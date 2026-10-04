@@ -1,4 +1,4 @@
-import { enemies, fighters, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats } from '../content/combat';
+import { adventureScaling, enemies, fighters, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats } from '../content/combat';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { enemyFractalisDrop } from '../content/progression';
 
@@ -7,6 +7,7 @@ export interface Combatant {
   definitionId: StarterId | EnemyId;
   side: 'ally' | 'enemy';
   name: string;
+  level: number | null;
   stats: Stats;
   hp: number;
   shield: number;
@@ -39,22 +40,24 @@ export interface BattleResult { state: BattleState; events: BattleEvent[] }
 
 function combatant(id: string, definitionId: Combatant['definitionId'], name: string, side: Combatant['side'], stats: Stats): Combatant {
   return {
-    id, definitionId, name, side, stats: { ...stats }, hp: stats.health, shield: 0,
+    id, definitionId, name, side, level: null, stats: { ...stats }, hp: stats.health, shield: 0,
     shatter: shatterGauge.starting, spent: false, recoverThrough: 0,
     readyRound: { skill1: 1, skill2: 1 }, burn: { damage: 0, turns: 0 }, weakened: 0,
   };
 }
 
 function spawnWave(wave: number): Combatant[] {
-  const scale = 1 + (wave - 1) * 0.12;
+  const steps = wave - 1;
   return (['goblin', 'imp', 'golem'] as const).map((id, index) => {
     const definition = enemies[id];
-    return combatant(`enemy-${wave}-${index}`, id, definition.name, 'enemy', {
-      health: Math.round(definition.stats.health * scale),
-      defense: definition.stats.defense + Math.floor((wave - 1) / 2),
-      damage: Math.round(definition.stats.damage * scale),
+    const unit = combatant(`enemy-${wave}-${index}`, id, definition.name, 'enemy', {
+      health: Math.round(definition.stats.health * (1 + steps * adventureScaling.healthPerWave)),
+      defense: definition.stats.defense + steps * adventureScaling.defensePerWave,
+      damage: Math.round(definition.stats.damage * (1 + steps * adventureScaling.damagePerWave)),
       crit: definition.stats.crit,
     });
+    unit.level = wave;
+    return unit;
   });
 }
 

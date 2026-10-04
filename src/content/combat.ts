@@ -48,6 +48,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
 };
 
 export const enemyIds = ['goblin', 'imp', 'golem'] as const;
+export const adventureScaling = { healthPerWave: 0.12, damagePerWave: 0.12, defensePerWave: 1 } as const;
 export type EnemyId = (typeof enemyIds)[number];
 export const enemies: Record<EnemyId, { name: string; art: string; stats: Stats }> = {
   goblin: { name: 'Goblin', art: 'goblin', stats: { health: 110, defense: 5, damage: 23, crit: 0.1 } },

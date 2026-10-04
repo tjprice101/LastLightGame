@@ -19,7 +19,7 @@ environment art, not a square transparent unit asset.
 The supplied [Grassy Field original](../Art/source/backgrounds/Grassy%20Field.png)
 has been moved out of the project root. Its byte-identical
 [runtime copy](../public/assets/backgrounds/grassy-field.png) is used behind the
-full Free Battle viewport, resolved through Vite's deployment base. The 1456 x 816 RGB PNG
+full Adventure viewport, resolved through Vite's deployment base. The 1456 x 816 RGB PNG
 is not alpha-processed, cropped, resized, or passed through the unit-art pipeline.
 Display uses aspect-preserving `object-fit: cover`, centered and fixed to the
 viewport; narrow screens crop the sides. Detached dark readouts keep stats readable
@@ -78,7 +78,7 @@ All six exports were reviewed over the dark game palette and checked for fully
 transparent borders, opaque interiors, and partial-alpha edges.
 
 The [portrait helper](../src/presentation/portrait.ts) resolves assets with Vite's
-deployment base. Selection, companion/character panels, and Free Battle use the
+deployment base. Selection, companion/character panels, and Adventure use the
 runtime images. Originals are not shipped in the game build.
 
 ## Standard character and enemy sizing

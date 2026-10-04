@@ -56,8 +56,8 @@ export function homeHub(starter: Starter, firstArrival: boolean): string {
       <section class="hub-dock" aria-label="Character upgrade shortcuts"><h2>Character</h2>
         <div>${tabButtons('overview', true)}</div></section>
       <div class="hub-launch"><button class="hub-battle-button" data-page="battle">
-        <small>SOLO / GRASSY FIELD</small><strong>Free Battle &rarr;</strong><span>Earn 5-10 Fractalis per enemy</span></button>
-        <p class="quiet">Progress saved on this device</p></div>
+        <small>SOLO / GRASSY FIELD</small><strong>Adventure &rarr;</strong><span>Start at wave 1 / Earn 5-10 Fractalis per enemy</span></button>
+        <p class="quiet">Fractalis saved on this device. Each entry starts a new run.</p></div>
     </div>`;
 }
 
@@ -90,7 +90,7 @@ export function characterHub(starter: Starter, selectedTab: string): string {
   if (selectedTab === 'overview') {
     detail = `${stats(starter)}<article class="hub-ability"><h3>${kit.passive.name} / Passive</h3><p>${kit.passive.description}</p></article>
       ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => ability(starter, action)).join('')}
-      <p class="quiet">These abilities work in Free Battle. Upgrade transactions remain unimplemented.</p>`;
+      <p class="quiet">These abilities work in Adventure. Upgrade transactions remain unimplemented.</p>`;
   } else if (selectedTab === 'inventory') {
     detail = equipment();
   } else {

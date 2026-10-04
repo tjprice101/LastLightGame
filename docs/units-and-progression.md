@@ -9,7 +9,7 @@ See [opening flow](opening-flow.md). Later-form art concepts do not define gamep
 The owner confirmed evolution, character levels, weapon upgrades, and separate
 upgrades for the unique passive, ability 1, ability 2, and ultimate.
 Ultimate display names must use `Last Flare: <character-specific name>`.
-Free Battle's initial names, effects, stats, and formulas were delegated for the
+Adventure's initial names, effects, stats, and formulas were delegated for the
 prototype and are documented separately. Upgrade costs, materials, and exact
 stat-growth/Fracture bonuses remain open. The first two tiers' level cap is confirmed.
 
@@ -53,12 +53,18 @@ The [prompt guide](../Art/midjourney-character-style-prompt.md) describes six ar
 stages each for Ember Swordsman, Tide Spearbearer, and Sprout Archer.
 Hair, eyes, signature clothing, and weapon type remain recognizable across stages.
 Fire, water, or grass can be chosen as the permanent starter. All three have implemented
-prototype combat kits in [Free Battle](free-battle.md), which uses only the saved starter.
+prototype combat kits in [Adventure](free-battle.md), which uses only the saved starter.
 They are not summonable, and their later forms are not implemented.
 The supplied art uses the names Infernis, Tizu, and Flores; stable save IDs remain
 `ember`, `tide`, and `sprout` so old profiles still load.
 
 ## Proposed roster and squad behavior
+
+Confirmed future exception: dungeon captures are separate from actual characters,
+have Normal/Heavy attacks only, weaker/squishier stats, and character-level upgrades
+only. They never evolve/Fracture or receive the seven character upgrade paths.
+Capture/team storage and leveling remain unimplemented; see
+[Dungeons and captures](dungeons-and-captures.md) for requirements and open decisions.
 
 - The roster owns instances; squads reference those instances.
 - A squad has ordered slots and, if approved, a leader assignment.

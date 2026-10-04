@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** mock-up-inspired Home hub and tabbed Character Upgrades.
+**Last updated:** Adventure rename/fresh runs/linear enemy levels and Flaming Depths art/design handoff.
 
 ## Project state
 
@@ -16,12 +16,12 @@
   first confirmation plays a companion awakening. Lore stays readable in the menu.
 - Implemented primary screens: Home, Character Upgrades, Events. Home shows the
   companion and coming-later Squad/Summon buttons. Inventory is inside upgrades;
-  Free Battle and Story are Home subactivities. Settings opens in a modal side drawer.
+  Adventure and Story are Home subactivities. Settings opens in a modal side drawer.
   Story displays the saved starter's lore/prologue; Events is a future placeholder. Motion settings
   save separately and update both canvas/CSS motion. Fractalis shows a persistent
   local balance; Lycalis is a label only. Upgrades and equipment remain previews.
 - Home now follows the supplied mock-up's utility rail / central character /
-  right stat-passive panel / bottom character dock and Free Battle launch.
+  right stat-passive panel / bottom character dock and Adventure launch.
   Character Upgrades has an area rail, central companion, and focused detail panel
   for Overview, seven upgrade paths, and Inventory / Equipment. Home shortcuts
   select these directly; Settings preserves the selected area. All content uses
@@ -30,18 +30,28 @@
   or mock-up scripts were imported. Provided mock-up files remain untouched.
 - All valid version-1 starter saves continue unchanged, including water/grass.
   The earlier forced fire re-selection policy is superseded.
-- Implemented: solo Free Battle using only the saved Infernis/Tizu/Flores, enemy waves,
+- Implemented: solo Adventure using only the saved Infernis/Tizu/Flores, enemy waves,
   health/defense/damage/crit, one action per turn, ultimate-only recovery, all
   passives/skills/Last Flares, elemental effects, and persistent remappable hotkeys.
   See [rules and kit values](free-battle.md).
 - Battle text now has opaque dark backing, stats/gauge/details at least 14px,
   instructions/logs 16px, readable disabled controls and defeated labels, and
   prominent keyboard focus. Only defeated artwork fades.
-- Free Battle now uses a dedicated full-viewport field screen, without sanctuary
+- Adventure uses a dedicated full-viewport field screen, without sanctuary
   chrome/nav. Unit sprites have no enclosing blue cards; name/stat readouts remain
   dark and readable. The compact HUD retains actions/hotkeys, end turn, restart,
   disclosures for full descriptions/log, and Settings. Quit Battle returns Home
-  while preserving session/rewards. Small screens scroll vertically as needed.
+  while retaining Fractalis but ending the run. Every entry starts at wave 1;
+  Settings preserves the active run. Small screens scroll vertically as needed.
+- Adventure supersedes Free Battle's name/session-resume policy. Enemies display
+  level = wave. HP/attack add 12% of base per wave (rounded), defense adds 1 each
+  wave; growth is linear, never compounded. Starter levels remain untracked.
+- Owner chose documentation/art first for Flaming Depths: one separate future
+  dungeon with higher-level waves, wave-end reports, and chance-based captures.
+  Captures are separate weaker/squishier fodder with Normal/Heavy only and level
+  upgrades only, never evolution. No dungeon/capture/team behavior is implemented.
+  [Ten ascending-power art prompts](../Art/Flaming%20Depths.md) are ready to generate;
+  [dungeon/capture contract](dungeons-and-captures.md) lists open balance/storage rules.
 - Each ally has Shatter Gauge: starts 0, caps 100, Light +20, Heavy +30,
   incoming enemy hit +10 (including shields). Skills cost 25/40 and Last Flare
   costs 100; skills no longer generate resource. Battle meters/buttons and the
@@ -49,7 +59,7 @@
 - Six supplied images moved to Art/source; transparent runtime exports are in
   public/assets. Portraits use the new names but retain old save IDs.
 - Grassy Field moved to `Art/source/backgrounds`, with a byte-identical landscape
-  PNG in `public/assets/backgrounds`. It is wired behind the Free Battle arena;
+  PNG in `public/assets/backgrounds`. It is wired behind the Adventure arena;
   no unit-art alpha removal or square normalization is applied.
 - Not implemented: rewarded quests, squad editing, summoning, upgrades/equipping,
   currency spending, Lycalis balances, item acquisition,
@@ -75,7 +85,7 @@ later contributors have made no changes.
 
 See [opening flow](opening-flow.md) for behavior and source references.
 The original art guide is preserved; supplied PNG art replaces SVG placeholders.
-Free Battle grants Fractalis enemy drops but no permanent roster grants. Broader design documents
+Adventure grants Fractalis enemy drops but no permanent roster grants. Broader design documents
 still label unapproved production mechanics as proposed.
 
 ## Next recommended action
@@ -99,14 +109,22 @@ progression/economy. Add future animation frames without changing resolver resul
 - Immersive field checks passed at 1280x720, 390x844, 320x640, and 844x390:
   scenery fills the viewport, sanctuary chrome/cards are absent, all five actions
   and full descriptions remain available, no horizontal overflow, and quit/re-entry
-  preserves session/rewards without leaking hotkeys. Settings suspends input.
+  retains earnings without leaking hotkeys. The old session-resume policy is
+  superseded: Adventure re-entry starts a new run. Settings suspends input.
   Water/grass defeat screens retain the selected character and allow restart.
   Desktop/mobile screenshots reviewed; narrow/short screens scroll as needed.
-- `npm test`: 84 passing tests for all three starter transitions and saved continuations,
+- `npm test`: 86 passing tests for all three starter transitions and saved continuations,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
   motion settings, combat formulas, all kits/passives, exact recovery/cooldown
   boundaries, status durations,   shield/heal caps, waves/defeat, hotkey validation, and every runtime unit PNG's
   960 x 960 RGBA export contract.
+- Adventure tests verify wave-1 starts, enemy levels, and exact base-relative HP/
+  attack and +1 defense across 20 waves; no compounded growth or invented ally level.
+- Browser checks cleared wave 1 through real actions and reached wave 2 with Goblin
+  HP 123, DEF 6, DMG 26 and every enemy showing level 2. Settings kept that wave/
+  enemy state; quit/re-entry reset to wave 1/full HP while retaining three enemy
+  payouts. All three starters retained their identities, spent actions through
+  Settings, and reset actions/gauges on re-entry. Test storage was restored.
 - Hub content tests cover all three real character kits, all nine areas, exact
   ability costs, effective defense, Fracture preview, and eight artifacts/master
   relic. Browser checks for each starter verify dock/rail selection, focus,

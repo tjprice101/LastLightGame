@@ -3,6 +3,8 @@
 For the new female fire greatsword starter, female grass bow starter, male water
 spear starter, and three basic enemy prompts, see [Starter Art](Starter%20Art.md).
 This guide remains the shared style reference.
+For ten dungeon enemies in ascending visual power, see
+[Flaming Depths](Flaming%20Depths.md). Those are distinct creatures, not evolutions.
 
 Reference target: **compact gacha JRPG unit illustration**, matching the supplied pirate chibi reference, not a cinematic anime battle portrait. Use a rounded oversized head, tiny torso, short limbs, and approximately 2.5–3-head-tall proportions. The character must have **only eyes as facial features**: no nose, mouth, eyebrows, or other facial marks. Render with clean contours, crisp cel shading and smooth painted highlights, not gritty sketching. Use a **solid pure-white background** with no scenery, gradient, texture, or cast-shadow backdrop. Keep the entire character and weapon visible. Aim for the character itself to occupy roughly one third of the canvas height, while its weapon, flowing costume, and separate curling effects extend much farther around it. Leave white gaps between effects and a white margin around the whole illustration. Character renders use **4:3** (1:1 only if a square card asset is specifically needed).
 

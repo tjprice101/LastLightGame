@@ -7,7 +7,7 @@ import { reducedMotion } from './settings';
 
 export interface BattleSession { state: BattleState; log: string[] }
 export function createSession(starterId: StarterId): BattleSession {
-  return { state: createBattle(crypto.getRandomValues(new Uint32Array(1))[0] || 1, [starterId]), log: ['Solo Free Battle ready. Each defeated enemy drops 5-10 Fractalis.'] };
+  return { state: createBattle(crypto.getRandomValues(new Uint32Array(1))[0] || 1, [starterId]), log: ['Solo Adventure ready at wave 1. Each defeated enemy drops 5-10 Fractalis.'] };
 }
 
 function definition(unit: Combatant): { art: string; color: string } {
@@ -81,7 +81,7 @@ export class BattleView {
       this.commitRewards(result);
       void this.present(result);
     } catch (error) {
-      console.error('Free Battle action rejected', error);
+      console.error('Adventure action rejected', error);
       this.error(error instanceof Error ? error.message : 'Battle action failed.');
     }
   }
@@ -189,7 +189,7 @@ export class BattleView {
     const state = unit.hp <= 0 ? 'Defeated' : unit.side === 'ally' && unit.spent ? `Acted${recovery ? ' - recover next turn' : ''}` : recovery ? 'Recovery turn' : 'Ready';
     return `<button class="battle-unit ${selected ? 'selected-unit' : ''} ${unit.hp <= 0 ? 'fallen' : ''}"
       data-unit="${unit.id}" data-side="${unit.side}" aria-pressed="${selected}" style="--element:${color}" ${unit.hp <= 0 ? 'disabled' : ''}>
-      <span class="unit-name">${unit.name}</span><span class="battle-art">
+      <span class="unit-name">${unit.name}${unit.level !== null ? ` / Lv. ${unit.level}` : ''}</span><span class="battle-art">
       <img src="${assetUrl(`${unit.side === 'ally' ? 'characters' : 'enemies'}/${art}.png`)}" alt="${unit.name}" width="960" height="960" />
       </span><span class="unit-readout"><span class="health-track"><span style="width:${unit.hp / unit.stats.health * 100}%"></span></span>
       <span class="unit-health">HP ${unit.hp}/${unit.stats.health}${unit.shield ? ` &middot; Shield ${unit.shield}` : ''}</span>
@@ -212,19 +212,19 @@ export class BattleView {
     if (!actor || !isStarterId(actor.definitionId)) throw new Error('Battle actor definition is missing.');
     const kit = fighters[actor.definitionId];
     this.host.innerHTML = `<img class="battle-scenery" src="${assetUrl('backgrounds/grassy-field.png')}" alt="Sunlit grassy-field battle scenery" width="1456" height="816" />
-      <div class="battle-top"><h1 tabindex="-1">Free Battle</h1>
+      <div class="battle-top"><h1 tabindex="-1">Adventure</h1>
       <span>Wave ${state.wave} &middot; Turn ${state.round} &middot; ${state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Wave cleared' : 'Character defeated'}</span></div>
       <p class="battle-drops" role="status">${this.session.log.filter((line) => line.includes(' drops +')).slice(-3).join(' ')}</p>
       <div class="battle-arena">
       <div class="battle-side enemies" role="group" aria-label="Enemies on the left">${state.enemies.map((unit) => this.unit(unit)).join('')}</div>
       <div class="battle-side allies solo" role="group" aria-label="Your character on the right">${state.allies.map((unit) => this.unit(unit)).join('')}</div></div>
       <div class="battle-hud">
-      <p id="battle-announcement" role="status">${state.phase === 'cleared' ? 'Wave cleared. Continue when ready; recovery and health carry over.' : state.phase === 'defeat' ? 'Your character has fallen. Restart Free Battle to try again.' : 'Choose an enemy on the left, then an action for your character.'}</p>
+      <p id="battle-announcement" role="status">${state.phase === 'cleared' ? 'Wave cleared. Continue when ready; recovery and health carry over.' : state.phase === 'defeat' ? 'Your character has fallen. Restart Adventure to try again.' : 'Choose an enemy on the left, then an action for your character.'}</p>
       <div class="battle-controls">
       <div class="battle-actions">${actionIds.map((action) => this.actionButton(state, actor, action)).join('')}</div>
       <div class="battle-turn-controls">
       <button id="end-battle-turn" class="primary-button" ${state.phase === 'defeat' ? 'disabled' : ''}><kbd>${keyLabel(this.bindings.endTurn)}</kbd> ${state.phase === 'cleared' ? 'Next wave' : 'End turn / enemy attacks'}</button>
-      <button id="restart-battle" class="text-button">Restart Free Battle</button></div>
+      <button id="restart-battle" class="text-button">Restart Adventure</button></div>
       <details class="battle-help"><summary>Abilities and battle rules</summary>
       <div class="actor-info"><strong>${actor.name}</strong><span>Passive: ${kit.passive.name} &mdash; ${kit.passive.description}</span></div>
       ${actionIds.map((action) => `<p><strong>${action === 'light' ? 'Light Attack' : action === 'heavy' ? 'Heavy Attack' : kit.abilities[action].name}:</strong> ${action === 'light' ? '100% damage; +20 Shatter Gauge.' : action === 'heavy' ? '180% damage; +30 Shatter Gauge.' : kit.abilities[action].description}</p>`).join('')}
@@ -232,7 +232,9 @@ export class BattleView {
         Shatter Gauge starts at ${shatterGauge.starting}; attacks build it and each incoming hit adds ${shatterGauge.incomingHit}, even through shields.
         Ending a turn forfeits unused actions.
         <kbd>${keyLabel(this.bindings.nextAlly)}</kbd> next ally &middot; <kbd>${keyLabel(this.bindings.nextTarget)}</kbd> next enemy</p>
-      <p class="quiet">Each defeated enemy drops 5-10 Fractalis, saved locally. Quitting keeps your session and earnings; reloading resets battle progress.</p>
+      <p class="quiet">Enemy level equals the wave. Health and attack grow by 12% of base per wave; defense grows by 1.
+        Each defeated enemy drops 5-10 Fractalis, saved locally. Quitting ends this run; entering again starts at wave 1.
+        Settings preserves the current run. Reloading resets battle progress.</p>
       </details></div>
       <p id="battle-error" role="alert" class="status"></p>
       <details class="battle-log"><summary>Battle log (${this.session.log.length} recent events)</summary><ol>${this.session.log.map((line) => `<li>${line}</li>`).join('')}</ol></details></div>`;
@@ -255,11 +257,11 @@ export class BattleView {
     });
     this.host.querySelector('#end-battle-turn')?.addEventListener('click', () => this.command('endTurn'));
     this.host.querySelector('#restart-battle')?.addEventListener('click', () => {
-      if (!confirm('Restart this practice battle? Current wave progress will be lost.')) return;
+      if (!confirm('Restart Adventure at wave 1? Current run progress will be lost; earned Fractalis is kept.')) return;
       const starterId = this.session.state.allies[0].definitionId;
       if (!isStarterId(starterId)) throw new Error('Solo starter definition is missing.');
       this.session.state = createSession(starterId).state;
-      this.session.log = ['Free Battle restarted.'];
+      this.session.log = ['Adventure restarted at wave 1. Earned Fractalis is kept.'];
       this.render();
     });
   }

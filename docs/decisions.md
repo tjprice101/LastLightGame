@@ -17,7 +17,7 @@ specifications own detailed rules; link them here rather than duplicating them.
 | D-008 | Fractalis main currency; Lycalis premium currency | Owner request, 2026-10-03 |
 | D-009 | Evolution, level, weapon, passive, ability 1/2, and Last Flare upgrades; eight unique artifacts plus one special master relic | Owner request, 2026-10-03; [progression](units-and-progression.md) |
 | D-010 | Inventory, settings, story mode, and a future events tab | Owner request, 2026-10-03; [menu surfaces](menus-and-inventory.md) |
-| D-011 | Main activity is Free Battle: endlessly fight Goblin/Imp/Rock Golem waves with enemies left and allies right | Owner request, 2026-10-04 |
+| D-011 | Main activity is Free Battle: endlessly fight Goblin/Imp/Rock Golem waves with enemies left and allies right; name/reset/scaling superseded by D-022 | Owner request, 2026-10-04 |
 | D-012 | Every character gets at most one light/heavy/skill/ultimate action per turn; original heavy/ultimate recovery rule superseded by D-017 | Owner request and follow-up approval, 2026-10-04 |
 | D-013 | Design editable prototype stats/kits for all three starters; expose configurable displayed battle hotkeys | Owner request and delegated initial balance, 2026-10-04; [rules](free-battle.md) |
 | D-014 | Organize supplied character/enemy art, preserve originals, remove white matte from runtime copies, wire to UI/battle | Owner request, 2026-10-04; [art](art-workflow.md) |
@@ -28,6 +28,8 @@ specifications own detailed rules; link them here rather than duplicating them.
 | D-019 | Offer fire, grass, or water at the beginning; Free Battle uses only the saved character. Make all battle text easier to read | Owner request, 2026-10-04. Supersedes D-007; preserve all valid starter saves. Opaque backing, larger text, and readable unavailable-action feedback |
 | D-020 | Each defeated enemy drops an integer 5-10 Fractalis immediately into a persistent browser-local balance starting at 0 | Owner request and persistence approval, 2026-10-04. Includes burn kills; keep earnings across exit/restart/reload. [Economy](summoning-and-economy.md) |
 | D-021 | Adapt the supplied gacha-hub mock-up for both Home and Character Upgrades using Last Light's actual data | Owner request and scope selection, 2026-10-04. Keep three primary screens and Settings drawer; use saved starter, stats/passive, Shatter Gauge, Fracture rules and wallet. No fake roster or working upgrade operations. [Menus](menus-and-inventory.md) |
+| D-022 | Rename Free Battle to Adventure; every entry starts at wave 1 with linearly growing enemy HP, attack, defense and level | Owner request and scaling approval, 2026-10-04. HP/attack add 12% of wave-1 base per wave (rounded), defense +1 per wave, level = wave. Keep 5-10 Fractalis drops; Settings retains the active run. [Adventure](free-battle.md) |
+| D-023 | Plan one separate dungeon, Flaming Depths, with higher-level enemy waves, end-of-wave action reports and chance-based captures | Owner request and scope choice, 2026-10-04. Document and prepare ten ascending-power art prompts now; playable dungeon/captures deferred. Captures are separate weaker fodder, Normal/Heavy only, level upgrades only, never evolved. [Dungeon contract](dungeons-and-captures.md) |
 
 D-003 records existing guidance, not approval of generated assets or gameplay rules.
 
@@ -37,8 +39,8 @@ D-003 records existing guidance, not approval of generated assets or gameplay ru
 | --- | --- | --- |
 | O-001 | Resolved for the prototype by D-004; native/mobile-store targets remain open | [Architecture](technical-architecture.md), [development](development-guide.md) |
 | O-002 | Offline prototype, online-first, or offline prototype with later online production? | [Architecture](technical-architecture.md), [economy](summoning-and-economy.md) |
-| O-003 | Free Battle rules resolved by D-011/D-012/D-013; production squads/advanced controls remain open | [Combat](combat.md), [units](units-and-progression.md) |
-| O-004 | Prototype stats/formulas specified in Free Battle; elemental advantage and production balance remain open | [Combat](combat.md), [content](content-guide.md) |
+| O-003 | Adventure rules resolved by D-011/D-012/D-013/D-022; production squads/advanced controls remain open | [Combat](combat.md), [units](units-and-progression.md) |
+| O-004 | Prototype stats/formulas specified in Adventure; elemental advantage and production balance remain open | [Combat](combat.md), [content](content-guide.md) |
 | O-005 | How do rarity, level, evolution, and duplicates work? | [Units](units-and-progression.md), [economy](summoning-and-economy.md) |
 | O-006 | What summon rates, guarantees, pity, and currency rules are desired? | [Economy](summoning-and-economy.md) |
 | O-007 | Is monetization planned, and for which markets/audiences? | [Economy](summoning-and-economy.md), [architecture](technical-architecture.md) |
@@ -47,6 +49,7 @@ D-003 records existing guidance, not approval of generated assets or gameplay ru
 | O-010 | What device budgets, accessibility, and localization requirements apply? | [Vision](game-vision.md), [development](development-guide.md) |
 | O-011 | Are unique artifacts distinct by instance or definition, and can characters share items? | [Equipment](menus-and-inventory.md#equipment-implementation-requirements) |
 | O-012 | Prototype abilities/Last Flare names implemented; upgrade costs/caps and starting currency balances remain open | [Units](units-and-progression.md), [economy](summoning-and-economy.md) |
+| O-013 | Dungeon wave/level/reward tables, capture odds/eligibility/persistence, fodder stats/leveling and team rules | [Dungeons and captures](dungeons-and-captures.md#decisions-needed-before-implementation) |
 
 ## Decision record template
 

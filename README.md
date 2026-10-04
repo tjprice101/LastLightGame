@@ -3,17 +3,23 @@
 An original cinematic 2D gacha RPG inspired by Brave Frontier.
 The browser-playable prelude includes an animated title, fire/water/grass starter selection,
 and three sanctuary screens: Home, Character Upgrades, and Events. Home displays
-your companion and Squad/Summon buttons, with Free Battle and story subactivities.
+your companion and Squad/Summon buttons, with Adventure and story subactivities.
 Inventory lives inside Character Upgrades; Settings opens in a side drawer.
 Home features a central companion showcase, live stat panel, shortcut dock, and
-Free Battle launch. Character Upgrades uses a selectable area rail and detail panel.
-Free Battle uses only your saved starter against
+Adventure launch. Character Upgrades uses a selectable area rail and detail panel.
+Adventure (formerly Free Battle) uses only your saved starter against
 endless Goblin/Imp/Rock Golem waves, with skills, passives, Shatter Gauge,
 Last Flares, ultimate-only recovery
 turns, and configurable hotkeys. Supplied artwork has transparent runtime exports.
 Upgrade/equipment previews and currency names are shown; upgrades, equipping,
 rewarded quests, summoning, currency spending, and Lycalis balances remain unimplemented.
 Each defeated enemy drops 5-10 Fractalis into a persistent browser-local balance.
+Every entry starts at wave 1. Enemy level equals the wave, HP/attack grow by a fixed
+12% of base per wave, and defense increases by 1. Settings preserves the active run;
+quitting ends it without losing currency.
+Flaming Depths dungeon, wave reports, and captured fodder teams are
+[documented for later implementation](docs/dungeons-and-captures.md).
+Ten ascending-power [enemy art prompts](Art/Flaming%20Depths.md) are ready to generate.
 
 ## Play and develop
 
@@ -44,5 +50,5 @@ See [setup and deployment](docs/development-guide.md) for details.
 Starter choice is saved only in this browser's local storage, not a cloud account.
 Illustrations are owner-supplied assets; originals and transparent exports are
 documented in the [art workflow](docs/art-workflow.md).
-See [Free Battle rules and kits](docs/free-battle.md) to customize combat.
+See [Adventure rules and kits](docs/free-battle.md) to customize combat.
 Do not interpret the documentation's proposed combat/economy rules as implemented.

@@ -15,7 +15,7 @@ The owner delegated language/engine selection and requested repository deploymen
    Tab, modifier keys, Escape, repeated keys, and browser shortcuts do not advance,
    preserving keyboard navigation and browser controls.
 3. With no save, offer Infernis (fire/greatsword), Tizu (water/spear), and
-   Flores (grass/bow). Select exactly one; the opening journey and Free Battle are solo.
+   Flores (grass/bow). Select exactly one; the opening journey and Adventure are solo.
 4. Require explicit selection; then enable "Begin your journey".
 5. Commit the starter to local storage before opening the sanctuary menu.
 6. On subsequent visits with any valid starter saved, title entry continues to the saved menu.
@@ -41,7 +41,7 @@ while all lore and controls remain accessible. No save-schema changes are needed
 
 The menu displays the saved companion and opens the
 [character, inventory, story, events, and settings surfaces](menus-and-inventory.md).
-Free Battle is implemented separately; quests, squad editing, and summoning are not.
+Adventure is implemented separately; dungeons, quests, squad editing, and summoning are not.
 Fractalis shows a persistent local balance earned from enemy drops; Lycalis is a
 label only. No saved character levels, accounts, or payment operations are introduced.
 
@@ -88,7 +88,7 @@ not the opening-screen renderer.
 
 - Keyboard and pointer can complete all three screens.
 - No starter is preselected; confirm remains disabled until selection.
-- All three starters persist and reload without replacement. Free Battle uses
+- All three starters persist and reload without replacement. Adventure uses
   exactly the saved starter on entry, restart, and subsequent waves.
 - Mobile layout has no horizontal overflow and all controls remain reachable.
 - Corrupt saves and unavailable storage produce explicit errors.

@@ -22,7 +22,7 @@ the engine before production; Phaser is a 2D browser engine, not a 3D engine.
 See [opening-flow implementation references](opening-flow.md#where-to-customize).
 The opening state machine and persistence are independent of Phaser/DOM rendering.
 Starter identity, motion preferences, and hotkeys are persisted in separate keys.
-[Free Battle](free-battle.md) now has a pure combat engine and an independent
+[Adventure](free-battle.md) now has a pure combat engine and an independent
 event/animation renderer. Battle state is in-memory only and has no economic
 effects. Runtime PNGs are static public assets imported through base-aware paths.
 There is no backend, authoritative economy, or save migration framework yet.

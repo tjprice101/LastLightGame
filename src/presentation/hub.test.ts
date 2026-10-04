@@ -8,6 +8,9 @@ describe('game-specific hub layouts', () => {
     expect(home).toContain(`characters/${starter.art}.png`);
     expect(home).toContain(starter.name);
     expect(home).toContain('data-page="battle"');
+    expect(home).toContain('Adventure &rarr;');
+    expect(home).toContain('Start at wave 1');
+    expect(home).not.toContain('Free Battle');
     expect(home).toContain('data-feature="Squad"');
     expect(home).toContain('data-feature="Summon"');
     const overview = characterHub(starter, 'overview');

@@ -3,7 +3,7 @@
 ## Confirmed requirements
 
 - Fire, water, and grass are available as first companions; choose one.
-  Free Battle uses only that saved character.
+  Adventure uses only that saved character.
 - **Fractalis** is the main currency; **Lycalis** is the premium currency.
 - Characters support evolution, levels, weapon upgrades, and independent upgrades
   for the unique passive, ability 1, ability 2, and ultimate.
@@ -13,7 +13,7 @@
 - Inventory, settings, and story-mode menus are needed; events come later.
 - Three primary sanctuary screens: Home, Character Upgrades, and Events.
   Home shows the character with Squad and Summon buttons; Settings sits to the side.
-- The starting experience and Free Battle are solo; no starting squad is granted.
+- The starting experience and Adventure are solo; no starting squad is granted.
 
 ## Implemented surfaces
 
@@ -28,15 +28,18 @@ their coming-later status without granting units or spending currency.
 The owner-provided hub mock-up guides both Home and Character Upgrades:
 Home has a left utility rail, a central unboxed character showcase, a right-side
 HP/DEF/DMG/CRIT and passive panel, a bottom character shortcut dock, and a prominent
-Free Battle launch. Currency chips show the actual Fractalis balance and an honest
+Adventure launch. Currency chips show the actual Fractalis balance and an honest
 unimplemented Lycalis label. Tizu's displayed effective defense includes his passive.
 Mobile stacks the showcase/stats before the shortcut rail; content scrolls rather
 than being clipped.
-[Free Battle](free-battle.md) and Story are Home subactivities with Back to Home
-controls, not additional primary tabs. Free Battle is an endless-wave
-practice mode with the saved starter and supplied scenery/art. It opens in a
+[Adventure](free-battle.md) and Story are Home subactivities with Back to Home
+controls, not additional primary tabs. Adventure is an endless-wave
+mode with the saved starter and supplied scenery/art. It opens in a
 full-viewport field state with Quit Battle rather than sanctuary navigation;
-quitting returns Home without discarding the session or Fractalis.
+quitting returns Home and ends the run without discarding Fractalis. Each entry
+starts at wave 1; Settings preserves the active run.
+[Flaming Depths and captures](dungeons-and-captures.md) are planned separately,
+not exposed as a playable dungeon or owned roster yet.
 Character Upgrades shows
 the saved companion's working combat kit and illustration.
 Character has a left area-selector rail, central saved companion, and right detail
@@ -70,7 +73,7 @@ restores the already-resolved battle state and uses the latest saved key binding
 
 All three version-1 starter IDs continue to the menu normally. The previous
 fire-only re-selection policy is superseded: water/grass saves are not overwritten,
-and Free Battle uses their saved companion. New saves still require explicit
+and Adventure uses their saved companion. New saves still require explicit
 selection and a successful write before entering the menu.
 
 ## Equipment implementation requirements

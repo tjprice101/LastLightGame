@@ -1,6 +1,6 @@
 # Combat specification
 
-**Status:** [Free Battle](free-battle.md) is implemented with prototype formulas,
+**Status:** [Adventure](free-battle.md) is implemented with prototype formulas,
 starter kits, waves, and hotkeys. This page retains broader production questions.
 
 ## Open rules
@@ -47,7 +47,7 @@ Before coding damage, document:
 - Shield/HP interaction, healing caps, and whether zero-damage hits trigger effects.
 
 The owner authorized a prototype balance set. Current formulas and worked tests
-are linked in [Free Battle](free-battle.md#stats-and-formulas); production tuning
+are linked in [Adventure](free-battle.md#stats-and-formulas); production tuning
 is still open.
 
 ## Skill and effect rules

@@ -1,25 +1,28 @@
-# Free Battle
+# Adventure
 
-**Status:** implemented practice mode, 2026-10-04. The owner approved an initial
+**Status:** implemented endless solo mode, renamed from Free Battle, 2026-10-04.
+The legacy document filename is retained for existing links. The owner approved an initial
 editable balance set. Shatter Gauge costs/gains are owner-approved; only ultimates
 force next-turn recovery, superseding the earlier heavy-attack recovery rule.
 This is not production balance or a rewarded story mode.
 
 ## Entering and leaving
 
-Home's **Enter Free Battle** button opens the activity.
-Free Battle is a separate full-viewport field screen, without the sanctuary
+Home's **Adventure** button opens a fresh run at **wave 1**, never resumes a
+previous run. Restart and reload also start at wave 1. Enemy level equals wave.
+Adventure is a separate full-viewport field screen, without the sanctuary
 header, primary navigation, or footer. Scenery fills the viewport; transparent
 unit art stands on the field without blue card borders. Detached dark name/stat
 readouts preserve contrast. The compact bottom HUD retains all five actions,
 hotkeys, resource/cooldown/recovery feedback, end turn, and restart. Full ability
 descriptions/passive/rules and the log are available in disclosures.
-**Quit Battle** returns Home, preserving the current in-memory session and earned
-Fractalis. Settings remains available and suspends battle input while open.
+**Quit Battle** returns Home and ends the run, preserving earned Fractalis but
+discarding wave progress. Settings suspends battle input while open; closing it
+preserves the current wave, health, gauges, and already-resolved actions.
 Small screens allow vertical scrolling rather than clipping controls; the scenery
 stays full-screen behind the content. This uses the browser viewport, not the
 permission-gated Fullscreen API.
-Choose Infernis (fire), Tizu (water), or Flores (grass) at the start. Free Battle
+Choose Infernis (fire), Tizu (water), or Flores (grass) at the start. Adventure
 uses **only your saved starter**, not a temporary team. Entry, restart, and later
 waves preserve that identity; no additional units or items are granted.
 Every newly defeated enemy drops a random integer **5-10 Fractalis**, including
@@ -39,16 +42,28 @@ Your character's action kit is selected automatically. Click an enemy to target 
 then finish the player turn with **End turn / enemy attacks**. Unused ally actions
 are forfeited when ending the turn. There is no automatic turn ending.
 
-Every wave has a Goblin, an Imp, and a Rock Golem. Enemy HP/damage scale by
-`1 + 0.12 * (wave - 1)` with rounding; defense increases by
-`floor((wave - 1) / 2)`. Clear a wave, then explicitly choose Next wave.
+Every wave has a Goblin, an Imp, and a Rock Golem. Approved linear growth:
+
+- Enemy level = `wave`, starting at 1; shown next to the enemy name.
+- HP = `round(baseHP * (1 + 0.12 * (wave - 1)))`.
+- Attack = `round(baseAttack * (1 + 0.12 * (wave - 1)))`.
+- Defense = `baseDefense + (wave - 1)`; increases every wave.
+- Critical chance stays at its base value.
+
+Growth uses wave-1 base stats, NOT the previous wave's stats, so it is not compounded.
+Integer rounding may make adjacent HP/attack increments differ by one.
+Edit [Adventure scaling](../src/content/combat.ts) to tune the fixed increments.
+Clear a wave, then explicitly choose Next wave.
 Continue until defeat, exit, or a confirmed restart. Health, shields, Shatter Gauge,
 skill cooldowns, and recovery carry between waves; defeated allies stay defeated.
 Flores' living passive still applies at the new-turn boundary.
 
-Switching menu tabs preserves the practice session for the current page lifetime.
-Reloading starts a new practice session. Leaving during animation cancels only
-presentation; the already resolved state is retained.
+Leaving Adventure during animation cancels presentation and ends the run; already
+committed Fractalis stays earned. Opening Settings during animation cancels
+presentation only, retaining the resolved combat state.
+The character's owned level remains untracked; enemy levels do not implement
+character leveling. [Dungeons and captures](dungeons-and-captures.md) are separately
+documented and not playable yet.
 
 ## Actions and recovery
 
@@ -98,7 +113,7 @@ zero. Healing caps at maximum HP and never revives. Burn bypasses defense but
 still consumes shield before HP. There is no elemental advantage multiplier yet.
 
 Critical rolls and enemy target selection use a seeded xorshift32 generator.
-Initial practice seeds come from browser crypto; a fixed seed reproduces rules
+Initial Adventure seeds come from browser crypto; a fixed seed reproduces rules
 in tests. Critical rolls occur independently per target; enemy attacks choose a
 random living ally. This is not an authoritative or monetized online battle system.
 

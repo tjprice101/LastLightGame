@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fighters, type ActionId } from '../content/combat';
+import { enemies, fighters, type ActionId } from '../content/combat';
 import { starters } from '../content/starters';
 import { act, actionUnavailable, createBattle, damageAmount, endTurn, nextWave, type BattleState } from './battle';
 
@@ -14,7 +14,7 @@ function use(state: BattleState, id: string, action: ActionId): BattleState {
   return act(state, id, action, state.enemies[0].id).state;
 }
 
-describe('Free Battle damage and turns', () => {
+describe('Adventure damage and turns', () => {
   it('uses flat defense, rounding before reduction, 150% crits, and a one-damage floor', () => {
     expect(damageAmount(38, 1, 5, false)).toBe(33);
     expect(damageAmount(38, 1.8, 5, false)).toBe(63);
@@ -160,6 +160,39 @@ describe('Shatter Gauge', () => {
 });
 
 describe('solo starter battles', () => {
+  it('starts fresh runs at wave and enemy level 1 without assigning a saved character level', () => {
+    const state = createBattle(12345);
+    expect(state.wave).toBe(1);
+    expect(state.enemies.map((enemy) => enemy.level)).toEqual([1, 1, 1]);
+    expect(state.allies[0].level).toBeNull();
+    state.phase = 'cleared';
+    state.enemies.forEach((enemy) => { enemy.hp = 0; });
+    const advanced = nextWave(state).state;
+    expect(advanced.wave).toBe(2);
+    expect(createBattle(12345).wave).toBe(1);
+    expect(createBattle(12345).enemies.map((enemy) => enemy.level)).toEqual([1, 1, 1]);
+  });
+  it('uses base-relative linear HP/attack, +1 defense and +1 level every wave, not compound growth', () => {
+    let state = createBattle(12345);
+    for (let wave = 1; wave <= 20; wave++) {
+      expect(state.wave).toBe(wave);
+      for (const unit of state.enemies) {
+        if (unit.definitionId !== 'goblin' && unit.definitionId !== 'imp' && unit.definitionId !== 'golem') {
+          throw new Error('Unexpected enemy definition.');
+        }
+        const base = enemies[unit.definitionId].stats;
+        expect(unit.level).toBe(wave);
+        expect(unit.stats.health).toBe(Math.round(base.health + base.health * 0.12 * (wave - 1)));
+        expect(unit.hp).toBe(unit.stats.health);
+        expect(unit.stats.damage).toBe(Math.round(base.damage + base.damage * 0.12 * (wave - 1)));
+        expect(unit.stats.defense).toBe(base.defense + wave - 1);
+        expect(unit.stats.crit).toBe(base.crit);
+      }
+      state.phase = 'cleared';
+      state.enemies.forEach((enemy) => { enemy.hp = 0; });
+      state = nextWave(state).state;
+    }
+  });
   it('defaults to one fire character, not a practice team', () => {
     expect(createBattle().allies.map((unit) => unit.definitionId)).toEqual(['ember']);
   });

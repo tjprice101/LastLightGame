@@ -9,7 +9,7 @@ spending, and monetization rules remain open.
 - **Fractalis:** main currency.
 - **Lycalis:** premium currency.
 
-Fractalis starts at **0** and every defeated Free Battle enemy grants a uniformly
+Fractalis starts at **0** and every defeated Adventure enemy grants a uniformly
 selected integer **5-10**, including burn kills. The balance is shown in the menu
 and persists separately under `last-light.wallet`:
 `{"version":1,"fractalis":0}`. Lycalis balances and spending remain unimplemented.

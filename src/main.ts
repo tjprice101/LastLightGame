@@ -209,6 +209,8 @@ function renderMenu(firstArrival = false): void {
       const page = button.dataset.page;
       if (page !== 'home' && page !== 'character' &&
           page !== 'story' && page !== 'events' && page !== 'battle') throw new Error('Unknown menu page.');
+      if (page === 'battle' && menuPage !== 'battle') battleSession = createSession(starter.id);
+      if (page !== 'battle' && menuPage === 'battle') battleSession = null;
       menuPage = page;
       renderMenu();
       focusHeading();

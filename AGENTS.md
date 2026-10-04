@@ -19,9 +19,13 @@
   power the browser prototype. Keep accessible menus in HTML over the canvas.
   Ask before changing engines or adding paid services, backends, or payments.
 - Inspect the workspace before trusting handoff status. Opening flow and
-  [Free Battle](docs/free-battle.md) exist; progression/economy operations do not.
-- Starter selection offers fire, water, and grass. Free Battle uses only the saved
+  [Adventure](docs/free-battle.md) exists; progression/economy operations do not.
+- Starter selection offers fire, water, and grass. Adventure uses only the saved
   starter, including after restart; do not auto-grant a team or replace existing saves.
+- Each Adventure entry starts at wave 1; Settings retains the run, quitting does not.
+  Enemy level equals wave; HP/attack grow linearly by 12% of base and defense by 1.
+  [Dungeons/captures](docs/dungeons-and-captures.md) are documented, not implemented.
+  Captures are distinct from characters, Normal/Heavy only, levelable but never evolved.
 - Preserve source images under Art/source; process runtime copies using
   tools/prepare_art.py. Images use Vite's deployment base, not root-relative paths.
 - Preserve the established art direction. Six illustrated stages do not establish

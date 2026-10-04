@@ -11,7 +11,7 @@ It is intended to make features easy to locate, extend, and hand off.
 - **Implemented:** present in code and verified; include implementation and test links.
 
 The title, fire/water/grass selection, local save, navigation, readable prologue, motion/
-hotkey settings, and solo Free Battle with the saved starter are implemented.
+hotkey settings, and solo Adventure with the saved starter are implemented.
 Currency labels, upgrade paths, and equipment slots are previews. Summoning,
 rewarded quests, and progression operations remain scaffolding.
 
@@ -23,7 +23,8 @@ rewarded quests, and progression operations remain scaffolding.
 | [Opening flow](opening-flow.md) | Title, starter selection, menu, local save, placeholder art |
 | [Menus and inventory](menus-and-inventory.md) | Fire-only roster, currencies, upgrades, 8+1 equipment, settings/story/events |
 | [Combat](combat.md) | Battle flow, actions, damage, effects, combat tests |
-| [Free Battle](free-battle.md) | Playable waves, all starter kits, recovery rules, stats, attacks, hotkeys |
+| [Adventure](free-battle.md) | Fresh wave-1 runs, linear enemy levels/stats, all starter kits, recovery, hotkeys |
+| [Dungeons and captures](dungeons-and-captures.md) | Flaming Depths, wave reports, separate captured-enemy ownership; not yet playable |
 | [Units and progression](units-and-progression.md) | Unit identity, roster, leveling, evolution, duplicates |
 | [Summoning and economy](summoning-and-economy.md) | Banners, odds, pity, currencies, reward transactions |
 | [Content guide](content-guide.md) | Adding units, skills, enemies, quests, and banners |
@@ -40,6 +41,8 @@ The [Starter Art prompts](../Art/Starter%20Art.md) cover the new base-form trio
 and three basic mythological enemies in the same style.
 The [Battle Scenery prompt](../Art/Battle%20Scenery.md) covers a cutesy grassy
 field for the intended solo opening battle.
+The [Flaming Depths prompts](../Art/Flaming%20Depths.md) cover ten dungeon enemies
+in ascending visual power, from a soot sprite to a flame sovereign.
 
 ## Common tasks
 
