@@ -1,6 +1,6 @@
 import './style.css';
 import { availableStarters, getStarter, isStarterId } from './content/starters';
-import { artifactSlots, currencies, fractureRules, upgradePaths } from './content/progression';
+import { currencies } from './content/progression';
 import { Journey } from './game/flow';
 import { SAVE_KEY } from './game/profile';
 import { portrait } from './presentation/portrait';
@@ -9,7 +9,7 @@ import { elementalReveal } from './presentation/reveal';
 import { applyMotion, loadMotion, saveMotion, type MotionPreference } from './presentation/settings';
 import { allowedCodes, commands, defaultBindings, keyLabel, loadBindings, saveBindings, validateBindings } from './game/hotkeys';
 import { BattleView, createSession, type BattleSession } from './presentation/battle-view';
-import { fighters, shatterGauge } from './content/combat';
+import { characterHub, homeHub, isCharacterTab } from './presentation/hub';
 import { loadFractalis, saveBattleRewards } from './game/wallet';
 
 const root = document.querySelector<HTMLElement>('#app');
@@ -23,6 +23,7 @@ app.addEventListener('error', (event) => {
 const journey = new Journey();
 type MenuPage = 'home' | 'character' | 'story' | 'events' | 'battle';
 let menuPage: MenuPage = 'home';
+let characterTab = 'overview';
 let motionPreference: MotionPreference = 'system';
 let settingsError = '';
 let bindings = { ...defaultBindings };
@@ -191,36 +192,7 @@ function renderMenu(firstArrival = false): void {
     ] as const).map(([page, label]) =>
       `<button data-page="${page}" ${(menuPage === 'battle' || menuPage === 'story' ? 'home' : menuPage) === page ? 'aria-current="page"' : ''}>${label}</button>`).join('')}</nav>
       <button id="open-settings" class="settings-trigger" aria-haspopup="dialog">Settings</button></div>
-    ${menuPage !== 'home' ? menuContent(menuPage) : `
-    <div class="menu-heading"><div><p class="eyebrow">THE SANCTUARY</p><h1 tabindex="-1">A new light awakens.</h1>
-      <p class="subtitle">Welcome home, traveler. Your journey is just beginning.</p></div>
-      <span class="chapter-badge">PROLOGUE<br><strong>01</strong></span></div>
-    <div class="menu-layout">
-      <article class="companion-panel ${firstArrival ? 'first-arrival' : ''}" style="--element:${starter.color}">
-        <p class="eyebrow">YOUR FIRST COMPANION</p>
-        <div class="portrait">${portrait(starter)}${firstArrival ? elementalReveal(starter) : ''}</div>
-        <span class="element-pill">${starter.element} / ${starter.weapon}</span>
-        <h2>${starter.name}</h2><p>${starter.description}</p>
-        ${firstArrival ? `<p class="bond-message">${starter.lore.awakening}</p>` : ''}
-        <details class="companion-lore" ${firstArrival ? 'open' : ''}>
-          <summary>Companion lore</summary>
-          <p class="eyebrow">${starter.lore.origin}</p>
-          <p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote>
-        </details>
-        <span class="small-label">STARTER FORM &middot; LOCAL SAVE</span>
-      </article>
-      <div class="menu-options">
-        <article class="journey-panel"><span class="eyebrow">PRACTICE ARENA</span>
-          <h2>Free Battle</h2><p>${starter.name} faces waves of Goblins, Imps, and Rock Golems alone in a sunlit meadow. Train without spending currency.</p>
-          <button class="primary-button" data-page="battle">Enter Free Battle &rarr;</button></article>
-        <div class="feature-grid">
-          <button class="feature-tile feature-button" data-feature="Squad"><span class="tile-symbol" aria-hidden="true">&#9671;</span><strong>Squad</strong><span>You start alone. Squad building comes later.</span><span>COMING SOON</span></button>
-          <button class="feature-tile feature-button" data-feature="Summon"><span class="tile-symbol" aria-hidden="true">&#10022;</span><strong>Summon</strong><span>New lights will answer the call.</span><span>COMING SOON</span></button>
-        </div>
-        <button class="text-button" data-page="story">Read the opening story</button>
-        <div class="menu-actions"><button id="return-title" class="text-button">Return to title</button><span>Progress saved on this device</span></div>
-      </div>
-    </div>`}
+    ${menuPage !== 'home' ? menuContent(menuPage) : homeHub(starter, firstArrival)}
   </section>`;
   frame(`${menuPage === 'battle' ? `<header class="battle-toolbar">
     <button class="text-button" data-page="home">Quit Battle</button>
@@ -245,6 +217,16 @@ function renderMenu(firstArrival = false): void {
   app.querySelectorAll<HTMLButtonElement>('[data-feature]').forEach((button) => {
     button.addEventListener('click', () => {
       showError(`${button.dataset.feature} is coming later. No units or currency have been changed.`);
+    });
+  });
+  app.querySelectorAll<HTMLButtonElement>('[data-character-tab]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const tab = button.dataset.characterTab;
+      if (!tab || !isCharacterTab(tab)) throw new Error('Unknown character upgrade area.');
+      characterTab = tab;
+      menuPage = 'character';
+      renderMenu();
+      app.querySelector<HTMLElement>('#upgrade-heading')?.focus();
     });
   });
   const drawer = app.querySelector<HTMLDialogElement>('#settings-drawer');
@@ -344,34 +326,7 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
   const heading = (name: string, text: string) =>
     `<h1 tabindex="-1">${name}</h1><p class="subtitle">${text}</p>`;
   if (page === 'battle') return '<button class="text-button" data-page="home">Back to Home</button><div id="battle-root"></div>';
-  if (page === 'character') return `${heading('Character Upgrades', `${starter.name} / Combat kit, progression, and equipment.`)}
-    <article class="companion-panel character-kit"><div class="portrait">${portrait(starter)}</div>
-      <p class="subtitle">HP ${fighters[starter.id].stats.health} &middot; Defense ${fighters[starter.id].stats.defense} &middot;
-      Damage ${fighters[starter.id].stats.damage} &middot; Crit ${Math.round(fighters[starter.id].stats.crit * 100)}%</p>
-      <h2>${fighters[starter.id].passive.name} &middot; Passive</h2><p>${fighters[starter.id].passive.description}</p>
-      ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => {
-        const ability = fighters[starter.id].abilities[action];
-        return `<h3>${ability.name}</h3><p>${ability.description} Costs ${shatterGauge.costs[action]} Shatter Gauge${ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</p>`;
-      }).join('')}
-      <p class="quiet">These abilities work in Free Battle; upgrade transactions remain unimplemented.</p>
-    </article>
-    <section class="inventory-section fracture-preview" aria-labelledby="fracture-heading">
-      <h2 id="fracture-heading">Level progression and Fracture</h2>
-      <article class="feature-tile">
-        <p class="eyebrow">CONFIRMED RULES &middot; PREVIEW ONLY</p>
-        <ol>
-          <li><strong>Tier ${fractureRules.sourceTier}:</strong> Level up to ${fractureRules.levelCap}. Fracture is required to evolve into Tier ${fractureRules.destinationTier}.</li>
-          <li><strong>Fracture:</strong> Gain major stat improvements and +${fractureRules.lycalisReward} Lycalis. Reset to level ${fractureRules.resetLevel} in the new tier.</li>
-          <li><strong>Tier ${fractureRules.destinationTier}:</strong> Level from ${fractureRules.resetLevel} to ${fractureRules.levelCap} again using different upgrade resources.</li>
-        </ol>
-        <p>Upgrade materials, costs, and exact stat improvements are coming later. Leveling and Fracturing are not available yet; no Lycalis has been awarded.</p>
-        <p class="quiet">Current level and tier are not tracked in the save yet. These are progression rules, not your character's current progress.</p>
-      </article>
-    </section>
-    <div class="upgrade-grid">${upgradePaths.map((path) =>
-      `<article class="feature-tile"><h2>${path.name}</h2><p>${path.detail.replace('<', '&lt;').replace('>', '&gt;')}</p><span>UPGRADES NOT IMPLEMENTED &middot; COSTS UNSET</span></article>`).join('')}</div>
-    <section class="inventory-section"><h2>Inventory</h2><div class="feature-tile"><h3>No items yet</h3><p>Artifacts, master relics, and upgrade materials will appear here. Item acquisition and equipping are not implemented.</p></div></section>
-    ${equipmentLayout()}`;
+  if (page === 'character') return characterHub(starter, characterTab);
   if (page === 'story') return `<button class="text-button" data-page="home">Back to Home</button>${heading('Story mode', `Prologue / ${starter.lore.origin}`)}
     <article class="story-panel lore-panel" style="--element:${starter.color}">
       <p class="eyebrow">A FIRST LIGHT</p><h2>${starter.title}</h2>
@@ -399,15 +354,6 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
           `<option value="${code}" ${bindings[command] === code ? 'selected' : ''}>${keyLabel(code)}</option>`).join('')}</select>`).join('')}
       <button class="primary-button" type="submit">Save battle hotkeys</button><p id="hotkey-result" role="status"></p>
     </form>`;
-}
-
-function equipmentLayout(): string {
-  return `<section class="equipment-panel"><h2>Equipment slots</h2>
-    <p class="subtitle">Eight unique artifacts and one separate, special master relic slot. Slots are a preview; equipping is not available yet.</p>
-    <div class="master-relic"><strong>Master relic</strong><span>Special slot &middot; Empty</span></div>
-    <div class="artifact-grid">${artifactSlots.map((slot) =>
-      `<div class="artifact-slot"><strong>Artifact ${slot}</strong><span>Empty</span></div>`).join('')}</div>
-  </section>`;
 }
 
 function render(): void {

@@ -27,6 +27,7 @@ specifications own detailed rules; link them here rather than duplicating them.
 | D-018 | Tier 1 caps at level 30, then Fractures into Tier 2 with major stat improvements, resets to level 0, and grants +10 Lycalis. Tier 2 levels to 30 with different resources | Owner request, 2026-10-04. Owner selected previews only until materials and exact stats are defined; no upgrade or reward transaction yet. [Progression rules](units-and-progression.md#confirmed-level-and-fracture-rules) |
 | D-019 | Offer fire, grass, or water at the beginning; Free Battle uses only the saved character. Make all battle text easier to read | Owner request, 2026-10-04. Supersedes D-007; preserve all valid starter saves. Opaque backing, larger text, and readable unavailable-action feedback |
 | D-020 | Each defeated enemy drops an integer 5-10 Fractalis immediately into a persistent browser-local balance starting at 0 | Owner request and persistence approval, 2026-10-04. Includes burn kills; keep earnings across exit/restart/reload. [Economy](summoning-and-economy.md) |
+| D-021 | Adapt the supplied gacha-hub mock-up for both Home and Character Upgrades using Last Light's actual data | Owner request and scope selection, 2026-10-04. Keep three primary screens and Settings drawer; use saved starter, stats/passive, Shatter Gauge, Fracture rules and wallet. No fake roster or working upgrade operations. [Menus](menus-and-inventory.md) |
 
 D-003 records existing guidance, not approval of generated assets or gameplay rules.
 

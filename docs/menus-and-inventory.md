@@ -25,6 +25,13 @@ starting at 0 and increasing by 5-10 per defeated enemy. Lycalis still shows
 
 Home displays the saved companion and Squad/Summon buttons. These buttons announce
 their coming-later status without granting units or spending currency.
+The owner-provided hub mock-up guides both Home and Character Upgrades:
+Home has a left utility rail, a central unboxed character showcase, a right-side
+HP/DEF/DMG/CRIT and passive panel, a bottom character shortcut dock, and a prominent
+Free Battle launch. Currency chips show the actual Fractalis balance and an honest
+unimplemented Lycalis label. Tizu's displayed effective defense includes his passive.
+Mobile stacks the showcase/stats before the shortcut rail; content scrolls rather
+than being clipped.
 [Free Battle](free-battle.md) and Story are Home subactivities with Back to Home
 controls, not additional primary tabs. Free Battle is an endless-wave
 practice mode with the saved starter and supplied scenery/art. It opens in a
@@ -32,8 +39,14 @@ full-viewport field state with Quit Battle rather than sanctuary navigation;
 quitting returns Home without discarding the session or Fractalis.
 Character Upgrades shows
 the saved companion's working combat kit and illustration.
-Character shows all seven upgrade paths. They are non-interactive previews until
-rules, costs, caps, and ability definitions are approved.
+Character has a left area-selector rail, central saved companion, and right detail
+panel: Overview, all seven upgrade paths, and Inventory / Equipment. Home dock
+shortcuts open the corresponding area directly. Area buttons expose their selected
+state and move focus to the detail heading. Settings preserves the selected area.
+Upgrade operations are disabled with explicit pending-cost/material notices.
+Overview shows the real passive, abilities, Shatter Gauge costs, and cooldowns;
+no mock-up health slider, estimated damage, fake levels, or additional owned roster
+has been implemented. The saved starter remains the only owned companion.
 The level/Fracture preview now specifies Tier 1's level-30 cap, Fracture into Tier 2
 with major stat improvements, reset to level 0, and +10 Lycalis. Tier 2 levels to 30
 using different resources. Materials, costs, and exact bonuses are pending.
@@ -43,7 +56,7 @@ relic above them. All are empty previews; no items have been granted and no equi
 unequip, ownership, or stat calculation operation exists yet.
 
 Inventory has an honest empty collection state. Story mode contains a readable
-original fire prologue, not playable battles or a chapter progression system.
+starter-specific prologue, not playable battles or a chapter progression system.
 Events is a reserved tab with no active events or timers.
 
 Settings supports persisted, validated battle hotkeys and a motion preference: follow device settings or reduce
@@ -77,6 +90,8 @@ None of these unresolved rules should be implemented through silent defaults.
 ## Implementation references
 
 - [Menu renderer](../src/main.ts)
+- [Hub and character-area markup](../src/presentation/hub.ts)
+- [Hub content tests](../src/presentation/hub.test.ts)
 - [Currency, slot, and upgrade definitions](../src/content/progression.ts)
 - [Available starters](../src/content/starters.ts)
 - [Motion persistence](../src/presentation/settings.ts)

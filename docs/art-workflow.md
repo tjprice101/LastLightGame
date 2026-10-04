@@ -95,8 +95,10 @@ This runtime export standard does not change the 4:3 Midjourney source-art guide
 Currency icons, interface symbols, backgrounds, and other non-unit assets have
 their own usage-specific dimensions and are **not** processed with this sprite rule.
 
-Selection and companion/character portraits share a square display slot up to
-250 CSS pixels; battle sprites share square slots up to 185px (100px on mobile).
+Selection portraits use a square slot up to 250 CSS pixels. The mock-up-inspired
+hub showcase uses a standardized square slot up to 380px (300px on desktop Home)
+so the companion is a focal point; all three characters use identical sizing.
+Battle sprites share square slots up to 185px (100px on mobile).
 Slots shrink to their container width and images use `object-fit: contain`.
 Thus each surface has consistent sizing without forcing large portrait dimensions
 onto compact battle cards. All incoming unit art must use the same export pipeline:

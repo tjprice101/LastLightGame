@@ -5,6 +5,8 @@ The browser-playable prelude includes an animated title, fire/water/grass starte
 and three sanctuary screens: Home, Character Upgrades, and Events. Home displays
 your companion and Squad/Summon buttons, with Free Battle and story subactivities.
 Inventory lives inside Character Upgrades; Settings opens in a side drawer.
+Home features a central companion showcase, live stat panel, shortcut dock, and
+Free Battle launch. Character Upgrades uses a selectable area rail and detail panel.
 Free Battle uses only your saved starter against
 endless Goblin/Imp/Rock Golem waves, with skills, passives, Shatter Gauge,
 Last Flares, ultimate-only recovery

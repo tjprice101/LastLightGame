@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** immersive full-viewport Free Battle presentation.
+**Last updated:** mock-up-inspired Home hub and tabbed Character Upgrades.
 
 ## Project state
 
@@ -20,6 +20,14 @@
   Story displays the saved starter's lore/prologue; Events is a future placeholder. Motion settings
   save separately and update both canvas/CSS motion. Fractalis shows a persistent
   local balance; Lycalis is a label only. Upgrades and equipment remain previews.
+- Home now follows the supplied mock-up's utility rail / central character /
+  right stat-passive panel / bottom character dock and Free Battle launch.
+  Character Upgrades has an area rail, central companion, and focused detail panel
+  for Overview, seven upgrade paths, and Inventory / Equipment. Home shortcuts
+  select these directly; Settings preserves the selected area. All content uses
+  the saved starter. Tizu's effective defense is 24, not base 16.
+  Render helpers live in `src/presentation/hub.ts`; no external fonts/dependencies
+  or mock-up scripts were imported. Provided mock-up files remain untouched.
 - All valid version-1 starter saves continue unchanged, including water/grass.
   The earlier forced fire re-selection policy is superseded.
 - Implemented: solo Free Battle using only the saved Infernis/Tizu/Flores, enemy waves,
@@ -94,11 +102,17 @@ progression/economy. Add future animation frames without changing resolver resul
   preserves session/rewards without leaking hotkeys. Settings suspends input.
   Water/grass defeat screens retain the selected character and allow restart.
   Desktop/mobile screenshots reviewed; narrow/short screens scroll as needed.
-- `npm test`: 80 passing tests for all three starter transitions and saved continuations,
+- `npm test`: 84 passing tests for all three starter transitions and saved continuations,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
   motion settings, combat formulas, all kits/passives, exact recovery/cooldown
   boundaries, status durations,   shield/heal caps, waves/defeat, hotkey validation, and every runtime unit PNG's
   960 x 960 RGBA export contract.
+- Hub content tests cover all three real character kits, all nine areas, exact
+  ability costs, effective defense, Fracture preview, and eight artifacts/master
+  relic. Browser checks for each starter verify dock/rail selection, focus,
+  unavailable upgrades, Settings tab preservation, battle/quit entry, and unchanged
+  profile/wallet. Home/Character layout checks pass at 1280x900, 390x844, 320x640,
+  and 844x390 with square contain-fit art and no horizontal overflow.
 - Reward tests cover all six integer payouts 5-10, repeatable independent reward
   randomness, ultimate multi-kills, burn kills, no repeated dead-enemy/ally payouts,
   wallet persistence, corrupt-save preservation, overflow and write failures.
