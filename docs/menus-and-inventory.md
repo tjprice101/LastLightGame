@@ -2,8 +2,8 @@
 
 ## Confirmed requirements
 
-- Only fire is available as a permanent first companion. Free Battle temporarily
-  provides all three starters without granting roster ownership.
+- Fire, water, and grass are available as first companions; choose one.
+  Free Battle uses only that saved character.
 - **Fractalis** is the main currency; **Lycalis** is the premium currency.
 - Characters support evolution, levels, weapon upgrades, and independent upgrades
   for the unique passive, ability 1, ability 2, and ultimate.
@@ -13,8 +13,7 @@
 - Inventory, settings, and story-mode menus are needed; events come later.
 - Three primary sanctuary screens: Home, Character Upgrades, and Events.
   Home shows the character with Squad and Summon buttons; Settings sits to the side.
-- The starting experience is solo. The temporary three-starter practice battle
-  still needs to be adapted; it does not grant a starting squad.
+- The starting experience and Free Battle are solo; no starting squad is granted.
 
 ## Implemented surfaces
 
@@ -27,7 +26,7 @@ Home displays the saved companion and Squad/Summon buttons. These buttons announ
 their coming-later status without granting units or spending currency.
 [Free Battle](free-battle.md) and Story are Home subactivities with Back to Home
 controls, not additional primary tabs. Free Battle remains an endless-wave
-practice mode with all three starters and the supplied art. Character Upgrades shows
+practice mode with the saved starter and supplied scenery/art. Character Upgrades shows
 the saved companion's working combat kit and illustration.
 Character shows all seven upgrade paths. They are non-interactive previews until
 rules, costs, caps, and ability definitions are approved.
@@ -52,11 +51,10 @@ restores the already-resolved battle state and uses the latest saved key binding
 
 ## Legacy companion saves
 
-Water/grass definitions remain available for version-1 saves and Free Battle,
-but cannot be selected as the first companion. After title entry, those
-players see a fire re-selection notice. The original save stays intact until
-explicit fire confirmation succeeds. A failed write preserves the previous save.
-This policy was selected by the owner, not an automatic conversion.
+All three version-1 starter IDs continue to the menu normally. The previous
+fire-only re-selection policy is superseded: water/grass saves are not overwritten,
+and Free Battle uses their saved companion. New saves still require explicit
+selection and a successful write before entering the menu.
 
 ## Equipment implementation requirements
 

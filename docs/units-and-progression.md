@@ -52,8 +52,8 @@ references its definition/form and records only mutable player state.
 The [prompt guide](../Art/midjourney-character-style-prompt.md) describes six art
 stages each for Ember Swordsman, Tide Spearbearer, and Sprout Archer.
 Hair, eyes, signature clothing, and weapon type remain recognizable across stages.
-Only fire can be chosen as the permanent starter. All three have implemented
-prototype combat kits in [Free Battle](free-battle.md), which uses a temporary team.
+Fire, water, or grass can be chosen as the permanent starter. All three have implemented
+prototype combat kits in [Free Battle](free-battle.md), which uses only the saved starter.
 They are not summonable, and their later forms are not implemented.
 The supplied art uses the names Infernis, Tizu, and Flores; stable save IDs remain
 `ember`, `tide`, and `sprout` so old profiles still load.

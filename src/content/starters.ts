@@ -51,7 +51,7 @@ export const starters = [
 
 export type Starter = (typeof starters)[number];
 export type StarterId = Starter['id'];
-export const availableStarters = starters.filter((starter) => starter.id === 'ember');
+export const availableStarters = starters;
 
 export function isAvailableStarter(id: StarterId): boolean {
   return availableStarters.some((starter) => starter.id === id);

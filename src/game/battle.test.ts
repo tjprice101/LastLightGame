@@ -4,7 +4,7 @@ import { starters } from '../content/starters';
 import { act, actionUnavailable, createBattle, damageAmount, endTurn, nextWave, type BattleState } from './battle';
 
 function controlled(): BattleState {
-  const state = createBattle(12345);
+  const state = createBattle(12345, ['ember', 'tide', 'sprout']);
   state.allies.forEach((unit) => { unit.shatter = 100; });
   for (const unit of [...state.allies, ...state.enemies]) unit.stats.crit = 0;
   for (const enemy of state.enemies) { enemy.hp = 2000; enemy.stats.health = 2000; }
@@ -94,7 +94,7 @@ describe('Free Battle damage and turns', () => {
 
 describe('Shatter Gauge', () => {
   it('starts every character at zero and keeps gauges independent', () => {
-    const state = createBattle();
+    const state = createBattle(1729, ['ember', 'tide', 'sprout']);
     expect(state.allies.map((unit) => unit.shatter)).toEqual([0, 0, 0]);
     const after = use(state, 'ember', 'light');
     expect(after.allies.map((unit) => unit.shatter)).toEqual([20, 0, 0]);
@@ -127,7 +127,7 @@ describe('Shatter Gauge', () => {
     }
   });
   it.each([0, 1000])('gains 10 per incoming hit even with %i shield, only for the targeted character', (shield) => {
-    const state = createBattle(12345);
+    const state = createBattle(12345, ['ember', 'tide', 'sprout']);
     state.allies.forEach((unit) => { unit.shield = shield; });
     const snapshot = structuredClone(state);
     const result = endTurn(state);
@@ -139,13 +139,13 @@ describe('Shatter Gauge', () => {
     expect(state).toEqual(snapshot);
   });
   it('caps incoming gains, includes lethal hits, and does not gain from passive healing or burn', () => {
-    const state = createBattle(12345);
+    const state = createBattle(12345, ['ember', 'tide', 'sprout']);
     state.allies.forEach((unit) => { unit.shatter = 95; unit.hp = 1; });
     state.enemies.forEach((unit) => { unit.stats.damage = 10000; });
     const result = endTurn(state);
     expect(result.state.allies.map((unit) => unit.shatter)).toEqual([100, 100, 100]);
     expect(result.state.allies.map((unit) => unit.hp)).toEqual([0, 0, 0]);
-    const burning = createBattle();
+    const burning = createBattle(1729, ['ember', 'tide', 'sprout']);
     burning.enemies.forEach((unit) => { unit.hp = 1; unit.burn = { damage: 8, turns: 1 }; });
     const clear = endTurn(burning).state;
     expect(clear.phase).toBe('cleared');
@@ -156,6 +156,35 @@ describe('Shatter Gauge', () => {
     const next = nextWave(clear).state;
     expect(next.allies[0].hp).toBe(111);
     expect(next.allies.map((unit) => unit.shatter)).toEqual([55, 0, 0]);
+  });
+});
+
+describe('solo starter battles', () => {
+  it('defaults to one fire character, not a practice team', () => {
+    expect(createBattle().allies.map((unit) => unit.definitionId)).toEqual(['ember']);
+  });
+  it.each(starters)('$name starts alone with the correct stats and working kit', ({ id }) => {
+    const state = createBattle(12345, [id]);
+    expect(state.allies).toHaveLength(1);
+    expect(state.allies[0].id).toBe(id);
+    expect(state.allies[0].shatter).toBe(0);
+    expect(state.allies[0].stats.defense).toBe(fighters[id].stats.defense + (id === 'tide' ? 8 : 0));
+    const acted = use(state, id, 'light');
+    const next = endTurn(acted).state;
+    expect(next.allies).toHaveLength(1);
+    expect(next.allies[0].shatter).toBe(50);
+    for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
+      const ready = createBattle(12345, [id]);
+      ready.allies[0].shatter = 100;
+      expect(() => use(ready, id, action)).not.toThrow();
+    }
+    next.enemies.forEach((unit) => { unit.hp = 0; });
+    next.phase = 'cleared';
+    expect(nextWave(next).state.allies.map((unit) => unit.id)).toEqual([id]);
+  });
+  it('rejects empty or duplicate battle rosters explicitly', () => {
+    expect(() => createBattle(1, [])).toThrow('distinct valid starters');
+    expect(() => createBattle(1, ['ember', 'ember'])).toThrow('distinct valid starters');
   });
 });
 

@@ -1,13 +1,13 @@
 import { actionIds, fighters, enemies, isActionId, shatterGauge, type ActionId } from '../content/combat';
-import { getStarter, isStarterId } from '../content/starters';
+import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { act, actionUnavailable, createBattle, endTurn, nextWave, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
 import { commands, keyLabel, type Bindings, type Command } from '../game/hotkeys';
 import { assetUrl } from './portrait';
 import { reducedMotion } from './settings';
 
 export interface BattleSession { state: BattleState; log: string[] }
-export function createSession(): BattleSession {
-  return { state: createBattle(crypto.getRandomValues(new Uint32Array(1))[0] || 1), log: ['Practice team ready. No rewards or permanent progression in Free Battle.'] };
+export function createSession(starterId: StarterId): BattleSession {
+  return { state: createBattle(crypto.getRandomValues(new Uint32Array(1))[0] || 1, [starterId]), log: ['Solo Free Battle ready. No rewards or permanent progression.'] };
 }
 
 function definition(unit: Combatant): { art: string; color: string } {
@@ -206,13 +206,13 @@ export class BattleView {
     if (!actor || !isStarterId(actor.definitionId)) throw new Error('Battle actor definition is missing.');
     const kit = fighters[actor.definitionId];
     this.host.innerHTML = `<div class="battle-top"><h1 tabindex="-1">Free Battle</h1>
-      <span>Wave ${state.wave} &middot; Turn ${state.round} &middot; ${state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Wave cleared' : 'Team defeated'}</span></div>
-      <p class="quiet">Practice team: all three starters. No permanent roster grants, rewards, or battle saves.</p>
+      <span>Wave ${state.wave} &middot; Turn ${state.round} &middot; ${state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Wave cleared' : 'Character defeated'}</span></div>
+      <p class="quiet">Solo Free Battle: ${actor.name}. No rewards or battle saves.</p>
       <div class="battle-arena"><img class="battle-scenery" src="${assetUrl('backgrounds/grassy-field.png')}" alt="Sunlit grassy-field battle scenery" width="1456" height="816" />
       <div class="battle-side enemies"><h2>Enemies &middot; Left</h2>${state.enemies.map((unit) => this.unit(unit)).join('')}</div>
       <div class="battle-divider" aria-hidden="true">VS</div>
-      <div class="battle-side allies"><h2>Your team &middot; Right</h2>${state.allies.map((unit) => this.unit(unit)).join('')}</div></div>
-      <p id="battle-announcement" role="status">${state.phase === 'cleared' ? 'Wave cleared. Continue when ready; recovery and health carry over.' : state.phase === 'defeat' ? 'Your team has fallen. Restart Free Battle to try again.' : 'Select an ally on the right and a target on the left.'}</p>
+      <div class="battle-side allies solo"><h2>Your character &middot; Right</h2>${state.allies.map((unit) => this.unit(unit)).join('')}</div></div>
+      <p id="battle-announcement" role="status">${state.phase === 'cleared' ? 'Wave cleared. Continue when ready; recovery and health carry over.' : state.phase === 'defeat' ? 'Your character has fallen. Restart Free Battle to try again.' : 'Choose an enemy on the left, then an action for your character.'}</p>
       <div class="battle-controls"><div class="actor-info"><strong>${actor.name}</strong><span>Passive: ${kit.passive.name} &mdash; ${kit.passive.description}</span></div>
       <div class="battle-actions">${actionIds.map((action) => this.actionButton(state, actor, action)).join('')}</div>
       <p class="quiet">One action per living character per turn. Only Last Flare forces a full recovery turn.
@@ -243,7 +243,9 @@ export class BattleView {
     this.host.querySelector('#end-battle-turn')?.addEventListener('click', () => this.command('endTurn'));
     this.host.querySelector('#restart-battle')?.addEventListener('click', () => {
       if (!confirm('Restart this practice battle? Current wave progress will be lost.')) return;
-      this.session.state = createBattle(crypto.getRandomValues(new Uint32Array(1))[0] || 1);
+      const starterId = this.session.state.allies[0].definitionId;
+      if (!isStarterId(starterId)) throw new Error('Solo starter definition is missing.');
+      this.session.state = createSession(starterId).state;
       this.session.log = ['Free Battle restarted.'];
       this.render();
     });

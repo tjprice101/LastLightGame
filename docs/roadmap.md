@@ -19,7 +19,7 @@ Review [open decisions](decisions.md#open-decisions), starting with target platf
 and the combat model. Browser/engine selection and the opening-screen foundation
 are now implemented; see [opening flow](opening-flow.md).
 The [Free Battle prototype](free-battle.md) now covers the initial battle gate with
-all three starters. Playtest/tune that slice and approve progression/reward rules
+solo play with any of the three starters. Playtest/tune that slice and approve progression/reward rules
 before production roster expansion. Native platforms remain undecided.
 
 ## Work that can proceed independently

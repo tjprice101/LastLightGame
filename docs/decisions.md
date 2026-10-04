@@ -13,7 +13,7 @@ specifications own detailed rules; link them here rather than duplicating them.
 | D-004 | TypeScript + Phaser 3 + Vite for a browser-first 2D prototype; Vitest for rule tests | Owner delegated language choice, 2026-10-03; supports animated 2D scenes and static deployment |
 | D-005 | Implement title -> starter choice -> opening menu first | Owner request, 2026-10-03; see [opening flow](opening-flow.md) |
 | D-006 | Publish to `tjprice101/LastLightGame` and deploy through GitHub Pages Actions | Owner-supplied repository and deployment request, 2026-10-03 |
-| D-007 | Fire-only playable roster; preserve legacy saves until explicit fire re-selection | Owner request and follow-up selection, 2026-10-03 |
+| D-007 | Original fire-only selection and legacy re-selection policy, superseded by D-019 | Owner request and follow-up selection, 2026-10-03 |
 | D-008 | Fractalis main currency; Lycalis premium currency | Owner request, 2026-10-03 |
 | D-009 | Evolution, level, weapon, passive, ability 1/2, and Last Flare upgrades; eight unique artifacts plus one special master relic | Owner request, 2026-10-03; [progression](units-and-progression.md) |
 | D-010 | Inventory, settings, story mode, and a future events tab | Owner request, 2026-10-03; [menu surfaces](menus-and-inventory.md) |
@@ -21,10 +21,11 @@ specifications own detailed rules; link them here rather than duplicating them.
 | D-012 | Every character gets at most one light/heavy/skill/ultimate action per turn; original heavy/ultimate recovery rule superseded by D-017 | Owner request and follow-up approval, 2026-10-04 |
 | D-013 | Design editable prototype stats/kits for all three starters; expose configurable displayed battle hotkeys | Owner request and delegated initial balance, 2026-10-04; [rules](free-battle.md) |
 | D-014 | Organize supplied character/enemy art, preserve originals, remove white matte from runtime copies, wire to UI/battle | Owner request, 2026-10-04; [art](art-workflow.md) |
-| D-015 | The starting experience is solo, not a team; next combat presentation needs scenery, beginning with a cutesy grassy field | Owner correction, 2026-10-04; [scenery prompt](../Art/Battle%20Scenery.md). Current three-unit practice implementation has not yet been changed |
+| D-015 | The starting experience is solo, not a team; combat needs cutesy grassy-field scenery | Owner correction, 2026-10-04; [scenery prompt](../Art/Battle%20Scenery.md). Scenery and solo battle now implemented |
 | D-016 | Three primary sanctuary screens: Home with character and Squad/Summon buttons, Character Upgrades, and Events; Settings off to the side | Owner navigation request; [menu surfaces](menus-and-inventory.md). Inventory is integrated into upgrades; Story and Free Battle remain Home subactivities |
 | D-017 | Each character uses Shatter Gauge for abilities; only Last Flare blocks all actions next turn. Heavy attacks no longer cause recovery | Owner correction and prototype-value approval, 2026-10-04. Start 0, cap 100; Light +20, Heavy +30, incoming hit +10; Ability 1 costs 25, Ability 2 costs 40, Last Flare costs 100. [Exact rules](free-battle.md#actions-and-recovery) |
 | D-018 | Tier 1 caps at level 30, then Fractures into Tier 2 with major stat improvements, resets to level 0, and grants +10 Lycalis. Tier 2 levels to 30 with different resources | Owner request, 2026-10-04. Owner selected previews only until materials and exact stats are defined; no upgrade or reward transaction yet. [Progression rules](units-and-progression.md#confirmed-level-and-fracture-rules) |
+| D-019 | Offer fire, grass, or water at the beginning; Free Battle uses only the saved character. Make all battle text easier to read | Owner request, 2026-10-04. Supersedes D-007; preserve all valid starter saves. Opaque backing, larger text, and readable unavailable-action feedback |
 
 D-003 records existing guidance, not approval of generated assets or gameplay rules.
 

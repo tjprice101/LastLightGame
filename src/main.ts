@@ -107,9 +107,8 @@ function renderSelection(): void {
   frame(`<section class="selection-screen">
     <p class="eyebrow">CHAPTER ZERO &nbsp; / &nbsp; A FIRST LIGHT</p>
     <h1 tabindex="-1">Choose your companion</h1>
-    <p class="subtitle">The fire companion is the first light available in this build.</p>
-    ${journey.profile && journey.profile.starterId !== 'ember' ? '<p class="migration-notice">Your previous companion is not available in this build. Your save is unchanged until you explicitly select and confirm fire.</p>' : ''}
-    <div class="starter-grid fire-only" role="group" aria-label="Starter companions">
+    <p class="subtitle">Choose your first light: fire, water, or grass. Your journey begins solo.</p>
+    <div class="starter-grid" role="group" aria-label="Starter companions">
       ${availableStarters.map((starter, index) => `<button class="starter-card" data-starter="${starter.id}"
         aria-pressed="${journey.selected === starter.id}" style="--element:${starter.color}">
         <span class="card-top"><span>${starter.element.toUpperCase()}</span><span>0${index + 1}</span></span>
@@ -201,7 +200,7 @@ function renderMenu(firstArrival = false): void {
       </article>
       <div class="menu-options">
         <article class="journey-panel"><span class="eyebrow">PRACTICE ARENA</span>
-          <h2>Free Battle</h2><p>Infernis, Tizu, and Flores stand together against endless waves of Goblins, Imps, and Rock Golems. Train without spending currency.</p>
+          <h2>Free Battle</h2><p>${starter.name} faces waves of Goblins, Imps, and Rock Golems alone in a sunlit meadow. Train without spending currency.</p>
           <button class="primary-button" data-page="battle">Enter Free Battle &rarr;</button></article>
         <div class="feature-grid">
           <button class="feature-tile feature-button" data-feature="Squad"><span class="tile-symbol" aria-hidden="true">&#9671;</span><strong>Squad</strong><span>You start alone. Squad building comes later.</span><span>COMING SOON</span></button>
@@ -252,7 +251,7 @@ function renderMenu(firstArrival = false): void {
   if (menuPage === 'battle') {
     const host = app.querySelector<HTMLElement>('#battle-root');
     if (!host) throw new Error('Battle host is missing.');
-    battleSession ??= createSession();
+    battleSession ??= createSession(starter.id);
     battleView = new BattleView(host, battleSession, bindings);
   }
   const settingsForm = app.querySelector<HTMLFormElement>('#settings-form');
@@ -342,11 +341,11 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
       `<article class="feature-tile"><h2>${path.name}</h2><p>${path.detail.replace('<', '&lt;').replace('>', '&gt;')}</p><span>UPGRADES NOT IMPLEMENTED &middot; COSTS UNSET</span></article>`).join('')}</div>
     <section class="inventory-section"><h2>Inventory</h2><div class="feature-tile"><h3>No items yet</h3><p>Artifacts, master relics, and upgrade materials will appear here. Item acquisition and equipping are not implemented.</p></div></section>
     ${equipmentLayout()}`;
-  if (page === 'story') return `<button class="text-button" data-page="home">Back to Home</button>${heading('Story mode', 'Prologue / The watchfires of Ashen Vale')}
+  if (page === 'story') return `<button class="text-button" data-page="home">Back to Home</button>${heading('Story mode', `Prologue / ${starter.lore.origin}`)}
     <article class="story-panel lore-panel" style="--element:${starter.color}">
-      <p class="eyebrow">A FIRST LIGHT</p><h2>The coal that would not fade</h2>
+      <p class="eyebrow">A FIRST LIGHT</p><h2>${starter.title}</h2>
       <p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote>
-      <p>At the edge of Ashen Vale, the road disappears beneath a veil of dusk. A small lantern glows beside you. It is not enough to light the world - not yet. But it is enough to take the first step.</p>
+      <p>The road disappears beneath a veil of dusk. A small light glows beside you. It is not enough to light the world - not yet. But it is enough to take the first step.</p>
       <p class="quiet">Readable prologue only. Story battles, chapters, and rewards are not implemented.</p>
     </article>`;
   if (page === 'events') return `${heading('Events', 'Future limited-time adventures.')}

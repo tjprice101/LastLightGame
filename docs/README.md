@@ -10,8 +10,8 @@ It is intended to make features easy to locate, extend, and hand off.
 - **Open:** a decision is still needed.
 - **Implemented:** present in code and verified; include implementation and test links.
 
-The title, fire-only selection, local save, navigation, readable prologue, motion/
-hotkey settings, and Free Battle with a temporary three-starter team are implemented.
+The title, fire/water/grass selection, local save, navigation, readable prologue, motion/
+hotkey settings, and solo Free Battle with the saved starter are implemented.
 Currency labels, upgrade paths, and equipment slots are previews. Summoning,
 rewarded quests, and progression operations remain scaffolding.
 

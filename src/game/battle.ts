@@ -1,5 +1,5 @@
 import { enemies, fighters, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats } from '../content/combat';
-import { isStarterId, starters, type StarterId } from '../content/starters';
+import { getStarter, isStarterId, type StarterId } from '../content/starters';
 
 export interface Combatant {
   id: string;
@@ -56,11 +56,15 @@ function spawnWave(wave: number): Combatant[] {
   });
 }
 
-export function createBattle(seed = 1729): BattleState {
+export function createBattle(seed = 1729, roster: readonly StarterId[] = ['ember']): BattleState {
   if (!Number.isInteger(seed) || seed < 1 || seed > 0xffffffff) throw new Error('Battle seed must be a nonzero uint32.');
+  if (!roster.length || new Set(roster).size !== roster.length || !roster.every(isStarterId)) {
+    throw new Error('Battle roster requires distinct valid starters.');
+  }
   return {
     wave: 1, round: 1, phase: 'player', seed,
-    allies: starters.map((starter) => {
+    allies: roster.map((id) => {
+      const starter = getStarter(id);
       const stats = { ...fighters[starter.id].stats };
       if (starter.id === 'tide') stats.defense += 8;
       return combatant(starter.id, starter.id, starter.name, 'ally', stats);

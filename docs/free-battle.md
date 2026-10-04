@@ -8,14 +8,15 @@ This is not production balance or a rewarded story mode.
 ## Entering and leaving
 
 Home's **Enter Free Battle** button opens the activity.
-The temporary team includes Infernis (fire), Tizu (water), and Flores (grass).
-Only fire remains selectable as a permanent first companion; practice does not
-grant Tizu/Flores, modify the roster save, consume currency, or award items.
+Choose Infernis (fire), Tizu (water), or Flores (grass) at the start. Free Battle
+uses **only your saved starter**, not a temporary team. Entry, restart, and later
+waves preserve that identity; no additional units, currency, or items are granted.
+Existing water/grass saves continue normally without forced fire re-selection.
 
 Enemies are on the **left**, allies on the **right**, including mobile layouts.
 The arena uses the supplied [grassy-field scenery](art-workflow.md), with
 aspect-preserving cover cropping and dark cards for readable stats.
-Click an ally to select its action kit and an enemy to target it. Select an action,
+Your character's action kit is selected automatically. Click an enemy to target it. Select an action,
 then finish the player turn with **End turn / enemy attacks**. Unused ally actions
 are forfeited when ending the turn. There is no automatic turn ending.
 
@@ -143,6 +144,11 @@ Use physical keyboard positions (`KeyboardEvent.code`). Browser modifier shortcu
 held-key repeats, and typing in form fields are ignored. Mobile uses buttons.
 Bindings persist under `last-light.hotkeys`, independently of motion/profile saves.
 Actual bindings are displayed on the action buttons and battle instructions.
+
+Battle text uses opaque dark backing, high-contrast light colors, at least 14px
+for unit stats/gauge/action details and 16px for instructions/logs. Disabled actions
+retain readable text and explain their resource/cooldown/recovery restriction;
+only defeated artwork fades, not the defeated character's labels.
 
 Animations use the supplied transparent illustrations: lunges, elemental strike
 overlays, larger Last Flare effects, and floating damage/heal/shield numbers.

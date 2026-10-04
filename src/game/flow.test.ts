@@ -72,30 +72,24 @@ describe('opening journey', () => {
     expect(journey.screen).toBe('selection');
     expect(journey.profile).toBeNull();
   });
-  it.each(['tide', 'sprout'] as const)('preserves a legacy %s save until fire is confirmed', (id) => {
+  it.each(['tide', 'sprout'] as const)('continues an existing %s save without replacement', (id) => {
     const storage = memoryStorage();
     saveStarter(storage, id);
     const raw = storage.getItem(SAVE_KEY);
     const journey = new Journey();
     journey.enter(storage);
-    expect(journey.screen).toBe('selection');
+    expect(journey.screen).toBe('menu');
     expect(storage.getItem(SAVE_KEY)).toBe(raw);
-    expect(() => journey.select(id)).toThrow('Only the fire');
-    journey.select('ember');
-    expect(storage.getItem(SAVE_KEY)).toBe(raw);
-    journey.confirm(storage);
-    expect(loadProfile(storage)?.starterId).toBe('ember');
+    expect(journey.profile?.starterId).toBe(id);
   });
-  it('preserves the legacy save when fire confirmation fails', () => {
+  it('continues an existing save even when storage is read-only', () => {
     const storage = memoryStorage();
     saveStarter(storage, 'tide');
     const raw = storage.getItem(SAVE_KEY);
     const journey = new Journey();
-    journey.enter(storage);
-    journey.select('ember');
     storage.setItem = () => { throw new Error('Storage denied'); };
-    expect(() => journey.confirm(storage)).toThrow('Storage denied');
+    expect(() => journey.enter(storage)).not.toThrow();
     expect(storage.getItem(SAVE_KEY)).toBe(raw);
-    expect(journey.screen).toBe('selection');
+    expect(journey.screen).toBe('menu');
   });
 });

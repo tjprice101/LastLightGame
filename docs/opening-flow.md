@@ -14,19 +14,16 @@ The owner delegated language/engine selection and requested repository deploymen
 2. Any ordinary key, the begin button, or a touch/click on that button advances.
    Tab, modifier keys, Escape, repeated keys, and browser shortcuts do not advance,
    preserving keyboard navigation and browser controls.
-3. With no save, show only Infernis (fire/greatsword). Tizu/Flores are available in
-   Free Battle's temporary team, not as permanent first companions.
-   Legacy saves require explicit fire re-selection;
-   see [menus and inventory](menus-and-inventory.md#legacy-companion-saves).
+3. With no save, offer Infernis (fire/greatsword), Tizu (water/spear), and
+   Flores (grass/bow). Select exactly one; the opening journey and Free Battle are solo.
 4. Require explicit selection; then enable "Begin your journey".
 5. Commit the starter to local storage before opening the sanctuary menu.
-6. On subsequent visits with fire saved, title entry continues to the saved menu.
+6. On subsequent visits with any valid starter saved, title entry continues to the saved menu.
 7. "Return to title" preserves the save.
 
 ## Starter lore and elemental reveals
 
-Selecting fire plays a rising-ember reveal. Water ripple and grass leaf
-variants are retained for future companions, not currently selectable.
+Selecting fire plays a rising-ember reveal; water plays a ripple and grass a leaf reveal.
 Each reveal contains 12 decorative motes and one ring, lasts at most 1.3 seconds,
 and never blocks selection or confirmation. Switching cards replaces the prior
 effect without accumulating particles. Card updates preserve keyboard focus.
@@ -91,8 +88,8 @@ not the opening-screen renderer.
 
 - Keyboard and pointer can complete all three screens.
 - No starter is preselected; confirm remains disabled until selection.
-- Fire persists and reloads; legacy water/grass saves stay intact until explicit
-  fire confirmation and reject unavailable selection.
+- All three starters persist and reload without replacement. Free Battle uses
+  exactly the saved starter on entry, restart, and subsequent waves.
 - Mobile layout has no horizontal overflow and all controls remain reachable.
 - Corrupt saves and unavailable storage produce explicit errors.
 - Reduced-motion mode has no looping background animation.

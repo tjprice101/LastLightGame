@@ -20,8 +20,8 @@
   Ask before changing engines or adding paid services, backends, or payments.
 - Inspect the workspace before trusting handoff status. Opening flow and
   [Free Battle](docs/free-battle.md) exist; progression/economy operations do not.
-- Free Battle uses a temporary three-starter practice team; permanent first
-  companion selection stays fire-only. Do not grant practice units as owned units.
+- Starter selection offers fire, water, and grass. Free Battle uses only the saved
+  starter, including after restart; do not auto-grant a team or replace existing saves.
 - Preserve source images under Art/source; process runtime copies using
   tools/prepare_art.py. Images use Vite's deployment base, not root-relative paths.
 - Preserve the established art direction. Six illustrated stages do not establish

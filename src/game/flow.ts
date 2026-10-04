@@ -17,7 +17,7 @@ export class Journey {
 
   select(id: StarterId): void {
     if (this.screen !== 'selection') throw new Error('Starter selection is not open.');
-    if (!isAvailableStarter(id)) throw new Error('Only the fire companion is available in this build.');
+    if (!isAvailableStarter(id)) throw new Error('Choose an available companion.');
     this.selected = id;
   }
 

@@ -5,8 +5,8 @@ import { loadMotion, saveMotion, SETTINGS_KEY } from '../presentation/settings';
 import { SAVE_KEY, type ProfileStorage } from '../game/profile';
 
 describe('confirmed game foundation', () => {
-  it('offers only fire and names both currencies correctly', () => {
-    expect(availableStarters.map((starter) => starter.id)).toEqual(['ember']);
+  it('offers fire, water, and grass and names both currencies correctly', () => {
+    expect(availableStarters.map((starter) => starter.id)).toEqual(['ember', 'tide', 'sprout']);
     expect(currencies.map((currency) => currency.name)).toEqual(['Fractalis', 'Lycalis']);
   });
   it('defines eight distinct artifact slots and seven upgrade paths', () => {

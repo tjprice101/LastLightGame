@@ -5,7 +5,7 @@ starter kits, waves, and hotkeys. This page retains broader production questions
 
 ## Open rules
 
-The practice party has three starters and player/enemy turns. Each ally acts at
+The battle starts with only the saved starter and player/enemy turns. Each ally acts at
 most once, building an individual Shatter Gauge from light/heavy attacks and
 incoming hits to pay for abilities. Only Last Flare forces full next-turn recovery.
 See [current rules](free-battle.md) for exact costs, targeting, order, and effects.

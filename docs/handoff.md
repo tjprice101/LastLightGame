@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** supplied grassy-field scenery integration.
+**Last updated:** three starter choices, solo Free Battle, and battle text readability.
 
 ## Project state
 
@@ -10,22 +10,25 @@
 - Documentation entry points: [root README](../README.md),
   [documentation hub](README.md), and [AI instructions](../AGENTS.md).
 - Stack: TypeScript, Phaser 3.90, Vite 7, Vitest 4; Node 22.12+.
-- Implemented: animated title, fire-only starter choice, explicit confirmation,
+- Implemented: animated title, fire/water/grass starter choice, explicit confirmation,
   local starter save, opening menu, saved-session continuation, save-error handling.
 - Starter selection now includes bounded elemental reveals and original lore;
   first confirmation plays a companion awakening. Lore stays readable in the menu.
 - Implemented primary screens: Home, Character Upgrades, Events. Home shows the
   companion and coming-later Squad/Summon buttons. Inventory is inside upgrades;
   Free Battle and Story are Home subactivities. Settings opens in a modal side drawer.
-  Story is a readable fire prologue; Events is a future placeholder. Motion settings
+  Story displays the saved starter's lore/prologue; Events is a future placeholder. Motion settings
   save separately and update both canvas/CSS motion. Fractalis and Lycalis are labels,
   not balances. Upgrades and eight artifact slots plus one master relic are previews.
-- Legacy water/grass saves require explicit fire re-selection without automatic
-  overwrite. A failed confirmation preserves the old save.
-- Implemented: Free Battle practice team (Infernis/Tizu/Flores), enemy waves,
+- All valid version-1 starter saves continue unchanged, including water/grass.
+  The earlier forced fire re-selection policy is superseded.
+- Implemented: solo Free Battle using only the saved Infernis/Tizu/Flores, enemy waves,
   health/defense/damage/crit, one action per turn, ultimate-only recovery, all
   passives/skills/Last Flares, elemental effects, and persistent remappable hotkeys.
   See [rules and kit values](free-battle.md).
+- Battle text now has opaque dark backing, stats/gauge/details at least 14px,
+  instructions/logs 16px, readable disabled controls and defeated labels, and
+  prominent keyboard focus. Only defeated artwork fades.
 - Each ally has Shatter Gauge: starts 0, caps 100, Light +20, Heavy +30,
   incoming enemy hit +10 (including shields). Skills cost 25/40 and Last Flare
   costs 100; skills no longer generate resource. Battle meters/buttons and the
@@ -60,14 +63,8 @@ still label unapproved production mechanics as proposed.
 
 ## Next recommended action
 
-Owner correction: the game starts with **one player character, not a team**.
-The current three-starter Free Battle practice implementation does not yet match
-that intended starting experience. [Battle Scenery](../Art/Battle%20Scenery.md)
-provides the requested grassy-field generation prompt, and supplied scenery is
-now integrated. Next, adapt the opening battle to the solo character; do not
-interpret the temporary practice team as an approved starting roster.
-
-Playtest the initial three-starter balance and attacks, then approve upgrade costs,
+Solo starter selection/battles and supplied grassy scenery are now implemented.
+Playtest solo balance for each of the three starter kits, then approve upgrade costs,
 item ownership/uniqueness, and rewarded quest rules before connecting battle to
 progression/economy. Add future animation frames without changing resolver results.
 
@@ -82,11 +79,17 @@ progression/economy. Add future animation frames without changing resolver resul
 
 ## Verification
 
-- `npm test`: 64 passing tests for fire-only transitions, legacy re-selection,
+- `npm test`: 71 passing tests for all three starter transitions and saved continuations,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
   motion settings, combat formulas, all kits/passives, exact recovery/cooldown
   boundaries, status durations,   shield/heal caps, waves/defeat, hotkey validation, and every runtime unit PNG's
   960 x 960 RGBA export contract.
+- Solo browser checks passed for each starter: new selection/confirmation, saved
+  reload, matching lore, exactly one ally, Heavy/skill resource changes, Settings
+  state preservation, and restart retaining the chosen character. Existing saves
+  continue without replacement. Desktop 1280px and mobile 320px text checks
+  measured at least 14px for battle details and >=4.5:1 contrast, including
+  unavailable controls; no overflow or overlapping battle sides. Screenshots reviewed.
 - Fracture content tests verify the exact Tier 1 -> Tier 2, level-30 cap, reset-0,
   +10 Lycalis rule and pending materials/stats. Production-preview headless Edge
   checks verify visible rules, seven upgrade areas, no enabled transactions,
