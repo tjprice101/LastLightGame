@@ -11,13 +11,13 @@
 - Each character has eight unique artifact slots and one separate special
   **master relic** slot: nine equipment slots total.
 - Inventory, settings, and story-mode menus are needed; events come later.
-- Three primary sanctuary screens: Home, Character Upgrades, and Events.
+- Four primary sanctuary screens: Home, Character Upgrades, Gameplay, and Events.
   Home shows the character with Squad and Summon buttons; Settings sits to the side.
 - The starting experience and Adventure are solo; no starting squad is granted.
 
 ## Implemented surfaces
 
-The sanctuary navigation opens Home, Character Upgrades, and Events. Settings is
+The sanctuary navigation opens Home, Character Upgrades, Gameplay, and Events. Settings is
 a modal right-side drawer available from every sanctuary screen, with close/Escape
 support and focus returned to its trigger. Fractalis shows a saved local balance,
 starting at 0 and increasing by 5-10 per defeated enemy. Lycalis still shows
@@ -35,14 +35,18 @@ than being clipped.
 Home uses a compact 240px desktop / 220px mobile square portrait, tighter spacing,
 and a wider desktop dock to reduce scrolling without shrinking readable text.
 On mobile Adventure appears immediately after character stats, before utility shortcuts.
-[Adventure](free-battle.md) and Story are Home subactivities with Back to Home
-controls, not additional primary tabs. Adventure is an endless-wave
+[Gameplay](gameplay-and-elements.md) groups Adventure, elemental dungeons,
+evolution infusion, Story and Events by activity type. Home retains quick entry.
+Adventure and Story return to Gameplay rather than Home. Adventure is an endless-wave
 mode with the saved starter and supplied scenery/art. It opens in a
-full-viewport field state with Quit Battle rather than sanctuary navigation;
-quitting returns Home and ends the run without discarding Fractalis. Each entry
+full-viewport field state with Quit Adventure rather than sanctuary navigation;
+quitting returns Gameplay and ends the run without discarding Fractalis. Each entry
 starts at wave 1; Settings preserves the active run.
 [Flaming Depths and captures](dungeons-and-captures.md) are planned separately,
 not exposed as a playable dungeon or owned roster yet.
+All ten elemental dungeons and both infusion modes have catalog cards with explicit
+disabled buttons and confirmed requirements. No farming/capture/evolution resources
+are granted; only Adventure can start combat. Story is readable and Events empty.
 Character Upgrades shows
 the saved companion's working combat kit and illustration.
 Character has a left area-selector rail, central saved companion, and right detail

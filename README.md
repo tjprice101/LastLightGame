@@ -2,7 +2,7 @@
 
 An original cinematic 2D gacha RPG inspired by Brave Frontier.
 The browser-playable prelude includes an animated title, fire/water/grass starter selection,
-and three sanctuary screens: Home, Character Upgrades, and Events. Home displays
+and four sanctuary screens: Home, Character Upgrades, Gameplay, and Events. Home displays
 your companion and Squad/Summon buttons, with Adventure and story subactivities.
 Inventory lives inside Character Upgrades; Settings opens in a side drawer.
 Home features a central companion showcase, live stat panel, shortcut dock, and
@@ -17,12 +17,17 @@ Each defeated enemy drops 5-10 Fractalis into a persistent browser-local balance
 Every entry starts at wave 1. Enemy level equals the wave, HP/attack grow by a fixed
 12% of base per wave, and defense increases by 1. Settings preserves the active run;
 quitting ends it without losing currency.
-Flaming Depths dungeon, wave reports, and captured fodder teams are
+Gameplay organizes Adventure, ten elemental material dungeons, the Heavens/Abyss
+infusion modes, Story and Events. The shared
+[element/material framework](docs/gameplay-and-elements.md) includes dungeon levels
+10-100 and five-form evolution-requirement previews; farming and infusion cards
+are not playable yet. Flaming Depths dungeon, wave reports, and captured fodder teams are
 [documented for later implementation](docs/dungeons-and-captures.md).
 Ten ascending-power [enemy art prompts](Art/Flaming%20Depths.md) remain available as references.
 All ten dungeon illustrations are now organized with transparent exports; the
-[complete Stage 1-50 design](docs/flaming-depths-stages.md) proposes increasing enemy
-levels/stats, hostile abilities and elite milestones. Dungeon gameplay remains deferred.
+[Stage 1-50 draft](docs/flaming-depths-stages.md) proposes encounters, hostile abilities
+and elite milestones; its old level/stat numbers are superseded by the new framework.
+Dungeon gameplay remains deferred.
 
 ## Play and develop
 

@@ -8,14 +8,17 @@ playable. No captured units, dungeon rewards, or team slots have been granted.
 
 - [Adventure](free-battle.md), formerly Free Battle, is the endless solo field mode.
   Every entry starts at wave 1; defeats grant persistent Fractalis.
-- Dungeons are separate activities outside Adventure. The first and only planned
-  dungeon for now is **Flaming Depths**.
+- Dungeons are separate activities outside Adventure. **Flaming Depths** has supplied
+  enemies and an encounter draft; the scope now includes one material dungeon per
+  each of ten elements in [the Gameplay framework](gameplay-and-elements.md).
+  All are 50 stages; levels start 10, reach 100 at Stage 45, stay 100 through Stage 50.
 - Dungeons contain enemy waves with higher enemy levels than Adventure.
   The exact comparison (corresponding wave or another baseline), level offset,
   stat table, wave count, encounter composition, and completion conditions need
-  approval. The owner has since requested design through **Stage 50**:
+  approval beyond the confirmed shared level formula. The owner requested design through **Stage 50**:
   [the complete stage proposal](flaming-depths-stages.md) supplies all lineups,
-  levels, stats, abilities and milestone encounters. Numbers remain proposals.
+  encounters, abilities and milestone ideas. Its old levels/stats are superseded
+  by the new elemental framework; balance numbers remain proposals.
   Do not treat the ten art concepts as an approved ten-wave dungeon.
 - After every dungeon wave, show an **end-of-wave action report** before advancing.
 - Defeated dungeon enemies have a chance to become captured and usable on the team.

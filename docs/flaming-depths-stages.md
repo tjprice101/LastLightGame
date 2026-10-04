@@ -1,5 +1,12 @@
 # Flaming Depths - 50-stage design
 
+**Superseded level/stat draft:** the new owner-approved elemental framework starts
+at level 10, grows linearly to 100 by Stage 45 and stays at 100 through Stage 50.
+The old levels 6-55 and their derived stat/milestone numbers below are historical,
+not current implementation inputs. Encounter/skill ideas remain unapproved proposals.
+Use [Gameplay and elements](gameplay-and-elements.md) and its tested level helper
+for current rules; revise HP/DEF/ATK balance before enabling this dungeon.
+
 **Status: proposed balance, not playable.** The owner requested design through
 Stage 50 and selected documentation/art first. The 50-stage scope is confirmed;
 the numbers, ability schedules, lineups, bosses, and entry/run policies below are

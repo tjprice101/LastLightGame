@@ -21,7 +21,18 @@ stat-growth/Fracture bonuses remain open. The first two tiers' level cap is conf
 - Fracture resets the character to **level 0** in Tier 2 and grants **+10 Lycalis**.
 - Tier 2 levels from 0 to **30** again, using different upgrade resources.
 - Upgrade materials will be defined later. Starting Tier 1 level, XP thresholds,
-  costs, later tiers, subsequent Fractures, and skill/equipment carryover remain open.
+  costs, later tier level rules, subsequent Fractures, and skill/equipment carryover remain open.
+
+### Elemental evolution-material framework
+
+Most characters now have five forms (Evo.1-5). Their own elemental dungeon supplies
+Common/Uncommon/Rare/Epic/Legendary/Omnic materials. Approved recipes: 1->2 Common,
+2->3 Common+Uncommon, 3->4 Uncommon+Rare, 4->5 Rare+Epic. Each also requires Fractalis
+and mapped special infusion enemies. Quantities and transactions remain undefined.
+Legendary/Omnic uses and exceptional evolution lines remain open.
+See [the owning element/material specification](gameplay-and-elements.md) and
+[typed requirement definitions](../src/content/activities.ts); Character Upgrades
+shows these recipes without granting/spending resources.
 
 The Character Upgrades screen shows these rules and labels them preview-only.
 The owner chose to defer transactions until materials and stats are defined:

@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** supplied Infernis icons integrated into battle and character panels.
+**Last updated:** grouped Gameplay tab and elemental farming/evolution framework.
 
 ## Project state
 
@@ -14,12 +14,25 @@
   local starter save, opening menu, saved-session continuation, save-error handling.
 - Starter selection now includes bounded elemental reveals and original lore;
   first confirmation plays a companion awakening. Lore stays readable in the menu.
-- Implemented primary screens: Home, Character Upgrades, Events. Home shows the
+- Implemented primary screens: Home, Character Upgrades, Gameplay, Events. Home shows the
   companion and coming-later Squad/Summon buttons. Inventory is inside upgrades;
   Adventure and Story are Home subactivities. Settings opens in a modal side drawer.
   Story displays the saved starter's lore/prologue; Events is a future placeholder. Motion settings
   save separately and update both canvas/CSS motion. Fractalis shows a persistent
   local balance; Lycalis is a label only. Upgrades and equipment remain previews.
+- Gameplay groups Adventure, elemental material dungeons, evolution infusion,
+  Story and Events. Adventure/Story return here; Home keeps direct Adventure
+  and adds Gameplay entry. New tab supersedes the old three-screen limit.
+  `src/content/activities.ts` owns ten canonical element/dungeon mappings, 60
+  distinct material IDs, two exact infusion eligibility groups and recipe helpers.
+  Starters keep save IDs but display Infernic/Aquatic/Efflorescent affinities.
+  Dungeon levels 10->100 linearly by Stage45, then plateau to Stage50; tested for
+  all stages. Ten dungeon cards and two infusion cards are visibly disabled.
+  Heavens/Abyss start Lv80, 25 stages, four tiers, 5-6 enemy concepts each;
+  later growth/rates/encounters remain open. Most characters have five forms,
+  approved recipes Common; Common+Uncommon; Uncommon+Rare; Rare+Epic, plus
+  Fractalis and mapped infusable enemies. No quantities, ownership or transactions.
+  [Owning specification](gameplay-and-elements.md).
 - Home now follows the supplied mock-up's utility rail / central character /
   right stat-passive panel / bottom character dock and Adventure launch.
   Character Upgrades has an area rail, central companion, and focused detail panel
@@ -66,7 +79,7 @@
   all-asset behavior remains unchanged.
 - [Full 50-stage proposal](flaming-depths-stages.md): ten five-stage regions,
   three-enemy regular waves and solo elite milestones every fifth stage;
-  increasing levels 6-55, base-relative HP/DEF/ATK growth, five skill ranks,
+  historical levels 6-55 (now superseded by the new Lv10-100 rule), five skill ranks,
   exact hostile skill effects/schedules, report boundaries and final completion.
   Numbers remain proposed; hostile skills never transfer to captured fodder.
   No runtime dungeon definitions, scene, captures, reports, rewards, team edits
@@ -149,11 +162,19 @@ progression/economy. Add future animation frames without changing resolver resul
   superseded: Adventure re-entry starts a new run. Settings suspends input.
   Water/grass defeat screens retain the selected character and allow restart.
   Desktop/mobile screenshots reviewed; narrow/short screens scroll as needed.
-- `npm test`: 89 passing tests for all three starter transitions and saved continuations,
+- `npm test`: 95 passing tests for all three starter transitions and saved continuations,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
   motion settings, combat formulas, all kits/passives, exact recovery/cooldown
   boundaries, status durations,   shield/heal caps, waves/defeat, hotkey validation, and every runtime unit PNG's
   960 x 960 RGBA export contract.
+- Framework tests cover ten exact dungeon mappings, sixty unique materials, every
+  stage level/plateau, rejected invalid inputs, exact infusion eligibility and
+  adjacent evolution requirements for every element; unavailable modes stay gated.
+- Browser checks for all three starters verify ten dungeon/two infusion cards,
+  twelve disabled launch controls, Gameplay Settings restoration, playable
+  Adventure launch/quit to Gameplay, Story parent navigation, correct own-element
+  recipes and stable character art. Gameplay has no horizontal overflow at
+  1280x720, 390x844 and 320x640. Profiles were preserved and test storage restored.
 - Adventure tests verify wave-1 starts, enemy levels, and exact base-relative HP/
   attack and +1 defense across 20 waves; no compounded growth or invented ally level.
 - Browser checks cleared wave 1 through real actions and reached wave 2 with Goblin

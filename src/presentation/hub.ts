@@ -4,6 +4,7 @@ import { artifactSlots, fractureRules, upgradePaths } from '../content/progressi
 import { portrait } from './portrait';
 import { elementalReveal } from './reveal';
 import { abilityIcon } from './ability-icon';
+import { evolutionRequirement, getElement, infusionModes } from '../content/activities';
 
 export const characterTabs = [
   { id: 'overview', label: 'Overview', symbol: '01' },
@@ -34,6 +35,7 @@ export function homeHub(starter: Starter, firstArrival: boolean): string {
   return `<div class="hub-heading"><p class="eyebrow">THE SANCTUARY</p><h1 tabindex="-1">Home</h1></div>
     <div class="home-hub" style="--element:${starter.color}">
       <aside class="hub-rail" aria-label="Home shortcuts">
+        <button class="hub-rail-button" data-page="gameplay"><span class="hub-symbol" aria-hidden="true">GP</span><span>Gameplay<small>Browse activity types</small></span></button>
         <button class="hub-rail-button" data-page="events"><span class="hub-symbol" aria-hidden="true">EV</span><span>Events<small>Future adventures</small></span></button>
         <button class="hub-rail-button" data-character-tab="inventory"><span class="hub-symbol" aria-hidden="true">IN</span><span>Inventory<small>No items yet</small></span></button>
         <button class="hub-rail-button" data-page="story"><span class="hub-symbol" aria-hidden="true">ST</span><span>Opening Story<small>${starter.lore.origin}</small></span></button>
@@ -83,6 +85,19 @@ function fracturePreview(): string {
     </ol><p>Exact stat improvements, materials, and costs are pending. No Lycalis has been awarded.</p></section>`;
 }
 
+function materialPreview(starter: Starter): string {
+  const element = getElement(starter.elementId);
+  const infusion = infusionModes.find((mode) => mode.id === element.infusion);
+  if (!infusion) throw new Error('Element infusion mode is missing.');
+  return `<section class="evolution-materials"><h3>Evolution material framework</h3>
+    <p>Most characters have five forms. ${element.name} characters use Fractalis,
+      ${element.dungeon} materials and special enemies from ${infusion.name}.</p>
+    <ul>${[1, 2, 3, 4].map((from) => {
+      const recipe = evolutionRequirement(starter.elementId, from);
+      return `<li>Evo.${recipe.from} to Evo.${recipe.to}: ${recipe.rarities.join(' + ')} ${element.name} materials</li>`;
+    }).join('')}</ul><p>Amounts, acquisition and stat bonuses are pending. No evolution resources have been granted or spent.</p></section>`;
+}
+
 export function characterDetail(starter: Starter, selectedTab: string): string {
   const tab = characterTabs.find((entry) => entry.id === selectedTab);
   if (!tab) throw new Error('Unknown character upgrade area.');
@@ -98,7 +113,7 @@ export function characterDetail(starter: Starter, selectedTab: string): string {
     const index = upgradePaths.findIndex((_, position) => selectedTab === `upgrade-${position}`);
     if (index < 0) throw new Error('Unknown upgrade definition.');
     const path = upgradePaths[index];
-    const specific = index <= 1 ? fracturePreview() : index === 2
+    const specific = index <= 1 ? `${fracturePreview()}${index === 0 ? materialPreview(starter) : ''}` : index === 2
       ? `<article class="hub-ability"><h3>${starter.weapon}</h3><p>Base character damage: ${kit.stats.damage}. Weapon stats and upgrades are not tracked yet.</p></article>`
       : index === 3 ? `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name}</span></h3><p>${kit.passive.description}</p></article>`
       : ability(starter, index === 4 ? 'skill1' : index === 5 ? 'skill2' : 'ultimate');

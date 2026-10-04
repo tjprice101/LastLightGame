@@ -24,8 +24,9 @@ rewarded quests, and progression operations remain scaffolding.
 | [Menus and inventory](menus-and-inventory.md) | Fire-only roster, currencies, upgrades, 8+1 equipment, settings/story/events |
 | [Combat](combat.md) | Battle flow, actions, damage, effects, combat tests |
 | [Adventure](free-battle.md) | Fresh wave-1 runs, linear enemy levels/stats, all starter kits, recovery, hotkeys |
+| [Gameplay and elements](gameplay-and-elements.md) | Grouped activity tab, ten elements/dungeons, level 10-100 curve, materials, infusion modes and evolution recipes |
 | [Dungeons and captures](dungeons-and-captures.md) | Flaming Depths, wave reports, separate captured-enemy ownership; not yet playable |
-| [Flaming Depths stages](flaming-depths-stages.md) | Complete proposed Stage 1-50 lineups, level/stat formulas, enemy skills and elite milestones |
+| [Flaming Depths stages](flaming-depths-stages.md) | Historical Stage 1-50 encounter/skill proposal; old levels/stats superseded by elemental framework |
 | [Units and progression](units-and-progression.md) | Unit identity, roster, leveling, evolution, duplicates |
 | [Summoning and economy](summoning-and-economy.md) | Banners, odds, pity, currencies, reward transactions |
 | [Content guide](content-guide.md) | Adding units, skills, enemies, quests, and banners |

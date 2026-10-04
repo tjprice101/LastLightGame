@@ -8,7 +8,7 @@ This is not production balance or a rewarded story mode.
 
 ## Entering and leaving
 
-Home's **Adventure** button opens a fresh run at **wave 1**, never resumes a
+Gameplay's **Start Adventure** button (or Home's Adventure shortcut) opens a fresh run at **wave 1**, never resumes a
 previous run. Restart and reload also start at wave 1. Enemy level equals wave.
 Adventure is a separate full-viewport field screen, without the sanctuary
 header, primary navigation, or footer. Scenery fills the viewport; transparent
@@ -16,7 +16,7 @@ unit art stands on the field without blue card borders. Detached dark name/stat
 readouts preserve contrast. The compact bottom HUD retains all five actions,
 hotkeys, resource/cooldown/recovery feedback, end turn, and restart. Full ability
 descriptions/passive/rules and the log are available in disclosures.
-**Quit Battle** returns Home and ends the run, preserving earned Fractalis but
+**Quit Adventure** returns Gameplay and ends the run, preserving earned Fractalis but
 discarding wave progress. Settings suspends battle input while open; closing it
 preserves the current wave, health, gauges, and already-resolved actions.
 Small screens allow vertical scrolling rather than clipping controls; the scenery

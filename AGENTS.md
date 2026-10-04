@@ -26,6 +26,10 @@
   Enemy level equals wave; HP/attack grow linearly by 12% of base and defense by 1.
   [Dungeons/captures](docs/dungeons-and-captures.md) are documented, not implemented.
   Captures are distinct from characters, Normal/Heavy only, levelable but never evolved.
+- [Gameplay/element framework](docs/gameplay-and-elements.md) is now the activity entry
+  point: ten material dungeons and two infusion modes are disabled catalogs, not
+  implemented farming. Shared dungeon levels 10->100 by Stage45, then plateau.
+  The old Flaming Depths Lv6-55 proposal is superseded. Do not invent drop rates/costs.
 - Preserve source images under Art/source; process runtime copies using
   tools/prepare_art.py. Images use Vite's deployment base, not root-relative paths.
 - Preserve the established art direction. Six illustrated stages do not establish

@@ -11,6 +11,7 @@ import { allowedCodes, commands, defaultBindings, keyLabel, loadBindings, saveBi
 import { BattleView, createSession, type BattleSession } from './presentation/battle-view';
 import { characterHub, homeHub, isCharacterTab, updateCharacterTab } from './presentation/hub';
 import { loadFractalis, saveBattleRewards } from './game/wallet';
+import { gameplayHub } from './presentation/gameplay';
 
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('Application root is missing.');
@@ -21,7 +22,7 @@ app.addEventListener('error', (event) => {
   showError(`Artwork could not load for ${event.target.alt}. Please reload or check the asset deployment.`);
 }, true);
 const journey = new Journey();
-type MenuPage = 'home' | 'character' | 'story' | 'events' | 'battle';
+type MenuPage = 'home' | 'character' | 'gameplay' | 'story' | 'events' | 'battle';
 let menuPage: MenuPage = 'home';
 let characterTab = 'overview';
 let motionPreference: MotionPreference = 'system';
@@ -118,7 +119,7 @@ function renderSelection(): void {
   frame(`<section class="selection-screen">
     <p class="eyebrow">CHAPTER ZERO &nbsp; / &nbsp; A FIRST LIGHT</p>
     <h1 tabindex="-1">Choose your companion</h1>
-    <p class="subtitle">Choose your first light: fire, water, or grass. Your journey begins solo.</p>
+    <p class="subtitle">Choose your first light: Infernic (fire), Aquatic (water), or Efflorescent (nature). Your journey begins solo.</p>
     <div class="starter-grid" role="group" aria-label="Starter companions">
       ${availableStarters.map((starter, index) => `<button class="starter-card" data-starter="${starter.id}"
         aria-pressed="${journey.selected === starter.id}" style="--element:${starter.color}">
@@ -188,14 +189,14 @@ function renderMenu(firstArrival = false): void {
       `<span><strong>${currency.name}${currency.id === 'fractalis' ? ` <span id="fractalis-balance">${fractalis ?? 'Unavailable'}</span>` : ''}</strong><small>${currency.role} &middot; ${currency.id === 'fractalis' ? 'Saved locally' : 'Balance not implemented'}</small></span>`).join('')}</div>
     ${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
     <div class="navigation-row"><nav class="menu-nav" aria-label="Main screens">${([
-      ['home', 'Home'], ['character', 'Character Upgrades'], ['events', 'Events'],
+      ['home', 'Home'], ['character', 'Character Upgrades'], ['gameplay', 'Gameplay'], ['events', 'Events'],
     ] as const).map(([page, label]) =>
-      `<button data-page="${page}" ${(menuPage === 'battle' || menuPage === 'story' ? 'home' : menuPage) === page ? 'aria-current="page"' : ''}>${label}</button>`).join('')}</nav>
+      `<button data-page="${page}" ${(menuPage === 'battle' || menuPage === 'story' ? 'gameplay' : menuPage) === page ? 'aria-current="page"' : ''}>${label}</button>`).join('')}</nav>
       <button id="open-settings" class="settings-trigger" aria-haspopup="dialog">Settings</button></div>
     ${menuPage !== 'home' ? menuContent(menuPage) : homeHub(starter, firstArrival)}
   </section>`;
   frame(`${menuPage === 'battle' ? `<header class="battle-toolbar">
-    <button class="text-button" data-page="home">Quit Battle</button>
+    <button class="text-button" data-page="gameplay">Quit Adventure</button>
     <span>Fractalis <strong id="fractalis-balance">${fractalis ?? 'Unavailable'}</strong></span>
     <button id="open-settings" class="text-button" aria-haspopup="dialog">Settings</button>
     </header>${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
@@ -208,7 +209,7 @@ function renderMenu(firstArrival = false): void {
     button.addEventListener('click', () => {
       const page = button.dataset.page;
       if (page !== 'home' && page !== 'character' &&
-          page !== 'story' && page !== 'events' && page !== 'battle') throw new Error('Unknown menu page.');
+          page !== 'gameplay' && page !== 'story' && page !== 'events' && page !== 'battle') throw new Error('Unknown menu page.');
       if (page === 'battle' && menuPage !== 'battle') battleSession = createSession(starter.id);
       if (page !== 'battle' && menuPage === 'battle') battleSession = null;
       menuPage = page;
@@ -333,7 +334,8 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
     `<h1 tabindex="-1">${name}</h1><p class="subtitle">${text}</p>`;
   if (page === 'battle') return '<button class="text-button" data-page="home">Back to Home</button><div id="battle-root"></div>';
   if (page === 'character') return characterHub(starter, characterTab);
-  if (page === 'story') return `<button class="text-button" data-page="home">Back to Home</button>${heading('Story mode', `Prologue / ${starter.lore.origin}`)}
+  if (page === 'gameplay') return gameplayHub();
+  if (page === 'story') return `<button class="text-button" data-page="gameplay">Back to Gameplay</button>${heading('Story mode', `Prologue / ${starter.lore.origin}`)}
     <article class="story-panel lore-panel" style="--element:${starter.color}">
       <p class="eyebrow">A FIRST LIGHT</p><h2>${starter.title}</h2>
       <p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote>
