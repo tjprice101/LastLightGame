@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** Adventure rename/fresh runs/linear enemy levels and Flaming Depths art/design handoff.
+**Last updated:** compact Home layout and stable in-place Character Upgrade tabs.
 
 ## Project state
 
@@ -28,6 +28,11 @@
   the saved starter. Tizu's effective defense is 24, not base 16.
   Render helpers live in `src/presentation/hub.ts`; no external fonts/dependencies
   or mock-up scripts were imported. Provided mock-up files remain untouched.
+- Home now uses tighter spacing, a 240px desktop / 220px mobile square portrait,
+  and a wider dock. Adventure is above utility shortcuts on mobile. Within
+  Character Upgrades, tabs replace only the detail panel, preserving the exact
+  showcase/image/rail/dialog DOM nodes without replaying entry animation.
+  Detail focus uses preventScroll; a desktop minimum panel height limits jumps.
 - All valid version-1 starter saves continue unchanged, including water/grass.
   The earlier forced fire re-selection policy is superseded.
 - Implemented: solo Adventure using only the saved Infernis/Tizu/Flores, enemy waves,
@@ -113,7 +118,7 @@ progression/economy. Add future animation frames without changing resolver resul
   superseded: Adventure re-entry starts a new run. Settings suspends input.
   Water/grass defeat screens retain the selected character and allow restart.
   Desktop/mobile screenshots reviewed; narrow/short screens scroll as needed.
-- `npm test`: 86 passing tests for all three starter transitions and saved continuations,
+- `npm test`: 87 passing tests for all three starter transitions and saved continuations,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
   motion settings, combat formulas, all kits/passives, exact recovery/cooldown
   boundaries, status durations,   shield/heal caps, waves/defeat, hotkey validation, and every runtime unit PNG's
@@ -131,6 +136,11 @@ progression/economy. Add future animation frames without changing resolver resul
   unavailable upgrades, Settings tab preservation, battle/quit entry, and unchanged
   profile/wallet. Home/Character layout checks pass at 1280x900, 390x844, 320x640,
   and 844x390 with square contain-fit art and no horizontal overflow.
+- Compact Home checks: at 1425x768 the full page fits without scrolling; at
+  1280x720 Adventure and the dock are visible, with only a small footer scroll.
+  Browser tab checks preserve exact image/showcase/rail/root/dialog nodes across
+  all nine areas, with no showcase mutations and correct focus/selected state.
+  Independent detail-render tests cover every starter/area with no image/nav markup.
 - Reward tests cover all six integer payouts 5-10, repeatable independent reward
   randomness, ultimate multi-kills, burn kills, no repeated dead-enemy/ally payouts,
   wallet persistence, corrupt-save preservation, overflow and write failures.

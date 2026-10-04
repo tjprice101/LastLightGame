@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { starters } from '../content/starters';
-import { characterHub, characterTabs, homeHub, isCharacterTab } from './hub';
+import { characterDetail, characterHub, characterTabs, homeHub, isCharacterTab } from './hub';
 
 describe('game-specific hub layouts', () => {
   it.each(starters)('$name uses its real art, stats, passive, and ability costs', (starter) => {
@@ -34,5 +34,18 @@ describe('game-specific hub layouts', () => {
     expect(inventory.match(/class="artifact-slot"/g)).toHaveLength(8);
     expect(inventory).toContain('Master relic');
     expect(homeHub(starters[0], true)).toContain(starters[0].lore.awakening);
+  });
+  it('renders tab details independently without replacing the character or navigation', () => {
+    for (const starter of starters) {
+      for (const tab of characterTabs) {
+        const detail = characterDetail(starter, tab.id);
+        expect(detail).toContain(`>${tab.label}</h2>`);
+        expect(detail).not.toContain('<img');
+        expect(detail).not.toContain('hub-showcase');
+        expect(detail).not.toContain('data-character-tab');
+        expect(characterHub(starter, tab.id)).toContain(detail);
+      }
+    }
+    expect(() => characterDetail(starters[0], 'invalid')).toThrow('Unknown');
   });
 });

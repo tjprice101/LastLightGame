@@ -9,7 +9,7 @@ import { elementalReveal } from './presentation/reveal';
 import { applyMotion, loadMotion, saveMotion, type MotionPreference } from './presentation/settings';
 import { allowedCodes, commands, defaultBindings, keyLabel, loadBindings, saveBindings, validateBindings } from './game/hotkeys';
 import { BattleView, createSession, type BattleSession } from './presentation/battle-view';
-import { characterHub, homeHub, isCharacterTab } from './presentation/hub';
+import { characterHub, homeHub, isCharacterTab, updateCharacterTab } from './presentation/hub';
 import { loadFractalis, saveBattleRewards } from './game/wallet';
 
 const root = document.querySelector<HTMLElement>('#app');
@@ -226,6 +226,10 @@ function renderMenu(firstArrival = false): void {
       const tab = button.dataset.characterTab;
       if (!tab || !isCharacterTab(tab)) throw new Error('Unknown character upgrade area.');
       characterTab = tab;
+      if (menuPage === 'character') {
+        updateCharacterTab(app, starter, tab);
+        return;
+      }
       menuPage = 'character';
       renderMenu();
       app.querySelector<HTMLElement>('#upgrade-heading')?.focus();

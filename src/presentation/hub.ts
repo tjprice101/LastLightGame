@@ -82,7 +82,7 @@ function fracturePreview(): string {
     </ol><p>Exact stat improvements, materials, and costs are pending. No Lycalis has been awarded.</p></section>`;
 }
 
-export function characterHub(starter: Starter, selectedTab: string): string {
+export function characterDetail(starter: Starter, selectedTab: string): string {
   const tab = characterTabs.find((entry) => entry.id === selectedTab);
   if (!tab) throw new Error('Unknown character upgrade area.');
   const kit = fighters[starter.id];
@@ -108,13 +108,29 @@ export function characterHub(starter: Starter, selectedTab: string): string {
       <button class="primary-button" disabled>Upgrade unavailable</button>
       <p class="quiet">Preview only. No level, tier, materials, or currency have been changed.</p>`;
   }
+  return `<p class="eyebrow">${selectedTab === 'overview' ? 'COMBAT KIT' : 'PREVIEW'}</p>
+    <h2 id="upgrade-heading" tabindex="-1">${tab.label}</h2>${detail}`;
+}
+
+export function updateCharacterTab(host: HTMLElement, starter: Starter, selectedTab: string): void {
+  const content = characterDetail(starter, selectedTab);
+  const panel = host.querySelector<HTMLElement>('.hub-detail');
+  if (!panel) throw new Error('Character detail panel is missing.');
+  panel.innerHTML = content;
+  host.querySelectorAll<HTMLButtonElement>('[data-character-tab]').forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.characterTab === selectedTab));
+  });
+  panel.querySelector<HTMLElement>('#upgrade-heading')?.focus({ preventScroll: true });
+}
+
+export function characterHub(starter: Starter, selectedTab: string): string {
+  const detail = characterDetail(starter, selectedTab);
   return `<div class="hub-heading"><p class="eyebrow">${starter.name} / PROGRESSION</p><h1 tabindex="-1">Character Upgrades</h1></div>
     <div class="character-hub" style="--element:${starter.color}">
       <nav class="hub-rail" aria-label="Character upgrade areas">${tabButtons(selectedTab)}</nav>
       <section class="hub-showcase"><div class="hub-portrait">${portrait(starter)}</div>
         <p class="element-pill">${starter.element} / ${starter.weapon}</p><h2>${starter.name}</h2>
         <p class="quiet">Your only owned companion</p><p class="quiet">Current level and tier are not tracked in the save.</p></section>
-      <section class="hub-detail" aria-labelledby="upgrade-heading"><p class="eyebrow">${selectedTab === 'overview' ? 'COMBAT KIT' : 'PREVIEW'}</p>
-        <h2 id="upgrade-heading" tabindex="-1">${tab.label}</h2>${detail}</section>
+      <section class="hub-detail" aria-labelledby="upgrade-heading">${detail}</section>
     </div>`;
 }

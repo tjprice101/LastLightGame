@@ -32,6 +32,9 @@ Adventure launch. Currency chips show the actual Fractalis balance and an honest
 unimplemented Lycalis label. Tizu's displayed effective defense includes his passive.
 Mobile stacks the showcase/stats before the shortcut rail; content scrolls rather
 than being clipped.
+Home uses a compact 240px desktop / 220px mobile square portrait, tighter spacing,
+and a wider desktop dock to reduce scrolling without shrinking readable text.
+On mobile Adventure appears immediately after character stats, before utility shortcuts.
 [Adventure](free-battle.md) and Story are Home subactivities with Back to Home
 controls, not additional primary tabs. Adventure is an endless-wave
 mode with the saved starter and supplied scenery/art. It opens in a
@@ -46,6 +49,9 @@ Character has a left area-selector rail, central saved companion, and right deta
 panel: Overview, all seven upgrade paths, and Inventory / Equipment. Home dock
 shortcuts open the corresponding area directly. Area buttons expose their selected
 state and move focus to the detail heading. Settings preserves the selected area.
+Within Character Upgrades, changing areas replaces only the detail panel and updates
+the existing buttons' selected state. The character image, showcase, navigation and
+Settings remain mounted; heading focus does not force a scroll jump or replay art.
 Upgrade operations are disabled with explicit pending-cost/material notices.
 Overview shows the real passive, abilities, Shatter Gauge costs, and cooldowns;
 no mock-up health slider, estimated damage, fake levels, or additional owned roster
