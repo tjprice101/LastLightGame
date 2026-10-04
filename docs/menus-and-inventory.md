@@ -2,7 +2,8 @@
 
 ## Confirmed requirements
 
-- Only fire is available in the current playable build.
+- Only fire is available as a permanent first companion. Free Battle temporarily
+  provides all three starters without granting roster ownership.
 - **Fractalis** is the main currency; **Lycalis** is the premium currency.
 - Characters support evolution, levels, weapon upgrades, and independent upgrades
   for the unique passive, ability 1, ability 2, and ultimate.
@@ -13,10 +14,13 @@
 
 ## Implemented surfaces
 
-The sanctuary navigation opens Character, Inventory, Story mode, Events, and
+The sanctuary navigation opens Free Battle, Character, Inventory, Story mode, Events, and
 Settings. Both currencies appear with explicit "Balance not implemented" labels;
 there are no invented starting balances, rewards, purchases, or spending operations.
 
+The main sanctuary activity is [Free Battle](free-battle.md), an endless-wave
+practice mode with all three starters and the supplied art. Character also shows
+the saved companion's working combat kit and illustration.
 Character shows all seven upgrade paths. They are non-interactive previews until
 rules, costs, caps, and ability definitions are approved.
 Character and Inventory show exactly eight numbered artifact slots and one master
@@ -27,15 +31,15 @@ Inventory has an honest empty collection state. Story mode contains a readable
 original fire prologue, not playable battles or a chapter progression system.
 Events is a reserved tab with no active events or timers.
 
-Settings supports a persisted motion preference: follow device settings or reduce
+Settings supports persisted, validated battle hotkeys and a motion preference: follow device settings or reduce
 motion. Device reduced motion cannot be overridden. The setting updates both
 Phaser ambient movement and CSS reveals immediately. Failed reads/writes are
 reported; storage uses the separate `last-light.settings` key.
 
 ## Legacy companion saves
 
-Water/grass definitions remain available for reading version-1 saves and for
-future art work, but cannot be selected in this build. After title entry, those
+Water/grass definitions remain available for version-1 saves and Free Battle,
+but cannot be selected as the first companion. After title entry, those
 players see a fire re-selection notice. The original save stays intact until
 explicit fire confirmation succeeds. A failed write preserves the previous save.
 This policy was selected by the owner, not an automatic conversion.

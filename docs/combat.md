@@ -1,11 +1,14 @@
 # Combat specification
 
-**Status:** proposed contract; no combat code exists.
+**Status:** [Free Battle](free-battle.md) is implemented with prototype formulas,
+starter kits, waves, and hotkeys. This page retains broader production questions.
 
 ## Open rules
 
-Choose party size, turn-based versus timing-based controls, action ordering,
-target selection, special-skill resource rules, and elemental relationships.
+The practice party has three starters and player/enemy turns. Each ally acts at
+most once, with a full next-turn recovery after heavy/ultimate.
+See [current rules](free-battle.md) for exact costs, targeting, order, and effects.
+Production squad size, advanced timing controls, and elemental relationships are open.
 Fire, water, and grass exist as art themes; no damage advantage chart is confirmed.
 Do not assume Brave Frontier's exact formulas or skill names.
 
@@ -42,8 +45,9 @@ Before coding damage, document:
 - Modifier order, rounding points, minimum/maximum values, and overflow behavior.
 - Shield/HP interaction, healing caps, and whether zero-damage hits trigger effects.
 
-No numeric formula is approved yet. Include worked examples and exact expected
-outputs when selecting one.
+The owner authorized a prototype balance set. Current formulas and worked tests
+are linked in [Free Battle](free-battle.md#stats-and-formulas); production tuning
+is still open.
 
 ## Skill and effect rules
 
@@ -66,5 +70,6 @@ summoned combatants if supported, and when an action consumes its cost.
 
 ## Implementation references
 
-Add battle module, skill resolver, formula tests, and event renderer links here
-after implementation.
+Implemented: [engine](../src/game/battle.ts), [kit definitions](../src/content/combat.ts),
+[exact tests](../src/game/battle.test.ts), and [event presentation](../src/presentation/battle-view.ts).
+Practice battle state is isolated from roster saves, upgrades, and economy.

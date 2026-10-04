@@ -18,8 +18,12 @@
 - The owner delegated stack selection: TypeScript, Phaser 3, Vite, and Vitest
   power the browser prototype. Keep accessible menus in HTML over the canvas.
   Ask before changing engines or adding paid services, backends, or payments.
-- Inspect the actual workspace before trusting handoff status. The opening flow
-  exists; combat and the broader game systems remain unimplemented.
+- Inspect the workspace before trusting handoff status. Opening flow and
+  [Free Battle](docs/free-battle.md) exist; progression/economy operations do not.
+- Free Battle uses a temporary three-starter practice team; permanent first
+  companion selection stays fire-only. Do not grant practice units as owned units.
+- Preserve source images under Art/source; process runtime copies using
+  tools/prepare_art.py. Images use Vite's deployment base, not root-relative paths.
 - Preserve the established art direction. Six illustrated stages do not establish
   six gameplay rarities or six implemented evolutions.
 - Keep gameplay rules and content definitions separate from presentation where

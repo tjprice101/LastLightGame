@@ -1,0 +1,156 @@
+# Free Battle
+
+**Status:** implemented practice mode, 2026-10-04. The owner approved an initial
+editable balance set and full recovery turns for heavy attacks/ultimates.
+This is not production balance or a rewarded story mode.
+
+## Entering and leaving
+
+Sanctuary's main activity and the navigation button open **Free Battle**.
+The temporary team includes Infernis (fire), Tizu (water), and Flores (grass).
+Only fire remains selectable as a permanent first companion; practice does not
+grant Tizu/Flores, modify the roster save, consume currency, or award items.
+
+Enemies are on the **left**, allies on the **right**, including mobile layouts.
+Click an ally to select its action kit and an enemy to target it. Select an action,
+then finish the player turn with **End turn / enemy attacks**. Unused ally actions
+are forfeited when ending the turn. There is no automatic turn ending.
+
+Every wave has a Goblin, an Imp, and a Rock Golem. Enemy HP/damage scale by
+`1 + 0.12 * (wave - 1)` with rounding; defense increases by
+`floor((wave - 1) / 2)`. Clear a wave, then explicitly choose Next wave.
+Continue until defeat, exit, or a confirmed restart. Health, shields, Flare,
+skill cooldowns, and recovery carry between waves; defeated allies stay defeated.
+Flores' living passive still applies at the new-turn boundary.
+
+Switching menu tabs preserves the practice session for the current page lifetime.
+Reloading starts a new practice session. Leaving during animation cancels only
+presentation; the already resolved state is retained.
+
+## Actions and recovery
+
+Each living character may perform **one** action per player turn:
+
+| Action | Rule |
+| --- | --- |
+| Light Attack | 100% damage to one target; gain 20 Flare |
+| Heavy Attack | 180% damage to one target; gain 30 Flare; no action next turn |
+| Ability 1 | Character-specific effect; gain 10 Flare; two-turn cooldown |
+| Ability 2 | Character-specific effect; gain 10 Flare; three-turn cooldown |
+| Last Flare | Character-specific ultimate; costs 100 Flare; no action next turn |
+
+All practice characters start with 100 Flare; cap is 100.
+Skills do not require Flare or force recovery. Cooldown "2" means using it on turn
+1 makes it usable again on turn 3; cooldown "3" becomes usable on turn 4.
+A heavy/ultimate on turn 1 blocks every action on turn 2 and allows actions again
+on turn 3. The rule also applies when a wave is cleared by that action.
+Support skills still consume the character's one action.
+
+## Stats and formulas
+
+| Character | HP | Base defense | Effective defense | Base damage | Critical chance |
+| --- | --- | --- | --- | --- | --- |
+| Infernis | 220 | 10 | 10 | 38 | 15% |
+| Tizu | 260 | 16 | 24 (passive) | 30 | 10% |
+| Flores | 190 | 8 | 8 | 32 | 20% |
+
+| Enemy (wave 1) | HP | Defense | Damage | Critical chance |
+| --- | --- | --- | --- | --- |
+| Goblin | 110 | 5 | 23 | 10% |
+| Imp | 90 | 3 | 28 | 15% |
+| Rock Golem | 160 | 15 | 20 | 5% |
+
+Damage: `max(1, round(baseDamage * multiplier * criticalModifier) - defense)`.
+Critical modifier is 1.5 on a critical hit, otherwise 1. Defense is flat reduction,
+not a percentage. Shields absorb calculated damage before health; HP floors at
+zero. Healing caps at maximum HP and never revives. Burn bypasses defense but
+still consumes shield before HP. There is no elemental advantage multiplier yet.
+
+Critical rolls and enemy target selection use a seeded xorshift32 generator.
+Initial practice seeds come from browser crypto; a fixed seed reproduces rules
+in tests. Critical rolls occur independently per target; enemy attacks choose a
+random living ally. This is not an authoritative or monetized online battle system.
+
+## Implemented starter kits
+
+### Infernis
+
+- **Unbroken Ember (passive):** multiply outgoing damage by 1.2 at or below
+  exactly 50% HP.
+- **Cinder Cleave:** 160% damage to one enemy; if it survives, apply 8 burn damage
+  at the start of its next two enemy phases. Refreshes, does not stack.
+- **Flame Arc:** 110% damage to every living enemy.
+- **Last Flare: Dawnfire:** 280% damage to every living enemy.
+
+### Tizu
+
+- **Stillwater Guard (passive):** +8 defense, included in the battle display.
+- **Undertow Thrust:** 150% damage to one enemy; if it survives, its next two
+  enemy-phase attacks use a 0.75 damage multiplier. Refreshes, does not stack.
+- **Tidal Shelter:** refresh every living ally's shield to at least 25; do not
+  add 25 to an existing shield.
+- **Last Flare: Ocean Memory:** 220% damage to all enemies; refresh ally shields
+  to at least 35.
+
+### Flores
+
+- **Root of Hope (passive):** at every subsequent player-turn start, while
+  Flores lives, heal each living ally for `round(maxHP * 0.05)`, at least 1.
+- **Briar Shot:** 150% damage to one enemy with +20 percentage points crit chance.
+- **Verdant Renewal:** heal every living ally for 30.
+- **Last Flare: Worldseed:** 180% damage to all enemies; heal living allies for 55.
+
+## Resolution order
+
+Validate phase, living actor, action allowance, recovery, resources, cooldown, and
+target -> clone state -> spend action/Flare and set recovery/cooldown -> damage and
+statuses -> support effects -> outcome check.
+Invalid operations throw explicit errors without modifying the previous state.
+
+On ending a turn, each living enemy takes its burn tick, then (if still alive)
+attacks a living ally. Its weaken duration decrements after its attack.
+Check defeat/clear, then advance the round and apply Flores' passive if the battle
+continues. An enemy killed by burn does not attack. No dead-target retargeting is
+needed for player actions because each action validates its current target.
+Defeat is terminal until restart. There is no revival or simultaneous reflected damage.
+
+## Hotkeys and feedback
+
+| Command | Default |
+| --- | --- |
+| Light / Heavy | Q / W |
+| Ability 1 / Ability 2 | E / R |
+| Last Flare | F |
+| End turn / Next wave | Space |
+| Next ally / Next enemy | C / T |
+
+Change all eight bindings in Settings -> Battle hotkeys. Every command needs a
+distinct supported key; duplicates/unsupported/corrupt mappings report errors.
+Use physical keyboard positions (`KeyboardEvent.code`). Browser modifier shortcuts,
+held-key repeats, and typing in form fields are ignored. Mobile uses buttons.
+Bindings persist under `last-light.hotkeys`, independently of motion/profile saves.
+Actual bindings are displayed on the action buttons and battle instructions.
+
+Animations use the supplied transparent illustrations: lunges, elemental strike
+overlays, larger Last Flare effects, and floating damage/heal/shield numbers.
+They are illustrative effects, not skeletal/frame-by-frame character animation.
+Input is locked while a resolved event sequence plays. Reduced motion skips
+movement without changing rules. Navigation and motion changes cancel active
+animations safely. A visible error is shown if animation fails, preserving results.
+Recent battle logs are bounded to 40 events.
+
+## Implementation and validation
+
+- [Balance and ability content](../src/content/combat.ts)
+- [Pure combat engine](../src/game/battle.ts)
+- [Battle presentation](../src/presentation/battle-view.ts)
+- [Hotkeys](../src/game/hotkeys.ts)
+- [Exact combat tests](../src/game/battle.test.ts)
+- [Hotkey tests](../src/game/hotkeys.test.ts)
+- [Asset processing](art-workflow.md#supplied-character-and-enemy-art)
+
+Run `npm test` and `npm run build`. Tests cover rounding/crit/defense, one action,
+exact recovery and cooldown boundaries, every kit, passives, status durations,
+shield/heal bounds, deterministic resolution, waves/defeat, and hotkey persistence.
+Browser checks cover all ability buttons, remapped commands, single-listener
+lifecycle, animation creation/cancellation, reduced motion, and side placement.

@@ -2,10 +2,12 @@
 
 An original cinematic 2D gacha RPG inspired by Brave Frontier.
 The browser-playable prelude includes an animated title, fire starter selection,
-and sanctuary navigation for character upgrades, inventory, settings, story, and
-future events. Upgrade/equipment previews and currency names are shown; only
-motion settings and the readable prologue work beyond the opening flow.
-Combat, quests, summoning, balances, upgrades, and equipping are not implemented yet.
+and sanctuary navigation for Free Battle, character upgrades, inventory, settings,
+story, and future events. Free Battle uses a temporary three-starter team against
+endless Goblin/Imp/Rock Golem waves, with skills, passives, Last Flares, recovery
+turns, and configurable hotkeys. Supplied artwork has transparent runtime exports.
+Upgrade/equipment previews and currency names are shown; upgrades, equipping,
+rewarded quests, summoning, and currency balances remain unimplemented.
 
 ## Play and develop
 
@@ -34,5 +36,7 @@ See [setup and deployment](docs/development-guide.md) for details.
 - [Character and weapon art prompt guide](Art/midjourney-character-style-prompt.md).
 
 Starter choice is saved only in this browser's local storage, not a cloud account.
-Illustrations are original SVG placeholders, not approved production assets.
+Illustrations are owner-supplied assets; originals and transparent exports are
+documented in the [art workflow](docs/art-workflow.md).
+See [Free Battle rules and kits](docs/free-battle.md) to customize combat.
 Do not interpret the documentation's proposed combat/economy rules as implemented.

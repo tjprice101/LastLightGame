@@ -9,7 +9,8 @@ are art concepts, not implemented upgrade paths.
 The owner confirmed evolution, character levels, weapon upgrades, and separate
 upgrades for the unique passive, ability 1, ability 2, and ultimate.
 Ultimate display names must use `Last Flare: <character-specific name>`.
-Specific names, effects, costs, materials, caps, and formulas remain unapproved.
+Free Battle's initial names, effects, stats, and formulas were delegated for the
+prototype and are documented separately. Upgrade costs, materials, and caps remain open.
 
 Each character has **eight unique artifacts** and **one master relic** equipped
 at most: nine slots, with the special master relic displayed above the artifacts.
@@ -35,9 +36,11 @@ references its definition/form and records only mutable player state.
 The [prompt guide](../Art/midjourney-character-style-prompt.md) describes six art
 stages each for Ember Swordsman, Tide Spearbearer, and Sprout Archer.
 Hair, eyes, signature clothing, and weapon type remain recognizable across stages.
-Only the fire starter is currently playable; the others remain concepts/legacy IDs.
-They are not yet balanced,
-summonable combat units, and their later forms are not implemented.
+Only fire can be chosen as the permanent starter. All three have implemented
+prototype combat kits in [Free Battle](free-battle.md), which uses a temporary team.
+They are not summonable, and their later forms are not implemented.
+The supplied art uses the names Infernis, Tizu, and Flores; stable save IDs remain
+`ember`, `tide`, and `sprout` so old profiles still load.
 
 ## Proposed roster and squad behavior
 

@@ -10,9 +10,10 @@ It is intended to make features easy to locate, extend, and hand off.
 - **Open:** a decision is still needed.
 - **Implemented:** present in code and verified; include implementation and test links.
 
-The title, fire-only selection, local save, navigation, readable prologue, and
-motion settings are implemented. Currency labels, upgrade paths, and equipment
-slots are previews. Combat, summoning, and progression operations remain scaffolding.
+The title, fire-only selection, local save, navigation, readable prologue, motion/
+hotkey settings, and Free Battle with a temporary three-starter team are implemented.
+Currency labels, upgrade paths, and equipment slots are previews. Summoning,
+rewarded quests, and progression operations remain scaffolding.
 
 ## Find the right document
 
@@ -22,6 +23,7 @@ slots are previews. Combat, summoning, and progression operations remain scaffol
 | [Opening flow](opening-flow.md) | Title, starter selection, menu, local save, placeholder art |
 | [Menus and inventory](menus-and-inventory.md) | Fire-only roster, currencies, upgrades, 8+1 equipment, settings/story/events |
 | [Combat](combat.md) | Battle flow, actions, damage, effects, combat tests |
+| [Free Battle](free-battle.md) | Playable waves, all starter kits, recovery rules, stats, attacks, hotkeys |
 | [Units and progression](units-and-progression.md) | Unit identity, roster, leveling, evolution, duplicates |
 | [Summoning and economy](summoning-and-economy.md) | Banners, odds, pity, currencies, reward transactions |
 | [Content guide](content-guide.md) | Adding units, skills, enemies, quests, and banners |

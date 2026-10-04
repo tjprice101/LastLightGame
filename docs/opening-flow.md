@@ -14,8 +14,9 @@ The owner delegated language/engine selection and requested repository deploymen
 2. Any ordinary key, the begin button, or a touch/click on that button advances.
    Tab, modifier keys, Escape, repeated keys, and browser shortcuts do not advance,
    preserving keyboard navigation and browser controls.
-3. With no save, show only Ember Beginner (fire/sword). Water/grass remain concepts,
-   not playable starters. Legacy saves require explicit fire re-selection;
+3. With no save, show only Infernis (fire/greatsword). Tizu/Flores are available in
+   Free Battle's temporary team, not as permanent first companions.
+   Legacy saves require explicit fire re-selection;
    see [menus and inventory](menus-and-inventory.md#legacy-companion-saves).
 4. Require explicit selection; then enable "Begin your journey".
 5. Commit the starter to local storage before opening the sanctuary menu.
@@ -30,9 +31,9 @@ Each reveal contains 12 decorative motes and one ring, lasts at most 1.3 seconds
 and never blocks selection or confirmation. Switching cards replaces the prior
 effect without accumulating particles. Card updates preserve keyboard focus.
 
-Selection displays original lore, an origin, and a personal vow. Ember carries the
-last coal of Ashen Vale; Tide searches for Glasswater's missing ferrykeepers;
-Sprout carries the hope of Hollowgreen's first new seed. These are editable
+Selection displays original lore, an origin, and a personal vow. Infernis carries the
+last coal of Ashen Vale; Tizu searches for Glasswater's missing ferrykeepers;
+Flores carries the hope of Hollowgreen's first new seed. These are editable
 prototype stories, not a claim that the wider world/story has been approved.
 
 After a successful first save, the menu plays a companion awakening and opens
@@ -43,7 +44,7 @@ while all lore and controls remain accessible. No save-schema changes are needed
 
 The menu displays the saved companion and opens the
 [character, inventory, story, events, and settings surfaces](menus-and-inventory.md).
-Quests, squad editing, and summoning are not working battle systems.
+Free Battle is implemented separately; quests, squad editing, and summoning are not.
 Currency names are shown, but no balances, levels, combat stats, accounts, or
 payment operations are introduced.
 
@@ -66,16 +67,15 @@ and must not become authoritative online account state.
 Phaser renders a layered landscape, light halo, and 48 bounded ambient motes.
 HTML provides responsive menus, semantic buttons, visible focus, and error alerts.
 Reduced-motion preferences disable CSS entrance/pulse animations and mote tweens.
-There is no audio or imported artwork. SVG portraits are original concept
-placeholders with eyes-only faces and each starter's signature motif.
-They are not replacements for approved white-canvas production illustrations.
+There is no audio. [Supplied artwork](art-workflow.md#supplied-character-and-enemy-art)
+now replaces SVG placeholder portraits in selection and companion panels.
 
 ## Where to customize
 
 - [Starter definitions](../src/content/starters.ts): names, text, colors, IDs, lore.
 - [Elemental reveals](../src/presentation/reveal.ts): bounded decorative effect markup.
 - [Reveal tests](../src/presentation/reveal.test.ts): lore completeness and effect budget.
-- [SVG portraits](../src/presentation/portrait.ts): temporary visuals.
+- [Portraits](../src/presentation/portrait.ts): runtime image paths using the deployment base.
 - [Backdrop](../src/presentation/backdrop.ts): ambient Phaser scene and tween budget.
 - [Screens](../src/main.ts): DOM rendering, inputs, errors, focus.
 - [Styles](../src/style.css): responsive layout and cinematic appearance.

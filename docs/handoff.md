@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** 2026-10-03, playable opening implementation.
+**Last updated:** 2026-10-04, Free Battle and supplied-art integration.
 
 ## Project state
 
@@ -20,7 +20,13 @@
   not balances. Upgrades and eight artifact slots plus one master relic are previews.
 - Legacy water/grass saves require explicit fire re-selection without automatic
   overwrite. A failed confirmation preserves the old save.
-- Not implemented: combat, quests, squad editing, summoning, upgrades/equipping,
+- Implemented: Free Battle practice team (Infernis/Tizu/Flores), enemy waves,
+  health/defense/damage/crit, one action per turn, heavy/ultimate recovery, all
+  passives/skills/Last Flares, elemental effects, and persistent remappable hotkeys.
+  See [rules and kit values](free-battle.md).
+- Six supplied images moved to Art/source; transparent runtime exports are in
+  public/assets. Portraits use the new names but retain old save IDs.
+- Not implemented: rewarded quests, squad editing, summoning, upgrades/equipping,
   currency balances/transactions, item acquisition,
   accounts, cloud saves, backend, payments.
 - Repository: [tjprice101/LastLightGame](https://github.com/tjprice101/LastLightGame).
@@ -34,28 +40,31 @@ later contributors have made no changes.
 ## What this handoff delivers
 
 See [opening flow](opening-flow.md) for behavior and source references.
-The original art guide is preserved; SVG illustrations are temporary original
-placeholders. Broader design documents still label unapproved mechanics as proposed.
+The original art guide is preserved; supplied PNG art replaces SVG placeholders.
+Free Battle has no rewards or permanent roster grants. Broader design documents
+still label unapproved production mechanics as proposed.
 
 ## Next recommended action
 
-Approve a small first battle scope and combat model (O-003/O-004 in the
-[decision log](decisions.md)), then implement/test a combat resolver independently
-of animations. Obtain approved art references before production asset work.
+Playtest the initial three-starter balance and attacks, then approve upgrade costs,
+item ownership/uniqueness, and rewarded quest rules before connecting battle to
+progression/economy. Add future animation frames without changing resolver results.
 
 ## Known gaps
 
-- No approved numerical formulas, rates, prices, squad size, or balance tables.
-- No supplied approved reference-image files/URLs in the workspace.
+- Prototype combat values were delegated and implemented; production balance,
+  summon rates/prices, rewards, and squad editing rules remain open.
+- Midjourney style-reference URL is absent; supplied runtime art is available.
 - No confirmed story, target devices, runtime asset pipeline, or commercial plan.
 - Phaser contributes most of the 1.2 MB uncompressed production bundle; Vite
   reports a chunk-size warning. Target-device performance has not been profiled.
 
 ## Verification
 
-- `npm test`: 20 passing tests for fire-only transitions, legacy re-selection,
+- `npm test`: 48 passing tests for fire-only transitions, legacy re-selection,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
-  and independent motion settings persistence.
+  motion settings, combat formulas, all kits/passives, exact recovery/cooldown
+  boundaries, status durations, shield/heal caps, waves/defeat, and hotkey validation.
 - `npm run build`: strict type-check and production build pass; bundle warning above.
 - `npm audit`: zero known dependency vulnerabilities after updating Vitest.
 - `npm ci`: clean lockfile restore passes with npm 10 after stopping the
@@ -82,6 +91,14 @@ of animations. Obtain approved art references before production asset work.
   Fractalis/Lycalis labels, all five menu pages, exactly eight artifacts plus one
   master relic, seven upgrade paths, readable story, future events, settings
   persistence and 390px layouts. DOM-triggered input was used for the hidden tab.
+- Free Battle browser checks: all nine starter skills/ultimates, exact heavy
+  recovery, all six decoded assets, enemy-left/team-right mobile layout, hotkey
+  remap/display/persistence/guards, duplicate rejection, listener cleanup on repeated
+  navigation, and first-action-only resolution. Animation tests created all three
+  ultimate variants and explicitly finished Web Animations to verify cleanup in the
+  hidden shared tab; navigation cancellation preserves the resolved state.
+- Alpha exports checked for transparent borders, partial-alpha edges, opaque
+  interiors; a dark-background contact sheet was visually reviewed.
 
 For setup and deployment commands, use the [development guide](development-guide.md).
 

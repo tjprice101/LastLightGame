@@ -7,20 +7,38 @@ import { portrait } from './presentation/portrait';
 import { createBackdrop } from './presentation/backdrop';
 import { elementalReveal } from './presentation/reveal';
 import { applyMotion, loadMotion, saveMotion, type MotionPreference } from './presentation/settings';
+import { allowedCodes, commands, defaultBindings, keyLabel, loadBindings, saveBindings, validateBindings } from './game/hotkeys';
+import { BattleView, createSession, type BattleSession } from './presentation/battle-view';
+import { fighters } from './content/combat';
 
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('Application root is missing.');
 const app = root;
+app.addEventListener('error', (event) => {
+  if (!(event.target instanceof HTMLImageElement)) return;
+  console.error('Artwork failed to load', event.target.src);
+  showError(`Artwork could not load for ${event.target.alt}. Please reload or check the asset deployment.`);
+}, true);
 const journey = new Journey();
-type MenuPage = 'home' | 'character' | 'inventory' | 'story' | 'events' | 'settings';
+type MenuPage = 'home' | 'character' | 'inventory' | 'story' | 'events' | 'settings' | 'battle';
 let menuPage: MenuPage = 'home';
 let motionPreference: MotionPreference = 'system';
 let settingsError = '';
+let bindings = { ...defaultBindings };
+let hotkeyError = '';
+let battleSession: BattleSession | null = null;
+let battleView: BattleView | null = null;
 try {
   motionPreference = loadMotion(localStorage);
 } catch (error) {
   console.error('Could not load Last Light settings', error);
   settingsError = `Settings could not be loaded. ${errorMessage(error)} System motion preferences remain active; save a setting to replace the unreadable value.`;
+}
+try {
+  bindings = loadBindings(localStorage);
+} catch (error) {
+  console.error('Could not load Last Light hotkeys', error);
+  hotkeyError = `Hotkeys could not be loaded. ${errorMessage(error)} Default keys are active; save new bindings in Settings to repair them.`;
 }
 applyMotion(motionPreference);
 createBackdrop();
@@ -106,7 +124,7 @@ function renderSelection(): void {
       <article id="starter-lore" class="lore-panel" ${journey.selected ? '' : 'hidden'}></article>
       <button id="begin" class="primary-button" ${journey.selected ? '' : 'disabled'}>Begin your journey <span aria-hidden="true">&rarr;</span></button>
     </div>
-    <p class="quiet">Saved on this browser &middot; Original placeholder illustrations</p>
+    <p class="quiet">Saved on this browser &middot; Supplied starter artwork</p>
   </section>`);
   app.querySelectorAll<HTMLButtonElement>('[data-starter]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -150,13 +168,15 @@ function renderSelection(): void {
 }
 
 function renderMenu(firstArrival = false): void {
+  battleView?.destroy();
+  battleView = null;
   if (!journey.profile) throw new Error('The opening menu requires a saved companion.');
   const starter = getStarter(journey.profile.starterId);
   frame(`<section class="menu-screen">
     <div class="currency-strip" aria-label="Currencies">${currencies.map((currency) =>
       `<span><strong>${currency.name}</strong><small>${currency.role} &middot; Balance not implemented</small></span>`).join('')}</div>
     <nav class="menu-nav" aria-label="Sanctuary navigation">${([
-      ['home', 'Sanctuary'], ['character', 'Character'], ['inventory', 'Inventory'],
+      ['home', 'Sanctuary'], ['battle', 'Free Battle'], ['character', 'Character'], ['inventory', 'Inventory'],
       ['story', 'Story mode'], ['events', 'Events'], ['settings', 'Settings'],
     ] as const).map(([page, label]) =>
       `<button data-page="${page}" ${menuPage === page ? 'aria-current="page"' : ''}>${label}</button>`).join('')}</nav>
@@ -179,9 +199,9 @@ function renderMenu(firstArrival = false): void {
         <span class="small-label">STARTER FORM &middot; LOCAL SAVE</span>
       </article>
       <div class="menu-options">
-        <article class="journey-panel"><span class="eyebrow">ON THE HORIZON</span>
-          <h2>Beyond the last light</h2><p>The first chapter is yet to be written. Your companion is ready for what comes next.</p>
-          <button class="text-button" data-page="story">Open story mode &rarr;</button></article>
+        <article class="journey-panel"><span class="eyebrow">PRACTICE ARENA</span>
+          <h2>Free Battle</h2><p>Infernis, Tizu, and Flores stand together against endless waves of Goblins, Imps, and Rock Golems. Train without spending currency.</p>
+          <button class="primary-button" data-page="battle">Enter Free Battle &rarr;</button></article>
         <div class="feature-grid">
           <div class="feature-tile"><span class="tile-symbol" aria-hidden="true">&#9671;</span><h3>Squad</h3><p>One companion. Endless possibility.</p><span>COMING SOON</span></div>
           <div class="feature-tile"><span class="tile-symbol" aria-hidden="true">&#10022;</span><h3>Summon</h3><p>New lights will answer the call.</p><span>COMING SOON</span></div>
@@ -194,14 +214,20 @@ function renderMenu(firstArrival = false): void {
     button.addEventListener('click', () => {
       const page = button.dataset.page;
       if (page !== 'home' && page !== 'character' && page !== 'inventory' &&
-          page !== 'story' && page !== 'events' && page !== 'settings') throw new Error('Unknown menu page.');
+          page !== 'story' && page !== 'events' && page !== 'settings' && page !== 'battle') throw new Error('Unknown menu page.');
       menuPage = page;
       renderMenu();
       focusHeading();
     });
   });
+  if (menuPage === 'battle') {
+    const host = app.querySelector<HTMLElement>('#battle-root');
+    if (!host) throw new Error('Battle host is missing.');
+    battleSession ??= createSession();
+    battleView = new BattleView(host, battleSession, bindings);
+  }
   const settingsForm = app.querySelector<HTMLFormElement>('#settings-form');
-  if (menuPage === 'settings' && settingsError) showError(settingsError);
+  if (menuPage === 'settings' && (settingsError || hotkeyError)) showError([settingsError, hotkeyError].filter(Boolean).join(' '));
   settingsForm?.addEventListener('submit', (event) => {
     event.preventDefault();
     const value = new FormData(settingsForm).get('motion');
@@ -211,13 +237,40 @@ function renderMenu(firstArrival = false): void {
       motionPreference = value;
       applyMotion(value);
       settingsError = '';
-      showError('');
+      showError(hotkeyError);
       const message = app.querySelector('#settings-result');
       if (!message) throw new Error('Settings result region is missing.');
       message.textContent = 'Motion preference saved on this browser.';
     } catch (error) {
       console.error('Could not save Last Light settings', error);
       showError(`Settings were not saved. ${errorMessage(error)}`);
+    }
+  });
+  const hotkeyForm = app.querySelector<HTMLFormElement>('#hotkey-form');
+  hotkeyForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const hotkeyResult = app.querySelector('#hotkey-result');
+    if (!hotkeyResult) throw new Error('Hotkey result region is missing.');
+    hotkeyResult.textContent = '';
+    const candidate: Record<string, FormDataEntryValue> = {};
+    const form = new FormData(hotkeyForm);
+    for (const [command] of commands) {
+      const value = form.get(command);
+      if (value === null) throw new Error('A hotkey field is missing.');
+      candidate[command] = value;
+    }
+    try {
+      const validated = validateBindings(candidate);
+      saveBindings(localStorage, validated);
+      bindings = validated;
+      hotkeyError = '';
+      showError(settingsError);
+      const result = app.querySelector('#hotkey-result');
+      if (!result) throw new Error('Hotkey result region is missing.');
+      result.textContent = 'Battle hotkeys saved. They will be shown on every battle action.';
+    } catch (error) {
+      console.error('Could not save battle hotkeys', error);
+      showError(`Hotkeys were not changed. ${errorMessage(error)}`);
     }
   });
   app.querySelector('#return-title')?.addEventListener('click', () => {
@@ -232,7 +285,16 @@ function menuContent(page: Exclude<MenuPage, 'home'>): string {
   const starter = getStarter(journey.profile.starterId);
   const heading = (name: string, text: string) =>
     `<h1 tabindex="-1">${name}</h1><p class="subtitle">${text}</p>`;
-  if (page === 'character') return `${heading(starter.name, 'Your companion\'s upgrade paths and equipment layout.')}
+  if (page === 'battle') return '<div id="battle-root"></div>';
+  if (page === 'character') return `${heading(starter.name, 'Your companion\'s combat kit, upgrade paths, and equipment layout.')}
+    <article class="companion-panel character-kit"><div class="portrait">${portrait(starter)}</div>
+      <p class="subtitle">HP ${fighters[starter.id].stats.health} &middot; Defense ${fighters[starter.id].stats.defense} &middot;
+      Damage ${fighters[starter.id].stats.damage} &middot; Crit ${Math.round(fighters[starter.id].stats.crit * 100)}%</p>
+      <h2>${fighters[starter.id].passive.name} &middot; Passive</h2><p>${fighters[starter.id].passive.description}</p>
+      ${Object.values(fighters[starter.id].abilities).map((ability) =>
+        `<h3>${ability.name}</h3><p>${ability.description}</p>`).join('')}
+      <p class="quiet">These abilities work in Free Battle; upgrade transactions remain unimplemented.</p>
+    </article>
     <div class="upgrade-grid">${upgradePaths.map((path) =>
       `<article class="feature-tile"><h2>${path.name}</h2><p>${path.detail.replace('<', '&lt;').replace('>', '&gt;')}</p><span>UPGRADES NOT IMPLEMENTED &middot; COSTS UNSET</span></article>`).join('')}</div>
     ${equipmentLayout()}`;
@@ -258,6 +320,13 @@ function menuContent(page: Exclude<MenuPage, 'home'>): string {
       <p>Reduced motion disables ambient movement and elemental reveal animations. Device-level reduced motion is always respected.</p>
       <button class="primary-button" type="submit">Save settings</button>
       <p id="settings-result" role="status"></p>
+    </form>
+    <form id="hotkey-form" class="feature-tile settings-panel hotkey-panel"><h2>Battle hotkeys</h2>
+      <p>Choose one distinct key per command. Keys are physical keyboard positions. Browser shortcuts and typing in fields are not intercepted.</p>
+      ${commands.map(([command, label]) => `<label for="key-${command}">${label}</label>
+        <select id="key-${command}" name="${command}">${allowedCodes.map((code) =>
+          `<option value="${code}" ${bindings[command] === code ? 'selected' : ''}>${keyLabel(code)}</option>`).join('')}</select>`).join('')}
+      <button class="primary-button" type="submit">Save battle hotkeys</button><p id="hotkey-result" role="status"></p>
     </form>`;
 }
 
@@ -286,3 +355,4 @@ document.addEventListener('keydown', (event) => {
 
 render();
 if (settingsError) showError(settingsError);
+if (hotkeyError) showError([settingsError, hotkeyError].filter(Boolean).join(' '));

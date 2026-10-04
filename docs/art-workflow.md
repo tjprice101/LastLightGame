@@ -22,9 +22,48 @@ not generated assets or changes to the playable roster.
   wings/aura. Each line preserves recognizable identity across its six art stages.
 - Standalone weapon concepts use 3:2 and an inky, readable floating showcase style.
 
-The art guide references approved images, but those image files or URLs are not
-present in this workspace. Obtain the actual approved references before claiming
-style-matched production output.
+The prompt guide's Midjourney style-reference image/URL is still not present.
+The owner has supplied the six illustrations below for runtime use. They are
+used as provided apart from background processing, not repainted to enforce the
+prompt guide's facial-feature rules.
+
+## Supplied character and enemy art
+
+Original RGB images are preserved without recompression under `Art/source`.
+Transparent runtime copies are exported under `public/assets`; the files were
+moved out of the project root.
+
+| Asset | Original | Runtime |
+| --- | --- | --- |
+| Infernis | [Source](../Art/source/characters/Infernis%20Beginner.png) | [Transparent PNG](../public/assets/characters/infernis.png) |
+| Tizu | [Source](../Art/source/characters/Tizu%20Beginner.png) | [Transparent PNG](../public/assets/characters/tizu.png) |
+| Flores | [Source](../Art/source/characters/Flores%20Beginner.png) | [Transparent PNG](../public/assets/characters/flores.png) |
+| Goblin | [Source](../Art/source/enemies/Goblin%20Enemy.png) | [Transparent PNG](../public/assets/enemies/goblin.png) |
+| Imp | [Source](../Art/source/enemies/Imp%20Enemy.png) | [Transparent PNG](../public/assets/enemies/imp.png) |
+| Rock Golem | [Source](../Art/source/enemies/Rock%20Golem%20Enemy.png) | [Transparent PNG](../public/assets/enemies/rock-golem.png) |
+
+The [processing script](../tools/prepare_art.py) floods border-connected near-white
+backgrounds, preserving enclosed white clothing/highlights. It reconstructs partial
+edge alpha and removes white contamination, crops transparent excess, adds padding,
+and downsizes to at most 960px. Colored ground shadows are retained as supplied
+art, not treated as white background.
+
+With [Python image dependencies](../tools/requirements.txt) installed, regenerate:
+
+```sh
+python tools/prepare_art.py
+```
+
+The one-time `--move-sources` option organizes root files, refuses to overwrite
+existing originals, and is not needed for ordinary regeneration.
+Normal game builds do not require Python. Inspect regenerated assets over both
+dark and light backgrounds; automatic segmentation is not a manual artistic mask.
+All six exports were reviewed over the dark game palette and checked for fully
+transparent borders, opaque interiors, and partial-alpha edges.
+
+The [portrait helper](../src/presentation/portrait.ts) resolves assets with Vite's
+deployment base. Selection, companion/character panels, and Free Battle use the
+runtime images. Originals are not shipped in the game build.
 
 ## Proposed asset intake
 
