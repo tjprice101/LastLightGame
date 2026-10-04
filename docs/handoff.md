@@ -99,6 +99,11 @@ progression/economy. Add future animation frames without changing resolver resul
   hidden shared tab; navigation cancellation preserves the resolved state.
 - Alpha exports checked for transparent borders, partial-alpha edges, opaque
   interiors; a dark-background contact sheet was visually reviewed.
+- [Free Battle deployment](https://github.com/tjprice101/LastLightGame/actions/runs/37176473879)
+  passed. All six public PNGs returned HTTP 200; live browser checks verified
+  decoded art, Cinder Cleave, Tidal Shelter, keyed Worldseed, enemy phase, and
+  recovery without uncaught errors. Browser test storage was restored afterward.
+- All 167 local documentation links/anchors across 19 Markdown documents resolved.
 
 For setup and deployment commands, use the [development guide](development-guide.md).
 
