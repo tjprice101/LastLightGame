@@ -10,7 +10,8 @@ endless Goblin/Imp/Rock Golem waves, with skills, passives, Shatter Gauge,
 Last Flares, ultimate-only recovery
 turns, and configurable hotkeys. Supplied artwork has transparent runtime exports.
 Upgrade/equipment previews and currency names are shown; upgrades, equipping,
-rewarded quests, summoning, and currency balances remain unimplemented.
+rewarded quests, summoning, currency spending, and Lycalis balances remain unimplemented.
+Each defeated enemy drops 5-10 Fractalis into a persistent browser-local balance.
 
 ## Play and develop
 

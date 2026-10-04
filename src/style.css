@@ -139,6 +139,7 @@ section { animation: arrive .6s ease-out both; }
 .battle-top > span { color: #ffe2a3; font-size: 16px; }
 #battle-root { color: #f5f7fa; font-size: 16px; line-height: 1.6; }
 #battle-root .quiet, #battle-root .status { color: #e0e7ef; font-size: 15px; letter-spacing: normal; }
+.battle-drops { color: #ffe2a3; font-size: 16px; font-weight: 600; }
 #battle-root button:disabled { opacity: 1; }
 #battle-root .battle-action:disabled { background: #263343; border-style: dashed; cursor: not-allowed; }
 #battle-root button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }

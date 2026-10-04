@@ -7,7 +7,7 @@ import { reducedMotion } from './settings';
 
 export interface BattleSession { state: BattleState; log: string[] }
 export function createSession(starterId: StarterId): BattleSession {
-  return { state: createBattle(crypto.getRandomValues(new Uint32Array(1))[0] || 1, [starterId]), log: ['Solo Free Battle ready. No rewards or permanent progression.'] };
+  return { state: createBattle(crypto.getRandomValues(new Uint32Array(1))[0] || 1, [starterId]), log: ['Solo Free Battle ready. Each defeated enemy drops 5-10 Fractalis.'] };
 }
 
 function definition(unit: Combatant): { art: string; color: string } {
@@ -29,7 +29,8 @@ export class BattleView {
     if (reducedMotion()) for (const animation of this.animations) animation.cancel();
   };
 
-  constructor(private host: HTMLElement, private session: BattleSession, private bindings: Bindings) {
+  constructor(private host: HTMLElement, private session: BattleSession, private bindings: Bindings,
+    private commitRewards: (result: BattleResult) => void) {
     this.targetId = session.state.enemies.find((enemy) => enemy.hp > 0)?.id ?? '';
     this.render();
     document.addEventListener('keydown', this.onKey);
@@ -77,6 +78,7 @@ export class BattleView {
       } else {
         result = act(state, this.actorId, command, this.targetId);
       }
+      this.commitRewards(result);
       void this.present(result);
     } catch (error) {
       console.error('Free Battle action rejected', error);
@@ -207,7 +209,8 @@ export class BattleView {
     const kit = fighters[actor.definitionId];
     this.host.innerHTML = `<div class="battle-top"><h1 tabindex="-1">Free Battle</h1>
       <span>Wave ${state.wave} &middot; Turn ${state.round} &middot; ${state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Wave cleared' : 'Character defeated'}</span></div>
-      <p class="quiet">Solo Free Battle: ${actor.name}. No rewards or battle saves.</p>
+      <p class="quiet">Solo Free Battle: ${actor.name}. Each defeated enemy drops 5-10 Fractalis, saved locally. Battle progress resets on reload.</p>
+      <p class="battle-drops" role="status">${this.session.log.filter((line) => line.includes(' drops +')).slice(-3).join(' ')}</p>
       <div class="battle-arena"><img class="battle-scenery" src="${assetUrl('backgrounds/grassy-field.png')}" alt="Sunlit grassy-field battle scenery" width="1456" height="816" />
       <div class="battle-side enemies"><h2>Enemies &middot; Left</h2>${state.enemies.map((unit) => this.unit(unit)).join('')}</div>
       <div class="battle-divider" aria-hidden="true">VS</div>

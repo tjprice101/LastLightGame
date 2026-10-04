@@ -19,8 +19,9 @@
 
 The sanctuary navigation opens Home, Character Upgrades, and Events. Settings is
 a modal right-side drawer available from every sanctuary screen, with close/Escape
-support and focus returned to its trigger. Both currencies appear with explicit "Balance not implemented" labels;
-there are no invented starting balances, rewards, purchases, or spending operations.
+support and focus returned to its trigger. Fractalis shows a saved local balance,
+starting at 0 and increasing by 5-10 per defeated enemy. Lycalis still shows
+"Balance not implemented"; purchases and spending remain unavailable.
 
 Home displays the saved companion and Squad/Summon buttons. These buttons announce
 their coming-later status without granting units or spending currency.

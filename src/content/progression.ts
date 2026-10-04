@@ -4,6 +4,7 @@ export const currencies = [
 ] as const;
 
 export const artifactSlots = Array.from({ length: 8 }, (_, index) => index + 1);
+export const enemyFractalisDrop = { minimum: 5, maximum: 10 } as const;
 export const fractureRules = {
   sourceTier: 1,
   destinationTier: 2,

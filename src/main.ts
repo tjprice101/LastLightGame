@@ -10,6 +10,7 @@ import { applyMotion, loadMotion, saveMotion, type MotionPreference } from './pr
 import { allowedCodes, commands, defaultBindings, keyLabel, loadBindings, saveBindings, validateBindings } from './game/hotkeys';
 import { BattleView, createSession, type BattleSession } from './presentation/battle-view';
 import { fighters, shatterGauge } from './content/combat';
+import { loadFractalis, saveBattleRewards } from './game/wallet';
 
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('Application root is missing.');
@@ -28,6 +29,14 @@ let bindings = { ...defaultBindings };
 let hotkeyError = '';
 let battleSession: BattleSession | null = null;
 let battleView: BattleView | null = null;
+let fractalis: number | null = null;
+let walletError = '';
+try {
+  fractalis = loadFractalis(localStorage);
+} catch (error) {
+  console.error('Could not load Last Light Fractalis balance', error);
+  walletError = errorMessage(error);
+}
 try {
   motionPreference = loadMotion(localStorage);
 } catch (error) {
@@ -174,7 +183,8 @@ function renderMenu(firstArrival = false): void {
   const starter = getStarter(journey.profile.starterId);
   frame(`<section class="menu-screen">
     <div class="currency-strip" aria-label="Currencies">${currencies.map((currency) =>
-      `<span><strong>${currency.name}</strong><small>${currency.role} &middot; Balance not implemented</small></span>`).join('')}</div>
+      `<span><strong>${currency.name}${currency.id === 'fractalis' ? ` <span id="fractalis-balance">${fractalis ?? 'Unavailable'}</span>` : ''}</strong><small>${currency.role} &middot; ${currency.id === 'fractalis' ? 'Saved locally' : 'Balance not implemented'}</small></span>`).join('')}</div>
+    ${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
     <div class="navigation-row"><nav class="menu-nav" aria-label="Main screens">${([
       ['home', 'Home'], ['character', 'Character Upgrades'], ['events', 'Events'],
     ] as const).map(([page, label]) =>
@@ -252,8 +262,22 @@ function renderMenu(firstArrival = false): void {
     const host = app.querySelector<HTMLElement>('#battle-root');
     if (!host) throw new Error('Battle host is missing.');
     battleSession ??= createSession(starter.id);
-    battleView = new BattleView(host, battleSession, bindings);
+    battleView = new BattleView(host, battleSession, bindings, (result) => {
+      const balance = app.querySelector('#fractalis-balance');
+      if (!balance) throw new Error('Fractalis balance region is missing.');
+      try {
+        fractalis = saveBattleRewards(localStorage, result);
+      } catch (error) {
+        throw new Error(`Fractalis could not be saved. The battle action was not applied; retry when storage is available. ${errorMessage(error)}`);
+      }
+      walletError = '';
+      balance.textContent = String(fractalis);
+      const error = app.querySelector('#wallet-error');
+      if (error) error.textContent = '';
+    });
   }
+  const walletStatus = app.querySelector('#wallet-error');
+  if (walletStatus) walletStatus.textContent = walletError;
   const settingsForm = app.querySelector<HTMLFormElement>('#settings-form');
   settingsForm?.addEventListener('submit', (event) => {
     event.preventDefault();

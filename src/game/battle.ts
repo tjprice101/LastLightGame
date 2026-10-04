@@ -1,5 +1,6 @@
 import { enemies, fighters, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats } from '../content/combat';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
+import { enemyFractalisDrop } from '../content/progression';
 
 export interface Combatant {
   id: string;
@@ -21,11 +22,12 @@ export interface BattleState {
   round: number;
   phase: 'player' | 'cleared' | 'defeat';
   seed: number;
+  rewardSeed: number;
   allies: Combatant[];
   enemies: Combatant[];
 }
 export interface BattleEvent {
-  kind: 'attack' | 'damage' | 'heal' | 'shield' | 'status' | 'turn';
+  kind: 'attack' | 'damage' | 'heal' | 'shield' | 'status' | 'turn' | 'reward';
   source: string;
   target: string;
   amount: number;
@@ -62,7 +64,7 @@ export function createBattle(seed = 1729, roster: readonly StarterId[] = ['ember
     throw new Error('Battle roster requires distinct valid starters.');
   }
   return {
-    wave: 1, round: 1, phase: 'player', seed,
+    wave: 1, round: 1, phase: 'player', seed, rewardSeed: seed,
     allies: roster.map((id) => {
       const starter = getStarter(id);
       const stats = { ...fighters[starter.id].stats };
@@ -144,6 +146,21 @@ function checkOutcome(state: BattleState): void {
   else if (!state.enemies.some((unit) => unit.hp > 0)) state.phase = 'cleared';
 }
 
+function awardDefeats(previous: BattleState, state: BattleState, events: BattleEvent[]): void {
+  for (const enemy of state.enemies) {
+    if (enemy.hp > 0 || !previous.enemies.some((unit) => unit.id === enemy.id && unit.hp > 0)) continue;
+    let seed = state.rewardSeed;
+    seed ^= seed << 13;
+    seed ^= seed >>> 17;
+    seed ^= seed << 5;
+    state.rewardSeed = seed >>> 0;
+    const amount = enemyFractalisDrop.minimum + Math.floor(state.rewardSeed / 0x100000000 *
+      (enemyFractalisDrop.maximum - enemyFractalisDrop.minimum + 1));
+    events.push({ kind: 'reward', source: enemy.id, target: '', amount, critical: false,
+      message: `${enemy.name} drops +${amount} Fractalis.` });
+  }
+}
+
 export function act(previous: BattleState, actorId: string, action: ActionId, targetId: string): BattleResult {
   if (!isActionId(action)) throw new Error('Unknown combat action.');
   const original = previous.allies.find((unit) => unit.id === actorId);
@@ -196,6 +213,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
     healTeam(state, actor, action === 'ultimate' ? 55 : 30, events);
   }
   checkOutcome(state);
+  awardDefeats(previous, state, events);
   return { state, events };
 }
 
@@ -231,6 +249,7 @@ export function endTurn(previous: BattleState): BattleResult {
   }
   checkOutcome(state);
   if (state.phase === 'player') newTurn(state, events);
+  awardDefeats(previous, state, events);
   return { state, events };
 }
 

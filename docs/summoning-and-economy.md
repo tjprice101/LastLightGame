@@ -1,7 +1,7 @@
 # Summoning and economy
 
 **Status:** currency names/roles and +10 Lycalis first-Fracture reward confirmed;
-rates, prices, balances, other earning,
+rates, prices, premium balances, other earning,
 spending, and monetization rules remain open.
 
 ## Confirmed currencies
@@ -9,7 +9,16 @@ spending, and monetization rules remain open.
 - **Fractalis:** main currency.
 - **Lycalis:** premium currency.
 
-Names appear in the menu; balances and transactions are not implemented.
+Fractalis starts at **0** and every defeated Free Battle enemy grants a uniformly
+selected integer **5-10**, including burn kills. The balance is shown in the menu
+and persists separately under `last-light.wallet`:
+`{"version":1,"fractalis":0}`. Lycalis balances and spending remain unimplemented.
+The wallet validates nonnegative safe integers; unreadable/corrupt values are
+reported without overwriting them. Storage failures reject the battle action,
+so retries cannot duplicate an already-committed kill reward. Reloading/restarting
+creates a fresh battle, not a re-claim of previous dead enemies.
+The local prototype has no cross-tab transaction locking or authoritative online
+account state; play in one tab. Clearing site data removes the balance.
 Premium does not by itself approve real-money purchases.
 
 The confirmed Tier 1 -> Tier 2 **Fracture** grants **+10 Lycalis** and resets
@@ -50,8 +59,8 @@ do not trust a client-supplied result or seed.
 Proposed: represent balances as bounded nonnegative integers in defined smallest
 units. Define acquisition sources, spending sinks, and caps for each currency.
 Earned and purchased currency are not interchangeable unless explicitly approved.
-Currency names/roles are approved above. Prices, drop tables, starting balances,
-and regeneration rules are not approved.
+Currency names/roles, zero-start Fractalis, and 5-10 enemy drops are approved above.
+Prices, other drop tables, starting Lycalis, and regeneration rules are not approved.
 
 ## Transaction requirements
 

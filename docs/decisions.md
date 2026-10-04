@@ -26,6 +26,7 @@ specifications own detailed rules; link them here rather than duplicating them.
 | D-017 | Each character uses Shatter Gauge for abilities; only Last Flare blocks all actions next turn. Heavy attacks no longer cause recovery | Owner correction and prototype-value approval, 2026-10-04. Start 0, cap 100; Light +20, Heavy +30, incoming hit +10; Ability 1 costs 25, Ability 2 costs 40, Last Flare costs 100. [Exact rules](free-battle.md#actions-and-recovery) |
 | D-018 | Tier 1 caps at level 30, then Fractures into Tier 2 with major stat improvements, resets to level 0, and grants +10 Lycalis. Tier 2 levels to 30 with different resources | Owner request, 2026-10-04. Owner selected previews only until materials and exact stats are defined; no upgrade or reward transaction yet. [Progression rules](units-and-progression.md#confirmed-level-and-fracture-rules) |
 | D-019 | Offer fire, grass, or water at the beginning; Free Battle uses only the saved character. Make all battle text easier to read | Owner request, 2026-10-04. Supersedes D-007; preserve all valid starter saves. Opaque backing, larger text, and readable unavailable-action feedback |
+| D-020 | Each defeated enemy drops an integer 5-10 Fractalis immediately into a persistent browser-local balance starting at 0 | Owner request and persistence approval, 2026-10-04. Includes burn kills; keep earnings across exit/restart/reload. [Economy](summoning-and-economy.md) |
 
 D-003 records existing guidance, not approval of generated assets or gameplay rules.
 

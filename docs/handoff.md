@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** three starter choices, solo Free Battle, and battle text readability.
+**Last updated:** persistent enemy Fractalis drops.
 
 ## Project state
 
@@ -18,8 +18,8 @@
   companion and coming-later Squad/Summon buttons. Inventory is inside upgrades;
   Free Battle and Story are Home subactivities. Settings opens in a modal side drawer.
   Story displays the saved starter's lore/prologue; Events is a future placeholder. Motion settings
-  save separately and update both canvas/CSS motion. Fractalis and Lycalis are labels,
-  not balances. Upgrades and eight artifact slots plus one master relic are previews.
+  save separately and update both canvas/CSS motion. Fractalis shows a persistent
+  local balance; Lycalis is a label only. Upgrades and equipment remain previews.
 - All valid version-1 starter saves continue unchanged, including water/grass.
   The earlier forced fire re-selection policy is superseded.
 - Implemented: solo Free Battle using only the saved Infernis/Tizu/Flores, enemy waves,
@@ -39,13 +39,17 @@
   PNG in `public/assets/backgrounds`. It is wired behind the Free Battle arena;
   no unit-art alpha removal or square normalization is applied.
 - Not implemented: rewarded quests, squad editing, summoning, upgrades/equipping,
-  currency balances/transactions, item acquisition,
+  currency spending, Lycalis balances, item acquisition,
   accounts, cloud saves, backend, payments.
 - Character Upgrades now previews the confirmed Tier 1 level-30 cap and Fracture
   into Tier 2: major stat improvements (values pending), reset to 0, +10 Lycalis.
   Tier 2 levels to 30 using different resources. Owner selected previews only
   until materials/stat bonuses are defined. Saves remain version 1, with no
-  invented current level/tier, balances, materials, or reward transactions.
+  invented current level/tier, Lycalis balance, materials, or Fracture transactions.
+- Every newly defeated enemy grants 5-10 Fractalis, including burn kills.
+  `last-light.wallet` version 1 stores a zero-start nonnegative integer balance.
+  Wallet writes precede battle-state commit; failures visibly reject the action.
+  Currency survives exit/restart/reload; corrupt wallets are never overwritten.
 - Repository: [tjprice101/LastLightGame](https://github.com/tjprice101/LastLightGame).
 - Deployment: [GitHub Pages](https://tjprice101.github.io/LastLightGame/),
   configured for the [Actions workflow](../.github/workflows/deploy.yml).
@@ -58,7 +62,7 @@ later contributors have made no changes.
 
 See [opening flow](opening-flow.md) for behavior and source references.
 The original art guide is preserved; supplied PNG art replaces SVG placeholders.
-Free Battle has no rewards or permanent roster grants. Broader design documents
+Free Battle grants Fractalis enemy drops but no permanent roster grants. Broader design documents
 still label unapproved production mechanics as proposed.
 
 ## Next recommended action
@@ -79,11 +83,17 @@ progression/economy. Add future animation frames without changing resolver resul
 
 ## Verification
 
-- `npm test`: 71 passing tests for all three starter transitions and saved continuations,
+- `npm test`: 80 passing tests for all three starter transitions and saved continuations,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
   motion settings, combat formulas, all kits/passives, exact recovery/cooldown
   boundaries, status durations,   shield/heal caps, waves/defeat, hotkey validation, and every runtime unit PNG's
   960 x 960 RGBA export contract.
+- Reward tests cover all six integer payouts 5-10, repeatable independent reward
+  randomness, ultimate multi-kills, burn kills, no repeated dead-enemy/ally payouts,
+  wallet persistence, corrupt-save preservation, overflow and write failures.
+  Headless Edge verified immediate payout/display, failed-write rollback/retry,
+  no duplicate after navigation/Settings, restart/reload retention, and visible
+  unavailable/error state for corrupt wallets.
 - Solo browser checks passed for each starter: new selection/confirmation, saved
   reload, matching lore, exactly one ally, Heavy/skill resource changes, Settings
   state preservation, and restart retaining the chosen character. Existing saves

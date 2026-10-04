@@ -25,7 +25,7 @@ stat-growth/Fracture bonuses remain open. The first two tiers' level cap is conf
 
 The Character Upgrades screen shows these rules and labels them preview-only.
 The owner chose to defer transactions until materials and stats are defined:
-no free leveling, invented materials/bonuses, currency balance, reward grant,
+no free leveling, invented materials/bonuses, Lycalis balance or Fracture reward grant,
 or saved level/tier has been added. See [editable rules](../src/content/progression.ts).
 
 Each character has **eight unique artifacts** and **one master relic** equipped

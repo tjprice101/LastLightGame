@@ -42,8 +42,8 @@ while all lore and controls remain accessible. No save-schema changes are needed
 The menu displays the saved companion and opens the
 [character, inventory, story, events, and settings surfaces](menus-and-inventory.md).
 Free Battle is implemented separately; quests, squad editing, and summoning are not.
-Currency names are shown, but no balances, levels, combat stats, accounts, or
-payment operations are introduced.
+Fractalis shows a persistent local balance earned from enemy drops; Lycalis is a
+label only. No saved character levels, accounts, or payment operations are introduced.
 
 ## Local persistence
 

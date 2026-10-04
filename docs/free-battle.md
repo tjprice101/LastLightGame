@@ -10,7 +10,15 @@ This is not production balance or a rewarded story mode.
 Home's **Enter Free Battle** button opens the activity.
 Choose Infernis (fire), Tizu (water), or Flores (grass) at the start. Free Battle
 uses **only your saved starter**, not a temporary team. Entry, restart, and later
-waves preserve that identity; no additional units, currency, or items are granted.
+waves preserve that identity; no additional units or items are granted.
+Every newly defeated enemy drops a random integer **5-10 Fractalis**, including
+burn kills and each target of a multi-enemy attack. The drop appears above the arena
+and in the log. The running balance appears in the currency strip.
+Rewards are saved immediately, before committing battle state/playing animations;
+leaving, defeat, restarting, and reloading do not remove earned currency.
+Already defeated enemies never drop again. A failed wallet read/write leaves the
+action/state uncommitted and shows an error; retry uses the same reward result.
+Reward randomness is separate from combat randomness.
 Existing water/grass saves continue normally without forced fire re-selection.
 
 Enemies are on the **left**, allies on the **right**, including mobile layouts.
@@ -164,6 +172,8 @@ Recent battle logs are bounded to 40 events.
 - [Pure combat engine](../src/game/battle.ts)
 - [Battle presentation](../src/presentation/battle-view.ts)
 - [Hotkeys](../src/game/hotkeys.ts)
+- [Local Fractalis wallet](../src/game/wallet.ts)
+- [Reward and wallet tests](../src/game/wallet.test.ts)
 - [Exact combat tests](../src/game/battle.test.ts)
 - [Hotkey tests](../src/game/hotkeys.test.ts)
 - [Asset processing](art-workflow.md#supplied-character-and-enemy-art)
