@@ -38,7 +38,8 @@ not targetable combatants. The original is preserved without retouching.
 - Standalone weapon concepts use 3:2 and an inky, readable floating showcase style.
 
 The prompt guide's Midjourney style-reference image/URL is still not present.
-The owner has supplied the six unit illustrations below and grassy-field scenery for runtime use. They are
+The owner has supplied the six initial unit illustrations, ten Flaming Depths
+enemy illustrations, and grassy-field scenery for runtime use. They are
 used as provided apart from background processing, not repainted to enforce the
 prompt guide's facial-feature rules.
 
@@ -76,6 +77,43 @@ Normal game builds do not require Python. Inspect regenerated assets over both
 dark and light backgrounds; automatic segmentation is not a manual artistic mask.
 All six exports were reviewed over the dark game palette and checked for fully
 transparent borders, opaque interiors, and partial-alpha edges.
+
+### Flaming Depths enemy art
+
+Ten RGB 1232x928 originals were moved from the root without recompression;
+SHA-256 hashes were compared before/after the move. All exports use the same
+960x960 RGBA / 864px occupied dimension / 48px minimum padding contract.
+These assets are ready for future dungeon wiring, not registered as Adventure
+enemies or captured units. Stage balance lives in
+[the 50-stage proposal](flaming-depths-stages.md).
+
+| Enemy | Original | Runtime |
+| --- | --- | --- |
+| Ashling | [Source](../Art/source/enemies/Ashling.png) | [PNG](../public/assets/enemies/ashling.png) |
+| Coalcap Kobold | [Source](../Art/source/enemies/Coalcap%20Kobold.png) | [PNG](../public/assets/enemies/coalcap-kobold.png) |
+| Emberhorn Faun | [Source](../Art/source/enemies/Emberhorn%20Faun.png) | [PNG](../public/assets/enemies/emberhorn-faun.png) |
+| Furnace Salamander | [Source](../Art/source/enemies/Furnace%20Salamander.png) | [PNG](../public/assets/enemies/furnace-salamander.png) |
+| Cinderhide Cyclops | [Source](../Art/source/enemies/Cinderhide%20Cyclops.png) | [PNG](../public/assets/enemies/cinderhide-cyclops.png) |
+| Obsidian Gargoyle | [Source](../Art/source/enemies/Obsidian%20Gargoyle.png) | [PNG](../public/assets/enemies/obsidian-gargoyle.png) |
+| Brasshorn Minotaur | [Source](../Art/source/enemies/Brasshorn%20Minotaur.png) | [PNG](../public/assets/enemies/brasshorn-minotaur.png) |
+| Pyrewing Harpy | [Source](../Art/source/enemies/Pyrewing%20Harpy.png) | [PNG](../public/assets/enemies/pyrewing-harpy.png) |
+| Magma Wyrm Knight | [Source](../Art/source/enemies/Magma%20Wyrm%20Knight.png) | [PNG](../public/assets/enemies/magma-wyrm-knight.png) |
+| Ifrit of the Last Furnace | [Source](../Art/source/enemies/Ifrit%20of%20the%20Last%20Furnace.png) | [PNG](../public/assets/enemies/last-furnace-ifrit.png) |
+
+Target only selected IDs with the processor's optional `--assets` flag:
+
+```sh
+python tools/prepare_art.py --assets ashling coalcap-kobold emberhorn-faun furnace-salamander cinderhide-cyclops obsidian-gargoyle brasshorn-minotaur pyrewing-harpy magma-wyrm-knight last-furnace-ifrit
+python tools/test_prepare_art.py
+```
+
+Add `--move-sources` only for first intake from the root. Unknown IDs are rejected
+by the CLI. Omitting `--assets` regenerates all registered unit exports as before.
+Dark-background review preserves complete silhouettes, weapons, and effects.
+The flood algorithm intentionally retains enclosed whites, including some light
+islands inside complex wings/aura and pale ground strokes. Those are not manually
+masked or repainted; future artistic cleanup should use a separately approved mask.
+Source art differs from some prompt details; no faces/weapons have been redesigned.
 
 The [portrait helper](../src/presentation/portrait.ts) resolves assets with Vite's
 deployment base. Selection, companion/character panels, and Adventure use the

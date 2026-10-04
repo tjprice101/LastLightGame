@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** compact Home layout and stable in-place Character Upgrade tabs.
+**Last updated:** Flaming Depths art intake and complete Stage 1-50 design proposal.
 
 ## Project state
 
@@ -57,6 +57,20 @@
   upgrades only, never evolution. No dungeon/capture/team behavior is implemented.
   [Ten ascending-power art prompts](../Art/Flaming%20Depths.md) are ready to generate;
   [dungeon/capture contract](dungeons-and-captures.md) lists open balance/storage rules.
+- Owner supplied all ten dungeon illustrations and explicitly selected a
+  design-first pass through Stage 50. Originals moved byte-for-byte into
+  `Art/source/enemies`; 960x960 transparent exports are in `public/assets/enemies`.
+  All ten were reviewed together over dark backing; enclosed pale regions remain
+  intentionally preserved by the existing matte algorithm, not manually retouched.
+  `tools/prepare_art.py --assets <ids>` now supports targeted regeneration; default
+  all-asset behavior remains unchanged.
+- [Full 50-stage proposal](flaming-depths-stages.md): ten five-stage regions,
+  three-enemy regular waves and solo elite milestones every fifth stage;
+  increasing levels 6-55, base-relative HP/DEF/ATK growth, five skill ranks,
+  exact hostile skill effects/schedules, report boundaries and final completion.
+  Numbers remain proposed; hostile skills never transfer to captured fodder.
+  No runtime dungeon definitions, scene, captures, reports, rewards, team edits
+  or progression transactions have been enabled.
 - Each ally has Shatter Gauge: starts 0, caps 100, Light +20, Heavy +30,
   incoming enemy hit +10 (including shields). Skills cost 25/40 and Last Flare
   costs 100; skills no longer generate resource. Battle meters/buttons and the
@@ -95,6 +109,8 @@ still label unapproved production mechanics as proposed.
 
 ## Next recommended action
 
+Approve the Flaming Depths stage balance and define captured-unit/team progression,
+capture odds, dungeon rewards and scenery before implementing the dungeon.
 Solo starter selection/battles and supplied grassy scenery are now implemented.
 Playtest solo balance for each of the three starter kits, then approve upgrade costs,
 item ownership/uniqueness, and rewarded quest rules before connecting battle to
@@ -111,6 +127,11 @@ progression/economy. Add future animation frames without changing resolver resul
 
 ## Verification
 
+- Dungeon intake: SHA-256 checks preserve all ten originals, Python's four
+  image-processing tests pass across all 16 registered unit assets, and runtime
+  PNG contract tests cover the new exports. A stage-table arithmetic check verifies
+  exactly 50 sequential rows, ten known archetypes, levels 6-55, five rank bands,
+  three-enemy regular lineups and exact stats for all ten elite milestones.
 - Immersive field checks passed at 1280x720, 390x844, 320x640, and 844x390:
   scenery fills the viewport, sanctuary chrome/cards are absent, all five actions
   and full descriptions remain available, no horizontal overflow, and quit/re-entry

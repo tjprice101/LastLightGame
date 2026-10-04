@@ -17,6 +17,16 @@ ASSETS = {
     "Goblin Enemy.png": ("enemies", "goblin"),
     "Imp Enemy.png": ("enemies", "imp"),
     "Rock Golem Enemy.png": ("enemies", "rock-golem"),
+    "Ashling.png": ("enemies", "ashling"),
+    "Coalcap Kobold.png": ("enemies", "coalcap-kobold"),
+    "Emberhorn Faun.png": ("enemies", "emberhorn-faun"),
+    "Furnace Salamander.png": ("enemies", "furnace-salamander"),
+    "Cinderhide Cyclops.png": ("enemies", "cinderhide-cyclops"),
+    "Obsidian Gargoyle.png": ("enemies", "obsidian-gargoyle"),
+    "Brasshorn Minotaur.png": ("enemies", "brasshorn-minotaur"),
+    "Pyrewing Harpy.png": ("enemies", "pyrewing-harpy"),
+    "Magma Wyrm Knight.png": ("enemies", "magma-wyrm-knight"),
+    "Ifrit of the Last Furnace.png": ("enemies", "last-furnace-ifrit"),
 }
 
 
@@ -80,8 +90,12 @@ def remove_matte(image):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--move-sources", action="store_true")
+    parser.add_argument("--assets", nargs="+", choices=[asset_id for _, asset_id in ASSETS.values()],
+                        help="Process only the named asset IDs; omit to regenerate all unit art.")
     args = parser.parse_args()
     for filename, (category, asset_id) in ASSETS.items():
+        if args.assets and asset_id not in args.assets:
+            continue
         original = ROOT / "Art" / "source" / category / filename
         if args.move_sources and (ROOT / filename).exists():
             if original.exists():

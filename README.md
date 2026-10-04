@@ -19,7 +19,10 @@ Every entry starts at wave 1. Enemy level equals the wave, HP/attack grow by a f
 quitting ends it without losing currency.
 Flaming Depths dungeon, wave reports, and captured fodder teams are
 [documented for later implementation](docs/dungeons-and-captures.md).
-Ten ascending-power [enemy art prompts](Art/Flaming%20Depths.md) are ready to generate.
+Ten ascending-power [enemy art prompts](Art/Flaming%20Depths.md) remain available as references.
+All ten dungeon illustrations are now organized with transparent exports; the
+[complete Stage 1-50 design](docs/flaming-depths-stages.md) proposes increasing enemy
+levels/stats, hostile abilities and elite milestones. Dungeon gameplay remains deferred.
 
 ## Play and develop
 

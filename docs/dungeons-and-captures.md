@@ -13,7 +13,10 @@ playable. No captured units, dungeon rewards, or team slots have been granted.
 - Dungeons contain enemy waves with higher enemy levels than Adventure.
   The exact comparison (corresponding wave or another baseline), level offset,
   stat table, wave count, encounter composition, and completion conditions need
-  approval. Do not treat the ten art concepts as an approved ten-wave dungeon.
+  approval. The owner has since requested design through **Stage 50**:
+  [the complete stage proposal](flaming-depths-stages.md) supplies all lineups,
+  levels, stats, abilities and milestone encounters. Numbers remain proposals.
+  Do not treat the ten art concepts as an approved ten-wave dungeon.
 - After every dungeon wave, show an **end-of-wave action report** before advancing.
 - Defeated dungeon enemies have a chance to become captured and usable on the team.
   Adventure does not currently grant captures.
@@ -87,6 +90,8 @@ Do not invent these values from visual power order.
 ## Art handoff
 
 [Flaming Depths](../Art/Flaming%20Depths.md) provides ten distinct enemies in ascending
-visual power, using the existing chibi/eyes-only/white-canvas style. Names and stable
-asset IDs there are art concepts, not loaded definitions or approved capture odds.
+visual power, using the existing chibi/eyes-only/white-canvas style.
+All ten supplied originals are now preserved under `Art/source/enemies`, with
+standardized transparent exports under `public/assets/enemies`.
+They are not registered as playable combat definitions or approved capture odds.
 Source and export contracts remain in [Art workflow](art-workflow.md).

@@ -25,6 +25,7 @@ rewarded quests, and progression operations remain scaffolding.
 | [Combat](combat.md) | Battle flow, actions, damage, effects, combat tests |
 | [Adventure](free-battle.md) | Fresh wave-1 runs, linear enemy levels/stats, all starter kits, recovery, hotkeys |
 | [Dungeons and captures](dungeons-and-captures.md) | Flaming Depths, wave reports, separate captured-enemy ownership; not yet playable |
+| [Flaming Depths stages](flaming-depths-stages.md) | Complete proposed Stage 1-50 lineups, level/stat formulas, enemy skills and elite milestones |
 | [Units and progression](units-and-progression.md) | Unit identity, roster, leveling, evolution, duplicates |
 | [Summoning and economy](summoning-and-economy.md) | Banners, odds, pity, currencies, reward transactions |
 | [Content guide](content-guide.md) | Adding units, skills, enemies, quests, and banners |
@@ -43,6 +44,8 @@ The [Battle Scenery prompt](../Art/Battle%20Scenery.md) covers a cutesy grassy
 field for the intended solo opening battle.
 The [Flaming Depths prompts](../Art/Flaming%20Depths.md) cover ten dungeon enemies
 in ascending visual power, from a soot sprite to a flame sovereign.
+The [Infernis Art prompts](../Art/Infernis%20Art.md) cover 1:1 icons for her passive,
+two abilities, Last Flare, and Light/Heavy attacks.
 
 ## Common tasks
 

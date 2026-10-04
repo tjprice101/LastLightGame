@@ -4,8 +4,12 @@ Ten copy/paste Midjourney enemy prompts for the first planned dungeon,
 **Flaming Depths**. Match [Starter Art](Starter%20Art.md) and the
 [elemental character style guide](midjourney-character-style-prompt.md).
 
-**Status:** art concepts ready for generation, not generated or approved runtime
-assets. The list runs from weakest-looking to strongest-looking. These are ten
+**Status:** prompts retained; the owner has supplied all ten matching enemy images.
+Originals are organized under `Art/source/enemies`; transparent standardized copies
+are under `public/assets/enemies`. See [asset paths](../docs/art-workflow.md#flaming-depths-enemy-art)
+and the [Stage 1-50 design proposal](../docs/flaming-depths-stages.md).
+Dungeon gameplay/captures are not implemented. The list runs from weakest-looking
+to strongest-looking. These are ten
 distinct enemies, not ten evolution forms; captured enemies cannot evolve.
 Order is relative visual power, not an approved level, wave, rarity, or stat table.
 Dungeon and capture rules are tracked in [Dungeons and captures](../docs/dungeons-and-captures.md).
