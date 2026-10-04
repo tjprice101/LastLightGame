@@ -14,17 +14,18 @@ The owner delegated language/engine selection and requested repository deploymen
 2. Any ordinary key, the begin button, or a touch/click on that button advances.
    Tab, modifier keys, Escape, repeated keys, and browser shortcuts do not advance,
    preserving keyboard navigation and browser controls.
-3. With no save, show three starter companions adapted from existing art concepts:
-   Ember Beginner (fire/sword), Tide Beginner (water/spear), Sprout Beginner (grass/bow).
+3. With no save, show only Ember Beginner (fire/sword). Water/grass remain concepts,
+   not playable starters. Legacy saves require explicit fire re-selection;
+   see [menus and inventory](menus-and-inventory.md#legacy-companion-saves).
 4. Require explicit selection; then enable "Begin your journey".
 5. Commit the starter to local storage before opening the sanctuary menu.
-6. On subsequent visits, the title entry continues directly to the saved menu.
+6. On subsequent visits with fire saved, title entry continues to the saved menu.
 7. "Return to title" preserves the save.
 
 ## Starter lore and elemental reveals
 
-Selecting a card plays a short, element-specific reveal: rising embers for fire,
-an expanding ripple and droplets for water, and swirling leaves for grass.
+Selecting fire plays a rising-ember reveal. Water ripple and grass leaf
+variants are retained for future companions, not currently selectable.
 Each reveal contains 12 decorative motes and one ring, lasts at most 1.3 seconds,
 and never blocks selection or confirmation. Switching cards replaces the prior
 effect without accumulating particles. Card updates preserve keyboard focus.
@@ -40,9 +41,11 @@ effect; lore remains available through the "Companion lore" disclosure.
 Reduced motion hides decorative reveals and disables the portrait animation,
 while all lore and controls remain accessible. No save-schema changes are needed.
 
-The menu displays the saved companion. Quests, squad editing, and summoning are
-clearly marked coming soon, not interactive features or working battle systems.
-No currency, levels, combat stats, accounts, or payment behavior is introduced.
+The menu displays the saved companion and opens the
+[character, inventory, story, events, and settings surfaces](menus-and-inventory.md).
+Quests, squad editing, and summoning are not working battle systems.
+Currency names are shown, but no balances, levels, combat stats, accounts, or
+payment operations are introduced.
 
 ## Local persistence
 
@@ -88,7 +91,8 @@ not the opening-screen renderer.
 
 - Keyboard and pointer can complete all three screens.
 - No starter is preselected; confirm remains disabled until selection.
-- All starter IDs persist and reload to the correct menu.
+- Fire persists and reloads; legacy water/grass saves stay intact until explicit
+  fire confirmation and reject unavailable selection.
 - Mobile layout has no horizontal overflow and all controls remain reachable.
 - Corrupt saves and unavailable storage produce explicit errors.
 - Reduced-motion mode has no looping background animation.

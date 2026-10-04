@@ -13,6 +13,10 @@ specifications own detailed rules; link them here rather than duplicating them.
 | D-004 | TypeScript + Phaser 3 + Vite for a browser-first 2D prototype; Vitest for rule tests | Owner delegated language choice, 2026-10-03; supports animated 2D scenes and static deployment |
 | D-005 | Implement title -> starter choice -> opening menu first | Owner request, 2026-10-03; see [opening flow](opening-flow.md) |
 | D-006 | Publish to `tjprice101/LastLightGame` and deploy through GitHub Pages Actions | Owner-supplied repository and deployment request, 2026-10-03 |
+| D-007 | Fire-only playable roster; preserve legacy saves until explicit fire re-selection | Owner request and follow-up selection, 2026-10-03 |
+| D-008 | Fractalis main currency; Lycalis premium currency | Owner request, 2026-10-03 |
+| D-009 | Evolution, level, weapon, passive, ability 1/2, and Last Flare upgrades; eight unique artifacts plus one special master relic | Owner request, 2026-10-03; [progression](units-and-progression.md) |
+| D-010 | Inventory, settings, story mode, and a future events tab | Owner request, 2026-10-03; [menu surfaces](menus-and-inventory.md) |
 
 D-003 records existing guidance, not approval of generated assets or gameplay rules.
 
@@ -30,6 +34,8 @@ D-003 records existing guidance, not approval of generated assets or gameplay ru
 | O-008 | Opening-screen scope resolved by D-005; story and battle slice remain open | [Vision](game-vision.md), [roadmap](roadmap.md) |
 | O-009 | What runtime art formats, dimensions, animations, and reference assets are approved? | [Art](art-workflow.md) |
 | O-010 | What device budgets, accessibility, and localization requirements apply? | [Vision](game-vision.md), [development](development-guide.md) |
+| O-011 | Are unique artifacts distinct by instance or definition, and can characters share items? | [Equipment](menus-and-inventory.md#equipment-implementation-requirements) |
+| O-012 | What ability names/effects, Last Flare sub-names, upgrade costs/caps, and starting currency balances apply? | [Units](units-and-progression.md), [economy](summoning-and-economy.md) |
 
 ## Decision record template
 

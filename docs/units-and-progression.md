@@ -4,6 +4,19 @@
 below remains proposed. See [opening flow](opening-flow.md). Evolution names
 are art concepts, not implemented upgrade paths.
 
+## Confirmed progression and equipment structure
+
+The owner confirmed evolution, character levels, weapon upgrades, and separate
+upgrades for the unique passive, ability 1, ability 2, and ultimate.
+Ultimate display names must use `Last Flare: <character-specific name>`.
+Specific names, effects, costs, materials, caps, and formulas remain unapproved.
+
+Each character has **eight unique artifacts** and **one master relic** equipped
+at most: nine slots, with the special master relic displayed above the artifacts.
+The uniqueness definition, item eligibility, and cross-character sharing rules
+still need clarification. See [menu/equipment requirements](menus-and-inventory.md).
+UI previews exist; upgrades and equipment transactions are not implemented.
+
 ## Separate these identities
 
 | Concept | Meaning |
@@ -22,7 +35,8 @@ references its definition/form and records only mutable player state.
 The [prompt guide](../Art/midjourney-character-style-prompt.md) describes six art
 stages each for Ember Swordsman, Tide Spearbearer, and Sprout Archer.
 Hair, eyes, signature clothing, and weapon type remain recognizable across stages.
-Their starter identities appear in the opening flow; they are not yet balanced,
+Only the fire starter is currently playable; the others remain concepts/legacy IDs.
+They are not yet balanced,
 summonable combat units, and their later forms are not implemented.
 
 ## Proposed roster and squad behavior
@@ -34,7 +48,8 @@ summonable combat units, and their later forms are not implemented.
 - Prevent consuming, selling, or removing a unit currently protected or assigned
   without an explicit, safe resolution policy.
 
-Party size, roster limits, leader bonuses, equipment slots, and locking are open.
+Party size, roster limits, leader bonuses, and locking are open.
+Equipment slot count/types are confirmed above; detailed equip rules remain open.
 
 ## Progression decisions
 

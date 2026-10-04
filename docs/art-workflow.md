@@ -7,6 +7,11 @@ owns the detailed prompt text and visual rules. Edit it when changing those rule
 do not maintain a second competing prompt library here.
 Use the actual `Art` directory capitalization consistently.
 
+[Starter Art](../Art/Starter%20Art.md) extends that guide with three new base-form
+companions (female fire/greatsword, female grass/bow, male water/spear) and three
+basic mythological enemy prompts (goblin, imp, golem). These are generation prompts,
+not generated assets or changes to the playable roster.
+
 ## Current visual direction
 
 - Compact chibi characters, approximately 2.5-3 heads tall; eyes-only faces.

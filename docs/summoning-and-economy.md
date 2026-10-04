@@ -1,6 +1,15 @@
 # Summoning and economy
 
-**Status:** proposed requirements; rates, prices, currencies, and monetization are open.
+**Status:** currency names/roles confirmed; rates, prices, balances, earning,
+spending, and monetization rules remain open.
+
+## Confirmed currencies
+
+- **Fractalis:** main currency.
+- **Lycalis:** premium currency.
+
+Names appear in the menu; balances and transactions are not implemented.
+Premium does not by itself approve real-money purchases.
 
 ## Banner contract
 
@@ -34,7 +43,8 @@ do not trust a client-supplied result or seed.
 Proposed: represent balances as bounded nonnegative integers in defined smallest
 units. Define acquisition sources, spending sinks, and caps for each currency.
 Earned and purchased currency are not interchangeable unless explicitly approved.
-There are no approved currency names, prices, drop tables, or regeneration rules.
+Currency names/roles are approved above. Prices, drop tables, starting balances,
+and regeneration rules are not approved.
 
 ## Transaction requirements
 

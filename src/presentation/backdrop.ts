@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { reducedMotion as prefersReducedMotion } from './settings';
 
 class Sanctuary extends Phaser.Scene {
   constructor() { super('sanctuary'); }
@@ -8,7 +9,7 @@ class Sanctuary extends Phaser.Scene {
       this.children.removeAll(true);
       this.tweens.killAll();
       const { width, height } = this.scale;
-      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reducedMotion = prefersReducedMotion();
       const landscape = this.add.graphics();
       landscape.fillStyle(0x080e1b).fillRect(0, 0, width, height);
       for (let ring = 16; ring > 0; ring--) {
@@ -52,9 +53,11 @@ class Sanctuary extends Phaser.Scene {
     this.scale.on('resize', draw);
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     motion.addEventListener('change', draw);
+    window.addEventListener('last-light-motion-change', draw);
     this.events.once('shutdown', () => {
       this.scale.off('resize', draw);
       motion.removeEventListener('change', draw);
+      window.removeEventListener('last-light-motion-change', draw);
     });
   }
 }

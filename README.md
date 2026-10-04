@@ -1,8 +1,11 @@
 # Last Light
 
 An original cinematic 2D gacha RPG inspired by Brave Frontier.
-The first browser-playable prelude includes an animated title, starter selection,
-and a sanctuary menu. Combat, quests, and summoning are not implemented yet.
+The browser-playable prelude includes an animated title, fire starter selection,
+and sanctuary navigation for character upgrades, inventory, settings, story, and
+future events. Upgrade/equipment previews and currency names are shown; only
+motion settings and the readable prologue work beyond the opening flow.
+Combat, quests, summoning, balances, upgrades, and equipping are not implemented yet.
 
 ## Play and develop
 

@@ -10,8 +10,9 @@ It is intended to make features easy to locate, extend, and hand off.
 - **Open:** a decision is still needed.
 - **Implemented:** present in code and verified; include implementation and test links.
 
-The opening title, starter selection, local starter save, and opening menu are
-implemented. Combat, summoning, and broader progression remain design scaffolding.
+The title, fire-only selection, local save, navigation, readable prologue, and
+motion settings are implemented. Currency labels, upgrade paths, and equipment
+slots are previews. Combat, summoning, and progression operations remain scaffolding.
 
 ## Find the right document
 
@@ -19,6 +20,7 @@ implemented. Combat, summoning, and broader progression remain design scaffoldin
 | --- | --- |
 | [Game vision](game-vision.md) | Product direction, design pillars, scope boundaries |
 | [Opening flow](opening-flow.md) | Title, starter selection, menu, local save, placeholder art |
+| [Menus and inventory](menus-and-inventory.md) | Fire-only roster, currencies, upgrades, 8+1 equipment, settings/story/events |
 | [Combat](combat.md) | Battle flow, actions, damage, effects, combat tests |
 | [Units and progression](units-and-progression.md) | Unit identity, roster, leveling, evolution, duplicates |
 | [Summoning and economy](summoning-and-economy.md) | Banners, odds, pity, currencies, reward transactions |
@@ -32,6 +34,8 @@ implemented. Combat, summoning, and broader progression remain design scaffoldin
 
 Also see the root [AI instructions](../AGENTS.md) and the existing
 [art prompt guide](../Art/midjourney-character-style-prompt.md).
+The [Starter Art prompts](../Art/Starter%20Art.md) cover the new base-form trio
+and three basic mythological enemies in the same style.
 
 ## Common tasks
 
