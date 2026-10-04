@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** three-screen sanctuary consolidation.
+**Last updated:** Shatter Gauge and ultimate-only recovery.
 
 ## Project state
 
@@ -23,9 +23,13 @@
 - Legacy water/grass saves require explicit fire re-selection without automatic
   overwrite. A failed confirmation preserves the old save.
 - Implemented: Free Battle practice team (Infernis/Tizu/Flores), enemy waves,
-  health/defense/damage/crit, one action per turn, heavy/ultimate recovery, all
+  health/defense/damage/crit, one action per turn, ultimate-only recovery, all
   passives/skills/Last Flares, elemental effects, and persistent remappable hotkeys.
   See [rules and kit values](free-battle.md).
+- Each ally has Shatter Gauge: starts 0, caps 100, Light +20, Heavy +30,
+  incoming enemy hit +10 (including shields). Skills cost 25/40 and Last Flare
+  costs 100; skills no longer generate resource. Battle meters/buttons and the
+  character kit show gauge/costs. No persistent-save schema change is needed.
 - Six supplied images moved to Art/source; transparent runtime exports are in
   public/assets. Portraits use the new names but retain old save IDs.
 - Not implemented: rewarded quests, squad editing, summoning, upgrades/equipping,
@@ -70,11 +74,19 @@ progression/economy. Add future animation frames without changing resolver resul
 
 ## Verification
 
-- `npm test`: 50 passing tests for fire-only transitions, legacy re-selection,
+- `npm test`: 62 passing tests for fire-only transitions, legacy re-selection,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
   motion settings, combat formulas, all kits/passives, exact recovery/cooldown
   boundaries, status durations,   shield/heal caps, waves/defeat, hotkey validation, and every runtime unit PNG's
   960 x 960 RGBA export contract.
+- Shatter tests cover zero-start/independent gauges, exact costs for every starter
+  ability (including support), insufficient-resource rejection without mutation,
+  attack/incoming-hit gains and cap, shielded/lethal hits, no passive/burn gain,
+  wave carryover, and ultimate-only recovery boundaries.
+- Local headless Edge verified real battle UI: zero-start meters and disabled
+  skills, Heavy +30, incoming-hit gains, 25/40 skill spending, next-turn availability,
+  gauge cap, Last Flare cost/recovery/expiry, and 320px layout without overflow.
+  Used a separate browser profile because the shared browser connection was unavailable.
 - `npm run build`: strict type-check and production build pass; bundle warning above.
 - `npm audit`: zero known dependency vulnerabilities after updating Vitest.
 - `npm ci`: clean lockfile restore passes with npm 10 after stopping the
@@ -105,8 +117,8 @@ progression/economy. Add future animation frames without changing resolver resul
   Home Squad/Summon buttons, seven upgrade areas and integrated inventory, drawer
   motion persistence/focus return on every screen, battle input suspension/resumption,
   and no horizontal overflow at 320px. Storage and viewport were restored.
-- Free Battle browser checks: all nine starter skills/ultimates, exact heavy
-  recovery, all six decoded assets, enemy-left/team-right mobile layout, hotkey
+- Earlier Free Battle browser checks (before Shatter Gauge): all nine starter
+  skills/ultimates, original heavy recovery, all six decoded assets, enemy-left/team-right mobile layout, hotkey
   remap/display/persistence/guards, duplicate rejection, listener cleanup on repeated
   navigation, and first-action-only resolution. Animation tests created all three
   ultimate variants and explicitly finished Web Animations to verify cleanup in the

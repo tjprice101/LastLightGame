@@ -1,4 +1,4 @@
-import { actionIds, fighters, enemies, isActionId, type ActionId } from '../content/combat';
+import { actionIds, fighters, enemies, isActionId, shatterGauge, type ActionId } from '../content/combat';
 import { getStarter, isStarterId } from '../content/starters';
 import { act, actionUnavailable, createBattle, endTurn, nextWave, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
 import { commands, keyLabel, type Bindings, type Command } from '../game/hotkeys';
@@ -192,7 +192,9 @@ export class BattleView {
       </span><span class="health-track"><span style="width:${unit.hp / unit.stats.health * 100}%"></span></span>
       <span class="unit-health">HP ${unit.hp}/${unit.stats.health}${unit.shield ? ` &middot; Shield ${unit.shield}` : ''}</span>
       <span class="unit-stats">DEF ${unit.stats.defense} &middot; DMG ${unit.stats.damage} &middot; CRIT ${Math.round(unit.stats.crit * 100)}%</span>
-      <span class="unit-status">${state}${unit.side === 'ally' ? ` &middot; Flare ${unit.flare}/100` : ''}${unit.burn.turns ? ' &middot; Burning' : ''}${unit.weakened ? ' &middot; Weakened' : ''}</span>
+      ${unit.side === 'ally' ? `<span class="shatter-track" role="meter" aria-label="${unit.name} Shatter Gauge" aria-valuemin="0" aria-valuemax="${shatterGauge.maximum}" aria-valuenow="${unit.shatter}"><span style="width:${unit.shatter / shatterGauge.maximum * 100}%"></span></span>
+      <span class="unit-gauge">Shatter Gauge ${unit.shatter}/${shatterGauge.maximum}</span>` : ''}
+      <span class="unit-status">${state}${unit.burn.turns ? ' &middot; Burning' : ''}${unit.weakened ? ' &middot; Weakened' : ''}</span>
     </button>`;
   }
 
@@ -212,7 +214,8 @@ export class BattleView {
       <p id="battle-announcement" role="status">${state.phase === 'cleared' ? 'Wave cleared. Continue when ready; recovery and health carry over.' : state.phase === 'defeat' ? 'Your team has fallen. Restart Free Battle to try again.' : 'Select an ally on the right and a target on the left.'}</p>
       <div class="battle-controls"><div class="actor-info"><strong>${actor.name}</strong><span>Passive: ${kit.passive.name} &mdash; ${kit.passive.description}</span></div>
       <div class="battle-actions">${actionIds.map((action) => this.actionButton(state, actor, action)).join('')}</div>
-      <p class="quiet">One action per living character per turn. Heavy / Last Flare forces a full recovery turn.
+      <p class="quiet">One action per living character per turn. Only Last Flare forces a full recovery turn.
+        Shatter Gauge starts at ${shatterGauge.starting}; attacks build it and each incoming hit adds ${shatterGauge.incomingHit}, even through shields.
         Ending a turn forfeits unused actions.
         <kbd>${keyLabel(this.bindings.nextAlly)}</kbd> next ally &middot; <kbd>${keyLabel(this.bindings.nextTarget)}</kbd> next enemy</p>
       <button id="end-battle-turn" class="primary-button" ${state.phase === 'defeat' ? 'disabled' : ''}><kbd>${keyLabel(this.bindings.endTurn)}</kbd> ${state.phase === 'cleared' ? 'Next wave' : 'End turn / enemy attacks'}</button>
@@ -249,10 +252,11 @@ export class BattleView {
     if (!isStarterId(actor.definitionId)) throw new Error('Invalid ally definition.');
     const ability = action === 'light' || action === 'heavy' ? null : fighters[actor.definitionId].abilities[action];
     const name = ability?.name ?? (action === 'light' ? 'Light Attack' : 'Heavy Attack');
-    const detail = ability?.description ?? (action === 'light' ? '100% damage; +20 Flare.' : '180% damage; +30 Flare; recover next turn.');
+    const detail = ability?.description ?? `${action === 'light' ? '100%' : '180%'} damage; +${shatterGauge.gains[action]} Shatter Gauge.`;
     const reason = actionUnavailable(state, actor, action);
     return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
       <kbd>${keyLabel(this.bindings[action])}</kbd><strong>${name}</strong><span>${detail}</span>
-      <small>${reason ?? (ability?.cooldown ? `${ability.cooldown}-turn cooldown; +10 Flare.` : 'Ready')}</small></button>`;
+      ${ability ? `<span>Costs ${shatterGauge.costs[action]} Shatter Gauge${ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
+      <small>${reason ?? 'Ready'}</small></button>`;
   }
 }

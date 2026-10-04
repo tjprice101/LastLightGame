@@ -151,6 +151,9 @@ section { animation: arrive .6s ease-out both; }
 .battle-art img { display: block; width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 2; }
 .health-track { height: 5px; background: #050c16; border-radius: 4px; overflow: hidden; }
 .health-track > span { display: block; height: 100%; background: var(--element); }
+.shatter-track { display: block; height: 5px; margin-top: 8px; background: #050c16; border-radius: 4px; overflow: hidden; }
+.shatter-track > span { display: block; height: 100%; background: #a3d6ff; }
+.unit-gauge { font-size: 10px; margin-top: 4px; line-height: 1.5; color: #a3d6ff; }
 .unit-health, .unit-stats, .unit-status { font-size: 10px; margin-top: 8px; line-height: 1.5; }
 .unit-stats { color: #c1c9d2; }
 .unit-status { color: var(--element); }

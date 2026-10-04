@@ -18,11 +18,12 @@ specifications own detailed rules; link them here rather than duplicating them.
 | D-009 | Evolution, level, weapon, passive, ability 1/2, and Last Flare upgrades; eight unique artifacts plus one special master relic | Owner request, 2026-10-03; [progression](units-and-progression.md) |
 | D-010 | Inventory, settings, story mode, and a future events tab | Owner request, 2026-10-03; [menu surfaces](menus-and-inventory.md) |
 | D-011 | Main activity is Free Battle: endlessly fight Goblin/Imp/Rock Golem waves with enemies left and allies right | Owner request, 2026-10-04 |
-| D-012 | Every character gets at most one light/heavy/skill/ultimate action per turn; heavy/ultimate forces a full next-turn recovery | Owner request and follow-up approval, 2026-10-04 |
+| D-012 | Every character gets at most one light/heavy/skill/ultimate action per turn; original heavy/ultimate recovery rule superseded by D-017 | Owner request and follow-up approval, 2026-10-04 |
 | D-013 | Design editable prototype stats/kits for all three starters; expose configurable displayed battle hotkeys | Owner request and delegated initial balance, 2026-10-04; [rules](free-battle.md) |
 | D-014 | Organize supplied character/enemy art, preserve originals, remove white matte from runtime copies, wire to UI/battle | Owner request, 2026-10-04; [art](art-workflow.md) |
 | D-015 | The starting experience is solo, not a team; next combat presentation needs scenery, beginning with a cutesy grassy field | Owner correction, 2026-10-04; [scenery prompt](../Art/Battle%20Scenery.md). Current three-unit practice implementation has not yet been changed |
 | D-016 | Three primary sanctuary screens: Home with character and Squad/Summon buttons, Character Upgrades, and Events; Settings off to the side | Owner navigation request; [menu surfaces](menus-and-inventory.md). Inventory is integrated into upgrades; Story and Free Battle remain Home subactivities |
+| D-017 | Each character uses Shatter Gauge for abilities; only Last Flare blocks all actions next turn. Heavy attacks no longer cause recovery | Owner correction and prototype-value approval, 2026-10-04. Start 0, cap 100; Light +20, Heavy +30, incoming hit +10; Ability 1 costs 25, Ability 2 costs 40, Last Flare costs 100. [Exact rules](free-battle.md#actions-and-recovery) |
 
 D-003 records existing guidance, not approval of generated assets or gameplay rules.
 

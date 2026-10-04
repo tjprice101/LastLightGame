@@ -1,12 +1,13 @@
 # Free Battle
 
 **Status:** implemented practice mode, 2026-10-04. The owner approved an initial
-editable balance set and full recovery turns for heavy attacks/ultimates.
+editable balance set. Shatter Gauge costs/gains are owner-approved; only ultimates
+force next-turn recovery, superseding the earlier heavy-attack recovery rule.
 This is not production balance or a rewarded story mode.
 
 ## Entering and leaving
 
-Sanctuary's main activity and the navigation button open **Free Battle**.
+Home's **Enter Free Battle** button opens the activity.
 The temporary team includes Infernis (fire), Tizu (water), and Flores (grass).
 Only fire remains selectable as a permanent first companion; practice does not
 grant Tizu/Flores, modify the roster save, consume currency, or award items.
@@ -19,7 +20,7 @@ are forfeited when ending the turn. There is no automatic turn ending.
 Every wave has a Goblin, an Imp, and a Rock Golem. Enemy HP/damage scale by
 `1 + 0.12 * (wave - 1)` with rounding; defense increases by
 `floor((wave - 1) / 2)`. Clear a wave, then explicitly choose Next wave.
-Continue until defeat, exit, or a confirmed restart. Health, shields, Flare,
+Continue until defeat, exit, or a confirmed restart. Health, shields, Shatter Gauge,
 skill cooldowns, and recovery carry between waves; defeated allies stay defeated.
 Flores' living passive still applies at the new-turn boundary.
 
@@ -33,18 +34,26 @@ Each living character may perform **one** action per player turn:
 
 | Action | Rule |
 | --- | --- |
-| Light Attack | 100% damage to one target; gain 20 Flare |
-| Heavy Attack | 180% damage to one target; gain 30 Flare; no action next turn |
-| Ability 1 | Character-specific effect; gain 10 Flare; two-turn cooldown |
-| Ability 2 | Character-specific effect; gain 10 Flare; three-turn cooldown |
-| Last Flare | Character-specific ultimate; costs 100 Flare; no action next turn |
+| Light Attack | 100% damage to one target; gain 20 Shatter Gauge |
+| Heavy Attack | 180% damage to one target; gain 30 Shatter Gauge; can attack next turn |
+| Ability 1 | Character-specific effect; costs 25 Shatter Gauge; two-turn cooldown |
+| Ability 2 | Character-specific effect; costs 40 Shatter Gauge; three-turn cooldown |
+| Last Flare | Character-specific ultimate; costs 100 Shatter Gauge; no action next turn |
 
-All practice characters start with 100 Flare; cap is 100.
-Skills do not require Flare or force recovery. Cooldown "2" means using it on turn
+Every character has an independent **Shatter Gauge**, starting at **0**, capped at
+**100**. Light/Heavy gains apply once per action, not once per target. Each incoming
+enemy hit adds **10**, including shield-absorbed and lethal hits; critical hits do
+not increase the gain. Burn, healing, shields, passives, and ability casts do not
+generate gauge. Skills and Last Flare require and spend their exact costs; spending
+does not generate gauge. Gauges persist between turns/waves, but reset on restart/reload.
+
+Skills do not force recovery. Cooldown "2" means using it on turn
 1 makes it usable again on turn 3; cooldown "3" becomes usable on turn 4.
-A heavy/ultimate on turn 1 blocks every action on turn 2 and allows actions again
+A Last Flare on turn 1 blocks every action on turn 2 and allows actions again
 on turn 3. The rule also applies when a wave is cleared by that action.
-Support skills still consume the character's one action.
+Light, Heavy, and skills allow another action on the next turn (subject to gauge
+and the selected skill's cooldown). Support skills still spend gauge and consume
+the character's one action.
 
 ## Stats and formulas
 
@@ -103,12 +112,14 @@ random living ally. This is not an authoritative or monetized online battle syst
 ## Resolution order
 
 Validate phase, living actor, action allowance, recovery, resources, cooldown, and
-target -> clone state -> spend action/Flare and set recovery/cooldown -> damage and
+target -> clone state -> spend action/Shatter Gauge, apply attack gauge gain, and
+set ultimate recovery/skill cooldown -> damage and
 statuses -> support effects -> outcome check.
 Invalid operations throw explicit errors without modifying the previous state.
 
 On ending a turn, each living enemy takes its burn tick, then (if still alive)
-attacks a living ally. Its weaken duration decrements after its attack.
+attacks a living ally, who gains Shatter Gauge after damage. Its weaken duration
+decrements after its attack.
 Check defeat/clear, then advance the round and apply Flores' passive if the battle
 continues. An enemy killed by burn does not attack. No dead-target retargeting is
 needed for player actions because each action validates its current target.

@@ -6,7 +6,8 @@ starter kits, waves, and hotkeys. This page retains broader production questions
 ## Open rules
 
 The practice party has three starters and player/enemy turns. Each ally acts at
-most once, with a full next-turn recovery after heavy/ultimate.
+most once, building an individual Shatter Gauge from light/heavy attacks and
+incoming hits to pay for abilities. Only Last Flare forces full next-turn recovery.
 See [current rules](free-battle.md) for exact costs, targeting, order, and effects.
 Production squad size, advanced timing controls, and elemental relationships are open.
 Fire, water, and grass exist as art themes; no damage advantage chart is confirmed.

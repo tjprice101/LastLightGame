@@ -9,7 +9,7 @@ import { elementalReveal } from './presentation/reveal';
 import { applyMotion, loadMotion, saveMotion, type MotionPreference } from './presentation/settings';
 import { allowedCodes, commands, defaultBindings, keyLabel, loadBindings, saveBindings, validateBindings } from './game/hotkeys';
 import { BattleView, createSession, type BattleSession } from './presentation/battle-view';
-import { fighters } from './content/combat';
+import { fighters, shatterGauge } from './content/combat';
 
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('Application root is missing.');
@@ -319,8 +319,10 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
       <p class="subtitle">HP ${fighters[starter.id].stats.health} &middot; Defense ${fighters[starter.id].stats.defense} &middot;
       Damage ${fighters[starter.id].stats.damage} &middot; Crit ${Math.round(fighters[starter.id].stats.crit * 100)}%</p>
       <h2>${fighters[starter.id].passive.name} &middot; Passive</h2><p>${fighters[starter.id].passive.description}</p>
-      ${Object.values(fighters[starter.id].abilities).map((ability) =>
-        `<h3>${ability.name}</h3><p>${ability.description}</p>`).join('')}
+      ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => {
+        const ability = fighters[starter.id].abilities[action];
+        return `<h3>${ability.name}</h3><p>${ability.description} Costs ${shatterGauge.costs[action]} Shatter Gauge${ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</p>`;
+      }).join('')}
       <p class="quiet">These abilities work in Free Battle; upgrade transactions remain unimplemented.</p>
     </article>
     <div class="upgrade-grid">${upgradePaths.map((path) =>

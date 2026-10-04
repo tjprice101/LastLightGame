@@ -1,4 +1,4 @@
-import { enemies, fighters, isActionId, type ActionId, type EnemyId, type Stats } from '../content/combat';
+import { enemies, fighters, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats } from '../content/combat';
 import { isStarterId, starters, type StarterId } from '../content/starters';
 
 export interface Combatant {
@@ -9,7 +9,7 @@ export interface Combatant {
   stats: Stats;
   hp: number;
   shield: number;
-  flare: number;
+  shatter: number;
   spent: boolean;
   recoverThrough: number;
   readyRound: Record<'skill1' | 'skill2', number>;
@@ -38,7 +38,7 @@ export interface BattleResult { state: BattleState; events: BattleEvent[] }
 function combatant(id: string, definitionId: Combatant['definitionId'], name: string, side: Combatant['side'], stats: Stats): Combatant {
   return {
     id, definitionId, name, side, stats: { ...stats }, hp: stats.health, shield: 0,
-    flare: side === 'ally' ? 100 : 0, spent: false, recoverThrough: 0,
+    shatter: shatterGauge.starting, spent: false, recoverThrough: 0,
     readyRound: { skill1: 1, skill2: 1 }, burn: { damage: 0, turns: 0 }, weakened: 0,
   };
 }
@@ -90,8 +90,8 @@ export function actionUnavailable(state: BattleState, actor: Combatant, action: 
   if (actor.side !== 'ally' || !state.allies.some((ally) => ally.id === actor.id)) return 'Choose a team member.';
   if (actor.hp <= 0) return 'This character is defeated.';
   if (actor.spent) return 'This character has already acted this turn.';
-  if (actor.recoverThrough >= state.round) return 'Recovering this turn after a heavy attack or Last Flare.';
-  if (action === 'ultimate' && actor.flare < 100) return 'Last Flare requires 100 Flare.';
+  if (actor.recoverThrough >= state.round) return 'Recovering this turn after Last Flare.';
+  if (actor.shatter < shatterGauge.costs[action]) return `Requires ${shatterGauge.costs[action]} Shatter Gauge.`;
   if ((action === 'skill1' || action === 'skill2') && actor.readyRound[action] > state.round) {
     return `Ready on turn ${actor.readyRound[action]}.`;
   }
@@ -109,6 +109,13 @@ function hurt(target: Combatant, amount: number, source: Combatant, events: Batt
   target.hp -= loss;
   event(events, 'damage', source, target, loss,
     `${target.name}: ${loss} damage${critical ? ' (critical)' : ''}${absorbed ? `, ${absorbed} shield absorbed` : ''}${target.hp === 0 ? ' - defeated' : ''}.`, critical);
+}
+
+function gainShatter(target: Combatant, amount: number, events: BattleEvent[]): void {
+  const gained = Math.min(shatterGauge.maximum - target.shatter, amount);
+  if (gained <= 0) return;
+  target.shatter += gained;
+  event(events, 'status', target, target, gained, `${target.name} gains ${gained} Shatter Gauge (${target.shatter}/${shatterGauge.maximum}).`);
 }
 
 function healTeam(state: BattleState, source: Combatant, amount: number, events: BattleEvent[], percent = false): void {
@@ -152,9 +159,9 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   const name = action === 'light' ? 'Light Attack' : action === 'heavy' ? 'Heavy Attack' : definition.abilities[action].name;
   events.push({ kind: 'attack', source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action });
   actor.spent = true;
-  if (action === 'heavy' || action === 'ultimate') actor.recoverThrough = state.round + 1;
-  if (action === 'ultimate') actor.flare -= 100;
-  else actor.flare = Math.min(100, actor.flare + (action === 'light' ? 20 : action === 'heavy' ? 30 : 10));
+  if (action === 'ultimate') actor.recoverThrough = state.round + 1;
+  actor.shatter -= shatterGauge.costs[action];
+  gainShatter(actor, shatterGauge.gains[action], events);
   if (action === 'skill1' || action === 'skill2') actor.readyRound[action] = state.round + definition.abilities[action].cooldown;
 
   if (!support) {
@@ -193,7 +200,7 @@ function newTurn(state: BattleState, events: BattleEvent[]): void {
   for (const ally of state.allies) ally.spent = false;
   const flores = state.allies.find((unit) => unit.id === 'sprout' && unit.hp > 0);
   if (flores) healTeam(state, flores, 0.05, events, true);
-  events.push({ kind: 'turn', source: '', target: '', amount: state.round, critical: false, message: `Turn ${state.round}. Heavy/ultimate users recover for exactly their next turn.` });
+  events.push({ kind: 'turn', source: '', target: '', amount: state.round, critical: false, message: `Turn ${state.round}. Only Last Flare forces next-turn recovery.` });
 }
 
 export function endTurn(previous: BattleState): BattleResult {
@@ -215,6 +222,7 @@ export function endTurn(previous: BattleState): BattleResult {
     const critical = roll(state) < enemy.stats.crit;
     events.push({ kind: 'attack', source: enemy.id, target: target.id, amount: 0, critical: false, message: `${enemy.name} attacks ${target.name}.`, action: 'light' });
     hurt(target, damageAmount(enemy.stats.damage, enemy.weakened > 0 ? 0.75 : 1, target.stats.defense, critical), enemy, events, critical);
+    gainShatter(target, shatterGauge.incomingHit, events);
     if (enemy.weakened > 0) enemy.weakened--;
   }
   checkOutcome(state);
@@ -230,6 +238,6 @@ export function nextWave(previous: BattleState): BattleResult {
   state.enemies = spawnWave(state.wave);
   state.phase = 'player';
   newTurn(state, events);
-  events.push({ kind: 'turn', source: '', target: '', amount: state.wave, critical: false, message: `Wave ${state.wave}: enemies grow stronger. Health, shields, Flare and recovery carry over.` });
+  events.push({ kind: 'turn', source: '', target: '', amount: state.wave, critical: false, message: `Wave ${state.wave}: enemies grow stronger. Health, shields, Shatter Gauge and recovery carry over.` });
   return { state, events };
 }

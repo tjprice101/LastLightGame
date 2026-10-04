@@ -2,6 +2,13 @@ import { type StarterId } from './starters';
 
 export const actionIds = ['light', 'heavy', 'skill1', 'skill2', 'ultimate'] as const;
 export type ActionId = (typeof actionIds)[number];
+export const shatterGauge = {
+  maximum: 100,
+  starting: 0,
+  incomingHit: 10,
+  gains: { light: 20, heavy: 30, skill1: 0, skill2: 0, ultimate: 0 },
+  costs: { light: 0, heavy: 0, skill1: 25, skill2: 40, ultimate: 100 },
+} as const;
 export interface Stats { health: number; defense: number; damage: number; crit: number }
 export interface Ability { name: string; description: string; cooldown: number }
 export interface FighterDefinition {
@@ -17,7 +24,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Cinder Cleave', description: '160% damage to one enemy; burn for 8 damage on its next two enemy phases.', cooldown: 2 },
       skill2: { name: 'Flame Arc', description: '110% damage to every living enemy.', cooldown: 3 },
-      ultimate: { name: 'Last Flare: Dawnfire', description: '280% damage to every enemy. Costs 100 Flare; recover next turn.', cooldown: 0 },
+      ultimate: { name: 'Last Flare: Dawnfire', description: '280% damage to every enemy. Recover next turn.', cooldown: 0 },
     },
   },
   tide: {
@@ -26,7 +33,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Undertow Thrust', description: '150% damage to one enemy; reduce its next two enemy-phase attacks by 25%.', cooldown: 2 },
       skill2: { name: 'Tidal Shelter', description: 'Give every living ally 25 shield (refresh to at least 25; does not stack).', cooldown: 3 },
-      ultimate: { name: 'Last Flare: Ocean Memory', description: '220% damage to all enemies and 35 shield for allies. Costs 100 Flare; recover next turn.', cooldown: 0 },
+      ultimate: { name: 'Last Flare: Ocean Memory', description: '220% damage to all enemies and 35 shield for allies. Recover next turn.', cooldown: 0 },
     },
   },
   sprout: {
@@ -35,7 +42,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     abilities: {
       skill1: { name: 'Briar Shot', description: '150% damage to one enemy with +20 percentage points critical chance.', cooldown: 2 },
       skill2: { name: 'Verdant Renewal', description: 'Restore 30 health to every living ally; cannot revive.', cooldown: 3 },
-      ultimate: { name: 'Last Flare: Worldseed', description: '180% damage to all enemies and heal living allies by 55. Costs 100 Flare; recover next turn.', cooldown: 0 },
+      ultimate: { name: 'Last Flare: Worldseed', description: '180% damage to all enemies and heal living allies by 55. Recover next turn.', cooldown: 0 },
     },
   },
 };

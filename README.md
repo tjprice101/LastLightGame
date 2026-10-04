@@ -6,7 +6,8 @@ and three sanctuary screens: Home, Character Upgrades, and Events. Home displays
 your companion and Squad/Summon buttons, with Free Battle and story subactivities.
 Inventory lives inside Character Upgrades; Settings opens in a side drawer.
 Free Battle uses a temporary three-starter team against
-endless Goblin/Imp/Rock Golem waves, with skills, passives, Last Flares, recovery
+endless Goblin/Imp/Rock Golem waves, with skills, passives, Shatter Gauge,
+Last Flares, ultimate-only recovery
 turns, and configurable hotkeys. Supplied artwork has transparent runtime exports.
 Upgrade/equipment previews and currency names are shown; upgrades, equipping,
 rewarded quests, summoning, and currency balances remain unimplemented.

@@ -5,6 +5,7 @@ import { act, actionUnavailable, createBattle, damageAmount, endTurn, nextWave, 
 
 function controlled(): BattleState {
   const state = createBattle(12345);
+  state.allies.forEach((unit) => { unit.shatter = 100; });
   for (const unit of [...state.allies, ...state.enemies]) unit.stats.crit = 0;
   for (const enemy of state.enemies) { enemy.hp = 2000; enemy.stats.health = 2000; }
   return state;
@@ -33,8 +34,8 @@ describe('Free Battle damage and turns', () => {
     expect(() => use(supported, 'tide', 'light')).toThrow('already acted');
     expect(supported.allies[2].spent).toBe(false);
   });
-  it.each(['heavy', 'ultimate'] as const)('%s blocks exactly the next full turn', (action) => {
-    let state = use(controlled(), 'ember', action);
+  it('Last Flare blocks exactly the next full turn', () => {
+    let state = use(controlled(), 'ember', 'ultimate');
     expect(state.round).toBe(1);
     expect(state.allies[0].recoverThrough).toBe(2);
     state = endTurn(state).state;
@@ -55,15 +56,13 @@ describe('Free Battle damage and turns', () => {
     state = endTurn(state).state;
     expect(actionUnavailable(state, state.allies[0], 'skill1')).toBeNull();
   });
-  it('requires 100 Flare and replenishes with actions up to its cap', () => {
-    let state = use(controlled(), 'tide', 'ultimate');
-    expect(state.allies[1].flare).toBe(0);
-    state = endTurn(endTurn(state).state).state;
-    expect(() => use(state, 'tide', 'ultimate')).toThrow('100 Flare');
-    state = use(state, 'tide', 'light');
-    expect(state.allies[1].flare).toBe(20);
-    const capped = controlled();
-    expect(use(capped, 'tide', 'light').allies[1].flare).toBe(100);
+  it.each(['light', 'heavy', 'skill1', 'skill2'] as const)('%s allows attacking on the very next turn', (action) => {
+    const acted = use(controlled(), 'ember', action);
+    expect(acted.allies[0].recoverThrough).toBe(0);
+    const next = endTurn(acted).state;
+    expect(next.round).toBe(2);
+    expect(actionUnavailable(next, next.allies[0], 'light')).toBeNull();
+    expect(() => use(next, 'ember', 'light')).not.toThrow();
   });
   it('rejects invalid targets, defeated actors, and out-of-phase actions without changing state', () => {
     const state = controlled();
@@ -90,6 +89,73 @@ describe('Free Battle damage and turns', () => {
     expect(critical.state.enemies[0].hp).toBe(1948);
     state.allies[0].stats.crit = 0;
     expect(act(state, 'ember', 'light', state.enemies[0].id).events.find((entry) => entry.kind === 'damage')?.critical).toBe(false);
+  });
+});
+
+describe('Shatter Gauge', () => {
+  it('starts every character at zero and keeps gauges independent', () => {
+    const state = createBattle();
+    expect(state.allies.map((unit) => unit.shatter)).toEqual([0, 0, 0]);
+    const after = use(state, 'ember', 'light');
+    expect(after.allies.map((unit) => unit.shatter)).toEqual([20, 0, 0]);
+    expect(state.allies.map((unit) => unit.shatter)).toEqual([0, 0, 0]);
+  });
+  it.each([
+    ['light', 20], ['heavy', 30],
+  ] as const)('%s gains exactly %i, capped at 100', (action, gain) => {
+    const state = createBattle();
+    expect(use(state, 'ember', action).allies[0].shatter).toBe(gain);
+    state.allies[0].shatter = 95;
+    expect(use(state, 'ember', action).allies[0].shatter).toBe(100);
+    state.allies[0].shatter = 100;
+    expect(use(state, 'ember', action).allies[0].shatter).toBe(100);
+  });
+  it.each(starters)('$name spends the exact cost for every ability, including support, with no skill gain', (starter) => {
+    for (const [action, cost] of [['skill1', 25], ['skill2', 40], ['ultimate', 100]] as const) {
+      const state = controlled();
+      const actor = state.allies.find((unit) => unit.id === starter.id);
+      if (!actor) throw new Error('Test actor is missing.');
+      actor.shatter = cost - 1;
+      const snapshot = structuredClone(state);
+      expect(actionUnavailable(state, actor, action)).toBe(`Requires ${cost} Shatter Gauge.`);
+      expect(() => use(state, starter.id, action)).toThrow(`Requires ${cost} Shatter Gauge.`);
+      expect(state).toEqual(snapshot);
+      actor.shatter = cost;
+      expect(use(state, starter.id, action).allies.find((unit) => unit.id === starter.id)?.shatter).toBe(0);
+      actor.shatter = 100;
+      expect(use(state, starter.id, action).allies.find((unit) => unit.id === starter.id)?.shatter).toBe(100 - cost);
+    }
+  });
+  it.each([0, 1000])('gains 10 per incoming hit even with %i shield, only for the targeted character', (shield) => {
+    const state = createBattle(12345);
+    state.allies.forEach((unit) => { unit.shield = shield; });
+    const snapshot = structuredClone(state);
+    const result = endTurn(state);
+    for (const ally of result.state.allies) {
+      const hits = result.events.filter((entry) => entry.kind === 'attack' && entry.target === ally.id).length;
+      expect(ally.shatter).toBe(hits * 10);
+    }
+    expect(result.state.allies.reduce((total, unit) => total + unit.shatter, 0)).toBe(30);
+    expect(state).toEqual(snapshot);
+  });
+  it('caps incoming gains, includes lethal hits, and does not gain from passive healing or burn', () => {
+    const state = createBattle(12345);
+    state.allies.forEach((unit) => { unit.shatter = 95; unit.hp = 1; });
+    state.enemies.forEach((unit) => { unit.stats.damage = 10000; });
+    const result = endTurn(state);
+    expect(result.state.allies.map((unit) => unit.shatter)).toEqual([100, 100, 100]);
+    expect(result.state.allies.map((unit) => unit.hp)).toEqual([0, 0, 0]);
+    const burning = createBattle();
+    burning.enemies.forEach((unit) => { unit.hp = 1; unit.burn = { damage: 8, turns: 1 }; });
+    const clear = endTurn(burning).state;
+    expect(clear.phase).toBe('cleared');
+    expect(clear.allies.map((unit) => unit.shatter)).toEqual([0, 0, 0]);
+    expect(clear.enemies.map((unit) => unit.shatter)).toEqual([0, 0, 0]);
+    clear.allies[0].shatter = 55;
+    clear.allies[0].hp = 100;
+    const next = nextWave(clear).state;
+    expect(next.allies[0].hp).toBe(111);
+    expect(next.allies.map((unit) => unit.shatter)).toEqual([55, 0, 0]);
   });
 });
 
@@ -194,10 +260,22 @@ describe('starter abilities and passives', () => {
 });
 
 describe('wave lifecycle', () => {
+  it('a heavy wave clear carries its gauge without blocking the next wave', () => {
+    const state = createBattle();
+    state.enemies.forEach((unit) => { unit.hp = 0; });
+    state.enemies[0].hp = 1;
+    const cleared = use(state, 'ember', 'heavy');
+    expect(cleared.phase).toBe('cleared');
+    const next = nextWave(cleared).state;
+    expect(next.allies[0].shatter).toBe(30);
+    expect(next.allies[0].recoverThrough).toBe(0);
+    expect(actionUnavailable(next, next.allies[0], 'heavy')).toBeNull();
+  });
   it('advances only after a clear, scales enemies, and carries recovery into the next wave', () => {
     const state = createBattle(1);
     expect(() => nextWave(state)).toThrow('Defeat this wave');
     state.enemies.forEach((unit) => { unit.hp = 1; });
+    state.allies[0].shatter = 100;
     const cleared = use(state, 'ember', 'ultimate');
     expect(cleared.phase).toBe('cleared');
     const next = nextWave(cleared).state;
@@ -206,7 +284,7 @@ describe('wave lifecycle', () => {
     expect(next.enemies.map((unit) => unit.definitionId)).toEqual(['goblin', 'imp', 'golem']);
     expect(next.enemies[0].stats.health).toBe(123);
     expect(actionUnavailable(next, next.allies[0], 'light')).toContain('Recovering');
-    expect(next.allies[0].flare).toBe(0);
+    expect(next.allies[0].shatter).toBe(0);
   });
   it('burn killing the last enemy clears the wave without that enemy attacking', () => {
     const state = controlled();
