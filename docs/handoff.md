@@ -12,6 +12,8 @@
 - Stack: TypeScript, Phaser 3.90, Vite 7, Vitest 4; Node 22.12+.
 - Implemented: animated title, three starter choices, explicit confirmation,
   local starter save, opening menu, saved-session continuation, save-error handling.
+- Starter selection now includes bounded elemental reveals and original lore;
+  first confirmation plays a companion awakening. Lore stays readable in the menu.
 - Not implemented: combat, quests, squad editing, summoning, broader progression,
   accounts, cloud saves, backend, payments.
 - Repository: [tjprice101/LastLightGame](https://github.com/tjprice101/LastLightGame).
@@ -44,8 +46,8 @@ of animations. Obtain approved art references before production asset work.
 
 ## Verification
 
-- `npm test`: 12 passing tests for opening transitions, all starters, persistence,
-  invalid saves, and failed storage writes.
+- `npm test`: 15 passing tests for opening transitions, all starters, persistence,
+  invalid saves, failed storage writes, lore completeness, and reveal particle budget.
 - `npm run build`: strict type-check and production build pass; bundle warning above.
 - `npm audit`: zero known dependency vulnerabilities after updating Vitest.
 - `npm ci`: clean lockfile restore passes with npm 10 after stopping the
@@ -62,6 +64,11 @@ of animations. Obtain approved art references before production asset work.
   uncaught browser errors.
 - npm 10 hit a resolver error when upgrading Vitest; `npx npm@11.6.0 install`
   resolved it. The committed lockfile is used by `npm ci`.
+- Reveal browser checks used DOM-triggered clicks because the shared browser tab
+  was hidden and native input/animation actionability stalled. Verified all three
+  lore/reveal variants, focus preservation, 12-mote limit, no preview save,
+  first-arrival-only awakening, saved lore, reduced-motion styles, and 390px layout.
+  Visual playback in a visible tab remains a manual check.
 
 For setup and deployment commands, use the [development guide](development-guide.md).
 

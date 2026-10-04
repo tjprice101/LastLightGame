@@ -21,6 +21,25 @@ The owner delegated language/engine selection and requested repository deploymen
 6. On subsequent visits, the title entry continues directly to the saved menu.
 7. "Return to title" preserves the save.
 
+## Starter lore and elemental reveals
+
+Selecting a card plays a short, element-specific reveal: rising embers for fire,
+an expanding ripple and droplets for water, and swirling leaves for grass.
+Each reveal contains 12 decorative motes and one ring, lasts at most 1.3 seconds,
+and never blocks selection or confirmation. Switching cards replaces the prior
+effect without accumulating particles. Card updates preserve keyboard focus.
+
+Selection displays original lore, an origin, and a personal vow. Ember carries the
+last coal of Ashen Vale; Tide searches for Glasswater's missing ferrykeepers;
+Sprout carries the hope of Hollowgreen's first new seed. These are editable
+prototype stories, not a claim that the wider world/story has been approved.
+
+After a successful first save, the menu plays a companion awakening and opens
+the lore panel. Saved-session continuation does not replay that first-arrival
+effect; lore remains available through the "Companion lore" disclosure.
+Reduced motion hides decorative reveals and disables the portrait animation,
+while all lore and controls remain accessible. No save-schema changes are needed.
+
 The menu displays the saved companion. Quests, squad editing, and summoning are
 clearly marked coming soon, not interactive features or working battle systems.
 No currency, levels, combat stats, accounts, or payment behavior is introduced.
@@ -50,7 +69,9 @@ They are not replacements for approved white-canvas production illustrations.
 
 ## Where to customize
 
-- [Starter definitions](../src/content/starters.ts): names, text, colors, IDs.
+- [Starter definitions](../src/content/starters.ts): names, text, colors, IDs, lore.
+- [Elemental reveals](../src/presentation/reveal.ts): bounded decorative effect markup.
+- [Reveal tests](../src/presentation/reveal.test.ts): lore completeness and effect budget.
 - [SVG portraits](../src/presentation/portrait.ts): temporary visuals.
 - [Backdrop](../src/presentation/backdrop.ts): ambient Phaser scene and tween budget.
 - [Screens](../src/main.ts): DOM rendering, inputs, errors, focus.

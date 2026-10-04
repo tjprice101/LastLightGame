@@ -4,6 +4,7 @@ import { Journey } from './game/flow';
 import { SAVE_KEY } from './game/profile';
 import { portrait } from './presentation/portrait';
 import { createBackdrop } from './presentation/backdrop';
+import { elementalReveal } from './presentation/reveal';
 
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('Application root is missing.');
@@ -79,7 +80,7 @@ function renderSelection(): void {
       ${starters.map((starter, index) => `<button class="starter-card" data-starter="${starter.id}"
         aria-pressed="${journey.selected === starter.id}" style="--element:${starter.color}">
         <span class="card-top"><span>${starter.element.toUpperCase()}</span><span>0${index + 1}</span></span>
-        <div class="portrait">${portrait(starter)}</div>
+        <div class="portrait">${portrait(starter)}<span class="reveal-slot"></span></div>
         <span class="weapon-label">${starter.weapon.toUpperCase()} &middot; STARTER</span>
         <strong>${starter.name}</strong>
         <span class="card-tagline">${starter.title}</span>
@@ -87,7 +88,8 @@ function renderSelection(): void {
       </button>`).join('')}
     </div>
     <div class="selection-detail">
-      <p id="starter-detail">${journey.selected ? getStarter(journey.selected).description : 'Select a companion to discover your first light.'}</p>
+      <p id="starter-detail" aria-live="polite">${journey.selected ? getStarter(journey.selected).description : 'Select a companion to discover your first light.'}</p>
+      <article id="starter-lore" class="lore-panel" ${journey.selected ? '' : 'hidden'}></article>
       <button id="begin" class="primary-button" ${journey.selected ? '' : 'disabled'}>Begin your journey <span aria-hidden="true">&rarr;</span></button>
     </div>
     <p class="quiet">Saved on this browser &middot; Original placeholder illustrations</p>
@@ -97,14 +99,33 @@ function renderSelection(): void {
       const id = button.dataset.starter;
       if (!isStarterId(id)) throw new Error('Invalid starter button.');
       journey.select(id);
-      renderSelection();
-      app.querySelector<HTMLButtonElement>(`[data-starter="${id}"]`)?.focus();
+      const starter = getStarter(id);
+      app.querySelectorAll<HTMLButtonElement>('[data-starter]').forEach((card) => {
+        const selected = card.dataset.starter === id;
+        card.setAttribute('aria-pressed', String(selected));
+        const mark = card.querySelector('.selection-mark');
+        const slot = card.querySelector('.reveal-slot');
+        if (!mark || !slot) throw new Error('Starter card reveal elements are missing.');
+        mark.textContent = selected ? 'SELECTED' : 'CHOOSE COMPANION';
+        slot.innerHTML = selected ? elementalReveal(starter) : '';
+      });
+      const detail = app.querySelector('#starter-detail');
+      const lore = app.querySelector<HTMLElement>('#starter-lore');
+      const begin = app.querySelector<HTMLButtonElement>('#begin');
+      if (!detail || !lore || !begin) throw new Error('Starter selection elements are missing.');
+      detail.textContent = `${starter.name}: ${starter.lore.awakening}`;
+      lore.hidden = false;
+      lore.style.setProperty('--element', starter.color);
+      lore.innerHTML = `<p class="eyebrow">${starter.lore.origin}</p>
+        <h2>${starter.title}</h2><p>${starter.lore.story}</p>
+        <blockquote>"${starter.lore.vow}"</blockquote>`;
+      begin.disabled = false;
     });
   });
   app.querySelector('#begin')?.addEventListener('click', () => {
     try {
       journey.confirm(localStorage);
-      render();
+      renderMenu(true);
       focusHeading();
     } catch (error) {
       console.error('Could not save Last Light starter', error);
@@ -113,7 +134,7 @@ function renderSelection(): void {
   });
 }
 
-function renderMenu(): void {
+function renderMenu(firstArrival = false): void {
   if (!journey.profile) throw new Error('The opening menu requires a saved companion.');
   const starter = getStarter(journey.profile.starterId);
   frame(`<section class="menu-screen">
@@ -121,11 +142,17 @@ function renderMenu(): void {
       <p class="subtitle">Welcome home, traveler. Your journey is just beginning.</p></div>
       <span class="chapter-badge">PROLOGUE<br><strong>01</strong></span></div>
     <div class="menu-layout">
-      <article class="companion-panel" style="--element:${starter.color}">
+      <article class="companion-panel ${firstArrival ? 'first-arrival' : ''}" style="--element:${starter.color}">
         <p class="eyebrow">YOUR FIRST COMPANION</p>
-        <div class="portrait">${portrait(starter)}</div>
+        <div class="portrait">${portrait(starter)}${firstArrival ? elementalReveal(starter) : ''}</div>
         <span class="element-pill">${starter.element} / ${starter.weapon}</span>
         <h2>${starter.name}</h2><p>${starter.description}</p>
+        ${firstArrival ? `<p class="bond-message">${starter.lore.awakening}</p>` : ''}
+        <details class="companion-lore" ${firstArrival ? 'open' : ''}>
+          <summary>Companion lore</summary>
+          <p class="eyebrow">${starter.lore.origin}</p>
+          <p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote>
+        </details>
         <span class="small-label">STARTER FORM &middot; LOCAL SAVE</span>
       </article>
       <div class="menu-options">
