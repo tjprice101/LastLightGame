@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** 2026-10-04, Free Battle and supplied-art integration.
+**Last updated:** three-screen sanctuary consolidation.
 
 ## Project state
 
@@ -14,7 +14,9 @@
   local starter save, opening menu, saved-session continuation, save-error handling.
 - Starter selection now includes bounded elemental reveals and original lore;
   first confirmation plays a companion awakening. Lore stays readable in the menu.
-- Implemented menu surfaces: Character, Inventory, Story mode, Events, Settings.
+- Implemented primary screens: Home, Character Upgrades, Events. Home shows the
+  companion and coming-later Squad/Summon buttons. Inventory is inside upgrades;
+  Free Battle and Story are Home subactivities. Settings opens in a modal side drawer.
   Story is a readable fire prologue; Events is a future placeholder. Motion settings
   save separately and update both canvas/CSS motion. Fractalis and Lycalis are labels,
   not balances. Upgrades and eight artifact slots plus one master relic are previews.
@@ -45,6 +47,13 @@ Free Battle has no rewards or permanent roster grants. Broader design documents
 still label unapproved production mechanics as proposed.
 
 ## Next recommended action
+
+Owner correction: the game starts with **one player character, not a team**.
+The current three-starter Free Battle practice implementation does not yet match
+that intended starting experience. [Battle Scenery](../Art/Battle%20Scenery.md)
+now provides the requested grassy-field generation prompt. Next, integrate an
+approved background and adapt the opening battle to the solo character; do not
+interpret the temporary practice team as an approved starting roster.
 
 Playtest the initial three-starter balance and attacks, then approve upgrade costs,
 item ownership/uniqueness, and rewarded quest rules before connecting battle to
@@ -88,10 +97,14 @@ progression/economy. Add future animation frames without changing resolver resul
   lore/reveal variants, focus preservation, 12-mote limit, no preview save,
   first-arrival-only awakening, saved lore, reduced-motion styles, and 390px layout.
   Visual playback in a visible tab remains a manual check.
-- Current menu checks: fire-only entry, preserved legacy save until confirmation,
-  Fractalis/Lycalis labels, all five menu pages, exactly eight artifacts plus one
+- Earlier menu checks: fire-only entry, preserved legacy save until confirmation,
+  Fractalis/Lycalis labels, exactly eight artifacts plus one
   master relic, seven upgrade paths, readable story, future events, settings
   persistence and 390px layouts. DOM-triggered input was used for the hidden tab.
+- Three-screen browser checks: exactly Home/Character Upgrades/Events navigation,
+  Home Squad/Summon buttons, seven upgrade areas and integrated inventory, drawer
+  motion persistence/focus return on every screen, battle input suspension/resumption,
+  and no horizontal overflow at 320px. Storage and viewport were restored.
 - Free Battle browser checks: all nine starter skills/ultimates, exact heavy
   recovery, all six decoded assets, enemy-left/team-right mobile layout, hotkey
   remap/display/persistence/guards, duplicate rejection, listener cleanup on repeated

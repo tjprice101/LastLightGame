@@ -20,7 +20,7 @@ app.addEventListener('error', (event) => {
   showError(`Artwork could not load for ${event.target.alt}. Please reload or check the asset deployment.`);
 }, true);
 const journey = new Journey();
-type MenuPage = 'home' | 'character' | 'inventory' | 'story' | 'events' | 'settings' | 'battle';
+type MenuPage = 'home' | 'character' | 'story' | 'events' | 'battle';
 let menuPage: MenuPage = 'home';
 let motionPreference: MotionPreference = 'system';
 let settingsError = '';
@@ -48,7 +48,8 @@ function errorMessage(error: unknown): string {
 }
 
 function showError(message: string): void {
-  const status = app.querySelector<HTMLElement>('#status');
+  const status = app.querySelector<HTMLElement>('dialog[open] #settings-error') ??
+    app.querySelector<HTMLElement>('#status');
   if (!status) throw new Error('Status region is missing.');
   status.textContent = message;
 }
@@ -175,11 +176,11 @@ function renderMenu(firstArrival = false): void {
   frame(`<section class="menu-screen">
     <div class="currency-strip" aria-label="Currencies">${currencies.map((currency) =>
       `<span><strong>${currency.name}</strong><small>${currency.role} &middot; Balance not implemented</small></span>`).join('')}</div>
-    <nav class="menu-nav" aria-label="Sanctuary navigation">${([
-      ['home', 'Sanctuary'], ['battle', 'Free Battle'], ['character', 'Character'], ['inventory', 'Inventory'],
-      ['story', 'Story mode'], ['events', 'Events'], ['settings', 'Settings'],
+    <div class="navigation-row"><nav class="menu-nav" aria-label="Main screens">${([
+      ['home', 'Home'], ['character', 'Character Upgrades'], ['events', 'Events'],
     ] as const).map(([page, label]) =>
-      `<button data-page="${page}" ${menuPage === page ? 'aria-current="page"' : ''}>${label}</button>`).join('')}</nav>
+      `<button data-page="${page}" ${(menuPage === 'battle' || menuPage === 'story' ? 'home' : menuPage) === page ? 'aria-current="page"' : ''}>${label}</button>`).join('')}</nav>
+      <button id="open-settings" class="settings-trigger" aria-haspopup="dialog">Settings</button></div>
     ${menuPage !== 'home' ? menuContent(menuPage) : `
     <div class="menu-heading"><div><p class="eyebrow">THE SANCTUARY</p><h1 tabindex="-1">A new light awakens.</h1>
       <p class="subtitle">Welcome home, traveler. Your journey is just beginning.</p></div>
@@ -203,22 +204,50 @@ function renderMenu(firstArrival = false): void {
           <h2>Free Battle</h2><p>Infernis, Tizu, and Flores stand together against endless waves of Goblins, Imps, and Rock Golems. Train without spending currency.</p>
           <button class="primary-button" data-page="battle">Enter Free Battle &rarr;</button></article>
         <div class="feature-grid">
-          <div class="feature-tile"><span class="tile-symbol" aria-hidden="true">&#9671;</span><h3>Squad</h3><p>One companion. Endless possibility.</p><span>COMING SOON</span></div>
-          <div class="feature-tile"><span class="tile-symbol" aria-hidden="true">&#10022;</span><h3>Summon</h3><p>New lights will answer the call.</p><span>COMING SOON</span></div>
+          <button class="feature-tile feature-button" data-feature="Squad"><span class="tile-symbol" aria-hidden="true">&#9671;</span><strong>Squad</strong><span>You start alone. Squad building comes later.</span><span>COMING SOON</span></button>
+          <button class="feature-tile feature-button" data-feature="Summon"><span class="tile-symbol" aria-hidden="true">&#10022;</span><strong>Summon</strong><span>New lights will answer the call.</span><span>COMING SOON</span></button>
         </div>
+        <button class="text-button" data-page="story">Read the opening story</button>
         <div class="menu-actions"><button id="return-title" class="text-button">Return to title</button><span>Progress saved on this device</span></div>
       </div>
     </div>`}
-  </section>`);
+  </section>
+  <dialog id="settings-drawer" class="settings-drawer" aria-labelledby="settings-heading">
+    <button id="close-settings" class="text-button">Close settings</button>
+    ${menuContent('settings')}<p id="settings-error" class="status" role="alert"></p>
+  </dialog>`);
   app.querySelectorAll<HTMLButtonElement>('[data-page]').forEach((button) => {
     button.addEventListener('click', () => {
       const page = button.dataset.page;
-      if (page !== 'home' && page !== 'character' && page !== 'inventory' &&
-          page !== 'story' && page !== 'events' && page !== 'settings' && page !== 'battle') throw new Error('Unknown menu page.');
+      if (page !== 'home' && page !== 'character' &&
+          page !== 'story' && page !== 'events' && page !== 'battle') throw new Error('Unknown menu page.');
       menuPage = page;
       renderMenu();
       focusHeading();
     });
+  });
+  app.querySelectorAll<HTMLButtonElement>('[data-feature]').forEach((button) => {
+    button.addEventListener('click', () => {
+      showError(`${button.dataset.feature} is coming later. No units or currency have been changed.`);
+    });
+  });
+  const drawer = app.querySelector<HTMLDialogElement>('#settings-drawer');
+  if (!drawer) throw new Error('Settings drawer is missing.');
+  app.querySelector('#open-settings')?.addEventListener('click', () => {
+    battleView?.destroy();
+    battleView = null;
+    drawer.showModal();
+    if (settingsError || hotkeyError) showError([settingsError, hotkeyError].filter(Boolean).join(' '));
+  });
+  const closeSettings = (): void => {
+    drawer.close();
+    renderMenu();
+    app.querySelector<HTMLButtonElement>('#open-settings')?.focus();
+  };
+  app.querySelector('#close-settings')?.addEventListener('click', closeSettings);
+  drawer.addEventListener('cancel', (event) => {
+    event.preventDefault();
+    closeSettings();
   });
   if (menuPage === 'battle') {
     const host = app.querySelector<HTMLElement>('#battle-root');
@@ -227,7 +256,6 @@ function renderMenu(firstArrival = false): void {
     battleView = new BattleView(host, battleSession, bindings);
   }
   const settingsForm = app.querySelector<HTMLFormElement>('#settings-form');
-  if (menuPage === 'settings' && (settingsError || hotkeyError)) showError([settingsError, hotkeyError].filter(Boolean).join(' '));
   settingsForm?.addEventListener('submit', (event) => {
     event.preventDefault();
     const value = new FormData(settingsForm).get('motion');
@@ -280,13 +308,13 @@ function renderMenu(firstArrival = false): void {
   });
 }
 
-function menuContent(page: Exclude<MenuPage, 'home'>): string {
+function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
   if (!journey.profile) throw new Error('A saved companion is required.');
   const starter = getStarter(journey.profile.starterId);
   const heading = (name: string, text: string) =>
     `<h1 tabindex="-1">${name}</h1><p class="subtitle">${text}</p>`;
-  if (page === 'battle') return '<div id="battle-root"></div>';
-  if (page === 'character') return `${heading(starter.name, 'Your companion\'s combat kit, upgrade paths, and equipment layout.')}
+  if (page === 'battle') return '<button class="text-button" data-page="home">Back to Home</button><div id="battle-root"></div>';
+  if (page === 'character') return `${heading('Character Upgrades', `${starter.name} / Combat kit, progression, and equipment.`)}
     <article class="companion-panel character-kit"><div class="portrait">${portrait(starter)}</div>
       <p class="subtitle">HP ${fighters[starter.id].stats.health} &middot; Defense ${fighters[starter.id].stats.defense} &middot;
       Damage ${fighters[starter.id].stats.damage} &middot; Crit ${Math.round(fighters[starter.id].stats.crit * 100)}%</p>
@@ -297,11 +325,9 @@ function menuContent(page: Exclude<MenuPage, 'home'>): string {
     </article>
     <div class="upgrade-grid">${upgradePaths.map((path) =>
       `<article class="feature-tile"><h2>${path.name}</h2><p>${path.detail.replace('<', '&lt;').replace('>', '&gt;')}</p><span>UPGRADES NOT IMPLEMENTED &middot; COSTS UNSET</span></article>`).join('')}</div>
+    <section class="inventory-section"><h2>Inventory</h2><div class="feature-tile"><h3>No items yet</h3><p>Artifacts, master relics, and upgrade materials will appear here. Item acquisition and equipping are not implemented.</p></div></section>
     ${equipmentLayout()}`;
-  if (page === 'inventory') return `${heading('Inventory', 'Your collection of artifacts, master relics, and upgrade materials.')}
-    <div class="feature-tile"><h2>No items yet</h2><p>Item acquisition and equipment operations are not implemented. No starter items have been granted.</p></div>
-    ${equipmentLayout()}`;
-  if (page === 'story') return `${heading('Story mode', 'Prologue / The watchfires of Ashen Vale')}
+  if (page === 'story') return `<button class="text-button" data-page="home">Back to Home</button>${heading('Story mode', 'Prologue / The watchfires of Ashen Vale')}
     <article class="story-panel lore-panel" style="--element:${starter.color}">
       <p class="eyebrow">A FIRST LIGHT</p><h2>The coal that would not fade</h2>
       <p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote>
@@ -310,7 +336,7 @@ function menuContent(page: Exclude<MenuPage, 'home'>): string {
     </article>`;
   if (page === 'events') return `${heading('Events', 'Future limited-time adventures.')}
     <article class="feature-tile"><h2>No events available</h2><p>This tab is reserved for later. There are no active events, timers, or event rewards.</p></article>`;
-  return `${heading('Settings', 'Preferences are stored separately from your companion save.')}
+  return `<h2 id="settings-heading">Settings</h2><p class="subtitle">Preferences are stored separately from your companion save.</p>
     <form id="settings-form" class="feature-tile settings-panel">
       <label for="motion">Animation preference</label>
       <select id="motion" name="motion">

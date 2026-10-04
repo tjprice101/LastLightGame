@@ -38,6 +38,8 @@ Also see the root [AI instructions](../AGENTS.md) and the existing
 [art prompt guide](../Art/midjourney-character-style-prompt.md).
 The [Starter Art prompts](../Art/Starter%20Art.md) cover the new base-form trio
 and three basic mythological enemies in the same style.
+The [Battle Scenery prompt](../Art/Battle%20Scenery.md) covers a cutesy grassy
+field for the intended solo opening battle.
 
 ## Common tasks
 

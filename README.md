@@ -2,8 +2,10 @@
 
 An original cinematic 2D gacha RPG inspired by Brave Frontier.
 The browser-playable prelude includes an animated title, fire starter selection,
-and sanctuary navigation for Free Battle, character upgrades, inventory, settings,
-story, and future events. Free Battle uses a temporary three-starter team against
+and three sanctuary screens: Home, Character Upgrades, and Events. Home displays
+your companion and Squad/Summon buttons, with Free Battle and story subactivities.
+Inventory lives inside Character Upgrades; Settings opens in a side drawer.
+Free Battle uses a temporary three-starter team against
 endless Goblin/Imp/Rock Golem waves, with skills, passives, Last Flares, recovery
 turns, and configurable hotkeys. Supplied artwork has transparent runtime exports.
 Upgrade/equipment previews and currency names are shown; upgrades, equipping,

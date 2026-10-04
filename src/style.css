@@ -85,6 +85,15 @@ h1 { font-size: clamp(30px, 4vw, 46px); margin: 8px 0 14px; }
 .menu-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 30px; }
 .menu-nav button { padding: 12px 18px; color: #c1c9d2; background: #101b2bbd; border: 1px solid #aab9c333; border-radius: 3px; }
 .menu-nav button[aria-current="page"] { color: var(--gold); border-color: var(--gold); }
+.navigation-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.settings-trigger { padding: 12px 16px; background: #101b2bbd; border: 1px solid #aab9c333; border-radius: 3px; color: var(--gold); }
+.settings-drawer { position: fixed; inset: 0 0 0 auto; margin: 0; width: min(540px, 100%); max-width: 100%; height: 100dvh; max-height: 100dvh; padding: 24px; overflow-y: auto; border: 0; border-left: 1px solid #d9bc7f55; color: #f2eadb; background: #0e1929; }
+.settings-drawer::backdrop { background: #020812b8; }
+.settings-drawer h2 { font-size: 28px; }
+.feature-button { display: flex; flex-direction: column; align-items: flex-start; text-align: left; color: #f2eadb; gap: 12px; }
+.feature-button strong { font: 23px Georgia, serif; }
+.feature-button > span:not(.tile-symbol) { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.inventory-section { margin-top: 30px; }
 .upgrade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
 .feature-tile h2 { margin: 6px 0 14px; font-size: 25px; }
 .equipment-panel { margin-top: 30px; }

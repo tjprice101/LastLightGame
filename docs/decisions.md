@@ -21,6 +21,8 @@ specifications own detailed rules; link them here rather than duplicating them.
 | D-012 | Every character gets at most one light/heavy/skill/ultimate action per turn; heavy/ultimate forces a full next-turn recovery | Owner request and follow-up approval, 2026-10-04 |
 | D-013 | Design editable prototype stats/kits for all three starters; expose configurable displayed battle hotkeys | Owner request and delegated initial balance, 2026-10-04; [rules](free-battle.md) |
 | D-014 | Organize supplied character/enemy art, preserve originals, remove white matte from runtime copies, wire to UI/battle | Owner request, 2026-10-04; [art](art-workflow.md) |
+| D-015 | The starting experience is solo, not a team; next combat presentation needs scenery, beginning with a cutesy grassy field | Owner correction, 2026-10-04; [scenery prompt](../Art/Battle%20Scenery.md). Current three-unit practice implementation has not yet been changed |
+| D-016 | Three primary sanctuary screens: Home with character and Squad/Summon buttons, Character Upgrades, and Events; Settings off to the side | Owner navigation request; [menu surfaces](menus-and-inventory.md). Inventory is integrated into upgrades; Story and Free Battle remain Home subactivities |
 
 D-003 records existing guidance, not approval of generated assets or gameplay rules.
 

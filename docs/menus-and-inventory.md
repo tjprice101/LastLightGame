@@ -11,19 +11,27 @@
 - Each character has eight unique artifact slots and one separate special
   **master relic** slot: nine equipment slots total.
 - Inventory, settings, and story-mode menus are needed; events come later.
+- Three primary sanctuary screens: Home, Character Upgrades, and Events.
+  Home shows the character with Squad and Summon buttons; Settings sits to the side.
+- The starting experience is solo. The temporary three-starter practice battle
+  still needs to be adapted; it does not grant a starting squad.
 
 ## Implemented surfaces
 
-The sanctuary navigation opens Free Battle, Character, Inventory, Story mode, Events, and
-Settings. Both currencies appear with explicit "Balance not implemented" labels;
+The sanctuary navigation opens Home, Character Upgrades, and Events. Settings is
+a modal right-side drawer available from every sanctuary screen, with close/Escape
+support and focus returned to its trigger. Both currencies appear with explicit "Balance not implemented" labels;
 there are no invented starting balances, rewards, purchases, or spending operations.
 
-The main sanctuary activity is [Free Battle](free-battle.md), an endless-wave
-practice mode with all three starters and the supplied art. Character also shows
+Home displays the saved companion and Squad/Summon buttons. These buttons announce
+their coming-later status without granting units or spending currency.
+[Free Battle](free-battle.md) and Story are Home subactivities with Back to Home
+controls, not additional primary tabs. Free Battle remains an endless-wave
+practice mode with all three starters and the supplied art. Character Upgrades shows
 the saved companion's working combat kit and illustration.
 Character shows all seven upgrade paths. They are non-interactive previews until
 rules, costs, caps, and ability definitions are approved.
-Character and Inventory show exactly eight numbered artifact slots and one master
+The integrated Inventory section shows exactly eight numbered artifact slots and one master
 relic above them. All are empty previews; no items have been granted and no equip,
 unequip, ownership, or stat calculation operation exists yet.
 
@@ -35,6 +43,8 @@ Settings supports persisted, validated battle hotkeys and a motion preference: f
 motion. Device reduced motion cannot be overridden. The setting updates both
 Phaser ambient movement and CSS reveals immediately. Failed reads/writes are
 reported; storage uses the separate `last-light.settings` key.
+Opening Settings suspends battle presentation and detaches its hotkeys. Closing
+restores the already-resolved battle state and uses the latest saved key bindings.
 
 ## Legacy companion saves
 
