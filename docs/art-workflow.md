@@ -44,14 +44,15 @@ moved out of the project root.
 
 The [processing script](../tools/prepare_art.py) floods border-connected near-white
 backgrounds, preserving enclosed white clothing/highlights. It reconstructs partial
-edge alpha and removes white contamination, crops transparent excess, adds padding,
-and downsizes to at most 960px. Colored ground shadows are retained as supplied
+edge alpha and removes white contamination, crops transparent excess, and fits
+the complete silhouette into the standardized canvas below. Colored ground shadows are retained as supplied
 art, not treated as white background.
 
 With [Python image dependencies](../tools/requirements.txt) installed, regenerate:
 
 ```sh
 python tools/prepare_art.py
+python tools/test_prepare_art.py
 ```
 
 The one-time `--move-sources` option organizes root files, refuses to overwrite
@@ -65,6 +66,33 @@ The [portrait helper](../src/presentation/portrait.ts) resolves assets with Vite
 deployment base. Selection, companion/character panels, and Free Battle use the
 runtime images. Originals are not shipped in the game build.
 
+## Standard character and enemy sizing
+
+Every runtime character/enemy PNG uses a **960 x 960 transparent RGBA canvas**.
+Trim transparent excess, scale uniformly so the longest content dimension is
+**864px**, then center it with at least **48px transparent padding on every side**.
+Never stretch the art or crop weapons/effects to fill the square. Smaller source
+images are upscaled to this same occupancy; use high-resolution originals to
+avoid softness. This standardizes complete silhouettes, not anatomical head/body
+height: a wide greatsword still needs more horizontal space than an unarmed creature.
+
+This runtime export standard does not change the 4:3 Midjourney source-art guide.
+Currency icons, interface symbols, backgrounds, and other non-unit assets have
+their own usage-specific dimensions and are **not** processed with this sprite rule.
+
+Selection and companion/character portraits share a square display slot up to
+250 CSS pixels; battle sprites share square slots up to 185px (100px on mobile).
+Slots shrink to their container width and images use `object-fit: contain`.
+Thus each surface has consistent sizing without forcing large portrait dimensions
+onto compact battle cards. All incoming unit art must use the same export pipeline:
+place the original in `Art/source/characters` or `Art/source/enemies`, add its
+filename/category/ID to `ASSETS` in the processing script, regenerate, and run the
+image tests. Runtime exports are checked for size, alpha, content occupancy, padding,
+and centering. Register the resulting path in the starter/enemy definitions.
+The [unit-art contract test](../src/presentation/art.test.ts) also checks every
+PNG in those two runtime folders during `npm test` and deployment, rejecting
+non-960px or non-RGBA assets. Other asset categories are deliberately excluded.
+
 ## Proposed asset intake
 
 1. Identify unit/form/asset IDs and intended UI or battle usage.
@@ -76,13 +104,13 @@ runtime images. Originals are not shipped in the game build.
 6. Register the export in the eventual asset manifest and verify it in-game.
 
 Suggested basename: `ember-stage-01-character-v001`; use the correct extension.
-Directory layout, pixel dimensions, compression, pivots, animation format, and
-runtime naming rules remain open until engine requirements are known.
+Static character/enemy layout and dimensions are specified above. Animation
+formats/pivots and non-unit asset dimensions remain usage-specific future decisions.
 
 ## Source versus runtime art
 
-The pure-white background is a concept/source requirement. Whether runtime assets
-need transparency, masks, sprites, or retained white backgrounds is undecided.
+The pure-white background is a concept/source requirement. Runtime character/enemy
+sprites use transparent square exports as specified above.
 Do not overwrite originals during conversion. Document export settings and
 inspect edges, effects, scaling, and cropping in the actual UI.
 

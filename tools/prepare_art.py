@@ -8,6 +8,8 @@ import numpy as np
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
+CANVAS_SIZE = 960
+CONTENT_SIZE = 864
 ASSETS = {
     "Infernis Beginner.png": ("characters", "infernis"),
     "Tizu Beginner.png": ("characters", "tizu"),
@@ -16,6 +18,20 @@ ASSETS = {
     "Imp Enemy.png": ("enemies", "imp"),
     "Rock Golem Enemy.png": ("enemies", "rock-golem"),
 }
+
+
+def standardize_sprite(image):
+    rgba = image.convert("RGBA")
+    bbox = rgba.getbbox()
+    if not bbox:
+        raise ValueError("Cannot standardize an empty sprite.")
+    cropped = rgba.crop(bbox)
+    scale = CONTENT_SIZE / max(cropped.size)
+    size = tuple(max(1, round(dimension * scale)) for dimension in cropped.size)
+    resized = cropped.resize(size, Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (CANVAS_SIZE, CANVAS_SIZE))
+    canvas.paste(resized, ((CANVAS_SIZE - size[0]) // 2, (CANVAS_SIZE - size[1]) // 2))
+    return canvas
 
 
 def remove_matte(image):
@@ -58,14 +74,7 @@ def remove_matte(image):
     rgb[alpha == 0] = 0
     rgba = np.dstack((rgb, alpha * 255)).astype(np.uint8)
     result = Image.fromarray(rgba)
-    bbox = result.getbbox()
-    if not bbox:
-        raise ValueError("Matte removal produced an empty image.")
-    cropped = result.crop(bbox)
-    padded = Image.new("RGBA", (cropped.width + 32, cropped.height + 32))
-    padded.paste(cropped, (16, 16))
-    padded.thumbnail((960, 960), Image.Resampling.LANCZOS)
-    return padded
+    return standardize_sprite(result)
 
 
 def main():
@@ -87,6 +96,10 @@ def main():
             result = remove_matte(image)
             result.save(output, optimize=True)
         alpha = np.asarray(result)[:, :, 3]
+        assert result.size == (CANVAS_SIZE, CANVAS_SIZE)
+        bbox = result.getbbox()
+        assert bbox and max(bbox[2] - bbox[0], bbox[3] - bbox[1]) == CONTENT_SIZE
+        assert min(bbox[0], bbox[1], CANVAS_SIZE - bbox[2], CANVAS_SIZE - bbox[3]) >= 48
         assert (alpha == 0).any() and (alpha == 255).any()
         assert ((alpha > 0) & (alpha < 255)).any()
         assert not alpha[0].any() and not alpha[-1].any()

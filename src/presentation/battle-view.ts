@@ -188,7 +188,7 @@ export class BattleView {
     return `<button class="battle-unit ${selected ? 'selected-unit' : ''} ${unit.hp <= 0 ? 'fallen' : ''}"
       data-unit="${unit.id}" data-side="${unit.side}" aria-pressed="${selected}" style="--element:${color}" ${unit.hp <= 0 ? 'disabled' : ''}>
       <span class="unit-name">${unit.name}</span><span class="battle-art">
-      <img src="${assetUrl(`${unit.side === 'ally' ? 'characters' : 'enemies'}/${art}.png`)}" alt="${unit.name}" />
+      <img src="${assetUrl(`${unit.side === 'ally' ? 'characters' : 'enemies'}/${art}.png`)}" alt="${unit.name}" width="960" height="960" />
       </span><span class="health-track"><span style="width:${unit.hp / unit.stats.health * 100}%"></span></span>
       <span class="unit-health">HP ${unit.hp}/${unit.stats.health}${unit.shield ? ` &middot; Shield ${unit.shield}` : ''}</span>
       <span class="unit-stats">DEF ${unit.stats.defense} &middot; DMG ${unit.stats.damage} &middot; CRIT ${Math.round(unit.stats.crit * 100)}%</span>

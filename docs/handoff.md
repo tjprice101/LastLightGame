@@ -61,10 +61,11 @@ progression/economy. Add future animation frames without changing resolver resul
 
 ## Verification
 
-- `npm test`: 48 passing tests for fire-only transitions, legacy re-selection,
+- `npm test`: 50 passing tests for fire-only transitions, legacy re-selection,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
   motion settings, combat formulas, all kits/passives, exact recovery/cooldown
-  boundaries, status durations, shield/heal caps, waves/defeat, and hotkey validation.
+  boundaries, status durations,   shield/heal caps, waves/defeat, hotkey validation, and every runtime unit PNG's
+  960 x 960 RGBA export contract.
 - `npm run build`: strict type-check and production build pass; bundle warning above.
 - `npm audit`: zero known dependency vulnerabilities after updating Vitest.
 - `npm ci`: clean lockfile restore passes with npm 10 after stopping the
@@ -104,6 +105,13 @@ progression/economy. Add future animation frames without changing resolver resul
   decoded art, Cinder Cleave, Tidal Shelter, keyed Worldseed, enemy phase, and
   recovery without uncaught errors. Browser test storage was restored afterward.
 - All 167 local documentation links/anchors across 19 Markdown documents resolved.
+- Unit art standardized to centered 960 x 960 canvases, longest content dimension
+  864px and minimum 48px padding. Source originals remain unchanged. Four Python
+  image tests check aspect preservation, white-interior preservation, export
+  occupancy/centering/padding, and empty-image rejection.
+- Browser sizing verified at 1280px, 390px, and 320px across selection, sanctuary,
+  character, and battle: equal battle slots, square images, contain fit, correct
+  natural sizes, and no horizontal overflow.
 
 For setup and deployment commands, use the [development guide](development-guide.md).
 

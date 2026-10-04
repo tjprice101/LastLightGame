@@ -42,8 +42,8 @@ h1 { font-size: clamp(30px, 4vw, 46px); margin: 8px 0 14px; }
 .starter-card:hover { transform: translateY(-5px); border-color: var(--element); }
 .starter-card[aria-pressed="true"] { border-color: var(--element); background: linear-gradient(155deg, #273545dc, #0b1320ed); box-shadow: 0 0 30px color-mix(in srgb, var(--element) 9%, transparent); }
 .card-top { display: flex; justify-content: space-between; width: 100%; font-size: 9px; letter-spacing: .18em; color: var(--element); }
-.portrait { width: 100%; max-width: 360px; margin: auto; position: relative; }
-.portrait img { display: block; width: 100%; height: 250px; object-fit: contain; }
+.portrait { width: min(100%, 250px); aspect-ratio: 1; margin: auto; position: relative; }
+.portrait img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .weapon-label, .small-label { color: var(--muted); font-size: 9px; letter-spacing: .15em; }
 .starter-card strong { font-size: clamp(19px, 2.2vw, 26px); margin: 12px 0 8px; }
 .card-tagline { font-size: 11px; color: var(--muted); min-height: 28px; line-height: 1.6; }
@@ -58,7 +58,6 @@ h1 { font-size: clamp(30px, 4vw, 46px); margin: 8px 0 14px; }
 .chapter-badge strong { font: 38px Georgia, serif; }
 .menu-layout { display: grid; grid-template-columns: minmax(260px, .85fr) 1.7fr; gap: 28px; }
 .companion-panel { padding: 24px; background: linear-gradient(155deg, #253446bb, #101b2be8); border: 1px solid #aab9c333; border-radius: 3px; }
-.companion-panel .portrait { max-width: 320px; }
 .companion-panel h2 { font-size: 27px; margin: 18px 0 12px; }
 .companion-panel p:not(.eyebrow) { color: #b4beca; font-size: 13px; line-height: 1.8; }
 .element-pill { color: var(--element); font-size: 10px; letter-spacing: .12em; }
@@ -139,8 +138,8 @@ section { animation: arrive .6s ease-out both; }
 .selected-unit { border-color: var(--element); box-shadow: 0 0 16px color-mix(in srgb, var(--element) 15%, transparent); }
 .fallen { filter: grayscale(1); opacity: .5; }
 .unit-name { font: 17px Georgia, serif; }
-.battle-art { display: block; position: relative; height: clamp(95px, 14vw, 185px); margin: 12px 0; }
-.battle-art img { width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 2; }
+.battle-art { display: block; position: relative; width: min(100%, 185px); aspect-ratio: 1; margin: 12px auto; }
+.battle-art img { display: block; width: 100%; height: 100%; object-fit: contain; position: relative; z-index: 2; }
 .health-track { height: 5px; background: #050c16; border-radius: 4px; overflow: hidden; }
 .health-track > span { display: block; height: 100%; background: var(--element); }
 .unit-health, .unit-stats, .unit-status { font-size: 10px; margin-top: 8px; line-height: 1.5; }
@@ -173,13 +172,12 @@ kbd { display: inline-block; min-width: 24px; padding: 3px 6px; font: 11px "Sego
   .shell { padding: 18px 6vw; }
   .build-label { letter-spacing: .07em; }
   .starter-grid { grid-template-columns: 1fr; gap: 16px; max-width: 380px; }
-  .starter-card .portrait { max-width: 260px; }
   .selection-screen { padding-top: 32px; }
   .menu-layout { grid-template-columns: 1fr; }
   .battle-arena { grid-template-columns: 1fr 16px 1fr; gap: 4px; }
   .battle-side { grid-template-columns: 1fr; gap: 8px; }
   .battle-unit { padding: 8px; }
-  .battle-art { height: 100px; margin: 5px 0; }
+  .battle-art { width: min(100%, 100px); margin: 5px auto; }
   .battle-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .artifact-grid { grid-template-columns: repeat(2, 1fr); }
   .currency-strip { justify-content: flex-start; }
