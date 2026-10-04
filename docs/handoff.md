@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** level-30 and Fracture progression previews.
+**Last updated:** supplied grassy-field scenery integration.
 
 ## Project state
 
@@ -32,6 +32,9 @@
   character kit show gauge/costs. No persistent-save schema change is needed.
 - Six supplied images moved to Art/source; transparent runtime exports are in
   public/assets. Portraits use the new names but retain old save IDs.
+- Grassy Field moved to `Art/source/backgrounds`, with a byte-identical landscape
+  PNG in `public/assets/backgrounds`. It is wired behind the Free Battle arena;
+  no unit-art alpha removal or square normalization is applied.
 - Not implemented: rewarded quests, squad editing, summoning, upgrades/equipping,
   currency balances/transactions, item acquisition,
   accounts, cloud saves, backend, payments.
@@ -60,8 +63,8 @@ still label unapproved production mechanics as proposed.
 Owner correction: the game starts with **one player character, not a team**.
 The current three-starter Free Battle practice implementation does not yet match
 that intended starting experience. [Battle Scenery](../Art/Battle%20Scenery.md)
-now provides the requested grassy-field generation prompt. Next, integrate an
-approved background and adapt the opening battle to the solo character; do not
+provides the requested grassy-field generation prompt, and supplied scenery is
+now integrated. Next, adapt the opening battle to the solo character; do not
 interpret the temporary practice team as an approved starting roster.
 
 Playtest the initial three-starter balance and attacks, then approve upgrade costs,
@@ -79,7 +82,7 @@ progression/economy. Add future animation frames without changing resolver resul
 
 ## Verification
 
-- `npm test`: 63 passing tests for fire-only transitions, legacy re-selection,
+- `npm test`: 64 passing tests for fire-only transitions, legacy re-selection,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
   motion settings, combat formulas, all kits/passives, exact recovery/cooldown
   boundaries, status durations,   shield/heal caps, waves/defeat, hotkey validation, and every runtime unit PNG's
@@ -88,6 +91,10 @@ progression/economy. Add future animation frames without changing resolver resul
   +10 Lycalis rule and pending materials/stats. Production-preview headless Edge
   checks verify visible rules, seven upgrade areas, no enabled transactions,
   unchanged version-1 save, and 320px layout without overflow.
+- Scenery tests verify the runtime PNG equals the preserved source and retains
+  1456 x 816 RGB dimensions. Headless Edge decoded the image at 1280px and 320px,
+  checked full arena coverage, aspect-preserving cover sizing, enemy-left/ally-right
+  layout, and working attacks; screenshots were reviewed for readable battle cards.
 - Shatter tests cover zero-start/independent gauges, exact costs for every starter
   ability (including support), insufficient-resource rejection without mutation,
   attack/incoming-hit gains and cap, shielded/lethal hits, no passive/burn gain,

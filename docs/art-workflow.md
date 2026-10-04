@@ -16,6 +16,16 @@ not generated assets or changes to the playable roster.
 background prompt for the opening solo encounter. Scenery is opaque full-bleed
 environment art, not a square transparent unit asset.
 
+The supplied [Grassy Field original](../Art/source/backgrounds/Grassy%20Field.png)
+has been moved out of the project root. Its byte-identical
+[runtime copy](../public/assets/backgrounds/grassy-field.png) is used behind the
+Free Battle arena, resolved through Vite's deployment base. The 1456 x 816 RGB PNG
+is not alpha-processed, cropped, resized, or passed through the unit-art pipeline.
+Display uses aspect-preserving `object-fit: cover`, anchored at the bottom; narrow
+screens crop the sides. Dark battle cards keep stats readable over bright scenery.
+The supplied image includes two tiny painted figures; these are background details,
+not targetable combatants. The original is preserved without retouching.
+
 ## Current visual direction
 
 - Compact chibi characters, approximately 2.5-3 heads tall; eyes-only faces.
@@ -27,7 +37,7 @@ environment art, not a square transparent unit asset.
 - Standalone weapon concepts use 3:2 and an inky, readable floating showcase style.
 
 The prompt guide's Midjourney style-reference image/URL is still not present.
-The owner has supplied the six illustrations below for runtime use. They are
+The owner has supplied the six unit illustrations below and grassy-field scenery for runtime use. They are
 used as provided apart from background processing, not repainted to enforce the
 prompt guide's facial-feature rules.
 

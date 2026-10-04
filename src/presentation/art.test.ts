@@ -16,4 +16,16 @@ describe('runtime unit art contract', () => {
       expect(png[25], `${filename} RGBA color type`).toBe(6);
     }
   });
+
+  describe('runtime battle scenery', () => {
+    it('preserves the supplied opaque landscape without unit-art processing', () => {
+      const source = readFileSync(new URL('../../Art/source/backgrounds/Grassy%20Field.png', import.meta.url));
+      const runtime = readFileSync(new URL('../../public/assets/backgrounds/grassy-field.png', import.meta.url));
+      expect(runtime.equals(source)).toBe(true);
+      expect(runtime.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+      expect(runtime.readUInt32BE(16)).toBe(1456);
+      expect(runtime.readUInt32BE(20)).toBe(816);
+      expect(runtime[25]).toBe(2);
+    });
+  });
 });

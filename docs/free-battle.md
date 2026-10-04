@@ -13,6 +13,8 @@ Only fire remains selectable as a permanent first companion; practice does not
 grant Tizu/Flores, modify the roster save, consume currency, or award items.
 
 Enemies are on the **left**, allies on the **right**, including mobile layouts.
+The arena uses the supplied [grassy-field scenery](art-workflow.md), with
+aspect-preserving cover cropping and dark cards for readable stats.
 Click an ally to select its action kit and an enemy to target it. Select an action,
 then finish the player turn with **End turn / enemy attacks**. Unused ally actions
 are forfeited when ending the turn. There is no automatic turn ending.

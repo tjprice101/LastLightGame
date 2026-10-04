@@ -208,7 +208,8 @@ export class BattleView {
     this.host.innerHTML = `<div class="battle-top"><h1 tabindex="-1">Free Battle</h1>
       <span>Wave ${state.wave} &middot; Turn ${state.round} &middot; ${state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Wave cleared' : 'Team defeated'}</span></div>
       <p class="quiet">Practice team: all three starters. No permanent roster grants, rewards, or battle saves.</p>
-      <div class="battle-arena"><div class="battle-side enemies"><h2>Enemies &middot; Left</h2>${state.enemies.map((unit) => this.unit(unit)).join('')}</div>
+      <div class="battle-arena"><img class="battle-scenery" src="${assetUrl('backgrounds/grassy-field.png')}" alt="Sunlit grassy-field battle scenery" width="1456" height="816" />
+      <div class="battle-side enemies"><h2>Enemies &middot; Left</h2>${state.enemies.map((unit) => this.unit(unit)).join('')}</div>
       <div class="battle-divider" aria-hidden="true">VS</div>
       <div class="battle-side allies"><h2>Your team &middot; Right</h2>${state.allies.map((unit) => this.unit(unit)).join('')}</div></div>
       <p id="battle-announcement" role="status">${state.phase === 'cleared' ? 'Wave cleared. Continue when ready; recovery and health carry over.' : state.phase === 'defeat' ? 'Your team has fallen. Restart Free Battle to try again.' : 'Select an ally on the right and a target on the left.'}</p>
