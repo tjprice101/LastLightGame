@@ -63,8 +63,9 @@ function showError(message: string): void {
   status.textContent = message;
 }
 
-function frame(body: string): void {
-  app.innerHTML = `<div class="shell">
+function frame(body: string, battle = false): void {
+  document.body.classList.toggle('in-battle', battle);
+  app.innerHTML = battle ? `<div class="battle-screen">${body}<p id="status" class="status" role="alert"></p></div>` : `<div class="shell">
     <header class="masthead"><span class="brand-mark">L / L</span><span>LAST LIGHT</span><span class="build-label">PRELUDE &middot; 0.1</span></header>
     ${body}
     <p id="status" class="status" role="alert"></p>
@@ -181,7 +182,7 @@ function renderMenu(firstArrival = false): void {
   battleView = null;
   if (!journey.profile) throw new Error('The opening menu requires a saved companion.');
   const starter = getStarter(journey.profile.starterId);
-  frame(`<section class="menu-screen">
+  const sanctuary = `<section class="menu-screen">
     <div class="currency-strip" aria-label="Currencies">${currencies.map((currency) =>
       `<span><strong>${currency.name}${currency.id === 'fractalis' ? ` <span id="fractalis-balance">${fractalis ?? 'Unavailable'}</span>` : ''}</strong><small>${currency.role} &middot; ${currency.id === 'fractalis' ? 'Saved locally' : 'Balance not implemented'}</small></span>`).join('')}</div>
     ${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
@@ -220,11 +221,17 @@ function renderMenu(firstArrival = false): void {
         <div class="menu-actions"><button id="return-title" class="text-button">Return to title</button><span>Progress saved on this device</span></div>
       </div>
     </div>`}
-  </section>
-  <dialog id="settings-drawer" class="settings-drawer" aria-labelledby="settings-heading">
+  </section>`;
+  frame(`${menuPage === 'battle' ? `<header class="battle-toolbar">
+    <button class="text-button" data-page="home">Quit Battle</button>
+    <span>Fractalis <strong id="fractalis-balance">${fractalis ?? 'Unavailable'}</strong></span>
+    <button id="open-settings" class="text-button" aria-haspopup="dialog">Settings</button>
+    </header>${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
+    <div id="battle-root"></div>` : sanctuary}
+    <dialog id="settings-drawer" class="settings-drawer" aria-labelledby="settings-heading">
     <button id="close-settings" class="text-button">Close settings</button>
     ${menuContent('settings')}<p id="settings-error" class="status" role="alert"></p>
-  </dialog>`);
+  </dialog>`, menuPage === 'battle');
   app.querySelectorAll<HTMLButtonElement>('[data-page]').forEach((button) => {
     button.addEventListener('click', () => {
       const page = button.dataset.page;

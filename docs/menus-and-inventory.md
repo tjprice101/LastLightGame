@@ -26,8 +26,11 @@ starting at 0 and increasing by 5-10 per defeated enemy. Lycalis still shows
 Home displays the saved companion and Squad/Summon buttons. These buttons announce
 their coming-later status without granting units or spending currency.
 [Free Battle](free-battle.md) and Story are Home subactivities with Back to Home
-controls, not additional primary tabs. Free Battle remains an endless-wave
-practice mode with the saved starter and supplied scenery/art. Character Upgrades shows
+controls, not additional primary tabs. Free Battle is an endless-wave
+practice mode with the saved starter and supplied scenery/art. It opens in a
+full-viewport field state with Quit Battle rather than sanctuary navigation;
+quitting returns Home without discarding the session or Fractalis.
+Character Upgrades shows
 the saved companion's working combat kit and illustration.
 Character shows all seven upgrade paths. They are non-interactive previews until
 rules, costs, caps, and ability definitions are approved.

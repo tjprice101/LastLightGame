@@ -191,41 +191,51 @@ export class BattleView {
       data-unit="${unit.id}" data-side="${unit.side}" aria-pressed="${selected}" style="--element:${color}" ${unit.hp <= 0 ? 'disabled' : ''}>
       <span class="unit-name">${unit.name}</span><span class="battle-art">
       <img src="${assetUrl(`${unit.side === 'ally' ? 'characters' : 'enemies'}/${art}.png`)}" alt="${unit.name}" width="960" height="960" />
-      </span><span class="health-track"><span style="width:${unit.hp / unit.stats.health * 100}%"></span></span>
+      </span><span class="unit-readout"><span class="health-track"><span style="width:${unit.hp / unit.stats.health * 100}%"></span></span>
       <span class="unit-health">HP ${unit.hp}/${unit.stats.health}${unit.shield ? ` &middot; Shield ${unit.shield}` : ''}</span>
       <span class="unit-stats">DEF ${unit.stats.defense} &middot; DMG ${unit.stats.damage} &middot; CRIT ${Math.round(unit.stats.crit * 100)}%</span>
       ${unit.side === 'ally' ? `<span class="shatter-track" role="meter" aria-label="${unit.name} Shatter Gauge" aria-valuemin="0" aria-valuemax="${shatterGauge.maximum}" aria-valuenow="${unit.shatter}"><span style="width:${unit.shatter / shatterGauge.maximum * 100}%"></span></span>
       <span class="unit-gauge">Shatter Gauge ${unit.shatter}/${shatterGauge.maximum}</span>` : ''}
-      <span class="unit-status">${state}${unit.burn.turns ? ' &middot; Burning' : ''}${unit.weakened ? ' &middot; Weakened' : ''}</span>
+      <span class="unit-status">${state}${unit.burn.turns ? ' &middot; Burning' : ''}${unit.weakened ? ' &middot; Weakened' : ''}</span></span>
     </button>`;
   }
 
   private render(): void {
     const state = this.session.state;
     if (!state.enemies.some((enemy) => enemy.id === this.targetId && enemy.hp > 0)) this.targetId = state.enemies.find((enemy) => enemy.hp > 0)?.id ?? '';
-    if (!state.allies.some((ally) => ally.id === this.actorId && ally.hp > 0)) this.actorId = state.allies.find((ally) => ally.hp > 0)?.id ?? 'ember';
+    if (!state.allies.some((ally) => ally.id === this.actorId)) {
+      const fallback = state.allies[0];
+      if (!fallback) throw new Error('Battle has no character.');
+      this.actorId = fallback.id;
+    }
     const actor = state.allies.find((unit) => unit.id === this.actorId);
     if (!actor || !isStarterId(actor.definitionId)) throw new Error('Battle actor definition is missing.');
     const kit = fighters[actor.definitionId];
-    this.host.innerHTML = `<div class="battle-top"><h1 tabindex="-1">Free Battle</h1>
+    this.host.innerHTML = `<img class="battle-scenery" src="${assetUrl('backgrounds/grassy-field.png')}" alt="Sunlit grassy-field battle scenery" width="1456" height="816" />
+      <div class="battle-top"><h1 tabindex="-1">Free Battle</h1>
       <span>Wave ${state.wave} &middot; Turn ${state.round} &middot; ${state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Wave cleared' : 'Character defeated'}</span></div>
-      <p class="quiet">Solo Free Battle: ${actor.name}. Each defeated enemy drops 5-10 Fractalis, saved locally. Battle progress resets on reload.</p>
       <p class="battle-drops" role="status">${this.session.log.filter((line) => line.includes(' drops +')).slice(-3).join(' ')}</p>
-      <div class="battle-arena"><img class="battle-scenery" src="${assetUrl('backgrounds/grassy-field.png')}" alt="Sunlit grassy-field battle scenery" width="1456" height="816" />
-      <div class="battle-side enemies"><h2>Enemies &middot; Left</h2>${state.enemies.map((unit) => this.unit(unit)).join('')}</div>
-      <div class="battle-divider" aria-hidden="true">VS</div>
-      <div class="battle-side allies solo"><h2>Your character &middot; Right</h2>${state.allies.map((unit) => this.unit(unit)).join('')}</div></div>
+      <div class="battle-arena">
+      <div class="battle-side enemies" role="group" aria-label="Enemies on the left">${state.enemies.map((unit) => this.unit(unit)).join('')}</div>
+      <div class="battle-side allies solo" role="group" aria-label="Your character on the right">${state.allies.map((unit) => this.unit(unit)).join('')}</div></div>
+      <div class="battle-hud">
       <p id="battle-announcement" role="status">${state.phase === 'cleared' ? 'Wave cleared. Continue when ready; recovery and health carry over.' : state.phase === 'defeat' ? 'Your character has fallen. Restart Free Battle to try again.' : 'Choose an enemy on the left, then an action for your character.'}</p>
-      <div class="battle-controls"><div class="actor-info"><strong>${actor.name}</strong><span>Passive: ${kit.passive.name} &mdash; ${kit.passive.description}</span></div>
+      <div class="battle-controls">
       <div class="battle-actions">${actionIds.map((action) => this.actionButton(state, actor, action)).join('')}</div>
+      <div class="battle-turn-controls">
+      <button id="end-battle-turn" class="primary-button" ${state.phase === 'defeat' ? 'disabled' : ''}><kbd>${keyLabel(this.bindings.endTurn)}</kbd> ${state.phase === 'cleared' ? 'Next wave' : 'End turn / enemy attacks'}</button>
+      <button id="restart-battle" class="text-button">Restart Free Battle</button></div>
+      <details class="battle-help"><summary>Abilities and battle rules</summary>
+      <div class="actor-info"><strong>${actor.name}</strong><span>Passive: ${kit.passive.name} &mdash; ${kit.passive.description}</span></div>
+      ${actionIds.map((action) => `<p><strong>${action === 'light' ? 'Light Attack' : action === 'heavy' ? 'Heavy Attack' : kit.abilities[action].name}:</strong> ${action === 'light' ? '100% damage; +20 Shatter Gauge.' : action === 'heavy' ? '180% damage; +30 Shatter Gauge.' : kit.abilities[action].description}</p>`).join('')}
       <p class="quiet">One action per living character per turn. Only Last Flare forces a full recovery turn.
         Shatter Gauge starts at ${shatterGauge.starting}; attacks build it and each incoming hit adds ${shatterGauge.incomingHit}, even through shields.
         Ending a turn forfeits unused actions.
         <kbd>${keyLabel(this.bindings.nextAlly)}</kbd> next ally &middot; <kbd>${keyLabel(this.bindings.nextTarget)}</kbd> next enemy</p>
-      <button id="end-battle-turn" class="primary-button" ${state.phase === 'defeat' ? 'disabled' : ''}><kbd>${keyLabel(this.bindings.endTurn)}</kbd> ${state.phase === 'cleared' ? 'Next wave' : 'End turn / enemy attacks'}</button>
-      <button id="restart-battle" class="text-button">Restart Free Battle</button></div>
+      <p class="quiet">Each defeated enemy drops 5-10 Fractalis, saved locally. Quitting keeps your session and earnings; reloading resets battle progress.</p>
+      </details></div>
       <p id="battle-error" role="alert" class="status"></p>
-      <details class="battle-log"><summary>Battle log (${this.session.log.length} recent events)</summary><ol>${this.session.log.map((line) => `<li>${line}</li>`).join('')}</ol></details>`;
+      <details class="battle-log"><summary>Battle log (${this.session.log.length} recent events)</summary><ol>${this.session.log.map((line) => `<li>${line}</li>`).join('')}</ol></details></div>`;
     this.host.querySelectorAll<HTMLButtonElement>('[data-unit]').forEach((button) => {
       button.addEventListener('click', () => {
         if (this.busy) return;
@@ -258,10 +268,10 @@ export class BattleView {
     if (!isStarterId(actor.definitionId)) throw new Error('Invalid ally definition.');
     const ability = action === 'light' || action === 'heavy' ? null : fighters[actor.definitionId].abilities[action];
     const name = ability?.name ?? (action === 'light' ? 'Light Attack' : 'Heavy Attack');
-    const detail = ability?.description ?? `${action === 'light' ? '100%' : '180%'} damage; +${shatterGauge.gains[action]} Shatter Gauge.`;
     const reason = actionUnavailable(state, actor, action);
     return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
-      <kbd>${keyLabel(this.bindings[action])}</kbd><strong>${name}</strong><span>${detail}</span>
+      <kbd>${keyLabel(this.bindings[action])}</kbd><strong>${name}</strong>
+      ${!ability ? `<span>+${shatterGauge.gains[action]} Shatter Gauge</span>` : ''}
       ${ability ? `<span>Costs ${shatterGauge.costs[action]} Shatter Gauge${ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
       <small>${reason ?? 'Ready'}</small></button>`;
   }

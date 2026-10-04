@@ -19,10 +19,11 @@ environment art, not a square transparent unit asset.
 The supplied [Grassy Field original](../Art/source/backgrounds/Grassy%20Field.png)
 has been moved out of the project root. Its byte-identical
 [runtime copy](../public/assets/backgrounds/grassy-field.png) is used behind the
-Free Battle arena, resolved through Vite's deployment base. The 1456 x 816 RGB PNG
+full Free Battle viewport, resolved through Vite's deployment base. The 1456 x 816 RGB PNG
 is not alpha-processed, cropped, resized, or passed through the unit-art pipeline.
-Display uses aspect-preserving `object-fit: cover`, anchored at the bottom; narrow
-screens crop the sides. Dark battle cards keep stats readable over bright scenery.
+Display uses aspect-preserving `object-fit: cover`, centered and fixed to the
+viewport; narrow screens crop the sides. Detached dark readouts keep stats readable
+while the sprite artwork has no enclosing blue card or border.
 The supplied image includes two tiny painted figures; these are background details,
 not targetable combatants. The original is preserved without retouching.
 

@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** persistent enemy Fractalis drops.
+**Last updated:** immersive full-viewport Free Battle presentation.
 
 ## Project state
 
@@ -29,6 +29,11 @@
 - Battle text now has opaque dark backing, stats/gauge/details at least 14px,
   instructions/logs 16px, readable disabled controls and defeated labels, and
   prominent keyboard focus. Only defeated artwork fades.
+- Free Battle now uses a dedicated full-viewport field screen, without sanctuary
+  chrome/nav. Unit sprites have no enclosing blue cards; name/stat readouts remain
+  dark and readable. The compact HUD retains actions/hotkeys, end turn, restart,
+  disclosures for full descriptions/log, and Settings. Quit Battle returns Home
+  while preserving session/rewards. Small screens scroll vertically as needed.
 - Each ally has Shatter Gauge: starts 0, caps 100, Light +20, Heavy +30,
   incoming enemy hit +10 (including shields). Skills cost 25/40 and Last Flare
   costs 100; skills no longer generate resource. Battle meters/buttons and the
@@ -83,6 +88,12 @@ progression/economy. Add future animation frames without changing resolver resul
 
 ## Verification
 
+- Immersive field checks passed at 1280x720, 390x844, 320x640, and 844x390:
+  scenery fills the viewport, sanctuary chrome/cards are absent, all five actions
+  and full descriptions remain available, no horizontal overflow, and quit/re-entry
+  preserves session/rewards without leaking hotkeys. Settings suspends input.
+  Water/grass defeat screens retain the selected character and allow restart.
+  Desktop/mobile screenshots reviewed; narrow/short screens scroll as needed.
 - `npm test`: 80 passing tests for all three starter transitions and saved continuations,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
   motion settings, combat formulas, all kits/passives, exact recovery/cooldown

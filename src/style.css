@@ -188,6 +188,41 @@ kbd { display: inline-block; min-width: 24px; padding: 3px 6px; font: 11px "Sego
 .damage-number { position: absolute; top: 25%; left: 15%; z-index: 5; font-weight: 700; font-size: 26px; color: #ffd0bd; background: #172333; padding: 4px 8px; border-radius: 4px; pointer-events: none; text-shadow: 0 2px 5px #000; }
 .damage-number.heal { color: #b3eb89; }
 .damage-number.shield { color: #98d9f2; }
+.in-battle #backdrop { visibility: hidden; }
+.battle-screen { position: relative; isolation: isolate; min-height: 100svh; padding: 12px clamp(10px, 2vw, 28px); display: flex; flex-direction: column; background: #26392c; }
+.battle-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 14px; background: #111b16ed; border-radius: 8px; color: #fff4cf; }
+.battle-toolbar .text-button { margin: 0; color: #fff4cf; font-size: 16px; }
+.battle-screen #battle-root { display: flex; flex-direction: column; flex: 1; }
+.battle-screen .battle-scenery { position: fixed; width: 100%; height: 100svh; border-radius: 0; object-position: center; }
+.battle-screen .battle-top { margin-top: 12px; padding: 6px 12px; background: #111b16e6; border-radius: 8px; align-self: flex-start; }
+.battle-screen .battle-top h1 { font-size: 24px; margin: 0; }
+.battle-screen .battle-drops { align-self: flex-start; background: #111b16ed; border-radius: 4px; margin: 8px 0; padding: 0 8px; }
+.battle-screen .battle-arena { flex: 1; min-height: 340px; grid-template-columns: 3fr 2fr; gap: clamp(16px, 4vw, 80px); align-items: end; background: transparent; padding: 8vh 0 16px; }
+.battle-screen .battle-unit { background: transparent; border: 0; box-shadow: none; padding: 4px; align-items: center; }
+.battle-screen .battle-unit.selected-unit .battle-art { filter: drop-shadow(0 0 8px var(--element)); }
+.battle-screen .unit-name { background: #111b16ed; border-radius: 4px; padding: 2px 8px; font-size: 18px; }
+.battle-screen .battle-art { margin: 4px auto; order: 2; }
+.battle-screen .unit-readout { order: 1; margin-top: 4px; }
+.unit-readout { display: flex; flex-direction: column; align-self: stretch; background: #111b16ed; padding: 8px; border-radius: 8px; }
+.battle-screen .unit-health, .battle-screen .unit-stats, .battle-screen .unit-status { margin-top: 3px; }
+.battle-screen .battle-hud { padding: 10px; background: #111b16ed; border-radius: 10px; }
+.battle-screen #battle-announcement { margin: 0 0 8px; min-height: 0; background: transparent; padding: 0 4px; }
+.battle-screen .battle-action { padding: 8px 10px; gap: 4px; background: #1c2b22; border-radius: 6px; }
+.battle-screen #battle-root .battle-action:disabled { background: #29362f; }
+.battle-screen .battle-action strong { font-size: 14px; }
+.battle-turn-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+.battle-turn-controls .primary-button { padding: 10px 14px; font-size: 14px; }
+.battle-turn-controls #restart-battle { margin: 0; font-size: 14px; }
+.battle-help { margin-top: 8px; font-size: 14px; }
+.battle-help summary, .battle-screen .battle-log summary { cursor: pointer; color: #ffe2a3; }
+.battle-screen .battle-log { margin: 8px 0 0; padding: 0; background: transparent; font-size: 14px; }
+.battle-screen .status:empty { display: none; }
+.battle-screen > .status, .battle-screen #wallet-error { background: #111b16ed; color: #fff; padding: 8px; }
+@media (min-width: 701px) and (max-height: 800px) {
+  .battle-screen .battle-art { width: min(100%, 120px); }
+  .battle-screen .battle-arena { min-height: 260px; padding-top: 8px; }
+  .battle-screen .battle-toolbar { padding: 4px 12px; }
+}
 @media (max-width: 700px) {
   .shell { padding: 18px 6vw; }
   .build-label { letter-spacing: .07em; }
@@ -199,6 +234,13 @@ kbd { display: inline-block; min-width: 24px; padding: 3px 6px; font: 11px "Sego
   .battle-unit { padding: 8px; }
   .battle-art { width: min(100%, 100px); margin: 5px auto; }
   .battle-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .battle-screen .battle-arena { grid-template-columns: 1fr 1fr; gap: 12px; padding-top: 16px; align-items: center; }
+  .battle-screen .battle-toolbar { padding: 8px; gap: 8px; flex-wrap: wrap; }
+  .battle-screen .battle-top { align-self: stretch; gap: 8px; }
+  .battle-screen .battle-top h1 { font-size: 22px; }
+  .battle-screen .battle-hud { padding: 8px; }
+  .battle-screen .battle-actions { gap: 6px; }
+  .battle-screen .battle-action { padding: 8px; }
   .artifact-grid { grid-template-columns: repeat(2, 1fr); }
   .currency-strip { justify-content: flex-start; }
   .chapter-badge { display: none; }
