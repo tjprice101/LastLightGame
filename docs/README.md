@@ -46,6 +46,8 @@ The [Flaming Depths prompts](../Art/Flaming%20Depths.md) cover ten dungeon enemi
 in ascending visual power, from a soot sprite to a flame sovereign.
 The [Infernis Art prompts](../Art/Infernis%20Art.md) cover 1:1 icons for her passive,
 two abilities, Last Flare, and Light/Heavy attacks.
+The [Flaming Depths Scenery prompts](../Art/Flaming%20Depths%20Scenery.md) cover
+a 3:1 selection banner and 16:9 battle background with destination-specific framing.
 
 ## Common tasks
 

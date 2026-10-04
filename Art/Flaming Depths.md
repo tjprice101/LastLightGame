@@ -13,6 +13,8 @@ to strongest-looking. These are ten
 distinct enemies, not ten evolution forms; captured enemies cannot evolve.
 Order is relative visual power, not an approved level, wave, rarity, or stat table.
 Dungeon and capture rules are tracked in [Dungeons and captures](../docs/dungeons-and-captures.md).
+For the 3:1 dungeon banner and 16:9 combat environment prompts, see
+[Flaming Depths Scenery](Flaming%20Depths%20Scenery.md).
 
 ## Shared style and generation instructions
 
