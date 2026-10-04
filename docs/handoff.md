@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** Shatter Gauge and ultimate-only recovery.
+**Last updated:** level-30 and Fracture progression previews.
 
 ## Project state
 
@@ -35,6 +35,11 @@
 - Not implemented: rewarded quests, squad editing, summoning, upgrades/equipping,
   currency balances/transactions, item acquisition,
   accounts, cloud saves, backend, payments.
+- Character Upgrades now previews the confirmed Tier 1 level-30 cap and Fracture
+  into Tier 2: major stat improvements (values pending), reset to 0, +10 Lycalis.
+  Tier 2 levels to 30 using different resources. Owner selected previews only
+  until materials/stat bonuses are defined. Saves remain version 1, with no
+  invented current level/tier, balances, materials, or reward transactions.
 - Repository: [tjprice101/LastLightGame](https://github.com/tjprice101/LastLightGame).
 - Deployment: [GitHub Pages](https://tjprice101.github.io/LastLightGame/),
   configured for the [Actions workflow](../.github/workflows/deploy.yml).
@@ -74,11 +79,15 @@ progression/economy. Add future animation frames without changing resolver resul
 
 ## Verification
 
-- `npm test`: 62 passing tests for fire-only transitions, legacy re-selection,
+- `npm test`: 63 passing tests for fire-only transitions, legacy re-selection,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
   motion settings, combat formulas, all kits/passives, exact recovery/cooldown
   boundaries, status durations,   shield/heal caps, waves/defeat, hotkey validation, and every runtime unit PNG's
   960 x 960 RGBA export contract.
+- Fracture content tests verify the exact Tier 1 -> Tier 2, level-30 cap, reset-0,
+  +10 Lycalis rule and pending materials/stats. Production-preview headless Edge
+  checks verify visible rules, seven upgrade areas, no enabled transactions,
+  unchanged version-1 save, and 320px layout without overflow.
 - Shatter tests cover zero-start/independent gauges, exact costs for every starter
   ability (including support), insufficient-resource rejection without mutation,
   attack/incoming-hit gains and cap, shielded/lethal hits, no passive/burn gain,

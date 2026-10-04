@@ -1,6 +1,6 @@
 import './style.css';
 import { availableStarters, getStarter, isStarterId } from './content/starters';
-import { artifactSlots, currencies, upgradePaths } from './content/progression';
+import { artifactSlots, currencies, fractureRules, upgradePaths } from './content/progression';
 import { Journey } from './game/flow';
 import { SAVE_KEY } from './game/profile';
 import { portrait } from './presentation/portrait';
@@ -325,6 +325,19 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
       }).join('')}
       <p class="quiet">These abilities work in Free Battle; upgrade transactions remain unimplemented.</p>
     </article>
+    <section class="inventory-section fracture-preview" aria-labelledby="fracture-heading">
+      <h2 id="fracture-heading">Level progression and Fracture</h2>
+      <article class="feature-tile">
+        <p class="eyebrow">CONFIRMED RULES &middot; PREVIEW ONLY</p>
+        <ol>
+          <li><strong>Tier ${fractureRules.sourceTier}:</strong> Level up to ${fractureRules.levelCap}. Fracture is required to evolve into Tier ${fractureRules.destinationTier}.</li>
+          <li><strong>Fracture:</strong> Gain major stat improvements and +${fractureRules.lycalisReward} Lycalis. Reset to level ${fractureRules.resetLevel} in the new tier.</li>
+          <li><strong>Tier ${fractureRules.destinationTier}:</strong> Level from ${fractureRules.resetLevel} to ${fractureRules.levelCap} again using different upgrade resources.</li>
+        </ol>
+        <p>Upgrade materials, costs, and exact stat improvements are coming later. Leveling and Fracturing are not available yet; no Lycalis has been awarded.</p>
+        <p class="quiet">Current level and tier are not tracked in the save yet. These are progression rules, not your character's current progress.</p>
+      </article>
+    </section>
     <div class="upgrade-grid">${upgradePaths.map((path) =>
       `<article class="feature-tile"><h2>${path.name}</h2><p>${path.detail.replace('<', '&lt;').replace('>', '&gt;')}</p><span>UPGRADES NOT IMPLEMENTED &middot; COSTS UNSET</span></article>`).join('')}</div>
     <section class="inventory-section"><h2>Inventory</h2><div class="feature-tile"><h3>No items yet</h3><p>Artifacts, master relics, and upgrade materials will appear here. Item acquisition and equipping are not implemented.</p></div></section>

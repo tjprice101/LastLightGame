@@ -1,6 +1,7 @@
 # Summoning and economy
 
-**Status:** currency names/roles confirmed; rates, prices, balances, earning,
+**Status:** currency names/roles and +10 Lycalis first-Fracture reward confirmed;
+rates, prices, balances, other earning,
 spending, and monetization rules remain open.
 
 ## Confirmed currencies
@@ -10,6 +11,12 @@ spending, and monetization rules remain open.
 
 Names appear in the menu; balances and transactions are not implemented.
 Premium does not by itself approve real-money purchases.
+
+The confirmed Tier 1 -> Tier 2 **Fracture** grants **+10 Lycalis** and resets
+the character to level 0. This is a rule preview, not an active earning mechanism:
+Fracture and currency transactions remain unimplemented. When enabled, the tier
+transition, level reset, costs, stat changes, and reward must persist atomically,
+with no duplicate reward on retry. See [progression](units-and-progression.md).
 
 ## Banner contract
 

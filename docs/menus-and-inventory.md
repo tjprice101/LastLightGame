@@ -31,6 +31,10 @@ practice mode with all three starters and the supplied art. Character Upgrades s
 the saved companion's working combat kit and illustration.
 Character shows all seven upgrade paths. They are non-interactive previews until
 rules, costs, caps, and ability definitions are approved.
+The level/Fracture preview now specifies Tier 1's level-30 cap, Fracture into Tier 2
+with major stat improvements, reset to level 0, and +10 Lycalis. Tier 2 levels to 30
+using different resources. Materials, costs, and exact bonuses are pending.
+No current level/tier is displayed as saved progress, and no reward is awarded.
 The integrated Inventory section shows exactly eight numbered artifact slots and one master
 relic above them. All are empty previews; no items have been granted and no equip,
 unequip, ownership, or stat calculation operation exists yet.

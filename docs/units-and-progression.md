@@ -1,8 +1,8 @@
 # Units and progression
 
-**Status:** opening starter identity/selection/local save implemented; progression
-below remains proposed. See [opening flow](opening-flow.md). Evolution names
-are art concepts, not implemented upgrade paths.
+**Status:** opening starter identity/selection/local save implemented; confirmed
+Fracture rules are displayed as previews, not executable transactions.
+See [opening flow](opening-flow.md). Later-form art concepts do not define gameplay tiers.
 
 ## Confirmed progression and equipment structure
 
@@ -10,7 +10,23 @@ The owner confirmed evolution, character levels, weapon upgrades, and separate
 upgrades for the unique passive, ability 1, ability 2, and ultimate.
 Ultimate display names must use `Last Flare: <character-specific name>`.
 Free Battle's initial names, effects, stats, and formulas were delegated for the
-prototype and are documented separately. Upgrade costs, materials, and caps remain open.
+prototype and are documented separately. Upgrade costs, materials, and exact
+stat-growth/Fracture bonuses remain open. The first two tiers' level cap is confirmed.
+
+### Confirmed level and Fracture rules
+
+- Tier 1 characters level up to **30** before needing to **Fracture** (evolve)
+  into Tier 2.
+- Fracture grants major stat improvements; exact values are not yet defined.
+- Fracture resets the character to **level 0** in Tier 2 and grants **+10 Lycalis**.
+- Tier 2 levels from 0 to **30** again, using different upgrade resources.
+- Upgrade materials will be defined later. Starting Tier 1 level, XP thresholds,
+  costs, later tiers, subsequent Fractures, and skill/equipment carryover remain open.
+
+The Character Upgrades screen shows these rules and labels them preview-only.
+The owner chose to defer transactions until materials and stats are defined:
+no free leveling, invented materials/bonuses, currency balance, reward grant,
+or saved level/tier has been added. See [editable rules](../src/content/progression.ts).
 
 Each character has **eight unique artifacts** and **one master relic** equipped
 at most: nine slots, with the special master relic displayed above the artifacts.
@@ -26,7 +42,7 @@ UI previews exist; upgrades and equipment transactions are not implemented.
 | Owned unit instance | One player's copy with a unique instance ID |
 | Evolution form | A form within a character's evolution line |
 | Rarity | Acquisition or balance classification; not automatically an evolution stage |
-| Level | Progress within a form or unit; exact model is open |
+| Level | Progress within a tier; cap 30 in Tier 1/2, reset to 0 on the first Fracture |
 
 Definitions should use stable IDs rather than display names. An owned instance
 references its definition/form and records only mutable player state.
@@ -56,7 +72,8 @@ Equipment slot count/types are confirmed above; detailed equip rules remain open
 
 ## Progression decisions
 
-Specify XP thresholds, level caps, stat growth, material costs, and unlock conditions.
+Specify XP thresholds, stat growth, material costs, and additional unlock conditions.
+Preserve the confirmed level-30 caps, Tier 1 -> Tier 2 reset to 0, and +10 Lycalis reward.
 Evolution must define source form, destination form, prerequisites, and how
 level/XP/skills/equipment transfer. Do not silently reset invested progress.
 
@@ -76,7 +93,9 @@ materials. Show explicit reasons for unavailable actions.
 - Multiple copies remain distinct through saving, loading, and squad assignment.
 - XP boundary behavior and caps match documented tables.
 - Evolution rejects missing prerequisites and invalid form transitions.
-- Successful evolution charges once and preserves the selected carryover fields.
+- First Fracture requires level 30 in Tier 1, reaches Tier 2 at level 0, and grants
+  exactly 10 Lycalis once. Retrying cannot duplicate the reward.
+- Successful evolution charges once and preserves the approved carryover fields.
 - Locked/assigned-unit restrictions apply to every destructive operation.
 - Unknown definition IDs in a save trigger a defined migration/recovery policy.
 
