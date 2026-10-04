@@ -48,12 +48,18 @@ of animations. Obtain approved art references before production asset work.
   invalid saves, and failed storage writes.
 - `npm run build`: strict type-check and production build pass; bundle warning above.
 - `npm audit`: zero known dependency vulnerabilities after updating Vitest.
+- `npm ci`: clean lockfile restore passes with npm 10 after stopping the
+  project's development server to release Windows' esbuild executable lock.
 - Browser checks: all starters select/save/reload; keyboard title entry; explicit
   selection gate; 390px layout without horizontal overflow; pointer completion;
   corrupt saves preserved with visible errors; failed writes do not advance;
   reduced-motion CSS verified.
 - Browser test save changes were restored to the previous local value.
 - Development server returned HTTP 200 at `/LastLightGame/`.
+- [First deployment workflow](https://github.com/tjprice101/LastLightGame/actions/runs/37174431784)
+  completed successfully. The public page returned HTTP 200, and a live browser
+  check verified canvas/assets, starter selection, and saved reload with no
+  uncaught browser errors.
 - npm 10 hit a resolver error when upgrading Vitest; `npx npm@11.6.0 install`
   resolved it. The committed lockfile is used by `npm ci`.
 

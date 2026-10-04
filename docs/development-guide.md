@@ -39,6 +39,8 @@ Do not commit `dist` or `node_modules`; CI uses the committed lockfile.
 - Blank page: inspect the browser console and check the deployment base/asset URLs.
 - Invalid save: the title reports it and offers a confirmed local-save deletion.
 - Save fails: check browser storage permissions; selection stays open, not falsely saved.
+- Windows `npm ci` reports an esbuild file lock: stop this project's dev/preview
+  server before restoring dependencies; do not terminate other projects' processes.
 - Old deployed build: inspect Actions and Pages deployment status; refresh after success.
 - Large bundle warning: Phaser currently accounts for most of the approximately
   1.2 MB uncompressed bundle. Do not suppress the warning as a performance fix.
