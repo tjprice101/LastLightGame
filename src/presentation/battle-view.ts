@@ -4,6 +4,7 @@ import { act, actionUnavailable, createBattle, endTurn, nextWave, type BattleSta
 import { commands, keyLabel, type Bindings, type Command } from '../game/hotkeys';
 import { assetUrl } from './portrait';
 import { reducedMotion } from './settings';
+import { abilityIcon } from './ability-icon';
 
 export interface BattleSession { state: BattleState; log: string[] }
 export function createSession(starterId: StarterId): BattleSession {
@@ -226,7 +227,7 @@ export class BattleView {
       <button id="end-battle-turn" class="primary-button" ${state.phase === 'defeat' ? 'disabled' : ''}><kbd>${keyLabel(this.bindings.endTurn)}</kbd> ${state.phase === 'cleared' ? 'Next wave' : 'End turn / enemy attacks'}</button>
       <button id="restart-battle" class="text-button">Restart Adventure</button></div>
       <details class="battle-help"><summary>Abilities and battle rules</summary>
-      <div class="actor-info"><strong>${actor.name}</strong><span>Passive: ${kit.passive.name} &mdash; ${kit.passive.description}</span></div>
+      <div class="actor-info"><strong>${actor.name}</strong><span class="passive-summary">${abilityIcon(actor.definitionId, 'passive')}<span>Passive: ${kit.passive.name} &mdash; ${kit.passive.description}</span></span></div>
       ${actionIds.map((action) => `<p><strong>${action === 'light' ? 'Light Attack' : action === 'heavy' ? 'Heavy Attack' : kit.abilities[action].name}:</strong> ${action === 'light' ? '100% damage; +20 Shatter Gauge.' : action === 'heavy' ? '180% damage; +30 Shatter Gauge.' : kit.abilities[action].description}</p>`).join('')}
       <p class="quiet">One action per living character per turn. Only Last Flare forces a full recovery turn.
         Shatter Gauge starts at ${shatterGauge.starting}; attacks build it and each incoming hit adds ${shatterGauge.incomingHit}, even through shields.
@@ -272,7 +273,7 @@ export class BattleView {
     const name = ability?.name ?? (action === 'light' ? 'Light Attack' : 'Heavy Attack');
     const reason = actionUnavailable(state, actor, action);
     return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
-      <kbd>${keyLabel(this.bindings[action])}</kbd><strong>${name}</strong>
+      <span class="battle-action-heading">${abilityIcon(actor.definitionId, action)}<span><kbd>${keyLabel(this.bindings[action])}</kbd><strong>${name}</strong></span></span>
       ${!ability ? `<span>+${shatterGauge.gains[action]} Shatter Gauge</span>` : ''}
       ${ability ? `<span>Costs ${shatterGauge.costs[action]} Shatter Gauge${ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
       <small>${reason ?? 'Ready'}</small></button>`;

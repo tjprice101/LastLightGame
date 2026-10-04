@@ -6,8 +6,12 @@ Names and mechanics match the [implemented combat kit](../src/content/combat.ts)
 Use the rendering style from [Starter Art](Starter%20Art.md) and the
 [character art guide](midjourney-character-style-prompt.md), adapted to icons.
 
-**Status:** prompts ready for generation, not generated or approved image assets.
-These icons are not wired into the game and do not change combat mechanics.
+**Status:** all six owner-supplied icons are organized and integrated.
+Originals are preserved under `Art/source/abilities/infernis`; transparent 256x256
+copies are under `public/assets/abilities`. Infernis uses all five attack icons in
+Adventure, and her passive/skills appear in Home and Character Upgrades.
+See [export contract](../docs/art-workflow.md#infernis-ability-icons).
+These icons do not change combat mechanics.
 
 ## Shared style and generation instructions
 
@@ -30,8 +34,7 @@ These icons are not wired into the game and do not change combat mechanics.
 - Compare generated results with approved character art. Review all six together
   at small icon size: silhouette, not color alone, must distinguish each action.
 - Preserve approved originals separately. These are ability icons, not unit
-  portraits: do not run them through the character silhouette-sizing workflow
-  without defining a separate icon export contract first.
+  portraits: use the separate 256px icon export contract, not 960px unit sizing.
 
 ## 1. Unbroken Ember - Passive
 

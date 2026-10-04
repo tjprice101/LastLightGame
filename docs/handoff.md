@@ -1,6 +1,6 @@
 # Current state and handoff
 
-**Last updated:** Flaming Depths art intake and complete Stage 1-50 design proposal.
+**Last updated:** supplied Infernis icons integrated into battle and character panels.
 
 ## Project state
 
@@ -77,6 +77,16 @@
   character kit show gauge/costs. No persistent-save schema change is needed.
 - Six supplied images moved to Art/source; transparent runtime exports are in
   public/assets. Portraits use the new names but retain old save IDs.
+- Six Infernis icons are preserved under `Art/source/abilities/infernis`, with
+  separate 256px RGBA / 224px content exports in `public/assets/abilities`.
+  `tools/prepare_icons.py` reuses matte removal without applying unit dimensions.
+  Adventure buttons use Light/Heavy/Ability 1/2/Last Flare icons; Home passive,
+  Character overview/individual passive-skill areas and battle passive help use
+  the matching art. Text/hotkeys/costs remain visible; water/grass remain text-only.
+  Browser checks confirm all mappings, decoded icons, 32px square battle sizing,
+  stable character portraits through skill tabs, working Light gauge gain, and
+  all five controls/no horizontal overflow at narrow widths for every starter.
+  Five Python tests now cover both unit and independent ability-icon exports.
 - Grassy Field moved to `Art/source/backgrounds`, with a byte-identical landscape
   PNG in `public/assets/backgrounds`. It is wired behind the Adventure arena;
   no unit-art alpha removal or square normalization is applied.
@@ -139,7 +149,7 @@ progression/economy. Add future animation frames without changing resolver resul
   superseded: Adventure re-entry starts a new run. Settings suspends input.
   Water/grass defeat screens retain the selected character and allow restart.
   Desktop/mobile screenshots reviewed; narrow/short screens scroll as needed.
-- `npm test`: 87 passing tests for all three starter transitions and saved continuations,
+- `npm test`: 89 passing tests for all three starter transitions and saved continuations,
   failed storage writes, lore/reveal budget, currency/slot/upgrade definitions,
   motion settings, combat formulas, all kits/passives, exact recovery/cooldown
   boundaries, status durations,   shield/heal caps, waves/defeat, hotkey validation, and every runtime unit PNG's
@@ -161,7 +171,7 @@ progression/economy. Add future animation frames without changing resolver resul
   1280x720 Adventure and the dock are visible, with only a small footer scroll.
   Browser tab checks preserve exact image/showcase/rail/root/dialog nodes across
   all nine areas, with no showcase mutations and correct focus/selected state.
-  Independent detail-render tests cover every starter/area with no image/nav markup.
+  Independent detail-render tests cover every starter/area with no portrait/nav markup.
 - Reward tests cover all six integer payouts 5-10, repeatable independent reward
   randomness, ultimate multi-kills, burn kills, no repeated dead-enemy/ally payouts,
   wallet persistence, corrupt-save preservation, overflow and write failures.

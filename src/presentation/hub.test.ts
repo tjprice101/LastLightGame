@@ -40,7 +40,7 @@ describe('game-specific hub layouts', () => {
       for (const tab of characterTabs) {
         const detail = characterDetail(starter, tab.id);
         expect(detail).toContain(`>${tab.label}</h2>`);
-        expect(detail).not.toContain('<img');
+        expect(detail).not.toContain('assets/characters/');
         expect(detail).not.toContain('hub-showcase');
         expect(detail).not.toContain('data-character-tab');
         expect(characterHub(starter, tab.id)).toContain(detail);

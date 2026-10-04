@@ -30,21 +30,21 @@ ASSETS = {
 }
 
 
-def standardize_sprite(image):
+def standardize_sprite(image, canvas_size=CANVAS_SIZE, content_size=CONTENT_SIZE):
     rgba = image.convert("RGBA")
     bbox = rgba.getbbox()
     if not bbox:
         raise ValueError("Cannot standardize an empty sprite.")
     cropped = rgba.crop(bbox)
-    scale = CONTENT_SIZE / max(cropped.size)
+    scale = content_size / max(cropped.size)
     size = tuple(max(1, round(dimension * scale)) for dimension in cropped.size)
     resized = cropped.resize(size, Image.Resampling.LANCZOS)
-    canvas = Image.new("RGBA", (CANVAS_SIZE, CANVAS_SIZE))
-    canvas.paste(resized, ((CANVAS_SIZE - size[0]) // 2, (CANVAS_SIZE - size[1]) // 2))
+    canvas = Image.new("RGBA", (canvas_size, canvas_size))
+    canvas.paste(resized, ((canvas_size - size[0]) // 2, (canvas_size - size[1]) // 2))
     return canvas
 
 
-def remove_matte(image):
+def remove_matte(image, canvas_size=CANVAS_SIZE, content_size=CONTENT_SIZE):
     rgb = np.asarray(image.convert("RGB"), dtype=np.float32)
     low, high = rgb.min(axis=2), rgb.max(axis=2)
     eligible = (low >= 230) & (high - low <= 20)
@@ -84,7 +84,7 @@ def remove_matte(image):
     rgb[alpha == 0] = 0
     rgba = np.dstack((rgb, alpha * 255)).astype(np.uint8)
     result = Image.fromarray(rgba)
-    return standardize_sprite(result)
+    return standardize_sprite(result, canvas_size, content_size)
 
 
 def main():

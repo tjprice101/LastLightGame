@@ -3,6 +3,7 @@ import unittest
 from PIL import Image, ImageDraw
 
 from prepare_art import ASSETS, CANVAS_SIZE, CONTENT_SIZE, ROOT, remove_matte, standardize_sprite
+from prepare_icons import ICONS
 
 
 class SpriteSizingTests(unittest.TestCase):
@@ -23,6 +24,18 @@ class SpriteSizingTests(unittest.TestCase):
     def test_empty_sprites_fail_explicitly(self):
         with self.assertRaisesRegex(ValueError, "empty sprite"):
             standardize_sprite(Image.new("RGBA", (100, 100)))
+
+    def test_ability_icons_have_their_own_square_export_contract(self):
+        for asset_id in ICONS.values():
+            with self.subTest(asset=asset_id):
+                with Image.open(ROOT / "public" / "assets" / "abilities" / f"{asset_id}.png") as image:
+                    self.assertEqual(image.mode, "RGBA")
+                    self.assertEqual(image.size, (256, 256))
+                    left, top, right, bottom = image.getbbox()
+                    self.assertEqual(max(right - left, bottom - top), 224)
+                    self.assertGreaterEqual(min(left, top, 256 - right, 256 - bottom), 16)
+                    self.assertLessEqual(abs(left - (256 - right)), 1)
+                    self.assertLessEqual(abs(top - (256 - bottom)), 1)
 
     def test_white_background_is_removed_but_enclosed_white_is_preserved(self):
         source = Image.new("RGB", (100, 100), "white")

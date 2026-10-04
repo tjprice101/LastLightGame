@@ -119,6 +119,36 @@ The [portrait helper](../src/presentation/portrait.ts) resolves assets with Vite
 deployment base. Selection, companion/character panels, and Adventure use the
 runtime images. Originals are not shipped in the game build.
 
+## Infernis ability icons
+
+All six 1024x1024 RGB originals were moved byte-for-byte into
+`Art/source/abilities/infernis`. Source hashes were verified after the move.
+Runtime exports use a **256x256 RGBA** canvas, longest visible dimension **224px**,
+centered with at least **16px transparent padding** on every side.
+They reuse border-connected white-matte removal but have a separate sizing contract.
+Enclosed pale highlights remain preserved; no supplied symbol was repainted.
+
+| Action | Original | Runtime |
+| --- | --- | --- |
+| Passive | [Unbroken Ember](../Art/source/abilities/infernis/Unbroken%20Ember.png) | [PNG](../public/assets/abilities/infernis-unbroken-ember.png) |
+| Ability 1 | [Cinder Cleave](../Art/source/abilities/infernis/Cinder%20Cleave.png) | [PNG](../public/assets/abilities/infernis-cinder-cleave.png) |
+| Ability 2 | [Flame Arc](../Art/source/abilities/infernis/Flame%20Arc.png) | [PNG](../public/assets/abilities/infernis-flame-arc.png) |
+| Last Flare | [Dawnfire](../Art/source/abilities/infernis/Last%20Flare,%20Dawnfire.png) | [PNG](../public/assets/abilities/infernis-last-flare-dawnfire.png) |
+| Light | [Light Attack](../Art/source/abilities/infernis/Light%20Attack.png) | [PNG](../public/assets/abilities/infernis-light-attack.png) |
+| Heavy | [Heavy Attack](../Art/source/abilities/infernis/Heavy%20Attack.png) | [PNG](../public/assets/abilities/infernis-heavy-attack.png) |
+
+Regenerate with `python tools/prepare_icons.py`, then `python tools/test_prepare_art.py`.
+Use `--move-sources` only for first root intake; existing source collisions fail.
+The [shared icon helper](../src/presentation/ability-icon.ts) supplies
+deployment-base URLs to Home passive, Character overview/individual ability areas,
+and Adventure's action buttons/passive help. Icons are decorative companions to
+visible text, not replacements for labels, costs or hotkeys. Water/grass have no
+supplied icons and retain their text controls without using Infernis artwork.
+Tab changes still preserve the character portrait DOM.
+Icon sizing is 32px in battle and 40px in character/passive panels, contain-fit.
+The [icon tests](../src/presentation/ability-icon.test.ts) verify all six mappings,
+dimensions/RGBA and absence of inappropriate water/grass substitution.
+
 ## Standard character and enemy sizing
 
 Every runtime character/enemy PNG uses a **960 x 960 transparent RGBA canvas**.

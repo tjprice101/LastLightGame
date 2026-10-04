@@ -3,6 +3,7 @@ import { fighters, shatterGauge } from '../content/combat';
 import { artifactSlots, fractureRules, upgradePaths } from '../content/progression';
 import { portrait } from './portrait';
 import { elementalReveal } from './reveal';
+import { abilityIcon } from './ability-icon';
 
 export const characterTabs = [
   { id: 'overview', label: 'Overview', symbol: '01' },
@@ -48,7 +49,7 @@ export function homeHub(starter: Starter, firstArrival: boolean): string {
       </section>
       <aside class="hub-info">
         <p class="eyebrow">ACTIVE CHARACTER</p><h2>${starter.name}</h2>
-        ${stats(starter)}<p><strong>${passive.name}</strong> &mdash; ${passive.description}</p>
+        ${stats(starter)}<p class="passive-summary">${abilityIcon(starter.id, 'passive')}<span><strong>${passive.name}</strong> &mdash; ${passive.description}</span></p>
         <p class="quiet">Base combat kit. Level and tier are not tracked yet.</p>
         <details class="companion-lore" ${firstArrival ? 'open' : ''}><summary>Companion lore</summary>
           <p>${starter.description}</p><p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote></details>
@@ -63,7 +64,7 @@ export function homeHub(starter: Starter, firstArrival: boolean): string {
 
 function ability(starter: Starter, action: 'skill1' | 'skill2' | 'ultimate'): string {
   const content = fighters[starter.id].abilities[action];
-  return `<article class="hub-ability"><h3>${content.name}</h3><p>${content.description}</p>
+  return `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, action)}<span>${content.name}</span></h3><p>${content.description}</p>
     <p class="hub-cost">Costs ${shatterGauge.costs[action]} Shatter Gauge${content.cooldown ? ` / ${content.cooldown}-turn cooldown` : ''}.</p></article>`;
 }
 
@@ -88,7 +89,7 @@ export function characterDetail(starter: Starter, selectedTab: string): string {
   const kit = fighters[starter.id];
   let detail: string;
   if (selectedTab === 'overview') {
-    detail = `${stats(starter)}<article class="hub-ability"><h3>${kit.passive.name} / Passive</h3><p>${kit.passive.description}</p></article>
+    detail = `${stats(starter)}<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name} / Passive</span></h3><p>${kit.passive.description}</p></article>
       ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => ability(starter, action)).join('')}
       <p class="quiet">These abilities work in Adventure. Upgrade transactions remain unimplemented.</p>`;
   } else if (selectedTab === 'inventory') {
@@ -99,7 +100,7 @@ export function characterDetail(starter: Starter, selectedTab: string): string {
     const path = upgradePaths[index];
     const specific = index <= 1 ? fracturePreview() : index === 2
       ? `<article class="hub-ability"><h3>${starter.weapon}</h3><p>Base character damage: ${kit.stats.damage}. Weapon stats and upgrades are not tracked yet.</p></article>`
-      : index === 3 ? `<article class="hub-ability"><h3>${kit.passive.name}</h3><p>${kit.passive.description}</p></article>`
+      : index === 3 ? `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name}</span></h3><p>${kit.passive.description}</p></article>`
       : ability(starter, index === 4 ? 'skill1' : index === 5 ? 'skill2' : 'ultimate');
     detail = `<p>${path.detail.replaceAll('<', '&lt;').replaceAll('>', '&gt;')}</p>${specific}
       <div class="hub-comparison"><div><small>IMPLEMENTED</small><strong>Base combat kit</strong></div>
