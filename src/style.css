@@ -139,12 +139,13 @@ h1 { font-size: clamp(30px, 4vw, 46px); margin: 8px 0 14px; }
 .hub-ability { margin-top: 12px; border: 1px solid #63749566; border-radius: 12px; padding: 14px; background: #0a1222aa; }
 .hub-ability p { margin: 6px 0; }
 .ability-icon { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; }
+.hub-symbol .ability-icon { width: 100%; height: 100%; }
 .ability-heading, .passive-summary, .battle-action-heading { display: flex; align-items: center; gap: 8px; }
 .battle-action-heading > span { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
 .battle-action-heading .ability-icon { width: 32px; height: 32px; }
 .hub-detail .hub-cost { color: #ffe2a3; }
-.hub-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
-.hub-comparison > div { padding: 14px; border: 1px solid #63749566; border-radius: 12px; }
+.hub-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+.hub-comparison > div { min-width: 0; overflow-wrap: anywhere; padding: 14px; border: 1px solid #63749566; border-radius: 12px; }
 .hub-comparison > div:last-child { border-style: dashed; }
 .hub-comparison strong { display: block; font-size: 16px; margin-top: 8px; }
 .hub-detail button:disabled { opacity: 1; background: #29362f; color: #e0e7ef; border: 1px dashed #d9bc7f; }
@@ -293,7 +294,6 @@ kbd { display: inline-block; min-width: 24px; padding: 3px 6px; font: 11px "Sego
 .effect-ember { border-radius: 70% 0 70% 30%; background: linear-gradient(35deg, transparent 20%, #f59b4044, transparent 70%); }
 .effect-tide { border: 6px double #79c9eb; border-radius: 50%; }
 .effect-sprout { border-radius: 0 80% 0 80%; border-color: #a9d58a; background: #a9d58a22; }
-.action-heavy { border-width: 10px; }
 .action-skill1 { border-style: dashed; }
 .action-skill2 { border-style: double; inset: 0; }
 .effect-ultimate { inset: -15%; border-width: 10px; box-shadow: 0 0 45px var(--element); }
@@ -312,8 +312,20 @@ kbd { display: inline-block; min-width: 24px; padding: 3px 6px; font: 11px "Sego
 .battle-screen .battle-arena { flex: 1; min-height: 340px; grid-template-columns: 3fr 2fr; gap: clamp(16px, 4vw, 80px); align-items: end; background: transparent; padding: 8vh 0 16px; }
 .battle-screen .battle-unit { background: transparent; border: 0; box-shadow: none; padding: 4px; align-items: center; }
 .battle-screen .battle-unit.selected-unit .battle-art { filter: drop-shadow(0 0 8px var(--element)); }
+.battle-unit[data-side="ally"] { touch-action: none; user-select: none; -webkit-user-select: none; }
+.battle-unit[data-side="ally"] img { pointer-events: none; }
+.battle-screen .battle-unit.ultimate-ready .battle-art { filter: drop-shadow(0 0 12px #fff) drop-shadow(0 0 22px #fff9); }
+.ultimate-ready .battle-art::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; background: linear-gradient(110deg, transparent 25%, #fff9 50%, transparent 75%); background-size: 300% 100%; animation: ultimate-shimmer 2s ease-in-out infinite; border-radius: 50%; }
+html[data-motion="reduced"] .ultimate-ready .battle-art::after { display: none; }
+@media (prefers-reduced-motion: reduce) { .ultimate-ready .battle-art::after { display: none; } }
+@keyframes ultimate-shimmer { from { background-position: 150% 0; opacity: .15; } 50% { opacity: .65; } to { background-position: -50% 0; opacity: .15; } }
+.defending-unit .unit-status { color: #b9defc; font-weight: 700; }
+.gesture-active { position: relative; z-index: 6; }
+.gesture-choice { position: absolute; bottom: 0; z-index: 7; width: min(280px, 100%); padding: 8px; color: #fff; background: #111b16; border: 1px solid #ffe2a3; border-radius: 8px; font-size: 14px; pointer-events: none; }
 .battle-screen .unit-name { background: #111b16ed; border-radius: 4px; padding: 2px 8px; font-size: 18px; }
-.battle-screen .battle-art { margin: 4px auto; order: 2; }
+.battle-screen .battle-art { width: min(100%, calc(185px * var(--unit-scale, 1))); margin: 4px auto; order: 2; flex-shrink: 0; }
+.battle-screen .battle-side .battle-unit { width: min(100%, 580px); justify-self: center; }
+.battle-screen .battle-side.enemies { grid-template-columns: repeat(var(--enemy-count, 3), minmax(0, 1fr)); }
 .battle-screen .unit-readout { order: 1; margin-top: 4px; }
 .unit-readout { display: flex; flex-direction: column; align-self: stretch; background: #111b16ed; padding: 8px; border-radius: 8px; }
 .battle-screen .unit-health, .battle-screen .unit-stats, .battle-screen .unit-status { margin-top: 3px; }
@@ -331,7 +343,7 @@ kbd { display: inline-block; min-width: 24px; padding: 3px 6px; font: 11px "Sego
 .battle-screen .status:empty { display: none; }
 .battle-screen > .status, .battle-screen #wallet-error { background: #111b16ed; color: #fff; padding: 8px; }
 @media (min-width: 701px) and (max-height: 800px) {
-  .battle-screen .battle-art { width: min(100%, 120px); }
+  .battle-screen .battle-art { width: min(100%, calc(155px * var(--unit-scale, 1))); }
   .battle-screen .battle-arena { min-height: 260px; padding-top: 8px; }
   .battle-screen .battle-toolbar { padding: 4px 12px; }
 }
@@ -347,6 +359,8 @@ kbd { display: inline-block; min-width: 24px; padding: 3px 6px; font: 11px "Sego
   .battle-art { width: min(100%, 100px); margin: 5px auto; }
   .battle-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .battle-screen .battle-arena { grid-template-columns: 1fr 1fr; gap: 12px; padding-top: 16px; align-items: center; }
+  .battle-screen .battle-side.enemies { grid-template-columns: minmax(0, 1fr); }
+  .battle-screen .battle-art { width: min(100%, calc(100px * var(--unit-scale, 1))); }
   .battle-screen .battle-toolbar { padding: 8px; gap: 8px; flex-wrap: wrap; }
   .battle-screen .battle-top { align-self: stretch; gap: 8px; }
   .battle-screen .battle-top h1 { font-size: 22px; }

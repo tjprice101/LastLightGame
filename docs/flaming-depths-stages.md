@@ -1,7 +1,7 @@
 # Flaming Depths - 50-stage design
 
 **Superseded level/stat draft:** the new owner-approved elemental framework starts
-at level 10, grows linearly to 100 by Stage 45 and stays at 100 through Stage 50.
+at level 10, grows linearly to 120 by Stage 45 and stays at 120 through Stage 50.
 The old levels 6-55 and their derived stat/milestone numbers below are historical,
 not current implementation inputs. Encounter/skill ideas remain unapproved proposals.
 Use [Gameplay and elements](gameplay-and-elements.md) and its tested level helper
@@ -31,7 +31,7 @@ See [Dungeons and captures](dungeons-and-captures.md) for the confirmed contract
   can be called achievable. Current unupgraded solo starters are not expected to
   beat all 50 stages.
 - Enemy abilities below belong to hostile dungeon enemies only. Captured versions
-  get Normal/Heavy only, never inherit these skills, elite bonuses, or boss flags.
+  get Normal only after global Heavy removal, never inherit these skills, elite bonuses, or boss flags.
 
 ## Base stats and level growth
 
@@ -108,7 +108,7 @@ New burns start ticking on the next enemy phase, not immediately on application.
 Enemy burn still follows existing rules: before its action, a lethal tick cancels it.
 Same-source burns refresh duration rather than stack; overlapping burns use the
 larger tick and refresh to 2 remaining phases. No indefinite accumulation.
-Charge weaken affects direct Normal/Heavy/skill/Last Flare damage before crit and
+Charge weaken affects direct Normal/skill/Last Flare damage before crit and
 defense, not burn/healing/shield. Refresh rather than stack; expire after two
 subsequent player turns, whether the ally acts or is recovering.
 Shatter incoming-hit gain applies once per direct hit, including Eruption's hit

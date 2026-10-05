@@ -2,6 +2,7 @@ export const starters = [
   {
     id: 'ember',
     name: 'Infernis',
+    role: 'Attacker',
     art: 'infernis',
     title: 'The spark that refuses to fade',
     element: 'Infernic (Fire)',
@@ -19,6 +20,7 @@ export const starters = [
   {
     id: 'tide',
     name: 'Tizu',
+    role: 'Tank',
     art: 'tizu',
     title: 'A quiet tide. An unbroken will.',
     element: 'Aquatic (Water)',
@@ -35,8 +37,9 @@ export const starters = [
   },
   {
     id: 'sprout',
-    name: 'Flores',
-    art: 'flores',
+    name: 'Flora',
+    role: 'Healer/Support',
+    art: 'flora',
     title: 'Life takes root in the impossible',
     element: 'Efflorescent (Nature)',
     elementId: 'efflorescent',
@@ -45,7 +48,7 @@ export const starters = [
     description: 'A green-haired archer with a wooden bow and a green neckerchief. A new beginning grows from a single seed.',
     lore: {
       origin: 'The waking roots of Hollowgreen',
-      story: 'Flores tended the smallest garden in Hollowgreen, where the old trees had stopped bearing leaves. One morning, a single seed unfurled beneath the gray branches. Carrying a simple bow and the gardeners\' green neckerchief, she left to find soil where that fragile hope could flourish. Flores believes the world is not dying - it is waiting to be cared for.',
+      story: 'Flora tended the smallest garden in Hollowgreen, where the old trees had stopped bearing leaves. One morning, a single seed unfurled beneath the gray branches. Carrying a simple bow and the gardeners\' green neckerchief, she left to find soil where that fragile hope could flourish. Flora believes the world is not dying - it is waiting to be cared for.',
       vow: 'Give hope a place to take root.',
       awakening: 'A sleeping seed opens to your light.',
     },

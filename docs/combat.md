@@ -6,8 +6,15 @@ starter kits, waves, and hotkeys. This page retains broader production questions
 ## Open rules
 
 The battle starts with only the saved starter and player/enemy turns. Each ally acts at
-most once, building an individual Shatter Gauge from light/heavy attacks and
+most once, building an individual Shatter Gauge from normal attacks and
 incoming hits to pay for abilities. Only Last Flare forces full next-turn recovery.
+Directional drags execute on release; right-click Defense uses the action and
+reduces incoming damage by 10% until next player turn. Heavy Attack is removed.
+Whenever no living teammate has a legal action, enemy phases resolve until
+someone can act or combat ends. Support/Defense count; Last Flare recovery still
+incurs a real enemy phase, automatically. Manual passing remains inside Battle
+menu for voluntarily forfeiting actions. Clear/defeat and manual stage
+advancement remain distinct; D-057 supersedes the one-phase rule in D-038.
 See [current rules](free-battle.md) for exact costs, targeting, order, and effects.
 Production squad size, advanced timing controls, and elemental relationships are open.
 Fire, water, and grass exist as art themes; no damage advantage chart is confirmed.

@@ -19,7 +19,7 @@ wide landscape background for a cutesy 2D turn-based fantasy JRPG battle, an inv
 
 ### Reference and generation notes
 
-- Optionally append `--sref <approved_style_reference_url> --sw 200`, replacing
+- Append `--sref <approved_reference_image_url> --sw 200`, replacing
   the placeholder with an actual reference. Use the approved illustration style,
   not a screenshot containing menus or text. Reference influence may need tuning.
 - Start at `--s 100`; preserve the clear floor before increasing decoration.
@@ -36,7 +36,7 @@ wide landscape background for a cutesy 2D turn-based fantasy JRPG battle, an inv
 - [ ] Entire combatant silhouettes and weapons remain readable on both sides.
 - [ ] Central attack lane and foreground floor remain clear.
 - [ ] Trees, flowers, and hills support the scene without becoming focal obstacles.
-- [ ] Looks consistent beside Infernis, Tizu, Flores, Goblin, Imp, and Rock Golem.
+- [ ] Looks consistent beside Infernis, Tizu, Flora, Goblin, Imp, and Rock Golem.
 - [ ] Checked with one player character on the right, not a starting team.
 - [ ] Mobile framing preserves both sides of the arena.
 

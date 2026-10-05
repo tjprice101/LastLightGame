@@ -1,0 +1,44 @@
+.portrait-cutin { position: fixed; left: 0; right: 0; top: 25svh; height: clamp(210px, 30svh, 320px); z-index: 20; pointer-events: none; overflow: hidden; isolation: isolate; background: radial-gradient(ellipse at 25% 55%, color-mix(in srgb, var(--element) 65%, transparent), transparent 58%), linear-gradient(110deg, #0c0c16fa, color-mix(in srgb, var(--element) 28%, #10101b) 42%, #10101bfa 76%); border-block: 2px solid color-mix(in srgb, var(--element) 65%, #fff); box-shadow: 0 10px 40px #0008, 0 0 calc(15px + var(--cutin-power) * 25px) var(--element); clip-path: polygon(0 6%, 100% 0, 100% 94%, 0 100%); }
+.cutin-streaks { position: absolute; inset: 0; z-index: -1; background: repeating-linear-gradient(-25deg, transparent 0 35px, color-mix(in srgb, var(--element) 22%, transparent) 36px 38px, transparent 39px 85px); mask-image: linear-gradient(90deg, #000, #000, transparent); }
+.cutin-portrait { position: absolute; width: min(48vw, 540px); height: 135%; left: 3%; top: -12%; filter: drop-shadow(0 0 20px var(--element)); transform: rotate(-5deg) scale(calc(1 + var(--cutin-power) * .06)); }
+.cutin-portrait img { width: 100%; height: 100%; object-fit: contain; object-position: center 15%; }
+.cutin-copy { position: absolute; left: 48%; right: 5%; top: 50%; translate: 0 -50%; display: grid; gap: 10px; color: #fff; text-shadow: 0 2px 5px #000; }
+.cutin-copy small { display: flex; align-items: center; gap: 10px; font: 700 10px "Segoe UI", Arial, sans-serif; letter-spacing: .24em; color: color-mix(in srgb, var(--element) 45%, #fff); }
+.cutin-copy small::before { content: ""; width: 8px; height: 8px; rotate: 45deg; border: 1px solid currentColor; background: var(--element); box-shadow: 0 0 12px var(--element); flex: none; }
+.cutin-copy strong { font: 600 clamp(14px, 1.8vw, 24px)/1.2 Georgia, serif; color: #e2e2eb; overflow-wrap: anywhere; }
+.cutin-copy > span { font: 600 clamp(22px, 3.3vw, 46px)/1.1 Georgia, serif; color: color-mix(in srgb, var(--element) 25%, #fff); overflow-wrap: anywhere; }
+.cutin-divider { display: block; width: 80%; height: 2px; margin-top: 5px; background: linear-gradient(90deg, var(--element), #ffffff70, transparent); }
+.cutin-edge { position: absolute; height: 1px; left: 0; right: 0; background: linear-gradient(90deg, transparent, var(--element), #fff, var(--element), transparent); pointer-events: none; }
+.cutin-edge-top { top: 13px; rotate: -1deg; }
+.cutin-edge-bottom { bottom: 13px; rotate: -1deg; }
+.cutin-crest { position: absolute; left: 27%; top: 50%; width: clamp(120px, 19vw, 260px); aspect-ratio: 1; translate: -50% -50%; rotate: 45deg; border: 1px solid color-mix(in srgb, var(--element) 65%, transparent); box-shadow: inset 0 0 25px color-mix(in srgb, var(--element) 20%, transparent); z-index: -1; }
+.cutin-crest > span { position: absolute; inset: 12%; border: 1px solid #ffffff35; }
+.cutin-enemy .cutin-portrait { left: auto; right: 3%; transform: rotate(5deg) scale(calc(1 + var(--cutin-power) * .06)); }
+.cutin-enemy .cutin-copy { left: 5%; right: 48%; }
+.cutin-enemy .cutin-crest { left: auto; right: 27%; translate: 50% -50%; }
+.cutin-sigil { position: absolute; width: 260px; height: 260px; border: 4px double var(--element); outline: 1px solid #ffffff40; outline-offset: 12px; border-radius: 50%; left: 15%; top: calc(50% - 130px); opacity: .45; }
+.cutin-enemy .cutin-sigil { left: auto; right: 15%; }
+.cutin-ultimate { height: clamp(260px, 36svh, 380px); border-block-width: 3px; background: radial-gradient(ellipse at 25% 50%, color-mix(in srgb, var(--element) 80%, transparent), transparent 65%), linear-gradient(110deg, #080810fa, color-mix(in srgb, var(--element) 38%, #080810), #080810fa 80%); }
+.cutin-ultimate .cutin-sigil { border: 8px double var(--element); outline: 1px solid #ffffff70; outline-offset: 15px; rotate: 30deg; border-radius: 20%; box-shadow: 0 0 30px var(--element); }
+.cutin-ultimate .cutin-portrait { width: min(50vw, 640px); height: 150%; top: -18%; }
+.cutin-ultimate .cutin-copy > span { color: color-mix(in srgb, var(--element) 30%, #fff); font-size: clamp(24px, 3.8vw, 52px); }
+.cutin-ultimate .cutin-crest { border: 4px double color-mix(in srgb, var(--element) 65%, #fff); outline: 1px solid var(--element); outline-offset: 12px; }
+@media (max-width: 700px) {
+  .portrait-cutin { top: 32svh; height: 260px; }
+  .cutin-portrait { left: -9%; width: 68vw; }
+  .cutin-enemy .cutin-portrait { right: -9%; }
+  .cutin-copy { left: 42%; right: 4%; gap: 8px; }
+  .cutin-enemy .cutin-copy { left: 4%; right: 42%; }
+  .cutin-ultimate .cutin-portrait { width: 72vw; }
+  .cutin-copy small { font-size: 9px; letter-spacing: .13em; gap: 6px; }
+  .cutin-copy strong { font-size: 14px; }
+  .cutin-copy > span { font-size: 22px; }
+  .cutin-ultimate { height: 300px; }
+  .cutin-ultimate .cutin-copy > span { font-size: 24px; }
+  .cutin-crest { width: 160px; }
+}
+@media (max-height: 500px) {
+  .portrait-cutin, .cutin-ultimate { top: 22svh; height: 65svh; }
+  .cutin-copy { gap: 5px; }
+  .cutin-copy > span, .cutin-ultimate .cutin-copy > span { font-size: clamp(18px, 4svh, 26px); }
+}

@@ -2,20 +2,17 @@ import { type ProfileStorage } from './profile';
 
 export const HOTKEYS_KEY = 'last-light.hotkeys';
 export const commands = [
-  ['light', 'Light Attack'], ['heavy', 'Heavy Attack'], ['skill1', 'Ability 1'],
-  ['skill2', 'Ability 2'], ['ultimate', 'Last Flare'], ['endTurn', 'End turn / next wave'],
   ['nextAlly', 'Next ally'], ['nextTarget', 'Next enemy'],
 ] as const;
 export type Command = (typeof commands)[number][0];
 export type Bindings = Record<Command, string>;
 export const defaultBindings: Bindings = {
-  light: 'KeyQ', heavy: 'KeyW', skill1: 'KeyE', skill2: 'KeyR', ultimate: 'KeyF',
-  endTurn: 'Space', nextAlly: 'KeyC', nextTarget: 'KeyT',
+  nextAlly: 'KeyC', nextTarget: 'KeyT',
 };
 export const allowedCodes = [
   ...Array.from({ length: 26 }, (_, index) => `Key${String.fromCharCode(65 + index)}`),
   ...Array.from({ length: 10 }, (_, index) => `Digit${index}`),
-  'Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+  'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
 ];
 
 export function keyLabel(code: string): string {
@@ -37,7 +34,9 @@ export function validateBindings(value: unknown): Bindings {
 
 export function loadBindings(storage: ProfileStorage): Bindings {
   const raw = storage.getItem(HOTKEYS_KEY);
-  return raw === null ? { ...defaultBindings } : validateBindings(JSON.parse(raw));
+  if (raw === null) return { ...defaultBindings };
+  const value: unknown = JSON.parse(raw);
+  return validateBindings(value);
 }
 
 export function saveBindings(storage: ProfileStorage, bindings: Bindings): void {

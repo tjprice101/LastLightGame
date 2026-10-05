@@ -1,8 +1,9 @@
 # Dungeons and captured enemies
 
-**Status:** confirmed direction, not implemented. The owner chose to implement
-Adventure first and prepare documentation/art before making dungeons or captures
-playable. No captured units, dungeon rewards, or team slots have been granted.
+**Status:** first-pass combat for all ten elemental material dungeons,
+material rewards, stage unlocks and clear reports implemented.
+Captures and team slots remain deferred. Exact current rules are owned by
+[Gameplay and elements](gameplay-and-elements.md).
 
 ## Mode boundary
 
@@ -11,7 +12,7 @@ playable. No captured units, dungeon rewards, or team slots have been granted.
 - Dungeons are separate activities outside Adventure. **Flaming Depths** has supplied
   enemies and an encounter draft; the scope now includes one material dungeon per
   each of ten elements in [the Gameplay framework](gameplay-and-elements.md).
-  All are 50 stages; levels start 10, reach 100 at Stage 45, stay 100 through Stage 50.
+  All are 50 stages; levels start 10, reach 120 at Stage 45, stay 120 through Stage 50.
 - Dungeons contain enemy waves with higher enemy levels than Adventure.
   The exact comparison (corresponding wave or another baseline), level offset,
   stat table, wave count, encounter composition, and completion conditions need
@@ -19,7 +20,9 @@ playable. No captured units, dungeon rewards, or team slots have been granted.
   [the complete stage proposal](flaming-depths-stages.md) supplies all lineups,
   encounters, abilities and milestone ideas. Its old levels/stats are superseded
   by the new elemental framework; balance numbers remain proposals.
-  Do not treat the ten art concepts as an approved ten-wave dungeon.
+  Do not treat the ten art concepts as an approved ten-wave dungeon. First-pass
+  runtime content instead uses two ordinary enemies/one fifth-stage boss and
+  periodic stronger strikes; the historical draft is not the active stat table.
 - After every dungeon wave, show an **end-of-wave action report** before advancing.
 - Defeated dungeon enemies have a chance to become captured and usable on the team.
   Adventure does not currently grant captures.
@@ -30,7 +33,7 @@ Captured enemies are a separate ownership category from actual characters:
 
 | Surface | Actual character | Captured enemy |
 | --- | --- | --- |
-| Actions | Light, Heavy, Ability 1, Ability 2, Last Flare | Normal and Heavy only |
+| Actions | Normal, Ability 1, Ability 2, Last Flare, Defense | Normal only; Defense eligibility open |
 | Progression | Character level, Fracture, weapon, passive and ability upgrades | Character level only |
 | Evolution | Confirmed character Fracture rules | Never evolves or Fractures |
 | Combat role | Primary companion / future character squad | Weaker, squishier expendable support |
@@ -38,7 +41,8 @@ Captured enemies are a separate ownership category from actual characters:
 
 Captured enemies must not appear as evolved starters or receive character upgrade
 controls, special skills, or Last Flares. "Normal" corresponds to the basic attack
-concept; its multiplier and Heavy rules still need approval. Whether captures have
+concept. Heavy was globally removed by the new character input rule; do not
+implement the historical captured Heavy action. Whether captures have Defense,
 passives, Shatter Gauge, equipment, or any non-action traits remains open.
 Enemy combat levels are not an approved captured-unit progression table.
 Being fodder does not establish permanent death, automatic deletion, or sacrifice
@@ -46,7 +50,11 @@ mechanics; those require explicit approval.
 
 ## End-of-wave report
 
-Confirmed: a report at each dungeon wave boundary. Proposed report fields:
+Implemented: stage-clear report with attacks, damage dealt/received,
+healing/shields, surviving HP and saved reward events; next-stage control requires
+manual advance. Full-stage events are retained separately from the bounded recent
+battle log. Capture outcomes are absent because captures are unimplemented.
+Expanded future report fields:
 
 - Dungeon name, wave number, enemy levels, and clear outcome.
 - Actions taken, damage dealt/received, healing/shields, and surviving team HP.
@@ -55,14 +63,14 @@ Confirmed: a report at each dungeon wave boundary. Proposed report fields:
 
 Keep a complete per-wave ledger separate from the presentation's bounded recent
 battle log; otherwise a long wave loses early actions. Snapshot the report before
-the next wave resets its ledger. Report field selection, captures-on-defeat timing,
+the next wave resets its ledger. Expanded report field selection, captures-on-defeat timing,
 and when the report is acknowledged remain open.
 
 ## Decisions needed before implementation
 
-- Entry UI, entry cost (if any), finite/endless waves, completion/defeat/exit policy.
-- Exact dungeon enemy levels/stats, enemy mixtures, and higher-level comparison.
-- Dungeon Fractalis amounts and other rewards; Adventure's 5-10 is not implicit approval.
+- Production dungeon balance, more complex waves and expanded hostile abilities.
+- Alternate reward pools, pity and capture integration. All ten elemental dungeons
+  are playable; seven await supplied enemy/material/environment artwork.
 - Capture probability, eligible enemies/bosses, automatic roll versus player choice,
   capacity/full-collection behavior, duplicates, and whether a failed run keeps captures.
 - Initial captured level, level cap, XP/material costs, HP/DEF/attack growth,
@@ -96,5 +104,5 @@ Do not invent these values from visual power order.
 visual power, using the existing chibi/eyes-only/white-canvas style.
 All ten supplied originals are now preserved under `Art/source/enemies`, with
 standardized transparent exports under `public/assets/enemies`.
-They are not registered as playable combat definitions or approved capture odds.
+They are used in Flaming Depths encounters, but do not establish capture odds.
 Source and export contracts remain in [Art workflow](art-workflow.md).

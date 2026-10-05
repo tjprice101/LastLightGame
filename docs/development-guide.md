@@ -43,7 +43,7 @@ Do not commit `dist` or `node_modules`; CI uses the committed lockfile.
 - Battle controls: click an ally on the right and an enemy on the left. Hotkeys
   are shown on the actions and can be remapped in Settings. End turn forfeits
   unused actions; only Last Flare users cannot act on the next turn. Each character
-  builds Shatter Gauge from light/heavy attacks and incoming hits to pay ability costs.
+  builds Shatter Gauge from normal attacks and incoming hits to pay ability costs.
 - Missing artwork: inspect the visible error and confirm `public/assets` was
   included in the Vite build. Source art is not loaded by the browser.
 - Python is only needed to regenerate transparent art, not to run/build the game.

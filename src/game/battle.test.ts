@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { enemies, fighters, type ActionId } from '../content/combat';
 import { starters } from '../content/starters';
 import { act, actionUnavailable, createBattle, damageAmount, endTurn, nextWave, type BattleState } from './battle';
+import { characterGrowthFactor, characterPotencyFactor } from '../content/progression';
+import { enemyStat, enemyGrowth } from '../content/stat-growth';
 
 function controlled(): BattleState {
   const state = createBattle(12345, ['ember', 'tide', 'sprout']);
@@ -40,7 +42,7 @@ describe('Adventure damage and turns', () => {
     expect(state.allies[0].recoverThrough).toBe(2);
     state = endTurn(state).state;
     expect(state.round).toBe(2);
-    for (const actionId of ['light', 'heavy', 'skill1', 'skill2', 'ultimate'] as const) {
+    for (const actionId of ['light', 'defend', 'skill1', 'skill2', 'ultimate'] as const) {
       expect(actionUnavailable(state, state.allies[0], actionId)).toContain('Recovering');
       expect(() => use(state, 'ember', actionId)).toThrow('Recovering');
     }
@@ -56,7 +58,7 @@ describe('Adventure damage and turns', () => {
     state = endTurn(state).state;
     expect(actionUnavailable(state, state.allies[0], 'skill1')).toBeNull();
   });
-  it.each(['light', 'heavy', 'skill1', 'skill2'] as const)('%s allows attacking on the very next turn', (action) => {
+  it.each(['light', 'defend', 'skill1', 'skill2'] as const)('%s allows attacking on the very next turn', (action) => {
     const acted = use(controlled(), 'ember', action);
     expect(acted.allies[0].recoverThrough).toBe(0);
     const next = endTurn(acted).state;
@@ -93,6 +95,18 @@ describe('Adventure damage and turns', () => {
 });
 
 describe('Shatter Gauge', () => {
+  it('uses grown character capacity with fixed gains and costs', () => {
+    const state = createBattle(12345, ['ember'], { ember: { level: 30, evolution: 2 } });
+    expect(state.allies[0].stats.shatterCapacity).toBeCloseTo(114);
+    state.allies[0].shatter = 110;
+    state.allies[0].stats.crit = 0;
+    expect(use(state, 'ember', 'light').allies[0].shatter).toBeCloseTo(114);
+    state.allies[0].shatter = 114;
+    expect(use(state, 'ember', 'ultimate').allies[0].shatter).toBeCloseTo(14);
+    const hit = endTurn(state);
+    expect(hit.state.allies[0].shatter).toBeCloseTo(114);
+    expect(() => createBattle(12345, ['ember'], { ember: { level: 31, evolution: 1 } })).toThrow('0 to 30');
+  });
   it('starts every character at zero and keeps gauges independent', () => {
     const state = createBattle(1729, ['ember', 'tide', 'sprout']);
     expect(state.allies.map((unit) => unit.shatter)).toEqual([0, 0, 0]);
@@ -100,8 +114,100 @@ describe('Shatter Gauge', () => {
     expect(after.allies.map((unit) => unit.shatter)).toEqual([20, 0, 0]);
     expect(state.allies.map((unit) => unit.shatter)).toEqual([0, 0, 0]);
   });
+
+  describe('progression-aware combat', () => {
+    it('uses fractional stats, defense, shields and healing rather than display-rounded values', () => {
+      const progress = { level: 1, evolution: 1 };
+      const state = createBattle(12345, ['ember', 'tide', 'sprout'], { ember: progress, tide: progress, sprout: progress });
+      state.allies.forEach((unit) => { unit.shatter = 100; unit.stats.crit = 0; });
+      state.enemies.forEach((unit) => { unit.hp = 2000; unit.stats.crit = 0; });
+      const factor = 1.03 ** 3;
+      expect(state.allies[0].stats.damage).toBeCloseTo(38 * factor);
+      expect(state.allies[1].stats.defense).toBeCloseTo(24 * factor ** .7);
+      expect(damageAmount(38.38, 1.01 * 1.6, 5, false)).toBe(57);
+      expect(damageAmount(50, 1, state.allies[0].stats.defense, false)).toBeCloseTo(50 - 10 * factor ** .7);
+      expect(use(state, 'tide', 'skill2').allies[0].shield).toBeCloseTo(25 * factor);
+      state.allies[0].hp = 100;
+      expect(use(state, 'sprout', 'skill2').allies[0].hp).toBeCloseTo(100 + 30 * factor);
+      state.phase = 'cleared';
+      state.enemies.forEach((unit) => { unit.hp = 0; });
+      expect(nextWave(state).state.allies[0].stats.damage).toBeCloseTo(38 * factor);
+    });
+
+    function grown(): BattleState {
+      const progress = { level: 30, evolution: 2 };
+      const state = createBattle(12345, ['ember', 'tide', 'sprout'], { ember: progress, tide: progress, sprout: progress });
+      state.allies.forEach((unit) => { unit.shatter = 114; unit.stats.crit = 0; });
+      state.enemies.forEach((unit) => { unit.hp = 20_000; unit.stats.health = 20_000; unit.stats.crit = 0; });
+      return state;
+    }
+
+    it('combines scaled Attack Damage, skill coefficient and critical multiplier', () => {
+      const state = grown();
+      state.allies[0].stats.crit = 1;
+      const result = act(state, 'ember', 'skill1', state.enemies[0].id);
+      const actor = state.allies[0];
+      const factor = characterGrowthFactor({ level: 30, evolution: 2 });
+      const potency = characterPotencyFactor({ level: 30, evolution: 2 });
+      const burn = Math.round(8 * factor * potency);
+      expect(result.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(actor.stats.damage, 1.6 * potency, 5, true, actor.stats.critMultiplier));
+      expect(result.state.enemies[0].burn).toEqual({ damage: burn, turns: 2 });
+      expect(result.state.allies[0].readyRound.skill1).toBe(3);
+      expect(result.state.allies[0].shatter).toBe(89);
+      expect(endTurn(result.state).events.find((entry) => entry.kind === 'damage' && entry.source === 'ember')?.amount).toBe(burn);
+      expect(damageAmount(100, 1, 0, true, 2.1)).toBe(210);
+      expect(() => damageAmount(100, 1, 0, true, NaN)).toThrow('Invalid damage');
+    });
+
+    it('scales Infernis passive magnitude without changing its health threshold', () => {
+      const state = grown();
+      state.allies[0].hp = state.allies[0].stats.health / 2;
+      const result = act(state, 'ember', 'light', state.enemies[0].id);
+      expect(result.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(state.allies[0].stats.damage, 1 + .2 * 1.14, 5, false));
+      state.allies[0].hp += 1;
+      expect(act(state, 'ember', 'light', state.enemies[0].id).events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(state.allies[0].stats.damage, 1, 5, false));
+    });
+
+    it('uses grown shields, weakening and effective defense', () => {
+      const state = grown();
+      const factor = characterGrowthFactor({ level: 30, evolution: 2 });
+      expect(state.allies[1].stats.defense).toBeCloseTo(24 * factor ** .7);
+      for (const unit of use(state, 'tide', 'skill2').allies) expect(unit.shield).toBeCloseTo(25 * factor);
+      for (const unit of use(state, 'tide', 'ultimate').allies) expect(unit.shield).toBeCloseTo(35 * factor);
+      const weakened = use(state, 'tide', 'skill1');
+      expect(weakened.enemies[0].weakenFraction).toBeCloseTo(.25 * 1.14);
+      expect(weakened.enemies[0].weakened).toBe(2);
+      weakened.allies.forEach((unit) => { unit.stats.defense = 0; });
+      const result = endTurn(weakened);
+      const target = result.state.allies.find((unit) => unit.id === result.events.find((entry) => entry.source === state.enemies[0].id && entry.kind === 'damage')?.target);
+      expect(result.events.find((entry) => entry.source === state.enemies[0].id && entry.kind === 'damage')?.amount).toBe(Math.max(1, Math.round(23 * (1 - .25 * 1.14)) - (target?.stats.defense ?? 0)));
+    });
+
+    it('uses grown healing and passive heal percentage without revival', () => {
+      const state = grown();
+      state.allies[0].hp = 100;
+      state.allies[1].hp = 0;
+      const factor = characterGrowthFactor({ level: 30, evolution: 2 });
+      expect(use(state, 'sprout', 'skill2').allies[0].hp).toBeCloseTo(100 + 30 * factor);
+      expect(use(state, 'sprout', 'ultimate').allies[0].hp).toBeCloseTo(100 + 55 * factor);
+      expect(use(state, 'sprout', 'skill2').allies[1].hp).toBe(0);
+      state.allies.forEach((unit) => { unit.shield = 1000; });
+      expect(endTurn(state).state.allies[0].hp).toBe(100 + Math.round(220 * factor * .05 * 1.14));
+      expect(state.allies[0].hp).toBe(100);
+    });
+
+    it('preserves the grown kit and capacities across waves', () => {
+      const state = grown();
+      state.phase = 'cleared';
+      state.enemies.forEach((unit) => { unit.hp = 0; });
+      const next = nextWave(state).state;
+      expect(next.allies[0].kit).toEqual(state.allies[0].kit);
+      expect(next.allies[0].stats.shatterCapacity).toBeCloseTo(114);
+      expect(next.allies[0].level).toBe(30);
+    });
+  });
   it.each([
-    ['light', 20], ['heavy', 30],
+    ['light', 20],
   ] as const)('%s gains exactly %i, capped at 100', (action, gain) => {
     const state = createBattle();
     expect(use(state, 'ember', action).allies[0].shatter).toBe(gain);
@@ -172,7 +278,7 @@ describe('solo starter battles', () => {
     expect(createBattle(12345).wave).toBe(1);
     expect(createBattle(12345).enemies.map((enemy) => enemy.level)).toEqual([1, 1, 1]);
   });
-  it('uses base-relative linear HP/attack, +1 defense and +1 level every wave, not compound growth', () => {
+  it('uses accelerating HP/attack/defense with double initial growth and increasing levels', () => {
     let state = createBattle(12345);
     for (let wave = 1; wave <= 20; wave++) {
       expect(state.wave).toBe(wave);
@@ -182,10 +288,10 @@ describe('solo starter battles', () => {
         }
         const base = enemies[unit.definitionId].stats;
         expect(unit.level).toBe(wave);
-        expect(unit.stats.health).toBe(Math.round(base.health + base.health * 0.12 * (wave - 1)));
+        expect(unit.stats.health).toBe(enemyStat(base.health, enemyGrowth.health, wave, 1, .24));
         expect(unit.hp).toBe(unit.stats.health);
-        expect(unit.stats.damage).toBe(Math.round(base.damage + base.damage * 0.12 * (wave - 1)));
-        expect(unit.stats.defense).toBe(base.defense + wave - 1);
+        expect(unit.stats.damage).toBe(enemyStat(base.damage, enemyGrowth.damage, wave, 1, .24));
+        expect(unit.stats.defense).toBe(enemyStat(base.defense, enemyGrowth.defense, wave, 1, 2 / base.defense));
         expect(unit.stats.crit).toBe(base.crit);
       }
       state.phase = 'cleared';
@@ -283,7 +389,7 @@ describe('starter abilities and passives', () => {
     expect(after.allies.map((unit) => unit.hp)).toEqual(state.allies.map((unit) => unit.hp));
     expect(after.allies.reduce((sum, unit) => sum + unit.shield, 0)).toBeLessThan(3000);
   });
-  it('Flores heals living allies at the start of the turn and does not revive', () => {
+  it('Flora heals living allies at the start of the turn and does not revive', () => {
     const state = controlled();
     state.enemies.forEach((unit) => { unit.hp = 0; });
     state.allies[0].hp = 100;
@@ -322,16 +428,16 @@ describe('starter abilities and passives', () => {
 });
 
 describe('wave lifecycle', () => {
-  it('a heavy wave clear carries its gauge without blocking the next wave', () => {
+  it('a normal wave clear carries its gauge without blocking the next wave', () => {
     const state = createBattle();
     state.enemies.forEach((unit) => { unit.hp = 0; });
     state.enemies[0].hp = 1;
-    const cleared = use(state, 'ember', 'heavy');
+    const cleared = use(state, 'ember', 'light');
     expect(cleared.phase).toBe('cleared');
     const next = nextWave(cleared).state;
-    expect(next.allies[0].shatter).toBe(30);
+    expect(next.allies[0].shatter).toBe(20);
     expect(next.allies[0].recoverThrough).toBe(0);
-    expect(actionUnavailable(next, next.allies[0], 'heavy')).toBeNull();
+    expect(actionUnavailable(next, next.allies[0], 'light')).toBeNull();
   });
   it('advances only after a clear, scales enemies, and carries recovery into the next wave', () => {
     const state = createBattle(1);
@@ -342,11 +448,11 @@ describe('wave lifecycle', () => {
     expect(cleared.phase).toBe('cleared');
     const next = nextWave(cleared).state;
     expect(next.wave).toBe(2);
-    expect(next.round).toBe(2);
+    expect(next.round).toBe(3);
     expect(next.enemies.map((unit) => unit.definitionId)).toEqual(['goblin', 'imp', 'golem']);
-    expect(next.enemies[0].stats.health).toBe(123);
-    expect(actionUnavailable(next, next.allies[0], 'light')).toContain('Recovering');
-    expect(next.allies[0].shatter).toBe(0);
+    expect(next.enemies[0].stats.health).toBe(136);
+    expect(actionUnavailable(next, next.allies[0], 'light')).toBeNull();
+    expect(next.allies[0].shatter).toBe(30);
   });
   it('burn killing the last enemy clears the wave without that enemy attacking', () => {
     const state = controlled();

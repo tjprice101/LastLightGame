@@ -1,6 +1,13 @@
-import { adventureScaling, enemies, fighters, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats } from '../content/combat';
+import { actionIds, adventureScaling, defenseMode, enemies, formatStat, resolveFighter, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats, type FighterDefinition } from '../content/combat';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
-import { enemyFractalisDrop } from '../content/progression';
+import { type CharacterProgress } from '../content/progression';
+import { fractalisDrop, rollDrop } from '../content/loot-random';
+import { dungeonEncounter, materialDrops, type PlayableDungeon } from '../content/dungeons';
+import { materialName } from '../content/dungeon-art';
+import { infusionEncounter, infusionDrops } from '../content/infusions';
+import { dungeonStageCount, type InfusionModeId } from '../content/activities';
+import { enemyGrowth, enemyStat } from '../content/stat-growth';
+import { enemySkills, scheduledEnemySkill, type EnemySkill } from '../content/enemy-skills';
 
 export interface Combatant {
   id: string;
@@ -8,6 +15,7 @@ export interface Combatant {
   side: 'ally' | 'enemy';
   name: string;
   level: number | null;
+  evolution?: number;
   stats: Stats;
   hp: number;
   shield: number;
@@ -17,6 +25,14 @@ export interface Combatant {
   readyRound: Record<'skill1' | 'skill2', number>;
   burn: { damage: number; turns: number };
   weakened: number;
+  weakenFraction: number;
+  kit: FighterDefinition | null;
+  defending: boolean;
+  art?: string;
+  color?: string;
+  enemySkills?: EnemySkill[];
+  boss?: boolean;
+  creatureId?: string;
 }
 export interface BattleState {
   wave: number;
@@ -26,6 +42,8 @@ export interface BattleState {
   rewardSeed: number;
   allies: Combatant[];
   enemies: Combatant[];
+  dungeon?: { element: PlayableDungeon; stage: number };
+  infusion?: { mode: InfusionModeId; stage: number };
 }
 export interface BattleEvent {
   kind: 'attack' | 'damage' | 'heal' | 'shield' | 'status' | 'turn' | 'reward';
@@ -35,6 +53,11 @@ export interface BattleEvent {
   critical: boolean;
   message: string;
   action?: ActionId;
+  enhancedAttack?: boolean;
+  abilityName?: string;
+  materials?: Record<string, number>;
+  shieldRemaining?: number;
+  periodic?: boolean;
 }
 export interface BattleResult { state: BattleState; events: BattleEvent[] }
 
@@ -42,40 +65,67 @@ function combatant(id: string, definitionId: Combatant['definitionId'], name: st
   return {
     id, definitionId, name, side, level: null, stats: { ...stats }, hp: stats.health, shield: 0,
     shatter: shatterGauge.starting, spent: false, recoverThrough: 0,
-    readyRound: { skill1: 1, skill2: 1 }, burn: { damage: 0, turns: 0 }, weakened: 0,
+    readyRound: { skill1: 1, skill2: 1 }, burn: { damage: 0, turns: 0 }, weakened: 0, weakenFraction: 0.25, kit: null, defending: false,
   };
 }
 
 function spawnWave(wave: number): Combatant[] {
-  const steps = wave - 1;
+  const level = Math.min(wave, enemyGrowth.maximumLevel);
   return (['goblin', 'imp', 'golem'] as const).map((id, index) => {
     const definition = enemies[id];
     const unit = combatant(`enemy-${wave}-${index}`, id, definition.name, 'enemy', {
-      health: Math.round(definition.stats.health * (1 + steps * adventureScaling.healthPerWave)),
-      defense: definition.stats.defense + steps * adventureScaling.defensePerWave,
-      damage: Math.round(definition.stats.damage * (1 + steps * adventureScaling.damagePerWave)),
+      ...definition.stats,
+      health: enemyStat(definition.stats.health, enemyGrowth.health, level, 1, adventureScaling.healthPerWave),
+      defense: enemyStat(definition.stats.defense, enemyGrowth.defense, level, 1, adventureScaling.defensePerWave / definition.stats.defense),
+      damage: enemyStat(definition.stats.damage, enemyGrowth.damage, level, 1, adventureScaling.damagePerWave),
       crit: definition.stats.crit,
     });
-    unit.level = wave;
+    unit.level = level;
+    unit.creatureId = `adventure:${id}`;
+    const strike = id === 'goblin' ? 'Wildwood Ambush' : id === 'imp' ? 'Cinder Mischief' : 'Faultline Crush';
+    unit.enemySkills = enemySkills(level, false, strike, 1.2 + (level - 1) * .004);
     return unit;
   });
 }
 
-export function createBattle(seed = 1729, roster: readonly StarterId[] = ['ember']): BattleState {
+export function createBattle(seed = 1729, roster: readonly StarterId[] = ['ember'], progress: Partial<Record<StarterId, CharacterProgress>> = {}): BattleState {
   if (!Number.isInteger(seed) || seed < 1 || seed > 0xffffffff) throw new Error('Battle seed must be a nonzero uint32.');
-  if (!roster.length || new Set(roster).size !== roster.length || !roster.every(isStarterId)) {
+  if (!roster.length || roster.length > 3 || new Set(roster).size !== roster.length || !roster.every(isStarterId)) {
     throw new Error('Battle roster requires distinct valid starters.');
   }
+
   return {
     wave: 1, round: 1, phase: 'player', seed, rewardSeed: seed,
     allies: roster.map((id) => {
       const starter = getStarter(id);
-      const stats = { ...fighters[starter.id].stats };
-      if (starter.id === 'tide') stats.defense += 8;
-      return combatant(starter.id, starter.id, starter.name, 'ally', stats);
+      const kit = resolveFighter(id, progress[id]);
+      const unit = combatant(starter.id, starter.id, starter.name, 'ally', kit.stats);
+      unit.kit = kit;
+      unit.level = progress[id]?.level ?? null;
+      unit.evolution = progress[id]?.evolution ?? 1;
+      return unit;
     }),
     enemies: spawnWave(1),
   };
+}
+
+export function createDungeonBattle(element: PlayableDungeon, stage: number, seed: number, starter: StarterId, progress: CharacterProgress,
+  roster: readonly StarterId[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }): BattleState {
+  const encounter = dungeonEncounter(element, stage);
+  const state = createBattle(seed, roster, teamProgress);
+  state.wave = stage;
+  state.dungeon = { element, stage };
+  state.enemies = Array.from({ length: encounter.boss ? 1 : 2 }, (_, index) => {
+    const unit = combatant(`dungeon-${element}-${stage}-${index}`, 'goblin', encounter.enemy.name, 'enemy', encounter.stats);
+    unit.level = encounter.level;
+    unit.creatureId = `dungeon:${element}:${encounter.tier}`;
+    unit.art = encounter.enemy.art;
+    unit.color = encounter.color;
+    unit.boss = encounter.boss;
+    unit.enemySkills = enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier);
+    return unit;
+  });
+  return state;
 }
 
 function roll(state: BattleState): number {
@@ -87,11 +137,30 @@ function roll(state: BattleState): number {
   return state.seed / 0x100000000;
 }
 
-export function damageAmount(base: number, multiplier: number, defense: number, critical: boolean): number {
-  if (![base, multiplier, defense].every(Number.isFinite) || base < 0 || multiplier < 0 || defense < 0) {
+export function createInfusionBattle(mode: InfusionModeId, stage: number, seed: number, starter: StarterId, progress: CharacterProgress,
+  roster: readonly StarterId[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }): BattleState {
+  const encounter = infusionEncounter(mode, stage);
+  const state = createBattle(seed, roster, teamProgress);
+  state.wave = stage;
+  state.infusion = { mode, stage };
+  state.enemies = Array.from({ length: encounter.boss ? 1 : 2 }, (_, index) => {
+    const unit = combatant(`infusion-${mode}-${stage}-${index}`, 'goblin', encounter.enemy.name, 'enemy', encounter.stats);
+    unit.level = encounter.level;
+    unit.creatureId = `infusion:${mode}:${encounter.tier}`;
+    unit.art = encounter.enemy.art;
+    unit.color = encounter.color;
+    unit.boss = encounter.boss;
+    unit.enemySkills = enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier);
+    return unit;
+  });
+  return state;
+}
+
+export function damageAmount(base: number, multiplier: number, defense: number, critical: boolean, critMultiplier = 1.5): number {
+  if (![base, multiplier, defense, critMultiplier].every(Number.isFinite) || base < 0 || multiplier < 0 || defense < 0 || critMultiplier < 1) {
     throw new Error('Invalid damage inputs.');
   }
-  return Math.max(1, Math.round(base * multiplier * (critical ? 1.5 : 1)) - defense);
+  return Math.max(1, Math.round(base * multiplier * (critical ? critMultiplier : 1)) - defense);
 }
 
 export function actionUnavailable(state: BattleState, actor: Combatant, action: ActionId): string | null {
@@ -111,20 +180,23 @@ function event(events: BattleEvent[], kind: BattleEvent['kind'], source: Combata
   events.push({ kind, source: source.id, target: target.id, amount, message, critical });
 }
 
-function hurt(target: Combatant, amount: number, source: Combatant, events: BattleEvent[], critical = false): void {
+function hurt(target: Combatant, amount: number, source: Combatant, events: BattleEvent[], critical = false, periodic = false): void {
+  if (target.defending) amount = Math.max(1, Math.round(amount * (1 - defenseMode.damageReduction)));
   const absorbed = Math.min(target.shield, amount);
   target.shield -= absorbed;
   const loss = Math.min(target.hp, amount - absorbed);
   target.hp -= loss;
   event(events, 'damage', source, target, loss,
-    `${target.name}: ${loss} damage${critical ? ' (critical)' : ''}${absorbed ? `, ${absorbed} shield absorbed` : ''}${target.hp === 0 ? ' - defeated' : ''}.`, critical);
+    `${target.name}: ${formatStat(loss)} damage${critical ? ' (critical)' : ''}${absorbed ? `, ${formatStat(absorbed)} shield absorbed` : ''}${target.hp === 0 ? ' - defeated' : ''}.`, critical);
+  events[events.length - 1].shieldRemaining = target.shield;
+  if (periodic) events[events.length - 1].periodic = true;
 }
 
 function gainShatter(target: Combatant, amount: number, events: BattleEvent[]): void {
-  const gained = Math.min(shatterGauge.maximum - target.shatter, amount);
+  const gained = Math.min(target.stats.shatterCapacity - target.shatter, amount);
   if (gained <= 0) return;
   target.shatter += gained;
-  event(events, 'status', target, target, gained, `${target.name} gains ${gained} Shatter Gauge (${target.shatter}/${shatterGauge.maximum}).`);
+  event(events, 'status', target, target, gained, `${target.name} gains ${formatStat(gained)} Shatter Gauge (${formatStat(target.shatter)}/${formatStat(target.stats.shatterCapacity)}).`);
 }
 
 function healTeam(state: BattleState, source: Combatant, amount: number, events: BattleEvent[], percent = false): void {
@@ -132,7 +204,7 @@ function healTeam(state: BattleState, source: Combatant, amount: number, events:
     const restored = Math.min(ally.stats.health - ally.hp, percent ? Math.max(1, Math.round(ally.stats.health * amount)) : amount);
     if (restored <= 0) continue;
     ally.hp += restored;
-    event(events, 'heal', source, ally, restored, `${source.name} restores ${restored} health to ${ally.name}.`);
+    event(events, 'heal', source, ally, restored, `${source.name} restores ${formatStat(restored)} health to ${ally.name}.`);
   }
 }
 
@@ -140,7 +212,7 @@ function shieldTeam(state: BattleState, source: Combatant, amount: number, event
   for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
     const gained = Math.max(0, amount - ally.shield);
     ally.shield = Math.max(ally.shield, amount);
-    event(events, 'shield', source, ally, gained, `${ally.name} has ${ally.shield} shield.`);
+    event(events, 'shield', source, ally, gained, `${ally.name} has ${formatStat(ally.shield)} shield.`);
   }
 }
 
@@ -152,15 +224,23 @@ function checkOutcome(state: BattleState): void {
 function awardDefeats(previous: BattleState, state: BattleState, events: BattleEvent[]): void {
   for (const enemy of state.enemies) {
     if (enemy.hp > 0 || !previous.enemies.some((unit) => unit.id === enemy.id && unit.hp > 0)) continue;
-    let seed = state.rewardSeed;
-    seed ^= seed << 13;
-    seed ^= seed >>> 17;
-    seed ^= seed << 5;
-    state.rewardSeed = seed >>> 0;
-    const amount = enemyFractalisDrop.minimum + Math.floor(state.rewardSeed / 0x100000000 *
-      (enemyFractalisDrop.maximum - enemyFractalisDrop.minimum + 1));
+    const rewardRoll = (): number => {
+      let seed = state.rewardSeed;
+      seed ^= seed << 13;
+      seed ^= seed >>> 17;
+      seed ^= seed << 5;
+      state.rewardSeed = seed >>> 0;
+      return state.rewardSeed / 0x100000000;
+    };
+    if (enemy.level === null) throw new Error('Enemy reward level is missing.');
+    const amount = rollDrop(fractalisDrop(enemy.level), rewardRoll);
+    if (amount === undefined) throw new Error('Guaranteed Fractalis reward did not drop.');
+    const materials = state.infusion ? infusionDrops(state.infusion.mode, state.infusion.stage, rewardRoll)
+      : state.dungeon ? materialDrops(state.dungeon.element, state.dungeon.stage, rewardRoll) : undefined;
+    const materialText = materials ? Object.entries(materials).map(([id, quantity]) => `${quantity} ${materialName(id)}`).join(', ') : '';
     events.push({ kind: 'reward', source: enemy.id, target: '', amount, critical: false,
-      message: `${enemy.name} drops +${amount} Fractalis.` });
+      ...(materials ? { materials } : {}),
+      message: `${enemy.name} drops +${amount} Fractalis${materials ? ` and ${materialText}` : ''}.` });
   }
 }
 
@@ -170,7 +250,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   if (!original) throw new Error('Unknown team member.');
   const reason = actionUnavailable(previous, original, action);
   if (reason) throw new Error(reason);
-  const support = action === 'skill2' && actorId !== 'ember';
+  const support = action === 'defend' || (action === 'skill2' && actorId !== 'ember');
   if (!support && !previous.enemies.some((enemy) => enemy.id === targetId && enemy.hp > 0)) {
     throw new Error('Choose a living enemy target.');
   }
@@ -178,10 +258,18 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   const actor = state.allies.find((unit) => unit.id === actorId);
   if (!actor) throw new Error('Team state is inconsistent.');
   if (!isStarterId(actor.definitionId)) throw new Error('Invalid ally definition.');
-  const definition = fighters[actor.definitionId];
+  const definition = actor.kit;
+  if (!definition) throw new Error('Ally combat kit is missing.');
+  const strength = action === 'light' || action === 'defend' ? null : definition.abilities[action].strength;
   const events: BattleEvent[] = [];
-  const name = action === 'light' ? 'Light Attack' : action === 'heavy' ? 'Heavy Attack' : definition.abilities[action].name;
-  events.push({ kind: 'attack', source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action });
+  const name = action === 'light' ? 'Normal Attack' : action === 'defend' ? 'Defense' : definition.abilities[action].name;
+  if (action === 'defend') {
+    actor.spent = true;
+    actor.defending = true;
+    event(events, 'status', actor, actor, defenseMode.damageReduction * 100, `${actor.name} enters Defense: incoming damage reduced by 10% until the next player turn.`);
+    return { state, events };
+  }
+  events.push({ kind: 'attack', source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action, abilityName: name });
   actor.spent = true;
   if (action === 'ultimate') actor.recoverThrough = state.round + 1;
   actor.shatter -= shatterGauge.costs[action];
@@ -191,29 +279,36 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   if (!support) {
     const all = action === 'ultimate' || (action === 'skill2' && actorId === 'ember');
     const targets = state.enemies.filter((enemy) => enemy.hp > 0 && (all || enemy.id === targetId));
-    let multiplier = action === 'heavy' ? 1.8 : 1;
-    if (action === 'skill1') multiplier = actorId === 'ember' ? 1.6 : 1.5;
-    if (action === 'skill2') multiplier = 1.1;
-    if (action === 'ultimate') multiplier = actorId === 'ember' ? 2.8 : actorId === 'tide' ? 2.2 : 1.8;
-    if (actorId === 'ember' && actor.hp <= actor.stats.health / 2) multiplier *= 1.2;
+    let multiplier = 1;
+    if (strength) {
+      if (strength.damageMultiplier === undefined) throw new Error('Attack skill damage multiplier is missing.');
+      multiplier = strength.damageMultiplier;
+    }
+    if (actorId === 'ember' && actor.hp <= actor.stats.health / 2) multiplier *= 1 + definition.passive.damageBonus;
     for (const target of targets) {
-      const critical = roll(state) < Math.min(1, actor.stats.crit + (actorId === 'sprout' && action === 'skill1' ? 0.2 : 0));
-      hurt(target, damageAmount(actor.stats.damage, multiplier, target.stats.defense, critical), actor, events, critical);
+      const critical = roll(state) < Math.min(1, actor.stats.crit + (strength?.critBonus ?? 0));
+      hurt(target, damageAmount(actor.stats.damage, multiplier, target.stats.defense, critical, actor.stats.critMultiplier), actor, events, critical);
       if (target.hp > 0 && action === 'skill1' && actorId === 'ember') {
-        target.burn = { damage: 8, turns: 2 };
-        event(events, 'status', actor, target, 8, `${target.name} burns for two enemy phases.`);
+        if (strength?.burnMultiplier === undefined) throw new Error('Burn strength is missing.');
+        const damage = Math.round(actor.stats.elementalDamage * strength.burnMultiplier);
+        target.burn = { damage, turns: 2 };
+        event(events, 'status', actor, target, damage, `${target.name} burns for two enemy phases.`);
       }
       if (target.hp > 0 && action === 'skill1' && actorId === 'tide') {
         target.weakened = 2;
+        if (strength?.weakenFraction === undefined) throw new Error('Weakening strength is missing.');
+        target.weakenFraction = strength.weakenFraction;
         event(events, 'status', actor, target, 0, `${target.name} is weakened for two enemy phases.`);
       }
     }
   }
   if (actorId === 'tide' && (action === 'skill2' || action === 'ultimate')) {
-    shieldTeam(state, actor, action === 'ultimate' ? 35 : 25, events);
+    if (strength?.shield === undefined) throw new Error('Shield strength is missing.');
+    shieldTeam(state, actor, strength.shield, events);
   }
   if (actorId === 'sprout' && (action === 'skill2' || action === 'ultimate')) {
-    healTeam(state, actor, action === 'ultimate' ? 55 : 30, events);
+    if (strength?.healing === undefined) throw new Error('Healing strength is missing.');
+    healTeam(state, actor, strength.healing, events);
   }
   checkOutcome(state);
   awardDefeats(previous, state, events);
@@ -222,9 +317,15 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
 
 function newTurn(state: BattleState, events: BattleEvent[]): void {
   state.round++;
-  for (const ally of state.allies) ally.spent = false;
-  const flores = state.allies.find((unit) => unit.id === 'sprout' && unit.hp > 0);
-  if (flores) healTeam(state, flores, 0.05, events, true);
+  for (const ally of state.allies) {
+    ally.spent = false;
+    ally.defending = false;
+  }
+  const flora = state.allies.find((unit) => unit.id === 'sprout' && unit.hp > 0);
+  if (flora) {
+    if (!flora.kit) throw new Error('Passive combat kit is missing.');
+    healTeam(state, flora, flora.kit.passive.healFraction, events, true);
+  }
   events.push({ kind: 'turn', source: '', target: '', amount: state.round, critical: false, message: `Turn ${state.round}. Only Last Flare forces next-turn recovery.` });
 }
 
@@ -238,15 +339,19 @@ export function endTurn(previous: BattleState): BattleResult {
       enemy.burn.turns--;
       const source = state.allies.find((unit) => unit.id === 'ember');
       if (!source) throw new Error('Burn source is missing.');
-      hurt(enemy, enemy.burn.damage, source, events);
+      hurt(enemy, enemy.burn.damage, source, events, false, true);
     }
     if (enemy.hp <= 0) continue;
     const living = state.allies.filter((unit) => unit.hp > 0);
     if (!living.length) break;
     const target = living[Math.floor(roll(state) * living.length)];
     const critical = roll(state) < enemy.stats.crit;
-    events.push({ kind: 'attack', source: enemy.id, target: target.id, amount: 0, critical: false, message: `${enemy.name} attacks ${target.name}.`, action: 'light' });
-    hurt(target, damageAmount(enemy.stats.damage, enemy.weakened > 0 ? 0.75 : 1, target.stats.defense, critical), enemy, events, critical);
+    const ability = scheduledEnemySkill(enemy.enemySkills ?? [], state.round);
+    events.push({ kind: 'attack', source: enemy.id, target: target.id, amount: 0, critical: false,
+      message: ability ? `${enemy.name} uses ${ability.name} on ${target.name}.` : `${enemy.name} attacks ${target.name}.`,
+      action: ability?.action ?? 'light', enhancedAttack: !!ability, abilityName: ability?.name });
+    const multiplier = (ability?.multiplier ?? 1) * (enemy.weakened > 0 ? 1 - enemy.weakenFraction : 1);
+    hurt(target, damageAmount(enemy.stats.damage, multiplier, target.stats.defense, critical, enemy.stats.critMultiplier), enemy, events, critical);
     gainShatter(target, shatterGauge.incomingHit, events);
     if (enemy.weakened > 0) enemy.weakened--;
   }
@@ -256,7 +361,57 @@ export function endTurn(previous: BattleState): BattleResult {
   return { state, events };
 }
 
+export function actAndAdvanceTurn(previous: BattleState, actorId: string, action: ActionId, targetId: string): BattleResult {
+  const actionResult = act(previous, actorId, action, targetId);
+  const advanced = advanceUnavailableTurns(actionResult.state);
+  return { state: advanced.state, events: [...actionResult.events, ...advanced.events] };
+}
+
+export function teamCanAct(state: BattleState): boolean {
+  return state.phase === 'player' && state.allies.some((ally) =>
+    actionIds.some((action) => actionUnavailable(state, ally, action) === null));
+}
+
+export function advanceUnavailableTurns(previous: BattleState): BattleResult {
+  let state = previous;
+  const events: BattleEvent[] = [];
+  while (state.phase === 'player' && !teamCanAct(state)) {
+    const result = endTurn(state);
+    state = result.state;
+    events.push(...result.events);
+  }
+  return { state, events };
+}
+
+export function nextStage(previous: BattleState, progress: CharacterProgress | Partial<Record<StarterId, CharacterProgress>>): BattleResult {
+  const destination = previous.infusion ?? previous.dungeon;
+  if (!destination) throw new Error('Only staged battles can advance to the next stage.');
+  if (previous.phase !== 'cleared') throw new Error('Clear this stage before advancing.');
+  if (previous.wave >= dungeonStageCount) throw new Error('Dungeon complete. Return to Gameplay to replay a stage.');
+  const starter = previous.allies[0]?.definitionId;
+  if (!isStarterId(starter)) throw new Error('Dungeon starter is missing.');
+  const roster = previous.allies.map((ally) => {
+    if (!isStarterId(ally.definitionId)) throw new Error('Continuing ally definition is missing.');
+    return ally.definitionId;
+  });
+  const teamProgress = 'level' in progress ? { [starter]: progress } : progress;
+  for (const id of roster) if (!teamProgress[id]) throw new Error('Continuing character progress is missing.');
+  const leaderProgress = teamProgress[starter];
+  if (!leaderProgress) throw new Error('Continuing leader progress is missing.');
+  const state = 'mode' in destination
+    ? createInfusionBattle(destination.mode, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress)
+    : createDungeonBattle(destination.element, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress);
+  for (const ally of state.allies) {
+    const prior = previous.allies.find((unit) => unit.id === ally.id);
+    if (!prior) throw new Error('Continuing character is missing from the previous encounter.');
+    ally.shatter = Math.min(prior.shatter, ally.stats.shatterCapacity);
+  }
+  return { state, events: [{ kind: 'turn', source: '', target: '', amount: state.wave, critical: false,
+    message: 'Next stage. Health and cooldowns reset; Shatter Gauge carries over.' }] };
+}
+
 export function nextWave(previous: BattleState): BattleResult {
+  if (previous.dungeon || previous.infusion) throw new Error('Dungeon stages must be started as separate encounters.');
   if (previous.phase !== 'cleared') throw new Error('Defeat this wave before advancing.');
   const state = structuredClone(previous);
   const events: BattleEvent[] = [];
@@ -265,5 +420,6 @@ export function nextWave(previous: BattleState): BattleResult {
   state.phase = 'player';
   newTurn(state, events);
   events.push({ kind: 'turn', source: '', target: '', amount: state.wave, critical: false, message: `Wave ${state.wave}: enemies grow stronger. Health, shields, Shatter Gauge and recovery carry over.` });
-  return { state, events };
+  const advanced = advanceUnavailableTurns(state);
+  return { state: advanced.state, events: [...events, ...advanced.events] };
 }

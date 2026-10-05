@@ -20,10 +20,11 @@ export const elementalMaterials = elements.flatMap((element) => materialRarities
   rarity,
   name: `${element.name} ${rarity} Material`,
 })));
-export const elementalDungeonRules = { stages: 50, startingLevel: 10, maximumLevel: 100, maximumLevelStage: 45 } as const;
+export const dungeonStageCount = 35;
+export const elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 10, maximumLevel: 120, maximumLevelStage: dungeonStageCount } as const;
 export const infusionModes = [
-  { id: 'heavens', name: 'Soar into the Heavens', energy: 'Light', enemyTheme: 'Angelic wisps of light', stages: 25, startingLevel: 80, enemyTiers: 4, uniqueEnemies: { minimum: 5, maximum: 6 } },
-  { id: 'abyss', name: 'Delve into the Abyss', energy: 'Chaotic', enemyTheme: 'Royal Shadow-bound wisps of darkness', stages: 25, startingLevel: 80, enemyTiers: 4, uniqueEnemies: { minimum: 5, maximum: 6 } },
+  { id: 'heavens', name: 'Soar to Heaven', energy: 'Light', enemyTheme: 'Dawnthorn Slime evolution line', stages: dungeonStageCount, startingLevel: 80, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
+  { id: 'abyss', name: 'Delve into the Abyss', energy: 'Chaotic', enemyTheme: 'Wraththorn Slime evolution line', stages: dungeonStageCount, startingLevel: 80, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
 ] as const;
 export type InfusionModeId = (typeof infusionModes)[number]['id'];
 
@@ -35,7 +36,7 @@ export function getElement(id: ElementId) {
 
 export function elementalEnemyLevel(stage: number): number {
   if (!Number.isInteger(stage) || stage < 1 || stage > elementalDungeonRules.stages) {
-    throw new Error('Elemental dungeon stage must be an integer from 1 to 50.');
+    throw new Error(`Elemental dungeon stage must be an integer from 1 to ${dungeonStageCount}.`);
   }
   const progress = Math.min(stage, elementalDungeonRules.maximumLevelStage) - 1;
   return Math.round(elementalDungeonRules.startingLevel +
@@ -48,15 +49,16 @@ export const evolutionRecipes = [
   { from: 2, to: 3, rarities: ['Common', 'Uncommon'] },
   { from: 3, to: 4, rarities: ['Uncommon', 'Rare'] },
   { from: 4, to: 5, rarities: ['Rare', 'Epic'] },
+  { from: 5, to: 6, rarities: ['Epic', 'Legendary'] },
 ] as const satisfies readonly { from: number; to: number; rarities: readonly MaterialRarity[] }[];
 
 export function evolutionRequirement(elementId: ElementId, from: number) {
   const element = getElement(elementId);
   const recipe = evolutionRecipes.find((entry) => entry.from === from);
-  if (!recipe) throw new Error('Evolution source must be an integer from 1 to 4.');
+  if (!recipe) throw new Error('Evolution source must be an integer from 1 to 5.');
   return {
     ...recipe, elementId, dungeon: element.dungeon, infusion: element.infusion,
-    requiresFractalis: true, requiresInfusableEnemies: true,
-    quantitiesDefined: false,
+    requiresFractalis: true, requiresInfusableEnemies: false,
+    quantitiesDefined: true,
   } as const;
 }

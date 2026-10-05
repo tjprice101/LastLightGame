@@ -15,7 +15,7 @@ The owner delegated language/engine selection and requested repository deploymen
    Tab, modifier keys, Escape, repeated keys, and browser shortcuts do not advance,
    preserving keyboard navigation and browser controls.
 3. With no save, offer Infernis (fire/greatsword), Tizu (water/spear), and
-   Flores (grass/bow). Select exactly one; the opening journey and Adventure are solo.
+   Flora (grass/bow). Select exactly one; the opening journey and Adventure are solo.
 4. Require explicit selection; then enable "Begin your journey".
 5. Commit the starter to local storage before opening the sanctuary menu.
 6. On subsequent visits with any valid starter saved, title entry continues to the saved menu.
@@ -30,7 +30,7 @@ effect without accumulating particles. Card updates preserve keyboard focus.
 
 Selection displays original lore, an origin, and a personal vow. Infernis carries the
 last coal of Ashen Vale; Tizu searches for Glasswater's missing ferrykeepers;
-Flores carries the hope of Hollowgreen's first new seed. These are editable
+Flora carries the hope of Hollowgreen's first new seed. These are editable
 prototype stories, not a claim that the wider world/story has been approved.
 
 After a successful first save, the menu plays a companion awakening and opens

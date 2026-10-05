@@ -1,0 +1,199 @@
+/* Sanctuary styling stays isolated from title selection and the immersive field. */
+body:has(.sanctuary-shell) { min-width: 0; }
+.sanctuary-shell {
+  --gold: #e8c36a;
+  --muted: #aeb9d3;
+  --line: #344465;
+  --ink: #0a0f1f;
+  --panel: #111a33ed;
+  width: 100%;
+  max-width: 1700px;
+  min-height: 100svh;
+  padding: 0;
+  color: #f4ecd9;
+  background: radial-gradient(ellipse at 50% 90%, #ff7a4520, transparent 55%), linear-gradient(#070b18dd, #131c35e6);
+}
+.shell.sanctuary-shell { padding: 0; }
+.ui-icon { display: block; width: 24px; height: 24px; flex: none; }
+.sanctuary-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding: 14px 28px 10px; }
+.sanctuary-brand { display: flex; align-items: center; gap: 14px; }
+.sanctuary-brand .brand-mark { transform: rotate(45deg); display: grid; place-items: center; width: 38px; height: 38px; padding: 0; color: var(--gold); border-color: var(--gold); }
+.sanctuary-brand .brand-mark span { transform: rotate(-45deg); font-size: 10px; }
+.sanctuary-brand strong { display: block; font-size: 13px; letter-spacing: .26em; }
+.sanctuary-brand small { color: var(--muted); font-size: 10px; letter-spacing: .2em; }
+.sanctuary-title { text-align: center; }
+.sanctuary-title .eyebrow { color: #ff9a70; margin: 0; font-size: 10px; }
+.sanctuary-title h1 { font-size: 32px; font-weight: 600; margin: 0; }
+.sanctuary-wallet { display: flex; justify-content: flex-end; align-items: center; gap: 8px; min-width: 0; }
+.sanctuary-header .currency-strip { position: static !important; display: flex; flex-wrap: nowrap; gap: 8px; margin: 0; }
+.sanctuary-header .currency-strip > span { border: 1px solid var(--line); border-radius: 14px; padding: 7px 10px; background: #0a0f1fcc; }
+.sanctuary-header .currency-strip strong { font: bold 18px Georgia, serif; }
+.sanctuary-header .currency-strip small { font-size: 10px; margin-top: 3px; max-width: 155px; }
+.sanctuary-header .settings-trigger { padding: 10px; border-radius: 12px; background: #0a0f1fcc; color: var(--gold); border-color: var(--line); }
+.sanctuary-shell .menu-screen.sanctuary-content { padding: 10px 28px 20px; margin: 0; width: 100%; }
+.sanctuary-content > .hub-heading, .sanctuary-content > .gameplay-hub > .hub-heading { display: none; }
+.sanctuary-nav { position: sticky; bottom: 0; z-index: 5; display: flex; justify-content: center; gap: 6px; padding: 10px 14px max(10px, env(safe-area-inset-bottom)); margin-top: auto; border-top: 1px solid var(--line); background: #070b18f5; }
+.sanctuary-shell > .sanctuary-nav { grid-row: 4; }
+.sanctuary-shell > .status { grid-row: 3; }
+.sanctuary-shell a:focus-visible, .sanctuary-shell .hub-rail-button:focus-visible { outline: 2px solid #7fd6c8; outline-offset: -3px; }
+.sanctuary-nav button { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 90px; padding: 5px 10px; border: 0; border-radius: 14px; background: none; color: var(--muted); font-size: 12px; }
+.sanctuary-nav .nav-symbol { display: grid; place-items: center; width: 64px; height: 52px; border: 1px solid var(--line); border-radius: 10px; background: #16213b; font-weight: 600; letter-spacing: .08em; }
+.sanctuary-nav .nav-symbol .ui-icon { width: 34px; height: 34px; }
+.sanctuary-shell .hub-rail-button .hub-symbol { width: 52px; height: 52px; }
+.sanctuary-shell .hub-rail-button .hub-symbol .ui-icon { width: 32px; height: 32px; }
+.sanctuary-shell .ability-heading { gap: 14px; }
+.sanctuary-shell .ability-icon { width: 80px; height: 80px; }
+.sanctuary-nav button[aria-current="page"] { color: var(--gold); }
+.sanctuary-nav button[aria-current="page"] .nav-symbol { background: linear-gradient(var(--gold), #c9973e); border-color: var(--gold); color: var(--ink); box-shadow: 0 0 18px #e8c36a55; transform: translateY(-3px); }
+.sanctuary-nav button small { position: absolute; right: 0; top: 0; background: #ff9a70; color: var(--ink); padding: 1px 4px; border-radius: 9px; font-size: 8px; font-weight: bold; }
+.sanctuary-shell .home-hub { position: relative; grid-template-columns: minmax(160px, .45fr) minmax(0, 1.7fr) minmax(310px, .9fr); grid-template-rows: 1fr auto; gap: 16px 22px; min-height: 560px; }
+.sanctuary-shell .hub-rail { gap: 8px; }
+.sanctuary-shell .hub-rail-button { --a: #26365c; --b: #121a33; position: relative; border: 0; border-radius: 0; background: linear-gradient(110deg, var(--a), var(--b)); clip-path: polygon(0 0, 100% 0, calc(100% - 14px) 100%, 0 100%); padding: 12px 22px 12px 10px; color: #fff; text-align: left; font-size: 14px; }
+.sanctuary-shell .hub-rail-button small { color: #f5f0e4; opacity: .9; font-size: 12px; }
+.sanctuary-shell .hub-rail-button .hub-symbol { background: #0006; border: 1px solid #ffffff33; border-radius: 10px; color: #fff; }
+.sanctuary-shell .home-hub .hub-rail-button:nth-child(1) { --a: #b94120; --b: #936021; }
+.sanctuary-shell .home-hub .hub-rail-button:nth-child(2) { --a: #6335a9; --b: #99447b; }
+.sanctuary-shell .home-hub .hub-rail-button:nth-child(3) { --a: #18655e; --b: #235e9d; }
+.sanctuary-shell .home-hub .hub-rail-button:nth-child(4) { --a: #35439b; --b: #816028; }
+.sanctuary-shell .home-hub .hub-rail-button:nth-child(6) { --a: #702e7c; --b: #452552; }
+.sanctuary-shell .hub-rail-button:hover, .sanctuary-shell .hub-rail-button[aria-pressed="true"] { filter: brightness(1.2); }
+.sanctuary-shell .hub-rail-button[aria-pressed="true"] { --a: #ad5124; --b: #913423; }
+.sanctuary-shell .hub-showcase { position: relative; text-align: center; align-self: center; }
+.sanctuary-shell .hub-showcase::before { content: ""; position: absolute; inset: 2% 6% 12%; border: 1px solid #e8c36a44; border-radius: 50%; box-shadow: 0 0 0 12px #e8c36a08, 0 0 0 13px #e8c36a20; pointer-events: none; }
+.sanctuary-shell .hub-portrait { position: relative; width: min(100%, 330px); }
+.sanctuary-shell .hub-showcase h2 { font-size: 36px; margin: 4px 0; }
+.sanctuary-shell .hub-showcase > p { margin: 6px 0; }
+.sanctuary-shell .home-hub .hub-showcase { grid-column: 2; grid-row: 1 / 3; padding: 0 0 20px; min-height: 490px; display: flex; flex-direction: column; justify-content: center; }
+.sanctuary-shell .home-hub .hub-showcase::before { display: none; }
+.sanctuary-shell .home-hub .hub-portrait { width: 100%; }
+.sanctuary-shell .home-hub .hub-dock { position: absolute; grid-column: auto; inset: 6px calc(31% + 22px) 25px calc(23% + 22px); pointer-events: none; border: 0; padding: 0; background: none; z-index: 2; }
+.sanctuary-shell .home-hub .hub-dock h2 { position: absolute; top: 0; width: 100%; text-align: center; }
+.sanctuary-shell .home-hub .hub-dock > div { position: relative; height: 100%; display: block; }
+.sanctuary-shell .home-hub .hub-dock-button { position: absolute; pointer-events: auto; width: 86px; color: #d9e1f1; font-size: 11px; line-height: 1.15; padding: 0; transform: translate(-50%, -50%); }
+.sanctuary-shell .home-hub .hub-dock-button:nth-child(-n+5) { left: 8%; }
+.sanctuary-shell .home-hub .hub-dock-button:nth-child(n+6) { left: 92%; }
+.sanctuary-shell .home-hub .hub-dock-button:nth-child(1), .sanctuary-shell .home-hub .hub-dock-button:nth-child(6) { top: 14%; }
+.sanctuary-shell .home-hub .hub-dock-button:nth-child(2), .sanctuary-shell .home-hub .hub-dock-button:nth-child(7) { top: 34%; }
+.sanctuary-shell .home-hub .hub-dock-button:nth-child(3), .sanctuary-shell .home-hub .hub-dock-button:nth-child(8) { top: 54%; }
+.sanctuary-shell .home-hub .hub-dock-button:nth-child(4), .sanctuary-shell .home-hub .hub-dock-button:nth-child(9) { top: 74%; }
+.sanctuary-shell .home-hub .hub-dock-button:nth-child(5) { top: 94%; }
+.sanctuary-shell .hub-dock-button .hub-symbol { width: 50px; height: 56px; border-radius: 0; border: 0; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); background: linear-gradient(#35486d, #10192e); color: var(--gold); padding: 5px; box-shadow: inset 0 0 0 2px #e8c36a33; }
+.sanctuary-shell .home-hub .hub-dock-button .hub-symbol { width: 44px; height: 50px; }
+.sanctuary-shell .hub-info, .sanctuary-shell .hub-detail, .sanctuary-shell .inventory-hub, .sanctuary-shell .feature-tile, .sanctuary-shell .story-panel { background: linear-gradient(#16213bea, #0e1630f2); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+.sanctuary-shell .hub-info { grid-column: 3; grid-row: 1; }
+.sanctuary-shell .hub-info h2 { font-size: 28px; }
+.team-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.team-heading p { margin: 0 !important; }
+.team-heading button { padding: 4px 0; }
+.team-companion { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px; margin-bottom: 14px; background: #0a0f1f88; border: 1px solid var(--line); border-radius: 14px; color: #f4ecd9; text-align: left; }
+.team-companion img { width: 50px; height: 50px; object-fit: contain; border: 1px solid var(--gold); border-radius: 50%; background: #253047; }
+.team-companion small { display: block; font-size: 11px; color: var(--muted); }
+.sanctuary-shell .hub-stats strong { font-size: 22px; }
+.sanctuary-shell .hub-stats small { font-size: 10px; overflow-wrap: anywhere; }
+.sanctuary-shell .home-hub .hub-launch { grid-column: 3; grid-row: 2; }
+.sanctuary-shell .hub-battle-button { clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px)); background: linear-gradient(115deg, #f4d98a, #e8a04a 55%, #ff7a45); border: 0; border-radius: 0; padding: 18px; }
+.sanctuary-shell .character-hub { grid-template-columns: minmax(200px, .8fr) minmax(220px, 1fr) minmax(370px, 1.5fr); gap: 22px; }
+.sanctuary-shell .character-hub .hub-detail { min-height: 0; }
+.sanctuary-shell .hub-detail h2 { font-size: 32px; }
+.sanctuary-shell .primary-button { border-radius: 99px; background: linear-gradient(#e8c36a, #c9973e 60%, #ff9a70); color: #0a0f1f; border-color: var(--gold); }
+.sanctuary-shell .artifact-slot, .sanctuary-shell .master-relic { border-radius: 12px; }
+.sanctuary-shell .inventory-section, .sanctuary-shell .equipment-panel { margin-top: 16px; }
+.sanctuary-shell .gameplay-hub { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 24px; }
+.sanctuary-shell .activity-categories { display: flex; flex-direction: column; gap: 8px; align-self: start; }
+.sanctuary-shell .activity-categories a { --a: #324276; --b: #17243d; display: flex; align-items: center; gap: 10px; border-radius: 0; border: 0; padding: 18px 16px; background: linear-gradient(110deg, var(--a), var(--b)); color: #fff; text-decoration: none; clip-path: polygon(0 0, 100% 0, calc(100% - 14px) 100%, 0 100%); }
+.sanctuary-shell .activity-categories a:nth-child(1) { --a: #ac4928; --b: #786027; }
+.sanctuary-shell .activity-categories a:nth-child(2) { --a: #2554a1; --b: #18635f; }
+.sanctuary-shell .activity-categories a:nth-child(3) { --a: #6135a2; --b: #994478; }
+.sanctuary-shell .activity-categories a:nth-child(5) { --a: #7d2e92; --b: #924721; }
+.sanctuary-shell .activity-categories a[aria-current] { box-shadow: inset 4px 0 var(--gold); filter: brightness(1.3); }
+.sanctuary-shell .activity-group { min-width: 0; margin: 0; }
+.sanctuary-shell .activity-group > h2 { margin-top: 0; font-size: 32px; }
+.sanctuary-shell .activity-card { border-radius: 16px; border-color: var(--line); background: linear-gradient(#16213be6, #0e1630f0); padding: 20px; }
+.sanctuary-shell #gameplay-adventure .activity-card { min-height: 300px; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; background: linear-gradient(#122e1890, #0d2429ef), var(--adventure-art) center / cover; }
+.sanctuary-shell .activity-card h3 { font-size: 28px; }
+.sanctuary-shell .activity-card p { color: #dce3ef; }
+.sanctuary-shell .dungeon-card { --dungeon: #bd5a35; border-top: 6px solid var(--dungeon); background: linear-gradient(150deg, color-mix(in srgb, var(--dungeon) 22%, #16213b), #0e1630 60%); }
+.dungeon-card[data-element-index="1"] { --dungeon: #398ad9; }
+.dungeon-card[data-element-index="2"] { --dungeon: #b98a4a; }
+.dungeon-card[data-element-index="3"] { --dungeon: #4eab68; }
+.dungeon-card[data-element-index="4"] { --dungeon: #d0b341; }
+.dungeon-card[data-element-index="5"] { --dungeon: #4dafa2; }
+.dungeon-card[data-element-index="6"] { --dungeon: #d1bf72; }
+.dungeon-card[data-element-index="7"] { --dungeon: #8e65ce; }
+.dungeon-card[data-element-index="8"] { --dungeon: #d180b2; }
+.dungeon-card[data-element-index="9"] { --dungeon: #c44786; }
+.sanctuary-shell #gameplay-infusion .activity-card:first-child { background: linear-gradient(140deg, #766231, #253858); }
+.sanctuary-shell #gameplay-infusion .activity-card:last-child { background: linear-gradient(140deg, #693056, #17122b); }
+.sanctuary-placeholder { width: min(100%, 780px); margin: 20px auto; padding: 30px; border: 1px solid var(--line); border-radius: 18px; background: #111a33ed; text-align: center; }
+.sanctuary-placeholder h2 { font-size: 36px; margin: 10px 0; }
+.sanctuary-placeholder p { color: #c9d0e3; line-height: 1.7; }
+.owned-companion img { display: block; width: min(220px, 100%); height: auto; margin: auto; }
+.owned-companion strong { display: block; font: 26px Georgia, serif; }
+.sealed-portal { display: grid; place-items: center; width: min(220px, 100%); aspect-ratio: 1; border: 1px solid #aa5eaf; border-radius: 50%; background: radial-gradient(#73348255, #0a0f1f); box-shadow: 0 0 45px #c44ad833; color: #ce95d1; font-size: 70px; margin: auto; }
+.sanctuary-shell .settings-drawer { color: #f4ecd9; border-radius: 18px 0 0 18px; background: #0e1630; border-color: var(--gold); }
+.sanctuary-shell > .status { position: sticky; bottom: 92px; background: #111a33; border-radius: 12px; padding: 8px 16px; z-index: 6; }
+.sanctuary-shell > .status:empty { padding: 0; margin: 0; }
+@media (min-width: 1101px) {
+  .sanctuary-shell { height: 100svh; min-height: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto; }
+  .sanctuary-shell .sanctuary-content { overflow-y: auto; min-height: 0; }
+  .sanctuary-shell .home-hub { min-height: 440px; height: 100%; grid-template-rows: minmax(0, 1fr) auto; }
+  .sanctuary-shell .home-hub .hub-info { min-height: 0; max-height: 100%; overflow-y: auto; }
+  .sanctuary-shell .home-hub .hub-showcase { min-height: 0; }
+  .sanctuary-shell .home-hub .hub-portrait { width: min(100%, 720px); }
+  .sanctuary-shell .character-hub { min-height: 440px; height: 100%; }
+  .sanctuary-shell .character-hub > .hub-rail, .sanctuary-shell .hub-detail { overflow-y: auto; max-height: 100%; }
+  .sanctuary-shell .character-hub .hub-showcase { position: static; }
+}
+@media (max-width: 1350px) {
+  .sanctuary-header { grid-template-columns: auto 1fr; }
+  .sanctuary-title { grid-column: 1 / -1; grid-row: 2; }
+  .sanctuary-shell .home-hub { grid-template-columns: minmax(145px, .45fr) minmax(0, 1.7fr) minmax(280px, .9fr); gap: 16px; }
+}
+@media (max-width: 1100px) {
+  .sanctuary-header { padding: 14px; }
+  .sanctuary-shell .menu-screen.sanctuary-content { padding: 12px 16px; }
+  .sanctuary-shell .home-hub, .sanctuary-shell .character-hub { grid-template-columns: 1fr 1fr; gap: 16px; min-height: 0; }
+  .sanctuary-shell .home-hub .hub-showcase { grid-column: 1 / -1; grid-row: 1; padding: 12px 0; min-height: 0; }
+  .sanctuary-shell .home-hub .hub-portrait { width: min(100%, 620px); }
+  .sanctuary-shell .home-hub .hub-info { grid-column: 1 / -1; grid-row: 2; }
+  .sanctuary-shell .home-hub .hub-dock { position: static; grid-column: 1 / -1; grid-row: 2; pointer-events: auto; padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); }
+  .sanctuary-shell .home-hub .hub-dock h2 { position: static; }
+  .sanctuary-shell .home-hub .hub-dock > div { display: flex; height: auto; }
+  .sanctuary-shell .home-hub .hub-dock-button { position: static; transform: none; }
+  .sanctuary-shell .home-hub .hub-launch { grid-column: 1 / -1; grid-row: 3; }
+  .sanctuary-shell .home-hub .hub-rail { grid-column: 1 / -1; grid-row: 4; flex-direction: row; flex-wrap: wrap; }
+  .sanctuary-shell .home-hub .hub-rail-button { flex: 1 1 220px; }
+  .sanctuary-shell .character-hub .hub-rail { grid-column: 1; grid-row: 1; flex-direction: column; }
+  .sanctuary-shell .character-hub .hub-showcase { grid-column: 2; grid-row: 1; position: static; }
+  .sanctuary-shell .character-hub .hub-detail { grid-column: 1 / -1; grid-row: 2; }
+}
+@media (max-width: 650px) {
+  .sanctuary-header { display: flex; flex-wrap: wrap; justify-content: center; }
+  .sanctuary-brand { justify-content: center; width: 100%; }
+  .sanctuary-title { order: 3; width: 100%; }
+  .sanctuary-wallet { width: 100%; justify-content: center; flex-wrap: wrap; }
+  .sanctuary-header .currency-strip { flex: 1; min-width: 0; }
+  .sanctuary-header .currency-strip > span { flex: 1; min-width: 0; }
+  .sanctuary-header .currency-strip strong { font-size: 16px; }
+  .sanctuary-header .currency-strip small { font-size: 9px; }
+  .sanctuary-shell .home-hub, .sanctuary-shell .character-hub { display: flex; flex-direction: column; }
+  .sanctuary-shell .home-hub .hub-showcase { order: 0; }
+  .sanctuary-shell .home-hub .hub-info { order: 2; }
+  .sanctuary-shell .home-hub .hub-dock { order: 3; }
+  .sanctuary-shell .home-hub .hub-launch { order: 1; }
+  .sanctuary-shell .home-hub .hub-rail { order: 4; }
+  .sanctuary-shell .character-hub .hub-showcase { order: 0; }
+  .sanctuary-shell .character-hub .hub-rail { order: 1; flex-direction: row; }
+  .sanctuary-shell .character-hub .hub-rail-button { flex: 1 1 145px; font-size: 12px; }
+  .sanctuary-shell .character-hub .hub-detail { order: 2; width: 100%; }
+  .sanctuary-nav { gap: 0; justify-content: space-between; padding: 8px 2px max(8px, env(safe-area-inset-bottom)); }
+  .sanctuary-nav button { min-width: 0; flex: 1; padding: 5px 1px; font-size: 9px; }
+  .sanctuary-nav .nav-symbol { width: 38px; height: 44px; font-size: 11px; }
+  .sanctuary-nav .nav-symbol .ui-icon { width: 30px; height: 30px; }
+  .sanctuary-nav button small { right: 1px; font-size: 6px; }
+  .sanctuary-shell .gameplay-hub { display: block; }
+  .sanctuary-shell .activity-categories { flex-direction: row; flex-wrap: wrap; margin-bottom: 16px; }
+  .sanctuary-shell .activity-categories a { flex: 1 1 120px; padding: 12px; font-size: 12px; }
+  .sanctuary-shell .artifact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sanctuary-shell .artifact-slot { padding: 12px; }
+}

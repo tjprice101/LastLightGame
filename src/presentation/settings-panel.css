@@ -1,0 +1,32 @@
+.sanctuary-shell .settings-drawer, .battle-screen .settings-drawer {
+  width: min(480px, 100%); padding: 22px; border: 0; border-left: 1px solid #ffffff30;
+  border-radius: 20px 0 0 20px; background: #151518; color: #f5f5f5; box-shadow: -16px 0 64px #0008;
+  scrollbar-width: thin; scrollbar-color: #55555f #151518; text-shadow: none;
+}
+.settings-drawer::backdrop { background: #08080bc7; backdrop-filter: blur(5px); }
+.drawer-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.settings-drawer .drawer-heading, .battle-menu .drawer-heading { position: sticky; top: 0; z-index: 2; padding-block: 8px; background: #151518; }
+.drawer-heading .eyebrow { margin: 0 0 6px; color: #bdbdc7; font-size: 10px; letter-spacing: .18em; }
+.settings-drawer .drawer-heading h2, .battle-menu .drawer-heading h2 { margin: 0; color: #f5f5f5; font: 600 28px/1.2 Georgia, serif; }
+.drawer-close { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; border: 1px solid #ffffff35; border-radius: 12px; background: #ffffff06; color: #f5f5f5; font: 24px/1 "Segoe UI", sans-serif; cursor: pointer; }
+.settings-drawer .subtitle { font-size: 13px; line-height: 1.6; color: #bdbdc7; }
+.settings-drawer .settings-panel { margin: 16px 0 0; padding: 18px; border: 1px solid #ffffff20; border-radius: 16px; background: #ffffff03; }
+.settings-panel h3 { margin: 0 0 12px; font: 600 19px/1.3 Georgia, serif; }
+.settings-drawer .settings-panel label { display: block; margin: 12px 0 8px; font: 600 13px/1.4 "Segoe UI", sans-serif; color: #eeeef3; }
+.sanctuary-shell .settings-drawer .settings-panel select, .battle-screen .settings-drawer .settings-panel select { width: 100%; min-height: 46px; border: 1px solid #ffffff35; border-radius: 10px; background: #242428; color: #fff; font: 13px "Segoe UI", sans-serif; padding: 10px; }
+.settings-drawer .settings-panel p { color: #bdbdc7; font: 13px/1.6 "Segoe UI", sans-serif; letter-spacing: 0; }
+.settings-drawer .settings-panel .primary-button { width: 100%; min-height: 44px; margin: 10px 0 0; padding: 12px; border: 1px solid #ffffff70; border-radius: 10px; background: #eeeeF2; color: #151518; text-shadow: none; font: 600 13px "Segoe UI", sans-serif; }
+.settings-key-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.settings-help { margin-top: 16px; font-size: 13px; }
+.settings-help summary { min-height: 44px; padding-block: 12px; cursor: pointer; }
+.settings-panel [role="status"]:empty, .settings-drawer > .status:empty { display: none; }
+.settings-drawer .settings-panel [role="status"]:not(:empty) { color: #c4e5ce; margin-bottom: 0; }
+.settings-trigger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 14px; border: 1px solid #ffffff35; border-radius: 12px; background: #ffffff06; color: #f5f5f5; font: 600 13px "Segoe UI", sans-serif; cursor: pointer; }
+.settings-trigger .ui-icon { width: 20px; height: 20px; }
+.settings-drawer button:focus-visible, .settings-drawer select:focus-visible, .settings-drawer summary:focus-visible, .drawer-close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@media (hover: hover) { .drawer-close:hover, .settings-trigger:hover { background: #ffffff10; border-color: #ffffff70; } }
+@media (max-width: 480px) {
+  .sanctuary-shell .settings-drawer, .battle-screen .settings-drawer { padding: 18px; border-radius: 0; }
+  .settings-drawer .settings-panel { padding: 14px; }
+  .settings-key-grid { grid-template-columns: 1fr; gap: 0; }
+}

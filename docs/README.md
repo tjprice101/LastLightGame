@@ -12,8 +12,11 @@ It is intended to make features easy to locate, extend, and hand off.
 
 The title, fire/water/grass selection, local save, navigation, readable prologue, motion/
 hotkey settings, and solo Adventure with the saved starter are implemented.
-Currency labels, upgrade paths, and equipment slots are previews. Summoning,
-rewarded quests, and progression operations remain scaffolding.
+All ten elemental material dungeons, saved material inventory, leveling, evolution,
+Fractalis spending and a one-time +10 Lycalis first-Fracture reward are implemented.
+Equipment, separate skill/weapon upgrades, captures and summoning remain previews.
+Seven dungeon packs await artwork; their named enemies, rewards and stage unlocks
+work with neutral interim visuals. Both infusion modes remain unavailable.
 
 ## Find the right document
 
@@ -24,8 +27,8 @@ rewarded quests, and progression operations remain scaffolding.
 | [Menus and inventory](menus-and-inventory.md) | Fire-only roster, currencies, upgrades, 8+1 equipment, settings/story/events |
 | [Combat](combat.md) | Battle flow, actions, damage, effects, combat tests |
 | [Adventure](free-battle.md) | Fresh wave-1 runs, linear enemy levels/stats, all starter kits, recovery, hotkeys |
-| [Gameplay and elements](gameplay-and-elements.md) | Grouped activity tab, ten elements/dungeons, level 10-100 curve, materials, infusion modes and evolution recipes |
-| [Dungeons and captures](dungeons-and-captures.md) | Flaming Depths, wave reports, separate captured-enemy ownership; not yet playable |
+| [Gameplay and elements](gameplay-and-elements.md) | Grouped activity tab, ten elements/dungeons, level 10-120 curve, materials, infusion modes and evolution recipes |
+| [Dungeons and captures](dungeons-and-captures.md) | Playable first-pass dungeon boundaries, reports and future captured-enemy ownership |
 | [Flaming Depths stages](flaming-depths-stages.md) | Historical Stage 1-50 encounter/skill proposal; old levels/stats superseded by elemental framework |
 | [Units and progression](units-and-progression.md) | Unit identity, roster, leveling, evolution, duplicates |
 | [Summoning and economy](summoning-and-economy.md) | Banners, odds, pity, currencies, reward transactions |
@@ -45,10 +48,22 @@ The [Battle Scenery prompt](../Art/Battle%20Scenery.md) covers a cutesy grassy
 field for the intended solo opening battle.
 The [Flaming Depths prompts](../Art/Flaming%20Depths.md) cover ten dungeon enemies
 in ascending visual power, from a soot sprite to a flame sovereign.
-The [Infernis Art prompts](../Art/Infernis%20Art.md) cover 1:1 icons for her passive,
-two abilities, Last Flare, and Light/Heavy attacks.
+The [Infernis Art prompts](../Art/Infernis%20Art.md) include five new greatsword
+evolution stages with increasingly chromatic heavenly flames and ornate armor,
+plus 1:1 ability icons (Heavy is archived).
+The [Tizu Art prompts](../Art/Tizu%20Art.md) and
+[Flora Art prompts](../Art/Flora%20Art.md) provide five new stages each:
+celestial tidal spear armor and angelic leaf-wing bow regalia. Both files also
+include six 1:1 ability/action icon prompts: Passive, Skill1, Skill2, Last Flare,
+Normal and Defense. Those icons have not been generated or supplied yet.
+All 15 evolved portraits are supplied and integrated into six gameplay forms,
+with caps 30 / 45 / 60 / 75 / 90 / 105. See D-033.
 The [Flaming Depths Scenery prompts](../Art/Flaming%20Depths%20Scenery.md) cover
 a 3:1 selection banner and 16:9 battle background with destination-specific framing.
+The [elemental dungeon art packs](../Art/dungeons/README.md) provide a separate
+file for each of the ten dungeons: eight ascending-power monsters, six material
+icons from Seed to Soul of its element, a 3:1 banner and a 16:9 arena background.
+Suggested encounter bands and drop pools are art proposals, not implemented rules.
 
 ## Common tasks
 

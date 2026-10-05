@@ -1,0 +1,185 @@
+/* Shared neutral chrome; artwork and element scopes supply the only color accents. */
+:root { color-scheme: dark; color: #f5f5f5; background: #090909; --gold: #f5f5f5; --muted: #bdbdbd; }
+.sanctuary-shell { --gold: #f5f5f5; --muted: #bdbdbd; --line: #454545; --ink: #090909; --panel: #181818ed; color: #f5f5f5; background: radial-gradient(ellipse at 50% 65%, #ffffff09, transparent 60%), #0b0b0bf5; }
+.brand-mark, .masthead, footer, .eyebrow, .game-title span, .enter-button, .text-button { color: #f5f5f5; }
+.brand-mark { border-color: #ffffff66; }
+.ornament { background: linear-gradient(90deg, transparent, #fff, transparent); }
+.title-emblem span { background: linear-gradient(#fff, #888); filter: drop-shadow(0 0 20px #ffffff55); }
+.game-title { text-shadow: 0 4px 50px #ffffff22; }
+.title-subtitle, .quiet, .subtitle { color: #bdbdbd; }
+.primary-button { color: #111; background: linear-gradient(#fff, #d4d4d4); border-color: #fff; }
+.starter-card { background: linear-gradient(155deg, #272727dd, #111111ed); border-color: #77777755; }
+.starter-card[aria-pressed="true"] { background: linear-gradient(155deg, #333333ed, #111); }
+.weapon-label, .small-label, .card-tagline { color: #bdbdbd; }
+.lore-panel { background: #181818dd; }
+.selection-detail p { color: #ddd; }
+.sanctuary-shell .sanctuary-title .eyebrow { color: #bdbdbd; }
+.sanctuary-shell .sanctuary-header .currency-strip > span, .sanctuary-shell .sanctuary-header .settings-trigger { background: #141414; color: #f5f5f5; border-color: #454545; }
+.sanctuary-shell .sanctuary-nav { background: #0b0b0bf5; border-color: #454545; }
+.sanctuary-shell .sanctuary-nav .nav-symbol { background: #202020; border-color: #555; color: #ddd; }
+.sanctuary-shell .sanctuary-nav button[aria-current="page"] .nav-symbol { background: #f5f5f5; color: #111; border-color: #fff; box-shadow: 0 0 18px #ffffff22; }
+.sanctuary-shell .sanctuary-nav button small { background: #ddd; color: #111; }
+.sanctuary-shell .hub-rail-button, .sanctuary-shell .activity-categories a,
+.sanctuary-shell .home-hub .hub-rail-button:nth-child(n),
+.sanctuary-shell .activity-categories a:nth-child(n) { --a: #303030; --b: #161616; color: #f5f5f5; min-height: 76px; border-left: 2px solid #777; background: linear-gradient(110deg, #303030, #161616); }
+.sanctuary-shell .hub-rail-button[aria-pressed="true"] { background: linear-gradient(110deg, #424242, #1a1a1a); border-left-color: var(--element, #fff); }
+.sanctuary-shell .activity-categories a[aria-current] { box-shadow: inset 4px 0 #fff; background: linear-gradient(110deg, #444, #202020); }
+.sanctuary-shell .hub-rail-button .hub-symbol { color: #fff; background: #0007; border-color: #ffffff33; }
+.sanctuary-shell .home-hub .hub-rail { overflow-y: auto; max-height: 100%; }
+.sanctuary-shell .hub-showcase::before { border-color: #ffffff33; box-shadow: 0 0 0 12px #ffffff05, 0 0 0 13px #ffffff18; }
+.sanctuary-shell .hub-info, .sanctuary-shell .hub-detail, .sanctuary-shell .inventory-hub,
+.sanctuary-shell .feature-tile, .sanctuary-shell .story-panel { background: linear-gradient(#202020ed, #111111f5); border-color: #454545; }
+.sanctuary-shell .hub-info strong, .sanctuary-shell .hub-stats strong { color: #fff; }
+.sanctuary-shell .hub-info .eyebrow, .sanctuary-shell .hub-detail .eyebrow,
+.sanctuary-shell .element-pill, .sanctuary-shell blockquote { color: var(--element, #f5f5f5); }
+.sanctuary-shell .hub-info p, .sanctuary-shell .hub-detail p, .sanctuary-shell .activity-card p { color: #d0d0d0; }
+.sanctuary-shell .team-companion, .sanctuary-shell .hub-stats > div,
+.sanctuary-shell .hub-ability, .sanctuary-shell .hub-comparison > div { background: #111b; border-color: #454545; }
+.team-companion img { background: #303030; border-color: var(--element, #fff); }
+.sanctuary-shell .hub-dock-button .hub-symbol { color: #fff; background: linear-gradient(#3b3b3b, #151515); box-shadow: inset 0 0 0 2px #ffffff44; }
+.sanctuary-shell .hub-dock h2 { color: #ddd; }
+.sanctuary-shell .hub-dock-button:hover .hub-symbol { background: #484848; }
+.sanctuary-shell .hub-battle-button { background: linear-gradient(115deg, #fff, #d5d5d5); color: #111; min-height: 128px; padding: 20px; }
+.sanctuary-shell .primary-button { background: #f5f5f5; color: #111; border-color: #fff; }
+.sanctuary-shell .hub-detail button:disabled, .sanctuary-shell .activity-card button:disabled { background: #252525; color: #ccc; border-color: #666; }
+.sanctuary-shell .hub-detail .hub-cost { color: #eee; }
+.sanctuary-shell .artifact-slot, .sanctuary-shell .master-relic { background: #181818; border-color: #777; }
+.sanctuary-shell .activity-group > p, .sanctuary-shell .activity-group p { color: #ccc; }
+.sanctuary-shell .activity-card, .sanctuary-shell #gameplay-infusion .activity-card:nth-child(n) { background: linear-gradient(#252525, #111); border-color: #454545; }
+.sanctuary-shell #gameplay-infusion .activity-card { border-top: 3px solid #eee2af; }
+.sanctuary-shell #gameplay-infusion .activity-card:last-child { border-top-color: #ed8bbe; }
+.sanctuary-shell .dungeon-card { border-top: 4px solid var(--dungeon); background: #171717; overflow: hidden; padding: 0; }
+.sanctuary-shell .dungeon-card > :not(.dungeon-banner) { margin-left: 18px; margin-right: 18px; }
+.sanctuary-shell .dungeon-card > .eyebrow { color: var(--dungeon); margin-top: 14px; }
+.sanctuary-shell .dungeon-card > button { width: calc(100% - 36px); margin-bottom: 18px; min-height: 48px; }
+.sanctuary-shell #gameplay-dungeons .activity-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr)); gap: 20px; }
+.dungeon-banner { display: block; width: 100%; height: auto; aspect-ratio: 3 / 1; object-fit: cover; }
+.banner-pending { display: grid; place-items: center; min-height: 120px; color: #bbb; background: linear-gradient(115deg, #303030, #111); border-bottom: 1px dashed #777; letter-spacing: .14em; font-size: 11px; }
+.dungeon-art-preview { margin-bottom: 18px; border-color: #555; }
+.dungeon-art-preview summary { color: var(--dungeon); min-height: 48px; padding: 12px 0; font-size: 13px; }
+.dungeon-art-preview h4 { color: #f5f5f5; font-size: 15px; margin: 18px 0 10px; }
+.dungeon-arena-preview, .dungeon-enemy-gallery figure, .dungeon-material-gallery figure { margin: 0; }
+.dungeon-arena-preview img { display: block; width: 100%; height: auto; border-radius: 8px; }
+.dungeon-enemy-gallery, .dungeon-material-gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.dungeon-enemy-gallery figure, .dungeon-material-gallery figure { border: 1px solid #555; border-radius: 10px; background: #232323; padding: 6px; min-width: 0; text-align: center; }
+.dungeon-enemy-gallery img, .dungeon-material-gallery img { width: 100%; height: auto; display: block; object-fit: contain; }
+.dungeon-art-preview figcaption, .dungeon-material-gallery figcaption { color: #ddd; font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; padding: 5px 0; }
+.dungeon-material-gallery small { display: block; color: var(--dungeon, #ccc); }
+.sanctuary-shell .evolution-materials .dungeon-material-gallery { margin: 16px 0; }
+.sanctuary-shell .sanctuary-placeholder, .sanctuary-shell .settings-drawer { background: #161616; border-color: #777; color: #f5f5f5; }
+.sanctuary-shell .sanctuary-placeholder p { color: #ccc; }
+.sealed-portal { border-color: #aaa; background: radial-gradient(#ffffff18, #111); box-shadow: 0 0 45px #ffffff12; color: #eee; }
+.sanctuary-shell .settings-panel select { background: #222; border-color: #777; color: #fff; }
+.sanctuary-shell > .status { background: #222; }
+.sanctuary-shell a:focus-visible, .sanctuary-shell .hub-rail-button:focus-visible { outline-color: #fff; }
+.battle-screen .battle-toolbar, .battle-screen .battle-top, .battle-screen .battle-hud,
+.battle-screen .unit-name, .battle-screen .unit-readout, .battle-screen .battle-drops { background: #111111ed; }
+.battle-screen .battle-action, .battle-screen #battle-root .battle-action:disabled { background: #252525; color: #fff; border-color: #777; }
+.battle-screen .battle-help summary, .battle-screen .battle-log summary, #battle-root kbd, .battle-drops { color: #f5f5f5; }
+.gesture-choice { background: #111; border-color: #fff; }
+@media (max-width: 650px) {
+  .sanctuary-shell .activity-categories a { min-height: 68px; }
+  .dungeon-enemy-gallery, .dungeon-material-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1101px) {
+  .sanctuary-shell .activity-categories { position: sticky; top: 0; }
+}
+.upgrade-progress { font-weight: 700; color: var(--text); }
+.upgrade-resources { list-style: none; padding: 0; display: grid; gap: 8px; }
+.upgrade-resources li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid #ffffff24; border-radius: 10px; }
+.upgrade-resources li span { margin-left: auto; white-space: nowrap; }
+.upgrade-resources img { width: 64px; height: 64px; object-fit: contain; flex-shrink: 0; }
+.upgrade-resources .resource-missing { border-color: #fa8d6370; }
+.upgrade-stat-preview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.upgrade-stat-preview span { display: grid; padding: 8px; background: #ffffff08; border-radius: 8px; }
+.upgrade-stat-preview small { color: #bbb; }
+.upgrade-rules { margin-top: 14px; }
+.evolution-silhouette { display: grid; place-items: center; width: 100%; height: 150px; margin: 8px 0; border-radius: 10px; background: #e5e5e5; overflow: hidden; }
+.evolution-silhouette img { display: block; width: min(100%, 150px); height: 150px; object-fit: contain; filter: brightness(0); }
+.dungeon-stage-label { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.dungeon-stage-label select { padding: 8px 16px; color: #fff; background: #171719; border: 1px solid #ffffff40; border-radius: 8px; }
+.dungeon-clear-report { padding: 12px 18px; border: 1px solid #ffffff40; border-radius: 12px; background: #151517; }
+.dungeon-clear-report h2 { font-size: 1.1rem; margin: 0; }
+.dungeon-clear-report p, .dungeon-clear-report ul { margin: 6px 0; font-size: .9rem; }
+.pending-dungeon-scenery { background: radial-gradient(ellipse at 50% 35%, var(--element), transparent 65%), #111; opacity: .25; }
+.pending-enemy-art { display: grid; place-content: center; justify-items: center; gap: 16px; width: 100%; height: 100%; }
+.pending-enemy-art > span { width: 70px; height: 90px; border: 2px solid var(--element); border-radius: 45% 45% 30% 30%; background: #171719; box-shadow: 0 0 20px #ffffff18; }
+.pending-enemy-art small { color: #ccc; font-size: 10px; letter-spacing: .12em; }
+img[data-mirrored="true"] { scale: -1 1; }
+.battle-sprite { display: block; width: 100%; height: 100%; }
+.character-idle { display: block; width: 100%; height: 100%; transform-origin: center; animation: character-breathe 5s ease-in-out infinite; }
+.character-idle[data-character="tide"] { animation-delay: -1.7s; }
+.character-idle[data-character="sprout"] { animation-delay: -3.2s; }
+.team-companion > .character-idle { width: 50px; height: 50px; flex: 0 0 50px; }
+.owned-companion > .character-idle { width: min(220px, 100%); height: auto; margin: auto; }
+.evolution-silhouette > .character-idle { width: min(100%, 150px); height: 150px; }
+@keyframes character-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+html[data-motion="reduced"] .character-idle { animation: none; }
+@media (prefers-reduced-motion: reduce) { .character-idle { animation: none; } }
+.sanctuary-shell .home-hub .hub-dock-button:nth-child(-n+3) { left: 8%; }
+.sanctuary-shell .home-hub .hub-dock-button:nth-child(n+4) { left: 92%; }
+.sanctuary-shell .home-hub .hub-dock-button:nth-child(1), .sanctuary-shell .home-hub .hub-dock-button:nth-child(4) { top: 24%; }
+.sanctuary-shell .home-hub .hub-dock-button:nth-child(2), .sanctuary-shell .home-hub .hub-dock-button:nth-child(5) { top: 54%; }
+.sanctuary-shell .home-hub .hub-dock-button:nth-child(3) { top: 84%; }
+.activity-transition { position: fixed; inset: 0; z-index: 10000; background: #000; opacity: 0; cursor: wait; }
+.activity-loading { position: absolute; right: max(24px, env(safe-area-inset-right)); bottom: max(24px, env(safe-area-inset-bottom)); display: grid; gap: 8px; width: min(180px, calc(100vw - 48px)); color: #fff; font: 12px/1.4 Arial, sans-serif; }
+.activity-loading strong { font-size: 14px; letter-spacing: .06em; }
+.activity-loading-track { display: block; height: 3px; background: #ffffff30; overflow: hidden; }
+.activity-loading-track > span { display: block; width: 10%; height: 100%; background: #fff; transition: width 180ms ease-out; }
+.battle-entering .battle-unit { opacity: 0; }
+body.in-battle { overflow-x: clip; }
+html[data-motion="reduced"] .activity-loading-track > span { transition: none; }
+@media (prefers-reduced-motion: reduce) { .activity-loading-track > span { transition: none; } }
+.character-role { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; margin-inline: 6px; vertical-align: middle; color: #eee; font: 600 11px/1.3 Arial, sans-serif; letter-spacing: .03em; text-transform: none; text-shadow: 0 1px 3px #0008, 0 0 9px #0007; }
+.role-medal { display: inline-grid; place-items: center; flex: 0 0 24px; width: 24px; height: 24px; border: 1px solid #ffffff80; border-radius: 50%; outline: 1px solid #ffffff30; outline-offset: 2px; color: #fff; background: transparent; }
+.role-medal svg { width: 19px; height: 19px; }
+.battle-screen .unit-name .character-role { display: flex; justify-content: center; margin: 5px 0 0; font-size: 10px; }
+.battle-screen .battle-unit[data-side="enemy"].selected-unit .battle-art { filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 14px var(--element)) drop-shadow(0 0 28px var(--element)); }
+.battle-screen .battle-unit[data-side="enemy"].selected-unit .battle-art::before { content: ""; position: absolute; inset: 8%; border: 2px solid var(--element); border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--element) 30%, transparent), transparent 70%); box-shadow: 0 0 10px #fff9, 0 0 24px var(--element); pointer-events: none; }
+.battle-screen .battle-unit[data-side="enemy"].selected-unit .unit-name,
+.battle-screen .battle-unit[data-side="enemy"].selected-unit .unit-readout { border-color: var(--element); box-shadow: 0 0 12px color-mix(in srgb, var(--element) 65%, transparent); }
+.battle-screen .unit-name, .battle-screen .unit-readout, .battle-screen .battle-top,
+.battle-screen .battle-drops, .battle-screen .damage-number, .battle-screen .battle-toolbar,
+.battle-screen .battle-hud, .battle-screen .battle-log { background: transparent; border: 0; box-shadow: none; text-shadow: 0 1px 3px #0008, 0 0 9px #0009, 0 0 18px #0007; }
+.battle-screen .battle-unit[data-side="enemy"].selected-unit .unit-name,
+.battle-screen .battle-unit[data-side="enemy"].selected-unit .unit-readout { box-shadow: none; text-shadow: 0 1px 3px #0009, 0 0 12px #0009, 0 0 8px var(--element); }
+.battle-screen .battle-action, .battle-screen #battle-root .battle-action:disabled { background: #1114; border-color: #ffffff45; }
+.battle-screen .battle-action:disabled { color: #ccc; }
+.gesture-choice { position: fixed; left: 50%; top: 50%; bottom: auto; transform: translate(-50%, -50%); width: min(280px, calc(100vw - 24px)); aspect-ratio: 1; padding: 0; border: 0; border-radius: 50%; background: radial-gradient(circle, #0007, #0002 55%, transparent 72%); color: #fff; text-shadow: 0 1px 3px #0009, 0 0 12px #0009; pointer-events: none; }
+.gesture-ornament { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #fffc; stroke-width: 1; filter: drop-shadow(0 0 4px var(--element)); }
+.gesture-direction { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 2px; width: 88px; font-size: 12px; line-height: 1.2; }
+.gesture-up { top: -4px; left: 50%; transform: translateX(-50%); }
+.gesture-down { bottom: -4px; left: 50%; transform: translateX(-50%); }
+.gesture-left { left: -4px; top: 50%; transform: translateY(-50%); }
+.gesture-right { right: -4px; top: 50%; transform: translateY(-50%); }
+.gesture-arrow { font-size: 26px; line-height: 1; color: var(--element); }
+.gesture-direction .ability-icon { width: 28px; height: 28px; }
+.gesture-direction small { font-size: 10px; }
+.gesture-direction[data-available="false"] { opacity: .5; }
+.gesture-direction[data-selected="true"] { opacity: 1; color: var(--element); filter: drop-shadow(0 0 8px var(--element)); }
+.gesture-direction[data-selected="true"][data-available="false"] { color: #ffb1a5; filter: drop-shadow(0 0 6px #ff705f); }
+.gesture-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 10px; letter-spacing: .14em; }
+.gesture-status { position: absolute; top: calc(100% + 12px); left: 0; width: 100%; text-align: center; font-size: 12px; line-height: 1.4; }
+@media (max-width: 650px) { .gesture-choice { width: min(240px, calc(100vw - 24px)); } }
+.unit-idle { display: block; width: 100%; height: 100%; transform-origin: center bottom; animation: unit-breathe 5s ease-in-out infinite; }
+.battle-unit:nth-child(2n) .unit-idle { animation-delay: -1.7s; }
+.battle-unit:nth-child(3n) .unit-idle { animation-delay: -3.2s; }
+.battle-unit[data-side="ally"] .unit-idle { animation-delay: -2.4s; }
+.fallen .unit-idle { animation: none; }
+.battle-screen .fallen { visibility: hidden; pointer-events: none; }
+.battle-loot { position: fixed; z-index: 9; width: 0; height: 0; pointer-events: none; }
+.loot-drop { position: absolute; left: var(--loot-x); top: var(--loot-y); width: 36px; height: 36px; translate: -50% -50%; scale: var(--loot-size, 1); color: #fff; text-align: center; }
+.loot-drop img { position: relative; width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 7px var(--loot-color)); }
+.loot-beam { position: absolute; bottom: 12px; left: 12px; width: 12px; height: 90px; background: linear-gradient(transparent, var(--loot-color)); box-shadow: 0 8px 12px var(--loot-color); opacity: .85; border-radius: 50% 50% 0 0; }
+.loot-token { position: relative; display: grid; place-items: center; width: 32px; height: 32px; border: 2px solid var(--loot-color); border-radius: 50%; background: #25232c; font: bold 10px Georgia, serif; box-shadow: 0 0 10px var(--loot-color); }
+.loot-drop strong { position: relative; display: block; font: bold 15px Arial, sans-serif; text-shadow: 0 1px 4px #000, 0 0 8px #000; }
+@keyframes unit-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+html[data-motion="reduced"] .unit-idle { animation: none; }
+@media (prefers-reduced-motion: reduce) { .unit-idle { animation: none; } }
+.battle-screen .damage-number { top: 40%; left: 50%; translate: -50% 0; z-index: 10; padding: 0; font-size: clamp(30px, 3.5vw, 48px); font-weight: 900; line-height: 1.1; white-space: nowrap; color: #fff5a3; text-shadow: 0 2px 4px #000b, 0 0 6px #fff9, 0 0 15px #ffb340, 0 0 28px #ff8b4055; }
+.battle-screen .damage-number.critical { color: #fff; font-size: clamp(36px, 4vw, 56px); text-shadow: 0 2px 4px #000b, 0 0 8px #fff, 0 0 20px #ffcf50; }
+.battle-screen .damage-number.heal { color: #c5ff83; text-shadow: 0 2px 4px #000b, 0 0 8px #e0ffc7, 0 0 20px #76ed56; }
+.battle-screen .damage-number.shield { color: #a7f3ff; text-shadow: 0 2px 4px #000b, 0 0 8px #e1ffff, 0 0 20px #55cfff; }
+.battle-screen .health-track > span { transition: width 420ms cubic-bezier(.22, .61, .36, 1); }
+html[data-motion="reduced"] .battle-screen .health-track > span { transition: none; }
+@media (prefers-reduced-motion: reduce) { .battle-screen .health-track > span { transition: none; } }

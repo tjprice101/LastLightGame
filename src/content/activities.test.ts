@@ -25,16 +25,15 @@ describe('activity and progression framework', () => {
       expect(elementalMaterials.filter((material) => material.elementId === element.id).map((material) => material.rarity)).toEqual(materialRarities);
     }
   });
-  it('scales all 50 dungeon stages linearly from 10 to 100, capped at stage 45', () => {
-    const levels = Array.from({ length: 50 }, (_, index) => elementalEnemyLevel(index + 1));
+  it('scales all 35 dungeon stages linearly from 10 to 120', () => {
+    const levels = Array.from({ length: 35 }, (_, index) => elementalEnemyLevel(index + 1));
     expect(levels[0]).toBe(10);
-    expect(levels[43]).toBe(98);
-    expect(levels.slice(44)).toEqual([100, 100, 100, 100, 100, 100]);
-    for (let stage = 1; stage <= 50; stage++) {
-      expect(levels[stage - 1]).toBe(Math.round(10 + (Math.min(stage, 45) - 1) * 90 / 44));
+    expect(levels[34]).toBe(120);
+    for (let stage = 1; stage <= 35; stage++) {
+      expect(levels[stage - 1]).toBe(Math.round(10 + (stage - 1) * 110 / 34));
       if (stage > 1) expect(levels[stage - 1]).toBeGreaterThanOrEqual(levels[stage - 2]);
     }
-    for (const invalid of [0, 51, -1, 1.5, NaN, Infinity]) expect(() => elementalEnemyLevel(invalid)).toThrow('1 to 50');
+    for (const invalid of [0, 36, -1, 1.5, NaN, Infinity]) expect(() => elementalEnemyLevel(invalid)).toThrow('1 to 35');
   });
   it('partitions infusion eligibility exactly with no duplicated or missing elements', () => {
     expect(elements.filter((element) => element.infusion === 'heavens').map((element) => element.id)).toEqual([
@@ -43,38 +42,40 @@ describe('activity and progression framework', () => {
     expect(elements.filter((element) => element.infusion === 'abyss').map((element) => element.id)).toEqual([
       'voltaic', 'luminous', 'ominous', 'tranquilitic', 'chaotic',
     ]);
-    expect(infusionModes.map((mode) => [mode.stages, mode.startingLevel, mode.enemyTiers])).toEqual([[25, 80, 4], [25, 80, 4]]);
+    expect(infusionModes.map((mode) => [mode.stages, mode.startingLevel, mode.enemyTiers])).toEqual([[35, 80, 6], [35, 80, 6]]);
   });
-  it('uses approved adjacent-rarity recipes for every element without defined quantities', () => {
+  it('uses approved adjacent-rarity recipes with first-pass costs and deferred creature consumption', () => {
     expect(evolutionRecipes.map((recipe) => recipe.rarities)).toEqual([
-      ['Common'], ['Common', 'Uncommon'], ['Uncommon', 'Rare'], ['Rare', 'Epic'],
+      ['Common'], ['Common', 'Uncommon'], ['Uncommon', 'Rare'], ['Rare', 'Epic'], ['Epic', 'Legendary'],
     ]);
-    for (const element of elements) for (let from = 1; from <= 4; from++) {
+    for (const element of elements) for (let from = 1; from <= 5; from++) {
       const result = evolutionRequirement(element.id, from);
       expect(result.dungeon).toBe(element.dungeon);
       expect(result.infusion).toBe(element.infusion);
       expect(result.requiresFractalis).toBe(true);
-      expect(result.requiresInfusableEnemies).toBe(true);
-      expect(result.quantitiesDefined).toBe(false);
+      expect(result.requiresInfusableEnemies).toBe(false);
+      expect(result.quantitiesDefined).toBe(true);
       expect(result.to).toBe(from + 1);
     }
-    for (const invalid of [0, 5, 1.5, NaN]) expect(() => evolutionRequirement('infernic', invalid)).toThrow('1 to 4');
+    for (const invalid of [0, 6, 1.5, NaN]) expect(() => evolutionRequirement('infernic', invalid)).toThrow('1 to 5');
   });
   it('renders all activities by type, gates unavailable modes, and previews starter recipes', () => {
     const markup = gameplayHub();
     for (const element of elements) expect(markup).toContain(element.dungeon);
     for (const mode of infusionModes) expect(markup).toContain(mode.name);
-    expect(markup.match(/disabled>Dungeon not playable yet/g)).toHaveLength(10);
-    expect(markup.match(/disabled>Infusion mode not playable yet/g)).toHaveLength(2);
+    expect(markup).not.toContain('Dungeon not playable yet');
+    expect(markup.match(/data-dungeon="/g)).toHaveLength(10);
+    expect(markup.match(/35 stages \/ Enemy levels 10-120/g)).toHaveLength(10);
+    expect(markup.match(/data-infusion="/g)).toHaveLength(2);
     expect(markup).toContain('data-page="battle"');
     expect(markup).toContain('data-page="story"');
     expect(markup).toContain('data-page="events"');
     for (const starter of starters) {
       const detail = characterDetail(starter, 'upgrade-0');
-      expect(detail).toContain('Evo.4 to Evo.5');
-      expect(detail).toContain('Rare + Epic');
-      expect(detail).toContain('Soar into the Heavens');
-      expect(detail).toContain('No evolution resources have been granted or spent');
+      expect(detail).toContain('Evo.1');
+      expect(detail).toContain('Reach Lv.30');
+      expect(detail).toContain(`Seed of ${elements.find((element) => element.id === starter.elementId)?.name}`);
+      expect(detail).not.toContain('Costs unset');
     }
   });
 });

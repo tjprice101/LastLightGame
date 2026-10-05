@@ -1,0 +1,16 @@
+.glossary-heading { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.glossary-heading > .quiet { flex-basis: 100%; }
+.glossary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 18px; }
+.glossary-card { min-width: 0; border: 1px solid #ffffff20; border-radius: 12px; padding: 16px; background: #121218; }
+.glossary-card[hidden] { display: none; }
+.glossary-card h2 { font-size: 1.1rem; }
+.glossary-art { display: grid; place-items: center; min-height: 220px; background: radial-gradient(ellipse, #ffffff0c, transparent 70%); }
+.glossary-art img, .glossary-art svg { width: 220px; max-width: 100%; height: 220px; object-fit: contain; color: #968ea6; }
+.glossary-card.undiscovered .glossary-art img { filter: brightness(0); }
+.glossary-card.undiscovered .glossary-art svg { color: #000; }
+.glossary-card summary, .glossary-card select, .glossary-heading select { min-height: 44px; }
+.glossary-card summary { padding-block: 12px; cursor: pointer; }
+.glossary-loot table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.glossary-loot th, .glossary-loot td { padding: 8px 4px; text-align: left; border-bottom: 1px solid #ffffff15; }
+.glossary-loot td small { display: block; opacity: .65; }
+.glossary-loot img { width: 56px; height: 56px; vertical-align: middle; object-fit: contain; }

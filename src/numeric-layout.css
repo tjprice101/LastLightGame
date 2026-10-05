@@ -1,0 +1,40 @@
+.sanctuary-shell .home-hub .hub-stats,
+.sanctuary-shell .character-hub .hub-stats {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr));
+}
+.sanctuary-shell .hub-stats > div {
+  min-width: 0;
+  padding: 10px 8px;
+  container-type: inline-size;
+}
+.sanctuary-shell .hub-stats strong,
+.sanctuary-shell .character-hub .hub-stats strong {
+  display: block;
+  max-width: 100%;
+  font-size: clamp(16px, 15cqi, 22px);
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.sanctuary-shell .hub-stats small { line-height: 1.4; margin-bottom: 4px; }
+.sanctuary-shell .character-hub .upgrade-stat-preview {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+}
+.upgrade-stat-preview strong { min-width: 0; line-height: 1.5; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.sanctuary-shell .upgrade-resources li { min-width: 0; flex-wrap: wrap; }
+.sanctuary-shell .upgrade-resources li strong { min-width: 0; flex: 1 1 100px; overflow-wrap: anywhere; }
+.sanctuary-shell .upgrade-resources li > span {
+  max-width: 100%;
+  min-width: 0;
+  flex: 0 1 auto;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.currency-strip > span, .currency-strip strong, .currency-reward > span { min-width: 0; }
+.currency-strip strong, .currency-reward strong { overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.battle-screen .battle-result-rewards li { flex-wrap: wrap; }
+.battle-screen .battle-result-rewards strong { max-width: 100%; white-space: normal; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.battle-screen .unit-health, .battle-screen .unit-gauge, .battle-screen .unit-stats { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.glossary-loot table { width: 100%; table-layout: fixed; }
+.glossary-loot th, .glossary-loot td { overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }

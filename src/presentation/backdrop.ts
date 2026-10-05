@@ -11,16 +11,16 @@ class Sanctuary extends Phaser.Scene {
       const { width, height } = this.scale;
       const reducedMotion = prefersReducedMotion();
       const landscape = this.add.graphics();
-      landscape.fillStyle(0x080e1b).fillRect(0, 0, width, height);
+      landscape.fillStyle(0x090909).fillRect(0, 0, width, height);
       for (let ring = 16; ring > 0; ring--) {
-        landscape.fillStyle(0x688692, 0.009);
+        landscape.fillStyle(0x999999, 0.009);
         landscape.fillCircle(width * 0.5, height * 0.38, ring * Math.min(width, height) * 0.042);
       }
-      landscape.lineStyle(1, 0xd9bc7f, 0.16);
+      landscape.lineStyle(1, 0xffffff, 0.16);
       landscape.strokeCircle(width * 0.5, height * 0.38, Math.min(width, height) * 0.27);
       landscape.strokeCircle(width * 0.5, height * 0.38, Math.min(width, height) * 0.285);
       for (let layer = 0; layer < 3; layer++) {
-        landscape.fillStyle([0x152331, 0x101c29, 0x0b1521][layer]);
+        landscape.fillStyle([0x202020, 0x181818, 0x111111][layer]);
         landscape.beginPath();
         landscape.moveTo(0, height);
         for (let x = 0; x <= width + 40; x += 40) {
@@ -36,7 +36,7 @@ class Sanctuary extends Phaser.Scene {
       for (let index = 0; index < 48; index++) {
         const light = this.add.circle(
           Phaser.Math.Between(0, width), Phaser.Math.Between(0, height),
-          index % 5 === 0 ? 2 : 1, 0xe9c993, Phaser.Math.FloatBetween(0.15, 0.6),
+          index % 5 === 0 ? 2 : 1, 0xffffff, Phaser.Math.FloatBetween(0.15, 0.6),
         );
         if (!reducedMotion) {
           this.tweens.add({
@@ -66,7 +66,7 @@ export function createBackdrop(): Phaser.Game {
   return new Phaser.Game({
     type: Phaser.AUTO,
     parent: 'backdrop',
-    backgroundColor: '#080e1b',
+    backgroundColor: '#090909',
     scene: Sanctuary,
     scale: { mode: Phaser.Scale.RESIZE, width: window.innerWidth, height: window.innerHeight },
     render: { antialias: true, powerPreference: 'high-performance' },

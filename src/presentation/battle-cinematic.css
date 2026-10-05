@@ -1,0 +1,75 @@
+.battle-screen .battle-side.enemies { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: clamp(12px, 3vh, 32px) 6px; }
+.battle-screen .battle-side.enemies > .battle-unit:nth-child(3n + 1) { grid-column: 1; }
+.battle-screen .battle-side.enemies > .battle-unit:nth-child(3n + 2) { grid-column: 2; grid-row: span 2; align-self: center; }
+.battle-screen .battle-side.enemies > .battle-unit:nth-child(3n) { grid-column: 1; }
+.battle-screen .battle-side.enemies > .battle-unit:only-child { grid-column: 1 / -1; }
+.battle-screen .battle-side.allies { grid-template-columns: repeat(2, minmax(0, 1fr)); align-self: center; align-items: center; gap: 18px 6px; }
+.battle-screen .battle-side.allies > .battle-unit:nth-child(3n + 1) { grid-column: 2; }
+.battle-screen .battle-side.allies > .battle-unit:nth-child(3n + 2) { grid-column: 1; grid-row: span 2; }
+.battle-screen .battle-side.allies > .battle-unit:nth-child(3n) { grid-column: 2; }
+.battle-screen .battle-side.allies > .battle-unit:only-child { grid-column: 1 / -1; }
+.battle-screen .battle-arena { padding-top: 2vh; align-items: center; gap: clamp(8px, 2vw, 32px); }
+.battle-screen .battle-top { width: 100%; background: transparent; }
+.battle-top .battle-turn-button { min-height: 44px; padding: 6px 12px; margin-left: auto; color: #fff; background: #1118; border: 1px solid #ffffff50; border-radius: 20px; font-size: 12px; }
+.battle-screen .battle-feedback { display: grid; gap: 6px; }
+.battle-screen #battle-announcement { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.battle-screen .battle-utilities { display: flex; justify-content: flex-end; align-items: start; flex-wrap: wrap; gap: 12px; }
+.battle-screen .battle-utilities > details { font-size: 12px; }
+.battle-screen .battle-utilities summary { min-height: 44px; padding: 10px 6px; cursor: pointer; }
+.battle-screen .battle-utilities details[open] { background: #111e; border: 1px solid #ffffff40; border-radius: 12px; padding: 8px; max-width: min(100%, 520px); }
+.battle-screen .battle-context-actions { display: grid; gap: 6px; }
+.battle-screen .battle-context-actions button { min-height: 44px; font-size: 12px; }
+.battle-screen .battle-context-actions .battle-action-heading { display: flex; align-items: center; gap: 8px; }
+.battle-screen .attack-effect.cinematic-impact { inset: -8%; border: 0; box-shadow: none; background: none; border-radius: 0; overflow: visible; }
+.cinematic-impact > span { position: absolute; pointer-events: none; }
+.cinematic-impact.effect-active .flair-spark { animation: flair-scatter calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; animation-delay: calc(var(--spark-delay) / var(--battle-speed, 1)); }
+.cinematic-impact.effect-active .flair-ring { animation: flair-orbit calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; }
+.cinematic-impact.effect-active .flair-ray { animation: flair-lance calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; }
+.flair-core { inset: 20%; border-radius: 50%; background: radial-gradient(circle, #fff9, var(--element) 20%, transparent 68%); }
+.flair-ring { inset: calc(14% - var(--ring) * 6%); border: 2px solid var(--element); border-radius: 50%; box-shadow: 0 0 14px var(--element), inset 0 0 8px var(--element); transform: rotate(var(--rotation)) scaleY(.55); }
+.flair-ray { left: 50%; top: 50%; width: 60%; height: 3px; background: linear-gradient(90deg, #fff9, var(--element), transparent); transform-origin: left; transform: rotate(var(--rotation)); }
+.flair-spark { left: calc(50% + var(--spark-x)); top: calc(50% + var(--spark-y)); width: 5px; height: 12px; background: var(--element); border-radius: 50%; box-shadow: 0 0 7px var(--element); transform: rotate(var(--rotation)); }
+.flair-flame .flair-ring { border-radius: 70% 0 70% 15%; border-width: 4px; }
+.flair-flame .flair-spark { background: #ffce87; border-radius: 80% 0; }
+.flair-tide .flair-ring { border-style: double; border-width: 5px; transform: rotate(var(--rotation)) scaleY(.35); }
+.flair-tide .flair-ray { height: 5px; }
+.flair-bloom .flair-ring { border-radius: 0 80% 0 80%; }
+.flair-bloom .flair-spark { width: 9px; height: 17px; border-radius: 0 90%; }
+.flair-radiant .flair-ring { border-color: #ffd76c; border-style: double; border-width: 5px; }
+.flair-radiant .flair-ray { background: linear-gradient(90deg, #fff, #ffd76c, #ff344d, transparent); }
+.flair-void .flair-core { background: radial-gradient(circle, #11041e 20%, #d632bb88 40%, transparent 70%); }
+.flair-void .flair-ring { border-color: #f377dd; border-radius: 30% 70% 40% 60%; box-shadow: 0 0 20px #873bce; }
+.flair-void .flair-ray { background: linear-gradient(90deg, #eb61cf, #7937ba, transparent); }
+.cinematic-trail { position: fixed; z-index: 8; height: 6px; transform-origin: left center; pointer-events: none; background: linear-gradient(90deg, transparent, var(--element), #ffffffc0); box-shadow: 0 0 14px var(--element); border-radius: 50%; }
+.cinematic-trail.flair-bloom { height: 3px; }
+.cinematic-trail.flair-tide { height: 10px; border: 1px solid #ffffff80; }
+@keyframes flair-scatter {
+  from { opacity: 0; translate: calc(var(--flight-x) * -.5) calc(var(--flight-y) * -.5); scale: .25; }
+  25% { opacity: 1; }
+  to { opacity: 0; translate: var(--flight-x) var(--flight-y); scale: 1.7; }
+}
+@keyframes flair-orbit {
+  from { opacity: .2; scale: .3; rotate: -20deg; }
+  35% { opacity: 1; }
+  to { opacity: 0; scale: 1.15; rotate: 45deg; }
+}
+@keyframes flair-lance {
+  from { opacity: 0; scale: .1 1; }
+  30% { opacity: 1; }
+  to { opacity: 0; scale: 1.4 1; }
+}
+html[data-motion="reduced"] .cinematic-impact > span { animation: none; }
+@media (prefers-reduced-motion: reduce) { .cinematic-impact > span { animation: none; } }
+@media (max-width: 700px) {
+  .battle-screen .battle-side.enemies { grid-template-columns: 1fr; gap: 14px; }
+  .battle-screen .battle-side.enemies > .battle-unit:nth-child(n) { grid-column: 1; grid-row: auto; width: 88%; justify-self: start; }
+  .battle-screen .battle-side.enemies > .battle-unit:nth-child(2n) { justify-self: end; }
+  .battle-screen .battle-side.enemies > .battle-unit:only-child { width: 100%; }
+  .battle-screen .battle-side.allies { grid-template-columns: 1fr; }
+  .battle-screen .battle-side.allies > .battle-unit:nth-child(n) { grid-column: 1; grid-row: auto; width: 88%; justify-self: end; }
+  .battle-screen .battle-side.allies > .battle-unit:nth-child(2n) { justify-self: start; }
+  .battle-screen .battle-side.allies > .battle-unit:only-child { width: 100%; }
+  .battle-screen .unit-name { font-size: 13px; }
+  .battle-screen .battle-top > span { font-size: 12px; }
+  .battle-top .battle-turn-button { margin-left: 0; }
+}

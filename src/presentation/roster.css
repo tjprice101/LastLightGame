@@ -1,0 +1,24 @@
+.owned-roster { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.roster-character { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1 1 180px; padding: 12px; border: 1px solid #ffffff30; border-radius: 14px; background: #1c1c20; color: #fff; text-align: left; }
+.roster-character[aria-pressed="true"] { border-color: var(--element); box-shadow: inset 0 -2px var(--element); }
+.roster-character > .character-idle { width: 76px; height: 76px; flex-shrink: 0; }
+.roster-character img { width: 100%; height: 100%; object-fit: contain; }
+.roster-character > span:last-child { min-width: 0; }
+.roster-character strong, .roster-character small { display: block; overflow-wrap: anywhere; }
+.roster-character small { color: #c4c4ce; margin-top: 5px; font-size: 12px; }
+.roster-summon { min-height: 44px; padding: 12px; border: 1px solid #ffffff30; border-radius: 14px; background: #ffffff05; color: #eee; }
+.squad-hub, .summon-hub { padding: clamp(14px, 2vw, 24px); background: #18181bd9; border: 1px solid #ffffff25; border-radius: 18px; }
+.squad-hub > p, .summon-hub > p { font-size: 14px; line-height: 1.6; }
+.squad-slots, .summon-pool { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; margin: 20px 0; }
+.squad-slot, .summon-pool article { display: flex; flex-direction: column; align-items: center; min-width: 0; padding: 18px; border: 1px solid #ffffff30; border-radius: 16px; background: #ffffff04; text-align: center; }
+.squad-portrait, .summon-portrait { position: relative; width: min(100%, 240px); aspect-ratio: 1; }
+.squad-portrait .character-idle, .summon-portrait .character-idle { display: block; width: 100%; height: 100%; }
+.squad-portrait img, .summon-portrait img { width: 100%; height: 100%; object-fit: contain; }
+.empty-squad-slot { display: grid; place-items: center; height: 100%; font: 60px Georgia, serif; color: #ffffff35; }
+.squad-slot small { color: #c4c4ce; margin: 6px 0 14px; }
+.squad-slot label { width: 100%; text-align: left; margin: auto 0 8px; font-size: 13px; }
+.squad-slot select { width: 100%; min-height: 46px; padding: 10px; background: #25252a; border: 1px solid #ffffff40; border-radius: 10px; color: #fff; font: inherit; }
+.summon-reveal { display: flex; flex-direction: column; align-items: center; padding: 24px; margin: 18px 0; border: 1px solid var(--element); border-radius: 18px; background: #ffffff04; text-align: center; }
+.summon-reveal h3 { font: 600 28px Georgia, serif; margin: 8px 0; }
+.owned-roster button:focus-visible, .squad-slot select:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.squad-hub .primary-button, .summon-hub .primary-button { min-height: 44px; padding: 12px 20px; white-space: normal; }
