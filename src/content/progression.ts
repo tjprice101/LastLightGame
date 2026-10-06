@@ -1,4 +1,4 @@
-import { evolutionRecipes, getElement, type ElementId } from './activities';
+import { evolutionRecipes, getElement, materialRarities, type ElementId, type MaterialRarity } from './activities';
 import { specialtyId } from './infusions';
 
 export const currencies = [
@@ -10,6 +10,10 @@ export const artifactSlots = Array.from({ length: 8 }, (_, index) => index + 1);
 // Opening Lv1 range; live per-enemy rewards use fractalisDrop(level).
 export const enemyFractalisDrop = { minimum: 5, maximum: 10 } as const;
 export const characterGrowth = { forms: 6, firstLevelCap: 30, levelsPerEvolution: 15, perLevel: 0.03, evolutionMultiplier: 1.45, exponent: 3 } as const;
+export function evolutionRarity(evolution: number): MaterialRarity {
+  characterLevelCap(evolution);
+  return materialRarities[evolution - 1];
+}
 export const fractureRules = {
   sourceTier: 1,
   destinationTier: 2,
@@ -82,11 +86,10 @@ export function characterPotencyFactor(progress: CharacterProgress): number {
 }
 
 export const upgradePaths = [
-  { name: 'Fracture / Evolution', detail: 'Preserve your level; multiply core growth by 1.45 and increase skill/passive potency.' },
-  { name: 'Character level', detail: 'Accelerating cubic core-stat growth; bounded percentage stats and skill/passive potency.' },
-  { name: 'Weapon upgrade', detail: 'Improve the character\'s weapon.' },
-  { name: 'Unique passive', detail: 'Upgrade the character\'s unique passive ability.' },
-  { name: 'Ability 1', detail: 'Upgrade the first active ability.' },
-  { name: 'Ability 2', detail: 'Upgrade the second active ability.' },
-  { name: 'Last Flare', detail: 'Upgrade the ultimate. Naming format: Last Flare: <character-specific name>.' },
+  { id: 'upgrade-0', name: 'Fracture / Evolution', detail: 'Preserve your level; multiply core growth by 1.45 and increase skill/passive potency.' },
+  { id: 'upgrade-1', name: 'Character level', detail: 'Accelerating cubic core-stat growth; bounded percentage stats and skill/passive potency.' },
+  { id: 'upgrade-3', name: 'Unique passive', detail: 'Upgrade the character\'s unique passive ability.' },
+  { id: 'upgrade-4', name: 'Ability 1', detail: 'Upgrade the first active ability.' },
+  { id: 'upgrade-5', name: 'Ability 2', detail: 'Upgrade the second active ability.' },
+  { id: 'upgrade-6', name: 'Last Flare', detail: 'Upgrade the ultimate. Naming format: Last Flare: <character-specific name>.' },
 ] as const;

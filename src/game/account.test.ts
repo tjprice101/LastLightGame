@@ -17,6 +17,9 @@ function funded(saved: ProfileStorage) {
   const account = emptyAccount();
   account.fractalis = 100000;
   account.materials = { 'infernic-common': 1000, 'infernic-uncommon': 1000, 'infernic-rare': 1000, 'infernic-epic': 1000, 'infernic-legendary': 1000, 'heavens-evolution': 1000, 'heavens-level': 1000 };
+  account.capturedCharacters = Array.from({ length: 6 }, (_, index) => ({
+    instanceId: `capture:00000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`, creatureId: 'infusion:heavens:5', locked: false,
+  }));
   return saveAccount(saved, account);
 }
 
@@ -102,7 +105,7 @@ describe('persistent progression transactions', () => {
     expect(result.materials['infernic-common']).toBe(999);
     expect(ownedProgress(loadAccount(saved), 'ember')).toEqual({ level: 1, evolution: 1 });
     expect(() => upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 })).toThrow('changed');
-    expect(() => upgradeCharacter(saved, 'tide', 'level', { level: 0, evolution: 1 })).toThrow('owned');
+    expect(() => upgradeCharacter(saved, 'tide', 'level', { level: 0, evolution: 1 })).toThrow('Owned Element-Bearer');
   });
   it('handles all six forms, retained levels, exact materials and a one-time first Fracture reward', () => {
     const saved = storage();
@@ -121,7 +124,8 @@ describe('persistent progression transactions', () => {
         const recipe = evolutionCost('infernic', before);
         totalCost += recipe.fractalis;
         for (const [id, amount] of Object.entries(recipe.materials)) spent[id] = (spent[id] ?? 0) + amount;
-        account = upgradeCharacter(saved, 'ember', 'evolve', before);
+        const fodder = before.evolution >= 3 ? account.capturedCharacters!.slice(0, before.evolution - 2).map((copy) => copy.instanceId) : [];
+        account = upgradeCharacter(saved, 'ember', 'evolve', before, fodder);
         expect(ownedProgress(account, 'ember').level).toBe(level);
         expect(account.lycalis).toBe(10);
       }
@@ -130,6 +134,7 @@ describe('persistent progression transactions', () => {
     expect(spent).toEqual({ 'infernic-common': 280, 'infernic-uncommon': 35, 'infernic-rare': 35, 'infernic-epic': 35, 'infernic-legendary': 10, 'heavens-evolution': 15, 'heavens-level': 30 });
     expect(account.fractalis).toBe(100000 - totalCost);
     expect(account.characters.ember).toEqual({ level: 105, evolution: 6 });
+    expect(account.capturedCharacters).toHaveLength(0);
     for (const [id, amount] of Object.entries(spent)) expect(account.materials[id]).toBe(1000 - amount);
     expect(() => upgradeCharacter(saved, 'ember', 'evolve', { level: 105, evolution: 6 })).toThrow('final');
     expect(() => upgradeCharacter(saved, 'ember', 'level', { level: 105, evolution: 6 })).toThrow('cap');

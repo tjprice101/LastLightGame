@@ -49,6 +49,7 @@ describe('playable Heaven and Abyss', () => {
       expect(session.state.enemies[0].enemySkills).toHaveLength(2);
       expect(session.state.enemies[0].art).toBe(encounter.enemy.art);
       expect(existsSync(resolve('public', 'assets', 'enemies', `${encounter.enemy.art}.png`))).toBe(true);
+      if (!encounter.enemy.art) throw new Error('Heaven/Abyss artwork is required.');
       expect(unitFacing(encounter.enemy.art, 'enemy').facing).toBe('right');
       const view = Object.create(BattleView.prototype);
       const menu = { addEventListener: vi.fn(), close: vi.fn() };
@@ -65,6 +66,18 @@ describe('playable Heaven and Abyss', () => {
     for (const stage of [0, 36, 1.5, NaN, Infinity]) expect(() => infusionEncounter(mode, stage)).toThrow();
     expect(existsSync(resolve('public', 'assets', 'banners', `${mode}-banner.png`))).toBe(true);
     expect(existsSync(resolve('public', 'assets', 'backgrounds', `${mode}-arena.png`))).toBe(true);
+  });
+
+  it.each(['treasury', 'sanctuary'] as const)('%s resolves all six keyed portraits and its supplied scenery', (mode) => {
+    for (const [name, art] of infusionEnemies[mode]) {
+      expect(name).toBeTruthy();
+      expect(art).toBeTruthy();
+      expect(existsSync(resolve('public', 'assets', 'enemies', `${art}.png`))).toBe(true);
+    }
+    const encounter = infusionEncounter(mode, 1);
+    expect(encounter.background).toBe(`${mode}-arena.png`);
+    expect(existsSync(resolve('public', 'assets', 'backgrounds', encounter.background))).toBe(true);
+    expect(gameplayHub(emptyAccount())).toContain(`assets/banners/${mode}-banner.png`);
   });
 
   it('uses exact specialty bands, quantities, rarity chances and mode-associated rolls', () => {
@@ -194,38 +207,42 @@ describe('playable Heaven and Abyss', () => {
     } finally { vi.unstubAllGlobals(); }
   });
 
-  it('spends Heaven weapon resources atomically, preserves rank through growth and rejects stale/max/missing resources', () => {
+  it('rejects weapon spending and preserves legacy bonuses through leveling and evolution', () => {
     const saved = storage();
     const account = emptyAccount();
     account.fractalis = 10000;
     account.materials = { 'heavens-weapon': 275, 'abyss-weapon': 275, 'infernic-common': 100, 'infernic-rare': 25, 'infernic-epic': 10, 'heavens-evolution': 5 };
-    saveAccount(saved, account);
     for (let rank = 1; rank <= 10; rank++) {
-      const current = ownedProgress(loadAccount(saved), 'ember');
-      expect(weaponCost('infernic', current)).toEqual({ fractalis: 100 * rank, materials: { 'heavens-weapon': 5 * rank } });
-      upgradeCharacter(saved, 'ember', 'weapon', current);
+      account.characters.ember = { level: 0, evolution: 1, weaponRank: rank };
+      saveAccount(saved, account);
+      const raw = saved.getItem(ACCOUNT_KEY);
       const progress = ownedProgress(loadAccount(saved), 'ember');
       expect(progress.weaponRank).toBe(rank);
       expect(resolveFighter('ember', progress).stats.damage).toBeCloseTo(resolveFighter('ember').stats.damage * (1 + .02 * rank));
+      expect(() => upgradeCharacter(saved, 'ember', 'weapon', progress)).toThrow('unavailable');
+      expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     }
     const ranked = loadAccount(saved);
-    expect(ranked.fractalis).toBe(4500);
-    expect(ranked.materials['heavens-weapon']).toBe(0);
+    expect(ranked.fractalis).toBe(10000);
+    expect(ranked.materials['heavens-weapon']).toBe(275);
     expect(ranked.materials['abyss-weapon']).toBe(275);
-    expect(() => upgradeCharacter(saved, 'ember', 'weapon', { level: 0, evolution: 1, weaponRank: 9 })).toThrow('changed');
-    expect(() => upgradeCharacter(saved, 'ember', 'weapon', ownedProgress(ranked, 'ember'))).toThrow('Maximum');
+    expect(() => upgradeCharacter(saved, 'ember', 'weapon', { level: 0, evolution: 1, weaponRank: 9 })).toThrow('unavailable');
+    expect(() => upgradeCharacter(saved, 'ember', 'weapon', ownedProgress(ranked, 'ember'))).toThrow('unavailable');
     const leveled = upgradeCharacter(saved, 'ember', 'level', ownedProgress(ranked, 'ember'));
     expect(ownedProgress(leveled, 'ember').weaponRank).toBe(10);
     leveled.characters.ember = { level: 75, evolution: 4, weaponRank: 10 };
+    leveled.capturedCharacters = [1, 2].map((index) => ({
+      instanceId: `capture:00000000-0000-4000-8000-${String(index).padStart(12, '0')}`, creatureId: 'infusion:heavens:3', locked: false,
+    }));
     saveAccount(saved, leveled);
-    const evolved = upgradeCharacter(saved, 'ember', 'evolve', ownedProgress(leveled, 'ember'));
+    const evolved = upgradeCharacter(saved, 'ember', 'evolve', ownedProgress(leveled, 'ember'), leveled.capturedCharacters.map((copy) => copy.instanceId));
     expect(evolved.characters.ember).toEqual({ level: 75, evolution: 5, weaponRank: 10 });
     const missing = emptyAccount();
     missing.fractalis = 1000;
     missing.materials['abyss-weapon'] = 100;
     saveAccount(saved, missing);
     const raw = saved.getItem(ACCOUNT_KEY);
-    expect(() => upgradeCharacter(saved, 'ember', 'weapon', { level: 0, evolution: 1 })).toThrow('Dawnsteel');
+    expect(() => upgradeCharacter(saved, 'ember', 'weapon', { level: 0, evolution: 1 })).toThrow('unavailable');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
   });
 
@@ -255,10 +272,8 @@ describe('playable Heaven and Abyss', () => {
       expect(inventoryHub(account)).toContain(`${material.art}.png`);
       expect(existsSync(resolve('public', 'assets', 'materials', `${material.art}.png`))).toBe(true);
     }
-    expect(characterDetail(starters[0], 'upgrade-2', account)).toContain('data-upgrade="weapon" >');
-    expect(characterDetail(starters[0], 'upgrade-2', account)).toContain('heavens-dawnsteel-of-judgment.png');
+    expect(() => characterDetail(starters[0], 'upgrade-2', account)).toThrow('Unknown character upgrade area');
     account.characters.ember = { level: 75, evolution: 4, weaponRank: 10 };
-    expect(characterDetail(starters[0], 'upgrade-2', account)).toContain('Maximum weapon rank');
     expect(characterDetail(starters[0], 'upgrade-0', account)).toContain('heavens-crown-scarlet-oath.png');
     account.characters.ember = { level: 75, evolution: 5 };
     expect(characterDetail(starters[0], 'upgrade-1', account)).toContain('heavens-chalice-undying-dawn.png');

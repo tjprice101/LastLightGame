@@ -139,7 +139,7 @@ body:has(.sanctuary-shell) { min-width: 0; }
   .sanctuary-shell .home-hub { min-height: 440px; height: 100%; grid-template-rows: minmax(0, 1fr) auto; }
   .sanctuary-shell .home-hub .hub-info { min-height: 0; max-height: 100%; overflow-y: auto; }
   .sanctuary-shell .home-hub .hub-showcase { min-height: 0; }
-  .sanctuary-shell .home-hub .hub-portrait { width: min(100%, 720px); }
+  .sanctuary-shell .home-hub .hub-portrait { width: min(100%, 480px); }
   .sanctuary-shell .character-hub { min-height: 440px; height: 100%; }
   .sanctuary-shell .character-hub > .hub-rail, .sanctuary-shell .hub-detail { overflow-y: auto; max-height: 100%; }
   .sanctuary-shell .character-hub .hub-showcase { position: static; }
@@ -154,7 +154,7 @@ body:has(.sanctuary-shell) { min-width: 0; }
   .sanctuary-shell .menu-screen.sanctuary-content { padding: 12px 16px; }
   .sanctuary-shell .home-hub, .sanctuary-shell .character-hub { grid-template-columns: 1fr 1fr; gap: 16px; min-height: 0; }
   .sanctuary-shell .home-hub .hub-showcase { grid-column: 1 / -1; grid-row: 1; padding: 12px 0; min-height: 0; }
-  .sanctuary-shell .home-hub .hub-portrait { width: min(100%, 620px); }
+  .sanctuary-shell .home-hub .hub-portrait { width: min(100%, 360px); }
   .sanctuary-shell .home-hub .hub-info { grid-column: 1 / -1; grid-row: 2; }
   .sanctuary-shell .home-hub .hub-dock { position: static; grid-column: 1 / -1; grid-row: 2; pointer-events: auto; padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: var(--panel); }
   .sanctuary-shell .home-hub .hub-dock h2 { position: static; }
@@ -178,6 +178,7 @@ body:has(.sanctuary-shell) { min-width: 0; }
   .sanctuary-header .currency-strip small { font-size: 9px; }
   .sanctuary-shell .home-hub, .sanctuary-shell .character-hub { display: flex; flex-direction: column; }
   .sanctuary-shell .home-hub .hub-showcase { order: 0; }
+  .sanctuary-shell .home-hub .hub-portrait { width: min(100%, 280px); }
   .sanctuary-shell .home-hub .hub-info { order: 2; }
   .sanctuary-shell .home-hub .hub-dock { order: 3; }
   .sanctuary-shell .home-hub .hub-launch { order: 1; }

@@ -17,15 +17,15 @@ export class Journey {
 
   select(id: StarterId): void {
     if (this.screen !== 'selection') throw new Error('Starter selection is not open.');
-    if (!isAvailableStarter(id)) throw new Error('Choose an available companion.');
+    if (!isAvailableStarter(id)) throw new Error('Choose an available Element-Bearer.');
     this.selected = id;
   }
 
   confirm(storage: ProfileStorage): void {
     if (this.screen !== 'selection' || !this.selected) {
-      throw new Error('Select a companion before beginning.');
+      throw new Error('Select an Element-Bearer before beginning.');
     }
-    if (!isAvailableStarter(this.selected)) throw new Error('This companion is not available.');
+    if (!isAvailableStarter(this.selected)) throw new Error('This Element-Bearer is not available.');
     this.profile = saveStarter(storage, this.selected);
     this.screen = 'menu';
   }

@@ -30,6 +30,12 @@ const sourceFacing: Record<string, Facing> = {
   'abyss-wraththorn-slime': 'front', 'abyss-starless-murmur': 'front',
   'abyss-ruins-awakening': 'left', 'abyss-hunger-beyond-veil': 'left',
   'abyss-worldfall-reverie': 'left', 'abyss-night-without-end': 'left',
+  'gleamstone-slime': 'right', 'diadem-of-daybreak-gleamstone-slime': 'right',
+  'scepter-of-radiance-gleamstone-slime': 'right', 'regalia-of-the-sun-gleamstone-slime': 'right',
+  'sovereign-of-the-gilded-vault-gleamstone-slime': 'right', 'the-crown-beyond-dawn-gleamstone-slime': 'right',
+  'rosethorn-wisp': 'right', 'votive-of-first-bloom-rosethorn-wisp': 'right',
+  'laurel-of-the-sacred-flame-rosethorn-wisp': 'right', 'seraph-of-the-rose-pyre-rosethorn-wisp': 'right',
+  'sovereign-of-the-hallowed-garden-rosethorn-wisp': 'right', 'the-flame-beyond-eternity-rosethorn-wisp': 'right',
 };
 
 export function unitFacing(art: string, side: 'ally' | 'enemy'): { facing: 'left' | 'right'; mirrored: boolean } {

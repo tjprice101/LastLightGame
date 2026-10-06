@@ -1,10 +1,10 @@
-import { elements, dungeonStageCount, getElement, type ElementId, type InfusionModeId } from './activities';
+import { elements, infusionModes, currencyModes, isCurrencyMode, infusionStageCount, getElement, type ElementId, type InfusionModeId } from './activities';
 import { type Stats } from './combat';
 import { lootRoll, rollDrop, scaledDrop } from './loot-random';
 import { enemyGrowth, enemyStat } from './stat-growth';
 
 export function isInfusionMode(value: unknown): value is InfusionModeId {
-  return value === 'heavens' || value === 'abyss';
+  return [...infusionModes, ...currencyModes].some((entry) => entry.id === value);
 }
 export function infusionElements(mode: InfusionModeId) {
   if (!isInfusionMode(mode)) throw new Error('Unknown infusion mode.');
@@ -38,21 +38,70 @@ export const infusionEnemies = {
     ['Worldfall Reverie, Wraththorn Slime', 'abyss-worldfall-reverie'],
     ['The Night Without End, Wraththorn Slime', 'abyss-night-without-end'],
   ],
+  treasury: [
+    ['Gleamstone Slime', 'gleamstone-slime'],
+    ['Diadem of Daybreak, Gleamstone Slime', 'diadem-of-daybreak-gleamstone-slime'],
+    ['Scepter of Radiance, Gleamstone Slime', 'scepter-of-radiance-gleamstone-slime'],
+    ['Regalia of the Sun, Gleamstone Slime', 'regalia-of-the-sun-gleamstone-slime'],
+    ['Sovereign of the Gilded Vault, Gleamstone Slime', 'sovereign-of-the-gilded-vault-gleamstone-slime'],
+    ['The Crown Beyond Dawn, Gleamstone Slime', 'the-crown-beyond-dawn-gleamstone-slime'],
+  ],
+  sanctuary: [
+    ['Rosethorn Wisp', 'rosethorn-wisp'],
+    ['Votive of First Bloom, Rosethorn Wisp', 'votive-of-first-bloom-rosethorn-wisp'],
+    ['Laurel of the Sacred Flame, Rosethorn Wisp', 'laurel-of-the-sacred-flame-rosethorn-wisp'],
+    ['Seraph of the Rose Pyre, Rosethorn Wisp', 'seraph-of-the-rose-pyre-rosethorn-wisp'],
+    ['Sovereign of the Hallowed Garden, Rosethorn Wisp', 'sovereign-of-the-hallowed-garden-rosethorn-wisp'],
+    ['The Flame Beyond Eternity, Rosethorn Wisp', 'the-flame-beyond-eternity-rosethorn-wisp'],
+  ],
 } as const;
-export function infusionEncounter(mode: InfusionModeId, stage: number) {
-  if (!isInfusionMode(mode) || !Number.isInteger(stage) || stage < 1 || stage > dungeonStageCount) throw new Error(`Infusion stage must be an integer from 1 to ${dungeonStageCount}.`);
-  const tier = Math.min(5, Math.floor((stage - 1) * 6 / dungeonStageCount));
-  const level = Math.round(80 + (stage - 1) * 40 / (dungeonStageCount - 1));
-  const boss = stage % 5 === 0;
-  const stats: Stats = {
+export const infusionEnemyElements = { heavens: 'tranquilitic', abyss: 'chaotic', treasury: 'luminous', sanctuary: 'tranquilitic' } as const satisfies Record<InfusionModeId, ElementId>;
+export function infusionEnemyStats(level: number, boss: boolean): Stats {
+  if (!Number.isInteger(level) || level < 80 || level > 120) throw new Error('Infusion enemy level must be from 80 to 120.');
+  return creatureEnemyStats(level, boss);
+}
+export function treasuryEnemyStats(level: number, boss: boolean): Stats {
+  if (!Number.isInteger(level) || level < 50 || level > 120) throw new Error('Treasury creature level must be from 50 to 120.');
+  return creatureEnemyStats(level, boss);
+}
+export const treasurySalePrices = [1000, 3000, 10000, 30000, 100000, 300000] as const;
+export const sanctuarySalePrices = [
+  { fractalis: 100, lycalis: 1 }, { fractalis: 300, lycalis: 2 },
+  { fractalis: 1000, lycalis: 3 }, { fractalis: 3000, lycalis: 5 },
+  { fractalis: 10000, lycalis: 7 }, { fractalis: 30000, lycalis: 10 },
+] as const;
+export function creatureSaleValue(mode: InfusionModeId, tier: number) {
+  if (!Number.isInteger(tier) || tier < 0 || tier > 5) throw new Error('Invalid creature sale tier.');
+  if (mode === 'treasury') return { fractalis: treasurySalePrices[tier], lycalis: 0 };
+  if (mode === 'sanctuary') return sanctuarySalePrices[tier];
+  throw new Error('This creature mode does not support sales.');
+}
+export function sanctuaryEnemyStats(level: number, boss: boolean): Stats {
+  if (!Number.isInteger(level) || level < 65 || level > 120) throw new Error('Sanctuary creature level must be from 65 to 120.');
+  return creatureEnemyStats(level, boss);
+}
+function creatureEnemyStats(level: number, boss: boolean): Stats {
+  return {
     health: enemyStat(boss ? 110 : 55, boss ? enemyGrowth.bossHealth : enemyGrowth.health, level, 10, .036),
     damage: enemyStat(boss ? 13 : 8, boss ? enemyGrowth.bossDamage : enemyGrowth.damage, level, 10, .036),
     defense: enemyStat(2, boss ? enemyGrowth.bossDefense : enemyGrowth.defense, level, 10, .08),
     crit: .12, critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0 };
+}
+export function infusionEncounter(mode: InfusionModeId, stage: number) {
+  const stages = infusionStageCount(mode);
+  if (!isInfusionMode(mode) || !Number.isInteger(stage) || stage < 1 || stage > stages) throw new Error(`Infusion stage must be an integer from 1 to ${stages}.`);
+  const tier = Math.min(5, Math.floor((stage - 1) * 6 / stages));
+  const definition = [...infusionModes, ...currencyModes].find((entry) => entry.id === mode);
+  if (!definition) throw new Error('Unknown staged creature mode.');
+  const startingLevel = definition.startingLevel;
+  const level = Math.round(startingLevel + (stage - 1) * (120 - startingLevel) / (stages - 1));
+  const boss = stage % 5 === 0;
+  const stats = mode === 'treasury' ? treasuryEnemyStats(level, boss)
+    : mode === 'sanctuary' ? sanctuaryEnemyStats(level, boss) : infusionEnemyStats(level, boss);
   const [name, art] = infusionEnemies[mode][tier];
-  return { name: mode === 'heavens' ? 'Soar to Heaven' : 'Delve into the Abyss', stage, level, boss, stats, tier, forms: 6,
-    enemy: { name, art }, color: mode === 'heavens' ? '#ff6565' : '#f464d4', background: `${mode}-arena.png`,
-    ability: mode === 'heavens' ? 'Scarlet Judgment' : 'Cosmic Wrath', abilityMultiplier: 1.2 + (stage - 1) / (dungeonStageCount - 1) * 24 * .016 };
+  return { name: definition.name, stage, level, boss, stats, tier, forms: 6,
+    enemy: { name, art, element: infusionEnemyElements[mode] }, color: mode === 'heavens' ? '#ff6565' : mode === 'abyss' ? '#f464d4' : mode === 'sanctuary' ? '#e7a7bf' : '#eed78b', background: `${mode}-arena.png`,
+    ability: mode === 'heavens' ? 'Scarlet Judgment' : mode === 'abyss' ? 'Cosmic Wrath' : mode === 'sanctuary' ? 'Hallowed Rosefire' : 'Sovereign Facet', abilityMultiplier: 1.2 + (stage - 1) / (stages - 1) * 24 * .016 };
 }
 export const infusionDropTable = [
   { rarity: 'epic', level: 80, chance: .15, finalChance: .85, quantity: 3 },
@@ -66,6 +115,7 @@ export const specialtyDropTable = [
 ] as const;
 export function infusionLoot(mode: InfusionModeId, stage: number) {
   const { level } = infusionEncounter(mode, stage);
+  if (isCurrencyMode(mode)) return { specialties: [], bonuses: [] };
   const specialties = specialtyDropTable.flatMap((entry) => {
     const drop = scaledDrop(level, 80, entry.level, 1, 1, entry.quantity);
     return drop ? [{ id: `${mode}-${entry.purpose}`, ...drop }] : [];

@@ -34,7 +34,7 @@ describe('opening journey', () => {
     const journey = new Journey();
     const storage = memoryStorage();
     journey.enter(storage);
-    expect(() => journey.confirm(storage)).toThrow('Select a companion');
+    expect(() => journey.confirm(storage)).toThrow('Select an Element-Bearer');
     expect(loadProfile(storage)).toBeNull();
   });
   it('continues an existing journey after the title', () => {

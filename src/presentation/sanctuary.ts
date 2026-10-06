@@ -2,7 +2,7 @@ import { currencies } from '../content/progression';
 import { uiIcon } from './ui-icon';
 import { currencyIcon } from './currency-icon';
 
-export const sanctuaryPages = ['home', 'character', 'gameplay', 'events', 'inventory', 'squad', 'summon', 'story', 'battle', 'glossary'] as const;
+export const sanctuaryPages = ['home', 'character', 'gameplay', 'events', 'inventory', 'squad', 'summon', 'story', 'battle', 'glossary', 'archives', 'conduit-store'] as const;
 export type MenuPage = (typeof sanctuaryPages)[number];
 
 export function isMenuPage(value: unknown): value is MenuPage {
@@ -15,12 +15,14 @@ const navigation = [
 ] as const;
 
 const headings: Record<MenuPage, readonly [string, string]> = {
-  home: ['THE SANCTUARY', 'Home'], character: ['YOUR COMPANION / PROGRESSION', 'Character Upgrades'],
+  home: ['THE SANCTUARY', 'Home'], character: ['YOUR ELEMENT-BEARER / PROGRESSION', 'Character Upgrades'],
   gameplay: ['CHOOSE YOUR ACTIVITY', 'Gameplay'], events: ['FUTURE ADVENTURES', 'Events'],
-  inventory: ['YOUR HOLDINGS', 'Inventory'], squad: ['YOUR COMPANIONS', 'Squad'],
+  inventory: ['YOUR HOLDINGS', 'Inventory'], squad: ['YOUR ELEMENT-BEARERS', 'Squad'],
   summon: ['A NEW LIGHT ANSWERS', 'Summon'], story: ['A FIRST LIGHT', 'Opening Story'],
   battle: ['YOUR SQUAD / GRASSY FIELD', 'Adventure'],
-  glossary: ['DISCOVERIES / ENEMY LOOT', 'Creature Glossary'],
+  glossary: ['COLLECTIONS / DISCOVERIES', 'Archives'],
+  archives: ['COLLECTIONS / DISCOVERIES', 'Archives'],
+  'conduit-store': ['ANCIENT WAR / RECOVERED MECHANISMS', 'Conduit Store'],
 };
 
 export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycalis: number | null = null): string {
@@ -37,7 +39,7 @@ export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycali
 
 export function sanctuaryNavigation(page: MenuPage): string {
   return `<nav class="sanctuary-nav" aria-label="Main screens">${navigation.map(([id, label]) =>
-    `<button data-page="${id}" ${page === id || (page === 'story' && id === 'gameplay') ? 'aria-current="page"' : ''}>
+    `<button data-page="${id}" ${page === id || (page === 'story' && id === 'gameplay') || (['conduit-store', 'archives', 'glossary'].includes(page) && id === 'inventory') ? 'aria-current="page"' : ''}>
       <span class="nav-symbol" aria-hidden="true">${uiIcon(id)}</span><span>${label}</span>
       </button>`).join('')}</nav>`;
 }

@@ -1,7 +1,7 @@
 import { type BattleEvent, type BattleState } from '../game/battle';
 import { formatStat } from '../content/combat';
 import { lootItems, lootArt } from './battle-loot';
-import { dungeonStageCount } from '../content/activities';
+import { dungeonStageCount, infusionStageCount } from '../content/activities';
 
 export function encounterRewards(events: readonly BattleEvent[]) {
   const totals = new Map<string, ReturnType<typeof lootItems>[number]>();
@@ -22,7 +22,7 @@ export function battleResults(state: BattleState, events: readonly BattleEvent[]
   if (state.phase === 'player') return '';
   const victory = state.phase === 'cleared';
   const staged = !!(state.dungeon || state.infusion);
-  const complete = staged && state.wave === dungeonStageCount;
+  const complete = staged && state.wave === (state.infusion ? infusionStageCount(state.infusion.mode) : dungeonStageCount);
   const rewards = encounterRewards(events);
   const allies = new Set(state.allies.map((ally) => ally.id));
   const total = (kind: BattleEvent['kind'], outgoing: boolean): number => events
@@ -32,7 +32,7 @@ export function battleResults(state: BattleState, events: readonly BattleEvent[]
     <div class="battle-result-title"><div><p class="eyebrow">${staged ? 'Stage' : 'Wave'} ${state.wave} ${victory ? 'cleared' : 'ended'}${victory && complete ? ' / Activity complete' : ''}</p>
       <h2 id="battle-result-heading" tabindex="-1">${victory ? 'Victory!' : 'Defeat'}</h2></div>
       <button class="text-button" data-result-dismiss>View battlefield</button></div>
-    <p id="battle-result-note">${victory ? 'The encounter is over. Your earned rewards are already saved.' : 'Your companion has fallen. Rewards from defeated enemies are already saved and will not be lost.'}
+    <p id="battle-result-note">${victory ? 'The encounter is over. Your earned rewards are already saved.' : 'Your squad has fallen. Rewards from defeated enemies are already saved and will not be lost.'}
       ${victory ? complete ? 'All stages completed. Return to Gameplay to replay unlocked stages.' : staged ? 'Continue with full HP; Shatter Gauge carries into the next stage.' : 'Health, Gauge and recovery carry into the next wave.' : ''}</p>
     <div class="battle-result-rewards"><h3>Rewards earned this ${staged ? 'stage' : 'wave'}</h3>
       ${rewards.length ? `<ul>${rewards.map((item) => `<li style="--reward-color:${item.color}">${lootArt(item)

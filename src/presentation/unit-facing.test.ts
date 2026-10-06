@@ -40,4 +40,14 @@ describe('unit facing without altering source art', () => {
     expect(unitFacing(art, 'enemy')).toEqual({ facing: 'right', mirrored: source === 'left' });
     expect(unitFacingAttributes(art, 'enemy')).toContain(`data-mirrored="${source === 'left'}"`);
   });
+  it.each([
+    'gleamstone-slime', 'diadem-of-daybreak-gleamstone-slime',
+    'scepter-of-radiance-gleamstone-slime', 'regalia-of-the-sun-gleamstone-slime',
+    'sovereign-of-the-gilded-vault-gleamstone-slime', 'the-crown-beyond-dawn-gleamstone-slime',
+    'rosethorn-wisp', 'votive-of-first-bloom-rosethorn-wisp',
+    'laurel-of-the-sacred-flame-rosethorn-wisp', 'seraph-of-the-rose-pyre-rosethorn-wisp',
+    'sovereign-of-the-hallowed-garden-rosethorn-wisp', 'the-flame-beyond-eternity-rosethorn-wisp',
+  ])('keeps supplied currency-mode cutout facing metadata for %s', (art) => {
+    expect(unitFacing(art, 'enemy')).toEqual({ facing: 'right', mirrored: false });
+  });
 });

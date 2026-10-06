@@ -21,7 +21,7 @@ export function attackFlair(unit: Combatant, action: string | undefined, enhance
   const skill = enhancedAttack || action !== 'light' && action !== undefined;
   const ultimate = action === 'ultimate';
   const power = growth ** 1.5;
-  const family = unit.creatureId?.startsWith('infusion:heavens:') ? 'radiant'
+  const family = unit.creatureId?.startsWith('infusion:heavens:') || unit.creatureId?.startsWith('infusion:treasury:') || unit.creatureId?.startsWith('infusion:sanctuary:') ? 'radiant'
     : unit.creatureId?.startsWith('infusion:abyss:') ? 'void'
     : unit.definitionId === 'ember' || unit.creatureId?.startsWith('dungeon:infernic:') ? 'flame'
     : unit.definitionId === 'tide' || unit.creatureId?.startsWith('dungeon:aquatic:') ? 'tide'

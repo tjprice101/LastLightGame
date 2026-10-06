@@ -1,5 +1,7 @@
 import { type StarterId } from './starters';
 import { characterGrowthFactor, characterPotencyFactor, weaponRules, type CharacterProgress } from './progression';
+import { getConduit, validateConduitSlots, type ConduitSlots } from './conduits';
+import { type ElementId } from './activities';
 
 export const actionIds = ['light', 'skill1', 'skill2', 'ultimate', 'defend'] as const;
 export type ActionId = (typeof actionIds)[number];
@@ -33,6 +35,7 @@ export interface FighterDefinition {
   stats: Stats;
   passive: { name: string; description: string; damageBonus: number; defenseBonus: number; healFraction: number };
   abilities: Record<'skill1' | 'skill2' | 'ultimate', Ability>;
+  unavailableActions?: ('skill1' | 'skill2' | 'ultimate')[];
 }
 
 export const fighters: Record<StarterId, FighterDefinition> = {
@@ -68,17 +71,17 @@ export const fighters: Record<StarterId, FighterDefinition> = {
 export const enemyIds = ['goblin', 'imp', 'golem'] as const;
 export const adventureScaling = { healthPerWave: 0.24, damagePerWave: 0.24, defensePerWave: 2 } as const;
 export type EnemyId = (typeof enemyIds)[number];
-export const enemies: Record<EnemyId, { name: string; art: string; stats: Stats }> = {
-  goblin: { name: 'Goblin', art: 'goblin', stats: { health: 110, defense: 5, damage: 23, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
-  imp: { name: 'Imp', art: 'imp', stats: { health: 90, defense: 3, damage: 28, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
-  golem: { name: 'Rock Golem', art: 'rock-golem', stats: { health: 160, defense: 15, damage: 20, crit: 0.05, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
+export const enemies: Record<EnemyId, { name: string; art: string; element: ElementId; stats: Stats }> = {
+  goblin: { name: 'Goblin', art: 'goblin', element: 'efflorescent', stats: { health: 110, defense: 5, damage: 23, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
+  imp: { name: 'Imp', art: 'imp', element: 'infernic', stats: { health: 90, defense: 3, damage: 28, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
+  golem: { name: 'Rock Golem', art: 'rock-golem', element: 'tectonic', stats: { health: 160, defense: 15, damage: 20, crit: 0.05, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
 };
 
 export function formatStat(value: number): string {
   return String(Number(value.toFixed(2)));
 }
 
-export function resolveFighter(id: StarterId, progress?: CharacterProgress): FighterDefinition {
+export function resolveFighter(id: StarterId, progress?: CharacterProgress, equipment?: ConduitSlots): FighterDefinition {
   const base = fighters[id];
   if (!base) throw new Error('Unknown fighter definition.');
   const factor = progress ? characterGrowthFactor(progress) : 1;
@@ -126,7 +129,18 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress): Fig
     kit.abilities.skill2.description = `Restore ${formatStat(value('skill2', 'healing'))} health to every living ally; cannot revive.`;
     kit.abilities.ultimate.description = `${pct(value('ultimate', 'damageMultiplier'))}% damage to all enemies and heal living allies by ${formatStat(value('ultimate', 'healing'))}. Recover next turn.`;
   }
+  applyConduitBuffs(kit.stats, equipment);
   return kit;
+}
+
+export function applyConduitBuffs(stats: Stats, equipment?: ConduitSlots): void {
+  if (equipment) for (const conduitId of validateConduitSlots(equipment)) {
+    if (conduitId === null) continue;
+    const buff = getConduit(conduitId).buff;
+    if (buff.kind === 'percent') stats[buff.stat] *= 1 + buff.amount / 100;
+    else if (buff.kind === 'percentage-points') stats.crit = Math.min(1, stats.crit + buff.amount / 100);
+    else stats[buff.stat] += buff.amount;
+  }
 }
 
 export function isActionId(value: unknown): value is ActionId {

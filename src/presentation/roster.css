@@ -9,16 +9,39 @@
 .roster-summon { min-height: 44px; padding: 12px; border: 1px solid #ffffff30; border-radius: 14px; background: #ffffff05; color: #eee; }
 .squad-hub, .summon-hub { padding: clamp(14px, 2vw, 24px); background: #18181bd9; border: 1px solid #ffffff25; border-radius: 18px; }
 .squad-hub > p, .summon-hub > p { font-size: 14px; line-height: 1.6; }
-.squad-slots, .summon-pool { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; margin: 20px 0; }
-.squad-slot, .summon-pool article { display: flex; flex-direction: column; align-items: center; min-width: 0; padding: 18px; border: 1px solid #ffffff30; border-radius: 16px; background: #ffffff04; text-align: center; }
-.squad-portrait, .summon-portrait { position: relative; width: min(100%, 240px); aspect-ratio: 1; }
-.squad-portrait .character-idle, .summon-portrait .character-idle { display: block; width: 100%; height: 100%; }
-.squad-portrait img, .summon-portrait img { width: 100%; height: 100%; object-fit: contain; }
+.squad-slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; margin: 20px 0; }
+.squad-slot { display: flex; flex-direction: column; align-items: center; min-width: 0; padding: 18px; border: 1px solid #ffffff30; border-radius: 16px; background: #ffffff04; text-align: center; }
+.squad-portrait { position: relative; width: min(100%, 240px); aspect-ratio: 1; }
+.squad-portrait .character-idle { display: block; width: 100%; height: 100%; }
+.squad-portrait img { width: 100%; height: 100%; object-fit: contain; }
 .empty-squad-slot { display: grid; place-items: center; height: 100%; font: 60px Georgia, serif; color: #ffffff35; }
 .squad-slot small { color: #c4c4ce; margin: 6px 0 14px; }
 .squad-slot label { width: 100%; text-align: left; margin: auto 0 8px; font-size: 13px; }
 .squad-slot select { width: 100%; min-height: 46px; padding: 10px; background: #25252a; border: 1px solid #ffffff40; border-radius: 10px; color: #fff; font: inherit; }
-.summon-reveal { display: flex; flex-direction: column; align-items: center; padding: 24px; margin: 18px 0; border: 1px solid var(--element); border-radius: 18px; background: #ffffff04; text-align: center; }
-.summon-reveal h3 { font: 600 28px Georgia, serif; margin: 8px 0; }
+.summon-banner-art { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid #ffffff25; border-radius: 14px; background: #24242b; }
+.summon-banner-art > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.summon-banner-placeholder { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; height: 100%; padding: 16px; text-align: center; color: #d9d9df; }
+.summon-banner-placeholder strong { font: 600 clamp(20px, 3vw, 38px) Georgia, serif; color: #fff; }
+.summon-banner-placeholder > span:last-child { font-size: 12px; }
+.summon-pity-progress { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px; margin: 12px 0 20px; }
+.summon-pity-progress > div { padding: 12px; border: 1px solid #ffffff20; border-radius: 10px; }
+.summon-pity-progress dt { color: #c4c4ce; font-size: 13px; }
+.summon-pity-progress dd { margin: 6px 0 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+.summon-drop-table { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 12px 0 20px; font-size: 14px; }
+.summon-drop-table caption { text-align: left; color: #c4c4ce; font-size: 12px; padding-bottom: 8px; }
+.summon-drop-table th, .summon-drop-table td { padding: 12px 8px; border-bottom: 1px solid #ffffff20; text-align: left; overflow-wrap: anywhere; }
+.summon-drop-table thead th { color: #c4c4ce; font-size: 12px; }
+.summon-drop-table th:first-child { width: 42%; }
+.summon-drop-table td:last-child, .summon-drop-table th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+.summon-drop-table td > span { display: block; margin-top: 4px; color: #c4c4ce; font-size: 12px; }
+.summon-rules { margin-top: 20px; border-top: 1px solid #ffffff20; padding-top: 16px; font-size: 13px; line-height: 1.6; }
+.summon-rules summary { cursor: pointer; min-height: 44px; }
+.summon-rules summary:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@media (max-width: 480px) {
+  .summon-drop-table { font-size: 12px; }
+  .summon-drop-table th, .summon-drop-table td { padding: 10px 4px; }
+  .summon-banner-placeholder { gap: 6px; }
+  .summon-banner-placeholder .eyebrow { font-size: 9px; }
+}
 .owned-roster button:focus-visible, .squad-slot select:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .squad-hub .primary-button, .summon-hub .primary-button { min-height: 44px; padding: 12px 20px; white-space: normal; }

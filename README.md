@@ -5,7 +5,7 @@ The browser-playable prelude includes an animated title, fire/water/grass starte
 and seven sanctuary destinations: Home, Character Upgrades, Gameplay, Events,
 Inventory, Squad and Summon. Squad and Summon are coming-soon previews.
 Settings opens in a side drawer. The full-concept UI uses colored angled menus,
-neutral black/white panels, element-associated accents, bottom navigation and a central companion showcase with
+neutral black/white panels, element-associated accents, bottom navigation and a central Element-Bearer showcase with
 hexagonal upgrade shortcuts. Home retains real stats and Adventure launch.
 Character Upgrades uses a stable selectable area rail and detail panel.
 All 15 supplied evolved portraits are integrated across Home, Character, Squad

@@ -146,3 +146,17 @@ html[data-motion="reduced"] .upgrade-celebration-label, html[data-motion="reduce
   .character-stat-groups { grid-template-columns: minmax(0, 1fr); }
   .character-stat-groups > :nth-child(n) { grid-column: 1; grid-row: auto; }
 }
+.evolution-fodder { min-width: 0; margin: 16px 0; padding: 12px; border: 1px solid #ffffff30; border-radius: 12px; }
+.evolution-fodder-list { display: grid; gap: 10px; max-height: 440px; overflow-y: auto; }
+.evolution-fodder-copy { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 10px; background: #ffffff05; border-radius: 10px; }
+.evolution-fodder-copy > input { width: 22px; height: 22px; flex-shrink: 0; }
+.evolution-fodder-copy > img { width: 64px; height: 64px; object-fit: contain; flex-shrink: 0; }
+.evolution-fodder-copy > span { min-width: 0; overflow-wrap: anywhere; }
+.evolution-fodder-copy strong, .evolution-fodder-copy small { display: block; }
+.evolution-fodder-copy .character-rating { margin: 6px 0; }
+.evolution-fodder-copy:has(input:disabled) { opacity: .65; }
+.evolution-fodder-copy:has(input:checked) { outline: 1px solid var(--element); }
+@media (max-width: 480px) {
+  .evolution-fodder-copy { flex-wrap: wrap; }
+  .evolution-fodder-copy > span { flex: 1 1 100%; }
+}

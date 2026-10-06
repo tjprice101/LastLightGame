@@ -4,6 +4,48 @@ export function lootRoll(random: () => number): number {
   return value;
 }
 
+export function infusionLycalisOdds(level: number) {
+  if (!Number.isInteger(level) || level < 80 || level > 120) throw new Error('Lycalis drops require an infusion enemy level from 80 to 120.');
+  const growth = (level - 80) / 40;
+  return [
+    { amount: 0, chance: .9 - .15 * growth },
+    { amount: 1, chance: .08 + .02 * growth },
+    { amount: 2, chance: .015 + .085 * growth },
+    { amount: 3, chance: .005 + .045 * growth },
+  ] as const;
+}
+
+export function rollInfusionLycalis(level: number, random: () => number): number {
+  return rollLycalisOdds(infusionLycalisOdds(level), random);
+}
+
+export function sanctuaryLycalisOdds(level: number) {
+  if (!Number.isInteger(level) || level < 65 || level > 120) throw new Error('Sanctuary Lycalis drops require an enemy level from 65 to 120.');
+  const growth = (level - 65) / 55;
+  const chance = .5 + .3 * growth;
+  return [{ amount: 0, chance: 1 - chance }, { amount: Math.round(1 + 4 * growth), chance }];
+}
+
+export function stagedLycalisOdds(mode: InfusionModeId, level: number) {
+  if (mode === 'treasury') throw new Error('Treasury does not award Lycalis drops.');
+  return mode === 'sanctuary' ? sanctuaryLycalisOdds(level) : infusionLycalisOdds(level);
+}
+
+export function rollStagedLycalis(mode: InfusionModeId, level: number, random: () => number): number {
+  return rollLycalisOdds(stagedLycalisOdds(mode, level), random);
+}
+
+function rollLycalisOdds(odds: readonly { amount: number; chance: number }[], random: () => number): number {
+  const roll = lootRoll(random);
+  let cumulative = 0;
+  for (const outcome of odds) {
+    cumulative += outcome.chance;
+    if (roll < cumulative) return outcome.amount;
+  }
+  // Absorb only floating-point summation error at the upper boundary.
+  return odds[odds.length - 1].amount;
+}
+
 export function plentifulDrops(drops: Record<string, number>, random: () => number): Record<string, number> {
   return Object.fromEntries(Object.entries(drops).map(([id, base]) => [id, base + Math.floor(lootRoll(random) * (base + 1))]));
 }
@@ -43,3 +85,10 @@ export function fractalisDrop(level: number): ScaledDrop {
   const minimum = 5 + Math.floor(10 * ((level - 1) / 119) ** 2);
   return { minimum, maximum: minimum * 2, chance: 1 };
 }
+
+export function treasuryFractalisDrop(level: number): ScaledDrop {
+  if (!Number.isInteger(level) || level < 65 || level > 120) throw new Error('Treasury drops require an enemy level from 65 to 120.');
+  const minimum = 100 + Math.floor(900 * ((level - 65) / 55) ** 2);
+  return { minimum, maximum: minimum * 2, chance: 1 };
+}
+import { type InfusionModeId } from './activities';

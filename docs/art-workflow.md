@@ -1,5 +1,64 @@
 # Art and asset workflow
 
+## Summoning banner artpieces
+
+Summoning uses16:9 opaque full-bleed Omnic-tier artpieces that embody each real
+banner's identity. Do not reuse3:1 dungeon headers or individual reward portraits.
+The Standard prompt/intake path is in [Summoning Banners](../Art/Summoning%20Banners.md).
+The supplied Standard banner is now registered at
+`public/assets/banners/summon-standard.png`. Drop-rate tables remain text-only:
+name, awarded rarity/star value and exact rate; Omnic art is not an acquisition
+promise. Follow this distinction for future banner and loot disclosures.
+
+## Rosethorn Sanctuary
+
+Phase10's [Sanctuary pack](../Art/Rosethorn%20Sanctuary.md) contains six
+Tranquilitic Rosethorn Wisp cutouts,3:1 activity header and16:9 arena.
+Keep limbless flame-shaped anatomy, ivory/rose/antique-gold identity, eyes-only
+faces and opaque non-emissive flame ribbons. Common is restrained; Omnic
+unfolds divine thorn-cathedral regalia/prismatic rose orbit rings.
+The six supplied portraits, header and arena are registered; hostile and owned
+copies share the same cutout files.
+Standard's Omnic artpiece includes Sanctuary rosefire architecture, not another
+banner, promised six-star EB or a portrait grid.
+
+## Crownfall Treasury
+
+Phase9's [Treasury pack](../Art/Crownfall%20Treasury.md) contains six progressively
+regal Luminous slime cutouts (shared hostile/captured portraits), a3:1 activity
+header and16:9 arena. The six supplied portraits, header and arena are registered;
+hostile and owned copies share the same cutout files.
+The Standard16:9 artpiece prompt now includes Treasury crown/amber architecture;
+this is not another summon banner or a6-star EB promise. Preserve originals,
+review keying/padding and register only approved exported images.
+
+## Pending dungeon rarity direction
+
+The five remaining art-pending dungeon packs (Earth, Wind, Light, Shadow and
+Chaos) now apply the shared Common-to-Omnic tone inside all40 enemy and30
+material prompts. Early designs remain restrained; later creatures and relics
+gain species-specific formidable armor, deployed elemental structures and
+majestic/prismatic final silhouettes, not cute wording or realistic anatomy.
+See [pack direction and generation rules](../Art/dungeons/README.md#pending-art-rarity-escalation-pass).
+Enemy lineup positions express art power, not assigned rarity or evolution;
+material rarity labels remain authoritative. Existing palettes/key colors,
+compact renderer, cutout padding/no-glow rules and scenery layouts are preserved.
+Runtime encounters, drops and already supplied packs are unchanged.
+
+## Game-wide rarity art direction
+
+Common-to-Omnic progression keeps the same established rendering style while
+becoming progressively less cutesy and more epic, formidable, majestic and
+awe-inspiring. This is a game-wide rule, not exclusive to Conduits. Higher-rarity
+prompts should emphasize commanding designs and fully realized elemental
+identity rather than adorable/babyish language. Keep compact proportions,
+species identity, clean contours, cel shading and cutout requirements unchanged.
+
+Use the [shared rarity tone ladder](../Art/midjourney-character-style-prompt.md#game-wide-rarity-tone-common-to-omnic)
+for new or revised prompts. Rarity and stars remain separate: a 5-star Common
+starter is still visually a restrained base form. This direction does not
+repaint delivered assets or change gameplay rarity/progression rules.
+
 ## Existing source of truth
 
 ### Currency artwork
@@ -118,6 +177,35 @@ existing cutout destinations or an existing intake manifest. Subsequent batches
 need an explicitly reviewed manifest-update workflow, not an overwrite of this
 intake. Tests assert all 96 source hashes, pixel-exact normalized exports and
 regeneration with the matte remover disabled.
+
+### Owner-supplied opaque RGB art intake (36 images)
+
+The 36 supplied images are preserved byte-for-byte under `Art/source`. At the
+owner's request, redundant root-level copies were removed after verifying their
+archived and runtime hashes. Ten element medallions, five Conduit icons and twelve Treasury /
+Rosethorn creature portraits are opaque RGB cutouts/icons. Their runtime
+exports use explicitly reviewed, border-connected per-image color keys: hue /
+saturation keys for medallions and Conduits, RGB border-swatch distance keys
+for creatures. The exact settings, canonical source/runtime paths and SHA-256
+hashes are recorded in [root-art-intake.json](../Art/root-art-intake.json).
+
+Only those 27 cutouts/icons have their backgrounds keyed and transparent
+padding/size normalized. The seven scenery banners and two arenas are copied
+byte-for-byte; they remain full-bleed opaque artwork. This is a distinct RGB
+intake path and does not change the supplied-alpha policy above: the existing
+96 authoritative-alpha cutouts are never background-removed. Runtime images
+are registered through existing content/presentation systems and use
+base-aware `assetUrl()` paths.
+
+The intake is explicit and repeatable, using archived sources when root inputs
+are absent. Review the plan before applying it, then
+run the focused provenance/export tests:
+
+```powershell
+python tools\intake_root_art.py
+python tools\intake_root_art.py --apply
+python -m unittest discover -s tools -p test_root_art_intake.py
+```
 
 ### New-generation solid key-color backgrounds
 
@@ -279,7 +367,7 @@ do not maintain a second competing prompt library here.
 Use the actual `Art` directory capitalization consistently.
 
 [Starter Art](../Art/Starter%20Art.md) extends that guide with three new base-form
-companions (female fire/greatsword, female grass/bow, male water/spear) and three
+Element-Bearers (female fire/greatsword, female grass/bow, male water/spear) and three
 basic mythological enemy prompts (goblin, imp, golem). These are generation prompts,
 not generated assets or changes to the playable roster.
 
@@ -464,7 +552,7 @@ masked or repainted; future artistic cleanup should use a separately approved ma
 Source art differs from some prompt details; no faces/weapons have been redesigned.
 
 The [portrait helper](../src/presentation/portrait.ts) resolves assets with Vite's
-deployment base. Selection, companion/character panels, and Adventure use the
+deployment base. Selection, Element-Bearer panels, and Adventure use the
 runtime images. Originals are not shipped in the game build.
 
 ## Supplied elemental dungeon packs
@@ -568,7 +656,7 @@ their own usage-specific dimensions and are **not** processed with this sprite r
 Selection portraits use a square slot up to 250 CSS pixels. The mock-up-inspired
 hub showcase uses a standardized square slot up to 380px on Character Upgrades
 (240px desktop / 220px mobile on the compact Home screen)
-so the companion is a focal point; all three characters use identical sizing.
+so the Element-Bearer is a focal point; all three characters use identical sizing.
 Battle sprites share square slots up to 185px (100px on mobile).
 Slots shrink to their container width and images use `object-fit: contain`.
 

@@ -5,7 +5,7 @@ import { battleSpeeds, type BattleSpeed } from './battle-speed';
 export function settingsPanel(motion: MotionPreference, bindings: Bindings, speed: BattleSpeed): string {
   return `<header class="drawer-heading"><div><p class="eyebrow">YOUR EXPERIENCE</p><h2 id="settings-heading">Settings</h2></div>
     <button id="close-settings" class="drawer-close" aria-label="Close settings">&times;</button></header>
-    <p class="subtitle">Saved on this device, separately from your companion.</p>
+    <p class="subtitle">Saved on this device, separately from your Element-Bearer.</p>
     <section class="settings-panel"><h3>Battle presentation</h3>
       <label for="settings-battle-speed">Animation speed</label>
       <select id="settings-battle-speed" data-battle-speed aria-describedby="speed-description">${battleSpeeds.map((value) =>

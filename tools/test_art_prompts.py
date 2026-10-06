@@ -16,6 +16,105 @@ def prompts():
 
 
 class ArtPromptTests(unittest.TestCase):
+    def test_sanctuary_has_six_divine_wisp_cutouts_and_two_scenery_prompts(self):
+        text = (ROOT / "Art" / "Rosethorn Sanctuary.md").read_text(encoding="utf-8")
+        bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
+        self.assertEqual(len(bodies), 8)
+        for body in bodies[:6]:
+            for anchor in ("Rosethorn Wisp", "limbless", "facing right", "chibi",
+                           "one third", "rose", "ivory", "antique-gold", "--ar 4:3"):
+                self.assertIn(anchor, body)
+            self.assertIn("two eyes as its only facial features", body)
+        for body in bodies[2:6]:
+            self.assertNotRegex(body.split(" --", 1)[0], r"\b(?:cute|cutesy|adorable|baby)\b")
+        for anchor in ("transcendent", "fully reborn", "prismatic", "orbit rings"):
+            self.assertIn(anchor, bodies[5])
+        self.assertIn("--ar 3:1", bodies[6])
+        self.assertIn("--ar 16:9", bodies[7])
+
+    def test_treasury_has_six_regal_capture_cutouts_and_two_scenery_prompts(self):
+        text = (ROOT / "Art" / "Crownfall Treasury.md").read_text(encoding="utf-8")
+        bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
+        self.assertEqual(len(bodies), 8)
+        for body in bodies[:6]:
+            for anchor in ("Gleamstone Slime", "limbless", "facing right",
+                           "one third", "chibi", "ivory", "gold", "amber", "--ar 4:3"):
+                self.assertIn(anchor, body)
+        for body in bodies[2:6]:
+            self.assertNotRegex(body.split(" --", 1)[0], r"\b(?:cute|cutesy|adorable|baby)\b")
+        for anchor in ("transcendent", "prismatic", "fully reborn", "orbit rings"):
+            self.assertIn(anchor, bodies[5])
+        self.assertIn("--ar 3:1", bodies[6])
+        self.assertIn("--ar 16:9", bodies[7])
+
+    def test_summon_banner_is_omnic_wide_scenery_not_reward_cards(self):
+        text = (ROOT / "Art" / "Summoning Banners.md").read_text(encoding="utf-8")
+        scenes = [body for body in BLOCK.findall(text) if "--niji" in body]
+        self.assertEqual(len(scenes), 1)
+        body = scenes[0]
+        for anchor in ("full-bleed", "Omnic masterpiece", "prismatic",
+                       "greatsword emblem", "spear emblem", "bow emblem", "--ar 16:9"):
+            self.assertIn(anchor, body)
+        self.assertNotRegex(body.split(" --", 1)[0], r"\b(?:cute|cutesy|adorable|baby)\b")
+        self.assertIn("portrait grid, reward cards", body.split("--no", 1)[1])
+
+    def test_pending_dungeon_packs_escalate_design_without_changing_renderer(self):
+        packs = (
+            ("Precipice of the Earth.md", "mountain-spire armor", "mineral rings"),
+            ("Sky-bound Rift.md", "silver flight fans", "cyclone rings"),
+            ("Lustrous River.md", "opal solar blades", "solar rings"),
+            ("Valley of Solitude.md", "eclipse vanes", "shadow rings"),
+            ("Ruins of Chaos.md", "impossible lattice", "warped matter rings"),
+        )
+        enemy_tones = ("simple approachable", "capable", "commanding", "impressive",
+                       "formidable", "magnificent", "majestic", "transcendent")
+        material_tones = ("simple restrained", "distinctive crafted", "commanding",
+                          "formidable", "majestic", "transcendent")
+        for filename, enemy_signature, soul_signature in packs:
+            path = ROOT / "Art" / "dungeons" / filename
+            bodies = BLOCK.findall(path.read_text(encoding="utf-8"))
+            self.assertEqual(len(bodies), 16)
+            for index, tone in enumerate(enemy_tones):
+                with self.subTest(pack=filename, enemy=index + 1):
+                    positive = bodies[index].split(" --", 1)[0]
+                    self.assertIn(tone, positive)
+                    self.assertIn("body one third of canvas height", positive)
+                    if index >= 2:
+                        self.assertNotRegex(positive, r"\b(?:cute|cutesy|adorable|baby|playful|toy-like)\b")
+            for index, tone in enumerate(material_tones):
+                with self.subTest(pack=filename, material=index + 1):
+                    positive = bodies[index + 8].split(" --", 1)[0]
+                    self.assertIn(tone, positive)
+                    self.assertIn("chibi", positive)
+                    self.assertIn("two thirds of canvas", positive)
+                    self.assertNotRegex(positive, r"\b(?:cute|cutesy|adorable|baby|playful|toy-like)\b")
+            self.assertIn(enemy_signature, bodies[7])
+            self.assertIn("prismatic", bodies[7])
+            self.assertIn(soul_signature, bodies[13])
+            self.assertIn("prismatic", bodies[13])
+            for body, ratio in zip(bodies[14:], ("3:1", "16:9")):
+                self.assertIn("full-bleed", body)
+                self.assertIn(f"--ar {ratio}", body)
+
+    def test_phase_four_has_ten_element_medallions_and_three_archive_banners(self):
+        elements = (ROOT / "Art" / "Element Emblems.md").read_text(encoding="utf-8")
+        emblems = [body for body in BLOCK.findall(elements) if "--niji" in body]
+        self.assertEqual(len(emblems), 10)
+        for element in ("infernic", "aquatic", "tectonic", "efflorescent", "voltaic",
+                        "atmospheric", "luminous", "ominous", "tranquilitic", "chaotic"):
+            self.assertIn(f"Art ID: `{element}`", elements)
+        for body in emblems:
+            self.assertIn("medallion", body)
+            self.assertIn("centered", body)
+            self.assertIn("opaque enamel inset", body)
+            self.assertIn("--ar 1:1", body)
+        banners = (ROOT / "Art" / "Archives.md").read_text(encoding="utf-8")
+        scenes = [body for body in BLOCK.findall(banners) if "--niji" in body]
+        self.assertEqual(len(scenes), 3)
+        for body in scenes:
+            self.assertIn("full-bleed", body)
+            self.assertIn("--ar 3:1", body)
+
     def test_every_prompt_retains_shared_rendering_and_valid_single_flags(self):
         entries = list(prompts())
         self.assertGreaterEqual(len(entries), 259)

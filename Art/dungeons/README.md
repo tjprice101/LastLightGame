@@ -22,6 +22,10 @@ instructions below before submitting them to Midjourney.
 
 ## Generation contract
 
+- Apply the [Common-to-Omnic tone ladder](../midjourney-character-style-prompt.md#game-wide-rarity-tone-common-to-omnic)
+  inside each copy-ready prompt, not just this guide. Compact chibi proportions
+  remain constant; higher-tier designs become commanding, formidable, majestic
+  and finally transcendent rather than increasingly cute.
 - Match the [approved character style](../midjourney-character-style-prompt.md):
   oversized rounded heads, tiny bodies, short limbs, eyes-only faces, precise
   anime outlines, crisp cel shading, smooth highlights and jewel-like colors.
@@ -44,6 +48,41 @@ instructions below before submitting them to Midjourney.
   Preserve originals; approve/upscale and export PNG through the art workflow.
   Unit exports remain 960x960 RGBA; item icons can target 256x256 RGBA.
   Never matte-remove banners/arena backgrounds.
+
+## Pending-art rarity escalation pass
+
+The five packs still awaiting supplied artwork are **Precipice of the Earth,
+Sky-bound Rift, Lustrous River, Valley of Solitude and Ruins of Chaos**.
+Their gameplay, names, encounters and rewards are implemented; this is an art
+revision, not a new dungeon implementation or rarity assignment to enemies.
+Already supplied dungeon packs are unchanged.
+
+All 40 enemy and 30 material prompts in these five packs now encode escalation:
+
+| Art position | Visual direction |
+| --- | --- |
+| Enemies1-2 | Simple approachable creature, then distinctive capable scavenger/keeper; restrained equipment. |
+| Enemies3-4 | Commanding guardian, then impressive armed sentinel; stronger species-specific silhouettes and disciplined poses. |
+| Enemies5-6 | Formidable champion, then magnificent sentinel/oracle; elaborate armor, signature weapons and deployed elemental structures. |
+| Enemy7 | Majestic regent/titan; masterful layered equipment and grand bounded elemental formations. |
+| Enemy8 | Transcendent elemental masterpiece; fully unfolded signature design, monumental weapon/mantle and nested prismatic formations. |
+| Materials Common/Uncommon | Simple seed, then distinctive emerging bloom; limited decoration and clear identity. |
+| Materials Rare/Epic | Commanding faceted relic, then formidable crafted crest; structured bevels, frames and elemental blades. |
+| Materials Legendary/Omnic | Majestic heart, then supreme elemental soul emblem; articulated cradles, nested structures and prismatic rings. |
+
+Enemy positions are **visual power direction**, not runtime rarity/stars, an
+evolution chain, or a guarantee about their drops. Materials retain their actual
+Common-through-Omnic labels and Seed/Bloom/Shard/Crest/Heart/Soul identities.
+Each element gets different signature geometry: mineral fault terraces, feather
+flight fans, solar mirrors, eclipse vanes or impossible polygon lattices.
+No blanket crown/wing addition to every species.
+
+Stronger effects must remain bounded, opaque, hard-edged and non-emissive on the
+source cutouts. Prismatic facets and painted energy spirals are allowed;
+bloom, transparent haze, background spill and realistic anatomy are not.
+Keep existing subject palettes and contrasting key colors unchanged.
+The ten existing banner/arena prompts retain their scenery lighting, layouts
+and quiet UI zones; the rarity ladder does not require noisy environments.
 
 ## Materials and progression
 

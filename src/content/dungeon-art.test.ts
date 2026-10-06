@@ -36,9 +36,9 @@ describe('supplied elemental dungeon artwork', () => {
     const element = elements.find((entry) => entry.id === id);
     expect(html).toContain(`Drops ${element?.name} materials used for enhancing characters and other items`);
   });
-  it('keeps five art-pending dungeons playable without requesting missing banners', () => {
+  it('keeps five art-pending dungeons playable alongside supplied mode banners', () => {
     const html = gameplayHub();
-    expect(html.match(/class="dungeon-banner"/g)).toHaveLength(7);
+    expect(html.match(/class="dungeon-banner"/g)).toHaveLength(9);
     expect(html.match(/BANNER ART COMING LATER/g)).toHaveLength(5);
     for (const element of elements.filter((entry) => !dungeonArt[entry.id])) {
       expect(html).toContain(`data-dungeon="${element.id}"`);

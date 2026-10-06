@@ -1,22 +1,23 @@
 import { enemies, enemyIds, formatStat } from './combat';
-import { elements, dungeonStageCount, type ElementId, type InfusionModeId } from './activities';
+import { elements, dungeonStageCount, infusionModes, currencyModes, type ElementId, type InfusionModeId } from './activities';
 import { dungeonEncounter, materialLoot } from './dungeons';
 import { infusionEncounter, infusionLoot, infusionElements } from './infusions';
-import { fractalisDrop } from './loot-random';
+import { fractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from './loot-random';
 
 export interface Creature {
   id: string;
   name: string;
   art?: string;
   area: string;
-  element?: ElementId;
+  element: ElementId;
+  dungeonElement?: ElementId;
   mode?: InfusionModeId;
   stages: number[];
 }
 
 function catalog(): Creature[] {
   const result: Creature[] = enemyIds.map((id) => ({ id: `adventure:${id}`, name: enemies[id].name,
-    art: enemies[id].art, area: 'Adventure', stages: [] }));
+    art: enemies[id].art, element: enemies[id].element, area: 'Adventure', stages: [] }));
   for (const element of elements) {
     for (let stage = 1; stage <= dungeonStageCount; stage++) {
       const encounter = dungeonEncounter(element.id, stage);
@@ -24,17 +25,18 @@ function catalog(): Creature[] {
       const entry = result.find((creature) => creature.id === id);
       if (entry) entry.stages.push(stage);
       else result.push({ id, name: encounter.enemy.name, art: encounter.enemy.art, area: element.dungeon,
-        element: element.id, stages: [stage] });
+        element: element.id, dungeonElement: element.id, stages: [stage] });
     }
   }
-  for (const mode of ['heavens', 'abyss'] as const) {
-    for (let stage = 1; stage <= dungeonStageCount; stage++) {
+  for (const definition of [...infusionModes, ...currencyModes]) {
+    const mode = definition.id;
+    for (let stage = 1; stage <= definition.stages; stage++) {
       const encounter = infusionEncounter(mode, stage);
       const id = `infusion:${mode}:${encounter.tier}`;
       const entry = result.find((creature) => creature.id === id);
       if (entry) entry.stages.push(stage);
       else result.push({ id, name: encounter.enemy.name, art: encounter.enemy.art,
-        area: encounter.name, mode, stages: [stage] });
+        area: encounter.name, element: encounter.enemy.element, mode, stages: [stage] });
     }
   }
   return result;
@@ -52,13 +54,19 @@ export function creatureLoot(creature: Creature, stage?: number): CreatureLoot[]
   getCreature(creature.id);
   if (creature.stages.length && (stage === undefined || !creature.stages.includes(stage))) throw new Error('Choose a stage where this creature appears.');
   if (!creature.stages.length && stage !== undefined && (!Number.isInteger(stage) || stage < 1 || stage > 120)) throw new Error('Choose an Adventure enemy level from 1 to 120.');
-  const level = creature.element && stage !== undefined ? dungeonEncounter(creature.element, stage).level
+  const level = creature.dungeonElement && stage !== undefined ? dungeonEncounter(creature.dungeonElement, stage).level
     : creature.mode && stage !== undefined ? infusionEncounter(creature.mode, stage).level : stage ?? 1;
-  const loot: CreatureLoot[] = [{ id: 'fractalis', ...fractalisDrop(level) }];
-  if (creature.element && stage !== undefined) {
-    loot.push(...materialLoot(creature.element, stage));
+  const loot: CreatureLoot[] = [{ id: 'fractalis', ...(creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level)) }];
+  if (creature.mode === 'treasury') return loot;
+  if (creature.dungeonElement && stage !== undefined) {
+    loot.push(...materialLoot(creature.dungeonElement, stage));
   } else if (creature.mode && stage !== undefined) {
     const pool = infusionLoot(creature.mode, stage);
+    const odds = stagedLycalisOdds(creature.mode, level);
+    loot.push(...odds.filter((outcome) => outcome.amount > 0).map((outcome) => ({
+      id: 'lycalis', minimum: outcome.amount, maximum: outcome.amount, chance: outcome.chance,
+      note: `One independent Lycalis roll per kill; outcomes are mutually exclusive. No Lycalis: ${formatStat(odds[0].chance * 100)}%. Ordinary enemies and bosses use the same odds.`,
+    })));
     loot.push(...pool.specialties);
     const eligibleElements = infusionElements(creature.mode);
     for (const drop of pool.bonuses) for (const element of eligibleElements) loot.push({

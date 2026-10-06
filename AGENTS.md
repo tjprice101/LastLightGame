@@ -11,6 +11,46 @@
 
 ## Project rules
 
+- Canonical character terminology: **Element-Bearer**, **Element-Bearers** and
+  **Owned Element-Bearers** for the player's collection. Never call characters
+  companions in UI, accessibility text, errors, documentation or character art
+  prompts. Only characters are Element-Bearers; captured enemies remain creatures.
+  Use squad member for mixed teams. Internal legacy names,
+  CSS hooks and save keys may remain unchanged for compatibility.
+
+- Phase5/6: optional wallet.capturedCharacters stores distinct
+  capture:<UUID> IDs/creatureId/locked/level/capturedStage/skills; characterLocks protects starter IDs.
+  Storage uncapped, copies start unlocked, manual locks plus squad protection.
+  Keep legacy starter IDs/progress/gear untouched.20% Heaven/Abyss per-kill
+  captures commit with ordinary rewards/discovery/receipt in one write, using
+  separate RNG. Treasury/Sanctuary also grant20% captures. No Adventure/elemental-dungeon captures. Captures retain defeated
+  level/skills, can independently level to120, never evolve, and use ordinary
+  stats times .65+.35*tier/5, never boss stats. Manual shared-Gauge skills retain
+  enemy intervals as cooldowns; missing slots unavailable. Mixed/all-captured
+  squads allow duplicate species, distinct IDs/max3; all run surfaces snapshot
+  copies/gear. Fixed-form stars1-6 supersede the old rare-character reservation.
+  Legacy metadata-free copies use first authored form stage without load writes.
+  See docs/character-instances.md and docs/dungeons-and-captures.md.
+
+- Phase4 Archives groups Character, Conduit and discovery-gated Creature
+  galleries. Character Archive lists every evolution individually; unreached
+  forms/unowned characters are silhouettes, reached forms reveal in color.
+  Filters combine element/rarity/ownership/form discovery/stars.
+  Starter current form shows actual equipped stats; others are level0 previews.
+  Character gallery has18 starter evolutions plus24 fixed captured forms.
+  Captured portraits reveal only on owning that form, not Creature discovery.
+  Galleries live under Inventory; old glossary page is a Creature-gallery alias.
+  Every combatant/creature has a canonical combat element. Adventure:
+  Goblin Efflorescent, Imp Infernic, Golem Tectonic. Dawnthorn Tranquilitic,
+  Wraththorn Chaotic; elemental dungeon enemies match their dungeon.
+  Creature.dungeonElement, not combat element, routes material loot.
+  Infusion five-element pools remain unchanged. No new affinity multipliers.
+  See docs/archives-and-elements.md and Art/Element Emblems.md.
+- Game-wide rarity art: Common->Omnic becomes less cutesy and more epic,
+  formidable, majestic and awe-inspiring in design and prompt language.
+  Keep the shared compact anime/cel renderer and species identity; do not
+  substitute realism or cinematic splash framing. Rarity is separate from
+  stars. Follow the shared prompt guide's rarity tone ladder for future art.
 - Last Light is an original gacha game inspired by Brave Frontier. Do not copy
   its characters, assets, story, code, names, or proprietary content.
 - Separate confirmed requirements, proposed designs, open questions, and
@@ -21,16 +61,15 @@
 - Inspect the workspace before trusting handoff status. Opening flow and
   [Adventure](docs/free-battle.md), all ten elemental material dungeons and
   [level/evolution transactions](docs/units-and-progression.md) are implemented.
-- Starter selection offers fire, water, and grass. Adventure uses only the saved
-  starter, including after restart; do not auto-grant a team or replace existing saves.
+- Starter selection offers fire, water, and grass. Adventure uses the saved
+  squad, including captured leaders; do not auto-grant a team or replace saves.
 - Each Adventure entry starts at wave 1; Settings retains the run, quitting does not.
   Enemy level follows wave up to120; stats accelerate from double prior initial
   growth. All enemy curves use src/content/stat-growth.ts with200k ordinary/
   400k bossHP at120. Character G=(1+.03*level)^3*1.45^(evo-1);
   percentages/coefficients use separate boundedP, not HP-scale growth.
-  [Dungeon captures](docs/dungeons-and-captures.md) remain unimplemented.
-  Captures are distinct from characters, Normal only after global Heavy removal,
-  levelable but never evolved; captured Defense eligibility remains open.
+  [Captures](docs/dungeons-and-captures.md) are playable in every activity,
+  acquired in Heaven/Abyss/Crownfall Treasury/Rosethorn Sanctuary; banner awards also create copies.
 - [Gameplay/element framework](docs/gameplay-and-elements.md) is now the activity entry
   point: all ten elemental dungeons and both infusion modes are playable (D-050).
   Five elemental dungeons use prompt-pack enemy names with neutral
@@ -42,12 +81,88 @@
   are the source of truth for rewards and glossary. Costs are unchanged.
   The old Flaming Depths Lv6-55 proposal is
   superseded. Editable first-pass drops/costs live in content/dungeons.ts and
-  content/progression.ts. Creature consumption is deferred, not permanently removed.
+  content/progression.ts. Phase7 creature infusion supplements existing costs:
+  Evo3->4 consumes1 form3+,4->5 consumes2 form4+,5->6 consumes3 form5+ copies
+  from the element's infusion mode, NOT the creature's combat element.
+  Explicit selections only; locked/squad/any-Conduit-equipped copies protected.
+  Shared evolutionFodderOptions and upgradeCharacter reread/validate copies,
+  then commit evolution/costs/removal in one write. No retroactive save charges.
+  See docs/evolution-fodder.md.
+- Phase8: Heaven/Abyss per-kill Lycalis probabilities linearly interpolate
+  Lv80 none/1/2/3 =90/8/1.5/0.5% to Lv120 =75/10/10/5%, same ordinary/boss.
+  Independent lycalisSeed preserves other RNG; premium rewards save atomically
+  with materials/captures/receipts. No Adventure/elemental-dungeon premium drops.
+  Standard Banner has fifteen real outcomes: first three Heaven/Abyss/Treasury/Sanctuary
+  forms, plus three5-star EBs.5-star tier1% TOTAL/equal entries; creatures
+  split remaining99%50:30:17/equal within tier. No4/6-star placeholders.
+  Future6-star EB tier gets0.1% total only when real entries exist.
+  Phase9 activates10-Lycalis draws: one atomic write for cost/reward/pity.
+  Owned EB result grants infusion:treasury:5 at Lv50 flat, acquisition
+  banner-duplicate, Stage22 kit; ordinary creature rewards use first authored
+  form stage level. No automatic equipping. See docs/summoning-and-economy.md.
+- Banner pity: independent per-banner200 highest-star /500 unowned-highest-star
+  counters. Natural highest-star resets200; new highest-star resets both.
+  Duplicate does not reset500 except its due all-owned fallback.500 takes
+  priority if both due; equal eligible guarantee odds. All-owned500 awards
+  ordinary highest-star duplicate conversion and resets both. Current highest5,
+  future6 only when authored. Optional wallet.bannerPity.standard validated;
+  missing legacy values read as0 without writes/retroactive counts.
+  resolveBannerPull is pure: summonCharacter atomically saves cost,
+  reward/duplicate conversion and counters together; failed/rejected draws
+  never advance.
+- Summoning visual contract:16:9 full-bleed Omnic-tier artpiece per real banner,
+  overall theme/identity, no reward portrait grid. Art/Summoning Banners.md
+  contains Standard prompt/export/intake; null artwork means neutral pending
+  panel, never unrelated images/missing PNG requests. Drop-rate rows only
+  name, awarded rarity/star value and rate. No unit art/roles/stats/lore.
+  Omnic art is not an acquisition rarity promise. Detailed rules stay in an
+  accessible disclosure; preserve exact odds/pity and atomic draw behavior.
+- Phase9 Crownfall Treasury:25 stages65->120, Luminous crowned gemstone slimes,
+  six fixed forms, every fifth stage boss. Currency-only mission loot per kill
+ 100-200 at65 to1,000-2,000 at120 using quadratic minimum, same boss/ordinary.
+  No ordinary second Fractalis roll/material/Lycalis/clear bonus.20% captures
+  retain defeated level/kit; separate RNG. Use per-mode stage counts everywhere.
+  Sale prices Common->Omnic1k/3k/10k/30k/100k/300k, independent of level/source.
+  sellTreasuryCreature rereads exact UUID and rejects locked/squad/Conduit
+  protection, commits currency/removal together. Treasury and Sanctuary copies sell.
+  Final duplicate reward at50 has explicit validated provenance permitting
+  below-mission level; do not lower real captures or use highest-account level.
+  Art is pending: six cutouts/mode header/arena prompts in Art/Crownfall Treasury.md.
+  No missing PNGs/unrelated art; see docs/crownfall-treasury.md.
+- Phase10 Rosethorn Sanctuary:25 stages65->120, six Tranquilitic divine/regal
+  flaming-wisp forms, every fifth stage boss,20% captures. One independent
+  Lycalis roll:50% chance of1 at65 ->80% chance of5 at120; chance linear,
+  quantity round(1+4*(level-65)/55). Ordinary Fractalis, no materials/clear bonus.
+  Boss/ordinary payouts match. Sanctuary Common->Omnic sales give both
+  Fractalis100/300/1k/3k/10k/30k and Lycalis1/2/3/5/7/10; fixed form, not level.
+  Exact odds/prices are developer tuning under owner-delegated balance.
+  creatureSaleOffer/sellCurrencyCreature share locked/squad/Conduit protections
+  with Treasury; both balances/removal save in one validated write, no partial
+  award on failure/overflow. Treasury-only wrappers preserve old callers.
+  Sanctuary copies cannot satisfy Heaven/Abyss evolution fodder. Only Treasury
+  final duplicate-EB copies allow acquisition=banner-duplicate/Lv50.
+  First three wisps join Standard's equally split creature tiers; pity,10 cost,
+  1% five-star EB tier and duplicate reward unchanged. See docs/rosethorn-sanctuary.md.
+  Art/Rosethorn Sanctuary.md has six cutouts/3:1 header/16:9 arena prompts.
+- Conduit Store is a submenu under Inventory, reachable from Home/Inventory/
+  Character equipment. Artifacts are renamed Conduits: ancient-war mechanisms,
+  some powered by Elemental Light. Catalog in content/conduits.ts; optional
+  wallet.conduits holds saved copy counts. Purchases commit funds/copy in one
+  write. Phase3 equips eight ordinary slots per owned character; one copy unlocks
+  all characters, one name per character, no consumption. Master reserved.
+  Optional wallet.conduitEquipment uses exactly8 IDs/nulls; reject duplicates/
+  unowned content. resolveFighter applies effective stats; run snapshots preserve
+  equipment through Continue/replay/Settings. Never reread menu gear mid-run.
+  Current five designs are Common only. Higher rarities progressively unfold/
+  restore into elemental masterpieces, Omnic fully completed/reborn with
+  prismatic swirling energy and shine. Preserve core identity/chibi renderer;
+  bounded opaque energy in cutouts, reviewed runtime glow separate from matte.
+  Art direction does not establish Conduit evolution mechanics or balance.
 - Full-concept sanctuary uses seven bottom destinations: Home, Character,
   Gameplay, Events, Inventory, Squad and Summon. Character selects owned IDs;
   Squad saves 1-3 distinct owned IDs, leader first, starter removable. Summon
   costs10 Lycalis, equal odds among unowned existing IDs, disabled when complete.
-  New companions start Lv0/Evo1/weapon0 and unequipped. Do not invent extra
+  New Element-Bearers start Lv0/Evo1/weapon0 and unequipped. Do not invent extra
   Lycalis income: First Fracture still pays10 once globally.
   Keep sanctuary CSS isolated from title/selection and immersive battle. Preserve
   character portrait/rail DOM when changing upgrade tabs.
@@ -60,7 +175,7 @@
   protect ivory halos/wings, Shard ribbons and Crest gold. No runtime keying.
   Galvanic green/teal keys are reviewed per image; wider Bloom/Seed/Soul cleanup
   protects Seed painted highlights and Soul facets with foreground masks.
-  Do not auto-grant materials or implement captures.
+  Do not auto-grant materials or extend capture eligibility without approval.
 - Art prompts share the original compact chibi renderer: clean anime contours,
   crisp cel shading, painted non-emissive highlights and jewel-like subject colors.
   Preserve identities/palettes/equipment/species; Heaven/Abyss may escalate
@@ -219,17 +334,21 @@
   of the mode's five elements uniformly, never from the other mode. Saved infusionStages defaults
   empty on oldv2 wallets; weaponRank defaults0 and must survive all transactions.
   Existing costs plus5/10 specialty items for4->5/5->6 and1 per Evo5/6 level.
-  Weapon rankR costs100R Fractalis/5R affinity-bound items, cap10, +2% grown Attack
-  per rank. See content/infusions.ts/progression.ts. Never auto-grant resources.
+  Weapon upgrading is disabled in menus and transactions. Preserve existing
+  ranks and their +2% grown Attack per rank; no refunds/new spending. Stable
+  character tab IDs skip upgrade-2, never shift passive/skill IDs.
+  Starters are fixed5-star; derive Evo1-6 rarity Common->Omnic from progression.
+  Follow docs/roadmap.md active expansion phases, one Standard Banner only.
+  See content/infusions.ts/progression.ts. Never auto-grant resources.
 - Preserve fractional growth for all seven character stats and skill/passive
   potency in content/combat.ts. Use formatStat only at presentation boundaries,
   never to calculate stats. Keep established combat-outcome rounding separate.
   Zero-base stats stay zero; see docs/units-and-progression.md (D-035).
-- Global Inventory contains owned materials only. Character > Artifacts /
-  Equipment owns eight artifact slots plus one Master Artifact per character
-  (D-037). Artifacts buff that character's stats; no artifact definitions,
-  equip transactions or bonus rules are implemented yet. Do not grant bonuses
-  or invent stacking rules from the empty slot preview.
+- Global Inventory separates owned materials and Conduit unlock counts.
+  Character > Conduits / Equipment has eight ordinary slots plus a reserved
+  Master slot. Equipping saved unlocks applies catalog bonuses to that character,
+  no duplicate names per character or consumption. Use shared resolveFighter;
+  preserve gear snapshots across battle Continue/replay.
 - Battle input uses actAndAdvanceTurn: resolve enemy phases while no living ally
   can legally act; support/Defense count. Recovery retains enemy attacks and all
   effects. Never auto-advance stages. Source art directions live in presentation/

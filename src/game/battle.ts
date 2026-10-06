@@ -1,28 +1,34 @@
 import { actionIds, adventureScaling, defenseMode, enemies, formatStat, resolveFighter, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats, type FighterDefinition } from '../content/combat';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { type CharacterProgress } from '../content/progression';
-import { fractalisDrop, rollDrop } from '../content/loot-random';
+import { fractalisDrop, treasuryFractalisDrop, rollDrop, rollStagedLycalis } from '../content/loot-random';
 import { dungeonEncounter, materialDrops, type PlayableDungeon } from '../content/dungeons';
 import { materialName } from '../content/dungeon-art';
 import { infusionEncounter, infusionDrops } from '../content/infusions';
-import { dungeonStageCount, type InfusionModeId } from '../content/activities';
+import { dungeonStageCount, infusionStageCount, type InfusionModeId, type ElementId } from '../content/activities';
 import { enemyGrowth, enemyStat } from '../content/stat-growth';
 import { enemySkills, scheduledEnemySkill, type EnemySkill } from '../content/enemy-skills';
+import { type ConduitSlots, type ConduitLoadouts } from '../content/conduits';
+import { capturedProgress, resolveCapturedFighter, type CapturedCharacter } from './character-instances';
+import { getCreature } from '../content/creatures';
+import { elementAccents } from '../content/dungeon-art';
 
 export interface Combatant {
   id: string;
-  definitionId: StarterId | EnemyId;
+  definitionId: string;
   side: 'ally' | 'enemy';
   name: string;
+  element: ElementId;
   level: number | null;
   evolution?: number;
+  conduits?: ConduitSlots;
   stats: Stats;
   hp: number;
   shield: number;
   shatter: number;
   spent: boolean;
   recoverThrough: number;
-  readyRound: Record<'skill1' | 'skill2', number>;
+  readyRound: Record<'skill1' | 'skill2', number> & { ultimate?: number };
   burn: { damage: number; turns: number };
   weakened: number;
   weakenFraction: number;
@@ -33,6 +39,7 @@ export interface Combatant {
   enemySkills?: EnemySkill[];
   boss?: boolean;
   creatureId?: string;
+  captured?: CapturedCharacter;
 }
 export interface BattleState {
   wave: number;
@@ -40,6 +47,8 @@ export interface BattleState {
   phase: 'player' | 'cleared' | 'defeat';
   seed: number;
   rewardSeed: number;
+  captureSeed?: number;
+  lycalisSeed?: number;
   allies: Combatant[];
   enemies: Combatant[];
   dungeon?: { element: PlayableDungeon; stage: number };
@@ -58,12 +67,14 @@ export interface BattleEvent {
   materials?: Record<string, number>;
   shieldRemaining?: number;
   periodic?: boolean;
+  capture?: { creatureId: string; level: number };
+  lycalis?: number;
 }
 export interface BattleResult { state: BattleState; events: BattleEvent[] }
 
-function combatant(id: string, definitionId: Combatant['definitionId'], name: string, side: Combatant['side'], stats: Stats): Combatant {
+function combatant(id: string, definitionId: Combatant['definitionId'], name: string, side: Combatant['side'], stats: Stats, element: ElementId): Combatant {
   return {
-    id, definitionId, name, side, level: null, stats: { ...stats }, hp: stats.health, shield: 0,
+    id, definitionId, name, element, side, level: null, stats: { ...stats }, hp: stats.health, shield: 0,
     shatter: shatterGauge.starting, spent: false, recoverThrough: 0,
     readyRound: { skill1: 1, skill2: 1 }, burn: { damage: 0, turns: 0 }, weakened: 0, weakenFraction: 0.25, kit: null, defending: false,
   };
@@ -79,7 +90,7 @@ function spawnWave(wave: number): Combatant[] {
       defense: enemyStat(definition.stats.defense, enemyGrowth.defense, level, 1, adventureScaling.defensePerWave / definition.stats.defense),
       damage: enemyStat(definition.stats.damage, enemyGrowth.damage, level, 1, adventureScaling.damagePerWave),
       crit: definition.stats.crit,
-    });
+    }, definition.element);
     unit.level = level;
     unit.creatureId = `adventure:${id}`;
     const strike = id === 'goblin' ? 'Wildwood Ambush' : id === 'imp' ? 'Cinder Mischief' : 'Faultline Crush';
@@ -88,21 +99,38 @@ function spawnWave(wave: number): Combatant[] {
   });
 }
 
-export function createBattle(seed = 1729, roster: readonly StarterId[] = ['ember'], progress: Partial<Record<StarterId, CharacterProgress>> = {}): BattleState {
+export function createBattle(seed = 1729, roster: readonly string[] = ['ember'], progress: Partial<Record<StarterId, CharacterProgress>> = {}, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = []): BattleState {
   if (!Number.isInteger(seed) || seed < 1 || seed > 0xffffffff) throw new Error('Battle seed must be a nonzero uint32.');
-  if (!roster.length || roster.length > 3 || new Set(roster).size !== roster.length || !roster.every(isStarterId)) {
+  if (!roster.length || roster.length > 3 || new Set(roster).size !== roster.length || !roster.every((id) => isStarterId(id) || captures.some((copy) => copy.instanceId === id))) {
     throw new Error('Battle roster requires distinct valid starters.');
   }
 
   return {
-    wave: 1, round: 1, phase: 'player', seed, rewardSeed: seed,
+    wave: 1, round: 1, phase: 'player', seed, rewardSeed: seed, captureSeed: seed,
     allies: roster.map((id) => {
+      if (!isStarterId(id)) {
+        const copy = captures.find((entry) => entry.instanceId === id);
+        if (!copy) throw new Error('Captured squad instance is missing.');
+        const creature = getCreature(copy.creatureId);
+        const kit = resolveCapturedFighter(copy, equipment[id]);
+        const unit = combatant(id, creature.id, `${creature.name} / Copy ${captures.findIndex((entry) => entry.instanceId === id) + 1}`, 'ally', kit.stats, creature.element);
+        unit.kit = kit;
+        unit.level = capturedProgress(copy).level;
+        unit.evolution = capturedProgress(copy).tier + 1;
+        unit.captured = structuredClone(copy);
+        unit.creatureId = creature.id;
+        unit.art = creature.art;
+        unit.color = elementAccents[creature.element];
+        if (equipment[id]) unit.conduits = [...equipment[id]];
+        return unit;
+      }
       const starter = getStarter(id);
-      const kit = resolveFighter(id, progress[id]);
-      const unit = combatant(starter.id, starter.id, starter.name, 'ally', kit.stats);
+      const kit = resolveFighter(id, progress[id], equipment[id]);
+      const unit = combatant(starter.id, starter.id, starter.name, 'ally', kit.stats, starter.elementId);
       unit.kit = kit;
       unit.level = progress[id]?.level ?? null;
       unit.evolution = progress[id]?.evolution ?? 1;
+      if (equipment[id]) unit.conduits = [...equipment[id]];
       return unit;
     }),
     enemies: spawnWave(1),
@@ -110,13 +138,13 @@ export function createBattle(seed = 1729, roster: readonly StarterId[] = ['ember
 }
 
 export function createDungeonBattle(element: PlayableDungeon, stage: number, seed: number, starter: StarterId, progress: CharacterProgress,
-  roster: readonly StarterId[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }): BattleState {
+  roster: readonly string[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = []): BattleState {
   const encounter = dungeonEncounter(element, stage);
-  const state = createBattle(seed, roster, teamProgress);
+  const state = createBattle(seed, roster, teamProgress, equipment, captures);
   state.wave = stage;
   state.dungeon = { element, stage };
   state.enemies = Array.from({ length: encounter.boss ? 1 : 2 }, (_, index) => {
-    const unit = combatant(`dungeon-${element}-${stage}-${index}`, 'goblin', encounter.enemy.name, 'enemy', encounter.stats);
+    const unit = combatant(`dungeon-${element}-${stage}-${index}`, 'goblin', encounter.enemy.name, 'enemy', encounter.stats, element);
     unit.level = encounter.level;
     unit.creatureId = `dungeon:${element}:${encounter.tier}`;
     unit.art = encounter.enemy.art;
@@ -138,13 +166,13 @@ function roll(state: BattleState): number {
 }
 
 export function createInfusionBattle(mode: InfusionModeId, stage: number, seed: number, starter: StarterId, progress: CharacterProgress,
-  roster: readonly StarterId[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }): BattleState {
+  roster: readonly string[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = []): BattleState {
   const encounter = infusionEncounter(mode, stage);
-  const state = createBattle(seed, roster, teamProgress);
+  const state = createBattle(seed, roster, teamProgress, equipment, captures);
   state.wave = stage;
   state.infusion = { mode, stage };
   state.enemies = Array.from({ length: encounter.boss ? 1 : 2 }, (_, index) => {
-    const unit = combatant(`infusion-${mode}-${stage}-${index}`, 'goblin', encounter.enemy.name, 'enemy', encounter.stats);
+    const unit = combatant(`infusion-${mode}-${stage}-${index}`, 'goblin', encounter.enemy.name, 'enemy', encounter.stats, encounter.enemy.element);
     unit.level = encounter.level;
     unit.creatureId = `infusion:${mode}:${encounter.tier}`;
     unit.art = encounter.enemy.art;
@@ -166,9 +194,11 @@ export function damageAmount(base: number, multiplier: number, defense: number, 
 export function actionUnavailable(state: BattleState, actor: Combatant, action: ActionId): string | null {
   if (state.phase !== 'player') return 'This wave is not accepting actions.';
   if (actor.side !== 'ally' || !state.allies.some((ally) => ally.id === actor.id)) return 'Choose a team member.';
+  if (action !== 'light' && action !== 'defend' && actor.kit?.unavailableActions?.includes(action)) return 'This captured form does not have this ability.';
   if (actor.hp <= 0) return 'This character is defeated.';
   if (actor.spent) return 'This character has already acted this turn.';
   if (actor.recoverThrough >= state.round) return 'Recovering this turn after Last Flare.';
+  if (action === 'ultimate' && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
   if (actor.shatter < shatterGauge.costs[action]) return `Requires ${shatterGauge.costs[action]} Shatter Gauge.`;
   if ((action === 'skill1' || action === 'skill2') && actor.readyRound[action] > state.round) {
     return `Ready on turn ${actor.readyRound[action]}.`;
@@ -233,15 +263,41 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
       return state.rewardSeed / 0x100000000;
     };
     if (enemy.level === null) throw new Error('Enemy reward level is missing.');
-    const amount = rollDrop(fractalisDrop(enemy.level), rewardRoll);
+    const amount = rollDrop(state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level), rewardRoll);
     if (amount === undefined) throw new Error('Guaranteed Fractalis reward did not drop.');
     const materials = state.infusion ? infusionDrops(state.infusion.mode, state.infusion.stage, rewardRoll)
       : state.dungeon ? materialDrops(state.dungeon.element, state.dungeon.stage, rewardRoll) : undefined;
     const materialText = materials ? Object.entries(materials).map(([id, quantity]) => `${quantity} ${materialName(id)}`).join(', ') : '';
+    let capture: BattleEvent['capture'];
+    let lycalis = 0;
+    if (state.infusion && enemy.creatureId) {
+      let seed = state.captureSeed ?? state.seed;
+      seed ^= seed << 13;
+      seed ^= seed >>> 17;
+      seed ^= seed << 5;
+      state.captureSeed = seed >>> 0;
+      if (captureSucceeds(state.captureSeed / 0x100000000)) capture = { creatureId: enemy.creatureId, level: enemy.level };
+      if (state.infusion.mode !== 'treasury') lycalis = rollStagedLycalis(state.infusion.mode, enemy.level, () => {
+        let premiumSeed = state.lycalisSeed ?? (((previous.seed ^ 0x9e3779b9) >>> 0) || 1);
+        premiumSeed ^= premiumSeed << 13;
+        premiumSeed ^= premiumSeed >>> 17;
+        premiumSeed ^= premiumSeed << 5;
+        state.lycalisSeed = premiumSeed >>> 0;
+        return state.lycalisSeed / 0x100000000;
+      });
+    }
     events.push({ kind: 'reward', source: enemy.id, target: '', amount, critical: false,
       ...(materials ? { materials } : {}),
-      message: `${enemy.name} drops +${amount} Fractalis${materials ? ` and ${materialText}` : ''}.` });
+      ...(capture ? { capture } : {}),
+      ...(lycalis ? { lycalis } : {}),
+      message: `${enemy.name} drops +${amount} Fractalis${materialText ? ` and ${materialText}` : ''}${lycalis ? ` and +${lycalis} Lycalis` : ''}${capture ? ` and a captured ${enemy.name} creature` : ''}.` });
   }
+
+}
+
+export function captureSucceeds(value: number): boolean {
+  if (!Number.isFinite(value) || value < 0 || value >= 1) throw new Error('Capture roll must be in [0, 1).');
+  return value < .2;
 }
 
 export function act(previous: BattleState, actorId: string, action: ActionId, targetId: string): BattleResult {
@@ -250,14 +306,13 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   if (!original) throw new Error('Unknown team member.');
   const reason = actionUnavailable(previous, original, action);
   if (reason) throw new Error(reason);
-  const support = action === 'defend' || (action === 'skill2' && actorId !== 'ember');
+  const support = action === 'defend' || (action === 'skill2' && (original.definitionId === 'tide' || original.definitionId === 'sprout') && !original.captured);
   if (!support && !previous.enemies.some((enemy) => enemy.id === targetId && enemy.hp > 0)) {
     throw new Error('Choose a living enemy target.');
   }
   const state = structuredClone(previous);
   const actor = state.allies.find((unit) => unit.id === actorId);
   if (!actor) throw new Error('Team state is inconsistent.');
-  if (!isStarterId(actor.definitionId)) throw new Error('Invalid ally definition.');
   const definition = actor.kit;
   if (!definition) throw new Error('Ally combat kit is missing.');
   const strength = action === 'light' || action === 'defend' ? null : definition.abilities[action].strength;
@@ -275,9 +330,10 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   actor.shatter -= shatterGauge.costs[action];
   gainShatter(actor, shatterGauge.gains[action], events);
   if (action === 'skill1' || action === 'skill2') actor.readyRound[action] = state.round + definition.abilities[action].cooldown;
+  if (action === 'ultimate' && actor.captured) actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
 
   if (!support) {
-    const all = action === 'ultimate' || (action === 'skill2' && actorId === 'ember');
+    const all = !actor.captured && (action === 'ultimate' || (action === 'skill2' && actor.definitionId === 'ember'));
     const targets = state.enemies.filter((enemy) => enemy.hp > 0 && (all || enemy.id === targetId));
     let multiplier = 1;
     if (strength) {
@@ -387,20 +443,24 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
   const destination = previous.infusion ?? previous.dungeon;
   if (!destination) throw new Error('Only staged battles can advance to the next stage.');
   if (previous.phase !== 'cleared') throw new Error('Clear this stage before advancing.');
-  if (previous.wave >= dungeonStageCount) throw new Error('Dungeon complete. Return to Gameplay to replay a stage.');
-  const starter = previous.allies[0]?.definitionId;
+  if (previous.wave >= (previous.infusion ? infusionStageCount(previous.infusion.mode) : dungeonStageCount)) throw new Error('Dungeon complete. Return to Gameplay to replay a stage.');
+  const starter = previous.allies.find((ally) => !ally.captured)?.definitionId ?? 'ember';
   if (!isStarterId(starter)) throw new Error('Dungeon starter is missing.');
   const roster = previous.allies.map((ally) => {
-    if (!isStarterId(ally.definitionId)) throw new Error('Continuing ally definition is missing.');
-    return ally.definitionId;
+    return ally.id;
   });
   const teamProgress = 'level' in progress ? { [starter]: progress } : progress;
-  for (const id of roster) if (!teamProgress[id]) throw new Error('Continuing character progress is missing.');
-  const leaderProgress = teamProgress[starter];
+  for (const id of roster) if (isStarterId(id) && !teamProgress[id]) throw new Error('Continuing character progress is missing.');
+  const leaderProgress = teamProgress[starter] ?? (previous.allies.every((ally) => ally.captured) ? { level: 0, evolution: 1 } : undefined);
   if (!leaderProgress) throw new Error('Continuing leader progress is missing.');
+  const equipment: ConduitLoadouts = {};
+  for (const ally of previous.allies) {
+    if (ally.conduits) equipment[ally.id] = [...ally.conduits];
+  }
+  const captures = previous.allies.flatMap((ally) => ally.captured ? [ally.captured] : []);
   const state = 'mode' in destination
-    ? createInfusionBattle(destination.mode, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress)
-    : createDungeonBattle(destination.element, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress);
+    ? createInfusionBattle(destination.mode, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures)
+    : createDungeonBattle(destination.element, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures);
   for (const ally of state.allies) {
     const prior = previous.allies.find((unit) => unit.id === ally.id);
     if (!prior) throw new Error('Continuing character is missing from the previous encounter.');

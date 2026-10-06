@@ -26,7 +26,19 @@ export const infusionModes = [
   { id: 'heavens', name: 'Soar to Heaven', energy: 'Light', enemyTheme: 'Dawnthorn Slime evolution line', stages: dungeonStageCount, startingLevel: 80, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
   { id: 'abyss', name: 'Delve into the Abyss', energy: 'Chaotic', enemyTheme: 'Wraththorn Slime evolution line', stages: dungeonStageCount, startingLevel: 80, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
 ] as const;
-export type InfusionModeId = (typeof infusionModes)[number]['id'];
+export const currencyModes = [
+  { id: 'treasury', name: 'Crownfall Treasury', stages: 25, startingLevel: 65, maximumLevel: 120, enemyTiers: 6 },
+  { id: 'sanctuary', name: 'Rosethorn Sanctuary', stages: 25, startingLevel: 65, maximumLevel: 120, enemyTiers: 6 },
+] as const;
+export type InfusionModeId = (typeof infusionModes)[number]['id'] | (typeof currencyModes)[number]['id'];
+export function isCurrencyMode(mode: InfusionModeId): boolean {
+  return currencyModes.some((entry) => entry.id === mode);
+}
+export function infusionStageCount(mode: InfusionModeId): number {
+  const definition = [...infusionModes, ...currencyModes].find((entry) => entry.id === mode);
+  if (!definition) throw new Error('Unknown staged creature mode.');
+  return definition.stages;
+}
 
 export function getElement(id: ElementId) {
   const element = elements.find((entry) => entry.id === id);
@@ -58,7 +70,9 @@ export function evolutionRequirement(elementId: ElementId, from: number) {
   if (!recipe) throw new Error('Evolution source must be an integer from 1 to 5.');
   return {
     ...recipe, elementId, dungeon: element.dungeon, infusion: element.infusion,
-    requiresFractalis: true, requiresInfusableEnemies: false,
+    requiresFractalis: true, requiresInfusableEnemies: from >= 3,
+    creatureCount: from >= 3 ? from - 2 : 0,
+    minimumCreatureForm: from >= 3 ? from : null,
     quantitiesDefined: true,
   } as const;
 }

@@ -1,0 +1,36 @@
+.character-rating { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; max-width: 100%; margin: 8px 0; font: 600 11px/1.5 "Segoe UI", sans-serif; color: #eee; vertical-align: middle; }
+.star-badge { --star-light: #f9d2aa; --star-mid: #bc794d; --star-dark: #60361f; --star-glow: #cd905b55; display: inline-flex; align-items: center; max-width: 100%; padding: 8px 10px; border: 1px solid #ffffff30; border-radius: 12px; background: linear-gradient(150deg, #39393de8, #101012); box-shadow: inset 0 1px #ffffff20, 0 3px 8px #0005; }
+.star-tier-2 { --star-light: #f3f7ff; --star-mid: #a5afbe; --star-dark: #4b5769; --star-glow: #c0d5f055; }
+.star-tier-3 { --star-light: #fff2b1; --star-mid: #e9b94b; --star-dark: #946323; --star-glow: #ffd76370; }
+.star-tier-4 { --star-light: #efd4ff; --star-mid: #bd82ec; --star-dark: #6a3c9d; --star-glow: #c58aff88; }
+.star-tier-5 { --star-light: #fff; --star-mid: #eef5ff; --star-dark: #8dacc8; --star-glow: #eef8ffb0; }
+.star-tier-6 { --star-light: #fff; --star-mid: #abedff; --star-dark: #ab78df; --star-glow: #d4bdffc0; border-color: #e6d8ff80; box-shadow: inset 0 1px #fff6, 0 0 12px #c5a4ff30; }
+.rating-stars { display: flex; flex-wrap: wrap; gap: 3px; }
+.rating-star { position: relative; display: block; width: 19px; height: 19px; flex: 0 0 19px; filter: drop-shadow(0 1px 1px #000) drop-shadow(0 0 3px var(--star-glow)); }
+.star-face, .star-shine { position: absolute; inset: 0; clip-path: polygon(50% 0%, 62% 34%, 98% 37%, 71% 60%, 80% 96%, 50% 77%, 20% 96%, 29% 60%, 2% 37%, 38% 34%); }
+.star-face { background: linear-gradient(135deg, var(--star-light) 0%, var(--star-mid) 38%, var(--star-light) 48%, var(--star-mid) 57%, var(--star-dark) 100%); }
+.star-shine { background: linear-gradient(115deg, transparent 25%, #fff 48%, transparent 65%); background-size: 300% 100%; background-position: 100% 0; opacity: .45; animation: rating-star-shine 5s ease-in-out infinite; }
+.rating-star:nth-child(2) .star-shine { animation-delay: .15s; }
+.rating-star:nth-child(3) .star-shine { animation-delay: .3s; }
+.rating-star:nth-child(4) .star-shine { animation-delay: .45s; }
+.rating-star:nth-child(5) .star-shine { animation-delay: .6s; }
+.rating-star:nth-child(6) .star-shine { animation-delay: .75s; }
+.star-tier-4 .rating-star, .star-tier-5 .rating-star { filter: drop-shadow(0 1px 1px #000) drop-shadow(0 0 4px var(--star-glow)); }
+.star-tier-6 .rating-star { filter: drop-shadow(0 1px 1px #000) drop-shadow(0 0 5px #e8daff) drop-shadow(0 0 8px #90dfff70); }
+.star-tier-6 .star-face { background: linear-gradient(135deg, #fff 0%, #ffb5d8 18%, #ffe5a0 32%, #b9ffcf 46%, #aff0ff 60%, #c3b2ff 76%, #fff 88%, #df91dd 100%); }
+.rarity-badge { --rarity-metal: #bcbcc3; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 3px; border: 1px solid color-mix(in srgb, var(--rarity-metal) 60%, transparent); border-radius: 18px 8px 8px 18px; background: linear-gradient(140deg, #343438, #141417); box-shadow: inset 0 1px #ffffff15; }
+.rarity-uncommon { --rarity-metal: #9dd5aa; }
+.rarity-rare { --rarity-metal: #92c7ee; }
+.rarity-epic { --rarity-metal: #c8a2f0; }
+.rarity-legendary { --rarity-metal: #edce89; }
+.rarity-omnic { --rarity-metal: #ead7ff; }
+.rarity-medallion { position: relative; display: grid; place-items: center; width: 28px; height: 28px; flex: 0 0 28px; border: 2px solid var(--rarity-metal); border-radius: 50%; background: radial-gradient(circle at 30% 20%, #fff8, transparent 50%), linear-gradient(145deg, #50505a, #16161c); box-shadow: inset 0 0 0 2px #111b, 0 2px 4px #0008; color: var(--rarity-metal); }
+.rarity-medallion::before { content: ""; position: absolute; inset: 5px; border: 1px solid var(--rarity-metal); transform: rotate(45deg); opacity: .45; }
+.rarity-medallion > span { position: relative; font: 700 12px Georgia, serif; text-shadow: 0 1px 2px #000; }
+.rarity-label { color: var(--rarity-metal); letter-spacing: .03em; }
+.rarity-omnic .rarity-medallion { background: linear-gradient(135deg, #e9adc8, #d6d5a8, #a4ccd1, #b3a0d5); color: #fff; }
+.character-stat-rating { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 14px; }
+.character-stat-rating > strong { font: 600 12px "Segoe UI", sans-serif; color: #c8c8cf; }
+@keyframes rating-star-shine { 0%, 55% { background-position: 100% 0; } 85%, 100% { background-position: 0% 0; } }
+html[data-motion="reduced"] .star-shine { animation: none; background-position: 50% 0; opacity: .3; }
+@media (prefers-reduced-motion: reduce) { .star-shine { animation: none; background-position: 50% 0; opacity: .3; } }

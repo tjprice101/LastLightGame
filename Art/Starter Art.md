@@ -2,7 +2,7 @@
 
 **Cutout background rule:** [Solid-color contract](cutout-background-contract.md). Subject identity, design and elemental colors come first. End the prompt with a short plain solid, unlit background instruction; No glows or glowing visual effects: use opaque solid-color elemental lines, ribbons, rings and shapes with crisp edges; painted highlights are non-emissive. Never recolor the subject to suit the background. Arenas and banners remain scenery.
 
-Six copy/paste Midjourney prompts: three base-form companions and three basic
+Six copy/paste Midjourney prompts: three base-form Element-Bearers and three basic
 mythological enemies. These extend the
 [elemental character art guide](midjourney-character-style-prompt.md); that guide
 remains the source of truth for the rendering style.
@@ -34,7 +34,7 @@ integrated into the six-form progression, with caps 30 / 45 / 60 / 75 / 90 / 105
 - Text prompts alone cannot guarantee an exact match. Inspect generated results
   beside approved earlier artwork before accepting them.
 
-## Starter companions
+## Starter Element-Bearers
 
 ### 1. Female Fire Starter - Greatsword Beginner
 

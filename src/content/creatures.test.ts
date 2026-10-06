@@ -9,6 +9,7 @@ import { sanctuaryHeader, isMenuPage } from '../presentation/sanctuary';
 import { homeHub } from '../presentation/hub';
 import { starters } from './starters';
 import { elements } from './activities';
+import { nextWave, nextStage } from '../game/battle';
 
 function storage(): ProfileStorage {
   const data = new Map<string, string>();
@@ -16,6 +17,35 @@ function storage(): ProfileStorage {
 }
 
 describe('saved creature discoveries and glossary', () => {
+  it('assigns confirmed combat elements to every enemy and preserves them across runs', () => {
+    const adventure = createBattle();
+    expect(adventure.enemies.map((enemy) => enemy.element)).toEqual(['efflorescent', 'infernic', 'tectonic']);
+    expect(adventure.allies[0].element).toBe('infernic');
+    adventure.phase = 'cleared';
+    expect(nextWave(adventure).state.enemies.map((enemy) => enemy.element)).toEqual(['efflorescent', 'infernic', 'tectonic']);
+    for (const element of playableDungeons) for (let stage = 1; stage <= 35; stage++) {
+      const state = createDungeonBattle(element, stage, 1729, 'ember', { level: 0, evolution: 1 });
+      for (const enemy of state.enemies) {
+        expect(enemy.element).toBe(element);
+        expect(getCreature(enemy.creatureId!).element).toBe(enemy.element);
+      }
+    }
+    for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= 35; stage++) {
+      const state = createInfusionBattle(mode, stage, 1729, 'ember', { level: 0, evolution: 1 });
+      for (const enemy of state.enemies) {
+        expect(enemy.element).toBe(mode === 'heavens' ? 'tranquilitic' : 'chaotic');
+        expect(getCreature(enemy.creatureId!).element).toBe(enemy.element);
+        expect(getCreature(enemy.creatureId!).dungeonElement).toBeUndefined();
+      }
+      if (stage < 35) {
+        state.phase = 'cleared';
+        expect(nextStage(state, { level: 0, evolution: 1 }).state.enemies[0].element).toBe(state.enemies[0].element);
+      }
+    }
+    for (const creature of creatures) expect(elements.some((element) => element.id === creature.element)).toBe(true);
+    expect(creatureLoot(getCreature('adventure:imp'), 120)).toEqual([{ id: 'fractalis', minimum: 15, maximum: 30, chance: 1 }]);
+  });
+
   it('catalogs every Adventure enemy and every authored dungeon/infusion form with stable identities', () => {
     expect(new Set(creatures.map((entry) => entry.id)).size).toBe(creatures.length);
     for (const enemy of createBattle().enemies) expect(getCreature(enemy.creatureId!).name).toBe(enemy.name);
@@ -84,8 +114,8 @@ describe('saved creature discoveries and glossary', () => {
     expect(html).not.toContain('Drop pool and chances');
     expect(html).not.toContain('Per-enemy loot');
     expect(isMenuPage('glossary')).toBe(true);
-    expect(sanctuaryHeader('glossary', 0, 0)).toContain('Creature Glossary');
-    expect(homeHub(starters[0], false)).toContain('data-page="glossary"');
+    expect(sanctuaryHeader('glossary', 0, 0)).toContain('Archives');
+    expect(homeHub(starters[0], false)).toContain('data-page="archives"');
     expect(creatureGlossary(null)).toContain('discoveries unavailable');
     const account = emptyAccount();
     account.creatures['dungeon:tectonic:0'] = { defeated: false };
@@ -95,9 +125,9 @@ describe('saved creature discoveries and glossary', () => {
   it('reports real stage gates and per-item probabilities, including uniform infusion elements', () => {
     const adventure = creatureLoot(getCreature('adventure:goblin'));
     expect(adventure).toEqual([{ id: 'fractalis', minimum: 5, maximum: 10, chance: 1 }]);
-    for (const creature of creatures.filter((entry) => entry.element)) for (const stage of creature.stages) {
+    for (const creature of creatures.filter((entry) => entry.dungeonElement)) for (const stage of creature.stages) {
       const pool = creatureLoot(creature, stage);
-      expect(pool.slice(1)).toEqual(materialLoot(creature.element!, stage));
+      expect(pool.slice(1)).toEqual(materialLoot(creature.dungeonElement!, stage));
     }
     const final = creatureLoot(getCreature('infusion:heavens:5'), 35);
     expect(final.find((entry) => entry.id === 'heavens-level')).toMatchObject({ minimum: 3, maximum: 6, chance: 1 });

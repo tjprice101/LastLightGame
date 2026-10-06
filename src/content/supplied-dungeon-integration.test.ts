@@ -42,7 +42,7 @@ describe.each([
   });
 
   it('registers matching material icons and stage-specific glossary drop chances', () => {
-    const catalog = creatures.filter((creature) => creature.element === element);
+    const catalog = creatures.filter((creature) => creature.dungeonElement === element);
     expect(catalog).toHaveLength(8);
     for (const creature of catalog) {
       expect(creature.art).toBeDefined();

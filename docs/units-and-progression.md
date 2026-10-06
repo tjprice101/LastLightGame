@@ -1,20 +1,55 @@
 # Units and progression
 
+## Conduit terminology and current scope
+
+The owner renamed Artifacts to **Conduits**: mechanisms hidden during an ancient
+war, some powered by Elemental Light. Character equipment now uses Conduits,
+eight Conduit slots and a separate Master Conduit slot. Older Artifact
+wording below is historical. Store purchases and per-character equipment/buffs
+are implemented. One owned copy unlocks every character; each name can equip
+once per character. Eight ordinary slots active, Master reserved.
+See [catalog and transactions](conduits.md).
+Duplicate captured-copy storage, locks, independent levels/Conduits and playable
+mixed/all-captured squads are implemented in [Phases5/6](character-instances.md).
+
 **Status:** starter leveling and Fracture are executable, persistent transactions.
 All ten elemental dungeons and both specialty modes supply resources. Weapon
-upgrades are executable; creature infusion and artifacts remain deferred.
+upgrades are disabled and removed from menus; previously purchased rank bonuses
+remain effective and survive saves/growth. Creature infusion and Conduit equipment
+are implemented; see [creature infusion](evolution-fodder.md).
 See [opening flow](opening-flow.md). All five supplied evolved portraits per
 starter now map to Evo.2-6, following the owner's six-form approval (D-033).
 
 ## Confirmed progression and equipment structure
 
-The owner confirmed evolution, character levels, weapon upgrades, and separate
+The owner confirmed evolution, character levels, and separate
 upgrades for the unique passive, ability 1, ability 2, and ultimate.
 Ultimate display names must use `Last Flare: <character-specific name>`.
 Adventure's initial names, effects, stats, and formulas were delegated for the
 prototype and are documented separately. Upgrade costs, materials, and exact
 transactions now use an editable first-pass balance below. Stat/skill/passive growth and all six standard level
 caps are confirmed below.
+
+### Stars versus evolution rarity
+
+Infernis, Tizu and Flora have a fixed **5-star** summon rating. Each starts at
+Common rarity, then advances through Uncommon, Rare, Epic, Legendary and Omnic
+at Evo2-6. Star rating does not increase with evolution or imply current summon
+odds. Rarity is derived from form, not saved separately.
+The shared [rating renderer](../src/presentation/character-rating.ts) serves
+selection, Home, Character, roster, Squad, Standard Banner and battle details.
+Combat nameplates stay compact; classification appears in Battle menu.
+Classification uses physical beveled star shapes and an evolution-number rarity
+medallion, including beside Character overview stats. Star tiers progress copper,
+silver, gold, violet, luminous white and prismatic rainbow at1-6 stars; higher
+tiers have stronger glow. A staggered reflective sweep animates in normal motion;
+reduced motion keeps static highlights/glow. Accessible labels announce the star
+count and rarity; decorative shapes are hidden from screen readers.
+
+Weapon names/art remain part of character identity. Weapon spending is rejected
+even if called directly; existing ranks/material holdings are retained, with
+no refund or new spending. Historical weapon price tables are inactive.
+See the [active expansion phases](roadmap.md#active-owner-requested-expansion-phases).
 
 ### Confirmed level and Fracture rules
 
@@ -81,7 +116,7 @@ Tectonic/Efflorescent/Atmospheric; Abyss serves the remaining elements.
 See [mode drops and specialty rules](gameplay-and-elements.md#two-infusion-modes).
 
 Tune [levelCost/evolutionBalance](../src/content/progression.ts), not UI strings.
-[Account transactions](../src/game/account.ts) recheck the saved owned companion,
+[Account transactions](../src/game/account.ts) recheck the saved owned Element-Bearer,
 expected level/form/weapon rank, eligibility and balances, then write all mutations together.
 Insufficient funds, stale progress and storage failures leave the save unchanged.
 The screen displays current/next stats and owned/required resources, asks for
@@ -143,8 +178,9 @@ Home, Character, skill/passive descriptions and battle all use the same resolver
 The current starter lines have six forms (Evo.1-6). Their own elemental dungeon supplies
 Common/Uncommon/Rare/Epic/Legendary/Omnic materials. Approved recipes: 1->2 Common,
 2->3 Common+Uncommon, 3->4 Uncommon+Rare, 4->5 Rare+Epic, 5->6 Epic+Legendary. Each also requires Fractalis
-and mapped special infusion enemies in the long-term design. The first-pass
-quantities above are active; creature consumption is explicitly deferred.
+and, from Evo3->4 onward, explicitly selected captured creatures from the mapped
+mode. Existing quantities above remain active; Phase7 supplements them with
+1/2/3 copies of form3+/4+/5+ respectively. See [selection/protection rules](evolution-fodder.md).
 Omnic uses and exceptional evolution lines remain open.
 See [the owning element/material specification](gameplay-and-elements.md) and
 [typed requirement definitions](../src/content/activities.ts); Character Upgrades
@@ -184,7 +220,7 @@ stages each for Ember Swordsman, Tide Spearbearer, and Sprout Archer.
 Hair, eyes, signature clothing, and weapon type remain recognizable across stages.
 Fire, water, or grass can be chosen as the permanent starter. All three have implemented
 prototype combat kits in [Adventure](free-battle.md), which uses only the saved starter.
-They are not summonable. Six gameplay forms affect progression/stats, and
+They are listed in the active Standard Banner. Six gameplay forms affect progression/stats, and
 all supplied later-form portraits now appear on Home, Character, Squad and in
 battle. Selection stays on the beginner art. Character upgrade tabs and successful
 evolution keep the portrait DOM node mounted; evolution changes its src/alt only.
@@ -198,7 +234,7 @@ The supplied art uses the names Infernis, Tizu, and Flora; stable save IDs remai
 Character progress records now represent ownership by stable ID (`ember`, `tide`,
 `sprout`), not duplicate instances. The original saved starter is normalized to
 Lv.0/Evo.1 ownership when absent, without writing during load. Existing progress
-is preserved. The Character roster selects each owned companion independently;
+is preserved. The Character roster selects each owned Element-Bearer independently;
 its tabs, costs, evolution art and upgrade transactions follow that selection.
 
 Squad saves one to three distinct owned IDs in order. First slot is the leader
@@ -214,16 +250,24 @@ Replay retains the run's progress snapshot and team, with fresh Gauge.
 Squad edits affect the next run; Settings retains the current run.
 See [summoning](summoning-and-economy.md) and [tests](../src/game/squad.test.ts).
 
-Confirmed future exception: dungeon captures are separate from actual characters,
-have Normal attacks only after the global Heavy removal, weaker/squishier stats, and character-level upgrades
-only. They never evolve/Fracture or receive the seven character upgrade paths.
-Captured-creature storage and leveling remain unimplemented.
-Defense eligibility for captured fodder is still undefined. See
-[Dungeons and captures](dungeons-and-captures.md) for requirements and open decisions.
+Heaven/Abyss captures are separate owned instances: retain defeated level/form
+and hostile skills, independently level to120, equip eight ordinary Conduits,
+use Normal/Defense and manual shared-Gauge retained abilities. Missing skills
+are unavailable. No evolution/Fracture or starter upgrade paths. Ordinary stats
+gain a permanent fixed-form multiplier, not boss bonuses; later forms have
+fixed1-6-star ratings. See [capture rules](dungeons-and-captures.md).
 
-Duplicate character instances, selling, consumption, leader bonuses and locking
-remain unapproved. The implemented pool contains only the three existing IDs.
-Equipment slot count/types are confirmed above; detailed equip rules remain open.
+Captured duplicates and manual locks/automatic squad protection are approved.
+Phase7 [creature infusion](evolution-fodder.md) consumes1/2/3 form3+/4+/5+
+creatures for Evo3->4/4->5/5->6 alongside existing costs, using the element's
+mode mapping. Locked/squad/Conduit-equipped copies are protected. Currency-farm
+selling is implemented; leader bonuses remain unimplemented.
+Standard includes the three5-star EBs and the first three forms of Heaven/Abyss/
+Treasury/Sanctuary creatures (15 real outcomes). Draws are active; owned EB
+results award the Omnic Treasury crowned slime at Lv50. Treasury copies sell
+for Fractalis; Sanctuary copies sell for both Fractalis and Lycalis by fixed-form
+rarity, protected when locked/squad-assigned/Conduit-equipped.
+See [Sanctuary rules](rosethorn-sanctuary.md).
 
 ## Progression decisions
 
@@ -246,8 +290,8 @@ materials. Show explicit reasons for unavailable actions.
 
 ## Validation cases
 
-- Unowned-only summons never create duplicate copies; ordered squads and independent
-  progress survive saving and loading.
+- Failed/unaffordable Standard draws never charge or grant; successful draws
+  atomically save cost, reward and pity. Existing EBs/progress remain unchanged.
 - XP boundary behavior and caps match documented tables.
 - Evolution rejects missing prerequisites and invalid form transitions.
 - First Fracture requires level 30 in Tier 1, reaches Tier 2 at level 30, and grants

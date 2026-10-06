@@ -35,7 +35,7 @@ describe('game-specific hub layouts', () => {
     if (starter.id === 'tide') expect(home).toContain('<strong>24</strong>');
   });
   it('offers overview, seven upgrade areas, and inventory with real progression costs', () => {
-    expect(characterTabs).toHaveLength(9);
+    expect(characterTabs).toHaveLength(8);
     for (const tab of characterTabs) {
       expect(isCharacterTab(tab.id)).toBe(true);
       expect(characterHub(starters[0], tab.id)).toContain(`>${tab.label}</h2>`);
@@ -48,8 +48,8 @@ describe('game-specific hub layouts', () => {
     expect(characterHub(starters[0], 'upgrade-0')).toContain('disabled>Evolve');
     expect(characterHub(starters[0], 'upgrade-0')).not.toContain('Costs unset');
     const inventory = characterHub(starters[0], 'equipment');
-    expect(inventory.match(/class="artifact-slot"/g)).toHaveLength(8);
-    expect(inventory).toContain('Master Artifact');
+    expect(inventory.match(/data-conduit-slot=/g)).toHaveLength(8);
+    expect(inventory).toContain('Master Conduit');
     expect(homeHub(starters[0], true)).toContain(starters[0].lore.awakening);
   });
   it.each(starters)('$name uses icons in existing shortcuts without an extra ability strip', (starter) => {
@@ -102,7 +102,7 @@ describe('game-specific hub layouts', () => {
     for (const category of ['Character', 'Growth', 'Combat']) {
       expect(hub).toContain(`class="character-nav-group" aria-label="${category}"`);
     }
-    expect(hub.match(/data-character-tab="/g)).toHaveLength(9);
+    expect(hub.match(/data-character-tab="/g)).toHaveLength(8);
     expect(hub.match(/aria-pressed="true"/g)).toHaveLength(1);
     expect(hub).toContain('class="character-form-title" data-owned-title');
     const overview = characterDetail(starter, 'overview');
@@ -118,8 +118,9 @@ describe('game-specific hub layouts', () => {
       expect(detail.match(/id="upgrade-result"/g)).toHaveLength(1);
       expect(detail.match(/<span><small>/g)).toHaveLength(7);
     }
-    expect(characterDetail(starter, 'upgrade-2')).toContain('data-upgrade="weapon"');
-    expect(characterDetail(starter, 'upgrade-2')).toContain('Required resources');
+    expect(isCharacterTab('upgrade-2')).toBe(false);
+    expect(() => characterDetail(starter, 'upgrade-2')).toThrow('Unknown character upgrade area');
+    expect(characterHub(starter, 'overview')).not.toContain('Weapon upgrade');
     for (const id of ['upgrade-3', 'upgrade-4', 'upgrade-5', 'upgrade-6']) {
       const detail = characterDetail(starter, id);
       expect(detail).toContain('Current effect');
@@ -128,7 +129,7 @@ describe('game-specific hub layouts', () => {
       expect(detail).not.toContain('Costs unset');
     }
     expect(characterDetail(starter, 'equipment')).toContain('Master slot');
-    expect(characterDetail(starter, 'equipment')).toContain('Artifact slots');
+    expect(characterDetail(starter, 'equipment')).toContain('Conduit slots');
   });
   it.each(starters)('$name previews only the next form as a silhouette, without revealing its title', (starter) => {
     for (let evolution = 1; evolution < 6; evolution++) {
@@ -151,7 +152,7 @@ describe('game-specific hub layouts', () => {
     account.materials['infernic-common'] = 20;
     account.characters.ember = { level: 30, evolution: 1 };
     const evolve = characterDetail(starters[0], 'upgrade-0', account);
-    expect(evolve).toContain('data-upgrade="evolve" >Evolve');
+    expect(evolve).toMatch(/data-upgrade="evolve"[^>]*data-upgrade-blocked="false"[^>]*>Evolve/);
     expect(evolve).toContain('20 / 15');
     expect(evolve).toContain('500 / 300');
     expect(evolve).not.toContain('PREVIEW');
@@ -172,10 +173,10 @@ describe('game-specific hub layouts', () => {
     const equipment = characterDetail(starter, 'equipment');
     expect(equipment).toContain(`data-character-equipment="${starter.id}"`);
     expect(equipment).toContain(`${starter.name}'s stats`);
-    expect(equipment).toContain('Master Artifact');
-    expect(equipment.match(/class="artifact-slot"/g)).toHaveLength(8);
+    expect(equipment).toContain('Master Conduit');
+    expect(equipment.match(/data-conduit-slot=/g)).toHaveLength(8);
     expect(equipment).not.toContain('<h2>Materials</h2>');
-    expect(equipment).toContain('No artifact stat bonuses applied');
+    expect(equipment).toContain('each name can be equipped once per character');
     expect(homeHub(starter, false)).not.toContain('data-character-tab="equipment"');
   });
   it('shows fractional growth consistently on Home, Overview and upgrade previews', () => {

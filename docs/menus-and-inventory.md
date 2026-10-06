@@ -1,5 +1,16 @@
 # Menus and inventory
 
+## Conduit Store (Phase2)
+
+Artifact terminology is now **Conduit** throughout the runtime. Home, Inventory
+and Character's Conduits tab link to the Conduit Store. Inventory
+shows saved owned-copy quantities separately from materials; the store stays
+under the Inventory bottom-navigation destination. Each confirmed Fractalis
+purchase grants one Common mechanism atomically. Equipment exposes eight
+immediately saved selectors and effective/baseline stats. One copy unlocks all
+characters, one name per character; Master reserved. Listed buffs apply when
+equipped and run snapshots retain them. See [Conduits](conduits.md).
+
 ## Battle result overlays
 
 Completed waves/stages show **Victory!**, combined earned rewards, optional
@@ -12,25 +23,34 @@ not Victory/reward dialogs. The old unstructured drop feed is removed.
 Totals are actual per-kill awards; opening, dismissing, continuing or quitting
 does not grant rewards again. See [battle details](free-battle.md#victory-defeat-and-turn-overlays).
 
-## Creature Glossary
+## Unified Archives (Phase4)
 
-Home has a Creature Glossary rail button. The catalog includes all97 authored
+Home, Inventory and Character link to one **Archives** submenu with Character,
+Conduit and Creature galleries and separate banner headers. See
+[Archives and elements](archives-and-elements.md) for catalog/ownership details,
+confirmed enemy typing and art prompts.
+
+### Creature Glossary
+
+The Creature gallery catalog includes all97 authored
 enemy forms across Adventure, elemental dungeons and both infusion modes.
 Unseen entries use black silhouettes with no revealed name or loot.
-Encountering an enemy saves its color/name; first defeat unlocks its actual
+Encountering an enemy saves its color/name and reveals its element; first defeat unlocks its actual
 per-enemy pool, quantity range and drop chances. Filter by activity and select
 a stage within the form's range to inspect rarity/material gates.
 Missing artwork remains an explicitly labeled neutral placeholder.
-Discoveries persist in walletv2; old saves start empty, never inventing past kills.
+Discoveries persist in walletv3; old saves start empty, never inventing past kills.
 Large late-game stats use the shared two-decimal formatter; combat keeps precision.
 
 ## Confirmed requirements
 
-- Fire, water, and grass are available as first companions; choose one.
+- Fire, water, and grass are available as first Element-Bearers; choose one.
   Adventure uses only that saved character.
 - **Fractalis** is the main currency; **Lycalis** is the premium currency.
-- Characters support evolution, levels, weapon upgrades, and independent upgrades
+- Characters support evolution, levels, and planned independent upgrades
   for the unique passive, ability 1, ability 2, and ultimate.
+- Weapon upgrades are disabled and removed from all menu navigation. Existing
+  purchased bonuses remain; weapon names/portraits still identify each character.
 - Ultimate names always follow `Last Flare: <character-specific name>`.
 - Each character has eight unique artifact slots and one separate special
   **Master Artifact** slot: nine equipment slots total. Artifacts buff the
@@ -87,9 +107,9 @@ Input remains locked until presentation finishes; disposal cancels animations an
 removes the burst. Defeat, exit, animation errors and retries never revoke or
 duplicate the already-saved loot. Next-stage reports do not award extra items.
 
-Home's main character artwork is an uncluttered centerpiece: up to720px on desktop
-and620px on tablet/mobile, bounded by available width. The square contain-fit
-keeps complete evolved wings, weapons and effects visible without cropping.
+Home's main character artwork is an uncluttered centerpiece: up to480px on desktop,
+360px on tablet and280px on phones, always bounded by available width. The square
+contain-fit keeps complete evolved wings, weapons and effects visible without cropping.
 Team thumbnails, facing and idle pulse are unchanged.
 
 Home intentionally omits passive/ability information and combat-icon shortcuts.
@@ -199,7 +219,8 @@ Home has a left utility rail, a large central unboxed character without decorati
 orbit rings or upgrade shortcuts, and a right-side current-team,
 seven-stat panel with prominent Adventure launch. The only team entry is
 the actual saved squad (one to three members), with the leader's portrait/stats.
-Squad/Summon buttons open the implemented team editor and paid unowned-only pool.
+Squad/Summon buttons open the implemented team editor and active Standard Banner.
+Confirm10-Lycalis draws; text-only outcome table,200/500 pity and saved results.
 Currency chips show actual saved Fractalis and Lycalis balances.
 Tizu's displayed effective defense includes his passive.
 Home, Character Overview, upgrade previews, weapon detail and battle readouts
@@ -247,9 +268,9 @@ arenas until supplied art is registered. These are playable encounters with real
 saved rewards, not preview-only buttons.
 Evolution shows only required own-element material artwork where supplied.
 Character Upgrades shows
-the saved companion's working combat kit and illustration.
-Character has a left area-selector rail, central saved companion, and right detail
-panel: Overview, all seven upgrade paths, and Artifacts / Equipment. Home dock
+the saved Element-Bearer's working combat kit and illustration.
+Character has a left area-selector rail, central saved Element-Bearer, and right detail
+panel: Overview, six upgrade paths (weapon upgrading removed), and Artifacts / Equipment. Home dock
 shortcuts open the corresponding area directly. Area buttons expose their selected
 state and move focus to the detail heading. Settings preserves the selected area.
 Within Character Upgrades, changing areas replaces only the detail panel and updates
@@ -261,14 +282,18 @@ level-cap requirements disable that action with concise guidance. Confirmation
 lists exact spending; cancellation changes nothing. Successful upgrades update
 the detail/progress/currency displays without replacing the portrait or rail.
 Detailed rules are collapsed; no all-rarity art catalog or placeholder cost text
-appears on these panels. Creature costs are deferred in this first pass.
+appears on these panels. Phase7 adds explicit per-copy creature selection
+alongside existing late evolution costs; protected rows show eligibility reasons.
+Permanent confirmation and one atomic save commit evolution/costs/removal.
+After consumption the Character screen refreshes to remove consumed copy cards.
+See [creature infusion](evolution-fodder.md).
 The next evolution is previewed as a solid black silhouette on a neutral light
 backing, without its form title or colors. The owned portrait remains in color;
 successful evolution reveals that form in the existing portrait. Final Evo.6
 shows no next-form preview. This is a visual reveal, not asset-access protection.
 Overview shows the real passive, abilities, Shatter Gauge costs, and cooldowns;
 no mock-up health slider, estimated damage, fake levels, or additional owned roster
-has been implemented. The saved starter remains the only owned companion.
+has been implemented. The saved starter remains the only Owned Element-Bearer.
 Home and Character Overview display all seven stats: Shatter capacity, Health,
 Defense, Attack Damage, Critical Rate, Critical Damage Multiplier and Elemental
 Damage. Battle displays the same stats with current HP/gauge and resolved skills.
@@ -299,12 +324,15 @@ Inventory lists saved material stacks or an honest empty-material state.
 Equipment remains empty. Story mode contains a readable
 starter-specific prologue, not playable battles or a chapter progression system.
 Events is a reserved tab with no active events or timers.
-Character shows an owned-companion picker above the existing upgrade tabs.
+Character shows an owned-Element-Bearer picker above the existing upgrade tabs.
 Squad exposes a required leader and two optional slots; saving validates distinct
-ownership and persists their order. The starter is not locked to the squad.
+ownership and persists their order. If no squad is saved, the editor defaults to
+the first owned member without writing until the player saves. Opening other
+menus does not require a valid battle squad; only battle entry enforces that
+requirement. The starter is not locked to the squad.
 Summon publishes remaining-pool odds and a 10-Lycalis cost, confirms before
 spending, and reveals the saved acquisition. Insufficient funds or a completed
-collection disables summoning. New companions must be equipped manually.
+collection disables summoning. New Element-Bearers must be equipped manually.
 Captures, duplicate copies and additional currency sources remain unimplemented.
 
 Settings supports persisted, validated ally/target selection keys (no attack
@@ -320,11 +348,11 @@ as sanctuary controls. Combat-specific styles live in
 `src/presentation/battle-ui.css`, scoped to `.battle-screen`; no additional
 preferences or save formats are introduced.
 
-## Legacy companion saves
+## Legacy Element-Bearer saves
 
 All three version-1 starter IDs continue to the menu normally. The previous
 fire-only re-selection policy is superseded: water/grass saves are not overwritten,
-and Adventure uses their saved companion. New saves still require explicit
+and Adventure uses their saved Element-Bearer. New saves still require explicit
 selection and a successful write before entering the menu.
 
 ## Equipment implementation requirements

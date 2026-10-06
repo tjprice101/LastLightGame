@@ -44,7 +44,7 @@ describe('activity and progression framework', () => {
     ]);
     expect(infusionModes.map((mode) => [mode.stages, mode.startingLevel, mode.enemyTiers])).toEqual([[35, 80, 6], [35, 80, 6]]);
   });
-  it('uses approved adjacent-rarity recipes with first-pass costs and deferred creature consumption', () => {
+  it('uses approved adjacent-rarity recipes and captured-creature requirements', () => {
     expect(evolutionRecipes.map((recipe) => recipe.rarities)).toEqual([
       ['Common'], ['Common', 'Uncommon'], ['Uncommon', 'Rare'], ['Rare', 'Epic'], ['Epic', 'Legendary'],
     ]);
@@ -53,7 +53,9 @@ describe('activity and progression framework', () => {
       expect(result.dungeon).toBe(element.dungeon);
       expect(result.infusion).toBe(element.infusion);
       expect(result.requiresFractalis).toBe(true);
-      expect(result.requiresInfusableEnemies).toBe(false);
+      expect(result.requiresInfusableEnemies).toBe(from >= 3);
+      expect(result.creatureCount).toBe(from >= 3 ? from - 2 : 0);
+      expect(result.minimumCreatureForm).toBe(from >= 3 ? from : null);
       expect(result.quantitiesDefined).toBe(true);
       expect(result.to).toBe(from + 1);
     }
@@ -66,7 +68,7 @@ describe('activity and progression framework', () => {
     expect(markup).not.toContain('Dungeon not playable yet');
     expect(markup.match(/data-dungeon="/g)).toHaveLength(10);
     expect(markup.match(/35 stages \/ Enemy levels 10-120/g)).toHaveLength(10);
-    expect(markup.match(/data-infusion="/g)).toHaveLength(2);
+    expect(markup.match(/data-infusion="/g)).toHaveLength(4);
     expect(markup).toContain('data-page="battle"');
     expect(markup).toContain('data-page="story"');
     expect(markup).toContain('data-page="events"');

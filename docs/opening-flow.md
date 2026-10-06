@@ -33,13 +33,13 @@ last coal of Ashen Vale; Tizu searches for Glasswater's missing ferrykeepers;
 Flora carries the hope of Hollowgreen's first new seed. These are editable
 prototype stories, not a claim that the wider world/story has been approved.
 
-After a successful first save, the menu plays a companion awakening and opens
+After a successful first save, the menu plays an Element-Bearer awakening and opens
 the lore panel. Saved-session continuation does not replay that first-arrival
-effect; lore remains available through the "Companion lore" disclosure.
+effect; lore remains available through the "Element-Bearer lore" disclosure.
 Reduced motion hides decorative reveals and disables the portrait animation,
 while all lore and controls remain accessible. No save-schema changes are needed.
 
-The menu displays the saved companion and opens the
+The menu displays the saved Element-Bearer and opens the
 [character, inventory, story, events, and settings surfaces](menus-and-inventory.md).
 Adventure is implemented separately; dungeons, quests, squad editing, and summoning are not.
 Fractalis shows a persistent local balance earned from enemy drops; Lycalis is a
@@ -65,7 +65,7 @@ Phaser renders a layered landscape, light halo, and 48 bounded ambient motes.
 HTML provides responsive menus, semantic buttons, visible focus, and error alerts.
 Reduced-motion preferences disable CSS entrance/pulse animations and mote tweens.
 There is no audio. [Supplied artwork](art-workflow.md#supplied-character-and-enemy-art)
-now replaces SVG placeholder portraits in selection and companion panels.
+now replaces SVG placeholder portraits in selection and Element-Bearer panels.
 
 ## Where to customize
 

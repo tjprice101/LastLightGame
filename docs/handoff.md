@@ -1,5 +1,563 @@
 # Current state and handoff
 
+## Latest: Phase12 owner-supplied art intake and runtime integration
+
+### Root image cleanup
+
+At the owner's request, removed the36 redundant root PNGs after verifying each
+against its archived source and recorded source/runtime SHA-256 hashes.
+Originals remain intact under `Art/source` and runtime assets are unchanged.
+The intake tool now supports archived-only inputs; coverage tests permit absent
+root copies while requiring every mapped original to remain available.
+Validation after cleanup: `python tools\intake_root_art.py` validates all36
+archived inputs/exports; `python -m unittest discover -s tools -p
+test_root_art_intake.py` passes4 tests. No root PNGs remain.
+
+Follow-up missing currency images were caused by the stopped local Vite server:
+browser requests to port5173 failed with `ERR_CONNECTION_REFUSED`, not missing
+files. Restarted the existing `Run Last Light` VS Code task and reloaded Home
+without modifying saves. Both currency PNGs returned HTTP200 (`image/png`) and
+decoded at256x256 in the browser; both Home portraits also loaded. A PowerShell
+HTTP sweep of all180 runtime images returned200 with image content types and
+zero failures. No runtime code or asset changes were needed.
+
+### Squad setup recovery
+
+Removed battle-squad validation from general menu rendering so it cannot block
+access to Squad setup. When squad state is absent or unusable in memory, the
+editor presents the first owned character as a proposed leader; it persists only
+after Save squad. Home falls back to the saved starter without requiring battle
+readiness. Battle entry still validates one to three distinct owned members.
+An account with no owned members displays an explicit empty state.
+See [Squad rules](menus-and-inventory.md).
+
+Validation: `npx vitest run src/presentation/roster.test.ts
+src/game/squad.test.ts src/game/flow.test.ts` —46 tests passed;
+`npm test` —606 tests passed across59 files; `npm run build` passed with the
+existing chunk-size advisory. Browser flow from new profile to Home to Squad
+confirmed the editor is reachable and the owned Infernis is selectable as
+leader. Test profile/wallet data was removed afterward.
+
+### Home portrait sizing follow-up
+
+Reduced the Home centerpiece art maximum from720px to480px on desktop, from
+620px to360px on tablet, and to280px on phones. Width remains bounded by its
+available container; portrait crop/facing and Character-screen art are unchanged.
+See [Home layout](menus-and-inventory.md).
+Validation: `npx vitest run src/presentation/hub.test.ts
+src/presentation/character-rating.test.ts` passes42 tests; `npm run build`
+passes with the existing Vite chunk-size advisory. Browser check at the available
+1290x852 viewport confirmed the Home portrait box is480x480px with no horizontal
+page overflow. Smaller requested browser widths are clamped by this harness and
+were not directly measured.
+
+The owner supplied36 opaque RGB PNGs in the repository root and requested
+appropriate background removal, copies in the art source tree, and wiring into
+the game. All originals were copied byte-for-byte to `Art/source`; redundant
+root copies were subsequently removed at the owner's request. The source/runtime SHA-256 hashes and per-image settings are in
+[root-art-intake.json](../Art/root-art-intake.json).
+
+- Ten elemental medallions and five Common Conduit icons use explicit,
+  border-connected hue/saturation keys.
+- Twelve Treasury/Rosethorn creature portraits use border-swatch RGB-distance
+  keys and transparent normalized exports. Their battle sprites now have
+  reviewed right-facing metadata.
+- Seven scenery banners and two arenas are copied byte-for-byte; they are not
+  background-removed.
+- Runtime wiring covers all ten element labels, five Conduit icons and store
+  banner, three Archive banners, Standard Banner artwork, Treasury/Sanctuary
+  activity headers, six portraits per mode, and both arenas. Existing
+  `assetUrl()` base-aware paths are retained. Existing supplied-alpha assets
+  were not modified.
+- Updated affected art/economy specs and regressions. Remaining five elemental
+  dungeon art packs (Earth, Wind, Light, Shadow and Chaos) are still pending;
+  no unrelated/missing image was substituted.
+
+### Phase12 validation
+
+- `python tools/intake_root_art.py` — all36 mappings validate in dry-run mode;
+  preserved originals and prior outputs match the recorded hashes.
+- `python -m unittest discover -s tools -p test_root_art_intake.py` —4 tests pass.
+- `python -m unittest discover -s tools` —46 tests pass.
+- `npx vitest run src/presentation/archives.test.ts src/presentation/conduit-store.test.ts src/presentation/roster.test.ts src/content/infusions.test.ts src/presentation/unit-facing.test.ts src/game/treasury.test.ts src/game/rosethorn-sanctuary.test.ts` —87 tests pass.
+- `npm test` —604 tests pass across59 files.
+- `npm run build` — TypeScript and production build pass; Vite reports the existing >500kB chunk advisory.
+- Browser smoke check fetched13 representative element, Conduit, portrait, banner and arena URLs under `/LastLightGame/assets/`; all returned HTTP200. The isolated test profile created for opening-flow access was removed; no profile remains.
+- No commit, push or deployment.
+
+No further owner decisions are needed for this approved intake. Future RGB
+deliveries still need per-image review; do not apply this keying to supplied
+alpha sources or the five unprovided dungeon packs. See [art workflow](art-workflow.md#owner-supplied-opaque-rgb-art-intake-36-images)
+and [Phase12](roadmap.md).
+
+## Previous: Phase11 Integrated validation and cross-system verification
+
+Phase11 adds comprehensive testing of economy lifecycle, combat continuity, save persistence and UI consistency across all implemented features.
+
+New [integrated-economy.test.ts](<C:/Users/creat/Downloads/Coding/Projects/Last Light/src/game/integrated-economy.test.ts>) exercises four critical scenarios:
+
+1. **Both farms → exact-copy dual sale → draw with duplicate conversion → Conduit equipping → protection → unequipping → full resale**
+   - Treasury and Rosethorn missions award captured creatures and Fractalis+Lycalis independently.
+   - Owned copies sell for exact form-based prices, protect other saves and remove exact instances.
+   - Draw costs 10 Lycalis atomically when funds available; fails safely without charging if insufficient.
+   - Duplicate EB result grants Treasury Omnic Lv50 copy with `acquisition:banner-duplicate` provenance.
+   - Conduit equipping prevents sale; unequipping enables it. Sale atomicity protects both currencies.
+
+2. **200/500 actual pity milestones with reload persistence**
+   - Pull 200 triggers highest-star guarantee; pull 500 triggers unowned-highest-star or all-owned fallback.
+   - Sale and reload transactions never reset pity counters.
+   - Expected counts match exact pulls with independent RNG per creature mode.
+
+3. **Independent leveling/equipment snapshots across all 15 activity destinations and Continue**
+   - Rosethorn capture levels independently to 65, retains learned stats and equipped Conduits.
+   - Squad protection prevents sale; Conduit protection prevents sale; manual locks prevent sale.
+   - Adventure plus all ten elemental dungeons and Heaven, Abyss, Treasury and Rosethorn Sanctuary preserve instance IDs, levels, equipment and Gauge across waves/stages.
+
+4. **Legacy v2 wallet compatibility**
+   - Old 12k Fractalis, 10 Lycalis, materials, characters, stages, receipts load read-only.
+   - First new transaction converts v2→v3 atomically, migrates stages to 35-floor equivalents, keeps everything intact.
+   - Historical fields missing from v2 are added as empty/defaults on first save.
+
+**590 tests** across 59 files pass. The integrated mixed-squad test now creates each of the 15 playable activity destinations and verifies roster IDs, captured level, equipment and Continue state. Production build has no typecheck errors. All transaction types preserve exact state, persist correctly, enforce protections and roll back safely on failure. Character Archive displays all 42 EB evolutions and captured creature forms with owned/unowned reconciliation.
+
+### Phase11 validation record
+
+- `npm test` — 590 tests passed across 59 test files.
+- `npx vitest run src/game/integrated-economy.test.ts` — 4 tests passed after expanding the activity matrix to all15 destinations.
+- `npm run build` — TypeScript check and Vite production build passed; Vite still reports the existing >500kB bundle-chunk advisory.
+- `python -m unittest discover -s tools -p test_art_prompts.py` — 9 prompt-contract checks passed.
+- Browser smoke test — title → starter selection → Home worked; Home had no horizontal overflow at the browser harness's available viewport widths of400,488 and1600px. The harness clamps requested320,390 and1280px widths to those available dimensions, so those exact breakpoints were not re-measured in this session. Existing prior responsive checks are listed in the historical handoff below.
+- Browser state began with empty local storage; the profile key created for the smoke test was removed after validation.
+- No new art assets were generated or added by Phase11. Art-prompt validation does not indicate generated art is ready.
+- No commit/push/deploy.
+
+## Previous: Phase10 Rosethorn Sanctuary and dual-currency wisp sales
+
+Owner renamed the mode to Rosethorn Sanctuary. Stable internal ID `sanctuary`
+and creature/save IDs are unchanged; Rosethorn Wisp remains the species name.
+
+Owner selected Rosethorn Sanctuary, revised the shorter-mode proposal to match
+Treasury's25 stages65-120, and requested chance-based roughly1->5 Lycalis per
+kill plus sales granting both currencies with less Fractalis than Treasury.
+Developer tuning:50% chance of1 at65 ->80% chance of5 at120; linear chance,
+rounded linear quantity, same boss/ordinary. Ordinary Fractalis remains7-14
+at65 ->15-30 at120; no materials/clear bonus. Every fifth stage is a boss.
+
+Six Tranquilitic divine/regal Rosethorn Wisp forms share hostile/captured
+definitions.20% mission captures retain actual level/stage/kit, independent
+RNG and existing leveling/equipment/mixed squads/snapshots/Continue/replay.
+Sanctuary cannot satisfy Heaven/Abyss evolution recipes. No new save version
+or load writes; optional infusionStages.sanctuary capped25. Legacyv2 stage
+migration applies only to Heaven/Abyss, not currency modes.
+
+Common->Omnic sales grant100/300/1k/3k/10k/30k Fractalis plus1/2/3/5/7/10
+Lycalis. Shared creatureSaleOffer/sellCurrencyCreature reread exact UUID and
+locked/squad/any-Conduit protection, save both balances/removal in one write,
+retain discoveries/pity/other copies. Treasury-only wrappers preserve prior
+callers. Confirmation names exact copy and both currencies; cancel unchanged.
+Either-balance overflow/storage failure preserves persisted copy and balances.
+Owner subsequently capped sale Lycalis at1-10; mission drops and Fractalis
+values are unchanged. The historical browser sale below used the former20 cap.
+
+Standard now15 outcomes:3 EBs + first3 forms from each of4 creature modes.
+Creature tier weights50:30:17 within99% remain, now equally split four ways.
+Cost10,1% five-star tier,200/500 pity and Treasury Omnic Lv50 duplicate reward
+unchanged. Character Archive now42 entries (18 EB evolutions +24 creatures).
+Currency activity cards/battle chrome/glossary/results and per-copy sales wired.
+
+Art/Rosethorn Sanctuary.md contains six cutouts +3:1 header +16:9 arena;
+Standard Omnic16:9 art prompt includes Sanctuary rosefire architecture. At the
+time of this Phase10 handoff, art remained pending with neutral visuals and no
+borrowed/missing assets; Phase12 later records the supplied art integration.
+See [authoritative rules/edit points](rosethorn-sanctuary.md).
+
+Verification at the time:586 tests across58 files,9 art checks and production build/typecheck
+passed. Existing Vite large-chunk warning remains. Isolated browser:
+real Stage1 combat saved14 Fractalis,1 Lycalis,two Lv65 captures,unlocked2 and
+two receipts; reload preserved it. Omnic sale canceled unchanged, then granted
+30k Fractalis +20 Lycalis/removing exact copy. Currency menu/mobile contained,
+no isolated page errors. Requested320 layout verified15 text-only rate rows
+with zero table art, Stage25/25 entry and contained battle geometry, no missing
+assets. Owner storage untouched; isolated contexts closed.
+No commit/push/deploy. At this historical handoff point Phase11 integrated
+validation was complete and Phase12 had no approved scope; the owner later
+approved the art-intake scope documented at the top of this handoff. Do not
+invent another mode as a replacement for an unapproved phase.
+
+## Previous: Phase9 Crownfall Treasury, slime sales and active Standard Banner
+
+Owner approved Crownfall Treasury:25 stages (revised from15), hostile levels
+65-120, Luminous six-form gemstone-crowned slime line, same boss/ordinary
+currency100-200 at65 to1,000-2,000 at120, quadratic range growth.
+Every fifth floor boss; no materials/Lycalis/extra ordinary currency/clear bonus.
+20% mission captures keep defeated level/stage/kit and existing independent
+leveling/Conduits/mixed squads/Continue/replay/Settings/Archive behavior.
+Per-mode stage count now drives25-floor validation/unlocks/completion/Continue.
+
+Standard activated at10 Lycalis. First three Treasury forms join Heaven/Abyss
+and three EBs for12 real entries, unchanged1%5-star tier/creature weights/pity.
+Ordinary banner creature starting level is its form's first authored stage.
+Owner revised duplicate reward twice; FINAL rule is Omnic Treasury final slime
+at **Lv50 flat**, not its first hostile stage or highest account level.
+Validated acquisition=banner-duplicate only for infusion:treasury:5 permits
+below-stage initial level and retains Stage22 kit. Mission captures unaffected.
+New EBs start Common/Evo1/Lv0; everything unequipped. Draws reread account and
+save cost/reward/independent200/500 pity in one atomic write, with confirmation
+and text-only saved result. No draw grant on invalid input/failed write.
+
+Character copy management sells Treasury only:1k/3k/10k/30k/100k/300k by fixed
+Common->Omnic form, independent of source or level. Exact UUID/name/price and
+permanent confirmation; locked/squad/any-Conduit protection reread. Currency/
+removal save together; obsolete empty loadout removed, discoveries retained.
+All18 creature forms in Character Archive; total36 character/form entries.
+Currency-farm category, clean mission loot/glossary and pending battle/art
+surfaces wired. Six cutouts +3:1 activity banner +16:9 arena prompt pack in
+Art/Crownfall Treasury.md; Standard16:9 Omnic prompt adds Treasury architecture.
+No images supplied/generated or missing PNG requests.
+
+Verification:577 tests across57 files and8 art-prompt checks passed;
+production build/type-check passed after final presentation refinements.
+Isolated real stage1 combat saved201 Fractalis/two Lv65 captures/unlocked2,
+retained across reload; simulated failed save preserved action/account then
+retry worked. UI verified draw/sale cancellation,500 all-owned conversion at50,
+10 currency cost/reset pity and300k exact-copy sale. Stage25 entry/completion
+chrome, requested320/390/1280 layouts, no isolated page errors/missing assets.
+Owner storage untouched. Existing bundle-size warning remains.
+
+Next: Phase10 shorter Tranquilitic divine/regal flaming-wisp Lycalis farm.
+Confirm its name/stages/levels/payout/capture and any sale policy before coding.
+No commit/push/deployment performed. See [Treasury rules/tests](crownfall-treasury.md).
+
+## Previous: Omnic summoning artpieces and clean drop tables
+
+Owner specified16:9 full-bleed Omnic-tier banner art embodying each banner's
+identity, with no individual outcome art in the drop-rate table. Standard now
+uses a reserved16:9 artwork panel and nine text-only Name / Rarity and stars /
+Rate rows, ordered highest stars first. Rarity is the actual awarded form
+(base Common EBs and Common/Uncommon/Rare creatures), not banner art direction
+or current owned progress. No roles, stats, lore, portraits or rating medallions
+in outcome rows. Compact pity progress stays visible; verbose reward/pity/tier
+rules move into an accessible collapsed disclosure.
+
+Art/Summoning Banners.md includes the Omnic Standard convergence prompt and
+1920x1080 export/intake contract. Typed artwork.path stays null until supplied
+approved art arrives; honest neutral pending panel, no invented asset requests.
+Existing dungeon/archive art formats remain unchanged. No images generated.
+
+Validation:571 gameplay tests and7 art-prompt checks passed; production build/
+type-check passed. Isolated browser verified nine exact names/rarities/stars/rates,
+no media inside the table, exact16:9 panel ratio and contained layouts at
+requested320/390/1280 widths. Disclosure expands, draw gate unchanged, no
+isolated page errors. Owner storage untouched; no commit/push/deployment.
+
+## Previous: revised banner rates and independent pity
+
+Owner raised5-star base tier to1% TOTAL (equal across three EBs), leaving future
+6-star at0.1% total only once authored. Current creature tiers share99%50:30:17.
+Independent200 highest-star /500 unowned-highest-star counters approved.
+Highest-star results reset200; new highest-star resets both.500 takes priority;
+if all highest-tier EBs owned, normal highest-star duplicate conversion and reset
+both counters. Equal eligible guarantee odds. Highest tier follows real pool.
+
+Pure resolveBannerPull handles base/guaranteed selection and counter transitions.
+Optional walletv3 bannerPity.standard validates/preserves counters; legacy absence
+reads as0 without writes. Preview shows progress/rules and updated rates.
+Draws/backend remain unavailable until Phase9 defines crowned-slime conversion.
+Activation must save result/cost/pity in one transaction, never separate writes.
+See [pity rules/tests](summoning-and-economy.md#independent-banner-pity) and D-070.
+Validation:570 tests across56 files passed; production build/type-check passed.
+Isolated browser confirmed1% five-star tier,0.333333% per EB,199/200 and499/500
+saved progress, independent resets/500 priority/all-owned fallback and unchanged
+wallet after gated click. Requested320/390/1280 layouts contained; isolated page
+reported no errors. Owner storage unchanged; no commit/push/deployment.
+
+## Previous: Phase8 Lycalis rewards and gated Standard Banner
+
+Heaven/Abyss kills independently roll0/1/2/3 Lycalis. Owner-approved linear odds:
+Lv80=90/8/1.5/0.5%, Lv120=75/10/10/5%, same ordinary/boss.
+Separate lycalisSeed preserves prior combat/material/capture RNG. Premium awards
+validate eligible dead source/stage/amount and commit with existing rewards,
+captures, discovery/unlocks and receipts; failure/retry/dedup/overflow checked.
+Loot/results/glossary use real Lycalis art and discrete nonuniform probabilities;
+battle wallet updates both currencies. No Adventure/material-dungeon drops.
+
+One Standard catalog/preview publishes nine real entries: first three Heaven/
+Abyss forms plus Infernis/Tizu/Flora.5-star tier was0.1% TOTAL (now1%, see above);
+creature tiers now split99%50:30:17/equal per tier. No4/6-star placeholders;
+future6-star EB tier gets0.1% only once authored. Ownership never changes rates.
+Old unowned-only draws removed. Draws are disabled in UI and backend:
+owner explicitly requires Phase9's highest-rarity crowned Fractalis slime for
+an already-owned EB. No substitute/cost/grant while missing. Existing saves
+preserved. Creature banner starting progression remains a decision for activation.
+See [economy/source/tests](summoning-and-economy.md) and D-069.
+
+Validation:560 tests across55 files passed; production build/type-check passed.
+Isolated browser verified
+Lv120 boss grants3 Lycalis, persists/reloads/deduplicates, all nine preview entries,
+precise EB odds/stars and unavailable draw/forced-click rejection without spending.
+Responsive requested320/390/1280 viewports contained; no missing images/page errors.
+Owner storage untouched. Existing bundle-size warning remains.
+
+Next: Phase9 Fractalis mode definitions, crowned final slime and then complete
+Standard activation/duplicate transactions. Ask the pending mode/balance/
+banner-starting-progression choices individually; do not invent content.
+No commit/push/deployment performed.
+
+## Previous: rarity escalation in all remaining dungeon art packs
+
+Reviewed the five packs absent from `dungeonArt`: Precipice of the Earth,
+Sky-bound Rift, Lustrous River, Valley of Solitude and Ruins of Chaos.
+Gameplay already works; these are the five awaiting supplied art.
+Revised all40 enemy and30 material copy-ready prompts with escalating
+species-specific armor/weapons, articulated structures and prismatic final
+designs; removed high-tier cute language. Common remains restrained.
+Same compact anime/cel renderer, names/palettes/keys/padding/no-emission and
+all ten scenery prompts preserved. No runtime balance/rarity assignments changed;
+supplied dungeon packs untouched. Enemy visual tiers are not evolution forms.
+See [art handoff](../Art/dungeons/README.md#pending-art-rarity-escalation-pass).
+All6 Python art checks passed, including the new five-pack tone/signature test.
+No new images generated, runtime changes, commit/push/deployment performed.
+
+## Previous: Phase7 protected-safe evolution creature infusion
+
+Owner confirmed creatures supplement existing material/Fractalis costs:
+Evo3->4 consumes1 form3+,4->5 consumes2 form4+,5->6 consumes3 form5+.
+Use the Element-Bearer's five-element Heaven/Abyss mapping, not the creature's
+combat element. Locked/current-squad/any-Conduit-equipped copies protected.
+Owner also clarified only characters are Element-Bearers; captured units remain
+creatures. UI/capture labels and future-agent rules corrected accordingly.
+
+Evolution screen lists every copy with eligibility reasons, portrait, form
+rating and level. Explicit selections only; exact count required; permanent
+confirmation names each copy. Authoritative save rereads current ownership,
+progression/protection/funds before one atomic evolution/cost/removal write.
+Cancel/failure preserves saves; consumed empty loadouts removed, remaining
+copies/discovery/receipts and legacy progress preserved. No load-time charges.
+Character copy management refreshes immediately after consumption.
+See [full spec/tests](evolution-fodder.md).
+
+Validation:556 tests passed; production build/type-check passed. Isolated browser
+verified exact-copy confirmation/cancel, protected/wrong-mode/low-form rows,
+1-versus2 selection, exact saved costs/removals and reload, failed-write retry
+and changed-lock rejection.320/390/1280px layouts contained, no page errors or
+missing assets. Owner storage unchanged; existing bundle-size warning remains.
+
+Historical next step was Phase8; delivered rewards/preview described above.
+No commit/push/deployment performed.
+
+## Historical terminology correction (clarified above)
+
+Owner established **Element-Bearer / Element-Bearers / Owned Element-Bearers**
+as canonical character language, replacing companion wording across opening,
+Home, Squad, Summon, captures, Archives, accessibility/errors and documentation.
+Legacy internal identifiers/CSS hooks/save keys remain stable; no gameplay or
+save-schema change. Apply this terminology to future features and character art.
+
+## Historical: Phase6 captures and playable creatures
+
+Heaven/Abyss kills now automatically roll exactly20% capture chance, including
+boss/burn/AOE kills. Separate capture RNG preserves existing material rolls.
+Capture level/stage/skills, rewards, discovery and receipt save atomically before
+combat advances. Failed writes reject visibly; repeat receipts do not duplicate.
+Quitting/defeat retains previously saved captures.
+
+Owner approved defeated level, independent levels through120, **no evolution**,
+ordinary/nonboss growth times fixed `.65 + .35*tier/5` form strength, shared-Gauge
+manual retained skills with enemy intervals as cooldowns, and captured later-form
+stars1-6. Higher forms stay stronger at equal levels; boss kits keep ultimates
+but lose hostile boss stat bonuses. Level costs/curve remain editable first-pass.
+
+Mixed/all-captured squads, captured leaders, Home showcase, manual actions,
+eight Conduits, independent levels/locks, loot/results, cut-ins, Settings,
+Continue/replay and30-entry Character Archive are wired by instance ID.
+Captured portraits/stars reveal by owning that fixed form, not merely discovering
+the Creature. Existing enemy art is reused; no new assets or missing PNG URLs.
+Metadata-free Phase5 records resolve to their form's first authored stage without
+load-time writes; legacy starter IDs/progress/equipment remain unchanged.
+
+Validation:544 regression tests and production build; existing Vite chunk-size
+warning remains. Isolated browser acquired two real80-level creatures in one
+Heaven clear and displayed both in saved loot; separate copy leveling/gear,
+duplicate all-captured squads, mobile containment, retained attacks, Settings
+and replay checked without page errors/missing assets. Owner storage unchanged.
+No commit/push/deployment performed.
+
+Next: **Phase7**, explicitly selected protected-safe evolution fodder. Confirm
+counts/tiers, material supplement/replacement and equipped-copy protection first.
+Phases8-10 still own banner/Lycalis changes and the two new currency farms.
+See [capture rules](dungeons-and-captures.md), [instances](character-instances.md)
+and [active roadmap](roadmap.md#active-owner-requested-expansion-phases).
+
+## Historical: Phase5 ownership and protection foundation
+
+Owner approved uncapped character storage, captures unlocked by default,
+manual locks plus automatic squad protection, and allowing duplicate species
+in future squads when copies have distinct instance IDs (max3 members).
+Explicitly approved moving playable mixed squads into Phase6 alongside retained
+enemy kits, rather than inventing captured starting stats/actions in Phase5.
+
+Added `character-instances.ts`: independent `capture:<UUID>` identities and
+registered eligible Heaven/Abyss definitions, pure append/validation helpers.
+Optional walletv3 `capturedCharacters` and `characterLocks` preserve existing
+starter progress, squad IDs, equipment, profile and legacy saves without load
+writes. Character menu shows copy management and independent lock controls.
+No capture reward or playable captured kit is active; no characters granted.
+See [instance spec](character-instances.md).
+
+Verification: full regression suite passed531 tests before the added500-copy
+capacity test; final focused instance suite/build rerun recorded in completion
+response. Isolated browser confirmed two independently saved copies, locking
+only one, lock persistence after reload, unlocked starter squad protection,
+unchanged balances/level/evolution/weapon rank and320px containment.
+No owner storage modified, commit/push/deployment performed.
+
+Next Phase6 needs captured initial level/stat/progression and ability timing
+decisions, then atomic20% capture rewards, instance-based mixed squads,
+Conduits, Character/Archives and battle/replay/Continue integration.
+
+### Character Archive correction
+
+Owner requested all character evolutions as individual visible entries and
+filters. Confirmed each form reveals in color only after that evolution is
+reached. All18 starter forms are present; unowned/unreached artwork uses black
+silhouettes with the same dark card/radial backdrop as undiscovered enemies.
+Shared CSS keeps the silhouette appearance consistent. Filters combine element, rarity,
+character ownership, form discovery and stars, with counts/empty state/reset.
+Current forms retain equipped stats, others clearly preview level0 without
+equipment. This supersedes Phase4's three current-form/base-preview cards.
+
+## Latest completed expansion: Phase4 / Archives and enemy elements
+
+Unified Archives is live from Home, Inventory and Character, containing
+Character, Conduit and the existing discovery-gated Creature galleries, each
+with a banner header. Gallery switching preserves filters and focuses the
+selected heading. Old internal glossary route selects the Creature panel.
+Common Conduit schematics and CSS headers remain honest placeholders.
+
+Owner confirmed Adventure Goblin=Efflorescent, Imp=Infernic, Golem=Tectonic;
+explicitly chose all Dawnthorn forms=Tranquilitic and all Wraththorn
+forms=Chaotic. Elemental dungeon enemies match their dungeon. Every combatant
+and creature now has combat typing. Enemy field nameplates, battle-menu intel,
+revealed glossary cards and infusion entry cards show readable element names.
+`Creature.dungeonElement` routes dungeon materials separately from combat
+typing, preserving Heaven/Abyss's original five-element pools, Adventure-only
+Fractalis and all stage/chance/quantity rules. No affinity damage modifiers.
+
+Added [Archives spec](archives-and-elements.md),
+[three banner prompts](../Art/Archives.md) and
+[ten medallion prompts](../Art/Element%20Emblems.md).
+
+Verification: **524 tests across51 files**, **5 Python art-prompt checks**,
+production TypeScript/Vite build and editor diagnostics passed. The existing
+large-bundle warning remains. Isolated browser checks verified3 character/
+5 Conduit/97 creature entries, gallery selection/focus,3 Adventure-filter
+results, filter retention, store navigation and new discoveries without loot
+unlock. Archive geometry fits320/390/1280px; battle enemy labels and modal
+labels were checked in Adventure, Flaming Depths and final Heaven/Abyss stages,
+including narrow320px geometry with no horizontal overflow in label containers.
+Browser screenshot capture unexpectedly resets emulation to desktop; use
+computed layout geometry for responsive checks, not cropped screenshots.
+No owner browser storage was seeded. No commit/push/deployment performed.
+
+**Next: Phase5**, instance-based ownership for separate captured duplicates.
+Resolve consequential protection/capacity UX before implementing. Captures,
+fodder, banner replacement and currency modes remain future phases.
+
+### Game-wide rarity tone
+
+Owner extended the Common-to-Omnic visual direction to the whole game:
+progressively less cutesy, more epic, formidable, majestic and incredible,
+while preserving the same art style. Shared prompt guide now contains the
+[rarity tone ladder](../Art/midjourney-character-style-prompt.md#game-wide-rarity-tone-common-to-omnic);
+art workflow and AGENTS carry the rule. Applies to future/revised prompts,
+not a bulk repaint or gameplay change. Stars remain distinct from rarity.
+
+### Future Conduit rarity art direction
+
+Owner clarified the five current designs are Common only. Higher rarities
+progressively unfold into restored/reborn elemental machines with increasingly
+epic construction and swirling prismatic energy; Omnic is a fully completed
+elemental masterpiece. Recorded in [Conduit art](../Art/Conduits.md#future-rarity-art-direction),
+[spec](conduits.md#confirmed-future-rarity-presentation) and AGENTS.
+No current prompts, buffs, prices or equipment mechanics changed.
+
+## Current expansion: Phase3 complete - Conduit equipment
+
+Owner approved one copy unlocking every character, each named Conduit once per
+character, eight ordinary slots only, Master reserved. Character equipment
+selectors save immediately with owned-ID/slot/uniqueness validation; no copies
+or currency consumed. Shared resolveFighter applies +5% HP/Attack/DEF after
+growth/legacy weapon bonuses, +2pp crit capped100%, +5 capacity.
+Home/overview/equipment/upgrade previews display effective stats; changed values
+show before-Conduit baselines. Battle menu lists equipped names. Full squads in
+all modes clone gear at entry; Continue/nextWave/replay/Settings preserve it.
+Store/inventory wording no longer claims inactive buffs. Extra purchased copies
+provide no extra equipment advantage and are disclosed as such.
+
+518 tests across50 files and production build passed before final verification.
+Isolated browser equipped all five on Infernis plus the same single-owned Vigil
+Core on Tizu, removed/re-equipped, reloaded and verified exact effective health,
+attack, critical rate, DEF and capacity. Duplicate options disabled; owned counts/
+currency unchanged. Settings/replay preserved gear/stats, selectors readable at
+320/390/1280px without horizontal overflow. Fixed a browser-found event listener
+placement bug before completion. Owner storage untouched.
+
+Next: Phase4 unified Archives, explicit enemy elements and elemental medallion
+prompts; ask about ambiguous enemy affinities before assigning them.
+
+## Current expansion: Phase2 complete - Conduits
+
+Owner renamed Artifacts to Conduits and approved the proposed prices/buffs:
+Vigil Core1,000/+5%HP, Siegebound Drive1,200/+5%Attack,
+Bastion Lock1,000/+5%DEF, Parallax Relay1,500/+2pp critical rate,
+Fracture Reservoir1,200/+5 Gauge capacity. Common ancient-war mechanisms;
+Vigil/Parallax/Reservoir are powered by Elemental Light, the source of elemental
+powers. No named ancient faction/war or element restriction invented.
+
+Store accessible from Home, Inventory and Character's Conduits / Equipment tab
+(including dynamically changed tabs). Seven bottom destinations preserved.
+Optional wallet.conduits map holds safe-integer owned counts; each confirmed
+purchase atomically saves one copy/cost. Reject insufficient balance, invalid
+IDs/saves/overflow and storage failure; no writes on read. Other account data
+and legacy purchased weapon bonuses unchanged. Inventory lists quantities.
+Runtime art is explicitly labeled recovered SVG schematics pending supplied
+images; [six prompts](../Art/Conduits.md) cover icons and store banner.
+
+501 tests across49 files and production build passed; known bundle warning
+remains. Four Python prompt tests passed. Isolated browser bought all five plus
+a duplicate, verified cancellation leaves wallet unchanged, exact6,900 total
+spend, retained unrelated state, reload inventory and320/390/1280px horizontal
+containment. Owner storage untouched.
+
+**Next: Phase3**, Conduit equip/unequip and actual stat effects. Purchases do
+NOT currently buff characters. Confirm duplicate stacking, slot eligibility
+and Master Conduit rules before applying bonuses. [Full spec](conduits.md).
+
+## Active expansion: Phase1
+
+Rating polish: shared character-rating renderer now uses physical beveled stars
+(copper/silver/gold/violet/white/prismatic tiers1-6) and framed rarity medallions.
+Character overview adds classification beside stats; all existing rating surfaces
+inherit the same badges. Reduced motion disables reflective sweeps, not static
+glow; screen readers receive explicit star/rarity labels.61 focused tests/build
+passed; isolated320px browser verified exact star counts, tier colors, medallions,
+reduced-motion suppression and horizontal containment. No gameplay/odds changes.
+
+Owner approved the phase-by-phase expansion in [roadmap](roadmap.md).
+Weapon upgrade UI and spending removed; existing ranks/Attack bonuses/materials
+preserved. Stable passive/skill tab IDs unchanged. Starter summon ratings5-star;
+derived rarity Common->Omnic follows Evo1-6 across selection, Home, Character,
+roster, Squad, summon/reveal and Battle menu. No new stat or summon odds changes.
+Next phase: five Common artifacts and Artifact Store; confirm prices/buffs.
+Only one Standard Banner planned. Its low-star enemy pool is described in
+the roadmap; no captures/new modes/banner expansion implemented yet.
+
+Phase1 verified:470 tests across47 files and TypeScript/Vite production build
+passed; existing bundle-size warning remains. Isolated mobile browser evolved
+Infernis Common->Uncommon while retaining5-star and weaponRank4, verified live
+roster/showcase/Squad/Battle menu labels, eight character tabs with no weapon
+controls and no horizontal overflow. No owner storage was seeded or modified.
+
 **Last updated:** Moderated loot stack growth.
 
 ### Moderate loot quantities (supersedes oversized 35-floor payouts below)
@@ -509,9 +1067,10 @@ whiteness is never an automatic background classification.
 Home removes the entire upgrade dock/caption and decorative ring, retaining
 character identity, all seven stats, team/lore/activity links. Team entry now opens
 Squad rather than an upgrade. No Home data-character-tab controls remain; upgrades
-live in Character. Wider central column allows720px desktop art,620px tablet;
-phone sizes stay width-bounded. Verified1600/1280/780/390/320px with no horizontal
-overflow, no ring/upgrade controls and all seven stats retained.
+live in Character. The original wider central column allowed720px desktop art and
+620px tablet; the later Home portrait sizing follow-up at the top supersedes these
+limits. Verified1600/1280/780/390/320px with no horizontal overflow, no ring/
+upgrade controls and all seven stats retained.
 
 ### Cinematic Character Upgrades
 
@@ -1001,7 +1560,7 @@ Her stable save/combat ID remains `sprout`, so existing saves still load.
   Defense, pointer cancellation/lost capture, ready shimmer and reduced-motion
   steady glow. Progressed capacity 140 still becomes ultimate-ready at cost 100.
 - Recent changes are local; no new GitHub Pages deployment is implied.
-- Earlier UI checks (before progression implementation): all seven destinations; real currency/owned companion; eight
+- Earlier UI checks (before progression implementation): all seven destinations; real currency/owned Element-Bearer; eight
   artifact slots and one relic; ten disabled dungeon cards/two disabled infusion
   cards; one visible activity group; stable portrait/rail across upgrade tabs;
   Settings open/close; Adventure entry and restored run, without sanctuary nav
@@ -1056,7 +1615,7 @@ Her stable save/combat ID remains `sprout`, so existing saves still load.
 - Implemented: animated title, fire/water/grass starter choice, explicit confirmation,
   local starter save, opening menu, saved-session continuation, save-error handling.
 - Starter selection now includes bounded elemental reveals and original lore;
-  first confirmation plays a companion awakening. Lore stays readable in the menu.
+  first confirmation plays an Element-Bearer awakening. Lore stays readable in the menu.
 - Implemented bottom destinations: Home, Character Upgrades, Gameplay, Events,
   Inventory, Squad and Summon. The last two are honest future-system previews.
   Inventory now lists materials only; D-037 moves the equipment preview to Character.
@@ -1088,7 +1647,7 @@ Her stable save/combat ID remains `sprout`, so existing saves still load.
 - Home now follows the full UI concept's colorful utility rail / central orbit
   character with hexagonal shortcuts / right current-team/stat-passive panel and
   Adventure launch. Seven-destination bottom nav supersedes earlier screen limits.
-  Character Upgrades has an area rail, central companion, and focused detail panel
+  Character Upgrades has an area rail, central Element-Bearer, and focused detail panel
   for Overview, seven upgrade paths, and Inventory / Equipment. Home shortcuts
   select these directly; Settings preserves the selected area. All content uses
   the saved starter. Tizu's effective defense is 24, not base 16.
@@ -1196,20 +1755,21 @@ Her stable save/combat ID remains `sprout`, so existing saves still load.
 Inspect the workspace again when resuming; this snapshot is not proof that
 later contributors have made no changes.
 
-## What this handoff delivers
+## Original foundation handoff (historical)
 
-See [opening flow](opening-flow.md) for behavior and source references.
+The following captured the initial prototype state and is superseded by the
+Phase10/Phase11 status above. See [opening flow](opening-flow.md) for current
+behavior and source references.
 The original art guide is preserved; supplied PNG art replaces SVG placeholders.
 Adventure grants Fractalis enemy drops but no permanent roster grants. Broader design documents
 still label unapproved production mechanics as proposed.
 
 ## Next recommended action
 
-Playtest dungeon difficulty and upgrade pacing for all three starters, then tune
-the first-pass cost/drop tables. Define creature infusion amounts/acquisition,
-captures/team rules, equipment uniqueness and independent skill upgrades before
-enabling those features. Tizu/Flora Defense icons remain unsupplied; their art
-files contain prompts and the approved style-reference URL remains required.
+Phase12 owner-supplied art integration is complete. Review
+[open decisions](decisions.md#open-decisions) or obtain owner approval for a
+specific new feature before adding another phase; do not treat a proposal or
+historical backlog item as approval.
 
 ## Known gaps
 
@@ -1353,8 +1913,8 @@ For setup and deployment commands, use the [development guide](development-guide
 
 ## Current: owned roster, summons and squads
 
-Character now selects all owned companions and upgrades them independently.
-Squad saves an ordered leader plus up to two companions; starter can be removed,
+Character now selects all owned Element-Bearers and upgrades them independently.
+Squad saves an ordered leader plus up to two Element-Bearers; starter can be removed,
 duplicates/unowned/empty squads rejected. All modes use the equipped team with
 per-member progress and controls. Continue/replay preserve the run snapshot and
 per-member Gauge; Settings does not replace the team.
@@ -1363,7 +1923,7 @@ Summoning costs10 Lycalis, draws equally only from unowned existing characters,
 and atomically saves deduction/acquisition before revealing. Newly summoned
 characters are unequipped. Completed pool and insufficient currency disable
 the action. First Fracture still grants10 Lycalis only once; acquiring both
-remaining companions naturally needs an owner-approved future earning source.
+remaining Element-Bearers naturally needs an owner-approved future earning source.
 
 Version3 wallet progress-record presence establishes ownership. Reads add the
 profile starter/default squad in memory only, preserving existing progress and

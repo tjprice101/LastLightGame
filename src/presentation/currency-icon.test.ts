@@ -21,7 +21,7 @@ describe('supplied currency artwork', () => {
   });
 
   it('uses supplied icons for costs and the existing First Fracture reward', () => {
-    for (const tab of ['upgrade-0', 'upgrade-1', 'upgrade-2']) {
+    for (const tab of ['upgrade-0', 'upgrade-1']) {
       expect(characterDetail(starters[0], tab)).toContain(currencyIcon('fractalis'));
     }
     expect(characterDetail(starters[0], 'upgrade-0')).toContain(currencyIcon('lycalis'));

@@ -10,7 +10,7 @@ export function portraitAttributes(starter: Starter, evolution = 1): { src: stri
   const form = characterArt(starter.id, evolution);
   return {
     src: assetUrl(`characters/${form.art}.png`),
-    alt: `${starter.name}, ${starter.element.toLowerCase()} companion with a ${starter.weapon.toLowerCase()}${evolution > 1 ? ` / ${form.title}` : ''}`,
+    alt: `${starter.name}, ${starter.element.toLowerCase()} Element-Bearer with a ${starter.weapon.toLowerCase()}${evolution > 1 ? ` / ${form.title}` : ''}`,
   };
 }
 

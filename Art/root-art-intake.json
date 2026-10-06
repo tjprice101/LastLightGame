@@ -1,0 +1,524 @@
+{
+  "asset_count": 36,
+  "assets": [
+    {
+      "incoming": "Atmospheric.png",
+      "source": "Art\\source\\elements\\Atmospheric.png",
+      "source_sha256": "8fbca586e2c0ca048f6d40e43c56e5dc878026563d465bd7fe5bffd5d0a38be5",
+      "runtime": "public\\assets\\elements\\atmospheric.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 344,
+        "tolerance": 20,
+        "saturation_min": 0.2,
+        "value_min": 0.25,
+        "border_only": true
+      },
+      "runtime_sha256": "feffde6d0e0c3f0ba76e0da0fc69f1df5dd04a96f9487bb53da58ac25515b504"
+    },
+    {
+      "incoming": "Chaotic.png",
+      "source": "Art\\source\\elements\\Chaotic.png",
+      "source_sha256": "5ba608c8b306d28b1c823689849b7dd413a481d5699a472c188c35bded247530",
+      "runtime": "public\\assets\\elements\\chaotic.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 74,
+        "tolerance": 18,
+        "saturation_min": 0.22,
+        "value_min": 0.18,
+        "border_only": true
+      },
+      "runtime_sha256": "5efa3386c9d37aa8dbcea69265ed0e57d0e326f2417f0dfe7ebcba15ea290110"
+    },
+    {
+      "incoming": "Efflorescent.png",
+      "source": "Art\\source\\elements\\Efflorescent.png",
+      "source_sha256": "3f479a523a0c25d9e4091fe844ab98128a30ce5c86cbe609d30e08a532b4f338",
+      "runtime": "public\\assets\\elements\\efflorescent.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 190,
+        "tolerance": 18,
+        "saturation_min": 0.2,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "runtime_sha256": "77ed446d117b777ccef75d576471df5cf7ac0ccc70f14ca9005fff7f5763af38"
+    },
+    {
+      "incoming": "Infernic Fire Medal.png",
+      "source": "Art\\source\\elements\\Infernic Fire Medal.png",
+      "source_sha256": "4fa37ad448e24934566d6d9843ceecc9deebbcd57a1e37d8ac18943a39d96d50",
+      "runtime": "public\\assets\\elements\\infernic.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 190,
+        "tolerance": 18,
+        "saturation_min": 0.2,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "runtime_sha256": "0ded8d98798411eb926c04410eda544d39706df7dd58d3ad6d9fee04ffa9e727"
+    },
+    {
+      "incoming": "Luminous.png",
+      "source": "Art\\source\\elements\\Luminous.png",
+      "source_sha256": "c12ab7921ea32d123549d3d154cdf9b4813e882308eaa3941e5ed8451ca80cff",
+      "runtime": "public\\assets\\elements\\luminous.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 187,
+        "tolerance": 18,
+        "saturation_min": 0.2,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "runtime_sha256": "516f16024b55c51c4fb0be15809634f8eadfaafc27cf0c590239237dee80b18a"
+    },
+    {
+      "incoming": "Oceanic.png",
+      "source": "Art\\source\\elements\\Oceanic.png",
+      "source_sha256": "15bbbd87644c0782a7401dad86d9777e625c05e45b95660c4828ea7ad0c7a6c3",
+      "runtime": "public\\assets\\elements\\aquatic.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 340,
+        "tolerance": 20,
+        "saturation_min": 0.2,
+        "value_min": 0.25,
+        "border_only": true
+      },
+      "runtime_sha256": "c8b9acca7364fe33434259ef575291247faf70aa1caaa70566e82aa805f0ad4c"
+    },
+    {
+      "incoming": "Ominous.png",
+      "source": "Art\\source\\elements\\Ominous.png",
+      "source_sha256": "268f50bea296ce229724de66b032d4d116e7301dab0372543cab39fcc9f24f24",
+      "runtime": "public\\assets\\elements\\ominous.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 184,
+        "tolerance": 18,
+        "saturation_min": 0.2,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "runtime_sha256": "96be736929f65484d65bcc6b7c9914372630d03bae08f941aa84a5cc2969f6f7"
+    },
+    {
+      "incoming": "Tectonic.png",
+      "source": "Art\\source\\elements\\Tectonic.png",
+      "source_sha256": "d4e8a03210ae289aa7d07408012c9371e4da3cf38999318583505f04bbafd755",
+      "runtime": "public\\assets\\elements\\tectonic.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 185,
+        "tolerance": 18,
+        "saturation_min": 0.2,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "runtime_sha256": "c8f382129d139546ac5ef53554707b5024e31370393126c325d780db42021b0d"
+    },
+    {
+      "incoming": "Tranquilitic.png",
+      "source": "Art\\source\\elements\\Tranquilitic.png",
+      "source_sha256": "71c9f7021ad79547434551fbfff1b390dbaa337901045fa5a1e80639dcc89079",
+      "runtime": "public\\assets\\elements\\tranquilitic.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 74,
+        "tolerance": 18,
+        "saturation_min": 0.22,
+        "value_min": 0.18,
+        "border_only": true
+      },
+      "runtime_sha256": "c0bd53ae00076b952d8aec6dfba135cf16d867130f3f085a44423e378ce6d5f4"
+    },
+    {
+      "incoming": "Voltaic.png",
+      "source": "Art\\source\\elements\\Voltaic.png",
+      "source_sha256": "ceb446c1d58ec58125eb5326955c4e02a4fe1e862e2bba04e783675446cf38e8",
+      "runtime": "public\\assets\\elements\\voltaic.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 185,
+        "tolerance": 18,
+        "saturation_min": 0.2,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "runtime_sha256": "58123996855aee9e6f1aca7266cc8af016dd665ed4d74aa79acaf07078b41335"
+    },
+    {
+      "incoming": "Bastion Lock.png",
+      "source": "Art\\source\\conduits\\Bastion Lock.png",
+      "source_sha256": "ae1f7a6e97992ebaa5b9ca6dfb5f4ec44d7e66550cae212b3b325a543c07f725",
+      "runtime": "public\\assets\\conduits\\bastion-lock.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 25,
+        "tolerance": 18,
+        "saturation_min": 0.25,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "runtime_sha256": "ee2afa3279702490b4e7e88e887bdad66f88371e27848a0471001509fbe333e5"
+    },
+    {
+      "incoming": "Fracture Reservoir.png",
+      "source": "Art\\source\\conduits\\Fracture Reservoir.png",
+      "source_sha256": "e4badde29665dc3e3c75aa8271277039009e0143e2b32cfd7c757eea4edf1dc2",
+      "runtime": "public\\assets\\conduits\\fracture-reservoir.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 162,
+        "tolerance": 18,
+        "saturation_min": 0.18,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "runtime_sha256": "f4643a4473d17f0d5057fb1d5af9b8771e79ec261a0f3bd0eec28e1767b91965"
+    },
+    {
+      "incoming": "Parallax Relay.png",
+      "source": "Art\\source\\conduits\\Parallax Relay.png",
+      "source_sha256": "0c4c960947335c21a8cef5fc82b2d8b2235e7dafe9a5ee36f5fe276d929f452c",
+      "runtime": "public\\assets\\conduits\\parallax-relay.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 0,
+        "tolerance": 16,
+        "saturation_min": 0.25,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "runtime_sha256": "7ab1c9d03affa70f5f310eb374edbd581fda65c2eb8dec6361086289b3b1191a"
+    },
+    {
+      "incoming": "Siegebound Drive.png",
+      "source": "Art\\source\\conduits\\Siegebound Drive.png",
+      "source_sha256": "98dda256aab7670bd349f3db9b4dc4daf7eeb78da89f7a28d78d9c9ed9dc84a1",
+      "runtime": "public\\assets\\conduits\\siegebound-drive.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 198,
+        "tolerance": 18,
+        "saturation_min": 0.25,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "runtime_sha256": "7ba91e9f9bf6b7ccddcd09acd3521239378315733da5ab4f1bf41b7fdd0667b5"
+    },
+    {
+      "incoming": "Vigil Core.png",
+      "source": "Art\\source\\conduits\\Vigil Core.png",
+      "source_sha256": "e6d0ef5917a0f982e8ae6269499d8cdf37b655ec0d7ae9448ebab0d4c8daee40",
+      "runtime": "public\\assets\\conduits\\vigil-core.png",
+      "processing": {
+        "method": "border-connected hue/saturation key",
+        "hue": 140,
+        "tolerance": 18,
+        "saturation_min": 0.12,
+        "value_min": 0.3,
+        "border_only": true
+      },
+      "runtime_sha256": "7f03b76a6316a371bee0df9e8538bfe2fd68bb109d6d992f02bb47cd9d55c19d"
+    },
+    {
+      "incoming": "Gleamstone Slime.png",
+      "source": "Art\\source\\enemies\\Gleamstone Slime.png",
+      "source_sha256": "0d76df28764f4d2b38dececc156f7f402f61e537b4863551fa7a58705dd354ac",
+      "runtime": "public\\assets\\enemies\\gleamstone-slime.png",
+      "processing": {
+        "method": "border-connected RGB-distance key",
+        "radius": 35,
+        "quantization": 8,
+        "derived_background_rgb": [
+          244,
+          84,
+          76
+        ]
+      },
+      "runtime_sha256": "9897297ab3866e87bad4278a454bbd6a8d8398f9041720bb86219cef769de2ad"
+    },
+    {
+      "incoming": "Diadem of Daybreak, Gleamstone Slime.png",
+      "source": "Art\\source\\enemies\\Diadem of Daybreak, Gleamstone Slime.png",
+      "source_sha256": "4d0e6edf4576856d03d78bed74a356987d154c3dc29c238ed84219cd7426256e",
+      "runtime": "public\\assets\\enemies\\diadem-of-daybreak-gleamstone-slime.png",
+      "processing": {
+        "method": "border-connected RGB-distance key",
+        "radius": 35,
+        "quantization": 8,
+        "derived_background_rgb": [
+          172,
+          84,
+          84
+        ]
+      },
+      "runtime_sha256": "771d7a0ce834bebc2c9e582c7879542ab20ffe7bd06a42ef162ece897985f127"
+    },
+    {
+      "incoming": "Scepter of Radiance, Gleamstone Slime.png",
+      "source": "Art\\source\\enemies\\Scepter of Radiance, Gleamstone Slime.png",
+      "source_sha256": "5c3670d1f40ad91600b7638d573e406f45e59fbf6c7222b4cf8c9574f9cfa819",
+      "runtime": "public\\assets\\enemies\\scepter-of-radiance-gleamstone-slime.png",
+      "processing": {
+        "method": "border-connected RGB-distance key",
+        "radius": 35,
+        "quantization": 8,
+        "derived_background_rgb": [
+          244,
+          132,
+          116
+        ]
+      },
+      "runtime_sha256": "f4c40cc5c7249085749797937bfd349d27e533ced7c1c42b9a4a409dca23b27b"
+    },
+    {
+      "incoming": "Regalia of the Sun, Gleamstone Slime.png",
+      "source": "Art\\source\\enemies\\Regalia of the Sun, Gleamstone Slime.png",
+      "source_sha256": "e26305fa6bb1b9098225e69622d99e8738245b87b66963e58563db40610fb424",
+      "runtime": "public\\assets\\enemies\\regalia-of-the-sun-gleamstone-slime.png",
+      "processing": {
+        "method": "border-connected RGB-distance key",
+        "radius": 35,
+        "quantization": 8,
+        "derived_background_rgb": [
+          236,
+          92,
+          132
+        ]
+      },
+      "runtime_sha256": "64c5bf90f761ccd9537e2510fd227076b2773649e23b2c018b1f3138e9a61908"
+    },
+    {
+      "incoming": "Sovereign of the Gilded Vault, Gleamstone Slime.png",
+      "source": "Art\\source\\enemies\\Sovereign of the Gilded Vault, Gleamstone Slime.png",
+      "source_sha256": "cbeebd82b9092b2350c3e7950fc8ff202c56094f938ac7288b5bb917dc8ae28a",
+      "runtime": "public\\assets\\enemies\\sovereign-of-the-gilded-vault-gleamstone-slime.png",
+      "processing": {
+        "method": "border-connected RGB-distance key",
+        "radius": 35,
+        "quantization": 8,
+        "derived_background_rgb": [
+          244,
+          68,
+          100
+        ]
+      },
+      "runtime_sha256": "e226792c6d683f6e197b7844c5e0cb864d2ac693dfce7a7118b11a73e83ea9dd"
+    },
+    {
+      "incoming": "The Crown Beyond Dawn, Gleamstone Slime.png",
+      "source": "Art\\source\\enemies\\The Crown Beyond Dawn, Gleamstone Slime.png",
+      "source_sha256": "cafe118fc965ba464d04b78e7f3924d42ba9255e92b262ccd47d4f8d3ad8598a",
+      "runtime": "public\\assets\\enemies\\the-crown-beyond-dawn-gleamstone-slime.png",
+      "processing": {
+        "method": "border-connected RGB-distance key",
+        "radius": 35,
+        "quantization": 8,
+        "derived_background_rgb": [
+          204,
+          44,
+          116
+        ]
+      },
+      "runtime_sha256": "427c05e30266cd0a23cffb31651e26e9d85323071e45992080b60cd8b6040767"
+    },
+    {
+      "incoming": "Rosethorn Wisp.png",
+      "source": "Art\\source\\enemies\\Rosethorn Wisp.png",
+      "source_sha256": "2b62ea74e46bf94aa2305c3132f02fa465c8a91a73450801f49e3d6879063792",
+      "runtime": "public\\assets\\enemies\\rosethorn-wisp.png",
+      "processing": {
+        "method": "border-connected RGB-distance key",
+        "radius": 35,
+        "quantization": 8,
+        "derived_background_rgb": [
+          204,
+          60,
+          124
+        ]
+      },
+      "runtime_sha256": "e650dad936b9ec935443e4867492cb2409a3b51f8e391b4020b8f781379e82b1"
+    },
+    {
+      "incoming": "Votive of First Bloom, Rosethorn Wisp.png",
+      "source": "Art\\source\\enemies\\Votive of First Bloom, Rosethorn Wisp.png",
+      "source_sha256": "13dc8951d124b4469c5d6ed4800eb371a8ac61f508c8aa009b51a1ead2566f1a",
+      "runtime": "public\\assets\\enemies\\votive-of-first-bloom-rosethorn-wisp.png",
+      "processing": {
+        "method": "border-connected RGB-distance key",
+        "radius": 35,
+        "quantization": 8,
+        "derived_background_rgb": [
+          204,
+          44,
+          124
+        ]
+      },
+      "runtime_sha256": "7d16249aa0b48e8df222139e44454c3421f4b718a54fe901a8fc82065d3ec852"
+    },
+    {
+      "incoming": "Laurel of the Sacred Flame. Rosethorn Wisp.png",
+      "source": "Art\\source\\enemies\\Laurel of the Sacred Flame. Rosethorn Wisp.png",
+      "source_sha256": "7decbbd3621d8fddbccafd5c2df36f8578d5be1dd48aadde2a9d72036c466d7b",
+      "runtime": "public\\assets\\enemies\\laurel-of-the-sacred-flame-rosethorn-wisp.png",
+      "processing": {
+        "method": "border-connected RGB-distance key",
+        "radius": 35,
+        "quantization": 8,
+        "derived_background_rgb": [
+          236,
+          44,
+          116
+        ]
+      },
+      "runtime_sha256": "79a36172154afa0bfbf8f1312a396924ef6d62bdd2814366fdabc08c6916317b"
+    },
+    {
+      "incoming": "Seraph of the Rose Pyre, Rosethorn Wisp.png",
+      "source": "Art\\source\\enemies\\Seraph of the Rose Pyre, Rosethorn Wisp.png",
+      "source_sha256": "9ea77d0213a2b64c040d4c155f242b94220eb421f4336957926cebb13f4f7ac9",
+      "runtime": "public\\assets\\enemies\\seraph-of-the-rose-pyre-rosethorn-wisp.png",
+      "processing": {
+        "method": "border-connected RGB-distance key",
+        "radius": 35,
+        "quantization": 8,
+        "derived_background_rgb": [
+          212,
+          92,
+          108
+        ]
+      },
+      "runtime_sha256": "b0e27995801468da2d1707bb166eacbbba110967a8db54450b7f569b67412702"
+    },
+    {
+      "incoming": "Sovereign of the Hallowed Garden, Rosethorn Wisp.png",
+      "source": "Art\\source\\enemies\\Sovereign of the Hallowed Garden, Rosethorn Wisp.png",
+      "source_sha256": "58ae3bad085007b2326c7f1528ee4d9daacb9218363ef7ff444920b06e874b3d",
+      "runtime": "public\\assets\\enemies\\sovereign-of-the-hallowed-garden-rosethorn-wisp.png",
+      "processing": {
+        "method": "border-connected RGB-distance key",
+        "radius": 35,
+        "quantization": 8,
+        "derived_background_rgb": [
+          220,
+          60,
+          100
+        ]
+      },
+      "runtime_sha256": "af338bdf855da4820f9a19392a761c19cb4c8b88a86774578faf02abded1dab6"
+    },
+    {
+      "incoming": "The Flame Beyond Eternity, Rosethorn Wisp.png",
+      "source": "Art\\source\\enemies\\The Flame Beyond Eternity, Rosethorn Wisp.png",
+      "source_sha256": "35f2a86a5fcc6e6af645701038dc00641ddac616cebf9f7aa443b51d42250f26",
+      "runtime": "public\\assets\\enemies\\the-flame-beyond-eternity-rosethorn-wisp.png",
+      "processing": {
+        "method": "border-connected RGB-distance key",
+        "radius": 35,
+        "quantization": 8,
+        "derived_background_rgb": [
+          228,
+          68,
+          84
+        ]
+      },
+      "runtime_sha256": "f864907eaec4e8f354e64e7d4c4f8844c7f2d24059f86042310fc675eabb5a97"
+    },
+    {
+      "incoming": "Character Archive Banner.png",
+      "source": "Art\\source\\banners\\Character Archive Banner.png",
+      "source_sha256": "6a7fba83fad5520a3f51e9fa74c9b8f5734e1025e984e4203495b275e093787e",
+      "runtime": "public\\assets\\banners\\archive-characters.png",
+      "processing": {
+        "method": "opaque scenery copied byte-for-byte"
+      },
+      "runtime_sha256": "6a7fba83fad5520a3f51e9fa74c9b8f5734e1025e984e4203495b275e093787e"
+    },
+    {
+      "incoming": "Conduit Archive Banner.png",
+      "source": "Art\\source\\banners\\Conduit Archive Banner.png",
+      "source_sha256": "195008363da2e469e47da41c914a99bf67305d16eed064bbf3c89e5316ec2054",
+      "runtime": "public\\assets\\banners\\archive-conduits.png",
+      "processing": {
+        "method": "opaque scenery copied byte-for-byte"
+      },
+      "runtime_sha256": "195008363da2e469e47da41c914a99bf67305d16eed064bbf3c89e5316ec2054"
+    },
+    {
+      "incoming": "Creature Archive Banner.png",
+      "source": "Art\\source\\banners\\Creature Archive Banner.png",
+      "source_sha256": "d67130aefea13535d0f454e96152180ab8fd83f9a952d34e0141617283ac8adc",
+      "runtime": "public\\assets\\banners\\archive-creatures.png",
+      "processing": {
+        "method": "opaque scenery copied byte-for-byte"
+      },
+      "runtime_sha256": "d67130aefea13535d0f454e96152180ab8fd83f9a952d34e0141617283ac8adc"
+    },
+    {
+      "incoming": "Conduit Store banner.png",
+      "source": "Art\\source\\banners\\Conduit Store banner.png",
+      "source_sha256": "9e8ea4faf75f6da9184a9e12749ea2edd36b8d11ff2247f4f0d02b90eb601436",
+      "runtime": "public\\assets\\banners\\conduit-store.png",
+      "processing": {
+        "method": "opaque scenery copied byte-for-byte"
+      },
+      "runtime_sha256": "9e8ea4faf75f6da9184a9e12749ea2edd36b8d11ff2247f4f0d02b90eb601436"
+    },
+    {
+      "incoming": "Standard Character Banner.png",
+      "source": "Art\\source\\banners\\Standard Character Banner.png",
+      "source_sha256": "c34e6deb4fb5580c0697bea8027eb94105415e7e3bbf21fb57c39ba336f635e2",
+      "runtime": "public\\assets\\banners\\summon-standard.png",
+      "processing": {
+        "method": "opaque scenery copied byte-for-byte"
+      },
+      "runtime_sha256": "c34e6deb4fb5580c0697bea8027eb94105415e7e3bbf21fb57c39ba336f635e2"
+    },
+    {
+      "incoming": "Treasury mode banner.png",
+      "source": "Art\\source\\banners\\Treasury mode banner.png",
+      "source_sha256": "eb84f0ef240683c509d69dc818e53bf3484f131a124c38291757d34037fab075",
+      "runtime": "public\\assets\\banners\\treasury-banner.png",
+      "processing": {
+        "method": "opaque scenery copied byte-for-byte"
+      },
+      "runtime_sha256": "eb84f0ef240683c509d69dc818e53bf3484f131a124c38291757d34037fab075"
+    },
+    {
+      "incoming": "Activity header for Rosethorn Sanctuary.png",
+      "source": "Art\\source\\banners\\Activity header for Rosethorn Sanctuary.png",
+      "source_sha256": "d4dafff07ac049d34cd97f74238d9a7b3b1a913d964f2b5e8754c2ac4b46552a",
+      "runtime": "public\\assets\\banners\\sanctuary-banner.png",
+      "processing": {
+        "method": "opaque scenery copied byte-for-byte"
+      },
+      "runtime_sha256": "d4dafff07ac049d34cd97f74238d9a7b3b1a913d964f2b5e8754c2ac4b46552a"
+    },
+    {
+      "incoming": "Treasury battle arena.png",
+      "source": "Art\\source\\backgrounds\\Treasury battle arena.png",
+      "source_sha256": "64386742fb50a5c2247748658fa15d6702f069687bf6cac9c71102b6ccf14153",
+      "runtime": "public\\assets\\backgrounds\\treasury-arena.png",
+      "processing": {
+        "method": "opaque scenery copied byte-for-byte"
+      },
+      "runtime_sha256": "64386742fb50a5c2247748658fa15d6702f069687bf6cac9c71102b6ccf14153"
+    },
+    {
+      "incoming": "Battle arena for Rosethorn Sanctuary.png",
+      "source": "Art\\source\\backgrounds\\Battle arena for Rosethorn Sanctuary.png",
+      "source_sha256": "7218ef860ea38f6cf00827a708f81fd145e7452d6b1334bccd3b117402d88690",
+      "runtime": "public\\assets\\backgrounds\\sanctuary-arena.png",
+      "processing": {
+        "method": "opaque scenery copied byte-for-byte"
+      },
+      "runtime_sha256": "7218ef860ea38f6cf00827a708f81fd145e7452d6b1334bccd3b117402d88690"
+    }
+  ]
+}

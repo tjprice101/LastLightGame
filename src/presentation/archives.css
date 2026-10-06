@@ -1,0 +1,58 @@
+.archives { min-width: 0; }
+.archive-navigation, .archive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 16px;
+  margin-block: 20px;
+}
+.archive-gallery-button {
+  display: grid;
+  gap: 8px;
+  min-height: 88px;
+  padding: 18px;
+  text-align: left;
+  border: 1px solid #ffffff30;
+  border-radius: 12px;
+  background: #181820;
+  color: #e9e4dc;
+}
+#archive-characters .archive-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+}
+.archive-gallery-button[aria-pressed="true"] { border-color: #c9b283; background: #29251f; }
+.archive-gallery-button small { opacity: .7; }
+.archive-panel[hidden] { display: none; }
+.archive-banner {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 112px;
+  padding: 24px;
+  margin-bottom: 20px;
+  border: 1px solid #ffffff24;
+  border-radius: 14px;
+  background: #15151c;
+}
+.archive-banner-art { position: absolute; z-index: 0; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.archive-banner::after { content: ""; position: absolute; z-index: 1; inset: 0; background: linear-gradient(90deg, #090b11e8, #090b1166 65%, #090b1122); }
+.archive-banner > :not(.archive-banner-art) { position: relative; z-index: 2; }
+.archive-banner h2 { margin-bottom: 0; }
+.archive-card { min-width: 0; padding: 18px; border: 1px solid #ffffff24; border-radius: 12px; background: #14141b; }
+.archive-card[hidden] { display: none; }
+.archive-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-top: 20px; }
+.archive-filters label { display: grid; gap: 6px; min-width: 0; flex: 1 1 160px; }
+.archive-filters select { width: 100%; min-width: 0; min-height: 44px; }
+.archive-card h3 { margin-bottom: 8px; }
+.archive-card > .element-label { display: flex; margin-block: 8px; }
+.archive-card > .character-rating { margin-block: 10px; }
+.archive-portrait { display: grid; place-items: center; width: 100%; aspect-ratio: 1; }
+.archive-portrait .character-idle, .archive-portrait img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.archive-mechanism { display: grid; place-items: center; gap: 12px; min-height: 160px; color: #c2b590; text-align: center; }
+.archive-mechanism .conduit-icon { width: 100px; height: 100px; }
+.archive-ownership { color: #d8c49a; }
+.archive-stats { display: flex; flex-wrap: wrap; gap: 16px; }
+.archive-stats dt { font-size: .75rem; opacity: .7; }
+.archive-stats dd { margin: 0; overflow-wrap: anywhere; }
+.archive-card summary { min-height: 44px; padding-block: 12px; cursor: pointer; }
+.archive-card li { margin-bottom: 8px; }
+.archive-card p, .archive-card li, .archive-banner, .archive-gallery-button { overflow-wrap: anywhere; }

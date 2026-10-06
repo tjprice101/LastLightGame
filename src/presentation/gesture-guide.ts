@@ -4,7 +4,7 @@ import { abilityIcon } from './ability-icon';
 import { isStarterId } from '../content/starters';
 
 export function gestureGuide(state: BattleState, actor: Combatant): string {
-  if (!actor.kit || !isStarterId(actor.definitionId)) throw new Error('Gesture guide requires an owned character kit.');
+  if (!actor.kit) throw new Error('Gesture guide requires an owned character kit.');
   const starterId = actor.definitionId;
   const directions = [
     { action: 'ultimate', direction: 'up', arrow: '&uarr;', label: 'Last Flare' },
@@ -19,7 +19,7 @@ export function gestureGuide(state: BattleState, actor: Combatant): string {
     </svg>${directions.map(({ action, direction, arrow, label }) => {
       const reason = actionUnavailable(state, actor, action);
       return `<span class="gesture-direction gesture-${direction}" data-gesture-action="${action}" data-available="${!reason}">
-        <span class="gesture-arrow">${arrow}</span>${abilityIcon(starterId, action)}
+        <span class="gesture-arrow">${arrow}</span>${isStarterId(starterId) ? abilityIcon(starterId, action) : ''}
         <strong>${label}</strong><small>${reason ? 'Unavailable' : action === 'light' ? `+${shatterGauge.gains.light} Gauge` : `${shatterGauge.costs[action]} Gauge`}</small></span>`;
     }).join('')}<span class="gesture-center" aria-hidden="true">DRAG</span>
     <span class="gesture-status" role="status">Choose a direction / Release near center to cancel</span>`;

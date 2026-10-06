@@ -45,10 +45,10 @@ describe('full sanctuary UI', () => {
     const html = gameplayHub();
     for (const element of elements) expect(html).toContain(element.dungeon);
     for (const mode of infusionModes) expect(html).toContain(mode.name);
-    expect(html.match(/class="activity-group"/g)).toHaveLength(5);
+    expect(html.match(/class="activity-group"/g)).toHaveLength(6);
     expect(html).not.toContain('Dungeon not playable yet');
     expect(html.match(/data-dungeon="/g)).toHaveLength(10);
-    expect(html.match(/data-infusion="/g)).toHaveLength(2);
+    expect(html.match(/data-infusion="/g)).toHaveLength(4);
     expect(html).toContain('data-page="battle"');
   });
 });

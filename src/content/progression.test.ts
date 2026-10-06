@@ -9,12 +9,12 @@ describe('confirmed game foundation', () => {
     expect(availableStarters.map((starter) => starter.id)).toEqual(['ember', 'tide', 'sprout']);
     expect(currencies.map((currency) => currency.name)).toEqual(['Fractalis', 'Lycalis']);
   });
-  it('defines eight distinct artifact slots and seven upgrade paths', () => {
+  it('defines eight distinct artifact slots and six upgrade paths without weapons', () => {
     expect(artifactSlots).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
     expect(upgradePaths.map((path) => path.name)).toEqual([
-      'Fracture / Evolution', 'Character level', 'Weapon upgrade', 'Unique passive', 'Ability 1', 'Ability 2', 'Last Flare',
+      'Fracture / Evolution', 'Character level', 'Unique passive', 'Ability 1', 'Ability 2', 'Last Flare',
     ]);
-    expect(upgradePaths[6].detail).toContain('Last Flare: <character-specific name>');
+    expect(upgradePaths[5].detail).toContain('Last Flare: <character-specific name>');
   });
   it('defines accelerating growth, preserved levels and six increasing caps', () => {
     expect(fractureRules).toEqual({

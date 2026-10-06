@@ -1,22 +1,23 @@
 # Dungeons and captured enemies
 
-**Status:** first-pass combat for all ten elemental material dungeons,
-material rewards, stage unlocks and clear reports implemented.
-Captures and team slots remain deferred. Exact current rules are owned by
-[Gameplay and elements](gameplay-and-elements.md).
+**Status:** Phase6 implemented: Heaven/Abyss capture rewards, retained playable
+kits, independent leveling/Conduits and mixed squads. All ten elemental material
+dungeons also have combat, rewards, stage unlocks and clear reports.
+See [Gameplay and elements](gameplay-and-elements.md) for encounter/drop tables
+and [Character instances](character-instances.md) for persistence/protection.
 
 ## Mode boundary
 
-- [Adventure](free-battle.md), formerly Free Battle, is the endless solo field mode.
+- [Adventure](free-battle.md), formerly Free Battle, is the endless field mode.
   Every entry starts at wave 1; defeats grant persistent Fractalis.
 - Dungeons are separate activities outside Adventure. **Flaming Depths** has supplied
   enemies and an encounter draft; the scope now includes one material dungeon per
   each of ten elements in [the Gameplay framework](gameplay-and-elements.md).
-  All are 50 stages; levels start 10, reach 120 at Stage 45, stay 120 through Stage 50.
+  All are 35 stages; levels start10 and reach120 at Stage35.
 - Dungeons contain enemy waves with higher enemy levels than Adventure.
   The exact comparison (corresponding wave or another baseline), level offset,
   stat table, wave count, encounter composition, and completion conditions need
-  approval beyond the confirmed shared level formula. The owner requested design through **Stage 50**:
+  production balancing beyond the current editable first pass. The historical **Stage50** design:
   [the complete stage proposal](flaming-depths-stages.md) supplies all lineups,
   encounters, abilities and milestone ideas. Its old levels/stats are superseded
   by the new elemental framework; balance numbers remain proposals.
@@ -24,36 +25,74 @@ Captures and team slots remain deferred. Exact current rules are owned by
   runtime content instead uses two ordinary enemies/one fifth-stage boss and
   periodic stronger strikes; the historical draft is not the active stat table.
 - After every dungeon wave, show an **end-of-wave action report** before advancing.
-- Defeated dungeon enemies have a chance to become captured and usable on the team.
-  Adventure does not currently grant captures.
+- **Soar to Heaven and Delve into the Abyss:** every newly defeated ordinary enemy
+  or boss automatically rolls exactly20% capture chance. Defend/burn/AOE kills
+  use the same award path; dead enemies cannot roll again.
+- Adventure and the ten elemental material dungeons do **not** grant captures.
+  Crownfall Treasury and Rosethorn Sanctuary grant the same20% captures.
+- Every activity accepts1-3 distinct owned instances, including all-captured
+  squads and captured leaders. Two copies of the same species are allowed.
 
 ## Captured-enemy contract
 
-Captured enemies are a separate ownership category from actual characters:
+Captured creatures retain their defeated form and hostile skill kit. Only
+characters are Element-Bearers; enemies and captured units remain creatures:
 
 | Surface | Actual character | Captured enemy |
 | --- | --- | --- |
-| Actions | Normal, Ability 1, Ability 2, Last Flare, Defense | Normal only; Defense eligibility open |
-| Progression | Character level, Fracture, weapon, passive and ability upgrades | Character level only |
+| Actions | Normal, Ability 1, Ability 2, Last Flare, Defense | Normal, Defense, and the skills/ultimate actually present on the defeated enemy |
+| Progression | Character level, Fracture, existing saved upgrade bonuses | Independent levels up to120 and eight ordinary Conduit slots |
 | Evolution | Confirmed character Fracture rules | Never evolves or Fractures |
-| Combat role | Primary companion / future character squad | Weaker, squishier expendable support |
-| Ownership today | Saved starter only | Not implemented |
+| Combat role | Authored elemental kit | Manually controlled retained kit; no invented passive bonus |
+| Ownership today | Saved starter IDs/progress | Separate stable capture UUIDs, level/stage/skills, locks and equipment |
 
-Captured enemies must not appear as evolved starters or receive character upgrade
-controls, special skills, or Last Flares. "Normal" corresponds to the basic attack
-concept. Heavy was globally removed by the new character input rule; do not
-implement the historical captured Heavy action. Whether captures have Defense,
-passives, Shatter Gauge, equipment, or any non-action traits remains open.
-Enemy combat levels are not an approved captured-unit progression table.
-Being fodder does not establish permanent death, automatic deletion, or sacrifice
-mechanics; those require explicit approval.
+This supersedes the historical Normal-only/weaker-support contract. Captures
+never acquire starter-specific upgrades or evolve into another form.
+No Heavy action, invented skill, permanent death or automatic deletion.
+
+### Fixed-form growth and ratings
+
+- Start at the defeated enemy's actual level. Keep its ability names, multipliers
+  and intervals unchanged when leveling; intervals become manual cooldowns.
+- Use the shared **ordinary**, never boss, infusion stat curve at the current
+  level. HP/Attack/Defense multiply by `.65 + .35 * tier / 5` for fixed tier0-5.
+  Thus a Lv120 initial form has130k HP, final form200k, versus400k hostile bossHP.
+  Higher captured forms remain stronger at equal level; boss captures retain
+  boss abilities but not boss stat bonuses.
+- Conduit buffs apply afterward, using the same shared stat helper as starters.
+- Each level costs `10 + 2 * nextLevel` Fractalis and
+  `ceil(nextLevel / 30)` Common materials matching the creature's combat element.
+  These are editable first-pass numbers in `capturedLevelCost`.
+- Fixed form1-6 sets acquisition stars1-6 and rarity Common through Omnic.
+  Leveling changes neither rating. This approved later-form capture exception
+  supersedes reserving every4-6-star unit exclusively for special banners.
+- Skills cost the shared25/40/100 Shatter Gauge; Normal/Defense and hit gains
+  remain shared. Retained attacks target one enemy. Missing slots explicitly
+  say Unavailable. Boss ultimate cooldowns coexist with normal next-turn recovery.
+
+### Atomic rewards
+
+Capture RNG uses a separate seeded stream, preserving combat/material randomness.
+Phase8 adds another independent Lycalis stream: the same eligible ordinary/boss
+kills roll mutually exclusive0/1/2/3 outcomes, linearly from90/8/1.5/0.5% at80
+to75/10/10/5% at120. Premium currency joins the same atomic write and appears
+in loot/results; no clear bonus or Adventure/elemental-dungeon Lycalis.
+See [economy and active banner](summoning-and-economy.md).
+Treasury instead grants currency-only high Fractalis payouts and20% captures,
+no Lycalis/materials.25-floor completion is mode-specific.
+The capture, ordinary rewards, discovery and `runId:enemyId` receipt commit in one
+wallet write **before** animation/state advance. Failed writes visibly reject
+the action; retries neither lose currency nor duplicate an already saved copy.
+Captures persist per kill even if the player quits or later loses the run.
 
 ## End-of-wave report
 
 Implemented: stage-clear report with attacks, damage dealt/received,
 healing/shields, surviving HP and saved reward events; next-stage control requires
 manual advance. Full-stage events are retained separately from the bounded recent
-battle log. Capture outcomes are absent because captures are unimplemented.
+battle log. Captured creatures appear alongside item rewards with the defeated
+enemy's supplied portrait. Reports summarize already saved rewards, never award
+them again.
 Expanded future report fields:
 
 - Dungeon name, wave number, enemy levels, and clear outcome.
@@ -63,23 +102,22 @@ Expanded future report fields:
 
 Keep a complete per-wave ledger separate from the presentation's bounded recent
 battle log; otherwise a long wave loses early actions. Snapshot the report before
-the next wave resets its ledger. Expanded report field selection, captures-on-defeat timing,
-and when the report is acknowledged remain open.
+the next wave resets its ledger. Continue remains manual.
 
 ## Decisions needed before implementation
 
 - Production dungeon balance, more complex waves and expanded hostile abilities.
-- Alternate reward pools, pity and capture integration. All ten elemental dungeons
-  are playable; seven await supplied enemy/material/environment artwork.
-- Capture probability, eligible enemies/bosses, automatic roll versus player choice,
-  capacity/full-collection behavior, duplicates, and whether a failed run keeps captures.
-- Initial captured level, level cap, XP/material costs, HP/DEF/attack growth,
-  relative stat reduction, and how an enemy becomes the weaker owned variant.
-- Team size/slot limits, assignment UX, whether captured enemies can join Adventure
-  (currently solo), defeat/revival rules, and character/captured-unit mixing.
-- Capture persistence schema, instance IDs, collection separation, migration/recovery.
+- Alternate reward pools and pity. Elemental dungeon captures are not in scope.
+- Phase7 [creature infusion](evolution-fodder.md) is implemented:1/2/3 form3+/4+/5+
+  copies from the matching mode alongside existing costs; protected-safe
+  explicit selection and one atomic write.
+- Phase9 [Crownfall Treasury](crownfall-treasury.md) and Standard activation are
+  implemented, including protected-safe sale and Lv50 duplicate reward.
+- Phase10 [Rosethorn Sanctuary](rosethorn-sanctuary.md) is implemented:
+  Lycalis farming, six divine wisp forms and protected-safe dual-currency sales.
+  Copy-ready art prompts exist; actual images remain pending.
 
-Do not invent these values from visual power order.
+Do not invent pending decisions from visual power order.
 
 ## Implementation and validation requirements
 
@@ -94,9 +132,11 @@ Do not invent these values from visual power order.
   duplicating a capture, or losing currency.
 - Keep current version-1 profile/wallet saves readable; do not overwrite corrupt
   collections. Define a retry/migration path before enabling new storage.
-- Test every wave's report, long-wave ledger, final-wave completion, denied capture,
-  duplicate/full-capacity behavior, failed-write retries, reload/exit, team validation,
-  leveling-only restrictions, and all attempts to evolve/use skills on captures.
+- `src/game/captures.test.ts` covers exact20% boundaries, burn/AOE duplicate
+  rewards, failed-write retry/dedup, unchanged loot RNG, invalid rewards/skills,
+  fixed-form growth, retained damage/ultimate cooldown/recovery, all destinations,
+  captured-only Continue, independent leveling/equipment and captured Home/art.
+  Existing instance tests cover uncapped storage, locks and legacy compatibility.
 
 ## Art handoff
 
@@ -106,3 +146,8 @@ All ten supplied originals are now preserved under `Art/source/enemies`, with
 standardized transparent exports under `public/assets/enemies`.
 They are used in Flaming Depths encounters, but do not establish capture odds.
 Source and export contracts remain in [Art workflow](art-workflow.md).
+Heaven/Abyss captures reuse the **same** registered enemy portrait/form and
+existing [gamemode prompts](../Art/gamemodes/README.md), including loot/cut-ins.
+No duplicate "owned version" art or new style is needed. Higher forms keep the
+shared renderer while becoming more epic/majestic, as documented in the prompt
+guide; clean cutout sources stay separate from runtime glow.

@@ -119,6 +119,16 @@ Inject controllable time/randomness into tests rather than relying on globals.
 
 ## Persistence contract
 
+Phase2 adds optional `conduits: Partial<Record<ConduitId, number>>` to the
+version3 wallet. Missing legacy inventories remain absent on load; known IDs
+require nonnegative safe-integer counts. `purchaseConduit` saves one copy and
+the exact Fractalis deduction together, preserving every other field. Buffs are
+applied by resolveFighter after growth/legacy weapon bonuses. Optional
+conduitEquipment maps owned character IDs to eight IDs/nulls. Validate distinct
+names and owned unlocks; equipConduit performs one-write updates without item
+consumption. Combatants clone equipment, enabling Continue/replay to rebuild
+the same effective stats without current account reads. [Details/tests](conduits.md).
+
 Starter identity remains unchanged in `last-light.profile` version1.
 Economy/progression share **`last-light.wallet` version3**:
 
@@ -143,9 +153,23 @@ Economy/progression share **`last-light.wallet` version3**:
   establishes ownership. On load, the profile starter gets a default Lv.0/Evo.1
   record only if absent. Existing records/progress survive unchanged.
   Optional legacy `squad` normalizes to the profile starter on read; new squad
-  writes require one to three distinct owned IDs, leader first.
+  writes require one to three distinct owned instance IDs, leader first.
+  Capture UUIDs may lead or share species; identical instances cannot repeat.
 - Dungeon and infusion stage values are highest unlocked stage, 1-35;
-  absent means Stage1. Captured-creature instances remain unimplemented.
+  absent means Stage1.
+- Optional `capturedCharacters` holds stable capture UUIDs, registered creature
+  IDs, manual locks and validated level/stage/retained-skill metadata.
+  Optional `characterLocks` holds starter locks. Legacy missing fields remain
+  absent; metadata-free Phase5 copies resolve in memory to their form's first
+  authored stage. Loading does not write. [Instance rules](character-instances.md).
+  Squad/Conduit maps support both starter and capture IDs; battle snapshots
+  freeze equipment/progress/kits for Continue/replay/Settings.
+  Captures use separate seeded RNG and join ordinary kill rewards/discovery/
+  receipts in one atomic write. [Capture rules/tests](dungeons-and-captures.md).
+  Phase7 evolution consumption rechecks selected ownership/mode/form/protection
+  and commits evolution, existing costs and copy removal in one write; rejects
+  stale progress and removes obsolete empty loadouts only for consumed copies.
+  No migration/retroactive charge. [Fodder spec/tests](evolution-fodder.md).
 - Version2 elemental unlocks migrate as `1 + round((min(oldStage,45)-1)*34/44)`;
   infusion unlocks as `1 + round((oldStage-1)*34/24)`, without writes on read.
   Missing infusionStages in
@@ -160,9 +184,25 @@ Economy/progression share **`last-light.wallet` version3**:
 - Every upgrade re-reads storage, verifies owned character and expected progress,
   checks cap/costs, and saves resources/progress/first-Fracture reward with one
   `setItem`. A failed write leaves all persistent values unchanged.
-- Summons re-read the wallet, exclude owned IDs, validate funds/random range,
-  and save ownership plus Lycalis deduction in one write. Squad saving validates
+- Phase9 Standard Banner is active; backend draws save cost, reward/duplicate
+  conversion and pity in one atomic write. Catalog/rates live
+  in content/standard-banner.ts. Separate lycalisSeed and optional reward.lycalis
+  use the shared exact infusion odds; eligible kill validation and all currency/
+  materials/captures/receipts commit in one wallet write. Squad saving validates
   ordered ownership and commits in one write. No changes to the profile starter.
+- Optional `bannerPity.standard: {highestStar,unownedHighestStar}` preserves two
+  independent counters in walletv3. Valid ranges0-199 and0-499; missing legacy
+  fields remain absent without load writes. `resolveBannerPull` is pure and
+  supplies the selected entry/guarantee/new counters, never grants/spends.
+  Activation must save cost, ownership/duplicate reward and pity in one atomic
+  write; rejected/failed draws do not count. [Rules](summoning-and-economy.md#independent-banner-pity).
+- Treasury reuses staged creature encounters with a separate25-stage limit,
+ 65->120 enemy levels, currency-only rewards,20% captures and per-form sale prices.
+  Final duplicate slime uses validated acquisition=`banner-duplicate` at50,
+  with Stage22 kit. Source-specific stats permit50 without altering hostile
+  Treasury level65 start or Heaven/Abyss80 start. Sale validates the latest
+  UUID/lock/squad/gear and atomically saves currency/removal.
+  See [mode/schema details](crownfall-treasury.md).
 - Battle sessions clone per-character progress and build all equipped allies.
   Continue/replay use the frozen run team, never the current menu selection.
 - Reward receipts combine a per-run UUID and enemy spawn ID. Successful kills

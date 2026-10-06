@@ -18,7 +18,8 @@ import { battleSpeed } from './battle-speed';
 import { abilityIcon } from './ability-icon';
 import { dragAction } from './battle-gesture';
 import { characterArt } from '../content/character-art';
-import { elementalDungeonRules, dungeonStageCount } from '../content/activities';
+import { elementalDungeonRules, dungeonStageCount, infusionStageCount, isCurrencyMode } from '../content/activities';
+import { elementLabel } from './element-label';
 import { unitFacingAttributes } from './unit-facing';
 import { gestureGuide, updateGestureGuide } from './gesture-guide';
 import { unitReadout } from './unit-readout';
@@ -30,19 +31,26 @@ import { infusionEncounter } from '../content/infusions';
 import { battleArtScale } from './battle-scale';
 import { lootBurst } from './battle-loot';
 import { type InfusionModeId } from '../content/activities';
+import { characterRating } from './character-rating';
+import { getConduit, type ConduitLoadouts } from '../content/conduits';
+import { type CapturedCharacter } from '../game/character-instances';
+import { capturedRating } from './owned-companion';
 
 export interface BattleSession { state: BattleState; log: string[]; runId: string; progress: CharacterProgress; teamProgress?: Partial<Record<StarterId, CharacterProgress>>; stageEvents: BattleEvent[]; entrancePending?: boolean; resultsVisible?: boolean }
 export function createSession(starterId: StarterId, progress: CharacterProgress = { level: 0, evolution: 1 }, dungeon?: { element: PlayableDungeon; stage: number } | { mode: InfusionModeId; stage: number },
-  team?: { ids: readonly StarterId[]; progress: Partial<Record<StarterId, CharacterProgress>> }): BattleSession {
+  team?: { ids: readonly string[]; progress: Partial<Record<StarterId, CharacterProgress>>; equipment?: ConduitLoadouts; captures?: readonly CapturedCharacter[] }): BattleSession {
   const seed = crypto.getRandomValues(new Uint32Array(1))[0] || 1;
   const ids = team?.ids ?? [starterId];
   const teamProgress = structuredClone(team?.progress ?? { [starterId]: progress });
-  for (const id of ids) if (!teamProgress[id]) throw new Error('Squad character progress is missing.');
+  const equipment = structuredClone(team?.equipment ?? {});
+  for (const id of ids) if (isStarterId(id) && !teamProgress[id]) throw new Error('Squad character progress is missing.');
   return {
-    state: dungeon ? 'mode' in dungeon ? createInfusionBattle(dungeon.mode, dungeon.stage, seed, starterId, progress, ids, teamProgress)
-      : createDungeonBattle(dungeon.element, dungeon.stage, seed, starterId, progress, ids, teamProgress) : createBattle(seed, ids, teamProgress),
+    state: dungeon ? 'mode' in dungeon ? createInfusionBattle(dungeon.mode, dungeon.stage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures)
+      : createDungeonBattle(dungeon.element, dungeon.stage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures) : createBattle(seed, ids, teamProgress, equipment, team?.captures),
     runId: crypto.randomUUID(), progress: { ...progress }, teamProgress, stageEvents: [], entrancePending: true,
-    log: [dungeon ? 'Dungeon ready. Defeated enemies grant level-scaled Fractalis and materials.' : 'Squad Adventure ready at wave 1. Fractalis drops increase with enemy level.'],
+    log: [dungeon && 'mode' in dungeon && dungeon.mode === 'treasury' ? 'Crownfall Treasury ready. Defeats grant Fractalis and roll20% capture chance; no material or Lycalis drops.'
+      : dungeon && 'mode' in dungeon && dungeon.mode === 'sanctuary' ? 'Rosethorn Sanctuary ready. Defeats grant ordinary Fractalis, independently roll Lycalis and20% capture chance; no materials.'
+      : dungeon ? 'Dungeon ready. Defeated enemies grant level-scaled Fractalis and materials.' : 'Squad Adventure ready at wave 1. Fractalis drops increase with enemy level.'],
   };
 }
 
@@ -464,8 +472,8 @@ export class BattleView {
     const ultimateReady = unit.side === 'ally' && actionUnavailable(this.session.state, unit, 'ultimate') === null;
     return `<button class="battle-unit ${selected ? 'selected-unit' : ''} ${unit.hp <= 0 ? 'fallen' : ''} ${ultimateReady ? 'ultimate-ready' : ''} ${unit.defending ? 'defending-unit' : ''}"
       data-unit="${unit.id}" data-side="${unit.side}" aria-pressed="${selected}" style="--element:${color};--unit-scale:${battleArtScale(this.session.state, unit)}" ${unit.hp <= 0 ? 'disabled' : ''}>
-      <span class="unit-name">${unit.name}${unit.level !== null ? ` / Lv. ${unit.level}` : ''}${unit.side === 'ally' && isStarterId(unit.definitionId) ? characterRole(unit.definitionId) : ''}</span><span class="battle-art">
-      <span class="battle-sprite"><span class="unit-idle">${art ? `<img src="${assetUrl(`${unit.side === 'ally' ? 'characters' : 'enemies'}/${art}.png`)}" alt="${unit.name}" ${unitFacingAttributes(art, unit.side)} width="960" height="960" />`
+      <span class="unit-name">${unit.name}${unit.level !== null ? ` / Lv. ${unit.level}` : ''}${unit.side === 'ally' && isStarterId(unit.definitionId) ? characterRole(unit.definitionId) : ''}${unit.side === 'enemy' ? elementLabel(unit.element) : ''}</span><span class="battle-art">
+      <span class="battle-sprite"><span class="unit-idle">${art ? `<img       src="${assetUrl(`${unit.side === 'ally' && !unit.captured ? 'characters' : 'enemies'}/${art}.png`)}" alt="${unit.name}" ${unitFacingAttributes(art, unit.side)} width="960" height="960" />`
         : '<span class="pending-enemy-art" aria-hidden="true"><span></span></span>'}</span></span>
       </span><span class="unit-readout"><span class="health-track"><span style="width:${unit.hp / unit.stats.health * 100}%"></span></span>
       ${unitReadout(unit, true)}</span>
@@ -484,18 +492,18 @@ export class BattleView {
       this.actorId = fallback.id;
     }
     const actor = state.allies.find((unit) => unit.id === this.actorId);
-    if (!actor || !isStarterId(actor.definitionId)) throw new Error('Battle actor definition is missing.');
+    if (!actor) throw new Error('Battle actor definition is missing.');
     const kit = actor.kit;
     if (!kit) throw new Error('Ally combat kit is missing.');
     const dungeon = state.infusion ? infusionEncounter(state.infusion.mode, state.infusion.stage)
       : state.dungeon ? dungeonEncounter(state.dungeon.element, state.dungeon.stage) : null;
-    const stages = dungeonStageCount;
+    const stages = state.infusion ? infusionStageCount(state.infusion.mode) : dungeonStageCount;
     const complete = !!dungeon && dungeon.stage === stages && state.phase === 'cleared';
     const results = this.session.resultsVisible !== false ? battleResults(state, this.session.stageEvents) : '';
     this.host.innerHTML = `${dungeon && !dungeon.background
       ? `<div class="battle-scenery pending-dungeon-scenery" style="--element:${dungeon.color}" aria-hidden="true"></div>`
       : `<img class="battle-scenery" src="${assetUrl(`backgrounds/${dungeon?.background ?? 'grassy-field.png'}`)}" alt="${dungeon?.name ?? 'Grassy field'} battle scenery" width="1456" height="816" />`}
-      <div class="battle-top"><div class="battle-heading"><span class="eyebrow">${state.infusion ? 'INFUSION TRIAL' : dungeon ? 'ELEMENTAL DUNGEON' : state.allies.length === 1 ? 'SOLO ADVENTURE' : 'SQUAD ADVENTURE'}</span><h1 tabindex="-1">${dungeon?.name ?? 'Adventure'}</h1></div>
+      <div class="battle-top"><div class="battle-heading"><span class="eyebrow">${state.infusion && isCurrencyMode(state.infusion.mode) ? 'CURRENCY FARM' : state.infusion ? 'INFUSION TRIAL' : dungeon ? 'ELEMENTAL DUNGEON' : state.allies.length === 1 ? 'SOLO ADVENTURE' : 'SQUAD ADVENTURE'}</span><h1 tabindex="-1">${dungeon?.name ?? 'Adventure'}</h1></div>
       <span class="battle-progress">${dungeon ? 'Stage' : 'Wave'} ${state.wave}${dungeon ? ` / ${stages}` : ''} &middot; Turn ${state.round} &middot; ${this.session.entrancePending ? 'Entering encounter' : complete ? 'Dungeon complete' : state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Encounter cleared' : 'Character defeated'}</span>
       <button id="open-battle-menu" class="battle-chrome-button" aria-haspopup="dialog" aria-controls="battle-menu">Battle menu</button>
       ${state.phase !== 'player' ? `<button data-result-show class="battle-turn-button">${state.phase === 'cleared' ? 'View victory' : 'View results'}</button>` : ''}</div>
@@ -511,14 +519,14 @@ export class BattleView {
       <header class="drawer-heading"><div><p class="eyebrow">TACTICS / REFERENCE</p><h2 id="battle-menu-heading">Battle menu</h2></div><button id="close-battle-menu" class="drawer-close" aria-label="Close battle menu">&times;</button></header>
       <div class="battle-utilities">
       <section class="battle-combat-menu"><h3>Actions / ${actor.name}</h3><p class="quiet">Choose an enemy on the battlefield, then use an action here or drag your character. Turns advance automatically when no teammate can act.</p>
-      <div class="battle-actor-picker" role="group" aria-label="Choose acting companion">${state.allies.map((ally) => `<button class="text-button" data-actor="${ally.id}" aria-pressed="${ally.id === this.actorId}" ${this.busy || ally.hp <= 0 || actionUnavailable(state, ally, 'light') !== null ? 'disabled' : ''}>${ally.name}${ally.hp <= 0 ? ' / defeated' : actionUnavailable(state, ally, 'light') !== null ? ' / unavailable' : ''}</button>`).join('')}</div>
+      <div class="battle-actor-picker" role="group" aria-label="Choose acting squad member">${state.allies.map((ally) => `<button class="text-button" data-actor="${ally.id}" aria-pressed="${ally.id === this.actorId}" ${this.busy || ally.hp <= 0 || actionUnavailable(state, ally, 'light') !== null ? 'disabled' : ''}>${ally.name}${ally.hp <= 0 ? ' / defeated' : actionUnavailable(state, ally, 'light') !== null ? ' / unavailable' : ''}</button>`).join('')}</div>
       <div class="battle-context-actions">${actionIds.map((action) => this.actionButton(state, actor, action)).join('')}</div>
       ${state.phase === 'player' ? '<button id="end-battle-turn" class="battle-chrome-button">Pass remaining actions</button>' : ''}</section>
       <section class="battle-unit-intel"><h3>Combatants</h3>${[...state.allies, ...state.enemies].map((unit) =>
-        `<article><strong>${unit.name}${unit.level !== null ? ` / Lv.${unit.level}` : ''}</strong>${unitReadout(unit)}<small>${unit.hp <= 0 ? 'Defeated' : unit.recoverThrough >= state.round ? 'Recovering after Last Flare' : unit.spent ? 'Action used' : 'Ready'}</small></article>`).join('')}</section>
+        `<article><strong>${unit.name}${unit.level !== null ? ` / Lv.${unit.level}` : ''}</strong>${elementLabel(unit.element)}        ${unit.side === 'ally' && isStarterId(unit.definitionId) ? characterRating(unit.definitionId, unit.evolution) : unit.captured ? capturedRating(unit.captured.creatureId) : ''}${unitReadout(unit)}${unit.conduits?.some((id) => id !== null) ? `<small>Conduits: ${unit.conduits.filter((id) => id !== null).map((id) => getConduit(id).name).join(', ')}</small>` : ''}<small>${unit.hp <= 0 ? 'Defeated' : unit.recoverThrough >= state.round ? 'Recovering after Last Flare' : unit.spent ? 'Action used' : 'Ready'}</small></article>`).join('')}</section>
       <details class="battle-help"><summary>Abilities and battle rules</summary>
       <button id="restart-battle" data-result-restart class="text-button">${dungeon ? 'Replay stage' : 'Restart Adventure'}</button>
-      <div class="actor-info"><strong>${actor.name}</strong><span class="passive-summary">${abilityIcon(actor.definitionId, 'passive')}<span>Passive: ${kit.passive.name} &mdash; ${kit.passive.description}</span></span></div>
+      <div class="actor-info"><strong>${actor.name}</strong><span class="passive-summary">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, 'passive') : ''}<span>Passive: ${kit.passive.name} &mdash; ${kit.passive.description}</span></span></div>
       <details class="enemy-skill-guide"><summary>Enemy skills and timing</summary>${state.enemies.map((enemy) => `<p><strong>${enemy.name} / Lv.${enemy.level}${enemy.boss ? ' / Boss' : ''}</strong></p><ul>${(enemy.enemySkills ?? []).map((skill) =>
         `<li>${skill.name}${skill.action === 'ultimate' ? ' (Ultimate)' : ''}: ${formatStat(skill.multiplier * 100)}% Attack, every ${skill.every} turns${state.round % skill.every === 0 ? ' / Due this turn' : ''}.</li>`).join('')}</ul>`).join('')}
         <p class="quiet">One attack per enemy turn. The second skill takes priority on overlapping schedules; boss ultimates take highest priority. Normal attacks on other turns.</p></details>
@@ -532,7 +540,7 @@ export class BattleView {
         Enemy turns resolve automatically whenever no living teammate has a legal action, including Last Flare recovery.
         Passing manually forfeits unused actions.
         Only ally/target selection keys remain configurable in Settings.</p>
-      <p class="quiet">${state.infusion ? `${dungeonStageCount} stages, enemy levels 80-120. Specialty materials unlock at levels 80/93/100; Epic/Legendary/Omnic bonuses from this mode's associated elements unlock at levels 80/100/115. Every fifth stage is a boss. Quantities and bonus chances grow with level. Health resets between stages; Gauge carries over.` : dungeon ? `Enemies grow from level ${elementalDungeonRules.startingLevel} to ${elementalDungeonRules.maximumLevel} across ${elementalDungeonRules.stages} stages. Every fifth stage is a boss; later enemies use stronger periodic strikes. Seeds are guaranteed; higher-rarity chances and stack sizes increase with enemy level. Health resets between stages; Gauge carries over.` : 'Enemy level follows the wave up to 120. Accelerating HP, attack and defense growth starts at twice the previous rate.'}
+      <p class="quiet">${state.infusion?.mode === 'sanctuary' ? '25 stages, enemy levels65-120. Per-enemy Lycalis:50% chance of1 at65 rising to80% chance of5 at120; ordinary Fractalis,20% capture chance, no materials. Every fifth stage is a boss; ordinary/boss payouts match. Wisp copies sell for both currencies by fixed-form rarity in Character; protected copies cannot be sold. Health resets; Gauge carries over.' : state.infusion?.mode === 'treasury' ? '25 stages, enemy levels65-120. Per-enemy Fractalis100-200 rising to1,000-2,000;20% capture chance, no material or Lycalis drops. Every fifth stage is a boss. Treasury copies sell by fixed-form rarity in Character; protected copies cannot be sold. Health resets; Gauge carries over.' : state.infusion ? `${dungeonStageCount} stages, enemy levels 80-120. Specialty materials unlock at levels 80/93/100; Epic/Legendary/Omnic bonuses from this mode's associated elements unlock at levels 80/100/115. Every fifth stage is a boss. Quantities and bonus chances grow with level. Health resets between stages; Gauge carries over.` : dungeon ? `Enemies grow from level ${elementalDungeonRules.startingLevel} to ${elementalDungeonRules.maximumLevel} across ${elementalDungeonRules.stages} stages. Every fifth stage is a boss; later enemies use stronger periodic strikes. Seeds are guaranteed; higher-rarity chances and stack sizes increase with enemy level. Health resets between stages; Gauge carries over.` : 'Enemy level follows the wave up to 120. Accelerating HP, attack and defense growth starts at twice the previous rate.'}
         Fractalis drops grow from 5-10 at level 1 to 15-30 at level 120, saved locally. Material stacks grow to 3-6 per successful drop. Quitting ends this run; ${dungeon ? 'unlocked stages can be replayed from Gameplay' : 'entering again starts at wave 1'}.
         Settings preserves the current run. Reloading resets battle progress.</p>
       </details>
@@ -675,14 +683,15 @@ export class BattleView {
       if (activityTransitionPending() || this.busy || this.disposed || this.dragging) return;
       const dungeon = this.session.state.infusion ?? this.session.state.dungeon;
       if (this.session.state.phase === 'player' && !confirm(dungeon ? 'Replay this stage? Earned rewards are kept.' : 'Restart Adventure at wave 1? Current run progress will be lost; earned Fractalis is kept.')) return;
-      const starterId = this.session.state.allies[0].definitionId;
+      const starterId = this.session.state.allies.find((ally) => isStarterId(ally.definitionId))?.definitionId ?? 'ember';
       if (!isStarterId(starterId)) throw new Error('Squad leader definition is missing.');
       const ids = this.session.state.allies.map((ally) => {
-        if (!isStarterId(ally.definitionId)) throw new Error('Squad character definition is missing.');
-        return ally.definitionId;
+        return ally.id;
       });
       const fresh = createSession(starterId, this.session.progress, dungeon, {
         ids, progress: this.session.teamProgress ?? { [starterId]: this.session.progress },
+        equipment: Object.fromEntries(this.session.state.allies.filter((ally) => ally.conduits).map((ally) => [ally.id, ally.conduits])),
+        captures: this.session.state.allies.flatMap((ally) => ally.captured ? [ally.captured] : []),
       });
       try {
         await transitionActivity(() => {
@@ -700,13 +709,12 @@ export class BattleView {
   }
 
   private actionButton(state: BattleState, actor: Combatant, action: ActionId): string {
-    if (!isStarterId(actor.definitionId)) throw new Error('Invalid ally definition.');
     if (!actor.kit) throw new Error('Ally combat kit is missing.');
     const ability = action === 'light' || action === 'defend' ? null : actor.kit.abilities[action];
     const name = ability?.name ?? (action === 'light' ? 'Normal Attack' : 'Defense');
     const reason = actionUnavailable(state, actor, action);
     return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
-      <span class="battle-action-heading">${abilityIcon(actor.definitionId, action)}<strong>${name}</strong></span>
+      <span class="battle-action-heading">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, action) : ''}<strong>${name}</strong></span>
       ${action === 'light' ? `<span>Down / +${shatterGauge.gains[action]} Shatter Gauge</span>` : action === 'defend' ? '<span>Right-click / -10% incoming damage</span>' : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'}</span>`}
       ${ability ? `<span>Costs ${shatterGauge.costs[action]} Shatter Gauge${ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
       <small>${reason ?? 'Ready'}</small></button>`;

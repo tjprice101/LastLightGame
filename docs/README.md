@@ -11,12 +11,34 @@ It is intended to make features easy to locate, extend, and hand off.
 - **Implemented:** present in code and verified; include implementation and test links.
 
 The title, fire/water/grass selection, local save, navigation, readable prologue, motion/
-hotkey settings, and solo Adventure with the saved starter are implemented.
+hotkey settings, and Adventure with the saved squad are implemented.
 All ten elemental material dungeons, saved material inventory, leveling, evolution,
 Fractalis spending and a one-time +10 Lycalis first-Fracture reward are implemented.
-Equipment, separate skill/weapon upgrades, captures and summoning remain previews.
-Seven dungeon packs await artwork; their named enemies, rewards and stage unlocks
-work with neutral interim visuals. Both infusion modes remain unavailable.
+Owned rosters and three-member mixed squads are implemented. Phase8 adds
+Heaven/Abyss Lycalis drops. Phase9 adds Crownfall Treasury, protected-safe slime
+sales and active10-Lycalis Standard draws with200/500 pity and Lv50 Omnic
+duplicate-EB slime rewards. See [Treasury](crownfall-treasury.md).
+Phase10 adds [Rosethorn Sanctuary](rosethorn-sanctuary.md):25 floors65-120,
+Lycalis farming, six divine wisp forms and protected-safe dual-currency sales.
+Its first three forms expand Standard to15 real outcomes; Character Archive
+contains42 EB evolution/creature form entries.
+Phase11 verifies cross-system economy and save behavior and run snapshots across
+all15 activity destinations. Phase12 completes integration of36 owner-supplied
+root images:27 keyed RGB cutouts/icons and nine scenery images copied unchanged.
+See the [roadmap](roadmap.md), [art workflow](art-workflow.md),
+[intake manifest](../Art/root-art-intake.json) and [handoff](handoff.md) for
+provenance, registration and validation.
+The Conduit Store sells five Common ancient-war mechanisms; per-character
+equipment applies their buffs across every battle mode. Weapon spending is
+disabled; existing bonuses persist.
+Heaven/Abyss20% captures, retained kits, mixed/all-captured squads, independent
+copy levels/Conduits and protection are implemented. Phase7 protected-safe
+creature infusion supplements evolution costs. Separate skill upgrades and
+further currency modes remain deferred.
+Unified Archives contain Character, Conduit and discovery-gated Creature
+galleries. All existing enemies have explicit visible elemental typing.
+Five dungeon packs await artwork; their named enemies, rewards and stage unlocks
+work with neutral interim visuals. Both infusion modes are playable.
 
 ## Find the right document
 
@@ -28,9 +50,13 @@ work with neutral interim visuals. Both infusion modes remain unavailable.
 | [Combat](combat.md) | Battle flow, actions, damage, effects, combat tests |
 | [Adventure](free-battle.md) | Fresh wave-1 runs, linear enemy levels/stats, all starter kits, recovery, hotkeys |
 | [Gameplay and elements](gameplay-and-elements.md) | Grouped activity tab, ten elements/dungeons, level 10-120 curve, materials, infusion modes and evolution recipes |
-| [Dungeons and captures](dungeons-and-captures.md) | Playable first-pass dungeon boundaries, reports and future captured-enemy ownership |
+| [Dungeons and captures](dungeons-and-captures.md) | Mode eligibility,20% atomic captures, retained kits, fixed-form stats/ratings and art reuse |
 | [Flaming Depths stages](flaming-depths-stages.md) | Historical Stage 1-50 encounter/skill proposal; old levels/stats superseded by elemental framework |
 | [Units and progression](units-and-progression.md) | Unit identity, roster, leveling, evolution, duplicates |
+| [Character instances](character-instances.md) | Independent copies, locks, levels/Conduits, run snapshots and legacy save compatibility |
+| [Evolution creature infusion](evolution-fodder.md) | Exact fodder counts/forms/mode mapping, protected-copy selection and atomic consumption |
+| [Conduits and store](conduits.md) | Ancient-war mechanisms, catalog, Fractalis purchases, ownership and equipment scope |
+| [Archives and enemy elements](archives-and-elements.md) | Unified galleries, discovery locks, confirmed enemy typing and separate loot routing |
 | [Summoning and economy](summoning-and-economy.md) | Banners, odds, pity, currencies, reward transactions |
 | [Content guide](content-guide.md) | Adding units, skills, enemies, quests, and banners |
 | [Technical architecture](technical-architecture.md) | Stack decisions, module boundaries, saves, online services |
@@ -42,6 +68,10 @@ work with neutral interim visuals. Both infusion modes remain unavailable.
 
 Also see the root [AI instructions](../AGENTS.md) and the existing
 [art prompt guide](../Art/midjourney-character-style-prompt.md).
+The [Archive banner prompts](../Art/Archives.md) and
+[element medallions](../Art/Element%20Emblems.md) cover Phase4 galleries and
+all ten canonical elements; supplied images are registered and tracked in the
+[root art manifest](../Art/root-art-intake.json).
 The [Starter Art prompts](../Art/Starter%20Art.md) cover the new base-form trio
 and three basic mythological enemies in the same style.
 The [Battle Scenery prompt](../Art/Battle%20Scenery.md) covers a cutesy grassy

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ACCOUNT_KEY, emptyAccount, equippedSquad, loadAccount, ownedCharacters, ownedProgress, saveAccount, setSquad,
-  summonCharacter, summonPool, upgradeCharacter, validateAccount } from './account';
+  summonCharacter, upgradeCharacter, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { levelCost } from '../content/progression';
 import { playableDungeons } from '../content/dungeons';
@@ -37,57 +37,30 @@ describe('owned roster, summoning and saved squads', () => {
       expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     }
   });
-  it.each([0, 0.49999, 0.5, 0.99999])('draws equal unowned-only pool boundaries at %s', (roll) => {
+  it.each([0, 9])('rejects unaffordable Standard draws without changing %s Lycalis or granting characters', (balance) => {
     const saved = storage();
-    fund(saved);
-    const pool = summonPool(loadAccount(saved));
-    expect(pool).toHaveLength(2);
+    fund(saved, balance);
+    const before = saved.getItem(ACCOUNT_KEY);
     const write = vi.spyOn(saved, 'setItem');
-    const result = summonCharacter(saved, () => roll);
-    expect(result.id).toBe(pool[Math.floor(roll * 2)]);
-    expect(result.account.lycalis).toBe(10);
-    expect(result.account.characters[result.id]).toEqual({ level: 0, evolution: 1, weaponRank: 0 });
-    expect(equippedSquad(result.account)).toEqual(['ember']);
-    expect(write).toHaveBeenCalledTimes(1);
-    expect(loadAccount(saved)).toEqual(result.account);
-  });
-  it('acquires both remaining characters without duplicates then rejects another draw without charging', () => {
-    const saved = storage();
-    fund(saved, 30);
-    const first = summonCharacter(saved, () => 0).id;
-    const second = summonCharacter(saved, () => 0.999).id;
-    expect(first).not.toBe(second);
-    expect(ownedCharacters(loadAccount(saved))).toHaveLength(3);
-    const before = saved.getItem(ACCOUNT_KEY);
-    expect(() => summonCharacter(saved)).toThrow('already owned');
+    expect(() => summonCharacter(saved)).toThrow('10 Lycalis');
+    expect(write).not.toHaveBeenCalled();
+    expect(ownedCharacters(loadAccount(saved))).toEqual(['ember']);
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
   });
-  it.each([-1, 1, NaN, Infinity])('rejects invalid roll %s before spending', (roll) => {
+  it('reports absent/corrupt saves without granting or charging', () => {
     const saved = storage();
-    fund(saved);
-    const before = saved.getItem(ACCOUNT_KEY);
-    expect(() => summonCharacter(saved, () => roll)).toThrow('[0, 1)');
-    expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
-  });
-  it('rejects insufficient currency, absent profile and failed persistence without granting or charging', () => {
-    const saved = storage();
-    fund(saved, 9);
-    const random = vi.fn(() => 0);
-    expect(() => summonCharacter(saved, random)).toThrow('10 Lycalis');
-    expect(random).not.toHaveBeenCalled();
-    fund(saved);
-    const before = saved.getItem(ACCOUNT_KEY);
-    vi.spyOn(saved, 'setItem').mockImplementation(() => { throw new Error('Storage unavailable'); });
-    expect(() => summonCharacter(saved, () => 0)).toThrow('Storage unavailable');
-    expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
+    saved.setItem(ACCOUNT_KEY, '{');
+    expect(() => summonCharacter(saved)).toThrow();
+    expect(saved.getItem(ACCOUNT_KEY)).toBe('{');
     saved.removeItem(SAVE_KEY);
-    expect(() => summonCharacter(saved)).toThrow('first companion');
+    expect(() => summonCharacter(saved)).toThrow('first Element-Bearer');
   });
   it('saves ordered squads, allows replacing starter as leader and removing starter entirely', () => {
     const saved = storage();
-    fund(saved);
-    summonCharacter(saved, () => 0);
-    summonCharacter(saved, () => 0);
+    const account = fund(saved);
+    account.characters.tide = { level: 0, evolution: 1 };
+    account.characters.sprout = { level: 0, evolution: 1 };
+    saveAccount(saved, account);
     setSquad(saved, ['sprout', 'tide', 'ember']);
     expect(equippedSquad(loadAccount(saved))).toEqual(['sprout', 'tide', 'ember']);
     setSquad(saved, ['tide']);
@@ -96,8 +69,9 @@ describe('owned roster, summoning and saved squads', () => {
   });
   it('does not change the equipped team when saving fails', () => {
     const saved = storage();
-    fund(saved);
-    summonCharacter(saved, () => 0);
+    const account = fund(saved);
+    account.characters.tide = { level: 0, evolution: 1 };
+    saveAccount(saved, account);
     const before = saved.getItem(ACCOUNT_KEY);
     vi.spyOn(saved, 'setItem').mockImplementation(() => { throw new Error('Storage unavailable'); });
     expect(() => setSquad(saved, ['tide'])).toThrow('Storage unavailable');
@@ -122,20 +96,21 @@ describe('owned roster, summoning and saved squads', () => {
     expect(() => loadAccount(saved)).toThrow('invalid or unsupported');
     expect(saved.getItem(ACCOUNT_KEY)).toBe('null');
   });
-  it('upgrades summoned characters independently and rejects unowned upgrades', () => {
+  it('upgrades previously acquired characters independently and rejects unowned upgrades', () => {
     const saved = storage();
     fund(saved, 10);
-    expect(() => upgradeCharacter(saved, 'tide', 'level', { level: 0, evolution: 1 })).toThrow('owned companion');
-    const { id } = summonCharacter(saved, () => 0);
+    expect(() => upgradeCharacter(saved, 'tide', 'level', { level: 0, evolution: 1 })).toThrow('Owned Element-Bearer');
+    const id = 'tide';
     const account = loadAccount(saved);
-    const cost = levelCost(id === 'tide' ? 'aquatic' : 'efflorescent', ownedProgress(account, id));
+    account.characters[id] = { level: 0, evolution: 1 };
+    const cost = levelCost('aquatic', ownedProgress(account, id));
     account.fractalis = cost.fractalis;
     account.materials = cost.materials;
     saveAccount(saved, account);
     const upgraded = upgradeCharacter(saved, id, 'level', ownedProgress(account, id));
     expect(upgraded.characters[id]?.level).toBe(1);
     expect(upgraded.characters.ember?.level).toBe(0);
-    expect(upgraded.lycalis).toBe(0);
+    expect(upgraded.lycalis).toBe(10);
   });
 });
 

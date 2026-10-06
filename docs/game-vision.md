@@ -1,12 +1,22 @@
 # Game vision
 
+## Character terminology
+
+Characters are **Element-Bearers**, not companions. Use **Owned Element-Bearers**
+for the player's character collection and **starter Element-Bearer** for the initial
+selection. Enemies/creatures remain enemies/creatures; owned captured units are
+**captured creatures**, not Element-Bearers. Mixed teams use **squad members**.
+This naming applies to
+menus, instructions, accessible labels, errors, lore references and art prompts.
+It does not change ownership, progression, combat or persistent save identities.
+
 ## Confirmed direction
 
 - Project name: **Last Light**.
 - A gacha game very similar in broad direction to **Brave Frontier**.
 - Documentation should begin early and support owner customization and AI handoffs.
 - A more cinematic presentation with many eventual animations and attack systems.
-- First implemented scope: title -> first companion choice -> basic opening menu;
+- First implemented scope: title -> first Element-Bearer choice -> basic opening menu;
   see [opening flow](opening-flow.md). Browser prototype stack selection was delegated.
 - Existing character and weapon visual guidance lives in the
   [art prompt guide](../Art/midjourney-character-style-prompt.md).

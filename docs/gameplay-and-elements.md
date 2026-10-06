@@ -3,8 +3,9 @@
 **Status:** Adventure and all ten elemental material dungeons are playable.
 Material inventory, starter leveling/evolution and first-Fracture reward are
 persistent. Soar to Heaven and Delve into the Abyss are playable with specialty
-rewards and weapon upgrades (D-050).
-Captures and creature consumption remain deferred. See D-032 and the
+rewards (weapon upgrades are now disabled; legacy bonuses remain).
+Captures and protected-safe evolution creature infusion are implemented in
+Phases6/7. See [creature infusion](evolution-fodder.md) and the
 [upgrade balance](units-and-progression.md#first-pass-philosophy-and-editable-costs).
 
 ## Activity organization
@@ -179,9 +180,10 @@ rarities:
 | Evo.4 -> Evo.5 | Rare + Epic |
 | Evo.5 -> Evo.6 | Epic + Legendary |
 
-Every transition requires **Fractalis**. The long-term design also requires
-**special infusable enemies** from the mapped mode, but the owner explicitly
-deferred creature consumption/acquisition for this first pass. "Common only" restricts the elemental
+Every transition requires **Fractalis**. Phase7 also requires captured creatures
+from the mapped mode for Evo3->4 onward:1/2/3 copies of form3+/4+/5+,
+supplementing all existing costs. Earlier transitions consume no creatures.
+"Common only" restricts the elemental
 material rarities, not the other currencies/infusion requirement.
 Legendary Hearts now supply the final evolution; Omnic Souls have no spending
 recipe yet. Exceptional characters with different chains need an
@@ -262,7 +264,8 @@ This is a drop reference, not capture/pity or a second source of rewards.
   LegendaryLv100/Stage18, OmnicLv115/Stage31. Chances grow from15%/6%/2%
   to85%/65%/40%; successful final stacks are3-6 for each rarity.
   Each successful rarity roll chooses **one** of the mode's five elements uniformly,
-  not every element. Final Fractalis is15-30. No capture, guaranteed rare pool or pity.
+  not every element. Final Fractalis is15-30. Phase6 adds20% captures per kill,
+  ordinary enemies and bosses alike; no guaranteed rare pool or pity.
   Enemy-death stacks vary visually from75-135% size, with randomized scatter and
   independent850-1849ms automatic pickup. Reduced motion keeps a static650ms
   receipt. Cosmetic rolls never alter awarded quantities or persistence.
@@ -277,9 +280,10 @@ This is a drop reference, not capture/pity or a second source of rewards.
   maximum10; Attack is grown Attack times `1+.02*rank`.
   Specialty spending follows affinity, not entry restrictions. All current
   starters use Heaven materials; Abyss helpers already cover its five elements.
-  Creature consumption stays deferred.
-  Enemy visual evolution does not enable captures, fodder evolution or mid-fight
-  transformation mechanics.
+  Phase7 consumes captured creatures alongside existing evolution costs; see
+  [creature infusion](evolution-fodder.md) for counts/forms/mode/protection rules.
+  Captures retain their defeated fixed form/level/skills, never evolve or
+  transform mid-fight. See [captured creatures](dungeons-and-captures.md).
 
 ## Save migration for the 35-floor rules
 
@@ -304,8 +308,10 @@ Upgrade prices and affinity rules are unchanged; no rewards are granted by migra
 - [Navigation](../src/main.ts) connects Gameplay, Adventure, Story and Events.
 
 Farming/evolution now uses [validated atomic account transactions](../src/game/account.ts)
-and [failure/retry tests](../src/game/account.test.ts). Creature inventory,
-captures, five remaining elemental art packs and production balance remain future work.
+and [failure/retry tests](../src/game/account.test.ts). Heaven/Abyss capture
+inventory/kits, mixed squads and independent levels/Conduits are implemented.
+Protected-safe fodder consumption is implemented; five remaining elemental art
+packs and production balance remain future work.
 Mode configurations must share existing combat resolution rather than fork it.
 Mode encounters/drops live in [infusions](../src/content/infusions.ts), with
 [regression tests](../src/content/infusions.test.ts). Keep this first-pass balance editable.

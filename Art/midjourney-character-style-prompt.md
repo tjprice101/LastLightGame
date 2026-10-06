@@ -15,6 +15,9 @@ For ten dungeon enemies in ascending visual power, see
 [Flaming Depths](Flaming%20Depths.md). Those are distinct creatures, not evolutions.
 For all ten elemental dungeons, see the [complete dungeon art packs](dungeons/README.md).
 Each file combines monsters, Seed-to-Soul materials, banner and arena prompts.
+For the ten framed element symbols, see [Element Emblems](Element%20Emblems.md).
+For the unified gallery headers, see [Archives](Archives.md).
+For Omnic-tier16:9 summoning artpieces, see [Summoning Banners](Summoning%20Banners.md).
 
 Reference target: **compact gacha JRPG unit illustration**, matching the supplied pirate chibi reference, not a cinematic anime battle portrait. Use a rounded oversized head, tiny torso, short limbs, and approximately 2.5–3-head-tall proportions. The character must have **only eyes as facial features**: no nose, mouth, eyebrows, or other facial marks. Render with clean contours, crisp cel shading and smooth painted highlights, not gritty sketching. Use a **plain solid-color background** with no scenery, gradient, texture, or cast-shadow backdrop. Keep the entire character and weapon visible. Aim for the character itself to occupy roughly one third of the canvas height, while its weapon, flowing costume, and separate curling effects extend much farther around it. Leave background-color gaps between effects and a background-color margin around the whole illustration. Character renders use **4:3** (1:1 only if a square card asset is specifically needed).
 
@@ -43,12 +46,46 @@ photographic materials, gritty textures or cinematic character splash-art framin
 - Scenery: full-bleed3:1 banners or16:9 arenas, matching linework/color treatment
   with their authored atmospheric lighting. Solid key backgrounds/no-glow cutout
   restrictions do not turn scenery into isolated icons.
+  Summoning banners specifically use16:9 full-bleed Omnic-tier artpieces, not
+  the3:1 dungeon/archive header format.
 
 Use the same actual approved chibi reference across packs: append
 `--sref <approved_reference_image_url> --sw 400` for cutouts or`--sw 200` for
 scenery. Replace the placeholder; do not invent a reference URL. Existing
 approved artwork must still be compared visually because text cannot guarantee
 the generated result. These prompt edits do not repaint supplied runtime assets.
+
+## Game-wide rarity tone: Common to Omnic
+
+**Owner-confirmed direction:** As rarity rises, designs become less cutesy and
+more epic, majestic, formidable and awe-inspiring. This applies across the game,
+not just Conduits. The rendering style stays the same; compact proportions do
+not require babyish designs or cute prompt language at higher rarities.
+
+| Rarity | Design and prompt tone |
+| --- | --- |
+| Common | Simple, restrained and approachable; modest gear and limited ornamentation. |
+| Uncommon | More capable and distinctive; emerging elemental identity and stronger silhouettes. |
+| Rare | Impressive, commanding and heroic; developed equipment and elemental motifs. |
+| Epic | Formidable, magnificent and battle-ready; dramatic poses and elaborate signature features. |
+| Legendary | Majestic, extraordinary and awe-inspiring; masterful equipment and grand elemental structures. |
+| Omnic | Supreme, transcendent elemental masterpiece; breathtaking presence and fully realized signature design. |
+
+Progressively reduce words such as "cute", "adorable", "baby", "little",
+"playful" and "toy-like" in high-rarity subject descriptions. Favor "formidable",
+"majestic", "regal", "magnificent", "transcendent" and "awe-inspiring" where
+appropriate to the subject. Escalate design, posture, weapons, machinery,
+ornamentation and bounded elemental effects, not merely palette or adjective
+count. Keep authored species, recognizable identity, palettes and elemental
+themes intact; not every subject needs crowns, wings or the same ornamentation.
+
+Do not interpret epic tone as realistic anatomy, gritty rendering, full-frame
+cinematic splash art or a different art style. Preserve clean anime contours,
+crisp cel shading, smooth painted highlights, compact species-appropriate
+proportions, eyes-only character faces and complete silhouettes with padding.
+Cutout backgrounds and non-emissive source-art rules remain in force.
+Rarity, not star count alone, controls this tone; the current 5-star starters
+still begin in restrained Common forms.
 
 ## Core Master Prompt (copy/paste base)
 

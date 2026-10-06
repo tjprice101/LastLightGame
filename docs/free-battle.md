@@ -4,9 +4,9 @@
 saved squad of one to three independently controllable owned characters.
 
 Each battle entry snapshots the ordered squad and individual progress. Character
-click/gestures, selection hotkeys and Battle menu's acting-companion buttons
+click/gestures, selection hotkeys and Battle menu's acting-Element-Bearer buttons
 select allies. Spent, recovering and defeated characters cannot act; the view
-defaults to a ready living companion when the current selection is unavailable.
+defaults to a ready living Element-Bearer when the current selection is unavailable.
 The enemy turn begins only after all living teammates are unable to act.
 Continue/replay keep the full run team, regardless of later menu changes.
 Multi-member mobile formations cap portrait height relative to the viewport,

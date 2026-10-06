@@ -3,6 +3,7 @@ import { materialArt, materialName } from '../content/dungeon-art';
 import { assetUrl } from './portrait';
 import { lootRoll } from '../content/loot-random';
 import { currencyArt } from './currency-icon';
+import { getCreature } from '../content/creatures';
 
 export function lootMotion(random: () => number = Math.random) {
   return { size: .75 + lootRoll(random) * .6, scatter: (lootRoll(random) - .5) * 14,
@@ -13,6 +14,7 @@ export function lootItems(event: BattleEvent) {
   if (event.kind !== 'reward') throw new Error('Loot presentation requires a reward event.');
   return [
     { id: 'fractalis', name: 'Fractalis', amount: event.amount, art: undefined, color: '#ffffff' },
+    ...(event.lycalis ? [{ id: 'lycalis', name: 'Lycalis', amount: event.lycalis, art: undefined, color: '#ffffff' }] : []),
     ...Object.entries(event.materials ?? {}).map(([id, amount]) => ({
       id, name: materialName(id), amount, art: materialArt(id),
       color: id.startsWith('heavens-') ? '#ff7474' : id.startsWith('abyss-') ? '#ff70dd'
@@ -20,12 +22,15 @@ export function lootItems(event: BattleEvent) {
           : id.endsWith('-epic') ? '#c898ff' : id.endsWith('-rare') ? '#79caff'
             : id.endsWith('-uncommon') ? '#9ee899' : '#ffffff',
     })),
+    ...(event.capture ? [{ id: `capture:${event.capture.creatureId}`, name: `${getCreature(event.capture.creatureId).name} creature`,
+      amount: 1, art: getCreature(event.capture.creatureId).art, color: '#f3df9b' }] : []),
   ];
 }
 
 export function lootArt(item: { id: string; art?: string }): string | undefined {
   return item.id === 'fractalis' ? currencyArt('fractalis')
-    : item.art ? assetUrl(`materials/${item.art}.png`) : undefined;
+    : item.id === 'lycalis' ? currencyArt('lycalis')
+    : item.art ? assetUrl(`${item.id.startsWith('capture:') ? 'enemies' : 'materials'}/${item.art}.png`) : undefined;
 }
 
 export function lootBurst(event: BattleEvent, random: () => number = Math.random): HTMLElement {

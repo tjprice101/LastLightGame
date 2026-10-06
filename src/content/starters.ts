@@ -1,6 +1,7 @@
 export const starters = [
   {
     id: 'ember',
+    stars: 5,
     name: 'Infernis',
     role: 'Attacker',
     art: 'infernis',
@@ -19,6 +20,7 @@ export const starters = [
   },
   {
     id: 'tide',
+    stars: 5,
     name: 'Tizu',
     role: 'Tank',
     art: 'tizu',
@@ -37,6 +39,7 @@ export const starters = [
   },
   {
     id: 'sprout',
+    stars: 5,
     name: 'Flora',
     role: 'Healer/Support',
     art: 'flora',

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { playableDungeons } from '../content/dungeons';
 import { BattleView, createSession } from './battle-view';
+import { elementLabel } from './element-label';
 
 function markup(session: ReturnType<typeof createSession>): string {
   const menu = { addEventListener: () => {}, close: () => {}, showModal: () => {} };
@@ -13,7 +14,7 @@ function markup(session: ReturnType<typeof createSession>): string {
 
 describe('shared battle chrome', () => {
   const progress = { level: 105, evolution: 6 };
-  it('renders the complete squad and accessible acting-companion selector', () => {
+  it('renders the complete squad and accessible acting Element-Bearer selector', () => {
     const session = createSession('tide', progress, undefined, { ids: ['tide', 'sprout', 'ember'],
       progress: { tide: progress, sprout: { level: 10, evolution: 1 }, ember: progress } });
     const html = markup(session);
@@ -23,7 +24,7 @@ describe('shared battle chrome', () => {
     session.state.allies.find((ally) => ally.id === 'ember')!.spent = true;
     expect(markup(session)).toContain('data-actor="tide" aria-pressed="true"');
   });
-  it('shows enemy levels on field nameplates in Adventure, every dungeon and both infusion modes', () => {
+  it('shows enemy levels and elements on field nameplates and in reference menus across all modes', () => {
     const sessions = [
       createSession('ember', progress),
       ...playableDungeons.flatMap((element) => [1, 35].map((stage) => createSession('ember', progress, { element, stage }))),
@@ -32,7 +33,9 @@ describe('shared battle chrome', () => {
     for (const session of sessions) {
       const html = markup(session);
       for (const enemy of session.state.enemies) {
-        expect(html).toContain(`<span class="unit-name">${enemy.name} / Lv. ${enemy.level}</span>`);
+        expect(html).toContain(`<span class="unit-name">${enemy.name} / Lv. ${enemy.level}${elementLabel(enemy.element)}</span>`);
+        const intel = html.slice(html.indexOf('class="battle-unit-intel"'));
+        expect(intel).toContain(elementLabel(enemy.element));
       }
       expect(html).toContain('<span class="unit-name">Infernis / Lv. 105');
       expect(html).not.toContain('Lv. null');

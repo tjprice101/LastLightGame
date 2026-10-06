@@ -1,0 +1,28 @@
+.conduit-store-banner { position: relative; isolation: isolate; overflow: hidden; padding: clamp(18px, 3vw, 32px); border: 1px solid #ffffff30; border-radius: 18px; background-image: linear-gradient(90deg, #111b 0%, #1119 45%, #1114 100%), var(--conduit-store-art); background-size: cover; background-position: center; }
+.conduit-store-banner h2 { font: 600 clamp(24px, 3vw, 36px) Georgia, serif; margin: 8px 0 14px; }
+.conduit-store p { line-height: 1.6; }
+.conduit-catalog { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; margin-top: 20px; }
+.conduit-card { min-width: 0; display: flex; flex-direction: column; padding: 20px; border: 1px solid #ffffff25; border-radius: 16px; background: #1b1b1ee8; }
+.conduit-card h3 { margin: 12px 0 6px; font: 600 22px Georgia, serif; }
+.conduit-card p { font-size: 13px; overflow-wrap: anywhere; }
+.conduit-card-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.conduit-card-heading small { color: #c3c3ca; }
+.conduit-mechanism { display: grid; justify-items: center; gap: 12px; padding: 22px; margin-bottom: 18px; border: 1px dashed #ffffff25; border-radius: 12px; background: #ffffff03; color: #bfc5cf; }
+.conduit-mechanism span { font-size: 11px; letter-spacing: .08em; }
+.conduit-icon { display: block; width: 48px; height: 48px; flex: 0 0 48px; object-fit: contain; }
+.conduit-mechanism .conduit-icon { width: 90px; height: 90px; }
+.conduit-effect { padding: 8px 12px; border-left: 2px solid #ddd; background: #ffffff06; color: #fff; }
+.conduit-quantity { margin-top: auto; font-variant-numeric: tabular-nums; }
+.conduit-price { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.conduit-card .primary-button { min-height: 44px; padding: 12px; white-space: normal; }
+.conduit-section-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.conduit-owned-list { list-style: none; padding: 0; display: grid; gap: 12px; }
+.conduit-owned-list li { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 12px; border: 1px solid #ffffff25; border-radius: 12px; }
+.conduit-owned-list li > div { flex: 1 1 140px; min-width: 0; }
+.conduit-owned-list strong, .conduit-owned-list small { display: block; overflow-wrap: anywhere; }
+.conduit-owned-list li > span { overflow-wrap: anywhere; max-width: 100%; font-variant-numeric: tabular-nums; }
+.conduit-equipment-slot { min-width: 0; }
+.conduit-equipment-slot select { width: 100%; min-width: 0; min-height: 44px; padding: 6px; border: 1px solid #ffffff40; border-radius: 8px; background: #252529; color: #fff; font: 12px "Segoe UI", sans-serif; }
+.conduit-equipment-slot label { display: block; margin-bottom: 8px; }
+.conduit-equipment-slot > span { display: block; white-space: normal; overflow-wrap: anywhere; margin-top: 8px; }
+.sanctuary-shell .character-hub .artifact-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); }
