@@ -2,10 +2,70 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { portraitCue, portraitCutin } from './battle-cutin';
 import { BattleView } from './battle-view';
 import { act, createBattle, createDungeonBattle, createInfusionBattle, endTurn } from '../game/battle';
+import { unitFacingAttributes } from './unit-facing';
+import { readdirSync } from 'node:fs';
+import { assetUrl } from './portrait';
 
 afterEach(() => vi.unstubAllGlobals());
 
 describe('skill portrait cut-ins', () => {
+  it('shares field-facing metadata for every supplied portrait on both sides, including captured allies', () => {
+    const panel = { className: '', setAttribute: vi.fn(), style: { setProperty: vi.fn() }, innerHTML: '',
+      querySelector: () => ({ textContent: '' }) };
+    vi.stubGlobal('document', { createElement: () => panel });
+    const battle = createBattle();
+    for (const category of ['characters', 'enemies'] as const) {
+      for (const filename of readdirSync(new URL(`../../public/assets/${category}/`, import.meta.url))) {
+        if (!filename.endsWith('.png')) continue;
+        const art = filename.slice(0, -4);
+        for (const side of category === 'characters' ? ['ally'] as const : ['ally', 'enemy'] as const) {
+          const unit = { ...(side === 'ally' ? battle.allies[0] : battle.enemies[0]), side,
+            captured: category === 'enemies' && side === 'ally'
+              ? { instanceId: 'capture:00000000-0000-4000-8000-000000000001', creatureId: 'infusion:heavens:0', locked: false }
+              : undefined };
+          portraitCutin(unit, { name: 'Facing check', duration: 3500, power: 1, ultimate: false }, art, '#fff');
+          expect(panel.innerHTML).toContain(unitFacingAttributes(art, side));
+          expect(panel.innerHTML).toContain(`/${category}/${art}.png`);
+          expect(panel.innerHTML).toContain(`src="${assetUrl(`${category}/${art}.png`)}"`);
+          expect(panel.innerHTML.match(/data-mirrored=/g)).toHaveLength(1);
+          expect(panel.innerHTML).toMatch(/<img[^>]+data-facing=/);
+        }
+      }
+    }
+  });
+
+  it.each(['ally', 'enemy'] as const)('animates the %s sprite wrapper, never the facing image, during an attack and return', async (side) => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false }));
+    vi.stubGlobal('document', { documentElement: { dataset: { motion: 'system' } }, createElement: () => ({
+      dataset: {}, className: '', innerHTML: '', setAttribute: vi.fn(), remove: vi.fn(),
+      classList: { add: vi.fn() }, style: { setProperty: vi.fn(), opacity: '' },
+    }) });
+    const state = createDungeonBattle('chaotic', 35, 1, 'ember', { level: 105, evolution: 6 });
+    const combatant = side === 'ally' ? state.allies[0] : state.enemies[0];
+    const defender = side === 'ally' ? state.enemies[0] : state.allies[0];
+    const image = { dataset: { facing: side === 'ally' ? 'left' : 'right' } };
+    const sprite = { image };
+    const bounds = { x: side === 'ally' ? 500 : 100, y: 100, width: 200, height: 200 };
+    const art = { append: vi.fn(), getBoundingClientRect: () => bounds };
+    const source = { getBoundingClientRect: () => bounds, style: { getPropertyValue: () => '#fff' },
+      querySelector: (selector: string) => selector === '.battle-sprite' ? sprite : art };
+    const target = { getBoundingClientRect: () => ({ ...bounds, x: 600 - bounds.x }),
+      querySelector: () => art };
+    const view = Object.create(BattleView.prototype);
+    Object.assign(view, { session: { state }, disposed: false, play: vi.fn(async () => {}),
+      host: { append: vi.fn(), querySelector: (selector: string) => selector.includes(combatant.id) ? source
+        : selector.includes(defender.id) ? target : { textContent: '' } } });
+    const impact = vi.fn(async () => {});
+    await Reflect.apply(Reflect.get(BattleView.prototype, 'animate'), view, [{
+      kind: 'attack', source: combatant.id, target: defender.id, action: 'light',
+      message: 'Facing check', amount: 0, critical: false,
+    }, impact]);
+    expect(view.play.mock.calls.filter(([node]: [unknown]) => node === sprite)).toHaveLength(2);
+    expect(view.play.mock.calls.some(([node]: [unknown]) => node === image)).toBe(false);
+    expect(image.dataset.facing).toBe(side === 'ally' ? 'left' : 'right');
+    expect(impact).toHaveBeenCalledOnce();
+  });
+
   it('shows character skills and supportive abilities with consistent duration and actual form progression', () => {
     const state = createBattle(1, ['tide'], { tide: { level: 105, evolution: 6 } });
     state.allies[0].shatter = 100;
@@ -21,7 +81,7 @@ describe('skill portrait cut-ins', () => {
     expect(portraitCue(young, skill)?.power).toBe(0);
   });
 
-  it('only shows enemy skills from50 and distinguishes boss ultimates', () => {
+  it('only shows enemy skills from 50 and distinguishes boss ultimates', () => {
     const early = createDungeonBattle('infernic', 1, 1, 'ember', { level: 0, evolution: 1 });
     early.round = 3;
     const event = endTurn(early).events.find((event) => event.kind === 'attack')!;

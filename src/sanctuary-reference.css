@@ -1,0 +1,275 @@
+.sanctuary-shell {
+  --menu-edge: #ffffff26;
+  --menu-surface: #191919eb;
+  max-width: 1600px;
+  padding-bottom: calc(112px + env(safe-area-inset-bottom));
+}
+.sanctuary-shell .sanctuary-header {
+  display: grid;
+  grid-template-columns: minmax(190px, 1fr) auto minmax(360px, 1fr);
+  align-items: center;
+  gap: 20px;
+  padding: 22px 30px;
+}
+.sanctuary-shell .sanctuary-brand { display: flex; align-items: center; gap: 18px; flex-wrap: nowrap; }
+.sanctuary-shell .sanctuary-brand .brand-mark { display: grid; place-items: center; width: 44px; height: 44px; min-width: 44px; border: 1px solid var(--menu-edge); transform: rotate(-8deg); font-size: 15px; }
+.sanctuary-shell .sanctuary-brand strong { font-size: 22px; font-weight: 400; }
+.sanctuary-shell .sanctuary-brand small { display: block; margin-top: 4px; color: #ababab; font-size: 12px; }
+.sanctuary-shell .sanctuary-header .sanctuary-title { grid-column: 2; grid-row: 1; text-align: center; }
+.sanctuary-shell .sanctuary-title .eyebrow { display: none; }
+.sanctuary-shell .sanctuary-title h1 { margin: 0; font-size: 28px; }
+.sanctuary-shell .sanctuary-header .sanctuary-wallet { grid-column: 3; grid-row: 1; display: flex; justify-content: flex-end; align-items: center; flex-wrap: nowrap; gap: 8px; min-width: 0; }
+.sanctuary-shell .sanctuary-header .currency-strip { display: flex; flex: 1 1 auto; gap: 8px; min-width: 0; }
+.sanctuary-shell .sanctuary-header .currency-strip > button { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; min-height: 48px; padding: 7px 12px; border: 1px solid var(--menu-edge); border-radius: 100px; background: #ffffff05; color: inherit; text-align: left; }
+.sanctuary-shell .sanctuary-header .currency-strip strong { display: block; min-width: 0; font-size: 14px; font-weight: 400; overflow-wrap: anywhere; }
+.sanctuary-shell .sanctuary-header .currency-strip small { display: block; color: #ababab; font-size: 10px; }
+.sanctuary-shell .sanctuary-header .currency-icon { width: 26px; height: 26px; flex: 0 0 26px; }
+.sanctuary-shell .sanctuary-header .sanctuary-wallet > [data-information] { display: grid; place-items: center; flex: 0 0 44px; width: 44px; min-width: 44px; height: 44px; padding: 0; border: 1px solid var(--menu-edge); border-radius: 50%; background: #ffffff05; font-size: 20px; }
+.sanctuary-shell .sanctuary-menu-trigger .ui-icon { width: 20px; height: 20px; }
+.sanctuary-shell .sanctuary-content { padding: 22px 30px; }
+.sanctuary-shell .sanctuary-dock {
+  position: fixed;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  width: min(430px, calc(100% - 28px));
+  padding: 7px;
+  border: 1px solid #ffffff30;
+  border-radius: 22px;
+  background: #141414f5;
+  box-shadow: 0 12px 36px #0008;
+  backdrop-filter: blur(16px);
+}
+.sanctuary-dock button { display: grid; place-items: center; gap: 6px; min-width: 0; min-height: 68px; padding: 8px; border: 0; border-radius: 15px; background: none; color: #bcbcbc; font-size: 12px; }
+.sanctuary-dock button .ui-icon { width: 22px; height: 22px; }
+.sanctuary-dock button[aria-current="page"] { background: #f1f0e9; color: #161616; }
+.sanctuary-shell :is(button, summary, a):focus-visible { outline: 2px solid #f1f0e9; outline-offset: 3px; }
+.sanctuary-shell [hidden] { display: none !important; }
+.sanctuary-shell .home-hub { grid-template-columns: 260px minmax(0, 1fr) 250px; grid-template-areas: "destinations identity squad"; gap: 24px; align-items: center; min-height: min(630px, calc(100svh - 200px)); }
+.sanctuary-shell .home-destinations { display: grid; gap: 16px; align-self: center; }
+.sanctuary-shell .home-banner-promotion { position: relative; border: 1px solid var(--menu-edge); border-radius: 18px; overflow: hidden; min-width: 0; }
+.sanctuary-shell .home-banner { height: 196px; min-height: 196px; justify-content: flex-end; padding: 22px 16px; border: 0; border-radius: 0; overflow: hidden; }
+.sanctuary-shell .home-summon-banner::before { opacity: .75; background-position: center; }
+.sanctuary-shell .home-banner small { position: absolute; left: 14px; top: 14px; max-width: calc(100% - 28px); padding: 6px 10px; background: #161616bf; border: 1px solid #ffffff30; border-radius: 100px; font-size: 11px; }
+.sanctuary-shell .home-banner strong { font-size: 23px; line-height: 1.12; letter-spacing: normal; }
+.sanctuary-shell .home-banner > span { font-size: 12px; line-height: 1.5; }
+.sanctuary-shell .home-banner > span { display: flex; align-items: center; gap: 6px; }
+.sanctuary-shell .home-banner > span .currency-icon { width: 20px; height: 20px; flex: 0 0 20px; }
+.sanctuary-shell .home-banner-promotion > .banner-showcase-control { position: absolute; top: 14px; right: 12px; width: auto; margin: 0; }
+.sanctuary-shell .home-banner-promotion > .banner-showcase-control > button { width: auto; min-height: 44px; padding: 8px 12px; background: #181818d9; font-size: 12px; border-radius: 100px; }
+.sanctuary-shell .home-banner small { max-width: calc(100% - 114px); }
+.sanctuary-shell .home-hub .hub-showcase { padding: 0; justify-content: center; gap: 0; overflow: visible; }
+.sanctuary-shell .home-hub .hub-showcase::before,
+.sanctuary-shell .home-hub .hub-showcase::after { display: none; }
+.sanctuary-shell .home-hub .hub-portrait { width: min(100%, 610px, max(330px, calc(100svh - 380px)))); max-width: 100%; padding: 0; margin: 0; }
+.sanctuary-shell .home-hub .hub-portrait .character-idle { width: 100%; height: 100%; }
+.sanctuary-shell .home-hub .hub-portrait img { max-height: none; object-fit: contain; }
+.sanctuary-identity-plate { position: relative; z-index: 1; width: min(100%, 460px); box-sizing: border-box; padding: 14px 24px; margin-top: -36px; border: 1px solid var(--menu-edge); border-radius: 20px; background: #191919b8; backdrop-filter: blur(12px); }
+.sanctuary-shell .home-hub .hub-showcase h2 { margin: 6px 0; font-size: clamp(30px, 3.4vw, 48px); line-height: 1.05; }
+.sanctuary-shell .home-hub .form-prefix { display: block; margin-bottom: 6px; font-size: 16px; color: #bcbcbc; }
+.sanctuary-shell .home-hub .element-pill { margin: 0; padding: 0; border: 0; background: none; color: #c9c9c9; }
+.sanctuary-shell .home-hub .hub-description { margin: 8px auto 0; font-size: 13px; line-height: 1.6; }
+.sanctuary-shell .home-hub .upgrade-progress { font-size: 12px; margin: 8px 0; }
+.sanctuary-shell .home-vow { font-size: 13px; color: #bcbcbc; margin: 8px 0; }
+.sanctuary-shell .home-character-link { min-height: 44px; padding: 8px 14px; margin-top: 4px; border-radius: 100px; font-size: 12px; }
+.sanctuary-shell .home-squad { align-self: center; gap: 12px; }
+.sanctuary-shell .home-squad h2 { font-size: 18px; font-weight: 400; }
+.sanctuary-shell .home-team { gap: 10px; }
+.sanctuary-shell .team-companion { min-height: 95px; padding: 10px; border-radius: 15px; }
+.sanctuary-shell .team-companion .character-idle { width: 64px; height: 64px; flex: 0 0 64px; }
+.sanctuary-shell .team-companion strong { font-size: 14px; }
+.sanctuary-shell .team-companion small { font-size: 11px; }
+.sanctuary-shell .home-squad > .text-button { min-height: 44px; }
+.sanctuary-shell .home-squad .primary-button { width: 100%; min-height: 52px; }
+.sanctuary-shell .sanctuary-team-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; padding: 0; border: 0; }
+.sanctuary-shell .sanctuary-team-tabs button,
+.sanctuary-shell .banner-rate-filters button { min-width: 44px; min-height: 44px; padding: 10px 18px; border: 1px solid var(--menu-edge); border-radius: 100px; background: #ffffff04; color: #bcbcbc; }
+.sanctuary-shell .sanctuary-team-tabs button[aria-pressed="true"],
+.sanctuary-shell .banner-rate-filters button[aria-pressed="true"] { background: #f1f0e9; color: #161616; border-color: #f1f0e9; }
+.sanctuary-shell .character-roster-strip .owned-roster { flex-wrap: nowrap; overflow-x: auto; padding: 4px; margin: 0 0 16px; }
+.sanctuary-shell .character-roster-strip .roster-character { flex: 0 0 210px; min-height: 76px; padding: 10px; }
+.sanctuary-shell .character-hub .character-roster-strip { width: 100%; min-width: 0; margin-top: 16px; text-align: left; }
+.sanctuary-shell .character-hub { grid-template-columns: minmax(0, 1fr) 450px; grid-template-areas: "identity detail"; align-items: start; }
+.sanctuary-shell .character-hub .hub-showcase { grid-area: identity; grid-column: auto; grid-row: auto; padding: 0; position: sticky; top: 18px; }
+.sanctuary-shell .character-hub .hub-portrait { width: min(100%, 680px); }
+.sanctuary-shell .character-hub .hub-showcase h2 { font-size: clamp(32px, 3.4vw, 50px); }
+.sanctuary-shell .character-hub .character-control-panel { grid-area: detail; border-radius: 20px; }
+.sanctuary-shell .character-hub .hub-detail { padding: 18px; }
+.sanctuary-shell .character-hub .hub-detail h2 { font-size: 24px; margin: 0 0 18px; }
+.sanctuary-shell .character-hub .character-stat-groups,
+.sanctuary-shell .character-hub .character-ability-grid { grid-template-columns: minmax(0, 1fr); }
+.sanctuary-shell .character-hub .character-stat-groups > * { grid-column: auto; grid-row: auto; padding: 0; border: 0; background: none; }
+.sanctuary-shell .character-hub .character-stat-groups .hub-stats { grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); }
+.sanctuary-shell .character-kit-navigation summary { min-height: 44px; padding: 10px 0; font-size: 13px; cursor: pointer; }
+.sanctuary-shell .character-kit-navigation[open] > div { margin-top: 8px; }
+.sanctuary-shell .character-protection { margin-top: 18px; }
+.sanctuary-shell .character-protection > summary { min-height: 44px; padding: 12px; cursor: pointer; }
+.sanctuary-shell .squad-hub { padding: 0; border: 0; background: none; }
+.sanctuary-shell .squad-heading h2 { font-size: 26px; font-weight: 400; }
+.sanctuary-shell .squad-slots { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.sanctuary-shell .squad-slot { align-items: stretch; padding: 18px; border-radius: 20px; background: var(--menu-surface); }
+.sanctuary-shell .squad-member-preview { display: flex; align-items: center; flex-direction: column; width: 100%; min-height: 280px; padding: 12px; border: 1px dashed #ffffff20; border-radius: 16px; background: #ffffff03; color: inherit; }
+.sanctuary-shell .squad-member-preview .squad-portrait { width: min(100%, 200px); }
+.sanctuary-shell .squad-member-preview > strong { font-size: 18px; }
+.sanctuary-shell .squad-remove { width: 100%; min-height: 44px; margin: 12px 0; }
+.sanctuary-shell .squad-roster { padding: 18px; border: 1px solid var(--menu-edge); border-radius: 20px; background: var(--menu-surface); }
+.sanctuary-shell .squad-roster .roster-character { flex: 0 1 270px; }
+.sanctuary-shell .squad-roster .roster-character > small { margin-left: auto; }
+.sanctuary-shell .gameplay-hub { grid-template-columns: 270px minmax(0, 1fr); column-gap: 24px; }
+.sanctuary-shell .gameplay-hub .activity-group { border-radius: 22px; background: var(--menu-surface); padding: 22px; border: 1px solid var(--menu-edge); }
+.sanctuary-shell .gameplay-hub .activity-group > h2 { margin: 0 0 18px; font-size: 28px; font-weight: 400; }
+.sanctuary-shell .gameplay-hub .activity-group > h2 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); }
+.sanctuary-shell .gameplay-hub .activity-categories { background: none; border: 0; padding: 0; }
+.sanctuary-shell .gameplay-hub .activity-categories a { border: 1px solid var(--menu-edge); border-radius: 15px; padding: 14px; min-height: 70px; }
+.sanctuary-shell .gameplay-hub .activity-categories a[aria-current="true"] { background: #f1f0e9; color: #151515; border-color: #f1f0e9; }
+.sanctuary-shell .gameplay-hub .activity-categories a[aria-current="true"] small { color: #454545; }
+.sanctuary-shell .gameplay-hub .activity-picker { display: flex; flex-wrap: wrap; gap: 8px; }
+.sanctuary-shell .gameplay-hub .activity-picker button { width: auto; min-height: 44px; border-radius: 100px; padding: 10px 16px; }
+.sanctuary-shell .gameplay-hub .activity-card { display: flex; flex-direction: column; align-items: stretch; gap: 14px; padding: 0; border: 0; background: none; overflow: visible; }
+.sanctuary-shell .gameplay-hub .activity-card > h3 { font-size: 28px; margin: 0; font-weight: 400; }
+.sanctuary-shell .gameplay-hub .activity-card > p { margin: 0; }
+.sanctuary-shell .activity-banner { position: relative; overflow: hidden; border-radius: 16px; }
+.sanctuary-shell .activity-banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 25%, #111b); pointer-events: none; }
+.sanctuary-shell .activity-banner > h3 { position: absolute; z-index: 1; left: 22px; right: 22px; bottom: 18px; margin: 0; font-size: clamp(24px, 3vw, 38px); line-height: 1.1; overflow-wrap: anywhere; }
+.sanctuary-shell .activity-banner .dungeon-banner { display: block; width: 100%; height: clamp(110px, 20svh, 200px); border-radius: 0; object-fit: cover; margin: 0; }
+.sanctuary-shell .gameplay-hub #gameplay-adventure .activity-card { padding-top: 220px; position: relative; }
+.sanctuary-shell .gameplay-hub #gameplay-adventure .activity-card::before { height: 196px; opacity: .8; background: var(--adventure-art) center / cover; border-radius: 16px; }
+.activity-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; }
+.activity-facts > div { min-width: 0; padding: 14px; border: 1px solid var(--menu-edge); border-radius: 14px; background: #ffffff04; }
+.activity-facts dt { font-size: 12px; color: #aaa; margin-bottom: 6px; }
+.activity-facts dd { margin: 0; font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+.sanctuary-shell .gameplay-hub .activity-card > .primary-button { width: 100%; min-height: 52px; margin-top: 10px; }
+.sanctuary-shell .activity-entry { position: sticky; bottom: -22px; z-index: 2; display: flex; align-items: end; justify-content: space-between; gap: 16px; padding: 16px 0; margin-top: 8px; border-top: 1px solid var(--menu-edge); background: #191919f5; }
+.sanctuary-shell .activity-entry .dungeon-stage-label { flex: 0 1 150px; margin: 0; min-width: 0; }
+.sanctuary-shell .activity-entry .primary-button { min-height: 52px; min-width: 0; flex: 1; }
+.sanctuary-shell .summon-hub { display: grid; grid-template-columns: minmax(0, 1fr) 380px; grid-template-areas: "title title" "main command"; gap: 20px 24px; padding: 0; border: 0; background: none; align-items: start; }
+.sanctuary-shell .summon-hub > .eyebrow { display: none; }
+.sanctuary-shell .summon-hub > h2 { display: block; grid-area: title; font-size: 28px; font-weight: 400; margin: 0; }
+.sanctuary-shell .summon-main { grid-area: main; display: grid; gap: 20px; min-width: 0; }
+.sanctuary-shell .summon-sidebar { grid-area: command; display: grid; gap: 18px; position: sticky; top: 18px; }
+.sanctuary-shell .summon-sidebar > .text-button { min-height: 48px; }
+.sanctuary-shell .summon-command,
+.sanctuary-shell .banner-pity,
+.sanctuary-shell .summon-rates { padding: 22px; border: 1px solid var(--menu-edge); border-radius: 20px; background: var(--menu-surface); }
+.sanctuary-shell .summon-command { display: flex; flex-direction: column; }
+.sanctuary-shell .summon-command .primary-button { min-height: 52px; width: 100%; }
+.sanctuary-shell .summon-pity-progress { grid-template-columns: minmax(0, 1fr); margin-bottom: 0; gap: 18px; }
+.sanctuary-shell .summon-pity-progress > div { padding: 0; border: 0; }
+.sanctuary-shell .summon-pity-progress meter { width: 100%; height: 12px; margin-top: 8px; accent-color: #f1f0e9; }
+.sanctuary-shell .summon-rates { min-width: 0; }
+.sanctuary-shell .summon-rates h3 { font-size: 22px; margin: 0; font-weight: 400; }
+.banner-rate-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+.banner-tier-totals { display: flex; flex-wrap: wrap; gap: 16px; padding: 12px 0; font-size: 13px; color: #bcbcbc; }
+.banner-tier-totals strong { color: #f1f0e9; margin-left: 4px; }
+.banner-tier-bar { display: flex; height: 8px; gap: 2px; overflow: hidden; border-radius: 100px; margin-top: 14px; }
+.banner-tier-bar span { flex-basis: 0; min-width: 1px; background: #f1f0e9; }
+.banner-tier-bar span:nth-child(2n) { background: #9e9e9e; }
+.banner-tier-bar span:nth-child(3n) { background: #676767; }
+.summon-affordability { width: 100%; height: 12px; margin-bottom: 14px; accent-color: #f1f0e9; }
+.sanctuary-shell meter::-webkit-meter-bar { background: #353535; border: 0; }
+.sanctuary-shell meter::-webkit-meter-optimum-value { background: #f1f0e9; }
+.sanctuary-shell meter::-moz-meter-bar { background: #f1f0e9; }
+.sanctuary-shell .inventory-currencies { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.sanctuary-shell .inventory-currency { padding: 20px; gap: 16px; }
+.sanctuary-shell .inventory-currency > :is(.currency-icon, .mechanical-component-icon) { width: 64px; height: 64px; flex: 0 0 64px; }
+.sanctuary-shell .inventory-currency strong { font-size: clamp(24px, 2.5vw, 38px); }
+#sanctuary-menu.sanctuary-menu-drawer,
+#sanctuary-help.sanctuary-help-drawer { width: min(380px, 100%); }
+#sanctuary-help.sanctuary-help-drawer { position: fixed; inset: 0 0 0 auto; margin: 0; height: 100dvh; max-height: 100dvh; max-width: 100%; box-sizing: border-box; padding: 26px; border: 0; border-left: 1px solid #ffffff26; border-radius: 0; background: #111; color: #f1f0e9; overflow-y: auto; }
+#sanctuary-help .drawer-heading { display: flex; justify-content: space-between; align-items: center; }
+#sanctuary-help .drawer-close { min-width: 44px; min-height: 44px; border-radius: 50%; }
+#sanctuary-help .information-content { padding: 0; line-height: 1.7; }
+#sanctuary-menu .sanctuary-menu-utilities h3 { margin: 24px 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: #aaa; }
+body:has(#sanctuary-help[open]) { overflow: hidden; }
+@media (min-width: 981px) {
+  .sanctuary-shell .gameplay-hub .activity-group { max-height: max(440px, calc(100svh - 280px)); overflow-y: auto; scrollbar-width: thin; }
+  .sanctuary-shell .character-hub .character-control-panel { max-height: max(460px, calc(100svh - 260px)); overflow-y: auto; scrollbar-width: thin; }
+  .sanctuary-shell .summon-main { max-height: max(460px, calc(100svh - 300px)); overflow-y: auto; scrollbar-width: thin; padding-right: 6px; }
+}
+@media (max-width: 1100px) {
+  .sanctuary-shell .sanctuary-header { grid-template-columns: minmax(160px, 1fr) auto minmax(320px, 1fr); gap: 12px; padding: 18px; }
+  .sanctuary-shell .home-hub { grid-template-columns: 220px minmax(0, 1fr) 220px; gap: 16px; }
+  .sanctuary-shell .character-hub { grid-template-columns: minmax(0, 1fr) 420px; }
+  .sanctuary-shell .summon-hub { grid-template-columns: minmax(0, 1fr) 320px; }
+  .sanctuary-shell .gameplay-hub { grid-template-columns: 235px minmax(0, 1fr); gap: 18px; }
+}
+@media (max-width: 980px) {
+  .sanctuary-shell .home-hub { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "identity identity" "destinations squad"; min-height: 0; }
+  .sanctuary-shell .home-hub .hub-portrait { width: min(100%, 580px); }
+  .sanctuary-shell .home-destinations { align-self: start; }
+  .sanctuary-shell .home-squad { align-self: start; }
+  .sanctuary-shell .character-hub { grid-template-columns: minmax(0, 1fr); grid-template-areas: "identity" "detail"; }
+  .sanctuary-shell .character-hub .hub-showcase { position: static; }
+  .sanctuary-shell .character-hub .hub-portrait { width: min(100%, 580px); }
+  .sanctuary-shell .summon-hub { grid-template-columns: minmax(0, 1fr); grid-template-areas: "title" "visual" "command" "available" "showcase" "rates"; }
+  .sanctuary-shell .summon-main { display: contents; }
+  .sanctuary-shell .summon-visual { display: contents; }
+  .sanctuary-shell .summon-banner-art { grid-area: visual; }
+  .sanctuary-shell .summon-hub .banner-characters { grid-area: available; }
+  .sanctuary-shell .summon-hub .summon-visual > .banner-showcase-control { grid-area: showcase; }
+  .sanctuary-shell .summon-rates { grid-area: rates; }
+  .sanctuary-shell .summon-sidebar { position: static; }
+  .sanctuary-shell .gameplay-hub { display: flex; flex-direction: column; }
+  .sanctuary-shell .gameplay-hub .activity-categories { display: flex; flex-wrap: nowrap; width: 100%; overflow-x: auto; padding: 4px; }
+  .sanctuary-shell .gameplay-hub .activity-categories a { flex: 0 0 220px; }
+  .sanctuary-shell .gameplay-hub .activity-group { width: 100%; box-sizing: border-box; }
+  .sanctuary-shell .activity-entry { position: static; }
+  .sanctuary-shell .inventory-currencies { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 720px) {
+  .sanctuary-shell .sanctuary-header { grid-template-columns: minmax(0, 1fr) auto; padding: 14px; gap: 12px; }
+  .sanctuary-shell .sanctuary-brand { gap: 12px; }
+  .sanctuary-shell .sanctuary-brand { gap: 8px; min-width: 0; }
+  .sanctuary-shell .sanctuary-brand > div { min-width: 0; }
+  .sanctuary-shell .sanctuary-brand .sanctuary-back { display: grid; place-items: center; padding: 0; flex: 0 0 44px; width: 44px; min-width: 44px; min-height: 44px; }
+  .sanctuary-shell .sanctuary-back > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .sanctuary-shell .sanctuary-brand strong { font-size: 19px; }
+  .sanctuary-shell .sanctuary-brand small { font-size: 10px; }
+  .sanctuary-shell .sanctuary-header .sanctuary-title { grid-column: 2; grid-row: 1; }
+  .sanctuary-shell .sanctuary-title h1 { font-size: 22px; }
+  .sanctuary-shell .sanctuary-header .sanctuary-wallet { grid-column: 1 / -1; grid-row: 2; width: 100%; }
+  .sanctuary-shell .sanctuary-header .currency-strip > button { padding: 6px 8px; }
+  .sanctuary-shell .sanctuary-content { padding: 18px 14px; }
+  .sanctuary-shell .sanctuary-team-tabs { gap: 6px; }
+  .sanctuary-shell .sanctuary-team-tabs button { padding: 10px 12px; font-size: 12px; }
+  .sanctuary-shell .home-hub { gap: 16px 12px; }
+  .sanctuary-shell .home-banner { height: 256px; min-height: 256px; padding: 18px 12px; }
+  .sanctuary-shell .home-banner strong { font-size: 20px; }
+  .sanctuary-shell .home-banner small { max-width: calc(100% - 28px); }
+  .sanctuary-shell .home-banner-promotion > .banner-showcase-control { top: 52px; right: 12px; }
+  .sanctuary-shell .home-banner > span { font-size: 11px; }
+  .sanctuary-shell .home-banner > span .currency-icon { display: none; }
+  .sanctuary-shell .team-companion { flex-direction: column; align-items: center; text-align: center; }
+  .sanctuary-shell .team-companion .character-idle { width: 76px; height: 76px; flex-basis: 76px; }
+  .sanctuary-shell .squad-slots { grid-template-columns: minmax(0, 1fr); }
+  .sanctuary-shell .squad-member-preview { min-height: 0; }
+  .sanctuary-shell .character-hub .hub-rail { grid-template-columns: minmax(0, 1fr); }
+  .sanctuary-shell .character-hub .artifact-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sanctuary-shell .character-hub .artifact-slot { min-height: 100px; }
+  .sanctuary-shell .gameplay-hub .activity-group { padding: 16px; }
+  .sanctuary-shell .activity-banner .dungeon-banner { height: 170px; }
+  .sanctuary-shell .activity-entry { flex-direction: column; align-items: stretch; gap: 10px; }
+  .sanctuary-shell .activity-entry .dungeon-stage-label { flex-basis: auto; }
+  .activity-facts { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .activity-facts > div { display: flex; justify-content: space-between; gap: 16px; padding: 12px; }
+  .activity-facts dt { margin: 0; flex: 0 0 80px; }
+  .activity-facts dd { text-align: right; }
+  .sanctuary-shell .summon-command,
+  .sanctuary-shell .banner-pity,
+  .sanctuary-shell .summon-rates { padding: 16px; }
+  .sanctuary-shell .summon-hub .banner-characters ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .sanctuary-shell .summon-hub .banner-characters li { padding: 10px; }
+  .sanctuary-shell .summon-hub .banner-characters strong { font-size: 14px; }
+}
+@media (max-width: 420px) {
+  .sanctuary-shell .sanctuary-brand small { max-width: 130px; }
+  .sanctuary-shell .sanctuary-header .currency-strip .currency-icon { width: 20px; height: 20px; flex-basis: 20px; }
+  .sanctuary-shell .sanctuary-header .currency-strip strong { font-size: 12px; }
+  .sanctuary-shell .sanctuary-header .currency-strip small { font-size: 9px; }
+  .sanctuary-shell .character-hub .artifact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sanctuary-identity-plate { padding: 14px; }
+}

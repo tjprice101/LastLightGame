@@ -1,0 +1,535 @@
+{
+  "asset_count": 16,
+  "assets": [
+    {
+      "asset": "riftpip",
+      "incoming": "Riftpip.png",
+      "source": "Art\\source\\enemies\\Riftpip.png",
+      "source_sha256": "e582973e0cfd5dfe526961e6b15254a10bb0156362577fd256a86bc3e7dc7fe2",
+      "runtime": "public\\assets\\enemies\\riftpip.png",
+      "runtime_sha256": "055e5a9aa4b9e59e6d02448955a05fd745b66e759899f85e2ca69f7561076941",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 165,
+        "background_seeds": [
+          [
+            0.208604,
+            0.360991
+          ],
+          [
+            0.066558,
+            0.584052
+          ],
+          [
+            0.116883,
+            0.481681
+          ],
+          [
+            0.142857,
+            0.378233
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "shardcap-gremlin",
+      "incoming": "Shardcap Gremlin.png",
+      "source": "Art\\source\\enemies\\Shardcap Gremlin.png",
+      "source_sha256": "1b051cf6fc4d3a2513babd3f83161e04c63a2998d47ade2a61968a9298cb810c",
+      "runtime": "public\\assets\\enemies\\shardcap-gremlin.png",
+      "runtime_sha256": "a102bc501c87ac009fcc205d1ac11fab701902f35585b1d408c56b5e0474315e",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 97,
+        "background_seeds": [
+          [
+            0.508117,
+            0.872845
+          ],
+          [
+            0.191558,
+            0.325431
+          ],
+          [
+            0.422078,
+            0.628233
+          ],
+          [
+            0.245942,
+            0.440733
+          ],
+          [
+            0.359578,
+            0.676724
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "nullshell-scarab",
+      "incoming": "Nullshell Scarab.png",
+      "source": "Art\\source\\enemies\\Nullshell Scarab.png",
+      "source_sha256": "4ac2543296c809a933b074a3ba19f8d5ddb7385a5e12c1d2ebe045b51f01ef09",
+      "runtime": "public\\assets\\enemies\\nullshell-scarab.png",
+      "runtime_sha256": "b4accc5aba187cca0425531a0b4878b3ffbf8232ea59b48b13b933f03ce30340",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 167,
+        "background_seeds": [
+          [
+            0.732143,
+            0.267241
+          ],
+          [
+            0.206981,
+            0.758621
+          ],
+          [
+            0.417208,
+            0.823276
+          ],
+          [
+            0.816558,
+            0.823276
+          ],
+          [
+            0.640422,
+            0.811422
+          ],
+          [
+            0.531656,
+            0.798491
+          ],
+          [
+            0.846591,
+            0.711207
+          ],
+          [
+            0.280844,
+            0.663793
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "paradox-sentinel",
+      "incoming": "Paradox Sentinel.png",
+      "source": "Art\\source\\enemies\\Paradox Sentinel.png",
+      "source_sha256": "c6676e363fc1f9cee078fdf2714f6c2789623fd3c2422f706d79a01438fd27f7",
+      "runtime": "public\\assets\\enemies\\paradox-sentinel.png",
+      "runtime_sha256": "3ade64db551f2666d449a1ff0239de8da695b1ac63db6f17a94b01f6b87fbabf",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 168,
+        "background_seeds": [
+          [
+            0.551948,
+            0.844828
+          ],
+          [
+            0.23539,
+            0.565733
+          ],
+          [
+            0.245942,
+            0.668103
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "fracturecoil-drake",
+      "incoming": "Fracturecoil Drake.png",
+      "source": "Art\\source\\enemies\\Fracturecoil Drake.png",
+      "source_sha256": "1f748121ffb5e475fe03780428e795aa0fd7d481b16c257e7412b1ecb22818e9",
+      "runtime": "public\\assets\\enemies\\fracturecoil-drake.png",
+      "runtime_sha256": "96308c84ce67ef174cf0fda751a68c83448ce149ec2b281e3bf7ab23e2a46159",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 152,
+        "background_seeds": [
+          [
+            0.225649,
+            0.539871
+          ],
+          [
+            0.704545,
+            0.623922
+          ],
+          [
+            0.560065,
+            0.853448
+          ],
+          [
+            0.569805,
+            0.408405
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "riftwing-chimera",
+      "incoming": "Riftwing Chimera.png",
+      "source": "Art\\source\\enemies\\Riftwing Chimera.png",
+      "source_sha256": "741e5174fd97f3588bad79a2283bb3d6c13c887f97244676324d7dcc7e0633e6",
+      "runtime": "public\\assets\\enemies\\riftwing-chimera.png",
+      "runtime_sha256": "2579e67c9be7b3289279e5cd1d987bc2a0fa35a2cb0f196be7d3545f80db33f4",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 162,
+        "background_seeds": [
+          [
+            0.279221,
+            0.898707
+          ],
+          [
+            0.538149,
+            0.90194
+          ],
+          [
+            0.448864,
+            0.877155
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "crownvoid-behemoth",
+      "incoming": "Crownvoid Behemoth.png",
+      "source": "Art\\source\\enemies\\Crownvoid Behemoth.png",
+      "source_sha256": "5580926bc609767fcf53c63cd9bc81f14b6f17a11fb3f2f548361b89f278876b",
+      "runtime": "public\\assets\\enemies\\crownvoid-behemoth.png",
+      "runtime_sha256": "ae349c95635b5d17e3b6943ab1f8898cd2bcb1104b4e01c8b0a1285e95e8ad24",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 160,
+        "background_seeds": [
+          [
+            0.489448,
+            0.882543
+          ],
+          [
+            0.794643,
+            0.303879
+          ],
+          [
+            0.13961,
+            0.483836
+          ],
+          [
+            0.36526,
+            0.627155
+          ],
+          [
+            0.875,
+            0.409483
+          ],
+          [
+            0.247565,
+            0.639009
+          ],
+          [
+            0.660714,
+            0.588362
+          ],
+          [
+            0.715097,
+            0.366379
+          ],
+          [
+            0.693994,
+            0.253233
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "sovereign-of-the-impossible-ruin",
+      "incoming": "Sovereign of the Impossible Ruin.png",
+      "source": "Art\\source\\enemies\\Sovereign of the Impossible Ruin.png",
+      "source_sha256": "8113b880b5c753bb17d253a3b6e4459c960642a1a7afcfd7e0ba47eb400e8cac",
+      "runtime": "public\\assets\\enemies\\sovereign-of-the-impossible-ruin.png",
+      "runtime_sha256": "d7916c4d5017f430948d219f4520de16563bb971d4abc3e05cf412f0748447aa",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 143,
+        "background_seeds": [
+          [
+            0.829545,
+            0.207974
+          ],
+          [
+            0.255682,
+            0.269397
+          ],
+          [
+            0.896916,
+            0.608836
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "chaotic-seed",
+      "incoming": "Seed of Chaotic.png",
+      "source": "Art\\source\\materials\\Seed of Chaotic.png",
+      "source_sha256": "f21f27b5e65656bb441f9dc05806fbf88fc36064f66917270d69376848531aba",
+      "runtime": "public\\assets\\materials\\chaotic-seed.png",
+      "runtime_sha256": "377351c950f03d7b4514bf51644f2ba63799da940e7bd834274c0728815638f7",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 165,
+        "background_seeds": []
+      }
+    },
+    {
+      "asset": "chaotic-bloom",
+      "incoming": "Bloom of Chaotic.png",
+      "source": "Art\\source\\materials\\Bloom of Chaotic.png",
+      "source_sha256": "daee6f8f9e6c3b8e5b92c97c60fdac30434e17696b72e2e4743b4b40304fa364",
+      "runtime": "public\\assets\\materials\\chaotic-bloom.png",
+      "runtime_sha256": "24c6d3dcf70b3e525d61828cbd08c8426167990f0b64bf68ea43dd1d7747b61a",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 168,
+        "background_seeds": [
+          [
+            0.235352,
+            0.334961
+          ],
+          [
+            0.790039,
+            0.673828
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "chaotic-shard",
+      "incoming": "Shard of Chaotic.png",
+      "source": "Art\\source\\materials\\Shard of Chaotic.png",
+      "source_sha256": "05a5f89492f1e47e45649d144255255e5d2dfcbea15b7e1c1e7e234e8f969a2b",
+      "runtime": "public\\assets\\materials\\chaotic-shard.png",
+      "runtime_sha256": "05820e42eedc266593540e5645aee71a50b9d199097f0b0dd9ab8f8c854cb817",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 164,
+        "background_seeds": []
+      }
+    },
+    {
+      "asset": "chaotic-crest",
+      "incoming": "Crest of Chaotic.png",
+      "source": "Art\\source\\materials\\Crest of Chaotic.png",
+      "source_sha256": "d29982f0c800009366dc4f6f48cefbeb338fd2ff4ce85883a5cec6a2f83dc595",
+      "runtime": "public\\assets\\materials\\chaotic-crest.png",
+      "runtime_sha256": "653eebdbb2b6719ff1592d3038084eaef4b8e3211623bbee714f9396cfa606fe",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 172,
+        "background_seeds": [
+          [
+            0.480469,
+            0.193359
+          ],
+          [
+            0.709961,
+            0.256836
+          ],
+          [
+            0.318359,
+            0.772461
+          ],
+          [
+            0.501953,
+            0.80957
+          ],
+          [
+            0.816406,
+            0.529297
+          ],
+          [
+            0.189453,
+            0.469727
+          ],
+          [
+            0.77832,
+            0.424805
+          ],
+          [
+            0.226562,
+            0.560547
+          ],
+          [
+            0.606445,
+            0.737305
+          ],
+          [
+            0.40918,
+            0.748047
+          ],
+          [
+            0.423828,
+            0.355469
+          ],
+          [
+            0.657227,
+            0.428711
+          ],
+          [
+            0.604492,
+            0.238281
+          ],
+          [
+            0.669922,
+            0.53418
+          ],
+          [
+            0.328125,
+            0.53125
+          ],
+          [
+            0.202148,
+            0.626953
+          ],
+          [
+            0.341797,
+            0.445312
+          ],
+          [
+            0.564453,
+            0.338867
+          ],
+          [
+            0.641602,
+            0.583008
+          ],
+          [
+            0.359375,
+            0.46582
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "chaotic-heart",
+      "incoming": "Heart of Chaotic.png",
+      "source": "Art\\source\\materials\\Heart of Chaotic.png",
+      "source_sha256": "d0649f5b953f67df3758149aa5d48f735f72d2b52b5e9f2742ad30e1e90ec91f",
+      "runtime": "public\\assets\\materials\\chaotic-heart.png",
+      "runtime_sha256": "adaa1536f5ccd5c76e48b516f7e3f8f9abe0e683d88e75dcca629095c6747479",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 171,
+        "background_seeds": [
+          [
+            0.765625,
+            0.321289
+          ],
+          [
+            0.335938,
+            0.246094
+          ],
+          [
+            0.449219,
+            0.873047
+          ],
+          [
+            0.210938,
+            0.759766
+          ],
+          [
+            0.238281,
+            0.540039
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "chaotic-soul",
+      "incoming": "Soul of Chaotic.png",
+      "source": "Art\\source\\materials\\Soul of Chaotic.png",
+      "source_sha256": "7e544945065b2d82a8adfc6be1cb44da978ec65b1f5c5fab2f929fe83bbcdb8b",
+      "runtime": "public\\assets\\materials\\chaotic-soul.png",
+      "runtime_sha256": "51d228e7750fbd7f3f437834926b0a88bc6526334a50cf5dc3ba551d0252a229",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 164,
+        "background_seeds": [
+          [
+            0.294922,
+            0.722656
+          ],
+          [
+            0.736328,
+            0.236328
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "ruins-of-chaos",
+      "incoming": "Ruins of Chaos Banner.png",
+      "source": "Art\\source\\banners\\Ruins of Chaos Banner.png",
+      "source_sha256": "b2258d29999a560e54cc8c604c5d99a0e1c4619806df261e2d59fa99a1240c61",
+      "runtime": "public\\assets\\banners\\ruins-of-chaos.png",
+      "runtime_sha256": "b2258d29999a560e54cc8c604c5d99a0e1c4619806df261e2d59fa99a1240c61",
+      "processing": {
+        "method": "unchanged scenery bytes"
+      }
+    },
+    {
+      "asset": "ruins-of-chaos",
+      "incoming": "Ruins of Chaos Arena.png",
+      "source": "Art\\source\\backgrounds\\Ruins of Chaos Arena.png",
+      "source_sha256": "f0e7fb0e70be0dd977950273bff31f4e132604aaf68202079833fe66e1818085",
+      "runtime": "public\\assets\\backgrounds\\ruins-of-chaos.png",
+      "runtime_sha256": "f0e7fb0e70be0dd977950273bff31f4e132604aaf68202079833fe66e1818085",
+      "processing": {
+        "method": "unchanged scenery bytes"
+      }
+    }
+  ]
+}

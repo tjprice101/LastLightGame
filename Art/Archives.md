@@ -1,8 +1,7 @@
 # Archive gallery banners
 
 Three related headers for the unified Archives submenu. Use the
-[shared style](midjourney-character-style-prompt.md) and actual approved
-`--sref <approved_reference_image_url> --sw 200` for scenery; do not invent a URL.
+[shared style](midjourney-character-style-prompt.md) without `--sref` or `--sw`.
 Keep one architectural visual family, with distinct gallery themes.
 These are full-bleed scenery, not cutouts. No baked-in words: UI overlays titles.
 Reserve the left/central third for readable text.

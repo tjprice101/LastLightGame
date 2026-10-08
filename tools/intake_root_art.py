@@ -11,7 +11,7 @@ import shutil
 import numpy as np
 from PIL import Image
 
-from color_matte import remove_color_matte
+from color_matte import remove_color_matte, reviewed_background_starts
 from prepare_art import ROOT, connected_matte, standardize_sprite
 
 
@@ -86,8 +86,33 @@ ASSETS = (
     _copy("Battle arena for Rosethorn Sanctuary.png", "backgrounds", "backgrounds/sanctuary-arena.png"),
 )
 
+BACKGROUND_SEEDS = {
+    "elements/atmospheric.png": [(0.522461, 0.0625)],
+    "elements/aquatic.png": [(0.639648, 0.144531), (0.808594, 0.244141)],
+    "elements/infernic.png": [(0.542969, 0.144531)],
+    "conduits/fracture-reservoir.png": [(0.68457, 0.407227), (0.393555, 0.643555)],
+    "enemies/scepter-of-radiance-gleamstone-slime.png": [(0.733766, 0.355603), (0.879058, 0.417026)],
+    "enemies/regalia-of-the-sun-gleamstone-slime.png": [(0.863636, 0.256466), (0.850649, 0.740302)],
+    "enemies/the-crown-beyond-dawn-gleamstone-slime.png": [
+        (0.222403, 0.246767), (0.154221, 0.284483), (0.142857, 0.365302),
+        (0.176948, 0.394397), (0.185877, 0.515086), (0.237825, 0.55819),
+        (0.271104, 0.594828), (0.647727, 0.682112), (0.412338, 0.686422),
+        (0.143669, 0.778017), (0.712662, 0.783405), (0.839286, 0.796336),
+        (0.521916, 0.865302), (0.847403, 0.84806), (0.340909, 0.891164),
+    ],
+    "enemies/rosethorn-wisp.png": [
+        (0.508929, 0.676724), (0.409091, 0.715517), (0.69724, 0.737069), (0.553571, 0.731681),
+    ],
+    "enemies/laurel-of-the-sacred-flame-rosethorn-wisp.png": [
+        (0.396916, 0.688578), (0.625, 0.689655), (0.298701, 0.673491), (0.588474, 0.817888),
+    ],
+    "enemies/sovereign-of-the-hallowed-garden-rosethorn-wisp.png": [(0.738636, 0.772629)],
+    "enemies/the-flame-beyond-eternity-rosethorn-wisp.png": [(0.622565, 0.21875), (0.38961, 0.212284)],
+}
 
-def _remove_rgb_matte(image: Image.Image, radius: int, quantization: int) -> tuple[Image.Image, tuple[int, int, int]]:
+
+def _remove_rgb_matte(image: Image.Image, radius: int, quantization: int,
+                      background_seeds=()) -> tuple[Image.Image, tuple[int, int, int]]:
     if radius <= 0 or quantization <= 0:
         raise ValueError("RGB key radius and quantization must be positive.")
     rgb = np.asarray(image.convert("RGB"), dtype=np.int32)
@@ -99,7 +124,7 @@ def _remove_rgb_matte(image: Image.Image, radius: int, quantization: int) -> tup
     height, width = eligible.shape
     border_pixels = ([(0, x) for x in range(width)] + [(height - 1, x) for x in range(width)] +
                      [(y, 0) for y in range(height)] + [(y, width - 1) for y in range(height)])
-    matte = connected_matte(eligible, border_pixels)
+    matte = connected_matte(eligible, border_pixels + reviewed_background_starts(eligible, background_seeds))
     if not matte.any():
         raise ValueError("RGB key did not match any border-connected background pixels.")
     rgba = np.dstack((rgb.astype(np.uint8), np.where(matte, 0, 255).astype(np.uint8)))
@@ -118,6 +143,9 @@ def _prepare(asset: Asset, path: Path) -> tuple[bytes, dict[str, object]]:
                 raise ValueError(f"Expected opaque RGB input: {path}")
             method, items = asset.key
             parameters = dict(items)
+            seeds = BACKGROUND_SEEDS.get(asset.runtime, ())
+            if seeds:
+                parameters["background_seeds"] = [list(point) for point in seeds]
             if method == "hue":
                 keyed = remove_color_matte(source, **parameters)
                 processing = {"method": "border-connected hue/saturation key", **parameters}
@@ -140,11 +168,23 @@ def _prepare(asset: Asset, path: Path) -> tuple[bytes, dict[str, object]]:
     }
 
 
-def plan() -> list[tuple[Asset, Path, Path, bytes, dict[str, object]]]:
+def plan(regenerate: bool = False) -> list[tuple[Asset, Path, Path, bytes, dict[str, object]]]:
     if len({asset.incoming for asset in ASSETS}) != len(ASSETS):
         raise ValueError("Duplicate incoming filename in art intake map.")
     if len({asset.runtime for asset in ASSETS}) != len(ASSETS):
         raise ValueError("Duplicate runtime destination in art intake map.")
+    manifest = ROOT / "Art" / "root-art-intake.json"
+    if regenerate:
+        previous = json.loads(manifest.read_text(encoding="utf-8"))
+        if previous["asset_count"] != len(ASSETS) or len(previous["assets"]) != len(ASSETS):
+            raise ValueError("Existing intake manifest does not cover the complete asset map.")
+        for asset, record in zip(ASSETS, previous["assets"]):
+            if record["incoming"] != asset.incoming or record["source"] != asset.source.replace("/", "\\") or record["runtime"] != f"public/assets/{asset.runtime}".replace("/", "\\"):
+                raise ValueError("Existing intake manifest mapping differs from the reviewed asset map.")
+            for field in ("source", "runtime"):
+                path = ROOT / record[field].replace("\\", "/")
+                if sha256(path.read_bytes()).hexdigest() != record[f"{field}_sha256"]:
+                    raise FileExistsError(f"Art changed outside the recorded intake: {path}")
     planned = []
     for asset in ASSETS:
         incoming = ROOT / asset.incoming
@@ -157,19 +197,19 @@ def plan() -> list[tuple[Asset, Path, Path, bytes, dict[str, object]]]:
         if source.exists() and sha256(source.read_bytes()).hexdigest() != sha256(incoming.read_bytes()).hexdigest():
             raise FileExistsError(f"Different source already exists: {source}")
         output, record = _prepare(asset, incoming)
-        if runtime.exists() and runtime.read_bytes() != output:
+        if not regenerate and runtime.exists() and runtime.read_bytes() != output:
             raise FileExistsError(f"Different runtime asset already exists: {runtime}")
         planned.append((asset, incoming, source, output, record))
     manifest = ROOT / "Art" / "root-art-intake.json"
     manifest_text = json.dumps({"asset_count": len(planned), "assets": [record for *_, record in planned]},
                                indent=2, ensure_ascii=False) + "\n"
-    if manifest.exists() and manifest.read_text(encoding="utf-8") != manifest_text:
+    if not regenerate and manifest.exists() and manifest.read_text(encoding="utf-8") != manifest_text:
         raise FileExistsError(f"Different art intake manifest already exists: {manifest}")
     return planned
 
 
-def intake(apply: bool = False) -> None:
-    planned = plan()
+def intake(apply: bool = False, regenerate: bool = False) -> None:
+    planned = plan(regenerate)
     for asset, incoming, source, output, record in planned:
         if apply:
             source.parent.mkdir(parents=True, exist_ok=True)
@@ -177,7 +217,7 @@ def intake(apply: bool = False) -> None:
                 shutil.copyfile(incoming, source)
             runtime = ROOT / "public" / "assets" / asset.runtime
             runtime.parent.mkdir(parents=True, exist_ok=True)
-            if not runtime.exists():
+            if not runtime.exists() or (regenerate and runtime.read_bytes() != output):
                 runtime.write_bytes(output)
         print(f"{asset.incoming} -> {asset.source} -> public/assets/{asset.runtime}")
     if apply:
@@ -190,4 +230,6 @@ def intake(apply: bool = False) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--apply", action="store_true", help="Copy preserved sources and write runtime exports.")
-    intake(parser.parse_args().apply)
+    parser.add_argument("--regenerate", action="store_true", help="Verify recorded originals/exports before planning replacement exports.")
+    args = parser.parse_args()
+    intake(args.apply, args.regenerate)

@@ -6,7 +6,6 @@ import { type ProfileStorage } from '../game/profile';
 import { playableDungeons, materialLoot } from './dungeons';
 import { creatureGlossary } from '../presentation/creature-glossary';
 import { sanctuaryHeader, isMenuPage } from '../presentation/sanctuary';
-import { homeHub } from '../presentation/hub';
 import { starters } from './starters';
 import { elements } from './activities';
 import { nextWave, nextStage } from '../game/battle';
@@ -69,13 +68,19 @@ describe('saved creature discoveries and glossary', () => {
     expect(seen.fractalis).toBe(0);
     expect(seen.materials).toEqual({});
     expect(loadAccount(saved).creatures).toEqual(seen.creatures);
-    expect(creatureGlossary(seen)).toContain('Encountered / Loot locked');
+    const seenHtml = creatureGlossary(seen);
+    expect(seenHtml).toContain('<strong>Encountered</strong>');
+    expect(seenHtml).not.toContain('Loot locked');
+    expect(seenHtml).not.toContain('Drop pool and chances');
     state.enemies[0].hp = 1;
     const result = act(state, 'ember', 'light', state.enemies[0].id);
     const beaten = saveAccountRewards(saved, result, 'run');
     expect(beaten.creatures[id]).toEqual({ defeated: true });
     expect(result.state.phase).toBe('player');
-    expect(creatureGlossary(beaten)).toContain('Drop pool and chances');
+    const beatenHtml = creatureGlossary(beaten);
+    expect(beatenHtml).toContain('Drop pool and chances');
+    expect(beatenHtml).toContain('<strong>Defeated</strong>');
+    expect(beatenHtml).not.toContain('Loot revealed');
     expect(saveAccountRewards(saved, result, 'run')).toEqual(beaten);
     expect(saveAccountRewards(saved, { state, events: [] }, 'replay').creatures[id].defeated).toBe(true);
   });
@@ -113,13 +118,14 @@ describe('saved creature discoveries and glossary', () => {
     expect(html).not.toContain('<h2>Goblin</h2>');
     expect(html).not.toContain('Drop pool and chances');
     expect(html).not.toContain('Per-enemy loot');
+    expect(html).not.toContain('Not encountered');
     expect(isMenuPage('glossary')).toBe(true);
     expect(sanctuaryHeader('glossary', 0, 0)).toContain('Archives');
-    expect(homeHub(starters[0], false)).toContain('data-page="archives"');
+    expect(sanctuaryHeader('home', 0, 0)).toContain('data-page="collections"');
     expect(creatureGlossary(null)).toContain('discoveries unavailable');
     const account = emptyAccount();
-    account.creatures['dungeon:tectonic:0'] = { defeated: false };
-    expect(creatureGlossary(account)).toContain('Artwork pending');
+    account.creatures['dungeon:ominous:0'] = { defeated: false };
+    expect(creatureGlossary(account)).toContain('enemies/duskmote.png');
   });
 
   it('reports real stage gates and per-item probabilities, including uniform infusion elements', () => {
@@ -135,7 +141,7 @@ describe('saved creature discoveries and glossary', () => {
     expect(final.find((entry) => entry.id === 'aquatic-legendary')?.chance).toBeCloseTo(.13);
     expect(final.find((entry) => entry.id === 'atmospheric-omnic')?.chance).toBeCloseTo(.08);
     expect(final.find((entry) => entry.id === 'chaotic-omnic')).toBeUndefined();
-    for (const creature of creatures.filter((entry) => entry.mode)) for (const stage of creature.stages) {
+    for (const creature of creatures.filter((entry) => entry.mode === 'heavens' || entry.mode === 'abyss')) for (const stage of creature.stages) {
       const bonuses = creatureLoot(creature, stage).filter((drop) => /-(epic|legendary|omnic)$/.test(drop.id));
       for (const drop of bonuses) {
         expect(elements.find((element) => drop.id.startsWith(`${element.id}-`))?.infusion).toBe(creature.mode);

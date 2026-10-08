@@ -4,17 +4,27 @@ import { assetUrl } from './portrait';
 import { lootRoll } from '../content/loot-random';
 import { currencyArt } from './currency-icon';
 import { getCreature } from '../content/creatures';
+import { getConduit, isConduitId, conduitColor } from '../content/conduits';
+import { mechanicalComponents } from '../content/mechanical-components';
+import { createConduitUpgradeMeter } from './conduit-upgrade-meter';
 
 export function lootMotion(random: () => number = Math.random) {
   return { size: .75 + lootRoll(random) * .6, scatter: (lootRoll(random) - .5) * 14,
     height: (lootRoll(random) - .5) * 24, duration: 850 + Math.floor(lootRoll(random) * 1000) };
 }
 
-export function lootItems(event: BattleEvent) {
+export interface LootItem { id: string; name: string; amount: number; art?: string; color: string; upgradeLevel?: number }
+export function lootItems(event: BattleEvent): LootItem[] {
   if (event.kind !== 'reward') throw new Error('Loot presentation requires a reward event.');
   return [
-    { id: 'fractalis', name: 'Fractalis', amount: event.amount, art: undefined, color: '#ffffff' },
-    ...(event.lycalis ? [{ id: 'lycalis', name: 'Lycalis', amount: event.lycalis, art: undefined, color: '#ffffff' }] : []),
+    { id: 'fractalis', name: 'Prismatica', amount: event.amount, art: undefined, color: '#ffffff' },
+    ...(event.lycalis ? [{ id: 'lycalis', name: 'Null-Prismatica', amount: event.lycalis, art: undefined, color: '#ffffff' }] : []),
+    ...(event.mechanicalComponents ? [{ id: mechanicalComponents.id, name: mechanicalComponents.name, amount: event.mechanicalComponents, color: '#ffffff' }] : []),
+    ...Object.entries(event.conduits ?? {}).map(([id, amount]) => {
+      if (!isConduitId(id)) throw new Error('Unknown Conduit in loot receipt.');
+      const conduit = getConduit(id);
+      return { id: `conduit:${id}`, name: `${conduit.name} ~ ${conduit.rarity} Conduit`, amount, art: conduit.art ?? undefined, color: conduitColor(conduit), upgradeLevel: event.conduitUpgrades?.[id] ?? 0 };
+    }),
     ...Object.entries(event.materials ?? {}).map(([id, amount]) => ({
       id, name: materialName(id), amount, art: materialArt(id),
       color: id.startsWith('heavens-') ? '#ff7474' : id.startsWith('abyss-') ? '#ff70dd'
@@ -30,7 +40,8 @@ export function lootItems(event: BattleEvent) {
 export function lootArt(item: { id: string; art?: string }): string | undefined {
   return item.id === 'fractalis' ? currencyArt('fractalis')
     : item.id === 'lycalis' ? currencyArt('lycalis')
-    : item.art ? assetUrl(`${item.id.startsWith('capture:') ? 'enemies' : 'materials'}/${item.art}.png`) : undefined;
+    : item.id === mechanicalComponents.id ? currencyArt('mechanical-components')
+    : item.art ? assetUrl(`${item.id.startsWith('conduit:') ? 'conduits' : item.id.startsWith('capture:') ? 'enemies' : 'materials'}/${item.art}.png`) : undefined;
 }
 
 export function lootBurst(event: BattleEvent, random: () => number = Math.random): HTMLElement {
@@ -57,10 +68,15 @@ export function lootBurst(event: BattleEvent, random: () => number = Math.random
       image.src = artwork;
       image.alt = '';
       drop.append(image);
+      if (item.upgradeLevel !== undefined) {
+        const marker = createConduitUpgradeMeter(item.upgradeLevel);
+        marker.className += ' loot-upgrade-marker';
+        drop.append(marker);
+      }
     } else {
       const token = document.createElement('span');
       token.className = 'loot-token';
-      token.textContent = item.name.split(' ')[0];
+      token.textContent = item.id === mechanicalComponents.id ? 'Artwork pending' : item.name.split(' ')[0];
       drop.append(token);
     }
     const quantity = document.createElement('strong');

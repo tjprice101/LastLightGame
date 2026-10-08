@@ -9,7 +9,7 @@ and [Character instances](character-instances.md) for persistence/protection.
 ## Mode boundary
 
 - [Adventure](free-battle.md), formerly Free Battle, is the endless field mode.
-  Every entry starts at wave 1; defeats grant persistent Fractalis.
+  Every entry starts at wave 1; defeats grant persistent Prismatica.
 - Dungeons are separate activities outside Adventure. **Flaming Depths** has supplied
   enemies and an encounter draft; the scope now includes one material dungeon per
   each of ten elements in [the Gameplay framework](gameplay-and-elements.md).
@@ -30,6 +30,10 @@ and [Character instances](character-instances.md) for persistence/protection.
   use the same award path; dead enemies cannot roll again.
 - Adventure and the ten elemental material dungeons do **not** grant captures.
   Crownfall Treasury and Rosethorn Sanctuary grant the same20% captures.
+  [Passion of Crimson Roses](crimson-roses.md) also grants20% captures, but only
+  for enemies at levels120 or below. Its35 stages run80-140; captures remain
+  capped120. Omnic Roselius come from the special banner's Lv.80 duplicate
+  conversion, not above-cap mission captures.
 - Every activity accepts1-3 distinct owned instances, including all-captured
   squads and captured leaders. Two copies of the same species are allowed.
 
@@ -60,9 +64,10 @@ No Heavy action, invented skill, permanent death or automatic deletion.
   Higher captured forms remain stronger at equal level; boss captures retain
   boss abilities but not boss stat bonuses.
 - Conduit buffs apply afterward, using the same shared stat helper as starters.
-- Each level costs `10 + 2 * nextLevel` Fractalis and
+- Each level costs `10 + 2 * nextLevel` Prismatica and
   `ceil(nextLevel / 30)` Common materials matching the creature's combat element.
   These are editable first-pass numbers in `capturedLevelCost`.
+  Roselius instead use Seed of Rosethorn; all older creature costs are unchanged.
 - Fixed form1-6 sets acquisition stars1-6 and rarity Common through Omnic.
   Leveling changes neither rating. This approved later-form capture exception
   supersedes reserving every4-6-star unit exclusively for special banners.
@@ -73,13 +78,13 @@ No Heavy action, invented skill, permanent death or automatic deletion.
 ### Atomic rewards
 
 Capture RNG uses a separate seeded stream, preserving combat/material randomness.
-Phase8 adds another independent Lycalis stream: the same eligible ordinary/boss
+Phase8 adds another independent Null-Prismatica stream: the same eligible ordinary/boss
 kills roll mutually exclusive0/1/2/3 outcomes, linearly from90/8/1.5/0.5% at80
 to75/10/10/5% at120. Premium currency joins the same atomic write and appears
-in loot/results; no clear bonus or Adventure/elemental-dungeon Lycalis.
+in loot/results; no clear bonus or Adventure/elemental-dungeon Null-Prismatica.
 See [economy and active banner](summoning-and-economy.md).
-Treasury instead grants currency-only high Fractalis payouts and20% captures,
-no Lycalis/materials.25-floor completion is mode-specific.
+Treasury instead grants currency-only high Prismatica payouts and20% captures,
+no Null-Prismatica/materials.25-floor completion is mode-specific.
 The capture, ordinary rewards, discovery and `runId:enemyId` receipt commit in one
 wallet write **before** animation/state advance. Failed writes visibly reject
 the action; retries neither lose currency nor duplicate an already saved copy.
@@ -114,7 +119,7 @@ the next wave resets its ledger. Continue remains manual.
 - Phase9 [Crownfall Treasury](crownfall-treasury.md) and Standard activation are
   implemented, including protected-safe sale and Lv50 duplicate reward.
 - Phase10 [Rosethorn Sanctuary](rosethorn-sanctuary.md) is implemented:
-  Lycalis farming, six divine wisp forms and protected-safe dual-currency sales.
+  Null-Prismatica farming, six divine wisp forms and protected-safe dual-currency sales.
   Copy-ready art prompts exist; actual images remain pending.
 
 Do not invent pending decisions from visual power order.

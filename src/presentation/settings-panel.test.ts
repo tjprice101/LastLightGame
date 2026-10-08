@@ -10,7 +10,8 @@ describe('shared settings drawer', () => {
       expect(html).toContain(text);
     }
     expect(html.match(/id="close-settings"/g)).toHaveLength(1);
-    expect(html).not.toContain('text-button');
+    expect(html).toContain('data-information="settings-information"');
+    expect(html).toContain('data-close-information');
     expect(html).toContain('aria-describedby="speed-description"');
     expect(html).toContain('aria-describedby="motion-description"');
     for (const [command] of commands) {

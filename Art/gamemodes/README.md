@@ -52,9 +52,8 @@ and full-bleed scenery retains its own composition and atmospheric lighting.
 - Banners: 3:1, right-side landmark, calmer left-side title region, no baked text.
   Arenas: 16:9, level enemy-left/ally-right standing zones, clear combat lane,
   quiet top/bottom UI space. Full-bleed opaque landscapes, never white-matted.
-- Every prompt is copy-ready except the owner's style-reference suffix. Append
-  `--sref <approved_reference_image_url> --sw 400` for enemies/items, or `--sw 200`
-  for environments, replacing the placeholder. The URL is not currently stored.
+- Every prompt is copy-ready. Enemy portrait blocks already include their
+  mapped reference at `--sw 400`; items and environments use no `--sref` or `--sw`.
   Keep one `--no` list, `--niji 6 --s 100 --q 1`; no second exclusion/style flag.
 - Preserve original PNGs. Export enemies as 960px RGBA / 864px content / 48px
   padding; items as 256px RGBA / 224px content / 16px padding. Suggested banner
@@ -105,7 +104,7 @@ uniformly from the mode's five elements; every fifth stage is a boss.
 Do not infer gameplay elemental typing from a mode's visual palette.
 
 **Spending:** keep elemental costs plus5 evolution items for4->5 and10 for5->6;
-one leveling item every Evo5/6 level. Weapon destination rank R costs100R Fractalis
+one leveling item every Evo5/6 level. Weapon destination rank R costs100R Prismatica
 and5R weapon items, rank10 cap, +2% grown Attack per rank. Creature infusion consumption
 remains deferred; this visual enemy evolution line does not enable player
 captures, fodder evolution or automatic enemy mid-fight transformations.

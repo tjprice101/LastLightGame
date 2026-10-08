@@ -1,9 +1,11 @@
-import { evolutionRecipes, getElement, materialRarities, type ElementId, type MaterialRarity } from './activities';
+import { evolutionRecipes, evolutionRequirement, getElement, materialRarities, type ElementId, type MaterialRarity } from './activities';
 import { specialtyId } from './infusions';
+import { getStarter, isRoseCharacter, type StarterId } from './starters';
+import { roseMaterials } from './roses';
 
 export const currencies = [
-  { id: 'fractalis', name: 'Fractalis', role: 'Main currency' },
-  { id: 'lycalis', name: 'Lycalis', role: 'Premium currency' },
+  { id: 'fractalis', name: 'Prismatica', role: 'Main currency' },
+  { id: 'lycalis', name: 'Null-Prismatica', role: 'Premium currency' },
 ] as const;
 
 export const artifactSlots = Array.from({ length: 8 }, (_, index) => index + 1);
@@ -67,7 +69,35 @@ export function characterLevelCap(evolution: number): number {
   if (!Number.isInteger(evolution) || evolution < 1 || evolution > characterGrowth.forms) {
     throw new Error(`Character evolution must be an integer from 1 to ${characterGrowth.forms}.`);
   }
+
   return characterGrowth.firstLevelCap + (evolution - 1) * characterGrowth.levelsPerEvolution;
+}
+
+export function characterLevelCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
+  const cost = levelCost(getStarter(id).elementId, progress);
+  if (!isRoseCharacter(id)) return cost;
+  return { fractalis: cost.fractalis, materials: {
+    [roseMaterials[0].id]: Math.ceil((progress.level + 1) / 30),
+    ...(progress.evolution >= 5 ? { [roseMaterials[5].id]: 1 } : {}),
+  } };
+}
+
+export function characterEvolutionCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
+  const cost = evolutionCost(getStarter(id).elementId, progress);
+  if (!isRoseCharacter(id)) return cost;
+  const recipe = evolutionRecipes[progress.evolution - 1];
+  const balance = evolutionBalance[progress.evolution - 1];
+  return { fractalis: cost.fractalis, materials: {
+    ...Object.fromEntries(recipe.rarities.map((rarity, index) => [
+      roseMaterials[materialRarities.indexOf(rarity)].id, balance.amounts[index],
+    ])),
+    ...(progress.evolution >= 4 ? { [roseMaterials[5].id]: progress.evolution === 4 ? 5 : 10 } : {}),
+  } };
+}
+
+export function characterEvolutionRequirement(id: StarterId, evolution: number) {
+  const requirement = evolutionRequirement(getStarter(id).elementId, evolution);
+  return { ...requirement, infusion: isRoseCharacter(id) ? 'roses' as const : requirement.infusion };
 }
 
 export function characterGrowthFactor(progress: CharacterProgress): number {
@@ -86,8 +116,8 @@ export function characterPotencyFactor(progress: CharacterProgress): number {
 }
 
 export const upgradePaths = [
-  { id: 'upgrade-0', name: 'Fracture / Evolution', detail: 'Preserve your level; multiply core growth by 1.45 and increase skill/passive potency.' },
-  { id: 'upgrade-1', name: 'Character level', detail: 'Accelerating cubic core-stat growth; bounded percentage stats and skill/passive potency.' },
+  { id: 'upgrade-0', name: 'Fracture ~ Evolution', detail: 'Preserve your level; multiply core growth by 1.45 and increase skill ~ passive potency.' },
+  { id: 'upgrade-1', name: 'Character level', detail: 'Accelerating cubic core-stat growth; bounded percentage stats and skill ~ passive potency.' },
   { id: 'upgrade-3', name: 'Unique passive', detail: 'Upgrade the character\'s unique passive ability.' },
   { id: 'upgrade-4', name: 'Ability 1', detail: 'Upgrade the first active ability.' },
   { id: 'upgrade-5', name: 'Ability 2', detail: 'Upgrade the second active ability.' },

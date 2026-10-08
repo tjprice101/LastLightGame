@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { conduits } from '../content/conduits';
+import { commonConduits as conduits } from '../content/conduits';
 import { emptyAccount } from '../game/account';
 import { conduitStore, conduitInventory } from './conduit-store';
 import { inventoryHub, characterHub } from './hub';
 import { starters } from '../content/starters';
-import { isMenuPage, sanctuaryNavigation } from './sanctuary';
+import { isMenuPage, sanctuaryContext, sanctuaryHeader } from './sanctuary';
 
 describe('Conduit Store and discovery routes', () => {
   it('has five Common mechanisms with approved prices/buffs and clearly deferred equipping', () => {
@@ -15,11 +15,13 @@ describe('Conduit Store and discovery routes', () => {
       expect(conduit.rarity).toBe('Common');
       expect(html).toContain(conduit.name);
       expect(html).toContain(conduit.effect);
-      expect(html).toContain(`${conduit.price} Fractalis`);
+      expect(html).toContain(`${conduit.price} Prismatica`);
     }
-    expect(html).toContain('Elemental Light');
-    expect(html).toContain('Owning one unlocks it for every character');
-    expect(html).toContain('Recovered mechanism');
+    expect(html).not.toContain('Elemental Light core');
+    expect(html).not.toContain('Mechanical drive');
+    expect(html).toContain('One owned copy unlocks a Conduit for all owned characters');
+    expect(html).toContain('data-information="store-information"');
+    expect(html).not.toContain('Recovered mechanism');
     for (const conduit of conduits) expect(html).toContain(`assets/conduits/${conduit.id}.png`);
     expect(html).toContain('assets/banners/conduit-store.png');
     expect(conduits.map((entry) => entry.price)).toEqual([1000, 1200, 1000, 1500, 1200]);
@@ -34,12 +36,13 @@ describe('Conduit Store and discovery routes', () => {
     expect(conduitStore(emptyAccount()).match(/ disabled/g)).toHaveLength(5);
     expect(conduitStore(null)).toContain('Store unavailable');
   });
-  it('is reachable from Inventory and Character without adding a bottom-navigation destination', () => {
+  it('belongs to Stores while retaining the contextual Character equipment route', () => {
     expect(isMenuPage('conduit-store')).toBe(true);
+    expect(isMenuPage('stores')).toBe(true);
     expect(inventoryHub()).toContain('data-page="conduit-store"');
     expect(characterHub(starters[0], 'equipment')).toContain('data-page="conduit-store"');
     expect(characterHub(starters[0], 'equipment')).not.toContain('Artifact');
-    expect(sanctuaryNavigation('conduit-store')).toContain('data-page="inventory" aria-current="page"');
-    expect(sanctuaryNavigation('conduit-store').match(/data-page=/g)).toHaveLength(7);
+    expect(sanctuaryContext('conduit-store')).toBe('');
+    expect(sanctuaryHeader('conduit-store', 0)).toContain('data-menu-back');
   });
 });

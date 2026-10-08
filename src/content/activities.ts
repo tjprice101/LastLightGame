@@ -8,7 +8,7 @@ export const elements = [
   { id: 'luminous', name: 'Luminous', affinity: 'Light', dungeon: 'Lustrous River', infusion: 'abyss' },
   { id: 'ominous', name: 'Ominous', affinity: 'Shadow', dungeon: 'Valley of Solitude', infusion: 'abyss' },
   { id: 'tranquilitic', name: 'Tranquilitic', affinity: 'Peace', dungeon: 'City of Heaven', infusion: 'abyss' },
-  { id: 'chaotic', name: 'Chaotic', affinity: 'Dark Matter/Energy', dungeon: 'Ruins of Chaos', infusion: 'abyss' },
+  { id: 'chaotic', name: 'Chaotic', affinity: 'Dark Matter ~ Energy', dungeon: 'Ruins of Chaos', infusion: 'abyss' },
 ] as const;
 
 export type ElementId = (typeof elements)[number]['id'];
@@ -30,14 +30,26 @@ export const currencyModes = [
   { id: 'treasury', name: 'Crownfall Treasury', stages: 25, startingLevel: 65, maximumLevel: 120, enemyTiers: 6 },
   { id: 'sanctuary', name: 'Rosethorn Sanctuary', stages: 25, startingLevel: 65, maximumLevel: 120, enemyTiers: 6 },
 ] as const;
-export type InfusionModeId = (typeof infusionModes)[number]['id'] | (typeof currencyModes)[number]['id'];
+export const eventModes = [
+  { id: 'roses', name: 'Passion of Crimson Roses', stages: 35, startingLevel: 80, maximumLevel: 140, enemyTiers: 6 },
+] as const;
+export const machineModes = [
+  { id: 'machines', name: 'Awaken the Machines', stages: 100, startingLevel: 10, maximumLevel: 120, enemyTiers: 6 },
+] as const;
+export type InfusionModeId = (typeof infusionModes)[number]['id'] | (typeof currencyModes)[number]['id'] | (typeof eventModes)[number]['id'] | (typeof machineModes)[number]['id'];
 export function isCurrencyMode(mode: InfusionModeId): boolean {
   return currencyModes.some((entry) => entry.id === mode);
 }
 export function infusionStageCount(mode: InfusionModeId): number {
-  const definition = [...infusionModes, ...currencyModes].find((entry) => entry.id === mode);
+  const definition = [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].find((entry) => entry.id === mode);
   if (!definition) throw new Error('Unknown staged creature mode.');
   return definition.stages;
+}
+export function validateMachineStage(stage: number): void {
+  const stages = infusionStageCount('machines');
+  if (!Number.isInteger(stage) || stage < 1 || stage > stages) {
+    throw new Error(`Awaken the Machines stage must be an integer from 1 to ${stages}.`);
+  }
 }
 
 export function getElement(id: ElementId) {

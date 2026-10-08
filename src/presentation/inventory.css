@@ -1,0 +1,54 @@
+.sanctuary-shell .inventory-hub {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  min-width: 0;
+}
+.inventory-introduction { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.inventory-introduction p { margin: 0; color: #bcbcbc; }
+.inventory-currencies { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.inventory-currency {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 24px 28px;
+  min-width: 0;
+  border: 1px solid #ffffff26;
+  border-radius: 20px;
+  background: linear-gradient(115deg, #242424e6, #141414e6);
+}
+.inventory-currency > .currency-icon { width: 80px; height: 80px; flex: 0 0 80px; }
+.inventory-currency > div { min-width: 0; }
+.inventory-currency strong { display: block; font-size: clamp(26px, 3.2vw, 48px); line-height: 1.15; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.inventory-currency span { display: block; margin-top: 6px; color: #bcbcbc; overflow-wrap: anywhere; }
+.inventory-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.inventory-tabs button { min-height: 48px; padding: 12px 24px; border: 1px solid #ffffff30; border-radius: 99px; background: #161616; color: #bcbcbc; }
+.inventory-tabs button[aria-selected="true"] { background: #f1f0e9; color: #171717; border-color: #f1f0e9; }
+.inventory-panel { min-width: 0; padding: 28px; border: 1px solid #ffffff26; border-radius: 20px; background: #171717b8; }
+.inventory-panel[hidden] { display: none; }
+.inventory-item-grid, .inventory-empty-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr)); gap: 14px; padding: 0; margin: 0; list-style: none; }
+.inventory-item { display: flex; flex-direction: column; align-items: center; gap: 10px; min-width: 0; padding: 14px; border: 1px solid #ffffff26; border-radius: 14px; background: #ffffff04; text-align: center; }
+.inventory-item-art { display: grid; place-items: center; width: 100%; aspect-ratio: 1; }
+.inventory-item-art img, .inventory-item-art .conduit-icon { width: 100%; height: 100%; max-width: 160px; max-height: 160px; object-fit: contain; }
+.inventory-item strong, .inventory-item small, .inventory-quantity { max-width: 100%; overflow-wrap: anywhere; }
+.inventory-item small { color: #bcbcbc; line-height: 1.5; }
+.inventory-quantity { margin-top: auto; font-variant-numeric: tabular-nums; }
+.inventory-empty-slots { grid-template-columns: repeat(auto-fill, minmax(min(100%, 104px), 1fr)); }
+.inventory-empty-slots i { aspect-ratio: 1; border: 1px dashed #ffffff26; border-radius: 16px; }
+.inventory-empty { padding: 30px 0 8px; text-align: center; }
+.inventory-empty h3 { margin: 0 0 12px; font-size: 28px; }
+.inventory-empty p { color: #bcbcbc; line-height: 1.6; }
+.inventory-empty button { min-height: 48px; margin-top: 12px; }
+@media (max-width: 720px) {
+  .inventory-currencies { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .inventory-currency { padding: 20px; gap: 16px; }
+  .inventory-currency > .currency-icon { width: 64px; height: 64px; flex-basis: 64px; }
+  .inventory-currency strong { font-size: clamp(24px, 6vw, 36px); }
+  .inventory-panel { padding: 18px; }
+  .inventory-item-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 120px), 1fr)); gap: 10px; }
+  .inventory-tabs button { padding: 12px 18px; }
+}

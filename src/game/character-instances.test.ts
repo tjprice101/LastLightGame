@@ -103,11 +103,11 @@ describe('duplicate character-instance foundation', () => {
     const html = characterCopyManagement(account);
     expect(html).toContain(`data-captured-copy="${first}"`);
     expect(html).toContain(`data-captured-copy="${second}"`);
-    expect(html).toContain('Owned copy 1');
-    expect(html).toContain('Owned copy 2');
-    expect(html).toContain('In squad / Automatically protected');
+    expect(html).toContain('Copy 1');
+    expect(html).toContain('Copy 2');
+    expect(html).toContain('<small>In squad</small>');
     expect(html).toContain('Retained abilities');
-    expect(characterCopyManagement(emptyAccount())).toContain('No captured creatures yet');
+    expect(characterCopyManagement(emptyAccount())).toContain('No captured creatures.');
     expect(characterCopyManagement(null)).toContain('role="alert"');
   });
 });

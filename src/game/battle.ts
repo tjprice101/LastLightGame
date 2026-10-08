@@ -8,10 +8,14 @@ import { infusionEncounter, infusionDrops } from '../content/infusions';
 import { dungeonStageCount, infusionStageCount, type InfusionModeId, type ElementId } from '../content/activities';
 import { enemyGrowth, enemyStat } from '../content/stat-growth';
 import { enemySkills, scheduledEnemySkill, type EnemySkill } from '../content/enemy-skills';
-import { type ConduitSlots, type ConduitLoadouts } from '../content/conduits';
+import { getConduit, isConduitId, validateConduitUpgrades, type ConduitId, type ConduitSlots, type ConduitLoadouts, type ConduitMechanic, type ConduitUpgrades } from '../content/conduits';
+import { rollMachineComponents } from '../content/mechanical-components';
+import { machineConduitDrops } from '../content/machines';
 import { capturedProgress, resolveCapturedFighter, type CapturedCharacter } from './character-instances';
+import { roseCaptureAllowed } from '../content/roses';
 import { getCreature } from '../content/creatures';
 import { elementAccents } from '../content/dungeon-art';
+import { characterName } from '../content/character-art';
 
 export interface Combatant {
   id: string;
@@ -29,9 +33,11 @@ export interface Combatant {
   spent: boolean;
   recoverThrough: number;
   readyRound: Record<'skill1' | 'skill2', number> & { ultimate?: number };
-  burn: { damage: number; turns: number };
+  burn: { damage: number; turns: number; sourceId?: string };
   weakened: number;
   weakenFraction: number;
+  attackBoost?: { fraction: number; throughRound: number };
+  conduitCharges?: { burnFocus?: boolean; normalMomentum?: boolean; weakenPierce?: boolean };
   kit: FighterDefinition | null;
   defending: boolean;
   art?: string;
@@ -49,6 +55,9 @@ export interface BattleState {
   rewardSeed: number;
   captureSeed?: number;
   lycalisSeed?: number;
+  conduitSeed?: number;
+  componentSeed?: number;
+  conduitUpgrades?: ConduitUpgrades;
   allies: Combatant[];
   enemies: Combatant[];
   dungeon?: { element: PlayableDungeon; stage: number };
@@ -69,6 +78,9 @@ export interface BattleEvent {
   periodic?: boolean;
   capture?: { creatureId: string; level: number };
   lycalis?: number;
+  conduits?: Partial<Record<ConduitId, number>>;
+  mechanicalComponents?: number;
+  conduitUpgrades?: ConduitUpgrades;
 }
 export interface BattleResult { state: BattleState; events: BattleEvent[] }
 
@@ -99,21 +111,23 @@ function spawnWave(wave: number): Combatant[] {
   });
 }
 
-export function createBattle(seed = 1729, roster: readonly string[] = ['ember'], progress: Partial<Record<StarterId, CharacterProgress>> = {}, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = []): BattleState {
+export function createBattle(seed = 1729, roster: readonly string[] = ['ember'], progress: Partial<Record<StarterId, CharacterProgress>> = {}, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = [], upgrades: ConduitUpgrades = {}): BattleState {
   if (!Number.isInteger(seed) || seed < 1 || seed > 0xffffffff) throw new Error('Battle seed must be a nonzero uint32.');
   if (!roster.length || roster.length > 3 || new Set(roster).size !== roster.length || !roster.every((id) => isStarterId(id) || captures.some((copy) => copy.instanceId === id))) {
     throw new Error('Battle roster requires distinct valid starters.');
   }
 
+  const snapshot = validateConduitUpgrades(upgrades);
   return {
     wave: 1, round: 1, phase: 'player', seed, rewardSeed: seed, captureSeed: seed,
+    conduitUpgrades: snapshot,
     allies: roster.map((id) => {
       if (!isStarterId(id)) {
         const copy = captures.find((entry) => entry.instanceId === id);
         if (!copy) throw new Error('Captured squad instance is missing.');
         const creature = getCreature(copy.creatureId);
-        const kit = resolveCapturedFighter(copy, equipment[id]);
-        const unit = combatant(id, creature.id, `${creature.name} / Copy ${captures.findIndex((entry) => entry.instanceId === id) + 1}`, 'ally', kit.stats, creature.element);
+        const kit = resolveCapturedFighter(copy, equipment[id], snapshot);
+        const unit = combatant(id, creature.id, `${creature.name} ~ Copy ${captures.findIndex((entry) => entry.instanceId === id) + 1}`, 'ally', kit.stats, creature.element);
         unit.kit = kit;
         unit.level = capturedProgress(copy).level;
         unit.evolution = capturedProgress(copy).tier + 1;
@@ -125,8 +139,8 @@ export function createBattle(seed = 1729, roster: readonly string[] = ['ember'],
         return unit;
       }
       const starter = getStarter(id);
-      const kit = resolveFighter(id, progress[id], equipment[id]);
-      const unit = combatant(starter.id, starter.id, starter.name, 'ally', kit.stats, starter.elementId);
+      const kit = resolveFighter(id, progress[id], equipment[id], snapshot);
+      const unit = combatant(starter.id, starter.id, characterName(id, progress[id]?.evolution), 'ally', kit.stats, starter.elementId);
       unit.kit = kit;
       unit.level = progress[id]?.level ?? null;
       unit.evolution = progress[id]?.evolution ?? 1;
@@ -138,9 +152,9 @@ export function createBattle(seed = 1729, roster: readonly string[] = ['ember'],
 }
 
 export function createDungeonBattle(element: PlayableDungeon, stage: number, seed: number, starter: StarterId, progress: CharacterProgress,
-  roster: readonly string[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = []): BattleState {
+  roster: readonly string[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = [], upgrades: ConduitUpgrades = {}): BattleState {
   const encounter = dungeonEncounter(element, stage);
-  const state = createBattle(seed, roster, teamProgress, equipment, captures);
+  const state = createBattle(seed, roster, teamProgress, equipment, captures, upgrades);
   state.wave = stage;
   state.dungeon = { element, stage };
   state.enemies = Array.from({ length: encounter.boss ? 1 : 2 }, (_, index) => {
@@ -166,9 +180,9 @@ function roll(state: BattleState): number {
 }
 
 export function createInfusionBattle(mode: InfusionModeId, stage: number, seed: number, starter: StarterId, progress: CharacterProgress,
-  roster: readonly string[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = []): BattleState {
+  roster: readonly string[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = [], upgrades: ConduitUpgrades = {}): BattleState {
   const encounter = infusionEncounter(mode, stage);
-  const state = createBattle(seed, roster, teamProgress, equipment, captures);
+  const state = createBattle(seed, roster, teamProgress, equipment, captures, upgrades);
   state.wave = stage;
   state.infusion = { mode, stage };
   state.enemies = Array.from({ length: encounter.boss ? 1 : 2 }, (_, index) => {
@@ -226,7 +240,7 @@ function gainShatter(target: Combatant, amount: number, events: BattleEvent[]): 
   const gained = Math.min(target.stats.shatterCapacity - target.shatter, amount);
   if (gained <= 0) return;
   target.shatter += gained;
-  event(events, 'status', target, target, gained, `${target.name} gains ${formatStat(gained)} Shatter Gauge (${formatStat(target.shatter)}/${formatStat(target.stats.shatterCapacity)}).`);
+  event(events, 'status', target, target, gained, `${target.name} gains ${formatStat(gained)} Shatter Gauge (${formatStat(target.shatter)} ~ ${formatStat(target.stats.shatterCapacity)}).`);
 }
 
 function healTeam(state: BattleState, source: Combatant, amount: number, events: BattleEvent[], percent = false): void {
@@ -263,21 +277,37 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
       return state.rewardSeed / 0x100000000;
     };
     if (enemy.level === null) throw new Error('Enemy reward level is missing.');
-    const amount = rollDrop(state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level), rewardRoll);
-    if (amount === undefined) throw new Error('Guaranteed Fractalis reward did not drop.');
+    const amount = rollDrop(state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === 'roses' ? 140 : 120), rewardRoll);
+    if (amount === undefined) throw new Error('Guaranteed Prismatica reward did not drop.');
     const materials = state.infusion ? infusionDrops(state.infusion.mode, state.infusion.stage, rewardRoll)
       : state.dungeon ? materialDrops(state.dungeon.element, state.dungeon.stage, rewardRoll) : undefined;
     const materialText = materials ? Object.entries(materials).map(([id, quantity]) => `${quantity} ${materialName(id)}`).join(', ') : '';
     let capture: BattleEvent['capture'];
     let lycalis = 0;
-    if (state.infusion && enemy.creatureId) {
+    const mechanicalComponents = state.infusion?.mode === 'machines' ? rollMachineComponents(state.infusion.stage, () => {
+      let seed = state.componentSeed ?? (((previous.rewardSeed ^ 0x6c8e9cf5) >>> 0) || 1);
+      seed ^= seed << 13;
+      seed ^= seed >>> 17;
+      seed ^= seed << 5;
+      state.componentSeed = seed >>> 0;
+      return state.componentSeed / 0x100000000;
+    }) : 0;
+    const conduits = state.infusion?.mode === 'machines' ? machineConduitDrops(state.infusion.stage, () => {
+      let seed = state.conduitSeed ?? (((previous.rewardSeed ^ 0xa511e9b3) >>> 0) || 1);
+      seed ^= seed << 13;
+      seed ^= seed >>> 17;
+      seed ^= seed << 5;
+      state.conduitSeed = seed >>> 0;
+      return state.conduitSeed / 0x100000000;
+    }) : undefined;
+    if (state.infusion && state.infusion.mode !== 'machines' && enemy.creatureId) {
       let seed = state.captureSeed ?? state.seed;
       seed ^= seed << 13;
       seed ^= seed >>> 17;
       seed ^= seed << 5;
       state.captureSeed = seed >>> 0;
-      if (captureSucceeds(state.captureSeed / 0x100000000)) capture = { creatureId: enemy.creatureId, level: enemy.level };
-      if (state.infusion.mode !== 'treasury') lycalis = rollStagedLycalis(state.infusion.mode, enemy.level, () => {
+      if ((state.infusion.mode !== 'roses' || roseCaptureAllowed(enemy.level)) && captureSucceeds(state.captureSeed / 0x100000000)) capture = { creatureId: enemy.creatureId, level: enemy.level };
+      if (state.infusion.mode !== 'treasury' && state.infusion.mode !== 'roses') lycalis = rollStagedLycalis(state.infusion.mode, enemy.level, () => {
         let premiumSeed = state.lycalisSeed ?? (((previous.seed ^ 0x9e3779b9) >>> 0) || 1);
         premiumSeed ^= premiumSeed << 13;
         premiumSeed ^= premiumSeed >>> 17;
@@ -290,7 +320,10 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
       ...(materials ? { materials } : {}),
       ...(capture ? { capture } : {}),
       ...(lycalis ? { lycalis } : {}),
-      message: `${enemy.name} drops +${amount} Fractalis${materialText ? ` and ${materialText}` : ''}${lycalis ? ` and +${lycalis} Lycalis` : ''}${capture ? ` and a captured ${enemy.name} creature` : ''}.` });
+      ...(conduits ? { conduits } : {}),
+      ...(conduits && Object.keys(conduits).length ? { conduitUpgrades: state.conduitUpgrades } : {}),
+      ...(mechanicalComponents ? { mechanicalComponents } : {}),
+      message: `${enemy.name} drops +${amount} Prismatica${materialText ? ` and ${materialText}` : ''}${lycalis ? ` and +${lycalis} Null-Prismatica` : ''}${mechanicalComponents ? ` and +${mechanicalComponents} Broken Mechanical Components` : ''}${capture ? ` and a captured ${enemy.name} creature` : ''}${conduits && Object.keys(conduits).length ? ` and ${Object.keys(conduits).filter(isConduitId).map((id) => getConduit(id).name).join(', ')}` : ''}.` });
   }
 
 }
@@ -300,13 +333,37 @@ export function captureSucceeds(value: number): boolean {
   return value < .2;
 }
 
+function hasMechanic(unit: Combatant, mechanic: ConduitMechanic): boolean {
+  return unit.conduits?.some((id) => id !== null && getConduit(id).mechanic === mechanic) ?? false;
+}
+
+function conduitShield(actor: Combatant, fraction: number, events: BattleEvent[]): void {
+  const amount = Math.round(actor.stats.health * fraction);
+  const gained = Math.max(0, amount - actor.shield);
+  actor.shield = Math.max(actor.shield, amount);
+  if (gained > 0) event(events, 'shield', actor, actor, gained, `${actor.name}'s Conduit grants ${formatStat(gained)} shield.`);
+}
+
+function conduitHeal(actor: Combatant, fraction: number, events: BattleEvent[]): void {
+  const restored = Math.min(actor.stats.health - actor.hp, Math.round(actor.stats.health * fraction));
+  if (actor.hp <= 0 || restored <= 0) return;
+  actor.hp += restored;
+  event(events, 'heal', actor, actor, restored, `${actor.name}'s Conduit restores ${formatStat(restored)} health.`);
+}
+
+function chargeConduit(actor: Combatant, key: 'burnFocus' | 'normalMomentum' | 'weakenPierce', events: BattleEvent[], effect: string): void {
+  actor.conduitCharges = { ...actor.conduitCharges, [key]: true };
+  event(events, 'status', actor, actor, 0, `${actor.name}: ${effect} (refresh; does not stack).`);
+}
+
 export function act(previous: BattleState, actorId: string, action: ActionId, targetId: string): BattleResult {
   if (!isActionId(action)) throw new Error('Unknown combat action.');
   const original = previous.allies.find((unit) => unit.id === actorId);
   if (!original) throw new Error('Unknown team member.');
   const reason = actionUnavailable(previous, original, action);
   if (reason) throw new Error(reason);
-  const support = action === 'defend' || (action === 'skill2' && (original.definitionId === 'tide' || original.definitionId === 'sprout') && !original.captured);
+  const support = action === 'defend' || (action !== 'light' && original.kit?.abilities[action].targets === 'all-allies') ||
+    (action === 'skill2' && (original.definitionId === 'tide' || original.definitionId === 'sprout') && !original.captured);
   if (!support && !previous.enemies.some((enemy) => enemy.id === targetId && enemy.hp > 0)) {
     throw new Error('Choose a living enemy target.');
   }
@@ -322,6 +379,8 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
     actor.spent = true;
     actor.defending = true;
     event(events, 'status', actor, actor, defenseMode.damageReduction * 100, `${actor.name} enters Defense: incoming damage reduced by 10% until the next player turn.`);
+    if (hasMechanic(actor, 'defense-ward')) conduitShield(actor, .1, events);
+    if (hasMechanic(actor, 'defense-heal')) conduitHeal(actor, .05, events);
     return { state, events };
   }
   events.push({ kind: 'attack', source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action, abilityName: name });
@@ -333,39 +392,67 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   if (action === 'ultimate' && actor.captured) actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
 
   if (!support) {
-    const all = !actor.captured && (action === 'ultimate' || (action === 'skill2' && actor.definitionId === 'ember'));
+    const critBonus = actor.conduitCharges?.burnFocus ? .05 : 0;
+    const pierce = actor.conduitCharges?.weakenPierce ? .2 : 0;
+    const momentum = action !== 'light' && actor.conduitCharges?.normalMomentum ? .1 : 0;
+    if (actor.conduitCharges) {
+      delete actor.conduitCharges.burnFocus;
+      delete actor.conduitCharges.weakenPierce;
+      if (action !== 'light') delete actor.conduitCharges.normalMomentum;
+    }
+    const all = !actor.captured && (action === 'ultimate' || (action === 'skill2' && actor.definitionId === 'ember') ||
+      (action !== 'light' && definition.abilities[action].targets === 'all-enemies'));
     const targets = state.enemies.filter((enemy) => enemy.hp > 0 && (all || enemy.id === targetId));
     let multiplier = 1;
     if (strength) {
       if (strength.damageMultiplier === undefined) throw new Error('Attack skill damage multiplier is missing.');
       multiplier = strength.damageMultiplier;
     }
-    if (actorId === 'ember' && actor.hp <= actor.stats.health / 2) multiplier *= 1 + definition.passive.damageBonus;
+    if (actor.hp <= actor.stats.health / 2) multiplier *= 1 + definition.passive.damageBonus;
+    if (actor.attackBoost && actor.attackBoost.throughRound >= state.round) multiplier *= 1 + actor.attackBoost.fraction;
+    multiplier *= 1 + momentum;
+    let burned = false;
+    let weakened = false;
+    let hitCritical = false;
     for (const target of targets) {
-      const critical = roll(state) < Math.min(1, actor.stats.crit + (strength?.critBonus ?? 0));
-      hurt(target, damageAmount(actor.stats.damage, multiplier, target.stats.defense, critical, actor.stats.critMultiplier), actor, events, critical);
-      if (target.hp > 0 && action === 'skill1' && actorId === 'ember') {
-        if (strength?.burnMultiplier === undefined) throw new Error('Burn strength is missing.');
+      const critical = roll(state) < Math.min(1, actor.stats.crit + (strength?.critBonus ?? 0) + critBonus);
+      hitCritical ||= critical;
+      hurt(target, damageAmount(actor.stats.damage, multiplier, target.stats.defense * (1 - pierce), critical, actor.stats.critMultiplier), actor, events, critical);
+      if (target.hp > 0 && strength?.burnMultiplier !== undefined) {
         const damage = Math.round(actor.stats.elementalDamage * strength.burnMultiplier);
-        target.burn = { damage, turns: 2 };
+        target.burn = { damage, turns: 2, sourceId: actor.id };
         event(events, 'status', actor, target, damage, `${target.name} burns for two enemy phases.`);
+        burned = true;
       }
-      if (target.hp > 0 && action === 'skill1' && actorId === 'tide') {
+      if (target.hp > 0 && strength?.weakenFraction !== undefined) {
         target.weakened = 2;
-        if (strength?.weakenFraction === undefined) throw new Error('Weakening strength is missing.');
         target.weakenFraction = strength.weakenFraction;
         event(events, 'status', actor, target, 0, `${target.name} is weakened for two enemy phases.`);
+        weakened = true;
       }
     }
+    if (burned && hasMechanic(actor, 'burn-focus')) chargeConduit(actor, 'burnFocus', events, 'next offensive activation gains +5 percentage points Critical Rate');
+    if (weakened && hasMechanic(actor, 'weaken-pierce')) chargeConduit(actor, 'weakenPierce', events, 'next offensive activation ignores 20% Defense');
+    if (action === 'light' && hasMechanic(actor, 'normal-momentum')) chargeConduit(actor, 'normalMomentum', events, 'next offensive skill gains +10% outgoing damage');
+    if (hitCritical && hasMechanic(actor, 'critical-gauge')) gainShatter(actor, 5, events);
   }
-  if (actorId === 'tide' && (action === 'skill2' || action === 'ultimate')) {
-    if (strength?.shield === undefined) throw new Error('Shield strength is missing.');
+  if (strength?.shield !== undefined) {
     shieldTeam(state, actor, strength.shield, events);
   }
-  if (actorId === 'sprout' && (action === 'skill2' || action === 'ultimate')) {
-    if (strength?.healing === undefined) throw new Error('Healing strength is missing.');
+  if (strength?.healing !== undefined) {
     healTeam(state, actor, strength.healing, events);
   }
+  if (strength?.attackBoostFraction !== undefined) {
+    for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
+      const prior = ally.attackBoost && ally.attackBoost.throughRound >= state.round ? ally.attackBoost.fraction : 0;
+      ally.attackBoost = { fraction: Math.max(prior, strength.attackBoostFraction), throughRound: state.round + 1 };
+      event(events, 'status', actor, ally, ally.attackBoost.fraction * 100,
+        `${ally.name}: outgoing attack damage +${formatStat(ally.attackBoost.fraction * 100)}% this and next player turn (refresh; does not stack).`);
+    }
+  }
+  if (hasMechanic(actor, 'shield-heal') && events.some((entry) => entry.kind === 'shield' && entry.source === actor.id && entry.amount > 0)) conduitHeal(actor, .05, events);
+  if (hasMechanic(actor, 'defeat-gauge') && events.some((entry) => entry.kind === 'damage' && entry.source === actor.id && state.enemies.some((enemy) => enemy.id === entry.target && enemy.hp === 0))) gainShatter(actor, 5, events);
+  if (action === 'ultimate' && hasMechanic(actor, 'ultimate-ward')) conduitShield(actor, .15, events);
   checkOutcome(state);
   awardDefeats(previous, state, events);
   return { state, events };
@@ -376,11 +463,12 @@ function newTurn(state: BattleState, events: BattleEvent[]): void {
   for (const ally of state.allies) {
     ally.spent = false;
     ally.defending = false;
+    if (ally.attackBoost && ally.attackBoost.throughRound < state.round) delete ally.attackBoost;
+    if (hasMechanic(ally, 'renewal')) conduitHeal(ally, .02, events);
   }
-  const flora = state.allies.find((unit) => unit.id === 'sprout' && unit.hp > 0);
-  if (flora) {
-    if (!flora.kit) throw new Error('Passive combat kit is missing.');
-    healTeam(state, flora, flora.kit.passive.healFraction, events, true);
+  for (const ally of state.allies.filter((unit) => unit.hp > 0 && (unit.kit?.passive.healFraction ?? 0) > 0)) {
+    if (!ally.kit) throw new Error('Passive combat kit is missing.');
+    healTeam(state, ally, ally.kit.passive.healFraction, events, true);
   }
   events.push({ kind: 'turn', source: '', target: '', amount: state.round, critical: false, message: `Turn ${state.round}. Only Last Flare forces next-turn recovery.` });
 }
@@ -393,7 +481,7 @@ export function endTurn(previous: BattleState): BattleResult {
     if (enemy.hp <= 0) continue;
     if (enemy.burn.turns > 0) {
       enemy.burn.turns--;
-      const source = state.allies.find((unit) => unit.id === 'ember');
+      const source = state.allies.find((unit) => unit.id === (enemy.burn.sourceId ?? 'ember'));
       if (!source) throw new Error('Burn source is missing.');
       hurt(enemy, enemy.burn.damage, source, events, false, true);
     }
@@ -459,13 +547,16 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
   }
   const captures = previous.allies.flatMap((ally) => ally.captured ? [ally.captured] : []);
   const state = 'mode' in destination
-    ? createInfusionBattle(destination.mode, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures)
-    : createDungeonBattle(destination.element, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures);
+    ? createInfusionBattle(destination.mode, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades)
+    : createDungeonBattle(destination.element, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades);
   for (const ally of state.allies) {
     const prior = previous.allies.find((unit) => unit.id === ally.id);
     if (!prior) throw new Error('Continuing character is missing from the previous encounter.');
     ally.shatter = Math.min(prior.shatter, ally.stats.shatterCapacity);
+    if (prior.conduitCharges) ally.conduitCharges = { ...prior.conduitCharges };
   }
+  if (previous.conduitSeed !== undefined) state.conduitSeed = previous.conduitSeed;
+  if (previous.componentSeed !== undefined) state.componentSeed = previous.componentSeed;
   return { state, events: [{ kind: 'turn', source: '', target: '', amount: state.wave, critical: false,
     message: 'Next stage. Health and cooldowns reset; Shatter Gauge carries over.' }] };
 }

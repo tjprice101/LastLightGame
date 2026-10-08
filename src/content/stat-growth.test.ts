@@ -36,6 +36,16 @@ describe('accelerating enemy stat curves', () => {
     expect(state.enemies.every((enemy) => enemy.level === 120 && enemy.stats.health === enemyGrowth.health)).toBe(true);
   });
 
+  it('opts into the anchored quadratic140 extension without changing legacy120 curves', () => {
+    for (let level = 80; level <= 120; level++) {
+      expect(enemyStat(90, 200000, level, 80, .036, 140))
+        .toBe(enemyStat(90, 200000, level, 80, .036));
+    }
+    expect(enemyStat(90, 200000, 140, 80, .036, 140)).toBe(591680);
+    expect(enemyStat(90, 200000, 140, 80, .036)).toBe(200000);
+    expect(() => enemyStat(90, 200000, 140, 80, .036, 141)).toThrow();
+  });
+
   it.each(starters)('$name can clear max-level dungeon and infusion bosses before equipment across three seeds', (starter) => {
     const progress = { level: 105, evolution: 6 };
     for (const seed of [1, 1729, 12345]) {

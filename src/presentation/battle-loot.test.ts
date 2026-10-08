@@ -35,6 +35,19 @@ const reward: BattleEvent = { kind: 'reward', source: 'enemy', target: '', amoun
   critical: false, message: 'Loot', materials: { 'heavens-weapon': 2, 'aquatic-epic': 1, 'chaotic-omnic': 1 } };
 
 describe('enemy-death loot presentation', () => {
+  it.each([0, 3, 5])('shows the snapshotted Conduit level %i as five squares', (level) => {
+    documentFixture();
+    const burst = lootBurst({ ...reward, materials: undefined, conduits: { 'vigil-core': 1 },
+      conduitUpgrades: { 'vigil-core': level } });
+    const drop = burst.children[1];
+    if (!(drop instanceof Node)) throw new Error('Loot fixture node is missing.');
+    const meter = drop.children[2];
+    expect(meter.className).toBe('conduit-upgrade-meter loot-upgrade-marker');
+    expect(meter.dataset.upgradeLevel).toBe(String(level));
+    expect(meter.children).toHaveLength(5);
+    expect(meter.children.filter((square) => square.className.includes('is-filled'))).toHaveLength(level);
+    expect(meter.getAttribute('aria-label')).toBe(`Conduit upgrade +${level} of 5`);
+  });
   it('varies each stack size, scatter and pickup speed independently within bounds', () => {
     documentFixture();
     expect(lootMotion(() => 0)).toEqual({ size: .75, scatter: -7, height: -12, duration: 850 });
@@ -80,7 +93,7 @@ describe('enemy-death loot presentation', () => {
     if (!(currencyDrop instanceof Node)) throw new Error('Loot fixture node is missing.');
     expect(currencyDrop.children[1].src).toContain('assets/currencies/fractalis.png');
     expect(burst.childElementCount).toBe(4);
-    expect(burst.getAttribute('aria-label')).toContain('7 Fractalis, 2 Dawnsteel of Judgment');
+    expect(burst.getAttribute('aria-label')).toContain('7 Prismatica, 2 Dawnsteel of Judgment');
     expect(lootItems({ ...reward, materials: undefined })).toHaveLength(1);
     expect(() => lootItems({ ...reward, kind: 'damage' })).toThrow('reward');
   });

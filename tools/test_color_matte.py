@@ -49,6 +49,21 @@ class ColorMatteTests(unittest.TestCase):
         self.assertEqual(result.getpixel((0, 0))[3], 0)
         self.assertEqual(result.getpixel((4, 4))[3], 255)
 
+    def test_reviewed_seed_clears_only_selected_enclosed_component(self):
+        image = Image.new("RGB", (9, 9), (240, 60, 150))
+        for y in range(2, 7):
+            for x in range(2, 7):
+                image.putpixel((x, y), (255, 255, 255))
+        image.putpixel((3, 4), (240, 60, 150))
+        image.putpixel((5, 4), (240, 60, 150))
+        result = remove_color_matte(image, 330, border_only=True, background_seeds=[(3/9, 4/9)])
+        self.assertEqual(result.getpixel((3, 4)), (0, 0, 0, 0))
+        self.assertEqual(result.getpixel((5, 4)), (240, 60, 150, 255))
+        self.assertEqual(result.getpixel((4, 4)), (255, 255, 255, 255))
+        for seeds in ([(-.1, .5)], [(1, .5)], [(4/9, 4/9)]):
+            with self.assertRaises(ValueError):
+                remove_color_matte(image, 330, border_only=True, background_seeds=seeds)
+
     def test_rejects_bad_settings_and_unmatched_background(self):
         image = Image.new("RGB", (2, 2), "white")
         for options in ({"hue": -1}, {"hue": 360}, {"hue": 330, "tolerance": 0},

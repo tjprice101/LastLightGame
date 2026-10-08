@@ -18,7 +18,7 @@ function kill(seed = 1): BattleResult {
   return act(state, 'ember', 'light', state.enemies[0].id);
 }
 
-describe('enemy Fractalis drops', () => {
+describe('enemy Prismatica drops', () => {
   it('awards inclusive integer 5-10 drops with reproducible independent reward randomness', () => {
     const amounts = new Set<number>();
     for (let seed = 1; seed <= 100; seed++) {
@@ -55,7 +55,7 @@ describe('enemy Fractalis drops', () => {
   });
 });
 
-describe('local Fractalis wallet', () => {
+describe('local Prismatica wallet', () => {
   it('starts at zero and persists accumulated rewards across battle restarts', () => {
     const saved = storage();
     expect(loadFractalis(saved)).toBe(0);

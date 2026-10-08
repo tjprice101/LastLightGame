@@ -1,0 +1,440 @@
+{
+  "phase": "bliss",
+  "asset_count": 12,
+  "assets": [
+    {
+      "incoming": "Featherstep Duelist, Bliss.png",
+      "asset": "bliss",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\bliss\\characters\\Featherstep Duelist, Bliss.png",
+      "source_sha256": "6191804f5b83ba09ca05e6a79455c93403feb815975b21913cb1422ebfb8522d",
+      "runtime": "public\\assets\\characters\\bliss.png",
+      "runtime_sha256": "81538db4ff2cf93d702cb2c14082cfb666298ca75341135699a643541996d573",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          55,
+          178,
+          167
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.641234,
+            0.849138
+          ],
+          [
+            0.683442,
+            0.25
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Stillplume Dancer, Bliss.png",
+      "asset": "bliss-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\bliss\\characters\\Stillplume Dancer, Bliss.png",
+      "source_sha256": "e6f48247e14efb4e8380a3c44c089db1a894586453e89bb3a66526f18940f9e7",
+      "runtime": "public\\assets\\characters\\bliss-evo-2.png",
+      "runtime_sha256": "58c6e4912c00ec9bcd4e5081383934ef1d2f24147be99de54f5472ce73c853e6",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          48,
+          194,
+          180
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.49513,
+            0.890086
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Quietwing Fencer, Bliss.png",
+      "asset": "bliss-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\bliss\\characters\\Quietwing Fencer, Bliss.png",
+      "source_sha256": "fbfbfe86108d8fbc804c6e1cce1fd4107c78b58b80eba58489c2cc6794586b19",
+      "runtime": "public\\assets\\characters\\bliss-evo-3.png",
+      "runtime_sha256": "4ce61c79ff34cb5584d61bb601356a9fb70ac2b3cc90ef8af1a1d87b5198e0b5",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          100,
+          178,
+          165
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.550325,
+            0.491379
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Prismplume Arbiter, Bliss.png",
+      "asset": "bliss-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\bliss\\characters\\Prismplume Arbiter, Bliss.png",
+      "source_sha256": "2e95ed98c612286901f44975bfc32734bd34879006c26bd7f00e2ddab4389ae7",
+      "runtime": "public\\assets\\characters\\bliss-evo-4.png",
+      "runtime_sha256": "23f16a921da600c8df73f68104ba7736ba9f4e7dbc127925401a4bbb56b230c8",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          49,
+          165,
+          169
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.621753,
+            0.325431
+          ],
+          [
+            0.362013,
+            0.362069
+          ],
+          [
+            0.704545,
+            0.62069
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Serene Tempest Empress, Bliss.png",
+      "asset": "bliss-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\bliss\\characters\\Serene Tempest Empress, Bliss.png",
+      "source_sha256": "5eabc0785943e62498c7c7c7d0262177649fdf3fa92f49d454fb7af095f454a1",
+      "runtime": "public\\assets\\characters\\bliss-evo-5.png",
+      "runtime_sha256": "cbef2118fc4b96cf0ef45ed97592761384188af0117bb226347fa99aba4b74b2",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          39,
+          168,
+          162
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.238636,
+            0.644397
+          ],
+          [
+            0.837662,
+            0.368534
+          ],
+          [
+            0.157468,
+            0.439655
+          ],
+          [
+            0.746753,
+            0.521552
+          ],
+          [
+            0.25974,
+            0.80819
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "The Thousandfeather Stillness, Bliss.png",
+      "asset": "bliss-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\bliss\\characters\\The Thousandfeather Stillness, Bliss.png",
+      "source_sha256": "40a3a8f4361b96aed3f628cfb04400010da565e0d77ff734d699736d6ffc869f",
+      "runtime": "public\\assets\\characters\\bliss-evo-6.png",
+      "runtime_sha256": "7b513fee025231c4bf6ce7107386a0756fca92956c3e2f94b10eb0baa474378c",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          67,
+          155,
+          146
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Stillfeather Tempo - Passive.png",
+      "asset": "bliss-passive",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\bliss\\abilities\\Stillfeather Tempo - Passive.png",
+      "source_sha256": "3f860bce9c719436a3a9e9fc7e6cdc297541873f414ab726031d6ccd0b538c47",
+      "runtime": "public\\assets\\abilities\\bliss-passive.png",
+      "runtime_sha256": "034fb691d6ca2fd2c8075e242868ab32527a50d59ac3d857205aa90478dd436f",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          113,
+          207,
+          183
+        ],
+        "radius": 18,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.3,
+            0.2
+          ],
+          [
+            0.671875,
+            0.689453
+          ],
+          [
+            0.300781,
+            0.310547
+          ]
+        ],
+        "reviewed_exterior_key_point": [
+          0.02,
+          0.5
+        ]
+      }
+    },
+    {
+      "incoming": "Warfeather Cut - Skill 1.png",
+      "asset": "bliss-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\bliss\\abilities\\Warfeather Cut - Skill 1.png",
+      "source_sha256": "ecb91490434899a41a65eb7042211f7c2b33075db10cf345ebe3b0a3564ef831",
+      "runtime": "public\\assets\\abilities\\bliss-skill1.png",
+      "runtime_sha256": "3d8d10f3f3acef38115292319014076045ed30e4838087c0b9dc0d83f07604ae",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          55,
+          199,
+          183
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.482422,
+            0.486328
+          ],
+          [
+            0.568359,
+            0.324219
+          ],
+          [
+            0.507812,
+            0.394531
+          ],
+          [
+            0.490234,
+            0.439453
+          ],
+          [
+            0.53125,
+            0.355469
+          ],
+          [
+            0.494141,
+            0.53125
+          ],
+          [
+            0.611328,
+            0.300781
+          ],
+          [
+            0.658203,
+            0.287109
+          ],
+          [
+            0.697266,
+            0.306641
+          ]
+        ],
+        "reviewed_exterior_frame": {
+          "outer_band": 0.025,
+          "minimum_span": 0.75
+        },
+        "reviewed_empty_frame_margin": 24
+      }
+    },
+    {
+      "incoming": "Quietstorm Flourish - Skill 2.png",
+      "asset": "bliss-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\bliss\\abilities\\Quietstorm Flourish - Skill 2.png",
+      "source_sha256": "656c97db8d8d83bd0809894ca7896e5a429e76d5d261c5fb62556dfc90f52ca0",
+      "runtime": "public\\assets\\abilities\\bliss-skill2.png",
+      "runtime_sha256": "022e3bc83ec088b24098d9c7f2f8ab977d942e7a0f775e80be76bc70bc3a112b",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          253,
+          249,
+          228
+        ],
+        "radius": 24,
+        "border_connected": true,
+        "background_seeds": [],
+        "reviewed_exterior_key_point": [
+          0.02,
+          0.5
+        ]
+      }
+    },
+    {
+      "incoming": "Thousandfeather Stillness - Last Flare.png",
+      "asset": "bliss-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\bliss\\abilities\\Thousandfeather Stillness - Last Flare.png",
+      "source_sha256": "315d87b4604588452cb1ba52b50efdf2e4ed2d723798480b8c4ef26e810226c1",
+      "runtime": "public\\assets\\abilities\\bliss-ultimate.png",
+      "runtime_sha256": "d611ac5cd144ff12b18d0216ee1c65ca700c68572fd80ffb5169f0c18a3a3cdb",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          32,
+          205,
+          184
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Fan Strike - Normal Attack.png",
+      "asset": "bliss-light",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\bliss\\abilities\\Fan Strike - Normal Attack.png",
+      "source_sha256": "0d6904154e95869d09a21fd1f38d87ffb4f40571f86213cd01e29d5191db14cd",
+      "runtime": "public\\assets\\abilities\\bliss-light.png",
+      "runtime_sha256": "b5c594f888a3b87e6005c0e606fc2f493bfa2d2948be170bec813f16ed705fde",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          30,
+          143,
+          136
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Folded Plume Guard - Defense.png",
+      "asset": "bliss-defend",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\bliss\\abilities\\Folded Plume Guard - Defense.png",
+      "source_sha256": "44d0b57ed1280861e5b5bb7d2a6a4c47064bae47fab0605831a5da83a325c1aa",
+      "runtime": "public\\assets\\abilities\\bliss-defend.png",
+      "runtime_sha256": "83f8a0bd60a1f63b6f77c77a17e8a5c837ae6ebab17d0db6be0190b4b33721c4",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          27,
+          201,
+          186
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    }
+  ]
+}

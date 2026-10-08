@@ -19,6 +19,31 @@ the engine before production; Phaser is a 2D browser engine, not a 3D engine.
 
 ## Current source map
 
+Game-native transaction confirmations live in `presentation/game-dialog.ts`
+(D-148). The single active styled HTML dialog blocks background input and
+restores focus; browser alert/confirm/prompt and OS Notification APIs are
+forbidden. `presentation/reward-screen.ts` shares a bounded tracked WAAPI
+portal/reveal and saved receipt, with Skip/Continue/Escape, fixed reachable
+footer and reduced-motion handling. `summon-presentation.ts` maps the exact
+saved main/conversion/bonus outcome; `conduit-presentation.ts` maps purchases/
+restoration. Presentation never saves or rolls. Existing battle results and
+character growth celebrations remain domain-specific. Transaction handlers
+distinguish rejected saves from presentation failures after successful saving.
+
+Sanctuary navigation (D-144) keeps the existing in-memory history but normalizes
+legacy Character/Squad links to Team. The snapshot retains its Squad/Bearers/
+Creatures area, selected owned IDs, growth/equipment tab and native control
+values. `presentation/sanctuary.ts` owns typed destinations, four-item dock and
+native Help/Menu; `src/sanctuary-reference.css` is imported after component CSS.
+The dock is never part of opening or immersive combat. Real renderers and the
+existing atomic transactions remain authoritative. Squad picks are drafts until
+Save; rate-star filters are per-banner transient state, not account fields.
+`presentation/activity-banner.ts` shares cropped live/pending-art headers and
+`presentation/activity-entry.ts` shares named staged-mode entry footers.
+`updateCharacterTab` still keeps
+the primary portrait node, updating roster metadata in place after saved growth.
+See [menu contract](menus-and-inventory.md#connected-sanctuary-reference-d-144).
+
 See [opening-flow implementation references](opening-flow.md#where-to-customize).
 The opening state machine and persistence are independent of Phaser/DOM rendering.
 Starter identity, motion preferences, and hotkeys are persisted in separate keys.
@@ -122,7 +147,7 @@ Inject controllable time/randomness into tests rather than relying on globals.
 Phase2 adds optional `conduits: Partial<Record<ConduitId, number>>` to the
 version3 wallet. Missing legacy inventories remain absent on load; known IDs
 require nonnegative safe-integer counts. `purchaseConduit` saves one copy and
-the exact Fractalis deduction together, preserving every other field. Buffs are
+the exact Prismatica deduction together, preserving every other field. Buffs are
 applied by resolveFighter after growth/legacy weapon bonuses. Optional
 conduitEquipment maps owned character IDs to eight IDs/nulls. Validate distinct
 names and owned unlocks; equipConduit performs one-write updates without item
@@ -177,7 +202,7 @@ Economy/progression share **`last-light.wallet` version3**:
   validates0-10 and survives level/evolution/reward transactions.
 - Version1 `{version:1,fractalis:N}` migrates in memory without changing its
   balance; the next successful transaction writes version3 to the same key.
-  No items, Lycalis or levels are retroactively granted.
+  No items, Null-Prismatica or levels are retroactively granted.
 - [Account validation](../src/game/account.ts) rejects unknown materials,
   invalid progression/stages, malformed receipts and unsafe counts. Corrupt data
   is reported and retained; no automatic reset or success-shaped empty fallback.
@@ -206,7 +231,7 @@ Economy/progression share **`last-light.wallet` version3**:
 - Battle sessions clone per-character progress and build all equipped allies.
   Continue/replay use the frozen run team, never the current menu selection.
 - Reward receipts combine a per-run UUID and enemy spawn ID. Successful kills
-  save Fractalis, materials, receipt and stage unlock together before applying
+  save Prismatica, materials, receipt and stage unlock together before applying
   combat. Retrying a receipt cannot grant it again; replay uses a new UUID.
 - Local storage is synchronous but has **no cross-tab lock**. Play in one tab;
   this is not a production-authoritative transaction service.

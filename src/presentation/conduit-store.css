@@ -9,8 +9,22 @@
 .conduit-card-heading small { color: #c3c3ca; }
 .conduit-mechanism { display: grid; justify-items: center; gap: 12px; padding: 22px; margin-bottom: 18px; border: 1px dashed #ffffff25; border-radius: 12px; background: #ffffff03; color: #bfc5cf; }
 .conduit-mechanism span { font-size: 11px; letter-spacing: .08em; }
-.conduit-icon { display: block; width: 48px; height: 48px; flex: 0 0 48px; object-fit: contain; }
-.conduit-mechanism .conduit-icon { width: 90px; height: 90px; }
+.conduit-icon { display: block; width: 80px; height: 80px; max-width: 100%; flex: 0 0 80px; object-fit: contain; }
+.conduit-icon-frame { position: relative; display: inline-block; width: 80px; height: 80px; max-width: 100%; flex: 0 0 80px; aspect-ratio: 1; }
+.conduit-icon-frame .conduit-icon { width: 100%; height: 100%; }
+.conduit-mechanism .conduit-icon-frame, .archive-mechanism .conduit-icon-frame { width: min(100%, 200px); height: auto; }
+.inventory-item-art .conduit-icon-frame { width: 100%; height: 100%; max-width: 160px; max-height: 160px; }
+.conduit-art-pending { display: grid; place-items: center; font-size: 12px; text-align: center; color: #bcbcbc; border: 1px dashed #ffffff30; border-radius: 12px; }
+.conduit-common { color: #c39874; border-color: #c39874; }
+.conduit-rare { color: #c7cbd1; border-color: #c7cbd1; }
+.conduit-legendary { color: #f1f0e9; border-color: #f1f0e9; }
+.conduit-omnic { color: #fff; background: linear-gradient(110deg, #dca1a144, #d7c98544, #91c5a744, #8cbbdb44, #c6a3dd44); border-color: #ded0ff; box-shadow: inset 0 0 8px #fff3; }
+.conduit-omnic { position: relative; isolation: isolate; overflow: hidden; }
+.conduit-omnic::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 18% 25%, #fff 0 1px, transparent 2px), radial-gradient(circle at 80% 70%, #fff 0 1px, transparent 2px), linear-gradient(115deg, transparent 25%, #fff8 48%, transparent 65%); background-size: auto, auto, 300% 100%; animation: conduit-prismatic-shine 5s ease-in-out infinite; }
+@keyframes conduit-prismatic-shine { 0%, 55% { opacity: .25; background-position: 0 0, 0 0, 100% 0; } 85%, 100% { opacity: .6; background-position: 0 0, 0 0, 0% 0; } }
+html[data-motion="reduced"] .conduit-omnic::after { animation: none; opacity: .3; }
+@media (prefers-reduced-motion: reduce) { .conduit-omnic::after { animation: none; opacity: .3; } }
+.conduit-mechanism .conduit-icon { width: min(100%, 200px); height: auto; aspect-ratio: 1; }
 .conduit-effect { padding: 8px 12px; border-left: 2px solid #ddd; background: #ffffff06; color: #fff; }
 .conduit-quantity { margin-top: auto; font-variant-numeric: tabular-nums; }
 .conduit-price { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }

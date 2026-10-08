@@ -1,0 +1,391 @@
+{
+  "phase": "bruno",
+  "asset_count": 12,
+  "assets": [
+    {
+      "incoming": "Quarry Sentinel, Bruno.png",
+      "asset": "bruno",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\bruno\\characters\\Quarry Sentinel, Bruno.png",
+      "source_sha256": "8f0d2f57d647438a95174deb3ee2421348d55f7f05bdbc1d8264f8cbba71e7f2",
+      "runtime": "public\\assets\\characters\\bruno.png",
+      "runtime_sha256": "846f0c31881a6ad1b417a7e4dc2880f8abb617959af350b40d9683df7c249ee2",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          251,
+          78,
+          104
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.607143,
+            0.872845
+          ]
+        ]
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Faultline Bulwark, Bruno.png",
+      "asset": "bruno-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\bruno\\characters\\Faultline Bulwark, Bruno.png",
+      "source_sha256": "c62fd5f8a8b8bad47574ed1137919c0448605f5973c11aa23681b9a1adbe1383",
+      "runtime": "public\\assets\\characters\\bruno-evo-2.png",
+      "runtime_sha256": "da9db624062e50b35b8f35475568d0ade857dcc4e82a7604634524be49a1960b",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          247,
+          125,
+          101
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.511364,
+            0.840517
+          ]
+        ]
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Bedrock Citadel, Bruno.png",
+      "asset": "bruno-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\bruno\\characters\\Bedrock Citadel, Bruno.png",
+      "source_sha256": "b552b3540658cb8734e2ea00144cde41fab7de88db7e930fa7f3f453a2f01e0f",
+      "runtime": "public\\assets\\characters\\bruno-evo-3.png",
+      "runtime_sha256": "095665612a35447b1ff08c6ec629e05537eff19f7a7d38c494ae4a1aa13e0a1b",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          238,
+          181,
+          103
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.503247,
+            0.864224
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Worldforge Bastion, Bruno.png",
+      "asset": "bruno-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\bruno\\characters\\Worldforge Bastion, Bruno.png",
+      "source_sha256": "9d020b32151faa294cea5792f09788dc237df4a212503348fa2a9dff4b7c62b6",
+      "runtime": "public\\assets\\characters\\bruno-evo-4.png",
+      "runtime_sha256": "de5844a27492a33739b6592fc7d345da9fee043c62150fab5288f8bb96984d07",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          231,
+          132,
+          103
+        ],
+        "radius": 26,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.418831,
+            0.855603
+          ],
+          [
+            0.910714,
+            0.258621
+          ],
+          [
+            0.537338,
+            0.159483
+          ],
+          [
+            0.92776,
+            0.320043
+          ],
+          [
+            0.582792,
+            0.079741
+          ]
+        ]
+      },
+      "source_facing": "right"
+    },
+    {
+      "incoming": "Prismatic Mountain Regent, Bruno.png",
+      "asset": "bruno-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\bruno\\characters\\Prismatic Mountain Regent, Bruno.png",
+      "source_sha256": "46c3c72d64073cea3f525b383f8f63bafa67bf710b0089d231e9bb1316b4b830",
+      "runtime": "public\\assets\\characters\\bruno-evo-5.png",
+      "runtime_sha256": "d60ce7f98adb5a191045a0b8fdde15ff2eb8b7e70c808b4894c6bd459e0affba",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          217,
+          101,
+          112
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.698052,
+            0.821121
+          ],
+          [
+            0.477273,
+            0.821121
+          ],
+          [
+            0.836039,
+            0.892241
+          ],
+          [
+            0.917208,
+            0.926724
+          ]
+        ]
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "The Living Worldwall, Bruno.png",
+      "asset": "bruno-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\bruno\\characters\\The Living Worldwall, Bruno.png",
+      "source_sha256": "4e9111ec2a2bd2a87f81e40bd3f8b9eddea00d532edd8d8de403c7c1f9a48c55",
+      "runtime": "public\\assets\\characters\\bruno-evo-6.png",
+      "runtime_sha256": "cd269f003f48b1356202aab950f3caefc7ce4473a22a465c77c35af4bd99711e",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          223,
+          108,
+          102
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.524351,
+            0.844828
+          ],
+          [
+            0.353896,
+            0.702586
+          ]
+        ]
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Faultbound Resolve - Passive.png",
+      "asset": "bruno-passive",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\bruno\\abilities\\Faultbound Resolve - Passive.png",
+      "source_sha256": "b519d2907c61921b4064b687a5072e1aa9dbc751d91611a93ab068886ba5906e",
+      "runtime": "public\\assets\\abilities\\bruno-passive.png",
+      "runtime_sha256": "73e55bf5bac1be86dc461db130a1bdae5f79549f31d423ae9a698c0fc507c9a9",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          251,
+          145,
+          94
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [],
+        "reviewed_exterior_frame": {
+          "outer_band": 0.025,
+          "minimum_span": 0.75
+        },
+        "reviewed_empty_frame_margin": 32
+      }
+    },
+    {
+      "incoming": "Seismic Hammerfall - Skill 1.png",
+      "asset": "bruno-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\bruno\\abilities\\Seismic Hammerfall - Skill 1.png",
+      "source_sha256": "cf0b2224d93068f22202d63390b59112b0ef6ecd05bfe6b8378af51c8a9b4a0e",
+      "runtime": "public\\assets\\abilities\\bruno-skill1.png",
+      "runtime_sha256": "67be1c384b48b18927f98e77ca0d4553799b90e9223d116d1744b8daed2c3dd7",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          253,
+          115,
+          87
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Citadel Mantle - Skill 2.png",
+      "asset": "bruno-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\bruno\\abilities\\Citadel Mantle - Skill 2.png",
+      "source_sha256": "cf514c2225bdf089ec008e209b63bd3ce4dc3369415232b0edb5a73f5b6d8c8c",
+      "runtime": "public\\assets\\abilities\\bruno-skill2.png",
+      "runtime_sha256": "13d8db2efa83a61690d4b4af08b856b14560baf87b2c77b488b24696c0f9c917",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          250,
+          69,
+          66
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Worldwall Ascendant - Last Flare.png",
+      "asset": "bruno-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\bruno\\abilities\\Worldwall Ascendant - Last Flare.png",
+      "source_sha256": "72e47dec42c3ad4a3b688134f95f28a72d65c68bef7765c36ecf9abba8739e3c",
+      "runtime": "public\\assets\\abilities\\bruno-ultimate.png",
+      "runtime_sha256": "399d280b0665ea261173b9006c047c93bac66c3d20b834bc6bd459ae955783df",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          254,
+          79,
+          55
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Hammer Strike - Normal Attack.png",
+      "asset": "bruno-light",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\bruno\\abilities\\Hammer Strike - Normal Attack.png",
+      "source_sha256": "6c5cdb4d0677f78b14f8c25c70eb172b97c040c3446766bee1be1344ddadf9de",
+      "runtime": "public\\assets\\abilities\\bruno-light.png",
+      "runtime_sha256": "5a36416c9c51b806c17af9f07cea797d32169977a0b046aac37ba832c0a9884d",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          252,
+          91,
+          150
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Bedrock Brace - Defense.png",
+      "asset": "bruno-defend",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\bruno\\abilities\\Bedrock Brace - Defense.png",
+      "source_sha256": "ee8f3769d898e41290cbcfa21ec33e662b9dac1c9e99468da04bee9bdbf1d3a3",
+      "runtime": "public\\assets\\abilities\\bruno-defend.png",
+      "runtime_sha256": "d8658e0fe7c1f99fc6cf6ff4280ebab36b98a025026516a8532c8372af74ac42",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          249,
+          84,
+          72
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    }
+  ]
+}

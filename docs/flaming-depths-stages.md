@@ -186,7 +186,7 @@ playtested, not inferred from its displayed level.
 
 ## Rewards, capture boundary, and wave reports
 
-No dungeon Fractalis amounts, capture odds or completion rewards are approved.
+No dungeon Prismatica amounts, capture odds or completion rewards are approved.
 Do not copy Adventure rewards silently or let the stage table grant ownership.
 Capture eligibility (especially elites/Ifrit), captured-level conversion,
 capacity, duplicate policy, team size and leveling costs remain owner decisions.

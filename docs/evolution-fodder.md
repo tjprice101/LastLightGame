@@ -1,12 +1,19 @@
 # Evolution creature infusion (Phase7)
 
+D-100's three [rose event EBs](crimson-roses.md) keep the same1/2/3-copy and
+form3+/4+/5+ gates but require Roselius, regardless of their Luminous/Ominous/
+Chaotic combat element. Character-aware requirement/cost helpers drive both
+menus and transactions. Existing EBs retain their element's Heaven/Abyss mode.
+Legendary Roselius are capturable at stages22/23 (Lv.117/119); higher-than120
+enemies cannot be captured. Final-form banner duplicates can also qualify. (Phase7)
+
 ## Approved and implemented rules
 
 Characters are **Element-Bearers**. Enemies and creatures remain **enemies** and
 **creatures**, even when captured and playable. Captured creatures are not
 renamed Element-Bearers or companions.
 
-Captured creatures supplement existing material and Fractalis evolution costs:
+Captured creatures supplement existing material and Prismatica evolution costs:
 
 | Evolution | Captured creatures consumed | Minimum captured form |
 | --- | --- | --- |
@@ -82,4 +89,4 @@ entries, not an already initialized replay/Continue team.
   protected/stale/unknown/duplicate copies, failure/retry and selection markup.
 
 Reuses existing Heaven/Abyss portrait and rating assets. No new art prompt or
-invented image path is needed. Phase8 banner and Lycalis odds remain separate.
+invented image path is needed. Phase8 banner and Null-Prismatica odds remain separate.

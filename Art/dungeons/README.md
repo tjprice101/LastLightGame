@@ -35,9 +35,8 @@ instructions below before submitting them to Midjourney.
 - Items use `--ar 1:1`: one collectible centered on a solid palette-exclusive key color, readable at icon size,
   increasingly faceted and prismatic without becoming a cluttered pile.
   These are objects, not characters; do not add faces.
-- Append `--sref <approved_reference_image_url> --sw 400` to monster/item
-  prompts, replacing the placeholder with the approved reference. The URL is
-  not stored here. Append the same reference with `--sw 200` for environments.
+- Monster portrait blocks already include their mapped reference at `--sw 400`.
+  Items and environments use no `--sref` or `--sw`.
 - Keep `--niji 6 --s 100 --q 1`; do not add a `--style` flag or a second `--no`.
   Existing exclusions must be extended within the single exclusion list.
 - Banners: 3:1, suggested export 1800x600, focal landmark right, calm title area
@@ -51,13 +50,16 @@ instructions below before submitting them to Midjourney.
 
 ## Pending-art rarity escalation pass
 
-The five packs still awaiting supplied artwork are **Precipice of the Earth,
-Sky-bound Rift, Lustrous River, Valley of Solitude and Ruins of Chaos**.
+The escalation pass originally covered **Precipice of the Earth, Sky-bound Rift,
+Lustrous River, Valley of Solitude and Ruins of Chaos**. Precipice, Lustrous,
+Chaos, Sky-bound Rift and Valley of Solitude are now supplied and integrated.
+All ten elemental packs have runtime art; the original escalation pass remains
+a reference for future prompt changes.
 Their gameplay, names, encounters and rewards are implemented; this is an art
 revision, not a new dungeon implementation or rarity assignment to enemies.
 Already supplied dungeon packs are unchanged.
 
-All 40 enemy and 30 material prompts in these five packs now encode escalation:
+All40 enemy and30 material prompts in those five packs encode escalation:
 
 | Art position | Visual direction |
 | --- | --- |

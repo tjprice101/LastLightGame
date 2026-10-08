@@ -19,10 +19,8 @@ instead of pure-white backgrounds, outer white margins, or square unit exports.
   rock. Keep foreground combat surfaces quieter than the supplied enemy effects.
 - No baked-in characters, monsters, ability effects, lettering, logos or UI.
   The game will overlay the title, stage information, buttons and combatants.
-- Append `--sref <approved_reference_image_url> --sw 200` to each prompt, using
-  the same approved illustration reference as the unit art. Replace the placeholder;
-  the reference URL is not stored here. Start at 200 for environment composition
-  and compare with approved enemies before changing reference strength.
+- Use the shared illustration renderer without `--sref` or `--sw`;
+  compare actual outputs with approved enemies for style consistency.
 - Retain `--niji 6 --s 100 --q 1`. Do not add a `--style` flag or a second `--no`
   parameter. Ratios differ intentionally by destination.
 - Pixel dimensions below are suggested export targets, not Midjourney flags.

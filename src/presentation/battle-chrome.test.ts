@@ -33,11 +33,11 @@ describe('shared battle chrome', () => {
     for (const session of sessions) {
       const html = markup(session);
       for (const enemy of session.state.enemies) {
-        expect(html).toContain(`<span class="unit-name">${enemy.name} / Lv. ${enemy.level}${elementLabel(enemy.element)}</span>`);
+        expect(html).toContain(`<span class="unit-name">${enemy.name} ~ Lv. ${enemy.level}${elementLabel(enemy.element)}</span>`);
         const intel = html.slice(html.indexOf('class="battle-unit-intel"'));
         expect(intel).toContain(elementLabel(enemy.element));
       }
-      expect(html).toContain('<span class="unit-name">Infernis / Lv. 105');
+      expect(html).toContain('<span class="unit-name">Eternal Heavenflame Sovereign, Infernis ~ Lv. 105');
       expect(html).not.toContain('Lv. null');
     }
   });
@@ -65,14 +65,14 @@ describe('shared battle chrome', () => {
     expect(html).toContain('ELEMENTAL DUNGEON');
     expect(html).toContain('class="battle-heading"');
     expect(html).toContain('class="battle-progress"');
-    expect(html).toContain('Stage 5 / 35');
+    expect(html).toContain('Stage 5 ~ 35');
     expect(html).toContain('class="unit-readout"');
   });
   it.each(['heavens', 'abyss'] as const)('uses shared chrome for %s, victory and defeat', (mode) => {
     const session = createSession('ember', progress, { mode, stage: 35 });
     const html = markup(session);
     expect(html).toContain('INFUSION TRIAL');
-    expect(html).toContain('Stage 35 / 35');
+    expect(html).toContain('Stage 35 ~ 35');
     expect(html).toContain('class="battle-heading"');
     for (const phase of ['cleared', 'defeat'] as const) {
       session.state.phase = phase;

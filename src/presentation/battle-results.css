@@ -17,6 +17,7 @@
 .battle-result-rewards ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 8px; padding: 0; list-style: none; max-height: 28svh; overflow-y: auto; }
 .battle-result-rewards li { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 8px; border: 1px solid color-mix(in srgb, var(--reward-color) 35%, transparent); border-radius: 10px; background: #ffffff06; font-size: 12px; }
 .battle-result-rewards img, .result-reward-token { width: 40px; height: 40px; flex-shrink: 0; object-fit: contain; }
+.battle-result-rewards .conduit-icon-frame, .battle-result-rewards .component-art-pending { width: 40px; height: 40px; flex: 0 0 40px; font-size: 8px; }
 .battle-result-rewards strong { margin-left: auto; color: var(--reward-color); white-space: nowrap; }
 .battle-result-rewards li > span:not(.result-reward-token) { min-width: 0; overflow-wrap: anywhere; }
 .result-reward-token { display: grid; place-items: center; border: 1px solid #ffffff60; border-radius: 50%; color: #ffe6aa; }

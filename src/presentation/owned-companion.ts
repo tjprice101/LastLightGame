@@ -6,6 +6,7 @@ import { portrait, assetUrl } from './portrait';
 import { characterRating, starBadge } from './character-rating';
 import { materialRarities, getElement } from '../content/activities';
 import { elementAccents } from '../content/dungeon-art';
+import { characterName } from '../content/character-art';
 
 export function capturedRating(creatureId: string): string {
   const creature = getCreature(creatureId);
@@ -19,8 +20,9 @@ export function ownedCompanion(account: Account, id: string) {
     if (!account.characters[id]) throw new Error('Choose an Owned Element-Bearer.');
     const starter = getStarter(id);
     const progress = ownedProgress(account, id);
-    return { name: starter.name, label: starter.name, color: starter.color, element: starter.element, level: progress.level, art: portrait(starter, progress.evolution),
-      rating: characterRating(id, progress.evolution), progress: `Lv.${progress.level} / Evo.${progress.evolution}` };
+    const name = characterName(id, progress.evolution);
+    return { name, label: name, color: starter.color, element: starter.element, level: progress.level, art: portrait(starter, progress.evolution),
+      rating: characterRating(id, progress.evolution), progress: `Lv.${progress.level} ~ Evo.${progress.evolution}` };
   }
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
   if (!copy) throw new Error('Choose an owned captured copy.');
@@ -28,7 +30,7 @@ export function ownedCompanion(account: Account, id: string) {
   const index = (account.capturedCharacters ?? []).findIndex((entry) => entry.instanceId === id) + 1;
   const level = capturedProgress(copy).level;
   const element = getElement(creature.element);
-  return { name: creature.name, label: `${creature.name} / Copy ${index}`, color: elementAccents[creature.element], element: element.name, level,
+  return { name: creature.name, label: `${creature.name} ~ Copy ${index}`, color: elementAccents[creature.element], element: element.name, level,
     art: creature.art ? `<img src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="960" height="960">` : '<span>Artwork pending</span>',
-    rating: capturedRating(creature.id), progress: `Lv.${level} / Fixed form / Copy ${index}` };
+    rating: capturedRating(creature.id), progress: `Lv.${level} ~ Copy ${index}` };
 }

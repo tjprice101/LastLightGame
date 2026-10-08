@@ -1,4 +1,6 @@
-export const starters = [
+import { flagshipCharacters } from './flagships';
+
+export const openingStarters = [
   {
     id: 'ember',
     stars: 5,
@@ -41,7 +43,7 @@ export const starters = [
     id: 'sprout',
     stars: 5,
     name: 'Flora',
-    role: 'Healer/Support',
+    role: 'Healer ~ Support',
     art: 'flora',
     title: 'Life takes root in the impossible',
     element: 'Efflorescent (Nature)',
@@ -58,9 +60,38 @@ export const starters = [
   },
 ] as const;
 
+export const roseCharacters = [
+  {
+    id: 'rosetta', stars: 6, name: 'Rosetta', role: 'Attacker', art: 'rosetta',
+    title: 'Virtue takes flight beneath a crimson sun', element: 'Luminous (Light)', elementId: 'luminous',
+    weapon: 'Bow', color: '#eee2af',
+    description: 'A rose-bound archer whose golden thorns and crimson wings scatter the shadows.',
+    lore: { origin: 'The gardens beneath sunny skies', story: 'Rosetta carries a quiet vow through the rose gardens: passion must protect life, not possess it. Her bow draws golden thorns across the sky, opening a path for those trapped beneath the crimson canopy.', vow: 'Let every rose shelter a beginning.', awakening: 'A crimson petal turns toward the sun.' },
+  },
+  {
+    id: 'thornia', stars: 6, name: 'Thornia', role: 'Tank', art: 'thornia',
+    title: 'The forbidden garden keeps its promises', element: 'Ominous (Shadow)', elementId: 'ominous',
+    weapon: 'Greatsword', color: '#bc9bef',
+    description: 'A shadow knight with a golden rose in her hair and a greatsword wrapped in crimson thorns.',
+    lore: { origin: 'The forbidden garden', story: 'Thornia once guarded a single golden rose at the edge of a forgotten garden. When its gates broke, she took up a greatsword and wove its thorns into armor, refusing to let beauty become another weapon against the defenseless.', vow: 'No one crosses these thorns alone.', awakening: 'The golden rose remembers its guardian.' },
+  },
+  {
+    id: 'crinso', stars: 6, name: 'Crinso', role: 'Attacker', art: 'crinso',
+    title: 'Beauty and ruin share a single edge', element: 'Chaotic (Dark Matter ~ Energy)', elementId: 'chaotic',
+    weapon: 'Dual-edged sword', color: '#ed8bbe',
+    description: 'A swift rose knight wielding one dual-edged sword, golden fire on one edge and crimson lightning on the other.',
+    lore: { origin: 'The paths between twin roses', story: 'Crinso learned that a garden needs both gentle tending and the strength to cut away what threatens it. His small double-edged dagger grew into a rose-centered blade as he followed that balance, carrying golden beauty and crimson destruction without surrendering to either.', vow: 'I choose what grows beyond the storm.', awakening: 'Two petals unfold around one resolve.' },
+  },
+] as const;
+export const starters = [...openingStarters, ...roseCharacters, ...flagshipCharacters] as const;
 export type Starter = (typeof starters)[number];
 export type StarterId = Starter['id'];
-export const availableStarters = starters;
+export type RoseCharacterId = (typeof roseCharacters)[number]['id'];
+export const availableStarters = openingStarters;
+
+export function isRoseCharacter(id: StarterId): id is RoseCharacterId {
+  return roseCharacters.some((character) => character.id === id);
+}
 
 export function isAvailableStarter(id: StarterId): boolean {
   return availableStarters.some((starter) => starter.id === id);

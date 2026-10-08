@@ -7,10 +7,14 @@ import { emptyAccount } from '../game/account';
 import { lootArt, lootItems } from './battle-loot';
 import { creatureGlossary } from './creature-glossary';
 import { creatures } from '../content/creatures';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 
 describe('supplied currency artwork', () => {
   it.each(['fractalis', 'lycalis'] as const)('resolves %s and retains accessible balance text on every menu', (id) => {
     expect(currencyArt(id)).toContain(`assets/currencies/${id}.png`);
+    const revision = createHash('sha256').update(readFileSync(`public/assets/currencies/${id}.png`)).digest('hex').slice(0, 16);
+    expect(currencyArt(id)).toContain(`.png?v=${revision}`);
     expect(currencyIcon(id)).toContain('alt="" aria-hidden="true" width="48" height="48"');
     for (const page of sanctuaryPages) {
       const html = sanctuaryHeader(page, 123, 10);
@@ -30,7 +34,7 @@ describe('supplied currency artwork', () => {
     expect(characterDetail(starters[0], 'upgrade-0', account)).not.toContain(currencyIcon('lycalis'));
   });
 
-  it('shows the coin only in revealed glossary drop pools', () => {
+  it('shows the legacy main-currency icon only in revealed glossary drop pools', () => {
     const account = emptyAccount();
     expect(creatureGlossary(account)).not.toContain(currencyIcon('fractalis'));
     account.creatures[creatures[0].id] = { defeated: true };
@@ -45,5 +49,14 @@ describe('supplied currency artwork', () => {
     expect(lootArt(items[0])).toBe(currencyArt('fractalis'));
     expect(lootArt(items[1])).toContain('assets/materials/infernic-seed.png');
     expect(lootArt({ id: 'unknown' })).toBeUndefined();
+  });
+
+  it('labels actual reward stacks with the new names while preserving legacy IDs and amounts', () => {
+    const items = lootItems({ kind: 'reward', source: 'enemy', target: '', amount: 7,
+      lycalis: 2, critical: false, message: 'Loot' });
+    expect(items.map(({ id, name, amount }) => ({ id, name, amount }))).toEqual([
+      { id: 'fractalis', name: 'Prismatica', amount: 7 },
+      { id: 'lycalis', name: 'Null-Prismatica', amount: 2 },
+    ]);
   });
 });

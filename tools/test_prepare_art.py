@@ -27,7 +27,8 @@ class SpriteSizingTests(unittest.TestCase):
                 with self.subTest(asset=record["asset"]):
                     source = ROOT / record["source"]
                     legacy = ROOT / record["legacy_source"]
-                    runtime = ROOT / record["runtime"]
+                    previous_starter = ROOT / "Art" / "source" / "starter-refresh" / "previous-runtime" / f"{record['asset']}.png"
+                    runtime = previous_starter if previous_starter.exists() else ROOT / record["runtime"]
                     self.assertEqual(hashlib.sha256(source.read_bytes()).hexdigest(), record["source_sha256"])
                     self.assertEqual(hashlib.sha256(legacy.read_bytes()).hexdigest(), record["legacy_source_sha256"])
                     if record.get("superseded"):
@@ -37,8 +38,12 @@ class SpriteSizingTests(unittest.TestCase):
                     self.assertEqual(hashlib.sha256(runtime.read_bytes()).hexdigest(), record["runtime_sha256"])
                     self.assertFalse((ROOT / record["incoming"]).exists())
                     size, content = (256, 224) if record["category"] in ("abilities", "materials") else (960, 864)
-                    result = prepare_sprite(legacy, record["asset"], size, content,
-                                            background_seeds=[(-1, -1)], matte_minimum=-1)
+                    if previous_starter.exists():
+                        with Image.open(source) as original:
+                            result = standardize_sprite(original, size, content)
+                    else:
+                        result = prepare_sprite(legacy, record["asset"], size, content,
+                                                background_seeds=[(-1, -1)], matte_minimum=-1)
                     with Image.open(source) as original, Image.open(runtime) as exported:
                         expected = standardize_sprite(original, size, content)
                         np.testing.assert_array_equal(np.asarray(result), np.asarray(expected))

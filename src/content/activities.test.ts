@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { elements, elementalMaterials, elementalEnemyLevel, evolutionRequirement, evolutionRecipes, infusionModes, materialRarities } from './activities';
-import { starters } from './starters';
+import { openingStarters as starters } from './starters';
 import { gameplayHub } from '../presentation/gameplay';
 import { characterDetail } from '../presentation/hub';
 
@@ -67,8 +67,10 @@ describe('activity and progression framework', () => {
     for (const mode of infusionModes) expect(markup).toContain(mode.name);
     expect(markup).not.toContain('Dungeon not playable yet');
     expect(markup.match(/data-dungeon="/g)).toHaveLength(10);
-    expect(markup.match(/35 stages \/ Enemy levels 10-120/g)).toHaveLength(10);
-    expect(markup.match(/data-infusion="/g)).toHaveLength(4);
+    expect(markup.match(/<dd>35 stages<\/dd>.*?<dd>10-120<\/dd>/g)).toHaveLength(10);
+    expect(markup).toContain('<dd>100 stages</dd>');
+    expect(markup.match(/data-infusion="/g)).toHaveLength(6);
+    expect(markup).toContain('data-infusion="machines"');
     expect(markup).toContain('data-page="battle"');
     expect(markup).toContain('data-page="story"');
     expect(markup).toContain('data-page="events"');

@@ -17,7 +17,7 @@ function storage(): ProfileStorage {
 }
 function kills(mode: 'heavens' | 'abyss', boss = false, burn = true) {
   const state = createInfusionBattle(mode, boss ? 35 : 1, 1, 'ember', { level: 105, evolution: 6 });
-  // First xorshift(15872) is above .99, guaranteeing the three-Lycalis outcome.
+  // First xorshift(15872) is above .99, guaranteeing the three-Null-Prismatica outcome.
   state.lycalisSeed = 15872;
   state.enemies.forEach((enemy) => {
     enemy.hp = 1;
@@ -27,7 +27,7 @@ function kills(mode: 'heavens' | 'abyss', boss = false, burn = true) {
   return { state, result: burn ? endTurn(state) : act(state, 'ember', 'skill2', state.enemies[0].id) };
 }
 
-describe('Phase8 Lycalis rewards and gated Standard Banner', () => {
+describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
   it('publishes exact endpoints and linearly scaled normalized probabilities at every enemy level', () => {
     expect(infusionLycalisOdds(80).map((entry) => entry.chance)).toEqual([.9, .08, .015, .005]);
     for (let level = 80; level <= 120; level++) {
@@ -81,7 +81,7 @@ describe('Phase8 Lycalis rewards and gated Standard Banner', () => {
       const reward = result.events.find((entry) => entry.lycalis)!;
       const item = lootItems(reward).find((entry) => entry.id === 'lycalis')!;
       expect(lootArt(item)).toContain('currencies/lycalis.png');
-      expect(battleResults(result.state, result.events)).toContain('Lycalis');
+      expect(battleResults(result.state, result.events)).toContain('Null-Prismatica');
     }
   });
   it('rejects forged premium rewards, alive sources and overflowing balances without touching saves', () => {
@@ -90,12 +90,12 @@ describe('Phase8 Lycalis rewards and gated Standard Banner', () => {
       const forged = structuredClone(result);
       forged.events.find((entry) => entry.kind === 'reward')!.lycalis = amount;
       const saved = storage();
-      expect(() => saveAccountRewards(saved, forged, 'bad')).toThrow('Invalid enemy Lycalis');
+      expect(() => saveAccountRewards(saved, forged, 'bad')).toThrow('Invalid enemy Null-Prismatica');
       expect(saved.getItem(ACCOUNT_KEY)).toBeNull();
     }
     const living = structuredClone(result);
     living.state.enemies[0].hp = 1;
-    expect(() => saveAccountRewards(storage(), living, 'alive')).toThrow('Lycalis');
+    expect(() => saveAccountRewards(storage(), living, 'alive')).toThrow('Null-Prismatica');
     const saved = storage();
     const account = emptyAccount();
     account.lycalis = Number.MAX_SAFE_INTEGER;
@@ -121,16 +121,16 @@ describe('Phase8 Lycalis rewards and gated Standard Banner', () => {
     expect(later.events.filter((entry) => entry.kind === 'reward')).toHaveLength(0);
     expect(later.state.lycalisSeed).toBe(result.state.lycalisSeed);
   });
-  it('never awards Lycalis in Adventure or elemental dungeons and rejects forged mode rewards', () => {
+  it('never awards Null-Prismatica in Adventure or elemental dungeons and rejects forged mode rewards', () => {
     for (const state of [createBattle(1), createDungeonBattle('infernic', 35, 1, 'ember', { level: 105, evolution: 6 })]) {
       state.enemies.forEach((enemy) => { enemy.hp = 1; enemy.burn = { damage: 1, turns: 1 }; });
       const result = endTurn(state);
       expect(result.events.every((entry) => entry.lycalis === undefined)).toBe(true);
       result.events.find((entry) => entry.kind === 'reward')!.lycalis = 1;
-      expect(() => saveAccountRewards(storage(), result, 'forged')).toThrow('Lycalis');
+      expect(() => saveAccountRewards(storage(), result, 'forged')).toThrow('Null-Prismatica');
     }
   });
-  it('publishes mutually exclusive exact Lycalis amounts in each stage glossary', () => {
+  it('publishes mutually exclusive exact Null-Prismatica amounts in each stage glossary', () => {
     for (const mode of ['heavens', 'abyss'] as const) for (let tier = 0; tier < 6; tier++) {
       const creature = getCreature(`infusion:${mode}:${tier}`);
       for (const stage of creature.stages) {
@@ -141,25 +141,29 @@ describe('Phase8 Lycalis rewards and gated Standard Banner', () => {
     }
     const account = emptyAccount();
     account.creatures['infusion:heavens:0'] = { defeated: true };
-    expect(creatureGlossary(account)).toContain('Lycalis');
+    expect(creatureGlossary(account)).toContain('Null-Prismatica');
     expect(creatureGlossary(account)).toContain('mutually exclusive');
   });
-  it('defines fifteen real entries with a 1% total5-star tier and normalized 50:30:17 creature weights', () => {
+  it('defines twenty-two real entries with 1% five-star, 0.1% six-star and normalized creature weights', () => {
     const pool = standardBannerPool();
-    expect(pool).toHaveLength(15);
-    expect(new Set(pool.map((entry) => entry.id)).size).toBe(15);
+    expect(pool).toHaveLength(22);
+    expect(new Set(pool.map((entry) => entry.id)).size).toBe(22);
     expect(pool.reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(1, 14);
     const characters = pool.filter((entry) => entry.kind === 'character');
-    expect(characters.map((entry) => entry.id)).toEqual(['ember', 'tide', 'sprout']);
-    expect(characters.reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(.01, 14);
-    expect(characters.every((entry) => entry.chance === .01 / 3)).toBe(true);
+    expect(characters.filter((entry) => entry.stars === 5).map((entry) => entry.id)).toEqual(['ember', 'tide', 'sprout', 'atmoso', 'bruno', 'elise']);
+    expect(characters.filter((entry) => entry.stars === 6).map((entry) => entry.id)).toEqual(['aurora', 'bliss', 'disciple', 'razor']);
+    for (const [stars, rate, count] of [[5, .01, 6], [6, .001, 4]]) {
+      const tier = characters.filter((entry) => entry.stars === stars);
+      expect(tier.reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(rate, 14);
+      expect(tier.every((entry) => entry.chance === rate / count)).toBe(true);
+    }
     for (const [index, stars] of [1, 2, 3].entries()) {
       const tier = pool.filter((entry) => entry.stars === stars);
       expect(tier).toHaveLength(4);
       expect(tier[0].chance).toBe(tier[1].chance);
-      expect(tier.reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(.99 * [50, 30, 17][index] / 97, 14);
+      expect(tier.reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(.989 * [50, 30, 17][index] / 97, 14);
     }
-    expect(pool.some((entry) => Number(entry.stars) === 4 || Number(entry.stars) === 6)).toBe(false);
+    expect(pool.some((entry) => Number(entry.stars) === 4)).toBe(false);
     expect(bannerPercent(1)).toBe('100%');
     expect(bannerPercent(.01 / 3)).toBe('0.333333%');
   });
@@ -174,10 +178,10 @@ describe('Phase8 Lycalis rewards and gated Standard Banner', () => {
       expect(() => summonCharacter(saved, () => NaN)).toThrow('[0, 1)');
       expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
       const html = summonHub(account);
-      expect(html.match(/data-banner-entry=/g)).toHaveLength(15);
-      expect(html).toContain('0.333333% per draw');
+      expect(html.match(/data-banner-entry=/g)).toHaveLength(22);
+      expect(html).toContain('0.166667% per draw');
       expect(html).not.toContain('disabled');
-      expect(html).toContain('highest-rarity crowned slime');
+      expect(html).toContain('The Crown Beyond Dawn, Gleamstone Slime ~ Omnic ~ 6-star ~ Lv.50');
       expect(html).not.toContain('All Element-Bearers owned');
     }
     expect(standardBanner.available).toBe(true);

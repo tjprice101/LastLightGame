@@ -1,0 +1,140 @@
+:root { --ui-font: Georgia, "Times New Roman", serif; font-family: var(--ui-font); }
+body, button, input, select, textarea { font-family: var(--ui-font); font-weight: 600; }
+select[data-selection-source] { display: none !important; }
+.selection-trigger {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 16px;
+  margin-block: 8px;
+  border: 1px solid #ffffff40;
+  border-radius: 12px;
+  background: #ffffff08;
+  color: #f1f0e9;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.selection-trigger::after { content: "  \2192"; }
+.selection-trigger:disabled { opacity: .5; cursor: default; }
+.selection-modal, .selection-modal * { font-family: var(--ui-font); }
+.captured-equipment { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.captured-equipment h4 { grid-column: 1 / -1; }
+.battle-screen .battle-menu .battle-utilities > section { width: 100%; }
+.selection-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px; }
+.selection-option {
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid #ffffff35;
+  border-radius: 10px;
+  background: #ffffff06;
+  color: #f1f0e9;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.selection-option[aria-pressed="true"] { background: #f1f0e9; color: #171717; }
+.selection-option:disabled { opacity: .4; }
+.selection-trigger:focus-visible, .selection-option:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+#app *, #app #battle-root * {
+  font-family: var(--ui-font);
+  font-weight: 600;
+}
+#app :is(h1, h2, h3, h4, strong, b), #app #battle-root :is(h1, h2, h3, h4, strong, b) { font-weight: 700; }
+.selection-modal, .selection-modal * { font-weight: 600; }
+.selection-modal :is(h1, h2, h3, h4, strong, b) { font-weight: 700; }
+.sanctuary-shell .sanctuary-title .eyebrow { display: none; }
+.sanctuary-shell .sanctuary-brand small { font-size: 11px; }
+.sanctuary-shell .sanctuary-header { padding-block: 18px; }
+.sanctuary-shell .sanctuary-title h1 { font-size: 28px; font-weight: 600; }
+.sanctuary-shell .home-hub {
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 1.1fr);
+  grid-template-areas: "identity destinations" "team launch";
+  gap: 24px;
+}
+.sanctuary-shell .home-hub .hub-showcase { align-self: center; }
+.destination-group header p:empty { display: none; }
+.destination-group h2 { font-size: 18px; }
+.destination-card strong { font-size: 17px; }
+.destination-card { min-height: 120px; padding: 16px; gap: 10px; }
+.destination-card small { font-size: 12px; margin-top: 5px; }
+.sanctuary-shell .home-hub .hub-info { display: flex; flex-wrap: wrap; gap: 12px; padding: 18px; }
+.sanctuary-shell .home-hub .hub-info > .team-heading { width: 100%; }
+.sanctuary-shell .home-hub .hub-info > .team-companion { flex: 1 1 180px; }
+.sanctuary-shell .home-hub .hub-info > :is(.eyebrow, h2) { display: none; }
+.sanctuary-shell .home-hub .hub-info .information-modal h2 { display: block; }
+.sanctuary-shell .home-hub .hub-launch { align-self: start; }
+.information-modal {
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100svh - 48px);
+  margin: auto;
+  padding: 24px;
+  border: 1px solid #ffffff40;
+  border-radius: 16px;
+  background: #1b1b1b;
+  color: #f1f0e9;
+  box-shadow: 0 24px 100px #0009;
+  overflow: auto;
+}
+.information-modal::backdrop { background: #080808bf; backdrop-filter: blur(6px); }
+.information-modal .drawer-heading { align-items: start; }
+.information-modal h2 { font-size: 24px; margin: 0; }
+.information-modal .drawer-close { margin-left: auto; }
+.information-modal p { font-size: 14px; line-height: 1.65; }
+.information-modal .upgrade-resources { display: grid; grid-template-columns: minmax(0, 1fr); }
+.information-modal .upgrade-stat-preview { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 12px; }
+.information-modal .upgrade-stat-preview > span { display: grid; gap: 6px; padding: 12px; border: 1px solid #fff2; border-radius: 8px; }
+.information-modal :is(strong, td, th) { overflow-wrap: anywhere; }
+.information-modal [role="alert"]:empty { display: none; }
+.information-modal[open] { animation: information-enter 180ms ease-out; }
+@keyframes information-enter { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+.sanctuary-shell .summon-command h3 { font-size: 20px; }
+.banner-characters { margin-block: 20px; }
+.summon-banner-navigation { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.summon-banner-navigation button {
+  min-height: 48px;
+  padding: 12px 20px;
+  border: 1px solid #ffffff40;
+  border-radius: 12px;
+  background: #ffffff06;
+  color: #f1f0e9;
+}
+.summon-banner-navigation button[aria-current="page"] { background: #f1f0e9; color: #171717; }
+.summon-banner-navigation button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.banner-characters h3 { font-size: 18px; }
+.banner-characters ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+.banner-characters li {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid #ffffff26;
+  border-top: 2px solid var(--element);
+  border-radius: 12px;
+  background: #ffffff04;
+}
+.banner-characters li > strong { font-size: 18px; overflow-wrap: anywhere; }
+.banner-characters .element-emblem { width: 36px; height: 36px; }
+.banner-character-rating { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.sanctuary-shell .character-copy-management .archive-grid { grid-template-columns: minmax(0, 1fr); }
+.sanctuary-shell .character-copy-management .archive-card { max-width: 760px; }
+.shell:not(.battle-screen) :is(.enter-button, .star-shine) { animation: none; }
+.sanctuary-shell .sanctuary-content,
+.sanctuary-shell .activity-group:not([hidden]),
+.sanctuary-shell .character-detail-content { animation-duration: 180ms; }
+@media (max-width: 900px) {
+  .sanctuary-shell .home-hub { grid-template-columns: minmax(0, 1fr); grid-template-areas: "identity" "destinations" "team" "launch"; }
+}
+@media (max-width: 600px) {
+  .information-modal { padding: 18px; }
+  .destination-card { min-height: 120px; }
+}
+@media (prefers-reduced-motion: reduce) { .information-modal[open] { animation: none; } }
+:root[data-motion="reduced"] .information-modal[open] { animation: none; }

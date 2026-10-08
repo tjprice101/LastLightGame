@@ -93,7 +93,7 @@ describe('20% capture rewards and retained fixed-form creatures', () => {
     const drops = (state: typeof a) => endTurn(state).events.filter((event) => event.kind === 'reward').map((event) => [event.amount, event.materials]);
     expect(drops(a)).toEqual(drops(b));
   });
-  it('keeps early level120 forms weaker than final forms and removes boss stat bonuses', () => {
+  it('keeps early level 120 forms weaker than final forms and removes boss stat bonuses', () => {
     const early = { ...copy(), level: 120 };
     const final = { ...copy(5), level: 120 };
     const boss = { ...copy(5, true), level: 120 };
@@ -157,7 +157,13 @@ describe('20% capture rewards and retained fixed-form creatures', () => {
     saveAccount(saved, max);
     expect(() => levelCapturedCharacter(saved, first.instanceId, 120)).toThrow('Maximum');
     expect(() => validateAccount({ ...max, capturedCharacters: [{ ...first, level: 121 }] })).toThrow();
-    expect(characterCopyManagement(equipped)).toContain('Cannot evolve');
+    const copyHtml = characterCopyManagement(equipped);
+    expect(copyHtml).toContain(`Copy 1 ~ Lv.${equipped.capturedCharacters![0].level}`);
+    expect(copyHtml).not.toContain('Fixed form');
+    const homeHtml = homeHub(getStarter('ember'), false, { ...equipped, squad: [first.instanceId] });
+    expect(homeHtml).not.toContain('Fixed form');
+    expect(homeHtml).toContain('Cannot evolve.');
+    expect(homeHtml).toContain('Level cap 120');
   });
   it('presents captured rewards as enemy icons and reveals only owned forms in Character Archive', () => {
     const { account } = seeded();
@@ -168,7 +174,7 @@ describe('20% capture rewards and retained fixed-form creatures', () => {
     const html = archives(account);
     expect(html).toContain('Owned copies 2');
     expect(html).toContain('data-filter-stars="6"');
-    expect(html.match(/data-archive-character=/g)).toHaveLength(42);
+    expect(html.match(/data-archive-character=/g)).toHaveLength(108);
   });
   it('retains boss ultimates with their exact damage, cooldown and recovery', () => {
     const captured = copy(5, true);
@@ -213,7 +219,7 @@ describe('20% capture rewards and retained fixed-form creatures', () => {
     expect(showcase).toContain('Wraththorn Slime');
     expect(showcase).toContain('enemies/abyss-wraththorn-slime.png');
     expect(showcase).not.toContain('Infernis');
-    const info = home.slice(home.indexOf('<aside class="hub-info">'));
+    const info = home.match(/<dialog[^>]*id="home-information"[\s\S]*?<\/dialog>/)?.[0] ?? '';
     expect(info).not.toContain('Infernis');
     expect(info).toContain(formatStat(next.allies[0].stats.health));
     expect(info).toContain('Before Conduits');

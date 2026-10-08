@@ -18,7 +18,7 @@ describe('attack presentation impact boundary', () => {
     const result = actAndAdvanceTurn(before, 'ember', 'light', before.enemies[0].id);
     const damage = result.events[impactEvents(result.events, 0)[0]];
     const bar = { style: { width: '100%' } };
-    const hp = { textContent: 'HP 110/110' };
+    const hp = { textContent: 'HP 110 ~ 110' };
     const classes = new Set<string>();
     const numbers: { textContent: string }[] = [];
     const sprite = {};
@@ -59,13 +59,13 @@ describe('attack presentation impact boundary', () => {
     try {
       const animate = Reflect.get(BattleView.prototype, 'animate');
       const presentation = Reflect.apply(animate, view, [result.events[0], () => Reflect.apply(animate, view, [damage])]);
-      expect(hp.textContent).toBe('HP 110/110');
+      expect(hp.textContent).toBe('HP 110 ~ 110');
       expect(bar.style.width).toBe('100%');
       expect(numbers).toHaveLength(0);
       finishWindup();
       await Promise.resolve();
       await Promise.resolve();
-      expect(hp.textContent).toBe(`HP ${110 - damage.amount}/110`);
+      expect(hp.textContent).toBe(`HP ${110 - damage.amount} ~ 110`);
       expect(Number.parseFloat(bar.style.width)).toBeCloseTo((110 - damage.amount) / 110 * 100);
       expect(numbers[0].textContent).toBe(`-${damage.amount}`);
       finishVisuals();

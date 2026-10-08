@@ -1,4 +1,4 @@
-import { starters, type StarterId } from './starters';
+import { starters, isRoseCharacter, type StarterId } from './starters';
 import { getCreature } from './creatures';
 import { lootRoll } from './loot-random';
 
@@ -75,15 +75,18 @@ export const standardBanner = {
 } as const;
 
 export type StandardBannerEntry =
-  | { kind: 'character'; id: StarterId; stars: 5; chance: number }
+  | { kind: 'character'; id: StarterId; stars: 5 | 6; chance: number }
   | { kind: 'creature'; id: string; stars: 1 | 2 | 3; chance: number };
 
 export function standardBannerPool(): StandardBannerEntry[] {
-  const characterChance = bannerCharacterTierRates[5];
+  const characters = starters.filter((character) => !isRoseCharacter(character.id));
+  const characterChance = ([5, 6] as const).reduce((total, stars) =>
+    total + (characters.some((character) => character.stars === stars) ? bannerCharacterTierRates[stars] : 0), 0);
   const remaining = 1 - characterChance;
   const weights = [50, 30, 17] as const;
-  const pool: StandardBannerEntry[] = starters.map((starter) => ({
-    kind: 'character', id: starter.id, stars: 5, chance: characterChance / starters.length,
+  const pool: StandardBannerEntry[] = characters.map((character) => ({
+    kind: 'character', id: character.id, stars: character.stars,
+    chance: bannerCharacterTierRates[character.stars] / characters.filter((entry) => entry.stars === character.stars).length,
   }));
   for (const stars of [1, 2, 3] as const) {
     const modes = ['heavens', 'abyss', 'treasury', 'sanctuary'] as const;

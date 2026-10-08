@@ -1,6 +1,7 @@
 import { type ActionId } from '../content/combat';
 import { type StarterId } from '../content/starters';
 import { assetUrl } from './portrait';
+import { flagshipAbilityIcons } from '../content/flagships';
 
 export const infernisIcons = {
   passive: 'infernis-unbroken-ember',
@@ -11,6 +12,7 @@ export const infernisIcons = {
 } as const;
 
 export const abilityIcons = {
+  ...flagshipAbilityIcons,
   ember: infernisIcons,
   tide: {
     passive: 'tizu-stillwater-guard',
@@ -26,9 +28,23 @@ export const abilityIcons = {
     skill2: 'flora-verdant-renewal',
     ultimate: 'flora-last-flare-worldseed',
   },
-} as const satisfies Record<StarterId, Record<Exclude<ActionId, 'defend'> | 'passive', string>>;
+  rosetta: {
+    passive: 'rosetta-passive', light: 'rosetta-light', skill1: 'rosetta-skill1',
+    skill2: 'rosetta-skill2', ultimate: 'rosetta-ultimate', defend: 'rosetta-defend',
+  },
+  thornia: {
+    passive: 'thornia-passive', light: 'thornia-light', skill1: 'thornia-skill1',
+    skill2: 'thornia-skill2', ultimate: 'thornia-ultimate', defend: 'thornia-defend',
+  },
+  crinso: {
+    passive: 'crinso-passive', light: 'crinso-light', skill1: 'crinso-skill1',
+    skill2: 'crinso-skill2', ultimate: 'crinso-ultimate', defend: 'crinso-defend',
+  },
+} as const satisfies Record<StarterId, Record<Exclude<ActionId, 'defend'> | 'passive', string> & { defend?: string }>;
 
 export function abilityIcon(starterId: StarterId, action: ActionId | 'passive'): string {
-  if (action === 'defend') return '';
-  return `<img class="ability-icon" src="${assetUrl(`abilities/${abilityIcons[starterId][action]}.png`)}" alt="" aria-hidden="true" width="256" height="256" />`;
+  const icons: Partial<Record<ActionId | 'passive', string>> = abilityIcons[starterId];
+  const icon = icons[action];
+  if (!icon) return '';
+  return `<img class="ability-icon" src="${assetUrl(`abilities/${icon}.png`)}" alt="" aria-hidden="true" width="256" height="256" />`;
 }

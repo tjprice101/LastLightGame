@@ -4,7 +4,7 @@ import { createBattle, createDungeonBattle, createInfusionBattle, endTurn, nextW
 import { playableDungeons } from './dungeons';
 
 describe('level-dependent enemy skill kits', () => {
-  it('has exactly one below50 and two from50, with one boss ultimate only in two-skill kits', () => {
+  it('has exactly one below 50 and two from 50, with one boss ultimate only in two-skill kits', () => {
     for (let level = 1; level <= 120; level++) for (const boss of [false, true]) {
       const skills = enemySkills(level, boss, 'Thornstrike', 1.5);
       expect(skills).toHaveLength(level < 50 ? 1 : 2);
@@ -28,7 +28,7 @@ describe('level-dependent enemy skill kits', () => {
     expect(scheduledEnemySkill(boss, 6)?.multiplier).toBe(2.6);
   });
 
-  it('wires all elemental stages, both modes and the Adventure49/50 boundary, including early enemies', () => {
+  it('wires all elemental stages, both modes and the Adventure49 ~ 50 boundary, including early enemies', () => {
     const progress = { level: 105, evolution: 6 };
     for (const element of playableDungeons) for (let stage = 1; stage <= 35; stage++) {
       const state = createDungeonBattle(element, stage, 1, 'ember', progress);

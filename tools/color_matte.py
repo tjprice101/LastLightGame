@@ -5,8 +5,21 @@ from PIL import Image
 from prepare_art import connected_matte
 
 
+def reviewed_background_starts(eligible, background_seeds):
+    height, width = eligible.shape
+    starts = []
+    for x, y in background_seeds:
+        if not (0 <= x < 1 and 0 <= y < 1):
+            raise ValueError("Background seed must use normalized source coordinates.")
+        row, column = min(round(y * height), height - 1), min(round(x * width), width - 1)
+        if not eligible[row, column]:
+            raise ValueError(f"Reviewed background seed does not match the key: {(x, y)}")
+        starts.append((row, column))
+    return starts
+
+
 def remove_color_matte(image, hue, tolerance=14, saturation_min=.30, value_min=.10,
-                       border_only=False, foreground_mask=None):
+                       border_only=False, foreground_mask=None, background_seeds=()):
     if not (0 <= hue < 360 and 0 < tolerance < 180 and
             0 < saturation_min < 1 and 0 <= value_min < 1):
         raise ValueError("Invalid reviewed color-matte settings.")
@@ -23,7 +36,9 @@ def remove_color_matte(image, hue, tolerance=14, saturation_min=.30, value_min=.
         height, width = eligible.shape
         border = [(0, x) for x in range(width)] + [(height - 1, x) for x in range(width)]
         border += [(y, x) for y in range(height) for x in (0, width - 1)]
-        eligible = connected_matte(eligible, border)
+        eligible = connected_matte(eligible, border + reviewed_background_starts(eligible, background_seeds))
+    elif background_seeds:
+        raise ValueError("Reviewed background seeds require border-only keying.")
     if not eligible.any():
         raise ValueError("Reviewed color did not match any background pixels.")
     rgba = np.dstack((rgb, np.where(eligible, 0, 255).astype(np.uint8)))

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { abilityIcon, abilityIcons } from './ability-icon';
-import { starters } from '../content/starters';
+import { openingStarters as starters } from '../content/starters';
 import { homeHub, characterHub } from './hub';
 import { gestureGuide } from './gesture-guide';
 import { createBattle } from '../game/battle';

@@ -1,10 +1,13 @@
 import { assetUrl } from './portrait';
 import './currency-icon.css';
+import { currencyArtRevisions } from '../content/currency-art-revisions';
 
-export type CurrencyId = 'fractalis' | 'lycalis';
+export type CurrencyId = 'fractalis' | 'lycalis' | 'mechanical-components';
 
 export function currencyArt(id: CurrencyId): string {
-  return assetUrl(`currencies/${id}.png`);
+  const url = assetUrl(`currencies/${id}.png`);
+  const revision = currencyArtRevisions[id];
+  return revision ? `${url}?v=${revision}` : url;
 }
 
 export function currencyIcon(id: CurrencyId): string {

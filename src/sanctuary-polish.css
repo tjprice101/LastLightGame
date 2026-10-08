@@ -1,0 +1,343 @@
+/* Final menu composition; combat field layout remains owned by battle-focus.css. */
+.sanctuary-shell {
+  --line: #ffffff26;
+  --muted: #b9b9b6;
+  --panel: #202020;
+  --ivory: #f1f0e9;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 100svh;
+  max-width: 1760px;
+  color: var(--ivory);
+  background:
+    radial-gradient(ellipse at 15% 5%, #ffffff0a, transparent 55%),
+    repeating-linear-gradient(120deg, #ffffff02 0 1px, transparent 1px 7px),
+    linear-gradient(145deg, #191919, #101010 60%, #171717);
+}
+.sanctuary-shell .sanctuary-header {
+  grid-template-columns: minmax(180px, 1fr) auto minmax(340px, 1fr);
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--line);
+  gap: 20px;
+  background: linear-gradient(#ffffff04, transparent);
+}
+.sanctuary-shell .sanctuary-title { grid-column: auto; grid-row: auto; }
+.sanctuary-shell .sanctuary-brand { flex-wrap: wrap; }
+.sanctuary-shell .sanctuary-home { gap: 8px; }
+.sanctuary-shell .sanctuary-title h1 { font-size: clamp(26px, 2.8vw, 40px); line-height: 1.2; }
+.sanctuary-shell .sanctuary-title .eyebrow { font-size: 11px; margin-bottom: 6px; }
+.sanctuary-shell .sanctuary-wallet { flex-wrap: wrap; }
+.sanctuary-shell .sanctuary-header .currency-strip { flex: 1 1 250px; min-width: 0; }
+.sanctuary-shell .sanctuary-header .currency-strip > span {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border-color: var(--line);
+  background: #ffffff04;
+}
+.sanctuary-shell .sanctuary-header .currency-strip strong { font-size: 16px; }
+.sanctuary-shell .sanctuary-header .currency-strip small { font-size: 11px; line-height: 1.4; }
+.sanctuary-shell .menu-screen.sanctuary-content {
+  flex: 1;
+  min-width: 0;
+  overflow: visible;
+  padding: 28px 32px 36px;
+}
+.sanctuary-shell .sanctuary-content p { line-height: 1.65; }
+.sanctuary-shell .sanctuary-nav {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: 100%;
+  gap: 8px;
+  padding: 12px 24px max(12px, env(safe-area-inset-bottom));
+  background: #161616f5;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 -12px 32px #0003;
+}
+.sanctuary-shell .sanctuary-nav button {
+  min-width: 0;
+  min-height: 76px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 10px;
+  border: 1px solid #ffffff18;
+  border-radius: 12px;
+  background: linear-gradient(#ffffff07, #ffffff02);
+}
+.sanctuary-shell .sanctuary-nav .nav-symbol {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 40px;
+  background: none;
+  border: 0;
+}
+.sanctuary-shell .sanctuary-nav .nav-symbol .ui-icon { width: 30px; height: 30px; }
+.nav-copy { display: grid; gap: 4px; text-align: left; min-width: 0; }
+.nav-copy strong { font: 600 15px/1.3 "Segoe UI", sans-serif; }
+.nav-copy > span { font-size: 11px; line-height: 1.4; color: var(--muted); }
+.sanctuary-shell .sanctuary-nav button[aria-current="page"] {
+  background: linear-gradient(135deg, #f6f5ef, #d9d8d1);
+  color: #171717;
+  border-color: #fff9;
+  box-shadow: 0 4px 20px #ffffff0c;
+}
+.sanctuary-shell .sanctuary-nav button[aria-current="page"] .nav-symbol { background: none; color: #171717; box-shadow: none; transform: none; }
+.sanctuary-shell .sanctuary-nav button[aria-current="page"] .nav-copy > span { color: #41413e; }
+.section-navigation { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 24px; }
+.section-navigation > :is(button, a) {
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  min-height: 84px;
+  padding: 16px 20px;
+  text-align: left;
+  border: 1px solid #ffffff28;
+  border-radius: 12px;
+  color: var(--ivory);
+  background: linear-gradient(120deg, #303030, #202020);
+  text-decoration: none;
+}
+.section-navigation strong { font: 600 18px/1.3 Georgia, serif; }
+.section-navigation span { font: 13px/1.5 "Segoe UI", sans-serif; color: var(--muted); }
+.section-navigation [aria-current="page"] { border-color: #ffffff85; box-shadow: inset 0 3px #f1f0e9; background: #363635; }
+.sanctuary-shell .home-hub {
+  display: grid;
+  grid-template-columns: minmax(280px, .85fr) minmax(0, 1.5fr);
+  grid-template-rows: auto auto auto;
+  grid-template-areas: "identity destinations" "identity launch" "team team";
+  align-items: start;
+  gap: 24px 32px;
+  height: auto;
+  min-height: 0;
+}
+.sanctuary-shell .home-hub .hub-showcase {
+  grid-area: identity;
+  align-self: center;
+  padding: 16px 0 28px;
+  min-height: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--element) 35%, transparent);
+  background: radial-gradient(ellipse at 50% 45%, color-mix(in srgb, var(--element) 7%, transparent), transparent 68%);
+}
+.sanctuary-shell .home-hub .hub-portrait { width: min(100%, 480px); filter: drop-shadow(0 20px 20px #0006); }
+.sanctuary-shell .home-hub .hub-showcase h2 { font-size: clamp(30px, 3vw, 44px); margin-block: 12px; }
+.sanctuary-shell .home-hub .hub-showcase > p { font-size: 14px; }
+.home-destinations { grid-area: destinations; display: grid; gap: 24px; min-width: 0; }
+.destination-group { min-width: 0; }
+.destination-group header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px 16px; margin-bottom: 12px; }
+.destination-group h2 { font: 600 23px/1.25 Georgia, serif; margin: 0; }
+.destination-group header p { margin: 0; font-size: 13px; color: var(--muted); }
+.destination-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.destination-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 154px;
+  min-width: 0;
+  padding: 20px 16px;
+  border: 1px solid #ffffff2b;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #373736, #202020);
+  color: var(--ivory);
+  text-align: left;
+  box-shadow: inset 0 1px #ffffff0a, 0 8px 18px #0002;
+}
+.destination-icon { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #ffffff25; border-radius: 12px; background: #ffffff06; }
+.destination-icon .ui-icon { width: 28px; height: 28px; }
+.destination-card strong { display: block; font: 600 19px/1.25 Georgia, serif; }
+.destination-card small { display: block; margin-top: 8px; font: 13px/1.5 "Segoe UI", sans-serif; color: #c5c5c0; }
+.destination-arrow { position: absolute; right: 16px; top: 22px; color: #d2d2cd; font-size: 22px; }
+.sanctuary-shell .home-hub .hub-launch { grid-area: launch; }
+.sanctuary-shell .home-hub .hub-battle-button {
+  clip-path: none;
+  border-radius: 14px;
+  min-height: 112px;
+  padding: 22px 26px;
+  background: linear-gradient(120deg, #f7f6ee, #d8d7d0);
+}
+.sanctuary-shell .home-hub .hub-info {
+  grid-area: team;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px 24px;
+  max-height: none;
+  overflow: visible;
+  padding: 24px;
+}
+.sanctuary-shell .home-hub .hub-info .team-heading { grid-column: 1 / -1; }
+.sanctuary-shell .home-hub .hub-info > .hub-stats { grid-column: 1 / -1; margin: 0; }
+.sanctuary-shell .home-hub .hub-info > .companion-lore { grid-column: 1 / -1; }
+.sanctuary-shell .home-hub .hub-info > .eyebrow { grid-column: 1 / -1; margin: 4px 0 0; }
+.sanctuary-shell .home-hub .hub-info h2 { margin: 0; }
+.sanctuary-shell .team-companion { min-height: 76px; margin: 0; border-color: #ffffff25; background: #ffffff04; }
+.sanctuary-shell .team-heading button { min-height: 44px; padding: 10px 16px; }
+.sanctuary-shell :is(.hub-info, .hub-detail, .squad-hub, .summon-hub, .sanctuary-placeholder, .story-panel, .character-copy-management) {
+  border: 1px solid #ffffff26;
+  border-radius: 18px;
+  background: linear-gradient(140deg, #292929ed, #191919f5);
+  box-shadow: inset 0 1px #ffffff08, 0 12px 36px #0002;
+}
+.sanctuary-shell :is(.squad-hub, .summon-hub, .character-copy-management) { padding: 28px; }
+.sanctuary-shell .character-copy-management { margin-top: 28px; scroll-margin-top: 24px; }
+.sanctuary-shell :is(.primary-button, .text-button, select, summary) { min-height: 48px; font-size: 14px; }
+.sanctuary-shell .primary-button { padding: 14px 24px; border-radius: 10px; font-weight: 600; letter-spacing: .02em; }
+.sanctuary-shell .text-button { display: inline-flex; align-items: center; justify-content: center; padding: 12px 18px; border: 1px solid #ffffff35; border-radius: 10px; background: #ffffff05; text-decoration: none; }
+.sanctuary-shell summary { padding: 14px 8px; cursor: pointer; line-height: 1.5; color: #deded8; }
+.sanctuary-shell :is(button, a, select, summary):focus-visible { outline: 2px solid #f1f0e9; outline-offset: 4px; }
+.sanctuary-shell :is(.destination-card, .section-navigation > *, .sanctuary-nav button, .primary-button, .text-button, .activity-categories a, .hub-rail-button, .archive-navigation button) {
+  transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, translate 180ms ease;
+}
+.sanctuary-shell .gameplay-hub { display: block; }
+.sanctuary-shell .activity-categories {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 28px;
+}
+.sanctuary-shell .activity-categories a:nth-child(n) {
+  clip-path: none;
+  min-height: 94px;
+  padding: 18px 20px;
+  border: 1px solid #ffffff2b;
+  border-radius: 12px;
+  background: linear-gradient(130deg, #303030, #1d1d1d);
+  gap: 14px;
+}
+.activity-categories strong { display: block; font: 600 19px/1.3 Georgia, serif; }
+.activity-categories small { display: block; font-size: 13px; line-height: 1.5; margin-top: 5px; color: #bdbdb8; }
+.sanctuary-shell .activity-categories a[aria-current] { border-color: #ffffff80; background: #3b3b39; box-shadow: inset 0 3px #f1f0e9; filter: none; }
+.sanctuary-shell .activity-group { padding: 24px; border: 1px solid #ffffff20; border-radius: 18px; background: #16161680; }
+.sanctuary-shell :is(.activity-group h2, #upgrade-heading) { scroll-margin-top: 24px; }
+.sanctuary-shell .activity-group[hidden] { display: none; }
+.sanctuary-shell .activity-group > h2 { font-size: 32px; margin-bottom: 12px; }
+.sanctuary-shell .activity-group > p { max-width: 100ch; font-size: 15px; }
+.sanctuary-shell .activity-card { padding: 24px; border-radius: 14px; }
+.sanctuary-shell .activity-card h3 { font-size: 26px; line-height: 1.25; }
+.sanctuary-shell .activity-card p { font-size: 14px; }
+.sanctuary-shell .activity-card .primary-button { min-width: min(100%, 220px); }
+.sanctuary-shell .activity-card .dungeon-stage-label { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-block: 16px; }
+.sanctuary-shell .dungeon-card { padding: 0; }
+.sanctuary-shell #gameplay-currency .activity-card + .activity-card { margin-top: 24px; }
+.sanctuary-shell .inventory-section { margin: 0; padding: 20px; min-width: 0; border: 1px solid #ffffff1f; border-radius: 12px; background: #ffffff03; }
+.sanctuary-shell .inventory-section:last-child { grid-column: 1 / -1; }
+.sanctuary-shell .inventory-section h2 { font-size: 26px; margin-top: 0; }
+.sanctuary-shell .upgrade-resources { gap: 12px; }
+.sanctuary-shell .upgrade-resources li { padding: 16px; border-radius: 10px; border-color: #ffffff22; background: #13131370; }
+.sanctuary-shell .owned-roster { gap: 12px; margin-bottom: 24px; }
+.sanctuary-shell .roster-character { min-height: 100px; padding: 16px; border-radius: 14px; }
+.sanctuary-shell .roster-summon { min-height: 72px; padding: 16px 24px; font-size: 15px; }
+.sanctuary-shell .character-hub { height: auto; min-height: 0; align-items: start; scroll-margin-top: 24px; }
+.sanctuary-shell .character-hub > .hub-rail { overflow: visible; max-height: none; gap: 24px; }
+@media (min-width: 1101px) { .sanctuary-shell .character-hub > .hub-rail { position: sticky; top: 24px; align-self: start; } }
+.sanctuary-shell .character-hub .hub-rail-button { min-height: 80px; border-radius: 12px; padding: 12px; font-size: 15px; border: 1px solid #ffffff25; }
+.sanctuary-shell .character-hub .hub-rail-button[aria-pressed="true"] { border-color: var(--element); box-shadow: inset 3px 0 var(--element); }
+.sanctuary-shell .character-nav-group h3 { font-size: 12px; margin-bottom: 10px; }
+.sanctuary-shell .character-hub .hub-detail { overflow: visible; max-height: none; padding: 24px; }
+.sanctuary-shell .character-hub .hub-detail p, .sanctuary-shell .character-hub .hub-detail li { font-size: 14px; line-height: 1.65; }
+.sanctuary-shell .character-hub .character-category { padding: 16px; }
+.sanctuary-shell .character-hub .character-category > h3 { font-size: 14px; }
+.sanctuary-shell .character-hub .hub-detail h2 { font-size: 30px; }
+.sanctuary-shell .squad-slot { padding: 24px; border-radius: 14px; background: linear-gradient(#ffffff06, #ffffff02); }
+.sanctuary-shell #squad-form > .primary-button { min-width: min(100%, 280px); margin-block: 12px; }
+.sanctuary-shell .summon-hub { max-width: 1200px; margin-inline: auto; }
+.sanctuary-shell .summon-banner-art { border-radius: 14px; overflow: hidden; border-color: #ffffff35; }
+.summon-command { margin: 24px 0; padding: 24px; border: 1px solid #ffffff40; border-radius: 14px; background: #ffffff06; }
+.summon-command h3 { font: 600 26px/1.3 Georgia, serif; margin: 0; }
+.summon-command .primary-button { min-width: min(100%, 300px); }
+.sanctuary-shell .banner-pity { padding: 20px; margin-block: 24px; border-radius: 14px; background: #ffffff04; }
+.sanctuary-shell .summon-drop-table { table-layout: fixed; width: 100%; font-size: 14px; }
+.sanctuary-shell .summon-drop-table :is(th, td) { padding: 16px 12px; overflow-wrap: anywhere; line-height: 1.5; }
+.sanctuary-shell .summon-drop-table th:first-child { width: 48%; }
+.sanctuary-shell .archive-navigation { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-block: 24px; }
+.sanctuary-shell .archive-navigation button { min-height: 84px; padding: 16px; font-size: 16px; border-radius: 12px; }
+.sanctuary-shell :is(.archive-filters, .glossary-controls) { padding: 20px; border: 1px solid #ffffff25; border-radius: 14px; background: #ffffff05; gap: 16px; }
+.sanctuary-shell :is(.archive-card, .conduit-card, .glossary-entry, .feature-tile) { padding: 24px; border-radius: 14px; background: linear-gradient(135deg, #292929, #191919); border-color: #ffffff25; }
+.sanctuary-shell :is(.archive-card, .conduit-card) h3 { font-size: 24px; line-height: 1.3; }
+.sanctuary-shell :is(.archive-card, .conduit-card) p { font-size: 14px; }
+.sanctuary-shell .story-panel { width: min(100%, 900px); margin-inline: auto; padding: clamp(24px, 4vw, 56px); }
+.sanctuary-shell .story-panel p { font-size: 17px; }
+.sanctuary-shell .sanctuary-placeholder { margin-block: 24px; padding: 40px; }
+.sanctuary-shell > .status:not(:empty) { bottom: 16px; border: 1px solid #ffffff35; margin: 0 24px 12px; padding: 16px; }
+.shell:not(.sanctuary-shell) { background: radial-gradient(ellipse at 50% 40%, #ffffff08, transparent 60%), repeating-linear-gradient(120deg, #ffffff02 0 1px, transparent 1px 7px), #101010c9; }
+.shell:not(.sanctuary-shell) .enter-button { min-height: 64px; padding: 18px 32px; border: 1px solid #ffffff60; border-radius: 12px; background: linear-gradient(#ffffff12, #ffffff03); font-size: 17px; }
+.shell:not(.sanctuary-shell) .starter-card { border-radius: 18px; box-shadow: inset 0 1px #ffffff15, 0 18px 48px #0003; }
+.shell:not(.sanctuary-shell) .selection-detail { padding: 24px; border: 1px solid #ffffff25; border-radius: 16px; background: #1c1c1cb8; }
+.shell:not(.sanctuary-shell) .selection-detail .primary-button { min-height: 56px; padding: 16px 28px; border-radius: 12px; font-size: 16px; }
+.sanctuary-shell .settings-drawer { width: min(560px, 100%); }
+.sanctuary-shell .settings-drawer .settings-panel { padding: 22px; }
+.sanctuary-shell .settings-drawer .settings-panel p { font-size: 14px; }
+@media (hover: hover) {
+  .sanctuary-shell :is(.destination-card, .section-navigation > *, .activity-categories a, .sanctuary-nav button):hover { border-color: #ffffff80; box-shadow: inset 0 1px #fff2, 0 8px 24px #0003; translate: 0 -2px; }
+}
+@keyframes sanctuary-panel-enter {
+  from { opacity: 0; translate: 0 10px; }
+  to { opacity: 1; translate: 0 0; }
+}
+.sanctuary-shell .sanctuary-content, .sanctuary-shell .activity-group:not([hidden]), .sanctuary-shell .character-detail-content { animation: sanctuary-panel-enter 320ms ease-out both; }
+@media (max-width: 1200px) {
+  .sanctuary-shell .sanctuary-header { grid-template-columns: 1fr 1fr; }
+  .sanctuary-shell .sanctuary-title { grid-row: 2; grid-column: 1 / -1; text-align: left; }
+  .sanctuary-shell .sanctuary-nav button { flex-direction: column; gap: 6px; }
+  .nav-copy { text-align: center; }
+  .nav-copy > span { display: none; }
+  .sanctuary-shell .home-hub { grid-template-columns: minmax(240px, .8fr) minmax(0, 1.5fr); gap: 24px; }
+  .destination-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .destination-card:last-child { grid-column: 1 / -1; flex-direction: row; align-items: center; min-height: 100px; }
+  .destination-card:last-child > span:nth-child(2) { padding-right: 20px; }
+}
+@media (max-width: 900px) {
+  .sanctuary-shell .sanctuary-header { padding: 20px; }
+  .sanctuary-shell .menu-screen.sanctuary-content { padding: 24px 20px; }
+  .sanctuary-shell .home-hub { grid-template-columns: minmax(0, 1fr); grid-template-areas: "identity" "destinations" "launch" "team"; }
+  .sanctuary-shell .home-hub .hub-portrait { width: min(100%, 360px); }
+  .destination-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .destination-card:last-child { grid-column: auto; flex-direction: column; align-items: flex-start; min-height: 154px; }
+  .sanctuary-shell .activity-categories { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .section-navigation { grid-template-columns: minmax(0, 1fr); }
+  .section-navigation > :is(button, a) { min-height: 72px; }
+  .sanctuary-shell .inventory-section:last-child { grid-column: auto; }
+  .sanctuary-shell .character-hub .hub-showcase { position: static; }
+}
+@media (max-width: 600px) {
+  .sanctuary-shell .sanctuary-header { padding: 16px; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+  .sanctuary-shell .sanctuary-title { grid-column: 1; grid-row: auto; }
+  .sanctuary-shell .sanctuary-wallet { justify-content: flex-start; width: 100%; }
+  .sanctuary-shell .sanctuary-header .currency-strip { flex: 1 1 100%; }
+  .sanctuary-shell .menu-screen.sanctuary-content { padding: 20px 16px 28px; }
+  .sanctuary-shell .sanctuary-nav { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 8px 8px max(8px, env(safe-area-inset-bottom)); }
+  .sanctuary-shell .sanctuary-nav button { min-height: 68px; padding: 8px 4px; border-radius: 10px; }
+  .sanctuary-shell .sanctuary-nav .nav-symbol { width: 28px; height: 28px; flex-basis: 28px; }
+  .sanctuary-shell .sanctuary-nav .nav-symbol .ui-icon { width: 24px; height: 24px; }
+  .nav-copy strong { font-size: 12px; }
+  .sanctuary-shell .home-hub .hub-portrait { width: min(100%, 280px); }
+  .destination-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .destination-card { padding: 16px 12px; min-height: 160px; }
+  .destination-card:last-child { grid-column: 1 / -1; flex-direction: row; align-items: center; min-height: 96px; }
+  .destination-card strong { font-size: 18px; }
+  .destination-card small { font-size: 13px; }
+  .destination-arrow { right: 12px; }
+  .sanctuary-shell .home-hub .hub-info { grid-template-columns: minmax(0, 1fr); padding: 20px; }
+  .sanctuary-shell .activity-categories a:nth-child(n) { padding: 14px 12px; flex-direction: column; align-items: flex-start; min-height: 124px; }
+  .activity-categories strong { font-size: 17px; }
+  .activity-categories small { font-size: 12px; }
+  .sanctuary-shell .activity-group { padding: 16px; }
+  .sanctuary-shell :is(.squad-hub, .summon-hub, .character-copy-management) { padding: 20px 16px; }
+  .sanctuary-shell .character-hub .hub-detail { padding: 16px; }
+  .sanctuary-shell .character-hub .hub-rail-button { min-height: 80px; font-size: 14px; }
+  .sanctuary-shell .archive-navigation { grid-template-columns: minmax(0, 1fr); }
+  .sanctuary-shell .archive-navigation button { min-height: 72px; }
+  .sanctuary-shell :is(.archive-card, .conduit-card, .glossary-entry) { padding: 18px; }
+  .summon-command { padding: 18px; }
+  .sanctuary-shell .summon-drop-table :is(th, td) { padding: 12px 8px; font-size: 13px; }
+  .sanctuary-shell .summon-drop-table th:first-child { width: 42%; }
+  .sanctuary-shell > .status:not(:empty) { bottom: 16px; margin-inline: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sanctuary-shell *, .shell:not(.sanctuary-shell) .enter-button { animation: none !important; transition: none !important; }
+}
+:root[data-motion="reduced"] .sanctuary-shell * { animation: none !important; transition: none !important; }

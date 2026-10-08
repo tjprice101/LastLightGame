@@ -1,0 +1,425 @@
+{
+  "phase": "aurora",
+  "asset_count": 12,
+  "assets": [
+    {
+      "incoming": "Daybreak Arbiter, Aurora.png",
+      "asset": "aurora",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\aurora\\characters\\Daybreak Arbiter, Aurora.png",
+      "source_sha256": "37312d2db48db870fd1ef813d36014ad5c277a1ea3dc3a3ca6e70d4e0e0f5fa1",
+      "runtime": "public\\assets\\characters\\aurora.png",
+      "runtime_sha256": "2e62e9c4a9efe24c0c3f5a69091c0d9bbcd32dfe371d91e240e17696fe5b71a1",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          221,
+          74,
+          93
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.521104,
+            0.851293
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Gleamveil Adjudicator, Aurora.png",
+      "asset": "aurora-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\aurora\\characters\\Gleamveil Adjudicator, Aurora.png",
+      "source_sha256": "73121a7530c1e04bdd6f251a0c307ee4f6e8d9cec5c1c5ac8aeb5b0d634cdde2",
+      "runtime": "public\\assets\\characters\\aurora-evo-2.png",
+      "runtime_sha256": "8c0c95788cc9d60b1e1d1eeb5c966e825d67da816f4c80cd3cd28f0beca59f35",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          220,
+          61,
+          100
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.512987,
+            0.894397
+          ],
+          [
+            0.850649,
+            0.396552
+          ],
+          [
+            0.168831,
+            0.443966
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Solar Verdict Oracle, Aurora.png",
+      "asset": "aurora-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\aurora\\characters\\Solar Verdict Oracle, Aurora.png",
+      "source_sha256": "2e14615177eacf287a099cb74e512bc1bbd76d8b053d56e6a5d3ca649f461a06",
+      "runtime": "public\\assets\\characters\\aurora-evo-3.png",
+      "runtime_sha256": "6b7ae633adc1ef8b344ea1a1dc903ebdce1e86bbedbb9ce00a218b0c29f2e2af",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          198,
+          90,
+          86
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.503247,
+            0.875
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Prismseal Seraph, Aurora.png",
+      "asset": "aurora-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\aurora\\characters\\Prismseal Seraph, Aurora.png",
+      "source_sha256": "e52aeb92d6a0467e9625342110f537028089d7014bb83d88af654fae3a4bbd97",
+      "runtime": "public\\assets\\characters\\aurora-evo-4.png",
+      "runtime_sha256": "cf9705c3fbb27f09ae755be344342cd6cbe9dde8785f7b87b7b95024f9b46ea3",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          228,
+          173,
+          69
+        ],
+        "radius": 24,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.167208,
+            0.568966
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Dawncourt Sovereign, Aurora.png",
+      "asset": "aurora-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\aurora\\characters\\Dawncourt Sovereign, Aurora.png",
+      "source_sha256": "f811106b88d0d52749ea57c8893dc4f17e09a1da6e14be22da7962ad2df29f32",
+      "runtime": "public\\assets\\characters\\aurora-evo-5.png",
+      "runtime_sha256": "82fd06d2681f331f499c916856de107659d34539f133522c0523337f3c0490a7",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          217,
+          67,
+          109
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.456169,
+            0.163793
+          ],
+          [
+            0.324675,
+            0.56681
+          ],
+          [
+            0.459416,
+            0.116379
+          ],
+          [
+            0.267857,
+            0.717672
+          ],
+          [
+            0.748377,
+            0.737069
+          ],
+          [
+            0.176948,
+            0.711207
+          ],
+          [
+            0.152597,
+            0.741379
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "The Dawn Beyond Judgment, Aurora.png",
+      "asset": "aurora-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\aurora\\characters\\The Dawn Beyond Judgment, Aurora.png",
+      "source_sha256": "dcd3ff1a634456b9cdc06b9f33ca897db5f23cb9c792a16cf003a0fb4b671498",
+      "runtime": "public\\assets\\characters\\aurora-evo-6.png",
+      "runtime_sha256": "fb2c25a4d36d6ac23714d34506699a440439241a3eec49267d26cd643076fd9c",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          198,
+          80,
+          118
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.149351,
+            0.517241
+          ],
+          [
+            0.116883,
+            0.415948
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Lens of Diminishment - Passive.png",
+      "asset": "aurora-passive",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\aurora\\abilities\\Lens of Diminishment - Passive.png",
+      "source_sha256": "78e605129851d58fc3ff29bf5158de43498b9512f91820d7d7b6207157c5f83b",
+      "runtime": "public\\assets\\abilities\\aurora-passive.png",
+      "runtime_sha256": "e92b4fa1cf5c5f5696f90140ad36286cf3975ab673d6f0a4f4e0522e66341583",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          243,
+          4,
+          152
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Gleamseal - Skill 1.png",
+      "asset": "aurora-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\aurora\\abilities\\Gleamseal - Skill 1.png",
+      "source_sha256": "13d200ed6611028fe6053e3f6e48ee0826746d4211c869d5516966909780c927",
+      "runtime": "public\\assets\\abilities\\aurora-skill1.png",
+      "runtime_sha256": "e7c1e0901ce5690fc2a81f272f72aefb2670115876429cbcc9962747dfcace96",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          239,
+          74,
+          148
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.466797,
+            0.675781
+          ]
+        ],
+        "reviewed_exterior_frame": {
+          "outer_band": 0.025,
+          "minimum_span": 0.75
+        }
+      }
+    },
+    {
+      "incoming": "Eclipse Mandate - Skill 2.png",
+      "asset": "aurora-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\aurora\\abilities\\Eclipse Mandate - Skill 2.png",
+      "source_sha256": "77b5cf31ef525f21648eacc895bfccbe881e756f628735f02ca581bab46b33ed",
+      "runtime": "public\\assets\\abilities\\aurora-skill2.png",
+      "runtime_sha256": "401402f8af559d0851f59c98f146523cd1f82fcb87832bd9a0f4ca5ddf8b1dda",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          238,
+          36,
+          167
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.632812,
+            0.529297
+          ]
+        ],
+        "reviewed_exterior_frame": {
+          "outer_band": 0.025,
+          "minimum_span": 0.75
+        }
+      }
+    },
+    {
+      "incoming": "Final Dawn Verdict - Last Flare.png",
+      "asset": "aurora-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\aurora\\abilities\\Final Dawn Verdict - Last Flare.png",
+      "source_sha256": "11dcf7c2eb480cd845280f3f388275c942ed0be015d7b3adf280f9a0439dc576",
+      "runtime": "public\\assets\\abilities\\aurora-ultimate.png",
+      "runtime_sha256": "480e669f8f714d09865294a3de989c580a0d90b77d07fd1d3aa29ae158a1b2d8",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          226,
+          60,
+          134
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.642578,
+            0.792969
+          ],
+          [
+            0.355469,
+            0.792969
+          ],
+          [
+            0.794922,
+            0.330078
+          ],
+          [
+            0.341797,
+            0.238281
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Light Lance - Normal Attack.png",
+      "asset": "aurora-light",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\aurora\\abilities\\Light Lance - Normal Attack.png",
+      "source_sha256": "d180487588b791957030fff90a69ebda090325be3e2d52385cfd66f526c45cce",
+      "runtime": "public\\assets\\abilities\\aurora-light.png",
+      "runtime_sha256": "0d92d6dc56d400a5fe92f06888f4f7ffd614c78868e4651564c6dc016f5e928c",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          232,
+          48,
+          163
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Prism Brace - Defense.png",
+      "asset": "aurora-defend",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\aurora\\abilities\\Prism Brace - Defense.png",
+      "source_sha256": "169aac0fd1f27e04ad3d91edc098b42c14ecfa493900b062184e1221ade5df88",
+      "runtime": "public\\assets\\abilities\\aurora-defend.png",
+      "runtime_sha256": "ad3c894d72ae5b162aacd7ccec66b677968fb4eac455362a6cbd17de66ee7047",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          224,
+          63,
+          99
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    }
+  ]
+}

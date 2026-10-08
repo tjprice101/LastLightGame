@@ -1,15 +1,21 @@
 # Conduits - Recovered mechanisms of the ancient war
 
+**D-124 update:** the five Common prompts below remain unchanged. New Rare,
+Legendary and ten element-specific Omnic prompts are in
+[Awaken the Machines](Awaken%20the%20Machines.md), with implemented acquisition/
+equipment/mechanics in [the specification](../docs/awaken-the-machines.md).
+The earlier six-tier future ladder below is historical design direction, not
+additional authored Uncommon/Epic Conduit tiers or an evolution mechanic.
+
 Conduits replace the former Artifact terminology. These are long-hidden
 mechanisms, not generic jewelry or contemporary machinery. Elemental Light
 is the source that gave every being their element and elemental powers; some
 Conduits retain fragments of it. Do not assign a particular elemental affinity
-or invent a named war/faction from these designs.
+or invent a named war/faction from these Common designs.
 
 Use the [original rendering](midjourney-character-style-prompt.md) and
-[cutout contract](cutout-background-contract.md). Append
-`--sref <approved_reference_image_url> --sw 400` to item prompts; use the same
-approved reference with `--sw 200` for the store banner. Do not invent its URL.
+[cutout contract](cutout-background-contract.md).
+Item prompts and the store banner use no `--sref` or `--sw`.
 Common mechanisms are restrained and readable, leaving elaborate royal designs
 for future rarities. Powered cores use opaque painted facets, not glow or
 background-visible transparency. Inspect delivered colors before choosing keys.
@@ -41,17 +47,19 @@ For clean source cutouts, depict swirling energy as bounded, opaque, hard-edged
 painted ribbons/facets with generous padding. Keep the contrasting solid key
 background and current no-bloom/no-spill contract; a luminous finished
 presentation can add reviewed runtime shine/glow without contaminating the matte.
-Higher-rarity prompts and effects will be authored when those rarities enter scope.
+Rare/Legendary/Omnic now have authored prompts and rarity presentation in D-124;
+actual new PNG generation/intake remains pending.
 
 The five supplied Common icons are registered at
 `public/assets/conduits/<id>.png`; the supplied store banner is registered at
 `public/assets/banners/conduit-store.png`. Their original RGB files are retained
 under `Art/source/conduits` and provenance/keying is recorded in
-`Art/root-art-intake.json`. Higher-rarity prompts and effects remain future work.
+`Art/root-art-intake.json`. New higher-rarity prompts are in the linked machine
+pack; their20 runtime icons intentionally remain pending artwork.
 
 ## Vigil Core
 
-Art ID: `vigil-core`. Common; 1,000 Fractalis; +5% Health.
+Art ID: `vigil-core`. Common; 1,000 Prismatica; +5% Health.
 Power: Elemental Light. Emergency life-support mechanism sealed under a battlefield.
 
 ```text
@@ -60,7 +68,7 @@ square gacha JRPG collectible item icon on plain canvas, one Vigil Core recovere
 
 ## Siegebound Drive
 
-Art ID: `siegebound-drive`. Common; 1,200 Fractalis; +5% Attack.
+Art ID: `siegebound-drive`. Common; 1,200 Prismatica; +5% Attack.
 Power: Mechanical. Force-transmission engine from a buried siege armory.
 
 ```text
@@ -69,7 +77,7 @@ square gacha JRPG collectible item icon on plain canvas, one Siegebound Drive re
 
 ## Bastion Lock
 
-Art ID: `bastion-lock`. Common; 1,000 Fractalis; +5% Defense.
+Art ID: `bastion-lock`. Common; 1,000 Prismatica; +5% Defense.
 Power: Mechanical. Folding ward mechanism recovered from a defensive vault.
 
 ```text
@@ -78,7 +86,7 @@ square gacha JRPG collectible item icon on plain canvas, one Bastion Lock recove
 
 ## Parallax Relay
 
-Art ID: `parallax-relay`. Common; 1,500 Fractalis; +2 percentage points Critical Rate.
+Art ID: `parallax-relay`. Common; 1,500 Prismatica; +2 percentage points Critical Rate.
 Power: Elemental Light. Concealed targeting relay with split crystal sightlines.
 
 ```text
@@ -87,7 +95,7 @@ square gacha JRPG collectible item icon on plain canvas, one Parallax Relay reco
 
 ## Fracture Reservoir
 
-Art ID: `fracture-reservoir`. Common; 1,200 Fractalis; +5 Shatter Capacity.
+Art ID: `fracture-reservoir`. Common; 1,200 Prismatica; +5 Shatter Capacity.
 Power: Elemental Light. Sealed accumulator hidden from the ancient armies.
 
 ```text

@@ -1,6 +1,32 @@
 # Last Light
 
 An original cinematic 2D gacha RPG inspired by Brave Frontier.
+
+## Current state and art direction
+
+Use the [documentation index](docs/README.md) and
+[current handoff](docs/handoff.md) for implemented behavior and verification.
+The original prototype overview below is a superseded historical snapshot,
+not the current feature checklist.
+
+- D-129/D-131/D-132: evolution-matched style references, upgraded character
+  prompt construction and enemy references with complete silhouette containment.
+- D-133: visible currencies are **Prismatica** and **Null-Prismatica**;
+  legacy save/asset IDs and economics remain unchanged. Bright/dark crystal
+  prompts use Evo.3, but replacement currency images are still pending.
+- D-134:60 new portraits for the ten non-starter Element-Bearers are installed,
+  background-removed and shared across menus, galleries, banners and battles.
+  New originals and previous portraits are preserved with verified hashes.
+- D-135: future prompts emphasize visible safety margins on all sides/corners
+  for every evolution. Pull back the complete composition rather than remove
+  details or diminish armor/powers; late forms retain dense intimidating art.
+
+See the [art workflow](docs/art-workflow.md),
+[prompt guide](Art/midjourney-character-style-prompt.md) and
+[edge-clearance contract](Art/cutout-background-contract.md#complete-silhouettes-and-edge-clearance-d-135).
+
+## Historical prototype overview (superseded)
+
 The browser-playable prelude includes an animated title, fire/water/grass starter selection,
 and seven sanctuary destinations: Home, Character Upgrades, Gameplay, Events,
 Inventory, Squad and Summon. Squad and Summon are coming-soon previews.
@@ -18,11 +44,11 @@ Adventure (formerly Free Battle) uses only your saved starter against
 endless Goblin/Imp/Rock Golem waves, with skills, passives, Shatter Gauge,
 Last Flares, directional drag controls, right-click Defense, ultimate-only recovery
 turns, and configurable hotkeys. Supplied artwork has transparent runtime exports.
-Character leveling and evolution now spend Fractalis and own-element materials,
+Character leveling and evolution now spend Prismatica and own-element materials,
 persist progress and scale the combat kit everywhere. First account Fracture grants
-10 Lycalis. Equipment, separate skill/weapon upgrades, rewarded quests and summoning
+10 Null-Prismatica. Equipment, separate skill/weapon upgrades, rewarded quests and summoning
 remain unimplemented. See [editable upgrade costs](docs/units-and-progression.md).
-Each defeated enemy drops 5-10 Fractalis into a persistent browser-local balance.
+Each defeated enemy drops 5-10 Prismatica into a persistent browser-local balance.
 Every entry starts at wave 1. Enemy level equals the wave, HP/attack grow by a fixed
 12% of base per wave, and defense increases by 1. Settings preserves the active run;
 quitting ends it without losing currency.

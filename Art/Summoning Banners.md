@@ -17,9 +17,8 @@ Scenery is opaque and full-bleed; cutout key backgrounds do not apply.
 If characters are later commissioned into a banner, keep their established
 compact anatomy, eyes-only faces and recognizable identity.
 
-Append the actual approved `--sref <approved_reference_image_url> --sw 200`
-for scenery. Replace the placeholder with the established approved reference;
-do not invent a URL. Review generated artwork against supplied art before use.
+Banners use no `--sref` or `--sw`. Keep the shared written renderer and
+review generated artwork against supplied art before use.
 
 ## Standard Banner / Omnic elemental convergence
 

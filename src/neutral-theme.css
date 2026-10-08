@@ -27,7 +27,7 @@
 .sanctuary-shell .hub-rail-button .hub-symbol { color: #fff; background: #0007; border-color: #ffffff33; }
 .sanctuary-shell .home-hub .hub-rail { overflow-y: auto; max-height: 100%; }
 .sanctuary-shell .hub-showcase::before { border-color: #ffffff33; box-shadow: 0 0 0 12px #ffffff05, 0 0 0 13px #ffffff18; }
-.sanctuary-shell .hub-info, .sanctuary-shell .hub-detail, .sanctuary-shell .inventory-hub,
+.sanctuary-shell .hub-info, .sanctuary-shell .hub-detail,
 .sanctuary-shell .feature-tile, .sanctuary-shell .story-panel { background: linear-gradient(#202020ed, #111111f5); border-color: #454545; }
 .sanctuary-shell .hub-info strong, .sanctuary-shell .hub-stats strong { color: #fff; }
 .sanctuary-shell .hub-info .eyebrow, .sanctuary-shell .hub-detail .eyebrow,

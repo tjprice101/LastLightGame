@@ -1,0 +1,44 @@
+#sanctuary-menu.sanctuary-menu-drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  margin: 0;
+  width: min(480px, 100%);
+  height: 100dvh;
+  max-width: 100%;
+  max-height: 100dvh;
+  box-sizing: border-box;
+  padding: 28px;
+  border: 0;
+  border-left: 1px solid #ffffff26;
+  border-radius: 0;
+  background: #111;
+  box-shadow: -24px 0 80px #0008;
+  color: #f1f0e9;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+#sanctuary-menu .drawer-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+#sanctuary-menu .drawer-heading h2 { margin: 0; font-size: 30px; }
+#sanctuary-menu .drawer-close { margin-left: auto; width: 48px; min-height: 48px; border-radius: 50%; }
+#sanctuary-menu .information-content { padding: 0; }
+.sanctuary-menu-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.sanctuary-menu-tiles button { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; padding: 20px 16px; min-height: 150px; border: 1px solid #ffffff26; border-radius: 18px; background: #ffffff06; color: inherit; text-align: left; }
+.sanctuary-menu-tiles strong { font-size: clamp(16px, 5vw, 23px); overflow-wrap: anywhere; }
+.sanctuary-menu-tiles small, .sanctuary-menu-utilities small { display: block; color: #bcbcbc; font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }
+.sanctuary-menu-tiles small { margin-top: -8px; }
+.sanctuary-menu-utilities { margin: 14px 0 22px; }
+.sanctuary-menu-utilities button { display: flex; align-items: center; gap: 18px; width: 100%; min-height: 64px; padding: 18px 10px; border: 0; border-bottom: 1px solid #ffffff26; border-radius: 0; background: none; color: inherit; text-align: left; }
+.sanctuary-menu-utilities span { min-width: 0; overflow-wrap: anywhere; }
+.sanctuary-menu-utilities small { margin-top: 4px; }
+#sanctuary-menu .ui-icon { width: 26px; height: 26px; flex: 0 0 26px; }
+#sanctuary-menu .sanctuary-menu-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#sanctuary-menu .sanctuary-menu-links button { min-height: 48px; padding: 12px; gap: 10px; font-size: 14px; }
+#sanctuary-menu button[aria-current="page"] { background: #f1f0e9; color: #171717; }
+#sanctuary-menu button[aria-current="page"] small { color: #414141; }
+#sanctuary-menu .sanctuary-menu-note { margin: 22px 0 0; color: #bcbcbc; font-size: 14px; line-height: 1.65; }
+body:has(#sanctuary-menu[open]) { overflow: hidden; }
+#sanctuary-menu[open] { animation: sanctuary-drawer-enter 180ms ease-out; }
+@keyframes sanctuary-drawer-enter { from { opacity: 0; translate: 28px 0; } to { opacity: 1; translate: 0 0; } }
+@media (max-width: 480px) { #sanctuary-menu.sanctuary-menu-drawer { padding: 22px 18px; } }
+@media (prefers-reduced-motion: reduce) { #sanctuary-menu[open] { animation: none; } }
+:root[data-motion="reduced"] #sanctuary-menu[open] { animation: none; }

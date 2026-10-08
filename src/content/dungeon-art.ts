@@ -1,5 +1,6 @@
 import { elements, materialRarities, type ElementId } from './activities';
 import { specialtyMaterials } from './infusions';
+import { roseMaterials } from './roses';
 
 export const elementAccents: Record<ElementId, string> = {
   infernic: '#fa8d63', aquatic: '#76c8f4', tectonic: '#d4ad7c', efflorescent: '#93d7a2',
@@ -13,6 +14,71 @@ export interface DungeonArt {
 }
 
 export const dungeonArt: Partial<Record<ElementId, DungeonArt>> = {
+  ominous: {
+    slug: 'valley-of-solitude',
+    enemies: [
+      { name: 'Duskmote', art: 'duskmote' },
+      { name: 'Veilcap Imp', art: 'veilcap-imp' },
+      { name: 'Gloomtail Cat', art: 'gloomtail-cat' },
+      { name: 'Hollowmantle Sentinel', art: 'hollowmantle-sentinel' },
+      { name: 'Umbrasilk Weaver', art: 'umbrasilk-weaver' },
+      { name: 'Moonless Gargoyle', art: 'moonless-gargoyle' },
+      { name: 'Eclipse Antler Regent', art: 'eclipse-antler-regent' },
+      { name: 'Monarch of the Silent Eclipse', art: 'monarch-of-the-silent-eclipse' },
+    ],
+  },
+  atmospheric: {
+    slug: 'sky-bound-rift',
+    enemies: [
+      { name: 'Puffling', art: 'puffling' },
+      { name: 'Reedcap Sylph', art: 'reedcap-sylph' },
+      { name: 'Gustfeather Harpy', art: 'gustfeather-harpy' },
+      { name: 'Cloudhorn Ibex', art: 'cloudhorn-ibex' },
+      { name: 'Zephyrcoil Drake', art: 'zephyrcoil-drake' },
+      { name: 'Cyclonewing Griffin', art: 'cyclonewing-griffin' },
+      { name: 'Crownwind Roc', art: 'crownwind-roc' },
+      { name: 'Regent of the Unbroken Sky', art: 'regent-of-the-unbroken-sky' },
+    ],
+  },
+  chaotic: {
+    slug: 'ruins-of-chaos',
+    enemies: [
+      { name: 'Riftpip', art: 'riftpip' },
+      { name: 'Shardcap Gremlin', art: 'shardcap-gremlin' },
+      { name: 'Nullshell Scarab', art: 'nullshell-scarab' },
+      { name: 'Paradox Sentinel', art: 'paradox-sentinel' },
+      { name: 'Fracturecoil Drake', art: 'fracturecoil-drake' },
+      { name: 'Riftwing Chimera', art: 'riftwing-chimera' },
+      { name: 'Crownvoid Behemoth', art: 'crownvoid-behemoth' },
+      { name: 'Sovereign of the Impossible Ruin', art: 'sovereign-of-the-impossible-ruin' },
+    ],
+  },
+  tectonic: {
+    slug: 'precipice-of-the-earth',
+    enemies: [
+      { name: 'Pebblekin', art: 'pebblekin' },
+      { name: 'Claycap Kobold', art: 'claycap-kobold' },
+      { name: 'Flintback Armadillo', art: 'flintback-armadillo' },
+      { name: 'Quartzhorn Ram', art: 'quartzhorn-ram' },
+      { name: 'Geode Cyclops', art: 'geode-cyclops' },
+      { name: 'Pillarwing Gargoyle', art: 'pillarwing-gargoyle' },
+      { name: 'Crownfault Behemoth', art: 'crownfault-behemoth' },
+      { name: 'Atlas of the Crystal Summit', art: 'atlas-of-the-crystal-summit' },
+    ],
+  },
+  luminous: {
+    slug: 'lustrous-river',
+    enemies: [
+      { name: 'Glimmerkin', art: 'glimmerkin' },
+      { name: 'Lanterncap Brownie', art: 'lanterncap-brownie' },
+      { name: 'Prismback Tortoise', art: 'prismback-tortoise' },
+      { name: 'Dawncrest Guardian', art: 'dawncrest-guardian' },
+      { name: 'Opalwing Griffin', art: 'opalwing-griffin' },
+      { name: 'Sunmirror Oracle', art: 'sunmirror-oracle' },
+      { name: 'Crownray Kirin', art: 'crownray-kirin' },
+      { name: 'Sovereign of the Sevenfold Dawn', art: 'sovereign-of-the-sevenfold-dawn' },
+    ],
+  },
   voltaic: {
     slug: 'galvanic-field',
     enemies: [
@@ -75,6 +141,7 @@ export const materialArtNames = ['Seed', 'Bloom', 'Shard', 'Crest', 'Heart', 'So
 
 export function materialArt(id: string): string | undefined {
   materialName(id);
+  if (roseMaterials.some((material) => material.id === id)) return id;
   const specialty = specialtyMaterials.find((entry) => entry.id === id);
   if (specialty) return specialty.art;
   const [elementId, rarity] = id.split('-');
@@ -84,6 +151,8 @@ export function materialArt(id: string): string | undefined {
 }
 
 export function materialName(id: string): string {
+  const rose = roseMaterials.find((material) => material.id === id);
+  if (rose) return rose.name;
   const specialty = specialtyMaterials.find((entry) => entry.id === id);
   if (specialty) return specialty.name;
   const [elementId, rarity] = id.split('-');

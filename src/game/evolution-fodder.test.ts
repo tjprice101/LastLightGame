@@ -131,7 +131,7 @@ describe('protected-safe evolution creature infusion', () => {
     expect(html).toContain('Locked');
     expect(html).toContain('In squad');
     expect(html).toContain('Conduits equipped');
-    expect(html).toContain('0 / 1 selected / 1 eligible');
+    expect(html).toContain('0 ~ 1 selected ~ 1 eligible');
     expect(html).toContain('data-fodder-count="1"');
     expect(html).toContain('disabled>Evolve');
     expect(html).not.toContain(' checked');

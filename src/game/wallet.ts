@@ -19,10 +19,10 @@ export function saveBattleRewards(storage: ProfileStorage, result: BattleResult)
     if (!enemy || enemy.level === null) throw new Error('Enemy reward source is missing.');
     const range = fractalisDrop(enemy.level);
     if (!Number.isSafeInteger(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum) {
-      throw new Error('Invalid enemy Fractalis drop.');
+      throw new Error('Invalid enemy Prismatica drop.');
     }
     total += reward.amount;
-    if (!Number.isSafeInteger(total)) throw new Error('Fractalis balance exceeds the supported maximum.');
+    if (!Number.isSafeInteger(total)) throw new Error('Prismatica balance exceeds the supported maximum.');
   }
   if (rewards.length) saveAccount(storage, { ...account, fractalis: total });
   return total;

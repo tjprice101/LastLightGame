@@ -28,6 +28,39 @@ No translucent effect fringes, additive light, bloom, haze or spill into the
 background. Keep the character and equipment dimensional; this is not a ban on
 their normal shading. Arena/banner scenery is exempt, as confirmed by the owner.
 
+## Complete silhouettes and edge clearance (D-135)
+
+Every future character evolution and enemy form must keep the **entire artwork**
+inside the canvas, not only the body. Base forms receive the same explicit
+protection as Legendary and Omnic. Include all weapon tips, hair, feet, wings,
+crowns, armor, tails, rings, ribbons, fragments and elemental powers.
+Nothing may touch, cross or disappear behind any side or corner of the image.
+Leave a continuous, clearly visible solid-background safety margin around the
+outermost detail on all four sides, including diagonal tips.
+
+Put a concise complete-silhouette framing clause near the subject description,
+then reinforce it once near the end of the design/composition description,
+before the short background clause. Do not rely only on negative flags or
+the word "full-body." Reuse this wording:
+
+> Complete artwork fully inside the canvas, every weapon wing ornament and
+> elemental-effect tip visible, continuous clear solid-background safety margin
+> on all four sides and corners, nothing touches or crosses the frame edges.
+
+Fit the **whole ensemble** by pulling back its composition uniformly when
+needed, not by cutting off tips, deleting layers, shortening equipment,
+simplifying armor or weakening elemental prowess. Keep compact anatomy and
+the same renderer, identity, palette, evolution features, rich interior density
+and imposing late-form design. An external margin is not a request for sparse
+artwork or empty space inside the design.
+
+Complete containment takes precedence over historical near-edge occupancy
+targets (including94%/96% and3%/2% late-form margins). Those remain records of
+existing prompts, not quotas that future prompts must satisfy at the cost of
+clipping. This future-prompt rule does not rewrite existing generation blocks,
+resize runtime art or reconstruct already-clipped supplied images.
+Scenery banners and arenas remain full-bleed; never add a cutout border to them.
+
 ## Short background instruction
 
 ```text
@@ -87,6 +120,13 @@ or eliminate generation errors. Check the actual full-resolution output:
 - Neither subject nor background has glow, emissive lighting, bloom or haze.
 - Powers have opaque solid-color shapes with crisp edges; rings remain open.
 - Complete weapons, pale feathers and effect silhouettes remain visible.
+- Inspect every side and corner at full resolution, in every evolution:
+  the outermost tip has a visible continuous safety margin, with no edge contact
+  or cut-off silhouette. Runtime padding alone is not proof of source containment.
+- Compare the design itself: added clearance must not remove armor, powers,
+  equipment, layered detail or the intended intimidating late-form presence.
+  If an output clips the subject, request the same complete design with framing
+  pulled back; background removal cannot restore missing tips.
 
 The supplied chalice example shows background variation and green haze. If the
 chalice design is otherwise correct, preserve it and edit only the background

@@ -72,7 +72,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     for (const level of [64, 121, 65.5, NaN]) expect(() => treasuryFractalisDrop(level)).toThrow();
     for (const stage of [0, 26, NaN, 1.5]) expect(() => infusionEncounter('treasury', stage)).toThrow();
   });
-  it('saves actual capture metadata/currency/unlocks together, rejects forged sources and stops at25', () => {
+  it('saves actual capture metadata/currency/unlocks together, rejects forged sources and stops at 25', () => {
     const saved = storage();
     const result = defeat(25);
     expect(result.events.some((entry) => entry.capture)).toBe(true);
@@ -122,15 +122,15 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     Object.assign(view, { session, bindings: defaultBindings, host: { innerHTML: '', querySelectorAll: () => [],
       querySelector: (selector: string) => selector === '#battle-menu' ? menu : null }, bind: vi.fn() });
     Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
-    expect(view.host.innerHTML).toContain('Stage 24 / 25');
+    expect(view.host.innerHTML).toContain('Stage 24 ~ 25');
     expect(view.host.innerHTML).toContain('assets/backgrounds/treasury-arena.png');
     expect(view.host.innerHTML).toContain('assets/enemies/the-crown-beyond-dawn-gleamstone-slime.png');
     expect(view.host.innerHTML).not.toContain('enemies/undefined');
     const account = emptyAccount();
     expect(gameplayHub(account)).toContain('data-infusion="treasury"');
-    expect(gameplayHub(account)).toContain('100-200 at65;1,000-2,000 at120');
+    expect(gameplayHub(account)).toContain('100-200 Prismatica at Lv.65 to 1,000-2,000 at Lv.120');
     expect(gameplayHub(account)).toContain('assets/banners/treasury-banner.png');
-    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(42);
+    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(108);
   });
   it('creates base EBs, independent creature rewards and exact Lv50 Omnic duplicate copies without modifying old progress', () => {
     const saved = funded();
@@ -145,13 +145,13 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     expect(duplicate.account.characters.ember).toEqual(account.characters.ember);
     expect(duplicate.account.squad).toEqual(['ember']);
     expect(duplicate.account.lycalis).toBe(90);
-    expect(duplicate.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 1 });
+    expect(duplicate.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 1 });
     expect(resolveCapturedFighter(duplicate.copy!).stats.health).toBeGreaterThan(0);
     expect(validateCapturedCharacters([duplicate.copy])).toEqual([duplicate.copy]);
-    const newEB = summonCharacter(saved, () => .004);
+    const newEB = summonCharacter(saved, () => .002);
     expect(newEB.entry.id).toBe('tide');
     expect(newEB.account.characters.tide).toEqual({ level: 0, evolution: 1, weaponRank: 0 });
-    expect(newEB.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
+    expect(newEB.account.bannerPity?.standard).toEqual({ highestStar: 2, unownedHighestStar: 2 });
     const pool = standardBannerPool();
     for (const entry of pool.filter((entry) => entry.kind === 'creature')) {
       const index = pool.indexOf(entry);
@@ -169,7 +169,9 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     for (const allOwned of [false, true]) {
       const saved = funded();
       const account = loadAccount(saved);
-      if (allOwned) account.characters = { ember: { level: 0, evolution: 1 }, tide: { level: 0, evolution: 1 }, sprout: { level: 0, evolution: 1 } };
+      if (allOwned) account.characters = { ember: { level: 0, evolution: 1 },
+        aurora: { level: 0, evolution: 1 }, bliss: { level: 0, evolution: 1 },
+        disciple: { level: 0, evolution: 1 }, razor: { level: 0, evolution: 1 } };
       account.bannerPity = { standard: { highestStar: 199, unownedHighestStar: 499 } };
       saveAccount(saved, account);
       const before = saved.getItem(ACCOUNT_KEY);
@@ -248,7 +250,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     expect(() => sellTreasuryCreature(saved, copy.instanceId)).toThrow();
     expect(saved.getItem(ACCOUNT_KEY)).toBe(overflowing);
   });
-  it('permits the level50 duplicate provenance only for the final Treasury form with a complete authored kit', () => {
+  it('permits the level 50 duplicate provenance only for the final Treasury form with a complete authored kit', () => {
     const copy = createCreatureCopy('infusion:treasury:5', undefined, 50, 'banner-duplicate');
     expect(capturedProgress(copy).level).toBe(50);
     expect(() => validateCapturedCharacters([{ ...copy, acquisition: undefined }])).toThrow();

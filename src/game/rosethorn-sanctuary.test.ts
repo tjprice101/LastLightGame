@@ -66,7 +66,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     expect(sanctuaryEnemyStats(120, true).health).toBeCloseTo(400000);
     for (const stage of [0, 26, NaN, 1.5]) expect(() => infusionEncounter('sanctuary', stage)).toThrow();
   });
-  it('implements the exact 1-at50% to5-at80% curve and validates RNG and level boundaries', () => {
+  it('implements the exact 1-at 50% to 5-at 80% curve and validates RNG and level boundaries', () => {
     expect(sanctuaryLycalisOdds(65)).toEqual([{ amount: 0, chance: .5 }, { amount: 1, chance: .5 }]);
     expect(sanctuaryLycalisOdds(120)[1]).toEqual({ amount: 5, chance: .8 });
     for (let level = 65; level <= 120; level++) {
@@ -80,7 +80,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     for (const level of [64, 121, NaN, 65.5]) expect(() => sanctuaryLycalisOdds(level)).toThrow();
     for (const roll of [-1, 1, NaN, Infinity]) expect(() => rollStagedLycalis('sanctuary', 65, () => roll)).toThrow();
   });
-  it('keeps premium RNG independent of Fractalis, captures and combat for direct and burn kills', () => {
+  it('keeps premium RNG independent of Prismatica, captures and combat for direct and burn kills', () => {
     for (const burn of [false, true]) {
       const premium = defeat(25, burn);
       const none = defeat(25, burn, 1);
@@ -222,11 +222,11 @@ describe('Phase10 Rosethorn Sanctuary', () => {
   });
   it('adds the first three wisps to Standard with equal tier odds and atomic independently sellable rewards', () => {
     const pool = standardBannerPool();
-    expect(pool).toHaveLength(15);
+    expect(pool).toHaveLength(22);
     expect(pool.reduce((total, entry) => total + entry.chance, 0)).toBeCloseTo(1, 14);
     for (let tier = 0; tier < 3; tier++) {
       const entry = pool.find((candidate) => candidate.id === `infusion:sanctuary:${tier}`)!;
-      expect(entry.chance).toBeCloseTo(.99 * [50, 30, 17][tier] / 97 / 4, 14);
+      expect(entry.chance).toBeCloseTo(.989 * [50, 30, 17][tier] / 97 / 4, 14);
       const roll = pool.slice(0, pool.indexOf(entry)).reduce((total, candidate) => total + candidate.chance, 0) + entry.chance / 2;
       const saved = storage();
       const account = loadAccount(saved);
@@ -248,12 +248,17 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     account.capturedCharacters = [createCreatureCopy('infusion:sanctuary:5')];
     account.creatures['infusion:sanctuary:5'] = { defeated: true };
     expect(gameplayHub(account)).toContain('data-infusion="sanctuary"');
-    expect(gameplayHub(account)).toContain('50% at65;80% at120');
-    expect(characterCopyManagement(account)).toContain('30,000 Fractalis + 10 Lycalis');
-    expect(creatureGlossary(account)).toContain('30,000 Fractalis + 10 Lycalis');
-    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(42);
+    expect(gameplayHub(account)).toContain('50% of 1 at Lv.65 to 80% of 5 at Lv.120');
+    expect(characterCopyManagement(account)).toContain('30,000 Prismatica + 10 Null-Prismatica');
+    const glossary = creatureGlossary(account);
+    expect(glossary).toContain('aria-label="Sale value"');
+    expect(glossary).toContain('currencies/fractalis.png');
+    expect(glossary).toContain('currencies/lycalis.png');
+    expect(glossary).toContain('<strong>30,000</strong>');
+    expect(glossary).toContain('<strong>10</strong>');
+    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(108);
     const html = summonHub(account);
-    expect(html.match(/data-banner-entry=/g)).toHaveLength(15);
+    expect(html.match(/data-banner-entry=/g)).toHaveLength(22);
     const table = html.slice(html.indexOf('<table'), html.indexOf('</table>'));
     expect(table).toContain('Rosethorn Wisp');
     expect(table).not.toMatch(/<img|<svg|portrait/);
@@ -263,9 +268,9 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     Object.assign(view, { session, bindings: defaultBindings, host: { innerHTML: '', querySelectorAll: () => [],
       querySelector: (selector: string) => selector === '#battle-menu' ? menu : null }, bind: vi.fn() });
     Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
-    expect(view.host.innerHTML).toContain('Stage 25 / 25');
+    expect(view.host.innerHTML).toContain('Stage 25 ~ 25');
     expect(view.host.innerHTML).toContain('CURRENCY FARM');
-    expect(view.host.innerHTML).toContain('80% chance of5');
+    expect(view.host.innerHTML).toContain('80% chance of 5');
     expect(view.host.innerHTML).toContain('assets/backgrounds/sanctuary-arena.png');
     expect(view.host.innerHTML).toContain('assets/enemies/the-flame-beyond-eternity-rosethorn-wisp.png');
     expect(view.host.innerHTML).not.toContain('enemies/undefined');

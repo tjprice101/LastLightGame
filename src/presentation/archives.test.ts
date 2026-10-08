@@ -5,8 +5,8 @@ import { conduits } from '../content/conduits';
 import { elements } from '../content/activities';
 import { starters } from '../content/starters';
 import { characterArt } from '../content/character-art';
-import { sanctuaryHeader, sanctuaryNavigation, isMenuPage } from './sanctuary';
-import { homeHub, inventoryHub, characterHub } from './hub';
+import { sanctuaryHeader, sanctuaryContext, isMenuPage } from './sanctuary';
+import { inventoryHub, characterHub } from './hub';
 import { elementLabel } from './element-label';
 
 describe('unified Archives', () => {
@@ -28,11 +28,16 @@ describe('unified Archives', () => {
     const before = structuredClone(account);
     const html = archives(account);
     for (const starter of starters) expect(html).toContain(`data-archive-character="${starter.id}"`);
-    expect(html).toContain('Owned / Lv.0 / Evo.2');
-    expect(html).toContain('Not owned / Silhouette');
-    expect(html.match(/data-archive-character=/g)).toHaveLength(42);
+    expect(html).toContain('Current form ~ Lv.0');
+    expect(html).toContain('<p class="archive-ownership">Not owned</p>');
+    expect(html).toContain('<p class="archive-ownership">Reached form</p>');
+    expect(html).toContain('<p class="archive-ownership">Evolution not reached</p>');
+    expect(html).toContain('Level 0 preview');
+    expect(html).not.toMatch(/ \/ (Silhouette|Art locked|Art revealed|Loot locked|Loot revealed|Includes equipped Conduits)/);
+    expect(html).not.toContain('Current saved stats');
+    expect(html.match(/data-archive-character=/g)).toHaveLength(108);
     expect(html.match(/archive-form-revealed/g)).toHaveLength(2);
-    expect(html.match(/archive-form-locked/g)).toHaveLength(40);
+    expect(html.match(/archive-form-locked/g)).toHaveLength(106);
     for (const starter of starters) for (let evolution = 1; evolution <= 6; evolution++) {
       expect(html).toContain(`data-archive-character="${starter.id}" data-form="${evolution}"`);
       expect(html).toContain(characterArt(starter.id, evolution).title);
@@ -45,20 +50,36 @@ describe('unified Archives', () => {
     expect(account).toEqual(before);
   });
 
-  it('catalogs every Common Conduit with supplied artwork, effects and saved counts', () => {
+  it('catalogs every Conduit with supplied artwork, effects and saved counts', () => {
     const account = emptyAccount();
     account.conduits = { 'bastion-lock': 3 };
     const html = archives(account, 'conduits');
     for (const conduit of conduits) {
       expect(html).toContain(`data-archive-conduit="${conduit.id}"`);
+      expect(html).toContain(`class="archive-card ${conduit.id === 'bastion-lock' ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-conduit="${conduit.id}"`);
       expect(html).toContain(conduit.effect);
     }
     expect(html).toContain('Owned 3');
-    expect(html).not.toContain('Artwork pending');
-    for (const conduit of conduits) expect(html).toContain(`assets/conduits/${conduit.id}.png`);
+    const conduitsSection = html.slice(html.indexOf('id="archive-conduits"'), html.indexOf('id="archive-creatures"'));
+    expect(conduitsSection).not.toContain('Artwork pending');
+    for (const conduit of conduits) {
+      expect(html).toContain(`assets/conduits/${conduit.art}.png`);
+    }
     const fullArchive = archives(account);
     for (const gallery of ['characters', 'conduits', 'creatures']) {
       expect(fullArchive).toContain(`assets/banners/archive-${gallery}.png`);
+    }
+  });
+
+  it('keeps unowned and unavailable Conduit art silhouetted without changing holdings', () => {
+    for (const account of [emptyAccount(), { ...emptyAccount(), conduits: { 'vigil-core': 0 } }, null]) {
+      const before = structuredClone(account);
+      const html = archives(account, 'conduits');
+      expect(html.match(/class="archive-card archive-conduit-locked"/g)).toHaveLength(conduits.length);
+      expect(html).not.toContain('archive-conduit-revealed');
+      expect(html).toContain('unowned Conduits remain silhouettes');
+      if (!account) expect(html).toContain('Ownership unavailable');
+      expect(account).toEqual(before);
     }
   });
 
@@ -76,20 +97,24 @@ describe('unified Archives', () => {
     expect(unavailable).toContain('Ownership unavailable');
     expect(unavailable).toContain('Creature discoveries unavailable');
     expect(unavailable).not.toContain('Owned 0');
-    expect(unavailable).not.toContain('Not owned / Silhouette');
-    expect(unavailable.match(/archive-form-locked/g)).toHaveLength(42);
+    expect(unavailable).not.toContain('<p class="archive-ownership">Not owned</p>');
+    expect(unavailable).not.toContain('Art locked');
+    expect(unavailable.match(/archive-form-locked/g)).toHaveLength(108);
     expect(unavailable).not.toContain('archive-form-revealed');
   });
 
-  it('routes Home, Inventory and Character through Archives and retains the old glossary route', () => {
+  it('routes galleries through Collections instead of Inventory and retains legacy aliases', () => {
     expect(isMenuPage('archives')).toBe(true);
     expect(isMenuPage('glossary')).toBe(true);
     expect(sanctuaryHeader('archives', 0)).toContain('Archives');
     expect(sanctuaryHeader('glossary', 0)).toContain('Archives');
-    expect(sanctuaryNavigation('archives')).toContain('data-page="inventory" aria-current="page"');
-    for (const html of [homeHub(starters[0], false), inventoryHub(), characterHub(starters[0], 'overview')]) {
-      expect(html).toContain('data-page="archives"');
-    }
+    expect(isMenuPage('collections')).toBe(true);
+    expect(sanctuaryContext('archives')).toBe('');
+    expect(sanctuaryHeader('archives', 0)).toContain('data-menu-back');
+    expect(archives(emptyAccount(), 'conduits')).not.toContain('Recovered ancient-war mechanism');
+    expect(sanctuaryHeader('home', 0)).toContain('data-page="collections"');
+    expect(sanctuaryContext('inventory') + inventoryHub()).not.toContain('data-page="archives"');
+    expect(characterHub(starters[0], 'overview')).not.toContain('data-page="archives"');
     expect(elementLabel('tranquilitic')).toContain('Tranquilitic <span>(Peace)</span>');
     expect(elementLabel('tranquilitic')).toContain('assets/elements/tranquilitic.png');
     for (const element of elements) {

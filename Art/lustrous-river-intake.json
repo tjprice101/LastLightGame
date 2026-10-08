@@ -1,0 +1,533 @@
+{
+  "asset_count": 16,
+  "assets": [
+    {
+      "asset": "glimmerkin",
+      "incoming": "Glimmerkin.png",
+      "source": "Art\\source\\enemies\\Glimmerkin.png",
+      "source_sha256": "a4ce2704f92b68676db1eaaba1848cbded6704898cd4eb890fab1a65db36e9eb",
+      "runtime": "public\\assets\\enemies\\glimmerkin.png",
+      "runtime_sha256": "672d754d9b971ecb1b42da73fb29481e066cc7341cca6102b6a6f1bd55164959",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 164,
+        "background_seeds": []
+      }
+    },
+    {
+      "asset": "lanterncap-brownie",
+      "incoming": "Lanterncap Brownie.png",
+      "source": "Art\\source\\enemies\\Lanterncap Brownie.png",
+      "source_sha256": "1431af785c5926c7dc52be1b127bfa6d7ca25c691a1c908f84ed8a217f09d64d",
+      "runtime": "public\\assets\\enemies\\lanterncap-brownie.png",
+      "runtime_sha256": "1a8aa4cd544d74c59f30a251b81e7a36ae6b9162d3db671953339a1fd0938edb",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 161,
+        "background_seeds": [
+          [
+            0.498377,
+            0.889009
+          ]
+        ],
+        "foreground_value_min": 205
+      }
+    },
+    {
+      "asset": "prismback-tortoise",
+      "incoming": "Prismback Tortoise.png",
+      "source": "Art\\source\\enemies\\Prismback Tortoise.png",
+      "source_sha256": "e20609e146b685cfda596f52ce6f48badefe8fa165a40ed1010aa3229e67f99f",
+      "runtime": "public\\assets\\enemies\\prismback-tortoise.png",
+      "runtime_sha256": "4e93581ddfc273a4c185014de02750f20f4d4c30068186360ca3e7bb9af3d272",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 96,
+        "background_seeds": [
+          [
+            0.614448,
+            0.835129
+          ],
+          [
+            0.336851,
+            0.84375
+          ],
+          [
+            0.17289,
+            0.493534
+          ],
+          [
+            0.122565,
+            0.75
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "dawncrest-guardian",
+      "incoming": "Dawncrest Guardian.png",
+      "source": "Art\\source\\enemies\\Dawncrest Guardian.png",
+      "source_sha256": "198c1c305a8b29a3ed4fecd873ca56526361aaa0e6f3ca997fe6e8d7ea08617e",
+      "runtime": "public\\assets\\enemies\\dawncrest-guardian.png",
+      "runtime_sha256": "f801a1ddf301f62842872aff5ec39cebb931258d4eafd4b6fc6a7582d3bac1d9",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 171,
+        "background_seeds": [
+          [
+            0.282468,
+            0.8125
+          ],
+          [
+            0.548701,
+            0.83944
+          ],
+          [
+            0.798701,
+            0.268319
+          ],
+          [
+            0.323864,
+            0.577586
+          ],
+          [
+            0.219156,
+            0.636853
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "opalwing-griffin",
+      "incoming": "Opalwing Griffin.png",
+      "source": "Art\\source\\enemies\\Opalwing Griffin.png",
+      "source_sha256": "841016341e1b20dc55a8c6006eb7828c73d7a2229d437f05a26efca1a23253fd",
+      "runtime": "public\\assets\\enemies\\opalwing-griffin.png",
+      "runtime_sha256": "09064472de28cea7cf2972db1fb9a0be3653de3596bf512cf64e59491d450f0e",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 174,
+        "background_seeds": [
+          [
+            0.469968,
+            0.154095
+          ],
+          [
+            0.731331,
+            0.550647
+          ],
+          [
+            0.357955,
+            0.831897
+          ],
+          [
+            0.129058,
+            0.681034
+          ],
+          [
+            0.602273,
+            0.851293
+          ],
+          [
+            0.782468,
+            0.43319
+          ],
+          [
+            0.546266,
+            0.351293
+          ],
+          [
+            0.794643,
+            0.296336
+          ],
+          [
+            0.211039,
+            0.46875
+          ],
+          [
+            0.577922,
+            0.485991
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "sunmirror-oracle",
+      "incoming": "Sunmirror Oracle.png",
+      "source": "Art\\source\\enemies\\Sunmirror Oracle.png",
+      "source_sha256": "085724daedefa246830baa7520b82a65507a87962c496874009f313e3a75e9b2",
+      "runtime": "public\\assets\\enemies\\sunmirror-oracle.png",
+      "runtime_sha256": "7a42795ee15fc97412e3abc74498e53b2094c2efbb7ca57aec775e26e3942401",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 169,
+        "background_seeds": [
+          [
+            0.855519,
+            0.567888
+          ],
+          [
+            0.175325,
+            0.543103
+          ],
+          [
+            0.767045,
+            0.762931
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "crownray-kirin",
+      "incoming": "Crownray Kirin.png",
+      "source": "Art\\source\\enemies\\Crownray Kirin.png",
+      "source_sha256": "8d0ad1bcf61488f1a47c6c078560dabfbd5227f1728a5144d03febca8f5e4935",
+      "runtime": "public\\assets\\enemies\\crownray-kirin.png",
+      "runtime_sha256": "84a2100690000265757b98a87fa5a31939e2d54e97d64e20b06910f514ffebc4",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 162,
+        "background_seeds": [
+          [
+            0.76461,
+            0.324353
+          ],
+          [
+            0.152597,
+            0.702586
+          ],
+          [
+            0.762175,
+            0.767241
+          ],
+          [
+            0.502435,
+            0.801724
+          ],
+          [
+            0.62013,
+            0.823276
+          ],
+          [
+            0.397727,
+            0.829741
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "sovereign-of-the-sevenfold-dawn",
+      "incoming": "Sovereign of the Sevenfold Dawn.png",
+      "source": "Art\\source\\enemies\\Sovereign of the Sevenfold Dawn.png",
+      "source_sha256": "cdcc08be3fdc9a4c6bccfbf0f6ff5b76be3e6833577de7fc542259527a0a070c",
+      "runtime": "public\\assets\\enemies\\sovereign-of-the-sevenfold-dawn.png",
+      "runtime_sha256": "b965082f277cce3254144ea576c4ce9f4d9f111e25ff62e76d416dad9998e9ae",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 174,
+        "background_seeds": [
+          [
+            0.652597,
+            0.538793
+          ],
+          [
+            0.157468,
+            0.544181
+          ],
+          [
+            0.814123,
+            0.904095
+          ],
+          [
+            0.588474,
+            0.733836
+          ],
+          [
+            0.702922,
+            0.835129
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "luminous-seed",
+      "incoming": "Seed of Luminous.png",
+      "source": "Art\\source\\materials\\Seed of Luminous.png",
+      "source_sha256": "45890c8357a1072a0fd10bfea974c6d4923dcc4351043853a97ecb54ae8616c1",
+      "runtime": "public\\assets\\materials\\luminous-seed.png",
+      "runtime_sha256": "4979b030f99674ce8c81d5d32fa2044087de81aabcbb6a0049eef2b60e3f510e",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 154,
+        "background_seeds": [
+          [
+            0.641602,
+            0.226562
+          ],
+          [
+            0.375977,
+            0.160156
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "luminous-bloom",
+      "incoming": "Bloom of Luminous.png",
+      "source": "Art\\source\\materials\\Bloom of Luminous.png",
+      "source_sha256": "e722f5a6d9b2a70c7621092a24947275d66ea8ecf5305a2a73d2663f6d8f5969",
+      "runtime": "public\\assets\\materials\\luminous-bloom.png",
+      "runtime_sha256": "a51dc4deabaccf662611940a94b6055ed3706049f29de15498e463f7d81d1065",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 66,
+        "background_seeds": [
+          [
+            0.292969,
+            0.723633
+          ],
+          [
+            0.254883,
+            0.572266
+          ],
+          [
+            0.317383,
+            0.629883
+          ],
+          [
+            0.441406,
+            0.691406
+          ],
+          [
+            0.308594,
+            0.674805
+          ],
+          [
+            0.283203,
+            0.594727
+          ],
+          [
+            0.324219,
+            0.769531
+          ],
+          [
+            0.401367,
+            0.716797
+          ],
+          [
+            0.34375,
+            0.740234
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "luminous-shard",
+      "incoming": "Shard of Luminous.png",
+      "source": "Art\\source\\materials\\Shard of Luminous.png",
+      "source_sha256": "644e23827fd04a2d766109ddcc85774e6eeb726b8c03508b61f93f3c4a30d132",
+      "runtime": "public\\assets\\materials\\luminous-shard.png",
+      "runtime_sha256": "7a2764b0f81518c26e93f0e6dbc12f9a24de269156241dc5cba41c8f4242bc14",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 161,
+        "background_seeds": [
+          [
+            0.201172,
+            0.630859
+          ],
+          [
+            0.326172,
+            0.790039
+          ],
+          [
+            0.796875,
+            0.68457
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "luminous-crest",
+      "incoming": "Crest of Luminous.png",
+      "source": "Art\\source\\materials\\Crest of Luminous.png",
+      "source_sha256": "1295becbd3416f27e6268986768c273df192aa536c25fcae73b46619c9f2c0b5",
+      "runtime": "public\\assets\\materials\\luminous-crest.png",
+      "runtime_sha256": "e85533263c1fbdbd55657db35d38fe67c467d17fbbaabd8771a5ad04e8952015",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 168,
+        "background_seeds": [
+          [
+            0.171875,
+            0.373047
+          ],
+          [
+            0.858398,
+            0.385742
+          ],
+          [
+            0.182617,
+            0.489258
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "luminous-heart",
+      "incoming": "Heart of Luminous.png",
+      "source": "Art\\source\\materials\\Heart of Luminous.png",
+      "source_sha256": "2f8f838a364bbf2f85b6b93e9176cf37fe4c4854fedef94a6d72ea9e56ebdb84",
+      "runtime": "public\\assets\\materials\\luminous-heart.png",
+      "runtime_sha256": "45a8c7245f327bc4b7d338dc966a36fde5cf7d584d76833ddf4e7c5c50301c5f",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 155,
+        "background_seeds": [
+          [
+            0.605469,
+            0.857422
+          ],
+          [
+            0.424805,
+            0.170898
+          ],
+          [
+            0.399414,
+            0.816406
+          ],
+          [
+            0.577148,
+            0.166016
+          ],
+          [
+            0.691406,
+            0.776367
+          ],
+          [
+            0.310547,
+            0.827148
+          ],
+          [
+            0.816406,
+            0.28125
+          ],
+          [
+            0.677734,
+            0.249023
+          ],
+          [
+            0.795898,
+            0.52832
+          ],
+          [
+            0.313477,
+            0.192383
+          ],
+          [
+            0.354492,
+            0.768555
+          ],
+          [
+            0.740234,
+            0.706055
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "luminous-soul",
+      "incoming": "Soul of Luminous.png",
+      "source": "Art\\source\\materials\\Soul of Luminous.png",
+      "source_sha256": "abad8fd0bd9d114fcdc226f08d8bbc1cfe9f0fbd167ab2854b7ecab4ec7c0f39",
+      "runtime": "public\\assets\\materials\\luminous-soul.png",
+      "runtime_sha256": "4bf09bf4318edf65570d3c913990875499a670db815efc7335ad6538f024f793",
+      "processing": {
+        "method": "border-connected color key with reviewed enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.25,
+        "border_only": true,
+        "hue": 158,
+        "background_seeds": [
+          [
+            0.280273,
+            0.754883
+          ],
+          [
+            0.736328,
+            0.741211
+          ],
+          [
+            0.204102,
+            0.541992
+          ],
+          [
+            0.80957,
+            0.529297
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "lustrous-river",
+      "incoming": "Lustrous River Banner.png",
+      "source": "Art\\source\\banners\\Lustrous River Banner.png",
+      "source_sha256": "dbb9038e65a673e00d98e5a6582c692a42394410973b887d5608228f2a2c9193",
+      "runtime": "public\\assets\\banners\\lustrous-river.png",
+      "runtime_sha256": "dbb9038e65a673e00d98e5a6582c692a42394410973b887d5608228f2a2c9193",
+      "processing": {
+        "method": "unchanged scenery bytes"
+      }
+    },
+    {
+      "asset": "lustrous-river",
+      "incoming": "Lustrous River Battle Arena.png",
+      "source": "Art\\source\\backgrounds\\Lustrous River Battle Arena.png",
+      "source_sha256": "84f53e8c12e89406eaf7f4d478b53f64f91089dfcedeff164800c0973bf9d86e",
+      "runtime": "public\\assets\\backgrounds\\lustrous-river.png",
+      "runtime_sha256": "84f53e8c12e89406eaf7f4d478b53f64f91089dfcedeff164800c0973bf9d86e",
+      "processing": {
+        "method": "unchanged scenery bytes"
+      }
+    }
+  ]
+}

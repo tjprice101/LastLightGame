@@ -19,7 +19,7 @@ export function portraitCutin(unit: Combatant, cue: NonNullable<ReturnType<typeo
   const panel = document.createElement('div');
   panel.className = `portrait-cutin cutin-${unit.side}${cue.ultimate ? ' cutin-ultimate' : ''}`;
   panel.setAttribute('role', 'status');
-  panel.setAttribute('aria-label', `${unit.name} / ${cue.name}${cue.ultimate ? ' / Ultimate' : ''}`);
+  panel.setAttribute('aria-label', `${unit.name} ~ ${cue.name}${cue.ultimate ? ' ~ Ultimate' : ''}`);
   panel.style.setProperty('--element', color);
   panel.style.setProperty('--cutin-power', String(cue.power));
   panel.innerHTML = `<span class="cutin-streaks" aria-hidden="true"></span><span class="cutin-sigil" aria-hidden="true"></span>

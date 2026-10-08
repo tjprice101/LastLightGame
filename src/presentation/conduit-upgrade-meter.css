@@ -1,0 +1,45 @@
+.conduit-upgrade-meter {
+  --meter-square: 8px;
+  --meter-gap: 3px;
+  position: absolute; bottom: 0; right: 0; display: inline-flex; gap: var(--meter-gap);
+  padding: 4px; border: 1px solid #ffffff45; border-radius: 4px;
+  background: #111e; box-sizing: border-box; pointer-events: none;
+}
+.conduit-upgrade-meter .conduit-upgrade-square {
+  position: relative; display: block; width: var(--meter-square); height: var(--meter-square);
+  flex: 0 0 var(--meter-square); box-sizing: border-box; border: 1px solid #777;
+  border-radius: 1px; background: #29292d;
+}
+.conduit-upgrade-meter .conduit-upgrade-square.is-filled {
+  border-color: #fff; background: linear-gradient(135deg, #fff 15%, #eee 45%, #acb8c4 70%, #fff);
+  box-shadow: inset 0 1px 2px #fff, 0 0 4px #fff6;
+}
+.conduit-upgrade-meter[data-upgrade-level="5"] .conduit-upgrade-square {
+  border-color: #fff;
+  background: linear-gradient(125deg, #fff, #ffb7d9, #e9d0ff, #bceeff, #beffdc, #fff0b5, #fff);
+  background-size: 300% 100%;
+  box-shadow: 0 0 5px #e8d2ff, 0 0 9px #a8eaff80, inset 0 0 2px #fff;
+  animation: conduit-meter-prism 5s ease-in-out infinite;
+}
+.conduit-upgrade-meter[data-upgrade-level="5"] .conduit-upgrade-square::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(115deg, transparent 30%, #fffc 50%, transparent 70%);
+  background-size: 300% 100%; animation: conduit-meter-shimmer 4s ease-in-out infinite;
+}
+@keyframes conduit-meter-prism {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes conduit-meter-shimmer {
+  0%, 40% { background-position: 100% 0; opacity: .15; }
+  75%, 100% { background-position: 0% 0; opacity: .8; }
+}
+.battle-result-rewards .conduit-upgrade-meter, .loot-upgrade-marker.conduit-upgrade-meter {
+  --meter-square: 4px; --meter-gap: 2px; padding: 2px;
+}
+html[data-motion="reduced"] .conduit-upgrade-meter .conduit-upgrade-square,
+html[data-motion="reduced"] .conduit-upgrade-meter .conduit-upgrade-square::after { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .conduit-upgrade-meter .conduit-upgrade-square,
+  .conduit-upgrade-meter .conduit-upgrade-square::after { animation: none; }
+}

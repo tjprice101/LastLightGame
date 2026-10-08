@@ -1,0 +1,292 @@
+{
+  "phase": "razor",
+  "asset_count": 12,
+  "assets": [
+    {
+      "incoming": "Nightwatch Bastion, Razor.png",
+      "asset": "razor",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\razor\\characters\\Nightwatch Bastion, Razor.png",
+      "source_sha256": "43f958fdef2625cd5f2f8ccc624b598b1157e0f5c3da82ad2be0d3e90a187fc7",
+      "runtime": "public\\assets\\characters\\razor.png",
+      "runtime_sha256": "caf9ae609740c94ddec50e9f219a1e3fb54b252e573095a8ba707fbb4e1771d3",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 148,
+        "tolerance": 18,
+        "saturation_min": 0.13764705882352943,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Duskplate Sentinel, Razor.png",
+      "asset": "razor-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\razor\\characters\\Duskplate Sentinel, Razor.png",
+      "source_sha256": "6f80ec76cd6880414e8ccce42ed575ab317b4de6d8adaed342b712dfcdae06ea",
+      "runtime": "public\\assets\\characters\\razor-evo-2.png",
+      "runtime_sha256": "40bcefbc77722b43e16a206fe2fa749fe58338f6643118f672aa0c95fa6f306f",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 88,
+        "tolerance": 18,
+        "saturation_min": 0.21176470588235294,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Eclipse Rampart, Razor.png",
+      "asset": "razor-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\razor\\characters\\Eclipse Rampart, Razor.png",
+      "source_sha256": "9feb9325d7a7e2997c6698e1efa2fcc207329b5fd7bd18bd7de27ef6505a9824",
+      "runtime": "public\\assets\\characters\\razor-evo-3.png",
+      "runtime_sha256": "01b633d119a09cfc359a81612fcca53c8911561f8323834466aaae6dcac14ee5",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 163,
+        "tolerance": 18,
+        "saturation_min": 0.25941176470588234,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "right"
+    },
+    {
+      "incoming": "Nightglass Bulwark, Razor.png",
+      "asset": "razor-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\razor\\characters\\Nightglass Bulwark, Razor.png",
+      "source_sha256": "9c6b98711c1e45f8760e456d44f4dcbc454bff8babc919221e4c94d6ef8ab743",
+      "runtime": "public\\assets\\characters\\razor-evo-4.png",
+      "runtime_sha256": "2b7a75e6c1c5d6f1a135e6512b85b5ca7fe0593f1c23fac46849ef9b3daf6d59",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 160,
+        "tolerance": 18,
+        "saturation_min": 0.20294117647058824,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Prismatic Eclipse Regent, Razor.png",
+      "asset": "razor-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\razor\\characters\\Prismatic Eclipse Regent, Razor.png",
+      "source_sha256": "5a0298734bd77f3cab1cc4f48d89007ae15c3c2fd9ab3ce9e2542f046448de32",
+      "runtime": "public\\assets\\characters\\razor-evo-5.png",
+      "runtime_sha256": "c06cb58cc243d542dcb40fc8d0f8c61ad786d127113c146efef2043368451d07",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 153,
+        "tolerance": 18,
+        "saturation_min": 0.21352941176470588,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "The Unbroken Midnight, Razor.png",
+      "asset": "razor-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\razor\\characters\\The Unbroken Midnight, Razor.png",
+      "source_sha256": "3227fa21c9c76bb16d9ad31a4b444b8f8bf1fc09460f733313a216ac3ce1d89f",
+      "runtime": "public\\assets\\characters\\razor-evo-6.png",
+      "runtime_sha256": "eab13e295bdfaeb579616f4d62703bac92ee18fec3a80f719895d19e4949a9d3",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 152,
+        "tolerance": 18,
+        "saturation_min": 0.17647058823529413,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Unbroken Night - Passive.png",
+      "asset": "razor-passive",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\razor\\abilities\\Unbroken Night - Passive.png",
+      "source_sha256": "6b7a7c30d0d7af70c960192f92139812629cf506184ebb49882534c2867045f5",
+      "runtime": "public\\assets\\abilities\\razor-passive.png",
+      "runtime_sha256": "89ef9678dc211b87c1685a244d8a3fdca42dda78029ce8b106b961cf88cfc2de",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 76,
+        "tolerance": 18,
+        "saturation_min": 0.26294117647058823,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Nightcleave - Skill 1.png",
+      "asset": "razor-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\razor\\abilities\\Nightcleave - Skill 1.png",
+      "source_sha256": "8472fb39aa4764e348e384d7e39e5171884ab16f8b5e12102fa6e88cde3b6d0e",
+      "runtime": "public\\assets\\abilities\\razor-skill1.png",
+      "runtime_sha256": "9c50a8793fe26410733435d0468ebd3ace2a04295cf100b5647c5808b2ab6370",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          2,
+          0,
+          1022,
+          1022
+        ],
+        "hue": 87,
+        "tolerance": 18,
+        "saturation_min": 0.22411764705882353,
+        "value_min": 0.12,
+        "border_only": false,
+        "reviewed_exterior_frame": {
+          "outer_band": 0.025,
+          "minimum_span": 0.75
+        }
+      }
+    },
+    {
+      "incoming": "Eclipse Bastion - Skill 2.png",
+      "asset": "razor-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\razor\\abilities\\Eclipse Bastion - Skill 2.png",
+      "source_sha256": "f512ac456e13aac8d215c0ae3e55b7f2b175c16b5609af7bc71868dfa4a5ef15",
+      "runtime": "public\\assets\\abilities\\razor-skill2.png",
+      "runtime_sha256": "bae24d99adaaf2837a79261ee0711c7554eef13331bcc1977f2d11c1c3b64112",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 74,
+        "tolerance": 18,
+        "saturation_min": 0.2823529411764706,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Unbroken Midnight - Last Flare.png",
+      "asset": "razor-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\razor\\abilities\\Unbroken Midnight - Last Flare.png",
+      "source_sha256": "6364ea21e51bdc34314d7d9b01f6ad6f0246bbc640e9a24e53f0e1a1b39bfae8",
+      "runtime": "public\\assets\\abilities\\razor-ultimate.png",
+      "runtime_sha256": "388bc560ef4eae902be5dad0eb2f447d11c370d549a59d54e55be3d547d155c9",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 74,
+        "tolerance": 18,
+        "saturation_min": 0.2823529411764706,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Night Sword Strike - Normal Attack.png",
+      "asset": "razor-light",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\razor\\abilities\\Night Sword Strike - Normal Attack.png",
+      "source_sha256": "fee27d68d943e08e5c3ce6cf719113f1e86736a32b5a7cc5f944717d9b06e17f",
+      "runtime": "public\\assets\\abilities\\razor-light.png",
+      "runtime_sha256": "2404490ba5ed87e2a8309683ff6749d4d45459a38ca28b576dee5ca2610dc824",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 135,
+        "tolerance": 18,
+        "saturation_min": 0.26823529411764707,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Nightglass Guard - Defense.png",
+      "asset": "razor-defend",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\razor\\abilities\\Nightglass Guard - Defense.png",
+      "source_sha256": "85194cb7a85bb36ca0f019627711908ac442e0b082e38435a9b9b647964babdd",
+      "runtime": "public\\assets\\abilities\\razor-defend.png",
+      "runtime_sha256": "685382807bdf73d1b05214cdef74af3f665c625c2aff0cfce541768ddf774420",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 76,
+        "tolerance": 18,
+        "saturation_min": 0.31058823529411766,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    }
+  ]
+}

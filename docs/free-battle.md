@@ -115,7 +115,7 @@ a modal containing optional accessible actions (including touch Defense),
 combatant details, rules, restart and the recent event log. Pass remaining
 actions is available there, not on the field. Victory/defeat Continue remains explicit.
 Only target/ally selection keys remain; no attack or Space turn shortcuts.
-**Quit Adventure** returns Gameplay and ends the run, preserving earned Fractalis but
+**Quit Adventure** returns Gameplay and ends the run, preserving earned Prismatica but
 discarding wave progress. Settings suspends battle input while open; closing it
 preserves the current wave, health, gauges, and already-resolved actions.
 Small screens allow vertical scrolling rather than clipping controls; the scenery
@@ -124,7 +124,7 @@ permission-gated Fullscreen API.
 Choose Infernis (fire), Tizu (water), or Flora (grass) at the start. Adventure
 uses **only your saved starter**, not a temporary team. Entry, restart, and later
 waves preserve that identity; no additional units or items are granted.
-Every newly defeated enemy drops a level-scaled random integer of Fractalis:
+Every newly defeated enemy drops a level-scaled random integer of Prismatica:
 **5-10 at Lv1**, increasing quadratically to **15-30 at Lv120**, including
 burn kills and each target of a multi-enemy attack. The drop appears above the arena
 and in the log. The running balance appears in the currency strip.
@@ -180,7 +180,7 @@ skill cooldowns, and recovery carry between waves; defeated allies stay defeated
 Flora' living passive still applies at the new-turn boundary.
 
 Leaving Adventure during animation cancels presentation and ends the run; already
-committed Fractalis stays earned. Opening Settings during animation cancels
+committed Prismatica stays earned. Opening Settings during animation cancels
 presentation only, retaining the resolved combat state.
 Saved character level/evolution now resolve the combat kit at run entry; enemy
 levels are independent of character progression. All ten
@@ -502,7 +502,7 @@ Recent battle logs are bounded to 40 events.
 - [Pure combat engine](../src/game/battle.ts)
 - [Battle presentation](../src/presentation/battle-view.ts)
 - [Hotkeys](../src/game/hotkeys.ts)
-- [Local Fractalis wallet](../src/game/wallet.ts)
+- [Local Prismatica wallet](../src/game/wallet.ts)
 - [Reward and wallet tests](../src/game/wallet.test.ts)
 - [Exact combat tests](../src/game/battle.test.ts)
 - [Defense and Heavy-removal tests](../src/game/defense.test.ts)

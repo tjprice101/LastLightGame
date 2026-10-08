@@ -1,0 +1,109 @@
+.shell { position: relative; isolation: isolate; }
+.ambient-background {
+  --ambient-pattern: repeating-linear-gradient(120deg, transparent 0 110px, #ffffff12 111px 112px, transparent 113px 220px);
+  --ambient-scale: 1;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  contain: strict;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 20% 15%, #ffffff0c, transparent 48%), radial-gradient(ellipse at 85% 85%, #ffffff0a, transparent 48%);
+}
+.ambient-background > span { position: absolute; display: block; pointer-events: none; }
+.ambient-pattern {
+  inset: -8%;
+  background-image: var(--ambient-pattern);
+  opacity: .7;
+  transform: scale(var(--ambient-scale));
+}
+.ambient-orbit {
+  width: min(86vw, 900px);
+  aspect-ratio: 1;
+  right: -20%;
+  top: 8%;
+  border: 1px solid #ffffff22;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, #ffffff10 0deg 1deg, transparent 1deg 30deg);
+  box-shadow: 0 0 0 28px #ffffff03, 0 0 0 29px #ffffff12, 0 0 0 76px #ffffff02, 0 0 0 77px #ffffff0c;
+  opacity: .65;
+  animation: ambient-orbit-turn 100s linear infinite;
+}
+.ambient-drift {
+  inset: -10%;
+  background:
+    radial-gradient(circle at 18% 25%, #ffffff70 0 1px, transparent 2px),
+    radial-gradient(circle at 62% 18%, #ffffff55 0 1px, transparent 2px),
+    radial-gradient(circle at 35% 72%, #ffffff60 0 1px, transparent 2px),
+    radial-gradient(circle at 82% 61%, #ffffff45 0 2px, transparent 3px),
+    linear-gradient(115deg, transparent 25%, #ffffff05 42%, #ffffff0c 44%, transparent 62%);
+  background-size: 280px 320px, 390px 440px, 340px 380px, 520px 490px, 100% 100%;
+  opacity: .65;
+  animation: ambient-drift 28s ease-in-out infinite alternate;
+}
+.ambient-background[data-ambient-screen="title"] {
+  --ambient-pattern: repeating-conic-gradient(from 45deg at 50% 38%, transparent 0deg 29.7deg, #ffffff16 29.8deg 30deg);
+}
+.ambient-background[data-ambient-screen="selection"] {
+  --ambient-pattern: repeating-linear-gradient(60deg, transparent 0 79px, #ffffff12 80px 81px, transparent 82px 160px), repeating-linear-gradient(-60deg, transparent 0 79px, #ffffff0c 80px 81px, transparent 82px 160px);
+}
+.ambient-background[data-ambient-screen="home"] {
+  --ambient-pattern: repeating-linear-gradient(108deg, transparent 0 24%, #ffffff16 24.1% 24.2%, #ffffff03 24.3% 49%, transparent 49.1% 74%);
+}
+.ambient-background[data-ambient-screen="character"] {
+  --ambient-pattern: radial-gradient(ellipse at 28% 52%, transparent 0 29%, #ffffff14 29.1% 29.3%, transparent 29.4% 36%, #ffffff0c 36.1% 36.3%, transparent 36.4%), repeating-linear-gradient(120deg, transparent 0 220px, #ffffff0a 221px 222px, transparent 223px 440px);
+}
+.ambient-background[data-ambient-screen="summon"] {
+  --ambient-pattern: repeating-conic-gradient(from 22.5deg at 70% 35%, transparent 0deg 44.7deg, #ffffff16 44.8deg 45deg);
+}
+.ambient-background[data-ambient-screen="squad"] {
+  --ambient-pattern: repeating-linear-gradient(90deg, transparent 0 159px, #ffffff12 160px 161px, transparent 162px 320px), repeating-linear-gradient(0deg, transparent 0 119px, #ffffff09 120px 121px, transparent 122px 240px);
+}
+.ambient-background[data-ambient-screen="gameplay"] {
+  --ambient-pattern: repeating-radial-gradient(ellipse at 70% 110%, transparent 0 60px, #ffffff14 61px 62px, transparent 63px 100px);
+}
+.ambient-background[data-ambient-screen="inventory"] {
+  --ambient-pattern: repeating-linear-gradient(45deg, transparent 0 69px, #ffffff12 70px 71px, transparent 72px 140px), repeating-linear-gradient(-45deg, transparent 0 69px, #ffffff09 70px 71px, transparent 72px 140px);
+}
+.ambient-background[data-ambient-screen="stores"] {
+  --ambient-pattern: repeating-linear-gradient(90deg, transparent 0 99px, #ffffff12 100px 101px, transparent 102px 200px), repeating-radial-gradient(circle at 80% 40%, transparent 0 90px, #ffffff0f 91px 92px, transparent 93px 150px);
+}
+.ambient-background[data-ambient-screen="collections"] {
+  --ambient-pattern: repeating-linear-gradient(0deg, transparent 0 89px, #ffffff10 90px 91px, transparent 92px 180px), repeating-linear-gradient(90deg, transparent 0 89px, #ffffff10 90px 91px, transparent 92px 180px);
+}
+.ambient-background[data-ambient-screen="story"] {
+  --ambient-pattern: repeating-radial-gradient(ellipse at 15% 65%, transparent 0 70px, #ffffff16 71px 72px, transparent 73px 120px);
+}
+.ambient-background[data-ambient-screen="events"] {
+  --ambient-pattern: repeating-linear-gradient(135deg, transparent 0 159px, #ffffff18 160px 161px, #ffffff04 162px 220px, transparent 221px 320px);
+}
+.ambient-background[data-ambient-screen="settings"] {
+  --ambient-pattern: repeating-linear-gradient(90deg, transparent 0 59px, #ffffff0d 60px 61px, transparent 62px 120px);
+}
+.ambient-background[data-ambient-screen="battle"] { background: none; }
+.ambient-background[data-ambient-screen="battle"] .ambient-pattern,
+.ambient-background[data-ambient-screen="battle"] .ambient-orbit { display: none; }
+.ambient-background[data-ambient-screen="battle"] .ambient-drift {
+  background-image: radial-gradient(circle at 18% 25%, #ffffff70 0 1px, transparent 2px), radial-gradient(circle at 62% 18%, #ffffff55 0 1px, transparent 2px);
+  background-size: 540px 600px, 680px 740px;
+  opacity: .4;
+}
+.battle-screen .battle-scenery { z-index: -2; }
+html .shell .information-modal, html .battle-screen .information-modal,
+html body > .selection-modal, html .battle-screen .battle-menu, html .battle-screen .battle-results {
+  background-image: repeating-linear-gradient(135deg, transparent 0 79px, #ffffff05 80px 81px, transparent 82px 160px), radial-gradient(ellipse at top right, #ffffff0a, transparent 70%);
+}
+html .sanctuary-shell .settings-drawer, html .battle-screen .settings-drawer {
+  background-image: repeating-linear-gradient(90deg, transparent 0 79px, #ffffff05 80px 81px, transparent 82px 160px), radial-gradient(ellipse at top right, #ffffff0a, transparent 70%);
+}
+@keyframes ambient-orbit-turn { to { transform: rotate(360deg); } }
+@keyframes ambient-drift { from { transform: translate3d(-1%, 1%, 0); } to { transform: translate3d(2%, -3%, 0); } }
+@media (max-width: 540px) {
+  .ambient-background { --ambient-scale: .8; }
+  .ambient-orbit { width: 120vw; right: -55%; top: 20%; }
+  .ambient-drift { opacity: .45; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-background > span { animation: none; }
+}
+html[data-motion="reduced"] .ambient-background > span { animation: none; }

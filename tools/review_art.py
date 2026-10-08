@@ -9,25 +9,25 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw
 
-from prepare_art import ROOT, ASSETS, MATTE_MINIMUMS, MATTE_SPREADS, PALE_ART_REGIONS, PALE_ART_CUTOUTS, pale_art_mask, remove_matte, supplied_cutout
-from prepare_dungeons import AQUATIC_ENEMIES, EFFLORESCENT_ENEMIES, TRANQUILITIC_ENEMIES, VOLTAIC_ENEMIES, has_color_matte, prepare_dungeon_sprite
+from prepare_art import ROOT, ASSETS, MATTE_MINIMUMS, MATTE_SPREADS, PALE_ART_REGIONS, PALE_ART_CUTOUTS, pale_art_mask, remove_matte, supplied_cutout, starter_refresh_source
+from prepare_dungeons import AQUATIC_ENEMIES, EFFLORESCENT_ENEMIES, TRANQUILITIC_ENEMIES, VOLTAIC_ENEMIES, LUMINOUS_ENEMIES, TECTONIC_ENEMIES, CHAOTIC_ENEMIES, ATMOSPHERIC_ENEMIES, OMINOUS_ENEMIES, has_color_matte, prepare_dungeon_sprite
 from prepare_infusions import ENEMIES, MATERIALS, has_infusion_color_matte, prepare_infusion_sprite
 from prepare_icons import ICONS
-from prepare_currencies import CURRENCIES, prepare_currency_sprite
+from prepare_currencies import CURRENCIES, prepare_currency_sprite, current_currency_source
 from matte_regions import BACKGROUND_SEEDS
 
 
 def sources():
     entries = {asset: ROOT / "Art" / "source" / category / filename
                for filename, (category, asset) in ASSETS.items()}
-    for pack in (AQUATIC_ENEMIES, EFFLORESCENT_ENEMIES, TRANQUILITIC_ENEMIES, VOLTAIC_ENEMIES, ENEMIES):
+    for pack in (AQUATIC_ENEMIES, EFFLORESCENT_ENEMIES, TRANQUILITIC_ENEMIES, VOLTAIC_ENEMIES, LUMINOUS_ENEMIES, TECTONIC_ENEMIES, CHAOTIC_ENEMIES, ATMOSPHERIC_ENEMIES, OMINOUS_ENEMIES, ENEMIES):
         entries.update({asset: ROOT / "Art" / "source" / "enemies" / f"{name}.png" for name, asset in pack.items()})
     entries.update({asset: ROOT / "Art" / "source" / "materials" / f"{name}.png" for name, asset in MATERIALS.items()})
-    for element in ("infernic", "aquatic", "efflorescent", "tranquilitic", "voltaic"):
+    for element in ("infernic", "aquatic", "efflorescent", "tranquilitic", "voltaic", "luminous", "tectonic", "chaotic", "atmospheric", "ominous"):
         for name in ("seed", "bloom", "shard", "crest", "heart", "soul"):
             entries[f"{element}-{name}"] = ROOT / "Art" / "source" / "materials" / f"{name.capitalize()} of {element.capitalize()}.png"
     entries.update({asset: ROOT / "Art" / "source" / "abilities" / asset.split("-")[0] / filename for filename, asset in ICONS.items()})
-    entries.update({asset: ROOT / "Art" / "source" / "currencies" / f"{name}.png" for name, asset in CURRENCIES.items()})
+    entries.update({asset: current_currency_source(name, asset) for name, asset in CURRENCIES.items()})
     return entries
 
 
@@ -74,20 +74,25 @@ def main():
             category = "abilities" if asset in ICONS.values() else source.parent.name
             runtime = ROOT / "public" / "assets" / category / f"{asset}.png"
             legacy_source = source
-            cutout = supplied_cutout(asset)
-            source = cutout or source
+            replacement = starter_refresh_source(asset)
+            cutout = None if replacement else supplied_cutout(asset)
+            source = replacement or cutout or source
+            if replacement:
+                from intake_starter_refresh import load_settings
+                processing = load_settings()[asset]
             entries.append({
                 "asset": asset,
                 "source": str(source.relative_to(ROOT)),
                 "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
                 "runtime": str(runtime.relative_to(ROOT)),
                 "runtime_sha256": hashlib.sha256(runtime.read_bytes()).hexdigest(),
-                "review": "owner-supplied-alpha" if cutout else "reviewed-color-key" if has_color_matte(asset) or has_infusion_color_matte(asset) or asset in CURRENCIES.values() else "targeted-cleanup" if asset in BACKGROUND_SEEDS or asset in MATTE_SPREADS or asset in PALE_ART_REGIONS else "retained",
-                "background_seeds": [] if cutout else BACKGROUND_SEEDS.get(asset, []),
+                "review": "reviewed-starter-replacement" if replacement else "owner-supplied-alpha" if cutout else "reviewed-color-key" if has_color_matte(asset) or has_infusion_color_matte(asset) or asset in CURRENCIES.values() else "targeted-cleanup" if asset in BACKGROUND_SEEDS or asset in MATTE_SPREADS or asset in PALE_ART_REGIONS else "retained",
+                "background_seeds": processing.get("background_seeds", []) if replacement else [] if cutout else BACKGROUND_SEEDS.get(asset, []),
+                **({"processing": processing} if replacement else {}),
                 **({"legacy_source": str(legacy_source.relative_to(ROOT)),
                     "processing": "supplied-alpha; trim, uniform resize and transparent padding only"} if cutout else {}),
                 **({"foreground_regions": PALE_ART_REGIONS[asset],
-                    "foreground_cutouts": PALE_ART_CUTOUTS.get(asset, [])} if not cutout and asset in PALE_ART_REGIONS else {}),
+                    "foreground_cutouts": PALE_ART_CUTOUTS.get(asset, [])} if not replacement and not cutout and asset in PALE_ART_REGIONS else {}),
             })
         (ROOT / "Art" / "matte-review.json").write_text(json.dumps({
             "reviewed": "2026-10-04",
@@ -100,7 +105,7 @@ def main():
         for asset in sorted(paths):
             if args.assets and asset not in args.assets:
                 continue
-            if not args.assets and not supplied_cutout(asset) and asset not in BACKGROUND_SEEDS and asset not in MATTE_SPREADS and not has_color_matte(asset) and not has_infusion_color_matte(asset) and asset not in CURRENCIES.values():
+            if not args.assets and not starter_refresh_source(asset) and not supplied_cutout(asset) and asset not in BACKGROUND_SEEDS and asset not in MATTE_SPREADS and not has_color_matte(asset) and not has_infusion_color_matte(asset) and asset not in CURRENCIES.values():
                 continue
             path = paths[asset]
             category = "abilities" if asset in ICONS.values() else path.parent.name

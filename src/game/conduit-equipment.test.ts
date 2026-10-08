@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ACCOUNT_KEY, loadAccount, saveAccount, equipConduit } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
-import { conduits, validateConduitSlots, type ConduitSlots } from '../content/conduits';
+import { commonConduits as conduits, validateConduitSlots, type ConduitSlots } from '../content/conduits';
 import { resolveFighter } from '../content/combat';
 import { createSession } from '../presentation/battle-view';
 import { nextStage, nextWave, act, damageAmount } from './battle';
@@ -97,11 +97,11 @@ describe('Conduit loadouts', () => {
         session.state.enemies[0].stats.defense, false));
     session.state.phase = 'cleared';
     expect(nextWave(session.state).state.allies[0].conduits).toEqual(slots);
-    expect(homeHub(getStarter('ember'), false, account)).toContain('<strong>231</strong>');
+    expect(homeHub(getStarter('ember'), false, account)).toContain('<strong class="stat-change stat-change--increase">231</strong>');
     expect(characterDetail(getStarter('ember'), 'overview', account)).toContain('Before Conduits: 220');
     const html = characterDetail(getStarter('ember'), 'equipment', account);
     expect(html.match(/data-conduit-slot=/g)).toHaveLength(8);
     expect(html).toContain('Vigil Core');
-    expect(html).toContain('Reserved / Not available');
+    expect(html).toContain('Reserved ~ Not available');
   });
 });

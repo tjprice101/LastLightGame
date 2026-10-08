@@ -19,9 +19,7 @@ wide landscape background for a cutesy 2D turn-based fantasy JRPG battle, an inv
 
 ### Reference and generation notes
 
-- Append `--sref <approved_reference_image_url> --sw 200`, replacing
-  the placeholder with an actual reference. Use the approved illustration style,
-  not a screenshot containing menus or text. Reference influence may need tuning.
+- Use the shared illustration renderer without `--sref` or `--sw`.
 - Start at `--s 100`; preserve the clear floor before increasing decoration.
 - Keep `--niji 6 --q 1` consistent with the existing prompts; do not add `--style`.
 - Generate at 16:9. For a narrower battle viewport, keep the playable floor and

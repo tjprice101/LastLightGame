@@ -6,10 +6,15 @@ import { SAVE_KEY, type ProfileStorage } from './profile';
 
 const pool = standardBannerPool();
 const zero = { highestStar: 0, unownedHighestStar: 0 };
-const owned = ['ember', 'tide', 'sprout'];
+const owned = ['aurora', 'bliss', 'disciple', 'razor'];
+function rollFor(id: string): number {
+  const index = pool.findIndex((entry) => entry.id === id);
+  if (index < 0) throw new Error('Missing banner test outcome.');
+  return pool.slice(0, index).reduce((sum, entry) => sum + entry.chance, 0) + pool[index].chance / 2;
+}
 
 describe('independent per-banner pity', () => {
-  it('uses 1% total five-star and 0.1% total future six-star rates', () => {
+  it('uses 1% total five-star and 0.1% total six-star rates', () => {
     expect(bannerCharacterTierRates).toEqual({ 5: .01, 6: .001 });
   });
   it('increments both counters on a lower-star outcome and never mutates inputs', () => {
@@ -22,7 +27,7 @@ describe('independent per-banner pity', () => {
   });
   it('guarantees the highest tier on exactly pull200, including every equal-split boundary', () => {
     expect(resolveBannerPull(pool, owned, { highestStar: 198, unownedHighestStar: 250 }, () => .5).entry.kind).toBe('creature');
-    for (const [roll, id] of [[0, 'ember'], [1 / 3 - 1e-10, 'ember'], [1 / 3, 'tide'], [2 / 3, 'sprout'], [.999999, 'sprout']] as const) {
+    for (const [roll, id] of [[0, 'aurora'], [.25 - 1e-10, 'aurora'], [.25, 'bliss'], [.5, 'disciple'], [.75, 'razor'], [.999999, 'razor']] as const) {
       const result = resolveBannerPull(pool, owned, { highestStar: 199, unownedHighestStar: 250 }, () => roll);
       expect(result.entry.id).toBe(id);
       expect(result.guarantee).toBe('highest-star');
@@ -31,33 +36,33 @@ describe('independent per-banner pity', () => {
   });
   it('resets only the200 counter for a natural duplicate and both for a natural new highest-star character', () => {
     const counters = { highestStar: 100, unownedHighestStar: 300 };
-    expect(resolveBannerPull(pool, ['ember'], counters, () => 0).pity).toEqual({ highestStar: 0, unownedHighestStar: 301 });
-    const newResult = resolveBannerPull(pool, ['ember'], counters, () => .004);
-    expect(newResult.entry.id).toBe('tide');
+    expect(resolveBannerPull(pool, ['aurora'], counters, () => rollFor('aurora')).pity).toEqual({ highestStar: 0, unownedHighestStar: 301 });
+    const newResult = resolveBannerPull(pool, ['aurora'], counters, () => rollFor('bliss'));
+    expect(newResult.entry.id).toBe('bliss');
     expect(newResult.pity).toEqual(zero);
   });
   it('guarantees an unowned highest-tier character on exactly pull500, with priority over200', () => {
-    expect(resolveBannerPull(pool, ['ember'], { highestStar: 50, unownedHighestStar: 498 }, () => .5).pity)
+    expect(resolveBannerPull(pool, ['aurora'], { highestStar: 50, unownedHighestStar: 498 }, () => .5).pity)
       .toEqual({ highestStar: 51, unownedHighestStar: 499 });
-    for (const highestStar of [0, 199]) for (const [roll, id] of [[0, 'tide'], [.5 - 1e-10, 'tide'], [.5, 'sprout'], [.999999, 'sprout']] as const) {
-      const result = resolveBannerPull(pool, ['ember'], { highestStar, unownedHighestStar: 499 }, () => roll);
+    for (const highestStar of [0, 199]) for (const [roll, id] of [[0, 'bliss'], [1 / 3 - 1e-10, 'bliss'], [1 / 3, 'disciple'], [2 / 3, 'razor'], [.999999, 'razor']] as const) {
+      const result = resolveBannerPull(pool, ['aurora'], { highestStar, unownedHighestStar: 499 }, () => roll);
       expect(result.entry.id).toBe(id);
       expect(result.guarantee).toBe('unowned-highest-star');
       expect(result.pity).toEqual(zero);
     }
-    expect(resolveBannerPull(pool, ['ember', 'sprout'], { highestStar: 0, unownedHighestStar: 499 }, () => .99).entry.id).toBe('tide');
+    expect(resolveBannerPull(pool, ['aurora', 'bliss', 'razor'], { highestStar: 0, unownedHighestStar: 499 }, () => .99).entry.id).toBe('disciple');
   });
   it('falls back to an ordinary highest-star duplicate result when all are owned, resetting both', () => {
     for (const roll of [0, .5, .999999]) {
       const result = resolveBannerPull(pool, owned, { highestStar: 25, unownedHighestStar: 499 }, () => roll);
-      expect(result.entry.stars).toBe(5);
+      expect(result.entry.stars).toBe(6);
       expect(owned).toContain(result.entry.id);
       expect(result.guarantee).toBe('all-owned-highest-star');
       expect(result.pity).toEqual(zero);
     }
   });
   it('targets six-star characters only when that tier actually exists, not lower unowned characters', () => {
-    // Test-only six-star fixtures; these are not registered game content.
+    // Pure resolver coverage remains independent of registered content.
     const future: BannerOutcome[] = [
       { kind: 'creature', id: 'low', stars: 1, chance: .989 },
       { kind: 'character', id: 'five', stars: 5, chance: .01 },
@@ -72,6 +77,19 @@ describe('independent per-banner pity', () => {
     const all = resolveBannerPull(future, ['six-a', 'six-b'], { highestStar: 0, unownedHighestStar: 499 }, () => 0);
     expect(all.entry.id).toBe('six-a');
     expect(all.guarantee).toBe('all-owned-highest-star');
+  });
+  it('advances both counters on five-star results and retains five-star-only resolver compatibility', () => {
+    const counters = { highestStar: 27, unownedHighestStar: 42 };
+    for (const id of ['ember', 'atmoso', 'bruno', 'elise']) {
+      expect(resolveBannerPull(pool, [], counters, () => rollFor(id)).pity)
+        .toEqual({ highestStar: 28, unownedHighestStar: 43 });
+    }
+    const legacy: BannerOutcome[] = [
+      { kind: 'character', id: 'five', stars: 5, chance: .01 },
+      { kind: 'creature', id: 'low', stars: 1, chance: .99 },
+    ];
+    expect(resolveBannerPull(legacy, [], counters, () => 0).pity).toEqual(zero);
+    expect(resolveBannerPull(legacy, [], { highestStar: 199, unownedHighestStar: 42 }, () => .99).entry.id).toBe('five');
   });
   it('has exact base-probability boundaries and consumes one roll per resolution, even for guarantees', () => {
     let boundary = 0;
@@ -114,8 +132,8 @@ describe('independent per-banner pity', () => {
     expect(loaded.bannerPity).toEqual(account.bannerPity);
     expect(() => summonCharacter(storage, () => -1)).toThrow('[0, 1)');
     expect(storage.getItem(ACCOUNT_KEY)).toBe(before);
-    expect(summonHub(loaded)).toContain('199 / 200');
-    expect(summonHub(loaded)).toContain('499 / 500');
+    expect(summonHub(loaded)).toContain('199 ~ 200');
+    expect(summonHub(loaded)).toContain('499 ~ 500');
     expect(summonHub(loaded)).toContain('500 guarantee takes priority');
     for (const bannerPity of [null, [], { unknown: zero }, { standard: { highestStar: 200, unownedHighestStar: 0 } }]) {
       expect(() => validateAccount({ ...account, bannerPity })).toThrow();

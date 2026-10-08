@@ -12,9 +12,15 @@
         "tolerance": 20,
         "saturation_min": 0.2,
         "value_min": 0.25,
-        "border_only": true
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.522461,
+            0.0625
+          ]
+        ]
       },
-      "runtime_sha256": "feffde6d0e0c3f0ba76e0da0fc69f1df5dd04a96f9487bb53da58ac25515b504"
+      "runtime_sha256": "32a76efd91448f1d4c83f622325ae6bb27db5860f860f644069a2dcea1f5a8bf"
     },
     {
       "incoming": "Chaotic.png",
@@ -57,9 +63,15 @@
         "tolerance": 18,
         "saturation_min": 0.2,
         "value_min": 0.2,
-        "border_only": true
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.542969,
+            0.144531
+          ]
+        ]
       },
-      "runtime_sha256": "0ded8d98798411eb926c04410eda544d39706df7dd58d3ad6d9fee04ffa9e727"
+      "runtime_sha256": "9342783a54ff24d86db0526b567d73f5fff33d02d399c794851290fdbf214a8d"
     },
     {
       "incoming": "Luminous.png",
@@ -87,9 +99,19 @@
         "tolerance": 20,
         "saturation_min": 0.2,
         "value_min": 0.25,
-        "border_only": true
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.639648,
+            0.144531
+          ],
+          [
+            0.808594,
+            0.244141
+          ]
+        ]
       },
-      "runtime_sha256": "c8b9acca7364fe33434259ef575291247faf70aa1caaa70566e82aa805f0ad4c"
+      "runtime_sha256": "3e1a2ab2d2528304f7a7f6c610769d39bd67a3d35ae71db00ebe46af1e069cf8"
     },
     {
       "incoming": "Ominous.png",
@@ -177,9 +199,19 @@
         "tolerance": 18,
         "saturation_min": 0.18,
         "value_min": 0.2,
-        "border_only": true
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.68457,
+            0.407227
+          ],
+          [
+            0.393555,
+            0.643555
+          ]
+        ]
       },
-      "runtime_sha256": "f4643a4473d17f0d5057fb1d5af9b8771e79ec261a0f3bd0eec28e1767b91965"
+      "runtime_sha256": "dd24c52094ad3927b9be302f604ef5ba4d6c25f2ebd095899b1d3ae1f353bd87"
     },
     {
       "incoming": "Parallax Relay.png",
@@ -269,13 +301,23 @@
         "method": "border-connected RGB-distance key",
         "radius": 35,
         "quantization": 8,
+        "background_seeds": [
+          [
+            0.733766,
+            0.355603
+          ],
+          [
+            0.879058,
+            0.417026
+          ]
+        ],
         "derived_background_rgb": [
           244,
           132,
           116
         ]
       },
-      "runtime_sha256": "f4c40cc5c7249085749797937bfd349d27e533ced7c1c42b9a4a409dca23b27b"
+      "runtime_sha256": "0e101344a6e8f5073837d50509b59bb5406402914549b9201c96402192d4f434"
     },
     {
       "incoming": "Regalia of the Sun, Gleamstone Slime.png",
@@ -286,13 +328,23 @@
         "method": "border-connected RGB-distance key",
         "radius": 35,
         "quantization": 8,
+        "background_seeds": [
+          [
+            0.863636,
+            0.256466
+          ],
+          [
+            0.850649,
+            0.740302
+          ]
+        ],
         "derived_background_rgb": [
           236,
           92,
           132
         ]
       },
-      "runtime_sha256": "64c5bf90f761ccd9537e2510fd227076b2773649e23b2c018b1f3138e9a61908"
+      "runtime_sha256": "35b40bf1fe7f52cb16179d542451a683a037b4d7375c5a79f74db7228be016ac"
     },
     {
       "incoming": "Sovereign of the Gilded Vault, Gleamstone Slime.png",
@@ -320,13 +372,75 @@
         "method": "border-connected RGB-distance key",
         "radius": 35,
         "quantization": 8,
+        "background_seeds": [
+          [
+            0.222403,
+            0.246767
+          ],
+          [
+            0.154221,
+            0.284483
+          ],
+          [
+            0.142857,
+            0.365302
+          ],
+          [
+            0.176948,
+            0.394397
+          ],
+          [
+            0.185877,
+            0.515086
+          ],
+          [
+            0.237825,
+            0.55819
+          ],
+          [
+            0.271104,
+            0.594828
+          ],
+          [
+            0.647727,
+            0.682112
+          ],
+          [
+            0.412338,
+            0.686422
+          ],
+          [
+            0.143669,
+            0.778017
+          ],
+          [
+            0.712662,
+            0.783405
+          ],
+          [
+            0.839286,
+            0.796336
+          ],
+          [
+            0.521916,
+            0.865302
+          ],
+          [
+            0.847403,
+            0.84806
+          ],
+          [
+            0.340909,
+            0.891164
+          ]
+        ],
         "derived_background_rgb": [
           204,
           44,
           116
         ]
       },
-      "runtime_sha256": "427c05e30266cd0a23cffb31651e26e9d85323071e45992080b60cd8b6040767"
+      "runtime_sha256": "4709b0b197dc181d2742eff847a99a977ac6ef08cc007b6e282f7904a5c62bca"
     },
     {
       "incoming": "Rosethorn Wisp.png",
@@ -337,13 +451,31 @@
         "method": "border-connected RGB-distance key",
         "radius": 35,
         "quantization": 8,
+        "background_seeds": [
+          [
+            0.508929,
+            0.676724
+          ],
+          [
+            0.409091,
+            0.715517
+          ],
+          [
+            0.69724,
+            0.737069
+          ],
+          [
+            0.553571,
+            0.731681
+          ]
+        ],
         "derived_background_rgb": [
           204,
           60,
           124
         ]
       },
-      "runtime_sha256": "e650dad936b9ec935443e4867492cb2409a3b51f8e391b4020b8f781379e82b1"
+      "runtime_sha256": "255294355420676679b7ff76b43ca502f102f11b923f304b8e42607f0efa1e92"
     },
     {
       "incoming": "Votive of First Bloom, Rosethorn Wisp.png",
@@ -371,13 +503,31 @@
         "method": "border-connected RGB-distance key",
         "radius": 35,
         "quantization": 8,
+        "background_seeds": [
+          [
+            0.396916,
+            0.688578
+          ],
+          [
+            0.625,
+            0.689655
+          ],
+          [
+            0.298701,
+            0.673491
+          ],
+          [
+            0.588474,
+            0.817888
+          ]
+        ],
         "derived_background_rgb": [
           236,
           44,
           116
         ]
       },
-      "runtime_sha256": "79a36172154afa0bfbf8f1312a396924ef6d62bdd2814366fdabc08c6916317b"
+      "runtime_sha256": "e3c67b450d1a52e7cf8f9730576ce8a8a86d6ac76f13fae40ada351ef74785a0"
     },
     {
       "incoming": "Seraph of the Rose Pyre, Rosethorn Wisp.png",
@@ -405,13 +555,19 @@
         "method": "border-connected RGB-distance key",
         "radius": 35,
         "quantization": 8,
+        "background_seeds": [
+          [
+            0.738636,
+            0.772629
+          ]
+        ],
         "derived_background_rgb": [
           220,
           60,
           100
         ]
       },
-      "runtime_sha256": "af338bdf855da4820f9a19392a761c19cb4c8b88a86774578faf02abded1dab6"
+      "runtime_sha256": "a669fdecdb9c14b4fb3c90efacfa8e7e35b183fd5e47252953eb9d1542bdd6de"
     },
     {
       "incoming": "The Flame Beyond Eternity, Rosethorn Wisp.png",
@@ -422,13 +578,23 @@
         "method": "border-connected RGB-distance key",
         "radius": 35,
         "quantization": 8,
+        "background_seeds": [
+          [
+            0.622565,
+            0.21875
+          ],
+          [
+            0.38961,
+            0.212284
+          ]
+        ],
         "derived_background_rgb": [
           228,
           68,
           84
         ]
       },
-      "runtime_sha256": "f864907eaec4e8f354e64e7d4c4f8844c7f2d24059f86042310fc675eabb5a97"
+      "runtime_sha256": "a732fd613622512ed8abd9e11e27c5151156b4c60e423799767ad56b0ab834a0"
     },
     {
       "incoming": "Character Archive Banner.png",

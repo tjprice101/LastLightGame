@@ -1,0 +1,1216 @@
+{
+  "phase": "roses",
+  "asset_count": 51,
+  "assets": [
+    {
+      "incoming": "Gilded Rose, Rosetta.png",
+      "asset": "rosetta",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Gilded Rose, Rosetta.png",
+      "source_sha256": "e160f3d537c2511ecd9d37b48baadbd30355328b5f53e7384fb781ac25fd6f79",
+      "runtime": "public\\assets\\characters\\rosetta.png",
+      "runtime_sha256": "6b5b0a676d76796c295c1381a2c90823d5956ef10c0df8e59e618247c7baa561",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 165,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "right"
+    },
+    {
+      "incoming": "Gilded Vow, Rosetta.png",
+      "asset": "rosetta-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Gilded Vow, Rosetta.png",
+      "source_sha256": "a3c283468814710acba18e1b6d38efb7df0113f5d8bfded993b7dc3dad164fd4",
+      "runtime": "public\\assets\\characters\\rosetta-evo-2.png",
+      "runtime_sha256": "2d2a9996b7dceb2aabd6c5b237aa544ed2baace83291ba32d54ecaaf8205f302",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 165,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Daybreak Archer, Rosetta.png",
+      "asset": "rosetta-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Daybreak Archer, Rosetta.png",
+      "source_sha256": "36544de9109f34ad4be3cc482f3af6a4fe98d29cd8ba038f3c085bf84ae60c4a",
+      "runtime": "public\\assets\\characters\\rosetta-evo-3.png",
+      "runtime_sha256": "a0969a5e136e3a0cb9bd52643bd47bb9183f93cc0d772fdc0d3d7f744253d2f6",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 172,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Seraph of Virtue, Rosetta.png",
+      "asset": "rosetta-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Seraph of Virtue, Rosetta.png",
+      "source_sha256": "2053e2ac8f73a00a479da8be546a93486a4700d1a54f9d0c1b1014ca78b61c8b",
+      "runtime": "public\\assets\\characters\\rosetta-evo-4.png",
+      "runtime_sha256": "bf0d52d5be354d6103be3f366dcf2a19341c28675af57c2625551687a4290900",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 159,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Sovereign of Passion, Rosetta.png",
+      "asset": "rosetta-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Sovereign of Passion, Rosetta.png",
+      "source_sha256": "8b1d975048b6c717201a7cc29e458418d1c1fb1fa9d1cf20c593c7a30c6bcb6b",
+      "runtime": "public\\assets\\characters\\rosetta-evo-5.png",
+      "runtime_sha256": "19d71b1cc2809c8de93aaa30d06611efb76d06c25811672a45ce13475d4e0c55",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 160,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "The Rose Beyond the Sun, Rosetta.png",
+      "asset": "rosetta-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\The Rose Beyond the Sun, Rosetta.png",
+      "source_sha256": "9b57ea629e6d06d23970ed8c379e9b264fafaabd2e0b59bcbef5c01cc54077fd",
+      "runtime": "public\\assets\\characters\\rosetta-evo-6.png",
+      "runtime_sha256": "51faf711b394f4953f278f9c3acec4ead0f3b18a4c69c345dc80db8fa79cc5fb",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 168,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Burdened by Thorns, Thornia.png",
+      "asset": "thornia",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Burdened by Thorns, Thornia.png",
+      "source_sha256": "3b685d82c4799224fefe425dd8f48eb74f7e03dcc594345e795f5321e601cc94",
+      "runtime": "public\\assets\\characters\\thornia.png",
+      "runtime_sha256": "6c4f8a259f2006bac34fb4c350f6abf70173ec6f95298c7a63021a16b9c35b0b",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 152,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Gilded Squire, Thornia.png",
+      "asset": "thornia-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Gilded Squire, Thornia.png",
+      "source_sha256": "40c7eae27e128deec0131f41c6941fc8cbe32eef32188167b8e1c39035aade9b",
+      "runtime": "public\\assets\\characters\\thornia-evo-2.png",
+      "runtime_sha256": "12476094007c14b036934be2bb6adb388aab2a89193d71809224881f19c53f6d",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 77,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Forbidden Rose Knight, Thornia.png",
+      "asset": "thornia-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Forbidden Rose Knight, Thornia.png",
+      "source_sha256": "e49f7cdf66e11bf4d32f08cfa3e703ceb3d109d3812b5b6e5b56d288fbf934d8",
+      "runtime": "public\\assets\\characters\\thornia-evo-3.png",
+      "runtime_sha256": "d47433af56acd650f6c402d3934fa160b1c01720b4627ef73dc645cb83ec8491",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 169,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Warden of the Shadow Garden, Thornia.png",
+      "asset": "thornia-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Warden of the Shadow Garden, Thornia.png",
+      "source_sha256": "5d87802914ca7e5b7851f3c1420f8fca09d63d0d26c45c2d97059f43ff9b234a",
+      "runtime": "public\\assets\\characters\\thornia-evo-4.png",
+      "runtime_sha256": "4e03e47ac8b14a352df3fa7e28145f06ff73bd79a47de43821a6b7082b6bcae3",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 156,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Queen of Golden Shadows, Thornia.png",
+      "asset": "thornia-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Queen of Golden Shadows, Thornia.png",
+      "source_sha256": "b4598b4fbc9ed2f8d4fe5062637e91304a603094893281311c326db4957717d8",
+      "runtime": "public\\assets\\characters\\thornia-evo-5.png",
+      "runtime_sha256": "280794e04e8f82d15c5779cda6960fab3410f08d0c2c364a63502b8c8f1dd302",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 160,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "The Thousand-Rose Empress, Thornia.png",
+      "asset": "thornia-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\The Thousand-Rose Empress, Thornia.png",
+      "source_sha256": "7f716c574efd827c442912029e1cda40ddf92c14b261c8813dd53ed7f8a723cd",
+      "runtime": "public\\assets\\characters\\thornia-evo-6.png",
+      "runtime_sha256": "1f30f72c660c5b78ab959516ff9e1e58cae35ece57bb286ef786b9ab3df74c2a",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 163,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Rosebound Page, Crinso.png",
+      "asset": "crinso",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Rosebound Page, Crinso.png",
+      "source_sha256": "a151330b1f78fdc1629295c9fc1118a3a051bf28c4b7f82dc7f0415623d30758",
+      "runtime": "public\\assets\\characters\\crinso.png",
+      "runtime_sha256": "5b4dd068b340861f74632aaf5993f59f830d25458b50162dc1249b5871dd8a1d",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 165,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Duality Initiate, Crinso.png",
+      "asset": "crinso-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Duality Initiate, Crinso.png",
+      "source_sha256": "7e55b087138445b01726dc13f5ae8531ef77611183597d189fa68dec9f4118f9",
+      "runtime": "public\\assets\\characters\\crinso-evo-2.png",
+      "runtime_sha256": "bbd7feeb6be07ebf1457c22e6d788a9336bea09492cd90a56d822b7893b17add",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 169,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Crimson-Gold Knight, Crinso.png",
+      "asset": "crinso-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Crimson-Gold Knight, Crinso.png",
+      "source_sha256": "a193d003b02e71658cc63b74f1850a6c9c497107a335822b05e68c5fbc920653",
+      "runtime": "public\\assets\\characters\\crinso-evo-3.png",
+      "runtime_sha256": "8801bdf711addc9f7e5003ae615821bb24573f15fc4201494c51c44a6b389aee",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 77,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Storm of the Twin Rose, Crinso.png",
+      "asset": "crinso-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Storm of the Twin Rose, Crinso.png",
+      "source_sha256": "9e06f7a13db27781afca1fc0c54ec9aef6519751d2f042f5721fea43e1ac2ef8",
+      "runtime": "public\\assets\\characters\\crinso-evo-4.png",
+      "runtime_sha256": "0c694638e62628b5d54d7990c0035d99a89af3cb6ae93756e5f10aeba1ec5bc9",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 163,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Sovereign of Beautiful Ruin, Crinso.png",
+      "asset": "crinso-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\Sovereign of Beautiful Ruin, Crinso.png",
+      "source_sha256": "52f9362d32e6a72a98238961b7ccfbce9d0fb8f53e4c86616a7aa3b5578e1da4",
+      "runtime": "public\\assets\\characters\\crinso-evo-5.png",
+      "runtime_sha256": "b28e1412519399c5bc3c6d907a13d3d1578d2c267448eba6cff5cfc43febf7de",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 168,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "The Rose Beyond Duality, Crinso.png",
+      "asset": "crinso-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\roses\\characters\\The Rose Beyond Duality, Crinso.png",
+      "source_sha256": "3226a65557f962e64922182bd673d92a4b9bc32890d31880a65bb2f303ffc906",
+      "runtime": "public\\assets\\characters\\crinso-evo-6.png",
+      "runtime_sha256": "fe3996c468f088883a8a7f43cd6df2188798886c48284569d9a2dcc234276f7c",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 158,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Virtuous Bloom.png",
+      "asset": "rosetta-passive",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Virtuous Bloom.png",
+      "source_sha256": "6b9ddf16e2a4cacc5b0fbd24c61f5b7cfdadf6d2ff3a26b47a5f63cf7d7f2875",
+      "runtime": "public\\assets\\abilities\\rosetta-passive.png",
+      "runtime_sha256": "f0e2521574c0d0616cd3a79916e7e3612ec762e22a070e2fe82df095d803a6e2",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 128,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Golden Thorn Volley.png",
+      "asset": "rosetta-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Golden Thorn Volley.png",
+      "source_sha256": "8a1a7df642380bae5269f0fe96cc512d47730215ffa809a07c63be268cdc747a",
+      "runtime": "public\\assets\\abilities\\rosetta-skill1.png",
+      "runtime_sha256": "af395a967eac1a4adcff5b5d367bfa12dee3f139da0a8d7edb82c805c51d8b5e",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          18,
+          21,
+          1011,
+          1010
+        ],
+        "hue": 115,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Crimson Skyfall.png",
+      "asset": "rosetta-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Crimson Skyfall.png",
+      "source_sha256": "936aa9f8d5e7c2a25ae003bf758f37bce075ce8a6ba7eaeacf3eba9fe94d89aa",
+      "runtime": "public\\assets\\abilities\\rosetta-skill2.png",
+      "runtime_sha256": "8b0510565f903dbef55e6dac678797ba2552bff3ebe10fad2b4926fbd1233f63",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 173,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Last Flare - Rose Beyond the Sun.png",
+      "asset": "rosetta-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Last Flare - Rose Beyond the Sun.png",
+      "source_sha256": "3b5e7b50919d5ce068a60f6168920a2821d7297b6469813922aadc5f9ac9bce4",
+      "runtime": "public\\assets\\abilities\\rosetta-ultimate.png",
+      "runtime_sha256": "a508ae3c373f0ed32ab3911e4ab54f1d6fdd9039763fc0705abc22b15e4d1696",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 168,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Normal Attack - Rosetta.png",
+      "asset": "rosetta-light",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Normal Attack - Rosetta.png",
+      "source_sha256": "ba3c5990ba759ac401b9f991003da4536536c58d293c228d1630e71130f2a4da",
+      "runtime": "public\\assets\\abilities\\rosetta-light.png",
+      "runtime_sha256": "ddd2a22d7e22de6bc9957d0416877a03b5603d7c09cd2e96fd91a7328ce4ad65",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          1,
+          1,
+          1021,
+          1024
+        ],
+        "hue": 153,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Defense - Rosetta.png",
+      "asset": "rosetta-defend",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Defense - Rosetta.png",
+      "source_sha256": "99366602bdae263787eb8a6fd0de792de3abba064e768ce67571552c532355a6",
+      "runtime": "public\\assets\\abilities\\rosetta-defend.png",
+      "runtime_sha256": "09cc04d2c7fd842804bb4ae0eee82d75197a4f1f437646890bd89b36ac38f1b0",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 165,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Passive - Forbidden Garden.png",
+      "asset": "thornia-passive",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Passive - Forbidden Garden.png",
+      "source_sha256": "6c6f77668f52e4ee9c6cd0914ed43de18b9b89a45d16371758233debbbabec4d",
+      "runtime": "public\\assets\\abilities\\thornia-passive.png",
+      "runtime_sha256": "2488f1091895665ed8cea54461f2a96f0e6ab5e2baf8fc77556a5c2efc8f1da6",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          15,
+          12,
+          1008,
+          1011
+        ],
+        "hue": 168,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Skill 1 - Gilded Thorn Guard.png",
+      "asset": "thornia-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Skill 1 - Gilded Thorn Guard.png",
+      "source_sha256": "feb5ec7bb6f20fd31787eba7a78fbfc3c247e96337b1246a4ebd263ac50a4176",
+      "runtime": "public\\assets\\abilities\\thornia-skill1.png",
+      "runtime_sha256": "82b17395267146f3f8434180410fe85c9d13e74763b029120f3693b2fd6da4b5",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 166,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Skill 2 - Shadow Rose Cleave.png",
+      "asset": "thornia-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Skill 2 - Shadow Rose Cleave.png",
+      "source_sha256": "06e1a7baab4f54bb14b143aff28b9d26a9871a53f30be0dcf8fd037711069559",
+      "runtime": "public\\assets\\abilities\\thornia-skill2.png",
+      "runtime_sha256": "edcf166fb7e68be000db637f27a80f7b31ae782a1c8f38a84abd84d424643a5f",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 168,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Last Flare - Thousand-Rose Dominion.png",
+      "asset": "thornia-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Last Flare - Thousand-Rose Dominion.png",
+      "source_sha256": "1ac5753f63fe8ea04b908e542d27da7fe0b447985999151115d869b857778a12",
+      "runtime": "public\\assets\\abilities\\thornia-ultimate.png",
+      "runtime_sha256": "193118be2aad4d0f4070da3e63d04d827817e8e365a040001ebd5e7fb41ad487",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 166,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Normal Attack - Thornia.png",
+      "asset": "thornia-light",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Normal Attack - Thornia.png",
+      "source_sha256": "198b291f20f55aabf96a6aacd2f9138461091387ad57a43a7bf4d41f8b098e70",
+      "runtime": "public\\assets\\abilities\\thornia-light.png",
+      "runtime_sha256": "875de013e648e3faa24718724446e2013fca3739c50d83cf46e38789a353c967",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 173,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Defense - Thornia.png",
+      "asset": "thornia-defend",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Defense - Thornia.png",
+      "source_sha256": "a5e0ecaa1fefc8d3f8c7376d6c7936f97a184f12da3284b4c51734474b24cfd7",
+      "runtime": "public\\assets\\abilities\\thornia-defend.png",
+      "runtime_sha256": "eca72b58c52f6c84abf0b00b0eb2de019b488b60e5a47ddb69a5165d71872ef1",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 166,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Passive - Rose Duality.png",
+      "asset": "crinso-passive",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Passive - Rose Duality.png",
+      "source_sha256": "cd8397e7a1fabc084d91e177afe73762ac6435f906e221b314a74ba75c04f78f",
+      "runtime": "public\\assets\\abilities\\crinso-passive.png",
+      "runtime_sha256": "301bf150145c5c0435774657b90e68a9be77ef7462b377a407b4a6c631f04032",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 146,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Skill 1 - Golden Edge.png",
+      "asset": "crinso-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Skill 1 - Golden Edge.png",
+      "source_sha256": "db9126cafe61beacb24ef78d462cbdea5977e1cd5545022f1096354e8fc3631b",
+      "runtime": "public\\assets\\abilities\\crinso-skill1.png",
+      "runtime_sha256": "06b37ffd98f1d2fd45dbb4792bb60684bb691a21ddb662cc4d8bd7a5877c275f",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 166,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Skill 2 - Crimson Rupture.png",
+      "asset": "crinso-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Skill 2 - Crimson Rupture.png",
+      "source_sha256": "c03e59fec77d052e99d8820108e599c61f84e0c47ae7540e78729140436627d4",
+      "runtime": "public\\assets\\abilities\\crinso-skill2.png",
+      "runtime_sha256": "3f0a1401bde7d541d029507b6a73f5bdb7029ee3b98981b7a301a57b6cbb4548",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 153,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Last Flare - Blossoming Cataclysm.png",
+      "asset": "crinso-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Last Flare - Blossoming Cataclysm.png",
+      "source_sha256": "3899a3a30c585ba53a7d27e3341abcf706f9352f6830b23469a0ed7426b22fa6",
+      "runtime": "public\\assets\\abilities\\crinso-ultimate.png",
+      "runtime_sha256": "ea81ced292931c474f15a746dcfa64981f83639e0cbe689a4cd4e5047d00e97d",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 172,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Normal Attack - Crisno.png",
+      "asset": "crinso-light",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Normal Attack - Crisno.png",
+      "source_sha256": "dfba1b67883923f3c467d8dbe1bab18fd3c2aa67437ab1f4e56eff8f9ac04ae5",
+      "runtime": "public\\assets\\abilities\\crinso-light.png",
+      "runtime_sha256": "264a45b18c6bd0645fea6febe88612cf4cebebaefb80c264d16c7bceef8fdd1f",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 173,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Defense - Crisno.png",
+      "asset": "crinso-defend",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\roses\\abilities\\Defense - Crisno.png",
+      "source_sha256": "782e3d690f24f467ed8ba3915c32ed93b55882225cb321d14c76767b93369fba",
+      "runtime": "public\\assets\\abilities\\crinso-defend.png",
+      "runtime_sha256": "e99c2f4f6912c679d1a8e8c335bd47226e4578687d777c02452bf7d0bc8fe907",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 166,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Roselius.png",
+      "asset": "roselius",
+      "category": "enemies",
+      "source": "Art\\source\\roster-intake\\roses\\enemies\\Roselius.png",
+      "source_sha256": "817cd7a86cf87ff8119ea0eda2a8d0b5e28d4428397214ad0512fb05cfc8a6fa",
+      "runtime": "public\\assets\\enemies\\roselius.png",
+      "runtime_sha256": "f9e9dc75ebc853ba0f379c1c16a8c62f30b26c729505d5ab6126a9661cef0d5e",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 173,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "right"
+    },
+    {
+      "incoming": "Votive of Golden Thorns, Roselius.png",
+      "asset": "roselius-golden-thorns",
+      "category": "enemies",
+      "source": "Art\\source\\roster-intake\\roses\\enemies\\Votive of Golden Thorns, Roselius.png",
+      "source_sha256": "63ffc0c0f734dc6440ce0b323fcf4e2976f374d19bc03755412fc29cab825134",
+      "runtime": "public\\assets\\enemies\\roselius-golden-thorns.png",
+      "runtime_sha256": "da6a8bc4ecad0cf19bf0ace3b91340a9f233ef91e23068c89e0c84f5c784d4df",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 166,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Knight of the Crimson Bloom, Roselius.png",
+      "asset": "roselius-crimson-bloom",
+      "category": "enemies",
+      "source": "Art\\source\\roster-intake\\roses\\enemies\\Knight of the Crimson Bloom, Roselius.png",
+      "source_sha256": "faccc6fadb9ad7636caf85e3dd5393e23bf7d49a9ae69cac2e9f7f3066d2dfe5",
+      "runtime": "public\\assets\\enemies\\roselius-crimson-bloom.png",
+      "runtime_sha256": "671918b0e0884b0d5a0ccdc30e72856705f77c41b24ff6701fae2d8636ca9dbc",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 165,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Seraph of Passion, Roselius.png",
+      "asset": "roselius-seraph-passion",
+      "category": "enemies",
+      "source": "Art\\source\\roster-intake\\roses\\enemies\\Seraph of Passion, Roselius.png",
+      "source_sha256": "14315099ed5ad671232fe3a3e9b5d9e6c15da7c8787a9dc25a45eaa0c1f1bca2",
+      "runtime": "public\\assets\\enemies\\roselius-seraph-passion.png",
+      "runtime_sha256": "44a66c2cbb2b595835a199dcc9e0701a34f136580a6731ef576fa18df912cec9",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 170,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Sovereign of the Living Rose, Roselius.png",
+      "asset": "roselius-living-rose",
+      "category": "enemies",
+      "source": "Art\\source\\roster-intake\\roses\\enemies\\Sovereign of the Living Rose, Roselius.png",
+      "source_sha256": "bcb4ab92b60723bd8ab7a3596595180a8b71215348250897d5de2eee281c23d4",
+      "runtime": "public\\assets\\enemies\\roselius-living-rose.png",
+      "runtime_sha256": "c9f4e6fea016998f5e8cacaf4c11ee3de4a2184cf37bdbe41796ed40f2164488",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 111,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "The Garden Beyond Eternity, Roselius.png",
+      "asset": "roselius-garden-eternity",
+      "category": "enemies",
+      "source": "Art\\source\\roster-intake\\roses\\enemies\\The Garden Beyond Eternity, Roselius.png",
+      "source_sha256": "b74b9ae1adc2f155885b1606a42cb6e5216225e17f0f886aa0bb037f1a4b0b96",
+      "runtime": "public\\assets\\enemies\\roselius-garden-eternity.png",
+      "runtime_sha256": "577ea19fb06171e927e14eefaf90e36068e888a1475f709c090d5b8162b2fbac",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 130,
+        "tolerance": 58,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false,
+        "reviewed_warm_backdrop_polygon": [
+          [
+            0.35,
+            0.06
+          ],
+          [
+            0.65,
+            0.06
+          ],
+          [
+            0.65,
+            0.3
+          ],
+          [
+            0.63,
+            0.39
+          ],
+          [
+            0.69,
+            0.49
+          ],
+          [
+            0.56,
+            0.51
+          ],
+          [
+            0.54,
+            0.34
+          ],
+          [
+            0.4,
+            0.34
+          ],
+          [
+            0.41,
+            0.52
+          ],
+          [
+            0.32,
+            0.5
+          ],
+          [
+            0.35,
+            0.36
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Seed of Rosethorn.png",
+      "asset": "rosethorn-common",
+      "category": "materials",
+      "source": "Art\\source\\roster-intake\\roses\\materials\\Seed of Rosethorn.png",
+      "source_sha256": "c9e9e222f4ad104d4b848cdda3e91d273a98fad371e2ed88bc97fbe05a98c035",
+      "runtime": "public\\assets\\materials\\rosethorn-common.png",
+      "runtime_sha256": "40a0ad58eaa5e24027c4af6da9d03ddb3ccdae6a9a7f24e18f5211d9370239b1",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 163,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Bud of Rosethorn.png",
+      "asset": "rosethorn-uncommon",
+      "category": "materials",
+      "source": "Art\\source\\roster-intake\\roses\\materials\\Bud of Rosethorn.png",
+      "source_sha256": "5dfc13e771769f3014b192a2107eff448620baa6d4463adefce491a9e654e7d7",
+      "runtime": "public\\assets\\materials\\rosethorn-uncommon.png",
+      "runtime_sha256": "ebeb79bfc86868273c769cfa70f0405b5eff7f257a38722ed61cf719560cdcb2",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 156,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Bloom of Rosethorn.png",
+      "asset": "rosethorn-rare",
+      "category": "materials",
+      "source": "Art\\source\\roster-intake\\roses\\materials\\Bloom of Rosethorn.png",
+      "source_sha256": "c0800a6538efc5d17115c46ca4335d3532235349767884a628d6384543ef5435",
+      "runtime": "public\\assets\\materials\\rosethorn-rare.png",
+      "runtime_sha256": "8df1102e6b96b0f116d44fd9fd5f61266bd4d06d27255b1caafe8f664aba989e",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 91,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Crest of Rosethorn.png",
+      "asset": "rosethorn-epic",
+      "category": "materials",
+      "source": "Art\\source\\roster-intake\\roses\\materials\\Crest of Rosethorn.png",
+      "source_sha256": "a7d77cb43b8b20cec555042c9513333c8891fe6b2096e0589e00eb239d805839",
+      "runtime": "public\\assets\\materials\\rosethorn-epic.png",
+      "runtime_sha256": "858f4d9c45e19ab5563ac8a947d7dcfea834d0016b79e050496266ffa068d218",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 160,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Heart of Rosethorn.png",
+      "asset": "rosethorn-legendary",
+      "category": "materials",
+      "source": "Art\\source\\roster-intake\\roses\\materials\\Heart of Rosethorn.png",
+      "source_sha256": "6440294bd05217cf55b5c7d44668f4422bc6a4e5515acfad3de4a17736eafb92",
+      "runtime": "public\\assets\\materials\\rosethorn-legendary.png",
+      "runtime_sha256": "4ee6b249a1617dde93d20e4f47f44e87ce35146786afc5673f9eed0bd9b589ef",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 163,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Soul of Rosethorn.png",
+      "asset": "rosethorn-omnic",
+      "category": "materials",
+      "source": "Art\\source\\roster-intake\\roses\\materials\\Soul of Rosethorn.png",
+      "source_sha256": "3ad893796a3cee636d1c3e185b7a61b8418896341b020b9aa789e5ffca0a90c1",
+      "runtime": "public\\assets\\materials\\rosethorn-omnic.png",
+      "runtime_sha256": "392a177b7548b50cb0eda518ac580bbdadaba614b527468492d5bd6d5e7a9d0f",
+      "processing": {
+        "method": "reviewed green/teal hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 144,
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Passion of Crimson Roses Event Activity Banner.png",
+      "asset": "roses-banner",
+      "category": "banners",
+      "source": "Art\\source\\roster-intake\\roses\\banners\\Passion of Crimson Roses Event Activity Banner.png",
+      "source_sha256": "5d709e7de159985bff94ad76dddc46e6fe42b2a8aa32bc2ac08297796497b80f",
+      "runtime": "public\\assets\\banners\\roses-banner.png",
+      "runtime_sha256": "5d709e7de159985bff94ad76dddc46e6fe42b2a8aa32bc2ac08297796497b80f",
+      "processing": {
+        "method": "scenery copied byte-for-byte"
+      }
+    },
+    {
+      "incoming": "Rosethorn event arena.png",
+      "asset": "roses-arena",
+      "category": "backgrounds",
+      "source": "Art\\source\\roster-intake\\roses\\backgrounds\\Rosethorn event arena.png",
+      "source_sha256": "5e7178b02b1f4e89d4d5b292b03299fe6872a0d12eccb5f3265b5839ece9b514",
+      "runtime": "public\\assets\\backgrounds\\roses-arena.png",
+      "runtime_sha256": "5e7178b02b1f4e89d4d5b292b03299fe6872a0d12eccb5f3265b5839ece9b514",
+      "processing": {
+        "method": "scenery copied byte-for-byte"
+      }
+    },
+    {
+      "incoming": "Omnic summoning artpiece - Roses Under Sunny Skies.png",
+      "asset": "summon-roses",
+      "category": "banners",
+      "source": "Art\\source\\roster-intake\\roses\\banners\\Omnic summoning artpiece - Roses Under Sunny Skies.png",
+      "source_sha256": "2c491ca5a9d586ca5e3d375d479da125c21daa146d89ffbb8717bbf56279a289",
+      "runtime": "public\\assets\\banners\\summon-roses.png",
+      "runtime_sha256": "2c491ca5a9d586ca5e3d375d479da125c21daa146d89ffbb8717bbf56279a289",
+      "processing": {
+        "method": "scenery copied byte-for-byte"
+      }
+    }
+  ]
+}

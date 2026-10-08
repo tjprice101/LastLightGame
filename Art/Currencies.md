@@ -1,44 +1,63 @@
-# Currency Art - Fractalis and Lycalis
+# Currency Art - Prismatica and Null-Prismatica
 
-Follow the [cutout background contract](cutout-background-contract.md).
-These are standalone currency icons, not scenery or interface mockups.
-Use the [original character rendering](midjourney-character-style-prompt.md):
-clean anime contours, crisp cel shading, smooth painted highlights and jewel-like
-colors, adapted to chunky collectible objects rather than humanoid anatomy.
-Keep the silver coin/prismatic residue and glass rose/chromatic thorn identities;
-never substitute generic gems or add character faces.
-Append `--sref <approved_reference_image_url> --sw 400` to each prompt using
-the same approved style reference as the other collectible artwork.
+**D-133:** owner renames both currencies and chooses bright/dark faceted prism
+counterparts. Both owner-supplied replacements are now installed (D-142).
+No balances, prices, income
+or save format change. Legacy IDs `fractalis`/`lycalis` and filenames remain.
 
-Both designs use a flat brown background to distinguish the matte from their
-silver, glass and chromatic facets. Review generated colors before removal;
-change only the background swatch if it overlaps painted subject details.
-Glass is represented by opaque painted facets and crisp highlights, not
-background-visible transparency. Shine is non-emissive, never glow.
+Follow the [cutout background contract](cutout-background-contract.md) and
+[shared renderer](midjourney-character-style-prompt.md): clean anime contours,
+crisp cel shading, smooth non-emissive painted highlights and jewel-like colors.
+Chunky collectible objects, not humanoid anatomy or scenery. Names/headings
+stay outside generation prose so the objects do not acquire lettering.
+Both item prompts use no `--sref` or `--sw` (D-147).
 
-## Implemented artwork
+## Supplied artwork and compatibility
 
-Owner originals are preserved in `Art/source/currencies/Fractalis.png` and
-`Art/source/currencies/Lycalis.png`. Transparent runtime icons are
-`public/assets/currencies/fractalis.png` and `lycalis.png` (256x256).
-The delivered backgrounds differed from the requested swatch, so each image
-has reviewed custom cleanup in `tools/prepare_currencies.py`. Fractalis cast
-shadow and Lycalis muted sparkle spill are removed without recoloring their
-painted facets. Currency balances, costs, inventory, First Fracture preview,
-enemy drops, results and glossary share these icons. Lycalis is not enemy loot.
+Historical originals remain byte-for-byte at
+`Art/source/currencies/Fractalis.png` and
+`Art/source/currencies/Lycalis.png`. Previous runtime exports are preserved
+under `Art/source/currencies/previous-runtime`. Active runtime filenames remain
+`public/assets/currencies/fractalis.png` and `lycalis.png`.
+New originals are preserved at `Art/source/currencies/Prismatica.png` and
+`Null-Prismatica.png`. Reviewed transparent256px/224px-content replacements
+now appear across all currency surfaces. Border-connected source-specific teal
+keys and bounded edge cleanup protect cyan/pale facets, dark rims and highlights;
+painted sparkles and the dark crystal's intentional shadow are preserved.
+[Intake provenance](prism-currency-intake.json) records new/source/runtime and
+previous-export hashes; historical originals/manifests remain untouched.
 
-## Fractalis - Main currency
+Regenerate with `python tools\intake_prism_currency_art.py --apply`; the shared
+exporter/review tool selects the new sources without legacy brown cleanup.
+Shared currency URLs include byte-derived revisions to avoid stale coin/rose
+caches. Validate `python -m unittest discover -s tools -p test_prism_currency_intake.py`
+and `python -m unittest discover -s tools -p test_prepare_currencies.py`.
 
-Suggested art ID: `fractalis`. One shiny coin with prismatic residue.
+The old source-specific brown/shadow/spill cleanup in
+[prepare_currencies.py](../tools/prepare_currencies.py) is for those delivered
+originals only. New prompts use contrasting flat green, not the historical
+brown matte. Do not run old cleanup/masks on new keyed artwork without explicit
+review and supported key handling. Transparent supplied sources keep their
+alpha and only trim/resize/pad. Preserve originals and update provenance only
+after replacement intake; do not fabricate new asset paths. The D-142 intake
+provides the explicit supported keyed-source handling for these deliveries.
+
+Prismatica remains the main upgrade/purchase/ordinary reward currency.
+Null-Prismatica remains the premium summon currency with existing eligible
+income sources. Names/designs do not change earning, spending or atomic saves.
+
+## Prismatica - Main currency
+
+Legacy art ID: `fractalis`. One bright, solid faceted prism crystal.
 
 ```text
-square gacha JRPG collectible currency icon on plain canvas, one Fractalis thick polished silver coin tilted slightly in three-quarter view, broad circular face with a simple embossed diamond-shaped fracture emblem without lettering, sturdy beveled rim and clearly visible coin thickness, small deposits of prismatic crystal residue clinging to the lower rim and crossing one shallow crack on the face, angular jewel-colored residue facets with tiny attached crystalline chips rather than a particle cloud, brilliant polished metal shine expressed as crisp opaque white reflection marks and painted silver shading, coin remains the dominant silhouette and residue remains secondary, chunky chibi-inspired object proportions ornate precise anime contours crisp cel shading smooth painted highlights jewel-like chromatic colors, bold recognizable coin silhouette readable at small inventory size, complete coin and attached residue roughly two thirds of the canvas, generous background-color margin on all four sides, plain solid brown background (#6B3E26), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, prismatic residue rendered as opaque solid-color crystal facets with crisp hard edges, non-emissive painted highlights --ar 1:1 --niji 6 --s 100 --q 1 --no face, eyes, character, hands, coin pile, multiple coins, rose, thorn, text, letters, numbers, logo, watermark, interface, frame, scenery, photorealism, 3d render, cropping, multiple items, ground shadow, background gradient, textured background, background vignette, background color spill, glow, glowing effects, light bloom, soft aura, haze, light spill
+square gacha JRPG collectible currency icon, one bright precious prism crystal with a chunky elongated hexagonal body pointed crown and tapered lower tip, broad pearlescent ivory central planes polished silver facet borders and sharply separated cyan rose violet and pale-gold refraction bands, small interlocking crystal facets attached around the lower tip form one cohesive object, substantial geometric volume clean readable silhouette no separate particle cloud, crisp white painted reflection marks non-emissive jewel highlights, clean precise anime contours crisp cel shading smooth painted highlights jewel-like saturated crystal colors, chibi-inspired collectible proportions readable at small inventory size, complete crystal roughly two thirds of canvas with a generous clear margin on all four sides, nothing touches the frame edges, solid opaque facets and hard edges, plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, non-emissive painted highlights --ar 1:1 --niji 6 --s 100 --q 1 --no face, eyes, character, hands, coin, rose, thorn, multiple crystals, text, letters, numbers, runes, logo, watermark, interface, frame, scenery, photorealism, 3d render, cropping, transparent crystal, background showing through crystal, ground shadow, background gradient, textured background, background vignette, background color spill, glow, light bloom, soft aura, haze, light spill
 ```
 
-## Lycalis - Premium currency
+## Null-Prismatica - Premium currency
 
-Suggested art ID: `lycalis`. One chromatic thorn protruding from a glass rose.
+Legacy art ID: `lycalis`. The same prism construction in obsidian and violet.
 
 ```text
-square gacha JRPG collectible premium currency icon on plain canvas, one Lycalis sculptural glass rose with a single prominent chromatic thorn protruding diagonally upward from the heart of the flower, layered thick crystal-glass petals forming an unmistakable rose silhouette around the thorn's base, pale silver and icy ivory glass facets with restrained jewel-colored refraction bands, long tapered thorn with sharply defined cyan violet magenta and gold chromatic planes, thorn clearly emerges from the rose rather than floating beside it, elegant precious flower-and-thorn collectible not a weapon or a living plant, glass rendered as opaque painted crystal facets with crisp white reflection marks and dark fine contour lines, clean background-color gaps between outer petals, chunky chibi-inspired object proportions ornate precise anime contours crisp cel shading smooth painted highlights jewel-like chromatic colors, bold rose-and-thorn silhouette readable at small inventory size, complete rose and entire thorn roughly two thirds of the canvas, generous background-color margin on all four sides, plain solid brown background (#6B3E26), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, chromatic accents rendered as opaque solid-color facets with crisp hard edges, non-emissive painted highlights --ar 1:1 --niji 6 --s 100 --q 1 --no face, eyes, character, hands, coin, bouquet, multiple roses, multiple thorns, sword, long stem, vase, text, letters, numbers, logo, watermark, interface, frame, scenery, photorealism, 3d render, cropping, multiple items, transparent petals, background showing through glass, ground shadow, background gradient, textured background, background vignette, background color spill, glow, glowing effects, light bloom, soft aura, haze, light spill
+square gacha JRPG collectible premium currency icon, one dark precious prism crystal with a chunky elongated hexagonal body pointed crown and tapered lower tip, broad obsidian central planes deep violet amethyst inset facets polished silver borders and sharply separated restrained magenta indigo and icy-ivory refraction bands, small interlocking crystal facets attached around the lower tip form one cohesive object, same geometric construction as its bright counterpart with a severe dark jewel identity, substantial geometric volume clean readable silhouette no separate particle cloud, crisp ivory painted reflection marks preserve facet readability without emission, clean precise anime contours crisp cel shading smooth painted highlights jewel-like saturated obsidian violet and silver colors, chibi-inspired collectible proportions readable at small inventory size, complete crystal roughly two thirds of canvas with a generous clear margin on all four sides, nothing touches the frame edges, solid opaque facets and hard edges, plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, non-emissive painted highlights --ar 1:1 --niji 6 --s 100 --q 1 --no face, eyes, character, hands, coin, rose, thorn, multiple crystals, text, letters, numbers, runes, logo, watermark, interface, frame, scenery, photorealism, 3d render, cropping, transparent crystal, background showing through crystal, ground shadow, background gradient, textured background, background vignette, background color spill, glow, light bloom, soft aura, haze, light spill
 ```

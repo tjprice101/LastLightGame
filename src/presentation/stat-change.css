@@ -1,0 +1,6 @@
+html :is(.upgrade-stat-preview, .hub-stats) .stat-change--increase { color: #8ee6ac; }
+html :is(.upgrade-stat-preview, .hub-stats) .stat-change--decrease { color: #ff9c9c; }
+html :is(.upgrade-stat-preview, .hub-stats) .stat-change--unchanged { color: inherit; }
+html .upgrade-resources .resource-missing { border-color: #ff9c9c80; }
+html .upgrade-resources .resource-missing > span { color: #ff9c9c; }
+html .upgrade-resources .resource-sufficient > span { color: #8ee6ac; }

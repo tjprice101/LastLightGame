@@ -1,0 +1,506 @@
+{
+  "asset_count": 16,
+  "assets": [
+    {
+      "asset": "pebblekin",
+      "incoming": "Pebblekin.png",
+      "source": "Art\\source\\enemies\\Pebblekin.png",
+      "source_sha256": "5d56a168d3c09c8b6fc93b41ada91f8a994cb8db9edcf8496eba68ebeeaf41a7",
+      "runtime": "public\\assets\\enemies\\pebblekin.png",
+      "runtime_sha256": "5fed4cde31119351747603face5af871b07ccc5c0353979116b53ce4078670bf",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 12,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 196,
+        "background_seeds": [
+          [
+            0.30763,
+            0.751078
+          ],
+          [
+            0.523539,
+            0.753233
+          ],
+          [
+            0.521916,
+            0.720905
+          ],
+          [
+            0.75974,
+            0.725216
+          ]
+        ],
+        "foreground_regions": []
+      }
+    },
+    {
+      "asset": "claycap-kobold",
+      "incoming": "Claycap Kobold.png",
+      "source": "Art\\source\\enemies\\Claycap Kobold.png",
+      "source_sha256": "8ecc21396e351245ddca036748ba63d95f7407d6cd0356f86f7506152e441c2e",
+      "runtime": "public\\assets\\enemies\\claycap-kobold.png",
+      "runtime_sha256": "4b7635bb54080b628f98d06d10aef154d5e5f76a78feb7da3c42631cc9adcd0b",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 12,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 201,
+        "background_seeds": [
+          [
+            0.494318,
+            0.851293
+          ]
+        ],
+        "foreground_regions": []
+      }
+    },
+    {
+      "asset": "flintback-armadillo",
+      "incoming": "Flntback Armadiillo.png",
+      "source": "Art\\source\\enemies\\Flntback Armadiillo.png",
+      "source_sha256": "e07247768a64ebee838906fcf934f1cda33b6e9b1de26bebb315b9aa496735a2",
+      "runtime": "public\\assets\\enemies\\flintback-armadillo.png",
+      "runtime_sha256": "3e763fa12f680a581299a32823fb37a572e7a350fdad4aea656e1bce55e0ac00",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 12,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 161,
+        "background_seeds": [
+          [
+            0.476461,
+            0.876078
+          ]
+        ],
+        "foreground_regions": []
+      }
+    },
+    {
+      "asset": "quartzhorn-ram",
+      "incoming": "Quartzhorn Ram.png",
+      "source": "Art\\source\\enemies\\Quartzhorn Ram.png",
+      "source_sha256": "afca78c1de0ca04db9c9713fef7edaa07a7b4d21c5d30ac09a9453a9ccd86d79",
+      "runtime": "public\\assets\\enemies\\quartzhorn-ram.png",
+      "runtime_sha256": "dd62cb448b5239fa80f545a67eea1a8476727d8d6c6d29604f28221cb1013340",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 12,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 188,
+        "background_seeds": [
+          [
+            0.534903,
+            0.868534
+          ],
+          [
+            0.75487,
+            0.204741
+          ],
+          [
+            0.67289,
+            0.685345
+          ]
+        ],
+        "foreground_regions": []
+      }
+    },
+    {
+      "asset": "geode-cyclops",
+      "incoming": "Geode Cyclops.png",
+      "source": "Art\\source\\enemies\\Geode Cyclops.png",
+      "source_sha256": "ccc311b3af559afe3e8085ddabedf567fab4a522fc207a3f5a0acd2146e6fe6b",
+      "runtime": "public\\assets\\enemies\\geode-cyclops.png",
+      "runtime_sha256": "6fc4989443d722d429f1dc11718bcd0b7e6cf95c27386eaecce47f9cc7c8a2b6",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 12,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 100,
+        "background_seeds": [
+          [
+            0.290584,
+            0.786638
+          ],
+          [
+            0.729708,
+            0.538793
+          ]
+        ],
+        "foreground_regions": []
+      }
+    },
+    {
+      "asset": "pillarwing-gargoyle",
+      "incoming": "Pillarwing Gargoyle.png",
+      "source": "Art\\source\\enemies\\Pillarwing Gargoyle.png",
+      "source_sha256": "9def452faf50b7617f905c7c566954c5412c83a3ffc4b01bba1ef57db1707bc8",
+      "runtime": "public\\assets\\enemies\\pillarwing-gargoyle.png",
+      "runtime_sha256": "dceea7832eb31e366221c4a6c6b3e233f55fff0fbc613d96cc65f38e0e6b6c3b",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 12,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 178,
+        "value_min": 0.65,
+        "background_seeds": [
+          [
+            0.491071,
+            0.857759
+          ]
+        ],
+        "foreground_regions": []
+      }
+    },
+    {
+      "asset": "crownfault-behemoth",
+      "incoming": "Crownfault Behemoth.png",
+      "source": "Art\\source\\enemies\\Crownfault Behemoth.png",
+      "source_sha256": "c64e744ffe902fb7b17a69a0d6046f828ef7b32581d862a9a43c2305d85864fb",
+      "runtime": "public\\assets\\enemies\\crownfault-behemoth.png",
+      "runtime_sha256": "d35140748cc8c5d49e5249836fe33ae33fc0a4a9ba3e8dae5e4b60c7beba16b3",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 12,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 185,
+        "background_seeds": [
+          [
+            0.471591,
+            0.877155
+          ],
+          [
+            0.643669,
+            0.167026
+          ],
+          [
+            0.525162,
+            0.859914
+          ],
+          [
+            0.550325,
+            0.875
+          ]
+        ],
+        "foreground_regions": []
+      }
+    },
+    {
+      "asset": "atlas-of-the-crystal-summit",
+      "incoming": "Atlas of the Crystal Summit.png",
+      "source": "Art\\source\\enemies\\Atlas of the Crystal Summit.png",
+      "source_sha256": "835a8a9adc04a38442cf8e543a0016194d28ff4c9fd7a7f37cf11308cc8d9200",
+      "runtime": "public\\assets\\enemies\\atlas-of-the-crystal-summit.png",
+      "runtime_sha256": "707dbaf42cc2fec793fe549845426bb58406d3f24ec06ebd2d50f787ebb255ad",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 6,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 191,
+        "background_seeds": [
+          [
+            0.283279,
+            0.756466
+          ],
+          [
+            0.527597,
+            0.881466
+          ]
+        ],
+        "foreground_regions": [
+          [
+            [
+              0.35,
+              0.32
+            ],
+            [
+              0.39,
+              0.275
+            ],
+            [
+              0.39,
+              0.26
+            ],
+            [
+              0.407,
+              0.2
+            ],
+            [
+              0.448,
+              0.23
+            ],
+            [
+              0.449,
+              0.17
+            ],
+            [
+              0.484,
+              0.077
+            ],
+            [
+              0.536,
+              0.147
+            ],
+            [
+              0.552,
+              0.237
+            ],
+            [
+              0.608,
+              0.195
+            ],
+            [
+              0.624,
+              0.25
+            ],
+            [
+              0.646,
+              0.22
+            ],
+            [
+              0.648,
+              0.3
+            ],
+            [
+              0.585,
+              0.365
+            ],
+            [
+              0.558,
+              0.388
+            ],
+            [
+              0.395,
+              0.416
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "tectonic-seed",
+      "incoming": "Seed of Tectonic.png",
+      "source": "Art\\source\\materials\\Seed of Tectonic.png",
+      "source_sha256": "db3e83d7136374e2821ea7431fe7413e91b48344d463f11700711ac8d894756c",
+      "runtime": "public\\assets\\materials\\tectonic-seed.png",
+      "runtime_sha256": "91a06ed7e88295d6f98557f783421defebd8f80f4a0f75578ec47e97bb278c47",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 12,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 189,
+        "background_seeds": [],
+        "foreground_regions": []
+      }
+    },
+    {
+      "asset": "tectonic-bloom",
+      "incoming": "Bloom of Tectonic.png",
+      "source": "Art\\source\\materials\\Bloom of Tectonic.png",
+      "source_sha256": "61d586655e4ef2193ee7743200e2f62125ed3e349347482b2ad034080c6c7f25",
+      "runtime": "public\\assets\\materials\\tectonic-bloom.png",
+      "runtime_sha256": "dbd0c557b3e502274c67e570dacd2047433defd0ac07891299b0e7aea9849ef1",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 23,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 195,
+        "background_seeds": [],
+        "foreground_regions": []
+      }
+    },
+    {
+      "asset": "tectonic-shard",
+      "incoming": "Shard of Tectonic.png",
+      "source": "Art\\source\\materials\\Shard of Tectonic.png",
+      "source_sha256": "cfda77f5770625689b3d4b1dcb480eefb91ca67ff8591b07d80c96683e9221a1",
+      "runtime": "public\\assets\\materials\\tectonic-shard.png",
+      "runtime_sha256": "28f576c32c16ed5667256039e304c87950b6e2a8e41e9b9f99ccb71ab5d3ab45",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 12,
+        "saturation_min": 0.12,
+        "border_only": true,
+        "hue": 210,
+        "background_seeds": [],
+        "foreground_regions": []
+      }
+    },
+    {
+      "asset": "tectonic-crest",
+      "incoming": "Crest of Tectonic.png",
+      "source": "Art\\source\\materials\\Crest of Tectonic.png",
+      "source_sha256": "ff5d14ca98e60d469942562eddaafa9422f0c088d9129801e19d7a93f7204b27",
+      "runtime": "public\\assets\\materials\\tectonic-crest.png",
+      "runtime_sha256": "cb339fc1aebb3c5661662127ec4a5a35722986fe4c1bd2745440ed762642e0d0",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 12,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 185,
+        "background_seeds": [
+          [
+            0.660156,
+            0.335938
+          ],
+          [
+            0.341797,
+            0.335938
+          ],
+          [
+            0.494141,
+            0.134766
+          ],
+          [
+            0.496094,
+            0.060547
+          ]
+        ],
+        "foreground_regions": []
+      }
+    },
+    {
+      "asset": "tectonic-heart",
+      "incoming": "Heart of Tectonic.png",
+      "source": "Art\\source\\materials\\Heart of Tectonic.png",
+      "source_sha256": "2262b0b6d48779bbc5614e1b7c0bcd53c4fa531c5fcd38b3c7b5ccbea864498a",
+      "runtime": "public\\assets\\materials\\tectonic-heart.png",
+      "runtime_sha256": "605b20edeab7c47a564dab132e245e7463e3fe580cd7600bc5c66f08830eba39",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 12,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 201,
+        "background_seeds": [],
+        "foreground_regions": []
+      }
+    },
+    {
+      "asset": "tectonic-soul",
+      "incoming": "Soul of Tectonic.png",
+      "source": "Art\\source\\materials\\Soul of Tectonic.png",
+      "source_sha256": "0d10808906034392ac217ec06582d5b4d78abfda157bcbf575fa2cb71ff6bbb1",
+      "runtime": "public\\assets\\materials\\tectonic-soul.png",
+      "runtime_sha256": "9b5219a40eeea3f706f3428bbad48902538972a2af2658d624c26120ce6082f1",
+      "processing": {
+        "method": "reviewed border key, enclosed seeds and foreground protection",
+        "tolerance": 6,
+        "saturation_min": 0.15,
+        "border_only": true,
+        "hue": 203,
+        "background_seeds": [
+          [
+            0.222656,
+            0.419922
+          ],
+          [
+            0.720703,
+            0.686523
+          ],
+          [
+            0.291992,
+            0.705078
+          ]
+        ],
+        "foreground_regions": [
+          [
+            [
+              0.311,
+              0.26
+            ],
+            [
+              0.336,
+              0.14
+            ],
+            [
+              0.398,
+              0.224
+            ],
+            [
+              0.496,
+              0.029
+            ],
+            [
+              0.576,
+              0.186
+            ],
+            [
+              0.596,
+              0.239
+            ],
+            [
+              0.679,
+              0.124
+            ],
+            [
+              0.681,
+              0.24
+            ],
+            [
+              0.663,
+              0.284
+            ],
+            [
+              0.673,
+              0.346
+            ],
+            [
+              0.69,
+              0.33
+            ],
+            [
+              0.695,
+              0.39
+            ],
+            [
+              0.62,
+              0.448
+            ],
+            [
+              0.347,
+              0.449
+            ],
+            [
+              0.303,
+              0.336
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "precipice-of-the-earth",
+      "incoming": "Precipice of the Earth Banner.png",
+      "source": "Art\\source\\banners\\Precipice of the Earth Banner.png",
+      "source_sha256": "83ed48ad58e5ae837e3daf76781125452bccdb9baa2ea1d85c4b5d9bd6db6898",
+      "runtime": "public\\assets\\banners\\precipice-of-the-earth.png",
+      "runtime_sha256": "83ed48ad58e5ae837e3daf76781125452bccdb9baa2ea1d85c4b5d9bd6db6898",
+      "processing": {
+        "method": "unchanged scenery bytes"
+      }
+    },
+    {
+      "asset": "precipice-of-the-earth",
+      "incoming": "Precipice of the Earth Arena.png",
+      "source": "Art\\source\\backgrounds\\Precipice of the Earth Arena.png",
+      "source_sha256": "2d10c88966a405ba69f895a5373c328ad65f66bcfe1dea38a390cfb8d2b5384f",
+      "runtime": "public\\assets\\backgrounds\\precipice-of-the-earth.png",
+      "runtime_sha256": "2d10c88966a405ba69f895a5373c328ad65f66bcfe1dea38a390cfb8d2b5384f",
+      "processing": {
+        "method": "unchanged scenery bytes"
+      }
+    }
+  ]
+}

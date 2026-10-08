@@ -2,24 +2,24 @@
 
 ## Direction and balance
 
-Phase10's Tranquilitic Lycalis farm. Owner selected the name and **25 stages,
+Phase10's Tranquilitic Null-Prismatica farm. Owner selected the name and **25 stages,
 levels65-120**, matching Crownfall Treasury rather than the earlier shorter-mode
 proposal. Creatures are divine, increasingly regal flaming wisps. The owner
-requested roughly1 Lycalis on a chance at the beginning and roughly5 at the
-highest level, and sales granting **both Fractalis and Lycalis together** with
-less Fractalis than equivalent Gleamstone Slimes.
+requested roughly1 Null-Prismatica on a chance at the beginning and roughly5 at the
+highest level, and sales granting **both Prismatica and Null-Prismatica together** with
+less Prismatica than equivalent Gleamstone Slimes.
 
-The owner subsequently capped sale Lycalis at1-10 per copy. The exact
+The owner subsequently capped sale Null-Prismatica at1-10 per copy. The exact
 intermediate sale values and mission chance curve are developer-selected tuning:
 
-- Level65: **50% none /50% one Lycalis** per kill.
-- Level120: **20% none /80% five Lycalis** per kill.
+- Level65: **50% none /50% one Null-Prismatica** per kill.
+- Level120: **20% none /80% five Null-Prismatica** per kill.
 - For growth `g=(level-65)/55`, chance is `0.5+0.3*g` and the successful
   quantity is `round(1+4*g)`. This is one roll, not five independent rolls.
 - Ordinary enemies and bosses use identical payouts. No clear bonus.
-- Ordinary Fractalis remains the shared level-scaled range:7-14 at65,
+- Ordinary Prismatica remains the shared level-scaled range:7-14 at65,
   15-30 at120. No material drops or infusion specialties.
-- Independent20% capture chance per defeated enemy. Lycalis, ordinary currency,
+- Independent20% capture chance per defeated enemy. Null-Prismatica, ordinary currency,
   capture and combat RNG remain separate.
 
 ## Content
@@ -28,7 +28,7 @@ Level at stage `s` is `round(65+(s-1)*55/24)`; every fifth stage is a boss.
 Ordinary stages have two enemies, bosses one. Enemy ability: Hallowed Rosefire,
 with the shared staged enemy skills/multiplier curve.
 
-| Fixed form | Stages | Name | Rarity / Stars | Fractalis sale | Lycalis sale |
+| Fixed form | Stages | Name | Rarity / Stars | Prismatica sale | Null-Prismatica sale |
 | --- | --- | --- | --- | --- | --- |
 |1 |1-5 |Rosethorn Wisp |Common /1 |100 |1 |
 |2 |6-9 |Votive of First Bloom, Rosethorn Wisp |Uncommon /2 |300 |2 |
@@ -64,8 +64,8 @@ even though their combat element is Tranquilitic.
 ## Atomic rewards and sales
 
 `saveAccountRewards` validates defeated source, mode/form/stage/level, ordinary
-currency range and exact successful Lycalis quantity from that level's odds.
-Currency-farm material awards reject. Premium currency, Fractalis, captures,
+currency range and exact successful Null-Prismatica quantity from that level's odds.
+Currency-farm material awards reject. Premium currency, Prismatica, captures,
 discovery, receipts and stage unlock commit in one validated write. Failed
 writes preserve persistent state; receipt replay cannot duplicate awards.
 
@@ -98,7 +98,7 @@ remain specific, compact and text-only where required.
 
 - [Mode/stages](../src/content/activities.ts).
 - [Forms, skills, stats and prices](../src/content/infusions.ts).
-- [Lycalis odds](../src/content/loot-random.ts).
+- [Null-Prismatica odds](../src/content/loot-random.ts).
 - [Standard pool](../src/content/standard-banner.ts).
 - [Atomic account transactions](../src/game/account.ts).
 - [All-floor/economy/presentation regressions](../src/game/rosethorn-sanctuary.test.ts).

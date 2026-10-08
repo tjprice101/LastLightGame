@@ -42,7 +42,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(draw.account.lycalis).toBe(5);
     expect(draw.account.characters.ember).toEqual(original.characters.ember);
     expect(draw.copy).toMatchObject({ creatureId: 'infusion:treasury:5', level: 50, acquisition: 'banner-duplicate' });
-    expect(draw.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 1 });
+    expect(draw.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 1 });
     const bought = purchaseConduit(saved, 'vigil-core');
     expect(bought.fractalis).toBe(sold.fractalis - 1000);
     equipConduit(saved, draw.copy!.instanceId, 0, 'vigil-core');
@@ -65,10 +65,11 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
   });
 
-  it('enforces actual200/500 saved pull milestones while sales/reloads never reset pity', () => {
+  it('enforces actual200 ~ 500 saved pull milestones while sales/reloads never reset pity', () => {
     const saved = storage();
     const account = loadAccount(saved);
     account.lycalis = 5000;
+    account.characters.aurora = { level: 0, evolution: 1, weaponRank: 0 };
     saveAccount(saved, account);
     for (let pull = 1; pull <= 500; pull++) {
       const result = summonCharacter(saved, () => 0.02);
@@ -81,8 +82,8 @@ describe('Phase11 integrated economy and save lifecycle', () => {
         expect(sold.lycalis).toBe(5000 - pull * 10);
       } else if (pull === 500) {
         expect(result.guarantee).toBe('unowned-highest-star');
-        expect(result.entry.id).toBe('tide');
-        expect(result.account.characters.tide).toEqual({ level: 0, evolution: 1, weaponRank: 0 });
+        expect(result.entry.id).toBe('bliss');
+        expect(result.account.characters.bliss).toEqual({ level: 0, evolution: 1, weaponRank: 0 });
         expect(result.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
       } else {
         expect(result.guarantee).toBe('none');

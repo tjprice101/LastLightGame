@@ -48,7 +48,10 @@
 .archive-portrait { display: grid; place-items: center; width: 100%; aspect-ratio: 1; }
 .archive-portrait .character-idle, .archive-portrait img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .archive-mechanism { display: grid; place-items: center; gap: 12px; min-height: 160px; color: #c2b590; text-align: center; }
-.archive-mechanism .conduit-icon { width: 100px; height: 100px; }
+.archive-mechanism .conduit-icon { width: min(100%, 200px); height: auto; aspect-ratio: 1; }
+.archive-conduit-locked .archive-mechanism .conduit-icon {
+  filter: brightness(0) drop-shadow(0 0 1px #ffffffb3) drop-shadow(0 0 8px #ffffff26);
+}
 .archive-ownership { color: #d8c49a; }
 .archive-stats { display: flex; flex-wrap: wrap; gap: 16px; }
 .archive-stats dt { font-size: .75rem; opacity: .7; }

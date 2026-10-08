@@ -1,0 +1,22 @@
+{
+  "asset": "mechanical-components",
+  "source": "Art\\source\\currencies\\Broken Mechanical Components.png",
+  "source_sha256": "c3ff5be7a737591d7e7e549b82af8786ff7d8308965d1f6c2477d1936677727b",
+  "runtime": "public\\assets\\currencies\\mechanical-components.png",
+  "runtime_sha256": "fa4b2804710aacb133f33901d47641450af3411cd9c14541d121d46bb826f00e",
+  "processing": {
+    "keys": [
+      [
+        6,
+        246,
+        220
+      ]
+    ],
+    "radius": 65,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 60
+    }
+  },
+  "supplied_alpha_policy": "trim/resize/pad only"
+}

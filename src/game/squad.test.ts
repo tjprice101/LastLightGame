@@ -37,12 +37,12 @@ describe('owned roster, summoning and saved squads', () => {
       expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     }
   });
-  it.each([0, 9])('rejects unaffordable Standard draws without changing %s Lycalis or granting characters', (balance) => {
+  it.each([0, 9])('rejects unaffordable Standard draws without changing %s Null-Prismatica or granting characters', (balance) => {
     const saved = storage();
     fund(saved, balance);
     const before = saved.getItem(ACCOUNT_KEY);
     const write = vi.spyOn(saved, 'setItem');
-    expect(() => summonCharacter(saved)).toThrow('10 Lycalis');
+    expect(() => summonCharacter(saved)).toThrow('10 Null-Prismatica');
     expect(write).not.toHaveBeenCalled();
     expect(ownedCharacters(loadAccount(saved))).toEqual(['ember']);
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);

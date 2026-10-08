@@ -1,0 +1,292 @@
+{
+  "phase": "disciple",
+  "asset_count": 12,
+  "assets": [
+    {
+      "incoming": "Mindflame Initiate, Disciple.png",
+      "asset": "disciple",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\disciple\\characters\\Mindflame Initiate, Disciple.png",
+      "source_sha256": "5110d194acef8b014bb85d2063abee6cbc4d2964f02c41f2300cf288ea383229",
+      "runtime": "public\\assets\\characters\\disciple.png",
+      "runtime_sha256": "eb1808c518cfc535789fc8732d03689ee5b673213e511df4d1a8953d3ea6e13c",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 203,
+        "tolerance": 18,
+        "saturation_min": 0.3264705882352941,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Thoughtforge Adept, Disciple.png",
+      "asset": "disciple-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\disciple\\characters\\Thoughtforge Adept, Disciple.png",
+      "source_sha256": "b823b76ed68b51055fb15d16d5ffbfd3dcbce9bafe148c30fbaf31b52443e2d1",
+      "runtime": "public\\assets\\characters\\disciple-evo-2.png",
+      "runtime_sha256": "af96be1e4bd1318fbcbc808a8d5192fb2d1aded9a98676960e8f3b3c67469b57",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 199,
+        "tolerance": 18,
+        "saturation_min": 0.2311764705882353,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Ascendant Mindbinder, Disciple.png",
+      "asset": "disciple-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\disciple\\characters\\Ascendant Mindbinder, Disciple.png",
+      "source_sha256": "f0d62f88574eef4b8dd64558cd934b25115aa3b0c63e7340167e9648d12f1130",
+      "runtime": "public\\assets\\characters\\disciple-evo-3.png",
+      "runtime_sha256": "ac9a0f100aa399907e2bb14cf21a0b3c0f70674f9beab5967dbffaf55cb4a8af",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 201,
+        "tolerance": 18,
+        "saturation_min": 0.3052941176470588,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Prismthought Hierophant, Disciple.png",
+      "asset": "disciple-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\disciple\\characters\\Prismthought Hierophant, Disciple.png",
+      "source_sha256": "c64f858cab00a4b6d28bd19a31fc6895f4e0b723c811c519efc91202a5add025",
+      "runtime": "public\\assets\\characters\\disciple-evo-4.png",
+      "runtime_sha256": "cc9dc24cf7c6fa84adbcbc94c71a98dc05481b1e531463dc95454ed6aa735eaa",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 204,
+        "tolerance": 18,
+        "saturation_min": 0.23647058823529413,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Mindflame Exarch, Disciple.png",
+      "asset": "disciple-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\disciple\\characters\\Mindflame Exarch, Disciple.png",
+      "source_sha256": "1eeb82236a919fe37d6b4ca1058577e4582530b8bf0c220429b431d9eeabe327",
+      "runtime": "public\\assets\\characters\\disciple-evo-5.png",
+      "runtime_sha256": "907119508c4471426a330df60b48b077b323b946aca5498a6e12b69f54b93ff3",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 194,
+        "tolerance": 18,
+        "saturation_min": 0.20294117647058824,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "The Unbound Mindcrown, Disciple.png",
+      "asset": "disciple-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\disciple\\characters\\The Unbound Mindcrown, Disciple.png",
+      "source_sha256": "96b0e32057d2e2c5866059d91e9cd6f828fdc95f2c804fc63cc8afbaff2010c7",
+      "runtime": "public\\assets\\characters\\disciple-evo-6.png",
+      "runtime_sha256": "03768eca949c012f26f9ff933deb3de09d52ce6d2a3f3e83c4844c64de358867",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "hue": 194,
+        "tolerance": 18,
+        "saturation_min": 0.3458823529411765,
+        "value_min": 0.12,
+        "border_only": false
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Shared Mindflame - Passive.png",
+      "asset": "disciple-passive",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\disciple\\abilities\\Shared Mindflame - Passive.png",
+      "source_sha256": "4470ab94a0ba32a497bfa459bc6cf93cb89c0461d1b438a2b39af1c3e4f92149",
+      "runtime": "public\\assets\\abilities\\disciple-passive.png",
+      "runtime_sha256": "a25365906dff65a12c9e40da83d94b8c7a5fbc5862fa45b27238187ddae91169",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 200,
+        "tolerance": 18,
+        "saturation_min": 0.3564705882352941,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Thoughtspark Benediction - Skill 1.png",
+      "asset": "disciple-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\disciple\\abilities\\Thoughtspark Benediction - Skill 1.png",
+      "source_sha256": "9f91e7f2f143676c9ba0da6bfa4d1c0772524a991a131d8cc46a74ef7a70c520",
+      "runtime": "public\\assets\\abilities\\disciple-skill1.png",
+      "runtime_sha256": "83a1361a623070316db2365bb66fe7dc890a6ee1dcea0fdf91ab5597618f9a3a",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 197,
+        "tolerance": 18,
+        "saturation_min": 0.24176470588235294,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Concord of Chaos - Skill 2.png",
+      "asset": "disciple-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\disciple\\abilities\\Concord of Chaos - Skill 2.png",
+      "source_sha256": "b9e5760ff6b11ab7c99026d36ff798d3a18683bee46077e2d3a408dc4a6a255c",
+      "runtime": "public\\assets\\abilities\\disciple-skill2.png",
+      "runtime_sha256": "a13ed1fc9f16a4a41376535a3f0f155295943736fcac7d91d023607fafb5a6e3",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 214,
+        "tolerance": 18,
+        "saturation_min": 0.34411764705882353,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Unbound Mindcrown - Last Flare.png",
+      "asset": "disciple-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\disciple\\abilities\\Unbound Mindcrown - Last Flare.png",
+      "source_sha256": "58fba6347e13bfe2aee0b3d118ddcab6bf7fa81a4bd8d012d0aba6eb6d185f6f",
+      "runtime": "public\\assets\\abilities\\disciple-ultimate.png",
+      "runtime_sha256": "98a875f5c937dbc42bae95d39ac4e7a3cf7ab58fa12850107356cefed09d59d9",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 214,
+        "tolerance": 18,
+        "saturation_min": 0.25058823529411767,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    },
+    {
+      "incoming": "Psychic Spark - Normal Attack.png",
+      "asset": "disciple-light",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\disciple\\abilities\\Psychic Spark - Normal Attack.png",
+      "source_sha256": "ede609fc7bf55d813be11f410c55bab76da2c7264b3616d6e9ca2618c35ec786",
+      "runtime": "public\\assets\\abilities\\disciple-light.png",
+      "runtime_sha256": "f9e0113a4ac05e8312ab84c2864d1eafac96053f4f09f4e5ce89b504cbc2a33c",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 189,
+        "tolerance": 18,
+        "saturation_min": 0.35823529411764704,
+        "value_min": 0.12,
+        "border_only": false,
+        "reviewed_exterior_frame": {
+          "outer_band": 0.025,
+          "minimum_span": 0.75
+        }
+      }
+    },
+    {
+      "incoming": "Mindward - Defense.png",
+      "asset": "disciple-defend",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\disciple\\abilities\\Mindward - Defense.png",
+      "source_sha256": "c2368eb5d9f6e6e3219e6013a96fd4f47724b36daccce61c2f45e96fda5847b7",
+      "runtime": "public\\assets\\abilities\\disciple-defend.png",
+      "runtime_sha256": "b188a3a0d10ec84a4f325ec2e6e9d5d6ceae688399a1c91ee0434fe39ad547b8",
+      "processing": {
+        "method": "reviewed hue key including enclosed openings; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "hue": 197,
+        "tolerance": 18,
+        "saturation_min": 0.3935294117647059,
+        "value_min": 0.12,
+        "border_only": false
+      }
+    }
+  ]
+}

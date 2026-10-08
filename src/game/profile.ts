@@ -1,4 +1,4 @@
-import { isStarterId, type StarterId } from '../content/starters';
+import { isStarterId, isAvailableStarter, type StarterId } from '../content/starters';
 
 export const SAVE_KEY = 'last-light.profile';
 export interface Profile {
@@ -19,7 +19,7 @@ export function loadProfile(storage: ProfileStorage): Profile | null {
   if (
     typeof data !== 'object' || data === null ||
     !('version' in data) || data.version !== 1 ||
-    !('starterId' in data) || !isStarterId(data.starterId)
+    !('starterId' in data) || !isStarterId(data.starterId) || !isAvailableStarter(data.starterId)
   ) {
     throw new Error('This local save is invalid or uses an unsupported version.');
   }
@@ -27,7 +27,7 @@ export function loadProfile(storage: ProfileStorage): Profile | null {
 }
 
 export function saveStarter(storage: ProfileStorage, starterId: StarterId): Profile {
-  if (!isStarterId(starterId)) throw new Error('Choose a valid starter.');
+  if (!isStarterId(starterId) || !isAvailableStarter(starterId)) throw new Error('Choose a valid starter.');
   const profile: Profile = { version: 1, starterId };
   storage.setItem(SAVE_KEY, JSON.stringify(profile));
   return profile;

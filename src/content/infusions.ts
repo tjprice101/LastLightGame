@@ -1,10 +1,12 @@
-import { elements, infusionModes, currencyModes, isCurrencyMode, infusionStageCount, getElement, type ElementId, type InfusionModeId } from './activities';
+import { elements, infusionModes, currencyModes, eventModes, machineModes, isCurrencyMode, infusionStageCount, getElement, type ElementId, type InfusionModeId } from './activities';
+import { machineEnemies } from './machines';
 import { type Stats } from './combat';
 import { lootRoll, rollDrop, scaledDrop } from './loot-random';
 import { enemyGrowth, enemyStat } from './stat-growth';
+import { roseMaterials, roseMaterialUnlocks, roseFinalChances, roseSaleQuantities, roseFormStages } from './roses';
 
 export function isInfusionMode(value: unknown): value is InfusionModeId {
-  return [...infusionModes, ...currencyModes].some((entry) => entry.id === value);
+  return [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].some((entry) => entry.id === value);
 }
 export function infusionElements(mode: InfusionModeId) {
   if (!isInfusionMode(mode)) throw new Error('Unknown infusion mode.');
@@ -54,8 +56,17 @@ export const infusionEnemies = {
     ['Sovereign of the Hallowed Garden, Rosethorn Wisp', 'sovereign-of-the-hallowed-garden-rosethorn-wisp'],
     ['The Flame Beyond Eternity, Rosethorn Wisp', 'the-flame-beyond-eternity-rosethorn-wisp'],
   ],
+  roses: [
+    ['Roselius', 'roselius'],
+    ['Votive of Golden Thorns, Roselius', 'roselius-golden-thorns'],
+    ['Knight of the Crimson Bloom, Roselius', 'roselius-crimson-bloom'],
+    ['Seraph of Passion, Roselius', 'roselius-seraph-passion'],
+    ['Sovereign of the Living Rose, Roselius', 'roselius-living-rose'],
+    ['The Garden Beyond Eternity, Roselius', 'roselius-garden-eternity'],
+  ],
+  machines: machineEnemies.map((enemy) => [enemy.name, enemy.art] as const),
 } as const;
-export const infusionEnemyElements = { heavens: 'tranquilitic', abyss: 'chaotic', treasury: 'luminous', sanctuary: 'tranquilitic' } as const satisfies Record<InfusionModeId, ElementId>;
+export const infusionEnemyElements = { heavens: 'tranquilitic', abyss: 'chaotic', treasury: 'luminous', sanctuary: 'tranquilitic', roses: 'luminous', machines: 'tectonic' } as const satisfies Record<InfusionModeId, ElementId>;
 export function infusionEnemyStats(level: number, boss: boolean): Stats {
   if (!Number.isInteger(level) || level < 80 || level > 120) throw new Error('Infusion enemy level must be from 80 to 120.');
   return creatureEnemyStats(level, boss);
@@ -72,36 +83,41 @@ export const sanctuarySalePrices = [
 ] as const;
 export function creatureSaleValue(mode: InfusionModeId, tier: number) {
   if (!Number.isInteger(tier) || tier < 0 || tier > 5) throw new Error('Invalid creature sale tier.');
-  if (mode === 'treasury') return { fractalis: treasurySalePrices[tier], lycalis: 0 };
-  if (mode === 'sanctuary') return sanctuarySalePrices[tier];
+  if (mode === 'treasury') return { fractalis: treasurySalePrices[tier], lycalis: 0, materials: {} as Record<string, number> };
+  if (mode === 'sanctuary') return { ...sanctuarySalePrices[tier], materials: {} as Record<string, number> };
+  if (mode === 'roses') return { fractalis: 0, lycalis: 0, materials: { [roseMaterials[tier].id]: roseSaleQuantities[tier] } };
   throw new Error('This creature mode does not support sales.');
 }
 export function sanctuaryEnemyStats(level: number, boss: boolean): Stats {
   if (!Number.isInteger(level) || level < 65 || level > 120) throw new Error('Sanctuary creature level must be from 65 to 120.');
   return creatureEnemyStats(level, boss);
 }
-function creatureEnemyStats(level: number, boss: boolean): Stats {
+export function roseEnemyStats(level: number, boss: boolean): Stats {
+  if (!Number.isInteger(level) || level < 80 || level > 140) throw new Error('Roselius enemy level must be from 80 to 140.');
+  return creatureEnemyStats(level, boss, 140);
+}
+function creatureEnemyStats(level: number, boss: boolean, maximumLevel = 120): Stats {
   return {
-    health: enemyStat(boss ? 110 : 55, boss ? enemyGrowth.bossHealth : enemyGrowth.health, level, 10, .036),
-    damage: enemyStat(boss ? 13 : 8, boss ? enemyGrowth.bossDamage : enemyGrowth.damage, level, 10, .036),
-    defense: enemyStat(2, boss ? enemyGrowth.bossDefense : enemyGrowth.defense, level, 10, .08),
+    health: enemyStat(boss ? 110 : 55, boss ? enemyGrowth.bossHealth : enemyGrowth.health, level, 10, .036, maximumLevel),
+    damage: enemyStat(boss ? 13 : 8, boss ? enemyGrowth.bossDamage : enemyGrowth.damage, level, 10, .036, maximumLevel),
+    defense: enemyStat(2, boss ? enemyGrowth.bossDefense : enemyGrowth.defense, level, 10, .08, maximumLevel),
     crit: .12, critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0 };
 }
 export function infusionEncounter(mode: InfusionModeId, stage: number) {
   const stages = infusionStageCount(mode);
   if (!isInfusionMode(mode) || !Number.isInteger(stage) || stage < 1 || stage > stages) throw new Error(`Infusion stage must be an integer from 1 to ${stages}.`);
-  const tier = Math.min(5, Math.floor((stage - 1) * 6 / stages));
-  const definition = [...infusionModes, ...currencyModes].find((entry) => entry.id === mode);
+  const tier = mode === 'roses' ? roseFormStages.filter((first) => stage >= first).length - 1 : Math.min(5, Math.floor((stage - 1) * 6 / stages));
+  const definition = [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].find((entry) => entry.id === mode);
   if (!definition) throw new Error('Unknown staged creature mode.');
   const startingLevel = definition.startingLevel;
-  const level = Math.round(startingLevel + (stage - 1) * (120 - startingLevel) / (stages - 1));
+  const level = Math.round(startingLevel + (stage - 1) * ((mode === 'roses' ? 140 : 120) - startingLevel) / (stages - 1));
   const boss = stage % 5 === 0;
   const stats = mode === 'treasury' ? treasuryEnemyStats(level, boss)
-    : mode === 'sanctuary' ? sanctuaryEnemyStats(level, boss) : infusionEnemyStats(level, boss);
+    : mode === 'sanctuary' ? sanctuaryEnemyStats(level, boss) : mode === 'roses' ? roseEnemyStats(level, boss) : mode === 'machines' ? creatureEnemyStats(level, boss) : infusionEnemyStats(level, boss);
   const [name, art] = infusionEnemies[mode][tier];
   return { name: definition.name, stage, level, boss, stats, tier, forms: 6,
-    enemy: { name, art, element: infusionEnemyElements[mode] }, color: mode === 'heavens' ? '#ff6565' : mode === 'abyss' ? '#f464d4' : mode === 'sanctuary' ? '#e7a7bf' : '#eed78b', background: `${mode}-arena.png`,
-    ability: mode === 'heavens' ? 'Scarlet Judgment' : mode === 'abyss' ? 'Cosmic Wrath' : mode === 'sanctuary' ? 'Hallowed Rosefire' : 'Sovereign Facet', abilityMultiplier: 1.2 + (stage - 1) / (stages - 1) * 24 * .016 };
+    enemy: { name, art, element: mode === 'machines' ? machineEnemies[tier].element : infusionEnemyElements[mode] }, color: mode === 'machines' ? '#dddddd' : mode === 'heavens' ? '#ff6565' : mode === 'abyss' ? '#f464d4' : mode === 'sanctuary' ? '#e7a7bf' : mode === 'roses' ? '#d36b7d' : '#eed78b', background: `${mode}-arena.png`,
+    ability: mode === 'machines' ? machineEnemies[tier].skill : mode === 'heavens' ? 'Scarlet Judgment' : mode === 'abyss' ? 'Cosmic Wrath' : mode === 'sanctuary' ? 'Hallowed Rosefire' : mode === 'roses' ? 'Golden Thorn Benediction' : 'Sovereign Facet', abilityMultiplier: 1.2 + (stage - 1) / (stages - 1) * (mode === 'roses' ? .65 : 24 * .016) };
 }
 export const infusionDropTable = [
   { rarity: 'epic', level: 80, chance: .15, finalChance: .85, quantity: 3 },
@@ -115,7 +131,13 @@ export const specialtyDropTable = [
 ] as const;
 export function infusionLoot(mode: InfusionModeId, stage: number) {
   const { level } = infusionEncounter(mode, stage);
-  if (isCurrencyMode(mode)) return { specialties: [], bonuses: [] };
+  if (isCurrencyMode(mode) || mode === 'machines') return { specialties: [], bonuses: [] };
+  if (mode === 'roses') return {
+    specialties: roseMaterials.flatMap((material, tier) => {
+      const drop = scaledDrop(level, 80, roseMaterialUnlocks[tier], tier === 0 ? 1 : roseFinalChances[tier] / 2, roseFinalChances[tier], 3, 140);
+      return drop ? [{ id: material.id, ...drop }] : [];
+    }), bonuses: [],
+  };
   const specialties = specialtyDropTable.flatMap((entry) => {
     const drop = scaledDrop(level, 80, entry.level, 1, 1, entry.quantity);
     return drop ? [{ id: `${mode}-${entry.purpose}`, ...drop }] : [];
@@ -133,8 +155,8 @@ export function infusionDrops(mode: InfusionModeId, stage: number, random: () =>
   const drops: Record<string, number> = {};
   for (const entry of specialties) {
     const amount = rollDrop(entry, random);
-    if (amount === undefined) throw new Error('Guaranteed specialty material did not drop.');
-    drops[entry.id] = amount;
+    if (amount === undefined && entry.chance === 1) throw new Error('Guaranteed specialty material did not drop.');
+    if (amount !== undefined) drops[entry.id] = amount;
   }
   for (const entry of bonuses) {
     const amount = rollDrop(entry, random);

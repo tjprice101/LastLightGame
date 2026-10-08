@@ -1,0 +1,11 @@
+.conduit-upgrade-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.conduit-upgrade-menu p { line-height: 1.6; overflow-wrap: anywhere; }
+.component-balance { display: flex; align-items: center; gap: 16px; padding: 20px; border: 1px solid #ffffff30; border-radius: 16px; background: #191919; margin: 16px 0; min-width: 0; }
+.component-balance > div { min-width: 0; }
+.component-balance strong { display: block; font-size: clamp(24px, 4vw, 40px); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.component-balance span { overflow-wrap: anywhere; }
+.mechanical-component-icon { width: 80px; height: 80px; flex: 0 0 80px; object-fit: contain; vertical-align: middle; }
+.conduit-upgrade-values { flex: 1; }
+.conduit-upgrade-values h4 { margin-bottom: 6px; }
+.conduit-upgrade-values p { margin-top: 0; }
+.conduit-upgrade-cost { font-variant-numeric: tabular-nums; }

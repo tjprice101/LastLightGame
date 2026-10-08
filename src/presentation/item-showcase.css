@@ -1,0 +1,12 @@
+.item-showcase { margin-block: 18px; padding: 16px; border: 1px solid #ffffff26; border-radius: 16px; background: linear-gradient(135deg, #ffffff0d, #11111170); }
+.item-showcase h4 { margin: 0 0 12px; color: #f1f0e9; font-size: 13px; font-weight: 600; }
+.item-showcase ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 96px), 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.item-showcase li { display: flex; min-width: 0; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.item-showcase-art { display: grid; width: 88px; height: 88px; max-width: 100%; place-items: center; border: 1px solid #ffffff20; border-radius: 16px; background: radial-gradient(ellipse at center, #ffffff1a, #ffffff03 72%); }
+.item-showcase-art img { width: 80px; height: 80px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 5px 5px #0007); }
+.item-showcase-name { color: #f1f0e9; font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; }
+.item-showcase-pending { padding: 8px; color: #bdbdc6; font-size: 11px; }
+.item-showcase strong { max-width: 100%; color: #fff; overflow-wrap: anywhere; font-size: 16px; }
+.currency-reward .currency-icon { width: 64px; height: 64px; flex-basis: 64px; }
+.hub-battle-button > span { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.hub-battle-button .currency-icon { width: 64px; height: 64px; flex-basis: 64px; }

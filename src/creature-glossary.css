@@ -10,7 +10,8 @@
 .glossary-card.undiscovered .glossary-art, .archive-form-locked .archive-portrait {
   background: radial-gradient(ellipse, #ffffff0c, transparent 70%);
 }
-.glossary-card.undiscovered .glossary-art img, .archive-form-locked .archive-portrait img { filter: brightness(0); }
+.glossary-card.undiscovered .glossary-art img { filter: brightness(0); }
+.archive-form-locked .archive-portrait img { filter: brightness(0) drop-shadow(0 0 1px #ffffffb3) drop-shadow(0 0 8px #ffffff26); }
 .glossary-card.undiscovered .glossary-art svg { color: #000; }
 .glossary-card summary, .glossary-card select, .glossary-heading select { min-height: 44px; }
 .glossary-card summary { padding-block: 12px; cursor: pointer; }

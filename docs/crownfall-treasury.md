@@ -2,13 +2,13 @@
 
 ## Approved and implemented
 
-Luminous Fractalis currency farm with25 stages, starting hostile level65 and
+Luminous Prismatica currency farm with25 stages, starting hostile level65 and
 ending120. Every fifth floor is one boss; other floors have two ordinary slimes.
 Six fixed forms become progressively regal gemstone-crowned masterpieces.
 Enemies use shared ordinary/boss growth and retained periodic kits;
 Sovereign Facet is the authored strike. Bosses retain a Last Ruin ultimate.
 
-| Form | Rarity / Stars | Stages | Sale Fractalis |
+| Form | Rarity / Stars | Stages | Sale Prismatica |
 | --- | --- | --- | --- |
 | Gleamstone Slime | Common /1 |1-5 |1,000 |
 | Diadem of Daybreak | Uncommon /2 |6-9 |3,000 |
@@ -26,10 +26,10 @@ Mode stage count is explicit, not the35-floor elemental/Heaven/Abyss constant.
 
 ## Mission loot
 
-Each newly defeated enemy awards one uniform integer in the Fractalis range:
+Each newly defeated enemy awards one uniform integer in the Prismatica range:
 `minimum=100+floor(900*((level-65)/55)^2)`, maximum=`minimum*2`.
 Exactly100-200 at65 and1,000-2,000 at120, same boss/ordinary rates.
-No second ordinary currency roll, Lycalis, materials or clear bonus.
+No second ordinary currency roll, Null-Prismatica, materials or clear bonus.
 Reward RNG and20% capture RNG remain separate. Burn/AOE share the normal
 newly-dead path. Dead units cannot roll again.
 

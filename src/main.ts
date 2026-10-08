@@ -5,21 +5,30 @@ import './character-screen.css';
 import './presentation/settings-panel.css';
 import { settingsPanel } from './presentation/settings-panel';
 import './creature-glossary.css';
+import './sanctuary-polish.css';
+import './interface.css';
+import { bindInformation, information } from './presentation/information';
+import { bindSelectionPanels } from './presentation/selection-panel';
+import { maxLevelPreview } from './presentation/max-level';
+import { levelCharacterToMaximum, type MaxLevelPlan } from './game/account';
 import './numeric-layout.css';
+import './sanctuary-layout.css';
+import './ambient-background.css';
+import { ambientBackground, type AmbientScreen } from './presentation/ambient-background';
 import { bindCreatureGlossary } from './presentation/creature-glossary';
 import { archives, bindArchives } from './presentation/archives';
 import { availableStarters, getStarter, isStarterId, type StarterId } from './content/starters';
-import { characterRoster, characterCopyManagement, squadHub, summonHub } from './presentation/roster';
+import { characterCopyManagement, squadHub, summonHub, bindSquadPreview, bindSummonRates } from './presentation/roster';
 import { Journey } from './game/flow';
 import { SAVE_KEY } from './game/profile';
-import { portrait, portraitAttributes } from './presentation/portrait';
+import { portrait, portraitAttributes, characterFacing } from './presentation/portrait';
 import { characterRole } from './presentation/character-role';
 import { characterRating } from './presentation/character-rating';
 import { conduitStore } from './presentation/conduit-store';
-import { getConduit, isConduitId } from './content/conduits';
+import { conduitUpgradeMenu, bindConduitUpgrades } from './presentation/conduit-upgrade';
+import { getConduit, isConduitId, conduitEffect } from './content/conduits';
 import { purchaseConduit, equipConduit, setCharacterLock, ownedCharacterInstances, levelCapturedCharacter } from './game/account';
-import { unitFacing } from './presentation/unit-facing';
-import { characterArt } from './content/character-art';
+import { characterName } from './content/character-art';
 import { uiIcon } from './presentation/ui-icon';
 import { currencyIcon } from './presentation/currency-icon';
 import { applyBattleSpeed, battleSpeeds, loadBattleSpeed, parseBattleSpeed, saveBattleSpeed, type BattleSpeed } from './presentation/battle-speed';
@@ -27,24 +36,37 @@ import { celebrateUpgrade } from './presentation/upgrade-celebration';
 import { activityTransitionPending, transitionActivity } from './presentation/activity-transition';
 import { createBackdrop } from './presentation/backdrop';
 import { elementalReveal } from './presentation/reveal';
-import { applyMotion, loadMotion, saveMotion, type MotionPreference } from './presentation/settings';
+import { applyMotion, loadMotion, saveMotion, reducedMotion, type MotionPreference } from './presentation/settings';
 import { commands, defaultBindings, loadBindings, saveBindings, validateBindings } from './game/hotkeys';
 import { BattleView, createSession, type BattleSession } from './presentation/battle-view';
-import { characterHub, homeHub, inventoryHub, isCharacterTab, updateCharacterTab } from './presentation/hub';
+import { characterHub, characterInformation, homeHub, inventoryHub, isCharacterTab, updateCharacterTab } from './presentation/hub';
+import { bindInventory, type InventoryTab } from './presentation/inventory';
 import { loadAccount, ownedProgress, equippedSquad, ownedCharacters, setSquad, summonCharacter, saveAccountRewards, unlockedStage, unlockedInfusionStage, upgradeCharacter, evolutionFodderOptions, creatureSaleOffer, sellCurrencyCreature, type Account } from './game/account';
 import { getCreature } from './content/creatures';
-import { standardBanner } from './content/standard-banner';
+import { getSummonBanner, isSummonBannerId, type SummonBannerId } from './content/summon-banners';
 import { isInfusionMode } from './content/infusions';
 import { isPlayableDungeon } from './content/dungeons';
-import { levelCost, evolutionCost, evolutionRarity } from './content/progression';
+import { characterLevelCost, characterEvolutionCost, evolutionRarity } from './content/progression';
 import { materialName } from './content/dungeon-art';
 import { capturedProgress } from './game/character-instances';
 import { gameplayHub, bindGameplayNavigation } from './presentation/gameplay';
-import { isMenuPage, sanctuaryHeader, sanctuaryNavigation, type MenuPage } from './presentation/sanctuary';
+import { roseEvent } from './presentation/rose-event';
+import { isMenuPage, sanctuaryHeader, sanctuaryContext, sanctuaryDock, sanctuaryDestination, type MenuPage, type TeamArea } from './presentation/sanctuary';
+import { MenuHistory } from './presentation/menu-history';
+import { gameConfirm, gameDialogPending } from './presentation/game-dialog';
+import { presentReward } from './presentation/reward-screen';
+import { summonReward } from './presentation/summon-presentation';
+import { conduitReward } from './presentation/conduit-presentation';
+import './sanctuary-reference.css';
 
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('Application root is missing.');
 const app = root;
+bindInformation(app);
+bindSelectionPanels(app);
+let characterCategory: TeamArea = 'squad';
+let selectedCapture: string | undefined;
+let pendingMaxLevel: MaxLevelPlan | null = null;
 app.addEventListener('error', (event) => {
   if (!(event.target instanceof HTMLImageElement)) return;
   console.error('Artwork failed to load', event.target.src);
@@ -54,6 +76,7 @@ const journey = new Journey();
 let menuPage: MenuPage = 'home';
 let characterTab = 'overview';
 let selectedCharacter: StarterId | null = null;
+let selectedBanner: SummonBannerId = 'standard';
 let motionPreference: MotionPreference = 'system';
 let settingsError = '';
 let speed: BattleSpeed = 1;
@@ -65,11 +88,95 @@ let battleView: BattleView | null = null;
 let fractalis: number | null = null;
 let account: Account | null = null;
 let walletError = '';
+interface MenuSnapshot {
+  page: MenuPage;
+  hash: string;
+  characterTab: string;
+  characterCategory: TeamArea;
+  selectedCharacter: StarterId | null;
+  selectedCapture: string | undefined;
+  selectedBanner: SummonBannerId;
+  summonRateStars?: string;
+  inventoryTab: InventoryTab;
+  gallery: string | undefined;
+  activities: { group: string; index: string }[];
+  controls: { attributes: [string, string][]; value: string }[];
+  panels: { key: string; top: number; left: number }[];
+  scroll: number;
+}
+const menuHistory = new MenuHistory<MenuSnapshot>();
+let inventoryTab: InventoryTab = 'materials';
+
+function menuSnapshot(): MenuSnapshot {
+  return {
+    page: menuPage, hash: location.hash, characterTab, characterCategory,
+    selectedCharacter, selectedCapture, selectedBanner, inventoryTab,
+    summonRateStars: app.querySelector<HTMLButtonElement>('[data-rate-stars][aria-pressed="true"]')?.dataset.rateStars,
+    gallery: app.querySelector<HTMLElement>('[data-archive-gallery][aria-pressed="true"]')?.dataset.archiveGallery,
+    activities: Array.from(app.querySelectorAll<HTMLButtonElement>('[data-activity-choice][aria-pressed="true"]')).map((button) => ({
+      group: button.closest('.activity-group')?.id ?? '', index: button.dataset.activityChoice ?? '',
+    })),
+    controls: Array.from(app.querySelectorAll<HTMLSelectElement>('.sanctuary-content select:not([data-conduit-slot]):not([data-capture-conduit])')).map((control) => ({
+      attributes: Array.from(control.attributes).filter((attribute) => attribute.name === 'id' || attribute.name.startsWith('data-') && attribute.name !== 'data-selection-source').map((attribute) => [attribute.name, attribute.value]),
+      value: control.value,
+    })),
+    panels: Array.from(app.querySelectorAll<HTMLElement>('[data-menu-scroll], .activity-group')).map((panel) => ({
+      key: panel.dataset.menuScroll ?? panel.id, top: panel.scrollTop, left: panel.scrollLeft,
+    })),
+    scroll: window.scrollY,
+  };
+}
+
+function visitMenu(page: MenuPage): void {
+  const destination = sanctuaryDestination(page);
+  menuHistory.visit(menuSnapshot(), destination);
+  if (page === 'character') characterCategory = 'bearers';
+  if (page === 'squad') characterCategory = 'squad';
+  menuPage = destination;
+}
+
+async function backMenu(): Promise<void> {
+  if (activityTransitionPending()) return;
+  await transitionActivity(() => {
+    const previous = menuHistory.back();
+    battleSession = null;
+    menuPage = previous.page;
+    characterTab = previous.characterTab;
+    characterCategory = previous.characterCategory;
+    selectedCharacter = previous.selectedCharacter;
+    selectedCapture = previous.selectedCapture;
+    selectedBanner = previous.selectedBanner;
+    inventoryTab = previous.inventoryTab;
+    history.replaceState(null, '', `${location.pathname}${location.search}${previous.hash}`);
+    renderMenu();
+    if (previous.summonRateStars !== undefined) {
+      const filter = app.querySelector<HTMLButtonElement>(`[data-rate-stars="${previous.summonRateStars}"]`);
+      if (!filter) throw new Error('Saved banner rate filter is unavailable.');
+      filter.click();
+    }
+    for (const activity of previous.activities) app.querySelector<HTMLButtonElement>(`#${activity.group} [data-activity-choice="${activity.index}"]`)?.click();
+    if (previous.gallery) app.querySelector<HTMLButtonElement>(`[data-archive-gallery="${previous.gallery}"]`)?.click();
+    for (const saved of previous.controls) {
+      const control = Array.from(app.querySelectorAll<HTMLSelectElement>('.sanctuary-content select')).find((candidate) =>
+        saved.attributes.every(([name, value]) => candidate.getAttribute(name) === value));
+      if (!control || !Array.from(control.options).some((option) => option.value === saved.value && !option.disabled)) continue;
+      control.value = saved.value;
+      if (control.matches('[data-character-filter], #glossary-area, [data-loot-stage], #squad-form select')) control.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    for (const saved of previous.panels) {
+      const panel = app.querySelector<HTMLElement>(`[data-menu-scroll="${saved.key}"], .activity-group[id="${saved.key}"]`);
+      if (!panel) throw new Error('Saved menu scroll panel is unavailable.');
+      panel.scrollTop = saved.top;
+      panel.scrollLeft = saved.left;
+    }
+    window.scrollTo({ top: previous.scroll, behavior: 'instant' });
+  });
+}
 try {
   account = loadAccount(localStorage);
   fractalis = account.fractalis;
 } catch (error) {
-  console.error('Could not load Last Light Fractalis balance', error);
+  console.error('Could not load Last Light Prismatica balance', error);
   walletError = errorMessage(error);
 }
 try {
@@ -102,7 +209,7 @@ function squadSession(current: Account, destination?: Parameters<typeof createSe
   const ids = equippedSquad(current);
   const leader = ids.find(isStarterId) ?? journey.profile?.starterId;
   if (!leader) throw new Error('Saved starter definition is missing.');
-  return createSession(leader, ownedProgress(current, leader), destination, { ids, progress: current.characters, equipment: current.conduitEquipment, captures: current.capturedCharacters });
+  return createSession(leader, ownedProgress(current, leader), destination, { ids, progress: current.characters, equipment: current.conduitEquipment, captures: current.capturedCharacters, upgrades: current.conduitUpgrades });
 }
 
 function showError(message: string): void {
@@ -114,8 +221,12 @@ function showError(message: string): void {
 
 function frame(body: string, battle = false, sanctuary = false): void {
   document.body.classList.toggle('in-battle', battle);
-  app.innerHTML = battle ? `<div class="battle-screen">${body}<p id="status" class="status" role="alert"></p></div>` : `<div class="shell ${sanctuary ? 'sanctuary-shell' : ''}">
-    ${sanctuary ? '' : '<header class="masthead"><span class="brand-mark">L / L</span><span>LAST LIGHT</span><span class="build-label">PRELUDE &middot; 0.1</span></header>'}
+  const backgroundScreen: AmbientScreen = battle ? 'battle' : !sanctuary
+    ? journey.screen === 'selection' ? 'selection' : 'title'
+    : menuPage === 'conduit-store' || menuPage === 'conduit-upgrade' ? 'stores' : menuPage === 'archives' || menuPage === 'glossary' ? 'collections' : menuPage === 'team' ? characterCategory === 'squad' ? 'squad' : 'character' : menuPage;
+  app.innerHTML = battle ? `<div class="battle-screen">${body}${ambientBackground(backgroundScreen)}<p id="status" class="status" role="alert"></p></div>` : `<div class="shell ${sanctuary ? 'sanctuary-shell' : ''}">
+    ${ambientBackground(backgroundScreen)}
+    ${sanctuary ? '' : '<header class="masthead"><span class="brand-mark">L ~ L</span><span>LAST LIGHT</span><span class="build-label">PRELUDE &middot; 0.1</span></header>'}
     ${body}
     <p id="status" class="status" role="alert"></p>
     ${sanctuary ? '' : '<footer><span>AN ORIGINAL GACHA RPG</span><span>A WORLD WAITING TO AWAKEN</span></footer>'}
@@ -150,9 +261,9 @@ function renderTitle(): void {
     <button id="save-recovery" class="text-button" hidden>Clear unreadable local save</button>
   </section>`);
   app.querySelector('#enter')?.addEventListener('click', enter);
-  app.querySelector('#save-recovery')?.addEventListener('click', () => {
-    if (!confirm('Delete the local Last Light save on this browser? This cannot be undone.')) return;
+  app.querySelector('#save-recovery')?.addEventListener('click', async () => {
     try {
+      if (!await gameConfirm('Delete the local Last Light save on this browser? This cannot be undone.', { title: 'Delete local save', confirmLabel: 'Delete save', danger: true })) return;
       localStorage.removeItem(SAVE_KEY);
       enter();
     } catch (error) {
@@ -164,9 +275,9 @@ function renderTitle(): void {
 
 function renderSelection(): void {
   frame(`<section class="selection-screen">
-    <p class="eyebrow">CHAPTER ZERO &nbsp; / &nbsp; A FIRST LIGHT</p>
+    <p class="eyebrow">CHAPTER ZERO &nbsp; ~ &nbsp; A FIRST LIGHT</p>
     <h1 tabindex="-1">Choose your Element-Bearer</h1>
-    <p class="subtitle">Choose your first light: Infernic (fire), Aquatic (water), or Efflorescent (nature). Your journey begins solo.</p>
+    <p class="subtitle">Choose your first Element-Bearer.</p>
     <div class="starter-grid" role="group" aria-label="Starter Element-Bearers">
       ${availableStarters.map((starter, index) => `<button class="starter-card" data-starter="${starter.id}"
         aria-pressed="${journey.selected === starter.id}" style="--element:${starter.color}">
@@ -174,17 +285,16 @@ function renderSelection(): void {
         <div class="portrait">${portrait(starter)}<span class="reveal-slot"></span></div>
         <span class="weapon-label">${starter.weapon.toUpperCase()} &middot; STARTER</span>
         ${characterRating(starter.id)}
-        <strong>${starter.name}</strong>${characterRole(starter.id)}
+        <strong>${characterName(starter.id)}</strong>${characterRole(starter.id)}
         <span class="card-tagline">${starter.title}</span>
         <span class="selection-mark">${journey.selected === starter.id ? 'SELECTED' : 'CHOOSE ELEMENT-BEARER'}</span>
       </button>`).join('')}
     </div>
     <div class="selection-detail">
-      <p id="starter-detail" aria-live="polite">${journey.selected ? getStarter(journey.selected).description : 'Select an Element-Bearer to discover your first light.'}</p>
+      <p id="starter-detail" aria-live="polite">${journey.selected ? getStarter(journey.selected).description : 'Select Beginner, Infernis; Beginner, Tizu; or Beginner, Flora.'}</p>
       <article id="starter-lore" class="lore-panel" ${journey.selected ? '' : 'hidden'}></article>
       <button id="begin" class="primary-button" ${journey.selected ? '' : 'disabled'}>Begin your journey <span aria-hidden="true">&rarr;</span></button>
     </div>
-    <p class="quiet">Saved on this browser &middot; Supplied starter artwork</p>
   </section>`);
   app.querySelectorAll<HTMLButtonElement>('[data-starter]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -205,7 +315,7 @@ function renderSelection(): void {
       const lore = app.querySelector<HTMLElement>('#starter-lore');
       const begin = app.querySelector<HTMLButtonElement>('#begin');
       if (!detail || !lore || !begin) throw new Error('Starter selection elements are missing.');
-      detail.textContent = `${starter.name}: ${starter.lore.awakening}`;
+      detail.textContent = `${characterName(starter.id)}: ${starter.lore.awakening}`;
       lore.hidden = false;
       lore.style.setProperty('--element', starter.color);
       lore.innerHTML = `<p class="eyebrow">${starter.lore.origin}</p>
@@ -246,24 +356,32 @@ function renderMenu(firstArrival = false): void {
     walletError = errorMessage(error);
   }
   const homeLeader = account && !firstArrival && menuPage === 'home' ? account.squad?.[0] ?? starter.id : starter.id;
-  const sanctuary = `${sanctuaryHeader(menuPage, fractalis, account?.lycalis ?? null)}<section class="menu-screen sanctuary-content">
+  const sanctuary = `${sanctuaryHeader(menuPage, fractalis, account?.lycalis ?? null, !!menuHistory.previous)}<section class="menu-screen sanctuary-content" data-menu-screen="${menuPage}">
     ${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
+    ${sanctuaryContext(menuPage, characterCategory)}
     ${menuPage !== 'home' ? menuContent(menuPage) : homeHub(isStarterId(homeLeader) ? getStarter(homeLeader) : starter, firstArrival, account)}
-  </section>${sanctuaryNavigation(menuPage)}`;
+  </section>${sanctuaryDock(menuPage)}`;
   frame(`${menuPage === 'battle' ? `<header class="battle-toolbar">
-    <button class="battle-chrome-button" data-page="gameplay">${uiIcon('back')}<span>Leave</span></button>
+    <button class="battle-chrome-button" data-menu-back>${uiIcon('back')}<span>Leave</span></button>
     <label class="battle-speed-control" for="battle-speed"><span>Speed</span><select id="battle-speed" data-battle-speed aria-label="Battle animation speed">${battleSpeeds.map((value) => `<option value="${value}" ${speed === value ? 'selected' : ''}>${value}&times;</option>`).join('')}</select></label>
     <button id="open-settings" class="battle-chrome-button" aria-haspopup="dialog">${uiIcon('settings')}<span>Settings</span></button>
     </header>${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
     <div id="battle-root"></div>` : sanctuary}
     <dialog id="settings-drawer" class="settings-drawer" aria-labelledby="settings-heading">
     ${settingsPanel(motionPreference, bindings, speed)}
-    ${menuPage === 'battle' ? `<p class="currency-reward">${currencyIcon('fractalis')}<span>Fractalis <strong id="fractalis-balance">${fractalis ?? 'Unavailable'}</strong></span></p>` : ''}
+    ${menuPage === 'battle' ? `<p class="currency-reward">${currencyIcon('fractalis')}<span>Prismatica <strong id="fractalis-balance">${fractalis ?? 'Unavailable'}</strong></span></p>` : ''}
     <p id="settings-error" class="status" role="alert"></p>
-  </dialog>`, menuPage === 'battle', menuPage !== 'battle');
+  </dialog>
+  ${menuPage === 'battle' ? '' : '<dialog id="max-level-dialog" class="information-modal" aria-labelledby="max-level-heading"><header class="drawer-heading"><button class="drawer-close" type="button" data-close-information aria-label="Close Max Level">&times;</button></header><div data-max-level-content></div><p data-max-level-error role="alert"></p></dialog>'}`, menuPage === 'battle', menuPage !== 'battle');
+  pendingMaxLevel = null;
+  app.querySelector(`[data-character-category="${characterCategory}"]`)?.setAttribute('aria-current', 'page');
   bindGameplayNavigation(app);
-  bindCreatureGlossary(app);
+  bindInventory(app, (tab) => { inventoryTab = tab; });
+  bindCreatureGlossary(app, account?.conduitUpgrades);
   bindArchives(app);
+  bindSquadPreview(app, account);
+  bindSummonRates(app);
+  bindConduitUpgrades(app, localStorage, (updated) => { account = updated; renderMenu(); }, showError);
   app.querySelectorAll<HTMLSelectElement>('[data-battle-speed]').forEach((speedControl) => speedControl.addEventListener('change', (event) => {
     if (!(event.currentTarget instanceof HTMLSelectElement)) throw new Error('Battle speed control is missing.');
     const control = event.currentTarget;
@@ -283,11 +401,16 @@ function renderMenu(firstArrival = false): void {
     }
   }));
   if (speedError) showError(speedError);
-  app.querySelectorAll<HTMLButtonElement>('[data-page]:not([data-page="conduit-store"])').forEach((button) => {
+  app.querySelectorAll<HTMLButtonElement>('[data-menu-back]').forEach((button) => button.addEventListener('click', async () => {
+    try { await backMenu(); }
+    catch (error) { console.error('Back navigation failed', error); showError(errorMessage(error)); }
+  }));
+  app.querySelectorAll<HTMLButtonElement>('[data-page]:not([data-page="conduit-store"]):not([data-page="conduit-upgrade"])').forEach((button) => {
     button.addEventListener('click', async () => {
       try {
         const page = button.dataset.page;
         if (!isMenuPage(page)) throw new Error('Unknown menu page.');
+        app.querySelector<HTMLDialogElement>('#sanctuary-menu[open]')?.close();
         if (page === menuPage) return;
         await transitionActivity(() => {
           if (page === 'battle' && menuPage !== 'battle') {
@@ -295,7 +418,24 @@ function renderMenu(firstArrival = false): void {
             battleSession = squadSession(loadAccount(localStorage));
           }
           if (page !== 'battle' && menuPage === 'battle') battleSession = null;
-          menuPage = page;
+          visitMenu(page);
+          if (page === 'team' && button.dataset.teamArea) {
+            const area = button.dataset.teamArea;
+            if (area !== 'squad' && area !== 'bearers' && area !== 'creatures') throw new Error('Unknown Team area.');
+            characterCategory = area;
+            if (button.dataset.teamCharacter) {
+              const id = button.dataset.teamCharacter;
+              if (!isStarterId(id) || !account || !ownedCharacters(account).includes(id)) throw new Error('Choose an owned Element-Bearer.');
+              selectedCharacter = id;
+            }
+            if (button.dataset.teamCapture) {
+              const id = button.dataset.teamCapture;
+              if (!account?.capturedCharacters?.some((copy) => copy.instanceId === id)) throw new Error('Choose an owned captured creature.');
+              selectedCapture = id;
+            }
+          }
+          if (page === 'gameplay' && button.hasAttribute('data-machine-activity')) history.replaceState(null, '', '#gameplay-machines');
+          if (page === 'summon' && button.hasAttribute('data-rose-banner')) selectedBanner = 'roses';
           renderMenu();
         });
       } catch (error) {
@@ -317,7 +457,7 @@ function renderMenu(firstArrival = false): void {
         await transitionActivity(() => {
           account = current;
           battleSession = squadSession(current, { element, stage });
-          menuPage = 'battle';
+          visitMenu('battle');
           renderMenu();
         });
       } catch (error) {
@@ -344,7 +484,7 @@ function renderMenu(firstArrival = false): void {
         await transitionActivity(() => {
           account = current;
           battleSession = squadSession(current, { mode, stage });
-          menuPage = 'battle';
+          visitMenu('battle');
           renderMenu();
         });
       } catch (error) {
@@ -353,19 +493,22 @@ function renderMenu(firstArrival = false): void {
       }
     });
   });
-  app.querySelectorAll<HTMLButtonElement>('[data-character-tab]').forEach((button) => {
+  app.querySelectorAll<HTMLButtonElement>('[data-character-tab], [data-character-section-tab]').forEach((button) => {
     button.addEventListener('click', async () => {
       try {
-        const tab = button.dataset.characterTab;
+        const tab = button.dataset.characterTab ?? button.dataset.characterSectionTab;
         if (!tab || !isCharacterTab(tab)) throw new Error('Unknown character upgrade area.');
-        if (menuPage === 'character') {
+        if (menuPage === 'team' && characterCategory === 'bearers') {
           characterTab = tab;
           updateCharacterTab(app, getStarter(selectedCharacter ?? starter.id), tab, account);
+          if (matchMedia('(max-width: 1100px)').matches) {
+            app.querySelector('#upgrade-heading')?.scrollIntoView({ block: 'start', behavior: reducedMotion() ? 'auto' : 'smooth' });
+          }
           return;
         }
         await transitionActivity(() => {
           characterTab = tab;
-          menuPage = 'character';
+          visitMenu('character');
           renderMenu();
         });
         app.querySelector<HTMLElement>('#upgrade-heading')?.focus();
@@ -381,13 +524,14 @@ function renderMenu(firstArrival = false): void {
     if (activityTransitionPending() || app.querySelector('#battle-root')?.getAttribute('aria-busy') === 'true') return;
     battleView?.destroy();
     battleView = null;
+    app.querySelector<HTMLDialogElement>('#sanctuary-menu[open]')?.close();
     drawer.showModal();
     if (settingsError || hotkeyError) showError([settingsError, hotkeyError].filter(Boolean).join(' '));
   });
   const closeSettings = (): void => {
     drawer.close();
     renderMenu();
-    app.querySelector<HTMLButtonElement>('#open-settings')?.focus();
+    app.querySelector<HTMLButtonElement>('[data-information="sanctuary-menu"], #open-settings')?.focus();
   };
   app.querySelector('#close-settings')?.addEventListener('click', closeSettings);
   drawer.addEventListener('cancel', (event) => {
@@ -410,7 +554,7 @@ function renderMenu(firstArrival = false): void {
     }
     battleView = new BattleView(host, battleSession, bindings, (result) => {
       const balance = app.querySelector('#fractalis-balance');
-      if (!balance) throw new Error('Fractalis balance region is missing.');
+      if (!balance) throw new Error('Prismatica balance region is missing.');
       try {
         if (!battleSession) throw new Error('Battle session is missing.');
         account = saveAccountRewards(localStorage, result, battleSession.runId);
@@ -424,31 +568,31 @@ function renderMenu(firstArrival = false): void {
       if (premium) premium.textContent = String(account.lycalis);
       const error = app.querySelector('#wallet-error');
       if (error) error.textContent = '';
-    }, () => transitionActivity(() => {
-      battleSession = null;
-      menuPage = 'gameplay';
-      renderMenu();
-    }));
+    }, backMenu);
   }
   const walletStatus = app.querySelector('#wallet-error');
   if (walletStatus) walletStatus.textContent = walletError;
   app.querySelectorAll<HTMLButtonElement>('[data-buy-conduit]').forEach((button) => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
+      let saved = false;
       try {
         if (button.disabled) return;
         const id = button.dataset.buyConduit;
         if (!isConduitId(id)) throw new Error('Unknown Conduit.');
         const conduit = getConduit(id);
-        if (!confirm(`Buy one ${conduit.name} for ${conduit.price} Fractalis? ${conduit.effect} when equipped. One owned copy unlocks it for every character; extra copies add no equipment benefit.`)) return;
+        const current = loadAccount(localStorage);
+        if (!await gameConfirm(`Buy one ${conduit.name} for ${conduit.price} Prismatica? ${conduitEffect(conduit, current.conduitUpgrades?.[id])} when equipped. One owned copy unlocks it for every character; extra copies add no equipment benefit.`, { title: 'Purchase Conduit', confirmLabel: 'Buy one' })) return;
         account = purchaseConduit(localStorage, id);
+        saved = true;
         renderMenu();
         const result = app.querySelector('#conduit-purchase-result');
         if (!result) throw new Error('Conduit purchase status is missing.');
-        result.textContent = `${conduit.name} purchased and saved. Owned ${account.conduits?.[id]}. Equip it in Character / Conduits to activate its bonus.`;
+        result.textContent = `${conduit.name} purchased. Owned ${account.conduits?.[id]}.`;
+        await presentReward(conduitReward(id, account, 'Conduit acquired', `${conduit.price} Prismatica spent`));
         app.querySelector<HTMLButtonElement>(`[data-buy-conduit="${id}"]`)?.focus({ preventScroll: true });
       } catch (error) {
         console.error('Conduit purchase rejected', error);
-        showError(`Conduit purchase was not completed. ${errorMessage(error)}`);
+        showError(`${saved ? 'Conduit purchased and saved, but its presentation could not complete. Check Inventory.' : 'Conduit purchase was not completed.'} ${errorMessage(error)}`);
       }
     });
   });
@@ -459,7 +603,7 @@ function renderMenu(firstArrival = false): void {
         const current = loadAccount(localStorage);
         if (!isStarterId(id) || !ownedCharacters(current).includes(id)) throw new Error('Choose an owned character.');
         selectedCharacter = id;
-        menuPage = 'character';
+        visitMenu('character');
         renderMenu();
         app.querySelector<HTMLElement>('#upgrade-heading')?.focus();
       } catch (error) {
@@ -469,28 +613,32 @@ function renderMenu(firstArrival = false): void {
     });
   });
   const squadForm = app.querySelector<HTMLFormElement>('#squad-form');
-  app.querySelectorAll<HTMLButtonElement>('[data-sell-creature]').forEach((button) => button.addEventListener('click', () => {
+  app.querySelectorAll<HTMLButtonElement>('[data-sell-creature]').forEach((button) => button.addEventListener('click', async () => {
     try {
       const id = button.dataset.sellCreature;
       if (!id) throw new Error('Currency-farm copy is missing.');
       const offer = creatureSaleOffer(loadAccount(localStorage), id);
       if (offer.reasons.length) throw new Error(`Sale protected: ${offer.reasons.join(', ')}.`);
-      const payout = `${offer.fractalis.toLocaleString('en-US')} Fractalis${offer.lycalis ? ` + ${offer.lycalis} Lycalis` : ''}`;
-      if (!confirm(`Permanently sell ${getCreature(offer.copy.creatureId).name} (${id}) for ${payout}? This exact copy will be removed and cannot be restored.`)) return;
+      const payout = [
+        ...(offer.fractalis ? [`${offer.fractalis.toLocaleString('en-US')} Prismatica`] : []),
+        ...(offer.lycalis ? [`${offer.lycalis} Null-Prismatica`] : []),
+        ...Object.entries(offer.materials).map(([id, amount]) => `${amount} ${materialName(id)}`),
+      ].join(' + ');
+      if (!await gameConfirm(`Permanently sell ${getCreature(offer.copy.creatureId).name} (${id}) for ${payout}? This exact copy will be removed and cannot be restored.`, { title: 'Sell creature', confirmLabel: 'Sell copy', danger: true })) return;
       account = sellCurrencyCreature(localStorage, id);
       renderMenu();
       const status = app.querySelector('#character-lock-result');
-      if (status) status.textContent = `Creature sold / +${payout} saved.`;
+      if (status) status.textContent = `Creature sold ~ +${payout}.`;
     } catch (error) {
       console.error('Currency-farm creature sale rejected', error);
       showError(`Creature was not sold. ${errorMessage(error)}`);
     }
   }));
-  app.querySelectorAll<HTMLButtonElement>('[data-level-capture]').forEach((button) => button.addEventListener('click', () => {
+  app.querySelectorAll<HTMLButtonElement>('[data-level-capture]').forEach((button) => button.addEventListener('click', async () => {
     try {
       const id = button.dataset.levelCapture;
       if (!id) throw new Error('Captured creature is missing.');
-      if (!confirm('Spend the listed Fractalis and materials to level up this captured copy?')) return;
+      if (!await gameConfirm('Spend the listed Prismatica and materials to level up this captured copy?', { title: 'Level up creature', confirmLabel: 'Level up' })) return;
       account = levelCapturedCharacter(localStorage, id, Number(button.dataset.expectedLevel));
       renderMenu();
     } catch (error) {
@@ -520,7 +668,7 @@ function renderMenu(firstArrival = false): void {
         renderMenu();
         const result = app.querySelector('#character-lock-result');
         if (!result) throw new Error('Character lock status is missing.');
-        result.textContent = value === 'true' ? 'Character locked and saved.' : 'Character unlocked and saved. Squad protection still applies.';
+        result.textContent = value === 'true' ? 'Character locked.' : 'Character unlocked.';
       } catch (error) {
         console.error('Character lock update rejected', error);
         showError(`Character lock was not changed. ${errorMessage(error)}`);
@@ -542,29 +690,34 @@ function renderMenu(firstArrival = false): void {
       renderMenu();
       const status = app.querySelector('#squad-result');
       if (!status) throw new Error('Squad status region is missing.');
-      status.textContent = 'Squad saved. These squad members will join your next battle.';
+      status.textContent = 'Squad saved.';
     } catch (error) {
       console.error('Squad update rejected', error);
       showError(`Squad was not changed. ${errorMessage(error)}`);
     }
   });
-  app.querySelector<HTMLButtonElement>('#summon-character')?.addEventListener('click', () => {
+  app.querySelector<HTMLButtonElement>('#summon-character')?.addEventListener('click', async () => {
+    if (gameDialogPending()) return;
+    let saved = false;
     try {
-      if (!confirm(`Spend ${standardBanner.cost} Lycalis for one Standard Banner draw? Base5-star tier:1%. Pity guarantees at200/500. Owned EB results convert to an Omnic treasure slime at Lv.50. Rewards start unequipped.`)) return;
-      const result = summonCharacter(localStorage);
+      const banner = getSummonBanner(selectedBanner);
+      if (!await gameConfirm(`Spend ${banner.cost} Null-Prismatica for one ${banner.name} draw? See Rates & Information for odds and reward rules.`, { title: banner.name, confirmLabel: 'Summon' })) return;
+      const result = summonCharacter(localStorage, Math.random, banner.id);
+      saved = true;
       account = result.account;
       renderMenu();
       const status = app.querySelector('#summon-result');
       if (!status) throw new Error('Summon status is missing.');
       const form = result.copy ? capturedProgress(result.copy).tier + 1 : 1;
-      const name = result.copy ? `${getCreature(result.copy.creatureId).name} creature / ${evolutionRarity(form)} / ${form}-star / Lv.${result.copy.level}`
-        : result.entry.kind === 'character' ? `${getStarter(result.entry.id).name} / New Element-Bearer / Common / ${result.entry.stars}-star / Lv.0` : '';
+      const name = result.copy ? `${getCreature(result.copy.creatureId).name} creature ~ ${evolutionRarity(form)} ~ ${form}-star ~ Lv.${result.copy.level}`
+        : result.entry.kind === 'character' ? `${characterName(result.entry.id)} ~ New Element-Bearer ~ Common ~ ${result.entry.stars}-star ~ Lv.0` : '';
       if (!name) throw new Error('Summon reward identity is missing.');
-      status.textContent = `${result.duplicate ? 'Owned EB converted: ' : 'Received: '}${name}. Saved / ${standardBanner.cost} Lycalis spent.${result.guarantee !== 'none' ? ` Pity: ${result.guarantee}.` : ''}`;
-      status.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+      status.textContent = `${result.duplicate ? 'Owned EB converted: ' : 'Received: '}${name}. ${banner.cost} Null-Prismatica spent.${result.guarantee !== 'none' ? ` Pity: ${result.guarantee}.` : ''}${result.bonusConduit ? ` Bonus: ${getConduit(result.bonusConduit).name} ~ Legendary Conduit. Not auto-equipped.` : ''}`;
+      await presentReward(summonReward(result, banner.id));
+      app.querySelector<HTMLButtonElement>('#summon-character')?.focus({ preventScroll: true });
     } catch (error) {
       console.error('Summoning rejected', error);
-      showError(`Summoning was not completed. ${errorMessage(error)}`);
+      showError(`${saved ? 'Your summon reward is saved, but its presentation could not complete. Check Team and Inventory.' : 'Summoning was not completed.'} ${errorMessage(error)}`);
     }
   });
   const settingsForm = app.querySelector<HTMLFormElement>('#settings-form');
@@ -580,7 +733,7 @@ function renderMenu(firstArrival = false): void {
       showError(hotkeyError);
       const message = app.querySelector('#settings-result');
       if (!message) throw new Error('Settings result region is missing.');
-      message.textContent = 'Motion preference saved on this browser.';
+      message.textContent = 'Motion preference saved.';
     } catch (error) {
       console.error('Could not save Last Light settings', error);
       showError(`Settings were not saved. ${errorMessage(error)}`);
@@ -607,13 +760,16 @@ function renderMenu(firstArrival = false): void {
       showError(settingsError);
       const result = app.querySelector('#hotkey-result');
       if (!result) throw new Error('Hotkey result region is missing.');
-      result.textContent = 'Selection keys saved. Attack and end-turn shortcuts are disabled.';
+      result.textContent = 'Selection keys saved.';
     } catch (error) {
       console.error('Could not save battle hotkeys', error);
       showError(`Hotkeys were not changed. ${errorMessage(error)}`);
     }
   });
   app.querySelector('#return-title')?.addEventListener('click', () => {
+    menuHistory.clear();
+    menuPage = 'home';
+    inventoryTab = 'materials';
     journey.screen = 'title';
     render();
     app.querySelector<HTMLButtonElement>('#enter')?.focus();
@@ -623,23 +779,27 @@ function renderMenu(firstArrival = false): void {
 function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
   if (!journey.profile) throw new Error('A saved Element-Bearer is required.');
   const starter = getStarter(journey.profile.starterId);
-  if (page === 'battle') return '<button class="text-button" data-page="home">Back to Home</button><div id="battle-root"></div>';
-  if (page === 'character') return `${characterRoster(account, selectedCharacter ?? starter.id)}${characterHub(getStarter(selectedCharacter ?? starter.id), characterTab, account)}${characterCopyManagement(account)}`;
-  if (page === 'inventory') return inventoryHub(account);
+  if (page === 'battle') return '<div id="battle-root"></div>';
+  if (page === 'team' && characterCategory === 'squad') return squadHub(account);
+  if (page === 'character' || page === 'team') return characterInformation() + (characterCategory === 'bearers'
+    ? `${characterHub(getStarter(selectedCharacter ?? starter.id), characterTab, account)}<details class="character-protection"><summary>Element-Bearer protection</summary>${characterCopyManagement(account, 'bearers')}</details>`
+    : characterCopyManagement(account, 'creatures', selectedCapture));
+  if (page === 'inventory') return inventoryHub(account, inventoryTab);
+  if (page === 'stores') return `${information('stores-information', 'Stores', '<p>Select a store to view its catalog and prices. Purchases use saved currency and require confirmation. Inventory lists owned items; equipment is managed in Character.</p>')}<section class="destination-group"><h2>Stores</h2><div class="destination-grid"><button class="destination-card" data-page="conduit-store">${currencyIcon('fractalis')}<strong>Conduit Store</strong><small>Conduits ~ Prismatica</small></button></div></section>`;
+  if (page === 'collections') return archives(account);
   if (page === 'conduit-store') return conduitStore(account);
+  if (page === 'conduit-upgrade') return conduitUpgradeMenu(account);
   if (page === 'archives' || page === 'glossary') return archives(account, page === 'glossary' ? 'creatures' : 'characters');
   if (page === 'squad') return squadHub(account);
-  if (page === 'summon') return summonHub(account);
+  if (page === 'summon') return summonHub(account, selectedBanner);
   if (page === 'gameplay') return gameplayHub(account);
-  if (page === 'story') return `<button class="text-button" data-page="gameplay">Back to Gameplay</button><p class="subtitle">Prologue / ${starter.lore.origin}</p>
+  if (page === 'story') return `${information('story-information', 'Opening Story', '<p>The prologue follows your saved starter Element-Bearer. Reading it does not start a battle or grant rewards.</p>')}<p class="subtitle">Prologue ~ ${starter.lore.origin}</p>
     <article class="story-panel lore-panel" style="--element:${starter.color}">
       <p class="eyebrow">A FIRST LIGHT</p><h2>${starter.title}</h2>
       <p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote>
       <p>The road disappears beneath a veil of dusk. A small light glows beside you. It is not enough to light the world - not yet. But it is enough to take the first step.</p>
-      <p class="quiet">Readable prologue only. Story battles, chapters, and rewards are not implemented.</p>
     </article>`;
-  if (page === 'events') return `<p class="subtitle">Future limited-time adventures.</p>
-    <article class="feature-tile"><h2>No events available</h2><p>This tab is reserved for later. There are no active events, timers, or event rewards.</p></article>`;
+  if (page === 'events') return roseEvent(account);
   return settingsPanel(motionPreference, bindings, speed);
 }
 
@@ -649,26 +809,26 @@ function render(): void {
   else renderMenu();
 }
 
-app.addEventListener('click', (event) => {
+app.addEventListener('click', async (event) => {
   if (!(event.target instanceof Element)) return;
   const button = event.target.closest<HTMLButtonElement>('[data-upgrade]');
-  if (!button || button.disabled || menuPage !== 'character') return;
+  if (!button || button.disabled || menuPage !== 'team' || characterCategory !== 'bearers') return;
   try {
     if (!journey.profile || !account) throw new Error('Character progression is unavailable.');
     const kind = button.dataset.upgrade;
     if (kind !== 'level' && kind !== 'evolve') throw new Error('Unknown or unavailable character upgrade.');
     const starter = getStarter(selectedCharacter ?? journey.profile.starterId);
     const expected = ownedProgress(account, starter.id);
-    const cost = kind === 'level' ? levelCost(starter.elementId, expected) : evolutionCost(starter.elementId, expected);
+    const cost = kind === 'level' ? characterLevelCost(starter.id, expected) : characterEvolutionCost(starter.id, expected);
     const materials = Object.entries(cost.materials).map(([id, amount]) => `${amount} ${materialName(id)}`).join(', ');
     const fodderIds = Array.from(app.querySelectorAll<HTMLInputElement>('[data-evolution-fodder]:checked')).map((input) => input.dataset.evolutionFodder ?? '');
-    const options = fodderIds.length ? evolutionFodderOptions(account, starter.elementId, expected.evolution) : [];
+    const options = fodderIds.length ? evolutionFodderOptions(account, starter.elementId, expected.evolution, starter.id) : [];
     const consumed = fodderIds.map((id) => {
       const option = options.find((entry) => entry.copy.instanceId === id);
       if (!option) throw new Error('Selected captured creature is missing.');
-      return `${option.creature.name} / Copy ${option.index} / Lv.${option.copy.level ?? capturedProgress(option.copy).level} / Form ${option.form}`;
+      return `${option.creature.name} ~ Copy ${option.index} ~ Lv.${option.copy.level ?? capturedProgress(option.copy).level} ~ Form ${option.form}`;
     });
-    if (!confirm(`${kind === 'level' ? 'Level up' : 'Evolve'} ${starter.name} for ${cost.fractalis} Fractalis and ${materials}?${consumed.length ? `\n\nPermanently consume these captured creatures:\n${consumed.join('\n')}\n\nThis cannot be undone.` : ''}`)) return;
+    if (!await gameConfirm(`${kind === 'level' ? 'Level up' : 'Evolve'} ${characterName(starter.id, expected.evolution)} for ${cost.fractalis} Prismatica and ${materials}?${consumed.length ? `\n\nPermanently consume these captured creatures:\n${consumed.join('\n')}\n\nThis cannot be undone.` : ''}`, { title: kind === 'level' ? 'Level up' : 'Evolution', confirmLabel: kind === 'level' ? 'Level up' : 'Evolve', danger: consumed.length > 0 })) return;
     const currency = app.querySelector('#fractalis-balance');
     const premium = app.querySelector('#lycalis-balance');
     if (!currency || !premium) throw new Error('Currency display is missing.');
@@ -679,13 +839,15 @@ app.addEventListener('click', (event) => {
     const progress = ownedProgress(account, starter.id);
     const rosterButton = app.querySelector(`[data-owned-character="${starter.id}"]`);
     const rosterLevel = rosterButton?.querySelector('span > small');
-    if (rosterLevel) rosterLevel.textContent = `Lv.${progress.level} / Evo.${progress.evolution}`;
+    const rosterName = rosterButton?.querySelector('span > strong');
+    if (rosterName) rosterName.textContent = characterName(starter.id, progress.evolution);
+    if (rosterLevel) rosterLevel.textContent = `Lv.${progress.level} ~ Evo.${progress.evolution}`;
     const rosterPortrait = rosterButton?.querySelector('img');
     if (rosterPortrait) {
       const art = portraitAttributes(starter, progress.evolution);
       rosterPortrait.src = art.src;
       rosterPortrait.alt = art.alt;
-      const facing = unitFacing(characterArt(starter.id, progress.evolution).art, 'ally');
+      const facing = characterFacing(starter.id, progress.evolution);
       rosterPortrait.dataset.facing = facing.facing;
       rosterPortrait.dataset.mirrored = String(facing.mirrored);
     }
@@ -694,8 +856,8 @@ app.addEventListener('click', (event) => {
     if (fodderIds.length) renderMenu();
     celebrateUpgrade(app, starter, kind, ownedProgress(updatedAccount, starter.id));
     const result = app.querySelector('#upgrade-result');
-    if (result) result.textContent = `${starter.name} ${kind === 'level' ? 'leveled up' : 'evolved'}. Saved on this browser.`;
-    else showError(`${starter.name} ${kind === 'level' ? 'leveled up' : 'evolved'}. Saved on this browser.`);
+    if (result) result.textContent = `${characterName(starter.id, progress.evolution)} ${kind === 'level' ? 'leveled up' : 'evolved'}.`;
+    else showError(`${characterName(starter.id, progress.evolution)} ${kind === 'level' ? 'leveled up' : 'evolved'}.`);
   } catch (error) {
     console.error('Character upgrade rejected', error);
     showError(`Upgrade was not completed. ${errorMessage(error)}`);
@@ -714,20 +876,106 @@ app.addEventListener('change', (event) => {
   const selected = app.querySelectorAll('[data-evolution-fodder]:checked').length;
   const required = Number(button.dataset.fodderCount);
   button.disabled = button.dataset.upgradeBlocked === 'true' || selected !== required;
-  status.textContent = `${selected} / ${required} selected${selected > required ? ' / Select fewer creatures' : ''}`;
+  status.textContent = `${selected} ~ ${required} selected${selected > required ? ' ~ Select fewer creatures' : ''}`;
+});
+
+app.addEventListener('click', (event) => {
+  if (!(event.target instanceof Element)) return;
+  const button = event.target.closest<HTMLButtonElement>('[data-summon-banner]');
+  if (!button || menuPage !== 'summon') return;
+  try {
+    const id = button.dataset.summonBanner;
+    if (!isSummonBannerId(id)) throw new Error('Unknown summon banner.');
+    if (id === selectedBanner) return;
+    selectedBanner = id;
+    renderMenu();
+    app.querySelector<HTMLButtonElement>(`[data-summon-banner="${id}"]`)?.focus({ preventScroll: true });
+  } catch (error) {
+    console.error('Banner selection failed', error);
+    showError(errorMessage(error));
+  }
 });
 
 app.addEventListener('click', async (event) => {
-  if (!(event.target instanceof Element) || !event.target.closest('[data-page="conduit-store"]')) return;
+  if (!(event.target instanceof Element)) return;
+  const category = event.target.closest<HTMLButtonElement>('[data-character-category]');
+  const capture = event.target.closest<HTMLButtonElement>('[data-owned-capture]');
+  const max = event.target.closest<HTMLButtonElement>('[data-max-level]');
+  const confirmMax = event.target.closest<HTMLButtonElement>('[data-confirm-max-level]');
+  if (!category && !capture && !max && !confirmMax) return;
   try {
-    if (menuPage === 'conduit-store') return;
+    if (category) {
+      const value = category.dataset.characterCategory;
+      if (value !== 'squad' && value !== 'bearers' && value !== 'creatures') throw new Error('Unknown Team area.');
+      characterCategory = value;
+      renderMenu();
+      app.querySelector<HTMLButtonElement>(`[data-character-category="${value}"]`)?.focus({ preventScroll: true });
+    } else if (capture) {
+      const id = capture.dataset.ownedCapture;
+      if (!id || !loadAccount(localStorage).capturedCharacters?.some((copy) => copy.instanceId === id)) throw new Error('Choose an owned captured creature.');
+      selectedCapture = id;
+      renderMenu();
+      app.querySelector<HTMLButtonElement>(`[data-owned-capture="${id}"]`)?.focus({ preventScroll: true });
+    } else if (max) {
+      const id = max.dataset.maxLevel;
+      if (!id) throw new Error('Character selection is missing.');
+      const preview = maxLevelPreview(loadAccount(localStorage), id);
+      const dialog = app.querySelector<HTMLDialogElement>('#max-level-dialog');
+      const content = dialog?.querySelector('[data-max-level-content]');
+      if (!dialog || !content) throw new Error('Max Level panel is missing.');
+      pendingMaxLevel = preview.plan;
+      content.innerHTML = preview.html;
+      const error = dialog.querySelector('[data-max-level-error]');
+      if (error) error.textContent = '';
+      max.focus({ preventScroll: true });
+      dialog.showModal();
+    } else if (confirmMax) {
+      if (!pendingMaxLevel) throw new Error('Reopen Max Level to calculate the current cost.');
+      const id = pendingMaxLevel.id;
+      const dialog = app.querySelector<HTMLDialogElement>('#max-level-dialog');
+      const currency = app.querySelector('#fractalis-balance');
+      if (!dialog || !currency) throw new Error('Max Level controls are missing.');
+      account = levelCharacterToMaximum(localStorage, pendingMaxLevel);
+      fractalis = account.fractalis;
+      pendingMaxLevel = null;
+      dialog.close();
+      if (isStarterId(id)) {
+        const starter = getStarter(id);
+        updateCharacterTab(app, starter, characterTab, account);
+        const progress = ownedProgress(account, id);
+        const label = app.querySelector(`[data-owned-character="${id}"] span > small`);
+        if (label) label.textContent = `Lv.${progress.level} ~ Evo.${progress.evolution}`;
+        currency.textContent = String(account.fractalis);
+        celebrateUpgrade(app, starter, 'level', progress);
+      } else renderMenu();
+      app.querySelector<HTMLButtonElement>(`[data-max-level="${id}"]`)?.focus({ preventScroll: true });
+      const result = app.querySelector('#upgrade-result') ?? app.querySelector('#character-lock-result');
+      if (result) result.textContent = 'Leveling complete.';
+    }
+  } catch (error) {
+    console.error('Character management failed', error);
+    const status = app.querySelector('[data-max-level-error]');
+    if (status && app.querySelector('#max-level-dialog[open]')) status.textContent = errorMessage(error);
+    else showError(errorMessage(error));
+  }
+});
+
+app.addEventListener('click', async (event) => {
+  if (!(event.target instanceof Element)) return;
+  const button = event.target.closest<HTMLElement>('[data-page="conduit-store"], [data-page="conduit-upgrade"]');
+  if (!button) return;
+  try {
+    const destination = button.dataset.page;
+    if (destination !== 'conduit-store' && destination !== 'conduit-upgrade') throw new Error('Unknown Conduit menu.');
+    app.querySelector<HTMLDialogElement>('#sanctuary-menu[open]')?.close();
+    if (menuPage === destination) return;
     await transitionActivity(() => {
-      menuPage = 'conduit-store';
+      visitMenu(destination);
       renderMenu();
     });
 
   } catch (error) {
-    console.error('Conduit Store navigation failed', error);
+    console.error('Conduit menu navigation failed', error);
     showError(errorMessage(error));
   }
 });
@@ -735,7 +983,7 @@ app.addEventListener('click', async (event) => {
 app.addEventListener('change', (event) => {
   if (!(event.target instanceof HTMLSelectElement) || !event.target.matches('[data-conduit-slot]')) return;
   try {
-    if (menuPage !== 'character' || !selectedCharacter) throw new Error('Choose an owned character before equipping.');
+    if (menuPage !== 'team' || characterCategory !== 'bearers' || !selectedCharacter) throw new Error('Choose an owned character before equipping.');
     const control = event.target;
     const id = control.value === '' ? null : control.value;
     if (id !== null && !isConduitId(id)) throw new Error('Unknown Conduit.');
@@ -743,7 +991,7 @@ app.addEventListener('change', (event) => {
     updateCharacterTab(app, getStarter(selectedCharacter), 'equipment', account);
     const status = app.querySelector('#conduit-equipment-result');
     if (!status) throw new Error('Conduit equipment status is missing.');
-    status.textContent = `${id === null ? 'Conduit removed' : `${getConduit(id).name} equipped`}. Saved. Changes apply to your next run.`;
+    status.textContent = `${id === null ? 'Conduit removed' : `${getConduit(id).name} equipped`}.`;
     app.querySelector<HTMLSelectElement>(`[data-conduit-slot="${control.dataset.conduitSlot}"]`)?.focus({ preventScroll: true });
   } catch (error) {
     console.error('Conduit equipment rejected', error);
@@ -753,6 +1001,7 @@ app.addEventListener('change', (event) => {
 });
 
 document.addEventListener('keydown', (event) => {
+  if (gameDialogPending()) return;
   if (journey.screen !== 'title' || event.repeat || event.ctrlKey || event.metaKey || event.altKey) return;
   if (['Tab', 'Shift', 'Control', 'Alt', 'Meta', 'Escape'].includes(event.key)) return;
   if (app.querySelector<HTMLElement>('#save-recovery:not([hidden])')) return;

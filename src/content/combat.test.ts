@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { fighters, formatStat, resolveFighter, shatterGauge } from './combat';
-import { starters } from './starters';
+import { openingStarters as starters } from './starters';
 import { characterLevelCap, characterGrowthFactor, characterPotencyFactor } from './progression';
 
 describe('character stat and kit growth', () => {

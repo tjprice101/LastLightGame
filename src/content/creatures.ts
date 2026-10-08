@@ -1,5 +1,7 @@
 import { enemies, enemyIds, formatStat } from './combat';
-import { elements, dungeonStageCount, infusionModes, currencyModes, type ElementId, type InfusionModeId } from './activities';
+import { elements, dungeonStageCount, infusionModes, currencyModes, eventModes, machineModes, type ElementId, type InfusionModeId } from './activities';
+import { machineConduitLoot } from './machines';
+import { machineComponentDrop } from './mechanical-components';
 import { dungeonEncounter, materialLoot } from './dungeons';
 import { infusionEncounter, infusionLoot, infusionElements } from './infusions';
 import { fractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from './loot-random';
@@ -28,7 +30,7 @@ function catalog(): Creature[] {
         element: element.id, dungeonElement: element.id, stages: [stage] });
     }
   }
-  for (const definition of [...infusionModes, ...currencyModes]) {
+  for (const definition of [...infusionModes, ...currencyModes, ...eventModes, ...machineModes]) {
     const mode = definition.id;
     for (let stage = 1; stage <= definition.stages; stage++) {
       const encounter = infusionEncounter(mode, stage);
@@ -56,16 +58,17 @@ export function creatureLoot(creature: Creature, stage?: number): CreatureLoot[]
   if (!creature.stages.length && stage !== undefined && (!Number.isInteger(stage) || stage < 1 || stage > 120)) throw new Error('Choose an Adventure enemy level from 1 to 120.');
   const level = creature.dungeonElement && stage !== undefined ? dungeonEncounter(creature.dungeonElement, stage).level
     : creature.mode && stage !== undefined ? infusionEncounter(creature.mode, stage).level : stage ?? 1;
-  const loot: CreatureLoot[] = [{ id: 'fractalis', ...(creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level)) }];
+  const loot: CreatureLoot[] = [{ id: 'fractalis', ...(creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level, creature.mode === 'roses' ? 140 : 120)) }];
   if (creature.mode === 'treasury') return loot;
+  if (creature.mode === 'machines' && stage !== undefined) return [...loot, machineComponentDrop(stage), ...machineConduitLoot(stage)];
   if (creature.dungeonElement && stage !== undefined) {
     loot.push(...materialLoot(creature.dungeonElement, stage));
   } else if (creature.mode && stage !== undefined) {
     const pool = infusionLoot(creature.mode, stage);
-    const odds = stagedLycalisOdds(creature.mode, level);
+    const odds = creature.mode === 'roses' ? [] : stagedLycalisOdds(creature.mode, level);
     loot.push(...odds.filter((outcome) => outcome.amount > 0).map((outcome) => ({
       id: 'lycalis', minimum: outcome.amount, maximum: outcome.amount, chance: outcome.chance,
-      note: `One independent Lycalis roll per kill; outcomes are mutually exclusive. No Lycalis: ${formatStat(odds[0].chance * 100)}%. Ordinary enemies and bosses use the same odds.`,
+      note: `One independent Null-Prismatica roll per kill; outcomes are mutually exclusive. No Null-Prismatica: ${formatStat(odds[0].chance * 100)}%. Ordinary enemies and bosses use the same odds.`,
     })));
     loot.push(...pool.specialties);
     const eligibleElements = infusionElements(creature.mode);

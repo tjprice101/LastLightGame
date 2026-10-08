@@ -11,6 +11,13 @@ from color_matte import remove_color_matte
 CURRENCIES = {"Fractalis": "fractalis", "Lycalis": "lycalis"}
 
 
+def current_currency_source(name, asset):
+    from intake_prism_currency_art import ASSETS, source_path
+    prism_name = next(name for name, identity in ASSETS.items() if identity == asset)
+    prism = source_path(prism_name)
+    return prism if prism.exists() else source_file(f"{name}.png", "currencies", True)
+
+
 def remove_currency_matte(image, asset):
     options = ({"hue": 20, "tolerance": 12, "saturation_min": .25}
                if asset == "fractalis" else
@@ -57,6 +64,11 @@ def remove_currency_matte(image, asset):
 def prepare_currency_sprite(source, asset, size=256, content=224):
     if asset not in CURRENCIES.values():
         raise ValueError(f"Unknown currency artwork: {asset}")
+    from intake_prism_currency_art import ASSETS, prepare
+    if source.stem in ASSETS:
+        if ASSETS[source.stem] != asset:
+            raise ValueError("Currency source does not match artwork identity.")
+        return prepare(source, asset, size, content)
     if supplied_cutout(asset):
         return prepare_sprite(source, asset, size, content)
     with Image.open(source) as image:
@@ -73,7 +85,7 @@ if __name__ == "__main__":
     for name, asset in CURRENCIES.items():
         if args.assets and asset not in args.assets:
             continue
-        source = source_file(f"{name}.png", "currencies", True)
+        source = current_currency_source(name, asset)
         output = ROOT / "public" / "assets" / "currencies" / f"{asset}.png"
         output.parent.mkdir(parents=True, exist_ok=True)
         prepare_currency_sprite(source, asset).save(output, optimize=True)
@@ -84,7 +96,7 @@ if __name__ == "__main__":
             "runtime": str(output.relative_to(ROOT)),
             "runtime_sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
             "review": "owner-supplied-alpha" if supplied_cutout(asset) else "reviewed-color-key",
-            "processing": "per-currency border-connected brown key; Fractalis reviewed exterior shadow mask preserving detached residue; Lycalis localized muted sparkle spill removal; trim, uniform resize, transparent padding",
+            "processing": "reviewed prism source-specific border-connected teal key and bounded edge cleanup; supplied alpha trim/resize/pad only" if source.stem in ("Prismatica", "Null-Prismatica") else "per-currency border-connected brown key; Fractalis reviewed exterior shadow mask preserving detached residue; Lycalis localized muted sparkle spill removal; trim, uniform resize, transparent padding",
         })
     if args.record_review:
         manifest = ROOT / "Art" / "matte-review.json"

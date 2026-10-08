@@ -1,0 +1,453 @@
+{
+  "phase": "atmoso",
+  "asset_count": 12,
+  "assets": [
+    {
+      "incoming": "Gale Wayfarer, Atmoso.png",
+      "asset": "atmoso",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\atmoso\\characters\\Gale Wayfarer, Atmoso.png",
+      "source_sha256": "6d2f28e55f8f0df2cc032c8cea6c1833a384d3050da1d49e28ff1277451ce63e",
+      "runtime": "public\\assets\\characters\\atmoso.png",
+      "runtime_sha256": "72dc4d517bb2762354485b5ad1330d860f990a33ea8fc2e724bf546106612b5a",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          245,
+          149,
+          86
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.519481,
+            0.868534
+          ],
+          [
+            0.725649,
+            0.359914
+          ]
+        ]
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Crosswind Adept, Atmoso.png",
+      "asset": "atmoso-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\atmoso\\characters\\Crosswind Adept, Atmoso.png",
+      "source_sha256": "7043d154a0748e12d4dde58d4accd9f3409e3e02b8704d4169b78a176d963210",
+      "runtime": "public\\assets\\characters\\atmoso-evo-2.png",
+      "runtime_sha256": "25f23c7895f28b62e3371cc34c0b11cc7c03611df45c5bcb3863b9d179f63f02",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          251,
+          167,
+          100
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.461039,
+            0.877155
+          ],
+          [
+            0.798701,
+            0.450431
+          ],
+          [
+            0.410714,
+            0.086207
+          ],
+          [
+            0.868506,
+            0.586207
+          ],
+          [
+            0.314935,
+            0.290948
+          ]
+        ]
+      },
+      "source_facing": "right"
+    },
+    {
+      "incoming": "Skyspoke Invoker, Atmoso.png",
+      "asset": "atmoso-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\atmoso\\characters\\Skyspoke Invoker, Atmoso.png",
+      "source_sha256": "9dbafdb3969724401bb54420ba67182a5c41226ca1c969dd25b6b6110a912427",
+      "runtime": "public\\assets\\characters\\atmoso-evo-3.png",
+      "runtime_sha256": "1d2755da828093cc88f6b20913ae9a852c3a2ac956fcec59c0619c3ecf862d19",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          254,
+          190,
+          108
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.5,
+            0.881466
+          ],
+          [
+            0.066558,
+            0.726293
+          ],
+          [
+            0.342532,
+            0.096983
+          ],
+          [
+            0.295455,
+            0.327586
+          ],
+          [
+            0.88961,
+            0.465517
+          ]
+        ]
+      },
+      "source_facing": "right"
+    },
+    {
+      "incoming": "Tempest Loom, Atmoso.png",
+      "asset": "atmoso-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\atmoso\\characters\\Tempest Loom, Atmoso.png",
+      "source_sha256": "a0e972fdbb369ceaa01eec4bfef5229ec2bbdc7c1c1ee03fa3aa0c7a67199084",
+      "runtime": "public\\assets\\characters\\atmoso-evo-4.png",
+      "runtime_sha256": "ce422d257364ec4de4de2a0874f8f7768d59aa8217216b5c7f4fbd78e230d05c",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          254,
+          168,
+          58
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.321429,
+            0.627155
+          ],
+          [
+            0.496753,
+            0.859914
+          ],
+          [
+            0.771104,
+            0.506466
+          ],
+          [
+            0.813312,
+            0.461207
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Crown of the High Gale, Atmoso.png",
+      "asset": "atmoso-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\atmoso\\characters\\Crown of the High Gale, Atmoso.png",
+      "source_sha256": "617d739c24dccefa5874c629183b321cb0e3ae9d0b5db7bfdf91d7b216affb0e",
+      "runtime": "public\\assets\\characters\\atmoso-evo-5.png",
+      "runtime_sha256": "e4b0d331447bd7bfb80098cb82ab1b3cc8043fc1acf817857f0e06d11c332cd2",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          232,
+          104,
+          45
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.878247,
+            0.353448
+          ],
+          [
+            0.13961,
+            0.737069
+          ],
+          [
+            0.813312,
+            0.767241
+          ],
+          [
+            0.737013,
+            0.178879
+          ],
+          [
+            0.287338,
+            0.228448
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "The Sky Without End, Atmoso.png",
+      "asset": "atmoso-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\atmoso\\characters\\The Sky Without End, Atmoso.png",
+      "source_sha256": "a2aa77c66308903ee89e3523e8cd1276ddeb91bfbe0d8f9013242bb84e2c14b4",
+      "runtime": "public\\assets\\characters\\atmoso-evo-6.png",
+      "runtime_sha256": "782068e13bf5098d280a6779aaf1ba43bc56441d91e38f4badca57f1005c5376",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          240,
+          152,
+          46
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.743506,
+            0.581897
+          ],
+          [
+            0.261364,
+            0.596983
+          ],
+          [
+            0.855519,
+            0.581897
+          ]
+        ]
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Gale Cadence - Passive.png",
+      "asset": "atmoso-passive",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\atmoso\\abilities\\Gale Cadence - Passive.png",
+      "source_sha256": "501e6e48f0d8d4ede1dfa8b83883bf3de7f1d8e763ba4530a7256d9d3b144634",
+      "runtime": "public\\assets\\abilities\\atmoso-passive.png",
+      "runtime_sha256": "384e6b0c97ff6e064f05bc1e99fa3460bc24d62acf45cf96f01465d7ceb514ee",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          252,
+          179,
+          51
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Razor Gale - Skill 1.png",
+      "asset": "atmoso-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\atmoso\\abilities\\Razor Gale - Skill 1.png",
+      "source_sha256": "334a06a2238092b605c54800f34182adb0347241c4ff5df4f2265b3f9c22cc28",
+      "runtime": "public\\assets\\abilities\\atmoso-skill1.png",
+      "runtime_sha256": "aac470cb81b305c1bb9f8d9485879c0c8f56f7613eb5348ac4f95ef3a3203bd4",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          254,
+          90,
+          33
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.388672,
+            0.525391
+          ],
+          [
+            0.472656,
+            0.730469
+          ]
+        ],
+        "reviewed_exterior_frame": {
+          "outer_band": 0.025,
+          "minimum_span": 0.75
+        }
+      }
+    },
+    {
+      "incoming": "Cyclone Weave - Skill 2.png",
+      "asset": "atmoso-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\atmoso\\abilities\\Cyclone Weave - Skill 2.png",
+      "source_sha256": "b136e34a5ed3b7a53a8e360836371d8e6063bb2c0432bcf34021011db3760982",
+      "runtime": "public\\assets\\abilities\\atmoso-skill2.png",
+      "runtime_sha256": "5af101ca08ae62423de668d4b896286d5af65f7024a422804607476bb46f0034",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          255,
+          126,
+          42
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Last Flare Sky Without End - Last Flare.png",
+      "asset": "atmoso-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\atmoso\\abilities\\Last Flare Sky Without End - Last Flare.png",
+      "source_sha256": "46b849f619cc3afd1bd670bb9a50e929ba007b4725adda825b9305b20e61ef63",
+      "runtime": "public\\assets\\abilities\\atmoso-ultimate.png",
+      "runtime_sha256": "421d1d9dd33e8d2e5e04da5d5b9741fc0354adb5eff71f2040387ab401204d4c",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          244,
+          106,
+          47
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Wind Pulse - Normal Attack.png",
+      "asset": "atmoso-light",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\atmoso\\abilities\\Wind Pulse - Normal Attack.png",
+      "source_sha256": "1a227402b0cd493108a9eed8f9244323c15941423f3565243b7bea35385b63b9",
+      "runtime": "public\\assets\\abilities\\atmoso-light.png",
+      "runtime_sha256": "e331772432916bec52f6bf19bcdf35d20229d4f701c4d95b839722f8feaa5738",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          247,
+          158,
+          52
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.74707,
+            0.188477
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Windward Brace - Defense.png",
+      "asset": "atmoso-defend",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\atmoso\\abilities\\Windward Brace - Defense.png",
+      "source_sha256": "796b2c7e11fa45c1ef0663e9e0634d2b258ba79bf012957d39efe99d2527c7cb",
+      "runtime": "public\\assets\\abilities\\atmoso-defend.png",
+      "runtime_sha256": "3bddbe0004cf1b075ba4619e518d06f5f9dfd75a883caec73146ada46d45e0f3",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          254,
+          111,
+          36
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.767578,
+            0.318359
+          ]
+        ],
+        "reviewed_exterior_frame": {
+          "outer_band": 0.025,
+          "minimum_span": 0.75
+        }
+      }
+    }
+  ]
+}

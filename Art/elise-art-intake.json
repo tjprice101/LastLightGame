@@ -1,0 +1,396 @@
+{
+  "phase": "elise",
+  "asset_count": 12,
+  "assets": [
+    {
+      "incoming": "Sparkstep Shinobi, Elise.png",
+      "asset": "elise",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\elise\\characters\\Sparkstep Shinobi, Elise.png",
+      "source_sha256": "00d4bc67bfea7dca13451e87d6d443f6a79918892760db509fb39a8f55842623",
+      "runtime": "public\\assets\\characters\\elise.png",
+      "runtime_sha256": "cc8da335162ed97cad4abe29c333397369cfbb13d3c336e31cb4804522e8d879",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          253,
+          168,
+          77
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.487013,
+            0.868534
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Voltweave Skirmisher, Elise.png",
+      "asset": "elise-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\elise\\characters\\Voltweave Skirmisher, Elise.png",
+      "source_sha256": "174a0d44029b83cbb2476541e2bd60d4776722759b742f27f6f8ef3dc4aa4176",
+      "runtime": "public\\assets\\characters\\elise-evo-2.png",
+      "runtime_sha256": "bf1020062acaebb24697e535c2dc190b73316783168a0768ae6faece31d23861",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          244,
+          106,
+          58
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.334416,
+            0.859914
+          ]
+        ]
+      },
+      "source_facing": "right"
+    },
+    {
+      "incoming": "Stormwheel Striker, Elise.png",
+      "asset": "elise-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\elise\\characters\\Stormwheel Striker, Elise.png",
+      "source_sha256": "00357ef189675a0771f98f6b43b023193eb7ab27909c31e30aa24abed162b789",
+      "runtime": "public\\assets\\characters\\elise-evo-3.png",
+      "runtime_sha256": "c26491812cdcc44f0fe9a4c565e1edc4153ed87cb2020cc8d45715e961cbae82",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          246,
+          175,
+          109
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.211039,
+            0.450431
+          ],
+          [
+            0.49513,
+            0.836207
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Thunderlace Executioner, Elise.png",
+      "asset": "elise-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\elise\\characters\\Thunderlace Executioner, Elise.png",
+      "source_sha256": "e9e064f549b440dac28c6695669b78691cb0cb152382bb1eeab6756b05c8af01",
+      "runtime": "public\\assets\\characters\\elise-evo-4.png",
+      "runtime_sha256": "aa2c3340adadf7ee0d2ec0656f97c06c922a9aad192d110771e4bfc7d9183d72",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          247,
+          163,
+          63
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.443182,
+            0.846983
+          ],
+          [
+            0.595779,
+            0.424569
+          ]
+        ]
+      },
+      "source_facing": "right"
+    },
+    {
+      "incoming": "Prismatic Storm Empress, Elise.png",
+      "asset": "elise-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\elise\\characters\\Prismatic Storm Empress, Elise.png",
+      "source_sha256": "33fab09e5265e17ed242986972de775836a19b6eca4c796040aff267772403df",
+      "runtime": "public\\assets\\characters\\elise-evo-5.png",
+      "runtime_sha256": "feb540877ade03d5c3314de7d21a6d95e685cfc9936d11d905353480669be8e8",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          253,
+          173,
+          75
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.162338,
+            0.797414
+          ],
+          [
+            0.25,
+            0.226293
+          ],
+          [
+            0.875,
+            0.69181
+          ],
+          [
+            0.584416,
+            0.1875
+          ],
+          [
+            0.116883,
+            0.704741
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "The Infinite Thunderwheel, Elise.png",
+      "asset": "elise-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\roster-intake\\elise\\characters\\The Infinite Thunderwheel, Elise.png",
+      "source_sha256": "2f7214213a120e321f0a38a1ef87b8f8f872b05bb21686a514676b242b38f878",
+      "runtime": "public\\assets\\characters\\elise-evo-6.png",
+      "runtime_sha256": "c273de9b02f09abb52b2a6a1b7bd00ecb8eb78bed91487c1ad54764f4b4a9b3b",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1232,
+          928
+        ],
+        "derived_background_rgb": [
+          247,
+          150,
+          47
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.38474,
+            0.474138
+          ],
+          [
+            0.435065,
+            0.594828
+          ]
+        ]
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Stormwheel Rhythm - Passive.png",
+      "asset": "elise-passive",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\elise\\abilities\\Stormwheel Rhythm - Passive.png",
+      "source_sha256": "6d2a5d05016a63845342889d03067ab255d2e9ee773d7fca97e05a8ca2edc7a2",
+      "runtime": "public\\assets\\abilities\\elise-passive.png",
+      "runtime_sha256": "f193f3b8fb37e0d7c0469fa9951ac42f6f1e6947ab6e2d0a322f3e434e8bd1db",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          254,
+          170,
+          45
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Voltstar Cut - Skill 1.png",
+      "asset": "elise-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\elise\\abilities\\Voltstar Cut - Skill 1.png",
+      "source_sha256": "884083aab4b7fb63878b13d01f606492ec2fb9433bdf4e378f7f059d3fbdfc8e",
+      "runtime": "public\\assets\\abilities\\elise-skill1.png",
+      "runtime_sha256": "339bc9fe4001ef0b537481a0992a9dde43ff7e29607a5c561b4377c519d13f48",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          254,
+          140,
+          50
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.623047,
+            0.755859
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Crosscurrent Volley - Skill 2.png",
+      "asset": "elise-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\elise\\abilities\\Crosscurrent Volley - Skill 2.png",
+      "source_sha256": "16e1cc3c1a219dbc4dd1a2f16f12f2f639fab4dba8015e39832bc0212de42dcc",
+      "runtime": "public\\assets\\abilities\\elise-skill2.png",
+      "runtime_sha256": "18a6b8d395dbe7e8f88155d051210a7120cff89da0ed7e745d85a60cd6dacfbf",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          254,
+          160,
+          82
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Infinite Thunderwheel - Last Flare.png",
+      "asset": "elise-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\elise\\abilities\\Infinite Thunderwheel - Last Flare.png",
+      "source_sha256": "b7a8293ca9fcad438c879b05c8916f83fec3e3b38ed61568227d6d940edddccf",
+      "runtime": "public\\assets\\abilities\\elise-ultimate.png",
+      "runtime_sha256": "19a7156a0019b443311a5389b33f4137a0d46261c09d9872d52e3abf30992216",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          254,
+          151,
+          29
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    },
+    {
+      "incoming": "Shuriken Throw - Normal Attack.png",
+      "asset": "elise-light",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\elise\\abilities\\Shuriken Throw - Normal Attack.png",
+      "source_sha256": "08f71ee43cbec7c176f5d0bc0cd81f9c5c39128db1fc91d66eef4b3e8d1e8c82",
+      "runtime": "public\\assets\\abilities\\elise-light.png",
+      "runtime_sha256": "68b9b803cfa9687e4db0677e34deb7108fe99f1eff20bb26fbfc0afcfc0263b8",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          254,
+          144,
+          34
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": [
+          [
+            0.375,
+            0.15625
+          ],
+          [
+            0.160156,
+            0.582031
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Grounded Star - Defense.png",
+      "asset": "elise-defend",
+      "category": "abilities",
+      "source": "Art\\source\\roster-intake\\elise\\abilities\\Grounded Star - Defense.png",
+      "source_sha256": "c761d161c8e3686200bea710d5fdba18bf75ea626bd327b11440a82d74e4f887",
+      "runtime": "public\\assets\\abilities\\elise-defend.png",
+      "runtime_sha256": "4c423dd2ca0133e0e5fecda8ebba66ff9c2f7c536ea0497d858bac1b5666219d",
+      "processing": {
+        "method": "reviewed border-connected RGB-distance key; exterior white frame only",
+        "outer_white_frame_crop": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "derived_background_rgb": [
+          251,
+          162,
+          56
+        ],
+        "radius": 32,
+        "border_connected": true,
+        "background_seeds": []
+      }
+    }
+  ]
+}

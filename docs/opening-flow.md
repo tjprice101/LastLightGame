@@ -42,7 +42,7 @@ while all lore and controls remain accessible. No save-schema changes are needed
 The menu displays the saved Element-Bearer and opens the
 [character, inventory, story, events, and settings surfaces](menus-and-inventory.md).
 Adventure is implemented separately; dungeons, quests, squad editing, and summoning are not.
-Fractalis shows a persistent local balance earned from enemy drops; Lycalis is a
+Prismatica shows a persistent local balance earned from enemy drops; Null-Prismatica is a
 label only. No saved character levels, accounts, or payment operations are introduced.
 
 ## Local persistence

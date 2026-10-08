@@ -1,0 +1,801 @@
+{
+  "asset_count": 16,
+  "assets": [
+    {
+      "asset": "duskmote",
+      "incoming": "Duskmote.png",
+      "source": "Art\\source\\enemies\\Duskmote.png",
+      "source_sha256": "05d849ffad0d2525b169e512d0ceb1ab5cd032b7035403b2eda9918750a5a106",
+      "runtime": "public\\assets\\enemies\\duskmote.png",
+      "runtime_sha256": "b711c779ac4ccf0b7927fb67b8bbbfc33ef2106338eac5108348afc897aa0327",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 144,
+        "background_seeds": [
+          [
+            0.771104,
+            0.832974
+          ],
+          [
+            0.140422,
+            0.34375
+          ],
+          [
+            0.118506,
+            0.40625
+          ],
+          [
+            0.950487,
+            0.853448
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "veilcap-imp",
+      "incoming": "Veilcap Imp.png",
+      "source": "Art\\source\\enemies\\Veilcap Imp.png",
+      "source_sha256": "f101ff4b73bcd6ab158a6bad54331c52c7305e9456a46bde5ef9b9f4b7cdb220",
+      "runtime": "public\\assets\\enemies\\veilcap-imp.png",
+      "runtime_sha256": "2aa3663316411696baec400677d24ab8b59a3c068085bbee35908d42f4eb23b5",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 96,
+        "background_seeds": [
+          [
+            0.24513,
+            0.498922
+          ],
+          [
+            0.805195,
+            0.336207
+          ],
+          [
+            0.382305,
+            0.539871
+          ],
+          [
+            0.294643,
+            0.523707
+          ],
+          [
+            0.137987,
+            0.741379
+          ],
+          [
+            0.175325,
+            0.821121
+          ],
+          [
+            0.163961,
+            0.774784
+          ],
+          [
+            0.37987,
+            0.857759
+          ],
+          [
+            0.434253,
+            0.475216
+          ],
+          [
+            0.854708,
+            0.75
+          ],
+          [
+            0.145292,
+            0.798491
+          ],
+          [
+            0.890422,
+            0.556034
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "gloomtail-cat",
+      "incoming": "Gloomtail Cat.png",
+      "source": "Art\\source\\enemies\\Gloomtail Cat.png",
+      "source_sha256": "9fabcd5ea4622dfb5221d0d93679012bc3abc181029673ad7ce15956df840333",
+      "runtime": "public\\assets\\enemies\\gloomtail-cat.png",
+      "runtime_sha256": "c35dbd85d0cf41acc8c95dd3e35f57a2bbd5a19f76166f7a30345b5dee4edebf",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 162,
+        "background_seeds": [
+          [
+            0.36039,
+            0.918103
+          ],
+          [
+            0.606331,
+            0.91056
+          ],
+          [
+            0.348214,
+            0.865302
+          ],
+          [
+            0.393669,
+            0.760776
+          ],
+          [
+            0.668831,
+            0.950431
+          ],
+          [
+            0.430195,
+            0.790948
+          ],
+          [
+            0.520292,
+            0.919181
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "hollowmantle-sentinel",
+      "incoming": "Hollowmantle Sentinel.png",
+      "source": "Art\\source\\enemies\\Hollowmantle Sentinel.png",
+      "source_sha256": "6d2c7e8fcc43765ea60f0a7df1c70aa72d553fcc15b53ad8f8161438bcc5a773",
+      "runtime": "public\\assets\\enemies\\hollowmantle-sentinel.png",
+      "runtime_sha256": "b0cf830685a58b366a6907dc768a3ae5df4c98294219f70a7b782bac4e8b1494",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 169,
+        "background_seeds": [
+          [
+            0.470779,
+            0.900862
+          ],
+          [
+            0.585227,
+            0.436422
+          ],
+          [
+            0.286526,
+            0.859914
+          ],
+          [
+            0.433442,
+            0.817888
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "umbrasilk-weaver",
+      "incoming": "Umbrasilk Weaver.png",
+      "source": "Art\\source\\enemies\\Umbrasilk Weaver.png",
+      "source_sha256": "8bb47331e9af79b35700c0153303e990ffb69017145765b12de6d54836b96da9",
+      "runtime": "public\\assets\\enemies\\umbrasilk-weaver.png",
+      "runtime_sha256": "3f8e645456b29126ee99b78488b9da440eef3f59f3ad8ca171058cbe3d66391f",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 165,
+        "background_seeds": [
+          [
+            0.279221,
+            0.849138
+          ],
+          [
+            0.548701,
+            0.832974
+          ],
+          [
+            0.779221,
+            0.820043
+          ],
+          [
+            0.126623,
+            0.827586
+          ],
+          [
+            0.140422,
+            0.367457
+          ],
+          [
+            0.907468,
+            0.863147
+          ],
+          [
+            0.130682,
+            0.477371
+          ],
+          [
+            0.233766,
+            0.28125
+          ],
+          [
+            0.484578,
+            0.146552
+          ],
+          [
+            0.510552,
+            0.112069
+          ],
+          [
+            0.568994,
+            0.125
+          ],
+          [
+            0.304383,
+            0.619612
+          ],
+          [
+            0.410714,
+            0.759698
+          ],
+          [
+            0.551948,
+            0.112069
+          ],
+          [
+            0.332792,
+            0.614224
+          ],
+          [
+            0.405032,
+            0.610991
+          ],
+          [
+            0.188312,
+            0.46444
+          ],
+          [
+            0.112825,
+            0.52694
+          ],
+          [
+            0.198864,
+            0.244612
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "moonless-gargoyle",
+      "incoming": "Moonless Gargoyle.png",
+      "source": "Art\\source\\enemies\\Moonless Gargoyle.png",
+      "source_sha256": "c7bde4dcb4cfecd68a3f8a3b69909a7704dc92b240e17613e8bc9a1f423c09fd",
+      "runtime": "public\\assets\\enemies\\moonless-gargoyle.png",
+      "runtime_sha256": "da8ba493af57bc118ac1179fd4c1e6ba603ecd491cfe22fdb6bd5c5dd756bc72",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 165,
+        "background_seeds": [
+          [
+            0.140422,
+            0.307112
+          ],
+          [
+            0.474026,
+            0.831897
+          ],
+          [
+            0.316558,
+            0.673491
+          ],
+          [
+            0.908279,
+            0.717672
+          ],
+          [
+            0.3125,
+            0.788793
+          ],
+          [
+            0.239448,
+            0.909483
+          ],
+          [
+            0.274351,
+            0.530172
+          ],
+          [
+            0.121753,
+            0.209052
+          ],
+          [
+            0.468344,
+            0.903017
+          ],
+          [
+            0.318182,
+            0.838362
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "eclipse-antler-regent",
+      "incoming": "Eclipse Antler Regent.png",
+      "source": "Art\\source\\enemies\\Eclipse Antler Regent.png",
+      "source_sha256": "913deacbf93af6886e582bc0e96ebcc45bc47337b90a5bd5b3d2d6384db8bef7",
+      "runtime": "public\\assets\\enemies\\eclipse-antler-regent.png",
+      "runtime_sha256": "f4bb95bb0d86e64b9c470a7640d4f2e6775bf34edc050197995814c4671d5943",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 145,
+        "background_seeds": [
+          [
+            0.796266,
+            0.351293
+          ],
+          [
+            0.135552,
+            0.424569
+          ],
+          [
+            0.627435,
+            0.909483
+          ],
+          [
+            0.469968,
+            0.881466
+          ],
+          [
+            0.556818,
+            0.446121
+          ],
+          [
+            0.343344,
+            0.890086
+          ],
+          [
+            0.309253,
+            0.270474
+          ],
+          [
+            0.614448,
+            0.34806
+          ],
+          [
+            0.467532,
+            0.372845
+          ],
+          [
+            0.257305,
+            0.235991
+          ],
+          [
+            0.159903,
+            0.33944
+          ],
+          [
+            0.703734,
+            0.524784
+          ],
+          [
+            0.230519,
+            0.309267
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "monarch-of-the-silent-eclipse",
+      "incoming": "Monarch of the Silent Eclipse.png",
+      "source": "Art\\source\\enemies\\Monarch of the Silent Eclipse.png",
+      "source_sha256": "297c7aea5af984a46ff2bdc4cc075e67106c4ad1480ee597631e1b0ea64f12d9",
+      "runtime": "public\\assets\\enemies\\monarch-of-the-silent-eclipse.png",
+      "runtime_sha256": "db1af5039092ddfc781752e48703f39584499ddcf4c9a8907d3ca1c4122d73b5",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 155,
+        "background_seeds": [
+          [
+            0.133929,
+            0.424569
+          ],
+          [
+            0.224838,
+            0.477371
+          ],
+          [
+            0.292208,
+            0.550647
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "ominous-seed",
+      "incoming": "Seed of Ominous.png",
+      "source": "Art\\source\\materials\\Seed of Ominous.png",
+      "source_sha256": "4d7584c554230f89248f13ce8559ab7c651996a3654842e0a028c6f5aa2dfa5a",
+      "runtime": "public\\assets\\materials\\ominous-seed.png",
+      "runtime_sha256": "ad472af7a80bf4083b5ee735f72e257c3e59ff26bc9423457560a93374980307",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 160,
+        "background_seeds": [
+          [
+            0.709961,
+            0.503906
+          ],
+          [
+            0.536133,
+            0.166016
+          ],
+          [
+            0.441406,
+            0.803711
+          ],
+          [
+            0.606445,
+            0.168945
+          ],
+          [
+            0.552734,
+            0.250977
+          ],
+          [
+            0.759766,
+            0.448242
+          ],
+          [
+            0.802734,
+            0.767578
+          ],
+          [
+            0.726562,
+            0.220703
+          ],
+          [
+            0.790039,
+            0.331055
+          ],
+          [
+            0.830078,
+            0.662109
+          ],
+          [
+            0.775391,
+            0.797852
+          ],
+          [
+            0.594727,
+            0.848633
+          ],
+          [
+            0.762695,
+            0.570312
+          ],
+          [
+            0.484375,
+            0.229492
+          ],
+          [
+            0.360352,
+            0.242188
+          ],
+          [
+            0.897461,
+            0.746094
+          ],
+          [
+            0.693359,
+            0.546875
+          ],
+          [
+            0.791016,
+            0.389648
+          ],
+          [
+            0.560547,
+            0.133789
+          ],
+          [
+            0.630859,
+            0.170898
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "ominous-bloom",
+      "incoming": "Bloom of Ominous.png",
+      "source": "Art\\source\\materials\\Bloom of Ominous.png",
+      "source_sha256": "d3d495d01fa5c4caf0d55840d6a1a6702c0a0fadfe3dbbcc973979bff21fedf6",
+      "runtime": "public\\assets\\materials\\ominous-bloom.png",
+      "runtime_sha256": "a1b4977fd38eddc41100b9e11e3ca847d7158bc14e0311a830525984753b270c",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 18,
+        "saturation_min": 0.07,
+        "border_only": true,
+        "hue": 152,
+        "background_seeds": [
+          [
+            0.34375,
+            0.722656
+          ],
+          [
+            0.617188,
+            0.689453
+          ],
+          [
+            0.498047,
+            0.765625
+          ],
+          [
+            0.50293,
+            0.836914
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "ominous-shard",
+      "incoming": "Shard of Ominous.png",
+      "source": "Art\\source\\materials\\Shard of Ominous.png",
+      "source_sha256": "a4b1b134c2e24e93f2c34e0cf3ae7d1247a32bf464b05c4382909756514c0e17",
+      "runtime": "public\\assets\\materials\\ominous-shard.png",
+      "runtime_sha256": "371c3f370df7a93e6e1c21bd72bc27399aaa2c5e974f46a42bbde1fa35ef15f2",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 152,
+        "background_seeds": [
+          [
+            0.563477,
+            0.19043
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "ominous-crest",
+      "incoming": "Crest of Ominous.png",
+      "source": "Art\\source\\materials\\Crest of Ominous.png",
+      "source_sha256": "5a323aa99559c6046483ef3ad28f6c471a31d82f84f8a1ea2ae7bc7c2149b4d7",
+      "runtime": "public\\assets\\materials\\ominous-crest.png",
+      "runtime_sha256": "84a52684c30423db853c85be5f479e0b428ac8ad9d5b2e821236c1453a026ac1",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 162,
+        "background_seeds": [
+          [
+            0.714844,
+            0.728516
+          ],
+          [
+            0.305664,
+            0.746094
+          ],
+          [
+            0.550781,
+            0.733398
+          ],
+          [
+            0.380859,
+            0.8125
+          ],
+          [
+            0.660156,
+            0.801758
+          ],
+          [
+            0.494141,
+            0.754883
+          ],
+          [
+            0.408203,
+            0.763672
+          ],
+          [
+            0.435547,
+            0.751953
+          ],
+          [
+            0.524414,
+            0.750977
+          ],
+          [
+            0.223633,
+            0.743164
+          ],
+          [
+            0.794922,
+            0.683594
+          ],
+          [
+            0.791016,
+            0.81543
+          ],
+          [
+            0.826172,
+            0.74707
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "ominous-heart",
+      "incoming": "Heart of Ominous.png",
+      "source": "Art\\source\\materials\\Heart of Ominous.png",
+      "source_sha256": "454f11df85183fd92d4ed9d74e42b6d273afcd660ef6c0a23a16502b5137fff6",
+      "runtime": "public\\assets\\materials\\ominous-heart.png",
+      "runtime_sha256": "6a8620f2e5c9a2b9376b452ba8c52a933b679a0e4f34d7779145a376ddb97f5d",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 18,
+        "saturation_min": 0.08,
+        "border_only": true,
+        "hue": 161,
+        "background_seeds": [
+          [
+            0.612305,
+            0.260742
+          ],
+          [
+            0.638672,
+            0.733398
+          ],
+          [
+            0.77832,
+            0.393555
+          ],
+          [
+            0.807617,
+            0.542969
+          ],
+          [
+            0.501953,
+            0.186523
+          ],
+          [
+            0.295898,
+            0.796875
+          ],
+          [
+            0.625977,
+            0.148438
+          ],
+          [
+            0.793945,
+            0.671875
+          ],
+          [
+            0.447266,
+            0.816406
+          ],
+          [
+            0.426758,
+            0.790039
+          ],
+          [
+            0.750977,
+            0.349609
+          ],
+          [
+            0.674805,
+            0.356445
+          ],
+          [
+            0.745117,
+            0.251953
+          ],
+          [
+            0.75293,
+            0.321289
+          ],
+          [
+            0.759766,
+            0.661133
+          ],
+          [
+            0.518555,
+            0.821289
+          ],
+          [
+            0.374023,
+            0.705078
+          ],
+          [
+            0.808594,
+            0.420898
+          ],
+          [
+            0.50293,
+            0.282227
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "ominous-soul",
+      "incoming": "Soul of Ominous.png",
+      "source": "Art\\source\\materials\\Soul of Ominous.png",
+      "source_sha256": "68924c59c93f5f319e5db60b56a4633812d5213431c3d78768d4dd82012f1629",
+      "runtime": "public\\assets\\materials\\ominous-soul.png",
+      "runtime_sha256": "e78dc769f7bfcdd1a46992936ecc07106a2a87ae83ce8200b7242fa7cd9db7cd",
+      "processing": {
+        "method": "reviewed border key and enclosed seeds",
+        "tolerance": 12,
+        "saturation_min": 0.2,
+        "border_only": true,
+        "hue": 167,
+        "background_seeds": [
+          [
+            0.448242,
+            0.411133
+          ],
+          [
+            0.729492,
+            0.275391
+          ],
+          [
+            0.279297,
+            0.644531
+          ],
+          [
+            0.482422,
+            0.424805
+          ],
+          [
+            0.323242,
+            0.53125
+          ]
+        ]
+      }
+    },
+    {
+      "asset": "valley-of-solitude",
+      "incoming": "Valley of Solitude Banner.png",
+      "source": "Art\\source\\banners\\Valley of Solitude Banner.png",
+      "source_sha256": "f5d07ac666edc9cd6508f65199410d5e60912a5ec90e39e475ed9fdebe86a2dd",
+      "runtime": "public\\assets\\banners\\valley-of-solitude.png",
+      "runtime_sha256": "f5d07ac666edc9cd6508f65199410d5e60912a5ec90e39e475ed9fdebe86a2dd",
+      "processing": {
+        "method": "unchanged scenery bytes"
+      }
+    },
+    {
+      "asset": "valley-of-solitude",
+      "incoming": "Valley of Solitude Arena.png",
+      "source": "Art\\source\\backgrounds\\Valley of Solitude Arena.png",
+      "source_sha256": "704cbebef38e51aedc2e11dc04bb547cdad689de5a8d3d6aa734eedb40edce79",
+      "runtime": "public\\assets\\backgrounds\\valley-of-solitude.png",
+      "runtime_sha256": "704cbebef38e51aedc2e11dc04bb547cdad689de5a8d3d6aa734eedb40edce79",
+      "processing": {
+        "method": "unchanged scenery bytes"
+      }
+    }
+  ]
+}

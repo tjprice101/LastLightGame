@@ -1,0 +1,670 @@
+{
+  "asset_count": 28,
+  "assets": [
+    {
+      "incoming": "Duplex Heart.png",
+      "asset": "duplex-heart",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Duplex Heart.png",
+      "source_sha256": "352ea9da293baf8bd3640cafba3e7dcade3c206d446949412c9694a6571a9923",
+      "runtime": "public\\assets\\conduits\\duplex-heart.png",
+      "runtime_sha256": "c7a6374333494b3106bd8deae69de116dbdee1cee795fda0ee2dbea2b068eea5",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          38,
+          244,
+          187
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Spearwheel Engine.png",
+      "asset": "spearwheel-engine",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Spearwheel Engine.png",
+      "source_sha256": "107c7e24e6ea15c060594fa9e2bf3714118ed6079c4d4b7aedbe91d70a6c861c",
+      "runtime": "public\\assets\\conduits\\spearwheel-engine.png",
+      "runtime_sha256": "c5753db4463d78c5ba4da35d67c95741c31d00c36a61bd4342108eb2e632b091",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          83,
+          236,
+          183
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Falcon Sight.png",
+      "asset": "falcon-sight",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Falcon Sight.png",
+      "source_sha256": "ed220ec264018402fa3faf69d215ccdef5df2c0e131f93572c2ff85a2d4a2919",
+      "runtime": "public\\assets\\conduits\\falcon-sight.png",
+      "runtime_sha256": "2afe67d6a7d177596da4fa7ef7778c67c1d700b7be5788a1b7ad1d9deca6a3b2",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          160,
+          216,
+          185
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Aegis Capacitor.png",
+      "asset": "aegis-capacitor",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Aegis Capacitor.png",
+      "source_sha256": "e1700f545df79c61c4a52699819d602f6abf13c51a5711caf97aefc1280f1c6c",
+      "runtime": "public\\assets\\conduits\\aegis-capacitor.png",
+      "runtime_sha256": "a0a88a2f4c5b0363c7df52399f46149911a78c7674023814646e768368513db3",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          24,
+          242,
+          202
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Springwell Pump.png",
+      "asset": "springwell-pump",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Springwell Pump.png",
+      "source_sha256": "16a8d34e6f2af4386ebffbe31f3b785934224f017acbb447715a78d1d5912afe",
+      "runtime": "public\\assets\\conduits\\springwell-pump.png",
+      "runtime_sha256": "902780fbbb7c9e6950ac33865af961514c3d2e736dfab40639995e59973542cf",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          104,
+          249,
+          191
+        ],
+        "radius": 30,
+        "foreground_ellipses": [
+          [
+            0.25,
+            0.4,
+            0.67,
+            0.77
+          ]
+        ],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Worldbreaker Drive.png",
+      "asset": "worldbreaker-drive",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Worldbreaker Drive.png",
+      "source_sha256": "8183216b7e1587c651cfb8a91136d076804e86135c23b64896e5635dc68270d2",
+      "runtime": "public\\assets\\conduits\\worldbreaker-drive.png",
+      "runtime_sha256": "2eb47dd43b184134e93171c19b72afa44d3d6c115cecf9a54fc23346366b67cf",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          153,
+          202,
+          179
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Immortal Vessel.png",
+      "asset": "immortal-vessel",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Immortal Vessel.png",
+      "source_sha256": "5d11816f795c286ead8c25c477036c01126f3c53c68ce8847426f3c1e3653437",
+      "runtime": "public\\assets\\conduits\\immortal-vessel.png",
+      "runtime_sha256": "d3ef7849ea21b7f3deedd91bf25eae80c312fdd875b8d61b7c73d7015be793a0",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          91,
+          187,
+          174
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Citadel Spine.png",
+      "asset": "citadel-spine",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Citadel Spine.png",
+      "source_sha256": "029a0b1a6cd02fc969a33b5b92e438ed1ea8f485b8c14b0dd630ee370c542113",
+      "runtime": "public\\assets\\conduits\\citadel-spine.png",
+      "runtime_sha256": "0d20ebf2a28c01eb78a08d402ac09906ff1a0bdefd26eb7e77da3941d07aff81",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          129,
+          164,
+          139
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Astral Prism.png",
+      "asset": "astral-prism",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Astral Prism.png",
+      "source_sha256": "148d252a6b8b84b722716300b985e7fe709e6bfdfe06cf96a0286c3bff2fe21c",
+      "runtime": "public\\assets\\conduits\\astral-prism.png",
+      "runtime_sha256": "f08dd4ab07ff354786979243bb91e736926ee21ae44ab7e4b54de1ddcaf3714f",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          158,
+          201,
+          180
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Judgment Lens.png",
+      "asset": "judgment-lens",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Judgment Lens.png",
+      "source_sha256": "b6f5bba3151e7200f5536bfafd7ab6d6a00e6ea5146033c48dde4290687b49c0",
+      "runtime": "public\\assets\\conduits\\judgment-lens.png",
+      "runtime_sha256": "c2a2d671a6247968de2254f69828fcf70b808866fbcfeb10497b289d9dc4c888",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          46,
+          252,
+          225
+        ],
+        "radius": 30,
+        "foreground_ellipses": [
+          [
+            0.37,
+            0.4,
+            0.64,
+            0.63
+          ]
+        ],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Infernic - Phoenix Reactor.png",
+      "asset": "infernic-phoenix-reactor",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Infernic - Phoenix Reactor.png",
+      "source_sha256": "b56add5fd1a5dbb1019e6b64748d92358234c05d9392521bc488892bec7808c0",
+      "runtime": "public\\assets\\conduits\\infernic-phoenix-reactor.png",
+      "runtime_sha256": "9c075a1a7b1c61917e2fc29f6c380a17eb60e8d980289d8fa77ee34fd77d3cb4",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          63,
+          189,
+          157
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Aquatic - Leviathan Pump.png",
+      "asset": "aquatic-leviathan-pump",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Aquatic - Leviathan Pump.png",
+      "source_sha256": "69951c08b7217d391d6f745573b6af5e8b258d5974da4dfcf7c78f87f5a90844",
+      "runtime": "public\\assets\\conduits\\aquatic-leviathan-pump.png",
+      "runtime_sha256": "20ca7bcf98f965824d9bdf8b1a801498eb7870a485ec36fea67b891712b1035c",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          110,
+          226,
+          191
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Tectonic - Atlas Bastion.png",
+      "asset": "tectonic-atlas-bastion",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Tectonic - Atlas Bastion.png",
+      "source_sha256": "ad52e51b099c1710a4cecd168a6bdff44ee36fa86b0f096e4469acd2da0a28ef",
+      "runtime": "public\\assets\\conduits\\tectonic-atlas-bastion.png",
+      "runtime_sha256": "8f483e5416b042528d40dbffce4a36b16c883c7f7bb01553981d858145532623",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          69,
+          236,
+          197
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Efflorescent - Worldtree Heart.png",
+      "asset": "efflorescent-worldtree-heart",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Efflorescent - Worldtree Heart.png",
+      "source_sha256": "d154d0660872ddccf04830f64225266b8982bd7d7c3aa2e801fc2ae93c2782bd",
+      "runtime": "public\\assets\\conduits\\efflorescent-worldtree-heart.png",
+      "runtime_sha256": "cba684b33bada5889bbe7a39c766a9fcb1e82656778e297bfe559a41324435a4",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          162,
+          220,
+          167
+        ],
+        "radius": 60,
+        "foreground_ellipses": [
+          [
+            0.28,
+            0.32,
+            0.72,
+            0.65
+          ]
+        ],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        },
+        "minimum_background_blue": 145
+      }
+    },
+    {
+      "incoming": "Voltaic - Thunderbird Coil.png",
+      "asset": "voltaic-thunderbird-coil",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Voltaic - Thunderbird Coil.png",
+      "source_sha256": "52038dad3d0fbc52c2fa803a72e482541dc5604722806443e1a0afb98fd24899",
+      "runtime": "public\\assets\\conduits\\voltaic-thunderbird-coil.png",
+      "runtime_sha256": "086d7790eb2ab0983dddb5c113bb242201360df17f7445cd8349b65ca14092b8",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          78,
+          234,
+          193
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        },
+        "reviewed_bottom_frame_rows": 2
+      }
+    },
+    {
+      "incoming": "Atmospheric - Griffin Turbine.png",
+      "asset": "atmospheric-griffin-turbine",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Atmospheric - Griffin Turbine.png",
+      "source_sha256": "25b6d5e597ee2a8fa323b51374d9f657a38e5ce2a73becbdf30c0a3f49223882",
+      "runtime": "public\\assets\\conduits\\atmospheric-griffin-turbine.png",
+      "runtime_sha256": "10bb480947c39c808be5ee3be534389e8eab43c7b32c3bb641c021e5b0873e2c",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          69,
+          231,
+          217
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Luminous - Seraph Mirror.png",
+      "asset": "luminous-seraph-mirror",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Luminous - Seraph Mirror.png",
+      "source_sha256": "5347ec581d0837bcb281940e14568f15ae2f182e58be044bbb5977d094084e45",
+      "runtime": "public\\assets\\conduits\\luminous-seraph-mirror.png",
+      "runtime_sha256": "7e53b453c0878d11e3ae45e3bc1a7edbf16889a6f869d2911d7c8e9594107260",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          174,
+          229,
+          188
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Ominous - Eclipse Mantle.png",
+      "asset": "ominous-eclipse-mantle",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Ominous - Eclipse Mantle.png",
+      "source_sha256": "992fbeaccf0a51206df13c0b232b28c1cd7749ceae24c84f16b397d1afdf3872",
+      "runtime": "public\\assets\\conduits\\ominous-eclipse-mantle.png",
+      "runtime_sha256": "7c92463ff5018f62326b53b96e3db77d2372f5f05dc80ac4e2d8916ac9b8ec45",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          77,
+          133,
+          102
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Tranquilitic - Kirin Cradle.png",
+      "asset": "tranquilitic-kirin-cradle",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Tranquilitic - Kirin Cradle.png",
+      "source_sha256": "e736e1ce903b05e968515d1cdb4c0ec6c68ee9bc1085681808a3fbdc18a854d6",
+      "runtime": "public\\assets\\conduits\\tranquilitic-kirin-cradle.png",
+      "runtime_sha256": "423384b0e42ff606f6ffdf8286af6900fd04cbdc61bde82a016416ff57b24190",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          110,
+          203,
+          177
+        ],
+        "radius": 30,
+        "foreground_ellipses": [
+          [
+            0.39,
+            0.46,
+            0.63,
+            0.7
+          ]
+        ],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Chaotic - Ouroboros Core.png",
+      "asset": "chaotic-ouroboros-core",
+      "category": "conduits",
+      "source": "Art\\source\\machines\\conduits\\Chaotic - Ouroboros Core.png",
+      "source_sha256": "6eafec6247f2cd56ea5ea750da7ef4d92eedfa9b8f6595535b241c4b88b2bf74",
+      "runtime": "public\\assets\\conduits\\chaotic-ouroboros-core.png",
+      "runtime_sha256": "3cf3faf22378b8fb3d90a7fc821e89e34f4c63133ee9cb754f15cfb8b0b353cc",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          100,
+          171,
+          136
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      }
+    },
+    {
+      "incoming": "Fractured Watcher.png",
+      "asset": "fractured-watcher",
+      "category": "enemies",
+      "source": "Art\\source\\machines\\enemies\\Fractured Watcher.png",
+      "source_sha256": "2343e5e4b2888c08020fb5fe0aea1a7378cda20e28b239106cb6c051bfa82d2f",
+      "runtime": "public\\assets\\enemies\\fractured-watcher.png",
+      "runtime_sha256": "f552e0bba4ae396addc0866b027562fa4b04cfc249fe2822a64db129c6bd64bd",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          172,
+          211,
+          70
+        ],
+        "radius": 30,
+        "foreground_ellipses": [
+          [
+            0.34,
+            0.24,
+            0.5,
+            0.39
+          ]
+        ],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Ashwing Harrier.png",
+      "asset": "ashwing-harrier",
+      "category": "enemies",
+      "source": "Art\\source\\machines\\enemies\\Ashwing Harrier.png",
+      "source_sha256": "599d574b978969c9dfd3bdeff02da50cf309a9a5e2e0aa8eef4228fdbcb0a2d1",
+      "runtime": "public\\assets\\enemies\\ashwing-harrier.png",
+      "runtime_sha256": "e3bc0c409f1e0f841c01815399eed4609cb896720afa732437a77d3d47645be7",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          33,
+          179,
+          165
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "source_facing": "right"
+    },
+    {
+      "incoming": "Ivory Kirin.png",
+      "asset": "ivory-kirin",
+      "category": "enemies",
+      "source": "Art\\source\\machines\\enemies\\Ivory Kirin.png",
+      "source_sha256": "e04a5c8ed684e3a2239e8771b82084bb39b7ae8b13cba870310e39b151a4939b",
+      "runtime": "public\\assets\\enemies\\ivory-kirin.png",
+      "runtime_sha256": "85483f791d226f2a4f8e2d2c6d301e852ea721c8ee83896237eefb86b12f596f",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          105,
+          177,
+          152
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Celestial Leviathan.png",
+      "asset": "celestial-leviathan",
+      "category": "enemies",
+      "source": "Art\\source\\machines\\enemies\\Celestial Leviathan.png",
+      "source_sha256": "1b802c153e5ea98855b45cf4acae4bd3cec63ab48fd76025006e07b71a542d48",
+      "runtime": "public\\assets\\enemies\\celestial-leviathan.png",
+      "runtime_sha256": "3685e8eae07442afa2f0538ae494b07414ab6e5b47a9f1cdde65b1296fd3a596",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          91,
+          120,
+          99
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "source_facing": "right"
+    },
+    {
+      "incoming": "Crowned Phoenix.png",
+      "asset": "crowned-phoenix",
+      "category": "enemies",
+      "source": "Art\\source\\machines\\enemies\\Crowned Phoenix.png",
+      "source_sha256": "82226d592d89a53d6fa358cd892611e7e87636978f2d2179aba7441a3c271e51",
+      "runtime": "public\\assets\\enemies\\crowned-phoenix.png",
+      "runtime_sha256": "c3adf5ae1b39bb5b6361704789a358cdccceeebf3486c1046de0185adb35a871",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          104,
+          137,
+          118
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "source_facing": "front"
+    },
+    {
+      "incoming": "Ouroboros of the First Dawn.png",
+      "asset": "ouroboros-first-dawn",
+      "category": "enemies",
+      "source": "Art\\source\\machines\\enemies\\Ouroboros of the First Dawn.png",
+      "source_sha256": "b87efae6fdcf6b3f2b7752b005ab5d58c8b6cfc8aa475220fb61a8437f724d21",
+      "runtime": "public\\assets\\enemies\\ouroboros-first-dawn.png",
+      "runtime_sha256": "893f8a4744e513709ed632b4aa3eeed1ff94a02f296d56a7f68941238ab2e6de",
+      "processing": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          61,
+          152,
+          145
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "source_facing": "left"
+    },
+    {
+      "incoming": "Machine Mode header.png",
+      "asset": "machines-banner",
+      "category": "banners",
+      "source": "Art\\source\\machines\\banners\\Machine Mode header.png",
+      "source_sha256": "22fa501b3cf3e970a595d17334ae2e694c6ab10e16213dfe34148ed0a788e799",
+      "runtime": "public\\assets\\banners\\machines-banner.png",
+      "runtime_sha256": "22fa501b3cf3e970a595d17334ae2e694c6ab10e16213dfe34148ed0a788e799",
+      "processing": {
+        "method": "scenery copied byte-for-byte"
+      }
+    },
+    {
+      "incoming": "Machine Mode Battle Arena.png",
+      "asset": "machines-arena",
+      "category": "backgrounds",
+      "source": "Art\\source\\machines\\backgrounds\\Machine Mode Battle Arena.png",
+      "source_sha256": "414546a5a2c59e6e6b34e137932b292298bd606a5f936ed8b42ed0ae240d9acb",
+      "runtime": "public\\assets\\backgrounds\\machines-arena.png",
+      "runtime_sha256": "414546a5a2c59e6e6b34e137932b292298bd606a5f936ed8b42ed0ae240d9acb",
+      "processing": {
+        "method": "scenery copied byte-for-byte"
+      }
+    }
+  ]
+}

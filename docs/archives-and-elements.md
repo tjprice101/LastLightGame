@@ -5,9 +5,9 @@
 Home's **Archives** shortcut opens one submenu containing three gallery choices,
 each with its own banner header:
 
-- **Character Archive:** all three authored Element-Bearers with separate cards for
-  every evolution (18 forms), plus24 fixed Heaven/Abyss/Treasury/Sanctuary
-  captured forms (42 total),
+- **Character Archive:** all13 authored Element-Bearers with separate cards for
+  every evolution (78 forms), plus30 fixed Heaven/Abyss/Treasury/Sanctuary/Roselius
+  captured forms (108 total),
   including names, stars, rarity and combat kits.
   Unowned characters and unreached evolutions use the same solid black
   silhouettes, dark card background and subtle radial backdrop as undiscovered
@@ -27,14 +27,19 @@ each with its own banner header:
   are fixed by acquired form, not level/evolution. Cards display owned-copy
   counts and explicitly labeled reference-level stats/kits, not a pretend
   aggregate of independently leveled/equipped copies.
-- **Conduit Archive:** all five Common mechanisms, saved copy counts, effects,
-  lore, power source and store prices. Supplied Common icon art is shown.
+- **Conduit Archive:** all25 Common/Rare/Legendary/Omnic mechanisms, saved copy
+  counts, effects, lore, power source and acquisition information. Owned names
+  show their supplied art in color; unowned/zero-count names use black silhouettes
+  with a subtle neutral outline (D-141). Unavailable saves keep artwork
+  silhouetted and explicitly report unavailable ownership. Only the artwork is
+  darkened: rarity badges, names/effects and five-square upgrade meters remain
+  readable. Store/equipment/reward artwork is unchanged; browsing grants nothing.
 - **Creature Glossary:** the existing discovery-gated gallery, activity filter
   and stage-specific loot tables. Unseen creatures retain hidden names, elements
   and silhouettes; encounter reveals identity/element, defeat reveals loot.
 
-Inventory and Character also link to Archives. It remains under Inventory in
-the seven-destination bottom navigation, not a new main tab.
+Home's Collections destination contains these three galleries (D-080).
+Inventory contains holdings only; there is no bottom navigation bar.
 The old internal `glossary` page still opens Archives on the Creature gallery.
 Changing galleries preserves the current activity/loot selections.
 Missing/corrupt saves explicitly report unavailable ownership/discoveries;
@@ -59,7 +64,7 @@ meaning or shape of an element.
 | All Dawnthorn Slime forms / Soar to Heaven | Tranquilitic / Peace |
 | All Wraththorn Slime forms / Delve into the Abyss | Chaotic / Dark Matter/Energy |
 
-Future Fractalis slimes are Luminous; future Lycalis wisps are Tranquilitic
+Future Prismatica slimes are Luminous; future Null-Prismatica wisps are Tranquilitic
 (modes/definitions are deferred to Phases9/10).
 
 Enemy nameplates show the canonical name and affinity in a compact second line.
@@ -72,13 +77,21 @@ are introduced.
 still drop materials from its original five-element infusion pool; Abyss retains
 its own original pool. `Creature.element` now always identifies combat typing,
 while optional `dungeonElement` selects a dungeon loot table.
-Adventure still drops only Fractalis. Stage gates, chances and amounts are
+Adventure still drops only Prismatica. Stage gates, chances and amounts are
 unchanged by elemental typing. Heaven/Abyss/Treasury/Sanctuary grant20% captures.
-Heaven/Abyss and Sanctuary award independent Lycalis drops; Treasury only
-awards mission Fractalis. Sanctuary shares Tranquilitic combat typing but not
+Heaven/Abyss and Sanctuary award independent Null-Prismatica drops; Treasury only
+awards mission Prismatica. Sanctuary shares Tranquilitic combat typing but not
 Heaven's evolution-material/fodder routing. See [capture rules](dungeons-and-captures.md).
 
 ## Code and extension points
+
+D-096 keeps card status text concise: Not owned, Reached form, Evolution not
+reached, Current form/level, Encountered or Defeated. Rendering descriptions
+(Silhouette, Art locked/revealed, Loot locked/revealed) are not card suffixes.
+Other-form stats still say Level 0 preview; shared Information explains gear
+and reveal rules. All silhouette styling, filters, unavailable-save reporting
+and loot gating remain unchanged. See
+[wording contract](menus-and-inventory.md#concise-status-wording-d-096).
 
 - `src/presentation/archives.ts` / `.css`: unified gallery presentation/bindings.
 - `src/presentation/element-label.ts` / `.css`: accessible common element label.

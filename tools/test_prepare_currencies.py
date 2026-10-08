@@ -11,7 +11,8 @@ class CurrencyArtTests(unittest.TestCase):
         for name, asset in CURRENCIES.items():
             with self.subTest(asset=asset):
                 source = ROOT / "Art" / "source" / "currencies" / f"{name}.png"
-                actual = Image.open(ROOT / "public" / "assets" / "currencies" / f"{asset}.png")
+                historical = ROOT / "Art" / "source" / "currencies" / "previous-runtime" / f"{asset}.png"
+                actual = Image.open(historical if historical.exists() else ROOT / "public" / "assets" / "currencies" / f"{asset}.png")
                 expected = prepare_currency_sprite(source, asset)
                 self.assertEqual(actual.mode, "RGBA")
                 self.assertEqual(actual.size, (256, 256))
@@ -47,6 +48,9 @@ class CurrencyArtTests(unittest.TestCase):
             record = next(entry for entry in records if entry["asset"] == asset)
             for category in ("source", "runtime"):
                 path = ROOT / record[category]
+                historical = ROOT / "Art" / "source" / "currencies" / "previous-runtime" / f"{asset}.png"
+                if category == "runtime" and historical.exists():
+                    path = historical
                 self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), record[f"{category}_sha256"])
 
 

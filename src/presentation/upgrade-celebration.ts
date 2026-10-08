@@ -1,6 +1,7 @@
 import { type Starter } from '../content/starters';
 import { type CharacterProgress } from '../content/progression';
 import { reducedMotion } from './settings';
+import { characterName } from '../content/character-art';
 
 export type UpgradeKind = 'level' | 'evolve';
 const active = new WeakMap<HTMLElement, () => void>();
@@ -9,7 +10,7 @@ export function upgradeCelebration(starter: Starter, kind: UpgradeKind, progress
   return `<span class="upgrade-aura" aria-hidden="true"><span class="upgrade-aura-ring"></span>
     ${Array.from({ length: kind === 'evolve' ? 12 : 6 }, (_, index) =>
       `<span class="upgrade-spark" style="--angle:${index * (kind === 'evolve' ? 30 : 60)}deg;--delay:${index % 3 * 80}ms"></span>`).join('')}</span>
-    <span class="upgrade-celebration-label" role="status">${starter.name}<strong>${kind === 'evolve' ? 'Evolution complete' : 'Level up'}</strong><span>${kind === 'evolve' ? `Evolution ${progress.evolution}` : `Level ${progress.level}`}</span></span>`;
+    <span class="upgrade-celebration-label" role="status">${characterName(starter.id, progress.evolution)}<strong>${kind === 'evolve' ? 'Evolution complete' : 'Level up'}</strong><span>${kind === 'evolve' ? `Evolution ${progress.evolution}` : `Level ${progress.level}`}</span></span>`;
 }
 
 export function celebrateUpgrade(host: HTMLElement, starter: Starter, kind: UpgradeKind, progress: CharacterProgress): void {

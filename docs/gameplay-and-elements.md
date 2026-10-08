@@ -13,11 +13,18 @@ Phases6/7. See [creature infusion](evolution-fodder.md) and the
 Gameplay is a new primary sanctuary tab alongside Home, Character Upgrades and
 Events, superseding the earlier exactly-three-screen layout.
 It groups **Adventure**, **Elemental material dungeons**, **Evolution infusion**,
-**Story**, and **Events**, with category links to each section.
+**Currency farms**, **Awaken the Machines**, **Story**, and **Events**, with category links to each section.
+The [machine activity](awaken-the-machines.md) has100 stages10-120 (D-139),
+per-kill Conduits and stage-growing Broken Mechanical Components for upgrades,
+not capture/evolution infusion/material/premium rewards. Omnic drops from75;
+other activities' stage counts stay unchanged.
 Home retains the compact Adventure shortcut and adds a Gameplay shortcut.
 Adventure quit ends the run and returns to Gameplay; each new entry starts at wave 1.
 Settings still retains an active run. Story returns to Gameplay.
-Events remains a primary tab as well as a Gameplay category, with no active rewards.
+Events remains a primary tab as well as a Gameplay category.
+[Passion of Crimson Roses](crimson-roses.md) is its first playable event:
+35 stages80-140, Rosethorn materials and20% captures only through enemy Lv.120.
+Existing mode tables/growth/costs below retain their prior120 caps.
 
 ## Canonical elements and dungeons
 
@@ -50,8 +57,8 @@ elemental damage bonuses, resistances, or revised battle balance.
   Stage 35 = 120. Invalid/fractional stages throw, never clamp silently.
 - Material unlock **enemy levels**, upgrade costs, enemy stat endpoints and
   ability schedules are preserved. Quantities and chances now increase with level.
-- First-pass encounters use supplied Infernic/Aquatic/Efflorescent/Tranquilitic/Voltaic enemy order
-  and arenas. The other five use all eight named enemies from their existing
+- First-pass encounters use supplied Infernic/Aquatic/Efflorescent/Tranquilitic/Voltaic/Luminous/Tectonic enemy order
+  and arenas. The other three use all eight named enemies from their existing
   art prompt packs, with neutral enemy shapes and element-accented arenas until
   art is supplied. No other element's artwork is reused. Two enemies per ordinary
   stage; one stronger boss every fifth stage.
@@ -89,6 +96,40 @@ elemental damage bonuses, resistances, or revised battle balance.
   hidden damage multiplier. Keep Adventure's independent wave formula unchanged.
 
 ### Pending artwork and reward integration
+
+All ten elemental dungeon art packs are now supplied and registered.
+Valley of Solitude's Ominous pack completes the intake (D-089): eight enemies,
+six materials, banner and arena. Shared wiring reaches battle/cut-ins,
+Collections, materials/loot/inventory/costs and activity reward previews.
+All35 stages, names/order, Umbral Strike, stats/schedules, rewards and
+discovery IDs remain unchanged.
+See [intake workflow](art-workflow.md#valley-of-solitude-intake-d-089).
+Neutral missing-art fallbacks remain available for future unregistered packs.
+
+Sky-bound Rift's Atmospheric pack is supplied (D-088): eight enemies, six
+materials, banner and arena. Shared registration wires battle/cut-ins,
+Collections, material loot/inventory/costs and activity reward previews.
+All35 stages, enemy order/names, Gale Strike, stats, schedules, drop rules
+and discovery IDs remain unchanged.
+See [intake workflow](art-workflow.md#sky-bound-rift-intake-d-088).
+
+Ruins of Chaos's Chaotic pack is supplied (D-087): eight enemies, six materials,
+banner and arena. Shared registration wires field/cut-ins, Collections, loot,
+inventory, costs and activity previews. All35 stages, enemy order/names,
+Rift Strike, stats, schedules, drop rules and discovery IDs remain unchanged.
+See [intake workflow](art-workflow.md#ruins-of-chaos-intake-d-087).
+
+Precipice of the Earth's Tectonic pack is supplied (D-086): eight enemies, six
+materials, banner and arena. Shared art registration reaches all existing
+encounter/menu/loot/progression surfaces without changing stages, stats, names,
+ability schedules, drop odds or discovery IDs.
+See [intake workflow](art-workflow.md#precipice-of-the-earth-intake-d-086).
+
+Lustrous River's Luminous pack is supplied (D-085): eight enemies, six material
+cutouts, header and arena. Registry wiring reaches encounters, skill cut-ins,
+Collections, activity reward showcases, loot, inventory and progression costs.
+Names/order, discovery IDs, stats, schedules, drops and35 stages remain unchanged.
+See [export/intake](art-workflow.md#lustrous-river-intake-d-085).
 
 Gameplay is independent of art availability. [Enemy lineups](../src/content/dungeon-enemies.ts)
 hold the named roster; [art manifest](../src/content/dungeon-art.ts) registers
@@ -153,7 +194,7 @@ so final quantities are only triple baseline, not the earlier oversized payouts.
 
 These rolls are independent, so multiple rarities may drop together.
 Bosses use the same per-enemy table, no hidden multiplier or pity.
-Fractalis per enemy scales from 5-10 at Lv1 to 15-30 at Lv120 in every mode:
+Prismatica per enemy scales from 5-10 at Lv1 to 15-30 at Lv120 in every mode:
 `minimum = 5 + floor(10*((L-1)/119)^2)`, maximum = twice minimum.
 Adventure remains endless, with loot/stats capped at enemy Lv120.
 Enemy-death loot bursts now visually show the exact saved reward stacks with
@@ -180,7 +221,7 @@ rarities:
 | Evo.4 -> Evo.5 | Rare + Epic |
 | Evo.5 -> Evo.6 | Epic + Legendary |
 
-Every transition requires **Fractalis**. Phase7 also requires captured creatures
+Every transition requires **Prismatica**. Phase7 also requires captured creatures
 from the mapped mode for Evo3->4 onward:1/2/3 copies of form3+/4+/5+,
 supplementing all existing costs. Earlier transitions consume no creatures.
 "Common only" restricts the elemental
@@ -194,8 +235,8 @@ Quantities/costs and Lv.0 start are now defined in
 Six-form caps are now 30/45/60/75/90/105; evolution preserves level. Stats follow
 an accelerating cubic core-stat curve with separate bounded skill/passive
 strength. This supersedes the old reset-to-0 and repeated level-30 caps.
-The first account Fracture grants +10 saved Lycalis once.
-No later Fracture Lycalis rewards assumed. See [growth rules](units-and-progression.md).
+The first account Fracture grants +10 saved Null-Prismatica once.
+No later Fracture Null-Prismatica rewards assumed. See [growth rules](units-and-progression.md).
 
 ## Two infusion modes
 
@@ -264,7 +305,7 @@ This is a drop reference, not capture/pity or a second source of rewards.
   LegendaryLv100/Stage18, OmnicLv115/Stage31. Chances grow from15%/6%/2%
   to85%/65%/40%; successful final stacks are3-6 for each rarity.
   Each successful rarity roll chooses **one** of the mode's five elements uniformly,
-  not every element. Final Fractalis is15-30. Phase6 adds20% captures per kill,
+  not every element. Final Prismatica is15-30. Phase6 adds20% captures per kill,
   ordinary enemies and bosses alike; no guaranteed rare pool or pity.
   Enemy-death stacks vary visually from75-135% size, with randomized scatter and
   independent850-1849ms automatic pickup. Reduced motion keeps a static650ms
@@ -276,7 +317,7 @@ This is a drop reference, not capture/pity or a second source of rewards.
   remain on defeat/exit; active encounters are not restored after reload.
 - Existing elemental recipes remain, plus5 specialty evolution items for4->5,
   10 for5->6 and1 specialty leveling item for every Evo5/6 level.
-  Weapon destination rank R costs100R Fractalis and5R matching weapon materials,
+  Weapon destination rank R costs100R Prismatica and5R matching weapon materials,
   maximum10; Attack is grown Attack times `1+.02*rank`.
   Specialty spending follows affinity, not entry restrictions. All current
   starters use Heaven materials; Abyss helpers already cover its five elements.

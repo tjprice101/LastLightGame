@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, ownedProgress, saveAccount, saveAccountRewards, unlockedStage, upgradeCharacter, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { act, createDungeonBattle, endTurn } from './battle';
-import { evolutionCost, levelCost } from '../content/progression';
+import { characterLevelCap, evolutionCost, levelCost } from '../content/progression';
 import { playableDungeons } from '../content/dungeons';
 
 function storage(): ProfileStorage {
@@ -24,6 +24,21 @@ function funded(saved: ProfileStorage) {
 }
 
 describe('persistent progression transactions', () => {
+  it.each([1, 2, 3, 4, 5])('requires the exact current level cap before evolution %i advances', (evolution) => {
+    const saved = storage();
+    const account = funded(saved);
+    const cap = characterLevelCap(evolution);
+    account.characters.ember = { level: cap - 1, evolution };
+    saveAccount(saved, account);
+    const before = saved.getItem(ACCOUNT_KEY);
+    const fodder = evolution >= 3 ? account.capturedCharacters!.slice(0, evolution - 2).map((copy) => copy.instanceId) : [];
+    expect(() => upgradeCharacter(saved, 'ember', 'evolve', account.characters.ember!, fodder)).toThrow('cap');
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
+    account.characters.ember.level = cap;
+    saveAccount(saved, account);
+    const evolved = upgradeCharacter(saved, 'ember', 'evolve', account.characters.ember, fodder);
+    expect(evolved.characters.ember).toMatchObject({ level: cap, evolution: evolution + 1 });
+  });
   it('migrates v2 stage progress once without losing any account data or writing during load', () => {
     const saved = storage();
     const legacy = {
@@ -142,7 +157,7 @@ describe('persistent progression transactions', () => {
   it('rejects missing resources and early evolution without touching the save', () => {
     const saved = storage();
     const before = saved.getItem(ACCOUNT_KEY);
-    expect(() => upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 })).toThrow('Fractalis');
+    expect(() => upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 })).toThrow('Prismatica');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     const account = funded(saved);
     expect(() => upgradeCharacter(saved, 'ember', 'evolve', { level: 0, evolution: 1 })).toThrow('cap');
@@ -179,7 +194,7 @@ describe('persistent progression transactions', () => {
 });
 
 describe('dungeon reward commits', () => {
-  it('grants materials, Fractalis and stage unlocks together, deduplicates retries and allows fresh runs', () => {
+  it('grants materials, Prismatica and stage unlocks together, deduplicates retries and allows fresh runs', () => {
     const saved = storage();
     const state = createDungeonBattle('infernic', 1, 1729, 'ember', { level: 0, evolution: 1 });
     state.enemies.forEach((enemy) => { enemy.hp = 1; });

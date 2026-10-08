@@ -22,7 +22,7 @@ export function gestureGuide(state: BattleState, actor: Combatant): string {
         <span class="gesture-arrow">${arrow}</span>${isStarterId(starterId) ? abilityIcon(starterId, action) : ''}
         <strong>${label}</strong><small>${reason ? 'Unavailable' : action === 'light' ? `+${shatterGauge.gains.light} Gauge` : `${shatterGauge.costs[action]} Gauge`}</small></span>`;
     }).join('')}<span class="gesture-center" aria-hidden="true">DRAG</span>
-    <span class="gesture-status" role="status">Choose a direction / Release near center to cancel</span>`;
+    <span class="gesture-status" role="status">Choose a direction ~ Release near center to cancel</span>`;
 }
 
 export function updateGestureGuide(guide: HTMLElement, state: BattleState, actor: Combatant, action: Exclude<ActionId, 'defend'> | null): void {
@@ -33,5 +33,5 @@ export function updateGestureGuide(guide: HTMLElement, state: BattleState, actor
   const status = guide.querySelector('.gesture-status');
   if (!status) throw new Error('Gesture status is missing.');
   const name = action === null ? 'Choose a direction' : action === 'light' ? 'Normal Attack' : actor.kit.abilities[action].name;
-  status.textContent = `${name} / ${action ? actionUnavailable(state, actor, action) ?? 'Release to use' : 'Release near center to cancel'}`;
+  status.textContent = `${name} ~ ${action ? actionUnavailable(state, actor, action) ?? 'Release to use' : 'Release near center to cancel'}`;
 }

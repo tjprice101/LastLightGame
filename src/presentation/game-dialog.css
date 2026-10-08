@@ -1,0 +1,41 @@
+.game-dialog {
+  width: min(620px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  box-sizing: border-box;
+  overflow: auto;
+  padding: clamp(20px, 4vw, 40px);
+  border: 1px solid #ffffff50;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #252525, #101010);
+  color: #f1f0e9;
+  font-family: Georgia, serif;
+  box-shadow: 0 24px 100px #000b;
+}
+.game-dialog::backdrop { background: #000c; }
+.game-dialog h2 { margin: 0 0 18px; overflow-wrap: anywhere; }
+.game-confirm-message { white-space: pre-wrap; line-height: 1.6; overflow-wrap: anywhere; }
+.game-dialog-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+.game-dialog button { min-height: 48px; min-width: 48px; }
+.game-dialog button:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.game-dialog .game-destructive { border: 2px solid #fff; }
+.game-dialog[hidden], .game-dialog [hidden] { display: none !important; }
+.reward-screen { width: min(850px, calc(100vw - 24px)); text-align: center; }
+.reward-screen[open] { display: flex; flex-direction: column; }
+.reward-content { min-height: 0; overflow-y: auto; overflow-x: hidden; }
+.reward-screen::backdrop { background: #050505f5; }
+.reward-stage { position: relative; display: grid; place-items: center; min-height: min(400px, 45dvh); isolation: isolate; }
+.reward-art { position: relative; z-index: 1; width: min(100%, 430px); height: min(400px, 45dvh); }
+.reward-art img { width: 100%; height: 100%; object-fit: contain; }
+.reward-art .character-idle { display: block; width: 100%; height: 100%; animation: none; }
+.reward-art > .conduit-icon-frame { width: 100%; height: 100%; }
+.reward-halo { position: absolute; width: min(360px, 65vw); aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--reward-accent, #fff); box-shadow: 0 0 60px var(--reward-accent, #fff), inset 0 0 40px #ffffff30; opacity: .45; }
+.reward-portal { position: absolute; width: min(180px, 35vw); aspect-ratio: 1; border: 3px solid #fff; transform: rotate(45deg); box-shadow: 0 0 65px var(--reward-accent, #fff), inset 0 0 45px var(--reward-accent, #fff); }
+.reward-portal::before, .reward-portal::after { content: ''; position: absolute; inset: -24px; border: 1px solid var(--reward-accent, #fff); }
+.reward-portal::after { inset: 20px; transform: rotate(45deg); background: #fff; box-shadow: 0 0 45px #fff; }
+.reward-details { line-height: 1.6; overflow-wrap: anywhere; }
+.reward-details .character-rating { justify-content: center; }
+.reward-details .conduit-icon-frame { width: 80px; height: 80px; display: inline-flex; vertical-align: middle; }
+.reward-screen .game-dialog-actions { justify-content: center; flex-shrink: 0; margin-top: 16px; padding-top: 12px; border-top: 1px solid #ffffff26; }
+.reward-animation-label { font-size: clamp(20px, 4vw, 32px); margin: 14px 0; }
+@media (prefers-reduced-motion: reduce) { .reward-halo { box-shadow: none; } }
+body.reduced-motion .reward-halo { box-shadow: none; }

@@ -1,4 +1,5 @@
 const shapes = {
+  menu: '<path d="M4 8h16M4 16h16"/>',
   settings: '<path d="M3 6h6M13 6h8M3 12h10M17 12h4M3 18h3M10 18h11"/><circle cx="11" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="8" cy="18" r="2"/>',
   close: '<path d="m6 6 12 12M18 6 6 18"/>',
   back: '<path d="m10 5-7 7 7 7M3 12h18"/>',

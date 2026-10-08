@@ -79,7 +79,7 @@ body:has(.sanctuary-shell) { min-width: 0; }
 .sanctuary-shell .home-hub .hub-dock-button:nth-child(5) { top: 94%; }
 .sanctuary-shell .hub-dock-button .hub-symbol { width: 50px; height: 56px; border-radius: 0; border: 0; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); background: linear-gradient(#35486d, #10192e); color: var(--gold); padding: 5px; box-shadow: inset 0 0 0 2px #e8c36a33; }
 .sanctuary-shell .home-hub .hub-dock-button .hub-symbol { width: 44px; height: 50px; }
-.sanctuary-shell .hub-info, .sanctuary-shell .hub-detail, .sanctuary-shell .inventory-hub, .sanctuary-shell .feature-tile, .sanctuary-shell .story-panel { background: linear-gradient(#16213bea, #0e1630f2); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+.sanctuary-shell .hub-info, .sanctuary-shell .hub-detail, .sanctuary-shell .feature-tile, .sanctuary-shell .story-panel { background: linear-gradient(#16213bea, #0e1630f2); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
 .sanctuary-shell .hub-info { grid-column: 3; grid-row: 1; }
 .sanctuary-shell .hub-info h2 { font-size: 28px; }
 .team-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; }

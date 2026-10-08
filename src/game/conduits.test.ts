@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { conduits, type ConduitId } from '../content/conduits';
+import { commonConduits, type ConduitId } from '../content/conduits';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, purchaseConduit, saveAccount, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 
@@ -9,7 +9,7 @@ function storage(): ProfileStorage {
     removeItem: (key) => { values.delete(key); } };
 }
 describe('Conduit purchase persistence', () => {
-  it.each(conduits)('purchases $name at its exact price with one write and no unrelated mutations', (conduit) => {
+  it.each(commonConduits)('purchases $name at its exact price with one write and no unrelated mutations', (conduit) => {
     const saved = storage();
     const before = loadAccount(saved);
     before.fractalis = 20000;
@@ -32,7 +32,7 @@ describe('Conduit purchase persistence', () => {
     expect(purchaseConduit(saved, 'vigil-core').fractalis).toBe(0);
     const before = saved.getItem(ACCOUNT_KEY);
     const write = vi.spyOn(saved, 'setItem');
-    expect(() => purchaseConduit(saved, 'vigil-core')).toThrow('Not enough Fractalis');
+    expect(() => purchaseConduit(saved, 'vigil-core')).toThrow('Not enough Prismatica');
     expect(write).not.toHaveBeenCalled();
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
   });

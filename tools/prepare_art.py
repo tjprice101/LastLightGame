@@ -136,6 +136,10 @@ def supplied_cutout(asset_id):
 
 
 def prepare_sprite(source, asset_id, canvas_size=CANVAS_SIZE, content_size=CONTENT_SIZE, **matte_options):
+    replacement = starter_refresh_source(asset_id)
+    if replacement:
+        from intake_starter_refresh import load_settings, prepare
+        return prepare(replacement, load_settings()[asset_id], canvas_size, content_size)
     cutout = supplied_cutout(asset_id)
     with Image.open(cutout or source) as image:
         if cutout:
@@ -144,6 +148,18 @@ def prepare_sprite(source, asset_id, canvas_size=CANVAS_SIZE, content_size=CONTE
             return standardize_sprite(image, canvas_size, content_size)
         matte_options.setdefault("foreground_mask", pale_art_mask(image, asset_id))
         return remove_matte(image, canvas_size, content_size, **matte_options)
+
+
+def starter_refresh_source(asset_id):
+    starter_ids = {asset for category, asset in ASSETS.values() if category == "characters"}
+    if asset_id not in starter_ids:
+        return None
+    source = ROOT / "Art" / "source" / "starter-refresh" / f"{asset_id}.png"
+    if source.is_file():
+        return source
+    if (ROOT / "Art" / "starter-refresh-intake.json").exists():
+        raise FileNotFoundError(f"Installed replacement starter source is missing: {source}")
+    return None
 
 
 def connected_matte(eligible, starts):

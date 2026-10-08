@@ -6,8 +6,7 @@ Use the [shared renderer](midjourney-character-style-prompt.md) and
 with a contrasting opaque inset and one unmistakable centered symbol.
 No lettering: names are supplied by the UI.
 
-Append `--sref <approved_reference_image_url> --sw 400` using the actual approved
-reference; do not invent a URL. Suggested key colors are starting points only:
+Emblem prompts use no `--sref` or `--sw`. Suggested key colors are starting points only:
 inspect delivered colors before keying. Preserve the full frame and margin.
 Light/flame symbols use opaque painted shapes, not bloom or transparent auras.
 All emblems keep one readable style; they do not advance through rarity.
