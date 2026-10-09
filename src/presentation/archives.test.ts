@@ -8,6 +8,7 @@ import { characterArt } from '../content/character-art';
 import { sanctuaryHeader, sanctuaryContext, isMenuPage } from './sanctuary';
 import { inventoryHub, characterHub } from './hub';
 import { elementLabel } from './element-label';
+import { elementAssetIds } from '../content/element-migration';
 
 describe('unified Archives', () => {
   it('groups the three galleries with banner headers and one visible default panel', () => {
@@ -35,9 +36,9 @@ describe('unified Archives', () => {
     expect(html).toContain('Level 0 preview');
     expect(html).not.toMatch(/ \/ (Silhouette|Art locked|Art revealed|Loot locked|Loot revealed|Includes equipped Conduits)/);
     expect(html).not.toContain('Current saved stats');
-    expect(html.match(/data-archive-character=/g)).toHaveLength(108);
+    expect(html.match(/data-archive-character=/g)).toHaveLength(126);
     expect(html.match(/archive-form-revealed/g)).toHaveLength(2);
-    expect(html.match(/archive-form-locked/g)).toHaveLength(106);
+    expect(html.match(/archive-form-locked/g)).toHaveLength(124);
     for (const starter of starters) for (let evolution = 1; evolution <= 6; evolution++) {
       expect(html).toContain(`data-archive-character="${starter.id}" data-form="${evolution}"`);
       expect(html).toContain(characterArt(starter.id, evolution).title);
@@ -50,7 +51,7 @@ describe('unified Archives', () => {
     expect(account).toEqual(before);
   });
 
-  it('catalogs every Conduit with supplied artwork, effects and saved counts', () => {
+  it('catalogs every Conduit with supplied or honestly pending artwork, effects and saved counts', () => {
     const account = emptyAccount();
     account.conduits = { 'bastion-lock': 3 };
     const html = archives(account, 'conduits');
@@ -61,9 +62,10 @@ describe('unified Archives', () => {
     }
     expect(html).toContain('Owned 3');
     const conduitsSection = html.slice(html.indexOf('id="archive-conduits"'), html.indexOf('id="archive-creatures"'));
-    expect(conduitsSection).not.toContain('Artwork pending');
+    expect(conduitsSection.match(/Artwork pending/g)).toHaveLength(60);
     for (const conduit of conduits) {
-      expect(html).toContain(`assets/conduits/${conduit.art}.png`);
+      if (conduit.art) expect(html).toContain(`assets/conduits/${conduit.art}.png`);
+      else expect(html).not.toContain(`assets/conduits/${conduit.id}.png`);
     }
     const fullArchive = archives(account);
     for (const gallery of ['characters', 'conduits', 'creatures']) {
@@ -91,7 +93,7 @@ describe('unified Archives', () => {
     account.creatures['adventure:goblin'] = { defeated: false };
     const revealed = archives(account, 'creatures');
     expect(revealed).toContain('<h2>Goblin</h2>');
-    expect(revealed).toContain('data-element="efflorescent"');
+    expect(revealed).toContain('data-element="botanic"');
     expect(revealed).not.toContain('Drop pool and chances');
     const unavailable = archives(null);
     expect(unavailable).toContain('Ownership unavailable');
@@ -99,7 +101,7 @@ describe('unified Archives', () => {
     expect(unavailable).not.toContain('Owned 0');
     expect(unavailable).not.toContain('<p class="archive-ownership">Not owned</p>');
     expect(unavailable).not.toContain('Art locked');
-    expect(unavailable.match(/archive-form-locked/g)).toHaveLength(108);
+    expect(unavailable.match(/archive-form-locked/g)).toHaveLength(126);
     expect(unavailable).not.toContain('archive-form-revealed');
   });
 
@@ -118,7 +120,7 @@ describe('unified Archives', () => {
     expect(elementLabel('tranquilitic')).toContain('Tranquilitic <span>(Peace)</span>');
     expect(elementLabel('tranquilitic')).toContain('assets/elements/tranquilitic.png');
     for (const element of elements) {
-      expect(elementLabel(element.id)).toContain(`assets/elements/${element.id}.png`);
+      expect(elementLabel(element.id)).toContain(`assets/elements/${elementAssetIds[element.id]}.png`);
       expect(elementLabel(element.id)).toContain(element.name);
     }
   });

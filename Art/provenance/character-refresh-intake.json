@@ -1,0 +1,2591 @@
+{
+  "asset_count": 60,
+  "assets": [
+    {
+      "incoming": "Gilded Rose, Rosetta.png",
+      "asset": "rosetta",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\rosetta.png",
+      "source_sha256": "3bb04a5a19bcaae44051be0b119923b85f4b5657070ef1ea5cffbcc9ce337ef4",
+      "runtime": "public\\assets\\characters\\rosetta.png",
+      "runtime_sha256": "d8ff7d16d061bbb01ac65a560bdfb2736252bf8772d3f2c348717586da54c7dc",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\rosetta.png",
+      "previous_runtime_sha256": "6b5b0a676d76796c295c1381a2c90823d5956ef10c0df8e59e618247c7baa561",
+      "processing": {
+        "keys": [
+          [
+            27,
+            112,
+            97
+          ]
+        ],
+        "radius": 18,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "source_facing": "right"
+      }
+    },
+    {
+      "incoming": "Gilded Vow, Rosetta.png",
+      "asset": "rosetta-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\rosetta-evo-2.png",
+      "source_sha256": "ce040edb01a429024765cf659e854077ef7421735b835c2fff7bd7a3a633e6d6",
+      "runtime": "public\\assets\\characters\\rosetta-evo-2.png",
+      "runtime_sha256": "3d81a22802dc46fcb26037df4ea9af1bdd2662dc0a069cf404ef45ddc55371a3",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\rosetta-evo-2.png",
+      "previous_runtime_sha256": "2d2a9996b7dceb2aabd6c5b237aa544ed2baace83291ba32d54ecaaf8205f302",
+      "processing": {
+        "keys": [
+          [
+            47,
+            113,
+            98
+          ]
+        ],
+        "radius": 18,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "source_facing": "left"
+      }
+    },
+    {
+      "incoming": "Daybreak Archer, Rosetta.png",
+      "asset": "rosetta-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\rosetta-evo-3.png",
+      "source_sha256": "6cc3b9682f509712169f0e770bfd88d713eefe51a1babd1f3e6a25c9f35f4476",
+      "runtime": "public\\assets\\characters\\rosetta-evo-3.png",
+      "runtime_sha256": "32faced143e30ea7796ce709c3fde1c48dd9b3685e261c201f4174f8ba12fd24",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\rosetta-evo-3.png",
+      "previous_runtime_sha256": "a0969a5e136e3a0cb9bd52643bd47bb9183f93cc0d772fdc0d3d7f744253d2f6",
+      "processing": {
+        "keys": [
+          [
+            47,
+            111,
+            105
+          ]
+        ],
+        "radius": 18,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "source_facing": "right"
+      }
+    },
+    {
+      "incoming": "Seraph of Virtue, Rosetta.png",
+      "asset": "rosetta-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\rosetta-evo-4.png",
+      "source_sha256": "419eeea60500fd42eead50f506e7a768a7a00045b078c3a76e943f26530e1eb3",
+      "runtime": "public\\assets\\characters\\rosetta-evo-4.png",
+      "runtime_sha256": "4cfce11a15a9e80fce9386cdca8c5065540df955f0cbe02f1861c68f8c8b871c",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\rosetta-evo-4.png",
+      "previous_runtime_sha256": "bf0d52d5be354d6103be3f366dcf2a19341c28675af57c2625551687a4290900",
+      "processing": {
+        "keys": [
+          [
+            60,
+            101,
+            83
+          ]
+        ],
+        "radius": 18,
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Sovereign of Passion, Rosetta.png",
+      "asset": "rosetta-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\rosetta-evo-5.png",
+      "source_sha256": "cea9a60014653b14671760095f71d88679bac65e7aeae3a9116dc290c5ce6380",
+      "runtime": "public\\assets\\characters\\rosetta-evo-5.png",
+      "runtime_sha256": "aeaaf3766d99738a1a9b566c2cbf45337e3dcccb5aae80b78ccd8ab8f235fe97",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\rosetta-evo-5.png",
+      "previous_runtime_sha256": "19d71b1cc2809c8de93aaa30d06611efb76d06c25811672a45ce13475d4e0c55",
+      "processing": {
+        "keys": [
+          [
+            1,
+            39,
+            14
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "The Rose Beyond the Sun, Rosetta.png",
+      "asset": "rosetta-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\rosetta-evo-6.png",
+      "source_sha256": "db315d4e35eb3f9caec7d4282fb71e6c29d462f5d8fb5d0335fea5652e211e4a",
+      "runtime": "public\\assets\\characters\\rosetta-evo-6.png",
+      "runtime_sha256": "f95929c8cc6af412777b6a2e1fd0e7c0ba07ce784715ed0c3327052c40bc47c1",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\rosetta-evo-6.png",
+      "previous_runtime_sha256": "51faf711b394f4953f278f9c3acec4ead0f3b18a4c69c345dc80db8fa79cc5fb",
+      "processing": {
+        "keys": [
+          [
+            34,
+            54,
+            29
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Burdened by Thorns, Thornia.png",
+      "asset": "thornia",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\thornia.png",
+      "source_sha256": "62908df7e4537b55613a48a74e8b97a4139a5a9b99aafc18fbd8eebb2b962be8",
+      "runtime": "public\\assets\\characters\\thornia.png",
+      "runtime_sha256": "303a03220438219ed980f006583cc759f7c02dce42420577657d29c00d3f9a36",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\thornia.png",
+      "previous_runtime_sha256": "6c4f8a259f2006bac34fb4c350f6abf70173ec6f95298c7a63021a16b9c35b0b",
+      "processing": {
+        "keys": [
+          [
+            67,
+            135,
+            101
+          ]
+        ],
+        "radius": 18,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Gilded Squire, Thornia.png",
+      "asset": "thornia-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\thornia-evo-2.png",
+      "source_sha256": "99648842f51ab38394a1ac73af7e442aec09cf47c3c4cb5c06de57aabe207e92",
+      "runtime": "public\\assets\\characters\\thornia-evo-2.png",
+      "runtime_sha256": "ab02f91914b2dcdc1b7378d9b165f21023d39bf2b44ddf20a28f071944c4346c",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\thornia-evo-2.png",
+      "previous_runtime_sha256": "12476094007c14b036934be2bb6adb388aab2a89193d71809224881f19c53f6d",
+      "processing": {
+        "keys": [
+          [
+            68,
+            110,
+            90
+          ]
+        ],
+        "radius": 18,
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Forbidden Rose Knight, Thornia.png",
+      "asset": "thornia-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\thornia-evo-3.png",
+      "source_sha256": "bb7cdd96086da072678c3b61b5d88a32ffb7cfce699497486c47c3a3243eccc7",
+      "runtime": "public\\assets\\characters\\thornia-evo-3.png",
+      "runtime_sha256": "28412484ed5bfcd3cd30cfeae750391956e876d9a3c55c7c7f823f14e322a78a",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\thornia-evo-3.png",
+      "previous_runtime_sha256": "d47433af56acd650f6c402d3934fa160b1c01720b4627ef73dc645cb83ec8491",
+      "processing": {
+        "keys": [
+          [
+            44,
+            139,
+            111
+          ]
+        ],
+        "radius": 18,
+        "exterior_frame": true,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Warden of the Shadow Garden, Thornia.png",
+      "asset": "thornia-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\thornia-evo-4.png",
+      "source_sha256": "1a1ba5bb7f1a81fe5886c83f8a1a61e43a6f30463efa2b056c210c850faa1526",
+      "runtime": "public\\assets\\characters\\thornia-evo-4.png",
+      "runtime_sha256": "8473d4b7f7a8f7826fbe5c99cbd001c89fb8b4d4fef3e0304b26dc7430a73f6b",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\thornia-evo-4.png",
+      "previous_runtime_sha256": "4e03e47ac8b14a352df3fa7e28145f06ff73bd79a47de43821a6b7082b6bcae3",
+      "processing": {
+        "keys": [
+          [
+            81,
+            108,
+            87
+          ]
+        ],
+        "radius": 18,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Queen of Golden Shadows, Thornia.png",
+      "asset": "thornia-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\thornia-evo-5.png",
+      "source_sha256": "c15498b92d3f7961dbe8539c86fc00a0419af7efe9c499c5a41cac7711a9dce6",
+      "runtime": "public\\assets\\characters\\thornia-evo-5.png",
+      "runtime_sha256": "65cfc6a35e7e2e8141dd2dcadd71b18addc052504da8e6c256bdd89ea96bd3ee",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\thornia-evo-5.png",
+      "previous_runtime_sha256": "280794e04e8f82d15c5779cda6960fab3410f08d0c2c364a63502b8c8f1dd302",
+      "processing": {
+        "keys": [
+          [
+            23,
+            46,
+            20
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "The Thousand-Rose Empress, Thornia.png",
+      "asset": "thornia-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\thornia-evo-6.png",
+      "source_sha256": "d26b3f03863f8d7f90639b0bfdfbe4c38fec40573a5e2d1e6dcbae09c1372657",
+      "runtime": "public\\assets\\characters\\thornia-evo-6.png",
+      "runtime_sha256": "b625dfb5d61390cc3dd1502af9d0beeaa08f8eb1da19de31634c56c41a968053",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\thornia-evo-6.png",
+      "previous_runtime_sha256": "1f30f72c660c5b78ab959516ff9e1e58cae35ece57bb286ef786b9ab3df74c2a",
+      "processing": {
+        "keys": [
+          [
+            103,
+            118,
+            95
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Rosebound Page, Crinso.png",
+      "asset": "crinso",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\crinso.png",
+      "source_sha256": "7801966571248e6549cf304b185ba6fa9ff7a772a0e641576cecbfe3c64e1b43",
+      "runtime": "public\\assets\\characters\\crinso.png",
+      "runtime_sha256": "9b759987d8f4f59ff0179b698a3280749e216aa98de0843d268287450aad70b8",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\crinso.png",
+      "previous_runtime_sha256": "5b4dd068b340861f74632aaf5993f59f830d25458b50162dc1249b5871dd8a1d",
+      "processing": {
+        "keys": [
+          [
+            43,
+            122,
+            104
+          ]
+        ],
+        "radius": 18,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "source_facing": "left"
+      }
+    },
+    {
+      "incoming": "Duality Initiate, Crinso.png",
+      "asset": "crinso-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\crinso-evo-2.png",
+      "source_sha256": "e7bc32ff3195b3080a31f498269d0be9c3030ec33d4cdd3c4f4feca0ab70f9d6",
+      "runtime": "public\\assets\\characters\\crinso-evo-2.png",
+      "runtime_sha256": "63034dd8c3006c4b707c30e869a5e89473c84b141b858ce19e6ab7e9bf15c13d",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\crinso-evo-2.png",
+      "previous_runtime_sha256": "bbd7feeb6be07ebf1457c22e6d788a9336bea09492cd90a56d822b7893b17add",
+      "processing": {
+        "keys": [
+          [
+            38,
+            118,
+            109
+          ]
+        ],
+        "radius": 18,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "source_facing": "left"
+      }
+    },
+    {
+      "incoming": "Crimson-Gold Knight, Crinso.png",
+      "asset": "crinso-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\crinso-evo-3.png",
+      "source_sha256": "acb03d0b6a4009deb235327f43a800420d9f50c565ac8b3df3f57b3b3760c2dd",
+      "runtime": "public\\assets\\characters\\crinso-evo-3.png",
+      "runtime_sha256": "6d954c2574b36e5f98098b1dce2f5fa8333a2ba328bd1aba4f4343648f08c422",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\crinso-evo-3.png",
+      "previous_runtime_sha256": "8801bdf711addc9f7e5003ae615821bb24573f15fc4201494c51c44a6b389aee",
+      "processing": {
+        "keys": [
+          [
+            41,
+            109,
+            87
+          ]
+        ],
+        "radius": 18,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "source_facing": "left"
+      }
+    },
+    {
+      "incoming": "Storm of the Twin Rose, Crinso.png",
+      "asset": "crinso-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\crinso-evo-4.png",
+      "source_sha256": "3a9598dc0c9ec81ce9c2edc5b390ac29c92956b3e3d59aca6ad58c090a6bb5ad",
+      "runtime": "public\\assets\\characters\\crinso-evo-4.png",
+      "runtime_sha256": "67e41c27f4f90cd7c531ee28ff9f15e831141b14a50b6dce62068b2996e6e240",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\crinso-evo-4.png",
+      "previous_runtime_sha256": "0c694638e62628b5d54d7990c0035d99a89af3cb6ae93756e5f10aeba1ec5bc9",
+      "processing": {
+        "keys": [
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            49,
+            97,
+            50
+          ],
+          [
+            65,
+            96,
+            61
+          ]
+        ],
+        "radius": 6,
+        "border_only": true,
+        "edge_cleanup": null,
+        "background_seeds": [
+          [
+            0.5244,
+            0.5603
+          ],
+          [
+            0.3669,
+            0.3718
+          ],
+          [
+            0.8117,
+            0.3804
+          ],
+          [
+            0.7687,
+            0.4494
+          ],
+          [
+            0.6761,
+            0.5032
+          ],
+          [
+            0.8279,
+            0.2985
+          ],
+          [
+            0.6226,
+            0.5668
+          ],
+          [
+            0.5698,
+            0.5657
+          ],
+          [
+            0.7135,
+            0.4246
+          ],
+          [
+            0.6177,
+            0.5205
+          ]
+        ],
+        "source_facing": "left"
+      }
+    },
+    {
+      "incoming": "Sovereign of Beautiful Ruin, Crinso.png",
+      "asset": "crinso-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\crinso-evo-5.png",
+      "source_sha256": "5a8953ed3eafd5cb234c36c5a0edcefff4271588e3a50f60e2eee3e716d627d7",
+      "runtime": "public\\assets\\characters\\crinso-evo-5.png",
+      "runtime_sha256": "ae3941ae2b53b36c07ff9ec43b5923cc5c69cc448387443ec077a6747543a430",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\crinso-evo-5.png",
+      "previous_runtime_sha256": "b28e1412519399c5bc3c6d907a13d3d1578d2c267448eba6cff5cfc43febf7de",
+      "processing": {
+        "keys": [
+          [
+            6,
+            33,
+            16
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "The Rose Beyond Duality, Crinso.png",
+      "asset": "crinso-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\crinso-evo-6.png",
+      "source_sha256": "6b9f73312e100671633baf63142bbb79c8e3dc3af3f6fb647a83b9088ddbbb1a",
+      "runtime": "public\\assets\\characters\\crinso-evo-6.png",
+      "runtime_sha256": "8fa4c173cbefdb25573ec8078f8a7754bb432f7860c3873bd12a06d6c2092865",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\crinso-evo-6.png",
+      "previous_runtime_sha256": "fe3996c468f088883a8a7f43cd6df2188798886c48284569d9a2dcc234276f7c",
+      "processing": {
+        "keys": [
+          [
+            207,
+            206,
+            206
+          ]
+        ],
+        "radius": 10,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Gale Wayfarer, Atmoso.png",
+      "asset": "atmoso",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\atmoso.png",
+      "source_sha256": "87b5a38a89f6e347583f8553ace148a05e6f542812b175baea7955ca5a86c6c5",
+      "runtime": "public\\assets\\characters\\atmoso.png",
+      "runtime_sha256": "cfde8f588b10180a1a9b55976b4851c1e671f587e75645be379f5d33aff57a94",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\atmoso.png",
+      "previous_runtime_sha256": "72dc4d517bb2762354485b5ad1330d860f990a33ea8fc2e724bf546106612b5a",
+      "processing": {
+        "keys": [
+          [
+            254,
+            170,
+            38
+          ]
+        ],
+        "radius": 14,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Crosswind Adept, Atmoso.png",
+      "asset": "atmoso-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\atmoso-evo-2.png",
+      "source_sha256": "9d2a8fd71ee2d70c45cc261843f6689e49090e3c88c5830b2f1304498e693bdf",
+      "runtime": "public\\assets\\characters\\atmoso-evo-2.png",
+      "runtime_sha256": "2ce28d8ae33b7e610fe204dd4a2f6ef19494117d04f0f600f0d05abb730f20ea",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\atmoso-evo-2.png",
+      "previous_runtime_sha256": "25f23c7895f28b62e3371cc34c0b11cc7c03611df45c5bcb3863b9d179f63f02",
+      "processing": {
+        "keys": [
+          [
+            253,
+            170,
+            57
+          ]
+        ],
+        "radius": 14,
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Skyspoke Invoker, Atmoso.png",
+      "asset": "atmoso-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\atmoso-evo-3.png",
+      "source_sha256": "c1049516bce0723d95f01b778165113304584696504178de9cee7e80bce7721d",
+      "runtime": "public\\assets\\characters\\atmoso-evo-3.png",
+      "runtime_sha256": "549cfafa329d259f4b62100e4aa4aea58c8fc0c9be3c792d1c1ddef85aa8d295",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\atmoso-evo-3.png",
+      "previous_runtime_sha256": "1d2755da828093cc88f6b20913ae9a852c3a2ac956fcec59c0619c3ecf862d19",
+      "processing": {
+        "keys": [
+          [
+            249,
+            166,
+            36
+          ]
+        ],
+        "radius": 14,
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Tempest Loom, Atmoso.png",
+      "asset": "atmoso-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\atmoso-evo-4.png",
+      "source_sha256": "7f7efdb4e28ea7cd56ce3d7f74f7b7e577f76ce81982d7fcd31820e039526eb1",
+      "runtime": "public\\assets\\characters\\atmoso-evo-4.png",
+      "runtime_sha256": "5a0e7c22e72714de46e2e3cfc5be7f25887f42801d311514aeb0b234c7b9de17",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\atmoso-evo-4.png",
+      "previous_runtime_sha256": "ce422d257364ec4de4de2a0874f8f7768d59aa8217216b5c7f4fbd78e230d05c",
+      "processing": {
+        "keys": [
+          [
+            253,
+            164,
+            2
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Crown of the High Gale, Atmoso.png",
+      "asset": "atmoso-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\atmoso-evo-5.png",
+      "source_sha256": "f2ebed47d4a90fed80b6ae6c755a936df91a3f4b9fa4e30600f52bbad4144827",
+      "runtime": "public\\assets\\characters\\atmoso-evo-5.png",
+      "runtime_sha256": "45f429409d04a250616f233fd4b78b713a06d65c434da172d43242514f7e4fd8",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\atmoso-evo-5.png",
+      "previous_runtime_sha256": "e4b0d331447bd7bfb80098cb82ab1b3cc8043fc1acf817857f0e06d11c332cd2",
+      "processing": {
+        "keys": [
+          [
+            230,
+            158,
+            16
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "The Sky Without End, Atmoso.png",
+      "asset": "atmoso-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\atmoso-evo-6.png",
+      "source_sha256": "ffcc3b7bd564e74055114dbc5069a556e676c17b6bf4d5a362633dd27b050cec",
+      "runtime": "public\\assets\\characters\\atmoso-evo-6.png",
+      "runtime_sha256": "db6a7123993286794a0cdc3df2ef4ac8381a4a1eed588ca0a88badcdfb6d049b",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\atmoso-evo-6.png",
+      "previous_runtime_sha256": "782068e13bf5098d280a6779aaf1ba43bc56441d91e38f4badca57f1005c5376",
+      "processing": {
+        "keys": [
+          [
+            242,
+            174,
+            47
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Daybreak Arbiter, Aurora.png",
+      "asset": "aurora",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\aurora.png",
+      "source_sha256": "02cc04043059e12d073d2b0309be73dd020527c47d8460a2e5391c3bd9562d87",
+      "runtime": "public\\assets\\characters\\aurora.png",
+      "runtime_sha256": "66b88060766d97270c1bbcd91c17912cdfa71c49eda5bbba61448f96a5218d44",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\aurora.png",
+      "previous_runtime_sha256": "2e62e9c4a9efe24c0c3f5a69091c0d9bbcd32dfe371d91e240e17696fe5b71a1",
+      "processing": {
+        "row_gradient": true,
+        "radius": 14,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.3766,
+            0.6433
+          ],
+          [
+            0.9188,
+            0.6379
+          ]
+        ],
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Gleamveil Adjudicator, Aurora.png",
+      "asset": "aurora-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\aurora-evo-2.png",
+      "source_sha256": "ab4a015d32d02f9c28348966d014308815fa0d77650ed983e49042bccef4215b",
+      "runtime": "public\\assets\\characters\\aurora-evo-2.png",
+      "runtime_sha256": "a6b2aeafc4e266bdefe53ded033ed731d85dda07bbc1522dbb03de19511b6e72",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\aurora-evo-2.png",
+      "previous_runtime_sha256": "8c0c95788cc9d60b1e1d1eeb5c966e825d67da816f4c80cd3cd28f0beca59f35",
+      "processing": {
+        "row_gradient": true,
+        "radius": 14,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4951,
+            0.9062
+          ],
+          [
+            0.3255,
+            0.4547
+          ],
+          [
+            0.4359,
+            0.5097
+          ],
+          [
+            0.3685,
+            0.5269
+          ]
+        ],
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Solar Verdict Oracle, Aurora.png",
+      "asset": "aurora-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\aurora-evo-3.png",
+      "source_sha256": "6f35a460f7cb9067bc130563e70991b251e1d003daef4ba33a71fe497c2ce76c",
+      "runtime": "public\\assets\\characters\\aurora-evo-3.png",
+      "runtime_sha256": "433a550a84def8cf57710cbd0834b2660a35c493fb038866a52eff9844226e5d",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\aurora-evo-3.png",
+      "previous_runtime_sha256": "6b7ae633adc1ef8b344ea1a1dc903ebdce1e86bbedbb9ce00a218b0c29f2e2af",
+      "processing": {
+        "keys": [
+          [
+            159,
+            63,
+            78
+          ]
+        ],
+        "radius": 14,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Prismseal Seraph, Aurora.png",
+      "asset": "aurora-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\aurora-evo-4.png",
+      "source_sha256": "f49d56f242c98785da8f00e415c7f5aaa0e9006c58381703962fdd8ff55e4036",
+      "runtime": "public\\assets\\characters\\aurora-evo-4.png",
+      "runtime_sha256": "ef22341a2d224ff35f630e0dd337d26c23dac0a4ecabd4253cb73668a7c4d72d",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\aurora-evo-4.png",
+      "previous_runtime_sha256": "cf9705c3fbb27f09ae755be344342cd6cbe9dde8785f7b87b7b95024f9b46ea3",
+      "processing": {
+        "keys": [
+          [
+            171,
+            45,
+            33
+          ]
+        ],
+        "radius": 14,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Dawncourt Sovereign, Aurora.png",
+      "asset": "aurora-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\aurora-evo-5.png",
+      "source_sha256": "097047f284c72a5353f615aa5a5d2fa5eea421e0e76f6513206d7d0faeedea9b",
+      "runtime": "public\\assets\\characters\\aurora-evo-5.png",
+      "runtime_sha256": "d06edaec70b6a794b68f0bb59daeaa64e06da7bb0521f146435539f7e3489a45",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\aurora-evo-5.png",
+      "previous_runtime_sha256": "82fd06d2681f331f499c916856de107659d34539f133522c0523337f3c0490a7",
+      "processing": {
+        "keys": [
+          [
+            53,
+            13,
+            12
+          ]
+        ],
+        "radius": 8,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6648,
+            0.1153
+          ],
+          [
+            0.6161,
+            0.2457
+          ],
+          [
+            0.5446,
+            0.2166
+          ],
+          [
+            0.205357,
+            0.49569
+          ],
+          [
+            0.762987,
+            0.522629
+          ],
+          [
+            0.173701,
+            0.721983
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "processing_history": [
+        {
+          "runtime": "Art\\source\\character-refresh\\corrections\\aurora-evo-5-8dff07afbacacab2eadaaf12c773428c878e545fedc6d0063e230d2d30c0c650.png",
+          "runtime_sha256": "8dff07afbacacab2eadaaf12c773428c878e545fedc6d0063e230d2d30c0c650",
+          "processing": {
+            "keys": [
+              [
+                53,
+                13,
+                12
+              ]
+            ],
+            "radius": 8,
+            "border_only": true,
+            "background_seeds": [
+              [
+                0.6648,
+                0.1153
+              ],
+              [
+                0.6161,
+                0.2457
+              ],
+              [
+                0.5446,
+                0.2166
+              ]
+            ],
+            "source_facing": "right",
+            "edge_cleanup": {
+              "source_pixels": 2,
+              "distance_ramp": 60
+            }
+          }
+        }
+      ]
+    },
+    {
+      "incoming": "The Dawn Beyond Judgment, Aurora.png",
+      "asset": "aurora-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\aurora-evo-6.png",
+      "source_sha256": "fc851ba8f7942b751d8ecb54802ad0c222fd226377b58dc6c01c5caf5478cbb2",
+      "runtime": "public\\assets\\characters\\aurora-evo-6.png",
+      "runtime_sha256": "869244833556d346c34623bc86c86feb0008c6537200ba21853c97cc4cd399c4",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\aurora-evo-6.png",
+      "previous_runtime_sha256": "fb2c25a4d36d6ac23714d34506699a440439241a3eec49267d26cd643076fd9c",
+      "processing": {
+        "keys": [
+          [
+            113,
+            41,
+            47
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Featherstep Duelist, Bliss.png",
+      "asset": "bliss",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\bliss.png",
+      "source_sha256": "921b87e7f127cecccf6dc06f47c574969a7eba69d0884022b7a1e91f0e0451c4",
+      "runtime": "public\\assets\\characters\\bliss.png",
+      "runtime_sha256": "41944e651e34933fb42ae7b7866abfa8b403874efb4225afe6568e0daa6f974f",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\bliss.png",
+      "previous_runtime_sha256": "81538db4ff2cf93d702cb2c14082cfb666298ca75341135699a643541996d573",
+      "processing": {
+        "keys": [
+          [
+            51,
+            106,
+            76
+          ]
+        ],
+        "radius": 18,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Stillplume Dancer, Bliss.png",
+      "asset": "bliss-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\bliss-evo-2.png",
+      "source_sha256": "18e19262f8229a12e75cf9fddb66f4f9e19722a354bb5e5a77b8a00268421ed8",
+      "runtime": "public\\assets\\characters\\bliss-evo-2.png",
+      "runtime_sha256": "a5c0f51d345e12db88c92419442236cafb9b4b36c73ae71e1d3e4a620aaef3d5",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\bliss-evo-2.png",
+      "previous_runtime_sha256": "58c6e4912c00ec9bcd4e5081383934ef1d2f24147be99de54f5472ce73c853e6",
+      "processing": {
+        "keys": [
+          [
+            43,
+            116,
+            84
+          ]
+        ],
+        "radius": 18,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "source_facing": "front"
+      }
+    },
+    {
+      "incoming": "Quietwing Fencer, Bliss.png",
+      "asset": "bliss-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\bliss-evo-3.png",
+      "source_sha256": "a4b31c6b8f9fb01e93b50efb47d300a62e2b4f794f743e09294f625f00cab957",
+      "runtime": "public\\assets\\characters\\bliss-evo-3.png",
+      "runtime_sha256": "599eb8873cc045a162bc7df7956fefdfd7c0660ffa6382389ef99a601182fe1d",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\bliss-evo-3.png",
+      "previous_runtime_sha256": "4ce61c79ff34cb5584d61bb601356a9fb70ac2b3cc90ef8af1a1d87b5198e0b5",
+      "processing": {
+        "keys": [
+          [
+            72,
+            94,
+            82
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Prismplume Arbiter, Bliss.png",
+      "asset": "bliss-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\bliss-evo-4.png",
+      "source_sha256": "68d10d28a1186ffdca360323435d41c31a2583d5cd2b2dd709654568effbf679",
+      "runtime": "public\\assets\\characters\\bliss-evo-4.png",
+      "runtime_sha256": "e8d7338cf955d2ead8d6c243b1f7d71e25db164d62a3b4377d3e4e9b31655b20",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\bliss-evo-4.png",
+      "previous_runtime_sha256": "23f16a921da600c8df73f68104ba7736ba9f4e7dbc127925401a4bbb56b230c8",
+      "processing": {
+        "keys": [
+          [
+            56,
+            97,
+            78
+          ]
+        ],
+        "radius": 18,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Serene Tempest Empress, Bliss.png",
+      "asset": "bliss-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\bliss-evo-5.png",
+      "source_sha256": "9234a4821b8fca23020d11ccf334a2a30a326e3b2589c4e190caa38e2b2a0c3c",
+      "runtime": "public\\assets\\characters\\bliss-evo-5.png",
+      "runtime_sha256": "867cb98fe58e8035acc6dde165865b79e123a2cb273272ab7471de0c7ab1fc8b",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\bliss-evo-5.png",
+      "previous_runtime_sha256": "cbef2118fc4b96cf0ef45ed97592761384188af0117bb226347fa99aba4b74b2",
+      "processing": {
+        "keys": [
+          [
+            56,
+            89,
+            47
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "The Thousandfeather Stillness, Bliss.png",
+      "asset": "bliss-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\bliss-evo-6.png",
+      "source_sha256": "c11ab7aff3755b2eb53bd5d80ab392c5272c477528bf98c9afdb50f51e9e2d0f",
+      "runtime": "public\\assets\\characters\\bliss-evo-6.png",
+      "runtime_sha256": "a23f8d8360163faa03cb80ddf284493e5db7d368e50e7beedc192a4b9dc01011",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\bliss-evo-6.png",
+      "previous_runtime_sha256": "7b513fee025231c4bf6ce7107386a0756fca92956c3e2f94b10eb0baa474378c",
+      "processing": {
+        "keys": [
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "radius": 3,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "source_facing": "front",
+        "background_seeds": [
+          [
+            0.37987,
+            0.197198
+          ],
+          [
+            0.391234,
+            0.252155
+          ],
+          [
+            0.651786,
+            0.297414
+          ],
+          [
+            0.166396,
+            0.405172
+          ],
+          [
+            0.577922,
+            0.425647
+          ],
+          [
+            0.156656,
+            0.417026
+          ],
+          [
+            0.785714,
+            0.445043
+          ],
+          [
+            0.213474,
+            0.438578
+          ],
+          [
+            0.331169,
+            0.487069
+          ],
+          [
+            0.292208,
+            0.475216
+          ],
+          [
+            0.716721,
+            0.478448
+          ],
+          [
+            0.318182,
+            0.596983
+          ],
+          [
+            0.141234,
+            0.59375
+          ],
+          [
+            0.25,
+            0.622845
+          ],
+          [
+            0.663961,
+            0.621767
+          ],
+          [
+            0.883929,
+            0.631466
+          ],
+          [
+            0.402597,
+            0.875
+          ],
+          [
+            0.553571,
+            0.834052
+          ],
+          [
+            0.883929,
+            0.855603
+          ]
+        ]
+      },
+      "processing_history": [
+        {
+          "runtime": "Art\\source\\character-refresh\\corrections\\bliss-evo-6-2c4932167dca53e2246e494197b8921baec5a69d53ee174530fede01202cee3d.png",
+          "runtime_sha256": "2c4932167dca53e2246e494197b8921baec5a69d53ee174530fede01202cee3d",
+          "processing": {
+            "keys": [
+              [
+                1,
+                1,
+                1
+              ]
+            ],
+            "radius": 3,
+            "border_only": true,
+            "edge_cleanup": null,
+            "source_facing": "front"
+          }
+        }
+      ]
+    },
+    {
+      "incoming": "sacredtrevor_Full_body_gacha_JRPG_chibi_unit_illustration_on__d7561af2-093b-40e1-ad72-4b48314d7186_1.png",
+      "asset": "bruno",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\bruno.png",
+      "source_sha256": "5c5dd69ded8fe8fa39bf1932f672157d9165a016dacca2b6162485ebdefbecb9",
+      "runtime": "public\\assets\\characters\\bruno.png",
+      "runtime_sha256": "a69c7a0abb1660e975d737425b2bdda12596c6ad942f531209ee1cee22b246c5",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\bruno.png",
+      "previous_runtime_sha256": "846f0c31881a6ad1b417a7e4dc2880f8abb617959af350b40d9683df7c249ee2",
+      "processing": {
+        "keys": [
+          [
+            255,
+            255,
+            255
+          ]
+        ],
+        "radius": 18,
+        "border_only": true,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.611328,
+            0.851562
+          ]
+        ]
+      },
+      "processing_history": [
+        {
+          "runtime": "Art\\source\\character-refresh\\corrections\\bruno-b9d4fa401941307feba3e7bfa6c89f0f5963e476ff1c5e0487c7e611b98be408.png",
+          "runtime_sha256": "b9d4fa401941307feba3e7bfa6c89f0f5963e476ff1c5e0487c7e611b98be408",
+          "processing": {
+            "keys": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "radius": 18,
+            "border_only": true,
+            "source_facing": "left",
+            "edge_cleanup": {
+              "source_pixels": 2,
+              "distance_ramp": 60
+            }
+          }
+        }
+      ]
+    },
+    {
+      "incoming": "Faultline Bulwark, Bruno.png",
+      "asset": "bruno-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\bruno-evo-2.png",
+      "source_sha256": "0206ad4cc91e37f1831ba7c44eee8846e06a139998abbe63750c726265c0a172",
+      "runtime": "public\\assets\\characters\\bruno-evo-2.png",
+      "runtime_sha256": "482cd40169c692bc67720307c1daaae1fb73c63b6f0b77d91c104920e208ddb2",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\bruno-evo-2.png",
+      "previous_runtime_sha256": "da9db624062e50b35b8f35475568d0ade857dcc4e82a7604634524be49a1960b",
+      "processing": {
+        "keys": [
+          [
+            181,
+            65,
+            77
+          ]
+        ],
+        "radius": 14,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Bedrock Citadel, Bruno.png",
+      "asset": "bruno-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\bruno-evo-3.png",
+      "source_sha256": "b7c06f2563863404650b3711f3a71cc66491db29ed08a515be90fe63457736b2",
+      "runtime": "public\\assets\\characters\\bruno-evo-3.png",
+      "runtime_sha256": "31ea6bd55f44880605d3e830fcb97f3bd05a4402d7848d7e86c62bbcea428bf4",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\bruno-evo-3.png",
+      "previous_runtime_sha256": "095665612a35447b1ff08c6ec629e05537eff19f7a7d38c494ae4a1aa13e0a1b",
+      "processing": {
+        "keys": [
+          [
+            135,
+            91,
+            93
+          ]
+        ],
+        "radius": 14,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "source_facing": "left"
+      }
+    },
+    {
+      "incoming": "Worldforge Bastion, Bruno.png",
+      "asset": "bruno-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\bruno-evo-4.png",
+      "source_sha256": "3e424d1168af886a7360e7a5c4d6081d8adbff33ce443599b1ec8384b2e26b52",
+      "runtime": "public\\assets\\characters\\bruno-evo-4.png",
+      "runtime_sha256": "c60a4be9569c5c81c24167da2e2609542ba43f2f9f1f6a253f7ddef1ca196c7a",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\bruno-evo-4.png",
+      "previous_runtime_sha256": "de5844a27492a33739b6592fc7d345da9fee043c62150fab5288f8bb96984d07",
+      "processing": {
+        "keys": [
+          [
+            254,
+            170,
+            22
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Prismatic Mountain Regent, Bruno.png",
+      "asset": "bruno-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\bruno-evo-5.png",
+      "source_sha256": "9daccd5d7c1557b431f59fbe7dda8de35b4776f4eb20a4c0cc9b36f0d4c792fb",
+      "runtime": "public\\assets\\characters\\bruno-evo-5.png",
+      "runtime_sha256": "b0078739a5fa0109ae33ef2cf0ffd4c04fd5492d719e19ac71123a0f73e1edac",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\bruno-evo-5.png",
+      "previous_runtime_sha256": "d60ce7f98adb5a191045a0b8fdde15ff2eb8b7e70c808b4894c6bd459e0affba",
+      "processing": {
+        "row_gradient": true,
+        "radius": 8,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.3847,
+            0.2425
+          ]
+        ],
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "The Living Worldwall, Bruno.png",
+      "asset": "bruno-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\bruno-evo-6.png",
+      "source_sha256": "4d7ae508a5f9a32b8080357ba2a487508ea4d4eeebc378893fa376d31729e404",
+      "runtime": "public\\assets\\characters\\bruno-evo-6.png",
+      "runtime_sha256": "b15b77686f0220cffd318d48f8feb4ba61b7c9e931e41a9a721e8b90f8ea7ec3",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\bruno-evo-6.png",
+      "previous_runtime_sha256": "cd269f003f48b1356202aab950f3caefc7ce4473a22a465c77c35af4bd99711e",
+      "processing": {
+        "keys": [
+          [
+            254,
+            255,
+            254
+          ]
+        ],
+        "radius": 14,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 5,
+          "distance_ramp": 120
+        },
+        "background_seeds": [
+          [
+            0.7979,
+            0.4332
+          ],
+          [
+            0.2248,
+            0.4375
+          ],
+          [
+            0.6339,
+            0.2716
+          ],
+          [
+            0.3904,
+            0.2899
+          ]
+        ],
+        "source_facing": "left"
+      }
+    },
+    {
+      "incoming": "Mindflame Initiate, Disciple.png",
+      "asset": "disciple",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\disciple.png",
+      "source_sha256": "ea2fe3a8900d5341ef2451af72f507c3da3c0fa6edbb446fe6e5a4ebcbde019b",
+      "runtime": "public\\assets\\characters\\disciple.png",
+      "runtime_sha256": "a248147a68c9b7f8b7f2067c78397c8968a77e7ba9d8c01d0474f77c7447d8e0",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\disciple.png",
+      "previous_runtime_sha256": "eb1808c518cfc535789fc8732d03689ee5b673213e511df4d1a8953d3ea6e13c",
+      "processing": {
+        "keys": [
+          [
+            38,
+            106,
+            226
+          ]
+        ],
+        "radius": 14,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "source_facing": "left"
+      }
+    },
+    {
+      "incoming": "Thoughtforge Adept, Disciple.png",
+      "asset": "disciple-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\disciple-evo-2.png",
+      "source_sha256": "c71421e0d10f7ef2dae8f9ae1a9132d4472503d705fd0f87e08ffa337a8be965",
+      "runtime": "public\\assets\\characters\\disciple-evo-2.png",
+      "runtime_sha256": "fa136526df4044a507b9d22fdca71e7eeaa653dd9d1ca11d1b6fd5227432766c",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\disciple-evo-2.png",
+      "previous_runtime_sha256": "af96be1e4bd1318fbcbc808a8d5192fb2d1aded9a98676960e8f3b3c67469b57",
+      "processing": {
+        "keys": [
+          [
+            1,
+            113,
+            173
+          ]
+        ],
+        "radius": 10,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "background_seeds": [
+          [
+            0.2532,
+            0.4504
+          ],
+          [
+            0.4497,
+            0.5668
+          ],
+          [
+            0.2946,
+            0.3825
+          ],
+          [
+            0.3222,
+            0.4213
+          ],
+          [
+            0.614448,
+            0.199353
+          ],
+          [
+            0.612013,
+            0.235991
+          ]
+        ],
+        "source_facing": "left"
+      },
+      "processing_history": [
+        {
+          "runtime": "Art\\source\\character-refresh\\corrections\\disciple-evo-2-0a53a3d9f92e0710f999274d5444733ce4b9f8cdce8bd5f47081bc1795042c60.png",
+          "runtime_sha256": "0a53a3d9f92e0710f999274d5444733ce4b9f8cdce8bd5f47081bc1795042c60",
+          "processing": {
+            "keys": [
+              [
+                1,
+                113,
+                173
+              ]
+            ],
+            "radius": 10,
+            "border_only": true,
+            "edge_cleanup": {
+              "source_pixels": 8,
+              "distance_ramp": 120
+            },
+            "background_seeds": [
+              [
+                0.2532,
+                0.4504
+              ],
+              [
+                0.4497,
+                0.5668
+              ],
+              [
+                0.2946,
+                0.3825
+              ],
+              [
+                0.3222,
+                0.4213
+              ]
+            ],
+            "source_facing": "left"
+          }
+        }
+      ]
+    },
+    {
+      "incoming": "Ascendant Mindbinder, Disciple.png",
+      "asset": "disciple-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\disciple-evo-3.png",
+      "source_sha256": "8a4d55a61629d1fe48ab43da8e48bf2b71c7b5f856317aa9a7f7272c973af460",
+      "runtime": "public\\assets\\characters\\disciple-evo-3.png",
+      "runtime_sha256": "261fa2b6753cb04b78d09f73d96c16f73db75a0639997aa4696b7582caeb1d86",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\disciple-evo-3.png",
+      "previous_runtime_sha256": "ac9a0f100aa399907e2bb14cf21a0b3c0f70674f9beab5967dbffaf55cb4a8af",
+      "processing": {
+        "keys": [
+          [
+            10,
+            130,
+            255
+          ]
+        ],
+        "radius": 14,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "source_facing": "front"
+      }
+    },
+    {
+      "incoming": "Prismthought Hierophant, Disciple.png",
+      "asset": "disciple-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\disciple-evo-4.png",
+      "source_sha256": "9a32888ae9efdba6d117bc11592bd8d5c2a03a373ce47b0868f1a63986592dc2",
+      "runtime": "public\\assets\\characters\\disciple-evo-4.png",
+      "runtime_sha256": "bed3ce50fc70493bd18a86ce74d827e33e201ffd0249c2cd6273ac560709bcd1",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\disciple-evo-4.png",
+      "previous_runtime_sha256": "cc9dc24cf7c6fa84adbcbc94c71a98dc05481b1e531463dc95454ed6aa735eaa",
+      "processing": {
+        "keys": [
+          [
+            3,
+            180,
+            254
+          ]
+        ],
+        "radius": 14,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Mindflame Exarch, Disciple.png",
+      "asset": "disciple-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\disciple-evo-5.png",
+      "source_sha256": "dde631d421adcd159565931e4aad2891a21ea70507e44499dc94863bbb278313",
+      "runtime": "public\\assets\\characters\\disciple-evo-5.png",
+      "runtime_sha256": "e87f847bdbe78d37da1bc074de967f508ca1a667ef60e05d2238902057dbca57",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\disciple-evo-5.png",
+      "previous_runtime_sha256": "907119508c4471426a330df60b48b077b323b946aca5498a6e12b69f54b93ff3",
+      "processing": {
+        "keys": [
+          [
+            1,
+            21,
+            145
+          ]
+        ],
+        "radius": 10,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "background_seeds": [
+          [
+            0.5106,
+            0.2155
+          ],
+          [
+            0.6778,
+            0.1584
+          ],
+          [
+            0.3823,
+            0.3384
+          ],
+          [
+            0.7459,
+            0.1153
+          ],
+          [
+            0.5998,
+            0.0905
+          ],
+          [
+            0.5349,
+            0.0894
+          ],
+          [
+            0.6453,
+            0.2543
+          ],
+          [
+            0.4269,
+            0.1013
+          ],
+          [
+            0.8709,
+            0.5905
+          ],
+          [
+            0.7825,
+            0.7694
+          ],
+          [
+            0.1364,
+            0.4871
+          ],
+          [
+            0.3385,
+            0.8276
+          ],
+          [
+            0.5787,
+            0.5927
+          ],
+          [
+            0.210227,
+            0.511853
+          ],
+          [
+            0.741883,
+            0.517241
+          ],
+          [
+            0.883117,
+            0.751078
+          ]
+        ],
+        "source_facing": "front"
+      },
+      "processing_history": [
+        {
+          "runtime": "Art\\source\\character-refresh\\corrections\\disciple-evo-5-bcfdc93c072cd15d2817ec9803c31359d49ccd71e642d4e1d5bdcbeb1e3cbb88.png",
+          "runtime_sha256": "bcfdc93c072cd15d2817ec9803c31359d49ccd71e642d4e1d5bdcbeb1e3cbb88",
+          "processing": {
+            "keys": [
+              [
+                1,
+                21,
+                145
+              ]
+            ],
+            "radius": 10,
+            "border_only": true,
+            "edge_cleanup": {
+              "source_pixels": 8,
+              "distance_ramp": 120
+            },
+            "background_seeds": [
+              [
+                0.5106,
+                0.2155
+              ],
+              [
+                0.6778,
+                0.1584
+              ],
+              [
+                0.3823,
+                0.3384
+              ],
+              [
+                0.7459,
+                0.1153
+              ],
+              [
+                0.5998,
+                0.0905
+              ],
+              [
+                0.5349,
+                0.0894
+              ],
+              [
+                0.6453,
+                0.2543
+              ],
+              [
+                0.4269,
+                0.1013
+              ],
+              [
+                0.8709,
+                0.5905
+              ],
+              [
+                0.7825,
+                0.7694
+              ],
+              [
+                0.1364,
+                0.4871
+              ],
+              [
+                0.3385,
+                0.8276
+              ],
+              [
+                0.5787,
+                0.5927
+              ]
+            ],
+            "source_facing": "front"
+          }
+        }
+      ]
+    },
+    {
+      "incoming": "The Unbound Mindcrown, Disciple.png",
+      "asset": "disciple-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\disciple-evo-6.png",
+      "source_sha256": "f4070184950c96ecf4a95f5aa6b1e83f96685171743867d2e25fa2912ed26a3e",
+      "runtime": "public\\assets\\characters\\disciple-evo-6.png",
+      "runtime_sha256": "505a5a96b2c38231741e6a976939d2b7bf6179fe07ff13cc5f78478368989769",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\disciple-evo-6.png",
+      "previous_runtime_sha256": "03768eca949c012f26f9ff933deb3de09d52ce6d2a3f3e83c4844c64de358867",
+      "processing": {
+        "keys": [
+          [
+            130,
+            127,
+            119
+          ]
+        ],
+        "radius": 10,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Sparkstep Shinobi, Elise.png",
+      "asset": "elise",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\elise.png",
+      "source_sha256": "6d46bad25e2106b7432780cfa99eb789ea7f3663f1afb5c33911f24b0d4352c5",
+      "runtime": "public\\assets\\characters\\elise.png",
+      "runtime_sha256": "5c46be99251dd18cab84a208095665ab9d006e80e6d0b4243cb1fbf1d0c92553",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\elise.png",
+      "previous_runtime_sha256": "cc8da335162ed97cad4abe29c333397369cfbb13d3c336e31cb4804522e8d879",
+      "processing": {
+        "keys": [
+          [
+            254,
+            178,
+            50
+          ]
+        ],
+        "radius": 14,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Voltweave Skirmisher, Elise.png",
+      "asset": "elise-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\elise-evo-2.png",
+      "source_sha256": "d5e363631e48f6aa66604af1142e8492bc5a9e5462a00ef09927ca7f4b92f4ec",
+      "runtime": "public\\assets\\characters\\elise-evo-2.png",
+      "runtime_sha256": "eeb7fc2461ca67a0a74cb76e926dcd458e26486de38d8dcaf723d0efa587a585",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\elise-evo-2.png",
+      "previous_runtime_sha256": "bf1020062acaebb24697e535c2dc190b73316783168a0768ae6faece31d23861",
+      "processing": {
+        "keys": [
+          [
+            254,
+            164,
+            55
+          ]
+        ],
+        "radius": 14,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Stormwheel Striker, Elise.png",
+      "asset": "elise-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\elise-evo-3.png",
+      "source_sha256": "59150952aebf525df51dd99bb004704a6df7b0bfe7374e9784a66c21cb1b178e",
+      "runtime": "public\\assets\\characters\\elise-evo-3.png",
+      "runtime_sha256": "fb64faf69c69f0ac5b4dee972d93b6b417dd8c4a075ec6dfcacc527ac4107e50",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\elise-evo-3.png",
+      "previous_runtime_sha256": "c26491812cdcc44f0fe9a4c565e1edc4153ed87cb2020cc8d45715e961cbae82",
+      "processing": {
+        "keys": [
+          [
+            242,
+            164,
+            67
+          ]
+        ],
+        "radius": 14,
+        "edge_cleanup": {
+          "source_pixels": 8,
+          "distance_ramp": 120
+        },
+        "source_facing": "front"
+      }
+    },
+    {
+      "incoming": "Thunderlace Executioner, Elise.png",
+      "asset": "elise-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\elise-evo-4.png",
+      "source_sha256": "c4fe99ef2d442cb52ce1eed2866dc724971df713b38f4ec92efa40375c22c911",
+      "runtime": "public\\assets\\characters\\elise-evo-4.png",
+      "runtime_sha256": "0ba0f56289a3b3af18b220b3b2f15c8716c108ae7a92377e89a1204c38d63bfe",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\elise-evo-4.png",
+      "previous_runtime_sha256": "aa2c3340adadf7ee0d2ec0656f97c06c922a9aad192d110771e4bfc7d9183d72",
+      "processing": {
+        "keys": [
+          [
+            254,
+            165,
+            27
+          ]
+        ],
+        "radius": 12,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Prismatic Storm Empress, Elise.png",
+      "asset": "elise-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\elise-evo-5.png",
+      "source_sha256": "a5fa49f8dfe695920024250824ea56b3d8d7212ae9227ae3c2a8320331f2b8cc",
+      "runtime": "public\\assets\\characters\\elise-evo-5.png",
+      "runtime_sha256": "b24f59839d20170b4eae26f7b5953827c71023bb8efaccf66107ce54f04d1387",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\elise-evo-5.png",
+      "previous_runtime_sha256": "feb540877ade03d5c3314de7d21a6d95e685cfc9936d11d905353480669be8e8",
+      "processing": {
+        "keys": [
+          [
+            169,
+            76,
+            2
+          ],
+          [
+            185,
+            92,
+            0
+          ],
+          [
+            205,
+            110,
+            0
+          ],
+          [
+            225,
+            130,
+            0
+          ],
+          [
+            245,
+            150,
+            0
+          ],
+          [
+            255,
+            170,
+            0
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6063,
+            0.0517
+          ],
+          [
+            0.8896,
+            0.4181
+          ],
+          [
+            0.48,
+            0.93
+          ],
+          [
+            0.8044,
+            0.6595
+          ],
+          [
+            0.6542,
+            0.1498
+          ],
+          [
+            0.7987,
+            0.5539
+          ],
+          [
+            0.1891,
+            0.6433
+          ],
+          [
+            0.8766,
+            0.7532
+          ],
+          [
+            0.1672,
+            0.6886
+          ],
+          [
+            0.3474,
+            0.2468
+          ],
+          [
+            0.1826,
+            0.7468
+          ],
+          [
+            0.806,
+            0.7252
+          ],
+          [
+            0.1729,
+            0.389
+          ],
+          [
+            0.1201,
+            0.5183
+          ],
+          [
+            0.7167,
+            0.7263
+          ],
+          [
+            0.8661,
+            0.6228
+          ],
+          [
+            0.2378,
+            0.7446
+          ],
+          [
+            0.9099,
+            0.3836
+          ],
+          [
+            0.9131,
+            0.4558
+          ],
+          [
+            0.3766,
+            0.1853
+          ],
+          [
+            0.8977,
+            0.5226
+          ],
+          [
+            0.8604,
+            0.7209
+          ],
+          [
+            0.8799,
+            0.6918
+          ],
+          [
+            0.310065,
+            0.203664
+          ],
+          [
+            0.349026,
+            0.177802
+          ],
+          [
+            0.699675,
+            0.15194
+          ],
+          [
+            0.117695,
+            0.779095
+          ],
+          [
+            0.258117,
+            0.773707
+          ],
+          [
+            0.185877,
+            0.790948
+          ],
+          [
+            0.841721,
+            0.797414
+          ],
+          [
+            0.116883,
+            0.855603
+          ]
+        ],
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_regions": [
+          {
+            "polygon": [
+              [
+                0.23,
+                0.12
+              ],
+              [
+                0.45,
+                0.12
+              ],
+              [
+                0.4,
+                0.32
+              ],
+              [
+                0.23,
+                0.32
+              ]
+            ],
+            "radius": 45
+          },
+          {
+            "polygon": [
+              [
+                0.56,
+                0.06
+              ],
+              [
+                0.75,
+                0.06
+              ],
+              [
+                0.75,
+                0.23
+              ],
+              [
+                0.56,
+                0.23
+              ]
+            ],
+            "radius": 45
+          }
+        ]
+      },
+      "processing_history": [
+        {
+          "runtime": "Art\\source\\character-refresh\\corrections\\elise-evo-5-0732ee3cd06e90b2b16f6a584d15d74aa9d82e6f2d704b6d933cd5408a559ca1.png",
+          "runtime_sha256": "0732ee3cd06e90b2b16f6a584d15d74aa9d82e6f2d704b6d933cd5408a559ca1",
+          "processing": {
+            "keys": [
+              [
+                169,
+                76,
+                2
+              ],
+              [
+                185,
+                92,
+                0
+              ],
+              [
+                205,
+                110,
+                0
+              ],
+              [
+                225,
+                130,
+                0
+              ],
+              [
+                245,
+                150,
+                0
+              ],
+              [
+                255,
+                170,
+                0
+              ]
+            ],
+            "radius": 16,
+            "border_only": true,
+            "background_seeds": [
+              [
+                0.6063,
+                0.0517
+              ],
+              [
+                0.8896,
+                0.4181
+              ],
+              [
+                0.48,
+                0.93
+              ],
+              [
+                0.8044,
+                0.6595
+              ],
+              [
+                0.6542,
+                0.1498
+              ],
+              [
+                0.7987,
+                0.5539
+              ],
+              [
+                0.1891,
+                0.6433
+              ],
+              [
+                0.8766,
+                0.7532
+              ],
+              [
+                0.1672,
+                0.6886
+              ],
+              [
+                0.3474,
+                0.2468
+              ],
+              [
+                0.1826,
+                0.7468
+              ],
+              [
+                0.806,
+                0.7252
+              ],
+              [
+                0.1729,
+                0.389
+              ],
+              [
+                0.1201,
+                0.5183
+              ],
+              [
+                0.7167,
+                0.7263
+              ],
+              [
+                0.8661,
+                0.6228
+              ],
+              [
+                0.2378,
+                0.7446
+              ],
+              [
+                0.9099,
+                0.3836
+              ],
+              [
+                0.9131,
+                0.4558
+              ],
+              [
+                0.3766,
+                0.1853
+              ],
+              [
+                0.8977,
+                0.5226
+              ],
+              [
+                0.8604,
+                0.7209
+              ],
+              [
+                0.8799,
+                0.6918
+              ]
+            ],
+            "source_facing": "front",
+            "edge_cleanup": {
+              "source_pixels": 2,
+              "distance_ramp": 60
+            }
+          }
+        }
+      ]
+    },
+    {
+      "incoming": "The Infinite Thunderwheel, Elise.png",
+      "asset": "elise-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\elise-evo-6.png",
+      "source_sha256": "863843d43e18d4d099ad6871218b024bd2c310682fbfcbef35e86deb90942f90",
+      "runtime": "public\\assets\\characters\\elise-evo-6.png",
+      "runtime_sha256": "b1c35595ea23eeed9aed52dedb515596a0d5f68464da9fc9e6baaa99ed14554b",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\elise-evo-6.png",
+      "previous_runtime_sha256": "c273de9b02f09abb52b2a6a1b7bd00ecb8eb78bed91487c1ad54764f4b4a9b3b",
+      "processing": {
+        "keys": [
+          [
+            158,
+            60,
+            20
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.1737,
+            0.5011
+          ],
+          [
+            0.4383,
+            0.1142
+          ],
+          [
+            0.8377,
+            0.4397
+          ],
+          [
+            0.5333,
+            0.4871
+          ],
+          [
+            0.7127,
+            0.2511
+          ],
+          [
+            0.6932,
+            0.4558
+          ],
+          [
+            0.783279,
+            0.487069
+          ],
+          [
+            0.417208,
+            0.487069
+          ],
+          [
+            0.857955,
+            0.514009
+          ],
+          [
+            0.25974,
+            0.493534
+          ],
+          [
+            0.75487,
+            0.501078
+          ],
+          [
+            0.685877,
+            0.488147
+          ],
+          [
+            0.674513,
+            0.510776
+          ],
+          [
+            0.254058,
+            0.547414
+          ],
+          [
+            0.254058,
+            0.522629
+          ],
+          [
+            0.816558,
+            0.586207
+          ],
+          [
+            0.727273,
+            0.563578
+          ],
+          [
+            0.101461,
+            0.669181
+          ],
+          [
+            0.823052,
+            0.653017
+          ],
+          [
+            0.922078,
+            0.704741
+          ],
+          [
+            0.193182,
+            0.760776
+          ],
+          [
+            0.75974,
+            0.814655
+          ],
+          [
+            0.913149,
+            0.765086
+          ]
+        ],
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "processing_history": [
+        {
+          "runtime": "Art\\source\\character-refresh\\corrections\\elise-evo-6-aa61ac1aa1be345effa6509db6227f5815e34065aaa00d08f35a5f93dd3f9a5c.png",
+          "runtime_sha256": "aa61ac1aa1be345effa6509db6227f5815e34065aaa00d08f35a5f93dd3f9a5c",
+          "processing": {
+            "keys": [
+              [
+                158,
+                60,
+                20
+              ]
+            ],
+            "radius": 12,
+            "border_only": true,
+            "background_seeds": [
+              [
+                0.1737,
+                0.5011
+              ],
+              [
+                0.4383,
+                0.1142
+              ],
+              [
+                0.8377,
+                0.4397
+              ],
+              [
+                0.5333,
+                0.4871
+              ],
+              [
+                0.7127,
+                0.2511
+              ],
+              [
+                0.6932,
+                0.4558
+              ]
+            ],
+            "source_facing": "front",
+            "edge_cleanup": {
+              "source_pixels": 2,
+              "distance_ramp": 60
+            }
+          }
+        }
+      ]
+    },
+    {
+      "incoming": "Nightwatch Bastion, Razor.png",
+      "asset": "razor",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\razor.png",
+      "source_sha256": "332de9ee2cef42cf6243e9b02b919c3c04ed0a3860c403246824b08b4f615ece",
+      "runtime": "public\\assets\\characters\\razor.png",
+      "runtime_sha256": "fc35234b9a6dee09393695d5e9fdfdfbfdb7aa0c2af7d9fedd71c54ec5409443",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\razor.png",
+      "previous_runtime_sha256": "caf9ae609740c94ddec50e9f219a1e3fb54b252e573095a8ba707fbb4e1771d3",
+      "processing": {
+        "keys": [
+          [
+            50,
+            134,
+            78
+          ]
+        ],
+        "radius": 18,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Duskplate Sentinel, Razor.png",
+      "asset": "razor-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\razor-evo-2.png",
+      "source_sha256": "91d842a1dda561af6acd23c2c8fd40b7d67d10dbd701b5bf5eaaa81ee846e050",
+      "runtime": "public\\assets\\characters\\razor-evo-2.png",
+      "runtime_sha256": "41555b93d77ac38de1e23ecdf290fe1a4f795df72c59b94a15c546827d185577",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\razor-evo-2.png",
+      "previous_runtime_sha256": "40bcefbc77722b43e16a206fe2fa749fe58338f6643118f672aa0c95fa6f306f",
+      "processing": {
+        "keys": [
+          [
+            37,
+            163,
+            128
+          ]
+        ],
+        "radius": 18,
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Eclipse Rampart, Razor.png",
+      "asset": "razor-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\razor-evo-3.png",
+      "source_sha256": "017b40e74009d6fd565914da923b8b8881e1bed724ce1cf90b4da331bee22f55",
+      "runtime": "public\\assets\\characters\\razor-evo-3.png",
+      "runtime_sha256": "845663f0e59a231dd65c6c2c9686aa3416807cd8397f1abe5956f0dd9f8ce2b1",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\razor-evo-3.png",
+      "previous_runtime_sha256": "01b633d119a09cfc359a81612fcca53c8911561f8323834466aaae6dcac14ee5",
+      "processing": {
+        "keys": [
+          [
+            17,
+            168,
+            139
+          ]
+        ],
+        "radius": 18,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Nightglass Bulwark, Razor.png",
+      "asset": "razor-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\razor-evo-4.png",
+      "source_sha256": "0ec7ec0c66b6d8dafbdcfd075d991eac76c13a23e678bff0b8323066f96b938c",
+      "runtime": "public\\assets\\characters\\razor-evo-4.png",
+      "runtime_sha256": "f99513463db60d657bc1fd8e9bb8729c0ac30c60db62310d5a6104a1bb097b2a",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\razor-evo-4.png",
+      "previous_runtime_sha256": "2b7a75e6c1c5d6f1a135e6512b85b5ca7fe0593f1c23fac46849ef9b3daf6d59",
+      "processing": {
+        "keys": [
+          [
+            3,
+            134,
+            93
+          ]
+        ],
+        "radius": 14,
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Prismatic Eclipse Regent, Razor.png",
+      "asset": "razor-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\razor-evo-5.png",
+      "source_sha256": "a3347f53bce80e5fbdc97b39415ca6f54f9c8c49f047476c6ed5340ddc11b429",
+      "runtime": "public\\assets\\characters\\razor-evo-5.png",
+      "runtime_sha256": "a4bb6e20e763c0c84cda1f6510c5733a79d44d6f899e8a42496b161014ba2db4",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\razor-evo-5.png",
+      "previous_runtime_sha256": "c06cb58cc243d542dcb40fc8d0f8c61ad786d127113c146efef2043368451d07",
+      "processing": {
+        "keys": [
+          [
+            3,
+            30,
+            1
+          ]
+        ],
+        "radius": 10,
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "The Unbroken Midnight, Razor.png",
+      "asset": "razor-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\character-refresh\\razor-evo-6.png",
+      "source_sha256": "4cc49286e9800716686807b2554f557d559b89d1caf271ea2c7fa476221c141f",
+      "runtime": "public\\assets\\characters\\razor-evo-6.png",
+      "runtime_sha256": "37d017080c2c0f2819707c513c05b84d759159e3f58845ae2d5eedec6f1ea2ce",
+      "previous_runtime": "Art\\source\\character-refresh\\previous-runtime\\razor-evo-6.png",
+      "previous_runtime_sha256": "eab13e295bdfaeb579616f4d62703bac92ee18fec3a80f719895d19e4949a9d3",
+      "processing": {
+        "keys": [
+          [
+            255,
+            255,
+            255
+          ]
+        ],
+        "radius": 18,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 5,
+          "distance_ramp": 120
+        },
+        "source_facing": "front",
+        "background_seeds": [
+          [
+            0.862825,
+            0.290948
+          ],
+          [
+            0.961851,
+            0.336207
+          ],
+          [
+            0.856331,
+            0.34806
+          ],
+          [
+            0.918831,
+            0.440733
+          ],
+          [
+            0.878247,
+            0.457974
+          ],
+          [
+            0.941558,
+            0.507543
+          ],
+          [
+            0.114448,
+            0.853448
+          ],
+          [
+            0.709416,
+            0.956897
+          ]
+        ]
+      },
+      "processing_history": [
+        {
+          "runtime": "Art\\source\\character-refresh\\corrections\\razor-evo-6-9b463f0eb1492ef32f53f8912fed57946c7785703eb8d1d4f0975efe23b1b1ef.png",
+          "runtime_sha256": "9b463f0eb1492ef32f53f8912fed57946c7785703eb8d1d4f0975efe23b1b1ef",
+          "processing": {
+            "keys": [
+              [
+                255,
+                255,
+                255
+              ]
+            ],
+            "radius": 18,
+            "border_only": true,
+            "edge_cleanup": {
+              "source_pixels": 5,
+              "distance_ramp": 120
+            },
+            "source_facing": "front"
+          }
+        }
+      ]
+    }
+  ]
+}

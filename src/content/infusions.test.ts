@@ -88,7 +88,8 @@ describe('playable Heaven and Abyss', () => {
         Object.fromEntries(pool.specialties.map((drop) => [drop.id, drop.maximum])));
     }
     for (const mode of ['heavens', 'abyss'] as const) for (const [index, element] of elements.filter((entry) => entry.infusion === mode).entries()) {
-      expect(infusionDrops(mode, 35, draws([0, 0, 0, 0, 0, (index + .5) / 5, 0, 0, (index + .5) / 5, 0, 0, (index + .5) / 5]))).toEqual({
+      const selection = (index + .5) / elements.filter((entry) => entry.infusion === mode).length;
+      expect(infusionDrops(mode, 35, draws([0, 0, 0, 0, 0, selection, 0, 0, selection, 0, 0, selection]))).toEqual({
         [`${mode}-weapon`]: 3, [`${mode}-evolution`]: 3, [`${mode}-level`]: 3,
         [`${element.id}-epic`]: 3, [`${element.id}-legendary`]: 3, [`${element.id}-omnic`]: 3,
       });
@@ -103,7 +104,7 @@ describe('playable Heaven and Abyss', () => {
           ...Array<number>(earlierRolls).fill(.999), success ? drop.chance - .000001 : drop.chance,
           ...(success ? [0, 0] : []), ...Array<number>(pool.bonuses.length - earlierRolls - 1).fill(.999),
         ]));
-        expect(result['voltaic-' + rarity]).toBe(success ? drop.minimum : undefined);
+        expect(result['tranquilitic-' + rarity]).toBe(success ? drop.minimum : undefined);
       }
     }
     for (const bad of [-1, 1, NaN, Infinity]) expect(() => infusionDrops('abyss', 35, () => bad)).toThrow('[0, 1)');
@@ -116,7 +117,7 @@ describe('playable Heaven and Abyss', () => {
       const sequence = [...pool.specialties.map(() => 0), ...pool.bonuses.flatMap(() => [0, 0, selection])];
       const drops = infusionDrops(mode, stage, draws(sequence));
       for (const drop of pool.bonuses) {
-        const id = `${eligible[Math.floor(selection * 5)]}-${drop.rarity}`;
+        const id = `${eligible[Math.floor(selection * eligible.length)]}-${drop.rarity}`;
         expect(drops[id]).toBe(drop.minimum);
       }
       for (const element of elements.filter((entry) => entry.infusion !== mode)) {

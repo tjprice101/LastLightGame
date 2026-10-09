@@ -1,10 +1,11 @@
 import { type ElementId } from './activities';
-import { dungeonArt } from './dungeon-art';
+import { legacyDungeonArt } from './dungeon-art';
+import { elementAssetIds, type LegacyElementId } from './element-migration';
 
 export interface DungeonEnemy { name: string; art?: string; ability?: string }
 
-function supplied(element: ElementId): readonly DungeonEnemy[] {
-  const pack = dungeonArt[element];
+function supplied(element: LegacyElementId): readonly DungeonEnemy[] {
+  const pack = legacyDungeonArt[element];
   if (!pack) throw new Error(`Expected supplied dungeon art: ${element}.`);
   return pack.enemies;
 }
@@ -13,7 +14,7 @@ function pending(names: readonly string[]): readonly DungeonEnemy[] {
   return names.map((name) => ({ name }));
 }
 
-export const dungeonEnemies: Record<ElementId, readonly DungeonEnemy[]> = {
+export const legacyDungeonEnemies: Record<LegacyElementId, readonly DungeonEnemy[]> = {
   infernic: supplied('infernic'),
   aquatic: supplied('aquatic'),
   efflorescent: supplied('efflorescent'),
@@ -31,9 +32,18 @@ export const dungeonEnemies: Record<ElementId, readonly DungeonEnemy[]> = {
     'Fracturecoil Drake', 'Riftwing Chimera', 'Crownvoid Behemoth', 'Sovereign of the Impossible Ruin']),
 };
 
-export const dungeonStrikes: Record<ElementId, string> = {
+export const legacyDungeonStrikes: Record<LegacyElementId, string> = {
   infernic: 'Furnace Strike', aquatic: 'Tidal Strike', efflorescent: 'Thorn Strike',
   tectonic: 'Faultline Strike', voltaic: 'Thunder Strike', atmospheric: 'Gale Strike',
   luminous: 'Radiant Strike', ominous: 'Umbral Strike', tranquilitic: 'Concord Strike',
   chaotic: 'Rift Strike',
 };
+
+export const dungeonEnemies: Record<ElementId, readonly DungeonEnemy[]> = {
+  infernic: legacyDungeonEnemies.infernic, oceanic: legacyDungeonEnemies.aquatic,
+  botanic: legacyDungeonEnemies.efflorescent, atmospheric: legacyDungeonEnemies.atmospheric,
+  tranquilitic: legacyDungeonEnemies.tranquilitic, chaotic: legacyDungeonEnemies.chaotic,
+};
+export function dungeonStrike(element: ElementId): string {
+  return legacyDungeonStrikes[elementAssetIds[element]];
+}

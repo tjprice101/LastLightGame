@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw
 
 from intake_character_refresh import ASSETS, MANIFEST, clean, digest, load_settings, prepare, ROOT
 from intake_roster_art import PHASES, historical_runtime
+from art_library import art_path
 
 
 class CharacterRefreshTests(unittest.TestCase):
@@ -35,7 +36,7 @@ class CharacterRefreshTests(unittest.TestCase):
 
     def test_historical_portraits_and_original_sources_remain_hash_verified(self):
         for phase in PHASES:
-            manifest = json.loads((ROOT / "Art" / f"{phase}-art-intake.json").read_text(encoding="utf-8"))
+            manifest = json.loads((art_path(f"{phase}-art-intake.json", root=ROOT)).read_text(encoding="utf-8"))
             for record in manifest["assets"]:
                 if record["category"] != "characters":
                     continue

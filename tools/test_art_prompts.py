@@ -2,6 +2,8 @@
 from pathlib import Path
 import re
 import unittest
+from character_palette import design_prose
+from art_library import art_path
 
 ROOT = Path(__file__).resolve().parent.parent
 BLOCK = re.compile(r"```(?:text)?\n(.*?)\n```", re.S)
@@ -22,7 +24,7 @@ def portrait_body_fraction(index):
 class ArtPromptTests(unittest.TestCase):
     def test_character_prompts_use_neutral_non_explicit_wording(self):
         paths = set((ROOT / "Art").glob("*Art.md"))
-        paths.add(ROOT / "Art" / "midjourney-character-style-prompt.md")
+        paths.add(art_path("midjourney-character-style-prompt.md", root=ROOT))
         checked = set()
         for path, index, body in prompts():
             if path not in paths:
@@ -38,7 +40,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertEqual(checked, paths)
 
     def test_razor_phase_keeps_compact_identity_renderer_key_and_single_night_sword(self):
-        text = (ROOT / "Art" / "Razor Art.md").read_text(encoding="utf-8")
+        text = (art_path("Razor Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
         self.assertEqual(len(bodies), 13)
         identity = ("one tiny male shadow-element chibi sword guardian, cropped ink-black hair with one "
@@ -55,7 +57,7 @@ class ArtPromptTests(unittest.TestCase):
             with self.subTest(block=index + 1):
                 positive, negatives = body.split(" --no ", 1)
                 positive = positive.split(" --", 1)[0]
-                self.assertLessEqual(len(positive.split()), 380)
+                self.assertLessEqual(len(design_prose(positive).split()), 380)
                 self.assertIn(renderer, positive)
                 self.assertTrue(positive.endswith(background))
                 self.assertIn("solid background-color margin on all four sides", positive)
@@ -78,7 +80,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("Pause for owner review of Razor", text)
 
     def test_razor_phase_progresses_and_retains_final_eclipse_bastion_architecture(self):
-        text = (ROOT / "Art" / "Razor Art.md").read_text(encoding="utf-8")
+        text = (art_path("Razor Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body.split(" --", 1)[0] for body in BLOCK.findall(text) if "--niji" in body]
         stages = (
             ("plain graphite long-sleeved tunic", "straight silver guard", "two small separate deep-violet crescent tabs"),
@@ -138,10 +140,10 @@ class ArtPromptTests(unittest.TestCase):
             ("Bliss", "female", "Tranquilitic", 6, "DPS", "warfan"),
             ("Disciple", "male", "Chaotic", 6, "Support - buffing allies", "psychic"),
         )
-        manifest = (ROOT / "Art" / "Flagship Characters.md").read_text(encoding="utf-8")
+        manifest = (art_path("Flagship Characters.md", root=ROOT)).read_text(encoding="utf-8")
         for name, gender, element, stars, role, signature in expected:
             with self.subTest(character=name):
-                text = (ROOT / "Art" / f"{name} Art.md").read_text(encoding="utf-8")
+                text = (art_path(f"{name} Art.md", root=ROOT)).read_text(encoding="utf-8")
                 bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
                 self.assertEqual(len(bodies), 13)
                 assets = re.findall(r"Suggested asset ID: `([^`]+)`", text)
@@ -195,7 +197,7 @@ class ArtPromptTests(unittest.TestCase):
                     self.assertEqual(line, line.rstrip(), "Trailing whitespace in a flagship pack.")
 
     def test_atmoso_phase_keeps_starter_renderer_and_copy_ready_key_background(self):
-        text = (ROOT / "Art" / "Atmoso Art.md").read_text(encoding="utf-8")
+        text = (art_path("Atmoso Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
         self.assertEqual(len(bodies), 13)
         background = ("plain solid orange background (#FF8000), flat unlit color edge to edge "
@@ -211,7 +213,7 @@ class ArtPromptTests(unittest.TestCase):
                 self.assertIn(renderer, positive)
                 self.assertIn("solid background-color margin on all four sides", positive)
                 self.assertIn("nothing touches the frame edges", positive)
-                self.assertLessEqual(len(positive.split()), 380)
+                self.assertLessEqual(len(design_prose(positive).split()), 380)
                 if index < 6:
                     for anchor in ("rounded oversized head tiny torso short limbs 2.5 to 3 heads tall",
                                    "eyes only with no other facial features", "silver-gray hair",
@@ -225,7 +227,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("D-121 supplied six portraits and six", text)
 
     def test_atmoso_phase_uses_visibly_different_stage_constructions(self):
-        text = (ROOT / "Art" / "Atmoso Art.md").read_text(encoding="utf-8")
+        text = (art_path("Atmoso Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
         stages = (
             ("plain navy long-sleeved tunic", "small open curved crook",
@@ -262,7 +264,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn(final_staff, bodies[12])
 
     def test_atmoso_review_preserves_renderer_and_expands_legendary_into_omnic(self):
-        text = (ROOT / "Art" / "Atmoso Art.md").read_text(encoding="utf-8")
+        text = (art_path("Atmoso Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body.split(" --", 1)[0] for body in BLOCK.findall(text) if "--niji" in body]
         identity = ("one tiny male wind-element chibi staff wielder, tousled silver-gray hair "
                     "teal eyes only with no other facial features recognizable sky-blue shoulder sash "
@@ -294,7 +296,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("Reject any output", text)
 
     def test_atmoso_phase_keeps_names_outside_images_and_excludes_lettering(self):
-        text = (ROOT / "Art" / "Atmoso Art.md").read_text(encoding="utf-8")
+        text = (art_path("Atmoso Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
         for index, body in enumerate(bodies):
             with self.subTest(block=index + 1):
@@ -312,7 +314,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("no lettering anywhere", text)
 
     def test_aurora_phase_keeps_renderer_identity_key_and_weaponless_casting(self):
-        text = (ROOT / "Art" / "Aurora Art.md").read_text(encoding="utf-8")
+        text = (art_path("Aurora Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
         self.assertEqual(len(bodies), 13)
         identity = ("one tiny female light-element chibi open-hand caster, pearl-white chin-length bob "
@@ -329,7 +331,7 @@ class ArtPromptTests(unittest.TestCase):
             with self.subTest(block=index + 1):
                 positive, negatives = body.split(" --no ", 1)
                 positive = positive.split(" --", 1)[0]
-                self.assertLessEqual(len(positive.split()), 380)
+                self.assertLessEqual(len(design_prose(positive).split()), 380)
                 self.assertIn(renderer, positive)
                 self.assertTrue(positive.endswith(background))
                 self.assertIn("solid background-color margin on all four sides", positive)
@@ -350,7 +352,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("Icons and weapons use no `--sref` or `--sw`", text)
 
     def test_aurora_phase_progresses_and_retains_legendary_structures_in_omnic(self):
-        text = (ROOT / "Art" / "Aurora Art.md").read_text(encoding="utf-8")
+        text = (art_path("Aurora Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body.split(" --", 1)[0] for body in BLOCK.findall(text) if "--niji" in body]
         stage_anchors = (
             ("plain ivory long-sleeved tunic", "one small open ivory lens circle"),
@@ -389,7 +391,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn(shared_focus, bodies[12])
 
     def test_bliss_phase_keeps_renderer_non_explicit_imagery_and_copy_contract(self):
-        text = (ROOT / "Art" / "Bliss Art.md").read_text(encoding="utf-8")
+        text = (art_path("Bliss Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
         self.assertEqual(len(bodies), 13)
         identity = ("one tiny female peace-element chibi warfan duelist, ivory hair in two low swept buns "
@@ -406,7 +408,7 @@ class ArtPromptTests(unittest.TestCase):
             with self.subTest(block=index + 1):
                 positive, negatives = body.split(" --no ", 1)
                 positive = positive.split(" --", 1)[0]
-                self.assertLessEqual(len(positive.split()), 380)
+                self.assertLessEqual(len(design_prose(positive).split()), 380)
                 self.assertIn(renderer, positive)
                 self.assertTrue(positive.endswith(background))
                 self.assertIn("solid background-color margin on all four sides", positive)
@@ -430,7 +432,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("Pause for owner review of Bliss", text)
 
     def test_bliss_phase_adds_feather_architecture_and_retains_legendary_in_omnic(self):
-        text = (ROOT / "Art" / "Bliss Art.md").read_text(encoding="utf-8")
+        text = (art_path("Bliss Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body.split(" --", 1)[0] for body in BLOCK.findall(text) if "--niji" in body]
         stages = (
             ("plain pearl long-sleeved tunic", "simple folding ivory warfans"),
@@ -474,7 +476,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("functional pearl grip", bodies[12])
 
     def test_bliss_review_transforms_armor_mass_and_fan_scale_not_just_wing_count(self):
-        text = (ROOT / "Art" / "Bliss Art.md").read_text(encoding="utf-8")
+        text = (art_path("Bliss Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body.split(" --", 1)[0] for body in BLOCK.findall(text) if "--niji" in body]
         self.assertIn("plain pearl long-sleeved tunic", bodies[0])
         self.assertIn("simple folding ivory warfans", bodies[0])
@@ -506,7 +508,7 @@ class ArtPromptTests(unittest.TestCase):
             self.assertNotRegex(body, r"\b(?:purple|obsidian|slime|cleaver|realistic|giant anatomy)\b")
 
     def test_bruno_phase_retains_renderer_identity_key_and_neutral_copy(self):
-        text = (ROOT / "Art" / "Bruno Art.md").read_text(encoding="utf-8")
+        text = (art_path("Bruno Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
         self.assertEqual(len(bodies), 13)
         renderer = ("clean precise anime contours crisp cel shading smooth painted highlights "
@@ -519,7 +521,7 @@ class ArtPromptTests(unittest.TestCase):
             with self.subTest(block=index + 1):
                 positive, negatives = body.split(" --no ", 1)
                 positive = positive.split(" --", 1)[0]
-                self.assertLessEqual(len(positive.split()), 380)
+                self.assertLessEqual(len(design_prose(positive).split()), 380)
                 self.assertIn(renderer, positive)
                 self.assertTrue(positive.endswith(background))
                 self.assertIn("solid background-color margin on all four sides", positive)
@@ -541,7 +543,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("Pause for owner review of Bruno", text)
 
     def test_bruno_restores_compact_anatomy_and_equipment_progression(self):
-        text = (ROOT / "Art" / "Bruno Art.md").read_text(encoding="utf-8")
+        text = (art_path("Bruno Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body.split(" --", 1)[0] for body in BLOCK.findall(text) if "--niji" in body]
         for index, body in enumerate(bodies[:6]):
             for anchor in ("short dark-brown swept-back hair", "tiny torso short limbs 2.5 to 3 heads tall",
@@ -576,7 +578,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("not combat hitbox/stats/camera changes", text)
 
     def test_disciple_phase_keeps_compact_identity_renderer_key_and_empty_palms(self):
-        text = (ROOT / "Art" / "Disciple Art.md").read_text(encoding="utf-8")
+        text = (art_path("Disciple Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
         self.assertEqual(len(bodies), 13)
         identity = ("one tiny male chaotic-element chibi psychic caster, short plum-black hair swept upward "
@@ -592,7 +594,7 @@ class ArtPromptTests(unittest.TestCase):
             with self.subTest(block=index + 1):
                 positive, negatives = body.split(" --no ", 1)
                 positive = positive.split(" --", 1)[0]
-                self.assertLessEqual(len(positive.split()), 380)
+                self.assertLessEqual(len(design_prose(positive).split()), 380)
                 self.assertIn(renderer, positive)
                 self.assertTrue(positive.endswith(background))
                 self.assertIn("solid background-color margin on all four sides", positive)
@@ -614,7 +616,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("Pause for owner review of Disciple", text)
 
     def test_disciple_phase_progresses_armor_and_retains_final_psychic_architecture(self):
-        text = (ROOT / "Art" / "Disciple Art.md").read_text(encoding="utf-8")
+        text = (art_path("Disciple Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body.split(" --", 1)[0] for body in BLOCK.findall(text) if "--niji" in body]
         stages = (
             ("plain charcoal long-sleeved tunic", "one small scarlet psychic flame"),
@@ -658,7 +660,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("three upward magenta flame crests", bodies[5])
 
     def test_elise_phase_keeps_renderer_anatomy_key_and_two_four_point_stars(self):
-        text = (ROOT / "Art" / "Elise Art.md").read_text(encoding="utf-8")
+        text = (art_path("Elise Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
         self.assertEqual(len(bodies), 13)
         identity = ("one tiny female electricity-element chibi shuriken fighter, short black hair with one "
@@ -675,7 +677,7 @@ class ArtPromptTests(unittest.TestCase):
             with self.subTest(block=index + 1):
                 positive, negatives = body.split(" --no ", 1)
                 positive = positive.split(" --", 1)[0]
-                self.assertLessEqual(len(positive.split()), 380)
+                self.assertLessEqual(len(design_prose(positive).split()), 380)
                 self.assertIn(renderer, positive)
                 self.assertTrue(positive.endswith(background))
                 self.assertIn("solid background-color margin on all four sides", positive)
@@ -696,7 +698,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("Pause for owner review of Elise", text)
 
     def test_elise_phase_progresses_and_retains_legendary_thunderwheel_architecture(self):
-        text = (ROOT / "Art" / "Elise Art.md").read_text(encoding="utf-8")
+        text = (art_path("Elise Art.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body.split(" --", 1)[0] for body in BLOCK.findall(text) if "--niji" in body]
         stages = (
             ("plain charcoal long-sleeved wrap tunic", "simple silver four-point shuriken"),
@@ -738,7 +740,7 @@ class ArtPromptTests(unittest.TestCase):
                 self.assertIn(anchor, bodies[index])
 
     def test_sanctuary_has_six_divine_wisp_cutouts_and_two_scenery_prompts(self):
-        text = (ROOT / "Art" / "Rosethorn Sanctuary.md").read_text(encoding="utf-8")
+        text = (art_path("Rosethorn Sanctuary.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
         self.assertEqual(len(bodies), 8)
         for body in bodies[:6]:
@@ -754,7 +756,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("--ar 16:9", bodies[7])
 
     def test_treasury_has_six_regal_capture_cutouts_and_two_scenery_prompts(self):
-        text = (ROOT / "Art" / "Crownfall Treasury.md").read_text(encoding="utf-8")
+        text = (art_path("Crownfall Treasury.md", root=ROOT)).read_text(encoding="utf-8")
         bodies = [body for body in BLOCK.findall(text) if "--niji" in body]
         self.assertEqual(len(bodies), 8)
         for body in bodies[:6]:
@@ -769,7 +771,7 @@ class ArtPromptTests(unittest.TestCase):
         self.assertIn("--ar 16:9", bodies[7])
 
     def test_summon_banner_is_omnic_wide_scenery_not_reward_cards(self):
-        text = (ROOT / "Art" / "Summoning Banners.md").read_text(encoding="utf-8")
+        text = (art_path("Summoning Banners.md", root=ROOT)).read_text(encoding="utf-8")
         scenes = [body for body in BLOCK.findall(text) if "--niji" in body]
         self.assertEqual(len(scenes), 1)
         body = scenes[0]
@@ -792,7 +794,7 @@ class ArtPromptTests(unittest.TestCase):
         material_tones = ("simple restrained", "distinctive crafted", "commanding",
                           "formidable", "majestic", "transcendent")
         for filename, enemy_signature, soul_signature in packs:
-            path = ROOT / "Art" / "dungeons" / filename
+            path = art_path("dungeons", filename, root=ROOT)
             bodies = BLOCK.findall(path.read_text(encoding="utf-8"))
             self.assertEqual(len(bodies), 16)
             for index, tone in enumerate(enemy_tones):
@@ -818,7 +820,7 @@ class ArtPromptTests(unittest.TestCase):
                 self.assertIn(f"--ar {ratio}", body)
 
     def test_phase_four_has_ten_element_medallions_and_three_archive_banners(self):
-        elements = (ROOT / "Art" / "Element Emblems.md").read_text(encoding="utf-8")
+        elements = (art_path("Element Emblems.md", root=ROOT)).read_text(encoding="utf-8")
         emblems = [body for body in BLOCK.findall(elements) if "--niji" in body]
         self.assertEqual(len(emblems), 10)
         for element in ("infernic", "aquatic", "tectonic", "efflorescent", "voltaic",
@@ -829,7 +831,7 @@ class ArtPromptTests(unittest.TestCase):
             self.assertIn("centered", body)
             self.assertIn("opaque enamel inset", body)
             self.assertIn("--ar 1:1", body)
-        banners = (ROOT / "Art" / "Archives.md").read_text(encoding="utf-8")
+        banners = (art_path("Archives.md", root=ROOT)).read_text(encoding="utf-8")
         scenes = [body for body in BLOCK.findall(banners) if "--niji" in body]
         self.assertEqual(len(scenes), 3)
         for body in scenes:
@@ -854,8 +856,10 @@ class ArtPromptTests(unittest.TestCase):
                 negatives = body.split("--no ", 1)[1].split(" --", 1)[0]
                 self.assertIn("photorealism", negatives)
                 self.assertIn("3d render", negatives)
-                if "--ar 4:3" in body:
-                    self.assertRegex(body, r" --sref https://\S+ --sw 400$")
+                if "--sref" in body:
+                    self.assertIn("--ar 4:3", body)
+                    weight = 10 if path == art_path("experiments", "Enemy Style Pilot.md", root=ROOT) and index <= 3 else 150
+                    self.assertRegex(body, rf" --sref https://\S+ --sw {weight}$")
                 else:
                     self.assertNotIn("--sref", body)
                     self.assertNotIn("--sw", body)
@@ -889,7 +893,7 @@ class ArtPromptTests(unittest.TestCase):
             ("Soar to Heaven.md", "Dawnthorn Slime", ("white", "scarlet", "gold"), "halberd"),
             ("Delve into the Abyss.md", "Wraththorn Slime", ("black", "purple", "pink"), "cleaver"),
         ):
-            path = ROOT / "Art" / "gamemodes" / filename
+            path = art_path("gamemodes", filename, root=ROOT)
             bodies = [body for body in BLOCK.findall(path.read_text(encoding="utf-8")) if "--niji" in body]
             self.assertEqual(len(bodies), 11)
             for index, body in enumerate(bodies[:6]):
@@ -908,19 +912,20 @@ class ArtPromptTests(unittest.TestCase):
             self.assertIn(weapon, bodies[5])
             self.assertIn("wings", bodies[5])
             self.assertRegex(bodies[5], r"crown|halo")
-        abyss = (ROOT / "Art" / "gamemodes" / "Delve into the Abyss.md").read_text(encoding="utf-8")
+        abyss = (art_path("gamemodes", "Delve into the Abyss.md", root=ROOT)).read_text(encoding="utf-8")
         self.assertIn("opaque painted glass facets", abyss)
         self.assertNotIn("two transparent amethyst", abyss)
 
     def test_currency_identities_remain_unique_objects(self):
-        path = ROOT / "Art" / "Currencies.md"
+        path = art_path("Currencies.md", root=ROOT)
         bodies = [body for body in BLOCK.findall(path.read_text(encoding="utf-8")) if "--niji" in body]
         self.assertEqual(len(bodies), 2)
-        self.assertIn("one bright precious prism crystal", bodies[0])
-        self.assertIn("pearlescent ivory central planes", bodies[0])
-        self.assertIn("one dark precious prism crystal", bodies[1])
-        self.assertIn("obsidian central planes", bodies[1])
-        self.assertIn("same geometric construction", bodies[1])
+        self.assertIn("one white precious coin", bodies[0])
+        self.assertIn("pearlescent-white face polished silver beveled rim", bodies[0])
+        self.assertIn("crisp painted white reflections", bodies[0])
+        self.assertIn("one cracked black precious coin", bodies[1])
+        self.assertIn("obsidian-black face dark steel beveled rim", bodies[1])
+        self.assertIn("three angular red and white lightning bolts emerging directly from the cracks", bodies[1])
         for body in bodies:
             self.assertIn("--ar 1:1", body)
             self.assertIn("roughly two thirds", body)

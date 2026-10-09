@@ -2,9 +2,10 @@
 from pathlib import Path
 import re
 import unittest
+from art_library import art_path
 
 ROOT = Path(__file__).resolve().parent.parent
-ART = ROOT / "Art" / "Awaken the Machines.md"
+ART = art_path("Awaken the Machines.md", root=ROOT)
 
 
 class MachineArtPrompts(unittest.TestCase):
@@ -29,6 +30,7 @@ class MachineArtPrompts(unittest.TestCase):
                 self.assertIn("--q 1", prompt)
                 self.assertNotIn("--style", prompt)
                 self.assertNotIn("--sref", prompt)
+                self.assertNotIn("--sw", prompt)
                 self.assertIn("clean precise anime contours", prompt)
                 self.assertIn("crisp cel shading", prompt)
                 if index < 26:
@@ -44,9 +46,16 @@ class MachineArtPrompts(unittest.TestCase):
 
     def test_enemy_escalation_and_scorched_wasteland(self):
         blocks = re.findall(r"```text\n(.*?)\n```", ART.read_text(encoding="utf-8"), re.S)
-        for index, coverage in enumerate([50, 60, 72, 84, 94, 96]):
+        for index, (coverage, margin) in enumerate([(50, 25), (60, 20)] + [(70, 15)] * 4):
             prompt = blocks[20 + index]
-            self.assertIn(f"spans {coverage} percent", prompt)
+            self.assertIn(f"spans no more than {coverage} percent", prompt)
+            self.assertIn(f"at least {margin} percent solid background-color margin", prompt)
+            self.assertIn("measured from the outermost ornament or effect rather than the body", prompt)
+            self.assertIn("distant pulled-back view", prompt)
+            self.assertIn("without removing or shortening wings equipment powers or ornamentation", prompt)
+            self.assertIn("authored creature colors control", prompt)
+            self.assertIn("not its palette costume or composition", prompt)
+            self.assertNotIn("spread toward every corner", prompt)
             self.assertIn("only with no other facial features", prompt)
             self.assertIn("right-facing", prompt)
             self.assertIn("--ar 4:3", prompt)

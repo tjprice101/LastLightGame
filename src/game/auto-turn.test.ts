@@ -93,12 +93,12 @@ describe('automatic enemy turn after the final available action', () => {
     expect(result.state.round).toBe(1);
   });
   it('includes burn-clear rewards and retains dungeon stage until manual advance', () => {
-    const state = createDungeonBattle('tectonic', 5, 1729, 'ember', { level: 0, evolution: 1 });
+    const state = createDungeonBattle('botanic', 5, 1729, 'ember', { level: 0, evolution: 1 });
     state.enemies[0].hp = 1;
     state.enemies[0].burn = { damage: 8, turns: 2 };
     const result = actAndAdvanceTurn(state, 'ember', 'defend', '');
     expect(result.state.phase).toBe('cleared');
     expect(result.state.dungeon?.stage).toBe(5);
-    expect(result.events.find((event) => event.kind === 'reward')?.materials).toEqual({ 'tectonic-common': 1, 'tectonic-uncommon': 1 });
+    expect(result.events.find((event) => event.kind === 'reward')?.materials).toEqual({ 'botanic-common': 1, 'botanic-uncommon': 1, 'botanic-rare': 2 });
   });
 });

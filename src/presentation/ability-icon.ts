@@ -13,6 +13,12 @@ export const infernisIcons = {
 
 export const abilityIcons = {
   ...flagshipAbilityIcons,
+  nerithe: { passive: 'nerithe-passive', skill1: 'nerithe-skill1',
+    skill2: 'nerithe-skill2', ultimate: 'nerithe-ultimate' },
+  orvella: { passive: 'orvella-passive', light: 'orvella-light', skill1: 'orvella-skill1',
+    skill2: 'orvella-skill2', ultimate: 'orvella-ultimate', defend: 'orvella-defend' },
+  vaelor: { passive: 'vaelor-passive', light: 'vaelor-light', skill1: 'vaelor-skill1',
+    skill2: 'vaelor-skill2', ultimate: 'vaelor-ultimate', defend: 'vaelor-defend' },
   ember: infernisIcons,
   tide: {
     passive: 'tizu-stillwater-guard',
@@ -40,7 +46,7 @@ export const abilityIcons = {
     passive: 'crinso-passive', light: 'crinso-light', skill1: 'crinso-skill1',
     skill2: 'crinso-skill2', ultimate: 'crinso-ultimate', defend: 'crinso-defend',
   },
-} as const satisfies Record<StarterId, Record<Exclude<ActionId, 'defend'> | 'passive', string> & { defend?: string }>;
+} as const satisfies Record<StarterId, Record<'skill1' | 'skill2' | 'ultimate' | 'passive', string> & { light?: string; defend?: string }>;
 
 export function abilityIcon(starterId: StarterId, action: ActionId | 'passive'): string {
   const icons: Partial<Record<ActionId | 'passive', string>> = abilityIcons[starterId];

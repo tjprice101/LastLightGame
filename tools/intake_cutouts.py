@@ -9,6 +9,7 @@ from PIL import Image
 from prepare_art import ROOT, standardize_sprite
 from review_art import sources
 from prepare_icons import ICONS
+from art_library import art_path
 
 
 def digest(path):
@@ -52,7 +53,7 @@ def intake(mapping, apply=False):
             "previous_runtime_sha256": digest(runtime),
             "processing": "supplied-alpha; trim, uniform resize and transparent padding only",
         }))
-    manifest = ROOT / "Art" / "cutout-intake.json"
+    manifest = art_path("cutout-intake.json", root=ROOT)
     if apply and manifest.exists():
         raise FileExistsError(f"Intake manifest already exists: {manifest}")
     for incoming, archived, runtime, result, record in planned:
@@ -65,6 +66,7 @@ def intake(mapping, apply=False):
             record["runtime_sha256"] = digest(runtime)
         print(f"{incoming.name} -> {archived.relative_to(ROOT)} -> {runtime.relative_to(ROOT)}")
     if apply:
+        manifest.parent.mkdir(parents=True, exist_ok=True)
         manifest.write_text(json.dumps({"method": "Owner-supplied transparent replacements; no background removal",
                                         "assets": [record for *_, record in planned]}, indent=2) + "\n",
                             encoding="utf-8")

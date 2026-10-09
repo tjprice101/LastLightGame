@@ -15,7 +15,7 @@ import { characterRole } from './character-role';
 import { currencyIcon } from './currency-icon';
 import { inventoryView, type InventoryTab } from './inventory';
 import { conduits, conduitEquipReason, conduitSlotCount, conduitEffect, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
-import { conduitIcon } from './conduit-store';
+import { conduitIcon, kitConduitRules } from './conduit-store';
 import { capturedProgress, resolveCapturedFighter, type CapturedCharacter } from '../game/character-instances';
 import { capturedRating } from './owned-companion';
 import { information } from './information';
@@ -142,8 +142,8 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
             return `<button class="team-companion" data-page="squad">${companion.art}<span><strong>${companion.name}</strong><small>${index === 0 ? 'Leader ~ ' : ''}${companion.progress}</small></span></button>`;
           }).join('')}
         </div>
-        <div class="hub-launch"><button class="hub-battle-button" data-page="battle">
-        <small>GRASSY FIELD</small><strong>Adventure &rarr;</strong><span>Start at wave 1 ~ ${currencyIcon('fractalis')} Prismatica</span></button>
+        <div class="hub-launch"><button class="hub-battle-button" data-page="story">
+        <small>SIX BEACONS</small><strong>Story &rarr;</strong><span>Explore the world map ~ 150 stages</span></button>
         </div>
       </aside>
     </div>`;
@@ -241,7 +241,8 @@ export function characterInformation(): string {
     Evolution requires the current form's maximum level and preserves that level. Max Level previews affordable levels within the current cap, total costs and stat changes before confirmation.
     Captured creatures level independently to 120 and cannot evolve.</p>
     <p>Core growth: (1 + 0.03 &times; level)&sup3; &times; 1.45^(evolution - 1). Defense uses core growth^0.7; percentage potency grows separately.
-    Shatter gains, skill costs, cooldowns and durations stay fixed. Ability potency increases with levels and evolution; there are no separate ability upgrades.</p>
+    Base Gauge gains, skill costs, cooldowns and durations do not scale with levels. Equipped Conduits may modify them as stated in their rules.
+    Ability potency increases with levels and evolution; there are no separate ability upgrades.</p>
     <h3>Evolution fodder</h3><p>Evo.3→4 consumes 1 form 3+ creature; Evo.4→5 consumes 2 form 4+; Evo.5→6 consumes 3 form 5+.
     Copies must match the element's infusion mode and be explicitly selected. Rosetta, Thornia and Crinso instead require Roselius from Passion of Crimson Roses. Consumption is permanent.</p>
     <h3>Rose event growth</h3><p>Rosetta, Thornia and Crinso use Rosethorn materials instead of ordinary elemental and specialty materials.
@@ -266,7 +267,8 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
   if (selectedTab === 'overview') {
     detail = `<div class="character-stat-rating"><strong>Character classification</strong>${characterRating(starter.id, progress?.evolution)}</div>${stats(starter, progress, true, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)}<section class="character-category character-combat"><h3>Abilities &amp; passive</h3><div class="character-ability-grid">
       <article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name} ~ Passive</span></h3><p>${kit.passive.description}</p></article>
-      ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => ability(starter, action, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)).join('')}</div></section>`;
+      ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => ability(starter, action, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)).join('')}</div>
+      ${kitConduitRules(account?.conduitEquipment?.[starter.id])}</section>`;
   } else if (selectedTab === 'equipment') {
     detail = equipment(starter, account);
   } else if (selectedTab === 'upgrade-0' || selectedTab === 'upgrade-1') {
@@ -275,7 +277,7 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
     if (!upgradePaths.some((path) => path.id === selectedTab)) throw new Error('Unknown upgrade definition.');
     const specific = selectedTab === 'upgrade-3' ? `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name}</span></h3><p>${kit.passive.description}</p></article>`
       : ability(starter, selectedTab === 'upgrade-4' ? 'skill1' : selectedTab === 'upgrade-5' ? 'skill2' : 'ultimate', progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades);
-    detail = `<section class="character-category"><h3>Current effect</h3>${specific}</section>`;
+    detail = `<section class="character-category"><h3>Current effect</h3>${specific}${kitConduitRules(account?.conduitEquipment?.[starter.id])}</section>`;
   }
   return `<h2 id="upgrade-heading" tabindex="-1">${tab.label}</h2><div class="character-detail-content">${detail}</div>`;
 }

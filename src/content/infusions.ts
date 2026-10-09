@@ -2,7 +2,7 @@ import { elements, infusionModes, currencyModes, eventModes, machineModes, isCur
 import { machineEnemies } from './machines';
 import { type Stats } from './combat';
 import { lootRoll, rollDrop, scaledDrop } from './loot-random';
-import { enemyGrowth, enemyStat } from './stat-growth';
+import { enemyGrowth, enemyStat, stagedEnemyAttack } from './stat-growth';
 import { roseMaterials, roseMaterialUnlocks, roseFinalChances, roseSaleQuantities, roseFormStages } from './roses';
 
 export function isInfusionMode(value: unknown): value is InfusionModeId {
@@ -66,7 +66,7 @@ export const infusionEnemies = {
   ],
   machines: machineEnemies.map((enemy) => [enemy.name, enemy.art] as const),
 } as const;
-export const infusionEnemyElements = { heavens: 'tranquilitic', abyss: 'chaotic', treasury: 'luminous', sanctuary: 'tranquilitic', roses: 'luminous', machines: 'tectonic' } as const satisfies Record<InfusionModeId, ElementId>;
+export const infusionEnemyElements = { heavens: 'tranquilitic', abyss: 'chaotic', treasury: 'tranquilitic', sanctuary: 'tranquilitic', roses: 'tranquilitic', machines: 'botanic' } as const satisfies Record<InfusionModeId, ElementId>;
 export function infusionEnemyStats(level: number, boss: boolean): Stats {
   if (!Number.isInteger(level) || level < 80 || level > 120) throw new Error('Infusion enemy level must be from 80 to 120.');
   return creatureEnemyStats(level, boss);
@@ -99,7 +99,7 @@ export function roseEnemyStats(level: number, boss: boolean): Stats {
 function creatureEnemyStats(level: number, boss: boolean, maximumLevel = 120): Stats {
   return {
     health: enemyStat(boss ? 110 : 55, boss ? enemyGrowth.bossHealth : enemyGrowth.health, level, 10, .036, maximumLevel),
-    damage: enemyStat(boss ? 13 : 8, boss ? enemyGrowth.bossDamage : enemyGrowth.damage, level, 10, .036, maximumLevel),
+    damage: stagedEnemyAttack(level, boss, 10, maximumLevel),
     defense: enemyStat(2, boss ? enemyGrowth.bossDefense : enemyGrowth.defense, level, 10, .08, maximumLevel),
     crit: .12, critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0 };
 }

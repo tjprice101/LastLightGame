@@ -1,13 +1,14 @@
 from pathlib import Path
 import re
 import unittest
+from art_library import art_path
 
 ROOT = Path(__file__).resolve().parent.parent
 
 
 class ComponentArtPromptTests(unittest.TestCase):
     def test_shattered_omnic_currency_has_one_renderer_compliant_cutout_prompt(self):
-        text = (ROOT / "Art" / "Broken Mechanical Components.md").read_text(encoding="utf-8")
+        text = (art_path("Broken Mechanical Components.md", root=ROOT)).read_text(encoding="utf-8")
         blocks = re.findall(r"```text\n(.*?)\n```", text, re.S)
         self.assertEqual(len(blocks), 1)
         prompt = blocks[0]

@@ -1,0 +1,2571 @@
+{
+  "asset_count": 40,
+  "assets": [
+    {
+      "incoming": "Uncharted Tide, Nerithe.png",
+      "asset": "nerithe",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\nerithe.png",
+      "source_sha256": "d24d0c541644f04a7660542c4cb1a83e39cecf5789e8fa1ea4c6659c91eba487",
+      "runtime": "public\\assets\\characters\\nerithe.png",
+      "runtime_sha256": "627959c92fc4b377c202289e478b05d5a09dad65a121a2a733b3d3ff3b923d80",
+      "processing": {
+        "keys": [
+          [
+            255,
+            201,
+            48
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.470779,
+            0.451509
+          ],
+          [
+            0.594156,
+            0.461207
+          ],
+          [
+            0.423701,
+            0.452586
+          ],
+          [
+            0.186688,
+            0.490302
+          ],
+          [
+            0.320617,
+            0.572198
+          ],
+          [
+            0.374188,
+            0.786638
+          ],
+          [
+            0.546266,
+            0.871767
+          ],
+          [
+            0.273539,
+            0.752155
+          ],
+          [
+            0.304383,
+            0.797414
+          ],
+          [
+            0.125812,
+            0.609914
+          ],
+          [
+            0.289773,
+            0.614224
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Current Surveyor, Nerithe.png",
+      "asset": "nerithe-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\nerithe-evo-2.png",
+      "source_sha256": "5622bfc301005f2c0df3f4133e3636ca070fbbae33898fdb1f42c0cc2637b949",
+      "runtime": "public\\assets\\characters\\nerithe-evo-2.png",
+      "runtime_sha256": "42b693d24a1aa78706d9d01c2da969caf7f08c681aa564e2c75dc75b482e5b50",
+      "processing": {
+        "keys": [
+          [
+            239,
+            170,
+            72
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.336039,
+            0.181034
+          ],
+          [
+            0.319805,
+            0.300647
+          ],
+          [
+            0.239448,
+            0.491379
+          ],
+          [
+            0.198052,
+            0.564655
+          ],
+          [
+            0.204545,
+            0.604526
+          ],
+          [
+            0.25487,
+            0.832974
+          ],
+          [
+            0.448864,
+            0.887931
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Keeper of the Spiral Sea, Nerithe.png",
+      "asset": "nerithe-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\nerithe-evo-3.png",
+      "source_sha256": "9542ac152df927693e08f28984840c416048bdd20089c6de7d520ab781463d7a",
+      "runtime": "public\\assets\\characters\\nerithe-evo-3.png",
+      "runtime_sha256": "22ff8fd31c8c3dcfd72918d8f05223ee81decc34d5b510d6372f036a06b69454",
+      "processing": {
+        "keys": [
+          [
+            244,
+            140,
+            64
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.238636,
+            0.559267
+          ],
+          [
+            0.656656,
+            0.653017
+          ],
+          [
+            0.181818,
+            0.58944
+          ],
+          [
+            0.375,
+            0.706897
+          ],
+          [
+            0.558442,
+            0.946121
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Admiral of the Folded Ocean, Nerithe.png",
+      "asset": "nerithe-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\nerithe-evo-4.png",
+      "source_sha256": "5403fec8aa0e725d9f926dfaec123233ff19440b112a862f1a0943f6fe4eb281",
+      "runtime": "public\\assets\\characters\\nerithe-evo-4.png",
+      "runtime_sha256": "aeb989705886eee5a51a7029ad90c31546122d4664bdea130e81a26c53a54143",
+      "processing": {
+        "keys": [
+          [
+            243,
+            168,
+            64
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.75487,
+            0.230603
+          ],
+          [
+            0.327922,
+            0.447198
+          ],
+          [
+            0.713474,
+            0.442888
+          ],
+          [
+            0.612825,
+            0.507543
+          ],
+          [
+            0.778409,
+            0.520474
+          ],
+          [
+            0.79789,
+            0.528017
+          ],
+          [
+            0.614448,
+            0.547414
+          ],
+          [
+            0.741071,
+            0.551724
+          ],
+          [
+            0.642045,
+            0.557112
+          ],
+          [
+            0.546266,
+            0.570043
+          ],
+          [
+            0.695617,
+            0.642241
+          ],
+          [
+            0.402597,
+            0.837284
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Sovereign of the Abyssal Meridian, Nerithe.png",
+      "asset": "nerithe-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\nerithe-evo-5.png",
+      "source_sha256": "77d08fc781d62c5aacc11b1e258546b2504f5bce6cd9b201c2ea1f7917a16fe4",
+      "runtime": "public\\assets\\characters\\nerithe-evo-5.png",
+      "runtime_sha256": "831535e0e83ff89638f3f9e8914e5b8957c57935258c580058df839e162b6332",
+      "processing": {
+        "keys": [
+          [
+            246,
+            172,
+            69
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.469968,
+            0.117457
+          ],
+          [
+            0.534091,
+            0.143319
+          ],
+          [
+            0.681818,
+            0.170259
+          ],
+          [
+            0.45211,
+            0.210129
+          ],
+          [
+            0.705357,
+            0.234914
+          ],
+          [
+            0.228084,
+            0.300647
+          ],
+          [
+            0.418019,
+            0.371767
+          ],
+          [
+            0.719968,
+            0.371767
+          ],
+          [
+            0.504058,
+            0.40625
+          ],
+          [
+            0.69237,
+            0.422414
+          ],
+          [
+            0.810065,
+            0.436422
+          ],
+          [
+            0.076299,
+            0.570043
+          ],
+          [
+            0.0625,
+            0.798491
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "The Sea Without a Shore, Nerithe.png",
+      "asset": "nerithe-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\nerithe-evo-6.png",
+      "source_sha256": "7f9c3d9596eb41cc31f832ae891dd35b05b38ccdc231d5d128c1ee8208f338d5",
+      "runtime": "public\\assets\\characters\\nerithe-evo-6.png",
+      "runtime_sha256": "606070da88ffa2b1fcd8f53c917264b6f99cb3c98aa88d4554801650a37e16b9",
+      "processing": {
+        "keys": [
+          [
+            246,
+            171,
+            96
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 35
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.599838,
+            0.053879
+          ],
+          [
+            0.492695,
+            0.065733
+          ],
+          [
+            0.630682,
+            0.117457
+          ],
+          [
+            0.658279,
+            0.12931
+          ],
+          [
+            0.414773,
+            0.167026
+          ],
+          [
+            0.145292,
+            0.256466
+          ],
+          [
+            0.26461,
+            0.22306
+          ],
+          [
+            0.650162,
+            0.219828
+          ],
+          [
+            0.698864,
+            0.220905
+          ],
+          [
+            0.753247,
+            0.253233
+          ],
+          [
+            0.400974,
+            0.260776
+          ],
+          [
+            0.202922,
+            0.322198
+          ],
+          [
+            0.220779,
+            0.424569
+          ],
+          [
+            0.3125,
+            0.389009
+          ],
+          [
+            0.806818,
+            0.382543
+          ],
+          [
+            0.330357,
+            0.426724
+          ],
+          [
+            0.728084,
+            0.438578
+          ],
+          [
+            0.761364,
+            0.508621
+          ],
+          [
+            0.36039,
+            0.481681
+          ],
+          [
+            0.867695,
+            0.546336
+          ],
+          [
+            0.715097,
+            0.508621
+          ],
+          [
+            0.366071,
+            0.517241
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Passive - Uncharted Current.png",
+      "asset": "nerithe-passive",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\nerithe-passive.png",
+      "source_sha256": "90a71f88bdef395d5d0c67497da45c172f75599f787c7b3fce0854a85a0b8460",
+      "runtime": "public\\assets\\abilities\\nerithe-passive.png",
+      "runtime_sha256": "9ad5329ed384a99e8b30f8e429e58e4bb1b01052b048bf7762f3c17fa1988835",
+      "processing": {
+        "keys": [
+          [
+            255,
+            175,
+            83
+          ],
+          [
+            252,
+            252,
+            250
+          ]
+        ],
+        "radius": 30,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 30
+        },
+        "background_seeds": [
+          [
+            0.815,
+            0.17
+          ]
+        ],
+        "discarded_frame_regions": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              0.075,
+              0
+            ],
+            [
+              0,
+              0.075
+            ]
+          ],
+          [
+            [
+              1,
+              0
+            ],
+            [
+              0.925,
+              0
+            ],
+            [
+              1,
+              0.075
+            ]
+          ],
+          [
+            [
+              0,
+              1
+            ],
+            [
+              0.075,
+              1
+            ],
+            [
+              0,
+              0.925
+            ]
+          ],
+          [
+            [
+              1,
+              1
+            ],
+            [
+              0.925,
+              1
+            ],
+            [
+              1,
+              0.925
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Skill 1 - Meridian Break.png",
+      "asset": "nerithe-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\nerithe-skill1.png",
+      "source_sha256": "9a5e8e30392cc6142fafcd11206cc8a991d90739d48ef5f30a3a8d73077b7128",
+      "runtime": "public\\assets\\abilities\\nerithe-skill1.png",
+      "runtime_sha256": "ee286edbe68da4d106db1795999fcf2877177f66f6ca0eee10ba4026ba58fae7",
+      "processing": {
+        "keys": [
+          [
+            235,
+            173,
+            113
+          ]
+        ],
+        "radius": 30,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "incoming": "Skill 2 - Fold the Sea.png",
+      "asset": "nerithe-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\nerithe-skill2.png",
+      "source_sha256": "4b0935efe4d0359bea39ea3a6393ddf3ba53a02919addc7e8edd3e672e546d42",
+      "runtime": "public\\assets\\abilities\\nerithe-skill2.png",
+      "runtime_sha256": "726834c767680d6c04eb5323a8e52d6f56b7edf180622da538ac721e5404b3ee",
+      "processing": {
+        "keys": [
+          [
+            238,
+            146,
+            58
+          ],
+          [
+            255,
+            145,
+            26
+          ]
+        ],
+        "radius": 30,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 30
+        }
+      },
+      "processing_history": [
+        {
+          "processing": {
+            "keys": [
+              [
+                238,
+                146,
+                58
+              ]
+            ],
+            "radius": 30,
+            "border_only": true,
+            "edge_cleanup": {
+              "source_pixels": 2,
+              "distance_ramp": 30
+            }
+          },
+          "runtime_sha256": "5389a35de40492921e1c5d2410cd20a447c14833d6f360965a8127dd8bb75f35",
+          "previous_runtime": "Art\\source\\elemental-war\\corrections\\nerithe-skill2-5389a35de404.png"
+        }
+      ]
+    },
+    {
+      "incoming": "Last Flare - Ocean Beyond the Map.png",
+      "asset": "nerithe-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\nerithe-ultimate.png",
+      "source_sha256": "2fd6ee830973930ee386b3d2201bc0d1ab79435272620b705edab35ee5ce1532",
+      "runtime": "public\\assets\\abilities\\nerithe-ultimate.png",
+      "runtime_sha256": "e5ae9b9c628ad9468cff3ab968b6a637dbffffab360921f234f029ca3f1fe6a4",
+      "processing": {
+        "keys": [
+          [
+            233,
+            140,
+            69
+          ]
+        ],
+        "radius": 30,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "incoming": "First Foundation, Orvella.png",
+      "asset": "orvella",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\orvella.png",
+      "source_sha256": "5bde7bbab702b003595d25f8e02fc7a750386eaf62029ed32ddca8e205d04e93",
+      "runtime": "public\\assets\\characters\\orvella.png",
+      "runtime_sha256": "1c5b09a5d9665af31a08341cf3c4400b862cd40a564eae9480d133afcc46b308",
+      "processing": {
+        "keys": [
+          [
+            66,
+            122,
+            98
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.223214,
+            0.258621
+          ],
+          [
+            0.344968,
+            0.422414
+          ],
+          [
+            0.582792,
+            0.557112
+          ],
+          [
+            0.439935,
+            0.603448
+          ],
+          [
+            0.532468,
+            0.746767
+          ],
+          [
+            0.51461,
+            0.862069
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Mason of the Faultline, Orvella.png",
+      "asset": "orvella-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\orvella-evo-2.png",
+      "source_sha256": "4e8b01e79acc4784dbc01be45d2530e1fac12df0782f45d9c3837e3788bb4f26",
+      "runtime": "public\\assets\\characters\\orvella-evo-2.png",
+      "runtime_sha256": "589ef0daa278f16fe03c851569372fead81058206f313ab2efcf940f92f1be38",
+      "processing": {
+        "keys": [
+          [
+            79,
+            141,
+            122
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.556006,
+            0.371767
+          ],
+          [
+            0.416396,
+            0.407328
+          ],
+          [
+            0.74026,
+            0.427802
+          ],
+          [
+            0.55276,
+            0.53125
+          ],
+          [
+            0.471591,
+            0.87931
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Keeper of the Buried Vault, Orvella.png",
+      "asset": "orvella-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\orvella-evo-3.png",
+      "source_sha256": "46dbf907d9e7068f0fb5fb372df56b239d70290a3999454207a3e4a29e7670ea",
+      "runtime": "public\\assets\\characters\\orvella-evo-3.png",
+      "runtime_sha256": "7089d0e31d0a293d0625651fce0e6b00f8df5708eec89a815a3a8043dc48a8e2",
+      "processing": {
+        "keys": [
+          [
+            60,
+            136,
+            116
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.551948,
+            0.53556
+          ],
+          [
+            0.440747,
+            0.540948
+          ],
+          [
+            0.30763,
+            0.613147
+          ],
+          [
+            0.328734,
+            0.762931
+          ],
+          [
+            0.649351,
+            0.772629
+          ],
+          [
+            0.491883,
+            0.795259
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Architect of the Moving Citadel, Orvella.png",
+      "asset": "orvella-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\orvella-evo-4.png",
+      "source_sha256": "d9197bfb8b15dd3a692a4f019f84d02114da5ba483bf3634273ec73ea42fda48",
+      "runtime": "public\\assets\\characters\\orvella-evo-4.png",
+      "runtime_sha256": "30c6905eb5f430b2614b53031f69ae761a645f410d2da2e3778af865568b3549",
+      "processing": {
+        "keys": [
+          [
+            80,
+            111,
+            93
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.731331,
+            0.282328
+          ],
+          [
+            0.773539,
+            0.342672
+          ],
+          [
+            0.426948,
+            0.417026
+          ],
+          [
+            0.357955,
+            0.471983
+          ],
+          [
+            0.48539,
+            0.71875
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Sovereign of the Deep Foundations, Orvella.png",
+      "asset": "orvella-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\orvella-evo-5.png",
+      "source_sha256": "129283d83184100073aea9506057da162f8a80492fe28e9192ffb378797a4587",
+      "runtime": "public\\assets\\characters\\orvella-evo-5.png",
+      "runtime_sha256": "50f2aba47556b8ce909f74c6caab64548fff607a9e71164028ea06ee28cc4c9e",
+      "processing": {
+        "keys": [
+          [
+            82,
+            104,
+            73
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.714286,
+            0.078664
+          ],
+          [
+            0.794643,
+            0.145474
+          ],
+          [
+            0.758117,
+            0.186422
+          ],
+          [
+            0.411526,
+            0.201509
+          ],
+          [
+            0.699675,
+            0.235991
+          ],
+          [
+            0.390422,
+            0.239224
+          ],
+          [
+            0.411526,
+            0.253233
+          ],
+          [
+            0.836851,
+            0.33944
+          ],
+          [
+            0.900974,
+            0.340517
+          ],
+          [
+            0.306006,
+            0.315733
+          ],
+          [
+            0.289773,
+            0.392241
+          ],
+          [
+            0.881494,
+            0.429957
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "The Throne Beneath the World, Orvella.png",
+      "asset": "orvella-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\orvella-evo-6.png",
+      "source_sha256": "e7683f0f1d20e1521cc0c0fad5716b2e4b6adbf1c6851471fe91b943f80607a7",
+      "runtime": "public\\assets\\characters\\orvella-evo-6.png",
+      "runtime_sha256": "f8559943b59dc31e68fe8a06ff019f91df6e1e6caa8ae5f6bf1fd09fd1ef446e",
+      "processing": {
+        "radius": 10,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 15
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.581981,
+            0.096983
+          ],
+          [
+            0.676136,
+            0.178879
+          ],
+          [
+            0.623377,
+            0.177802
+          ],
+          [
+            0.543019,
+            0.185345
+          ],
+          [
+            0.606331,
+            0.228448
+          ],
+          [
+            0.696429,
+            0.24569
+          ],
+          [
+            0.607955,
+            0.311422
+          ],
+          [
+            0.050325,
+            0.770474
+          ]
+        ],
+        "row_gradient_samples": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0.2
+          ],
+          [
+            0,
+            0.32
+          ],
+          [
+            0,
+            0.9
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Passive - Load-Bearing Will.png",
+      "asset": "orvella-passive",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\orvella-passive.png",
+      "source_sha256": "9c7f83b4f426d8e885fc9f89fd29dcd5c7c1c2434b9bbda784f28839ce259fee",
+      "runtime": "public\\assets\\abilities\\orvella-passive.png",
+      "runtime_sha256": "bc1068cf33d947b5ef0d9c5a2d72396e6a9e4141534459b2a97a7f949e918c61",
+      "processing": {
+        "keys": [
+          [
+            74,
+            176,
+            146
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "background_seeds": [
+          [
+            0.5,
+            0.191406
+          ],
+          [
+            0.240234,
+            0.285156
+          ],
+          [
+            0.759766,
+            0.286133
+          ],
+          [
+            0.500977,
+            0.514648
+          ],
+          [
+            0.126953,
+            0.854492
+          ],
+          [
+            0.407227,
+            0.880859
+          ],
+          [
+            0.633789,
+            0.884766
+          ],
+          [
+            0.257812,
+            0.90332
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Skill 1 - Keystone Reversal.png",
+      "asset": "orvella-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\orvella-skill1.png",
+      "source_sha256": "b824f0ce141817e9c32de401a0038fe66c9b79382df1874b7bc7d9817caf1a78",
+      "runtime": "public\\assets\\abilities\\orvella-skill1.png",
+      "runtime_sha256": "885714f8a0ee2444b361f6597d8de52d279ad511bf5129ba8ee5e8fda4546b0b",
+      "processing": {
+        "keys": [
+          [
+            82,
+            243,
+            192
+          ],
+          [
+            255,
+            255,
+            255
+          ]
+        ],
+        "radius": 25,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "exterior_frame": true,
+        "discarded_frame_regions": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0
+            ],
+            [
+              0.12,
+              0.08
+            ],
+            [
+              0.08,
+              0.12
+            ],
+            [
+              0,
+              0.12
+            ]
+          ],
+          [
+            [
+              1,
+              0
+            ],
+            [
+              0.88,
+              0
+            ],
+            [
+              0.88,
+              0.08
+            ],
+            [
+              0.92,
+              0.12
+            ],
+            [
+              1,
+              0.12
+            ]
+          ],
+          [
+            [
+              1,
+              1
+            ],
+            [
+              0.88,
+              1
+            ],
+            [
+              0.88,
+              0.92
+            ],
+            [
+              0.92,
+              0.88
+            ],
+            [
+              1,
+              0.88
+            ]
+          ],
+          [
+            [
+              0,
+              1
+            ],
+            [
+              0.12,
+              1
+            ],
+            [
+              0.12,
+              0.92
+            ],
+            [
+              0.08,
+              0.88
+            ],
+            [
+              0,
+              0.88
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Skill 2 - Raise the Faultline.png",
+      "asset": "orvella-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\orvella-skill2.png",
+      "source_sha256": "36742ad5e907ef89a0fc441dc57bbd228fbc61d854f81b714dfd46f0ad18b43d",
+      "runtime": "public\\assets\\abilities\\orvella-skill2.png",
+      "runtime_sha256": "eb3179fcc4dcb5cb0ad8281a4f6977aee6ad1fc31afe53d198a1d617ac4259fd",
+      "processing": {
+        "keys": [
+          [
+            36,
+            226,
+            163
+          ],
+          [
+            255,
+            255,
+            255
+          ]
+        ],
+        "radius": 25,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "exterior_frame": true,
+        "discarded_frame_regions": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0
+            ],
+            [
+              0.12,
+              0.08
+            ],
+            [
+              0.08,
+              0.12
+            ],
+            [
+              0,
+              0.12
+            ]
+          ],
+          [
+            [
+              1,
+              0
+            ],
+            [
+              0.88,
+              0
+            ],
+            [
+              0.88,
+              0.08
+            ],
+            [
+              0.92,
+              0.12
+            ],
+            [
+              1,
+              0.12
+            ]
+          ],
+          [
+            [
+              1,
+              1
+            ],
+            [
+              0.88,
+              1
+            ],
+            [
+              0.88,
+              0.92
+            ],
+            [
+              0.92,
+              0.88
+            ],
+            [
+              1,
+              0.88
+            ]
+          ],
+          [
+            [
+              0,
+              1
+            ],
+            [
+              0.12,
+              1
+            ],
+            [
+              0.12,
+              0.92
+            ],
+            [
+              0.08,
+              0.88
+            ],
+            [
+              0,
+              0.88
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Last Flare - Worldweight Citadel.png",
+      "asset": "orvella-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\orvella-ultimate.png",
+      "source_sha256": "c3c8d9953c24799d0b062f0d9b8126d59209eb6df8f56348608dcc288fb719a1",
+      "runtime": "public\\assets\\abilities\\orvella-ultimate.png",
+      "runtime_sha256": "0517e9322e35074537b61b5a200b73a95581715244cc8e91a53040ecaa2576ce",
+      "processing": {
+        "keys": [
+          [
+            108,
+            199,
+            164
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        }
+      }
+    },
+    {
+      "incoming": "Normal Attack - Plumbline Strike.png",
+      "asset": "orvella-light",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\orvella-light.png",
+      "source_sha256": "d3853c3b18744b3963df706cda5a410eedf52bf0c1f054276a3fd0a54cd7ba9c",
+      "runtime": "public\\assets\\abilities\\orvella-light.png",
+      "runtime_sha256": "b0d8110c28b99fa2377055b0ddc11907cbcab23a53dcd8df35110db8a9eb2728",
+      "processing": {
+        "keys": [
+          [
+            63,
+            188,
+            149
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        }
+      }
+    },
+    {
+      "incoming": "Defense - Foundation Brace.png",
+      "asset": "orvella-defend",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\orvella-defend.png",
+      "source_sha256": "a33bdd645950f42cf2a930b2a1c73de3f1916f0c943df5753c8e11b1f1530e1b",
+      "runtime": "public\\assets\\abilities\\orvella-defend.png",
+      "runtime_sha256": "e8640c703d16fadf68afe47ef67d2ba3bddc438fbb241899f251e3ea023dfbc5",
+      "processing": {
+        "keys": [
+          [
+            79,
+            204,
+            137
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        }
+      }
+    },
+    {
+      "incoming": "Quiet Voltage, Vaelor.png",
+      "asset": "vaelor",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\vaelor.png",
+      "source_sha256": "f35659efd331ea6cb034f0b511b95a2fce5f4e5d72e139a2923d3a94f5b32a17",
+      "runtime": "public\\assets\\characters\\vaelor.png",
+      "runtime_sha256": "d8ddb1074e7c896bb0e288d9d8a1fb55663b789811c84b1f82f4c86f1c2f1b66",
+      "processing": {
+        "keys": [
+          [
+            254,
+            184,
+            51
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.831981,
+            0.186422
+          ],
+          [
+            0.273539,
+            0.283405
+          ],
+          [
+            0.633929,
+            0.275862
+          ],
+          [
+            0.742695,
+            0.34375
+          ],
+          [
+            0.818182,
+            0.37069
+          ],
+          [
+            0.310065,
+            0.362069
+          ],
+          [
+            0.377435,
+            0.395474
+          ],
+          [
+            0.304383,
+            0.419181
+          ],
+          [
+            0.625812,
+            0.413793
+          ],
+          [
+            0.915584,
+            0.417026
+          ],
+          [
+            0.713474,
+            0.422414
+          ],
+          [
+            0.921266,
+            0.502155
+          ],
+          [
+            0.869318,
+            0.537716
+          ],
+          [
+            0.07711,
+            0.613147
+          ],
+          [
+            0.086039,
+            0.654095
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Keeper of the Stormbeat, Vaelor.png",
+      "asset": "vaelor-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\vaelor-evo-2.png",
+      "source_sha256": "b5d9ed266bcf2307af2c82bfbc283b4bac3874523d65461cfc239d951306abe9",
+      "runtime": "public\\assets\\characters\\vaelor-evo-2.png",
+      "runtime_sha256": "ff7c89d01a2f7e80de70410077dd0207a47045b6948fc70a2c60bb9c372c5c72",
+      "processing": {
+        "keys": [
+          [
+            222,
+            88,
+            43
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.497565,
+            0.368534
+          ],
+          [
+            0.854708,
+            0.363147
+          ],
+          [
+            0.574675,
+            0.877155
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Marshal of the Thunder Choir, Vaelor.png",
+      "asset": "vaelor-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\vaelor-evo-3.png",
+      "source_sha256": "3ad1f49b1547fa50aa71abc5f381d2344c928246522fc80e61fa8d35e3cc1efb",
+      "runtime": "public\\assets\\characters\\vaelor-evo-3.png",
+      "runtime_sha256": "d443cb8b715d20aec7ae8dc4d42bd65901cd491b4c75f268ecbbf5e8ca49624a",
+      "processing": {
+        "keys": [
+          [
+            254,
+            175,
+            71
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.63961,
+            0.354526
+          ],
+          [
+            0.655032,
+            0.452586
+          ],
+          [
+            0.614448,
+            0.46875
+          ],
+          [
+            0.49026,
+            0.886853
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Conductor of the Broken Sky, Vaelor.png",
+      "asset": "vaelor-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\vaelor-evo-4.png",
+      "source_sha256": "8271289d52f52973a68b44c88ca3238f132d047b5c78112fe51e1f55d2e94d4b",
+      "runtime": "public\\assets\\characters\\vaelor-evo-4.png",
+      "runtime_sha256": "3f2512287aa428a83fb7a5f61002f83501fa545f286f207423adb9bd0c385d74",
+      "processing": {
+        "keys": [
+          [
+            254,
+            173,
+            5
+          ],
+          [
+            238,
+            169,
+            36
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.548701,
+            0.16056
+          ],
+          [
+            0.573052,
+            0.244612
+          ],
+          [
+            0.273539,
+            0.543103
+          ],
+          [
+            0.266234,
+            0.655172
+          ],
+          [
+            0.153409,
+            0.642241
+          ],
+          [
+            0.293019,
+            0.65194
+          ],
+          [
+            0.209416,
+            0.648707
+          ],
+          [
+            0.111201,
+            0.663793
+          ],
+          [
+            0.180195,
+            0.674569
+          ],
+          [
+            0.135552,
+            0.696121
+          ],
+          [
+            0.284091,
+            0.715517
+          ],
+          [
+            0.30763,
+            0.728448
+          ],
+          [
+            0.331981,
+            0.899784
+          ],
+          [
+            0.491883,
+            0.905172
+          ],
+          [
+            0.636364,
+            0.893319
+          ]
+        ]
+      },
+      "processing_history": [
+        {
+          "processing": {
+            "keys": [
+              [
+                254,
+                173,
+                5
+              ]
+            ],
+            "radius": 35,
+            "border_only": true,
+            "edge_cleanup": {
+              "source_pixels": 2,
+              "distance_ramp": 40
+            },
+            "source_facing": "left",
+            "background_seeds": [
+              [
+                0.548701,
+                0.16056
+              ],
+              [
+                0.573052,
+                0.244612
+              ],
+              [
+                0.273539,
+                0.543103
+              ],
+              [
+                0.266234,
+                0.655172
+              ],
+              [
+                0.153409,
+                0.642241
+              ],
+              [
+                0.293019,
+                0.65194
+              ],
+              [
+                0.209416,
+                0.648707
+              ],
+              [
+                0.111201,
+                0.663793
+              ],
+              [
+                0.180195,
+                0.674569
+              ],
+              [
+                0.135552,
+                0.696121
+              ],
+              [
+                0.284091,
+                0.715517
+              ],
+              [
+                0.30763,
+                0.728448
+              ],
+              [
+                0.331981,
+                0.899784
+              ],
+              [
+                0.491883,
+                0.905172
+              ],
+              [
+                0.636364,
+                0.893319
+              ]
+            ]
+          },
+          "runtime_sha256": "1f0a8620d46bfa60fd0542623d902af90331bb745c6e5470ebe3333cd31d1cdd",
+          "previous_runtime": "Art\\source\\elemental-war\\corrections\\vaelor-evo-4-1f0a8620d46b.png"
+        }
+      ]
+    },
+    {
+      "incoming": "Sovereign of the Final Frequency, Vaelor.png",
+      "asset": "vaelor-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\vaelor-evo-5.png",
+      "source_sha256": "f42c04625a7f9cdaa720cbf20fc0fe6917a38a4be7050b7ba57533f683f2914d",
+      "runtime": "public\\assets\\characters\\vaelor-evo-5.png",
+      "runtime_sha256": "6a7acb768e20219012c405dbd31f249929fdc41edbf569994bd1eb151129b307",
+      "processing": {
+        "keys": [
+          [
+            211,
+            106,
+            17
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.473214,
+            0.077586
+          ],
+          [
+            0.813312,
+            0.150862
+          ],
+          [
+            0.668019,
+            0.19181
+          ],
+          [
+            0.757305,
+            0.234914
+          ],
+          [
+            0.849026,
+            0.181034
+          ],
+          [
+            0.883929,
+            0.248922
+          ],
+          [
+            0.874188,
+            0.279095
+          ],
+          [
+            0.729708,
+            0.30819
+          ],
+          [
+            0.750812,
+            0.390086
+          ],
+          [
+            0.88474,
+            0.421336
+          ],
+          [
+            0.144481,
+            0.565733
+          ],
+          [
+            0.809253,
+            0.548491
+          ],
+          [
+            0.905844,
+            0.716595
+          ],
+          [
+            0.05763,
+            0.712284
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "The Sky's Final Chord, Vaelor.png",
+      "asset": "vaelor-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\elemental-war\\characters\\vaelor-evo-6.png",
+      "source_sha256": "7e04bd75ceb335792033a15521e3b1dcef7798ca734af23f20a98be1611591f2",
+      "runtime": "public\\assets\\characters\\vaelor-evo-6.png",
+      "runtime_sha256": "59a769e9b1c7d2ef5c5b0db32e6cd240bb635367deaced57654c5eabc364f8c5",
+      "processing": {
+        "keys": [
+          [
+            254,
+            167,
+            37
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "source_facing": "left",
+        "background_seeds": [
+          [
+            0.666396,
+            0.204741
+          ],
+          [
+            0.227273,
+            0.350216
+          ],
+          [
+            0.12987,
+            0.572198
+          ],
+          [
+            0.103084,
+            0.599138
+          ],
+          [
+            0.258929,
+            0.729526
+          ],
+          [
+            0.088474,
+            0.793103
+          ],
+          [
+            0.305195,
+            0.891164
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Passive - Standing Thunder.png",
+      "asset": "vaelor-passive",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\vaelor-passive.png",
+      "source_sha256": "a215a52859ca801071e0e8b651c8e53e9f2d06e64498d84d94ebfa0cf6fc14a3",
+      "runtime": "public\\assets\\abilities\\vaelor-passive.png",
+      "runtime_sha256": "cdd82ec4744d57926b37a9b42dca10938850044a5c2d2fb2c06573ddd0c9d434",
+      "processing": {
+        "keys": [
+          [
+            253,
+            178,
+            67
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "exterior_frame": true,
+        "discarded_frame_regions": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0
+            ],
+            [
+              0.12,
+              0.08
+            ],
+            [
+              0.08,
+              0.12
+            ],
+            [
+              0,
+              0.12
+            ]
+          ],
+          [
+            [
+              1,
+              0
+            ],
+            [
+              0.88,
+              0
+            ],
+            [
+              0.88,
+              0.08
+            ],
+            [
+              0.92,
+              0.12
+            ],
+            [
+              1,
+              0.12
+            ]
+          ],
+          [
+            [
+              1,
+              1
+            ],
+            [
+              0.88,
+              1
+            ],
+            [
+              0.88,
+              0.92
+            ],
+            [
+              0.92,
+              0.88
+            ],
+            [
+              1,
+              0.88
+            ]
+          ],
+          [
+            [
+              0,
+              1
+            ],
+            [
+              0.12,
+              1
+            ],
+            [
+              0.12,
+              0.92
+            ],
+            [
+              0.08,
+              0.88
+            ],
+            [
+              0,
+              0.88
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Skill 1 - Forked Cadence.png",
+      "asset": "vaelor-skill1",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\vaelor-skill1.png",
+      "source_sha256": "e1c2b75a588a04a91b23a89acc01d1362e28720f710cc2a627769bcba0f85d64",
+      "runtime": "public\\assets\\abilities\\vaelor-skill1.png",
+      "runtime_sha256": "236ea8fb0048491abf73a090356c255170d15cde3dd0af31524921b7e09e4103",
+      "processing": {
+        "keys": [
+          [
+            249,
+            183,
+            55
+          ],
+          [
+            221,
+            171,
+            79
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        }
+      },
+      "processing_history": [
+        {
+          "processing": {
+            "keys": [
+              [
+                249,
+                183,
+                55
+              ]
+            ],
+            "radius": 35,
+            "border_only": true,
+            "edge_cleanup": {
+              "source_pixels": 2,
+              "distance_ramp": 40
+            }
+          },
+          "runtime_sha256": "79c9035fc452a1525781498bdcc18a586701b4d33b53f14ef28708f0114a653a",
+          "previous_runtime": "Art\\source\\elemental-war\\corrections\\vaelor-skill1-79c9035fc452.png"
+        }
+      ]
+    },
+    {
+      "incoming": "Skill 2 - Resonance Cascade.png",
+      "asset": "vaelor-skill2",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\vaelor-skill2.png",
+      "source_sha256": "d4a313ebec587d4c9fac880c15b4e1c20a0f64a2ee7fb87d87d22df7eba05caa",
+      "runtime": "public\\assets\\abilities\\vaelor-skill2.png",
+      "runtime_sha256": "9315bf3ad0d02c6dda1cf52bab2faa794526214d7c0bd3459528b7e45069f457",
+      "processing": {
+        "keys": [
+          [
+            253,
+            173,
+            52
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "exterior_frame": true,
+        "discarded_frame_regions": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0
+            ],
+            [
+              0.12,
+              0.08
+            ],
+            [
+              0.08,
+              0.12
+            ],
+            [
+              0,
+              0.12
+            ]
+          ],
+          [
+            [
+              1,
+              0
+            ],
+            [
+              0.88,
+              0
+            ],
+            [
+              0.88,
+              0.08
+            ],
+            [
+              0.92,
+              0.12
+            ],
+            [
+              1,
+              0.12
+            ]
+          ],
+          [
+            [
+              1,
+              1
+            ],
+            [
+              0.88,
+              1
+            ],
+            [
+              0.88,
+              0.92
+            ],
+            [
+              0.92,
+              0.88
+            ],
+            [
+              1,
+              0.88
+            ]
+          ],
+          [
+            [
+              0,
+              1
+            ],
+            [
+              0.12,
+              1
+            ],
+            [
+              0.12,
+              0.92
+            ],
+            [
+              0.08,
+              0.88
+            ],
+            [
+              0,
+              0.88
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Last Flare - Last Chord of the Sky.png",
+      "asset": "vaelor-ultimate",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\vaelor-ultimate.png",
+      "source_sha256": "6d48ec06f3f8ffcd69ae96cc0698b975ec0765f4d6d0b46157f13facf3348ca8",
+      "runtime": "public\\assets\\abilities\\vaelor-ultimate.png",
+      "runtime_sha256": "ca0b50405bf37de2b7125bbfaaea1651c55a19dbd1e76d0228ce5ca030f57459",
+      "processing": {
+        "keys": [
+          [
+            254,
+            147,
+            48
+          ]
+        ],
+        "radius": 35,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        }
+      }
+    },
+    {
+      "incoming": "Normal Attack - Tuning Strike.png",
+      "asset": "vaelor-light",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\vaelor-light.png",
+      "source_sha256": "52edda927b7519f1bbc9ea7c284192d80b2817e55562922c6a031668868bffba",
+      "runtime": "public\\assets\\abilities\\vaelor-light.png",
+      "runtime_sha256": "566af6f9560dd02109e805b313c86ada8d3cc7dd0efade7ab05996e0c18eb572",
+      "processing": {
+        "keys": [
+          [
+            255,
+            100,
+            22
+          ],
+          [
+            255,
+            255,
+            255
+          ],
+          [
+            255,
+            143,
+            40
+          ],
+          [
+            228,
+            30,
+            49
+          ],
+          [
+            239,
+            42,
+            25
+          ]
+        ],
+        "radius": 25,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.1,
+            0.1
+          ],
+          [
+            0.666992,
+            0.767578
+          ],
+          [
+            0.966797,
+            0.856445
+          ],
+          [
+            0.057617,
+            0.936523
+          ],
+          [
+            0.488281,
+            0.966797
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "exterior_frame": true,
+        "discarded_frame_regions": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0
+            ],
+            [
+              0.12,
+              0.08
+            ],
+            [
+              0.08,
+              0.12
+            ],
+            [
+              0,
+              0.12
+            ]
+          ],
+          [
+            [
+              1,
+              0
+            ],
+            [
+              0.88,
+              0
+            ],
+            [
+              0.88,
+              0.08
+            ],
+            [
+              0.92,
+              0.12
+            ],
+            [
+              1,
+              0.12
+            ]
+          ],
+          [
+            [
+              1,
+              1
+            ],
+            [
+              0.88,
+              1
+            ],
+            [
+              0.88,
+              0.92
+            ],
+            [
+              0.92,
+              0.88
+            ],
+            [
+              1,
+              0.88
+            ]
+          ],
+          [
+            [
+              0,
+              0.967
+            ],
+            [
+              1,
+              0.967
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        ],
+        "background_regions": [
+          {
+            "polygon": [
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                0
+              ],
+              [
+                1,
+                0.065
+              ],
+              [
+                0,
+                0.065
+              ]
+            ],
+            "radius": 65
+          },
+          {
+            "polygon": [
+              [
+                0,
+                0
+              ],
+              [
+                0.065,
+                0
+              ],
+              [
+                0.065,
+                1
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            "radius": 65
+          },
+          {
+            "polygon": [
+              [
+                1,
+                0
+              ],
+              [
+                0.935,
+                0
+              ],
+              [
+                0.935,
+                1
+              ],
+              [
+                1,
+                1
+              ]
+            ],
+            "radius": 65
+          },
+          {
+            "polygon": [
+              [
+                0,
+                1
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                0.935
+              ],
+              [
+                0,
+                0.935
+              ]
+            ],
+            "radius": 65
+          }
+        ]
+      }
+    },
+    {
+      "incoming": "Defense - Insulated Stance.png",
+      "asset": "vaelor-defend",
+      "category": "abilities",
+      "source": "Art\\source\\elemental-war\\abilities\\vaelor-defend.png",
+      "source_sha256": "49464f364f2a46be6284a1c0d184e5a7ff77c2c35a3f79679f4aac547d63a26a",
+      "runtime": "public\\assets\\abilities\\vaelor-defend.png",
+      "runtime_sha256": "cdfa5ce086a1646c08ec9ec632b30f89e8797f32111d1745c95b4438b7343fb7",
+      "processing": {
+        "keys": [
+          [
+            253,
+            174,
+            7
+          ],
+          [
+            255,
+            255,
+            255
+          ]
+        ],
+        "radius": 25,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "exterior_frame": true,
+        "discarded_frame_regions": [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              0.12,
+              0
+            ],
+            [
+              0.12,
+              0.08
+            ],
+            [
+              0.08,
+              0.12
+            ],
+            [
+              0,
+              0.12
+            ]
+          ],
+          [
+            [
+              1,
+              0
+            ],
+            [
+              0.88,
+              0
+            ],
+            [
+              0.88,
+              0.08
+            ],
+            [
+              0.92,
+              0.12
+            ],
+            [
+              1,
+              0.12
+            ]
+          ],
+          [
+            [
+              1,
+              1
+            ],
+            [
+              0.88,
+              1
+            ],
+            [
+              0.88,
+              0.92
+            ],
+            [
+              0.92,
+              0.88
+            ],
+            [
+              1,
+              0.88
+            ]
+          ],
+          [
+            [
+              0,
+              1
+            ],
+            [
+              0.12,
+              1
+            ],
+            [
+              0.12,
+              0.92
+            ],
+            [
+              0.08,
+              0.88
+            ],
+            [
+              0,
+              0.88
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Activity banner Nerithe.png",
+      "asset": "elemental-war-nerithe-banner",
+      "category": "banners",
+      "source": "Art\\source\\elemental-war\\banners\\elemental-war-nerithe-banner.png",
+      "source_sha256": "bd364ab6a038077d204f07f504c99c25027fdabc7afc893a695e69b4a61a9b78",
+      "runtime": "public\\assets\\banners\\elemental-war-nerithe-banner.png",
+      "runtime_sha256": "bd364ab6a038077d204f07f504c99c25027fdabc7afc893a695e69b4a61a9b78",
+      "processing": {
+        "method": "scenery copied byte-for-byte"
+      }
+    },
+    {
+      "incoming": "Activity banner Orvella.png",
+      "asset": "elemental-war-orvella-banner",
+      "category": "banners",
+      "source": "Art\\source\\elemental-war\\banners\\elemental-war-orvella-banner.png",
+      "source_sha256": "e1346cbf9a9bfa84250ec5ebd4243cd7fb8b50e1eee21e4cf4c55138fc3964e8",
+      "runtime": "public\\assets\\banners\\elemental-war-orvella-banner.png",
+      "runtime_sha256": "e1346cbf9a9bfa84250ec5ebd4243cd7fb8b50e1eee21e4cf4c55138fc3964e8",
+      "processing": {
+        "method": "scenery copied byte-for-byte"
+      }
+    },
+    {
+      "incoming": "Valor Activity Banner.png",
+      "asset": "elemental-war-vaelor-banner",
+      "category": "banners",
+      "source": "Art\\source\\elemental-war\\banners\\elemental-war-vaelor-banner.png",
+      "source_sha256": "ea4ed46eedce9279f78f01c2fa29242daeff9b84a5c5be3a453d7b7b5340ea38",
+      "runtime": "public\\assets\\banners\\elemental-war-vaelor-banner.png",
+      "runtime_sha256": "ea4ed46eedce9279f78f01c2fa29242daeff9b84a5c5be3a453d7b7b5340ea38",
+      "processing": {
+        "method": "scenery copied byte-for-byte"
+      }
+    },
+    {
+      "incoming": "Nerithe Battle arena.png",
+      "asset": "elemental-war-nerithe-arena",
+      "category": "backgrounds",
+      "source": "Art\\source\\elemental-war\\backgrounds\\elemental-war-nerithe-arena.png",
+      "source_sha256": "fb719315c84d2f09ccf2553d16c50483bedc612259d7b8d9f0a7ae7ce6d8be75",
+      "runtime": "public\\assets\\backgrounds\\elemental-war-nerithe-arena.png",
+      "runtime_sha256": "fb719315c84d2f09ccf2553d16c50483bedc612259d7b8d9f0a7ae7ce6d8be75",
+      "processing": {
+        "method": "scenery copied byte-for-byte"
+      }
+    },
+    {
+      "incoming": "Battle arena Orvella.png",
+      "asset": "elemental-war-orvella-arena",
+      "category": "backgrounds",
+      "source": "Art\\source\\elemental-war\\backgrounds\\elemental-war-orvella-arena.png",
+      "source_sha256": "79ea80a84aee530f3a448e5f3150841f0bce47c1e67717cc753649c8fec6d739",
+      "runtime": "public\\assets\\backgrounds\\elemental-war-orvella-arena.png",
+      "runtime_sha256": "79ea80a84aee530f3a448e5f3150841f0bce47c1e67717cc753649c8fec6d739",
+      "processing": {
+        "method": "scenery copied byte-for-byte"
+      }
+    },
+    {
+      "incoming": "Vaelor Battle Arena.png",
+      "asset": "elemental-war-vaelor-arena",
+      "category": "backgrounds",
+      "source": "Art\\source\\elemental-war\\backgrounds\\elemental-war-vaelor-arena.png",
+      "source_sha256": "af77f5ca40da0a0ce2121532f0bb95197e2e50f9ac612675c04bfec0aa3e43cb",
+      "runtime": "public\\assets\\backgrounds\\elemental-war-vaelor-arena.png",
+      "runtime_sha256": "af77f5ca40da0a0ce2121532f0bb95197e2e50f9ac612675c04bfec0aa3e43cb",
+      "processing": {
+        "method": "scenery copied byte-for-byte"
+      }
+    }
+  ]
+}

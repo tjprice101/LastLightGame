@@ -8,11 +8,12 @@ from PIL import Image
 from prepare_art import ROOT
 from prepare_dungeons import CHAOS_KEYS, prepare_dungeon_sprite, prepare_chaos_cutout
 from review_art import sources
+from art_library import art_path
 
 
 class ChaosArtTests(unittest.TestCase):
     def test_provenance_and_deterministic_exports(self):
-        manifest = json.loads((ROOT / "Art" / "ruins-chaos-intake.json").read_text(encoding="utf-8"))
+        manifest = json.loads((art_path("ruins-chaos-intake.json", root=ROOT)).read_text(encoding="utf-8"))
         self.assertEqual(manifest["asset_count"], 16)
         self.assertEqual(len(manifest["assets"]), 16)
         for record in manifest["assets"]:

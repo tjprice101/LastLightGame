@@ -12,6 +12,7 @@ from PIL import Image, ImageDraw, ImageFilter
 
 from prepare_art import ROOT, standardize_sprite
 from intake_roster_art import remove_exterior_outline
+from art_library import art_path
 
 
 ASSETS = [
@@ -165,7 +166,7 @@ def intake(apply=False, remove_incoming=False):
         if asset in SOURCE_FACING:
             record["source_facing"] = SOURCE_FACING[asset]
         planned.append((incoming, archived, runtime, output, record))
-    manifest = ROOT / "Art" / "machines-art-intake.json"
+    manifest = art_path("machines-art-intake.json", root=ROOT)
     document = {"asset_count": len(planned), "assets": [row[-1] for row in planned]}
     if manifest.exists() and json.loads(manifest.read_text(encoding="utf-8")) != json.loads(json.dumps(document)):
         raise FileExistsError(f"Conflicting provenance: {manifest}")
@@ -179,6 +180,7 @@ def intake(apply=False, remove_incoming=False):
                 runtime.write_bytes(output)
             if digest(archived) != record["source_sha256"] or digest(runtime) != record["runtime_sha256"]:
                 raise ValueError(f"Installed bytes differ: {runtime}")
+        manifest.parent.mkdir(parents=True, exist_ok=True)
         manifest.write_text(json.dumps(document, indent=2) + "\n", encoding="utf-8")
         if remove_incoming:
             for incoming, archived, runtime, _, record in planned:

@@ -13,15 +13,22 @@ import { unitFacing } from './unit-facing';
 
 describe('supplied machine artwork integration', () => {
   it('registers every new Conduit through the shared equipment/archive/loot resolvers', () => {
-    const recovered = conduits.filter((entry) => entry.rarity !== 'Common');
-    expect(recovered).toHaveLength(20);
-    for (const conduit of recovered) {
+    const supplied = conduits.filter((entry) => entry.art !== null);
+    const pending = conduits.filter((entry) => entry.art === null);
+    expect(supplied).toHaveLength(25);
+    expect(pending).toHaveLength(60);
+    for (const conduit of supplied) {
       expect(conduit.art).toBe(conduit.id);
       expect(conduitIcon(conduit.id)).toContain(assetUrl(`conduits/${conduit.id}.png`));
       expect(lootArt({ id: `conduit:${conduit.id}`, art: conduit.art ?? undefined }))
         .toBe(assetUrl(`conduits/${conduit.id}.png`));
       const png = readFileSync(new URL(`../../public/assets/conduits/${conduit.id}.png`, import.meta.url));
       expect([png.readUInt32BE(16), png.readUInt32BE(20), png[25]]).toEqual([256, 256, 6]);
+    }
+    for (const conduit of pending) {
+      expect(conduitIcon(conduit.id)).toContain('Artwork pending');
+      expect(conduitIcon(conduit.id)).not.toContain('assets/conduits/');
+      expect(lootArt({ id: `conduit:${conduit.id}` })).toBeUndefined();
     }
   });
 

@@ -1,4 +1,10 @@
-# Adventure
+# Training (formerly Adventure)
+
+**D-164:** the existing endless engine described below is now presented as
+Training, with stable legacy IDs and unchanged wave/loot/Continue rules.
+Home's campaign is the separate [150-stage Story map](story-and-training.md),
+with first-clear bosses and limited elemental materials. Historical Adventure
+wording below refers only to retained Training, not the campaign.
 
 **Status:** implemented endless Adventure, renamed from Free Battle. Supports the
 saved squad of one to three independently controllable owned characters.
@@ -286,7 +292,7 @@ Each living character may perform **one** action per player turn:
 **Heavy Attack is removed**, not hidden behind another input. The internal `light`
 action ID now means Normal Attack and preserves the existing basic-attack PNG.
 Defense costs no gauge, grants none on use and does not force recovery.
-It reduces damage after flat defense/critical calculation and before shield
+It reduces damage after Defense mitigation/critical calculation and before shield
 absorption: `max(1, round(incomingDamage * 0.90))`. Existing one-damage floor
 remains; incoming hits still grant +10 gauge. It applies to damage events, not
 healing or shield gains, and clears at the next player-turn boundary, including
@@ -334,16 +340,19 @@ drop pool. Discoveries and rewards commit together before death presentation.
 | Imp | 90 | 3 | 28 | 15% |
 | Rock Golem | 160 | 15 | 20 | 5% |
 
-Damage: `max(1, round(baseDamage * multiplier * criticalModifier) - defense)`.
+Damage (D-165): `max(1, round(baseDamage * multiplier * criticalModifier /
+(1 + defense / baseDamage)))`; zero base Attack resolves to the one-damage floor.
 Character stats and flat shield/heal potency retain fractional progression values.
 The rounding above applies only to attack resolution, not stored/resolved Attack
-or Defense; fractional defense can yield fractional damage/HP. All stat readouts,
+or Defense; use full-precision stats and round once after mitigation. All stat readouts,
 floating amounts, logs and reports format up to two decimals without changing
 combat precision. Burn ticks, Defense-mode reduction and percentage healing keep
 their existing resolution rounding. Zero-base stats remain zero.
 Critical modifier uses the attacker's Critical Damage Multiplier (1.5x at base)
-on a critical hit, otherwise 1. Defense is flat reduction,
-not a percentage. Shields absorb calculated damage before health; HP floors at
+on a critical hit, otherwise 1. Defense gives attack-relative diminishing returns:
+equal Defense and base Attack mitigate50%; twice that Defense mitigates two-thirds.
+Skills, Weaken and crits modify outgoing damage, not the mitigation ratio.
+Defense pierce reduces the Defense input before mitigation. Shields absorb calculated damage before health; HP floors at
 zero. Healing caps at maximum HP and never revives. Burn bypasses defense but
 still consumes shield before HP. There is no elemental advantage multiplier yet.
 All characters also have Shatter capacity (100 at base) and Elemental Damage

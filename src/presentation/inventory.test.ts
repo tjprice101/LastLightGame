@@ -21,7 +21,7 @@ describe('reference Inventory layout', () => {
     const account = emptyAccount();
     account.fractalis = Number.MAX_SAFE_INTEGER;
     account.lycalis = Number.MAX_SAFE_INTEGER;
-    account.materials = { 'infernic-common': Number.MAX_SAFE_INTEGER, 'rosethorn-omnic': 2, 'aquatic-rare': 0 };
+    account.materials = { 'infernic-common': Number.MAX_SAFE_INTEGER, 'rosethorn-omnic': 2, 'oceanic-rare': 0 };
     account.conduits = { 'vigil-core': 3, 'bastion-lock': 0 };
     const before = structuredClone(account);
     const html = inventoryView(account, 'conduits');
@@ -69,10 +69,12 @@ describe('right-side sanctuary Menu', () => {
     expect(tiles).toContain('Currencies &amp; materials');
     expect(html).toContain('Recovered ancient mechanisms');
     expect(html).toContain('data-page="conduit-store"');
-    for (const page of ['home', 'team', 'summon', 'gameplay', 'events', 'stores', 'story']) {
+    for (const page of ['events', 'stores', 'story']) {
       expect(html.match(new RegExp(`data-page="${page}"`, 'g'))).toHaveLength(1);
     }
-    for (const id of ['open-settings', 'return-title', 'fractalis-balance', 'lycalis-balance']) {
+    for (const page of ['home', 'team', 'summon', 'gameplay']) expect(html).not.toContain(`data-page="${page}"`);
+    expect(html).not.toContain('id="return-title"');
+    for (const id of ['open-settings', 'fractalis-balance', 'lycalis-balance']) {
       expect(html.match(new RegExp(`id="${id}"`, 'g'))).toHaveLength(1);
     }
     expect(html).toContain('data-close-information aria-label="Close Menu"');

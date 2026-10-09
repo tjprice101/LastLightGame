@@ -13,11 +13,12 @@ from prepare_infusions import ENEMIES as INFUSION_ENEMIES, MATERIALS as INFUSION
 from matte_regions import BACKGROUND_SEEDS, BACKGROUND_MINIMUMS
 from prepare_art import MATTE_MINIMUMS, MATTE_SPREADS
 from review_art import sources
+from art_library import art_path
 
 
 class SpriteSizingTests(unittest.TestCase):
     def test_supplied_cutouts_preserve_original_bytes_and_bypass_matte_removal(self):
-        manifest = json.loads((ROOT / "Art" / "cutout-intake.json").read_text(encoding="utf-8"))
+        manifest = json.loads((art_path("cutout-intake.json", root=ROOT)).read_text(encoding="utf-8"))
         records = manifest["assets"]
         self.assertEqual(len(records), 96)
         self.assertEqual(len({row["asset"] for row in records}), 96)

@@ -13,6 +13,7 @@ from PIL import Image, ImageDraw
 from color_matte import remove_color_matte
 from color_matte import reviewed_background_starts
 from prepare_art import ROOT, connected_matte, standardize_sprite
+from art_library import art_path
 
 
 def portraits(character, names):
@@ -209,7 +210,7 @@ def digest(path):
 
 
 def historical_runtime(asset, runtime):
-    manifest = ROOT / "Art" / "character-refresh-intake.json"
+    manifest = art_path("character-refresh-intake.json", root=ROOT)
     if manifest.exists():
         refresh = json.loads(manifest.read_text(encoding="utf-8"))
         for record in refresh["assets"]:
@@ -359,7 +360,7 @@ def intake(phase, apply=False, remove_incoming=False):
     mapping = PHASES[phase]
     if len({row[0] for row in mapping}) != len(mapping) or len({row[1:] for row in mapping}) != len(mapping):
         raise ValueError("Duplicate intake mapping.")
-    manifest = ROOT / "Art" / f"{phase}-art-intake.json"
+    manifest = art_path(f"{phase}-art-intake.json", root=ROOT)
     previous = json.loads(manifest.read_text(encoding="utf-8")) if manifest.exists() else None
     planned = []
     for filename, category, asset in mapping:
@@ -394,6 +395,7 @@ def intake(phase, apply=False, remove_incoming=False):
                 runtime.write_bytes(output)
             if digest(source) != record["source_sha256"] or digest(runtime) != record["runtime_sha256"]:
                 raise ValueError(f"Installed bytes differ: {source}")
+        manifest.parent.mkdir(parents=True, exist_ok=True)
         manifest.write_text(text, encoding="utf-8")
         if remove_incoming:
             for incoming, source, _, _, record in planned:

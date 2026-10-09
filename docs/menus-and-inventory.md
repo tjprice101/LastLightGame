@@ -1,5 +1,33 @@
 # Menus and inventory
 
+## Contextual desktop navigation (D-166)
+
+The approved D-160 desktop pass retains the four Home/Team/Summon/Play dock
+destinations, large character art, contextual categories and existing curtain/
+panel/drawer animations. Menu now lists secondary routes rather than repeating
+the dock; Inventory/Collections/Conduit Store/Upgrade/Story/Events/Stores remain
+reachable. Back names its actual prior destination, including cross-links,
+and retains the existing filter/tab/scroll history rather than always going Home.
+
+Return to title exists only in Settings. In battle it confirms ending the run,
+retains saved rewards and disposes the suspended session; Cancel stays in Settings.
+Closing menu Settings no longer rebuilds the screen, preserving live category,
+filters, unsaved squad selection, scroll and portrait DOM. Battle still rebuilds
+from its retained snapshot without repeating entrance presentation.
+
+Desktop Gameplay, Character and Summon use the page scroll instead of stacked
+bounded panel scrolls; modal drawers, explicit selection lists and galleries
+keep intentional contained scrolling. Neutral button hover feedback enhances
+the existing panel animations and honors both reduced-motion preferences.
+Title/selection/immersive battle CSS and economy are unchanged.
+
+Validate sanctuary/settings/inventory/navigation/copy tests, production build,
+and disposable browser contexts at desktop/mobile widths: contextual Back,
+Settings/Escape restoration, all routes, single-scroll content, exact large
+balances/costs, reduced-motion/focus and battle title-cancel/confirm. Do not write
+to owner storage. This is the desktop contextual-flow pass, not new artwork or
+the deferred remaining intrinsic character kits.
+
 ## In-game dialogs and reward foundation (D-148)
 
 No browser `alert`, `confirm`, `prompt`, Notification permissions or OS

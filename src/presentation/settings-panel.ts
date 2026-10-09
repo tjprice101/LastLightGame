@@ -28,5 +28,9 @@ export function settingsPanel(motion: MotionPreference, bindings: Bindings, spee
         <select id="key-${command}" name="${command}">${allowedCodes.map((code) =>
           `<option value="${code}" ${bindings[command] === code ? 'selected' : ''}>${keyLabel(code)}</option>`).join('')}</select></div>`).join('')}</div>
       <button class="primary-button" type="submit">Save selection keys</button><p id="hotkey-result" role="status"></p>
-    </form>`;
+    </form>
+    <section class="settings-panel settings-session"><h3>Session</h3>
+      <p>Return to the title ends any active battle. Saved progress and earned rewards are kept.</p>
+      <button id="return-title" type="button" class="text-button">Return to title</button>
+    </section>`;
 }

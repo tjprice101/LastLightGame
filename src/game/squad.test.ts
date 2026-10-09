@@ -103,7 +103,7 @@ describe('owned roster, summoning and saved squads', () => {
     const id = 'tide';
     const account = loadAccount(saved);
     account.characters[id] = { level: 0, evolution: 1 };
-    const cost = levelCost('aquatic', ownedProgress(account, id));
+    const cost = levelCost('oceanic', ownedProgress(account, id));
     account.fractalis = cost.fractalis;
     account.materials = cost.materials;
     saveAccount(saved, account);

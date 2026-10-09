@@ -3,6 +3,26 @@
 **Status:** [Adventure](free-battle.md) is implemented with prototype formulas,
 starter kits, waves, and hotkeys. This page retains broader production questions.
 
+## Current Defense balance (D-165)
+
+All direct allied/enemy attacks use attack-relative diminishing Defense, not
+flat subtraction. See [exact formula and modifier order](free-battle.md#stats-and-formulas).
+The owner approves this correction afterLv13 enemies hit unequippedLv0 starters
+for1. Story now has16/24 opening Attack and the shared .12 early growth at half
+the staged curve; Machines/material/infusion/currency modes use32/48 atLv10.
+Existing HP/Defense curves, level120 endpoints and Rose level140 endpoints,
+rewards/RNG/saves/ability schedules are unchanged. Existing runs retain snapshots;
+start a new encounter to receive the new enemy stats.
+
+Validate `npm test -- src\game\defense-balance.test.ts src\game\battle.test.ts
+src\game\defense.test.ts src\game\story.test.ts src\content\stat-growth.test.ts
+src\game\crimson-roses.test.ts --maxWorkers=2`.
+Acceptance includes real noncriticalLv13 Story/Machines hits of at least9% of
+every unequippedLv0 starter's maximumHP, diminishing returns, precision,
+critical/skill multipliers, guarded/shielded hits, monotonic growth and unchanged
+late endpoints. Stronger progression reduces relative incoming damage; there
+is no forced level-gap multiplier or Conduit requirement.
+
 ## Open rules
 
 The battle starts with only the saved starter and player/enemy turns. Each ally acts at

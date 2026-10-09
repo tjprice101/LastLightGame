@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { commonConduits, type ConduitId } from '../content/conduits';
+import { additionalCommonConduits, commonConduits, type ConduitId } from '../content/conduits';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, purchaseConduit, saveAccount, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 
@@ -9,7 +9,7 @@ function storage(): ProfileStorage {
     removeItem: (key) => { values.delete(key); } };
 }
 describe('Conduit purchase persistence', () => {
-  it.each(commonConduits)('purchases $name at its exact price with one write and no unrelated mutations', (conduit) => {
+  it.each([...commonConduits, ...additionalCommonConduits])('purchases $name at its exact price with one write and no unrelated mutations', (conduit) => {
     const saved = storage();
     const before = loadAccount(saved);
     before.fractalis = 20000;

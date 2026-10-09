@@ -63,7 +63,7 @@ describe('plentiful loot quantities', () => {
       const pool = infusionLoot(mode, stage);
       const drops = infusionDrops(mode, stage, () => 0);
       for (const drop of pool.specialties) expect(drops[drop.id]).toBe(drop.minimum);
-      for (const drop of pool.bonuses) expect(drops[`${mode === 'heavens' ? 'infernic' : 'voltaic'}-${drop.rarity}`]).toBe(drop.minimum);
+      for (const drop of pool.bonuses) expect(drops[`${mode === 'heavens' ? 'infernic' : 'tranquilitic'}-${drop.rarity}`]).toBe(drop.minimum);
       const { level } = infusionEncounter(mode, stage);
       expect(drops[`${mode}-evolution`] !== undefined).toBe(level >= 93);
       expect(drops[`${mode}-level`] !== undefined).toBe(level >= 100);

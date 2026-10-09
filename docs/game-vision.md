@@ -1,5 +1,18 @@
 # Game vision
 
+**Intrinsic kits (D-163):** full-roster ability/passive redesign approved in
+batches, starting with implemented Infernis/Tizu/Flora loops. Simple capped
+stacks and meaningful buff/debuff setup/payoff choices work without equipment.
+[Rules and remaining scope](character-kit-rework.md).
+
+**Current D-160 rollout:** six canonical types are implemented: Infernic,
+Oceanic, Atmospheric, Botanic, Tranquilitic and Chaotic. Material dungeons have
+35 floorsLv38-120 and retain all legacy enemy families. The150-stage
+linear [Story/Training split](story-and-training.md) is implemented (D-164);
+the desktop contextual navigation pass is implemented (D-166).
+The25 further [kit Conduits](kit-conduits.md) are implemented, with imagery
+pending. [Current phase status](six-element-rework.md).
+
 ## Character terminology
 
 Character form display names use **Prefix, Character name**, with each
@@ -17,6 +30,34 @@ It does not change ownership, progression, combat or persistent save identities.
 
 ## Confirmed direction
 
+- D-160: implement the approved six-element/Story/desktop rework in phases.
+  Art filing, content/save migration and25 kit Conduits are complete;
+  Story/Training and the desktop contextual pass are also implemented. Keep originals and
+  existing play access; no load-time writes, grants or partial balance migration.
+  Approval does not mean the new systems are already playable.
+  [Approved baseline and implementation status](six-element-rework.md).
+
+- D-159 supersedes older character400 guidance below: every authored character
+  portrait retains its exact reference at150, with individually locked palettes
+  and unwanted-color negatives. Character-specific icons/weapons receive palette
+  controls without references. Installed imagery and gameplay stay unchanged.
+  [Current policy](art-workflow.md#character-palette-control-d-159-current-policy).
+
+- D-155: all enemy generation prompts use no style-reference URL or weight
+  flags; authored creature palettes/designs and written renderer remain.
+  Only Element-Bearer character portrait prompts retain references at400.
+  Supersedes earlier enemy assignments without changing installed art.
+  [Current policy](art-workflow.md#reference-free-enemies-d-155-current-policy).
+
+- D-151/D-157: implement35 unique Conduits and four expressive5/6-star pilots
+  (bounded personal charges, owned marks, precision and protection). Common
+  additions Store-only/usefulness-priced, machine tier totals unchanged,
+  original five Legendary banner bonus only. Real enemy debuffs show beside HP.
+  Steel sword sweep/shield and white/black lightning coin prompts supersede
+  earlier prismatic generation concepts; installed art remains until delivery.
+  [Six-phase plan](conduit-expansion-plan.md) distinguishes implemented runtime,
+  developer tuning and pending reviewed artwork.
+
 - D-149 installs the18 newly supplied Infernis/Tizu/Flora portraits, Beginner
   through Omnic, with reviewed offline background cleanup and shared facing/
   cache revisions. Original and previous generations remain preserved.
@@ -28,20 +69,23 @@ It does not change ownership, progression, combat or persistent save identities.
   banners, arenas and all other art use no `--sref` or `--sw`; keep the written
   renderer and designs unchanged. Supersedes non-portrait reference exceptions.
 
-- D-145: Elemental War design-first, not implemented. Each character-themed
+- D-145/D-152/D-156: Elemental War was design-first; Nerithe, Orvella and Vaelor are now
+  implemented playable6-star Element-Bearers with their own trials. Each character-themed
   activity has10 stages90-140, six forms and1% final-boss base-form EB recruitment.
   Guaranteed Prismatica, separate chance of Null-Prismatica, no other loot;
   successful owned recruitment converts to existing currency. Activity-header
-  banners only, not summon banners. Two female/one male original design
-  proposals and complete art packs are in [Elemental War](elemental-war.md);
-  their names/kits/6-star values/balance/mapping are not owner-approved yet.
+  banners only, not summon banners. Two female/one male original designs
+  and complete art packs are in [Elemental War](elemental-war.md).
+  All three identities, ratings and trial baseline are owner-approved;
+  numerical kits use documented tuning. All three activity headers/arenas
+  are installed; family header/weapons/Nerithe basic-action icons remain pending.
 
 - D-135: future prompts must keep the entire character/enemy design clear of
   every frame edge and corner at every form. Uniformly pull back composition
   when needed; do not sacrifice armor, equipment, powers or layered detail.
   Late forms retain dense intimidating presence. Complete containment takes
   priority over historical near-edge occupancy targets; scenery stays full-bleed.
-  [Framing contract](../Art/cutout-background-contract.md#complete-silhouettes-and-edge-clearance-d-135).
+  [Framing contract](../Art/guides/cutout-background-contract.md#complete-silhouettes-and-edge-clearance-d-135).
 - Current art status: D-129/D-131/D-132 establish exact style references and
   portrait/enemy prompt quality; D-134 installs60 replacement portraits for
   ten non-starter Element-Bearers, preserving both generations and saves.
@@ -62,7 +106,7 @@ It does not change ownership, progression, combat or persistent save identities.
 - First implemented scope: title -> first Element-Bearer choice -> basic opening menu;
   see [opening flow](opening-flow.md). Browser prototype stack selection was delegated.
 - Existing character and weapon visual guidance lives in the
-  [art prompt guide](../Art/midjourney-character-style-prompt.md).
+  [art prompt guide](../Art/guides/midjourney-character-style-prompt.md).
 - D-109 restores compact character anatomy throughout evolution. Owner rejected
   Bruno's D-107/D-108 transformation directions and prefers the current Bliss
   approach: epic armor, equipment, wings and regalia around the same compact

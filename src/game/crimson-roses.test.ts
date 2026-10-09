@@ -67,7 +67,7 @@ describe('Passion of Crimson Roses integration', () => {
       const encounter = infusionEncounter('roses', stage);
       expect(encounter.level).toBe(Math.round(80 + (stage - 1) * 60 / 34));
       expect(encounter.tier).toBe(roseFormStages.filter((first) => stage >= first).length - 1);
-      expect(encounter.enemy.element).toBe('luminous');
+      expect(encounter.enemy.element).toBe('tranquilitic');
       expect(encounter.boss).toBe(stage % 5 === 0);
       expect(encounter.stats.health).toBe(roseEnemyStats(encounter.level, encounter.boss).health);
       expect(encounter.enemy.art).toBe(getCreature(`infusion:roses:${encounter.tier}`).art);
@@ -207,7 +207,7 @@ describe('Passion of Crimson Roses integration', () => {
     const invalid = [
       (result: ReturnType<typeof defeat>) => { result.events.find((event) => event.kind === 'reward')!.capture = { creatureId: result.state.enemies[0].creatureId!, level: 140 }; },
       (result: ReturnType<typeof defeat>) => { result.events.find((event) => event.kind === 'reward')!.lycalis = 1; },
-      (result: ReturnType<typeof defeat>) => { result.events.find((event) => event.kind === 'reward')!.materials = { 'luminous-common': 1 }; },
+      (result: ReturnType<typeof defeat>) => { result.events.find((event) => event.kind === 'reward')!.materials = { 'tranquilitic-common': 1 }; },
       (result: ReturnType<typeof defeat>) => { result.events.find((event) => event.kind === 'reward')!.materials = { 'rosethorn-common': 100 }; },
       (result: ReturnType<typeof defeat>) => { result.events.find((event) => event.kind === 'reward')!.materials = {}; },
       (result: ReturnType<typeof defeat>) => { result.state.enemies[0].hp = 1; },
@@ -419,10 +419,10 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     const copy = createCreatureCopy('infusion:roses:4');
     account.capturedCharacters = [copy, createCreatureCopy('infusion:abyss:5')];
     account.characters.thornia = { level: 60, evolution: 3 };
-    let options = evolutionFodderOptions(account, 'ominous', 3, 'thornia');
+    let options = evolutionFodderOptions(account, 'chaotic', 3, 'thornia');
     expect(options.map((option) => option.eligible)).toEqual([true, false]);
     copy.locked = true;
-    options = evolutionFodderOptions(account, 'ominous', 3, 'thornia');
+    options = evolutionFodderOptions(account, 'chaotic', 3, 'thornia');
     expect(options[0].reasons).toContain('Locked');
     saveAccount(store.saved, account);
     const raw = store.saved.getItem(ACCOUNT_KEY);

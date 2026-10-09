@@ -2,6 +2,8 @@
 
 from pathlib import Path
 import re
+from character_palette import apply_palette, REFERENCE_WEIGHT
+from art_library import art_path
 
 ROOT = Path(__file__).resolve().parent.parent
 ART = ROOT / "Art"
@@ -106,7 +108,7 @@ DESIGNS = (
 
 
 def references():
-    text = (ART / "midjourney-character-style-prompt.md").read_text(encoding="utf-8")
+    text = (art_path("midjourney-character-style-prompt.md", root=ROOT)).read_text(encoding="utf-8")
     found = dict((int(evo), url) for evo, url in re.findall(r"^\| ([0-6]) \| (\S+) \|$", text, re.M))
     if set(found) != set(range(7)):
         raise ValueError("Approved reference table must contain Evo.0-6.")
@@ -116,7 +118,7 @@ def references():
 def flags(ratio, reference=None, scenery=False):
     exclusions = NO + ", character portrait grid, text panels, interface framing" if scenery else CUTOUT_NO
     return (f" --ar {ratio} --niji 6 --s 100 --q 1 --no {exclusions}"
-            + (f" --sref {reference} --sw 400" if reference is not None else ""))
+            + (f" --sref {reference} --sw {REFERENCE_WEIGHT}" if reference is not None else ""))
 
 
 def background(design):
@@ -124,18 +126,28 @@ def background(design):
             "and through all openings, subject colors unchanged, no glows or glowing visual effects")
 
 
-def block(heading, asset, prompt):
-    return f"### {heading}\n\nProposed asset ID: `{asset}` (not registered).\n\n```text\n{prompt}\n```\n"
+def block(heading, asset, prompt, registered=False):
+    status = "Runtime asset ID" if registered else "Proposed asset ID"
+    note = "supplied and installed" if registered else "not registered"
+    return f"### {heading}\n\n{status}: `{asset}` ({note}).\n\n```text\n{prompt}\n```\n"
 
 
 def pack(design, refs):
     name, identity = design["name"], design["id"]
+    installed = True
+    status = (
+        f"**Implemented and supplied (D-152/D-156):** six portraits and {'four ability' if identity == 'nerithe' else 'six action'} icons installed; "
+        "playable character and ten-stage trial registered, with supplied activity header and arena. "
+        "Standalone weapon remains pending; Nerithe Normal Attack/Defense icons are not supplied. "
+        "Original prompt concepts below are retained; supplied weapon/identity details "
+        "are authoritative and are not redesigned to match the proposal. "
+        if installed else "**Design proposal only (D-145):** no supplied images, playable registration, "
+        "approved kit numbers or banner acquisition. Owner review required. "
+    )
     text = [
         f"# {name} Art - Elemental War",
-        "**Design proposal only (D-145):** no supplied images, playable registration, approved kit "
-        "numbers or banner acquisition. Owner review required. "
-        "[Mode/specification](../docs/elemental-war.md).",
-        f"Proposed {design['gender']}6-star **{design['element']} Element-Bearer**. "
+        status + "[Mode/specification](../../docs/elemental-war.md).",
+        f"{'Approved' if installed else 'Proposed'} {design['gender']}6-star **{design['element']} Element-Bearer**. "
         f"Sub-mode: **{design['mode']}**. All forms retain the same human identity. "
         "Character and boss share these portraits; review facing for both sides during intake.",
         "## Form line",
@@ -143,8 +155,9 @@ def pack(design, refs):
                    *[f"| {i} | {rarity} | {title}, {name} |"
                      for i, (rarity, title) in enumerate(zip(RARITIES, design["titles"]), 1)]]),
         "## Generation contract",
-        "Six portraits use exact matching Evo.1-6 approved references/weight400. "
-        "Only character/enemy portraits use --sref/--sw (D-147). "
+        "Six portraits use exact matching Evo.1-6 approved references/weight150. "
+        "Each uses a tailored subject palette lock and unwanted-color exclusions (D-159). "
+        "Only character portraits use --sref/--sw; production enemies remain reference-free (D-155). "
         "Icons, weapons, items, banners, arenas and all other art use no style-reference flags. "
         "Keep portrait references and the shared renderer fixed during design testing; signed URLs may expire. "
         "Never use proper names, titles or ability lettering as image prose.",
@@ -167,20 +180,25 @@ def pack(design, refs):
             f"{RENDERER}, consistent {design['palette']} palette, {MARGIN}, {background(design)}"
             + flags("4:3", refs[evolution])
         )
+        prompt = apply_palette(prompt, design["name"])
         asset = identity if evolution == 1 else f"{identity}-evo-{evolution}"
-        text.append(block(f"Evo.{evolution} / {rarity} - {title}, {name}", asset, prompt))
+        text.append(block(f"Evo.{evolution} / {rarity} - {title}, {name}", asset, prompt, installed))
     text.append("## Six ability and action icons")
-    for kind, name, symbol, purpose in design["icons"]:
+    for index, (kind, name, symbol, purpose) in enumerate(design["icons"]):
         slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
         prompt = (f"square gacha JRPG {design['affinity']}-element ability icon, {symbol}, {CONTAIN}, "
                   "one cohesive chunky symbol readable at small button size, broad separated shapes and open key channels, "
                   f"{RENDERER}, consistent {design['palette']} palette, {MARGIN}, {background(design)}"
                   + flags("1:1"))
-        text.append(block(f"{kind} - {name}", f"{identity}-{slug}", prompt) + f"\n{purpose}\n")
+        prompt = apply_palette(prompt, design["name"])
+        action = ("passive", "skill1", "skill2", "ultimate", "light", "defend")[index]
+        supplied = identity != "nerithe" or action not in ("light", "defend")
+        text.append(block(f"{kind} - {name}", f"{identity}-{action if installed else slug}", prompt, supplied) + f"\n{purpose}\n")
     prompt = (f"standalone gacha JRPG weapon cutout, {design['weapon_final']}, {CONTAIN}, "
               "single object diagonal arrangement minimal foreshortening, complete weapon and every tip inside the image, "
               f"{RENDERER}, consistent {design['palette']} palette, {MARGIN}, {background(design)}"
               + flags("3:2"))
+    prompt = apply_palette(prompt, design["name"])
     text.extend(["## Signature weapon", block("Final-form weapon reference", f"{identity}-weapon", prompt)])
     text.append("## Sub-mode scenery")
     for heading, suffix, description, ratio in (
@@ -192,19 +210,29 @@ def pack(design, refs):
                   "and deep layered scenery in the same anime style, no unit portrait grid, no lettering, "
                   "scenery reaches every edge, no cutout matte or decorative frame"
                   + flags(ratio, scenery=True))
-        text.append(block(heading, f"elemental-war-{identity}-{suffix}", prompt))
+        text.append(block(heading, f"elemental-war-{identity}-{suffix}", prompt, True))
     text.extend([
         "## Export and visual review",
         "- Portraits: transparent960px canvas, reviewed uniform trim/resize/pad; preserve supplied alpha. "
         "Icons: transparent256px/224px content. Weapon: transparent cutout retaining the complete tip/grip.",
-        "- Source images remain byte-preserved under Art/source only after owner delivery. "
-        "Do not request these proposed runtime filenames before actual intake.",
+        ("- Installed originals are byte-preserved under Art/source/elemental-war. "
+         "Art/provenance/elemental-war-intake.json records all40 source/export hashes; "
+         "Art/provenance/elemental-war-settings.json records individual keys, gaps, gradient samples and facing. "
+         "Scenery is copied byte-for-byte; missing weapon/action IDs remain proposals, never requested URLs."
+         if installed else "- Source images remain byte-preserved under Art/source only after owner delivery. "
+         "Do not request these proposed runtime filenames before actual intake."),
         "- Inspect all six at equal body height and thumbnail size: distinct gear/poses, growing dense elemental "
         "architecture, eyes and weapon grip readable; Omnic retains Legendary foundations.",
         "- Inspect every edge/corner and enclosed key gap; never recover margin by deleting detail or clipping tips. "
         "No generated glow/realism/lettering. Scenery is exempt from cutout no-glow/edge-margin rules.",
         "- No source artwork is approved by passing prompt tests; generate and visually review first.",
     ])
+    note = ("**Palette control (D-159):** every portrait retains its exact reference URL at150, "
+            "with identity-specific subject palette locks and unwanted-color exclusions. "
+            "Prismatic/opal describes faceting inside that palette, not extra hues. "
+            "Character-specific icons/weapons share the palette without reference flags. "
+            "Solid keys, scenery and installed images unchanged.")
+    text.insert(1, note)
     return "\n\n".join(text) + "\n"
 
 
@@ -220,11 +248,13 @@ def family():
         + flags("3:1", scenery=True)
     )
     return (
-        "# Elemental War Art\n\n**Design only (D-145), not implemented or supplied.** "
-        "[Specification and open approvals](../docs/elemental-war.md).\n\n"
+        "# Elemental War Art\n\n**All three characters and trials implemented (D-152/D-156).** "
+        "Six portraits each, all three activity headers/arenas and16 action/ability icons are installed. "
+        "The family header, standalone weapons and Nerithe Normal Attack/Defense icons remain pending. "
+        "[Specification and remaining scope](../../docs/elemental-war.md).\n\n"
         "Three original challengers, each with a15-prompt pack: "
-        "[Nerithe](Nerithe%20Art.md), [Orvella](Orvella%20Art.md), "
-        "[Vaelor](Vaelor%20Art.md). Six portraits, six ability/action icons, weapon, "
+        "[Nerithe](../characters/Nerithe%20Art.md), [Orvella](../characters/Orvella%20Art.md), "
+        "[Vaelor](../characters/Vaelor%20Art.md). Six portraits, six ability/action icons, weapon, "
         "activity header and arena per character. This family header makes46 total prompts.\n\n"
         "Activity banners are not summon banners or new acquisition pools. "
         "Only character/enemy portraits use --sref/--sw (D-147); icons, weapons and scenery do not. "
@@ -241,8 +271,8 @@ def family():
 
 def outputs():
     refs = references()
-    return {**{ART / f"{design['name']} Art.md": pack(design, refs) for design in DESIGNS},
-            ART / "Elemental War.md": family()}
+    return {**{art_path(f"{design['name']} Art.md", root=ROOT): pack(design, refs) for design in DESIGNS},
+            art_path("Elemental War.md", root=ROOT): family()}
 
 
 if __name__ == "__main__":

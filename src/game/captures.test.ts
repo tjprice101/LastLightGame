@@ -174,7 +174,7 @@ describe('20% capture rewards and retained fixed-form creatures', () => {
     const html = archives(account);
     expect(html).toContain('Owned copies 2');
     expect(html).toContain('data-filter-stars="6"');
-    expect(html.match(/data-archive-character=/g)).toHaveLength(108);
+    expect(html.match(/data-archive-character=/g)).toHaveLength(126);
   });
   it('retains boss ultimates with their exact damage, cooldown and recovery', () => {
     const captured = copy(5, true);

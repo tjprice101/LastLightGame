@@ -5,42 +5,41 @@ import { gameplayHub } from '../presentation/gameplay';
 import { characterDetail } from '../presentation/hub';
 
 describe('activity and progression framework', () => {
-  it('maps all ten canonical elements to their exact dungeons in owner order', () => {
+  it('maps the six canonical elements to their surviving dungeons in owner order', () => {
     expect(elements.map((element) => element.name)).toEqual([
-      'Infernic', 'Aquatic', 'Tectonic', 'Efflorescent', 'Voltaic', 'Atmospheric', 'Luminous', 'Ominous', 'Tranquilitic', 'Chaotic',
+      'Infernic', 'Oceanic', 'Atmospheric', 'Botanic', 'Tranquilitic', 'Chaotic',
     ]);
     expect(elements.map((element) => element.dungeon)).toEqual([
-      'Flaming Depths', 'Oceanic Valley', 'Precipice of the Earth', 'Garden of Beauty', 'Galvanic Field',
-      'Sky-bound Rift', 'Lustrous River', 'Valley of Solitude', 'City of Heaven', 'Ruins of Chaos',
+      'Flaming Depths', 'Oceanic Valley', 'Sky-bound Rift', 'Garden of Beauty', 'City of Heaven', 'Ruins of Chaos',
     ]);
-    expect(new Set(elements.map((element) => element.id)).size).toBe(10);
-    expect(starters.map((starter) => starter.elementId)).toEqual(['infernic', 'aquatic', 'efflorescent']);
+    expect(new Set(elements.map((element) => element.id)).size).toBe(6);
+    expect(starters.map((starter) => starter.elementId)).toEqual(['infernic', 'oceanic', 'botanic']);
     expect(starters.map((starter) => starter.id)).toEqual(['ember', 'tide', 'sprout']);
   });
-  it('defines sixty distinct elemental materials without inventing inventory or rates', () => {
+  it('defines 36 distinct elemental materials without inventing inventory or rates', () => {
     expect(materialRarities).toEqual(['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Omnic']);
-    expect(elementalMaterials).toHaveLength(60);
-    expect(new Set(elementalMaterials.map((material) => material.id)).size).toBe(60);
+    expect(elementalMaterials).toHaveLength(36);
+    expect(new Set(elementalMaterials.map((material) => material.id)).size).toBe(36);
     for (const element of elements) {
       expect(elementalMaterials.filter((material) => material.elementId === element.id).map((material) => material.rarity)).toEqual(materialRarities);
     }
   });
-  it('scales all 35 dungeon stages linearly from 10 to 120', () => {
+  it('scales all 35 dungeon stages linearly from 38 to 120', () => {
     const levels = Array.from({ length: 35 }, (_, index) => elementalEnemyLevel(index + 1));
-    expect(levels[0]).toBe(10);
+    expect(levels[0]).toBe(38);
     expect(levels[34]).toBe(120);
     for (let stage = 1; stage <= 35; stage++) {
-      expect(levels[stage - 1]).toBe(Math.round(10 + (stage - 1) * 110 / 34));
+      expect(levels[stage - 1]).toBe(Math.round(38 + (stage - 1) * 82 / 34));
       if (stage > 1) expect(levels[stage - 1]).toBeGreaterThanOrEqual(levels[stage - 2]);
     }
     for (const invalid of [0, 36, -1, 1.5, NaN, Infinity]) expect(() => elementalEnemyLevel(invalid)).toThrow('1 to 35');
   });
   it('partitions infusion eligibility exactly with no duplicated or missing elements', () => {
     expect(elements.filter((element) => element.infusion === 'heavens').map((element) => element.id)).toEqual([
-      'infernic', 'aquatic', 'tectonic', 'efflorescent', 'atmospheric',
+      'infernic', 'oceanic', 'atmospheric', 'botanic',
     ]);
     expect(elements.filter((element) => element.infusion === 'abyss').map((element) => element.id)).toEqual([
-      'voltaic', 'luminous', 'ominous', 'tranquilitic', 'chaotic',
+      'tranquilitic', 'chaotic',
     ]);
     expect(infusionModes.map((mode) => [mode.stages, mode.startingLevel, mode.enemyTiers])).toEqual([[35, 80, 6], [35, 80, 6]]);
   });
@@ -66,8 +65,8 @@ describe('activity and progression framework', () => {
     for (const element of elements) expect(markup).toContain(element.dungeon);
     for (const mode of infusionModes) expect(markup).toContain(mode.name);
     expect(markup).not.toContain('Dungeon not playable yet');
-    expect(markup.match(/data-dungeon="/g)).toHaveLength(10);
-    expect(markup.match(/<dd>35 stages<\/dd>.*?<dd>10-120<\/dd>/g)).toHaveLength(10);
+    expect(markup.match(/data-dungeon="/g)).toHaveLength(6);
+    expect(markup.match(/<dd>35 stages<\/dd>.*?<dd>38-120<\/dd>/g)).toHaveLength(6);
     expect(markup).toContain('<dd>100 stages</dd>');
     expect(markup.match(/data-infusion="/g)).toHaveLength(6);
     expect(markup).toContain('data-infusion="machines"');

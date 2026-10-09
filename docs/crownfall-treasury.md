@@ -76,10 +76,10 @@ See [complete banner rules](summoning-and-economy.md).
 - [Copy validation/growth](../src/game/character-instances.ts), [transactions](../src/game/account.ts).
 - [Gameplay](../src/presentation/gameplay.ts), [copy/summon UI](../src/presentation/roster.ts).
 - [Regression tests](../src/game/treasury.test.ts).
-- [Six cutouts + mode banner + arena prompts](../Art/Crownfall%20Treasury.md).
+- [Six cutouts + mode banner + arena prompts](../Art/creatures/Crownfall%20Treasury.md).
 
 The six supplied portraits,3:1 mode banner and16:9 arena are registered.
 Captures/enemies reuse each reviewed portrait. Original hashes and per-image
-key settings are in [root-art-intake.json](../Art/root-art-intake.json). The
+key settings are in [root-art-intake.json](../Art/provenance/root-art-intake.json). The
 Standard summoning artpiece remains16:9 Omnic, with Treasury crown motifs.
 No new materials, currency purchase, pity ramp or Phase10 mode is included.

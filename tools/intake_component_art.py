@@ -11,11 +11,12 @@ from PIL import Image
 
 from prepare_art import ROOT, standardize_sprite
 from intake_character_refresh import clean
+from art_library import art_path
 
 INCOMING = ROOT / "Broken Mechanical Components.png"
 SOURCE = ROOT / "Art" / "source" / "currencies" / INCOMING.name
 RUNTIME = ROOT / "public" / "assets" / "currencies" / "mechanical-components.png"
-MANIFEST = ROOT / "Art" / "component-art-intake.json"
+MANIFEST = art_path("component-art-intake.json", root=ROOT)
 SETTINGS = {"keys": [[6, 246, 220]], "radius": 65,
             "edge_cleanup": {"source_pixels": 2, "distance_ramp": 60}}
 
@@ -64,6 +65,7 @@ def intake(apply=False, remove_incoming=False, review=None):
         RUNTIME.write_bytes(output)
         if digest(SOURCE) != record["source_sha256"] or digest(RUNTIME) != record["runtime_sha256"]:
             raise ValueError("Installed component bytes differ.")
+        MANIFEST.parent.mkdir(parents=True, exist_ok=True)
         MANIFEST.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
         if remove_incoming and INCOMING.exists():
             if digest(INCOMING) != digest(SOURCE):

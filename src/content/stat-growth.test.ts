@@ -54,7 +54,8 @@ describe('accelerating enemy stat curves', () => {
         let state = initial;
         for (let turn = 0; state.phase === 'player' && turn < 100; turn++) {
           const actor = state.allies[0];
-          const action = (['ultimate', 'skill1', 'light'] as const).find((id) => !actionUnavailable(state, actor, id));
+          const priorities = starter.id === 'disciple' ? ['skill1', 'skill2', 'light'] as const : ['ultimate', 'skill1', 'light'] as const;
+          const action = priorities.find((id) => !actionUnavailable(state, actor, id));
           if (action) state = act(state, actor.id, action, state.enemies.find((enemy) => enemy.hp > 0)!.id).state;
           if (state.phase === 'player') state = endTurn(state).state;
         }

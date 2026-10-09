@@ -4,6 +4,7 @@ import json
 from PIL import Image
 from prepare_art import ROOT
 from prepare_currencies import CURRENCIES, prepare_currency_sprite, remove_currency_matte
+from art_library import art_path
 
 
 class CurrencyArtTests(unittest.TestCase):
@@ -43,7 +44,7 @@ class CurrencyArtTests(unittest.TestCase):
             prepare_currency_sprite(ROOT / "missing.png", "unknown")
 
     def test_review_records_match_preserved_sources_and_runtime_files(self):
-        records = json.loads((ROOT / "Art" / "matte-review.json").read_text(encoding="utf-8"))["assets"]
+        records = json.loads((art_path("matte-review.json", root=ROOT)).read_text(encoding="utf-8"))["assets"]
         for asset in CURRENCIES.values():
             record = next(entry for entry in records if entry["asset"] == asset)
             for category in ("source", "runtime"):

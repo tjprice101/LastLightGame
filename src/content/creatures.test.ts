@@ -18,10 +18,10 @@ function storage(): ProfileStorage {
 describe('saved creature discoveries and glossary', () => {
   it('assigns confirmed combat elements to every enemy and preserves them across runs', () => {
     const adventure = createBattle();
-    expect(adventure.enemies.map((enemy) => enemy.element)).toEqual(['efflorescent', 'infernic', 'tectonic']);
+    expect(adventure.enemies.map((enemy) => enemy.element)).toEqual(['botanic', 'infernic', 'botanic']);
     expect(adventure.allies[0].element).toBe('infernic');
     adventure.phase = 'cleared';
-    expect(nextWave(adventure).state.enemies.map((enemy) => enemy.element)).toEqual(['efflorescent', 'infernic', 'tectonic']);
+    expect(nextWave(adventure).state.enemies.map((enemy) => enemy.element)).toEqual(['botanic', 'infernic', 'botanic']);
     for (const element of playableDungeons) for (let stage = 1; stage <= 35; stage++) {
       const state = createDungeonBattle(element, stage, 1729, 'ember', { level: 0, evolution: 1 });
       for (const enemy of state.enemies) {
@@ -137,9 +137,9 @@ describe('saved creature discoveries and glossary', () => {
     }
     const final = creatureLoot(getCreature('infusion:heavens:5'), 35);
     expect(final.find((entry) => entry.id === 'heavens-level')).toMatchObject({ minimum: 3, maximum: 6, chance: 1 });
-    expect(final.find((entry) => entry.id === 'infernic-epic')?.chance).toBeCloseTo(.17);
-    expect(final.find((entry) => entry.id === 'aquatic-legendary')?.chance).toBeCloseTo(.13);
-    expect(final.find((entry) => entry.id === 'atmospheric-omnic')?.chance).toBeCloseTo(.08);
+    expect(final.find((entry) => entry.id === 'infernic-epic')?.chance).toBeCloseTo(.85 / 4);
+    expect(final.find((entry) => entry.id === 'oceanic-legendary')?.chance).toBeCloseTo(.65 / 4);
+    expect(final.find((entry) => entry.id === 'atmospheric-omnic')?.chance).toBeCloseTo(.4 / 4);
     expect(final.find((entry) => entry.id === 'chaotic-omnic')).toBeUndefined();
     for (const creature of creatures.filter((entry) => entry.mode === 'heavens' || entry.mode === 'abyss')) for (const stage of creature.stages) {
       const bonuses = creatureLoot(creature, stage).filter((drop) => /-(epic|legendary|omnic)$/.test(drop.id));

@@ -1,4 +1,4 @@
-import { elementalMaterials, dungeonStageCount, infusionStageCount, isCurrencyMode, evolutionRequirement, type ElementId } from '../content/activities';
+import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, type ElementId } from '../content/activities';
 import { fractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from '../content/loot-random';
 import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, characterEvolutionRequirement, fractureRules, characterLevelCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
@@ -17,10 +17,13 @@ import { infusionEncounter, infusionLoot, creatureSaleValue } from '../content/i
 import { standardBanner, resolveBannerPull, validateBannerPity, type StandardBannerEntry, type BannerPity } from '../content/standard-banner';
 import { getSummonBanner, isSummonBannerId, type SummonBannerId } from '../content/summon-banners';
 import { roseMaterials, roseCaptureMaximumLevel } from '../content/roses';
+import { isWarCharacter, warEncounter, warLoot, warStageCount, type WarCharacterId } from '../content/elemental-war';
+import { canonicalElement, isLegacyElement } from '../content/element-migration';
+import { storyEncounter, storyCreature, storyRules, storyBossBonus, storyMaterialLoot } from '../content/story';
 
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
-  version: 3;
+  version: 4;
   fractalis: number;
   lycalis: number;
   bannerPity?: Partial<Record<SummonBannerId, BannerPity>>;
@@ -36,11 +39,13 @@ export interface Account {
   firstFracture: boolean;
   dungeonStages: Partial<Record<PlayableDungeon, number>>;
   infusionStages: Partial<Record<InfusionModeId, number>>;
+  warStages?: Partial<Record<WarCharacterId, number>>;
+  storyCompleted?: number;
   receipts: string[];
   creatures: Record<string, { defeated: boolean }>;
 }
 export function emptyAccount(): Account {
-  return { version: 3, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 4, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value: unknown): value is number {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
@@ -48,8 +53,21 @@ function count(value: unknown): value is number {
 function record(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
+export function migrateLegacyDungeonStage(stage: number, version: 2 | 3): number {
+  if (!count(stage) || stage < 1 || stage > (version === 2 ? 50 : dungeonStageCount)) throw new Error('Invalid saved dungeon stage.');
+  const oldStage = version === 2
+    ? 1 + Math.round((Math.min(stage, 45) - 1) * (dungeonStageCount - 1) / 44) : stage;
+  if (oldStage === 1) return 1;
+  if (oldStage === dungeonStageCount) return dungeonStageCount;
+  const completedLevel = Math.round(10 + (oldStage - 2) * 110 / 34);
+  let unlocked = 1;
+  for (let floor = 1; floor <= dungeonStageCount; floor++) {
+    if (elementalEnemyLevel(floor) <= completedLevel) unlocked = Math.min(dungeonStageCount, floor + 1);
+  }
+  return unlocked;
+}
 export function validateAccount(value: unknown): Account {
-  if (!record(value) || (value.version !== 2 && value.version !== 3) || !count(value.fractalis) || !count(value.lycalis) ||
+  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4) || !count(value.fractalis) || !count(value.lycalis) ||
       !record(value.materials) || !record(value.characters) || !record(value.dungeonStages) ||
       typeof value.firstFracture !== 'boolean' || !Array.isArray(value.receipts) ||
       !value.receipts.every((receipt) => typeof receipt === 'string') || new Set(value.receipts).size !== value.receipts.length) {
@@ -72,6 +90,18 @@ export function validateAccount(value: unknown): Account {
   }
   account.firstFracture = value.firstFracture;
   account.receipts = [...value.receipts];
+  if (value.storyCompleted !== undefined) {
+    if (!count(value.storyCompleted) || value.storyCompleted > storyRules.stages) throw new Error('Invalid saved Story progress.');
+    account.storyCompleted = value.storyCompleted;
+  }
+  if (value.warStages !== undefined) {
+    if (!record(value.warStages)) throw new Error('Invalid saved Elemental War progress.');
+    account.warStages = {};
+    for (const [id, stage] of Object.entries(value.warStages)) {
+      if (!isWarCharacter(id) || !count(stage) || stage < 1 || stage > warStageCount) throw new Error('Invalid saved Elemental War stage.');
+      account.warStages[id] = stage;
+    }
+  }
   if (value.conduits !== undefined) {
     if (!record(value.conduits)) throw new Error('Invalid saved Conduit inventory.');
     account.conduits = {};
@@ -87,8 +117,15 @@ export function validateAccount(value: unknown): Account {
     }
   }
   for (const [id, amount] of Object.entries(value.materials)) {
-    if (!isMaterial(id) || !count(amount)) throw new Error(`Invalid saved material: ${id}.`);
-    account.materials[id] = amount;
+    let canonicalId = id;
+    if (value.version !== 4) {
+      const [element, rarity] = id.split('-');
+      if (isLegacyElement(element) && id === `${element}-${rarity}`) canonicalId = `${canonicalElement(element)}-${rarity}`;
+    }
+    if (!isMaterial(canonicalId) || !count(amount)) throw new Error(`Invalid saved material: ${id}.`);
+    const total = (account.materials[canonicalId] ?? 0) + amount;
+    if (!count(total)) throw new Error(`Merged material balance exceeds the supported maximum: ${canonicalId}. The save has not been overwritten.`);
+    account.materials[canonicalId] = total;
   }
   for (const [id, progress] of Object.entries(value.characters)) {
     if (!isStarterId(id) || !record(progress) || typeof progress.level !== 'number' || typeof progress.evolution !== 'number') {
@@ -129,9 +166,10 @@ export function validateAccount(value: unknown): Account {
     }
   }
   for (const [id, stage] of Object.entries(value.dungeonStages)) {
-    if (!isPlayableDungeon(id) || !count(stage) || stage < 1 || stage > (value.version === 2 ? 50 : dungeonStageCount)) throw new Error('Invalid saved dungeon stage.');
-    account.dungeonStages[id] = value.version === 2
-      ? 1 + Math.round((Math.min(stage, 45) - 1) * (dungeonStageCount - 1) / 44) : stage;
+    const canonicalId = value.version === 4 ? id : isLegacyElement(id) ? canonicalElement(id) : id;
+    if (!isPlayableDungeon(canonicalId) || !count(stage) || stage < 1 || stage > (value.version === 2 ? 50 : dungeonStageCount)) throw new Error('Invalid saved dungeon stage.');
+    const migratedStage = value.version === 4 ? stage : migrateLegacyDungeonStage(stage, value.version === 2 ? 2 : 3);
+    account.dungeonStages[canonicalId] = Math.max(account.dungeonStages[canonicalId] ?? 1, migratedStage);
   }
   if (value.infusionStages !== undefined) {
     if (!record(value.infusionStages)) throw new Error('Invalid saved infusion stages.');
@@ -374,6 +412,20 @@ export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: '
 export function saveAccountRewards(storage: ProfileStorage, result: BattleResult, runId: string): Account {
   const account = loadAccount(storage);
   let changed = false;
+  const recruitments: { reward: BattleResult['events'][number]; character: WarCharacterId; outcome: 'new' | 'duplicate' }[] = [];
+  const storyBonuses: { reward: BattleResult['events'][number]; bonus: ReturnType<typeof storyBossBonus> }[] = [];
+  const story = result.state.story;
+  if (story) {
+    const encounter = storyEncounter(story.storyStage);
+    if (result.state.dungeon || result.state.infusion || result.state.war || result.state.wave !== story.storyStage ||
+        story.storyStage > unlockedStoryStage(account) ||
+        result.state.enemies.length !== (encounter.boss ? 1 : 2) ||
+        result.state.enemies.some((enemy, index) => enemy.id !== `story-${story.storyStage}-${index}` ||
+          enemy.level !== encounter.level || enemy.element !== encounter.element || enemy.boss !== encounter.boss ||
+          !Array.from({ length: encounter.boss ? 1 : 4 }, (_, identity) => storyCreature(story.storyStage, identity).id).includes(enemy.creatureId ?? ''))) {
+      throw new Error('Invalid or locked Story encounter.');
+    }
+  }
   for (const enemy of result.state.enemies) {
     if (!enemy.creatureId) continue;
     getCreature(enemy.creatureId);
@@ -389,6 +441,64 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     if (account.receipts.includes(receipt)) continue;
     const enemy = result.state.enemies.find((unit) => unit.id === reward.source);
     if (!enemy || enemy.level === null) throw new Error('Enemy reward source is missing.');
+    if (story) {
+      const stage = story.storyStage;
+      const encounter = storyEncounter(stage);
+      const range = fractalisDrop(encounter.level);
+      const materialPool = storyMaterialLoot(stage);
+      if (enemy.hp > 0 || reward.capture !== undefined || reward.conduits !== undefined ||
+          reward.mechanicalComponents !== undefined || reward.lycalis !== undefined || reward.storyBonus !== undefined ||
+          reward.recruitment !== undefined || reward.recruitmentOutcome !== undefined ||
+          !count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum ||
+          !record(reward.materials) || !count(reward.materials[`${encounter.element}-common`])) {
+        throw new Error('Invalid Story reward.');
+      }
+      for (const [id, amount] of Object.entries(reward.materials)) {
+        const drop = materialPool.find((entry) => entry.id === id);
+        if (!drop || !count(amount) || amount < drop.minimum || amount > drop.maximum) throw new Error('Invalid Story material drop.');
+        account.materials[id] = (account.materials[id] ?? 0) + amount;
+      }
+      account.fractalis += reward.amount;
+      if (encounter.boss && result.state.phase === 'cleared' && (account.storyCompleted ?? 0) < stage) {
+        const bonus = storyBossBonus(stage);
+        account.fractalis += bonus.fractalis;
+        account.lycalis += bonus.lycalis;
+        storyBonuses.push({ reward, bonus });
+      }
+      account.receipts.push(receipt);
+      changed = true;
+      continue;
+    }
+    if (reward.storyBonus !== undefined) throw new Error('Story bonuses require a regional first clear.');
+    if (result.state.war) {
+      const { character, stage } = result.state.war;
+      const encounter = warEncounter(character, stage);
+      const loot = warLoot(stage);
+      if (result.state.dungeon || result.state.infusion || result.state.enemies.length !== 1 ||
+          stage > unlockedWarStage(account, character) || result.state.wave !== stage || result.state.phase !== 'cleared' ||
+          enemy.hp > 0 || enemy.definitionId !== character || enemy.id !== `war-${character}-${stage}` ||
+          enemy.level !== encounter.level || enemy.element !== encounter.element || enemy.evolution !== encounter.evolution || !enemy.boss ||
+          enemy.creatureId || reward.capture !== undefined || reward.materials !== undefined ||
+          reward.conduits !== undefined || reward.mechanicalComponents !== undefined ||
+          !count(reward.amount) || reward.amount < loot.fractalis.minimum || reward.amount > loot.fractalis.maximum ||
+          (reward.lycalis !== undefined && reward.lycalis !== loot.lycalis.quantity) ||
+          reward.recruitmentOutcome !== undefined ||
+          (reward.recruitment !== undefined && (stage !== warStageCount || reward.recruitment !== character))) {
+        throw new Error('Invalid Elemental War reward.');
+      }
+      account.fractalis += reward.amount;
+      account.lycalis += reward.lycalis ?? 0;
+      if (reward.recruitment) {
+        const outcome = account.characters[character] ? 'duplicate' : 'new';
+        if (outcome === 'duplicate') account.lycalis += 100;
+        else account.characters[character] = { level: 0, evolution: 1, weaponRank: 0 };
+        recruitments.push({ reward, character, outcome });
+      }
+      account.receipts.push(receipt);
+      changed = true;
+      continue;
+    }
+    if (reward.recruitment !== undefined || reward.recruitmentOutcome !== undefined) throw new Error('Recruitment requires Elemental War.');
     const range = result.state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, result.state.infusion?.mode === 'roses' ? 140 : 120);
     if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === 'roses' || result.state.infusion.mode === 'machines') &&
         (enemy.hp > 0 || !enemy.creatureId || getCreature(enemy.creatureId).mode !== result.state.infusion.mode ||
@@ -469,7 +579,46 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       changed = true;
     }
   }
-  return changed ? saveAccount(storage, account) : account;
+  const war = result.state.war;
+  if (war && result.state.phase === 'cleared' && result.state.enemies.length === 1 &&
+      result.state.enemies[0].hp <= 0 && account.receipts.includes(`${runId}:${result.state.enemies[0].id}`)) {
+    const unlocked = Math.min(warStageCount, war.stage + 1);
+    if (unlockedWarStage(account, war.character) < unlocked) {
+      account.warStages = { ...account.warStages, [war.character]: unlocked };
+      changed = true;
+    }
+  }
+  if (story && result.state.phase === 'cleared') {
+    if (result.state.enemies.some((enemy) => enemy.hp > 0 || !account.receipts.includes(`${runId}:${enemy.id}`))) {
+      throw new Error('Story clear requires saved rewards for every defeated enemy.');
+    }
+    if ((account.storyCompleted ?? 0) < story.storyStage) {
+      account.storyCompleted = story.storyStage;
+      changed = true;
+    }
+  }
+  const saved = changed ? saveAccount(storage, account) : account;
+  for (const { reward, bonus } of storyBonuses) {
+    reward.amount += bonus.fractalis;
+    reward.lycalis = bonus.lycalis;
+    reward.storyBonus = bonus;
+    reward.message += ` First regional clear: +${bonus.fractalis} Prismatica and +${bonus.lycalis} Null-Prismatica.`;
+  }
+  for (const { reward, character, outcome } of recruitments) {
+    reward.recruitmentOutcome = outcome;
+    reward.message += outcome === 'new' ? ` ${getStarter(character).name} recruited at Lv.0 ~ Evo.1.`
+      : ' Already-owned recruitment converted to 100 Null-Prismatica.';
+  }
+  return saved;
+}
+
+export function unlockedWarStage(account: Account, character: WarCharacterId): number {
+  if (!isWarCharacter(character)) throw new Error('Unknown Elemental War challenger.');
+  return account.warStages?.[character] ?? 1;
+}
+
+export function unlockedStoryStage(account: Account): number {
+  return Math.min(storyRules.stages, (account.storyCompleted ?? 0) + 1);
 }
 
 export function unlockedStage(account: Account, dungeon: PlayableDungeon): number {

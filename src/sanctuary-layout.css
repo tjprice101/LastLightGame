@@ -188,10 +188,6 @@
 .sanctuary-shell .archives .archive-portrait { aspect-ratio: 3 / 4; }
 .sanctuary-shell .section-navigation strong { font-size: 16px; }
 .sanctuary-shell button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-@media (min-width: 801px) {
-  .sanctuary-shell .character-hub .hub-detail { max-height: max(360px, calc(100svh - 340px)); overflow-y: auto; scrollbar-gutter: stable; }
-  .sanctuary-shell .character-control-panel:has([data-character-section="equipment"]:not([hidden])) .hub-detail { max-height: max(440px, calc(100svh - 220px)); }
-}
 @media (hover: hover) {
   .home-banner:hover, .home-menu-shortcuts button:hover,
   .activity-picker button:hover, .sanctuary-menu-links button:hover { border-color: #ffffff90; }

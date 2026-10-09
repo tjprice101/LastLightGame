@@ -11,6 +11,8 @@ describe('shared settings drawer', () => {
     }
     expect(html.match(/id="close-settings"/g)).toHaveLength(1);
     expect(html).toContain('data-information="settings-information"');
+    expect(html.match(/id="return-title"/g)).toHaveLength(1);
+    expect(html).toContain('Saved progress and earned rewards are kept');
     expect(html).toContain('data-close-information');
     expect(html).toContain('aria-describedby="speed-description"');
     expect(html).toContain('aria-describedby="motion-description"');

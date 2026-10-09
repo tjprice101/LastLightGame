@@ -32,7 +32,7 @@ function documentFixture(reduced = false) {
   vi.stubGlobal('HTMLElement', Node);
 }
 const reward: BattleEvent = { kind: 'reward', source: 'enemy', target: '', amount: 7,
-  critical: false, message: 'Loot', materials: { 'heavens-weapon': 2, 'aquatic-epic': 1, 'chaotic-omnic': 1 } };
+  critical: false, message: 'Loot', materials: { 'heavens-weapon': 2, 'oceanic-epic': 1, 'chaotic-omnic': 1 } };
 
 describe('enemy-death loot presentation', () => {
   it.each([0, 3, 5])('shows the snapshotted Conduit level %i as five squares', (level) => {

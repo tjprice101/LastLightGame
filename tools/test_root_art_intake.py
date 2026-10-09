@@ -10,6 +10,7 @@ import numpy as np
 
 from intake_root_art import ASSETS, ROOT, BACKGROUND_SEEDS, Asset, _remove_rgb_matte, _prepare, intake, plan
 from color_matte import remove_color_matte
+from art_library import art_path
 
 
 class RootArtIntakeTests(unittest.TestCase):
@@ -22,7 +23,7 @@ class RootArtIntakeTests(unittest.TestCase):
         self.assertEqual(len(ASSETS), 36)
 
     def test_intake_manifest_sources_and_runtime_exports_match(self):
-        manifest = json.loads((ROOT / "Art" / "root-art-intake.json").read_text(encoding="utf-8"))
+        manifest = json.loads((art_path("root-art-intake.json", root=ROOT)).read_text(encoding="utf-8"))
         self.assertEqual(manifest["asset_count"], len(ASSETS))
         self.assertEqual(len(manifest["assets"]), len(ASSETS))
         for asset, record in zip(ASSETS, manifest["assets"]):

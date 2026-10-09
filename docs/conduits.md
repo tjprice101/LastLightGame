@@ -2,7 +2,10 @@
 
 **Status:** purchasing/per-character equipment/stat buffs remain active. D-124
 adds [Awaken the Machines](awaken-the-machines.md),20 earned Conduits, unique
-Omnic mechanics and an additional Legendary banner bonus.25 total entries.
+Omnic mechanics and an additional Legendary banner bonus. D-157 expands
+to60 entries:10 Common/15 Rare/15 Legendary/20 Omnic, with35 added devices.
+D-162 implements25 more [kit-focused Conduits](kit-conduits.md), bringing the
+live catalog to85 (15/23/21/26); machine tier totals and banner eligibility stay.
 D-130 adds [five account-wide upgrades](conduit-upgrades.md) using new machine
 currency only. Modifiers/penalties end at3.5x; special mechanics unchanged.
 D-136/D-139 scale component costs by rarity: Common1x, Rare2x, Legendary4x,
@@ -20,15 +23,17 @@ Owner-approved Omnic equipment requires a matching combat element.
 
 ## Rarity presentation and expansion (D-124)
 
-Five existing **Common/bronze** designs remain small stat unlocks. Five
-**Rare/silver** entries improve two distinct stats; five **Legendary/platinum-
-white** entries provide85% to one stat and -10% to another. Ten
+Fifteen **Common/bronze** designs remain small stat/kit unlocks. Twenty-three
+**Rare/silver** entries improve two distinct stats; twenty-one **Legendary/platinum-
+white** entries provide85% to one stat and -10% to another. Twenty-six
 **Omnic/prismatic** elemental masterpieces provide three60/50/40% stat buffs
-plus unique combat mechanics. Higher rarity unfolds/restores more ambitious
+plus unique combat mechanics. D-162 adds fixed kit rules across all four tiers;
+five Common prices and all25 exact rules are in the [kit catalog](kit-conduits.md).
+Higher rarity unfolds/restores more ambitious
 machinery in the final Thornia/Crinso compact anime/cel renderer, not palette
 swaps/realism. "Uncommon" in this request was clarified to mean Rare.
 
-See the [rarity art direction](../Art/Conduits.md#future-rarity-art-direction)
+See the [rarity art direction](../Art/conduits/Conduits.md#future-rarity-art-direction)
 for historical direction and cutout/effect separation, and
 [current catalog/mechanics](awaken-the-machines.md) for the implemented rules.
 No Uncommon/Epic Conduit catalog or Conduit evolution system. D-130 upgrades
@@ -43,13 +48,22 @@ stat modifiers without changing rarity, identity or artwork.
 | Bastion Lock |1,000 | +5% Defense | Mechanical |
 | Parallax Relay |1,500 | +2 percentage points Critical Rate | Elemental Light |
 | Fracture Reservoir |1,200 | +5 Shatter Capacity | Elemental Light |
+| Prism Splinter Socket |1,600 | +5% Elemental Damage | Elemental Light |
+| Precision Escapement |1,800 | +8% Critical Damage multiplier | Mechanical |
+| Fieldbrace Coupler |1,400 | +3% Health / +3% Defense | Mechanical |
+| Reserve Torque Crank |1,500 | +3% Attack / +3% Health | Mechanical |
+| Crosspin Governor |1,500 | +3% Attack / +3% Defense | Elemental Light |
 
-Prices and stats are owner-approved editable first-pass balance.
+Original five prices/stats are owner-approved first-pass balance; additional
+five prices are developer tuning by usefulness under the owner's instruction.
+Common is Store-only; no machine Common drop tier. Percent ED helps only a
+nonzero base stat, never invents an affinity/status for a character with zero ED.
 Definitions: [conduits.ts](../src/content/conduits.ts). Buff descriptors
 distinguish percentage multipliers, percentage-point additions and flat bonuses;
 percentage buffs apply after character growth and existing weapon bonuses.
 Critical rate adds0.02 (two percentage points), capped at100%; Gauge capacity
-adds5. These do not change skill coefficients, cooldowns or Shatter gain rates.
+adds5. These original stat-only designs do not change skill coefficients,
+cooldowns or Shatter gain rates; D-162 kit-focused designs explicitly do.
 
 ## Navigation and transactions
 
@@ -67,14 +81,19 @@ purchases are allowed but extra copies provide no additional equipment benefit.
 **Owning one copy unlocks that name for every owned character.** Equipping does
 not consume or reserve copies. Each character can equip a named Conduit only
 once across its eight ordinary slots. Different characters may share the unlock.
-Common purchase rules/prices are unchanged. Drop-only Rare/Legendary/Omnic
+Original Common purchase prices/rules are unchanged; ten additions use the
+same atomic purchase path and shared unlocks. Drop-only Rare/Legendary/Omnic
 cannot be purchased, including through transaction calls. No Conduit sales,
 refunds or limited stock. Machine per-kill independent8%/3.5%/eligible1%
 tier rolls and successful banner0.5% Legendary bonus are active (D-124).
 Owned but unequipped Conduits give no bonuses.
 
-`last-light.wallet` version3 gains an optional `conduits` map of registered IDs
+`last-light.wallet` version4 retains the optional `conduits` map of registered IDs
 to nonnegative safe-integer counts. Old saves need no rewriting on load.
+The six-element migration changes elemental eligibility, never stable Conduit
+IDs/counts/upgrades/equipment. Former Earth/Nature, Wind/Electricity, Peace/Light
+and Chaos/Shadow Omnic designs now share their merged canonical eligibility.
+The25 further additions are live; machine tier totals remain unchanged.
 Purchases re-read storage, validate profile/catalog/funds/capacity, then save
 the Prismatica deduction and copy together in one write. Failed writes and
 rejected purchases do not change the persistent wallet. Other currencies,
@@ -83,14 +102,18 @@ As with existing transactions, play in one tab: there is no cross-tab lock.
 
 ## Artwork
 
-[Copy-ready prompts](../Art/Conduits.md) cover five icons and the store banner.
+[Copy-ready prompts](../Art/conduits/Conduits.md) cover five icons and the store banner.
 The five supplied Common icons and store banner are registered; RGB source
 provenance and per-image background-key settings are in
-[root-art-intake.json](../Art/root-art-intake.json). The20 new catalog entries
-have [copy-ready prompts](../Art/Awaken%20the%20Machines.md) and installed,
+[root-art-intake.json](../Art/provenance/root-art-intake.json). The20 new catalog entries
+have [copy-ready prompts](../Art/creatures/Awaken%20the%20Machines.md) and installed,
 reviewed256px transparent icons (D-128). Original bytes, per-image keys and
-foreground protections are recorded in [machine provenance](../Art/machines-art-intake.json).
+foreground protections are recorded in [machine provenance](../Art/provenance/machines-art-intake.json).
 All shared Inventory/Archive/equipment/loot/results resolvers use the catalog IDs.
+The35 D-157 and25 D-162 additions remain art-pending with honest neutral presentation,
+not existing icons borrowed from unrelated devices or missing PNG URLs.
+[Approved catalog and phases](conduit-expansion-plan.md) records their identities.
+[Kit catalog](kit-conduits.md) / [25 new icon prompts](../Art/conduits/Kit%20Conduits.md).
 Ordinary Inventory/equipment icons are80px; Store and Conduit Archive hero art
 is responsive up to200px. Repeated "Recovered mechanism" artwork labels are
 removed; unique lore, names, effects, prices and counts remain (D-092).
@@ -111,7 +134,7 @@ leaves the previous equipment unchanged; no currency/copy consumption.
 Character equipment shows eight selectors, selected effects and effective stats.
 Home, overview and upgrade previews use the same `resolveFighter` derived stats;
 changed values show their before-Conduits baseline. Battle details list the
-run's Conduits. Adventure, ten dungeons and both infusion modes clone equipment
+run's Conduits. Adventure, six dungeons and both infusion modes clone equipment
 at entry. Continue, replay, next wave and Settings preserve that snapshot;
 later menu changes only affect a new run. Max HP uses the Health buff, actions
 use effective Attack/Crit and incoming damage uses effective Defense.

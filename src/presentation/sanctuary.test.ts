@@ -10,10 +10,10 @@ describe('full sanctuary UI', () => {
     for (const page of sanctuaryPages) {
       const html = sanctuaryHeader(page, 0, 0);
       expect(html).not.toContain('sanctuary-nav');
-      expect(html).toContain('data-page="home"');
+      expect(sanctuaryDock(page === 'battle' ? 'home' : page)).toContain('data-page="home"');
       expect(html).toContain('data-information="sanctuary-menu"');
-      expect(html.match(/id="return-title"/g)).toHaveLength(1);
-      for (const destination of ['team', 'gameplay', 'events', 'inventory', 'stores', 'collections', 'summon', 'story']) {
+      expect(html).not.toContain('id="return-title"');
+      for (const destination of ['events', 'inventory', 'stores', 'collections', 'story']) {
         expect(html).toContain(`data-page="${destination}"`);
       }
       expect(html).not.toContain('sanctuary-home');
@@ -78,6 +78,9 @@ describe('full sanctuary UI', () => {
     const header = sanctuaryHeader('story', 0, 0, true).split('data-information="sanctuary-menu"')[0];
     expect(header).not.toContain('data-page="home"');
     expect(header).toContain('>Back');
+    expect(sanctuaryHeader('conduit-store', 0, 0, true, 'character')).toContain('aria-label="Back to Team"');
+    expect(sanctuaryHeader('home', 0, 0, true, 'inventory')).toContain('<small>Inventory</small>');
+    expect(sanctuaryHeader('home', 0, 0, false, 'inventory')).not.toContain('data-menu-back');
   });
   it('limits global inventory to owned materials, separate from character equipment', () => {
     const html = inventoryHub();
@@ -86,9 +89,9 @@ describe('full sanctuary UI', () => {
     expect(html).not.toContain('equipment-panel');
     expect(html).toContain('No materials yet');
     const account = emptyAccount();
-    account.materials = { 'tectonic-common': 3, 'chaotic-omnic': 1, 'aquatic-rare': 0 };
+    account.materials = { 'botanic-common': 3, 'chaotic-omnic': 1, 'oceanic-rare': 0 };
     const owned = inventoryHub(account);
-    expect(owned).toContain('Seed of Tectonic');
+    expect(owned).toContain('Seed of Botanic');
     expect(owned).toContain('Soul of Chaotic');
     expect(owned).not.toContain('Shard of Aquatic');
     expect(owned).not.toContain('artifact-slot');
@@ -98,13 +101,15 @@ describe('full sanctuary UI', () => {
     const html = gameplayHub();
     for (const element of elements) expect(html).toContain(element.dungeon);
     for (const mode of infusionModes) expect(html).toContain(mode.name);
-    expect(html.match(/class="activity-group"/g)).toHaveLength(7);
+    expect(html.match(/class="activity-group"/g)).toHaveLength(8);
     expect(html).not.toContain('Dungeon not playable yet');
-    expect(html.match(/data-dungeon="/g)).toHaveLength(10);
+    expect(html.match(/data-dungeon="/g)).toHaveLength(6);
     expect(html.match(/data-infusion="/g)).toHaveLength(6);
     expect(html).toContain('data-page="battle"');
-    expect(html.match(/class="activity-picker"/g)).toHaveLength(3);
-    expect(html.match(/data-activity-choice=/g)).toHaveLength(14);
+    expect(html.match(/class="activity-picker"/g)).toHaveLength(4);
+    expect(html.match(/data-activity-choice=/g)).toHaveLength(13);
+    expect(html).toContain('TRANQUILITIC ~ PRISMATICA');
+    expect(html).not.toContain('LUMINOUS');
     expect(html).toContain('data-information="gameplay-information"');
   });
 });

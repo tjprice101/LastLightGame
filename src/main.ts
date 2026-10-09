@@ -46,10 +46,15 @@ import { getCreature } from './content/creatures';
 import { getSummonBanner, isSummonBannerId, type SummonBannerId } from './content/summon-banners';
 import { isInfusionMode } from './content/infusions';
 import { isPlayableDungeon } from './content/dungeons';
+import { isWarCharacter } from './content/elemental-war';
+import { unlockedWarStage } from './game/account';
 import { characterLevelCost, characterEvolutionCost, evolutionRarity } from './content/progression';
 import { materialName } from './content/dungeon-art';
 import { capturedProgress } from './game/character-instances';
 import { gameplayHub, bindGameplayNavigation } from './presentation/gameplay';
+import { storyCampaign, bindStoryNavigation } from './presentation/story';
+import { storyEncounter } from './content/story';
+import { unlockedStoryStage } from './game/account';
 import { roseEvent } from './presentation/rose-event';
 import { isMenuPage, sanctuaryHeader, sanctuaryContext, sanctuaryDock, sanctuaryDestination, type MenuPage, type TeamArea } from './presentation/sanctuary';
 import { MenuHistory } from './presentation/menu-history';
@@ -356,7 +361,7 @@ function renderMenu(firstArrival = false): void {
     walletError = errorMessage(error);
   }
   const homeLeader = account && !firstArrival && menuPage === 'home' ? account.squad?.[0] ?? starter.id : starter.id;
-  const sanctuary = `${sanctuaryHeader(menuPage, fractalis, account?.lycalis ?? null, !!menuHistory.previous)}<section class="menu-screen sanctuary-content" data-menu-screen="${menuPage}">
+  const sanctuary = `${sanctuaryHeader(menuPage, fractalis, account?.lycalis ?? null, !!menuHistory.previous, menuHistory.previous?.page)}<section class="menu-screen sanctuary-content" data-menu-screen="${menuPage}">
     ${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
     ${sanctuaryContext(menuPage, characterCategory)}
     ${menuPage !== 'home' ? menuContent(menuPage) : homeHub(isStarterId(homeLeader) ? getStarter(homeLeader) : starter, firstArrival, account)}
@@ -376,6 +381,7 @@ function renderMenu(firstArrival = false): void {
   pendingMaxLevel = null;
   app.querySelector(`[data-character-category="${characterCategory}"]`)?.setAttribute('aria-current', 'page');
   bindGameplayNavigation(app);
+  bindStoryNavigation(app, account);
   bindInventory(app, (tab) => { inventoryTab = tab; });
   bindCreatureGlossary(app, account?.conduitUpgrades);
   bindArchives(app);
@@ -435,11 +441,31 @@ function renderMenu(firstArrival = false): void {
             }
           }
           if (page === 'gameplay' && button.hasAttribute('data-machine-activity')) history.replaceState(null, '', '#gameplay-machines');
+          if (page === 'gameplay' && button.hasAttribute('data-training-activity')) history.replaceState(null, '', '#gameplay-adventure');
           if (page === 'summon' && button.hasAttribute('data-rose-banner')) selectedBanner = 'roses';
           renderMenu();
         });
       } catch (error) {
         console.error('Activity navigation failed', error);
+        showError(errorMessage(error));
+      }
+    });
+  });
+  app.querySelectorAll<HTMLButtonElement>('[data-story-stage]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      try {
+        const stage = Number(button.dataset.storyStage);
+        storyEncounter(stage);
+        const current = loadAccount(localStorage);
+        if (stage > unlockedStoryStage(current)) throw new Error('Complete the earlier Story stages first.');
+        await transitionActivity(() => {
+          account = current;
+          battleSession = squadSession(current, { storyStage: stage });
+          visitMenu('battle');
+          renderMenu();
+        });
+      } catch (error) {
+        console.error('Story entry rejected', error);
         showError(errorMessage(error));
       }
     });
@@ -462,6 +488,28 @@ function renderMenu(firstArrival = false): void {
         });
       } catch (error) {
         console.error('Dungeon entry rejected', error);
+        showError(errorMessage(error));
+      }
+    });
+  });
+  app.querySelectorAll<HTMLButtonElement>('[data-war]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      try {
+        const character = button.dataset.war;
+        if (!isWarCharacter(character)) throw new Error('Unknown Elemental War challenger.');
+        const control = app.querySelector<HTMLSelectElement>(`[data-war-stage="${character}"]`);
+        if (!control) throw new Error('Elemental War stage selector is missing.');
+        const stage = Number(control.value);
+        const current = loadAccount(localStorage);
+        if (!Number.isInteger(stage) || stage < 1 || stage > unlockedWarStage(current, character)) throw new Error('Complete earlier Elemental War stages first.');
+        await transitionActivity(() => {
+          account = current;
+          battleSession = squadSession(current, { character, stage });
+          visitMenu('battle');
+          renderMenu();
+        });
+      } catch (error) {
+        console.error('Elemental War entry rejected', error);
         showError(errorMessage(error));
       }
     });
@@ -530,7 +578,7 @@ function renderMenu(firstArrival = false): void {
   });
   const closeSettings = (): void => {
     drawer.close();
-    renderMenu();
+    if (menuPage === 'battle') renderMenu();
     app.querySelector<HTMLButtonElement>('[data-information="sanctuary-menu"], #open-settings')?.focus();
   };
   app.querySelector('#close-settings')?.addEventListener('click', closeSettings);
@@ -766,13 +814,24 @@ function renderMenu(firstArrival = false): void {
       showError(`Hotkeys were not changed. ${errorMessage(error)}`);
     }
   });
-  app.querySelector('#return-title')?.addEventListener('click', () => {
-    menuHistory.clear();
-    menuPage = 'home';
-    inventoryTab = 'materials';
-    journey.screen = 'title';
-    render();
-    app.querySelector<HTMLButtonElement>('#enter')?.focus();
+  app.querySelector('#return-title')?.addEventListener('click', async () => {
+    if (gameDialogPending()) return;
+    try {
+      if (menuPage === 'battle' && !await gameConfirm('End this battle and return to the title? Saved rewards are kept; encounter progress is not.', { title: 'Leave battle', confirmLabel: 'Return to title' })) return;
+      battleView?.destroy();
+      battleView = null;
+      battleSession = null;
+      drawer.close();
+      menuHistory.clear();
+      menuPage = 'home';
+      inventoryTab = 'materials';
+      journey.screen = 'title';
+      render();
+      app.querySelector<HTMLButtonElement>('#enter')?.focus();
+    } catch (error) {
+      console.error('Could not return to title', error);
+      showError(`Could not leave this screen. ${errorMessage(error)}`);
+    }
   });
 }
 
@@ -793,12 +852,7 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
   if (page === 'squad') return squadHub(account);
   if (page === 'summon') return summonHub(account, selectedBanner);
   if (page === 'gameplay') return gameplayHub(account);
-  if (page === 'story') return `${information('story-information', 'Opening Story', '<p>The prologue follows your saved starter Element-Bearer. Reading it does not start a battle or grant rewards.</p>')}<p class="subtitle">Prologue ~ ${starter.lore.origin}</p>
-    <article class="story-panel lore-panel" style="--element:${starter.color}">
-      <p class="eyebrow">A FIRST LIGHT</p><h2>${starter.title}</h2>
-      <p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote>
-      <p>The road disappears beneath a veil of dusk. A small light glows beside you. It is not enough to light the world - not yet. But it is enough to take the first step.</p>
-    </article>`;
+  if (page === 'story') return storyCampaign(account, starter.id);
   if (page === 'events') return roseEvent(account);
   return settingsPanel(motionPreference, bindings, speed);
 }

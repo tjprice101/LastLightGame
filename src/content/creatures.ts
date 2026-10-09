@@ -2,9 +2,10 @@ import { enemies, enemyIds, formatStat } from './combat';
 import { elements, dungeonStageCount, infusionModes, currencyModes, eventModes, machineModes, type ElementId, type InfusionModeId } from './activities';
 import { machineConduitLoot } from './machines';
 import { machineComponentDrop } from './mechanical-components';
-import { dungeonEncounter, materialLoot } from './dungeons';
+import { dungeonEncounter, dungeonVariants, materialLoot } from './dungeons';
 import { infusionEncounter, infusionLoot, infusionElements } from './infusions';
 import { fractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from './loot-random';
+import { storyEncounter, storyCreature, storyRules, storyLoot, storyBossBonus } from './story';
 
 export interface Creature {
   id: string;
@@ -14,20 +15,31 @@ export interface Creature {
   element: ElementId;
   dungeonElement?: ElementId;
   mode?: InfusionModeId;
+  story?: true;
   stages: number[];
 }
 
 function catalog(): Creature[] {
   const result: Creature[] = enemyIds.map((id) => ({ id: `adventure:${id}`, name: enemies[id].name,
-    art: enemies[id].art, element: enemies[id].element, area: 'Adventure', stages: [] }));
+    art: enemies[id].art, element: enemies[id].element, area: 'Training', stages: [] }));
+  for (let stage = 1; stage <= storyRules.stages; stage++) {
+    const encounter = storyEncounter(stage);
+    for (let identity = 0; identity < (encounter.boss ? 1 : 4); identity++) {
+      const creature = storyCreature(stage, identity);
+      const existing = result.find((entry) => entry.id === creature.id);
+      if (existing) existing.stages.push(stage);
+      else result.push({ ...creature, element: encounter.element, area: encounter.name, story: true, stages: [stage] });
+    }
+  }
   for (const element of elements) {
     for (let stage = 1; stage <= dungeonStageCount; stage++) {
-      const encounter = dungeonEncounter(element.id, stage);
-      const id = `dungeon:${element.id}:${encounter.tier}`;
-      const entry = result.find((creature) => creature.id === id);
-      if (entry) entry.stages.push(stage);
-      else result.push({ id, name: encounter.enemy.name, art: encounter.enemy.art, area: element.dungeon,
-        element: element.id, dungeonElement: element.id, stages: [stage] });
+      for (const variant of dungeonVariants(element.id, stage)) {
+        const id = variant.creatureId;
+        const entry = result.find((creature) => creature.id === id);
+        if (entry) entry.stages.push(stage);
+        else result.push({ id, name: variant.enemy.name, art: variant.enemy.art, area: element.dungeon,
+          element: element.id, dungeonElement: element.id, stages: [stage] });
+      }
     }
   }
   for (const definition of [...infusionModes, ...currencyModes, ...eventModes, ...machineModes]) {
@@ -55,7 +67,16 @@ export interface CreatureLoot { id: string; minimum: number; maximum: number; ch
 export function creatureLoot(creature: Creature, stage?: number): CreatureLoot[] {
   getCreature(creature.id);
   if (creature.stages.length && (stage === undefined || !creature.stages.includes(stage))) throw new Error('Choose a stage where this creature appears.');
-  if (!creature.stages.length && stage !== undefined && (!Number.isInteger(stage) || stage < 1 || stage > 120)) throw new Error('Choose an Adventure enemy level from 1 to 120.');
+  if (creature.story && stage !== undefined) {
+    const loot: CreatureLoot[] = storyLoot(stage);
+    if (storyEncounter(stage).boss) {
+      const bonus = storyBossBonus(stage);
+      loot.push({ id: 'fractalis', minimum: bonus.fractalis, maximum: bonus.fractalis, chance: 1, note: 'Account first clear only; not a replay drop.' },
+        { id: 'lycalis', minimum: bonus.lycalis, maximum: bonus.lycalis, chance: 1, note: 'Account first clear only; not a replay drop.' });
+    }
+    return loot;
+  }
+  if (!creature.stages.length && stage !== undefined && (!Number.isInteger(stage) || stage < 1 || stage > 120)) throw new Error('Choose a Training enemy level from 1 to 120.');
   const level = creature.dungeonElement && stage !== undefined ? dungeonEncounter(creature.dungeonElement, stage).level
     : creature.mode && stage !== undefined ? infusionEncounter(creature.mode, stage).level : stage ?? 1;
   const loot: CreatureLoot[] = [{ id: 'fractalis', ...(creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level, creature.mode === 'roses' ? 140 : 120)) }];

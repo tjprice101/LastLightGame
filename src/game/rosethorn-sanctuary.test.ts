@@ -256,7 +256,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     expect(glossary).toContain('currencies/lycalis.png');
     expect(glossary).toContain('<strong>30,000</strong>');
     expect(glossary).toContain('<strong>10</strong>');
-    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(108);
+    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(126);
     const html = summonHub(account);
     expect(html.match(/data-banner-entry=/g)).toHaveLength(22);
     const table = html.slice(html.indexOf('<table'), html.indexOf('</table>'));

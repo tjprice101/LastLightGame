@@ -21,7 +21,7 @@ function funded(): Account {
   account.characters.ember = { level: 0, evolution: 1, weaponRank: 3 };
   account.fractalis = 100000;
   account.lycalis = 100;
-  account.materials = { 'infernic-common': 1000, 'heavens-level': 1000, 'luminous-common': 1000 };
+  account.materials = { 'infernic-common': 1000, 'heavens-level': 1000, 'tranquilitic-common': 1000 };
   account.squad = ['ember'];
   account.receipts = ['keep-this-receipt'];
   return account;
@@ -92,10 +92,10 @@ describe('Max Level plans and transactions', () => {
     for (let level = progress.level; level < 120; level++) {
       const cost = capturedLevelCost({ ...original, level });
       expectedCurrency += cost.fractalis;
-      expectedMaterials += cost.materials['luminous-common'];
+      expectedMaterials += cost.materials['tranquilitic-common'];
     }
     expect(plan.targetLevel).toBe(120);
-    expect(plan.cost).toEqual({ fractalis: expectedCurrency, materials: { 'luminous-common': expectedMaterials } });
+    expect(plan.cost).toEqual({ fractalis: expectedCurrency, materials: { 'tranquilitic-common': expectedMaterials } });
     const writes = store.writes();
     const after = levelCharacterToMaximum(store.saved, plan);
     expect(store.writes()).toBe(writes + 1);

@@ -131,7 +131,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
       ...(['heavens', 'abyss', 'treasury', 'sanctuary'] as const).map((mode) =>
         ({ create: () => createInfusionBattle(mode, 1, 1, 'ember', starterProgress, ids, progress, equipment, captures), kind: 'staged' as const })),
     ];
-    expect(factories).toHaveLength(15);
+    expect(factories).toHaveLength(11);
     for (const { create, kind } of factories) {
       const state = create();
       expect(state.allies.map((ally) => ally.id)).toEqual(ids);
@@ -189,7 +189,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(loaded.capturedCharacters).toBeUndefined();
     const draw = summonCharacter(saved, () => 0);
     expect(write).toHaveBeenCalledTimes(1);
-    expect(draw.account).toMatchObject({ version: 3, fractalis: 12345, lycalis: 0, materials: legacy.materials,
+    expect(draw.account).toMatchObject({ version: 4, fractalis: 12345, lycalis: 0, materials: legacy.materials,
       characters: legacy.characters, firstFracture: true, receipts: legacy.receipts,
       creatures: legacy.creatures, squad: legacy.squad, dungeonStages: { infernic: 35 }, infusionStages: { heavens: 35 } });
     expect(draw.copy?.level).toBe(50);

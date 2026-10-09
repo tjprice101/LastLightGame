@@ -104,7 +104,7 @@ describe('playable flagship roster', () => {
     const account = emptyAccount();
     account.characters = { bruno: { level: 0, evolution: 1 }, disciple: { level: 0, evolution: 1 }, elise: { level: 0, evolution: 1 } };
     account.fractalis = 100;
-    account.materials['tectonic-common'] = 2;
+    account.materials['botanic-common'] = 2;
     account.conduits = { 'siegebound-drive': 1 };
     saveAccount(saved, account);
     expect(setSquad(saved, ['disciple', 'bruno', 'elise']).squad).toEqual(['disciple', 'bruno', 'elise']);
@@ -112,11 +112,11 @@ describe('playable flagship roster', () => {
     const cost = characterLevelCost('bruno', { level: 0, evolution: 1 });
     const upgraded = upgradeCharacter(saved, 'bruno', 'level', { level: 0, evolution: 1 });
     expect(upgraded.fractalis).toBe(100 - cost.fractalis);
-    expect(upgraded.materials['tectonic-common']).toBe(2 - cost.materials['tectonic-common']);
+    expect(upgraded.materials['botanic-common']).toBe(2 - cost.materials['botanic-common']);
     expect(upgraded.characters.bruno?.level).toBe(1);
     for (const character of flagshipCharacters) {
       expect(characterEvolutionRequirement(character.id, 4).infusion).toBe(
-        ['tectonic', 'atmospheric'].includes(character.elementId) ? 'heavens' : 'abyss');
+        ['botanic', 'atmospheric'].includes(character.elementId) ? 'heavens' : 'abyss');
     }
     expect(archives(upgraded)).toContain('data-archive-character="bruno"');
   });

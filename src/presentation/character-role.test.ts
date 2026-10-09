@@ -12,6 +12,7 @@ describe('character role medals', () => {
       ['Rosetta', 'Attacker'], ['Thornia', 'Tank'], ['Crinso', 'Attacker'],
       ['Atmoso', 'Attacker'], ['Aurora', 'Support'], ['Bliss', 'Attacker'],
       ['Bruno', 'Tank'], ['Disciple', 'Support'], ['Elise', 'Attacker'], ['Razor', 'Tank'],
+      ['Nerithe', 'Attacker'], ['Orvella', 'Tank'], ['Vaelor', 'Attacker'],
     ]);
   });
 

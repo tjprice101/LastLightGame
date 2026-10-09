@@ -1,7 +1,7 @@
 # Evolution creature infusion (Phase7)
 
 D-100's three [rose event EBs](crimson-roses.md) keep the same1/2/3-copy and
-form3+/4+/5+ gates but require Roselius, regardless of their Luminous/Ominous/
+form3+/4+/5+ gates but require Roselius, regardless of their Tranquilitic/
 Chaotic combat element. Character-aware requirement/cost helpers drive both
 menus and transactions. Existing EBs retain their element's Heaven/Abyss mode.
 Legendary Roselius are capturable at stages22/23 (Lv.117/119); higher-than120
@@ -26,8 +26,11 @@ Captured creatures supplement existing material and Prismatica evolution costs:
 Higher forms qualify; captured level and boss/ordinary origin do not change
 eligibility. Eligible copies must come from the Element-Bearer's infusion mode:
 
-- **Heaven:** Infernic, Aquatic, Tectonic, Efflorescent and Atmospheric.
-- **Abyss:** Voltaic, Luminous, Ominous, Tranquilitic and Chaotic.
+- **Heaven:** Infernic, Oceanic, Atmospheric and Botanic.
+- **Abyss:** Tranquilitic and Chaotic.
+
+D-160 remaps legacy types consistently; former Voltaic characters now use
+Heaven specialty materials/fodder. Existing upgrades are not charged again.
 
 Use the element's existing `infusion` mapping, not the captured creature's combat
 element. Dawnthorn remains Tranquilitic and Wraththorn remains Chaotic; that
@@ -85,7 +88,7 @@ entries, not an already initialized replay/Continue team.
 - `src/presentation/hub.ts`: evolution resources and per-copy selector.
 - `src/main.ts`: selection count, exact-copy confirmation and refreshed screens.
 - `src/character-screen.css`: bounded responsive copy list.
-- `src/game/evolution-fodder.test.ts`: thresholds/all ten mappings, atomic costs,
+- `src/game/evolution-fodder.test.ts`: thresholds/all six mappings, atomic costs,
   protected/stale/unknown/duplicate copies, failure/retry and selection markup.
 
 Reuses existing Heaven/Abyss portrait and rating assets. No new art prompt or

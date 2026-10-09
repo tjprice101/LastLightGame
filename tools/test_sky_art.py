@@ -8,11 +8,12 @@ from PIL import Image
 from prepare_art import ROOT
 from prepare_dungeons import SKY_KEYS, prepare_dungeon_sprite, prepare_sky_cutout
 from review_art import sources
+from art_library import art_path
 
 
 class SkyArtTests(unittest.TestCase):
     def test_provenance_and_deterministic_exports(self):
-        manifest = json.loads((ROOT / "Art" / "sky-bound-rift-intake.json").read_text(encoding="utf-8"))
+        manifest = json.loads((art_path("sky-bound-rift-intake.json", root=ROOT)).read_text(encoding="utf-8"))
         self.assertEqual(manifest["asset_count"], 16)
         self.assertEqual(len(manifest["assets"]), 16)
         self.assertIn("Sky-bound RIft Arena.png", [entry["incoming"] for entry in manifest["assets"]])

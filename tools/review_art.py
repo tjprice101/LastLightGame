@@ -15,6 +15,7 @@ from prepare_infusions import ENEMIES, MATERIALS, has_infusion_color_matte, prep
 from prepare_icons import ICONS
 from prepare_currencies import CURRENCIES, prepare_currency_sprite, current_currency_source
 from matte_regions import BACKGROUND_SEEDS
+from art_library import art_path
 
 
 def sources():
@@ -64,7 +65,7 @@ def main():
     parser.add_argument("--pockets", nargs="+", choices=list(sources()), help="Render numbered source-coordinate candidates for these asset IDs.")
     parser.add_argument("--cleaned", action="store_true", help="Preview reviewed cleanup at full export resolution.")
     parser.add_argument("--assets", nargs="+", choices=list(sources()), help="Limit cleaned exports to these IDs.")
-    parser.add_argument("--record-review", action="store_true", help="Record the completed manual audit in Art/matte-review.json.")
+    parser.add_argument("--record-review", action="store_true", help="Record the completed manual audit in Art/provenance/matte-review.json.")
     parser.add_argument("--input", type=Path, default=ROOT / "public" / "assets", help="Cutouts to display on contact sheets.")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
@@ -94,7 +95,9 @@ def main():
                 **({"foreground_regions": PALE_ART_REGIONS[asset],
                     "foreground_cutouts": PALE_ART_CUTOUTS.get(asset, [])} if not replacement and not cutout and asset in PALE_ART_REGIONS else {}),
             })
-        (ROOT / "Art" / "matte-review.json").write_text(json.dumps({
+        review_path = art_path("matte-review.json", root=ROOT)
+        review_path.parent.mkdir(parents=True, exist_ok=True)
+        review_path.write_text(json.dumps({
             "reviewed": "2026-10-04",
             "method": "Owner-supplied RGBA cutouts take precedence without background removal; legacy originals retain earlier reviewed processing.",
             "assets": entries,

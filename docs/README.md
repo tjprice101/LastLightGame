@@ -5,6 +5,96 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Defense rebalance (D-165):** direct attacks now use attack-relative diminishing
+Defense, not flat subtraction. Early Story/Machines/staged Attack corrected;
+level120/140 endpoints and rewards/RNG preserved.
+[Formula and validation](combat.md#current-defense-balance-d-165).
+
+**Desktop contextual pass (D-166):** actual Back targets, secondary-only Menu,
+Title only in Settings with battle confirmation, menu state retained on Settings
+close, page scrolling instead of nested desktop panels and reduced-motion-aware
+button feedback. [Navigation rules](menus-and-inventory.md#contextual-desktop-navigation-d-166).
+
+**Story and Training (D-164):**150 playable linear stages across six elemental
+regions, Lv1-55, four original ordinary identities plus one regional boss each.
+Common/Uncommon materials only; exact one-time boss bonuses save atomically
+with kills/progression. Existing endless Adventure survives as Training.
+Home opens the world map; Story scenery/30 creatures remain neutral art-pending.
+[Rules, catalog and validation](story-and-training.md).
+
+**Intrinsic character kits (D-163):** owner clarifies buffs/debuffs/stacks belong
+in abilities, not special equipment. Full-roster phased redesign approved;
+Infernis/Tizu/Flora now have intrinsic three-stack setup/payoff loops.
+Remaining roster redesign is pending; Conduit additions are a separate feature.
+[Mechanics, rollout and validation](character-kit-rework.md).
+
+**Phased rework approved (D-160):** safe six-element migration,25 additional
+kit Conduits,150-stage Story/retained Training, dungeon Lv38-120 and desktop UI
+baseline now approved. Physical Art filing implemented first:77 prompt/record
+files relocated, tooling/links updated,1237 source/runtime/provenance files
+verified byte-identical. Six-element migration is now live:36 canonical materials,
+walletv4 read-only legacy migration, retained randomized enemy families and
+dungeonsLv38-120.25 kit-focused Conduits are also live (D-162), for85 total;
+Story/Training is now live (D-164); desktop contextual navigation is implemented (D-166).
+[Approved baseline and phase status](six-element-rework.md) /
+[Organized Art library](../Art/README.md).
+
+**Kit Conduits (D-162):**25 implemented entries (5/8/6/6), fixed modifiers to
+attacks/heals/shields/Burn/Weaken/Gauge/cooldowns with exact triggers and bounds.
+Existing machine tier totals, stage75 Omnic gate and original five Legendary
+banner eligibility remain. All25 icons pending reviewed delivery.
+[Catalog/rules/validation](kit-conduits.md) /
+[25 copy-ready prompts](../Art/conduits/Kit%20Conduits.md).
+
+**Character palette overhaul (D-159):** all16 lines,115 canonical portraits
+and109 character-specific icons/weapons now have individual palette locks and
+unwanted-color negatives; exact portrait references retained at150.
+No installed-image/gameplay changes. Owner reports Rosetta success; other
+generated outputs still need review.
+[Policy/validation](art-workflow.md#character-palette-control-d-159-current-policy).
+
+**Rework intake (D-158):** owner wants reference renderer without borrowed
+colors/design. Three low-weight enemy alternatives are approved for testing,
+not global enemy prompt rollout. D-160 now approves the previously pending
+six-element/Story/UI baseline. [Rework plan](six-element-rework.md) /
+[Art library](../Art/README.md) / [Pilot](../Art/experiments/Enemy%20Style%20Pilot.md).
+
+**Reference-free enemies (D-155):** both reference URL and weight flags removed
+from all129 enemy prompts across18 packs. Written designs/framing and installed
+art unchanged; character references retained.
+[Current policy](art-workflow.md#reference-free-enemies-d-155-current-policy).
+
+**Machine prompt pilot (D-154):** six enemies receive stronger whole-design
+clearance (at most70% footprint/at least15% margins) and lower100 style weight
+with authored-palette priority. Other portraits unchanged; generated-image
+validation pending. [Workflow](art-workflow.md#machine-enemy-framingpalette-pilot-d-154).
+
+**Six-form enemy references (D-153):**36 portrait prompts across six packs
+now use distinct owner-provided Evo.1-6 URLs at400. Character/other enemy
+references, non-portrait art, written designs and installed images unchanged.
+[Scope and validation](art-workflow.md#six-form-enemy-style-references-d-153).
+
+**Phased expansion (D-151/D-157):**35 new Conduits (5 Common,
+10 Rare,10 Legendary,10 Omnic, one new Omnic per element), machine acquisition
+rules, four bounded kit pilots and actual debuff labels beside enemy HP.
+Common additions are Store-only/usefulness-priced; Rare8%/Legendary3.5%/
+Omnic1% tier totals stay fixed and new Legendary entries stay out of banners.
+Steel sword sweep/shield and white/black coin prompts are ready; installed
+art remains until revised replacements arrive. Runtime batch completion and
+exact validation live in the handoff, not a promise made by the prompt packs.
+[Phases/catalog](conduit-expansion-plan.md) /
+[Universal Action Icons](../Art/ui/Universal%20Action%20Icons.md) /
+[Status Icons](../Art/ui/Battle%20Status%20Icons.md) /
+[35 Conduit Icons](../Art/conduits/Conduit%20Expansion.md) /
+[Currency Coins](../Art/items/Currencies.md).
+
+**Portrait pocket cleanup (D-150):** reviewed all78 character forms; installed
+13 individually corrected portraits with78 explicit gap seeds, two bounded
+local hair-gap regions and source-specific edge cleanup. No global deletion.
+Originals/pre-correction exports and processing history retained; shared URL
+revisions refresh color portraits and locked silhouettes.
+[Workflow and validation](art-workflow.md#individually-reviewed-portrait-pockets-d-150).
+
 **Starter portraits (D-149):** all18 replacement forms for Infernis, Tizu and
 Flora are installed. New originals/previous exports preserved, backgrounds
 cleaned offline per source, shared facing/cache identity updated; locked
@@ -30,13 +120,14 @@ formula dumps and nonfunctional skill-upgrade cards removed from menus.
 Decision-critical data stays visible; detailed rules remain in Help/Information.
 [Scope and validation](menus-and-inventory.md#primary-screen-copy-cleanup-d-146).
 
-**Elemental War (D-145): design only, not playable.** Owner-approved activity
-family has10 stages Lv.90-140 per challenger, six evolution forms, final-boss
-1% base-form recruitment, Prismatica and independently chance-based
-Null-Prismatica only. Owned-result currency conversion and activity-only banners
-confirmed. Three proposed original Element-Bearers and46 copy-ready art prompts;
-names/kits/ratings/payout amounts/mapping await approval.
-[Specification](elemental-war.md) / [art packs](../Art/Elemental%20War.md).
+**Elemental War (D-152/D-156): all three challengers playable.** Approved6-star
+Nerithe/Orvella/Vaelor have supplied six-form art and16 action/ability icons; three free
+ten-stage trials run Lv.90-140, with final-only1% base-form recruitment or
+100 Null-Prismatica duplicate conversion. Independent currencies, unlocks and
+receipt save atomically. Existing squad/gear/Gauge/progression and summon pools
+are preserved. All three headers/arenas are installed; family header, standalone
+weapons and Nerithe Normal Attack/Defense icons remain pending.
+[Specification](elemental-war.md) / [art packs](../Art/ui/Elemental%20War.md).
 
 **Connected Sanctuary (D-144):** the supplied reference now drives the real
 four-item Home/Team/Summon/Play dock, combined Team management, portrait/banner
@@ -64,7 +155,7 @@ a static prismatic finish. Accessible exact levels and mechanics unchanged.
 **Component art (D-137):** Broken Mechanical Components supplied icon is
 installed across Inventory/upgrades/showcases/loot/results. Original preserved,
 teal background removed offline and source/runtime hashes recorded.
-[Intake and validation](../Art/Broken%20Mechanical%20Components.md#supplied-artwork-intake-d-137).
+[Intake and validation](../Art/items/Broken%20Mechanical%20Components.md#supplied-artwork-intake-d-137).
 
 **Conduit costs (D-136):** [upgrade costs](conduit-upgrades.md) now scale by rarity:
 Common1x, Rare2x, Legendary4x, Omnic200x after D-139. Shared pricing covers menus/confirmations/
@@ -75,7 +166,7 @@ strong explicit complete-design containment and continuous visible margins
 on every side/corner. Pull back composition, never simplify the art or reduce
 its powers/detail. Containment overrides historical near-edge targets for
 future prompts; existing blocks/assets and full-bleed scenery are unchanged.
-[Framing contract](../Art/cutout-background-contract.md#complete-silhouettes-and-edge-clearance-d-135) /
+[Framing contract](../Art/guides/cutout-background-contract.md#complete-silhouettes-and-edge-clearance-d-135) /
 [review workflow](art-workflow.md#future-edge-safe-composition-without-lost-detail-d-135).
 
 **Current character art (D-134):**60 replacement portraits installed for all
@@ -84,19 +175,19 @@ new facing and shared runtime IDs serve every existing portrait surface.
 New originals and previous exports preserved; root copies relocated only after
 hash verification. Starters and other asset types unchanged.
 [Workflow and validation](art-workflow.md#replacement-character-portraits-d-134) /
-[provenance](../Art/character-refresh-intake.json).
+[provenance](../Art/provenance/character-refresh-intake.json).
 
 **Currency names (D-133):** main **Prismatica**, premium **Null-Prismatica**
 across visible UI/errors/accessibility/rewards/docs. Legacy keys/filenames,
 balances and economics unchanged. New bright/dark prism prompts use Evo.3;
 both supplied crystal replacements are now installed/reviewed (D-142).
 [Economy compatibility](summoning-and-economy.md#currency-names-and-legacy-compatibility-d-133) /
-[art prompts](../Art/Currencies.md).
+[art prompts](../Art/items/Currencies.md).
 
 **Enemy references (D-132):**129 enemy prompts include owner-supplied mapped
 style suffixes; all226 character/enemy full-body blocks explicitly prohibit
 edge contact. No enemy design/background/runtime changes.
-[Mapping](../Art/midjourney-character-style-prompt.md#character-form-style-references) /
+[Mapping](../Art/guides/midjourney-character-style-prompt.md#character-form-style-references) /
 [workflow](art-workflow.md#enemy-style-references-and-edge-containment-d-132).
 
 **Portrait prompts (D-131):** all78 canonical Element-Bearer evolution prompts
@@ -104,19 +195,19 @@ now share Bliss/Rose-banner construction, progressive ensemble spread and
 dense power-first finales around unchanged compact anatomy. Nine late-form
 guide examples also align. Supplied artwork/gameplay and other prompt types
 are unchanged; generated output still requires visual review.
-[Contract](../Art/midjourney-character-style-prompt.md#portrait-quality-standard-d-131) /
+[Contract](../Art/guides/midjourney-character-style-prompt.md#portrait-quality-standard-d-131) /
 [workflow](art-workflow.md#character-portrait-quality-d-131).
 
 **Conduit upgrades (D-130):** [five-step account-wide restoration](conduit-upgrades.md)
 uses new Broken Mechanical Components from stage-scaled machine drops. Stat
 modifiers and penalties end at3.5x; Omnic mechanics unchanged. Menu, icon levels,
-atomic saves and run snapshots are integrated. [Currency prompt](../Art/Broken%20Mechanical%20Components.md)
+atomic saves and run snapshots are integrated. [Currency prompt](../Art/items/Broken%20Mechanical%20Components.md)
 is ready; runtime honestly marks its artwork pending.
 
 **Character prompts (D-129):**97 character-form/template blocks now include
 exact owner-supplied evolution-specific `--sref`/`--sw 400` suffixes.
 Other prompt types and supplied/runtime art are unchanged.
-[Mapping and validation](../Art/midjourney-character-style-prompt.md#character-form-style-references) /
+[Mapping and validation](../Art/guides/midjourney-character-style-prompt.md#character-form-style-references) /
 [workflow](art-workflow.md#character-form-style-references-d-129).
 
 **Current art (D-128):** all28 supplied Awaken the Machines images installed:
@@ -124,7 +215,7 @@ Other prompt types and supplied/runtime art are unchanged.
 Originals archived with reviewed keys/facing and reproducible hashes.
 [Contract](awaken-the-machines.md#art-menus-and-integration) /
 [workflow](art-workflow.md#machine-expansion-art-d-124d-128) /
-[provenance](../Art/machines-art-intake.json).
+[provenance](../Art/provenance/machines-art-intake.json).
 
 **Completed UI (D-127):** game-wide visible separators use spaced ` ~ `; joined
 words/numbers corrected, including "35 stages ~ Enemy levels 80-140".
@@ -142,7 +233,7 @@ directly. [Contract](menus-and-inventory.md#current-navigation-and-presentation-
 / [handoff](handoff.md#current-task-home-special-banner-promotion-d-125).
 
 **Completed (D-124):** [Awaken the Machines](awaken-the-machines.md), expanded
-Conduits and [28 art prompts](../Art/Awaken%20the%20Machines.md). Now100 stages (D-139),
+Conduits and [28 art prompts](../Art/creatures/Awaken%20the%20Machines.md). Now100 stages (D-139),
 five Rare/five Legendary/ten element-matched Omnic items, real combat mechanics,
 independent enemy loot and atomic Legendary banner bonuses. Supplied art installed
 under D-128.
@@ -159,7 +250,7 @@ all seven flagships are playable through approved Standard tiers.
 See [flagship specification and validation](flagship-characters.md),
 [phase handoff](handoff.md#current-task-phased-supplied-rosterevent-art-intake-d-121),
 [intake workflow](art-workflow.md#phased-rosterevent-delivery-d-121) and
-[Roses provenance](../Art/roses-art-intake.json). All eight phases now cover135
+[Roses provenance](../Art/provenance/roses-art-intake.json). All eight phases now cover135
 assets; the handoff records final validation and the existing prompt-test caveat.
 
 - **Confirmed:** explicitly requested by the owner or present in existing source material.
@@ -183,7 +274,7 @@ Phase11 verifies cross-system economy and save behavior and run snapshots across
 all15 activity destinations. Phase12 completes integration of36 owner-supplied
 root images:27 keyed RGB cutouts/icons and nine scenery images copied unchanged.
 See the [roadmap](roadmap.md), [art workflow](art-workflow.md),
-[intake manifest](../Art/root-art-intake.json) and [handoff](handoff.md) for
+[intake manifest](../Art/provenance/root-art-intake.json) and [handoff](handoff.md) for
 provenance, registration and validation.
 The owner-approved sanctuary revision separates Inventory holdings, Stores and
 Collections, adds selectable Character categories and uses consistent sans-serif
@@ -328,38 +419,38 @@ See [character naming](units-and-progression.md#global-character-display-names-d
 | [Handoff](handoff.md) | Current workspace state, next action, contributor handoff |
 
 Also see the root [AI instructions](../AGENTS.md) and the existing
-[art prompt guide](../Art/midjourney-character-style-prompt.md).
-The [Archive banner prompts](../Art/Archives.md) and
-[element medallions](../Art/Element%20Emblems.md) cover Phase4 galleries and
+[art prompt guide](../Art/guides/midjourney-character-style-prompt.md).
+The [Archive banner prompts](../Art/ui/Archives.md) and
+[element medallions](../Art/ui/Element%20Emblems.md) cover Phase4 galleries and
 all ten canonical elements; supplied images are registered and tracked in the
-[root art manifest](../Art/root-art-intake.json).
-The [Starter Art prompts](../Art/Starter%20Art.md) cover the new base-form trio
+[root art manifest](../Art/provenance/root-art-intake.json).
+The [Starter Art prompts](../Art/characters/Starter%20Art.md) cover the new base-form trio
 and three basic mythological enemies in the same style.
-The [flagship manifest](../Art/Flagship%20Characters.md) links the seven other
-elements' new packs: [Bruno](../Art/Bruno%20Art.md),
-[Elise](../Art/Elise%20Art.md), [Aurora](../Art/Aurora%20Art.md),
-[Atmoso](../Art/Atmoso%20Art.md), [Razor](../Art/Razor%20Art.md),
-[Bliss](../Art/Bliss%20Art.md) and [Disciple](../Art/Disciple%20Art.md).
+The [flagship manifest](../Art/characters/Flagship%20Characters.md) links the seven other
+elements' new packs: [Bruno](../Art/characters/Bruno%20Art.md),
+[Elise](../Art/characters/Elise%20Art.md), [Aurora](../Art/characters/Aurora%20Art.md),
+[Atmoso](../Art/characters/Atmoso%20Art.md), [Razor](../Art/characters/Razor%20Art.md),
+[Bliss](../Art/characters/Bliss%20Art.md) and [Disciple](../Art/characters/Disciple%20Art.md).
 Each has six forms, six ability/action icons and one weapon/focus prompt.
 All finish fully prismatic-armored; four6-star lines have exceptional final
 silhouettes. These91 prompts do not add live characters or change banner odds.
-The [Battle Scenery prompt](../Art/Battle%20Scenery.md) covers a cutesy grassy
+The [Battle Scenery prompt](../Art/ui/Battle%20Scenery.md) covers a cutesy grassy
 field for the intended solo opening battle.
-The [Flaming Depths prompts](../Art/Flaming%20Depths.md) cover ten dungeon enemies
+The [Flaming Depths prompts](../Art/creatures/Flaming%20Depths.md) cover ten dungeon enemies
 in ascending visual power, from a soot sprite to a flame sovereign.
-The [Infernis Art prompts](../Art/Infernis%20Art.md) include five new greatsword
+The [Infernis Art prompts](../Art/characters/Infernis%20Art.md) include five new greatsword
 evolution stages with increasingly chromatic heavenly flames and ornate armor,
 plus 1:1 ability icons (Heavy is archived).
-The [Tizu Art prompts](../Art/Tizu%20Art.md) and
-[Flora Art prompts](../Art/Flora%20Art.md) provide five new stages each:
+The [Tizu Art prompts](../Art/characters/Tizu%20Art.md) and
+[Flora Art prompts](../Art/characters/Flora%20Art.md) provide five new stages each:
 celestial tidal spear armor and angelic leaf-wing bow regalia. Both files also
 include six 1:1 ability/action icon prompts: Passive, Skill1, Skill2, Last Flare,
 Normal and Defense. Those icons have not been generated or supplied yet.
 All 15 evolved portraits are supplied and integrated into six gameplay forms,
 with caps 30 / 45 / 60 / 75 / 90 / 105. See D-033.
-The [Flaming Depths Scenery prompts](../Art/Flaming%20Depths%20Scenery.md) cover
+The [Flaming Depths Scenery prompts](../Art/ui/Flaming%20Depths%20Scenery.md) cover
 a 3:1 selection banner and 16:9 battle background with destination-specific framing.
-The [elemental dungeon art packs](../Art/dungeons/README.md) provide a separate
+The [elemental dungeon art packs](../Art/creatures/dungeons/README.md) provide a separate
 file for each of the ten dungeons: eight ascending-power monsters, six material
 icons from Seed to Soul of its element, a 3:1 banner and a 16:9 arena background.
 Suggested encounter bands and drop pools are art proposals, not implemented rules.

@@ -33,8 +33,8 @@ describe('Defense action and Heavy removal', () => {
     state.allies[0].shield = 20;
     const normal = endTurn(state);
     const defended = endTurn(act(state, 'ember', 'defend', '').state);
-    expect(normal.events.filter((e) => e.kind === 'damage').map((e) => e.amount)).toEqual([80, 100, 100]);
-    expect(defended.events.filter((e) => e.kind === 'damage').map((e) => e.amount)).toEqual([70, 90, 90]);
+    expect(normal.events.filter((e) => e.kind === 'damage').map((e) => e.amount)).toEqual([81, 101, 101]);
+    expect(defended.events.filter((e) => e.kind === 'damage').map((e) => e.amount)).toEqual([71, 91, 91]);
     expect(defended.state.allies[0].shatter).toBe(30);
     expect(defended.state.allies[0].defending).toBe(false);
     expect(defended.state.allies[0].spent).toBe(false);

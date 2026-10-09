@@ -19,7 +19,7 @@ describe('shared battle chrome', () => {
       progress: { tide: progress, sprout: { level: 10, evolution: 1 }, ember: progress } });
     const html = markup(session);
     expect(html).toContain('allies squad');
-    expect(html).toContain('SQUAD ADVENTURE');
+    expect(html).toContain('SQUAD TRAINING');
     for (const id of ['tide', 'sprout', 'ember']) expect(html).toContain(`data-actor="${id}"`);
     session.state.allies.find((ally) => ally.id === 'ember')!.spent = true;
     expect(markup(session)).toContain('data-actor="tide" aria-pressed="true"');
@@ -41,10 +41,10 @@ describe('shared battle chrome', () => {
       expect(html).not.toContain('Lv. null');
     }
   });
-  it('gives Adventure a themed heading and progress panel without changing field controls', () => {
+  it('gives Training a themed heading and progress panel without changing field controls', () => {
     const html = markup(createSession('ember', progress));
     expect(html).toContain('class="battle-heading"');
-    expect(html).toContain('SOLO ADVENTURE');
+    expect(html).toContain('SOLO TRAINING');
     expect(html).toContain('class="battle-progress"');
     expect(html).toContain('Wave 1');
     expect(html).toContain('id="end-battle-turn"');
@@ -59,6 +59,21 @@ describe('shared battle chrome', () => {
     expect(html).toContain('aria-labelledby="battle-menu-heading"');
     expect(html).toContain('Pass remaining actions');
     expect(html).toContain('class="battle-unit-intel"');
+  });
+  it('shows Story stage 150, neutral pending art, regional narrative and final-stage controls', () => {
+    const session = createSession('ember', progress, { storyStage: 150 });
+    let html = markup(session);
+    expect(html).toContain('STORY CAMPAIGN');
+    expect(html).toContain('Stage 150 ~ 150');
+    expect(html).toContain('Riftbound Frontier');
+    expect(html).toContain('pending-dungeon-scenery');
+    expect(html).toContain('pending-enemy-art');
+    expect(html).not.toContain('backgrounds/grassy-field');
+    expect(html).toContain('Six regions in a fixed order');
+    session.state.phase = 'cleared';
+    html = markup(session);
+    expect(html).not.toContain('data-result-continue');
+    expect(html).toContain('All 150 stages cleared');
   });
   it.each(playableDungeons)('uses the same heading and readout structure in %s', (element) => {
     const html = markup(createSession('ember', progress, { element, stage: 5 }));

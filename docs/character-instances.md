@@ -23,7 +23,9 @@ material sales and the special banner's Omnic Lv.80 duplicate reward.
 
 ## Persistence and compatibility
 
-Walletv3 adds optional `capturedCharacters` and `characterLocks` fields.
+Walletv4 retains optional `capturedCharacters` and `characterLocks` fields.
+Legacyv3 data normalizes read-only through the six-element migration; UUIDs,
+creature IDs, levels, skills, locks and equipped Conduits stay intact.
 Legacy starter IDs remain stable instance identifiers in existing character
 progress/squad/equipment records. No destructive rekeying or profile rewrite is
 needed. Old accounts load without writes and without fabricated captures/locks.

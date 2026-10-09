@@ -1,4 +1,4 @@
-import { conduits, getConduit, conduitEffect, validateConduitUpgradeLevel, type ConduitId } from '../content/conduits';
+import { conduits, getConduit, conduitEffect, validateConduitUpgradeLevel, type ConduitId, type ConduitSlots } from '../content/conduits';
 import { type Account } from '../game/account';
 import { currencyIcon } from './currency-icon';
 import { assetUrl } from './portrait';
@@ -15,6 +15,17 @@ export function conduitIcon(id: ConduitId, level = 0): string {
 export function conduitRarity(id: ConduitId): string {
   const rarity = getConduit(id).rarity;
   return `<span class="rarity-badge conduit-rarity conduit-${rarity.toLowerCase()}">${rarity}</span>`;
+}
+export function kitConduitRules(equipment?: ConduitSlots): string {
+  const rules = (equipment ?? []).flatMap((id) => {
+    if (id === null) return [];
+    const conduit = getConduit(id);
+    return 'kitEffects' in conduit
+      ? [`<li><strong>${conduit.name}:</strong> ${conduit.effect.slice(conduit.effect.indexOf('. ') + 2)}</li>`] : [];
+  });
+  return rules.length ? `<section class="equipped-kit-rules"><h3>Equipped kit rules</h3>
+    <p>Ability descriptions show the authored base kit. These equipped rules apply during combat; account upgrades scale stats, not these rules.</p>
+    <ul>${rules.join('')}</ul></section>` : '';
 }
 export function conduitInventory(account: Account | null): string {
   return `<section class="inventory-section"><div class="conduit-section-heading"><h2>Conduits</h2></div>

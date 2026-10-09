@@ -1,5 +1,5 @@
 import { actionUnavailable, type BattleState, type Combatant } from '../game/battle';
-import { shatterGauge, type ActionId } from '../content/combat';
+import { shatterGauge, basicActionName, type ActionId } from '../content/combat';
 import { abilityIcon } from './ability-icon';
 import { isStarterId } from '../content/starters';
 
@@ -32,6 +32,6 @@ export function updateGestureGuide(guide: HTMLElement, state: BattleState, actor
   });
   const status = guide.querySelector('.gesture-status');
   if (!status) throw new Error('Gesture status is missing.');
-  const name = action === null ? 'Choose a direction' : action === 'light' ? 'Normal Attack' : actor.kit.abilities[action].name;
+  const name = action === null ? 'Choose a direction' : action === 'light' ? basicActionName(actor.definitionId, action) : actor.kit.abilities[action].name;
   status.textContent = `${name} ~ ${action ? actionUnavailable(state, actor, action) ?? 'Release to use' : 'Release near center to cancel'}`;
 }

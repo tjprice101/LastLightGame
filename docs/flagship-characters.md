@@ -6,7 +6,7 @@ All42 portraits for these seven lines now use the new owner delivery, with
 reviewed background removal and per-form facing. Canonical runtime IDs still
 serve all menus, archives, showcases, battle and cut-ins. Original D-121 sources
 and previous exports remain preserved; new originals/hashes/settings live in
-[replacement provenance](../Art/character-refresh-intake.json).
+[replacement provenance](../Art/provenance/character-refresh-intake.json).
 [Workflow and tests](art-workflow.md#replacement-character-portraits-d-134)
 cover regeneration and transparent margins. Owner confirms the unnamed
 hammer-wielder image is Bruno's base. No gameplay/ownership/save changes.

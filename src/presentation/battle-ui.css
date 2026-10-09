@@ -98,6 +98,11 @@
 .battle-screen .settings-drawer { width: min(480px, 100%); padding: 24px; border-left: 1px solid #ffffff35; border-radius: 18px 0 0 18px; background: #151518; color: #f5f5f5; box-shadow: -12px 0 48px #0006; text-shadow: none; }
 .battle-screen .settings-drawer::backdrop { background: #08080cbf; }
 .settings-close { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.battle-screen #battle-root .battle-debuffs { display: flex; flex-wrap: wrap; gap: 4px; min-width: 0; grid-column: 1 / -1; }
+.battle-screen #battle-root .battle-debuffs:empty { display: none; }
+.battle-screen #battle-root .battle-status-badge { display: inline-block; min-width: 0; max-width: 100%; padding: 3px 5px; border: 1px solid #ffffff45; border-radius: 4px; background: #111e; color: #f5f5f5; font: 10px/1.4 "Segoe UI", sans-serif; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; text-align: left; }
+.battle-screen #battle-root .battle-status-badge[data-debuff="burn"] { border-left: 3px solid #df7356; }
+.battle-screen #battle-root .battle-status-badge[data-debuff="weaken"] { border-left: 3px solid #aeb7c5; }
 .battle-screen .settings-close { min-height: 44px; padding: 10px 14px; border: 1px solid #ffffff35; border-radius: 10px; text-decoration: none; background: #222226; color: #fff; margin-bottom: 12px; }
 .battle-screen .settings-drawer h2 { margin: 16px 0 8px; font-size: 26px; color: #f5f5f5; }
 .battle-screen .settings-drawer .subtitle { color: #bbbcc6; font-size: 13px; }

@@ -43,7 +43,7 @@ describe('persistent progression transactions', () => {
     const saved = storage();
     const legacy = {
       ...emptyAccount(), version: 2, fractalis: 123456, lycalis: 300, firstFracture: true,
-      materials: { 'voltaic-common': 456, 'abyss-level': 12 },
+      materials: { 'atmospheric-common': 456, 'abyss-level': 12 },
       characters: { ember: { level: 90, evolution: 5, weaponRank: 3 } },
       dungeonStages: { infernic: 1, aquatic: 23, voltaic: 45, tranquilitic: 50 },
       infusionStages: { heavens: 13, abyss: 25 },
@@ -52,8 +52,8 @@ describe('persistent progression transactions', () => {
     const raw = JSON.stringify(legacy);
     saved.setItem(ACCOUNT_KEY, raw);
     const migrated = loadAccount(saved);
-    expect(migrated.version).toBe(3);
-    expect(migrated.dungeonStages).toEqual({ infernic: 1, aquatic: 18, voltaic: 35, tranquilitic: 35 });
+    expect(migrated.version).toBe(4);
+    expect(migrated.dungeonStages).toEqual({ infernic: 1, oceanic: 12, atmospheric: 35, tranquilitic: 35 });
     expect(migrated.infusionStages).toEqual({ heavens: 18, abyss: 35 });
     for (const field of ['fractalis', 'lycalis', 'firstFracture', 'materials', 'characters', 'creatures', 'receipts'] as const) {
       expect(migrated[field]).toEqual(legacy[field]);
@@ -61,7 +61,7 @@ describe('persistent progression transactions', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     saveAccount(saved, migrated);
     expect(loadAccount(saved)).toEqual(migrated);
-    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(3);
+    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(4);
     expect(validateAccount({ ...legacy, infusionStages: { heavens: 1 } }).infusionStages).toEqual({ heavens: 1 });
   });
   it('rejects invalid legacy and current floors without overwriting the save', () => {
@@ -201,16 +201,18 @@ describe('dungeon reward commits', () => {
     state.allies[0].shatter = 100;
     const result = act(state, 'ember', 'ultimate', state.enemies[0].id);
     const first = saveAccountRewards(saved, result, 'run-1');
-    expect(first.materials['infernic-common']).toBe(2);
+    const common = result.events.filter((event) => event.kind === 'reward')
+      .reduce((total, event) => total + (event.materials?.['infernic-common'] ?? 0), 0);
+    expect(first.materials['infernic-common']).toBe(common);
     expect(first.fractalis).toBeGreaterThanOrEqual(10);
     expect(unlockedStage(first, 'infernic')).toBe(2);
     expect(saveAccountRewards(saved, result, 'run-1')).toEqual(first);
-    expect(saveAccountRewards(saved, result, 'run-2').materials['infernic-common']).toBe(4);
-    expect(saveAccountRewards(saved, endTurn(createDungeonBattle('infernic', 1, 2, 'ember', { level: 0, evolution: 1 })), 'run-3').materials['infernic-common']).toBe(4);
+    expect(saveAccountRewards(saved, result, 'run-2').materials['infernic-common']).toBe(common * 2);
+    expect(saveAccountRewards(saved, endTurn(createDungeonBattle('infernic', 1, 2, 'ember', { level: 0, evolution: 1 })), 'run-3').materials['infernic-common']).toBe(common * 2);
   });
   it('leaves the battle uncommitted when storage fails, and permits the same reward to retry once', () => {
     const saved = storage();
-    const state = createDungeonBattle('aquatic', 35, 2, 'tide', { level: 90, evolution: 5 });
+    const state = createDungeonBattle('oceanic', 35, 2, 'tide', { level: 90, evolution: 5 });
     state.enemies[0].hp = 1;
     const result = act(state, 'tide', 'light', state.enemies[0].id);
     const write = saved.setItem;
@@ -219,9 +221,9 @@ describe('dungeon reward commits', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBeNull();
     saved.setItem = write;
     const account = saveAccountRewards(saved, result, 'run');
-    expect(account.materials['aquatic-common']).toBe(result.events.filter((event) => event.kind === 'reward')
-      .reduce((total, event) => total + (event.materials?.['aquatic-common'] ?? 0), 0));
-    expect(account.dungeonStages.aquatic).toBe(35);
+    expect(account.materials['oceanic-common']).toBe(result.events.filter((event) => event.kind === 'reward')
+      .reduce((total, event) => total + (event.materials?.['oceanic-common'] ?? 0), 0));
+    expect(account.dungeonStages.oceanic).toBe(35);
     expect(saveAccountRewards(saved, result, 'run')).toEqual(account);
   });
 });

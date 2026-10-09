@@ -1,5 +1,15 @@
 # Summoning and economy
 
+## Story regional first-clear income (D-164)
+
+The approved [six-region campaign](story-and-training.md) adds one account-wide
+boss-clear bonus per region: Prismatica1,000/1,150/1,323/1,521/1,749/2,011 and
+Null-Prismatica50/58/66/76/87/101. Each saves atomically with ordinary boss loot,
+discovery, receipt and progress. Replays pay no premium bonus; no random Story
+premium drop or additional clear grant exists. First Fracture/other income,
+banner prices/odds/pity remain unchanged. Older no-Adventure-premium wording
+below refers to the retained endless Training, not this new campaign.
+
 ## Animated saved summon reveal (D-148)
 
 Paid draws use an in-game confirmation, never a browser/OS message box.
@@ -27,7 +37,7 @@ Historical source originals/provenance are not renamed or repainted.
 
 Owner chose bright faceted prism and dark obsidian/violet counterpart prompts,
 now without `--sref` or `--sw` under D-147, superseding the Evo.3 exception. See
-[replacement currency prompts and intake](../Art/Currencies.md). D-142 installs
+[replacement currency prompts and intake](../Art/items/Currencies.md). D-142 installs
 both supplied crystal icons with reviewed offline cleanup, original/previous
 exports preserved and content-versioned shared URLs. Economy/save fields unchanged.
 
@@ -105,7 +115,7 @@ Exact curve/prices are developer tuning under owner-delegated balance.
 
 ### Implemented flagship direction (D-094/D-121/D-122)
 
-Bruno (Tectonic Tank), Elise (Voltaic DPS) and Atmoso (Atmospheric DPS) are
+Bruno (Botanic Tank), Elise (Atmospheric DPS) and Atmoso (Atmospheric DPS) are
 owner-approved5-star Standard Banner Element-Bearers.
 Aurora/Razor/Bliss/Disciple are approved6-star Standard identities.
 All seven now have actual six-form content, supplied artwork and playable kits.
@@ -147,8 +157,8 @@ All summoning banners use **16:9 full-bleed Omnic-tier artpieces** reflecting
 their overall identity, not individual reward portraits. Art direction does not
 change acquisition rarity or odds. The supplied Standard artwork is registered
 at `banners/summon-standard.png`; its original and provenance are recorded in
-[root-art-intake.json](../Art/root-art-intake.json). See
-[copy-ready art prompt/intake](../Art/Summoning%20Banners.md).
+[root-art-intake.json](../Art/provenance/root-art-intake.json). See
+[copy-ready art prompt/intake](../Art/ui/Summoning%20Banners.md).
 
 The drop-rate table has only **Name / Rarity and stars / Rate**, one row per
 actual outcome. No unit art, roles, stats, lore, decorative rating medallions
@@ -232,7 +242,7 @@ since the last qualifying result:
 
 [Resolver](../src/content/standard-banner.ts) implements exact selection and
 counter transitions as a pure function, without grants/spending. Optional
-walletv3 `bannerPity.standard` stores `{highestStar,unownedHighestStar}`, each
+walletv4 `bannerPity.standard` stores `{highestStar,unownedHighestStar}`, each
 nonnegative integer below200/500. Missing legacy data reads as zero only for
 display/resolution; no load write or retroactive count. Invalid counters fail
 explicitly. The menu displays current saved progress and rules.
@@ -264,7 +274,10 @@ Dungeon materials and progression costs are documented in
 [gameplay](gameplay-and-elements.md) and [progression](units-and-progression.md).
 **Null-Prismatica** is premium currency; this does not authorize real-money purchases.
 
-The wallet remains `last-light.wallet` version3. Balances must be nonnegative safe
+The wallet is `last-light.wallet` version4. Versions1/2/3 remain readable without
+load writes. Legacy elemental balances/unlocks normalize through the
+[six-element migration](six-element-rework.md#implemented-elemental-migration-contract);
+the next ordinary transaction saves once. Balances must be nonnegative safe
 integers; overflow/corruption/storage failures are explicit errors, never silent
 fallbacks. Loading grants nothing and writes nothing. Existing legacy balances
 and starter IDs remain intact. Local storage is single-tab prototype persistence,

@@ -44,7 +44,7 @@ describe('Shatter Gauge carry within a run', () => {
   it('rejects unfinished/final stages and Adventure through the stage API', () => {
     expect(() => nextStage(staged[0], progress)).toThrow('Clear this stage');
     expect(() => nextStage(createBattle(), progress)).toThrow('Only staged');
-    for (const final of [createDungeonBattle('voltaic', 35, 1, 'ember', progress),
+    for (const final of [createDungeonBattle('atmospheric', 35, 1, 'ember', progress),
       createInfusionBattle('abyss', 35, 1, 'ember', progress)]) {
       final.phase = 'cleared';
       expect(() => nextStage(final, progress)).toThrow('Dungeon complete');

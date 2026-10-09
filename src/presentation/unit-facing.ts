@@ -1,6 +1,12 @@
 type Facing = 'left' | 'right' | 'front';
 
 const sourceFacing: Record<string, Facing> = {
+  nerithe: 'left', 'nerithe-evo-2': 'left', 'nerithe-evo-3': 'left',
+  'nerithe-evo-4': 'left', 'nerithe-evo-5': 'left', 'nerithe-evo-6': 'left',
+  orvella: 'left', 'orvella-evo-2': 'left', 'orvella-evo-3': 'left',
+  'orvella-evo-4': 'left', 'orvella-evo-5': 'left', 'orvella-evo-6': 'left',
+  vaelor: 'left', 'vaelor-evo-2': 'left', 'vaelor-evo-3': 'left',
+  'vaelor-evo-4': 'left', 'vaelor-evo-5': 'left', 'vaelor-evo-6': 'left',
   'fractured-watcher': 'left', 'ashwing-harrier': 'right', 'ivory-kirin': 'left',
   'celestial-leviathan': 'right', 'crowned-phoenix': 'front', 'ouroboros-first-dawn': 'left',
   atmoso: 'front', 'atmoso-evo-2': 'right', 'atmoso-evo-3': 'right',

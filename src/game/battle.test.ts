@@ -17,10 +17,10 @@ function use(state: BattleState, id: string, action: ActionId): BattleState {
 }
 
 describe('Adventure damage and turns', () => {
-  it('uses flat defense, rounding before reduction, 150% crits, and a one-damage floor', () => {
-    expect(damageAmount(38, 1, 5, false)).toBe(33);
-    expect(damageAmount(38, 1.8, 5, false)).toBe(63);
-    expect(damageAmount(38, 1, 5, true)).toBe(52);
+  it('uses attack-relative diminishing Defense, rounds the mitigated hit, and retains 150% crits and a one-damage floor', () => {
+    expect(damageAmount(38, 1, 5, false)).toBe(34);
+    expect(damageAmount(38, 1.8, 5, false)).toBe(60);
+    expect(damageAmount(38, 1, 5, true)).toBe(50);
     expect(damageAmount(1, 1, 500, false)).toBe(1);
     expect(() => damageAmount(-1, 1, 0, false)).toThrow('Invalid damage');
     expect(() => damageAmount(NaN, 1, 0, false)).toThrow('Invalid damage');
@@ -30,7 +30,7 @@ describe('Adventure damage and turns', () => {
     const original = structuredClone(state);
     const result = act(state, 'ember', 'light', state.enemies[0].id);
     expect(state).toEqual(original);
-    expect(result.state.enemies[0].hp).toBe(1967);
+    expect(result.state.enemies[0].hp).toBe(1966);
     expect(() => use(result.state, 'ember', 'skill1')).toThrow('already acted');
     const supported = use(result.state, 'tide', 'skill2');
     expect(() => use(supported, 'tide', 'light')).toThrow('already acted');
@@ -88,7 +88,7 @@ describe('Adventure damage and turns', () => {
     state.allies[0].stats.crit = 1;
     const critical = act(state, 'ember', 'light', state.enemies[0].id);
     expect(critical.events.find((entry) => entry.kind === 'damage')?.critical).toBe(true);
-    expect(critical.state.enemies[0].hp).toBe(1948);
+    expect(critical.state.enemies[0].hp).toBe(1950);
     state.allies[0].stats.crit = 0;
     expect(act(state, 'ember', 'light', state.enemies[0].id).events.find((entry) => entry.kind === 'damage')?.critical).toBe(false);
   });
@@ -124,8 +124,8 @@ describe('Shatter Gauge', () => {
       const factor = 1.03 ** 3;
       expect(state.allies[0].stats.damage).toBeCloseTo(38 * factor);
       expect(state.allies[1].stats.defense).toBeCloseTo(24 * factor ** .7);
-      expect(damageAmount(38.38, 1.01 * 1.6, 5, false)).toBe(57);
-      expect(damageAmount(50, 1, state.allies[0].stats.defense, false)).toBeCloseTo(50 - 10 * factor ** .7);
+      expect(damageAmount(38.38, 1.01 * 1.6, 5, false)).toBe(55);
+      expect(damageAmount(50, 1, state.allies[0].stats.defense, false)).toBe(Math.round(2500 / (50 + 10 * factor ** .7)));
       expect(use(state, 'tide', 'skill2').allies[0].shield).toBeCloseTo(25 * factor);
       state.allies[0].hp = 100;
       expect(use(state, 'sprout', 'skill2').allies[0].hp).toBeCloseTo(100 + 30 * factor);
@@ -331,31 +331,31 @@ describe('starter abilities and passives', () => {
   it('Infernis passive activates at exactly half health, not above', () => {
     const state = controlled();
     state.allies[0].hp = 111;
-    expect(use(state, 'ember', 'light').enemies[0].hp).toBe(1967);
+    expect(use(state, 'ember', 'light').enemies[0].hp).toBe(1966);
     state.allies[0].hp = 110;
-    expect(use(state, 'ember', 'light').enemies[0].hp).toBe(1959);
+    expect(use(state, 'ember', 'light').enemies[0].hp).toBe(1960);
   });
   it('Cinder Cleave burns for exactly two enemy phases', () => {
     let state = use(controlled(), 'ember', 'skill1');
-    expect(state.enemies[0].hp).toBe(1944);
+    expect(state.enemies[0].hp).toBe(1946);
     state = endTurn(state).state;
-    expect(state.enemies[0].hp).toBe(1936);
+    expect(state.enemies[0].hp).toBe(1938);
     expect(state.enemies[0].burn.turns).toBe(1);
     state = endTurn(state).state;
-    expect(state.enemies[0].hp).toBe(1928);
+    expect(state.enemies[0].hp).toBe(1930);
     expect(state.enemies[0].burn.turns).toBe(0);
-    expect(endTurn(state).state.enemies[0].hp).toBe(1928);
+    expect(endTurn(state).state.enemies[0].hp).toBe(1930);
   });
   it('Flame Arc and Dawnfire hit every enemy', () => {
     const state = controlled();
-    expect(use(state, 'ember', 'skill2').enemies.map((unit) => unit.hp)).toEqual([1963, 1961, 1973]);
-    expect(use(state, 'ember', 'ultimate').enemies.map((unit) => unit.hp)).toEqual([1899, 1897, 1909]);
+    expect(use(state, 'ember', 'skill2').enemies.map((unit) => unit.hp)).toEqual([1963, 1961, 1970]);
+    expect(use(state, 'ember', 'ultimate').enemies.map((unit) => unit.hp)).toEqual([1906, 1901, 1924]);
   });
   it('Tizu passive adds eight defense and Undertow weakens two attacks', () => {
     let state = controlled();
     expect(state.allies[1].stats.defense).toBe(fighters.tide.stats.defense + 8);
     state = use(state, 'tide', 'skill1');
-    expect(state.enemies[0].hp).toBe(1960);
+    expect(state.enemies[0].hp).toBe(1961);
     expect(state.enemies[0].weakened).toBe(2);
     state = endTurn(state).state;
     expect(state.enemies[0].weakened).toBe(1);
@@ -368,9 +368,9 @@ describe('starter abilities and passives', () => {
     expect(use(state, 'tide', 'skill2').allies.map((unit) => unit.shield)).toEqual([30, 25, 25]);
     const ultimate = use(state, 'tide', 'ultimate');
     expect(ultimate.allies.map((unit) => unit.shield)).toEqual([35, 35, 35]);
-    expect(ultimate.enemies.map((unit) => unit.hp)).toEqual([1939, 1937, 1949]);
+    expect(ultimate.enemies.map((unit) => unit.hp)).toEqual([1943, 1940, 1956]);
   });
-  it('Undertow applies the 25% attack reduction before defense', () => {
+  it('Undertow reduces outgoing damage by 25% with the same Defense mitigation', () => {
     const state = controlled();
     state.enemies[1].hp = 0;
     state.enemies[2].hp = 0;
@@ -380,7 +380,7 @@ describe('starter abilities and passives', () => {
     expect(hit).toBeDefined();
     const target = state.allies.find((unit) => unit.id === hit?.target);
     expect(target).toBeDefined();
-    expect(hit?.amount).toBe(Math.max(1, 17 - (target?.stats.defense ?? 0)));
+    expect(hit?.amount).toBe(damageAmount(23, .75, target!.stats.defense, false));
   });
   it('shields absorb damage before health', () => {
     const state = controlled();
@@ -403,11 +403,11 @@ describe('starter abilities and passives', () => {
   it('Briar Shot gains exactly 20 percentage points critical chance', () => {
     const state = controlled();
     // Seed 12345 has a first roll above 0.2, so this remains noncritical.
-    expect(use(state, 'sprout', 'skill1').enemies[0].hp).toBe(1957);
+    expect(use(state, 'sprout', 'skill1').enemies[0].hp).toBe(1958);
     state.seed = 1; // First roll is below 0.2: only the skill's bonus can crit.
     const result = act(state, 'sprout', 'skill1', state.enemies[0].id);
     expect(result.events.find((entry) => entry.kind === 'damage')?.critical).toBe(true);
-    expect(result.state.enemies[0].hp).toBe(1933);
+    expect(result.state.enemies[0].hp).toBe(1938);
   });
   it('Renewal and Worldseed heal, respect caps, do not revive, and ultimate damages all', () => {
     const state = controlled();
@@ -417,7 +417,7 @@ describe('starter abilities and passives', () => {
     expect(support.allies.map((unit) => unit.hp)).toEqual([130, 0, 190]);
     const ultimate = use(state, 'sprout', 'ultimate');
     expect(ultimate.allies.map((unit) => unit.hp)).toEqual([155, 0, 190]);
-    expect(ultimate.enemies.map((unit) => unit.hp)).toEqual([1947, 1945, 1957]);
+    expect(ultimate.enemies.map((unit) => unit.hp)).toEqual([1950, 1947, 1961]);
   });
   it.each(starters)('$name has two implemented abilities and a consistently named ultimate', (starter) => {
     expect(fighters[starter.id].abilities.ultimate.name).toMatch(/^Last Flare: .+/);

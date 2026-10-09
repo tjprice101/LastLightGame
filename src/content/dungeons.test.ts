@@ -16,7 +16,7 @@ describe('elemental material dungeons', () => {
   it.each(playableDungeons)('%s defines all 35 stage encounters with explicit art availability and level 10-120 scaling', (element) => {
     for (let stage = 1; stage <= 35; stage++) {
       const encounter = dungeonEncounter(element, stage);
-      expect(encounter.level).toBe(Math.round(10 + (stage - 1) * 110 / 34));
+      expect(encounter.level).toBe(Math.round(38 + (stage - 1) * 82 / 34));
       if (dungeonArt[element]) {
         expect(encounter.enemy.art).toBeDefined();
         expect(existsSync(resolve('public', 'assets', 'enemies', `${encounter.enemy.art}.png`))).toBe(true);
@@ -46,7 +46,7 @@ describe('elemental material dungeons', () => {
       [`${element}-epic`]: 3, [`${element}-legendary`]: 3, [`${element}-omnic`]: 3,
     });
     for (const stage of [1, 35]) {
-      let state = createDungeonBattle(element, stage, 1729, 'ember', stage === 1 ? { level: 0, evolution: 1 } : { level: 105, evolution: 6 });
+      let state = createDungeonBattle(element, stage, 1729, 'ember', stage === 1 ? { level: 38, evolution: 2 } : { level: 105, evolution: 6 });
       for (let turn = 0; state.phase === 'player' && turn < 100; turn++) {
         const actor = state.allies[0];
         const action = (['ultimate', 'skill1', 'light'] as const).find((action) => !actionUnavailable(state, actor, action));
@@ -57,19 +57,19 @@ describe('elemental material dungeons', () => {
     }
   });
   it('guarantees Seeds, gates each higher rarity exactly and checks probability boundaries', () => {
-    expect(materialDrops('infernic', 1, () => 0)).toEqual({ 'infernic-common': 1 });
+    expect(materialDrops('infernic', 1, () => 0)).toEqual({ 'infernic-common': 1, 'infernic-uncommon': 1 });
     expect(materialDrops('infernic', 35, () => 0.99)).toEqual({ 'infernic-common': 6 });
     for (const entry of materialDropTable) {
       const stage = Array.from({ length: 35 }, (_, i) => i + 1).find((value) => elementalEnemyLevel(value) >= entry.level)!;
-      expect(materialDrops('aquatic', stage - 1, () => 0)[`aquatic-${entry.rarity}`]).toBeUndefined();
-      expect(materialDrops('aquatic', stage, () => 0)[`aquatic-${entry.rarity}`]).toBeGreaterThanOrEqual(1);
+      if (stage > 1) expect(materialDrops('oceanic', stage - 1, () => 0)[`oceanic-${entry.rarity}`]).toBeUndefined();
+      expect(materialDrops('oceanic', stage, () => 0)[`oceanic-${entry.rarity}`]).toBeGreaterThanOrEqual(1);
     }
     expect(() => materialDrops('infernic', 6, () => 1)).toThrow();
   });
   it.each(starters)('$name can clear the opening stages at base stats and final stage at max progression', (starter) => {
     if (!isPlayableDungeon(starter.elementId)) throw new Error('Starter dungeon is unavailable.');
     for (const stage of [1, 5, 35]) {
-      const progress = stage === 35 ? { level: 105, evolution: 6 } : { level: 0, evolution: 1 };
+      const progress = stage === 35 ? { level: 105, evolution: 6 } : { level: 45, evolution: 2 };
       let state = createDungeonBattle(starter.elementId, stage, 1729, starter.id, progress);
       let turns = 0;
       while (state.phase === 'player' && turns++ < 100) {

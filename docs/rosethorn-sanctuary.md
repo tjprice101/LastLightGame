@@ -41,7 +41,7 @@ Stable IDs: `infusion:sanctuary:0` through `infusion:sanctuary:5`.
 These are creatures, not Element-Bearers. They never evolve. Enemy and captured
 portraits share one definition. The six supplied portraits,3:1 header and16:9
 arena are registered; RGB source hashes and per-image key settings are recorded
-in [root-art-intake.json](../Art/root-art-intake.json).
+in [root-art-intake.json](../Art/provenance/root-art-intake.json).
 
 ## Captures and saved progression
 
@@ -102,7 +102,7 @@ remain specific, compact and text-only where required.
 - [Standard pool](../src/content/standard-banner.ts).
 - [Atomic account transactions](../src/game/account.ts).
 - [All-floor/economy/presentation regressions](../src/game/rosethorn-sanctuary.test.ts).
-- [Eight copy-ready art prompts and intake](../Art/Rosethorn%20Sanctuary.md).
+- [Eight copy-ready art prompts and intake](../Art/creatures/Rosethorn%20Sanctuary.md).
 
 Tests cover all25 floors,65-120 odds/boundaries, direct/burn kills, independent
 RNG, capture/source validation, write failures/receipts, stage caps/migration,

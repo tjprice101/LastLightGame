@@ -29,20 +29,21 @@ const headings: Record<MenuPage, readonly [string, string]> = {
   team: ['FORMATION AND GROWTH', 'Team'],
   gameplay: ['ACTIVITIES', 'Gameplay'], events: ['EVENTS', 'Events'],
   inventory: ['OWNED ITEMS', 'Inventory'], stores: ['STORES', 'Stores'], collections: ['CATALOGS', 'Collections'], squad: ['FORMATION', 'Squad'],
-  summon: ['SUMMONING', 'Summon'], story: ['A FIRST LIGHT', 'Opening Story'],
-  battle: ['YOUR SQUAD ~ GRASSY FIELD', 'Adventure'],
+  summon: ['SUMMONING', 'Summon'], story: ['SIX BEACONS', 'Story'],
+  battle: ['YOUR SQUAD ~ GRASSY FIELD', 'Training'],
   glossary: ['COLLECTIONS ~ DISCOVERIES', 'Archives'],
   archives: ['COLLECTIONS ~ DISCOVERIES', 'Archives'],
   'conduit-store': ['STORES', 'Conduit Store'],
   'conduit-upgrade': ['RESTORATION', 'Conduit Upgrade'],
 };
 
-export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycalis: number | null = null, canGoBack = page !== 'home'): string {
+export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycalis: number | null = null, canGoBack = page !== 'home', backPage?: MenuPage): string {
   const [eyebrow, title] = headings[sanctuaryDestination(page)];
+  const backTitle = backPage ? headings[sanctuaryDestination(backPage)][1] : undefined;
   return `<header class="sanctuary-header">
     <div class="sanctuary-brand"><span class="brand-mark"><span>L ~ L</span></span>
       <div><strong>Last Light</strong></div>
-      ${canGoBack ? `<button type="button" class="text-button sanctuary-back" data-menu-back>${uiIcon('back')}<span>Back</span></button>` : ''}</div>
+      ${canGoBack ? `<button type="button" class="text-button sanctuary-back" data-menu-back${backTitle ? ` aria-label="Back to ${backTitle}"` : ''}>${uiIcon('back')}<span>Back${backTitle ? `<small>${backTitle}</small>` : ''}</span></button>` : ''}</div>
     <div class="sanctuary-title"><p class="eyebrow">${eyebrow}</p><h1 tabindex="-1">${title}</h1></div>
     <div class="sanctuary-wallet"><div class="currency-strip" aria-label="Currencies">${currencies.map((currency) =>
       `<button type="button" data-page="inventory" aria-label="View ${currency.name} in Inventory">${currencyIcon(currency.id)}<strong><span id="${currency.id}-balance">${(currency.id === 'fractalis' ? fractalis : lycalis) ?? 'Unavailable'}</span><small>${currency.name}</small></strong></button>`).join('')}</div>
@@ -58,14 +59,11 @@ export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycali
         <h3>Conduits</h3>
         <button type="button" data-page="conduit-store" ${page === 'conduit-store' ? 'aria-current="page"' : ''}>${uiIcon('inventory')}<span>Conduit Store<small>Recovered ancient mechanisms</small></span></button>
         <button type="button" data-page="conduit-upgrade" ${page === 'conduit-upgrade' ? 'aria-current="page"' : ''}>${uiIcon('evolution')}<span>Conduit Upgrade<small>Broken Mechanical Components</small></span></button>
-        <h3>Game</h3>        <button type="button" data-page="story" ${page === 'story' ? 'aria-current="page"' : ''}>${uiIcon('story')}<span>Opening Story</span></button>
+        <h3>Game</h3>        <button type="button" data-page="story" ${page === 'story' ? 'aria-current="page"' : ''}>${uiIcon('story')}<span>Story world map</span></button>
         <button id="open-settings" type="button" aria-haspopup="dialog">${uiIcon('settings')}<span>Settings</span></button>
-        <button id="return-title" type="button">${uiIcon('back')}<span>Return to title</span></button>
       </nav><nav class="sanctuary-menu-links" aria-label="Sanctuary destinations">
         ${([
-          ['home', 'Home', 'home'], ['team', 'Team', 'squad'],
-          ['summon', 'Summon', 'summon'],
-          ['gameplay', 'Gameplay', 'gameplay'], ['events', 'Events', 'events'],
+          ['events', 'Events', 'events'],
           ['stores', 'Stores', 'inventory'],
         ] as const).map(([destination, name, icon]) => `<button type="button" data-page="${destination}" ${destination === page ? 'aria-current="page"' : ''}>${uiIcon(icon)}<span>${name}</span></button>`).join('')}
       </nav></div>
@@ -87,6 +85,6 @@ function sanctuaryHelp(page: MenuPage): string {
   if (destination === 'team') return '<p>Manage your saved squad, Element-Bearers and captured creatures.</p><h3>Squad</h3><p>Choose an owned member, assign a slot and save. The first slot is the leader; teams contain one to three distinct owned IDs.</p><h3>Element-Bearers</h3><p>Review stats and skills, level up, evolve and equip Conduits. Growth actions show exact costs and require confirmation.</p><h3>Captured Creatures</h3><p>Each copy has its own level, skills, lock and equipment. Locked, squad-assigned and equipped copies are protected from sales and consumption.</p>';
   if (destination === 'summon') return '<p>Choose a real banner, review its rates and pity, then confirm a single draw. Showcase displays its available high-star Element-Bearers.</p><p>Only successfully saved draws spend currency or advance pity. Each banner keeps its own counters.</p>';
   if (destination === 'gameplay' || destination === 'events') return '<p>Select an activity category and location, choose an unlocked stage and enter with your saved squad. All implemented activities remain playable.</p><p>Rewards save per defeated enemy. Continue is manual; Settings retains the run and quitting ends it. The Information panel contains exact activity rules.</p>';
-  if (destination === 'home') return '<p>Your saved leader is the centerpiece. Select a banner to summon, tap a squad slot to edit your team, or enter Adventure at wave 1.</p><p>The bottom dock opens Home, Team, Summon and Play. The Menu holds Inventory, Collections, Conduits, Events, Settings and Opening Story.</p>';
+  if (destination === 'home') return '<p>Your saved leader is the centerpiece. Select a banner to summon, tap a squad slot to edit your team, or open the Story world map. Play also offers endless Training from wave 1.</p><p>The bottom dock opens Home, Team, Summon and Play. The Menu holds Inventory, Collections, Conduits, Events, Settings and Story.</p>';
   return '<p>Use the visible categories and controls to inspect your actual holdings or discoveries. Exact costs, eligibility and save errors remain visible.</p><p>Menu contains the other destinations. Back returns to the screen and selections you came from; opening panels does not spend or grant resources.</p>';
 }

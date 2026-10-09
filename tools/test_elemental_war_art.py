@@ -1,7 +1,9 @@
 import re
 import unittest
+from character_palette import design_prose
 
 from build_elemental_war_art import ART, ROOT, DESIGNS, RENDERER, CONTAIN, MARGIN, outputs, references
+from art_library import art_path
 
 BLOCK = re.compile(r"```text\n(.*?)\n```", re.S)
 
@@ -15,23 +17,24 @@ class ElementalWarArtTests(unittest.TestCase):
         self.assertEqual([design["gender"] for design in DESIGNS], ["female", "female", "male"])
         self.assertEqual({design["element"] for design in DESIGNS}, {"Aquatic", "Tectonic", "Voltaic"})
         for design in DESIGNS:
-            text = (ART / f"{design['name']} Art.md").read_text(encoding="utf-8")
+            text = (art_path(f"{design['name']} Art.md", root=ROOT)).read_text(encoding="utf-8")
             self.assertEqual(len(BLOCK.findall(text)), 15)
-            self.assertEqual(len(re.findall(r"Proposed asset ID:", text)), 15)
+            self.assertEqual(len(re.findall(r"(?:Proposed|Runtime) asset ID:", text)), 15)
+            self.assertEqual(text.count("Runtime asset ID:"), 12 if design["id"] == "nerithe" else 14)
             for title in design["titles"]:
                 self.assertIn(f"{title}, {design['name']}", text)
             for _, name, _, _ in design["icons"]:
                 self.assertIn(name, text)
-        self.assertEqual(len(BLOCK.findall((ART / "Elemental War.md").read_text())), 1)
+        self.assertEqual(len(BLOCK.findall((art_path("Elemental War.md", root=ROOT)).read_text())), 1)
 
     def test_exact_references_ratios_weights_and_single_flags(self):
         refs = references()
         for design in DESIGNS:
-            blocks = BLOCK.findall((ART / f"{design['name']} Art.md").read_text())
+            blocks = BLOCK.findall((art_path(f"{design['name']} Art.md", root=ROOT)).read_text())
             for index, prompt in enumerate(blocks):
                 ratio = "4:3" if index < 6 else "1:1" if index < 12 else "3:2" if index == 12 else "3:1" if index == 13 else "16:9"
                 if index < 6:
-                    self.assertTrue(prompt.endswith(f"--sref {refs[index + 1]} --sw 400"))
+                    self.assertTrue(prompt.endswith(f"--sref {refs[index + 1]} --sw 150"))
                 else:
                     self.assertNotIn("--sref", prompt)
                     self.assertNotIn("--sw", prompt)
@@ -40,17 +43,17 @@ class ElementalWarArtTests(unittest.TestCase):
                     self.assertEqual(len(re.findall(rf"--{flag}(?=\s)", prompt)), 1)
                 for flag in ("sref", "sw"):
                     self.assertEqual(len(re.findall(rf"--{flag}(?=\s)", prompt)), int(index < 6))
-        banner = BLOCK.findall((ART / "Elemental War.md").read_text())[0]
+        banner = BLOCK.findall((art_path("Elemental War.md", root=ROOT)).read_text())[0]
         self.assertNotIn("--sref", banner)
         self.assertNotIn("--sw", banner)
 
     def test_renderer_identity_containment_and_positive_word_budget(self):
         for design in DESIGNS:
-            blocks = BLOCK.findall((ART / f"{design['name']} Art.md").read_text())
+            blocks = BLOCK.findall((art_path(f"{design['name']} Art.md", root=ROOT)).read_text())
             for index, prompt in enumerate(blocks):
                 positive = prompt.split(" --ar", 1)[0]
                 self.assertIn(RENDERER, positive)
-                self.assertLessEqual(len(positive.split()), 380)
+                self.assertLessEqual(len(design_prose(positive).split()), 380)
                 if index < 13:
                     self.assertIn(CONTAIN, positive)
                     self.assertIn(MARGIN, positive)
@@ -75,9 +78,9 @@ class ElementalWarArtTests(unittest.TestCase):
 
     def test_design_status_stage_endpoints_and_exact_recruitment_contract(self):
         spec = (ROOT / "docs" / "elemental-war.md").read_text(encoding="utf-8")
-        for phrase in ("not implemented", "**1% chance**", "**base form as a playable character**",
-                       "two female, one male", "existing currency", "Proposed currency tuning",
-                       "No pity is proposed", "one validated", "receipt-deduplicated",
+        for phrase in ("Nerithe is implemented", "**1% chance**", "**base form as a playable character**",
+                       "two female, one male", "existing currency", "Approved currency tuning",
+                       "No recruitment pity", "one validated", "receipt-deduplicated",
                        "stages1-9", "roll < .01", "Lv.0/Evo.1/weapon0"):
             self.assertIn(phrase, spec)
         rows = re.findall(r"^\| (\d+) \| (\d+) \| Evo\.(\d) \|", spec, re.M)

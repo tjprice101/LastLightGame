@@ -43,7 +43,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
       expect(encounter.level).toBe(Math.round(65 + (stage - 1) * 55 / 24));
       expect(encounter.tier).toBe(Math.floor((stage - 1) * 6 / 25));
       expect(encounter.boss).toBe(stage % 5 === 0);
-      expect(encounter.enemy.element).toBe('luminous');
+      expect(encounter.enemy.element).toBe('tranquilitic');
       expect(encounter.enemy.art).toBe(infusionEnemies.treasury[encounter.tier][1]);
       expect(encounter.background).toBe('treasury-arena.png');
       if (!starts[encounter.tier]) starts[encounter.tier] = stage;
@@ -130,7 +130,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     expect(gameplayHub(account)).toContain('data-infusion="treasury"');
     expect(gameplayHub(account)).toContain('100-200 Prismatica at Lv.65 to 1,000-2,000 at Lv.120');
     expect(gameplayHub(account)).toContain('assets/banners/treasury-banner.png');
-    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(108);
+    expect(archives(account).match(/data-archive-character=/g)).toHaveLength(126);
   });
   it('creates base EBs, independent creature rewards and exact Lv50 Omnic duplicate copies without modifying old progress', () => {
     const saved = funded();

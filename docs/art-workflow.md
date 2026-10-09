@@ -1,5 +1,273 @@
 # Art and asset workflow
 
+## Organized physical Art library (D-160)
+
+Owner approves the safe phased rework baseline. Physical filing now moves
+77 documents/records into the [Art library](../Art/README.md):
+37 formerly flat prompt documents,14 activity Markdown files and26 JSON records.
+Character, creature, Conduit, item, UI/scenery and guide categories are distinct.
+Mixed Starter Art stays with characters; activity packs retain enemies/materials/
+scenery together under creatures. Existing dungeon/infusion subpacks are nested
+under creatures. Experiments stay separate.
+
+Records/settings/reviews move to `Art/provenance` **without byte changes**.
+Recorded source/runtime paths and hashes stay unchanged. Supplied sources remain
+under `Art/source`; runtime exports are untouched. Filing verified1237
+source/runtime/provenance files byte-identical and did not rerun image processing.
+
+Generators, intake/export/review tools and tests resolve paths through
+[art_library.py](../tools/art_library.py). The explicit map accepts legacy
+logical pack names without keeping duplicate physical files; already-canonical
+paths are unchanged. New generated records belong under provenance. Markdown
+links and source-referencing TypeScript fixtures point at the new destinations.
+Do not use old flat paths or rebuild originals simply to organize the library.
+
+Validate with `test_art_library.py`, existing prompt/reproduction/intake suites
+and the three presentation tests reading Art source/metadata. The one-time
+[filing tool](../tools/organize_art_library.py) fails preflight if old inputs are
+missing or destinations exist; do not rerun it on the organized library.
+No source deletion, combat/save change, palette regeneration or deployment.
+
+## Character palette control (D-159, current policy)
+
+Owner reports the warm Rosetta Legendary prompt succeeds with explicit
+blue/navy/cyan negatives, subject-only palette remapping and reference weight150.
+Apply this format to all16 authored character lines, not a global blue ban.
+The224 canonical cutouts cover115 referenced portraits (including19 guide
+templates/examples) and109 reference-free character-specific icons/weapons.
+The two Rosetta experimental variants also follow150/current warm colors;
+their earlier400/minimal-blue comparisons are superseded, not preserved controls.
+
+- Preserve each exact signed reference URL, all flags/quality settings except
+  weight150, identity, equipment, ornate silhouette, framing and solid key.
+- List unwanted hues first in the single `--no` clause. Remove contradictory
+  positive colors: warm reds replace Rose blue/violet facets; Infernis removes
+  cyan/violet fringes; Tizu removes rose/violet water refractions; Flora removes
+  aqua/violet and rainbow-string cues. Do not simplify the evolving regalia.
+- Prismatic/opal remains geometric/material language, explicitly restricted to
+  the allowed palette rather than rainbow colors. Retain authored blue on Tizu,
+  Nerithe, Atmoso, Bliss and Vaelor; green on Flora/Elise; shadow/geode violet
+  where designed. Neutral/material exceptions are explicit per character.
+- The restriction affects the subject only. Do not negate the exact key hue in
+  `--no`; the subject lock still forbids it when off-palette. This avoids fighting
+  the solid blue/green/orange/magenta background instruction.
+- Character-specific icons/weapons inherit palette controls without gaining
+  references. Scenery, production enemies, universal icons, source/installed
+  images, runtime behavior and saves are unchanged.
+
+Shared rules: [character_palette.py](../tools/character_palette.py).
+Idempotent canonical update: `python tools\update_character_palettes.py`.
+War/experimental generators import the same policy; regenerate with
+`python tools\build_elemental_war_art.py` and
+`python tools\build_enemy_style_pilot.py`.
+Validate coverage, forbidden positive colors, preserved references/keys,
+single flags,450-word total ceiling and unchanged design-only budgets using
+`test_character_palettes.py`, `test_character_style_references.py`,
+`test_elemental_war_art.py`, `test_enemy_style_pilot.py` and `test_art_prompts.py`.
+Passing text tests is not pixel acceptance: other characters still need owner
+review of generated full-resolution palette, layering and tip containment.
+
+## Reference-style versus palette pilot (D-158)
+
+Owner wants the approved reference renderer, not borrowed costume/palette.
+[Separate three-enemy pilot](../Art/experiments/Enemy%20Style%20Pilot.md)
+preserves production species/details/framing and exact owner URLs while testing
+weight10 in revision2 after the owner rejected weight50's palette transfer.
+Material/color-placement clauses and individual exclusions retain legitimate
+blue/fire/opal. No new reference artwork or grayscale intake required.
+Production enemy packs remain reference-free; no global rollout or
+enemy change until generated pale/blue/crimson comparisons are reviewed.
+Character rollout is separately approved under D-159 above.
+Low weight/text priority cannot guarantee Midjourney separation. Do not remove
+legitimate blue or fire or simplify elaborate art to manufacture clear margins.
+[Art library index](../Art/README.md) now reflects the implemented D-160 filing
+pass above; source image paths remain unchanged.
+Validate pilot generation with `test_enemy_style_pilot.py`; all broad prompt
+tests recognize only this named experiment as a weight10 exception.
+
+## Reference-free enemies (D-155, current policy)
+
+Owner reports reference influence remains excessive and requests removal from
+each enemy prompt. Removed both `--sref` and its paired `--sw` from all129
+enemy generation blocks across18 packs: Machines, Treasury, Sanctuary, Crimson
+Roses, Heaven/Abyss, ten elemental dungeons, historical ten-enemy Flaming Depths
+and three Starter Art enemies. Character portraits retain their exact references
+at150 under D-159, including the three starters sharing a file with enemy prompts.
+Items/icons/scenery remain reference-free.
+
+Written species/equipment/palettes/renderer/background/framing are preserved,
+including the Machines whole-design70% maximum/15% minimum clearance pilot.
+No references should be reappended from the historical enemy URL table.
+D-155 supersedes D-132/D-153 and the reference-weight portion of D-154,
+not its framing. Original sources and installed art are unchanged.
+Reference-free text prompts still require full-resolution visual acceptance;
+no generation or pixel-level palette/clearance success is claimed.
+
+Validate with `test_enemy_style_references.py` (all129 reference-free enemies),
+`test_machine_art_prompts.py`, `test_character_style_references.py`
+(unchanged exact character URLs,150 weight), and `test_art_prompts.py`.
+
+## Machine enemy framing/palette pilot (D-154)
+
+Historical weight experiment: D-155 subsequently removes every enemy reference
+pair. The framing and authored-palette instructions below remain applicable.
+
+Owner reports edge contact and enemy reference palette bleed; chooses Machines
+first rather than global character/enemy edits. Six prompt blocks now use
+maximum50/60/70/70/70/70% full-ensemble footprints and minimum25/20/15/15/15/15%
+outer margins, measured beyond every ornament/effect. Added early pulled-back
+framing and final containment/palette reinforcement. Removed corner-reaching
+direction, preserved all species/equipment/wings/authored colors/interior detail.
+References remain exact D-153 URLs, but machine weight is100 instead of400.
+Other character/enemy references remain400. Items/scenery remain reference-free.
+[Pilot and image review](../Art/guides/cutout-background-contract.md#machine-enemy-pilot-explicit-outer-footprint-d-154).
+
+Only prompt text/tests/docs changed;20 Conduit prompts and two scenery blocks
+were byte-identical through the bounded rewrite. No new generation, installed
+asset changes or pixel-level success claim. Require new full-resolution outputs
+to verify both actual tip clearance and reduced palette transfer before rollout.
+Validate with `test_machine_art_prompts.py`, `test_enemy_style_references.py`,
+`test_character_style_references.py` and `test_art_prompts.py`.
+
+## Six-form enemy style references (D-153)
+
+Owner supplied six distinct enemy references and confirmed all six-form enemy
+packs as scope. [Exact mapping](../Art/guides/midjourney-character-style-prompt.md#six-form-enemy-references-d-153)
+applies Evo.1-6 to Awaken the Machines, Crownfall Treasury, Rosethorn Sanctuary,
+Passion of Crimson Roses, Soar to Heaven and Delve into the Abyss.
+All36 enemy portrait blocks end with one exact `--sref URL --sw 400`
+(Machines subsequently reduced to100 under D-154);
+retain full signed query strings. Evo.2/3 are distinct here.
+
+Character portraits and basic/eight-/ten-enemy lineups keep their previous
+references. D-147 still excludes all icons, Conduits, materials, weapons and
+scenery. Only suffix URLs changed: original identities, palettes, equipment,
+compact renderer, no-glow cutouts and framing remain intact. Reference images
+are style guidance, not licensed game assets to copy. No installed art changed,
+no images downloaded/generated, and no runtime/gameplay/save changes.
+Expired signed URLs need owner replacements, never silent substitutions.
+
+Validate exact owner URLs, all129 enemy suffixes, containment and non-portrait
+exclusions with `python -m unittest discover -s tools -p test_enemy_style_references.py`.
+Also run `test_character_style_references.py` to check the unchanged character
+mapping and `test_art_prompts.py` for shared prompt contracts.
+
+## Elemental War supplied cutouts (D-152)
+
+Originally Orvella/Vaelor's24 cutouts; D-156 adds Nerithe's six portraits,
+four ability icons and all six sub-mode headers/arenas. The40-asset manifest
+covers18 portraits,16 icons and6 scenery images.
+`tools/intake_elemental_war_art.py` preserves exact root originals under
+`Art/source/elemental-war/{characters,abilities,banners,backgrounds}`, exports transparent960px
+portraits/256px icons with864/224px content, verifies hashes before removing
+only verified incoming files, and rejects source/runtime/provenance conflicts.
+Headers1904x640 and arenas1456x816 are copied byte-for-byte, with no keying,
+resizing or cropping. `Valor Activity Banner.png` is the supplied Vaelor header,
+not a character rename. Nerithe Normal Attack/Defense icons were not supplied;
+their actions remain text-only, with no missing-image requests.
+`Art/provenance/elemental-war-settings.json` records per-source border-connected RGB
+keys, individually selected enclosed gaps, reviewed gradient samples for
+Orvella Omnic, bounded icon-frame cleanup and source-facing metadata.
+No runtime keying, blanket color removal or reconstruction of source-clipped
+tips. Painted powers, pale eyes, equipment and contact shadows are retained.
+Any supplied alpha bypasses every key/gradient/frame correction.
+
+`Art/provenance/elemental-war-intake.json` records all original/export hashes and exact
+processing settings. Shared prepare_sprite prioritizes these reviewed sources,
+and character-art revision URLs refresh portraits/locked silhouettes/boss
+sprites/cut-ins without duplicate enemy PNGs. All three6-star characters and their
+trials are live; Character Archives reveal only owned/reached forms, never
+merely defeated boss forms. Family header and standalone weapons remain
+pending. Original prompt concepts remain authored
+as proposals where supplied equipment differs, not pixel-edit instructions.
+
+Review: `python tools\intake_elemental_war_art.py --review <review-directory>`.
+Install: `python tools\intake_elemental_war_art.py --apply --remove-incoming`.
+Reviewed corrections: `python tools\intake_elemental_war_art.py --reprocess-reviewed --apply`.
+This verifies installed original/runtime hashes before changes, archives replaced
+exports under `Art/source/elemental-war/corrections`, retains manifest history
+and refreshes portrait revisions. Review changed settings/outputs before applying;
+never bypass provenance conflicts or silently overwrite externally changed art.
+Validate: `python -m unittest discover -s tools -p test_elemental_war_intake.py`
+and `test_elemental_war_art.py`; runtime:
+`npm test -- src\game\elemental-war.test.ts`, then build/registry regressions.
+
+## Revised universal action icons and coins (D-151/D-157)
+
+[Two copy-ready prompts](../Art/ui/Universal%20Action%20Icons.md) author a
+steel sword with a sweeping action arc for Normal Attack and a steel shield
+for Defense. These supersede the earlier prismatic wing/shield concepts;
+the older root PNGs are not the revised replacements.
+Keep the current compact anime/cel renderer, opaque non-emissive cutout shapes,
+clear complete margins and D-147's no-reference rule for non-portrait assets.
+
+Revised images are not delivered or installed. Keep existing action art until both
+replacements are reviewed/exported. Then update the shared ability resolver
+for every live EB, archive obsolete runtime versions before removal, and
+preserve historical originals/provenance. Passive/Skills/Last Flare stay
+character-specific. [Phases and acceptance](conduit-expansion-plan.md#phase-5---asset-intake-and-implementation).
+
+[Currency prompts](../Art/items/Currencies.md) now request a white shimmering coin
+and cracked black coin with red/white lightning. Use painted reflections,
+opaque crisp sparkle marks/zigzags under the no-glow cutout contract. Keep
+installed prism icons, all historical originals/provenance and internal keys
+until reviewed coin delivery; no balance or transaction changes from prompts.
+
+[Status prompts](../Art/ui/Battle%20Status%20Icons.md) are generated reproducibly
+by `python tools\build_status_art.py`. Each is a complete reference-free1:1
+compact cel symbol with safe margins, opaque powers and solid green background
+through gaps. Live debuffs/charges use accessible text until intake; counts,
+strength and clocks remain real HTML, not baked into pictures. No invented
+URLs. Validate with `python -m unittest discover -s tools -p test_status_art_prompts.py`.
+
+## Individually reviewed portrait pockets (D-150)
+
+Review every character line before choosing corrections. The current78-form
+contact-sheet audit identifies13 affected portraits: Bruno base; Tizu Evo.3/5/6;
+Bliss Evo.6; Razor Evo.6; Elise Evo.5/6; Aurora Evo.5; Flora Evo.4/6; Disciple
+Evo.2/5. [Explicit source-coordinate corrections](../Art/provenance/portrait-pocket-corrections.json)
+add78 reviewed gap seeds, not a global hue/white-removal pass. Two bounded
+Elise Evo.5 hair-gap polygons accommodate locally different backdrop shades;
+Bliss Evo.6 has its own bounded2-source-pixel black-edge cleanup. Existing
+global thresholds and all other portraits stay unchanged.
+
+Keep similar foreground colors: white eyes/feathers, black armor/cape,
+gold equipment, elemental powers and intentionally painted contact shadows.
+Selected foreground pixels are regression-tested against original RGB bytes.
+Delivered alpha still bypasses all keying. Source originals, original intake
+backups, facing, names, ownership and gameplay are unchanged.
+
+Both refresh settings loaders include these source-specific corrections.
+The strict original intake guards remain active. Use
+`tools/reprocess_portrait_pockets.py` for subsequent reviewed revisions:
+
+1. Change only explicitly reviewed source settings/coordinates.
+2. `python tools\reprocess_portrait_pockets.py --assets <distinct-asset-IDs> --review <new-directory>`
+   generates exact candidates, dark/light previews and a hashed plan; no install.
+3. Inspect each candidate, including pale/dark foreground and nearby gaps.
+4. Run the same command with `--apply`. It verifies source/current/historical
+   hashes and rejects changed settings, provenance, plans or candidate bytes.
+   Pre-correction PNGs are preserved under each source family's `corrections`
+   folder; intake `processing_history` records hashes and old processing.
+   Only selected runtime PNGs/manifests change; shared URL revisions regenerate.
+
+Validation:
+- Combined Python modules `test_portrait_pockets`, `test_character_refresh`,
+  `test_starter_refresh`, `test_character_art_revisions`, `test_prepare_art`:
+  **35 tests passed**, including all78 current exports,78 extra gap seeds,
+  retained foreground, correction history, local-mask boundaries, conflict
+  rejection, historical supplied-alpha compatibility and URL revisions.
+- Final `python -m unittest discover -s tools -p test_portrait_pockets.py`:
+  **6 passed**, after adding explicit source/runtime/backup-conflict preflight
+  coverage and requiring correction history for every selected portrait.
+- `python tools\intake_character_refresh.py` and
+  `python tools\intake_starter_refresh.py`: strict dry runs pass (60/18 portraits).
+- `npm test -- src\presentation\portrait.test.ts src\content\character-art.test.ts src\presentation\archives.test.ts src\presentation\battle-cutin.test.ts`:
+  **4 files /48 tests passed**.
+- **Build Last Light** (`npm run build`): TypeScript/Vite pass, existing
+  large-chunk advisory only. All13 browser-fetched corrected images decode
+  at960x960; shared helper URL revisions match fetched SHA-256 prefixes.
+
 ## Replacement starter portraits (D-149)
 
 Owner delivers all18 starter forms: Beginner through Omnic for Infernis, Tizu
@@ -8,9 +276,9 @@ the previous18 runtime exports live in its `previous-runtime` folder. Historical
 originals and supplied-alpha files/manifests remain unchanged. New RGB artwork
 does not replace or re-key those historical alpha sources.
 
-[Intake provenance](../Art/starter-refresh-intake.json) records incoming names,
+[Intake provenance](../Art/provenance/starter-refresh-intake.json) records incoming names,
 source/previous/runtime SHA-256 values and exact reviewed processing.
-[Per-source settings](../Art/starter-refresh-settings.json) use border-connected
+[Per-source settings](../Art/provenance/starter-refresh-settings.json) use border-connected
 RGB keys, row-gradient samples for the three gradient backdrops and116 manually
 reviewed enclosed-gap seeds. Bounded edge decontamination removes key spill;
 Flora Omnic uses a wider6-source-pixel edge band while retaining pale feathers,
@@ -68,11 +336,13 @@ and the focused character/enemy/currency/Elemental War reference tests.
 
 ## Elemental War proposal art (D-145)
 
-Design-only [specification](elemental-war.md), not a runtime expansion.
-[Art index](../Art/Elemental%20War.md) links three15-prompt packs: Nerithe
+Originally design-only; the [specification](elemental-war.md) now records all
+three approved, implemented challengers (D-152/D-156).
+[Art index](../Art/ui/Elemental%20War.md) links three15-prompt packs: Nerithe
 (female/Aquatic), Orvella (female/Tectonic), Vaelor (male/Voltaic). Six portraits,
 six ability/action icons, weapon, activity header and arena each; family header
-makes46 prompts. Names/kits/6-star ratings are proposals awaiting owner review.
+makes46 prompts. All three names, kit identities and6-star ratings are
+approved; numerical kits use documented tuning. Uninstalled art IDs remain proposals.
 No summon-banner artwork/pool, material prompts or extra reward assets.
 
 Exact Evo.1-6 approved references/400 for portraits only; icons, weapons and
@@ -112,8 +382,8 @@ the ten non-starter lines.
 
 Owner requests stronger edge-avoidance emphasis in all future evolutions,
 without detracting from the artwork. Follow
-[complete-silhouette framing](../Art/cutout-background-contract.md#complete-silhouettes-and-edge-clearance-d-135)
-and the [shared prompt guide](../Art/midjourney-character-style-prompt.md#future-complete-design-framing-d-135):
+[complete-silhouette framing](../Art/guides/cutout-background-contract.md#complete-silhouettes-and-edge-clearance-d-135)
+and the [shared prompt guide](../Art/guides/midjourney-character-style-prompt.md#future-complete-design-framing-d-135):
 explicit positive framing near subject and composition clauses, continuous
 visible safety margin on all four sides/corners, every equipment/power tip
 inside the canvas. Applies equally to base through Omnic and enemy forms.
@@ -148,12 +418,12 @@ ability icons, weapons, creatures, currencies and scenery are unchanged.
 New originals live byte-for-byte in `Art/source/character-refresh/<asset>.png`;
 previous runtime portraits remain in its `previous-runtime` subdirectory.
 All historical D-121 source originals and manifests remain intact. The new
-[manifest](../Art/character-refresh-intake.json) records incoming filenames,
+[manifest](../Art/provenance/character-refresh-intake.json) records incoming filenames,
 both generations' hashes and the active runtime paths. Historical roster
 regeneration verifies the preserved previous exports, never overwrites these
 replacements. Do not rerun legacy masks on new originals.
 
-[Reviewed per-source settings](../Art/character-refresh-settings.json) handle
+[Reviewed per-source settings](../Art/provenance/character-refresh-settings.json) handle
 green/teal, orange, red, blue, gray, white, black and vertical-gradient backdrops.
 Black/white/overlapping-color sources use border-connected keys and explicitly
 reviewed enclosed-gap seeds; Bruno's white eyes and dark armor are retained.
@@ -192,7 +462,7 @@ From the repository root:
 
 Visible currency names are Prismatica (main) and Null-Prismatica (premium).
 Owner chooses bright faceted prism/dark obsidian-violet counterpart designs,
-in [Currencies](../Art/Currencies.md). Under D-147 these item prompts use
+in [Currencies](../Art/items/Currencies.md). Under D-147 these item prompts use
 no `--sref` or `--sw`, superseding the earlier Evo.3 reference exception.
 Both are opaque crisp cel-shaded objects with contrasting flat green keys,
 full silhouettes and clear outer margins; no source glow/scenery/lettering.
@@ -203,7 +473,7 @@ new originals retain owner names under `Art/source/currencies`. Runtime IDs
 remain `fractalis`/`lycalis`, now transparent256px with224px content.
 Reviewed border-connected teal keys/edge cleanup protect crystal colors,
 sparkles and intentional shadow; no legacy brown masks or runtime keying.
-[Provenance](../Art/prism-currency-intake.json) records both generations.
+[Provenance](../Art/provenance/prism-currency-intake.json) records both generations.
 `python tools\intake_prism_currency_art.py --apply` regenerates exports/revisions;
 regular currency exporter and review tool select active new sources.
 Supplied alpha remains authoritative. No economy/save/asset-ID migration.
@@ -220,7 +490,7 @@ Owner requests only reference suffixes for all enemies, then explicitly requires
 all character/enemy art stay inside the frame without touching its edges.
 Added129 exact `--sref URL --sw 400` suffixes: six-form lines1-6; eight-enemy
 lineups1/2/2/3/4/5/5/6; ten-enemy lineups1/2/2/3/3/4/4/5/5/6; basic Adventure
-enemies1. See [URLs](../Art/midjourney-character-style-prompt.md#character-form-style-references).
+enemies1. See [URLs](../Art/guides/midjourney-character-style-prompt.md#character-form-style-references).
 Visual lineup mapping does not create creature evolutions or alter gameplay.
 Suffixes are already in copy-ready blocks, superseding older placeholder
 instructions for enemies. Do not append again.
@@ -242,7 +512,7 @@ signed links may expire and require refreshed owner-supplied URLs.
 Owner requests all thirteen character portrait lines meet Bliss and Rose-banner
 quality, then selects evolution portraits only. All78 canonical portraits and
 nine late guide examples now use the
-[shared construction contract](../Art/midjourney-character-style-prompt.md#portrait-quality-standard-d-131).
+[shared construction contract](../Art/guides/midjourney-character-style-prompt.md#portrait-quality-standard-d-131).
 Base identities/early silhouettes remain; Epic layers rear powers, Legendary/
 Omnic densely fill rear interior gaps with character-specific elemental
 architecture. Canonical body scale1/3 ->1/4 ->1/5 shifts emphasis to powers/
@@ -271,14 +541,14 @@ Text tests cannot verify the generator's resulting artwork or acceptance.
 
 ## Broken Mechanical Components (D-130)
 
-[Currency prompt](../Art/Broken%20Mechanical%20Components.md) follows the
+[Currency prompt](../Art/items/Broken%20Mechanical%20Components.md) follows the
 Thornia/Crinso compact anime/cel renderer: shattered Omnic-tier ivory/platinum
 wing vanes, halo segments and prismatic opal reactor shards. Face-free cutout,
 opaque accents/non-emissive highlights, no glow, solid unlit key through gaps.
 Owner-supplied image is installed (D-137): original bytes preserved under
 `Art/source/currencies`, reviewed offline teal key/edge cleanup, transparent
 256px export with224px content. Dark/light reviews protect ivory machinery and
-the colored core. [Provenance](../Art/component-art-intake.json) records hashes
+the colored core. [Provenance](../Art/provenance/component-art-intake.json) records hashes
 and processing. Supplied alpha stays authoritative; no runtime keying.
 Regenerate with `python tools\intake_component_art.py --apply`.
 Validate `python -m unittest discover -s tools -p test_component_art_intake.py`.
@@ -286,7 +556,7 @@ Validate `python -m unittest discover -s tools -p test_component_art_prompt.py`.
 
 ## Character-form style references (D-129)
 
-The [shared guide](../Art/midjourney-character-style-prompt.md#character-form-style-references)
+The [shared guide](../Art/guides/midjourney-character-style-prompt.md#character-form-style-references)
 records all seven owner-supplied URLs. Existing Evo.1-6 use matching references;
 starter base/Common uses Evo.1, Stage1-6 examples likewise. Evo.0 is for
 explicit future Evo.0/generic templates, not a seventh gameplay form.
@@ -306,7 +576,7 @@ Validation:
 
 ## Machine expansion art (D-124/D-128)
 
-[Awaken the Machines](../Art/Awaken%20the%20Machines.md) has28 copy-ready
+[Awaken the Machines](../Art/creatures/Awaken%20the%20Machines.md) has28 copy-ready
 prompts:5 Rare/silver,5 Legendary/platinum and10 elemental Omnic Conduits,
 six black/white-broken-to-angelic mythic machine creatures,3:1 header and16:9
 arena. Scenery shows an element-scorched wasteland/giant white machine awakening.
@@ -316,7 +586,7 @@ All28 supplied RGB originals are archived byte-for-byte under
 `Art/source/machines`:20 Conduits, six enemies, header and arena.
 [Intake tool](../tools/intake_machine_art.py) exports256px icons (224px content)
 and960px enemy cutouts (864px content). Scenery is copied unchanged.
-[Manifest](../Art/machines-art-intake.json) records source/export hashes, explicit
+[Manifest](../Art/provenance/machines-art-intake.json) records source/export hashes, explicit
 per-image RGB keys, protected foreground ellipses and six reviewed facing values.
 Keys cover enclosed gaps; bounded two-source-pixel edge cleanup removes color
 spill. Worldtree's blue-channel constraint protects green foliage; ellipses
@@ -353,7 +623,7 @@ framing retain the same non-explicit visual intent. Removed unnecessary
 explicit injury words from character-pack negative lists. Titles, asset IDs,
 weapons, palettes, armor progression, keys and flags remain unchanged.
 
-The [shared wording contract](../Art/midjourney-character-style-prompt.md#neutral-character-wording-d-104)
+The [shared wording contract](../Art/guides/midjourney-character-style-prompt.md#neutral-character-wording-d-104)
 and local regression cover positive prose and negative lists, not a claimed
 service blacklist or guaranteed acceptance. Inspect any service rejection
 and follow its rules; no evasion, altered reference images or generated-output
@@ -366,7 +636,7 @@ Validate with both art prompt unittest suites.
 **Current Rosetta Omnic density review (D-120):** owner clarifies late
 evolutions should have prevalent detailing/energy behind the character and
 very busy, chaotic compositions with almost no interior dead space. Applied
-only to [Rosetta's Omnic](../Art/Rosetta%20Art.md): overlapping rose mandalas,
+only to [Rosetta's Omnic](../Art/characters/Rosetta%20Art.md): overlapping rose mandalas,
 branching thorn lattice, radial petal rays, counter-sweeping ribbons and
 clustered prism fragments form a dense rear energy tapestry behind body/wings.
 This is interior density, not just96% bounding spread or sparse outer sparks.
@@ -384,7 +654,7 @@ Owner requests Thornia's escalating style for the creature/material pack, then
 explicitly adds Crinso to the same turn. Each pack was revised as its own line;
 no automatic change to Rosetta/Thornia or their supplied/generated assets.
 
-**Phase10, D-118:** [Roselius and Rosethorn](../Art/Passion%20of%20Crimson%20Roses.md)
+**Phase10, D-118:** [Roselius and Rosethorn](../Art/creatures/Passion%20of%20Crimson%20Roses.md)
 revises12 cutouts: six fixed female Luminous rose-angel forms/six material icons.
 Same ivory core/crimson crest/two eyes, compact anatomy/body1/3/renderer.
 First plates -> segmented armor ->6/8/16 late wings, mantle/pauldrons/crown
@@ -399,7 +669,7 @@ two-thirds-square composition and small-icon readability. Soul expands
 Heart's facets/armor/thorns/rings/ribbons with triple-tier petals/crown/extra
 ring/open arches; no new drop tier. Header/arena/summoning prompts unchanged.
 
-**Phase11, D-119:** [Crinso's13 blocks](../Art/Crinso%20Art.md) now keep
+**Phase11, D-119:** [Crinso's13 blocks](../Art/characters/Crinso%20Art.md) now keep
 compact eyes-only anatomy/hair/rose tie and charcoal/crimson/gold/ivory identity.
 Plain knight -> segmented armor/mantle/winglets ->4/8/16 late wings with
 opposed gold-flame/crimson-lightning petal vanes. Exactly one connected
@@ -422,7 +692,7 @@ Earlier phase notes below are historical snapshots.
 **Phase9: Thornia / escalating elegant chaos (D-117).** Owner calls Rosetta a
 good start and requests future progressions become still wilder, more elegant
 and spectacular; apply that knowledge to Thornia next, one character at a time.
-[Thornia's13 blocks](../Art/Thornia%20Art.md) now retain compact anatomy,
+[Thornia's13 blocks](../Art/characters/Thornia%20Art.md) now retain compact anatomy,
 dark hair/crimson rose clasp/narrow eyes, shadow palette and identical renderer.
 Plain knight -> first plates -> segmented thorn armor/mantle/winglets ->
 four-wing eclipse guard -> eight-wing thorn court -> sixteen-wing rose empress.
@@ -469,7 +739,7 @@ requiring output inspection, not measured existing images.
 
 **Current Phase8 restoration (D-114):** owner withdrew the less-chibi late
 anatomy direction and requests compact Bliss/Bruno style with amplified
-effects/splendor. [Rosetta](../Art/Rosetta%20Art.md) now retains rounded head,
+effects/splendor. [Rosetta](../Art/characters/Rosetta%20Art.md) now retains rounded head,
 tiny torso/short limbs/2.5-3 heads and body one third of canvas across all forms.
 Renderer/identity/eyes-only face stay fixed. Armor, mantle, ornate bow,4/8/16
 wings and elemental architecture carry epicness around the same body.
@@ -488,7 +758,7 @@ updated without changing Standard, costs, kits, progression or saved counters.
 Owner explicitly allows less-chibi late proportions and giant angel presence,
 while insisting on eyes-only faces and the same anime/cel renderer.
 This is a rose-EB-only exception to fixed compact anatomy, not realism or
-monstrous bodies. Revise one at a time: [Rosetta's13 blocks](../Art/Rosetta%20Art.md)
+monstrous bodies. Revise one at a time: [Rosetta's13 blocks](../Art/characters/Rosetta%20Art.md)
 now progress2.5-3 ->3 ->3.5 ->4 ->4.5 ->5 heads tall, one-third ->two-fifths ->
 half-canvas body framing. Identity/palette/renderer fixed. Plain archer grows
 segmented crimson/gold rose armor, layered canopy pauldrons, divided mantle,
@@ -502,7 +772,7 @@ green keys/text exclusions/padding and all headings/IDs preserved.
 Their metadata changes to6-star now; their copy bodies are untouched this phase.
 
 **Phase7: Razor (D-112).** Owner requested the same stylized additions next.
-Revised [Razor's13 prompts](../Art/Razor%20Art.md): fixed compact anatomy,
+Revised [Razor's13 prompts](../Art/characters/Razor%20Art.md): fixed compact anatomy,
 silver forelock/violet eyes/black scarf, ink-black/graphite/violet/silver identity
 and identical renderer. Plain tunic/night sword -> first plates -> segmented
 bastion armor/mantle/winglets -> high collar/broken corona -> six-wing eclipse
@@ -523,7 +793,7 @@ architecture. **Pause for Razor review.** Only Rosetta/Thornia/Crinso await this
 individual pass. Earlier phase notes below are historical snapshots.
 
 **Phase6: Elise (D-111).** Owner requested the same stylized additions next.
-Revised [Elise's13 prompts](../Art/Elise%20Art.md) with fixed compact anatomy,
+Revised [Elise's13 prompts](../Art/characters/Elise%20Art.md) with fixed compact anatomy,
 black hair/side lock, lime eyes, mint wrist ribbons and charcoal identity.
 Plain covered wrap outfit/stars -> first plates -> segmented armor/substantial
 gauntlets/divided mantle -> high lightning collar/broken corona -> six-wing
@@ -544,7 +814,7 @@ and weapon/icon consistency. **Pause for Elise review.**
 Razor and three event EBs await individual correction. Earlier notes are snapshots.
 
 **Phase5: Disciple (D-110).** Owner requested the same stylized additions as
-Bliss/Bruno. Revised [Disciple's13 prompts](../Art/Disciple%20Art.md) with fixed
+Bliss/Bruno. Revised [Disciple's13 prompts](../Art/characters/Disciple%20Art.md) with fixed
 compact anatomy/identity/palette/renderer in every form. Plain tunic/flame grows
 into segmented black-amethyst armor, charcoal joints/silver fracture seams,
 substantial lattice shoulders/gauntlets, divided mantle, high collar, broken
@@ -590,7 +860,7 @@ Tests now enforce dignified divine armor rather than monstrous mutation.
 characters to lose human anatomy and become monstrous/godlike embodiments of
 their element at massive implied scale, starting with Bruno only. This
 supersedes prior universal fixed-human-body rules, not the shared anime/cel/
-painted renderer. [Bruno's13 prompts](../Art/Bruno%20Art.md) now progress human
+painted renderer. [Bruno's13 prompts](../Art/characters/Bruno%20Art.md) now progress human
 quarry sentinel -> first forged armor -> mineral forearms/legs -> living-bedrock
 avatar -> mountain titan -> worldwall deity. Hair becomes a swept umber mineral
 crest; amber eyes/ochre sash-to-banner/basalt squares/bronze ribs/single
@@ -638,7 +908,7 @@ pending. **Pause for Bliss review.** D-105 below is the first-pass snapshot.
 
 **Phase3 first pass: Bliss (D-105)** follows the owner's acceptance of Aurora and request
 to move to Bliss with a slight stronger Wraththorn influence, not a renderer
-overhaul. [Bliss's13 prompts](../Art/Bliss%20Art.md) repeat fixed identity/anatomy/
+overhaul. [Bliss's13 prompts](../Art/characters/Bliss%20Art.md) repeat fixed identity/anatomy/
 palette/rendering clauses. Plain covered tunic/fans grow into segmented feather
 plates with pale-blue joints/pearl fracture seams, split mantle, orbit fragments,
 broken corona and open-ribbed feather wings. Omnic preserves Legendary's three
@@ -658,7 +928,7 @@ Atmoso and Aurora directions are accepted; four remaining flagships
 The Phase1/2 notes below are historical snapshots, not current stop targets.
 
 **Phase2: Aurora** follows the owner's acceptance of the Atmoso direction and
-explicit request to move to her next. [Aurora's13 prompts](../Art/Aurora%20Art.md)
+explicit request to move to her next. [Aurora's13 prompts](../Art/characters/Aurora%20Art.md)
 now use identical portrait identity/anatomy/renderer/palette clauses, a plain
 starter base and segmented ivory lens armor with obsidian eclipse seams,
 divided mantle, pearl fragments and severe solar-lens prism wings.
@@ -700,7 +970,7 @@ backgrounds/unwanted text in generated output. The owner selected **Atmoso
 first, then pause for review**. Do not bulk-rewrite the remaining nine lines
 or treat D-099/D-100's previous prompt checks as output approval.
 
-**Phase1 prompt revision:** [Atmoso](../Art/Atmoso%20Art.md),13 blocks: six
+**Phase1 prompt revision:** [Atmoso](../Art/characters/Atmoso%20Art.md),13 blocks: six
 portraits, six symbols and one matching final staff. Compare beginner anatomy/
 renderer against supplied Infernis/Tizu/Flora; build threatening regalia using
 Wraththorn/Dawnthorn's armor/mantle/wing/crown/orbit progression, not their
@@ -729,10 +999,10 @@ snapshot; runtime/art registrations are unchanged.
 ## Crimson Roses packs (D-100)
 
 [Event specification](crimson-roses.md) owns playable rules and pending-art
-registration. [Rosetta](../Art/Rosetta%20Art.md),
-[Thornia](../Art/Thornia%20Art.md) and [Crinso](../Art/Crinso%20Art.md) each have
+registration. [Rosetta](../Art/characters/Rosetta%20Art.md),
+[Thornia](../Art/characters/Thornia%20Art.md) and [Crinso](../Art/characters/Crinso%20Art.md) each have
 six evolving portraits, six action/ability icons and one final weapon prompt.
-[Passion of Crimson Roses](../Art/Passion%20of%20Crimson%20Roses.md) supplies six
+[Passion of Crimson Roses](../Art/creatures/Passion%20of%20Crimson%20Roses.md) supplies six
 female Roselius angel forms, six Rosethorn material icons,3:1 activity header,
 16:9 arena and16:9 Omnic Roses Under Sunny Skies summoning scenery (54 total).
 Identity palette is crimson/gold/pearlescent roses/thorns, not a new renderer.
@@ -780,7 +1050,7 @@ Generated images still require manual side-by-side review at every evolution:
 simple base, clearly escalating silhouette, unobstructed eyes/feet/weapons,
 complete wing tips and no merged/cropped effects. No images were generated here.
 
-[Flagship manifest](../Art/Flagship%20Characters.md) links seven individual
+[Flagship manifest](../Art/characters/Flagship%20Characters.md) links seven individual
 copy-ready packs: Bruno/Tectonic hammer Tank, Elise/Voltaic shuriken DPS,
 Aurora/Luminous light-energy enemy-debuff Support, Atmoso/Atmospheric wind-staff
 DPS, Razor/Ominous pure-night sword Tank, Bliss/Tranquilitic feather/warfan DPS
@@ -815,7 +1085,7 @@ new prompts and existing packs but cannot validate generated image quality.
 
 Summoning uses16:9 opaque full-bleed Omnic-tier artpieces that embody each real
 banner's identity. Do not reuse3:1 dungeon headers or individual reward portraits.
-The Standard prompt/intake path is in [Summoning Banners](../Art/Summoning%20Banners.md).
+The Standard prompt/intake path is in [Summoning Banners](../Art/ui/Summoning%20Banners.md).
 The supplied Standard banner is now registered at
 `public/assets/banners/summon-standard.png`. Drop-rate tables remain text-only:
 name, awarded rarity/star value and exact rate; Omnic art is not an acquisition
@@ -823,7 +1093,7 @@ promise. Follow this distinction for future banner and loot disclosures.
 
 ## Rosethorn Sanctuary
 
-Phase10's [Sanctuary pack](../Art/Rosethorn%20Sanctuary.md) contains six
+Phase10's [Sanctuary pack](../Art/creatures/Rosethorn%20Sanctuary.md) contains six
 Tranquilitic Rosethorn Wisp cutouts,3:1 activity header and16:9 arena.
 Keep limbless flame-shaped anatomy, ivory/rose/antique-gold identity, eyes-only
 faces and opaque non-emissive flame ribbons. Common is restrained; Omnic
@@ -835,7 +1105,7 @@ banner, promised six-star EB or a portrait grid.
 
 ## Crownfall Treasury
 
-Phase9's [Treasury pack](../Art/Crownfall%20Treasury.md) contains six progressively
+Phase9's [Treasury pack](../Art/creatures/Crownfall%20Treasury.md) contains six progressively
 regal Luminous slime cutouts (shared hostile/captured portraits), a3:1 activity
 header and16:9 arena. The six supplied portraits, header and arena are registered;
 hostile and owned copies share the same cutout files.
@@ -850,7 +1120,7 @@ The original escalation pass remains a guide for future artwork:
 early designs remain restrained; later creatures and relics
 gain species-specific formidable armor, deployed elemental structures and
 majestic/prismatic final silhouettes, not cute wording or realistic anatomy.
-See [pack direction and generation rules](../Art/dungeons/README.md#pending-art-rarity-escalation-pass).
+See [pack direction and generation rules](../Art/creatures/dungeons/README.md#pending-art-rarity-escalation-pass).
 Enemy lineup positions express art power, not assigned rarity or evolution;
 material rarity labels remain authoritative. Existing palettes/key colors,
 compact renderer, cutout padding/no-glow rules and scenery layouts are preserved.
@@ -860,7 +1130,7 @@ Runtime encounters, drops and already supplied packs are unchanged.
 
 All16 owner-supplied root PNGs were moved without modification into
 `Art/source/enemies`, `materials`, `banners` and `backgrounds`.
-[Intake manifest](../Art/lustrous-river-intake.json) records source/runtime hashes
+[Intake manifest](../Art/provenance/lustrous-river-intake.json) records source/runtime hashes
 and per-image reviewed key hues plus normalized enclosed-background seeds.
 Banner and arena exports preserve source bytes exactly. Eight enemy cutouts
 export960px RGBA with864px content; six materials export256px RGBA with224px
@@ -891,7 +1161,7 @@ stable creature discovery entries. No captures or economy changes.
 Moved16 owner-supplied root PNGs unchanged into `Art/source` by category.
 The misspelled incoming `Flntback Armadiillo.png` is preserved verbatim;
 runtime `flintback-armadillo.png` uses the canonical enemy name.
-[Provenance](../Art/precipice-earth-intake.json) records source/runtime hashes,
+[Provenance](../Art/provenance/precipice-earth-intake.json) records source/runtime hashes,
 per-source key settings, normalized enclosed-hole seeds and crystal masks.
 Eight enemies export960px RGBA/864px content; six materials256px/224px.
 Banner/arena copies preserve original bytes. Regenerate only this pack with
@@ -918,7 +1188,7 @@ stages/eight stable creature IDs. No captures, spending or reward changes.
 ## Ruins of Chaos intake (D-087)
 
 Moved all16 supplied root PNGs unchanged into `Art/source` by category.
-[Intake manifest](../Art/ruins-chaos-intake.json) records source/runtime hashes
+[Intake manifest](../Art/provenance/ruins-chaos-intake.json) records source/runtime hashes
 and individually reviewed key settings/enclosed-background seeds.
 Eight enemy cutouts export960px RGBA/864px content; six materials256px/224px.
 The banner/arena exports preserve original scenery bytes exactly.
@@ -955,7 +1225,7 @@ eligibility are unchanged.
 Moved16 supplied root PNGs unchanged into `Art/source` by category.
 The incoming capitalization `Sky-bound RIft Arena.png` remains in source;
 runtime banner/arena use canonical `sky-bound-rift.png`.
-[Provenance](../Art/sky-bound-rift-intake.json) records hashes, key settings,
+[Provenance](../Art/provenance/sky-bound-rift-intake.json) records hashes, key settings,
 reviewed enclosed-hole seeds, source-coordinate foreground polygons and the
 scoped lower-shadow key. Eight enemies export960px RGBA/864px content;
 six materials256px/224px. Scenery copies preserve original bytes.
@@ -994,7 +1264,7 @@ shared cut-in regressions cover every supplied portrait.
 ## Valley of Solitude intake (D-089)
 
 Moved all16 supplied root PNGs unchanged into `Art/source` by category.
-[Provenance](../Art/valley-solitude-intake.json) records source/runtime hashes,
+[Provenance](../Art/provenance/valley-solitude-intake.json) records source/runtime hashes,
 per-image key settings and normalized reviewed enclosed-background seeds.
 Eight enemies export960px RGBA/864px content; six materials256px/224px.
 Banner/arena runtime copies preserve original bytes.
@@ -1037,7 +1307,7 @@ prompts should emphasize commanding designs and fully realized elemental
 identity rather than adorable/babyish language. Keep compact proportions,
 species identity, clean contours, cel shading and cutout requirements unchanged.
 
-Use the [shared rarity tone ladder](../Art/midjourney-character-style-prompt.md#game-wide-rarity-tone-common-to-omnic)
+Use the [shared rarity tone ladder](../Art/guides/midjourney-character-style-prompt.md#game-wide-rarity-tone-common-to-omnic)
 for new or revised prompts. Rarity and stars remain separate: a 5-star Common
 starter is still visually a restrained base form. This direction does not
 repaint delivered assets or change gameplay rarity/progression rules.
@@ -1056,7 +1326,7 @@ see [flagship integration](flagship-characters.md).
 
 Phase1 installs51 Roses assets through
 [intake_roster_art.py](../tools/intake_roster_art.py) and records
-[provenance](../Art/roses-art-intake.json). Source filenames `Gilded Rose,
+[provenance](../Art/provenance/roses-art-intake.json). Source filenames `Gilded Rose,
 Rosetta`/`Burdened by Thorns, Thornia` map to their existing base IDs; the
 misspelled `Crisno` action files map to canonical `crinso` IDs without changing
 saved IDs or authored display titles. All18 supplied action icons are wired,
@@ -1126,7 +1396,7 @@ python tools\review_art.py --cleaned --assets fractalis lycalis --output <review
 
 After visually reviewing both dark and light previews, add `--record-review`
 to the currency exporter to refresh only those assets' provenance in
-`Art/matte-review.json`. Owner-supplied alpha overrides bypass color cleanup.
+`Art/provenance/matte-review.json`. Owner-supplied alpha overrides bypass color cleanup.
 Currency URLs come from `src/presentation/currency-icon.ts`; loot presentation
 uses `lootArt` to distinguish currencies from materials. No runtime keying
 or economy changes are involved.
@@ -1149,7 +1419,7 @@ Bloom, Seed and Soul use wider spill cleanup; source-coordinate foreground
 masks protect Seed metal highlights and Soul crystal facets. Options/masks
 live in `tools/prepare_dungeons.py`; `review_art.py --cleaned` uses the same
 helper. Supplied-alpha overrides bypass cleanup, and no runtime keying exists.
-See [Galvanic Field](../Art/dungeons/Galvanic%20Field.md) for skills and actual
+See [Galvanic Field](../Art/creatures/dungeons/Galvanic%20Field.md) for skills and actual
 stage/drop gates. Review new deliveries individually before reusing settings.
 
 ### City of Heaven color-background intake
@@ -1171,7 +1441,7 @@ bright, saturated border-connected key to protect gold subject details. The
 Shard has a narrow hue tolerance to preserve red ribbons; the Seed has a wider
 key for its pale pink spill. New packs require visual review, not blanket reuse
 of these values. No runtime removal is introduced. Authoritative supplied-alpha
-overrides still bypass every remover. See [City of Heaven](../Art/dungeons/City%20of%20Heaven.md)
+overrides still bypass every remover. See [City of Heaven](../Art/creatures/dungeons/City%20of%20Heaven.md)
 for the implemented roster, skills, stages and drop gates.
 
 ### Owner-supplied transparent replacements (current policy)
@@ -1180,7 +1450,7 @@ All 96 timestamp-named PNGs supplied in the project root were individually
 matched to existing assets, then renamed to their existing in-game filenames
 under `Art/source/cutouts/{characters,enemies,materials,abilities}`. Those files
 are byte-identical to the supplied PNGs and are now the authoritative sources.
-[Intake manifest](../Art/cutout-intake.json) records original filenames, canonical
+[Intake manifest](../Art/provenance/cutout-intake.json) records original filenames, canonical
 paths, original/runtime hashes, and preserved historical source paths.
 
 **Never remove backgrounds from these replacements.** All four exporters use
@@ -1232,7 +1502,7 @@ Rosethorn creature portraits are opaque RGB cutouts/icons. Their runtime
 exports use explicitly reviewed, border-connected per-image color keys: hue /
 saturation keys for medallions and Conduits, RGB border-swatch distance keys
 for creatures. The exact settings, canonical source/runtime paths and SHA-256
-hashes are recorded in [root-art-intake.json](../Art/root-art-intake.json).
+hashes are recorded in [root-art-intake.json](../Art/provenance/root-art-intake.json).
 
 Enclosed background pockets use36 visually reviewed source-normalized seeds
 across11 exports in `tools/intake_root_art.py`: Atmospheric/Infernic/Aquatic
@@ -1307,7 +1577,7 @@ also need regeneration or a reviewed redraw as hard-edged solid-color shapes.
 This prompt policy does not strip existing supplied PNGs or disable animated
 in-game combat effects.
 
-See the [mandatory cutout contract](../Art/cutout-background-contract.md).
+See the [mandatory cutout contract](../Art/guides/cutout-background-contract.md).
 The owner confirmed that arenas and banners remain illustrated scenery; all27
 environment prompt blocks are unchanged. This supersedes historical white-canvas
 generation guidance below, **not** the processing history of supplied originals.
@@ -1357,7 +1627,7 @@ backgrounds:18 characters,41 enemies,24 materials and16 ability icons. It update
 32 exports; the other67 retain their existing pixels. Banners and arenas remain
 opaque scenery, not cutouts. Source PNGs are never edited.
 
-[Review manifest](../Art/matte-review.json) records every asset, source/runtime
+[Review manifest](../Art/provenance/matte-review.json) records every asset, source/runtime
 SHA-256, and whether it was retained or received targeted cleanup.
 [Authored pocket points](../tools/matte_regions.py) identify confirmed background
 between legs, bowstrings, crown thorns, ribbons and enclosed elemental loops.
@@ -1397,7 +1667,7 @@ Regenerate with `python tools/prepare_art.py --assets infernis-evo-6`.
 Original PNGs remain unchanged; canvas/content/margins and enclosed white details
 retain the existing export contract. Foreground masks must match source size.
 
-[Heaven/Abyss mode packs](../Art/gamemodes/README.md) contain separate six-form
+[Heaven/Abyss mode packs](../Art/creatures/gamemodes/README.md) contain separate six-form
 slime evolution trees, three specialty material icons per mode, and banners/
 arenas. Their epic thorned enemies supersede earlier wisp art direction but are
 now supplied assets and implemented encounters. Heaven: white/black/red/gold;
@@ -1429,21 +1699,21 @@ The review tool uses the same helper; no runtime background removal is involved.
 The stable `abyss-evolution` material and `abyss-heart-shattered-void` art IDs
 continue to serve rewards, Inventory, recipes and Creature Glossary.
 
-The [Midjourney character and weapon prompt guide](../Art/midjourney-character-style-prompt.md)
+The [Midjourney character and weapon prompt guide](../Art/guides/midjourney-character-style-prompt.md)
 owns the detailed prompt text and visual rules. Edit it when changing those rules;
 do not maintain a second competing prompt library here.
 Use the actual `Art` directory capitalization consistently.
 
-[Starter Art](../Art/Starter%20Art.md) extends that guide with three new base-form
+[Starter Art](../Art/characters/Starter%20Art.md) extends that guide with three new base-form
 Element-Bearers (female fire/greatsword, female grass/bow, male water/spear) and three
 basic mythological enemy prompts (goblin, imp, golem). These are generation prompts,
 not generated assets or changes to the playable roster.
 
-[Battle Scenery](../Art/Battle%20Scenery.md) contains the cutesy grassy-field
+[Battle Scenery](../Art/ui/Battle%20Scenery.md) contains the cutesy grassy-field
 background prompt for the opening solo encounter. Scenery is opaque full-bleed
 environment art, not a square transparent unit asset.
 
-The [elemental dungeon art packs](../Art/dungeons/README.md) combine eight
+The [elemental dungeon art packs](../Art/creatures/dungeons/README.md) combine eight
 ascending-power monster prompts, six 1:1 Seed-to-Soul material icons, one 3:1
 banner and one 16:9 battle arena per dungeon. They preserve the existing chibi
 style and separate sprite/item white canvases from opaque environment art.
@@ -1473,7 +1743,7 @@ not targetable combatants. The original is preserved without retouching.
 - Standalone weapon concepts retain3:2 framing and readable floating silhouettes,
   but now use the original clean chibi rendering, not splotchy ink showcases.
 - Currency and material icons adapt that renderer to chunky faceted objects at1:1,
-  without humanoid faces or body rules. See [currency prompts](../Art/Currencies.md).
+  without humanoid faces or body rules. See [currency prompts](../Art/items/Currencies.md).
 - Heaven/Abyss retain their severe palettes, same-slime identities and elaborate
   ornamentation; complexity does not permit realistic anatomy or a different renderer.
 - Only character/enemy portraits use mapped references at `--sw 400`;
@@ -1539,7 +1809,7 @@ python tools/prepare_art.py --assets tizu-evo-2 tizu-evo-3 tizu-evo-4 tizu-evo-5
 
 ### Tizu and Flora ability icon prompts
 
-[Tizu Art](../Art/Tizu%20Art.md) and [Flora Art](../Art/Flora%20Art.md) each contain
+[Tizu Art](../Art/characters/Tizu%20Art.md) and [Flora Art](../Art/characters/Flora%20Art.md) each contain
 six generation-ready 1:1 prompts: Passive, Skill1, Skill2, Last Flare, Normal and
 Defense. Their stated mechanics match the base resolved kits; no new effects,
 summons or retired Heavy action are introduced.

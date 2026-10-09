@@ -1,6 +1,7 @@
 import { starters, isRoseCharacter, type StarterId } from './starters';
 import { getCreature } from './creatures';
 import { lootRoll } from './loot-random';
+import { isWarCharacter } from './war-characters';
 
 export const bannerPityLimits = { highestStar: 200, unownedHighestStar: 500 } as const;
 export const bannerCharacterTierRates = { 5: .01, 6: .001 } as const;
@@ -79,7 +80,7 @@ export type StandardBannerEntry =
   | { kind: 'creature'; id: string; stars: 1 | 2 | 3; chance: number };
 
 export function standardBannerPool(): StandardBannerEntry[] {
-  const characters = starters.filter((character) => !isRoseCharacter(character.id));
+  const characters = starters.filter((character) => !isRoseCharacter(character.id) && !isWarCharacter(character.id));
   const characterChance = ([5, 6] as const).reduce((total, stars) =>
     total + (characters.some((character) => character.stars === stars) ? bannerCharacterTierRates[stars] : 0), 0);
   const remaining = 1 - characterChance;

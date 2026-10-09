@@ -3,9 +3,14 @@ import { characterGrowthFactor, characterPotencyFactor, weaponRules, type Charac
 import { getConduit, conduitBuffs, validateConduitSlots, validateConduitElement, type ConduitSlots, type ConduitUpgrades } from './conduits';
 import { type ElementId } from './activities';
 import { flagshipFighters } from './flagships';
+import { warFighters, warActionNames, isWarCharacter } from './war-characters';
+import { kitPilotDescriptions, type KitPilot } from './kit-pilots';
 
 export const actionIds = ['light', 'skill1', 'skill2', 'ultimate', 'defend'] as const;
 export type ActionId = (typeof actionIds)[number];
+export function basicActionName(id: string, action: 'light' | 'defend'): string {
+  return isWarCharacter(id) ? warActionNames[id][action] : action === 'light' ? 'Normal Attack' : 'Defense';
+}
 export const defenseMode = { damageReduction: 0.1 } as const;
 export const shatterGauge = {
   maximum: 100,
@@ -34,39 +39,44 @@ export interface AbilityStrength {
 }
 export interface Ability { name: string; description: string; cooldown: number; strength: AbilityStrength; targets?: 'all-enemies' | 'all-allies' }
 export interface FighterDefinition {
+  pilot?: KitPilot;
   stats: Stats;
-  passive: { name: string; description: string; damageBonus: number; defenseBonus: number; healFraction: number };
+  passive: { name: string; description: string; damageBonus: number; defenseBonus: number; healFraction: number; lightGaugeBonus?: number };
   abilities: Record<'skill1' | 'skill2' | 'ultimate', Ability>;
   unavailableActions?: ('skill1' | 'skill2' | 'ultimate')[];
 }
 
 export const fighters: Record<StarterId, FighterDefinition> = {
   ...flagshipFighters,
+  ...warFighters,
   ember: {
+    pilot: 'ember-seals',
     stats: { health: 220, defense: 10, damage: 38, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 8 },
     passive: { name: 'Unbroken Ember', description: '+20% outgoing damage at or below 50% health.', damageBonus: 0.2, defenseBonus: 0, healFraction: 0 },
     abilities: {
       skill1: { name: 'Cinder Cleave', description: '160% damage to one enemy; burn for 8 damage on its next two enemy phases.', cooldown: 2, strength: { damageMultiplier: 1.6, burnMultiplier: 1 } },
-      skill2: { name: 'Flame Arc', description: '110% damage to every living enemy.', cooldown: 3, strength: { damageMultiplier: 1.1 } },
-      ultimate: { name: 'Last Flare: Dawnfire', description: '280% damage to every enemy. Recover next turn.', cooldown: 0, strength: { damageMultiplier: 2.8 } },
+      skill2: { name: 'Flame Arc', description: `110% damage to every living enemy. ${kitPilotDescriptions['ember-seals'].skill2}`, cooldown: 3, strength: { damageMultiplier: 1.1 } },
+      ultimate: { name: 'Last Flare: Dawnfire', description: `280% damage to every enemy; burn surviving targets for 6 damage on their next two enemy phases. Recover next turn. ${kitPilotDescriptions['ember-seals'].ultimate}`, cooldown: 0, strength: { damageMultiplier: 2.8, burnMultiplier: .75 } },
     },
   },
   tide: {
+    pilot: 'shelter',
     stats: { health: 260, defense: 16, damage: 30, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: 'Stillwater Guard', description: '+8 defense, already included in displayed effective defense.', damageBonus: 0, defenseBonus: 8, healFraction: 0 },
     abilities: {
-      skill1: { name: 'Undertow Thrust', description: '150% damage to one enemy; reduce its next two enemy-phase attacks by 25%.', cooldown: 2, strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
+      skill1: { name: 'Undertow Thrust', description: `150% damage to one enemy; reduce its next two enemy-phase attacks by 25%. ${kitPilotDescriptions.shelter.skill1}`, cooldown: 2, strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
       skill2: { name: 'Tidal Shelter', description: 'Give every living ally 25 shield (refresh to at least 25; does not stack).', cooldown: 3, strength: { shield: 25 } },
-      ultimate: { name: 'Last Flare: Ocean Memory', description: '220% damage to all enemies and 35 shield for allies. Recover next turn.', cooldown: 0, strength: { damageMultiplier: 2.2, shield: 35 } },
+      ultimate: { name: 'Last Flare: Ocean Memory', description: `220% damage to all enemies and 35 shield for allies. Recover next turn. ${kitPilotDescriptions.shelter.ultimate}`, cooldown: 0, strength: { damageMultiplier: 2.2, shield: 35 } },
     },
   },
   sprout: {
+    pilot: 'bloom',
     stats: { health: 190, defense: 8, damage: 32, crit: 0.2, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: 'Root of Hope', description: 'At each new player turn, heal living allies by 5% of their maximum health while Flora lives.', damageBonus: 0, defenseBonus: 0, healFraction: 0.05 },
     abilities: {
-      skill1: { name: 'Briar Shot', description: '150% damage to one enemy with +20 percentage points critical chance.', cooldown: 2, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
-      skill2: { name: 'Verdant Renewal', description: 'Restore 30 health to every living ally; cannot revive.', cooldown: 3, strength: { healing: 30 } },
-      ultimate: { name: 'Last Flare: Worldseed', description: '180% damage to all enemies and heal living allies by 55. Recover next turn.', cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } },
+      skill1: { name: 'Briar Shot', description: `150% damage to one enemy with +20 percentage points critical chance. ${kitPilotDescriptions.bloom.skill1}`, cooldown: 2, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
+      skill2: { name: 'Verdant Renewal', description: "Restore 30 health to every living ally; cannot revive. Increase living allies' outgoing attack damage by 10% this and next player turn (refresh; does not stack).", cooldown: 3, strength: { healing: 30, attackBoostFraction: .1 } },
+      ultimate: { name: 'Last Flare: Worldseed', description: `180% damage to all enemies and heal living allies by 55. Recover next turn. ${kitPilotDescriptions.bloom.ultimate}`, cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } },
     },
   },
   rosetta: {
@@ -102,9 +112,9 @@ export const enemyIds = ['goblin', 'imp', 'golem'] as const;
 export const adventureScaling = { healthPerWave: 0.24, damagePerWave: 0.24, defensePerWave: 2 } as const;
 export type EnemyId = (typeof enemyIds)[number];
 export const enemies: Record<EnemyId, { name: string; art: string; element: ElementId; stats: Stats }> = {
-  goblin: { name: 'Goblin', art: 'goblin', element: 'efflorescent', stats: { health: 110, defense: 5, damage: 23, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
+  goblin: { name: 'Goblin', art: 'goblin', element: 'botanic', stats: { health: 110, defense: 5, damage: 23, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
   imp: { name: 'Imp', art: 'imp', element: 'infernic', stats: { health: 90, defense: 3, damage: 28, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
-  golem: { name: 'Rock Golem', art: 'rock-golem', element: 'tectonic', stats: { health: 160, defense: 15, damage: 20, crit: 0.05, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
+  golem: { name: 'Rock Golem', art: 'rock-golem', element: 'botanic', stats: { health: 160, defense: 15, damage: 20, crit: 0.05, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
 };
 
 export function formatStat(value: number): string {
@@ -150,7 +160,7 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
     kit.passive.description = `+${pct(kit.passive.damageBonus)}% outgoing damage at or below 50% health.`;
     kit.abilities.skill1.description = `${pct(value('skill1', 'damageMultiplier'))}% damage to one enemy; burn for ${Math.round(kit.stats.elementalDamage * value('skill1', 'burnMultiplier'))} damage on its next two enemy phases.`;
     kit.abilities.skill2.description = `${pct(value('skill2', 'damageMultiplier'))}% damage to every living enemy.`;
-    kit.abilities.ultimate.description = `${pct(value('ultimate', 'damageMultiplier'))}% damage to every enemy. Recover next turn.`;
+    kit.abilities.ultimate.description = `${pct(value('ultimate', 'damageMultiplier'))}% damage to every enemy; burn surviving targets for ${Math.round(kit.stats.elementalDamage * value('ultimate', 'burnMultiplier'))} damage on their next two enemy phases. Recover next turn.`;
   } else if (id === 'tide') {
     kit.passive.description = `+${formatStat(kit.passive.defenseBonus)} defense, already included in displayed effective defense.`;
     kit.abilities.skill1.description = `${pct(value('skill1', 'damageMultiplier'))}% damage to one enemy; reduce its next two enemy-phase attacks by ${pct(value('skill1', 'weakenFraction'))}%.`;
@@ -159,10 +169,12 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
   } else if (id === 'sprout') {
     kit.passive.description = `At each new player turn, heal living allies by ${pct(kit.passive.healFraction)}% of their maximum health while Flora lives.`;
     kit.abilities.skill1.description = `${pct(value('skill1', 'damageMultiplier'))}% damage to one enemy with +${pct(value('skill1', 'critBonus'))} percentage points critical chance.`;
-    kit.abilities.skill2.description = `Restore ${formatStat(value('skill2', 'healing'))} health to every living ally; cannot revive.`;
+    kit.abilities.skill2.description = `Restore ${formatStat(value('skill2', 'healing'))} health to every living ally; cannot revive. Increase living allies' outgoing attack damage by ${pct(value('skill2', 'attackBoostFraction'))}% this and next player turn (refresh; does not stack).`;
     kit.abilities.ultimate.description = `${pct(value('ultimate', 'damageMultiplier'))}% damage to all enemies and heal living allies by ${formatStat(value('ultimate', 'healing'))}. Recover next turn.`;
   } else {
-    kit.passive.description = kit.passive.healFraction > 0
+    kit.passive.description = kit.passive.lightGaugeBonus !== undefined
+      ? `Normal Attack gains ${formatStat(kit.passive.lightGaugeBonus)} additional Gauge, capped by Gauge capacity.`
+      : kit.passive.healFraction > 0
       ? `At each new player turn, heal living allies by ${pct(kit.passive.healFraction)}% of maximum health while this Element-Bearer lives.`
       : kit.passive.defenseBonus > 0 ? `+${formatStat(kit.passive.defenseBonus)} defense, included in effective defense.`
         : `+${pct(kit.passive.damageBonus)}% outgoing damage at or below 50% health.`;
@@ -178,6 +190,13 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
       if (strength.healing !== undefined) effects.push(`restore ${formatStat(strength.healing)} health to every living ally; cannot revive`);
       if (strength.attackBoostFraction !== undefined) effects.push(`increase living allies' outgoing attack damage by ${pct(strength.attackBoostFraction)}% this and next player turn (refresh; does not stack)`);
       ability.description = `${effects.join('; ')}.${action === 'ultimate' ? ' Recover next turn.' : ''}`;
+    }
+  }
+  if (kit.pilot) {
+    const descriptions = kitPilotDescriptions[kit.pilot];
+    kit.passive.description += ` ${descriptions.passive}`;
+    for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
+      if (descriptions[action]) kit.abilities[action].description += ` ${descriptions[action]}`;
     }
   }
   return kit;

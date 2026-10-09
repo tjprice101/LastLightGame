@@ -1,12 +1,8 @@
 export const elements = [
   { id: 'infernic', name: 'Infernic', affinity: 'Fire', dungeon: 'Flaming Depths', infusion: 'heavens' },
-  { id: 'aquatic', name: 'Aquatic', affinity: 'Water', dungeon: 'Oceanic Valley', infusion: 'heavens' },
-  { id: 'tectonic', name: 'Tectonic', affinity: 'Earth', dungeon: 'Precipice of the Earth', infusion: 'heavens' },
-  { id: 'efflorescent', name: 'Efflorescent', affinity: 'Nature', dungeon: 'Garden of Beauty', infusion: 'heavens' },
-  { id: 'voltaic', name: 'Voltaic', affinity: 'Electricity', dungeon: 'Galvanic Field', infusion: 'abyss' },
+  { id: 'oceanic', name: 'Oceanic', affinity: 'Water', dungeon: 'Oceanic Valley', infusion: 'heavens' },
   { id: 'atmospheric', name: 'Atmospheric', affinity: 'Wind', dungeon: 'Sky-bound Rift', infusion: 'heavens' },
-  { id: 'luminous', name: 'Luminous', affinity: 'Light', dungeon: 'Lustrous River', infusion: 'abyss' },
-  { id: 'ominous', name: 'Ominous', affinity: 'Shadow', dungeon: 'Valley of Solitude', infusion: 'abyss' },
+  { id: 'botanic', name: 'Botanic', affinity: 'Nature', dungeon: 'Garden of Beauty', infusion: 'heavens' },
   { id: 'tranquilitic', name: 'Tranquilitic', affinity: 'Peace', dungeon: 'City of Heaven', infusion: 'abyss' },
   { id: 'chaotic', name: 'Chaotic', affinity: 'Dark Matter ~ Energy', dungeon: 'Ruins of Chaos', infusion: 'abyss' },
 ] as const;
@@ -21,7 +17,7 @@ export const elementalMaterials = elements.flatMap((element) => materialRarities
   name: `${element.name} ${rarity} Material`,
 })));
 export const dungeonStageCount = 35;
-export const elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 10, maximumLevel: 120, maximumLevelStage: dungeonStageCount } as const;
+export const elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 38, maximumLevel: 120, maximumLevelStage: dungeonStageCount } as const;
 export const infusionModes = [
   { id: 'heavens', name: 'Soar to Heaven', energy: 'Light', enemyTheme: 'Dawnthorn Slime evolution line', stages: dungeonStageCount, startingLevel: 80, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
   { id: 'abyss', name: 'Delve into the Abyss', energy: 'Chaotic', enemyTheme: 'Wraththorn Slime evolution line', stages: dungeonStageCount, startingLevel: 80, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },

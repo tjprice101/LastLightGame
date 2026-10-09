@@ -13,6 +13,7 @@ from PIL import Image
 
 from color_matte import remove_color_matte, reviewed_background_starts
 from prepare_art import ROOT, connected_matte, standardize_sprite
+from art_library import art_path
 
 
 @dataclass(frozen=True)
@@ -173,7 +174,7 @@ def plan(regenerate: bool = False) -> list[tuple[Asset, Path, Path, bytes, dict[
         raise ValueError("Duplicate incoming filename in art intake map.")
     if len({asset.runtime for asset in ASSETS}) != len(ASSETS):
         raise ValueError("Duplicate runtime destination in art intake map.")
-    manifest = ROOT / "Art" / "root-art-intake.json"
+    manifest = art_path("root-art-intake.json", root=ROOT)
     if regenerate:
         previous = json.loads(manifest.read_text(encoding="utf-8"))
         if previous["asset_count"] != len(ASSETS) or len(previous["assets"]) != len(ASSETS):
@@ -200,7 +201,7 @@ def plan(regenerate: bool = False) -> list[tuple[Asset, Path, Path, bytes, dict[
         if not regenerate and runtime.exists() and runtime.read_bytes() != output:
             raise FileExistsError(f"Different runtime asset already exists: {runtime}")
         planned.append((asset, incoming, source, output, record))
-    manifest = ROOT / "Art" / "root-art-intake.json"
+    manifest = art_path("root-art-intake.json", root=ROOT)
     manifest_text = json.dumps({"asset_count": len(planned), "assets": [record for *_, record in planned]},
                                indent=2, ensure_ascii=False) + "\n"
     if not regenerate and manifest.exists() and manifest.read_text(encoding="utf-8") != manifest_text:
@@ -221,7 +222,8 @@ def intake(apply: bool = False, regenerate: bool = False) -> None:
                 runtime.write_bytes(output)
         print(f"{asset.incoming} -> {asset.source} -> public/assets/{asset.runtime}")
     if apply:
-        manifest = ROOT / "Art" / "root-art-intake.json"
+        manifest = art_path("root-art-intake.json", root=ROOT)
+        manifest.parent.mkdir(parents=True, exist_ok=True)
         manifest.write_text(json.dumps({"asset_count": len(planned), "assets": [record for *_, record in planned]},
                                        indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"{len(planned)} assets {'installed' if apply else 'validated (dry run)'}; source originals remain unchanged.")

@@ -17,7 +17,7 @@ export function impactEvents(events: readonly BattleEvent[], attackIndex: number
   for (let index = attackIndex + 1; index < events.length; index++) {
     const event = events[index];
     if (event.kind === 'attack' || event.kind === 'turn' || event.periodic) break;
-    if (event.source === attack.source && (event.kind === 'damage' || event.kind === 'heal' || event.kind === 'shield')) indices.push(index);
+    if (event.source === attack.source && (event.kind === 'damage' || event.kind === 'heal' || event.kind === 'shield' || (event.kind === 'status' && event.debuffs && event.target !== attack.source))) indices.push(index);
   }
   return indices;
 }

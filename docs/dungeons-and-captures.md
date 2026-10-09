@@ -1,7 +1,7 @@
 # Dungeons and captured enemies
 
 **Status:** Phase6 implemented: Heaven/Abyss capture rewards, retained playable
-kits, independent leveling/Conduits and mixed squads. All ten elemental material
+kits, independent leveling/Conduits and mixed squads. All six elemental material
 dungeons also have combat, rewards, stage unlocks and clear reports.
 See [Gameplay and elements](gameplay-and-elements.md) for encounter/drop tables
 and [Character instances](character-instances.md) for persistence/protection.
@@ -12,8 +12,9 @@ and [Character instances](character-instances.md) for persistence/protection.
   Every entry starts at wave 1; defeats grant persistent Prismatica.
 - Dungeons are separate activities outside Adventure. **Flaming Depths** has supplied
   enemies and an encounter draft; the scope now includes one material dungeon per
-  each of ten elements in [the Gameplay framework](gameplay-and-elements.md).
-  All are 35 stages; levels start10 and reach120 at Stage35.
+  each of six elements in [the Gameplay framework](gameplay-and-elements.md).
+  All are35 stages; levels start38 and reach120 at Stage35. All ten original
+  enemy families remain available through merged canonical dungeons (D-160).
 - Dungeons contain enemy waves with higher enemy levels than Adventure.
   The exact comparison (corresponding wave or another baseline), level offset,
   stat table, wave count, encounter composition, and completion conditions need
@@ -28,7 +29,7 @@ and [Character instances](character-instances.md) for persistence/protection.
 - **Soar to Heaven and Delve into the Abyss:** every newly defeated ordinary enemy
   or boss automatically rolls exactly20% capture chance. Defend/burn/AOE kills
   use the same award path; dead enemies cannot roll again.
-- Adventure and the ten elemental material dungeons do **not** grant captures.
+- Adventure and the six elemental material dungeons do **not** grant captures.
   Crownfall Treasury and Rosethorn Sanctuary grant the same20% captures.
   [Passion of Crimson Roses](crimson-roses.md) also grants20% captures, but only
   for enemies at levels120 or below. Its35 stages run80-140; captures remain
@@ -145,14 +146,14 @@ Do not invent pending decisions from visual power order.
 
 ## Art handoff
 
-[Flaming Depths](../Art/Flaming%20Depths.md) provides ten distinct enemies in ascending
+[Flaming Depths](../Art/creatures/Flaming%20Depths.md) provides ten distinct enemies in ascending
 visual power, using the existing chibi/eyes-only/white-canvas style.
 All ten supplied originals are now preserved under `Art/source/enemies`, with
 standardized transparent exports under `public/assets/enemies`.
 They are used in Flaming Depths encounters, but do not establish capture odds.
 Source and export contracts remain in [Art workflow](art-workflow.md).
 Heaven/Abyss captures reuse the **same** registered enemy portrait/form and
-existing [gamemode prompts](../Art/gamemodes/README.md), including loot/cut-ins.
+existing [gamemode prompts](../Art/creatures/gamemodes/README.md), including loot/cut-ins.
 No duplicate "owned version" art or new style is needed. Higher forms keep the
 shared renderer while becoming more epic/majestic, as documented in the prompt
 guide; clean cutout sources stay separate from runtime glow.

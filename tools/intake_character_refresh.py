@@ -13,10 +13,12 @@ from PIL import Image, ImageDraw, ImageFilter
 from prepare_art import ROOT, connected_matte, standardize_sprite
 from color_matte import reviewed_background_starts
 from intake_roster_art import PHASES, remove_exterior_outline
+from portrait_pocket_settings import apply_corrections
+from art_library import art_path
 
 
-MANIFEST = ROOT / "Art" / "character-refresh-intake.json"
-SETTINGS = ROOT / "Art" / "character-refresh-settings.json"
+MANIFEST = art_path("character-refresh-intake.json", root=ROOT)
+SETTINGS = art_path("character-refresh-settings.json", root=ROOT)
 BRUNO_INCOMING = "sacredtrevor_Full_body_gacha_JRPG_chibi_unit_illustration_on__d7561af2-093b-40e1-ad72-4b48314d7186_1.png"
 ASSETS = [(BRUNO_INCOMING if asset == "bruno" else filename, asset)
           for rows in PHASES.values() for filename, category, asset in rows if category == "characters"]
@@ -26,7 +28,7 @@ def load_settings():
     settings = json.loads(SETTINGS.read_text(encoding="utf-8"))
     for row in settings.values():
         row.setdefault("edge_cleanup", {"source_pixels": 2, "distance_ramp": 60})
-    return settings
+    return apply_corrections(settings)
 
 
 def digest(path):
@@ -46,7 +48,15 @@ def clean(image, settings):
     rgb = np.asarray(image.convert("RGB"), dtype=np.float32)
     height, width = rgb.shape[:2]
     radius = settings["radius"]
-    if settings.get("row_gradient"):
+    if settings.get("row_gradient_samples"):
+        samples = sorted(settings["row_gradient_samples"], key=lambda point: point[1])
+        positions = [round(y * (height - 1)) for _, y in samples]
+        colors = np.asarray([rgb[round(y * (height - 1)), round(x * (width - 1))]
+                             for x, y in samples])
+        key = np.stack([np.interp(np.arange(height), positions, colors[:, channel])
+                        for channel in range(3)], axis=1)[:, None, :]
+        distance = np.sqrt(np.sum((rgb - key) ** 2, axis=2))
+    elif settings.get("row_gradient"):
         # Reviewed empty strips on each side sample the generated vertical backdrop.
         border = np.concatenate((rgb[:, :4], rgb[:, -4:]), axis=1)
         key = np.median(border, axis=1)[:, None, :]
@@ -57,7 +67,14 @@ def clean(image, settings):
         nearest = distances.argmin(axis=0)
         key = keys[nearest]
         distance = distances.min(axis=0)
-    eligible = distance <= radius
+    radii = np.full((height, width), radius, dtype=np.float32)
+    for region in settings.get("background_regions", []):
+        area = Image.new("L", image.size)
+        ImageDraw.Draw(area).polygon(
+            [(round(x * width), round(y * height)) for x, y in region["polygon"]], fill=255)
+        selected = np.asarray(area) > 0
+        radii[selected] = region["radius"]
+    eligible = distance <= radii
     protected = Image.new("L", image.size)
     draw = ImageDraw.Draw(protected)
     for polygon in settings.get("foreground_polygons", []):
@@ -79,8 +96,8 @@ def clean(image, settings):
         pixels = settings["edge_cleanup"]["source_pixels"]
         adjacent = np.asarray(Image.fromarray(matte.astype(np.uint8) * 255)
                               .filter(ImageFilter.MaxFilter(2 * pixels + 1))) > 0
-        edge = adjacent & ~matte & (np.asarray(protected) == 0) & (distance < radius + ramp)
-        alpha = np.clip((distance[edge] - radius) / ramp, .01, 1)
+        edge = adjacent & ~matte & (np.asarray(protected) == 0) & (distance < radii + ramp)
+        alpha = np.clip((distance[edge] - radii[edge]) / ramp, .01, 1)
         colors = np.broadcast_to(key, rgb.shape)[edge]
         rgba[edge, :3] = np.clip(
             (rgb[edge] - (1 - alpha[:, None]) * colors) / alpha[:, None], 0, 255).astype(np.uint8)
@@ -146,6 +163,8 @@ def intake(apply=False, remove_incoming=False):
                   "runtime": str(runtime.relative_to(ROOT)), "runtime_sha256": sha256(output).hexdigest(),
                   "previous_runtime": str(historical.relative_to(ROOT)),
                   "previous_runtime_sha256": historical_hash, "processing": settings[asset]}
+        if old and "processing_history" in old:
+            record["processing_history"] = old["processing_history"]
         planned.append((source, archived, runtime, historical, output, record))
     text = json.dumps({"asset_count": len(planned), "assets": [row[-1] for row in planned]}, indent=2) + "\n"
     if previous and previous != json.loads(text):
@@ -161,6 +180,7 @@ def intake(apply=False, remove_incoming=False):
             runtime.write_bytes(output)
             if digest(archived) != record["source_sha256"] or digest(runtime) != record["runtime_sha256"]:
                 raise ValueError(f"Installed bytes differ: {runtime}")
+        MANIFEST.parent.mkdir(parents=True, exist_ok=True)
         MANIFEST.write_text(text, encoding="utf-8")
         from character_art_revisions import write_revisions
         write_revisions()

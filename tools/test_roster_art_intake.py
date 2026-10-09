@@ -7,11 +7,12 @@ from PIL import Image
 import numpy as np
 
 from intake_roster_art import ROOT, ROSES, PHASES, SOURCE_FACING, digest, prepare, remove_exterior_outline, historical_runtime
+from art_library import art_path
 
 
 class RosterArtIntakeTests(unittest.TestCase):
     def test_roses_mapping_and_provenance_cover_every_supplied_asset(self):
-        manifest = json.loads((ROOT / "Art" / "roses-art-intake.json").read_text(encoding="utf-8"))
+        manifest = json.loads((art_path("roses-art-intake.json", root=ROOT)).read_text(encoding="utf-8"))
         self.assertEqual(manifest["asset_count"], 51)
         self.assertEqual(len(manifest["assets"]), 51)
         self.assertEqual(len({row[0] for row in ROSES}), 51)
@@ -50,7 +51,7 @@ class RosterArtIntakeTests(unittest.TestCase):
     def test_all_135_assets_have_verified_sources_transparent_exports_and_padding(self):
         total = 0
         for phase, mapping in PHASES.items():
-            manifest = json.loads((ROOT / "Art" / f"{phase}-art-intake.json").read_text(encoding="utf-8"))
+            manifest = json.loads((art_path(f"{phase}-art-intake.json", root=ROOT)).read_text(encoding="utf-8"))
             self.assertEqual(manifest["asset_count"], len(mapping))
             self.assertEqual(len(manifest["assets"]), len(mapping))
             for expected, record in zip(mapping, manifest["assets"]):

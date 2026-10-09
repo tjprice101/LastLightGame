@@ -2,6 +2,8 @@
 from pathlib import Path
 import re
 import unittest
+from character_palette import design_prose
+from art_library import art_path
 
 ROOT = Path(__file__).resolve().parent.parent
 ART = ROOT / "Art"
@@ -75,14 +77,14 @@ def prompts(path):
 class RoseArtPromptTests(unittest.TestCase):
     def test_form_headings_match_owner_delivered_titles(self):
         for name, spec in CHARACTERS.items():
-            text = (ART / f"{name} Art.md").read_text(encoding="utf-8")
+            text = (art_path(f"{name} Art.md", root=ROOT)).read_text(encoding="utf-8")
             headings = re.findall(r"^### Evo\.\d / \w+ - (.+)$", text, re.M)
             self.assertEqual(headings, [f"{title}, {name}" for title in spec["titles"]])
 
     def test_character_packs_have_exact_forms_icons_and_weapons(self):
         for name, spec in CHARACTERS.items():
             with self.subTest(character=name):
-                path = ART / f"{name} Art.md"
+                path = art_path(f"{name} Art.md", root=ROOT)
                 text, bodies = prompts(path)
                 self.assertEqual(len(bodies), 13)
                 self.assertEqual(len(re.findall(r"Suggested asset ID: `[^`]+`", text)), 13)
@@ -90,8 +92,9 @@ class RoseArtPromptTests(unittest.TestCase):
                     f"**{spec['stars']} Element-Bearer**",
                     " ".join(text.split()),
                 )
-                self.assertNotIn("--sref", "\n".join(bodies))
-                self.assertIn("<approved_reference_image_url>", text)
+                for body in bodies[:6]:
+                    self.assertRegex(body, r" --sref https://\S+ --sw 150$")
+                self.assertNotIn("--sref", "\n".join(bodies[6:]))
 
                 headings = re.findall(r"^### Evo\.\d / \w+ - (.+)$", text, re.M)
                 self.assertEqual(len(headings), 6)
@@ -111,7 +114,7 @@ class RoseArtPromptTests(unittest.TestCase):
                     if index == 0:
                         self.assertIn("plain ivory long-sleeved tunic" if name == "Rosetta"
                                       else "plain charcoal long-sleeved tunic", positive)
-                        self.assertNotIn("armor", positive)
+                        self.assertNotIn("armor", design_prose(positive))
                     if index == 1:
                         self.assertIn("first forged", positive)
                         self.assertIn("no full wings yet", positive)
@@ -149,7 +152,7 @@ class RoseArtPromptTests(unittest.TestCase):
                         self.assertNotIn("twin swords", positive)
 
     def test_rosetta_restores_compact_anatomy_and_amplifies_effect_splendor(self):
-        text, bodies = prompts(ART / "Rosetta Art.md")
+        text, bodies = prompts(art_path("Rosetta Art.md", root=ROOT))
         renderer = ("clean precise anime contours crisp cel shading smooth painted highlights jewel-like "
                     "saturated deep crimson antique gold pearlescent ivory and rose colors")
         anatomy = ("compact chibi rounded oversized head tiny torso short limbs "
@@ -158,7 +161,7 @@ class RoseArtPromptTests(unittest.TestCase):
             positive, negatives = body.split(" --no ", 1)
             positive = positive.split(" --", 1)[0]
             with self.subTest(block=index + 1):
-                self.assertLessEqual(len(positive.split()), 350)
+                self.assertLessEqual(len(design_prose(positive).split()), 350)
                 self.assertIn(renderer, positive)
                 self.assertNotRegex(positive, r"\b(?:Rosetta|Common|Omnic|six-star|runes)\b")
                 self.assertIn("through all openings", positive)
@@ -197,8 +200,8 @@ class RoseArtPromptTests(unittest.TestCase):
         self.assertIn("Pause for owner review of Rosetta", text)
 
     def test_rosetta_late_resplendence_fills_canvas_without_changing_anatomy(self):
-        _, bodies = prompts(ART / "Rosetta Art.md")
-        chromatic = "rose-violet sapphire-blue and warm opal chromatic facets"
+        _, bodies = prompts(art_path("Rosetta Art.md", root=ROOT))
+        chromatic = "ruby-red scarlet champagne-gold and ivory chromatic facets"
         for index, (coverage, margin) in enumerate(zip((50, 60, 72, 84, 94, 96), (25, 20, 14, 8, 3, 2))):
             positive = bodies[index].split(" --", 1)[0]
             for anchor in (
@@ -213,7 +216,7 @@ class RoseArtPromptTests(unittest.TestCase):
             ):
                 self.assertIn(anchor, positive)
             self.assertNotIn("generous solid background-color margin", positive)
-            self.assertLessEqual(len(positive.split()), 350)
+            self.assertLessEqual(len(design_prose(positive).split()), 350)
             if index >= 4:
                 self.assertIn(chromatic + " on armor wings bow and rings", positive)
                 self.assertIn("wings mantle thorn arches ribbons spread toward every side and corner", positive)
@@ -223,7 +226,7 @@ class RoseArtPromptTests(unittest.TestCase):
             self.assertIn(chromatic, bodies[index])
 
     def test_rosetta_omnic_adds_dense_rear_effects_without_losing_readability(self):
-        _, bodies = prompts(ART / "Rosetta Art.md")
+        _, bodies = prompts(art_path("Rosetta Art.md", root=ROOT))
         positive = bodies[5].split(" --", 1)[0]
         for anchor in (
             "extremely busy rear energy tapestry behind character and wings",
@@ -237,19 +240,19 @@ class RoseArtPromptTests(unittest.TestCase):
             "no glows or glowing visual effects",
         ):
             self.assertIn(anchor, positive)
-        self.assertLessEqual(len(positive.split()), 350)
+        self.assertLessEqual(len(design_prose(positive).split()), 350)
         for body in bodies[:5] + bodies[6:]:
             self.assertNotIn("rear energy tapestry", body)
 
     def test_thornia_phase_retains_compact_identity_and_progressive_canvas_spread(self):
-        text, bodies = prompts(ART / "Thornia Art.md")
+        text, bodies = prompts(art_path("Thornia Art.md", root=ROOT))
         renderer = ("clean precise anime contours crisp cel shading smooth painted highlights jewel-like "
                     "saturated charcoal deep crimson antique gold pearlescent ivory and rose colors")
         for index, body in enumerate(bodies):
             positive, negatives = body.split(" --no ", 1)
             positive = positive.split(" --", 1)[0]
             with self.subTest(block=index + 1):
-                self.assertLessEqual(len(positive.split()), 350)
+                self.assertLessEqual(len(design_prose(positive).split()), 350)
                 self.assertIn(renderer, positive)
                 self.assertNotRegex(positive, r"\b(?:Thornia|Common|Omnic|six-star|runes)\b")
                 self.assertIn("nothing touches the frame edges", positive)
@@ -278,7 +281,7 @@ class RoseArtPromptTests(unittest.TestCase):
         self.assertIn("Pause for owner review of Thornia", text)
 
     def test_thornia_phase_builds_elegant_shadow_storm_and_retains_final_architecture(self):
-        _, bodies = prompts(ART / "Thornia Art.md")
+        _, bodies = prompts(art_path("Thornia Art.md", root=ROOT))
         positive = [body.split(" --", 1)[0] for body in bodies]
         for index, anchors in enumerate((
             ("plain charcoal long-sleeved tunic", "one small dark-steel greatsword"),
@@ -297,7 +300,7 @@ class RoseArtPromptTests(unittest.TestCase):
             for anchor in ("upper pair rising middle pairs spreading lower pair sweeping down",
                            "divided royal charcoal mantle lined crimson", "high thorn collar",
                            "airborne twisting sword sweep with one knee raised", "offset thorn fans",
-                           "amethyst rose-violet and warm opal chromatic facets",
+                           "deep-crimson scarlet champagne-gold and ivory chromatic facets",
                            "wings mantle thorn arches ribbons spread toward every side and corner"):
                 self.assertIn(anchor, body)
         for anchor in ("eight principal wings in four expanded pairs", "eight shorter auxiliary wings",
@@ -315,7 +318,7 @@ class RoseArtPromptTests(unittest.TestCase):
             self.assertIn("torso shoulders arms hands hips thighs knees shins and feet", body)
 
     def test_crinso_phase_keeps_compact_identity_connected_weapon_and_canvas_spread(self):
-        text, bodies = prompts(ART / "Crinso Art.md")
+        text, bodies = prompts(art_path("Crinso Art.md", root=ROOT))
         renderer = ("clean precise anime contours crisp cel shading smooth painted highlights jewel-like "
                     "saturated charcoal deep crimson antique gold pearlescent ivory and rose colors")
         weapon = ("exactly one connected double-ended two-edged sword with single central grip "
@@ -324,7 +327,7 @@ class RoseArtPromptTests(unittest.TestCase):
             positive, negatives = body.split(" --no ", 1)
             positive = positive.split(" --", 1)[0]
             with self.subTest(block=index + 1):
-                self.assertLessEqual(len(positive.split()), 350)
+                self.assertLessEqual(len(design_prose(positive).split()), 350)
                 self.assertIn(renderer, positive)
                 self.assertIn("nothing touches the frame edges", positive)
                 self.assertIn("subject colors unchanged", positive)
@@ -354,7 +357,7 @@ class RoseArtPromptTests(unittest.TestCase):
         self.assertIn("Pause for owner review of Crinso", text)
 
     def test_crinso_phase_escalates_duality_and_retains_final_rose_weapon_architecture(self):
-        _, bodies = prompts(ART / "Crinso Art.md")
+        _, bodies = prompts(art_path("Crinso Art.md", root=ROOT))
         positives = [body.split(" --", 1)[0] for body in bodies]
         for index, anchors in enumerate((
             ("plain charcoal long-sleeved tunic", "short simple blades", "gold flame tongue and crimson zigzag"),
@@ -375,7 +378,7 @@ class RoseArtPromptTests(unittest.TestCase):
                            "divided royal charcoal mantle lined crimson", "high petal collar",
                            "airborne twisting sword sweep one knee raised weapon beside body",
                            "opposed gold-flame and crimson-lightning petal vanes", "offset thorn fans",
-                           "rose-violet sapphire-blue and warm opal facets",
+                           "ruby-red scarlet champagne-gold and ivory facets",
                            "wings mantle thorn arches ribbons spread toward every side and corner"):
                 self.assertIn(anchor, body)
         for anchor in ("eight principal wings in four expanded pairs", "eight auxiliary wings",
@@ -391,10 +394,10 @@ class RoseArtPromptTests(unittest.TestCase):
             self.assertIn("torso shoulders arms hands hips thighs knees shins and feet", body)
 
     def test_roselius_pack_has_six_matching_creature_forms_and_six_materials(self):
-        text, bodies = prompts(ART / "Passion of Crimson Roses.md")
+        text, bodies = prompts(art_path("Passion of Crimson Roses.md", root=ROOT))
         self.assertEqual(len(bodies), 15)
         character_prompt_count = sum(
-            len(prompts(ART / f"{name} Art.md")[1]) for name in CHARACTERS
+            len(prompts(art_path(f"{name} Art.md", root=ROOT))[1]) for name in CHARACTERS
         )
         self.assertEqual(character_prompt_count + len(bodies), 54)
         self.assertIn("35 stages", text)
@@ -439,7 +442,7 @@ class RoseArtPromptTests(unittest.TestCase):
             self.assertNotIn("plain solid", body)
 
     def test_roselius_revision_keeps_identity_and_progressive_whole_artwork_spread(self):
-        text, bodies = prompts(ART / "Passion of Crimson Roses.md")
+        text, bodies = prompts(art_path("Passion of Crimson Roses.md", root=ROOT))
         renderer = ("clean precise anime contours crisp cel shading smooth painted highlights jewel-like "
                     "saturated deep crimson antique gold pearlescent ivory and rose colors")
         identity = ("one female light-element chibi angel creature, rounded pearlescent ivory core "
@@ -450,7 +453,7 @@ class RoseArtPromptTests(unittest.TestCase):
             positive, negatives = body.split(" --no ", 1)
             positive = positive.split(" --", 1)[0]
             with self.subTest(cutout=index + 1):
-                self.assertLessEqual(len(positive.split()), 350)
+                self.assertLessEqual(len(design_prose(positive).split()), 350)
                 self.assertIn(renderer, positive)
                 self.assertNotRegex(positive, r"\b(?:Roselius|Rosethorn|Common|Uncommon|Rare|Epic|Legendary|Omnic)\b")
                 self.assertIn("nothing touches the frame edges", positive)
@@ -479,7 +482,7 @@ class RoseArtPromptTests(unittest.TestCase):
         self.assertIn("Pause for owner review of Roselius and Rosethorn materials", text)
 
     def test_roselius_and_materials_progress_and_preserve_final_architecture(self):
-        _, bodies = prompts(ART / "Passion of Crimson Roses.md")
+        _, bodies = prompts(art_path("Passion of Crimson Roses.md", root=ROOT))
         positives = [body.split(" --", 1)[0] for body in bodies[:12]]
         stages = (
             ("plain ivory tunic", "two small rose-gold feather wings", "one gold thorn curl"),
@@ -530,13 +533,16 @@ class RoseArtPromptTests(unittest.TestCase):
         self.assertNotIn("interwoven open arches", positives[10])
 
     def test_all_cutouts_have_shared_style_contract_and_exactly_one_flag(self):
-        files = tuple(ART / f"{name} Art.md" for name in CHARACTERS)
-        files += (ART / "Passion of Crimson Roses.md",)
+        files = tuple(art_path(f"{name} Art.md", root=ROOT) for name in CHARACTERS)
+        files += (art_path("Passion of Crimson Roses.md", root=ROOT),)
         for path in files:
             _, bodies = prompts(path)
             for index, body in enumerate(bodies):
                 with self.subTest(file=path.name, prompt=index + 1):
-                    self.assertNotIn("--sref", body)
+                    if path.stem.removesuffix(" Art") in CHARACTERS and index < 6:
+                        self.assertRegex(body, r" --sref https://\S+ --sw 150$")
+                    else:
+                        self.assertNotIn("--sref", body)
                     for flag in FLAGS:
                         self.assertEqual(len(re.findall(re.escape(flag) + r"\s", body)), 1)
                     self.assertIn("--niji 6", body)

@@ -7,6 +7,7 @@ from PIL import Image, ImageDraw
 from prepare_art import ROOT, supplied_cutout, prepare_sprite, standardize_sprite, connected_matte
 from prepare_dungeons import source_file
 from color_matte import remove_color_matte
+from art_library import art_path
 
 CURRENCIES = {"Fractalis": "fractalis", "Lycalis": "lycalis"}
 
@@ -99,7 +100,7 @@ if __name__ == "__main__":
             "processing": "reviewed prism source-specific border-connected teal key and bounded edge cleanup; supplied alpha trim/resize/pad only" if source.stem in ("Prismatica", "Null-Prismatica") else "per-currency border-connected brown key; Fractalis reviewed exterior shadow mask preserving detached residue; Lycalis localized muted sparkle spill removal; trim, uniform resize, transparent padding",
         })
     if args.record_review:
-        manifest = ROOT / "Art" / "matte-review.json"
+        manifest = art_path("matte-review.json", root=ROOT)
         data = json.loads(manifest.read_text(encoding="utf-8"))
         updated = {record["asset"] for record in records}
         data["assets"] = [record for record in data["assets"] if record["asset"] not in updated] + records

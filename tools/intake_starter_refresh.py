@@ -11,9 +11,11 @@ from PIL import Image, ImageDraw
 
 from prepare_art import ROOT, ASSETS as LEGACY_ASSETS, standardize_sprite
 from intake_character_refresh import clean
+from portrait_pocket_settings import apply_corrections
+from art_library import art_path
 
-MANIFEST = ROOT / "Art" / "starter-refresh-intake.json"
-SETTINGS = ROOT / "Art" / "starter-refresh-settings.json"
+MANIFEST = art_path("starter-refresh-intake.json", root=ROOT)
+SETTINGS = art_path("starter-refresh-settings.json", root=ROOT)
 ASSETS = [(filename.replace(f"{name} Beginner", f"Beginner, {name}"), asset)
           for filename, (category, asset) in LEGACY_ASSETS.items()
           for name in ("Infernis", "Tizu", "Flora")
@@ -34,7 +36,7 @@ def load_settings():
         raise ValueError("Reviewed settings must cover exactly18 starter forms.")
     for row in settings.values():
         row.setdefault("edge_cleanup", {"source_pixels": 2, "distance_ramp": 40})
-    return settings
+    return apply_corrections(settings)
 
 
 def prepare(source, settings, size=960, content=864):
@@ -71,6 +73,8 @@ def intake(apply=False, remove_incoming=False, review=None):
                   "runtime_sha256": sha256(output).hexdigest(),
                   "previous_runtime": str(historical.relative_to(ROOT)),
                   "previous_runtime_sha256": previous_hash, "processing": settings[asset]}
+        if old and "processing_history" in old_records[asset]:
+            record["processing_history"] = old_records[asset]["processing_history"]
         planned.append((incoming, source, archived, runtime, historical, image, output, record))
     records = {"asset_count": 18, "assets": [row[-1] for row in planned]}
     if old and old != records:
@@ -103,6 +107,7 @@ def intake(apply=False, remove_incoming=False, review=None):
             runtime.write_bytes(output)
             if digest(archived) != record["source_sha256"] or digest(runtime) != record["runtime_sha256"]:
                 raise ValueError(f"Installed starter bytes differ: {record['asset']}")
+        MANIFEST.parent.mkdir(parents=True, exist_ok=True)
         MANIFEST.write_text(json.dumps(records, indent=2) + "\n", encoding="utf-8")
         from character_art_revisions import write_revisions
         write_revisions()

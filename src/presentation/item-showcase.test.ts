@@ -16,20 +16,20 @@ describe('activity item artwork', () => {
     expect(html).not.toContain('materials/fractalis');
   });
   it('uses registered elemental/specialty PNGs', () => {
-    const html = itemShowcase([{ id: 'infernic-common' }, { id: 'heavens-evolution' }, { id: 'abyss-level' }, { id: 'ominous-omnic' }], 'Rewards');
+    const html = itemShowcase([{ id: 'infernic-common' }, { id: 'heavens-evolution' }, { id: 'abyss-level' }, { id: 'chaotic-omnic' }], 'Rewards');
     expect(html).toContain('materials/infernic-seed.png');
     expect(html).toContain('materials/heavens-crown-scarlet-oath.png');
     expect(html).toContain('materials/abyss-hourglass-endless-wrath.png');
-    expect(html).toContain('Soul of Ominous');
+    expect(html).toContain('Soul of Chaotic');
     expect(html).not.toContain('Artwork pending');
-    expect(html).toContain('materials/ominous-soul.png');
+    expect(html).toContain('materials/chaotic-soul.png');
     expect(() => itemShowcase([{ id: 'unknown' }], 'Rewards')).toThrow('Unknown material');
   });
   it('keeps a named neutral tile when future material artwork is unavailable', () => {
     const art = vi.spyOn(dungeonArtwork, 'materialArt').mockReturnValue(undefined);
     try {
-      const html = itemShowcase([{ id: 'ominous-omnic' }], 'Rewards');
-      expect(html).toContain('Soul of Ominous');
+      const html = itemShowcase([{ id: 'chaotic-omnic' }], 'Rewards');
+      expect(html).toContain('Soul of Chaotic');
       expect(html).toContain('Artwork pending');
       expect(html).not.toContain('<img');
     } finally { art.mockRestore(); }
@@ -55,7 +55,7 @@ describe('activity item artwork', () => {
   it('references only existing exported PNGs on activity reward displays', () => {
     const html = gameplayHub(emptyAccount());
     const sections = html.match(/<section class="item-showcase"[\s\S]*?<\/section>/g) ?? [];
-    expect(sections).toHaveLength(17);
+    expect(sections).toHaveLength(16);
     expect(sections.some((section) => section.includes('Broken Mechanical Components') && section.includes('currencies/mechanical-components.png'))).toBe(true);
     for (const section of sections) {
       for (const match of section.matchAll(/src="[^"]*assets\/([^"]+)"/g)) {

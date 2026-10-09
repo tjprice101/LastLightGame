@@ -16,7 +16,7 @@ reviewed offline background removal, enclosed-gap cleanup and updated facing.
 Existing shared IDs wire all six forms into menus, Squad, archives, Summon
 showcases/results, battle and cut-ins. D-121 icons/materials/creatures/scenery
 are unchanged. Both original generations and previous exports remain preserved.
-See [provenance](../Art/character-refresh-intake.json) and
+See [provenance](../Art/provenance/character-refresh-intake.json) and
 [workflow/validation](art-workflow.md#replacement-character-portraits-d-134).
 The D-134 intake itself changed no character titles, acquisition, progression,
 economics or saves; D-143 above now adopts the intentional delivered base titles.
@@ -32,7 +32,7 @@ own scenery rather than pending placeholders. Earlier art-pending statements
 below describe the pre-intake state.
 
 Originals/hashes and cleanup settings live in
-[Roses provenance](../Art/roses-art-intake.json); regeneration/review steps are
+[Roses provenance](../Art/provenance/roses-art-intake.json); regeneration/review steps are
 in [art workflow](art-workflow.md#phased-rosterevent-delivery-d-121).
 Historical D-121 intake retained authored titles despite different base filenames
 and the supplied `Crisno` typo. D-143 adopts only the owner-confirmed Rosetta/
@@ -172,7 +172,7 @@ contours/cel shading/painted highlights, eyes-only identities, covered designs,
 opaque no-glow powers and keyed/padded cutouts. No anatomy exception remains
 for rose EBs; no gameplay scale/stat changes. Same2.5-3-head anatomy/body one third
 of canvas in every form.
-[Rosetta](../Art/Rosetta%20Art.md) is Phase8:13 blocks retain their format,
+[Rosetta](../Art/characters/Rosetta%20Art.md) is Phase8:13 blocks retain their format,
 4/8/16 late wings, retained airborne draw/rose regalia and
 expanded bow/cosmic sun-rings. Owner subsequently moved to Thornia under D-117
 below. No generated assets or new combat mechanics.
@@ -186,7 +186,7 @@ compact anatomy unchanged; effects/wings/bow fill the canvas without cropping
 or hiding eyes. No glow/scenery. Final bow/Last Flare share facet accents.
 
 **Current phase D-117:** owner moved to Thornia, requesting progressively
-wilder yet elegant effects/splendor. [Thornia](../Art/Thornia%20Art.md) now
+wilder yet elegant effects/splendor. [Thornia](../Art/characters/Thornia%20Art.md) now
 has13 individually revised blocks, compact anatomy/eyes-only renderer,
 segmented thorn armor/ornate greatsword,4/8/16 wings and increasingly elaborate
 tilted eclipse rings/off-axis thorn fans/ribbons/interwoven open arches.
@@ -196,14 +196,14 @@ Rosetta's blocks unchanged. Pause for Thornia review; only Crinso pending.
 Prior phase status above is historical; no runtime/artwork changes.
 
 **Latest phase D-118/D-119:** owner next requests the same style for Roselius/
-materials, then also Crinso. [Roselius/material pack](../Art/Passion%20of%20Crimson%20Roses.md)
+materials, then also Crinso. [Roselius/material pack](../Art/creatures/Passion%20of%20Crimson%20Roses.md)
 now has12 revised cutouts: six compact female Luminous weaponless angels,
 6/8/16 late wings and expanded rose court/thorn rings/mantle/crown with
 right-facing airborne casting; six distinct face-free collectibles with
 layered petals/rings/thorn fans, Soul retaining/expanding Heart's architecture.
 Creature ensemble framing follows50/60/72/84/94/96% targets; materials stay
 two-thirds square and readable. Scenery's three prompts remain unchanged.
-[Crinso](../Art/Crinso%20Art.md) now has13 revised blocks: compact eyes-only
+[Crinso](../Art/characters/Crinso%20Art.md) now has13 revised blocks: compact eyes-only
 identity,4/8/16 wings, gold-flame/crimson-lightning duality and one connected
 double-ended two-edged sword. Weapon hub progresses to fully blossomed/nested
 rose, rails/armor/mantle/tilted rings/counter-sweeping ribbons expand through
@@ -260,10 +260,10 @@ Discovery/reveal and protected-copy management remain intact.
 **54 generation prompts:**39 character/icon/weapon prompts plus15 Roselius/
 material/header/arena/summoning prompts:
 
-- [Rosetta](../Art/Rosetta%20Art.md)
-- [Thornia](../Art/Thornia%20Art.md)
-- [Crinso](../Art/Crinso%20Art.md)
-- [Event, creatures, materials and banner](../Art/Passion%20of%20Crimson%20Roses.md)
+- [Rosetta](../Art/characters/Rosetta%20Art.md)
+- [Thornia](../Art/characters/Thornia%20Art.md)
+- [Crinso](../Art/characters/Crinso%20Art.md)
+- [Event, creatures, materials and banner](../Art/creatures/Passion%20of%20Crimson%20Roses.md)
 
 Simple starter-style bases build into full-body crimson/gold/pearl prism armor,
 large wings, rose/thorn powers and ornate signature weapons. Rosetta's6-star

@@ -1,4 +1,5 @@
 import { flagshipCharacters } from './flagships';
+import { warCharacters } from './war-characters';
 
 export const openingStarters = [
   {
@@ -27,8 +28,8 @@ export const openingStarters = [
     role: 'Tank',
     art: 'tizu',
     title: 'A quiet tide. An unbroken will.',
-    element: 'Aquatic (Water)',
-    elementId: 'aquatic',
+    element: 'Oceanic (Water)',
+    elementId: 'oceanic',
     weapon: 'Spear',
     color: '#79c9eb',
     description: 'A blue-haired traveler with a simple spear and a blue sash. Where the world falls silent, the tide keeps moving.',
@@ -46,8 +47,8 @@ export const openingStarters = [
     role: 'Healer ~ Support',
     art: 'flora',
     title: 'Life takes root in the impossible',
-    element: 'Efflorescent (Nature)',
-    elementId: 'efflorescent',
+    element: 'Botanic (Nature)',
+    elementId: 'botanic',
     weapon: 'Bow',
     color: '#a9d58a',
     description: 'A green-haired archer with a wooden bow and a green neckerchief. A new beginning grows from a single seed.',
@@ -63,14 +64,14 @@ export const openingStarters = [
 export const roseCharacters = [
   {
     id: 'rosetta', stars: 6, name: 'Rosetta', role: 'Attacker', art: 'rosetta',
-    title: 'Virtue takes flight beneath a crimson sun', element: 'Luminous (Light)', elementId: 'luminous',
+    title: 'Virtue takes flight beneath a crimson sun', element: 'Tranquilitic (Peace)', elementId: 'tranquilitic',
     weapon: 'Bow', color: '#eee2af',
     description: 'A rose-bound archer whose golden thorns and crimson wings scatter the shadows.',
     lore: { origin: 'The gardens beneath sunny skies', story: 'Rosetta carries a quiet vow through the rose gardens: passion must protect life, not possess it. Her bow draws golden thorns across the sky, opening a path for those trapped beneath the crimson canopy.', vow: 'Let every rose shelter a beginning.', awakening: 'A crimson petal turns toward the sun.' },
   },
   {
     id: 'thornia', stars: 6, name: 'Thornia', role: 'Tank', art: 'thornia',
-    title: 'The forbidden garden keeps its promises', element: 'Ominous (Shadow)', elementId: 'ominous',
+    title: 'The forbidden garden keeps its promises', element: 'Chaotic (Dark Matter ~ Energy)', elementId: 'chaotic',
     weapon: 'Greatsword', color: '#bc9bef',
     description: 'A shadow knight with a golden rose in her hair and a greatsword wrapped in crimson thorns.',
     lore: { origin: 'The forbidden garden', story: 'Thornia once guarded a single golden rose at the edge of a forgotten garden. When its gates broke, she took up a greatsword and wove its thorns into armor, refusing to let beauty become another weapon against the defenseless.', vow: 'No one crosses these thorns alone.', awakening: 'The golden rose remembers its guardian.' },
@@ -83,7 +84,7 @@ export const roseCharacters = [
     lore: { origin: 'The paths between twin roses', story: 'Crinso learned that a garden needs both gentle tending and the strength to cut away what threatens it. His small double-edged dagger grew into a rose-centered blade as he followed that balance, carrying golden beauty and crimson destruction without surrendering to either.', vow: 'I choose what grows beyond the storm.', awakening: 'Two petals unfold around one resolve.' },
   },
 ] as const;
-export const starters = [...openingStarters, ...roseCharacters, ...flagshipCharacters] as const;
+export const starters = [...openingStarters, ...roseCharacters, ...flagshipCharacters, ...warCharacters] as const;
 export type Starter = (typeof starters)[number];
 export type StarterId = Starter['id'];
 export type RoseCharacterId = (typeof roseCharacters)[number]['id'];

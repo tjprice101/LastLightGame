@@ -3,9 +3,10 @@ from pathlib import Path
 import re
 import unittest
 from urllib.parse import parse_qs, urlparse
+from art_library import art_path
 
 ROOT = Path(__file__).resolve().parent.parent
-GUIDE = ROOT / "Art" / "midjourney-character-style-prompt.md"
+GUIDE = art_path("midjourney-character-style-prompt.md", root=ROOT)
 BLOCK = re.compile(r"```(?:text)?\n(.*?)\n```", re.S)
 PACKS = ("Atmoso", "Aurora", "Bliss", "Bruno", "Crinso", "Disciple",
          "Elise", "Razor", "Rosetta", "Thornia")
@@ -62,7 +63,7 @@ class CharacterStyleReferenceTests(unittest.TestCase):
         }
         count = 0
         for filename, stages in expected.items():
-            text = (ROOT / "Art" / filename).read_text(encoding="utf-8")
+            text = (art_path(filename, root=ROOT)).read_text(encoding="utf-8")
             bodies = []
             others = []
             for match in BLOCK.finditer(text):
@@ -82,7 +83,7 @@ class CharacterStyleReferenceTests(unittest.TestCase):
                 with self.subTest(file=filename, block=index + 1):
                     body = bodies[index]
                     self.assertTrue(body.endswith(
-                        f" --sref {self.references[stage]} --sw 400"))
+                        f" --sref {self.references[stage]} --sw 150"))
                     self.assertEqual(body.count("--sref "), 1)
                     self.assertEqual(body.count("--sw "), 1)
                     self.assertNotIn("<approved_reference", body)

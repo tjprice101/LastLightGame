@@ -11,11 +11,12 @@ from PIL import Image, ImageDraw
 
 import intake_machine_art as intake
 from prepare_art import standardize_sprite
+from art_library import art_path
 
 
 class MachineArtIntakeTests(unittest.TestCase):
     def test_all_28_sources_exports_and_regeneration_match_provenance(self):
-        manifest = json.loads((intake.ROOT / "Art" / "machines-art-intake.json").read_text())
+        manifest = json.loads((art_path("machines-art-intake.json", root=intake.ROOT)).read_text())
         self.assertEqual(manifest["asset_count"], 28)
         self.assertEqual(len(manifest["assets"]), 28)
         self.assertEqual(len({row[0] for row in intake.ASSETS}), 28)
@@ -110,7 +111,7 @@ class MachineArtIntakeTests(unittest.TestCase):
                 self.assertTrue((root / "one.png").exists())
                 runtime.unlink()
                 intake.intake(apply=True)
-                manifest = root / "Art" / "machines-art-intake.json"
+                manifest = art_path("machines-art-intake.json", root=root)
                 original_manifest = manifest.read_bytes()
                 (root / "two.png").write_bytes(b"changed source")
                 with self.assertRaises(FileExistsError):

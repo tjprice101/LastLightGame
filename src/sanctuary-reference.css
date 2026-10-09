@@ -15,6 +15,8 @@
 .sanctuary-shell .sanctuary-brand .brand-mark { display: grid; place-items: center; width: 44px; height: 44px; min-width: 44px; border: 1px solid var(--menu-edge); transform: rotate(-8deg); font-size: 15px; }
 .sanctuary-shell .sanctuary-brand strong { font-size: 22px; font-weight: 400; }
 .sanctuary-shell .sanctuary-brand small { display: block; margin-top: 4px; color: #ababab; font-size: 12px; }
+.sanctuary-shell .sanctuary-back { display: flex; align-items: center; gap: 8px; min-height: 44px; text-align: left; }
+.sanctuary-shell .sanctuary-back small { max-width: 150px; overflow-wrap: anywhere; }
 .sanctuary-shell .sanctuary-header .sanctuary-title { grid-column: 2; grid-row: 1; text-align: center; }
 .sanctuary-shell .sanctuary-title .eyebrow { display: none; }
 .sanctuary-shell .sanctuary-title h1 { margin: 0; font-size: 28px; }
@@ -47,6 +49,14 @@
 .sanctuary-dock button { display: grid; place-items: center; gap: 6px; min-width: 0; min-height: 68px; padding: 8px; border: 0; border-radius: 15px; background: none; color: #bcbcbc; font-size: 12px; }
 .sanctuary-dock button .ui-icon { width: 22px; height: 22px; }
 .sanctuary-dock button[aria-current="page"] { background: #f1f0e9; color: #161616; }
+.sanctuary-shell :is(.sanctuary-dock button, .home-banner, .home-menu-shortcuts button, .activity-picker button) {
+  transition: translate 180ms ease-out, background-color 180ms ease-out, border-color 180ms ease-out;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduced"]) .sanctuary-shell :is(.sanctuary-dock button, .home-banner, .home-menu-shortcuts button, .activity-picker button):not(:disabled):hover {
+    translate: 0 -2px;
+  }
+}
 .sanctuary-shell :is(button, summary, a):focus-visible { outline: 2px solid #f1f0e9; outline-offset: 3px; }
 .sanctuary-shell [hidden] { display: none !important; }
 .sanctuary-shell .home-hub { grid-template-columns: 260px minmax(0, 1fr) 250px; grid-template-areas: "destinations identity squad"; gap: 24px; align-items: center; min-height: min(630px, calc(100svh - 200px)); }
@@ -185,11 +195,6 @@
 #sanctuary-help .information-content { padding: 0; line-height: 1.7; }
 #sanctuary-menu .sanctuary-menu-utilities h3 { margin: 24px 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: #aaa; }
 body:has(#sanctuary-help[open]) { overflow: hidden; }
-@media (min-width: 981px) {
-  .sanctuary-shell .gameplay-hub .activity-group { max-height: max(440px, calc(100svh - 280px)); overflow-y: auto; scrollbar-width: thin; }
-  .sanctuary-shell .character-hub .character-control-panel { max-height: max(460px, calc(100svh - 260px)); overflow-y: auto; scrollbar-width: thin; }
-  .sanctuary-shell .summon-main { max-height: max(460px, calc(100svh - 300px)); overflow-y: auto; scrollbar-width: thin; padding-right: 6px; }
-}
 @media (max-width: 1100px) {
   .sanctuary-shell .sanctuary-header { grid-template-columns: minmax(160px, 1fr) auto minmax(320px, 1fr); gap: 12px; padding: 18px; }
   .sanctuary-shell .home-hub { grid-template-columns: 220px minmax(0, 1fr) 220px; gap: 16px; }

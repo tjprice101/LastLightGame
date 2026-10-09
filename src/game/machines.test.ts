@@ -2,11 +2,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { conduits, conduitBuffs, validateConduitSlots, type ConduitId, type ConduitSlots } from '../content/conduits';
 import { elements } from '../content/activities';
 import { infusionEncounter } from '../content/infusions';
-import { machineConduitDrops, machineConduitLoot, bannerConduitBonus, machineEnemies } from '../content/machines';
+import { machineConduitDrops, machineConduitLoot, bannerConduitBonus, machineEnemies, isBannerConduitEligible } from '../content/machines';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { getStarter, starters } from '../content/starters';
-import { resolveFighter } from '../content/combat';
-import { act, endTurn, nextStage, damageAmount, createBattle, createInfusionBattle, type BattleState } from './battle';
+import { resolveFighter, shatterGauge } from '../content/combat';
+import { act, endTurn, nextStage, damageAmount, actionUnavailable, createBattle, createInfusionBattle, type BattleState } from './battle';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, equipConduit, summonCharacter, purchaseConduit, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { createCreatureCopy, validateCapturedCharacters, resolveCapturedFighter } from './character-instances';
@@ -17,6 +17,7 @@ import { lootItems } from '../presentation/battle-loot';
 import { encounterRewards, battleResults } from '../presentation/battle-results';
 import { archives } from '../presentation/archives';
 import { machineComponentDrop } from '../content/mechanical-components';
+import { createSession } from '../presentation/battle-view';
 
 function sequence(...values: number[]): () => number {
   let index = 0;
@@ -30,14 +31,32 @@ function storage(): ProfileStorage {
   return { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => { values.set(key, value); }, removeItem: (key) => { values.delete(key); } };
 }
 function slots(id: ConduitId): ConduitSlots { return [id, null, null, null, null, null, null, null]; }
-function omnicBattle(element: (typeof elements)[number]['id']): BattleState {
-  const starter = starters.find((entry) => entry.elementId === element);
-  const conduit = conduits.find((entry) => entry.element === element);
+function omnicBattle(element: 'infernic' | 'aquatic' | 'tectonic' | 'efflorescent' | 'voltaic' | 'atmospheric' | 'luminous' | 'ominous' | 'tranquilitic' | 'chaotic'): BattleState {
+  const identities = { infernic: 'ember', aquatic: 'tide', tectonic: 'bruno', efflorescent: 'sprout',
+    voltaic: 'elise', atmospheric: 'atmoso', luminous: 'rosetta', ominous: 'thornia', tranquilitic: 'bliss', chaotic: 'crinso' };
+  const starter = starters.find((entry) => entry.id === identities[element]);
+  const conduit = conduits.find((entry) => entry.id.startsWith(`${element}-`));
   if (!starter || !conduit) throw new Error('Missing element fixture.');
   const state = createBattle(1729, [starter.id], { [starter.id]: { level: 50, evolution: 4 } }, { [starter.id]: slots(conduit.id) });
   state.allies[0].shatter = 100;
   for (const enemy of state.enemies) { enemy.hp = enemy.stats.health = 1e8; enemy.stats.defense = 0; enemy.stats.damage = 0; enemy.stats.crit = 0; }
   state.allies[0].stats.crit = 0;
+  return state;
+}
+function expandedBattle(id: ConduitId): BattleState {
+  const conduit = conduits.find((entry) => entry.id === id);
+  const starter = conduit?.element && starters.find((entry) => entry.elementId === conduit.element);
+  if (!conduit?.element || !starter) throw new Error(`Missing expanded Omnic fixture: ${id}.`);
+  const state = createBattle(1729, [starter.id], { [starter.id]: { level: 50, evolution: 4 } },
+    { [starter.id]: slots(conduit.id) });
+  state.allies[0].shatter = 100;
+  state.allies[0].stats.crit = 0;
+  for (const enemy of state.enemies) {
+    enemy.hp = enemy.stats.health = 1e8;
+    enemy.stats.defense = 0;
+    enemy.stats.damage = 0;
+    enemy.stats.crit = 0;
+  }
   return state;
 }
 function attack(state: BattleState, action: 'light' | 'skill1' | 'skill2' | 'ultimate' | 'defend') {
@@ -46,9 +65,9 @@ function attack(state: BattleState, action: 'light' | 'skill1' | 'skill2' | 'ult
 
 describe('machine content and exact probabilities', () => {
   it('authors the exact catalog and distinct stats/penalties/elements without selling drops', () => {
-    expect(conduits).toHaveLength(25);
-    expect(new Set(conduits.map((entry) => entry.id)).size).toBe(25);
-    for (const [rarity, count] of [['Common', 5], ['Rare', 5], ['Legendary', 5], ['Omnic', 10]] as const) {
+    expect(conduits).toHaveLength(85);
+    expect(new Set(conduits.map((entry) => entry.id)).size).toBe(85);
+    for (const [rarity, count] of [['Common', 15], ['Rare', 23], ['Legendary', 21], ['Omnic', 26]] as const) {
       const pool = conduits.filter((entry) => entry.rarity === rarity);
       expect(pool).toHaveLength(count);
       for (const conduit of pool) {
@@ -57,10 +76,16 @@ describe('machine content and exact probabilities', () => {
         if (rarity === 'Rare') expect(buffs).toHaveLength(2);
         if (rarity === 'Legendary') expect(buffs.map((entry) => entry.amount)).toEqual([85, -10]);
         if (rarity === 'Omnic') { expect(buffs).toHaveLength(3); expect(conduit.mechanic).toBeTruthy(); }
-        if (rarity !== 'Common') { expect(conduit.price).toBeNull(); expect(conduit.art).toBe(conduit.id); }
+        if (rarity !== 'Common') expect(conduit.price).toBeNull();
       }
     }
-    expect(conduits.filter((entry) => entry.rarity === 'Omnic').map((entry) => entry.element).sort()).toEqual(elements.map((entry) => entry.id).sort());
+    expect(conduits.filter((entry) => entry.rarity === 'Omnic').map((entry) => entry.element).sort())
+      .toEqual([...Array<string>(3).fill('infernic'), ...Array<string>(3).fill('oceanic'),
+        ...Array<string>(5).fill('atmospheric'), ...Array<string>(5).fill('botanic'),
+        ...Array<string>(5).fill('tranquilitic'), ...Array<string>(5).fill('chaotic')].sort());
+    expect(conduits.filter((entry) => entry.price !== null)).toHaveLength(15);
+    expect(conduits.filter((entry) => entry.art === null)).toHaveLength(60);
+    expect(conduits.filter((entry) => entry.art === entry.id)).toHaveLength(25);
   });
   it('has100 stages 10-120, six distinct machines, every fifth-stage boss and no missing art URLs', () => {
     for (let stage = 1; stage <= 100; stage++) {
@@ -81,23 +106,37 @@ describe('machine content and exact probabilities', () => {
   it('checks exact independent tier boundaries, excludes Omnic below 75 and chooses equal entries', () => {
     expect(machineConduitDrops(74, sequence(.08, .035))).toEqual({});
     expect(machineConduitDrops(75, sequence(.08, .035, .01))).toEqual({});
-    for (let index = 0; index < 5; index++) {
-      const drops = machineConduitDrops(75, sequence(.079999, (index + .5) / 5, .034999, (index + .5) / 5, .01));
-      expect(Object.keys(drops)).toEqual([conduits.filter((c) => c.rarity === 'Rare')[index].id, conduits.filter((c) => c.rarity === 'Legendary')[index].id]);
+    const rarePool = conduits.filter((c) => c.rarity === 'Rare');
+    const legendaryPool = conduits.filter((c) => c.rarity === 'Legendary');
+    const omnicPool = conduits.filter((c) => c.rarity === 'Omnic');
+    for (let index = 0; index < rarePool.length; index++) {
+      const drops = machineConduitDrops(75, sequence(.079999, (index + .5) / rarePool.length,
+        .035, .01));
+      expect(Object.keys(drops)).toEqual([rarePool[index].id]);
     }
-    for (let index = 0; index < 10; index++) {
-      expect(machineConduitDrops(75, sequence(.08, .035, .009999, (index + .5) / 10))).toEqual({ [conduits.filter((c) => c.rarity === 'Omnic')[index].id]: 1 });
+    for (let index = 0; index < legendaryPool.length; index++) {
+      expect(machineConduitDrops(75, sequence(.08, .034999, (index + .5) / legendaryPool.length, .01)))
+        .toEqual({ [legendaryPool[index].id]: 1 });
+    }
+    for (let index = 0; index < omnicPool.length; index++) {
+      expect(machineConduitDrops(75, sequence(.08, .035, .009999, (index + .5) / omnicPool.length))).toEqual({ [omnicPool[index].id]: 1 });
     }
     expect(Object.keys(machineConduitDrops(100, () => 0))).toHaveLength(3);
     expect(bannerConduitBonus(() => .005)).toBeUndefined();
-    for (let index = 0; index < 5; index++) expect(bannerConduitBonus(sequence(.004999, (index + .5) / 5))).toBe(conduits.filter((c) => c.rarity === 'Legendary')[index].id);
+    const bannerPool = ['worldbreaker-drive', 'immortal-vessel', 'citadel-spine', 'astral-prism', 'judgment-lens'];
+    for (let index = 0; index < bannerPool.length; index++) {
+      expect(bannerConduitBonus(sequence(.004999, (index + .5) / bannerPool.length))).toBe(bannerPool[index]);
+    }
+    expect(conduits.filter((entry) => entry.rarity === 'Legendary' && isBannerConduitEligible(entry.id))).toHaveLength(5);
+    expect(conduits.filter((entry) => entry.rarity === 'Legendary' && !isBannerConduitEligible(entry.id))).toHaveLength(16);
     for (const invalid of [-1, 1, NaN, Infinity]) expect(() => machineConduitDrops(1, () => invalid)).toThrow('Loot roll');
   });
   it('publishes exactly the acquisition API odds in the discovery-gated glossary', () => {
     for (const stage of [1, 74, 75, 100]) {
       const encounter = infusionEncounter('machines', stage);
       const pool = machineConduitLoot(stage);
-      expect(pool).toHaveLength(stage < 75 ? 10 : 20);
+      expect(pool).toHaveLength(stage < 75 ? 44 : 70);
+      expect(pool.some((drop) => conduits.find((conduit) => conduit.id === drop.id)?.rarity === 'Common')).toBe(false);
       for (const [rarity, chance] of [['Rare', .08], ['Legendary', .035], ['Omnic', stage < 75 ? 0 : .01]] as const) {
         expect(pool.filter((drop) => conduits.find((c) => c.id === drop.id)?.rarity === rarity).reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(chance, 12);
       }
@@ -365,6 +404,256 @@ describe('Conduit equipment and all ten Omnic mechanics', () => {
     expect(inventory).toContain('conduits/aquatic-leviathan-pump.png');
     const detail = characterDetail(getStarter('ember'), 'equipment', account);
     expect(detail).toContain('Element mismatch');
-    expect(archives(account, 'characters').match(/data-archive-character=/g)).toHaveLength(108);
+    expect(archives(account, 'characters').match(/data-archive-character=/g)).toHaveLength(126);
+    expect(archives(account, 'conduits').match(/Eligible for the 0\.5% Legendary bonus tier/g)).toHaveLength(5);
+  });
+});
+
+describe('expanded Omnic mechanics', () => {
+  it('combines live and expanded same-element Omnic modifiers while preserving zero stats and upgrades', () => {
+    const progress = { level: 105, evolution: 6 };
+    const base = resolveFighter('ember', progress);
+    const equipped = resolveFighter('ember', progress, [
+      'infernic-phoenix-reactor', 'infernic-cinder-testament', null, null, null, null, null, null,
+    ]);
+    expect(equipped.stats.damage).toBeCloseTo(base.stats.damage * 1.6 * 1.5);
+    expect(equipped.stats.elementalDamage).toBeCloseTo(base.stats.elementalDamage * 1.5 * 1.6);
+    expect(equipped.stats.health).toBeCloseTo(base.stats.health * 1.4);
+    expect(equipped.stats.defense).toBeCloseTo(base.stats.defense * 1.4);
+    const zeroElemental = resolveFighter('tide', progress, ['prism-splinter-socket', null, null, null, null, null, null, null]);
+    expect(zeroElemental.stats.elementalDamage).toBe(0);
+    const upgraded = resolveFighter('ember', progress, ['infernic-cinder-testament', null, null, null, null, null, null, null],
+      { 'infernic-cinder-testament': 5 });
+    expect(upgraded.stats.elementalDamage).toBeCloseTo(base.stats.elementalDamage * 3.1);
+  });
+
+  it('Cinder seals trigger once per enemy phase, cap at three, and add damage when consumed by a skill', () => {
+    let state = expandedBattle('infernic-cinder-testament');
+    for (const enemy of state.enemies) enemy.burn = { damage: 1, turns: 3, sourceId: state.allies[0].id };
+    for (const seals of [1, 2, 3]) {
+      const tick = endTurn(state);
+      const periodic = tick.events.find((entry) => entry.kind === 'damage' && entry.periodic);
+      expect(periodic?.debuffs).toEqual({
+        ...(seals < 3 ? { burn: { damage: 1, turns: 3 - seals } } : {}),
+        weakened: 0, weakenFraction: 0,
+      });
+      state = tick.state;
+      expect(state.allies[0].conduitCharges?.emberSeals).toBe(seals);
+    }
+    state.allies[0].spent = false;
+    const actor = state.allies[0];
+    const expected = damageAmount(actor.stats.damage,
+      actor.kit!.abilities.skill1.strength!.damageMultiplier! * 1.15, 0, false, actor.stats.critMultiplier);
+    const result = attack(state, 'skill1');
+    expect(result.events.find((entry) => entry.kind === 'damage')?.amount).toBe(expected);
+    expect(result.state.allies[0].conduitCharges?.emberSeals).toBeUndefined();
+    expect(result.state.allies[0].conduitCharges?.emberSealRound).toBe(state.round - 1);
+  });
+
+  it('Undertide reduces the other ordinary cooldown once per player turn without touching recovery', () => {
+    const state = expandedBattle('aquatic-undertide-chronometer');
+    const actor = state.allies[0];
+    state.enemies[0].weakened = 2;
+    actor.readyRound.skill2 = state.round + 3;
+    const first = attack(state, 'skill1').state;
+    expect(first.allies[0].readyRound.skill2).toBe(state.round + 2);
+    expect(first.allies[0].recoverThrough).toBe(0);
+    first.allies[0].spent = false;
+    first.allies[0].readyRound.skill1 = first.round;
+    first.enemies[0].weakened = 2;
+    const second = attack(first, 'skill1').state;
+    expect(second.allies[0].readyRound.skill2).toBe(state.round + 2);
+  });
+
+  it('publishes ordered typed debuff snapshots on application, periodic damage, and duration changes', () => {
+    const state = expandedBattle('aquatic-undertide-chronometer');
+    const application = attack(state, 'skill1');
+    const applied = application.events.find((entry) => entry.kind === 'status' && entry.target === state.enemies[0].id)?.debuffs;
+    expect(applied?.weakened).toBe(2);
+    expect(applied?.weakenFraction).toBe(application.state.enemies[0].weakenFraction);
+    const tick = endTurn(application.state);
+    const weakenUpdate = tick.events.find((entry) => entry.kind === 'status' && entry.target === state.enemies[0].id);
+    expect(weakenUpdate?.debuffs?.weakened).toBe(1);
+    expect(weakenUpdate?.debuffs?.weakenFraction).toBe(application.state.enemies[0].weakenFraction);
+    const periodicState = structuredClone(state);
+    periodicState.enemies[0].burn = { damage: 7, turns: 2, sourceId: state.allies[0].id };
+    const periodic = endTurn(periodicState).events.find((entry) => entry.periodic);
+    expect(periodic?.debuffs).toEqual({ burn: { damage: 7, turns: 1 }, weakened: 0, weakenFraction: 0 });
+  });
+
+  it('Faultkeeper consumes its ward on the first direct hit even when shields absorb it', () => {
+    const guarded = expandedBattle('tectonic-faultkeeper-loom');
+    guarded.enemies = guarded.enemies.slice(0, 1);
+    guarded.enemies[0].stats.damage = 10000;
+    guarded.allies[0].shield = 1e6;
+    const without = structuredClone(guarded);
+    without.allies[0].conduits = Array(8).fill(null);
+    const armed = attack(guarded, 'defend').state;
+    const plain = attack(without, 'defend').state;
+    const armedStart = armed.allies[0].shield;
+    const plainStart = plain.allies[0].shield;
+    const guardedHit = endTurn(armed);
+    const plainHit = endTurn(plain);
+    expect(armedStart - guardedHit.state.allies[0].shield).toBeLessThan(plainStart - plainHit.state.allies[0].shield);
+    expect(guardedHit.state.allies[0].conduitCharges?.faultkeeperWard).toBeUndefined();
+    expect(guardedHit.events.some((entry) => entry.kind === 'status' && entry.message.includes('reduces this direct hit by 15%'))).toBe(true);
+  });
+
+  it('Verdant healing grants another living ally a one-use Normal Attack bonus', () => {
+    const progress = { level: 50, evolution: 4 };
+    const state = createBattle(1729, ['sprout', 'ember'], { sprout: progress, ember: progress },
+      { sprout: slots('efflorescent-verdant-covenant') });
+    state.enemies = state.enemies.slice(0, 1);
+    state.enemies.forEach((enemy) => { enemy.hp = enemy.stats.health = 1e8; enemy.stats.defense = 0; });
+    state.allies[0].shatter = 100;
+    state.allies[1].stats.crit = 0;
+    state.seed = 0x7fffffff;
+    const other = state.allies[1];
+    other.hp = Math.floor(other.stats.health / 2);
+    const healed = act(state, 'sprout', 'skill2', state.enemies[0].id).state;
+    expect(healed.allies[1].conduitCharges?.verdantNormal).toBe(true);
+    healed.allies[1].spent = false;
+    const expected = damageAmount(other.stats.damage, 1.1 * (1 + healed.allies[1].attackBoost!.fraction), 0, false, other.stats.critMultiplier);
+    const normal = act(healed, 'ember', 'light', healed.enemies[0].id);
+    expect(normal.events.find((entry) => entry.kind === 'damage')?.amount).toBe(expected);
+    expect(normal.state.allies[1].conduitCharges?.verdantNormal).toBeUndefined();
+  });
+
+  it('Stormstep primes the opposite slot and its new charge never affects the priming activation', () => {
+    const state = expandedBattle('voltaic-stormstep-dynamo');
+    const first = attack(state, 'skill1');
+    const actor = first.state.allies[0];
+    expect(actor.conduitCharges?.stormstepSkill2).toBe(true);
+    expect(actor.conduitCharges?.stormstepSkill1).toBeUndefined();
+    const ordinaryHit = first.events.find((entry) => entry.kind === 'damage')!;
+    const noBonus = damageAmount(state.allies[0].stats.damage,
+      state.allies[0].kit!.abilities.skill1.strength!.damageMultiplier!, 0, ordinaryHit.critical, state.allies[0].stats.critMultiplier);
+    expect(ordinaryHit.amount).toBe(noBonus);
+    actor.spent = false;
+    actor.readyRound.skill2 = first.state.round;
+    const next = attack(first.state, 'skill2');
+    const chargedHit = next.events.find((entry) => entry.kind === 'damage')!;
+    const expected = damageAmount(actor.stats.damage,
+      actor.kit!.abilities.skill2.strength!.damageMultiplier! * 1.1, 0, chargedHit.critical, actor.stats.critMultiplier);
+    expect(chargedHit.amount).toBe(expected);
+    const uncharged = structuredClone(first.state);
+    uncharged.allies[0].conduits = Array(8).fill(null);
+    delete uncharged.allies[0].conduitCharges?.stormstepSkill2;
+    uncharged.allies[0].spent = false;
+    uncharged.allies[0].readyRound.skill2 = uncharged.round;
+    expect(attack(uncharged, 'skill2').events.find((entry) => entry.kind === 'damage')?.amount).toBeLessThan(chargedHit.amount);
+    expect(next.state.allies[0].conduitCharges?.stormstepSkill1).toBe(true);
+    expect(next.state.allies[0].conduitCharges?.stormstepSkill2).toBeUndefined();
+  });
+
+  it('Skythread saves an illegal skill attempt and discounts only the next legal ordinary skill', () => {
+    const state = expandedBattle('atmospheric-skythread-rudder');
+    const defended = attack(state, 'defend').state;
+    const actor = defended.allies[0];
+    const discountedCost = Math.max(1, shatterGauge.costs.skill1 - 5);
+    expect(actor.conduitCharges?.skythread).toBe(true);
+    actor.spent = false;
+    actor.shatter = discountedCost - 1;
+    expect(actionUnavailable(defended, actor, 'skill1')).toContain(`Requires ${discountedCost} Shatter Gauge`);
+    expect(actor.conduitCharges?.skythread).toBe(true);
+    actor.shatter = discountedCost;
+    expect(actionUnavailable(defended, actor, 'skill1')).toBeNull();
+    const activated = attack(defended, 'skill1').state.allies[0];
+    expect(activated.shatter).toBe(0);
+    expect(activated.conduitCharges?.skythread).toBeUndefined();
+  });
+
+  it('Dawn Witness stacks to three and consumes the bonus on the next offensive activation', () => {
+    let state = expandedBattle('luminous-dawn-witness-array');
+    state.enemies = state.enemies.slice(0, 1);
+    for (const stacks of [1, 2, 3]) {
+      state.allies[0].spent = false;
+      state.seed = 0x7fffffff;
+      state = attack(state, 'light').state;
+      expect(state.allies[0].conduitCharges?.dawnWitness).toBe(stacks);
+    }
+    const withWitness = structuredClone(state);
+    const withoutWitness = structuredClone(state);
+    withWitness.seed = withoutWitness.seed = Array.from({ length: 10000 }, (_, index) => index + 1).find((seed) => {
+      let roll = seed;
+      roll ^= roll << 13;
+      roll ^= roll >>> 17;
+      roll ^= roll << 5;
+      const chance = (roll >>> 0) / 0x100000000;
+      return chance > .02 && chance < .11;
+    })!;
+    withWitness.allies[0].spent = withoutWitness.allies[0].spent = false;
+    withWitness.allies[0].stats.crit = withoutWitness.allies[0].stats.crit = .02;
+    delete withoutWitness.allies[0].conduitCharges?.dawnWitness;
+    withoutWitness.allies[0].conduits = Array(8).fill(null);
+    expect(attack(withWitness, 'light').events.find((entry) => entry.kind === 'damage')?.critical).toBe(true);
+    expect(attack(withoutWitness, 'light').events.find((entry) => entry.kind === 'damage')?.critical).toBe(false);
+    expect(attack(withWitness, 'light').state.allies[0].conduitCharges?.dawnWitness).toBeUndefined();
+  });
+
+  it('Nightglass marks surviving targets to two and consumes only the attacked bearer-owned marks', () => {
+    const state = expandedBattle('ominous-nightglass-archive');
+    const first = attack(state, 'skill2').state;
+    expect(first.enemies[0].conduitMarks?.[first.allies[0].id]).toBe(1);
+    expect(attack(state, 'skill2').events.find((entry) => entry.kind === 'status' && entry.debuffs?.marks)?.debuffs)
+      .toMatchObject({ weakened: 2, marks: [{ bearerId: state.allies[0].id, stacks: 1 }] });
+    first.allies[0].spent = false;
+    first.allies[0].readyRound.skill2 = first.round;
+    const second = attack(first, 'skill2').state;
+    expect(second.enemies[0].conduitMarks?.[second.allies[0].id]).toBe(2);
+    second.allies[0].spent = false;
+    const actor = second.allies[0];
+    const expected = damageAmount(actor.stats.damage, 1.16, 0, false, actor.stats.critMultiplier);
+    const attackResult = attack(second, 'light');
+    expect(attackResult.events.find((entry) => entry.kind === 'damage')?.amount).toBe(expected);
+    expect(attackResult.events.find((entry) => entry.kind === 'status' && entry.target === second.enemies[0].id)?.debuffs)
+      .toMatchObject({ weakened: 2, weakenFraction: second.enemies[0].weakenFraction });
+    expect(attackResult.events.find((entry) => entry.kind === 'status' && entry.target === second.enemies[0].id)?.debuffs).not.toHaveProperty('marks');
+    expect(attackResult.state.enemies[0].conduitMarks).toBeUndefined();
+  });
+
+  it('Stillhour grants Gauge after a direct shield-absorbed hit that is survived', () => {
+    const state = expandedBattle('tranquilitic-stillhour-carillon');
+    state.enemies = state.enemies.slice(0, 1);
+    state.enemies[0].stats.damage = 100;
+    state.allies[0].shield = 1e6;
+    const defended = attack(state, 'defend').state;
+    const withoutCharge = structuredClone(defended);
+    delete withoutCharge.allies[0].conduitCharges?.stillhour;
+    const ordinary = endTurn(withoutCharge).state.allies[0];
+    const hit = endTurn(defended);
+    expect(hit.state.allies[0].hp).toBeGreaterThan(0);
+    expect(hit.state.allies[0].shatter).toBe(Math.min(hit.state.allies[0].stats.shatterCapacity, ordinary.shatter + 8));
+    expect(hit.state.allies[0].conduitCharges?.stillhour).toBeUndefined();
+  });
+
+  it('Paradox primes only after Last Flare, respects normal recovery, and carries charges through Continue but not replay', () => {
+    const state = expandedBattle('chaotic-paradox-spindle');
+    const ultimate = attack(state, 'ultimate').state;
+    expect(ultimate.allies[0].conduitCharges?.paradox).toBe(true);
+    ultimate.allies[0].spent = false;
+    expect(actionUnavailable(ultimate, ultimate.allies[0], 'light')).toContain('Recovering');
+    const recovery = endTurn(ultimate).state;
+    expect(actionUnavailable(recovery, recovery.allies[0], 'light')).toContain('Recovering');
+    const ready = endTurn(recovery).state;
+    const actor = ready.allies[0];
+    const strike = attack(ready, 'light');
+    const hit = strike.events.find((entry) => entry.kind === 'damage')!;
+    expect(hit.amount).toBe(damageAmount(actor.stats.damage, 1.15, 0, hit.critical, actor.stats.critMultiplier));
+    expect(strike.state.allies[0].conduitCharges?.paradox).toBeUndefined();
+
+    const progress = { level: 50, evolution: 4 };
+    const machine = createInfusionBattle('machines', 1, 1, 'ember', progress, ['ember'], { ember: progress },
+      { ember: slots('infernic-cinder-testament') });
+    machine.phase = 'cleared';
+    machine.allies[0].conduitCharges = { emberSeals: 2, emberSealRound: 1 };
+    machine.enemies[0].conduitMarks = { ember: 2 };
+    const continued = nextStage(machine, progress).state;
+    expect(continued.allies[0].conduitCharges?.emberSeals).toBe(2);
+    expect(continued.allies[0].conduitCharges?.emberSealRound).toBeUndefined();
+    expect(continued.enemies[0].conduitMarks).toBeUndefined();
+    const replay = createSession('ember', progress, { mode: 'machines', stage: 1 },
+      { ids: ['ember'], progress: { ember: progress }, equipment: { ember: slots('infernic-cinder-testament') } });
+    expect(replay.state.allies[0].conduitCharges).toBeUndefined();
   });
 });

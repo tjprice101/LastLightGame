@@ -78,9 +78,9 @@ describe('game-specific hub layouts', () => {
     const home = homeHub(starter, false);
     expect(home).toContain(`characters/${starter.art}.png`);
     expect(home).toContain(starter.name);
-    expect(home).toContain('data-page="battle"');
-    expect(home).toContain('Adventure &rarr;');
-    expect(home).toContain('Start at wave 1');
+    expect(home).toContain('data-page="story"');
+    expect(home).toContain('Story &rarr;');
+    expect(home).toContain('Explore the world map ~ 150 stages');
     expect(home).not.toContain('Free Battle');
     expect(home).toContain('data-page="squad"');
     expect(home).toContain('data-page="summon"');

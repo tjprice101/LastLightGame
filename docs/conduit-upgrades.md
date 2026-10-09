@@ -7,11 +7,16 @@ a new Conduit Upgrade menu, five upgrades per Conduit and icon-level indicators.
 Follow-ups confirm **one account-wide level per Conduit name**, preserving shared
 unlocks, and **+250% over the original stat modifiers**: final modifiers are
 3.5 times the originals. Owner explicitly clarifies **penalties grow too**.
-Omnic unique mechanics remain unchanged. All25 Common/Rare/Legendary/Omnic
+Omnic unique mechanics remain unchanged. All85 Common/Rare/Legendary/Omnic
 Conduits can be upgraded; neither rarity nor artwork evolves.
+The35 D-157 additions reuse the same five levels/cost multipliers and
+account-wide snapshots; special mechanic caps/coefficients do not upgrade.
+The25 [kit-focused additions](kit-conduits.md) reuse these paths too. Account
+upgrades multiply their stat descriptors, never kit potency bonuses, proc
+quantities, cooldown reductions or caps.
 
 Owner chooses a Midjourney prompt and neutral pending-art icon, not authored
-SVG art. [Broken Mechanical Components prompt](../Art/Broken%20Mechanical%20Components.md)
+SVG art. [Broken Mechanical Components prompt](../Art/items/Broken%20Mechanical%20Components.md)
 depicts a shattered Omnic-tier ivory/platinum mechanism with prismatic opal
 facets. This is visual direction, not the currency's acquisition rarity.
 The owner-supplied image is now installed (D-137), with original bytes/hashes
@@ -160,7 +165,7 @@ Existing Prismatica/Null-Prismatica IDs are unchanged.
 - `python -m unittest discover -s tools -p test_art_prompts.py` for established
   art contracts; record pre-existing failures without editing unrelated prompts.
 - Verify all100 exact drop boundaries, every modifier/+0-5, negative penalties,
-  flat/percentage-point buffs and critical cap. Verify all25 names' exact five
+  flat/percentage-point buffs and critical cap. Verify all60 names' exact five
   rarity costs, one-component-short rejection, exact-funds spending and final cap.
   Test legacy loads without writes,
   duplicate retention, one-write upgrades/rewards, replay dedup, source/quantity

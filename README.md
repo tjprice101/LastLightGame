@@ -22,8 +22,8 @@ not the current feature checklist.
   details or diminish armor/powers; late forms retain dense intimidating art.
 
 See the [art workflow](docs/art-workflow.md),
-[prompt guide](Art/midjourney-character-style-prompt.md) and
-[edge-clearance contract](Art/cutout-background-contract.md#complete-silhouettes-and-edge-clearance-d-135).
+[prompt guide](Art/guides/midjourney-character-style-prompt.md) and
+[edge-clearance contract](Art/guides/cutout-background-contract.md#complete-silhouettes-and-edge-clearance-d-135).
 
 ## Historical prototype overview (superseded)
 
@@ -36,8 +36,8 @@ hexagonal upgrade shortcuts. Home retains real stats and Adventure launch.
 Character Upgrades uses a stable selectable area rail and detail panel.
 All 15 supplied evolved portraits are integrated across Home, Character, Squad
 and battle. Six forms cap at 30/45/60/75/90/105; the final evolution uses Epic
-Crests and Legendary Hearts. [Tizu](Art/Tizu%20Art.md) and
-[Flora](Art/Flora%20Art.md) now have six ability/action icon prompts each.
+Crests and Legendary Hearts. [Tizu](Art/characters/Tizu%20Art.md) and
+[Flora](Art/characters/Flora%20Art.md) now have six ability/action icon prompts each.
 Those icons are prompts only until generated art is supplied.
 Inventory is available independently and within Character Upgrades.
 Adventure (formerly Free Battle) uses only your saved starter against
@@ -59,7 +59,7 @@ infusion modes, Story and Events. The shared
 Garden of Beauty are playable across 50 progressively unlocked/replayable stages.
 Defeats grant saved materials; stage-clear reports precede advancement.
 The other seven dungeons, infusion modes and captured fodder remain unavailable.
-Ten ascending-power [enemy art prompts](Art/Flaming%20Depths.md) remain available as references.
+Ten ascending-power [enemy art prompts](Art/creatures/Flaming%20Depths.md) remain available as references.
 All ten dungeon illustrations are now organized with transparent exports; the
 [Stage 1-50 draft](docs/flaming-depths-stages.md) proposes encounters, hostile abilities
 and elite milestones; its old level/stat numbers are superseded by the new framework.
@@ -94,7 +94,7 @@ See [setup and deployment](docs/development-guide.md) for details.
 - [Development guide](docs/development-guide.md): how to add your own features.
 - [Handoff and current state](docs/handoff.md): what exists and what to do next.
 - [AI agent instructions](AGENTS.md): project-specific rules for future agents.
-- [Character and weapon art prompt guide](Art/midjourney-character-style-prompt.md).
+- [Character and weapon art prompt guide](Art/guides/midjourney-character-style-prompt.md).
 
 Starter choice is saved only in this browser's local storage, not a cloud account.
 Illustrations are owner-supplied assets; originals and transparent exports are

@@ -2,6 +2,7 @@
 from pathlib import Path
 import re
 import unittest
+from art_library import art_path
 
 ROOT = Path(__file__).resolve().parent.parent
 BLOCK = re.compile(r"```(?:text)?\n(.*?)\n```", re.S)
@@ -30,14 +31,14 @@ MOTIFS = {
 def portraits():
     entries = {name: {} for name in NAMES}
     for name in NAMES:
-        path = ROOT / "Art" / f"{name} Art.md"
+        path = art_path(f"{name} Art.md", root=ROOT)
         text = path.read_text(encoding="utf-8")
         for match in BLOCK.finditer(text):
             heading = re.findall(r"^#{1,6} (.+)$", text[:match.start()], re.M)[-1]
             stage = re.search(r"(?:Evo\.|Art Stage )([1-6])", heading)
             if stage and "--sref " in match.group(1):
                 entries[name][int(stage.group(1))] = match.group(1)
-    starter = (ROOT / "Art" / "Starter Art.md").read_text(encoding="utf-8")
+    starter = (art_path("Starter Art.md", root=ROOT)).read_text(encoding="utf-8")
     for match in BLOCK.finditer(starter):
         heading = re.findall(r"^#{1,6} (.+)$", starter[:match.start()], re.M)[-1]
         for name in NAMES[:3]:

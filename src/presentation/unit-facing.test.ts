@@ -7,7 +7,7 @@ import { openingStarters as starters } from '../content/starters';
 describe('unit facing without altering source art', () => {
   it('uses the individually reviewed directions for every refreshed character form on both sides', () => {
     const settings: Record<string, { source_facing: 'left' | 'right' | 'front' }> = JSON.parse(
-      readFileSync(new URL('../../Art/character-refresh-settings.json', import.meta.url), 'utf8'));
+      readFileSync(new URL('../../Art/provenance/character-refresh-settings.json', import.meta.url), 'utf8'));
     expect(Object.keys(settings)).toHaveLength(60);
     for (const [art, { source_facing: source }] of Object.entries(settings)) {
       expect(unitFacing(art, 'ally')).toEqual({ facing: 'left', mirrored: source === 'right' });
@@ -24,7 +24,7 @@ describe('unit facing without altering source art', () => {
   });
   it('shares all18 replacement starter directions across menus and both battle sides', () => {
     const settings: Record<string, { source_facing: 'left' | 'right' | 'front' }> = JSON.parse(
-      readFileSync(new URL('../../Art/starter-refresh-settings.json', import.meta.url), 'utf8'));
+      readFileSync(new URL('../../Art/provenance/starter-refresh-settings.json', import.meta.url), 'utf8'));
     expect(Object.keys(settings)).toHaveLength(18);
     for (const [art, { source_facing: source }] of Object.entries(settings)) {
       expect(unitFacing(art, 'ally')).toEqual({ facing: 'left', mirrored: source === 'right' });

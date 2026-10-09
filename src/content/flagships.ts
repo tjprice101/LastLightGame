@@ -10,7 +10,7 @@ export const flagshipCharacters = [
   },
   {
     id: 'aurora', stars: 6, name: 'Aurora', role: 'Support', art: 'aurora',
-    title: 'The dawn reveals a gentler judgment', element: 'Luminous (Light)', elementId: 'luminous',
+    title: 'The dawn reveals a gentler judgment', element: 'Tranquilitic (Peace)', elementId: 'tranquilitic',
     weapon: 'Empty-hand light casting', color: '#eee2af',
     description: 'A light arbiter whose prismatic lenses restrain enemy attacks.',
     lore: { origin: 'The lens courts of Lustrous River', story: 'Aurora inherited a lens that shows the consequences hidden behind every verdict. She left the courts to seek those their judgments overlooked, shaping the dawn into seals that temper violence rather than reward it.', vow: 'Let the dawn reveal a better choice.', awakening: 'A prism turns toward an unwritten verdict.' },
@@ -24,7 +24,7 @@ export const flagshipCharacters = [
   },
   {
     id: 'bruno', stars: 5, name: 'Bruno', role: 'Tank', art: 'bruno',
-    title: 'A mountain stands where others cannot', element: 'Tectonic (Earth)', elementId: 'tectonic',
+    title: 'A mountain stands where others cannot', element: 'Botanic (Nature)', elementId: 'botanic',
     weapon: 'Stone hammer', color: '#c7a782',
     description: 'A quarry guardian whose stone hammer raises a shelter of living bedrock.',
     lore: { origin: 'The quarries of Precipice of the Earth', story: 'Bruno stayed when the quarry walls began to fall. With a stone hammer and a promise to the workers, he shaped each broken slab into a new shelter. He now carries that promise wherever the earth can still offer refuge.', vow: 'Stand behind me. We will hold.', awakening: 'Bedrock answers a steady hand.' },
@@ -38,14 +38,14 @@ export const flagshipCharacters = [
   },
   {
     id: 'elise', stars: 5, name: 'Elise', role: 'Attacker', art: 'elise',
-    title: 'Thunder finds the smallest opening', element: 'Voltaic (Electricity)', elementId: 'voltaic',
+    title: 'Thunder finds the smallest opening', element: 'Atmospheric (Wind)', elementId: 'atmospheric',
     weapon: 'Two four-point shuriken', color: '#b6e49a',
     description: 'A swift storm striker wielding exactly two four-point shuriken.',
     lore: { origin: 'The circuit paths of Galvanic Field', story: 'Elise mapped the forgotten circuit paths with two small throwing stars and a fearless step. When the field fractured, she learned to follow its branching currents, striking the smallest opening before the storm could close it.', vow: 'There is always another opening.', awakening: 'Two sparks trace a path through the storm.' },
   },
   {
     id: 'razor', stars: 6, name: 'Razor', role: 'Tank', art: 'razor',
-    title: 'Midnight keeps an unbroken watch', element: 'Ominous (Shadow)', elementId: 'ominous',
+    title: 'Midnight keeps an unbroken watch', element: 'Chaotic (Dark Matter ~ Energy)', elementId: 'chaotic',
     weapon: 'Night sword', color: '#bc9bef',
     description: 'A shadow sentinel whose single night sword guards an eclipse bastion.',
     lore: { origin: 'The nightwatch of Valley of Solitude', story: 'Razor kept the last watch when the valley gates were abandoned. He learned to shape the surrounding darkness into a bastion rather than a threat, carrying one night sword and a vow that no frightened traveler would face midnight alone.', vow: 'The night will find me standing.', awakening: 'A silent sentinel answers your call.' },
@@ -75,6 +75,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     },
   },
   aurora: {
+    pilot: 'verdict',
     stats: { health: 215, defense: 10, damage: 32, crit: .12, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: 'Lens of Diminishment', description: '+6 defense, included in effective defense.', damageBonus: 0, defenseBonus: 6, healFraction: 0 },
     abilities: {
@@ -84,11 +85,12 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     },
   },
   bliss: {
+    pilot: 'restoration',
     stats: { health: 210, defense: 10, damage: 42, crit: .25, shatterCapacity: 100, critMultiplier: 1.7, elementalDamage: 0 },
     passive: { name: 'Stillfeather Tempo', description: '+20% outgoing damage at or below 50% health.', damageBonus: .2, defenseBonus: 0, healFraction: 0 },
     abilities: {
       skill1: { name: 'Warfeather Cut', description: '175% damage to one enemy with +15 percentage points critical chance.', cooldown: 2, strength: { damageMultiplier: 1.75, critBonus: .15 } },
-      skill2: { name: 'Quietstorm Flourish', description: '125% damage to every living enemy with +10 percentage points critical chance.', cooldown: 3, targets: 'all-enemies', strength: { damageMultiplier: 1.25, critBonus: .1 } },
+      skill2: { name: 'Quietstorm Flourish', description: '125% damage to every living enemy with +10 percentage points critical chance; restore 12 health to every living ally, no revival.', cooldown: 3, targets: 'all-enemies', strength: { damageMultiplier: 1.25, critBonus: .1, healing: 12 } },
       ultimate: { name: 'Last Flare: Thousandfeather Stillness', description: '300% damage to every living enemy with +20 percentage points critical chance. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 3, critBonus: .2 } },
     },
   },

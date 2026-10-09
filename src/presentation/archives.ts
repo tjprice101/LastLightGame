@@ -11,6 +11,7 @@ import { capturedRating } from './owned-companion';
 import { characterRating } from './character-rating';
 import { characterRole } from './character-role';
 import { conduitIcon, conduitRarity } from './conduit-store';
+import { isBannerConduitEligible } from '../content/machines';
 import { creatureGlossary } from './creature-glossary';
 import { elementLabel } from './element-label';
 import { information } from './information';
@@ -74,7 +75,7 @@ function conduitArchive(account: Account | null): string {
       <div class="archive-mechanism">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div>
       <h3>${conduit.name}</h3>${conduitRarity(conduit.id)}
       <p class="archive-ownership">${account ? `Owned ${account.conduits?.[conduit.id] ?? 0}` : 'Ownership unavailable'}</p>
-      <strong>${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</strong><p>${conduit.lore}</p><p>${conduit.power} ~ ${conduit.price !== null ? `${conduit.price.toLocaleString('en-US')} Prismatica` : 'Awaken the Machines drop'}${conduit.rarity === 'Legendary' ? ' ~ 0.5% bonus tier on successful banner draws' : ''}</p>
+      <strong>${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</strong><p>${conduit.lore}</p><p>${conduit.power} ~ ${conduit.price !== null ? `${conduit.price.toLocaleString('en-US')} Prismatica` : 'Awaken the Machines drop'}${isBannerConduitEligible(conduit.id) ? ' ~ Eligible for the 0.5% Legendary bonus tier on successful banner draws' : ''}</p>
     </article>`).join('')}</div>`;
 }
 
@@ -85,7 +86,7 @@ export function archives(account: Account | null, selected: ArchiveGallery = 'ch
     <h3>Conduits</h3><p>Owned Conduits reveal their artwork in color; unowned Conduits remain silhouettes. The catalog shows effects and owned counts. Equipment rules are in Character Information.</p>
     <h3>Creature discovery and loot</h3><p>Encountering reveals identity and element. Defeating reveals exact stage loot.
     Quantities vary uniformly within each range; rarity rolls are independent and have no pity.
-    Heaven, Abyss, Treasury and Sanctuary have a separate 20% capture chance per kill; Adventure and elemental dungeons cannot grant captures.
+    Heaven, Abyss, Treasury and Sanctuary have a separate 20% capture chance per kill; Story, Training and elemental dungeons cannot grant captures.
     Captures retain defeated level ~ form ~ skills. Currency creature sale prices are fixed by form; sale protections are in Character Information.</p>
     <h3>Element-Bearer identities</h3>${starters.map((starter) => `<p><strong>${characterName(starter.id)}</strong> ~ ${starter.description}</p>`).join('')}`)}
     <nav class="archive-navigation" aria-label="Archive galleries">${galleries.map((gallery) =>

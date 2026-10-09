@@ -7,6 +7,7 @@ import argparse
 import numpy as np
 from PIL import Image, ImageDraw
 from matte_regions import BACKGROUND_SEEDS, BACKGROUND_MINIMUMS
+from art_library import art_path
 
 ROOT = Path(__file__).resolve().parents[1]
 CANVAS_SIZE = 960
@@ -140,6 +141,11 @@ def prepare_sprite(source, asset_id, canvas_size=CANVAS_SIZE, content_size=CONTE
     if replacement:
         from intake_starter_refresh import load_settings, prepare
         return prepare(replacement, load_settings()[asset_id], canvas_size, content_size)
+    from intake_elemental_war_art import reviewed_source
+    war_source = reviewed_source(asset_id)
+    if war_source:
+        from intake_elemental_war_art import load_settings, prepare
+        return prepare(war_source[0], load_settings()[asset_id], war_source[1], canvas_size, content_size)
     cutout = supplied_cutout(asset_id)
     with Image.open(cutout or source) as image:
         if cutout:
@@ -157,7 +163,7 @@ def starter_refresh_source(asset_id):
     source = ROOT / "Art" / "source" / "starter-refresh" / f"{asset_id}.png"
     if source.is_file():
         return source
-    if (ROOT / "Art" / "starter-refresh-intake.json").exists():
+    if (art_path("starter-refresh-intake.json", root=ROOT)).exists():
         raise FileNotFoundError(f"Installed replacement starter source is missing: {source}")
     return None
 

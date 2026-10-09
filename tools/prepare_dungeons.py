@@ -12,6 +12,7 @@ from color_matte import remove_color_matte
 from prepare_art import supplied_cutout, standardize_sprite
 from PIL import Image, ImageDraw
 import numpy as np
+from art_library import art_path
 
 VOLTAIC_ENEMIES = {
     "Sparkpip": "sparkpip", "Coppercap Gremlin": "coppercap-gremlin",
@@ -458,7 +459,9 @@ def record_dungeon_intake(pack, element, slug, options, manifest_name, foregroun
                         "processing": {"method": "reviewed border key and enclosed seeds", **options(asset),
                                        **({"foreground_regions": foreground_regions.get(asset, [])} if foreground_regions else {})}
                         if asset != slug else {"method": "unchanged scenery bytes"}})
-    (ROOT / "Art" / manifest_name).write_text(json.dumps({"asset_count": len(entries), "assets": entries}, indent=2) + "\n", encoding="utf-8")
+    manifest = art_path(manifest_name, root=ROOT)
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    manifest.write_text(json.dumps({"asset_count": len(entries), "assets": entries}, indent=2) + "\n", encoding="utf-8")
 
 
 def main():
@@ -520,7 +523,9 @@ def main():
                                            **precipice_key_options(asset),
                                            "foreground_regions": PRECIPICE_FOREGROUND_REGIONS.get(asset, [])}
                             if asset in PRECIPICE_KEYS else {"method": "unchanged scenery bytes"}})
-        (ROOT / "Art" / "precipice-earth-intake.json").write_text(json.dumps({"asset_count": len(entries), "assets": entries}, indent=2) + "\n", encoding="utf-8")
+        manifest = art_path("precipice-earth-intake.json", root=ROOT)
+        manifest.parent.mkdir(parents=True, exist_ok=True)
+        manifest.write_text(json.dumps({"asset_count": len(entries), "assets": entries}, indent=2) + "\n", encoding="utf-8")
     if "luminous" in args.elements:
         entries = []
         files = [(f"{name}.png", "enemies", asset) for name, asset in LUMINOUS_ENEMIES.items()]
@@ -538,7 +543,9 @@ def main():
                                            **({"foreground_value_min": LUSTROUS_KEYS[asset]["foreground_value_min"]}
                                               if "foreground_value_min" in LUSTROUS_KEYS[asset] else {})}
                             if asset in LUSTROUS_KEYS else {"method": "unchanged scenery bytes"}})
-        (ROOT / "Art" / "lustrous-river-intake.json").write_text(json.dumps({"asset_count": len(entries), "assets": entries}, indent=2) + "\n", encoding="utf-8")
+        manifest = art_path("lustrous-river-intake.json", root=ROOT)
+        manifest.parent.mkdir(parents=True, exist_ok=True)
+        manifest.write_text(json.dumps({"asset_count": len(entries), "assets": entries}, indent=2) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

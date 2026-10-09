@@ -7,6 +7,8 @@ import { getCreature } from '../content/creatures';
 import { getConduit, isConduitId, conduitColor } from '../content/conduits';
 import { mechanicalComponents } from '../content/mechanical-components';
 import { createConduitUpgradeMeter } from './conduit-upgrade-meter';
+import { getStarter } from '../content/starters';
+import { characterName } from '../content/character-art';
 
 export function lootMotion(random: () => number = Math.random) {
   return { size: .75 + lootRoll(random) * .6, scatter: (lootRoll(random) - .5) * 14,
@@ -18,7 +20,13 @@ export function lootItems(event: BattleEvent): LootItem[] {
   if (event.kind !== 'reward') throw new Error('Loot presentation requires a reward event.');
   return [
     { id: 'fractalis', name: 'Prismatica', amount: event.amount, art: undefined, color: '#ffffff' },
-    ...(event.lycalis ? [{ id: 'lycalis', name: 'Null-Prismatica', amount: event.lycalis, art: undefined, color: '#ffffff' }] : []),
+    ...((event.lycalis ?? 0) + (event.recruitmentOutcome === 'duplicate' ? 100 : 0) > 0
+      ? [{ id: 'lycalis', name: `Null-Prismatica${event.recruitmentOutcome === 'duplicate' ? ' (includes 100 duplicate conversion)' : ''}`,
+        amount: (event.lycalis ?? 0) + (event.recruitmentOutcome === 'duplicate' ? 100 : 0), art: undefined, color: '#ffffff' }] : []),
+    ...(event.recruitment && event.recruitmentOutcome === 'new' ? [{
+      id: `recruitment:${event.recruitment}`, name: `${characterName(event.recruitment)} ~ Element-Bearer`,
+      amount: 1, art: getStarter(event.recruitment).art, color: '#ffffff',
+    }] : []),
     ...(event.mechanicalComponents ? [{ id: mechanicalComponents.id, name: mechanicalComponents.name, amount: event.mechanicalComponents, color: '#ffffff' }] : []),
     ...Object.entries(event.conduits ?? {}).map(([id, amount]) => {
       if (!isConduitId(id)) throw new Error('Unknown Conduit in loot receipt.');
@@ -41,7 +49,7 @@ export function lootArt(item: { id: string; art?: string }): string | undefined 
   return item.id === 'fractalis' ? currencyArt('fractalis')
     : item.id === 'lycalis' ? currencyArt('lycalis')
     : item.id === mechanicalComponents.id ? currencyArt('mechanical-components')
-    : item.art ? assetUrl(`${item.id.startsWith('conduit:') ? 'conduits' : item.id.startsWith('capture:') ? 'enemies' : 'materials'}/${item.art}.png`) : undefined;
+    : item.art ? assetUrl(`${item.id.startsWith('recruitment:') ? 'characters' : item.id.startsWith('conduit:') ? 'conduits' : item.id.startsWith('capture:') ? 'enemies' : 'materials'}/${item.art}.png`) : undefined;
 }
 
 export function lootBurst(event: BattleEvent, random: () => number = Math.random): HTMLElement {

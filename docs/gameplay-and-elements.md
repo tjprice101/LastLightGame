@@ -1,6 +1,13 @@
 # Gameplay, elements and farming framework
 
-**Status:** Adventure and all ten elemental material dungeons are playable.
+**Status:**150-stage Story, retained endless Training and all six elemental
+material dungeons are playable.
+The [D-160 migration](six-element-rework.md#implemented-elemental-migration-contract)
+replaces ten types with six, preserves all original enemy families/discoveries,
+merges materials/unlocks safely in walletv4 and starts dungeons atLv38.
+The [Story/Training split](story-and-training.md) is implemented (D-164).
+Story has six25-stage regions Lv1-55, Common/Uncommon materials and atomic
+first-clear regional bonuses. Training retains the old endless Adventure.
 Material inventory, starter leveling/evolution and first-Fracture reward are
 persistent. Soar to Heaven and Delve into the Abyss are playable with specialty
 rewards (weapon upgrades are now disabled; legacy bonuses remain).
@@ -12,15 +19,15 @@ Phases6/7. See [creature infusion](evolution-fodder.md) and the
 
 Gameplay is a new primary sanctuary tab alongside Home, Character Upgrades and
 Events, superseding the earlier exactly-three-screen layout.
-It groups **Adventure**, **Elemental material dungeons**, **Evolution infusion**,
-**Currency farms**, **Awaken the Machines**, **Story**, and **Events**, with category links to each section.
+It groups **Story**, **Training**, **Elemental material dungeons**, **Evolution infusion**,
+**Currency farms**, **Awaken the Machines**, **Elemental War**, and **Events**, with category links to each section.
 The [machine activity](awaken-the-machines.md) has100 stages10-120 (D-139),
 per-kill Conduits and stage-growing Broken Mechanical Components for upgrades,
 not capture/evolution infusion/material/premium rewards. Omnic drops from75;
 other activities' stage counts stay unchanged.
-Home retains the compact Adventure shortcut and adds a Gameplay shortcut.
-Adventure quit ends the run and returns to Gameplay; each new entry starts at wave 1.
-Settings still retains an active run. Story returns to Gameplay.
+Home's campaign shortcut opens the Story map. Training entry starts at wave1.
+Quitting ends the run and restores its contextual entry/map; rewards remain.
+Settings still retains an active run. The prologue remains inside Story.
 Events remains a primary tab as well as a Gameplay category.
 [Passion of Crimson Roses](crimson-roses.md) is its first playable event:
 35 stages80-140, Rosethorn materials and20% captures only through enemy Lv.120.
@@ -31,17 +38,13 @@ Existing mode tables/growth/costs below retain their prior120 caps.
 | Element | Affinity | Material dungeon | Infusable enemy source |
 | --- | --- | --- | --- |
 | Infernic | Fire | Flaming Depths | Soar to Heaven |
-| Aquatic | Water | Oceanic Valley | Soar to Heaven |
-| Tectonic | Earth | Precipice of the Earth | Soar to Heaven |
-| Efflorescent | Nature | Garden of Beauty | Soar to Heaven |
-| Voltaic | Electricity | Galvanic Field | Delve into the Abyss |
+| Oceanic | Water | Oceanic Valley | Soar to Heaven |
 | Atmospheric | Wind | Sky-bound Rift | Soar to Heaven |
-| Luminous | Light | Lustrous River | Delve into the Abyss |
-| Ominous | Shadow | Valley of Solitude | Delve into the Abyss |
+| Botanic | Nature | Garden of Beauty | Soar to Heaven |
 | Tranquilitic | Peace | City of Heaven | Delve into the Abyss |
 | Chaotic | Dark Matter/Energy | Ruins of Chaos | Delve into the Abyss |
 
-Infernis is Infernic, Tizu Aquatic, Flora Efflorescent (formerly described as grass).
+Infernis is Infernic, Tizu Oceanic, Flora Botanic (formerly described as grass).
 Existing starter IDs `ember`, `tide`, `sprout` and combat kits remain unchanged.
 Each starter now has a canonical `elementId`; display names include the familiar
 affinity. Element registration does not grant additional playable characters,
@@ -50,22 +53,24 @@ elemental damage bonuses, resistances, or revised battle balance.
 ## Material dungeon stages
 
 - Exactly **35 stages** per elemental dungeon and per infusion mode.
-- Start at enemy **level 10**.
+- Start at enemy **level 38**, the midpoint of Evo2's30-45 range.
 - Linear growth reaches the same **level 120 endpoint at Stage 35**.
-- Formula: `round(10 + (stage-1)*110/34)`.
-- Examples: Stage 1 = 10, Stage 2 = 13, Stage 18 = 65, Stage 34 = 117,
+- Formula: `round(38 + (stage-1)*82/34)`.
+- Examples: Stage 1 = 38, Stage 2 = 40, Stage 18 = 79, Stage 34 = 118,
   Stage 35 = 120. Invalid/fractional stages throw, never clamp silently.
 - Material unlock **enemy levels**, upgrade costs, enemy stat endpoints and
   ability schedules are preserved. Quantities and chances now increase with level.
-- First-pass encounters use supplied Infernic/Aquatic/Efflorescent/Tranquilitic/Voltaic/Luminous/Tectonic enemy order
-  and arenas. The other three use all eight named enemies from their existing
-  art prompt packs, with neutral enemy shapes and element-accented arenas until
-  art is supplied. No other element's artwork is reused. Two enemies per ordinary
+- Encounters retain all ten original supplied enemy packs. Atmospheric mixes
+  wind/electric families, Botanic nature/earth, Tranquilitic peace/light and
+  Chaotic chaos/shadow. Each enemy independently selects a family uniformly
+  at its matching tier using a separate continuing encounter RNG stream.
+  Arenas/material icons use the surviving canonical pack. Two enemies per ordinary
   stage; one stronger boss every fifth stage.
   Enemy lineup index is `floor((stage-1) * pack.length / 35)`.
 - Stats use the shared accelerating curve below, starting at Lv10 HP55/110
-  and Attack8/13 for ordinary/boss; Defense2. HP/Attack initial rate .024
-  doubles former .012 growth. Defense initial rate .08 on base2 doubles
+  and Attack32/48 for ordinary/boss; Defense2. HP initial rate .024
+  doubles former .012 growth; Attack uses the shared .12 early growth (D-165).
+  Defense initial rate .08 on base2 doubles
   former additive .08. Crit `.05+(level-10)*.002`, bounded at .25.
 - Every enemy, including Stage1 enemies, has a periodic elemental strike: multiplier
   `1.2+(stage-1)*.588/34`, every two boss turns or three ordinary turns.
@@ -155,16 +160,17 @@ Wave reports and dungeon capture direction remain in
 
 Every element has six authored material definitions:
 **Common, Uncommon, Rare, Epic, Legendary, Omnic**.
-There are 60 stable IDs such as `infernic-common` and `aquatic-omnic`.
+There are36 canonical IDs such as `infernic-common` and `oceanic-omnic`.
 These are definition records only, not owned material counts or granted items.
 
 The owner specified a **Seed of <canonical element>** starting material and
 **Soul of <canonical element>** final material for every dungeon. The
-[dungeon art packs](../Art/dungeons/README.md) map these to Common and Omnic,
+[dungeon art packs](../Art/creatures/dungeons/README.md) map these to Common and Omnic,
 with proposed Bloom, Shard, Crest and Heart designs for the intermediate slots.
 Art grows from a simple seed to an elaborate prismatic collectible while keeping
 chunky chibi readability. Runtime inventory/cost/reward names now use
-Seed/Bloom/Shard/Crest/Heart/Soul of the element; stable IDs remain unchanged.
+Seed/Bloom/Shard/Crest/Heart/Soul of the element. Legacy elemental material IDs
+are remapped and merged on read without saving; other stable IDs remain unchanged.
 
 Confirmed: later/tougher encounters can drop higher rarities; higher rarities are
 less likely than ordinary materials even against high-level enemies. Farming is
@@ -175,15 +181,15 @@ First-pass drops per defeated dungeon enemy (including burn kills):
 | Material | Unlock enemy level / first floor | Chance at unlock -> Lv120 | Lv120 quantity |
 | --- | --- | --- | --- |
 | Seed / Common | 10 / 1 | Guaranteed | 3-6 |
-| Bloom / Uncommon | 23 / 5 | 25% -> 98% | 3-6 |
-| Shard / Rare | 48 / 13 | 12% -> 90% | 3-6 |
-| Crest / Epic | 73 / 21 | 6% -> 80% | 3-6 |
-| Heart / Legendary | 98 / 29 | 2.5% -> 60% | 3-6 |
+| Bloom / Uncommon | 23 / 1 (entryLv38) | 25% -> 98% | 3-6 |
+| Shard / Rare | 48 / 5 | 12% -> 90% | 3-6 |
+| Crest / Epic | 73 / 16 | 6% -> 80% | 3-6 |
+| Heart / Legendary | 98 / 26 | 2.5% -> 60% | 3-6 |
 | Soul / Omnic | 120 / 35 | 35% at Lv120 | 3-6 |
 
 All prior enemy-level gates remain intact. Soul only unlocks at the endpoint,
 so its old 1% starting chance is replaced by the final 35% chance there.
-For enemy level L, dungeon starting level S, unlock level U and final minimum Q:
+For enemy level L, preserved loot-curve baseline S=10, unlock level U and final minimum Q:
 `minimum = 1 + floor((Q-1)*((L-S)/(120-S))^2)`.
 Each successful drop independently rolls an inclusive integer from minimum to
 twice minimum. Chances interpolate from the unlock chance to the final chance
@@ -256,21 +262,23 @@ unseen entries are black silhouettes, seen entries show color/name, defeated
 entries reveal real loot pools and chances. Activity filter and stage selector
 show only the creature's stage band. Evolution forms have separate stable IDs.
 Legacy saves begin with no recorded discoveries; earlier fights are not inferred.
-Mode-associated infusion loot shows each eligible element's rarityChance/5
-(at Lv120: Epic17%, Legendary13%, Omnic8%) and explains the shared rarity selection.
+Mode-associated infusion loot shows each eligible element's rarityChance divided
+by its mode pool length:4 for Heaven,2 for Abyss. AtLv120 each Heaven affinity has
+Epic21.25%/Legendary16.25%/Omnic10%; Abyss has42.5%/32.5%/20%.
+These are shares of the unchanged total rarity chances, not additional rolls.
 Adventure uses an enemy-level selector; staged encounters show their actual floor loot.
 This is a drop reference, not capture/pity or a second source of rewards.
 
-- **Soar to Heaven:** Infernic, Aquatic, Tectonic, Efflorescent, Atmospheric.
+- **Soar to Heaven:** Infernic, Oceanic, Atmospheric, Botanic.
   New art direction: white Dawnthorn Slime evolving into a severe celestial
   final form, The Dawn Without Mercy, with black/red/gold thorn regalia;
   replaces the old Light-wisp concept.
-- **Delve into the Abyss:** Luminous, Voltaic, Ominous, Chaotic, Tranquilitic.
+- **Delve into the Abyss:** Tranquilitic, Chaotic.
   New art direction: black Wraththorn Slime evolving into a cosmic wrath
   final form, The Night Without End, with white/deep-purple/hot-pink thorns;
   replaces the old royal-wisp concept.
 - Each has **35 stages** and starts at enemy **level 80**. New
-  [mode art packs](../Art/gamemodes/README.md) author six visual forms per mode
+  [mode art packs](../Art/creatures/gamemodes/README.md) author six visual forms per mode
   (base plus five evolutions), now supplied and wired into live encounters.
   Each mode keeps one permanent creature name: Dawnthorn Slime or Wraththorn
   Slime. Later names use "<evolution title>, <permanent slime name>" as the same
@@ -279,7 +287,9 @@ This is a drop reference, not capture/pity or a second source of rewards.
   Forms occupy stages1-6/7-12/13-18/19-24/25-30/31-35.
   Two ordinary enemies, one stronger boss every fifth stage.
   Stats use the shared accelerating enemy curve described below, with .036
-  starting HP/Attack rate versus elemental dungeons' .024. At Lv120:200,000
+  starting HP rate versus elemental dungeons' .024. Shared Attack starts32/48
+  atLv10 with .12 early growth (D-165), including Machines/currency modes.
+  Attack above120 retains its original .036 extension rate. At Lv120:200,000
   ordinaryHP/400,000 bossHP,4,000/6,000 Attack and1,500/2,250 Defense.
   Crit12%, multiplier1.5. Scarlet Judgment/Cosmic Wrath strikes every3 ordinary
   turns or2 boss turns, coefficient `1.2+(stage-1)*.384/34`.
@@ -297,14 +307,14 @@ This is a drop reference, not capture/pity or a second source of rewards.
   (caps90/105), not just character levels above80. Heaven uses blade/crown/chalice
   objects; Abyss uses claw/fracture-orb/hourglass objects.
 - Both modes may also drop existing Epic/Legendary/Omnic materials, restricted
-  to their **five listed elements**, matching their specialty affinity group.
+  to their **four Heaven/two Abyss affinities**, matching their specialty group.
 - Per defeat: guaranteed weapon material from Lv80/Stage1, evolution from
   Lv93/Stage12, leveling from Lv100/Stage18. Using the shared quantity curve
   with starting level80, all final specialty stacks are3-6.
   Preserved supplemental unlocks: EpicLv80/Stage1,
   LegendaryLv100/Stage18, OmnicLv115/Stage31. Chances grow from15%/6%/2%
   to85%/65%/40%; successful final stacks are3-6 for each rarity.
-  Each successful rarity roll chooses **one** of the mode's five elements uniformly,
+  Each successful rarity roll chooses **one** of the mode's eligible elements uniformly,
   not every element. Final Prismatica is15-30. Phase6 adds20% captures per kill,
   ordinary enemies and bosses alike; no guaranteed rare pool or pity.
   Enemy-death stacks vary visually from75-135% size, with randomized scatter and
@@ -320,7 +330,7 @@ This is a drop reference, not capture/pity or a second source of rewards.
   Weapon destination rank R costs100R Prismatica and5R matching weapon materials,
   maximum10; Attack is grown Attack times `1+.02*rank`.
   Specialty spending follows affinity, not entry restrictions. All current
-  starters use Heaven materials; Abyss helpers already cover its five elements.
+  opening starters use Heaven materials; Abyss helpers cover its two elements.
   Phase7 consumes captured creatures alongside existing evolution costs; see
   [creature infusion](evolution-fodder.md) for counts/forms/mode/protection rules.
   Captures retain their defeated fixed form/level/skills, never evolve or
@@ -328,14 +338,17 @@ This is a drop reference, not capture/pity or a second source of rewards.
 
 ## Save migration for the 35-floor rules
 
-`last-light.wallet` now uses version3. Version2 elemental unlocks map by
+`last-light.wallet` now uses version4. Version2 elemental unlocks first map by
 `1+round((min(oldFloor,45)-1)*34/44)`; infusion unlocks map by
-`1+round((oldFloor-1)*34/24)`. This approximately preserves enemy-level progress;
-former final floors map to35. Currency, material stacks, character levels/forms,
-weapon ranks, first-Fracture flags, discoveries and receipts are retained.
+`1+round((oldFloor-1)*34/24)`. Version2/3 elemental progress then maps the highest
+completed enemy level to the newLv38-120 floors; initial/final unlocks remain1/35.
+Merged element unlocks use the maximum; legacy material balances sum by rarity,
+rejecting overflow before any write. Currency, character levels/forms, weapon
+ranks, captures/gear, pity, first-Fracture flags, discoveries and receipts remain.
 Loading never rewrites the save; the next successful transaction persists
-version3, which is not mapped again. Version1 currency migration remains supported.
-Upgrade prices and affinity rules are unchanged; no rewards are granted by migration.
+version4, which is not mapped again. Version1 currency migration remains supported.
+Upgrade prices are unchanged; specialty/fodder affinities follow the new4/2 pools.
+No rewards are granted by migration. [Exact contract/tests](six-element-rework.md#implemented-elemental-migration-contract).
 
 ## Extension points and implementation gates
 
@@ -344,7 +357,7 @@ Upgrade prices and affinity rules are unchanged; no rewards are granted by migra
 - [Gameplay presentation](../src/presentation/gameplay.ts): grouped activities,
   real stage selectors/launches and unavailable notices for gated modes.
 - [Framework tests](../src/content/activities.test.ts): exact mappings, all 35
-  levels, all 60 materials, eligibility and adjacent recipes.
+  levels, all36 materials, eligibility and adjacent recipes.
 - [Character progression](../src/presentation/hub.ts) uses shared costs and saved progress.
 - [Navigation](../src/main.ts) connects Gameplay, Adventure, Story and Events.
 

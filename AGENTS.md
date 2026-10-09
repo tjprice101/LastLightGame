@@ -1,11 +1,148 @@
 # Last Light: AI agent entry point
 
+## Story / Training rollout (D-164)
+
+Owner defers remaining intrinsic character redesign and requests next major
+phase.150-stage Story is now playable, six25-stage canonical regions Lv1-55,
+four original ordinary identities plus regional boss25 each. Home opens
+Story map; old endless Adventure is Training (legacy adventure:* IDs and
+#gameplay-adventure retained). docs/story-and-training.md owns exact contract.
+Optional walletv4 storyCompleted0-150 defaults0 read-only. Entry/kill validation
+rejects locked stages and malformed source/loot; Common/Uncommon materials
+only, no captures. First regional bonuses1k/50 grow exact15% from original
+bases using integer ratios and whole-unit rounding; replay premiums never
+repeat. Kill/materials/currencies/discovery/receipt/unlock commit in one write;
+decorate actual bonus events only AFTER successful persistence. Overflow/
+denied saves preserve raw wallet and eligibility. Separate continuing
+encounterSeed; preserve frozen squads/gear/captures/upgrades through Continue/
+Retry/Settings. Stage150 has no Continue. All30 Story creatures/scenery are
+neutral art-pending; never substitute art/request missing PNGs. Collection
+loot uses runtime Story tables with first-clear annotations. Validate
+story.test.ts/full suite/build. Broader desktop overhaul is next; remaining
+intrinsic roster rework stays paused at owner direction. Supersedes older
+"Story pending" statements below.
+
+## Intrinsic ability redesign (D-163)
+
+Owner clarifies dynamic buffs/debuffs/stacks mean character abilities, NOT
+special per-character Conduits; full-roster phased batches approved, starters
+first. docs/character-kit-rework.md is the current contract. Infernis personal
+Ember Seals spend on Skill2 (+8% each) or ultimate (+12% each, authored Burn);
+Tizu Tide stacks come from effective authored direct shield absorption once
+per enemy phase and spend on Skill1 Weaken or ultimate shield; Flora Blooms
+come from effective authored healing once per round (including passive) and
+spend on Skill1 damage or ultimate healing. All cap3, no equipment required.
+Renewal grants refresh-only bounded attack buff using existing clock/helper.
+Preserve costs/cooldowns/recovery, fractional growth, independent Conduit
+resources, snapshots, no load writes/new RNG/rewards. Field has one small
+resource counter; exact choices remain in Character/Battle reference.
+Existing25 Conduits stay separate, not fulfillment of kit redesign; remaining
+roster intrinsic redesign is pending and paused while Story/desktop proceeds.
+Validate starter-kits.test.ts and existing combat/pilot/Conduit/readout suites.
+
+## Approved phased rework (D-160)
+
+Owner approves docs/six-element-rework.md baseline: six-element safe migration,
+25 further Conduits5/8/6/6,150-stage Story/retained endless Training, first-clear
+regional boss bonuses,35 dungeon floors Lv38-120 and desktop contextual flow.
+Physical Art filing and six-element runtime migration are implemented.
+25 additional kit Conduits are implemented (D-162); Story/desktop overhaul are
+NOT yet live. Catalog85=15 Common/23 Rare/21 Legendary/26 Omnic; new Common
+Store-only, machine tier totals8%/3.5%/1% with stage75 gate, original five
+Legendary banner pool only. content/kit-conduits.ts owns25 typed designs/rules;
+game/kit-conduits.ts resolves fixed, bounded enhancements to authored kits.
+Never scale kit rules with account upgrades, grant missing skills/statuses,
+revive, bypass recovery or consume RNG for them. Graft one-charge/Storm Clock
+once-per-round state survives Settings, resets on new encounters. Burn/Weaken
+keep existing HP-side actual snapshots; detailed kit rules are in Character/
+Battle menu. Art/conduits/Kit Conduits.md has25 palette-locked reference-free
+prompts; all new icons stay neutral pending reviewed delivery. Validate
+kit-conduits.test.ts/test_kit_conduit_art.py and existing Conduit suites.
+Art packs now live under category folders, records under Art/provenance.
+Use tools/art_library.py for paths; sources stay under Art/source with original
+bytes/hashes. Mixed packs stay intact. Do not reintroduce old flat duplicates.
+This supersedes older "baseline unanswered"/"physical relocation pending" notes.
+Canonical types are Infernic/Oceanic/Atmospheric/Botanic/Tranquilitic/Chaotic.
+Walletv4 accepts legacyv1/v2/v3 read-only, sums merged materials with overflow
+rejection, maps highest completed dungeon levels and preserves initial/final
+unlock floors. First ordinary transaction saves once; never remigratev4.
+Heaven has4 affinities, Abyss2. All82 legacy dungeon discovery IDs/art remain;
+choose related families uniformly with encounterSeed separate from combat/
+reward/capture RNG, continuing across stages. Dungeons now startLv38, end120.
+Stable character/Conduit/capture IDs and Rose recipe override remain unchanged.
+Surviving asset names remain legacy via content/element-migration.ts.
+This supersedes older ten-element/v3/five-affinity guidance below. Never add
+load-time writes, overflow fallback, retired-original deletion or grants.
+
+## Current character palette policy (D-159)
+
+All16 character lines use tailored subject palette locks/leading unwanted-color
+negatives; preserve exact signed portrait URLs at150. Remove positive color
+contradictions, not legitimate blue/green/violet/fire. Prismatic/opal means
+bounded faceting, not extra hues. Key backgrounds are exempt and never negated.
+Character-specific icons/weapons share palettes without references;
+scenery/installed art unchanged. Use tools/character_palette.py and the War/pilot
+generators; validate test_character_palettes.py plus existing reference/art suites.
+This supersedes older character400 instructions below, not enemy/source policy.
+
+## Reference policy (D-155; character weight superseded by D-159)
+
+Only Element-Bearer character portrait prompts retain `--sref`/`--sw` at400.
+All129 enemy prompts are reference-free, including Machines/dungeons/infusions/
+currency farms/event creatures/Starter Art enemies. Historical enemy URLs are
+provenance only: never reappend them. Preserve species, authored palettes,
+equipment, compact renderer and framing. D-154 Machines clearance stays;
+its100 reference-weight pilot is superseded. Installed artwork unchanged.
+
+## Six-form enemy references (D-153)
+
+Historical policy, superseded by D-155 above.
+
+All six-form enemy packs use the separate Enemy Evo1-6 table in
+Art/guides/midjourney-character-style-prompt.md at400, including distinct Evo2/3,
+except Machines at100 under D-154. Machines is the owner-selected first pilot:
+whole-design max70% footprint/min15% outer margins (early forms stay smaller),
+authored palette priority, no equipment/detail removal. Other portraits
+unchanged until new generated outputs are reviewed; no image guarantee.
+36 blocks: Machines, Treasury, Sanctuary, Crimson Roses, Heaven and Abyss.
+Character/basic/eight-/ten-enemy mappings unchanged; non-portraits have no
+reference flags. Preserve complete owner URLs and original creature identities,
+equipment, palettes, renderer/framing. No runtime artwork changes.
+
+## Rework/reference pilot (D-158)
+
+Owner wants reference-based renderer without palette/costume copying, approves
+a few low-weight enemy tests before global application. Art/experiments/Enemy
+Style Pilot.md is the only enemy-reference exception; production packs stay
+reference-free. Do not interpret six-element/Story/UI baseline suggestions as
+approved migrations. See docs/six-element-rework.md for confirmed request versus
+approved baseline/status under D-160. Art/README.md indexes the now-organized
+collections; original deletion, new random encounters and save rewrite remain
+unimplemented in this phase.
+
+## Phased Conduits, richer kits and shared action art (D-151/D-157)
+
+docs/conduit-expansion-plan.md records35 approved additions (5/10/10/10),
+Store-only/usefulness-priced Common and unchanged machine tier totals/gates.
+Only original five Legendary Conduits join banner bonuses. Four bounded pilots
+preserve identities; owner specifically selects modest Bliss Skill2 healing,
+not a healer-role replacement. Other kits must not receive blanket rewrites.
+Show real owned marks/Burn/Weaken beside enemy HP with accurate clocks/stacks,
+typed ordered snapshots, no message parsing, color-only labels or art URL guesses.
+Art/ui/Universal Action Icons.md now requests steel sword sweep/steel shield;
+older root prismatic images are not these revised replacements.
+Art/items/Currencies.md requests white/black lightning coins. Battle Status Icons.md
+provides reference-free prompts for actual debuffs/charges; use text until intake.
+Keep current Normal Attack/Defense assets until both replacements arrive;
+then shared resolver/intake replaces them, preserving historical originals.
+Passive, Skills and Last Flare stay character-specific. No missing-image URLs.
+
 ## Replacement starter artwork (D-149)
 
 All18 Infernis/Tizu/Flora replacement forms are installed under stable asset IDs.
 New RGB originals are preserved in Art/source/starter-refresh; previous exports
 in its previous-runtime folder. Use tools/intake_starter_refresh.py and reviewed
-Art/starter-refresh-settings.json, not historical alpha files/white masks.
+Art/provenance/starter-refresh-settings.json, not historical alpha files/white masks.
 prepare_sprite routes current sources first; shared portrait revisions/facing
 cover menus, locked silhouettes, fields and cut-ins. Existing historical supplied
 alpha remains authoritative for that historical generation; never re-key it.
@@ -46,7 +183,7 @@ presence. Keep compact renderer/identity, dense interiors and exact references.
 Containment overrides historical near-edge94%/96% occupancy/3%/2% margins
 for future prompts; existing blocks/runtime exports remain unchanged.
 Scenery stays full-bleed. Inspect actual generated pixels, not just runtime
-padding. See Art/cutout-background-contract.md and shared prompt guide.
+padding. See Art/guides/cutout-background-contract.md and shared prompt guide.
 
 ## Current character artwork (D-134)
 
@@ -54,7 +191,7 @@ All60 portraits for Atmoso/Aurora/Bliss/Bruno/Disciple/Elise/Razor/Rosetta/
 Thornia/Crinso use the replacement delivery. Owner confirms unnamed hammer
 wielder as Bruno base. Art/source/character-refresh preserves new originals
 and previous-runtime exports; historical D-121 originals/manifests stay intact.
-tools/intake_character_refresh.py plus Art/character-refresh-settings.json
+tools/intake_character_refresh.py plus Art/provenance/character-refresh-settings.json
 reproduce reviewed RGB/gradient/gap/spill cleanup; transparent supplied alpha
 bypasses cleanup. Never apply historical roster masks to new sources.
 Canonical runtime IDs and reviewed unit-facing.ts metadata cover all existing
@@ -71,7 +208,7 @@ stay intact. D-142 installs supplied Prismatica/Null-Prismatica crystal icons;
 historical coin/rose originals and exports are preserved. Use
 tools/intake_prism_currency_art.py to reproduce reviewed teal cleanup and URL
 revisions; shared currency resolver owns active versioned URLs.
-Art/Currencies.md now proposes bright prism/dark obsidian-violet prism icons,
+Art/items/Currencies.md now proposes bright prism/dark obsidian-violet prism icons,
 both without `--sref`/`--sw` under D-147, with contrasting green
 keys and complete outer margins. Old source-specific brown masks cannot be
 reused on replacement keyed sources without explicit review/tool support.
@@ -89,7 +226,7 @@ Every character/enemy full-body prompt explicitly keeps the complete silhouette
 inside a clear margin: never touch/cross the image edges, even in Omnic forms.
 Do not append duplicate reference flags. Enemy designs/parameters/backgrounds
 and supplied/runtime art remain unchanged.
-See [mapping](Art/midjourney-character-style-prompt.md#character-form-style-references).
+See [mapping](Art/guides/midjourney-character-style-prompt.md#character-form-style-references).
 Validate with `python -m unittest discover -s tools -p test_enemy_style_references.py`.
 
 ## Character portrait quality (D-131)
@@ -103,7 +240,7 @@ Late powers dominate and fill rear interior gaps, not just outer tips. Preserve
 clear faces/hands/weapons, narrow key channels, complete tips and contrasting
 reviewed per-form backgrounds. Canonical positive prose cap380 words.
 Icons/weapons/creatures/scenery and supplied/runtime images are unchanged.
-See [shared contract](Art/midjourney-character-style-prompt.md#portrait-quality-standard-d-131).
+See [shared contract](Art/guides/midjourney-character-style-prompt.md#portrait-quality-standard-d-131).
 Historical per-character pause/body-scale/sparse-gap instructions are superseded.
 Validate with `python -m unittest discover -s tools -p "test_character_*.py"`.
 
@@ -111,7 +248,7 @@ Validate with `python -m unittest discover -s tools -p "test_character_*.py"`.
 
 Future and existing character-form prompts end with the exact evolution-matched
 `--sref URL --sw 400` from
-[the shared mapping](Art/midjourney-character-style-prompt.md#character-form-style-references).
+[the shared mapping](Art/guides/midjourney-character-style-prompt.md#character-form-style-references).
 Existing base/Common uses Evo.1; Evo.2-6 match directly. Evo.0 is reserved for
 explicit future Evo.0 forms/generic templates, not a gameplay indexing change.
 Do not duplicate flags or apply these references to icons, weapons, creatures
@@ -132,7 +269,7 @@ Common Store catalog/prices and all existing modes unchanged.25 Conduits total.
 Omnic requires matching combat element (also captured copies), max4 of8 ordinary
 slots; enforce at UI/transaction/save/fighter boundaries. Master reserved.
 Thornia/Crinso final compact/cel art escalation is the new standard.
-28 prompts in Art/Awaken the Machines.md, no generated images yet; use neutral
+28 prompts in Art/creatures/Awaken the Machines.md, no generated images yet; use neutral
 pending states, no nonexistent PNGs. Rosetta revert was withdrawn; leave unchanged.
 See docs/awaken-the-machines.md and docs/conduits.md for exact mechanics/tests.
 
@@ -143,7 +280,7 @@ playable as well. Phase1 completes51 Roses assets: preserved/hash-recorded
 sources in `Art/source/roster-intake/roses`, runtime art and all shared
 character/ability/creature/material/event/banner surfaces. Supplied rose
 Defense icons are wired; original starter Defense remains text-only.
-Tool `tools/intake_roster_art.py`/manifest `Art/roses-art-intake.json`;
+Tool `tools/intake_roster_art.py`/manifest `Art/provenance/roses-art-intake.json`;
 root originals removed only after archival/review/verification.84 flagship
 images are now individually reviewed/archived/installed with source-specific
 keys and42 facing entries. Never apply color removal to supplied-alpha sources.
@@ -164,17 +301,21 @@ phase state and validation live in docs/handoff.md.
 3. [Game vision](docs/game-vision.md) and [decision log](docs/decisions.md).
 4. The system document relevant to the task.
 5. [Art workflow](docs/art-workflow.md) and the existing
-   [prompt guide](Art/midjourney-character-style-prompt.md) before changing art.
+   [prompt guide](Art/guides/midjourney-character-style-prompt.md) before changing art.
 
 ## Project rules
 
-- D-145 Elemental War is specification/art only, not implemented. Owner chose
-  design-first:10 stages90-140/six forms per sub-mode,1% final-boss base EB
+- D-152/D-156 Elemental War is live for Nerithe/Orvella/Vaelor. Owner approved
+  playable6-star characters:10 stages90-140/six forms per sub-mode,1% final-boss base EB
   recruitment, guaranteed Prismatica plus separate Null-Prismatica chance,
-  owned-result existing-currency conversion, activity-header banners only.
-  Nerithe/Orvella/Vaelor names/kits/6-star ratings/payouts/mapping are proposals.
-  See docs/elemental-war.md and Art/Elemental War.md; never register/grant them
-  from this proposal.46 prompts reproduce via tools/build_elemental_war_art.py;
+  owned-result100 Null-Prismatica conversion, free sequential entries/no pity,
+  activity-header banners only. Nerithe passive adds fixed5 Gauge on her Normal
+  Attack only; all kits use documented tuning and existing caps/costs.
+  All18 portraits/16 icons/six headers/arenas installed; family header/weapons
+  and Nerithe Normal Attack/Defense icons pending. Preserve atomic rewards,
+  separate RNG, run snapshots and Archive ownership gates; never auto-grant.
+  See docs/elemental-war.md and Art/ui/Elemental War.md.
+ 46 prompts reproduce via tools/build_elemental_war_art.py;
   validate with python -m unittest discover -s tools -p test_elemental_war_art.py.
 
 - D-137 component icon is installed: `Art/source/currencies/Broken Mechanical
@@ -314,7 +455,7 @@ phase state and validation live in docs/handoff.md.
   No gameplay RNG, camera movement or changes to battle-speed/combat timing.
 
 - D-094: seven future flagship Element-Bearers have generation-only art packs
-  linked in Art/Flagship Characters.md. Bruno/Tectonic hammer Tank,
+  linked in Art/characters/Flagship Characters.md. Bruno/Tectonic hammer Tank,
   Elise/Voltaic shuriken DPS, Atmoso/Atmospheric wind-staff DPS are5-star planned
   for Standard. Aurora/Luminous light-energy enemy-debuff Support, Razor/Ominous
   night-sword Tank, Bliss/Tranquilitic feather/warfan DPS, Disciple/Chaotic psychic
@@ -418,7 +559,7 @@ phase state and validation live in docs/handoff.md.
   Wraththorn Chaotic; elemental dungeon enemies match their dungeon.
   Creature.dungeonElement, not combat element, routes material loot.
   Infusion five-element pools remain unchanged. No new affinity multipliers.
-  See docs/archives-and-elements.md and Art/Element Emblems.md.
+  See docs/archives-and-elements.md and Art/ui/Element Emblems.md.
 - Game-wide rarity art: Common->Omnic becomes less cutesy and more epic,
   formidable, majestic and awe-inspiring in design and prompt language.
   Keep the shared compact anime/cel renderer and species identity; do not
@@ -484,7 +625,7 @@ phase state and validation live in docs/handoff.md.
   reward/duplicate conversion and counters together; failed/rejected draws
   never advance.
 - Summoning visual contract:16:9 full-bleed Omnic-tier artpiece per real banner,
-  overall theme/identity, no reward portrait grid. Art/Summoning Banners.md
+  overall theme/identity, no reward portrait grid. Art/ui/Summoning Banners.md
   contains Standard prompt/export/intake; null artwork means neutral pending
   panel, never unrelated images/missing PNG requests. Drop-rate rows only
   name, awarded rarity/star value and rate. No unit art/roles/stats/lore.
@@ -500,7 +641,7 @@ phase state and validation live in docs/handoff.md.
   protection, commits currency/removal together. Treasury and Sanctuary copies sell.
   Final duplicate reward at50 has explicit validated provenance permitting
   below-mission level; do not lower real captures or use highest-account level.
-  Art is pending: six cutouts/mode header/arena prompts in Art/Crownfall Treasury.md.
+  Art is pending: six cutouts/mode header/arena prompts in Art/creatures/Crownfall Treasury.md.
   No missing PNGs/unrelated art; see docs/crownfall-treasury.md.
 - Phase10 Rosethorn Sanctuary:25 stages65->120, six Tranquilitic divine/regal
   flaming-wisp forms, every fifth stage boss,20% captures. One independent
@@ -516,7 +657,7 @@ phase state and validation live in docs/handoff.md.
   final duplicate-EB copies allow acquisition=banner-duplicate/Lv50.
   First three wisps join Standard's equally split creature tiers; pity,10 cost,
   1% five-star EB tier and duplicate reward unchanged. See docs/rosethorn-sanctuary.md.
-  Art/Rosethorn Sanctuary.md has six cutouts/3:1 header/16:9 arena prompts.
+  Art/creatures/Rosethorn Sanctuary.md has six cutouts/3:1 header/16:9 arena prompts.
 - Conduit Store is a submenu under Stores, reachable from Home/Stores/
   Character equipment. Artifacts are renamed Conduits: ancient-war mechanisms,
   some powered by Elemental Light. Catalog in content/conduits.ts; optional
@@ -545,30 +686,30 @@ phase state and validation live in docs/handoff.md.
   dungeon battles and recipe icons, alongside the supplied Garden of Beauty and
   City of Heaven, Galvanic Field and Lustrous River packs. City/Galvanic enemies
   have per-enemy ability names; Lustrous retains the existing Luminous strike.
-  Lustrous originals/provenance are in Art/source and Art/lustrous-river-intake.json.
+  Lustrous originals/provenance are in Art/source and Art/provenance/lustrous-river-intake.json.
   prepare_dungeons.py --elements luminous uses per-source border keys/reviewed
   hole seeds, retaining pale subject/gem colors. Guardian/Griffin/Oracle/Kirin
   mirror right in battle via unit-facing.ts; the other four remain right.
   Precipice/Tectonic is also supplied: tools/prepare_dungeons.py --elements
-  tectonic regenerates reviewed keyed cutouts; Art/precipice-earth-intake.json
+  tectonic regenerates reviewed keyed cutouts; Art/provenance/precipice-earth-intake.json
   records provenance, hole seeds and tight crystal masks. Preserve the typo
   Flntback Armadiillo.png in source, canonical Flintback Armadillo in runtime.
   Keep genuine frontal Atlas/Behemoth unchanged; directional sprites face right.
   Chaos is supplied: prepare_dungeons.py --elements chaotic regenerates
-  reviewed per-source keyed cutouts/enclosed gaps; Art/ruins-chaos-intake.json
+  reviewed per-source keyed cutouts/enclosed gaps; Art/provenance/ruins-chaos-intake.json
   preserves hashes/settings. Retain matching cyan prisms/powers and pale pixels.
   Shared unit-facing.ts keeps enemies right/allies left in field and cut-ins;
   animate wrappers, never overwrite image facing or mirror panels/text.
   Genuine frontal Crownvoid/Sovereign remain unchanged. No capture changes.
   Sky-bound Rift is supplied: prepare_dungeons.py --elements atmospheric,
-  Art/sky-bound-rift-intake.json. Preserve original arena capitalization.
+  Art/provenance/sky-bound-rift-intake.json. Preserve original arena capitalization.
   Reviewed magenta/cyan keys and enclosed seeds preserve pale feathers;
   Seed uses tight feather/ribbon polygons and bright-channel protection,
   Drake a value gate/highlight mask. Soul's lower shadow key unions alpha
   without restoring keyed backgrounds. Hostile directional units face right;
   genuine frontal Roc stays unchanged. Gale Strike/discovery/captures unchanged.
   Valley of Solitude completes the ten packs: prepare_dungeons.py --elements
-  ominous, Art/valley-solitude-intake.json. Reviewed green/teal keys include
+  ominous, Art/provenance/valley-solitude-intake.json. Reviewed green/teal keys include
   low-saturation Bloom/Heart backgrounds and enclosed ring/chain/limb gaps;
   preserve matching gem/casing highlights, pale artwork and painted shadows.
   Imp/Sentinel/Gargoyle/Regent mirror right; Duskmote/Cat already right,
@@ -630,7 +771,7 @@ phase state and validation live in docs/handoff.md.
   Owner-supplied alpha in Art/source/cutouts is authoritative for96 assets.
   All exporters use prepare_art.prepare_sprite: trim/resize/pad ONLY for these
   sources. Never apply background removal, seeds, foreground masks or edge
-  decontamination to them. Art/cutout-intake.json records originalbyte hashes and
+  decontamination to them. Art/provenance/cutout-intake.json records originalbyte hashes and
   canonicalnames. Historical originals remain preserved; older Infernis6/Tizu5/
   Flora6 corrections apply only to legacy sources, not supplied cutouts.
   BaseFlora/BaseTizu/archivedHeavy have no suppliedreplacement and stay unchanged.
@@ -641,7 +782,7 @@ phase state and validation live in docs/handoff.md.
   Use presentation/currency-icon.ts and battle-loot.lootArt, not material URLs
   or letter tokens. Keep both balance IDs, accessible labels and economy rules;
   Null-Prismatica is not enemy loot. Confirmations use styled in-game dialogs.
-  New cutout prompts follow Art/cutout-background-contract.md: subject identity,
+  New cutout prompts follow Art/guides/cutout-background-contract.md: subject identity,
   equipment, palette and style first; short plain solid unlit background clause
   last. Never force subject colors to clash or redesign them for keying.
   No glows in cutout generation: powers are opaque solid-color lines/ribbons/
@@ -711,7 +852,7 @@ phase state and validation live in docs/handoff.md.
   upgrade controls around it. All upgrades remain in Character.
 - Cutout cleanup uses reviewed original-normalized seeds in tools/matte_regions.py
    across all exporters; do not globally remove enclosed white pixels.
-   Art/matte-review.json records all99 assets and32 targeted fixes. Use
+   Art/provenance/matte-review.json records all99 assets and32 targeted fixes. Use
    tools/review_art.py for dark previews and inspect candidates manually.
    Pale wing/crystal protection and per-asset thresholds must survive regeneration.
 - Creature Glossary opens from Home. Content catalog assigns stable IDs to each
@@ -723,7 +864,7 @@ phase state and validation live in docs/handoff.md.
   associated affinities; per-element probabilities are rarityChance/5.
   Preserve image DOM, thumbnail bounds, facing and nested celebration selectors;
   honor reduced motion. Battle pulse lives separately on unit-idle.
-- Heaven/Abyss art direction lives in Art/gamemodes (D-048/D-050): six-form slime
+- Heaven/Abyss art direction lives in Art/creatures/gamemodes (D-048/D-050): six-form slime
   lines supersede wisps; three specialty items per mode plus mode-associated Epic+
   drops. Late leveling item applies throughout Evo5/6, not just aboveLv80.
   Both modes are live:35 stages80->120, bosses every5. Specialty unlock levels

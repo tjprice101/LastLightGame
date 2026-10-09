@@ -1,10 +1,11 @@
 import { elements, materialRarities, type ElementId } from './activities';
 import { specialtyMaterials } from './infusions';
 import { roseMaterials } from './roses';
+import { elementAssetIds, type LegacyElementId } from './element-migration';
 
 export const elementAccents: Record<ElementId, string> = {
-  infernic: '#fa8d63', aquatic: '#76c8f4', tectonic: '#d4ad7c', efflorescent: '#93d7a2',
-  voltaic: '#f2d873', atmospheric: '#91ddd1', luminous: '#eee2af', ominous: '#bc9bef',
+  infernic: '#fa8d63', oceanic: '#76c8f4', botanic: '#93d7a2',
+  atmospheric: '#91ddd1',
   tranquilitic: '#edb3d5', chaotic: '#ed8bbe',
 };
 
@@ -13,7 +14,7 @@ export interface DungeonArt {
   enemies: readonly { name: string; art: string; ability?: string }[];
 }
 
-export const dungeonArt: Partial<Record<ElementId, DungeonArt>> = {
+export const legacyDungeonArt: Partial<Record<LegacyElementId, DungeonArt>> = {
   ominous: {
     slug: 'valley-of-solitude',
     enemies: [
@@ -137,6 +138,10 @@ export const dungeonArt: Partial<Record<ElementId, DungeonArt>> = {
   },
 };
 
+export const dungeonArt: Partial<Record<ElementId, DungeonArt>> = Object.fromEntries(
+  elements.map((element) => [element.id, legacyDungeonArt[elementAssetIds[element.id]]]),
+);
+
 export const materialArtNames = ['Seed', 'Bloom', 'Shard', 'Crest', 'Heart', 'Soul'] as const;
 
 export function materialArt(id: string): string | undefined {
@@ -147,7 +152,7 @@ export function materialArt(id: string): string | undefined {
   const [elementId, rarity] = id.split('-');
   const element = elements.find((entry) => entry.id === elementId);
   const index = materialRarities.findIndex((entry) => entry.toLowerCase() === rarity);
-  return element && dungeonArt[element.id] ? `${element.id}-${materialArtNames[index].toLowerCase()}` : undefined;
+  return element && dungeonArt[element.id] ? `${elementAssetIds[element.id]}-${materialArtNames[index].toLowerCase()}` : undefined;
 }
 
 export function materialName(id: string): string {

@@ -1,9 +1,10 @@
 import { elements, elementalEnemyLevel, elementalDungeonRules, getElement, type ElementId } from './activities';
-import { dungeonArt, elementAccents } from './dungeon-art';
+import { dungeonArt, legacyDungeonArt, elementAccents } from './dungeon-art';
 import { type Stats } from './combat';
-import { dungeonEnemies, dungeonStrikes, type DungeonEnemy } from './dungeon-enemies';
+import { legacyDungeonEnemies, legacyDungeonStrikes, type DungeonEnemy } from './dungeon-enemies';
+import { elementSources, type LegacyElementId } from './element-migration';
 import { scaledDrop, rollDrop } from './loot-random';
-import { enemyGrowth, enemyStat } from './stat-growth';
+import { enemyGrowth, enemyStat, stagedEnemyAttack } from './stat-growth';
 
 export const playableDungeons = elements.map((element) => element.id);
 export type PlayableDungeon = (typeof playableDungeons)[number];
@@ -11,26 +12,38 @@ export function isPlayableDungeon(value: unknown): value is PlayableDungeon {
   return playableDungeons.some((element) => element === value);
 }
 
-export function dungeonEncounter(element: PlayableDungeon, stage: number) {
+export function dungeonVariants(element: PlayableDungeon, stage: number) {
+  if (!isPlayableDungeon(element)) throw new Error('Dungeon is not playable.');
+  elementalEnemyLevel(stage);
+  return elementSources[element].map((source: LegacyElementId) => {
+    const art = legacyDungeonArt[source];
+    const pack: readonly DungeonEnemy[] = art?.enemies ?? legacyDungeonEnemies[source];
+    if (!pack.length) throw new Error(`Dungeon enemy lineup is missing: ${source}.`);
+    const tier = Math.min(pack.length - 1, Math.floor((stage - 1) * pack.length / elementalDungeonRules.stages));
+    return { source, tier, forms: pack.length, enemy: pack[tier],
+      creatureId: `dungeon:${source}:${tier}`, ability: pack[tier].ability ?? legacyDungeonStrikes[source] };
+  });
+}
+
+export function dungeonEncounter(element: PlayableDungeon, stage: number, family = 0) {
   if (!isPlayableDungeon(element)) throw new Error('Dungeon is not playable.');
   const level = elementalEnemyLevel(stage);
   const art = dungeonArt[element];
-  const pack: readonly DungeonEnemy[] = art?.enemies ?? dungeonEnemies[element];
-  if (!pack.length) throw new Error(`Dungeon enemy lineup is missing: ${element}.`);
-  const tier = Math.min(pack.length - 1, Math.floor((stage - 1) * pack.length / elementalDungeonRules.stages));
+  const variants = dungeonVariants(element, stage);
+  if (!Number.isInteger(family) || family < 0 || family >= variants.length) throw new Error('Invalid dungeon enemy family.');
+  const variant = variants[family];
   const boss = stage % 5 === 0;
   const stats: Stats = {
     health: enemyStat(boss ? 110 : 55, boss ? enemyGrowth.bossHealth : enemyGrowth.health, level, 10, .024),
-    damage: enemyStat(boss ? 13 : 8, boss ? enemyGrowth.bossDamage : enemyGrowth.damage, level, 10, .024),
+    damage: stagedEnemyAttack(level, boss),
     defense: enemyStat(2, boss ? enemyGrowth.bossDefense : enemyGrowth.defense, level, 10, .08),
     crit: Math.min(0.25, 0.05 + (level - 10) * 0.002),
     critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0,
   };
   return {
-    name: getElement(element).dungeon, level, stage, boss, stats, tier, forms: pack.length,
-    enemy: pack[tier], color: elementAccents[element],
+    name: getElement(element).dungeon, level, stage, boss, stats, ...variant,
+    color: elementAccents[element],
     background: art ? `${art.slug}.png` : null,
-    ability: pack[tier].ability ?? dungeonStrikes[element],
     abilityMultiplier: 1.2 + (stage - 1) / (elementalDungeonRules.stages - 1) * 49 * 0.012,
   };
 }

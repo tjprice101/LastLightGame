@@ -8,11 +8,12 @@ from PIL import Image
 from prepare_art import ROOT
 from prepare_dungeons import PRECIPICE_KEYS, prepare_dungeon_sprite, prepare_precipice_cutout
 from review_art import sources
+from art_library import art_path
 
 
 class PrecipiceArtTests(unittest.TestCase):
     def test_provenance_and_deterministic_exports(self):
-        manifest = json.loads((ROOT / "Art" / "precipice-earth-intake.json").read_text(encoding="utf-8"))
+        manifest = json.loads((art_path("precipice-earth-intake.json", root=ROOT)).read_text(encoding="utf-8"))
         self.assertEqual(manifest["asset_count"], 16)
         self.assertEqual(len(manifest["assets"]), 16)
         for record in manifest["assets"]:

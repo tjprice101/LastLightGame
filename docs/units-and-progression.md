@@ -1,5 +1,73 @@
 # Units and progression
 
+## Intrinsic kit redesign (D-163)
+
+Owner clarifies the kit request means abilities/passives, not per-character
+Conduits, and selects full-roster phased implementation starting with starters.
+Infernis now chooses Flame Arc or Dawnfire for personal Ember Seal spending;
+Tizu builds Tide from actual authored shield absorption and spends on stronger
+Weaken or ultimate shielding; Flora builds Blooms from effective healing and
+spends on Briar Shot damage or Worldseed healing, with Renewal's team attack
+buff. These work without equipment. Fixed caps/trigger coefficients stay
+separate from ordinary stat/potency growth.
+[Exact rules, compatibility and tests](character-kit-rework.md).
+The D-151/D-157 table below records the earlier pilot baseline; D-163 supersedes
+starter spending/stack rules only. Remaining roster redesign is still pending.
+
+## Elemental War characters (D-152/D-156)
+
+Nerithe (Oceanic tactical attacker), Orvella (Botanic tank/support) and
+Vaelor (Atmospheric burst attacker) are
+six-star Element-Bearers recruited only by their final Elemental War boss's
+1% roll, never through either summon pool. New ownership starts at
+Lv.0/Evo.1/weapon0, unequipped, without changing the saved squad.
+The regular matching-element level/evolution costs, Heaven/Abyss specialty
+and explicit fodder requirements apply; playable caps remain30-105 across
+six forms. Boss140 does not unlock playable140. All three use supported damage/
+Weaken/shield/critical/low-health effects and ordinary Last Flare recovery;
+no new counter, stun or stored-charge engine. Nerithe's snapshot passive adds
+a fixed5 Gauge to her own Normal Attack only, capped by ordinary Gauge capacity;
+it does not scale with stats or affect anyone else's gains. Her four supplied
+ability icons are installed; Normal Attack/Defense stay text-only.
+[Exact kits and rewards](elemental-war.md).
+
+## Richer kit pilots and status display (D-151/D-157)
+
+Owner permits buffs, debuffs, bounded stacks and elemental status effects in
+5/6-star Element-Bearer abilities, not damage-only designs. This is permission
+to design, followed by owner instruction to implement everything in phases.
+Keep other kits untouched; preserve existing costs, identity and combat clocks.
+[Pilot rules and validation](conduit-expansion-plan.md#phase-3---broader-character-kit-design)
+define timing, ownership, caps, duration/consumption and snapshot gates.
+Normal Attack/Defense will share universal artwork after delivery; actions,
+Gauge gains and Defense math are unchanged by that art replacement.
+
+The four pilot coefficients below are developer tuning, not owner-specified
+numbers. Per-encounter transient state deep-clones with combat; Settings
+preserves it, while Continue/replay create fresh marks and charges. No wallet
+fields, resource spending, action/cooldown bypass, revival or extra rewards.
+
+| Pilot | Trigger, cap and expiry | Payoff |
+| --- | --- | --- |
+| Infernis | Own effective Burn damage, once per enemy phase; 3 personal Ember Seals maximum; living source only | Skill2 spends all, +8% additive outgoing damage per seal, max24%; one spend for entire AoE |
+| Tizu | Effective Tizu-authored shield that survives a phase; one Shelter Charge per recipient, refresh, no stack; requires living source | First direct enemy hit consumes10% reduction before shield absorption; Burn does not consume it; remaining shield may re-prime next turn |
+| Aurora | Skill1 marks surviving target; per-owner2 Verdict Marks, two enemy phases, refresh | Skill2 spends own living-target marks once; +5pp team CR per mark, capped10pp through next player turn, refresh/nonstack; ordinary CR clamp |
+| Bliss | Skill2 retains damage/crit and adds12 flat healing, scaled byG; effective healing of another ally grants one Restorative Charge per activation, capped3 | Last Flare spends charges before resolution; allies receive shield5% caster effective maxHP per charge, capped15%, refresh/nonstack; ordinary recovery |
+
+Owner explicitly selects modest healing on Bliss rather than moving the pilot
+to Flora. She remains an attacker with existing art/skills/passive damage bonus.
+All fixed stack/bonus/ward coefficients above remain fixed under growth;
+only existing stat/ability scaling applies to healing and damage.
+Personal Ember Seals and Omnic Ember Seals are separate trigger/spender state;
+matching triggers can grant one of each without recursively triggering.
+
+Active Burn/Weaken/Fracture/Verdict effects appear as compact, wrapping text
+beside enemy HP in field and Combatants menu. Burn/Verdict duration is enemy
+phases; Weaken remaining count is enemy attacks. Marks name their owners.
+Expired/dead-target badges disappear in event order; Settings retains actual
+state and reduced motion shows final resolved state. No icon URLs until
+[status artwork](../Art/ui/Battle%20Status%20Icons.md) is supplied and reviewed.
+
 ## Rose event Element-Bearers (D-100)
 
 Rosetta6-star/Luminous bow, Thornia6-star/Ominous greatsword and Crinso6-star/
@@ -47,7 +115,7 @@ and responsive long-name wrapping. Retain short identity references in prose.
 ## Playable flagship identities (D-094/D-121/D-122)
 
 The owner confirmed seven new Element-Bearers, each with six forms matching
-the starter structure. [Flagship art manifest](../Art/Flagship%20Characters.md)
+the starter structure. [Flagship art manifest](../Art/characters/Flagship%20Characters.md)
 owns their name/gender/element/weapon/role/star table and generation packs.
 Bruno, Elise and Atmoso are5-star in Standard; Aurora, Razor, Bliss
 and Disciple are6-star in Standard. Fixed star value
@@ -204,7 +272,7 @@ confirmation, and keeps the portrait/rail mounted after tab changes and upgrades
 | --- | --- | --- |
 | Shatter Gauge Amount | `shatterCapacity` | Maximum100 timesP; current gauge starts0 |
 | Health | `health` | Maximum HP |
-| Defense | `defense` | Flat damage reduction; displayed effective defense includes passive |
+| Defense | `defense` | Attack-relative diminishing damage reduction; displayed effective defense includes passive |
 | Attack Damage | `damage` | Base hit damage before action coefficients |
 | Critical Rate | `crit` | Base timesP, capped at75% |
 | Critical Damage Multiplier | `critMultiplier` | 1.5x base timesP, capped at3x |
@@ -237,7 +305,7 @@ Attack Damage and skill coefficients both scale, intentionally strengthening
 skill hits through both factors. Burn uses the grown Elemental Damage stat times
 the grown skill coefficient, rounded to an integer. Flora's passive uses grown
 healing percentage against the recipient's grown maximum HP.
-Combat still rounds direct attack power before subtracting full-precision defense,
+Combat rounds direct damage after attack-relative Defense mitigation (D-165),
 burn ticks, Defense-mode damage and percentage-heal outcomes at their established
 resolution points. A rounded hit need not rise every level; the underlying stats
 and potency do. Flat healing/shields and HP can be fractional.
@@ -291,7 +359,7 @@ references its definition/form and records only mutable player state.
 
 ## Existing art concepts
 
-The [prompt guide](../Art/midjourney-character-style-prompt.md) describes six art
+The [prompt guide](../Art/guides/midjourney-character-style-prompt.md) describes six art
 stages each for Ember Swordsman, Tide Spearbearer, and Sprout Archer.
 Hair, eyes, signature clothing, and weapon type remain recognizable across stages.
 Fire, water, or grass can be chosen as the permanent starter. All three have implemented

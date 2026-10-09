@@ -6,6 +6,7 @@ import { characterRating, starBadge } from './character-rating';
 import { characterHub, homeHub } from './hub';
 import { characterRoster, squadHub, summonHub } from './roster';
 import { emptyAccount } from '../game/account';
+import { isWarCharacter } from '../content/war-characters';
 
 describe('fixed summon stars and evolving rarity', () => {
   it.each([1, 2, 3, 4, 5, 6])('renders exactly %s physical stars with an accessible tier label', (stars) => {
@@ -31,8 +32,11 @@ describe('fixed summon stars and evolving rarity', () => {
         characterRoster(account, starter.id), squadHub(account)]) expect(html).toContain(label);
     }
     const summon = summonHub(emptyAccount(), isRoseCharacter(starter.id) ? 'roses' : 'standard');
-    expect(summon).toContain(starter.name);
-    expect(summon).toContain(`Common<span>${starter.stars}-star</span>`);
+    if (isWarCharacter(starter.id)) expect(summon).not.toContain(starter.name);
+    else {
+      expect(summon).toContain(starter.name);
+      expect(summon).toContain(`Common<span>${starter.stars}-star</span>`);
+    }
     const rates = summon.slice(summon.indexOf('<table'), summon.indexOf('</table>'));
     expect(rates).not.toContain('character-rating');
   });
