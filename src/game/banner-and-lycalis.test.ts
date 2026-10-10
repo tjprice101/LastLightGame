@@ -181,7 +181,7 @@ describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
       expect(html.match(/data-banner-entry=/g)).toHaveLength(22);
       expect(html).toContain('0.166667% per draw');
       expect(html).not.toContain('disabled');
-      expect(html).toContain('The Crown Beyond Dawn, Gleamstone Slime ~ Omnic ~ 6-star ~ Lv.50');
+      expect(html).toContain('The Crown Beyond Dawn, Gleamstone Slime · Omnic · 6-star · Lv.50');
       expect(html).not.toContain('All Element-Bearers owned');
     }
     expect(standardBanner.available).toBe(true);

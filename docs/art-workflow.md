@@ -1,5 +1,180 @@
 # Art and asset workflow
 
+## Emberwake Story delivery (D-178)
+
+Installed the five Infernic creatures and Emberwake March arena. All30 Story
+creatures and six regional arenas are now delivered. Owner explicitly excludes
+the new World Map.png from this intake; the installed D-171 map and
+its source/hash remain unchanged.
+
+Original six files are archived byte-for-byte under Art/source/story/infernic.
+`tools/intake_story_art.py --element infernic` limits processing and root cleanup
+to this region while preserving the other31 manifest records. Source-specific
+keys, reviewed enclosed-gap seeds, moth ribbon spill regions and facing are in
+Art/provenance/story-art-settings.json; hashes/reproduction records extend
+story-art-intake.json. Keep genuine flames, pale claws, armor and painted shadows
+(including the boar's teal ground shadow). No runtime keying.
+
+Five transparent960px sprites have at least48px outer padding. The1456x816 arena
+preserves every source pixel as opaque scenery. Shared Story registry/facing/
+byte revisions cover encounters, battle art and discovery-gated galleries.
+Reproduce with `python tools\intake_story_art.py --element infernic --apply`;
+refresh `python tools\story_art_revisions.py --write`.
+
+## Full installed Conduit cleanup review (D-177)
+
+Owner reports background color remaining inside some icons and requests a review
+of every Conduit artpiece. Review complete for all60 installed images; the25
+undelivered reborn kit designs cannot be reviewed as pixels and remain pending.
+Inspect authoritative source, dark/light composites and enclosed openings
+individually; same-color gems/powers are not background merely because they match
+the key. Preserve original bytes, pale metal, elemental detail and authored shadows.
+
+Correct only reviewed per-source keys/gap seeds/edge masks in the owning exporter,
+not global green/cyan removal or a disconnected runtime patch. Supplied original
+alpha stays authoritative; do not re-key it. Preserve replaced runtime bytes and
+record all60 verdicts plus before/after/source hashes and reproduction settings
+in Art/provenance/conduit-cleanup-review.json. Refresh shared Conduit URL revisions
+after verified exports. No mechanics, source art repainting or save changes.
+
+Five corrected exports: Chaotic Paradox Spindle, Execution Orrery, Meridian
+Inverter, Nullsong Transmission and Prism Splinter Socket. Reviewed enclosed
+key islands and narrow source-border remnants were removed; genuine cyan/violet
+facets, pale metal and authored shadows retained. Other55 needed no correction.
+`tools/intake_delivered_art.py` owns updated seeds/keys/row-gradient/border-strip
+settings; previous five exports archived under
+Art/source/delivered-root-art/previous-runtime/conduits/D-177.
+`python -m unittest discover -s tools -p test_conduit_cleanup_review.py`
+verifies all60 source hashes, verdicts, prior/current exports and reproduction.
+`python tools\conduit_art_revisions.py` validates current shared URLs.
+Older root-intake suites can reject unrelated unmapped incoming PNGs; do not
+delete or fold those into this Conduit-only review.
+
+## Reborn Omnic kit Conduits (D-176)
+
+All25 entries in [Kit Conduits.md](../Art/conduits/Kit%20Conduits.md) now match
+the replacement runtime Omnics, not old5/8/6/6 tier widgets. Stable IDs are kept.
+Written original Machines Omnic standard supplies renderer/presence: full reborn
+protected central mechanism, monumental ivory/platinum armor, six immense
+elemental fans, nested rings/crowns, counter-sweeping ribbons and dense rear
+facets. Each identity remains distinct; no image reference, copied device or
+unbounded rainbow palette. Clear outer margins, visible cores and offline/no-glow
+generation remain. No installed art or historical source bytes are replaced.
+
+Reproduce `python tools\build_kit_conduit_art.py`; validate25Omnic identities,
+full reborn architecture/palette/key/margins/exact regeneration with
+`python -m unittest discover -s tools -p test_kit_conduit_art.py`.
+Future originals belong under Art/source/kit-conduits; all25 still undelivered.
+
+## Delivered elemental status icons (D-175)
+
+Owner delivers all nine named root PNGs and requests background removal, archival
+and wiring. All nine are installed and verified. Byte-identical originals live under
+Art/source/abilities/statuses; reviewed per-source keys/gaps/hash records under
+Art/provenance/status-art-settings.json and status-art-intake.json. Supplied alpha
+remains authoritative; preserve pale metal/ivory and real green subject pixels.
+Export transparent256px squares with no more than224px subject content. Only
+remove the nine exact root files after archive/hash/export/visual verification.
+
+`tools/intake_status_art.py` owns archival and reviewed offline reproduction.
+`tools/status_art_revisions.py --write` refreshes shared byte-derived URL revisions
+after exports; without --write verifies them. Runtime registry uses stable
+abilities/statuses/status-*.png IDs and Vite deployment-base paths.
+
+Typed resource family/origin/kind resolves six shared icons and three exact Rose
+resource signatures. Actual Burn gets the shared Infernic icon; actual Weaken
+and Fracture get Chaotic Suppression, retaining precise labels/owners/clocks.
+Native counters show icons next to exact0/3 values. Relevant equipment charges
+share family art in full Battle reference, never merge with native counts.
+Compact field retains its existing small native counter/enemy badge scope.
+Unrelated non-elemental effects stay text, no arbitrary icon substitution.
+Icons are decorative with empty alt/aria-hidden; real text stays accessible.
+No combat math, effect/clock/ownership, rewards/RNG/account writes or new status.
+
+## Consolidated elemental status artwork (D-173)
+
+Owner reduces unnecessary special effects/counters and approves shared elemental
+families with precise Rose signatures. [Battle Status Icons.md](../Art/ui/Battle%20Status%20Icons.md)
+now has nine prompts, superseding the40-prompt checklist below: Burn, Ward, Bloom,
+Tempest, Focus, Suppression, Rose Grace, Thorn Aegis and Rose Duality.
+Share family art without merging actual mechanics/source/count/clocks. Basic
+combat meters and non-elemental equipment feedback remain live text without
+separate generated status images. No installed/source art changes.
+Reproduce `python tools\build_status_art.py`; validate status prompt tests.
+
+## Delivered Story art intake (D-171)
+
+Owner supplies31 root PNGs:25 creature portraits, five regional arenas and
+World Map.png. Oceanic/Atmospheric/Botanic/Tranquilitic/Chaotic are delivered;
+Infernic's five creatures and arena are not. Do not request missing files or
+substitute another element's art. Story IDs/stats/encounters/rewards are unchanged.
+
+`tools/intake_story_art.py` owns exact filename mappings, reviewed source-specific
+background keys/enclosed-gap settings, visual/export reproduction and hash-safe
+archival. Originals live in Art/source/story/<element> and world-map; records in
+Art/provenance. Root copies are removed only after archived bytes/hashes and
+reviewed exports verify. Enemy sprites are960px transparent padded cutouts;
+supplied alpha is authoritative. Source-clipped tips are not reconstructed.
+Arenas/map stay opaque, preserving aspect ratio, never keyed like creatures.
+
+`content/story-art.ts` registers actual delivered enemies and arena/map filenames.
+`storyCreature` shares the same art with catalog/spawns; reviewed unit-facing
+metadata covers field/cut-ins. Deployment-base shared URLs get byte-derived
+revisions from `python tools\story_art_revisions.py --write` after reviewed
+exports; running without --write validates the revisions are current. Gallery
+silhouettes/discovery gates remain. Map shows the entire supplied scenery at its
+natural aspect ratio, with six accessible region controls/stage locks below.
+Do not infer terrain button coordinates or bake art text into unlock semantics.
+
+Validate targeted intake tests, `src/content/story-art.test.ts`, Story/battle
+chrome/facing/portrait/Collections tests, full suite/build and browser image decode/
+field/map checks with no owner-save mutation. Prompt generation references in
+Art/creatures/story remain intact; other missing art stays explicitly pending.
+
+
+## Complete battle-status prompt pack (D-170 / D-172)
+
+[Battle Status Icons.md](../Art/ui/Battle%20Status%20Icons.md) now contains40
+copy-ready reference-free1:1 prompts: existing debuffs/native resources/team buffs,
+new Standard/Rose/War resources, all actual equipment charges and generic shield,
+Defense/recovery/Gauge/cooldown indicators. Explicitly distinguish instant cooldown
+feedback from persistent charges; art does not create statuses or modify clocks.
+All numerical counts/strengths/source owners remain real HTML, never baked text.
+
+Reproduce using `python tools\build_status_art.py`; validate with
+`python -m unittest discover -s tools -p test_status_art_prompts.py` and the shared
+prompt-policy suite. Preserve old proposed status IDs; single cohesive symbols,
+per-symbol palette locks/unwanted hues, solid green keys (magenta for green subjects),
+no key-color negation, complete margins/no-glow compact anime/cel renderer.
+Sources belong in Art/source/abilities/statuses, not root; export transparent256px
+with224px content only after review, alpha-safe offline processing and shared
+resolver integration. Currently prompt-only: no missing-image URLs or generated
+art installed. See [kit rules](character-kit-rework.md).
+
+
+## Story map, creatures and arenas (D-168)
+
+Owner requests copy-ready Midjourney packs for the implemented world map,
+regional enemies and battle arenas matching elemental dungeons. Organized
+[Story packs](../Art/creatures/story/README.md) cover30 exact runtime identities,
+six arenas and the [world map](../Art/ui/Story%20World%20Map.md),37 prompts total.
+No new creature evolution/rarity/capture promise or gameplay change. D-171
+installs the delivered25 creatures/five arenas/map; Infernic remains pending. Cutouts follow current keys/palette/no-glow/containment rules; arenas
+use side-view empty equal-height standing lanes and scenery lighting; map is
+overhead connected terrain with all functional text/controls overlaid in HTML.
+
+All52 previous root deliveries are archived; repository root has no remaining
+images. Future Story originals go under Art/source/story/<element> or world-map,
+preserving bytes/hashes. Proposed runtime paths in packs are intake targets,
+not image registrations. Review generated species/palette/tips/enclosed keys,
+standing lanes and desktop/mobile framing before offline export/shared wiring.
+Supplied alpha remains authoritative. Never background-remove scenery.
+
+Run `python -m unittest discover -s tools -p test_story_art_prompts.py` for exact
+runtime-name/ID coverage,37 prompts, renderer/flags/word budgets/keys, side-view
+arenas and six ordered map terrains. Also run the shared prompt-policy suite;
+historical Machines failures are separate from newly authored Story results.
+
 ## Organized physical Art library (D-160)
 
 Owner approves the safe phased rework baseline. Physical filing now moves
@@ -201,17 +376,44 @@ the older root PNGs are not the revised replacements.
 Keep the current compact anime/cel renderer, opaque non-emissive cutout shapes,
 clear complete margins and D-147's no-reference rule for non-portrait assets.
 
-Revised images are not delivered or installed. Keep existing action art until both
-replacements are reviewed/exported. Then update the shared ability resolver
-for every live EB, archive obsolete runtime versions before removal, and
-preserve historical originals/provenance. Passive/Skills/Last Flare stay
+The supplied D-157 icons are reviewed and installed through the shared
+ability resolver for every live Element-Bearer. Originals and runtime hashes
+are recorded in [D-157 provenance](../Art/provenance/d157-root-art-intake.json);
+superseded source art remains preserved. Passive/Skills/Last Flare stay
 character-specific. [Phases and acceptance](conduit-expansion-plan.md#phase-5---asset-intake-and-implementation).
 
-[Currency prompts](../Art/items/Currencies.md) now request a white shimmering coin
+[Currency prompts](../Art/items/Currencies.md) request a white shimmering coin
 and cracked black coin with red/white lightning. Use painted reflections,
-opaque crisp sparkle marks/zigzags under the no-glow cutout contract. Keep
-installed prism icons, all historical originals/provenance and internal keys
-until reviewed coin delivery; no balance or transaction changes from prompts.
+opaque crisp sparkle marks/zigzags under the no-glow cutout contract. The
+reviewed D-157 coin replacements now use the existing internal IDs; previous
+runtime exports and historical originals/provenance remain preserved.
+No balance or transaction changes.
+
+## D-157 universal icons and currency replacement intake
+
+The four approved root deliveries are installed: two shared ability icons
+(Normal Attack and Defense) and two currency replacements (Prismatica and
+Null-Prismatica). Exact incoming names map to the established universal icon
+IDs and `fractalis`/`lycalis`; shared ability/currency URL resolvers include
+byte-derived cache revisions. No reward, economy, combat, or save behavior
+changed.
+
+The RGB sources use individually sampled border-connected green keys and
+bounded edge cleanup. One explicitly reviewed interior seed removes the
+sword's enclosed background gap. The shield's pale metal and the coins' white
+facets, red lightning, dark details and blue cast shadow remain opaque.
+Light/dark contact sheets and representative small exports were inspected.
+Original source bytes and runtime hashes are recorded in
+[D-157 provenance](../Art/provenance/d157-root-art-intake.json). The former
+D-142 currency runtime exports are separately preserved and hash-verified;
+historical currency originals and provenance are retained.
+
+Reproduce the intake with `python tools\intake_d157_root_art.py --apply`;
+review candidates with `python tools\intake_d157_root_art.py --review <directory>`.
+Validate using `python -m unittest discover -s tools -p test_d157_root_art_intake.py`,
+`python -m unittest discover -s tools -p test_prism_currency_intake.py` and the focused
+presentation icon/currency tests. Root cleanup is allowed only after archive
+and installed-export hash verification.
 
 [Status prompts](../Art/ui/Battle%20Status%20Icons.md) are generated reproducibly
 by `python tools\build_status_art.py`. Each is a complete reference-free1:1
@@ -444,12 +646,12 @@ field/portrait/cut-in presentation. No forms, titles, stats, stars, acquisition,
 ownership gates or save IDs change.
 
 From the repository root:
-- `python tools\intake_character_refresh.py`: hash/provenance preflight.
 - `python tools\intake_character_refresh.py --review <review-directory>`:
   reproduce cutouts and six-form dark contact sheets without installing.
-- `python tools\intake_character_refresh.py --apply --remove-incoming`:
-  install/verify exports, archive both generations, then remove only named
-  root copies whose source/runtime hashes match. This completed for all60.
+- `python tools\intake_character_refresh.py --apply --remove-incoming` was the
+  completed one-time D-134 install for all60. Its 13 later-replaced runtime
+  files are preserved by the delivered-root-art intake below; do not rerun this
+  older apply/preflight against the current runtime.
 - `python -m unittest discover -s tools -p test_character_refresh.py`:
   hashes, exact regeneration, all margins, reviewed gaps, preserved eyes,
   supplied-alpha bypass and facing.
@@ -2089,3 +2291,55 @@ Known issues:
 - Composition reads at expected display size, not just enlarged.
 - Source and reference usage rights are documented; no copied franchise assets.
 - Runtime export meets the selected importer and rendering requirements.
+
+## Delivered Conduit icons and replacement portraits (D-167)
+
+The reviewed delivery contains35 Conduit icons and13 replacement character
+portraits. Exact incoming names resolve through the authored Conduit designs and
+character roster; ambiguous or missing matches stop the intake. The batch
+supersedes prior runtime art for Bliss forms1-6, Rosetta and Crinso forms5-6,
+Aurora and Bruno form5, and Thornia form6. Existing form IDs and facing
+metadata remain in use.
+
+Original PNG bytes are archived under
+`Art/source/delivered-root-art/{conduits,characters}` and SHA-256 recorded in
+`Art/provenance/delivered-root-art-intake.json`. The replaced portrait exports
+are separately preserved under `Art/source/delivered-root-art/previous-runtime`;
+older character-refresh sources and manifests remain unchanged. The four
+D-157 root PNGs were outside this 48-source batch and are separately reviewed
+and installed under the D-157 intake section above.
+
+All48 delivered sources are RGB. Each has an explicit reviewed key and radius;
+the few enclosed background gaps use19 normalized source-coordinate seeds
+across8 exports. Verdant Covenant's spatially varied backdrop uses three
+reviewed RGB samples. Matte flood fill remains border-connected plus only the
+named seeds, preserving matching subject colors and painted shadows. Supplied
+alpha, if present in a later batch, remains authoritative and receives trim,
+resize and pad only. No runtime background removal is used.
+
+Conduit exports are256px RGBA with224px content; portrait exports are960px RGBA
+with864px content. Shared `assetUrl()` versions character and Conduit images
+from their runtime bytes, so Store, Inventory, Archive and loot surfaces share
+cache invalidation without changing their content resolvers.
+
+From the repository root, first reproduce and inspect the dark contact sheets,
+then install and verify the named batch:
+
+```powershell
+python tools\intake_delivered_art.py --review C:\Temp\delivered-art-review
+python tools\intake_delivered_art.py
+python tools\intake_delivered_art.py --apply --remove-incoming
+python tools\conduit_art_revisions.py
+python -m unittest discover -s tools -p test_delivered_art_intake.py
+python -m unittest discover -s tools -p test_conduit_art_revisions.py
+python -m unittest discover -s tools -p test_character_refresh.py
+python -m unittest discover -s tools -p test_root_art_intake.py
+npm test -- src\presentation\machine-art.test.ts src\presentation\archives.test.ts src\game\machines.test.ts src\presentation\conduit-store.test.ts src\presentation\portrait.test.ts
+```
+
+Applying archives and verifies each source/export before removing only the48
+named root copies. It also preserves the previous13 runtime portraits and
+regenerates both portrait and Conduit cache revisions. The earlier
+`intake_character_refresh.py --apply` batch predates these replacements; do not
+use it to re-export the13 superseded forms. Its reproduction test checks their
+older exports through the preserved `previous-runtime` archive.

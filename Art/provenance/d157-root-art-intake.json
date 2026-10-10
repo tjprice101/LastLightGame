@@ -1,0 +1,335 @@
+{
+  "decision": "D-157",
+  "asset_count": 4,
+  "assets": [
+    {
+      "incoming": "Normal Attack - Steel Sword Sweep.png",
+      "asset": "universal-normal-attack",
+      "category": "abilities",
+      "source": "Art\\source\\abilities\\universal\\D-157\\normal-attack.png",
+      "source_sha256": "5f4a69332d3b393cf8d984a30ae1111c1079c1a37fc9868c78f4c01948244fa8",
+      "runtime": "public\\assets\\abilities\\universal-normal-attack.png",
+      "runtime_sha256": "ee16ec5ccb716e69cb664ee4301aaf7f9faac81ece4d1823f1d211f25e688f3e",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individually reviewed border-connected RGB key",
+        "keys": [
+          [
+            183,
+            227,
+            15
+          ],
+          [
+            182,
+            227,
+            12
+          ],
+          [
+            210,
+            237,
+            65
+          ],
+          [
+            209,
+            236,
+            64
+          ],
+          [
+            189,
+            212,
+            51
+          ],
+          [
+            215,
+            205,
+            85
+          ],
+          [
+            185,
+            206,
+            54
+          ],
+          [
+            216,
+            223,
+            102
+          ],
+          [
+            180,
+            222,
+            13
+          ],
+          [
+            152,
+            202,
+            9
+          ],
+          [
+            175,
+            218,
+            19
+          ],
+          [
+            153,
+            200,
+            10
+          ],
+          [
+            165,
+            212,
+            7
+          ],
+          [
+            166,
+            213,
+            6
+          ],
+          [
+            179,
+            219,
+            46
+          ],
+          [
+            183,
+            218,
+            26
+          ],
+          [
+            181,
+            206,
+            54
+          ],
+          [
+            182,
+            226,
+            15
+          ],
+          [
+            210,
+            236,
+            65
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.597,
+            0.13
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Defense - Steel Shield.png",
+      "asset": "universal-defense",
+      "category": "abilities",
+      "source": "Art\\source\\abilities\\universal\\D-157\\defense.png",
+      "source_sha256": "4f0ae1fb33704edc0094e549f32894a5f83a3b6070c926224aa74905f0370db7",
+      "runtime": "public\\assets\\abilities\\universal-defense.png",
+      "runtime_sha256": "b68caa3cf0d17b72889d2916673505e4eba34d87df4826cef79eea33ab9d3913",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individually reviewed border-connected RGB key",
+        "keys": [
+          [
+            143,
+            198,
+            173
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Prismatica - Main currency.png",
+      "asset": "fractalis",
+      "category": "currencies",
+      "source": "Art\\source\\currencies\\D-157\\Prismatica.png",
+      "source_sha256": "320abec1638d4424bb9b169d8fcfbcb6ca6093c33aaa7a4eb31621a8c139d5eb",
+      "runtime": "public\\assets\\currencies\\fractalis.png",
+      "runtime_sha256": "286ac742e7045b0bb698f3eda29f6abddb2b5c44ce63315e22579db7dd839d89",
+      "previous_runtime": "Art\\source\\currencies\\previous-runtime\\D-157\\fractalis.png",
+      "previous_runtime_sha256": "10304a64352e672ac5ee9d4e248450a81575b7d3c454219189e33f3885b2c16f",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individually reviewed border-connected RGB key",
+        "keys": [
+          [
+            73,
+            219,
+            129
+          ],
+          [
+            86,
+            206,
+            143
+          ],
+          [
+            95,
+            197,
+            142
+          ],
+          [
+            96,
+            203,
+            144
+          ],
+          [
+            94,
+            202,
+            139
+          ],
+          [
+            70,
+            220,
+            131
+          ],
+          [
+            66,
+            213,
+            123
+          ],
+          [
+            93,
+            219,
+            132
+          ],
+          [
+            87,
+            220,
+            130
+          ],
+          [
+            111,
+            217,
+            126
+          ],
+          [
+            118,
+            221,
+            131
+          ],
+          [
+            106,
+            217,
+            121
+          ],
+          [
+            108,
+            225,
+            144
+          ],
+          [
+            104,
+            217,
+            124
+          ],
+          [
+            107,
+            226,
+            144
+          ],
+          [
+            100,
+            224,
+            146
+          ],
+          [
+            95,
+            224,
+            140
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Null-Prismatica - Premium currencyNull-Prismatica - Premium currency.png",
+      "asset": "lycalis",
+      "category": "currencies",
+      "source": "Art\\source\\currencies\\D-157\\Null-Prismatica.png",
+      "source_sha256": "f63984469febffe4b9b695431758cbf8e9de99ed9f74db2297eda50c0c02ec49",
+      "runtime": "public\\assets\\currencies\\lycalis.png",
+      "runtime_sha256": "aa20d2a455a9099c6c953aadeb57fc4ccc985829ca4c09ba4da73b2622874eae",
+      "previous_runtime": "Art\\source\\currencies\\previous-runtime\\D-157\\lycalis.png",
+      "previous_runtime_sha256": "bddc26f5e591645124289052fb3685727053904a36e9fd8eb719f20bc068a765",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individually reviewed border-connected RGB key",
+        "keys": [
+          [
+            153,
+            228,
+            175
+          ],
+          [
+            161,
+            223,
+            181
+          ],
+          [
+            169,
+            222,
+            182
+          ],
+          [
+            167,
+            224,
+            183
+          ],
+          [
+            152,
+            228,
+            176
+          ],
+          [
+            154,
+            229,
+            174
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    }
+  ]
+}

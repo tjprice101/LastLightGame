@@ -30,7 +30,7 @@ describe('saved summon reward presentation', () => {
     expect(reward.title).toBe('Element-Bearer summoned');
     expect(reward.art).toContain('characters/');
     expect(reward.details).toContain('6-star character');
-    expect(reward.details).toContain('Lv.0 ~ Evo.1');
+    expect(reward.details).toContain('Lv.0 · Evo.1');
     expect(reward.details).toContain('10 Null-Prismatica spent');
     expect(reward.details).toContain('Roses Under Sunny Skies');
     expect(result).toEqual(before);

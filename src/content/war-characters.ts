@@ -64,6 +64,7 @@ export const warFighters: Record<WarCharacterId, FighterDefinition> = {
     },
   },
   vaelor: {
+    pilot: 'tempest',
     stats: { health: 210, defense: 11, damage: 45, crit: .22, shatterCapacity: 100, critMultiplier: 1.65, elementalDamage: 8 },
     passive: { name: 'Standing Thunder', description: '+25% outgoing damage at or below half health.', damageBonus: .25, defenseBonus: 0, healFraction: 0 },
     abilities: {

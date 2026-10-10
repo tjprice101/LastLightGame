@@ -3,6 +3,7 @@ import { type Stats } from './combat';
 import { elementAccents } from './dungeon-art';
 import { enemyGrowth, enemyStat, stagedEnemyAttack } from './stat-growth';
 import { fractalisDrop, rollDrop } from './loot-random';
+import { storyRegionArt } from './story-art';
 
 export const storyRules = { regionStages: 25, stages: 150, startingLevel: 1, maximumLevel: 55 } as const;
 export const storyRegions: readonly {
@@ -43,14 +44,16 @@ export function storyEncounter(stage: number) {
     crit: .05, critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0,
   };
   return { ...region, name: region.name, stage, regionIndex, regionStage, level, boss, stats,
-    color: elementAccents[region.element], background: null,
+    color: elementAccents[region.element], background: storyRegionArt[region.element]?.background ?? null,
     abilityMultiplier: 1.15 + (level - 1) * .003 };
 }
 
-export function storyCreature(stage: number, identity: number): { id: string; name: string } {
+export function storyCreature(stage: number, identity: number): { id: string; name: string; art?: string } {
   const encounter = storyEncounter(stage);
   if (!Number.isInteger(identity) || identity < 0 || identity >= (encounter.boss ? 1 : 4)) throw new Error('Invalid Story enemy identity.');
-  return { id: `story:${encounter.element}:${encounter.boss ? 'boss' : identity}`,
+  const art = storyRegionArt[encounter.element];
+  return { ...(art ? { art: encounter.boss ? art.boss : art.enemies[identity] } : {}),
+    id: `story:${encounter.element}:${encounter.boss ? 'boss' : identity}`,
     name: encounter.boss ? storyRegions[encounter.regionIndex].boss : encounter.enemies[identity] };
 }
 

@@ -231,7 +231,7 @@ function frame(body: string, battle = false, sanctuary = false): void {
     : menuPage === 'conduit-store' || menuPage === 'conduit-upgrade' ? 'stores' : menuPage === 'archives' || menuPage === 'glossary' ? 'collections' : menuPage === 'team' ? characterCategory === 'squad' ? 'squad' : 'character' : menuPage;
   app.innerHTML = battle ? `<div class="battle-screen">${body}${ambientBackground(backgroundScreen)}<p id="status" class="status" role="alert"></p></div>` : `<div class="shell ${sanctuary ? 'sanctuary-shell' : ''}">
     ${ambientBackground(backgroundScreen)}
-    ${sanctuary ? '' : '<header class="masthead"><span class="brand-mark">L ~ L</span><span>LAST LIGHT</span><span class="build-label">PRELUDE &middot; 0.1</span></header>'}
+    ${sanctuary ? '' : '<header class="masthead"><span class="brand-mark">L · L</span><span>LAST LIGHT</span><span class="build-label">PRELUDE &middot; 0.1</span></header>'}
     ${body}
     <p id="status" class="status" role="alert"></p>
     ${sanctuary ? '' : '<footer><span>AN ORIGINAL GACHA RPG</span><span>A WORLD WAITING TO AWAKEN</span></footer>'}
@@ -280,7 +280,7 @@ function renderTitle(): void {
 
 function renderSelection(): void {
   frame(`<section class="selection-screen">
-    <p class="eyebrow">CHAPTER ZERO &nbsp; ~ &nbsp; A FIRST LIGHT</p>
+    <p class="eyebrow">CHAPTER ZERO &nbsp; · &nbsp; A FIRST LIGHT</p>
     <h1 tabindex="-1">Choose your Element-Bearer</h1>
     <p class="subtitle">Choose your first Element-Bearer.</p>
     <div class="starter-grid" role="group" aria-label="Starter Element-Bearers">
@@ -676,7 +676,7 @@ function renderMenu(firstArrival = false): void {
       account = sellCurrencyCreature(localStorage, id);
       renderMenu();
       const status = app.querySelector('#character-lock-result');
-      if (status) status.textContent = `Creature sold ~ +${payout}.`;
+      if (status) status.textContent = `Creature sold · +${payout}.`;
     } catch (error) {
       console.error('Currency-farm creature sale rejected', error);
       showError(`Creature was not sold. ${errorMessage(error)}`);
@@ -757,10 +757,10 @@ function renderMenu(firstArrival = false): void {
       const status = app.querySelector('#summon-result');
       if (!status) throw new Error('Summon status is missing.');
       const form = result.copy ? capturedProgress(result.copy).tier + 1 : 1;
-      const name = result.copy ? `${getCreature(result.copy.creatureId).name} creature ~ ${evolutionRarity(form)} ~ ${form}-star ~ Lv.${result.copy.level}`
-        : result.entry.kind === 'character' ? `${characterName(result.entry.id)} ~ New Element-Bearer ~ Common ~ ${result.entry.stars}-star ~ Lv.0` : '';
+      const name = result.copy ? `${getCreature(result.copy.creatureId).name} creature · ${evolutionRarity(form)} · ${form}-star · Lv.${result.copy.level}`
+        : result.entry.kind === 'character' ? `${characterName(result.entry.id)} · New Element-Bearer · Common · ${result.entry.stars}-star · Lv.0` : '';
       if (!name) throw new Error('Summon reward identity is missing.');
-      status.textContent = `${result.duplicate ? 'Owned EB converted: ' : 'Received: '}${name}. ${banner.cost} Null-Prismatica spent.${result.guarantee !== 'none' ? ` Pity: ${result.guarantee}.` : ''}${result.bonusConduit ? ` Bonus: ${getConduit(result.bonusConduit).name} ~ Legendary Conduit. Not auto-equipped.` : ''}`;
+      status.textContent = `${result.duplicate ? 'Owned EB converted: ' : 'Received: '}${name}. ${banner.cost} Null-Prismatica spent.${result.guarantee !== 'none' ? ` Pity: ${result.guarantee}.` : ''}${result.bonusConduit ? ` Bonus: ${getConduit(result.bonusConduit).name} · Legendary Conduit. Not auto-equipped.` : ''}`;
       await presentReward(summonReward(result, banner.id));
       app.querySelector<HTMLButtonElement>('#summon-character')?.focus({ preventScroll: true });
     } catch (error) {
@@ -844,7 +844,7 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
     ? `${characterHub(getStarter(selectedCharacter ?? starter.id), characterTab, account)}<details class="character-protection"><summary>Element-Bearer protection</summary>${characterCopyManagement(account, 'bearers')}</details>`
     : characterCopyManagement(account, 'creatures', selectedCapture));
   if (page === 'inventory') return inventoryHub(account, inventoryTab);
-  if (page === 'stores') return `${information('stores-information', 'Stores', '<p>Select a store to view its catalog and prices. Purchases use saved currency and require confirmation. Inventory lists owned items; equipment is managed in Character.</p>')}<section class="destination-group"><h2>Stores</h2><div class="destination-grid"><button class="destination-card" data-page="conduit-store">${currencyIcon('fractalis')}<strong>Conduit Store</strong><small>Conduits ~ Prismatica</small></button></div></section>`;
+  if (page === 'stores') return `${information('stores-information', 'Stores', '<p>Select a store to view its catalog and prices. Purchases use saved currency and require confirmation. Inventory lists owned items; equipment is managed in Character.</p>')}<section class="destination-group"><h2>Stores</h2><div class="destination-grid"><button class="destination-card" data-page="conduit-store">${currencyIcon('fractalis')}<strong>Conduit Store</strong><small>Conduits · Prismatica</small></button></div></section>`;
   if (page === 'collections') return archives(account);
   if (page === 'conduit-store') return conduitStore(account);
   if (page === 'conduit-upgrade') return conduitUpgradeMenu(account);
@@ -880,7 +880,7 @@ app.addEventListener('click', async (event) => {
     const consumed = fodderIds.map((id) => {
       const option = options.find((entry) => entry.copy.instanceId === id);
       if (!option) throw new Error('Selected captured creature is missing.');
-      return `${option.creature.name} ~ Copy ${option.index} ~ Lv.${option.copy.level ?? capturedProgress(option.copy).level} ~ Form ${option.form}`;
+      return `${option.creature.name} · Copy ${option.index} · Lv.${option.copy.level ?? capturedProgress(option.copy).level} · Form ${option.form}`;
     });
     if (!await gameConfirm(`${kind === 'level' ? 'Level up' : 'Evolve'} ${characterName(starter.id, expected.evolution)} for ${cost.fractalis} Prismatica and ${materials}?${consumed.length ? `\n\nPermanently consume these captured creatures:\n${consumed.join('\n')}\n\nThis cannot be undone.` : ''}`, { title: kind === 'level' ? 'Level up' : 'Evolution', confirmLabel: kind === 'level' ? 'Level up' : 'Evolve', danger: consumed.length > 0 })) return;
     const currency = app.querySelector('#fractalis-balance');
@@ -895,7 +895,7 @@ app.addEventListener('click', async (event) => {
     const rosterLevel = rosterButton?.querySelector('span > small');
     const rosterName = rosterButton?.querySelector('span > strong');
     if (rosterName) rosterName.textContent = characterName(starter.id, progress.evolution);
-    if (rosterLevel) rosterLevel.textContent = `Lv.${progress.level} ~ Evo.${progress.evolution}`;
+    if (rosterLevel) rosterLevel.textContent = `Lv.${progress.level} · Evo.${progress.evolution}`;
     const rosterPortrait = rosterButton?.querySelector('img');
     if (rosterPortrait) {
       const art = portraitAttributes(starter, progress.evolution);
@@ -930,7 +930,7 @@ app.addEventListener('change', (event) => {
   const selected = app.querySelectorAll('[data-evolution-fodder]:checked').length;
   const required = Number(button.dataset.fodderCount);
   button.disabled = button.dataset.upgradeBlocked === 'true' || selected !== required;
-  status.textContent = `${selected} ~ ${required} selected${selected > required ? ' ~ Select fewer creatures' : ''}`;
+  status.textContent = `${selected} / ${required} selected${selected > required ? ' · Select fewer creatures' : ''}`;
 });
 
 app.addEventListener('click', (event) => {
@@ -998,7 +998,7 @@ app.addEventListener('click', async (event) => {
         updateCharacterTab(app, starter, characterTab, account);
         const progress = ownedProgress(account, id);
         const label = app.querySelector(`[data-owned-character="${id}"] span > small`);
-        if (label) label.textContent = `Lv.${progress.level} ~ Evo.${progress.evolution}`;
+        if (label) label.textContent = `Lv.${progress.level} · Evo.${progress.evolution}`;
         currency.textContent = String(account.fractalis);
         celebrateUpgrade(app, starter, 'level', progress);
       } else renderMenu();

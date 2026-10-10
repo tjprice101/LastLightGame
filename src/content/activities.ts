@@ -4,7 +4,7 @@ export const elements = [
   { id: 'atmospheric', name: 'Atmospheric', affinity: 'Wind', dungeon: 'Sky-bound Rift', infusion: 'heavens' },
   { id: 'botanic', name: 'Botanic', affinity: 'Nature', dungeon: 'Garden of Beauty', infusion: 'heavens' },
   { id: 'tranquilitic', name: 'Tranquilitic', affinity: 'Peace', dungeon: 'City of Heaven', infusion: 'abyss' },
-  { id: 'chaotic', name: 'Chaotic', affinity: 'Dark Matter ~ Energy', dungeon: 'Ruins of Chaos', infusion: 'abyss' },
+  { id: 'chaotic', name: 'Chaotic', affinity: 'Dark Matter & Energy', dungeon: 'Ruins of Chaos', infusion: 'abyss' },
 ] as const;
 
 export type ElementId = (typeof elements)[number]['id'];

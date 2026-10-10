@@ -10,7 +10,7 @@ describe('Conduit upgrade square meter', () => {
     expect(html).toContain(`data-upgrade-level="${level}"`);
     expect(html).toContain('aria-hidden="true"');
     expect(html).not.toContain(`+${level}`);
-    expect(conduitIcon('vigil-core', level)).toContain(`aria-label="Vigil Core ~ Upgrade +${level} of 5"`);
+    expect(conduitIcon('vigil-core', level)).toContain(`aria-label="Vigil Core · Upgrade +${level} of 5"`);
     expect(conduitIcon('vigil-core', level)).toContain(html);
   });
   it.each([-1, 6, 1.5, NaN])('rejects invalid level %s', (level) => {

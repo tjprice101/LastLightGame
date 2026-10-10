@@ -11,6 +11,9 @@ function dialogFixture() {
     isConnected = true;
     focus = focus;
   }
+  class Button extends Element {
+    constructor(readonly value: string) { super(); }
+  }
   class Dialog extends EventTarget {
     open = false;
     returnValue = '';
@@ -23,8 +26,9 @@ function dialogFixture() {
   }
   const dialog = new Dialog();
   vi.stubGlobal('HTMLElement', Element);
+  vi.stubGlobal('HTMLButtonElement', Button);
   vi.stubGlobal('document', { activeElement: new Element(), createElement: () => dialog, body: { append: vi.fn() } });
-  return { dialog, focus };
+  return { dialog, focus, Button };
 }
 
 describe('in-game confirmation foundation', () => {
@@ -72,6 +76,27 @@ describe('in-game confirmation foundation', () => {
     dialog.dispatchEvent(key);
     expect(await pending).toBe(false);
     expect(key.defaultPrevented).toBe(true);
+    expect(gameDialogPending()).toBe(false);
+  });
+  it.each(['confirm', 'cancel'])('settles %s submission even when native close events are delayed', async (value) => {
+    const { dialog, Button } = dialogFixture();
+    dialog.close = () => { dialog.open = false; };
+    const pending = gameConfirm('Test');
+    const submit = new Event('submit', { cancelable: true });
+    Object.defineProperty(submit, 'submitter', { value: new Button(value) });
+    dialog.dispatchEvent(submit);
+    expect(await pending).toBe(value === 'confirm');
+    expect(submit.defaultPrevented).toBe(true);
+    expect(gameDialogPending()).toBe(false);
+    expect(dialog.remove).toHaveBeenCalledOnce();
+  });
+  it('rejects an invalid confirmation submission and releases its lock', async () => {
+    const { dialog } = dialogFixture();
+    const pending = gameConfirm('Test');
+    const submit = new Event('submit', { cancelable: true });
+    Object.defineProperty(submit, 'submitter', { value: null });
+    dialog.dispatchEvent(submit);
+    await expect(pending).rejects.toThrow('Confirmation action is invalid');
     expect(gameDialogPending()).toBe(false);
   });
   it('forbids browser/OS notification APIs in runtime source, including future screens', () => {

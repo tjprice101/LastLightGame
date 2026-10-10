@@ -9,7 +9,7 @@ import { loadProfile, type ProfileStorage } from './profile';
 import { type BattleResult } from './battle';
 import { materialName } from '../content/dungeon-art';
 import { getCreature } from '../content/creatures';
-import { getConduit, isConduitId, validateConduitSlots, validateConduitElement, conduitSlotCount, validateConduitUpgrades, conduitUpgradeCost, type ConduitId, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
+import { getConduit, isConduitId, validateConduitSlots, normalizeLegacyKitSlots, validateConduitElement, conduitSlotCount, validateConduitUpgrades, conduitUpgradeCost, type ConduitId, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
 import { machineComponentDrop } from '../content/mechanical-components';
 import { bannerConduitBonus, machineConduitLoot } from '../content/machines';
 import { validateCapturedCharacters, validateCharacterLocks, capturedProgress, capturedLevelCost, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
@@ -23,7 +23,7 @@ import { storyEncounter, storyCreature, storyRules, storyBossBonus, storyMateria
 
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
-  version: 4;
+  version: 5;
   fractalis: number;
   lycalis: number;
   bannerPity?: Partial<Record<SummonBannerId, BannerPity>>;
@@ -45,7 +45,7 @@ export interface Account {
   creatures: Record<string, { defeated: boolean }>;
 }
 export function emptyAccount(): Account {
-  return { version: 4, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 5, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value: unknown): value is number {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
@@ -67,7 +67,7 @@ export function migrateLegacyDungeonStage(stage: number, version: 2 | 3): number
   return unlocked;
 }
 export function validateAccount(value: unknown): Account {
-  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4) || !count(value.fractalis) || !count(value.lycalis) ||
+  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4 && value.version !== 5) || !count(value.fractalis) || !count(value.lycalis) ||
       !record(value.materials) || !record(value.characters) || !record(value.dungeonStages) ||
       typeof value.firstFracture !== 'boolean' || !Array.isArray(value.receipts) ||
       !value.receipts.every((receipt) => typeof receipt === 'string') || new Set(value.receipts).size !== value.receipts.length) {
@@ -118,7 +118,7 @@ export function validateAccount(value: unknown): Account {
   }
   for (const [id, amount] of Object.entries(value.materials)) {
     let canonicalId = id;
-    if (value.version !== 4) {
+    if (value.version < 4) {
       const [element, rarity] = id.split('-');
       if (isLegacyElement(element) && id === `${element}-${rarity}`) canonicalId = `${canonicalElement(element)}-${rarity}`;
     }
@@ -152,23 +152,21 @@ export function validateAccount(value: unknown): Account {
     account.conduitEquipment = {};
     for (const [id, slots] of Object.entries(value.conduitEquipment)) {
       if (!ownedCharacterInstances(account).includes(id)) throw new Error('Conduit equipment requires an owned character.');
-      const equipped = validateConduitSlots(slots);
-      if (isStarterId(id)) validateConduitElement(equipped, getStarter(id).elementId);
-      else {
-        const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
-        if (!copy) throw new Error('Conduit equipment requires an owned captured creature.');
-        validateConduitElement(equipped, getCreature(copy.creatureId).element);
-      }
-      if (equipped.some((conduit) => conduit !== null && !(account.conduits?.[conduit] ?? 0))) {
+      const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
+      const element = isStarterId(id) ? getStarter(id).elementId : copy ? getCreature(copy.creatureId).element : undefined;
+      if (!element) throw new Error('Conduit equipment requires an owned captured creature.');
+      if (!Array.isArray(slots) || slots.some((conduit) => conduit !== null && (!isConduitId(conduit) || !(account.conduits?.[conduit] ?? 0)))) {
         throw new Error('Conduit equipment requires an owned Conduit.');
       }
+      const equipped = value.version < 5 ? normalizeLegacyKitSlots(slots, element) : validateConduitSlots(slots);
+      validateConduitElement(equipped, element);
       account.conduitEquipment[id] = equipped;
     }
   }
   for (const [id, stage] of Object.entries(value.dungeonStages)) {
-    const canonicalId = value.version === 4 ? id : isLegacyElement(id) ? canonicalElement(id) : id;
+    const canonicalId = value.version >= 4 ? id : isLegacyElement(id) ? canonicalElement(id) : id;
     if (!isPlayableDungeon(canonicalId) || !count(stage) || stage < 1 || stage > (value.version === 2 ? 50 : dungeonStageCount)) throw new Error('Invalid saved dungeon stage.');
-    const migratedStage = value.version === 4 ? stage : migrateLegacyDungeonStage(stage, value.version === 2 ? 2 : 3);
+    const migratedStage = value.version >= 4 ? stage : migrateLegacyDungeonStage(stage, value.version === 2 ? 2 : 3);
     account.dungeonStages[canonicalId] = Math.max(account.dungeonStages[canonicalId] ?? 1, migratedStage);
   }
   if (value.infusionStages !== undefined) {
@@ -389,7 +387,7 @@ export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: '
     for (const id of fodderIds) {
       const option = options.find((entry) => entry.copy.instanceId === id);
       if (!option) throw new Error('Selected captured creature is no longer owned.');
-      if (!option.eligible) throw new Error(`Cannot consume ${option.creature.name} ~ Copy ${option.index}: ${option.reasons.join(', ')}.`);
+      if (!option.eligible) throw new Error(`Cannot consume ${option.creature.name} · Copy ${option.index}: ${option.reasons.join(', ')}.`);
     }
   }
   if (account.fractalis < cost.fractalis) throw new Error('Not enough Prismatica.');
@@ -606,7 +604,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
   }
   for (const { reward, character, outcome } of recruitments) {
     reward.recruitmentOutcome = outcome;
-    reward.message += outcome === 'new' ? ` ${getStarter(character).name} recruited at Lv.0 ~ Evo.1.`
+    reward.message += outcome === 'new' ? ` ${getStarter(character).name} recruited at Lv.0 · Evo.1.`
       : ' Already-owned recruitment converted to 100 Null-Prismatica.';
   }
   return saved;

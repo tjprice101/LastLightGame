@@ -13,7 +13,7 @@ import { conduitReward } from './conduit-presentation';
 export function conduitUpgradeMenu(account: Account | null): string {
   const owned = conduits.filter((conduit) => (account?.conduits?.[conduit.id] ?? 0) > 0);
   const costInformation = Object.entries(conduitUpgradeRarityMultipliers).map(([rarity, multiplier]) =>
-    `<p>${rarity}: ${conduitUpgradeCosts.map((cost) => cost * multiplier).join(' ~ ')} components for +1 through +5.</p>`).join('');
+    `<p>${rarity}: ${conduitUpgradeCosts.map((cost) => cost * multiplier).join(' / ')} components for +1 through +5.</p>`).join('');
   return `<section class="conduit-upgrade-menu">
     <div class="conduit-upgrade-heading"><div><h2>Conduit Upgrade</h2></div>
       <button class="text-button" data-page="gameplay" data-machine-activity>Earn components &rarr;</button></div>
@@ -25,11 +25,11 @@ export function conduitUpgradeMenu(account: Account | null): string {
       const affordable = cost !== null && (account.mechanicalComponents ?? 0) >= cost;
       return `<article class="conduit-card" data-upgrade-card="${conduit.id}">
         <div class="conduit-mechanism">${conduitIcon(conduit.id, level)}</div>
-        <h3>${conduit.name}</h3>${conduitRarity(conduit.id)}<p>Upgrade +${level} ~ ${conduitUpgradeCap} ~ Owned ${account.conduits?.[conduit.id]}</p>
+        <h3>${conduit.name}</h3>${conduitRarity(conduit.id)}<p>Upgrade +${level} / ${conduitUpgradeCap} · Owned ${account.conduits?.[conduit.id]}</p>
         <section class="conduit-upgrade-values"><h4>Current</h4><p>${conduitEffect(conduit, level)}</p>
-          ${cost !== null ? `<h4>Next ~ +${level + 1}</h4><p>${conduitEffect(conduit, level + 1)}</p>` : '<p>Maximum upgrade reached.</p>'}</section>
+          ${cost !== null ? `<h4>Next · +${level + 1}</h4><p>${conduitEffect(conduit, level + 1)}</p>` : '<p>Maximum upgrade reached.</p>'}</section>
         <p class="conduit-upgrade-cost">${cost === null ? 'No further upgrades' : `${cost} Broken Mechanical Components`}</p>
-        <button class="primary-button" type="button" data-upgrade-conduit="${conduit.id}" data-expected-upgrade="${level}" ${affordable ? '' : 'disabled'}>${cost === null ? 'Maximum upgrade +5' : `Upgrade to +${level + 1} ~ ${cost} components`}</button>
+        <button class="primary-button" type="button" data-upgrade-conduit="${conduit.id}" data-expected-upgrade="${level}" ${affordable ? '' : 'disabled'}>${cost === null ? 'Maximum upgrade +5' : `Upgrade to +${level + 1} · ${cost} components`}</button>
         ${cost !== null && !affordable ? '<p class="quiet">Not enough Broken Mechanical Components.</p>' : ''}
       </article>`;
     }).join('')}</div>` : '<p>No owned Conduits to upgrade.</p>'}

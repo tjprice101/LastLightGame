@@ -11,6 +11,10 @@ and retains the existing filter/tab/scroll history rather than always going Home
 
 Return to title exists only in Settings. In battle it confirms ending the run,
 retains saved rewards and disposes the suspended session; Cancel stays in Settings.
+Confirmation submissions and Escape settle explicitly, without waiting for a
+browser-render-scheduled native close event; native dismissal remains supported.
+Saved reward Continue/Escape uses the same explicit completion guarantee, with
+existing animation/listener/focus cleanup and no additional economy transaction.
 Closing menu Settings no longer rebuilds the screen, preserving live category,
 filters, unsaved squad selection, scroll and portrait DOM. Battle still rebuilds
 from its retained snapshot without repeating entrance presentation.
@@ -227,18 +231,27 @@ Mechanical Components. Its supplied art is installed (D-137); existing currency 
 two primary header balances and all other navigation remain unchanged.
 History-aware Back retains the caller and character tab.
 
-### Visible separators and spacing (D-127)
+### Visible separators and spacing (D-169, supersedes D-127)
 
-All visible UI separators use a tilde with spaces: ` ~ `, including activity
-captions, banner/showcase headings, stats/current-maximum readouts, squad counts,
-equipment/economy labels, rules and combat logs. Joined words/numbers are spaced:
-**35 stages ~ Enemy levels 80-140**, not "Enemy levels80-140". Paths, markup,
-save identifiers and mathematical division remain unchanged. Exact numbers,
-odds, account transactions and combat behavior are preserved. Future copy
-must follow this contract rather than introducing slash-separated labels.
+The game uses no tilde separators. Use the separator that fits the meaning:
 
-Validation: `npm test -- src\presentation\ui-copy.test.ts` checks rendered menu/
-rule/gallery/readout text, the exact event caption and preserved asset URLs.
+- **Counts, current/maximum values and owned/required amounts:** use spaced slashes,
+  such as material requirements **73 / 12**, **HP 220 / 220**, **2 / 3 slots
+  filled**, **Stage 5 / 35**, pity **199 / 200** and **Lv.12 / 30**.
+  Parallel tier values also use slashes: **unlock at 80 / 93 / 100**.
+- **Labels and attributes:** use a spaced middle dot, such as **Lv.0 · Evo.1**,
+  **Name · Omnic · 6-star · Lv.50** and **35 stages · Enemy levels 80-140**.
+- **Stat bonus lists and prose:** use commas, such as **+15% Attack, +12% Health**.
+- **Pairs:** use `&` or "and" (**Dark Matter & Energy**, **touch and keyboard**).
+  Use an en dash for a level range (**Evo.5–6**).
+
+Joined words and numbers remain spaced. Paths, markup, save IDs and mathematical
+division stay unchanged. Exact numbers, odds, transactions and combat behavior
+are preserved.
+
+Validation: `npm test -- src\presentation\ui-copy.test.ts` rejects any tilde or
+unspaced slash in rendered menus, rules, galleries and readouts. It also checks
+**Owned / Required**, squad counts and middle-dot level labels.
 Run `npm test` for related literal expectations and impact/readout regressions;
 check the event caption at 320/390/1280px for natural wrapping/no overflow.
 
@@ -1058,3 +1071,9 @@ None of these unresolved rules should be implemented through silent defaults.
 
 See [units and progression](units-and-progression.md) and
 [economy](summoning-and-economy.md) for the owning gameplay contracts.
+# Silhouette drag previews
+
+Character portraits, evolution previews, captured/Creature gallery portraits
+and Conduit icons disable native image dragging. CSS silhouettes must not reveal
+the original colored image in a browser drag ghost. Reveal/ownership rules,
+portrait DOM and accessible labels are unchanged.

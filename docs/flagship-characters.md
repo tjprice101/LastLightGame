@@ -38,6 +38,19 @@ Its highest authored tier is now six-star, so five-star awards advance both
 counters; natural six-stars reset200 and newly owned six-stars reset both.
 Draw price, atomic transaction and Lv.50 Treasury duplicate conversion remain.
 
+## Intrinsic dynamic kits (D-170)
+
+The owner resumes all seven Standard flagships in the full-roster phased redesign.
+Atmoso banks Gale Cadence, Aurora chooses Precision versus per-target Verdict
+detonation, Bliss chooses charge-fueled damage versus her existing shield payoff,
+Bruno converts effective protection into Bedrock, Disciple builds Concord through
+sourced team-buff damage, Elise alternates ordinary skills for Storm Rhythm and
+Razor banks Night Resolve from Defense.
+[Exact stack triggers, bounded choices and tests](character-kit-rework.md#standard-flagship-loops-d-170).
+Original skill names, targets, stats, costs, cooldowns and Last Flare recovery
+remain. The following first-pass coefficients are preserved; D-170 adds fixed
+resource payoffs around them, with total Disciple attack buff bounded at65%.
+
 ## Implemented content and first-pass tuning
 
 [Flagship catalog](../src/content/flagships.ts) owns identities, six title
@@ -63,7 +76,8 @@ and combat rounding. Buffs refresh through the current and next player turns;
 the stronger existing value wins, they never stack, and dead allies get neither
 buff nor shield. Last Flare still costs100 Gauge and forces next-turn recovery.
 
-Optional per-combatant `attackBoost` snapshots fraction/expiry round in the
+Optional per-combatant `attackBoost` snapshots fraction/expiry round and D-170
+source provenance in the
 resolved battle state. Cloning and Settings preserve it; new player turns expire
 it, Adventure Continue advances its lifetime, and separate dungeon stages reset
 it with health/cooldowns. Structured status events retain the actual application;

@@ -57,7 +57,7 @@ describe('playable Heaven and Abyss', () => {
         host: { innerHTML: '', querySelectorAll: () => [], querySelector: (selector: string) => selector === '#battle-menu' ? menu : null }, bind: vi.fn() });
       Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
       expect(view.host.innerHTML).toContain(`${mode}-arena.png`);
-      expect(view.host.innerHTML).toContain(`Stage ${stage} ~ 35`);
+      expect(view.host.innerHTML).toContain(`Stage ${stage} / 35`);
       session.state.phase = 'cleared';
       Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
       expect(view.host.innerHTML).toContain(stage === 35 ? 'All 35 stages cleared' : 'Continue with full health');
@@ -248,7 +248,7 @@ describe('playable Heaven and Abyss', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
   });
 
-  it('maps spending by all ten affinities, including leveling below 80 throughout Evo5 ~ 6', () => {
+  it('maps spending by all ten affinities, including leveling below 80 throughout Evo5 / 6', () => {
     for (const element of elements) {
       expect(weaponCost(element.id, { level: 0, evolution: 1 }).materials).toEqual({ [specialtyId(element.id, 'weapon')]: 5 });
       expect(evolutionCost(element.id, { level: 75, evolution: 4 }).materials[specialtyId(element.id, 'evolution')]).toBe(5);

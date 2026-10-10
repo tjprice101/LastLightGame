@@ -1,5 +1,25 @@
 # Elemental War
 
+## Current consolidation (D-173)
+
+Owner chooses Rose-only signatures rather than preserving bespoke War counters.
+Retire Nerithe's Charted Current and Orvella's Foundation; their base kits and
+Nerithe's fixed5 extra Normal-only Gauge stay. Vaelor participates in shared
+Tempest with Atmoso/Elise, not a unique Resonance mechanic. [Current exact rules](character-kit-rework.md#current-consolidation-contract-d-173)
+supersede the D-172 native-loop paragraph below. Trial enemies, acquisitions,
+rewards, art and account ownership remain unchanged.
+
+## Native setup/payoff loops (D-172)
+
+Nerithe earns Charted Current from effective Normal Attacks; her existing fixed5
+extra Gauge remains Normal-only. Orvella earns Foundation from legal Defense.
+Vaelor earns Resonance from effective critical Normal/ordinary skill activations,
+using the existing critical result without extra rolls. All cap3 with an ordinary
+skill versus Last Flare spending choice. [Exact loops and bounds](character-kit-rework.md#rose-and-elemental-war-loops-d-172)
+preserve authored base kits, costs, cooldowns, recovery and encounter snapshots.
+No equipment prerequisite or recruitment/reward/save change. Trial enemies keep
+their authored enemy skills; these personal mechanics belong to playable EBs only.
+
 ## Status: all three characters and trials implemented (D-152/D-156)
 
 After the original design-first request (D-145), the owner supplied both

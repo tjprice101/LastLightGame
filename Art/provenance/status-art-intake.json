@@ -1,0 +1,727 @@
+{
+  "asset_count": 9,
+  "canvas": 256,
+  "content_limit": 224,
+  "assets": [
+    {
+      "incoming": "Atmospheric Charge.png",
+      "asset": "status-tempest",
+      "source": "Art\\source\\abilities\\statuses\\Atmospheric Charge.png",
+      "source_sha256": "4e5ced31c8f7e2ed1892386ec953dc2ffb8b669a5d90836fa73bbaa337772c0a",
+      "runtime": "public\\assets\\abilities\\statuses\\status-tempest.png",
+      "runtime_sha256": "8b83fa5526014f297b6bd0cbae723a675c62c05a65d116cbe08a9cb04c2c3e80",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "44b71cdcead304f13fc439d2762984a29f15de3ffae2c4524ad6aea8b63f2cbd",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "d76a5776a871145158802c3d52e05218beb88ff0cf574b33830042a46e8520c1",
+      "runtime_content_bbox": [
+        26,
+        16,
+        230,
+        240
+      ],
+      "settings": {
+        "empty_border": {
+          "pixels": 4,
+          "radius": 90
+        },
+        "keys": [
+          [
+            184,
+            229,
+            47
+          ],
+          [
+            203,
+            234,
+            43
+          ],
+          [
+            222,
+            237,
+            36
+          ],
+          [
+            240,
+            248,
+            40
+          ]
+        ],
+        "radius": 18,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.557617188,
+            0.5859375
+          ],
+          [
+            0.655273437,
+            0.208007813
+          ],
+          [
+            0.604492188,
+            0.576171875
+          ],
+          [
+            0.4765625,
+            0.740234375
+          ],
+          [
+            0.43,
+            0.62
+          ],
+          [
+            0.345,
+            0.25
+          ]
+        ],
+        "foreground_polygons": [
+          [
+            [
+              0.46,
+              0.4
+            ],
+            [
+              0.54,
+              0.4
+            ],
+            [
+              0.54,
+              0.485
+            ],
+            [
+              0.46,
+              0.485
+            ]
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Preserve ivory blade facets, metallic shadows, pale sparks, central yellow jewel and the authored ground glint."
+      }
+    },
+    {
+      "incoming": "Botanic Renewal.png",
+      "asset": "status-bloom",
+      "source": "Art\\source\\abilities\\statuses\\Botanic Renewal.png",
+      "source_sha256": "447a4dead47e9b7e0e3b060ebf57d6538374de3776b6420a3be417c4a0781e43",
+      "runtime": "public\\assets\\abilities\\statuses\\status-bloom.png",
+      "runtime_sha256": "5460f876814de10477caef414dec35a7c3cb686ded9af6860f495d9ff7802021",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "07b75e3a9f2c338536ca01cb8c160b83163c3fad5f5e0d6fd122ac0cd0d5f0d3",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "138a5f9bd41dabbd5694fa6ea46e3cefd5f037540b2a0826ad661307021d9662",
+      "runtime_content_bbox": [
+        34,
+        16,
+        222,
+        240
+      ],
+      "settings": {
+        "empty_border": {
+          "pixels": 4,
+          "radius": 90
+        },
+        "keys": [
+          [
+            248,
+            92,
+            128
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.389648438,
+            0.697265625
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source uses a pink/magenta-family key, not green: preserve green leaves/gem and ivory flower/feathers."
+      }
+    },
+    {
+      "incoming": "Chaotic Suppression.png",
+      "asset": "status-suppression",
+      "source": "Art\\source\\abilities\\statuses\\Chaotic Suppression.png",
+      "source_sha256": "fcd1400865b14b9248372bb9d7fc0bdf5b455daf11eb92d9918e5519acdfa375",
+      "runtime": "public\\assets\\abilities\\statuses\\status-suppression.png",
+      "runtime_sha256": "816384b299d85132cc6de2078abd6b6832730867d9a310d42ce9f710c57bfd91",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "a4b5d2f7b1d6163e405a9a797bb4a748da5580a144403ccceb85d30fc947f629",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "9332c50a98f48a153013f39b72e33da14341d913e91ceb086b5ee5a95e98c989",
+      "runtime_content_bbox": [
+        35,
+        16,
+        220,
+        240
+      ],
+      "settings": {
+        "empty_border": {
+          "pixels": 4,
+          "radius": 90
+        },
+        "keys": [
+          [
+            136,
+            185,
+            101
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.740234375,
+            0.671875
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Preserve pale sword bevels, dark purple orb and feather shadows."
+      }
+    },
+    {
+      "incoming": "Infernic Embers.png",
+      "asset": "status-burn",
+      "source": "Art\\source\\abilities\\statuses\\Infernic Embers.png",
+      "source_sha256": "e189d211d7471f6db3da44ade6e84ff235e289c56c78820f367aefcd8017f7b2",
+      "runtime": "public\\assets\\abilities\\statuses\\status-burn.png",
+      "runtime_sha256": "424f90eb0a7ae9e2b7080809b089837312b171a2ccf590b5f80cdb71bf87b471",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "58452e10a0c35b87597b2ea3c67e1a22f8d139bbc907264b6421d91e1ad9b834",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "c03548103489229a59d6132cc0bbe6460da9345603c94da81def204f1061cd16",
+      "runtime_content_bbox": [
+        21,
+        16,
+        235,
+        240
+      ],
+      "settings": {
+        "empty_border": {
+          "pixels": 4,
+          "radius": 90
+        },
+        "keys": [
+          [
+            175,
+            232,
+            82
+          ],
+          [
+            194,
+            234,
+            80
+          ],
+          [
+            204,
+            232,
+            78
+          ],
+          [
+            214,
+            235,
+            80
+          ],
+          [
+            225,
+            238,
+            105
+          ]
+        ],
+        "radius": 18,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source has a varying green backdrop; preserve brown rock/leaf shadows, orange flame and pale yellow flame interior."
+      }
+    },
+    {
+      "incoming": "Oceanic Protection.png",
+      "asset": "status-ward",
+      "source": "Art\\source\\abilities\\statuses\\Oceanic Protection.png",
+      "source_sha256": "5d2a9a556d7c5b13a7bd5bab7005f99c19de426dd3e1614eba2833ab25e05f4a",
+      "runtime": "public\\assets\\abilities\\statuses\\status-ward.png",
+      "runtime_sha256": "bc9b4df28bcfe4292d2c62af13ad07d4c716f96cfaefb8bcf0b017587dc88b2e",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "792685ffde1779883f1954e6a1d903927a165d169262f9f03ada5cec3f2b4d44",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "6d7d78c0989507a60549f8ce80b18638f6f5baa35878987ea4ec156ca9ec652e",
+      "runtime_content_bbox": [
+        28,
+        16,
+        227,
+        240
+      ],
+      "settings": {
+        "empty_border": {
+          "pixels": 4,
+          "radius": 90
+        },
+        "keys": [
+          [
+            106,
+            207,
+            195
+          ],
+          [
+            114,
+            210,
+            202
+          ],
+          [
+            103,
+            185,
+            182
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.51953125,
+            0.874023437
+          ],
+          [
+            0.19140625,
+            0.278320312
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Teal source key is distinct from sapphire shield and icy ivory/silver wings; preserve internal cyan gem highlights."
+      }
+    },
+    {
+      "incoming": "Rose Duality.png",
+      "asset": "status-rose-duality",
+      "source": "Art\\source\\abilities\\statuses\\Rose Duality.png",
+      "source_sha256": "32e666e4b75df374c1e63fc2bb6b7338a6918ea6458481617029d0101521f022",
+      "runtime": "public\\assets\\abilities\\statuses\\status-rose-duality.png",
+      "runtime_sha256": "a067056782118aef1c43212ae0a7288fab4c4eeb095cfe4be25480ba2e81b348",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "88521399c848d3b2cda3f1d6f84e36f767f111223f6766baa7bbfe6f61b3dc4b",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "d758db17e00c8a49563030f03a40d432a3495021e07c710a21ae7af5f02815dc",
+      "runtime_content_bbox": [
+        20,
+        16,
+        235,
+        240
+      ],
+      "settings": {
+        "empty_border": {
+          "pixels": 4,
+          "radius": 90
+        },
+        "keys": [
+          [
+            66,
+            246,
+            176
+          ],
+          [
+            78,
+            247,
+            174
+          ],
+          [
+            92,
+            249,
+            174
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.235,
+            0.105
+          ],
+          [
+            0.765,
+            0.11
+          ],
+          [
+            0.45,
+            0.72
+          ],
+          [
+            0.27,
+            0.065
+          ],
+          [
+            0.44,
+            0.1
+          ],
+          [
+            0.62,
+            0.72
+          ],
+          [
+            0.6953125,
+            0.239257812
+          ],
+          [
+            0.400390625,
+            0.484375
+          ],
+          [
+            0.307617188,
+            0.244140625
+          ],
+          [
+            0.663085937,
+            0.546875
+          ],
+          [
+            0.638671875,
+            0.509765625
+          ],
+          [
+            0.334960938,
+            0.546875
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Preserve red petals, gold blades and dark leaf/metal shadows."
+      }
+    },
+    {
+      "incoming": "Rose Grace.png",
+      "asset": "status-rose-grace",
+      "source": "Art\\source\\abilities\\statuses\\Rose Grace.png",
+      "source_sha256": "558cec2f5b5b4908f9cb022d2e04784e400da5d7a50be24e811a0dfdfdd76dee",
+      "runtime": "public\\assets\\abilities\\statuses\\status-rose-grace.png",
+      "runtime_sha256": "3760b4080f37223ddd956e963cf129863b2cf6c2771c3329fec7d1e1999b930a",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "71b91cf00adb08ec61cd5c167933c88d3214224d01051b6b57fcae9dcb3f45eb",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "84fa4faf2705eae13c27cc94f3e4861e1fbeaa41f3dc2ea35e44df1798e74d52",
+      "runtime_content_bbox": [
+        21,
+        16,
+        235,
+        240
+      ],
+      "settings": {
+        "empty_border": {
+          "pixels": 4,
+          "radius": 90
+        },
+        "keys": [
+          [
+            114,
+            185,
+            120
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4,
+            0.5
+          ],
+          [
+            0.33984375,
+            0.110351562
+          ],
+          [
+            0.37890625,
+            0.845703125
+          ],
+          [
+            0.7734375,
+            0.48828125
+          ],
+          [
+            0.573242188,
+            0.270507813
+          ],
+          [
+            0.392578125,
+            0.1953125
+          ],
+          [
+            0.33203125,
+            0.866210938
+          ],
+          [
+            0.354492188,
+            0.828125
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Remove the broad enclosed crescent opening; preserve ivory roses, gold crescent and olive leaf shadows."
+      }
+    },
+    {
+      "incoming": "Thorn Aegis.png",
+      "asset": "status-thorn-aegis",
+      "source": "Art\\source\\abilities\\statuses\\Thorn Aegis.png",
+      "source_sha256": "7d710466889996d4350accd6b8b0c2849de746289807ca8d1f672e959ddcbb38",
+      "runtime": "public\\assets\\abilities\\statuses\\status-thorn-aegis.png",
+      "runtime_sha256": "f6780d014cb71c57a6f4b281b6d9cfd96ec307aa53727c6ccc58c8c106af6768",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "59007781b35c5b188d415aecc2ce7f0a00bda5695a6a63a78cc1fc9936b72730",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "fb041036fb3498a2436afa2c73027aa3ac5c842565328580d4ff74fd4653b728",
+      "runtime_content_bbox": [
+        16,
+        17,
+        240,
+        238
+      ],
+      "settings": {
+        "empty_border": {
+          "pixels": 4,
+          "radius": 90
+        },
+        "keys": [
+          [
+            124,
+            239,
+            117
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.77,
+            0.72
+          ],
+          [
+            0.26953125,
+            0.77734375
+          ],
+          [
+            0.348632812,
+            0.146484375
+          ],
+          [
+            0.286132812,
+            0.184570312
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Preserve red rose and dark green leaves; reviewed bright green source backdrop is not a subject-color policy."
+      }
+    },
+    {
+      "incoming": "Tranquilitic Focus.png",
+      "asset": "status-focus",
+      "source": "Art\\source\\abilities\\statuses\\Tranquilitic Focus.png",
+      "source_sha256": "1410a3e336bb944b05e5beeecf21ebfb0439384df661e7b339a50e843f7f84f6",
+      "runtime": "public\\assets\\abilities\\statuses\\status-focus.png",
+      "runtime_sha256": "66c7374d14a84cc5380a286e939aa184fce8f0fe03ead0b107f92348aa197fe6",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "3d4b6e9e520fe95f1a31e839b08d7b1b10d65dd435d280365dcf48bd85d2be3b",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "0a1720424c7be40771f2a451a3075e37d42d8b6685227d47b1b28c329322d655",
+      "runtime_content_bbox": [
+        17,
+        16,
+        239,
+        240
+      ],
+      "settings": {
+        "empty_border": {
+          "pixels": 4,
+          "radius": 90
+        },
+        "keys": [
+          [
+            190,
+            223,
+            78
+          ],
+          [
+            191,
+            211,
+            102
+          ],
+          [
+            201,
+            212,
+            98
+          ],
+          [
+            216,
+            221,
+            82
+          ],
+          [
+            231,
+            234,
+            81
+          ],
+          [
+            205,
+            222,
+            81
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5,
+            0.55
+          ],
+          [
+            0.43,
+            0.1
+          ],
+          [
+            0.25,
+            0.23
+          ],
+          [
+            0.557,
+            0.108
+          ],
+          [
+            0.8,
+            0.273
+          ],
+          [
+            0.57421875,
+            0.4453125
+          ],
+          [
+            0.284179687,
+            0.189453125
+          ],
+          [
+            0.71484375,
+            0.185546875
+          ],
+          [
+            0.73828125,
+            0.213867187
+          ],
+          [
+            0.469726562,
+            0.084960937
+          ],
+          [
+            0.864257812,
+            0.556640625
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Remove enclosed ring key but preserve green central jewel, ivory faceted crystals, gold hardware and pale sparks."
+      }
+    }
+  ]
+}

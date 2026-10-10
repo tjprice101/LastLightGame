@@ -19,10 +19,11 @@ import { elementAccents } from '../content/dungeon-art';
 import { characterName } from '../content/character-art';
 import { basicActionName } from '../content/combat';
 import { warEncounter, warStageCount, rollWarRewards, type WarCharacterId } from '../content/elemental-war';
+import type { ElementalEffectTag } from '../content/elemental-effects';
 import type { KitPilotState } from '../content/kit-pilots';
 import { debuffSnapshot } from './battle-debuffs';
-import { pilotAfterAbility, pilotBurnDamage, pilotCriticalBonus, pilotEffectiveHeal, pilotIncomingMultiplier, pilotNewTurn, pilotOutgoingBonus, pilotPrepareStarter, pilotPrepareVerdict, pilotShieldAbsorbed, pilotUltimateShield, pilotVerdictHit } from './kit-pilots';
-import { kitAfterActivation, kitActivationBonus, kitDamageBonus, kitHealingMultiplier, kitSum } from './kit-conduits';
+import { pilotAfterDirectActivation, pilotAuthoredShieldAbsorbed, pilotBurnDamage, pilotEffectiveHeal, pilotOutgoingBonus, pilotPrepareStarter } from './kit-pilots';
+import { resolveOmnicInteraction, type OmnicMemory } from './kit-conduits';
 import { storyEncounter, storyCreature, storyDrops, storyRules } from '../content/story';
 
 export interface Combatant {
@@ -41,10 +42,14 @@ export interface Combatant {
   spent: boolean;
   recoverThrough: number;
   readyRound: Record<'skill1' | 'skill2', number> & { ultimate?: number };
-  burn: { damage: number; turns: number; sourceId?: string };
+  burn: { damage: number; turns: number; sourceId?: string; origin?: 'native' | 'rose' };
   weakened: number;
   weakenFraction: number;
-  attackBoost?: { fraction: number; throughRound: number };
+  weakenOrigin?: 'native' | 'rose';
+  weakenSourceId?: string;
+  attackBoost?: { fraction: number; throughRound: number; sourceId?: string; origin?: 'native' | 'conduit' };
+  omnicMemory?: Record<string, OmnicMemory>;
+  omnicProtection?: number;
   conduitCharges?: {
     burnFocus?: boolean;
     normalMomentum?: boolean;
@@ -60,8 +65,6 @@ export interface Combatant {
     dawnWitness?: number;
     stillhour?: boolean;
     paradox?: boolean;
-    graftCovenant?: boolean;
-    kitCooldownRound?: number;
   };
   conduitMarks?: Partial<Record<string, number>>;
   pilot?: KitPilotState;
@@ -116,13 +119,14 @@ export interface BattleEvent {
   recruitmentOutcome?: 'new' | 'duplicate';
   storyBonus?: { fractalis: number; lycalis: number };
   conduitUpgrades?: ConduitUpgrades;
+  elementalEffect?: ElementalEffectTag;
 }
 export interface BattleDebuffSnapshot {
   burn?: { damage: number; turns: number };
   weakened: number;
   weakenFraction: number;
   marks?: { bearerId: string; stacks: number }[];
-  verdict?: { bearerId: string; stacks: number; turns: number }[];
+  elementalEffects?: ElementalEffectTag[];
 }
 export interface BattleResult { state: BattleState; events: BattleEvent[] }
 
@@ -198,7 +202,7 @@ export function createBattle(seed = 1729, roster: readonly string[] = ['ember'],
         if (!copy) throw new Error('Captured squad instance is missing.');
         const creature = getCreature(copy.creatureId);
         const kit = resolveCapturedFighter(copy, equipment[id], snapshot);
-        const unit = combatant(id, creature.id, `${creature.name} ~ Copy ${captures.findIndex((entry) => entry.instanceId === id) + 1}`, 'ally', kit.stats, creature.element);
+        const unit = combatant(id, creature.id, `${creature.name} · Copy ${captures.findIndex((entry) => entry.instanceId === id) + 1}`, 'ally', kit.stats, creature.element);
         unit.kit = kit;
         unit.level = capturedProgress(copy).level;
         unit.evolution = capturedProgress(copy).tier + 1;
@@ -270,6 +274,7 @@ export function createStoryBattle(stage: number, seed: number, starter: StarterI
     const unit = combatant(`story-${stage}-${index}`, creature.id, creature.name, 'enemy', encounter.stats, encounter.element);
     unit.level = encounter.level;
     unit.creatureId = creature.id;
+    unit.art = creature.art;
     unit.color = encounter.color;
     unit.boss = encounter.boss;
     unit.enemySkills = enemySkills(encounter.level, encounter.boss, `${creature.name} Strike`, encounter.abilityMultiplier);
@@ -344,7 +349,7 @@ function event(events: BattleEvent[], kind: BattleEvent['kind'], source: Combata
 function hurt(target: Combatant, amount: number, source: Combatant, events: BattleEvent[], critical = false, periodic = false, conduitReduction = 0): void {
   if (conduitReduction > 0) amount = Math.max(1, Math.round(amount * (1 - conduitReduction)));
   if (target.defending) amount = Math.max(1, Math.round(amount * (1 - Math.min(.5,
-    defenseMode.damageReduction + (periodic ? 0 : kitSum(target, 'defenseReduction'))))));
+    defenseMode.damageReduction))));
   const absorbed = Math.min(target.shield, amount);
   target.shield -= absorbed;
   const loss = Math.min(target.hp, amount - absorbed);
@@ -366,17 +371,19 @@ function gainShatter(target: Combatant, amount: number, events: BattleEvent[]): 
   const gained = Math.min(target.stats.shatterCapacity - target.shatter, amount);
   if (gained <= 0) return;
   target.shatter += gained;
-  event(events, 'status', target, target, gained, `${target.name} gains ${formatStat(gained)} Shatter Gauge (${formatStat(target.shatter)} ~ ${formatStat(target.stats.shatterCapacity)}).`);
+  event(events, 'status', target, target, gained, `${target.name} gains ${formatStat(gained)} Shatter Gauge (${formatStat(target.shatter)} / ${formatStat(target.stats.shatterCapacity)}).`);
 }
 
 function healTeam(state: BattleState, source: Combatant, amount: number, events: BattleEvent[], percent = false): void {
-  amount *= kitHealingMultiplier(source);
   for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
     const restored = Math.min(ally.stats.health - ally.hp, percent ? Math.max(1, Math.round(ally.stats.health * amount)) : amount);
     if (restored <= 0) continue;
+    const beforeHp = ally.hp;
     ally.hp += restored;
     event(events, 'heal', source, ally, restored, `${source.name} restores ${formatStat(restored)} health to ${ally.name}.`);
-    pilotEffectiveHeal(state, source, restored, events);
+    pilotEffectiveHeal(state, source, ally, restored, events);
+    resolveOmnicInteraction(state, source, { trigger: 'heal', target: ally, amount: restored, beforeHp }, events);
+    resolveOmnicInteraction(state, source, { trigger: 'support', target: ally, amount: restored }, events);
     if (source.id !== ally.id && hasMechanic(source, 'verdant-covenant')) {
       ally.conduitCharges = { ...ally.conduitCharges, verdantNormal: true };
       event(events, 'status', source, ally, 10, `${ally.name}'s next Normal Attack gains +10% outgoing damage (refresh; does not stack).`);
@@ -385,12 +392,21 @@ function healTeam(state: BattleState, source: Combatant, amount: number, events:
 }
 
 function shieldTeam(state: BattleState, source: Combatant, amount: number, events: BattleEvent[], authored = true): void {
-  if (authored) amount *= 1 + Math.min(.75, kitSum(source, 'shield'));
   for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
     const gained = Math.max(0, amount - ally.shield);
-    if (gained > 0 && source.kit?.pilot !== 'shelter') delete ally.pilot?.shelterSourceId;
+    if (gained > 0) {
+      delete ally.pilot?.authoredShieldSourceId;
+      if (authored && source.hp > 0) {
+        ally.pilot ??= {};
+        ally.pilot.authoredShieldSourceId = source.id;
+      }
+    }
     ally.shield = Math.max(ally.shield, amount);
     event(events, 'shield', source, ally, gained, `${ally.name} has ${formatStat(ally.shield)} shield.`);
+    if (authored && gained > 0) {
+      resolveOmnicInteraction(state, source, { trigger: 'shield-grown', target: ally, amount: gained }, events);
+      resolveOmnicInteraction(state, source, { trigger: 'support', target: ally, amount: gained }, events);
+    }
   }
 }
 
@@ -484,7 +500,7 @@ function hasMechanic(unit: Combatant, mechanic: ConduitMechanic): boolean {
 function conduitShield(actor: Combatant, fraction: number, events: BattleEvent[]): void {
   const amount = Math.round(actor.stats.health * fraction);
   const gained = Math.max(0, amount - actor.shield);
-  if (gained > 0) delete actor.pilot?.shelterSourceId;
+  if (gained > 0) delete actor.pilot?.authoredShieldSourceId;
   actor.shield = Math.max(actor.shield, amount);
   if (gained > 0) event(events, 'shield', actor, actor, gained, `${actor.name}'s Conduit grants ${formatStat(gained)} shield.`);
 }
@@ -529,24 +545,21 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   if (action === 'defend') {
     actor.spent = true;
     actor.defending = true;
-    const defenseReduction = Math.min(.5, defenseMode.damageReduction + kitSum(actor, 'defenseReduction'));
+    const defenseReduction = defenseMode.damageReduction;
     event(events, 'status', actor, actor, defenseReduction * 100, `${actor.name} enters ${name}: incoming ${defenseReduction > defenseMode.damageReduction ? 'direct ' : ''}damage reduced by ${formatStat(defenseReduction * 100)}% until the next player turn.`);
     if (hasMechanic(actor, 'defense-ward')) conduitShield(actor, .1, events);
     if (hasMechanic(actor, 'defense-heal')) conduitHeal(actor, .05, events);
     if (hasMechanic(actor, 'faultkeeper-ward')) primeConduitCharge(actor, 'faultkeeperWard', events, 'the next direct enemy hit deals 15% less damage');
     if (hasMechanic(actor, 'stillhour')) primeConduitCharge(actor, 'stillhour', events, 'the first direct enemy hit you survive grants 8 Shatter Gauge');
     if (hasMechanic(actor, 'skythread')) primeConduitCharge(actor, 'skythread', events, 'your next ordinary skill costs 5 less Shatter Gauge');
-    gainShatter(actor, kitSum(actor, 'defenseGauge'), events);
-    const teamWard = kitSum(actor, 'defenseTeamShield');
-    if (teamWard > 0) shieldTeam(state, actor, Math.round(actor.stats.health * teamWard), events, false);
-    for (const { target, amount } of kitAfterActivation(state, actor, action, false, events).gauges) gainShatter(target, amount, events);
+    resolveOmnicInteraction(state, actor, { trigger: 'defense', action }, events);
     return { state, events };
   }
   events.push({ kind: 'attack', source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action, abilityName: name });
   actor.spent = true;
   if (action === 'ultimate') actor.recoverThrough = state.round + 1;
   actor.shatter -= actionGaugeCost(actor, action);
-  gainShatter(actor, shatterGauge.gains[action] + (action === 'light' ? (definition.passive.lightGaugeBonus ?? 0) + kitSum(actor, 'normalGauge') : 0), events);
+  gainShatter(actor, shatterGauge.gains[action] + (action === 'light' ? (definition.passive.lightGaugeBonus ?? 0) : 0), events);
   if (action === 'skill1' || action === 'skill2') actor.readyRound[action] = state.round + definition.abilities[action].cooldown;
   if (action === 'ultimate' && actor.captured) actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
   const stormstepBonus = (action === 'skill1' && actor.conduitCharges?.stormstepSkill1) ||
@@ -554,11 +567,11 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   if (action === 'skill1') delete actor.conduitCharges?.stormstepSkill1;
   if (action === 'skill2') delete actor.conduitCharges?.stormstepSkill2;
   if (action === 'skill1' || action === 'skill2') delete actor.conduitCharges?.skythread;
-  const pilotShield = pilotUltimateShield(actor, action, events);
+  const priorResources = { ...actor.pilot };
   const starterBonus = pilotPrepareStarter(actor, action, events);
-  pilotPrepareVerdict(state, actor, action, events);
-  const kitBonus = kitActivationBonus(state, actor, action, support, events);
   let hitWeakenedEnemy = false;
+  let effectiveDirectDamage = false;
+  let effectiveCriticalDamage = false;
 
   if (!support) {
     const pilotBonus = pilotOutgoingBonus(actor, action, events) + starterBonus.damage;
@@ -566,7 +579,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
     const paradoxBonus = actor.conduitCharges?.paradox ? .15 : 0;
     const verdantBonus = action === 'light' && actor.conduitCharges?.verdantNormal ? .1 : 0;
     const dawnWitnessCharges = actor.conduitCharges?.dawnWitness ?? 0;
-    const critBonus = (actor.conduitCharges?.burnFocus ? .05 : 0) + .03 * dawnWitnessCharges + pilotCriticalBonus(actor, state.round);
+    const critBonus = (actor.conduitCharges?.burnFocus ? .05 : 0) + .03 * dawnWitnessCharges;
     const pierce = actor.conduitCharges?.weakenPierce ? .2 : 0;
     const momentum = action !== 'light' && actor.conduitCharges?.normalMomentum ? .1 : 0;
     if (actor.conduitCharges) {
@@ -588,7 +601,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
     }
     if (actor.hp <= actor.stats.health / 2) multiplier *= 1 + definition.passive.damageBonus;
     if (actor.attackBoost && actor.attackBoost.throughRound >= state.round) multiplier *= 1 + actor.attackBoost.fraction;
-    multiplier *= 1 + momentum + emberBonus + stormstepBonus + paradoxBonus + verdantBonus + pilotBonus;
+    const additiveOutgoingBonus = momentum + emberBonus + stormstepBonus + paradoxBonus + verdantBonus + pilotBonus;
     hitWeakenedEnemy = (action === 'skill1' || action === 'skill2') && targets.some((target) => target.weakened > 0);
     let burned = false;
     let weakened = false;
@@ -601,24 +614,46 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
         delete target.conduitMarks[actor.id];
         if (!Object.keys(target.conduitMarks).length) delete target.conduitMarks;
       }
-      const kitMultiplier = 1 + Math.min(.75, kitBonus + kitDamageBonus(actor, target, action));
-      const kitPierce = action === 'ultimate' ? kitSum(actor, 'ultimatePierce') : 0;
-      const criticalMultiplier = actor.stats.critMultiplier * (1 + Math.min(.75, kitSum(actor, 'criticalDamage')));
-      hurt(target, damageAmount(actor.stats.damage, multiplier * (1 + marks * .08) * kitMultiplier,
-        target.stats.defense * (1 - Math.min(.75, pierce + kitPierce)), critical, criticalMultiplier), actor, events, critical);
-      pilotVerdictHit(actor, target, action, events);
+      const criticalMultiplier = actor.stats.critMultiplier;
+      const priorShield = target.shield;
+      const priorBurnTurns = target.burn.turns;
+      const ownBurn = target.burn.turns > 0 && target.burn.sourceId === actor.id;
+      const ownWeaken = target.weakened > 0 && target.weakenSourceId === actor.id;
+      hurt(target, damageAmount(actor.stats.damage, multiplier *
+        (1 + additiveOutgoingBonus) * (1 + marks * .08),
+        target.stats.defense * (1 - Math.min(.75, pierce)), critical, criticalMultiplier), actor, events, critical);
+      const hpDamage = events[events.length - 1].amount;
+      effectiveDirectDamage ||= events[events.length - 1].amount > 0;
+      const effectiveHit = events[events.length - 1].amount > 0 || priorShield > target.shield;
+      effectiveCriticalDamage ||= critical && effectiveHit;
+      const actualDamage = hpDamage + priorShield - target.shield;
+      resolveOmnicInteraction(state, actor, { trigger: 'direct', action, target, amount: actualDamage, hpDamage, ownBurn, ownWeaken }, events);
+      if (critical) resolveOmnicInteraction(state, actor, { trigger: 'critical', action, target, amount: actualDamage, hpDamage }, events);
+      if (marks && effectiveHit) resolveOmnicInteraction(state, actor, { trigger: 'fracture-spent', action, target, amount: marks }, events);
       if (marks) event(events, 'status', actor, target, 0, `${target.name} loses ${marks} Fracture Mark${marks === 1 ? '' : 's'} from ${actor.name}.`);
       if (target.hp > 0 && strength?.burnMultiplier !== undefined) {
-        const damage = Math.round(actor.stats.elementalDamage * strength.burnMultiplier * (1 + Math.min(.75, kitSum(actor, 'burn'))));
-        target.burn = { damage, turns: 2, sourceId: actor.id };
-        event(events, 'status', actor, target, damage, `${target.name} burns for two enemy phases.`);
+        const damage = Math.round(actor.stats.elementalDamage * strength.burnMultiplier);
+        const previousBurn = { ...target.burn };
+        const clockExtension = Math.max(0, target.burn.turns - priorBurnTurns);
+        target.burn = { damage, turns: Math.min(3, 2 + clockExtension), sourceId: actor.id, origin: actor.kit?.pilot === 'rose-duality' ? 'rose' : 'native' };
+        event(events, 'status', actor, target, damage, `${target.name} burns for ${target.burn.turns === 2 ? 'two' : 'three'} enemy phases.`);
+        if (damage > 0 && (previousBurn.sourceId !== actor.id || previousBurn.damage < damage || previousBurn.turns < 2)) {
+          resolveOmnicInteraction(state, actor, { trigger: 'burn-applied', action, target, amount: damage }, events);
+        }
         burned = true;
       }
       if (target.hp > 0 && strength?.weakenFraction !== undefined) {
+        const previousWeaken = { turns: target.weakened, fraction: target.weakenFraction, source: target.weakenSourceId };
         target.weakened = 2;
-        const weakenBonus = kitSum(actor, 'weaken') + starterBonus.weaken;
+        target.weakenSourceId = actor.id;
+        target.weakenOrigin = actor.kit?.pilot === 'rose-grace' || actor.kit?.pilot === 'thorn-aegis' ||
+          actor.kit?.pilot === 'rose-duality' ? 'rose' : 'native';
+        const weakenBonus = starterBonus.weaken;
         target.weakenFraction = weakenBonus > 0 ? Math.min(.6, strength.weakenFraction + weakenBonus) : strength.weakenFraction;
         event(events, 'status', actor, target, 0, `${target.name} is weakened for two enemy phases.`);
+        if (target.weakenFraction > 0 && (previousWeaken.source !== actor.id || previousWeaken.turns < 2 || previousWeaken.fraction < target.weakenFraction)) {
+          resolveOmnicInteraction(state, actor, { trigger: 'weaken-applied', action, target, amount: target.weakenFraction }, events);
+        }
         weakened = true;
       }
       if (target.hp > 0 && action !== 'light' && hasMechanic(actor, 'nightglass')) {
@@ -653,24 +688,37 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
       }
     }
   }
+  for (const resource of ['ember', 'bloom', 'tempest', 'thornAegis', 'duality'] as const) {
+    const spent = (priorResources[resource] ?? 0) - (actor.pilot?.[resource] ?? 0);
+    if (!actor.captured && spent > 0) resolveOmnicInteraction(state, actor, { trigger: 'resource-spent', action, resource, amount: Math.min(3, spent) }, events);
+  }
+  pilotAfterDirectActivation(actor, action, events, effectiveCriticalDamage);
   if ((action === 'skill1' || action === 'skill2') && hasMechanic(actor, 'stormstep')) {
     primeConduitCharge(actor, action === 'skill1' ? 'stormstepSkill2' : 'stormstepSkill1', events,
       `the next ${action === 'skill1' ? 'Skill 2' : 'Skill 1'} gains +10% outgoing damage`);
   }
-  if (strength?.shield !== undefined) {
-    shieldTeam(state, actor, strength.shield + starterBonus.shield, events);
+  if (strength?.shield !== undefined || starterBonus.shield > 0) {
+    shieldTeam(state, actor, (strength?.shield ?? 0) + starterBonus.shield, events);
   }
   if (strength?.healing !== undefined) {
     healTeam(state, actor, strength.healing * starterBonus.healing, events);
   }
-  if (pilotShield > 0) shieldTeam(state, actor, pilotShield, events);
-  pilotAfterAbility(actor, action, state.allies, events, 0);
   if (strength?.attackBoostFraction !== undefined) {
     for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
       const prior = ally.attackBoost && ally.attackBoost.throughRound >= state.round ? ally.attackBoost.fraction : 0;
-      ally.attackBoost = { fraction: Math.max(prior, strength.attackBoostFraction), throughRound: state.round + 1 };
+      const fraction = Math.min(.65, strength.attackBoostFraction);
+      const previousSourceId = ally.attackBoost && ally.attackBoost.throughRound >= state.round
+        ? ally.attackBoost.sourceId : undefined;
+      const sourceId = fraction >= prior ? actor.id : previousSourceId;
+      ally.attackBoost = {
+        fraction: Math.max(prior, fraction),
+        throughRound: state.round + 1,
+        ...(sourceId ? { sourceId } : {}),
+        ...(fraction < prior && ally.attackBoost?.origin === 'conduit' ? { origin: 'conduit' as const } : {}),
+      };
       event(events, 'status', actor, ally, ally.attackBoost.fraction * 100,
         `${ally.name}: outgoing attack damage +${formatStat(ally.attackBoost.fraction * 100)}% this and next player turn (refresh; does not stack).`);
+      if (fraction > prior) resolveOmnicInteraction(state, actor, { trigger: 'support', action, target: ally, amount: fraction - prior }, events);
     }
   }
   if (hasMechanic(actor, 'shield-heal') && events.some((entry) => entry.kind === 'shield' && entry.source === actor.id && entry.amount > 0)) conduitHeal(actor, .05, events);
@@ -678,7 +726,6 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   if (action === 'ultimate' && hasMechanic(actor, 'ultimate-ward')) conduitShield(actor, .15, events);
   if (action === 'ultimate' && hasMechanic(actor, 'paradox')) primeConduitCharge(actor, 'paradox', events,
     'your first offensive activation after normal recovery gains +15% outgoing damage');
-  for (const { target, amount } of kitAfterActivation(state, actor, action, hitWeakenedEnemy, events).gauges) gainShatter(target, amount, events);
   checkOutcome(state);
   awardDefeats(previous, state, events);
   return { state, events };
@@ -686,7 +733,6 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
 
 function newTurn(state: BattleState, events: BattleEvent[]): void {
   state.round++;
-  pilotNewTurn(state, events);
   for (const ally of state.allies) {
     ally.spent = false;
     ally.defending = false;
@@ -713,6 +759,7 @@ export function endTurn(previous: BattleState): BattleResult {
       const priorHp = enemy.hp;
       hurt(enemy, enemy.burn.damage, source, events, false, true);
       pilotBurnDamage(state, source, priorHp - enemy.hp, events);
+      resolveOmnicInteraction(state, source, { trigger: 'burn-tick', target: enemy, amount: priorHp - enemy.hp, lethal: enemy.hp === 0 }, events);
       if (enemy.hp < priorHp && source.hp > 0 && hasMechanic(source, 'ember-seals') &&
           source.conduitCharges?.emberSealRound !== state.round && (source.conduitCharges?.emberSeals ?? 0) < 3) {
         const seals = (source.conduitCharges?.emberSeals ?? 0) + 1;
@@ -735,12 +782,16 @@ export function endTurn(previous: BattleState): BattleResult {
       delete target.conduitCharges.faultkeeperWard;
       event(events, 'status', target, target, 15, `${target.name}'s Faultkeeper ward reduces this direct hit by 15%.`);
     }
-    const shelterMultiplier = pilotIncomingMultiplier(state, target, events);
     const priorShield = target.shield;
-    const shieldSourceId = target.pilot?.shelterSourceId;
-    hurt(target, Math.max(1, Math.round(damageAmount(enemy.stats.damage, multiplier, target.stats.defense, critical, enemy.stats.critMultiplier) * shelterMultiplier)),
-      enemy, events, critical, false, faultkeeperWard ? .15 : 0);
-    pilotShieldAbsorbed(state, shieldSourceId, priorShield - target.shield, events);
+    const shieldSourceId = target.pilot?.authoredShieldSourceId;
+    const omnicProtection = target.omnicProtection ?? 0;
+    delete target.omnicProtection;
+    hurt(target, damageAmount(enemy.stats.damage, multiplier, target.stats.defense, critical, enemy.stats.critMultiplier),
+      enemy, events, critical, false, omnicProtection > 0
+        ? 1 - (1 - (faultkeeperWard ? .15 : 0)) * (1 - omnicProtection) : faultkeeperWard ? .15 : 0);
+    pilotAuthoredShieldAbsorbed(state, shieldSourceId, priorShield - target.shield, events);
+    const shieldOwner = state.allies.find((ally) => ally.id === shieldSourceId);
+    if (shieldOwner) resolveOmnicInteraction(state, shieldOwner, { trigger: 'shield-absorbed', target, amount: priorShield - target.shield }, events);
     if (target.hp > 0 && target.conduitCharges?.stillhour) {
       delete target.conduitCharges.stillhour;
       gainShatter(target, 8, events);
@@ -749,6 +800,8 @@ export function endTurn(previous: BattleState): BattleResult {
     if (enemy.weakened > 0) {
       enemy.weakened--;
       if (enemy.weakened === 0) enemy.weakenFraction = 0;
+      if (enemy.weakened === 0) delete enemy.weakenOrigin;
+      if (enemy.weakened === 0) delete enemy.weakenSourceId;
       event(events, 'status', enemy, enemy, enemy.weakened,
         enemy.weakened > 0 ? `${enemy.name}'s Weaken has ${enemy.weakened} enemy phase remaining.` : `${enemy.name}'s Weaken expires.`);
     }
@@ -817,8 +870,6 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
       ally.conduitCharges = { ...prior.conduitCharges };
       delete ally.conduitCharges.emberSealRound;
       delete ally.conduitCharges.undertideUsedRound;
-      delete ally.conduitCharges.kitCooldownRound;
-      delete ally.conduitCharges.graftCovenant;
     }
   }
   if (previous.conduitSeed !== undefined) state.conduitSeed = previous.conduitSeed;
@@ -842,8 +893,8 @@ export function nextWave(previous: BattleState): BattleResult {
   state.phase = 'player';
   for (const ally of state.allies) delete ally.pilot;
   for (const ally of state.allies) {
-    delete ally.conduitCharges?.graftCovenant;
-    delete ally.conduitCharges?.kitCooldownRound;
+    delete ally.omnicMemory;
+    delete ally.omnicProtection;
   }
   newTurn(state, events);
   events.push({ kind: 'turn', source: '', target: '', amount: state.wave, critical: false, message: `Wave ${state.wave}: enemies grow stronger. Health, shields, Shatter Gauge and recovery carry over.` });

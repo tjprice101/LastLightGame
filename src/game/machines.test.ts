@@ -67,7 +67,7 @@ describe('machine content and exact probabilities', () => {
   it('authors the exact catalog and distinct stats/penalties/elements without selling drops', () => {
     expect(conduits).toHaveLength(85);
     expect(new Set(conduits.map((entry) => entry.id)).size).toBe(85);
-    for (const [rarity, count] of [['Common', 15], ['Rare', 23], ['Legendary', 21], ['Omnic', 26]] as const) {
+    for (const [rarity, count] of [['Common', 10], ['Rare', 15], ['Legendary', 15], ['Omnic', 45]] as const) {
       const pool = conduits.filter((entry) => entry.rarity === rarity);
       expect(pool).toHaveLength(count);
       for (const conduit of pool) {
@@ -80,12 +80,12 @@ describe('machine content and exact probabilities', () => {
       }
     }
     expect(conduits.filter((entry) => entry.rarity === 'Omnic').map((entry) => entry.element).sort())
-      .toEqual([...Array<string>(3).fill('infernic'), ...Array<string>(3).fill('oceanic'),
-        ...Array<string>(5).fill('atmospheric'), ...Array<string>(5).fill('botanic'),
-        ...Array<string>(5).fill('tranquilitic'), ...Array<string>(5).fill('chaotic')].sort());
-    expect(conduits.filter((entry) => entry.price !== null)).toHaveLength(15);
-    expect(conduits.filter((entry) => entry.art === null)).toHaveLength(60);
-    expect(conduits.filter((entry) => entry.art === entry.id)).toHaveLength(25);
+      .toEqual([...Array<string>(8).fill('infernic'), ...Array<string>(6).fill('oceanic'),
+        ...Array<string>(7).fill('atmospheric'), ...Array<string>(8).fill('botanic'),
+        ...Array<string>(8).fill('tranquilitic'), ...Array<string>(8).fill('chaotic')].sort());
+    expect(conduits.filter((entry) => entry.price !== null)).toHaveLength(10);
+    expect(conduits.filter((entry) => entry.art === null)).toHaveLength(25);
+    expect(conduits.filter((entry) => entry.art === entry.id)).toHaveLength(60);
   });
   it('has100 stages 10-120, six distinct machines, every fifth-stage boss and no missing art URLs', () => {
     for (let stage = 1; stage <= 100; stage++) {
@@ -128,14 +128,14 @@ describe('machine content and exact probabilities', () => {
       expect(bannerConduitBonus(sequence(.004999, (index + .5) / bannerPool.length))).toBe(bannerPool[index]);
     }
     expect(conduits.filter((entry) => entry.rarity === 'Legendary' && isBannerConduitEligible(entry.id))).toHaveLength(5);
-    expect(conduits.filter((entry) => entry.rarity === 'Legendary' && !isBannerConduitEligible(entry.id))).toHaveLength(16);
+    expect(conduits.filter((entry) => entry.rarity === 'Legendary' && !isBannerConduitEligible(entry.id))).toHaveLength(10);
     for (const invalid of [-1, 1, NaN, Infinity]) expect(() => machineConduitDrops(1, () => invalid)).toThrow('Loot roll');
   });
   it('publishes exactly the acquisition API odds in the discovery-gated glossary', () => {
     for (const stage of [1, 74, 75, 100]) {
       const encounter = infusionEncounter('machines', stage);
       const pool = machineConduitLoot(stage);
-      expect(pool).toHaveLength(stage < 75 ? 44 : 70);
+      expect(pool).toHaveLength(stage < 75 ? 30 : 75);
       expect(pool.some((drop) => conduits.find((conduit) => conduit.id === drop.id)?.rarity === 'Common')).toBe(false);
       for (const [rarity, chance] of [['Rare', .08], ['Legendary', .035], ['Omnic', stage < 75 ? 0 : .01]] as const) {
         expect(pool.filter((drop) => conduits.find((c) => c.id === drop.id)?.rarity === rarity).reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(chance, 12);
@@ -372,13 +372,23 @@ describe('Conduit equipment and all ten Omnic mechanics', () => {
     expect(shield.state.phase).toBe('cleared');
   });
   it('Atmospheric normal attack empowers only the next offensive skill', () => {
-    const state = attack(omnicBattle('atmospheric'), 'light').state;
+    const initial = omnicBattle('atmospheric');
+    initial.allies[0].stats.crit = 1;
+    const state = attack(initial, 'light').state;
     expect(state.allies[0].conduitCharges?.normalMomentum).toBe(true);
+    expect(state.allies[0].pilot?.tempest).toBe(1);
+    state.allies[0].stats.crit = 0;
     state.allies[0].spent = false;
     const empowered = attack(state, 'skill1');
     const kit = state.allies[0].kit!;
-    expect(empowered.events.find((event) => event.kind === 'damage')!.amount).toBe(damageAmount(state.allies[0].stats.damage, kit.abilities.skill1.strength.damageMultiplier! * 1.1, 0, false, state.allies[0].stats.critMultiplier));
+    const conduitBonus = .1;
+    const intrinsicBonus = .08;
+    expect(empowered.events.find((event) => event.kind === 'damage')!.amount)
+      .toBe(damageAmount(state.allies[0].stats.damage,
+        kit.abilities.skill1.strength.damageMultiplier! * (1 + conduitBonus + intrinsicBonus),
+        0, false, state.allies[0].stats.critMultiplier));
     expect(empowered.state.allies[0].conduitCharges?.normalMomentum).toBeUndefined();
+    expect(empowered.state.allies[0].pilot?.tempest).toBe(0);
   });
   it('Ominous Weaken prepares20% pierce without altering enemy stats; Chaotic ultimate wards but keeps recovery', () => {
     const shadow = attack(omnicBattle('ominous'), 'skill2').state;
@@ -435,6 +445,7 @@ describe('expanded Omnic mechanics', () => {
       const periodic = tick.events.find((entry) => entry.kind === 'damage' && entry.periodic);
       expect(periodic?.debuffs).toEqual({
         ...(seals < 3 ? { burn: { damage: 1, turns: 3 - seals } } : {}),
+        ...(seals < 3 ? { elementalEffects: [{ family: 'burn', kind: 'burn', origin: 'native', source: 'living-self-authored-burn' }] } : {}),
         weakened: 0, weakenFraction: 0,
       });
       state = tick.state;
@@ -478,7 +489,11 @@ describe('expanded Omnic mechanics', () => {
     const periodicState = structuredClone(state);
     periodicState.enemies[0].burn = { damage: 7, turns: 2, sourceId: state.allies[0].id };
     const periodic = endTurn(periodicState).events.find((entry) => entry.periodic);
-    expect(periodic?.debuffs).toEqual({ burn: { damage: 7, turns: 1 }, weakened: 0, weakenFraction: 0 });
+    expect(periodic?.debuffs).toEqual({
+      burn: { damage: 7, turns: 1 },
+      elementalEffects: [{ family: 'burn', kind: 'burn', origin: 'native', source: 'living-self-authored-burn' }],
+      weakened: 0, weakenFraction: 0,
+    });
   });
 
   it('Faultkeeper consumes its ward on the first direct hit even when shields absorb it', () => {

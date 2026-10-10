@@ -33,11 +33,11 @@ describe('shared battle chrome', () => {
     for (const session of sessions) {
       const html = markup(session);
       for (const enemy of session.state.enemies) {
-        expect(html).toContain(`<span class="unit-name">${enemy.name} ~ Lv. ${enemy.level}${elementLabel(enemy.element)}</span>`);
+        expect(html).toContain(`<span class="unit-name">${enemy.name} · Lv. ${enemy.level}${elementLabel(enemy.element)}</span>`);
         const intel = html.slice(html.indexOf('class="battle-unit-intel"'));
         expect(intel).toContain(elementLabel(enemy.element));
       }
-      expect(html).toContain('<span class="unit-name">Eternal Heavenflame Sovereign, Infernis ~ Lv. 105');
+      expect(html).toContain('<span class="unit-name">Eternal Heavenflame Sovereign, Infernis · Lv. 105');
       expect(html).not.toContain('Lv. null');
     }
   });
@@ -60,14 +60,16 @@ describe('shared battle chrome', () => {
     expect(html).toContain('Pass remaining actions');
     expect(html).toContain('class="battle-unit-intel"');
   });
-  it('shows Story stage 150, neutral pending art, regional narrative and final-stage controls', () => {
+  it('shows Story stage 150 with delivered regional art, narrative and final-stage controls', () => {
     const session = createSession('ember', progress, { storyStage: 150 });
     let html = markup(session);
     expect(html).toContain('STORY CAMPAIGN');
-    expect(html).toContain('Stage 150 ~ 150');
+    expect(html).toContain('Stage 150 / 150');
     expect(html).toContain('Riftbound Frontier');
-    expect(html).toContain('pending-dungeon-scenery');
-    expect(html).toContain('pending-enemy-art');
+    expect(html).toContain('backgrounds/story-riftbound-frontier-arena.png');
+    expect(html).toContain('enemies/story-chaotic-boss.png');
+    expect(html).not.toContain('pending-dungeon-scenery');
+    expect(html).not.toContain('pending-enemy-art');
     expect(html).not.toContain('backgrounds/grassy-field');
     expect(html).toContain('Six regions in a fixed order');
     session.state.phase = 'cleared';
@@ -75,19 +77,27 @@ describe('shared battle chrome', () => {
     expect(html).not.toContain('data-result-continue');
     expect(html).toContain('All 150 stages cleared');
   });
+  it('retains honest pending Story art only for the undelivered Infernic region', () => {
+    const html = markup(createSession('ember', progress, { storyStage: 25 }));
+    expect(html).toContain('Emberwake March');
+    expect(html).toContain('pending-dungeon-scenery');
+    expect(html).toContain('pending-enemy-art');
+    expect(html).not.toContain('backgrounds/story-emberwake');
+    expect(html).not.toContain('enemies/story-infernic');
+  });
   it.each(playableDungeons)('uses the same heading and readout structure in %s', (element) => {
     const html = markup(createSession('ember', progress, { element, stage: 5 }));
     expect(html).toContain('ELEMENTAL DUNGEON');
     expect(html).toContain('class="battle-heading"');
     expect(html).toContain('class="battle-progress"');
-    expect(html).toContain('Stage 5 ~ 35');
+    expect(html).toContain('Stage 5 / 35');
     expect(html).toContain('class="unit-readout"');
   });
   it.each(['heavens', 'abyss'] as const)('uses shared chrome for %s, victory and defeat', (mode) => {
     const session = createSession('ember', progress, { mode, stage: 35 });
     const html = markup(session);
     expect(html).toContain('INFUSION TRIAL');
-    expect(html).toContain('Stage 35 ~ 35');
+    expect(html).toContain('Stage 35 / 35');
     expect(html).toContain('class="battle-heading"');
     for (const phase of ['cleared', 'defeat'] as const) {
       session.state.phase = phase;

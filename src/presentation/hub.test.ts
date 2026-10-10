@@ -48,7 +48,7 @@ describe('game-specific hub layouts', () => {
     expect(html).toContain('banners/summon-roses.png');
     expect(html).toContain('<strong>Roses Under Sunny Skies</strong><span>Special Limited Time Banner!</span>');
     expect(html).not.toContain('home-event-banner');
-    expect(html).not.toContain('35 stages ~ Lv.80-140');
+    expect(html).not.toContain('35 stages · Lv.80-140');
     expect(html).toContain('class="home-squad" aria-label="Current squad"');
     expect(html.match(/class="team-companion/g)).toHaveLength(3);
     expect(html.match(/team-empty/g)).toHaveLength(2);
@@ -80,7 +80,7 @@ describe('game-specific hub layouts', () => {
     expect(home).toContain(starter.name);
     expect(home).toContain('data-page="story"');
     expect(home).toContain('Story &rarr;');
-    expect(home).toContain('Explore the world map ~ 150 stages');
+    expect(home).toContain('Explore the world map · 150 stages');
     expect(home).not.toContain('Free Battle');
     expect(home).toContain('data-page="squad"');
     expect(home).toContain('data-page="summon"');
@@ -100,7 +100,7 @@ describe('game-specific hub layouts', () => {
     expect(() => characterHub(starters[0], 'missing')).toThrow('Unknown');
     expect(characterHub(starters[0], 'upgrade-0')).toContain('+10 Null-Prismatica');
     expect(characterInformation()).toContain("Evolution requires the current form's maximum level and preserves that level");
-    expect(characterInformation()).toContain('30 ~ 45 ~ 60 ~ 75 ~ 90');
+    expect(characterInformation()).toContain('30 / 45 / 60 / 75 / 90');
     expect(characterHub(starters[0], 'upgrade-0')).toContain('disabled>Evolve');
     expect(characterHub(starters[0], 'upgrade-0')).not.toContain('Costs unset');
     const inventory = characterHub(starters[0], 'equipment');
@@ -185,7 +185,7 @@ describe('game-specific hub layouts', () => {
       const detail = characterDetail(starter, id);
       expect(detail).toContain('class="character-upgrade-grid"');
       expect(detail).toContain('Required resources');
-      expect(detail).toContain('Owned ~ Required');
+      expect(detail).toContain('Owned / Required');
       expect(detail.match(/id="upgrade-result"/g)).toHaveLength(1);
       expect(detail.match(/<span><small>/g)).toHaveLength(7);
     }
@@ -225,13 +225,13 @@ describe('game-specific hub layouts', () => {
     account.characters.ember = { level: 30, evolution: 1 };
     const evolve = characterDetail(starters[0], 'upgrade-0', account);
     expect(evolve).toMatch(/data-upgrade="evolve"[^>]*data-upgrade-blocked="false"[^>]*>Evolve/);
-    expect(evolve).toContain('20 ~ 15');
-    expect(evolve).toContain('500 ~ 300');
+    expect(evolve).toContain('20 / 15');
+    expect(evolve).toContain('500 / 300');
     expect(evolve).not.toContain('PREVIEW');
     expect(evolve).not.toContain('Materials coming later');
     expect(characterDetail(starters[0], 'upgrade-1', account)).toContain('Level cap reached');
     expect(characterDetail(starters[0], 'overview', account)).toContain('174.4% damage');
-    expect(homeHub(starters[0], false, account)).toContain('Lv.30 ~ Evo.1');
+    expect(homeHub(starters[0], false, account)).toContain('Lv.30 · Evo.1');
     account.characters.ember = { level: 105, evolution: 6 };
     expect(characterDetail(starters[0], 'upgrade-0', account)).toContain('Final evolution reached');
     expect(characterDetail(starters[0], 'upgrade-1', account)).toContain('Maximum level reached');

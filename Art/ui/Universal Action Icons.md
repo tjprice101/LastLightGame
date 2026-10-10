@@ -1,11 +1,10 @@
 # Universal Normal Attack and Defense icons
 
 The owner replaces the earlier prismatic wing/shield concepts with an
-element-neutral **steel sword sweep** and **steel shield**. These are new
-generation prompts, not installed replacements. Current action artwork stays
-installed until both revised designs are supplied and reviewed. Previously
-delivered Prismatic Winged Strike/Prismatic Aegis images are earlier concepts,
-not approval to install them in place of the revised steel designs.
+element-neutral **steel sword sweep** and **steel shield**. The supplied
+D-157 replacements are reviewed and installed as the shared Normal Attack and
+Defense icons. Previously delivered Prismatic Winged Strike/Prismatic Aegis
+images are earlier concepts, not the active universal art.
 Passive, Skill1/2 and Last Flare remain character-specific.
 See [phases and intake](../../docs/conduit-expansion-plan.md).
 
@@ -14,19 +13,21 @@ See [phases and intake](../../docs/conduit-expansion-plan.md).
 Compact chibi anime/cel collectible icon renderer, precise contours, crisp
 cel shading and non-emissive painted metallic highlights. Neither icon has
 an elemental affinity. No `--sref` or `--sw`, character, labels or UI frame.
-Suggested future IDs: `universal-normal-attack`, `universal-defense`.
-They are not live URLs. Preserve supplied originals under
-`Art/source/abilities/universal`, then review dark/light backgrounds, every
-enclosed gap and small sizes before transparent256px/224px-content exports.
-Do not remove current icons until both new images are reviewed, exported and
-wired across every real Element-Bearer through the shared ability resolver.
-Archive obsolete exports and preserve original sources/provenance.
+Shared runtime IDs: `universal-normal-attack`, `universal-defense`.
+They are shared live URLs. Originals are preserved under
+`Art/source/abilities/universal/D-157`, with source/runtime hashes in
+`Art/provenance/d157-root-art-intake.json`. The RGB green key is individually
+sampled per source; the sword sweep includes one reviewed enclosed-gap seed.
+Dark/light sheets and small-size transparent256px/224px-content exports were
+reviewed before installation.
+Superseded source art remains preserved; the shared resolver now serves the new
+icons for every Element-Bearer.
 Names, Gauge gains, Defense strength and captured skill availability do not
 change with artwork.
 
 ## Normal Attack - Steel Sword Sweep
 
-Suggested delivery filename: `Universal Normal Attack - Steel Sword Sweep.png`.
+Delivered filename: `Normal Attack - Steel Sword Sweep.png`.
 One physical sword, with a hard-edged action arc showing its sweep.
 
 ```text
@@ -35,7 +36,7 @@ one steel sword sweep normal attack ability icon, a single complete broad silver
 
 ## Defense - Steel Shield
 
-Suggested delivery filename: `Universal Defense - Steel Shield.png`.
+Delivered filename: `Defense - Steel Shield.png`.
 A stable physical shield, clearly distinct from the sweeping attack.
 
 ```text

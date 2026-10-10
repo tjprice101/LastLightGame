@@ -1,5 +1,10 @@
 # Units and progression
 
+**Current native-effect direction (D-173):** shared elemental families and fewer
+personal counters, Rose-only precise signatures. [Current contract](character-kit-rework.md#current-consolidation-contract-d-173)
+supersedes historical all16-resource descriptions. No progression/save/gear
+changes; removing redundant native stack bonuses does not remove base skills.
+
 ## Intrinsic kit redesign (D-163)
 
 Owner clarifies the kit request means abilities/passives, not per-character
@@ -25,13 +30,20 @@ The regular matching-element level/evolution costs, Heaven/Abyss specialty
 and explicit fodder requirements apply; playable caps remain30-105 across
 six forms. Boss140 does not unlock playable140. All three use supported damage/
 Weaken/shield/critical/low-health effects and ordinary Last Flare recovery;
-no new counter, stun or stored-charge engine. Nerithe's snapshot passive adds
+no stun or counterattack engine. D-172 adds bounded personal resources using
+the shared intrinsic state, not persistent progression. Nerithe's snapshot passive adds
 a fixed5 Gauge to her own Normal Attack only, capped by ordinary Gauge capacity;
 it does not scale with stats or affect anyone else's gains. Her four supplied
 ability icons are installed; Normal Attack/Defense stay text-only.
 [Exact kits and rewards](elemental-war.md).
 
 ## Richer kit pilots and status display (D-151/D-157)
+
+**D-170/D-172 current intrinsic rollout:** seven Standard flagships and Rose/War batches have native
+setup/payoff loops; see [the kit contract](character-kit-rework.md). Equipment
+pilots remain separate. [One status-icon pack](../Art/ui/Battle%20Status%20Icons.md)
+covers40 actual old/new effects/resources. No icons installed by prompts.
+
 
 Owner permits buffs, debuffs, bounded stacks and elemental status effects in
 5/6-star Element-Bearer abilities, not damage-only designs. This is permission
@@ -52,7 +64,7 @@ fields, resource spending, action/cooldown bypass, revival or extra rewards.
 | Infernis | Own effective Burn damage, once per enemy phase; 3 personal Ember Seals maximum; living source only | Skill2 spends all, +8% additive outgoing damage per seal, max24%; one spend for entire AoE |
 | Tizu | Effective Tizu-authored shield that survives a phase; one Shelter Charge per recipient, refresh, no stack; requires living source | First direct enemy hit consumes10% reduction before shield absorption; Burn does not consume it; remaining shield may re-prime next turn |
 | Aurora | Skill1 marks surviving target; per-owner2 Verdict Marks, two enemy phases, refresh | Skill2 spends own living-target marks once; +5pp team CR per mark, capped10pp through next player turn, refresh/nonstack; ordinary CR clamp |
-| Bliss | Skill2 retains damage/crit and adds12 flat healing, scaled byG; effective healing of another ally grants one Restorative Charge per activation, capped3 | Last Flare spends charges before resolution; allies receive shield5% caster effective maxHP per charge, capped15%, refresh/nonstack; ordinary recovery |
+| Bliss | Skill2 retains damage/crit and adds12 flat healing, scaled byG; effective healing of another ally grants one Restorative Charge per activation, capped3 | D-170: Skill1 may spend charges for +8% outgoing damage each, or Last Flare retains shield5% caster effective maxHP per charge, capped15%, refresh/nonstack; ordinary recovery |
 
 Owner explicitly selects modest healing on Bliss rather than moving the pilot
 to Flora. She remains an attacker with existing art/skills/passive damage bonus.

@@ -268,7 +268,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     Object.assign(view, { session, bindings: defaultBindings, host: { innerHTML: '', querySelectorAll: () => [],
       querySelector: (selector: string) => selector === '#battle-menu' ? menu : null }, bind: vi.fn() });
     Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
-    expect(view.host.innerHTML).toContain('Stage 25 ~ 25');
+    expect(view.host.innerHTML).toContain('Stage 25 / 25');
     expect(view.host.innerHTML).toContain('CURRENCY FARM');
     expect(view.host.innerHTML).toContain('80% chance of 5');
     expect(view.host.innerHTML).toContain('assets/backgrounds/sanctuary-arena.png');

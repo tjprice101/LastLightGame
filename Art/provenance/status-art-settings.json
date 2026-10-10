@@ -1,0 +1,84 @@
+{
+  "status-tempest": {
+    "empty_border": {"pixels": 4, "radius": 90},
+    "keys": [[184, 229, 47], [203, 234, 43], [222, 237, 36], [240, 248, 40]],
+    "radius": 18,
+    "border_only": true,
+    "background_seeds": [[0.557617188, 0.5859375], [0.655273437, 0.208007813], [0.604492188, 0.576171875], [0.4765625, 0.740234375], [0.43, 0.62], [0.345, 0.25]],
+    "foreground_polygons": [[[0.46, 0.4], [0.54, 0.4], [0.54, 0.485], [0.46, 0.485]]],
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 60},
+    "review": "Preserve ivory blade facets, metallic shadows, pale sparks, central yellow jewel and the authored ground glint."
+  },
+  "status-bloom": {
+    "empty_border": {"pixels": 4, "radius": 90},
+    "keys": [[248, 92, 128]],
+    "radius": 12,
+    "border_only": true,
+    "background_seeds": [[0.389648438, 0.697265625]],
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 60},
+    "review": "Source uses a pink/magenta-family key, not green: preserve green leaves/gem and ivory flower/feathers."
+  },
+  "status-suppression": {
+    "empty_border": {"pixels": 4, "radius": 90},
+    "keys": [[136, 185, 101]],
+    "radius": 12,
+    "border_only": true,
+    "background_seeds": [[0.740234375, 0.671875]],
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 60},
+    "review": "Preserve pale sword bevels, dark purple orb and feather shadows."
+  },
+  "status-burn": {
+    "empty_border": {"pixels": 4, "radius": 90},
+    "keys": [[175, 232, 82], [194, 234, 80], [204, 232, 78], [214, 235, 80], [225, 238, 105]],
+    "radius": 18,
+    "border_only": true,
+    "background_seeds": [],
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 60},
+    "review": "Source has a varying green backdrop; preserve brown rock/leaf shadows, orange flame and pale yellow flame interior."
+  },
+  "status-ward": {
+    "empty_border": {"pixels": 4, "radius": 90},
+    "keys": [[106, 207, 195], [114, 210, 202], [103, 185, 182]],
+    "radius": 12,
+    "border_only": true,
+    "background_seeds": [[0.51953125, 0.874023437], [0.19140625, 0.278320312]],
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 60},
+    "review": "Teal source key is distinct from sapphire shield and icy ivory/silver wings; preserve internal cyan gem highlights."
+  },
+  "status-rose-duality": {
+    "empty_border": {"pixels": 4, "radius": 90},
+    "keys": [[66, 246, 176], [78, 247, 174], [92, 249, 174]],
+    "radius": 12,
+    "border_only": true,
+    "background_seeds": [[0.235, 0.105], [0.765, 0.11], [0.45, 0.72], [0.27, 0.065], [0.44, 0.1], [0.62, 0.72], [0.6953125, 0.239257812], [0.400390625, 0.484375], [0.307617188, 0.244140625], [0.663085937, 0.546875], [0.638671875, 0.509765625], [0.334960938, 0.546875]],
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 60},
+    "review": "Preserve red petals, gold blades and dark leaf/metal shadows."
+  },
+  "status-rose-grace": {
+    "empty_border": {"pixels": 4, "radius": 90},
+    "keys": [[114, 185, 120]],
+    "radius": 12,
+    "border_only": true,
+    "background_seeds": [[0.4, 0.5], [0.33984375, 0.110351562], [0.37890625, 0.845703125], [0.7734375, 0.48828125], [0.573242188, 0.270507813], [0.392578125, 0.1953125], [0.33203125, 0.866210938], [0.354492188, 0.828125]],
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 60},
+    "review": "Remove the broad enclosed crescent opening; preserve ivory roses, gold crescent and olive leaf shadows."
+  },
+  "status-thorn-aegis": {
+    "empty_border": {"pixels": 4, "radius": 90},
+    "keys": [[124, 239, 117]],
+    "radius": 12,
+    "border_only": true,
+    "background_seeds": [[0.77, 0.72], [0.26953125, 0.77734375], [0.348632812, 0.146484375], [0.286132812, 0.184570312]],
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 60},
+    "review": "Preserve red rose and dark green leaves; reviewed bright green source backdrop is not a subject-color policy."
+  },
+  "status-focus": {
+    "empty_border": {"pixels": 4, "radius": 90},
+    "keys": [[190, 223, 78], [191, 211, 102], [201, 212, 98], [216, 221, 82], [231, 234, 81], [205, 222, 81]],
+    "radius": 12,
+    "border_only": true,
+    "background_seeds": [[0.5, 0.55], [0.43, 0.1], [0.25, 0.23], [0.557, 0.108], [0.8, 0.273], [0.57421875, 0.4453125], [0.284179687, 0.189453125], [0.71484375, 0.185546875], [0.73828125, 0.213867187], [0.469726562, 0.084960937], [0.864257812, 0.556640625]],
+    "edge_cleanup": {"source_pixels": 2, "distance_ramp": 60},
+    "review": "Remove enclosed ring key but preserve green central jewel, ivory faceted crystals, gold hardware and pale sparks."
+  }
+}

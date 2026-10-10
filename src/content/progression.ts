@@ -116,8 +116,8 @@ export function characterPotencyFactor(progress: CharacterProgress): number {
 }
 
 export const upgradePaths = [
-  { id: 'upgrade-0', name: 'Fracture ~ Evolution', detail: 'Preserve your level; multiply core growth by 1.45 and increase skill ~ passive potency.' },
-  { id: 'upgrade-1', name: 'Character level', detail: 'Accelerating cubic core-stat growth; bounded percentage stats and skill ~ passive potency.' },
+  { id: 'upgrade-0', name: 'Fracture & Evolution', detail: 'Preserve your level; multiply core growth by 1.45 and increase skill and passive potency.' },
+  { id: 'upgrade-1', name: 'Character level', detail: 'Accelerating cubic core-stat growth; bounded percentage stats and skill and passive potency.' },
   { id: 'upgrade-3', name: 'Unique passive', detail: 'Upgrade the character\'s unique passive ability.' },
   { id: 'upgrade-4', name: 'Ability 1', detail: 'Upgrade the first active ability.' },
   { id: 'upgrade-5', name: 'Ability 2', detail: 'Upgrade the second active ability.' },

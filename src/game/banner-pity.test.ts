@@ -132,8 +132,8 @@ describe('independent per-banner pity', () => {
     expect(loaded.bannerPity).toEqual(account.bannerPity);
     expect(() => summonCharacter(storage, () => -1)).toThrow('[0, 1)');
     expect(storage.getItem(ACCOUNT_KEY)).toBe(before);
-    expect(summonHub(loaded)).toContain('199 ~ 200');
-    expect(summonHub(loaded)).toContain('499 ~ 500');
+    expect(summonHub(loaded)).toContain('199 / 200');
+    expect(summonHub(loaded)).toContain('499 / 500');
     expect(summonHub(loaded)).toContain('500 guarantee takes priority');
     for (const bannerPity of [null, [], { unknown: zero }, { standard: { highestStar: 200, unownedHighestStar: 0 } }]) {
       expect(() => validateAccount({ ...account, bannerPity })).toThrow();

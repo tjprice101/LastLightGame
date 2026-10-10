@@ -1,5 +1,129 @@
 # Last Light: AI agent entry point
 
+## Full Conduit cleanup review (D-177)
+
+All60 installed icons reviewed against authoritative sources/dark/light/magnified
+gaps. Five corrected: Paradox Spindle, Execution Orrery, Meridian Inverter,
+Nullsong Transmission, Prism Splinter Socket. Owning intake_delivered_art seeds/
+row-gradient/border strips reproduce; previous exports/sourcehash preserved.
+Art/provenance/conduit-cleanup-review.json has60 verdicts/before/after/sourcehash.
+Conduit byteURLrevisions refreshed. Preserve remaining cyan/gems/castshadows as
+authored subject detail, not global color deletion.25 kit icons still undelivered.
+
+## Omnic kit replacement (D-176)
+
+Owner explicitly approves replacing same25 kitConduit IDs allOmnic with unique
+new effects, keeping counts/upgrades; catalog85 tiers10Common15Rare15Legendary45Omnic.
+Leave Store/lower Machine tiers, join existing stage75+1% Omnic pool; original5
+Legendary banner pool unchanged. Read-only compatibility normalization unequips
+only converted mismatching/excessOmnic slots in order, no load writes/raw loss.
+New full reborn elemental art should match original MachinesOmnic epicness,
+not humble bronze widgets; all25 artwork remains pending. docs/kit-conduits.md
+currentD176 contract supersedes earlierD162 rules. Walletv5 marks migration:
+v1-v4 read-only normalization, first successful transaction savesv5; invalidv5
+gear strictly rejected. Generated Omnic effects never feed authored native loops.
+
+## Delivered status icons (D-175)
+
+All nine named root status PNGs archived, reviewed, exported and wired.
+Preserve bytes under Art/source/abilities/statuses, per-source keys/gaps/hashes
+Art/provenance/status-art-*.json; tools/intake_status_art.py owns reproduction.
+Typed family/origin/kind resolves six shared/three Rose icons; numeric text/owners/
+clocks unchanged. Use shared deployment-base revisioned URLs, no runtime keying.
+No mechanics/rewards/saves changed. Supersedes older nine-status-art-pending.
+
+## Thematic effect names (D-174)
+
+Naming only: burn/ward/bloom/tempest/focus/suppression display as Infernic Embers/
+Oceanic Protection/Botanic Renewal/Atmospheric Charge/Tranquilitic Focus/Chaotic
+Suppression. Applicable shared counters use matching names. Stable internal IDs,
+precise Burn/Weaken/Fracture, authored skills, gear and Rose signatures unchanged.
+All D-173 mechanics preserved. Nine status prompts retain proposed filename IDs.
+
+## Current elemental consolidation (D-173)
+
+Owner approves live simplification into Burn/Ward/Bloom/Tempest/Focus/Suppression,
+fewer personal counters and Rose-only unique signatures. Implemented and verified;
+docs/character-kit-rework.md current contract supersedes all16 bespoke-kit guidance.
+Retain Rosetta/Thornia/Crinso precise signatures; remove Aurora/Bruno/Disciple/Razor/
+Nerithe/Orvella bespoke counters, not their base abilities or essential combat rules.
+Preserve all owned Conduit effects and independent origins/owners/actual predicates.
+No future Omnic mechanics added. Status-art checklist now nine prompts (six families
+plus three Rose signatures), not40. Exact live text remains; no missing icon URLs.
+
+## Remaining intrinsic batches (D-172)
+
+Owner explicitly resumes Rose trio then War trio; all six are implemented.
+docs/character-kit-rework.md owns bounded cap3 Rose Grace/Thorn Aegis/Rose Duality/
+Charted Current/Foundation/Resonance loops. Preserve authored stats, skills,
+Gauge/cooldowns/recovery, sourced effective healing/shield absorption/Burn,
+existing critical RNG and independent Conduit resources. Nerithe's extra5 Gauge
+remains fixed and Normal-only. No captured-kit replacement or account writes.
+Art/ui/Battle Status Icons.md now has40 reference-free palette-locked prompts,
+including six new symbols; regenerate tools/build_status_art.py and validate
+test_status_art_prompts.py. All icons still prompt-only. This supersedes older
+34-icon and remaining-Rose/War-pending summaries. Full roster16 native kits done;
+validate rose-war-intrinsic-kits.test.ts plus full suite/build and icon tests.
+
+## Delivered Story art (D-171)
+
+Owner supplies31 root PNGs:25 enemies and five arenas Oceanic through Chaotic,
+plus world map. Infernic5 enemies/arena remain neutral pending. Story source
+originals preserved under Art/source/story, keys/gaps/hashes in Art/provenance,
+reproduce tools/intake_story_art.py; supplied alpha authoritative, scenery opaque.
+content/story-art.ts/storyCreature share exact art across spawns/catalog/field/
+cut-ins/Collections; reviewed unit-facing and tools/story_art_revisions.py refresh
+shared deployment-base URLs. Entire map is uncropped natural-aspect scenery;
+all labels/unlocks/progress stay accessible HTML. No RNG/stats/reward/save changes.
+This supersedes older all-Story-art-pending statements, not missing Infernic art.
+
+
+## Resumed intrinsic kits and complete status icons (D-170)
+
+Owner resumes phased native ability overhaul after Story/art/navigation.
+Seven Standard flagship intrinsic kits are implemented; Rose/War remain next batches.
+Use docs/character-kit-rework.md for bounded owner-specific resources/payoffs,
+provenance, once-per-phase/round guards and resets; no equipment prerequisites,
+new RNG/rewards/save writes or cost/cooldown/recovery bypass. Preserve starters.
+Art/ui/Battle Status Icons.md is the complete34-symbol current/new Midjourney
+checklist; reproduce tools/build_status_art.py and test_status_art_prompts.py.
+Prompt-only, reference-free palettes/keys/margins; live text until actual reviewed
+intake. This resumes/supersedes older paused-roster directions below.
+
+
+## Delivered artwork installed (D-167)
+
+All52 owner-delivered root PNGs installed:35 Conduit icons,13 replacement
+portraits, universal Normal Attack/Defense and both currency coins. Originals
+and prior exports preserved with hash provenance in Art/source and Art/provenance.
+tools/intake_delivered_art.py and tools/intake_d157_root_art.py own reviewed
+per-source keys/gap masks and reproduction. No runtime background removal.
+Shared byte-derived character/Conduit/ability/currency URL revisions refresh
+every surface. Basic action icons are universal across all characters; authored
+skills/passives and historical basic exports remain.25 newer kit-Conduit images
+were not delivered. See docs/art-workflow.md; do not rerun historical currency
+preparation over current replacements without respecting latest source authority.
+
+## Defense and contextual desktop corrections (D-165/D-166)
+
+Direct damage uses base Attack/(base Attack+effective Defense) diminishing
+mitigation, with action/Weaken/critical multipliers outside the ratio. Round
+final direct damage once; preserve floor1, Burn bypass, pierce, shields and guard.
+Shared stagedEnemyAttack starts32/48 atLv10 with .12 growth; Story starts16/24
+atLv1 using half that curve. HP/Defense/Training curves, level120 and Rose140
+endpoints, RNG/rewards/saves are unchanged; .036 Attack extension above120.
+Validate actualLv13 hits>=9% maxHP for all unequippedLv0 starters plus late
+balance tests. See docs/combat.md and defense-balance.test.ts.
+
+Desktop Menu has secondary routes, no duplicate dock links. Back names actual
+history target. Return to title exists only in Settings, confirming battle
+exit and disposing its session while retaining saved rewards. Closing menu
+Settings preserves its DOM/filter/scroll/unsaved selection; battle reconstructs
+its frozen run. Gameplay/Character/Summon use page scrolling, intentional
+dialogs/lists retain contained scroll. Existing reduced-motion-aware animations
+and portrait-preserving character tabs remain. docs/menus-and-inventory.md owns
+the current contract; older desktop-pending statements are superseded.
+
 ## Story / Training rollout (D-164)
 
 Owner defers remaining intrinsic character redesign and requests next major
@@ -18,7 +142,7 @@ encounterSeed; preserve frozen squads/gear/captures/upgrades through Continue/
 Retry/Settings. Stage150 has no Continue. All30 Story creatures/scenery are
 neutral art-pending; never substitute art/request missing PNGs. Collection
 loot uses runtime Story tables with first-clear annotations. Validate
-story.test.ts/full suite/build. Broader desktop overhaul is next; remaining
+story.test.ts/full suite/build. Contextual desktop pass is implemented; remaining
 intrinsic roster rework stays paused at owner direction. Supersedes older
 "Story pending" statements below.
 

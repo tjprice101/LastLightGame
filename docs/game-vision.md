@@ -1,7 +1,7 @@
 # Game vision
 
 **Intrinsic kits (D-163):** full-roster ability/passive redesign approved in
-batches, starting with implemented Infernis/Tizu/Flora loops. Simple capped
+batches; all16 complete through Roses then War (D-172). Simple capped
 stacks and meaningful buff/debuff setup/payoff choices work without equipment.
 [Rules and remaining scope](character-kit-rework.md).
 

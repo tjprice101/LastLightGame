@@ -1,5 +1,105 @@
 # Kit-focused Conduits (D-160/D-162)
 
+## Current approved Omnic replacement (D-176)
+
+Owner explicitly chooses replacing these same25 items, not adding25 more.
+All become Omnic with new distinct elemental interaction mechanics and fully
+reborn art matching the original Machines Omnic presence. Implementation is
+complete; historical D-162 rules below remain a record, not the new contract.
+
+Confirmed compatibility/acquisition choices:
+
+- Preserve every stable item/art ID, owned count and account upgrade progress.
+- Converted25 move to the existing stage75+ Omnic pool with unchanged1% total.
+  Remove their prior Common Store/Rare/Legendary acquisition entries. Banner
+  original-five Legendary bonuses remain unchanged. Catalog85 becomes
+  **10 Common /15 Rare /15 Legendary /45 Omnic**.
+- All25 require matching combat element and count toward four Omnic per fighter.
+  Existing equipment normalization retains valid slots in original order and
+  unequips only converted items that mismatch element or exceed the total cap;
+  never delete ownership/upgrades or silently grandfather invalid equipment.
+  Loads remain read-only; first ordinary successful transaction persists migration.
+  Current saves must remain strictly validated after migration, not perpetual
+  silent repair. Failed/overflow/denied transactions preserve raw saved bytes.
+- New rules must differ from the other60 Conduits and each other, use actual
+  effects/source provenance, bounded triggers/once gates and independent state.
+  No new RNG/rewards/income, resurrection, recovery bypass or free-action loops.
+  Kit rules do not scale with account stat upgrades. Character/captured
+  capability boundaries and run Settings/Continue snapshots remain.
+- Prompts use individually distinct full reborn central devices, monumental
+  platinum/ivory armor, six immense elemental fans, coronas/crowns/ribbons and
+  dense rear facets with clear readable cores, matching the written Machines
+  Omnic renderer/epicness. Keep palette locks, no image references, no glow,
+  full outer margins and offline-only future intake. All25 images still pending.
+
+Walletv5 is the durable conversion marker. v1-v4 read without writes, normalize
+only incompatible/excess converted slots, preserve final slots/order and all
+ownership/upgrades/progress. First successful ordinary transaction writes v5.
+Invalid v5 gear is rejected, never repeatedly repaired. This is a compatibility
+migration, not a new reward or retroactive charge.
+
+### Implemented replacement rules
+
+All listed stat triples are60%/50%/40%, respectively. A=Attack, H=Health,
+D=Defense, E=Elemental Damage, C=Critical Damage multiplier. Every rule has an
+independent once-per-round gate, with actual effective triggers and no generated
+effect feedback. Banked reserves survive retained snapshots and reset on new
+encounters. Cooldown reductions never ready a skill before the next round.
+
+| Stable ID | New Omnic name | Stats | New interaction |
+| --- | --- | --- | --- |
+| tempered-strike-link | Phoenix Temper Dominion | A/D/H | Own effective Burn banks Temper max3; effective Normal spends for2 Gauge each |
+| mending-valve | Worldroot Sap Cathedral | H/E/D | Authored effective healing banks Sap max3; Defense spends for3 Gauge each to most injured ally |
+| ward-stitch-spool | Leviathan Ward Loom | D/H/E | Own authored shield absorption refreshes self shield for25% absorbed, capped3% caster HP |
+| cinder-metering-nozzle | Eternal Cinder Observatory | E/A/D | Effective Burn application banks one relay; later skill against own Burn extends it one phase, cap3 |
+| pulse-trigger-pawl | Sky Sovereign Escapement | A/C/D | Effective critical banks one reserve; Defense shortens longest available own ordinary cooldown by1 |
+| firstlight-cam | Firstlight Concordance | A/H/D | Actual authored support to another banks one reserve; effective Normal shortens injured other ally's longest ordinary cooldown by1 |
+| secondbeat-rack | Secondbeat Rupture Throne | A/E/D | Actual authored Weaken banks one reserve; later Normal against own Weaken places one personal Fracture after impact, cap2 |
+| flare-focusing-iris | Ember Coronation Iris | E/H/A | Actual Infernic Embers spending shields most injured ally4% caster HP each, cap12% |
+| clearwater-manifold | Abyssal Clearwater Parliament | H/D/E | Own authored shield absorption grants lowest-Gauge other ally4 Gauge |
+| aegis-return-spring | Aegis Covenant Crown | D/H/E | Actual authored shield increase banks one reserve; Defense gives injured other ally8% attack buff through next round |
+| emberlife-kiln | Phoenix Lifeforge | H/E/A | Own Burn HP damage heals injured other ally25% damage, cap2% caster HP |
+| tension-governor | Fractured Mercy Governor | D/E/H | HP damage against own Weaken shields injured other ally10% damage, cap3% caster HP |
+| covercharge-drum | Worldgrove Covercharge Heart | D/H/E | Actual authored healing of another refreshes self shield4% caster HP |
+| sootwake-crucible | Sootwake Phoenix Mirror | A/H/D | Normal HP damage against own Burn refreshes self shield10% damage, cap4% caster HP |
+| tidebound-reflector | Leviathan Mercy Reflector | H/D/A | Actual authored shield increase refreshes injured ally shield5% caster HP |
+| pressurecrest-governor | Tempest Shelter Sovereign | C/A/H | Critical direct HP damage shields injured other ally10% damage, cap3% caster HP |
+| rootbound-triage-vault | Worldroot Triage Sanctuary | H/D/E | Actual authored healing of a recipient initially at/below half HP shortens their longest ordinary cooldown by1 |
+| solace-anchor | Solace Witness Monolith | D/H/A | Actual authored support to another banks one Witness; Defense gives injured other ally5 Gauge |
+| ruinselect-prism | Ruinselect Fracture Parliament | E/A/H | Effective Normal consuming own Fractures gives lowest-Gauge other ally2 Gauge each, cap4 |
+| infernic-pyre-census | Pyre Census Requiem | A/E/H | Own Burn killing tick shortens both available ordinary cooldowns by1 |
+| oceanic-shared-tide-pump | Shared Tide Lifesea Engine | H/D/E | Own authored shield absorption on another heals that recipient30% absorbed, cap3% caster HP |
+| atmospheric-storm-clock | Tempest Return Chronarch | A/C/D | Actual Atmospheric Charge spending returns2 Gauge each, cap6 |
+| botanic-graft-covenant | Worldroot Graft Coronation | H/E/D | Actual Botanic Renewal spending shields injured ally3% caster HP each, cap9% |
+| tranquilitic-accord-bastion | Accord Seraph Sanctuary | D/H/E | Effective authored support to another grants refresh-only10% next direct-hit protection, no Burn reduction |
+| chaotic-fault-verdict | Rosefault Precision Sovereign | E/A/H | Actual Thorn Aegis/Rose Duality spending heals self2% max HP each, cap6%, without native healing triggers |
+
+These replace old kit effects, not stack with them. Generated shields replace
+only by a larger offer and clear authored provenance when replacing; generated
+healing/support cannot earn native/gear authored-resource loops. Recipient choice
+is deterministic, living-only; unavailable skills, full Gauge/HP and weaker
+shield offers yield no effective payout. No new RNG, kill rewards or load writes.
+
+Art reproduction: `python tools\build_kit_conduit_art.py`.
+Validate `python -m unittest discover -s tools -p test_kit_conduit_art.py`,
+`npm test -- --maxWorkers=2`, and `npm run build`.
+
+## Historical D-162 contract (superseded by D-176)
+
+## Elemental family integration boundary (D-173)
+
+The owner approves [shared broad-to-precise effects](character-kit-rework.md#current-consolidation-contract-d-173)
+for future Omnic design: Burn/Ward/Bloom/Tempest/Focus/Suppression, plus precise
+Rose signatures. Family membership is not a new buff/debuff or universal proc:
+inspect the actual precise effect, source, origin and clock. Existing conditionals
+against Burning/Weakened enemies retain their exact predicates.
+
+This consolidation does not remove/reprice owned Conduits or merge equipment
+charges with native resources. Preserve all authored acquisition/slots/stat/kit
+rules below. No new Omnic designs, rewards, restrictions or effects implemented
+in this phase. Non-elemental equipment feedback remains accurate live text
+without requiring a unique generated status icon.
+
 **Owner clarification (D-163):** the requested dynamic character kits mean
 intrinsic abilities/passives, not these equipment modifiers. This catalog is
 retained as a separate Conduit feature, without removing ownership. It does

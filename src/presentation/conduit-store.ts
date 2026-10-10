@@ -9,7 +9,7 @@ import { conduitUpgradeMeter } from './conduit-upgrade-meter';
 export function conduitIcon(id: ConduitId, level = 0): string {
   const conduit = getConduit(id);
   validateConduitUpgradeLevel(level);
-  return `<span class="conduit-icon-frame" role="img" aria-label="${conduit.name} ~ Upgrade +${level} of 5" data-conduit-upgrade="${level}">${conduit.art ? `<img class="conduit-icon" src="${assetUrl(`conduits/${conduit.art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">`
+  return `<span class="conduit-icon-frame" role="img" aria-label="${conduit.name} · Upgrade +${level} of 5" data-conduit-upgrade="${level}">${conduit.art ? `<img draggable="false" class="conduit-icon" src="${assetUrl(`conduits/${conduit.art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">`
     : '<span class="conduit-icon conduit-art-pending">Artwork pending</span>'}${conduitUpgradeMeter(level)}</span>`;
 }
 export function conduitRarity(id: ConduitId): string {
@@ -37,7 +37,7 @@ export function conduitInventory(account: Account | null): string {
     </section>`;
 }
 export function conduitStore(account: Account | null): string {
-  return `<section class="conduit-store"><header class="conduit-store-banner" style="--conduit-store-art:url('${assetUrl('banners/conduit-store.png')}')"><p class="eyebrow">RECOVERED ~ ANCIENT WAR MECHANISMS</p><h2>The Conduit Store</h2>
+  return `<section class="conduit-store"><header class="conduit-store-banner" style="--conduit-store-art:url('${assetUrl('banners/conduit-store.png')}')"><p class="eyebrow">RECOVERED · ANCIENT WAR MECHANISMS</p><h2>The Conduit Store</h2>
     <p>Long-hidden mechanisms, recovered from sealed armories and forgotten battlefields.</p>
     </header>
     ${information('store-information', 'Conduit purchases', '<p>Purchase with Prismatica. One owned copy unlocks a Conduit for all owned characters. Each character can equip each name once. Additional copies do not increase its effect.</p><p>Equip Conduits in Character. Purchases require confirmation.</p>')}
@@ -49,7 +49,7 @@ export function conduitStore(account: Account | null): string {
       <h3>${conduit.name}</h3><p class="conduit-effect">${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</p>
       <p class="conduit-quantity">Owned ${account ? account.conduits?.[conduit.id] ?? 0 : 'Unavailable'}</p>
       <p class="conduit-price">${currencyIcon('fractalis')}<strong>${conduit.price} Prismatica</strong></p>
-      <button class="primary-button" data-buy-conduit="${conduit.id}" ${!account || account.fractalis < conduit.price ? 'disabled' : ''}>Buy one ~ ${conduit.price}</button>
+      <button class="primary-button" data-buy-conduit="${conduit.id}" ${!account || account.fractalis < conduit.price ? 'disabled' : ''}>Buy one · ${conduit.price}</button>
       ${account && account.fractalis < conduit.price ? '<p class="quiet">Not enough Prismatica.</p>' : ''}</article>`).join('')}</div>
     <p id="conduit-purchase-result" role="status"></p></section>`;
 }

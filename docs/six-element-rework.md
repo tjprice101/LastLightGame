@@ -21,7 +21,7 @@ to identify what is actually complete.
 | Character palette prompts | Implemented (D-159) | All16 lines; generated-image acceptance still pending |
 | Six-element migration | Implemented | Six canonical types/36 materials; walletv4 migration, merged enemy families, recipes/equipment/Archives |
 |25 additional kit Conduits | Implemented (D-162) |5 Common/8 Rare/6 Legendary/6 Omnic; fixed kit effects,85 total;25 icon prompts, imagery pending |
-| Intrinsic character abilities | Starter batch implemented (D-163); remaining roster pending | Owner clarifies buffs/debuffs/stacks belong to abilities, not equipment; full-roster phased scope, three-stack starter loops without Conduits |
+| Intrinsic character abilities | All16 implemented (D-163/D-170/D-172) | Owner clarifies buffs/debuffs/stacks belong to abilities, not equipment; phased starters, Standard flagships, Roses then War complete with bounded native loops without Conduits |
 | Story/dungeon rebalance | Implemented (D-164) |35-floor dungeons Lv38-120; six25-stage Story regions Lv1-55, retained Training and atomic first-clear bosses; campaign art pending |
 | Desktop menu overhaul | Contextual pass implemented (D-166) | Actual Back target, secondary-only Menu, Title only in Settings, retained menu DOM and page scrolling; existing animations/reduced motion |
 

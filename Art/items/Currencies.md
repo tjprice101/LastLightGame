@@ -1,10 +1,9 @@
 # Currency Art - Prismatica and Null-Prismatica
 
 **Current prompt direction:** white shimmering coin and cracked black coin with
-red/white lightning. The previous bright/dark prism images remain installed
-(D-142) until new coin replacements are supplied and individually reviewed.
-No balances, prices, income
-or save format change. Legacy IDs `fractalis`/`lycalis` and filenames remain.
+red/white lightning. The D-157 replacements are individually reviewed and
+installed; the D-142 coin exports are preserved separately. No balances, prices,
+income or save format change. Legacy IDs `fractalis`/`lycalis` and filenames remain.
 
 Follow the [cutout background contract](../guides/cutout-background-contract.md) and
 [shared renderer](../guides/midjourney-character-style-prompt.md): clean anime contours,
@@ -15,21 +14,22 @@ Both item prompts use no `--sref` or `--sw` (D-147).
 
 ## Supplied artwork and compatibility
 
-Historical originals remain byte-for-byte at
+Historical D-142 originals remain byte-for-byte at
 `Art/source/currencies/Fractalis.png` and
-`Art/source/currencies/Lycalis.png`. Previous runtime exports are preserved
-under `Art/source/currencies/previous-runtime`. Active runtime filenames remain
-`public/assets/currencies/fractalis.png` and `lycalis.png`.
-New originals are preserved at `Art/source/currencies/Prismatica.png` and
-`Null-Prismatica.png`. Reviewed transparent256px/224px-content replacements
-now appear across all currency surfaces. Border-connected source-specific teal
-keys and bounded edge cleanup protect cyan/pale facets, dark rims and highlights;
-painted sparkles and the dark crystal's intentional shadow are preserved.
-[Intake provenance](../provenance/prism-currency-intake.json) records new/source/runtime and
-previous-export hashes; historical originals/manifests remain untouched.
+`Art/source/currencies/Lycalis.png`. Both their earlier runtime exports and the
+D-142 active exports replaced by D-157 are preserved under
+`Art/source/currencies/previous-runtime`. New D-157 originals are preserved at
+`Art/source/currencies/D-157/Prismatica.png` and `Null-Prismatica.png`.
+Reviewed transparent256px/224px-content replacements use individually sampled
+border-connected green keys and bounded edge cleanup; pale coin facets,
+painted sparkles, dark rims and the intentional blue cast shadow are preserved.
+The [D-157 intake provenance](../provenance/d157-root-art-intake.json) records
+source/runtime and previous-export hashes. The earlier
+[D-142 provenance](../provenance/prism-currency-intake.json) retains its
+historical source hashes and points to the preserved former active exports.
 
-Regenerate with `python tools\intake_prism_currency_art.py --apply`; the shared
-exporter/review tool selects the new sources without legacy brown cleanup.
+Regenerate with `python tools\intake_d157_root_art.py --apply` after review; the
+shared exporter selects D-157 sources without legacy brown cleanup.
 Shared currency URLs include byte-derived revisions to avoid stale coin/rose
 caches. Validate `python -m unittest discover -s tools -p test_prism_currency_intake.py`
 and `python -m unittest discover -s tools -p test_prepare_currencies.py`.

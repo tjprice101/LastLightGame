@@ -5,6 +5,59 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Monochrome UI/cloud saves (D-179):** new owner HTML reference and new stores/
+Supabase username login approved; implementation and hosted setup pending.
+[Approved rules and open questions](mono-ui-and-cloud-saves.md).
+
+**Emberwake delivery (D-178):** five Infernic cutouts and regional arena installed;
+all30 Story creatures/six arenas delivered. New root World Map explicitly
+excluded; original installed map preserved. [Intake](art-workflow.md#emberwake-story-delivery-d-178).
+
+**Omnic kit conversion (D-176):** approved replacement of existing25 designs,
+preserving IDs/ownership/upgrades and safely unequipping incompatible/excess
+converted slots. Unique new Omnic mechanics/full reborn prompt pack implemented;
+existing stage75+1% acquisition, no Store/lower-tier entries. [Contract](kit-conduits.md#current-approved-omnic-replacement-d-176).
+
+**Delivered status icons (D-175):** all nine family/Rose images supplied;
+offline reviewed intake and live badge/counter/reference wiring complete.
+[Workflow](art-workflow.md#delivered-elemental-status-icons-d-175).
+
+**Thematic names (D-174):** elemental family/shared counter labels now use
+Infernic Embers, Oceanic Protection, Botanic Renewal, Atmospheric Charge,
+Tranquilitic Focus and Chaotic Suppression. Naming only; Rose signatures and
+all mechanics/IDs remain. [Mapping](character-kit-rework.md#current-display-names-d-174).
+
+**Current consolidation (D-173):** owner approves fewer shared elemental mechanics
+and Rose-only unique signatures, rather than special counters on all16 characters.
+Implemented and verified. [Broad-to-precise contract](character-kit-rework.md#current-consolidation-contract-d-173)
+supersedes prior roster completion statements. [Status art](../Art/ui/Battle%20Status%20Icons.md)
+now requests nine shared-family/Rose symbols, not40; basic rules and owned
+equipment stay intact.
+
+**Remaining intrinsic roster batches (D-172):** Rose trio, then Elemental War
+trio, with one bounded cap3 native resource each and ordinary-skill/Last Flare
+choices. No equipment requirement or cost/cooldown/recovery bypass; preserve
+existing saves/RNG/rewards. [Current loops and validation](character-kit-rework.md).
+[Status-icon pack](../Art/ui/Battle%20Status%20Icons.md) now has40 prompt-only symbols.
+
+**Delivered Story art (D-171):**25 reviewed enemy cutouts, five opaque regional
+arenas and one world map installed under stable IDs. Infernic remains pending.
+Shared catalog/spawn/facing/revisions drive battles, cut-ins, Collections and map;
+no economy/save changes. [Story contract](story-and-training.md).
+
+**Story art prompts (D-168):** world map,30 runtime-matched creatures and six
+elemental-dungeon-style battle arenas have organized copy-ready packs.
+D-171 now installs the supplied25 creatures/five arenas/map; Infernic remains
+pending. All delivered art was previously
+archived out of the repository root; future Story originals belong under
+Art/source/story. [Art index](../Art/creatures/story/README.md).
+
+**Delivered artwork (D-167):**52 root PNGs reviewed and installed:35 Conduit
+icons,13 replacement portraits, universal Normal/Defense and both currencies.
+Original bytes/prior exports/hash provenance preserved; shared URLs revisioned,
+zero root PNGs remain.25 undelivered kit-Conduit icons remain pending.
+[Intake and reproduction](art-workflow.md).
+
 **Defense rebalance (D-165):** direct attacks now use attack-relative diminishing
 Defense, not flat subtraction. Early Story/Machines/staged Attack corrected;
 level120/140 endpoints and rewards/RNG preserved.
@@ -19,13 +72,16 @@ button feedback. [Navigation rules](menus-and-inventory.md#contextual-desktop-na
 regions, Lv1-55, four original ordinary identities plus one regional boss each.
 Common/Uncommon materials only; exact one-time boss bonuses save atomically
 with kills/progression. Existing endless Adventure survives as Training.
-Home opens the world map; Story scenery/30 creatures remain neutral art-pending.
+Home opens the world map; D-171 installs delivered25 creatures/five arenas/map,
+with Infernic scenery/five creatures still neutral art-pending.
 [Rules, catalog and validation](story-and-training.md).
 
-**Intrinsic character kits (D-163):** owner clarifies buffs/debuffs/stacks belong
+**Intrinsic character kits (D-163 / D-170):** owner clarifies buffs/debuffs/stacks belong
 in abilities, not special equipment. Full-roster phased redesign approved;
 Infernis/Tizu/Flora now have intrinsic three-stack setup/payoff loops.
-Remaining roster redesign is pending; Conduit additions are a separate feature.
+D-170 implements the seven Standard flagships; Rose/War batches remain subsequent.
+One [status-icon file](../Art/ui/Battle%20Status%20Icons.md) covers34 existing/new
+symbols, with no installed images. Conduit additions remain a separate feature.
 [Mechanics, rollout and validation](character-kit-rework.md).
 
 **Phased rework approved (D-160):** safe six-element migration,25 additional
@@ -219,7 +275,7 @@ Originals archived with reviewed keys/facing and reproducible hashes.
 
 **Completed UI (D-127):** game-wide visible separators use spaced ` ~ `; joined
 words/numbers corrected, including "35 stages ~ Enemy levels 80-140".
-[Contract](menus-and-inventory.md#visible-separators-and-spacing-d-127) /
+[Contract](menus-and-inventory.md#visible-separators-and-spacing-d-169-supersedes-d-127) /
 [handoff](handoff.md#current-task-visible-separators-and-copy-spacing-d-127).
 
 **Completed UI (D-126):** each Home banner/selected Summon panel has a Showcase

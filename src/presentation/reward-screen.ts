@@ -71,19 +71,23 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     window.addEventListener('last-light-motion-change', motionChanged);
     await new Promise<void>((resolve, reject) => {
       dialog.addEventListener('close', () => resolve(), { once: true });
+      const finish = (): void => {
+        dialog.close();
+        resolve();
+      };
       dialog.addEventListener('cancel', (event) => {
         event.preventDefault();
         if (!revealed) reveal();
-        else dialog.close();
+        else finish();
       });
       dialog.addEventListener('keydown', (event) => {
         if (event.key !== 'Escape') return;
         event.preventDefault();
         event.stopPropagation();
         if (!revealed) reveal();
-        else dialog.close();
+        else finish();
       });
-      close.addEventListener('click', () => dialog.close());
+      close.addEventListener('click', finish);
       skip.addEventListener('click', () => reveal());
       try {
         dialog.showModal();

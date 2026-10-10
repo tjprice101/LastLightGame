@@ -30,9 +30,9 @@ const headings: Record<MenuPage, readonly [string, string]> = {
   gameplay: ['ACTIVITIES', 'Gameplay'], events: ['EVENTS', 'Events'],
   inventory: ['OWNED ITEMS', 'Inventory'], stores: ['STORES', 'Stores'], collections: ['CATALOGS', 'Collections'], squad: ['FORMATION', 'Squad'],
   summon: ['SUMMONING', 'Summon'], story: ['SIX BEACONS', 'Story'],
-  battle: ['YOUR SQUAD ~ GRASSY FIELD', 'Training'],
-  glossary: ['COLLECTIONS ~ DISCOVERIES', 'Archives'],
-  archives: ['COLLECTIONS ~ DISCOVERIES', 'Archives'],
+  battle: ['YOUR SQUAD · GRASSY FIELD', 'Training'],
+  glossary: ['COLLECTIONS · DISCOVERIES', 'Archives'],
+  archives: ['COLLECTIONS · DISCOVERIES', 'Archives'],
   'conduit-store': ['STORES', 'Conduit Store'],
   'conduit-upgrade': ['RESTORATION', 'Conduit Upgrade'],
 };
@@ -41,7 +41,7 @@ export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycali
   const [eyebrow, title] = headings[sanctuaryDestination(page)];
   const backTitle = backPage ? headings[sanctuaryDestination(backPage)][1] : undefined;
   return `<header class="sanctuary-header">
-    <div class="sanctuary-brand"><span class="brand-mark"><span>L ~ L</span></span>
+    <div class="sanctuary-brand"><span class="brand-mark"><span>L · L</span></span>
       <div><strong>Last Light</strong></div>
       ${canGoBack ? `<button type="button" class="text-button sanctuary-back" data-menu-back${backTitle ? ` aria-label="Back to ${backTitle}"` : ''}>${uiIcon('back')}<span>Back${backTitle ? `<small>${backTitle}</small>` : ''}</span></button>` : ''}</div>
     <div class="sanctuary-title"><p class="eyebrow">${eyebrow}</p><h1 tabindex="-1">${title}</h1></div>

@@ -43,7 +43,7 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
       button.setAttribute('aria-haspopup', 'dialog');
       const labels = Array.from(select.labels ?? []);
       const label = select.getAttribute('aria-label') ??
-        labels.map((entry) => Array.from(entry.childNodes).filter((node) => node.nodeType === Node.TEXT_NODE).map((node) => node.textContent).join('').trim()).join(' ~ ');
+        labels.map((entry) => Array.from(entry.childNodes).filter((node) => node.nodeType === Node.TEXT_NODE).map((node) => node.textContent).join('').trim()).join(' · ');
       button.setAttribute('aria-label', `${label || 'Select option'}: ${select.selectedOptions[0]?.textContent ?? 'Select'}`);
       if (select.hasAttribute('aria-describedby')) button.setAttribute('aria-describedby', select.getAttribute('aria-describedby')!);
       button.textContent = select.selectedOptions[0]?.textContent ?? 'Select';

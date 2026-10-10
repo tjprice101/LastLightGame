@@ -7,9 +7,9 @@ import { starters } from '../content/starters';
 import { isMenuPage, sanctuaryContext, sanctuaryHeader } from './sanctuary';
 
 describe('Conduit Store and discovery routes', () => {
-  it('retains existing Common mechanisms and lists all fifteen Store-only items', () => {
+  it('retains all ten original Common Store mechanisms after the Omnic replacements', () => {
     const html = conduitStore({ ...emptyAccount(), fractalis: 10000 });
-    expect(html.match(/data-buy-conduit=/g)).toHaveLength(15);
+    expect(html.match(/data-buy-conduit=/g)).toHaveLength(10);
     expect(html).not.toContain('disabled');
     for (const conduit of conduits) {
       expect(conduit.rarity).toBe('Common');
@@ -26,8 +26,7 @@ describe('Conduit Store and discovery routes', () => {
     for (const conduit of additionalCommonConduits) {
       expect(html).toContain(conduit.name);
       expect(html).toContain(`${conduit.price} Prismatica`);
-      expect(html).toContain('Artwork pending');
-      expect(html).not.toContain(`assets/conduits/${conduit.id}.png`);
+      expect(html).toContain(`assets/conduits/${conduit.id}.png`);
     }
     expect(html).toContain('assets/banners/conduit-store.png');
     expect(conduits.map((entry) => entry.price)).toEqual([1000, 1200, 1000, 1500, 1200]);
@@ -40,7 +39,7 @@ describe('Conduit Store and discovery routes', () => {
     expect(conduitInventory(account)).not.toContain('Bastion Lock');
     expect(conduitInventory(emptyAccount())).toContain('No Conduits owned');
     expect(conduitInventory(null)).toContain('role="alert"');
-    expect(conduitStore(emptyAccount()).match(/ disabled/g)).toHaveLength(15);
+    expect(conduitStore(emptyAccount()).match(/ disabled/g)).toHaveLength(10);
     expect(conduitStore(null)).toContain('Store unavailable');
   });
   it('belongs to Stores while retaining the contextual Character equipment route', () => {

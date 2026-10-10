@@ -53,11 +53,11 @@ describe('visible UI copy', () => {
     expect(upgrades).not.toContain('Restore your mechanisms');
     expect(upgrades).toContain('Not enough Broken Mechanical Components.');
     expect(upgrades).toContain('Current');
-    expect(upgrades).toContain('Next ~ +1');
+    expect(upgrades).toContain('Next · +1');
     const gameplay = gameplayHub(account);
     expect(primary(gameplay)).not.toContain(machineComponentRulesText);
     expect(gameplay).toContain(machineComponentRulesText);
-    expect(primary(gameplay)).toContain('Rare 8% ~ Legendary 3.5% ~ Omnic 1% from stage 75');
+    expect(primary(gameplay)).toContain('Rare 8% · Legendary 3.5% · Omnic 1% from stage 75');
     expect(primary(gameplay)).not.toContain('no battles or rewards yet');
     expect(primary(squadHub(account))).not.toContain('Save to apply changes.');
     expect(primary(squadHub(account))).toContain('Save squad');
@@ -109,7 +109,7 @@ describe('visible UI copy', () => {
     expect(header).toContain('currencies/lycalis.png');
     expect(inventoryView(account)).toContain('aria-label="Null-Prismatica balance"');
   });
-  it('uses spaced tildes across menus, galleries, rules and combat readouts without slash separators', () => {
+  it('uses spaced slashes for counts and middle dots for labels, never tildes', () => {
     const account = emptyAccount();
     account.characters.ember = { level: 0, evolution: 1 };
     account.squad = ['ember'];
@@ -128,15 +128,18 @@ describe('visible UI copy', () => {
     ];
     for (const markup of surfaces) {
       const text = textContent(markup);
-      expect(text).not.toContain('/');
-      expect(text).not.toMatch(/\S~|~\S/);
+      expect(text).not.toContain('~');
+      expect(text).not.toMatch(/\S\/|\/\S/);
       expect(text).not.toMatch(/\b(?:levels?|forms?|stage|quantities|separate|Rare|Legendary|Omnic)\d/i);
     }
+    expect(textContent(characterHub(openingStarters[0], 'upgrade-1', account))).toMatch(/Owned \/ Required/);
+    expect(textContent(squadHub(account))).toContain('1 / 3 slots filled');
+    expect(textContent(characterHub(openingStarters[0], 'overview', account))).toContain('Lv.0 · Evo.1');
   });
   it('fixes the exact event caption and preserves numeric values and asset paths', () => {
     const html = roseEvent(emptyAccount());
-    expect(html).toContain('35 stages ~ Enemy levels 80-140');
+    expect(html).toContain('35 stages · Enemy levels 80-140');
     expect(html).toContain('banners/roses-banner.png');
-    expect(unitReadout(createBattle().allies[0])).toContain('HP 220 ~ 220');
+    expect(unitReadout(createBattle().allies[0])).toContain('HP 220 / 220');
   });
 });

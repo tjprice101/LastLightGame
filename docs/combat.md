@@ -1,7 +1,21 @@
 # Combat specification
 
+**Current D-173 direction:** owner approves shared elemental families/fewer
+personal counters and precise Rose signatures. [Current contract](character-kit-rework.md#current-consolidation-contract-d-173)
+supersedes the all16 bespoke-resource goal below. Preserve essential healing,
+Shield, Weaken, crit/attack buffs, Gauge, cooldowns/recovery and owned equipment;
+family labels do not replace actual status predicates or combat elements.
+
 **Status:** [Adventure](free-battle.md) is implemented with prototype formulas,
 starter kits, waves, and hotkeys. This page retains broader production questions.
+
+## Resumed intrinsic kits (D-170 / D-172)
+
+The seven Standard flagships and remaining Rose/War batches receive typed capped setup/payoff choices using
+existing attack/shield/buff/event clocks. No equipment prerequisite or new RNG,
+reward/save writes or recovery bypass. [Exact loops and rollout](character-kit-rework.md)
+own the current contract; [status icon prompts](../Art/ui/Battle%20Status%20Icons.md)
+remain generation-only with text indicators until reviewed delivery.
 
 ## Current Defense balance (D-165)
 

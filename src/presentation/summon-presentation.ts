@@ -26,19 +26,19 @@ export function summonReward(result: SummonResult, bannerId: SummonBannerId): Re
     const creature = getCreature(result.copy.creatureId);
     reward = { title: result.duplicate ? 'Duplicate converted' : 'Creature summoned', name: member.name,
       art: member.art, accent: member.color, animationLabel: 'Calling through the Light',
-      details: `${member.rating}${elementLabel(creature.element)}<p>Captured creature ~ Lv.${member.level}</p>${conversion}` };
+      details: `${member.rating}${elementLabel(creature.element)}<p>Captured creature · Lv.${member.level}</p>${conversion}` };
   } else {
     if (entry.kind !== 'character' || !isStarterId(entry.id)) throw new Error('Summoned Element-Bearer definition is missing.');
     const character = getStarter(entry.id);
     reward = { title: 'Element-Bearer summoned', name: characterName(character.id, 1),
       art: portrait(character, 1), accent: character.color, animationLabel: 'Calling through the Light',
-      details: `${characterRating(character.id, 1)}${elementLabel(character.elementId)}<p>New Element-Bearer ~ Lv.0 ~ Evo.1</p>` };
+      details: `${characterRating(character.id, 1)}${elementLabel(character.elementId)}<p>New Element-Bearer · Lv.0 · Evo.1</p>` };
   }
-  reward.details += `<p>${escapeDialogText(banner.name)} ~ ${banner.cost} Null-Prismatica spent</p>`;
+  reward.details += `<p>${escapeDialogText(banner.name)} · ${banner.cost} Null-Prismatica spent</p>`;
   if (result.guarantee !== 'none') {
     const guarantee = result.guarantee === 'highest-star' ? 'Highest-star character'
       : result.guarantee === 'unowned-highest-star' ? 'Unowned highest-star character'
-        : result.guarantee === 'all-owned-highest-star' ? 'Highest-star character ~ All already owned' : null;
+        : result.guarantee === 'all-owned-highest-star' ? 'Highest-star character · All already owned' : null;
     if (!guarantee) throw new Error('Unknown summon guarantee.');
     reward.details += `<p>Pity guarantee: ${guarantee}</p>`;
   }

@@ -124,7 +124,7 @@ describe('six-region linear Story contract', () => {
 
   it('preserves mixed/all-captured squad progress and equipment snapshots across Continue/replay', () => {
     const copy = createCreatureCopy('infusion:heavens:0');
-    const equipment: ConduitLoadouts = { [copy.instanceId]: ['tempered-strike-link', null, null, null, null, null, null, null] };
+    const equipment: ConduitLoadouts = { [copy.instanceId]: ['siegebound-drive', null, null, null, null, null, null, null] };
     const session = createSession('ember', { level: 0, evolution: 1 }, { storyStage: 1 },
       { ids: [copy.instanceId], progress: {}, captures: [copy], equipment });
     session.state.allies[0].shatter = 42;
@@ -134,7 +134,7 @@ describe('six-region linear Story contract', () => {
     const continued = nextStage(session.state, {}).state;
     expect(continued.allies[0].id).toBe(session.state.allies[0].id);
     expect(continued.allies[0].captured?.level).not.toBe(120);
-    expect(continued.allies[0].conduits?.[0]).toBe('tempered-strike-link');
+    expect(continued.allies[0].conduits?.[0]).toBe('siegebound-drive');
     expect(continued.allies[0].shatter).toBe(42);
     expect(() => nextWave(session.state)).toThrow('Staged');
   });
@@ -299,7 +299,7 @@ describe('Story and Training presentation', () => {
     expect(html.match(/data-story-stage="\d+" disabled/g)).toHaveLength(149);
     expect(html).toContain('data-story-stage="1"');
     expect(html).toContain('First-clear bonus');
-    expect(html).toContain('artwork pending');
+    expect(html).not.toContain('artwork pending');
     expect(html).not.toContain('assets/enemies');
     expect(html).toContain('Read opening prologue');
     expect(storyCampaign(null, 'ember')).toContain('role="alert"');

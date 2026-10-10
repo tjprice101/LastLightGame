@@ -71,7 +71,7 @@ describe('supplied elemental dungeon artwork', () => {
     expect(characterDetail(starters[1], 'upgrade-0')).toContain('materials/aquatic-seed.png');
     expect(characterDetail(starters[1], 'upgrade-0')).not.toContain('materials/aquatic-soul.png');
     expect(characterDetail(starters[2], 'upgrade-0')).not.toContain('materials/aquatic-');
-    expect(characterDetail(starters[0], 'upgrade-0')).toContain('0 ~ 15');
+    expect(characterDetail(starters[0], 'upgrade-0')).toContain('0 / 15');
   });
   it.each(['luminous', 'tectonic', 'chaotic', 'atmospheric', 'ominous'] as const)('wires every %s stage and stable discovery entry without changing enemy order or abilities', (element) => {
     const art = legacyDungeonArt[element];

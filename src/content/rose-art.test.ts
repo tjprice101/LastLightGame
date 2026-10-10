@@ -26,7 +26,9 @@ describe('supplied Roses artwork', () => {
     for (const action of ['passive', 'light', 'defend', 'skill1', 'skill2', 'ultimate'] as const) {
       const art = abilityIcons[character.id][action];
       shipped('abilities', art);
-      expect(abilityIcon(character.id, action)).toContain(`abilities/${art}.png`);
+      const shared = action === 'light' ? 'universal-normal-attack'
+        : action === 'defend' ? 'universal-defense' : art;
+      expect(abilityIcon(character.id, action)).toContain(`abilities/${shared}.png`);
     }
   });
   it('uses the same real Roselius art in every stage and catalog/captured form', () => {

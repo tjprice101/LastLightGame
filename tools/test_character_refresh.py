@@ -12,6 +12,10 @@ from art_library import art_path
 class CharacterRefreshTests(unittest.TestCase):
     def test_all_ten_six_form_lines_have_verified_archives_and_runtime_exports(self):
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+        delivered = json.loads((art_path("delivered-root-art-intake.json", root=ROOT))
+                               .read_text(encoding="utf-8"))
+        delivered_records = {row["asset"]: row for row in delivered["assets"]
+                             if row["category"] == "characters"}
         settings = load_settings()
         self.assertEqual(manifest["asset_count"], 60)
         self.assertEqual(len(ASSETS), len(set(asset for _, asset in ASSETS)))
@@ -22,12 +26,15 @@ class CharacterRefreshTests(unittest.TestCase):
                 self.assertEqual(record["asset"], asset)
                 self.assertEqual(record["processing"], settings[asset])
                 self.assertFalse((ROOT / incoming).exists())
-                for path, hash_key in (("source", "source_sha256"), ("runtime", "runtime_sha256"),
-                                       ("previous_runtime", "previous_runtime_sha256")):
-                    self.assertEqual(digest(ROOT / record[path]), record[hash_key])
+                self.assertEqual(digest(ROOT / record["source"]), record["source_sha256"])
+                old_runtime = (ROOT / delivered_records[asset]["previous_runtime"]
+                               if asset in delivered_records else ROOT / record["runtime"])
+                self.assertEqual(digest(old_runtime), record["runtime_sha256"])
+                self.assertEqual(digest(ROOT / record["previous_runtime"]),
+                                 record["previous_runtime_sha256"])
                 self.assertEqual(prepare(ROOT / record["source"], settings[asset]),
-                                 (ROOT / record["runtime"]).read_bytes())
-                with Image.open(ROOT / record["runtime"]) as image:
+                                 old_runtime.read_bytes())
+                with Image.open(old_runtime) as image:
                     self.assertEqual(image.mode, "RGBA")
                     self.assertEqual(image.size, (960, 960))
                     left, top, right, bottom = image.getbbox()

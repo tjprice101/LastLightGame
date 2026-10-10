@@ -5,16 +5,21 @@ import { enemyDebuffs, enemyStatusReadout } from './battle-status';
 import { impactEvents } from './battle-health';
 
 describe('actual ordered enemy debuff display', () => {
-  it('renders owner-specific Fracture/Verdict marks alongside actual clocks without treating owners as HTML', () => {
+  it('renders owner-specific Conduit Fracture and typed Focus-family Weaken without obsolete Verdict marks', () => {
     const state = createBattle();
     const enemy = state.enemies[0];
     enemy.conduitMarks = { ember: 2, other: 1 };
-    enemy.pilot = { verdictMarks: { aurora: { stacks: 2, turns: 1 } } };
-    const markup = enemyDebuffs(debuffSnapshot(enemy), [{ id: 'ember', name: '<Ember>' }, { id: 'aurora', name: 'Aurora' }]);
-    expect(markup).toContain('Fracture Mark 2/2 ~ &lt;Ember&gt;');
-    expect(markup).toContain('Fracture Mark 1/2 ~ other');
-    expect(markup).toContain('Verdict Mark 2/2 ~ Aurora ~ 1 enemy phase');
-    expect(markup).not.toContain('<img');
+    enemy.weakened = 2;
+    enemy.weakenFraction = .25;
+    const markup = enemyDebuffs(debuffSnapshot(enemy), [{ id: 'ember', name: '<Ember>' }]);
+    expect(markup).toContain('Fracture Mark 2/2 · &lt;Ember&gt;');
+    expect(markup).toContain('Fracture Mark 1/2 · other');
+    expect(markup).toContain('Weaken -25% Attack');
+    expect(markup).toContain('data-effect-family="suppression"');
+    expect(markup).toContain('data-effect-origin="conduit"');
+    expect(markup).not.toContain('Verdict');
+    expect(markup).toContain('data-status-art="suppression"');
+    expect(markup.match(/class="status-icon"/g)).toHaveLength(3);
     enemy.hp = 0;
     expect(enemyStatusReadout(enemy)).not.toContain('battle-status-badge');
   });

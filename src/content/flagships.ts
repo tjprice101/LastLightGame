@@ -31,7 +31,7 @@ export const flagshipCharacters = [
   },
   {
     id: 'disciple', stars: 6, name: 'Disciple', role: 'Support', art: 'disciple',
-    title: 'Many wills become an unbroken crown', element: 'Chaotic (Dark Matter ~ Energy)', elementId: 'chaotic',
+    title: 'Many wills become an unbroken crown', element: 'Chaotic (Dark Matter & Energy)', elementId: 'chaotic',
     weapon: 'Empty-hand psychic casting', color: '#c68aea',
     description: 'A psychic caster who empowers allies with linked mindflame formations.',
     lore: { origin: 'The thought forges of Ruins of Chaos', story: 'Disciple refused the thought forges that demanded a single will. He carries their fractured teachings into a new practice: minds may strengthen one another without surrendering their freedom. His open hands weave scarlet mindflame into a shared resolve.', vow: 'Strength shared is freedom preserved.', awakening: 'An unbound thought reaches for your own.' },
@@ -45,7 +45,7 @@ export const flagshipCharacters = [
   },
   {
     id: 'razor', stars: 6, name: 'Razor', role: 'Tank', art: 'razor',
-    title: 'Midnight keeps an unbroken watch', element: 'Chaotic (Dark Matter ~ Energy)', elementId: 'chaotic',
+    title: 'Midnight keeps an unbroken watch', element: 'Chaotic (Dark Matter & Energy)', elementId: 'chaotic',
     weapon: 'Night sword', color: '#bc9bef',
     description: 'A shadow sentinel whose single night sword guards an eclipse bastion.',
     lore: { origin: 'The nightwatch of Valley of Solitude', story: 'Razor kept the last watch when the valley gates were abandoned. He learned to shape the surrounding darkness into a bastion rather than a threat, carrying one night sword and a vow that no frightened traveler would face midnight alone.', vow: 'The night will find me standing.', awakening: 'A silent sentinel answers your call.' },
@@ -66,6 +66,7 @@ export const flagshipEvolutionTitles: Record<FlagshipId, readonly string[]> = {
 
 export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
   atmoso: {
+    pilot: 'tempest',
     stats: { health: 205, defense: 9, damage: 39, crit: .2, shatterCapacity: 100, critMultiplier: 1.6, elementalDamage: 0 },
     passive: { name: 'Gale Cadence', description: '+15% outgoing damage at or below 50% health.', damageBonus: .15, defenseBonus: 0, healFraction: 0 },
     abilities: {
@@ -75,7 +76,6 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     },
   },
   aurora: {
-    pilot: 'verdict',
     stats: { health: 215, defense: 10, damage: 32, crit: .12, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: 'Lens of Diminishment', description: '+6 defense, included in effective defense.', damageBonus: 0, defenseBonus: 6, healFraction: 0 },
     abilities: {
@@ -85,7 +85,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     },
   },
   bliss: {
-    pilot: 'restoration',
+    pilot: 'bloom',
     stats: { health: 210, defense: 10, damage: 42, crit: .25, shatterCapacity: 100, critMultiplier: 1.7, elementalDamage: 0 },
     passive: { name: 'Stillfeather Tempo', description: '+20% outgoing damage at or below 50% health.', damageBonus: .2, defenseBonus: 0, healFraction: 0 },
     abilities: {
@@ -113,6 +113,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
     },
   },
   elise: {
+    pilot: 'tempest',
     stats: { health: 195, defense: 8, damage: 40, crit: .25, shatterCapacity: 100, critMultiplier: 1.7, elementalDamage: 0 },
     passive: { name: 'Stormwheel Rhythm', description: '+15% outgoing damage at or below 50% health.', damageBonus: .15, defenseBonus: 0, healFraction: 0 },
     abilities: {

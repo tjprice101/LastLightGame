@@ -2,11 +2,20 @@ import { type Starter, type StarterId } from '../content/starters';
 import { characterArt, characterName } from '../content/character-art';
 import { unitFacing } from './unit-facing';
 import { characterArtRevisions } from '../content/character-art-revisions';
+import { conduitArtRevisions } from '../content/conduit-art-revisions';
+import { abilityArtRevisions } from '../content/ability-art-revisions';
+import { storyArtRevisions } from '../content/story-art-revisions';
+import { statusArtRevisions } from '../content/status-art-revisions';
 
 export function assetUrl(path: string): string {
   const url = `${import.meta.env.BASE_URL}assets/${path}`;
   const character = /^characters\/([^/]+)\.png$/.exec(path);
-  const revision = character ? characterArtRevisions[character[1]] : undefined;
+  const conduit = /^conduits\/([^/]+)\.png$/.exec(path);
+  const ability = /^abilities\/([^/]+)\.png$/.exec(path);
+  const revision = character
+    ? characterArtRevisions[character[1]]
+    : conduit ? conduitArtRevisions[conduit[1]]
+      : ability ? abilityArtRevisions[ability[1]] : statusArtRevisions[path] ?? storyArtRevisions[path];
   return revision ? `${url}?v=${revision}` : url;
 }
 
@@ -21,7 +30,7 @@ export function portraitAttributes(starter: Starter, evolution = 1): { src: stri
 
 export function portrait(starter: Starter, evolution = 1): string {
   const { src, alt } = portraitAttributes(starter, evolution);
-  return `<span class="character-idle" data-character="${starter.id}"><img src="${src}" alt="${alt}" ${characterFacingAttributes(starter.id, evolution)} width="960" height="960" /></span>`;
+  return `<span class="character-idle" data-character="${starter.id}"><img draggable="false" src="${src}" alt="${alt}" ${characterFacingAttributes(starter.id, evolution)} width="960" height="960" /></span>`;
 }
 
 export function characterFacing(id: StarterId, evolution = 1) {

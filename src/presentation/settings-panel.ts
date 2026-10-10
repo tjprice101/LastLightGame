@@ -10,8 +10,8 @@ export function settingsPanel(motion: MotionPreference, bindings: Bindings, spee
     <section class="settings-panel"><h3>Battle presentation</h3>
       <label for="settings-battle-speed">Animation speed</label>
       <select id="settings-battle-speed" data-battle-speed aria-describedby="speed-description">${battleSpeeds.map((value) =>
-        `<option value="${value}" ${speed === value ? 'selected' : ''}>${value}&times;${value === 1 ? ' ~ Cinematic' : value === 2 ? ' ~ Quick' : ' ~ Fast'}</option>`).join('')}</select>
-      <p id="speed-description">Presentation only ~ Saved automatically</p>
+        `<option value="${value}" ${speed === value ? 'selected' : ''}>${value}&times;${value === 1 ? ' · Cinematic' : value === 2 ? ' · Quick' : ' · Fast'}</option>`).join('')}</select>
+      <p id="speed-description">Presentation only · Saved automatically</p>
     </section>
     <form id="settings-form" class="settings-panel"><h3>Motion &amp; accessibility</h3>
       <label for="motion">Animation preference</label>

@@ -11,6 +11,12 @@ import { elementLabel } from './element-label';
 import { elementAssetIds } from '../content/element-migration';
 
 describe('unified Archives', () => {
+  it('disables native image drag previews so locked art cannot reveal its colored drag ghost', () => {
+    const html = archives(emptyAccount());
+    const images = html.match(/<img\b[^>]*src="[^"]*\/(?:characters|enemies|conduits)\/[^"]*"[^>]*>/g) ?? [];
+    expect(images.length).toBeGreaterThan(0);
+    for (const image of images) expect(image).toContain('draggable="false"');
+  });
   it('groups the three galleries with banner headers and one visible default panel', () => {
     const html = archives(emptyAccount());
     expect(html.match(/data-archive-gallery=/g)).toHaveLength(3);
@@ -29,7 +35,7 @@ describe('unified Archives', () => {
     const before = structuredClone(account);
     const html = archives(account);
     for (const starter of starters) expect(html).toContain(`data-archive-character="${starter.id}"`);
-    expect(html).toContain('Current form ~ Lv.0');
+    expect(html).toContain('Current form · Lv.0');
     expect(html).toContain('<p class="archive-ownership">Not owned</p>');
     expect(html).toContain('<p class="archive-ownership">Reached form</p>');
     expect(html).toContain('<p class="archive-ownership">Evolution not reached</p>');
@@ -62,7 +68,7 @@ describe('unified Archives', () => {
     }
     expect(html).toContain('Owned 3');
     const conduitsSection = html.slice(html.indexOf('id="archive-conduits"'), html.indexOf('id="archive-creatures"'));
-    expect(conduitsSection.match(/Artwork pending/g)).toHaveLength(60);
+    expect(conduitsSection.match(/Artwork pending/g)).toHaveLength(25);
     for (const conduit of conduits) {
       if (conduit.art) expect(html).toContain(`assets/conduits/${conduit.art}.png`);
       else expect(html).not.toContain(`assets/conduits/${conduit.id}.png`);

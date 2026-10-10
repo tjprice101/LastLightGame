@@ -9,7 +9,7 @@ describe('roster, squad and summon screens', () => {
   it('renders owned characters only and highlights the selected Element-Bearer', () => {
     const html = characterRoster(account, 'tide');
     expect(html).toContain('data-owned-character="tide" aria-pressed="true"');
-    expect(html).toContain('Lv.30 ~ Evo.2');
+    expect(html).toContain('Lv.30 · Evo.2');
     expect(html).not.toContain('data-owned-character="sprout"');
   });
   it('renders three ordered slots, optional removal and no starter lock', () => {
@@ -31,7 +31,7 @@ describe('roster, squad and summon screens', () => {
   it('places Save beside the filled-slot count while retaining the same submitted form fields', () => {
     const html = squadHub(account);
     const header = html.slice(0, html.indexOf('<form id="squad-form">'));
-    expect(header).toContain('2 ~ 3 slots filled');
+    expect(header).toContain('2 / 3 slots filled');
     expect(header).toContain('form="squad-form"');
     expect(html.match(/>Save squad<\/button>/g)).toHaveLength(1);
     expect(html.match(/class="squad-member-preview"/g)).toHaveLength(3);
@@ -50,11 +50,11 @@ describe('roster, squad and summon screens', () => {
     expect(html.match(/data-banner-entry=/g)).toHaveLength(22);
     expect(html).toContain('5-star tier: 1%');
     expect(html).toContain('0.166667% per draw');
-    expect(html).toContain('The Crown Beyond Dawn, Gleamstone Slime ~ Omnic ~ 6-star ~ Lv.50');
+    expect(html).toContain('The Crown Beyond Dawn, Gleamstone Slime · Omnic · 6-star · Lv.50');
     expect(summonHub({ ...account, lycalis: 9 })).toContain('disabled');
     expect(summonHub({ ...account, characters: { ...account.characters, sprout: { level: 0, evolution: 1 } } }))
-      .toContain('Summon ~ 10 Null-Prismatica');
-    expect(html).not.toContain('NEW ELEMENT-BEARER ~ SAVED');
+      .toContain('Summon · 10 Null-Prismatica');
+    expect(html).not.toContain('NEW ELEMENT-BEARER · SAVED');
   });
   it('places one summon action beside its cost and gives the artwork and real rates their own main panel', () => {
     const html = summonHub(account);
@@ -99,8 +99,8 @@ describe('roster, squad and summon screens', () => {
     const wallet = { ...account, bannerPity: { standard: { highestStar: 199, unownedHighestStar: 499 } } };
     const before = structuredClone(wallet);
     const html = summonHub(wallet);
-    expect(html).toContain('199 ~ 200');
-    expect(html).toContain('499 ~ 500');
+    expect(html).toContain('199 / 200');
+    expect(html).toContain('499 / 500');
     expect(html).toContain('max="200" value="199"');
     expect(html).toContain('max="500" value="499"');
     expect(html.match(/data-banner-entry=/g)).toHaveLength(standardBannerPool().length);
@@ -141,7 +141,7 @@ describe('roster, squad and summon screens', () => {
     const table = html.slice(html.indexOf('<table'), html.indexOf('</table>'));
     expect(table.match(/data-banner-entry=/g)).toHaveLength(22);
     expect(table).toContain('scope="col">Name');
-    expect(table).toContain('scope="col">Rarity ~ Stars');
+    expect(table).toContain('scope="col">Rarity · Stars');
     expect(table).toContain('scope="col">Rate');
     expect(table).toContain('Common<span>5-star</span>');
     expect(table).toContain('Uncommon<span>2-star</span>');

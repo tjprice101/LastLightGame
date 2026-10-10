@@ -8,7 +8,7 @@ import { createBattle } from '../game/battle';
 describe('character role medals', () => {
   it('classifies the current kits without changing combat stats', () => {
     expect(starters.map(({ name, role }) => [name, role])).toEqual([
-      ['Infernis', 'Attacker'], ['Tizu', 'Tank'], ['Flora', 'Healer ~ Support'],
+      ['Infernis', 'Attacker'], ['Tizu', 'Tank'], ['Flora', 'Healer & Support'],
       ['Rosetta', 'Attacker'], ['Thornia', 'Tank'], ['Crinso', 'Attacker'],
       ['Atmoso', 'Attacker'], ['Aurora', 'Support'], ['Bliss', 'Attacker'],
       ['Bruno', 'Tank'], ['Disciple', 'Support'], ['Elise', 'Attacker'], ['Razor', 'Tank'],

@@ -38,7 +38,20 @@ export async function gameConfirm(message: string, options: { title?: string; co
   try {
     return await new Promise<boolean>((resolve, reject) => {
       dialog.addEventListener('close', () => resolve(dialog.returnValue === 'confirm'), { once: true });
-      const cancel = (): void => { dialog.returnValue = 'cancel'; dialog.close(); };
+      const finish = (confirmed: boolean): void => {
+        dialog.returnValue = confirmed ? 'confirm' : 'cancel';
+        dialog.close();
+        resolve(confirmed);
+      };
+      dialog.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (!(event.submitter instanceof HTMLButtonElement) || !['confirm', 'cancel'].includes(event.submitter.value)) {
+          reject(new Error('Confirmation action is invalid.'));
+          return;
+        }
+        finish(event.submitter.value === 'confirm');
+      });
+      const cancel = (): void => { finish(false); };
       dialog.addEventListener('cancel', (event) => { event.preventDefault(); cancel(); });
       dialog.addEventListener('keydown', (event) => {
         if (event.key !== 'Escape') return;

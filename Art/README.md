@@ -29,6 +29,10 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
 
 ## Creatures and activities
 
+- [Story region packs](creatures/story/README.md):30 original creature cutouts
+  and six elemental-dungeon-style battle arenas; [world map](ui/Story%20World%20Map.md).
+  D-171/D-178 install all30 supplied creatures/six arenas/original map.
+  The new World Map.png is excluded from this intake at owner direction.
 - [Elemental dungeon packs](creatures/dungeons/README.md).
 - [Heaven/Abyss packs](creatures/gamemodes/README.md).
 - [Machines](creatures/Awaken%20the%20Machines.md), [Treasury](creatures/Crownfall%20Treasury.md),
@@ -38,10 +42,13 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
 ## Items, actions and scenery
 
 - [Conduits](conduits/Conduits.md), [35 added Conduits](conduits/Conduit%20Expansion.md).
-- [25 kit-focused Conduits](conduits/Kit%20Conduits.md): runtime-matched unique
-  device prompts, individual palettes; supplied icons still pending.
+- [25 reborn Omnic kit Conduits](conduits/Kit%20Conduits.md): D-176 converts
+  existing25 IDs to unique new Omnic mechanics/full elemental masterpieces;
+  individual palette locks, original Machines Omnic epicness; icons still pending.
 - [Currencies](items/Currencies.md), [Components](items/Broken%20Mechanical%20Components.md).
-- [Universal actions](ui/Universal%20Action%20Icons.md), [Battle statuses](ui/Battle%20Status%20Icons.md).
+- [Universal actions](ui/Universal%20Action%20Icons.md), [Battle statuses](ui/Battle%20Status%20Icons.md):
+  D-173 nine-symbol shared elemental-family/Rose checklist, replacing40;
+  D-175 all nine delivered, reviewed and installed.
 - [Element emblems](ui/Element%20Emblems.md), [Archives](ui/Archives.md),
   [Summoning](ui/Summoning%20Banners.md), [Battle scenery](ui/Battle%20Scenery.md),
   [Flaming Depths scenery](ui/Flaming%20Depths%20Scenery.md).

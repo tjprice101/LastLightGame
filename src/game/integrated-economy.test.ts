@@ -65,7 +65,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
   });
 
-  it('enforces actual200 ~ 500 saved pull milestones while sales/reloads never reset pity', () => {
+  it('enforces actual200 / 500 saved pull milestones while sales/reloads never reset pity', () => {
     const saved = storage();
     const account = loadAccount(saved);
     account.lycalis = 5000;
@@ -189,7 +189,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(loaded.capturedCharacters).toBeUndefined();
     const draw = summonCharacter(saved, () => 0);
     expect(write).toHaveBeenCalledTimes(1);
-    expect(draw.account).toMatchObject({ version: 4, fractalis: 12345, lycalis: 0, materials: legacy.materials,
+    expect(draw.account).toMatchObject({ version: 5, fractalis: 12345, lycalis: 0, materials: legacy.materials,
       characters: legacy.characters, firstFracture: true, receipts: legacy.receipts,
       creatures: legacy.creatures, squad: legacy.squad, dungeonStages: { infernic: 35 }, infusionStages: { heavens: 35 } });
     expect(draw.copy?.level).toBe(50);

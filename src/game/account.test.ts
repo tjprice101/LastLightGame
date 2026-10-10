@@ -52,7 +52,7 @@ describe('persistent progression transactions', () => {
     const raw = JSON.stringify(legacy);
     saved.setItem(ACCOUNT_KEY, raw);
     const migrated = loadAccount(saved);
-    expect(migrated.version).toBe(4);
+    expect(migrated.version).toBe(5);
     expect(migrated.dungeonStages).toEqual({ infernic: 1, oceanic: 12, atmospheric: 35, tranquilitic: 35 });
     expect(migrated.infusionStages).toEqual({ heavens: 18, abyss: 35 });
     for (const field of ['fractalis', 'lycalis', 'firstFracture', 'materials', 'characters', 'creatures', 'receipts'] as const) {
@@ -61,7 +61,7 @@ describe('persistent progression transactions', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     saveAccount(saved, migrated);
     expect(loadAccount(saved)).toEqual(migrated);
-    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(4);
+    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(5);
     expect(validateAccount({ ...legacy, infusionStages: { heavens: 1 } }).infusionStages).toEqual({ heavens: 1 });
   });
   it('rejects invalid legacy and current floors without overwriting the save', () => {

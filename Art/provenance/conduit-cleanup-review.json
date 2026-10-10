@@ -1,0 +1,2377 @@
+{
+  "review_id": "D-177",
+  "asset_count": 60,
+  "changed_count": 5,
+  "undelivered_kit_icon_count": 25,
+  "undelivered_kit_icons_reviewed": false,
+  "review_method": "Manual source, dark/light runtime contact-sheet and magnified-candidate review; offline exporter reproduction.",
+  "assets": [
+    {
+      "asset": "aegis-capacitor",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Aegis Capacitor.png",
+      "source_sha256": "e1700f545df79c61c4a52699819d602f6abf13c51a5711caf97aefc1280f1c6c",
+      "runtime": "public\\assets\\conduits\\aegis-capacitor.png",
+      "before_sha256": "a0a88a2f4c5b0363c7df52399f46149911a78c7674023814646e768368513db3",
+      "after_sha256": "a0a88a2f4c5b0363c7df52399f46149911a78c7674023814646e768368513db3",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The cyan key-adjacent pixels belong to the centered opal and mechanical highlights; no distinct background island remained.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          24,
+          242,
+          202
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "aquatic-leviathan-pump",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Aquatic - Leviathan Pump.png",
+      "source_sha256": "69951c08b7217d391d6f745573b6af5e8b258d5974da4dfcf7c78f87f5a90844",
+      "runtime": "public\\assets\\conduits\\aquatic-leviathan-pump.png",
+      "before_sha256": "20ca7bcf98f965824d9bdf8b1a801498eb7870a485ec36fea67b891712b1035c",
+      "after_sha256": "20ca7bcf98f965824d9bdf8b1a801498eb7870a485ec36fea67b891712b1035c",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The blue/cyan pixels are attached to the pump, crystals and reflections; the open silhouette and gaps are clear.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          110,
+          226,
+          191
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "aquatic-undertide-chronometer",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\aquatic-undertide-chronometer.png",
+      "source_sha256": "9bdbe4227060ae254b626976ae4faaced27294003bc935fff4fb2c2a751c718a",
+      "runtime": "public\\assets\\conduits\\aquatic-undertide-chronometer.png",
+      "before_sha256": "12ebe907c893ef6042aadbf542b4af37da3f9d9de3e19f8e97b12c29658ab62b",
+      "after_sha256": "12ebe907c893ef6042aadbf542b4af37da3f9d9de3e19f8e97b12c29658ab62b",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The remaining blue-green pixels align with the authored inner gears and crystal accents; no separate enclosed matte patch was verified.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            4,
+            236,
+            188
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "astral-prism",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Astral Prism.png",
+      "source_sha256": "148d252a6b8b84b722716300b985e7fe709e6bfdfe06cf96a0286c3bff2fe21c",
+      "runtime": "public\\assets\\conduits\\astral-prism.png",
+      "before_sha256": "f08dd4ab07ff354786979243bb91e736926ee21ae44ab7e4b54de1ddcaf3714f",
+      "after_sha256": "f08dd4ab07ff354786979243bb91e736926ee21ae44ab7e4b54de1ddcaf3714f",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The pale rays and dark-blue center are intact, with no separate background fill in the rays or openings.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          158,
+          201,
+          180
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "atmospheric-griffin-turbine",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Atmospheric - Griffin Turbine.png",
+      "source_sha256": "25b6d5e597ee2a8fa323b51374d9f657a38e5ce2a73becbdf30c0a3f49223882",
+      "runtime": "public\\assets\\conduits\\atmospheric-griffin-turbine.png",
+      "before_sha256": "10bb480947c39c808be5ee3be534389e8eab43c7b32c3bb641c021e5b0873e2c",
+      "after_sha256": "10bb480947c39c808be5ee3be534389e8eab43c7b32c3bb641c021e5b0873e2c",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The cyan details follow the turbine and feather blades; the negative spaces remain transparent.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          69,
+          231,
+          217
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "atmospheric-skythread-rudder",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\atmospheric-skythread-rudder.png",
+      "source_sha256": "eeaee003c19177a1dace7678a5fb76920ada143bf3c7d0d1f696c29f696c6754",
+      "runtime": "public\\assets\\conduits\\atmospheric-skythread-rudder.png",
+      "before_sha256": "42907dab9e4c47cba9854e96bb226c4ad8e1f351f87bbe18c40f5f8afaf7968b",
+      "after_sha256": "42907dab9e4c47cba9854e96bb226c4ad8e1f351f87bbe18c40f5f8afaf7968b",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The teal accents belong to the rudder and core; the open shaft and outer silhouette have no residual field.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            148,
+            204,
+            180
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "bastion-lock",
+      "source_authority": "Art/provenance/root-art-intake.json",
+      "source": "Art\\source\\conduits\\Bastion Lock.png",
+      "source_sha256": "ae1f7a6e97992ebaa5b9ca6dfb5f4ec44d7e66550cae212b3b325a543c07f725",
+      "runtime": "public\\assets\\conduits\\bastion-lock.png",
+      "before_sha256": "ee2afa3279702490b4e7e88e887bdad66f88371e27848a0471001509fbe333e5",
+      "after_sha256": "ee2afa3279702490b4e7e88e887bdad66f88371e27848a0471001509fbe333e5",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The warm key-colored pixels are on bronze hardware; the interlocking plate openings remain clear.",
+      "settings": {
+        "method": "border-connected hue/saturation key",
+        "hue": 25,
+        "tolerance": 18,
+        "saturation_min": 0.25,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "breach-pendulum",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\breach-pendulum.png",
+      "source_sha256": "2bac83094dc928e3ab0bed90592600bed6345b722287e7f45ce760f5bdaae7b8",
+      "runtime": "public\\assets\\conduits\\breach-pendulum.png",
+      "before_sha256": "d15ac29a0e6c87d3879a0a0f7c5c43244c672e62cc03405177d8306eb50b1b80",
+      "after_sha256": "d15ac29a0e6c87d3879a0a0f7c5c43244c672e62cc03405177d8306eb50b1b80",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The near-key pixels coincide with pale metal, chain facets and cyan insets; no isolated background fill was distinguishable.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            132,
+            196,
+            180
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.43,
+            0.275
+          ]
+        ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "chaotic-ouroboros-core",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Chaotic - Ouroboros Core.png",
+      "source_sha256": "6eafec6247f2cd56ea5ea750da7ef4d92eedfa9b8f6595535b241c4b88b2bf74",
+      "runtime": "public\\assets\\conduits\\chaotic-ouroboros-core.png",
+      "before_sha256": "3cf3faf22378b8fb3d90a7fc821e89e34f4c63133ee9cb754f15cfb8b0b353cc",
+      "after_sha256": "3cf3faf22378b8fb3d90a7fc821e89e34f4c63133ee9cb754f15cfb8b0b353cc",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The red-gold ring and violet crystal are intact; no separate background fill remained in its open silhouette.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          100,
+          171,
+          136
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "chaotic-paradox-spindle",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\chaotic-paradox-spindle.png",
+      "source_sha256": "65f3170d7346211fa18e3f216527ecdd256bc54155d54a6a821a8058bb63eb61",
+      "runtime": "public\\assets\\conduits\\chaotic-paradox-spindle.png",
+      "before_sha256": "1a48b889febab4e4a381bf3f48f79e3bb89a49b21e976963390f9ccfdd1be34e",
+      "after_sha256": "e6efd9a57b515e76534ff8388e5ba8c2decda178ed27fa854ed23f84562cc9c5",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\chaotic-paradox-spindle.png",
+      "previous_runtime_sha256": "1a48b889febab4e4a381bf3f48f79e3bb89a49b21e976963390f9ccfdd1be34e",
+      "verdict": "corrected",
+      "rationale": "Cleared the enclosed source-key pockets inside the dark mechanism and the two reviewed outer background traces; preserved the violet core and the separate authored cyan accents.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            28,
+            228,
+            188
+          ]
+        ],
+        "radius": 16,
+        "background_border_strips": {
+          "top": 2,
+          "bottom": 2
+        },
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.402,
+            0.601
+          ],
+          [
+            0.619,
+            0.579
+          ],
+          [
+            0.364258,
+            0.423828
+          ]
+        ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "citadel-spine",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Citadel Spine.png",
+      "source_sha256": "029a0b1a6cd02fc969a33b5b92e438ed1ea8f485b8c14b0dd630ee370c542113",
+      "runtime": "public\\assets\\conduits\\citadel-spine.png",
+      "before_sha256": "0d20ebf2a28c01eb78a08d402ac09906ff1a0bdefd26eb7e77da3941d07aff81",
+      "after_sha256": "0d20ebf2a28c01eb78a08d402ac09906ff1a0bdefd26eb7e77da3941d07aff81",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The pale structure and violet channels retain crisp transparent openings with no remaining backdrop patch.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          129,
+          164,
+          139
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "coilfeed-ratchet",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\coilfeed-ratchet.png",
+      "source_sha256": "fd89d851f178cb7ac238d6d6cc02ae187603845a5b2594d1dc2581f3fd0ace26",
+      "runtime": "public\\assets\\conduits\\coilfeed-ratchet.png",
+      "before_sha256": "4793a2ec2ff497b51b73efa3a5c46f4031c10a5b0d78745ffbb8e69f1c98e6c1",
+      "after_sha256": "4793a2ec2ff497b51b73efa3a5c46f4031c10a5b0d78745ffbb8e69f1c98e6c1",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The blue gears, ivory shell and cyan facets are authored subject pixels; the surrounding openings are clear.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            244,
+            132
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "crosspin-governor",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\crosspin-governor.png",
+      "source_sha256": "03fba08fd4b6fb9d86279ba62ce20237c4890812b73fe61fae078d039276d413",
+      "runtime": "public\\assets\\conduits\\crosspin-governor.png",
+      "before_sha256": "2640be5f9798d8e43d665af70c3e3df667515662b62873ae84ef1331e240a9da",
+      "after_sha256": "2640be5f9798d8e43d665af70c3e3df667515662b62873ae84ef1331e240a9da",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The key-adjacent green/cyan marks are attached to the inset crystals and metal; no separate matte island remained.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            124,
+            204,
+            164
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "duplex-heart",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Duplex Heart.png",
+      "source_sha256": "352ea9da293baf8bd3640cafba3e7dcade3c206d446949412c9694a6571a9923",
+      "runtime": "public\\assets\\conduits\\duplex-heart.png",
+      "before_sha256": "c7a6374333494b3106bd8deae69de116dbdee1cee795fda0ee2dbea2b068eea5",
+      "after_sha256": "c7a6374333494b3106bd8deae69de116dbdee1cee795fda0ee2dbea2b068eea5",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The turquoise pixels belong to the paired cores and frame reflections; the device openings are transparent.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          38,
+          244,
+          187
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "efflorescent-verdant-covenant",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\efflorescent-verdant-covenant.png",
+      "source_sha256": "6338c542c549ba6076e16759e665fec8f82ceda3008cff4608f9c45b6dfd16fc",
+      "runtime": "public\\assets\\conduits\\efflorescent-verdant-covenant.png",
+      "before_sha256": "4024aa119d57c4f9221d8b45c8b3131974dab1edf8f917f11c47c48981ef0d6e",
+      "after_sha256": "4024aa119d57c4f9221d8b45c8b3131974dab1edf8f917f11c47c48981ef0d6e",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The green leaves, gems and energy details are subject art and were preserved; no separate background gap was verified.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            92,
+            212,
+            148
+          ],
+          [
+            103,
+            226,
+            159
+          ],
+          [
+            100,
+            223,
+            157
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.5,
+            0.7
+          ]
+        ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "efflorescent-worldtree-heart",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Efflorescent - Worldtree Heart.png",
+      "source_sha256": "d154d0660872ddccf04830f64225266b8982bd7d7c3aa2e801fc2ae93c2782bd",
+      "runtime": "public\\assets\\conduits\\efflorescent-worldtree-heart.png",
+      "before_sha256": "cba684b33bada5889bbe7a39c766a9fcb1e82656778e297bfe559a41324435a4",
+      "after_sha256": "cba684b33bada5889bbe7a39c766a9fcb1e82656778e297bfe559a41324435a4",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The green crown/core is authored subject detail; protected foreground and transparent outer gaps remain intact.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          162,
+          220,
+          167
+        ],
+        "radius": 60,
+        "foreground_ellipses": [
+          [
+            0.28,
+            0.32,
+            0.72,
+            0.65
+          ]
+        ],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        },
+        "minimum_background_blue": 145
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "execution-orrery",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\execution-orrery.png",
+      "source_sha256": "0737f297c348603a52b9660da304cd2ef88b00090d8a792cf5fd91be3006a278",
+      "runtime": "public\\assets\\conduits\\execution-orrery.png",
+      "before_sha256": "fdcec8c4580ade643ab4e0878678e4288186939e51ca56b5722ef75fce5d3574",
+      "after_sha256": "8cb2101f0b469c54fe6cb2ee348b78966b5ef58fbdd483ce895fe53f38c21852",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\execution-orrery.png",
+      "previous_runtime_sha256": "fdcec8c4580ade643ab4e0878678e4288186939e51ca56b5722ef75fce5d3574",
+      "verdict": "corrected",
+      "rationale": "Cleared disconnected backdrop islands visible inside the orrery rings and open lower framework; preserved the ivory/bronze device and its separate ground shadow.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            60,
+            132,
+            124
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.456055,
+            0.234375
+          ],
+          [
+            0.594727,
+            0.279297
+          ],
+          [
+            0.420898,
+            0.441406
+          ],
+          [
+            0.560547,
+            0.442383
+          ],
+          [
+            0.555664,
+            0.780273
+          ],
+          [
+            0.389648,
+            0.876953
+          ],
+          [
+            0.606445,
+            0.875977
+          ],
+          [
+            0.589844,
+            0.370117
+          ],
+          [
+            0.40918,
+            0.366211
+          ],
+          [
+            0.640625,
+            0.370117
+          ],
+          [
+            0.358398,
+            0.365234
+          ],
+          [
+            0.241211,
+            0.939453
+          ],
+          [
+            0.75,
+            0.938477
+          ]
+        ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "falcon-sight",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Falcon Sight.png",
+      "source_sha256": "ed220ec264018402fa3faf69d215ccdef5df2c0e131f93572c2ff85a2d4a2919",
+      "runtime": "public\\assets\\conduits\\falcon-sight.png",
+      "before_sha256": "2afe67d6a7d177596da4fa7ef7778c67c1d700b7be5788a1b7ad1d9deca6a3b2",
+      "after_sha256": "2afe67d6a7d177596da4fa7ef7778c67c1d700b7be5788a1b7ad1d9deca6a3b2",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The silver/blue aperture and detached-looking points are authored silhouette details; no residual background area remained.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          160,
+          216,
+          185
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "fieldbrace-coupler",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\fieldbrace-coupler.png",
+      "source_sha256": "36f380d2c94364ed91aa70f893bb76da8733fdac89da995b19e9508c41a29e48",
+      "runtime": "public\\assets\\conduits\\fieldbrace-coupler.png",
+      "before_sha256": "0dcfdacd28cfe8e8b58634889128d5ab460a8dee5d65dcd360bd7c290f649ac0",
+      "after_sha256": "0dcfdacd28cfe8e8b58634889128d5ab460a8dee5d65dcd360bd7c290f649ac0",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The cyan/green pixels are confined to the crystals and metal reflections; the negative spaces are clear.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            252,
+            196
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "fracture-reservoir",
+      "source_authority": "Art/provenance/root-art-intake.json",
+      "source": "Art\\source\\conduits\\Fracture Reservoir.png",
+      "source_sha256": "e4badde29665dc3e3c75aa8271277039009e0143e2b32cfd7c757eea4edf1dc2",
+      "runtime": "public\\assets\\conduits\\fracture-reservoir.png",
+      "before_sha256": "dd24c52094ad3927b9be302f604ef5ba4d6c25f2ebd095899b1d3ae1f353bd87",
+      "after_sha256": "dd24c52094ad3927b9be302f604ef5ba4d6c25f2ebd095899b1d3ae1f353bd87",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The existing two reviewed gap seeds clear the source-key openings; cyan crystal and violet chamber pixels are retained.",
+      "settings": {
+        "method": "border-connected hue/saturation key",
+        "hue": 162,
+        "tolerance": 18,
+        "saturation_min": 0.18,
+        "value_min": 0.2,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.68457,
+            0.407227
+          ],
+          [
+            0.393555,
+            0.643555
+          ]
+        ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "glassroot-gimbal",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\glassroot-gimbal.png",
+      "source_sha256": "2394cfeff44015da5ef566932ad0f50b9b93ea0dbfcf0802fcf6d74e2b6b7249",
+      "runtime": "public\\assets\\conduits\\glassroot-gimbal.png",
+      "before_sha256": "194429ddddd98c20d022798e9084138391f380170f7bbfdd2b5af27fcd9e68ae",
+      "after_sha256": "194429ddddd98c20d022798e9084138391f380170f7bbfdd2b5af27fcd9e68ae",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The glass-green pixels are within the lens and gimbal; the open frame remains transparent.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            124,
+            252,
+            212
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "granite-hourglass",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\granite-hourglass.png",
+      "source_sha256": "a4d09d592326e13e0dd0983ec707dc024aafeb26d92d7eae36bbc44515db1d24",
+      "runtime": "public\\assets\\conduits\\granite-hourglass.png",
+      "before_sha256": "a81eb4795843d3ebcf573bbc9e848b35d2bb05025a230fa9cd354bdd3f65f5a9",
+      "after_sha256": "a81eb4795843d3ebcf573bbc9e848b35d2bb05025a230fa9cd354bdd3f65f5a9",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The broad teal area below the mechanism is the source-authored cast shadow, not a key-field remnant; metal and crystal gaps are clear.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            196,
+            164
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "hammerbalance-link",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\hammerbalance-link.png",
+      "source_sha256": "4cf419cebb45618adc7f86ae9faf47a2dfcadb074a3d98ae6a13e977bb988e0f",
+      "runtime": "public\\assets\\conduits\\hammerbalance-link.png",
+      "before_sha256": "733c7f15cbd03f63c3ec0cead6257b91c26b293d1137df4776760e855d4698f1",
+      "after_sha256": "733c7f15cbd03f63c3ec0cead6257b91c26b293d1137df4776760e855d4698f1",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The blue-green facets are part of the head and haft insets; the surrounding negative spaces are transparent.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            252,
+            220
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "horizon-heartcase",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\horizon-heartcase.png",
+      "source_sha256": "3e79615c39854ca6024f6f7f0e5d97e15153cdf86929cbee11000635af2e58a3",
+      "runtime": "public\\assets\\conduits\\horizon-heartcase.png",
+      "before_sha256": "df62b94dbef3cbf17faf211ffe8ba973a866386b19f867a7ab8c7cb38cb6bfee",
+      "after_sha256": "df62b94dbef3cbf17faf211ffe8ba973a866386b19f867a7ab8c7cb38cb6bfee",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The green/cyan pixels are contained in the opal and inset details; no disconnected backdrop region remained.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            100,
+            204,
+            180
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "immortal-vessel",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Immortal Vessel.png",
+      "source_sha256": "5d11816f795c286ead8c25c477036c01126f3c53c68ce8847426f3c1e3653437",
+      "runtime": "public\\assets\\conduits\\immortal-vessel.png",
+      "before_sha256": "d3ef7849ea21b7f3deedd91bf25eae80c312fdd875b8d61b7c73d7015be793a0",
+      "after_sha256": "d3ef7849ea21b7f3deedd91bf25eae80c312fdd875b8d61b7c73d7015be793a0",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The pale wings and turquoise vessel core are intact, with no filled background in the open silhouette.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          91,
+          187,
+          174
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "infernic-cinder-testament",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\infernic-cinder-testament.png",
+      "source_sha256": "7037302c8761f9b12da1c213fd60054cf1ffdc23ebcffc7ee69ccc490d0f5e73",
+      "runtime": "public\\assets\\conduits\\infernic-cinder-testament.png",
+      "before_sha256": "d4684869dedb41420547b4363ac90e217a170771ca7adf99ed8f161d88fb45ef",
+      "after_sha256": "d4684869dedb41420547b4363ac90e217a170771ca7adf99ed8f161d88fb45ef",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The warm engine and detached sparks are retained; the low oval beneath it is the authored shadow.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            132,
+            244,
+            180
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "infernic-phoenix-reactor",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Infernic - Phoenix Reactor.png",
+      "source_sha256": "b56add5fd1a5dbb1019e6b64748d92358234c05d9392521bc488892bec7808c0",
+      "runtime": "public\\assets\\conduits\\infernic-phoenix-reactor.png",
+      "before_sha256": "9c075a1a7b1c61917e2fc29f6c380a17eb60e8d980289d8fa77ee34fd77d3cb4",
+      "after_sha256": "9c075a1a7b1c61917e2fc29f6c380a17eb60e8d980289d8fa77ee34fd77d3cb4",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The orange fire and red mechanism are authored opaque subject shapes; openings are transparent.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          63,
+          189,
+          157
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "judgment-lens",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Judgment Lens.png",
+      "source_sha256": "b6f5bba3151e7200f5536bfafd7ab6d6a00e6ea5146033c48dde4290687b49c0",
+      "runtime": "public\\assets\\conduits\\judgment-lens.png",
+      "before_sha256": "c2a2d671a6247968de2254f69828fcf70b808866fbcfeb10497b289d9dc4c888",
+      "after_sha256": "c2a2d671a6247968de2254f69828fcf70b808866fbcfeb10497b289d9dc4c888",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The central lens is protected subject art; no separate key-colored area remains in its frame.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          46,
+          252,
+          225
+        ],
+        "radius": 30,
+        "foreground_ellipses": [
+          [
+            0.37,
+            0.4,
+            0.64,
+            0.63
+          ]
+        ],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "lifeline-flywheel",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\lifeline-flywheel.png",
+      "source_sha256": "4b8ce60b18f909b6a436304fa6fa2e3801b1e61e2f783bff57b6ed8def9554ce",
+      "runtime": "public\\assets\\conduits\\lifeline-flywheel.png",
+      "before_sha256": "e5af428eaf6193a523b18c005d23872d49f65c4a6c3809098dae7067e2dfd030",
+      "after_sha256": "e5af428eaf6193a523b18c005d23872d49f65c4a6c3809098dae7067e2dfd030",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The green-blue accents belong to the flywheel and core; the open ring and lower cavity are clear.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            60,
+            244,
+            196
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "luminous-dawn-witness-array",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\luminous-dawn-witness-array.png",
+      "source_sha256": "9df0630ea5fa56efb743c9e8c0c87bcc0cb713f8d1482040db410ea0f017f76f",
+      "runtime": "public\\assets\\conduits\\luminous-dawn-witness-array.png",
+      "before_sha256": "68e23b9aeb3899111c0d1cf337262bf3e933116b28a440c0edb9503a01025af6",
+      "after_sha256": "68e23b9aeb3899111c0d1cf337262bf3e933116b28a440c0edb9503a01025af6",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The pale green facets are part of the glass lenses and highlights; no detached background island was confirmed.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            164,
+            212,
+            172
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "luminous-seraph-mirror",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Luminous - Seraph Mirror.png",
+      "source_sha256": "5347ec581d0837bcb281940e14568f15ae2f182e58be044bbb5977d094084e45",
+      "runtime": "public\\assets\\conduits\\luminous-seraph-mirror.png",
+      "before_sha256": "7e53b453c0878d11e3ae45e3bc1a7edbf16889a6f869d2911d7c8e9594107260",
+      "after_sha256": "7e53b453c0878d11e3ae45e3bc1a7edbf16889a6f869d2911d7c8e9594107260",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The ivory rays, gold frame and central mirror are preserved; the negative spaces are clear.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          174,
+          229,
+          188
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "meridian-inverter",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\meridian-inverter.png",
+      "source_sha256": "593acbe3f192dc1d1e64163223da8945d1b11c20a048fad71f16f209030ea793",
+      "runtime": "public\\assets\\conduits\\meridian-inverter.png",
+      "before_sha256": "5d579777efe467fb3223d337e10e31bb4b016e2ee77dc2816935578785db0005",
+      "after_sha256": "87020269e133aec87a1a826b6cf6bc9e483293a3b8cad0ed81a463acf88272cb",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\meridian-inverter.png",
+      "previous_runtime_sha256": "5d579777efe467fb3223d337e10e31bb4b016e2ee77dc2816935578785db0005",
+      "verdict": "corrected",
+      "rationale": "Removed the reviewed two-pixel source-border remnant and matched the row-varying backdrop; preserved the silver/blue mechanism and facets.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            100,
+            164,
+            156
+          ]
+        ],
+        "radius": 12,
+        "row_gradient": true,
+        "background_border_strips": {
+          "top": 2,
+          "right": 2,
+          "bottom": 2,
+          "left": 2
+        },
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "nullsong-transmission",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\nullsong-transmission.png",
+      "source_sha256": "86794a5fb37c7367afe9d36305f769cf856901a9bb1fb6041d7c8efb68f1b769",
+      "runtime": "public\\assets\\conduits\\nullsong-transmission.png",
+      "before_sha256": "b8b9b9f43107f3a9d7861405a7290454a5ad45063c37f7c83ec132161e960925",
+      "after_sha256": "a4e65e085df15981751f4afafa59fe1b2216dd08afd735e8f772016abdf2b739",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\nullsong-transmission.png",
+      "previous_runtime_sha256": "b8b9b9f43107f3a9d7861405a7290454a5ad45063c37f7c83ec132161e960925",
+      "verdict": "corrected",
+      "rationale": "Cleared disconnected backdrop islands within the open arch and lower framework; preserved the gold mechanism, pale metal and authored shadow.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            116,
+            204,
+            188
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.350586,
+            0.361328
+          ],
+          [
+            0.619141,
+            0.334961
+          ],
+          [
+            0.663086,
+            0.692383
+          ],
+          [
+            0.334961,
+            0.691406
+          ],
+          [
+            0.537109,
+            0.702148
+          ],
+          [
+            0.706055,
+            0.55957
+          ]
+        ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "ominous-eclipse-mantle",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Ominous - Eclipse Mantle.png",
+      "source_sha256": "992fbeaccf0a51206df13c0b232b28c1cd7749ceae24c84f16b397d1afdf3872",
+      "runtime": "public\\assets\\conduits\\ominous-eclipse-mantle.png",
+      "before_sha256": "7c92463ff5018f62326b53b96e3db77d2372f5f05dc80ac4e2d8916ac9b8ec45",
+      "after_sha256": "7c92463ff5018f62326b53b96e3db77d2372f5f05dc80ac4e2d8916ac9b8ec45",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The violet-black silhouette and small detached facets are authored subject details; the openings remain transparent.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          77,
+          133,
+          102
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "ominous-nightglass-archive",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\ominous-nightglass-archive.png",
+      "source_sha256": "6e9c526403a8b3c977f91cc433e2e35f4170db0c73e113e79e3982ea6c07941f",
+      "runtime": "public\\assets\\conduits\\ominous-nightglass-archive.png",
+      "before_sha256": "3212321fb397a712c30a27821999285d75ff7dd0ddf2511644c7afbff9b32131",
+      "after_sha256": "3212321fb397a712c30a27821999285d75ff7dd0ddf2511644c7afbff9b32131",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The violet glass and dark frame are intentional subject colors; no separate backdrop remained.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            172,
+            236,
+            124
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "opal-indexer",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\opal-indexer.png",
+      "source_sha256": "ebdaded359ec6a56cfe75da71f1697f910a7b72ee759aac8f805d375c4d44987",
+      "runtime": "public\\assets\\conduits\\opal-indexer.png",
+      "before_sha256": "81772f5153eab2697d984a3bbc82f2b2b65c273bd25ff1d09c2fdf81d698f912",
+      "after_sha256": "81772f5153eab2697d984a3bbc82f2b2b65c273bd25ff1d09c2fdf81d698f912",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The teal oval below the device is an authored cast shadow; the green glass and open frame remain intact.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            236,
+            180
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.17,
+            0.498
+          ],
+          [
+            0.256,
+            0.712
+          ],
+          [
+            0.474,
+            0.728
+          ],
+          [
+            0.594,
+            0.591
+          ],
+          [
+            0.457,
+            0.296
+          ]
+        ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "pale-bulwark-diadem",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\pale-bulwark-diadem.png",
+      "source_sha256": "c5563fd8ce13b7f43e38fa606e5a032be886756fbbbd8af7e78b3e31a405b1f0",
+      "runtime": "public\\assets\\conduits\\pale-bulwark-diadem.png",
+      "before_sha256": "7fe6f701ed582a9f85c6498cfaa9b40bada0239d3c365d33c33a6375c4938ae5",
+      "after_sha256": "7fe6f701ed582a9f85c6498cfaa9b40bada0239d3c365d33c33a6375c4938ae5",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The pale rays and blue gem remain opaque subject details; no enclosed background patch was visible.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            84,
+            212,
+            180
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "parallax-relay",
+      "source_authority": "Art/provenance/root-art-intake.json",
+      "source": "Art\\source\\conduits\\Parallax Relay.png",
+      "source_sha256": "0c4c960947335c21a8cef5fc82b2d8b2235e7dafe9a5ee36f5fe276d929f452c",
+      "runtime": "public\\assets\\conduits\\parallax-relay.png",
+      "before_sha256": "7ab1c9d03affa70f5f310eb374edbd581fda65c2eb8dec6361086289b3b1191a",
+      "after_sha256": "7ab1c9d03affa70f5f310eb374edbd581fda65c2eb8dec6361086289b3b1191a",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The cool metal and central blue facets remain intact; no residual keyed background is visible.",
+      "settings": {
+        "method": "border-connected hue/saturation key",
+        "hue": 0,
+        "tolerance": 16,
+        "saturation_min": 0.25,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "precision-escapement",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\precision-escapement.png",
+      "source_sha256": "accc84854bb5947774806f22b2e19c3dec3425fd4e23861aeee4be0f1e3cf0ce",
+      "runtime": "public\\assets\\conduits\\precision-escapement.png",
+      "before_sha256": "144babc7603ed0be8f474df77225c9f2c258b30c02f1283b5906e166431ad2b3",
+      "after_sha256": "144babc7603ed0be8f474df77225c9f2c258b30c02f1283b5906e166431ad2b3",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The gold and cyan components are subject detail; the wheel openings remain transparent.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            132,
+            236,
+            196
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "prism-splinter-socket",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\prism-splinter-socket.png",
+      "source_sha256": "42d0666b22353ea0432132ad36ecb84109099550e940b1401728f4b06db488fc",
+      "runtime": "public\\assets\\conduits\\prism-splinter-socket.png",
+      "before_sha256": "8e83da1b01971b9e4ac145db8c73fc9ad45155e3d2ff6df8d9d4588857dbbfaa",
+      "after_sha256": "e1ede40e00c756a3b20643a9708641d0f4a0702dedf03738578b39e919538b0b",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\prism-splinter-socket.png",
+      "previous_runtime_sha256": "8e83da1b01971b9e4ac145db8c73fc9ad45155e3d2ff6df8d9d4588857dbbfaa",
+      "verdict": "corrected",
+      "rationale": "Cleared the enclosed green-key triangle and two disconnected openings; preserved the steel triangle, blue crystal assembly and bronze fittings.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            60,
+            140,
+            124
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.487305,
+            0.245117
+          ],
+          [
+            0.198242,
+            0.756836
+          ],
+          [
+            0.333984,
+            0.412109
+          ]
+        ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "reserve-torque-crank",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\reserve-torque-crank.png",
+      "source_sha256": "856d3d7d8d7011925092a96b24a92f6d512f8fdc8392073c54f392c284636b69",
+      "runtime": "public\\assets\\conduits\\reserve-torque-crank.png",
+      "before_sha256": "502211768d71c18283389518f570729c0f9af071acb99317a6b06ac55940a43f",
+      "after_sha256": "502211768d71c18283389518f570729c0f9af071acb99317a6b06ac55940a43f",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The green-adjacent pixels fall within the cast shadow and bronze support details; no independent background patch was verified.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            132,
+            204,
+            164
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "resonance-crucible",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\resonance-crucible.png",
+      "source_sha256": "0b0329bf71cae49373988530211a9be7d45c4d8fb0b75ddda6d2522bfe45931d",
+      "runtime": "public\\assets\\conduits\\resonance-crucible.png",
+      "before_sha256": "71bc330d57c0b117c21f5c85b00db5077a5b9327f0f00941479cbc9b40cea1fa",
+      "after_sha256": "71bc330d57c0b117c21f5c85b00db5077a5b9327f0f00941479cbc9b40cea1fa",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The cyan crystals and violet fittings are attached to the mechanism; the negative spaces are clear.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            164,
+            236,
+            172
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "sentinel-aperture",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\sentinel-aperture.png",
+      "source_sha256": "c963eb3cc5c0d75f14a4223f51fc831e9aa83dbfa196d0618ef2a4dcbd68606a",
+      "runtime": "public\\assets\\conduits\\sentinel-aperture.png",
+      "before_sha256": "2fd8650cc9a85e03cce6309be7c494557752250c5b60f28446f4c3f5ef9db03d",
+      "after_sha256": "2fd8650cc9a85e03cce6309be7c494557752250c5b60f28446f4c3f5ef9db03d",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The existing reviewed aperture seed clears its enclosed source-key opening; the cyan center and pale rim are preserved.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            124,
+            228,
+            188
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.258,
+            0.395
+          ]
+        ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "siege-cantilever",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\siege-cantilever.png",
+      "source_sha256": "f8489865c1a8784e0919b7dff19de0c96494076bed63376e416efc9653175d46",
+      "runtime": "public\\assets\\conduits\\siege-cantilever.png",
+      "before_sha256": "9e90700283074edf46ceae585b0b1a901f60f4fa8be7e2dae7ed7792fe62f241",
+      "after_sha256": "9e90700283074edf46ceae585b0b1a901f60f4fa8be7e2dae7ed7792fe62f241",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The pale blade, violet fittings and small detached facets are subject art; no background fill remained.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            180,
+            188,
+            156
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "siegebound-drive",
+      "source_authority": "Art/provenance/root-art-intake.json",
+      "source": "Art\\source\\conduits\\Siegebound Drive.png",
+      "source_sha256": "98dda256aab7670bd349f3db9b4dc4daf7eeb78da89f7a28d78d9c9ed9dc84a1",
+      "runtime": "public\\assets\\conduits\\siegebound-drive.png",
+      "before_sha256": "7ba91e9f9bf6b7ccddcd09acd3521239378315733da5ab4f1bf41b7fdd0667b5",
+      "after_sha256": "7ba91e9f9bf6b7ccddcd09acd3521239378315733da5ab4f1bf41b7fdd0667b5",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The cyan engine core and blue accents are authored; the open wheel and silhouette margins are clear.",
+      "settings": {
+        "method": "border-connected hue/saturation key",
+        "hue": 198,
+        "tolerance": 18,
+        "saturation_min": 0.25,
+        "value_min": 0.2,
+        "border_only": true
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "spearwheel-engine",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Spearwheel Engine.png",
+      "source_sha256": "107c7e24e6ea15c060594fa9e2bf3714118ed6079c4d4b7aedbe91d70a6c861c",
+      "runtime": "public\\assets\\conduits\\spearwheel-engine.png",
+      "before_sha256": "c5753db4463d78c5ba4da35d67c95741c31d00c36a61bd4342108eb2e632b091",
+      "after_sha256": "c5753db4463d78c5ba4da35d67c95741c31d00c36a61bd4342108eb2e632b091",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The cyan components and lower cast shadow are intentional; no separate background island remained.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          83,
+          236,
+          183
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "springwell-pump",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Springwell Pump.png",
+      "source_sha256": "16a8d34e6f2af4386ebffbe31f3b785934224f017acbb447715a78d1d5912afe",
+      "runtime": "public\\assets\\conduits\\springwell-pump.png",
+      "before_sha256": "902780fbbb7c9e6950ac33865af961514c3d2e736dfab40639995e59973542cf",
+      "after_sha256": "902780fbbb7c9e6950ac33865af961514c3d2e736dfab40639995e59973542cf",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The turquoise lower region is the authored shadow and the central pump is protected subject art; no isolated background patch was verified.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          104,
+          249,
+          191
+        ],
+        "radius": 30,
+        "foreground_ellipses": [
+          [
+            0.25,
+            0.4,
+            0.67,
+            0.77
+          ]
+        ],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "starvein-conductor",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\starvein-conductor.png",
+      "source_sha256": "9dc26fb04262b5e2d1ec495344c5ebe43c80508956dc3ed8a90a7dc1a3ce0b3c",
+      "runtime": "public\\assets\\conduits\\starvein-conductor.png",
+      "before_sha256": "b84b631045bd4c35ba789dc5601d9e10abdcd5f9e258fdee7906db60e666f7f3",
+      "after_sha256": "b84b631045bd4c35ba789dc5601d9e10abdcd5f9e258fdee7906db60e666f7f3",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The gold/ivory branching frame and green details are subject pixels; its negative spaces remain transparent.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            116,
+            156,
+            140
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "stasis-reliquary",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\stasis-reliquary.png",
+      "source_sha256": "f120a553d7fef48322d2664845a2acac67ac3aa27c67277ab4483f8521743ce4",
+      "runtime": "public\\assets\\conduits\\stasis-reliquary.png",
+      "before_sha256": "e4149ac136509afbf005c5574f68929e3adff92c834325b5da6cd578b43ed05d",
+      "after_sha256": "e4149ac136509afbf005c5574f68929e3adff92c834325b5da6cd578b43ed05d",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The turquoise vessel, bronze shell and cast shadow are distinct authored shapes; no residual field was visible.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            44,
+            172,
+            156
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "tectonic-atlas-bastion",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Tectonic - Atlas Bastion.png",
+      "source_sha256": "ad52e51b099c1710a4cecd168a6bdff44ee36fa86b0f096e4469acd2da0a28ef",
+      "runtime": "public\\assets\\conduits\\tectonic-atlas-bastion.png",
+      "before_sha256": "8f483e5416b042528d40dbffce4a36b16c883c7f7bb01553981d858145532623",
+      "after_sha256": "8f483e5416b042528d40dbffce4a36b16c883c7f7bb01553981d858145532623",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The orange facets are subject crystals and the dark frame is preserved; no separate background fill remained.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          69,
+          236,
+          197
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "tectonic-faultkeeper-loom",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\tectonic-faultkeeper-loom.png",
+      "source_sha256": "d85fbad6447256cbb20f487866996457bcdb61a769ca7417c67e97c28a0232c9",
+      "runtime": "public\\assets\\conduits\\tectonic-faultkeeper-loom.png",
+      "before_sha256": "14e4545894434e1b2816dc42218e21d535459b04ff95d7928c0676a8315b2620",
+      "after_sha256": "14e4545894434e1b2816dc42218e21d535459b04ff95d7928c0676a8315b2620",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The pale green spikes and dark machinery are authored subject details; the open structure remains transparent.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            124,
+            180,
+            148
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "tranquilitic-kirin-cradle",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Tranquilitic - Kirin Cradle.png",
+      "source_sha256": "e736e1ce903b05e968515d1cdb4c0ec6c68ee9bc1085681808a3fbdc18a854d6",
+      "runtime": "public\\assets\\conduits\\tranquilitic-kirin-cradle.png",
+      "before_sha256": "423384b0e42ff606f6ffdf8286af6900fd04cbdc61bde82a016416ff57b24190",
+      "after_sha256": "423384b0e42ff606f6ffdf8286af6900fd04cbdc61bde82a016416ff57b24190",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The pale-metal frame and opal remain intact; no distinct background island was visible in the open cradle.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          110,
+          203,
+          177
+        ],
+        "radius": 30,
+        "foreground_ellipses": [
+          [
+            0.39,
+            0.46,
+            0.63,
+            0.7
+          ]
+        ],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "tranquilitic-stillhour-carillon",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\tranquilitic-stillhour-carillon.png",
+      "source_sha256": "d310965b85d45308862a5b076dd613b79b70be39535f41fe7e18e18742d7f659",
+      "runtime": "public\\assets\\conduits\\tranquilitic-stillhour-carillon.png",
+      "before_sha256": "8fb7982bc95cefe077855aea391e701d3764d1978c39612812c61da75055ec14",
+      "after_sha256": "8fb7982bc95cefe077855aea391e701d3764d1978c39612812c61da75055ec14",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The turquoise clock faces and small reflections are subject detail; reviewed gaps remain transparent.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            76,
+            196,
+            188
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.394,
+            0.456
+          ],
+          [
+            0.607,
+            0.456
+          ],
+          [
+            0.26,
+            0.459
+          ],
+          [
+            0.742,
+            0.46
+          ]
+        ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "twinpulse-bellows",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\twinpulse-bellows.png",
+      "source_sha256": "07ea3b2c96ad69c2cadc13a072f7c074f6185742c258ea63c792323048471d4a",
+      "runtime": "public\\assets\\conduits\\twinpulse-bellows.png",
+      "before_sha256": "44c6e1f3fe1b98f0800a4c93ef7de2a8d80225f14e5de87693bd324c621dfe6d",
+      "after_sha256": "44c6e1f3fe1b98f0800a4c93ef7de2a8d80225f14e5de87693bd324c621dfe6d",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The cyan glass and silver pipework are preserved; no enclosed backdrop patch remained.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            60,
+            228,
+            180
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "verdict-caliper",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\verdict-caliper.png",
+      "source_sha256": "4c85729adee6cbb6c9a122e5e9d89e91500b5d478fe4ce7ce489a4c88554e329",
+      "runtime": "public\\assets\\conduits\\verdict-caliper.png",
+      "before_sha256": "dedc90abe97b24b0d60be53dc3b341123288102aaa5e4f7f10b671f20f06417d",
+      "after_sha256": "dedc90abe97b24b0d60be53dc3b341123288102aaa5e4f7f10b671f20f06417d",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The pale green-adjacent pixels are part of the ivory armor and highlights; no distinct background fill was visible.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            196,
+            164
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "vigil-core",
+      "source_authority": "Art/provenance/root-art-intake.json",
+      "source": "Art\\source\\conduits\\Vigil Core.png",
+      "source_sha256": "e6d0ef5917a0f982e8ae6269499d8cdf37b655ec0d7ae9448ebab0d4c8daee40",
+      "runtime": "public\\assets\\conduits\\vigil-core.png",
+      "before_sha256": "7f03b76a6316a371bee0df9e8538bfe2fd68bb109d6d992f02bb47cd9d55c19d",
+      "after_sha256": "7f03b76a6316a371bee0df9e8538bfe2fd68bb109d6d992f02bb47cd9d55c19d",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The green central core and silver shell are preserved subject pixels; the surrounding holes remain clear.",
+      "settings": {
+        "method": "border-connected hue/saturation key",
+        "hue": 140,
+        "tolerance": 18,
+        "saturation_min": 0.12,
+        "value_min": 0.3,
+        "border_only": true
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "voltaic-stormstep-dynamo",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\voltaic-stormstep-dynamo.png",
+      "source_sha256": "2116b62e9e688edd5c417c64ec7791678a20db770ccca58188bf03ece1a7b49e",
+      "runtime": "public\\assets\\conduits\\voltaic-stormstep-dynamo.png",
+      "before_sha256": "cc73980037a2965d27619d96c4132be1b2a4c140395c3c7fbf5b44b23baf97f3",
+      "after_sha256": "cc73980037a2965d27619d96c4132be1b2a4c140395c3c7fbf5b44b23baf97f3",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The blue and yellow facets belong to the dynamo; the detached sparks are authored and not backdrop.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            108,
+            220,
+            180
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "voltaic-thunderbird-coil",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Voltaic - Thunderbird Coil.png",
+      "source_sha256": "52038dad3d0fbc52c2fa803a72e482541dc5604722806443e1a0afb98fd24899",
+      "runtime": "public\\assets\\conduits\\voltaic-thunderbird-coil.png",
+      "before_sha256": "086d7790eb2ab0983dddb5c113bb242201360df17f7445cd8349b65ca14092b8",
+      "after_sha256": "086d7790eb2ab0983dddb5c113bb242201360df17f7445cd8349b65ca14092b8",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The cyan bird wings and mechanical coil are preserved; no separate matte area remained.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          78,
+          234,
+          193
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        },
+        "reviewed_bottom_frame_rows": 2
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "wardglass-transformer",
+      "source_authority": "Art/provenance/delivered-root-art-intake.json",
+      "source": "Art\\source\\delivered-root-art\\conduits\\wardglass-transformer.png",
+      "source_sha256": "63390dab3bea70c50e2f1931fcde4b71d4723169354b5feee050d0dd159adaa0",
+      "runtime": "public\\assets\\conduits\\wardglass-transformer.png",
+      "before_sha256": "983cb2b4e9bedee68a53896a9974ffb2f7944ff20d69baf7f70a067648dadbf3",
+      "after_sha256": "983cb2b4e9bedee68a53896a9974ffb2f7944ff20d69baf7f70a067648dadbf3",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The blue glass and silver shell are subject detail; the gaps through the transformer are transparent.",
+      "settings": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            84,
+            252,
+            172
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "worldbreaker-drive",
+      "source_authority": "Art/provenance/machines-art-intake.json",
+      "source": "Art\\source\\machines\\conduits\\Worldbreaker Drive.png",
+      "source_sha256": "8183216b7e1587c651cfb8a91136d076804e86135c23b64896e5635dc68270d2",
+      "runtime": "public\\assets\\conduits\\worldbreaker-drive.png",
+      "before_sha256": "2eb47dd43b184134e93171c19b72afa44d3d6c115cecf9a54fc23346366b67cf",
+      "after_sha256": "2eb47dd43b184134e93171c19b72afa44d3d6c115cecf9a54fc23346366b67cf",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "The red ribbons, pale armor and center crystal are intact; the open silhouette has no background island.",
+      "settings": {
+        "method": "reviewed RGB key including enclosed openings; protected foreground; exterior frame only",
+        "key_rgb": [
+          153,
+          202,
+          179
+        ],
+        "radius": 30,
+        "foreground_ellipses": [],
+        "edge_cleanup": {
+          "adjacent_source_pixels": 2,
+          "distance_ramp": 50
+        }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    }
+  ]
+}

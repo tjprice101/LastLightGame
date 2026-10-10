@@ -50,23 +50,23 @@ export const fighters: Record<StarterId, FighterDefinition> = {
   ...flagshipFighters,
   ...warFighters,
   ember: {
-    pilot: 'ember-seals',
+    pilot: 'ember',
     stats: { health: 220, defense: 10, damage: 38, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 8 },
     passive: { name: 'Unbroken Ember', description: '+20% outgoing damage at or below 50% health.', damageBonus: 0.2, defenseBonus: 0, healFraction: 0 },
     abilities: {
       skill1: { name: 'Cinder Cleave', description: '160% damage to one enemy; burn for 8 damage on its next two enemy phases.', cooldown: 2, strength: { damageMultiplier: 1.6, burnMultiplier: 1 } },
-      skill2: { name: 'Flame Arc', description: `110% damage to every living enemy. ${kitPilotDescriptions['ember-seals'].skill2}`, cooldown: 3, strength: { damageMultiplier: 1.1 } },
-      ultimate: { name: 'Last Flare: Dawnfire', description: `280% damage to every enemy; burn surviving targets for 6 damage on their next two enemy phases. Recover next turn. ${kitPilotDescriptions['ember-seals'].ultimate}`, cooldown: 0, strength: { damageMultiplier: 2.8, burnMultiplier: .75 } },
+      skill2: { name: 'Flame Arc', description: `110% damage to every living enemy. ${kitPilotDescriptions.ember.skill2!}`, cooldown: 3, strength: { damageMultiplier: 1.1 } },
+      ultimate: { name: 'Last Flare: Dawnfire', description: `280% damage to every enemy; burn surviving targets for 6 damage on their next two enemy phases. Recover next turn. ${kitPilotDescriptions.ember.ultimate!}`, cooldown: 0, strength: { damageMultiplier: 2.8, burnMultiplier: .75 } },
     },
   },
   tide: {
-    pilot: 'shelter',
+    pilot: 'ward',
     stats: { health: 260, defense: 16, damage: 30, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: 'Stillwater Guard', description: '+8 defense, already included in displayed effective defense.', damageBonus: 0, defenseBonus: 8, healFraction: 0 },
     abilities: {
-      skill1: { name: 'Undertow Thrust', description: `150% damage to one enemy; reduce its next two enemy-phase attacks by 25%. ${kitPilotDescriptions.shelter.skill1}`, cooldown: 2, strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
+      skill1: { name: 'Undertow Thrust', description: `150% damage to one enemy; reduce its next two enemy-phase attacks by 25%. ${kitPilotDescriptions.ward.skill1!}`, cooldown: 2, strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
       skill2: { name: 'Tidal Shelter', description: 'Give every living ally 25 shield (refresh to at least 25; does not stack).', cooldown: 3, strength: { shield: 25 } },
-      ultimate: { name: 'Last Flare: Ocean Memory', description: `220% damage to all enemies and 35 shield for allies. Recover next turn. ${kitPilotDescriptions.shelter.ultimate}`, cooldown: 0, strength: { damageMultiplier: 2.2, shield: 35 } },
+      ultimate: { name: 'Last Flare: Ocean Memory', description: `220% damage to all enemies and 35 shield for allies. Recover next turn. ${kitPilotDescriptions.ward.ultimate!}`, cooldown: 0, strength: { damageMultiplier: 2.2, shield: 35 } },
     },
   },
   sprout: {
@@ -74,12 +74,13 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     stats: { health: 190, defense: 8, damage: 32, crit: 0.2, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: 'Root of Hope', description: 'At each new player turn, heal living allies by 5% of their maximum health while Flora lives.', damageBonus: 0, defenseBonus: 0, healFraction: 0.05 },
     abilities: {
-      skill1: { name: 'Briar Shot', description: `150% damage to one enemy with +20 percentage points critical chance. ${kitPilotDescriptions.bloom.skill1}`, cooldown: 2, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
+      skill1: { name: 'Briar Shot', description: '150% damage to one enemy with +20 percentage points critical chance. Consumes all Blooms for +10% outgoing damage each (maximum +30%).', cooldown: 2, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
       skill2: { name: 'Verdant Renewal', description: "Restore 30 health to every living ally; cannot revive. Increase living allies' outgoing attack damage by 10% this and next player turn (refresh; does not stack).", cooldown: 3, strength: { healing: 30, attackBoostFraction: .1 } },
-      ultimate: { name: 'Last Flare: Worldseed', description: `180% damage to all enemies and heal living allies by 55. Recover next turn. ${kitPilotDescriptions.bloom.ultimate}`, cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } },
+      ultimate: { name: 'Last Flare: Worldseed', description: '180% damage to all enemies and heal living allies by 55. Recover next turn. Consumes all Blooms for +15% authored healing each (maximum +45%).', cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } },
     },
   },
   rosetta: {
+    pilot: 'rose-grace',
     stats: { health: 225, defense: 11, damage: 43, crit: .2, shatterCapacity: 100, critMultiplier: 1.6, elementalDamage: 0 },
     passive: { name: 'Virtuous Bloom', description: 'At each new player turn, heal living allies by 2% of maximum health while Rosetta lives.', damageBonus: 0, defenseBonus: 0, healFraction: .02 },
     abilities: {
@@ -89,6 +90,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     },
   },
   thornia: {
+    pilot: 'thorn-aegis',
     stats: { health: 280, defense: 17, damage: 31, crit: .1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: 'Forbidden Garden', description: '+9 defense, included in effective defense.', damageBonus: 0, defenseBonus: 9, healFraction: 0 },
     abilities: {
@@ -98,6 +100,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     },
   },
   crinso: {
+    pilot: 'rose-duality',
     stats: { health: 205, defense: 9, damage: 41, crit: .25, shatterCapacity: 100, critMultiplier: 1.7, elementalDamage: 9 },
     passive: { name: 'Rose Duality', description: '+15% outgoing damage at or below 50% health.', damageBonus: .15, defenseBonus: 0, healFraction: 0 },
     abilities: {
@@ -198,6 +201,31 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
     for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
       if (descriptions[action]) kit.abilities[action].description += ` ${descriptions[action]}`;
     }
+  }
+  const intrinsicActionCopy: Partial<Record<StarterId, Partial<Record<'skill1' | 'skill2' | 'ultimate', string>>>> = {
+    sprout: {
+      skill1: 'Consumes all Blooms for +10% outgoing damage each (maximum +30%).',
+      ultimate: 'Consumes all Blooms for +15% authored healing each (maximum +45%); spent before healing, once for the whole activation.',
+    },
+    bliss: {
+      skill1: 'Consumes all Blooms for +8% outgoing damage each (maximum +24%).',
+      ultimate: "Consumes all Blooms to add a shield worth 5% of this caster's maximum Health each (maximum 15%); refreshes rather than stacks.",
+    },
+    atmoso: {
+      skill1: 'Consumes all Atmospheric Charge for +8% outgoing damage each (maximum +24%).',
+      ultimate: 'Consumes all Atmospheric Charge for +12% outgoing damage each (maximum +36%).',
+    },
+    elise: {
+      skill1: 'Consumes all Atmospheric Charge for +8% outgoing damage each (maximum +24%).',
+      ultimate: 'Consumes all Atmospheric Charge for +12% outgoing damage each (maximum +36%).',
+    },
+    vaelor: {
+      skill2: 'Consumes all Atmospheric Charge for +8% outgoing damage each (maximum +24%).',
+      ultimate: 'Consumes all Atmospheric Charge for +12% outgoing damage each (maximum +36%).',
+    },
+  };
+  for (const [action, text] of Object.entries(intrinsicActionCopy[id] ?? {})) {
+    kit.abilities[action as 'skill1' | 'skill2' | 'ultimate'].description += ` ${text}`;
   }
   return kit;
 }

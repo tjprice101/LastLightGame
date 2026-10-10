@@ -330,7 +330,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     expect(second.account.characters[character.id]).toEqual(first.account.characters[character.id]);
   });
 
-  it('targets all three six-stars equally for 200 ~ 500 guarantees and preserves independent pity on rejected/failed draws', () => {
+  it('targets all three six-stars equally for 200 / 500 guarantees and preserves independent pity on rejected/failed draws', () => {
     const pool = roseBannerPool();
     for (const [index, id] of ['rosetta', 'thornia', 'crinso'].entries()) {
       expect(resolveBannerPull(pool, [], { highestStar: 199, unownedHighestStar: 20 }, () => (index + .5) / 3).entry.id).toBe(id);
@@ -475,14 +475,14 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     expect(html).not.toContain('5-star tier: 1%');
     expect(html).toContain('Rosetta, Thornia and Crinso share the 6-star tier equally');
     expect(html).not.toContain('Thornia and Crinso do not reset');
-    expect(html).toContain('The Garden Beyond Eternity, Roselius ~ Omnic ~ 6-star ~ Lv.80');
+    expect(html).toContain('The Garden Beyond Eternity, Roselius · Omnic · 6-star · Lv.80');
     expect(html).toContain('6 Soul of Rosethorn');
     expect(html).toContain('assets/banners/roses-banner.png');
     expect(html).toContain('assets/banners/summon-roses.png');
     for (const character of roseCharacters) {
       expect(portrait(character, 6)).toContain(`assets/characters/${character.art}-evo-6.png`);
       expect(abilityIcon(character.id, 'skill1')).toContain(`assets/abilities/${character.id}-skill1.png`);
-      expect(abilityIcon(character.id, 'defend')).toContain(`assets/abilities/${character.id}-defend.png`);
+      expect(abilityIcon(character.id, 'defend')).toContain('assets/abilities/universal-defense.png');
     }
     for (const material of roseMaterials) {
       expect(materialName(material.id)).toBe(material.name);

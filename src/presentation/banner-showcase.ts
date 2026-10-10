@@ -10,7 +10,7 @@ export function bannerShowcase(id: SummonBannerId): string {
   const banner = getSummonBanner(id);
   const characters = banner.pool().filter((entry) =>
     entry.kind === 'character' && (entry.stars === 5 || entry.stars === 6));
-  return `<div class="banner-showcase-control">${information(`banner-showcase-${id}`, `${banner.name} ~ Showcase`,
+  return `<div class="banner-showcase-control">${information(`banner-showcase-${id}`, `${banner.name} · Showcase`,
     `<p>Base forms of the 5-star and 6-star Element-Bearers available from this banner.</p>
     <ul class="banner-showcase-grid">${characters.map((entry) => {
       if (!isStarterId(entry.id)) throw new Error('Banner showcase character definition is missing.');

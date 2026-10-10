@@ -37,14 +37,14 @@ describe('Max Level plans and transactions', () => {
     expect(plan).toMatchObject({ currentLevel: 0, targetLevel: 30, cap: 30, cost: { fractalis: 1230, materials: { 'infernic-common': 30 } } });
     expect(account).toEqual(before);
     expect(store.writes()).toBe(writes);
-    expect(maxLevelPreview(account, 'ember').html).toContain('Level 0 &rarr; 30 ~ Cap 30');
+    expect(maxLevelPreview(account, 'ember').html).toContain('Level 0 &rarr; 30 · Cap 30');
     expect(maxLevelPreview(account, 'ember').html.match(/<span><small>/g)).toHaveLength(7);
     expect(maxLevelPreview(account, 'ember').html).toContain('stat-change--increase');
   });
   it.each([
     [25, 100, 1, 12, 1], [26, 100, 2, 26, 2],
     [1000, 1, 1, 12, 1], [11, 100, 0, 0, 0], [1000, 0, 0, 0, 0],
-  ])('uses exact affordability thresholds with %i Prismatica ~ %i materials', (fractalis, materials, target, currency, quantity) => {
+  ])('uses exact affordability thresholds with %i Prismatica · %i materials', (fractalis, materials, target, currency, quantity) => {
     const account = funded();
     account.fractalis = fractalis;
     account.materials['infernic-common'] = materials;

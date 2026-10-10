@@ -17,7 +17,7 @@ class RootArtIntakeTests(unittest.TestCase):
     def test_all_root_pngs_are_explicitly_mapped(self):
         mapped = {asset.incoming for asset in ASSETS}
         root_pngs = {path.name for path in ROOT.glob("*.png")}
-        self.assertTrue(root_pngs <= mapped, f"Unmapped root PNGs: {root_pngs - mapped}")
+        self.assertFalse(root_pngs, f"Undocumented/unintaked root PNGs: {root_pngs}")
         for asset in ASSETS:
             self.assertTrue((ROOT / asset.incoming).is_file() or (ROOT / asset.source).is_file())
         self.assertEqual(len(ASSETS), 36)

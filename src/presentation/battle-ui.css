@@ -103,6 +103,8 @@
 .battle-screen #battle-root .battle-status-badge { display: inline-block; min-width: 0; max-width: 100%; padding: 3px 5px; border: 1px solid #ffffff45; border-radius: 4px; background: #111e; color: #f5f5f5; font: 10px/1.4 "Segoe UI", sans-serif; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; text-align: left; }
 .battle-screen #battle-root .battle-status-badge[data-debuff="burn"] { border-left: 3px solid #df7356; }
 .battle-screen #battle-root .battle-status-badge[data-debuff="weaken"] { border-left: 3px solid #aeb7c5; }
+.status-icon { display: inline-block; width: 24px; height: 24px; margin-right: 4px; object-fit: contain; vertical-align: middle; flex: 0 0 auto; }
+.battle-screen #battle-root .battle-status-badge .status-icon { width: 20px; height: 20px; }
 .battle-screen .settings-close { min-height: 44px; padding: 10px 14px; border: 1px solid #ffffff35; border-radius: 10px; text-decoration: none; background: #222226; color: #fff; margin-bottom: 12px; }
 .battle-screen .settings-drawer h2 { margin: 16px 0 8px; font-size: 26px; color: #f5f5f5; }
 .battle-screen .settings-drawer .subtitle { color: #bbbcc6; font-size: 13px; }

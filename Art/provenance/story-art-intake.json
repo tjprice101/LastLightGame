@@ -1,0 +1,2132 @@
+{
+  "version": 1,
+  "counts": {
+    "enemies": 30,
+    "arenas": 6,
+    "world_maps": 1
+  },
+  "visual_review": "approved",
+  "assets": [
+    {
+      "incoming": "Cinderling.png",
+      "asset": "story-infernic-0",
+      "category": "enemies",
+      "source": "Art\\source\\story\\infernic\\Cinderling.png",
+      "source_sha256": "36e1043a89d04ebd5d7ddbf746b09349f2e437c90599d73c2a5b1762401f6cfa",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-infernic-0.png",
+      "runtime_sha256": "6fdbd3ab8beba47cd0323d8cfaa4b3f04eb24660dd0fbe1e26de9e4b9c73c1e1",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "9fc13204824e64fbfd03785b1ea28e6ce04c6fed10548beeeec0824f82743641",
+      "settings": {
+        "keys": [
+          [
+            187,
+            203,
+            116
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.36039,
+            0.872845
+          ],
+          [
+            0.162338,
+            0.855603
+          ],
+          [
+            0.155844,
+            0.858836
+          ],
+          [
+            0.155844,
+            0.853448
+          ],
+          [
+            0.169643,
+            0.858836
+          ],
+          [
+            0.209416,
+            0.856681
+          ],
+          [
+            0.215909,
+            0.858836
+          ]
+        ],
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Ashback Boar.png",
+      "asset": "story-infernic-1",
+      "category": "enemies",
+      "source": "Art\\source\\story\\infernic\\Ashback Boar.png",
+      "source_sha256": "822541f4bd37009b250116f603657b912a771c981ce8797e05e47c09b1f3d909",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-infernic-1.png",
+      "runtime_sha256": "d88906971df71ed0e765bea2b7af85cb5f31fc0195e66aa1aea892e330f10b81",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "64afdc028700c4a3ee4b872866ada98878914974c920bc1cb80baf4794fedb04",
+      "settings": {
+        "keys": [
+          [
+            154,
+            198,
+            168
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.777597,
+            0.834052
+          ],
+          [
+            0.37013,
+            0.866379
+          ],
+          [
+            0.545455,
+            0.858836
+          ],
+          [
+            0.376623,
+            0.760776
+          ],
+          [
+            0.730519,
+            0.942888
+          ],
+          [
+            0.94724,
+            0.899784
+          ],
+          [
+            0.081981,
+            0.962284
+          ],
+          [
+            0.601461,
+            0.90194
+          ],
+          [
+            0.112013,
+            0.97306
+          ],
+          [
+            0.101461,
+            0.965517
+          ],
+          [
+            0.094156,
+            0.955819
+          ],
+          [
+            0.096591,
+            0.97306
+          ],
+          [
+            0.762987,
+            0.945043
+          ],
+          [
+            0.097403,
+            0.960129
+          ],
+          [
+            0.109578,
+            0.967672
+          ],
+          [
+            0.856331,
+            0.81681
+          ]
+        ],
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Coalcrest Moth.png",
+      "asset": "story-infernic-2",
+      "category": "enemies",
+      "source": "Art\\source\\story\\infernic\\Coalcrest Moth.png",
+      "source_sha256": "94e87e8c2a37ad1fd6ce43345c7115a544f5ccf44116167742f8854142b95dde",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-infernic-2.png",
+      "runtime_sha256": "83277a7cf664bd040aca8adde36d8563e375ef2d9c75e28940b41a3c3718241a",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "e0a1a94b6ef0e2c4624adb0775d109fc266fcc61beebe5669988ab6f8b2263f9",
+      "settings": {
+        "keys": [
+          [
+            107,
+            130,
+            111
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 14,
+        "border_only": true,
+        "background_regions": [
+          {
+            "polygon": [
+              [
+                0.85,
+                0.59
+              ],
+              [
+                0.99,
+                0.59
+              ],
+              [
+                0.99,
+                0.94
+              ],
+              [
+                0.79,
+                0.95
+              ],
+              [
+                0.78,
+                0.86
+              ],
+              [
+                0.8,
+                0.74
+              ]
+            ],
+            "radius": 55
+          },
+          {
+            "polygon": [
+              [
+                0.0,
+                0.39
+              ],
+              [
+                0.14,
+                0.38
+              ],
+              [
+                0.16,
+                0.5
+              ],
+              [
+                0.11,
+                0.6
+              ],
+              [
+                0.15,
+                0.69
+              ],
+              [
+                0.31,
+                0.79
+              ],
+              [
+                0.31,
+                0.83
+              ],
+              [
+                0.05,
+                0.81
+              ],
+              [
+                0.015,
+                0.72
+              ]
+            ],
+            "radius": 55
+          }
+        ],
+        "background_seeds": [
+          [
+            0.893669,
+            0.657328
+          ],
+          [
+            0.07711,
+            0.704741
+          ],
+          [
+            0.926136,
+            0.762931
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        }
+      }
+    },
+    {
+      "incoming": "Furnace Jackal.png",
+      "asset": "story-infernic-3",
+      "category": "enemies",
+      "source": "Art\\source\\story\\infernic\\Furnace Jackal.png",
+      "source_sha256": "d40cd3043963485af97f61d278639e88648b55cd7cc9ec1a450a2b688c50165e",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-infernic-3.png",
+      "runtime_sha256": "a87ab963f5eea501e9952f53e87975f85bd7a22b5cd7c62dc3b2039e5f774aa9",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "0353fad2b97c6a80528f798ce0a9de9841366c93b14d164c8108ea253f6721d1",
+      "settings": {
+        "keys": [
+          [
+            97,
+            132,
+            97
+          ]
+        ],
+        "radius": 14,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.291396,
+            0.818966
+          ],
+          [
+            0.790584,
+            0.838362
+          ],
+          [
+            0.529221,
+            0.807112
+          ],
+          [
+            0.369318,
+            0.413793
+          ],
+          [
+            0.861201,
+            0.420259
+          ],
+          [
+            0.163961,
+            0.143319
+          ],
+          [
+            0.719156,
+            0.75431
+          ],
+          [
+            0.546266,
+            0.424569
+          ],
+          [
+            0.633929,
+            0.685345
+          ],
+          [
+            0.799513,
+            0.639009
+          ],
+          [
+            0.655032,
+            0.724138
+          ],
+          [
+            0.42776,
+            0.917026
+          ],
+          [
+            0.424513,
+            0.943966
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "incoming": "Kilnheart Warden — regional boss.png",
+      "asset": "story-infernic-boss",
+      "category": "enemies",
+      "source": "Art\\source\\story\\infernic\\Kilnheart Warden — regional boss.png",
+      "source_sha256": "72fe3d7f41c97be95d275d740a6ca5e900fc1c21f386139084a6e5a5dd006265",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-infernic-boss.png",
+      "runtime_sha256": "7900608d7c34463f864e5f34c999a0a982ea3e0e21f81d189d633429f1379b40",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "a26599b85b6ebe134a50b40025a6dc69d47003abcf8e9618d2a6cf9d6366fdfb",
+      "settings": {
+        "keys": [
+          [
+            113,
+            151,
+            124
+          ]
+        ],
+        "radius": 14,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.49513,
+            0.834052
+          ],
+          [
+            0.343344,
+            0.426724
+          ],
+          [
+            0.574675,
+            0.251078
+          ],
+          [
+            0.392857,
+            0.939655
+          ],
+          [
+            0.629058,
+            0.932112
+          ],
+          [
+            0.933442,
+            0.655172
+          ],
+          [
+            0.929383,
+            0.648707
+          ],
+          [
+            0.935065,
+            0.662716
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "incoming": "Emberwake March — empty regional arena.png",
+      "asset": "story-emberwake-march-arena",
+      "category": "backgrounds",
+      "source": "Art\\source\\story\\infernic\\Emberwake March — empty regional arena.png",
+      "source_sha256": "19107b845f1c28b2564807d66f9f033fd6635d80bfc8ace94490ca920c7eb287",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\backgrounds\\story-emberwake-march-arena.png",
+      "runtime_sha256": "a1f78f4936494adcfc8a4c0dc5307c87a398ca6deccb3064537dc309c11b41ef",
+      "runtime_dimensions": [
+        1456,
+        816
+      ],
+      "runtime_pixel_sha256": "0bbb52a367e1084504a3b74224d08a0ab575c312e426eb00a0b8e1a13ef0f72e",
+      "settings": {
+        "processing": "opaque-original-size"
+      }
+    },
+    {
+      "incoming": "Tideglass Crab.png",
+      "asset": "story-oceanic-0",
+      "category": "enemies",
+      "source": "Art\\source\\story\\oceanic\\Tideglass Crab.png",
+      "source_sha256": "7136f1073c4532f402824f5ee123e34442e1c7a290403ec423fd5ff68a7462b4",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-oceanic-0.png",
+      "runtime_sha256": "1c585bf844baa0b605747c4e5218e004ca4ef30db5cbc03a9a8a529a388d9f28",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "9c323e1224d30d2f981e1b106b96015c226a4d50f608d7b33c7af76e99ef1292",
+      "settings": {
+        "keys": [
+          [
+            174,
+            201,
+            100
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.2039,
+            0.53614
+          ],
+          [
+            0.84728,
+            0.54261
+          ],
+          [
+            0.67912,
+            0.60086
+          ],
+          [
+            0.89927,
+            0.6041
+          ],
+          [
+            0.43461,
+            0.60626
+          ],
+          [
+            0.85134,
+            0.63862
+          ],
+          [
+            0.39318,
+            0.83172
+          ],
+          [
+            0.69618,
+            0.85329
+          ]
+        ],
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Foamfin Drake.png",
+      "asset": "story-oceanic-1",
+      "category": "enemies",
+      "source": "Art\\source\\story\\oceanic\\Foamfin Drake.png",
+      "source_sha256": "cce6f53704fca732b4f7cc053d02cd5a85fed69228d65fb67710aa57bfe011fb",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-oceanic-1.png",
+      "runtime_sha256": "34498333e1e1b26daf4ff9da64cc034d4def097b00a54c5d6b62c302dc2b4c3a",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "7c687c774926c6a9ac050736c771b18450e6da997f4b004c6cd857d12d97337a",
+      "settings": {
+        "keys": [
+          [
+            115,
+            189,
+            171
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.75548,
+            0.67098
+          ],
+          [
+            0.37937,
+            0.87163
+          ],
+          [
+            0.47604,
+            0.89105
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Pearlshell Turtle.png",
+      "asset": "story-oceanic-2",
+      "category": "enemies",
+      "source": "Art\\source\\story\\oceanic\\Pearlshell Turtle.png",
+      "source_sha256": "83c2a03bbfcf67e022913dd9d2a7edad1980416970922fc4d225e9f78f11ed32",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-oceanic-2.png",
+      "runtime_sha256": "19af5e0d29eb2879f5a4364424bbfe3d459c36979d15bf2264764aca76ef193e",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "900bb5fa3f9e60f0c0167b6f38da056758a17d7fa45ef20779ccc2f8bb4f38b1",
+      "settings": {
+        "keys": [
+          [
+            70,
+            179,
+            163
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.44923,
+            0.80583
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Current Ray.png",
+      "asset": "story-oceanic-3",
+      "category": "enemies",
+      "source": "Art\\source\\story\\oceanic\\Current Ray.png",
+      "source_sha256": "75d7156ae6a335d9c04008ddc4b91ae5f86f1399a9625d34d9cdc5af3a7bfd0c",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-oceanic-3.png",
+      "runtime_sha256": "9923d146053eb4224d6853e54f0bbcc23d77e394a96b84f633459916e3ec18b8",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "558a9d95ae587d7b7691fa01605864635f267fb94ef81b5cf8d1348a4cc27bda",
+      "settings": {
+        "keys": [
+          [
+            1,
+            186,
+            174
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.59626,
+            0.16397
+          ],
+          [
+            0.22421,
+            0.25351
+          ],
+          [
+            0.27051,
+            0.30205
+          ],
+          [
+            0.62713,
+            0.32686
+          ],
+          [
+            0.17465,
+            0.32147
+          ],
+          [
+            0.59383,
+            0.33549
+          ],
+          [
+            0.58733,
+            0.37217
+          ],
+          [
+            0.651786,
+            0.345905
+          ],
+          [
+            0.42973,
+            0.45307
+          ],
+          [
+            0.33225,
+            0.47357
+          ],
+          [
+            0.19578,
+            0.47033
+          ],
+          [
+            0.27295,
+            0.48004
+          ],
+          [
+            0.13241,
+            0.55448
+          ],
+          [
+            0.17465,
+            0.51888
+          ],
+          [
+            0.26483,
+            0.68069
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Deepbell Leviathan — regional boss.png",
+      "asset": "story-oceanic-boss",
+      "category": "enemies",
+      "source": "Art\\source\\story\\oceanic\\Deepbell Leviathan — regional boss.png",
+      "source_sha256": "b1fe7479b6b876e5444a400df3e1eff05f4908bfb0966b5e935bb0e68cb145c8",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-oceanic-boss.png",
+      "runtime_sha256": "cfe7c8d874737db79dc72c4710ab910505452c9d293e52721bd3975e5851ba8f",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "fc7a40ef97cc7f05adbacdf79e674651c6132c90613a9d6314b25abe28e77f6b",
+      "settings": {
+        "keys": [
+          [
+            36,
+            199,
+            192
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.14297,
+            0.51564
+          ],
+          [
+            0.88383,
+            0.54045
+          ],
+          [
+            0.29569,
+            0.69795
+          ],
+          [
+            0.62632,
+            0.70119
+          ],
+          [
+            0.2039,
+            0.83279
+          ],
+          [
+            0.27457,
+            0.8425
+          ],
+          [
+            0.46466,
+            0.91046
+          ]
+        ],
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Glasswater Reach — empty regional arena.png",
+      "asset": "story-glasswater-reach-arena",
+      "category": "backgrounds",
+      "source": "Art\\source\\story\\oceanic\\Glasswater Reach — empty regional arena.png",
+      "source_sha256": "eadaa11c221ee83fb626492c9fbb923e78677457b4bd3e17f488d1504f59717c",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\backgrounds\\story-glasswater-reach-arena.png",
+      "runtime_sha256": "0c271411216d9ad561c18328d2502d13051ab600e2733617e04050504bab08ec",
+      "runtime_dimensions": [
+        1456,
+        816
+      ],
+      "runtime_pixel_sha256": "641ff30753b065f14c9ad1bdac3535f5c73ebb66b3fc38fcc9efa2709484ea81",
+      "settings": {
+        "processing": "opaque-original-size"
+      }
+    },
+    {
+      "incoming": "Cloudhorn Ram.png",
+      "asset": "story-atmospheric-0",
+      "category": "enemies",
+      "source": "Art\\source\\story\\atmospheric\\Cloudhorn Ram.png",
+      "source_sha256": "fb95db27386818b45637bd40477be07accb8fa677f4fe2a3ff6f5f161c36684a",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-atmospheric-0.png",
+      "runtime_sha256": "e33f687cb84666e594de8e419bbb5f47858b3f764e2a978ee7f32e4bf506d0b0",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "417f64115875d9138d33b18823839c55ac3cdf53df6a63811209ee3fda442676",
+      "settings": {
+        "keys": [
+          [
+            91,
+            188,
+            168
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.56052,
+            0.88673
+          ],
+          [
+            0.36312,
+            0.89752
+          ],
+          [
+            0.47847,
+            0.87918
+          ]
+        ],
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Staticwing Kite.png",
+      "asset": "story-atmospheric-1",
+      "category": "enemies",
+      "source": "Art\\source\\story\\atmospheric\\Staticwing Kite.png",
+      "source_sha256": "f9383da0260f001d8d3fe0975b054abbcf58ad40c5e65cc1220976de41e6ef69",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-atmospheric-1.png",
+      "runtime_sha256": "da8408e6cee546677b4bbe977f9ba42438734b904b5d50884616730fb31ae8c1",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "ea34952c7063ae6a831a2868d3ae73dda65c672e23e79255fa5f2862f100c1be",
+      "settings": {
+        "keys": [
+          [
+            205,
+            226,
+            65
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Gusttail Lynx.png",
+      "asset": "story-atmospheric-2",
+      "category": "enemies",
+      "source": "Art\\source\\story\\atmospheric\\Gusttail Lynx.png",
+      "source_sha256": "eaddbcb4fa2a746dea4bdc6e28c8b343e545128b525e79d839f2c5f4e874cb7c",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-atmospheric-2.png",
+      "runtime_sha256": "d02e1889fd448a63565ee0eddabe1e68aa818cdcbe5158a6684a787b6b9a4928",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "9bb695a747922fda2ee0fcf6b6c7086f6bb3f9d1990cba0de64356569772ace0",
+      "settings": {
+        "keys": [
+          [
+            203,
+            228,
+            122
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.1974,
+            0.42395
+          ],
+          [
+            0.15191,
+            0.46386
+          ],
+          [
+            0.28676,
+            0.78964
+          ],
+          [
+            0.43704,
+            0.77994
+          ],
+          [
+            0.58002,
+            0.7918
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Thundercoil Serpent.png",
+      "asset": "story-atmospheric-3",
+      "category": "enemies",
+      "source": "Art\\source\\story\\atmospheric\\Thundercoil Serpent.png",
+      "source_sha256": "6b398c352cbc467457ecb620d05629ac4873155fb983c04cdcf95186a1bb8bb8",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-atmospheric-3.png",
+      "runtime_sha256": "9c4795731e28067cee0f96387b3327e79aea392fba8e74aacbc14a28bef15c2c",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "72c8c8e25313e4ee72978c29811773cceeecdfc71a129122302f891fd9eb2b43",
+      "settings": {
+        "keys": [
+          [
+            204,
+            232,
+            109
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.22502,
+            0.57066
+          ],
+          [
+            0.84809,
+            0.64617
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Tempest Crown Roc — regional boss.png",
+      "asset": "story-atmospheric-boss",
+      "category": "enemies",
+      "source": "Art\\source\\story\\atmospheric\\Tempest Crown Roc — regional boss.png",
+      "source_sha256": "0885da37e9cd540e961f9ab057438db6b55802d7589a14a62f968e20c869a413",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-atmospheric-boss.png",
+      "runtime_sha256": "30bd45c10ad341f602c7c08b869bd97ab142eac08edadcab5c6ddc48c3f23059",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "46f809ba517ba621b93523d994d81eba9bf549e19003c1052847804996dfd912",
+      "settings": {
+        "keys": [
+          [
+            129,
+            205,
+            164
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.13241,
+            0.30421
+          ],
+          [
+            0.19009,
+            0.21467
+          ],
+          [
+            0.85784,
+            0.41532
+          ],
+          [
+            0.25426,
+            0.51456
+          ],
+          [
+            0.3883,
+            0.53722
+          ],
+          [
+            0.72786,
+            0.78857
+          ],
+          [
+            0.66125,
+            0.5534
+          ],
+          [
+            0.38587,
+            0.58684
+          ],
+          [
+            0.32331,
+            0.66882
+          ],
+          [
+            0.23721,
+            0.66343
+          ],
+          [
+            0.2437,
+            0.76268
+          ],
+          [
+            0.13729,
+            0.77562
+          ],
+          [
+            0.55321,
+            0.88781
+          ],
+          [
+            0.22583,
+            0.86947
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Stormspan Heights — empty regional arena.png",
+      "asset": "story-stormspan-heights-arena",
+      "category": "backgrounds",
+      "source": "Art\\source\\story\\atmospheric\\Stormspan Heights — empty regional arena.png",
+      "source_sha256": "bd8c9374c4de78c6d02bf611ecb382ecd4c554010a047f703854ae784f0abebb",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\backgrounds\\story-stormspan-heights-arena.png",
+      "runtime_sha256": "80ab730942450dcc27fbf5375d94c173e347862ad34460ab526f6dae28c032fc",
+      "runtime_dimensions": [
+        1456,
+        816
+      ],
+      "runtime_pixel_sha256": "a43eaca90f58f4c6041a3de21fb0e9d74a013a41983f8abeff2f9a499c780ead",
+      "settings": {
+        "processing": "opaque-original-size"
+      }
+    },
+    {
+      "incoming": "Mossplate Beetle.png",
+      "asset": "story-botanic-0",
+      "category": "enemies",
+      "source": "Art\\source\\story\\botanic\\Mossplate Beetle.png",
+      "source_sha256": "0f57be7859bea062d05b48e3f4add09dad72e93dba7709f196579e40fe808aac",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-botanic-0.png",
+      "runtime_sha256": "098794dd6e80108353c769dc7b78270ec6b6451a26046233e1b772142f150fc7",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "549e45104ddeeef446c7dab2927c75089820935bd35a66e0f5a7714a8d8e009b",
+      "settings": {
+        "keys": [
+          [
+            81,
+            203,
+            240
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.27782,
+            0.3603
+          ],
+          [
+            0.19659,
+            0.51025
+          ],
+          [
+            0.24127,
+            0.70119
+          ],
+          [
+            0.41186,
+            0.71737
+          ],
+          [
+            0.25426,
+            0.74002
+          ]
+        ],
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Briarback Stag.png",
+      "asset": "story-botanic-1",
+      "category": "enemies",
+      "source": "Art\\source\\story\\botanic\\Briarback Stag.png",
+      "source_sha256": "55d3e1a3a4232bc630975a2a4dd75824331ccfdf2f529945dd86bfe9b214a430",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-botanic-1.png",
+      "runtime_sha256": "e2059a8af8c5f8927285372a7a5eef109ad66f556039050c779857a09b1e82f8",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "29b673a6f5e00e0f73aa6e7e8dda8846be4882767f6004abbc84e3d119da40dd",
+      "settings": {
+        "keys": [
+          [
+            125,
+            225,
+            235
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.51259,
+            0.20173
+          ],
+          [
+            0.6182,
+            0.25998
+          ],
+          [
+            0.6182,
+            0.41532
+          ],
+          [
+            0.19496,
+            0.48759
+          ],
+          [
+            0.74574,
+            0.66451
+          ],
+          [
+            0.31032,
+            0.88565
+          ],
+          [
+            0.72786,
+            0.726
+          ],
+          [
+            0.62388,
+            0.85653
+          ],
+          [
+            0.59301,
+            0.75836
+          ],
+          [
+            0.66369,
+            0.77131
+          ],
+          [
+            0.71812,
+            0.88565
+          ],
+          [
+            0.25833,
+            0.8123
+          ],
+          [
+            0.42161,
+            0.84142
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Loamjaw Mole.png",
+      "asset": "story-botanic-2",
+      "category": "enemies",
+      "source": "Art\\source\\story\\botanic\\Loamjaw Mole.png",
+      "source_sha256": "2734f443565ac891c5311b9387a89c0c6ef2c9e4eb93cf3c3ef433a29d83136c",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-botanic-2.png",
+      "runtime_sha256": "10211d3bd57bc2d43e44c7c61f092326dd1d5c1e47c29446dcbb36125d0f732d",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "8f8b4cb842f5be7f91d745e7b393346c85ed0a658414fef5df4473233b8f6eb0",
+      "settings": {
+        "keys": [
+          [
+            80,
+            192,
+            220
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.23721,
+            0.59547
+          ],
+          [
+            0.47929,
+            0.83495
+          ],
+          [
+            0.10154,
+            0.90076
+          ]
+        ],
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Fernmantle Basilisk.png",
+      "asset": "story-botanic-3",
+      "category": "enemies",
+      "source": "Art\\source\\story\\botanic\\Fernmantle Basilisk.png",
+      "source_sha256": "37cf0631736a12473a2ff728f1fee38a9b2b5016d1c6276db92058162846390a",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-botanic-3.png",
+      "runtime_sha256": "b52b5cc41c2b172ab7c5d9795fa726aed7bb4b1d09309aea7b936a0deca448d0",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "6b82f6d97d583023018fcee33f13c9ba29629c6d375092ec1a37b6ad46fe99aa",
+      "settings": {
+        "keys": [
+          [
+            123,
+            188,
+            200
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.658,
+            0.16289
+          ],
+          [
+            0.594968,
+            0.219828
+          ],
+          [
+            0.28026,
+            0.40237
+          ],
+          [
+            0.18522,
+            0.56203
+          ],
+          [
+            0.791396,
+            0.633621
+          ],
+          [
+            0.6905,
+            0.68716
+          ],
+          [
+            0.70999,
+            0.83927
+          ],
+          [
+            0.47685,
+            0.85005
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Heartwood Colossus — regional boss.png",
+      "asset": "story-botanic-boss",
+      "category": "enemies",
+      "source": "Art\\source\\story\\botanic\\Heartwood Colossus — regional boss.png",
+      "source_sha256": "879fb3360e11b94bdd2e5b9a8784eba2af19cf3cc3a082063b00f01ef9d2919b",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-botanic-boss.png",
+      "runtime_sha256": "1208727eca691f77a0053c67b842471e4bfce0f27c23de311cae253b1e1866ba",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "6fd2e5e68061a79fa23d98c67ff5f2661a5f44f5878163a25a877caed020634a",
+      "settings": {
+        "keys": [
+          [
+            83,
+            179,
+            200
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.60845,
+            0.24488
+          ],
+          [
+            0.35906,
+            0.25351
+          ],
+          [
+            0.65394,
+            0.25782
+          ],
+          [
+            0.72705,
+            0.26969
+          ],
+          [
+            0.67669,
+            0.274
+          ],
+          [
+            0.39968,
+            0.27292
+          ],
+          [
+            0.72136,
+            0.28803
+          ],
+          [
+            0.42323,
+            0.30205
+          ],
+          [
+            0.77254,
+            0.37648
+          ],
+          [
+            0.29407,
+            0.52104
+          ],
+          [
+            0.31357,
+            0.76375
+          ],
+          [
+            0.51909,
+            0.81877
+          ],
+          [
+            0.5134,
+            0.89428
+          ]
+        ],
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Rootstone Wilds — empty regional arena.png",
+      "asset": "story-rootstone-wilds-arena",
+      "category": "backgrounds",
+      "source": "Art\\source\\story\\botanic\\Rootstone Wilds — empty regional arena.png",
+      "source_sha256": "895f28960b8064f66320a8fe7afcf4a51eec68b6079a821d4c4a3277a2fd5193",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\backgrounds\\story-rootstone-wilds-arena.png",
+      "runtime_sha256": "d8ae601b6ba284d2371f30a75f9a8e40796c54ebbb05bebae98ace36c77fa1fb",
+      "runtime_dimensions": [
+        1456,
+        816
+      ],
+      "runtime_pixel_sha256": "6ec19cddfcdd99b4a25db7a620e7c43ba36edb9ae96d02e36301bbf339fc35f5",
+      "settings": {
+        "processing": "opaque-original-size"
+      }
+    },
+    {
+      "incoming": "Ivoryveil Moth.png",
+      "asset": "story-tranquilitic-0",
+      "category": "enemies",
+      "source": "Art\\source\\story\\tranquilitic\\Ivoryveil Moth.png",
+      "source_sha256": "b65e45d702f191e350400e0a27c9c3666b8d663a56b6f2567d69fdf12202e98a",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-tranquilitic-0.png",
+      "runtime_sha256": "5874d019f9055e667896ff89f7c2f117ebce837e79411734f1072705f8d2ae45",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "915e91e44bd416266e52339bec15d9a2df6e79e114ca3408c6ea541035e01a88",
+      "settings": {
+        "keys": [
+          [
+            145,
+            159,
+            143
+          ]
+        ],
+        "radius": 14,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.64419,
+            0.13053
+          ],
+          [
+            0.43217,
+            0.86839
+          ],
+          [
+            0.66694,
+            0.87918
+          ],
+          [
+            0.83022,
+            0.90291
+          ],
+          [
+            0.2234,
+            0.90399
+          ]
+        ],
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "incoming": "Dewhalo Hart.png",
+      "asset": "story-tranquilitic-1",
+      "category": "enemies",
+      "source": "Art\\source\\story\\tranquilitic\\Dewhalo Hart.png",
+      "source_sha256": "5170c1c5df7cd17502bf0cae88751cd57e1ebfaffc36af279c49ecbb408a7f12",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-tranquilitic-1.png",
+      "runtime_sha256": "538548c94dd275689c1afcdddfaa71b38f528a68c1a2207fe0b7fbc9a7b35703",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "d510cb56241d038ddeff2cdb143e60ae2a5c22340f84919b5e54ca76512ffe60",
+      "settings": {
+        "keys": [
+          [
+            187,
+            207,
+            98
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.37449,
+            0.15965
+          ],
+          [
+            0.37855,
+            0.22114
+          ],
+          [
+            0.75061,
+            0.22546
+          ],
+          [
+            0.24695,
+            0.30205
+          ],
+          [
+            0.79041,
+            0.29666
+          ],
+          [
+            0.31844,
+            0.548
+          ],
+          [
+            0.74167,
+            0.60194
+          ],
+          [
+            0.35581,
+            0.86084
+          ],
+          [
+            0.44598,
+            0.863
+          ],
+          [
+            0.63526,
+            0.8123
+          ],
+          [
+            0.5459,
+            0.82956
+          ],
+          [
+            0.36962,
+            0.93096
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Vowcrest Crane.png",
+      "asset": "story-tranquilitic-2",
+      "category": "enemies",
+      "source": "Art\\source\\story\\tranquilitic\\Vowcrest Crane.png",
+      "source_sha256": "5feabdcc4cd5d296131943d9d65bd8fd6e3f49ae94305891ad08e704b117302b",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-tranquilitic-2.png",
+      "runtime_sha256": "82b7e02102f12e8d79daa8cc2afc3a6423246cf4a9325988406a071c59880f3e",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "df7ab80746d91032178c118f9b5e8651052c39e9cc155a8151c3dddc33c01314",
+      "settings": {
+        "keys": [
+          [
+            152,
+            191,
+            155
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.58895,
+            0.86084
+          ]
+        ],
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "incoming": "Opalward Lion.png",
+      "asset": "story-tranquilitic-3",
+      "category": "enemies",
+      "source": "Art\\source\\story\\tranquilitic\\Opalward Lion.png",
+      "source_sha256": "69eae15ea34db44f2e3ff3bec6f8f9c09aaeefa7eb95ff5f07f45707bcb1693e",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-tranquilitic-3.png",
+      "runtime_sha256": "8ddc4dde5d5d159ed8fb584111db0d641ef42673a4085f4f061de6cf86911390",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "394d18c6e72ba6f3e1b341c9ee0fa59bd4adbe7dc107eb70571a76935047558d",
+      "settings": {
+        "keys": [
+          [
+            193,
+            214,
+            86
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.56133,
+            0.83927
+          ],
+          [
+            0.71487,
+            0.863
+          ],
+          [
+            0.20877,
+            0.76483
+          ],
+          [
+            0.33225,
+            0.863
+          ]
+        ],
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Serene Oathkeeper — regional boss.png",
+      "asset": "story-tranquilitic-boss",
+      "category": "enemies",
+      "source": "Art\\source\\story\\tranquilitic\\Serene Oathkeeper — regional boss.png",
+      "source_sha256": "49bd6736e97d0b4cc70872f3ba3213abf2ce16dad2d4a7b986b3aa564c1d983c",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-tranquilitic-boss.png",
+      "runtime_sha256": "820489d0dc1f904c44adbcde4dc6d543af919595c22399eda1144ea687721deb",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "2a6b216081a493294e779d4e7629b8e2d98730fa8df7cb699030b2aba827d3c7",
+      "settings": {
+        "keys": [
+          [
+            199,
+            208,
+            91
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.07067,
+            0.25135
+          ],
+          [
+            0.21852,
+            0.47789
+          ],
+          [
+            0.7831,
+            0.47896
+          ],
+          [
+            0.77417,
+            0.63107
+          ]
+        ],
+        "source_facing": "front",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Stillhalo Vale — empty regional arena.png",
+      "asset": "story-stillhalo-vale-arena",
+      "category": "backgrounds",
+      "source": "Art\\source\\story\\tranquilitic\\Stillhalo Vale — empty regional arena.png",
+      "source_sha256": "09ae56463eb3a3789c9a08383aae35d12834c56d99df223f5c8b02a301111f13",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\backgrounds\\story-stillhalo-vale-arena.png",
+      "runtime_sha256": "1882980b4ec93e573c1c88b8785c1030d901d8cf3a25c137c234e1bea60cc8d3",
+      "runtime_dimensions": [
+        1456,
+        816
+      ],
+      "runtime_pixel_sha256": "090e5b4b51e6b10c364352cd916d6ead687b0ace14f6efeaa873ad0ab56808e0",
+      "settings": {
+        "processing": "opaque-original-size"
+      }
+    },
+    {
+      "incoming": "Riftfang Hound.png",
+      "asset": "story-chaotic-0",
+      "category": "enemies",
+      "source": "Art\\source\\story\\chaotic\\Riftfang Hound.png",
+      "source_sha256": "3ca066ee96a493e84636723ff2f04ac3e56957645be11ad7a391f3e3a2d0cb52",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-chaotic-0.png",
+      "runtime_sha256": "b7ef3a1680a9ff8e28a31e9fed3f938ca97580cae97bf6bc9e444069454a333a",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "0956cba9af58d1553953032ae9311f3e9146c83f2fd8767573d87c1427b81ea7",
+      "settings": {
+        "keys": [
+          [
+            209,
+            224,
+            114
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.57108,
+            0.3754
+          ],
+          [
+            0.24452,
+            0.65696
+          ],
+          [
+            0.75873,
+            0.66235
+          ],
+          [
+            0.65313,
+            0.85329
+          ],
+          [
+            0.33469,
+            0.82416
+          ],
+          [
+            0.50284,
+            0.84358
+          ],
+          [
+            0.43298,
+            0.93096
+          ]
+        ],
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Splinterhide Lizard.png",
+      "asset": "story-chaotic-1",
+      "category": "enemies",
+      "source": "Art\\source\\story\\chaotic\\Splinterhide Lizard.png",
+      "source_sha256": "309bea607fadcfe3703917ef87ffdb25386fdfd20775c4d97f074c3d3f58f090",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-chaotic-1.png",
+      "runtime_sha256": "6ca2376d8cc9faa71d16847de151a51650954071888cc50a80e9d7424e378c21",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "3c1b758fc0710919f702e02a429124fd0f9073fa2483c9ff1091054155951f58",
+      "settings": {
+        "keys": [
+          [
+            219,
+            247,
+            112
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5922,
+            0.85545
+          ]
+        ],
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Voidcrest Raven.png",
+      "asset": "story-chaotic-2",
+      "category": "enemies",
+      "source": "Art\\source\\story\\chaotic\\Voidcrest Raven.png",
+      "source_sha256": "4b28087bd6f992cd5d5df5c9af7450feccd5b6040ff1143116e1da3915b735e5",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-chaotic-2.png",
+      "runtime_sha256": "eb67bd4d0911c0d2f10099a648ed1a2070996fa23efec4c5c803523727eb0aef",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "972b72563ce2855ef216e1a9411ad7b511dfc7be3b02066935f1b6082eddf93d",
+      "settings": {
+        "keys": [
+          [
+            201,
+            242,
+            97
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.66856,
+            0.11003
+          ],
+          [
+            0.73355,
+            0.61704
+          ],
+          [
+            0.38099,
+            0.72276
+          ],
+          [
+            0.79204,
+            0.7972
+          ],
+          [
+            0.53046,
+            0.78209
+          ],
+          [
+            0.72055,
+            0.77886
+          ],
+          [
+            0.67506,
+            0.8069
+          ],
+          [
+            0.53696,
+            0.89105
+          ],
+          [
+            0.67019,
+            0.82848
+          ],
+          [
+            0.72218,
+            0.90615
+          ],
+          [
+            0.63474,
+            0.857759
+          ]
+        ],
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Faultcoil Wyrm.png",
+      "asset": "story-chaotic-3",
+      "category": "enemies",
+      "source": "Art\\source\\story\\chaotic\\Faultcoil Wyrm.png",
+      "source_sha256": "fc1c8116ba8d167726fc0175ecd3b3b2a1c43ec576b82d84d8d67f77f4caee7a",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-chaotic-3.png",
+      "runtime_sha256": "9858e4cb4aba87363994b6e274cdd102292184a03ba75a1c1cf7555427f95ae2",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "a09bf29a905e200abc94f15d5e738dd8213e5127cda09d3184c9560657cffda4",
+      "settings": {
+        "keys": [
+          [
+            168,
+            238,
+            145
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "source_facing": "right",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Fracture Sovereign — regional boss.png",
+      "asset": "story-chaotic-boss",
+      "category": "enemies",
+      "source": "Art\\source\\story\\chaotic\\Fracture Sovereign — regional boss.png",
+      "source_sha256": "2ccd3c3bb3b96c0ae299659e2bd2a407336b69eb5860b59ae78b3d96edf7065f",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\enemies\\story-chaotic-boss.png",
+      "runtime_sha256": "dd833cf2c838d567a26d492e8dc8337390ef4a839a922cb26dc2007004115a23",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_pixel_sha256": "7b269322380c50483e448b6c9db9e263aee729c195b1ac0c23afaa4ccd57bbe6",
+      "settings": {
+        "keys": [
+          [
+            142,
+            227,
+            169
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4671,
+            0.17368
+          ],
+          [
+            0.71243,
+            0.23732
+          ],
+          [
+            0.27376,
+            0.42179
+          ],
+          [
+            0.29651,
+            0.76483
+          ],
+          [
+            0.51584,
+            0.83172
+          ]
+        ],
+        "source_facing": "left",
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        }
+      }
+    },
+    {
+      "incoming": "Riftbound Frontier — empty regional arena.png",
+      "asset": "story-riftbound-frontier-arena",
+      "category": "backgrounds",
+      "source": "Art\\source\\story\\chaotic\\Riftbound Frontier — empty regional arena.png",
+      "source_sha256": "e3a8ebcbaba28d8ba96f30ca11032c056b440d6ebe5c36a238d2db6c0eaf457c",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\backgrounds\\story-riftbound-frontier-arena.png",
+      "runtime_sha256": "8c2f4e47d78550bf645eb57128ac3e15e07534adca03c787936422c2aff43204",
+      "runtime_dimensions": [
+        1456,
+        816
+      ],
+      "runtime_pixel_sha256": "b216c3687e7c681865202d2c667a3995920fe288cb1a44d6c5df845fa245f19b",
+      "settings": {
+        "processing": "opaque-original-size"
+      }
+    },
+    {
+      "incoming": "World Map.png",
+      "asset": "story-world-map",
+      "category": "backgrounds",
+      "source": "Art\\source\\story\\world-map\\World Map.png",
+      "source_sha256": "699752763ba01e45a11b2a56c1929aa080e7627b8fcf7f7b60c53d9d8069d98e",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "runtime": "public\\assets\\backgrounds\\story-world-map.png",
+      "runtime_sha256": "708924e69f0311b113792b15d7624dc4dc2f16d8dc2f6cc6dcd1b2b71344a6ec",
+      "runtime_dimensions": [
+        1456,
+        816
+      ],
+      "runtime_pixel_sha256": "f88b840e7cb25c1d73a7beea5b7bd137c00daa0882a95dff07e28aefe58aafc5",
+      "settings": {
+        "processing": "opaque-original-size"
+      }
+    }
+  ]
+}

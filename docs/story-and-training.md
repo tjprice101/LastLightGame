@@ -27,10 +27,24 @@ is retained as a disclosure inside Story, not removed.
 
 These names, short regional introductions/conclusions and first-pass combat
 tuning are original developer content within the approved scope, not
-owner-authored lore or coefficients. All30 creatures and six regional scenery
-pieces are art-pending. Use neutral tokens/elemental pending scenery, never
-another element's enemy art or nonexistent PNG requests. No art is generated
-or installed in this phase.
+owner-authored lore or coefficients. D-171/D-178 owner deliveries install all30
+creatures, six regional arenas and the original world map. D-178 adds Emberwake's
+five reviewed transparent cutouts and intact arena; the newer root World Map.png
+is explicitly excluded from this intake. Images do not introduce captures
+or new rarity forms.
+
+**D-168 art generation:** [six region packs](../Art/creatures/story/README.md)
+provide all30 exact creature identities and six empty side-view battle arenas
+matching the elemental dungeon renderer and standing-lane composition.
+[World map prompt](../Art/ui/Story%20World%20Map.md) covers six connected regional
+terrains; names, locks and150 stage controls remain accessible HTML, not baked
+into generated art. Individual palettes/reference-free enemy cutouts keep
+complete silhouettes and unlit solid keys; scenery stays opaque/full-bleed.
+These prompts do not register nonexistent files or change rewards/rarity/forms.
+Deliver originals under Art/source/story, never the repository root.
+Validate `python -m unittest discover -s tools -p test_story_art_prompts.py`;
+D-171 installs the actual reviewed31-image delivery; remaining Infernic imagery
+stays pending. Prompt files remain the generation reference, not source images.
 
 - Every ordinary stage has two enemies, each uniformly sampled from its
   region's four identities; duplicates are allowed. Stage25 of each region has
@@ -103,6 +117,23 @@ and other activity income remain unchanged.
 - Settings keeps the encounter. Quit returns the contextual entry/map and
   retains all earned rewards. Reload ends the run, preserving account progress.
   Local storage retains its existing single-tab, non-authoritative limitation.
+
+## Delivered artwork (D-171)
+
+Shared `content/story-art.ts` owns only supplied regional IDs and scenery.
+`storyCreature` carries art into both catalog and combat spawns, so field sprites,
+level50+ skill/ultimate cut-ins and discovery-gated Collections use identical
+exports without changing stable IDs/names. Reviewed `unit-facing.ts` metadata
+keeps enemies right-facing or preserves genuine front poses. Shared assetUrl
+uses Vite's deployment base and byte-derived Story URL revisions everywhere.
+
+Enemy originals are preserved under Art/source/story/<element> and cleaned
+only offline using reviewed per-source keys/enclosed-gap settings; supplied real
+alpha bypasses key removal. Arenas/map stay opaque full-bleed, not cutouts.
+The entire world-map image is rendered at its natural aspect ratio with width100%
+and automatic height, never cover-cropped. Region/stage buttons remain accessible
+HTML below it, with all six regions, real locks and exact progress preserved.
+No baked map label replaces controls, no new region position is guessed.
 
 ## Map and accessibility
 

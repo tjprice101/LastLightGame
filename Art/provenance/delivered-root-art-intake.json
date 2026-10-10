@@ -1,0 +1,1699 @@
+{
+  "asset_count": 48,
+  "assets": [
+    {
+      "incoming": "Dawncourt Sovereign, Aurora.png",
+      "asset": "aurora-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\aurora-evo-5.png",
+      "source_sha256": "a8154c2ed15cf689e3f906090b30742cff4048d5f72760d81154004d4f3e0da2",
+      "runtime": "public\\assets\\characters\\aurora-evo-5.png",
+      "runtime_sha256": "5ec590317bf60c2df003aca4a0152bd51eb110ce96d4ce296fd8d78b5487986c",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "row_gradient": true,
+        "radius": 10,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "source_facing": "right",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\aurora-evo-5.png",
+      "previous_runtime_sha256": "d06edaec70b6a794b68f0bb59daeaa64e06da7bb0521f146435539f7e3489a45"
+    },
+    {
+      "incoming": "Featherstep Duelist, Bliss.png",
+      "asset": "bliss",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\bliss.png",
+      "source_sha256": "06fde8e7638496aefbd6d6be36a303d766c913332cc69edcb4b710be1be627dc",
+      "runtime": "public\\assets\\characters\\bliss.png",
+      "runtime_sha256": "55bf8ea7c8f7ccd1d67a560b64edca938c0aa2c9614c1693834609cf3bf336cb",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            44,
+            100,
+            84
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "source_facing": "front",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\bliss.png",
+      "previous_runtime_sha256": "41944e651e34933fb42ae7b7866abfa8b403874efb4225afe6568e0daa6f974f"
+    },
+    {
+      "incoming": "Stillplume Dancer, Bliss.png",
+      "asset": "bliss-evo-2",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\bliss-evo-2.png",
+      "source_sha256": "8352c40f8353b02a6d50feff86366aa9f987e8eb4505815eb7f1cd4a84af0d57",
+      "runtime": "public\\assets\\characters\\bliss-evo-2.png",
+      "runtime_sha256": "d43c21320a95fd926a3b87399e2cab3497b2e1ea4c2ce8ab9b64cbd946ccc88c",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            4,
+            116,
+            92
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.36068,
+            0.44444
+          ],
+          [
+            0.33306,
+            0.31715
+          ]
+        ]
+      },
+      "source_facing": "front",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\bliss-evo-2.png",
+      "previous_runtime_sha256": "a5c0f51d345e12db88c92419442236cafb9b4b36c73ae71e1d3e4a620aaef3d5"
+    },
+    {
+      "incoming": "Quietwing Fencer, Bliss.png",
+      "asset": "bliss-evo-3",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\bliss-evo-3.png",
+      "source_sha256": "98c61cd7acc83c8c0008ef983f5302451698bb4f6d2db15fc1f916d2cc81577c",
+      "runtime": "public\\assets\\characters\\bliss-evo-3.png",
+      "runtime_sha256": "0ee1e1fa9576a25b02e2470b9403fb025892baa8cc0132d9b205a26698fcfb0e",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        2464,
+        1856
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            12,
+            92,
+            84
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.311,
+            0.37628
+          ],
+          [
+            0.34836,
+            0.06846
+          ],
+          [
+            0.36703,
+            0.30943
+          ]
+        ]
+      },
+      "source_facing": "front",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\bliss-evo-3.png",
+      "previous_runtime_sha256": "599eb8873cc045a162bc7df7956fefdfd7c0660ffa6382389ef99a601182fe1d"
+    },
+    {
+      "incoming": "Prismplume Arbiter, Bliss.png",
+      "asset": "bliss-evo-4",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\bliss-evo-4.png",
+      "source_sha256": "89d08d4bfaa7f484af634ce1572a09e49c46a03e3441da063446e188f52cca8f",
+      "runtime": "public\\assets\\characters\\bliss-evo-4.png",
+      "runtime_sha256": "d42ced7ce943dd21c9c29cb311eaa9173884b30b74c9b47d426de67d9ac28ed8",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            44,
+            44,
+            44
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "source_facing": "front",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\bliss-evo-4.png",
+      "previous_runtime_sha256": "e8d7338cf955d2ead8d6c243b1f7d71e25db164d62a3b4377d3e4e9b31655b20"
+    },
+    {
+      "incoming": "Serene Tempest Empress, Bliss.png",
+      "asset": "bliss-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\bliss-evo-5.png",
+      "source_sha256": "7745a051cc0b0d65e65215430b697291444666939e45d2bf7f32e18a3c6d0e23",
+      "runtime": "public\\assets\\characters\\bliss-evo-5.png",
+      "runtime_sha256": "07b0a2a7ff144ece0768fc2e205c2503ecc953ab3d8e81b68e69559c76bf064a",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            20,
+            20,
+            20
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "source_facing": "left",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\bliss-evo-5.png",
+      "previous_runtime_sha256": "867cb98fe58e8035acc6dde165865b79e123a2cb273272ab7471de0c7ab1fc8b"
+    },
+    {
+      "incoming": "The Thousandfeather Stillness, Bliss.png",
+      "asset": "bliss-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\bliss-evo-6.png",
+      "source_sha256": "54093249c50f97c64f252c827595afad99446c65fe1a4032ae146fa2d9e3920c",
+      "runtime": "public\\assets\\characters\\bliss-evo-6.png",
+      "runtime_sha256": "b590d2f94665c9dd80afc8c8143ad5df33036dfe60cdfc76a81f97349bee503b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            68,
+            60,
+            60
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "source_facing": "front",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\bliss-evo-6.png",
+      "previous_runtime_sha256": "a23f8d8360163faa03cb80ddf284493e5db7d368e50e7beedc192a4b9dc01011"
+    },
+    {
+      "incoming": "Prismatic Mountain Regent, Bruno.png",
+      "asset": "bruno-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\bruno-evo-5.png",
+      "source_sha256": "cf8341a154c716c4e0a18e28e321e916eff525f727b356e70d16ff0623b83a18",
+      "runtime": "public\\assets\\characters\\bruno-evo-5.png",
+      "runtime_sha256": "aa9ee38ad228b3c37dba740d21c3e8a8d42bca7b0ec47888065fbe3264c2261f",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            252,
+            252,
+            252
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "source_facing": "left",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\bruno-evo-5.png",
+      "previous_runtime_sha256": "b0078739a5fa0109ae33ef2cf0ffd4c04fd5492d719e19ac71123a0f73e1edac"
+    },
+    {
+      "incoming": "Sovereign of Beautiful Ruin, Crinso.png",
+      "asset": "crinso-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\crinso-evo-5.png",
+      "source_sha256": "a7d6f764f487a0fbfa62771b6c1f13b9155e0284399f686fe1d671dded5ab175",
+      "runtime": "public\\assets\\characters\\crinso-evo-5.png",
+      "runtime_sha256": "4c3d870d0f192c0cfdccd3cce131e305e80e10a592aaa91c025cabd5f3b5f4e3",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            4,
+            4,
+            4
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "source_facing": "left",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\crinso-evo-5.png",
+      "previous_runtime_sha256": "ae3941ae2b53b36c07ff9ec43b5923cc5c69cc448387443ec077a6747543a430"
+    },
+    {
+      "incoming": "The Rose Beyond Duality, Crinso.png",
+      "asset": "crinso-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\crinso-evo-6.png",
+      "source_sha256": "65bb0839c6b6ff85f95f54aced1fb18ce1a1363c47a0c9567539bca237652803",
+      "runtime": "public\\assets\\characters\\crinso-evo-6.png",
+      "runtime_sha256": "6cf053e127020af59fae6e8615e1921d7bca045917c10b7b4a8f5bdf08d32089",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            108,
+            108,
+            108
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "source_facing": "left",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\crinso-evo-6.png",
+      "previous_runtime_sha256": "8fa4c173cbefdb25573ec8078f8a7754bb432f7860c3873bd12a06d6c2092865"
+    },
+    {
+      "incoming": "Sovereign of Passion, Rosetta.png",
+      "asset": "rosetta-evo-5",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\rosetta-evo-5.png",
+      "source_sha256": "a905f4be5f35da23d76c2f2bfd0ca8f8a3e75979677ec0d0788830e1a08ad053",
+      "runtime": "public\\assets\\characters\\rosetta-evo-5.png",
+      "runtime_sha256": "7a55634293c3333e9b972b16ee0e20046a42e3970f831dc955aa783f7a81c0dc",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            252,
+            252,
+            252
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "source_facing": "right",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\rosetta-evo-5.png",
+      "previous_runtime_sha256": "aeaaf3766d99738a1a9b566c2cbf45337e3dcccb5aae80b78ccd8ab8f235fe97"
+    },
+    {
+      "incoming": "The Rose Beyond the Sun, Rosetta.png",
+      "asset": "rosetta-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\rosetta-evo-6.png",
+      "source_sha256": "2d0280847765f5e8c2e645186eb092d3a06111999f78ca6af305ee433e096d38",
+      "runtime": "public\\assets\\characters\\rosetta-evo-6.png",
+      "runtime_sha256": "4d34ea717e1da02ee2f3b333bb0b6ba02c719262bfeb28530690e4279b77fe2f",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            44,
+            44,
+            44
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "source_facing": "right",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\rosetta-evo-6.png",
+      "previous_runtime_sha256": "f95929c8cc6af412777b6a2e1fd0e7c0ba07ce784715ed0c3327052c40bc47c1"
+    },
+    {
+      "incoming": "The Thousand-Rose Empress, Thornia.png",
+      "asset": "thornia-evo-6",
+      "category": "characters",
+      "source": "Art\\source\\delivered-root-art\\characters\\thornia-evo-6.png",
+      "source_sha256": "f30f0332936ac736bd6bfca48636de40e7a04f0e5d7f32cb2aeb852b687b3b83",
+      "runtime": "public\\assets\\characters\\thornia-evo-6.png",
+      "runtime_sha256": "ab2d2e0d6c6d46b84105e53e51b627ba6c26b3d88fef0ddf2630c0cdd977b13c",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            140,
+            140
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "source_facing": "left",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\thornia-evo-6.png",
+      "previous_runtime_sha256": "b625dfb5d61390cc3dd1502af9d0beeaa08f8eb1da19de31634c56c41a968053"
+    },
+    {
+      "incoming": "Undertide Chronometer (Omnic  Aquatic).png",
+      "asset": "aquatic-undertide-chronometer",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\aquatic-undertide-chronometer.png",
+      "source_sha256": "9bdbe4227060ae254b626976ae4faaced27294003bc935fff4fb2c2a751c718a",
+      "runtime": "public\\assets\\conduits\\aquatic-undertide-chronometer.png",
+      "runtime_sha256": "12ebe907c893ef6042aadbf542b4af37da3f9d9de3e19f8e97b12c29658ab62b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            4,
+            236,
+            188
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Skythread Rudder (Omnic  Atmospheric).png",
+      "asset": "atmospheric-skythread-rudder",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\atmospheric-skythread-rudder.png",
+      "source_sha256": "eeaee003c19177a1dace7678a5fb76920ada143bf3c7d0d1f696c29f696c6754",
+      "runtime": "public\\assets\\conduits\\atmospheric-skythread-rudder.png",
+      "runtime_sha256": "42907dab9e4c47cba9854e96bb226c4ad8e1f351f87bbe18c40f5f8afaf7968b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            148,
+            204,
+            180
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Breach Pendulum (Rare).png",
+      "asset": "breach-pendulum",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\breach-pendulum.png",
+      "source_sha256": "2bac83094dc928e3ab0bed90592600bed6345b722287e7f45ce760f5bdaae7b8",
+      "runtime": "public\\assets\\conduits\\breach-pendulum.png",
+      "runtime_sha256": "d15ac29a0e6c87d3879a0a0f7c5c43244c672e62cc03405177d8306eb50b1b80",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            132,
+            196,
+            180
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.43,
+            0.275
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Paradox Spindle (Omnic  Chaotic).png",
+      "asset": "chaotic-paradox-spindle",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\chaotic-paradox-spindle.png",
+      "source_sha256": "65f3170d7346211fa18e3f216527ecdd256bc54155d54a6a821a8058bb63eb61",
+      "runtime": "public\\assets\\conduits\\chaotic-paradox-spindle.png",
+      "runtime_sha256": "e6efd9a57b515e76534ff8388e5ba8c2decda178ed27fa854ed23f84562cc9c5",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            28,
+            228,
+            188
+          ]
+        ],
+        "radius": 16,
+        "background_border_strips": {
+          "top": 2,
+          "bottom": 2
+        },
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.402,
+            0.601
+          ],
+          [
+            0.619,
+            0.579
+          ],
+          [
+            0.364258,
+            0.423828
+          ]
+        ]
+      },
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\chaotic-paradox-spindle.png",
+      "previous_runtime_sha256": "1a48b889febab4e4a381bf3f48f79e3bb89a49b21e976963390f9ccfdd1be34e"
+    },
+    {
+      "incoming": "Coilfeed Ratchet (Rare).png",
+      "asset": "coilfeed-ratchet",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\coilfeed-ratchet.png",
+      "source_sha256": "fd89d851f178cb7ac238d6d6cc02ae187603845a5b2594d1dc2581f3fd0ace26",
+      "runtime": "public\\assets\\conduits\\coilfeed-ratchet.png",
+      "runtime_sha256": "4793a2ec2ff497b51b73efa3a5c46f4031c10a5b0d78745ffbb8e69f1c98e6c1",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            244,
+            132
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Crosspin Governor (Common).png",
+      "asset": "crosspin-governor",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\crosspin-governor.png",
+      "source_sha256": "03fba08fd4b6fb9d86279ba62ce20237c4890812b73fe61fae078d039276d413",
+      "runtime": "public\\assets\\conduits\\crosspin-governor.png",
+      "runtime_sha256": "2640be5f9798d8e43d665af70c3e3df667515662b62873ae84ef1331e240a9da",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            124,
+            204,
+            164
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Verdant Covenant (Omnic  Efflorescent).png",
+      "asset": "efflorescent-verdant-covenant",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\efflorescent-verdant-covenant.png",
+      "source_sha256": "6338c542c549ba6076e16759e665fec8f82ceda3008cff4608f9c45b6dfd16fc",
+      "runtime": "public\\assets\\conduits\\efflorescent-verdant-covenant.png",
+      "runtime_sha256": "4024aa119d57c4f9221d8b45c8b3131974dab1edf8f917f11c47c48981ef0d6e",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            92,
+            212,
+            148
+          ],
+          [
+            103,
+            226,
+            159
+          ],
+          [
+            100,
+            223,
+            157
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.5,
+            0.7
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Execution Orrery (Legendary).png",
+      "asset": "execution-orrery",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\execution-orrery.png",
+      "source_sha256": "0737f297c348603a52b9660da304cd2ef88b00090d8a792cf5fd91be3006a278",
+      "runtime": "public\\assets\\conduits\\execution-orrery.png",
+      "runtime_sha256": "8cb2101f0b469c54fe6cb2ee348b78966b5ef58fbdd483ce895fe53f38c21852",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            60,
+            132,
+            124
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.456055,
+            0.234375
+          ],
+          [
+            0.594727,
+            0.279297
+          ],
+          [
+            0.420898,
+            0.441406
+          ],
+          [
+            0.560547,
+            0.442383
+          ],
+          [
+            0.555664,
+            0.780273
+          ],
+          [
+            0.389648,
+            0.876953
+          ],
+          [
+            0.606445,
+            0.875977
+          ],
+          [
+            0.589844,
+            0.370117
+          ],
+          [
+            0.40918,
+            0.366211
+          ],
+          [
+            0.640625,
+            0.370117
+          ],
+          [
+            0.358398,
+            0.365234
+          ],
+          [
+            0.241211,
+            0.939453
+          ],
+          [
+            0.75,
+            0.938477
+          ]
+        ]
+      },
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\execution-orrery.png",
+      "previous_runtime_sha256": "fdcec8c4580ade643ab4e0878678e4288186939e51ca56b5722ef75fce5d3574"
+    },
+    {
+      "incoming": "Fieldbrace Coupler (Common).png",
+      "asset": "fieldbrace-coupler",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\fieldbrace-coupler.png",
+      "source_sha256": "36f380d2c94364ed91aa70f893bb76da8733fdac89da995b19e9508c41a29e48",
+      "runtime": "public\\assets\\conduits\\fieldbrace-coupler.png",
+      "runtime_sha256": "0dcfdacd28cfe8e8b58634889128d5ab460a8dee5d65dcd360bd7c290f649ac0",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            252,
+            196
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Glassroot Gimbal (Rare).png",
+      "asset": "glassroot-gimbal",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\glassroot-gimbal.png",
+      "source_sha256": "2394cfeff44015da5ef566932ad0f50b9b93ea0dbfcf0802fcf6d74e2b6b7249",
+      "runtime": "public\\assets\\conduits\\glassroot-gimbal.png",
+      "runtime_sha256": "194429ddddd98c20d022798e9084138391f380170f7bbfdd2b5af27fcd9e68ae",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            124,
+            252,
+            212
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Granite Hourglass (Legendary).png",
+      "asset": "granite-hourglass",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\granite-hourglass.png",
+      "source_sha256": "a4d09d592326e13e0dd0983ec707dc024aafeb26d92d7eae36bbc44515db1d24",
+      "runtime": "public\\assets\\conduits\\granite-hourglass.png",
+      "runtime_sha256": "a81eb4795843d3ebcf573bbc9e848b35d2bb05025a230fa9cd354bdd3f65f5a9",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            196,
+            164
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Hammerbalance Link (Rare).png",
+      "asset": "hammerbalance-link",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\hammerbalance-link.png",
+      "source_sha256": "4cf419cebb45618adc7f86ae9faf47a2dfcadb074a3d98ae6a13e977bb988e0f",
+      "runtime": "public\\assets\\conduits\\hammerbalance-link.png",
+      "runtime_sha256": "733c7f15cbd03f63c3ec0cead6257b91c26b293d1137df4776760e855d4698f1",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            252,
+            220
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Horizon Heartcase (Legendary).png",
+      "asset": "horizon-heartcase",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\horizon-heartcase.png",
+      "source_sha256": "3e79615c39854ca6024f6f7f0e5d97e15153cdf86929cbee11000635af2e58a3",
+      "runtime": "public\\assets\\conduits\\horizon-heartcase.png",
+      "runtime_sha256": "df62b94dbef3cbf17faf211ffe8ba973a866386b19f867a7ab8c7cb38cb6bfee",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            100,
+            204,
+            180
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Cinder Testament (Omnic  Infernic).png",
+      "asset": "infernic-cinder-testament",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\infernic-cinder-testament.png",
+      "source_sha256": "7037302c8761f9b12da1c213fd60054cf1ffdc23ebcffc7ee69ccc490d0f5e73",
+      "runtime": "public\\assets\\conduits\\infernic-cinder-testament.png",
+      "runtime_sha256": "d4684869dedb41420547b4363ac90e217a170771ca7adf99ed8f161d88fb45ef",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            132,
+            244,
+            180
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Lifeline Flywheel (Rare).png",
+      "asset": "lifeline-flywheel",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\lifeline-flywheel.png",
+      "source_sha256": "4b8ce60b18f909b6a436304fa6fa2e3801b1e61e2f783bff57b6ed8def9554ce",
+      "runtime": "public\\assets\\conduits\\lifeline-flywheel.png",
+      "runtime_sha256": "e5af428eaf6193a523b18c005d23872d49f65c4a6c3809098dae7067e2dfd030",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            60,
+            244,
+            196
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Dawn Witness Array (Omnic  Luminous).png",
+      "asset": "luminous-dawn-witness-array",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\luminous-dawn-witness-array.png",
+      "source_sha256": "9df0630ea5fa56efb743c9e8c0c87bcc0cb713f8d1482040db410ea0f017f76f",
+      "runtime": "public\\assets\\conduits\\luminous-dawn-witness-array.png",
+      "runtime_sha256": "68e23b9aeb3899111c0d1cf337262bf3e933116b28a440c0edb9503a01025af6",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            164,
+            212,
+            172
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Meridian Inverter (Legendary).png",
+      "asset": "meridian-inverter",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\meridian-inverter.png",
+      "source_sha256": "593acbe3f192dc1d1e64163223da8945d1b11c20a048fad71f16f209030ea793",
+      "runtime": "public\\assets\\conduits\\meridian-inverter.png",
+      "runtime_sha256": "87020269e133aec87a1a826b6cf6bc9e483293a3b8cad0ed81a463acf88272cb",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            100,
+            164,
+            156
+          ]
+        ],
+        "radius": 12,
+        "row_gradient": true,
+        "background_border_strips": {
+          "top": 2,
+          "right": 2,
+          "bottom": 2,
+          "left": 2
+        },
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      },
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\meridian-inverter.png",
+      "previous_runtime_sha256": "5d579777efe467fb3223d337e10e31bb4b016e2ee77dc2816935578785db0005"
+    },
+    {
+      "incoming": "Nullsong Transmission (Legendary).png",
+      "asset": "nullsong-transmission",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\nullsong-transmission.png",
+      "source_sha256": "86794a5fb37c7367afe9d36305f769cf856901a9bb1fb6041d7c8efb68f1b769",
+      "runtime": "public\\assets\\conduits\\nullsong-transmission.png",
+      "runtime_sha256": "a4e65e085df15981751f4afafa59fe1b2216dd08afd735e8f772016abdf2b739",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            116,
+            204,
+            188
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.350586,
+            0.361328
+          ],
+          [
+            0.619141,
+            0.334961
+          ],
+          [
+            0.663086,
+            0.692383
+          ],
+          [
+            0.334961,
+            0.691406
+          ],
+          [
+            0.537109,
+            0.702148
+          ],
+          [
+            0.706055,
+            0.55957
+          ]
+        ]
+      },
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\nullsong-transmission.png",
+      "previous_runtime_sha256": "b8b9b9f43107f3a9d7861405a7290454a5ad45063c37f7c83ec132161e960925"
+    },
+    {
+      "incoming": "Nightglass Archive (Omnic  Ominous).png",
+      "asset": "ominous-nightglass-archive",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\ominous-nightglass-archive.png",
+      "source_sha256": "6e9c526403a8b3c977f91cc433e2e35f4170db0c73e113e79e3982ea6c07941f",
+      "runtime": "public\\assets\\conduits\\ominous-nightglass-archive.png",
+      "runtime_sha256": "3212321fb397a712c30a27821999285d75ff7dd0ddf2511644c7afbff9b32131",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            172,
+            236,
+            124
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Opal Indexer (Rare).png",
+      "asset": "opal-indexer",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\opal-indexer.png",
+      "source_sha256": "ebdaded359ec6a56cfe75da71f1697f910a7b72ee759aac8f805d375c4d44987",
+      "runtime": "public\\assets\\conduits\\opal-indexer.png",
+      "runtime_sha256": "81772f5153eab2697d984a3bbc82f2b2b65c273bd25ff1d09c2fdf81d698f912",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            236,
+            180
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.17,
+            0.498
+          ],
+          [
+            0.256,
+            0.712
+          ],
+          [
+            0.474,
+            0.728
+          ],
+          [
+            0.594,
+            0.591
+          ],
+          [
+            0.457,
+            0.296
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Pale Bulwark Diadem (Legendary).png",
+      "asset": "pale-bulwark-diadem",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\pale-bulwark-diadem.png",
+      "source_sha256": "c5563fd8ce13b7f43e38fa606e5a032be886756fbbbd8af7e78b3e31a405b1f0",
+      "runtime": "public\\assets\\conduits\\pale-bulwark-diadem.png",
+      "runtime_sha256": "7fe6f701ed582a9f85c6498cfaa9b40bada0239d3c365d33c33a6375c4938ae5",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            84,
+            212,
+            180
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Precision Escapement (Common).png",
+      "asset": "precision-escapement",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\precision-escapement.png",
+      "source_sha256": "accc84854bb5947774806f22b2e19c3dec3425fd4e23861aeee4be0f1e3cf0ce",
+      "runtime": "public\\assets\\conduits\\precision-escapement.png",
+      "runtime_sha256": "144babc7603ed0be8f474df77225c9f2c258b30c02f1283b5906e166431ad2b3",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            132,
+            236,
+            196
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Prism Splinter Socket (Common).png",
+      "asset": "prism-splinter-socket",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\prism-splinter-socket.png",
+      "source_sha256": "42d0666b22353ea0432132ad36ecb84109099550e940b1401728f4b06db488fc",
+      "runtime": "public\\assets\\conduits\\prism-splinter-socket.png",
+      "runtime_sha256": "e1ede40e00c756a3b20643a9708641d0f4a0702dedf03738578b39e919538b0b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            60,
+            140,
+            124
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.487305,
+            0.245117
+          ],
+          [
+            0.198242,
+            0.756836
+          ],
+          [
+            0.333984,
+            0.412109
+          ]
+        ]
+      },
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\prism-splinter-socket.png",
+      "previous_runtime_sha256": "8e83da1b01971b9e4ac145db8c73fc9ad45155e3d2ff6df8d9d4588857dbbfaa"
+    },
+    {
+      "incoming": "Reserve Torque Crank (Common).png",
+      "asset": "reserve-torque-crank",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\reserve-torque-crank.png",
+      "source_sha256": "856d3d7d8d7011925092a96b24a92f6d512f8fdc8392073c54f392c284636b69",
+      "runtime": "public\\assets\\conduits\\reserve-torque-crank.png",
+      "runtime_sha256": "502211768d71c18283389518f570729c0f9af071acb99317a6b06ac55940a43f",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            132,
+            204,
+            164
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Resonance Crucible (Rare).png",
+      "asset": "resonance-crucible",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\resonance-crucible.png",
+      "source_sha256": "0b0329bf71cae49373988530211a9be7d45c4d8fb0b75ddda6d2522bfe45931d",
+      "runtime": "public\\assets\\conduits\\resonance-crucible.png",
+      "runtime_sha256": "71bc330d57c0b117c21f5c85b00db5077a5b9327f0f00941479cbc9b40cea1fa",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            164,
+            236,
+            172
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Sentinel Aperture (Rare).png",
+      "asset": "sentinel-aperture",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\sentinel-aperture.png",
+      "source_sha256": "c963eb3cc5c0d75f14a4223f51fc831e9aa83dbfa196d0618ef2a4dcbd68606a",
+      "runtime": "public\\assets\\conduits\\sentinel-aperture.png",
+      "runtime_sha256": "2fd8650cc9a85e03cce6309be7c494557752250c5b60f28446f4c3f5ef9db03d",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            124,
+            228,
+            188
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.258,
+            0.395
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Siege Cantilever (Legendary).png",
+      "asset": "siege-cantilever",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\siege-cantilever.png",
+      "source_sha256": "f8489865c1a8784e0919b7dff19de0c96494076bed63376e416efc9653175d46",
+      "runtime": "public\\assets\\conduits\\siege-cantilever.png",
+      "runtime_sha256": "9e90700283074edf46ceae585b0b1a901f60f4fa8be7e2dae7ed7792fe62f241",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            180,
+            188,
+            156
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Starvein Conductor (Legendary).png",
+      "asset": "starvein-conductor",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\starvein-conductor.png",
+      "source_sha256": "9dc26fb04262b5e2d1ec495344c5ebe43c80508956dc3ed8a90a7dc1a3ce0b3c",
+      "runtime": "public\\assets\\conduits\\starvein-conductor.png",
+      "runtime_sha256": "b84b631045bd4c35ba789dc5601d9e10abdcd5f9e258fdee7906db60e666f7f3",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            116,
+            156,
+            140
+          ]
+        ],
+        "radius": 12,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Stasis Reliquary (Legendary).png",
+      "asset": "stasis-reliquary",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\stasis-reliquary.png",
+      "source_sha256": "f120a553d7fef48322d2664845a2acac67ac3aa27c67277ab4483f8521743ce4",
+      "runtime": "public\\assets\\conduits\\stasis-reliquary.png",
+      "runtime_sha256": "e4149ac136509afbf005c5574f68929e3adff92c834325b5da6cd578b43ed05d",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            44,
+            172,
+            156
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Faultkeeper Loom (Omnic  Tectonic).png",
+      "asset": "tectonic-faultkeeper-loom",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\tectonic-faultkeeper-loom.png",
+      "source_sha256": "d85fbad6447256cbb20f487866996457bcdb61a769ca7417c67e97c28a0232c9",
+      "runtime": "public\\assets\\conduits\\tectonic-faultkeeper-loom.png",
+      "runtime_sha256": "14e4545894434e1b2816dc42218e21d535459b04ff95d7928c0676a8315b2620",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            124,
+            180,
+            148
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Stillhour Carillon (Omnic  Tranquilitic).png",
+      "asset": "tranquilitic-stillhour-carillon",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\tranquilitic-stillhour-carillon.png",
+      "source_sha256": "d310965b85d45308862a5b076dd613b79b70be39535f41fe7e18e18742d7f659",
+      "runtime": "public\\assets\\conduits\\tranquilitic-stillhour-carillon.png",
+      "runtime_sha256": "8fb7982bc95cefe077855aea391e701d3764d1978c39612812c61da75055ec14",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            76,
+            196,
+            188
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "background_seeds": [
+          [
+            0.394,
+            0.456
+          ],
+          [
+            0.607,
+            0.456
+          ],
+          [
+            0.26,
+            0.459
+          ],
+          [
+            0.742,
+            0.46
+          ]
+        ]
+      }
+    },
+    {
+      "incoming": "Twinpulse Bellows (Rare).png",
+      "asset": "twinpulse-bellows",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\twinpulse-bellows.png",
+      "source_sha256": "07ea3b2c96ad69c2cadc13a072f7c074f6185742c258ea63c792323048471d4a",
+      "runtime": "public\\assets\\conduits\\twinpulse-bellows.png",
+      "runtime_sha256": "44c6e1f3fe1b98f0800a4c93ef7de2a8d80225f14e5de87693bd324c621dfe6d",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            60,
+            228,
+            180
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Verdict Caliper (Legendary).png",
+      "asset": "verdict-caliper",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\verdict-caliper.png",
+      "source_sha256": "4c85729adee6cbb6c9a122e5e9d89e91500b5d478fe4ce7ce489a4c88554e329",
+      "runtime": "public\\assets\\conduits\\verdict-caliper.png",
+      "runtime_sha256": "dedc90abe97b24b0d60be53dc3b341123288102aaa5e4f7f10b671f20f06417d",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            140,
+            196,
+            164
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Stormstep Dynamo (Omnic  Voltaic).png",
+      "asset": "voltaic-stormstep-dynamo",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\voltaic-stormstep-dynamo.png",
+      "source_sha256": "2116b62e9e688edd5c417c64ec7791678a20db770ccca58188bf03ece1a7b49e",
+      "runtime": "public\\assets\\conduits\\voltaic-stormstep-dynamo.png",
+      "runtime_sha256": "cc73980037a2965d27619d96c4132be1b2a4c140395c3c7fbf5b44b23baf97f3",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            108,
+            220,
+            180
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    },
+    {
+      "incoming": "Wardglass Transformer (Rare).png",
+      "asset": "wardglass-transformer",
+      "category": "conduits",
+      "source": "Art\\source\\delivered-root-art\\conduits\\wardglass-transformer.png",
+      "source_sha256": "63390dab3bea70c50e2f1931fcde4b71d4723169354b5feee050d0dd159adaa0",
+      "runtime": "public\\assets\\conduits\\wardglass-transformer.png",
+      "runtime_sha256": "983cb2b4e9bedee68a53896a9974ffb2f7944ff20d69baf7f70a067648dadbf3",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "processing": {
+        "method": "individual border-connected RGB key",
+        "keys": [
+          [
+            84,
+            252,
+            172
+          ]
+        ],
+        "radius": 16,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        }
+      }
+    }
+  ]
+}

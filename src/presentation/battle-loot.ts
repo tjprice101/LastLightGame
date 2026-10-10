@@ -24,14 +24,14 @@ export function lootItems(event: BattleEvent): LootItem[] {
       ? [{ id: 'lycalis', name: `Null-Prismatica${event.recruitmentOutcome === 'duplicate' ? ' (includes 100 duplicate conversion)' : ''}`,
         amount: (event.lycalis ?? 0) + (event.recruitmentOutcome === 'duplicate' ? 100 : 0), art: undefined, color: '#ffffff' }] : []),
     ...(event.recruitment && event.recruitmentOutcome === 'new' ? [{
-      id: `recruitment:${event.recruitment}`, name: `${characterName(event.recruitment)} ~ Element-Bearer`,
+      id: `recruitment:${event.recruitment}`, name: `${characterName(event.recruitment)} · Element-Bearer`,
       amount: 1, art: getStarter(event.recruitment).art, color: '#ffffff',
     }] : []),
     ...(event.mechanicalComponents ? [{ id: mechanicalComponents.id, name: mechanicalComponents.name, amount: event.mechanicalComponents, color: '#ffffff' }] : []),
     ...Object.entries(event.conduits ?? {}).map(([id, amount]) => {
       if (!isConduitId(id)) throw new Error('Unknown Conduit in loot receipt.');
       const conduit = getConduit(id);
-      return { id: `conduit:${id}`, name: `${conduit.name} ~ ${conduit.rarity} Conduit`, amount, art: conduit.art ?? undefined, color: conduitColor(conduit), upgradeLevel: event.conduitUpgrades?.[id] ?? 0 };
+      return { id: `conduit:${id}`, name: `${conduit.name} · ${conduit.rarity} Conduit`, amount, art: conduit.art ?? undefined, color: conduitColor(conduit), upgradeLevel: event.conduitUpgrades?.[id] ?? 0 };
     }),
     ...Object.entries(event.materials ?? {}).map(([id, amount]) => ({
       id, name: materialName(id), amount, art: materialArt(id),

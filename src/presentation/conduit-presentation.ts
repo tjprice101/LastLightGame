@@ -12,7 +12,7 @@ export function conduitReward(id: ConduitId, account: Account, title: string, re
   return {
     title, name: conduit.name, accent: '#ffffff', animationLabel: 'Ancient mechanism restored',
     art: conduitIcon(id, level),
-    details: `${conduitRarity(id)}<p>Upgrade +${level} ~ Owned ${owned}</p>
-      <p>${escapeDialogText(conduitEffect(conduit, level))}</p><p>${escapeDialogText(receipt)}</p><p>Account-wide unlock ~ Not auto-equipped</p>`,
+    details: `${conduitRarity(id)}<p>Upgrade +${level} · Owned ${owned}</p>
+      <p>${escapeDialogText(conduitEffect(conduit, level))}</p><p>${escapeDialogText(receipt)}</p><p>Account-wide unlock · Not auto-equipped</p>`,
   };
 }

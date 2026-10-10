@@ -1,5 +1,12 @@
 # Summoning and economy
 
+**Wallet compatibility (D-176):** current version5 marks the25-kitConduit Omnic
+conversion. v1-v4 normalization remains read-only and retains account data;
+only converted wrong-element/excess-fourOmnic equipment slots are unequipped.
+First successful ordinary transaction savesv5; malformedv5 gear is rejected.
+No currency, pity, recruitment, summon-cost, reward or banner-pool changes.
+[Current compatibility contract](kit-conduits.md#current-approved-omnic-replacement-d-176).
+
 ## Story regional first-clear income (D-164)
 
 The approved [six-region campaign](story-and-training.md) adds one account-wide

@@ -11,7 +11,12 @@ describe('character stat and kit growth', () => {
     expect(kit.stats.defense).toBe(original.stats.defense + original.passive.defenseBonus);
     expect(kit.stats.critMultiplier).toBe(1.5);
     expect(kit.stats.shatterCapacity).toBe(100);
-    expect(kit.abilities).toEqual(original.abilities);
+    for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
+      expect(kit.abilities[action].name).toBe(original.abilities[action].name);
+      expect(kit.abilities[action].strength).toEqual(original.abilities[action].strength);
+      expect(kit.abilities[action].cooldown).toBe(original.abilities[action].cooldown);
+    }
+    if (starter.id === 'sprout') expect(kit.abilities.ultimate.description).toContain('spent before healing');
     kit.stats.health = 1;
     expect(fighters[starter.id]).toEqual(original);
   });

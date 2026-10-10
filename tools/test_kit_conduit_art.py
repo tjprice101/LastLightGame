@@ -8,7 +8,7 @@ from build_kit_conduit_art import ROOT, PALETTES, designs, document
 class KitConduitArtTests(unittest.TestCase):
     def test_catalog_and_exact_reproduction(self):
         rows = designs()
-        self.assertEqual(Counter(row[2] for row in rows), {"Common": 5, "Rare": 8, "Legendary": 6, "Omnic": 6})
+        self.assertEqual(Counter(row[2] for row in rows), {"Omnic": 25})
         self.assertEqual({row[3] for row in rows if row[2] == "Omnic"}, set(PALETTES))
         self.assertEqual(art_path("conduits", "Kit Conduits.md", root=ROOT).read_text(encoding="utf-8"), document())
 
@@ -29,7 +29,12 @@ class KitConduitArtTests(unittest.TestCase):
             self.assertIn("flat unlit color edge to edge and through all openings", prompt)
             self.assertIn("strict subject palette lock", prompt)
             self.assertIn("no glows or glowing visual effects", prompt)
-            self.assertLess(len(prompt.split(" --ar ")[0].split()), 285)
+            self.assertIn("fully reborn", prompt)
+            self.assertIn("six majestic elemental fan structures", prompt)
+            self.assertIn("fill rear interior gaps", prompt)
+            self.assertNotIn("small restrained", prompt)
+            self.assertNotIn("small bronze", prompt)
+            self.assertLess(len(prompt.split(" --ar ")[0].split()), 380)
 
 
 if __name__ == "__main__":

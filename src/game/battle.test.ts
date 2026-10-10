@@ -151,7 +151,7 @@ describe('Shatter Gauge', () => {
       const potency = characterPotencyFactor({ level: 30, evolution: 2 });
       const burn = Math.round(8 * factor * potency);
       expect(result.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(actor.stats.damage, 1.6 * potency, 5, true, actor.stats.critMultiplier));
-      expect(result.state.enemies[0].burn).toEqual({ damage: burn, turns: 2, sourceId: 'ember' });
+      expect(result.state.enemies[0].burn).toEqual({ damage: burn, turns: 2, sourceId: 'ember', origin: 'native' });
       expect(result.state.allies[0].readyRound.skill1).toBe(3);
       expect(result.state.allies[0].shatter).toBe(89);
       expect(endTurn(result.state).events.find((entry) => entry.kind === 'damage' && entry.source === 'ember')?.amount).toBe(burn);

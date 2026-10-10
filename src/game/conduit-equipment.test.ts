@@ -102,6 +102,6 @@ describe('Conduit loadouts', () => {
     const html = characterDetail(getStarter('ember'), 'equipment', account);
     expect(html.match(/data-conduit-slot=/g)).toHaveLength(8);
     expect(html).toContain('Vigil Core');
-    expect(html).toContain('Reserved ~ Not available');
+    expect(html).toContain('Reserved · Not available');
   });
 });

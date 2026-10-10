@@ -35,22 +35,22 @@ describe('Conduit Upgrade and account-aware icons', () => {
     const html = conduitUpgradeMenu(account);
     expect(html.match(/data-upgrade-card=/g)).toHaveLength(2);
     expect(html).toContain('data-expected-upgrade="4"');
-    expect(html).toContain('+255% Attack ~ -30% Health');
-    expect(html).toContain('+297.5% Attack ~ -35% Health');
-    expect(html).toContain('Upgrade to +5 ~ 1000 components');
+    expect(html).toContain('+255% Attack, -30% Health');
+    expect(html).toContain('+297.5% Attack, -35% Health');
+    expect(html).toContain('Upgrade to +5 · 1000 components');
     expect(html).toMatch(/data-upgrade-conduit="worldbreaker-drive"[^>]+disabled/);
     account.mechanicalComponents = 1000;
     expect(conduitUpgradeMenu(account)).not.toMatch(/data-upgrade-conduit="worldbreaker-drive"[^>]+disabled/);
-    for (const row of ['Common: 25 ~ 50 ~ 100 ~ 175 ~ 250',
-      'Rare: 50 ~ 100 ~ 200 ~ 350 ~ 500', 'Legendary: 100 ~ 200 ~ 400 ~ 700 ~ 1000',
-      'Omnic: 5000 ~ 10000 ~ 20000 ~ 35000 ~ 50000']) expect(html).toContain(row);
+    for (const row of ['Common: 25 / 50 / 100 / 175 / 250',
+      'Rare: 50 / 100 / 200 / 350 / 500', 'Legendary: 100 / 200 / 400 / 700 / 1000',
+      'Omnic: 5000 / 10000 / 20000 / 35000 / 50000']) expect(html).toContain(row);
     expect(html).toContain('3.5 times their original values');
     expect(html).toContain('Legendary penalties grow too');
     expect(html).toContain('id="mechanical-components-balance">250');
     expect(html).toContain('data-machine-activity');
     expect(html).not.toContain('artwork pending');
     expect(html).toContain('currencies/mechanical-components.png');
-    expect(conduitIcon('worldbreaker-drive', 4)).toContain('aria-label="Worldbreaker Drive ~ Upgrade +4 of 5"');
+    expect(conduitIcon('worldbreaker-drive', 4)).toContain('aria-label="Worldbreaker Drive · Upgrade +4 of 5"');
     expect(conduitIcon('worldbreaker-drive', 4)).toContain('class="conduit-upgrade-meter" data-upgrade-level="4" aria-hidden="true"');
     for (const level of [-1, 6, 1.5, NaN]) expect(() => conduitIcon('vigil-core', level)).toThrow();
   });
@@ -78,7 +78,7 @@ describe('Conduit Upgrade and account-aware icons', () => {
     for (const html of [inventoryView(equipped, 'conduits'), archives(equipped, 'conduits'),
       characterDetail(getStarter('ember'), 'equipment', equipped), characterCopyManagement(equipped, 'all')]) {
       expect(html).toContain('data-conduit-upgrade="5"');
-      expect(html).toContain('+297.5% Attack ~ -35% Health');
+      expect(html).toContain('+297.5% Attack, -35% Health');
       expect(html).toContain('data-page="conduit-upgrade"');
     }
     expect(conduitStore(equipped)).toContain('+12.5% Health');

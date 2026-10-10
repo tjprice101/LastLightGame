@@ -158,7 +158,7 @@ describe('20% capture rewards and retained fixed-form creatures', () => {
     expect(() => levelCapturedCharacter(saved, first.instanceId, 120)).toThrow('Maximum');
     expect(() => validateAccount({ ...max, capturedCharacters: [{ ...first, level: 121 }] })).toThrow();
     const copyHtml = characterCopyManagement(equipped);
-    expect(copyHtml).toContain(`Copy 1 ~ Lv.${equipped.capturedCharacters![0].level}`);
+    expect(copyHtml).toContain(`Copy 1 · Lv.${equipped.capturedCharacters![0].level}`);
     expect(copyHtml).not.toContain('Fixed form');
     const homeHtml = homeHub(getStarter('ember'), false, { ...equipped, squad: [first.instanceId] });
     expect(homeHtml).not.toContain('Fixed form');

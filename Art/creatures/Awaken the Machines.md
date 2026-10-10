@@ -140,6 +140,12 @@ square gacha JRPG collectible item illustration, one majestic ancient-war precis
 
 ## Ten Omnic Conduits - prismatic elemental masterpieces
 
+D-176 retains these original ten identities/art prompts as the visual benchmark;
+the full current Omnic pool has45 entries at1% total (1%/45 per entry).
+[Reborn Kit Conduits](../conduits/Kit%20Conduits.md) converts the same25 newer IDs
+to Omnic with distinct mechanics. Historical ten-entry rates below are superseded;
+use the runtime catalog/drop tables for current odds.
+
 Owner's "Omni" is the canonical **Omnic** tier.1% total from stage75 (D-139),
 ten equal entries0.1% each. Three stat bonuses and one real combat mechanic
 each; maximum four equipped, matching character combat element only.

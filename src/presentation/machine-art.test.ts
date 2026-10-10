@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { conduits } from '../content/conduits';
+import { conduitArtRevisions } from '../content/conduit-art-revisions';
 import { getCreature } from '../content/creatures';
 import { machineEnemies } from '../content/machines';
 import { infusionEncounter } from '../content/infusions';
@@ -15,14 +17,18 @@ describe('supplied machine artwork integration', () => {
   it('registers every new Conduit through the shared equipment/archive/loot resolvers', () => {
     const supplied = conduits.filter((entry) => entry.art !== null);
     const pending = conduits.filter((entry) => entry.art === null);
-    expect(supplied).toHaveLength(25);
-    expect(pending).toHaveLength(60);
+    expect(supplied).toHaveLength(60);
+    expect(pending).toHaveLength(25);
     for (const conduit of supplied) {
       expect(conduit.art).toBe(conduit.id);
-      expect(conduitIcon(conduit.id)).toContain(assetUrl(`conduits/${conduit.id}.png`));
+      const path = `conduits/${conduit.id}.png`;
+      const png = readFileSync(new URL(`../../public/assets/${path}`, import.meta.url));
+      const revision = createHash('sha256').update(png).digest('hex').slice(0, 16);
+      expect(conduitArtRevisions[conduit.id]).toBe(revision);
+      expect(assetUrl(path)).toBe(`${import.meta.env.BASE_URL}assets/${path}?v=${revision}`);
+      expect(conduitIcon(conduit.id)).toContain(assetUrl(path));
       expect(lootArt({ id: `conduit:${conduit.id}`, art: conduit.art ?? undefined }))
-        .toBe(assetUrl(`conduits/${conduit.id}.png`));
-      const png = readFileSync(new URL(`../../public/assets/conduits/${conduit.id}.png`, import.meta.url));
+        .toBe(assetUrl(path));
       expect([png.readUInt32BE(16), png.readUInt32BE(20), png[25]]).toEqual([256, 256, 6]);
     }
     for (const conduit of pending) {

@@ -1,4 +1,4 @@
-"""Generate the 25 kit-Conduit prompts from their runtime identities."""
+"""Generate the 25 reborn Omnic kit-Conduit prompts from runtime identities."""
 from collections import Counter
 from pathlib import Path
 import re
@@ -14,10 +14,7 @@ PALETTES = {
     "chaotic": ("obsidian black crimson scarlet violet ivory silver and platinum", "blue, navy, cyan, yellow, pink"),
 }
 MATERIALS = {
-    "Common": "small restrained recovered bronze mechanism with compact ceramic details",
-    "Rare": "intricate restored silver mechanism with clearly interlocking articulated components",
-    "Legendary": "formidable majestic platinum and ivory ancient-war mechanism with layered open architecture",
-    "Omnic": "awe-inspiring fully restored ancient-war masterpiece with immense articulated architecture and elaborate bounded prismatic facets",
+    "Omnic": "fully reborn awe-inspiring ancient-war elemental masterpiece with monumental platinum ivory armor, immense articulated architecture and elaborate bounded prismatic facets",
 }
 
 
@@ -27,31 +24,38 @@ def designs():
     rows = re.findall(pattern, text, re.S)
     if len(rows) != 25 or len({row[0] for row in rows}) != 25:
         raise ValueError("Expected 25 unique runtime kit-Conduit identities.")
-    if Counter(row[2] for row in rows) != {"Common": 5, "Rare": 8, "Legendary": 6, "Omnic": 6}:
-        raise ValueError("Kit-Conduit rarity distribution must be 5/8/6/6.")
+    if Counter(row[2] for row in rows) != {"Omnic": 25}:
+        raise ValueError("All 25 converted kit-Conduits must be Omnic.")
     return rows
 
 
 def document():
     sections = [
-        "# Kit-focused Conduit icon prompts",
-        "25 reference-free copy-ready prompts matched to the implemented runtime catalog. "
+        "# Reborn Omnic kit-Conduit icon prompts",
+        "D-176:25 reference-free copy-ready Omnic prompts matched to the converted runtime catalog. "
         "[Mechanics, acquisition and validation](../../docs/kit-conduits.md). "
         "Art IDs below are identities, not URLs or installed imagery. All25 entries "
         "remain art-pending until supplied originals are reviewed and exported.",
         "Preserve originals under Art/source/kit-conduits. Review each key, enclosed "
         "opening, ivory metal, crystal facet and shadow individually. Export transparent "
         "256px icons with224px content; never reuse an unrelated icon, request a missing "
-        "PNG, or remove authoritative supplied alpha. Rarity affects complexity, not "
-        "extra out-of-palette hues. Elemental theme does not restrict Common/Rare/"
-        "Legendary equipment; only Omnic requires the matching combat element.",
+        "PNG, or remove authoritative supplied alpha. All25 require matching combat "
+        "element and count toward the four-Omnic limit. Preserve stable art IDs. "
+        "Original elemental Omnics in [Awaken the Machines](../creatures/Awaken%20the%20Machines.md) "
+        "provide the written renderer/epicness benchmark, not image references or copied devices. "
+        "Fully reborn elemental regalia, immense fans, nested coronas and dense rear "
+        "architecture surround a readable device core; never small recovered bronze mechanisms. "
+        "Palettes remain individually locked; opal/prismatic means allowed-color faceting, not rainbow.",
     ]
     for number, (asset, name, rarity, theme, identity) in enumerate(designs(), 1):
         palette, negatives = PALETTES[theme]
         prompt = (
             f"one {identity}, {MATERIALS[rarity]}, original fantasy machinery not modern electronics, "
             "recognizable complete device silhouette with distinct moving joints and protected "
-            f"central mechanism, jewel-like {palette} subject colors, compact chibi anime gacha "
+            "six majestic elemental fan structures with layered branching ribs, nested tilted "
+            "coronas and regal crown, counter-sweeping opaque ribbons and faceted fragments "
+            "fill rear interior gaps while narrow key channels separate readable layers, "
+            f"central mechanism remains visible, jewel-like {palette} subject colors, compact chibi anime gacha "
             "collectible renderer clean precise contours crisp cel shading smooth painted "
             "non-emissive highlights, opaque solid metal ceramic crystal and elemental shapes "
             "with crisp hard edges, strict subject palette lock use ONLY the listed subject "

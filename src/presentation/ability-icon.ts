@@ -50,7 +50,9 @@ export const abilityIcons = {
 
 export function abilityIcon(starterId: StarterId, action: ActionId | 'passive'): string {
   const icons: Partial<Record<ActionId | 'passive', string>> = abilityIcons[starterId];
-  const icon = icons[action];
+  const icon = action === 'light'
+    ? 'universal-normal-attack'
+    : action === 'defend' ? 'universal-defense' : icons[action];
   if (!icon) return '';
   return `<img class="ability-icon" src="${assetUrl(`abilities/${icon}.png`)}" alt="" aria-hidden="true" width="256" height="256" />`;
 }

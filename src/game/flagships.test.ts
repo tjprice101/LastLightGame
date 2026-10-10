@@ -51,7 +51,9 @@ describe('playable flagship roster', () => {
       expect(characterName(character.id, evolution)).toBe(`${form.title}, ${character.name}`);
     }
     for (const action of ['passive', 'light', 'skill1', 'skill2', 'ultimate', 'defend'] as const) {
-      expect(abilityIcon(character.id, action)).toContain(`abilities/${character.id}-${action}.png`);
+      const art = action === 'light' ? 'universal-normal-attack' : action === 'defend' ? 'universal-defense' : `${character.id}-${action}`;
+      expect(abilityIcon(character.id, action)).toContain(`abilities/${art}.png`);
+      expect(existsSync(`public/assets/abilities/${art}.png`)).toBe(true);
       expect(existsSync(`public/assets/abilities/${character.id}-${action}.png`)).toBe(true);
     }
     expect(characterRole(character.id)).toContain(`data-character-role="${character.role}"`);
@@ -146,7 +148,7 @@ describe('Disciple ally empowerment', () => {
     state.allies.forEach((unit) => { unit.shatter = 100; unit.stats.crit = 0; });
     state.enemies.forEach((unit) => { unit.hp = 1000000; unit.stats.health = 1000000; });
     const supported = act(state, 'disciple', 'skill1', state.enemies[0].id).state;
-    expect(supported.allies[1].attackBoost).toEqual({ fraction: .2, throughRound: 2 });
+    expect(supported.allies[1].attackBoost).toEqual({ fraction: .2, throughRound: 2, sourceId: 'disciple' });
     const result = act(supported, copy.instanceId, 'light', supported.enemies[0].id);
     expect(result.events.find((entry) => entry.kind === 'damage')?.amount)
       .toBe(damageAmount(supported.allies[1].stats.damage, 1.2, supported.enemies[0].stats.defense, false));
@@ -154,7 +156,7 @@ describe('Disciple ally empowerment', () => {
     result.state.enemies.forEach((unit) => { unit.hp = 0; });
     const next = nextWave(result.state).state;
     expect(next.round).toBe(2);
-    expect(next.allies[1].attackBoost).toEqual({ fraction: .2, throughRound: 2 });
+    expect(next.allies[1].attackBoost).toEqual({ fraction: .2, throughRound: 2, sourceId: 'disciple' });
   });
   it('boosts actual damage for living allies, persists on clone/resume, and expires after the next turn', () => {
     const state = controlled();
@@ -167,7 +169,7 @@ describe('Disciple ally empowerment', () => {
     const attack = act(resumed, 'elise', 'light', resumed.enemies[0].id);
     expect(attack.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(40, 1.2, state.enemies[0].stats.defense, false));
     const next = endTurn(attack.state).state;
-    expect(next.allies[2].attackBoost).toEqual({ fraction: .2, throughRound: 2 });
+    expect(next.allies[2].attackBoost).toEqual({ fraction: .2, throughRound: 2, sourceId: 'disciple' });
     expect(endTurn(next).state.allies.every((ally) => ally.attackBoost === undefined)).toBe(true);
   });
   it('refreshes instead of stacking, protects dead allies, and gives the advertised shields', () => {
@@ -181,7 +183,7 @@ describe('Disciple ally empowerment', () => {
     expect(state.allies[1].shield).toBe(0);
     state = endTurn(state).state;
     state = act(state, 'disciple', 'skill1', state.enemies[0].id).state;
-    expect(state.allies[0].attackBoost).toEqual({ fraction: .3, throughRound: 3 });
+    expect(state.allies[0].attackBoost).toEqual({ fraction: .3, throughRound: 3, sourceId: 'disciple' });
     const ultimate = controlled();
     const result = act(ultimate, 'disciple', 'ultimate', '');
     expect(result.state.allies[0].attackBoost?.fraction).toBe(.4);

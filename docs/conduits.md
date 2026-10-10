@@ -1,5 +1,13 @@
 # Conduits and Conduit Store
 
+**Current D-176 conversion:** same25 kitConduit IDs become new Omnics, keeping
+ownership/upgrades. Catalog85 tiers10Common/15Rare/15Legendary/45Omnic;
+converted entries no longer sold or lower-tier drops, stage75+1%Omnic total.
+Walletv5 is the read-only legacy conversion marker; remove only incompatible/
+excess converted equipped slots in order, then persist on ordinary success.
+Currentv5 gear is strictly validated. [Exact rules/compatibility](kit-conduits.md#current-approved-omnic-replacement-d-176)
+supersede earlier25 kitConduit tier/rule totals, not other60 designs. and Conduit Store
+
 **Status:** purchasing/per-character equipment/stat buffs remain active. D-124
 adds [Awaken the Machines](awaken-the-machines.md),20 earned Conduits, unique
 Omnic mechanics and an additional Legendary banner bonus. D-157 expands

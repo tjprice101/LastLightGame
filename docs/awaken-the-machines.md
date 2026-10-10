@@ -1,5 +1,12 @@
 # Awaken the Machines and expanded Conduits
 
+**D-176 current pool:** same25 kitConduit IDs converted to unique Omnics,
+yielding15Rare/15Legendary/45Omnic pool entries with unchanged8%/3.5%/1%
+total chances, stage75Omnic gate and independent RNG stream. Equal entry chance
+within tiers; original-five Legendary banner pool unchanged. Converted Common
+Store entries no longer sold. [Current catalog/compatibility](kit-conduits.md#current-approved-omnic-replacement-d-176)
+supersedes historical pool counts below. and expanded Conduits
+
 ## Current kit expansion (D-160/D-162)
 
 The approved25 further kit-focused additions are implemented after six-element

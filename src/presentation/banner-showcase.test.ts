@@ -14,7 +14,7 @@ describe('banner showcases', () => {
     const expected = banner.pool().filter((entry) => entry.kind === 'character' && entry.stars >= 5);
     expect(html.match(/data-showcase-character=/g)).toHaveLength(expected.length);
     expect(html).toContain(`id="banner-showcase-${banner.id}"`);
-    expect(html).toContain(`${banner.name} ~ Showcase`);
+    expect(html).toContain(`${banner.name} · Showcase`);
     expect(html).toContain('aria-haspopup="dialog"');
     expect(html).toContain('aria-label="Close Showcase"');
     for (const entry of expected) {

@@ -1,5 +1,21 @@
 # Passion of Crimson Roses and Roses Under Sunny Skies
 
+## Native setup/payoff loops (D-172)
+
+D-173 preserves these three Rose signatures while consolidating ordinary native
+effects. Rose Grace is precise Bloom, Thorn Aegis precise Ward and Rose Duality
+precise Burn. Family membership does not merge owners/counts with general native
+or equipment resources. Their three unique symbol prompts remain.
+
+Rosetta's effective authored healing earns Rose Grace, Thornia's actual authored
+shield absorption earns Thorn Aegis and Crinso's own effective Burn earns personal
+Rose Duality. All cap3; ordinary skills spend for Weaken/damage, Last Flare offers
+a stronger damage or shield payoff. Existing low-health damage, healing, shields,
+Burn, names, targeting, Gauge costs, cooldowns and recovery remain intact.
+[Exact triggers, bounds and snapshot rules](character-kit-rework.md#rose-and-elemental-war-loops-d-172)
+own the contract. No equipment prerequisite, art replacement, recruitment/reward
+change or persistent account resource. Enemy Roselius kits are unchanged.
+
 ## Owner-supplied Evo.1 titles (D-143)
 
 The delivered filenames intentionally establish **Gilded Rose, Rosetta** and

@@ -122,7 +122,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     Object.assign(view, { session, bindings: defaultBindings, host: { innerHTML: '', querySelectorAll: () => [],
       querySelector: (selector: string) => selector === '#battle-menu' ? menu : null }, bind: vi.fn() });
     Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
-    expect(view.host.innerHTML).toContain('Stage 24 ~ 25');
+    expect(view.host.innerHTML).toContain('Stage 24 / 25');
     expect(view.host.innerHTML).toContain('assets/backgrounds/treasury-arena.png');
     expect(view.host.innerHTML).toContain('assets/enemies/the-crown-beyond-dawn-gleamstone-slime.png');
     expect(view.host.innerHTML).not.toContain('enemies/undefined');

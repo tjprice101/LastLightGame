@@ -1,6 +1,559 @@
 # Current state and handoff
 
-## Current:150-stage Story / retained Training implemented (D-164)
+## Next: Monochrome UI and Supabase setup (D-179)
+
+Inspected owner reference at C:\Users\creat\Downloads\last-light-mono.html.
+New stores and cloud accounts explicitly approved after initial clarification.
+[Approved rules/open questions](mono-ui-and-cloud-saves.md) are authoritative.
+Supabase project ohtfgwomdfteaxubndww supplied; publishable configuration stored
+in Git-ignored .env.local with placeholder-only .env.example. Free plan,
+US East, username/password with email verification/recovery selected.
+Owner chooses mandatory online accounts/server-authoritative progression and
+purchases. Online accounts start fresh; local saves remain separate legacy mode,
+never imported as trusted progress. Hosted project exists; new UI/store
+transactions/auth/server schema/functions are not implemented or deployed yet.
+Do not replace real content with sample mock data or expose server keys.
+
+## Current: All60 installed Conduit cutouts reviewed (D-177)
+
+Owner reports residual background color within icons and requests thorough
+revisit. Reviewed all60 installed Conduit sprites against actual
+authoritative original/light/dark views and magnified candidates. Correct only
+reviewed source-specific enclosed gaps/spill; preserve gems/powers/pale metal/
+shadows/original bytes and supplied alpha. Owning exporters must reproduce fixes,
+prior runtime bytes preserved, all60 verdicts/source/before/after hashes recorded
+Art/provenance/conduit-cleanup-review.json.25 missing kit images remain pending.
+
+Five corrected: Chaotic Paradox Spindle, Execution Orrery, Meridian Inverter,
+Nullsong Transmission and Prism Splinter Socket. Cleared reviewed enclosed
+backdrop islands/narrow border remnants with per-image gap/row-gradient/strip
+settings in owning intake_delivered_art exporter. Preserved violet/cyan gems,
+pale metal/subject accents and cast shadows;55 other exports unchanged.
+Original source hashes unchanged, five prior runtimes archived with hashes.
+
+Shared URL revisions regenerated. `python -m unittest discover -s tools -p
+test_conduit_cleanup_review.py`:1 passed, all60 reviewed source/hash/verdict/
+prior-export/reproduction records verified. `python tools\conduit_art_revisions.py`
+matches bytes; revision test1 passed. Intake/reproduction checks passed.
+Two older root-art suites still fail because seven unrelated newly incoming
+Story/world-map PNGs are unmapped; left them untouched and outside this task.
+Browser: all five changed revisioned URLs return200/decode256px, fetchedSHA256
+matches URLrevision; localStorage unchanged. `git diff --check` passed.
+No gameplay code changed; no full game suite required for pixel/settings updates.
+No mechanics, saves, account writes or new artwork generation requested.
+
+## Current:25 kit Conduits replaced by new Omnics (D-176)
+
+Owner requests all designs in Kit Conduits become unique Omnics with comparable
+epicness/style to original elemental MachinesOmnics. Clarified replacement of
+same25, not addition; preserve IDs/counts/upgrades. Owner approves unequipping
+only converted wrong-element/excess-fourOmnic slots in order, read-only legacy
+normalization with first successful ordinary save. Acquisition all25 move to
+stage75+existing1%Omnic pool, leave Store/lower pools; banner unchanged.
+Expected catalog85 tier totals10/15/15/45.
+
+Implemented TS/engine/account migration/all gear/catalog/loot surfaces and tests.
+New25 rules are distinct bounded actual elemental interactions preserving other60,
+RNG/rewards/recovery. [Exact identities/stat triples/interaction table](kit-conduits.md#implemented-replacement-rules)
+owns live details. Walletv5 is durable conversion marker: legacyv1-v4 reads do
+not write, retain ownership/upgrades/currencies/progress/locks/squads and remove
+only converted incompatible/excess slots in original order including final slots.
+First ordinary successful transaction savesv5; invalidv5 equipment is rejected.
+Generated Omnic healing/shields/support never retrigger authored native/gear loops.
+Independent proc/reserve gates survive Settings/clones, reset new encounters.
+Art generator now requires25Omnic and full reborn platinum/ivory elemental
+architecture, six majestic fans/crowns/ribbons/dense interiors/visible device
+core matching MachinesOmnic written standard without references/palette drift.
+Regenerated from updated typed designs; existing25 art still undelivered.
+
+**Verified:**
+
+- `python tools\build_kit_conduit_art.py` regenerated all25Omnic prompts.
+  `python -m unittest discover -s tools -p test_kit_conduit_art.py`:2 passed,
+  exact reproduction/identities/palettes/renderer/dense architecture/margins.
+- `npm test -- --maxWorkers=2`:94 files /1,382 tests passed. Includes all25
+  exact distinct rules/caps/effective trigger/provenance/RNG/readout tests,
+  strict gear/pool ratios and legacy/raw-preservation/denied/overflow migration.
+  Agent's unbounded-worker full run had an integrated-economy timeout;
+  established bounded-worker runs passed.
+- Build Last Light (`npm run build`): TypeScript/Vite140 modules passed;
+  existing >500kB chunk advisory only.
+- Browser in-memory storage fixture: real catalog85 counts10/15/15/45, all25
+  matchingOmnic/nullStorePrice; loadv4 zero writes retains owned counts,
+  unequips wrong-element slot0 and preserves compatible slot1; one explicit
+  test-storage save persistsv5. Real localStorage unchanged; no owner save edits.
+- Art library links, `git diff --check` and final diagnostics checked below.
+
+No dependencies, owner account writes/grants, commits or deployments.
+Local game server remains running; new encounters use rebuilt equipment rules,
+retained runs preserve their intended snapshot boundary. All25 icons still
+neutral art-pending until reviewed image delivery. Infernic Story six art assets
+also remain undelivered; all nine status icons are installed.
+
+## Current: Delivered status icons installed (D-175)
+
+Owner supplies nine root PNGs matching all six thematic family names and three
+Rose signatures. Completed byte-identical archives, reviewed
+per-source RGB/gap cleanup, transparent256px/224px-content exports and exact
+hash-verified root removal. tools/intake_status_art.py and Art/provenance/
+status-art-{settings,intake}.json own reproduction/provenance.
+
+Runtime wiring added: content/status-art.ts stable nine-path registry and typed
+family/Rose resource selection; presentation/status-icon.ts shared decorative
+renderer using deployment-base assetUrl. Enemy Burn uses shared burn icon,
+actual Weaken/Fracture shared suppression; precise source/text/clock intact.
+Native counters get exact family or Rose art, counts unchanged. Applicable
+equipment full readouts use family art while unrelated effects stay text and
+compact field scope remains unchanged. CSS contains20px badge/24px counter icons.
+
+tools/status_art_revisions.py prepared for byte-derived shared URL revisions;
+generated and connected to shared assetUrl. New status-icon.test.ts verifies
+nine real URLs/hashes/decorative accessibility, typed source mapping, actual
+debuff snapshots and independent equipment/compact behavior.
+Existing readout/status/kit focused suites:3 files /15 tests passed.
+Prompt reproduction2 tests passed.
+
+**Final verification:** `python -m unittest discover -s tools -p
+test_status_art_intake.py`:15 passed; archive-only reproduction verified.
+`python tools\status_art_revisions.py`: runtime byte revisions match.
+`npm test -- --maxWorkers=2`:94 files /1,348 passed.
+Build Last Light (`npm run build`): TypeScript/Vite140 modules passed; existing
+large-chunk advisory only. All nine original hashes/runtime/decoded hashes and
+reviewed keys/gaps recorded. Exact verified root copies removed.
+
+Browser: all nine versioned assets returned200 and decoded256x256; real native
+and Rose counters, equipment charges and Burn/Weaken/Fracture snapshots render
+matching icons.17 fixture icons fully loaded at24px counters/20px enemy badges;
+390px container had no horizontal overflow. Exact values/owners/labels and
+empty-alt/aria-hidden accessibility retained; local storage unchanged.
+Manual source/dark/light review preserved pale detail, green subjects and
+intentional shadows; pale sparks naturally contrast less on white.
+Remaining:25 kit-Conduit icons and Infernic Story five enemies/arena undelivered.
+All nine status icons are now installed, superseding older pending statements.
+No gameplay/save/RNG changes, dependencies, commit or deployment.
+
+## Current: Thematic elemental display names (D-174)
+
+Owner asks to keep all mechanics and rename generic effects to fit their
+elements, specifically Ward to Oceanic Protection. Shared labels now:
+Infernic Embers / Oceanic Protection / Botanic Renewal / Atmospheric Charge /
+Tranquilitic Focus / Chaotic Suppression. Applicable native counters, descriptions
+and status events follow these names. Precise Burn/Weaken/Fracture labels, authored
+ability names, equipment charges and all three Rose signatures stay unchanged.
+Family/resource/proposed image IDs, art prompt bodies, source provenance and
+all mechanics/save/RNG remain unchanged. Art generator/checklist headings use
+thematic labels, still nine symbols and no installed icons.
+
+`npm test -- --maxWorkers=2`:93 files /1,344 tests passed, including new exact
+family-name/unchanged resource-ID/readout/Rose checks and existing math regressions.
+`npm run build`: TypeScript/Vite137 modules passed, existing chunk advisory only.
+`python -m unittest discover -s tools -p test_status_art_prompts.py`:2 passed;
+Art local-link test, editor diagnostics and `git diff --check` passed.
+No dependencies, account writes, commits or deployments. Remaining artwork/
+future Omnic scope unchanged from D-173.
+
+## Current: Elemental consolidation complete (D-173)
+
+Owner explicitly approves live consolidation rather than icon renaming:
+Burn/Ward/Bloom/Tempest/Focus/Suppression families, fewer personal counters,
+Rose-only precise signatures, no future Conduits in this phase.
+[Current contract](character-kit-rework.md#current-consolidation-contract-d-173)
+supersedes historical all16 bespoke-resource completion below.
+
+Shared Ember/Ward/Bloom/Tempest native loops replace redundant resource labels.
+Retire native Shelter Charge, Verdict marks/mark Precision, Bedrock, Concord,
+Night Resolve, Charted Current and Foundation, while preserving base authored
+abilities, essential combat rules and all owned equipment effects. Six EBs
+Aurora/Bruno/Disciple/Razor/Nerithe/Orvella have no native stack mechanic.
+Rose signatures stay precise independent Bloom/Ward/Burn specializations.
+Tempest critical trigger is shared across Atmoso/Elise/Vaelor; Bloom earns
+once/round, with Bliss other-only and Flora including self.
+
+Status generation is reduced40 to nine prompts; exact reproduction/palette/
+key/reference tests and Art local-link validation passed. No generated or
+installed icons, save migrations, account grants or new RNG.
+
+Removed Aurora's native pilot entirely rather than renaming its marks: no native
+mark/Precision producers, snapshots, badge/readout entries or hooks remain.
+Authored damage/Weaken and Conduit critical effects are preserved. Typed
+family/kind/origin/source metadata is used by current resource descriptors,
+readouts, status events and actual debuff snapshots; no speculative proc engine.
+
+**Final verification:**
+
+- `npm test -- --maxWorkers=2`:93 files /1,343 tests passed, including revised
+  full-roster applicability, shared triggers/spend order/source/caps/RNG/snapshot
+  regressions and existing Rose/equipment behavior.
+- Build Last Light (`npm run build`): TypeScript/Vite137 modules passed;
+  existing >500kB chunk advisory only.
+- `python -m unittest discover -s tools -p test_status_art_prompts.py`:2 passed;
+  nine exact symbols/reproduction/palette/keys/reference contract.
+  Art local-link test and `git diff --check` passed.
+- Browser after fresh reload: all16 actual field readouts match the contract,
+  ten shared/Rose counters and six no-pilot/no-counter EBs. Atmoso/Elise/Vaelor
+  each earn one Tempest on an effective critical Normal using the same trigger.
+  Local storage unchanged. Initial probe used invalid identity `infernis` instead
+  of stable `ember`; corrected by reading canonical registry and retesting.
+
+**Remaining:** nine status images,25 kit-Conduit images and Infernic Story five
+enemies/arena remain undelivered. Future Omnic family/specialization interactions
+are explicitly future design, not new implemented gear. No dependency changes,
+save writes/grants, commit or deployment.
+
+## Current: Rose and War intrinsic batches complete (D-172)
+
+**Owner request:** finish Rosetta/Thornia/Crinso, then Nerithe/Orvella/Vaelor.
+All16 playable Element-Bearers now have bounded native setup/payoff loops;
+Conduits are independent enhancements, not substitutes.
+
+**Implemented changes:** six cap3 resources: Rose Grace from Rosetta effective
+authored healing once/round; Thorn Aegis from her living authored shield source's
+actual direct absorption once/enemy phase; Rose Duality from Crinso's living
+own effective Burn once/phase; Charted Current from Nerithe effective Normal;
+Foundation from Orvella legal Defense; Resonance from Vaelor effective critical
+Normal/ordinary skills once/activation, using existing crit outcomes.
+Ordinary/Last Flare spending choices, exact coefficients and constraints live in
+[kit specification](character-kit-rework.md#rose-and-elemental-war-loops-d-172).
+
+Shared typed resource/guard/shield-source helpers retain stronger actual shield
+ownership on weaker refresh, count effective HP/shield direct critical hits,
+and preserve snapshots and independent Conduit resources. Captured recipients
+benefit normally; captured kits do not gain EB loops. New encounters reset
+personal state; Rosetta can legitimately earn Grace from opening passive healing.
+Preserve authored names/stats/targeting/coefficients/Gauge/cooldowns/recovery,
+Nerithe fixed5 Normal-only Gauge, low-health passives and Burn snapshots.
+One compact live0/3 field counter per living owner; exact Character/Battle
+references use typed resolved descriptions. No new RNG/rewards/save schema/writes.
+
+**Artwork:** [Battle Status Icons.md](../Art/ui/Battle%20Status%20Icons.md)
+extends34 to40 prompts with six new symbols; existing IDs/prompts retained.
+Reference-free individual palettes/negative hues, unlit keys and complete margins.
+All40 remain prompt-only; no missing runtime URLs. Reproduce:
+`python tools\build_status_art.py`.
+
+**Verification:**
+
+- `npx vitest run src\game\rose-war-intrinsic-kits.test.ts`:50 passed.
+  Includes exact base/grown damage/Weaken/shield potency, AoE once, source/death/
+  zero/overheal guards, caps, rejection/RNG immutability, gear independence,
+  clone/Continue and readout references. Additional focused regressions passed.
+- `npm test -- --maxWorkers=2`:93 files /1,391 tests passed.
+- Build Last Light (`npm run build`): TypeScript/Vite136 modules passed;
+  existing >500kB chunk advisory only.
+- `python -m unittest discover -s tools -p test_status_art_prompts.py`:2 passed;
+  exact40-prompt reproduction/coverage, palettes/keys and no-reference contract.
+  Art-library local-links test passed; `git diff --check` passed.
+- Browser in-memory fixtures: all six actual readout3/3 counters and ordinary
+  spending to0 verified; Nerithe Normal earns25 Gauge and one Current.
+  Local storage unchanged; no owner save funded/edited.
+
+**Remaining:** no roster batch outstanding. Status-icon40 images,25 kit-Conduit
+icons and Infernic Story five enemies/arena remain undelivered. Future balance
+changes require actual play feedback; no new owner decision blocks this phase.
+No dependency changes, commit or deployment.
+
+## Current: Delivered Story images installed (D-171)
+
+Owner asks to move root Story artwork, properly cut out enemies and wire the map.
+Completed31 supplied PNGs:25 enemy cutouts, five regional arenas (Oceanic,
+Atmospheric, Botanic, Tranquilitic, Chaotic) and World Map. Infernic's five enemies
+and arena were not delivered and remain neutral pending without missing URLs.
+
+**Changes and implemented behavior:**
+
+- Every original archived byte-identically under Art/source/story/<element> or
+  world-map; Art/provenance/story-art-intake.json and story-art-settings.json
+  preserve original/runtime/decoded-pixel hashes, dimensions and reviewed settings.
+  Verified root copies removed; root image count0. Reproduction uses
+  `python tools\intake_story_art.py --apply --reviewed --remove-incoming`.
+- Reviewed source-specific offline RGB keys/enclosed gaps produce960px transparent
+  enemy sprites; supplied alpha bypasses cleanup. Light/dark/source visual reviews
+  completed. Tiny source detached markings retained; clipped tips not reconstructed.
+  Five arenas/map preserve original opaque1456x816 pixels, never background-keyed.
+- content/story-art.ts registers only the actual25 sprites/five arena IDs/map.
+  storyCreature supplies shared art to both discovery catalog and all Story spawns.
+  Existing field/cut-ins/Collections therefore use the same IDs/images and retain
+  discovery gates. Reviewed per-enemy unit-facing metadata mirrors only left poses,
+  genuine frontal poses unchanged. Chaotic boss mirrors right in field and cut-in.
+- tools/story_art_revisions.py generates byte-derived shared URL revisions for31
+  actual exports; portrait.assetUrl includes these across enemies/backgrounds and
+  uses Vite deployment base. No art paths guessed for Infernic.
+- Map renders complete image at natural aspect ratio (width100%, height auto),
+  never cover-cropped; six accessible region buttons/150 stage controls remain
+  separate HTML below it. Stage locks/progress/bonuses and navigation unchanged.
+  Pending copy applies only to Infernic. No combat math/RNG/reward/save changes.
+
+**Verification and outcomes:**
+
+- `python -m unittest discover -s tools -p test_story_art_intake.py`:
+  **18 tests passed**, including source/hash/alpha/scenery/facing/archive-only
+  reproduction. `python tools\story_art_revisions.py`: byte revisions match.
+- `python -m unittest discover -s tools -p test_story_art_prompts.py`:
+  **5 passed**; generation references retained.
+- Targeted Story art/Story/battle chrome/facing/Archives: **5 files /126 passed**.
+  New tests verify exact31 real exports/revisions, every150-stage spawn/catalog,
+  Continue to regional boss, discovery-safe galleries, six controls/locks,
+  uncropped map styles and undelivered Infernic field fallback.
+- `npm test -- --maxWorkers=2`: **92 files /1,341 tests passed**.
+- Build Last Light (`npm run build`): TypeScript/Vite passed,136 modules;
+  existing >500kB bundle advisory only. `git diff --check` passed.
+- Browser:31 versioned assets return200 and decode as25 960px sprites plus six
+  1456x816 opaque scenery images. Map natural aspect preserved at desktop and
+  within390px container (356x199.5px image, no crop). Six region controls and
+  Oceanic preview worked while stage26 remained disabled for empty account.
+  All five regional boss field renders use exact art/scenery/facing; stage150
+  ultimate cut-in uses same mirrored Chaotic boss. Stored data unchanged during
+  field/cut-in probes; no owner account funded or edited. Browser img.decode()
+  render scheduling stalls were avoided with fetch/createImageBitmap checks.
+
+**Remaining:** Infernic Story5 enemies/arena undelivered;34 status-icon images
+and25 newer kit-Conduit icons pending; Rose/War intrinsic-kit batches remain next.
+No commit/deployment/dependencies, account migration or grants.
+
+
+## Current: Intrinsic Standard-flagship kits and complete status prompts (D-170)
+
+Owner resumes native dynamic ability/buff/stack redesign after the completed
+Story/art/navigation phases and requests one Midjourney file containing all old
+and new status icons. Full-roster rollout remains phased, not a blanket equipment
+rewrite. Seven Standard flagships implemented; original starter loops preserved.
+
+**Changes and implemented behavior:**
+
+- Atmoso: cap3 Gale Cadence from effective Normal/Skill2 activations; Skill1
+  spends +8% outgoing damage each, Last Flare +12% each. Single activation gain/
+  spend across AoE. Skill2 builds, never spends.
+- Aurora: existing own Verdict Marks/Skill2 Precision retained; Last Flare instead
+  consumes marks separately on each living target for +12% damage each (max24%).
+- Bliss: modest Skill2 healing/Restorative Charges retained. Skill1 now offers
+  +8% damage per charge; Last Flare retains its existing5% caster maxHP shield
+  per charge. Both consume the same resource, cap3; shield refresh/nonstack.
+- Bruno: actual direct absorption by his authored shields earns Bedrock once per
+  enemy phase across recipients, cap3, living source/provenance required. Skill1
+  spends +5pp Weaken each (combined cap60%); Last Flare adds5% caster maxHP each
+  to authored shield offer before refresh.
+- Disciple: effective direct attack under his actual sourced buff earns Concord
+  once per round, cap3, living source required. Skill2 spends +4pp attack buff
+  each, Last Flare +6pp each, combined cap65%, existing refresh/clock/nonstack.
+- Elise: first effective ordinary skill establishes rhythm without gaining a
+  stack; later alternating Skill1/Skill2 activations gain one Storm Rhythm, cap3.
+  Normal/Defense preserve rhythm. Skill1 spends +8% damage per existing stack
+  before possibly earning one new stack; Last Flare spends +12% each.
+- Razor: Defense earns Night Resolve, cap3. Skill1 spends +5pp Weaken each
+  (combined cap60%); Last Flare spends +12% outgoing damage each.
+- Typed per-encounter resources/source provenance/round gates clone with actions
+  and Settings and reset at new encounters. No new RNG/reward/save behavior,
+  equipment prerequisite, cost/cooldown/recovery bypass or captured-kit rewrite.
+  One short0/3 resource counter in the field; exact choices in resolved Character
+  and Battle reference. Existing equipment charges remain independent.
+- [One copy-ready Midjourney file](../Art/ui/Battle%20Status%20Icons.md) now holds
+  all34 current old/new symbols with delivery IDs/filenames, individual palette
+  locks/unwanted colors, reference-free1:1 keys/margins/no-glow. Green subjects
+  use magenta keys. Generic Shield/Defense/Recovery/Gauge/cooldown plus all real
+  intrinsic/equipment effects; instant feedback is not fabricated active status.
+  Text only until actual reviewed images arrive. No generated image installed.
+
+**Verification and outcomes:**
+
+- `npm test -- --maxWorkers=2`: **91 files /1,336 tests passed** final run.
+- `npm test -- src\game\machines.test.ts src\game\flagship-intrinsic-kits.test.ts --maxWorkers=2`:
+  **2 files /41 tests passed**, including independent native/equipment damage
+  bonuses and their separate consumption. Type-check `npx tsc --noEmit` passes.
+- Build Last Light (`npm run build`): TypeScript/Vite passes,134 modules;
+  existing >500kB bundle advisory only. Edited engine/readout/Python diagnostics
+  clear; `git diff --check` passes.
+- `python -m unittest discover -s tools -p test_status_art_prompts.py -v`:
+  **2 tests pass**, all34 icons reproduce exactly with required coverage,
+  palette/key/margin/no-reference rules and symbol word budgets.
+- Shared art-prompt suite:28 tests run with28 historical failed subtests, all
+  exclusively unchanged Awaken the Machines; no status-icon failures.
+  Art library's all-document local-link check passes.
+- Editor test runner reports no discovered tests; established CLI runner used.
+
+- Browser pure-engine/resolved-readout checks on isolated validation-server
+  origin: six personal counters exactly0/3, one counter each, no tilde or missing
+  icon images; Aurora remains enemy-mark-owned. Exact Atmoso Normal->Skill2->
+  Skill1 counts0/1/2/0 and Elise Skill1->Skill2->Skill1 counts0/0/1/1 confirmed.
+  Stored data byte-unchanged during these checks. This did not fund or alter an
+  owner account. New browser-context creation is restricted by storage affinity,
+  so no claim of mobile visual acceptance is made.
+- Initial verification found/fixed a pilot-test nullable-state compile issue,
+  incorrect Atmoso spender/reference and first-skill Elise resource gain; exact
+  sequence regressions now protect these. The related Conduit damage fixture now
+  includes the newly authored Gale bonus and verifies independent charge checks.
+
+**Remaining / next:** Rose trio Rosetta/Thornia/Crinso, then Elemental War trio
+Nerithe/Orvella/Vaelor intrinsic redesigns are not yet implemented. Status images
+need generation, reviewed alpha-safe offline intake and shared resolver wiring.
+Story imagery and25 newer kit-Conduit images also remain pending. No commit or
+deployment, dependencies, retroactive grants or account migration. No owner
+question blocks the next already-approved phased kit batch.
+
+
+## Current: Separator correction (D-169)
+
+Owner asked to restore slashes for materials and replace every other tilde with a
+separator that fits its meaning. Owned/required, current/maximum, squad, pity,
+stage and tier values use ` / `. Labels use ` · `. Stat lists use commas, pairs
+use `&`/and and ranges use en dashes. The broad replacement covered 66 source
+files, including matching test literals. D-127's tilde contract is superseded.
+
+**Verification:** `npm test -- --maxWorkers=2`: 90 files / 1,327 tests passed.
+`npm run build` passed with the existing >500kB chunk advisory only.
+`git diff --check` passed. `ui-copy.test.ts` now rejects tildes and unspaced
+slashes in rendered surfaces, then checks Owned / Required and squad/level labels.
+No values, IDs, saves, economy or combat behavior changed.
+
+## Current: Story art prompt packs complete (D-168)
+
+Owner requests a world-map prompt, every regional enemy and regional battle
+arenas in the existing elemental dungeon style, with all art outside the main
+folder. Scope is37 copy-ready prompts: one map,30 distinct runtime creatures
+and six empty side-view arenas. No generated images or new runtime registration.
+
+- [World map](../Art/ui/Story%20World%20Map.md) authored; six canonical terrains
+  in journey order, overhead scenery, six beacon landmarks, overlay-only HTML
+  labels/locks/stage controls. Full-bleed opaque export, never background-remove.
+- [Story pack index](../Art/creatures/story/README.md) and focused coverage
+  tests added. All six region files are complete: Emberwake March, Glasswater
+  Reach, Stormspan Heights, Rootstone Wilds, Stillhalo Vale and Riftbound Frontier.
+  Cutouts use individual palettes, unlit keys, complete silhouettes; arenas use
+  clear equal-height left/right standing lanes and recessed dungeon-style detail.
+- Related Story specification, Art library/workflow/docs index and D-168 updated.
+  All52 previously delivered root images remain archived; root image count0.
+
+**Verification and outcomes:**
+
+- `python -m unittest discover -s tools -p test_story_art_prompts.py -v`:
+  all5 tests pass, checking exact37 prompts, runtime regions/names/IDs, single
+  reference-free flags/shared renderer/word budgets, palettes/keys/containment,
+  side-view arenas and ordered world-map terrains.
+- `python -m unittest discover -s tools -p test_art_prompts.py`:
+ 28 tests run;28 failed subtests exclusively in unchanged Awaken the Machines.
+  No Story prompt failures. Historical policy failures remain unmodified.
+- `python -m unittest discover -s tools -p test_art_library.py -v`:
+ 5/6 pass, including every Art document's local links. Existing provenance-count
+  assertion expects26 but sees28 after the previous two intake manifests;
+  unrelated to new prompt files and left unchanged.
+- `git diff --check` passes; repository root image count remains0.
+  No TypeScript/build run needed for prompt/documentation-only changes.
+
+**Next:** generate/deliver the37 images using the indexed prompts.
+Real Story artwork, review/offline export/runtime intake remain pending delivery.
+Remaining intrinsic roster ability redesign stays paused; no new owner decision
+is required for this prompt scope. No commit/deployment or save changes.
+
+## Current: Defense rebalance and desktop contextual pass (D-165/D-166)
+
+Owner approves the diminishing-return Defense correction, requests intake of
+new root artwork and continuing the next approved phase. Artwork intake is
+separate from the verified combat/navigation changes below.
+
+**Changes and implemented behavior:**
+
+- All direct allied/enemy hits use Attack/(Attack+Defense) mitigation, with
+  action/critical/Weaken modifiers outside that ratio and integer final damage.
+  Equal Attack/Defense halves damage rather than cancelling it. Full-precision
+  stat inputs, pierce, Burn bypass, shields, guard, RNG and reward timing remain.
+- Shared staged Attack now starts32/48 atLv10 with .12 early growth; Story
+  starts16/24 atLv1 on half that curve. OrdinaryLv13 Story/Machines Attack40/44
+  yields32/36 noncritical normal damage againstLv0 Infernis (220HP/10Defense).
+  Every unequippedLv0 starter takes>=9% maxHP per real noncriticalLv13 hit.
+  HP/Defense/Training curves, Lv120 endpoints and Rose140 Attack17,750 remain.
+  Separating .036 post120 extension avoids unintentionally buffing final Roses.
+  Existing snapshots retain old enemy stats; enter/retry a new encounter.
+- Desktop Back identifies the real caller; Menu keeps secondary routes without
+  duplicating the four-destination dock. Return to title appears only in Settings,
+  with battle confirmation/disposal. Menu Settings close preserves current DOM,
+  filters/unsaved selection/scroll instead of rebuilding. Battle reconstruction
+  is retained. Removed nested desktop Gameplay/Character/Summon scroll caps;
+  preserved modal/list scrolling, existing animations and reduced-motion-safe
+  neutral button feedback. No account/schema/economy/ownership changes.
+
+**Verification and outcomes:**
+
+- `npm test -- --maxWorkers=2`: final90 files /1,327 tests passed.
+- Targeted balance pass:4 files /94 tests; guarded/Rose/endgame pass:4 files /
+  101 tests. Updated literal damage fixtures match the intended formula; the
+  max-level support simulation now uses Disciple's actual shield skill rather
+  than repeatedly choosing a non-damaging ultimate over it.
+- `npm test -- src\presentation\sanctuary.test.ts src\presentation\inventory.test.ts src\presentation\settings-panel.test.ts src\presentation\menu-history.test.ts src\presentation\ui-copy.test.ts src\presentation\battle-chrome.test.ts --maxWorkers=2`:
+  6 files /33 tests passed.
+- Build Last Light (`npm run build`): TypeScript/Vite passed,132 modules;
+  existing >500kB bundle advisory only. Edited engine/navigation editor
+  diagnostics are clear; `git diff --check` passed.
+- Disposable browser UI check: seven secondary Menu destinations; exact
+  maximum-safe-integer balances; Machines stage2 and the same select DOM node
+  survived Settings/Escape; Gameplay overflow visible/max-height none; Back
+  restored Home; Title absent from Menu and worked through Settings. No page
+  errors or save changes; owner wallet byte-identical. Native hidden selects
+  use the game's selection dialog for automation, not selectOption.
+- RealLv13 Story browser Defense turn: Infernis220->162HP from two guarded
+  hits29 each; Gauge0->20. Battle title cancellation retained Settings/run;
+  closing Settings retained the encounter; confirmation reached Title with
+  saved wallet unchanged. Native dialog close events are render-scheduled and
+  stalled the first browser attempt: explicit confirmation submit/Escape and
+  reward Continue/Escape now settle immediately and dispose through the same
+  existing cleanup. Added six delayed-close/invalid-submit/reward tests.
+  Related modal pass:3 files /17 tests. No economy logic moved into presentation.
+- Mobile DOM verification with true mobile emulation:390px layout/document
+  width, contained358px portrait, exact maximum-safe balances, full100,787.57HP
+  endgame stats,83.7x68px dock targets; Summon page scroll also had no horizontal
+  overflow. Cached browser screenshot painting did not reliably track viewport
+  changes, so responsive acceptance used actual DOM bounds/media queries.
+- Previous blocked Conduit purchase/equip/action browser sequence is now
+  complete: bought Tempered Strike Link for1,500 (100,000->98,500), one unlock,
+  equipped one of eight slots; battle reference displayed its fixed Normal
+  bonus, actual Normal saved one kill receipt/reward and completed presentation,
+  then enemy retaliation left210HP/Gauge30 and aria-busy=false. Finite visual
+  animations were explicitly finished by the harness; owner wallet unchanged.
+
+**Artwork intake (D-167), first verified batch:**35 supplied Conduit icons and
+13 replacement character portraits are installed through shared catalogs and
+byte-derived URL revisions. All48 original bytes/SHA-256 hashes and13 previous
+portrait exports are preserved in Art/source/delivered-root-art and its provenance
+manifest. Every export received dark-background visual review; RGB backgrounds
+use per-source keys and19 reviewed enclosed-gap seeds across8 exports, not
+runtime keying or global pale removal. No in-scope source was rejected.
+
+- `python tools\intake_delivered_art.py --apply --remove-incoming`:48 installed/
+  archived named originals. Dry run and character/Conduit revision checks passed.
+- Focused Python delivery/revisions/character/root/roster suites:20 tests passed.
+- Focused machine-art/Archives/Machines/Store/portrait run:5 files /62 tests passed.
+- Post48-image integration: `npm test -- --maxWorkers=2` passed90 files /
+  1,327 tests; Build Last Light (`npm run build`) passed133 modules with the
+  existing bundle advisory.
+
+**Artwork intake complete (D-167):** the remaining two universal action icons
+and two currency replacements are now installed:52 delivered PNGs total,
+zero root PNGs remaining. All four added original/runtime hashes match
+provenance; both prior D-142 currency exports are preserved and hash-verified.
+Individual keys and one reviewed sword-gap seed retain pale shield steel,
+coin detail and painted shadow. Shared Normal/Defense artwork now applies
+across the roster, preserving character-specific skills/passives and old action
+exports. Shared action/currency URLs use byte-derived cache revisions.
+
+- `python -m unittest discover -s tools -p test_d157_root_art_intake.py -v`:
+  4 passed. Related prism currency/preparation/root/universal prompt suites:
+  5/3/4/7 passed. General prompt suite still has28 historical unchanged Machines
+  wording failures; no unrelated prompt rewrites.
+- Focused ability/currency/Rose/Crimson Roses/War validation:5 files /106 tests.
+  Full integration initially exposed seven old flagship fixtures expecting
+  character-specific basic icons; updated them to assert universal runtime
+  icons while retaining existence checks for preserved historical exports.
+- Final `npm test -- --maxWorkers=2`:90 files /1,327 tests passed.
+  Build Last Light (`npm run build`):134 modules, TypeScript/Vite passed,
+  existing bundle advisory. `git diff --check` passed; root PNG count0.
+- Disposable browser decoded updated currencies, Bliss base/Omnic replacements
+  and both universal battle action icons at deployment-base/revision URLs.
+  No page errors; owner wallet unchanged. A stale shared-tab HMR overlay from
+  the temporary generated-module creation order cleared on reload to Title.
+
+**Remaining:**25 additional kit-Conduit images were not delivered and remain pending.
+Remaining intrinsic roster redesign stays paused.
+No commit/deployment or owner-save changes.
+
+## Previous milestone:150-stage Story / retained Training implemented (D-164)
 
 Updated by Copilot after the owner asks to defer remaining intrinsic character
 redesign and continue the next major phase.
@@ -5912,3 +6465,37 @@ Known issues and limitations:
 Open decisions/blockers:
 Next concrete action and prerequisites:
 ```
+# Silhouette drag correction
+
+Native image dragging disabled in shared portrait/Conduit rendering and direct
+gallery/evolution images, preventing colored drag ghosts from locked silhouettes.
+Related renderer tests:65 passed across4 files with
+`npm test -- src\presentation\archives.test.ts src\presentation\portrait.test.ts src\presentation\hub.test.ts src\presentation\conduit-store.test.ts --maxWorkers=2`.
+`npx tsc --noEmit` passed. Browser fixture:211 gallery portrait/Conduit images
+all have native draggable=false, without account writes.
+# Emberwake delivery complete (D-178)
+
+Installed Cinderling, Ashback Boar, Coalcrest Moth, Furnace Jackal and Kilnheart
+Warden cutouts plus the intact Emberwake March arena. All30 Story creatures/
+six arenas now delivered. Five RGB sources individually keyed with reviewed
+enclosed gap seeds and moth ribbon spill regions; preserve pale flames/claws,
+armor, genuine ground shadows and source bytes. Original six files archived in
+Art/source/story/infernic; only these six root copies removed after verified
+archive/export hashes. Shared registry/facing/revisions cover battles/Collections.
+
+Owner explicitly excludes replacement World Map. This intake preserved all31
+prior manifest records and exports and did not process/delete the incoming map.
+The root map was subsequently observed absent outside this scoped intake;
+do not infer it was installed by this work or restore another contributor's file.
+
+Validation:
+- `python tools\intake_story_art.py --element infernic --apply --reviewed --remove-incoming`: six installed,37 recorded.
+- `python -m unittest discover -s tools -p test_story_art_intake.py`:20 passed; all37 reproduce, region isolation/replacement-map preservation tested.
+- `npm test -- src\content\story-art.test.ts src\game\story.test.ts src\presentation\archives.test.ts --maxWorkers=2`:31 passed across3 files.
+- `npx tsc --noEmit`, `python tools\story_art_revisions.py`, `git diff --check`: passed.
+- Browser: six URLs HTTP200; five960px sprites and1456x816 arena decode.
+  Stages1/25 select real Emberwake art; boar mirrors right; localStorage unchanged.
+
+No combat, rewards, RNG, unlocks or save changes. Existing user-requested localhost
+server remains running. Broad text-icon coverage/grammar request is not completed
+by this art-only intake;25 reborn kit Conduit images remain undelivered.

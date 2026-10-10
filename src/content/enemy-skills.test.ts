@@ -28,7 +28,7 @@ describe('level-dependent enemy skill kits', () => {
     expect(scheduledEnemySkill(boss, 6)?.multiplier).toBe(2.6);
   });
 
-  it('wires all elemental stages, both modes and the Adventure49 ~ 50 boundary, including early enemies', () => {
+  it('wires all elemental stages, both modes and the Adventure49 / 50 boundary, including early enemies', () => {
     const progress = { level: 105, evolution: 6 };
     for (const element of playableDungeons) for (let stage = 1; stage <= 35; stage++) {
       const state = createDungeonBattle(element, stage, 1, 'ember', progress);

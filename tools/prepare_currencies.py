@@ -13,6 +13,13 @@ CURRENCIES = {"Fractalis": "fractalis", "Lycalis": "lycalis"}
 
 
 def current_currency_source(name, asset):
+    from intake_d157_root_art import assets as delivered_assets
+    delivered = next(row for row in delivered_assets()
+                     if row.asset == asset and row.category == "currencies")
+    if delivered.source.is_file():
+        return delivered.source
+    if (ROOT / delivered.incoming).is_file():
+        return ROOT / delivered.incoming
     from intake_prism_currency_art import ASSETS, source_path
     prism_name = next(name for name, identity in ASSETS.items() if identity == asset)
     prism = source_path(prism_name)
