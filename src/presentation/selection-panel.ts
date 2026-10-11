@@ -73,11 +73,23 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
         header.append(heading, close);
         const choices = document.createElement('div');
         choices.className = 'selection-options';
+        choices.tabIndex = 0;
+        choices.setAttribute('aria-label', `${control.label} choices`);
         Array.from(select.options).forEach((option, index) => {
           const choice = document.createElement('button');
           choice.type = 'button';
           choice.className = 'selection-option';
-          choice.textContent = option.textContent;
+          const text = document.createElement('span');
+          text.textContent = option.textContent;
+          if (select.hasAttribute('data-master-equipment') && isMasterConduitId(option.value)) {
+            const art = document.createElement('span');
+            art.className = 'selection-option-art';
+            art.innerHTML = masterConduitIcon(option.value);
+            art.querySelector('img')?.setAttribute('alt', '');
+            choice.classList.add('selection-option-with-art');
+            choice.append(art);
+          }
+          choice.append(text);
           choice.disabled = option.disabled || (option.parentElement instanceof HTMLOptGroupElement && option.parentElement.disabled);
           choice.setAttribute('aria-pressed', String(option.selected));
           choice.addEventListener('click', () => {
@@ -134,3 +146,5 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
     controls.clear();
   };
 }
+import { isMasterConduitId } from '../content/master-conduits';
+import { masterConduitIcon } from './master-conduits';

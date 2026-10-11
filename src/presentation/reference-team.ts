@@ -14,7 +14,7 @@ import { squadHub } from './roster';
 import { itemShowcase } from './item-showcase';
 import { materialName } from '../content/dungeon-art';
 import { information } from './information';
-import { conduitSummary, filledConduitSlots } from './conduit-loadout';
+import { filledConduitSlots } from './conduit-loadout';
 import { conduitSlotCount } from '../content/conduits';
 
 export type ReferenceTeamView = 'detail' | 'bearers' | 'creatures' | 'capture' | 'formation' | 'conduits' | 'capture-conduits';
@@ -30,7 +30,7 @@ export interface ReferenceTeamState {
 export function referenceTeamSidebar(account: Account, state: ReferenceTeamState): string {
   const squad = equippedSquad(account);
   return `<aside class="ref-team-sidebar">
-    <section class="ref-panel"><header class="ref-panel-heading">Squad · ${squad.length} of 3</header>
+    <section class="ref-panel"><header class="ref-panel-heading">Squad · ${squad.length} of 3<button type="button" data-team-view="formation">Edit squad</button></header>
       ${Array.from({ length: 3 }, (_, index) => {
         const id = squad[index];
         if (!id) return '<button class="ref-member-row ref-empty-row" data-team-view="formation">+ Choose a member</button>';
@@ -99,6 +99,7 @@ function captureDetail(account: Account, id: string): string {
         <div class="ref-tags"><span class="ref-stars" aria-label="${progress.tier + 1}-star Elemental-Devourer">${'★'.repeat(progress.tier + 1)}</span><span class="ref-chip">${evolutionRarity(progress.tier + 1)}</span></div>
         <div class="ref-character-progress"><div>Level ${formatStat(progress.level)} / 120<div class="ref-bar"><i style="width:${progress.level / 120 * 100}%"></i></div></div><div>Fixed form · Cannot evolve</div></div></div>
       <div class="ref-character-header-actions"><button class="ref-link" data-team-view="creatures">← All captured Elemental-Devourers</button>
+        <button type="button" class="ref-chip" data-open-loadout>Conduits · <span data-conduit-count>${filledConduitSlots(id, account)}/${conduitSlotCount}</span></button>
         ${squad[0] === id ? '<span class="ref-chip ref-white">Squad leader</span>' : squad.includes(id) ? `<button class="ref-chip" data-make-leader="${id}">♛ Make leader</button>` : '<button class="ref-chip" data-team-view="formation">Add to squad</button>'}
         <button class="ref-chip" data-character-lock="${id}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Unlock' : 'Lock'} Elemental-Devourer</button></div>
     </header>
@@ -118,7 +119,6 @@ function captureDetail(account: Account, id: string): string {
         <button class="text-button" data-max-level="${id}" ${cost ? '' : 'disabled'}>Max Level</button>
         ${cost && !canLevel ? `<p class="ref-growth-summary">${account.fractalis < cost.fractalis ? 'Not enough Prismatica. ' : ''}${missing.map(([key, amount]) => `Need ${amount} ${materialName(key)}; owned ${account.materials[key] ?? 0}.`).join(' ')}</p>` : ''}</article>
         <article><h4>${sale ? 'Sell copy' : 'Fixed form'}</h4>${sale ? saleControls(sale, id) : '<p class="ref-growth-summary">This Elemental-Devourer cannot be sold or evolved.</p>'}</article></div><p id="character-lock-result" role="status"></p></section>
-      ${conduitSummary(id, account)}
     </div></div></section></section>`;
 }
 

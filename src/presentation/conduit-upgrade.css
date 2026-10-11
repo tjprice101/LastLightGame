@@ -1,11 +1,142 @@
-.conduit-upgrade-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-.conduit-upgrade-menu p { line-height: 1.6; overflow-wrap: anywhere; }
-.component-balance { display: flex; align-items: center; gap: 16px; padding: 20px; border: 1px solid #ffffff30; border-radius: 16px; background: #191919; margin: 16px 0; min-width: 0; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade {
+  height: 100%; min-height: 0; grid-template-columns: minmax(22rem, 1fr) minmax(0, 1.5fr);
+  grid-template-rows: auto minmax(0, 1fr); gap: .65rem;
+}
+html body .sanctuary-shell .ref-conduit-upgrade :is(p, small) { line-height: 1.4; overflow-wrap: anywhere; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-panel { padding: .8rem; gap: .65rem; overflow: visible; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-panel-heading { font-size: .85rem; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-owned { grid-column: 1; grid-row: 2; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-detail,
+html body .sanctuary-shell .ref-conduit-upgrade .ref-empty { grid-column: 2; grid-row: 2; }
+html body .sanctuary-shell .ref-conduit-upgrade :is(input, select, button) { font-size: .85rem; }
+.ref-upgrade-tools { display: grid; grid-template-columns: minmax(0, 1fr) 9.5rem; align-items: center; gap: .5rem; }
+.ref-upgrade-tools label { min-width: 0; }
+.ref-upgrade-filters { display: flex; flex-direction: column; gap: .35rem; }
+.ref-upgrade-chips { display: flex; gap: .35rem; flex-wrap: wrap; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-upgrade-chips button {
+  min-height: 44px; padding: .35rem .65rem; border-radius: 99px; font-size: .8rem; line-height: 1.2;
+  background: #202024; color: #bdbdc4; border: 1px solid #414148; box-shadow: none;
+}
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-upgrade-chips button[aria-pressed="true"],
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-member-row.is-selected,
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-market-tabs button[aria-current],
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .primary-button:not(:disabled) {
+  background: #f4f4f5; background-image: none; color: #151518; border-color: #f4f4f5; box-shadow: none;
+}
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-member-row.is-selected small { color: #414148; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade button::before,
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade button::after { background-image: none; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade button:not(:disabled) {
+  background-image: none !important;
+}
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-upgrade-chips button,
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-market-tabs button {
+  padding-left: .65rem !important; justify-content: center !important; text-align: center !important;
+}
+.ref-upgrade-catalog { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: .5rem; }
+.ref-upgrade-catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: .5rem; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row {
+  display: flex; align-items: center; gap: .5rem; min-width: 0; min-height: 76px;
+  padding: .4rem; text-align: left; border: 1px solid #38383e; border-radius: .6rem;
+}
+html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row.is-selected { border-color: #e5e5eb; background: #303035; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row > span:last-child { min-width: 0; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row b { font-size: .85rem; line-height: 1.25; display: block; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row small { display: block; color: #bdbdc4; font-size: .75rem; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-thumb { width: 46px; height: 46px; flex: 0 0 46px; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-thumb .conduit-icon-frame {
+  display: block; width: 100%; height: 100%; min-width: 0; min-height: 0; max-height: 100%; flex: none;
+}
+html body .sanctuary-shell .ref-conduit-upgrade .ref-thumb .conduit-icon {
+  width: 100%; height: 100%; min-height: 0; object-fit: contain; padding-bottom: 9px; box-sizing: border-box;
+}
+html body .sanctuary-shell .ref-conduit-upgrade .ref-thumb .conduit-upgrade-meter {
+  --meter-square: 4px; --meter-gap: 2px; padding: 1px; right: 0; bottom: 0; max-width: 100%;
+}
+.ref-upgrade-pagination { display: flex; align-items: center; justify-content: space-between; gap: .4rem; margin-top: auto; }
+.ref-upgrade-pagination span { text-align: center; font-size: .8rem; color: #c6c6cd; }
+.ref-upgrade-no-matches { grid-column: 1 / -1; padding: 1rem 0; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-identity {
+  display: grid; grid-template-columns: 100px minmax(0, 1fr); align-items: center; gap: 1rem; flex: none;
+}
+html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-identity h2 { font-size: 1.65rem; line-height: 1.2; font-weight: 700; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-identity p { font-size: .85rem; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-store-hero { height: 100px; width: 100px; padding: 0; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-store-hero .conduit-icon-frame {
+  flex: none; aspect-ratio: 1; width: 100%; height: 100%; max-height: 100px; min-height: 0;
+}
+html body .sanctuary-shell .ref-conduit-upgrade .ref-store-hero .conduit-icon { width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+html body .sanctuary-shell .ref-conduit-upgrade .conduit-upgrade-values {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: .8rem; align-items: center;
+  flex: none; padding: .75rem; border: 1px solid #3d3d45; border-radius: .6rem; background: #202024;
+}
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .conduit-upgrade-values h4 { font-size: .85rem; margin-bottom: .4rem; color: #bdbdc4; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .conduit-upgrade-values p { font-size: 1.1rem; line-height: 1.35; font-weight: 700; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression {
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .4rem; overflow: visible; flex: none;
+}
+html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression article {
+  min-width: 0; padding: .6rem .45rem; border: 1px solid #37373d; border-radius: .5rem; background: #1a1a1e;
+}
+html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression article.is-current { border-color: #e5e5eb; background: #303035; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression small { display: block; margin-bottom: .4rem; font-size: .8rem; font-weight: 700; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression p { font-size: .8rem; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-resources {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .35rem 1rem;
+  padding: .75rem 0 0; margin-top: auto; border: 0; border-top: 1px solid #38383e; border-radius: 0; background: none;
+}
+.ref-upgrade-resources > .ref-panel-heading { grid-column: 1; }
+html body .sanctuary-shell .ref-conduit-upgrade .component-balance {
+  grid-column: 1; display: flex; flex-direction: row; align-items: center; gap: .65rem; margin: 0; padding: 0; background: none; border: 0;
+}
 .component-balance > div { min-width: 0; }
-.component-balance strong { display: block; font-size: clamp(24px, 4vw, 40px); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
-.component-balance span { overflow-wrap: anywhere; }
-.mechanical-component-icon { width: 80px; height: 80px; flex: 0 0 80px; object-fit: contain; vertical-align: middle; }
-.conduit-upgrade-values { flex: 1; }
-.conduit-upgrade-values h4 { margin-bottom: 6px; }
-.conduit-upgrade-values p { margin-top: 0; }
-.conduit-upgrade-cost { font-variant-numeric: tabular-nums; }
+.component-balance strong { display: block; font-size: 1.4rem; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+html body .sanctuary-shell .ref-conduit-upgrade .component-balance span { font-size: .8rem; }
+html body .sanctuary-shell .ref-conduit-upgrade .mechanical-component-icon { width: 44px; height: 44px; flex: 0 0 44px; object-fit: contain; }
+html body .sanctuary-shell .ref-conduit-upgrade .conduit-upgrade-cost { grid-column: 1; font-size: .8rem; font-variant-numeric: tabular-nums; }
+.ref-upgrade-resources meter { grid-column: 1; width: 100%; height: .65rem; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-resources footer {
+  grid-column: 2; grid-row: 1 / span 5; display: flex; flex-direction: column; justify-content: center; gap: .4rem; margin: 0;
+}
+html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-resources footer p { font-size: .8rem; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-market-tabs { grid-column: 1; grid-row: 1; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-information { grid-column: 2; grid-row: 1; min-height: 44px; gap: 1rem; justify-content: flex-end; }
+html body .sanctuary-shell .ref-conduit-upgrade #conduit-upgrade-result { font-size: .8rem; max-width: 65ch; }
+.ref-conduit-upgrade #conduit-upgrade-result:empty { display: none; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-panel { padding: .75rem; gap: .5rem; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-panel-heading {
+  padding-bottom: .3rem; font-size: .85rem; line-height: 1.3; letter-spacing: .06em;
+}
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-member-row b { font-size: .85rem; line-height: 1.25; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-member-row small { font-size: .75rem; line-height: 1.3; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade :is(input, select, .selection-trigger) {
+  min-height: 44px; padding: .4rem .6rem; font-size: .85rem; line-height: 1.3;
+}
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-upgrade-sort .selection-trigger { display: block; width: 100%; margin: 0; }
+.ref-upgrade-special { float: right; margin-left: .5rem; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-upgrade-special button { font-size: .8rem; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-upgrade-resources { padding: .5rem 0 0; gap: .25rem .75rem; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-upgrade-identity { grid-template-columns: 90px minmax(0, 1fr); }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-store-hero { width: 90px; height: 90px; }
+html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-effect-progression p { font-size: .8rem; line-height: 1.3; }
+@media (max-width: 1100px), (max-height: 700px) {
+  html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade { height: auto; grid-template-rows: auto auto auto; }
+}
+@media (max-width: 960px) {
+  html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade { grid-template-columns: minmax(0, 1fr); }
+  html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-detail,
+  html body .sanctuary-shell .ref-conduit-upgrade .ref-empty { grid-column: 1; grid-row: 3; }
+  html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-information { grid-row: 4; }
+  html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-information { grid-column: 1; }
+  html body .sanctuary-shell .ref-conduit-upgrade .ref-effect-progression { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-resources { margin-top: .5rem; }
+}
+@media (max-width: 480px) {
+  .ref-upgrade-tools { grid-template-columns: minmax(0, 1fr); }
+  html body .sanctuary-shell .ref-conduit-upgrade .ref-member-row { flex-direction: column; align-items: flex-start; }
+  html body .sanctuary-shell .ref-conduit-upgrade .conduit-upgrade-values { grid-template-columns: minmax(0, 1fr); }
+  .conduit-upgrade-values > span { display: none; }
+  html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-resources { grid-template-columns: minmax(0, 1fr); }
+  html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-resources footer { grid-column: 1; grid-row: auto; }
+  html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-information { align-items: flex-start; flex-direction: column; }
+}

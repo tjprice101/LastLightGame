@@ -1,5 +1,166 @@
 # Menus and inventory
 
+Level/evolution stat and form previews are permanently expanded (D-253).
+Their headings use the same bordered gradient treatment as menu controls but
+remain noninteractive headings, with no dropdown/collapse affordance. Compact
+stat previews follow the same rule; actual values and transactions are unchanged.
+
+## Master picker artwork and adjacent Team tabs (D-250)
+
+Master equipment choices display their canonical64px art beside names, retaining
+the hidden select and single change transaction. The unequipped choice has no
+substitute art. Team detail portraits are160px desktop/128px phone. Desktop
+Stats & Skills/Level/Evolution/Conduits tabs occupy a2x2 group beside the gradient
+header; narrower screens move them below without clipping. This supersedes
+D-245's portrait size and below-header tabs, not Squad formation sizing.
+
+## Readable Conduit cards and Details (D-249)
+
+Equipped Master art is112px (D-254),75% larger than D-252's64px, with a matching
+grid track on desktop and narrow layouts; containment remains unchanged.
+
+Loadout omits duplicate Buy/global Upgrade header links (D-251). One Store
+link remains in the owned catalog; equipped cards retain targeted Upgrade.
+
+Equip uses64px slot/catalog art with4px upgrade-meter squares. Slot names and
+owned names use16px text; metadata and controls use14px. Slot artwork and
+target/Details controls occupy one row, with full-width identity underneath
+and a two-button Upgrade/Remove row. Labels never break within words.
+Each owned/equipped Conduit has Details, including stat-only designs.
+The game-native modal shows112px art, current upgrade/element, each actual
+upgraded stat on its own line, complete special effects and Omnic element/slot
+restrictions. Dense effects are no longer squeezed into the small slot.
+Four owned entries per page, search/filter/sort, real costs and equipment
+transactions are unchanged. Close/Escape restore focus.
+
+## Concise ability facts (D-248)
+
+Ability descriptions use objective effect statements, not questions or repeated
+tutorial paragraphs. Shared charge acquisition/cap rules stay in the kit resource
+reference, not every spending ability. Ability copy retains targets, potency,
+duration, charge scaling/caps and concise status semantics; costs/cooldowns remain
+in their existing readouts. Shield/Burn refresh, Defense bypass and caster recovery
+rules are preserved. This is a copy change, not a combat rebalance.
+
+Fresh Team navigation opens character detail, even after editing Squad and
+visiting Home (D-247). Explicit Edit squad still opens formation; Back restores
+its actual historical Team sub-view rather than resetting it.
+
+## Smaller squad formation portraits (D-246)
+
+Formation portrait/empty-slot frames cap at176px square instead of growing
+with the three-column cards. Reduced card padding/gaps keep names, rarity,
+level and Change/Choose controls readable and visible. Squad selection and
+saving are unchanged; this does not resize the separate character header.
+
+## Compact Conduit and Team screens (D-244)
+
+The owner's images6/7 supersede D-238's oversized two-by-four slots and large
+Master/owned-list composition. Desktop Equip uses four columns by two rows
+of compact slot cards, a short Master row and bonuses inside the loadout panel.
+Upgrade uses a compact owned catalog beside selected identity, current/next
+effects, level progression and the actual upgrade resource/action footer.
+Owned catalogs use pagination with search, sorting and filters, approved for
+accounts with85 entries: all entries remain accessible without scrolling lists.
+Equip shows four owned rows per page; Upgrade shows six catalog cards per page.
+At1367x768 both pages fit the available desktop content viewport, including
+filled equipment slots and long multi-stat effects. Narrow screens retain
+responsive stacking/page scrolling; touch controls retain44px minimum targets.
+The references specify presentation, not fake names, prices, caps or mechanics;
+active Master functionality, five account upgrades and component-only spending
+remain authoritative. Detailed effects and rejection reasons remain accessible.
+
+Team has a direct Edit squad route to the existing formation editor, even with
+three occupied slots. Remove the redundant lower Conduits summary from bearer
+and captured-copy details; header/tab equipment entry remains. Character detail
+headers retain a black gradient, sized to their content rather than stretching
+across the page (D-245). With112px desktop/80px narrow portraits, collection,
+Conduits and leader controls sit directly beneath the identity beside the
+portrait, not at the far right. Store icon frames
+reserve meter space and constrain intrinsic image sizes above the name.
+Home, Market and the restored global navigation remain unchanged.
+
+## Restored global navigation (D-243)
+
+At owner request, restore the pre-D-242 global bar's markup, sizing, responsive
+layout and always-visible navigation. Remove the expandable wrapper, page-label
+row, Show/Hide toggle and in-memory expansion state. All four destinations,
+currency controls and utilities use their prior layout; character content is
+unchanged. D-242's retractable-header contract below is historical, not active.
+
+Retain the specificity-correct viewport grid and content scroller from D-242
+so lower page information remains reachable. Browser checks at1367/1024/390px
+confirm four destinations, no toggle, scrolling to the content bottom and no
+horizontal overflow. Sanctuary/reference tests cover the restored markup.
+
+## Thin retractable global navigation (D-242)
+
+Superseded by D-243; retained as historical context.
+
+The global Home/Team/Summon/Play header, not the character portrait header,
+has a Hide navigation / Show navigation control. Expanded navigation uses
+compact44px controls, readable14px-plus labels and natural wrapping when
+balances/destinations cannot fit. Collapsed navigation shows the current page
+and the toggle in a slim row. All destinations, exact currencies, Help,
+Collections, Settings and Profile remain in the expandable region.
+
+The header starts expanded and remembers the player's choice in memory across
+menu renders, without wallet/settings writes. Its toggle exposes
+`aria-expanded`/`aria-controls`; hidden controls leave the tab order, while the
+page heading remains outside the hidden region for navigation focus. Toggling
+only changes the header, preserving content DOM, form drafts and selections.
+Title, selection and battle toolbars are unchanged.
+
+The menu shell consistently uses a viewport-height grid with an auto-sized
+header and a scrollable remaining content region at every width. Explicit
+specificity overrides the historical `.menu-screen.sanctuary-content` visible
+overflow and narrow-screen block layout that otherwise clipped lower content.
+No further shrinking of character art, stats or page content.
+
+Validation: `sanctuary-navigation.test.ts` covers toggling, focus, retained DOM,
+collapsed renders and malformed-control errors; existing sanctuary/reference
+tests retain destinations. Browser checks at1367/1024/390px measure a53px
+collapsed header, reachable bottom content and no horizontal overflow.
+Expanded measured60/111/162px with debug-sized balances and no clipped buttons;
+larger balances wrap rather than shrinking text. State survives a menu render.
+
+## Normal browser UI sizing and contained art (D-240)
+
+Use the browser's default root font size (`100%`, normally16px), not
+viewport-dependent enlargement. This supersedes D-237. Supporting menu labels
+have a14px minimum; preserve browser zoom, exact values and44px controls.
+Team detail rows size to their actual contents and start-align the header,
+preventing overlap with the section tabs. Detail portrait columns are11rem
+on desktop, with10/11rem narrow-layout caps,3.5rem sidebar thumbs and9rem
+collection art. This reduces D-235 sizing while retaining prominent portraits.
+
+Thumbnail grid tracks and children have zero intrinsic minimums and explicit
+container bounds. Inventory art stays inside5rem cells. Upgrade list thumbs
+are52px square with contained frames/images and a reserved9px meter area;
+the selected icon is at most180px inside a12rem hero. Keep source artwork,
+portrait DOM/facing and full-bleed scenery unchanged.
+
+Selection dialogs fit within the viewport minus32px, up to800px wide and640px
+high. Their choices region scrolls independently, reserves scrollbar space,
+shows a normal-width scrollbar and is keyboard-focusable with a choices label.
+All choices remain available, including disabled choices; closing/Escape
+restores trigger focus without changing the backing select. Conduit owned
+lists also have visible scrollbars; the upgrade list is focusable. At961-1200px,
+Upgrade uses a15rem list column beside stacked details/resources instead of
+three cramped columns. At1200px and below its owned list is capped at26rem
+and scrolls, rather than making an85-entry page unmanageably tall.
+
+Validation: `selection-panel.test.ts` covers85 choices, last-option selection,
+one change event, disabled choices and Escape/focus cleanup. Existing Conduit
+update/loadout and reference-UI tests retain transaction and DOM behavior.
+Browser checks at actual1367/1024/390px cover Home, Team, Summon, Gameplay and
+Inventory without horizontal overflow or art exceeding tested containers,
+plus Collections without overflow. Team headers end before tabs; upgrade
+icons fit52px bounds and the final owned row is reachable. The ordinary
+Conduit picker reaches its final option at all three widths and restores focus
+on Escape; Settings fits the390px viewport. Use only isolated debug holdings
+for navigation checks, never fund or transact against real saves.
+
 ## Conduit bonus emphasis and owned search (D-239)
 
 Total bonuses compares final equipped stats against the same member's unequipped

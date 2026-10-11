@@ -1,7 +1,18 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { MenuHistory } from './menu-history';
 
 describe('menu traversal history', () => {
+  it('opens character detail on a fresh Team visit without changing Back restoration', () => {
+    const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');
+    const visit = main.slice(main.indexOf('function visitMenu('), main.indexOf('async function backMenu('));
+    expect(visit).toContain("if (page === 'team' || page === 'character') teamView = 'detail';");
+    expect(visit).toContain("teamView = 'formation'");
+    const history = new MenuHistory<{ page: string; teamView: string }>();
+    history.visit({ page: 'team', teamView: 'formation' }, 'home');
+    expect(history.back()).toEqual({ page: 'team', teamView: 'formation' });
+    expect(main).toContain('teamView = previous.teamView;');
+  });
   it('returns through the actual caller chain including cross-links and Home', () => {
     const history = new MenuHistory<{ page: string; tab?: string }>();
     history.visit({ page: 'home' }, 'character');

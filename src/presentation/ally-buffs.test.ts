@@ -19,7 +19,7 @@ describe('actual allied effects beside HP', () => {
     const before = structuredClone(unit);
     const html = unitReadout(unit, true, [unit], 2);
     for (const text of ['Shield 25.5', 'Damage +30% · through turn 3', `Defense · -${defenseMode.damageReduction * 100}% damage`,
-      'Next hit -15%', 'Oceanic Protection 2 / 3 charges', 'Charges do nothing on their own']) expect(html).toContain(text);
+      'Next hit -15%', 'Oceanic Protection 2 / 3 charges', 'No standalone effect.']) expect(html).toContain(text);
     expect(unit).toEqual(before);
     unit.attackBoost.throughRound = 1;
     unit.shield = 0;

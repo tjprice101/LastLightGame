@@ -1,5 +1,240 @@
 # Current state and handoff
 
+## Larger equipped Master artwork (D-254)
+
+- Increased equipped Master art/grid track64px ->112px, exactly75% larger.
+  Browser confirmed112x112 art and no horizontal overflow at1367px.
+  `npm run build` passed with the existing chunk advisory. CSS-only; sources
+  and equipment behavior unchanged.
+
+## Always-visible growth previews (D-253)
+
+- Replaced growth preview details/summary with static containers/headings in
+  `hub.ts`, including compact stat previews. Heading uses bordered gradient
+  styling without a fake button/collapse action.
+- Browser evolution fixture confirmed seven visible stats, form preview and
+  styled heading with no details ancestor. `npx vitest run
+  src\presentation\reference-ui.test.ts src\presentation\conduit-menu-update.test.ts
+  src\presentation\menu-information.test.ts --maxWorkers=2` passed43/43.
+  Updated obsolete empty-loadout global Upgrade expectation from D-251.
+  `npm run build` passed with the existing chunk advisory.
+
+## Matching Master artwork size (D-252)
+
+- Increased equipped Master art and its grid track from44px to64px, matching
+  ordinary Conduits. Browser1367x768 eight-filled-slot/Master fixture confirmed
+  both at64px,686/686 content height and no horizontal overflow.
+- `npm run build` passed with the existing chunk advisory. CSS-only change;
+  no equipment transactions or artwork sources changed.
+
+## Reduced Loadout cross-links (D-251)
+
+- Removed duplicate Buy/global Upgrade links from the slot-panel heading.
+  One Store link remains; equipped cards retain targeted Upgrade controls.
+- `npx vitest run src\presentation\conduit-loadout.test.ts --maxWorkers=2`
+  passed30/30, including exact navigation-link counts. `npm run build` passed
+  with the existing chunk advisory; `git diff --check` passed.
+
+## Master picker art and adjacent character tabs (D-250)
+
+- Shared selection panels use canonical Master artwork for Master equipment
+  options without modifying select/change hooks. Team detail portraits increase
+  to160px desktop/128px phone; four tabs sit beside the gradient header on desktop.
+  Squad formation art sizing is unchanged.
+- Browser1367px confirmed160px portrait and tabs sharing the header's top edge;
+  all three Master images loaded at64px from canonical URLs. At390px,128px
+  portrait/four tabs had no horizontal overflow. No real account transactions.
+- `npx vitest run src\presentation\selection-panel.test.ts
+  src\presentation\reference-ui.test.ts src\presentation\conduit-menu-update.test.ts
+  --maxWorkers=2` passed41/41, including Master art and one-change selection.
+  `npm run build` passed with the existing chunk advisory; editor Problems clean.
+
+## Readable Conduit cards and Details (D-249)
+
+- `conduit-loadout.ts` gives every owned/equipped Conduit a Details action with
+  current upgraded stats, full special mechanics and Omnic restrictions in the
+  shared game dialog. Cards separate art/controls, identity and Upgrade/Remove
+  instead of squeezing three actions and long effects into one row.
+- `conduit-loadout.css` uses64px art,4px meter squares,16px names and14px
+  metadata/actions, with unbroken button labels. Details uses112px contained art.
+  Shared meter/assets and upgrade/equip transactions remain unchanged.
+- Browser1367x768 eight-filled-slot fixture measured686/686 content height,
+  no horizontal overflow and single-line Upgrade/Remove. At390px,64px art,
+  button labels and modal had no horizontal overflow. Actual Omnic modal
+  showed all three +5 buffs, full rule, element restriction and4-slot cap.
+- Full `npx vitest run --maxWorkers=2 --reporter=json
+  --outputFile="$env:TEMP\ll-d249-full.json"` passed1791/1791.
+  After tightening the modal list-length assertion, `npx vitest run
+  src\presentation\conduit-loadout.test.ts --maxWorkers=2` passed30/30.
+  `npm run build` passed with the existing chunk advisory. No account writes
+  or commits.
+
+## Concise ability facts (D-248)
+
+- Removed auto-appended charge tutorials and Gauge explanations from character
+  ability copy. Shared resource references use compact factual labels with no
+  questions. Status/critical/recovery explanations are short effect statements.
+  All strengths/costs/cooldowns and frozen definitions remain unchanged.
+- Browser module check confirmed Tizu Skill1 is39 words, retains damage,
+  Weaken duration/scaling/cap and Defense distinction, and contains no resource
+  acquisition paragraph. Full `npx vitest run --maxWorkers=2 --reporter=json
+  --outputFile="$env:TEMP\ll-d248-full.json"` passed1790/1790.
+  `npm run build` passed with the existing chunk advisory.
+
+## Fresh Team entry resets to character detail (D-247)
+
+- `visitMenu` now resets explicit Team entries to detail instead of retaining
+  the last formation view. Explicit Squad routing and Back snapshot restoration
+  are unchanged. No saves or selection resets.
+- `npx vitest run src\presentation\menu-history.test.ts
+  src\presentation\reference-ui.test.ts --maxWorkers=2` passed37/37 including
+  the fresh-entry/Back regression. `npm run build` passed with the existing
+  chunk advisory; `git diff --check` passed.
+
+## Smaller squad formation portraits (D-246)
+
+- `squad-formation.css` caps occupied/empty portrait frames at176px and trims
+  card padding/gaps, retaining readable labels and44px controls.
+- Browser1367x768 fixture measured176x176 art,415px cards and686/686 content
+  client/scroll heights. No wallet writes. `npx vitest run
+  src\presentation\roster.test.ts src\presentation\reference-ui.test.ts
+  --maxWorkers=2` passed48/48; `npm run build` passed with the existing chunk
+  advisory. `git diff --check` passed.
+
+## Content-sized character portrait header (D-245)
+
+- Corrected D-244's mistaken removal of the black gradient. Team detail headers
+  now fit their content rather than spanning the page. Collection, Conduits and
+  leader controls sit beneath identity beside the portrait; captured-copy
+  headers share the correction. Portrait DOM/actions/stat sizing are unchanged.
+- Browser fixture at1367px measured a660px header,112px portrait and adjacent
+  controls; screenshot confirmed the grouping. At390px header/content had no
+  horizontal overflow. Fixtures do not write account data.
+- `npx vitest run src\presentation\reference-ui.test.ts
+  src\presentation\conduit-menu-update.test.ts --maxWorkers=2` passed38/38.
+  Existing `Build Last Light` task (`npm run build`) passed type-check/build
+  with the existing chunk-size advisory. `git diff --check` passed; editor CSS
+  Problems reported no errors. No commits or account writes.
+
+## Compact Conduit and Team screens (D-244)
+
+- Rebuilt Upgrade as a six-card paginated catalog beside current/next effects,
+  horizontal levels and the real component footer. Rebuilt Equip with4x2
+  slots, compact functional Master, net bonus strip, search/sort/filter controls
+  and four owned rows per page. Root-delegated controls survive panel refreshes;
+  title/account changes clear transient loadout state. Long rules use native
+  game Information dialogs. No new spending, caps, rewards or save pathways.
+- Team removes the duplicate lower equipment summary, adds Edit squad and
+  unboxes/compacts its portrait header. Store icons have bounded frames and
+  reserved meter space. Home/Market/global navigation are unchanged.
+- Browser presentation-only fixtures at1367x768 verified actual Team loadout
+  wrappers with empty and eight filled slots, long effects and net bonuses;
+  content client/scroll height686/686 and no horizontal overflow. Final Upgrade
+  long-effect fixture also measured686/686. No real wallet was funded.
+  Narrow screens retain responsive page scrolling rather than hidden content.
+- `npx vitest run --maxWorkers=2 --reporter=json
+  --outputFile="$env:TEMP\ll-d244-full.json"` passed1789/1789 tests.
+  Existing `Build Last Light` task (`npm run build`) passed type-check/build;
+  the pre-existing large-chunk advisory remains. Editor Problems reported no
+  errors; `git diff --check` passed. No commits.
+
+## Global navigation restored (D-243)
+
+- Restored pre-D-242 header markup/styles and removed its binder/state from
+  `sanctuary.ts`/`main.ts`. Deleted the now-obsolete navigation-toggle test file;
+  existing sanctuary tests explicitly reject Show/Hide controls and wrapper.
+  Retained D-242's specificity-correct shell/content scrolling rules. Previous
+  sizing, art containment and summon fixes are unchanged.
+- `npx vitest run src\presentation\sanctuary.test.ts
+  src\presentation\reference-ui.test.ts --maxWorkers=2` passed42/42.
+  `npm run build` through the existing task passed including type-check,
+  with the existing large-chunk advisory. `git diff --check` passed.
+  Browser at1367/1024/390px confirmed four destinations, no toggle, auto content
+  scrolling to the bottom and no horizontal overflow. No account transactions
+  or commits. D-242's collapsible-bar details below are historical.
+
+## Thin retractable global navigation (D-242)
+
+- Owner clarified the global Home/Team/Summon/Play header, not the portrait
+  header. `sanctuary.ts` adds an expandable controls region, slim page label
+  and aria-linked toggle plus `bindSanctuaryNavigation`. `main.ts` keeps the
+  expanded choice in memory across menu renders, starting expanded. Toggling
+  preserves content DOM/forms/selections and never writes saves. All utilities,
+  currencies and routes remain; page heading stays outside the hidden region.
+- `reference-layout.css` adds compact44px controls and wrapping labels/balances.
+  A specificity-correct viewport grid/content scroller also fixes the historical
+  `.menu-screen.sanctuary-content` visible overflow and narrow block-shell rules
+  that clipped lower content. No additional art/content font shrinking and no
+  changes to title, selection, battle toolbar, gameplay or transactions.
+- `sanctuary-navigation.test.ts` adds3 tests; an old negative string assertion
+  now checks the exact retired nav class rather than matching the new toggle's
+  name. Focused sanctuary/navigation/reference tests passed45/45.
+  Final `npx vitest run --maxWorkers=2 --reporter=json
+  --outputFile="$env:TEMP\ll-d242-full.json"` passed1779/1779 with0 failures
+  (includes D-241 tests). `npm run build` via the existing task passed including
+  type-check; existing large-chunk advisory remains. VS Code found no problems
+  in changed main/navigation/CSS/test files; `git diff --check` passed.
+- Browser isolated debug checks at1367/1024/390px: collapsed header53px;
+  expanded60/111/162px with billion-unit balances and no clipped control labels.
+  Team content scrolled to its bottom at every width (193/445/1419px offsets),
+  without horizontal overflow. Collapse survives the Summon render; Show
+  navigation restores all controls. Hidden controls have no visible boxes.
+  Browser hidden-tab artwork transition delays remain a testing limitation;
+  checks used test-only animation/decode acceleration, not runtime changes.
+  No real account transactions or commits.
+
+## Subdued summon rewards and unclipped art (D-241)
+
+- `game-dialog.css` stops decorative halo/rays/ring/sparks at saved reveal and
+  removes persistent art glow. Ten-pull art grids/children have zero intrinsic
+  minimums, explicit bounds and4px clearance; material and character art fits.
+  `reward-screen.ts` limits tier reveal to96-100% scale/1.15 brightness and
+  a20%-opacity300/450ms flash. D-230 anticipation and tier borders remain.
+  No artwork-source, receipt, transaction, odds, pity or save changes.
+- `reward-screen.test.ts` adds both animated tier checks and cancellation.
+  `npx vitest run src\presentation\reward-screen.test.ts
+  src\presentation\summon-presentation.test.ts
+  src\presentation\summon-layout.test.ts --maxWorkers=2` passed18/18.
+  `npm run build` through the existing build task passed including type-check;
+  only the existing large-chunk advisory remains. VS Code found no problems
+  in the three changed source/test files.
+- Browser presentation-only fixtures (no transactions) verified five-star
+  material/duplicate results at1367/1024/390px and six-star portraits
+  at1367/390px: all images/wrappers contained, revealed rays/halo hidden,
+  whole-art filter/animation absent. Material images loaded successfully.
+  Skip reveals and Continue disposes the test dialog. No commits created.
+
+## Normal browser UI sizing and contained art (D-240)
+
+- `reference-layout.css` replaces viewport-scaled root text with100%, keeps
+  supporting labels at least14px, gives Team intrinsic/start-aligned rows and
+  smaller bounded portraits, and constrains thumbnail/Inventory grid children.
+  This supersedes D-237 and reduces D-235 art sizing without changing portrait
+  identity/DOM. `conduit-upgrade.css` bounds52px icons/meters and the180px hero;
+  laptops use a15rem owned column beside stacked details/resources.
+- `interface.css` bounds selection dialogs to the viewport and makes choices
+  visibly scrollable; `selection-panel.ts` labels/focus-enables the scroll region.
+  `conduit-upgrade.ts` focus-enables its owned list; both Conduit list styles
+  show scrollbars. Narrow upgrade lists cap at26rem. Backing selects, disabled
+  choices, focus restoration, upgrades, equipment and atomic saves are unchanged.
+  No art-source, economy, combat or online/account changes.
+- Final validation after all CSS fixes: `npx vitest run --maxWorkers=2
+  --reporter=json --outputFile="$env:TEMP\ll-d240-full.json"` passed1774/1774
+  with0 failures. `npm run build` via the existing Build Last Light task passed,
+  including `tsc --noEmit`; only the existing large-chunk advisory remains.
+  VS Code reported no problems in the seven touched source/test files.
+  `git diff --check` passed. The editor test runner did not discover tests;
+  the existing Vitest CLI provided the full regression result.
+- Browser navigation used the isolated memory-only debug profile: Home, Team,
+  Summon, Gameplay and Inventory at actual1367/1024/390px all had16px root text,
+  no horizontal overflow and no art exceeding tested container dimensions.
+  Collections also had no overflow. Team headers ended before tabs at every
+  width. Upgrade rows measured68px high;52px icons fit, lists scrolled to the
+  final of85 owned entries. The ordinary picker retained85 Conduits plus the
+  empty choice, scrolled to the final option at every width and restored focus
+  on Escape; Settings fit390px without horizontal overflow.
+  No real purchases/sales/upgrades were performed. No commits created.
+
 ## Conduit net bonus colors and search (D-239)
 
 - `conduit-loadout.ts` splits Total bonuses into colored net change, white

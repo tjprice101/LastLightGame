@@ -21,5 +21,5 @@ export function abilityStatuses(strength: AbilityStrength): string {
 export function kitResource(kit: FighterDefinition): string {
   const resource = kit.pilot ? kitPilotDescriptions[kit.pilot].resource : undefined;
   return resource ? `<span class="ability-status" data-effect-family="${resource.effect.family}" data-effect-origin="${resource.effect.origin}" title="${resource.summary}">
-    ${statusIcon(elementalStatusArt(resource.effect))}${resource.label}</span><p class="kit-resource-summary"><strong>What is ${resource.label}?</strong> ${resource.summary}</p>` : '';
+    ${statusIcon(elementalStatusArt(resource.effect))}${resource.label}</span><p class="kit-resource-summary">${resource.summary}</p>` : '';
 }

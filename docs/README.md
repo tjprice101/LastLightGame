@@ -5,6 +5,31 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Readable Conduit cards (D-249):** larger art/text, smaller meters, unbroken
+action labels and full current effects in a game-native Details modal.
+[Contract](menus-and-inventory.md#readable-conduit-cards-and-details-d-249).
+
+**Compact Conduit and Team screens (D-244):** Upgrade/Equip follow the owner's
+two-column references with paginated searchable owned catalogs; Store art stays
+above text. Team has Edit squad, a content-sized gradient header with nearby
+collection/equipment/leader controls (D-245), and no lower equipment
+summary. [Contract](menus-and-inventory.md#compact-conduit-and-team-screens-d-244).
+
+**Restored global navigation (D-243):** the pre-D-242 bar is restored without
+Show/Hide controls. The corrected content scrolling remains.
+[Contract](menus-and-inventory.md#restored-global-navigation-d-243).
+
+**Readable summon rewards (D-241):** tier effects stop when rewards appear;
+the reveal flash/brightness is subdued and ten-pull images fit their art cells.
+Gold/prismatic anticipation and saved outcomes remain unchanged.
+[Contract](summoning-and-economy.md#readable-reward-reveals-and-contained-art-d-241).
+
+**Normal browser UI sizing (D-240):** browser-default root text replaces
+viewport enlargement. Team rows no longer overlap; portraits, Inventory art
+and upgrade icons stay contained. Conduit choices and owned upgrade lists
+have bounded, visible, keyboard-focusable scrolling.
+[Contract](menus-and-inventory.md#normal-browser-ui-sizing-and-contained-art-d-240).
+
 **Conduit search and bonus colors (D-239):** search owned Conduits by keyword,
 canonical element, effects or descriptions. Total bonuses keeps base values white
 and colors the net bonus/final value relative to that base, green up and red down.

@@ -81,14 +81,14 @@ export async function presentReward(reward: RewardPresentation): Promise<void> {
     dialog.setAttribute('data-reward-revealed', 'true');
     if (animateArt && !reducedMotion()) {
       artAnimation = reward.tier
-        ? art.animate([{ opacity: 0, transform: 'scale(.6)', filter: 'brightness(3)' },
-          { opacity: 1, transform: 'scale(1.08)', filter: 'brightness(1.6)', offset: .55 },
+        ? art.animate([{ opacity: 0, transform: 'scale(.96)', filter: 'brightness(1.15)' },
+          { opacity: 1, transform: 'scale(1)', filter: 'brightness(1)', offset: .55 },
           { opacity: 1, transform: 'scale(1)', filter: 'brightness(1)' }], { duration: reward.tier === 'six-star' ? 900 : 650, easing: 'ease-out' })
         : art.animate([{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'translateY(0)' }],
           { duration: 360, easing: 'ease-out' });
       const flash = dialog.querySelector<HTMLElement>('.reward-flash');
-      flashAnimation = flash?.animate([{ opacity: .95, transform: 'scale(.4)' }, { opacity: 0, transform: 'scale(2.4)' }],
-        { duration: reward.tier === 'six-star' ? 1100 : 750, easing: 'ease-out' });
+      flashAnimation = flash?.animate([{ opacity: .2, transform: 'scale(.4)' }, { opacity: 0, transform: 'scale(1)' }],
+        { duration: reward.tier === 'six-star' ? 450 : 300, easing: 'ease-out' });
     }
   };
   dialog.addEventListener('error', (event) => {

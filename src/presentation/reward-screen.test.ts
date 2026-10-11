@@ -2,8 +2,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { presentReward } from './reward-screen';
 import { gameDialogPending } from './game-dialog';
 
-vi.mock('./settings', () => ({ reducedMotion: () => true }));
-afterEach(() => vi.unstubAllGlobals());
+const motion = vi.hoisted(() => ({ reduced: true }));
+vi.mock('./settings', () => ({ reducedMotion: () => motion.reduced }));
+afterEach(() => { vi.unstubAllGlobals(); motion.reduced = true; });
 
 function fixture() {
   class Element extends EventTarget {
@@ -11,9 +12,11 @@ function fixture() {
     textContent = '';
     isConnected = true;
     focus = vi.fn();
+    animation = { cancel: vi.fn(), onfinish: undefined as (() => void) | undefined };
+    animate = vi.fn(() => this.animation);
   }
   const selectors = ['.reward-portal', '.reward-art', '.reward-details', '.reward-animation-label',
-    '[data-skip-reward]', '[data-close-reward]', '.reward-art-error'];
+    '[data-skip-reward]', '[data-close-reward]', '.reward-art-error', '.reward-flash'];
   const controls = new Map(selectors.map((selector) => [selector, new Element()]));
   class Dialog extends Element {
     open = false;
@@ -37,6 +40,26 @@ function fixture() {
 }
 
 describe('saved reward dismissal', () => {
+  it.each(['five-star', 'six-star'] as const)('keeps the %s reveal dim and within its final art bounds', async (tier) => {
+    motion.reduced = false;
+    const { dialog, controls } = fixture();
+    const pending = presentReward({ title: 'Summoned', name: 'Saved reward', art: '', details: '',
+      accent: '#fff', animationLabel: 'Opening', tier });
+    controls.get('.reward-portal')!.animation.onfinish!();
+    expect(dialog.setAttribute).toHaveBeenCalledWith('data-reward-revealed', 'true');
+    expect(controls.get('.reward-art')!.animate).toHaveBeenCalledWith([
+      { opacity: 0, transform: 'scale(.96)', filter: 'brightness(1.15)' },
+      { opacity: 1, transform: 'scale(1)', filter: 'brightness(1)', offset: .55 },
+      { opacity: 1, transform: 'scale(1)', filter: 'brightness(1)' },
+    ], { duration: tier === 'six-star' ? 900 : 650, easing: 'ease-out' });
+    expect(controls.get('.reward-flash')!.animate).toHaveBeenCalledWith([
+      { opacity: .2, transform: 'scale(.4)' }, { opacity: 0, transform: 'scale(1)' },
+    ], { duration: tier === 'six-star' ? 450 : 300, easing: 'ease-out' });
+    controls.get('[data-close-reward]')!.dispatchEvent(new Event('click'));
+    await pending;
+    expect(controls.get('.reward-art')!.animation.cancel).toHaveBeenCalledOnce();
+    expect(controls.get('.reward-flash')!.animation.cancel).toHaveBeenCalledOnce();
+  });
   it('uses the saved-upgrade label and immediately reveals stats in reduced motion', async () => {
     const { dialog, controls } = fixture();
     const pending = presentReward({ title: 'Level up!', name: 'Infernis', art: '', details: '<p>Stat changes</p>',

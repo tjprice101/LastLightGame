@@ -45,7 +45,7 @@ describe('typed ability status labels', () => {
       expect(JSON.stringify(kit)).not.toContain('Consumes all Blooms');
     }
   });
-  it('defines every character charge and term wherever an ability uses it', () => {
+  it('keeps shared charge rules out of individual ability descriptions', () => {
     for (const starter of starters) {
       const kit = resolveFighter(starter.id);
       const resource = kit.pilot ? kitPilotDescriptions[kit.pilot].resource : undefined;
@@ -53,13 +53,17 @@ describe('typed ability status labels', () => {
       expect(text).not.toMatch(/Consumes all|stacks? of|per stack|authored ordinary|Conduit Ember Seals/);
       for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
         const ability = kit.abilities[action];
-        if (resource && ability.description.includes(`Spends all ${resource.label}`)) expect(ability.description).toContain(`What is ${resource.label}?`);
+        expect(ability.description).not.toContain('?');
+        if (resource) expect(ability.description).not.toContain(resource.summary);
         if (ability.strength.burnMultiplier !== undefined) expect(ability.description).toContain('ignores Defense');
       }
-      if (resource) expect(kitResource(kit)).toContain(`What is ${resource.label}?`);
-      if (kit.passive.description.includes('Gauge')) expect(kit.passive.description).toContain('Skills and Last Flare spend it');
+      if (resource) {
+        expect(kitResource(kit)).toContain(resource.summary);
+        expect(kitResource(kit)).not.toContain('What is');
+      }
     }
-    expect(resolveFighter('tide').abilities.skill1.description).toContain('What is Oceanic Protection? Oceanic Protection is a counter of 0-3 charges');
+    expect(resolveFighter('tide').abilities.skill1.description).toContain('Weaken: outgoing attack damage reduction; Defense unchanged.');
+    expect(resolveFighter('tide').abilities.skill1.description.split(/\s+/).length).toBeLessThanOrEqual(65);
   });
   it('maps all native and Rose resource identities to delivered icons without parsing prose', () => {
     for (const [id, icon] of [['ember', 'burn'], ['tide', 'ward'], ['sprout', 'bloom'],

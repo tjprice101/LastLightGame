@@ -10,6 +10,9 @@ describe('full sanctuary UI', () => {
     for (const page of sanctuaryPages) {
       const html = sanctuaryHeader(page, 0, 0);
       expect(html).not.toContain('sanctuary-nav');
+      expect(html).not.toContain('Show navigation');
+      expect(html).not.toContain('Hide navigation');
+      expect(html).not.toContain('sanctuary-header-controls');
       expect(sanctuaryDock(page === 'battle' ? 'home' : page)).toContain('data-page="home"');
       expect(html).not.toContain('sanctuary-menu');
       expect(html).toContain('id="open-settings"');

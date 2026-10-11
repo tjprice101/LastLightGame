@@ -231,32 +231,25 @@ export function describeFighter(id: StarterId, snapshot: FighterDefinition): Fig
       ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge (maximum +36%).`,
     },
   };
-  if (kit.passive.description.includes('Gauge')) {
-    kit.passive.description += ' Gauge (Shatter Gauge) is the meter under the health bar that fills as this character acts and takes hits; Skills and Last Flare spend it.';
-  }
   for (const [action, text] of Object.entries(intrinsicActionCopy[id] ?? {})) {
     kit.abilities[action as 'skill1' | 'skill2' | 'ultimate'].description += ` ${text}`;
   }
   for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
     const ability = kit.abilities[action];
     if (ability.strength.shield !== undefined || (id === 'bliss' && action === 'ultimate')) {
-      ability.description += ' Shield absorbs damage before HP and lasts until used up. New shields keep the higher amount, rather than adding together.';
+      ability.description += ' Shield: absorbs damage before HP; persists until depleted; refreshes to the higher amount.';
     }
     if (ability.strength.weakenFraction !== undefined) {
-      ability.description += ' This is Weaken: it reduces enemy outgoing attack damage, not Defense.';
+      ability.description += ' Weaken: outgoing attack damage reduction; Defense unchanged.';
     }
     if (ability.strength.critBonus !== undefined) {
-      ability.description += ' The critical-chance bonus applies only to this attack, not future attacks.';
+      ability.description += ' Critical chance bonus: this attack only.';
     }
     if (ability.strength.burnMultiplier !== undefined) {
-      ability.description += ' Burn deals its damage once in each of the next two enemy phases and ignores Defense. A new Burn replaces the old one instead of adding to it.';
-    }
-    const resource = kit.pilot ? kitPilotDescriptions[kit.pilot].resource : undefined;
-    if (resource && ability.description.includes(`Spends all ${resource.label}`)) {
-      ability.description += ` What is ${resource.label}? ${resource.summary}`;
+      ability.description += ' Burn: 2 enemy phases; ignores Defense; replaces existing Burn.';
     }
     if (action === 'ultimate') {
-      ability.description += ' Recovery means this character cannot act on the next player turn; allies may still act.';
+      ability.description += ' Recovery: caster skips the next player turn.';
     }
   }
   return kit;

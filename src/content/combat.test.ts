@@ -14,12 +14,12 @@ describe('character stat and kit growth', () => {
       expect(ability.strength).toEqual(original.abilities[action].strength);
       expect(ability.cooldown).toBe(original.abilities[action].cooldown);
       if (ability.strength.shield !== undefined) {
-        expect(ability.description).toContain('Shield absorbs damage before HP');
+        expect(ability.description).toContain('Shield: absorbs damage before HP');
         expect(ability.description).toContain('higher amount');
       }
       if (ability.strength.weakenFraction !== undefined) expect(ability.description).toContain('Weaken');
-      if (ability.strength.critBonus !== undefined) expect(ability.description).toContain('only to this attack');
-      if (action === 'ultimate') expect(ability.description).toContain('cannot act on the next player turn');
+      if (ability.strength.critBonus !== undefined) expect(ability.description).toContain('Critical chance bonus: this attack only.');
+      if (action === 'ultimate') expect(ability.description).toContain('Recovery: caster skips the next player turn.');
       expect(ability.description).not.toMatch(/\bauthored\b/);
     }
     expect(kit.passive.description).not.toMatch(/\beffective authored\b/);

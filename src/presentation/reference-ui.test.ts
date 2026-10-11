@@ -150,6 +150,8 @@ describe('replacement reference screen structures', () => {
     for (const tab of ['overview', 'upgrade-1', 'upgrade-0', 'equipment']) expect(html).toContain(`data-character-tab="${tab}"`);
     expect(html.match(/aria-haspopup="dialog"/g)).toHaveLength(4);
     expect(html).not.toContain('data-conduit-slot=');
+    expect(html).not.toContain('loadout-summary');
+    expect(html).toContain('data-team-view="formation">Edit squad');
     expect(html).not.toContain('data-upgrade=');
     expect(html).toContain('data-make-leader="ember"');
     expect(html).not.toContain('character-upgrade-grid');
@@ -158,7 +160,7 @@ describe('replacement reference screen structures', () => {
     const equipment = referenceTeam(wallet, { ...state, tab: 'equipment' });
     expect(equipment.match(/data-conduit-slot=/g)).toHaveLength(8);
     expect(equipment).toContain('Master slot');
-    expect(equipment).toContain('data-page="conduit-upgrade"');
+    expect(equipment).not.toContain('loadout-heading-links');
     expect(equipment).not.toContain('data-upgrade="level"');
     for (const [tab, action] of [['upgrade-1', 'level'], ['upgrade-0', 'evolve']]) {
       const growth = referenceTeam(wallet, { ...state, tab });
@@ -166,6 +168,9 @@ describe('replacement reference screen structures', () => {
       expect(growth).toContain(`data-upgrade="${action}"`);
       expect(growth).toContain('Owned / Required');
       expect(growth).toContain('upgrade-stat-preview');
+      expect(growth).toContain('class="ref-growth-preview-heading">Stat &amp; form preview</h3>');
+      expect(growth).not.toContain('<details class="ref-growth-preview"');
+      expect(growth).not.toContain('<summary>Stat');
       expect(growth).toContain('id="upgrade-result"');
     }
   });
@@ -204,8 +209,9 @@ describe('replacement reference screen structures', () => {
     expect(detail).not.toContain('data-owned-capture');
     expect(detail.match(/data-captured-copy=/g)).toHaveLength(1);
     expect(detail).not.toContain('data-capture-conduit=');
-    expect(detail).toContain('loadout-summary');
-    expect(detail.match(/data-open-loadout/g)).toHaveLength(2);
+    expect(detail).not.toContain('loadout-summary');
+    expect(detail.match(/data-open-loadout/g)).toHaveLength(1);
+    expect(detail).toContain('data-team-view="formation">Edit squad');
     expect(detail.match(/aria-haspopup="dialog"/g)).toHaveLength(3);
     expect(detail).toContain(`data-level-capture="${first.instanceId}"`);
     expect(detail).toContain(`data-max-level="${first.instanceId}"`);
@@ -231,7 +237,7 @@ describe('replacement reference screen structures', () => {
     expect(html).not.toContain('captured-stage');
     expect(html).not.toContain('ref-copy-management');
     expect(html).toContain(stats(copy));
-    expect(html).toContain('loadout-summary');
+    expect(html).not.toContain('loadout-summary');
     expect(html).toContain('data-open-loadout');
     expect(html).not.toContain('ref-equipment-slot loadout-slot');
     const loadout = referenceTeam(wallet, { view: 'capture-conduits', selected: 'ember', capture: copy.instanceId, element: '', sort: 'level' });

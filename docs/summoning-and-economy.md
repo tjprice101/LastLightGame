@@ -1,5 +1,25 @@
 # Summoning and economy
 
+## Readable reward reveals and contained art (D-241)
+
+Keep D-230's gold/prismatic anticipation and tier-specific result borders,
+but stop the halo, rays, ring and sparks once saved rewards appear. Results
+have no persistent whole-art glow. Tier art fades in from96% to100% scale,
+without overshoot, with brightness at most1.15 rather than3. The reveal flash
+peaks at20% opacity and lasts300ms for five-star/450ms for six-star results.
+Reduced motion, Skip, Escape, explicit Continue and cleanup remain unchanged.
+
+Ten-pull art cells use zero-minimum grid tracks and bounded image/portrait
+children with4px internal clearance. This prevents intrinsic256/960px image
+dimensions from overflowing and being cropped by the cell. Preserve complete
+art, facing and exact saved outcomes; no asset, reward, pity or save changes.
+
+Validation: reward-screen tests cover both tiers' animation bounds and cleanup;
+summon-presentation/layout tests preserve receipts and controls. Browser fixtures
+verify five-star material/duplicate grids at1367/1024/390px and six-star portrait
+grids at1367/390px: no art outside cells, no persistent rays or whole-art glow.
+Fixtures present receipts only, without transactions against real saves.
+
 ## Featured characters strip (D-219)
 
 Below the banner artwork, a single compact panel shows the banner's real

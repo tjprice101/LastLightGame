@@ -1,4 +1,4 @@
-html { font-size: clamp(15px, max(.2vw + 14px, min(1.25vw, 2.3vh)), 22px); }
+html { font-size: 100%; }
 html body { --ui-font: Georgia, "Times New Roman", serif; font-family: var(--ui-font); }
 html body :is(button, input, select, textarea, h1, h2, h3, h4, p, small, span, strong, b, label, table) { font-family: var(--ui-font); }
 html body :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) :is(button, input, select, textarea) { font: 500 .8rem/1.4 var(--ui-font); border: 1px solid #2d2d31; border-radius: .6rem; background: #1a1a1c; color: #f4f4f5; padding: .55rem .75rem; min-height: 44px; }
@@ -32,6 +32,23 @@ html body .banner-showcase-grid .element-emblem { width: 1.5rem; height: 1.5rem;
 @media (hover: hover) {
   html body :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) button:hover:not(:disabled) { border-color: #707076; }
   html body .sanctuary-shell :is(.ref-product, .ref-collection-card, .ref-member-row, .ref-home-shop):hover:not(:disabled) { background-color: #242427; }
+}
+
+#app .sanctuary-shell .ref-team-detail:has(> .ref-character-header) { display: grid; grid-template-columns: minmax(0, 2fr) minmax(12rem, 1fr); grid-template-rows: auto auto; }
+#app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-portrait { width: 10rem; height: 10rem; }
+#app .sanctuary-shell .ref-team-detail > .ref-character-submenus { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; align-self: start; }
+#app .sanctuary-shell .ref-team-detail > .ref-character-submenus button { min-height: 52px; }
+#app .sanctuary-shell .ref-team-detail:has(> .ref-character-header) > .ref-character-panels { grid-column: 1 / -1; }
+.selection-modal .selection-option-with-art { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: center; gap: .75rem; text-align: left; }
+.selection-modal .selection-option-art { width: 64px; height: 64px; min-width: 0; }
+.selection-modal .selection-option-art img { width: 100%; height: 100%; object-fit: contain; }
+@media (max-width: 1100px) {
+  #app .sanctuary-shell .ref-team-detail:has(> .ref-character-header) { grid-template-columns: minmax(0, 1fr); }
+  #app .sanctuary-shell .ref-team-detail > .ref-character-submenus { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  #app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-portrait { width: 8rem; height: 8rem; }
+  #app .sanctuary-shell .ref-team-detail > .ref-character-submenus { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 :root[data-motion="reduced"] :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) button { transition: none; }
 html body .sanctuary-shell { height: 100dvh; min-height: 0; display: grid; grid-template-rows: 3.6rem minmax(0, 1fr); padding: 0; overflow: hidden; font-weight: 400; }
@@ -87,7 +104,7 @@ html body .sanctuary-shell .ref-home-shop { text-align: left; position: relative
 .ref-home-shop b { display: block; font-size: .9rem; }
 .ref-home-shop small { display: block; color: #a9a9ae; font-size: .74rem; margin-top: .25rem; }
 .ref-shop-arrow { align-self: flex-end; font-size: 1.3rem; }
-.ref-team { grid-template-columns: 17.5rem minmax(0, 1fr); }
+.ref-team { grid-template-columns: 17.5rem minmax(0, 1fr); height: auto; min-height: 100%; align-items: start; }
 .ref-team-sidebar { display: flex; flex-direction: column; gap: .9rem; min-height: 0; overflow: auto; }
 .ref-collection-sidebar { flex: 1; }
 .ref-member-line { position: relative; }
@@ -99,7 +116,9 @@ html body .sanctuary-shell .ref-member-row.is-selected { border-color: #f4f4f5; 
 .ref-member-row small { color: #707076; font-size: .72rem; }
 .ref-thumb { width: 2.6rem; height: 2.6rem; border-radius: .5rem; flex: none; display: grid; place-items: center; background: #242427; overflow: hidden; }
 .ref-thumb :is(img, .character-idle) { width: 100%; height: 100%; object-fit: contain; }
-.ref-team-detail { display: grid; grid-template-rows: auto auto auto; align-content: start; gap: .9rem; min-height: 0; min-width: 0; }
+.ref-thumb { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+.ref-thumb :is(img, .character-idle) { min-width: 0; min-height: 0; max-width: 100%; max-height: 100%; }
+.ref-team-detail { display: grid; grid-template-rows: max-content max-content max-content; align-content: start; gap: .9rem; min-height: 0; min-width: 0; }
 html body .sanctuary-shell .ref-character-header { display: flex; flex-direction: row; align-items: center; gap: 1.1rem; padding: .8rem; }
 html body .sanctuary-shell .ref-character-portrait { position: relative; width: 4.6rem; height: 4.6rem; min-height: 0; flex: none; background: #242427; border-radius: .8rem; display: grid; place-items: center; }
 .ref-character-portrait :is(.character-idle, img) { width: 100%; height: 100%; object-fit: contain; }
@@ -152,7 +171,7 @@ html body .sanctuary-shell .ref-character-panels .hub-stats > div { display: fle
 .ref-capture-detail .mono-growth-options .item-showcase :is(strong, b, span, small) { font-size: .72rem; }
 html body .sanctuary-shell .ref-capture-detail .mono-growth-options .ref-growth-summary { font-size: .72rem; line-height: 1.4; }
 .ref-growth-preview { font-size: .72rem; }
-.ref-growth-preview summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+.ref-growth-preview-heading { min-height: 44px; display: flex; align-items: center; padding: .55rem .75rem; border: 1px solid #2d2d31; border-radius: .6rem; background: linear-gradient(115deg, #292b30, #161618); color: #f4f4f5; }
 .ref-growth-preview > div > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem; padding: .25rem 0; }
 .ref-equipment-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; }
 .ref-equipment-slot { display: flex; flex-direction: column; align-items: center; gap: .3rem; border: 1px solid #2d2d31; background: #1a1a1c; border-radius: .6rem; padding: .4rem; min-width: 0; }
@@ -242,8 +261,8 @@ html body .sanctuary-shell .ref-inventory .ref-panel-heading { flex-wrap: wrap; 
 html body .sanctuary-shell .ref-inventory .ref-panel-heading > span { display: flex; flex-wrap: wrap; gap: .4rem; }
 .ref-inventory .inventory-item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 7rem), 1fr)); gap: .55rem; padding: 0; }
 .ref-inventory .inventory-item { border: 1px solid #2d2d31; background: #1a1a1c; border-radius: .6rem; padding: .5rem; min-width: 0; }
-.ref-inventory .inventory-item-art { width: 100%; height: 4rem; }
-.ref-inventory .inventory-item-art :is(img, .conduit-icon-frame) { width: 100%; height: 100%; object-fit: contain; }
+.ref-inventory .inventory-item-art { width: 100%; height: 5rem; aspect-ratio: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+html body .sanctuary-shell .ref-inventory .inventory-item-art :is(img, .conduit-icon-frame) { width: 100%; height: 100%; min-width: 0; min-height: 0; max-width: 100%; max-height: 100%; object-fit: contain; }
 .ref-inventory .inventory-item strong { font-size: .75rem; }
 .ref-inventory .inventory-quantity { font-size: .7rem; }
 html body .sanctuary-shell .ref-inventory .inventory-empty-slots { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .5rem; max-width: 30rem; }
@@ -711,7 +730,7 @@ html body .sanctuary-shell :is(.ref-member-row small, .ref-card-caption small, .
   font-size: .78rem;
   line-height: 1.55;
 }
-html body .sanctuary-shell .sanctuary-content :is(small, .eyebrow, .ref-component-count, [data-character-filter-result], .ref-equipment-note) { font-size: max(.78rem, 12px); line-height: 1.5; }
+html body .sanctuary-shell .sanctuary-content :is(small, .eyebrow, .ref-component-count, [data-character-filter-result], .ref-equipment-note) { font-size: max(.875rem, 14px); line-height: 1.5; }
 html body .sanctuary-shell .ref-story-region-sidebar [data-story-region] small { font-size: max(.78rem, 12px); line-height: 1.5; }
 html body .sanctuary-shell .ref-panel-heading > span { font-size: max(.78rem, 12px); letter-spacing: normal; text-transform: none; }
 html body .sanctuary-shell :is(.ref-member-row b, .ref-card-caption b, .ref-product b, .inventory-item strong, .archive-panel .archive-card h3) { font-size: .9rem; line-height: 1.35; }
@@ -822,24 +841,44 @@ html body .information-modal .information-topic ul { padding-left: 1.2rem; }
 .kit-resource-summary strong { margin-right: .25rem; }
 
 /* D-235: character art is the focal point of Team screens. */
-html body .sanctuary-shell .ref-character-header { display: grid; grid-template-columns: clamp(12rem, 24vw, 19rem) minmax(0, 1fr) auto; align-items: center; gap: 1.4rem; padding: 1rem; }
-html body .sanctuary-shell .ref-character-header .ref-character-portrait { width: 100%; height: auto; aspect-ratio: 1; max-height: none; border-radius: 1.1rem; padding: .6rem; background: radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--ui-accent, #f4f4f5) 18%, #2a2a2e), #121214 72%); border: 1px solid #ffffff1f; overflow: hidden; }
+html body .sanctuary-shell .ref-character-header { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) minmax(0, auto); align-items: center; align-self: start; gap: 1rem; padding: 1rem; }
+html body .sanctuary-shell .ref-character-header .ref-character-portrait { box-sizing: border-box; width: 100%; height: auto; aspect-ratio: 1; max-height: none; border-radius: 1.1rem; padding: .6rem; background: radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--ui-accent, #f4f4f5) 18%, #2a2a2e), #121214 72%); border: 1px solid #ffffff1f; overflow: hidden; }
 html body .sanctuary-shell .ref-character-header .ref-character-portrait :is(.character-idle, img) { width: 100%; height: 100%; max-width: none; max-height: none; object-fit: contain; }
-html body .sanctuary-shell .ref-character-header .ref-character-identity h2 { font-size: clamp(1.9rem, 3vw, 2.8rem); }
+html body .sanctuary-shell .ref-character-header .ref-character-identity h2 { font-size: 1.75rem; }
 html body .sanctuary-shell .ref-character-header .ref-character-identity p { font-size: .82rem; }
 html body .sanctuary-shell .ref-character-header .ref-bar { width: 9rem; }
-html body .sanctuary-shell .ref-team-sidebar .ref-thumb:not(.ref-count) { width: 4.2rem; height: 4.2rem; border-radius: .65rem; }
-html body .sanctuary-shell .ref-card-art { height: 11rem; }
+html body .sanctuary-shell .ref-team-sidebar .ref-thumb:not(.ref-count) { width: 3.5rem; height: 3.5rem; border-radius: .65rem; }
+html body .sanctuary-shell .ref-card-art { height: 9rem; }
 html body .sanctuary-shell .ref-bearer-grid { grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); }
 html body .sanctuary-shell .ref-capture-grid { grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); }
 @media (max-width: 960px) {
-  html body .sanctuary-shell .ref-character-header { grid-template-columns: clamp(10rem, 34vw, 15rem) minmax(0, 1fr); }
+  html body .sanctuary-shell .ref-character-header { grid-template-columns: minmax(0, 10rem) minmax(0, 1fr); }
   html body .sanctuary-shell .ref-character-header .ref-character-header-actions { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
 }
 @media (max-width: 540px) {
   html body .sanctuary-shell .ref-character-header { grid-template-columns: 1fr; text-align: center; }
-  html body .sanctuary-shell .ref-character-header .ref-character-portrait { width: min(100%, 17rem); margin-inline: auto; }
+  html body .sanctuary-shell .ref-character-header .ref-character-portrait { width: min(100%, 11rem); margin-inline: auto; }
   html body .sanctuary-shell .ref-character-header .ref-character-progress, html body .sanctuary-shell .ref-character-header .ref-tags { justify-content: center; }
   html body .sanctuary-shell .ref-card-art { height: 9rem; }
   html body .sanctuary-shell :is(.ref-bearer-grid, .ref-capture-grid) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+html body .shell.sanctuary-shell { display: grid; height: 100dvh; min-height: 0; padding: 0; overflow: hidden; grid-template-rows: auto minmax(0, 1fr); }
+html body .sanctuary-shell .menu-screen.sanctuary-content { height: 100%; min-height: 0; overflow: auto; scrollbar-width: auto; scrollbar-gutter: stable; }
+
+#app .sanctuary-shell .ref-team-detail .ref-character-header { grid-template-columns: 10rem minmax(0, 1fr); width: 100%; max-width: 100%; box-sizing: border-box; padding: .65rem; gap: .4rem .8rem; background: linear-gradient(115deg, #24262b, #111113); border: 1px solid #ffffff1f; border-radius: .8rem; box-shadow: none; }
+#app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-portrait { grid-row: 1 / 3; }
+#app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-identity { grid-column: 2; }
+html body .sanctuary-shell .ref-character-header .ref-character-portrait { width: 7rem; height: 7rem; padding: 0; background: none; border: 0; border-radius: 0; }
+html body .sanctuary-shell .ref-character-header .ref-character-identity h2 { font-size: 1.5rem; }
+html body .sanctuary-shell .ref-character-header .ref-character-progress { gap: .8rem; margin-top: .35rem; }
+#app .sanctuary-shell .ref-team-detail .ref-character-header-actions { grid-column: 2; gap: .3rem; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: flex-start; width: auto; }
+#app .sanctuary-shell .ref-team-detail .ref-character-header-actions .ref-link { width: auto; }
+html body .sanctuary-shell .ref-character-header-actions button { padding-block: .3rem; }
+html body .sanctuary-shell .ref-team-sidebar .ref-panel-heading > button { font-size: .875rem; letter-spacing: normal; text-transform: none; padding: .3rem .5rem; }
+@media (max-width: 640px) {
+  #app .sanctuary-shell .ref-team-detail .ref-character-header { grid-template-columns: 8rem minmax(0, 1fr); }
+  #app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-portrait { grid-row: 1; }
+  html body .sanctuary-shell .ref-character-header .ref-character-portrait { width: 5rem; height: 5rem; margin: 0; }
+  #app .sanctuary-shell .ref-team-detail .ref-character-header-actions { grid-column: 1 / -1; width: 100%; }
 }

@@ -87,7 +87,7 @@ import './presentation/debug-profile.css';
 import './presentation/conduit-loadout.css';
 import './presentation/status-toast.css';
 import { saleLabel } from './presentation/creature-sale';
-import { applyConduitSearch } from './presentation/conduit-loadout';
+import { applyConduitSearch, bindConduitLoadout, resetConduitLoadoutView } from './presentation/conduit-loadout';
 
 const gameStorage = new DebugProfileStorage(window.localStorage, import.meta.env.DEV);
 
@@ -210,6 +210,7 @@ async function enterOnline(progressReady = false): Promise<void> {
   onlinePending = null;
   applyOnline(response);
   menuHistory.clear();
+  resetConduitLoadoutView();
   menuPage = response.session ? 'battle' : (response.account.storyCompleted ?? 0) < 25 ? 'story' : 'home';
   selectedCharacter = null;
   journey.selected = null;
@@ -325,7 +326,7 @@ function visitMenu(page: MenuPage): void {
   const destination = sanctuaryDestination(page);
   menuHistory.visit(menuSnapshot(), destination);
   if (destination === 'team') characterCategory = 'bearers';
-  if (page === 'character') teamView = 'detail';
+  if (page === 'team' || page === 'character') teamView = 'detail';
   if (page === 'squad') { characterCategory = 'squad'; teamView = 'formation'; }
   menuPage = destination;
   if (page === 'story') history.replaceState(null, '', '#gameplay-story');
@@ -577,6 +578,7 @@ function renderMenu(firstArrival = false): void {
   pendingMaxLevel = null;
   app.querySelector(`[data-character-category="${characterCategory}"]`)?.setAttribute('aria-current', 'page');
   applyConduitSearch(app, conduitSearch);
+  bindConduitLoadout(app);
   bindGameplayNavigation(app);
   bindStoryNavigation(app, account);
   bindProfileEditor(app, async edits => {
@@ -1086,6 +1088,7 @@ function renderMenu(firstArrival = false): void {
       battleSession = null;
       drawer.close();
       menuHistory.clear();
+      resetConduitLoadoutView();
       menuPage = 'home';
       inventoryTab = 'materials';
       journey.screen = 'title';
@@ -1291,6 +1294,7 @@ function offlineSaveChanged(change: OfflineChange): void {
   journey.profile = null;
   journey.screen = 'title';
   menuHistory.clear();
+  resetConduitLoadoutView();
   if (change === 'loaded') {
     if (fromMenu) {
       journey.enter(gameStorage);
@@ -1428,6 +1432,7 @@ app.addEventListener('click', async event => {
       journey.profile = null;
       journey.screen = 'title';
       menuHistory.clear();
+      resetConduitLoadoutView();
       render();
       return;
     }
@@ -1776,6 +1781,7 @@ if (import.meta.env.DEV) bindDebugPhrase(document, () =>
       battleView = null;
       battleSession = null;
       menuHistory.clear();
+      resetConduitLoadoutView();
       journey.screen = 'title';
       journey.profile = null;
       journey.selected = null;

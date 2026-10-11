@@ -1,66 +1,161 @@
-/* D-229 Conduit loadout: slot cards, total bonuses and owned list (imported after reference-layout.css). */
+/* D-244 Conduit loadout: compact slot grid, bonus strip and paginated owned list. */
 html body .sanctuary-shell .ref-organized-detail .ref-equipment-workspace { padding: 0; border: 0; background: none; }
-html body .sanctuary-shell .conduit-loadout { display: grid; gap: .9rem; width: 100%; min-width: 0; container-type: inline-size; }
+html body .sanctuary-shell .conduit-loadout { display: grid; gap: .75rem; width: 100%; min-width: 0; container-type: inline-size; font-size: .875rem; }
 /* The container-sized loadout has no intrinsic width, so every ancestor must stretch rather than shrink-wrap. */
 html body .sanctuary-shell .ref-team-detail > .ref-character-panels,
 html body .sanctuary-shell .ref-character-panels > .ref-organized-detail,
 html body .sanctuary-shell .ref-organized-detail > .ref-equipment-workspace { align-self: stretch; width: 100%; min-width: 0; box-sizing: border-box; }
-html body .sanctuary-shell .loadout-header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: .6rem 1rem; }
-html body .sanctuary-shell .loadout-header h3 { margin: 0; font-size: 1.35rem; line-height: 1.25; }
-html body .sanctuary-shell .loadout-header p { margin: .2rem 0 0; color: var(--menu-muted, #a9a9ae); font-size: .85rem; }
-html body .sanctuary-shell .loadout-member-tabs button { min-height: 44px; }
-html body .sanctuary-shell .loadout-member-tabs button[aria-pressed=true] { border-color: var(--leader-accent, #f4f4f5); color: #f4f4f5; }
-html body .sanctuary-shell .loadout-layout { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(17rem, 1fr); gap: .9rem; align-items: start; }
-html body .sanctuary-shell .loadout-side { display: grid; gap: .9rem; min-width: 0; }
-html body .sanctuary-shell .conduit-loadout .ref-panel { display: grid; gap: .7rem; padding: 1rem; min-width: 0; border: 1px solid var(--menu-border, #2d2d31); border-radius: .9rem; background: #131314; }
-html body .sanctuary-shell .conduit-loadout .ref-panel-heading { display: flex; justify-content: space-between; align-items: center; gap: .5rem; text-transform: uppercase; }
-html body .sanctuary-shell .conduit-loadout .ref-master-slot { grid-template-columns: auto minmax(0, 1fr); align-items: center; margin: 0; border-style: dashed; }
-html body .sanctuary-shell .conduit-loadout .ref-master-slot > :not(.master-art):not(.master-art-pending) { grid-column: 2; }
-html body .sanctuary-shell .conduit-loadout .ref-master-slot > :is(h3, strong) { grid-column: 1 / -1; margin: 0; }
-html body .sanctuary-shell .conduit-loadout .ref-master-slot .master-art { grid-row: span 4; width: 96px; height: 96px; }
-html body .sanctuary-shell .conduit-loadout .ref-master-slot > p:last-child { grid-column: 1 / -1; }
 
-html body .sanctuary-shell .conduit-loadout .loadout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot { display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: start; gap: .75rem; padding: .85rem; text-align: left;
-  border: 1px solid var(--menu-border, #2d2d31); border-left: 3px solid var(--loadout-accent, var(--menu-border, #2d2d31)); border-radius: .8rem; background: var(--menu-surface-raised, #1a1a1c); }
-html body .sanctuary-shell .conduit-loadout .loadout-slot .conduit-icon-frame { width: 88px; height: 88px; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot-body { display: grid; gap: .3rem; min-width: 0; justify-items: start; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot h4 { margin: 0; font-size: 1rem; line-height: 1.3; overflow-wrap: anywhere; }
-html body .sanctuary-shell .conduit-loadout .loadout-eyebrow { text-transform: uppercase; letter-spacing: .08em; color: var(--menu-muted, #a9a9ae); }
-html body .sanctuary-shell .conduit-loadout .loadout-effect { margin: .15rem 0 0; font-size: 1.15rem; font-weight: 700; line-height: 1.3; color: #f4f4f5; overflow-wrap: anywhere; }
-html body .sanctuary-shell .conduit-loadout .loadout-level { margin: 0; font-size: .8rem; line-height: 1.5; color: var(--menu-muted, #a9a9ae); overflow-wrap: anywhere; }
-html body .sanctuary-shell .conduit-loadout .loadout-rule { font-size: .8rem; line-height: 1.5; color: #c9c9ce; }
-html body .sanctuary-shell .conduit-loadout .loadout-rule summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
-html body .sanctuary-shell .conduit-loadout .loadout-rule p { margin: 0; }
-html body .sanctuary-shell .conduit-loadout .loadout-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .2rem; width: 100%; }
-html body .sanctuary-shell .conduit-loadout .loadout-actions > button { min-height: 44px; flex: 1 1 6rem; }
-html body .sanctuary-shell .conduit-loadout .loadout-swap { flex: 1 1 100%; min-width: 0; }
-html body .sanctuary-shell .conduit-loadout .loadout-swap .selection-trigger { width: 100%; min-height: 44px; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty { grid-template-columns: minmax(0, 1fr); align-content: center; min-height: 9rem; border-style: dashed; border-left-width: 1px; background: transparent; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty h4 { color: #c9c9ce; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty p { margin: 0; color: var(--menu-muted, #a9a9ae); font-size: .85rem; line-height: 1.5; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty .selection-trigger { width: 100%; min-height: 44px; }
-html body .sanctuary-shell .conduit-loadout .loadout-footer { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+/* Page frame (D-238). */
+#app .sanctuary-shell .ref-loadout-page :is(.ref-character-panels, .ref-organized-detail, .ref-equipment-workspace, .character-detail-content) { padding: 0; margin: 0; border: 0; background: none; box-shadow: none; }
+#app .sanctuary-shell .ref-loadout-page #upgrade-heading { display: none; }
+#app .sanctuary-shell .ref-conduit-page :is(.ref-loadout-page, .ref-character-panels, .ref-equipment-workspace) { gap: 0; }
+#app .sanctuary-shell .loadout-owned-text small { line-height: 1.25; }
+#app .sanctuary-shell .loadout-tools :is(input, .selection-trigger) { height: 36px; min-height: 36px; padding: .25rem .6rem; }
+#app .sanctuary-shell .conduit-loadout .ref-panel-heading { padding-bottom: .25rem; }
+#app .sanctuary-shell .conduit-loadout .loadout-owned { gap: .3rem; }
+#app .sanctuary-shell .conduit-loadout .loadout-slot { gap: .2rem; padding: .35rem; }
+#app .sanctuary-shell .conduit-loadout .loadout-slot-main { grid-template-columns: 40px minmax(0, 1fr); }
+#app .sanctuary-shell .conduit-loadout .loadout-slot-art { width: 40px; height: 40px; }
+#app .sanctuary-shell .conduit-loadout .loadout-slot-body :is(b, small),
+#app .sanctuary-shell .conduit-loadout .loadout-effect { line-height: 1.2; }
+#app .sanctuary-shell .conduit-loadout .loadout-slot-target { min-height: 24px; line-height: 1.2; }
+#app .sanctuary-shell .conduit-loadout .loadout-master-select .selection-trigger { height: 36px; min-height: 36px; padding: .25rem .6rem; }
+#app .sanctuary-shell .conduit-loadout .loadout-master-text small { line-height: 1.2; }
+#app .sanctuary-shell .conduit-loadout .loadout-bonus-row { line-height: 1.2; padding: .15rem .3rem; gap: .1rem .25rem; }
+#app .sanctuary-shell .conduit-loadout .loadout-bonus-row > span { font-size: .75rem; }
+#app .sanctuary-shell .conduit-loadout .loadout-bonus-strip { gap: .25rem; }
+#app .sanctuary-shell .conduit-loadout .ref-panel { gap: .25rem; padding: .4rem; }
+#app .sanctuary-shell .conduit-loadout .ref-panel-heading { padding-bottom: 0; }
+#app .sanctuary-shell .conduit-loadout .loadout-bonus-row strong { font-size: .8rem; line-height: 1.2; }
+#app .sanctuary-shell .conduit-loadout .loadout-bonuses { gap: .2rem; padding-top: .25rem; }
+#app .sanctuary-shell .sanctuary-content:has(.ref-conduit-page) { padding-top: .5rem; padding-bottom: .75rem; }
+@media (pointer: coarse) {
+  #app .sanctuary-shell .conduit-loadout button,
+  #app .sanctuary-shell .conduit-loadout .selection-trigger { min-height: 44px; height: auto; }
+}
+html body .sanctuary-shell .loadout-back { display: none; }
+html body .sanctuary-shell .ref-screen.ref-conduit-page { display: block; grid-template-columns: minmax(0, 1fr); }
+html body .sanctuary-shell .ref-conduit-page > .ref-loadout-page { display: block; width: 100%; max-width: 88rem; margin: 0 auto; min-width: 0; }
+html body .sanctuary-shell .ref-loadout-page > .ref-character-panels { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; overflow: visible; max-height: none; }
+html body .sanctuary-shell .ref-loadout-page #upgrade-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+html body .sanctuary-shell .ref-loadout-page .character-detail-content { padding: 0; }
 
-html body .sanctuary-shell .loadout-bonus-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem .8rem; padding: .45rem 0; border-bottom: 1px solid #222225; font-size: .88rem; }
-html body .sanctuary-shell .loadout-bonus-row:last-child { border-bottom: 0; }
-html body .sanctuary-shell .loadout-bonus-row strong { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+/* Header: Back | title | member pills. */
+html body .sanctuary-shell .loadout-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1rem; }
+html body .sanctuary-shell .ref-loadout-page .loadout-header { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; }
+html body .sanctuary-shell .loadout-header h3 { margin: 0; font-size: 1.3rem; font-weight: 700; line-height: 1.2; }
+html body .sanctuary-shell .loadout-header p { margin: .1rem 0 0; color: var(--menu-muted, #a9a9ae); font-size: .85rem; }
+html body .sanctuary-shell .ref-loadout-page .loadout-back { display: inline-flex; align-items: center; min-height: 40px; padding: .4rem 1rem; border: 1px solid #3a3a3f; border-radius: .6rem; background: transparent; color: #f4f4f5; font-weight: 700; white-space: nowrap; cursor: pointer; }
+html body .sanctuary-shell .ref-loadout-page .loadout-back:hover { border-color: #8a8a90; background: #1a1a1c; }
+html body .sanctuary-shell .conduit-loadout .loadout-member-tabs { display: flex; flex-wrap: wrap; gap: .4rem; justify-content: flex-end; padding: 0; border: 0; background: none; }
+html body .sanctuary-shell .conduit-loadout .loadout-member-tabs button { min-height: 36px; padding: .3rem .95rem; border: 1px solid #3a3a3f; border-radius: 999px; background: transparent; color: #d4d4d8; }
+html body .sanctuary-shell .conduit-loadout .loadout-member-tabs button[aria-pressed=true] { border-color: #f4f4f5; background: #f4f4f5; color: #0b0b0c; }
+
+/* Shared button surfaces use important gradients; keep this page flat without overriding disabled gray. */
+html body .sanctuary-shell .conduit-loadout :is(button, .ref-chip, .ref-link):not(:disabled):not([aria-disabled=true]) { background-image: none !important; box-shadow: none; }
+html body .sanctuary-shell .conduit-loadout :is(.loadout-member-tabs button, .loadout-actions > button, .loadout-owned-row > button, .loadout-filter-group button, .loadout-pager button) { text-align: center !important; justify-content: center !important; }
+
+/* Two-panel layout. */
+html body .sanctuary-shell .loadout-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(20rem, 1fr); gap: .75rem; align-items: stretch; }
+html body .sanctuary-shell .conduit-loadout .ref-panel { display: flex; flex-direction: column; gap: .5rem; padding: .75rem; min-width: 0; border: 1px solid var(--menu-border, #2d2d31); border-radius: .8rem; background: #131314; }
+html body .sanctuary-shell .conduit-loadout .ref-panel-heading { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin: 0; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--menu-muted, #a9a9ae); }
+html body .sanctuary-shell .conduit-loadout .ref-panel-heading .ref-link { min-height: 28px; padding: 0 .2rem; border: 0; background: none; color: #f4f4f5; text-decoration: underline; text-underline-offset: 3px; text-transform: none; letter-spacing: 0; font-size: .85rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-heading-links { display: inline-flex; gap: .6rem; }
+
+/* Compact horizontal Master row. */
+html body .sanctuary-shell .conduit-loadout .ref-master-slot { display: grid; grid-template-columns: 112px minmax(0, 1fr) minmax(9rem, 14rem) auto; align-items: center; gap: .6rem; margin: 0; padding: .4rem .6rem; border: 1px dashed #3a3a3f; border-radius: .7rem; background: transparent; }
+html body .sanctuary-shell .conduit-loadout .ref-master-slot:not(.loadout-master) { grid-template-columns: auto minmax(0, 1fr); }
+html body .sanctuary-shell .conduit-loadout .ref-master-slot:not(.loadout-master) > p { margin: 0; color: var(--menu-muted, #a9a9ae); font-size: .85rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-master-art { display: grid; place-items: center; width: 112px; height: 112px; overflow: hidden; }
+html body .sanctuary-shell .conduit-loadout .loadout-master-art .master-art { width: 112px; height: 112px; max-width: 100%; max-height: 100%; object-fit: contain; }
+html body .sanctuary-shell .conduit-loadout .loadout-master-empty { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #3a3a3f; border-radius: .5rem; color: #8a8a90; font-weight: 700; }
+html body .sanctuary-shell .conduit-loadout .loadout-master-text { display: grid; min-width: 0; line-height: 1.25; }
+html body .sanctuary-shell .conduit-loadout .loadout-master-text b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html body .sanctuary-shell .conduit-loadout .loadout-master-text small:last-child { color: var(--menu-muted, #a9a9ae); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html body .sanctuary-shell .conduit-loadout .loadout-master-select .selection-trigger { width: 100%; min-height: 36px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html body .sanctuary-shell .conduit-loadout .loadout-eyebrow { font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--menu-muted, #a9a9ae); }
+
+/* Four-by-two slot grid. */
+html body .sanctuary-shell .conduit-loadout .loadout-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(10.25rem, auto); gap: .5rem; margin: 0; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot { position: relative; display: flex; flex-direction: column; gap: .35rem; min-width: 0; padding: .5rem; overflow: hidden; text-align: left;
+  border: 1px solid #2d2d31; border-top: 2px solid var(--loadout-accent, #2d2d31); border-radius: .7rem; background: #161618; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot.is-target { outline: 2px solid #f4f4f5; outline-offset: -1px; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-target { align-self: flex-start; min-height: 28px; padding: .1rem .55rem; border: 1px solid #3a3a3f; border-radius: 999px; background: transparent; color: #a9a9ae; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-target[aria-pressed=true] { border-color: #f4f4f5; background: #f4f4f5 !important; color: #0b0b0c; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-main { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: .5rem; align-items: center; min-width: 0; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-art { display: block; width: 48px; height: 48px; overflow: hidden; }
+html body .sanctuary-shell .conduit-loadout :is(.loadout-slot-art, .loadout-owned-art) .conduit-icon-frame { box-sizing: border-box; width: 100%; height: 100%; min-width: 0; min-height: 0; max-width: 100%; max-height: 100%; flex: none; }
+html body .sanctuary-shell .conduit-loadout :is(.loadout-slot-art, .loadout-owned-art) .conduit-icon { width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-body { display: grid; gap: .1rem; min-width: 0; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-name { font-size: .875rem; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+html body .sanctuary-shell .conduit-loadout .loadout-level { font-size: .75rem; line-height: 1.3; color: var(--menu-muted, #a9a9ae); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html body .sanctuary-shell .conduit-loadout .loadout-effect { margin: 0; font-size: .875rem; font-weight: 700; line-height: 1.25; color: #f4f4f5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+html body .sanctuary-shell .conduit-loadout .loadout-actions { display: flex; gap: .3rem; margin-top: auto; width: 100%; }
+html body .sanctuary-shell .conduit-loadout .loadout-actions > button { flex: 1 1 0; min-width: 0; min-height: 32px; padding: .2rem .3rem; border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #f4f4f5; font-size: .8rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-actions > .loadout-rule-button { flex: 0 0 auto; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty { align-items: center; justify-content: space-between; border: 1px dashed #3a3a3f; background: transparent; text-align: center; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty .loadout-slot-target { align-self: flex-start; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-plus { display: grid; place-items: center; flex: 1; width: 100%; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-plus .selection-trigger { display: grid; place-items: center; width: 3.25rem; height: 3.25rem; min-height: 0; padding: 0; border: 1px dashed #5a5a60; border-radius: 50%; background: transparent; color: transparent; font-size: 0; overflow: hidden; cursor: pointer; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-plus .selection-trigger::before { content: '+'; color: #d4d4d8; font-size: 1.75rem; line-height: 1; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-plus .selection-trigger:hover:not(:disabled) { border-color: #f4f4f5; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-plus select:not([hidden]) { max-width: 100%; }
+html body .sanctuary-shell .conduit-loadout .loadout-empty-label { color: var(--menu-muted, #a9a9ae); font-size: .75rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-swap[hidden] { display: none; }
+
+/* Total bonuses strip inside the loadout panel. */
+html body .sanctuary-shell .conduit-loadout .loadout-bonuses { display: grid; gap: .3rem; margin-top: auto; padding-top: .5rem; border-top: 1px solid #242427; }
+html body .sanctuary-shell .conduit-loadout .loadout-bonus-heading { margin: 0; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--menu-muted, #a9a9ae); }
+html body .sanctuary-shell .conduit-loadout .loadout-bonus-strip { display: flex; flex-wrap: wrap; gap: .3rem .5rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-bonus-strip > p { margin: 0; font-size: .85rem; }
+html body .sanctuary-shell .loadout-bonus-row { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: .1rem .4rem; padding: .2rem .5rem; border: 1px solid #242427; border-radius: .5rem; font-size: .8rem; }
+html body .sanctuary-shell .loadout-bonus-row > span { color: #d4d4d8; }
+html body .sanctuary-shell .loadout-bonus-row strong { font-weight: 700; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 html body .sanctuary-shell .loadout-bonus-row .loadout-base-stat { color: #f4f4f5; }
-html body .sanctuary-shell .loadout-owned-list { display: grid; gap: .5rem; max-height: min(60vh, 34rem); overflow-y: auto; padding-right: .2rem; }
-html body .sanctuary-shell .loadout-search { display: grid; gap: .4rem; font-size: .85rem; color: #d4d4d8; }
-html body .sanctuary-shell .loadout-search input { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; border: 1px solid #3a3a3f; border-radius: .6rem; padding: .65rem .75rem; background: #1a1a1c; color: #f4f4f5; font: inherit; }
+html body .sanctuary-shell .conduit-loadout .ref-equipment-note { margin: 0; color: var(--menu-muted, #a9a9ae); font-size: .75rem; }
+
+/* Your Conduits: search/sort, filters, cue, paginated rows (no scroll region). */
+html body .sanctuary-shell .conduit-loadout .loadout-tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(8rem, 11rem); gap: .4rem; }
+html body .sanctuary-shell .loadout-search { display: block; min-width: 0; }
+html body .sanctuary-shell .loadout-search input { box-sizing: border-box; width: 100%; min-width: 0; min-height: 36px; border: 1px solid #3a3a3f; border-radius: .5rem; padding: .35rem .6rem; background: #1a1a1c; color: #f4f4f5; font: inherit; }
 html body .sanctuary-shell .loadout-search input::placeholder { color: #a9a9ae; }
 html body .sanctuary-shell .loadout-search input:focus-visible { outline: 2px solid #f4f4f5; outline-offset: 2px; }
-html body .sanctuary-shell .loadout-search-status { margin: 0; font-size: .8rem; }
-html body .sanctuary-shell .loadout-owned [hidden] { display: none; }
-html body .sanctuary-shell .loadout-owned-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: center; gap: .65rem; padding: .55rem .65rem; border: 1px solid var(--menu-border, #2d2d31); border-radius: .7rem; background: var(--menu-surface-raised, #1a1a1c); }
-html body .sanctuary-shell .loadout-owned-row.is-equipped { border-color: #55555b; }
-html body .sanctuary-shell .loadout-owned-art .conduit-icon-frame { width: 56px; height: 56px; }
-html body .sanctuary-shell .loadout-owned-text { display: grid; gap: .1rem; min-width: 0; }
-html body .sanctuary-shell .loadout-owned-text b { font-size: .92rem; line-height: 1.3; overflow-wrap: anywhere; }
-html body .sanctuary-shell .loadout-owned-text small { overflow-wrap: anywhere; }
-html body .sanctuary-shell .loadout-owned-row > :is(button, .ref-chip) { min-height: 44px; white-space: nowrap; }
+html body .sanctuary-shell .conduit-loadout .loadout-sort { min-width: 0; }
+html body .sanctuary-shell .conduit-loadout .loadout-sort .selection-trigger { width: 100%; min-height: 36px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .8rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-filters { display: flex; flex-wrap: wrap; gap: .3rem .6rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-filter-group { display: inline-flex; flex-wrap: wrap; gap: .25rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-filter-group button { min-height: 28px; padding: .1rem .6rem; border: 1px solid #3a3a3f; border-radius: 999px; background: transparent; color: #d4d4d8; font-size: .78rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-filter-group button[aria-pressed=true] { border-color: #f4f4f5; background: #f4f4f5 !important; color: #0b0b0c; }
+html body .sanctuary-shell .conduit-loadout .loadout-target-cue { margin: 0; padding: .25rem .5rem; border-left: 2px solid #f4f4f5; color: #f4f4f5; font-size: .8rem; font-weight: 700; }
+html body .sanctuary-shell .loadout-search-status { margin: 0; font-size: .75rem; color: var(--menu-muted, #a9a9ae); }
+html body .sanctuary-shell .loadout-owned [hidden] { display: none !important; }
+html body .sanctuary-shell .loadout-owned-list { display: grid; align-content: start; gap: 0; flex: 1; min-height: 0; overflow: visible; }
+html body .sanctuary-shell .loadout-owned-list > p { margin: .5rem 0; font-size: .85rem; }
+html body .sanctuary-shell .loadout-owned-row { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto auto; align-items: center; gap: .5rem; min-height: 48px; padding: .25rem .1rem; border-bottom: 1px solid #242427; }
+html body .sanctuary-shell .loadout-owned-row:last-of-type { border-bottom: 0; }
+html body .sanctuary-shell .loadout-owned-art { display: block; width: 40px; height: 40px; overflow: hidden; }
+html body .sanctuary-shell .loadout-owned-text { display: grid; gap: 0; min-width: 0; line-height: 1.25; }
+html body .sanctuary-shell .loadout-owned-text b { font-size: .875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html body .sanctuary-shell .loadout-owned-text small { font-size: .75rem; color: var(--menu-muted, #a9a9ae); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+html body .sanctuary-shell .loadout-owned-text .loadout-reason { color: #c9c9ce; }
+html body .sanctuary-shell .conduit-loadout .loadout-owned-row > button { min-height: 32px; padding: .2rem .7rem; border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #f4f4f5; font-size: .8rem; white-space: nowrap; }
+html body .sanctuary-shell .conduit-loadout .loadout-owned-row > .ref-white { display: inline-flex; align-items: center; min-height: 28px; padding: .1rem .7rem; border: 1px solid #f4f4f5; border-radius: 999px; background: #f4f4f5; color: #0b0b0c; font-size: .78rem; white-space: nowrap; }
+html body .sanctuary-shell .conduit-loadout :is(.loadout-actions, .loadout-owned-row) > button:hover:not(:disabled),
+html body .sanctuary-shell .conduit-loadout .loadout-rule-button:hover:not(:disabled) { border-color: #8a8a90; background: #1f1f22; }
+html body .sanctuary-shell .conduit-loadout .loadout-rule-button { min-height: 32px; padding: .2rem .5rem; border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #d4d4d8; font-size: .75rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-pager { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: auto; padding-top: .4rem; border-top: 1px solid #242427; font-size: .8rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-pager button { min-height: 32px; padding: .2rem .8rem; border: 1px solid #3a3a3f; border-radius: .5rem; background: transparent; color: #f4f4f5; font-size: .8rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-pager [data-loadout-page-status] { color: #d4d4d8; font-variant-numeric: tabular-nums; }
 
+/* Touch devices keep full 44px targets. */
+@media (pointer: coarse) {
+  html body .sanctuary-shell .conduit-loadout :is(.loadout-actions > button, .loadout-owned-row > button, .loadout-rule-button, .loadout-pager button, .loadout-filter-group button, .loadout-slot-target, .loadout-member-tabs button, .loadout-back, .ref-panel-heading .ref-link) { min-height: 44px; }
+  html body .sanctuary-shell .conduit-loadout :is(.loadout-search input, .loadout-sort .selection-trigger, .loadout-master-select .selection-trigger) { min-height: 44px; }
+  html body .sanctuary-shell .conduit-loadout .loadout-slot-plus .selection-trigger { width: 44px; height: 44px; }
+}
+
+/* Overview summary card. */
 html body .sanctuary-shell .loadout-summary h3 { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
 html body .sanctuary-shell .loadout-summary-list { display: grid; gap: .45rem; }
 html body .sanctuary-shell .loadout-summary-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: .6rem; font-size: .88rem; }
@@ -69,55 +164,47 @@ html body .sanctuary-shell .loadout-summary-art .conduit-icon-frame { width: 44p
 html body .sanctuary-shell .loadout-open { width: 100%; min-height: 44px; margin-top: .6rem; }
 html body .sanctuary-shell .ref-organized-detail .ref-character-overview > .loadout-summary { grid-column: 1 / -1; }
 
-@container (max-width: 760px) {
+@container (max-width: 980px) {
   html body .sanctuary-shell .loadout-layout { grid-template-columns: minmax(0, 1fr); }
-  html body .sanctuary-shell .loadout-owned-list { max-height: 70vh; overscroll-behavior: contain; }
-}
-@container (max-width: 520px) {
-  html body .sanctuary-shell .conduit-loadout .loadout-grid { grid-template-columns: minmax(0, 1fr); }
-  html body .sanctuary-shell .conduit-loadout .loadout-slot { grid-template-columns: 64px minmax(0, 1fr); }
-  html body .sanctuary-shell .conduit-loadout .loadout-slot .conduit-icon-frame { width: 64px; height: 64px; }
-  html body .sanctuary-shell .conduit-loadout .ref-master-slot { grid-template-columns: minmax(0, 1fr); }
-  html body .sanctuary-shell .conduit-loadout .ref-master-slot > * { grid-column: 1 !important; }
-  html body .sanctuary-shell .loadout-owned-row { grid-template-columns: 48px minmax(0, 1fr); }
-  html body .sanctuary-shell .loadout-owned-row > :is(button, .ref-chip) { grid-column: 1 / -1; justify-self: stretch; text-align: center; }
-}
-
-/* D-238 dedicated full-page loadout matching the owner's mock-up: flat neutral panels, Back button, member pills. */
-html body .sanctuary-shell .loadout-back { display: none; }
-html body .sanctuary-shell .ref-screen.ref-conduit-page { display: block; grid-template-columns: minmax(0, 1fr); }
-html body .sanctuary-shell .ref-conduit-page > .ref-loadout-page { display: block; width: 100%; max-width: 88rem; margin: 0 auto; min-width: 0; }
-html body .sanctuary-shell .ref-loadout-page > .ref-character-panels { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; overflow: visible; max-height: none; }
-html body .sanctuary-shell .ref-loadout-page #upgrade-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-html body .sanctuary-shell .ref-loadout-page .character-detail-content { padding: 0; }
-html body .sanctuary-shell .ref-loadout-page .loadout-header { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .75rem 1.25rem; }
-html body .sanctuary-shell .ref-loadout-page .loadout-back { display: inline-flex; align-items: center; min-height: 48px; padding: .55rem 1.1rem; border: 1px solid #3a3a3f; border-radius: .7rem; background: transparent; color: #f4f4f5; font-weight: 700; white-space: nowrap; cursor: pointer; }
-html body .sanctuary-shell .ref-loadout-page .loadout-back:hover { border-color: #8a8a90; background: #1a1a1c; }
-html body .sanctuary-shell .ref-loadout-page .loadout-title h3 { font-size: 1.55rem; font-weight: 700; }
-/* Shared button surfaces use important gradients; keep this page flat without overriding disabled gray. */
-html body .sanctuary-shell .conduit-loadout :is(button, .ref-chip, .ref-link):not(:disabled):not([aria-disabled=true]) { background-image: none !important; box-shadow: none; }
-html body .sanctuary-shell .conduit-loadout :is(.loadout-member-tabs button, .loadout-actions > button, .loadout-owned-row > button) { text-align: center !important; justify-content: center !important; }
-html body .sanctuary-shell .conduit-loadout .loadout-member-tabs { display: flex; flex-wrap: wrap; gap: .4rem; justify-content: flex-end; padding: 0; border: 0; background: none; }
-html body .sanctuary-shell .conduit-loadout .loadout-member-tabs button { padding: .45rem 1rem; border: 1px solid #3a3a3f; border-radius: 999px; background: transparent; color: #d4d4d8; }
-html body .sanctuary-shell .conduit-loadout .loadout-member-tabs button[aria-pressed=true] { border-color: #f4f4f5; background: #f4f4f5; color: #0b0b0c; }
-html body .sanctuary-shell .conduit-loadout .ref-panel-heading { font-size: .78rem; letter-spacing: .1em; color: var(--menu-muted, #a9a9ae); }
-html body .sanctuary-shell .conduit-loadout .loadout-slot { border-left-width: 1px; border-color: #2d2d31; background: #161618; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot:not(.is-empty) { border-top: 1px solid #2d2d31; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty { border: 1px dashed #3a3a3f; background: transparent; justify-items: center; text-align: center; }
-html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty h4 { font-weight: 700; }
-html body .sanctuary-shell .conduit-loadout .loadout-actions > button,
-html body .sanctuary-shell .conduit-loadout .loadout-owned-row > button { border: 1px solid #3a3a3f; border-radius: .6rem; background: transparent; color: #f4f4f5; }
-html body .sanctuary-shell .conduit-loadout .loadout-actions > button:hover:not(:disabled),
-html body .sanctuary-shell .conduit-loadout .loadout-owned-row > button:hover:not(:disabled) { border-color: #8a8a90; background: #1f1f22; }
-html body .sanctuary-shell .conduit-loadout .loadout-owned-row > .ref-white { border: 1px solid #f4f4f5; border-radius: 999px; background: #f4f4f5; color: #0b0b0c; padding: .35rem .9rem; display: inline-flex; align-items: center; }
-html body .sanctuary-shell .conduit-loadout .loadout-owned-list { gap: 0; }
-html body .sanctuary-shell .conduit-loadout .loadout-owned-row { border: 0; border-bottom: 1px solid #242427; border-radius: 0; background: none; padding: .7rem .1rem; }
-html body .sanctuary-shell .conduit-loadout .loadout-owned-row:last-child { border-bottom: 0; }
-html body .sanctuary-shell .conduit-loadout .loadout-owned-text small { color: var(--menu-muted, #a9a9ae); }
-html body .sanctuary-shell .conduit-loadout .ref-panel-heading .ref-link { text-decoration: underline; text-underline-offset: 3px; text-transform: none; letter-spacing: 0; color: #f4f4f5; padding: 0; border: 0; min-height: 44px; }
-html body .sanctuary-shell .loadout-bonus-row strong { font-weight: 700; }
-@container (max-width: 760px) {
   html body .sanctuary-shell .ref-loadout-page .loadout-header { grid-template-columns: minmax(0, 1fr); }
   html body .sanctuary-shell .ref-loadout-page .loadout-back { justify-self: start; }
   html body .sanctuary-shell .conduit-loadout .loadout-member-tabs { justify-content: flex-start; }
 }
+@container (max-width: 640px) {
+  html body .sanctuary-shell .conduit-loadout .loadout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html body .sanctuary-shell .conduit-loadout .ref-master-slot { grid-template-columns: 112px minmax(0, 1fr); }
+  html body .sanctuary-shell .conduit-loadout .loadout-master-select { grid-column: 1 / -1; }
+  html body .sanctuary-shell .conduit-loadout .ref-master-slot > .loadout-rule-button { grid-column: 1 / -1; }
+  html body .sanctuary-shell .conduit-loadout .loadout-tools { grid-template-columns: minmax(0, 1fr); }
+  html body .sanctuary-shell .loadout-owned-row { grid-template-columns: 40px minmax(0, 1fr) auto; }
+  html body .sanctuary-shell .loadout-owned-row > span:empty { display: none; }
+}
+@container (max-width: 380px) {
+  html body .sanctuary-shell .conduit-loadout .loadout-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Keep slot controls legible; detailed effects have their own reading surface. */
+#app .sanctuary-shell .conduit-loadout .loadout-slot-main { grid-template-columns: 64px minmax(0, 1fr); gap: .4rem; }
+#app .sanctuary-shell .conduit-loadout .loadout-slot-art,
+#app .sanctuary-shell .conduit-loadout .loadout-owned-art { width: 64px; height: 64px; }
+#app .sanctuary-shell .conduit-loadout .loadout-slot-controls { display: grid; gap: .25rem; justify-items: start; }
+#app .sanctuary-shell .conduit-loadout .loadout-slot-name { font-size: 1rem; line-height: 1.2; overflow-wrap: normal; }
+#app .sanctuary-shell .conduit-loadout .loadout-level { font-size: .875rem; background: none; color: #c9c9ce; }
+#app .sanctuary-shell .conduit-loadout .loadout-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .25rem; }
+#app .sanctuary-shell .conduit-loadout .loadout-actions > button { font-size: .875rem; padding: .25rem .1rem; white-space: nowrap; overflow-wrap: normal; word-break: normal; }
+#app .sanctuary-shell .conduit-loadout .loadout-owned-row { grid-template-columns: 64px minmax(0, 1fr) auto; column-gap: .6rem; }
+#app .sanctuary-shell .conduit-loadout .loadout-owned-row .loadout-owned-art { grid-row: 1 / 3; }
+#app .sanctuary-shell .conduit-loadout .loadout-owned-row .loadout-owned-text { grid-row: 1 / 3; }
+#app .sanctuary-shell .conduit-loadout .loadout-owned-row > .loadout-rule-button { grid-column: 3; grid-row: 1; }
+#app .sanctuary-shell .conduit-loadout .loadout-owned-row > :is([data-loadout-equip], .ref-white) { grid-column: 3; grid-row: 2; }
+#app .sanctuary-shell .conduit-loadout .loadout-owned-text b { font-size: 1rem; white-space: normal; line-height: 1.2; }
+#app .sanctuary-shell .conduit-loadout .loadout-owned-text small { font-size: .875rem; }
+#app .sanctuary-shell .conduit-loadout .loadout-rule-button { font-size: .875rem; padding: .2rem .4rem; white-space: nowrap; }
+#app .sanctuary-shell .conduit-loadout .conduit-upgrade-meter,
+.game-dialog .loadout-detail .conduit-upgrade-meter { --meter-square: 4px; --meter-gap: 2px; padding: 2px; }
+#app .sanctuary-shell .conduit-loadout .conduit-upgrade-square { box-shadow: none; }
+.game-dialog .loadout-detail-art { width: 112px; height: 112px; margin: .5rem auto; }
+.game-dialog .loadout-detail-art .conduit-icon-frame { width: 100%; height: 100%; max-width: 100%; }
+.game-dialog .loadout-detail-art .conduit-icon { width: 100%; height: 100%; object-fit: contain; }
+.game-dialog .loadout-detail h3 { margin: .9rem 0 .35rem; }
+.game-dialog .loadout-detail li { padding-block: .15rem; }

@@ -23,6 +23,26 @@ select[data-selection-source] { display: none !important; }
 .captured-equipment h4 { grid-column: 1 / -1; }
 .battle-screen .battle-menu .battle-utilities > section { width: 100%; }
 .selection-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px; }
+html body .selection-modal[open] {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(800px, calc(100vw - 32px));
+  height: min(640px, calc(100dvh - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: hidden;
+}
+html body .selection-modal .drawer-heading { margin: 0 0 12px; min-width: 0; }
+html body .selection-modal .selection-options {
+  min-height: 0;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+  scrollbar-width: auto;
+  scrollbar-color: #85858d #202024;
+  align-content: start;
+  padding: 4px;
+}
+html body .selection-modal .selection-option { min-height: 44px; font-size: .875rem; padding: 10px 12px; }
 .selection-option {
   min-height: 48px;
   padding: 12px 16px;

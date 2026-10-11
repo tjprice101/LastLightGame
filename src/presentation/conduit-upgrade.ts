@@ -10,23 +10,84 @@ import { gameConfirm } from './game-dialog';
 import { presentReward } from './reward-screen';
 import { conduitReward } from './conduit-presentation';
 
+const pageSize = 6;
+interface CatalogState { query: string; rarity: string; status: string; sort: string; page: number }
+type OwnedEntry = { id: ConduitId; copies: number; level: number };
+const catalogStates = new WeakMap<HTMLElement, CatalogState>();
+const boundCatalogs = new WeakSet<HTMLElement>();
+const boundUpgrades = new WeakSet<HTMLButtonElement>();
+const initialState = (): CatalogState => ({ query: '', rarity: '', status: '', sort: 'name', page: 0 });
+const escapeAttribute = (value: string): string => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+function catalogPage(entries: OwnedEntry[], components: number, selected: string | undefined, state: CatalogState): string {
+  const filtered = entries.filter(entry => {
+    const conduit = getConduit(entry.id);
+    const cost = conduitUpgradeCost(conduit, entry.level);
+    return conduit.name.toLowerCase().includes(state.query.trim().toLowerCase())
+      && (!state.rarity || conduit.rarity === state.rarity)
+      && (!state.status || (state.status === 'maximum' ? cost === null
+        : state.status === 'available' ? cost !== null && components >= cost : cost !== null));
+  }).sort((a, b) => {
+    const first = getConduit(a.id), second = getConduit(b.id);
+    const rarities = ['Common', 'Rare', 'Legendary', 'Omnic'];
+    const delta = state.sort === 'rarity' ? rarities.indexOf(second.rarity) - rarities.indexOf(first.rarity)
+      : state.sort === 'level' ? b.level - a.level : 0;
+    return delta || first.name.localeCompare(second.name) || a.id.localeCompare(b.id);
+  });
+  const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  state.page = Math.max(0, Math.min(state.page, pages - 1));
+  const start = state.page * pageSize;
+  return `<div class="ref-upgrade-catalog-grid" aria-label="Owned Conduits to upgrade">${filtered.slice(start, start + pageSize).map(entry => {
+    const conduit = getConduit(entry.id);
+    return `<button type="button" class="ref-member-row ${entry.id === selected ? 'is-selected' : ''}" aria-pressed="${entry.id === selected}" data-select-upgrade-conduit="${entry.id}"><span class="ref-thumb">${conduitIcon(entry.id, entry.level)}</span><span><b>${conduit.name}</b><small>${conduit.rarity} · +${entry.level} / ${conduitUpgradeCap}</small><small>Owned ${entry.copies}</small></span></button>`;
+  }).join('') || '<p class="ref-upgrade-no-matches">No matching owned Conduits. Adjust your filters.</p>'}</div>
+    <nav class="ref-upgrade-pagination" aria-label="Owned Conduit pages"><button type="button" data-upgrade-page="-1" aria-label="Previous owned Conduit page" ${state.page === 0 ? 'disabled' : ''}>←</button><span role="status">${filtered.length ? `${start + 1}–${Math.min(start + pageSize, filtered.length)} of ${filtered.length}` : '0 of 0'} · Page ${state.page + 1} / ${pages}</span><button type="button" data-upgrade-page="1" aria-label="Next owned Conduit page" ${state.page + 1 === pages ? 'disabled' : ''}>→</button></nav>`;
+}
+
+function ownedEntries(account: Account | null): OwnedEntry[] {
+  return conduits.filter(conduit => (account?.conduits?.[conduit.id] ?? 0) > 0)
+    .map(conduit => ({ id: conduit.id, copies: account!.conduits![conduit.id]!, level: account?.conduitUpgrades?.[conduit.id] ?? 0 }));
+}
+
+function upgradeStatEffect(id: ConduitId, level: number): string {
+  const conduit = getConduit(id);
+  const effect = conduitEffect(conduit, level);
+  const separator = effect.indexOf('. ');
+  return conduit.mechanic && separator !== -1 ? effect.slice(0, separator) : effect;
+}
+
 export function conduitUpgradeMenu(account: Account | null, selected?: string): string {
+  return renderConduitUpgradeMenu(account, selected, initialState());
+}
+
+function renderConduitUpgradeMenu(account: Account | null, selected: string | undefined, state: CatalogState): string {
   const owned = conduits.filter((conduit) => (account?.conduits?.[conduit.id] ?? 0) > 0);
   const choice = owned.find(entry => entry.id === selected) ?? owned[0];
+  const entries = ownedEntries(account);
   const costInformation = Object.entries(conduitUpgradeRarityMultipliers).map(([rarity, multiplier]) =>
     `<p>${rarity}: ${conduitUpgradeCosts.map((cost) => cost * multiplier).join(' / ')} components for +1 through +5.</p>`).join('');
-  return `<section class="conduit-upgrade-menu ref-screen ref-conduit-upgrade">
+  return `<section class="conduit-upgrade-menu ref-screen ref-conduit-upgrade" data-upgrade-owned="${escapeAttribute(JSON.stringify(entries))}" data-upgrade-components="${account?.mechanicalComponents ?? 0}">
     <nav class="ref-market-tabs"><button aria-current="page">Conduit Upgrade</button><button data-page="conduit-store">Conduit Store →</button></nav>
-    <aside class="ref-panel"><header class="ref-panel-heading">Owned · ${owned.length}</header><div class="ref-scroll">${owned.map(conduit => `<button class="ref-member-row ${conduit.id === choice?.id ? 'is-selected' : ''}" data-select-upgrade-conduit="${conduit.id}"><span class="ref-thumb">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</span><span><b>${conduit.name}</b><small>${conduit.rarity} · +${account?.conduitUpgrades?.[conduit.id] ?? 0} / ${conduitUpgradeCap}</small></span></button>`).join('')}</div></aside>
+    <aside class="ref-panel ref-upgrade-owned"><header class="ref-panel-heading">Owned · ${owned.length}</header>
+      <div class="ref-upgrade-tools"><label class="ref-upgrade-search"><span class="ref-sr-only">Search owned Conduits</span><input type="search" data-upgrade-search placeholder="Search Conduits…" value="${escapeAttribute(state.query)}"></label>
+      <label class="ref-upgrade-sort"><span class="ref-sr-only">Sort owned Conduits</span><select data-upgrade-sort>${[['name', 'Name A–Z'], ['rarity', 'Rarity highest'], ['level', 'Upgrade highest']].map(([value, label]) => `<option value="${value}" ${state.sort === value ? 'selected' : ''}>${label}</option>`).join('')}</select></label></div>
+      <div class="ref-upgrade-filters">
+      <div class="ref-upgrade-chips" role="group" aria-label="Filter owned Conduits by rarity">${[['', 'All'], ...['Common', 'Rare', 'Legendary', 'Omnic'].map(rarity => [rarity, rarity])].map(([value, label]) => `<button type="button" data-upgrade-rarity-chip="${value}" aria-pressed="${state.rarity === value}">${label}</button>`).join('')}</div>
+      <select hidden data-native-select data-upgrade-rarity aria-label="Rarity"><option value="">All rarities</option>${['Common', 'Rare', 'Legendary', 'Omnic'].map(rarity => `<option ${state.rarity === rarity ? 'selected' : ''}>${rarity}</option>`).join('')}</select>
+      <div class="ref-upgrade-chips" role="group" aria-label="Filter owned Conduits by upgrade status">${[['', 'All'], ['available', 'Can upgrade'], ['unfinished', 'Below maximum'], ['maximum', 'Maximum +5']].map(([value, label]) => `<button type="button" data-upgrade-status-chip="${value}" aria-pressed="${state.status === value}">${label}</button>`).join('')}</div>
+      <select hidden data-native-select data-upgrade-status aria-label="Status">${[['', 'All statuses'], ['available', 'Can upgrade'], ['unfinished', 'Below maximum'], ['maximum', 'Maximum +5']].map(([value, label]) => `<option value="${value}" ${state.status === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div>
+      <div class="ref-upgrade-catalog">${catalogPage(entries, account?.mechanicalComponents ?? 0, choice?.id, state)}</div></aside>
     ${account && choice ? (() => {
       const level = account.conduitUpgrades?.[choice.id] ?? 0;
       const cost = conduitUpgradeCost(choice, level);
       const affordable = cost !== null && (account.mechanicalComponents ?? 0) >= cost;
-      return `<section class="ref-panel ref-upgrade-detail" data-upgrade-card="${choice.id}"><header class="ref-panel-heading">Selected Conduit</header><div class="ref-upgrade-identity"><div class="ref-store-hero">${conduitIcon(choice.id, level)}</div><div><h2>${choice.name}</h2>${conduitRarity(choice.id)}<p>Upgrade +${level} / ${conduitUpgradeCap} · Owned ${account.conduits?.[choice.id]}</p><div class="ref-pips">${Array.from({ length: conduitUpgradeCap }, (_, index) => `<i class="${index < level ? 'is-filled' : ''}"></i>`).join('')}</div><section class="conduit-upgrade-values"><h4>Current</h4><p>${conduitEffect(choice, level)}</p>${cost !== null ? `<h4>Next · +${level + 1}</h4><p>${conduitEffect(choice, level + 1)}</p>` : '<p>Maximum upgrade reached.</p>'}</section></div></div><header class="ref-panel-heading">Effect by upgrade</header><div class="ref-scroll ref-effect-progression">${Array.from({ length: conduitUpgradeCap + 1 }, (_, upgrade) => `<article class="${upgrade === level ? 'is-current' : ''}"><small>+${upgrade}</small><p>${conduitEffect(choice, upgrade)}</p></article>`).join('')}</div></section>
+      return `<section class="ref-panel ref-upgrade-detail" data-upgrade-card="${choice.id}"><div class="ref-upgrade-identity"><div class="ref-store-hero">${conduitIcon(choice.id, level)}</div><div>${choice.mechanic ? `<div class="ref-upgrade-special">${information('conduit-upgrade-special-effect', `${choice.name} · Special effect`, `<p>${choice.effect}</p><p>Special mechanics are unchanged by upgrades. Only the listed stat modifiers scale.</p>`, 'Special effect · unchanged')}</div>` : ''}<h2>${choice.name}</h2>${conduitRarity(choice.id)}<p>Upgrade +${level} / ${conduitUpgradeCap} · Owned ${account.conduits?.[choice.id]}</p><div class="ref-pips" aria-hidden="true">${Array.from({ length: conduitUpgradeCap }, (_, index) => `<i class="${index < level ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
+      <section class="conduit-upgrade-values"><div><h4>Current · +${level}</h4><p>${upgradeStatEffect(choice.id, level)}</p></div><span aria-hidden="true">→</span><div>${cost !== null ? `<h4>Next · +${level + 1}</h4><p>${upgradeStatEffect(choice.id, level + 1)}</p>` : '<h4>Maximum · +5</h4><p>Maximum upgrade reached.</p>'}</div></section>
+      <header class="ref-panel-heading">Effect by upgrade${choice.mechanic ? '<span>Special effect unchanged</span>' : ''}</header><div class="ref-effect-progression">${Array.from({ length: conduitUpgradeCap + 1 }, (_, upgrade) => `<article class="${upgrade === level ? 'is-current' : ''}" ${upgrade === level ? 'aria-current="step"' : ''}><small>+${upgrade}${upgrade === level ? ' · Current' : ''}</small><p>${upgradeStatEffect(choice.id, upgrade)}</p></article>`).join('')}</div>
       <aside class="ref-panel ref-upgrade-resources"><header class="ref-panel-heading">Required resources</header><article class="component-balance">${mechanicalComponentIcon()}<div><strong id="mechanical-components-balance">${account.mechanicalComponents ?? 0}</strong><span>Broken Mechanical Components</span></div></article>
       <p class="conduit-upgrade-cost">${cost === null ? 'No further upgrades' : `${cost} Broken Mechanical Components required`}</p>${cost === null ? '<p>Maximum upgrade reached.</p>' : `<meter min="0" max="${cost}" value="${Math.min(account.mechanicalComponents ?? 0, cost)}" aria-label="Components towards upgrade"></meter>`}
       <footer><button class="primary-button" type="button" data-upgrade-conduit="${choice.id}" data-expected-upgrade="${level}" ${affordable ? '' : 'disabled'}>${cost === null ? 'Maximum upgrade +5' : `Upgrade to +${level + 1} · ${cost} components`}</button>
-      ${cost !== null && !affordable ? '<p class="quiet">Not enough Broken Mechanical Components.</p>' : ''}<button class="ref-link" data-page="gameplay" data-machine-activity>Earn components →</button></footer></aside>`;
+      ${cost !== null && !affordable ? '<p class="quiet">Not enough Broken Mechanical Components.</p>' : ''}<button class="ref-link" data-page="gameplay" data-machine-activity>Earn components →</button></footer></aside></section>`;
     })() : `<section class="ref-panel ref-empty"><p ${account ? '' : 'role="alert"'}>${account ? 'No owned Conduits to upgrade.' : 'Conduit upgrades unavailable. Resolve the save error.'}</p><button class="ref-link" data-page="conduit-store">Open Conduit Store →</button></section>`}
     <div class="ref-upgrade-information">
     ${information('conduit-upgrade-information', 'Conduit upgrades', `<p>Each owned Conduit name can be upgraded five times account-wide. All characters sharing that name benefit; copies are not consumed. Each upgrade adds 50% of its original stat modifiers, reaching 3.5 times their original values at +5 (+250%). Legendary penalties grow too; Omnic special mechanics do not change. Critical Rate can exceed 100%: every hit then crits, and each point above 100% is the chance for an Elemental Crit (1.5 times normal critical damage).</p><p>Only Broken Mechanical Components are spent. Costs increase with rarity; Omnic restoration is a long-term goal.</p>${costInformation}<p>Components drop only from defeated machines, independently of other rewards. ${machineComponentRulesText} No clear bonus or exchange.</p><p>Current and next values include drawbacks. Ongoing battles keep the upgrade levels snapshotted at entry; new runs use current upgrades.</p>`)}
@@ -37,8 +98,11 @@ export function conduitUpgradeMenu(account: Account | null, selected?: string): 
 export function bindConduitUpgrades(host: HTMLElement, storage: ProfileStorage,
   refresh: (account: Account) => void, reportError: (message: string) => void,
   performUpgrade?: (id: ConduitId, level: number) => Promise<Account>): void {
+  bindUpgradeCatalog(host);
   let pending = false;
   host.querySelectorAll<HTMLButtonElement>('[data-upgrade-conduit]').forEach((button) => {
+    if (boundUpgrades.has(button)) return;
+    boundUpgrades.add(button);
     button.addEventListener('click', async () => {
       let saved = false;
       try {
@@ -73,34 +137,114 @@ export function updateConduitUpgradeMenu(host: HTMLElement, account: Account | n
   const current = host.querySelector<HTMLElement>('.ref-conduit-upgrade');
   if (!current) throw new Error('Conduit Upgrade is missing.');
   const template = document.createElement('template');
-  template.innerHTML = conduitUpgradeMenu(account, selected);
+  const state = catalogStates.get(current) ?? initialState();
+  catalogStates.set(current, state);
+  template.innerHTML = renderConduitUpgradeMenu(account, selected ?? current.querySelector<HTMLElement>('[data-upgrade-card]')?.dataset.upgradeCard, state);
   const next = template.content;
+  const nextScreen = next.querySelector<HTMLElement>('.ref-conduit-upgrade')!;
+  current.dataset.upgradeOwned = nextScreen.dataset.upgradeOwned;
+  current.dataset.upgradeComponents = nextScreen.dataset.upgradeComponents;
   const chosen = next.querySelector<HTMLElement>('[data-upgrade-card]')?.dataset.upgradeCard;
-  current.querySelectorAll<HTMLButtonElement>('[data-select-upgrade-conduit]').forEach(button => {
-    const id = button.dataset.selectUpgradeConduit;
-    button.classList.toggle('is-selected', id === chosen);
-    button.setAttribute('aria-pressed', String(id === chosen));
-    if (isConduitId(id)) {
-      const small = button.querySelector('small');
-      const level = account?.conduitUpgrades?.[id] ?? 0;
-      if (small) small.textContent = `${getConduit(id).rarity} · +${level} / ${conduitUpgradeCap}`;
-      const icon = button.querySelector<HTMLElement>('.conduit-icon-frame');
-      if (icon && icon.dataset.conduitUpgrade !== String(level)) {
-        const thumb = button.querySelector('.ref-thumb');
-        if (thumb) thumb.innerHTML = conduitIcon(id, level);
-      }
-    }
-  });
-  for (const selector of ['.ref-upgrade-detail', '.ref-upgrade-resources']) {
-    const panel = current.querySelector<HTMLElement>(selector);
-    const updated = next.querySelector<HTMLElement>(selector);
-    if (!panel || !updated) throw new Error('Conduit Upgrade panels are missing.');
-    const scroll = panel.querySelector<HTMLElement>('.ref-scroll')?.scrollTop ?? 0;
-    const earnComponents = panel.querySelector('[data-machine-activity]');
-    panel.replaceChildren(...Array.from(updated.childNodes));
-    if (earnComponents) panel.querySelector('[data-machine-activity]')?.replaceWith(earnComponents);
-    if (updated.dataset.upgradeCard) panel.dataset.upgradeCard = updated.dataset.upgradeCard;
-    const scroller = panel.querySelector<HTMLElement>('.ref-scroll');
-    if (scroller) scroller.scrollTop = scroll;
+  const heading = current.querySelector('.ref-upgrade-owned > .ref-panel-heading');
+  if (heading) heading.textContent = `Owned · ${ownedEntries(account).length}`;
+  updateCatalog(current, chosen, state);
+  const panel = current.querySelector<HTMLElement>('.ref-upgrade-detail, .ref-empty');
+  const updated = next.querySelector<HTMLElement>('.ref-upgrade-detail, .ref-empty');
+  if (!panel || !updated) throw new Error('Conduit Upgrade panels are missing.');
+  const resource = panel.querySelector('.ref-upgrade-resources');
+  const earnComponents = resource?.querySelector('[data-machine-activity]');
+  const active = document.activeElement;
+  const focusedAction = active instanceof HTMLElement && panel.contains(active)
+    ? active.hasAttribute('data-upgrade-conduit') ? 'upgrade' : active.hasAttribute('data-machine-activity') ? 'earn' : undefined
+    : undefined;
+  panel.className = updated.className;
+  if (updated.dataset.upgradeCard) panel.dataset.upgradeCard = updated.dataset.upgradeCard;
+  else delete panel.dataset.upgradeCard;
+  panel.replaceChildren(...Array.from(updated.childNodes));
+  const nextResource = panel.querySelector('.ref-upgrade-resources');
+  if (resource && nextResource) {
+    resource.replaceChildren(...Array.from(nextResource.childNodes));
+    nextResource.replaceWith(resource);
+    if (earnComponents) resource.querySelector('[data-machine-activity]')?.replaceWith(earnComponents);
   }
+  if (focusedAction) {
+    const target = panel.querySelector<HTMLButtonElement>(focusedAction === 'upgrade' ? '[data-upgrade-conduit]' : '[data-machine-activity]');
+    if (target && !target.disabled) target.focus({ preventScroll: true });
+    else current.querySelector<HTMLElement>('#conduit-upgrade-result')?.focus({ preventScroll: true });
+  }
+}
+
+function updateCatalog(screen: HTMLElement, selected: string | undefined, state: CatalogState): void {
+  const catalog = screen.querySelector<HTMLElement>('.ref-upgrade-catalog');
+  if (!catalog) throw new Error('Conduit Upgrade catalog is missing.');
+  const template = document.createElement('template');
+  template.innerHTML = catalogPage(JSON.parse(screen.dataset.upgradeOwned ?? '[]') as OwnedEntry[],
+    Number(screen.dataset.upgradeComponents ?? 0), selected, state);
+  const grid = catalog.querySelector('.ref-upgrade-catalog-grid')!;
+  const nextGrid = template.content.querySelector('.ref-upgrade-catalog-grid')!;
+  const existing = new Map(Array.from(grid.querySelectorAll<HTMLElement>('[data-select-upgrade-conduit]'))
+    .map(card => [card.dataset.selectUpgradeConduit, card]));
+  const active = document.activeElement;
+  const nodes = Array.from(nextGrid.childNodes).map(node => {
+    if (!(node instanceof HTMLElement)) return node;
+    const card = existing.get(node.dataset.selectUpgradeConduit);
+    if (!card) return node;
+    card.className = node.className;
+    card.setAttribute('aria-pressed', node.getAttribute('aria-pressed') ?? 'false');
+    if (card.querySelector('.conduit-icon-frame')?.getAttribute('data-conduit-upgrade')
+      !== node.querySelector('.conduit-icon-frame')?.getAttribute('data-conduit-upgrade')) {
+      card.querySelector('.ref-thumb')?.replaceChildren(...Array.from(node.querySelector('.ref-thumb')!.childNodes));
+    }
+    card.querySelectorAll('small').forEach((small, index) => { small.textContent = node.querySelectorAll('small')[index]?.textContent ?? ''; });
+    return card;
+  });
+  grid.replaceChildren(...nodes);
+  if (active instanceof HTMLElement && grid.contains(active)) active.focus({ preventScroll: true });
+  else if (active instanceof HTMLElement && [...existing.values()].includes(active)) {
+    screen.querySelector<HTMLElement>('[data-upgrade-search]')?.focus({ preventScroll: true });
+  }
+  const pagination = catalog.querySelector('.ref-upgrade-pagination')!;
+  const nextPagination = template.content.querySelector('.ref-upgrade-pagination')!;
+  pagination.querySelector('span')!.textContent = nextPagination.querySelector('span')!.textContent;
+  pagination.querySelectorAll<HTMLButtonElement>('button').forEach((button, index) => {
+    button.disabled = nextPagination.querySelectorAll<HTMLButtonElement>('button')[index].disabled;
+  });
+}
+
+function bindUpgradeCatalog(host: HTMLElement): void {
+  const screen = host.querySelector<HTMLElement>('.ref-conduit-upgrade');
+  if (!screen || boundCatalogs.has(screen)) return;
+  boundCatalogs.add(screen);
+  const state = catalogStates.get(screen) ?? initialState();
+  catalogStates.set(screen, state);
+  const refreshCatalog = () => {
+    screen.querySelectorAll<HTMLButtonElement>('[data-upgrade-rarity-chip], [data-upgrade-status-chip]').forEach(button => {
+      const rarity = button.dataset.upgradeRarityChip;
+      button.setAttribute('aria-pressed', String(rarity !== undefined ? state.rarity === rarity : state.status === button.dataset.upgradeStatusChip));
+    });
+    updateCatalog(screen, screen.querySelector<HTMLElement>('[data-upgrade-card]')?.dataset.upgradeCard, state);
+  };
+  screen.querySelector<HTMLInputElement>('[data-upgrade-search]')?.addEventListener('input', event => {
+    state.query = (event.currentTarget as HTMLInputElement).value;
+    state.page = 0;
+    refreshCatalog();
+  });
+  for (const [selector, key] of [['[data-upgrade-rarity]', 'rarity'], ['[data-upgrade-status]', 'status'], ['[data-upgrade-sort]', 'sort']] as const) {
+    screen.querySelector<HTMLSelectElement>(selector)?.addEventListener('change', event => {
+      state[key] = (event.currentTarget as HTMLSelectElement).value;
+      state.page = 0;
+      refreshCatalog();
+    });
+  }
+  screen.querySelectorAll<HTMLButtonElement>('[data-upgrade-rarity-chip], [data-upgrade-status-chip]').forEach(button => button.addEventListener('click', () => {
+    const rarity = button.dataset.upgradeRarityChip;
+    const control = screen.querySelector<HTMLSelectElement>(rarity !== undefined ? '[data-upgrade-rarity]' : '[data-upgrade-status]')!;
+    control.value = rarity ?? button.dataset.upgradeStatusChip ?? '';
+    control.dispatchEvent(new Event('change', { bubbles: true }));
+  }));
+  screen.querySelectorAll<HTMLButtonElement>('[data-upgrade-page]').forEach(button => button.addEventListener('click', () => {
+    if (button.disabled) return;
+    state.page += Number(button.dataset.upgradePage);
+    refreshCatalog();
+  }));
 }
