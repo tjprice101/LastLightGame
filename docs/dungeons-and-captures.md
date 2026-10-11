@@ -1,5 +1,12 @@
 # Dungeons and captured enemies
 
+**D-192:** activity locks use highest-owned Element-Bearer level, not squad leader
+or captures. Heaven/Abyss entry starts at50 with cap-aligned floors; new hostile
+stats do not increase playable capture stats. Existing explicit capture levels,
+kits and UUIDs survive; metadata-free Heaven/Abyss copies keep legacy inferred
+levels. [Access](story-and-training.md#story-first-progression-and-activity-access-d-192)
+and [balance](combat.md#enemy-progression-rebalance-d-192) supersede old tuning below.
+
 **Status:** Phase6 implemented: Heaven/Abyss capture rewards, retained playable
 kits, independent leveling/Conduits and mixed squads. All six elemental material
 dungeons also have combat, rewards, stage unlocks and clear reports.
@@ -59,9 +66,9 @@ No Heavy action, invented skill, permanent death or automatic deletion.
 
 - Start at the defeated enemy's actual level. Keep its ability names, multipliers
   and intervals unchanged when leveling; intervals become manual cooldowns.
-- Use the shared **ordinary**, never boss, infusion stat curve at the current
+- Use the original playable **ordinary**, never boss, infusion stat curve at the current
   level. HP/Attack/Defense multiply by `.65 + .35 * tier / 5` for fixed tier0-5.
-  Thus a Lv120 initial form has130k HP, final form200k, versus400k hostile bossHP.
+  Thus a Lv120 initial form has130k HP, final form200k, versus500k hostile bossHP.
   Higher captured forms remain stronger at equal level; boss captures retain
   boss abilities but not boss stat bonuses.
 - Conduit buffs apply afterward, using the same shared stat helper as starters.
@@ -82,6 +89,7 @@ Capture RNG uses a separate seeded stream, preserving combat/material randomness
 Phase8 adds another independent Null-Prismatica stream: the same eligible ordinary/boss
 kills roll mutually exclusive0/1/2/3 outcomes, linearly from90/8/1.5/0.5% at80
 to75/10/10/5% at120. Premium currency joins the same atomic write and appears
+only from enemyLv80; new early infusion floors grant none,
 in loot/results; no clear bonus or Adventure/elemental-dungeon Null-Prismatica.
 See [economy and active banner](summoning-and-economy.md).
 Treasury instead grants currency-only high Prismatica payouts and20% captures,
@@ -122,6 +130,8 @@ the next wave resets its ledger. Continue remains manual.
 - Phase10 [Rosethorn Sanctuary](rosethorn-sanctuary.md) is implemented:
   Null-Prismatica farming, six divine wisp forms and protected-safe dual-currency sales.
   Copy-ready art prompts exist; actual images remain pending.
+- D-233: Heaven/Abyss copies also sell, for a chosen Null-Prismatica or mode-item
+  payout (1-6 by form). Player-facing text calls captures Elemental-Devourers.
 
 Do not invent pending decisions from visual power order.
 

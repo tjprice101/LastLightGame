@@ -1,8 +1,37 @@
 import { describe, expect, it } from 'vitest';
-import { plentifulDrops, fractalisDrop, scaledDrop } from './loot-random';
+import { plentifulDrops, fractalisDrop, scaledDrop, storyFractalisDrop, treasuryFractalisDrop } from './loot-random';
+import { storyEncounter, storyLoot, storyRules } from './story';
 import { materialDrops, materialLoot, materialDropTable } from './dungeons';
 import { infusionDrops, infusionLoot, infusionEncounter } from './infusions';
 import { elementalEnemyLevel, elements } from './activities';
+
+describe('Story and Treasury Prismatica (D-225)', () => {
+  it('gives Story a constant per-level step, so Prismatica rises linearly across all stages', () => {
+    for (let level = 1; level < 120; level += 1) {
+      expect(storyFractalisDrop(level + 1).minimum - storyFractalisDrop(level).minimum).toBe(2);
+      expect(storyFractalisDrop(level).maximum).toBe(storyFractalisDrop(level).minimum * 2);
+    }
+    expect(storyFractalisDrop(1)).toEqual({ minimum: 5, maximum: 10, chance: 1 });
+    expect(storyFractalisDrop(55)).toEqual({ minimum: 113, maximum: 226, chance: 1 });
+    for (const level of [0, 121, 1.5, NaN]) expect(() => storyFractalisDrop(level)).toThrow();
+    for (let stage = 1; stage <= storyRules.stages; stage += 1) {
+      const range = storyFractalisDrop(storyEncounter(stage).level);
+      expect(storyLoot(stage).find((drop) => drop.id === 'fractalis')).toMatchObject(range);
+    }
+  });
+
+  it('matches the Story line at Treasury entry, then climbs strictly faster to 20x', () => {
+    expect(treasuryFractalisDrop(65)).toEqual(storyFractalisDrop(65));
+    let previousStep = 0;
+    for (let level = 66; level <= 120; level += 1) {
+      const step = treasuryFractalisDrop(level).minimum - treasuryFractalisDrop(level - 1).minimum;
+      expect(step).toBeGreaterThan(previousStep);
+      expect(treasuryFractalisDrop(level).minimum).toBeGreaterThan(storyFractalisDrop(level).minimum);
+      previousStep = step;
+    }
+    expect(treasuryFractalisDrop(120).minimum).toBe(storyFractalisDrop(120).minimum * 20);
+  });
+});
 
 describe('plentiful loot quantities', () => {
   it('bounds every dungeon and infusion stack to triple normal quantities across all floors', () => {
@@ -65,8 +94,8 @@ describe('plentiful loot quantities', () => {
       for (const drop of pool.specialties) expect(drops[drop.id]).toBe(drop.minimum);
       for (const drop of pool.bonuses) expect(drops[`${mode === 'heavens' ? 'infernic' : 'tranquilitic'}-${drop.rarity}`]).toBe(drop.minimum);
       const { level } = infusionEncounter(mode, stage);
-      expect(drops[`${mode}-evolution`] !== undefined).toBe(level >= 93);
-      expect(drops[`${mode}-level`] !== undefined).toBe(level >= 100);
+      expect(drops[`${mode}-evolution`] !== undefined).toBe(level >= 75);
+      expect(drops[`${mode}-level`] !== undefined).toBe(level >= 75);
     }
   });
 

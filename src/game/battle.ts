@@ -1,13 +1,13 @@
-import { actionIds, adventureScaling, defenseMode, enemies, formatStat, resolveFighter, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats, type FighterDefinition } from '../content/combat';
+import { actionIds, defenseMode, enemies, formatStat, resolveFighter, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats, type FighterDefinition } from '../content/combat';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { type CharacterProgress } from '../content/progression';
-import { fractalisDrop, treasuryFractalisDrop, rollDrop, rollStagedLycalis } from '../content/loot-random';
+import { fractalisDrop, storyFractalisDrop, treasuryFractalisDrop, rollDrop, rollStagedLycalis } from '../content/loot-random';
 import { dungeonEncounter, materialDrops, type PlayableDungeon } from '../content/dungeons';
 import { elementSources } from '../content/element-migration';
 import { materialName } from '../content/dungeon-art';
 import { infusionEncounter, infusionDrops } from '../content/infusions';
 import { dungeonStageCount, infusionStageCount, type InfusionModeId, type ElementId } from '../content/activities';
-import { enemyGrowth, enemyStat } from '../content/stat-growth';
+import { enemyGrowth, enemyCombatStats } from '../content/stat-growth';
 import { enemySkills, scheduledEnemySkill, type EnemySkill } from '../content/enemy-skills';
 import { getConduit, isConduitId, validateConduitUpgrades, type ConduitId, type ConduitSlots, type ConduitLoadouts, type ConduitMechanic, type ConduitUpgrades } from '../content/conduits';
 import { rollMachineComponents } from '../content/mechanical-components';
@@ -22,8 +22,10 @@ import { warEncounter, warStageCount, rollWarRewards, type WarCharacterId } from
 import type { ElementalEffectTag } from '../content/elemental-effects';
 import type { KitPilotState } from '../content/kit-pilots';
 import { debuffSnapshot } from './battle-debuffs';
+import { buffSnapshot, type BattleBuffSnapshot } from './battle-buffs';
 import { pilotAfterDirectActivation, pilotAuthoredShieldAbsorbed, pilotBurnDamage, pilotEffectiveHeal, pilotOutgoingBonus, pilotPrepareStarter } from './kit-pilots';
 import { resolveOmnicInteraction, type OmnicMemory } from './kit-conduits';
+import { masterChestDrops, validateMasterCharacter, type MasterConduitId, type MasterLoadouts } from '../content/master-conduits';
 import { storyEncounter, storyCreature, storyDrops, storyRules } from '../content/story';
 
 export interface Combatant {
@@ -35,6 +37,7 @@ export interface Combatant {
   level: number | null;
   evolution?: number;
   conduits?: ConduitSlots;
+  masterConduit?: MasterConduitId;
   stats: Stats;
   hp: number;
   shield: number;
@@ -87,13 +90,14 @@ export interface BattleState {
   lycalisSeed?: number;
   conduitSeed?: number;
   componentSeed?: number;
+  masterChestSeed?: number;
   recruitmentSeed?: number;
   encounterSeed?: number;
   conduitUpgrades?: ConduitUpgrades;
   allies: Combatant[];
   enemies: Combatant[];
   dungeon?: { element: PlayableDungeon; stage: number };
-  infusion?: { mode: InfusionModeId; stage: number };
+  infusion?: { mode: InfusionModeId; stage: number; schedule?: 'legacy' | 'caps' };
   war?: { character: WarCharacterId; stage: number };
   story?: { storyStage: number };
 }
@@ -103,18 +107,21 @@ export interface BattleEvent {
   target: string;
   amount: number;
   critical: boolean;
+  elementalCritical?: boolean;
   message: string;
   action?: ActionId;
   enhancedAttack?: boolean;
   abilityName?: string;
   materials?: Record<string, number>;
   shieldRemaining?: number;
+  buffs?: BattleBuffSnapshot;
   periodic?: boolean;
   debuffs?: BattleDebuffSnapshot;
   capture?: { creatureId: string; level: number };
   lycalis?: number;
   conduits?: Partial<Record<ConduitId, number>>;
   mechanicalComponents?: number;
+  masterChests?: number;
   recruitment?: WarCharacterId;
   recruitmentOutcome?: 'new' | 'duplicate';
   storyBonus?: { fractalis: number; lycalis: number };
@@ -129,6 +136,18 @@ export interface BattleDebuffSnapshot {
   elementalEffects?: ElementalEffectTag[];
 }
 export interface BattleResult { state: BattleState; events: BattleEvent[] }
+
+export function withMasterLoadouts(state: BattleState, masters: MasterLoadouts = {}): BattleState {
+  for (const [character, id] of Object.entries(masters)) {
+    if (id !== null && id !== undefined) validateMasterCharacter(id, character);
+  }
+  for (const ally of state.allies) {
+    if (!isStarterId(ally.definitionId) || ally.captured) continue;
+    const id = masters[ally.definitionId];
+    if (id) ally.masterConduit = id;
+  }
+  return state;
+}
 
 export function createWarBattle(character: WarCharacterId, stage: number, seed: number, starter: StarterId, progress: CharacterProgress,
   roster: readonly string[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress },
@@ -173,9 +192,7 @@ function spawnWave(wave: number): Combatant[] {
     const definition = enemies[id];
     const unit = combatant(`enemy-${wave}-${index}`, id, definition.name, 'enemy', {
       ...definition.stats,
-      health: enemyStat(definition.stats.health, enemyGrowth.health, level, 1, adventureScaling.healthPerWave),
-      defense: enemyStat(definition.stats.defense, enemyGrowth.defense, level, 1, adventureScaling.defensePerWave / definition.stats.defense),
-      damage: enemyStat(definition.stats.damage, enemyGrowth.damage, level, 1, adventureScaling.damagePerWave),
+      ...enemyCombatStats(level, false, definition.stats),
       crit: definition.stats.crit,
     }, definition.element);
     unit.level = level;
@@ -293,11 +310,11 @@ function roll(state: BattleState): number {
 }
 
 export function createInfusionBattle(mode: InfusionModeId, stage: number, seed: number, starter: StarterId, progress: CharacterProgress,
-  roster: readonly string[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = [], upgrades: ConduitUpgrades = {}): BattleState {
-  const encounter = infusionEncounter(mode, stage);
+  roster: readonly string[] = [starter], teamProgress: Partial<Record<StarterId, CharacterProgress>> = { [starter]: progress }, equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = [], upgrades: ConduitUpgrades = {}, schedule: 'legacy' | 'caps' = 'caps'): BattleState {
+  const encounter = infusionEncounter(mode, stage, schedule);
   const state = createBattle(seed, roster, teamProgress, equipment, captures, upgrades);
   state.wave = stage;
-  state.infusion = { mode, stage };
+  state.infusion = { mode, stage, schedule };
   state.enemies = Array.from({ length: encounter.boss ? 1 : 2 }, (_, index) => {
     const unit = combatant(`infusion-${mode}-${stage}-${index}`, 'goblin', encounter.enemy.name, 'enemy', encounter.stats, encounter.enemy.element);
     unit.level = encounter.level;
@@ -309,6 +326,16 @@ export function createInfusionBattle(mode: InfusionModeId, stage: number, seed: 
     return unit;
   });
   return state;
+}
+
+/** Elemental Crits multiply the normal critical multiplier by this factor. */
+export const elementalCritFactor = 1.5;
+
+/** Rolls a hit's critical outcome. Rates above 100% always crit and roll (rate - 100%) for an Elemental Crit; no extra roll otherwise. */
+export function rollCritical(state: BattleState, rate: number): { critical: boolean; elemental: boolean } {
+  const critical = roll(state) < Math.min(1, rate);
+  const elemental = critical && rate > 1 && roll(state) < Math.min(1, rate - 1);
+  return { critical, elemental };
 }
 
 export function damageAmount(base: number, multiplier: number, defense: number, critical: boolean, critMultiplier = 1.5): number {
@@ -343,10 +370,11 @@ function actionGaugeCost(actor: Combatant, action: ActionId): number {
 
 function event(events: BattleEvent[], kind: BattleEvent['kind'], source: Combatant, target: Combatant, amount: number, message: string, critical = false): void {
   events.push({ kind, source: source.id, target: target.id, amount, message, critical,
+    ...(target.side === 'ally' ? { buffs: buffSnapshot(target) } : {}),
     ...(kind === 'status' || kind === 'damage' ? { debuffs: debuffSnapshot(target) } : {}) });
 }
 
-function hurt(target: Combatant, amount: number, source: Combatant, events: BattleEvent[], critical = false, periodic = false, conduitReduction = 0): void {
+function hurt(target: Combatant, amount: number, source: Combatant, events: BattleEvent[], critical = false, periodic = false, conduitReduction = 0, elementalCritical = false): void {
   if (conduitReduction > 0) amount = Math.max(1, Math.round(amount * (1 - conduitReduction)));
   if (target.defending) amount = Math.max(1, Math.round(amount * (1 - Math.min(.5,
     defenseMode.damageReduction))));
@@ -359,8 +387,9 @@ function hurt(target: Combatant, amount: number, source: Combatant, events: Batt
     delete target.pilot;
   }
   event(events, 'damage', source, target, loss,
-    `${target.name}: ${formatStat(loss)} damage${critical ? ' (critical)' : ''}${absorbed ? `, ${formatStat(absorbed)} shield absorbed` : ''}${target.hp === 0 ? ' - defeated' : ''}.`, critical);
+    `${target.name}: ${formatStat(loss)} damage${elementalCritical ? ' (Elemental Crit)' : critical ? ' (critical)' : ''}${absorbed ? `, ${formatStat(absorbed)} shield absorbed` : ''}${target.hp === 0 ? ' - defeated' : ''}.`, critical);
   events[events.length - 1].shieldRemaining = target.shield;
+  if (elementalCritical) events[events.length - 1].elementalCritical = true;
   if (periodic) {
     events[events.length - 1].periodic = true;
     events[events.length - 1].debuffs = debuffSnapshot(target);
@@ -436,10 +465,10 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
         message: `${enemy.name} dropped ${reward.amount} Prismatica${reward.lycalis ? ` and ${reward.lycalis} Null-Prismatica` : ''}.` });
       continue;
     }
-    const amount = rollDrop(state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === 'roses' ? 140 : 120), rewardRoll);
+    const amount = rollDrop(state.story ? storyFractalisDrop(enemy.level) : state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === 'roses' ? 140 : 120), rewardRoll);
     if (amount === undefined) throw new Error('Guaranteed Prismatica reward did not drop.');
     const materials = state.story ? storyDrops(state.story.storyStage, rewardRoll)
-      : state.infusion ? infusionDrops(state.infusion.mode, state.infusion.stage, rewardRoll)
+      : state.infusion ? infusionDrops(state.infusion.mode, state.infusion.stage, rewardRoll, state.infusion.schedule ?? 'legacy')
       : state.dungeon ? materialDrops(state.dungeon.element, state.dungeon.stage, rewardRoll) : undefined;
     const materialText = materials ? Object.entries(materials).map(([id, quantity]) => `${quantity} ${materialName(id)}`).join(', ') : '';
     let capture: BattleEvent['capture'];
@@ -460,6 +489,14 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
       state.conduitSeed = seed >>> 0;
       return state.conduitSeed / 0x100000000;
     }) : undefined;
+    const masterChests = state.infusion?.mode === 'machines' ? masterChestDrops(state.infusion.stage, enemy.boss === true, () => {
+      let seed = state.masterChestSeed ?? (((previous.rewardSeed ^ 0x7f4a7c15) >>> 0) || 1);
+      seed ^= seed << 13;
+      seed ^= seed >>> 17;
+      seed ^= seed << 5;
+      state.masterChestSeed = seed >>> 0;
+      return state.masterChestSeed / 0x100000000;
+    }) : 0;
     if (state.infusion && state.infusion.mode !== 'machines' && enemy.creatureId) {
       let seed = state.captureSeed ?? state.seed;
       seed ^= seed << 13;
@@ -483,7 +520,8 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
       ...(conduits ? { conduits } : {}),
       ...(conduits && Object.keys(conduits).length ? { conduitUpgrades: state.conduitUpgrades } : {}),
       ...(mechanicalComponents ? { mechanicalComponents } : {}),
-      message: `${enemy.name} drops +${amount} Prismatica${materialText ? ` and ${materialText}` : ''}${lycalis ? ` and +${lycalis} Null-Prismatica` : ''}${mechanicalComponents ? ` and +${mechanicalComponents} Broken Mechanical Components` : ''}${capture ? ` and a captured ${enemy.name} creature` : ''}${conduits && Object.keys(conduits).length ? ` and ${Object.keys(conduits).filter(isConduitId).map((id) => getConduit(id).name).join(', ')}` : ''}.` });
+      ...(masterChests ? { masterChests } : {}),
+      message: `${enemy.name} drops +${amount} Prismatica${materialText ? ` and ${materialText}` : ''}${lycalis ? ` and +${lycalis} Null-Prismatica` : ''}${mechanicalComponents ? ` and +${mechanicalComponents} Broken Mechanical Components` : ''}${capture ? ` and a captured ${enemy.name} Elemental-Devourer` : ''}${conduits && Object.keys(conduits).length ? ` and ${Object.keys(conduits).filter(isConduitId).map((id) => getConduit(id).name).join(', ')}` : ''}.` });
   }
 
 }
@@ -607,27 +645,27 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
     let weakened = false;
     let hitCritical = false;
     for (const target of targets) {
-      const critical = roll(state) < Math.min(1, actor.stats.crit + (strength?.critBonus ?? 0) + critBonus);
+      const { critical, elemental } = rollCritical(state, actor.stats.crit + (strength?.critBonus ?? 0) + critBonus);
       hitCritical ||= critical;
       const marks = action === 'light' ? target.conduitMarks?.[actor.id] ?? 0 : 0;
       if (marks && target.conduitMarks) {
         delete target.conduitMarks[actor.id];
         if (!Object.keys(target.conduitMarks).length) delete target.conduitMarks;
       }
-      const criticalMultiplier = actor.stats.critMultiplier;
+      const criticalMultiplier = actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1);
       const priorShield = target.shield;
       const priorBurnTurns = target.burn.turns;
       const ownBurn = target.burn.turns > 0 && target.burn.sourceId === actor.id;
       const ownWeaken = target.weakened > 0 && target.weakenSourceId === actor.id;
       hurt(target, damageAmount(actor.stats.damage, multiplier *
         (1 + additiveOutgoingBonus) * (1 + marks * .08),
-        target.stats.defense * (1 - Math.min(.75, pierce)), critical, criticalMultiplier), actor, events, critical);
+        target.stats.defense * (1 - Math.min(.75, pierce)), critical, criticalMultiplier), actor, events, critical, false, 0, elemental);
       const hpDamage = events[events.length - 1].amount;
       effectiveDirectDamage ||= events[events.length - 1].amount > 0;
       const effectiveHit = events[events.length - 1].amount > 0 || priorShield > target.shield;
       effectiveCriticalDamage ||= critical && effectiveHit;
       const actualDamage = hpDamage + priorShield - target.shield;
-      resolveOmnicInteraction(state, actor, { trigger: 'direct', action, target, amount: actualDamage, hpDamage, ownBurn, ownWeaken }, events);
+      resolveOmnicInteraction(state, actor, { trigger: 'direct', action, target, amount: actualDamage, hpDamage, ownBurn, ownWeaken, lethal: target.hp === 0 }, events);
       if (critical) resolveOmnicInteraction(state, actor, { trigger: 'critical', action, target, amount: actualDamage, hpDamage }, events);
       if (marks && effectiveHit) resolveOmnicInteraction(state, actor, { trigger: 'fracture-spent', action, target, amount: marks }, events);
       if (marks) event(events, 'status', actor, target, 0, `${target.name} loses ${marks} Fracture Mark${marks === 1 ? '' : 's'} from ${actor.name}.`);
@@ -726,6 +764,8 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   if (action === 'ultimate' && hasMechanic(actor, 'ultimate-ward')) conduitShield(actor, .15, events);
   if (action === 'ultimate' && hasMechanic(actor, 'paradox')) primeConduitCharge(actor, 'paradox', events,
     'your first offensive activation after normal recovery gains +15% outgoing damage');
+  resolveOmnicInteraction(state, actor, { trigger: 'activation', action, amount: 1,
+    target: support ? undefined : state.enemies.find((enemy) => enemy.id === targetId) }, events);
   checkOutcome(state);
   awardDefeats(previous, state, events);
   return { state, events };
@@ -791,13 +831,13 @@ export function endTurn(previous: BattleState): BattleResult {
         ? 1 - (1 - (faultkeeperWard ? .15 : 0)) * (1 - omnicProtection) : faultkeeperWard ? .15 : 0);
     pilotAuthoredShieldAbsorbed(state, shieldSourceId, priorShield - target.shield, events);
     const shieldOwner = state.allies.find((ally) => ally.id === shieldSourceId);
-    if (shieldOwner) resolveOmnicInteraction(state, shieldOwner, { trigger: 'shield-absorbed', target, amount: priorShield - target.shield }, events);
+    if (shieldOwner) resolveOmnicInteraction(state, shieldOwner, { trigger: 'shield-absorbed', target, attacker: enemy, amount: priorShield - target.shield }, events);
     if (target.hp > 0 && target.conduitCharges?.stillhour) {
       delete target.conduitCharges.stillhour;
       gainShatter(target, 8, events);
     }
     gainShatter(target, shatterGauge.incomingHit, events);
-    if (enemy.weakened > 0) {
+    if (enemy.hp > 0 && enemy.weakened > 0) {
       enemy.weakened--;
       if (enemy.weakened === 0) enemy.weakenFraction = 0;
       if (enemy.weakened === 0) delete enemy.weakenOrigin;
@@ -860,12 +900,13 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
     : 'character' in destination
     ? createWarBattle(destination.character, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades)
     : 'mode' in destination
-    ? createInfusionBattle(destination.mode, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades)
+    ? createInfusionBattle(destination.mode, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, destination.schedule ?? 'legacy')
     : createDungeonBattle(destination.element, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, previous.encounterSeed);
   for (const ally of state.allies) {
     const prior = previous.allies.find((unit) => unit.id === ally.id);
     if (!prior) throw new Error('Continuing character is missing from the previous encounter.');
     ally.shatter = Math.min(prior.shatter, ally.stats.shatterCapacity);
+    if (prior.masterConduit) ally.masterConduit = prior.masterConduit;
     if (prior.conduitCharges) {
       ally.conduitCharges = { ...prior.conduitCharges };
       delete ally.conduitCharges.emberSealRound;
@@ -874,6 +915,7 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
   }
   if (previous.conduitSeed !== undefined) state.conduitSeed = previous.conduitSeed;
   if (previous.componentSeed !== undefined) state.componentSeed = previous.componentSeed;
+  if (previous.masterChestSeed !== undefined) state.masterChestSeed = previous.masterChestSeed;
   if (previous.war) {
     state.rewardSeed = previous.rewardSeed;
     state.lycalisSeed = previous.lycalisSeed;

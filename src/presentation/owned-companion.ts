@@ -11,7 +11,7 @@ import { characterName } from '../content/character-art';
 export function capturedRating(creatureId: string): string {
   const creature = getCreature(creatureId);
   const tier = Number(creatureId.split(':').at(-1));
-  if (!creature.mode || !Number.isInteger(tier) || tier < 0 || tier > 5) throw new Error('Invalid captured creature form.');
+  if (!creature.mode || !Number.isInteger(tier) || tier < 0 || tier > 5) throw new Error('Invalid captured Elemental-Devourer form.');
   const rarity = materialRarities[tier];
   return `<span class="character-rating">${starBadge(tier + 1, 'creature')}<span class="rarity-badge rarity-${rarity.toLowerCase()}" role="img" aria-label="${rarity} rarity"><span class="rarity-medallion" aria-hidden="true"><span>${tier + 1}</span></span><span class="rarity-label" aria-hidden="true">${rarity}</span></span></span>`;
 }

@@ -1,5 +1,13 @@
 # Elemental War
 
+## Readable trial cards (D-213)
+
+All three trial cards use a solid-surface title below their banner art, readable
+identity/fact labels and a wrapping stage/action footer with a separate unlock
+hint. Locked buttons remain readable; free entry and stage selection are
+unchanged. Shared activity/menu corrections also cover other destinations.
+See the [UI contract](menus-and-inventory.md#readable-activity-banners-and-unclipped-controls-d-213).
+
 ## Current consolidation (D-173)
 
 Owner chooses Rose-only signatures rather than preserving bespoke War counters.

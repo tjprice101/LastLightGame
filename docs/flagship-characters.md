@@ -1,5 +1,11 @@
 # Playable flagship Element-Bearers
 
+**Current banner rewards (D-214):** Standard's character tiers remain unchanged.
+Non-character pulls now award Common/Uncommon/Rare elemental materials; owned
+flagships convert into15 Rare materials from one equally selected element.
+No new Treasury copy. Existing creatures and their provenance are retained.
+[Exact contract](summoning-and-economy.md#material-banner-rewards-d-214).
+
 ## Replacement portrait intake (D-134)
 
 All42 portraits for these seven lines now use the new owner delivery, with

@@ -136,5 +136,4 @@ select[data-selection-source] { display: none !important; }
   .information-modal { padding: 18px; }
   .destination-card { min-height: 120px; }
 }
-@media (prefers-reduced-motion: reduce) { .information-modal[open] { animation: none; } }
 :root[data-motion="reduced"] .information-modal[open] { animation: none; }

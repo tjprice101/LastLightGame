@@ -28,6 +28,37 @@ export function gameDialogPending(): boolean {
   return active;
 }
 
+export interface GameChoice<T extends string> { value: T; label: string; primary?: boolean }
+/** Styled dialog with arbitrary choices; Escape/backdrop cancel resolves to `cancelValue`. */
+export async function gameChoose<T extends string>(message: string, choices: readonly GameChoice<T>[], cancelValue: T,
+  options: { title?: string; messageHtml?: string } = {}): Promise<T> {
+  if (active) return cancelValue;
+  const title = options.title ?? 'Choose an action';
+  const { dialog, dispose } = createGameDialog(title);
+  dialog.innerHTML = `<h2>${escapeDialogText(title)}</h2>${options.messageHtml ?? `<p class="game-confirm-message">${escapeDialogText(message)}</p>`}
+    <form method="dialog" class="game-dialog-actions">${choices.map(choice => `<button class="${choice.primary ? 'primary-button' : 'text-button'}" value="${escapeDialogText(choice.value)}"${choice.value === cancelValue ? ' autofocus' : ''}>${escapeDialogText(choice.label)}</button>`).join('')}</form>`;
+  try {
+    return await new Promise<T>((resolve, reject) => {
+      const finish = (value: T): void => { resolve(value); dialog.close(); };
+      dialog.addEventListener('close', () => resolve(cancelValue), { once: true });
+      dialog.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const choice = event.submitter instanceof HTMLButtonElement ? choices.find(entry => entry.value === (event.submitter as HTMLButtonElement).value) : undefined;
+        if (!choice) { reject(new Error('Dialog choice is invalid.')); return; }
+        finish(choice.value);
+      });
+      dialog.addEventListener('cancel', (event) => { event.preventDefault(); finish(cancelValue); });
+      dialog.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        event.preventDefault();
+        event.stopPropagation();
+        finish(cancelValue);
+      });
+      try { dialog.showModal(); } catch (error) { reject(error); }
+    });
+  } finally { dispose(); }
+}
+
 export async function gameConfirm(message: string, options: { title?: string; confirmLabel?: string; danger?: boolean } = {}): Promise<boolean> {
   if (active) return false;
   const title = options.title ?? 'Confirm action';

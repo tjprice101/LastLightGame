@@ -1,0 +1,123 @@
+/* D-229 Conduit loadout: slot cards, total bonuses and owned list (imported after reference-layout.css). */
+html body .sanctuary-shell .ref-organized-detail .ref-equipment-workspace { padding: 0; border: 0; background: none; }
+html body .sanctuary-shell .conduit-loadout { display: grid; gap: .9rem; width: 100%; min-width: 0; container-type: inline-size; }
+/* The container-sized loadout has no intrinsic width, so every ancestor must stretch rather than shrink-wrap. */
+html body .sanctuary-shell .ref-team-detail > .ref-character-panels,
+html body .sanctuary-shell .ref-character-panels > .ref-organized-detail,
+html body .sanctuary-shell .ref-organized-detail > .ref-equipment-workspace { align-self: stretch; width: 100%; min-width: 0; box-sizing: border-box; }
+html body .sanctuary-shell .loadout-header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: .6rem 1rem; }
+html body .sanctuary-shell .loadout-header h3 { margin: 0; font-size: 1.35rem; line-height: 1.25; }
+html body .sanctuary-shell .loadout-header p { margin: .2rem 0 0; color: var(--menu-muted, #a9a9ae); font-size: .85rem; }
+html body .sanctuary-shell .loadout-member-tabs button { min-height: 44px; }
+html body .sanctuary-shell .loadout-member-tabs button[aria-pressed=true] { border-color: var(--leader-accent, #f4f4f5); color: #f4f4f5; }
+html body .sanctuary-shell .loadout-layout { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(17rem, 1fr); gap: .9rem; align-items: start; }
+html body .sanctuary-shell .loadout-side { display: grid; gap: .9rem; min-width: 0; }
+html body .sanctuary-shell .conduit-loadout .ref-panel { display: grid; gap: .7rem; padding: 1rem; min-width: 0; border: 1px solid var(--menu-border, #2d2d31); border-radius: .9rem; background: #131314; }
+html body .sanctuary-shell .conduit-loadout .ref-panel-heading { display: flex; justify-content: space-between; align-items: center; gap: .5rem; text-transform: uppercase; }
+html body .sanctuary-shell .conduit-loadout .ref-master-slot { grid-template-columns: auto minmax(0, 1fr); align-items: center; margin: 0; border-style: dashed; }
+html body .sanctuary-shell .conduit-loadout .ref-master-slot > :not(.master-art):not(.master-art-pending) { grid-column: 2; }
+html body .sanctuary-shell .conduit-loadout .ref-master-slot > :is(h3, strong) { grid-column: 1 / -1; margin: 0; }
+html body .sanctuary-shell .conduit-loadout .ref-master-slot .master-art { grid-row: span 4; width: 96px; height: 96px; }
+html body .sanctuary-shell .conduit-loadout .ref-master-slot > p:last-child { grid-column: 1 / -1; }
+
+html body .sanctuary-shell .conduit-loadout .loadout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot { display: grid; grid-template-columns: 88px minmax(0, 1fr); align-items: start; gap: .75rem; padding: .85rem; text-align: left;
+  border: 1px solid var(--menu-border, #2d2d31); border-left: 3px solid var(--loadout-accent, var(--menu-border, #2d2d31)); border-radius: .8rem; background: var(--menu-surface-raised, #1a1a1c); }
+html body .sanctuary-shell .conduit-loadout .loadout-slot .conduit-icon-frame { width: 88px; height: 88px; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot-body { display: grid; gap: .3rem; min-width: 0; justify-items: start; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot h4 { margin: 0; font-size: 1rem; line-height: 1.3; overflow-wrap: anywhere; }
+html body .sanctuary-shell .conduit-loadout .loadout-eyebrow { text-transform: uppercase; letter-spacing: .08em; color: var(--menu-muted, #a9a9ae); }
+html body .sanctuary-shell .conduit-loadout .loadout-effect { margin: .15rem 0 0; font-size: 1.15rem; font-weight: 700; line-height: 1.3; color: #f4f4f5; overflow-wrap: anywhere; }
+html body .sanctuary-shell .conduit-loadout .loadout-level { margin: 0; font-size: .8rem; line-height: 1.5; color: var(--menu-muted, #a9a9ae); overflow-wrap: anywhere; }
+html body .sanctuary-shell .conduit-loadout .loadout-rule { font-size: .8rem; line-height: 1.5; color: #c9c9ce; }
+html body .sanctuary-shell .conduit-loadout .loadout-rule summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+html body .sanctuary-shell .conduit-loadout .loadout-rule p { margin: 0; }
+html body .sanctuary-shell .conduit-loadout .loadout-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .2rem; width: 100%; }
+html body .sanctuary-shell .conduit-loadout .loadout-actions > button { min-height: 44px; flex: 1 1 6rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-swap { flex: 1 1 100%; min-width: 0; }
+html body .sanctuary-shell .conduit-loadout .loadout-swap .selection-trigger { width: 100%; min-height: 44px; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty { grid-template-columns: minmax(0, 1fr); align-content: center; min-height: 9rem; border-style: dashed; border-left-width: 1px; background: transparent; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty h4 { color: #c9c9ce; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty p { margin: 0; color: var(--menu-muted, #a9a9ae); font-size: .85rem; line-height: 1.5; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty .selection-trigger { width: 100%; min-height: 44px; }
+html body .sanctuary-shell .conduit-loadout .loadout-footer { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+
+html body .sanctuary-shell .loadout-bonus-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem .8rem; padding: .45rem 0; border-bottom: 1px solid #222225; font-size: .88rem; }
+html body .sanctuary-shell .loadout-bonus-row:last-child { border-bottom: 0; }
+html body .sanctuary-shell .loadout-bonus-row strong { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+html body .sanctuary-shell .loadout-bonus-row .loadout-base-stat { color: #f4f4f5; }
+html body .sanctuary-shell .loadout-owned-list { display: grid; gap: .5rem; max-height: min(60vh, 34rem); overflow-y: auto; padding-right: .2rem; }
+html body .sanctuary-shell .loadout-search { display: grid; gap: .4rem; font-size: .85rem; color: #d4d4d8; }
+html body .sanctuary-shell .loadout-search input { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; border: 1px solid #3a3a3f; border-radius: .6rem; padding: .65rem .75rem; background: #1a1a1c; color: #f4f4f5; font: inherit; }
+html body .sanctuary-shell .loadout-search input::placeholder { color: #a9a9ae; }
+html body .sanctuary-shell .loadout-search input:focus-visible { outline: 2px solid #f4f4f5; outline-offset: 2px; }
+html body .sanctuary-shell .loadout-search-status { margin: 0; font-size: .8rem; }
+html body .sanctuary-shell .loadout-owned [hidden] { display: none; }
+html body .sanctuary-shell .loadout-owned-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: center; gap: .65rem; padding: .55rem .65rem; border: 1px solid var(--menu-border, #2d2d31); border-radius: .7rem; background: var(--menu-surface-raised, #1a1a1c); }
+html body .sanctuary-shell .loadout-owned-row.is-equipped { border-color: #55555b; }
+html body .sanctuary-shell .loadout-owned-art .conduit-icon-frame { width: 56px; height: 56px; }
+html body .sanctuary-shell .loadout-owned-text { display: grid; gap: .1rem; min-width: 0; }
+html body .sanctuary-shell .loadout-owned-text b { font-size: .92rem; line-height: 1.3; overflow-wrap: anywhere; }
+html body .sanctuary-shell .loadout-owned-text small { overflow-wrap: anywhere; }
+html body .sanctuary-shell .loadout-owned-row > :is(button, .ref-chip) { min-height: 44px; white-space: nowrap; }
+
+html body .sanctuary-shell .loadout-summary h3 { display: flex; justify-content: space-between; align-items: center; gap: .5rem; }
+html body .sanctuary-shell .loadout-summary-list { display: grid; gap: .45rem; }
+html body .sanctuary-shell .loadout-summary-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: .6rem; font-size: .88rem; }
+html body .sanctuary-shell .loadout-summary-row strong { text-align: right; overflow-wrap: anywhere; }
+html body .sanctuary-shell .loadout-summary-art .conduit-icon-frame { width: 44px; height: 44px; }
+html body .sanctuary-shell .loadout-open { width: 100%; min-height: 44px; margin-top: .6rem; }
+html body .sanctuary-shell .ref-organized-detail .ref-character-overview > .loadout-summary { grid-column: 1 / -1; }
+
+@container (max-width: 760px) {
+  html body .sanctuary-shell .loadout-layout { grid-template-columns: minmax(0, 1fr); }
+  html body .sanctuary-shell .loadout-owned-list { max-height: 70vh; overscroll-behavior: contain; }
+}
+@container (max-width: 520px) {
+  html body .sanctuary-shell .conduit-loadout .loadout-grid { grid-template-columns: minmax(0, 1fr); }
+  html body .sanctuary-shell .conduit-loadout .loadout-slot { grid-template-columns: 64px minmax(0, 1fr); }
+  html body .sanctuary-shell .conduit-loadout .loadout-slot .conduit-icon-frame { width: 64px; height: 64px; }
+  html body .sanctuary-shell .conduit-loadout .ref-master-slot { grid-template-columns: minmax(0, 1fr); }
+  html body .sanctuary-shell .conduit-loadout .ref-master-slot > * { grid-column: 1 !important; }
+  html body .sanctuary-shell .loadout-owned-row { grid-template-columns: 48px minmax(0, 1fr); }
+  html body .sanctuary-shell .loadout-owned-row > :is(button, .ref-chip) { grid-column: 1 / -1; justify-self: stretch; text-align: center; }
+}
+
+/* D-238 dedicated full-page loadout matching the owner's mock-up: flat neutral panels, Back button, member pills. */
+html body .sanctuary-shell .loadout-back { display: none; }
+html body .sanctuary-shell .ref-screen.ref-conduit-page { display: block; grid-template-columns: minmax(0, 1fr); }
+html body .sanctuary-shell .ref-conduit-page > .ref-loadout-page { display: block; width: 100%; max-width: 88rem; margin: 0 auto; min-width: 0; }
+html body .sanctuary-shell .ref-loadout-page > .ref-character-panels { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; overflow: visible; max-height: none; }
+html body .sanctuary-shell .ref-loadout-page #upgrade-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+html body .sanctuary-shell .ref-loadout-page .character-detail-content { padding: 0; }
+html body .sanctuary-shell .ref-loadout-page .loadout-header { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .75rem 1.25rem; }
+html body .sanctuary-shell .ref-loadout-page .loadout-back { display: inline-flex; align-items: center; min-height: 48px; padding: .55rem 1.1rem; border: 1px solid #3a3a3f; border-radius: .7rem; background: transparent; color: #f4f4f5; font-weight: 700; white-space: nowrap; cursor: pointer; }
+html body .sanctuary-shell .ref-loadout-page .loadout-back:hover { border-color: #8a8a90; background: #1a1a1c; }
+html body .sanctuary-shell .ref-loadout-page .loadout-title h3 { font-size: 1.55rem; font-weight: 700; }
+/* Shared button surfaces use important gradients; keep this page flat without overriding disabled gray. */
+html body .sanctuary-shell .conduit-loadout :is(button, .ref-chip, .ref-link):not(:disabled):not([aria-disabled=true]) { background-image: none !important; box-shadow: none; }
+html body .sanctuary-shell .conduit-loadout :is(.loadout-member-tabs button, .loadout-actions > button, .loadout-owned-row > button) { text-align: center !important; justify-content: center !important; }
+html body .sanctuary-shell .conduit-loadout .loadout-member-tabs { display: flex; flex-wrap: wrap; gap: .4rem; justify-content: flex-end; padding: 0; border: 0; background: none; }
+html body .sanctuary-shell .conduit-loadout .loadout-member-tabs button { padding: .45rem 1rem; border: 1px solid #3a3a3f; border-radius: 999px; background: transparent; color: #d4d4d8; }
+html body .sanctuary-shell .conduit-loadout .loadout-member-tabs button[aria-pressed=true] { border-color: #f4f4f5; background: #f4f4f5; color: #0b0b0c; }
+html body .sanctuary-shell .conduit-loadout .ref-panel-heading { font-size: .78rem; letter-spacing: .1em; color: var(--menu-muted, #a9a9ae); }
+html body .sanctuary-shell .conduit-loadout .loadout-slot { border-left-width: 1px; border-color: #2d2d31; background: #161618; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot:not(.is-empty) { border-top: 1px solid #2d2d31; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty { border: 1px dashed #3a3a3f; background: transparent; justify-items: center; text-align: center; }
+html body .sanctuary-shell .conduit-loadout .loadout-slot.is-empty h4 { font-weight: 700; }
+html body .sanctuary-shell .conduit-loadout .loadout-actions > button,
+html body .sanctuary-shell .conduit-loadout .loadout-owned-row > button { border: 1px solid #3a3a3f; border-radius: .6rem; background: transparent; color: #f4f4f5; }
+html body .sanctuary-shell .conduit-loadout .loadout-actions > button:hover:not(:disabled),
+html body .sanctuary-shell .conduit-loadout .loadout-owned-row > button:hover:not(:disabled) { border-color: #8a8a90; background: #1f1f22; }
+html body .sanctuary-shell .conduit-loadout .loadout-owned-row > .ref-white { border: 1px solid #f4f4f5; border-radius: 999px; background: #f4f4f5; color: #0b0b0c; padding: .35rem .9rem; display: inline-flex; align-items: center; }
+html body .sanctuary-shell .conduit-loadout .loadout-owned-list { gap: 0; }
+html body .sanctuary-shell .conduit-loadout .loadout-owned-row { border: 0; border-bottom: 1px solid #242427; border-radius: 0; background: none; padding: .7rem .1rem; }
+html body .sanctuary-shell .conduit-loadout .loadout-owned-row:last-child { border-bottom: 0; }
+html body .sanctuary-shell .conduit-loadout .loadout-owned-text small { color: var(--menu-muted, #a9a9ae); }
+html body .sanctuary-shell .conduit-loadout .ref-panel-heading .ref-link { text-decoration: underline; text-underline-offset: 3px; text-transform: none; letter-spacing: 0; color: #f4f4f5; padding: 0; border: 0; min-height: 44px; }
+html body .sanctuary-shell .loadout-bonus-row strong { font-weight: 700; }
+@container (max-width: 760px) {
+  html body .sanctuary-shell .ref-loadout-page .loadout-header { grid-template-columns: minmax(0, 1fr); }
+  html body .sanctuary-shell .ref-loadout-page .loadout-back { justify-self: start; }
+  html body .sanctuary-shell .conduit-loadout .loadout-member-tabs { justify-content: flex-start; }
+}

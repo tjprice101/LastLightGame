@@ -1,0 +1,296 @@
+import {
+  ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, validateAccount, equippedSquad, ownedCharacters,
+  ownedCharacterInstances, ownedProgress, setSquad, setCharacterLock, summonCharacter, summonCharacters, multiSummonCount,
+  purchaseExchangeMaterial, type SummonDraw, sellCurrencyCreature,
+  purchaseConduit, equipConduit, openMasterChest, equipMasterConduit, upgradeConduit, upgradeCharacter, levelCapturedCharacter,
+  levelCharacterToMaximum, saveAccountRewards, unlockedStage, unlockedInfusionStage,
+  unlockedWarStage, unlockedStoryStage, type Account,
+} from '../../../src/game/account';
+import { SAVE_KEY, type ProfileStorage } from '../../../src/game/profile';
+import { createBattle, createStoryBattle, createDungeonBattle, createInfusionBattle, createWarBattle,
+  actAndAdvanceTurn, endTurn, advanceUnavailableTurns, nextStage, nextWave, actionUnavailable,
+  withMasterLoadouts, type BattleResult } from '../../../src/game/battle';
+import type { MasterLoadouts } from '../../../src/content/master-conduits';
+import { isStarterId, type StarterId } from '../../../src/content/starters';
+import { isActionId } from '../../../src/content/combat';
+import { elements } from '../../../src/content/activities';
+import { isPlayableDungeon } from '../../../src/content/dungeons';
+import { isInfusionMode } from '../../../src/content/infusions';
+import { isWarCharacter } from '../../../src/content/elemental-war';
+import type { Activity, GameOperation, GameRequest, GameResponse, OnlineProfile, ProfileFrame,
+  ServerBattleSession } from '../../../src/online/server-game';
+import type { CapturedCharacter } from '../../../src/game/character-instances';
+import type { ConduitLoadouts, ConduitUpgrades } from '../../../src/content/conduits';
+import { assertActivityAccess } from '../../../src/game/activity-access';
+import { validateSaveFile } from '../../../src/game/save-file';
+
+export interface DurableRun {
+  session: ServerBattleSession;
+  activity: Activity;
+  roster: string[];
+  equipment: ConduitLoadouts;
+  captures: CapturedCharacter[];
+  upgrades: ConduitUpgrades;
+  masters?: MasterLoadouts;
+}
+export interface DurableGame {
+  account: Account;
+  starterId: StarterId | null;
+  profile: OnlineProfile;
+  run: DurableRun | null;
+}
+export const frames: ProfileFrame[] = ['default', 'thin-outline', 'double-outline', 'corner-brackets'];
+export function freshGame(username: string, createdAt = new Date().toISOString()): DurableGame {
+  return { account: emptyAccount(), starterId: null, run: null, profile: {
+    username, displayName: username, bio: '', icon: 'neutral', frame: 'default', ownedFrames: ['default'],
+    createdAt, totalDraws: 0,
+    statistics: { storyCompleted: 0, ownedBearers: 0, capturedCreatures: 0, discoveredCreatures: 0 },
+  } };
+}
+function record(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === 'object' && !Array.isArray(value);
+}
+function keys(value: Record<string, unknown>, allowed: string[]): void {
+  if (Object.keys(value).some(key => !allowed.includes(key))) throw new Error('Unexpected request field.');
+}
+function text(value: unknown, maximum = 100): asserts value is string {
+  if (typeof value !== 'string' || !value.length || value.length > maximum) throw new Error('Invalid text input.');
+}
+function integer(value: unknown): asserts value is number {
+  if (!Number.isSafeInteger(value) || (value as number) < 0) throw new Error('Invalid integer input.');
+}
+const operationKeys: Record<GameOperation['kind'], string[]> = {
+  friendRequest: ['username'], acceptFriendRequest: ['userId'], declineFriendRequest: ['userId'],
+  cancelFriendRequest: ['userId'], removeFriend: ['userId'],
+  read: [], bootstrap: ['starterId'], importSave: ['save'], setSquad: ['ids'], setCharacterLock: ['id', 'locked'],
+  summon: ['bannerId'], summonTen: ['bannerId'], sellCurrencyCreature: ['id', 'saleOption'], purchaseConduit: ['id'],
+  equipConduit: ['character', 'slot', 'conduit'], upgradeConduit: ['id', 'expectedLevel'],
+  openMasterChest: ['id'], equipMasterConduit: ['character', 'conduit'],
+  upgradeCharacter: ['id', 'upgradeKind', 'expected', 'fodderIds'], levelCaptured: ['id', 'expectedLevel'],
+  levelMax: ['id', 'expected'], purchaseMaterial: ['element', 'quantity'], purchaseFrame: ['frame'],
+  updateProfile: ['displayName', 'bio', 'icon', 'frame'], enter: ['activity'],
+  act: ['runId', 'actorId', 'action', 'targetId'], endTurn: ['runId'], continue: ['runId'],
+  retry: ['runId'], quit: ['runId'],
+};
+export function validateRequest(value: unknown): GameRequest {
+  if (!record(value)) throw new Error('Request must be an object.');
+  keys(value, ['requestId', 'expectedRevision', 'operation']);
+  if (typeof value.requestId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value.requestId)) {
+    throw new Error('A UUID request ID is required.');
+  }
+  integer(value.expectedRevision);
+  if (!record(value.operation) || typeof value.operation.kind !== 'string' ||
+      !Object.hasOwn(operationKeys, value.operation.kind)) throw new Error('Unknown game operation.');
+  const op = value.operation;
+  if (op.kind === 'importSave') validateSaveFile(op.save);
+  keys(op, ['kind', ...operationKeys[op.kind as GameOperation['kind']]]);
+  if (operationKeys[op.kind as GameOperation['kind']].some(key => key !== 'fodderIds' && key !== 'saleOption' && !(key in op))) throw new Error('Missing operation field.');
+  for (const field of ['id', 'character', 'runId', 'actorId', 'targetId', 'bannerId', 'starterId', 'element', 'frame', 'upgradeKind', 'action', 'saleOption']) {
+    if (field in op) text(op[field]);
+  }
+  for (const field of ['slot', 'expectedLevel', 'quantity']) if (field in op) integer(op[field]);
+  if ('locked' in op && typeof op.locked !== 'boolean') throw new Error('Invalid lock.');
+  for (const field of ['ids', 'fodderIds']) if (field in op) {
+    if (!Array.isArray(op[field]) || op[field].length > 3 || !op[field].every(id => typeof id === 'string' && id.length > 0 && id.length <= 100)) throw new Error('Invalid character IDs.');
+  }
+  if (op.kind === 'upgradeCharacter') {
+    if (!record(op.expected)) throw new Error('Invalid expected progress.');
+    keys(op.expected, ['level', 'evolution', 'weaponRank']);
+    integer(op.expected.level); integer(op.expected.evolution);
+    if ('weaponRank' in op.expected) integer(op.expected.weaponRank);
+  }
+  if (op.kind === 'levelMax') {
+    if (!record(op.expected) || op.expected.id !== op.id) throw new Error('Invalid Max Level preview.');
+    keys(op.expected, ['id', 'currentLevel', 'targetLevel', 'cap', 'cost', 'progressKey']);
+    for (const field of ['currentLevel', 'targetLevel', 'cap']) integer(op.expected[field]);
+    text(op.expected.progressKey, 8192);
+    if (!record(op.expected.cost) || !record(op.expected.cost.materials)) throw new Error('Invalid Max Level cost.');
+    keys(op.expected.cost, ['fractalis', 'materials']);
+    integer(op.expected.cost.fractalis);
+    for (const amount of Object.values(op.expected.cost.materials)) integer(amount);
+  }
+  if (op.kind === 'enter') {
+    if (!record(op.activity) || !['training', 'story', 'dungeon', 'infusion', 'war'].includes(String(op.activity.kind))) throw new Error('Invalid activity.');
+    keys(op.activity, op.activity.kind === 'training' ? ['kind'] : op.activity.kind === 'story' ? ['kind', 'stage'] :
+      ['kind', 'stage', op.activity.kind === 'dungeon' ? 'element' : op.activity.kind === 'infusion' ? 'mode' : 'character']);
+    if (op.activity.kind !== 'training') integer(op.activity.stage);
+  }
+  if (op.kind === 'updateProfile') {
+    if (typeof op.displayName !== 'string' || !op.displayName.trim().length || [...op.displayName].length > 16 ||
+      typeof op.bio !== 'string' || [...op.bio].length > 120 ||
+      /[\u0000-\u001f\u007f]/.test(op.displayName + op.bio) ||
+      (typeof op.icon !== 'string' || op.icon.length > 100)) throw new Error('Invalid profile fields.');
+  }
+  if (op.kind === 'friendRequest' && (typeof op.username !== 'string' || !/^[a-z0-9_]{3,16}$/i.test(op.username))) throw new Error('Invalid friend username.');
+  if ('userId' in op && (typeof op.userId !== 'string' || !/^[0-9a-f-]{36}$/i.test(op.userId))) throw new Error('Invalid friend user ID.');
+  return value as unknown as GameRequest;
+}
+class VirtualStorage implements ProfileStorage {
+  private items = new Map<string, string>();
+  constructor(game: DurableGame) {
+    this.items.set(ACCOUNT_KEY, JSON.stringify(game.account));
+    if (game.starterId) this.items.set(SAVE_KEY, JSON.stringify({ version: 1, starterId: game.starterId }));
+  }
+  getItem(key: string): string | null { return this.items.get(key) ?? null; }
+  setItem(key: string, value: string): void { this.items.set(key, value); }
+  removeItem(key: string): void { this.items.delete(key); }
+}
+export function publicGame(game: DurableGame, revision: number): GameResponse {
+  const account = game.account;
+  const profile = { ...game.profile, statistics: {
+    storyCompleted: account.storyCompleted ?? 0, ownedBearers: ownedCharacters(account).length,
+    capturedCreatures: account.capturedCharacters?.length ?? 0,
+    discoveredCreatures: Object.keys(account.creatures).length,
+  } };
+  return { revision, account: structuredClone(account), starterId: game.starterId, profile,
+    session: game.run ? structuredClone(game.run.session) : null,
+    social: { friends: [], incoming: [], outgoing: [] } };
+}
+function gate(account: Account, activity: Activity, entering = true): void {
+  if (entering) assertActivityAccess(account, activity);
+  if (activity.kind === 'training') return;
+  if (!Number.isInteger(activity.stage) || activity.stage < 1) throw new Error('Invalid stage.');
+  const maximum = activity.kind === 'story' ? unlockedStoryStage(account) :
+    activity.kind === 'dungeon' && isPlayableDungeon(activity.element) ? unlockedStage(account, activity.element) :
+    activity.kind === 'infusion' && isInfusionMode(activity.mode) ? unlockedInfusionStage(account, activity.mode) :
+    activity.kind === 'war' && isWarCharacter(activity.character) ? unlockedWarStage(account, activity.character) : 0;
+  if (activity.stage > maximum) throw new Error('Activity stage is locked or unavailable.');
+}
+function encounter(game: DurableGame, run: DurableRun, seed: number) {
+  const s = run.session;
+  if (!game.starterId) throw new Error('Choose a starter first.');
+  const args = [seed, game.starterId, s.progress, run.roster, s.teamProgress, run.equipment, run.captures, run.upgrades] as const;
+  const a = run.activity;
+  return withMasterLoadouts(a.kind === 'training' ? createBattle(seed, run.roster, s.teamProgress, run.equipment, run.captures, run.upgrades) :
+    a.kind === 'story' ? createStoryBattle(a.stage, ...args) :
+    a.kind === 'dungeon' ? createDungeonBattle(a.element, a.stage, ...args) :
+    a.kind === 'infusion' ? createInfusionBattle(a.mode, a.stage, ...args, s.state ? s.state.infusion?.schedule ?? 'legacy' : 'caps') : createWarBattle(a.character, a.stage, ...args), run.masters);
+}
+export function resolveOperation(previous: DurableGame, operation: GameOperation,
+  entropy: { seed(): number; uuid(): string; random(): number }): { game: DurableGame; response: GameResponse } {
+  validateRequest({ requestId: '00000000-0000-4000-8000-000000000001', expectedRevision: 0, operation });
+  const game = structuredClone(previous);
+  const storage = new VirtualStorage(game);
+  let result: BattleResult | undefined;
+  let summon: ReturnType<typeof summonCharacter> | undefined;
+  let summons: SummonDraw[] | undefined;
+  if (operation.kind === 'read') return { game, response: publicGame(game, 0) };
+  if (operation.kind === 'bootstrap') {
+    if (game.starterId || Object.keys(game.account.characters).length) throw new Error('Starter has already been selected.');
+    if (!['ember', 'tide', 'sprout'].includes(operation.starterId)) throw new Error('Invalid initial starter.');
+    game.starterId = operation.starterId;
+    game.account.characters[operation.starterId] = { level: 0, evolution: 1, weaponRank: 0 };
+    game.account.squad = [operation.starterId];
+  } else if (operation.kind === 'importSave') {
+    if (game.starterId || game.run || Object.keys(game.account.characters).length) throw new Error('Save files can only be imported into a new, unstarted online account.');
+    const save = validateSaveFile(operation.save);
+    game.account = save.account;
+    game.starterId = save.profile.starterId;
+  } else if (['friendRequest', 'acceptFriendRequest', 'declineFriendRequest', 'cancelFriendRequest', 'removeFriend'].includes(operation.kind)) {
+    // The commit RPC validates and atomically changes the recipient graph.
+  } else {
+    if (!game.starterId) throw new Error('Choose your first Element-Bearer before playing.');
+    switch (operation.kind) {
+      case 'setSquad': setSquad(storage, operation.ids); break;
+      case 'setCharacterLock': setCharacterLock(storage, operation.id, operation.locked); break;
+      case 'summon':
+        summon = summonCharacter(storage, entropy.random, operation.bannerId);
+        game.profile.totalDraws++;
+        if (!Number.isSafeInteger(game.profile.totalDraws)) throw new Error('Draw count overflow.');
+        break;
+      case 'summonTen':
+        summons = summonCharacters(storage, entropy.random, operation.bannerId, multiSummonCount).draws;
+        game.profile.totalDraws += multiSummonCount;
+        if (!Number.isSafeInteger(game.profile.totalDraws)) throw new Error('Draw count overflow.');
+        break;
+      case 'sellCurrencyCreature': sellCurrencyCreature(storage, operation.id, operation.saleOption); break;
+      case 'purchaseConduit': purchaseConduit(storage, operation.id); break;
+      case 'equipConduit': equipConduit(storage, operation.character, operation.slot, operation.conduit); break;
+      case 'openMasterChest': openMasterChest(storage, operation.id); break;
+      case 'equipMasterConduit': equipMasterConduit(storage, operation.character, operation.conduit); break;
+      case 'upgradeConduit': upgradeConduit(storage, operation.id, operation.expectedLevel); break;
+      case 'upgradeCharacter':
+        if (!isStarterId(operation.id) || !ownedCharacters(game.account).includes(operation.id)) throw new Error('Choose an owned Element-Bearer.');
+        upgradeCharacter(storage, operation.id, operation.upgradeKind, operation.expected, operation.fodderIds); break;
+      case 'levelCaptured': levelCapturedCharacter(storage, operation.id, operation.expectedLevel); break;
+      case 'levelMax': levelCharacterToMaximum(storage, operation.expected); break;
+      case 'purchaseMaterial':
+        purchaseExchangeMaterial(storage, operation.element, operation.quantity); break;
+      case 'purchaseFrame': {
+        if (!frames.includes(operation.frame)) throw new Error('Unknown profile frame.');
+        if (game.profile.ownedFrames.includes(operation.frame)) throw new Error('This profile frame is already owned.');
+        const account = loadAccount(storage);
+        if (account.lycalis < 10) throw new Error('Not enough Null-Prismatica.');
+        account.lycalis -= 10; saveAccount(storage, account);
+        game.profile.ownedFrames.push(operation.frame); break;
+      }
+      case 'updateProfile':
+        if (!game.profile.ownedFrames.includes(operation.frame)) throw new Error('Choose an owned frame.');
+        if (operation.icon !== 'neutral' && !ownedCharacters(game.account).includes(operation.icon)) throw new Error('Choose an owned profile icon.');
+        Object.assign(game.profile, { displayName: operation.displayName.trim(), bio: operation.bio, icon: operation.icon, frame: operation.frame });
+        break;
+      case 'enter': {
+        if (game.run) throw new Error('Quit the current run before entering another activity.');
+        gate(game.account, operation.activity);
+        const roster = equippedSquad(game.account);
+        const teamProgress = structuredClone(game.account.characters);
+        const run: DurableRun = {
+          activity: structuredClone(operation.activity), roster,
+          equipment: structuredClone(game.account.conduitEquipment ?? {}),
+          captures: structuredClone(game.account.capturedCharacters ?? []),
+          upgrades: structuredClone(game.account.conduitUpgrades ?? {}),
+          masters: structuredClone(game.account.masterEquipment ?? {}),
+          session: { state: null!, runId: entropy.uuid(), progress: ownedProgress(game.account, game.starterId),
+            teamProgress, log: ['Authoritative encounter ready.'], stageEvents: [], entrancePending: true },
+        };
+        run.session.state = encounter(game, run, entropy.seed());
+        game.run = run;
+        result = advanceUnavailableTurns(run.session.state);
+        break;
+      }
+      case 'act': case 'endTurn': case 'continue': case 'retry': case 'quit': {
+        const run = game.run;
+        if (!run || run.session.runId !== operation.runId) throw new Error('This battle run is no longer active.');
+        const state = run.session.state;
+        if (operation.kind === 'quit') { game.run = null; break; }
+        if (operation.kind === 'act') {
+          if (!isActionId(operation.action)) throw new Error('Invalid battle action.');
+          const actor = state.allies.find(a => a.id === operation.actorId);
+          if (!actor || actionUnavailable(state, actor, operation.action)) throw new Error('The selected squad member cannot use that action.');
+          const targets = [...state.allies, ...state.enemies];
+          if (!targets.some(t => t.id === operation.targetId && t.hp > 0)) throw new Error('Invalid battle target.');
+          result = actAndAdvanceTurn(state, operation.actorId, operation.action, operation.targetId);
+        } else if (operation.kind === 'endTurn') {
+          if (state.phase !== 'player') throw new Error('Battle is not in the player phase.');
+          const first = endTurn(state);
+          const advanced = advanceUnavailableTurns(first.state);
+          result = { state: advanced.state, events: [...first.events, ...advanced.events] };
+        } else if (operation.kind === 'continue') {
+          if (state.phase !== 'cleared') throw new Error('Clear the encounter before continuing.');
+          result = state.dungeon || state.infusion || state.war || state.story
+            ? nextStage(state, run.session.teamProgress) : nextWave(state);
+          if (run.activity.kind !== 'training') run.activity.stage++;
+          gate(game.account, run.activity, false);
+          run.session.stageEvents = []; run.session.entrancePending = true;
+        } else {
+          if (state.phase !== 'defeat') throw new Error('Retry is only available after defeat.');
+          run.session.runId = entropy.uuid();
+          run.session.stageEvents = []; run.session.entrancePending = true;
+          result = advanceUnavailableTurns(encounter(game, run, entropy.seed()));
+        }
+        break;
+      }
+    }
+    if (result && game.run) {
+      saveAccountRewards(storage, result, game.run.session.runId);
+      game.run.session.state = result.state;
+      game.run.session.stageEvents.push(...result.events);
+      game.run.session.log = [...game.run.session.log, ...result.events.map(e => e.message)].slice(-100);
+      game.run.session.resultsVisible = result.state.phase !== 'player';
+    }
+    game.account = loadAccount(storage);
+  }
+  game.account = validateAccount(game.account);
+  if (game.profile.icon !== 'neutral' && !ownedCharacters(game.account).includes(game.profile.icon)) game.profile.icon = 'neutral';
+  return { game, response: { ...publicGame(game, 0), ...(result ? { result } : {}), ...(summon ? { summon } : {}), ...(summons ? { summons } : {}) } };
+}

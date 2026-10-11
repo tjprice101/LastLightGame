@@ -310,9 +310,9 @@ describe('Story and Training presentation', () => {
   });
 
   it('makes Story the Home campaign and preserves endless Training launch/rules separately', () => {
-    expect(homeHub(getStarter('ember'), false, emptyAccount())).toContain('<strong>Story &rarr;</strong>');
+    expect(homeHub(getStarter('ember'), false, emptyAccount())).toContain('<strong>Continue story</strong>');
     const html = gameplayHub();
-    expect(html).toContain('Open world map');
+    expect(html).toContain('data-story-view="map"');
     expect(html).toContain('Enter Training');
     expect(html).toContain('data-page="battle"');
     expect(html).not.toContain('Enter Adventure');

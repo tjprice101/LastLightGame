@@ -1,5 +1,43 @@
 # Art and asset workflow
 
+## Character Master prompt pack (D-201)
+
+[Master Conduits.md](../Art/conduits/Master%20Conduits.md) contains 50 copy-ready
+prompts: 48 unique character-specific Omnic Masters, Cosmic Grand Master Chest
+and Astral Reserve emblem. Dense cosmic/planetary machinery uses the bearer's
+palette and signature structures, compact anime/cel rendering, opaque mechanical
+flames and continuous background safety margins. No non-portrait reference flags.
+Reproduce with `python tools\build_master_conduit_art.py`; validate with
+`python -m unittest discover -s tools -p test_master_conduit_art.py`.
+Names/effects/designs derive from the live typed catalogue. D-226 installed the delivered
+art via `tools\intake_master_conduit_art.py` (sources in Art/source/master-conduits,
+runtime in public/assets/master-conduits, byte revisions from
+`tools\master_conduit_art_revisions.py`). No runtime background removal.
+[Feature contract](master-conduits.md).
+
+## Delivered Omnic kit-Conduit icons (D-199)
+
+All25 D-176 originals are archived byte-for-byte under Art/source/kit-conduits.
+The exact owner filenames map to existing stable IDs, with transparent256px
+exports and224px content under public/assets/conduits. All85 catalog icons now
+have installed artwork. Mechanics, acquisition, equipment and saves are unchanged.
+
+`tools/intake_kit_conduit_art.py` owns this intake, using the existing connected
+key/edge-cleanup foundation. Reviewed per-source row-gradient/multi-shade keys, enclosed-gap
+seeds and empty-border settings live in Art/provenance/kit-conduit-art-settings.json.
+Source/runtime/pixel hashes and reproduction metadata live in
+Art/provenance/kit-conduit-art-intake.json. Preserve ivory metal, turquoise/green
+facets and authored ground shadows; do not globally erase matching subject colors.
+Supplied alpha bypasses keying. All25 reviewed on dark/light backgrounds.
+Root originals were removed only after matching archived hashes and installed
+exports. Historical60 sources/exports/D-177 review remain unchanged.
+
+Reproduce: `python tools\intake_kit_conduit_art.py --apply`.
+Refresh URLs: `python tools\conduit_art_revisions.py --write`.
+Validate: `python -m unittest discover -s tools -p 'test*conduit*.py'`.
+Shared catalog art IDs and byte revisions cover equipment, Inventory, Collections,
+showcases and battle reward/reference artwork; no runtime background removal.
+
 ## Emberwake Story delivery (D-178)
 
 Installed the five Infernic creatures and Emberwake March arena. All30 Story
@@ -25,7 +63,8 @@ refresh `python tools\story_art_revisions.py --write`.
 
 Owner reports background color remaining inside some icons and requests a review
 of every Conduit artpiece. Review complete for all60 installed images; the25
-undelivered reborn kit designs cannot be reviewed as pixels and remain pending.
+then-undelivered reborn kit designs were excluded from this historical review;
+D-199 now installs and reviews them separately.
 Inspect authoritative source, dark/light composites and enclosed openings
 individually; same-color gems/powers are not background merely because they match
 the key. Preserve original bytes, pale metal, elemental detail and authored shadows.
@@ -64,7 +103,7 @@ generation remain. No installed art or historical source bytes are replaced.
 Reproduce `python tools\build_kit_conduit_art.py`; validate25Omnic identities,
 full reborn architecture/palette/key/margins/exact regeneration with
 `python -m unittest discover -s tools -p test_kit_conduit_art.py`.
-Future originals belong under Art/source/kit-conduits; all25 still undelivered.
+Originals now live under Art/source/kit-conduits; D-199 supersedes pending status.
 
 ## Delivered elemental status icons (D-175)
 

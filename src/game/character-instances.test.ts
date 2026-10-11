@@ -80,7 +80,7 @@ describe('duplicate character-instance foundation', () => {
     expect(loadAccount(saved).capturedCharacters).toBeUndefined();
     expect(loadAccount(saved).characterLocks).toBeUndefined();
   });
-  it('rejects corrupt IDs, duplicate instance IDs, ineligible creatures and invalid locks', () => {
+  it('rejects corrupt IDs, duplicate instance IDs, ineligible Elemental-Devourers and invalid locks', () => {
     const copy = { instanceId: first, creatureId: 'infusion:abyss:0', locked: false };
     for (const value of [null, {}, [copy, copy], [{ ...copy, instanceId: 'ember' }], [{ ...copy, locked: 'yes' }],
       [{ ...copy, creatureId: 'adventure:goblin' }], [{ ...copy, creatureId: 'dungeon:infernic:0' }]]) {
@@ -107,7 +107,7 @@ describe('duplicate character-instance foundation', () => {
     expect(html).toContain('Copy 2');
     expect(html).toContain('<small>In squad</small>');
     expect(html).toContain('Retained abilities');
-    expect(characterCopyManagement(emptyAccount())).toContain('No captured creatures.');
+    expect(characterCopyManagement(emptyAccount())).toContain('No captured Elemental-Devourers.');
     expect(characterCopyManagement(null)).toContain('role="alert"');
   });
 });

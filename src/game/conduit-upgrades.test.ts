@@ -247,7 +247,7 @@ describe('account-wide five-step Conduit restoration', () => {
     }
     expect(conduit).toEqual(original);
   });
-  it('uses grown stats for both starters and captures, scales flat/percentage-points, and caps crit', () => {
+  it('uses grown stats for both starters and captures, scales flat/percentage-points, and lets crit exceed 100%', () => {
     const equipment: ConduitSlots = ['worldbreaker-drive', 'parallax-relay', 'fracture-reservoir', null, null, null, null, null];
     const upgrades = { 'worldbreaker-drive': 5, 'parallax-relay': 5, 'fracture-reservoir': 5 };
     const progress = { level: 105, evolution: 6, weaponRank: 4 };
@@ -255,11 +255,11 @@ describe('account-wide five-step Conduit restoration', () => {
     const stats = resolveFighter('ember', progress, equipment, upgrades).stats;
     expect(stats.damage).toBeCloseTo(base.damage * 3.975);
     expect(stats.health).toBeCloseTo(base.health * .65);
-    expect(stats.crit).toBeCloseTo(Math.min(1, base.crit + .07));
+    expect(stats.crit).toBeCloseTo(base.crit + .07);
     expect(stats.shatterCapacity).toBeCloseTo(base.shatterCapacity + 17.5);
     const capped = { ...base, crit: .98 };
     applyConduitBuffs(capped, equipment, upgrades);
-    expect(capped.crit).toBe(1);
+    expect(capped.crit).toBeCloseTo(1.05);
     const copy = createCreatureCopy('infusion:heavens:0', 1, 80);
     const capturedBase = resolveCapturedFighter(copy).stats;
     const captured = resolveCapturedFighter(copy, equipment, upgrades).stats;

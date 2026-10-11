@@ -37,6 +37,17 @@ function fixture() {
 }
 
 describe('saved reward dismissal', () => {
+  it('uses the saved-upgrade label and immediately reveals stats in reduced motion', async () => {
+    const { dialog, controls } = fixture();
+    const pending = presentReward({ title: 'Level up!', name: 'Infernis', art: '', details: '<p>Stat changes</p>',
+      accent: '#fff', animationLabel: 'Growing stronger', savedLabel: 'Upgrade saved' });
+    expect(controls.get('.reward-animation-label')!.textContent).toBe('Upgrade saved');
+    expect(controls.get('.reward-details')!.hidden).toBe(false);
+    expect(controls.get('.reward-art')!.hidden).toBe(false);
+    controls.get('[data-close-reward]')!.dispatchEvent(new Event('click'));
+    await pending;
+    expect(dialog.remove).toHaveBeenCalledOnce();
+  });
   it.each(['continue', 'escape', 'cancel'])('settles %s without waiting for native close rendering', async (action) => {
     const { dialog, controls, removeMotion } = fixture();
     const pending = presentReward({ title: 'Saved', name: 'Conduit', art: '', details: '', accent: '#fff', animationLabel: 'Opening' });

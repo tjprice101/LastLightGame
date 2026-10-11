@@ -27,7 +27,7 @@ function setup(evolution = 3) {
   return { storage, account };
 }
 
-describe('protected-safe evolution creature infusion', () => {
+describe('protected-safe evolution Elemental-Devourer infusion', () => {
   it.each([3, 4, 5])('consumes exactly the selected %i-form recipe copies atomically with existing costs', (evolution) => {
     const { storage, account } = setup(evolution);
     const current = account.characters.ember!;
@@ -90,7 +90,7 @@ describe('protected-safe evolution creature infusion', () => {
     expect(() => upgradeCharacter(storage, 'ember', 'evolve', staleProgress, [copy(1).instanceId, id])).toThrow('Cannot consume');
     expect(storage.getItem(ACCOUNT_KEY)).toBe(before);
   });
-  it('preserves progression, creatures and costs when writes fail; retry commits only once', () => {
+  it('preserves progression, Elemental-Devourers and costs when writes fail; retry commits only once', () => {
     const { storage, account } = setup();
     const write = storage.setItem;
     const before = storage.getItem(ACCOUNT_KEY);
@@ -135,6 +135,6 @@ describe('protected-safe evolution creature infusion', () => {
     expect(html).toContain('data-fodder-count="1"');
     expect(html).toContain('disabled>Evolve');
     expect(html).not.toContain(' checked');
-    expect(html).toContain('6-star creature');
+    expect(html).toContain('6-star Elemental-Devourer');
   });
 });

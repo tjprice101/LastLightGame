@@ -88,7 +88,7 @@ describe('battle animation speed', () => {
     vi.stubGlobal('window', events);
     Object.assign(document, { addEventListener: vi.fn(), removeEventListener: vi.fn() });
     const menu = { addEventListener: vi.fn(), close: vi.fn() };
-    const host = { querySelector: (selector: string) => selector === '#battle-menu' ? menu : null, querySelectorAll: () => [], innerHTML: '' };
+    const host = { querySelector: (selector: string) => selector === '#battle-menu' ? menu : null, querySelectorAll: () => [], innerHTML: '', classList: { remove: vi.fn() } };
     const session = { state: createBattle(1729, ['ember']), log: [], stageEvents: [], progress: { level: 0, evolution: 1 } };
     const view = Reflect.construct(BattleView, [host, session, { nextAlly: 'KeyC', nextTarget: 'KeyT' }, () => {}]);
     let settled = false;

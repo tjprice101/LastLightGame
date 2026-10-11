@@ -108,7 +108,7 @@ describe('encounter entrance', () => {
     expect(f.view.render).toHaveBeenCalledOnce();
   });
 
-  it('does not rerender a disposed field while loading', async () => {
+  it('does not rerender or unlock a replacement field after disposal while loading', async () => {
     const f = fixture();
     const entry = f.enter();
     f.view.disposed = true;
@@ -116,7 +116,8 @@ describe('encounter entrance', () => {
     expect(f.view.play).not.toHaveBeenCalled();
     expect(f.view.render).not.toHaveBeenCalled();
     expect(f.view.session.entrancePending).toBe(true);
-    expect(f.classes.size).toBe(0);
+    expect(f.classes.has('battle-entering')).toBe(true);
+    expect(f.view.host.setAttribute).not.toHaveBeenCalledWith('aria-busy', 'false');
   });
 
   it('reports entrance errors without losing the resolved encounter or keeping controls locked', async () => {

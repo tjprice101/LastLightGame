@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { enemyGrowth, enemyStat } from './stat-growth';
+import { enemyCombatStats, enemyGrowth, enemyStat } from './stat-growth';
 import { dungeonEncounter, playableDungeons } from './dungeons';
 import { infusionEncounter } from './infusions';
 import { act, actionUnavailable, createBattle, createDungeonBattle, createInfusionBattle, endTurn, nextWave } from '../game/battle';
@@ -24,9 +24,9 @@ describe('accelerating enemy stat curves', () => {
   it('applies the same endpoints to shortened dungeons, both infusion modes and Adventure', () => {
     for (const element of playableDungeons) {
       expect(dungeonEncounter(element, 34).stats.health).toBeLessThan(200_000);
-      expect(dungeonEncounter(element, 35).stats).toMatchObject({ health: 400_000, damage: 6_000, defense: 2_250 });
+      expect(dungeonEncounter(element, 35).stats).toMatchObject(enemyCombatStats(120, true));
     }
-    for (const mode of ['heavens', 'abyss'] as const) expect(infusionEncounter(mode, 35).stats.health).toBe(400_000);
+    for (const mode of ['heavens', 'abyss'] as const) expect(infusionEncounter(mode, 35).stats.health).toBe(enemyGrowth.bossHealth);
     let state = createBattle();
     for (let wave = 1; wave < 120; wave++) {
       state.phase = 'cleared';
@@ -46,7 +46,7 @@ describe('accelerating enemy stat curves', () => {
     expect(() => enemyStat(90, 200000, 140, 80, .036, 141)).toThrow();
   });
 
-  it.each(starters)('$name can clear max-level dungeon and infusion bosses before equipment across three seeds', (starter) => {
+  it.each(starters)('$name cannot solo trivialize final bosses without equipment across three seeds', (starter) => {
     const progress = { level: 105, evolution: 6 };
     for (const seed of [1, 1729, 12345]) {
       for (const initial of [createDungeonBattle(starter.elementId, 35, seed, starter.id, progress),
@@ -59,7 +59,7 @@ describe('accelerating enemy stat curves', () => {
           if (action) state = act(state, actor.id, action, state.enemies.find((enemy) => enemy.hp > 0)!.id).state;
           if (state.phase === 'player') state = endTurn(state).state;
         }
-        expect(state.phase, `${starter.name}, seed ${seed}, ${initial.infusion?.mode ?? 'dungeon'}`).toBe('cleared');
+        expect(state.phase, `${starter.name}, seed ${seed}, ${initial.infusion?.mode ?? 'dungeon'}`).toBe('defeat');
       }
     }
   });

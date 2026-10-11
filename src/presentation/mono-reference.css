@@ -1,0 +1,239 @@
+:root { --ui-font: Georgia, "Times New Roman", serif; }
+html body .sanctuary-shell {
+  --mono-bg: #0b0b0c; --mono-panel: #131314; --mono-raised: #1a1a1c; --mono-line: #2d2d31;
+  --mono-text: #f4f4f5; --mono-muted: #a9a9ae; --mono-quiet: #b5b5bc;
+  --menu-edge: var(--mono-line); --menu-surface: var(--mono-panel);
+  color: var(--mono-text); background: var(--mono-bg); font-family: var(--ui-font);
+  width: 100%; max-width: none; min-height: 100svh; padding: 0 0 1.25rem; font-size: 1rem;
+}
+html body :is(.sanctuary-shell,.information-modal,.settings-panel,.game-dialog,.reward-screen) :is(button,input,select,textarea) { font-family: var(--ui-font); }
+html body .sanctuary-shell :is(h1,h2,h3,h4,p) { letter-spacing: normal; }
+html body .sanctuary-shell :is(button,a,summary,select,input) { min-height: 44px; }
+html body .sanctuary-shell :is(button,a,summary,select,input):focus-visible { outline: 2px solid white; outline-offset: 3px; }
+html body .sanctuary-shell :is(button,input,select,textarea) { color: inherit; }
+html body .sanctuary-shell button { font-weight: 600; }
+html body .sanctuary-shell :is(.primary-button,.hub-battle-button) { background: white; color: #0b0b0c; border: 1px solid white; border-radius: .7rem; box-shadow: none; }
+html body .sanctuary-shell button:disabled { background: #242427; color: var(--mono-quiet); cursor: default; }
+html body .sanctuary-shell .text-button { border: 1px solid var(--mono-line); border-radius: .65rem; background: transparent; }
+html body .sanctuary-shell .eyebrow { color: var(--mono-quiet); font-size: .66rem; font-weight: 600; letter-spacing: .12em; }
+html body .sanctuary-shell .sanctuary-header { grid-template-columns: minmax(170px,1fr) auto minmax(280px,1fr); min-height: 3.6rem; padding: .45rem 1.25rem; gap: .8rem; border-bottom: 1px solid var(--mono-line); background: var(--mono-bg); }
+html body .sanctuary-shell .sanctuary-brand { gap: .7rem; }
+html body .sanctuary-shell .sanctuary-brand strong { font-size: .8rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+html body .sanctuary-shell .sanctuary-brand .brand-mark { transform: none; width: 2rem; min-width: 2rem; height: 2rem; border-radius: .4rem; border: 1.5px solid var(--mono-text); font-size: .6rem; }
+html body .sanctuary-shell .sanctuary-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+html body .sanctuary-shell .sanctuary-wallet { grid-column: 3; gap: .45rem; }
+html body .sanctuary-shell .currency-strip > button { min-height: 44px; border-color: var(--mono-line); padding: .3rem .7rem; background: var(--mono-panel); }
+html body .sanctuary-shell .currency-strip small { display: none; }
+html body .sanctuary-shell .currency-strip .currency-icon { width: 20px; height: 20px; flex-basis: 20px; }
+html body .sanctuary-shell .currency-strip strong { font-size: .8rem; font-variant-numeric: tabular-nums; }
+html body .sanctuary-shell .sanctuary-wallet > button { min-width: 44px; min-height: 44px; border: 1px solid var(--mono-line); border-radius: 50%; padding: .55rem; background: var(--mono-panel); }
+html body .sanctuary-shell .sanctuary-back { padding: .25rem .5rem; font-size: .72rem; }
+html body .sanctuary-shell .sanctuary-back small { display: none; }
+html body .sanctuary-shell .sanctuary-dock { position: absolute; top: .45rem; bottom: auto; left: 50%; transform: translateX(-50%); display: flex; gap: .25rem; padding: 0; width: auto; border: 0; border-radius: 0; box-shadow: none; background: none; backdrop-filter: none; }
+html body .sanctuary-shell .sanctuary-dock button { display: flex; gap: .5rem; min-height: 44px; border-radius: .6rem; padding: .55rem 1rem; font-size: .9rem; color: var(--mono-muted); }
+html body .sanctuary-shell .sanctuary-dock button[aria-current] { background: white; color: #0b0b0c; }
+html body .sanctuary-shell .sanctuary-dock .ui-icon { width: 1.1rem; height: 1.1rem; }
+html body .sanctuary-shell .sanctuary-content { padding: 1rem 1.25rem; }
+html body .sanctuary-shell .hub-heading { display: none; }
+html body .sanctuary-shell :is(.sanctuary-team-tabs,.section-navigation,.character-sections,.summon-banner-navigation,.archive-navigation) button { border-radius: .6rem; background: var(--mono-raised); border: 1px solid var(--mono-line); color: var(--mono-muted); }
+html body .sanctuary-shell :is(.sanctuary-team-tabs,.section-navigation,.character-sections,.summon-banner-navigation,.archive-navigation) button:is([aria-pressed=true],[aria-current=page]) { background: white; color: #0b0b0c; border-color: white; }
+html body .sanctuary-shell .home-hub { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); grid-template-areas: "identity identity story story" "identity identity squad squad" "identity identity destinations destinations" "identity identity stores stores"; grid-template-rows: auto auto auto auto; gap: .9rem; min-height: calc(100svh - 7rem); align-items: stretch; }
+html body .sanctuary-shell .home-hub .hub-showcase { grid-area: identity; display: flex; flex-direction: column; justify-content: flex-end; border: 1px solid var(--mono-line); border-radius: .9rem; overflow: hidden; padding: 0; min-width: 0; background: radial-gradient(circle at 50% 45%,#252528,var(--mono-panel) 72%); }
+html body .sanctuary-shell .home-hub .hub-portrait { flex: 1; display: grid; place-items: center; width: 100%; min-height: 260px; max-height: 440px; padding: 1rem; margin: 0; }
+html body .sanctuary-shell .home-hub .hub-portrait img { max-height: 440px; width: 100%; object-fit: contain; }
+html body .sanctuary-shell .sanctuary-identity-plate { width: 100%; margin: 0; padding: 1.4rem; border: 0; border-radius: 0; background: linear-gradient(transparent,#0b0b0c 45%); backdrop-filter: none; }
+html body .sanctuary-shell .home-hub .hub-showcase h2 { font-size: clamp(1.8rem,3.2vw,2.8rem); margin: .4rem 0 .6rem; line-height: 1.05; }
+html body .sanctuary-shell .home-hub .form-prefix { font-size: .8rem; font-weight: 400; color: var(--mono-muted); }
+html body .sanctuary-shell .home-hub .home-vow { display: none; }
+.mono-leader-stats { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .6rem; margin: .75rem 0; }
+.mono-leader-stats > div { border: 1px solid var(--mono-line); border-radius: .6rem; padding: .45rem .7rem; background: #131314cc; min-width: 0; overflow-wrap: anywhere; }
+.mono-leader-stats small { display: block; color: var(--mono-quiet); font-size: .68rem; }
+.mono-leader-stats strong { font-size: 1.15rem; }
+.mono-panel-heading { display: block; color: var(--mono-quiet); font-size: .66rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+html body .sanctuary-shell .mono-story-launch { grid-area: story; position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: .75rem; padding: .95rem; border-radius: .9rem; background: white; color: #0b0b0c; border: 1px solid white; text-align: left; min-height: 160px; }
+.mono-story-launch .mono-panel-heading { color: #55555a; }
+.mono-story-launch > strong { font-size: clamp(1.4rem,2.3vw,2rem); }
+.mono-story-launch > span:not(.mono-panel-heading) { font-size: .85rem; }
+.mono-story-launch .mono-arrow { align-self: flex-end; display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: 50%; background: #0b0b0c; color: white; }
+html body .sanctuary-shell .home-squad { grid-area: squad; display: block; padding: .95rem; border: 1px solid var(--mono-line); border-radius: .9rem; background: var(--mono-panel); }
+html body .sanctuary-shell .home-squad .hub-info { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .6rem; border: 0; background: none; padding: 0; }
+html body .sanctuary-shell .home-squad .team-heading { grid-column: 1/-1; margin: 0; font-size: .7rem; }
+html body .sanctuary-shell .home-squad .team-heading h2 { font-size: .7rem; color: var(--mono-quiet); text-transform: uppercase; letter-spacing: .12em; }
+html body .sanctuary-shell .team-companion { min-width: 0; display: flex; flex-direction: column; gap: .35rem; border: 1px solid var(--mono-line); border-radius: .7rem; background: var(--mono-raised); padding: .6rem; min-height: 110px; }
+html body .sanctuary-shell .team-companion .character-idle { width: 60px; height: 60px; max-width: 100%; }
+html body .sanctuary-shell .team-companion strong { font-size: .85rem; overflow-wrap: anywhere; }
+html body .sanctuary-shell .team-companion small { color: var(--mono-quiet); font-size: .72rem; }
+html body .sanctuary-shell .home-destinations { grid-area: destinations; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .9rem; align-self: stretch; }
+html body .sanctuary-shell .home-banner-promotion { border-radius: .9rem; border-color: var(--mono-line); }
+html body .sanctuary-shell .home-banner { min-height: 170px; height: 100%; padding: .95rem; }
+html body .sanctuary-shell .home-banner strong { font-size: 1rem; }
+.mono-home-stores { grid-area: stores; display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+.mono-home-stores button { display: grid; gap: .35rem; padding: .95rem; background: var(--mono-panel); border: 1px solid var(--mono-line); border-radius: .9rem; text-align: left; }
+.mono-home-stores strong { font-size: .85rem; }
+.mono-home-stores small { color: var(--mono-muted); }
+html body .sanctuary-shell .character-hub { display: grid; grid-template-columns: 17.5rem minmax(0,1fr); align-items: start; gap: .9rem; min-height: 0; }
+html body .sanctuary-shell .character-hub > .hub-showcase { display: flex; flex-direction: column; justify-content: flex-start; border: 1px solid var(--mono-line); border-radius: .9rem; background: var(--mono-panel); padding: .95rem; overflow: visible; }
+html body .sanctuary-shell .character-hub .hub-showcase::before, html body .sanctuary-shell .character-hub .hub-showcase::after { display: none; }
+html body .sanctuary-shell .character-hub .hub-portrait { width: 100%; min-height: 0; max-height: 180px; margin: 0; }
+html body .sanctuary-shell .character-hub .hub-portrait img { max-height: 180px; }
+html body .sanctuary-shell .character-hub .hub-showcase h2 { font-size: 1.2rem; }
+html body .sanctuary-shell .character-roster-strip { width: 100%; margin-top: .9rem; }
+html body .sanctuary-shell .character-roster-strip .owned-roster { display: flex; flex-direction: column; max-height: none; overflow: visible; padding: 0; }
+html body .sanctuary-shell .roster-character { display: flex; align-items: center; gap: .7rem; width: 100%; padding: .5rem; border: 1px solid var(--mono-line); border-radius: .7rem; background: var(--mono-raised); min-height: 66px; }
+html body .sanctuary-shell .roster-character[aria-pressed=true] { border-color: white; box-shadow: 0 0 0 1px white; }
+html body .sanctuary-shell .roster-character .character-idle { width: 42px; height: 42px; min-width: 42px; }
+html body .sanctuary-shell .character-control-panel { padding: 0; border: 0; background: none; display: grid; gap: .9rem; }
+html body .sanctuary-shell .hub-rail { border: 1px solid var(--mono-line); border-radius: .9rem; background: var(--mono-panel); padding: .8rem; }
+html body .sanctuary-shell .character-sections { display: flex; gap: .4rem; }
+html body .sanctuary-shell .hub-detail { border: 0; padding: 0; background: none; overflow: visible; max-height: none; }
+html body .sanctuary-shell .hub-detail > h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.mono-character-quad { display: grid; grid-template-columns: 1fr 1.3fr; gap: .9rem; align-items: start; }
+html body .sanctuary-shell .mono-character-quad > .character-category { border: 1px solid var(--mono-line); border-radius: .9rem; background: var(--mono-panel); padding: .95rem; min-width: 0; margin: 0; }
+html body .sanctuary-shell .mono-character-quad h3 { font-size: .7rem; text-transform: uppercase; letter-spacing: .12em; color: var(--mono-quiet); margin-bottom: .7rem; }
+html body .sanctuary-shell .character-stat-groups, html body .sanctuary-shell .character-ability-grid { display: block; }
+html body .sanctuary-shell .character-stat-groups .character-category { border: 0; background: none; padding: 0; }
+html body .sanctuary-shell .character-stat-groups h3 { margin: .7rem 0 .3rem; }
+html body .sanctuary-shell .character-stat-groups .hub-stats { display: block; }
+html body .sanctuary-shell .character-stat-groups .hub-stats > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .3rem; border: 0; border-bottom: 1px solid var(--mono-line); padding: .35rem 0; background: none; }
+html body .sanctuary-shell .character-stat-groups .hub-stats strong { font-size: .86rem; font-weight: 600; }
+html body .sanctuary-shell .character-stat-groups .hub-stats small { font-size: .78rem; }
+html body .sanctuary-shell .hub-ability { padding: .45rem 0; border: 0; border-bottom: 1px solid var(--mono-line); background: none; }
+html body .sanctuary-shell .hub-ability .ability-heading { font-size: .84rem; text-transform: none; letter-spacing: normal; color: var(--mono-text); }
+html body .sanctuary-shell .hub-ability .ability-icon { width: 36px; height: 36px; }
+html body .sanctuary-shell .hub-ability p { font-size: .76rem; color: var(--mono-muted); line-height: 1.4; }
+.mono-growth-options { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+.mono-growth-options > article { min-width: 0; border: 1px solid var(--mono-line); border-radius: .7rem; padding: .7rem; background: var(--mono-raised); }
+html body .sanctuary-shell .mono-growth-options .character-upgrade-grid { display: block; }
+html body .sanctuary-shell .mono-growth-options .character-category { padding: 0; margin: .6rem 0; border: 0; background: none; }
+html body .sanctuary-shell .mono-growth-options .upgrade-stat-preview { display: grid; grid-template-columns: 1fr; font-size: .72rem; }
+html body .sanctuary-shell .mono-growth-options .upgrade-resources li { display: flex; flex-wrap: wrap; font-size: .72rem; gap: .3rem; }
+html body .sanctuary-shell .mono-growth-options .upgrade-resources img { width: 28px; height: 28px; }
+html body .sanctuary-shell .mono-character-conduits .equipment-panel > .character-stat-groups { display: none; }
+html body .sanctuary-shell .mono-character-conduits .character-equipment-grid { display: flex; flex-direction: column-reverse; gap: .45rem; }
+html body .sanctuary-shell .mono-character-conduits .character-category { border: 0; padding: 0; }
+html body .sanctuary-shell .artifact-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .45rem; }
+html body .sanctuary-shell .artifact-slot { min-width: 0; padding: .45rem; border: 1px dashed #3b3b40; border-radius: .6rem; background: none; }
+html body .sanctuary-shell .artifact-slot :is(label,span) { font-size: .68rem; }
+html body .sanctuary-shell .artifact-slot .conduit-icon-frame { width: 48px; height: 48px; }
+html body .sanctuary-shell .artifact-slot select { width: 100%; }
+html body .sanctuary-shell .master-relic { padding: .5rem; border: 1px solid var(--mono-line); border-radius: .6rem; background: var(--mono-raised); }
+html body .sanctuary-shell :is(.inventory-currency,.inventory-panel,.conduit-card,.conduit-upgrade-card,.archive-card,.activity-card,.summon-sidebar,.summon-rates) { background: var(--mono-panel); border: 1px solid var(--mono-line); border-radius: .9rem; box-shadow: none; }
+html body .sanctuary-shell .inventory-currencies { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .9rem; }
+html body .sanctuary-shell .inventory-item-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(115px,1fr)); gap: .6rem; }
+html body .sanctuary-shell .inventory-item { border: 1px solid var(--mono-line); border-radius: .7rem; background: var(--mono-raised); padding: .7rem; }
+html body .sanctuary-shell .inventory-item-art { height: 80px; }
+html body .sanctuary-shell .inventory-item strong { font-size: .8rem; }
+html body .sanctuary-shell .inventory-quantity { font-size: .72rem; color: var(--mono-muted); }
+html body .sanctuary-shell .summon-layout { display: grid; grid-template-columns: 15rem minmax(0,1fr) 17rem; gap: .9rem; }
+html body .sanctuary-shell .summon-layout > .summon-banner-navigation { display: flex; flex-direction: column; align-self: start; gap: .45rem; padding: .95rem; border: 1px solid var(--mono-line); border-radius: .9rem; background: var(--mono-panel); }
+html body .sanctuary-shell .summon-layout .summon-hub, html body .sanctuary-shell .summon-main { display: contents; }
+html body .sanctuary-shell .summon-hub > :is(.eyebrow,h2) { display: none; }
+html body .sanctuary-shell .summon-visual { display: flex; flex-direction: column; border: 1px solid var(--mono-line); border-radius: .9rem; background: var(--mono-panel); overflow: hidden; padding: 0; }
+html body .sanctuary-shell .summon-banner-art { aspect-ratio: 16/9; border: 0; border-radius: 0; min-height: 240px; }
+html body .sanctuary-shell .summon-banner-art img { width: 100%; height: 100%; object-fit: cover; }
+html body .sanctuary-shell .banner-characters { padding: 1rem; }
+html body .sanctuary-shell .banner-characters ul { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .5rem; }
+html body .sanctuary-shell .banner-characters li { border-color: var(--mono-line); background: var(--mono-raised); padding: .5rem; font-size: .74rem; }
+html body .sanctuary-shell .summon-sidebar { display: flex; flex-direction: column; gap: .7rem; padding: .95rem; }
+html body .sanctuary-shell .summon-rates { grid-column: 1/-1; padding: .95rem; }
+html body .sanctuary-shell .summon-drop-table { width: 100%; font-size: .78rem; }
+html body .sanctuary-shell .conduit-catalog { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .9rem; }
+html body .sanctuary-shell .conduit-card { padding: .95rem; }
+html body .sanctuary-shell .conduit-card h3 { font-size: 1rem; }
+html body .sanctuary-shell .conduit-card .conduit-effect { font-size: .8rem; color: var(--mono-muted); }
+html body .sanctuary-shell .archive-filters { display: flex; flex-direction: column; padding: .95rem; background: var(--mono-panel); border: 1px solid var(--mono-line); border-radius: .9rem; gap: .7rem; }
+html body .sanctuary-shell .archive-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: .7rem; }
+html body .sanctuary-shell .archive-card { min-width: 0; padding: .8rem; }
+html body .sanctuary-shell .archive-portrait { height: 140px; }
+html body .sanctuary-shell .archive-card h3 { font-size: .84rem; }
+html body .sanctuary-shell .archive-card p { font-size: .74rem; }
+html body .sanctuary-shell .gameplay-hub { display: grid; grid-template-columns: 16rem minmax(0,1fr); gap: .9rem; }
+html body .sanctuary-shell .gameplay-hub > .menu-information-action { grid-column: 1/-1; }
+html body .sanctuary-shell .activity-categories { display: flex; flex-direction: column; grid-column: 1; padding: .95rem; background: var(--mono-panel); border: 1px solid var(--mono-line); border-radius: .9rem; gap: .2rem; }
+html body .sanctuary-shell .activity-categories a { border-radius: .6rem; border: 0; padding: .6rem .75rem; color: var(--mono-muted); background: none; }
+html body .sanctuary-shell .activity-categories a[aria-current] { background: white; color: #0b0b0c; }
+html body .sanctuary-shell .activity-group { grid-column: 2; }
+html body .sanctuary-shell .activity-picker { display: flex; flex-wrap: wrap; gap: .3rem; }
+html body .sanctuary-shell .activity-picker button { background: var(--mono-raised); color: var(--mono-muted); border: 1px solid var(--mono-line); border-radius: .6rem; }
+html body .sanctuary-shell .activity-picker button[aria-pressed=true] { background: white; color: #0b0b0c; }
+html body .sanctuary-shell .activity-grid { display: block; }
+html body .sanctuary-shell .activity-card { padding: .95rem; }
+html body .sanctuary-shell :is(.rarity-badge,.role-badge,.element-pill) { background: var(--mono-raised); border-color: var(--mono-line); color: var(--mono-muted); }
+html body .sanctuary-shell .status-icon { width: 20px; height: 20px; vertical-align: middle; object-fit: contain; margin-right: .3rem; }
+.ability-statuses { display: flex; flex-wrap: wrap; gap: .3rem; }
+.ability-status { display: inline-flex; align-items: center; gap: .25rem; font-size: .7rem; color: #a9a9ae; }
+.ability-status .status-icon { width: 18px; height: 18px; object-fit: contain; }
+html body .sanctuary-shell .sanctuary-menu-drawer { background: var(--mono-panel); border-color: var(--mono-line); border-radius: 0; }
+html body .sanctuary-shell .mono-story-campaign { display: grid; grid-template-columns: 16rem minmax(0,1fr); gap: .9rem; }
+html body .sanctuary-shell .mono-story-campaign .story-map-heading { grid-column: 1/-1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .7rem; }
+html body .sanctuary-shell .mono-story-view-tabs { display: flex; gap: .3rem; }
+html body .sanctuary-shell .mono-story-view-tabs button { border: 1px solid var(--mono-line); border-radius: .6rem; padding: .5rem .9rem; background: var(--mono-raised); }
+html body .sanctuary-shell .mono-story-view-tabs button[aria-pressed=true] { background: white; color: #0b0b0c; }
+html body .sanctuary-shell .mono-story-campaign .story-world-map { display: flex; flex-direction: column; gap: .4rem; padding: .95rem; border: 1px solid var(--mono-line); border-radius: .9rem; background: var(--mono-panel); }
+html body .sanctuary-shell .mono-story-campaign .story-world-map button { display: flex; flex-direction: column; align-items: flex-start; gap: .3rem; min-height: 90px; border: 1px solid transparent; border-radius: .6rem; background: none; padding: .6rem .75rem; }
+html body .sanctuary-shell .mono-story-campaign .story-world-map button[aria-pressed=true] { background: white; color: #0b0b0c; }
+html body .sanctuary-shell .mono-story-campaign .story-world-map strong { font-size: .9rem; }
+html body .sanctuary-shell .mono-story-campaign .story-world-map small { font-size: .7rem; }
+html body .sanctuary-shell .mono-story-campaign .story-region-panel { grid-column: 2; display: grid; grid-template-columns: 15rem minmax(0,1fr); gap: .9rem; border: 0; border-radius: 0; padding: 0; background: none; }
+html body .sanctuary-shell .mono-story-campaign .story-stage-path { display: flex; flex-direction: column; gap: .3rem; padding: .8rem; border: 1px solid var(--mono-line); border-radius: .9rem; background: var(--mono-panel); max-height: 650px; overflow: auto; }
+.mono-story-stage-row { display: grid; grid-template-columns: minmax(0,1fr) 44px; gap: .25rem; }
+html body .sanctuary-shell .mono-story-campaign .story-stage { display: grid; grid-template-columns: 1fr auto; gap: .2rem; border: 0; background: none; border-radius: .6rem; padding: .55rem; text-align: left; }
+html body .sanctuary-shell .mono-story-campaign .story-stage strong { font-size: .82rem; }
+html body .sanctuary-shell .mono-story-campaign .story-stage :is(small,span) { font-size: .68rem; }
+html body .sanctuary-shell .mono-story-campaign .story-stage[aria-pressed=true] { background: white; color: #0b0b0c; }
+html body .sanctuary-shell .mono-story-quick-enter { display: grid; place-items: center; border: 1px solid var(--mono-line); border-radius: .6rem; background: var(--mono-raised); }
+html body .sanctuary-shell .mono-story-stage-detail { padding: .95rem; border: 1px solid var(--mono-line); border-radius: .9rem; background: var(--mono-panel); min-width: 0; }
+.mono-story-detail-banner { position: relative; height: 160px; display: flex; align-items: flex-end; border-radius: .8rem; overflow: hidden; background: #242427; padding: .9rem; margin-bottom: .8rem; }
+.mono-story-detail-banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.mono-story-detail-banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent,#0b0b0cbf); }
+.mono-story-detail-banner h2 { position: relative; z-index: 1; font-size: 1.5rem; }
+.mono-story-stage-detail > p, .mono-story-stage-detail section { margin: .8rem 0; font-size: .82rem; }
+.mono-story-stage-detail h3 { font-size: .8rem; margin: .5rem 0; }
+.mono-story-stage-detail .activity-facts { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .5rem; }
+.mono-story-stage-detail .activity-facts div { display: flex; flex-direction: column; gap: .3rem; padding: .6rem; border: 1px solid var(--mono-line); border-radius: .6rem; background: var(--mono-raised); min-width: 0; }
+.mono-story-loot { padding-left: 1.1rem; color: var(--mono-muted); font-size: .8rem; }
+html body .sanctuary-shell .mono-story-campaign .story-map-art { grid-column: 2; padding: 0; overflow: hidden; border-color: var(--mono-line); border-radius: .9rem; }
+html body .sanctuary-shell .mono-story-campaign :is(.story-prologue,[data-training-activity]) { grid-column: 1/-1; }
+html body .sanctuary-shell #gameplay-story > h2 { display: none; }
+html body .sanctuary-shell #gameplay-story .mono-story-quick-enter { display: none; }
+@media (min-width: 1100px) {
+  html body .sanctuary-shell .archive-panel { display: grid; grid-template-columns: 15rem minmax(0,1fr); gap: .9rem; align-items: start; }
+  html body .sanctuary-shell .archive-panel > .archive-filters { grid-column: 1; grid-row: 2/5; }
+  html body .sanctuary-shell .archive-panel > .archive-grid { grid-column: 2; grid-row: 2/5; }
+}
+@media (max-width: 1099px) {
+  html body .sanctuary-shell .sanctuary-header { grid-template-columns: 1fr auto; }
+  html body .sanctuary-shell .sanctuary-wallet { grid-column: 2; }
+  html body .sanctuary-shell .sanctuary-dock { position: fixed; top: auto; bottom: 0; width: 100%; background: #131314f5; border-top: 1px solid var(--mono-line); padding: .5rem 1rem calc(.5rem + env(safe-area-inset-bottom)); display: grid; grid-template-columns: repeat(4,1fr); z-index: 20; }
+  html body .sanctuary-shell .sanctuary-dock button { justify-content: center; padding: .55rem .4rem; font-size: .8rem; }
+  html body .sanctuary-shell { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+  html body .sanctuary-shell .summon-layout { grid-template-columns: 12rem minmax(0,1fr); }
+  html body .sanctuary-shell .summon-sidebar { grid-column: 1/-1; display: grid; grid-template-columns: 1fr 1fr; }
+  html body .sanctuary-shell .conduit-catalog { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@media (max-width: 760px) {
+  html body .sanctuary-shell .sanctuary-header { padding: .5rem .75rem; }
+  html body .sanctuary-shell .sanctuary-brand > div, html body .sanctuary-shell .sanctuary-help-trigger { display: none; }
+  html body .sanctuary-shell .sanctuary-back { font-size: .7rem; gap: .2rem; }
+  html body .sanctuary-shell .currency-strip > button { padding: .3rem .4rem; }
+  html body .sanctuary-shell .sanctuary-wallet { gap: .25rem; }
+  html body .sanctuary-shell .sanctuary-content { padding: .75rem; }
+  html body .sanctuary-shell .home-hub { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-areas: "identity identity" "story story" "squad squad" "destinations destinations" "stores stores"; min-height: 0; }
+  html body .sanctuary-shell .home-hub .hub-portrait { min-height: 200px; height: 240px; max-height: 240px; }
+  html body .sanctuary-shell .home-hub .hub-portrait img { max-height: 240px; }
+  html body .sanctuary-shell .character-hub, html body .sanctuary-shell .mono-character-quad, html body .sanctuary-shell .summon-layout, html body .sanctuary-shell .gameplay-hub { grid-template-columns: 1fr; }
+  html body .sanctuary-shell .character-roster-strip .owned-roster { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
+  html body .sanctuary-shell .artifact-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  html body .sanctuary-shell .inventory-currencies { grid-template-columns: 1fr; }
+  html body .sanctuary-shell .summon-layout > .summon-banner-navigation { flex-direction: row; flex-wrap: wrap; }
+  html body .sanctuary-shell .summon-sidebar { display: flex; }
+  html body .sanctuary-shell .activity-group { grid-column: 1; }
+  html body .sanctuary-shell .banner-characters ul { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  html body .sanctuary-shell .conduit-catalog { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  html body .sanctuary-shell .mono-story-campaign, html body .sanctuary-shell .mono-story-campaign .story-region-panel { grid-template-columns: 1fr; }
+  html body .sanctuary-shell .mono-story-campaign :is(.story-region-panel,.story-map-art) { grid-column: 1; }
+  html body .sanctuary-shell .mono-story-campaign .story-world-map { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
+  html body .sanctuary-shell .mono-story-campaign .story-stage-path { max-height: 280px; }
+  html body .sanctuary-shell #gameplay-story .mono-story-campaign { grid-template-columns: 1fr; }
+}
+:root[data-motion=reduced] .sanctuary-shell *, :root[data-motion=reduced] .sanctuary-shell *::before, :root[data-motion=reduced] .sanctuary-shell *::after { animation: none !important; transition: none !important; }

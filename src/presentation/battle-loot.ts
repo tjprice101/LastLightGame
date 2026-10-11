@@ -9,6 +9,7 @@ import { mechanicalComponents } from '../content/mechanical-components';
 import { createConduitUpgradeMeter } from './conduit-upgrade-meter';
 import { getStarter } from '../content/starters';
 import { characterName } from '../content/character-art';
+import { masterChest } from '../content/master-conduits';
 
 export function lootMotion(random: () => number = Math.random) {
   return { size: .75 + lootRoll(random) * .6, scatter: (lootRoll(random) - .5) * 14,
@@ -28,6 +29,7 @@ export function lootItems(event: BattleEvent): LootItem[] {
       amount: 1, art: getStarter(event.recruitment).art, color: '#ffffff',
     }] : []),
     ...(event.mechanicalComponents ? [{ id: mechanicalComponents.id, name: mechanicalComponents.name, amount: event.mechanicalComponents, color: '#ffffff' }] : []),
+    ...(event.masterChests ? [{ id: masterChest.id, name: masterChest.name, amount: event.masterChests, color: '#ded0ff' }] : []),
     ...Object.entries(event.conduits ?? {}).map(([id, amount]) => {
       if (!isConduitId(id)) throw new Error('Unknown Conduit in loot receipt.');
       const conduit = getConduit(id);
@@ -40,7 +42,7 @@ export function lootItems(event: BattleEvent): LootItem[] {
           : id.endsWith('-epic') ? '#c898ff' : id.endsWith('-rare') ? '#79caff'
             : id.endsWith('-uncommon') ? '#9ee899' : '#ffffff',
     })),
-    ...(event.capture ? [{ id: `capture:${event.capture.creatureId}`, name: `${getCreature(event.capture.creatureId).name} creature`,
+    ...(event.capture ? [{ id: `capture:${event.capture.creatureId}`, name: `${getCreature(event.capture.creatureId).name} Elemental-Devourer`,
       amount: 1, art: getCreature(event.capture.creatureId).art, color: '#f3df9b' }] : []),
   ];
 }

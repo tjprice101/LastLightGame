@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { eventModes, infusionStageCount } from '../content/activities';
-import { infusionEncounter, infusionDrops, infusionLoot, roseEnemyStats } from '../content/infusions';
+import { capturedEnemyStats, infusionEncounter, infusionDrops, infusionLoot, roseEnemyStats } from '../content/infusions';
+import { enemyCombatStats } from '../content/stat-growth';
+import type { ConduitSlots } from '../content/conduits';
 import { roseMaterials, roseCaptureAllowed, roseSaleQuantities, roseFormStages } from '../content/roses';
 import { roseBannerPool } from '../content/rose-banner';
 import { standardBannerPool, resolveBannerPull } from '../content/standard-banner';
@@ -75,8 +77,8 @@ describe('Passion of Crimson Roses integration', () => {
       expect(getCreature(`infusion:roses:${encounter.tier}`).stages).toContain(stage);
     }
     expect(roseEnemyStats(120, false).health).toBe(200000);
-    expect(roseEnemyStats(140, false).health).toBe(591680);
-    expect(roseEnemyStats(140, true).health).toBe(1183360);
+    expect(roseEnemyStats(140, false).health).toBe(enemyCombatStats(140, false).health);
+    expect(roseEnemyStats(140, true).health).toBe(enemyCombatStats(140, true).health);
     expect(roseEnemyStats(140, true).health).toBeGreaterThan(roseEnemyStats(140, false).health);
     for (let level = 81; level <= 140; level++) {
       const prior = roseEnemyStats(level - 1, false);
@@ -127,10 +129,14 @@ describe('Passion of Crimson Roses integration', () => {
     ['rosetta', 'thornia', 'crinso'],
     ['ember', 'tide', 'sprout'],
     ['rosetta', 'thornia', 'sprout'],
-  ] as const)('allows the max-level %s/%s/%s squad to clear the140 boss without gear', (...team) => {
+  ] as const)('allows the built max-level %s/%s/%s squad to clear the140 boss', (...team) => {
     const progress = Object.fromEntries(team.map((id) => [id, { level: 105, evolution: 6 }]));
+    const equipment = Object.fromEntries(team.map(id => [id, [
+      'worldbreaker-drive', 'immortal-vessel', 'citadel-spine', 'astral-prism',
+      'siege-cantilever', 'duplex-heart', 'twinpulse-bellows', 'springwell-pump',
+    ] satisfies ConduitSlots]));
     for (const seed of [1, 1729, 12345]) {
-      let state = createInfusionBattle('roses', 35, seed, team[0], progress[team[0]], team, progress);
+      let state = createInfusionBattle('roses', 35, seed, team[0], progress[team[0]], team, progress, equipment);
       for (let step = 0; state.phase === 'player' && step < 600; step++) {
         const actor = state.allies.find((unit) => unit.hp > 0 && !actionUnavailable(state, unit, 'light'));
         if (!actor) {
@@ -285,7 +291,7 @@ describe('Passion of Crimson Roses integration', () => {
     expect(next.allies[0].conduits).toEqual(gear.rosetta);
     expect(next.allies[1].captured).toEqual(copy);
     expect(next.enemies[0].level).toBe(121);
-    expect(resolveCapturedFighter(copy).stats.health).toBeCloseTo(roseEnemyStats(capturedProgress(copy).level, false).health * .93);
+    expect(resolveCapturedFighter(copy).stats.health).toBeCloseTo(capturedEnemyStats(capturedProgress(copy).level).health * .93);
     const last = defeat(35).state;
     expect(() => nextStage(last, { level: 105, evolution: 6 })).toThrow('complete');
   });
@@ -302,15 +308,15 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     }
     expect(pool.filter((entry) => entry.stars === 5)).toEqual([]);
     expect(pool.filter((entry) => entry.kind === 'character').reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(.011, 14);
-    expect(pool.filter((entry) => entry.kind === 'creature').map((entry) => entry.chance)).toEqual([50, 30, 17].map((weight) => .989 * weight / 97));
-    expect(standardBannerPool()).toHaveLength(22);
+    expect(pool.filter((entry) => entry.kind === 'material').map((entry) => entry.chance)).toEqual([50, 30, 17].map((weight) => .989 * weight / 97));
+    expect(standardBannerPool()).toHaveLength(28);
     expect(standardBannerPool().filter((entry) => entry.kind === 'character').map((entry) => entry.id))
       .toEqual(['ember', 'tide', 'sprout', 'atmoso', 'aurora', 'bliss', 'bruno', 'disciple', 'elise', 'razor']);
     expect(availableStarters.map((entry) => entry.id)).toEqual(['ember', 'tide', 'sprout']);
     expect(() => saveStarter(storage().saved, 'rosetta')).toThrow('valid starter');
   });
 
-  it.each(roseCharacters)('acquires$name at Lv.0/Evo.1, then converts duplicates to a Lv.80 Omnic Roselius', (character) => {
+  it.each(roseCharacters)('acquires$name at Lv.0/Evo.1, then converts duplicates to Rare Rosethorn materials', (character) => {
     const store = storage();
     saveAccount(store.saved, funded());
     const pool = roseBannerPool();
@@ -323,8 +329,9 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     expect(first.account.conduitEquipment?.[character.id]).toBeUndefined();
     const second = summonCharacter(store.saved, () => roll, 'roses');
     expect(store.writes()).toBe(2);
-    expect(second.copy).toMatchObject({ creatureId: 'infusion:roses:5', level: 80, acquisition: 'banner-duplicate', locked: false, capturedStage: 29 });
-    expect(capturedProgress(second.copy!).skills).toEqual(capturedProgress(createCreatureCopy('infusion:roses:5', undefined, 80, 'banner-duplicate')).skills);
+    expect(second.copy).toBeUndefined();
+    expect(second.materials).toEqual({ id: 'rosethorn-rare', amount: 15 });
+    expect(second.account.materials['rosethorn-rare']).toBe(1015);
     expect(second.account.lycalis).toBe(980);
     expect(second.account.bannerPity?.standard).toBeUndefined();
     expect(second.account.characters[character.id]).toEqual(first.account.characters[character.id]);
@@ -348,7 +355,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     expect(all.guarantee).toBe('all-owned-highest-star');
     expect(all.pity).toEqual({ highestStar: 0, unownedHighestStar: 0 });
     const lower = resolveBannerPull(pool, [], { highestStar: 3, unownedHighestStar: 4 }, () => .5);
-    expect(lower.entry.kind).toBe('creature');
+    expect(lower.entry.kind).toBe('material');
     expect(lower.pity).toEqual({ highestStar: 4, unownedHighestStar: 5 });
     const store = storage();
     const account = funded();
@@ -471,11 +478,11 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     expect(html).toContain('data-infusion="roses"');
     expect(html).toContain('No captures above Lv.120');
     expect(html).toContain('Current highest tier: 6-star');
-    expect(html).toContain('6-star tier: 1.1%');
+    expect(html).toContain('6-star · 1.1%');
     expect(html).not.toContain('5-star tier: 1%');
-    expect(html).toContain('Rosetta, Thornia and Crinso share the 6-star tier equally');
+    for (const id of ['rosetta', 'thornia', 'crinso']) expect(html).toContain(`data-banner-entry="${id}" data-entry-stars="6"`);
     expect(html).not.toContain('Thornia and Crinso do not reset');
-    expect(html).toContain('The Garden Beyond Eternity, Roselius · Omnic · 6-star · Lv.80');
+    expect(html).toContain('15 Rare Rosethorn materials');
     expect(html).toContain('6 Soul of Rosethorn');
     expect(html).toContain('assets/banners/roses-banner.png');
     expect(html).toContain('assets/banners/summon-roses.png');

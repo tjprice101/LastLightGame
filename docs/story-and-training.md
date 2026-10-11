@@ -1,5 +1,34 @@
 # Story campaign and endless Training (D-160/D-164)
 
+## Story-first progression and activity access (D-192)
+
+New starter selection opens Story. Online accounts with fewer than25 Story
+clears return to Story; an active online run still resumes first. World map
+is the initial Story view, with beacon-to-stage navigation and a direct Team
+shortcut. Existing stage/region selections remain transient and history-aware.
+Short hints explain replaying for materials, leveling/evolving in Team,
+checking enemy levels and bringing healing/shields to bosses.
+
+Activity entry uses the **highest-level owned Element-Bearer**, including one
+outside the squad. Captured levels never count. Locks remain visible with
+requirements and highest owned level; both browser and server reject bypasses.
+
+| Activity | Entry requirement |
+| --- | --- |
+| Story / Training | Available immediately |
+| Awaken the Machines | Lv.10 and Emberwake March cleared |
+| Elemental material dungeons | Lv.30 |
+| Heaven / Abyss | Lv.50 |
+| Treasury / Sanctuary | Lv.60 |
+| Crimson Roses | Lv.75 |
+| Elemental War | Lv.85 |
+
+Sequential stage locks still apply. No resources, levels or characters are
+granted to satisfy these requirements. Existing active runs keep their frozen
+team and may Continue/Retry without reapplying new activity entry gates.
+See [combat balance](combat.md#enemy-progression-rebalance-d-192) and
+[infusion schedule](gameplay-and-elements.md#two-infusion-modes).
+
 ## Approved scope and implemented behavior
 
 The owner approves the six-region linear campaign and later directs work to
@@ -54,19 +83,20 @@ stays pending. Prompt files remain the generation reference, not source images.
 - Use a separate xorshift encounter stream, seeded from the battle seed with
   the established salt and continued across stages. Sampling never consumes
   combat, loot, capture or premium RNG.
-- Story uses `stat-growth.ts`'s shared ordinary/boss curves with lower HP bases
-  and a Story difficulty envelope:40% resulting HP,50% resulting Defense.
-  D-165 sets opening Attack16/24 with half the shared .12 staged Attack curve,
-  giving ordinaryLv13 enemies40 Attack instead of4. This keeps Story easier
-  than overlapping material dungeons without harmless early hits. This is tuning, not a change
-  to dungeon/Training/farm endpoints.
+- D-192 uses the shared hostile curve with90% resulting HP and75% Attack,
+  retaining shared Defense. This supersedes D-164/D-165's earlier envelope.
+  It keeps Story easier than overlapping material dungeons while higher-level
+  enemies take meaningful hits and threaten underleveled teams.
 - Every real spawn uses `enemy-skills.ts`: one skill belowLv50, two at50+,
   with ordinary boss ultimate priority. Existing combat rules remain.
 
 ## Loot and first-clear economy
 
-Every kill gives the ordinary level-scaled Prismatica range from
-`fractalisDrop`, plus matching-element **Common** materials. **Uncommon**
+Every kill gives the linear Story Prismatica range from `storyFractalisDrop`
+(D-225): minimum `5+2*(level-1)`, maximum double, so5-10 at Lv1 and113-226 at
+Lv55, a constant step per level and therefore per stage. Crownfall Treasury
+pays exactly this line at the same enemy level on entry, then multiplies it up
+to20x by Lv120. Kills also give matching-element **Common** materials. **Uncommon**
 materials unlock at enemyLv23; no Rare/Epic/Legendary/Omnic material, specialty,
 Conduit, component, recruitment or capture is eligible in Story.
 

@@ -1,0 +1,18 @@
+.debug-profile-banner {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 100;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100vw - 24px);
+  padding: 10px;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  background: #171717;
+  color: #fff;
+  font: 600 14px Georgia, serif;
+}
+.debug-profile-banner button { min-height: 44px; }

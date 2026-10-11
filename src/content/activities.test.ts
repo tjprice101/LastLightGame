@@ -41,7 +41,7 @@ describe('activity and progression framework', () => {
     expect(elements.filter((element) => element.infusion === 'abyss').map((element) => element.id)).toEqual([
       'tranquilitic', 'chaotic',
     ]);
-    expect(infusionModes.map((mode) => [mode.stages, mode.startingLevel, mode.enemyTiers])).toEqual([[35, 80, 6], [35, 80, 6]]);
+    expect(infusionModes.map((mode) => [mode.stages, mode.startingLevel, mode.enemyTiers])).toEqual([[35, 50, 6], [35, 50, 6]]);
   });
   it('uses approved adjacent-rarity recipes and captured-creature requirements', () => {
     expect(evolutionRecipes.map((recipe) => recipe.rarities)).toEqual([
@@ -71,7 +71,7 @@ describe('activity and progression framework', () => {
     expect(markup.match(/data-infusion="/g)).toHaveLength(6);
     expect(markup).toContain('data-infusion="machines"');
     expect(markup).toContain('data-page="battle"');
-    expect(markup).toContain('data-page="story"');
+    expect(markup).toContain('data-story-enter="1"');
     expect(markup).toContain('data-page="events"');
     for (const starter of starters) {
       const detail = characterDetail(starter, 'upgrade-0');

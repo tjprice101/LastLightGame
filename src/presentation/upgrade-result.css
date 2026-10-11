@@ -1,0 +1,52 @@
+/* D-231 level-up / evolution result. Portrait art is bounded to its stage so it never covers the identity text. */
+.upgrade-result-portrait { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.upgrade-result-portrait :is(.character-idle, .hub-portrait) { width: 100%; height: 100%; display: block; }
+html body .reward-screen .upgrade-result-portrait img { display: block; width: 100%; height: 100%; max-height: 100%; min-height: 0; object-fit: contain; }
+.reward-screen:has(.upgrade-result-portrait) .reward-stage,
+.reward-screen:has(.upgrade-result-portrait) .reward-art { min-height: 0; height: min(230px, 26dvh); }
+.reward-screen:has(.upgrade-result-portrait) .reward-art { width: min(260px, 100%); }
+.reward-screen:has(.upgrade-result-portrait) .reward-halo { width: min(230px, 26dvh); height: min(230px, 26dvh); }
+.reward-screen:has(.upgrade-result-portrait) .reward-stage { overflow: hidden; }
+html body .reward-screen:has(.upgrade-result-portrait) h2 { margin: 0 0 .5rem; }
+html body .reward-screen:has(.upgrade-result-portrait) .reward-animation-label { font-size: .95rem; margin: .35rem 0; color: #c9c9ce; }
+html body .reward-screen:has(.upgrade-result-portrait) .reward-details :is(h3, h4, p) { margin: .35rem 0; }
+html body .reward-screen:has(.upgrade-result-portrait) .reward-details h3 { font-size: 1.15rem; line-height: 1.3; color: #f4f4f5; }
+html body .reward-screen:has(.upgrade-result-portrait) .reward-details h4 { margin-top: .9rem; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: #a9a9ae; }
+
+.upgrade-result-identity { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .5rem .7rem; }
+html body .reward-screen .upgrade-result-identity .upgrade-result-progress { margin: 0; }
+html body .reward-screen .upgrade-result-identity .character-rating { margin: 0; }
+.upgrade-result-level { display: inline-block; padding: .4rem .9rem; border-radius: 999px; font-size: 1.05rem; font-weight: 700; color: #f4f4f5;
+  background: color-mix(in srgb, var(--reward-accent, #8d8d93) 22%, #18181b); border: 1px solid color-mix(in srgb, var(--reward-accent, #8d8d93) 70%, #3a3a3f);
+  font-variant-numeric: tabular-nums; }
+
+.upgrade-result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .5rem; text-align: left; margin-top: .4rem; }
+.upgrade-result-stat { min-width: 0; display: grid; grid-template-columns: 1fr auto; grid-template-areas: "label delta" "value value"; align-items: center; gap: .25rem .6rem;
+  padding: .65rem .8rem; border: 1px solid #2d2d31; border-left: 3px solid #4ade80; border-radius: .6rem; background: #1a1a1c; overflow-wrap: anywhere; }
+.upgrade-result-stat small { grid-area: label; color: #c9c9ce; font-size: .78rem; }
+.upgrade-result-stat strong { grid-area: value; font-size: .95rem; line-height: 1.35; font-variant-numeric: tabular-nums; }
+.upgrade-result-stat > span { grid-area: delta; justify-self: end; padding: .1rem .5rem; border-radius: 999px; font-size: .78rem; font-weight: 700;
+  background: color-mix(in srgb, currentColor 14%, transparent); font-variant-numeric: tabular-nums; }
+.upgrade-result-stat:has(> .stat-change--decrease) { border-left-color: #f87171; }
+.upgrade-result-none { color: #a9a9ae; }
+.upgrade-result-unchanged { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: .35rem .6rem; margin-top: .6rem; font-size: .78rem; color: #8d8d93; }
+.upgrade-result-unchanged > .stat-change { font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: .7rem; }
+.upgrade-result-unchanged ul { display: contents; list-style: none; margin: 0; padding: 0; }
+.upgrade-result-unchanged li { white-space: nowrap; }
+.upgrade-result-unchanged li b { color: #c9c9ce; font-weight: 600; }
+.upgrade-result-unchanged li:not(:last-child)::after { content: '\00b7' / ''; margin-left: .6rem; color: #55555b; }
+
+.reward-details:not([hidden]) .upgrade-result-stat { animation: upgrade-stat-reveal 400ms ease-out both; animation-delay: var(--stat-delay); }
+@keyframes upgrade-stat-reveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 600px) {
+  .upgrade-result-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .4rem; }
+  .upgrade-result-stat { padding: .45rem .55rem; grid-template-areas: "label" "value" "delta"; grid-template-columns: minmax(0, 1fr); }
+  .upgrade-result-stat > span { justify-self: start; }
+  .upgrade-result-stat strong { font-size: .85rem; }
+  .reward-screen:has(.upgrade-result-portrait) .reward-stage,
+  .reward-screen:has(.upgrade-result-portrait) .reward-art { height: min(170px, 21dvh); }
+  .reward-screen:has(.upgrade-result-portrait) .reward-halo { width: min(170px, 21dvh); height: min(170px, 21dvh); }
+  .upgrade-result-level { font-size: .95rem; }
+}
+:root[data-motion="reduced"] .reward-details:not([hidden]) .upgrade-result-stat,
+body.reduced-motion .reward-details:not([hidden]) .upgrade-result-stat { animation: none; }

@@ -3,7 +3,7 @@ import { ACCOUNT_KEY, loadAccount, saveAccount, saveAccountRewards, summonCharac
   purchaseConduit, equipConduit, setSquad, setCharacterLock, levelCapturedCharacter, equippedSquad } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { createBattle, createDungeonBattle, createInfusionBattle, endTurn, nextStage, nextWave } from './battle';
-import { capturedProgress } from './character-instances';
+import { capturedProgress, createCreatureCopy } from './character-instances';
 import { standardBannerPool } from '../content/standard-banner';
 import { playableDungeons } from '../content/dungeons';
 import { archives } from '../presentation/archives';
@@ -41,20 +41,22 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(draw.duplicate).toBe(true);
     expect(draw.account.lycalis).toBe(5);
     expect(draw.account.characters.ember).toEqual(original.characters.ember);
-    expect(draw.copy).toMatchObject({ creatureId: 'infusion:treasury:5', level: 50, acquisition: 'banner-duplicate' });
+    expect(draw.materials).toEqual({ id: 'infernic-rare', amount: 15 });
+    expect(draw.copy).toBeUndefined();
     expect(draw.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 1 });
     const bought = purchaseConduit(saved, 'vigil-core');
     expect(bought.fractalis).toBe(sold.fractalis - 1000);
-    equipConduit(saved, draw.copy!.instanceId, 0, 'vigil-core');
+    const retained = farmed.capturedCharacters![0];
+    equipConduit(saved, retained.instanceId, 0, 'vigil-core');
     const protectedSave = saved.getItem(ACCOUNT_KEY);
-    expect(() => sellCurrencyCreature(saved, draw.copy!.instanceId)).toThrow('cannot be sold');
+    expect(() => sellCurrencyCreature(saved, retained.instanceId)).toThrow('cannot be sold');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(protectedSave);
-    equipConduit(saved, draw.copy!.instanceId, 0, null);
-    const final = sellCurrencyCreature(saved, draw.copy!.instanceId);
+    equipConduit(saved, retained.instanceId, 0, null);
+    const final = sellCurrencyCreature(saved, retained.instanceId);
     expect(final.fractalis).toBe(bought.fractalis + 300000);
     expect(final.lycalis).toBe(5);
     expect(final.bannerPity).toEqual(draw.account.bannerPity);
-    expect(final.capturedCharacters).toEqual([farmed.capturedCharacters![0]]);
+    expect(final.capturedCharacters).toEqual([]);
     expect(loadAccount(saved)).toEqual(final);
     expect(saveAccountRewards(saved, sanctuary, 'sanctuary')).toEqual(final);
     expect(saveAccountRewards(saved, treasury, 'treasury')).toEqual(final);
@@ -65,37 +67,37 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
   });
 
-  it('enforces actual200 / 500 saved pull milestones while sales/reloads never reset pity', () => {
+  it('enforces actual80 / 150 saved pull milestones while sales/reloads never reset pity', () => {
     const saved = storage();
     const account = loadAccount(saved);
     account.lycalis = 5000;
     account.characters.aurora = { level: 0, evolution: 1, weaponRank: 0 };
     saveAccount(saved, account);
-    for (let pull = 1; pull <= 500; pull++) {
+    for (let pull = 1; pull <= 150; pull++) {
       const result = summonCharacter(saved, () => 0.02);
-      if (pull === 200 || pull === 400) {
+      if (pull === 80) {
         expect(result.guarantee).toBe('highest-star');
         expect(result.duplicate).toBe(true);
-        expect(result.copy?.level).toBe(50);
-        const sold = sellCurrencyCreature(saved, result.copy!.instanceId);
+        expect(result.materials).toEqual({ id: 'infernic-rare', amount: 15 });
+        const sold = loadAccount(saved);
         expect(sold.bannerPity).toEqual(result.account.bannerPity);
         expect(sold.lycalis).toBe(5000 - pull * 10);
-      } else if (pull === 500) {
+      } else if (pull === 150) {
         expect(result.guarantee).toBe('unowned-highest-star');
         expect(result.entry.id).toBe('bliss');
         expect(result.account.characters.bliss).toEqual({ level: 0, evolution: 1, weaponRank: 0 });
         expect(result.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
       } else {
         expect(result.guarantee).toBe('none');
-        expect(result.entry.kind).toBe('creature');
+        expect(result.entry.kind).toBe('material');
         expect(result.account.bannerPity?.standard)
-          .toEqual({ highestStar: pull % 200, unownedHighestStar: pull });
+          .toEqual({ highestStar: pull % 80, unownedHighestStar: pull });
       }
       expect(loadAccount(saved).lycalis).toBe(5000 - pull * 10);
     }
     const final = loadAccount(saved);
-    expect(final.capturedCharacters).toHaveLength(497);
-    expect(final.fractalis).toBe(600000);
+    expect(final.capturedCharacters).toBeUndefined();
+    expect(final.fractalis).toBe(0);
     expect(final.squad).toEqual(['ember']);
     expect(final.characters.ember).toEqual(account.characters.ember);
   });
@@ -107,11 +109,9 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     account.fractalis = 3000;
     account.materials = { 'tranquilitic-common': 10 };
     saveAccount(saved, account);
-    const pool = standardBannerPool();
-    const index = pool.findIndex((entry) => entry.id === 'infusion:sanctuary:0');
-    const roll = pool.slice(0, index).reduce((total, entry) => total + entry.chance, 0) + pool[index].chance / 2;
-    const draw = summonCharacter(saved, () => roll);
-    const copy = draw.copy!;
+    const copy = createCreatureCopy('infusion:sanctuary:0');
+    account.capturedCharacters = [copy];
+    saveAccount(saved, account);
     levelCapturedCharacter(saved, copy.instanceId, 65);
     purchaseConduit(saved, 'vigil-core');
     equipConduit(saved, copy.instanceId, 0, 'vigil-core');
@@ -189,10 +189,10 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     expect(loaded.capturedCharacters).toBeUndefined();
     const draw = summonCharacter(saved, () => 0);
     expect(write).toHaveBeenCalledTimes(1);
-    expect(draw.account).toMatchObject({ version: 5, fractalis: 12345, lycalis: 0, materials: legacy.materials,
+    expect(draw.account).toMatchObject({ version: 5, fractalis: 12345, lycalis: 0, materials: { ...legacy.materials, 'infernic-rare': 15 },
       characters: legacy.characters, firstFracture: true, receipts: legacy.receipts,
       creatures: legacy.creatures, squad: legacy.squad, dungeonStages: { infernic: 35 }, infusionStages: { heavens: 35 } });
-    expect(draw.copy?.level).toBe(50);
+    expect(draw.copy).toBeUndefined();
     expect(loadAccount(saved)).toEqual(draw.account);
   });
 });

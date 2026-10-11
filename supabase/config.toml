@@ -1,0 +1,17 @@
+project_id = "Last_Light"
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:5173/LastLightGame/"
+additional_redirect_urls = ["http://localhost:5173/LastLightGame/", "https://tjprice101.github.io/LastLightGame/"]
+minimum_password_length = 12
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true
+
+[functions.account-auth]
+verify_jwt = false
+
+[functions.game-operation]
+verify_jwt = false

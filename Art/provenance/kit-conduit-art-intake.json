@@ -1,0 +1,2238 @@
+{
+  "asset_count": 25,
+  "canvas": 256,
+  "content_limit": 224,
+  "assets": [
+    {
+      "asset": "tempered-strike-link",
+      "incoming": "Phoenix Temper Dominion (Omnic  Infernic).png",
+      "source": "Art\\source\\kit-conduits\\Phoenix Temper Dominion (Omnic  Infernic).png",
+      "source_sha256": "6e958852b89f27facf3907f67d273b8ced375be9af78033c5bf03cf7abafcecc",
+      "runtime": "public\\assets\\conduits\\tempered-strike-link.png",
+      "runtime_sha256": "a6f0cf4d25d34c03346f0a8beea767756fb322227da8c46533e5d0e75687459f",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        20,
+        16,
+        235,
+        240
+      ],
+      "runtime_pixel_sha256": "acf43e4ebf4d48b397f809ffef8d0961654b7e8886d3793eabcdacfdc9261853",
+      "settings": {
+        "keys": [
+          [
+            180,
+            176,
+            79
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.8486,
+            0.251
+          ],
+          [
+            0.2236,
+            0.459
+          ],
+          [
+            0.1924,
+            0.373
+          ],
+          [
+            0.749,
+            0.3457
+          ],
+          [
+            0.2451,
+            0.2412
+          ],
+          [
+            0.1523,
+            0.3564
+          ],
+          [
+            0.4004,
+            0.2207
+          ],
+          [
+            0.5508,
+            0.2617
+          ],
+          [
+            0.7031,
+            0.7002
+          ],
+          [
+            0.332,
+            0.6592
+          ],
+          [
+            0.4463,
+            0.2578
+          ],
+          [
+            0.6895,
+            0.4014
+          ],
+          [
+            0.6631,
+            0.3535
+          ],
+          [
+            0.5684,
+            0.6582
+          ],
+          [
+            0.3174,
+            0.4023
+          ],
+          [
+            0.2686,
+            0.6406
+          ],
+          [
+            0.4922,
+            0.1816
+          ],
+          [
+            0.3877,
+            0.7168
+          ],
+          [
+            0.5566,
+            0.2412
+          ],
+          [
+            0.5586,
+            0.5381
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "mending-valve",
+      "incoming": "Worldroot Sap Cathedral (Omnic  Botanic).png",
+      "source": "Art\\source\\kit-conduits\\Worldroot Sap Cathedral (Omnic  Botanic).png",
+      "source_sha256": "67f8a95cd543abc3b10dc0e92c1c0a6fb737b3d899a88c8506f6ddceb0b9b69a",
+      "runtime": "public\\assets\\conduits\\mending-valve.png",
+      "runtime_sha256": "5e37af315c95fa0795ec14a7a10bf32f905167a66dc1c59fcfba49656253d4a1",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        23,
+        16,
+        233,
+        240
+      ],
+      "runtime_pixel_sha256": "6e94bbdcfe6d611d1b171d8e35128aca5a1580093c282fe3c5729e83f601d24c",
+      "settings": {
+        "keys": [
+          [
+            203,
+            224,
+            155
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.168,
+            0.7441
+          ],
+          [
+            0.8174,
+            0.7373
+          ],
+          [
+            0.2041,
+            0.749
+          ],
+          [
+            0.791,
+            0.7607
+          ],
+          [
+            0.8057,
+            0.8066
+          ],
+          [
+            0.1973,
+            0.8066
+          ],
+          [
+            0.7256,
+            0.7578
+          ],
+          [
+            0.2598,
+            0.7695
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "ward-stitch-spool",
+      "incoming": "Leviathan Ward Loom (Omnic  Oceanic).png",
+      "source": "Art\\source\\kit-conduits\\Leviathan Ward Loom (Omnic  Oceanic).png",
+      "source_sha256": "d14ac377f5e682f70b5f2d682b076b97122ba63b34fb82c8d55d2a532390ec87",
+      "runtime": "public\\assets\\conduits\\ward-stitch-spool.png",
+      "runtime_sha256": "16607bddce83d8a2c5fc2813ae69470066295b5288cd70d29e835aa1a96ade4c",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        29,
+        16,
+        226,
+        240
+      ],
+      "runtime_pixel_sha256": "17b7488a5824658260c36f7c5f1d6c42cf0dadc23748c9485149f7c6850af3d3",
+      "settings": {
+        "keys": [
+          [
+            116,
+            167,
+            153
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.7256,
+            0.8252
+          ],
+          [
+            0.2656,
+            0.8311
+          ],
+          [
+            0.416,
+            0.2324
+          ],
+          [
+            0.5762,
+            0.2383
+          ],
+          [
+            0.627,
+            0.248
+          ],
+          [
+            0.3652,
+            0.2539
+          ],
+          [
+            0.1572,
+            0.4834
+          ],
+          [
+            0.8311,
+            0.4805
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "cinder-metering-nozzle",
+      "incoming": "Eternal Cinder Observatory (Omnic  Infernic).png",
+      "source": "Art\\source\\kit-conduits\\Eternal Cinder Observatory (Omnic  Infernic).png",
+      "source_sha256": "7a042a98b6851febe3bf6eeab6ba763ebc0ab8e0c06c0c183cf082270e2dcdc5",
+      "runtime": "public\\assets\\conduits\\cinder-metering-nozzle.png",
+      "runtime_sha256": "372cabd79f64df2030f8831b02e14b7cd88a97f9e44783207ab6f5f52523afeb",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        23,
+        16,
+        233,
+        240
+      ],
+      "runtime_pixel_sha256": "9e8888fb0678bedfc4414ea6e9de57e34829c06b82450e902f664777bfb89ef0",
+      "settings": {
+        "keys": [
+          [
+            170,
+            198,
+            107
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.2471,
+            0.8682
+          ],
+          [
+            0.7549,
+            0.876
+          ],
+          [
+            0.2627,
+            0.6367
+          ],
+          [
+            0.2646,
+            0.6201
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "pulse-trigger-pawl",
+      "incoming": "Sky Sovereign Escapement (Omnic  Atmospheric).png",
+      "source": "Art\\source\\kit-conduits\\Sky Sovereign Escapement (Omnic  Atmospheric).png",
+      "source_sha256": "64c4f630844f7c9d708d68e28416df7a88c7811c0fe4fcc9214b4399e5bd4daa",
+      "runtime": "public\\assets\\conduits\\pulse-trigger-pawl.png",
+      "runtime_sha256": "da0efac3127de4657c8bc5bf2bf95de636eeeb0f78bfa0299792a77ec0c8cee1",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        26,
+        16,
+        230,
+        240
+      ],
+      "runtime_pixel_sha256": "f28a7f8e9bca597789de5d86b64c6069b538484e2297865988eeea7074f54f67",
+      "settings": {
+        "keys": [
+          [
+            6,
+            138,
+            139
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6943,
+            0.7588
+          ],
+          [
+            0.3789,
+            0.1494
+          ],
+          [
+            0.7031,
+            0.5361
+          ],
+          [
+            0.6494,
+            0.1152
+          ],
+          [
+            0.4678,
+            0.583
+          ],
+          [
+            0.627,
+            0.4922
+          ],
+          [
+            0.5117,
+            0.2539
+          ],
+          [
+            0.6211,
+            0.751
+          ],
+          [
+            0.6953,
+            0.2588
+          ],
+          [
+            0.5518,
+            0.0869
+          ],
+          [
+            0.5947,
+            0.7041
+          ],
+          [
+            0.7129,
+            0.4111
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "firstlight-cam",
+      "incoming": "Firstlight Concordance (Omnic  Tranquilitic).png",
+      "source": "Art\\source\\kit-conduits\\Firstlight Concordance (Omnic  Tranquilitic).png",
+      "source_sha256": "1672aff88eb0653be191a3669969379c6f65d7675cb8490df2e9927c4b858ba5",
+      "runtime": "public\\assets\\conduits\\firstlight-cam.png",
+      "runtime_sha256": "8caaea58e155cd865e78cc421c27a0111634b85100c78c21a388696673418efb",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        17,
+        240,
+        238
+      ],
+      "runtime_pixel_sha256": "3831f3bcf75bc0ea900d865004b8377aef66c21acb63f0551e6d3f4f693500a9",
+      "settings": {
+        "keys": [
+          [
+            126,
+            201,
+            182
+          ],
+          [
+            125,
+            203,
+            187
+          ],
+          [
+            126,
+            205,
+            190
+          ],
+          [
+            125,
+            216,
+            207
+          ]
+        ],
+        "radius": 28,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.475,
+            0.174
+          ],
+          [
+            0.7217,
+            0.5713
+          ],
+          [
+            0.2783,
+            0.5752
+          ],
+          [
+            0.292,
+            0.3027
+          ],
+          [
+            0.709,
+            0.3037
+          ],
+          [
+            0.5186,
+            0.7295
+          ],
+          [
+            0.4805,
+            0.7305
+          ],
+          [
+            0.7842,
+            0.2852
+          ],
+          [
+            0.7441,
+            0.3643
+          ],
+          [
+            0.2246,
+            0.291
+          ],
+          [
+            0.7803,
+            0.625
+          ],
+          [
+            0.2383,
+            0.5967
+          ],
+          [
+            0.7461,
+            0.502
+          ],
+          [
+            0.2197,
+            0.627
+          ],
+          [
+            0.7578,
+            0.5928
+          ],
+          [
+            0.7549,
+            0.6631
+          ],
+          [
+            0.7178,
+            0.6455
+          ],
+          [
+            0.2568,
+            0.3633
+          ],
+          [
+            0.2051,
+            0.3242
+          ],
+          [
+            0.2744,
+            0.6494
+          ],
+          [
+            0.4561,
+            0.6494
+          ],
+          [
+            0.2266,
+            0.3525
+          ],
+          [
+            0.3008,
+            0.626
+          ],
+          [
+            0.5195,
+            0.1699
+          ],
+          [
+            0.7949,
+            0.3252
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "secondbeat-rack",
+      "incoming": "Secondbeat Rupture Throne (Omnic  Chaotic).png",
+      "source": "Art\\source\\kit-conduits\\Secondbeat Rupture Throne (Omnic  Chaotic).png",
+      "source_sha256": "5496f6a9e35bbd64247573b30958299d4edc1a0b44eddf8785d52da5954ea2ef",
+      "runtime": "public\\assets\\conduits\\secondbeat-rack.png",
+      "runtime_sha256": "f7efbcb32c1f4e7cab4f9bd4a2017944711daa59a7e3af27497b55501be4c935",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        239,
+        240
+      ],
+      "runtime_pixel_sha256": "3d401d3ca1339be8c7d9489d385e0f3d273bfb7797f8b7e539f1b584f00e1868",
+      "settings": {
+        "keys": [
+          [
+            93,
+            191,
+            141
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4346,
+            0.9033
+          ],
+          [
+            0.1455,
+            0.8721
+          ],
+          [
+            0.751,
+            0.8789
+          ],
+          [
+            0.7285,
+            0.834
+          ],
+          [
+            0.3389,
+            0.3477
+          ],
+          [
+            0.332,
+            0.3086
+          ],
+          [
+            0.6367,
+            0.5938
+          ],
+          [
+            0.3877,
+            0.6104
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "flare-focusing-iris",
+      "incoming": "Ember Coronation Iris (Omnic  Infernic).png",
+      "source": "Art\\source\\kit-conduits\\Ember Coronation Iris (Omnic  Infernic).png",
+      "source_sha256": "3d19c4972e7a77f7c0cf64f562c31d07b81b0e0d505465530e7a09fffbfb048c",
+      "runtime": "public\\assets\\conduits\\flare-focusing-iris.png",
+      "runtime_sha256": "cf9d2b4b88a311f67ef1246b67cb92305c7caf76e9cd3e59aacded74f4ca1585",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        21,
+        16,
+        234,
+        240
+      ],
+      "runtime_pixel_sha256": "f0949a1ee993f461ca29a8058d025c579070792451a478eb6747f557c4e578e5",
+      "settings": {
+        "keys": [
+          [
+            103,
+            169,
+            151
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.7314,
+            0.2881
+          ],
+          [
+            0.2734,
+            0.29
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "clearwater-manifold",
+      "incoming": "Abyssal Clearwater Parliament (Omnic  Oceanic).png",
+      "source": "Art\\source\\kit-conduits\\Abyssal Clearwater Parliament (Omnic  Oceanic).png",
+      "source_sha256": "3c136fd62c71dc631c3944a4ae0dfbbbaabbe0a69b0884d5b0f1debe1008a54c",
+      "runtime": "public\\assets\\conduits\\clearwater-manifold.png",
+      "runtime_sha256": "a57fa11be18359d05e23d254b36fc1e9e60ff44f3444b35600ca6930af2687c8",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        25,
+        16,
+        231,
+        240
+      ],
+      "runtime_pixel_sha256": "917735512024e4c62fc763476980398db8e35de9554cf8fa2a5edccc7d5faacb",
+      "settings": {
+        "keys": [
+          [
+            66,
+            212,
+            192
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.7676,
+            0.4258
+          ],
+          [
+            0.2578,
+            0.4414
+          ],
+          [
+            0.4229,
+            0.1104
+          ],
+          [
+            0.5762,
+            0.1094
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "aegis-return-spring",
+      "incoming": "Aegis Covenant Crown (Omnic  Tranquilitic).png",
+      "source": "Art\\source\\kit-conduits\\Aegis Covenant Crown (Omnic  Tranquilitic).png",
+      "source_sha256": "87aa5142256b810722dcbe464cccc8675c5b2ff4b701c784b582a2ba38b35103",
+      "runtime": "public\\assets\\conduits\\aegis-return-spring.png",
+      "runtime_sha256": "0d98cbc110cf5bb5b81530f0193a115fb4eb1f7b7d5b7df193ed6817556dc284",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        26,
+        16,
+        230,
+        240
+      ],
+      "runtime_pixel_sha256": "5a1dd348968ecae560d2308d1263411729f4fe051b37247668a64fb104f429ef",
+      "settings": {
+        "keys": [
+          [
+            78,
+            184,
+            177
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6221,
+            0.5918
+          ],
+          [
+            0.3545,
+            0.6074
+          ],
+          [
+            0.4766,
+            0.8867
+          ],
+          [
+            0.3896,
+            0.2373
+          ],
+          [
+            0.6123,
+            0.2363
+          ],
+          [
+            0.2773,
+            0.5479
+          ],
+          [
+            0.7451,
+            0.5488
+          ],
+          [
+            0.5791,
+            0.1973
+          ],
+          [
+            0.4414,
+            0.1982
+          ],
+          [
+            0.5088,
+            0.2363
+          ],
+          [
+            0.541,
+            0.1963
+          ],
+          [
+            0.499,
+            0.0938
+          ],
+          [
+            0.4912,
+            0.0869
+          ],
+          [
+            0.4912,
+            0.2275
+          ],
+          [
+            0.7158,
+            0.3896
+          ],
+          [
+            0.5391,
+            0.6719
+          ],
+          [
+            0.5732,
+            0.5332
+          ],
+          [
+            0.5,
+            0.2246
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "emberlife-kiln",
+      "incoming": "Phoenix Lifeforge (Omnic  Infernic).png",
+      "source": "Art\\source\\kit-conduits\\Phoenix Lifeforge (Omnic  Infernic).png",
+      "source_sha256": "8358cb6ed9f0ef195d783235e262713e8d5ddae016def1042ad90300b5865d33",
+      "runtime": "public\\assets\\conduits\\emberlife-kiln.png",
+      "runtime_sha256": "bbca47f0986a1a218501c17bcd9ef9cf21f4eff7f4a5577b0a91230a420c07a3",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        20,
+        240,
+        235
+      ],
+      "runtime_pixel_sha256": "632bf511a140c9d8108a5536cbfcccc9e12663d114e43b1427d85d0c6c70bb29",
+      "settings": {
+        "keys": [
+          [
+            169,
+            221,
+            116
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5693,
+            0.4541
+          ],
+          [
+            0.4453,
+            0.4844
+          ],
+          [
+            0.6875,
+            0.4512
+          ],
+          [
+            0.5107,
+            0.9043
+          ],
+          [
+            0.3125,
+            0.5752
+          ],
+          [
+            0.4961,
+            0.375
+          ],
+          [
+            0.4863,
+            0.9033
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "tension-governor",
+      "incoming": "Fractured Mercy Governor (Omnic  Chaotic).png",
+      "source": "Art\\source\\kit-conduits\\Fractured Mercy Governor (Omnic  Chaotic).png",
+      "source_sha256": "b39f2a7b186c6fbbd17ef285dabb62ed500532b826c8ac0aec46f378f38c7624",
+      "runtime": "public\\assets\\conduits\\tension-governor.png",
+      "runtime_sha256": "735112afb696aaaf64777e85b9a56f51e56307ed2a15d2b4f3eca33e5ce4cc6c",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        240
+      ],
+      "runtime_pixel_sha256": "cad2ca93d37286c4e1f5f2fb4db417e600776a70ecd55babcfbd4326c988e4c2",
+      "settings": {
+        "keys": [
+          [
+            198,
+            244,
+            106
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5449,
+            0.6348
+          ],
+          [
+            0.2295,
+            0.8457
+          ],
+          [
+            0.1689,
+            0.8652
+          ],
+          [
+            0.8438,
+            0.8691
+          ],
+          [
+            0.3809,
+            0.4678
+          ],
+          [
+            0.8359,
+            0.7871
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "covercharge-drum",
+      "incoming": "Worldgrove Covercharge Heart (Omnic  Botanic).png",
+      "source": "Art\\source\\kit-conduits\\Worldgrove Covercharge Heart (Omnic  Botanic).png",
+      "source_sha256": "e7397123f1020e8555715601ec8fa2c948ea641ba432494be6719f0cf6e82125",
+      "runtime": "public\\assets\\conduits\\covercharge-drum.png",
+      "runtime_sha256": "8166b9b6227a4dec7a1ea850caeb011d6eb600590e028700b63eca0f3820ee32",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        20,
+        16,
+        235,
+        240
+      ],
+      "runtime_pixel_sha256": "90b42e4886ece5109117199852877a140dbc8de4f399104b600b4fd74ff1b7d7",
+      "settings": {
+        "keys": [
+          [
+            171,
+            218,
+            156
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.2695,
+            0.8311
+          ],
+          [
+            0.7441,
+            0.8252
+          ],
+          [
+            0.3242,
+            0.666
+          ],
+          [
+            0.7275,
+            0.6396
+          ],
+          [
+            0.2881,
+            0.5811
+          ],
+          [
+            0.6514,
+            0.6494
+          ],
+          [
+            0.5039,
+            0.7559
+          ],
+          [
+            0.3359,
+            0.626
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "sootwake-crucible",
+      "incoming": "Sootwake Phoenix Mirror (Omnic  Infernic).png",
+      "source": "Art\\source\\kit-conduits\\Sootwake Phoenix Mirror (Omnic  Infernic).png",
+      "source_sha256": "3d80f61269d5131556495ed53b26ab4e459919112bfa604f778d6b371a407a51",
+      "runtime": "public\\assets\\conduits\\sootwake-crucible.png",
+      "runtime_sha256": "20a0f6ae69845271d755a5e524af4affa48bdb14f2c3cfab94121fbb5c72b5bd",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        25,
+        16,
+        231,
+        240
+      ],
+      "runtime_pixel_sha256": "fcd1a4073e5d088f54bc84aae4cc185f46bc45190ef97682b40a2f233ef2fdfb",
+      "settings": {
+        "keys": [
+          [
+            178,
+            194,
+            130
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6943,
+            0.7207
+          ],
+          [
+            0.2871,
+            0.7266
+          ],
+          [
+            0.3682,
+            0.7148
+          ],
+          [
+            0.5537,
+            0.7471
+          ],
+          [
+            0.6416,
+            0.7051
+          ],
+          [
+            0.4053,
+            0.7822
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "tidebound-reflector",
+      "incoming": "Leviathan Mercy Reflector (Omnic  Oceanic).png",
+      "source": "Art\\source\\kit-conduits\\Leviathan Mercy Reflector (Omnic  Oceanic).png",
+      "source_sha256": "8d693f34491968a64e29aed4ec030c937de153d31b5d0c2c41e4ee459afe3b8e",
+      "runtime": "public\\assets\\conduits\\tidebound-reflector.png",
+      "runtime_sha256": "5439e8999af07e51e062fe04aae18c86a52a2aefe26377cc5557f1e9245a7e13",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        26,
+        16,
+        229,
+        240
+      ],
+      "runtime_pixel_sha256": "b6b060fc333005273e3f0557404ae3c440d1ffbe2d877cea6fc40d9374beb2fb",
+      "settings": {
+        "keys": [
+          [
+            91,
+            183,
+            172
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5195,
+            0.8799
+          ],
+          [
+            0.4619,
+            0.5371
+          ],
+          [
+            0.5234,
+            0.5273
+          ],
+          [
+            0.5664,
+            0.4521
+          ],
+          [
+            0.4355,
+            0.4482
+          ],
+          [
+            0.5029,
+            0.9463
+          ],
+          [
+            0.5928,
+            0.2227
+          ],
+          [
+            0.5576,
+            0.3643
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "pressurecrest-governor",
+      "incoming": "Tempest Shelter Sovereign (Omnic  Atmospheric).png",
+      "source": "Art\\source\\kit-conduits\\Tempest Shelter Sovereign (Omnic  Atmospheric).png",
+      "source_sha256": "95e9fa0550387ce62f8e11347db872d0672358c75f79d364104b173cd666aeb2",
+      "runtime": "public\\assets\\conduits\\pressurecrest-governor.png",
+      "runtime_sha256": "9d9b1ceae89bbad8e5b1307aed0a1444f6dff2851fa814bd906d473a62d5e498",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        20,
+        240,
+        235
+      ],
+      "runtime_pixel_sha256": "b07caefbe11f4a8bf1a516e5c8dbf15473b1be1dfa55a3c3f88d9ad03d4aa236",
+      "settings": {
+        "keys": [
+          [
+            71,
+            189,
+            182
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.3672,
+            0.7041
+          ],
+          [
+            0.4619,
+            0.7861
+          ],
+          [
+            0.4863,
+            0.79
+          ],
+          [
+            0.376,
+            0.6719
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "rootbound-triage-vault",
+      "incoming": "Worldroot Triage Sanctuary (Omnic  Botanic).png",
+      "source": "Art\\source\\kit-conduits\\Worldroot Triage Sanctuary (Omnic  Botanic).png",
+      "source_sha256": "c828f7b40df25a1115a534e9debac7ab5498df2d8c5b2f9661925c7914d0fd6a",
+      "runtime": "public\\assets\\conduits\\rootbound-triage-vault.png",
+      "runtime_sha256": "a7f040b3c94ee7238b24bd6fb25f816a4750aeb2e63620e8c6feb27dfb00f516",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        32,
+        16,
+        224,
+        240
+      ],
+      "runtime_pixel_sha256": "5830abf7975c31beea8d4517cabff353efa423dc1dc3bb61bb3e4b84427e1d43",
+      "settings": {
+        "keys": [
+          [
+            96,
+            175,
+            105
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.3857,
+            0.4453
+          ],
+          [
+            0.6094,
+            0.4492
+          ],
+          [
+            0.5625,
+            0.9082
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "solace-anchor",
+      "incoming": "Solace Witness Monolith (Omnic  Tranquilitic).png",
+      "source": "Art\\source\\kit-conduits\\Solace Witness Monolith (Omnic  Tranquilitic).png",
+      "source_sha256": "2081b073f93c5e544221c496644d6cafedf523fabd69e76c0c7f36abeb80926d",
+      "runtime": "public\\assets\\conduits\\solace-anchor.png",
+      "runtime_sha256": "66abbf0aaf9905f2ed356e3f5ad382fdb4eb0481d3ffcfd01005b44fff9e2e36",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        32,
+        16,
+        224,
+        240
+      ],
+      "runtime_pixel_sha256": "1e6588a984c755db61468b5fc3da8469451ffd039ceaea4018d17b965bcc00ea",
+      "settings": {
+        "keys": [
+          [
+            76,
+            207,
+            196
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.2295,
+            0.6504
+          ],
+          [
+            0.3809,
+            0.4668
+          ],
+          [
+            0.6318,
+            0.4697
+          ],
+          [
+            0.7295,
+            0.3721
+          ],
+          [
+            0.2617,
+            0.3809
+          ],
+          [
+            0.5967,
+            0.4277
+          ],
+          [
+            0.5859,
+            0.499
+          ],
+          [
+            0.418,
+            0.4932
+          ],
+          [
+            0.4297,
+            0.7393
+          ],
+          [
+            0.5234,
+            0.4238
+          ],
+          [
+            0.2451,
+            0.627
+          ],
+          [
+            0.3955,
+            0.4863
+          ],
+          [
+            0.6211,
+            0.4795
+          ],
+          [
+            0.4316,
+            0.2539
+          ],
+          [
+            0.459,
+            0.084
+          ],
+          [
+            0.417,
+            0.4287
+          ],
+          [
+            0.5732,
+            0.2129
+          ],
+          [
+            0.5439,
+            0.082
+          ],
+          [
+            0.4316,
+            0.4297
+          ],
+          [
+            0.4365,
+            0.2139
+          ],
+          [
+            0.4316,
+            0.3037
+          ],
+          [
+            0.5684,
+            0.7324
+          ],
+          [
+            0.7402,
+            0.6299
+          ],
+          [
+            0.3906,
+            0.5039
+          ],
+          [
+            0.3945,
+            0.4307
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "ruinselect-prism",
+      "incoming": "Ruinselect Fracture Parliament (Omnic  Chaotic).png",
+      "source": "Art\\source\\kit-conduits\\Ruinselect Fracture Parliament (Omnic  Chaotic).png",
+      "source_sha256": "68d4b75d1e91316c2fc2fcc6c249501426c32a7db4907360850c705000858c3a",
+      "runtime": "public\\assets\\conduits\\ruinselect-prism.png",
+      "runtime_sha256": "cb51b6c13af0679645a37e55389a365536957a4a3cf53787f8c98abc02b252dc",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        19,
+        240,
+        236
+      ],
+      "runtime_pixel_sha256": "62c159baefa20b8c3657c6e555e660db34fbde21b07f7f7a25052a4526809d0a",
+      "settings": {
+        "keys": [
+          [
+            122,
+            149,
+            131
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.3682,
+            0.3906
+          ],
+          [
+            0.6934,
+            0.2471
+          ],
+          [
+            0.6475,
+            0.5361
+          ],
+          [
+            0.5664,
+            0.2197
+          ],
+          [
+            0.665,
+            0.2598
+          ],
+          [
+            0.626,
+            0.2432
+          ],
+          [
+            0.3652,
+            0.3096
+          ],
+          [
+            0.3652,
+            0.2363
+          ],
+          [
+            0.5752,
+            0.5391
+          ],
+          [
+            0.5879,
+            0.3154
+          ],
+          [
+            0.3828,
+            0.5195
+          ],
+          [
+            0.4062,
+            0.3232
+          ],
+          [
+            0.3496,
+            0.2227
+          ],
+          [
+            0.6113,
+            0.5283
+          ],
+          [
+            0.6367,
+            0.2236
+          ],
+          [
+            0.3418,
+            0.2637
+          ],
+          [
+            0.4053,
+            0.5547
+          ],
+          [
+            0.3438,
+            0.2979
+          ],
+          [
+            0.4053,
+            0.252
+          ],
+          [
+            0.7871,
+            0.5254
+          ],
+          [
+            0.3584,
+            0.2676
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "infernic-pyre-census",
+      "incoming": "Pyre Census Requiem (Omnic  Infernic).png",
+      "source": "Art\\source\\kit-conduits\\Pyre Census Requiem (Omnic  Infernic).png",
+      "source_sha256": "394e98dc5e86bb18e97531217f00840e4b2903f0a6248d24b1fdfd43541a4cae",
+      "runtime": "public\\assets\\conduits\\infernic-pyre-census.png",
+      "runtime_sha256": "92ec31d6773812a77dbba3ececf4d3cac2513737af035230d31465a694277bd3",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        20,
+        16,
+        235,
+        240
+      ],
+      "runtime_pixel_sha256": "2fbbe14bf5b785de5e8fdf850361cf179c98d4cc65cc791f3ab776888e131f11",
+      "settings": {
+        "keys": [
+          [
+            124,
+            141,
+            96
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6885,
+            0.4941
+          ],
+          [
+            0.5938,
+            0.4961
+          ],
+          [
+            0.8604,
+            0.3848
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "oceanic-shared-tide-pump",
+      "incoming": "Shared Tide Lifesea Engine (Omnic  Oceanic).png",
+      "source": "Art\\source\\kit-conduits\\Shared Tide Lifesea Engine (Omnic  Oceanic).png",
+      "source_sha256": "45bfd35ccefc31557f35f4d71d3af84e4a7ff0c08cb6c1b6626c1e02b69aa1e7",
+      "runtime": "public\\assets\\conduits\\oceanic-shared-tide-pump.png",
+      "runtime_sha256": "5f2c74d674c9519bfb6cac65faecb56f50108debfe68879408a034e22cc45bc4",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        17,
+        16,
+        238,
+        240
+      ],
+      "runtime_pixel_sha256": "35f0f183dff3cea9f1bf9dfcc09256a3917a93092ed15193082ee919096fb6c2",
+      "settings": {
+        "keys": [
+          [
+            22,
+            158,
+            159
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.2646,
+            0.8877
+          ],
+          [
+            0.7617,
+            0.876
+          ],
+          [
+            0.3447,
+            0.6689
+          ],
+          [
+            0.6436,
+            0.6553
+          ],
+          [
+            0.7227,
+            0.5605
+          ],
+          [
+            0.501,
+            0.8457
+          ],
+          [
+            0.5068,
+            0.6426
+          ],
+          [
+            0.4355,
+            0.1172
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "atmospheric-storm-clock",
+      "incoming": "Tempest Return Chronarch (Omnic  Atmospheric).png",
+      "source": "Art\\source\\kit-conduits\\Tempest Return Chronarch (Omnic  Atmospheric).png",
+      "source_sha256": "48552df9b9154853afea818ce536f05a2b88965b4a5b522d5f26ef9ee3695855",
+      "runtime": "public\\assets\\conduits\\atmospheric-storm-clock.png",
+      "runtime_sha256": "d6163b1e2238054a0ac903a6266ab54e5ffbb3b10f9f83cefa4277c2a9914bc8",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        22,
+        16,
+        234,
+        240
+      ],
+      "runtime_pixel_sha256": "4cfe17a75b6657b9dca8590150e66bbfe7bb0370efb94b56753a119f441f37a3",
+      "settings": {
+        "keys": [
+          [
+            25,
+            207,
+            193
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5771,
+            0.4473
+          ],
+          [
+            0.375,
+            0.832
+          ],
+          [
+            0.6279,
+            0.8154
+          ],
+          [
+            0.5449,
+            0.8779
+          ],
+          [
+            0.6025,
+            0.499
+          ],
+          [
+            0.4316,
+            0.8613
+          ],
+          [
+            0.4688,
+            0.5381
+          ],
+          [
+            0.5205,
+            0.5635
+          ],
+          [
+            0.4033,
+            0.4619
+          ],
+          [
+            0.4238,
+            0.5068
+          ],
+          [
+            0.5996,
+            0.4785
+          ],
+          [
+            0.5215,
+            0.5889
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "botanic-graft-covenant",
+      "incoming": "Worldroot Graft Coronation (Omnic  Botanic).png",
+      "source": "Art\\source\\kit-conduits\\Worldroot Graft Coronation (Omnic  Botanic).png",
+      "source_sha256": "fdeb431773280c559b4c87e40b76f635ff01bf1e748b47d5d83f16a206a3c8c5",
+      "runtime": "public\\assets\\conduits\\botanic-graft-covenant.png",
+      "runtime_sha256": "de4228aef5b0e5ad42a3cecb5de0a31a358d566dd9b187ae03aee5d8cdcaa666",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        239
+      ],
+      "runtime_pixel_sha256": "3d36476bb4170b542d8ecbc08fda7060739f1864cb15bfafe5d618013028dd41",
+      "settings": {
+        "keys": [
+          [
+            81,
+            175,
+            82
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.3633,
+            0.8389
+          ],
+          [
+            0.7031,
+            0.8184
+          ],
+          [
+            0.291,
+            0.7168
+          ],
+          [
+            0.7695,
+            0.6885
+          ],
+          [
+            0.4775,
+            0.8477
+          ],
+          [
+            0.5996,
+            0.8652
+          ],
+          [
+            0.4385,
+            0.7598
+          ],
+          [
+            0.5342,
+            0.8701
+          ],
+          [
+            0.3535,
+            0.6328
+          ],
+          [
+            0.625,
+            0.7549
+          ],
+          [
+            0.6104,
+            0.8955
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "tranquilitic-accord-bastion",
+      "incoming": "Accord Seraph Sanctuary (Omnic  Tranquilitic).png",
+      "source": "Art\\source\\kit-conduits\\Accord Seraph Sanctuary (Omnic  Tranquilitic).png",
+      "source_sha256": "e869e18e8bf5836406d6310b012fe22358fc323fc530207602b0786ed108b61e",
+      "runtime": "public\\assets\\conduits\\tranquilitic-accord-bastion.png",
+      "runtime_sha256": "9b04d23ac004996c891975d3f35c4f158aa81fecf3960f1b5372b711930e79e8",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        239
+      ],
+      "runtime_pixel_sha256": "5b74ade105f9e859311fd66bdb8495a5564e26e4f02f0518044c3823c2527fa4",
+      "settings": {
+        "keys": [
+          [
+            58,
+            135,
+            126
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.3594,
+            0.7041
+          ],
+          [
+            0.5811,
+            0.6729
+          ],
+          [
+            0.708,
+            0.6348
+          ],
+          [
+            0.292,
+            0.6387
+          ],
+          [
+            0.4023,
+            0.2812
+          ],
+          [
+            0.6016,
+            0.2793
+          ],
+          [
+            0.5713,
+            0.7461
+          ],
+          [
+            0.5684,
+            0.2773
+          ],
+          [
+            0.3408,
+            0.3672
+          ],
+          [
+            0.4629,
+            0.7764
+          ],
+          [
+            0.4443,
+            0.2754
+          ],
+          [
+            0.4609,
+            0.6953
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    },
+    {
+      "asset": "chaotic-fault-verdict",
+      "incoming": "Rosefault Precision Sovereign (Omnic  Chaotic).png",
+      "source": "Art\\source\\kit-conduits\\Rosefault Precision Sovereign (Omnic  Chaotic).png",
+      "source_sha256": "e2a9575cb31d296a390591b27b2dfeff4bc6743977963d73b888e148a7e30992",
+      "runtime": "public\\assets\\conduits\\chaotic-fault-verdict.png",
+      "runtime_sha256": "872bbba3de17a12c35e3a7dd7b7f36d5d54c18b50f4f813768611c9830a9c34e",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        17,
+        240,
+        238
+      ],
+      "runtime_pixel_sha256": "e8bf9fe81b7006bd63e1f808e6700d96aef7eda96fe2c3a006de228e9b158aed",
+      "settings": {
+        "keys": [
+          [
+            147,
+            218,
+            167
+          ]
+        ],
+        "radius": 28,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6162,
+            0.2031
+          ],
+          [
+            0.8096,
+            0.376
+          ],
+          [
+            0.5693,
+            0.1934
+          ],
+          [
+            0.6768,
+            0.5508
+          ],
+          [
+            0.5674,
+            0.4717
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 60
+        },
+        "review": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+        "empty_border": {
+          "pixels": 4,
+          "radius": 100
+        }
+      }
+    }
+  ]
+}

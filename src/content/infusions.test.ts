@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { elements } from './activities';
-import { infusionDrops, infusionEncounter, infusionEnemies, infusionLoot, specialtyId, specialtyMaterials } from './infusions';
+import { infusionDrops, infusionEncounter, infusionEnemies, infusionLoot, infusionEnemyLevel, specialtyId, specialtyMaterials } from './infusions';
 import { evolutionCost, levelCost, weaponCost } from './progression';
 import { resolveFighter } from './combat';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, ownedProgress, saveAccount, saveAccountRewards, unlockedInfusionStage, upgradeCharacter } from '../game/account';
@@ -37,7 +37,7 @@ describe('playable Heaven and Abyss', () => {
     const formStages = [1, 7, 13, 19, 25, 31];
     for (let stage = 1; stage <= 35; stage++) {
       const encounter = infusionEncounter(mode, stage);
-      expect(encounter.level).toBe(Math.round(80 + (stage - 1) * 40 / 34));
+      expect(encounter.level).toBe(infusionEnemyLevel(stage));
       expect(encounter.boss).toBe(stage % 5 === 0);
       const tier = formStages.filter((start) => stage >= start).length - 1;
       expect(encounter.enemy.name).toBe(infusionEnemies[mode][tier][0]);
@@ -94,7 +94,7 @@ describe('playable Heaven and Abyss', () => {
         [`${element.id}-epic`]: 3, [`${element.id}-legendary`]: 3, [`${element.id}-omnic`]: 3,
       });
     }
-    for (const [rarity, stage] of [['epic', 1], ['legendary', 18], ['omnic', 31]] as const) {
+    for (const [rarity, stage] of [['epic', 22], ['legendary', 30], ['omnic', 34]] as const) {
       const pool = infusionLoot('abyss', stage);
       const earlierRolls = pool.bonuses.findIndex((drop) => drop.rarity === rarity);
       const drop = pool.bonuses[earlierRolls];
@@ -177,7 +177,7 @@ describe('playable Heaven and Abyss', () => {
       present: vi.fn((result) => { session.state = result.state; }),
     });
     Reflect.apply(Reflect.get(BattleView.prototype, 'command'), view, ['endTurn']);
-    expect(session.state.infusion).toEqual({ mode, stage: 35 });
+    expect(session.state.infusion).toEqual({ mode, stage: 35, schedule: 'caps' });
     expect(session.state.allies[0].hp).toBe(session.state.allies[0].stats.health);
     expect(session.state.allies[0].shatter).toBe(80);
     expect(session.state.allies[0].kit?.stats.damage).toBe(resolveFighter('ember', session.progress).stats.damage);
@@ -201,7 +201,7 @@ describe('playable Heaven and Abyss', () => {
     try {
       await replay();
       expect(session.runId).not.toBe(oldRun);
-      expect(session.state.infusion).toEqual({ mode, stage: 35 });
+      expect(session.state.infusion).toEqual({ mode, stage: 35, schedule: 'caps' });
       expect(session.state.phase).toBe('player');
       expect(session.stageEvents).toEqual([]);
       expect(session.entrancePending).toBe(true);

@@ -277,20 +277,22 @@ This is a drop reference, not capture/pity or a second source of rewards.
   New art direction: black Wraththorn Slime evolving into a cosmic wrath
   final form, The Night Without End, with white/deep-purple/hot-pink thorns;
   replaces the old royal-wisp concept.
-- Each has **35 stages** and starts at enemy **level 80**. New
+- D-192: each has **35 stages**, starts at enemy **level50** and requires an
+  owned Element-Bearer at Lv.50. New
   [mode art packs](../Art/creatures/gamemodes/README.md) author six visual forms per mode
   (base plus five evolutions), now supplied and wired into live encounters.
   Each mode keeps one permanent creature name: Dawnthorn Slime or Wraththorn
   Slime. Later names use "<evolution title>, <permanent slime name>" as the same
   named slime strengthens across stages/levels, not separate species.
-- Enemy level is `round(80 + (stage-1)*40/34)`, reaching 120 at Stage35.
+- Enemy levels interpolate linearly between stage/level anchors
+  **1/50,13/65,19/75,25/85,35/120**, rounding once to whole levels.
+  The owner approves this correction so evolution fodder is accessible before
+  the Lv.60/75/90 character caps block progression.
   Forms occupy stages1-6/7-12/13-18/19-24/25-30/31-35.
   Two ordinary enemies, one stronger boss every fifth stage.
-  Stats use the shared accelerating enemy curve described below, with .036
-  starting HP rate versus elemental dungeons' .024. Shared Attack starts32/48
-  atLv10 with .12 early growth (D-165), including Machines/currency modes.
-  Attack above120 retains its original .036 extension rate. At Lv120:200,000
-  ordinaryHP/400,000 bossHP,4,000/6,000 Attack and1,500/2,250 Defense.
+  Stats use [D-192's hostile curve](combat.md#enemy-progression-rebalance-d-192).
+  At Lv120:200,000 ordinaryHP/500,000 bossHP,40,000/50,000 Attack
+  and6,000/8,000 Defense. Captured playable stats retain the original curve.
   Crit12%, multiplier1.5. Scarlet Judgment/Cosmic Wrath strikes every3 ordinary
   turns or2 boss turns, coefficient `1.2+(stage-1)*.384/34`.
   The final coefficient remains 1.584.
@@ -308,11 +310,11 @@ This is a drop reference, not capture/pity or a second source of rewards.
   objects; Abyss uses claw/fracture-orb/hourglass objects.
 - Both modes may also drop existing Epic/Legendary/Omnic materials, restricted
   to their **four Heaven/two Abyss affinities**, matching their specialty group.
-- Per defeat: guaranteed weapon material from Lv80/Stage1, evolution from
-  Lv93/Stage12, leveling from Lv100/Stage18. Using the shared quantity curve
-  with starting level80, all final specialty stacks are3-6.
-  Preserved supplemental unlocks: EpicLv80/Stage1,
-  LegendaryLv100/Stage18, OmnicLv115/Stage31. Chances grow from15%/6%/2%
+- Per defeat: guaranteed weapon material from Lv50/Stage1; evolution and
+  leveling materials from Lv75/Stage19. The quantity curve starts at50;
+  all final specialty stacks remain3-6.
+  Preserved supplemental level unlocks: EpicLv80/Stage22,
+  LegendaryLv100/Stage30, OmnicLv115/Stage34. Chances grow from15%/6%/2%
   to85%/65%/40%; successful final stacks are3-6 for each rarity.
   Each successful rarity roll chooses **one** of the mode's eligible elements uniformly,
   not every element. Final Prismatica is15-30. Phase6 adds20% captures per kill,
@@ -325,6 +327,13 @@ This is a drop reference, not capture/pity or a second source of rewards.
   resets health, Gauge and cooldowns; Continue refreshes health/cooldowns but
   carries Gauge within the current run. Rewards save before presentation and
   remain on defeat/exit; active encounters are not restored after reload.
+- D-192 keeps existing stage unlock IDs and saved capture levels/skills. Legacy
+  metadata-free captures retain the old inferred80-120 levels without writes.
+  Existing local/online runs without the new schedule marker keep their former
+  80-120 levels and original loot schedule through Continue/Retry. New entries
+  use the cap-aligned schedule. Online read resumes its durable active run.
+- No infusion Null-Prismatica below enemyLv80. The80-120 probabilities and
+  independent RNG stream remain unchanged.
 - Existing elemental recipes remain, plus5 specialty evolution items for4->5,
   10 for5->6 and1 specialty leveling item for every Evo5/6 level.
   Weapon destination rank R costs100R Prismatica and5R matching weapon materials,

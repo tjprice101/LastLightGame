@@ -1,5 +1,15 @@
 # Passion of Crimson Roses and Roses Under Sunny Skies
 
+## Banner material rewards (D-214)
+
+New Roses draws award Seed/Bud/Bloom of Rosethorn instead of Roselius, with
+10 Common/6 Uncommon/3 Rare bundles and50:30:17 normalized non-character
+weights. Owned Element-Bearers convert to15 Bloom of Rosethorn (Rare), never
+Omnic materials or creatures. Three6-star EB odds, cost,80/150 pity and Conduit
+bonus remain. Existing Roselius copies/captures/sales/provenance are unchanged.
+[Shared exact contract](summoning-and-economy.md#material-banner-rewards-d-214)
+supersedes historical banner-copy conversion rules below.
+
 ## Native setup/payoff loops (D-172)
 
 D-173 preserves these three Rose signatures while consolidating ordinary native

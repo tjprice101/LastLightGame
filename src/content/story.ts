@@ -1,8 +1,8 @@
 import { type ElementId } from './activities';
 import { type Stats } from './combat';
 import { elementAccents } from './dungeon-art';
-import { enemyGrowth, enemyStat, stagedEnemyAttack } from './stat-growth';
-import { fractalisDrop, rollDrop } from './loot-random';
+import { enemyCombatStats } from './stat-growth';
+import { rollDrop, storyFractalisDrop } from './loot-random';
 import { storyRegionArt } from './story-art';
 
 export const storyRules = { regionStages: 25, stages: 150, startingLevel: 1, maximumLevel: 55 } as const;
@@ -37,10 +37,9 @@ export function storyEncounter(stage: number) {
   const level = Math.round(storyRules.startingLevel + (stage - 1) *
     (storyRules.maximumLevel - storyRules.startingLevel) / (storyRules.stages - 1));
   const boss = regionStage === storyRules.regionStages;
+  const combat = enemyCombatStats(level, boss);
   const stats: Stats = {
-    health: Math.round(enemyStat(boss ? 140 : 60, boss ? enemyGrowth.bossHealth : enemyGrowth.health, level, 1, .024) * .4),
-    damage: Math.round(stagedEnemyAttack(level, boss, 1) * .5),
-    defense: Math.round(enemyStat(2, boss ? enemyGrowth.bossDefense : enemyGrowth.defense, level, 1, .04) * .5),
+    ...combat, health: Math.round(combat.health * .9), damage: Math.round(combat.damage * .75),
     crit: .05, critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0,
   };
   return { ...region, name: region.name, stage, regionIndex, regionStage, level, boss, stats,
@@ -81,8 +80,8 @@ export function storyDrops(stage: number, random: () => number): Record<string, 
   }));
 }
 
-export const storyRulesText = 'Six regions in a fixed order, 25 stages each, enemy levels 1-55. Common and Uncommon matching-element materials only; no captures. Regional bosses grant a one-time account bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and growing 15% per region. Replays grant ordinary per-kill loot only. Continue restores HP and retains Gauge.';
+export const storyRulesText = 'Six regions in a fixed order, 25 stages each, enemy levels 1-55. Common and Uncommon matching-element materials only; no captures. Regional bosses grant a one-time account bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and growing 15% per region. Every kill drops Prismatica on a straight line by enemy level: 5-10 at Lv.1, +2 minimum per level, 113-226 at Lv.55. Replays grant ordinary per-kill loot only. Continue restores HP and retains Gauge.';
 
 export function storyLoot(stage: number) {
-  return [{ id: 'fractalis', ...fractalisDrop(storyEncounter(stage).level) }, ...storyMaterialLoot(stage)];
+  return [{ id: 'fractalis', ...storyFractalisDrop(storyEncounter(stage).level) }, ...storyMaterialLoot(stage)];
 }

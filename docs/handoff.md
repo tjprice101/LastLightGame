@@ -1,6 +1,1500 @@
 # Current state and handoff
 
-## Next: Monochrome UI and Supabase setup (D-179)
+## Conduit net bonus colors and search (D-239)
+
+- `conduit-loadout.ts` splits Total bonuses into colored net change, white
+  unequipped base and colored final value. Direction uses the actual before/after
+  stats: green above base, red below base, unchanged rows omitted. Shared
+  `stat-change.css` now includes `.loadout-bonuses`; the base has its own white
+  class in `conduit-loadout.css`. No stat calculation or rounding changes.
+- Your Conduits has a labeled search input, live result count and no-match message.
+  `conduitMatchesSearch` matches all whitespace-separated keywords, ignoring
+  case, across name/ID, canonical element, effect, stat labels, lore, rarity
+  and power. `applyConduitSearch` hides owned rows only, preserving slot controls
+  and row DOM. Main keeps the query in memory across render/member changes;
+  `updateCharacterTab` retains it across Element-Bearer equip/Master refreshes.
+  No storage writes, grants, eligibility or upgrade changes.
+- Validation: focused loadout/stat-change/reference-UI tests passed 61/61 before
+  the final split-color refinement. Final full regression command
+  `npx vitest run --maxWorkers=2 --reporter=json
+  --outputFile="$env:TEMP\ll-d239-full.json"` passed 1772/1772.
+  `npm run build` passed including `tsc --noEmit` (existing large-chunk advisory).
+  Browser verified actual white base/green result computed colors, description
+  and combined element/effect searches, no matches, clearing, query retention
+  after equip/member switching, and a 390px viewport without overflow.
+  Earlier isolated debug checks verified red below-base computed color; tests
+  cover the final split markup and net-positive/net-negative comparisons.
+
+## Dedicated full-page Conduit loadout (D-238)
+
+- `reference-team.ts` adds `conduits`/`capture-conduits` views without the Team
+  sidebar, portrait header or growth tabs. `main.ts` routes the Conduits tab,
+  summary links and squad pills there; Back returns to that member's detail.
+  Captured details now show the shared Conduits summary instead of an embedded
+  full loadout. Missing captured selections still fall back to the collection.
+- `conduit-loadout.ts` supplies the member-specific Back control and loadout
+  tabs. `conduit-loadout.css` provides the flat neutral full-width layout,
+  outlined controls, white selected/equipped pills and responsive stacking.
+  It explicitly overrides shared button gradients while preserving disabled gray.
+- Mechanics, art, levels, Master selectors and atomic equip/upgrade operations
+  are unchanged. The owner's reference remains read-only; temporary
+  `public/__ref/mock.html` was removed.
+- Validation: `npx vitest run src\presentation\conduit-loadout.test.ts
+  src\presentation\reference-ui.test.ts --maxWorkers=2` passed 43/43;
+  `npx vitest run --maxWorkers=2 --reporter=json
+  --outputFile="$env:TEMP\ll-d238-full.json"` passed 1758/1758.
+  `npm run build` passed, including `tsc --noEmit`, with the existing large-chunk
+  advisory. Browser verified member switching, Back/reopen, captured-copy
+  equip/unequip and return to the same copy; returning through Team after an
+  Upgrade visit restores the loadout. Measured 700px/390px layouts have
+  no horizontal overflow. Transactions were tested only in the isolated
+  memory-only debug profile, not funded real saves.
+
+## Viewport-scaled UI text (D-237)
+
+Line 1 of src/presentation/reference-layout.css now scales the root font size with viewport width, bounded by height (22px cap). Audited Play/Team/Summon/Home at 1857x960, 1486x768 and 1280x960: no new horizontal overflow or clipping. Validated: full suite 1756/1756, npm run build OK.
+
+## Squad formation redesign (D-236)
+
+src/presentation/roster.ts squadHub/bindSquadPreview render three slot cards and a #squad-picker dialog (filters, search, slot tags, error line); styles in src/presentation/squad-formation.css (imported after roster.css). Picking writes the hidden slot selects and marks the draft; Save remains the only write. Browser-verified assign/swap/remove/leader guard/filter/search/close. Validated: focused squad suites 117/117, full suite 1756/1756, npm run build OK. Reduced motion follows the in-game data-motion setting.
+
+## Large Team character art (D-235)
+
+The D-235 block at the end of src/presentation/reference-layout.css makes the Team detail portrait about 307px square at 1280px (was ~74px), sidebar thumbs 4.2rem and collection card art 11rem, with <=960px/<=540px breakpoints. CSS only; portrait DOM preserved. Validated: reference-ui/upgrade-reference/roster tests 68/68, npm run build OK.
+
+## Smaller summon banner splash (D-234)
+
+- `reference-layout.css` caps `.ref-summon-hero` at `min(100%, 31rem)`, centered. Browser at
+  1280px: art 669×375 → 494×277; phones keep full width. Featured lineup unchanged.
+
+## Heaven/Abyss choice sales and Elemental-Devourer naming (D-233)
+
+- Heaven/Abyss copies sell for a chosen payout: Null-Prismatica or one of the three mode
+  items, 1-6 by form. `presentation/creature-sale.ts`/`.css` render shared single-payout or
+  choose-one controls (Team capture detail and roster); `isSellableCreatureMode` gates
+  heavens/abyss/treasury/sanctuary/roses. The Glossary loot table lists the four options.
+  Online `sell-creature` forwards `saleOption`; `engine.bundle.js` regenerated.
+- UI prose renames creatures to Elemental-Devourers (labels, aria, confirmations, errors,
+  Information, Glossary). Stable IDs/hooks/saves untouched.
+- Tests: `heaven-abyss-sale.test.ts`, updated `reference-ui`/`rosethorn-sanctuary` and renamed
+  string expectations. Full suite 1756/1756; build OK. Browser save has no Heaven/Abyss copy,
+  so the choice UI was verified by tests rather than funding the shared save.
+
+## Status toasts and creature sale fix (D-232)
+
+- Bug: selling worked, but `renderMenu()` re-rendered the sold copy's detail, `referenceTeam`
+  threw "Choose an owned captured creature." and the catch reported "Creature was not sold";
+  a second click on the stale view hit the currency-farm-only error. `main.ts` now returns to
+  the creature list after selling the open copy and `menuContent()` falls back from a missing
+  capture detail to the list.
+- New `presentation/status-toast.ts`/`.css`: `showError` routes `#status` messages to a toned
+  dismissible toast (in-dialog `#settings-error` stays plain text).
+- Tests: `status-toast.test.ts` (tone inference, structure, dismissal). Browser-verified sale
+  returns to the list with "Creature sold · +1 Seed of Rosethorn." and no error toast.
+
+## Level-up result layout (D-231)
+
+- `upgrade-result.ts` now renders an identity block (`.upgrade-result-level` badge +
+  rating), changed-stat cards only and a compact `.upgrade-result-unchanged` list.
+- `upgrade-result.css` bounds the portrait image to the stage (flex wrapper fixes a
+  grid percentage-height overflow), sizes the halo to the stage, two-column phone cards.
+- Tests: `upgrade-result.test.ts` counts cards per changed stat and the unchanged list.
+- Validation: `npx tsc --noEmit`; full Vitest 1749/1749; `npm run build`.
+
+## Tiered summon reveals (D-230)
+
+- reward-screen.ts: optional `tier` (`summonRevealTier(stars)`: 5 -> five-star, 6 -> six-star) sets `data-reward-tier`, adds aria-hidden rays/ring/sparks/flash layers, tier label, longer portal (3.2s / 4.3s multi-spin) and a scale/brightness art reveal with flash. game-dialog.css holds the gold and prismatic themes plus 10-pull `is-five-star`/`is-six-star` tiles; all tier animation is disabled by both reduced-motion settings.
+- summon-presentation.ts sets the tier from the pulled entry stars (duplicates keep their tier); 10-pull uses the highest. No odds/pity/save changes.
+- Checked in a temporary harness (deleted): gold 5-star and prismatic 6-star screens, art/details revealed, no overflow. Tests in summon-presentation.test.ts.
+
+## Conduit loadout page (D-229)
+
+- New src/presentation/conduit-loadout.ts/.css render Team > Conduits like the owner mock-ups: header + squad tabs, Master card, 8 slot cards with art/pips/effect/level/next level and Upgrade/Unequip/swap, Total Bonuses, Your Conduits list with Equip. Overview has a Conduits summary card; header has a Conduits n/8 chip (`data-open-loadout`).
+- main.ts: delegated `[data-loadout-equip]`/`[data-loadout-unequip]` (online performOnline or offline equipConduit), `[data-open-loadout]`, Upgrade links preselect the Conduit via `data-upgrade-target`, squad tabs keep the Conduits tab. Existing slot selects/ids/change handlers retained.
+- Layout checked in a temporary harness at phone (stacked, no overflow, owned list contained) and wide desktop (two columns, 88px art). Tests: conduit-loadout.test.ts, reference-ui.test.ts; full suite 1745/1745, build OK.
+
+## Plain Conduit wording (D-228)
+
+- Removed player-facing "authored"/"non-authored"/"intrinsic"/"native" jargon from content/kit-conduits.ts, content/master-conduits.ts, the game/kit-conduits.ts battle message, the Conduit Store note and the Rose event note. Text only; no mechanics changed. Full suite 1737/1737.
+
+## Larger squad battle art (D-227)
+
+- src/presentation/battle-mono.css: a `@media (min-width: 761px)` block makes `.battle-arena` a size container; `.allies.squad .battle-art` uses `min(100%, 150px * --unit-scale, 38cqh, 24cqw)` with -5cqh unit overlap (first/last units keep their outer margin) and nameplates raised above neighbouring art. Mobile squad caps are now 17dvh (<=760px) and 16dvh (<=540px rows).
+- Measured with the real BattleView (Evo6, three allies): 1530x780 -> 306px (was ~247px at a taller window), 1920x1080 -> 405px, 1280x720 -> 278px, 390x844 -> 146px; all art and nameplates stay inside the arena with no horizontal overflow. Solo/two-ally/enemy sizes unchanged.
+- Test: src/presentation/battle-squad-art.test.ts checks the CSS rules.
+
+## Unique Master Conduits and delivered art (D-226)
+
+- content/master-conduits.ts: 36 rewritten Master rules/effect texts, 12 kept; per-character trigger and rule uniqueness are tested.
+- Engine (game/kit-conduits.ts, content/conduit-kit.ts): `strike`, `charge`, `weaken-clock` outcomes; `all-allies`/`struck`/`attacker`/`all-enemies` recipients; `selfBelowHalf`. battle.ts passes `lethal`, the activation target and the shield attacker; Weaken no longer ticks on defeated enemies. Strike kills during endTurn are rewarded normally.
+- Art: tools/intake_master_conduit_art.py (settings + manifest in Art/provenance), sources in Art/source/master-conduits (raw extra delivery in `alternates`, not wired), runtime in public/assets/master-conduits. Revisions: tools/master_conduit_art_revisions.py --write. Wired into equipment, Inventory chest, Archives, choice dialog, reward reveal and the Astral Reserve readout.
+- Server bundle regenerated (node tools\bundle_server_game.mjs).
+- Validation: master-conduits.test.ts, archives.test.ts, test_master_conduit_art.py, test_master_conduit_intake.py, full suite, build.
+
+## Linear Story Prismatica and Treasury scaling (D-225)
+
+- `storyFractalisDrop` (content/loot-random.ts) gives a linear Story curve, 5+2*(level-1) to double, used by battle rewards, Story validation and `storyLoot`.
+- `treasuryFractalisDrop` now equals that line at Lv65 and multiplies it up to 20x at Lv120 (133-266 to 4,860-9,720). Gameplay/battle copy comes from `treasuryPrismaticaText`.
+- Other modes still use `fractalisDrop`. Tests: loot-random.test.ts (linearity, Story stage tables, Treasury >= Story, accelerating steps), treasury.test.ts, menu-information.test.ts.
+
+## Gray unavailable buttons (D-224)
+
+- Final rule at the end of src/presentation/button-style.css grays every
+  `:disabled`/`[aria-disabled="true"]` button outside `#battle-root`. Guarded by
+  src/presentation/disabled-buttons.test.ts. Verified computed styles in browser.
+
+## Elemental Crits (D-223)
+
+- Critical Rate may exceed 100% through Conduits/one-hit bonuses. `rollCritical`
+  in src/game/battle.ts: rate <= 100% uses the single original roll; above it,
+  the hit always crits and a second seeded roll at (rate - 100%) makes it an
+  Elemental Crit with critMultiplier x `elementalCritFactor` (1.5).
+- `BattleEvent.elementalCritical`, log text "(Elemental Crit)", rainbow
+  `.damage-number.elemental-critical` (battle-ui.css, static when reduced motion).
+- Character stats show "Elemental Crit chance" above 100%; Conduit upgrade
+  information no longer claims a 100% cap. Enemy crits unchanged.
+- Validation: battle.test.ts, conduit-upgrades.test.ts, hub.test.ts; full suite/build.
+
+## Character term explanations (D-222)
+
+Every character-specific charge is defined wherever it appears. `kitPilotDescriptions[*].resource.summary` is the single source. `describeFighter` appends "What is X?" to each spending ability, adds a Burn rule (two enemy phases, ignores Defense, replaces older Burn) and adds a Gauge definition when a passive mentions Gauge. `kitResource` renders the summary under the resource chip, and the battle readout tooltip reuses it. Copy uses "charges", not "stacks". Validation: the `ability-status.test.ts` all-character term test plus the full suite.
+
+## Offline-first accounts (D-221)
+
+No gameplay or economy action requires an account. Play Offline covers every activity, summon, upgrade, the Material Exchange (offline `purchaseExchangeMaterial`) and the Conduit Store. Only friends, the public profile and profile frames stay account-gated, and the Cosmetic Store notice and errors now say they are online profile perks. Validation: `online-store-profile.test.ts` offline assertions, typecheck and the full suite.
+
+## Gameplay information topics (D-220)
+
+Gameplay information is a topic menu (10 topics) with one-topic detail and an
+All topics back button, using shared `informationTopics`. Verified:
+`information-topics.test.ts` 2/2; full suite 1,724/1,724; `npm run build` passes.
+Not browser-checked because the shared tab was in active use.
+
+## Banner featured characters (D-219)
+
+Summon shows the banner's real 6★/5★ Element-Bearers in one compact strip under
+the art (portrait, short name, Owned check), with no rates. Verified:
+summon-layout/roster/reference-ui tests 50/50 pass, `npm run build` passes;
+browser measurement at 2217px wide: one 126px-tall row, no horizontal scroll.
+
+## Exchange categories, event materials and 10-pull (D-218)
+
+Material Exchange now has Normal/Limited-time Event categories, Rose materials
+(2,500-750,000 Prismatica each), Buy 1/5/10 buttons, offline purchases and a
+three-choice Rose-only warning (Do not show again cancels the current purchase).
+Banners add Summon 10-Pull (100 Null-Prismatica, ten sequential draws, one save;
+server `summonTen`). Server bundle regenerated.
+
+Verified:
+- `npx tsc --noEmit`, `npm run build`: pass.
+- `node tools\bundle_server_game.mjs`; `node tools\smoke_server_game.mjs`: hosted smoke passed.
+- Targeted: material-exchange, server-game, online-store-profile, reference-ui,
+  summon-presentation, roster, ui-copy tests: 7 files / 94 tests pass.
+- `npx vitest run --maxWorkers=2`: 1,722/1,722 tests pass.
+- Browser (debug profile): both categories, warning buttons, Purchase (+5,
+  ∁E2,500) and no horizontal scroll at phone width. 10-pull browser check not
+  completed (background tab stalls transitions); unit tests cover it.
+
+## Isolated development debug profile (D-217)
+
+Owner requests menu shortcut `Iamthelight`, explicitly chooses an isolated
+development-only profile preserving real saves and max-level/evolution
+characters with all gameplay ownership/stages/resources. New debug-profile
+module builds/validates against live catalogs, including16 final-form EBs,
+85 max-upgraded ordinary Conduits,48 Masters, every mode/Story/discovery and
+90 Lv120 captured copies (three of each capturable form). Grants48 material
+types at1m, currencies/components at1b and100 chests; gear starts empty.
+
+Main routes its existing local account/profile/settings transactions through
+DebugProfileStorage. Normal behavior delegates unchanged; active debug reads,
+writes/removals use memory only, with no fallback to real storage. DEBUG/Exit
+is visible even in battle/title. Exit reloads/discards memory. DEV-gated phrase
+listener ignores fields/modifiers/repeats and is disabled in combat/dialogs/
+Player info/pending online operations/transitions. Title's ordinary keyboard
+account shortcut respects phrase-prefix prevented events.
+
+Online operations/account opening and real Player info save management are
+blocked while active, including the menu profile route/custom save component.
+Server-only socials/cosmetics are not unlocked. No hosted change or real grants.
+
+Verified:
+- `npm test -- src\game\debug-profile.test.ts --maxWorkers=2`:4 tests pass.
+  Catalog completeness/max progress, validated captures/materials/stages,
+  ordinary storage forwarding, isolated actual squad/equip/summon/settings/
+  removal transactions, unchanged raw saved data, reload restoration,
+  production refusal and exact phrase/field/modifier/blocked-context gating.
+- `npm test -- --maxWorkers=2 --reporter=json --outputFile="$env:TEMP\last-light-debug-final.json"`:
+  full120 files /1712 tests pass.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,243 modules; existing
+  large-chunk advisory only. Changed runtime/test diagnostics clear.
+- Actual development app, synthetic DOM keyboard events: activation shows
+  debug balance/Story clear/16 EBs/90 captures and105/105, Evo6/6. Player info
+  has no real save component. Equipped ordinary Vigil Core and Infernis Master
+  through actual UI change handlers; all86 slot options (empty+85) present.
+  Raw browser storage unchanged throughout activation/equipment/Exit reload;
+  Exit returns to normal Title with no debug marker. No real-account writes.
+  Hidden-tab browser keyboard did not deliver events and activity image decode
+  timed out on navigation; DOM key/change checks and completed menu markup
+  were used rather than claiming normal animation/art-loading validation.
+  Disposable preview returned to about:blank.
+- `git diff --check`:pass with existing LF/CRLF advisories.
+
+Debug progress intentionally disappears on reload and cannot be exported into
+real saves. Production activation, online grants/social/cosmetic unlocks and
+hosted rollout remain excluded. Pending art/React migration unchanged.
+No commit/push requested.
+
+## Organized Team sub-menus and ability dialogs (D-216)
+
+Owner requests a dedicated Conduit equipment sub-menu with slots, clear compact
+level/evolution material information and clickable detailed abilities. Owner
+chooses equipment plus a Restore/Upgrade link, not a combined restoration
+screen. Element-Bearer Team details now have Stats & Skills/Level/Evolution/
+Conduits areas. Navigation updates the detail only and persists through the
+existing transient history. Header/portrait/navigation survive updates.
+
+Conduits uses the shared eight-slot responsive grid and separate Master,
+Store/Upgrade links and optional effective stats. Delegated Master events work
+after new detail markup and update in place. Fixed shared captured slot
+controls accidentally using the Conduit selection instead of actual copy ID.
+Growth shows canonical Owned / Required resource rows and visible actions;
+optional stat/form preview reduces scrolling. Phone content/resources lead.
+Skills/passive open existing native information dialogs with resolved
+descriptions, costs/cooldowns/resources and equipment rules. Captured skills
+also use dialogs with unavailable slots explicit. Rich trigger markup is
+separate from plain escaped close accessibility labels.
+
+Verified:
+- `npm test -- src\presentation\hub.test.ts src\presentation\reference-ui.test.ts src\presentation\upgrade-reference.test.ts src\presentation\conduit-upgrade.test.ts src\presentation\conduit-menu-update.test.ts src\presentation\menu-information.test.ts src\game\conduit-equipment.test.ts src\game\master-conduits.test.ts --maxWorkers=2`:
+  8 files /187 tests pass. Includes canonical resource names/amounts for all16
+  EBs across five nonfinal forms, seven-stat previews, no input mutations,
+  dialog opening/Escape, plain close label, retained header/portrait/navigation,
+  actual captured copy equipment IDs and unchanged equipment/Master rules.
+- Build Last Light (`npm run build`): TypeScript/Vite pass,241 modules; existing
+  large-chunk advisory only. Changed runtime/test editor diagnostics clear.
+- Isolated real renderers/full shared CSS and button classification:
+  32 sub-menu checks (four areas x starter/populated late Rose fixtures x
+  320/390/1024/1460px), no horizontal overflow, clipped control/resource widths
+  or internally scrolling detail panels. Includes eight equipped Conduits,
+  owned Master and maximum-safe balances/material counts.
+- 16 native ability-dialog checks: all four abilities at those widths open,
+  fit horizontally, close on Escape and restore trigger focus. Actual desktop
+  overview/equipment screenshots inspected. No real account writes.
+- `git diff --check`: pass with existing LF/CRLF advisories.
+
+No combat/economy/reward/save-format changes or server rebundle needed.
+Hosted engine rollout, pending Master/chest art and remaining React migration
+stay separate. No commit/push requested.
+
+## Inventory collapse correction (D-215)
+
+Owner reports collapsed/overlapping Inventory. The old fixed fractional
+three-row grid did not accommodate the added Master/chest panel. Inventory now
+uses natural-height rows/page scroll, explicitly grouped currencies, a named
+full-width Master section and visible non-scrolling holdings lists. Phone
+currencies stack, icons do not shrink, heading actions wrap and decorative
+empty slots stay compact. Materials/ordinary Conduits remain simultaneous.
+No account writes, reward changes, new tabs or artwork changes.
+
+Verified:
+- `npm test -- src\presentation\inventory.test.ts src\presentation\reference-ui.test.ts src\game\master-conduits.test.ts --maxWorkers=2`:
+  3 files /102 tests pass. Added owned Master/chest and simultaneous material/
+  Conduit rendering plus immutable-input coverage.
+- Build Last Light (`npm run build`): TypeScript/Vite pass,241 modules; existing
+  large-chunk advisory only. Changed-file editor diagnostics clear.
+- Isolated real Inventory renderer/shared CSS, four fixtures (empty,
+  screenshot-like27/0 balances, populated all Masters/Conduits with maximum-safe
+  balances/materials, unavailable) at320/390/1024/1460px:16 checks, no collapsed
+  panels, intersecting panel rectangles, horizontal overflow or clipped control
+  widths. Desktop screenshot inspected. No real account mutations.
+- `git diff --check`: pass, existing LF/CRLF advisories only.
+
+Hosted engine deployment and pending Master/chest art remain separate and
+unchanged; this presentation correction needs no server rebundle. No commit
+or push requested.
+
+## Banner materials instead of new creatures (D-214)
+
+Owner requests elemental/event materials instead of banner creatures, confirms
+replacing duplicate conversions too, explicitly limits ALL material bundles
+to Rare and approves retaining50:30:17 weights with tuned bundle quantities.
+Common10/Uncommon6/Rare3; duplicates15 Rare. Standard has18 material outcomes
+across six equally selected elements plus unchanged10 EBs. Roses has three
+Rosethorn material outcomes plus unchanged3 EBs. Both keep98.9% non-character
+chance, character tier odds,10 cost,80/150 pity and0.5% Legendary bonus.
+
+Shared banner-materials content owns quantities/pools/duplicate resolution and
+canonical validation. summonCharacter adds exact material stacks, cost, pity
+and bonus in one validated save, never creates a new creature. Standard
+duplicate family selection consumes one summon-only random roll; Roses needs
+none. Existing creatures/copies/locks/gear/progress/discovery and historical
+duplicate provenance remain unchanged, with no load writes/conversions.
+Legacy saved server receipts still support their actual creature/copy result.
+New material receipts reject wrong identities/quantities/rarities.
+
+Rates & Information names material tiers/counts instead of creature/star rows,
+saved reveals show shared real material art and quantities, inline result and
+Inventory Help match. No new art requested or missing URLs. Updated historical
+summon tests to preserve creature gameplay coverage through capture fixtures,
+not new summons. Shared authoritative engine bundle regenerated locally.
+
+Verified:
+- `npm test -- --maxWorkers=2 --reporter=json --outputFile="$env:TEMP\last-light-material-final.json"`:
+  119 files /1690 tests pass. Includes every material outcome at both exact
+  probability boundaries, six-element/Rosethorn pools, Rare cap/quantities,
+  pity/all-owned duplicates/bonus/one-save, raw-wallet overflow/write failure,
+  old creature preservation, malformed material outcomes and server receipts.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,241 modules; existing
+  large-chunk advisory only. Changed runtime file diagnostics clear.
+- `node tools\bundle_server_game.mjs`:pass. `git diff --check`:pass with
+  LF/CRLF conversion advisories only.
+- Isolated real saved-reward renderer/shared CSS: Standard/Roses ordinary and
+  duplicate material receipts at320/390/1024/1280px fit without horizontal
+  dialog overflow or clipped Continue. Inspected actual Rosethorn Rare reveal
+  screenshot and named quantity/accessibility. No owner wallet/account writes.
+  Disposable preview returned to about:blank.
+
+Hosted game-operation deployment remains pending (including prior pity/effect
+updates); local server-bundle regeneration is not hosted rollout. No commit/
+push requested. All requested local banner behavior is implemented; no further
+owner balance choice needed.
+
+## Readable War banners and shared menu clipping (D-213)
+
+Owner screenshot shows a squeezed Locked button and dim trial identity. Root
+cause: legacy sticky entry flex row did not wrap stage/action/100%-basis hint;
+fixed card sizing and art-overlaid headings compounded readability.
+Shared activity headings now sit below imagery on solid dark surfaces.
+Entry rows explicitly wrap horizontally (overriding legacy phone column
+direction), stage/action have useful flex bases and hints own a full row.
+Activity cards/groups grow with page scrolling. Machines/Roses no longer
+reserve empty picker columns. Fact definition rows consistently stack.
+
+Shared text/filled buttons wrap; disabled menu buttons stay opaque/readable.
+Quiet labels are brighter neutrals. Browser sweep also found narrow Team
+level/evolution progress overflow and an inherited Home portrait size overriding
+its button bounds; corrected both without changing image sources or behavior.
+All stage gates, free War entries, recruitment, reward/save rules are untouched.
+
+Verified:
+- `npm test -- src\presentation\activity-banner.test.ts src\presentation\reference-ui.test.ts src\presentation\menu-information.test.ts src\presentation\ui-copy.test.ts --maxWorkers=2`:
+  4 files /48 tests pass, including all three War final-stage/free-entry/
+  immutable-progress regression. Initial test fixture used invalid Lv120
+  starter; corrected to real Evo6 cap105, not a gameplay change.
+- Final cross-menu run adds `src\presentation\sanctuary.test.ts` and
+  `src\presentation\summon-layout.test.ts` to the command above:
+  6 files /59 tests pass. `git diff --check` passes with LF/CRLF advisories only.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,240 modules; existing
+  large-chunk advisory only. Changed-file diagnostics clear.
+- Isolated real renderers/shared CSS/selection panels/button classification:
+  all16 activity cards at320/390/1024/1280px in both locked and unlocked
+  fixtures (128 card checks) have no page/card horizontal overflow or clipped
+  button/title text. Home/Team/Inventory/Summon/Store/Upgrade pass text clipping
+  and page overflow checks at those widths. War label contrast measured
+  7.59-15.81:1 (title, identity, facts, disabled entry and unlock hint).
+  No owner save or account writes. Hidden-tab requestAnimationFrame stalled
+  the first browser sweep; reran synchronously with actual button classification.
+- Local CSS/presentation only; no server rebundle, deployment or commit.
+
+## Training panel polish (D-212)
+
+Owner requests a cleaner Training panel. The actual Gameplay card now occupies
+the full content column with a bounded grassy-field header, three readable facts,
+compact Prismatica reward, concise run guidance and a separated entry footer.
+Removed inherited empty picker column, full-card image/pseudo-header/padding and
+internal card scrolling. Scoped fact overrides prevent inherited horizontal
+definition rows from squeezing values into single-character phone columns.
+Routes, entry bindings, squad/run rules, rewards and saves remain unchanged.
+
+Verified: `npm test -- src\presentation\reference-ui.test.ts src\presentation\sanctuary.test.ts src\presentation\menu-information.test.ts --maxWorkers=2`
+passes 3 files /47 tests. Build Last Light (`npm run build`) passes TypeScript/
+Vite with only the existing large-chunk advisory. Isolated real renderer/shared
+CSS at320/390/1024/1280px has no page or card horizontal overflow; inspected
+desktop screenshot and exact fact/entry dimensions. No owner account writes.
+Local presentation only; no commit, deployment or server bundle change needed.
+
+## Applied allied effects and clear character abilities (D-211)
+
+Owner requests real shields/effects on HP readouts and understandable ability
+descriptions. Shared unitReadout now renders exact active Shield, Damage bonus/
+last turn, Defense, one-hit protection and recovery with existing icons/text.
+Inactive/dead effects hide; personal counters explicitly say charges and explain
+their separation from applied effects. The full-width wrapping effect row avoids
+the inherited two-column health grid collapsing HP; no new artwork required.
+
+Added typed pure buffSnapshot and optional BattleEvent.buffs. Character events,
+pilot events and Conduit/Master events record actual values when emitted.
+BattleView snapshots pre-action buffs and updates them alongside HP at impact,
+including remaining shield after absorption; legacy shield events use existing
+deltas/shieldRemaining, never messages or final-state guesses. Other historical
+effects still resolve correctly on final render. Existing combat math, triggers,
+strengths, costs/cooldowns/recovery/RNG/account schemas and saves are unchanged.
+
+All16 describeFighter outputs clarify shields (absorb before HP, higher amount
+on refresh), Weaken versus Defense, one-attack critical bonuses and next-turn
+caster recovery. Shared pilot triggers explain actual damage, shield absorption,
+missing-HP healing, living owners and excluded Conduit sources. Bliss explicitly
+requires another living ally. Existing thematic names and canonical kits remain.
+
+Verified:
+- `npm test -- --maxWorkers=2`:118 files /1679 tests pass, including four
+  applied-effect tests and16 all-roster copy/immutable-strength cases.
+- After final health-card grid/accessibility correction:
+  `npm test -- src\presentation\ally-buffs.test.ts src\presentation\unit-readout.test.ts src\presentation\battle-impact.test.ts src\content\combat.test.ts --maxWorkers=2`:
+  4 files /40 tests pass. Ordered team shield/buff snapshots, no future-state
+  leakage, actual absorption, expiration/death, legacy events and target grouping.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,240 modules; existing
+  large-chunk advisory only. Changed core/renderer diagnostics clear.
+- `node tools\bundle_server_game.mjs`:pass; shared server bundle refreshed.
+  `git diff --check`:pass, only LF/CRLF conversion advisories.
+- Isolated actual BattleView/shared CSS, synthetic three-member squad with
+  fractional shields and timed buffs:320/390/1024/1280px no horizontal overflow;
+  effects fit their cards and HP retains nonzero/full row width. Desktop all3
+  remain above feedback; phone labels wrap. Accessible unit names contain actual
+  Shield/Damage text, not a generic replacement name. No owner saves/rewards;
+  disposable view disposed and page cleaned.
+
+Local only; hosted game-operation deployment is still needed for new event-time
+buff metadata online. Legacy server shields/final state remain supported.
+No commit/push/deployment. Remaining migration/artwork tasks unchanged.
+
+## Battle speed no longer gets stuck disabled (D-210)
+
+Owner reports intermittent speed lock. BattleView moves the existing toolbar
+inside its host and retains it across renders, but blanket button locks during
+entrance/local playback/online requests also disabled speed and retained utility
+buttons. Exclude data-battle-speed-choice controls from those three locks.
+On reattaching the toolbar, synchronize disabled state: speed stays enabled;
+Leave/Settings lock only while busy and unlock when ready. Preserve actual
+nodes/listeners, live playback rates, speed persistence and combat/save authority.
+
+Verified:
+- `npm test -- src\presentation\battle-toolbar.test.ts src\presentation\battle-speed.test.ts src\presentation\battle-chrome.test.ts src\presentation\battle-animations.test.ts src\presentation\battle-authority.test.ts --maxWorkers=2`:
+  5 files /56 tests pass. Four new jsdom cases exercise actual retained toolbar
+  through entrance/local/online playback and server rejection, live speed clicks,
+  locked combat/utilities, restoration and original listeners/state preservation.
+  Existing in-flight playback-rate/disposal and all-activity dispatch tests pass.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,238 modules; existing
+  large-chunk advisory only. New test/renderer editor diagnostics clear.
+- Isolated actual BattleView: speed3 works while entrance is busy; speed2 works
+  during a local attack, and retained Settings unlocks after entrance. Hidden-tab
+  animation timing stalled, so finite entrance animations were finished explicitly
+  for this check; automated DOM tests verify completion paths deterministically.
+  Synthetic session only, no owner saves/rewards written; preview disposed/cleaned.
+
+Contract/index/decision log updated; local client correction, no server change,
+commit/push or deployment. Unrelated pending work remains unchanged.
+
+## Sidebar Menu removed (D-209)
+
+Owner confirms removal of the screenshot's right-side Menu and top-bar trigger,
+not a replacement dialog. Removed header markup, dedicated sidebar CSS/import
+and obsolete main/information handling. Settings now opens directly from the
+header gear using the existing handler, restoring focus there on close.
+Collections has a direct book control; other destinations retain existing
+Home/Inventory/Team/Store/Play routes. Help copy describes direct navigation.
+Phone header uses four48px utility columns. Battle toolbar and Player info's
+exclusive save-data controls are unchanged.
+
+Verified targeted sanctuary/inventory/Conduit upgrade/Settings/Archives/menu
+information tests:6 files /39 tests pass. Build Last Light (`npm run build`)
+passes TypeScript/Vite,238 modules, existing large-chunk advisory only.
+Changed renderer/main/information diagnostics clear. Isolated actual header
+and shared CSS at320/390/1024/1280px: no page/header horizontal overflow, all
+four utility controls48px, no Menu trigger/dialog and exactly one Settings
+control. Synthetic balances only, no owner save writes. Disposable preview
+cleaned. Contract/index/decision log updated; local only, no deployment/commit.
+
+## Uncluttered banners and reduced pity (D-208)
+
+Owner requests cleaner banner composition, rates only behind Rates & Information
+and pity200/500 ->80/150. Owner explicitly approves honoring existing progress
+on the next draw. Summon now keeps selection/pity, unobstructed artwork/title
+and single-draw cost/action/result; no character/star cloud, separate Showcase
+button or inline rate tiers. Home Showcase is unchanged. One centered dialog
+starts with complete text-only outcome tables and filters, followed by rules.
+Filters hide whole tiers; wrapping columns retain names/rarity/stars/full rates.
+Removed inherited minimum artwork height so16:9 remains intact on phones too.
+
+Shared resolver uses80/150 due-or-overdue checks with unowned priority.
+Historical valid counters0-199/0-499 remain accepted and displayed exactly;
+meters alone clamp. No account rewrite on read, retroactive grants or schema
+change. Costs/base rates/RNG/independent banners/duplicate resets and one-write
+saved transactions remain. Shared authoritative engine bundle refreshed locally.
+
+Verified:
+- `npm test -- --maxWorkers=2`:116 files /1655 tests pass. Includes exact79/80
+  and149/150 thresholds, overdue read-only progress, failed writes,150 actual
+  saved draws, authoritative Standard/Roses operations and both single-dialog
+  outcome/filter contracts. Full suite rerun after rates-first adjustment.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,239 modules; existing
+  large-chunk advisory only. Final build includes responsive artwork correction.
+- `node tools\bundle_server_game.mjs`:pass.
+- `git diff --check`:pass; only existing LF/CRLF conversion advisories.
+  Changed core/renderer/new test/server-test editor diagnostics clear.
+- Isolated actual renderer/shared CSS at390/1024/1280px, both real banners:
+  no horizontal page/dialog/table overflow; artwork ratio16:9 at every size.
+  Rates start the dialog, filters select complete tiers. Synthetic199/499
+  progress shows199/80 and499/150 with Next draw guaranteed on both banners.
+  No owner account/storage writes or real summons; disposable preview cleaned.
+
+Contracts/index/decision log updated. Local only, no commit/push or hosted
+deployment; hosted game-operation must be deployed to activate online80/150.
+Remaining React migration, Master artwork and other pending rollout unchanged.
+
+## Organized opening starter selection (D-207)
+
+Owner's screenshot confirms opening Infernis/Tizu/Flora selection, requesting
+better organization and less scrolling. Real React StarterSelection now groups
+three compact cards beside the selected-character panel on desktop; phone/
+tablet uses the same three-card row above details. Shared5-star/Common rating
+appears once. Exact portraits/facing, canonical names, roles, weapons, character
+colors and reveals remain. Begin precedes native Read story disclosure, with
+all origin/awakening/story/vow text retained. No automatic selection/grants.
+
+Main mounts/disposes it through the existing shared React root lifecycle.
+Journey.select and original offline confirm/online bootstrap remain authoritative;
+Begin locks repeated actions during save and existing explicit errors allow
+retry. Player info remains reachable and choice/detail restore on return.
+Keyed portraits preserve DOM/focus on selection; no whole-screen refresh.
+Scoped starter-selection.css retains Georgia, current shared gradient controls,
+44px+ targets and natural scrolling instead of clipped content.
+
+Verified:
+- `npm test -- src\ui\starter-selection.test.tsx src\ui\mount.test.tsx src\ui\opening.test.tsx src\game\flow.test.ts --maxWorkers=2`:
+  4 files /42 tests pass: original choices/save flow, disabled initial Begin,
+  selection/focus/portrait retention, optional lore reset, pending lock,
+  selected restore/Player info and root disposal.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,239 modules; existing
+  large-chunk advisory only. Changed-file editor diagnostics clear.
+- Isolated actual component plus shared shell/current CSS:1024/1280 by768
+  shows all cards and Begin without vertical/horizontal page overflow.
+  390 by844 all three selected choices keep Begin above the bottom edge
+  (about823px before shared button finish);320px has no horizontal overflow,
+  46px minimum buttons and modest natural vertical scroll. Full story retained.
+  Included D-206 gradient button classification; artwork cards stay exempt.
+  No real account/storage writes; native pointer automation timed out in hidden
+  tab, DOM click verification succeeded. No claim of hosted account mutation.
+
+Contracts/index/decision log updated. Local only, no commit/push/deployment.
+Other retained menus/battle React migration and Master artwork remain pending.
+
+## Gradient buttons and off-center labels (D-206)
+
+Owner requests gradients on background-less buttons and bold corner/stylish
+labels across all screens. Added `src/presentation/button-style.ts` (DOM tagger,
+installed in `main.ts`) and `button-style.css` (imported last). Artwork buttons
+and battle units untouched; existing gradient fills keep their look.
+
+Verified in an isolated browser tab (empty storage, offline save created for the
+test and cleared afterwards): Title, starter select (portrait cards unchanged),
+Home (Market/Inventory heading top-left, arrow bottom-right), Summon before/after,
+Play, Team and Menu drawer. `npm run build` passes. `npx vitest run`: 1645/1646;
+the one failure (`integrated-economy.test.ts` pity milestones) is a parallel-load
+timeout and passes alone (4/4). Battle toolbar, Settings and dialogs inherit the
+rule but were not individually screenshot-reviewed.
+
+## Activity sidebar horizontal overflow corrected (D-205)
+
+Owner reports sideways scroll in Activity navigation. reference-layout.css
+explicitly resets inherited flex-wrap/fixed tab flex bases, stretches the rail
+within its column, prevents section shrink and permits width-safe label wrapping.
+Phones use responsive grid rows instead of a horizontal strip. Vertical scroll
+and all category links remain; no hidden-overflow workaround or gameplay changes.
+
+Verified isolated actual Gameplay renderer with all legacy/current CSS:
+rail clientWidth/scrollWidth both216 at1280px, both208 at1024px/short height,
+both321 at390px. All phone links fit, minimum height64px; no horizontal page
+overflow at any checked width. Currency category selected without save writes.
+Build Last Light (`npm run build`) passes TypeScript/Vite,235 modules, existing
+large-chunk advisory only. Contract/index/decision log updated; local only.
+
+## Conduit layout fit and retained menu interactions (D-204)
+
+Owner reports Conduit layout mismatch and full-screen refresh on selection.
+Corrected card flex sizing and bounded Store/Upgrade hero icon frames so
+artwork/upgrade meters stay in their intended stage rather than overlapping
+headings. No image/source changes or clipped-overflow workaround.
+
+updateConduitStore/updateConduitUpgradeMenu now update relevant panels only.
+Main selection handlers no longer call renderMenu; same-selected targets no-op.
+Store catalog/cards/art survive selection and purchase; filter controls remain,
+catalog entries replace only when changed. Upgrade owned rows survive, while
+actual detail/actions/resources update; Earn components keeps its bound node.
+Purchase/upgrade success rebinds new transaction buttons and updates header
+balances, retaining atomic persistence, confirmations and saved reward reveals.
+Other menu refreshes/remaining React migration are outside this correction.
+
+Verified:
+- `npm test -- src\presentation\conduit-menu-update.test.ts src\presentation\conduit-store.test.ts src\presentation\conduit-upgrade.test.ts src\presentation\reference-ui.test.ts --maxWorkers=2`:
+  4 files /49 tests pass, including five new DOM regression cases for retained
+  nodes/focus/scroll, selection, purchases, filters, upgrade levels/actions and
+  explicit missing-panel errors.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,235 modules; existing
+  large-chunk advisory only. Initial NodeList spread errors corrected using
+  Array.from, consistent with this repository's DOM library configuration.
+- Isolated actual-renderer Store at1280/390px: artwork fits card/hero before
+  titles, no horizontal page overflow; selection retains header/catalog/card
+  identity and focus. Upgrade390px retains header/list and selects real actions.
+  Used synthetic in-memory holdings only, no owner account/save mutation.
+
+Contract/index/decision log updated. No commit/push or hosted deployment.
+Remaining React migration and Master artwork/deployment are unchanged.
+
+## Menu header and content scale (D-203)
+
+Owner requests a larger top bar with other menu UI slightly smaller. Shared
+reference-layout.css now uses a5.15rem header minimum (previous4.5rem), larger
+brand/currency/icons, 1.05rem dock labels and48px utilities. Main content uses
+.95rem body copy and modestly reduced panel/card/heading spacing. No zoom,
+root-font scaling, portrait resizing or gameplay/save changes. Georgia, leader
+themes, full numbers,12px note floors and44px content targets remain.
+
+Phone wallet grid places currencies above three48px utility buttons, preventing
+legacy full-row wallet overrides and very narrow balance columns. Desktop
+navigation/wallet remain separate. Title, pre-game Player info, dialogs and
+battle are not globally scaled; save actions still live only in Player info.
+
+Verified:
+- `npm test -- src\presentation\reference-ui.test.ts src\presentation\sanctuary.test.ts src\presentation\leader-theme.test.ts src\presentation\online-store-profile.test.ts src\presentation\inventory.test.ts src\presentation\archives.test.ts src\presentation\conduit-store.test.ts src\ui\opening.test.tsx --maxWorkers=2`:
+  8 files /107 tests pass.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,235 modules; existing
+  large-chunk advisory only.
+- Isolated actual-renderer browser checks across Home/Team/Play/Summon/
+  Inventory/Collections/Conduit Store/Upgrade and mounted Player info at390,
+  1024 and1280px: no header overlap/horizontal page overflow, content controls
+  at least44px. Maximum-safe balances stay complete. Additional320px header
+  stress check fits with48px utilities. Desktop dock type about17px versus
+  content15-16px; normal1280 header about85px. No real account/storage writes.
+
+[Contract](menus-and-inventory.md#menu-header-and-content-scale-d-203);
+index/decision log updated. Local only, no commit/push/hosted publication.
+Remaining React migration, Master artwork/deployment and owner visual review
+remain pending.
+
+## Save-data management in Player info only (D-202)
+
+Owner requests all save-file information/actions in Player info alone and
+explicitly confirms moving backup warnings and new-account Import/Start fresh
+out of registration too. Removed title save panel/destructive recovery button,
+both menu/battle Settings mounts and account-dialog import/export/staging logic.
+Title has Play Online, Play Offline and Player info; selection also links there.
+
+src/ui/player-save-data.tsx owns the real React save-data panel and pre-game
+Player info screen. Retained offline Profile now has actual save controls;
+online Profile mounts the same panel only in Player info, never Friends.
+ll-player-save-data replaces the removed ll-offline-save boundary and retains
+connected/disconnected cleanup and change events. Shared Georgia/polished
+panels/actions are used; no extra save implementation or wallet schema.
+
+Offline Save/Export/Load/Delete, limits, overwrite/deletion confirmations,
+validation, rollback and automatic progression writes are unchanged. Unreadable
+offline saves can be deleted or restored before starter selection. Offline menu
+load discards only the old offline run and remains on Player info; deletion
+remains in pre-game Player info. Offline management during online play never
+changes modes, overwrites online progress or discards an online session.
+
+Account dialog now handles access/recovery only. Unstarted online accounts land
+in Player info to import or explicitly confirm fresh progress before selecting
+a starter; closing returns to title. Player info provides account access, backup
+warning and refreshable online status. Previously staged registration imports
+restore only for the matching username with the same request ID. New selections/
+imports happen there, preserve offline originals, and retain uncertain-request
+IDs for retry. Cancelling either choice leaves data unchanged; established
+accounts remain nonreplaceable. Auth changes clear stale in-memory choices;
+failed online reads report errors rather than claim an established account.
+
+Verified:
+- `npm test -- src\ui\opening.test.tsx src\ui\mount.test.tsx src\presentation\offline-save.test.ts src\presentation\online-store-profile.test.ts src\presentation\settings-panel.test.ts src\game\save-file.test.ts src\online\account-client.test.ts src\presentation\reference-ui.test.ts src\presentation\sanctuary.test.ts src\presentation\ui-copy.test.ts --maxWorkers=2`:
+  10 files /96 tests pass. Covers placement, pre-starter recovery, unchanged
+  registration data, import cancellation/retry/staged IDs, wrong usernames,
+  account switches, failed reads, late upload disposal and Profile/Friends.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,235 modules;
+  existing large-chunk advisory only. Changed UI/main editor diagnostics clear.
+- Isolated browser with empty in-memory storage/no main/Phaser/account writes:
+  pre-game Player info fits390px/1280px with Georgia and46px buttons. Save without
+  a starter reports its real error. Actual title exposes only three navigation
+  actions/no file inputs. Actual offline/online Profile layouts fit both widths;
+  four save actions remain44px+ (about57px phone/48px desktop). Friends has no
+  save-data mount. Authentication/import behavior is covered by mocked
+  component tests, not a hosted account mutation. Disposable preview cleaned.
+
+[Contract](mono-ui-and-cloud-saves.md#player-info-owns-save-data-management-d-202),
+menus/index/decision log updated. Supersedes historical title/Settings/
+registration save placement. No engine/server/schema changes, commit/push or
+hosted publication. Remaining React migration and Master artwork/deployment
+work is unchanged.
+
+## Character Masters and choice chests (D-201)
+
+Owner requests three character-specific Omnic Masters for every Element-Bearer,
+cosmic/planetary machinery art and a mechanically flaming locked choice chest
+with a 1% final-Machines-boss drop. Follow-up approves choices for any unowned
+Master, including future characters, and one matching Master per bearer.
+
+Implemented 48 unique designs in src/content/master-conduits.ts, separate from
+85 ordinary Conduits/pools/upgrades. Fixed effective-event-driven kit effects
+include personal Burn extension, Fracture, shields/heals, Gauge, cooldowns,
+refresh-only Attack/protection and 16 Astral Reserve designs (cap three).
+No generated-effect recursion, revival, captures, auto-equip or ordinary-slot
+consumption. Actual field counters/full references expose names, clocks/effects.
+New encounter memory resets; Settings preserves it and Continue/Training/Retry
+retain frozen Master equipment. Existing reward/combat streams are unchanged.
+
+Final Machines stage100/Lv120 boss independently rolls one chest at1% on a
+separate continuing stream. Strict source/stage/level/phase validation, safe
+counts and receipt-deduplication commit it with kill rewards in one write.
+Inventory opens a React choice dialog, then an in-game confirmation naming the
+exact selected Master/effect. One chest/unlock save precedes reward presentation.
+Future-character unlocks never grant characters; duplicates reject and all-owned
+extra chests remain unopened. One separate matching Team slot, Inventory,
+Collections, creature loot and Battle/Character references are wired.
+
+Optional walletv5 masterChests/masterConduits/masterEquipment validate without
+legacy load writes/grants. Save files retain them. Offline and authoritative
+server operations share helpers; durable online Retry uses frozen equipment.
+Server source/generated engine.bundle.js refreshed locally, not deployed.
+
+Combined Art/conduits/Master Conduits.md has50 reproducible prompts:48 Masters,
+chest and Astral Reserve. Densely layered cosmic machinery, character palettes,
+opaque flames and complete outer margins; no references or generated PNG claims.
+All new runtime visuals are explicitly pending, no guessed asset URLs.
+[Feature specification](master-conduits.md); index, decisions, related menu/
+Conduit/Machines/art documents and Art index updated.
+
+Verified:
+- `npm test -- --maxWorkers=2`:113 files /1632 tests pass. Includes64 Master
+  engine/save/equipment/server cases and two React lifecycle/choice tests.
+  Initial obsolete display assertions and test fixtures corrected. One full-run
+  existing economy timeout under concurrent build load passed on the final
+  isolated run; no unrelated timeout/configuration changes.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,240 modules;
+  existing large-chunk advisory only. New-file editor diagnostics clear.
+- `python tools\build_master_conduit_art.py` and
+  `python -m unittest discover -s tools -p test_master_conduit_art.py`:50 prompts
+  reproduced, three tests pass.
+- `node tools\bundle_server_game.mjs`:successful bundle refresh.
+  `git --no-pager diff --check`:pass (existing LF/CRLF advisory only).
+- Isolated no-main/no-Phaser browser with synthetic in-memory holdings:
+  React choice has16 character options/three exact cards, disables owned entries;
+  future-character selection returns master-nerithe-2 without spending.
+  Cancel restores opener focus and preserves chests. Dialog fits1280 desktop
+  and390 phone with Georgia/no horizontal overflow,44px+ controls. Actual
+  Team/Inventory renderer widths fit both sizes; bound Master selection trigger
+  is44px desktop/54px phone. Event dispatch checks avoid hidden-browser pointer
+  instability; screenshot cropping prevents claiming a visual gallery.
+  No owner account writes; disposable preview cleaned to about:blank.
+
+Remaining:48 Master/chest/emblem PNG delivery/intake, hosted function/frontend
+publication and owner visual acceptance. Remaining whole-game React migration
+batches are still pending. No commit/push/deployment.
+
+## Shared menu polish (D-200)
+
+Owner requests all menus polished with proper typography, suggesting Georgia.
+Restored the shared Georgia stack in current reference styles, removed active
+Sora imports/local face, and stopped desktop root/menu font shrinking. Shared
+body/control/heading hierarchy, contrast, tabular numbers, panels/separators,
+card/field spacing, focus/destructive states and React account/save copy refined.
+Header intrinsic columns prevent nav/wallet overlap; full balances wrap rather
+than abbreviate. Team identity loses its inherited decorative oval. Compact
+desktop adjusts dense columns; phone growth/rates stack and equipment uses two
+columns. Story-region labels and React title notes/kickers have12px floors;
+Settings no longer retains explicit sans-serif field fonts.
+
+Changed owning styles:src/presentation/reference-layout.css,
+src/presentation/mono-reference.css, src/styles/ui.css and font imports in
+src/main.ts. No new stylesheet, mechanics, transactions or animation changes.
+Leader accents, contained detail lists/page scrolling, full values and existing
+upgrade celebration hooks remain. Sora dependency remains unused in the manifest.
+
+Verified:
+- `npm test -- src\presentation\reference-ui.test.ts src\presentation\sanctuary.test.ts src\presentation\leader-theme.test.ts src\presentation\settings-panel.test.ts src\presentation\archives.test.ts src\presentation\conduit-store.test.ts src\presentation\conduit-upgrade.test.ts src\presentation\online-store-profile.test.ts src\presentation\inventory.test.ts src\presentation\roster.test.ts src\presentation\upgrade-reference.test.ts src\ui\opening.test.tsx src\ui\mount.test.tsx --maxWorkers=2`:
+  13 files /130 tests pass.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,237 modules;
+  no Sora font outputs, existing large-chunk advisory only. Editor diagnostics
+  report no errors in the four changed code/style files.
+- In-memory actual-renderer checks cover10 main menus at1280/1024 desktop
+  and390px phone:page widths fit, desktop header has no overlap, tested buttons
+  remain44px+. Synthetic online Profile also fits phone width.
+- Separate no-main/no-Phaser preview checks all five Team views (bearer detail/
+  collection, creature collection/detail, formation) plus bound Story navigation
+  and real equipment selection triggers. No horizontal content overflow at1024px
+  or390px, including maximum-safe currency balances. Computed font is Georgia.
+  Mobile Story screenshot inspected; hidden-browser screenshot freshness is not
+  reliable enough to claim a complete screenshot gallery.
+- React title has52px play actions and46px save actions at390px. Actual account
+  sign-in dialog fits354px at390px, uses Georgia and44px+ controls; no account
+  submission. Settings/confirmation fit desktop with Georgia/no horizontal
+  overflow. Confirmation cancellation resolves false without deleting data.
+  No fixture transactions or owner account mutations.
+
+Remaining:owner visual acceptance and approved later React conversion batches.
+Not every modal/state has independent screenshot coverage; shared styles and
+existing functional regressions are verified. No commit/push, server deployment
+or hosted frontend publication.
+
+## Delivered Omnic kit-Conduit intake (D-199)
+
+Owner requests all25 root Omnic Conduit PNGs moved, background-removed and wired.
+All25 exact filenames match existing reborn kit identities. Byte-identical originals
+are archived in Art/source/kit-conduits; transparent256px/224px-content exports
+use stable IDs in public/assets/conduits. Reviewed row-gradient/multi-shade keys,
+connected enclosed openings and empty-border cleanup preserve ivory metal,
+matching turquoise/green facets and painted shadows. Firstlight's brighter
+interior backdrop has explicit reviewed shades and halo-opening seeds, not
+blanket turquoise removal. Supplied alpha remains authoritative.
+
+Dedicated tools/intake_kit_conduit_art.py and Art/provenance/kit-conduit-art-settings.json
+reproduce all25; kit-conduit-art-intake.json records original/runtime/pixel hashes,
+dimensions and settings. Only these25 verified root copies were removed after
+archive/export verification. Historical60 sources, exports and D-177 review are
+unchanged. Shared catalog art IDs and generated byte revisions cover Inventory,
+Collections, equipment/showcases and battle reward/reference artwork. All85
+catalog icons now resolve real assets. No new items, acquisition/rules/stats,
+equipment migration, save writes, currency changes or gameplay RNG.
+
+Verified:
+- `python tools\intake_kit_conduit_art.py --apply --reviewed --remove-incoming`:
+  25 installed with original/hash verification; final refined exports reproduced
+  with `python tools\intake_kit_conduit_art.py --apply`.
+- `python tools\conduit_art_revisions.py --write`:85 revisioned assets.
+  `python tools\build_kit_conduit_art.py`:generated prompt/status authority updated.
+- `python -m unittest discover -s tools -p 'test*conduit*.py'`:9 tests pass,
+  including exact mapping/hashes/reproduction, dimensions/padding, supplied-alpha
+  bypass, preserved green crystal/ivory/turquoise and cleared actual backdrop.
+  Historical60-icon review and generated prompts/revisions still pass.
+- `npm test -- src\presentation\machine-art.test.ts src\presentation\archives.test.ts src\game\machines.test.ts src\game\kit-conduits.test.ts src\presentation\conduit-store.test.ts src\presentation\item-showcase.test.ts --maxWorkers=2`:
+  6 files /124 tests pass.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,241 modules;
+  existing large-bundle advisory only. Editor diagnostics pass.
+- Dark/light source/runtime composites inspected. Disposable browser grid uses
+  the actual shared conduitIcon resolver; all25 images decode at256px with
+  versioned URLs. No owner account mutation; preview page cleaned to about:blank.
+  The final Firstlight cleanup is additionally verified at source resolution.
+
+Documentation/index/decision log updated. No commit/push, server changes or
+hosted frontend publication. No artwork remains pending in the Conduit catalog.
+Remaining approved React migration batches are unrelated and still pending.
+
+## Home Squad removal and upgrade animation repair (D-198)
+
+Owner reports saved upgrades aborting with missing-portrait error and explicitly
+removes the Squad panel from Home. Root cause:celebrateUpgrade still queried the
+retired `.character-hub` ancestor; current Team uses `.hub-showcase`. Shared
+showcase/portrait selector now matches both layouts, including level/evolution/
+Max Level call sites. CSS portrait animations and reduced-motion rules match it;
+current reference portrait positions the aura locally. Subsequent saved seven-stat
+reward reveal is no longer skipped. Transactions/stats/costs/RNG are unchanged.
+
+Home removes squad slots/Edit/Make leader; Team retains all squad management.
+Current saved leader showcase (including captures), Story arena and Market/
+Inventory remain. Desktop Story occupies the removed row; obsolete Home squad
+CSS removed. No squad saves/order/theme/run snapshot changes.
+
+Verified:
+- `npm test -- src\presentation\upgrade-reference.test.ts src\presentation\upgrade-celebration.test.ts src\presentation\upgrade-result.test.ts src\presentation\reference-ui.test.ts src\presentation\hub.test.ts --maxWorkers=2`:5 files /98 tests pass.
+  New DOM tests use actual referenceTeam markup (no `.character-hub`), preserve
+  portrait DOM, play level/evolution aura/sparks then saved stat reveal, test
+  cleanup/reduced motion. Home tests assert no Squad/formation/Make leader.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,241 modules; existing
+  large-bundle advisory. Editor diagnostics and `git --no-pager diff --check`
+  pass (CRLF advisory only). Final follow-up only removes obsolete Home CSS.
+- Disposable in-memory actual main fixture levels Infernis12ↁE3 after normal
+  confirmation, saves once and mounts the Level up reward reveal with actual
+  553.4ↁE90.84 HP/+37.44 plus remaining stats. Browser reports portrait
+  `upgrade-portrait-level` animation and `celebrating-level` class. Hidden-browser
+  activity transition required manually finishing finite animations and produced
+  an artwork-timeout status before entry; no missing-portrait error on upgrade.
+  This verifies animation wiring, not natural hidden-browser playback.
+- Home has no Squad panel on desktop1280x960/mobile390x844; leader/Story/shops
+  remain and mobile panels fit351.5px without horizontal overflow.
+  No owner data touched. Disposable page cleaned to about:blank.
+
+No server changes/deployment, commit/push or hosted frontend publication.
+Remaining React batches remain pending; this request does not claim to convert
+Home/upgrade results to React. Owner visual acceptance is pending.
+
+## React UI migration: first verified batch (D-197)
+
+Owner explicitly requests React-based menus/modals and selects migrating all UI
+in verified batches, starting with shared components/title/account/save screens.
+Existing mock-up remains the visual target; React is not itself polish or owner
+acceptance. First batch is implemented, not a claim of full-game conversion.
+
+Changed:
+- Added React19/react-dom, Zustand5/Immer and JSX typing. Keep current
+  TypeScript5.9/Vite7 rather than downgrading. jsdom is development-only for
+  real React DOM interaction tests; `npm install` reports0 vulnerabilities.
+- Shared typed Button/Panel/Status/Dialog and inline SVG in `src/ui`;
+  scoped hand-written `src/styles/ui.css` owns consistent surfaces, spacing,
+  typography, hover/focus/disabled/destructive states and46px controls.
+  Title entry actions are52px. Leader variables flow through shared theming.
+- Title and all offline save panels are real React components, not raw appended
+  buttons/HTML wrappers. Online sign-in/create/recovery/password-reset/import
+  dialog is React, with separate account views and original transaction rules.
+- Zustand/Immer is transient UI state only, currently unreadable-save recovery;
+  no editable client copy of authoritative online holdings. Saves/server rules/
+  schemas/RNG/rewards and battle renderer/animations are unchanged.
+- Title root unmounts before retained screens replace the app. Temporary
+  `ll-offline-save` connected/disconnected boundary mounts real React save
+  panels inside legacy Settings, including battle Settings. DOM moves preserve
+  the same root; removal cleans it up. Successful load/delete forwards into
+  existing run/navigation reset. Uploads lock actions and late results after
+  unmount cannot overwrite progress.
+- Removed superseded raw title/save/account styling. Future new UI must use
+  shared typed components; remaining legacy renderers exist only pending
+  their scheduled migration. Contract/batches in
+  [React migration](mono-ui-and-cloud-saves.md#react-ui-migration-d-197).
+
+Verified:
+- `npm test -- --maxWorkers=2`:110 files /1563 tests pass.
+- Final `npm test -- src\ui\opening.test.tsx src\ui\mount.test.tsx src\presentation\offline-save.test.ts --maxWorkers=2`:3 files /18 tests pass,
+  including subsequent root-preservation-on-DOM-move correction.
+  Covers six actions, recovery, save/export, malformed/valid import, cancel/
+  delete/auth isolation, late-upload rejection, backup/explicit opt-out, staged
+  import/fresh registration, exact request ID, established-account gating,
+  cleanup and React/legacy Settings boundary.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,241 modules.
+  Existing large-bundle advisory remains; React increases frontend bundle size.
+  Editor diagnostics and `git --no-pager diff --check` pass (CRLF advisory only).
+- In-memory disposable browser:actual title fits1280x720 and390x844 without
+  horizontal/outer vertical scrolling, including saved-status text on desktop;
+  buttons52/46px, real surface colors/radii and title screenshots inspected.
+  Mobile registration/import dialog stays within390px, no horizontal overflow,
+  with contained scrolling for dense content. Account sign-in/create/import
+  selection and Close work. Navigation into offline Home/Settings mounts one
+  real React save panel; Save works, theme resolves Infernic#fa8d63. Returning
+  to title mounts a fresh root. Scripted DOM clicks used for hidden browser;
+  screenshot viewport buffer can include unused black area outside mobile size.
+  No real registration/import or owner save mutation in browser checks.
+  Disposable page navigated to about:blank.
+
+Remaining:
+- Selection, shared navigation/sheets, Home/Team, Play/Story, Summon, holdings/
+  stores/profile and remaining confirmation/reward/upgrade/battle UI still
+  require subsequent React batches. No animations or functionality were removed
+  to facilitate this first batch. Existing transaction confirmations retain the
+  game-dialog foundation for now.
+- React Fast Refresh is not configured; Vite JSX works and HMR can reload pages.
+- Hosted frontend publication, full migration and visual owner acceptance remain
+  pending. No server deployment required for this presentation-only batch.
+  No commit/push. Owner-approved next scope is continued verified UI migration.
+
+## Play Offline save files and new-account transfer (D-196)
+
+Owner rejects "Legacy Mode" and approves complete offline progress transfer once,
+only into a brand-new online account. Title now offers Play Online / Play Offline.
+Title and offline Settings expose Save, Export Save File, Load Save File and
+Delete Save Data. Existing automatic saving remains. Files contain the complete
+normalized wallet and original starter profile, excluding credentials, device
+settings and active runs. Load validates before confirmed replacement; failed
+multi-key writes restore prior values or report restoration failure explicitly.
+Delete preserves online auth/account data and device settings.
+
+Registration offers Import Save File / Start fresh, warns when current offline
+progress has not been exported and requires confirmation to proceed without a
+backup. Import selection stays locally staged through email verification; after
+sign-in, Play Online confirms the transfer. Choosing fresh clears a previous
+staged registration import. File reads disable actions until validation finishes,
+and closing the account dialog discards late upload results. Offline originals
+remain. Download initiation does not prove a file was retained.
+
+Authenticated server import requires revision0 and no existing starter/run;
+existing CAS/idempotent atomic commit handles concurrent first operations and
+identical retries. Imported editable balances/progress are explicitly approved
+by the owner, not verified earnings or an anti-cheat guarantee. Online identity,
+social data and cosmetics remain server-owned. Upload/import cap is4MB.
+
+Verified:
+- `npm test -- src\game\save-file.test.ts src\presentation\offline-save.test.ts src\online\server-game.test.ts src\online\account-client.test.ts src\presentation\online-store-profile.test.ts src\presentation\settings-panel.test.ts --maxWorkers=2`:6 files /39 tests pass.
+- `npm test -- --maxWorkers=2`:108 files /1548 tests pass.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,206 modules; existing
+  large-bundle advisory. Editor diagnostics and `git --no-pager diff --check`
+  pass (CRLF advisory only).
+- `node tools\bundle_server_game.mjs`, `npx tsc --project supabase\functions\game-operation\tsconfig.json --pretty false`,
+  `npx --yes deno check supabase\functions\game-operation\index.ts`:pass.
+- `node tools\test_server_game_sql.mjs`:hosted rollback SQL passes.
+- `npx supabase functions deploy game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`:deployed.
+- `node tools\smoke_server_game.mjs`:hosted complete-wallet import (>8KB),
+  identical retry, repeated/started-account rejection and existing gameplay/
+  social/CAS checks pass; disposable hosted identities removed.
+- Disposable in-memory browser fixture:Save, export initiation, malformed upload
+  rejection preserving500 Prismatica, confirmed valid load restoring900,
+  Delete cancel preserving900 and confirmed Delete preserving auth/settings.
+  Title fits1280x720 and390x844 without page overflow; all six buttons are at
+  least44px high. Initial horizontal overflow came from a missing fixture
+  backdrop container, not production markup; compact title spacing prevents
+  the additional controls causing unnecessary vertical scrolling.
+- Browser account checks use mocked services:backup warning and staged
+  registration, signed-in import confirmation restoring1234 Prismatica,
+  staging cleanup, fresh registration clearing old staging, and actions disabled
+  during a deliberately delayed file read. No successful real registration in
+  browser testing; an initial incorrectly mocked request was rejected. Scripted
+  DOM clicks used for the hidden browser. Fixture navigated to about:blank;
+  no owner storage was changed or test files added to the repository.
+
+Server function is deployed; hosted frontend publication remains pending.
+No commit or push. No owner decision is outstanding for this task.
+
+## Full-screen gradient coverage correction
+
+Owner reports the main-menu gradient does not stretch across the screen.
+Removed the capped70vw/65vh bloom oval and mobile size override. Bloom now
+overscans the viewport by50% on each edge with modest bounded drift; a faint
+leader-tinted base gradient covers the full nonbattle background. Battle remains
+lighter and scenery-preserving. No layout, account or gameplay changes.
+
+`npm test -- src\presentation\ambient-background.test.ts src\presentation\leader-theme.test.ts --maxWorkers=2`:
+2 files /39 tests pass. Editor diagnostics and `git --no-pager diff --check` pass.
+Disposable browser fixture verifies background dimensions equal1280x720 and
+390x844; bloom covers every edge at five sampled times across its38s drift,
+matching Oceanic tint and no horizontal overflow. Fixture removed. These are
+manual timeline samples, not hidden-browser natural playback. Hosted frontend
+publication remains pending.
+
+## Current captured creature Team parity (D-195)
+
+Owner requests creature UI match Element-Bearers while retaining Sell and related
+copy controls. Team captured details now use the same identity header and
+Stats/Skills/Growth/Conduits four-panel composition, not the legacy oversized
+portrait with one long control column. Shared stats include all seven values
+and Before Conduits comparisons; shared equipment renders eight ordinary slots,
+reserved Master and Store/Upgrade links with captured-copy transaction hooks.
+Collection captions include actual stars/element/level and squad membership.
+Header retains copy identity, cap120/fixed form, locks and leader/squad actions.
+Actual retained skills/costs/cooldowns, Max Level, level costs, sale value and
+protection reasons remain. No invented passive/evolution/ultimate, save changes,
+server changes or gameplay/transaction changes. Leader tint covers sidebar
+selection and progress bars too.
+
+Verified:
+- `npm test -- src\presentation\reference-ui.test.ts src\presentation\hub.test.ts src\presentation\roster.test.ts --maxWorkers=2`:3 files /85 tests pass.
+  Covers independent copies, lock hooks, all eight slots, sale-enabled/blocked/
+  unsupported modes, max120 and immutable rendering.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,204 modules; existing
+  large-bundle advisory. Editor diagnostics and `git --no-pager diff --check`
+  pass (CRLF advisory only).
+- Disposable in-memory Votive RoseliusLv89 fixture: desktop1280x720 reference
+  header/four bounded panels without outer page scrolling or horizontal overflow;
+  mobile390x844 stacks all four panels/eight slots without horizontal overflow.
+  Dense panels retain contained scrolling, as on the bearer layout.
+  Shared slot selection dialog opens with the correct slot label; scripted DOM
+  click used because hidden-browser stable-element waits timed out. No account
+  writes or owner-page mutations. Fixture removed.
+
+Frontend publication and visual owner acceptance remain pending. No server
+redeployment is needed.
+
+## Current squad leader theme and bloom (D-194)
+
+Owner requests menu accents follow the chosen squad leader and all screens gain
+a matching slowly drifting bloom puff. Shared leader-theme resolves all16
+Element-Bearers and captured combat elements; frame applies root variables for
+menus and body-mounted dialogs. Active navigation, primary actions, selected
+controls, focus/hover and Story arrows use the canonical shared palette.
+Battle uses its frozen first squad member even after actor/leader death or menu
+changes. Before a leader is available, opening screens remain neutral.
+
+Existing ambient backgrounds now include a bounded radial bloom animated with
+CSS transforms; lighter battle overlay preserves supplied scenery, animations
+and interaction. In-game Reduce motion stops drift. Dialog tint is static.
+No account/save/RNG/combat/server changes or unrelated palette rewrites.
+
+Verified:
+- `npm test -- src\presentation\leader-theme.test.ts src\presentation\ambient-background.test.ts src\presentation\reference-ui.test.ts --maxWorkers=2`:3 files /65 tests pass.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,204 modules; existing
+  large-bundle advisory remains. Editor diagnostics and `git --no-pager diff --check`
+  pass (CRLF advisory only).
+- Disposable in-memory browser fixtures verify all six actual navigation/dialog
+  colors and matching bloom gradients, keyboard-visible Oceanic focus, no
+  horizontal overflow at1280x720 and390x844, pointer-transparent layers and
+  retained loaded battle scenery/unblocked Battle menu hit testing.
+- Bloom transforms differ at0/19s manually sampled animation times; Reduce
+  motion yields animation:none. Hidden browser playback is not visual owner
+  acceptance. No owner account data was written; fixture removed.
+
+Frontend publication and visual owner acceptance remain pending. No server
+redeployment is needed.
+
+## Current Home Story artwork correction
+
+Owner requests the main-menu Continue Story button show the battle arena of the
+Story location reached. Shared referenceHome now renders the next unlocked
+stage's installed regional arena (final region after completion), with a
+full-bleed cover image and dark contrast overlay. Region, progress, hints, arrow
+and Story navigation remain; no save/server/combat changes. All six regional
+boundaries and completion are covered by immutable renderer tests.
+
+Validation: `npm test -- src\presentation\reference-ui.test.ts --maxWorkers=2`
+passed 1 file / 27 tests. Build Last Light (`npm run build`) passed TypeScript
+and Vite (202 modules; existing large-bundle advisory). Editor diagnostics and
+`git --no-pager diff --check` passed. A disposable in-memory browser Home fixture
+verified the Glasswater arena loads, covers its card and retains white readable
+text, with no horizontal overflow at 1280px desktop and 390px mobile widths.
+No owner account writes. Frontend publication and visual owner acceptance remain
+pending; no server redeployment is needed for this presentation-only change.
+
+## Current Story-first rebalance and activity access (D-192)
+
+### What changed
+
+Owner approves stronger enemy growth and normal-hit targets; explicitly selects
+highest-level owned Element-Bearer for activity locks, excluding captured levels
+and allowing bearers outside the squad. Shared hostile stats now grow throughout
+the level range, with exact Lv120 ordinary/boss HP200k/500k, Attack40k/50k and
+Defense6k/8k. Training preserves species opening stats. Story uses90% shared HP
+and75% Attack. No hidden level-gap modifier or changed player stat/skill costs.
+Captured playable stats remain on the original ordinary curve.
+
+Story/Training are immediate; Machines requiresLv10 + Emberwake clear; material
+dungeons30; Heaven/Abyss50; Treasury/Sanctuary60; Roses75; War85. Visible locked
+controls and client/server assertions share the helper. Starter selection and
+early online return open Story world map; an active online session resumes first.
+Home/Story/Help/Play guidance is short, with exact rates retained in Information.
+
+Owner separately approves preventing the infusion evolution deadlock. New floor
+anchors are1/50,13/65,19/75,25/85,35/120. Form3/4/5 and75 evolution/level materials
+align with60/75/90 caps. Premium remains zero below80;80-120 odds unchanged.
+Old capture levels/skills/UUIDs and metadata-free inferred levels remain valid.
+New infusion state has a caps schedule marker. Existing runs without one retain
+legacy levels and loot through Continue/Retry; new entry locks never interrupt
+active frozen runs. No load-time write, migration or resource grant.
+
+### What was verified
+
+- `npm test -- --maxWorkers=2`:105 files /1495 tests pass.
+- Tests measure actual Normal Attack hits for all three starters at eight
+  progression milestones. Infernis meets2-4/3-5/5-8 bands; lower-Attack tank/healer
+  roles retain their separate strengths. Even critical normals cannot one-shot
+  +5/+8/+10 ordinary enemies. Three seeds cover opening Story/no gear, accessible
+  Common Store gear for opening dungeons/Rare/form3 access, and built Rose squads.
+- Boundary gate tests cover client/server agreement, first-region requirement,
+  outside-squad ownership, captured exclusion, rejection immutability and old
+  durable-run read/Continue/Retry compatibility.
+- Build Last Light (`npm run build`):TypeScript/Vite pass,202 modules; existing
+  large-bundle advisory remains. Editor diagnostics clean.
+- `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json --pretty false`,
+  `npx --yes deno check supabase\functions\game-operation\index.ts`:pass.
+- `node tools\test_server_game_sql.mjs`:deployed SQL isolation/atomicity assertions
+  pass in rollback. No schema change.
+- `npx supabase functions deploy game-operation --project-ref ohtfgwomdfteaxubndww
+  --no-verify-jwt`:successful. Docker warning is nonfatal; API upload succeeds.
+- `node tools\smoke_server_game.mjs`:hosted authenticated first-stage locks,
+  unchanged revision/balance on rejection,75HP/4DEF opening Story enemy surviving
+  the first Normal Attack, actual kills/rewards/Continue/Quit, idempotency/CAS and
+  Friends privacy pass. Isolated identities/cascading records removed in finally.
+- Browser real-renderer map/stage fixtures at1280x720 have no outer page scroll;
+ 390x844 has no horizontal overflow, with vertical stacked content scrolling.
+  Six beacons/25 stages/Team/hints and six disabled infusion entries verified.
+  Browser localStorage unchanged. Fixtures removed by reload; animation studio
+  restored with no error. No owner account was modified.
+
+### Remaining scope / owner review
+
+No rebalance/access code remains pending. Hosted authoritative rules are updated;
+the web client is built locally but has not been published to the hosted frontend
+because these cumulative worktree changes have not been committed/pushed.
+Owner playtesting/visual acceptance remain; tests establish bounded behavior,
+not that every possible squad/gear/seed combination has ideal difficulty.
+D-191 preview remains available; this rebalance preserves its renderer.
+Player growth, ordinary costs/rewards, historical art and unrelated worktree
+changes remain intact. See [combat contract](combat.md#enemy-progression-rebalance-d-192),
+[access](story-and-training.md#story-first-progression-and-activity-access-d-192)
+and [infusion](gameplay-and-elements.md#two-infusion-modes).
+
+## Current animation overhaul (D-191)
+
+Owner requests every battle preserve animations and each character's attacks/
+casts grow more spectacular with evolution. Existing shared local/online renderer
+already carries entrances/banners/readiness glow; most roster impact profiles
+were generic. Added 16 typed, distinct weapon/caster signatures, seven pose types,
+source cast geometry and tiered impact crowns/arcs alongside existing rings/
+rays/sparks. Shared cut-in architecture preserves actual identity/action copy,
+3500ms duration and stationary reading hold. Unit colors and facing preserved.
+Separate clamped level/evolution factors keep late levels from saturating visual
+progression before Omnic. No combat/cost/cooldown/RNG/reward/save/server changes.
+
+Development-only `animation-preview.html` and `src/battle-animation-preview.ts`
+provide all characters/forms/actions/speeds plus activity selection through real
+BattleView with pure, in-memory authority fixtures. No persistence; preview is
+not a production build entry. Dispose old views on resets; disposed presentation
+cannot overwrite replacement host busy state. Owner visual approval remains.
+
+Validation: `npm test -- src\presentation\battle-effects.test.ts
+src\presentation\battle-animations.test.ts src\presentation\battle-cutin.test.ts
+src\presentation\battle-entrance.test.ts src\presentation\battle-authority.test.ts
+src\presentation\battle-chrome.test.ts src\presentation\battle-health.test.ts
+src\presentation\settings.test.ts src\game\captures.test.ts --maxWorkers=2`:
+9 files / 81 tests pass. Matrix covers all 17 concrete activity variants both
+locally and through authoritative presentation, with simultaneous AoE impacts.
+Build Last Light (`npm run build`): TypeScript/Vite pass, 201 modules; existing
+large-bundle advisory. `git --no-pager diff --check`: pass; diagnostics clean.
+
+Browser real-renderer fixtures cover 384 combinations (16 characters x six
+evolutions x four actions): zero missing cast/impact ensembles or errors, 16
+distinct signatures, no leftover effects and unchanged local storage. Additional
+10 activity-category cases, playback rates 1/2/3 and explicit reduction checked.
+Hidden browser clocks require explicit finite-animation completion and microtask
+draining; checks verify scheduled frames/layers, not natural wall-clock playback.
+Omnic Infernis banner preview shown; live studio remains available for review.
+Phone preview at actual 390 x 844 has no horizontal page overflow and every
+studio action/selector is at least 44px. Browser instrumentation was removed by
+reload; preview remains at default full animation/1x for owner inspection.
+
+## Current correction: remove redundant menu Back (D-190)
+
+Owner confirms removing Back from all main-menu screens with persistent
+navigation, keeping battle Leave and dialog Close/Cancel. Removed shared header
+Back markup/history parameters and updated its caller/tests. Persistent
+destinations/Menu, battle Leave handler and transient history/context restoration
+remain unchanged. No account writes, battle rule change or server deployment.
+
+Validation: `npm test -- src\presentation\sanctuary.test.ts
+src\presentation\archives.test.ts src\presentation\conduit-store.test.ts
+src\presentation\menu-history.test.ts src\presentation\game-dialog.test.ts
+--maxWorkers=2`: 5 files / 31 tests pass. Build Last Light (`npm run build`):
+TypeScript/Vite pass, 201 modules; existing bundle advisory.
+`git --no-pager diff --check`: pass. Browser renderer checks all 16 menu routes:
+zero Back buttons, four primary destinations and both Help/Menu close controls.
+
+## Current correction: element/status naming consistency (D-189)
+
+Owner reports inconsistent buffs/type names and Fire versus Infernic filters.
+All Team/Archive filters already use canonical names from D-186; added an exact
+six-name regression plus a presentation-source guard against `.affinity`.
+Material Exchange now also uses canonical element names. Found/fixed stale
+"Blooms" in Flora/Bliss spending descriptions and "one Infernic Embers stack"
+grammar. Native resources/passive triggers/spending text derive from shared
+family labels. Keep actual Burn/Weaken/Shield, Rose signatures and independent
+Conduit names distinct; no new effects or changed mechanics.
+
+Extracted pure describeFighter from the existing resolved-description builder.
+Battle references regenerate current copy from frozen kit strengths, covering
+old online snapshots without state/save/server mutations or reading menu gear.
+Shared status badges include canonical family tooltips; Archive kits and Battle
+ability references now use the same typed effects/icons as Team/action controls.
+
+Browser renderer checks verify all six canonical Team/Archive filter names and
+all six Material Exchange descriptions, native/Rose resource names, delivered
+icons and grammatical stack copy; localStorage unchanged. No account transaction.
+Targeted verification includes copy, status, Archives/Battle/readouts/stores,
+starter/flagship kits, combat content and server game tests. No server deployment
+needed for current display correction; owner visual acceptance remains.
+
+Validation: `npm test -- src\presentation\ui-copy.test.ts
+src\presentation\ability-status.test.ts src\presentation\archives.test.ts
+src\presentation\battle-chrome.test.ts src\presentation\unit-readout.test.ts
+src\presentation\online-store-profile.test.ts src\game\starter-kits.test.ts
+src\game\flagship-intrinsic-kits.test.ts src\content\combat.test.ts
+src\online\server-game.test.ts --maxWorkers=2`: 10 files / 88 tests pass.
+Build Last Light (`npm run build`): TypeScript/Vite pass, 201 modules; existing
+bundle advisory. `git --no-pager diff --check`: pass; editor diagnostics clean.
+
+## Current correction: Play/Story screen organization (D-188)
+
+Owner supplies current/desired screenshots. Replaced ungrouped activity cards,
+bulky region cards and stacked scenic stage detail with grouped activity rail,
+compact region sidebar/Prologue and one main regional panel: real heading,
+progress and map tabs; five-by-five stages beside boss/first-clear rewards;
+selected-stage summary, exact per-kill loot and Enter/Replay in bottom footer.
+Removed conflicting legacy ID-specific flex rules and redundant Open world map
+route button. Preserved inline map nodes/roads, all eight activities, canonical
+element names, stage gates, transactions, loot and account data.
+
+Browser fixtures use an in-memory account with 26 completed stages. At
+1440 x 900 and 1280 x 720 all 25 stages, boss and entry fit with no main/rail
+vertical scrolling or horizontal page overflow. Phone 390 x 844 uses compact
+horizontal activities, two-column regions and stacked main content; no
+horizontal page overflow/overlap, every stage >=44px and entry >=48px.
+Verified selection updates, replay label, locked-region disabled entry, inline
+map/region return and forwarding stage 27 entry to the existing hook. Fixtures
+do not start a real battle or write the owner account.
+
+Validation: `npm test -- src\game\story.test.ts
+src\presentation\reference-ui.test.ts src\presentation\menu-history.test.ts
+src\presentation\ui-copy.test.ts src\presentation\menu-information.test.ts
+--maxWorkers=2`: 5 files / 46 tests pass. Build Last Light (`npm run build`):
+TypeScript/Vite pass, 201 modules; existing bundle advisory. No server deployment
+required. Owner visual acceptance remains; this correction does not claim
+whole-game pixel-perfect approval.
+
+## Current correction: explicit-only reduced motion (D-187)
+
+Owner reports missing battle animations and inaccessible Votive Roselius skills.
+Shared owner browser reported device reduced motion with no saved reduction;
+both the motion helper and a global CSS media rule suppressed presentation.
+Full animations now plays by default, ignoring device reduction. Only explicit
+in-game Reduce motion suppresses JavaScript/CSS animations. Updated Settings
+copy; preserved legacy system/reduced tokens without storage writes. Removed
+device-based CSS animation gates across battle/menu/reward/upgrade surfaces.
+
+Saved Votive copies still have Golden Thorn Benediction/Overdrive with 25/40
+Gauge costs and 3/5-turn cooldowns; ordinary copies do not have Last Flare.
+No kit, cost, combat, reward or server rule change. Regression tests and isolated
+browser battles execute both skills and preserve their actual ability names.
+
+Validation: `npm test -- src\presentation\settings.test.ts
+src\presentation\settings-panel.test.ts src\game\captures.test.ts
+src\presentation\battle-chrome.test.ts src\presentation\battle-authority.test.ts
+src\presentation\battle-entrance.test.ts src\presentation\battle-effects.test.ts
+src\presentation\battle-cutin.test.ts src\presentation\battle-gesture.test.ts
+src\presentation\gesture-guide.test.ts src\presentation\reward-screen.test.ts
+src\presentation\upgrade-result.test.ts --maxWorkers=2`: 12 files / 82 tests pass.
+Build Last Light (`npm run build`): TypeScript/Vite pass, 201 modules; existing
+large-bundle advisory. `git --no-pager diff --check`: pass.
+Browser fixtures with device reduction active verify slide-in timelines, both
+3500ms captured-skill banners, attack movement, impacts/trails/numbers, normal
+idle animation and Last Flare shimmer/glow. Explicit reduction removes entrance
+animation, idle motion and shimmer while retaining the static glow. Hidden-page
+finite timelines were advanced explicitly, not claimed as natural playback.
+No owner account writes; disposable fixture DOM and animation hooks removed.
+No server deployment needed; broader UI acceptance/authentication checks remain.
+
+## Current addition: canonical-only element labels (D-186)
+
+Removed affinity parentheticals from shared element labels and all sixteen
+character display definitions, including portrait accessibility text. Team
+filters/cards, Archive element options and Play headings now use canonical names
+without redundant affinity annotations. Internal affinity metadata, stable IDs,
+combat, art and saves are unchanged; no server deployment required.
+
+Validation: `npm test -- src\presentation\ui-copy.test.ts
+src\presentation\archives.test.ts src\presentation\reference-ui.test.ts
+src\presentation\battle-chrome.test.ts src\content\activities.test.ts
+--maxWorkers=2`: 5 files / 45 tests pass. Build Last Light (`npm run build`):
+TypeScript/Vite pass, 201 modules; existing bundle advisory. Cross-surface
+regression covers all character names/portraits, shared labels, Home, Team,
+Archives, Play, Squad and banners. No new owner decisions or remaining work
+for this display change; broader pending items below remain unchanged.
+
+## Current addition: animated upgrade stat results (D-185)
+
+Owner requests game-style animations showing the boosted stats whenever a
+character levels/upgrades. Single Element-Bearer levels, evolution, Max Level
+and captured single/Max leveling now open a shared game-native result after the
+transaction saves and the menu updates. The elemental reveal shows the saved
+portrait, exact level/form change and seven staggered before/after stat cards
+with signed boosts; unchanged values remain neutral and tiny boosts never
+display "+0". Effective stats include actual equipment/upgrades. Existing
+inline celebration and portrait-preserving updates remain.
+
+Uses the reward foundation with "Upgrade saved", Skip, Continue, Escape, focus
+restoration/disposal and immediate static reduced-motion results. No new
+transaction, RNG, growth, cost or server change. Post-save presentation errors
+explicitly report that the upgrade is saved. Mobile fixtures fit seven cards
+and Continue at 390 x 844 without content scrolling.
+
+Verification: `npm test -- --maxWorkers=2`: 101 files / 1,438 tests pass.
+Build Last Light (`npm run build`): TypeScript/Vite pass, 201 modules; existing
+bundle advisory. Targeted result/inline celebration/reward dismissal/Max Level:
+4 files / 45 tests pass. Disposable browser fixtures verify evolved and captured
+portraits, exact level changes, seven stats, green/tiny gains, neutral unchanged
+stats, normal reveal/card animation, reduced motion and Skip/Continue cleanup.
+Hidden-browser finite animations advanced explicitly; no owner save mutation.
+Browser restored after checks. No commit/deployment or additional owner decision
+needed; broader owner UI acceptance/auth/email and recent-history gaps below
+remain unchanged. [Contract](units-and-progression.md#animated-upgrade-results-d-185).
+
+## Current: Reference structures and battle/control polish (D-183/D-184)
+
+Owner rejects the earlier claim of UI completion: the supplied screenshots are
+desired targets for only some interfaces, and the full latest HTML governs
+every screen/subview. Do not preserve superseded Georgia/tab-heavy character/
+Home-promotion/desktop page-scroll composition.
+
+Application now uses replacement Home and Team renderers, persistent Team
+sidebar/detail/owned-grid/captured-grid/formation views, real leader/filter/sort
+bindings and transient history. Growth preserves portrait DOM while refreshing
+header progression/rarity/pips/sidebar art. Summon is left-pity/hero/right-draw/
+bottom-tier-rates; Inventory shows both holdings panels. Play/Story, compact
+Collections, selected Conduit Store/Upgrade, Material/Cosmetic Market and
+Profile/Friends use the new structures and existing real operation hooks.
+Story now has six selectable map beacons/five completion-aware roads and compact
+five-column stage cards. Captured detail omits the inherited nested roster.
+Profile has an owned-icon grid, live bio count and automatic field-change saves:
+retry confirms an identical failed payload before sending newer queued edits.
+Self-hosted Sora replaces the installed-font approximation. Help/Menu/Settings
+are right-side sheets. No save/economy/odds/content changes or test grants.
+
+Owner's permanent D-184 standard requires polished text/buttons/dialogs, minimal
+scrolling/interaction and no functionality or effect removal. Battle now has
+one header with a persistent toolbar and one-click speeds, adjacent nameplates,
+compact footer, centered results and a bounded three-column reference menu.
+All five actions/Pass remain there; the approved bottom strip is removed.
+At 1440 x 900 the action panel fits without scrolling. Actual cut-ins, impact
+rings/sparks/trails and normal/reduced-motion readiness glows remain.
+Title/Information/Showcase controls, banner stars, visible Archive ownership/
+rarity/effects, Prologue access and 44px profile icons are corrected.
+
+Remaining: owner visual acceptance/authenticated whole-interface click-through;
+persisted recent activity (explicitly unavailable,
+never fabricated), owner authentication/email-delivery checks. Do not treat
+structural geometry/regression tests as pixel-perfect owner acceptance.
+[Current scope/status](mono-ui-and-cloud-saves.md#reference-structure-replacement-d-183).
+
+Validation: `npm test -- --maxWorkers=2`: 100 files / 1,431 tests pass.
+Build Last Light (`npm run build`): TypeScript/Vite pass, 199 modules, existing
+bundle-size advisory. Targeted reference/roster/Story: 3 files / 47 tests pass.
+Editor diagnostics: no errors in changed runtime TypeScript.
+Browser 1440 x 900 and 390 x 844: nineteen menu/subview fixtures have no
+horizontal page/content/panel overflow with maximum-safe-integer balances;
+desktop needs no outer content scroll. All 221 information dialogs fit mobile
+after entrance completion. Confirmation cancel, Settings bounds and reward
+Skip/Continue/disposal pass without transactions. Battle squads fit 1280 x 720
+and mobile; final results fit and omit Continue. Toolbar identity survives
+rerenders. Normal-motion fixture observes Dawnfire, element portrait glow,
+impact/trail/32 sparks and cleanup; hidden integrated browser freezes animation
+clocks, so finite timelines were advanced explicitly, not timed wall-clock.
+Reduced-motion fixture retains steady white readiness glow.
+Earlier browser 1440 x 900: all eight Play categories fit; six map nodes/five roads,
+locked-region entry disabled. Browser 390 x 844, maximum-safe-integer balances:
+Home, Team detail/capture/formation and Play/map have no horizontal page/content/
+header overflow. Profile fixture verifies failed-payload-first retry, newer
+queued fields, live count and explicit success/error state. Fixture checks do
+not mutate local storage or select an owner starter; browser restored afterward.
+These are not owner pixel-perfect acceptance or a full authenticated click-through.
+No new owner decisions are needed for this approved presentation pass; no commit
+or server deployment is performed.
+
+## Online rollout complete; initial UI claim superseded (D-181/D-182)
+
+Owner requests completion using the expanded Last Light.html reference; the
+provided Markdown contains branding only. Server gameplay/social migrations and
+the game-operation endpoint are deployed. Initial UI integration/regression
+results below are historical, not proof of the subsequently requested replacement.
+
+Client operations now cover fresh online starter selection, real account reads,
+all existing progression/equipment/squad/locks/sales/summons/Conduit purchases,
+the clarified Material Exchange/Cosmetic Store and editable profile. Online
+battle entry/actions/end-turn/Continue/Retry/Quit use authority transport; legacy
+wallet/profile keys are not read or written by online gameplay. Local motion/
+speed/hotkeys remain preferences. Ambiguous requests retain their original ID
+and have an explicit pending-operation retry; stale revisions reload current
+state. Owner additionally approves real Friends/requests; the profile UI and
+typed server operations now include accept/decline/cancel/remove.
+
+Validation: `npm test -- --maxWorkers=2`:99 files/1,417 tests pass.
+Build Last Light (`npm run build`):192 modules, pass; existing500kB advisory.
+`node tools\test_server_game_sql.mjs`: deployed game/social ACL, ownership,
+idempotency and stale revision tests pass inside rollback.
+`npx --yes deno check supabase\functions\game-operation\index.ts`:pass.
+Hosted authenticated smoke passed actual combat rewards, retry/CAS competition
+and friend workflows; isolated test identities/records removed.
+Browser: actual legacy Home/Story/Stores,150 stage hooks, six correctly disabled
+online-only material purchases and unchanged legacy storage during navigation.
+Material/cosmetic/profile renders fit390px; desktop renders fit1440px.
+Hidden integrated browser activity decode promises timed out despite loaded
+images, so complete click-through/animation visual acceptance remains an owner
+check rather than claimed pixel-perfect proof. Default email confirmation/
+recovery delivery and successful owner account login still need owner testing.
+No production SMTP or paid services added.25 missing Omnic kit artworks remain
+neutral pending, not substituted.
+Use [the rollout contract](mono-ui-and-cloud-saves.md), not the historical
+identity-only status immediately below, when continuing this phase.
+
+## Current: Online identity foundation (D-179/D-180)
 
 Inspected owner reference at C:\Users\creat\Downloads\last-light-mono.html.
 New stores and cloud accounts explicitly approved after initial clarification.
@@ -10,8 +1504,25 @@ in Git-ignored .env.local with placeholder-only .env.example. Free plan,
 US East, username/password with email verification/recovery selected.
 Owner chooses mandatory online accounts/server-authoritative progression and
 purchases. Online accounts start fresh; local saves remain separate legacy mode,
-never imported as trusted progress. Hosted project exists; new UI/store
-transactions/auth/server schema/functions are not implemented or deployed yet.
+never imported as trusted progress. Project linked; identity SQL migration and
+account-auth Edge Function deployed. Auth settings updated only for approved
+URLs/12-character passwords. Username rules3-16 letters/numbers/underscores,
+case-insensitive uniqueness, initially immutable; profile RLS restricts reads
+to self and denies all client writes. Server-only rate-limit RPC; no email directory.
+
+Title's Online account dialog supports register/sign-in/recovery/sign-out;
+Play legacy mode remains explicit and separate. Tokens use last-light.online-auth.
+Actual signup verification/recovery email and successful account login await
+owner testing; default Supabase mail service, no production SMTP configured.
+New overall UI/stores/profile customization/server combat/economy remain pending.
+Do not enable browser-wallet writes as an approximation of server authority.
+
+Validation:95 files/1,392 tests pass (`npm test -- --maxWorkers=2`); production
+build passes (existing size advisory). Deno auth check passes. Hosted SQL tests
+pass within rollback: normalized/unique/valid usernames, exact rate threshold,
+ACL and RLS isolation. Anonymous profile/RPC reads denied in browser; login
+rejection rendered explicitly,390px modal/focus/Close pass, legacy storage unchanged.
+Fixed the stale undelivered-Infernic battle-chrome expectation from D-178.
 Do not replace real content with sample mock data or expose server keys.
 
 ## Current: All60 installed Conduit cutouts reviewed (D-177)
@@ -2608,7 +4119,7 @@ Roses is unchanged. All seven are now playable, with reviewed supplied art.
 The earlier Bliss/Bruno reversal was a documentation transcription error;
 their authored stars were not changed.
 
-### Phase 1: Roses characters and event — implemented
+### Phase 1: Roses characters and event  Eimplemented
 
 [Intake tool](../tools/intake_roster_art.py) maps51 sources explicitly:
 18 Rosetta/Thornia/Crinso portraits,18 ability icons (including Defense),
@@ -4539,8 +6050,8 @@ An account with no owned members displays an explicit empty state.
 See [Squad rules](menus-and-inventory.md).
 
 Validation: `npx vitest run src/presentation/roster.test.ts
-src/game/squad.test.ts src/game/flow.test.ts` —46 tests passed;
-`npm test` —606 tests passed across59 files; `npm run build` passed with the
+src/game/squad.test.ts src/game/flow.test.ts`  E6 tests passed;
+`npm test`  E06 tests passed across59 files; `npm run build` passed with the
 existing chunk-size advisory. Browser flow from new profile to Home to Squad
 confirmed the editor is reachable and the owned Infernis is selectable as
 leader. Test profile/wallet data was removed afterward.
@@ -4582,13 +6093,13 @@ root copies were subsequently removed at the owner's request. The source/runtime
 
 ### Phase12 validation
 
-- `python tools/intake_root_art.py` — all36 mappings validate in dry-run mode;
+- `python tools/intake_root_art.py`  Eall36 mappings validate in dry-run mode;
   preserved originals and prior outputs match the recorded hashes.
-- `python -m unittest discover -s tools -p test_root_art_intake.py` —4 tests pass.
-- `python -m unittest discover -s tools` —46 tests pass.
-- `npx vitest run src/presentation/archives.test.ts src/presentation/conduit-store.test.ts src/presentation/roster.test.ts src/content/infusions.test.ts src/presentation/unit-facing.test.ts src/game/treasury.test.ts src/game/rosethorn-sanctuary.test.ts` —87 tests pass.
-- `npm test` —604 tests pass across59 files.
-- `npm run build` — TypeScript and production build pass; Vite reports the existing >500kB chunk advisory.
+- `python -m unittest discover -s tools -p test_root_art_intake.py`  E tests pass.
+- `python -m unittest discover -s tools`  E6 tests pass.
+- `npx vitest run src/presentation/archives.test.ts src/presentation/conduit-store.test.ts src/presentation/roster.test.ts src/content/infusions.test.ts src/presentation/unit-facing.test.ts src/game/treasury.test.ts src/game/rosethorn-sanctuary.test.ts`  E7 tests pass.
+- `npm test`  E04 tests pass across59 files.
+- `npm run build`  ETypeScript and production build pass; Vite reports the existing >500kB chunk advisory.
 - Browser smoke check fetched13 representative element, Conduit, portrait, banner and arena URLs under `/LastLightGame/assets/`; all returned HTTP200. The isolated test profile created for opening-flow access was removed; no profile remains.
 - No commit, push or deployment.
 
@@ -4603,7 +6114,7 @@ Phase11 adds comprehensive testing of economy lifecycle, combat continuity, save
 
 New [integrated-economy.test.ts](<C:/Users/creat/Downloads/Coding/Projects/Last Light/src/game/integrated-economy.test.ts>) exercises four critical scenarios:
 
-1. **Both farms → exact-copy dual sale → draw with duplicate conversion → Conduit equipping → protection → unequipping → full resale**
+1. **Both farms ↁEexact-copy dual sale ↁEdraw with duplicate conversion ↁEConduit equipping ↁEprotection ↁEunequipping ↁEfull resale**
    - Treasury and Rosethorn missions award captured creatures and Prismatica+Null-Prismatica independently.
    - Owned copies sell for exact form-based prices, protect other saves and remove exact instances.
    - Draw costs 10 Null-Prismatica atomically when funds available; fails safely without charging if insufficient.
@@ -4629,11 +6140,11 @@ New [integrated-economy.test.ts](<C:/Users/creat/Downloads/Coding/Projects/Last 
 
 ### Phase11 validation record
 
-- `npm test` — 590 tests passed across 59 test files.
-- `npx vitest run src/game/integrated-economy.test.ts` — 4 tests passed after expanding the activity matrix to all15 destinations.
-- `npm run build` — TypeScript check and Vite production build passed; Vite still reports the existing >500kB bundle-chunk advisory.
-- `python -m unittest discover -s tools -p test_art_prompts.py` — 9 prompt-contract checks passed.
-- Browser smoke test — title → starter selection → Home worked; Home had no horizontal overflow at the browser harness's available viewport widths of400,488 and1600px. The harness clamps requested320,390 and1280px widths to those available dimensions, so those exact breakpoints were not re-measured in this session. Existing prior responsive checks are listed in the historical handoff below.
+- `npm test`  E590 tests passed across 59 test files.
+- `npx vitest run src/game/integrated-economy.test.ts`  E4 tests passed after expanding the activity matrix to all15 destinations.
+- `npm run build`  ETypeScript check and Vite production build passed; Vite still reports the existing >500kB bundle-chunk advisory.
+- `python -m unittest discover -s tools -p test_art_prompts.py`  E9 prompt-contract checks passed.
+- Browser smoke test  Etitle ↁEstarter selection ↁEHome worked; Home had no horizontal overflow at the browser harness's available viewport widths of400,488 and1600px. The harness clamps requested320,390 and1280px widths to those available dimensions, so those exact breakpoints were not re-measured in this session. Existing prior responsive checks are listed in the historical handoff below.
 - Browser state began with empty local storage; the profile key created for the smoke test was removed after validation.
 - No new art assets were generated or added by Phase11. Art-prompt validation does not indicate generated art is ready.
 - No commit/push/deploy.

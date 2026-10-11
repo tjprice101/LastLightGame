@@ -3,6 +3,7 @@ import { characterArt, characterName } from '../content/character-art';
 import { unitFacing } from './unit-facing';
 import { characterArtRevisions } from '../content/character-art-revisions';
 import { conduitArtRevisions } from '../content/conduit-art-revisions';
+import { masterConduitArtRevisions } from '../content/master-conduit-art-revisions';
 import { abilityArtRevisions } from '../content/ability-art-revisions';
 import { storyArtRevisions } from '../content/story-art-revisions';
 import { statusArtRevisions } from '../content/status-art-revisions';
@@ -12,9 +13,11 @@ export function assetUrl(path: string): string {
   const character = /^characters\/([^/]+)\.png$/.exec(path);
   const conduit = /^conduits\/([^/]+)\.png$/.exec(path);
   const ability = /^abilities\/([^/]+)\.png$/.exec(path);
+  const master = /^master-conduits\/([^/]+)\.png$/.exec(path);
   const revision = character
     ? characterArtRevisions[character[1]]
     : conduit ? conduitArtRevisions[conduit[1]]
+      : master ? masterConduitArtRevisions[master[1]]
       : ability ? abilityArtRevisions[ability[1]] : statusArtRevisions[path] ?? storyArtRevisions[path];
   return revision ? `${url}?v=${revision}` : url;
 }

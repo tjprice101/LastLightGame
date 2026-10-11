@@ -1,5 +1,10 @@
 # Conduits and Conduit Store
 
+**D-201 current Master slot:** [48 character Masters](master-conduits.md) now
+equip in one separate matching slot, superseding historical reserved-Master
+statements. Final Machines boss has an independent 1% choice-chest drop.
+The ordinary catalogue remains 85; Masters do not enter its pools/upgrades.
+
 **Current D-176 conversion:** same25 kitConduit IDs become new Omnics, keeping
 ownership/upgrades. Catalog85 tiers10Common/15Rare/15Legendary/45Omnic;
 converted entries no longer sold or lower-tier drops, stage75+1%Omnic total.
@@ -77,10 +82,10 @@ cooldowns or Shatter gain rates; D-162 kit-focused designs explicitly do.
 
 Home's Stores destination contains Conduit Store. Inventory lists owned copies
 only. Character's Conduits tab retains its contextual store link; eight ordinary
-slots are active and Master remains reserved. No bottom-navigation bar.
+slots are active alongside one character-specific Master slot (D-201).
 History-aware Back returns from the Store to its actual caller, including the
 selected Character Conduits tab or Stores (D-092), rather than a fixed Home link.
-D-093 arranges equipment as a full-width reserved Master block above a
+D-093 arranges equipment as a full-width Master block above a
 four-by-two ordinary-slot grid on desktop, two columns on phones. The detail
 panel scrolls on desktop; every gear selector/effect remains available.
 
@@ -118,8 +123,9 @@ have [copy-ready prompts](../Art/creatures/Awaken%20the%20Machines.md) and insta
 reviewed256px transparent icons (D-128). Original bytes, per-image keys and
 foreground protections are recorded in [machine provenance](../Art/provenance/machines-art-intake.json).
 All shared Inventory/Archive/equipment/loot/results resolvers use the catalog IDs.
-The35 D-157 and25 D-162 additions remain art-pending with honest neutral presentation,
-not existing icons borrowed from unrelated devices or missing PNG URLs.
+The35 D-157 additions are installed under D-167; D-199 installs the25 reborn
+kit-Conduit icons with reviewed source-specific background cleanup and preserved
+originals. All85 catalog entries now resolve real artwork, never unrelated icons.
 [Approved catalog and phases](conduit-expansion-plan.md) records their identities.
 [Kit catalog](kit-conduits.md) / [25 new icon prompts](../Art/conduits/Kit%20Conduits.md).
 Ordinary Inventory/equipment icons are80px; Store and Conduit Archive hero art

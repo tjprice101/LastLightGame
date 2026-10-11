@@ -10,7 +10,7 @@ import { characterCopyManagement } from './roster';
 import { createCreatureCopy } from '../game/character-instances';
 import { getStarter } from '../content/starters';
 import { creatureGlossary } from './creature-glossary';
-import { sanctuaryHeader, isMenuPage } from './sanctuary';
+import { isMenuPage } from './sanctuary';
 import { lootItems, lootArt } from './battle-loot';
 import { battleResults, encounterRewards } from './battle-results';
 import { createInfusionBattle, type BattleEvent } from '../game/battle';
@@ -32,15 +32,16 @@ function wallet() {
 describe('Conduit Upgrade and account-aware icons', () => {
   it('shows owned names only, current/next drawbacks, exact costs, components-only rules and accessible levels', () => {
     const account = wallet();
-    const html = conduitUpgradeMenu(account);
-    expect(html.match(/data-upgrade-card=/g)).toHaveLength(2);
+    const html = conduitUpgradeMenu(account, 'worldbreaker-drive');
+    expect(html.match(/data-select-upgrade-conduit=/g)).toHaveLength(2);
+    expect(html.match(/data-upgrade-card=/g)).toHaveLength(1);
     expect(html).toContain('data-expected-upgrade="4"');
     expect(html).toContain('+255% Attack, -30% Health');
     expect(html).toContain('+297.5% Attack, -35% Health');
     expect(html).toContain('Upgrade to +5 · 1000 components');
     expect(html).toMatch(/data-upgrade-conduit="worldbreaker-drive"[^>]+disabled/);
     account.mechanicalComponents = 1000;
-    expect(conduitUpgradeMenu(account)).not.toMatch(/data-upgrade-conduit="worldbreaker-drive"[^>]+disabled/);
+    expect(conduitUpgradeMenu(account, 'worldbreaker-drive')).not.toMatch(/data-upgrade-conduit="worldbreaker-drive"[^>]+disabled/);
     for (const row of ['Common: 25 / 50 / 100 / 175 / 250',
       'Rare: 50 / 100 / 200 / 350 / 500', 'Legendary: 100 / 200 / 400 / 700 / 1000',
       'Omnic: 5000 / 10000 / 20000 / 35000 / 50000']) expect(html).toContain(row);
@@ -60,8 +61,9 @@ describe('Conduit Upgrade and account-aware icons', () => {
     account.conduitUpgrades['worldbreaker-drive'] = 5;
     const html = conduitUpgradeMenu(account);
     expect(html).toMatch(/data-upgrade-conduit="vigil-core"[^>]+disabled/);
-    expect(html).toMatch(/data-upgrade-conduit="worldbreaker-drive"[^>]+disabled/);
-    expect(html).toContain('Maximum upgrade +5');
+    const max = conduitUpgradeMenu(account, 'worldbreaker-drive');
+    expect(max).toMatch(/data-upgrade-conduit="worldbreaker-drive"[^>]+disabled/);
+    expect(max).toContain('Maximum upgrade +5');
     expect(html).toContain('Not enough Broken Mechanical Components');
     expect(conduitUpgradeMenu(emptyAccount())).toContain('No owned Conduits to upgrade');
     expect(conduitUpgradeMenu(null)).toContain('role="alert"');
@@ -85,7 +87,7 @@ describe('Conduit Upgrade and account-aware icons', () => {
     expect(homeHub(getStarter('ember'), false, equipped)).toContain('143');
     expect(equipped).toEqual(before);
     expect(isMenuPage('conduit-upgrade')).toBe(true);
-    expect(sanctuaryHeader('home', 0, 0)).toContain('data-page="conduit-upgrade"');
+    expect(inventoryView(wallet())).toContain('data-page="conduit-upgrade"');
   });
   it('shows the stage component loot only after defeat and uses saved icon levels in machine loot tables', () => {
     const account = wallet();

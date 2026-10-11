@@ -41,6 +41,10 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
 
 ## Items, actions and scenery
 
+- [48 character Masters, choice chest and Astral Reserve](conduits/Master%20Conduits.md):
+  D-201 combined 50-prompt pack, cosmic machinery and character palettes;
+  runtime mechanics implemented, PNG artwork pending.
+
 - [Conduits](conduits/Conduits.md), [35 added Conduits](conduits/Conduit%20Expansion.md).
 - [25 reborn Omnic kit Conduits](conduits/Kit%20Conduits.md): D-176 converts
   existing25 IDs to unique new Omnic mechanics/full elemental masterpieces;

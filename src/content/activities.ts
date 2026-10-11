@@ -19,8 +19,8 @@ export const elementalMaterials = elements.flatMap((element) => materialRarities
 export const dungeonStageCount = 35;
 export const elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 38, maximumLevel: 120, maximumLevelStage: dungeonStageCount } as const;
 export const infusionModes = [
-  { id: 'heavens', name: 'Soar to Heaven', energy: 'Light', enemyTheme: 'Dawnthorn Slime evolution line', stages: dungeonStageCount, startingLevel: 80, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
-  { id: 'abyss', name: 'Delve into the Abyss', energy: 'Chaotic', enemyTheme: 'Wraththorn Slime evolution line', stages: dungeonStageCount, startingLevel: 80, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
+  { id: 'heavens', name: 'Soar to Heaven', energy: 'Light', enemyTheme: 'Dawnthorn Slime evolution line', stages: dungeonStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
+  { id: 'abyss', name: 'Delve into the Abyss', energy: 'Chaotic', enemyTheme: 'Wraththorn Slime evolution line', stages: dungeonStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
 ] as const;
 export const currencyModes = [
   { id: 'treasury', name: 'Crownfall Treasury', stages: 25, startingLevel: 65, maximumLevel: 120, enemyTiers: 6 },
@@ -38,7 +38,7 @@ export function isCurrencyMode(mode: InfusionModeId): boolean {
 }
 export function infusionStageCount(mode: InfusionModeId): number {
   const definition = [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].find((entry) => entry.id === mode);
-  if (!definition) throw new Error('Unknown staged creature mode.');
+  if (!definition) throw new Error('Unknown staged Elemental-Devourer mode.');
   return definition.stages;
 }
 export function validateMachineStage(stage: number): void {

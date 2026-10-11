@@ -25,6 +25,6 @@ export function maxLevelPreview(account: Account, id: string): { html: string; p
       const stat = key as keyof typeof labels;
       return `<span><small>${label}</small><strong>${statChange(before[stat], after[stat], stat === 'crit' ? '%' : stat === 'critMultiplier' ? 'x' : '')}</strong></span>`;
     }).join('')}</div>
-    <p>${plan.targetLevel === plan.currentLevel ? plan.currentLevel === plan.cap ? 'Level cap reached.' : 'Insufficient resources for the next level.' : `Level ${isStarterId(id) ? characterName(id, progress?.evolution) : 'this creature'} to ${plan.targetLevel}?`}</p>
+    <p>${plan.targetLevel === plan.currentLevel ? plan.currentLevel === plan.cap ? 'Level cap reached.' : 'Insufficient resources for the next level.' : `Level ${isStarterId(id) ? characterName(id, progress?.evolution) : 'this Elemental-Devourer'} to ${plan.targetLevel}?`}</p>
     <button type="button" class="primary-button" data-confirm-max-level ${plan.targetLevel === plan.currentLevel ? 'disabled' : ''}>Confirm leveling</button>` };
 }

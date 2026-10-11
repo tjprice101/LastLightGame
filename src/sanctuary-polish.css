@@ -337,7 +337,4 @@
   .sanctuary-shell .summon-drop-table th:first-child { width: 42%; }
   .sanctuary-shell > .status:not(:empty) { bottom: 16px; margin-inline: 16px; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .sanctuary-shell *, .shell:not(.sanctuary-shell) .enter-button { animation: none !important; transition: none !important; }
-}
 :root[data-motion="reduced"] .sanctuary-shell * { animation: none !important; transition: none !important; }

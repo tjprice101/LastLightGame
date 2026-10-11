@@ -1,9 +1,30 @@
 import { describe, expect, it } from 'vitest';
-import { fighters, formatStat, resolveFighter, shatterGauge } from './combat';
-import { openingStarters as starters } from './starters';
+import { describeFighter, fighters, formatStat, resolveFighter, shatterGauge } from './combat';
+import { openingStarters as starters, starters as roster } from './starters';
 import { characterLevelCap, characterGrowthFactor, characterPotencyFactor } from './progression';
 
 describe('character stat and kit growth', () => {
+  it.each(roster)('$name explains actual ability effects without changing frozen kits', starter => {
+    const original = resolveFighter(starter.id);
+    const before = structuredClone(original);
+    const kit = describeFighter(starter.id, original);
+    expect(original).toEqual(before);
+    for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
+      const ability = kit.abilities[action];
+      expect(ability.strength).toEqual(original.abilities[action].strength);
+      expect(ability.cooldown).toBe(original.abilities[action].cooldown);
+      if (ability.strength.shield !== undefined) {
+        expect(ability.description).toContain('Shield absorbs damage before HP');
+        expect(ability.description).toContain('higher amount');
+      }
+      if (ability.strength.weakenFraction !== undefined) expect(ability.description).toContain('Weaken');
+      if (ability.strength.critBonus !== undefined) expect(ability.description).toContain('only to this attack');
+      if (action === 'ultimate') expect(ability.description).toContain('cannot act on the next player turn');
+      expect(ability.description).not.toMatch(/\bauthored\b/);
+    }
+    expect(kit.passive.description).not.toMatch(/\beffective authored\b/);
+    if (starter.id === 'bliss') expect(kit.passive.description).toContain('another living ally');
+  });
   it.each(starters)('$name preserves its original base kit without mutating definitions', (starter) => {
     const original = structuredClone(fighters[starter.id]);
     const kit = resolveFighter(starter.id);

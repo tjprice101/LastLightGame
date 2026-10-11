@@ -1,0 +1,845 @@
+html { font-size: clamp(15px, max(.2vw + 14px, min(1.25vw, 2.3vh)), 22px); }
+html body { --ui-font: Georgia, "Times New Roman", serif; font-family: var(--ui-font); }
+html body :is(button, input, select, textarea, h1, h2, h3, h4, p, small, span, strong, b, label, table) { font-family: var(--ui-font); }
+html body :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) :is(button, input, select, textarea) { font: 500 .8rem/1.4 var(--ui-font); border: 1px solid #2d2d31; border-radius: .6rem; background: #1a1a1c; color: #f4f4f5; padding: .55rem .75rem; min-height: 44px; }
+html body :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) :is(input, select, textarea) { width: 100%; min-width: 0; }
+html body :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) button { cursor: pointer; transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease; }
+html body :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) :is(button, input, select, textarea):focus-visible { outline: 2px solid #f4f4f5; outline-offset: 3px; }
+html body :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) button:disabled { cursor: not-allowed; opacity: 1; background: #242427; color: #b5b5bc; border-color: #55555b; }
+html body :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) :is(.primary-button, .game-confirm-button) { background: #f4f4f5; color: #0b0b0c; border-color: #f4f4f5; font-weight: 600; box-shadow: none; }
+html body :is(.game-dialog, .information-modal, .online-account) { border-color: #2d2d31; border-radius: .9rem; background: #131314; color: #f4f4f5; padding: 1.3rem; }
+html body :is(.game-dialog, .information-modal, .online-account) :is(h2, h3, h4) { line-height: 1.3; letter-spacing: normal; }
+html body :is(.game-dialog, .information-modal, .online-account) h2 { font-size: 1.3rem; }
+html body :is(.game-dialog, .information-modal, .online-account) :is(p, li, dt, dd) { font-size: .85rem; line-height: 1.55; }
+html body :is(.game-dialog, .information-modal, .online-account)::backdrop { background: #000a; backdrop-filter: blur(4px); }
+html body :is(.sanctuary-shell, .information-modal, .game-dialog) { scrollbar-width: thin; scrollbar-color: #55555b #131314; }
+html body .sanctuary-shell :is(.ref-panel, .ref-store-detail, .inventory-panel, .archive-card) { overflow-wrap: anywhere; }
+html body .sanctuary-shell [data-information] { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 44px; font-size: .75rem; }
+html body :is(.sanctuary-help-drawer, .sanctuary-menu-drawer, .settings-drawer) .drawer-heading { position: sticky; top: 0; background: #131314; padding-bottom: .8rem; margin-bottom: .8rem; border-bottom: 1px solid #2d2d31; }
+html body .settings-drawer .settings-panel { padding: .9rem; margin-top: .8rem; border-radius: .75rem; background: #1a1a1c; border-color: #2d2d31; }
+html body .settings-drawer :is(h3, label, p) { font-family: var(--ui-font); letter-spacing: normal; }
+html body .settings-drawer h3 { font-size: .95rem; }
+html body .settings-drawer :is(label, p) { font-size: .8rem; line-height: 1.5; }
+html body .sanctuary-shell .ref-panel > h3, html body .sanctuary-shell .ref-character-panels .mono-character-quad > section > h3 { font-size: .66rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #707076; margin: 0 0 .5rem; }
+html body .sanctuary-shell [data-information] { text-decoration: none; }
+html body .sanctuary-shell .ref-archive-manage { display: flex; flex-direction: column; gap: .4rem; }
+html body .sanctuary-shell .ref-summon-draw > [data-information], html body .sanctuary-shell .ref-summon-draw .banner-showcase-control { width: 100%; }
+html body .sanctuary-shell .ref-inventory .inventory-item > small { font-size: .72rem; line-height: 1.4; color: #a9a9ae; }
+html body .banner-showcase-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: .7rem; }
+html body .banner-showcase-grid > li { padding: .7rem; gap: .5rem; background: #1a1a1c; border-color: #2d2d31; }
+html body .banner-showcase-grid h3 { font: 600 .85rem/1.3 var(--ui-font); }
+html body .banner-showcase-grid .element-emblem { width: 1.5rem; height: 1.5rem; }
+@media (hover: hover) {
+  html body :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) button:hover:not(:disabled) { border-color: #707076; }
+  html body .sanctuary-shell :is(.ref-product, .ref-collection-card, .ref-member-row, .ref-home-shop):hover:not(:disabled) { background-color: #242427; }
+}
+:root[data-motion="reduced"] :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) button { transition: none; }
+html body .sanctuary-shell { height: 100dvh; min-height: 0; display: grid; grid-template-rows: 3.6rem minmax(0, 1fr); padding: 0; overflow: hidden; font-weight: 400; }
+html body .sanctuary-shell .sanctuary-header { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; padding: 0 1.25rem; gap: 1rem; min-height: 0; border-bottom: 1px solid #2d2d31; }
+html body .sanctuary-shell .sanctuary-brand { gap: .7rem; min-width: 0; }
+html body .sanctuary-shell .sanctuary-brand strong { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; }
+html body .sanctuary-shell .brand-mark { width: 2rem; height: 2rem; border-radius: .4rem; }
+html body .sanctuary-shell .sanctuary-back { font-size: .65rem; min-height: 44px; }
+html body .sanctuary-shell .sanctuary-dock { position: static; transform: none; width: auto; background: none; display: flex; border: 0; padding: 0; gap: .25rem; }
+html body .sanctuary-shell .sanctuary-dock button { display: flex; align-items: center; gap: .5rem; min-height: 44px; padding: .55rem 1.1rem; font-size: .9rem; font-weight: 600; border-radius: .6rem; }
+html body .sanctuary-shell .sanctuary-wallet { grid-column: 3; justify-content: flex-end; gap: .45rem; }
+html body .sanctuary-shell .sanctuary-header .currency-strip { gap: .5rem; width: auto; }
+html body .sanctuary-shell .sanctuary-header .currency-strip > button { flex: none; gap: .5rem; padding: .4rem .8rem; background: #131314; border: 1px solid #2d2d31; border-radius: 99px; min-height: 44px; }
+html body .sanctuary-shell .sanctuary-header .currency-strip strong { display: flex; flex-direction: row; flex-wrap: nowrap; align-items: baseline; gap: .4rem; font-size: .82rem; font-weight: 600; }
+html body .sanctuary-shell .sanctuary-header .currency-strip strong small { display: block; font-size: .72rem; font-weight: 400; color: #707076; }
+html body .sanctuary-shell .currency-strip .currency-icon { width: 1.25rem; height: 1.25rem; }
+html body .sanctuary-shell .sanctuary-content { width: 100%; max-width: none; min-height: 0; height: 100%; overflow: auto; padding: 1rem 1.25rem 1.25rem; }
+.ref-sr-only { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; overflow: hidden !important; clip-path: inset(50%); white-space: nowrap; }
+.ref-screen { display: grid; height: 100%; min-height: 0; gap: .9rem; color: #f4f4f5; }
+.ref-screen :is(h2, h3, h4, p) { margin: 0; }
+.ref-panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: #131314; border: 1px solid #2d2d31; border-radius: .9rem; padding: .95rem; gap: .6rem; }
+.ref-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: #707076; font-weight: 600; }
+.ref-panel-heading > span { font-size: .7rem; color: #a9a9ae; font-weight: 400; }
+.ref-panel-heading :is(button, a) { letter-spacing: normal; text-transform: none; }
+.ref-scroll { min-height: 0; overflow: auto; flex: 1; }
+html body .sanctuary-shell .ref-link { border: 0; background: none; color: #a9a9ae; font-size: .72rem; padding: .3rem; min-height: 44px; }
+.ref-tags { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem; }
+html body .sanctuary-shell .ref-chip { display: inline-flex; align-items: center; justify-content: center; font-size: .74rem; border: 1px solid #2d2d31; border-radius: 99px; background: #1a1a1c; color: #a9a9ae; padding: .18rem .65rem; width: fit-content; }
+html body .sanctuary-shell button.ref-chip { min-height: 44px; }
+html body .sanctuary-shell .ref-white { background: #f4f4f5; color: #0b0b0c; border-color: #f4f4f5; }
+.ref-stars { letter-spacing: .15em; font-size: .85rem; }
+.ref-home { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: minmax(0, 2fr) minmax(0, 1fr); }
+.ref-home-leader { grid-column: 1 / 3; grid-row: 1 / 3; padding: 0; position: relative; overflow: hidden; }
+html body .sanctuary-shell .ref-home-art { position: absolute; inset: 0 0 9.5rem; display: grid; place-items: center; padding: 1rem; border: 0; background: none; width: 100%; }
+.ref-home-art :is(.hub-portrait, .character-idle) { width: 100%; height: 100%; min-height: 0; display: grid; place-items: center; }
+html body .sanctuary-shell .ref-home-art img { width: 94%; max-width: 94%; min-height: 0; max-height: 100%; height: 100%; object-fit: contain; }
+.ref-home-identity { position: absolute; inset: auto 0 0; padding: 1.4rem; background: linear-gradient(transparent, #0b0b0c 45%); pointer-events: none; }
+.ref-home-identity > p { font-size: .8rem; color: #a9a9ae; }
+.ref-home-identity h2 { font-size: clamp(1.8rem, 3.2vw, 2.8rem); line-height: 1.05; margin: .15rem 0 .6rem; }
+.ref-stat-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin-top: .9rem; }
+.ref-stat-strip > div { border: 1px solid #2d2d31; border-radius: .6rem; padding: .45rem .7rem; background: #131314cc; min-width: 0; overflow-wrap: anywhere; }
+.ref-stat-strip small { display: block; color: #707076; font-size: .68rem; }
+.ref-stat-strip b { font-size: 1.15rem; }
+html body .sanctuary-shell .ref-home-story { grid-column: 3 / 5; grid-row: 1; position: relative; isolation: isolate; overflow: hidden; background: #131314; color: #fff; text-align: left; justify-content: space-between; border-color: #2d2d31; }
+html body .sanctuary-shell .ref-home-story-arena { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; max-width: none; max-height: none; object-fit: cover; object-position: center; pointer-events: none; }
+.ref-home-story::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #000c, #0005), linear-gradient(0deg, #0006, transparent); pointer-events: none; }
+.ref-home-story .ref-panel-heading { color: #eee; }
+.ref-home-story strong { font-size: clamp(1.4rem, 2.3vw, 2rem); line-height: 1.1; display: block; }
+.ref-home-story small { display: block; color: #eee; font-size: .85rem; margin-top: .35rem; }
+.ref-go { align-self: flex-end; width: 3rem; height: 3rem; border-radius: 50%; background: #0b0b0c; color: white; display: grid; place-items: center; font-size: 1.3rem; }
+.ref-home-shops { grid-column: 3 / 5; grid-row: 2; display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+html body .sanctuary-shell .ref-home-shop { text-align: left; position: relative; justify-content: space-between; }
+.ref-home-shop b { display: block; font-size: .9rem; }
+.ref-home-shop small { display: block; color: #a9a9ae; font-size: .74rem; margin-top: .25rem; }
+.ref-shop-arrow { align-self: flex-end; font-size: 1.3rem; }
+.ref-team { grid-template-columns: 17.5rem minmax(0, 1fr); }
+.ref-team-sidebar { display: flex; flex-direction: column; gap: .9rem; min-height: 0; overflow: auto; }
+.ref-collection-sidebar { flex: 1; }
+.ref-member-line { position: relative; }
+html body .sanctuary-shell .ref-member-row { display: flex; align-items: center; gap: .7rem; border: 1px solid #2d2d31; border-radius: .7rem; background: #1a1a1c; width: 100%; padding: .5rem; text-align: left; min-width: 0; }
+.ref-member-line > .ref-chip { position: absolute; right: .35rem; bottom: .35rem; }
+.ref-member-line:has(> .ref-chip) .ref-member-row { padding-right: 4.3rem; }
+html body .sanctuary-shell .ref-member-row.is-selected { border-color: #f4f4f5; box-shadow: 0 0 0 1px #f4f4f5; }
+.ref-member-row b { display: block; font-size: .88rem; line-height: 1.2; }
+.ref-member-row small { color: #707076; font-size: .72rem; }
+.ref-thumb { width: 2.6rem; height: 2.6rem; border-radius: .5rem; flex: none; display: grid; place-items: center; background: #242427; overflow: hidden; }
+.ref-thumb :is(img, .character-idle) { width: 100%; height: 100%; object-fit: contain; }
+.ref-team-detail { display: grid; grid-template-rows: auto auto auto; align-content: start; gap: .9rem; min-height: 0; min-width: 0; }
+html body .sanctuary-shell .ref-character-header { display: flex; flex-direction: row; align-items: center; gap: 1.1rem; padding: .8rem; }
+html body .sanctuary-shell .ref-character-portrait { position: relative; width: 4.6rem; height: 4.6rem; min-height: 0; flex: none; background: #242427; border-radius: .8rem; display: grid; place-items: center; }
+.ref-character-portrait :is(.character-idle, img) { width: 100%; height: 100%; object-fit: contain; }
+.ref-character-identity { flex: 1; min-width: 0; }
+.ref-character-identity p { font-size: .75rem; color: #a9a9ae; }
+.ref-character-identity h2 { font-size: 1.7rem; line-height: 1.1; margin: .2rem 0 .35rem; }
+.ref-character-progress { display: flex; gap: 1.4rem; margin-top: .55rem; font-size: .76rem; color: #a9a9ae; }
+.ref-bar { height: 4px; border-radius: 4px; background: #242427; overflow: hidden; width: 7rem; margin-top: .3rem; }
+.ref-bar i { height: 100%; display: block; background: #f4f4f5; }
+.ref-pips { display: flex; gap: 3px; margin-top: .3rem; }
+.ref-pips i { width: 1.2rem; height: 4px; border-radius: 2px; background: #242427; }
+.ref-pips .is-filled { background: #f4f4f5; }
+.ref-character-header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: .5rem; }
+html body .sanctuary-shell .ref-character-panels { padding: 0; margin: 0; background: none; border: 0; height: auto; display: block; align-self: start; min-height: 0; overflow: visible; }
+.ref-character-panels > #upgrade-heading { display: none; }
+.ref-character-panels > .character-detail-content { height: 100%; min-height: 0; padding: 0; }
+html body .sanctuary-shell .ref-character-panels .mono-character-quad { display: grid; height: 100%; grid-template-columns: 1fr 1.3fr; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; gap: .9rem; min-height: 0; }
+html body .sanctuary-shell .ref-character-panels .mono-character-quad > section { padding: .95rem; margin: 0; border: 1px solid #2d2d31; border-radius: .9rem; background: #131314; min-height: 0; overflow: auto; }
+.ref-character-panels h3 { font-size: .8rem; margin-bottom: .6rem; }
+.ref-character-panels :is(.character-stat-rating, .hub-stats-heading, .character-stats-context) { display: none; }
+.ref-character-panels .hub-stat-groups { display: block; }
+.ref-character-panels .hub-stat-group { border: 0; padding: 0; background: none; }
+.ref-character-panels .hub-stat-group > h4 { display: none; }
+.ref-character-panels .character-ability-grid { display: block; }
+.ref-character-panels .hub-ability { border: 0; border-bottom: 1px solid #2d2d31; padding: .3rem 0; margin: 0; background: none; }
+.ref-character-panels .hub-ability h3 { font-size: .84rem; margin-bottom: .2rem; }
+.ref-character-panels .hub-ability p { font-size: .76rem; line-height: 1.35; color: #a9a9ae; }
+.ref-character-panels .ability-icon { width: 1.5rem; height: 1.5rem; }
+html body .sanctuary-shell .ref-character-panels .hub-stats { display: block; }
+html body .sanctuary-shell .ref-character-panels .hub-stats > div { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: .2rem .6rem; padding: .3rem 0; border: 0; border-bottom: 1px solid #2d2d31; background: none; border-radius: 0; min-height: 0; }
+.ref-character-panels .hub-stats small { font-size: .86rem; color: #a9a9ae; }
+.ref-character-panels .hub-stats strong { font-size: .86rem; }
+.ref-character-panels .hub-stats > div > small:last-child:not(:first-child) { flex-basis: 100%; font-size: .65rem; }
+.ref-character-panels .mono-growth-options { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+.ref-character-panels .mono-growth-options > article { display: flex; flex-direction: column; gap: .35rem; padding: .7rem; border: 1px solid #2d2d31; border-radius: .7rem; background: #1a1a1c; min-width: 0; }
+.ref-character-panels .mono-growth-options h4 { font-size: .9rem; }
+.ref-growth-summary, .ref-growth-cost, .ref-growth-materials { font-size: .74rem; color: #a9a9ae; }
+.ref-growth-cost { display: flex; align-items: center; gap: .3rem; }
+.ref-growth-cost .currency-icon { width: 1.1rem; height: 1.1rem; }
+.ref-growth-materials { list-style: none; padding: 0; margin: 0; flex: 1; }
+.ref-growth-materials li { display: flex; align-items: center; gap: .35rem; margin-bottom: .3rem; }
+.ref-growth-materials img { width: 1.5rem; height: 1.5rem; object-fit: contain; }
+.ref-growth-materials small { display: block; font-size: .65rem; color: #707076; }
+.ref-capture-detail .mono-growth-options .item-showcase { padding: 0; border: 0; margin: 0; background: none; }
+.ref-capture-detail .mono-growth-options .item-showcase ul { grid-template-columns: 1fr; gap: .35rem; }
+.ref-capture-detail .mono-growth-options .item-showcase li { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr) auto; gap: .35rem; text-align: left; }
+.ref-capture-detail .mono-growth-options .item-showcase-art { width: 1.5rem; height: 1.5rem; border: 0; border-radius: .3rem; }
+.ref-capture-detail .mono-growth-options .item-showcase-art img { width: 100%; height: 100%; }
+.ref-capture-detail .mono-growth-options .item-showcase h4 { font-size: .7rem; margin-bottom: .35rem; }
+.ref-capture-detail .mono-growth-options .item-showcase :is(strong, b, span, small) { font-size: .72rem; }
+html body .sanctuary-shell .ref-capture-detail .mono-growth-options .ref-growth-summary { font-size: .72rem; line-height: 1.4; }
+.ref-growth-preview { font-size: .72rem; }
+.ref-growth-preview summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+.ref-growth-preview > div > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .2rem; padding: .25rem 0; }
+.ref-equipment-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; }
+.ref-equipment-slot { display: flex; flex-direction: column; align-items: center; gap: .3rem; border: 1px solid #2d2d31; background: #1a1a1c; border-radius: .6rem; padding: .4rem; min-width: 0; }
+.ref-equipment-slot .conduit-icon-frame { width: 2.8rem; height: 2.8rem; }
+.ref-equipment-slot small { font-size: .62rem; color: #a9a9ae; }
+.ref-equipment-slot .selection-trigger { width: 100%; padding: .25rem; font-size: .65rem; overflow-wrap: anywhere; }
+.ref-slot-empty { display: grid; place-items: center; width: 2.8rem; height: 2.8rem; color: #707076; }
+.ref-master-slot { text-align: center; border: 1px dashed #2d2d31; border-radius: .6rem; padding: .65rem; font-size: .72rem; color: #707076; margin-top: .5rem; }
+.ref-equipment footer { display: flex; justify-content: space-between; }
+html body .sanctuary-shell .ref-character-submenus { display: flex; flex-wrap: wrap; gap: .5rem; }
+html body .sanctuary-shell .ref-character-submenus button { flex: 1 1 8rem; min-height: 44px; }
+html body .sanctuary-shell .ref-character-submenus button[aria-pressed=true] { border-color: var(--leader-accent, #f4f4f5); }
+html body .sanctuary-shell .ref-organized-detail { height: auto; min-width: 0; }
+html body .sanctuary-shell .ref-organized-detail .ref-character-overview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: .9rem; }
+html body .sanctuary-shell .ref-organized-detail :is(.ref-character-overview > section, .ref-equipment-workspace, .character-upgrade-grid > section) { min-width: 0; margin: 0; padding: 1rem; border: 1px solid #2d2d31; border-radius: .9rem; background: #131314; overflow: visible; }
+html body .sanctuary-shell .ref-ability-buttons { display: grid; gap: .5rem; }
+html body .sanctuary-shell .ref-ability-buttons > button { display: flex; gap: .75rem; align-items: center; text-align: left; width: 100%; min-height: 64px; }
+html body .sanctuary-shell .ref-ability-buttons > button .ability-icon { width: 40px; height: 40px; flex: none; }
+.ref-ability-buttons > button span { min-width: 0; }
+.ref-ability-buttons > button small { display: block; margin-top: .2rem; }
+html body .sanctuary-shell .ref-ability-buttons dialog { width: min(720px, calc(100vw - 24px)); }
+html body .sanctuary-shell .ref-ability-buttons dialog :is(p, small) { font-size: .95rem; line-height: 1.65; }
+html body .sanctuary-shell .ref-ability-buttons dialog .ability-icon { width: 64px; height: 64px; }
+html body .sanctuary-shell .ref-organized-detail .character-upgrade-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .9rem; }
+html body .sanctuary-shell .ref-organized-detail .upgrade-resources { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: .5rem; padding: 0; }
+html body .sanctuary-shell .ref-organized-detail .upgrade-resources li { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: .3rem .6rem; padding: .6rem; min-width: 0; }
+html body .sanctuary-shell .ref-organized-detail .upgrade-resources li :is(img, .currency-icon) { width: 40px; height: 40px; grid-row: span 2; object-fit: contain; }
+.ref-organized-detail .upgrade-resources li :is(strong, span) { overflow-wrap: anywhere; }
+html body .sanctuary-shell .ref-organized-detail .upgrade-resources li span { grid-column: 2; }
+html body .sanctuary-shell .ref-organized-detail .upgrade-stat-preview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+html body .sanctuary-shell .ref-organized-detail .ref-master-slot { text-align: left; margin: 0 0 .8rem; color: #b5b5bc; }
+html body .sanctuary-shell .ref-organized-detail .ref-master-slot :is(h3, label) { color: #f4f4f5; }
+html body .sanctuary-shell .ref-organized-detail .ref-equipment-slot { padding: .75rem; justify-content: start; }
+html body .sanctuary-shell .ref-organized-detail .ref-equipment-slot .conduit-icon-frame { width: 80px; height: 80px; max-width: 100%; }
+html body .sanctuary-shell .ref-organized-detail .ref-equipment footer { flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }
+@media (max-width: 720px) {
+  html body .sanctuary-shell .ref-organized-detail :is(.ref-character-overview, .character-upgrade-grid) { grid-template-columns: minmax(0, 1fr); }
+  html body .sanctuary-shell .ref-organized-detail .upgrade-payment { order: -1; }
+  html body .sanctuary-shell .ref-team > .ref-team-sidebar { order: 1; }
+}
+.ref-equipment-note { font-size: .65rem; color: #a9a9ae; }
+.ref-team-collection { gap: .7rem; }
+.ref-roster-toolbar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .6rem; }
+.ref-roster-toolbar label { display: flex; align-items: center; gap: .4rem; font-size: .72rem; }
+.ref-segment { display: flex; gap: .3rem; flex-wrap: wrap; }
+html body .sanctuary-shell .ref-segment button { border: 1px solid #2d2d31; background: #1a1a1c; border-radius: .5rem; font-size: .74rem; padding: .35rem .6rem; }
+html body .sanctuary-shell .ref-segment button[aria-pressed=true] { color: #0b0b0c; background: #f4f4f5; }
+.ref-bearer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: .65rem; align-content: start; }
+.ref-capture-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: .65rem; align-content: start; }
+html body .sanctuary-shell .ref-copy-management { padding: 0; border: 0; background: none; margin: 0; }
+html body .sanctuary-shell .ref-copy-management > .archive-grid { display: block; padding: 0; }
+html body .sanctuary-shell .ref-copy-management .archive-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: .9rem; padding: 0; border: 0; background: none; }
+html body .sanctuary-shell .ref-copy-management .captured-stage { display: flex; flex-direction: column; align-items: center; gap: .5rem; min-width: 0; padding: .95rem; border: 1px solid #2d2d31; border-radius: .9rem; background: #1a1a1c; }
+html body .sanctuary-shell .ref-copy-management .archive-portrait { width: 100%; height: 24rem; min-height: 0; }
+.ref-copy-management .archive-portrait :is(img, .character-idle) { width: 100%; height: 100%; object-fit: contain; }
+.ref-copy-management .captured-controls { display: flex; flex-direction: column; gap: .6rem; min-width: 0; }
+.ref-copy-management .captured-controls > p { font-size: .8rem; }
+.ref-copy-management :is(.captured-abilities, .captured-equipment) { padding: .95rem; background: #1a1a1c; border: 1px solid #2d2d31; border-radius: .9rem; font-size: .75rem; }
+.ref-copy-management .captured-abilities h4, .ref-copy-management .captured-equipment h4 { font-size: .66rem; text-transform: uppercase; letter-spacing: .12em; color: #707076; margin-bottom: .7rem; }
+.ref-copy-management .captured-equipment { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+.ref-copy-management .captured-equipment > :is(h4, p, button) { grid-column: 1 / -1; }
+.ref-copy-management .captured-equipment label { min-width: 0; display: flex; flex-direction: column; gap: .3rem; padding: .5rem; border: 1px solid #2d2d31; border-radius: .6rem; }
+.ref-copy-management .captured-equipment .conduit-icon { width: 3rem; height: 3rem; }
+html body .sanctuary-shell .ref-formation .squad-hub { padding: 0; margin: 0; background: none; border: 0; }
+html body .sanctuary-shell .ref-formation .squad-slots { gap: .9rem; }
+html body .sanctuary-shell .ref-formation .squad-slot { padding: .95rem; background: #1a1a1c; border: 1px solid #2d2d31; border-radius: .9rem; }
+.ref-formation .squad-roster { margin-top: .9rem; }
+html body .sanctuary-shell .ref-collection-card { padding: 0; text-align: left; background: #1a1a1c; border: 1px solid #2d2d31; border-radius: .7rem; overflow: hidden; min-width: 0; }
+.ref-card-art { display: grid; place-items: center; height: 7rem; width: 100%; padding: .5rem; background: radial-gradient(circle at 50% 62%, #303033, #151516 72%); }
+.ref-card-art :is(.hub-portrait, .character-idle, img) { height: 100%; width: 100%; min-height: 0; object-fit: contain; }
+.ref-card-caption { padding: .65rem; display: flex; flex-direction: column; align-items: flex-start; gap: .25rem; }
+.ref-card-caption b { font-size: .85rem; }
+.ref-card-caption small { color: #707076; font-size: .72rem; }
+html body .sanctuary-shell .ref-add-card { display: grid; place-items: center; min-height: 11rem; border-style: dashed; background: none; color: #a9a9ae; }
+.ref-empty { padding: 2rem 1rem; text-align: center; color: #a9a9ae; }
+html body .sanctuary-shell .ref-inventory { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; grid-auto-rows: auto; height: auto; align-items: start; position: relative; }
+.ref-inventory .inventory-introduction { grid-column: 1 / -1; padding: 0; border: 0; margin: 0; }
+html body .sanctuary-shell .ref-inventory .inventory-currencies { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+html body .sanctuary-shell .ref-inventory .inventory-currency { display: flex; flex-direction: row; align-items: center; padding: 1rem; border: 1px solid #2d2d31; margin: 0; }
+.ref-inventory .inventory-currency .currency-icon { width: 3rem; height: 3rem; }
+html body .sanctuary-shell .ref-inventory .inventory-currency > .currency-icon { flex: 0 0 3rem; width: 3rem; height: 3rem; }
+.ref-inventory .inventory-currency strong { font-size: clamp(1.5rem, 2.8vw, 2.8rem); }
+html body .sanctuary-shell .ref-inventory .inventory-panel { padding: .95rem; margin: 0; height: auto; min-height: 0; overflow: visible; }
+html body .sanctuary-shell .ref-inventory .inventory-masters { grid-column: 1 / -1; }
+html body .sanctuary-shell .ref-inventory .ref-scroll { flex: none; overflow: visible; }
+html body .sanctuary-shell .ref-inventory .ref-panel-heading { flex-wrap: wrap; }
+html body .sanctuary-shell .ref-inventory .ref-panel-heading > span { display: flex; flex-wrap: wrap; gap: .4rem; }
+.ref-inventory .inventory-item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 7rem), 1fr)); gap: .55rem; padding: 0; }
+.ref-inventory .inventory-item { border: 1px solid #2d2d31; background: #1a1a1c; border-radius: .6rem; padding: .5rem; min-width: 0; }
+.ref-inventory .inventory-item-art { width: 100%; height: 4rem; }
+.ref-inventory .inventory-item-art :is(img, .conduit-icon-frame) { width: 100%; height: 100%; object-fit: contain; }
+.ref-inventory .inventory-item strong { font-size: .75rem; }
+.ref-inventory .inventory-quantity { font-size: .7rem; }
+html body .sanctuary-shell .ref-inventory .inventory-empty-slots { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .5rem; max-width: 30rem; }
+html body .sanctuary-shell .ref-inventory .inventory-empty-slots i { max-height: 64px; }
+html body .sanctuary-shell .ref-inventory .inventory-masters > .inventory-item { align-items: start; text-align: left; }
+.ref-component-count { display: flex; align-items: center; gap: .4rem; font-size: .7rem; color: #a9a9ae; }
+.ref-component-count img { width: 1.5rem; height: 1.5rem; object-fit: contain; }
+html body .sanctuary-shell .ref-conduit-store { grid-template-columns: 11rem minmax(0, 1fr) 18.5rem; grid-template-rows: auto minmax(0, 1fr); }
+html body .sanctuary-shell .ref-conduit-upgrade { grid-template-columns: 15rem minmax(0, 1fr) 18.5rem; grid-template-rows: auto minmax(0, 1fr) auto; }
+html body .sanctuary-shell .ref-market { grid-template-columns: minmax(0, 1fr) 18.5rem; grid-template-rows: auto minmax(0, 1fr); }
+.ref-market-tabs, .ref-market .online-store-tabs { grid-column: 1 / -1; display: flex; gap: .3rem; flex-wrap: wrap; border: 0; padding: 0; margin: 0; }
+html body .sanctuary-shell :is(.ref-market-tabs, .ref-market .online-store-tabs) button { border: 1px solid #2d2d31; border-radius: .5rem; background: #1a1a1c; color: #a9a9ae; font-size: .78rem; padding: .35rem .85rem; }
+html body .sanctuary-shell :is(.ref-market-tabs, .ref-market .online-store-tabs) button:is([aria-current], [aria-pressed=true]) { background: #f4f4f5; color: #0b0b0c; }
+.ref-rarity-filter { display: flex; flex-direction: column; gap: .35rem; }
+html body .sanctuary-shell .ref-rarity-filter button { display: flex; justify-content: space-between; align-items: center; gap: .4rem; padding: .45rem .6rem; background: #1a1a1c; border-radius: .6rem; border: 1px solid #2d2d31; font-size: .8rem; }
+html body .sanctuary-shell .ref-rarity-filter button[aria-pressed=true] { background: #f4f4f5; color: #0b0b0c; }
+.ref-product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: .6rem; }
+html body .sanctuary-shell .ref-product { display: flex; flex-direction: column; align-items: flex-start; gap: .35rem; padding: .65rem; background: #1a1a1c; border: 1px solid #2d2d31; border-radius: .7rem; text-align: left; min-width: 0; }
+html body .sanctuary-shell .ref-product[aria-pressed=true] { border-color: #f4f4f5; box-shadow: 0 0 0 1px #f4f4f5; }
+.ref-product b { font-size: .8rem; }
+.ref-product small { color: #a9a9ae; font-size: .7rem; }
+.ref-product :is(.conduit-icon-frame, .ref-product-art, .profile-frame-preview) { height: 7rem; width: 100%; margin: 0; display: grid; place-items: center; }
+.ref-product img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.ref-store-detail { overflow: auto; }
+.ref-store-detail h2 { font-size: 1.1rem; line-height: 1.2; }
+.ref-store-detail > p { color: #a9a9ae; font-size: .78rem; line-height: 1.5; }
+.ref-store-hero { display: grid; place-items: center; height: 13rem; width: 100%; background: #1a1a1c; border-radius: .7rem; }
+.ref-store-hero .conduit-icon-frame { height: 100%; width: 100%; }
+.ref-store-hero img { width: 100%; height: 100%; object-fit: contain; }
+.ref-conduit-store .ref-product .conduit-icon-frame { flex: 0 0 auto; aspect-ratio: auto; }
+:is(.ref-conduit-store, .ref-conduit-upgrade) .ref-store-hero .conduit-icon-frame { width: min(100%, 200px); height: 100%; max-height: 200px; min-height: 0; aspect-ratio: auto; }
+:is(.ref-conduit-store, .ref-conduit-upgrade) .ref-store-hero .conduit-icon { min-height: 0; }
+.ref-store-detail .item-showcase { border: 0; padding: 0; background: none; }
+.ref-store-detail .item-showcase-art { height: 10rem; }
+.ref-store-detail footer { margin-top: auto; display: flex; flex-direction: column; gap: .5rem; }
+.ref-store-detail footer p { font-size: .7rem; color: #a9a9ae; }
+.ref-store-detail footer button { width: 100%; }
+.ref-store-detail footer label { display: flex; flex-direction: column; gap: .4rem; font-size: .75rem; }
+.ref-exchange-categories { display: flex; flex-wrap: wrap; gap: .3rem; padding: 0 0 .6rem; }
+html body .sanctuary-shell .ref-exchange-categories button { min-height: 44px; border: 1px solid #2d2d31; border-radius: .5rem; background: #1a1a1c; color: #c9c9ce; padding: .35rem .85rem; }
+html body .sanctuary-shell .ref-exchange-categories button[aria-pressed=true] { background: #f4f4f5; color: #0b0b0c; }
+.ref-exchange-note { margin: 0 0 .6rem; padding: .5rem .7rem; border: 1px solid #ffffff38; border-left: 3px solid #e7a8b8; border-radius: .5rem; background: #ffffff0a; font-size: .8rem; line-height: 1.45; }
+.ref-exchange-buy { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; }
+html body .sanctuary-shell .ref-store-detail .ref-exchange-buy button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .1rem; min-height: 52px; padding: .35rem .25rem; white-space: normal; }
+.ref-exchange-buy button small { font-size: .68rem; line-height: 1.2; overflow-wrap: anywhere; opacity: .85; }
+.ref-detail-facts { margin: .3rem 0; font-size: .8rem; }
+.ref-detail-facts > div { display: flex; justify-content: space-between; gap: .5rem; padding: .35rem 0; border-bottom: 1px solid #2d2d31; }
+.ref-detail-facts dt { color: #a9a9ae; }
+.ref-detail-facts dd { text-align: right; margin: 0; }
+.ref-upgrade-detail { overflow: auto; }
+.ref-upgrade-identity { display: grid; grid-template-columns: minmax(0, .55fr) minmax(0, 1.45fr); gap: 1.4rem; min-height: 0; }
+.ref-upgrade-identity h2 { font-size: 1.5rem; }
+.ref-upgrade-identity p { font-size: .78rem; color: #a9a9ae; }
+.ref-effect-progression { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+.ref-effect-progression article { padding: .5rem; border: 1px solid #2d2d31; border-radius: .6rem; font-size: .7rem; }
+.ref-effect-progression article.is-current { border-color: #f4f4f5; }
+.ref-upgrade-resources { overflow: auto; }
+.ref-upgrade-resources footer { margin-top: auto; display: flex; flex-direction: column; gap: .5rem; }
+.ref-upgrade-resources .component-balance { display: flex; flex-direction: column; background: none; padding: .5rem; border: 0; }
+.ref-upgrade-resources :is(p, span) { font-size: .75rem; }
+.ref-upgrade-information { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; }
+.ref-frame-hero { width: 100%; height: 13rem; margin: 0; }
+html body .sanctuary-shell .ref-profile { grid-template-columns: 19rem minmax(0, 1fr) 18rem; grid-template-rows: auto minmax(0, 1fr); }
+.ref-profile .online-profile-panel { overflow: auto; }
+.ref-profile .online-profile-panel h2 { font-size: .8rem; }
+.ref-profile .online-profile-panel label { display: flex; flex-direction: column; gap: .35rem; font-size: .75rem; }
+.ref-profile-code { display: flex; flex-direction: column; gap: .3rem; }
+.ref-profile-code small { font-size: .65rem; color: #707076; }
+.ref-profile-code b { font-size: .8rem; }
+.ref-profile-icons { border: 0; padding: 0; margin: .4rem 0; display: flex; flex-wrap: wrap; gap: .45rem; }
+.ref-profile-icons legend { font-size: .66rem; text-transform: uppercase; letter-spacing: .12em; color: #707076; margin-bottom: .5rem; }
+.ref-profile-icons label { position: relative; }
+html body .sanctuary-shell .ref-profile-icons input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; min-height: 0; margin: 0; padding: 0; cursor: pointer; }
+.ref-profile-icons label > span { display: grid; place-items: center; width: max(44px, 2.75rem); height: max(44px, 2.75rem); border: 1px solid #2d2d31; border-radius: 50%; background: #242427; overflow: hidden; }
+.ref-profile-icons input:checked + span { border-color: #f4f4f5; background: #f4f4f5; color: #0b0b0c; }
+.ref-profile-icons input:focus-visible + span { outline: 2px solid #f4f4f5; outline-offset: 3px; }
+.ref-profile-icons :is(img, .character-idle) { width: 100%; height: 100%; object-fit: contain; }
+.ref-bio-label { display: flex; justify-content: space-between; gap: .5rem; }
+.ref-profile-save-note { font-size: .7rem; color: #a9a9ae; }
+html body .sanctuary-shell .ref-profile .online-profile-statistics { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: .9rem; min-height: 0; overflow: auto; }
+.ref-profile .online-profile-statistics article { display: flex; flex-direction: column; padding: .95rem; border: 1px solid #2d2d31; background: #131314; border-radius: .9rem; min-width: 0; min-height: 0; overflow: auto; }
+.ref-profile .online-profile-statistics h2 { font-size: .8rem; margin-bottom: .6rem; }
+.ref-profile .online-profile-statistics dl { display: grid; grid-template-columns: 1fr auto; gap: .5rem; font-size: .78rem; margin: 0; }
+.ref-profile .online-profile-statistics dt { color: #a9a9ae; }
+.ref-profile .online-profile-statistics dd { margin: 0; text-align: right; }
+.ref-profile .online-profile-statistics p { font-size: .7rem; color: #a9a9ae; margin-top: .5rem; }
+.ref-profile-right { display: flex; flex-direction: column; gap: .9rem; min-height: 0; overflow: auto; }
+.ref-profile-right .ref-team-sidebar { flex: 1; overflow: visible; }
+.ref-profile-right .ref-collection-sidebar { display: none; }
+.ref-profile-right > section { flex: 1; }
+.ref-profile-right p { font-size: .75rem; color: #a9a9ae; }
+.ref-profile-social { min-height: 0; }
+html body .sanctuary-shell .ref-profile .online-friends { height: 100%; margin: 0; overflow: auto; display: flex; flex-direction: column; }
+.ref-profile .online-friends :is(p, input, button, label) { font-size: .75rem; }
+.ref-profile .online-friends ul { list-style: none; padding: 0; }
+.ref-profile .online-friend { display: flex; align-items: center; justify-content: space-between; gap: .7rem; padding: .6rem 0; border-bottom: 1px solid #2d2d31; }
+.ref-profile .online-friend .profile-frame-preview { width: 2.6rem; height: 2.6rem; }
+.ref-profile .online-friend > div:last-child { display: flex; gap: .3rem; }
+.ref-profile .online-friends nav { display: flex; flex-wrap: wrap; gap: .3rem; }
+html body .sanctuary-shell .ref-play { display: grid; align-items: stretch; grid-template-columns: 16rem minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+.ref-activity-sidebar { grid-column: 1; grid-row: 1; height: 100%; overflow: hidden; }
+html body .sanctuary-shell .ref-play .activity-categories { display: flex; position: static; flex: 1; flex-direction: column; flex-wrap: nowrap; align-self: stretch; min-width: 0; min-height: 0; overflow: auto; width: 100%; padding: 0; border: 0; background: none; }
+html body .sanctuary-shell .ref-play .activity-categories a { display: flex; flex: 0 0 auto; min-width: 0; align-items: center; padding: .55rem .75rem; border: 0; border-radius: .6rem; min-height: 44px; background: none; box-shadow: none; text-decoration: none; }
+html body .sanctuary-shell .ref-play .activity-categories a[aria-current] { background: #f4f4f5; color: #0b0b0c; }
+.ref-activity-section { display: flex; flex: 0 0 auto; min-width: 0; flex-direction: column; gap: .25rem; }
+.ref-play .ref-activity-section + .ref-activity-section { margin-top: .45rem; }
+.ref-play .ref-activity-section h3 { margin: 0 0 .25rem; color: #707076; font-size: .65rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.ref-play .activity-categories a > span { display: flex; min-width: 0; overflow-wrap: anywhere; flex-direction: column; gap: .2rem; }
+.ref-play .activity-categories a[aria-current] small { color: #45454a; }
+.ref-play .activity-categories strong { font-size: .85rem; }
+.ref-play .activity-categories small { font-size: .68rem; color: #707076; }
+html body .sanctuary-shell .ref-play .activity-group { grid-column: 2; grid-row: 1; display: grid; grid-template-columns: 15rem minmax(0, 1fr); grid-template-rows: auto; gap: .9rem; height: auto; min-height: 0; padding: 0; margin: 0; border: 0; background: none; overflow: visible; align-self: start; }
+.ref-play .activity-group > h2 { display: none; }
+html body .sanctuary-shell .ref-play .activity-picker { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; min-height: 0; overflow: auto; padding: .95rem; border: 1px solid #2d2d31; border-radius: .9rem; background: #131314; margin: 0; }
+.ref-play .activity-picker::before { content: "Location"; font-size: .8rem; font-weight: 600; margin-bottom: .6rem; }
+html body .sanctuary-shell .ref-play .activity-picker button { min-height: 44px; text-align: left; padding: .6rem; font-size: .8rem; }
+html body .sanctuary-shell .ref-play .activity-grid { display: contents; }
+html body .sanctuary-shell .ref-play .activity-card { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; height: auto; overflow: visible; border: 1px solid #2d2d31; border-radius: .9rem; padding: .95rem; background: #131314; gap: 1rem; }
+.ref-play .activity-card .activity-entry { margin-top: auto; }
+html body .sanctuary-shell .activity-card .activity-banner { height: auto; flex: none; background: #1a1a1c; }
+html body .sanctuary-shell .activity-card .activity-banner::after { content: none; }
+html body .sanctuary-shell .activity-card .activity-banner .dungeon-banner { height: clamp(8rem, 18vw, 13rem); width: 100%; object-fit: cover; }
+html body .sanctuary-shell .activity-card .activity-banner > h3 { position: static; margin: 0; padding: .85rem 1rem; color: #f4f4f5; font-size: clamp(1.25rem, 2.2vw, 2rem); line-height: 1.25; letter-spacing: normal; overflow-wrap: anywhere; }
+.ref-play .activity-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; font-size: .78rem; }
+.ref-play .activity-facts > div { padding: .65rem; background: #1a1a1c; border: 1px solid #2d2d31; border-radius: .6rem; min-width: 0; }
+.ref-play .activity-facts dt { font-size: .68rem; color: #707076; }
+.ref-play .activity-facts dd { margin: .25rem 0 0; }
+html body .sanctuary-shell .activity-facts > div { display: block; }
+html body .sanctuary-shell .activity-facts dt { min-width: 0; color: #b5b5bc; }
+html body .sanctuary-shell .activity-facts dd { margin: .35rem 0 0; overflow-wrap: anywhere; }
+html body .sanctuary-shell .activity-entry { position: static; display: flex; flex-direction: row; flex-wrap: wrap; align-items: end; gap: .75rem; padding: 1rem 0 0; background: none; }
+html body .sanctuary-shell .activity-entry .dungeon-stage-label { flex: 1 1 10rem; min-width: 0; font-size: .8rem; letter-spacing: normal; }
+html body .sanctuary-shell .activity-entry :is(.primary-button, .selection-trigger) { min-width: 0; max-width: 100%; height: auto; min-height: 48px; white-space: normal; overflow-wrap: anywhere; }
+html body .sanctuary-shell .activity-entry .primary-button { flex: 1 1 12rem; }
+html body .sanctuary-shell .activity-entry .selection-trigger { width: 100%; }
+html body .sanctuary-shell .activity-entry .activity-unlock-hint { flex: 1 0 100%; min-width: 0; margin: 0; color: #b5b5bc; }
+html body .sanctuary-shell .ref-play :is(#gameplay-machines, #gameplay-events) { grid-template-columns: minmax(0, 1fr); }
+html body .sanctuary-shell .ref-play :is(#gameplay-machines, #gameplay-events) .activity-card { grid-column: 1; }
+html body .sanctuary-shell .ref-play #gameplay-events > .text-button { grid-column: 1; grid-row: 2; }
+html body .sanctuary-shell .ref-play #gameplay-adventure { grid-template-columns: minmax(0, 1fr); height: auto; overflow: visible; align-self: start; }
+html body .sanctuary-shell .ref-play #gameplay-adventure .training-card { grid-column: 1; height: auto; min-height: 0; padding: 0; background: #131314; overflow: hidden; display: block; }
+html body .sanctuary-shell .ref-play #gameplay-adventure .training-card::before { content: none; }
+.training-hero { position: relative; min-height: 12rem; height: clamp(12rem, 20vw, 17rem); overflow: hidden; }
+.training-hero > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.training-hero > div { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 1.5rem; background: linear-gradient(transparent 30%, #131314ed); }
+html body .sanctuary-shell .ref-play #gameplay-adventure .training-hero h3 { margin: .35rem 0 0; font-size: clamp(1.5rem, 2.5vw, 2.3rem); line-height: 1.2; color: #f4f1e9; }
+.training-details { display: grid; gap: 1.25rem; padding: 1.5rem; }
+html body .sanctuary-shell .ref-play .training-details .activity-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
+.training-summary { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+.training-summary > p { max-width: 38rem; margin: 0; }
+.training-summary .item-showcase { flex: 0 0 auto; margin: 0; }
+html body .sanctuary-shell .training-summary .item-showcase { padding: .75rem; min-width: 0; }
+html body .sanctuary-shell .training-summary .item-showcase h4 { margin: 0 0 .4rem; }
+html body .sanctuary-shell .training-summary .item-showcase ul { margin: 0; display: block; }
+html body .sanctuary-shell .training-summary .item-showcase li { display: flex; align-items: center; gap: .75rem; min-width: 0; }
+html body .sanctuary-shell .training-summary .item-showcase-art { width: 52px; height: 52px; min-width: 52px; }
+html body .sanctuary-shell .training-summary .item-showcase-art img { width: 100%; height: 100%; object-fit: contain; }
+html body .sanctuary-shell .training-hero p { color: #fff; }
+.training-entry { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 1rem; border-top: 1px solid #ffffff24; }
+.training-entry p { margin: 0; }
+html body .sanctuary-shell .ref-play #gameplay-adventure .training-entry .primary-button { min-height: 48px; font-size: 1rem; padding: .8rem 1.5rem; flex: 0 0 auto; }
+@media (max-width: 540px) {
+  html body .sanctuary-shell .ref-inventory .inventory-currencies { grid-template-columns: minmax(0, 1fr); }
+  .training-details { padding: 1rem; }
+  .training-summary, .training-entry { flex-direction: column; align-items: stretch; }
+  .training-hero > div { padding: 1rem; }
+}
+html body .sanctuary-shell .ref-play #gameplay-story { display: block; }
+html body .sanctuary-shell .mono-story-campaign { height: 100%; grid-template-columns: 15rem minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); min-height: 0; gap: .9rem; }
+html body .sanctuary-shell .ref-story-region-sidebar { display: flex; flex-direction: column; gap: .6rem; min-height: 0; padding: .95rem; border: 1px solid #2d2d31; border-radius: .9rem; background: #131314; }
+.ref-story-region-heading { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
+html body .sanctuary-shell .ref-story-region-heading [data-information] { padding: 0; min-height: 44px; background: none; border: 0; text-decoration: underline; }
+html body .sanctuary-shell .mono-story-campaign .story-world-map { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: auto; gap: .4rem; padding: 0; border: 0; background: none; }
+html body .sanctuary-shell .mono-story-campaign .story-world-map button { min-height: 64px; padding: .7rem; border: 0; gap: .2rem; box-shadow: none; transform: none; }
+html body .sanctuary-shell .mono-story-campaign .story-world-map button::after { display: none; }
+html body .sanctuary-shell .mono-story-campaign .story-world-map strong { font: 500 .86rem/1.4 var(--ui-font); }
+html body .sanctuary-shell .mono-story-campaign .story-world-map small { font-size: .7rem; color: #a9a9ae; }
+html body .sanctuary-shell .mono-story-campaign .story-world-map button[aria-pressed="true"] small { color: #45454a; }
+html body .sanctuary-shell .mono-story-campaign .story-world-map .element-label { color: inherit; font-size: inherit; }
+.ref-story-region-sidebar .element-emblem { display: none; }
+html body .sanctuary-shell .ref-story-main { display: flex; flex-direction: column; gap: .9rem; min-width: 0; min-height: 0; padding: .95rem; border: 1px solid #2d2d31; border-radius: .9rem; background: #131314; overflow: auto; }
+html body .sanctuary-shell .mono-story-campaign .story-map-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; padding: 0; border: 0; background: none; gap: .6rem; }
+.ref-story-main .story-map-heading h2 { margin: .2rem 0; font-size: 1.7rem; }
+.ref-story-main .story-map-heading p { font-size: .8rem; line-height: 1.5; color: #a9a9ae; }
+.ref-story-main .story-map-heading .eyebrow { color: #a9a9ae; }
+.ref-story-main .ref-story-progress { margin-top: .6rem; }
+html body .sanctuary-shell .mono-story-campaign .story-region-panel { display: grid; flex: 1; grid-template-columns: minmax(0, 1.7fr) minmax(13rem, 1fr); grid-template-rows: minmax(0, 1fr) auto; min-height: 0; padding: 0; border: 0; background: none; gap: .9rem; overflow: visible; }
+.ref-story-stages { min-width: 0; min-height: 0; }
+.ref-story-stages > h3 { margin-bottom: .65rem; }
+html body .sanctuary-shell .mono-story-campaign .story-stage-path { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-content: start; max-height: none; margin: 0; padding: 0; background: none; border: 0; gap: .4rem; overflow: visible; }
+html body .sanctuary-shell .mono-story-campaign .mono-story-stage-row { display: block; min-width: 0; }
+html body .sanctuary-shell .mono-story-campaign .story-stage { display: flex; flex-direction: column; width: 100%; min-height: 4rem; padding: .4rem .2rem; border: 1px solid #2d2d31; background: #1a1a1c; align-items: center; text-align: center; justify-content: center; gap: .1rem; }
+html body .sanctuary-shell .mono-story-campaign .story-stage strong { font-size: 1rem; }
+html body .sanctuary-shell .mono-story-campaign .story-stage[aria-pressed="true"] { background: #f4f4f5; color: #0b0b0c; }
+html body .sanctuary-shell .mono-story-campaign .story-stage[aria-current="step"] { border-color: #f4f4f5; box-shadow: none; }
+html body .sanctuary-shell .mono-story-campaign .story-boss-stage { border-style: dashed; }
+html body .sanctuary-shell .mono-story-campaign .story-boss-preview { margin: 0; padding: .9rem; border: 1px solid #2d2d31; border-radius: .9rem; min-width: 0; }
+.ref-story-main .story-boss-preview h3 { font-size: 1.15rem; margin: .65rem 0 .4rem; }
+.ref-story-main .story-boss-preview > p:not(.eyebrow) { font-size: .8rem; line-height: 1.5; color: #a9a9ae; }
+html body .sanctuary-shell .ref-story-main .item-showcase { margin: 1rem 0 0; padding: 0; background: none; border: 0; }
+html body .sanctuary-shell .ref-story-main .item-showcase ul { display: flex; flex-wrap: wrap; gap: .8rem; }
+html body .sanctuary-shell .ref-story-main .item-showcase li { width: 6rem; min-width: 0; }
+html body .sanctuary-shell .ref-story-main .item-showcase-art { width: 3rem; height: 3rem; background: #242427; border-radius: .7rem; }
+html body .sanctuary-shell .ref-story-main .item-showcase-art img { width: 100%; height: 100%; object-fit: contain; }
+html body .sanctuary-shell .ref-story-main .item-showcase-name { font-size: .7rem; }
+html body .sanctuary-shell .ref-story-entry { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: .8rem; border-top: 1px solid #2d2d31; min-width: 0; }
+.ref-story-entry-summary { min-width: 0; }
+.ref-story-entry-summary > p { font-size: .78rem; line-height: 1.5; color: #a9a9ae; }
+.ref-story-entry-summary .ref-story-kill-loot { margin-top: .25rem; font-size: .65rem; }
+.activity-entry .activity-unlock-hint { flex-basis: 100%; font-size: .75rem; line-height: 1.45; color: #aaa; margin: .25rem 0 0; }
+html body .sanctuary-shell .ref-story-entry > button { flex: none; min-height: 48px; font-size: .95rem; font-weight: 600; }
+html body .sanctuary-shell .mono-story-campaign .story-map-art { display: flex; flex: 1; flex-direction: column; min-height: 0; grid-column: auto; padding: 0; }
+html body .sanctuary-shell .mono-story-campaign :is(.story-region-panel, .story-map-art)[hidden] { display: none; }
+.ref-world-map { position: relative; height: 100%; min-height: 24rem; overflow: hidden; border-radius: .8rem; background: #1a1a1c; }
+.ref-world-map > img { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: cover; }
+.ref-map-roads { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.ref-map-roads line { stroke: #55555b; stroke-width: 2; stroke-dasharray: 5 7; }
+.ref-map-roads line.is-restored { stroke: #f4f4f5; stroke-width: 3; stroke-dasharray: none; }
+html body .sanctuary-shell .ref-map-node { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: .2rem; padding: .25rem; background: none; border: 0; color: #f4f4f5; z-index: 1; }
+.ref-map-node > span { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: #242427; border: 2px solid #707076; font-weight: 700; }
+.ref-map-node.is-restored > span { background: #f4f4f5; color: #0b0b0c; border-color: #f4f4f5; }
+.ref-map-node.is-open > span { border-color: #f4f4f5; box-shadow: 0 0 0 5px #ffffff29; }
+.ref-map-node[aria-pressed="true"] > span { outline: 2px solid #f4f4f5; outline-offset: 4px; }
+.ref-map-node :is(b, small) { background: #0b0b0cd9; border-radius: .4rem; padding: .12rem .4rem; }
+.ref-map-node b { font-size: .74rem; }
+.ref-map-node small { font-size: .64rem; color: #a9a9ae; }
+.ref-map-node.is-locked { opacity: .75; }
+.ref-play #gameplay-story .story-map-art { display: flex; flex-direction: column; }
+.ref-play #gameplay-story .ref-world-map { flex: 1; min-height: 0; }
+.mono-story-campaign :is(.story-prologue, [data-training-activity]) { display: none; }
+html body .sanctuary-shell .archives { height: 100%; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); gap: .6rem; }
+.archives > [data-information] { justify-self: end; min-height: 44px; }
+html body .sanctuary-shell .archive-navigation { display: flex; flex-wrap: wrap; gap: .3rem; padding: 0; background: none; border: 0; margin: 0; }
+html body .sanctuary-shell .archive-gallery-button { min-height: 44px; padding: .4rem .8rem; border: 1px solid #2d2d31; background: #1a1a1c; border-radius: .5rem; }
+.archive-gallery-button strong { font-size: .78rem; }
+.archive-gallery-button small { display: none; }
+html body .sanctuary-shell .archive-panel { height: 100%; min-height: 0; display: grid; grid-template-columns: 14rem minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; gap: .65rem .9rem; padding: 0; background: none; border: 0; margin: 0; overflow: hidden; }
+.ref-archive-manage { grid-column: 1; grid-row: 1; }
+html body .sanctuary-shell .archive-panel > .archive-filters { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; padding: .95rem; border: 1px solid #2d2d31; border-radius: .9rem; background: #131314; min-height: 0; overflow: auto; }
+.archive-filters label { font-size: .76rem; display: flex; flex-direction: column; gap: .3rem; }
+.archive-panel > [data-character-filter-result] { grid-column: 1; grid-row: 3; font-size: .72rem; color: #a9a9ae; }
+html body .sanctuary-shell .archive-panel > .archive-grid { grid-column: 2; grid-row: 1 / 4; display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); align-content: start; min-height: 0; overflow: auto; padding: .95rem; border: 1px solid #2d2d31; border-radius: .9rem; background: #131314; gap: .6rem; }
+html body .sanctuary-shell .archive-panel .archive-card { padding: .6rem; background: #1a1a1c; border: 1px solid #2d2d31; border-radius: .7rem; display: flex; flex-direction: column; gap: .3rem; min-height: 0; }
+html body .sanctuary-shell .archive-panel .archive-card :is(.archive-portrait, .archive-mechanism) { width: 100%; height: 7rem; min-height: 0; margin: 0; }
+.archive-card .archive-portrait :is(img, .character-idle) { width: 100%; height: 100%; object-fit: contain; }
+.archive-panel .archive-card h3 { font-size: .76rem; margin: 0; }
+.archive-panel .archive-card > p { font-size: .65rem; margin: 0; color: #a9a9ae; }
+.archive-panel .archive-card [data-information] { font-size: .7rem; }
+.archive-panel > .glossary-heading { grid-column: 1; grid-row: 1 / 4; min-height: 0; padding: .95rem; border: 1px solid #2d2d31; border-radius: .9rem; background: #131314; display: flex; flex-direction: column; gap: .65rem; font-size: .76rem; }
+.archive-panel > .glossary-grid { grid-column: 2; grid-row: 1 / 4; min-height: 0; overflow: auto; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); }
+.archive-panel .glossary-card { min-height: 0; padding: .6rem; border-radius: .7rem; }
+.archive-panel .glossary-art { height: 7rem; }
+.archive-panel .glossary-art img { height: 100%; width: 100%; object-fit: contain; }
+.archive-panel .glossary-card h2 { font-size: .8rem; }
+.archive-panel .glossary-card p { font-size: .68rem; }
+html body :is(.sanctuary-help-drawer, .sanctuary-menu-drawer, .settings-drawer) { position: fixed; inset: 0 0 0 auto; width: min(23rem, 100%); max-width: 100%; height: 100dvh; max-height: 100dvh; margin: 0; border: 0; border-left: 1px solid #2d2d31; border-radius: 0; padding: 1.3rem; background: #131314; color: #f4f4f5; overflow: auto; }
+html body :is(.sanctuary-help-drawer, .sanctuary-menu-drawer, .settings-drawer)::backdrop { background: #0009; }
+html body .sanctuary-shell > #status { position: fixed; left: 50%; bottom: 2rem; transform: translateX(-50%); z-index: 30; width: max-content; max-width: min(90vw, 48rem); padding: .65rem 1.1rem; border: 1px solid #2d2d31; border-radius: .7rem; background: #f4f4f5; color: #0b0b0c; font-size: .8rem; margin: 0; overflow-wrap: anywhere; }
+html body .sanctuary-shell > #status:empty { display: none; }
+html body .sanctuary-shell .ref-summon { grid-template-columns: 13rem minmax(0, 1fr) 17rem; grid-template-rows: auto; align-items: start; }
+.ref-summon-left { display: flex; flex-direction: column; gap: .9rem; min-height: 0; overflow: visible; }
+.ref-summon-left .banner-pity { flex: 1; }
+html body .sanctuary-shell .ref-summon .summon-banner-navigation { display: flex; flex-direction: column; padding: 0; border: 0; background: none; }
+.ref-summon h3 { font-size: .8rem; margin: 0 0 .6rem; }
+.ref-summon-left .summon-pity-progress { display: flex; flex-direction: column; gap: 1rem; }
+.ref-summon-left .summon-pity-progress dt { font-size: .72rem; color: #a9a9ae; }
+.ref-summon-left .summon-pity-progress dd { font-size: .82rem; margin: .3rem 0; }
+html body .sanctuary-shell .ref-summon .ref-summon-hero { position: relative; padding: 0; overflow: hidden; }
+/* D-234: banner splash stays large but no longer fills the whole center column. */
+html body .sanctuary-shell .ref-summon .ref-summon-hero { width: 100%; max-width: min(100%, 31rem); margin-inline: auto; justify-self: center; }
+html body .sanctuary-shell .ref-summon-hero .summon-visual { aspect-ratio: 16 / 9; min-height: 0; display: block; }
+html body .sanctuary-shell .ref-summon-hero .summon-banner-art { height: 100%; min-height: 0; border: 0; border-radius: 0; aspect-ratio: auto; }
+.ref-summon-hero .summon-banner-art img { width: 100%; height: 100%; object-fit: cover; }
+.ref-summon-overlay { position: absolute; inset: auto 0 0; background: linear-gradient(transparent, #0b0b0ce6 45%); padding: 2rem 1.1rem 1rem; }
+.ref-summon-overlay h2 { font-size: clamp(1.5rem, 2.4vw, 2.4rem); margin: .3rem 0 .7rem; }
+.ref-summon-overlay .banner-characters { border: 0; padding: 0; background: none; margin: 0; }
+.ref-summon-overlay .banner-characters h3 { display: none; }
+.ref-summon-overlay .banner-characters ul { display: flex; flex-wrap: wrap; gap: .35rem; }
+.ref-summon-overlay .banner-characters li { display: block; padding: .3rem .55rem; border: 1px solid #ffffff40; border-radius: 99px; background: #0b0b0c99; }
+.ref-summon-overlay .banner-characters li strong { font-size: .68rem; }
+.ref-summon-overlay .element-label { display: none; }
+.ref-summon-overlay .banner-character-rating { display: inline; font-size: .65rem; color: #a9a9ae; margin-left: .35rem; }
+.ref-summon-main { display: flex; flex-direction: column; gap: .9rem; min-width: 0; }
+html body .sanctuary-shell .ref-summon .summon-featured { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: .6rem 1.6rem; padding: .8rem 1rem; }
+html body .sanctuary-shell .ref-summon .summon-featured-tier { display: flex; flex: 0 1 auto; width: auto; max-width: 100%; justify-content: flex-start; align-items: center; gap: .8rem; min-width: 0; }
+.summon-featured-tier + .summon-featured-tier { padding-left: 1.6rem; border-left: 1px solid #2d2d31; }
+.ref-summon .summon-featured-tier h3 { margin: 0; font-size: .9rem; color: #f4f4f5; white-space: nowrap; }
+.summon-featured-tier ul { display: flex; flex-wrap: wrap; gap: .55rem; margin: 0; padding: 0; list-style: none; }
+.summon-featured-tier li { position: relative; display: flex; flex-direction: column; align-items: center; gap: .25rem; width: 4.25rem; }
+.summon-featured-art { display: block; width: 4.25rem; height: 4.25rem; border: 1px solid #2d2d31; border-radius: .6rem; background: radial-gradient(circle at 50% 40%, #2a2a2e, #141416); overflow: hidden; }
+.summon-featured-art .character-idle { display: block; width: 100%; height: 100%; animation: none; }
+.summon-featured-art img { width: 100%; height: 100%; object-fit: contain; }
+.summon-featured-name { max-width: 100%; font-size: .68rem; color: #c9c9ce; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.summon-featured-owned { position: absolute; top: .2rem; right: .2rem; display: grid; place-items: center; width: 1.05rem; height: 1.05rem; border-radius: 50%; background: #f4f4f5; color: #0b0b0c; font-size: .62rem; }
+@media (max-width: 700px) { .summon-featured-tier + .summon-featured-tier { padding-left: 0; border-left: 0; } }
+.ref-summon-draw { overflow: visible; justify-content: flex-start; }
+.ref-summon-draw .summon-command { display: flex; flex-direction: column; gap: .8rem; border: 0; padding: 0; background: none; }
+.ref-summon-draw .currency-reward { font-size: .8rem; }
+.ref-summon-draw .quiet { font-size: .72rem; color: #a9a9ae; }
+.ref-summon-rates { grid-column: 1 / -1; max-height: 17rem; }
+.ref-summon-rates .summon-rates { display: flex; flex-direction: column; min-height: 0; padding: 0; border: 0; background: none; gap: .4rem; }
+.ref-summon-rates .summon-rates header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem; }
+.ref-summon-rates #banner-rate-note { font-size: .65rem; color: #707076; }
+.ref-summon-rates :is(.banner-tier-bar, .banner-tier-totals) { display: none; }
+.ref-summon-rates .banner-rate-filters { display: flex; gap: .25rem; }
+.ref-summon-rates .banner-rate-filters button { min-height: 44px; padding: .2rem .5rem; font-size: .65rem; }
+.ref-rate-columns { display: flex; gap: 1rem; min-height: 0; }
+.ref-rate-tier { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+.ref-rate-tier h4 { font-size: .72rem; padding-bottom: .3rem; }
+.ref-rate-tier table { width: 100%; font-size: .65rem; border-collapse: collapse; }
+.ref-rate-tier caption { position: absolute; clip-path: inset(50%); width: 1px; height: 1px; overflow: hidden; }
+.ref-rate-tier :is(th, td) { padding: .25rem 0; border-bottom: 1px solid #2d2d31; }
+.ref-rate-tier tbody th { text-align: left; font-weight: 400; }
+.ref-rate-tier td:nth-child(2) { display: none; }
+.ref-rate-tier td:last-child { text-align: right; white-space: nowrap; padding-left: .4rem; color: #a9a9ae; }
+html body #summon-information { width: min(900px, calc(100vw - 32px)); }
+html body #summon-information .summon-rates { margin-top: 24px; min-width: 0; }
+html body #summon-information .ref-rate-columns { display: grid; grid-template-columns: 1fr; gap: 20px; }
+html body #summon-information .ref-rate-tier .ref-scroll { overflow: visible; max-height: none; }
+html body #summon-information .ref-rate-tier h4 { font-size: 1rem; margin: 0 0 8px; }
+html body #summon-information .summon-drop-table { table-layout: fixed; font-size: .85rem; }
+html body #summon-information .summon-drop-table :is(th, td) { overflow-wrap: anywhere; white-space: normal; padding: 10px 8px; }
+html body #summon-information .summon-drop-table th { width: 48%; }
+html body #summon-information .summon-drop-table td:nth-child(2) { display: table-cell; width: 22%; }
+html body #summon-information .summon-drop-table td:nth-child(2) span { display: block; }
+html body #summon-information .banner-rate-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+html body #summon-information .banner-rate-filters button { min-height: 44px; }
+@media (max-width: 960px) {
+  html body .sanctuary-shell { height: auto; min-height: 100dvh; display: block; overflow: visible; padding-bottom: 5.5rem; }
+  html body .sanctuary-shell .sanctuary-header { grid-template-columns: 1fr auto; min-height: 3.6rem; padding: .5rem .75rem; gap: .4rem; }
+  html body .sanctuary-shell .sanctuary-wallet { grid-column: 2; flex-wrap: wrap; gap: .25rem; }
+  html body .sanctuary-shell .sanctuary-brand > div, html body .sanctuary-shell .sanctuary-back small { display: none; }
+  html body .sanctuary-shell .sanctuary-dock { position: fixed; inset: auto 0 0; width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); z-index: 20; padding: .5rem .75rem calc(.5rem + env(safe-area-inset-bottom)); background: #131314f5; border-top: 1px solid #2d2d31; }
+  html body .sanctuary-shell .sanctuary-dock button { justify-content: center; padding: .5rem .2rem; }
+  html body .sanctuary-shell .sanctuary-content { height: auto; overflow: visible; padding: .75rem; }
+  .ref-screen { height: auto; }
+  .ref-home { display: flex; flex-direction: column; }
+  .ref-home-leader { height: 34rem; flex: none; }
+  .ref-home-story { min-height: 13rem; }
+  .ref-home-shops { min-height: 12rem; }
+  .ref-team { grid-template-columns: 1fr; }
+  .ref-team-sidebar { display: grid; grid-template-columns: 1fr 1fr; overflow: visible; }
+  .ref-collection-sidebar { flex: none; }
+  .ref-team-detail { display: flex; flex-direction: column; }
+  html body .sanctuary-shell .ref-copy-management .archive-card { grid-template-columns: 1fr; }
+  html body .sanctuary-shell .ref-copy-management .archive-portrait { height: 18rem; }
+  html body .sanctuary-shell .ref-character-panels { overflow: visible; height: auto; }
+  html body .sanctuary-shell .ref-character-panels .mono-character-quad { height: auto; grid-template-columns: 1fr; grid-template-rows: auto; }
+  html body .sanctuary-shell .ref-character-panels .mono-character-quad > section { overflow: visible; }
+  .ref-character-header-actions { align-items: flex-start; }
+  html body .sanctuary-shell .ref-character-header { flex-wrap: wrap; }
+  html body .sanctuary-shell .ref-summon { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .ref-summon-left { display: grid; grid-template-columns: 1fr 1fr; overflow: visible; }
+  html body .sanctuary-shell .ref-summon-hero { height: auto; }
+  .ref-summon-rates { max-height: none; grid-column: 1; }
+  .ref-rate-columns { display: grid; grid-template-columns: 1fr 1fr; }
+  .ref-rate-tier .ref-scroll { max-height: 15rem; }
+  html body .sanctuary-shell :is(.ref-market, .ref-conduit-store, .ref-conduit-upgrade, .ref-inventory) { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .ref-inventory .inventory-currencies { display: grid; grid-template-columns: 1fr 1fr; }
+  .ref-store-hero { height: 12rem; }
+  .ref-upgrade-identity { grid-template-columns: 1fr; }
+  html body .sanctuary-shell .ref-profile { grid-template-columns: 1fr; grid-template-rows: auto; }
+  html body .sanctuary-shell .ref-profile .online-profile-statistics { grid-template-rows: auto; }
+  html body .sanctuary-shell .ref-play { grid-template-columns: 1fr; grid-template-rows: auto; }
+  .ref-activity-sidebar { grid-column: 1; grid-row: 1; }
+  html body .sanctuary-shell .ref-play .activity-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: .7rem; }
+  .ref-play .ref-activity-section { display: contents; }
+  .ref-play .ref-activity-section h3 { display: none; }
+  html body .sanctuary-shell .ref-play .activity-categories a { width: 100%; }
+  .ref-play .ref-activity-section + .ref-activity-section { margin-top: 0; }
+  html body .sanctuary-shell .ref-play .activity-group { grid-column: 1; grid-row: 2; height: auto; grid-template-columns: 1fr; grid-template-rows: auto auto; overflow: visible; }
+  html body .sanctuary-shell .ref-play .activity-picker { grid-column: 1; grid-row: 1; flex-direction: row; }
+  html body .sanctuary-shell .ref-play .activity-card { grid-column: 1; grid-row: 2; height: auto; }
+  html body .sanctuary-shell .mono-story-campaign { grid-template-columns: 1fr; grid-template-rows: auto; height: auto; }
+  html body .sanctuary-shell .mono-story-campaign .story-world-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; }
+  html body .sanctuary-shell .mono-story-campaign .story-map-heading { grid-template-columns: 1fr; }
+  html body .sanctuary-shell .mono-story-campaign .story-region-panel { grid-template-columns: 1fr; grid-template-rows: auto; }
+  html body .sanctuary-shell .ref-story-main { overflow: visible; }
+  html body .sanctuary-shell .ref-story-entry { flex-direction: column; align-items: stretch; }
+  html body .sanctuary-shell .ref-story-entry > button { width: 100%; }
+  .ref-play #gameplay-story .ref-world-map { flex: none; height: 26rem; min-height: 26rem; }
+  .ref-map-node b { max-width: 7rem; }
+  html body .sanctuary-shell .archives { height: auto; grid-template-rows: auto; }
+  html body .sanctuary-shell .archive-panel { height: auto; grid-template-columns: 1fr; grid-template-rows: auto; overflow: visible; }
+  html body .sanctuary-shell .archive-panel > :is(.archive-grid, .archive-filters, .ref-archive-manage, [data-character-filter-result], .glossary-heading, .glossary-grid) { grid-column: 1; grid-row: auto; }
+  html body .sanctuary-shell > #status { bottom: 5.5rem; }
+}
+@media (max-width: 540px) {
+  html body .sanctuary-shell .sanctuary-wallet { min-width: 0; }
+  html body .sanctuary-shell .sanctuary-header .currency-strip { flex-direction: column; align-items: stretch; gap: .25rem; }
+  html body .sanctuary-shell .sanctuary-header .currency-strip > button { padding: .25rem .4rem; min-width: 0; }
+  html body .sanctuary-shell .sanctuary-header .currency-strip strong { flex-wrap: wrap; }
+  .ref-team-sidebar { grid-template-columns: 1fr; }
+  .ref-home-shops { grid-template-columns: 1fr; }
+}
+
+/* Shared finish for the reference menus and both dialog implementations. */
+html body {
+  --menu-text: #f4f1e9;
+  --menu-muted: #b8b6bd;
+  --menu-border: #ffffff24;
+  --menu-surface: #161619;
+  --menu-surface-raised: #202024;
+  color: var(--menu-text);
+}
+#app :is(p, li, dt, dd, small, label, input, select, textarea),
+html body :is(.information-modal, .selection-modal, .game-dialog, .ll-ui) :is(p, li, dt, dd, small, label, input, select, textarea) {
+  font-weight: 400;
+  line-height: 1.6;
+}
+#app :is(h1, h2, h3, h4), html body :is(dialog, .ll-ui) :is(h1, h2, h3, h4) {
+  font-family: var(--ui-font);
+  font-weight: 700;
+  text-wrap: balance;
+}
+#app :is(button, a, summary), html body dialog :is(button, a, summary) { font-weight: 600; }
+html body :is(.sanctuary-shell, .ll-ui, .information-modal, .selection-modal, .game-dialog, .settings-drawer) {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+html body .sanctuary-shell {
+  grid-template-rows: auto minmax(0, 1fr);
+  color: var(--menu-text);
+}
+html body .sanctuary-shell .sanctuary-header {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 5.15rem;
+  gap: 1rem;
+  padding: .65rem 1.25rem;
+  background: #111113e6;
+}
+html body .sanctuary-shell .sanctuary-dock { justify-content: center; min-width: 0; }
+html body .sanctuary-shell .sanctuary-brand strong { font-size: .95rem; }
+html body .sanctuary-shell .sanctuary-brand .brand-mark { width: 2.4rem; min-width: 2.4rem; height: 2.4rem; font-size: .7rem; }
+html body .sanctuary-shell .sanctuary-dock button { min-height: 48px; padding: .7rem .9rem; font-size: 1.05rem; }
+html body .sanctuary-shell .sanctuary-header .ui-icon { width: 1.25rem; height: 1.25rem; }
+html body .sanctuary-shell .sanctuary-wallet { min-width: 0; }
+html body .sanctuary-shell .sanctuary-header .currency-strip { min-width: 0; }
+html body .sanctuary-shell .sanctuary-header .currency-strip > button { min-width: 0; min-height: 48px; max-width: 12rem; border-radius: .75rem; padding: .5rem .7rem; }
+html body .sanctuary-shell .sanctuary-header .currency-strip strong { display: grid; gap: 0; font-size: 1rem; min-width: 0; text-align: left; }
+html body .sanctuary-shell .sanctuary-header .currency-strip strong > span { overflow-wrap: anywhere; }
+html body .sanctuary-shell .sanctuary-header .currency-strip strong small { color: var(--menu-muted); font-size: .78rem; }
+html body .sanctuary-shell .sanctuary-header .currency-icon { width: 1.5rem; height: 1.5rem; }
+html body .sanctuary-shell .sanctuary-header .sanctuary-wallet > button.text-button { width: 48px; min-width: 48px; height: 48px; min-height: 48px; flex: 0 0 48px; padding: .6rem; font-size: 1.05rem; }
+html body .sanctuary-shell .online-header-avatar { width: 36px; height: 36px; }
+html body .sanctuary-shell .sanctuary-content { padding: 1rem 1.15rem 1.35rem; font-size: .95rem; }
+html body .sanctuary-shell .sanctuary-content .ref-screen { gap: .8rem; }
+html body .sanctuary-shell .sanctuary-content .ref-panel { padding: .85rem; gap: .55rem; }
+html body .sanctuary-shell .sanctuary-content :is(button, input, select, textarea) { font-size: .85rem; }
+html body .sanctuary-shell :is(.ref-panel, .ref-character-panels .mono-character-quad > section, .archive-panel > .archive-grid, .archive-panel > .archive-filters, .ref-story-main, .ref-story-region-sidebar, .ref-play .activity-card, .ref-play .activity-picker) {
+  border-color: var(--menu-border);
+  background-color: var(--menu-surface);
+  box-shadow: 0 8px 24px #0002;
+}
+html body .sanctuary-shell :is(.ref-panel-heading, .ref-panel > h3, .ref-character-panels .mono-character-quad > section > h3, .ref-play .ref-activity-section h3) {
+  color: var(--menu-muted);
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  line-height: 1.5;
+}
+html body .sanctuary-shell :is(.ref-panel-heading, .ref-character-panels .mono-character-quad > section > h3) { padding-bottom: .6rem; border-bottom: 1px solid var(--menu-border); }
+html body .sanctuary-shell :is(.ref-member-row, .ref-product, .ref-collection-card, .inventory-item, .archive-panel .archive-card, .mono-growth-options > article) { background-color: var(--menu-surface-raised); border-color: var(--menu-border); }
+html body .sanctuary-shell :is(.ref-member-row small, .ref-card-caption small, .ref-stat-strip small, .ref-growth-materials small, .ref-play .activity-categories small, .ref-play .activity-facts dt, .ref-product small, .ref-store-detail > p, .archive-panel .archive-card > p) {
+  color: var(--menu-muted);
+  font-size: .78rem;
+  line-height: 1.55;
+}
+html body .sanctuary-shell .sanctuary-content :is(small, .eyebrow, .ref-component-count, [data-character-filter-result], .ref-equipment-note) { font-size: max(.78rem, 12px); line-height: 1.5; }
+html body .sanctuary-shell .ref-story-region-sidebar [data-story-region] small { font-size: max(.78rem, 12px); line-height: 1.5; }
+html body .sanctuary-shell .ref-panel-heading > span { font-size: max(.78rem, 12px); letter-spacing: normal; text-transform: none; }
+html body .sanctuary-shell :is(.ref-member-row b, .ref-card-caption b, .ref-product b, .inventory-item strong, .archive-panel .archive-card h3) { font-size: .9rem; line-height: 1.35; }
+html body .sanctuary-shell :is(.ref-store-detail h2, .ref-character-identity h2, .ref-story-main .story-map-heading h2) { line-height: 1.2; }
+html body .sanctuary-shell .ref-store-detail h2 { font-size: 1.3rem; margin-block: .4rem; }
+html body .sanctuary-shell .ref-home-shop { padding: 1rem; gap: .9rem; }
+html body .sanctuary-shell .ref-home-shop b { font-size: 1.05rem; line-height: 1.45; }
+html body .sanctuary-shell .ref-home-shop small { font-size: .85rem; }
+html body .sanctuary-shell .ref-home-story { padding: 1.15rem; }
+html body .sanctuary-shell .ref-home-story strong { font-size: clamp(1.6rem, 2.35vw, 2.45rem); line-height: 1.2; }
+html body .sanctuary-shell .ref-home-story small { font-size: .9rem; line-height: 1.6; }
+html body .sanctuary-shell .ref-character-panels .hub-ability { padding-block: .7rem; }
+html body .sanctuary-shell .ref-character-panels .hub-ability h3 { font-size: .95rem; line-height: 1.4; }
+html body .sanctuary-shell .ref-character-panels .hub-ability p { font-size: .82rem; line-height: 1.6; }
+html body .sanctuary-shell .ref-character-panels .ability-icon { width: 2.5rem; height: 2.5rem; }
+html body .sanctuary-shell .ref-character-panels .hub-stats > div { padding-block: .55rem; }
+html body .sanctuary-shell .ref-character-panels .hub-stats > div > small:last-child:not(:first-child) { font-size: .75rem; }
+html body .sanctuary-shell .ref-character-header::before,
+html body .sanctuary-shell .ref-character-header::after { display: none; }
+html body .sanctuary-shell .ref-character-header { text-align: left; }
+html body .sanctuary-shell .ref-character-identity { text-align: left; }
+html body .sanctuary-shell .ref-growth-preview { font-size: .85rem; }
+html body .sanctuary-shell .ref-growth-preview small { font-size: .78rem; }
+html body .sanctuary-shell .ref-equipment-slot .selection-trigger { font-size: .78rem; padding: .45rem; white-space: normal; }
+html body .sanctuary-shell :is(.ref-equipment-slot small, .ref-equipment-note) { font-size: .75rem; line-height: 1.5; }
+html body .sanctuary-shell :is(.ref-growth-summary, .ref-growth-cost, .ref-growth-materials, .ref-story-entry-summary > p, .ref-story-main .story-boss-preview > p:not(.eyebrow)) { font-size: .85rem; line-height: 1.6; }
+html body .sanctuary-shell .ref-character-panels .mono-growth-options > article { gap: .55rem; padding: .8rem; }
+html body .sanctuary-shell :is(.ref-product-grid, .ref-bearer-grid, .ref-capture-grid) { gap: .75rem; }
+html body .sanctuary-shell .ref-product { padding: .75rem; gap: .45rem; }
+html body .sanctuary-shell :is(.ref-market-tabs, .ref-segment, .archive-navigation, .ref-rarity-filter, .summon-banner-navigation, .banner-rate-filters) button { font-size: .85rem; line-height: 1.4; }
+html body .sanctuary-shell .ref-rate-tier table { font-size: .8rem; line-height: 1.5; }
+html body .sanctuary-shell .ref-rate-tier :is(th, td) { padding-block: .5rem; }
+html body .sanctuary-shell :is(.ref-summon-rates #banner-rate-note, .ref-story-entry-summary .ref-story-kill-loot) { font-size: max(.78rem, 12px); line-height: 1.6; color: var(--menu-muted); }
+html body .sanctuary-shell :is(.activity-card > p, .activity-card > small, .story-stage small, .ref-map-node small, .item-showcase-name, .ref-inventory .inventory-item > small) { font-size: .8rem; line-height: 1.5; }
+html body .sanctuary-shell .ref-play .activity-facts { grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr)); }
+html body .sanctuary-shell :is(.ref-link, [data-information], .selection-trigger) { font-size: .85rem; }
+html body :is(.game-dialog, .information-modal, .selection-modal, .settings-drawer) { color: var(--menu-text); border-color: var(--menu-border); }
+html body :is(.game-dialog, .information-modal, .selection-modal) :is(p, li, dt, dd) { font-size: .95rem; line-height: 1.65; }
+html body :is(.game-dialog, .information-modal, .selection-modal) h2 { font-size: 1.6rem; line-height: 1.25; margin-bottom: .8rem; }
+html body :is(.sanctuary-shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer) :is(button, input, select, textarea) { font-size: .9rem; }
+html body :is(.sanctuary-shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer) :is(input, select, textarea) { padding: .75rem .85rem; background-color: #101013; border-color: var(--menu-border); }
+html body :is(.sanctuary-shell, .game-dialog, .information-modal, .selection-modal, .settings-drawer) :is(button, a, input, select, textarea):focus-visible { outline: 2px solid var(--ui-accent); outline-offset: 3px; }
+html body .game-dialog .game-destructive { color: #ffc3b8; background: #bf59451a; border-color: #e58c7980; }
+html body .settings-drawer :is(label, p) { font-size: .9rem; line-height: 1.6; }
+html body .settings-drawer :is(h2, h3, label, p, button, select) { font-family: var(--ui-font); }
+html body .settings-drawer h3 { font-size: 1.1rem; }
+html body .sanctuary-shell .ref-master-slot { display: grid; gap: .65rem; padding: 1rem; border: 1px solid var(--menu-border); border-radius: .8rem; background: var(--menu-surface-raised); text-align: left; }
+html body .sanctuary-shell .ref-master-slot :is(label, strong) { font-size: .95rem; }
+html body .sanctuary-shell .ref-master-slot p { font-size: .85rem; line-height: 1.6; }
+html body .master-reference { padding-block: .6rem; }
+html body .master-reference h3 { font-size: 1rem; line-height: 1.4; }
+html body .master-art { display: block; width: 96px; height: 96px; margin-inline: auto; object-fit: contain; }
+html body .reward-art .master-art, html body .ref-master-slot .master-art { width: 160px; height: 160px; }
+html body .unit-master-reserve img { width: 18px; height: 18px; vertical-align: middle; margin-right: .25rem; }
+html body .master-art-pending { display: grid; place-items: center; min-height: 80px; padding: .65rem; border: 1px dashed var(--menu-border); border-radius: .6rem; color: var(--menu-muted); font-size: .8rem; }
+html body .sanctuary-shell :is(.ref-member-row, .ref-product, .ref-collection-card, .archive-gallery-button, .ref-home-shop) { transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease; }
+@media (min-width: 961px) and (max-width: 1200px) {
+  html body .sanctuary-shell .sanctuary-brand > div { display: none; }
+  html body .sanctuary-shell .sanctuary-header { gap: .6rem; padding-inline: .85rem; }
+  html body .sanctuary-shell .sanctuary-dock button { gap: .35rem; padding-inline: .65rem; }
+  html body .sanctuary-shell :is(.ref-conduit-store, .ref-conduit-upgrade) { grid-template-columns: 10rem minmax(0, 1fr) 16rem; }
+  html body .sanctuary-shell .ref-team { grid-template-columns: 14rem minmax(0, 1fr); }
+  html body .sanctuary-shell .ref-character-panels .mono-character-quad { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
+  html body .sanctuary-shell .ref-character-panels .mono-growth-options { grid-template-columns: 1fr; }
+}
+@media (max-width: 960px) {
+  html body .sanctuary-shell .sanctuary-header { grid-template-columns: auto minmax(0, 1fr); gap: .6rem; padding: .6rem .75rem; }
+  html body .sanctuary-shell .sanctuary-header .sanctuary-wallet { grid-column: 2; grid-row: 1; display: grid; grid-template-columns: repeat(4, minmax(48px, 1fr)); justify-items: end; }
+  html body .sanctuary-shell .sanctuary-header .currency-strip { grid-column: 1 / -1; width: 100%; }
+  html body .sanctuary-shell .sanctuary-content { padding: 1rem .75rem; }
+  html body .sanctuary-shell .sanctuary-dock { justify-content: stretch; }
+  html body .sanctuary-shell .ref-home-leader { height: clamp(26rem, 75vw, 34rem); }
+  html body .sanctuary-shell .ref-summon-hero { height: auto; }
+}
+@media (max-width: 540px) {
+  html body .sanctuary-shell .sanctuary-header .currency-strip { flex-direction: column; flex: 1 1 9rem; }
+  html body .sanctuary-shell .sanctuary-header .currency-strip > button { width: 100%; max-width: none; }
+  html body .sanctuary-shell .sanctuary-header .currency-strip strong { display: flex; flex-wrap: wrap; gap: .25rem .5rem; }
+  html body .sanctuary-shell .sanctuary-brand { align-self: start; padding-top: .35rem; }
+  html body .sanctuary-shell :is(.ref-rate-columns, .ref-summon-left, .mono-growth-options) { grid-template-columns: 1fr; }
+  html body .sanctuary-shell .ref-character-panels .mono-growth-options { grid-template-columns: 1fr; }
+  html body .sanctuary-shell .ref-equipment-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html body .sanctuary-shell .ref-character-header-actions { flex-direction: row; flex-wrap: wrap; width: 100%; }
+  html body :is(.game-dialog, .information-modal, .selection-modal) { padding: 1.1rem; }
+}
+:root[data-motion="reduced"] body .sanctuary-shell :is(.ref-member-row, .ref-product, .ref-collection-card, .archive-gallery-button, .ref-home-shop) { transition: none; }
+html body .sanctuary-shell :is(.ref-profile-code small, .ref-profile-icons legend, .ref-slot-empty, .ref-copy-management .captured-abilities h4, .ref-copy-management .captured-equipment h4, .eyebrow) { color: #b5b5bc; }
+html body .sanctuary-shell .ref-character-progress { flex-wrap: wrap; }
+html body :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) :is(.primary-button, .game-confirm-button):disabled { opacity: 1; color: #b5b5bc; background: #242427; border-color: #55555b; }
+
+/* Information topic menus */
+html body .information-modal .information-topic-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: .6rem; }
+html body .information-modal .information-topic-list[hidden], html body .information-modal .information-topic[hidden] { display: none; }
+html body .information-modal .information-topic-list button { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; align-items: center; column-gap: .8rem; row-gap: .15rem; width: 100%; padding: .85rem 1rem; text-align: left; border-radius: .7rem; background: #18181a; }
+html body .information-modal .information-topic-list button strong { grid-column: 1; font-size: .98rem; color: #f4f4f5; }
+html body .information-modal .information-topic-list button span { grid-column: 1; font-size: .8rem; color: #a9a9ae; overflow-wrap: anywhere; }
+html body .information-modal .information-topic-list button b { grid-column: 2; grid-row: 1 / span 2; font-size: 1.4rem; color: #a9a9ae; }
+html body .information-modal .information-topic-list button:hover:not(:disabled) b { color: #f4f4f5; }
+html body .information-modal .information-topic { display: grid; gap: .4rem; }
+html body .information-modal .information-topic-back { justify-self: start; }
+html body .information-modal .information-topic h3 { font-size: 1.2rem; margin: .3rem 0 .2rem; }
+html body .information-modal .information-topic h4 { font-size: .95rem; margin: .6rem 0 0; }
+html body .information-modal .information-topic :is(p, ul) { margin: 0; }
+html body .information-modal .information-topic ul { padding-left: 1.2rem; }
+
+/* Character charge definitions */
+.kit-resource-summary { margin: .35rem 0 .5rem; font-size: .9em; line-height: 1.45; opacity: .9; }
+.kit-resource-summary strong { margin-right: .25rem; }
+
+/* D-235: character art is the focal point of Team screens. */
+html body .sanctuary-shell .ref-character-header { display: grid; grid-template-columns: clamp(12rem, 24vw, 19rem) minmax(0, 1fr) auto; align-items: center; gap: 1.4rem; padding: 1rem; }
+html body .sanctuary-shell .ref-character-header .ref-character-portrait { width: 100%; height: auto; aspect-ratio: 1; max-height: none; border-radius: 1.1rem; padding: .6rem; background: radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--ui-accent, #f4f4f5) 18%, #2a2a2e), #121214 72%); border: 1px solid #ffffff1f; overflow: hidden; }
+html body .sanctuary-shell .ref-character-header .ref-character-portrait :is(.character-idle, img) { width: 100%; height: 100%; max-width: none; max-height: none; object-fit: contain; }
+html body .sanctuary-shell .ref-character-header .ref-character-identity h2 { font-size: clamp(1.9rem, 3vw, 2.8rem); }
+html body .sanctuary-shell .ref-character-header .ref-character-identity p { font-size: .82rem; }
+html body .sanctuary-shell .ref-character-header .ref-bar { width: 9rem; }
+html body .sanctuary-shell .ref-team-sidebar .ref-thumb:not(.ref-count) { width: 4.2rem; height: 4.2rem; border-radius: .65rem; }
+html body .sanctuary-shell .ref-card-art { height: 11rem; }
+html body .sanctuary-shell .ref-bearer-grid { grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); }
+html body .sanctuary-shell .ref-capture-grid { grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); }
+@media (max-width: 960px) {
+  html body .sanctuary-shell .ref-character-header { grid-template-columns: clamp(10rem, 34vw, 15rem) minmax(0, 1fr); }
+  html body .sanctuary-shell .ref-character-header .ref-character-header-actions { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+}
+@media (max-width: 540px) {
+  html body .sanctuary-shell .ref-character-header { grid-template-columns: 1fr; text-align: center; }
+  html body .sanctuary-shell .ref-character-header .ref-character-portrait { width: min(100%, 17rem); margin-inline: auto; }
+  html body .sanctuary-shell .ref-character-header .ref-character-progress, html body .sanctuary-shell .ref-character-header .ref-tags { justify-content: center; }
+  html body .sanctuary-shell .ref-card-art { height: 9rem; }
+  html body .sanctuary-shell :is(.ref-bearer-grid, .ref-capture-grid) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

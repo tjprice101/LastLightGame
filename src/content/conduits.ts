@@ -117,7 +117,7 @@ export const conduits = [
     lore: 'A fully restored elemental masterpiece from the ancient white machine.' })),
   ...omnicConduits.slice(10).map((entry) => ({ ...entry, rarity: 'Omnic' as const, price: null, power: 'Elemental Light', art: entry.id,
     lore: 'A newly catalogued prismatic elemental masterpiece, awaiting its original reviewed artwork.' })),
-  ...kitConduitDesigns.map((entry) => ({ ...entry, mechanic: 'kit-interaction' as const, power: 'Elemental Light', art: null })),
+  ...kitConduitDesigns.map((entry) => ({ ...entry, mechanic: 'kit-interaction' as const, power: 'Elemental Light', art: entry.id })),
 ] as const;
 
 export type Conduit = (typeof conduits)[number];

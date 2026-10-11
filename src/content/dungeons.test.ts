@@ -7,6 +7,7 @@ import { starters } from './starters';
 import { elements, elementalEnemyLevel } from './activities';
 import { dungeonArt } from './dungeon-art';
 import { readFileSync } from 'node:fs';
+import { enemyCombatStats } from './stat-growth';
 
 describe('elemental material dungeons', () => {
   it('enables exactly the ten canonical elements and rejects unknown dungeons', () => {
@@ -40,7 +41,7 @@ describe('elemental material dungeons', () => {
     expect([...encountered]).toEqual(names);
     expect(encountered.size).toBe(8);
   });
-  it.each(playableDungeons)('%s grants only its own materials and supports opening/final clears', (element) => {
+  it.each(playableDungeons)('%s grants only its own materials; final bosses reject unbuilt solo clears', (element) => {
     expect(materialDrops(element, 35, () => 0)).toEqual({
       [`${element}-common`]: 3, [`${element}-uncommon`]: 3, [`${element}-rare`]: 3,
       [`${element}-epic`]: 3, [`${element}-legendary`]: 3, [`${element}-omnic`]: 3,
@@ -53,7 +54,7 @@ describe('elemental material dungeons', () => {
         if (action) state = act(state, actor.id, action, state.enemies.find((enemy) => enemy.hp > 0)!.id).state;
         if (state.phase === 'player') state = endTurn(state).state;
       }
-      expect(state.phase, `${element} stage ${stage}`).toBe('cleared');
+      expect(state.phase, `${element} stage ${stage}`).toBe(stage === 35 ? 'defeat' : 'cleared');
     }
   });
   it('guarantees Seeds, gates each higher rarity exactly and checks probability boundaries', () => {
@@ -66,7 +67,7 @@ describe('elemental material dungeons', () => {
     }
     expect(() => materialDrops('infernic', 6, () => 1)).toThrow();
   });
-  it.each(starters)('$name can clear the opening stages at base stats and final stage at max progression', (starter) => {
+  it.each(starters)('$name can clear early stages; progression alone does not solo-clear final bosses', (starter) => {
     if (!isPlayableDungeon(starter.elementId)) throw new Error('Starter dungeon is unavailable.');
     for (const stage of [1, 5, 35]) {
       const progress = stage === 35 ? { level: 105, evolution: 6 } : { level: 45, evolution: 2 };
@@ -78,7 +79,7 @@ describe('elemental material dungeons', () => {
         if (action) state = act(state, actor.id, action, state.enemies.find((enemy) => enemy.hp > 0)!.id).state;
         if (state.phase === 'player') state = endTurn(state).state;
       }
-      expect(state.phase, `${starter.name} stage ${stage}`).toBe('cleared');
+      expect(state.phase, `${starter.name} stage ${stage}`).toBe(stage === 35 ? 'defeat' : 'cleared');
       expect(turns).toBeLessThan(100);
       expect(() => nextWave(state)).toThrow('separate encounters');
     }
@@ -87,7 +88,7 @@ describe('elemental material dungeons', () => {
     const encounter = dungeonEncounter('infernic', 35);
     expect(encounter.abilityMultiplier).toBeCloseTo(1.788);
     expect(encounter.level).toBe(120);
-    expect(encounter.stats).toMatchObject({ health: 400_000, damage: 6_000, defense: 2_250, crit: .25 });
+    expect(encounter.stats).toMatchObject({ ...enemyCombatStats(120, true), crit: .25 });
     expect(materialDropTable.map((drop) => drop.level)).toEqual([23, 48, 73, 98, 120]);
     expect(materialDrops('infernic', 35, () => 0)).toEqual({
       'infernic-common': 3, 'infernic-uncommon': 3, 'infernic-rare': 3,

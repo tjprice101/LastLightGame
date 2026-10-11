@@ -1,0 +1,1185 @@
+{
+  "master-ember-1": {
+    "border_only": true,
+    "keys": [
+      [
+        218,
+        248,
+        106
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-ember-2": {
+    "border_only": true,
+    "keys": [
+      [
+        178,
+        204,
+        115
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-ember-3": {
+    "border_only": true,
+    "keys": [
+      [
+        140,
+        192,
+        97
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-tide-1": {
+    "border_only": true,
+    "keys": [
+      [
+        91,
+        207,
+        172
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-tide-2": {
+    "border_only": true,
+    "keys": [
+      [
+        76,
+        124,
+        111
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-tide-3": {
+    "border_only": true,
+    "keys": [
+      [
+        115,
+        185,
+        174
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-sprout-1": {
+    "border_only": true,
+    "keys": [
+      [
+        211,
+        152,
+        164
+      ]
+    ],
+    "radius": 48,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 50
+    },
+    "background_seeds": [
+      [
+        0.618,
+        0.166
+      ],
+      [
+        0.719,
+        0.278
+      ],
+      [
+        0.277,
+        0.279
+      ],
+      [
+        0.791,
+        0.689
+      ],
+      [
+        0.867,
+        0.781
+      ],
+      [
+        0.783,
+        0.468
+      ],
+      [
+        0.617188,
+        0.165039
+      ],
+      [
+        0.717773,
+        0.27832
+      ],
+      [
+        0.276367,
+        0.279297
+      ],
+      [
+        0.783203,
+        0.467773
+      ],
+      [
+        0.212891,
+        0.510742
+      ],
+      [
+        0.808594,
+        0.512695
+      ],
+      [
+        0.761719,
+        0.658203
+      ],
+      [
+        0.263672,
+        0.663086
+      ],
+      [
+        0.298828,
+        0.695312
+      ],
+      [
+        0.791016,
+        0.689453
+      ],
+      [
+        0.866211,
+        0.78125
+      ],
+      [
+        0.138672,
+        0.78418
+      ],
+      [
+        0.651367,
+        0.820312
+      ],
+      [
+        0.262695,
+        0.821289
+      ]
+    ],
+    "foreground_polygons": [],
+    "review": "Pink border key tuned for backdrop variation; six visible pink openings plus every >=1000px enclosed pink island confirmed in the labeled source overlay are seeded. Pink is not an authored subject palette; preserve green leaves, architecture and built-in base; remove only border-connected/confirmed pink backdrop."
+  },
+  "master-sprout-2": {
+    "border_only": true,
+    "keys": [
+      [
+        254,
+        254,
+        254
+      ]
+    ],
+    "radius": 20,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 45
+    },
+    "background_seeds": [],
+    "review": "Pure-white border key at restrained radius preserves ivory/white metal by distance; no seeds because reviewed candidate islands overlap pale subject/metal and were not confirmed as background. Flat detached white backdrop shadow keys cleanly; retain built-in base."
+  },
+  "master-sprout-3": {
+    "border_only": true,
+    "keys": [
+      [
+        252,
+        107,
+        138
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-atmoso-1": {
+    "border_only": true,
+    "keys": [
+      [
+        34,
+        213,
+        200
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-atmoso-2": {
+    "border_only": true,
+    "keys": [
+      [
+        174,
+        204,
+        184
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-atmoso-3": {
+    "border_only": true,
+    "keys": [
+      [
+        95,
+        154,
+        136
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-aurora-1": {
+    "border_only": true,
+    "keys": [
+      [
+        196,
+        224,
+        184
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-aurora-2": {
+    "border_only": true,
+    "keys": [
+      [
+        197,
+        207,
+        91
+      ]
+    ],
+    "radius": 32,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 45
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Source uses a uniform yellow-green background with a separate olive painted cast shadow beneath the lower wings; border-connected source-specific key removes backdrop, while preserve the attached olive shadow/base and all ivory wing metal. No enclosed background seeds needed."
+  },
+  "master-aurora-3": {
+    "border_only": true,
+    "keys": [
+      [
+        179,
+        197,
+        167
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-bliss-1": {
+    "border_only": true,
+    "keys": [
+      [
+        105,
+        148,
+        139
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-bliss-2": {
+    "border_only": true,
+    "keys": [
+      [
+        185,
+        206,
+        190
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-bliss-3": {
+    "border_only": true,
+    "keys": [
+      [
+        90,
+        162,
+        152
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-bruno-1": {
+    "border_only": true,
+    "keys": [
+      [
+        153,
+        162,
+        136
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-bruno-2": {
+    "border_only": true,
+    "keys": [
+      [
+        188,
+        197,
+        148
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-bruno-3": {
+    "border_only": true,
+    "keys": [
+      [
+        213,
+        227,
+        102
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-disciple-1": {
+    "border_only": true,
+    "keys": [
+      [
+        176,
+        186,
+        156
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-disciple-2": {
+    "border_only": true,
+    "keys": [
+      [
+        126,
+        162,
+        128
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-disciple-3": {
+    "border_only": true,
+    "keys": [
+      [
+        178,
+        198,
+        173
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-elise-1": {
+    "border_only": true,
+    "keys": [
+      [
+        236,
+        125,
+        219
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [
+      [
+        0.490234,
+        0.295898
+      ],
+      [
+        0.585,
+        0.873
+      ],
+      [
+        0.451,
+        0.679
+      ],
+      [
+        0.549,
+        0.68
+      ],
+      [
+        0.31543,
+        0.476562
+      ],
+      [
+        0.68,
+        0.478
+      ],
+      [
+        0.26,
+        0.804
+      ],
+      [
+        0.185,
+        0.47
+      ],
+      [
+        0.741,
+        0.797
+      ],
+      [
+        0.817,
+        0.293
+      ],
+      [
+        0.196,
+        0.579
+      ],
+      [
+        0.816406,
+        0.292969
+      ],
+      [
+        0.679688,
+        0.477539
+      ],
+      [
+        0.18457,
+        0.469727
+      ],
+      [
+        0.196289,
+        0.579102
+      ],
+      [
+        0.549805,
+        0.679688
+      ],
+      [
+        0.451172,
+        0.678711
+      ],
+      [
+        0.741211,
+        0.796875
+      ],
+      [
+        0.260742,
+        0.803711
+      ],
+      [
+        0.584961,
+        0.873047
+      ]
+    ],
+    "foreground_polygons": [],
+    "review": "Magenta border key; every >=1000px disconnected magenta island in the candidate overlay was confirmed as plain backdrop between lime blades/clockwork and seeded. Lime/white/gold subject colors are distinct; preserve authored metal and remove magenta backdrop only."
+  },
+  "master-elise-2": {
+    "border_only": true,
+    "keys": [
+      [
+        213,
+        46,
+        163
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [
+      [
+        0.163,
+        0.321
+      ],
+      [
+        0.835,
+        0.265
+      ],
+      [
+        0.675,
+        0.45
+      ],
+      [
+        0.835938,
+        0.265625
+      ],
+      [
+        0.163086,
+        0.321289
+      ],
+      [
+        0.307617,
+        0.442383
+      ],
+      [
+        0.674805,
+        0.450195
+      ],
+      [
+        0.228516,
+        0.538086
+      ],
+      [
+        0.34668,
+        0.583984
+      ]
+    ],
+    "foreground_polygons": [],
+    "review": "Magenta border key; all >=1000px disconnected magenta regions shown in the candidate overlay were confirmed as backdrop between lime blades/clockwork and seeded; retain authored pale/lime subject and remove only matching background."
+  },
+  "master-elise-3": {
+    "border_only": true,
+    "keys": [
+      [
+        200,
+        159,
+        207
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-razor-1": {
+    "border_only": true,
+    "keys": [
+      [
+        97,
+        152,
+        118
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [
+      [
+        0.38,
+        0.79
+      ],
+      [
+        0.63,
+        0.81
+      ],
+      [
+        0.26,
+        0.56
+      ],
+      [
+        0.88,
+        0.33
+      ]
+    ],
+    "foreground_polygons": [],
+    "review": "Reviewed green backdrop islands inside the crescent-wing envelope (lower central field and left/right inner openings) seeded after visual confirmation; preserve purple wing surfaces, central bastion, and attached ground shadow. Green is not an authored Razor palette color; remove only matching backdrop components."
+  },
+  "master-razor-2": {
+    "border_only": true,
+    "keys": [
+      [
+        161,
+        192,
+        136
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-razor-3": {
+    "border_only": true,
+    "keys": [
+      [
+        107,
+        131,
+        102
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-rosetta-1": {
+    "border_only": true,
+    "keys": [
+      [
+        115,
+        120,
+        86
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Reviewed clear side-border row gradient key; preserve the authored subject and attached painted base/shadow, remove backdrop variation only.",
+    "row_gradient": true
+  },
+  "master-rosetta-2": {
+    "border_only": true,
+    "keys": [
+      [
+        71,
+        98,
+        67
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-rosetta-3": {
+    "border_only": true,
+    "keys": [
+      [
+        87,
+        166,
+        136
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-thornia-1": {
+    "border_only": true,
+    "keys": [
+      [
+        60,
+        117,
+        98
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [
+      [
+        0.63,
+        0.62
+      ],
+      [
+        0.3,
+        0.63
+      ],
+      [
+        0.36,
+        0.31
+      ],
+      [
+        0.66,
+        0.31
+      ]
+    ],
+    "foreground_polygons": [],
+    "review": "Reviewed green backdrop islands visible through the rose-wheel lattice/inner arches seeded; preserve red roses, bronze rails and authored dark center. Green is the plain source key rather than a subject color."
+  },
+  "master-thornia-2": {
+    "border_only": true,
+    "keys": [
+      [
+        202,
+        211,
+        183
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-thornia-3": {
+    "border_only": true,
+    "keys": [
+      [
+        114,
+        136,
+        107
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-crinso-1": {
+    "border_only": true,
+    "keys": [
+      [
+        167,
+        184,
+        149
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-crinso-2": {
+    "border_only": true,
+    "keys": [
+      [
+        59,
+        106,
+        70
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [
+      [
+        0.419922,
+        0.217773
+      ],
+      [
+        0.263672,
+        0.219727
+      ],
+      [
+        0.209961,
+        0.339844
+      ],
+      [
+        0.304688,
+        0.485352
+      ],
+      [
+        0.723633,
+        0.394531
+      ],
+      [
+        0.197266,
+        0.473633
+      ],
+      [
+        0.710938,
+        0.580078
+      ],
+      [
+        0.539062,
+        0.720703
+      ],
+      [
+        0.75293,
+        0.633789
+      ],
+      [
+        0.378906,
+        0.670898
+      ],
+      [
+        0.708984,
+        0.713867
+      ],
+      [
+        0.65625,
+        0.775391
+      ]
+    ],
+    "foreground_polygons": [],
+    "review": "Dark-green border key; every >=1000px enclosed dark-green backdrop island visible in the correct Duality Planet Flamewheel candidate overlay is seeded. Preserve authored red, pink, black, gold and any green details smaller/ambiguous with subject; remove only confirmed large background fields."
+  },
+  "master-crinso-3": {
+    "border_only": true,
+    "keys": [
+      [
+        78,
+        138,
+        96
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-nerithe-1": {
+    "border_only": true,
+    "keys": [
+      [
+        68,
+        141,
+        134
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-nerithe-2": {
+    "border_only": true,
+    "keys": [
+      [
+        157,
+        204,
+        189
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-nerithe-3": {
+    "border_only": true,
+    "keys": [
+      [
+        22,
+        192,
+        184
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-orvella-1": {
+    "border_only": true,
+    "keys": [
+      [
+        132,
+        158,
+        134
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-orvella-2": {
+    "border_only": true,
+    "keys": [
+      [
+        127,
+        147,
+        128
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-orvella-3": {
+    "border_only": true,
+    "keys": [
+      [
+        133,
+        146,
+        106
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-vaelor-1": {
+    "border_only": true,
+    "keys": [
+      [
+        116,
+        171,
+        153
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "master-vaelor-2": {
+    "border_only": true,
+    "keys": [
+      [
+        133,
+        148,
+        129
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Magenta border key; protect authored lime blade facets where key-adjacent; remove flat cast backdrop shadow."
+  },
+  "master-vaelor-3": {
+    "border_only": true,
+    "keys": [
+      [
+        74,
+        127,
+        132
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  },
+  "grand-master-chest": {
+    "border_only": true,
+    "keys": [
+      [
+        150,
+        233,
+        192
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Reviewed clear side-border row gradient key; preserve the authored subject and attached painted base/shadow, remove backdrop variation only.",
+    "row_gradient": true
+  },
+  "astral-reserve": {
+    "border_only": true,
+    "keys": [
+      [
+        104,
+        212,
+        190
+      ]
+    ],
+    "radius": 30,
+    "edge_cleanup": {
+      "source_pixels": 2,
+      "distance_ramp": 55
+    },
+    "background_seeds": [],
+    "foreground_polygons": [],
+    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+  }
+}

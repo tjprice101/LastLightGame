@@ -1,6 +1,6 @@
 import { getCreature } from '../content/creatures';
 import { isStarterId, type StarterId } from '../content/starters';
-import { infusionEncounter, infusionEnemyStats, treasuryEnemyStats, sanctuaryEnemyStats, roseEnemyStats } from '../content/infusions';
+import { infusionEncounter, capturedEnemyStats } from '../content/infusions';
 import { enemySkills, type EnemySkill } from '../content/enemy-skills';
 import { applyConduitBuffs, formatStat, type FighterDefinition } from '../content/combat';
 import { validateConduitElement, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
@@ -22,7 +22,7 @@ export function isCapturedInstanceId(value: unknown): value is string {
 }
 
 export function validateCapturedCharacters(value: unknown): CapturedCharacter[] {
-  if (!Array.isArray(value)) throw new Error('Invalid saved captured creatures.');
+  if (!Array.isArray(value)) throw new Error('Invalid saved captured Elemental-Devourers.');
   const seen = new Set<string>();
   return value.map((entry: unknown) => {
     if (typeof entry !== 'object' || entry === null || !('instanceId' in entry) ||
@@ -31,17 +31,17 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
       throw new Error('Invalid or duplicate captured-character instance.');
     }
     const creature = getCreature(entry.creatureId);
-    if (!creature.mode || creature.mode === 'machines') throw new Error('This creature is not eligible for captured-character ownership.');
+    if (!creature.mode || creature.mode === 'machines') throw new Error('This Elemental-Devourer is not eligible for captured-character ownership.');
     seen.add(entry.instanceId);
     const copy: CapturedCharacter = { instanceId: entry.instanceId, creatureId: entry.creatureId, locked: entry.locked };
     if ('acquisition' in entry) {
-      if (entry.acquisition !== 'banner-duplicate' || roseDuplicateMinimumLevel(creature.id) === undefined) throw new Error('Invalid creature acquisition source.');
+      if (entry.acquisition !== 'banner-duplicate' || roseDuplicateMinimumLevel(creature.id) === undefined) throw new Error('Invalid Elemental-Devourer acquisition source.');
       copy.acquisition = entry.acquisition;
     }
     if ('level' in entry) {
       if (!Number.isInteger(entry.level) || typeof entry.level !== 'number' || entry.level < 1 || entry.level > 120 ||
           !('capturedStage' in entry) || typeof entry.capturedStage !== 'number' || !creature.stages.includes(entry.capturedStage) ||
-          !('skills' in entry) || !Array.isArray(entry.skills)) throw new Error('Invalid captured creature progression.');
+          !('skills' in entry) || !Array.isArray(entry.skills)) throw new Error('Invalid captured Elemental-Devourer progression.');
       const expected = infusionEncounter(creature.mode, entry.capturedStage);
       if (creature.mode === 'roses' && copy.acquisition !== 'banner-duplicate' && expected.level > roseCaptureMaximumLevel) throw new Error('Roselius above level 120 cannot be captured.');
       const valid = enemySkills(expected.level, expected.boss, expected.ability, expected.abilityMultiplier);
@@ -52,7 +52,7 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
       copy.level = entry.level;
       copy.capturedStage = entry.capturedStage;
       copy.skills = valid;
-    } else if ('skills' in entry || 'capturedStage' in entry || 'acquisition' in entry) throw new Error('Incomplete captured creature progression.');
+    } else if ('skills' in entry || 'capturedStage' in entry || 'acquisition' in entry) throw new Error('Incomplete captured Elemental-Devourer progression.');
     if (creature.mode === 'roses' && copy.level === undefined && infusionEncounter(creature.mode, creature.stages[0]).level > roseCaptureMaximumLevel) throw new Error('Roselius above level 120 requires banner duplicate provenance.');
     return copy;
   });
@@ -60,27 +60,27 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
 
 export function capturedProgress(copy: CapturedCharacter) {
   const creature = getCreature(copy.creatureId);
-  if (!creature.mode || creature.mode === 'machines') throw new Error('Captured creature mode is missing or non-capturable.');
+  if (!creature.mode || creature.mode === 'machines') throw new Error('Captured Elemental-Devourer mode is missing or non-capturable.');
   const stage = copy.capturedStage ?? creature.stages[0];
   const encounter = infusionEncounter(creature.mode, stage);
-  return { level: copy.level ?? encounter.level, stage, tier: encounter.tier,
+  const legacyLevel = creature.mode === 'heavens' || creature.mode === 'abyss' ? Math.round(80 + (stage - 1) * 40 / 34) : encounter.level;
+  return { level: copy.level ?? legacyLevel, stage, tier: encounter.tier,
     skills: copy.skills ?? enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier) };
 }
 
 export function capturedLevelCost(copy: CapturedCharacter) {
   const { level } = capturedProgress(copy);
-  if (level >= 120) throw new Error('Maximum captured creature level reached.');
+  if (level >= 120) throw new Error('Maximum captured Elemental-Devourer level reached.');
   const creature = getCreature(copy.creatureId);
   return { fractalis: 10 + 2 * (level + 1), materials: { [creature.mode === 'roses' ? roseMaterials[0].id : `${creature.element}-common`]: Math.ceil((level + 1) / 30) } };
 }
 
 export function resolveCapturedFighter(copy: CapturedCharacter, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): FighterDefinition {
   const creature = getCreature(copy.creatureId);
-  if (!creature.mode || creature.mode === 'machines') throw new Error('Captured creature mode is missing or non-capturable.');
+  if (!creature.mode || creature.mode === 'machines') throw new Error('Captured Elemental-Devourer mode is missing or non-capturable.');
   const { level, tier, skills } = capturedProgress(copy);
-  // Ordinary enemy growth, with fixed form strength; never retain boss stat bonuses.
-  const reference = creature.mode === 'treasury' ? treasuryEnemyStats(level, false)
-    : creature.mode === 'sanctuary' ? sanctuaryEnemyStats(level, false) : creature.mode === 'roses' ? roseEnemyStats(level, false) : infusionEnemyStats(level, false);
+  // Captures keep their pre-rebalance playable curve, not the stronger hostile stats.
+  const reference = capturedEnemyStats(level, creature.mode === 'roses' ? 140 : 120);
   const factor = .65 + .35 * tier / 5;
   const stats = { ...reference, health: reference.health * factor,
     damage: reference.damage * factor, defense: reference.defense * factor };
@@ -119,9 +119,9 @@ export function appendCapturedCharacter(copies: readonly CapturedCharacter[], cr
 
 export function createCreatureCopy(creatureId: string, stage?: number, level?: number, acquisition?: 'banner-duplicate'): CapturedCharacter {
   const creature = getCreature(creatureId);
-  if (!creature.mode) throw new Error('Creature ownership requires an authored playable mode.');
+  if (!creature.mode) throw new Error('Elemental-Devourer ownership requires a playable game mode.');
   const capturedStage = stage ?? creature.stages[0];
-  if (!creature.stages.includes(capturedStage)) throw new Error('Creature form does not occur at this stage.');
+  if (!creature.stages.includes(capturedStage)) throw new Error('Elemental-Devourer form does not occur at this stage.');
   const encounter = infusionEncounter(creature.mode, capturedStage);
   return validateCapturedCharacters([{ instanceId: `capture:${crypto.randomUUID()}`, creatureId, locked: false,
     level: level ?? encounter.level, capturedStage,

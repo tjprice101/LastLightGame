@@ -1,11 +1,13 @@
-import { actionIds, enemies, formatStat, isActionId, shatterGauge, type ActionId } from '../content/combat';
+import { actionIds, describeFighter, enemies, formatStat, isActionId, shatterGauge, type ActionId } from '../content/combat';
 import { gameConfirm, gameDialogPending } from './game-dialog';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
-import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, actionUnavailable, createBattle, createDungeonBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
+import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, actionUnavailable, createBattle, createDungeonBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, withMasterLoadouts, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
+import type { MasterLoadouts } from '../content/master-conduits';
+import { masterReference } from './master-conduits';
 import { type CharacterProgress } from '../content/progression';
 import { dungeonEncounter, type PlayableDungeon } from '../content/dungeons';
 import { commands, type Bindings, type Command } from '../game/hotkeys';
-import { attackFlair, attackEffectMarkup } from './battle-effects';
+import { attackFlair, attackEffectMarkup, attackPose, signatureMarkup } from './battle-effects';
 import './battle-cinematic.css';
 import { battleResults } from './battle-results';
 import './battle-results.css';
@@ -31,6 +33,7 @@ import { characterRole } from './character-role';
 import { activityTransitionPending, transitionActivity, waitForActivityTransition } from './activity-transition';
 import { entranceFrames } from './battle-entrance';
 import { infusionEncounter } from '../content/infusions';
+import { treasuryPrismaticaText } from '../content/loot-random';
 import { battleArtScale } from './battle-scale';
 import { lootBurst } from './battle-loot';
 import { type InfusionModeId } from '../content/activities';
@@ -42,10 +45,23 @@ import { machineRules } from '../content/machines';
 import { warEncounter, warStageCount, warRulesText, type WarCharacterId } from '../content/elemental-war';
 import { basicActionName } from '../content/combat';
 import { storyEncounter, storyRules, storyRulesText } from '../content/story';
+import './battle-mono.css';
+import { abilityStatuses, kitResource } from './ability-status';
+import { buffSnapshot, type BattleBuffSnapshot } from '../game/battle-buffs';
+import { allyBuffs } from './ally-buffs';
 
 export interface BattleSession { state: BattleState; log: string[]; runId: string; progress: CharacterProgress; teamProgress?: Partial<Record<StarterId, CharacterProgress>>; stageEvents: BattleEvent[]; entrancePending?: boolean; resultsVisible?: boolean }
+export interface BattleAuthorityResponse { session: BattleSession; result?: BattleResult }
+export interface BattleAuthority {
+  action(actorId: string, action: ActionId, targetId: string): Promise<BattleAuthorityResponse>;
+  endTurn(): Promise<BattleAuthorityResponse>;
+  nextStage(): Promise<BattleAuthorityResponse>;
+  nextWave(): Promise<BattleAuthorityResponse>;
+  retry(): Promise<BattleAuthorityResponse>;
+  quit(): Promise<unknown>;
+}
 export function createSession(starterId: StarterId, progress: CharacterProgress = { level: 0, evolution: 1 }, dungeon?: { element: PlayableDungeon; stage: number } | { mode: InfusionModeId; stage: number } | { character: WarCharacterId; stage: number } | { storyStage: number },
-  team?: { ids: readonly string[]; progress: Partial<Record<StarterId, CharacterProgress>>; equipment?: ConduitLoadouts; captures?: readonly CapturedCharacter[]; upgrades?: ConduitUpgrades }): BattleSession {
+  team?: { ids: readonly string[]; progress: Partial<Record<StarterId, CharacterProgress>>; equipment?: ConduitLoadouts; captures?: readonly CapturedCharacter[]; upgrades?: ConduitUpgrades; masters?: MasterLoadouts }): BattleSession {
   const seed = crypto.getRandomValues(new Uint32Array(1))[0] || 1;
   const ids = team?.ids ?? [starterId];
   const teamProgress = structuredClone(team?.progress ?? { [starterId]: progress });
@@ -53,10 +69,10 @@ export function createSession(starterId: StarterId, progress: CharacterProgress 
   const upgrades = structuredClone(team?.upgrades ?? {});
   for (const id of ids) if (isStarterId(id) && !teamProgress[id]) throw new Error('Squad character progress is missing.');
   return {
-    state: dungeon ? 'storyStage' in dungeon ? createStoryBattle(dungeon.storyStage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades)
+    state: withMasterLoadouts(dungeon ? 'storyStage' in dungeon ? createStoryBattle(dungeon.storyStage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades)
       : 'character' in dungeon ? createWarBattle(dungeon.character, dungeon.stage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades)
       : 'mode' in dungeon ? createInfusionBattle(dungeon.mode, dungeon.stage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades)
-      : createDungeonBattle(dungeon.element, dungeon.stage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades) : createBattle(seed, ids, teamProgress, equipment, team?.captures, upgrades),
+      : createDungeonBattle(dungeon.element, dungeon.stage, seed, starterId, progress, ids, teamProgress, equipment, team?.captures, upgrades) : createBattle(seed, ids, teamProgress, equipment, team?.captures, upgrades), team?.masters),
     runId: crypto.randomUUID(), progress: { ...progress }, teamProgress, stageEvents: [], entrancePending: true,
     log: [dungeon && 'mode' in dungeon && dungeon.mode === 'machines' ? `Awaken the Machines ready. ${machineRules.stages} stages. Independent per-kill Conduit rolls: Rare 8%, Legendary 3.5%, Omnic 1% from stage ${machineRules.omnicStage}. Broken Mechanical Components chance and quantity increase by stage. Ordinary Prismatica; no captures, evolution materials or Null-Prismatica.`
       : dungeon && 'mode' in dungeon && dungeon.mode === 'treasury' ? 'Crownfall Treasury ready. Defeats grant Prismatica and roll 20% capture chance; no material or Null-Prismatica drops.'
@@ -87,6 +103,7 @@ export class BattleView {
   private disposed = false;
   private dragging = false;
   private displayedHealth = new Map<string, number>();
+  private displayedBuffs = new Map<string, BattleBuffSnapshot>();
   private animations = new Set<Animation>();
   private motion = matchMedia('(prefers-reduced-motion: reduce)');
   private onSpeed = (): void => {
@@ -97,7 +114,8 @@ export class BattleView {
   };
 
   constructor(private host: HTMLElement, private session: BattleSession, private bindings: Bindings,
-    private commitRewards: (result: BattleResult) => void, private quit?: () => Promise<void>) {
+    private commitRewards: (result: BattleResult) => void, private quit?: () => Promise<void>,
+    private authority?: BattleAuthority) {
     this.targetId = session.state.enemies.find((enemy) => enemy.hp > 0)?.id ?? '';
     this.actorId = session.state.allies[0]?.id ?? '';
     this.render();
@@ -113,6 +131,7 @@ export class BattleView {
   }
 
   private advanceIdleTurn(): void {
+    if (this.authority) return;
     if (this.busy || this.disposed || this.session.state.phase !== 'player' || teamCanAct(this.session.state)) return;
     try {
       const result = advanceUnavailableTurns(this.session.state);
@@ -128,7 +147,7 @@ export class BattleView {
     this.busy = true;
     this.host.setAttribute('aria-busy', 'true');
     this.host.classList.add('battle-entering');
-    this.host.querySelectorAll<HTMLButtonElement>('button').forEach((button) => { button.disabled = true; });
+    this.host.querySelectorAll<HTMLButtonElement>('button:not([data-battle-speed-choice])').forEach((button) => { button.disabled = true; });
     const announcement = this.host.querySelector('#battle-announcement');
     if (announcement) announcement.textContent = 'Combatants are taking their positions...';
     try {
@@ -153,9 +172,9 @@ export class BattleView {
       }
       return;
     } finally {
-      this.host.classList.remove('battle-entering');
+      if (!this.disposed) this.host.classList.remove('battle-entering');
       this.busy = false;
-      this.host.setAttribute('aria-busy', 'false');
+      if (!this.disposed) this.host.setAttribute('aria-busy', 'false');
     }
     if (!this.disposed) {
       this.render();
@@ -167,6 +186,7 @@ export class BattleView {
   destroy(): void {
     this.disposed = true;
     this.dragging = false;
+    this.host.classList.remove('battle-entering');
     document.removeEventListener('keydown', this.onKey);
     this.motion.removeEventListener('change', this.onMotion);
     window.removeEventListener('last-light-motion-change', this.onMotion);
@@ -200,6 +220,10 @@ export class BattleView {
       else this.targetId = next.id;
       this.render();
       this.host.querySelector<HTMLButtonElement>(`[data-unit="${next.id}"]`)?.focus();
+      return;
+    }
+    if (this.authority) {
+      void this.authoritativeCommand(command);
       return;
     }
     try {
@@ -237,10 +261,50 @@ export class BattleView {
     status.textContent = message;
   }
 
+  private async authoritativeCommand(command: ActionId | 'endTurn'): Promise<void> {
+    if (!this.authority || this.busy || this.disposed) return;
+    const state = this.session.state;
+    this.busy = true;
+    this.host.setAttribute('aria-busy', 'true');
+    this.host.querySelectorAll<HTMLButtonElement>('button:not([data-battle-speed-choice])').forEach((button) => { button.disabled = true; });
+    try {
+      const response = command !== 'endTurn' ? await this.authority.action(this.actorId, command, this.targetId)
+        : state.phase === 'cleared' ? await (state.story || state.dungeon || state.infusion || state.war
+          ? this.authority.nextStage() : this.authority.nextWave()) : await this.authority.endTurn();
+      if (this.disposed) return;
+      const result = response.result ?? { state: response.session.state, events: [] };
+      const entrance = result.state.wave !== state.wave;
+      if (entrance) await transitionActivity(() => this.presentAuthoritative(response, result, true));
+      else await this.presentAuthoritative(response, result);
+    } catch (error) {
+      if (!this.disposed) {
+        this.busy = false;
+        this.render();
+        this.error(error instanceof Error ? error.message : 'The server rejected this action. Combat state is preserved.');
+      }
+    } finally {
+      if (!this.session.entrancePending) {
+        this.busy = false;
+        if (!this.disposed) this.host.setAttribute('aria-busy', 'false');
+      }
+    }
+  }
+
+  private async presentAuthoritative(response: BattleAuthorityResponse, result: BattleResult, entrance = false): Promise<void> {
+    await this.present(result, entrance);
+    if (this.disposed) return;
+    const visible = this.session.resultsVisible;
+    const entering = this.session.entrancePending;
+    Object.assign(this.session, structuredClone(response.session));
+    this.session.resultsVisible = visible;
+    this.session.entrancePending = entering;
+  }
+
   private async present(result: BattleResult, entrance = false): Promise<void> {
     this.busy = true;
     this.host.setAttribute('aria-busy', 'true');
     this.displayedHealth = healthSnapshot([...this.session.state.allies, ...this.session.state.enemies]);
+    this.displayedBuffs = new Map(this.session.state.allies.map(unit => [unit.id, buffSnapshot(unit)]));
     const turnEnded = result.state.round > this.session.state.round && result.state.wave === this.session.state.wave;
     if (result.state.wave !== this.session.state.wave) this.session.stageEvents = [];
     this.session.stageEvents.push(...result.events);
@@ -254,7 +318,7 @@ export class BattleView {
       void this.enterEncounter();
       return;
     }
-    this.host.querySelectorAll<HTMLButtonElement>('button').forEach((button) => { button.disabled = true; });
+    this.host.querySelectorAll<HTMLButtonElement>('button:not([data-battle-speed-choice])').forEach((button) => { button.disabled = true; });
     this.host.querySelectorAll('.ultimate-ready').forEach((unit) => unit.classList.remove('ultimate-ready'));
     try {
       {
@@ -290,7 +354,7 @@ export class BattleView {
       }
     } finally {
       this.busy = false;
-      this.host.setAttribute('aria-busy', 'false');
+      if (!this.disposed) this.host.setAttribute('aria-busy', 'false');
     }
     if (!this.disposed) {
       this.render();
@@ -397,7 +461,6 @@ export class BattleView {
         if (this.disposed || reducedMotion()) return;
       }
       const flair = attackFlair(combatant, entry.action, entry.enhancedAttack);
-      const ultimate = entry.action === 'ultimate';
       const support = entry.source === entry.target;
       const color = source.style.getPropertyValue('--element');
       const sourceArt = source.querySelector('.battle-art')?.getBoundingClientRect();
@@ -407,6 +470,7 @@ export class BattleView {
       effect.className = `attack-effect cinematic-impact flair-${flair.family} action-${entry.action}`;
       effect.innerHTML = attackEffectMarkup(flair);
       effect.dataset.power = String(flair.power);
+      effect.dataset.signature = flair.signature;
       effect.setAttribute('aria-hidden', 'true');
       effect.style.setProperty('--element', color);
       effect.style.setProperty('--flair-duration', `${flair.duration}ms`);
@@ -424,14 +488,26 @@ export class BattleView {
       trail.style.width = `${Math.hypot(dx, dy)}px`;
       trail.style.opacity = '0';
       if (!support) this.host.append(trail);
+      const casting = document.createElement('span');
+      casting.className = `attack-effect cinematic-impact cinematic-cast flair-${flair.family}`;
+      casting.innerHTML = signatureMarkup(flair);
+      casting.setAttribute('aria-hidden', 'true');
+      casting.style.setProperty('--element', color);
+      casting.style.setProperty('--flair-duration', `${flair.windup}ms`);
+      casting.style.opacity = '0';
+      source.querySelector('.battle-art')?.append(casting);
       const label = this.host.querySelector('#battle-announcement');
       if (label) label.textContent = entry.message;
       try {
-        const pose = support ? 'translateY(-12px) scale(1.08)' : `translate(${distance}px,${vertical}px) rotate(${entry.source === 'sprout' ? -5 : 5}deg) scale(${ultimate ? 1.12 : 1.04})`;
-        await this.play(sprite, [
+        const pose = attackPose(flair, distance, vertical, support);
+        await Promise.all([this.play(sprite, [
           { transform: 'translate(0,0) scale(1)' },
           { transform: pose },
-        ], ultimate ? 360 : 180);
+        ], flair.windup), this.play(casting, [
+          { opacity: 0, transform: 'scale(.25) rotate(-35deg)' },
+          { opacity: .65, transform: `scale(${.8 + flair.power * .5}) rotate(0deg)`, offset: .75 },
+          { opacity: 0, transform: `scale(${1 + flair.power * .6}) rotate(15deg)` },
+        ], flair.windup)]);
         if (this.disposed || reducedMotion()) return;
         effect.style.opacity = '1';
         effect.classList.add('effect-active');
@@ -439,7 +515,7 @@ export class BattleView {
           this.play(sprite, [
             { transform: pose },
             { transform: 'translate(0,0) scale(1)' },
-          ], ultimate ? 440 : 240),
+          ], Math.round(flair.duration * .65)),
           this.play(effect, [
             { opacity: 0, transform: 'scale(.35) rotate(-15deg)' },
             { opacity: .85, transform: `scale(${flair.size}) rotate(0deg)`, offset: .25 },
@@ -452,7 +528,7 @@ export class BattleView {
           ], flair.duration)]),
           impact(),
         ]);
-      } finally { effect.remove(); trail.remove(); }
+      } finally { effect.remove(); trail.remove(); casting.remove(); }
     } else if ((entry.kind === 'damage' || entry.kind === 'heal' || entry.kind === 'shield') && target) {
       {
         const unit = [...this.session.state.allies, ...this.session.state.enemies].find((unit) => unit.id === entry.target);
@@ -460,6 +536,7 @@ export class BattleView {
         if (!unit || hp === undefined) throw new Error('Animated health snapshot is missing.');
         const next = healthAfterEvent(hp, unit.stats.health, entry);
         this.displayedHealth.set(entry.target, next);
+        this.updateBuffs(target, entry, next > 0);
         const bar = target.querySelector<HTMLElement>('.health-track > span');
         const label = target.querySelector('.unit-health');
         if (!bar || !label) throw new Error('Animated health readout is missing.');
@@ -472,8 +549,8 @@ export class BattleView {
         } else if (entry.debuffs) this.updateDebuffs(target, entry);
       }
       const amount = document.createElement('span');
-      amount.className = `damage-number ${entry.kind}${entry.critical ? ' critical' : ''}`;
-      amount.textContent = `${entry.kind === 'damage' ? '-' : '+'}${formatStat(entry.amount)}${entry.critical ? ' CRIT' : ''}`;
+      amount.className = `damage-number ${entry.kind}${entry.critical ? ' critical' : ''}${entry.elementalCritical ? ' elemental-critical' : ''}`;
+      amount.textContent = `${entry.kind === 'damage' ? '-' : '+'}${formatStat(entry.amount)}${entry.elementalCritical ? ' ELEMENTAL CRIT' : entry.critical ? ' CRIT' : ''}`;
       target.append(amount);
       try {
         await this.play(amount, [
@@ -485,7 +562,23 @@ export class BattleView {
       } finally { amount.remove(); }
     } else if (entry.kind === 'status' && target && entry.debuffs) {
       this.updateDebuffs(target, entry);
+      this.updateBuffs(target, entry);
+    } else if (entry.kind === 'status' && target && entry.buffs) {
+      this.updateBuffs(target, entry);
     }
+  }
+
+  private updateBuffs(target: Element, entry: BattleEvent, alive = true): void {
+    if (!this.session.state.allies.some(unit => unit.id === entry.target)) return;
+    const readout = target.querySelector('.unit-active-buffs');
+    const before = this.displayedBuffs.get(entry.target);
+    if (!readout || !before) return;
+    const next = entry.buffs ?? {
+      ...before,
+      shield: entry.shieldRemaining ?? (entry.kind === 'shield' ? before.shield + entry.amount : before.shield),
+    };
+    this.displayedBuffs.set(entry.target, next);
+    readout.innerHTML = alive ? allyBuffs(next, this.session.state.round) : '';
   }
 
   private updateDebuffs(target: Element, entry: BattleEvent): void {
@@ -501,11 +594,11 @@ export class BattleView {
     const ultimateReady = unit.side === 'ally' && actionUnavailable(this.session.state, unit, 'ultimate') === null;
     return `<button class="battle-unit ${selected ? 'selected-unit' : ''} ${unit.hp <= 0 ? 'fallen' : ''} ${ultimateReady ? 'ultimate-ready' : ''} ${unit.defending ? 'defending-unit' : ''}"
       data-unit="${unit.id}" data-side="${unit.side}" aria-pressed="${selected}" style="--element:${color};--unit-scale:${battleArtScale(this.session.state, unit)}" ${unit.hp <= 0 ? 'disabled' : ''}>
-      <span class="unit-name">${unit.name}${unit.level !== null ? ` · Lv. ${unit.level}` : ''}${unit.side === 'ally' && isStarterId(unit.definitionId) ? characterRole(unit.definitionId) : ''}${unit.side === 'enemy' ? elementLabel(unit.element) : ''}</span><span class="battle-art">
+      <span class="battle-art">
       <span class="battle-sprite"><span class="unit-idle">${art ? `<img       src="${assetUrl(`${isStarterId(unit.definitionId) && !unit.captured ? 'characters' : 'enemies'}/${art}.png`)}" alt="${unit.name}" ${unitFacingAttributes(art, unit.side)} width="960" height="960" />`
         : '<span class="pending-enemy-art" aria-hidden="true"><span></span></span>'}</span></span>
-      </span><span class="unit-readout"><span class="health-track"><span style="width:${unit.hp / unit.stats.health * 100}%"></span></span>
-      ${unitReadout(unit, true, this.session.state.allies, this.session.state.round)}</span>
+      </span><span class="unit-nameplate"><span class="unit-name">${unit.name}${unit.level !== null ? ` · Lv. ${unit.level}` : ''}${unit.side === 'ally' && isStarterId(unit.definitionId) ? characterRole(unit.definitionId) : ''}${unit.side === 'enemy' ? elementLabel(unit.element) : ''}</span><span class="unit-readout"><span class="health-track"><span style="width:${unit.hp / unit.stats.health * 100}%"></span></span>
+      ${unitReadout(unit, true, this.session.state.allies, this.session.state.round)}</span></span>
     </button>`;
   }
 
@@ -522,7 +615,8 @@ export class BattleView {
     }
     const actor = state.allies.find((unit) => unit.id === this.actorId);
     if (!actor) throw new Error('Battle actor definition is missing.');
-    const kit = actor.kit;
+    const kit = actor.kit && isStarterId(actor.definitionId) && !actor.captured
+      ? describeFighter(actor.definitionId, actor.kit) : actor.kit;
     if (!kit) throw new Error('Ally combat kit is missing.');
     const dungeon = state.story ? storyEncounter(state.story.storyStage)
       : state.war ? warEncounter(state.war.character, state.war.stage)
@@ -531,38 +625,41 @@ export class BattleView {
     const stages = state.story ? storyRules.stages : state.war ? warStageCount : state.infusion ? infusionStageCount(state.infusion.mode) : dungeonStageCount;
     const complete = !!dungeon && dungeon.stage === stages && state.phase === 'cleared';
     const results = this.session.resultsVisible !== false ? battleResults(state, this.session.stageEvents) : '';
+    const toolbar = this.host.parentElement?.closest('.battle-screen')?.querySelector('.battle-toolbar');
+    toolbar?.remove();
     this.host.innerHTML = `${dungeon && !dungeon.background
       ? `<div class="battle-scenery pending-dungeon-scenery" style="--element:${dungeon.color}" aria-hidden="true"></div>`
       : `<img class="battle-scenery" src="${assetUrl(`backgrounds/${dungeon?.background ?? 'grassy-field.png'}`)}" alt="${dungeon?.name ?? 'Grassy field'} battle scenery" width="1456" height="816" />`}
       <div class="battle-top"><div class="battle-heading"><span class="eyebrow">${state.story ? 'STORY CAMPAIGN' : state.war ? 'ELEMENTAL WAR' : state.infusion?.mode === 'machines' ? 'MACHINE TRIAL' : state.infusion?.mode === 'roses' ? 'EVENT' : state.infusion && isCurrencyMode(state.infusion.mode) ? 'CURRENCY FARM' : state.infusion ? 'INFUSION TRIAL' : dungeon ? 'ELEMENTAL DUNGEON' : state.allies.length === 1 ? 'SOLO TRAINING' : 'SQUAD TRAINING'}</span><h1 tabindex="-1">${dungeon?.name ?? 'Training'}</h1></div>
-      <span class="battle-progress">${dungeon ? 'Stage' : 'Wave'} ${state.wave}${dungeon ? ` / ${stages}` : ''} &middot; Turn ${state.round} &middot; ${this.session.entrancePending ? 'Entering encounter' : complete ? 'Dungeon complete' : state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Encounter cleared' : 'Character defeated'}</span>
-      <button id="open-battle-menu" class="battle-chrome-button" aria-haspopup="dialog" aria-controls="battle-menu">Battle menu</button>
-      ${state.phase !== 'player' ? `<button data-result-show class="battle-turn-button">${state.phase === 'cleared' ? 'View victory' : 'View results'}</button>` : ''}</div>
+      <span class="battle-progress">${dungeon ? 'Stage' : 'Wave'} ${state.wave}${dungeon ? ` / ${stages}` : ''} &middot; Turn ${state.round} &middot; ${this.session.entrancePending ? 'Entering encounter' : complete ? 'Activity complete' : state.phase === 'player' ? 'Player turn' : state.phase === 'cleared' ? 'Encounter cleared' : 'Squad defeated'}</span>
+      <div class="battle-header-actions"><span data-battle-toolbar-slot></span><button id="open-battle-menu" class="battle-chrome-button" aria-haspopup="dialog" aria-controls="battle-menu">Battle menu</button>
+      ${state.phase !== 'player' ? `<button data-result-show class="battle-turn-button">${state.phase === 'cleared' ? 'View victory' : 'View results'}</button>` : ''}</div></div>
       <div class="battle-arena">
       <div class="battle-side enemies" style="--enemy-count:${state.enemies.length}" role="group" aria-label="Enemies on the left">${state.enemies.map((unit) => this.unit(unit)).join('')}</div>
       <div class="battle-side allies ${state.allies.length === 1 ? 'solo' : 'squad'}" role="group" aria-label="Your squad on the right">${state.allies.map((unit) => this.unit(unit)).join('')}</div></div>
-      <div class="battle-feedback">
+      <footer class="battle-feedback">
       ${results}
       <p id="battle-error" role="alert" class="status"></p>
-      <p id="battle-announcement" role="status">${complete ? `All ${stages} stages cleared. Return to Gameplay to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Shatter Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your character has fallen. Restart to try again; earned rewards are kept.' : 'Choose an enemy. Hold your character and drag: Up Last Flare, Left Skill 1, Right Skill 2, Down Normal. Release to act; right-click to defend.'}</p>
-      </div>
+      <div class="battle-footer-summary"><p id="battle-announcement" role="status">${complete ? `All ${stages} stages cleared. Return to Play to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Shatter Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your squad has fallen. Retry when ready; earned rewards are kept.' : 'Select a target. Drag an ally: ↑ Last Flare · ← Skill 1 · → Skill 2 · ↓ Normal. Right-click: Defense.'}</p>
+      <span class="battle-footer-target"><strong>${actor.name}</strong><small>Target: ${state.enemies.find((enemy) => enemy.id === this.targetId)?.name ?? 'None'}</small></span></div>
+      </footer>
       <dialog id="battle-menu" class="battle-menu" aria-labelledby="battle-menu-heading">
       <header class="drawer-heading"><div><p class="eyebrow">TACTICS · REFERENCE</p><h2 id="battle-menu-heading">Battle menu</h2></div><button id="close-battle-menu" class="drawer-close" aria-label="Close battle menu">&times;</button></header>
       <div class="battle-utilities">
       <section class="battle-combat-menu"><h3>Actions · ${actor.name}</h3><p class="quiet">Choose an enemy on the battlefield, then use an action here or drag your character. Turns advance automatically when no teammate can act.</p>
-      <div class="battle-actor-picker" role="group" aria-label="Choose acting squad member">${state.allies.map((ally) => `<button class="text-button" data-actor="${ally.id}" aria-pressed="${ally.id === this.actorId}" ${this.busy || ally.hp <= 0 || actionUnavailable(state, ally, 'light') !== null ? 'disabled' : ''}>${ally.name}${ally.hp <= 0 ? ' · defeated' : actionUnavailable(state, ally, 'light') !== null ? ' · unavailable' : ''}</button>`).join('')}</div>
+      <div class="battle-actor-picker" role="group" aria-label="Choose acting squad member">${state.allies.map((ally) => `<button class="text-button" data-actor="${ally.id}" aria-pressed="${ally.id === this.actorId}" title="${ally.name}" ${this.busy || ally.hp <= 0 || actionUnavailable(state, ally, 'light') !== null ? 'disabled' : ''}>${isStarterId(ally.definitionId) ? getStarter(ally.definitionId).name : ally.name}${ally.hp <= 0 ? ' · defeated' : actionUnavailable(state, ally, 'light') !== null ? ' · unavailable' : ''}</button>`).join('')}</div>
       <div class="battle-context-actions">${actionIds.map((action) => this.actionButton(state, actor, action)).join('')}</div>
       ${state.phase === 'player' ? '<button id="end-battle-turn" class="battle-chrome-button">Pass remaining actions</button>' : ''}</section>
       <section class="battle-unit-intel"><h3>Combatants</h3>${[...state.allies, ...state.enemies].map((unit) =>
         `<article><strong>${unit.name}${unit.level !== null ? ` · Lv.${unit.level}` : ''}</strong>${elementLabel(unit.element)}        ${unit.side === 'ally' && isStarterId(unit.definitionId) ? characterRating(unit.definitionId, unit.evolution) : unit.captured ? capturedRating(unit.captured.creatureId) : ''}${unitReadout(unit, false, state.allies, state.round)}${unit.attackBoost && unit.attackBoost.throughRound >= state.round ? `<small>Outgoing attack damage +${formatStat(unit.attackBoost.fraction * 100)}% through turn ${unit.attackBoost.throughRound}</small>` : ''}${unit.conduits?.some((id) => id !== null) ? `<small>Conduits: ${unit.conduits.filter((id) => id !== null).map((id) => getConduit(id).name).join(', ')}</small>` : ''}<small>${unit.hp <= 0 ? 'Defeated' : unit.recoverThrough >= state.round ? 'Recovering after Last Flare' : unit.spent ? 'Action used' : 'Ready'}</small></article>`).join('')}</section>
       <section class="battle-help"><h3>Abilities and battle rules</h3>
       <button id="restart-battle" data-result-restart class="text-button">${dungeon ? 'Replay stage' : 'Restart Training'}</button>
-      <div class="actor-info"><strong>${actor.name}</strong><span class="passive-summary">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, 'passive') : ''}<span>Passive: ${kit.passive.name} &mdash; ${kit.passive.description}</span></span></div>
-      ${kitConduitRules(actor.conduits)}
+      <div class="actor-info"><strong>${actor.name}</strong><span class="passive-summary">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, 'passive') : ''}<span>Passive: ${kit.passive.name} &mdash; ${kit.passive.description}</span></span>${kitResource(kit)}</div>
+      ${kitConduitRules(actor.conduits)}${masterReference(actor.masterConduit)}
       <section class="enemy-skill-guide"><h3>Enemy skills and timing</h3>${state.enemies.map((enemy) => `<p><strong>${enemy.name} · Lv.${enemy.level}${enemy.boss ? ' · Boss' : ''}</strong></p><ul>${(enemy.enemySkills ?? []).map((skill) =>
         `<li>${skill.name}${skill.action === 'ultimate' ? ' (Ultimate)' : ''}: ${formatStat(skill.multiplier * 100)}% Attack, every ${skill.every} turns${state.round % skill.every === 0 ? ' · Due this turn' : ''}.</li>`).join('')}</ul>`).join('')}
         <p class="quiet">One attack per enemy turn. The second skill takes priority on overlapping schedules; boss ultimates take highest priority. Normal attacks on other turns.</p></section>
-      ${actionIds.map((action) => `<p><strong>${action === 'light' || action === 'defend' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name}:</strong> ${action === 'light' ? '100% damage; +20 Shatter Gauge.' : action === 'defend' ? 'Consumes your action; reduces incoming damage by 10% until the next player turn. Incoming hits still grant Shatter Gauge.' : kit.abilities[action].description}</p>`).join('')}
+      ${actionIds.map((action) => `<p><strong>${action === 'light' || action === 'defend' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name}:</strong> ${action === 'light' ? '100% damage; +20 Shatter Gauge.' : action === 'defend' ? 'Consumes your action; reduces incoming damage by 10% until the next player turn. Incoming hits still grant Shatter Gauge.' : `${abilityStatuses(kit.abilities[action].strength)}${kit.abilities[action].description}`}</p>`).join('')}
       <p class="quiet">Drag at least 32 pixels and release to execute. Return near the starting point to cancel.
         White glow and shimmer mean Last Flare is usable now. Reduced motion keeps a steady white glow.
         Battle menu provides Defense and accessible buttons on touch and keyboard.
@@ -574,11 +671,17 @@ export class BattleView {
         Only ally and target selection keys remain configurable in Settings.</p>
       ${state.story ? `<p class="quiet">${storyRulesText}</p><p>${storyEncounter(state.story.storyStage).introduction}</p>` : state.war ? `<p class="quiet">${warRulesText}</p>` : ''}
       <div ${state.story || state.war ? 'hidden' : ''}>
-      <p class="quiet">${state.infusion?.mode === 'roses' ? '35 stages, enemy levels 80-140. Rosethorn Seed / Bud / Bloom / Crest / Heart / Soul unlock at 80 / 90 / 100 / 110 / 120 / 130. Every fifth stage is a boss; per-kill payouts match ordinary enemies. 20% captures only at enemy levels 120 or below; no captures above 120. Copies retain defeated level and skills, level up to 120 and sell for their form material in Character. No Null-Prismatica or clear bonus. Health resets; Gauge carries over.' : state.infusion?.mode === 'sanctuary' ? '25 stages, enemy levels 65-120. Per-enemy Null-Prismatica: 50% chance of 1 at 65 rising to 80% chance of 5 at 120; ordinary Prismatica, 20% capture chance, no materials. Every fifth stage is a boss; ordinary and boss payouts match. Wisp copies sell for both currencies by fixed-form rarity in Character; protected copies cannot be sold. Health resets; Gauge carries over.' : state.infusion?.mode === 'treasury' ? '25 stages, enemy levels 65-120. Per-enemy Prismatica 100-200 rising to 1,000-2,000; 20% capture chance, no material or Null-Prismatica drops. Every fifth stage is a boss. Treasury copies sell by fixed-form rarity in Character; protected copies cannot be sold. Health resets; Gauge carries over.' : state.infusion ? `${dungeonStageCount} stages, enemy levels 80-120. Specialty materials unlock at levels 80 / 93 / 100; Epic / Legendary / Omnic bonuses from this mode's associated elements unlock at levels 80 / 100 / 115. Every fifth stage is a boss. Quantities and bonus chances grow with level. Health resets between stages; Gauge carries over.` : dungeon ? `Enemies grow from level ${elementalDungeonRules.startingLevel} to ${elementalDungeonRules.maximumLevel} across ${elementalDungeonRules.stages} stages. Every fifth stage is a boss; later enemies use stronger periodic strikes. Seeds are guaranteed; higher-rarity chances and stack sizes increase with enemy level. Health resets between stages; Gauge carries over.` : 'Enemy level follows the wave up to 120. Accelerating HP, attack and defense growth starts at twice the previous rate.'}
-        Prismatica drops grow from 5-10 at level 1 to 15-30 at level 120, saved locally. Material stacks grow to 3-6 per successful drop. Quitting ends this run; ${dungeon ? 'unlocked stages can be replayed from Gameplay' : 'entering again starts at wave 1'}.
-        Settings preserves the current run. Reloading resets battle progress.</p></div>
+      <p class="quiet">${state.infusion?.mode === 'roses' ? '35 stages, enemy levels 80-140. Rosethorn Seed / Bud / Bloom / Crest / Heart / Soul unlock at 80 / 90 / 100 / 110 / 120 / 130. Every fifth stage is a boss; per-kill payouts match ordinary enemies. 20% captures only at enemy levels 120 or below; no captures above 120. Copies retain defeated level and skills, level up to 120 and sell for their form material in Character. No Null-Prismatica or clear bonus. Health resets; Gauge carries over.' : state.infusion?.mode === 'sanctuary' ? '25 stages, enemy levels 65-120. Per-enemy Null-Prismatica: 50% chance of 1 at 65 rising to 80% chance of 5 at 120; ordinary Prismatica, 20% capture chance, no materials. Every fifth stage is a boss; ordinary and boss payouts match. Wisp copies sell for both currencies by fixed-form rarity in Character; protected copies cannot be sold. Health resets; Gauge carries over.' : state.infusion?.mode === 'treasury' ? '25 stages, enemy levels 65-120. ${treasuryPrismaticaText} 20% capture chance, no material or Null-Prismatica drops. Every fifth stage is a boss. Treasury copies sell by fixed-form rarity in Character; protected copies cannot be sold. Health resets; Gauge carries over.' : state.infusion ? `${dungeonStageCount} stages, enemy levels 80-120. Specialty materials unlock at levels 80 / 93 / 100; Epic / Legendary / Omnic bonuses from this mode's associated elements unlock at levels 80 / 100 / 115. Every fifth stage is a boss. Quantities and bonus chances grow with level. Health resets between stages; Gauge carries over.` : dungeon ? `Enemies grow from level ${elementalDungeonRules.startingLevel} to ${elementalDungeonRules.maximumLevel} across ${elementalDungeonRules.stages} stages. Every fifth stage is a boss; later enemies use stronger periodic strikes. Seeds are guaranteed; higher-rarity chances and stack sizes increase with enemy level. Health resets between stages; Gauge carries over.` : 'Enemy level follows the wave up to 120. Accelerating HP, attack and defense growth starts at twice the previous rate.'}
+        ${state.story ? 'Story Prismatica rises in a straight line with enemy level (+2 minimum per level)' : state.infusion?.mode === 'treasury' ? 'Treasury Prismatica multiplies the Story line' : 'Prismatica drops grow from 5-10 at level 1 to 15-30 at level 120'} and save with the defeated enemy's rewards. Material stacks grow to 3-6 per successful drop. Quitting ends this run; ${dungeon ? 'unlocked stages can be replayed from Play' : 'entering again starts at wave 1'}.
+        Settings preserves the current run. ${this.authority ? 'Signing back in restores the server-saved run.' : 'Reloading resets battle progress, not saved rewards.'}</p></div>
       </section>
       <section class="battle-log"><h3>Battle log (${this.session.log.length} recent events)</h3><ol>${this.session.log.map((line) => `<li>${line}</li>`).join('')}</ol></section></div></dialog>`;
+    if (toolbar) {
+      toolbar.querySelectorAll<HTMLButtonElement>('button').forEach(button => {
+        button.disabled = !!this.busy && !button.hasAttribute('data-battle-speed-choice');
+      });
+      this.host.querySelector('[data-battle-toolbar-slot]')?.append(toolbar);
+    }
     const menu = this.host.querySelector<HTMLDialogElement>('#battle-menu');
     if (!menu) throw new Error('Battle menu is missing.');
     const closeMenu = (): void => {
@@ -707,6 +810,7 @@ export class BattleView {
       this.busy = true;
       try {
         if (!this.quit) throw new Error('Battle exit is unavailable.');
+        if (this.authority) await this.authority.quit();
         await this.quit();
       } catch (error) {
         console.error('Battle exit failed', error);
@@ -724,6 +828,28 @@ export class BattleView {
         return;
       }
       if (this.disposed || this.busy || activityTransitionPending()) return;
+      if (this.authority) {
+        this.busy = true;
+        this.host.setAttribute('aria-busy', 'true');
+        try {
+          const response = await this.authority.retry();
+          if (this.disposed) return;
+          await transitionActivity(() => {
+            if (this.disposed) return;
+            Object.assign(this.session, structuredClone(response.session));
+            this.session.entrancePending = true;
+            this.render();
+            void this.enterEncounter();
+          });
+        } catch (error) {
+          if (!this.disposed) {
+            this.busy = false;
+            this.render();
+            this.error(error instanceof Error ? error.message : 'The server rejected the retry.');
+          }
+        } finally { if (!this.session.entrancePending) this.busy = false; }
+        return;
+      }
       const starterId = this.session.state.allies.find((ally) => isStarterId(ally.definitionId))?.definitionId ?? 'ember';
       if (!isStarterId(starterId)) throw new Error('Squad leader definition is missing.');
       const ids = this.session.state.allies.map((ally) => {
@@ -734,6 +860,7 @@ export class BattleView {
         equipment: Object.fromEntries(this.session.state.allies.filter((ally) => ally.conduits).map((ally) => [ally.id, ally.conduits])),
         captures: this.session.state.allies.flatMap((ally) => ally.captured ? [ally.captured] : []),
         upgrades: this.session.state.conduitUpgrades,
+        masters: Object.fromEntries(this.session.state.allies.filter(ally => ally.masterConduit).map(ally => [ally.definitionId, ally.masterConduit])),
       });
       try {
         await transitionActivity(() => {
@@ -757,6 +884,7 @@ export class BattleView {
     const reason = actionUnavailable(state, actor, action);
     return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
       <span class="battle-action-heading">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, action) : ''}<strong>${name}</strong></span>
+      ${ability ? abilityStatuses(ability.strength) : ''}
       ${action === 'light' ? `<span>Down · +${shatterGauge.gains[action]} Shatter Gauge</span>` : action === 'defend' ? '<span>Right-click, -10% incoming damage</span>' : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'}</span>`}
       ${ability ? `<span>Costs ${shatterGauge.costs[action]} Shatter Gauge${ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
       <small>${reason ?? 'Ready'}</small></button>`;

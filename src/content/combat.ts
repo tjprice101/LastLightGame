@@ -5,6 +5,7 @@ import { type ElementId } from './activities';
 import { flagshipFighters } from './flagships';
 import { warFighters, warActionNames, isWarCharacter } from './war-characters';
 import { kitPilotDescriptions, type KitPilot } from './kit-pilots';
+import { elementalEffectFamilies } from './elemental-effects';
 
 export const actionIds = ['light', 'skill1', 'skill2', 'ultimate', 'defend'] as const;
 export type ActionId = (typeof actionIds)[number];
@@ -74,9 +75,9 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     stats: { health: 190, defense: 8, damage: 32, crit: 0.2, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: 'Root of Hope', description: 'At each new player turn, heal living allies by 5% of their maximum health while Flora lives.', damageBonus: 0, defenseBonus: 0, healFraction: 0.05 },
     abilities: {
-      skill1: { name: 'Briar Shot', description: '150% damage to one enemy with +20 percentage points critical chance. Consumes all Blooms for +10% outgoing damage each (maximum +30%).', cooldown: 2, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
+      skill1: { name: 'Briar Shot', description: `150% damage to one enemy with +20 percentage points critical chance. Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge (maximum +30%).`, cooldown: 2, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
       skill2: { name: 'Verdant Renewal', description: "Restore 30 health to every living ally; cannot revive. Increase living allies' outgoing attack damage by 10% this and next player turn (refresh; does not stack).", cooldown: 3, strength: { healing: 30, attackBoostFraction: .1 } },
-      ultimate: { name: 'Last Flare: Worldseed', description: '180% damage to all enemies and heal living allies by 55. Recover next turn. Consumes all Blooms for +15% authored healing each (maximum +45%).', cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } },
+      ultimate: { name: 'Last Flare: Worldseed', description: `180% damage to all enemies and heal living allies by 55. Recover next turn. Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge (maximum +45%).`, cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } },
     },
   },
   rosetta: {
@@ -153,6 +154,11 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
   }
   if (equipment) validateConduitElement(equipment, getStarter(id).elementId);
   applyConduitBuffs(kit.stats, equipment, upgrades);
+  return describeFighter(id, kit);
+}
+
+export function describeFighter(id: StarterId, snapshot: FighterDefinition): FighterDefinition {
+  const kit = structuredClone(snapshot);
   const pct = (value: number) => formatStat(value * 100);
   const value = (action: 'skill1' | 'skill2' | 'ultimate', key: keyof AbilityStrength): number => {
     const amount = kit.abilities[action].strength[key];
@@ -201,31 +207,57 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
     for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
       if (descriptions[action]) kit.abilities[action].description += ` ${descriptions[action]}`;
     }
+    if (id === 'bliss') kit.passive.description += ' Bliss must heal another living ally to gain a charge; self-healing does not count.';
   }
   const intrinsicActionCopy: Partial<Record<StarterId, Partial<Record<'skill1' | 'skill2' | 'ultimate', string>>>> = {
     sprout: {
-      skill1: 'Consumes all Blooms for +10% outgoing damage each (maximum +30%).',
-      ultimate: 'Consumes all Blooms for +15% authored healing each (maximum +45%); spent before healing, once for the whole activation.',
+      skill1: `Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge (maximum +30%).`,
+      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge (maximum +45%); spent before healing, once for the whole activation.`,
     },
     bliss: {
-      skill1: 'Consumes all Blooms for +8% outgoing damage each (maximum +24%).',
-      ultimate: "Consumes all Blooms to add a shield worth 5% of this caster's maximum Health each (maximum 15%); refreshes rather than stacks.",
+      skill1: `Spends all ${elementalEffectFamilies.bloom.label} charges for +8% outgoing damage per charge (maximum +24%).`,
+      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges to add a shield worth 5% of this caster's maximum Health per charge (maximum 15%); refreshes rather than stacks.`,
     },
     atmoso: {
-      skill1: 'Consumes all Atmospheric Charge for +8% outgoing damage each (maximum +24%).',
-      ultimate: 'Consumes all Atmospheric Charge for +12% outgoing damage each (maximum +36%).',
+      skill1: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge (maximum +24%).`,
+      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge (maximum +36%).`,
     },
     elise: {
-      skill1: 'Consumes all Atmospheric Charge for +8% outgoing damage each (maximum +24%).',
-      ultimate: 'Consumes all Atmospheric Charge for +12% outgoing damage each (maximum +36%).',
+      skill1: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge (maximum +24%).`,
+      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge (maximum +36%).`,
     },
     vaelor: {
-      skill2: 'Consumes all Atmospheric Charge for +8% outgoing damage each (maximum +24%).',
-      ultimate: 'Consumes all Atmospheric Charge for +12% outgoing damage each (maximum +36%).',
+      skill2: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge (maximum +24%).`,
+      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge (maximum +36%).`,
     },
   };
+  if (kit.passive.description.includes('Gauge')) {
+    kit.passive.description += ' Gauge (Shatter Gauge) is the meter under the health bar that fills as this character acts and takes hits; Skills and Last Flare spend it.';
+  }
   for (const [action, text] of Object.entries(intrinsicActionCopy[id] ?? {})) {
     kit.abilities[action as 'skill1' | 'skill2' | 'ultimate'].description += ` ${text}`;
+  }
+  for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
+    const ability = kit.abilities[action];
+    if (ability.strength.shield !== undefined || (id === 'bliss' && action === 'ultimate')) {
+      ability.description += ' Shield absorbs damage before HP and lasts until used up. New shields keep the higher amount, rather than adding together.';
+    }
+    if (ability.strength.weakenFraction !== undefined) {
+      ability.description += ' This is Weaken: it reduces enemy outgoing attack damage, not Defense.';
+    }
+    if (ability.strength.critBonus !== undefined) {
+      ability.description += ' The critical-chance bonus applies only to this attack, not future attacks.';
+    }
+    if (ability.strength.burnMultiplier !== undefined) {
+      ability.description += ' Burn deals its damage once in each of the next two enemy phases and ignores Defense. A new Burn replaces the old one instead of adding to it.';
+    }
+    const resource = kit.pilot ? kitPilotDescriptions[kit.pilot].resource : undefined;
+    if (resource && ability.description.includes(`Spends all ${resource.label}`)) {
+      ability.description += ` What is ${resource.label}? ${resource.summary}`;
+    }
+    if (action === 'ultimate') {
+      ability.description += ' Recovery means this character cannot act on the next player turn; allies may still act.';
+    }
   }
   return kit;
 }
@@ -235,7 +267,11 @@ export function applyConduitBuffs(stats: Stats, equipment?: ConduitSlots, upgrad
     if (conduitId === null) continue;
     for (const buff of conduitBuffs(getConduit(conduitId), upgrades?.[conduitId] ?? 0)) {
       if (buff.kind === 'percent') stats[buff.stat] *= 1 + buff.amount / 100;
-      else if (buff.kind === 'percentage-points') stats[buff.stat] = Math.min(1, Math.max(0, stats[buff.stat] + buff.amount / 100));
+      else if (buff.kind === 'percentage-points') {
+        // Critical Rate may exceed 100%: the excess becomes the Elemental Crit chance.
+        const value = Math.max(0, stats[buff.stat] + buff.amount / 100);
+        stats[buff.stat] = buff.stat === 'crit' ? value : Math.min(1, value);
+      }
       else stats[buff.stat] += buff.amount;
     }
   }

@@ -37,7 +37,7 @@ describe('shared starter elemental loops', () => {
     expect(skill.state.allies[0].pilot?.ember).toBe(0);
     expect(skill.events.find((event) => event.kind === 'damage')?.amount)
       .toBe(damageAmount(actor.stats.damage, 1.1 * 1.24, 0, false, actor.stats.critMultiplier));
-    expect(resolveFighter('ember').abilities.skill2.description).toContain('Consumes all Infernic Embers');
+    expect(resolveFighter('ember').abilities.skill2.description).toContain('Spends all Infernic Embers');
   });
 
   it('keeps native Ember and owned Cinder Conduit Ember Seal charges independent with the original additive damage', () => {
@@ -135,7 +135,7 @@ describe('shared starter elemental loops', () => {
     expect(skill.events.find((event) => event.kind === 'damage')?.amount)
       .toBe(plain.events.find((event) => event.kind === 'damage')?.amount! * 1.24);
     expect(skill.state.allies[0].pilot?.bloom).toBe(0);
-    expect(resolveFighter('bliss').abilities.skill1.description).toContain('+8% outgoing damage each');
+    expect(resolveFighter('bliss').abilities.skill1.description).toContain('+8% outgoing damage per charge');
     const ultimateState = encounter('bliss');
     ultimateState.allies[0].pilot = { bloom: 2 };
     const ultimate = act(ultimateState, 'bliss', 'ultimate', ultimateState.enemies[0].id);

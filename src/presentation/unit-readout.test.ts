@@ -29,7 +29,7 @@ describe('field readouts', () => {
     ally.conduitCharges = { burnFocus: true, normalMomentum: true, weakenPierce: true };
     ally.omnicProtection = .1;
     const full = unitReadout(ally);
-    for (const text of ['+5 percentage points Crit', '+10% outgoing damage', 'ignores 20% Defense', 'Accord protection: next direct enemy hit -10%']) {
+    for (const text of ['+5 percentage points Crit', '+10% outgoing damage', 'ignores 20% Defense', 'Direct-hit protection: next direct enemy hit -10%']) {
       expect(full).toContain(text);
       expect(unitReadout(ally, true)).not.toContain(text);
     }
@@ -83,12 +83,14 @@ describe('field readouts', () => {
     const war = createBattle(9, ['vaelor']);
     expect(unitReadout(war.allies[0], true)).toContain('Atmospheric Charge 0 / 3');
   });
-  it('shows only ally HP, Defense and Shatter Gauge with fractional formatting', () => {
+  it('shows real allied shield points with HP, Defense and Shatter Gauge', () => {
     const ally = createBattle(1729, ['ember'], { ember: { level: 1, evolution: 1 } }).allies[0];
     ally.shield = 25;
     ally.shatter = 20.5;
     const readout = unitReadout(ally);
     for (const text of ['HP 240.4 / 240.4', 'DEF 10.64', 'Shatter Gauge 20.5 / 100.3', 'aria-valuenow="20.5"']) expect(readout).toContain(text);
-    for (const text of ['ATK', 'CRIT', 'Critical', 'Elemental', 'Shield', 'Ready', 'unit-status']) expect(readout).not.toContain(text);
+    expect(readout).toContain('Shield 25');
+    expect(unitReadout(ally, true)).toContain('Shield 25');
+    for (const text of ['ATK', 'CRIT', 'Critical', 'Elemental', 'Ready', 'unit-status']) expect(readout).not.toContain(text);
   });
 });

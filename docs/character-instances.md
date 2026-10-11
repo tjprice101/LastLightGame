@@ -48,7 +48,9 @@ dungeons remain ineligible.
 - `creatureSaleOffer`/`sellCurrencyCreature`: exact-copy sale prices by form,
   rejecting manual/squad/Conduit protection and saving currency/removal together.
   Sanctuary grants both currencies; Treasury grants only Prismatica; Roselius
-  grant only their fixed-form Rosethorn material. The
+  grant only their fixed-form Rosethorn material. D-233: Heaven/Abyss copies take an
+  explicit `saleOption` — Null-Prismatica or one of the mode's three items, 1-6 by form.
+  Player-facing text calls captured copies Elemental-Devourers. The
   Treasury-only wrappers remain available for compatibility.
 
 `src/presentation/roster.ts` displays captured-copy management from Character:

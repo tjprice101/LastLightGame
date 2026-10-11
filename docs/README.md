@@ -5,9 +5,191 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
-**Monochrome UI/cloud saves (D-179):** new owner HTML reference and new stores/
-Supabase username login approved; implementation and hosted setup pending.
-[Approved rules and open questions](mono-ui-and-cloud-saves.md).
+**Conduit search and bonus colors (D-239):** search owned Conduits by keyword,
+canonical element, effects or descriptions. Total bonuses keeps base values white
+and colors the net bonus/final value relative to that base, green up and red down.
+[Contract](menus-and-inventory.md#conduit-bonus-emphasis-and-owned-search-d-239).
+
+**Full-page Conduit loadout (D-238):** Team's Conduits tab and summary links
+open a dedicated loadout without the sidebar or portrait header. Back/member
+pills, art/level slot cards, Total bonuses and owned Conduits follow the owner's
+HTML reference; captured copies use the same flow. Mechanics remain unchanged.
+[Contract](menus-and-inventory.md#dedicated-conduit-loadout-page-d-238).
+
+**Development debug profile (D-217):** type `Iamthelight` on a menu outside
+text fields to start an isolated all-unlocked/maxed gameplay test profile.
+Real saves/auth are untouched; Exit debug/reload discards it. Not available
+in production or for online account/social/cosmetic operations.
+[Contract](menus-and-inventory.md#isolated-development-debug-profile-d-217).
+
+**Organized Team sub-menus (D-216):** Stats & Skills, Level, Evolution and
+Conduits replace cramped simultaneous character panels. Equipment has eight
+slots/separate Master, growth exposes exact resource rows and optional previews,
+and ability buttons open detailed dialogs. Transactions are unchanged.
+[Contract](menus-and-inventory.md#organized-team-sub-menus-and-ability-dialogs-d-216).
+
+**Inventory layout corrected (D-215):** natural-height panels, a deliberate
+Master/chest row, responsive currency cards and compact empty slots prevent
+collapse/overlap while retaining simultaneous holdings and existing actions.
+[Contract](menus-and-inventory.md#inventory-panels-without-collapse-d-215).
+
+**Material banner rewards (D-214):** non-character pulls now give10 Common/
+6 Uncommon/3 Rare materials using50:30:17 weights. Standard uses six equally
+likely elements; Roses uses Rosethorn. Duplicates award15 Rare materials.
+Character odds/costs/pity/bonus and existing creatures are preserved.
+[Contract](summoning-and-economy.md#material-banner-rewards-d-214).
+
+**Readable banners and controls (D-213):** Elemental War and shared activity
+cards have solid-background headings, wrapping entry footers and natural page
+scrolling. Shared menu text/disabled controls retain contrast and labels wrap.
+[Contract](menus-and-inventory.md#readable-activity-banners-and-unclipped-controls-d-213).
+
+**Training panel polished (D-212):** full-width scenery header, compact facts,
+reward and entry footer replace the empty picker column and internally scrolling
+card. Gameplay and saves unchanged.
+[Contract](menus-and-inventory.md#training-panel-polish-d-212).
+
+**Active allied effects (D-211):** remaining shields and real timed buffs appear
+beside HP, updating from ordered event snapshots. All16 Element-Bearers use
+clarified shield/Weaken/critical/recovery and stored-charge descriptions.
+[Contract](menus-and-inventory.md#active-allied-effects-and-clear-ability-copy-d-211).
+
+**Battle speed lock fixed (D-210):** speed controls remain enabled during
+entrance/action playback and online requests. Retained toolbar utilities unlock
+when ready instead of keeping stale disabled state.
+[Contract](menus-and-inventory.md#battle-speed-stays-available-d-210).
+
+**Sidebar Menu removed (D-209):** no Menu drawer or trigger. Settings and
+Collections now have direct top-bar controls; existing primary/contextual routes
+retain every destination.
+[Contract](menus-and-inventory.md#no-sidebar-menu-d-209).
+
+**Banner cleanup and pity (D-208):** artwork is free of character/star overlays;
+outcomes and rates appear only in Rates & Information. Both banners now use
+80/150 guarantees, retaining old progress for the next saved draw.
+[Rules](summoning-and-economy.md#independent-banner-pity) /
+[layout](menus-and-inventory.md#uncluttered-banners-and-reduced-pity-d-208).
+
+**Starter selection (D-207):** compact three-card React comparison with an
+adjacent selected-character panel on desktop; phones retain a three-card row.
+Begin precedes optional full lore, reducing required scrolling without changing
+starter choices or saves. [Contract](menus-and-inventory.md#organized-opening-starter-selection-d-207).
+
+**Activity navigation (D-205):** desktop categories remain in one vertical
+column; phones use a wrapping grid instead of sideways scrolling.
+[Contract](menus-and-inventory.md#activity-navigation-without-sideways-scrolling-d-205).
+
+**Conduit menu interactions (D-204):** Store/Upgrade selections and saved
+transactions update their panels in place, retaining the header/list and scroll.
+Artwork is contained within the card/detail stage without overlapping text.
+[Contract](menus-and-inventory.md#conduit-panel-fit-and-in-place-updates-d-204).
+
+**Menu sizing (D-203):** larger shared header/navigation/currency/utility controls,
+slightly more compact menu content and responsive phone wallet rows. Retains
+Georgia, full values, portrait sizes and minimum interaction targets; no global
+zoom or battle scaling. [Contract](menus-and-inventory.md#menu-header-and-content-scale-d-203).
+
+**Save-data location (D-202):** Player info alone owns offline Save/Export/Load/
+Delete, backup warnings and new-account Import/Start fresh. It is reachable
+before starter selection/unreadable-save recovery; title, Settings and registration
+no longer expose save actions. Online progress and offline files stay separate.
+[Contract](mono-ui-and-cloud-saves.md#player-info-owns-save-data-management-d-202).
+
+**Character Masters (D-201):** 48 separate Omnic Masters, three per bearer,
+one matching slot and fixed kit mechanics. The final Machines boss independently
+drops a choice chest at 1%; Inventory can unlock an unowned Master even for a
+future character. React choice, atomic offline/server operations and frozen
+battle gear are implemented locally; hosted deployment and PNG artwork pending.
+[Rules](master-conduits.md) / [50 combined art prompts](../Art/conduits/Master%20Conduits.md).
+
+**Menu polish (D-200):** shared Georgia typography, readable notes and full values,
+consistent panels/controls, wrap-safe headers and compact/phone layouts cover
+current reference menus and React title/account/save UI. Remaining React
+conversion batches are still pending.
+[Contract](menus-and-inventory.md#shared-menu-typography-and-finish-d-200).
+
+**Omnic Conduit artwork (D-199):** all25 delivered kit-Conduit icons are archived,
+individually keyed/reviewed and installed. All85 catalog icons now have artwork;
+stable IDs, gameplay and saves are unchanged.
+[Intake and validation](art-workflow.md#delivered-omnic-kit-conduit-icons-d-199).
+
+**Home/upgrade correction (D-198):** no Squad panel on Home; squad management
+remains in Team. Saved upgrade celebrations resolve the current showcase portrait
+and no longer abort the animated stat reveal on reference Team screens.
+[Home](menus-and-inventory.md#home-without-squad-d-198) /
+[upgrades](units-and-progression.md#reference-team-upgrade-animation-correction-d-198).
+
+**React UI migration (D-197):** owner approves converting all UI in verified
+batches. Shared React19 components, Zustand5/Immer transient state and scoped CSS
+now drive title, offline save panels and account onboarding. Remaining menus/
+dialogs/battle chrome are pending; gameplay/server/save authority is unchanged.
+[Contract and batch status](mono-ui-and-cloud-saves.md#react-ui-migration-d-197).
+
+**Online/Offline save files (D-196):** explicit offline Save/Export/Load/Delete,
+backup warning at registration, staged file selection through email verification
+and one-time full-wallet import into an unstarted online account.
+Owner explicitly accepts editable offline holdings; subsequent online play
+remains authoritative. [Contract](mono-ui-and-cloud-saves.md#play-online--play-offline-and-save-files-d-196).
+
+**Captured Team parity (D-195):** creatures now use the same identity header,
+four-panel details, seven-stat comparisons and eight-slot Conduits as
+Element-Bearers, retaining copy-specific skills, caps, locks and protected sales.
+[Contract](menus-and-inventory.md#captured-creature-team-layout-parity-d-195).
+
+**Leader accent and bloom (D-194):** shared UI accents follow the saved squad
+leader's element, including captured leaders; battle retains its frozen leader.
+All screen backgrounds have a matching slow, soft bloom with explicit in-game
+motion reduction. [Contract](menus-and-inventory.md#squad-leader-accents-and-drifting-bloom-d-194).
+
+**Story-first enemy progression (D-192):** stronger shared hostile stats,
+highest-owned-Element-Bearer activity locks and concise early guidance are
+implemented. Heaven/Abyss starts at50 with cap-aligned fodder/material access;
+captured playable stats and old active infusion schedules remain compatible.
+Full1495-test suite/build/server checks pass; authoritative rules are deployed
+and authenticated fresh-account locks/real opening combat pass hosted smoke.
+[Balance](combat.md#enemy-progression-rebalance-d-192) and
+[gates](story-and-training.md#story-first-progression-and-activity-access-d-192).
+
+**Progressive battle choreography (D-191):** all 16 Element-Bearers have distinct
+weapon/caster signatures, layered source casts and evolution-scaled impact
+architecture. Shared local/online animation paths cover every activity; existing
+entrances, banners, readiness glow, speed and explicit reduction remain.
+[Contract and preview](combat.md#progressive-character-choreography-d-191).
+
+**Terminology consistency (D-189):** canonical element names in filters/material
+copy, shared resource labels and grammatical stack wording, no stale Blooms in
+Flora/Bliss descriptions. Frozen online kit references refresh text without
+changing strengths; Archive/Battle references use typed status badges.
+[Contract](menus-and-inventory.md#consistent-element-and-status-terminology-d-189).
+
+**Play/Story organization (D-188):** grouped activities, compact region selector,
+single regional main panel with five-by-five stages/boss rewards and entry
+footer now follow the supplied organization. All activity/map/entry/loot hooks
+remain real. [Contract](menus-and-inventory.md#play-and-story-organization-d-188).
+
+**Explicit animation preference (D-187):** Full animations is the default;
+only selecting Reduce motion in-game disables effects, not device preferences.
+Browser fixtures verify entrances, both Votive Roselius skill banners/attacks,
+impact effects and Last Flare shine without account writes.
+[Contract](menus-and-inventory.md#explicit-motion-preference-d-187).
+
+**Animated upgrade results (D-185):** saved single/Max levels and evolutions,
+including captured-copy leveling, reveal the actual portrait and seven effective
+stat changes with animated gains, Skip/Continue and reduced-motion support.
+[Contract and validation](units-and-progression.md#animated-upgrade-results-d-185).
+
+**Reference UI replacement/online gameplay (D-179-D-184):** hosted username authentication,
+server-authoritative battles/progression/purchases, material/cosmetic stores,
+editable profiles and real Friends/requests are implemented. The expanded
+UI's initial completion claim was rejected by the owner. The complete latest
+reference now drives replacement screen structures, clickable Story beacons and
+automatic profile field saving. Battle/header/footer/menu and shared controls/
+dialogs are polished under the permanent no-functionality-removal standard.
+Nineteen desktop/mobile view fixtures and mobile information dialogs are checked;
+pixel-perfect owner acceptance and recorded recent history remain. Online accounts start
+fresh and separate legacy saves are preserved.
+Email delivery remains an owner deployment check.
+[Contract and validation](mono-ui-and-cloud-saves.md).
 
 **Emberwake delivery (D-178):** five Infernic cutouts and regional arena installed;
 all30 Story creatures/six arenas delivered. New root World Map explicitly

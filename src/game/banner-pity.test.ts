@@ -20,37 +20,48 @@ describe('independent per-banner pity', () => {
   it('increments both counters on a lower-star outcome and never mutates inputs', () => {
     const counters = { highestStar: 10, unownedHighestStar: 20 };
     const result = resolveBannerPull(pool, owned, counters, () => .5);
-    expect(result.entry.kind).toBe('creature');
+    expect(result.entry.kind).toBe('material');
     expect(result.guarantee).toBe('none');
     expect(result.pity).toEqual({ highestStar: 11, unownedHighestStar: 21 });
     expect(counters).toEqual({ highestStar: 10, unownedHighestStar: 20 });
   });
-  it('guarantees the highest tier on exactly pull200, including every equal-split boundary', () => {
-    expect(resolveBannerPull(pool, owned, { highestStar: 198, unownedHighestStar: 250 }, () => .5).entry.kind).toBe('creature');
+  it('guarantees the highest tier on exactly pull80, including every equal-split boundary', () => {
+    expect(resolveBannerPull(pool, owned, { highestStar: 78, unownedHighestStar: 100 }, () => .5).entry.kind).toBe('material');
     for (const [roll, id] of [[0, 'aurora'], [.25 - 1e-10, 'aurora'], [.25, 'bliss'], [.5, 'disciple'], [.75, 'razor'], [.999999, 'razor']] as const) {
-      const result = resolveBannerPull(pool, owned, { highestStar: 199, unownedHighestStar: 250 }, () => roll);
+      const result = resolveBannerPull(pool, owned, { highestStar: 79, unownedHighestStar: 100 }, () => roll);
       expect(result.entry.id).toBe(id);
       expect(result.guarantee).toBe('highest-star');
-      expect(result.pity).toEqual({ highestStar: 0, unownedHighestStar: 251 });
+      expect(result.pity).toEqual({ highestStar: 0, unownedHighestStar: 101 });
     }
   });
-  it('resets only the200 counter for a natural duplicate and both for a natural new highest-star character', () => {
-    const counters = { highestStar: 100, unownedHighestStar: 300 };
-    expect(resolveBannerPull(pool, ['aurora'], counters, () => rollFor('aurora')).pity).toEqual({ highestStar: 0, unownedHighestStar: 301 });
+  it('resets only the80 counter for a natural duplicate and both for a natural new highest-star character', () => {
+    const counters = { highestStar: 40, unownedHighestStar: 100 };
+    expect(resolveBannerPull(pool, ['aurora'], counters, () => rollFor('aurora')).pity).toEqual({ highestStar: 0, unownedHighestStar: 101 });
     const newResult = resolveBannerPull(pool, ['aurora'], counters, () => rollFor('bliss'));
     expect(newResult.entry.id).toBe('bliss');
     expect(newResult.pity).toEqual(zero);
   });
-  it('guarantees an unowned highest-tier character on exactly pull500, with priority over200', () => {
-    expect(resolveBannerPull(pool, ['aurora'], { highestStar: 50, unownedHighestStar: 498 }, () => .5).pity)
-      .toEqual({ highestStar: 51, unownedHighestStar: 499 });
-    for (const highestStar of [0, 199]) for (const [roll, id] of [[0, 'bliss'], [1 / 3 - 1e-10, 'bliss'], [1 / 3, 'disciple'], [2 / 3, 'razor'], [.999999, 'razor']] as const) {
-      const result = resolveBannerPull(pool, ['aurora'], { highestStar, unownedHighestStar: 499 }, () => roll);
+  it('guarantees an unowned highest-tier character on exactly pull150, with priority over80', () => {
+    expect(resolveBannerPull(pool, ['aurora'], { highestStar: 50, unownedHighestStar: 148 }, () => .5).pity)
+      .toEqual({ highestStar: 51, unownedHighestStar: 149 });
+    for (const highestStar of [0, 79]) for (const [roll, id] of [[0, 'bliss'], [1 / 3 - 1e-10, 'bliss'], [1 / 3, 'disciple'], [2 / 3, 'razor'], [.999999, 'razor']] as const) {
+      const result = resolveBannerPull(pool, ['aurora'], { highestStar, unownedHighestStar: 149 }, () => roll);
       expect(result.entry.id).toBe(id);
       expect(result.guarantee).toBe('unowned-highest-star');
       expect(result.pity).toEqual(zero);
     }
     expect(resolveBannerPull(pool, ['aurora', 'bliss', 'razor'], { highestStar: 0, unownedHighestStar: 499 }, () => .99).entry.id).toBe('disciple');
+  });
+  it('honors legacy progress read-only and pays overdue guarantees only on a saved draw', () => {
+    const counters = { highestStar: 199, unownedHighestStar: 499 };
+    expect(validateBannerPity(counters)).toEqual(counters);
+    const result = resolveBannerPull(pool, ['aurora'], counters, () => 0);
+    expect(result.guarantee).toBe('unowned-highest-star');
+    expect(result.entry.id).toBe('bliss');
+    expect(result.pity).toEqual(zero);
+    expect(counters).toEqual({ highestStar: 199, unownedHighestStar: 499 });
+    expect(resolveBannerPull(pool, owned, { highestStar: 120, unownedHighestStar: 130 }, () => 0).pity)
+      .toEqual({ highestStar: 0, unownedHighestStar: 131 });
   });
   it('falls back to an ordinary highest-star duplicate result when all are owned, resetting both', () => {
     for (const roll of [0, .5, .999999]) {
@@ -132,9 +143,9 @@ describe('independent per-banner pity', () => {
     expect(loaded.bannerPity).toEqual(account.bannerPity);
     expect(() => summonCharacter(storage, () => -1)).toThrow('[0, 1)');
     expect(storage.getItem(ACCOUNT_KEY)).toBe(before);
-    expect(summonHub(loaded)).toContain('199 / 200');
-    expect(summonHub(loaded)).toContain('499 / 500');
-    expect(summonHub(loaded)).toContain('500 guarantee takes priority');
+    expect(summonHub(loaded)).toContain('199 / 80');
+    expect(summonHub(loaded)).toContain('499 / 150');
+    expect(summonHub(loaded)).toContain('150 guarantee takes priority');
     for (const bannerPity of [null, [], { unknown: zero }, { standard: { highestStar: 200, unownedHighestStar: 0 } }]) {
       expect(() => validateAccount({ ...account, bannerPity })).toThrow();
     }

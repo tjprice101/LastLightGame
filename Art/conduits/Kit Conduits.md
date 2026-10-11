@@ -1,6 +1,6 @@
 # Reborn Omnic kit-Conduit icon prompts
 
-D-176:25 reference-free copy-ready Omnic prompts matched to the converted runtime catalog. [Mechanics, acquisition and validation](../../docs/kit-conduits.md). Art IDs below are identities, not URLs or installed imagery. All25 entries remain art-pending until supplied originals are reviewed and exported.
+D-176:25 reference-free copy-ready Omnic prompts matched to the converted runtime catalog. [Mechanics, acquisition and validation](../../docs/kit-conduits.md). D-199: all25 owner-delivered icons are installed under these stable art IDs. Originals, reviewed cleanup settings and source/export hashes are preserved. Reproduce with tools/intake_kit_conduit_art.py; these prompts remain generation provenance.
 
 Preserve originals under Art/source/kit-conduits. Review each key, enclosed opening, ivory metal, crystal facet and shadow individually. Export transparent 256px icons with224px content; never reuse an unrelated icon, request a missing PNG, or remove authoritative supplied alpha. All25 require matching combat element and count toward the four-Omnic limit. Preserve stable art IDs. Original elemental Omnics in [Awaken the Machines](../creatures/Awaken%20the%20Machines.md) provide the written renderer/epicness benchmark, not image references or copied devices. Fully reborn elemental regalia, immense fans, nested coronas and dense rear architecture surround a readable device core; never small recovered bronze mechanisms. Palettes remain individually locked; opal/prismatic means allowed-color faceting, not rainbow.
 

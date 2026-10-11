@@ -1,5 +1,10 @@
 # Awaken the Machines and expanded Conduits
 
+**D-201 final-boss chest:** stage 100 / Lv.120 boss independently has a 1% chance
+to drop one Cosmic Grand Master Chest. Open in Inventory for an unowned Master
+of your choice, including future characters. [48 Masters and exact rules](master-conduits.md).
+No ordinary tier-pool, component, currency or banner chance changes.
+
 **D-176 current pool:** same25 kitConduit IDs converted to unique Omnics,
 yielding15Rare/15Legendary/45Omnic pool entries with unchanged8%/3.5%/1%
 total chances, stage75Omnic gate and independent RNG stream. Equal entry chance

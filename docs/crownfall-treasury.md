@@ -27,8 +27,10 @@ Mode stage count is explicit, not the35-floor elemental/Heaven/Abyss constant.
 ## Mission loot
 
 Each newly defeated enemy awards one uniform integer in the Prismatica range:
-`minimum=100+floor(900*((level-65)/55)^2)`, maximum=`minimum*2`.
-Exactly100-200 at65 and1,000-2,000 at120, same boss/ordinary rates.
+`minimum=round(storyMinimum(level)*(1+19*((level-65)/55)^2))`, maximum=`minimum*2`,
+where `storyMinimum=5+2*(level-1)` is the D-225 linear Story line. Treasury
+equals Story at the same level on entry (133-266 at65), then the multiplier
+accelerates to20x: 4,860-9,720 at120. Same boss/ordinary rates.
 No second ordinary currency roll, Null-Prismatica, materials or clear bonus.
 Reward RNG and20% capture RNG remain separate. Burn/AOE share the normal
 newly-dead path. Dead units cannot roll again.

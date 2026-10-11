@@ -16,7 +16,7 @@ import { archives } from '../presentation/archives';
 const progress = { level: 0, evolution: 1 };
 
 describe('delivered Story art integration', () => {
-  it('has all delivered30 creatures,6 arenas and the preserved map with byte-derived URLs', () => {
+  it('has all delivered30 Elemental-Devourers,6 arenas and the preserved map with byte-derived URLs', () => {
     expect(Object.keys(storyRegionArt)).toHaveLength(6);
     expect(storyRegionArt.infernic?.boss).toBe('story-infernic-boss');
     const paths = [`backgrounds/${storyWorldMap}`];

@@ -6,7 +6,7 @@ import { information } from './information';
 export function settingsPanel(motion: MotionPreference, bindings: Bindings, speed: BattleSpeed): string {
   return `<header class="drawer-heading"><div><h2 id="settings-heading">Settings</h2></div>
     <button id="close-settings" class="drawer-close" aria-label="Close settings">&times;</button></header>
-    ${information('settings-information', 'Settings information', '<p>Settings save on this device. Animation speed changes presentation only, not combat or rewards. Reduced motion respects both the saved setting and device preference. Selection keys switch allies or targets; they cannot attack or end a turn. Use distinct physical keys. Typing and browser shortcuts are not intercepted.</p><p>Drag characters to act or use Battle menu controls. Turns advance automatically while no living ally can act. Stages require Continue.</p>')}
+    ${information('settings-information', 'Settings information', '<p>Settings save on this device. Animation speed changes presentation only, not combat or rewards. Animations play unless you select Reduce motion here; device preferences do not disable them. Selection keys switch allies or targets; they cannot attack or end a turn. Use distinct physical keys. Typing and browser shortcuts are not intercepted.</p><p>Drag characters to act or use Battle menu controls. Turns advance automatically while no living ally can act. Stages require Continue.</p>')}
     <section class="settings-panel"><h3>Battle presentation</h3>
       <label for="settings-battle-speed">Animation speed</label>
       <select id="settings-battle-speed" data-battle-speed aria-describedby="speed-description">${battleSpeeds.map((value) =>
@@ -16,10 +16,10 @@ export function settingsPanel(motion: MotionPreference, bindings: Bindings, spee
     <form id="settings-form" class="settings-panel"><h3>Motion &amp; accessibility</h3>
       <label for="motion">Animation preference</label>
       <select id="motion" name="motion" aria-describedby="motion-description">
-        <option value="system" ${motion === 'system' ? 'selected' : ''}>Follow device preferences</option>
+        <option value="system" ${motion === 'system' ? 'selected' : ''}>Full animations</option>
         <option value="reduced" ${motion === 'reduced' ? 'selected' : ''}>Reduce motion</option>
       </select>
-      <p id="motion-description">Device reduced-motion settings also apply.</p>
+      <p id="motion-description">Animations are on by default. Only Reduce motion disables them.</p>
       <button class="primary-button" type="submit">Save motion preference</button><p id="settings-result" role="status"></p>
     </form>
     <form id="hotkey-form" class="settings-panel hotkey-panel"><h3>Selection keys</h3>

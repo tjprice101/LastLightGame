@@ -1,5 +1,74 @@
 # Summoning and economy
 
+## Featured characters strip (D-219)
+
+Below the banner artwork, a single compact panel shows the banner's real
+Element-Bearers, grouped by star tier (highest first; Standard: 6★ and 5★,
+Roses: 6★). Each entry is a small base-form portrait with a short name and an
+Owned check when owned; the full title is in the tooltip. The strip is built from
+`banner.pool()`, so it never lists characters the banner can't award. It shows
+no rates, roles or stats. Rates stay only in Rates & Information.
+
+## Summon 10-Pull (D-218)
+
+Each real banner has a single Summon (10 Null-Prismatica) and a "Summon 10-Pull"
+button (100 Null-Prismatica, disabled below 100). `summonCharacters` checks the
+whole cost first, then resolves ten ordinary draws in sequence on one account
+snapshot. Pity counters, newly owned Element-Bearers (later copies become
+duplicate material bundles), material rewards and the 0.5% Legendary bonus
+Conduit roll carry from one draw to the next. Cost, all rewards and the final
+pity are saved together in one write; a failed or rejected 10-pull spends
+nothing. Odds, pity thresholds (80/150) and rewards are unchanged; there is no
+10-pull discount or extra guarantee. The online server uses the `summonTen`
+operation, increments total draws by ten and returns exactly ten validated
+receipts. The result dialog shows all ten saved results in one grid.
+
+## Material banner rewards (D-214)
+
+Owner replaces all new creature awards from both real summon banners, including
+owned Element-Bearer conversions, with material bundles. Owner caps every banner
+material award at Rare and approves retaining50:30:17 Common/Uncommon/Rare
+weights with tuned quantities and larger Rare duplicate bundles.
+
+| Non-character tier | Bundle size | Weight within non-character rewards |
+| --- | --- | --- |
+| Common | 10 | 50 / 97 |
+| Uncommon | 6 | 30 / 97 |
+| Rare | 3 | 17 / 97 |
+
+Standard has10 Element-Bearer entries plus18 material entries: each of the six
+elements equally likely within each material tier. Roses has3 Element-Bearer
+entries plus Seed/Bud/Bloom of Rosethorn (Common/Uncommon/Rare). Materials occupy
+the existing98.9% non-character probability on both banners. Standard's1%
+five-star/0.1% six-star totals and Roses'1.1% six-star total remain unchanged.
+An owned Element-Bearer converts to15 Rare materials: one equally selected
+Standard element, or Bloom of Rosethorn on Roses. No Epic/Legendary/Omnic
+materials, creature copies, sale step or automatic equipping from new draws.
+
+Cost10 Null-Prismatica, independent80/150 pity and additional0.5% Legendary
+Conduit bonus remain. Material results advance both pity counters; character
+results keep existing highest-tier/new-ownership resets and all-owned behavior.
+Duplicate Standard draws use one extra independent summon roll to select the
+element; Roses duplicates need no family roll. Combat/reward/capture RNG stays
+untouched. Main reward, cost, pity and bonus save once, with overflow/write
+failure preserving raw wallet/currencies/eligibility.
+
+Already owned creatures, historical duplicate provenance, locks, progression,
+equipment and sale/capture rules remain intact. No load writes or retroactive
+replacement. Historical saved server receipts can still reveal their actual
+old creature award; no new transaction creates one. Shared server engine and
+client response validation support material receipts, but hosted rollout is
+separate from local bundle regeneration.
+
+Rates & Information shows named material quantities/rarity/probabilities,
+not creature/star rows for materials. Saved reveals use existing material art
+and exact quantities; duplicates explicitly say Rare materials instead.
+Inventory Help includes banners as material sources.
+
+Validate `src\game\banner-materials.test.ts`, existing banner/pity/economy/
+presentation tests, authoritative server tests, full suite and build.
+This supersedes creature-pull and duplicate-copy rules in historical sections.
+
 **Wallet compatibility (D-176):** current version5 marks the25-kitConduit Omnic
 conversion. v1-v4 normalization remains read-only and retains account data;
 only converted wrong-element/excess-fourOmnic equipment slots are unequipped.
@@ -29,6 +98,13 @@ dismisses. Reduced motion reveals immediately. No Claim, reroll, second write
 or changed odds. Failed saves never launch a success reveal; presentation errors
 after saving explicitly say the reward is saved. Summon focus returns on dismissal.
 [Shared contract](menus-and-inventory.md#in-game-dialogs-and-reward-foundation-d-148).
+
+D-230 tiers the reveal by pulled star value (duplicates included; a 10-pull uses
+its highest): 5-star is gold with rays, ring, sparks, a 3200ms portal and a
+reveal flash; 6-star is prismatic rainbow with denser effects and a 4300ms
+multi-spin portal. Lower pulls keep the 2400ms neutral portal. 10-pull tiles
+for 5/6-star results are highlighted. Presentation only; reduced motion keeps
+the colours but no animation.
 
 ## Currency names and legacy compatibility (D-133)
 
@@ -177,15 +253,13 @@ duplicate and income rules remain accessible in the centered **Rates & Informati
 dialog (D-080). The complete text-only rate table is also inside that dialog;
 cost, draw action, eligibility, result and pity progress stay on the main screen.
 
-D-081 adds a compact **Available Element-Bearers** strip below the banner art.
-It lists only real character outcomes in that banner's5/6-star tiers: element
-emblem/name, character name, outcome stars and awarded-form rarity. Standard
-lists all ten real Standard EBs at their fixed5/6 stars and Common (Evo1),
-independent of owned evolution. No placeholders or duplicate-conversion creatures.
-It does not advertise boosted rates or add portraits, roles, stats or lore.
-The separate Rates & Information table remains text-only and unchanged.
-D-083 shows its rules as a normal section inside the centered dialog, without
-a second expandable disclosure. Odds, pity and draw transactions are unchanged.
+D-208 supersedes D-081's Available Element-Bearers strip and later character/star
+overlays on Summon. Artwork carries only its banner title; no separate Showcase
+control or inline tier rates. Home Showcase remains unchanged. The one
+Rates & Information dialog starts with the full outcome tables and tier filters,
+followed by ordinary pity/reward rule sections, without another disclosure.
+Wrapping columns retain names, awarded rarity/stars and precise rates at phone
+widths. Tier filters hide complete sections; no sideways table scroll.
 Future characters must have registered definitions and awarded-form metadata
 before joining a banner; the current catalog only supports Evo1 starter awards.
 
@@ -228,20 +302,20 @@ have been approved. There are no extra banner placeholders.
 
 ## Independent banner pity
 
-Owner approved two independent per-banner counters, counting completed draws
+Owner approved D-208's two independent per-banner counters, counting completed draws
 since the last qualifying result:
 
-- **200:** guarantees a character of the highest star tier currently in the
-  real pool on the200th draw without such a result. Any highest-star character,
+- **80:** guarantees a character of the highest star tier currently in the
+  real pool on the80th draw without such a result. Any highest-star character,
   including a duplicate, resets this counter.
-- **500:** guarantees an **unowned character of that same highest star tier**
-  on the500th draw without a new highest-star character. A natural or guaranteed
-  new highest-star character resets this counter (and also the200 counter).
-- A duplicate highest-star result does not reset500 unless500 pity itself is
+- **150:** guarantees an **unowned character of that same highest star tier**
+  on the150th draw without a new highest-star character. A natural or guaranteed
+  new highest-star character resets this counter (and also the80 counter).
+- A duplicate highest-star result does not reset150 unless150 pity itself is
   due and all highest-tier characters are owned. In that case award a normal
   highest-star duplicate result through the crowned-slime conversion, resetting
   both counters. Do not downgrade the guarantee to an unowned lower-tier EB.
-- When both guarantees are due,500 takes priority. Eligible guaranteed
+- When both guarantees are due,150 takes priority. Eligible guaranteed
   characters split equally. No soft-pity rate ramp is approved.
 - Highest tier is6 in both current banners. Five-star Standard results do not
   reset highest-tier counters. Pool changes do not
@@ -250,7 +324,12 @@ since the last qualifying result:
 [Resolver](../src/content/standard-banner.ts) implements exact selection and
 counter transitions as a pure function, without grants/spending. Optional
 walletv4 `bannerPity.standard` stores `{highestStar,unownedHighestStar}`, each
-nonnegative integer below200/500. Missing legacy data reads as zero only for
+nonnegative integer below the historical200/500 validation bounds. Existing
+earned progress remains unchanged, including counters above the new limits:
+due/overdue values trigger the applicable guarantee on the next saved draw.
+No schema migration, load writes or retroactive awards; only visual meters clamp
+to80/150, while numeric labels show the actual saved values. New ordinary draw
+progress stays below the new limits after resolution. Missing legacy data reads as zero only for
 display/resolution; no load write or retroactive count. Invalid counters fail
 explicitly. The menu displays current saved progress and rules.
 
@@ -260,9 +339,10 @@ Only successfully persisted draws count; cancellations, rejected draws, failed
 saves and menu visits never advance pity. Never save counters separately.
 
 Published tier probabilities above are **base rates outside guaranteed pulls**.
-On200 pity the highest-tier character probability is100%; on500 pity it is100%
+On80 pity the highest-tier character probability is100%; on150 pity it is100%
 within the eligible unowned subset (or all highest-tier characters if all owned).
-Tests cover exact199/200 and499/500 thresholds, independent natural resets,
+Tests cover exact79/80 and149/150 thresholds, preserved199/499 overdue progress,
+authoritative server draws, independent natural resets,
 simultaneous priority, all-owned fallback, invalid inputs, future6-star fixtures,
 saved progress and failed writes. Phase9 transaction tests cover actual rewards.
 See [pity tests](../src/game/banner-pity.test.ts).

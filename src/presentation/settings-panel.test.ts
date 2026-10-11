@@ -16,6 +16,9 @@ describe('shared settings drawer', () => {
     expect(html).toContain('data-close-information');
     expect(html).toContain('aria-describedby="speed-description"');
     expect(html).toContain('aria-describedby="motion-description"');
+    expect(html).toContain('Full animations');
+    expect(html).toContain('Only Reduce motion disables them');
+    expect(html).not.toContain('Follow device preferences');
     for (const [command] of commands) {
       expect(html).toContain(`label for="key-${command}"`);
       expect(html).toContain(`id="key-${command}" name="${command}"`);

@@ -97,8 +97,9 @@ describe('playable flagship roster', () => {
       ? { highestStar: 0, unownedHighestStar: 0 } : { highestStar: 13, unownedHighestStar: 26 });
     const duplicate = summonCharacter(saved, roll);
     expect(duplicate.duplicate).toBe(true);
-    expect(duplicate.copy?.creatureId).toBe('infusion:treasury:5');
-    expect(duplicate.copy?.level).toBe(50);
+    expect(duplicate.copy).toBeUndefined();
+    expect(duplicate.materials?.id).toMatch(/-rare$/);
+    expect(duplicate.materials?.amount).toBe(15);
     expect(duplicate.account.characters[character.id]).toEqual(result.account.characters[character.id]);
   });
   it('shares leveling, evolution routes, squad saves and gear without granting resources', () => {

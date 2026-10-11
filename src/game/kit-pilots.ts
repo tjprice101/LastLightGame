@@ -3,6 +3,7 @@ import { type ActionId } from '../content/combat';
 import { kitPilotDescriptions, type KitPilot, type KitPilotResourceKey, type KitPilotState } from '../content/kit-pilots';
 import { type BattleEvent, type BattleState, type Combatant } from './battle';
 import { debuffSnapshot } from './battle-debuffs';
+import { buffSnapshot } from './battle-buffs';
 
 function charges(unit: Combatant): KitPilotState {
   return unit.pilot ??= {};
@@ -11,7 +12,8 @@ function charges(unit: Combatant): KitPilotState {
 function status(events: BattleEvent[], source: Combatant, target: Combatant, message: string, effect?: ElementalEffectTag): void {
   events.push({
     kind: 'status', source: source.id, target: target.id, amount: 0, critical: false, message,
-    debuffs: debuffSnapshot(target), ...(effect ? { elementalEffect: effect } : {}),
+    debuffs: debuffSnapshot(target), ...(target.side === 'ally' ? { buffs: buffSnapshot(target) } : {}),
+    ...(effect ? { elementalEffect: effect } : {}),
   });
 }
 

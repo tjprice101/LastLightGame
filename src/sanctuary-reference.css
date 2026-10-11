@@ -52,7 +52,7 @@
 .sanctuary-shell :is(.sanctuary-dock button, .home-banner, .home-menu-shortcuts button, .activity-picker button) {
   transition: translate 180ms ease-out, background-color 180ms ease-out, border-color 180ms ease-out;
 }
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+@media (hover: hover) {
   :root:not([data-motion="reduced"]) .sanctuary-shell :is(.sanctuary-dock button, .home-banner, .home-menu-shortcuts button, .activity-picker button):not(:disabled):hover {
     translate: 0 -2px;
   }

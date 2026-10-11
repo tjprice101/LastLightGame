@@ -29,7 +29,7 @@ describe('battlefield visual rank', () => {
     expect(battleArtScale(base, base.enemies[0])).toBe(1);
     expect(battleArtScale(last, last.enemies[0])).toBeCloseTo(3.1);
   });
-  it('keeps basic Adventure creatures small and the golem heavier', () => {
+  it('keeps basic Adventure Elemental-Devourers small and the golem heavier', () => {
     const state = createBattle();
     expect(state.enemies.map((unit) => battleArtScale(state, unit))).toEqual([1, 1, 1.2]);
   });

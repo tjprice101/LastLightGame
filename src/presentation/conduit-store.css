@@ -23,7 +23,7 @@
 .conduit-omnic::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 18% 25%, #fff 0 1px, transparent 2px), radial-gradient(circle at 80% 70%, #fff 0 1px, transparent 2px), linear-gradient(115deg, transparent 25%, #fff8 48%, transparent 65%); background-size: auto, auto, 300% 100%; animation: conduit-prismatic-shine 5s ease-in-out infinite; }
 @keyframes conduit-prismatic-shine { 0%, 55% { opacity: .25; background-position: 0 0, 0 0, 100% 0; } 85%, 100% { opacity: .6; background-position: 0 0, 0 0, 0% 0; } }
 html[data-motion="reduced"] .conduit-omnic::after { animation: none; opacity: .3; }
-@media (prefers-reduced-motion: reduce) { .conduit-omnic::after { animation: none; opacity: .3; } }
+:root[data-motion="reduced"] .conduit-omnic::after { animation: none; opacity: .3; }
 .conduit-mechanism .conduit-icon { width: min(100%, 200px); height: auto; aspect-ratio: 1; }
 .conduit-effect { padding: 8px 12px; border-left: 2px solid #ddd; background: #ffffff06; color: #fff; }
 .conduit-quantity { margin-top: auto; font-variant-numeric: tabular-nums; }

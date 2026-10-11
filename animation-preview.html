@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Light - Battle animation preview</title>
+    <style>
+      body { margin: 0; background: #090b12; color: #eee; display: flex; flex-direction: column; height: 100svh; }
+      .preview-controls { position: relative; z-index: 30; display: flex; flex-wrap: wrap; align-items: end; gap: 10px; padding: 14px 20px; background: #11151f; border-bottom: 1px solid #424957; }
+      .preview-controls h1 { font-size: 18px; margin: 0; }
+      .preview-controls p { font-size: 12px; margin: 4px 0 0; }
+      .preview-controls label { display: grid; gap: 3px; font-size: 12px; }
+      .preview-controls select, .preview-controls button { min-height: 44px; padding: 8px 12px; background: #202634; color: white; border: 1px solid #647086; border-radius: 6px; }
+      .preview-controls :focus-visible { outline: 2px solid white; outline-offset: 3px; }
+      .preview-controls #preview-error { width: 100%; color: #ffb1b1; }
+      .preview-stage.battle-screen { position: relative; min-height: 0; flex: 1; overflow: hidden; }
+      #battle-root { height: 100%; }
+      @media (max-width: 700px) { body { height: auto; } .preview-controls { padding: 10px; } .preview-controls > div { width: 100%; } .preview-stage.battle-screen { min-height: 650px; } }
+    </style>
+  </head>
+  <body>
+    <header class="preview-controls">
+      <div><h1>Battle animation studio</h1><p>All 16 Element-Bearers. Real battle renderer. In-memory only; no account or reward writes.</p></div>
+      <label>Element-Bearer<select id="preview-character"></select></label>
+      <label>Evolution<select id="preview-evolution"></select></label>
+      <label>Battle<select id="preview-mode"></select></label>
+      <label>Action<select id="preview-action"><option value="light">Normal Attack</option><option value="skill1">Skill 1</option><option value="skill2">Skill 2</option><option value="ultimate" selected>Last Flare</option></select></label>
+      <label>Speed<select id="preview-speed"><option>1</option><option>2</option><option>3</option></select></label>
+      <button id="preview-play">Play animation</button><button id="preview-entrance">Replay entrance</button>
+      <p id="preview-error" role="alert"></p>
+    </header>
+    <main class="preview-stage battle-screen"><div id="battle-root"></div></main>
+    <script type="module" src="/src/battle-animation-preview.ts"></script>
+  </body>
+</html>

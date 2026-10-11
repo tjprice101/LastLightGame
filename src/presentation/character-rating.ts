@@ -4,7 +4,7 @@ import './character-rating.css';
 
 export function starBadge(stars: number, subject: 'character' | 'creature' = 'character'): string {
   if (!Number.isInteger(stars) || stars < 1 || stars > 6) throw new Error('Character stars must be an integer from 1 to 6.');
-  return `<span class="star-badge star-tier-${stars}" role="img" aria-label="${stars}-star ${subject}"><span class="rating-stars" aria-hidden="true">${Array.from({ length: stars }, () =>
+  return `<span class="star-badge star-tier-${stars}" role="img" aria-label="${stars}-star ${subject === 'creature' ? 'Elemental-Devourer' : subject}"><span class="rating-stars" aria-hidden="true">${Array.from({ length: stars }, () =>
     '<span class="rating-star"><span class="star-face"></span><span class="star-shine"></span></span>').join('')}</span></span>`;
 }
 

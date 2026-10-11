@@ -22,6 +22,16 @@
 .battle-screen .battle-context-actions .battle-action-heading { display: flex; align-items: center; gap: 8px; }
 .battle-screen .attack-effect.cinematic-impact { inset: -8%; border: 0; box-shadow: none; background: none; border-radius: 0; overflow: visible; }
 .cinematic-impact > span { position: absolute; pointer-events: none; }
+.flair-signature { position: absolute; inset: calc(8% - var(--crown) * 7%); width: calc(84% + var(--crown) * 14%); height: calc(84% + var(--crown) * 14%); overflow: visible; rotate: var(--rotation); color: var(--element); filter: drop-shadow(0 0 6px var(--element)); pointer-events: none; }
+.flair-signature path { fill: color-mix(in srgb, var(--element) 8%, transparent); stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.cinematic-impact.effect-active .flair-signature { animation: flair-crown calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; }
+.flair-arc { inset: calc(4% - var(--arc) * 3%); border: 3px solid transparent; border-top-color: var(--element); border-right-color: #ffffffa0; border-radius: 50%; rotate: var(--rotation); filter: drop-shadow(0 0 6px var(--element)); }
+.cinematic-impact.effect-active .flair-arc { animation: flair-sweep calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; }
+.cinematic-cast { z-index: 3; }
+.cinematic-cast .flair-signature { filter: drop-shadow(0 0 12px var(--element)); }
+.flair-bloom .flair-arc { border-radius: 5% 85%; }
+.flair-void .flair-arc { border-radius: 15%; }
+.flair-flame .flair-arc { border-radius: 70% 5%; border-top-width: 6px; }
 .cinematic-impact.effect-active .flair-spark { animation: flair-scatter calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; animation-delay: calc(var(--spark-delay) / var(--battle-speed, 1)); }
 .cinematic-impact.effect-active .flair-ring { animation: flair-orbit calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; }
 .cinematic-impact.effect-active .flair-ray { animation: flair-lance calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; }
@@ -35,11 +45,11 @@
 .flair-tide .flair-ray { height: 5px; }
 .flair-bloom .flair-ring { border-radius: 0 80% 0 80%; }
 .flair-bloom .flair-spark { width: 9px; height: 17px; border-radius: 0 90%; }
-.flair-radiant .flair-ring { border-color: #ffd76c; border-style: double; border-width: 5px; }
-.flair-radiant .flair-ray { background: linear-gradient(90deg, #fff, #ffd76c, #ff344d, transparent); }
+.flair-radiant .flair-ring { border-color: var(--element); border-style: double; border-width: 5px; }
+.flair-radiant .flair-ray { background: linear-gradient(90deg, #fff, var(--element), transparent); }
 .flair-void .flair-core { background: radial-gradient(circle, #11041e 20%, #d632bb88 40%, transparent 70%); }
-.flair-void .flair-ring { border-color: #f377dd; border-radius: 30% 70% 40% 60%; box-shadow: 0 0 20px #873bce; }
-.flair-void .flair-ray { background: linear-gradient(90deg, #eb61cf, #7937ba, transparent); }
+.flair-void .flair-ring { border-color: var(--element); border-radius: 30% 70% 40% 60%; box-shadow: 0 0 20px var(--element); }
+.flair-void .flair-ray { background: linear-gradient(90deg, #fff, var(--element), transparent); }
 .cinematic-trail { position: fixed; z-index: 8; height: 6px; transform-origin: left center; pointer-events: none; background: linear-gradient(90deg, transparent, var(--element), #ffffffc0); box-shadow: 0 0 14px var(--element); border-radius: 50%; }
 .cinematic-trail.flair-bloom { height: 3px; }
 .cinematic-trail.flair-tide { height: 10px; border: 1px solid #ffffff80; }
@@ -58,8 +68,17 @@
   30% { opacity: 1; }
   to { opacity: 0; scale: 1.4 1; }
 }
+@keyframes flair-crown {
+  from { opacity: 0; scale: .35; }
+  25% { opacity: .8; }
+  to { opacity: 0; scale: 1.2; }
+}
+@keyframes flair-sweep {
+  from { opacity: 0; scale: .3; transform: rotate(-80deg); }
+  30% { opacity: .9; }
+  to { opacity: 0; scale: 1.35; transform: rotate(100deg); }
+}
 html[data-motion="reduced"] .cinematic-impact > span { animation: none; }
-@media (prefers-reduced-motion: reduce) { .cinematic-impact > span { animation: none; } }
 @media (max-width: 700px) {
   .battle-screen .battle-side.enemies { grid-template-columns: 1fr; gap: 14px; }
   .battle-screen .battle-side.enemies > .battle-unit:nth-child(n) { grid-column: 1; grid-row: auto; width: 88%; justify-self: start; }

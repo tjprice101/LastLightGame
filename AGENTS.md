@@ -1,5 +1,12 @@
 # Last Light: AI agent entry point
 
+## Gradient buttons, off-center labels (D-206)
+
+button-style.ts tags flat buttons (text/icon/tile/filled; art and battle units
+skipped) and button-style.css, imported last, adds leader-accent gradients and
+bold leading-edge labels/top-left tile headings. Presentation only; never
+restyle artwork-backed buttons. See docs/menus-and-inventory.md (D-206).
+
 ## Full Conduit cleanup review (D-177)
 
 All60 installed icons reviewed against authoritative sources/dark/light/magnified
@@ -652,7 +659,7 @@ phase state and validation live in docs/handoff.md.
 - Canonical character terminology: **Element-Bearer**, **Element-Bearers** and
   **Owned Element-Bearers** for the player's collection. Never call characters
   companions in UI, accessibility text, errors, documentation or character art
-  prompts. Only characters are Element-Bearers; captured enemies remain creatures.
+  prompts. Only characters are Element-Bearers; captured enemies are Elemental-Devourers (D-233; internal "creature" IDs/hooks stay).
   Use squad member for mixed teams. Internal legacy names,
   CSS hooks and save keys may remain unchanged for compatibility.
 

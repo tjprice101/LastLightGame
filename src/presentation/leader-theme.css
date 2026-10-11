@@ -1,0 +1,56 @@
+:root { --ui-accent: #f4f4f5; --ui-accent-soft: color-mix(in srgb, var(--ui-accent) 14%, transparent); }
+
+html[data-leader-element] body :is(.shell, .battle-screen, .game-dialog, .information-modal, .selection-modal, .online-account, .settings-drawer, .reward-screen) :is(button, a, input, select, textarea, summary):focus-visible {
+  outline-color: var(--ui-accent);
+}
+html[data-leader-element] body :is(.shell, .game-dialog, .information-modal, .online-account, .settings-drawer, .reward-screen) :is(.primary-button, .game-confirm-button, .enter-button),
+html[data-leader-element] body .sanctuary-shell .ref-white,
+html[data-leader-element] body .sanctuary-shell :is(.sanctuary-dock, .sanctuary-team-tabs, .section-navigation, .character-sections, .summon-banner-navigation, .archive-navigation, .ref-segment, .ref-market-tabs, .online-store-tabs, .ref-rarity-filter) button:is([aria-current], [aria-pressed="true"]),
+html[data-leader-element] body .sanctuary-shell .ref-play .activity-categories a[aria-current],
+html[data-leader-element] body .sanctuary-shell .mono-story-campaign .story-stage[aria-pressed="true"],
+html[data-leader-element] body .selection-modal .selection-options button[aria-pressed="true"],
+html[data-leader-element] body .battle-screen .battle-speed-buttons button[aria-pressed="true"] {
+  background: var(--ui-accent);
+  border-color: var(--ui-accent);
+  color: #0b0b0c;
+}
+html[data-leader-element] body .sanctuary-shell :is(.ref-product, .ref-member-row, .archive-card, .ref-collection-card)[aria-pressed="true"],
+html[data-leader-element] body .sanctuary-shell .mono-story-campaign .story-stage[aria-current="step"] {
+  border-color: var(--ui-accent);
+  box-shadow: 0 0 0 1px var(--ui-accent-soft);
+}
+html[data-leader-element] body .sanctuary-shell .brand-mark { color: var(--ui-accent); border-color: var(--ui-accent); }
+html[data-leader-element] body .sanctuary-shell .ref-go { background: var(--ui-accent); color: #0b0b0c; }
+html[data-leader-element] body .sanctuary-shell .ref-member-row.is-selected { border-color: var(--ui-accent); box-shadow: 0 0 0 1px var(--ui-accent); }
+html[data-leader-element] body .sanctuary-shell :is(.ref-bar i, .ref-pips .is-filled) { background: var(--ui-accent); }
+html[data-leader-element] body .sanctuary-shell .ref-map-node[aria-pressed="true"] > span { outline-color: var(--ui-accent); }
+html[data-leader-element] body .sanctuary-shell .ref-map-node.is-restored > span { background: var(--ui-accent); border-color: var(--ui-accent); }
+html[data-leader-element] body .battle-screen #battle-root .battle-menu .battle-actor-picker button[aria-pressed="true"] {
+  background: var(--ui-accent); border-color: var(--ui-accent); color: #0b0b0c;
+}
+html[data-leader-element] body :is(input, progress) { accent-color: var(--ui-accent); }
+html[data-leader-element] body :is(.game-dialog, .information-modal, .selection-modal, .settings-drawer, .reward-screen) {
+  background-image: radial-gradient(ellipse at top right, var(--ui-accent-soft), transparent 65%);
+}
+@media (hover: hover) {
+  html[data-leader-element] body :is(.sanctuary-shell, .game-dialog, .information-modal, .selection-modal, .online-account, .settings-drawer, .reward-screen) :is(button, a):hover:not(:disabled) {
+    border-color: var(--ui-accent);
+  }
+}
+.ambient-background:not([data-ambient-screen="battle"]) {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--ui-accent) 8%, transparent), color-mix(in srgb, var(--ui-accent) 3%, transparent));
+}
+.ambient-bloom {
+  inset: -50%;
+  background: radial-gradient(ellipse at center, color-mix(in srgb, var(--ui-accent) 20%, transparent), color-mix(in srgb, var(--ui-accent) 9%, transparent) 45%, transparent 75%);
+  animation: ambient-bloom-drift 38s ease-in-out infinite alternate;
+}
+.battle-screen { isolation: isolate; }
+.battle-screen .ambient-background { z-index: 1; }
+.ambient-background[data-ambient-screen="battle"] .ambient-bloom { opacity: .45; }
+@keyframes ambient-bloom-drift {
+  0% { transform: translate3d(-8%, 4%, 0); }
+  50% { transform: translate3d(8%, 8%, 0); }
+  100% { transform: translate3d(12%, -8%, 0); }
+}
+html[data-motion="reduced"] .ambient-bloom { animation: none; transform: none; }

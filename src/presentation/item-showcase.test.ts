@@ -55,7 +55,8 @@ describe('activity item artwork', () => {
   it('references only existing exported PNGs on activity reward displays', () => {
     const html = gameplayHub(emptyAccount());
     const sections = html.match(/<section class="item-showcase"[\s\S]*?<\/section>/g) ?? [];
-    expect(sections).toHaveLength(16);
+    expect(sections).toHaveLength(22);
+    expect(html.match(/class="story-boss-preview"/g)).toHaveLength(6);
     expect(sections.some((section) => section.includes('Broken Mechanical Components') && section.includes('currencies/mechanical-components.png'))).toBe(true);
     for (const section of sections) {
       for (const match of section.matchAll(/src="[^"]*assets\/([^"]+)"/g)) {

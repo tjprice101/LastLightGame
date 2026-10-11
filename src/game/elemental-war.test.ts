@@ -65,14 +65,14 @@ describe('Elemental War', () => {
           expect.objectContaining({ name: warFighters[character].abilities.ultimate.name, every: 6, action: 'ultimate' }),
         ]);
       }
-      expect(warEncounter(character, 10).stats.health).toBe(1183360);
+      expect(warEncounter(character, 10).stats.health).toBe(924800);
     }
     for (const stage of [0, 11, NaN, 1.5]) expect(() => warEncounter('orvella', stage)).toThrow();
   });
 
   it('preserves starter choices, summon pools, six-star registration and existing progression costs', () => {
     expect(availableStarters.map((entry) => entry.id)).toEqual(['ember', 'tide', 'sprout']);
-    expect(standardBannerPool()).toHaveLength(22);
+    expect(standardBannerPool()).toHaveLength(28);
     for (const { id } of warCharacters) {
       expect(getStarter(id).stars).toBe(6);
       expect(standardBannerPool().some((entry) => entry.id === id)).toBe(false);

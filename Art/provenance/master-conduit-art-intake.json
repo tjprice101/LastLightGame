@@ -1,0 +1,2499 @@
+{
+  "asset_count": 50,
+  "canvas": 256,
+  "content_limit": 224,
+  "assets": [
+    {
+      "asset": "master-ember-1",
+      "incoming": "Helios Pyre Cathedral (Omnic  Infernis).png",
+      "source": "Art\\source\\master-conduits\\Helios Pyre Cathedral (Omnic  Infernis).png",
+      "source_sha256": "1da33d02f9ea4a53a5106e7c2b03df039f642443ad8cc8d2d89faf05fe5e0c74",
+      "runtime": "public\\assets\\master-conduits\\master-ember-1.png",
+      "runtime_sha256": "a1b332dd0d3efa6139fbe126ba902a85d7485422ec079256d7546bfc6beda4d6",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        239
+      ],
+      "runtime_pixel_sha256": "2647212b6157a6d08a294a22a60269a96dfc223ea33bc24e276ab62c20d6c57a",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            218,
+            248,
+            106
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-ember-2",
+      "incoming": "Cinderstar Genesis Engine (Omnic  Infernis).png",
+      "source": "Art\\source\\master-conduits\\Cinderstar Genesis Engine (Omnic  Infernis).png",
+      "source_sha256": "f14c961d2e3346dd140e0626700bb3072c04adc489ff4bf78e9b0b82eda40ecb",
+      "runtime": "public\\assets\\master-conduits\\master-ember-2.png",
+      "runtime_sha256": "bee5f72d6b50ce76881a75c105ca4b1a3161d3a24e96bc0f68dc4fe390ca02c5",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        239,
+        240
+      ],
+      "runtime_pixel_sha256": "4eda41609522fc080da6279cc2ae2361f452d25f3d3da755248b91dce43d30e4",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            178,
+            204,
+            115
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-ember-3",
+      "incoming": "Unbroken Sunforge Throne (Omnic  Infernis).png",
+      "source": "Art\\source\\master-conduits\\Unbroken Sunforge Throne (Omnic  Infernis).png",
+      "source_sha256": "1e8d9c8f9bb92bb3c993fd9c7dee74486e9697e00e1b1999dd1792158c142a9c",
+      "runtime": "public\\assets\\master-conduits\\master-ember-3.png",
+      "runtime_sha256": "fd198f3de63cd809248dbc2dbfe8f1fba87d25707e464433c9e5f7c6203674c1",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        17,
+        240,
+        239
+      ],
+      "runtime_pixel_sha256": "0c3fa8fae91114cc5787c71313a5cf7c27ce5a9c7b9c105b09606d8463fc0979",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            140,
+            192,
+            97
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-tide-1",
+      "incoming": "Abyssal Shelter Observatory (Omnic  Tizu).png",
+      "source": "Art\\source\\master-conduits\\Abyssal Shelter Observatory (Omnic  Tizu).png",
+      "source_sha256": "27c6cde06d381cbcd00f9ef950e4430497ea3ec0bb2a97cdd893c4a34b1346e7",
+      "runtime": "public\\assets\\master-conduits\\master-tide-1.png",
+      "runtime_sha256": "1f39144660c23e5fc8bf2955a09f39a43c18400588aa2a4494a3322a06abc235",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        21,
+        240,
+        235
+      ],
+      "runtime_pixel_sha256": "fb2a50478e26535812ac4fe8df0e8343e6b1ea2ab59570433e2676c72b20181c",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            91,
+            207,
+            172
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-tide-2",
+      "incoming": "Ocean Memory Worldpump (Omnic  Tizu).png",
+      "source": "Art\\source\\master-conduits\\Ocean Memory Worldpump (Omnic  Tizu).png",
+      "source_sha256": "27fd42c791d5af9bb0c56aab891cd0e35a2aa38010c3d03a3f7c867f686c3ecb",
+      "runtime": "public\\assets\\master-conduits\\master-tide-2.png",
+      "runtime_sha256": "664022444fc075280a13fd60621391efadb66bab03f2f77f5fcd586fc97dcd54",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        23,
+        16,
+        233,
+        240
+      ],
+      "runtime_pixel_sha256": "55d2eb185ebbc0d8a83a66e7c4c8a34d11f5a532355128b54b5b2bb111666a5c",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            76,
+            124,
+            111
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-tide-3",
+      "incoming": "Undertow Sovereign Harpoon (Omnic  Tizu).png",
+      "source": "Art\\source\\master-conduits\\Undertow Sovereign Harpoon (Omnic  Tizu).png",
+      "source_sha256": "ce9b64f5bfcf1fce0dd9e19f77feaf4919ceabda261e9f5d22bc28cae49b0a37",
+      "runtime": "public\\assets\\master-conduits\\master-tide-3.png",
+      "runtime_sha256": "00cee7803ea382d0320d67343ce1f644a61524bbad47b208360175cbc2b7f430",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        18,
+        16,
+        238,
+        240
+      ],
+      "runtime_pixel_sha256": "2e3e3805c6be6aad623fa68cf355110c35faa0a2fa4f149aaf6712c31b9148c0",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            115,
+            185,
+            174
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-sprout-1",
+      "incoming": "Worldseed Mercy Foundry (Omnic  Flora).png",
+      "source": "Art\\source\\master-conduits\\Worldseed Mercy Foundry (Omnic  Flora).png",
+      "source_sha256": "4b534775b3d7c32f5d04ffdcb38e92dd356d34062db6b5407588eb989d14ce94",
+      "runtime": "public\\assets\\master-conduits\\master-sprout-1.png",
+      "runtime_sha256": "da73c1f80b9ffab9f3922b86abb74560b2a3415e9aadc5a0138de30c7a9e3b65",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        19,
+        240,
+        236
+      ],
+      "runtime_pixel_sha256": "a8fef5d868f65721ac2e9ace1608cf9b55d8a0c3de3d4373dd0d8e989648d340",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            211,
+            152,
+            164
+          ]
+        ],
+        "radius": 48,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 50
+        },
+        "background_seeds": [
+          [
+            0.618,
+            0.166
+          ],
+          [
+            0.719,
+            0.278
+          ],
+          [
+            0.277,
+            0.279
+          ],
+          [
+            0.791,
+            0.689
+          ],
+          [
+            0.867,
+            0.781
+          ],
+          [
+            0.783,
+            0.468
+          ],
+          [
+            0.617188,
+            0.165039
+          ],
+          [
+            0.717773,
+            0.27832
+          ],
+          [
+            0.276367,
+            0.279297
+          ],
+          [
+            0.783203,
+            0.467773
+          ],
+          [
+            0.212891,
+            0.510742
+          ],
+          [
+            0.808594,
+            0.512695
+          ],
+          [
+            0.761719,
+            0.658203
+          ],
+          [
+            0.263672,
+            0.663086
+          ],
+          [
+            0.298828,
+            0.695312
+          ],
+          [
+            0.791016,
+            0.689453
+          ],
+          [
+            0.866211,
+            0.78125
+          ],
+          [
+            0.138672,
+            0.78418
+          ],
+          [
+            0.651367,
+            0.820312
+          ],
+          [
+            0.262695,
+            0.821289
+          ]
+        ],
+        "foreground_polygons": [],
+        "review": "Pink border key tuned for backdrop variation; six visible pink openings plus every >=1000px enclosed pink island confirmed in the labeled source overlay are seeded. Pink is not an authored subject palette; preserve green leaves, architecture and built-in base; remove only border-connected/confirmed pink backdrop."
+      }
+    },
+    {
+      "asset": "master-sprout-2",
+      "incoming": "Briar Constellation Loom (Omnic  Flora).png",
+      "source": "Art\\source\\master-conduits\\Briar Constellation Loom (Omnic  Flora).png",
+      "source_sha256": "28cc0de3534abb62fe995a748b13fb7bb6a9adaea52e004097fd98cc00db16e5",
+      "runtime": "public\\assets\\master-conduits\\master-sprout-2.png",
+      "runtime_sha256": "5604c5f1e1403b002955c484f21e88305f58d666a21db746607e48918fa17dc0",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        18,
+        16,
+        238,
+        240
+      ],
+      "runtime_pixel_sha256": "1135df3210d6fdfe680f3d7814eff17aa4b38af330ad6c21f379b49bb76afb21",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            254,
+            254,
+            254
+          ]
+        ],
+        "radius": 20,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        },
+        "background_seeds": [],
+        "review": "Pure-white border key at restrained radius preserves ivory/white metal by distance; no seeds because reviewed candidate islands overlap pale subject/metal and were not confirmed as background. Flat detached white backdrop shadow keys cleanly; retain built-in base."
+      }
+    },
+    {
+      "asset": "master-sprout-3",
+      "incoming": "Evergreen Continuance Crucible (Omnic  Flora).png",
+      "source": "Art\\source\\master-conduits\\Evergreen Continuance Crucible (Omnic  Flora).png",
+      "source_sha256": "cd3a0b185a7c710ed3f32e41ea35a8a023388ad4656dd08c505e317c0cdbb727",
+      "runtime": "public\\assets\\master-conduits\\master-sprout-3.png",
+      "runtime_sha256": "7a0a2f9f79c4a43a5ef897997150990c8c018367ea69a80df6d7c911f684d61f",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        18,
+        16,
+        238,
+        240
+      ],
+      "runtime_pixel_sha256": "c2a25c5dc68cdd29a5fa8dd019d41ba2a7670e6a1dcb7ecd690894129324fbfa",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            252,
+            107,
+            138
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-atmoso-1",
+      "incoming": "Sky Without End Turbine (Omnic  Atmoso).png",
+      "source": "Art\\source\\master-conduits\\Sky Without End Turbine (Omnic  Atmoso).png",
+      "source_sha256": "7a091af1951ed09cb2ed32792aed846fa04a6ff251620e5fec2c59a19be1e213",
+      "runtime": "public\\assets\\master-conduits\\master-atmoso-1.png",
+      "runtime_sha256": "8d40ff8839e063bc948590da0f0e396cd28b62525a76a2c89bb893f355f1a0df",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        240
+      ],
+      "runtime_pixel_sha256": "d8e065c4207bb982602375db4ac4c2ff8b3440fd57587adb7eb5774660d833f4",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            34,
+            213,
+            200
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-atmoso-2",
+      "incoming": "Horizon Cyclone Orrery (Omnic  Atmoso).png",
+      "source": "Art\\source\\master-conduits\\Horizon Cyclone Orrery (Omnic  Atmoso).png",
+      "source_sha256": "bbe09b59dbc71c3827b8965dae8c346dfafa13e431525f781a31f320141dad41",
+      "runtime": "public\\assets\\master-conduits\\master-atmoso-2.png",
+      "runtime_sha256": "212a00b26df6fca8eee241f645d72d6e6fc12fa05afae63139dbbc18211319fe",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        18,
+        16,
+        238,
+        240
+      ],
+      "runtime_pixel_sha256": "a5976368e18cb625a71aca9ea2b585f13a037ed82229f74750558d0c2a1c5b28",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            174,
+            204,
+            184
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-atmoso-3",
+      "incoming": "Crosswind Imperial Drive (Omnic  Atmoso).png",
+      "source": "Art\\source\\master-conduits\\Crosswind Imperial Drive (Omnic  Atmoso).png",
+      "source_sha256": "7852bac459878f551dd9e5b76c5250ad249c55fd7b1a213a818e2bd2adcd9825",
+      "runtime": "public\\assets\\master-conduits\\master-atmoso-3.png",
+      "runtime_sha256": "685b077a0698fbe5392902675d230159eee684c62c416067dfcd364808dd4384",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        17,
+        16,
+        239,
+        240
+      ],
+      "runtime_pixel_sha256": "ad76ec8c95c9e19211e49c7db2020feb78df624342e7935a7395c9c9efe197f2",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            95,
+            154,
+            136
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-aurora-1",
+      "incoming": "Final Dawn Tribunal (Omnic  Aurora).png",
+      "source": "Art\\source\\master-conduits\\Final Dawn Tribunal (Omnic  Aurora).png",
+      "source_sha256": "4bc96d1a23b8db4f145101e4e59349f1f5b8b579601334cb909f3c5ff0a0b5ad",
+      "runtime": "public\\assets\\master-conduits\\master-aurora-1.png",
+      "runtime_sha256": "155b6dd9f2c94e4fe28a18f4e304c1b590c84c52122d8df4c4bf86a4bf27fa79",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        18,
+        240,
+        237
+      ],
+      "runtime_pixel_sha256": "1e6cd67fa0d3833aea73eb5e028062e51649f8257a09cc2c1f74434c4f449b91",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            196,
+            224,
+            184
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-aurora-2",
+      "incoming": "Prismseal Astral Judiciary (Omnic  Aurora).png",
+      "source": "Art\\source\\master-conduits\\Prismseal Astral Judiciary (Omnic  Aurora).png",
+      "source_sha256": "0da2efbffdd65e33134e1da816d9d672db29ec46278ecc215e0ae46bd79d1062",
+      "runtime": "public\\assets\\master-conduits\\master-aurora-2.png",
+      "runtime_sha256": "b199e02b7f8b0ae7d3de304cfc87ecfa193490e6b117b394ffa92f6b041b9834",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        18,
+        240,
+        238
+      ],
+      "runtime_pixel_sha256": "7f6da7db8e607eea91c99be1d2c3802467d83a47303152103661c32a13c16373",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            197,
+            207,
+            91
+          ]
+        ],
+        "radius": 32,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 45
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Source uses a uniform yellow-green background with a separate olive painted cast shadow beneath the lower wings; border-connected source-specific key removes backdrop, while preserve the attached olive shadow/base and all ivory wing metal. No enclosed background seeds needed."
+      }
+    },
+    {
+      "asset": "master-aurora-3",
+      "incoming": "Merciful Eclipse Regulator (Omnic  Aurora).png",
+      "source": "Art\\source\\master-conduits\\Merciful Eclipse Regulator (Omnic  Aurora).png",
+      "source_sha256": "60fa5b3cc915ca2dff4ec33fa0243cae9e07be34c82b1c0b0cdab46b0b8a3ddb",
+      "runtime": "public\\assets\\master-conduits\\master-aurora-3.png",
+      "runtime_sha256": "cbb45548c5466d0d44826c3a1657d704b0b81700fa42adc39b365fa4653ac57e",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        239
+      ],
+      "runtime_pixel_sha256": "cf5a8c938257d3c6ae7f3d401a5dbeb47dd736e13e1b7a77144fc136ef28f2b4",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            179,
+            197,
+            167
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-bliss-1",
+      "incoming": "Thousandfeather Zenith Loom (Omnic  Bliss).png",
+      "source": "Art\\source\\master-conduits\\Thousandfeather Zenith Loom (Omnic  Bliss).png",
+      "source_sha256": "f3e3f37425433a610cd76fc81ee2348deedb126dac969efb68989262c4fa24e8",
+      "runtime": "public\\assets\\master-conduits\\master-bliss-1.png",
+      "runtime_sha256": "ae58f8e6afb699a2a9e5d12a9c2cca099a1f2a9f7631ee7d1b251b22e258ee7a",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        17,
+        240,
+        239
+      ],
+      "runtime_pixel_sha256": "99ea26cd42a200fbf02b5052d698ee8860ec1eee813bd79dd70128e88656a75c",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            105,
+            148,
+            139
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-bliss-2",
+      "incoming": "Stillplume Planetary Ballet (Omnic  Bliss).png",
+      "source": "Art\\source\\master-conduits\\Stillplume Planetary Ballet (Omnic  Bliss).png",
+      "source_sha256": "aa13a336de871a4821f7924d7480574173c8fe2327e00407697ea84bc836df41",
+      "runtime": "public\\assets\\master-conduits\\master-bliss-2.png",
+      "runtime_sha256": "3cd2bb77e0c53fa1fc929863dbdd551c1af1904386c81ad39c8c2a29949511bf",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        240
+      ],
+      "runtime_pixel_sha256": "c5c1a958645ff3c8f381424dde83390b8eb82c30d59e8bfb23b9215aeaf0ea06",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            185,
+            206,
+            190
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-bliss-3",
+      "incoming": "Quiet Heaven Fanforge (Omnic  Bliss).png",
+      "source": "Art\\source\\master-conduits\\Quiet Heaven Fanforge (Omnic  Bliss).png",
+      "source_sha256": "b55e612681b4b81bcc40beaab97ed3fc1d5b83943aa1bc3398a0b57ef37a8e03",
+      "runtime": "public\\assets\\master-conduits\\master-bliss-3.png",
+      "runtime_sha256": "c7c42b71354dd9d293c55bc3106f015ace65dbe13d25c288d7e55104ddd75d2b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        239
+      ],
+      "runtime_pixel_sha256": "d2e90fac0ff54c9ed2c86a6c55edf8f79c7eb3333274f7ab192612b7965115a5",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            90,
+            162,
+            152
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-bruno-1",
+      "incoming": "Living Worldwall Atlas (Omnic  Bruno).png",
+      "source": "Art\\source\\master-conduits\\Living Worldwall Atlas (Omnic  Bruno).png",
+      "source_sha256": "6632beda5964e70578b03c660a4ee2535a930c9465046b7b0c6586b009c23fd6",
+      "runtime": "public\\assets\\master-conduits\\master-bruno-1.png",
+      "runtime_sha256": "94550b11eba9ddc86e210775768bde27391507fb3314f36e32cbef27640c3daa",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        17,
+        16,
+        239,
+        240
+      ],
+      "runtime_pixel_sha256": "dcf0b1574f27e54bb5e82f2049cbbb2982e5af9e061c91147c21018c43abcd5f",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            153,
+            162,
+            136
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-bruno-2",
+      "incoming": "Quarry Planet Gravitas (Omnic  Bruno).png",
+      "source": "Art\\source\\master-conduits\\Quarry Planet Gravitas (Omnic  Bruno).png",
+      "source_sha256": "97bf8cba57ba8f517a4e5fd91788c44c8ecef0d5056f9fa910bbfea8d591b1d3",
+      "runtime": "public\\assets\\master-conduits\\master-bruno-2.png",
+      "runtime_sha256": "2ab38a9fb8144ea4e6def076830f6f3dafdf46fcb3d2d216d325e717590ab558",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        26,
+        240,
+        230
+      ],
+      "runtime_pixel_sha256": "110122614ceb4a72a554c27cde675c313f29a22edbd7a8179b542d730564f329",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            188,
+            197,
+            148
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-bruno-3",
+      "incoming": "Worldforge Hammer Dominion (Omnic  Bruno).png",
+      "source": "Art\\source\\master-conduits\\Worldforge Hammer Dominion (Omnic  Bruno).png",
+      "source_sha256": "264521eafa6aec29105a530346f47665a9c0d2229fba4476e2b6c60b1bc332ef",
+      "runtime": "public\\assets\\master-conduits\\master-bruno-3.png",
+      "runtime_sha256": "8391fbb8776f9493e277f4ecb9e8f51cbcda938ba151bf9f1fa63c406814a18a",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        239
+      ],
+      "runtime_pixel_sha256": "76f4193fbfa5424e1a20a9171672d41c8973cabd856e85fce820b4996244c6e6",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            213,
+            227,
+            102
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-disciple-1",
+      "incoming": "Unbound Mindcrown Synapse (Omnic  Disciple).png",
+      "source": "Art\\source\\master-conduits\\Unbound Mindcrown Synapse (Omnic  Disciple).png",
+      "source_sha256": "29c956e086c56a94b24f9de3effa72a8e412118d735fe1cdd5c5c8b0aacde2ee",
+      "runtime": "public\\assets\\master-conduits\\master-disciple-1.png",
+      "runtime_sha256": "9f101908222ba72a72e277b69af975d4cfdfd8b49ace2eb785d5ede058ce0d30",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        239,
+        240
+      ],
+      "runtime_pixel_sha256": "e155e25d8d2d743fa190f60744d10c58c7259c33171789061cf70e3674880d0d",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            176,
+            186,
+            156
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-disciple-2",
+      "incoming": "Concord Planet Thoughtforge (Omnic  Disciple).png",
+      "source": "Art\\source\\master-conduits\\Concord Planet Thoughtforge (Omnic  Disciple).png",
+      "source_sha256": "53e71e1d0586f70cd4474f56919a8d83445a226cd1f6d9df3cb3a057c531869a",
+      "runtime": "public\\assets\\master-conduits\\master-disciple-2.png",
+      "runtime_sha256": "4d4844b94eaa635d1d947f514958ef5102eb9495f00a521523d2760bfe22c1ea",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        17,
+        16,
+        239,
+        240
+      ],
+      "runtime_pixel_sha256": "7ebc370c976490178fd75bbd8c60cb09b43f3e430822a60516c0823e05fbe6a5",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            126,
+            162,
+            128
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-disciple-3",
+      "incoming": "Sovereign Will Amplifier (Omnic  Disciple).png",
+      "source": "Art\\source\\master-conduits\\Sovereign Will Amplifier (Omnic  Disciple).png",
+      "source_sha256": "06477d9c397dde7d0b003ecb39406afa8b2a9fac141d4407fcf1dc36f7149f02",
+      "runtime": "public\\assets\\master-conduits\\master-disciple-3.png",
+      "runtime_sha256": "b3bcf6609b2caf67f0fb1977896f231a7db4f1ef00f13739ecf10921ea5ec96d",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        19,
+        16,
+        237,
+        240
+      ],
+      "runtime_pixel_sha256": "a522485cb8d1245ea0b2bf3e43b91c49997bd239832dff603555fce1d6011e7e",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            178,
+            198,
+            173
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-elise-1",
+      "incoming": "Infinite Thunderwheel Arsenal (Omnic  Elise).png",
+      "source": "Art\\source\\master-conduits\\Infinite Thunderwheel Arsenal (Omnic  Elise).png",
+      "source_sha256": "a1cabb860e118a3bf90166e380e29e938162d83e8b59ad915db20dcca5843518",
+      "runtime": "public\\assets\\master-conduits\\master-elise-1.png",
+      "runtime_sha256": "1d8b37c7e63b82eeeae1ff21fb20dc91893193eefc1872a16d5a05b5a9a1709a",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        20,
+        240,
+        235
+      ],
+      "runtime_pixel_sha256": "eda4381d54bfbe83acde0e618379becf214681a3d2110c8a4cfb3ddf234ef278",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            236,
+            125,
+            219
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [
+          [
+            0.490234,
+            0.295898
+          ],
+          [
+            0.585,
+            0.873
+          ],
+          [
+            0.451,
+            0.679
+          ],
+          [
+            0.549,
+            0.68
+          ],
+          [
+            0.31543,
+            0.476562
+          ],
+          [
+            0.68,
+            0.478
+          ],
+          [
+            0.26,
+            0.804
+          ],
+          [
+            0.185,
+            0.47
+          ],
+          [
+            0.741,
+            0.797
+          ],
+          [
+            0.817,
+            0.293
+          ],
+          [
+            0.196,
+            0.579
+          ],
+          [
+            0.816406,
+            0.292969
+          ],
+          [
+            0.679688,
+            0.477539
+          ],
+          [
+            0.18457,
+            0.469727
+          ],
+          [
+            0.196289,
+            0.579102
+          ],
+          [
+            0.549805,
+            0.679688
+          ],
+          [
+            0.451172,
+            0.678711
+          ],
+          [
+            0.741211,
+            0.796875
+          ],
+          [
+            0.260742,
+            0.803711
+          ],
+          [
+            0.584961,
+            0.873047
+          ]
+        ],
+        "foreground_polygons": [],
+        "review": "Magenta border key; every >=1000px disconnected magenta island in the candidate overlay was confirmed as plain backdrop between lime blades/clockwork and seeded. Lime/white/gold subject colors are distinct; preserve authored metal and remove magenta backdrop only."
+      }
+    },
+    {
+      "asset": "master-elise-2",
+      "incoming": "Twin Star Planetary Ratchet (Omnic  Elise).png",
+      "source": "Art\\source\\master-conduits\\Twin Star Planetary Ratchet (Omnic  Elise).png",
+      "source_sha256": "702a8c3a76f43043c4c3a49ff1994ed86674bf309c3ba0aa0ef07c6c101ff50a",
+      "runtime": "public\\assets\\master-conduits\\master-elise-2.png",
+      "runtime_sha256": "65d0d7ac59b26f8475aa31a02c1a9536ada6a96c35b099fb940bcf03e195eb99",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        17,
+        240,
+        238
+      ],
+      "runtime_pixel_sha256": "2ce5105970d8327ba6f9293e8ecd80fc16fa62ef75e138b9adaa56057db9b6f0",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            213,
+            46,
+            163
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [
+          [
+            0.163,
+            0.321
+          ],
+          [
+            0.835,
+            0.265
+          ],
+          [
+            0.675,
+            0.45
+          ],
+          [
+            0.835938,
+            0.265625
+          ],
+          [
+            0.163086,
+            0.321289
+          ],
+          [
+            0.307617,
+            0.442383
+          ],
+          [
+            0.674805,
+            0.450195
+          ],
+          [
+            0.228516,
+            0.538086
+          ],
+          [
+            0.34668,
+            0.583984
+          ]
+        ],
+        "foreground_polygons": [],
+        "review": "Magenta border key; all >=1000px disconnected magenta regions shown in the candidate overlay were confirmed as backdrop between lime blades/clockwork and seeded; retain authored pale/lime subject and remove only matching background."
+      }
+    },
+    {
+      "asset": "master-elise-3",
+      "incoming": "Storm Empress Execution Clock (Omnic  Elise).png",
+      "source": "Art\\source\\master-conduits\\Storm Empress Execution Clock (Omnic  Elise).png",
+      "source_sha256": "1a6f554f17c9cc8c67fa7a375b3721b2a43e51a0d6b43da6cc342b15f8d367ed",
+      "runtime": "public\\assets\\master-conduits\\master-elise-3.png",
+      "runtime_sha256": "047d9bd7ab8966214f4968e201b2f431a471150d955710df741f2ce3c6d54648",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        19,
+        240,
+        237
+      ],
+      "runtime_pixel_sha256": "760695f6f27cb7fc0df0ae61f4d057840ef922a2058a5623fd53786c7e35f981",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            200,
+            159,
+            207
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-razor-1",
+      "incoming": "Unbroken Midnight Bastion (Omnic  Razor).png",
+      "source": "Art\\source\\master-conduits\\Unbroken Midnight Bastion (Omnic  Razor).png",
+      "source_sha256": "bb5f4851e8b369d51e9ce3bac9eb46024649dc4fd68e735f22e6eedcabdb0ac2",
+      "runtime": "public\\assets\\master-conduits\\master-razor-1.png",
+      "runtime_sha256": "baf6acd421b6cf827c642eab8d83b9bc3742f7ee6802f49fe8e8821047110a80",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        20,
+        240,
+        235
+      ],
+      "runtime_pixel_sha256": "da360b50ebb53d3df464c2423b38d8f22bb2edb0bcf5b191d008163abbf61705",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            97,
+            152,
+            118
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [
+          [
+            0.38,
+            0.79
+          ],
+          [
+            0.63,
+            0.81
+          ],
+          [
+            0.26,
+            0.56
+          ],
+          [
+            0.88,
+            0.33
+          ]
+        ],
+        "foreground_polygons": [],
+        "review": "Reviewed green backdrop islands inside the crescent-wing envelope (lower central field and left/right inner openings) seeded after visual confirmation; preserve purple wing surfaces, central bastion, and attached ground shadow. Green is not an authored Razor palette color; remove only matching backdrop components."
+      }
+    },
+    {
+      "asset": "master-razor-2",
+      "incoming": "Eclipse Planet Watchtower (Omnic  Razor).png",
+      "source": "Art\\source\\master-conduits\\Eclipse Planet Watchtower (Omnic  Razor).png",
+      "source_sha256": "b109e56f9e995d1bb6b91a4361e1d607a5d7c08b8c89e907873c279501c218d7",
+      "runtime": "public\\assets\\master-conduits\\master-razor-2.png",
+      "runtime_sha256": "8d03e028fd2bd51c25674c2364922413ed1a24870ef16f3a265cee5331344877",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        19,
+        240,
+        236
+      ],
+      "runtime_pixel_sha256": "de0404a512084b4a6d78e16420b4fc5dc04e43ad875b2d8c91100a3852d1a2e7",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            161,
+            192,
+            136
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-razor-3",
+      "incoming": "Nightglass Counterblade Engine (Omnic  Razor).png",
+      "source": "Art\\source\\master-conduits\\Nightglass Counterblade Engine (Omnic  Razor).png",
+      "source_sha256": "6bfc6bbc97a1163157d3df4c194554b7bdc8675d3ef5372dfe8452f5df4ee825",
+      "runtime": "public\\assets\\master-conduits\\master-razor-3.png",
+      "runtime_sha256": "bc2075c6a5d849f68e4128521b7f3aa4205c54a9852c2c4db7512cde8387245c",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        240
+      ],
+      "runtime_pixel_sha256": "1b1d355e6a6b9e70029084585a208e59f0c20ef946927ef675c15ba23e559389",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            107,
+            131,
+            102
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-rosetta-1",
+      "incoming": "Rose Beyond the Sun Orrery (Omnic  Rosetta).png",
+      "source": "Art\\source\\master-conduits\\Rose Beyond the Sun Orrery (Omnic  Rosetta).png",
+      "source_sha256": "d3e787e1b5cbb318bd7266f08d5b359b8b6bf39d139f417779ee4c110a58606f",
+      "runtime": "public\\assets\\master-conduits\\master-rosetta-1.png",
+      "runtime_sha256": "1a3c6883c82cfa7cb55569f88caec4def4682d16207df4c829cc0814ea9b4ac8",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        19,
+        240,
+        237
+      ],
+      "runtime_pixel_sha256": "4bb8979f80a27f2a842be1403809ebcb17edf0382575805e0dff36734040416a",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            115,
+            120,
+            86
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Reviewed clear side-border row gradient key; preserve the authored subject and attached painted base/shadow, remove backdrop variation only.",
+        "row_gradient": true
+      }
+    },
+    {
+      "asset": "master-rosetta-2",
+      "incoming": "Virtuous Planet Rosegarden (Omnic  Rosetta).png",
+      "source": "Art\\source\\master-conduits\\Virtuous Planet Rosegarden (Omnic  Rosetta).png",
+      "source_sha256": "144e1fe8ac9005abf179507ced6ce6ae7d677e90015e04bbeda993c2fa0f2dc1",
+      "runtime": "public\\assets\\master-conduits\\master-rosetta-2.png",
+      "runtime_sha256": "a42ea3b0dfc318627dc60644800e67ae0caac8406b1a6d6c1636e57c1f7f4e12",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        17,
+        16,
+        238,
+        240
+      ],
+      "runtime_pixel_sha256": "96b63ab42d17798307108bd55b901b6d81d39bee46da13eed9cf43b668f26cef",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            71,
+            98,
+            67
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-rosetta-3",
+      "incoming": "Golden Thorn Judgment Loom (Omnic  Rosetta).png",
+      "source": "Art\\source\\master-conduits\\Golden Thorn Judgment Loom (Omnic  Rosetta).png",
+      "source_sha256": "88652dc35a9b5a609a992081f2361e4b85e20f42d501ee0f8b5ac24878a3c7d5",
+      "runtime": "public\\assets\\master-conduits\\master-rosetta-3.png",
+      "runtime_sha256": "f24cee15d3800516abe864266b3ad44cc2150b3f441e7a76ca340e7d7d39db71",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        17,
+        240,
+        239
+      ],
+      "runtime_pixel_sha256": "8b53cdfa2b41e6f1dc7f7829db51cf021da3eea4d3c5cc718fd88005142a0052",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            87,
+            166,
+            136
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-thornia-1",
+      "incoming": "Forbidden Garden Worldlock (Omnic  Thornia).png",
+      "source": "Art\\source\\master-conduits\\Forbidden Garden Worldlock (Omnic  Thornia).png",
+      "source_sha256": "4600b975e0e40ee5f74547cc2745a93ccce5877501efda48ee6538ddcf464bc1",
+      "runtime": "public\\assets\\master-conduits\\master-thornia-1.png",
+      "runtime_sha256": "16af2bea6f20ad02377a3e263cc58b8b7017cbbf3bcedc4ca51e04d69264b041",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        17,
+        16,
+        238,
+        240
+      ],
+      "runtime_pixel_sha256": "c2ac46571f71e8774afd65eeb76e4a31323c2d95295d1639763f84091a52f7ec",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            60,
+            117,
+            98
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [
+          [
+            0.63,
+            0.62
+          ],
+          [
+            0.3,
+            0.63
+          ],
+          [
+            0.36,
+            0.31
+          ],
+          [
+            0.66,
+            0.31
+          ]
+        ],
+        "foreground_polygons": [],
+        "review": "Reviewed green backdrop islands visible through the rose-wheel lattice/inner arches seeded; preserve red roses, bronze rails and authored dark center. Green is the plain source key rather than a subject color."
+      }
+    },
+    {
+      "asset": "master-thornia-2",
+      "incoming": "Thousand-Rose Planetary Aegis (Omnic  Thornia).png",
+      "source": "Art\\source\\master-conduits\\Thousand-Rose Planetary Aegis (Omnic  Thornia).png",
+      "source_sha256": "57a6e597e4f1682a328f3344934c66d6a2a5a551b2a729c677b9c5f72f3a07ac",
+      "runtime": "public\\assets\\master-conduits\\master-thornia-2.png",
+      "runtime_sha256": "642a4a64d8a3f0e58129271e7977b725ae8eae275ce1eeaa6e7906bfd7509181",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        239,
+        240
+      ],
+      "runtime_pixel_sha256": "942ab5d2c1db8324d1e9ec41dfb091668e42c2d64d9cfab63d46e470bd06e6c9",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            202,
+            211,
+            183
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-thornia-3",
+      "incoming": "Shadow Rose Sovereign Foundry (Omnic  Thornia).png",
+      "source": "Art\\source\\master-conduits\\Shadow Rose Sovereign Foundry (Omnic  Thornia).png",
+      "source_sha256": "b6ce5f85040d77a66e938f3eacc79f0937865acb5484985244d46dfa642a9baf",
+      "runtime": "public\\assets\\master-conduits\\master-thornia-3.png",
+      "runtime_sha256": "5112c99147506fab925a1f79d941763afb9b8175a96eb4539eb7d94cbd0cf1d9",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        18,
+        240,
+        238
+      ],
+      "runtime_pixel_sha256": "c58f8ce5702066b18c0e1baafd6a89cb16774bf08d3556d24c29a494e490d109",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            114,
+            136,
+            107
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-crinso-1",
+      "incoming": "Twin-Rose Singularity Drive (Omnic  Crinso).png",
+      "source": "Art\\source\\master-conduits\\Twin-Rose Singularity Drive (Omnic  Crinso).png",
+      "source_sha256": "d2b71869b9d8fa1ac286174ff703242e7407242720bcd9e9cb3939048bc00383",
+      "runtime": "public\\assets\\master-conduits\\master-crinso-1.png",
+      "runtime_sha256": "6c62b14a77908d3e812cfa1b20393cf6573f81d68fbcb7e9a4ea4e47ba83ac91",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        239,
+        240
+      ],
+      "runtime_pixel_sha256": "ce99b8cb2e495eb9916cf407fa5f492564f34050a257b245e54a709308ed2dfd",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            167,
+            184,
+            149
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-crinso-2",
+      "incoming": "Duality Planet Flamewheel (Omnic  Crinso).png",
+      "source": "Art\\source\\master-conduits\\Duality Planet Flamewheel (Omnic  Crinso).png",
+      "source_sha256": "11db5fac3d08478cbf0e65e503040e5df06814211a5ff74562c12307488bbd2e",
+      "runtime": "public\\assets\\master-conduits\\master-crinso-2.png",
+      "runtime_sha256": "5156a12c09807ab718d1d09400bb30b887fe0111952807c67cfa3c8899500ca6",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        20,
+        240,
+        236
+      ],
+      "runtime_pixel_sha256": "cae37c46a256ac75dba443499aaeb002f3e10b0b5212153f74be4d8c0b218e46",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            59,
+            106,
+            70
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [
+          [
+            0.419922,
+            0.217773
+          ],
+          [
+            0.263672,
+            0.219727
+          ],
+          [
+            0.209961,
+            0.339844
+          ],
+          [
+            0.304688,
+            0.485352
+          ],
+          [
+            0.723633,
+            0.394531
+          ],
+          [
+            0.197266,
+            0.473633
+          ],
+          [
+            0.710938,
+            0.580078
+          ],
+          [
+            0.539062,
+            0.720703
+          ],
+          [
+            0.75293,
+            0.633789
+          ],
+          [
+            0.378906,
+            0.670898
+          ],
+          [
+            0.708984,
+            0.713867
+          ],
+          [
+            0.65625,
+            0.775391
+          ]
+        ],
+        "foreground_polygons": [],
+        "review": "Dark-green border key; every >=1000px enclosed dark-green backdrop island visible in the correct Duality Planet Flamewheel candidate overlay is seeded. Preserve authored red, pink, black, gold and any green details smaller/ambiguous with subject; remove only confirmed large background fields."
+      }
+    },
+    {
+      "asset": "master-crinso-3",
+      "incoming": "Crimson Beauty Pyre Requiem (Omnic  Crinso).png",
+      "source": "Art\\source\\master-conduits\\Crimson Beauty Pyre Requiem (Omnic  Crinso).png",
+      "source_sha256": "88e36c9e288273bf5b4355ba5dd3306cbed81e1156e16f1f2d9688fa831b5bd9",
+      "runtime": "public\\assets\\master-conduits\\master-crinso-3.png",
+      "runtime_sha256": "f157aabffee0327ab4471bf2121805d6ae64cbdb767348168a78bba75647312a",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        239
+      ],
+      "runtime_pixel_sha256": "8c4f21c336beac4684419dc51f62dca1c7af20aa96d757c7f062b086e1224487",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            78,
+            138,
+            96
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-nerithe-1",
+      "incoming": "Shoreless Meridian Worldchart (Omnic  Nerithe).png",
+      "source": "Art\\source\\master-conduits\\Shoreless Meridian Worldchart (Omnic  Nerithe).png",
+      "source_sha256": "2329eedbdc5861bc572f8263cf2fa88117b11e6eaf06b04edee34c9269e66d51",
+      "runtime": "public\\assets\\master-conduits\\master-nerithe-1.png",
+      "runtime_sha256": "f11d5b05f3769e1e08793c519530b9f0a398f8bf609b64b4deeaf5f11446c14d",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        240
+      ],
+      "runtime_pixel_sha256": "168e203a46033c4c30503541f13402e005ff38c580c3f24eca8fd5f25ad5f435",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            68,
+            141,
+            134
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-nerithe-2",
+      "incoming": "Folded Ocean Planetarium (Omnic  Nerithe).png",
+      "source": "Art\\source\\master-conduits\\Folded Ocean Planetarium (Omnic  Nerithe).png",
+      "source_sha256": "c4b69118db45a713f032f541047907c8d4beb06c7a70aa882541e618d1d56b39",
+      "runtime": "public\\assets\\master-conduits\\master-nerithe-2.png",
+      "runtime_sha256": "0dd3a7980424e8c79139eba68afd0592aa3f1e8aac2ddd48aa89fb0bd490410e",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        240
+      ],
+      "runtime_pixel_sha256": "db4b410cd97c6ccf83e352a8040c25d000f99165bd644cdc1c17e573043419cd",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            157,
+            204,
+            189
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-nerithe-3",
+      "incoming": "Abyssal Surveyor Crown (Omnic  Nerithe).png",
+      "source": "Art\\source\\master-conduits\\Abyssal Surveyor Crown (Omnic  Nerithe).png",
+      "source_sha256": "ba8dc866a81c75655258551a4cc5e7e30b124680e91c524c68964efd788e8beb",
+      "runtime": "public\\assets\\master-conduits\\master-nerithe-3.png",
+      "runtime_sha256": "53f8f675c7fbbd802584a37647b9aa89e248f0aab1b2a75c582c04a840febf84",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        238
+      ],
+      "runtime_pixel_sha256": "dc8f3429f69fde9cb90ceb5bce67de96409d0cd3ec5740a6f4053023d22d65d7",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            22,
+            192,
+            184
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-orvella-1",
+      "incoming": "Throne Beneath the World (Omnic  Orvella).png",
+      "source": "Art\\source\\master-conduits\\Throne Beneath the World (Omnic  Orvella).png",
+      "source_sha256": "9c6105c32bdc83abc2d92b501b6c2e9bf2c8252da9863af49da8d117a85bc81f",
+      "runtime": "public\\assets\\master-conduits\\master-orvella-1.png",
+      "runtime_sha256": "f509d23c1c2e82503e567f13ce241cd07a2b01f8a32d5e503233f48ba74e199b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        19,
+        240,
+        236
+      ],
+      "runtime_pixel_sha256": "487dec32b5a3fbe315cfb4103105aabb1d6a7e67bf82e90ffd6c487864e9e86c",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            132,
+            158,
+            134
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-orvella-2",
+      "incoming": "Deep Foundation Planetpress (Omnic  Orvella).png",
+      "source": "Art\\source\\master-conduits\\Deep Foundation Planetpress (Omnic  Orvella).png",
+      "source_sha256": "96ac7f14f2ee071a274dc8d3f6a32084abcc95407928be8732314085ded9454b",
+      "runtime": "public\\assets\\master-conduits\\master-orvella-2.png",
+      "runtime_sha256": "bdb173d6254e5317f0653552c039c07c8555097ef671e024363b9f0b0a39d24a",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        21,
+        240,
+        235
+      ],
+      "runtime_pixel_sha256": "4d7cffca0cb29913813eda07cd7b33bb64d129af15ffc4b380ca37bbe71eef32",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            127,
+            147,
+            128
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-orvella-3",
+      "incoming": "Keystone Sovereign Counterweight (Omnic  Orvella).png",
+      "source": "Art\\source\\master-conduits\\Keystone Sovereign Counterweight (Omnic  Orvella).png",
+      "source_sha256": "da64336b4c1cf28553360f354428b8e90628978fd79d30206b4b48c82ed029a2",
+      "runtime": "public\\assets\\master-conduits\\master-orvella-3.png",
+      "runtime_sha256": "7cc4bdbfb01c23d2e8c250cc991df9fcc164a40d8ea8967d6e1a81662ea5b48b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        17,
+        240,
+        239
+      ],
+      "runtime_pixel_sha256": "9cb6fbbcf294d42203e1e988d6f604c2c5b6c54e4238a0d495e3038ab64e88ff",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            133,
+            146,
+            106
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-vaelor-1",
+      "incoming": "Final Chord Celestial Resonator (Omnic  Vaelor).png",
+      "source": "Art\\source\\master-conduits\\Final Chord Celestial Resonator (Omnic  Vaelor).png",
+      "source_sha256": "be3295709ed30416320c2cf96cf5736d9d2af89cc08148179bdd5816674b195f",
+      "runtime": "public\\assets\\master-conduits\\master-vaelor-1.png",
+      "runtime_sha256": "db47cb297e06a8005555de8020bb9f9ba5ba3bc94e665c2555edfc89aa05d12b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        240
+      ],
+      "runtime_pixel_sha256": "9d6cf27f833c6b1b7be5602ea2eec296546500a51cb7bd2d2c258652f43a9e78",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            116,
+            171,
+            153
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-vaelor-2",
+      "incoming": "Thunder Choir Planetary Fugue (Omnic  Vaelor).png",
+      "source": "Art\\source\\master-conduits\\Thunder Choir Planetary Fugue (Omnic  Vaelor).png",
+      "source_sha256": "be6cd68ce61c6e0aec836cbe867dfe921cadb410684e264f4f3f32f439d4c824",
+      "runtime": "public\\assets\\master-conduits\\master-vaelor-2.png",
+      "runtime_sha256": "4570f0196238c5e38b32703a9cdaff1de645ad0fd75d7ad23882f320396dd583",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        29,
+        16,
+        226,
+        240
+      ],
+      "runtime_pixel_sha256": "afad30ca2aee40f63889b8306f9b3d9a906f69536439a97ad723be45bbdfc233",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            133,
+            148,
+            129
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Magenta border key; protect authored lime blade facets where key-adjacent; remove flat cast backdrop shadow."
+      }
+    },
+    {
+      "asset": "master-vaelor-3",
+      "incoming": "Broken Sky Imperial Metronome (Omnic  Vaelor).png",
+      "source": "Art\\source\\master-conduits\\Broken Sky Imperial Metronome (Omnic  Vaelor).png",
+      "source_sha256": "0d0761253403573a546d128605ca90329e68287e092cb4785f41ae324cb76f04",
+      "runtime": "public\\assets\\master-conduits\\master-vaelor-3.png",
+      "runtime_sha256": "b5f3f15d29e7075ebc7bdac7695e345ac84ab22cd368a3209f046153ac04a66c",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        20,
+        16,
+        235,
+        240
+      ],
+      "runtime_pixel_sha256": "f17b3556dc7a212dcc4eedceca9bb44cd5e022e0f32adf72b92ac5f1c3a8e7d6",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            74,
+            127,
+            132
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    },
+    {
+      "asset": "grand-master-chest",
+      "incoming": "Cosmic Grand Master Chest.png",
+      "source": "Art\\source\\master-conduits\\Cosmic Grand Master Chest.png",
+      "source_sha256": "afc97facec682f244b4fb491a9738c8c8f837b2142a1f8ea626692334ccd75fb",
+      "runtime": "public\\assets\\master-conduits\\grand-master-chest.png",
+      "runtime_sha256": "01822f0ce6dbdaa82ad5762b5bd0cfe7d809945d7ddcd99da822ec4d9973be59",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        17,
+        21,
+        240,
+        235
+      ],
+      "runtime_pixel_sha256": "023e9a55a644f6e9be76f8296b3f55b7601c95296793d80c2b6e44ae1585336f",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            150,
+            233,
+            192
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Reviewed clear side-border row gradient key; preserve the authored subject and attached painted base/shadow, remove backdrop variation only.",
+        "row_gradient": true
+      }
+    },
+    {
+      "asset": "astral-reserve",
+      "incoming": "Astral Reserve \u2014 shared mechanic emblem.png",
+      "source": "Art\\source\\master-conduits\\Astral Reserve \u2014 shared mechanic emblem.png",
+      "source_sha256": "6e7cc85fe6d9f6fd64c27e9e52d79dd27c666ccd16c5c725f0f0894a01d10f50",
+      "runtime": "public\\assets\\master-conduits\\astral-reserve.png",
+      "runtime_sha256": "083d5886404947a1fc7edb4cfedec5299f7ae9818a831d308709b4452f49e47a",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        22,
+        16,
+        233,
+        240
+      ],
+      "runtime_pixel_sha256": "cbbb404672b97e6f05869a292f5763f261668dd75392fefdb05f888680bc0a5c",
+      "settings": {
+        "border_only": true,
+        "keys": [
+          [
+            104,
+            212,
+            190
+          ]
+        ],
+        "radius": 30,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 55
+        },
+        "background_seeds": [],
+        "foreground_polygons": [],
+        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+      }
+    }
+  ],
+  "alternates": [
+    {
+      "incoming": "sacredtrevor_one_double-shuriken_execution_clock_segmented_ye_8f67ac60-d864-47df-a5c7-12c603e1f6d8_2.png",
+      "source": "Art\\source\\master-conduits\\alternates\\sacredtrevor_one_double-shuriken_execution_clock_segmented_ye_8f67ac60-d864-47df-a5c7-12c603e1f6d8_2.png",
+      "source_sha256": "a0648387e27081f115177998b817ed5060261bea3f65e575905fb2768d3c6556",
+      "runtime": null,
+      "used": false
+    }
+  ]
+}

@@ -14,7 +14,8 @@ describe('roster, squad and summon screens', () => {
   });
   it('renders three ordered slots, optional removal and no starter lock', () => {
     const html = squadHub(account);
-    expect(html.match(/class="squad-slot"/g)).toHaveLength(3);
+    expect(html.match(/class="squad-slot(?: squad-slot-leader)?"/g)).toHaveLength(3);
+    expect(html.match(/class="squad-slot squad-slot-leader"/g)).toHaveLength(1);
     expect(html).toContain('<option value="tide" selected>');
     expect(html).toContain('Choose leader');
     expect(html).toContain('Empty slot');
@@ -46,11 +47,13 @@ describe('roster, squad and summon screens', () => {
     const html = summonHub(account);
     expect(html).toContain('Standard Banner');
     expect(html).toContain('10 Null-Prismatica');
-    expect(html).not.toContain('disabled');
-    expect(html.match(/data-banner-entry=/g)).toHaveLength(22);
-    expect(html).toContain('5-star tier: 1%');
+    expect(html).not.toMatch(/id="summon-character"[^>]*disabled/);
+    expect(summonHub({ ...account, lycalis: 100 })).not.toMatch(/id="summon-ten"[^>]*disabled/);
+    expect(summonHub({ ...account, lycalis: 99 })).toMatch(/id="summon-ten"[^>]*disabled/);
+    expect(html.match(/data-banner-entry=/g)).toHaveLength(28);
+    expect(html).toContain('5-star · 1%');
     expect(html).toContain('0.166667% per draw');
-    expect(html).toContain('The Crown Beyond Dawn, Gleamstone Slime · Omnic · 6-star · Lv.50');
+    expect(html).toContain('15 Rare materials');
     expect(summonHub({ ...account, lycalis: 9 })).toContain('disabled');
     expect(summonHub({ ...account, characters: { ...account.characters, sprout: { level: 0, evolution: 1 } } }))
       .toContain('Summon · 10 Null-Prismatica');
@@ -60,19 +63,21 @@ describe('roster, squad and summon screens', () => {
     const html = summonHub(account);
     expect(html.match(/id="summon-character"/g)).toHaveLength(1);
     expect(html.match(/id="banner-cost-note"/g)).toHaveLength(1);
-    expect(html).toContain('class="summon-main"');
+    expect(html).toContain('class="ref-panel ref-summon-hero"');
     expect(html.indexOf('class="summon-banner-art')).toBeLessThan(html.indexOf('<table'));
     expect(html).toContain('aria-describedby="banner-cost-note"');
     expect(html).toContain('class="summon-visual"');
-    expect(html).toContain('class="summon-sidebar"');
+    expect(html).toContain('class="ref-panel ref-summon-draw"');
     expect(html).toContain('data-information="summon-information"');
     expect(html).toContain('class="summon-rates"');
     expect(html).toContain('data-rate-stars="all"');
     expect(html).toContain('data-rate-stars="6"');
     expect(html).toContain('aria-label="Highest-star pity progress"');
     expect(html).toContain('aria-label="Unowned highest-star pity progress"');
-    const dialog = html.slice(html.indexOf('<dialog class="information-modal" id="summon-information"'), html.indexOf('</aside>'));
-    expect(dialog).not.toContain('<table');
+    const dialogStart = html.indexOf('<dialog class="information-modal" id="summon-information"');
+    const dialog = html.slice(dialogStart, html.indexOf('</dialog>', dialogStart));
+    expect(dialog).toContain('<table');
+    expect(html.replace(dialog, '')).not.toContain('<table');
     expect(dialog).toContain('Counters are independent');
   });
   it('offers a real roster including each captured UUID and keeps draft assignments distinct', () => {
@@ -82,6 +87,12 @@ describe('roster, squad and summon screens', () => {
     expect(squadHub(mixed)).toContain('data-squad-assign="0"');
     expect(squadHub(mixed)).toContain('data-squad-remove="2"');
     expect(squadHub(mixed)).not.toContain('data-owned-character');
+    const picker = squadHub(mixed);
+    expect(picker).toContain('<dialog class="information-modal squad-picker" id="squad-picker"');
+    expect(picker).toContain('data-squad-filter="creatures"');
+    expect(picker).toContain('data-squad-search-input');
+    expect(picker).toContain(`data-squad-pick="${id}" data-squad-kind="creatures"`);
+    expect(picker).toContain('data-squad-open="0"');
     const owned = ['tide', 'ember', id];
     const slots = ['tide', 'ember', ''];
     expect(assignSquadSlot(slots, 0, 'ember', owned)).toEqual(['ember', 'tide', '']);
@@ -99,10 +110,10 @@ describe('roster, squad and summon screens', () => {
     const wallet = { ...account, bannerPity: { standard: { highestStar: 199, unownedHighestStar: 499 } } };
     const before = structuredClone(wallet);
     const html = summonHub(wallet);
-    expect(html).toContain('199 / 200');
-    expect(html).toContain('499 / 500');
-    expect(html).toContain('max="200" value="199"');
-    expect(html).toContain('max="500" value="499"');
+    expect(html).toContain('199 / 80');
+    expect(html).toContain('499 / 150');
+    expect(html).toContain('max="80" value="80"');
+    expect(html).toContain('max="150" value="150"');
     expect(html.match(/data-banner-entry=/g)).toHaveLength(standardBannerPool().length);
     for (const outcome of standardBannerPool()) {
       expect(html).toContain(`data-banner-entry="${outcome.id}" data-entry-stars="${outcome.stars}"`);
@@ -138,21 +149,23 @@ describe('roster, squad and summon screens', () => {
     expect(html).toContain('assets/banners/summon-standard.png');
     expect(html).toContain('width="1456" height="816"');
     expect(html).not.toContain('art-pending');
-    const table = html.slice(html.indexOf('<table'), html.indexOf('</table>'));
-    expect(table.match(/data-banner-entry=/g)).toHaveLength(22);
+    const table = [...html.matchAll(/<table[\s\S]*?<\/table>/g)].map(match => match[0]).join('');
+    expect(table.match(/data-banner-entry=/g)).toHaveLength(28);
     expect(table).toContain('scope="col">Name');
     expect(table).toContain('scope="col">Rarity · Stars');
     expect(table).toContain('scope="col">Rate');
     expect(table).toContain('Common<span>5-star</span>');
-    expect(table).toContain('Uncommon<span>2-star</span>');
-    expect(table).toContain('Rare<span>3-star</span>');
+    expect(table).toContain('Uncommon</td>');
+    expect(table).toContain('Rare</td>');
+    expect(table).not.toContain('2-star');
+    expect(table).not.toContain('3-star');
     expect(table).not.toMatch(/<img|<svg|portrait|character-role|star-badge|rarity-medallion/);
     expect(html).not.toContain('summon-pool');
     expect(html).toContain('<section class="summon-rules">');
     expect(html).not.toContain('<details');
   });
   it('shows only the banner’s real high-star Element-Bearers with their awarded rarity and element', () => {
-    const html = summonHub({ ...account, characters: { ember: { level: 105, evolution: 6 } } });
+    const html = bannerCharacters(standardBannerPool());
     const start = html.indexOf('<section class="banner-characters"');
     const featured = html.slice(start, html.indexOf('</section>', start));
     expect(featured.match(/data-banner-character=/g)).toHaveLength(10);
@@ -169,7 +182,7 @@ describe('roster, squad and summon screens', () => {
     expect(featured).not.toMatch(/Omnic|infusion:|characters\/|abilities\/|portrait/);
     expect(bannerCharacters(standardBannerPool().filter((entry) => entry.kind === 'creature'))).toBe('');
   });
-  it('uses authored outcome stars, excludes lower tiers and creatures, and rejects missing definitions', () => {
+  it('uses authored outcome stars, excludes lower tiers and Elemental-Devourers, and rejects missing definitions', () => {
     const html = bannerCharacters([
       { kind: 'character', id: 'ember', stars: 6, chance: .001 },
       { kind: 'character', id: 'tide', stars: 4, chance: .1 },

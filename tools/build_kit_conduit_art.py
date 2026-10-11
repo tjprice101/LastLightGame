@@ -34,8 +34,9 @@ def document():
         "# Reborn Omnic kit-Conduit icon prompts",
         "D-176:25 reference-free copy-ready Omnic prompts matched to the converted runtime catalog. "
         "[Mechanics, acquisition and validation](../../docs/kit-conduits.md). "
-        "Art IDs below are identities, not URLs or installed imagery. All25 entries "
-        "remain art-pending until supplied originals are reviewed and exported.",
+        "D-199: all25 owner-delivered icons are installed under these stable art IDs. "
+        "Originals, reviewed cleanup settings and source/export hashes are preserved. "
+        "Reproduce with tools/intake_kit_conduit_art.py; these prompts remain generation provenance.",
         "Preserve originals under Art/source/kit-conduits. Review each key, enclosed "
         "opening, ivory metal, crystal facet and shadow individually. Export transparent "
         "256px icons with224px content; never reuse an unrelated icon, request a missing "

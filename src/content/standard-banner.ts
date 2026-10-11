@@ -1,20 +1,21 @@
 import { starters, isRoseCharacter, type StarterId } from './starters';
-import { getCreature } from './creatures';
+import { bannerMaterialDefinition, bannerMaterialPool } from './banner-materials';
 import { lootRoll } from './loot-random';
 import { isWarCharacter } from './war-characters';
 
-export const bannerPityLimits = { highestStar: 200, unownedHighestStar: 500 } as const;
+export const bannerPityLimits = { highestStar: 80, unownedHighestStar: 150 } as const;
+const savedBannerPityBounds = { highestStar: 200, unownedHighestStar: 500 } as const;
 export const bannerCharacterTierRates = { 5: .01, 6: .001 } as const;
 export interface BannerPity { highestStar: number; unownedHighestStar: number }
-export interface BannerOutcome { kind: 'character' | 'creature'; id: string; stars: number; chance: number }
+export interface BannerOutcome { kind: 'character' | 'creature' | 'material'; id: string; stars: number; chance: number }
 
 export function validateBannerPity(value: unknown): BannerPity {
   if (typeof value !== 'object' || value === null || Array.isArray(value) ||
       !('highestStar' in value) || typeof value.highestStar !== 'number' ||
-      !Number.isInteger(value.highestStar) || value.highestStar < 0 || value.highestStar >= bannerPityLimits.highestStar ||
+      !Number.isInteger(value.highestStar) || value.highestStar < 0 || value.highestStar >= savedBannerPityBounds.highestStar ||
       !('unownedHighestStar' in value) || typeof value.unownedHighestStar !== 'number' ||
       !Number.isInteger(value.unownedHighestStar) || value.unownedHighestStar < 0 ||
-      value.unownedHighestStar >= bannerPityLimits.unownedHighestStar) {
+      value.unownedHighestStar >= savedBannerPityBounds.unownedHighestStar) {
     throw new Error('Invalid saved banner pity counters.');
   }
   return { highestStar: value.highestStar, unownedHighestStar: value.unownedHighestStar };
@@ -25,11 +26,19 @@ export function resolveBannerPull<T extends BannerOutcome>(
 ): { entry: T; pity: BannerPity; guarantee: 'none' | 'highest-star' | 'unowned-highest-star' | 'all-owned-highest-star' } {
   const pity = validateBannerPity(counters);
   if (!pool.length || new Set(pool.map((entry) => entry.id)).size !== pool.length ||
-      pool.some((entry) => !entry.id || (entry.kind !== 'character' && entry.kind !== 'creature') ||
+      pool.some((entry) => !entry.id || !['character', 'creature', 'material'].includes(entry.kind) ||
         !Number.isInteger(entry.stars) || entry.stars < 1 || entry.stars > 6 ||
         !Number.isFinite(entry.chance) || entry.chance <= 0 || entry.chance > 1) ||
       Math.abs(pool.reduce((sum, entry) => sum + entry.chance, 0) - 1) > 1e-12) {
     throw new Error('Invalid banner outcome pool.');
+  }
+  for (const entry of pool) {
+    if (entry.kind !== 'material') continue;
+    const material = bannerMaterialDefinition(entry.id);
+    if (entry.stars < 1 || entry.stars > 3 || !('amount' in entry) || entry.amount !== material.amount ||
+      entry.id.split('-').at(-1) !== ['common', 'uncommon', 'rare'][entry.stars - 1]) {
+      throw new Error('Invalid banner material outcome.');
+    }
   }
   const highestStars = Math.max(...pool.map((entry) => entry.stars));
   const highest = pool.filter((entry) => entry.kind === 'character' && entry.stars === highestStars);
@@ -37,10 +46,10 @@ export function resolveBannerPull<T extends BannerOutcome>(
   const unowned = highest.filter((entry) => !ownedCharacters.includes(entry.id));
   let eligible: readonly T[] = pool;
   let guarantee: 'none' | 'highest-star' | 'unowned-highest-star' | 'all-owned-highest-star' = 'none';
-  if (pity.unownedHighestStar + 1 === bannerPityLimits.unownedHighestStar) {
+  if (pity.unownedHighestStar + 1 >= bannerPityLimits.unownedHighestStar) {
     eligible = unowned.length ? unowned : highest;
     guarantee = unowned.length ? 'unowned-highest-star' : 'all-owned-highest-star';
-  } else if (pity.highestStar + 1 === bannerPityLimits.highestStar) {
+  } else if (pity.highestStar + 1 >= bannerPityLimits.highestStar) {
     eligible = highest;
     guarantee = 'highest-star';
   }
@@ -71,12 +80,13 @@ const standardBannerArtwork: { path: string | null; aspectRatio: '16:9'; directi
 
 export const standardBanner = {
   id: 'standard', name: 'Standard Banner', cost: 10, available: true,
-  duplicateReward: { kind: 'final-fractalis-crowned-slime', creatureId: 'infusion:treasury:5', level: 50 },
   artwork: standardBannerArtwork,
 } as const;
 
 export type StandardBannerEntry =
   | { kind: 'character'; id: StarterId; stars: 5 | 6; chance: number }
+  | { kind: 'material'; id: string; stars: 1 | 2 | 3; chance: number; amount: number }
+  // Historical server receipts can still contain a previously saved creature award.
   | { kind: 'creature'; id: string; stars: 1 | 2 | 3; chance: number };
 
 export function standardBannerPool(): StandardBannerEntry[] {
@@ -84,19 +94,11 @@ export function standardBannerPool(): StandardBannerEntry[] {
   const characterChance = ([5, 6] as const).reduce((total, stars) =>
     total + (characters.some((character) => character.stars === stars) ? bannerCharacterTierRates[stars] : 0), 0);
   const remaining = 1 - characterChance;
-  const weights = [50, 30, 17] as const;
   const pool: StandardBannerEntry[] = characters.map((character) => ({
     kind: 'character', id: character.id, stars: character.stars,
     chance: bannerCharacterTierRates[character.stars] / characters.filter((entry) => entry.stars === character.stars).length,
   }));
-  for (const stars of [1, 2, 3] as const) {
-    const modes = ['heavens', 'abyss', 'treasury', 'sanctuary'] as const;
-    const chance = remaining * weights[stars - 1] / 97 / modes.length;
-    for (const mode of modes) {
-      const creature = getCreature(`infusion:${mode}:${stars - 1}`);
-      pool.push({ kind: 'creature', id: creature.id, stars, chance });
-    }
-  }
+  pool.push(...bannerMaterialPool(false, remaining));
   if (Math.abs(pool.reduce((total, entry) => total + entry.chance, 0) - 1) > 1e-12) {
     throw new Error('Standard Banner probabilities must total 100%.');
   }

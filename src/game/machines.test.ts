@@ -84,8 +84,8 @@ describe('machine content and exact probabilities', () => {
         ...Array<string>(7).fill('atmospheric'), ...Array<string>(8).fill('botanic'),
         ...Array<string>(8).fill('tranquilitic'), ...Array<string>(8).fill('chaotic')].sort());
     expect(conduits.filter((entry) => entry.price !== null)).toHaveLength(10);
-    expect(conduits.filter((entry) => entry.art === null)).toHaveLength(25);
-    expect(conduits.filter((entry) => entry.art === entry.id)).toHaveLength(60);
+    expect(conduits.filter((entry) => entry.art === null)).toHaveLength(0);
+    expect(conduits.filter((entry) => entry.art === entry.id)).toHaveLength(85);
   });
   it('has100 stages 10-120, six distinct machines, every fifth-stage boss and no missing art URLs', () => {
     for (let stage = 1; stage <= 100; stage++) {
@@ -96,7 +96,7 @@ describe('machine content and exact probabilities', () => {
       expect(encounter.level).toBe(Math.round(10 + (stage - 1) * 110 / 99));
     }
     expect(new Set(Array.from({ length: 100 }, (_, index) => infusionEncounter('machines', index + 1).enemy.name)).size).toBe(6);
-    expect(infusionEncounter('machines', 100).stats.health).toBe(400000);
+    expect(infusionEncounter('machines', 100).stats.health).toBe(500000);
     expect(infusionEncounter('machines', 99).stats.health).toBeLessThan(200000);
     for (const [tier, [first, last]] of [[1, 17], [18, 34], [35, 50], [51, 67], [68, 84], [85, 100]].entries()) {
       expect(getCreature(`infusion:machines:${tier}`).stages).toEqual(Array.from({ length: last - first + 1 }, (_, index) => first + index));
@@ -140,7 +140,9 @@ describe('machine content and exact probabilities', () => {
       for (const [rarity, chance] of [['Rare', .08], ['Legendary', .035], ['Omnic', stage < 75 ? 0 : .01]] as const) {
         expect(pool.filter((drop) => conduits.find((c) => c.id === drop.id)?.rarity === rarity).reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(chance, 12);
       }
-      expect(creatureLoot(getCreature(`infusion:machines:${encounter.tier}`), stage).slice(1)).toEqual([machineComponentDrop(stage), ...pool]);
+      const published = creatureLoot(getCreature(`infusion:machines:${encounter.tier}`), stage).slice(1);
+      expect(published.filter(drop => drop.id !== 'grand-master-chest')).toEqual([machineComponentDrop(stage), ...pool]);
+      expect(published.filter(drop => drop.id === 'grand-master-chest')).toHaveLength(stage === 100 ? 1 : 0);
     }
   });
 });

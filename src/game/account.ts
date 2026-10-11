@@ -1,5 +1,5 @@
 import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, type ElementId } from '../content/activities';
-import { fractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from '../content/loot-random';
+import { fractalisDrop, storyFractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from '../content/loot-random';
 import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, characterEvolutionRequirement, fractureRules, characterLevelCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
 import { type InfusionModeId } from '../content/activities';
@@ -12,11 +12,14 @@ import { getCreature } from '../content/creatures';
 import { getConduit, isConduitId, validateConduitSlots, normalizeLegacyKitSlots, validateConduitElement, conduitSlotCount, validateConduitUpgrades, conduitUpgradeCost, type ConduitId, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
 import { machineComponentDrop } from '../content/mechanical-components';
 import { bannerConduitBonus, machineConduitLoot } from '../content/machines';
+import { isMasterConduitId, masterChest, validateMasterCharacter, type MasterConduitId, type MasterLoadouts } from '../content/master-conduits';
 import { validateCapturedCharacters, validateCharacterLocks, capturedProgress, capturedLevelCost, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
-import { infusionEncounter, infusionLoot, creatureSaleValue } from '../content/infusions';
+import { infusionEncounter, infusionLoot, creatureSaleOptions } from '../content/infusions';
 import { standardBanner, resolveBannerPull, validateBannerPity, type StandardBannerEntry, type BannerPity } from '../content/standard-banner';
+import { bannerDuplicateMaterials, type BannerMaterialReward } from '../content/banner-materials';
 import { getSummonBanner, isSummonBannerId, type SummonBannerId } from '../content/summon-banners';
 import { roseMaterials, roseCaptureMaximumLevel } from '../content/roses';
+import { exchangeProduct, isExchangeQuantity } from '../content/material-exchange';
 import { isWarCharacter, warEncounter, warLoot, warStageCount, type WarCharacterId } from '../content/elemental-war';
 import { canonicalElement, isLegacyElement } from '../content/element-migration';
 import { storyEncounter, storyCreature, storyRules, storyBossBonus, storyMaterialLoot } from '../content/story';
@@ -36,6 +39,9 @@ export interface Account {
   conduitEquipment?: ConduitLoadouts;
   conduitUpgrades?: ConduitUpgrades;
   mechanicalComponents?: number;
+  masterChests?: number;
+  masterConduits?: Partial<Record<MasterConduitId, number>>;
+  masterEquipment?: MasterLoadouts;
   firstFracture: boolean;
   dungeonStages: Partial<Record<PlayableDungeon, number>>;
   infusionStages: Partial<Record<InfusionModeId, number>>;
@@ -79,6 +85,18 @@ export function validateAccount(value: unknown): Account {
   if (value.mechanicalComponents !== undefined) {
     if (!count(value.mechanicalComponents)) throw new Error('Invalid saved Broken Mechanical Components balance.');
     account.mechanicalComponents = value.mechanicalComponents;
+  }
+  if (value.masterChests !== undefined) {
+    if (!count(value.masterChests)) throw new Error('Invalid saved Master chest count.');
+    account.masterChests = value.masterChests;
+  }
+  if (value.masterConduits !== undefined) {
+    if (!record(value.masterConduits)) throw new Error('Invalid saved Master Conduit inventory.');
+    account.masterConduits = {};
+    for (const [id, amount] of Object.entries(value.masterConduits)) {
+      if (!isMasterConduitId(id) || (amount !== 0 && amount !== 1)) throw new Error('Invalid saved Master Conduit unlock.');
+      account.masterConduits[id] = amount;
+    }
   }
   if (value.bannerPity !== undefined) {
     if (!record(value.bannerPity)) throw new Error('Invalid saved banner pity.');
@@ -147,6 +165,18 @@ export function validateAccount(value: unknown): Account {
     }
     account.squad = [...value.squad];
   }
+  if (value.masterEquipment !== undefined) {
+    if (!record(value.masterEquipment)) throw new Error('Invalid saved Master equipment.');
+    account.masterEquipment = {};
+    for (const [character, id] of Object.entries(value.masterEquipment)) {
+      if (!isStarterId(character) || !account.characters[character]) throw new Error('Master equipment requires an owned Element-Bearer.');
+      if (id !== null) {
+        if (!isMasterConduitId(id) || account.masterConduits?.[id] !== 1) throw new Error('Master equipment requires an owned Master Conduit.');
+        validateMasterCharacter(id, character);
+      }
+      account.masterEquipment[character] = id;
+    }
+  }
   if (value.conduitEquipment !== undefined) {
     if (!record(value.conduitEquipment)) throw new Error('Invalid saved Conduit equipment.');
     account.conduitEquipment = {};
@@ -154,7 +184,7 @@ export function validateAccount(value: unknown): Account {
       if (!ownedCharacterInstances(account).includes(id)) throw new Error('Conduit equipment requires an owned character.');
       const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
       const element = isStarterId(id) ? getStarter(id).elementId : copy ? getCreature(copy.creatureId).element : undefined;
-      if (!element) throw new Error('Conduit equipment requires an owned captured creature.');
+      if (!element) throw new Error('Conduit equipment requires an owned captured Elemental-Devourer.');
       if (!Array.isArray(slots) || slots.some((conduit) => conduit !== null && (!isConduitId(conduit) || !(account.conduits?.[conduit] ?? 0)))) {
         throw new Error('Conduit equipment requires an owned Conduit.');
       }
@@ -177,10 +207,10 @@ export function validateAccount(value: unknown): Account {
         ? 1 + Math.round((stage - 1) * (dungeonStageCount - 1) / 24) : stage;
     }
     if (value.creatures !== undefined) {
-      if (!record(value.creatures)) throw new Error('Invalid saved creature discoveries.');
+      if (!record(value.creatures)) throw new Error('Invalid saved Elemental-Devourer discoveries.');
       for (const [id, entry] of Object.entries(value.creatures)) {
         getCreature(id);
-        if (!record(entry) || typeof entry.defeated !== 'boolean') throw new Error('Invalid saved creature discovery.');
+        if (!record(entry) || typeof entry.defeated !== 'boolean') throw new Error('Invalid saved Elemental-Devourer discovery.');
         account.creatures[id] = { defeated: entry.defeated };
       }
     }
@@ -221,7 +251,7 @@ export function evolutionFodderOptions(account: Account, element: ElementId, evo
     const form = capturedProgress(copy).tier + 1;
     const protection = characterProtection(account, copy.instanceId);
     const reasons: string[] = [];
-    if (!requirement.requiresInfusableEnemies) reasons.push('No creatures required for this evolution');
+    if (!requirement.requiresInfusableEnemies) reasons.push('No Elemental-Devourers required for this evolution');
     if (creature.mode !== requirement.infusion) reasons.push('Wrong infusion mode');
     if (form < (requirement.minimumCreatureForm ?? 1)) reasons.push(`Requires form ${requirement.minimumCreatureForm} or higher`);
     if (protection.locked) reasons.push('Locked');
@@ -258,30 +288,61 @@ export function setSquad(storage: ProfileStorage, ids: readonly string[]): Accou
   return saveAccount(storage, account);
 }
 export const summonCost = standardBanner.cost;
+export interface SummonDraw {
+  entry: StandardBannerEntry; materials?: BannerMaterialReward; copy?: CapturedCharacter; duplicate: boolean; guarantee: string; bonusConduit?: ConduitId;
+}
+export const multiSummonCount = 10;
 export function summonCharacter(storage: ProfileStorage, random: () => number = Math.random, bannerId: string = 'standard'):
-  { account: Account; entry: StandardBannerEntry; copy?: CapturedCharacter; duplicate: boolean; guarantee: string; bonusConduit?: ConduitId } {
+  { account: Account } & SummonDraw {
+  const { account, draws } = summonCharacters(storage, random, bannerId, 1);
+  return { account, ...draws[0] };
+}
+/** Resolves draws sequentially (pity, ownership and bonuses carry forward), then saves cost and every reward in one write. */
+export function summonCharacters(storage: ProfileStorage, random: () => number = Math.random, bannerId: string = 'standard', count: number = multiSummonCount):
+  { account: Account; draws: SummonDraw[] } {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before summoning.');
   const banner = getSummonBanner(bannerId);
+  if (count !== 1 && count !== multiSummonCount) throw new Error('Choose a single or 10-pull summon.');
   if (!banner.available) throw new Error('Banner unavailable.');
   const account = loadAccount(storage);
-  if (account.lycalis < banner.cost) throw new Error(`Summoning requires ${banner.cost} Null-Prismatica.`);
+  const cost = banner.cost * count;
+  if (account.lycalis < cost) throw new Error(`${count === 1 ? 'Summoning' : 'A 10-pull'} requires ${cost} Null-Prismatica.`);
+  const draws = Array.from({ length: count }, () => drawBanner(account, banner, random));
+  account.lycalis -= cost;
+  return { account: saveAccount(storage, account), draws };
+}
+function drawBanner(account: Account, banner: ReturnType<typeof getSummonBanner>, random: () => number): SummonDraw {
   const result = resolveBannerPull(banner.pool(), ownedCharacters(account),
     account.bannerPity?.[banner.id] ?? { highestStar: 0, unownedHighestStar: 0 }, random);
   const duplicate = result.entry.kind === 'character' && account.characters[result.entry.id] !== undefined;
-  let copy: CapturedCharacter | undefined;
+  let materials: BannerMaterialReward | undefined;
   if (duplicate) {
-    copy = createCreatureCopy(banner.duplicateReward.creatureId, undefined, banner.duplicateReward.level, 'banner-duplicate');
+    materials = bannerDuplicateMaterials(banner.id === 'roses', random);
+  } else if (result.entry.kind === 'material') {
+    materials = { id: result.entry.id, amount: result.entry.amount };
   } else if (result.entry.kind === 'creature') {
-    copy = createCreatureCopy(result.entry.id);
+    throw new Error('Elemental-Devourer summon outcomes are retired.');
   } else {
     account.characters[result.entry.id] = { level: 0, evolution: 1, weaponRank: 0 };
   }
-  if (copy) account.capturedCharacters = [...(account.capturedCharacters ?? []), copy];
-  account.lycalis -= banner.cost;
+  if (materials) account.materials[materials.id] = (account.materials[materials.id] ?? 0) + materials.amount;
   account.bannerPity = { ...account.bannerPity, [banner.id]: result.pity };
   const bonusConduit = bannerConduitBonus(random);
   if (bonusConduit) account.conduits = { ...account.conduits, [bonusConduit]: (account.conduits?.[bonusConduit] ?? 0) + 1 };
-  return { account: saveAccount(storage, account), entry: result.entry, copy, duplicate, guarantee: result.guarantee, bonusConduit };
+  return { entry: result.entry, materials, duplicate, guarantee: result.guarantee, bonusConduit };
+}
+export function purchaseExchangeMaterial(storage: ProfileStorage, productId: string, quantity: number): Account {
+  if (!loadProfile(storage)) throw new Error('Choose your first Element-****** using the Material Exchange.');
+  const product = exchangeProduct(productId);
+  if (!isExchangeQuantity(quantity)) throw new Error('Invalid Material Exchange quantity.');
+  const account = loadAccount(storage);
+  const cost = product.price * quantity;
+  if (account.fractalis < cost) throw new Error(`Not enough Prismatica. ${quantity} costs ${cost}.`);
+  const owned = (account.materials[product.materialId] ?? 0) + quantity;
+  if (!Number.isSafeInteger(owned)) throw new Error('Material inventory capacity reached.');
+  account.fractalis -= cost;
+  account.materials[product.materialId] = owned;
+  return saveAccount(storage, account);
 }
 
 export function treasurySaleOffer(account: Account, id: string) {
@@ -290,29 +351,37 @@ export function treasurySaleOffer(account: Account, id: string) {
   const offer = creatureSaleOffer(account, id);
   return { ...offer, amount: offer.fractalis };
 }
-export function creatureSaleOffer(account: Account, id: string) {
+export function isSellableCreatureMode(mode: InfusionModeId | undefined): boolean {
+  return !!mode && (isCurrencyMode(mode) || mode === 'roses' || mode === 'heavens' || mode === 'abyss');
+}
+export function creatureSaleOffer(account: Account, id: string, optionId?: string) {
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
   const mode = copy && getCreature(copy.creatureId).mode;
-  if (!copy || !mode || (!isCurrencyMode(mode) && mode !== 'roses')) throw new Error('Only an owned currency-farm creature or Roselius can be sold here.');
+  if (!copy || !mode || !isSellableCreatureMode(mode)) throw new Error('Only an owned currency-farm, Heaven, Abyss or Roselius Elemental-Devourer can be sold here.');
   const protection = characterProtection(account, id);
   const reasons = [
     ...(protection.locked ? ['Locked'] : []), ...(protection.inSquad ? ['In squad'] : []),
     ...(account.conduitEquipment?.[id]?.some((conduit) => conduit !== null) ? ['Conduits equipped'] : []),
   ];
-  return { copy, ...creatureSaleValue(mode, capturedProgress(copy).tier), reasons };
+  const options = creatureSaleOptions(mode, capturedProgress(copy).tier);
+  const chosen = optionId === undefined ? options[0] : options.find((option) => option.id === optionId);
+  if (!chosen) throw new Error('Choose one of the listed sale payouts.');
+  const { id: option, ...payout } = chosen;
+  return { copy, ...payout, option, options, reasons };
 }
 export function sellTreasuryCreature(storage: ProfileStorage, id: string): Account {
   treasurySaleOffer(loadAccount(storage), id);
   return sellCurrencyCreature(storage, id);
 }
-export function sellCurrencyCreature(storage: ProfileStorage, id: string): Account {
-  if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before selling creatures.');
+export function sellCurrencyCreature(storage: ProfileStorage, id: string, optionId?: string): Account {
+  if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before selling Elemental-Devourers.');
   const account = loadAccount(storage);
-  const offer = creatureSaleOffer(account, id);
-  if (offer.reasons.length) throw new Error(`Creature cannot be sold: ${offer.reasons.join(', ')}.`);
+  const offer = creatureSaleOffer(account, id, optionId);
+  if (offer.reasons.length) throw new Error(`Elemental-Devourer cannot be sold: ${offer.reasons.join(', ')}.`);
   account.fractalis += offer.fractalis;
   account.lycalis += offer.lycalis;
   for (const [material, amount] of Object.entries(offer.materials)) account.materials[material] = (account.materials[material] ?? 0) + amount;
+  if (![account.fractalis, account.lycalis, ...Object.keys(offer.materials).map((material) => account.materials[material])].every(Number.isSafeInteger)) throw new Error('Currency or material capacity reached.');
   account.capturedCharacters = account.capturedCharacters?.filter((copy) => copy.instanceId !== id);
   if (account.conduitEquipment) delete account.conduitEquipment[id];
   return saveAccount(storage, account);
@@ -342,6 +411,27 @@ export function equipConduit(storage: ProfileStorage, character: string, slot: n
   const slots = [...(account.conduitEquipment?.[character] ?? Array<ConduitId | null>(conduitSlotCount).fill(null))];
   slots[slot] = conduit;
   account.conduitEquipment = { ...account.conduitEquipment, [character]: validateConduitSlots(slots) };
+  return saveAccount(storage, account);
+}
+export function openMasterChest(storage: ProfileStorage, id: MasterConduitId): Account {
+  if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before opening a Master chest.');
+  if (!isMasterConduitId(id)) throw new Error('Choose a valid Master Conduit.');
+  const account = loadAccount(storage);
+  if ((account.masterChests ?? 0) < 1) throw new Error('No Cosmic Grand Master Chest is available.');
+  if ((account.masterConduits?.[id] ?? 0) > 0) throw new Error('This Master Conduit is already owned. Choose an unowned Master.');
+  account.masterChests = (account.masterChests ?? 0) - 1;
+  account.masterConduits = { ...account.masterConduits, [id]: 1 };
+  return saveAccount(storage, account);
+}
+export function equipMasterConduit(storage: ProfileStorage, character: StarterId, id: MasterConduitId | null): Account {
+  if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before equipping a Master.');
+  const account = loadAccount(storage);
+  if (!isStarterId(character) || !account.characters[character]) throw new Error('Choose an owned Element-Bearer.');
+  if (id !== null) {
+    if (!isMasterConduitId(id) || account.masterConduits?.[id] !== 1) throw new Error('Choose an owned Master Conduit.');
+    validateMasterCharacter(id, character);
+  }
+  account.masterEquipment = { ...account.masterEquipment, [character]: id };
   return saveAccount(storage, account);
 }
 export function upgradeConduit(storage: ProfileStorage, id: ConduitId, expectedLevel: number): Account {
@@ -380,13 +470,13 @@ export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: '
   if (kind === 'evolve' && current.level !== characterLevelCap(current.evolution)) throw new Error('Reach this form level cap before evolving.');
   const creatureCount = kind === 'evolve' ? characterEvolutionRequirement(id, current.evolution).creatureCount : 0;
   if (fodderIds.length !== creatureCount || new Set(fodderIds).size !== fodderIds.length) {
-    throw new Error(`Select exactly ${creatureCount} distinct captured creatures for this upgrade.`);
+    throw new Error(`Select exactly ${creatureCount} distinct captured Elemental-Devourers for this upgrade.`);
   }
   if (fodderIds.length) {
     const options = evolutionFodderOptions(account, element, current.evolution, id);
     for (const id of fodderIds) {
       const option = options.find((entry) => entry.copy.instanceId === id);
-      if (!option) throw new Error('Selected captured creature is no longer owned.');
+      if (!option) throw new Error('Selected captured Elemental-Devourer is no longer owned.');
       if (!option.eligible) throw new Error(`Cannot consume ${option.creature.name} · Copy ${option.index}: ${option.reasons.join(', ')}.`);
     }
   }
@@ -439,10 +529,22 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     if (account.receipts.includes(receipt)) continue;
     const enemy = result.state.enemies.find((unit) => unit.id === reward.source);
     if (!enemy || enemy.level === null) throw new Error('Enemy reward source is missing.');
+    if (reward.masterChests !== undefined) {
+      const activity = result.state.infusion;
+      if (reward.masterChests !== 1 || activity?.mode !== 'machines' || activity.stage !== masterChest.stage ||
+          result.state.wave !== masterChest.stage || unlockedInfusionStage(account, 'machines') < masterChest.stage ||
+          result.state.phase !== 'cleared' || result.state.enemies.length !== 1 ||
+          enemy.id !== `infusion-machines-${masterChest.stage}-0` || !enemy.boss || enemy.hp > 0 ||
+          enemy.creatureId !== 'infusion:machines:5' || enemy.level !== 120 || result.state.story || result.state.dungeon || result.state.war) {
+        throw new Error('Master chests only drop from the final Awaken the Machines boss.');
+      }
+      account.masterChests = (account.masterChests ?? 0) + 1;
+      if (!count(account.masterChests)) throw new Error('Master chest inventory capacity reached.');
+    }
     if (story) {
       const stage = story.storyStage;
       const encounter = storyEncounter(stage);
-      const range = fractalisDrop(encounter.level);
+      const range = storyFractalisDrop(encounter.level);
       const materialPool = storyMaterialLoot(stage);
       if (enemy.hp > 0 || reward.capture !== undefined || reward.conduits !== undefined ||
           reward.mechanicalComponents !== undefined || reward.lycalis !== undefined || reward.storyBonus !== undefined ||
@@ -501,7 +603,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === 'roses' || result.state.infusion.mode === 'machines') &&
         (enemy.hp > 0 || !enemy.creatureId || getCreature(enemy.creatureId).mode !== result.state.infusion.mode ||
           !getCreature(enemy.creatureId).stages.includes(result.state.infusion.stage) ||
-          enemy.level !== infusionEncounter(result.state.infusion.mode, result.state.infusion.stage).level)) throw new Error('Invalid currency-farm reward source.');
+          enemy.level !== infusionEncounter(result.state.infusion.mode, result.state.infusion.stage, result.state.infusion.schedule ?? 'legacy').level)) throw new Error('Invalid currency-farm reward source.');
     if (!count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum) throw new Error('Invalid enemy Prismatica drop.');
     account.fractalis += reward.amount;
     if (reward.mechanicalComponents !== undefined) {
@@ -529,7 +631,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       if (!Number.isInteger(reward.lycalis) || reward.lycalis < 1 ||
           !result.state.infusion || result.state.infusion.mode === 'treasury' || result.state.infusion.mode === 'roses' || result.state.infusion.mode === 'machines' || creature?.mode !== result.state.infusion.mode ||
           !creature.stages.includes(result.state.infusion.stage) || enemy.hp > 0 ||
-          enemy.level !== infusionEncounter(result.state.infusion.mode, result.state.infusion.stage).level ||
+          enemy.level !== infusionEncounter(result.state.infusion.mode, result.state.infusion.stage, result.state.infusion.schedule ?? 'legacy').level ||
           !stagedLycalisOdds(result.state.infusion.mode, enemy.level).some((outcome) => outcome.amount === reward.lycalis)) {
         throw new Error('Invalid enemy Null-Prismatica reward.');
       }
@@ -550,7 +652,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       const stage = result.state.infusion?.stage;
       if (!creature.mode || creature.mode === 'machines' || !stage || creature.mode !== result.state.infusion?.mode ||
           enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== enemy.level ||
-          enemy.level !== infusionEncounter(creature.mode, stage).level ||
+          enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? 'legacy').level ||
           (creature.mode === 'roses' && enemy.level > roseCaptureMaximumLevel)) {
         throw new Error('Invalid captured enemy reward.');
       }
@@ -628,9 +730,9 @@ export function levelCapturedCharacter(storage: ProfileStorage, id: string, expe
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before leveling.');
   const account = loadAccount(storage);
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
-  if (!copy) throw new Error('Choose an owned captured creature.');
+  if (!copy) throw new Error('Choose an owned captured Elemental-Devourer.');
   const progress = capturedProgress(copy);
-  if (progress.level !== expectedLevel) throw new Error('Captured creature level changed. Reopen this screen.');
+  if (progress.level !== expectedLevel) throw new Error('Captured Elemental-Devourer level changed. Reopen this screen.');
   const cost = capturedLevelCost(copy);
   if (account.fractalis < cost.fractalis) throw new Error('Not enough Prismatica.');
   for (const [material, amount] of Object.entries(cost.materials)) if ((account.materials[material] ?? 0) < amount) throw new Error(`Not enough ${materialName(material)}.`);
@@ -690,7 +792,7 @@ export function levelCharacterToMaximum(storage: ProfileStorage, expected: MaxLe
     account.characters[plan.id] = { ...ownedProgress(account, plan.id), level: plan.targetLevel };
   } else {
     const copy = account.capturedCharacters?.find((entry) => entry.instanceId === plan.id);
-    if (!copy) throw new Error('Captured creature is no longer owned.');
+    if (!copy) throw new Error('Captured Elemental-Devourer is no longer owned.');
     const progress = capturedProgress(copy);
     copy.level = plan.targetLevel;
     copy.capturedStage = progress.stage;

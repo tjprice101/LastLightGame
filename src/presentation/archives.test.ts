@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { archives } from './archives';
 import { emptyAccount } from '../game/account';
 import { conduits } from '../content/conduits';
+import { masterConduits } from '../content/master-conduits';
 import { elements } from '../content/activities';
 import { starters } from '../content/starters';
 import { characterArt } from '../content/character-art';
@@ -11,16 +12,26 @@ import { elementLabel } from './element-label';
 import { elementAssetIds } from '../content/element-migration';
 
 describe('unified Archives', () => {
+  it('keeps ownership, form rarity and effects visible without requiring detail dialogs', () => {
+    const html = archives(emptyAccount(), 'conduits');
+    expect(html).toContain('<div class="ref-archive-manage"><button class="text-button" data-page="conduit-store">');
+    const card = html.slice(html.indexOf('data-archive-character="ember"'), html.indexOf('data-information="archive-kit-ember-1"'));
+    expect(card).toContain('aria-label="5-star character"');
+    expect(card).toContain('aria-label="Common rarity"');
+    expect(card).toContain('<p class="archive-ownership">Not owned</p>');
+    expect(html.match(/class="archive-effect"/g)).toHaveLength(conduits.length + masterConduits.length);
+  });
   it('disables native image drag previews so locked art cannot reveal its colored drag ghost', () => {
     const html = archives(emptyAccount());
     const images = html.match(/<img\b[^>]*src="[^"]*\/(?:characters|enemies|conduits)\/[^"]*"[^>]*>/g) ?? [];
     expect(images.length).toBeGreaterThan(0);
     for (const image of images) expect(image).toContain('draggable="false"');
   });
-  it('groups the three galleries with banner headers and one visible default panel', () => {
+  it('groups the three galleries with compact controls and one visible default panel', () => {
     const html = archives(emptyAccount());
     expect(html.match(/data-archive-gallery=/g)).toHaveLength(3);
-    expect(html.match(/class="archive-banner /g)).toHaveLength(3);
+    expect(html).not.toContain('class="archive-banner ');
+    expect(html.match(/class="ref-sr-only" id="archive-/g)).toHaveLength(3);
     expect(html).toContain('id="archive-characters" class="archive-panel" aria-labelledby="archive-characters-heading" >');
     expect(html).toContain('id="archive-conduits" class="archive-panel" aria-labelledby="archive-conduits-heading" hidden');
     expect(html).toContain('id="archive-creatures" class="archive-panel" aria-labelledby="archive-creatures-heading" hidden');
@@ -57,7 +68,7 @@ describe('unified Archives', () => {
     expect(account).toEqual(before);
   });
 
-  it('catalogs every Conduit with supplied or honestly pending artwork, effects and saved counts', () => {
+  it('catalogs every Conduit with supplied artwork, effects and saved counts', () => {
     const account = emptyAccount();
     account.conduits = { 'bastion-lock': 3 };
     const html = archives(account, 'conduits');
@@ -68,14 +79,15 @@ describe('unified Archives', () => {
     }
     expect(html).toContain('Owned 3');
     const conduitsSection = html.slice(html.indexOf('id="archive-conduits"'), html.indexOf('id="archive-creatures"'));
-    expect(conduitsSection.match(/Artwork pending/g)).toHaveLength(25);
+    expect(conduitsSection).not.toContain('Master Conduit artwork pending');
+    expect(conduitsSection.match(/assets\/master-conduits\/master-[a-z]+-[123]\.png\?v=[0-9a-f]{16}/g)).toHaveLength(48);
+    expect(conduitsSection.match(/data-archive-master=/g)).toHaveLength(48);
     for (const conduit of conduits) {
-      if (conduit.art) expect(html).toContain(`assets/conduits/${conduit.art}.png`);
-      else expect(html).not.toContain(`assets/conduits/${conduit.id}.png`);
+      expect(html).toContain(`assets/conduits/${conduit.art}.png`);
     }
     const fullArchive = archives(account);
     for (const gallery of ['characters', 'conduits', 'creatures']) {
-      expect(fullArchive).toContain(`assets/banners/archive-${gallery}.png`);
+      expect(fullArchive).toContain(`id="archive-${gallery}-heading"`);
     }
   });
 
@@ -103,7 +115,7 @@ describe('unified Archives', () => {
     expect(revealed).not.toContain('Drop pool and chances');
     const unavailable = archives(null);
     expect(unavailable).toContain('Ownership unavailable');
-    expect(unavailable).toContain('Creature discoveries unavailable');
+    expect(unavailable).toContain('Elemental-Devourer discoveries unavailable');
     expect(unavailable).not.toContain('Owned 0');
     expect(unavailable).not.toContain('<p class="archive-ownership">Not owned</p>');
     expect(unavailable).not.toContain('Art locked');
@@ -118,12 +130,13 @@ describe('unified Archives', () => {
     expect(sanctuaryHeader('glossary', 0)).toContain('Archives');
     expect(isMenuPage('collections')).toBe(true);
     expect(sanctuaryContext('archives')).toBe('');
-    expect(sanctuaryHeader('archives', 0)).toContain('data-menu-back');
+    expect(sanctuaryHeader('archives', 0)).not.toContain('data-menu-back');
     expect(archives(emptyAccount(), 'conduits')).not.toContain('Recovered ancient-war mechanism');
     expect(sanctuaryHeader('home', 0)).toContain('data-page="collections"');
     expect(sanctuaryContext('inventory') + inventoryHub()).not.toContain('data-page="archives"');
     expect(characterHub(starters[0], 'overview')).not.toContain('data-page="archives"');
-    expect(elementLabel('tranquilitic')).toContain('Tranquilitic <span>(Peace)</span>');
+    expect(elementLabel('tranquilitic')).toContain('Tranquilitic</span>');
+    expect(elementLabel('tranquilitic')).not.toContain('(Peace)');
     expect(elementLabel('tranquilitic')).toContain('assets/elements/tranquilitic.png');
     for (const element of elements) {
       expect(elementLabel(element.id)).toContain(`assets/elements/${elementAssetIds[element.id]}.png`);

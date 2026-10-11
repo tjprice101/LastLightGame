@@ -15,7 +15,7 @@ function storage(): ProfileStorage {
   return { getItem: (key) => data.get(key) ?? null, setItem: (key, value) => { data.set(key, value); }, removeItem: (key) => { data.delete(key); } };
 }
 
-describe('saved creature discoveries and glossary', () => {
+describe('saved Elemental-Devourer discoveries and glossary', () => {
   it('assigns confirmed combat elements to every enemy and preserves them across runs', () => {
     const adventure = createBattle();
     expect(adventure.enemies.map((enemy) => enemy.element)).toEqual(['botanic', 'infernic', 'botanic']);
@@ -108,7 +108,7 @@ describe('saved creature discoveries and glossary', () => {
     expect(loadAccount(saved).creatures).toEqual({});
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     expect(() => validateAccount({ ...emptyAccount(), creatures: { 'fake:id': { defeated: true } } })).toThrow('Unknown glossary');
-    expect(() => validateAccount({ ...emptyAccount(), creatures: { 'adventure:goblin': { defeated: 'yes' } } })).toThrow('Invalid saved creature');
+    expect(() => validateAccount({ ...emptyAccount(), creatures: { 'adventure:goblin': { defeated: 'yes' } } })).toThrow('Invalid saved Elemental-Devourer');
     saveAccount(saved, emptyAccount());
   });
 

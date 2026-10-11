@@ -35,7 +35,7 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
       control.button.setAttribute('aria-label', `${control.label}: ${text}`);
       if (control.button.disabled !== select.disabled) control.button.disabled = select.disabled;
     }
-    host.querySelectorAll<HTMLSelectElement>('select:not([data-selection-source])').forEach((select) => {
+    host.querySelectorAll<HTMLSelectElement>('select:not([data-selection-source]):not([data-native-select])').forEach((select) => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'selection-trigger';

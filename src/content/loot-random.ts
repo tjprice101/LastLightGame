@@ -5,7 +5,8 @@ export function lootRoll(random: () => number): number {
 }
 
 export function infusionLycalisOdds(level: number) {
-  if (!Number.isInteger(level) || level < 80 || level > 120) throw new Error('Null-Prismatica drops require an infusion enemy level from 80 to 120.');
+  if (!Number.isInteger(level) || level < 50 || level > 120) throw new Error('Null-Prismatica drops require an infusion enemy level from 50 to 120.');
+  if (level < 80) return [{ amount: 0, chance: 1 }];
   const growth = (level - 80) / 40;
   return [
     { amount: 0, chance: .9 - .15 * growth },
@@ -88,9 +89,30 @@ export function fractalisDrop(level: number, maximumLevel = 120): ScaledDrop {
   return { minimum, maximum: minimum * 2, chance: 1 };
 }
 
+/** Story per-kill Prismatica rises in a straight line: minimum = base + perLevel * (level - 1), maximum double. */
+export const storyPrismaticaLine = { base: 5, perLevel: 2 } as const;
+/** Crownfall Treasury pays the Story line for the same enemy level times a multiplier from 1x (Lv.65) to finalMultiplier (Lv.120). */
+export const treasuryPrismaticaBoost = { startingLevel: 65, maximumLevel: 120, finalMultiplier: 20 } as const;
+
+export function storyFractalisDrop(level: number): ScaledDrop {
+  if (!Number.isInteger(level) || level < 1 || level > 120) throw new Error('Story Prismatica requires an enemy level from 1 to 120.');
+  const minimum = storyPrismaticaLine.base + storyPrismaticaLine.perLevel * (level - 1);
+  return { minimum, maximum: minimum * 2, chance: 1 };
+}
+
+export function treasuryPrismaticaMultiplier(level: number): number {
+  const { startingLevel, maximumLevel, finalMultiplier } = treasuryPrismaticaBoost;
+  if (!Number.isInteger(level) || level < startingLevel || level > maximumLevel) throw new Error('Treasury drops require an enemy level from 65 to 120.');
+  return 1 + (finalMultiplier - 1) * ((level - startingLevel) / (maximumLevel - startingLevel)) ** 2;
+}
+
 export function treasuryFractalisDrop(level: number): ScaledDrop {
-  if (!Number.isInteger(level) || level < 65 || level > 120) throw new Error('Treasury drops require an enemy level from 65 to 120.');
-  const minimum = 100 + Math.floor(900 * ((level - 65) / 55) ** 2);
+  const multiplier = treasuryPrismaticaMultiplier(level);
+  const minimum = Math.round(storyFractalisDrop(level).minimum * multiplier);
   return { minimum, maximum: minimum * 2, chance: 1 };
 }
 import { type InfusionModeId } from './activities';
+
+const range = (drop: ScaledDrop) => `${drop.minimum.toLocaleString('en-US')}-${drop.maximum.toLocaleString('en-US')}`;
+/** Player-facing Treasury payout rule, generated from the live formulas. */
+export const treasuryPrismaticaText = `Guaranteed per-kill Prismatica starts at the Story line for the same enemy level (${range(treasuryFractalisDrop(65))} at Lv.65) and multiplies up to ${treasuryPrismaticaBoost.finalMultiplier}x by Lv.120 (${range(treasuryFractalisDrop(120))}); the multiplier grows faster each stage.`;

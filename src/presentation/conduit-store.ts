@@ -24,7 +24,7 @@ export function kitConduitRules(equipment?: ConduitSlots): string {
       ? [`<li><strong>${conduit.name}:</strong> ${conduit.effect.slice(conduit.effect.indexOf('. ') + 2)}</li>`] : [];
   });
   return rules.length ? `<section class="equipped-kit-rules"><h3>Equipped kit rules</h3>
-    <p>Ability descriptions show the authored base kit. These equipped rules apply during combat; account upgrades scale stats, not these rules.</p>
+    <p>Ability descriptions show the character’s base abilities. These equipped rules apply during combat; account upgrades scale stats, not these rules.</p>
     <ul>${rules.join('')}</ul></section>` : '';
 }
 export function conduitInventory(account: Account | null): string {
@@ -36,20 +36,46 @@ export function conduitInventory(account: Account | null): string {
         : '<p>No Conduits owned yet.</p>'}
     </section>`;
 }
-export function conduitStore(account: Account | null): string {
-  return `<section class="conduit-store"><header class="conduit-store-banner" style="--conduit-store-art:url('${assetUrl('banners/conduit-store.png')}')"><p class="eyebrow">RECOVERED · ANCIENT WAR MECHANISMS</p><h2>The Conduit Store</h2>
-    <p>Long-hidden mechanisms, recovered from sealed armories and forgotten battlefields.</p>
-    </header>
+export function conduitStore(account: Account | null, selected?: string, rarity = ''): string {
+  const catalog = conduits.filter(entry => entry.price !== null && (!rarity || entry.rarity === rarity));
+  const choice = catalog.find(entry => entry.id === selected) ?? catalog[0];
+  return `<section class="conduit-store ref-screen ref-conduit-store"><nav class="ref-market-tabs"><button data-page="stores">Material Exchange</button><button data-page="stores" data-market-cosmetics>Cosmetic Store</button><button aria-current="page">Conduit Store</button><button data-page="conduit-upgrade">Upgrade →</button></nav>
+    <aside class="ref-panel"><h3>Rarity</h3><nav class="ref-rarity-filter">${['', ...new Set(conduits.filter(entry => entry.price !== null).map(entry => entry.rarity))].map(value => `<button data-store-rarity="${value}" aria-pressed="${value === rarity}">${value || 'All'}<small>${conduits.filter(entry => entry.price !== null && (!value || entry.rarity === value)).length}</small></button>`).join('')}</nav></aside>
+    <section class="ref-panel ref-store-catalog"><header class="ref-panel-heading">Recovered ancient mechanisms · ${catalog.length}</header><div class="ref-scroll"><div class="ref-product-grid">${catalog.map(conduit => `<button class="ref-product" data-store-conduit="${conduit.id}" aria-pressed="${conduit.id === choice?.id}">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}<b>${conduit.name}</b><small>${conduit.rarity}</small><small>${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</small><span class="ref-chip">${account?.conduits?.[conduit.id] ? `Owned ${account.conduits[conduit.id]}` : `${conduit.price} Prismatica`}</span></button>`).join('')}</div></div></section>
+    <aside class="ref-panel ref-store-detail">${choice ? `<header class="ref-panel-heading">Details</header><div class="ref-store-hero">${conduitIcon(choice.id, account?.conduitUpgrades?.[choice.id])}</div><h2>${choice.name}</h2>${conduitRarity(choice.id)}<p>${choice.lore}</p><dl class="ref-detail-facts"><div><dt>Current effect</dt><dd>${conduitEffect(choice, account?.conduitUpgrades?.[choice.id])}</dd></div><div><dt>At +5</dt><dd>${conduitEffect(choice, 5)}</dd></div><div><dt>Owned</dt><dd>${account?.conduits?.[choice.id] ?? 0}</dd></div></dl>
+      <footer><p class="conduit-price">${currencyIcon('fractalis')}<strong>${choice.price} Prismatica</strong></p><button class="primary-button" data-buy-conduit="${choice.id}" ${!account || choice.price === null || account.fractalis < choice.price ? 'disabled' : ''}>Buy one · ${choice.price}</button>${account && choice.price !== null && account.fractalis < choice.price ? '<p class="quiet">Not enough Prismatica.</p>' : ''}</footer>` : '<p>No Conduits match this filter.</p>'}
     ${information('store-information', 'Conduit purchases', '<p>Purchase with Prismatica. One owned copy unlocks a Conduit for all owned characters. Each character can equip each name once. Additional copies do not increase its effect.</p><p>Equip Conduits in Character. Purchases require confirmation.</p>')}
-    <button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button>
     ${!account ? '<p role="alert">Store unavailable. Resolve the save error before purchasing.</p>' : ''}
-    <div class="conduit-catalog">${conduits.filter((entry) => entry.price !== null).map((conduit) => `<article class="conduit-card">
-      <div class="conduit-mechanism">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div>
-      <div class="conduit-card-heading">${conduitRarity(conduit.id)}</div>
-      <h3>${conduit.name}</h3><p class="conduit-effect">${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</p>
-      <p class="conduit-quantity">Owned ${account ? account.conduits?.[conduit.id] ?? 0 : 'Unavailable'}</p>
-      <p class="conduit-price">${currencyIcon('fractalis')}<strong>${conduit.price} Prismatica</strong></p>
-      <button class="primary-button" data-buy-conduit="${conduit.id}" ${!account || account.fractalis < conduit.price ? 'disabled' : ''}>Buy one · ${conduit.price}</button>
-      ${account && account.fractalis < conduit.price ? '<p class="quiet">Not enough Prismatica.</p>' : ''}</article>`).join('')}</div>
-    <p id="conduit-purchase-result" role="status"></p></section>`;
+    <p id="conduit-purchase-result" role="status"></p></aside></section>`;
+}
+
+export function updateConduitStore(host: HTMLElement, account: Account | null, selected?: string, rarity = ''): void {
+  const current = host.querySelector<HTMLElement>('.ref-conduit-store');
+  if (!current) throw new Error('Conduit Store is missing.');
+  const template = document.createElement('template');
+  template.innerHTML = conduitStore(account, selected, rarity);
+  const next = template.content;
+  const catalog = current.querySelector<HTMLElement>('.ref-store-catalog');
+  const nextCatalog = next.querySelector<HTMLElement>('.ref-store-catalog');
+  const detail = current.querySelector<HTMLElement>('.ref-store-detail');
+  const nextDetail = next.querySelector<HTMLElement>('.ref-store-detail');
+  if (!catalog || !nextCatalog || !detail || !nextDetail) throw new Error('Conduit Store panels are missing.');
+  const cards = Array.from(catalog.querySelectorAll<HTMLButtonElement>('[data-store-conduit]'));
+  const nextCards = Array.from(nextCatalog.querySelectorAll<HTMLButtonElement>('[data-store-conduit]'));
+  if (cards.length !== nextCards.length || cards.some((card, index) => card.dataset.storeConduit !== nextCards[index]?.dataset.storeConduit)) {
+    catalog.replaceChildren(...Array.from(nextCatalog.childNodes));
+  } else {
+    cards.forEach((card, index) => {
+      const updated = nextCards[index];
+      card.setAttribute('aria-pressed', updated.getAttribute('aria-pressed') ?? 'false');
+      const chip = card.querySelector('.ref-chip');
+      const nextChip = updated.querySelector('.ref-chip');
+      if (chip && nextChip) chip.textContent = nextChip.textContent;
+    });
+  }
+  current.querySelectorAll<HTMLButtonElement>('[data-store-rarity]').forEach(button =>
+    button.setAttribute('aria-pressed', String(button.dataset.storeRarity === rarity)));
+  const scroll = detail.scrollTop;
+  detail.replaceChildren(...Array.from(nextDetail.childNodes));
+  detail.scrollTop = scroll;
 }

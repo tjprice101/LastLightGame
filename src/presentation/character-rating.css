@@ -33,4 +33,4 @@
 .character-stat-rating > strong { font: 600 12px "Segoe UI", sans-serif; color: #c8c8cf; }
 @keyframes rating-star-shine { 0%, 55% { background-position: 100% 0; } 85%, 100% { background-position: 0% 0; } }
 html[data-motion="reduced"] .star-shine { animation: none; background-position: 50% 0; opacity: .3; }
-@media (prefers-reduced-motion: reduce) { .star-shine { animation: none; background-position: 50% 0; opacity: .3; } }
+:root[data-motion="reduced"] .star-shine { animation: none; background-position: 50% 0; opacity: .3; }

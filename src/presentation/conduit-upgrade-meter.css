@@ -39,7 +39,3 @@
 }
 html[data-motion="reduced"] .conduit-upgrade-meter .conduit-upgrade-square,
 html[data-motion="reduced"] .conduit-upgrade-meter .conduit-upgrade-square::after { animation: none; }
-@media (prefers-reduced-motion: reduce) {
-  .conduit-upgrade-meter .conduit-upgrade-square,
-  .conduit-upgrade-meter .conduit-upgrade-square::after { animation: none; }
-}

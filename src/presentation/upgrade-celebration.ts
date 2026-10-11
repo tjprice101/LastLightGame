@@ -14,7 +14,7 @@ export function upgradeCelebration(starter: Starter, kind: UpgradeKind, progress
 }
 
 export function celebrateUpgrade(host: HTMLElement, starter: Starter, kind: UpgradeKind, progress: CharacterProgress): void {
-  const portrait = host.querySelector<HTMLElement>('.character-hub .hub-portrait');
+  const portrait = host.querySelector<HTMLElement>('.hub-showcase .hub-portrait');
   if (!portrait) throw new Error('Character portrait is missing for upgrade celebration.');
   active.get(portrait)?.();
   const celebration = document.createElement('span');

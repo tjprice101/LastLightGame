@@ -48,8 +48,9 @@ describe('consolidated flagship effects', () => {
   ])('$id earns Tempest from any effective critical direct activation and spends before the same activation can earn again', ({ id, action }) => {
     const state = encounter(id);
     const actor = state.allies[0];
-    actor.stats.crit = 1;
     const ability = actor.kit!.abilities[action];
+    // Exactly 100% total: a skill crit bonus above that would add an Elemental Crit roll.
+    actor.stats.crit = 1 - (ability.strength.critBonus ?? 0);
     actor.pilot = { tempest: 3 };
     const before = structuredClone(state);
     const ordinary = act(state, actor.id, action, state.enemies[0].id);
@@ -150,8 +151,8 @@ describe('consolidated flagship effects', () => {
     expect(result.state.allies[0].shield).toBe(actor.stats.health * .15);
     expect(result.state.allies[0].pilot?.bloom).toBe(0);
     expect(result.state.allies[0].recoverThrough).toBe(state.round + 1);
-    expect(resolveFighter('bliss').abilities.skill1.description).toContain('+8% outgoing damage each');
-    expect(resolveFighter('bliss').abilities.ultimate.description).toContain("5% of this caster's maximum Health each");
+    expect(resolveFighter('bliss').abilities.skill1.description).toContain('+8% outgoing damage per charge');
+    expect(resolveFighter('bliss').abilities.ultimate.description).toContain("5% of this caster's maximum Health per charge");
   });
 
   it('creates fresh shared state on a new encounter and preserves independent active Conduit effects', () => {

@@ -2,9 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { activityBanner } from './activity-banner';
 import { gameplayHub } from './gameplay';
 import { emptyAccount } from '../game/account';
+import { elementalWars, warEncounter } from '../content/elemental-war';
 
 describe('reference activity banners', () => {
-  it('uses real base-aware artwork with a separate overlaid activity name', () => {
+  it('uses real base-aware artwork with a separate activity heading', () => {
     const html = activityBanner('Awaken the Machines', 'banners/machines-banner.png', 'An ancient machine awakens.');
     expect(html).toContain('class="activity-banner"');
     expect(html).toContain('assets/banners/machines-banner.png');
@@ -19,6 +20,23 @@ describe('reference activity banners', () => {
     expect(html).toContain('<h3>An authored dungeon</h3>');
     expect(html).not.toContain('<img');
     expect(html).not.toContain('src=');
+  });
+  it('preserves all three War banners, final-stage choices and free entry without mutating progress', () => {
+    const account = emptyAccount();
+    account.characters.ember = { level: 105, evolution: 6 };
+    account.warStages = { nerithe: 10, orvella: 10, vaelor: 10 };
+    const before = structuredClone(account);
+    const html = gameplayHub(account);
+    const war = html.slice(html.indexOf('id="gameplay-war"'), html.indexOf('id="gameplay-story"'));
+    for (const mode of elementalWars) {
+      expect(war).toContain(`<h3>${mode.name}</h3>`);
+      expect(war).toContain(`data-war-stage="${mode.character}"`);
+      expect(war).toContain(`data-war="${mode.character}" >Enter trial · Free`);
+      expect(war).toContain(`10 · Lv.${warEncounter(mode.character, 10).level}</option>`);
+    }
+    expect(war.match(/class="activity-entry"/g)).toHaveLength(3);
+    expect(war.match(/class="activity-unlock-hint"/g)).toHaveLength(3);
+    expect(account).toEqual(before);
   });
   it('retains all staged entry selectors inside real entry footers and all named reward panels', () => {
     const account = emptyAccount();

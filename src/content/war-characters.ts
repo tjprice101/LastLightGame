@@ -3,21 +3,21 @@ import type { FighterDefinition } from './combat';
 export const warCharacters = [
   {
     id: 'nerithe', stars: 6, name: 'Nerithe', role: 'Attacker', art: 'nerithe',
-    title: 'The cartographer of the shoreless sea', element: 'Oceanic (Water)', elementId: 'oceanic',
+    title: 'The cartographer of the shoreless sea', element: 'Oceanic', elementId: 'oceanic',
     weapon: 'Surveyor trident', color: '#54c9d4',
     description: 'A human tide-cartographer with a surveyor trident and an expanding dominion of folded currents.',
     lore: { origin: 'The observatories above the spiral sea', story: 'Nerithe charted a current that never returned to shore. Following its meridians, she learned to fold distant tides around the people lost between them.', vow: 'No one is lost beyond my map.', awakening: 'An uncharted current answers.' },
   },
   {
     id: 'orvella', stars: 6, name: 'Orvella', role: 'Tank', art: 'orvella',
-    title: 'The foundation that bears the world', element: 'Botanic (Nature)', elementId: 'botanic',
+    title: 'The foundation that bears the world', element: 'Botanic', elementId: 'botanic',
     weapon: 'Crystal mace', color: '#d2b59a',
     description: 'A human foundation sovereign with a crystal mace and an ever-growing citadel of stone.',
     lore: { origin: 'The vaults beneath the faultline', story: 'Orvella once braced a broken village gate with a mason\'s stone. She now carries the weight of buried citadels, raising their foundations to shelter those the world forgot.', vow: 'No shelter falls while I still stand.', awakening: 'The first foundation answers.' },
   },
   {
     id: 'vaelor', stars: 6, name: 'Vaelor', role: 'Attacker', art: 'vaelor',
-    title: 'The final chord of the broken sky', element: 'Atmospheric (Wind)', elementId: 'atmospheric',
+    title: 'The final chord of the broken sky', element: 'Atmospheric', elementId: 'atmospheric',
     weapon: 'Resonance blade', color: '#e6d177',
     description: 'A human storm conductor wielding a resonance blade amid branching thunder architecture.',
     lore: { origin: 'The towers of the thunder choir', story: 'Vaelor listened for the missing rhythm between storms. With a small resonance blade, he followed that silence until the broken sky itself became his choir.', vow: 'Even a broken sky can sing again.', awakening: 'Quiet voltage finds its first rhythm.' },

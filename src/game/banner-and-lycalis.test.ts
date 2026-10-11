@@ -9,6 +9,7 @@ import { lootArt, lootItems } from '../presentation/battle-loot';
 import { battleResults, encounterRewards } from '../presentation/battle-results';
 import { creatureGlossary } from '../presentation/creature-glossary';
 import { summonHub } from '../presentation/roster';
+import { infusionEncounter } from '../content/infusions';
 
 function storage(): ProfileStorage {
   const map = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
@@ -16,7 +17,7 @@ function storage(): ProfileStorage {
     removeItem: (key) => { map.delete(key); } };
 }
 function kills(mode: 'heavens' | 'abyss', boss = false, burn = true) {
-  const state = createInfusionBattle(mode, boss ? 35 : 1, 1, 'ember', { level: 105, evolution: 6 });
+  const state = createInfusionBattle(mode, boss ? 35 : 22, 1, 'ember', { level: 105, evolution: 6 });
   // First xorshift(15872) is above .99, guaranteeing the three-Null-Prismatica outcome.
   state.lycalisSeed = 15872;
   state.enemies.forEach((enemy) => {
@@ -46,7 +47,8 @@ describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
     }
     expect(rollInfusionLycalis(80, () => 0)).toBe(0);
     expect(rollInfusionLycalis(120, () => .9999999)).toBe(3);
-    for (const level of [79, 121, NaN, 80.5]) expect(() => infusionLycalisOdds(level)).toThrow();
+    for (let level = 50; level < 80; level++) expect(infusionLycalisOdds(level)).toEqual([{ amount: 0, chance: 1 }]);
+    for (const level of [49, 121, NaN, 80.5]) expect(() => infusionLycalisOdds(level)).toThrow();
     for (const roll of [-1, 1, NaN, Infinity]) expect(() => rollInfusionLycalis(100, () => roll)).toThrow('[0, 1)');
   });
   it.each(['heavens', 'abyss'] as const)('%s persists burn/AOE and boss premium rewards atomically, deduplicates and preserves existing reward RNG', (mode) => {
@@ -95,7 +97,7 @@ describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
     }
     const living = structuredClone(result);
     living.state.enemies[0].hp = 1;
-    expect(() => saveAccountRewards(storage(), living, 'alive')).toThrow('Null-Prismatica');
+    expect(() => saveAccountRewards(storage(), living, 'alive')).toThrow('Invalid enemy Null-Prismatica');
     const saved = storage();
     const account = emptyAccount();
     account.lycalis = Number.MAX_SAFE_INTEGER;
@@ -135,19 +137,19 @@ describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
       const creature = getCreature(`infusion:${mode}:${tier}`);
       for (const stage of creature.stages) {
         const loot = creatureLoot(creature, stage).filter((entry) => entry.id === 'lycalis');
-        expect(loot.map((entry) => [entry.minimum, entry.maximum])).toEqual([[1, 1], [2, 2], [3, 3]]);
+        expect(loot.map((entry) => [entry.minimum, entry.maximum])).toEqual(infusionEncounter(mode, stage).level < 80 ? [] : [[1, 1], [2, 2], [3, 3]]);
         expect(loot.every((entry) => entry.note?.includes('mutually exclusive'))).toBe(true);
       }
     }
     const account = emptyAccount();
-    account.creatures['infusion:heavens:0'] = { defeated: true };
+    account.creatures['infusion:heavens:4'] = { defeated: true };
     expect(creatureGlossary(account)).toContain('Null-Prismatica');
     expect(creatureGlossary(account)).toContain('mutually exclusive');
   });
-  it('defines twenty-two real entries with 1% five-star, 0.1% six-star and normalized creature weights', () => {
+  it('defines twenty-eight real entries with 1% five-star, 0.1% six-star and normalized material weights', () => {
     const pool = standardBannerPool();
-    expect(pool).toHaveLength(22);
-    expect(new Set(pool.map((entry) => entry.id)).size).toBe(22);
+    expect(pool).toHaveLength(28);
+    expect(new Set(pool.map((entry) => entry.id)).size).toBe(28);
     expect(pool.reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(1, 14);
     const characters = pool.filter((entry) => entry.kind === 'character');
     expect(characters.filter((entry) => entry.stars === 5).map((entry) => entry.id)).toEqual(['ember', 'tide', 'sprout', 'atmoso', 'bruno', 'elise']);
@@ -159,7 +161,7 @@ describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
     }
     for (const [index, stars] of [1, 2, 3].entries()) {
       const tier = pool.filter((entry) => entry.stars === stars);
-      expect(tier).toHaveLength(4);
+      expect(tier).toHaveLength(6);
       expect(tier[0].chance).toBe(tier[1].chance);
       expect(tier.reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(.989 * [50, 30, 17][index] / 97, 14);
     }
@@ -178,15 +180,13 @@ describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
       expect(() => summonCharacter(saved, () => NaN)).toThrow('[0, 1)');
       expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
       const html = summonHub(account);
-      expect(html.match(/data-banner-entry=/g)).toHaveLength(22);
+      expect(html.match(/data-banner-entry=/g)).toHaveLength(28);
       expect(html).toContain('0.166667% per draw');
       expect(html).not.toContain('disabled');
-      expect(html).toContain('The Crown Beyond Dawn, Gleamstone Slime · Omnic · 6-star · Lv.50');
+      expect(html).toContain('15 Rare materials');
       expect(html).not.toContain('All Element-Bearers owned');
     }
     expect(standardBanner.available).toBe(true);
-    expect(standardBanner.duplicateReward.creatureId).toBe('infusion:treasury:5');
-    expect(standardBanner.duplicateReward.level).toBe(50);
     expect(standardBanner.cost).toBe(10);
   });
 });

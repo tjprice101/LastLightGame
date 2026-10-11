@@ -1,6 +1,7 @@
 import { enemies, enemyIds, formatStat } from './combat';
 import { elements, dungeonStageCount, infusionModes, currencyModes, eventModes, machineModes, type ElementId, type InfusionModeId } from './activities';
 import { machineConduitLoot } from './machines';
+import { masterChest } from './master-conduits';
 import { machineComponentDrop } from './mechanical-components';
 import { dungeonEncounter, dungeonVariants, materialLoot } from './dungeons';
 import { infusionEncounter, infusionLoot, infusionElements } from './infusions';
@@ -59,14 +60,14 @@ function catalog(): Creature[] {
 export const creatures: readonly Creature[] = catalog();
 export function getCreature(id: string): Creature {
   const creature = creatures.find((entry) => entry.id === id);
-  if (!creature) throw new Error(`Unknown glossary creature: ${id}.`);
+  if (!creature) throw new Error(`Unknown glossary Elemental-Devourer: ${id}.`);
   return creature;
 }
 
 export interface CreatureLoot { id: string; minimum: number; maximum: number; chance: number; note?: string }
 export function creatureLoot(creature: Creature, stage?: number): CreatureLoot[] {
   getCreature(creature.id);
-  if (creature.stages.length && (stage === undefined || !creature.stages.includes(stage))) throw new Error('Choose a stage where this creature appears.');
+  if (creature.stages.length && (stage === undefined || !creature.stages.includes(stage))) throw new Error('Choose a stage where this Elemental-Devourer appears.');
   if (creature.story && stage !== undefined) {
     const loot: CreatureLoot[] = storyLoot(stage);
     if (storyEncounter(stage).boss) {
@@ -81,7 +82,9 @@ export function creatureLoot(creature: Creature, stage?: number): CreatureLoot[]
     : creature.mode && stage !== undefined ? infusionEncounter(creature.mode, stage).level : stage ?? 1;
   const loot: CreatureLoot[] = [{ id: 'fractalis', ...(creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level, creature.mode === 'roses' ? 140 : 120)) }];
   if (creature.mode === 'treasury') return loot;
-  if (creature.mode === 'machines' && stage !== undefined) return [...loot, machineComponentDrop(stage), ...machineConduitLoot(stage)];
+  if (creature.mode === 'machines' && stage !== undefined) return [...loot, machineComponentDrop(stage), ...machineConduitLoot(stage),
+    ...(stage === masterChest.stage ? [{ id: masterChest.id, minimum: 1, maximum: 1, chance: masterChest.chance,
+      note: 'Final boss only. Open in Inventory to choose one unowned character-specific Omnic Master Conduit.' }] : [])];
   if (creature.dungeonElement && stage !== undefined) {
     loot.push(...materialLoot(creature.dungeonElement, stage));
   } else if (creature.mode && stage !== undefined) {

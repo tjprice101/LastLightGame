@@ -28,14 +28,15 @@ describe('banner showcases', () => {
     }
     expect(html).not.toMatch(/infusion:|data-banner-entry|summon-character|silhouette/);
   });
-  it('adds independent controls to both Home banners and the selected Summon banner without mutating the account', () => {
+  it('keeps Home showcases while Summon uses its single rates and information control', () => {
     const account = emptyAccount();
     account.characters.ember = { level: 105, evolution: 6 };
     const before = structuredClone(account);
     const home = homeHub(openingStarters[0], false, account);
     for (const banner of summonBanners) {
       expect(home).toContain(`data-information="banner-showcase-${banner.id}"`);
-      expect(summonHub(account, banner.id)).toContain(`data-information="banner-showcase-${banner.id}"`);
+      expect(summonHub(account, banner.id)).not.toContain(`data-information="banner-showcase-${banner.id}"`);
+      expect(summonHub(account, banner.id)).toContain('data-information="summon-information"');
     }
     expect(account).toEqual(before);
   });

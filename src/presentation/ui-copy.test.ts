@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { emptyAccount } from '../game/account';
 import { createBattle } from '../game/battle';
-import { openingStarters } from '../content/starters';
+import { openingStarters, starters } from '../content/starters';
 import { elements } from '../content/activities';
 import { conduits } from '../content/conduits';
 import { defaultBindings } from '../game/hotkeys';
@@ -21,10 +21,60 @@ import { itemShowcase } from './item-showcase';
 import { sanctuaryHeader } from './sanctuary';
 import { loadAccount, ACCOUNT_KEY, summonCharacter } from '../game/account';
 import { SAVE_KEY } from '../game/profile';
+import { elementLabel } from './element-label';
+import { referenceHome } from './reference-home';
+import { referenceTeam } from './reference-team';
+import { portrait } from './portrait';
+import { onlineStores } from './online-store-profile';
+import { readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
 const textContent = (markup: string) => markup.replace(/<[^>]*>/g, ' ');
 
 describe('visible UI copy', () => {
+  it('never uses affinity aliases in element filters or presentation data sources', () => {
+    const account = emptyAccount();
+    account.characters = Object.fromEntries(starters.map(starter => [starter.id, { level: 0, evolution: 1 }]));
+    account.squad = ['ember'];
+    const team = referenceTeam(account, { view: 'bearers', selected: 'ember', element: '', sort: 'level' });
+    const archive = archives(account);
+    for (const element of elements) {
+      expect(team).toContain(`data-team-element="${element.id}" aria-pressed="false">${element.name}</button>`);
+      expect(archive).toContain(`<option value="${element.id}">${element.name}</option>`);
+      expect(onlineStores(account, null, 'materials', element.id)).toContain(`Common ${element.name} upgrade material.`);
+    }
+    function check(directory: string): void {
+      for (const entry of readdirSync(directory, { withFileTypes: true })) {
+        const path = join(directory, entry.name);
+        if (entry.isDirectory()) check(path);
+        else if (entry.name.endsWith('.ts') && !entry.name.endsWith('.test.ts')) {
+          expect(readFileSync(path, 'utf8'), path).not.toMatch(/\.affinity\b/);
+        }
+      }
+    }
+    check(join(process.cwd(), 'src', 'presentation'));
+  });
+  it('uses canonical element names without affinity suffixes on labels, portraits and menu screens', () => {
+    const account = emptyAccount();
+    account.characters = Object.fromEntries(starters.map(starter => [starter.id, { level: 0, evolution: 1 }]));
+    account.squad = ['ember'];
+    const suffix = /\((?:peace|fire|water|wind|nature|dark matter & energy)\)/i;
+    for (const starter of starters) {
+      expect(starter.element).toBe(elements.find(element => element.id === starter.elementId)?.name);
+      expect(portrait(starter)).not.toMatch(suffix);
+      expect(characterHub(starter, 'overview', account)).not.toMatch(suffix);
+      expect(referenceHome(starter, { ...account, squad: [starter.id] })).not.toMatch(suffix);
+    }
+    for (const element of elements) {
+      expect(elementLabel(element.id)).toContain(`${element.name}</span>`);
+      expect(elementLabel(element.id)).not.toMatch(suffix);
+    }
+    for (const markup of [archives(account), gameplayHub(account), squadHub(account),
+      summonHub(account, 'standard'), summonHub(account, 'roses'),
+      referenceTeam(account, { view: 'bearers', selected: 'ember', element: '', sort: 'level' })]) {
+      expect(markup).not.toMatch(suffix);
+    }
+  });
   it('keeps redundant instructions and implementation notes off primary screens without hiding decision-critical data', () => {
     const account = emptyAccount();
     account.characters.ember = { level: 0, evolution: 1 };
@@ -63,7 +113,8 @@ describe('visible UI copy', () => {
     expect(primary(squadHub(account))).toContain('Save squad');
     const summon = primary(summonHub(account));
     expect(summon).not.toContain('You will confirm before spending.');
-    expect(summon).toContain('Drop rates');
+    expect(summon).not.toContain('Drop rates');
+    expect(summon).toContain('Rates & Information');
     expect(summon).toContain('Pity guarantees');
     expect(summon).toContain('Cost 10');
     expect(primary(sanctuaryHeader('inventory', 10000, 100))).not.toContain('Prelude 0.1');

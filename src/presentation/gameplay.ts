@@ -1,12 +1,12 @@
 import { elements, elementalDungeonRules, elementalEnemyLevel, infusionModes, currencyModes, materialRarities } from '../content/activities';
 import { assetUrl } from './portrait';
-import { uiIcon } from './ui-icon';
 import { dungeonArt, elementAccents } from '../content/dungeon-art';
 import { isPlayableDungeon } from '../content/dungeons';
-import { emptyAccount, unlockedStage, unlockedWarStage, type Account } from '../game/account';
+import { emptyAccount, unlockedStage, unlockedWarStage, ownedCharacters, type Account } from '../game/account';
+import { treasuryPrismaticaText } from '../content/loot-random';
 import { infusionEnemyElements, treasurySalePrices, sanctuarySalePrices, specialtyMaterials } from '../content/infusions';
 import { elementLabel } from './element-label';
-import { information } from './information';
+import { information, informationTopics } from './information';
 import { itemShowcase } from './item-showcase';
 import { roseEvent, roseEventRules } from './rose-event';
 import { machineRules, machineRulesText } from '../content/machines';
@@ -15,25 +15,37 @@ import { infusionEntry } from './activity-entry';
 import { elementalWars, warEncounter, warRulesText } from '../content/elemental-war';
 import { getStarter } from '../content/starters';
 import { storyRulesText } from '../content/story';
+import { storyCampaign } from './story';
+import { activityAccess } from '../game/activity-access';
 
 function dungeonEntry(element: (typeof elements)[number]['id'], account: Account | null): string {
   if (!account) return '<button disabled>Dungeon unavailable: resolve the save error</button>';
   if (!isPlayableDungeon(element)) throw new Error('Unknown elemental dungeon.');
   const unlocked = unlockedStage(account, element);
+  const access = activityAccess(account, { kind: 'dungeon', element, stage: unlocked });
   return `<footer class="activity-entry"><label class="dungeon-stage-label">Stage
     <select data-dungeon-stage="${element}" aria-label="${elements.find((entry) => entry.id === element)?.dungeon} stage">${Array.from({ length: unlocked }, (_, stage) => `<option value="${stage + 1}" ${stage + 1 === unlocked ? 'selected' : ''}>${stage + 1}</option>`).join('')}</select></label>
-    <button class="primary-button" data-dungeon="${element}">Enter dungeon</button></footer>`;
+    <button class="primary-button" data-dungeon="${element}" ${access.unlocked ? '' : 'disabled'}>${access.unlocked ? 'Enter dungeon' : 'Locked'}</button>
+    <p class="activity-unlock-hint">${access.unlocked ? 'Unlocked' : 'Unlocks at'} ${access.requirement}. Your highest: Lv.${access.level}.</p></footer>`;
 }
 
 const activityCategories = [
   ['story', 'Story', 'Six regions · 150 stages · Lv.1-55', 'story'],
   ['adventure', 'Training', 'Endless waves · Prismatica', 'gameplay'],
-  ['dungeons', 'Elemental dungeons', 'Six elements · Upgrade materials', 'inventory'],
-  ['infusion', 'Evolution infusion', 'Heaven & Abyss · Late-form growth', 'evolution'],
-  ['currency', 'Currency farms', 'Prismatica & Null-Prismatica', 'inventory'],
-  ['machines', 'Awaken the Machines', 'Conduits · Lv.10-120', 'inventory'],
-  ['war', 'Elemental War', 'Human challengers · Lv.90-140', 'gameplay'],
-  ['events', 'Events', 'Passion of Crimson Roses · Lv.80-140', 'events'],
+  ['dungeons', 'Elemental dungeons', 'Unlock Lv.30 · Upgrade materials', 'inventory'],
+  ['infusion', 'Evolution infusion', 'Unlock Lv.50 · Heaven & Abyss', 'evolution'],
+  ['currency', 'Currency farms', 'Unlock Lv.60 · Currencies', 'inventory'],
+  ['machines', 'Awaken the Machines', 'Unlock Lv.10 + first region · Conduits', 'inventory'],
+  ['war', 'Elemental War', 'Unlock Lv.85 · Human challengers', 'gameplay'],
+  ['events', 'Events', 'Unlock Lv.75 · Crimson Roses', 'events'],
+] as const;
+
+const activitySections = [
+  ['Start here', ['story']],
+  ['Practice', ['adventure']],
+  ['Grow your team', ['dungeons', 'infusion', 'machines', 'war']],
+  ['Earn currency', ['currency']],
+  ['Events', ['events']],
 ] as const;
 
 const selectedActivities = new Map<string, number>();
@@ -47,46 +59,64 @@ function activityFacts(stages: string, levels: string, drops: string): string {
   return `<dl class="activity-facts"><div><dt>Stages</dt><dd>${stages}</dd></div><div><dt>Enemy levels</dt><dd>${levels}</dd></div><div><dt>Drops</dt><dd>${drops}</dd></div></dl>`;
 }
 
-export function gameplayHub(account: Account | null = emptyAccount()): string {
-  return `<div class="gameplay-hub"><div class="hub-heading"><p class="eyebrow">CHOOSE YOUR ACTIVITY</p><h1 tabindex="-1">Gameplay</h1></div>
-    <div class="menu-information-action">
-    ${information('gameplay-information', 'Gameplay information', `<h3>Story</h3><p>${storyRulesText}</p><h3>Training</h3><p>Each entry begins at wave 1 with your saved squad.
-      Endless waves cap enemy level at 120. Per-kill Prismatica grows from 5-10 at Lv.1 to 15-30 at Lv.120. No materials, captures or Null-Prismatica.</p>
-      <h3>Elemental dungeons</h3><p>${elementalDungeonRules.stages} stages, enemy levels ${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}.
-      Materials match the dungeon's element. Quantities and rare chances increase with level. No captures or Null-Prismatica.
-      Defeated Creature entries in Collections show exact stage drop tables.</p>
-      <h3>Evolution infusion</h3><p>Specialty materials unlock at levels 80 / 93 / 100. Bonus Epic / Legendary / Omnic unlock at 80 / 100 / 115.
-      Heaven draws bonus materials from its four associated elements; Abyss draws from its two.
-      Each kill independently rolls Null-Prismatica: at Lv.80 none / 1 / 2 / 3 = 90 / 8 / 1.5 / 0.5%; at Lv.120 = 75 / 10 / 10 / 5%, with linear interpolation.</p>
-      ${infusionModes.map((mode) => `<p><strong>${mode.name}</strong> · Enemy element: ${elementLabel(infusionEnemyElements[mode.id])}
-        · Material pool: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</p>`).join('')}
-      <h3>Captures and currency farms</h3><p>Heaven, Abyss, Crownfall Treasury and Rosethorn Sanctuary have a separate 20% per-kill capture chance.
-      Copies retain defeated level, form and kit. Currency farms have 25 stages at levels 65-120, six fixed forms and a boss every fifth stage.
-      Boss and ordinary enemies use the same payouts. No farm materials or clear bonus.</p>
-      <h4>Crownfall Treasury</h4><p>Guaranteed 100-200 Prismatica at Lv.65 to 1,000-2,000 at Lv.120; minimum grows quadratically. No Null-Prismatica.
-      Common through Omnic creature sales: ${treasurySalePrices.map((price) => price.toLocaleString('en-US')).join(' / ')} Prismatica.</p>
+function gameplayInformation(): string {
+  return informationTopics('gameplay-information', [
+    { id: 'start', title: 'Getting started', summary: 'Where to begin, unlocks and getting stronger', content: `<p>Clear Story stages for materials and currencies, then level and evolve in Team. Replay cleared stages when you need more materials.</p>
+      <h4>Unlocks</h4><p>Your highest-level owned Element-Bearer unlocks activities, even when not in your squad. Captured Elemental-Devourers do not count.</p>
+      <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li></ul>
+      <h4>Tougher fights</h4><p>Higher-level enemies hit harder and take more hits. Level up, evolve and equip Conduits. Bring healing or shields for bosses.</p>` },
+    { id: 'story', title: 'Story', summary: 'Six regions ? 150 stages', content: `<p>${storyRulesText}</p>` },
+    { id: 'training', title: 'Training', summary: 'Endless waves ? Prismatica', content: `<p>Each entry begins at wave 1 with your saved squad. Endless waves cap enemy level at 120.</p>
+      <p>Per-kill Prismatica grows from 5-10 at Lv.1 to 15-30 at Lv.120. No materials, captures or Null-Prismatica.</p>` },
+    { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, enemy levels ${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}.</p>
+      <p>Materials match the dungeon's element. Quantities and rare chances increase with level. No captures or Null-Prismatica.</p>
+      <p>Defeated Elemental-Devourer entries in Collections show exact stage drop tables.</p>` },
+    { id: 'infusion', title: 'Evolution infusion', summary: 'Heaven & Abyss ? evolution items', content: `<p>Enemy levels 50-120. Form 3 begins at Lv.65, form 4 at Lv.75 and form 5 at Lv.85.</p>
+      <p>Evolution and level specialty materials unlock at Lv.75. Bonus Epic / Legendary / Omnic unlock at 80 / 100 / 115.
+      Heaven draws bonus materials from its four associated elements; Abyss draws from its two.</p>
+      <p>No Null-Prismatica below Lv.80. From Lv.80, each kill independently rolls it: none / 1 / 2 / 3 = 90 / 8 / 1.5 / 0.5%; at Lv.120 = 75 / 10 / 10 / 5%, with linear interpolation.</p>
+      <p>Each kill has a separate 20% capture chance. Copies retain defeated level, form and kit.</p>
+      ${infusionModes.map((mode) => `<p><strong>${mode.name}</strong> ? Enemy element: ${elementLabel(infusionEnemyElements[mode.id])}
+        ? Material pool: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</p>`).join('')}` },
+    { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages at levels 65-120, six fixed forms and a boss every fifth stage. Boss and ordinary enemies use the same payouts. No farm materials or clear bonus.</p>
+      <p>Each kill has a separate 20% capture chance. Copies retain defeated level, form and kit.</p>
+      <h4>Crownfall Treasury</h4><p>${treasuryPrismaticaText} No Null-Prismatica.
+      Common through Omnic Elemental-Devourer sales: ${treasurySalePrices.map((price) => price.toLocaleString('en-US')).join(' / ')} Prismatica.</p>
       <h4>Rosethorn Sanctuary</h4><p>Ordinary Prismatica 7-14 at Lv.65 to 15-30 at Lv.120.
       One independent Null-Prismatica roll: 50% of 1 at Lv.65 to 80% of 5 at Lv.120. Chance is linear; quantity rounds the linear 1-5 curve.
       Common through Omnic sales: ${sanctuarySalePrices.map((price) => `${price.fractalis.toLocaleString('en-US')} Prismatica + ${price.lycalis} Null-Prismatica`).join(' / ')}.</p>
-      <p>Sell copies in Character. Locked, squad-assigned and Conduit-equipped copies are protected.</p>
-      <h3>Passion of Crimson Roses</h3>${roseEventRules}
-      <h3>Awaken the Machines</h3>${machineRulesText}
-      <h3>Elemental War</h3><p>${warRulesText}</p>
-      <h3>Continuing encounters</h3><p>Continue is manual. Staged activities restore HP between stages and retain Gauge.
-      Training carries HP, Gauge and recovery into the next wave. Settings retains the current encounter; quitting ends the run.</p>`)}</div>
+      <p>Sell copies in Team. Locked, squad-assigned and Conduit-equipped copies are protected.</p>` },
+    { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Event stages ? Rose materials', content: roseEventRules },
+    { id: 'machines', title: 'Awaken the Machines', summary: 'Conduits ? components ? Masters', content: machineRulesText },
+    { id: 'war', title: 'Elemental War', summary: 'Human challengers ? rare recruits', content: `<p>${warRulesText}</p>` },
+    { id: 'continuing', title: 'Continuing encounters', summary: 'HP, Gauge, Settings and quitting', content: `<p>Continue is manual. Staged activities restore HP between stages and retain Gauge.</p>
+      <p>Training carries HP, Gauge and recovery into the next wave. Settings retains the current encounter; quitting ends the run.</p>` },
+  ]);
+}
+
+export function gameplayHub(account: Account | null = emptyAccount()): string {
+  return `<div class="gameplay-hub ref-screen ref-play"><aside class="ref-panel ref-activity-sidebar"><header class="ref-panel-heading">Activity</header>
+    <div class="menu-information-action">
+    ${information('gameplay-information', 'Gameplay information', gameplayInformation())}</div>
     <nav class="activity-categories" data-menu-scroll="activity-rail" aria-label="Activity types">
-      ${activityCategories.map(([id, name, description, icon]) => `<a href="#gameplay-${id}" aria-controls="gameplay-${id}">${uiIcon(icon)}<span><strong>${name}</strong><small>${description}</small></span></a>`).join('')}
-    </nav>
+      ${activitySections.map(([heading, ids]) => `<section class="ref-activity-section"><h3>${heading}</h3>${ids.map((category) => {
+        const entry = activityCategories.find(([id]) => id === category)!;
+        const [id, name, description] = entry;
+        return `<a href="#gameplay-${id}" aria-controls="gameplay-${id}"><span><strong>${name}</strong><small>${description}</small></span></a>`;
+      }).join('')}</section>`).join('')}
+    </nav></aside>
     <section class="activity-group" id="gameplay-adventure"><h2>Training</h2>
-      <article class="activity-card" style="--adventure-art:url('${assetUrl('backgrounds/grassy-field.png')}')"><h3>Training · Grassy Field</h3>
-        ${activityFacts('Endless waves', '1-120', 'Prismatica')}
-        ${itemShowcase([{ id: 'fractalis' }], 'Rewards')}
-        <button class="primary-button" data-page="battle">Enter Training</button></article></section>
+      <article class="activity-card training-card">
+        <header class="training-hero"><img src="${assetUrl('backgrounds/grassy-field.png')}" alt="" width="1456" height="816"><div><p class="eyebrow">Practice · Endless battles</p><h3>Training · Grassy Field</h3></div></header>
+        <div class="training-details">${activityFacts('Endless waves', '1-120', 'Prismatica')}
+          <div class="training-summary"><p>Start at wave 1 with your saved squad. Continue at your own pace; HP and Gauge carry into the next wave.</p>${itemShowcase([{ id: 'fractalis' }], 'Rewards')}</div>
+          <footer class="training-entry"><p class="quiet">Rewards save after each defeat. Leaving ends the run.</p><button class="primary-button" data-page="battle">Enter Training</button></footer>
+        </div></article></section>
     <section class="activity-group" id="gameplay-dungeons"><h2>Elemental material dungeons</h2>
       ${activityPicker(elements.map((element) => ({ name: element.dungeon })))}
       <div class="activity-grid">${elements.map((element, index) => `<article class="activity-card dungeon-card ${dungeonArt[element.id] ? 'has-dungeon-art' : ''}" data-element-index="${index}" style="--dungeon:${elementAccents[element.id]}">
         ${activityBanner(element.dungeon, dungeonArt[element.id] ? `banners/${dungeonArt[element.id]?.slug}.png` : null, `${element.dungeon} banner`, true)}
-        <p class="eyebrow">${element.name} · ${element.affinity}</p>
+        <p class="eyebrow">${element.name}</p>
         ${activityFacts(`${elementalDungeonRules.stages} stages`, `${elementalDungeonRules.startingLevel}-${elementalDungeonRules.maximumLevel}`, 'Prismatica · Materials')}
         ${itemShowcase([{ id: 'fractalis' }, ...materialRarities.map((rarity) => ({ id: `${element.id}-${rarity.toLowerCase()}` }))], 'Rewards across stages')}
         ${dungeonEntry(element.id, account)}</article>`).join('')}</div></section>
@@ -96,6 +126,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
         ${activityBanner(mode.name, `banners/${mode.id}-banner.png`)}
         <p class="eyebrow">${mode.energy} ENERGY</p>
         ${activityFacts(`${mode.stages} stages`, `${mode.startingLevel}-120`, 'Materials · Prismatica · Null-Prismatica · Captures')}
+        <p>Evolution materials from Lv.75. Null-Prismatica from Lv.80.</p>
         ${itemShowcase([{ id: 'fractalis' }, { id: 'lycalis' }, ...specialtyMaterials.filter((item) => item.id.startsWith(`${mode.id}-`)).map((item) => ({ id: item.id }))], 'Currencies & specialty materials')}
         ${infusionEntry(mode, account)}</article>`).join('')}</div></section>
     <section class="activity-group" id="gameplay-currency"><h2>Currency farms</h2>
@@ -118,6 +149,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       ${activityPicker(elementalWars)}
       ${elementalWars.map((mode) => {
         const unlocked = account ? unlockedWarStage(account, mode.character) : 1;
+        const access = account ? activityAccess(account, { kind: 'war', character: mode.character, stage: unlocked }) : null;
         return `<article class="activity-card" style="--dungeon:${elementAccents[mode.element]}">
           ${activityBanner(mode.name, `banners/${warEncounter(mode.character, 1).banner}`, `${mode.name} activity banner`, true)}
           <p class="eyebrow">${getStarter(mode.character).name} · ${elementLabel(mode.element)}</p>
@@ -127,14 +159,14 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
           ${account ? `<footer class="activity-entry"><label class="dungeon-stage-label">Stage
             <select data-war-stage="${mode.character}" aria-label="${mode.name} stage" ${account ? '' : 'disabled'}>${Array.from({ length: unlocked }, (_, index) =>
               `<option value="${index + 1}" ${index + 1 === unlocked ? 'selected' : ''}>${index + 1} · Lv.${warEncounter(mode.character, index + 1).level}</option>`).join('')}</select></label>
-            <button class="primary-button" data-war="${mode.character}">Enter trial · Free</button></footer>`
+            <button class="primary-button" data-war="${mode.character}" ${access?.unlocked ? '' : 'disabled'}>${access?.unlocked ? 'Enter trial · Free' : 'Locked'}</button>
+            <p class="activity-unlock-hint">${access?.unlocked ? 'Unlocked' : 'Unlocks at'} ${access?.requirement}. Your highest: Lv.${access?.level}.</p></footer>`
               : '<button disabled>Elemental War unavailable: resolve the save error</button>'}
         </article>`;
       }).join('')}</section>
-    <section class="activity-group" id="gameplay-story"><h2>Story</h2><article class="activity-card">
-      <h3>Six beacons · One road</h3><p>Follow a linear campaign across all six elements. Restore each regional beacon to open the next land.</p>
-      ${activityFacts('150 · 25 per region', '1-55', 'Common · Uncommon materials')}
-      <button class="primary-button" data-page="story">Open world map</button></article></section>
+    <section class="activity-group" id="gameplay-story"><h2>Story</h2>
+      ${storyCampaign(account, account ? ownedCharacters(account)[0] ?? 'ember' : 'ember', false)}
+      </section>
     <section class="activity-group" id="gameplay-events"><h2>Events</h2>${roseEvent(account, false)}<button class="text-button" data-page="events">Event details &rarr;</button></section></div>`;
 }
 

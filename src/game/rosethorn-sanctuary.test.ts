@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { currencyModes, infusionStageCount } from '../content/activities';
-import { infusionEncounter, infusionEnemies, infusionDrops, sanctuaryEnemyStats, sanctuarySalePrices, treasurySalePrices } from '../content/infusions';
+import { capturedEnemyStats, infusionEncounter, infusionEnemies, infusionDrops, sanctuaryEnemyStats, sanctuarySalePrices, treasurySalePrices } from '../content/infusions';
 import { sanctuaryLycalisOdds, rollStagedLycalis, fractalisDrop } from '../content/loot-random';
 import { getCreature, creatureLoot } from '../content/creatures';
 import { standardBannerPool } from '../content/standard-banner';
@@ -63,7 +63,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
       }
     }
     expect(sanctuaryEnemyStats(120, false).health).toBeCloseTo(200000);
-    expect(sanctuaryEnemyStats(120, true).health).toBeCloseTo(400000);
+    expect(sanctuaryEnemyStats(120, true).health).toBeCloseTo(500000);
     for (const stage of [0, 26, NaN, 1.5]) expect(() => infusionEncounter('sanctuary', stage)).toThrow();
   });
   it('implements the exact 1-at 50% to 5-at 80% curve and validates RNG and level boundaries', () => {
@@ -148,7 +148,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     expect(creatureSaleOffer(upgraded, copy.instanceId)).toMatchObject(sanctuarySalePrices[0]);
     expect(() => validateCapturedCharacters([{ ...copy, level: 64 }])).toThrow();
     expect(() => validateCapturedCharacters([{ ...copy, acquisition: 'banner-duplicate' }])).toThrow();
-    expect(resolveCapturedFighter(copy).stats.health).toBeCloseTo(sanctuaryEnemyStats(65, false).health * .65);
+    expect(resolveCapturedFighter(copy).stats.health).toBeCloseTo(capturedEnemyStats(65).health * .65);
     for (const ids of [[copy.instanceId, other.instanceId], ['ember', copy.instanceId]]) {
       const state = createInfusionBattle('sanctuary', 24, 1, 'ember', { level: 0, evolution: 1 }, ids,
         { ember: { level: 0, evolution: 1 } }, {}, [copy, other]);
@@ -189,7 +189,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
       expect(() => sellCurrencyCreature(saved, copy.instanceId)).toThrow();
     }
   });
-  it('rereads all protections, rejects nonsale creatures, and preserves both balances/copy on write failure or overflow', () => {
+  it('rereads all protections, rejects nonsale Elemental-Devourers, and preserves both balances/copy on write failure or overflow', () => {
     const saved = storage();
     const copy = createCreatureCopy('infusion:sanctuary:5');
     const account = loadAccount(saved);
@@ -206,7 +206,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
       expect(characterCopyManagement(loadAccount(saved))).toContain('Sale protected');
       saveAccount(saved, account);
     }
-    for (const id of ['ember', account.capturedCharacters![1].instanceId]) expect(() => sellCurrencyCreature(saved, id)).toThrow();
+    for (const id of ['ember', 'capture:00000000-0000-4000-8000-000000000000']) expect(() => sellCurrencyCreature(saved, id)).toThrow();
     const before = saved.getItem(ACCOUNT_KEY);
     const write = saved.setItem;
     saved.setItem = () => { throw new Error('Write denied'); };
@@ -220,13 +220,14 @@ describe('Phase10 Rosethorn Sanctuary', () => {
       expect(saved.getItem(ACCOUNT_KEY)).toBe(overflowing);
     }
   });
-  it('adds the first three wisps to Standard with equal tier odds and atomic independently sellable rewards', () => {
+  it('awards Tranquilitic materials from Standard with equal elemental tier odds and atomic saves', () => {
     const pool = standardBannerPool();
-    expect(pool).toHaveLength(22);
+    expect(pool).toHaveLength(28);
     expect(pool.reduce((total, entry) => total + entry.chance, 0)).toBeCloseTo(1, 14);
     for (let tier = 0; tier < 3; tier++) {
-      const entry = pool.find((candidate) => candidate.id === `infusion:sanctuary:${tier}`)!;
-      expect(entry.chance).toBeCloseTo(.989 * [50, 30, 17][tier] / 97 / 4, 14);
+      const entry = pool.find((candidate) => candidate.kind === 'material' && candidate.id === `tranquilitic-${['common', 'uncommon', 'rare'][tier]}`);
+      if (!entry || entry.kind !== 'material') throw new Error('Material outcome missing.');
+      expect(entry.chance).toBeCloseTo(.989 * [50, 30, 17][tier] / 97 / 6, 14);
       const roll = pool.slice(0, pool.indexOf(entry)).reduce((total, candidate) => total + candidate.chance, 0) + entry.chance / 2;
       const saved = storage();
       const account = loadAccount(saved);
@@ -235,11 +236,11 @@ describe('Phase10 Rosethorn Sanctuary', () => {
       const write = vi.spyOn(saved, 'setItem');
       const result = summonCharacter(saved, () => roll);
       expect(write).toHaveBeenCalledTimes(1);
-      expect(result.copy?.creatureId).toBe(entry.id);
-      expect(result.copy?.level).toBe(infusionEncounter('sanctuary', getCreature(entry.id).stages[0]).level);
+      expect(result.copy).toBeUndefined();
+      expect(result.materials).toEqual({ id: entry.id, amount: entry.amount });
       expect(result.account.lycalis).toBe(10);
       expect(result.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 1 });
-      expect(creatureSaleOffer(result.account, result.copy!.instanceId)).toMatchObject(sanctuarySalePrices[tier]);
+      expect(result.account.materials[entry.id]).toBe(entry.amount);
     }
   });
   it('renders accurate activity, sale, glossary, archives and battle chrome without missing assets', () => {
@@ -258,9 +259,9 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     expect(glossary).toContain('<strong>10</strong>');
     expect(archives(account).match(/data-archive-character=/g)).toHaveLength(126);
     const html = summonHub(account);
-    expect(html.match(/data-banner-entry=/g)).toHaveLength(22);
-    const table = html.slice(html.indexOf('<table'), html.indexOf('</table>'));
-    expect(table).toContain('Rosethorn Wisp');
+    expect(html.match(/data-banner-entry=/g)).toHaveLength(28);
+    const table = [...html.matchAll(/<table[\s\S]*?<\/table>/g)].map(match => match[0]).join('');
+    expect(table).toContain('Tranquilitic');
     expect(table).not.toMatch(/<img|<svg|portrait/);
     const session = createSession('ember', { level: 0, evolution: 1 }, { mode: 'sanctuary', stage: 25 });
     const menu = { addEventListener: vi.fn(), close: vi.fn() };

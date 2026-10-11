@@ -14,6 +14,31 @@ function markup(session: ReturnType<typeof createSession>): string {
 
 describe('shared battle chrome', () => {
   const progress = { level: 105, evolution: 6 };
+  it('uses current status names for frozen online kits without changing their combat data', () => {
+    const session = createSession('sprout', progress);
+    session.state.allies[0].kit!.abilities.skill1.description = 'Consumes all Blooms.';
+    const before = structuredClone(session);
+    const html = markup(session);
+    expect(html).toContain('Botanic Renewal charges');
+    expect(html).not.toContain('Consumes all Blooms.');
+    expect(html).toContain('title="Botanic Renewal · Healing"');
+    expect(session).toEqual(before);
+  });
+  it('moves the existing toolbar into the header on every render without replacing its controls', () => {
+    const appended: object[] = [];
+    let removed = 0;
+    const toolbar = { remove: () => { removed++; }, querySelectorAll: () => [] };
+    const slot = { append: (node: object) => { appended.push(node); } };
+    const menu = { addEventListener: () => {}, close: () => {}, showModal: () => {} };
+    const host = { innerHTML: '', parentElement: { closest: () => ({ querySelector: () => toolbar }) },
+      querySelectorAll: () => [], querySelector: (selector: string) => selector === '#battle-menu' ? menu : selector === '[data-battle-toolbar-slot]' ? slot : null };
+    const view: BattleView = Object.create(BattleView.prototype);
+    Object.assign(view, { host, session: createSession('ember', progress), actorId: 'ember', targetId: '', dragging: false });
+    Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
+    Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
+    expect(removed).toBe(2);
+    expect(appended).toEqual([toolbar, toolbar]);
+  });
   it('renders the complete squad and accessible acting Element-Bearer selector', () => {
     const session = createSession('tide', progress, undefined, { ids: ['tide', 'sprout', 'ember'],
       progress: { tide: progress, sprout: { level: 10, evolution: 1 }, ember: progress } });
@@ -56,9 +81,18 @@ describe('shared battle chrome', () => {
     expect(field).not.toContain('id="end-battle-turn"');
     expect(field).not.toContain('unit-stats');
     expect(field).toContain('id="open-battle-menu"');
+    expect(field).toContain('data-battle-toolbar-slot');
+    expect(field).toContain('class="battle-footer-summary"');
+    expect(field).toContain('id="battle-announcement" role="status"');
+    expect(field).not.toContain('battle-command-bar');
+    expect(field).not.toContain('battle-field-actions');
+    expect(html.match(/data-action=/g)).toHaveLength(5);
+    expect(html).toContain('class="unit-nameplate"');
     expect(html).toContain('aria-labelledby="battle-menu-heading"');
     expect(html).toContain('Pass remaining actions');
     expect(html).toContain('class="battle-unit-intel"');
+    expect(html).toContain('saved rewards');
+    expect(html).not.toContain('saved locally');
   });
   it('shows Story stage 150 with delivered regional art, narrative and final-stage controls', () => {
     const session = createSession('ember', progress, { storyStage: 150 });
@@ -77,13 +111,13 @@ describe('shared battle chrome', () => {
     expect(html).not.toContain('data-result-continue');
     expect(html).toContain('All 150 stages cleared');
   });
-  it('retains honest pending Story art only for the undelivered Infernic region', () => {
+  it('uses delivered Emberwake scenery and boss art in Story battle chrome', () => {
     const html = markup(createSession('ember', progress, { storyStage: 25 }));
     expect(html).toContain('Emberwake March');
-    expect(html).toContain('pending-dungeon-scenery');
-    expect(html).toContain('pending-enemy-art');
-    expect(html).not.toContain('backgrounds/story-emberwake');
-    expect(html).not.toContain('enemies/story-infernic');
+    expect(html).not.toContain('pending-dungeon-scenery');
+    expect(html).not.toContain('pending-enemy-art');
+    expect(html).toContain('backgrounds/story-emberwake-march-arena.png');
+    expect(html).toContain('enemies/story-infernic-boss.png');
   });
   it.each(playableDungeons)('uses the same heading and readout structure in %s', (element) => {
     const html = markup(createSession('ember', progress, { element, stage: 5 }));

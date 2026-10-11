@@ -1,0 +1,54 @@
+html body .ll-starter-selection { width: 100%; max-width: 1160px; margin: auto; padding-block: 20px; }
+html body .ll-starter-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
+html body .ll-starter-heading h1 { margin: 8px 0; font: 700 clamp(24px, 2.6vw, 36px)/1.2 var(--ui-font); }
+html body .ll-starter-heading p:not(.ll-kicker) { margin: 0; color: var(--menu-muted); font-size: .9rem; }
+.ll-starter-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, .9fr); gap: 20px; align-items: start; }
+.ll-starter-choices { min-width: 0; }
+.ll-starter-shared-rating { margin-bottom: 12px; }
+.ll-starter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+html body .ll-ui .ll-starter-card { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; padding: 16px 12px 0; border: 1px solid var(--menu-border); border-radius: 14px; background: linear-gradient(155deg, #272727dd, #111111ed); color: var(--menu-text); font-family: var(--ui-font); transition: border-color 160ms ease, background-color 160ms ease; }
+html body .ll-ui .ll-starter-card[aria-pressed="true"] { border-color: var(--element); box-shadow: inset 0 0 0 1px var(--element); }
+html body .ll-ui .ll-starter-card:hover:not(:disabled) { border-color: var(--element); }
+html body .ll-ui .ll-starter-card:focus-visible { outline: 2px solid var(--element); outline-offset: 3px; }
+.ll-starter-element { color: var(--element); font-size: max(.75rem, 12px); font-weight: 700; }
+.ll-starter-portrait { position: relative; display: block; width: 100%; height: clamp(145px, 15vw, 210px); }
+.ll-starter-portrait .character-idle { display: block; width: 100%; height: 100%; }
+.ll-starter-portrait img { display: block; width: 100%; height: 100%; object-fit: contain; }
+html body .ll-ui .ll-starter-card strong { font-size: clamp(14px, 1.3vw, 20px); line-height: 1.3; text-align: center; }
+.ll-starter-role { font-size: max(.8rem, 12px); line-height: 1.4; text-align: center; }
+.ll-starter-weapon { color: var(--menu-muted); font-size: max(.75rem, 12px); }
+.ll-starter-mark { align-self: stretch; display: grid; place-items: center; min-height: 44px; margin: 4px -12px 0; border-top: 1px solid var(--menu-border); color: var(--element); font-size: max(.75rem, 12px); font-weight: 700; }
+html body .ll-ui .ll-starter-note { margin: 12px 0 0; font-size: max(.8rem, 12px); line-height: 1.5; color: var(--menu-muted); }
+.ll-starter-detail { min-width: 0; padding: 20px; border: 1px solid var(--menu-border); border-top: 2px solid var(--element); border-radius: 14px; background: #181818e8; }
+html body .ll-ui .ll-starter-detail h2 { font: 700 1.4rem/1.25 var(--ui-font); margin: 12px 0; }
+html body .ll-ui .ll-starter-detail p { font-size: .9rem; line-height: 1.6; margin-block: 12px; }
+html body .ll-ui .ll-starter-detail .ll-kicker { color: var(--element); font-size: max(.75rem, 12px); margin: 0; }
+.ll-starter-summary { color: var(--menu-text); }
+html body .ll-ui .ll-starter-detail > .ll-button { width: 100%; min-height: 48px; margin-top: 12px; }
+.ll-starter-story { margin-top: 16px; border-top: 1px solid var(--menu-border); }
+.ll-starter-story summary { display: flex; align-items: center; min-height: 44px; cursor: pointer; font-size: .85rem; color: var(--menu-muted); }
+.ll-starter-story summary::before { content: "+"; margin-right: 8px; }
+.ll-starter-story[open] summary::before { content: "-"; }
+.ll-starter-story summary:focus-visible { outline: 2px solid var(--element); outline-offset: 2px; }
+.ll-starter-story blockquote { margin: 12px 0 0; padding-left: 12px; border-left: 2px solid var(--element); font-size: .9rem; line-height: 1.5; }
+@media (max-width: 900px) {
+  .ll-starter-layout { grid-template-columns: 1fr; gap: 16px; }
+  .ll-starter-detail { padding: 16px; }
+  .ll-starter-portrait { height: clamp(100px, 22vw, 180px); }
+}
+@media (max-width: 480px) {
+  html body .ll-starter-selection { padding-block: 12px; }
+  html body .ll-starter-heading { margin-bottom: 16px; }
+  html body .ll-starter-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .ll-starter-heading > div { display: contents; }
+  html body .ll-starter-heading .ll-kicker { grid-column: 1; grid-row: 1; letter-spacing: .08em; }
+  html body .ll-starter-heading > .ll-button { grid-column: 2; grid-row: 1; }
+  html body .ll-starter-heading h1 { grid-column: 1 / -1; margin: 4px 0; }
+  html body .ll-starter-heading p:not(.ll-kicker) { grid-column: 1 / -1; }
+  .ll-starter-grid { gap: 8px; }
+  html body .ll-ui .ll-starter-card { padding: 12px 6px 0; gap: 6px; }
+  .ll-starter-mark { margin-inline: -6px; }
+  html body .ll-ui .ll-starter-card strong { font-size: 14px; }
+  .ll-starter-role { min-height: 34px; }
+}
+html[data-motion="reduced"] body .ll-ui .ll-starter-card { transition: none; }

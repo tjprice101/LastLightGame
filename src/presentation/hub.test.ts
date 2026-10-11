@@ -79,8 +79,8 @@ describe('game-specific hub layouts', () => {
     expect(home).toContain(`characters/${starter.art}.png`);
     expect(home).toContain(starter.name);
     expect(home).toContain('data-page="story"');
-    expect(home).toContain('Story &rarr;');
-    expect(home).toContain('Explore the world map · 150 stages');
+    expect(home).toContain('<strong>Continue story</strong>');
+    expect(home).toContain('Story · 0 / 150');
     expect(home).not.toContain('Free Battle');
     expect(home).toContain('data-page="squad"');
     expect(home).toContain('data-page="summon"');
@@ -148,7 +148,13 @@ describe('game-specific hub layouts', () => {
       for (const tab of characterTabs) {
         const detail = characterDetail(starter, tab.id);
         expect(detail).toContain(`>${tab.label}</h2>`);
-        if (tab.id !== 'upgrade-0') expect(detail).not.toContain('assets/characters/');
+        if (tab.id !== 'upgrade-0' && tab.id !== 'overview') expect(detail).not.toContain('assets/characters/');
+        if (tab.id === 'overview') {
+          expect(detail).toContain('mono-character-quad');
+          expect(detail).toContain('data-upgrade="level"');
+          expect(detail).toContain('data-upgrade="evolve"');
+          expect(detail.match(/id="upgrade-result"/g)).toHaveLength(1);
+        }
         expect(detail).not.toContain('hub-showcase');
         expect(detail).not.toContain('data-character-tab');
         expect(characterHub(starter, tab.id)).toContain(detail);
@@ -177,7 +183,7 @@ describe('game-specific hub layouts', () => {
     expect(hub.indexOf('class="character-control-panel"')).toBeLessThan(hub.indexOf('class="hub-rail"'));
     expect(hub).toContain(`<span data-owned-title>${characterName(starter.id)}</span>`);
     const overview = characterDetail(starter, 'overview');
-    for (const heading of ['Survival', 'Offense', 'Resource', 'Abilities &amp; passive']) {
+    for (const heading of ['Stats', 'Skills', 'Growth', 'Conduits']) {
       expect(overview).toContain(`>${heading}</h3>`);
     }
     expect(overview.match(/class="hub-ability"/g)).toHaveLength(4);

@@ -48,7 +48,7 @@ describe('attack presentation impact boundary', () => {
     const windup = new Promise<void>((resolve) => { finishWindup = resolve; });
     const visuals = new Promise<void>((resolve) => { finishVisuals = resolve; });
     let calls = 0;
-    view.play = () => ++calls === 1 ? windup : visuals;
+    view.play = () => ++calls <= 2 ? windup : visuals;
     const originalDocument = globalThis.document;
     Object.defineProperty(globalThis, 'document', { configurable: true, value: {
       documentElement: { dataset: { motion: 'system' } },
@@ -63,8 +63,7 @@ describe('attack presentation impact boundary', () => {
       expect(bar.style.width).toBe('100%');
       expect(numbers).toHaveLength(0);
       finishWindup();
-      await Promise.resolve();
-      await Promise.resolve();
+      for (let frame = 0; frame < 12; frame++) await Promise.resolve();
       expect(hp.textContent).toBe(`HP ${110 - damage.amount} / 110`);
       expect(Number.parseFloat(bar.style.width)).toBeCloseTo((110 - damage.amount) / 110 * 100);
       expect(numbers[0].textContent).toBe(`-${damage.amount}`);

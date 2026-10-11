@@ -4,7 +4,7 @@ import { type Stats } from './combat';
 import { legacyDungeonEnemies, legacyDungeonStrikes, type DungeonEnemy } from './dungeon-enemies';
 import { elementSources, type LegacyElementId } from './element-migration';
 import { scaledDrop, rollDrop } from './loot-random';
-import { enemyGrowth, enemyStat, stagedEnemyAttack } from './stat-growth';
+import { enemyCombatStats } from './stat-growth';
 
 export const playableDungeons = elements.map((element) => element.id);
 export type PlayableDungeon = (typeof playableDungeons)[number];
@@ -34,9 +34,7 @@ export function dungeonEncounter(element: PlayableDungeon, stage: number, family
   const variant = variants[family];
   const boss = stage % 5 === 0;
   const stats: Stats = {
-    health: enemyStat(boss ? 110 : 55, boss ? enemyGrowth.bossHealth : enemyGrowth.health, level, 10, .024),
-    damage: stagedEnemyAttack(level, boss),
-    defense: enemyStat(2, boss ? enemyGrowth.bossDefense : enemyGrowth.defense, level, 10, .08),
+    ...enemyCombatStats(level, boss),
     crit: Math.min(0.25, 0.05 + (level - 10) * 0.002),
     critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0,
   };

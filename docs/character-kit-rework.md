@@ -1,5 +1,14 @@
 # Intrinsic character kit rework (D-163 / D-170 / D-172)
 
+**D-211 presentation clarification:** existing family names remain, but native
+readouts explicitly label their counts as stored charges, not applied effects.
+Actual remaining Shield and timed Damage buffs appear separately beside HP.
+All16 generated ability descriptions explain shield refresh/absorption, precise
+Weaken, single-attack critical bonuses and next-turn recovery in plain language;
+pilot triggers replace "effective authored" jargon with actual missing-HP/
+damage/absorption conditions and source restrictions. No kit redesign or numeric
+change. [Contract](menus-and-inventory.md#active-allied-effects-and-clear-ability-copy-d-211).
+
 **Delivered status artwork (D-175):** all nine named PNGs supplied; reviewed
 offline intake/wiring complete. [Workflow](art-workflow.md#delivered-elemental-status-icons-d-175)
 owns original/alpha/hash/URL policy. Shared icons decorate real status/counter/
@@ -7,6 +16,14 @@ equipment text, not new effects; Rose resource signatures resolve their own art.
 This supersedes older prompt-only status statements.
 
 ## Current display names (D-174)
+
+D-189 enforces these names across all presentation surfaces. Native labels,
+passive triggers and spending descriptions share the family catalog; Flora and
+Bliss use Botanic Renewal, not the retired "Blooms" wording. Stack grammar is
+"one stack of [name]" / "per stack". Online frozen kits refresh description text
+from their actual strengths without rewriting combat state. Precise effect
+badges remain distinct from family labels and retain shared icons/tooltips.
+[Cross-screen contract](menus-and-inventory.md#consistent-element-and-status-terminology-d-189).
 
 Owner requests thematic names only, with D-173 mechanics unchanged:
 

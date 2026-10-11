@@ -25,6 +25,5 @@
 .story-campaign button:focus-visible, .story-prologue summary:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
 @media (max-width: 1100px) { .story-world-map { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .story-world-map { grid-template-columns: repeat(2, minmax(0, 1fr)); } .story-stage-path { grid-template-columns: repeat(5, minmax(44px, 1fr)); gap: 5px; } .story-region-panel { padding: 12px; } .story-stage { padding: 6px; } }
-@media (prefers-reduced-motion: reduce) { .story-world-map button { transition: none; } .story-world-map button:hover { transform: none; } }
 [data-motion="reduced"] .story-world-map button { transition: none; }
 [data-motion="reduced"] .story-world-map button:hover { transform: none; }

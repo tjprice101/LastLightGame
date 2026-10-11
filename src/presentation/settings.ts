@@ -21,6 +21,5 @@ export function applyMotion(value: MotionPreference): void {
 }
 
 export function reducedMotion(): boolean {
-  return document.documentElement.dataset.motion === 'reduced' ||
-    matchMedia('(prefers-reduced-motion: reduce)').matches;
+  return document.documentElement.dataset.motion === 'reduced';
 }

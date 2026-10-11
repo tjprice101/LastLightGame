@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { enemies, fighters, type ActionId } from '../content/combat';
 import { openingStarters as starters } from '../content/starters';
-import { act, actionUnavailable, createBattle, damageAmount, endTurn, nextWave, type BattleState } from './battle';
+import { act, actionUnavailable, createBattle, damageAmount, elementalCritFactor, endTurn, nextWave, rollCritical, type BattleState } from './battle';
 import { characterGrowthFactor, characterPotencyFactor } from '../content/progression';
-import { enemyStat, enemyGrowth } from '../content/stat-growth';
+import { enemyCombatStats, enemyGrowth } from '../content/stat-growth';
 
 function controlled(): BattleState {
   const state = createBattle(12345, ['ember', 'tide', 'sprout']);
@@ -91,6 +91,36 @@ describe('Adventure damage and turns', () => {
     expect(critical.state.enemies[0].hp).toBe(1950);
     state.allies[0].stats.crit = 0;
     expect(act(state, 'ember', 'light', state.enemies[0].id).events.find((entry) => entry.kind === 'damage')?.critical).toBe(false);
+  });
+  it('Critical Rate above 100% always crits and turns the excess into a rainbow Elemental Crit at 1.5x critical damage', () => {
+    const state = controlled();
+    state.allies[0].stats.crit = 2;
+    const elemental = act(state, 'ember', 'light', state.enemies[0].id);
+    const hit = elemental.events.find((entry) => entry.kind === 'damage');
+    expect(hit?.critical).toBe(true);
+    expect(hit?.elementalCritical).toBe(true);
+    expect(hit?.message).toContain('Elemental Crit');
+    const actor = state.allies[0];
+    expect(elemental.state.enemies[0].hp).toBe(2000 - damageAmount(actor.stats.damage, 1, state.enemies[0].stats.defense, true, actor.stats.critMultiplier * elementalCritFactor));
+    state.allies[0].stats.crit = 1;
+    const normal = act(state, 'ember', 'light', state.enemies[0].id).events.find((entry) => entry.kind === 'damage');
+    expect(normal?.critical).toBe(true);
+    expect(normal?.elementalCritical).toBeUndefined();
+  });
+  it('only rolls a second Elemental Crit check above 100%, leaving ordinary RNG unchanged', () => {
+    const atOrBelow = controlled();
+    const before = atOrBelow.seed;
+    rollCritical(atOrBelow, 1);
+    const oneRoll = atOrBelow.seed;
+    const above = controlled();
+    expect(above.seed).toBe(before);
+    rollCritical(above, 1.5);
+    expect(above.seed).not.toBe(oneRoll);
+    let elementalHits = 0;
+    const sample = controlled();
+    for (let i = 0; i < 4000; i += 1) if (rollCritical(sample, 1.25).elemental) elementalHits += 1;
+    expect(elementalHits / 4000).toBeGreaterThan(.2);
+    expect(elementalHits / 4000).toBeLessThan(.3);
   });
 });
 
@@ -288,10 +318,10 @@ describe('solo starter battles', () => {
         }
         const base = enemies[unit.definitionId].stats;
         expect(unit.level).toBe(wave);
-        expect(unit.stats.health).toBe(enemyStat(base.health, enemyGrowth.health, wave, 1, .24));
+        expect(unit.stats.health).toBe(enemyCombatStats(wave, false, base).health);
         expect(unit.hp).toBe(unit.stats.health);
-        expect(unit.stats.damage).toBe(enemyStat(base.damage, enemyGrowth.damage, wave, 1, .24));
-        expect(unit.stats.defense).toBe(enemyStat(base.defense, enemyGrowth.defense, wave, 1, 2 / base.defense));
+        expect(unit.stats.damage).toBe(enemyCombatStats(wave, false, base).damage);
+        expect(unit.stats.defense).toBe(enemyCombatStats(wave, false, base).defense);
         expect(unit.stats.crit).toBe(base.crit);
       }
       state.phase = 'cleared';
@@ -450,7 +480,7 @@ describe('wave lifecycle', () => {
     expect(next.wave).toBe(2);
     expect(next.round).toBe(3);
     expect(next.enemies.map((unit) => unit.definitionId)).toEqual(['goblin', 'imp', 'golem']);
-    expect(next.enemies[0].stats.health).toBe(136);
+    expect(next.enemies[0].stats.health).toBe(enemyCombatStats(2, false, enemies.goblin.stats).health);
     expect(actionUnavailable(next, next.allies[0], 'light')).toBeNull();
     expect(next.allies[0].shatter).toBe(30);
   });

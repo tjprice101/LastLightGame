@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createBattle, createDungeonBattle, createInfusionBattle, act, endTurn, nextStage, nextWave, captureSucceeds, actionUnavailable, damageAmount } from './battle';
 import { emptyAccount, saveAccount, loadAccount, saveAccountRewards, setSquad, equipConduit, levelCapturedCharacter, characterProtection, validateAccount, ACCOUNT_KEY } from './account';
-import { capturedProgress, resolveCapturedFighter, type CapturedCharacter } from './character-instances';
+import { capturedProgress, createCreatureCopy, resolveCapturedFighter, type CapturedCharacter } from './character-instances';
 import { infusionEncounter } from '../content/infusions';
 import { enemySkills } from '../content/enemy-skills';
 import { SAVE_KEY, type ProfileStorage } from './profile';
@@ -18,7 +18,7 @@ function copy(tier = 0, boss = false, index = 1): CapturedCharacter {
   const stage = boss ? tier === 5 ? 35 : 5 : tier === 0 ? 1 : tier === 5 ? 31 : 7;
   const encounter = infusionEncounter('abyss', stage);
   return { instanceId: `capture:00000000-0000-4000-8000-${String(index).padStart(12, '0')}`,
-    creatureId: `infusion:abyss:${encounter.tier}`, level: encounter.level, capturedStage: stage, locked: false,
+    creatureId: `infusion:abyss:${encounter.tier}`, level: Math.round(80 + (stage - 1) * 40 / 34), capturedStage: stage, locked: false,
     skills: enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier) };
 }
 function storage(): ProfileStorage {
@@ -39,7 +39,23 @@ function seeded() {
   return { saved, account };
 }
 
-describe('20% capture rewards and retained fixed-form creatures', () => {
+describe('20% capture rewards and retained fixed-form Elemental-Devourers', () => {
+  it.each(['skill1', 'skill2'] as const)('keeps Votive Roselius %s usable at its actual Gauge cost', (action) => {
+    const votive = createCreatureCopy('infusion:roses:1', 6);
+    const state = createBattle(1729, [votive.instanceId], {}, {}, [votive]);
+    const actor = state.allies[0];
+    const cost = action === 'skill1' ? 25 : 40;
+    expect(actor.kit!.abilities[action].name).toContain('Golden Thorn Benediction');
+    expect(actionUnavailable(state, actor, action)).toBe(`Requires ${cost} Shatter Gauge.`);
+    actor.shatter = cost;
+    expect(actionUnavailable(state, actor, action)).toBeNull();
+    const result = act(state, actor.id, action, state.enemies[0].id);
+    expect(result.events).toContainEqual(expect.objectContaining({
+      kind: 'attack', source: actor.id, action, abilityName: actor.kit!.abilities[action].name,
+    }));
+    expect(result.state.allies[0].shatter).toBe(0);
+    expect(actionUnavailable(state, actor, 'ultimate')).toBe('This captured form does not have this ability.');
+  });
   it('uses exactly the [0,.2) threshold and rejects invalid rolls', () => {
     expect(captureSucceeds(0)).toBe(true);
     expect(captureSucceeds(.199999)).toBe(true);
@@ -73,7 +89,7 @@ describe('20% capture rewards and retained fixed-form creatures', () => {
     expect(account.capturedCharacters).toHaveLength(2);
     expect(new Set(account.capturedCharacters?.map((entry) => entry.instanceId)).size).toBe(2);
     for (const entry of account.capturedCharacters ?? []) {
-      expect(entry.level).toBe(80);
+      expect(entry.level).toBe(50);
       expect(entry.skills).toEqual(state.enemies[0].enemySkills);
       expect(entry.locked).toBe(false);
     }

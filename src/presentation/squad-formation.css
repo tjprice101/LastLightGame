@@ -1,0 +1,74 @@
+/* D-236 squad formation: three focal slot cards plus a member picker modal. */
+html body .sanctuary-shell .squad-hub.squad-formation .squad-heading { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-heading h2 { margin: 0; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-heading p { margin: .3rem 0 0; color: #b9b9c2; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-save { display: flex; align-items: center; gap: .9rem; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-save [data-squad-count] { color: #c9c9d2; }
+
+html body .sanctuary-shell .squad-hub.squad-formation .squad-slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.1rem 0 .6rem; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-slot { position: relative; display: flex; flex-direction: column; align-items: stretch; gap: .7rem; min-width: 0; padding: 1rem; border: 1px solid #2f2f35; border-radius: 1.1rem; background: linear-gradient(180deg, #1d1d21, #151518); }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-slot-leader { border-color: color-mix(in srgb, var(--ui-accent, #d8d8de) 55%, #2f2f35); box-shadow: 0 0 0 1px color-mix(in srgb, var(--ui-accent, #d8d8de) 20%, transparent) inset; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-slot h3 { margin: 0; font-size: .82rem; letter-spacing: .14em; text-transform: uppercase; color: #a9a9b3; text-align: center; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-slot-leader h3 { color: var(--ui-accent, #f0f0f4); }
+
+html body .sanctuary-shell .squad-hub.squad-formation .squad-member-preview { display: flex; flex-direction: column; align-items: center; gap: .55rem; width: 100%; min-height: 0; padding: .6rem .6rem 1rem; border: 1px solid #ffffff12; border-radius: .9rem; background: #ffffff05; color: inherit; cursor: pointer; transition: border-color .15s, background .15s, transform .15s; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-member-preview:hover { border-color: #ffffff38; background: #ffffff0a; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-member-preview:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-card-art { position: relative; display: grid; place-items: center; width: 100%; aspect-ratio: 1; max-width: none; border-radius: .75rem; overflow: hidden;
+  background: radial-gradient(circle at 50% 58%, color-mix(in srgb, var(--member-accent, #8a8a95) 30%, transparent), transparent 68%), #0f0f12; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-card-art .character-idle { display: block; width: 100%; height: 100%; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-card-art img { width: 100%; height: 100%; object-fit: contain; }
+html body .sanctuary-shell .squad-hub.squad-formation .empty-squad-slot { font-size: 4rem; color: #ffffff30; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-card-copy { display: flex; flex-direction: column; align-items: center; gap: .35rem; min-width: 0; text-align: center; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-card-copy strong { font-size: 1.05rem; line-height: 1.25; overflow-wrap: anywhere; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-card-copy small { margin: 0; color: #b4b4be; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-slot-actions { display: flex; gap: .55rem; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-slot-actions button { flex: 1; display: flex; align-items: center; min-height: 44px; margin: 0; justify-content: center; text-align: center; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-slot-actions button[hidden] { display: none; }
+
+html body .sanctuary-shell .squad-picker { width: min(64rem, calc(100vw - 2rem)); max-width: none; max-height: min(52rem, calc(100vh - 2rem)); padding: 0; display: none; flex-direction: column; overflow: hidden; border: 1px solid #3a3a42; border-radius: 1.1rem; background: #141417; color: #f2f2f5; }
+html body .sanctuary-shell .squad-picker[open] { display: flex; }
+html body .sanctuary-shell .squad-picker::backdrop { background: #000000b8; backdrop-filter: blur(3px); }
+html body .sanctuary-shell .squad-picker .drawer-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.2rem; border-bottom: 1px solid #2c2c33; }
+html body .sanctuary-shell .squad-picker .drawer-heading h2 { margin: 0; font-size: 1.35rem; }
+html body .sanctuary-shell .squad-picker-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .7rem; padding: .85rem 1.2rem; border-bottom: 1px solid #24242a; }
+html body .sanctuary-shell .squad-picker-filters { display: flex; flex-wrap: wrap; gap: .4rem; }
+html body .sanctuary-shell .squad-picker-filters button { min-height: 40px; padding: .45rem .9rem; font-size: .88rem !important; box-shadow: none; background-image: none; border: 1px solid #3a3a42; border-radius: 999px; background: #1c1c20; color: #cfcfd6; font: inherit; cursor: pointer; }
+html body .sanctuary-shell .squad-picker-filters button::before, html body .sanctuary-shell .squad-picker-filters button::after { content: none; display: none; }
+html body .sanctuary-shell .squad-picker-filters button[aria-pressed="true"] { border-color: #f2f2f5; background: #f2f2f5; color: #111; }
+html body .sanctuary-shell .squad-picker-search { flex: 1 1 14rem; max-width: 20rem; min-height: 40px; padding: .45rem .8rem; border: 1px solid #3a3a42; border-radius: .6rem; background: #1c1c20; color: #fff; font: inherit; }
+html body .sanctuary-shell .squad-picker-error:empty { display: none; }
+html body .sanctuary-shell .squad-picker-error { margin: .7rem 1.2rem 0; padding: .55rem .8rem; border-radius: .6rem; background: #4a1d1d; color: #ffd6d6; }
+html body .sanctuary-shell .squad-picker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: .7rem; padding: 1rem 1.2rem 1.2rem; overflow-y: auto; overscroll-behavior: contain; }
+html body .sanctuary-shell .squad-picker-empty { margin: 0; padding: 0 1.2rem 1.2rem; color: #b4b4be; }
+html body .sanctuary-shell .squad-pick-card { position: relative; display: flex; flex-direction: column; align-items: stretch; gap: .45rem; min-width: 0; padding: .5rem .5rem .7rem; border: 1px solid #2f2f36; border-radius: .8rem; background: #1b1b1f; color: inherit; font: inherit; text-align: center; cursor: pointer; transition: border-color .15s, transform .15s; }
+html body .sanctuary-shell .squad-pick-card[hidden] { display: none; }
+html body .sanctuary-shell .squad-pick-card:hover { border-color: #ffffff55; transform: translateY(-2px); }
+html body .sanctuary-shell .squad-pick-card:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+html body .sanctuary-shell .squad-pick-card[aria-pressed="true"] { border-color: var(--member-accent, #fff); box-shadow: 0 0 0 1px var(--member-accent, #fff) inset; }
+html body .sanctuary-shell .squad-pick-art { display: grid; place-items: center; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: .6rem;
+  background: radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--member-accent, #8a8a95) 28%, transparent), transparent 70%), #0f0f12; }
+html body .sanctuary-shell .squad-pick-art > *, html body .sanctuary-shell .squad-pick-art .character-idle { display: block; width: 100%; height: 100%; }
+html body .sanctuary-shell .squad-pick-art img { width: 100%; height: 100%; object-fit: contain; }
+html body .sanctuary-shell .squad-pick-copy { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
+html body .sanctuary-shell .squad-pick-copy strong { font-size: .88rem; line-height: 1.25; overflow-wrap: anywhere; }
+html body .sanctuary-shell .squad-pick-copy small { color: #a9a9b3; font-size: .75rem; }
+html body .sanctuary-shell .squad-pick-tag:empty { display: none; }
+html body .sanctuary-shell .squad-pick-tag { position: absolute; top: .45rem; left: .45rem; padding: .15rem .5rem; border-radius: 999px; background: #f2f2f5; color: #111; font-size: .7rem; letter-spacing: .04em; }
+
+@media (max-width: 860px) {
+  html body .sanctuary-shell .squad-hub.squad-formation .squad-slots { grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+}
+@media (max-width: 540px) {
+  html body .sanctuary-shell .squad-hub.squad-formation .squad-slots { grid-template-columns: 1fr; }
+  html body .sanctuary-shell .squad-hub.squad-formation .squad-card-art { max-width: 17rem; margin-inline: auto; }
+  html body .sanctuary-shell .squad-picker { width: 100vw; max-height: 100vh; height: 100vh; border-radius: 0; }
+  html body .sanctuary-shell .squad-picker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  html body .sanctuary-shell .squad-picker-search { max-width: none; }
+}
+:root[data-motion="reduced"] body .sanctuary-shell .squad-pick-card, :root[data-motion="reduced"] body .sanctuary-shell .squad-hub.squad-formation .squad-member-preview { transition: none; }
+:root[data-motion="reduced"] body .sanctuary-shell .squad-pick-card:hover { transform: none; }
+
+html body .sanctuary-shell .squad-hub.squad-formation .squad-slot-actions button { justify-content: center !important; text-align: center !important; padding-inline: .9rem !important; background-image: linear-gradient(135deg, color-mix(in srgb, var(--member-accent, #edb3d5) 12%, #1d1c21), #141317) !important; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-slot-actions button:hover, html body .sanctuary-shell .squad-hub.squad-formation .squad-slot-actions button:focus-visible { background-image: linear-gradient(135deg, color-mix(in srgb, var(--member-accent, #edb3d5) 24%, #1d1c21), #18171b) !important; }
+html body .sanctuary-shell .squad-hub.squad-formation .squad-slot-actions .squad-remove { color: #f0b7b7; }

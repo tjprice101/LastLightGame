@@ -67,8 +67,8 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
       }
     }
     expect(starts).toEqual([1, 6, 10, 14, 18, 22]);
-    expect(treasuryFractalisDrop(65)).toEqual({ minimum: 100, maximum: 200, chance: 1 });
-    expect(treasuryFractalisDrop(120)).toEqual({ minimum: 1000, maximum: 2000, chance: 1 });
+    expect(treasuryFractalisDrop(65)).toEqual({ minimum: 133, maximum: 266, chance: 1 });
+    expect(treasuryFractalisDrop(120)).toEqual({ minimum: 4860, maximum: 9720, chance: 1 });
     for (const level of [64, 121, 65.5, NaN]) expect(() => treasuryFractalisDrop(level)).toThrow();
     for (const stage of [0, 26, NaN, 1.5]) expect(() => infusionEncounter('treasury', stage)).toThrow();
   });
@@ -128,41 +128,37 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     expect(view.host.innerHTML).not.toContain('enemies/undefined');
     const account = emptyAccount();
     expect(gameplayHub(account)).toContain('data-infusion="treasury"');
-    expect(gameplayHub(account)).toContain('100-200 Prismatica at Lv.65 to 1,000-2,000 at Lv.120');
+    expect(gameplayHub(account)).toContain('133-266 at Lv.65) and multiplies up to 20x by Lv.120 (4,860-9,720)');
     expect(gameplayHub(account)).toContain('assets/banners/treasury-banner.png');
     expect(archives(account).match(/data-archive-character=/g)).toHaveLength(126);
   });
-  it('creates base EBs, independent creature rewards and exact Lv50 Omnic duplicate copies without modifying old progress', () => {
+  it('creates base EBs and material bundles with larger Rare duplicate conversions without modifying old progress', () => {
     const saved = funded();
     const account = loadAccount(saved);
     account.characters.ember = { level: 75, evolution: 4, weaponRank: 3 };
     saveAccount(saved, account);
     const duplicate = summonCharacter(saved, () => 0);
     expect(duplicate.duplicate).toBe(true);
-    expect(duplicate.copy?.creatureId).toBe('infusion:treasury:5');
-    expect(duplicate.copy?.level).toBe(50);
-    expect(duplicate.copy?.acquisition).toBe('banner-duplicate');
+    expect(duplicate.copy).toBeUndefined();
+    expect(duplicate.materials).toEqual({ id: 'infernic-rare', amount: 15 });
     expect(duplicate.account.characters.ember).toEqual(account.characters.ember);
     expect(duplicate.account.squad).toEqual(['ember']);
     expect(duplicate.account.lycalis).toBe(90);
     expect(duplicate.account.bannerPity?.standard).toEqual({ highestStar: 1, unownedHighestStar: 1 });
-    expect(resolveCapturedFighter(duplicate.copy!).stats.health).toBeGreaterThan(0);
-    expect(validateCapturedCharacters([duplicate.copy])).toEqual([duplicate.copy]);
     const newEB = summonCharacter(saved, () => .002);
     expect(newEB.entry.id).toBe('tide');
     expect(newEB.account.characters.tide).toEqual({ level: 0, evolution: 1, weaponRank: 0 });
     expect(newEB.account.bannerPity?.standard).toEqual({ highestStar: 2, unownedHighestStar: 2 });
     const pool = standardBannerPool();
-    for (const entry of pool.filter((entry) => entry.kind === 'creature')) {
+    for (const entry of pool.filter((entry) => entry.kind === 'material')) {
       const index = pool.indexOf(entry);
       const roll = pool.slice(0, index).reduce((sum, candidate) => sum + candidate.chance, 0) + entry.chance / 2;
       const fresh = funded();
       const first = summonCharacter(fresh, () => roll);
       const second = summonCharacter(fresh, () => roll);
-      expect(first.copy?.creatureId).toBe(entry.id);
-      expect(first.copy?.level).toBe(infusionEncounter(getCreature(entry.id).mode!, getCreature(entry.id).stages[0]).level);
-      expect(first.copy?.instanceId).not.toBe(second.copy?.instanceId);
-      expect(second.account.capturedCharacters).toHaveLength(2);
+      expect(first.materials).toEqual({ id: entry.id, amount: entry.amount });
+      expect(second.account.materials[entry.id]).toBe(entry.amount * 2);
+      expect(second.account.capturedCharacters).toBeUndefined();
     }
   });
   it('commits pity guarantees/reward/cost in one write, including500 all-owned conversion and failed retry', () => {
@@ -185,7 +181,8 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
       expect(result.guarantee).toBe(allOwned ? 'all-owned-highest-star' : 'unowned-highest-star');
       expect(result.account.bannerPity?.standard).toEqual({ highestStar: 0, unownedHighestStar: 0 });
       expect(result.account.lycalis).toBe(90);
-      expect(result.copy?.level).toBe(allOwned ? 50 : undefined);
+      expect(result.copy).toBeUndefined();
+      expect(result.materials).toEqual(allOwned ? { id: 'infernic-rare', amount: 15 } : undefined);
       expect(write).toHaveBeenCalledTimes(1);
       expect(loadAccount(saved)).toEqual(result.account);
     }

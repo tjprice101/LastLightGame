@@ -1,5 +1,65 @@
 # Units and progression
 
+## Reference Team upgrade animation correction (D-198)
+
+Saved level/evolution/Max Level presentation uses the shared
+`.hub-showcase .hub-portrait` container, not the retired `.character-hub`
+ancestor. Current Team and retained Character markup both expose that portrait.
+Portrait animation CSS and reduced-motion rules share the same selector.
+The reference portrait positions its overlay locally. This prevents the
+celebration error from aborting the subsequent saved stat-reveal presentation;
+no additional transaction, reward, growth or cost change.
+`upgrade-reference.test.ts` exercises actual Team markup, portrait-preserving
+updates, level/evolution celebrations, seven-stat reveal and reduced motion.
+
+**D-192:** character stat/cost/cap rules are unchanged. Stronger hostile scaling
+now rewards builds and squad utility. Activity access uses highest owned
+Element-Bearer level; Heaven/Abyss opens at50 with fodder/material levels aligned
+to the existing evolution caps. Captures retain their original playable stats.
+See [balance](combat.md#enemy-progression-rebalance-d-192) and
+[fodder access](evolution-fodder.md).
+
+## Animated upgrade results (D-185)
+
+Every successful single level, Max Level and evolution opens a game-native
+result presentation after persistence and menu refresh. Captured creatures
+receive the same presentation for single and bulk leveling, using their exact
+copy identity and fixed-form portrait. Existing portrait-preserving updates and
+inline Element-Bearer celebration remain.
+
+D-231 layout: the portrait is bounded above a separate identity block with a
+high-contrast level/evolution badge; only changed stats appear as cards and
+unchanged stats are listed once on a muted line with their current values.
+
+The shared reward-screen foundation supplies the elemental reveal, portrait,
+Skip animation, explicit Continue, Escape, focus restoration and disposal.
+Upgrade results say "Upgrade saved", not "Reward saved". Staggered cards for the changed stats among
+show effective Health, Attack, Defense, Critical rate, Critical multiplier,
+Shatter capacity and Elemental damage before/after and their signed differences.
+Values resolve from pre-transaction and confirmed post-transaction account
+snapshots with actual equipment/upgrades, not a predicted target. Max Level
+shows its entire saved gain; evolution keeps the real retained level.
+Gains/losses use existing green/red stat-change styling and unchanged stats stay
+neutral. Tiny nonzero gains that would round to zero use three significant
+digits in the delta only; ordinary stat formatting and combat math are unchanged.
+
+Reduced motion immediately reveals the static result and disables card
+animation. Desktop uses four stat columns; mobile uses two. At 390 x 844,
+single/evolution/captured-Max fixtures show all seven cards and Continue without
+content scrolling. Shorter screens retain contained scrolling and visible
+Continue. No transaction runs from animation or dismissal. Failed transactions
+never show this result; post-save presentation errors explicitly retain the
+saved upgrade and do not invite a duplicate purchase.
+
+Validation: `npm test -- --maxWorkers=2`: 101 files / 1,438 tests passed.
+`npm run build`: TypeScript/Vite passed, 201 modules (existing bundle advisory).
+Targeted upgrade-result/upgrade-celebration/reward-screen/Max Level:
+4 files / 45 tests passed. Browser checks cover seven stat rows, signed/fractional
+gains, unchanged captured stats, correct evolved/fixed portraits, Skip/Continue,
+normal card animation and immediate reduced-motion reveal; no storage writes.
+Hidden integrated-browser animation clocks were explicitly advanced for the
+normal-motion fixture, not treated as natural wall-clock playback.
+
 **Current native-effect direction (D-173):** shared elemental families and fewer
 personal counters, Rose-only precise signatures. [Current contract](character-kit-rework.md#current-consolidation-contract-d-173)
 supersedes historical all16-resource descriptions. No progression/save/gear

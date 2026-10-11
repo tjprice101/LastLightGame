@@ -1,5 +1,13 @@
 # Evolution creature infusion (Phase7)
 
+**D-192 progression correction:** highest-owned Element-Bearer Lv.50 opens
+Heaven/Abyss. Form3 starts at stage13/Lv.65, form4 at19/Lv.75 and form5 at25/Lv.85.
+Evolution/level specialties start at75, so the existing Lv.60/75/90 evolution
+caps no longer require entry to a Lv.80+ starting mode. Counts, explicit copy
+selection, protection and atomic costs below are unchanged. Rose characters
+still use Roselius; develop another owned bearer to unlock their Lv.75 activity.
+See [schedule](gameplay-and-elements.md#two-infusion-modes).
+
 D-100's three [rose event EBs](crimson-roses.md) keep the same1/2/3-copy and
 form3+/4+/5+ gates but require Roselius, regardless of their Tranquilitic/
 Chaotic combat element. Character-aware requirement/cost helpers drive both

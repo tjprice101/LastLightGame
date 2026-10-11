@@ -1,5 +1,770 @@
 # Menus and inventory
 
+## Conduit bonus emphasis and owned search (D-239)
+
+Total bonuses compares final equipped stats against the same member's unequipped
+base stats. The base stays white. Only the net bonus and final value are green
+when above that base or red when below it; arrows, signs and exact values remain
+visible so color is not the only cue. A penalty does not turn a still-above-base
+total red. Compare unrounded values using the shared direction helper; unchanged
+rows stay omitted. Equipment and combat calculations are unchanged.
+
+Your Conduits has a search field for names, canonical elements, effects and
+descriptions/lore (also stat labels, rarity and power). Searches ignore case and
+require every whitespace-separated keyword to match somewhere in the entry.
+For example, `infernic burn` finds entries matching both words; `interlocking`
+finds Siegebound Drive through its lore. Elementless entries can be found with
+`any element`. A live Showing N of M count and explicit no-match message
+distinguish filtering from an empty collection. Clearing restores all owned rows.
+
+Search only filters the owned list, not equipped slots or eligibility. The
+in-memory query survives equip/unequip refreshes and member switching, without
+wallet writes. Existing disabled reasons and actual transaction hooks remain.
+Validation is in `conduit-loadout.test.ts`, including DOM filtering, no account
+mutation, refresh retention and net-color direction, plus shared UI/copy suites.
+
+## Dedicated Conduit loadout page (D-238)
+
+Team's Conduits tab and the Stats & Skills summary's Full view/Open full Conduit
+view actions open a dedicated page, not an equipment panel beneath the character
+portrait. Captured Elemental-Devourer details use the same summary and full-page
+entry. The page omits the Team sidebar, character header and growth tabs.
+
+The header has Back to the selected member, their name with the filled-slot count
+and squad member pills. Switching pills keeps the full loadout open; Back returns
+to that member's detail. The loadout has a separate Master card and eight ordinary
+slot cards showing actual art, upgrade pips, rarity, effects, level/next level and
+Upgrade/Unequip/swap controls. Total bonuses and the owned Conduits list occupy
+the right column, stacking below on narrow screens. Empty slots are centered and
+dashed; controls are neutral outlined surfaces without leader-accent stripes,
+selected/equipped pills are white, and disabled controls remain gray.
+
+The owner's HTML reference supplies layout only. Keep the implemented Master
+system, shared per-character unlocks, actual upgrade caps, Omnic/element/duplicate
+restrictions and existing online/offline atomic transactions, rather than the
+mock's reserved Master or move-between-characters placeholder rules. Refreshing
+equipment stays on the full page. Returning through Team after visiting
+Store/Upgrade restores the selected loadout, without saving navigation state
+to the wallet.
+
+Validation: `conduit-loadout.test.ts` covers full-page structure, member tabs,
+copy-specific controls, ownership rejection and unchanged account data;
+`reference-ui.test.ts` covers the detail summaries. Browser checks cover
+member switching, Back/reopen, captured equip/unequip and narrow-page overflow.
+
+## Information topic menus (D-220)
+
+Gameplay information opens a topic menu instead of one long page. Topics:
+Getting started, Story, Training, Elemental dungeons, Evolution infusion,
+Currency farms, Passion of Crimson Roses, Awaken the Machines, Elemental War and
+Continuing encounters. Each card shows a title and a short summary. Selecting one
+shows only that topic, with an "All topics" back button that returns focus to the
+same card. Reopening the dialog always starts on the list. Use the shared
+`informationTopics(id, topics)` helper in `presentation/information.ts`; it
+rejects duplicate topic IDs. `bindInformation` owns the navigation.
+The rules text is the same as before; only the organization changed.
+
+## Material Exchange categories and 10-pull (D-218)
+
+Stores > Material Exchange has two category buttons:
+
+- **Normal Game Materials**: the six Common elemental materials at 80 Prismatica each.
+- **Limited-time Event Materials**: the six Roses Under Sunny Skies Rosethorn
+  materials, Seed→Soul, at 2,500 / 7,500 / 25,000 / 75,000 / 250,000 / 750,000
+  Prismatica each. A note and the detail panel state they are only for
+  Rosetta, Thornia and Crinso.
+
+`content/material-exchange.ts` owns the catalog. Each product has Buy 1 / Buy 5 /
+Buy 10 buttons showing the exact total; a button is disabled when unaffordable.
+There are no bulk discounts. Purchases work online (server `purchaseMaterial`
+with the product ID) and offline (`purchaseExchangeMaterial`, one atomic local
+write). Unknown products, other quantities, insufficient Prismatica and
+inventory overflow are rejected without spending.
+
+Buying an event material first opens a styled in-game warning naming those
+characters, with **Do not show again**, **Back** and **Purchase**. Do not show
+again stores `last-light.event-material-warning=hidden` (outside the save) and
+cancels that purchase; later event purchases use the ordinary confirmation.
+Switching category selects that category's first product. The layout wraps on
+phones without horizontal scrolling. The banner 10-pull is described in
+[summoning](summoning-and-economy.md#summon-10-pull-d-218).
+
+## Isolated development debug profile (D-217)
+
+On a development build, type the exact case-sensitive `Iamthelight` on any
+menu (including title/selection) outside text fields. It starts a fresh
+in-memory test profile: all16 Element-Bearers at final evolution/current level
+cap, all85 ordinary Conduits at +5, all48 Masters, every staged activity and
+Story clear, every creature discovery/defeat and three Lv120 copies of every
+capturable form. All48 material types receive1,000,000; both currencies and
+Broken Mechanical Components receive1,000,000,000; Master chests receive100.
+Equipment starts empty so the tester can choose builds.
+
+The shortcut is disabled in production, combat, dialogs, Player info and
+during pending online operations/activity transitions. Typing in inputs,
+textareas, selects or editable content never activates it. No actual save
+rewrites, online grants, paid access or missing-art substitutes.
+
+All local gameplay/settings persistence goes through the same storage adapter;
+after activation it reads/writes only memory and never falls through to real
+storage. Real save-data management, exports/imports/deletion and online
+operations are unavailable in debug mode, including the menu Player info
+route. A persistent DEBUG indicator/Exit debug button is visible. Exit or a
+page reload discards the test profile and returns to the original saves/auth.
+Normal non-debug persistence remains unchanged. Server-only account/social/
+cosmetic features are intentionally not unlocked by this local test profile.
+
+Validate complete catalogs against live content, normal storage forwarding,
+production refusal, isolated transactions/settings/removals, exact keyboard
+matching and no activation in blocked contexts. Browser-check activation,
+max progress, equipment/Master changes, blocked real save UI and unchanged
+raw browser storage before/after Exit debug.
+
+## Organized Team sub-menus and ability dialogs (D-216)
+
+Team Element-Bearer details now use persistent Stats & Skills, Level,
+Evolution and Conduits sub-menus instead of four independently scrolling
+panels. Switching updates only the detail area, preserving header, portrait
+and navigation. Existing transient tab history restores the selected area.
+On narrow phones the selected character content precedes the squad sidebar.
+
+Conduits owns eight ordinary slots and a separate named Master section. D-229
+replaces the plain grid with a loadout page (presentation/conduit-loadout.ts):
+header "Name · Conduits" with filled count and squad tabs; left Loadout panel
+with the Master card and two-column slot cards showing art, upgrade pips,
+effect, Level L of 5 / next level, Upgrade, Unequip and a swap selector; right
+Total Bonuses (before -> after) and Your Conduits list with Equip buttons
+(disabled with a reason when full/ineligible). Columns stack below 760px
+container width; the owned list scrolls inside its panel. Overview shows a
+Conduits summary card and the header a Conduits n/8 chip, both opening this
+page. Store and Restore/Upgrade remain
+linked existing destinations, not a combined transaction screen (owner choice).
+Effective equipment stats are available on demand. Master selection uses the
+delegated change path so it still works after an in-place sub-menu update.
+Captured equipment controls retain the actual copy ID, not the selected
+Conduit ID.
+
+Level/Evolution keep exact canonical costs, material names/icons, Owned /
+Required values, affordability, level gates, specialty/event requirements
+and explicit fodder selection. Resources and actions stay visible; seven
+stat changes and the evolution silhouette are in an optional preview.
+Use natural page scrolling rather than clipped or independently scrolling
+panels; resources come first on phones.
+
+Passive, Skill 1, Skill 2 and Last Flare are compact named/icon buttons opening
+native in-game information dialogs. Details use the current resolved kit,
+stored-resource rules, actual Gauge costs/cooldowns and equipped Conduit/Master
+rules. Captured skills also open dialogs, clearly retaining unavailable slots.
+Close and Escape preserve the underlying screen; no ability upgrade or combat
+mechanic changes. Rich trigger markup is separate from the close button's
+plain accessible label.
+
+Validation: all16 Element-Bearers/forms must match canonical level/evolution
+costs without writes; check four sub-menus at320/390/1024/1460px, all four
+ability dialogs, retained portrait/header, reachable controls and exact large
+counts. Equipment protections, atomic upgrades, confirmations and saved reward
+presentation remain unchanged.
+
+## Inventory panels without collapse (D-215)
+
+Inventory uses natural-height grid rows and page scrolling, not fixed
+fractional rows that squeeze currency and holdings panels. The two currencies
+share an explicit full-width row and stack on narrow phones. Masters/chests
+have a dedicated full-width section; Materials and ordinary Conduits remain
+simultaneously visible, side by side on desktop and stacked on phones.
+Holdings lists grow with content without nested scroll or overlapping panels.
+Decorative empty slots stay compact and never represent a storage limit.
+Preserve all counts, exact balances, chest actions, Store/Upgrade routes and
+transactions; this is a presentation correction only.
+
+Validation: empty, screenshot-like, populated and unavailable inventories at
+320/390/1024/1460px must have noncollapsed, nonintersecting panels, no horizontal
+overflow and reachable actions. Include all Masters/Conduits and maximum-safe
+balances/material counts without mutating a real account.
+
+## Material summon presentation (D-214)
+
+Both banners replace new creature pulls/conversions with material bundles up
+to Rare. Rates & Information displays exact quantities, material names, rarity
+and rates; material filters say Common/Uncommon/Rare rather than star values.
+Keep character star tiers, costs,80/150 pity and bonus rules. Saved reveals and
+inline receipts use awarded material art/names/counts; duplicate results explain
+the conversion to15 Rare materials. Inventory Help includes banner sources.
+Existing captured creatures are not removed or converted; old saved server
+receipts remain displayable. See the [economy contract](summoning-and-economy.md#material-banner-rewards-d-214).
+
+## Readable activity banners and unclipped controls (D-213)
+
+Activity-card titles sit below artwork on a solid dark surface, not over
+potentially bright or busy pixels. Shared stage-entry footers are static,
+wrapping rows: stage choice and action retain usable width, and unlock guidance
+occupies its own full row. Cards grow naturally with page scrolling; do not
+compress the footer to fit a fixed-height internally scrolling card.
+This covers all three Elemental War trials, dungeons, infusion, currency farms,
+Machines and Roses. Machines/Roses have no unused location-picker column.
+
+Shared text/filled buttons wrap complete labels. Disabled menu controls retain
+readable contrast rather than fading their entire surface. Quiet menu labels
+use a lighter neutral; preserve themed accents, Georgia, focus and existing
+selection dialogs. Team level/evolution progress wraps on narrow phones, and
+Home artwork stays contained in its button without changing portrait bytes.
+No entry gates, stage choices, costs, rewards, recruitment odds or save changes.
+
+Validation: check all16 activity cards at320/390/1024/1280px with locked and
+unlocked accounts, including War stage10. Neither page/card nor button/title
+may overflow horizontally, and labels must not exceed control height. Check
+Home, Team, Inventory, Summon, Store and Upgrade at those widths; War title,
+identity, fact labels, disabled entry and unlock hint must exceed4.5:1 contrast.
+
+## Training panel polish (D-212)
+
+Training uses the entire content column, without an empty location-picker
+column. A bounded grassy-field scenery header leads into three compact facts,
+saved-squad/Continue guidance and the actual Prismatica reward. A separated
+footer keeps Enter Training and the per-defeat save/quit note together.
+The card grows naturally with page scrolling rather than an internal scrollbar;
+phone facts wrap without horizontal overflow. Preserve Georgia, the existing
+activity selector, route IDs, entry handler and all Training mechanics.
+
+## Active allied effects and clear ability copy (D-211)
+
+Allied field HP readouts now include a compact wrapping row of actual active
+effects: remaining Shield points, outgoing Damage bonus with its last active
+turn, Defense reduction, one-hit protection and Last Flare recovery. The shared
+readout also serves captured creatures and Battle reference. Hide zero/expired/
+defeated effects; use existing status art plus exact text, never icons alone.
+The row spans the full health-card grid width so HP cannot collapse into a
+zero-width column. Keep complete values and phone wrapping.
+
+Typed event-time buff snapshots from character, pilot and Conduit/Master
+producers update the field at impact, including shields absorbing damage.
+Use pre-action presentation ledgers rather than final-state guesses or message
+parsing. Historical events without snapshots still support shield gain deltas
+and shieldRemaining; other active effects appear from real state on final render.
+No new combat effects, calculations, RNG, account fields or load writes.
+
+All16 Element-Bearer descriptions share clarified rules: Shield absorbs damage
+before HP and keeps the higher amount on refresh; Weaken lowers enemy outgoing
+damage, not Defense; critical bonuses are only for that attack; Last Flare
+recovery blocks the caster's next player turn, not allies. Personal family stacks
+are explicitly stored charges, separate from applied Shield/Burn/healing.
+Triggers explain missing-HP healing, living owners and ability-versus-Conduit
+sources; Bliss still requires healing another living ally. Existing names,
+numeric strengths, target sets, limits/costs/cooldowns and frozen kits remain.
+
+## Battle speed stays available (D-210)
+
+Battle speed1x/2x/3x is presentation-only and remains usable during encounter
+entrances, local action animations and authoritative requests/playback. Combat
+controls and Leave/Settings remain locked while resolving; restoring the
+retained toolbar on render must reset those utilities to the current busy state
+rather than carry a stale disabled attribute forward. Preserve toolbar nodes/
+listeners, active animation rate updates, persisted speed and all combat/save
+rules. Regression coverage includes entrances, local/online actions and server
+rejection with actual retained DOM controls.
+
+## No sidebar Menu (D-209)
+
+Owner explicitly requests removing the right-side Menu and its top-bar trigger,
+not replacing it with another menu dialog. Shared headers no longer render it.
+Settings opens directly from the gear control and returns focus to that control
+on closing; Collections has a direct book control beside Help/Profile. Phone
+utility rows accommodate all four controls at48px without sideways overflow.
+
+Existing paths remain: currency buttons/Home Inventory open holdings, Home
+Market opens Stores, Inventory/Team/Store link to Conduit Store/Upgrade, Home
+opens Story and Play includes Events. Keep the four primary destinations and
+battle toolbar unchanged. Save-data management remains exclusively Player info.
+Help describes these direct routes. This supersedes older Menu-drawer contracts
+below; Help and Settings dialogs remain, only the sidebar Menu is removed.
+
+## Uncluttered banners and reduced pity (D-208)
+
+Summon separates banner selection/pity, unobstructed 16:9 artwork/title and
+single-draw cost/action/result. Remove the character/star badge cloud, separate
+Showcase control and inline rate tiers from this page; Home Showcase is unchanged.
+Rates & Information alone contains the complete text-only outcome tables,
+aggregate tier totals, filters and pity/reward rules. Rates come first, rules
+follow; filters hide entire unselected tiers. Keep full names, awarded rarity,
+stars and precise rates, with wrapping table columns and one natural vertical
+dialog scroll rather than sideways or independent tiny list scrollers.
+
+Both banners use80 highest-star /150 unowned-highest-star pity. Display actual
+saved counters even when above the new limits, clamp only visual meters and show
+Next draw guaranteed when due. Honor existing progress on the next successful
+draw without rewriting accounts on read. Preserve cost, base rates, independent
+banner counters and atomic transactions. This supersedes older Summon layout
+and200/500 display guidance below; see [exact rules](summoning-and-economy.md#independent-banner-pity).
+
+## Organized opening starter selection (D-207)
+
+Opening selection now uses a real React StarterSelection component with three
+compact, equal-width cards and a selected-character panel alongside on desktop.
+Shared five-star/Common rating appears once; each card retains its element,
+canonical form name, portrait/facing, role, weapon and selected state. The
+selected panel shows identity/role/tagline and Begin before optional native
+Read story disclosure. Full origin, awakening, lore and vow remain available.
+
+Phone/tablet layouts put the panel below the three-card comparison row instead
+of stacking three full-height portraits. Keep Georgia, character palettes,
+shared gradient controls, 44px+ targets, contained artwork and natural vertical
+scroll when needed; no clipped content or horizontal scroll. Selecting retains
+portrait DOM/focus and the elemental reveal, without rebuilding the screen.
+Player info remains accessible; returning restores the choice and detail panel.
+Begin locks actions while saving, preserves existing offline confirmation/online
+bootstrap authority and opens Story only after success. No new grants or load
+writes. Desktop1024/1280 by768 should show all choices and Begin without scrolling;
+390 by844 should show Begin before the bottom edge with story closed.
+
+## Gradient buttons with off-center labels (D-206)
+
+Every button without its own artwork receives a subtle gradient: a 135deg
+leader-accent wash plus a soft vertical shade, layered with `background-image`
+only so existing fill colors survive. `src/presentation/button-style.ts`
+(installed once from `main.ts`) observes the DOM and tags each button, link
+button or `role="button"` once via `data-button-surface`:
+
+- `art`: url() background or a large image/portrait (starter cards, banners,
+  Story arena, portraits, roster art). Never restyled.
+- `filled`: already has its own gradient fill (for example primary buttons).
+  Fill kept; label becomes bold and left anchored.
+- `text`: ordinary labelled controls. Gradient, bold left-anchored label and a
+  small accent marker bar at the leading edge.
+- `icon`: icon-only or very short/small controls. Gradient only, stays centered.
+- `tile`: tall multi-line cards. Gradient, left-aligned copy, bold heading in the
+  top-left corner (Home Market/Inventory keep details bottom-left, arrow bottom-right).
+
+Battle field units are never tagged. `src/presentation/button-style.css` is the
+last imported stylesheet. Preserve Georgia, leader accents, 44px targets, visible
+focus and all behavior; this is presentation only.
+
+## Activity navigation without sideways scrolling (D-205)
+
+The Activity sidebar is a single non-wrapping vertical column on desktop:
+section groups do not shrink or wrap into parallel columns, and links do not
+inherit legacy fixed horizontal-tab flex sizes. Long labels wrap within the
+available width. Vertical scrolling remains available when necessary.
+On phones the categories form a responsive wrapping grid rather than a sideways
+tab strip. Every category stays reachable with at least44px targets; no overflow
+masking or text clipping. Validate rail scrollWidth equals clientWidth at desktop
+and phone widths, including short-height windows.
+
+## Conduit panel fit and in-place updates (D-204)
+
+Conduit Store artwork stays inside its card or bounded 200px detail stage;
+the icon frame must not inherit a flex basis/aspect ratio that overlaps titles,
+rarity or effects. Upgrade detail artwork uses the same contained stage.
+Preserve source artwork and upgrade meters rather than masking overflow.
+
+Selecting a Store item or owned upgrade target updates its detail/action panels
+without rebuilding the menu shell, header or catalog/owned list. Selection
+states, focused cards, catalog scroll and existing art nodes survive. Rarity
+filters replace catalog contents only when their entries change. Purchases
+refresh owned counts, affordability and header balances; upgrades refresh levels,
+meters, effects and component costs. New transaction controls are bound once;
+the existing Earn components navigation control retains its handler. Confirmations,
+atomic persistence, saved reward presentation and online authority are unchanged.
+Clicking an already selected target does nothing. Other menu migration remains
+separate; this is not a claim that all existing menus now update incrementally.
+
+## Menu header and content scale (D-203)
+
+The menu header is deliberately larger than surrounding content: 5.15rem minimum
+height, larger brand/currency icons, 1.05rem navigation labels and 48px minimum
+navigation/utility controls. Main menu body text is .95rem with modestly reduced
+panel/card spacing and headings. Georgia, leader accents, portrait sizes, full
+numeric values, 12px note floors and 44px content controls are retained.
+
+Use shared reference-layout.css rules, not CSS zoom/transforms or root font
+changes. Compact desktop preserves separate navigation/wallet columns; phone
+wallets place currencies above three utility controls and retain the bottom
+dock. Maximum-safe balances wrap without overlap or horizontal scrolling.
+Title, pre-game Player info, dialogs and battle are not globally rescaled.
+Validate actual Home/Team/Play/Summon/Inventory/Collections/Store/Upgrade/Profile
+renderers at phone and desktop widths, with ordinary and maximum-safe balances.
+
+## Save-data management in Player info only (D-202)
+
+Player info owns every game-save control, file explanation, backup warning and
+new-account transfer choice. Title and starter selection provide a Player info
+link only; menu/battle Settings and registration have no save panels. Offline
+Profile now has real Save/Export/Load/Delete controls; online Profile includes the
+same clearly labelled offline controls only in Player info, not Friends. New
+online accounts visit Player info to import or confirm fresh progress before
+choosing a starter. Unreadable-save recovery remains available there.
+Device preference buttons and automatic gameplay saves are unchanged.
+[Full lifecycle/transaction contract](mono-ui-and-cloud-saves.md#player-info-owns-save-data-management-d-202).
+
+## Character Masters and choice chest (D-201)
+
+Inventory shows chest count, an Open choice action and owned Master effects.
+The React dialog groups three Masters per Element-Bearer, permits future-character
+choices, disables owned rewards and spends nothing until the subsequent in-game
+confirmation. Save precedes the shared reward reveal. All-owned chests remain.
+Team has an actual separate matching Master selector; captures explain their
+ineligibility. Character/Battle references and Collections expose exact effects;
+Astral Reserve shows its actual capped count in battle. Missing artwork remains
+explicitly pending. [Mechanics, saves and validation](master-conduits.md).
+This supersedes historical reserved-Master statements below.
+
+## Shared menu typography and finish (D-200)
+
+Owner requests a polish pass across all menus and suggests Georgia. Current
+reference menus and React title/account/save components use the shared Georgia /
+Times New Roman / serif stack; active Sora imports and the local Sora face are
+removed. Body copy uses regular weight, controls semibold and headings bold.
+Readable line heights, higher-contrast muted text and tabular full-value numbers
+replace shrinking desktop text. Small menu notes have a12px floor.
+
+Shared surfaces have consistent borders, depth, section separators, card spacing,
+fields and visible focus. Header columns size to the brand and wallet rather
+than letting navigation overlap currencies. Currency values wrap without
+abbreviation, including maximum-safe balances. Team details/collections,
+captured copies, formation, Story/activities, Summon rates, Inventory, Stores,
+Conduit equipment/upgrade, Collections and Profile inherit the finish. React
+account/save panels and native Settings/confirmation/selection dialogs retain
+their actual controls, lifecycle and accessibility.
+
+Compact desktop adjusts dense columns; phone layouts stack rates/growth and use
+two equipment columns. Page scrolling and intentionally contained detail lists
+remain. Preserve leader accents, entity/semantic colors, artwork, saved upgrade
+animations and explicit in-game motion reduction. This is a shared visual pass,
+not completion of the remaining React conversion or owner visual approval.
+
+Validate with the menu/React regression selection recorded in the handoff,
+`npm run build`, and desktop/phone checks of real renderers, full balances,
+44px controls, readable notes and horizontal overflow. Preview fixtures must
+not mutate player accounts or start the live Phaser game.
+
+## Home without Squad (D-198)
+
+Owner removes the Squad panel from Home. The current leader showcase remains,
+including captured leaders, along with Story and Market/Inventory shortcuts.
+Story fills the removed panel's area on desktop; no empty grid row remains.
+Squad inspection/editing and leader selection remain in Team, not on Home.
+No squad save/order, theme resolution or battle snapshot changes.
+
+## React migration standard (D-197)
+
+Owner approves the entire UI moving to real React components in verified batches.
+The title, all offline save panels and account onboarding are the first converted
+surfaces. New UI must use shared typed Button/Panel/Status/Dialog primitives and
+scoped CSS, with consistent visual states, readable content and at least44px
+targets. Preserve the current reference, every real action, accessibility, leader
+theme and battle animations. A framework migration is not visual approval.
+Remaining legacy menus/dialogs are not yet converted; see the
+[migration contract](mono-ui-and-cloud-saves.md#react-ui-migration-d-197).
+
+## Offline save controls (D-196)
+
+Title has Play Online / Play Offline, plus Save, Export Save File, Load Save File
+and Delete Save Data. Offline Settings repeats those save controls; online
+Settings never writes an offline wallet as its account save. File load/deletion
+use explicit in-game confirmations and preserve online identity data. Account
+creation offers a backup prompt and an import-or-fresh choice.
+[Complete file and one-time transfer contract](mono-ui-and-cloud-saves.md#play-online--play-offline-and-save-files-d-196).
+
+## Captured creature Team layout parity (D-195)
+
+Captured creature details use the same compact identity header and four-panel
+Stats / Skills / Growth / Conduits composition as Element-Bearers, rather than
+the inherited tall portrait and single scrolling control column. Header shows
+actual copy number, canonical element, fixed-form stars/rarity, level120 cap,
+lock and squad/leader actions. Collection cards share artwork/caption styling
+and show actual stars, element, level and squad membership.
+
+Stats reuse the seven-stat renderer and Before Conduits comparisons. Skills
+show only retained abilities with their real Shatter Gauge costs/cooldowns;
+missing slots remain unavailable. Growth includes exact per-copy level costs,
+Max Level and real sale value/protection reasons where selling is supported.
+No evolution, passive or ultimate is invented. Conduits reuse the same eight-slot
+renderer, reserved Master and Store/Upgrade links, with captured-copy transaction
+hooks and existing matching-element/duplicate/ownership restrictions.
+Desktop uses the existing bounded reference panels; mobile stacks without
+horizontal clipping. All lock/level/equip/sale confirmations, server authority,
+copy UUID protections and saved upgrade-result animations remain unchanged.
+
+## Squad leader accents and drifting bloom (D-194)
+
+Menu primary actions, active navigation/tabs, selected controls, focus outlines
+and dialog highlights follow the current saved squad leader's canonical element
+palette. Captured creature leaders use their combat element too. Browsing another
+character or activity does not change the theme; changing the saved leader does.
+Battle chrome and Settings use the frozen run leader, including a defeated
+leader, not the selected actor or live menu equipment.
+
+All shared screen backgrounds include a soft element-tinted radial bloom that
+drifts slowly using CSS transforms. It is clipped to the viewport, decorative,
+noninteractive and lighter in battles to preserve scenery and combat readability.
+The bloom extends beyond every viewport edge throughout its drift, without
+desktop size caps or a mobile-sized oval. A faint leader-tinted base gradient
+covers the entire nonbattle background so the corners never lose the tint.
+Dialogs retain matching static tint. In-game Reduce motion stops the drift.
+Before a leader is available, opening screens retain a neutral bloom/accent.
+Entity element labels, semantic gains/losses, rarity, art, combat effects and
+exact numbers remain their own colors; this is UI theming, not a palette rewrite.
+Theme selection does not save account data or consume gameplay RNG.
+
+Validate with `npm test -- src\presentation\leader-theme.test.ts
+src\presentation\ambient-background.test.ts src\presentation\reference-ui.test.ts
+--maxWorkers=2`, the normal build, and desktop/mobile browser checks for palette
+switches, matching gradients, focus, reduced motion and overflow.
+
+## Home Story arena card
+
+The Home Continue Story shortcut shows the installed battle arena of the next
+unlocked Story stage as full-bleed artwork, not a blank panel or world map.
+It follows saved campaign progress across all six regions; completed campaigns
+keep the final region arena. A dark overlay preserves readable region/progress
+text and the navigation arrow. The decorative image uses deployment-base URLs;
+the button still opens Story without changing progress or saving anything.
+
+## Story-first guidance and visible activity locks (D-192)
+
+Story world map opens after starter selection and for returning early online
+accounts (fewer than25 Story clears), unless resuming a saved online battle.
+Home highlights Story progress/enemy level. Story offers Team alongside map/stage
+views and short contextual hints for leveling, replay materials and boss utility.
+Play category descriptions show unlock levels; entry footers show the full
+requirement and highest owned bearer level, with locked actions disabled.
+
+Use highest-level owned Element-Bearer, including outside the squad; never count
+captured levels. [Exact gates](story-and-training.md#story-first-progression-and-activity-access-d-192)
+are enforced by both client entry and server rules. Information retains exact
+drop/payout rules separately from the short guidance. Viewing locked activities
+does not unlock stages, spend resources or write saves.
+
+Browser fixtures at1280x720 keep map and stage views within the desktop viewport.
+At390x844 they have no horizontal overflow; stacked mobile content still uses
+vertical page scrolling. Six beacons,25 stage controls, Team, entry and actual
+loot remain. This is geometry/renderer validation, not owner pixel acceptance.
+
+## Main-menu navigation without Back (D-190)
+
+All persistent-navigation menu screens omit the redundant Back button, including
+Home, Team, Play, Story, Summon, Events, Inventory, Stores, Collections, Conduit
+Store/Upgrade and Profile, plus legacy aliases. Use main destinations and Menu.
+This supersedes historical caller-based Back requirements for these menus.
+Battle still has Leave and retains caller/history-based return behavior.
+Dialogs retain Close/Cancel, Escape, focus restoration and confirmation controls.
+Keep transient history for screen context and battle returns; no save changes.
+
+## Consistent element and status terminology (D-189)
+
+All element filters, headings, cards, accessibility labels and Material Exchange
+copy use Infernic, Oceanic, Atmospheric, Botanic, Tranquilitic and Chaotic.
+Fire/Water/Wind/Nature/Peace/Dark Matter & Energy are internal affinity metadata,
+not alternative filter labels. Presentation source must not read `.affinity`.
+
+Native resource labels and ability/passive descriptions use the shared
+elemental-family catalog: Infernic Embers, Oceanic Protection, Botanic Renewal,
+Atmospheric Charge, Tranquilitic Focus and Chaotic Suppression. Flora/Bliss no
+longer call Botanic Renewal "Blooms". Use "one stack of Infernic Embers" and
+"per stack", not "one Infernic Embers" or uncountable names after numbers.
+Rose Grace, Thorn Aegis, Rose Duality and independent Conduit charges retain
+their distinct names and mechanics.
+
+Precise effects remain Burn, Weaken, Shield, Healing, Critical boost and Attack
+boost; a family name does not imply the presence of every effect in that family.
+Typed ability status badges share delivered icons and canonical family tooltips
+in Team, action controls, Battle references and Archive kit dialogs. Archive
+passives also show the shared resource badge. Do not infer icons from prose.
+
+Battle references refresh description text using frozen authoritative strengths,
+not current menu progress/equipment. This also corrects older online snapshots
+without changing their stats/kit values, writing saves or deploying server rules.
+
+## Play and Story organization (D-188)
+
+The supplied Story screenshot governs organization, superseding older stacked
+stage/detail layouts. Desktop Play has three coordinated columns:
+
+- Grouped Activity rail: Start here, Practice, Grow your team, Earn currency,
+  Events. Keep Story, Training, six elemental dungeons, evolution infusion,
+  Machines, Elemental War, both currency farms and the Rose event.
+- Compact region sidebar: six names, canonical element/progress text and a
+  Prologue control. No duplicate region eyebrows, connector lines or bulky cards.
+- Single regional main panel: actual region name, level range, introduction,
+  completed/next-stage progress and Stages/World map tabs. Its five-by-five stage
+  grid sits beside the regional boss and saved-eligibility first-clear rewards;
+  the selected-stage summary, exact per-kill loot and Enter/Replay action are in
+  the bottom footer. Do not add a second scenic detail card or extra map route.
+
+Region/map selection refreshes the heading and visible stage panel. Stage
+selection updates the footer without changing the account. Enter/Replay forwards
+to the existing validated stage transaction; locked stages remain disabled.
+Use real currency images/amounts, not reference placeholder letters. Phone
+activity choices use a compact horizontal rail, regions use two columns, and
+the main panel stacks without horizontal page overflow. Stage targets remain
+at least 44px, and the entry button stays at least 48px.
+
+Validation includes the real 26-stage-completed/Glasswater stage-2 reference
+case, desktop 1440 x 900 and 1280 x 720 with all 25 stages, boss and entry visible
+without main-panel scrolling; 390 x 844 has no horizontal overflow or overlap.
+Long content or smaller heights may scroll rather than clip.
+
+## Explicit motion preference (D-187)
+
+Animations always display unless the player explicitly selects **Reduce motion**
+in game Settings. **Full animations** is the default. Device/browser reduced-motion
+preferences do not disable JavaScript presentation or CSS animations. This
+supersedes historical statements below about honoring both device and saved
+preferences. Preserve slide-in entrances, attack movement, impact effects/glows,
+skill/Last Flare portrait banners, Gauge readiness shine and reward/upgrade reveals.
+Reduced motion retains static information and the steady readiness glow.
+
+The existing `system` storage token now means Full animations; `reduced` still
+means Reduce motion. No load-time write or settings/account migration is needed.
+Settings descriptions and the shared motion helper use this explicit-only rule;
+CSS must not independently gate animation on `prefers-reduced-motion`.
+
+Captured Votive Roselius retains Golden Thorn Benediction (25 Gauge) and
+Overdrive: Golden Thorn Benediction (40 Gauge), with its saved 3/5-turn cooldowns.
+Normal attacks grant 20 Gauge and incoming hits grant 10. At encounter entry,
+insufficient Gauge is not a missing skill. Ordinary captured forms have no
+Last Flare; boss captures retain their authored ultimate instead of Skill 2.
+Action controls show actual costs, readiness and rejection reasons.
+
+## Element name display (D-186)
+
+Element typing uses canonical names only: Infernic, Oceanic, Atmospheric,
+Botanic, Tranquilitic and Chaotic. Do not append affinity parentheticals such as
+"(Peace)", "(Fire)" or "(Dark Matter & Energy)" in any screen, dialog or
+accessibility label. Shared emblems/names, all character metadata and portrait
+alt text, Team filters/cards, Archive options and Play headings follow this rule.
+Affinity definitions remain internal descriptive metadata; element IDs,
+mechanics, saves and art are unchanged.
+
+## Permanent polish and preservation standard (D-184)
+
+Character upgrades now also use the D-185
+[animated saved stat result](units-and-progression.md#animated-upgrade-results-d-185):
+single levels, Max Level and evolutions display the actual portrait and all seven
+effective stat deltas, including captured-copy leveling (D-231: changed stats as
+cards, unchanged stats collapsed into one muted line, art never overlaps text).
+
+D-232: menu status/warning messages appear as a dark toned toast (error, success or
+notice icon/title, × dismiss, auto-dismiss) via `presentation/status-toast.ts`. Selling
+the open captured copy returns to the Captured Creatures list with the sale receipt.
+
+D-233: the area is now labelled Captured Elemental-Devourers and all prose uses
+Elemental-Devourer(s). Heaven/Abyss copies show a "Choose one payout" grid (Null-Prismatica
+or any of three mode items, art + amount, 44px buttons, gray when protected) through the
+shared `presentation/creature-sale.ts`; single-payout modes keep one Sell button.
+
+Every new or revised screen, text label, control and dialog must use the current
+reference hierarchy, consistent typography/spacing, clear selected/disabled/
+focus states and accessible targets. Basic identity, ownership, exact values
+and actionable information should be visible, not buried behind unnecessary
+dialogs. Minimize page movement and interactions; long catalogs and detailed
+rules may scroll within appropriate panels. This standard applies to all future
+UI work, not only the interfaces shown in owner screenshots.
+
+Reorganization is not content removal. Keep banner star values and Showcase,
+combat actions, ability cut-ins, impact rings/sparks/trails, numbers, glows,
+loot effects, results and transaction hooks. Only the in-game Reduce motion
+selection disables animation (D-187); reduced motion uses a steady readiness glow.
+
+Battle now owns the viewport with one header, adjacent sprite/nameplate groups
+and a compact status/actor/target footer. Leave, Settings and the existing
+toolbar survive rerenders; 1x/2x/3x speed choices require one click. The approved
+bottom action strip is removed, not its five actions: Normal Attack, Defense,
+both skills, Last Flare and Pass remain in Battle menu, alongside gestures.
+Desktop menu has Actions/Combatants/Abilities columns and a bottom log, with
+bounded independent scrolling rather than clipped sections. At 1440 x 900 the
+five actions and Pass fit without action-panel scrolling. Mobile stacks the
+menu panels. Results remain dismissible/reopenable with their actual stage gates.
+
+Shared controls/dialogs, title entry buttons, Information hooks and Showcase
+typography are aligned. Archives expose rarity/ownership and Conduit effects
+without opening details; detailed kits/lore remain accessible. Story has a
+visible Prologue control. Profile icon targets are at least 44px. Copy describes
+real online/legacy persistence and no longer claims online gameplay is pending.
+No combat, economy, authority or reward rules change in this pass.
+
+## Current reference structure replacement (D-183)
+
+The owner explicitly rejects keeping the inherited UI structure. The complete
+latest HTML, including its subviews and interactions, supersedes historical
+layout conventions in this document. See the [screen-by-screen replacement
+status](mono-ui-and-cloud-saves.md#reference-structure-replacement-d-183).
+
+Home has no promotional banner panels. Desktop owns the viewport with contained
+panel scrolling; at 960px and below it stacks into page scrolling and bottom
+navigation. Team uses the persistent Squad/Collection sidebar and simultaneous
+four-panel detail, not the historical horizontal categories/tab rail. Collection
+and selected-product views are separate. Inventory shows both holdings panels.
+Summon separates left pity, central hero, right action and bottom rate tiers.
+Actual prices, values, artwork, ownership and transaction hooks remain required.
+Sora is self-hosted at the four reference weights, rather than requiring an
+installed font. Shared selection panels remain for equipment; reference-native
+controls use `data-native-select` to opt out.
+
+Layout state (Team view/filter/sort, selected store/restoration/material/frame,
+profile view) stays transient and is restored with external menu history.
+Character growth updates the existing header portrait, level bar, evolution
+pips, rarity and sidebar portrait without replacing portrait DOM.
+Profile fields automatically save when editing finishes, with live bio count,
+owned-icon selection and explicit retry for an unconfirmed server result.
+World-map nodes inspect real regions; completion controls roads and entry gates.
+
+## Initial monochrome pass (D-181; layout superseded by D-183)
+
+The current supplied `Last Light.html` supersedes the older Sanctuary mock-up
+composition below. Presentation uses real content and stable transaction hooks:
+desktop Home/Team/Summon/Play navigation moves to the top; mobile retains a
+safe-area-aware bottom navigation. Menu, contextual Back, Help and Settings stay
+available. The header has a Profile shortcut. No mock balances, characters,
+rates, friends or combat calculations are copied from the reference.
+
+Home places the real saved leader and Health/Attack/Defense on the left, actual
+Story progress on the right, and three squad slots, Market and Inventory
+panels beside it. Team Overview displays the four Stats/Skills/Growth/Conduits
+panels together. Level/evolution previews retain exact costs, eligibility,
+fodder and their existing confirmation hooks; tab changes preserve portrait DOM.
+Summon has banner navigation, actual banner art, draw/pity panel and complete
+rates. Inventory, Collections, Conduit Store and Upgrade keep their existing
+holdings, filtering, equipment and purchase/upgrade paths in monochrome panels.
+
+Story is available directly in Play as well as its dedicated route. Six region
+selectors, stage details and a World map toggle use the real levels, per-kill
+tables, locks and first-clear boss bonuses. All150 stage entry hooks remain;
+selection updates detail independently of entry. Delivered regional arena/map
+images are reused without clipping the map or inventing missing banner files.
+
+Battle retains actual combatants, status readouts, gestures, selection shortcuts,
+Settings, results and reference menu. D-184 consolidates accessible actions and
+Pass in the menu rather than duplicating them in a bottom strip.
+Normal/Defense remain real actions, not the mock's four-skill shortcut system.
+The optional BattleAuthority transport awaits server results before impact
+presentation and skips local combat/reward writes. Failed calls keep the previous
+session. Continue/Retry/Quit use transport operations online; legacy behavior
+remains available. Conduit upgrade binding and online-account Play accept optional
+async integration callbacks, without mixing legacy storage into online accounts.
+
+Typed ability strength/resource descriptors add delivered status icons beside
+effect labels; no description parsing or wholesale text/HTML replacement.
+`reference-layout.css` supersedes the initial `mono-reference.css` layout;
+`battle-mono.css` remains the combat layer. Self-hosted Sora removes the installed-
+font dependency.44px controls, focus, full numeric values and both reduced-motion
+preferences remain.
+
+Validation: targeted presentation, Story/art and authority-isolation tests;
+full `npm test -- --maxWorkers=2`, `npm run build`, and disposable desktop/mobile
+browser checks. Do not modify owner storage to fund visual examples.
+
+## Online account foundation (D-179/D-180)
+
+Title distinguishes Online account from Play legacy mode. The in-game account
+dialog supports username/password authentication, registration with verification
+email, password recovery, sign-out and recovery-link password changes. Online
+gameplay is explicitly unavailable until server-authoritative combat and economy
+are implemented. No legacy wallet/profile import or automatic account grants.
+Modal Close/Escape remove the dialog and restore focus synchronously; inputs do
+not trigger title's legacy keyboard shortcut.44px controls/mobile containment
+and session storage separation remain mandatory.
+[Hosted contract and validation](mono-ui-and-cloud-saves.md).
+
 ## Contextual desktop navigation (D-166)
 
 The approved D-160 desktop pass retains the four Home/Team/Summon/Play dock
@@ -1077,3 +1842,15 @@ Character portraits, evolution previews, captured/Creature gallery portraits
 and Conduit icons disable native image dragging. CSS silhouettes must not reveal
 the original colored image in a browser drag ghost. Reveal/ownership rules,
 portrait DOM and accessible labels are unchanged.
+
+## Team character art size (D-235)
+
+Team detail headers lead with a large square portrait (up to ~19rem) beside the identity block; collection cards use 11rem art and sidebar squad thumbs 4.2rem. Styling lives in the final D-235 block of reference-layout.css.
+
+## Squad formation (D-236)
+
+Squad shows three slot cards (Leader first) with large portraits, name, rating and element/progress. Change/Choose (or clicking the card) opens a picker modal listing every owned Element-Bearer and Elemental-Devourer with All/Element-Bearers/Elemental-Devourers filters, name search and tags for members already placed; choosing a placed member swaps slots. Remove clears members 2-3; the leader cannot move into an empty slot. Changes are a draft until Save squad, which still submits the hidden slot-N selects in one atomic save.
+
+## Viewport-scaled text (D-237)
+
+The root font size grows with viewport width (bounded by height) from about 16.5px at 1280px up to 22px on wide windows, so menus fill large or zoomed-out screens instead of staying small. Size new menu text in rem so it follows this scale.

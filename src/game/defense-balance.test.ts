@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { stagedEnemyAttack } from '../content/stat-growth';
+import { enemyCombatStats, enemyGrowth, stagedEnemyAttack } from '../content/stat-growth';
 import { infusionStageCount } from '../content/activities';
 import { infusionEncounter } from '../content/infusions';
 import { storyEncounter } from '../content/story';
@@ -42,8 +42,8 @@ describe('attack-relative Defense balance', () => {
   it('makes Lv13 Story and Machines direct hits cost at least 9% of every unequipped Lv0 starter HP', () => {
     expect(storyEncounter(35).level).toBe(13);
     expect(infusionEncounter('machines', 4).level).toBe(13);
-    expect(storyEncounter(35).stats.damage).toBe(40);
-    expect(infusionEncounter('machines', 4).stats.damage).toBe(44);
+    expect(storyEncounter(35).stats.damage).toBe(Math.round(enemyCombatStats(13, false).damage * .75));
+    expect(infusionEncounter('machines', 4).stats.damage).toBe(enemyCombatStats(13, false).damage);
     for (const id of ['ember', 'tide', 'sprout'] as const) {
       for (const state of [
         createStoryBattle(35, 1729, id, { level: 0, evolution: 1 }),
@@ -83,14 +83,14 @@ describe('attack-relative Defense balance', () => {
         expect(attack).toBeGreaterThanOrEqual(last);
         last = attack;
       }
-      expect(last).toBe(boss ? 6000 : 4000);
+      expect(last).toBe(boss ? enemyGrowth.bossDamage : enemyGrowth.damage);
     }
-    for (const element of playableDungeons) expect(dungeonEncounter(element, 35).stats.damage).toBe(6000);
+    for (const element of playableDungeons) expect(dungeonEncounter(element, 35).stats.damage).toBe(enemyGrowth.bossDamage);
     for (const mode of ['heavens', 'abyss', 'treasury', 'sanctuary', 'machines'] as const) {
-      expect(infusionEncounter(mode, infusionStageCount(mode)).stats.damage).toBe(6000);
+      expect(infusionEncounter(mode, infusionStageCount(mode)).stats.damage).toBe(enemyGrowth.bossDamage);
     }
-    expect(storyEncounter(1).stats.damage).toBe(16);
-    expect(stagedEnemyAttack(121, true, 10, 140)).toBeGreaterThan(6000);
-    expect(stagedEnemyAttack(140, true, 10, 140)).toBe(17750);
+    expect(storyEncounter(1).stats.damage).toBe(17);
+    expect(stagedEnemyAttack(121, true, 10, 140)).toBeGreaterThan(enemyGrowth.bossDamage);
+    expect(stagedEnemyAttack(140, true, 10, 140)).toBe(Math.round(enemyGrowth.bossDamage * 1.36 ** 2));
   });
 });

@@ -6,20 +6,21 @@ import { elements, infusionModes } from '../content/activities';
 import { emptyAccount } from '../game/account';
 
 describe('full sanctuary UI', () => {
-  it('keeps every menu reachable through the dock and Menu while leaving battle immersive', () => {
+  it('keeps primary navigation and direct utilities without a Menu sidebar', () => {
     for (const page of sanctuaryPages) {
       const html = sanctuaryHeader(page, 0, 0);
       expect(html).not.toContain('sanctuary-nav');
       expect(sanctuaryDock(page === 'battle' ? 'home' : page)).toContain('data-page="home"');
-      expect(html).toContain('data-information="sanctuary-menu"');
+      expect(html).not.toContain('sanctuary-menu');
+      expect(html).toContain('id="open-settings"');
       expect(html).not.toContain('id="return-title"');
-      for (const destination of ['events', 'inventory', 'stores', 'collections', 'story']) {
+      for (const destination of ['inventory', 'collections', 'profile']) {
         expect(html).toContain(`data-page="${destination}"`);
       }
       expect(html).not.toContain('sanctuary-home');
-      if (page !== 'home') expect(html).toContain('data-menu-back');
+      expect(html).not.toContain('data-menu-back');
     }
-    for (const page of ['home', 'team', 'character', 'gameplay', 'events', 'inventory', 'stores', 'collections', 'squad', 'summon', 'story', 'battle']) {
+    for (const page of ['home', 'team', 'character', 'gameplay', 'events', 'inventory', 'stores', 'collections', 'squad', 'summon', 'story', 'battle', 'profile']) {
       expect(isMenuPage(page)).toBe(true);
     }
     expect(isMenuPage('settings')).toBe(false);
@@ -47,11 +48,11 @@ describe('full sanctuary UI', () => {
     const header = sanctuaryHeader('team', Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER);
     expect(header).toContain('Help for Team');
     expect(header).toContain('id="sanctuary-help"');
-    expect(header.match(/data-page="inventory"/g)).toHaveLength(3);
+    expect(header.match(/data-page="inventory"/g)).toHaveLength(2);
     expect(header).toContain('id="fractalis-balance">9007199254740991');
     expect(header).toContain('id="lycalis-balance">9007199254740991');
-    expect(header).toContain('<h3>Conduits</h3>');
-    expect(header).toContain('<h3>Game</h3>');
+    expect(header).toContain('aria-label="Open Collections"');
+    expect(header).toContain('aria-label="Open Settings"');
   });
   it('renders real currency without inventing a premium balance or level', () => {
     const html = sanctuaryHeader('home', 123);
@@ -60,6 +61,12 @@ describe('full sanctuary UI', () => {
     expect(sanctuaryHeader('home', 123, 10)).toContain('id="lycalis-balance">10');
     expect(sanctuaryHeader('inventory', null)).toContain('Unavailable');
     expect(html).toContain('aria-haspopup="dialog"');
+  });
+  it('exposes Profile as a reachable menu page with a contextual header', () => {
+    const html = sanctuaryHeader('profile', 0, 0);
+    expect(html).toContain('<h1 class="ref-sr-only" tabindex="-1">Profile</h1>');
+    expect(html).toContain('data-page="profile"');
+    expect(sanctuaryDestination('profile')).toBe('profile');
   });
   it('separates holdings, stores and collections and exposes both Character categories', () => {
     expect(sanctuaryContext('inventory')).toBe('');
@@ -72,15 +79,15 @@ describe('full sanctuary UI', () => {
     expect(sanctuaryContext('story')).toBe('');
     expect(sanctuaryContext('home')).toBe('');
   });
-  it('shows Back based on actual history even on Home, not a fixed Home shortcut', () => {
-    expect(sanctuaryHeader('home', 0, 0, true)).toContain('data-menu-back');
-    expect(sanctuaryHeader('character', 0, 0, false)).not.toContain('data-menu-back');
-    const header = sanctuaryHeader('story', 0, 0, true).split('data-information="sanctuary-menu"')[0];
-    expect(header).not.toContain('data-page="home"');
-    expect(header).toContain('>Back');
-    expect(sanctuaryHeader('conduit-store', 0, 0, true, 'character')).toContain('aria-label="Back to Team"');
-    expect(sanctuaryHeader('home', 0, 0, true, 'inventory')).toContain('<small>Inventory</small>');
-    expect(sanctuaryHeader('home', 0, 0, false, 'inventory')).not.toContain('data-menu-back');
+  it('omits redundant Back on every main-menu screen while retaining navigation and dialog closing', () => {
+    for (const page of sanctuaryPages.filter(page => page !== 'battle')) {
+      const header = sanctuaryHeader(page, 0, 0);
+      expect(header).not.toContain('sanctuary-back');
+      expect(header).not.toContain('data-menu-back');
+      expect(header).toContain('data-page="home"');
+      expect(header).toContain('aria-label="Close Help"');
+      expect(header).not.toContain('aria-label="Close Menu"');
+    }
   });
   it('limits global inventory to owned materials, separate from character equipment', () => {
     const html = inventoryHub();

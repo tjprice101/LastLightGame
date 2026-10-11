@@ -30,7 +30,10 @@ Confirmed compatibility/acquisition choices:
   platinum/ivory armor, six immense elemental fans, coronas/crowns/ribbons and
   dense rear facets with clear readable cores, matching the written Machines
   Omnic renderer/epicness. Keep palette locks, no image references, no glow,
-  full outer margins and offline-only future intake. All25 images still pending.
+  full outer margins and offline-only intake. D-199 installs all25 delivered icons:
+  byte-preserved originals in Art/source/kit-conduits, reviewed256px transparent
+  exports, source-specific gaps/keys and hashes in Art/provenance. Shared catalog
+  and byte-derived URLs cover all presentation surfaces without changing rules.
 
 Walletv5 is the durable conversion marker. v1-v4 read without writes, normalize
 only incompatible/excess converted slots, preserve final slots/order and all

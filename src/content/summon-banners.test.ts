@@ -22,9 +22,9 @@ describe('summon banner selection', () => {
     expect(html).toContain('aria-label="Summon banners"');
     expect(html).toContain('data-summon-banner="standard" aria-current="page"');
     expect(html).toContain('data-banner="standard"');
-    expect(html).toContain('14 / 200');
-    expect(html).toContain('25 / 500');
-    expect(html.match(/data-banner-entry=/g)).toHaveLength(22);
+    expect(html).toContain('14 / 80');
+    expect(html).toContain('25 / 150');
+    expect(html.match(/data-banner-entry=/g)).toHaveLength(28);
     expect(html).not.toContain('Event Banner');
     expect(account).toEqual(before);
   });
