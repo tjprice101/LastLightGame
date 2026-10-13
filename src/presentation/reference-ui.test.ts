@@ -73,6 +73,12 @@ describe('replacement reference screen structures', () => {
     const before = structuredClone(wallet);
     const html = storyCampaign(wallet, 'ember');
     expect(html.match(/data-story-map-region=/g)).toHaveLength(6);
+    expect(html).toContain('class="ref-world-map-canvas"');
+    expect(html).toContain('width="1456" height="816"');
+    for (const [index, left, top] of [[0, 24, 33], [1, 73, 33], [2, 47, 20], [3, 50, 73], [4, 23, 65], [5, 80, 66]]) {
+      expect(html).toContain(`style="left:${left}%;top:${top}%" data-story-map-region="${index}"`);
+    }
+    expect(html).toContain('<strong>5. Stillhalo Vale</strong>');
     expect(html.match(/<line /g)).toHaveLength(5);
     expect(html.match(/vector-effect="non-scaling-stroke"/g)).toHaveLength(5);
     expect(html).toContain('class="ref-map-node is-restored"');
@@ -84,11 +90,11 @@ describe('replacement reference screen structures', () => {
   it('offers owned profile icons and automatic field saving with an accurate bio count', () => {
     const wallet = account();
     const html = onlineProfile(wallet, { username: 'Test_Player', displayName: 'Player', bio: 'A spark', icon: 'tide', frame: 'default', ownedFrames: ['default'], createdAt: '2026-01-01', totalDraws: 0 });
-    expect(html.match(/type="radio" name="icon"/g)).toHaveLength(3);
-    expect(html).toContain('value="tide" checked');
-    expect(html).not.toContain('value="sprout"');
+    expect(html.match(/<option value=/g)).toHaveLength(3);
+    expect(html).toContain('value="profile:tide:base" selected');
+    expect(html).not.toContain('value="profile:sprout:base"');
     expect(html).toContain('data-bio-count>7 / 120');
-    expect(html).toContain('Changes save automatically');
+    expect(html).toContain('Edits save when you finish a field.');
     expect(html).toContain('data-profile-retry hidden');
     expect(html).not.toContain('>Save profile<');
   });
@@ -148,7 +154,7 @@ describe('replacement reference screen structures', () => {
     expect(html.match(/class="is-filled"/g)).toHaveLength(1);
     for (const heading of ['Stats', 'Skills']) expect(html).toContain(`>${heading}</h3>`);
     for (const tab of ['overview', 'upgrade-1', 'upgrade-0', 'equipment']) expect(html).toContain(`data-character-tab="${tab}"`);
-    expect(html.match(/aria-haspopup="dialog"/g)).toHaveLength(4);
+    expect(html.match(/aria-haspopup="dialog"/g)).toHaveLength(5);
     expect(html).not.toContain('data-conduit-slot=');
     expect(html).not.toContain('loadout-summary');
     expect(html).toContain('data-team-view="formation">Edit squad');
@@ -168,7 +174,7 @@ describe('replacement reference screen structures', () => {
       expect(growth).toContain(`data-upgrade="${action}"`);
       expect(growth).toContain('Owned / Required');
       expect(growth).toContain('upgrade-stat-preview');
-      expect(growth).toContain('class="ref-growth-preview-heading">Stat &amp; form preview</h3>');
+      expect(growth).toContain(`class="ref-growth-preview-heading">${tab === 'upgrade-0' ? 'Stat &amp; form preview' : 'Level &amp; stat preview'}</h3>`);
       expect(growth).not.toContain('<details class="ref-growth-preview"');
       expect(growth).not.toContain('<summary>Stat');
       expect(growth).toContain('id="upgrade-result"');
@@ -190,6 +196,23 @@ describe('replacement reference screen structures', () => {
     expect(wallet.squad).toEqual(['tide', 'ember']);
   });
 
+  it.each(['ember', 'tide', 'sprout'] as const)('keeps %s detail controls compact without duplicate collection or Conduit shortcuts', selected => {
+    const wallet = account();
+    wallet.characters.sprout = { level: 0, evolution: 1 };
+    const before = structuredClone(wallet);
+    const html = referenceTeam(wallet, { view: 'detail', selected, element: '', sort: 'level' });
+    const header = html.slice(html.indexOf('<header class="ref-panel ref-character-header'), html.indexOf('<nav class="ref-character-submenus'));
+    expect(header).not.toContain('data-team-view="bearers"');
+    expect(header).not.toContain('data-open-loadout');
+    expect(header).not.toContain('data-conduit-count');
+    expect(html).toContain('data-team-view="bearers"');
+    expect(html).toContain('data-character-tab="equipment"');
+    expect(html.match(/aria-haspopup="dialog"/g)).toHaveLength(5);
+    expect(html).not.toContain('Select an ability to see');
+    expect(header).toContain(selected === 'tide' ? 'Squad leader' : selected === 'ember' ? 'data-make-leader="ember"' : 'Add to squad');
+    expect(wallet).toEqual(before);
+  });
+
   it('renders independent captured-copy cards and retains their actual locks', () => {
     const wallet = account();
     const first = createCreatureCopy('infusion:treasury:0', 1, 65);
@@ -199,12 +222,17 @@ describe('replacement reference screen structures', () => {
     for (const copy of [first, second]) expect(html).toContain(`data-team-capture-detail="${copy.instanceId}"`);
     expect(html).toContain(`data-character-lock="${first.instanceId}" data-lock-value="true" aria-pressed="false"`);
     expect(html).toContain(`data-character-lock="${second.instanceId}" data-lock-value="false" aria-pressed="true"`);
-    expect(html.match(/Copy [12]/g)).toHaveLength(2);
+    expect(html.match(/Copy [12]/g)).toHaveLength(4);
     expect(html).not.toContain('data-captured-copy');
     const detail = referenceTeam(wallet, { view: 'capture', selected: 'ember', capture: first.instanceId, element: '', sort: 'level' });
     expect(detail).toContain('ref-character-header');
     expect(detail).toContain('ref-character-panels');
-    expect(detail).toContain('mono-character-quad');
+    expect(detail).toContain('ref-character-overview ref-capture-panel');
+    expect(detail).toContain('data-capture-tab="upgrade-1"');
+    expect(detail).toContain('data-capture-tab="sale"');
+    expect(detail).not.toContain('mono-character-quad');
+    expect(detail).not.toContain('All captured Elemental-Devourers</button>');
+    expect(detail).not.toContain('data-conduit-count');
     expect(detail).not.toContain('ref-master-slot');
     expect(detail).not.toContain('data-owned-capture');
     expect(detail.match(/data-captured-copy=/g)).toHaveLength(1);
@@ -212,7 +240,7 @@ describe('replacement reference screen structures', () => {
     expect(detail).not.toContain('loadout-summary');
     expect(detail.match(/data-open-loadout/g)).toHaveLength(1);
     expect(detail).toContain('data-team-view="formation">Edit squad');
-    expect(detail.match(/aria-haspopup="dialog"/g)).toHaveLength(3);
+    expect(detail.match(/aria-haspopup="dialog"/g)).toHaveLength(4);
     expect(detail).toContain(`data-level-capture="${first.instanceId}"`);
     expect(detail).toContain(`data-max-level="${first.instanceId}"`);
   });
@@ -309,13 +337,14 @@ describe('replacement reference screen structures', () => {
   it('shows real profile information or Friends without fabricating activity history', () => {
     const wallet = account();
     const profile = { username: 'Test_Player', displayName: 'Test Player', bio: '', icon: 'neutral',
-      frame: 'default', ownedFrames: ['default'], createdAt: '2026-10-10T00:00:00Z', totalDraws: 17 };
+      frame: 'default', ownedFrames: ['default'], createdAt: '2026-10-10T00:00:00Z', totalDraws: 17,
+      friendCode: 'LL-ABCD-1234', playerId: 'ABCD-1234' };
     const social = { friends: [], incoming: [], outgoing: [] };
     const info = onlineProfile(wallet, profile, social);
     expect(info).toContain('data-profile-tab="info" aria-pressed="true"');
     expect(info).toContain('class="ref-profile-social" hidden');
-    expect(info).toContain('data-copy-username="Test_Player"');
-    expect(info).toContain('Activity history is not recorded');
+    expect(info).toContain('data-copy-profile="LL-ABCD-1234"');
+    expect(info).toContain('Earlier history is not reconstructed.');
     const friends = onlineProfile(wallet, profile, social, 'friends');
     expect(friends).toContain('class="online-profile-statistics" hidden');
     expect(friends).toContain('data-friend-search');

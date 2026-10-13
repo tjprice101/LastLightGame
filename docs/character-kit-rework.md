@@ -1,5 +1,21 @@
 # Intrinsic character kit rework (D-163 / D-170 / D-172)
 
+## Charge and passive readability
+
+Character, Collections and Battle references put the actual passive first,
+then explain what its stored charges buy. Each resource-bearing character has
+an identity-specific spending explanation: named skill/slot, all-charge
+consumption, exact bonus and applicable cap. Spending resets saved charges to0;
+zero charges never disables the skill's normal effect. Earning conditions live
+in the passive rather than a repeated resource paragraph. Battle counter
+tooltips explain the payoff instead of saying "No standalone effect."
+
+All16 generated kits retain exact numeric snapshot strengths and mechanics.
+Recovery appears once, Burn duration is not repeated, and shield refresh rules
+are explained separately from the shield amount. Passives are automatic while
+alive, with no action or Gauge cost. Native/Rose and Conduit charges remain
+independent. No trigger, cost, cooldown, recovery, RNG or save change.
+
 **D-211 presentation clarification:** existing family names remain, but native
 readouts explicitly label their counts as stored charges, not applied effects.
 Actual remaining Shield and timed Damage buffs appear separately beside HP.

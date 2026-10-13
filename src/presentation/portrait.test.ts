@@ -39,7 +39,7 @@ describe('current character artwork across revealed and locked surfaces', () => 
       if (evolution < 6) {
         const next = assetUrl(`characters/${characterArt(starter.id, evolution + 1).art}.png`);
         const preview = characterDetail(starter, 'upgrade-0', account);
-        expect(preview).toContain('class="evolution-silhouette"');
+        expect(preview).toContain('class="evolution-silhouette unreached-character-art"');
         expect(preview).toContain(`src="${next}"`);
       }
     }

@@ -1,5 +1,407 @@
 # Menus and inventory
 
+## Resources are owned items
+
+Inventory's Resources grid includes progression materials and positive stacks
+of Broken Mechanical Components. Components use the same item card, full-size
+artwork area, exact Owned quantity and optional Details as neighboring resources,
+not a balance/stat line in Conduits. Resources counts include that distinct item
+type. Zero components has no tile; components-only holdings are not empty.
+Component Details explains real Conduit upgrade use and Machine drop rules.
+Search and the Components type filter target this same resource tile. Keep the
+existing account field and all acquisition/spending rules unchanged.
+
+## Inventory search, filters and concise Information (D-271)
+
+Inventory has a live case-insensitive item-name search, combined Item type,
+Rarity and Element filters, and Clear. Type covers materials, ordinary Conduits,
+Masters, chests and positive component holdings. Search also recognizes a
+Master's bearer name. Counts report matching distinct positive item types,
+not quantities; currency balances and unavailable-save errors remain visible.
+No matches has an explicit status, not an empty-inventory claim.
+
+Element matches ordinary material definitions, authored Conduit affinity,
+Master bearer affinity and the actual matching elements for Heaven/Abyss
+specialty recipes. Rosethorn materials, unrestricted Conduits, components and
+chests have no fixed element; use No element to find them. Specialty materials,
+components and chests have no authored rarity; never infer a rarity from art.
+Selections use the existing shared accessible selection panels.
+
+Filtering hides nonmatching cards/sections without recreating artwork, Details
+or chest controls, changing holdings or resetting disclosure choices. Search
+and filters survive menu refresh and caller-based history in memory, resetting
+at title. Nothing is written to a wallet.
+
+Inventory Information opens four short optional topics: Finding items,
+Materials, Conduits, and Masters & chests. Keep sources, exact equipment limits,
+chest chance and activation bounds available without one long visible text wall.
+Use the shared topic/back/focus behavior and existing item Details.
+
+## Optional histories and founding canon (D-269)
+
+Team headers provide an optional Lore dialog for individual human bearers and
+captured Devourers, without adding a biography wall to the main detail screen.
+Individual Archive kit references retain the human's history; Collections
+Information stays concise and rules-focused. Devourer and Machine origins are
+available only after discovery, alongside existing identity/element gates.
+Machines are labeled separately from Rise's Devourers.
+
+Global Help and Gameplay Information provide the Let and Rise origin topic.
+Story's Prologue uses the same shared history. All use existing styled native
+dialogs and topic navigation, with focus restoration and contained dialog
+scrolling. No automatic popup or account write. Item Details and Summon
+Information use the same canon without changing their mechanical rules.
+See [founding canon](world-lore.md) for the full narrative and boundaries.
+
+## Collapsible holdings and item Details (D-268)
+
+Master Conduits & Chests, Materials and ordinary Conduits are independent native
+disclosures with44px summary controls and Expand/Collapse affordances. All start
+open; closing one never hides another. Expansion state is transient and restored
+through menu history and refreshes, not written to the account. Returning to
+title resets it. Currency balances remain outside the disclosures.
+
+Owned-item cards show bounded artwork, complete names, rarity/bearer where
+applicable, exact counts and a Details button. Wider natural-height slots and
+shared content rows align neighboring names, counts and buttons. Do not put long
+effect paragraphs into narrow grid slots. Native styled Details dialogs retain
+the exact current upgraded effect, fixed kit rules (without repeating them),
+Conduit lore and ownership/equipment explanation. Masters identify their bearer
+and always-active rules; materials explain their real progression use, including
+the currently unusable weapon specialties. Chest Details explains choice, use
+and drops; its artwork remains the sole opening action with existing protections.
+No new destination links, transactions or acquisition rules.
+
+This supersedes D-215's always-open requirement and older prohibitions on optional
+descriptions. Lists still use natural page scrolling, never squeezed/nested panes.
+
+Collections Information contains gallery rules only, not a roster-wide
+Element-Bearer biography list. Individual combat-kit references remain available.
+
+Cosmic Grand Master Chests appear only as positive owned stacks in the Master
+inventory grid, with normal item artwork/name/count rows, not a dedicated
+full-width chest panel or separate labeled action button. Select the chest
+artwork to choose a Master using the existing confirmation and atomic opening
+flow. All-owned accounts retain their chest tile with opening disabled.
+Drop rules and detailed chest rules remain in Inventory Information.
+Inventory holdings contain no destination shortcut buttons: no Store, Upgrade,
+Equip in Team or empty-state dungeon/store links. Use the shared navigation
+for destinations; keep Information and owned consumable use available.
+
+Summon banner artwork uses a shared38.75rem maximum width,25% larger than
+the previous31rem cap, for both current and future banners. Preserve the
+16:9 artwork ratio; constrain to available column width on smaller screens
+rather than overflowing, zooming or cropping more of the image.
+
+Featured character portraits beneath each banner use8.5rem square slots,
+double the previous4.25rem size. Keep complete contain-fitted portraits,
+larger readable names and ownership marks. Tier lists wrap naturally; phones
+put the tier heading above the list and fit at most two portraits per row,
+reducing the slot width only when needed. This shared rule covers both real
+banners and future lineups without changing banner artwork, odds or acquisition.
+
+Item catalog cards share naturally sized content rows using CSS subgrid.
+Material Exchange, Cosmetic Store and Conduit Store align artwork, names,
+rarity/ownership, effects (when present) and price/count chips across each
+visual row. Inventory material/Conduit/Master grids and Conduit Collections
+use the same row-sharing approach. A longer name/count/effect expands the
+shared row rather than shifting adjacent fields independently.
+Keep complete text and exact amounts: no fixed-height clipping, ellipsis,
+line clamps, smaller fonts or script-measured heights. Responsive column
+changes rebuild shared rows automatically; selected styling and actions remain.
+
+Character and Conduit Archives reserve a bounded7rem artwork row. Portrait
+wrappers, ordinary Conduit frames and Master art fit that row with contain
+sizing instead of growing from intrinsic image dimensions or square aspect
+ratios. A small inset accommodates portrait idle motion; Conduit frames reserve
+space for their upgrade meter. Names and details stay outside the artwork row,
+with shared card rows preserving neighboring name alignment. Keep complete
+silhouettes, facing and full text; do not resize source assets to repair layout.
+
+Evolution uses a dedicated compact desktop layout: smaller identity portrait
+only on this tab, one stat/form heading, horizontal current/next comparison,
+three-column exact stat deltas, compact costs and adjacent action/rejection
+text. Keep preview, every cost, fodder status and Evolve visible together at
+1367x640 and1788x768, including maximum-safe holdings and a full squad.
+Only the uncapped captured-copy chooser retains contained scrolling; phones
+keep accessible page scrolling with no horizontal overflow. Selection labels
+retain44px targets and their checkboxes cannot expand to full-row width.
+Evolution and unreached Collections portraits share the same dark radial
+background and black silhouette with a subtle white outline/halo, actual
+form asset and facing. No white preview slab or revealed future artwork.
+Switching tabs restores the normal header without replacing portrait DOM.
+
+The Level tab shares Evolution's compact desktop identity header, resource
+cards and three-column seven-stat grid. One "Level & stat preview" heading
+replaces repeated progress/preview labels; current and next levels stay visible.
+Level up, Max Level and rejection text share an action row. All stats, costs
+and controls fit together at1367x640 and1788x768 without page scrolling.
+Phones retain page scrolling and a two-column stat grid, without horizontal
+overflow. Leveling costs, caps and confirmation behavior are unchanged.
+
+Captured Elemental-Devourer detail uses the same compact Team composition:
+identity/level/fixed-form header, squad and Lock copy actions, then Stats & Skills,
+Level, Sale and Conduits sub-menus. Remove duplicate collection and equipment-count
+links from the header. Stats & Skills displays exact equipped stats and retained
+ability dialogs; unavailable slots remain explicitly labelled.
+Level shows all seven current/next stat deltas and exact owned/required costs,
+with Level up and Max Level together. Sale retains every authored payout choice
+and protection reason; nonsellable forms explain their restriction.
+Sub-menu switches preserve portrait and action DOM, update the in-memory Team
+tab for history/refresh, and never write accounts. Conduits opens the existing
+full-page captured-copy loadout. No Evolution tab or new captured mechanics.
+At1367x640 and1788x768 these detail panels fit without scrolling; mobile keeps
+page scrolling without horizontal overflow. Complete names/portraits stay apart.
+
+Each sellable captured-copy collection card has Quick Sell beside Lock.
+It opens a native styled dialog naming that exact copy, with its actual
+sale value or authored payout choices, and a Sell action. Locked, squad and
+Conduit-protected copies still show their offer but cannot sell; display the
+actual protection reason. Reuse the detail screen's shared sale controls,
+per-copy IDs and existing reread/confirmation/atomic sale flow. Closing the
+dialog does not change the collection, selection or wallet.
+Sale confirmations show the creature name and exact payout, not the internal
+capture UUID. Exact-copy validation/removal still uses the unchanged saved ID.
+
+Character passive dialogs explain the automatic effect and charge earning
+first, then a separate "What the charges do" section with character-specific
+skill spending, exact bonuses and caps. All charges are spent; base skill
+effects remain available at0 charges. Collections and Battle use the same
+identity-aware reference. Battle charge tooltips explain the stored payoff,
+not "No standalone effect." Avoid repeating earning paragraphs or recovery,
+shield-refresh and Burn-duration rules within one description.
+
+Profile Player info omits the redundant Edit squad heading button; member cards
+and empty-slot Add a member routes remain, with full squad editing in Team.
+Desktop uses spare panel height for larger portraits (112-144px on shorter
+screens, up to176px on tall screens),56-64px squad thumbnails, larger30-32px
+headline totals and13-14px account/collection values. At640px height, compact
+gaps/48px bio field and balanced rows keep information and save controls visible.
+The current Story region is already named/highlighted in its rows; its duplicate
+header caption is omitted on short desktops. Preserve five recent events,
+full names/counts,120-character bio,44px actions and actual saves. Desktop
+1367x640 and1788x768 fit without page/panel scroll after entrance animations;
+phones retain accessible page scrolling rather than hiding/clipping information.
+
+Header wallet controls use64px minimum currency cards with32px currency artwork,
+larger balances/labels and56px Help/Collections/Settings buttons with26px glyphs.
+The Profile control is72px with an edge-filling circular frame and cover-fitted
+portrait, not an inset rounded square. Zero padding and circular clipping remove
+the dead ring; the outer button border and selected cosmetic border remain.
+The unsigned generic profile glyph is36px. Phone utility grids reserve72px for
+Profile and56px for each other control. Preserve exact balances, frame selection,
+profile-picture resolver, accessible labels and navigation; no art/save changes.
+
+Conduit loadout action/details/slot/filter controls use symmetric inline padding
+and centered text/grid alignment, overriding shared leading-edge button styling.
+
+Character detail header artwork uses a height-responsive11-16rem square portrait
+on desktop (30dvh, capped16rem), keeping the enlarged artwork while leaving room
+for the details on shorter screens. At phone widths the header stacks with a centered
+15rem portrait and identity/actions below. Preserve the complete supplied art
+with contain sizing, facing/idle wrappers and page scrolling; no sprite cropping
+or source changes. This sizing applies to both bearer and captured detail headers.
+
+D-265 removes the duplicate All Element-Bearers and Conduits/count buttons from
+the bearer header. Collection remains in the Team sidebar; Conduits remains a
+persistent sub-menu. Squad leader/Make leader/Add to squad remain beside the
+identity. Compact header/panel gaps, seven stat rows and four skill buttons remove
+excess padding and the redundant Skills instruction. Preserve exact values,
+ability dialogs,44px minimum actions, full names and page scrolling when needed
+on phones/short screens or with expanded equipment comparisons. The sidebar uses
+compact thumbnails/rows without removing squad/collection controls. Captured
+lock/loadout controls and upgrade/equipment functionality remain unchanged.
+
+Upgrade validation checks the always-visible Stat & form preview (not a
+collapsed `details` disclosure), seven stat deltas and exact resource costs for
+all16 bearers at each nonfinal evolution and both Level/Evolution paths.
+Visible-copy tests enforce spaced count slashes; prose uses words such as
+"shield and buff" rather than unspaced slash shorthand.
+
+## Earned profile pictures and text chats (D-260)
+
+The owner approves private text messages between accepted friends and invite-only
+groups, up to500 characters/message and10 members. Group owners add/remove members.
+Chats/Friends/Requests use the supplied compact references with searchable chat
+list, central conversation/composer and member/details sidebar. Unread counts,
+pin/mute and blocking are required; blocking prevents messages and new friend
+requests. No share-code, squad-sharing or stage-invite cards. Server persistence,
+endpoint and client wiring are implemented and deployed; older D-259 "no chat"
+describes that earlier delivery, not the current approved scope.
+
+Updates poll every10 seconds only while Chats is visible, with manual Refresh.
+Newest pages mark read; earlier history loads30 messages at a time. Pin/mute do
+not independently mark read; muted conversations retain their own unread count
+but are excluded from aggregate unread. Group invitations require explicit
+accept/decline and count toward capacity. Owner departure transfers to the
+longest-standing member; an empty group is removed. New members can read earlier
+group history. Blocking removes friendship/requests and pending invites between
+the players, hides the blocked sender's group messages and excludes them from
+unread. Unblocking does not restore friendship; re-friending reveals retained DM
+history. No realtime push, edit/delete or reporting feature in this delivery.
+
+Messages are plain text, escaped at render, with no media/HTML interpretation.
+Server authorization, rate limits and idempotent request IDs own persistence.
+No optimistic sent messages: acknowledgement must precede display. Ambiguous
+failure retains a retry with the same payload/ID; definitive rejection allows
+correction. Navigation disposes polling and stale responses; account changes
+clear transient chat state. Chat never advances gameplay revisions or RNG.
+
+Profile picture collection replaces generic/quick avatar choices with exactly32
+character pictures: acquisition and Omnic for each of16 Element-Bearers, plus the
+neutral Last Light default. Base requires ownership; Omnic requires evolution6.
+No captured creatures or intermediate forms. Legacy character icon IDs resolve to
+their acquisition picture without load writes. Change/Browse opens a game-native
+searchable All/Unlocked/Locked grid, selected preview, unlock requirement and
+Profile/Chat/Friends usage previews. Locked entries show grayscale, lightly blurred
+art with a sharp shadowed Locked overlay and cannot be
+applied. Selection uses the existing profile edit queue, not another save pipeline.
+Navigation/sign-out invalidates an open editor's result.
+The D-263 collection reference uses a near-full-viewport native dialog: Back and
+breadcrumb row, large collection panel, separate detail panel and anchored Use/
+Back controls. Desktop panels share top/bottom bounds; phones stack with contained
+collection scrolling and dialog page scrolling. Real Default/Characters sections
+have ownership counts; All/Default/Characters/Acquisition/Omnic categories combine
+with search and All/Unlocked/Locked filters. Empty groups disappear and the shown
+count reflects actual matches. No sample data, New tracking or invented creature/
+achievement/event picture categories.
+
+Unlock ring/count includes the available neutral default (33 total), with the
+32-character count explicit. Cards remain220px high with100px square artwork rows,
+full title and separate rarity/character labels; selected cards have a check mark.
+Preview arrows cycle matching entries, including muted locked art and requirements.
+The preview shows actual rarity/form, In use, unlock requirement and compact
+Profile/Chat/Friends examples. Applying the already used picture is disabled and
+cannot cause another save. Preview/filter interactions remain entirely transient.
+
+Dedicated1:1 illustrations are installed (D-262), replacing full-body previews
+across every shared avatar surface.31 have vibrant current-element gradient
+mosaics; Omnic Flora preserves the complete delivered image unchanged.
+Characters retain supplied square framing/scale, with revisioned deployment-base
+URLs. The [32-prompt pack](../Art/characters/Element-Bearer%20Profile%20Pictures.md)
+remains generation guidance; no auto-grants, costumes or progression changes.
+
+## Friends reference and real presence (D-259)
+
+The top navigation has Player info, Chats and Friends only; the redundant
+Requests shortcut is removed. Requests remain in the Friends sidebar.
+
+Friends shares the profile editor on the left, searchable accepted friends in
+the center, and Add friend plus Requests on the right. Received/Sent tabs switch
+only requests, never hide the accepted-friend list, and remain selected through
+refresh/actions and menu history. Friends count uses the real30 limit and the
+main Friends tab retains its incoming-request badge. Username and public code
+requests remain supported; Copy uses the actual signed-in code, not samples.
+
+Accepted rows show actual artwork/name/username, Online or Offline/Last seen,
+and View profile. Remove friend lives in that profile dialog and retains its
+confirmation. Requests keep Accept/Decline/Cancel with44px targets. Search
+matches accepted names/usernames only and has a no-match message. Dense lists
+have bounded visible scrolling so all30 friends and pending requests remain
+reachable without stretching the desktop page. Phones stack with page scrolling.
+No Beacon Seeker, sample data/codes, fabricated badges or chat system.
+
+Online means a server-recorded accepted presence touch within90 seconds;
+otherwise Last seen uses that actual timestamp. Never-seen friends have no
+invented timestamp; missing optional legacy fields show Status unavailable.
+Only accepted friends receive presence; incoming/outgoing requests do not.
+Checkpoints refresh presence text without replacing editor/search/tab DOM.
+Presence is approximate recent activity, not guaranteed live connectivity;
+sign-out/inactive tabs may remain marked online until the90-second window ends.
+No additional polling service, client timestamps or gameplay revision changes.
+
+## Signed-in profile reference layout (D-257)
+
+### One-screen desktop refinement (D-258)
+
+Short desktop viewports retain the three-column profile instead of moving
+Squad/Recent activity below the page solely because of height. At desktop
+widths of1200px or more and heights up to820px, the avatar sits beside Display
+name, spacing is tightened and progress/activity rows are compact. All six
+Story rows and five recent records remain visible, without overlapping panels
+or shrinking44px actions. The duplicate online-autosave footer is omitted in
+this compact arrangement; the editor retains its Auto-saves label. The
+editable bio has a smaller textarea, retaining its full120-character limit.
+Widths below1200px retain responsive page scrolling; mobile is not squeezed
+into a single unreadable screen. Gameplay, save and profile behavior is unchanged.
+
+The owner's first profile image is the layout target, not sample account data.
+Player info uses a portrait/editor column, four compact real summary cards,
+always-open Story/Collection and Account/Save panels, and a Squad/Recent activity
+column. No collapsed article headings or nested profile-panel scrollbars.
+At1367x768 the desktop reference fits one screen; narrower/shorter viewports
+stack panels with page scrolling rather than clipping. Inputs/actions retain
+44px targets, Georgia, exact values, real art, accessible selection/focus and
+the existing global navigation. Profile icon shortcuts plus the shared artwork
+picker expose every owned bearer without expanding the editor by sixteen icons.
+Checkpoint updates refresh tracked numbers without replacing unsaved field or
+portrait DOM.
+
+All six canonical Story regions show exact completed stages out of25. Summary
+totals are150 stages, six restored regional beacons, sixteen Element-Bearers and
+thirty accepted friends. Collection uses actual owned ordinary Conduit types out
+of85, distinct currently owned eligible captured forms out of30, and reached
+Character Archive forms out of126 (96 bearer evolutions plus30 captured forms).
+Captured copies remain uncapped and are counted separately. Account shows join
+date, forward-only online days/time/summons, plus both banners' actual200/500
+pity counters. No fabricated historical totals or static demo holdings.
+
+Friends still supports usernames, and now also accepts the stable generated
+friend code shown with Copy beneath the display name. A separate public Player
+ID derives from that code, not the authentication ID. Incoming requests have a
+real count badge. Acceptance checks both players'30-friend capacity atomically;
+existing excess friendships are not removed. No email, private wallet or other
+private account data is shared.
+
+Recent activity displays the latest five real confirmed records (server keeps
+eight), including new-profile creation, starter/import, summons, Conduit
+purchases and Story clears. First regional clear details identify beacon
+restoration; replay does not invent another restoration. Old activity is not
+reconstructed. The owner explicitly declines the Beacon Seeker badge; sample
+toggles, fictional icons and sample notices are omitted.
+
+Compact Save Data keeps online and browser saves distinct. Save now checkpoints
+the signed-in online account and acknowledges only success. Copy/Load save code
+and Delete Save Data affect only the offline browser save. Codes are versioned
+`LLSAVE1:` UTF-8/base64 complete offline envelopes, limited to4MB decoded and
+validated exactly like files; they contain no auth/session/settings data and
+are private, editable backups, not rewards. Loading requires in-game confirmation
+and retains rollback protection. Missing browser data disables copy/delete/
+export, not online Save now or Load. Export/Load files remain in a game-native
+File tools dialog to keep the reference card compact. New unstarted online
+accounts retain the existing full Player info import safeguards.
+
+Title entry has exactly two actions (D-255): Sign-in / Create Account and
+Play Offline. The title Player info button is removed; existing starter/menu
+Player info and save-management routes remain. Account entry opens the
+authentication dialog and successful sign-in enters online play automatically
+(D-256), without a second Play Online button.
+
+## Automatic online entry and minute autosave (D-256)
+
+Successful sign-in and an existing authenticated account enter online directly.
+Reload restores the authenticated online account; Play Offline cannot silently
+switch a signed-in player to the browser save. Sign out explicitly to play
+offline. Email verification and password recovery remain required where
+applicable; recovery does not enter play until the new password is saved.
+New-account Start fresh/Import Save File remains in Player info, not a mode
+choice. Failed entry reports an error and offers Retry connection.
+
+Active initialized online/offline games autosave every60 seconds while the
+browser runs. Offline uses the existing validated, rollback-capable save.
+Online uses a server-only checkpoint of the authoritative wallet/profile/frozen
+run; it changes neither gameplay revision nor RNG, rewards or pending requests,
+and never replaces the client battle presentation. Busy/pending online operations
+defer that cycle. Title, uninitialized accounts and isolated debug do not save.
+Mode/account changes reset the timer; page exit stops it and browser restoration
+restarts it. Ordinary immediate transaction saves remain unchanged.
+
+Only acknowledged success shows "Your light endures. Progress saved." in a
+separate polite, noninteractive notice. It fades and is removed after1.8 seconds,
+without taking focus or replacing error/reward notifications; reduced motion
+uses a static notice for the same duration. Failures show an explicit error,
+never a success notice.
+
 Level/evolution stat and form previews are permanently expanded (D-253).
 Their headings use the same bordered gradient treatment as menu controls but
 remain noninteractive headings, with no dropdown/collapse affordance. Compact
@@ -326,20 +728,20 @@ ability dialogs, retained portrait/header, reachable controls and exact large
 counts. Equipment protections, atomic upgrades, confirmations and saved reward
 presentation remain unchanged.
 
-## Inventory panels without collapse (D-215)
+## Natural-height Inventory panels (D-215; disclosures superseded by D-268)
 
 Inventory uses natural-height grid rows and page scrolling, not fixed
 fractional rows that squeeze currency and holdings panels. The two currencies
 share an explicit full-width row and stack on narrow phones. Masters/chests
-have a dedicated full-width section; Materials and ordinary Conduits remain
-simultaneously visible, side by side on desktop and stacked on phones.
+have a dedicated full-width section; Materials and ordinary Conduits sit
+side by side on desktop and stacked on phones, independently collapsible under D-268.
 Holdings lists grow with content without nested scroll or overlapping panels.
 Decorative empty slots stay compact and never represent a storage limit.
-Preserve all counts, exact balances, chest actions, Store/Upgrade routes and
+Preserve all counts, exact balances, chest actions, external Store/Upgrade routes and
 transactions; this is a presentation correction only.
 
 Validation: empty, screenshot-like, populated and unavailable inventories at
-320/390/1024/1460px must have noncollapsed, nonintersecting panels, no horizontal
+320/390/1024/1460px must have nonintersecting open panels, working disclosures, no horizontal
 overflow and reachable actions. Include all Masters/Conduits and maximum-safe
 balances/material counts without mutating a real account.
 

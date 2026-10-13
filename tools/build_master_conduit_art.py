@@ -184,7 +184,7 @@ def document():
     sections.append(
         "## 50. Astral Reserve — shared mechanic emblem\n\n"
         "Art ID: `astral-reserve` (runtime public\\assets\\master-conduits\\astral-reserve.png).\n\n"
-        "Effect contract: personal stored Astral Reserve, once per round, capped at three; "
+        "Effect contract: personal stored Astral Reserve, earned on every qualifying native outcome, capped at three; "
         "the equipped Master's exact trigger, spend action and per-reserve payout are "
         "the catalogue contracts above. Show actual count and label as readable text.\n\n"
         "```text\n" + prompt(

@@ -13,7 +13,7 @@ import { emptyAccount, ownedProgress, equippedSquad, ownedCharacters, evolutionF
 import { characterName } from '../content/character-art';
 import { characterRole } from './character-role';
 import { currencyIcon } from './currency-icon';
-import { inventoryView, type InventoryTab } from './inventory';
+import { inventoryView, type InventoryTab, type InventorySections, type InventoryFilters } from './inventory';
 import { conduits, conduitEquipReason, conduitSlotCount, conduitEffect, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
 import { conduitIcon, kitConduitRules } from './conduit-store';
 import { capturedProgress, resolveCapturedFighter, type CapturedCharacter } from '../game/character-instances';
@@ -200,8 +200,8 @@ function materialIcon(id: string): string {
   return art ? `<img draggable="false" src="${assetUrl(`materials/${art}.png`)}" alt="" width="48" height="48">` : '';
 }
 
-export function inventoryHub(account: Account | null = emptyAccount(), selected: InventoryTab = 'materials'): string {
-  return inventoryView(account, selected);
+export function inventoryHub(account: Account | null = emptyAccount(), selected: InventoryTab = 'materials', sections?: Readonly<InventorySections>, filters?: Readonly<InventoryFilters>): string {
+  return inventoryView(account, selected, sections, filters);
 }
 
 function upgradePanel(starter: Starter, evolve: boolean, account: Account | null, result = true, compact = false, organized = false): string {
@@ -242,18 +242,18 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
     <section class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Stat preview</h3><div>${(['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).map(key => `<div><small>${({ health: 'Health', defense: 'Defense', damage: 'Attack', crit: 'Critical Rate', critMultiplier: 'Critical Damage', shatterCapacity: 'Shatter Capacity', elementalDamage: 'Elemental Damage' })[key]}</small>${statChange(before[key], after[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '')}</div>`).join('')}</div></section>
     ${selection}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-count="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
     ${!evolve ? `<button class="ref-link" data-max-level="${starter.id}">Max Level</button>` : ''}<p class="quiet">${reason}</p>`;
-  return `<p class="upgrade-progress">Lv.${current.level} / ${cap} &middot; Evo.${current.evolution} / ${characterGrowth.forms}</p>
-    <div class="character-upgrade-grid"><section class="character-category upgrade-benefits">${organized ? '<div class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Stat &amp; form preview</h3>' : ''}<h3>${evolve ? 'Evolution preview' : 'Level preview'}</h3>
+  return `${organized ? '' : `<p class="upgrade-progress">Lv.${current.level} / ${cap} &middot; Evo.${current.evolution} / ${characterGrowth.forms}</p>`}
+    <div class="character-upgrade-grid"><section class="character-category upgrade-benefits">${organized ? `<div class="ref-growth-preview"><h3 class="ref-growth-preview-heading">${evolve ? 'Stat &amp; form preview' : 'Level &amp; stat preview'}</h3>` : ''}${organized ? '' : `<h3>${evolve ? 'Evolution preview' : 'Level preview'}</h3>`}
     <div class="hub-comparison"><div><small>CURRENT</small><strong>${evolve ? `Evo.${current.evolution}` : `Lv.${current.level}`}</strong></div>
-    <div><small>NEXT</small>${nextPortrait ? `<div class="evolution-silhouette"><span class="character-idle" data-character="${starter.id}"><img draggable="false" src="${nextPortrait.src}" alt="${characterName(starter.id, current.evolution)} next evolution silhouette" ${characterFacingAttributes(starter.id, next.evolution)} width="150" height="150"></span></div>` : ''}<strong>${evolve ? `Evo.${next.evolution} · Cap ${characterLevelCap(next.evolution)}` : `Lv.${next.level}`}</strong></div></div>
+    <div><small>NEXT</small>${nextPortrait ? `<div class="evolution-silhouette unreached-character-art"><span class="character-idle" data-character="${starter.id}"><img draggable="false" src="${nextPortrait.src}" alt="${characterName(starter.id, next.evolution)} next evolution silhouette" ${characterFacingAttributes(starter.id, next.evolution)} width="150" height="150"></span></div>` : ''}<strong>${evolve ? `Evo.${next.evolution} · Cap ${characterLevelCap(next.evolution)}` : `Lv.${next.level}`}</strong></div></div>
     <div class="upgrade-stat-preview">${(['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).map((key) =>
       `<span><small>${({ health: 'Health', defense: 'Defense', damage: 'Attack', crit: 'Critical Rate', critMultiplier: 'Critical Damage', shatterCapacity: 'Shatter Capacity', elementalDamage: 'Elemental Damage' })[key]}</small><strong>${statChange(before[key], after[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '')}</strong></span>`).join('')}</div>
-    ${organized ? '</div>' : ''}</section><section class="character-category upgrade-payment"><h3>Required resources</h3><p class="resource-key">Owned / Required</p>
+    ${organized ? '</div>' : ''}</section><section class="character-category upgrade-payment"><h3>Required resources${organized ? ' <small class="resource-key">Owned / Required</small>' : ''}</h3>${organized ? '' : '<p class="resource-key">Owned / Required</p>'}
     <ul class="upgrade-resources">${resources.map((resource) => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${resource.name}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>
     ${evolve && !account.firstFracture ? `<p class="currency-reward">${currencyIcon('lycalis')}<span>First Fracture reward: +10 Null-Prismatica.</span></p>` : ''}
-    ${selection}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-count="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
+    ${selection}${organized ? `<div class="ref-growth-action${evolve ? ' ref-evolution-action' : ''}">` : ''}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-count="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
     ${!evolve ? `<button class="text-button" type="button" data-max-level="${starter.id}">Max Level</button>` : ''}
-    <p class="quiet">${reason}</p>
+    <p class="quiet">${reason}</p>${organized ? '</div>' : ''}
     ${result ? '<p id="upgrade-result" role="status"></p>' : ''}</section></div>`;
 }
 
@@ -289,17 +289,17 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
   if (selectedTab === 'overview' && organized) {
     const rules = kitConduitRules(account?.conduitEquipment?.[starter.id]) + masterReference(account?.masterEquipment?.[starter.id]);
     detail = `<div class="ref-character-overview"><section class="character-category"><h3>Stats</h3>${stats(starter, progress, false, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)}</section>
-      <section class="character-category"><h3>Skills</h3><p class="quiet">Select an ability to see its effects, costs and rules.</p><div class="ref-ability-buttons">
+      <section class="character-category"><h3>Skills</h3><div class="ref-ability-buttons">
       ${(['passive', 'skill1', 'skill2', 'ultimate'] as const).map(action => {
         const label = action === 'passive' ? 'Passive' : action === 'skill1' ? 'Skill 1' : action === 'skill2' ? 'Skill 2' : 'Last Flare';
-        const content = action === 'passive' ? `<article class="hub-ability"><h3>${kit.passive.name}</h3>${kitResource(kit)}<p>${kit.passive.description}</p><p>Always active. No Gauge cost.</p></article>`
+        const content = action === 'passive' ? `<article class="hub-ability"><h3>${kit.passive.name}</h3><p>${kit.passive.description}</p>${kitResource(kit, starter.id)}<p>Passive: automatic while alive. No action or Gauge cost.</p></article>`
           : ability(starter, action, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades);
         return information(`character-${starter.id}-${action}`, `${label} · ${action === 'passive' ? kit.passive.name : kit.abilities[action].name}`, content + rules, `${label} details`,
           `${abilityIcon(starter.id, action)}<span><strong>${action === 'passive' ? kit.passive.name : kit.abilities[action].name}</strong><small>${label} · View details</small></span>`);
       }).join('')}</div></section></div>`;
   } else if (selectedTab === 'overview') {
     detail = `<div class="mono-character-quad"><section class="character-category mono-character-stats"><h3>Stats</h3>${stats(starter, progress, false, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)}</section><section class="character-category character-combat"><h3>Skills</h3><div class="character-ability-grid">
-      <article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name} · Passive</span></h3>${kitResource(kit)}<p>${kit.passive.description}</p></article>
+      <article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name} · Passive</span></h3><p>${kit.passive.description}</p>${kitResource(kit, starter.id)}</article>
       ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => ability(starter, action, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)).join('')}</div>
       ${kitConduitRules(account?.conduitEquipment?.[starter.id])}${masterReference(account?.masterEquipment?.[starter.id])}</section>
       <section class="character-category mono-character-growth"><h3>Growth</h3><div class="mono-growth-options"><article><h4>Level up</h4>${upgradePanel(starter, false, account, false, true)}</article><article><h4>Evolve</h4>${upgradePanel(starter, true, account, false, true)}</article></div><p id="upgrade-result" role="status"></p></section>
@@ -310,11 +310,11 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
     detail = upgradePanel(starter, selectedTab === 'upgrade-0', account, true, false, organized);
   } else {
     if (!upgradePaths.some((path) => path.id === selectedTab)) throw new Error('Unknown upgrade definition.');
-    const specific = selectedTab === 'upgrade-3' ? `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name}</span></h3>${kitResource(kit)}<p>${kit.passive.description}</p></article>`
+    const specific = selectedTab === 'upgrade-3' ? `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name}</span></h3><p>${kit.passive.description}</p>${kitResource(kit, starter.id)}</article>`
       : ability(starter, selectedTab === 'upgrade-4' ? 'skill1' : selectedTab === 'upgrade-5' ? 'skill2' : 'ultimate', progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades);
     detail = `<section class="character-category"><h3>Current effect</h3>${specific}${kitConduitRules(account?.conduitEquipment?.[starter.id])}</section>`;
   }
-  return `<h2 id="upgrade-heading" tabindex="-1">${tab.label}</h2><div class="character-detail-content${organized ? ' ref-organized-detail' : ''}">${detail}</div>`;
+  return `<h2 id="upgrade-heading" tabindex="-1">${tab.label}</h2><div class="character-detail-content${organized ? ' ref-organized-detail' : ''}${organized && (selectedTab === 'upgrade-0' || selectedTab === 'upgrade-1') ? ' ref-growth-detail' : ''}${organized && selectedTab === 'upgrade-0' ? ' ref-evolution-detail' : ''}">${detail}</div>`;
 }
 
 export function updateCharacterTab(host: HTMLElement, starter: Starter, selectedTab: string, account: Account | null = emptyAccount()): void {

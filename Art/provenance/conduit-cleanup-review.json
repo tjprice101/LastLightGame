@@ -1,10 +1,15 @@
 {
-  "review_id": "D-177",
-  "asset_count": 60,
-  "changed_count": 5,
-  "undelivered_kit_icon_count": 25,
-  "undelivered_kit_icons_reviewed": false,
-  "review_method": "Manual source, dark/light runtime contact-sheet and magnified-candidate review; offline exporter reproduction.",
+  "review_id": "D-177-full-audit",
+  "asset_count": 135,
+  "ordinary_conduit_count": 85,
+  "kit_conduit_count": 25,
+  "master_conduit_count": 50,
+  "master_character_icon_count": 48,
+  "master_related_asset_count": 2,
+  "changed_count": 31,
+  "undelivered_kit_icon_count": 0,
+  "kit_icons_reviewed": true,
+  "review_method": "Manual full-resolution source, dark/light source and installed-runtime composites, magnified enclosed-key candidate overlays, and source-specific offline exporter reproduction.",
   "assets": [
     {
       "asset": "aegis-capacitor",
@@ -31,6 +36,47 @@
           "adjacent_source_pixels": 2,
           "distance_ramp": 50
         }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "aegis-return-spring",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Aegis Covenant Crown (Omnic  Tranquilitic).png",
+      "source_sha256": "87aa5142256b810722dcbe464cccc8675c5b2ff4b701c784b582a2ba38b35103",
+      "runtime": "public\\assets\\conduits\\aegis-return-spring.png",
+      "before_sha256": "0d98cbc110cf5bb5b81530f0193a115fb4eb1f7b7d5b7df193ed6817556dc284",
+      "after_sha256": "0d98cbc110cf5bb5b81530f0193a115fb4eb1f7b7d5b7df193ed6817556dc284",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          26,
+          16,
+          230,
+          240
+        ],
+        "runtime_pixel_sha256": "5a1dd348968ecae560d2308d1263411729f4fe051b37247668a64fb104f429ef"
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -149,6 +195,47 @@
       }
     },
     {
+      "asset": "astral-reserve",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Astral Reserve — shared mechanic emblem.png",
+      "source_sha256": "6e7cc85fe6d9f6fd64c27e9e52d79dd27c666ccd16c5c725f0f0894a01d10f50",
+      "runtime": "public\\assets\\master-conduits\\astral-reserve.png",
+      "before_sha256": "083d5886404947a1fc7edb4cfedec5299f7ae9818a831d308709b4452f49e47a",
+      "after_sha256": "083d5886404947a1fc7edb4cfedec5299f7ae9818a831d308709b4452f49e47a",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          22,
+          16,
+          233,
+          240
+        ],
+        "runtime_pixel_sha256": "cbbb404672b97e6f05869a292f5763f261668dd75392fefdb05f888680bc0a5c"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
       "asset": "atmospheric-griffin-turbine",
       "source_authority": "Art/provenance/machines-art-intake.json",
       "source": "Art\\source\\machines\\conduits\\Atmospheric - Griffin Turbine.png",
@@ -221,6 +308,47 @@
       }
     },
     {
+      "asset": "atmospheric-storm-clock",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Tempest Return Chronarch (Omnic  Atmospheric).png",
+      "source_sha256": "48552df9b9154853afea818ce536f05a2b88965b4a5b522d5f26ef9ee3695855",
+      "runtime": "public\\assets\\conduits\\atmospheric-storm-clock.png",
+      "before_sha256": "d6163b1e2238054a0ac903a6266ab54e5ffbb3b10f9f83cefa4277c2a9914bc8",
+      "after_sha256": "d6163b1e2238054a0ac903a6266ab54e5ffbb3b10f9f83cefa4277c2a9914bc8",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          22,
+          16,
+          234,
+          240
+        ],
+        "runtime_pixel_sha256": "4cfe17a75b6657b9dca8590150e66bbfe7bb0370efb94b56753a119f441f37a3"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
       "asset": "bastion-lock",
       "source_authority": "Art/provenance/root-art-intake.json",
       "source": "Art\\source\\conduits\\Bastion Lock.png",
@@ -239,6 +367,47 @@
         "saturation_min": 0.25,
         "value_min": 0.2,
         "border_only": true
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "botanic-graft-covenant",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Worldroot Graft Coronation (Omnic  Botanic).png",
+      "source_sha256": "fdeb431773280c559b4c87e40b76f635ff01bf1e748b47d5d83f16a206a3c8c5",
+      "runtime": "public\\assets\\conduits\\botanic-graft-covenant.png",
+      "before_sha256": "de4228aef5b0e5ad42a3cecb5de0a31a358d566dd9b187ae03aee5d8cdcaa666",
+      "after_sha256": "de4228aef5b0e5ad42a3cecb5de0a31a358d566dd9b187ae03aee5d8cdcaa666",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          239
+        ],
+        "runtime_pixel_sha256": "3d36476bb4170b542d8ecbc08fda7060739f1864cb15bfafe5d618013028dd41"
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -282,6 +451,47 @@
             0.275
           ]
         ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "chaotic-fault-verdict",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Rosefault Precision Sovereign (Omnic  Chaotic).png",
+      "source_sha256": "e2a9575cb31d296a390591b27b2dfeff4bc6743977963d73b888e148a7e30992",
+      "runtime": "public\\assets\\conduits\\chaotic-fault-verdict.png",
+      "before_sha256": "872bbba3de17a12c35e3a7dd7b7f36d5d54c18b50f4f813768611c9830a9c34e",
+      "after_sha256": "872bbba3de17a12c35e3a7dd7b7f36d5d54c18b50f4f813768611c9830a9c34e",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          17,
+          240,
+          238
+        ],
+        "runtime_pixel_sha256": "e8bf9fe81b7006bd63e1f808e6700d96aef7eda96fe2c3a006de228e9b158aed"
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -383,6 +593,47 @@
       }
     },
     {
+      "asset": "cinder-metering-nozzle",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Eternal Cinder Observatory (Omnic  Infernic).png",
+      "source_sha256": "7a042a98b6851febe3bf6eeab6ba763ebc0ab8e0c06c0c183cf082270e2dcdc5",
+      "runtime": "public\\assets\\conduits\\cinder-metering-nozzle.png",
+      "before_sha256": "372cabd79f64df2030f8831b02e14b7cd88a97f9e44783207ab6f5f52523afeb",
+      "after_sha256": "372cabd79f64df2030f8831b02e14b7cd88a97f9e44783207ab6f5f52523afeb",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          23,
+          16,
+          233,
+          240
+        ],
+        "runtime_pixel_sha256": "9e8888fb0678bedfc4414ea6e9de57e34829c06b82450e902f664777bfb89ef0"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
       "asset": "citadel-spine",
       "source_authority": "Art/provenance/machines-art-intake.json",
       "source": "Art\\source\\machines\\conduits\\Citadel Spine.png",
@@ -407,6 +658,47 @@
           "adjacent_source_pixels": 2,
           "distance_ramp": 50
         }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "clearwater-manifold",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Abyssal Clearwater Parliament (Omnic  Oceanic).png",
+      "source_sha256": "3c136fd62c71dc631c3944a4ae0dfbbbaabbe0a69b0884d5b0f1debe1008a54c",
+      "runtime": "public\\assets\\conduits\\clearwater-manifold.png",
+      "before_sha256": "a57fa11be18359d05e23d254b36fc1e9e60ff44f3444b35600ca6930af2687c8",
+      "after_sha256": "a57fa11be18359d05e23d254b36fc1e9e60ff44f3444b35600ca6930af2687c8",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          25,
+          16,
+          231,
+          240
+        ],
+        "runtime_pixel_sha256": "917735512024e4c62fc763476980398db8e35de9554cf8fa2a5edccc7d5faacb"
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -444,6 +736,47 @@
           "source_pixels": 2,
           "distance_ramp": 60
         }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "covercharge-drum",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Worldgrove Covercharge Heart (Omnic  Botanic).png",
+      "source_sha256": "e7397123f1020e8555715601ec8fa2c948ea641ba432494be6719f0cf6e82125",
+      "runtime": "public\\assets\\conduits\\covercharge-drum.png",
+      "before_sha256": "8166b9b6227a4dec7a1ea850caeb011d6eb600590e028700b63eca0f3820ee32",
+      "after_sha256": "8166b9b6227a4dec7a1ea850caeb011d6eb600590e028700b63eca0f3820ee32",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          20,
+          16,
+          235,
+          240
+        ],
+        "runtime_pixel_sha256": "90b42e4886ece5109117199852877a140dbc8de4f399104b600b4fd74ff1b7d7"
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -623,6 +956,47 @@
       }
     },
     {
+      "asset": "emberlife-kiln",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Phoenix Lifeforge (Omnic  Infernic).png",
+      "source_sha256": "8358cb6ed9f0ef195d783235e262713e8d5ddae016def1042ad90300b5865d33",
+      "runtime": "public\\assets\\conduits\\emberlife-kiln.png",
+      "before_sha256": "bbca47f0986a1a218501c17bcd9ef9cf21f4eff7f4a5577b0a91230a420c07a3",
+      "after_sha256": "bbca47f0986a1a218501c17bcd9ef9cf21f4eff7f4a5577b0a91230a420c07a3",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          20,
+          240,
+          235
+        ],
+        "runtime_pixel_sha256": "632bf511a140c9d8108a5536cbfcccc9e12663d114e43b1427d85d0c6c70bb29"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
       "asset": "execution-orrery",
       "source_authority": "Art/provenance/delivered-root-art-intake.json",
       "source": "Art\\source\\delivered-root-art\\conduits\\execution-orrery.png",
@@ -755,11 +1129,11 @@
       "source_sha256": "36f380d2c94364ed91aa70f893bb76da8733fdac89da995b19e9508c41a29e48",
       "runtime": "public\\assets\\conduits\\fieldbrace-coupler.png",
       "before_sha256": "0dcfdacd28cfe8e8b58634889128d5ab460a8dee5d65dcd360bd7c290f649ac0",
-      "after_sha256": "0dcfdacd28cfe8e8b58634889128d5ab460a8dee5d65dcd360bd7c290f649ac0",
-      "previous_runtime": null,
-      "previous_runtime_sha256": null,
-      "verdict": "no-change",
-      "rationale": "The cyan/green pixels are confined to the crystals and metal reflections; the negative spaces are clear.",
+      "after_sha256": "6fe9c05cac8827f5676ed8d70207c5c27e3d61fe322b71147f4356ca24de5d3b",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\fieldbrace-coupler.png",
+      "previous_runtime_sha256": "0dcfdacd28cfe8e8b58634889128d5ab460a8dee5d65dcd360bd7c290f649ac0",
+      "verdict": "corrected",
+      "rationale": "Follow-up review cleared mint backdrop trapped between the legs and body, plus the empty right-edge strip; preserved cyan crystals and the painted blue ground shadow.",
       "settings": {
         "method": "individual border-connected RGB key",
         "keys": [
@@ -770,11 +1144,110 @@
           ]
         ],
         "radius": 12,
+        "background_border_strips": {
+          "right": 2
+        },
         "border_only": true,
         "edge_cleanup": {
           "source_pixels": 2,
           "distance_ramp": 60
-        }
+        },
+        "background_seeds": [
+          [
+            0.29,
+            0.73
+          ],
+          [
+            0.75,
+            0.76
+          ],
+          [
+            0.49,
+            0.71
+          ]
+        ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "firstlight-cam",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Firstlight Concordance (Omnic  Tranquilitic).png",
+      "source_sha256": "1672aff88eb0653be191a3669969379c6f65d7675cb8490df2e9927c4b858ba5",
+      "runtime": "public\\assets\\conduits\\firstlight-cam.png",
+      "before_sha256": "8caaea58e155cd865e78cc421c27a0111634b85100c78c21a388696673418efb",
+      "after_sha256": "8caaea58e155cd865e78cc421c27a0111634b85100c78c21a388696673418efb",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          17,
+          240,
+          238
+        ],
+        "runtime_pixel_sha256": "3831f3bcf75bc0ea900d865004b8377aef66c21acb63f0551e6d3f4f693500a9"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "flare-focusing-iris",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Ember Coronation Iris (Omnic  Infernic).png",
+      "source_sha256": "3d19c4972e7a77f7c0cf64f562c31d07b81b0e0d505465530e7a09fffbfb048c",
+      "runtime": "public\\assets\\conduits\\flare-focusing-iris.png",
+      "before_sha256": "cf9d2b4b88a311f67ef1246b67cb92305c7caf76e9cd3e59aacded74f4ca1585",
+      "after_sha256": "cf9d2b4b88a311f67ef1246b67cb92305c7caf76e9cd3e59aacded74f4ca1585",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          21,
+          16,
+          234,
+          240
+        ],
+        "runtime_pixel_sha256": "f0949a1ee993f461ca29a8058d025c579070792451a478eb6747f557c4e578e5"
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -851,6 +1324,47 @@
           "source_pixels": 2,
           "distance_ramp": 60
         }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "grand-master-chest",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Cosmic Grand Master Chest.png",
+      "source_sha256": "afc97facec682f244b4fb491a9738c8c8f837b2142a1f8ea626692334ccd75fb",
+      "runtime": "public\\assets\\master-conduits\\grand-master-chest.png",
+      "before_sha256": "01822f0ce6dbdaa82ad5762b5bd0cfe7d809945d7ddcd99da822ec4d9973be59",
+      "after_sha256": "01822f0ce6dbdaa82ad5762b5bd0cfe7d809945d7ddcd99da822ec4d9973be59",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Reviewed clear side-border row gradient key; preserve the authored subject and attached painted base/shadow, remove backdrop variation only.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          17,
+          21,
+          240,
+          235
+        ],
+        "runtime_pixel_sha256": "023e9a55a644f6e9be76f8296b3f55b7601c95296793d80c2b6e44ae1585336f"
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -942,11 +1456,11 @@
       "source_sha256": "3e79615c39854ca6024f6f7f0e5d97e15153cdf86929cbee11000635af2e58a3",
       "runtime": "public\\assets\\conduits\\horizon-heartcase.png",
       "before_sha256": "df62b94dbef3cbf17faf211ffe8ba973a866386b19f867a7ab8c7cb38cb6bfee",
-      "after_sha256": "df62b94dbef3cbf17faf211ffe8ba973a866386b19f867a7ab8c7cb38cb6bfee",
-      "previous_runtime": null,
-      "previous_runtime_sha256": null,
-      "verdict": "no-change",
-      "rationale": "The green/cyan pixels are contained in the opal and inset details; no disconnected backdrop region remained.",
+      "after_sha256": "783b0c11164489c898e7566bcd121b922ddc64795c3f9e51a06f08cfd9ac8973",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\horizon-heartcase.png",
+      "previous_runtime_sha256": "df62b94dbef3cbf17faf211ffe8ba973a866386b19f867a7ab8c7cb38cb6bfee",
+      "verdict": "corrected",
+      "rationale": "Follow-up review cleared teal backdrop trapped between the lower limbs; preserved ivory armor, opal core, purple limb and painted ground shadow.",
       "settings": {
         "method": "individual border-connected RGB key",
         "keys": [
@@ -961,7 +1475,21 @@
         "edge_cleanup": {
           "source_pixels": 2,
           "distance_ramp": 60
-        }
+        },
+        "background_seeds": [
+          [
+            0.28,
+            0.78
+          ],
+          [
+            0.7,
+            0.79
+          ],
+          [
+            0.47,
+            0.82
+          ]
+        ]
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -1080,6 +1608,47 @@
       }
     },
     {
+      "asset": "infernic-pyre-census",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Pyre Census Requiem (Omnic  Infernic).png",
+      "source_sha256": "394e98dc5e86bb18e97531217f00840e4b2903f0a6248d24b1fdfd43541a4cae",
+      "runtime": "public\\assets\\conduits\\infernic-pyre-census.png",
+      "before_sha256": "92ec31d6773812a77dbba3ececf4d3cac2513737af035230d31465a694277bd3",
+      "after_sha256": "92ec31d6773812a77dbba3ececf4d3cac2513737af035230d31465a694277bd3",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          20,
+          16,
+          235,
+          240
+        ],
+        "runtime_pixel_sha256": "2fbbe14bf5b785de5e8fdf850361cf179c98d4cc65cc791f3ab776888e131f11"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
       "asset": "judgment-lens",
       "source_authority": "Art/provenance/machines-art-intake.json",
       "source": "Art\\source\\machines\\conduits\\Judgment Lens.png",
@@ -1165,11 +1734,11 @@
       "source_sha256": "9df0630ea5fa56efb743c9e8c0c87bcc0cb713f8d1482040db410ea0f017f76f",
       "runtime": "public\\assets\\conduits\\luminous-dawn-witness-array.png",
       "before_sha256": "68e23b9aeb3899111c0d1cf337262bf3e933116b28a440c0edb9503a01025af6",
-      "after_sha256": "68e23b9aeb3899111c0d1cf337262bf3e933116b28a440c0edb9503a01025af6",
-      "previous_runtime": null,
-      "previous_runtime_sha256": null,
-      "verdict": "no-change",
-      "rationale": "The pale green facets are part of the glass lenses and highlights; no detached background island was confirmed.",
+      "after_sha256": "bc3b7feb547f3a9eabaf5bece0daebec52d748a7ab09886f61a31b13ecb32acd",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\luminous-dawn-witness-array.png",
+      "previous_runtime_sha256": "68e23b9aeb3899111c0d1cf337262bf3e933116b28a440c0edb9503a01025af6",
+      "verdict": "corrected",
+      "rationale": "Follow-up review matched the row-varying backdrop and cleared reviewed tripod openings with a bounded local tolerance; preserved green lenses, pale metal and ground shadow.",
       "settings": {
         "method": "individual border-connected RGB key",
         "keys": [
@@ -1180,11 +1749,45 @@
           ]
         ],
         "radius": 16,
+        "row_gradient": true,
+        "background_regions": [
+          {
+            "polygon": [
+              [
+                0.28,
+                0.55
+              ],
+              [
+                0.72,
+                0.55
+              ],
+              [
+                0.72,
+                0.9
+              ],
+              [
+                0.28,
+                0.9
+              ]
+            ],
+            "radius": 40
+          }
+        ],
         "border_only": true,
         "edge_cleanup": {
           "source_pixels": 2,
           "distance_ramp": 60
-        }
+        },
+        "background_seeds": [
+          [
+            0.43,
+            0.7
+          ],
+          [
+            0.58,
+            0.78
+          ]
+        ]
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -1220,6 +1823,2015 @@
           "adjacent_source_pixels": 2,
           "distance_ramp": 50
         }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-atmoso-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Sky Without End Turbine (Omnic  Atmoso).png",
+      "source_sha256": "7a091af1951ed09cb2ed32792aed846fa04a6ff251620e5fec2c59a19be1e213",
+      "runtime": "public\\assets\\master-conduits\\master-atmoso-1.png",
+      "before_sha256": "8d40ff8839e063bc948590da0f0e396cd28b62525a76a2c89bb893f355f1a0df",
+      "after_sha256": "8d40ff8839e063bc948590da0f0e396cd28b62525a76a2c89bb893f355f1a0df",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          240
+        ],
+        "runtime_pixel_sha256": "d8e065c4207bb982602375db4ac4c2ff8b3440fd57587adb7eb5774660d833f4"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-atmoso-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Horizon Cyclone Orrery (Omnic  Atmoso).png",
+      "source_sha256": "bbe09b59dbc71c3827b8965dae8c346dfafa13e431525f781a31f320141dad41",
+      "runtime": "public\\assets\\master-conduits\\master-atmoso-2.png",
+      "before_sha256": "212a00b26df6fca8eee241f645d72d6e6fc12fa05afae63139dbbc18211319fe",
+      "after_sha256": "4f55411cbc4ade63a298dde2c2c08d41b82382718f21a33b281d732d3631e65f",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-atmoso-2.png",
+      "previous_runtime_sha256": "212a00b26df6fca8eee241f645d72d6e6fc12fa05afae63139dbbc18211319fe",
+      "verdict": "corrected",
+      "rationale": "Cleared two pale-teal backdrop patches behind the lower clock frame; preserved the central lens and pale mechanical structure.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          18,
+          16,
+          238,
+          240
+        ],
+        "runtime_pixel_sha256": "795b14e54a83433175cc6820511420b46b815681a9114abc76a14363c17ca494"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-atmoso-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Crosswind Imperial Drive (Omnic  Atmoso).png",
+      "source_sha256": "7852bac459878f551dd9e5b76c5250ad249c55fd7b1a213a818e2bd2adcd9825",
+      "runtime": "public\\assets\\master-conduits\\master-atmoso-3.png",
+      "before_sha256": "685b077a0698fbe5392902675d230159eee684c62c416067dfcd364808dd4384",
+      "after_sha256": "685b077a0698fbe5392902675d230159eee684c62c416067dfcd364808dd4384",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          17,
+          16,
+          239,
+          240
+        ],
+        "runtime_pixel_sha256": "ad76ec8c95c9e19211e49c7db2020feb78df624342e7935a7395c9c9efe197f2"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-aurora-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Final Dawn Tribunal (Omnic  Aurora).png",
+      "source_sha256": "4bc96d1a23b8db4f145101e4e59349f1f5b8b579601334cb909f3c5ff0a0b5ad",
+      "runtime": "public\\assets\\master-conduits\\master-aurora-1.png",
+      "before_sha256": "155b6dd9f2c94e4fe28a18f4e304c1b590c84c52122d8df4c4bf86a4bf27fa79",
+      "after_sha256": "4019b0d04e19b8917ade6a9994c94e09ecda05732541c4a00e4718ba0761bed5",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-aurora-1.png",
+      "previous_runtime_sha256": "155b6dd9f2c94e4fe28a18f4e304c1b590c84c52122d8df4c4bf86a4bf27fa79",
+      "verdict": "corrected",
+      "rationale": "Cleared three enclosed pale-green fields behind the crown and lower side arches; preserved the orange lens, ivory architecture and attached lower shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          18,
+          240,
+          237
+        ],
+        "runtime_pixel_sha256": "867d3364383c943e1f88ba303937be41a2b138bba762e74cebbe24c308331678"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-aurora-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Prismseal Astral Judiciary (Omnic  Aurora).png",
+      "source_sha256": "0da2efbffdd65e33134e1da816d9d672db29ec46278ecc215e0ae46bd79d1062",
+      "runtime": "public\\assets\\master-conduits\\master-aurora-2.png",
+      "before_sha256": "b199e02b7f8b0ae7d3de304cfc87ecfa193490e6b117b394ffa92f6b041b9834",
+      "after_sha256": "e69b31c9c69cd460fecc66e1694a63280dc1606bb456c9e89bcc5e9366db4ee4",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-aurora-2.png",
+      "previous_runtime_sha256": "b199e02b7f8b0ae7d3de304cfc87ecfa193490e6b117b394ffa92f6b041b9834",
+      "verdict": "corrected",
+      "rationale": "Cleared four enclosed yellow-green backdrop islands behind lower wing joints; preserved the distinct olive cast shadow beneath the wings, ivory metal and orange core.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          18,
+          240,
+          238
+        ],
+        "runtime_pixel_sha256": "31eeb87cbcca6a1a7937046c8629c655e2560b74d57d689ee8ac9bcdc86a62b3"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-aurora-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Merciful Eclipse Regulator (Omnic  Aurora).png",
+      "source_sha256": "60fa5b3cc915ca2dff4ec33fa0243cae9e07be34c82b1c0b0cdab46b0b8a3ddb",
+      "runtime": "public\\assets\\master-conduits\\master-aurora-3.png",
+      "before_sha256": "cbb45548c5466d0d44826c3a1657d704b0b81700fa42adc39b365fa4653ac57e",
+      "after_sha256": "89bfdd0e28beb8a5d32b01b6bf9bae231803da54ca5192e73fdf45dbfed5c6f9",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-aurora-3.png",
+      "previous_runtime_sha256": "cbb45548c5466d0d44826c3a1657d704b0b81700fa42adc39b365fa4653ac57e",
+      "verdict": "corrected",
+      "rationale": "Cleared three pale-green backdrop openings between lower radial arms; preserved the gold rays, orange lens and pale mechanical details.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          239
+        ],
+        "runtime_pixel_sha256": "0b8bb4d22c7204f5e616c8c7ec4b88b1ca92220b515782818ca5200e08b82222"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-bliss-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Thousandfeather Zenith Loom (Omnic  Bliss).png",
+      "source_sha256": "f3e3f37425433a610cd76fc81ee2348deedb126dac969efb68989262c4fa24e8",
+      "runtime": "public\\assets\\master-conduits\\master-bliss-1.png",
+      "before_sha256": "ae58f8e6afb699a2a9e5d12a9c2cca099a1f2a9f7631ee7d1b251b22e258ee7a",
+      "after_sha256": "6972ce1c111483a9733e64d7883701065966ab4592811c8aac48e3be4e55cc3e",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-bliss-1.png",
+      "previous_runtime_sha256": "ae58f8e6afb699a2a9e5d12a9c2cca099a1f2a9f7631ee7d1b251b22e258ee7a",
+      "verdict": "corrected",
+      "rationale": "Cleared five gray-green backdrop fields inside the suspended frame and between its ribs; preserved the pale architecture, feathers, cables and lower shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          17,
+          240,
+          239
+        ],
+        "runtime_pixel_sha256": "13512a33d7afb15f0f03dda44aac3b44a835c8de00b6b14ffa99830b0069119b"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-bliss-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Stillplume Planetary Ballet (Omnic  Bliss).png",
+      "source_sha256": "aa13a336de871a4821f7924d7480574173c8fe2327e00407697ea84bc836df41",
+      "runtime": "public\\assets\\master-conduits\\master-bliss-2.png",
+      "before_sha256": "3cd2bb77e0c53fa1fc929863dbdd551c1af1904386c81ad39c8c2a29949511bf",
+      "after_sha256": "3cd2bb77e0c53fa1fc929863dbdd551c1af1904386c81ad39c8c2a29949511bf",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Pale-green candidate islands overlap the opal sphere reflections and glass body; preserve these visually ambiguous areas and lower hanging details rather than risk cutting subject facets. Border-connected backdrop and detached shadow are cleared.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          240
+        ],
+        "runtime_pixel_sha256": "c5c1a958645ff3c8f381424dde83390b8eb82c30d59e8bfb23b9215aeaf0ea06"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-bliss-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Quiet Heaven Fanforge (Omnic  Bliss).png",
+      "source_sha256": "b55e612681b4b81bcc40beaab97ed3fc1d5b83943aa1bc3398a0b57ef37a8e03",
+      "runtime": "public\\assets\\master-conduits\\master-bliss-3.png",
+      "before_sha256": "c7c42b71354dd9d293c55bc3106f015ace65dbe13d25c288d7e55104ddd75d2b",
+      "after_sha256": "bbdf7fd86faba88362f7c3ea0351925f737fc804e52bfb00dd6c66efd4cf64a2",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-bliss-3.png",
+      "previous_runtime_sha256": "c7c42b71354dd9d293c55bc3106f015ace65dbe13d25c288d7e55104ddd75d2b",
+      "verdict": "corrected",
+      "rationale": "Cleared three turquoise backdrop gaps inside the feather-and-loom structure; preserved the ivory feathers and teal mechanical accents.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          239
+        ],
+        "runtime_pixel_sha256": "42cbcceaf41dfb1785df803d2d0013bc815442664d3b9acde4eb427ac33ed950"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-bruno-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Living Worldwall Atlas (Omnic  Bruno).png",
+      "source_sha256": "6632beda5964e70578b03c660a4ee2535a930c9465046b7b0c6586b009c23fd6",
+      "runtime": "public\\assets\\master-conduits\\master-bruno-1.png",
+      "before_sha256": "94550b11eba9ddc86e210775768bde27391507fb3314f36e32cbef27640c3daa",
+      "after_sha256": "94550b11eba9ddc86e210775768bde27391507fb3314f36e32cbef27640c3daa",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          17,
+          16,
+          239,
+          240
+        ],
+        "runtime_pixel_sha256": "dcf0b1574f27e54bb5e82f2049cbbb2982e5af9e061c91147c21018c43abcd5f"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-bruno-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Quarry Planet Gravitas (Omnic  Bruno).png",
+      "source_sha256": "97bf8cba57ba8f517a4e5fd91788c44c8ecef0d5056f9fa910bbfea8d591b1d3",
+      "runtime": "public\\assets\\master-conduits\\master-bruno-2.png",
+      "before_sha256": "2ab38a9fb8144ea4e6def076830f6f3dafdf46fcb3d2d216d325e717590ab558",
+      "after_sha256": "f1de203c6cca9f82e52ddab2cd176ad225175152e1038c99300569d6276754d5",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-bruno-2.png",
+      "previous_runtime_sha256": "2ab38a9fb8144ea4e6def076830f6f3dafdf46fcb3d2d216d325e717590ab558",
+      "verdict": "corrected",
+      "rationale": "Cleared two pale-green fields between the rock plates and upper central slabs; preserved the orange seams, dark stone and broad ground shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          26,
+          240,
+          230
+        ],
+        "runtime_pixel_sha256": "d0ace484ea8a398f0f53d52ad37d3d0db29ff97379661794312a577406477ce7"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-bruno-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Worldforge Hammer Dominion (Omnic  Bruno).png",
+      "source_sha256": "264521eafa6aec29105a530346f47665a9c0d2229fba4476e2b6c60b1bc332ef",
+      "runtime": "public\\assets\\master-conduits\\master-bruno-3.png",
+      "before_sha256": "8391fbb8776f9493e277f4ecb9e8f51cbcda938ba151bf9f1fa63c406814a18a",
+      "after_sha256": "8391fbb8776f9493e277f4ecb9e8f51cbcda938ba151bf9f1fa63c406814a18a",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          239
+        ],
+        "runtime_pixel_sha256": "76f4193fbfa5424e1a20a9171672d41c8973cabd856e85fce820b4996244c6e6"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-crinso-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Twin-Rose Singularity Drive (Omnic  Crinso).png",
+      "source_sha256": "d2b71869b9d8fa1ac286174ff703242e7407242720bcd9e9cb3939048bc00383",
+      "runtime": "public\\assets\\master-conduits\\master-crinso-1.png",
+      "before_sha256": "6c62b14a77908d3e812cfa1b20393cf6573f81d68fbcb7e9a4ea4e47ba83ac91",
+      "after_sha256": "6a15558e16f357a7084c5cef11ed1b31a4addab50b6c746e25dc5e9405144058",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-crinso-1.png",
+      "previous_runtime_sha256": "6c62b14a77908d3e812cfa1b20393cf6573f81d68fbcb7e9a4ea4e47ba83ac91",
+      "verdict": "corrected",
+      "rationale": "Cleared two enclosed sage backdrop gaps inside the rose-wheel structure; preserved the double blade, gold hub and detached sparks.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          239,
+          240
+        ],
+        "runtime_pixel_sha256": "10f5a01d1a94b2ee0af1e184077ed98645d3e072d6c4fc84b6491a91e8ce338d"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-crinso-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Duality Planet Flamewheel (Omnic  Crinso).png",
+      "source_sha256": "11db5fac3d08478cbf0e65e503040e5df06814211a5ff74562c12307488bbd2e",
+      "runtime": "public\\assets\\master-conduits\\master-crinso-2.png",
+      "before_sha256": "5156a12c09807ab718d1d09400bb30b887fe0111952807c67cfa3c8899500ca6",
+      "after_sha256": "5156a12c09807ab718d1d09400bb30b887fe0111952807c67cfa3c8899500ca6",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Dark-green border key; every >=1000px enclosed dark-green backdrop island visible in the correct Duality Planet Flamewheel candidate overlay is seeded. Preserve authored red, pink, black, gold and any green details smaller/ambiguous with subject; remove only confirmed large background fields.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          20,
+          240,
+          236
+        ],
+        "runtime_pixel_sha256": "cae37c46a256ac75dba443499aaeb002f3e10b0b5212153f74be4d8c0b218e46"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-crinso-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Crimson Beauty Pyre Requiem (Omnic  Crinso).png",
+      "source_sha256": "88e36c9e288273bf5b4355ba5dd3306cbed81e1156e16f1f2d9688fa831b5bd9",
+      "runtime": "public\\assets\\master-conduits\\master-crinso-3.png",
+      "before_sha256": "f157aabffee0327ab4471bf2121805d6ae64cbdb767348168a78bba75647312a",
+      "after_sha256": "dd9033b271e02ac6d2e6c3e88aab6caf1b39dca649f58a146dcc63a4d8fb804d",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-crinso-3.png",
+      "previous_runtime_sha256": "f157aabffee0327ab4471bf2121805d6ae64cbdb767348168a78bba75647312a",
+      "verdict": "corrected",
+      "rationale": "Cleared the enclosed muted-green backdrop pocket inside the upper wheel; preserved the red-gold device and authored center.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          239
+        ],
+        "runtime_pixel_sha256": "ac20d19fe84b3962b5f2742c3a14cb9f8dff0797ca6630abf715a3039ce087b8"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-disciple-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Unbound Mindcrown Synapse (Omnic  Disciple).png",
+      "source_sha256": "29c956e086c56a94b24f9de3effa72a8e412118d735fe1cdd5c5c8b0aacde2ee",
+      "runtime": "public\\assets\\master-conduits\\master-disciple-1.png",
+      "before_sha256": "9f101908222ba72a72e277b69af975d4cfdfd8b49ace2eb785d5ede058ce0d30",
+      "after_sha256": "18a506934169ecf7d9832343c5493cff12bf8a0c5f70e72b4d15879544d30af1",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-disciple-1.png",
+      "previous_runtime_sha256": "9f101908222ba72a72e277b69af975d4cfdfd8b49ace2eb785d5ede058ce0d30",
+      "verdict": "corrected",
+      "rationale": "Cleared thirteen enclosed sage backdrop islands within the suspended ring and open appendages; preserved the structures, dark center and dangling gold strands.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          239,
+          240
+        ],
+        "runtime_pixel_sha256": "76f7077e549624020a73ff90443aa95bf42ab2f53a61dd0ea5138ca0cff060f3"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-disciple-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Concord Planet Thoughtforge (Omnic  Disciple).png",
+      "source_sha256": "53e71e1d0586f70cd4474f56919a8d83445a226cd1f6d9df3cb3a057c531869a",
+      "runtime": "public\\assets\\master-conduits\\master-disciple-2.png",
+      "before_sha256": "4d4844b94eaa635d1d947f514958ef5102eb9495f00a521523d2760bfe22c1ea",
+      "after_sha256": "4d4844b94eaa635d1d947f514958ef5102eb9495f00a521523d2760bfe22c1ea",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          17,
+          16,
+          239,
+          240
+        ],
+        "runtime_pixel_sha256": "7ebc370c976490178fd75bbd8c60cb09b43f3e430822a60516c0823e05fbe6a5"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-disciple-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Sovereign Will Amplifier (Omnic  Disciple).png",
+      "source_sha256": "06477d9c397dde7d0b003ecb39406afa8b2a9fac141d4407fcf1dc36f7149f02",
+      "runtime": "public\\assets\\master-conduits\\master-disciple-3.png",
+      "before_sha256": "b3bcf6609b2caf67f0fb1977896f231a7db4f1ef00f13739ecf10921ea5ec96d",
+      "after_sha256": "b3bcf6609b2caf67f0fb1977896f231a7db4f1ef00f13739ecf10921ea5ec96d",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          19,
+          16,
+          237,
+          240
+        ],
+        "runtime_pixel_sha256": "a522485cb8d1245ea0b2bf3e43b91c49997bd239832dff603555fce1d6011e7e"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-elise-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Infinite Thunderwheel Arsenal (Omnic  Elise).png",
+      "source_sha256": "a1cabb860e118a3bf90166e380e29e938162d83e8b59ad915db20dcca5843518",
+      "runtime": "public\\assets\\master-conduits\\master-elise-1.png",
+      "before_sha256": "1d8b37c7e63b82eeeae1ff21fb20dc91893193eefc1872a16d5a05b5a9a1709a",
+      "after_sha256": "1d8b37c7e63b82eeeae1ff21fb20dc91893193eefc1872a16d5a05b5a9a1709a",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Magenta border key; every >=1000px disconnected magenta island in the candidate overlay was confirmed as plain backdrop between lime blades/clockwork and seeded. Lime/white/gold subject colors are distinct; preserve authored metal and remove magenta backdrop only.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          20,
+          240,
+          235
+        ],
+        "runtime_pixel_sha256": "eda4381d54bfbe83acde0e618379becf214681a3d2110c8a4cfb3ddf234ef278"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-elise-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Twin Star Planetary Ratchet (Omnic  Elise).png",
+      "source_sha256": "702a8c3a76f43043c4c3a49ff1994ed86674bf309c3ba0aa0ef07c6c101ff50a",
+      "runtime": "public\\assets\\master-conduits\\master-elise-2.png",
+      "before_sha256": "65d0d7ac59b26f8475aa31a02c1a9536ada6a96c35b099fb940bcf03e195eb99",
+      "after_sha256": "65d0d7ac59b26f8475aa31a02c1a9536ada6a96c35b099fb940bcf03e195eb99",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Magenta border key; all >=1000px disconnected magenta regions shown in the candidate overlay were confirmed as backdrop between lime blades/clockwork and seeded; retain authored pale/lime subject and remove only matching background.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          17,
+          240,
+          238
+        ],
+        "runtime_pixel_sha256": "2ce5105970d8327ba6f9293e8ecd80fc16fa62ef75e138b9adaa56057db9b6f0"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-elise-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Storm Empress Execution Clock (Omnic  Elise).png",
+      "source_sha256": "1a6f554f17c9cc8c67fa7a375b3721b2a43e51a0d6b43da6cc342b15f8d367ed",
+      "runtime": "public\\assets\\master-conduits\\master-elise-3.png",
+      "before_sha256": "047d9bd7ab8966214f4968e201b2f431a471150d955710df741f2ce3c6d54648",
+      "after_sha256": "047d9bd7ab8966214f4968e201b2f431a471150d955710df741f2ce3c6d54648",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          19,
+          240,
+          237
+        ],
+        "runtime_pixel_sha256": "760695f6f27cb7fc0df0ae61f4d057840ef922a2058a5623fd53786c7e35f981"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-ember-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Helios Pyre Cathedral (Omnic  Infernis).png",
+      "source_sha256": "1da33d02f9ea4a53a5106e7c2b03df039f642443ad8cc8d2d89faf05fe5e0c74",
+      "runtime": "public\\assets\\master-conduits\\master-ember-1.png",
+      "before_sha256": "a1b332dd0d3efa6139fbe126ba902a85d7485422ec079256d7546bfc6beda4d6",
+      "after_sha256": "a1b332dd0d3efa6139fbe126ba902a85d7485422ec079256d7546bfc6beda4d6",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          239
+        ],
+        "runtime_pixel_sha256": "2647212b6157a6d08a294a22a60269a96dfc223ea33bc24e276ab62c20d6c57a"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-ember-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Cinderstar Genesis Engine (Omnic  Infernis).png",
+      "source_sha256": "f14c961d2e3346dd140e0626700bb3072c04adc489ff4bf78e9b0b82eda40ecb",
+      "runtime": "public\\assets\\master-conduits\\master-ember-2.png",
+      "before_sha256": "bee5f72d6b50ce76881a75c105ca4b1a3161d3a24e96bc0f68dc4fe390ca02c5",
+      "after_sha256": "bee5f72d6b50ce76881a75c105ca4b1a3161d3a24e96bc0f68dc4fe390ca02c5",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          239,
+          240
+        ],
+        "runtime_pixel_sha256": "4eda41609522fc080da6279cc2ae2361f452d25f3d3da755248b91dce43d30e4"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-ember-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Unbroken Sunforge Throne (Omnic  Infernis).png",
+      "source_sha256": "1e8d9c8f9bb92bb3c993fd9c7dee74486e9697e00e1b1999dd1792158c142a9c",
+      "runtime": "public\\assets\\master-conduits\\master-ember-3.png",
+      "before_sha256": "fd198f3de63cd809248dbc2dbfe8f1fba87d25707e464433c9e5f7c6203674c1",
+      "after_sha256": "fd198f3de63cd809248dbc2dbfe8f1fba87d25707e464433c9e5f7c6203674c1",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          17,
+          240,
+          239
+        ],
+        "runtime_pixel_sha256": "0c3fa8fae91114cc5787c71313a5cf7c27ce5a9c7b9c105b09606d8463fc0979"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-nerithe-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Shoreless Meridian Worldchart (Omnic  Nerithe).png",
+      "source_sha256": "2329eedbdc5861bc572f8263cf2fa88117b11e6eaf06b04edee34c9269e66d51",
+      "runtime": "public\\assets\\master-conduits\\master-nerithe-1.png",
+      "before_sha256": "f11d5b05f3769e1e08793c519530b9f0a398f8bf609b64b4deeaf5f11446c14d",
+      "after_sha256": "f11d5b05f3769e1e08793c519530b9f0a398f8bf609b64b4deeaf5f11446c14d",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          240
+        ],
+        "runtime_pixel_sha256": "168e203a46033c4c30503541f13402e005ff38c580c3f24eca8fd5f25ad5f435"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-nerithe-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Folded Ocean Planetarium (Omnic  Nerithe).png",
+      "source_sha256": "c4b69118db45a713f032f541047907c8d4beb06c7a70aa882541e618d1d56b39",
+      "runtime": "public\\assets\\master-conduits\\master-nerithe-2.png",
+      "before_sha256": "0dd3a7980424e8c79139eba68afd0592aa3f1e8aac2ddd48aa89fb0bd490410e",
+      "after_sha256": "0dd3a7980424e8c79139eba68afd0592aa3f1e8aac2ddd48aa89fb0bd490410e",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          240
+        ],
+        "runtime_pixel_sha256": "db4b410cd97c6ccf83e352a8040c25d000f99165bd644cdc1c17e573043419cd"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-nerithe-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Abyssal Surveyor Crown (Omnic  Nerithe).png",
+      "source_sha256": "ba8dc866a81c75655258551a4cc5e7e30b124680e91c524c68964efd788e8beb",
+      "runtime": "public\\assets\\master-conduits\\master-nerithe-3.png",
+      "before_sha256": "53f8f675c7fbbd802584a37647b9aa89e248f0aab1b2a75c582c04a840febf84",
+      "after_sha256": "53f8f675c7fbbd802584a37647b9aa89e248f0aab1b2a75c582c04a840febf84",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          238
+        ],
+        "runtime_pixel_sha256": "dc8f3429f69fde9cb90ceb5bce67de96409d0cd3ec5740a6f4053023d22d65d7"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-orvella-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Throne Beneath the World (Omnic  Orvella).png",
+      "source_sha256": "9c6105c32bdc83abc2d92b501b6c2e9bf2c8252da9863af49da8d117a85bc81f",
+      "runtime": "public\\assets\\master-conduits\\master-orvella-1.png",
+      "before_sha256": "f509d23c1c2e82503e567f13ce241cd07a2b01f8a32d5e503233f48ba74e199b",
+      "after_sha256": "99459b7e564eb641ef85ec6dc836eafad6e3d4f06bd04dcbd6ea1e55b60f6634",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-orvella-1.png",
+      "previous_runtime_sha256": "f509d23c1c2e82503e567f13ce241cd07a2b01f8a32d5e503233f48ba74e199b",
+      "verdict": "corrected",
+      "rationale": "Cleared three broad muted-green backdrop islands behind the throne and side columns; preserved the violet crystals, stone architecture and sand-colored ground plane.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          19,
+          240,
+          236
+        ],
+        "runtime_pixel_sha256": "a3f08842e431eb1fe7fcb1828eb8ff46d62f8846b71ef3c4923a7cda8bca8f8c"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-orvella-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Deep Foundation Planetpress (Omnic  Orvella).png",
+      "source_sha256": "96ac7f14f2ee071a274dc8d3f6a32084abcc95407928be8732314085ded9454b",
+      "runtime": "public\\assets\\master-conduits\\master-orvella-2.png",
+      "before_sha256": "bdb173d6254e5317f0653552c039c07c8555097ef671e024363b9f0b0a39d24a",
+      "after_sha256": "bdb173d6254e5317f0653552c039c07c8555097ef671e024363b9f0b0a39d24a",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          21,
+          240,
+          235
+        ],
+        "runtime_pixel_sha256": "4d7cffca0cb29913813eda07cd7b33bb64d129af15ffc4b380ca37bbe71eef32"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-orvella-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Keystone Sovereign Counterweight (Omnic  Orvella).png",
+      "source_sha256": "da64336b4c1cf28553360f354428b8e90628978fd79d30206b4b48c82ed029a2",
+      "runtime": "public\\assets\\master-conduits\\master-orvella-3.png",
+      "before_sha256": "7cc4bdbfb01c23d2e8c250cc991df9fcc164a40d8ea8967d6e1a81662ea5b48b",
+      "after_sha256": "7cc4bdbfb01c23d2e8c250cc991df9fcc164a40d8ea8967d6e1a81662ea5b48b",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          17,
+          240,
+          239
+        ],
+        "runtime_pixel_sha256": "9cb6fbbcf294d42203e1e988d6f604c2c5b6c54e4238a0d495e3038ab64e88ff"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-razor-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Unbroken Midnight Bastion (Omnic  Razor).png",
+      "source_sha256": "bb5f4851e8b369d51e9ce3bac9eb46024649dc4fd68e735f22e6eedcabdb0ac2",
+      "runtime": "public\\assets\\master-conduits\\master-razor-1.png",
+      "before_sha256": "baf6acd421b6cf827c642eab8d83b9bc3742f7ee6802f49fe8e8821047110a80",
+      "after_sha256": "f151961e0809ecc5246f592b503e638dafa73e3bef3be0dfee5400055d7bce4a",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-razor-1.png",
+      "previous_runtime_sha256": "baf6acd421b6cf827c642eab8d83b9bc3742f7ee6802f49fe8e8821047110a80",
+      "verdict": "corrected",
+      "rationale": "Cleared two additional enclosed green backdrop fields within the crescent-wing envelope; preserved the purple wing surfaces, central bastion and attached ground shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          20,
+          240,
+          235
+        ],
+        "runtime_pixel_sha256": "61ee787d2248f28a82f3322992a17c720d08074131c759f595be59908d6e4634"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-razor-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Eclipse Planet Watchtower (Omnic  Razor).png",
+      "source_sha256": "b109e56f9e995d1bb6b91a4361e1d607a5d7c08b8c89e907873c279501c218d7",
+      "runtime": "public\\assets\\master-conduits\\master-razor-2.png",
+      "before_sha256": "8d03e028fd2bd51c25674c2364922413ed1a24870ef16f3a265cee5331344877",
+      "after_sha256": "8d03e028fd2bd51c25674c2364922413ed1a24870ef16f3a265cee5331344877",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          19,
+          240,
+          236
+        ],
+        "runtime_pixel_sha256": "de0404a512084b4a6d78e16420b4fc5dc04e43ad875b2d8c91100a3852d1a2e7"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-razor-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Nightglass Counterblade Engine (Omnic  Razor).png",
+      "source_sha256": "6bfc6bbc97a1163157d3df4c194554b7bdc8675d3ef5372dfe8452f5df4ee825",
+      "runtime": "public\\assets\\master-conduits\\master-razor-3.png",
+      "before_sha256": "bc2075c6a5d849f68e4128521b7f3aa4205c54a9852c2c4db7512cde8387245c",
+      "after_sha256": "fa76b28c439d66fd851a07c184bdd4040276781ca49199a93f664466ee358200",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-razor-3.png",
+      "previous_runtime_sha256": "bc2075c6a5d849f68e4128521b7f3aa4205c54a9852c2c4db7512cde8387245c",
+      "verdict": "corrected",
+      "rationale": "Cleared two muted-green backdrop fields inside the lower clockwork and right inner crescent; preserved the dark-violet mechanism and pointed facets.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          240
+        ],
+        "runtime_pixel_sha256": "b03f8181ea3a035951012f05568b21acabcc1a2c2b681a6a47f38f93f9b1a2fc"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-rosetta-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Rose Beyond the Sun Orrery (Omnic  Rosetta).png",
+      "source_sha256": "d3e787e1b5cbb318bd7266f08d5b359b8b6bf39d139f417779ee4c110a58606f",
+      "runtime": "public\\assets\\master-conduits\\master-rosetta-1.png",
+      "before_sha256": "1a3c6883c82cfa7cb55569f88caec4def4682d16207df4c829cc0814ea9b4ac8",
+      "after_sha256": "14b4d361b0074cfcf3be1eb08529831706b98591a54634283c16851aa6c4a19b",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-rosetta-1.png",
+      "previous_runtime_sha256": "1a3c6883c82cfa7cb55569f88caec4def4682d16207df4c829cc0814ea9b4ac8",
+      "verdict": "corrected",
+      "rationale": "Cleared four enclosed olive backdrop fields within the rose-wheel frame using its row-gradient key; preserved the roses, gold machinery and attached lower base/shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          19,
+          240,
+          237
+        ],
+        "runtime_pixel_sha256": "f5c6c90ffa17a9639146125399c88c7cbcc5f66ed27e30975547bec85cc75f7c"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-rosetta-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Virtuous Planet Rosegarden (Omnic  Rosetta).png",
+      "source_sha256": "144e1fe8ac9005abf179507ced6ce6ae7d677e90015e04bbeda993c2fa0f2dc1",
+      "runtime": "public\\assets\\master-conduits\\master-rosetta-2.png",
+      "before_sha256": "a42ea3b0dfc318627dc60644800e67ae0caac8406b1a6d6c1636e57c1f7f4e12",
+      "after_sha256": "2e556119ee172edca157c88f83d823723c95a4bb9030467ca414a30ac74f28c4",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-rosetta-2.png",
+      "previous_runtime_sha256": "a42ea3b0dfc318627dc60644800e67ae0caac8406b1a6d6c1636e57c1f7f4e12",
+      "verdict": "corrected",
+      "rationale": "Cleared two enclosed dark-green backdrop openings inside the flower-and-gear assembly; preserved the red roses, cream wings and hanging details.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          17,
+          16,
+          238,
+          240
+        ],
+        "runtime_pixel_sha256": "c767bc37d01752f64040b0f821b015e550c2590fe9ace64ada8dd38406d1b35d"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-rosetta-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Golden Thorn Judgment Loom (Omnic  Rosetta).png",
+      "source_sha256": "88652dc35a9b5a609a992081f2361e4b85e20f42d501ee0f8b5ac24878a3c7d5",
+      "runtime": "public\\assets\\master-conduits\\master-rosetta-3.png",
+      "before_sha256": "f24cee15d3800516abe864266b3ad44cc2150b3f441e7a76ca340e7d7d39db71",
+      "after_sha256": "c479418959a67d3336252ab912fc4f72b517a681a7cd92e5b5fc1694b0bd3715",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-rosetta-3.png",
+      "previous_runtime_sha256": "f24cee15d3800516abe864266b3ad44cc2150b3f441e7a76ca340e7d7d39db71",
+      "verdict": "corrected",
+      "rationale": "Cleared five turquoise-green backdrop gaps through the rose medallion and lower frame; preserved the roses, pale metal, gold fittings and central structure.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          17,
+          240,
+          239
+        ],
+        "runtime_pixel_sha256": "73c2dee2933fcfd87cab3a52e099a77f8a4e3b55f3611a9517d2bb3b46dde375"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-sprout-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Worldseed Mercy Foundry (Omnic  Flora).png",
+      "source_sha256": "4b534775b3d7c32f5d04ffdcb38e92dd356d34062db6b5407588eb989d14ce94",
+      "runtime": "public\\assets\\master-conduits\\master-sprout-1.png",
+      "before_sha256": "da73c1f80b9ffab9f3922b86abb74560b2a3415e9aadc5a0138de30c7a9e3b65",
+      "after_sha256": "da73c1f80b9ffab9f3922b86abb74560b2a3415e9aadc5a0138de30c7a9e3b65",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Pink border key tuned for backdrop variation; six visible pink openings plus every >=1000px enclosed pink island confirmed in the labeled source overlay are seeded. Pink is not an authored subject palette; preserve green leaves, architecture and built-in base; remove only border-connected/confirmed pink backdrop.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          19,
+          240,
+          236
+        ],
+        "runtime_pixel_sha256": "a8fef5d868f65721ac2e9ace1608cf9b55d8a0c3de3d4373dd0d8e989648d340"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-sprout-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Briar Constellation Loom (Omnic  Flora).png",
+      "source_sha256": "28cc0de3534abb62fe995a748b13fb7bb6a9adaea52e004097fd98cc00db16e5",
+      "runtime": "public\\assets\\master-conduits\\master-sprout-2.png",
+      "before_sha256": "5604c5f1e1403b002955c484f21e88305f58d666a21db746607e48918fa17dc0",
+      "after_sha256": "5604c5f1e1403b002955c484f21e88305f58d666a21db746607e48918fa17dc0",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Pure-white border key at restrained radius preserves ivory/white metal by distance; no seeds because reviewed candidate islands overlap pale subject/metal and were not confirmed as background. Flat detached white backdrop shadow keys cleanly; retain built-in base.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          18,
+          16,
+          238,
+          240
+        ],
+        "runtime_pixel_sha256": "1135df3210d6fdfe680f3d7814eff17aa4b38af330ad6c21f379b49bb76afb21"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-sprout-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Evergreen Continuance Crucible (Omnic  Flora).png",
+      "source_sha256": "cd3a0b185a7c710ed3f32e41ea35a8a023388ad4656dd08c505e317c0cdbb727",
+      "runtime": "public\\assets\\master-conduits\\master-sprout-3.png",
+      "before_sha256": "7a0a2f9f79c4a43a5ef897997150990c8c018367ea69a80df6d7c911f684d61f",
+      "after_sha256": "7a0a2f9f79c4a43a5ef897997150990c8c018367ea69a80df6d7c911f684d61f",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          18,
+          16,
+          238,
+          240
+        ],
+        "runtime_pixel_sha256": "c2a25c5dc68cdd29a5fa8dd019d41ba2a7670e6a1dcb7ecd690894129324fbfa"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-thornia-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Forbidden Garden Worldlock (Omnic  Thornia).png",
+      "source_sha256": "4600b975e0e40ee5f74547cc2745a93ccce5877501efda48ee6538ddcf464bc1",
+      "runtime": "public\\assets\\master-conduits\\master-thornia-1.png",
+      "before_sha256": "16af2bea6f20ad02377a3e263cc58b8b7017cbbf3bcedc4ca51e04d69264b041",
+      "after_sha256": "5b7b579d7d3a515c76957a3d29178cfdc606256fc5690d5d13d8a7db381d308e",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-thornia-1.png",
+      "previous_runtime_sha256": "16af2bea6f20ad02377a3e263cc58b8b7017cbbf3bcedc4ca51e04d69264b041",
+      "verdict": "corrected",
+      "rationale": "Cleared five additional green backdrop fields visible through the rose-wheel lattice; preserved red roses, bronze rails and the authored dark center.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          17,
+          16,
+          238,
+          240
+        ],
+        "runtime_pixel_sha256": "3de92f7eba32dd0218dfc25bbbc522aba6a1e2dd45e7bcce1d5432f6c19617d1"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-thornia-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Thousand-Rose Planetary Aegis (Omnic  Thornia).png",
+      "source_sha256": "57a6e597e4f1682a328f3344934c66d6a2a5a551b2a729c677b9c5f72f3a07ac",
+      "runtime": "public\\assets\\master-conduits\\master-thornia-2.png",
+      "before_sha256": "642a4a64d8a3f0e58129271e7977b725ae8eae275ce1eeaa6e7906bfd7509181",
+      "after_sha256": "2b52cae194c7ee3bde58f5d1418180d11d429ae9011eaf0ec689c60be593112f",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-thornia-2.png",
+      "previous_runtime_sha256": "642a4a64d8a3f0e58129271e7977b725ae8eae275ce1eeaa6e7906bfd7509181",
+      "verdict": "corrected",
+      "rationale": "Cleared five pale-green backdrop openings within the rose wheels and inner assembly; preserved the roses, white/gold metal, red blades and lower shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          239,
+          240
+        ],
+        "runtime_pixel_sha256": "789802f6fdc68f48ce98c1a19bc630362d4f6f55516e3b4b68d07c78f731f453"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-thornia-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Shadow Rose Sovereign Foundry (Omnic  Thornia).png",
+      "source_sha256": "b6ce5f85040d77a66e938f3eacc79f0937865acb5484985244d46dfa642a9baf",
+      "runtime": "public\\assets\\master-conduits\\master-thornia-3.png",
+      "before_sha256": "5112c99147506fab925a1f79d941763afb9b8175a96eb4539eb7d94cbd0cf1d9",
+      "after_sha256": "000ce4e7a156f17dbd37dc20aecc319983e2e7e211f7de92608266a8aa1083cc",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-thornia-3.png",
+      "previous_runtime_sha256": "5112c99147506fab925a1f79d941763afb9b8175a96eb4539eb7d94cbd0cf1d9",
+      "verdict": "corrected",
+      "rationale": "Cleared three olive backdrop fields behind the upper wheel and central armor; preserved the broad mauve ground cloud and olive shadow beneath the chassis.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          18,
+          240,
+          238
+        ],
+        "runtime_pixel_sha256": "3abe000319985dc8df2016529c2b64d988fea88be6ec2bce083d573bf8b8d6d1"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-tide-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Abyssal Shelter Observatory (Omnic  Tizu).png",
+      "source_sha256": "27c6cde06d381cbcd00f9ef950e4430497ea3ec0bb2a97cdd893c4a34b1346e7",
+      "runtime": "public\\assets\\master-conduits\\master-tide-1.png",
+      "before_sha256": "1f39144660c23e5fc8bf2955a09f39a43c18400588aa2a4494a3322a06abc235",
+      "after_sha256": "1f39144660c23e5fc8bf2955a09f39a43c18400588aa2a4494a3322a06abc235",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          21,
+          240,
+          235
+        ],
+        "runtime_pixel_sha256": "fb2a50478e26535812ac4fe8df0e8343e6b1ea2ab59570433e2676c72b20181c"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-tide-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Ocean Memory Worldpump (Omnic  Tizu).png",
+      "source_sha256": "27fd42c791d5af9bb0c56aab891cd0e35a2aa38010c3d03a3f7c867f686c3ecb",
+      "runtime": "public\\assets\\master-conduits\\master-tide-2.png",
+      "before_sha256": "664022444fc075280a13fd60621391efadb66bab03f2f77f5fcd586fc97dcd54",
+      "after_sha256": "e7c007d014cbe9d7dc03af67f4ce050a96fc563c5e7cfef0b04eada871bae73b",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-tide-2.png",
+      "previous_runtime_sha256": "664022444fc075280a13fd60621391efadb66bab03f2f77f5fcd586fc97dcd54",
+      "verdict": "corrected",
+      "rationale": "Cleared five enclosed green backdrop fields between the orb frame and lower struts; preserved the blue planetary core, pale metal and authored base.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          23,
+          16,
+          233,
+          240
+        ],
+        "runtime_pixel_sha256": "dc765142421cc3ab92967cf64b917fa8cf3aa1c953712a4d6155bbbdb6c71683"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-tide-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Undertow Sovereign Harpoon (Omnic  Tizu).png",
+      "source_sha256": "ce9b64f5bfcf1fce0dd9e19f77feaf4919ceabda261e9f5d22bc28cae49b0a37",
+      "runtime": "public\\assets\\master-conduits\\master-tide-3.png",
+      "before_sha256": "00cee7803ea382d0320d67343ce1f644a61524bbad47b208360175cbc2b7f430",
+      "after_sha256": "a1012fef1dc20c3bffe40fc7bd86cff274128f62426eabdc602e0e40036e51df",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-tide-3.png",
+      "previous_runtime_sha256": "00cee7803ea382d0320d67343ce1f644a61524bbad47b208360175cbc2b7f430",
+      "verdict": "corrected",
+      "rationale": "Cleared eleven enclosed teal backdrop fields among the planetary rings and spokes; preserved the red roses, bronze rails, dark center and turquoise details.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          18,
+          16,
+          238,
+          240
+        ],
+        "runtime_pixel_sha256": "586657eb41b9d056449476c3c96c1972a3100ce8b5d2de69d25bebd499c323b6"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-vaelor-1",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Final Chord Celestial Resonator (Omnic  Vaelor).png",
+      "source_sha256": "be3295709ed30416320c2cf96cf5736d9d2af89cc08148179bdd5816674b195f",
+      "runtime": "public\\assets\\master-conduits\\master-vaelor-1.png",
+      "before_sha256": "db47cb297e06a8005555de8020bb9f9ba5ba3bc94e665c2555edfc89aa05d12b",
+      "after_sha256": "db47cb297e06a8005555de8020bb9f9ba5ba3bc94e665c2555edfc89aa05d12b",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          240
+        ],
+        "runtime_pixel_sha256": "9d6cf27f833c6b1b7be5602ea2eec296546500a51cb7bd2d2c258652f43a9e78"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-vaelor-2",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Thunder Choir Planetary Fugue (Omnic  Vaelor).png",
+      "source_sha256": "be6cd68ce61c6e0aec836cbe867dfe921cadb410684e264f4f3f32f439d4c824",
+      "runtime": "public\\assets\\master-conduits\\master-vaelor-2.png",
+      "before_sha256": "4570f0196238c5e38b32703a9cdaff1de645ad0fd75d7ad23882f320396dd583",
+      "after_sha256": "4570f0196238c5e38b32703a9cdaff1de645ad0fd75d7ad23882f320396dd583",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Magenta border key; protect authored lime blade facets where key-adjacent; remove flat cast backdrop shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          29,
+          16,
+          226,
+          240
+        ],
+        "runtime_pixel_sha256": "afad30ca2aee40f63889b8306f9b3d9a906f69536439a97ad723be45bbdfc233"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "master-vaelor-3",
+      "source_authority": "Art/provenance/master-conduit-art-intake.json",
+      "source": "Art\\source\\master-conduits\\Broken Sky Imperial Metronome (Omnic  Vaelor).png",
+      "source_sha256": "0d0761253403573a546d128605ca90329e68287e092cb4785f41ae324cb76f04",
+      "runtime": "public\\assets\\master-conduits\\master-vaelor-3.png",
+      "before_sha256": "b5f3f15d29e7075ebc7bdac7695e345ac84ab22cd368a3209f046153ac04a66c",
+      "after_sha256": "9fb44dd852b6d06ebc51295d863f680bee3f512d5727c2afa6f0015c8dbd0a33",
+      "previous_runtime": "Art\\source\\master-conduits\\previous-runtime\\conduit-background-audit\\master-vaelor-3.png",
+      "previous_runtime_sha256": "b5f3f15d29e7075ebc7bdac7695e345ac84ab22cd368a3209f046153ac04a66c",
+      "verdict": "corrected",
+      "rationale": "Cleared three enclosed teal backdrop fields behind the upper instrument and pendulum; preserved the lower attached teal cast shadow.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          20,
+          16,
+          235,
+          240
+        ],
+        "runtime_pixel_sha256": "ca9795837d2004f07d56ee3cf4f5c1bee9ea5a8f3b194580e46c809900e50221"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "mending-valve",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Worldroot Sap Cathedral (Omnic  Botanic).png",
+      "source_sha256": "67f8a95cd543abc3b10dc0e92c1c0a6fb737b3d899a88c8506f6ddceb0b9b69a",
+      "runtime": "public\\assets\\conduits\\mending-valve.png",
+      "before_sha256": "5e37af315c95fa0795ec14a7a10bf32f905167a66dc1c59fcfba49656253d4a1",
+      "after_sha256": "5e37af315c95fa0795ec14a7a10bf32f905167a66dc1c59fcfba49656253d4a1",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          23,
+          16,
+          233,
+          240
+        ],
+        "runtime_pixel_sha256": "6e94bbdcfe6d611d1b171d8e35128aca5a1580093c282fe3c5729e83f601d24c"
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -1327,6 +3939,47 @@
             0.55957
           ]
         ]
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "oceanic-shared-tide-pump",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Shared Tide Lifesea Engine (Omnic  Oceanic).png",
+      "source_sha256": "45bfd35ccefc31557f35f4d71d3af84e4a7ff0c08cb6c1b6626c1e02b69aa1e7",
+      "runtime": "public\\assets\\conduits\\oceanic-shared-tide-pump.png",
+      "before_sha256": "5f2c74d674c9519bfb6cac65faecb56f50108debfe68879408a034e22cc45bc4",
+      "after_sha256": "5f2c74d674c9519bfb6cac65faecb56f50108debfe68879408a034e22cc45bc4",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          17,
+          16,
+          238,
+          240
+        ],
+        "runtime_pixel_sha256": "35f0f183dff3cea9f1bf9dfcc09256a3917a93092ed15193082ee919096fb6c2"
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -1572,6 +4225,47 @@
       }
     },
     {
+      "asset": "pressurecrest-governor",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Tempest Shelter Sovereign (Omnic  Atmospheric).png",
+      "source_sha256": "95e9fa0550387ce62f8e11347db872d0672358c75f79d364104b173cd666aeb2",
+      "runtime": "public\\assets\\conduits\\pressurecrest-governor.png",
+      "before_sha256": "9d9b1ceae89bbad8e5b1307aed0a1444f6dff2851fa814bd906d473a62d5e498",
+      "after_sha256": "9d9b1ceae89bbad8e5b1307aed0a1444f6dff2851fa814bd906d473a62d5e498",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          20,
+          240,
+          235
+        ],
+        "runtime_pixel_sha256": "b07caefbe11f4a8bf1a516e5c8dbf15473b1be1dfa55a3c3f88d9ad03d4aa236"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
       "asset": "prism-splinter-socket",
       "source_authority": "Art/provenance/delivered-root-art-intake.json",
       "source": "Art\\source\\delivered-root-art\\conduits\\prism-splinter-socket.png",
@@ -1623,17 +4317,58 @@
       }
     },
     {
+      "asset": "pulse-trigger-pawl",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Sky Sovereign Escapement (Omnic  Atmospheric).png",
+      "source_sha256": "64c4f630844f7c9d708d68e28416df7a88c7811c0fe4fcc9214b4399e5bd4daa",
+      "runtime": "public\\assets\\conduits\\pulse-trigger-pawl.png",
+      "before_sha256": "da0efac3127de4657c8bc5bf2bf95de636eeeb0f78bfa0299792a77ec0c8cee1",
+      "after_sha256": "da0efac3127de4657c8bc5bf2bf95de636eeeb0f78bfa0299792a77ec0c8cee1",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          26,
+          16,
+          230,
+          240
+        ],
+        "runtime_pixel_sha256": "f28a7f8e9bca597789de5d86b64c6069b538484e2297865988eeea7074f54f67"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
       "asset": "reserve-torque-crank",
       "source_authority": "Art/provenance/delivered-root-art-intake.json",
       "source": "Art\\source\\delivered-root-art\\conduits\\reserve-torque-crank.png",
       "source_sha256": "856d3d7d8d7011925092a96b24a92f6d512f8fdc8392073c54f392c284636b69",
       "runtime": "public\\assets\\conduits\\reserve-torque-crank.png",
       "before_sha256": "502211768d71c18283389518f570729c0f9af071acb99317a6b06ac55940a43f",
-      "after_sha256": "502211768d71c18283389518f570729c0f9af071acb99317a6b06ac55940a43f",
-      "previous_runtime": null,
-      "previous_runtime_sha256": null,
-      "verdict": "no-change",
-      "rationale": "The green-adjacent pixels fall within the cast shadow and bronze support details; no independent background patch was verified.",
+      "after_sha256": "e6b6062657ba76188c7d7663704dce6673784019f675a746797e1036e054c088",
+      "previous_runtime": "Art\\source\\delivered-root-art\\previous-runtime\\conduits\\D-177\\reserve-torque-crank.png",
+      "previous_runtime_sha256": "502211768d71c18283389518f570729c0f9af071acb99317a6b06ac55940a43f",
+      "verdict": "corrected",
+      "rationale": "Follow-up review cleared green backdrop inside both frame openings and below the lower crossbar; preserved bronze hardware, cyan core and brown ground shadow.",
       "settings": {
         "method": "individual border-connected RGB key",
         "keys": [
@@ -1648,7 +4383,21 @@
         "edge_cleanup": {
           "source_pixels": 2,
           "distance_ramp": 60
-        }
+        },
+        "background_seeds": [
+          [
+            0.35,
+            0.52
+          ],
+          [
+            0.65,
+            0.52
+          ],
+          [
+            0.5,
+            0.87
+          ]
+        ]
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -1686,6 +4435,129 @@
           "source_pixels": 2,
           "distance_ramp": 60
         }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "rootbound-triage-vault",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Worldroot Triage Sanctuary (Omnic  Botanic).png",
+      "source_sha256": "c828f7b40df25a1115a534e9debac7ab5498df2d8c5b2f9661925c7914d0fd6a",
+      "runtime": "public\\assets\\conduits\\rootbound-triage-vault.png",
+      "before_sha256": "a7f040b3c94ee7238b24bd6fb25f816a4750aeb2e63620e8c6feb27dfb00f516",
+      "after_sha256": "a7f040b3c94ee7238b24bd6fb25f816a4750aeb2e63620e8c6feb27dfb00f516",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          32,
+          16,
+          224,
+          240
+        ],
+        "runtime_pixel_sha256": "5830abf7975c31beea8d4517cabff353efa423dc1dc3bb61bb3e4b84427e1d43"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "ruinselect-prism",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Ruinselect Fracture Parliament (Omnic  Chaotic).png",
+      "source_sha256": "68d4b75d1e91316c2fc2fcc6c249501426c32a7db4907360850c705000858c3a",
+      "runtime": "public\\assets\\conduits\\ruinselect-prism.png",
+      "before_sha256": "cb51b6c13af0679645a37e55389a365536957a4a3cf53787f8c98abc02b252dc",
+      "after_sha256": "cb51b6c13af0679645a37e55389a365536957a4a3cf53787f8c98abc02b252dc",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          19,
+          240,
+          236
+        ],
+        "runtime_pixel_sha256": "62c159baefa20b8c3657c6e555e660db34fbde21b07f7f7a25052a4526809d0a"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "secondbeat-rack",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Secondbeat Rupture Throne (Omnic  Chaotic).png",
+      "source_sha256": "5496f6a9e35bbd64247573b30958299d4edc1a0b44eddf8785d52da5954ea2ef",
+      "runtime": "public\\assets\\conduits\\secondbeat-rack.png",
+      "before_sha256": "f7efbcb32c1f4e7cab4f9bd4a2017944711daa59a7e3af27497b55501be4c935",
+      "after_sha256": "f7efbcb32c1f4e7cab4f9bd4a2017944711daa59a7e3af27497b55501be4c935",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          239,
+          240
+        ],
+        "runtime_pixel_sha256": "3d401d3ca1339be8c7d9489d385e0f3d273bfb7797f8b7e539f1b584f00e1868"
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -1795,6 +4667,88 @@
         "saturation_min": 0.25,
         "value_min": 0.2,
         "border_only": true
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "solace-anchor",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Solace Witness Monolith (Omnic  Tranquilitic).png",
+      "source_sha256": "2081b073f93c5e544221c496644d6cafedf523fabd69e76c0c7f36abeb80926d",
+      "runtime": "public\\assets\\conduits\\solace-anchor.png",
+      "before_sha256": "66abbf0aaf9905f2ed356e3f5ad382fdb4eb0481d3ffcfd01005b44fff9e2e36",
+      "after_sha256": "66abbf0aaf9905f2ed356e3f5ad382fdb4eb0481d3ffcfd01005b44fff9e2e36",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          32,
+          16,
+          224,
+          240
+        ],
+        "runtime_pixel_sha256": "1e6588a984c755db61468b5fc3da8469451ffd039ceaea4018d17b965bcc00ea"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "sootwake-crucible",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Sootwake Phoenix Mirror (Omnic  Infernic).png",
+      "source_sha256": "3d80f61269d5131556495ed53b26ab4e459919112bfa604f778d6b371a407a51",
+      "runtime": "public\\assets\\conduits\\sootwake-crucible.png",
+      "before_sha256": "20a0f6ae69845271d755a5e524af4affa48bdb14f2c3cfab94121fbb5c72b5bd",
+      "after_sha256": "20a0f6ae69845271d755a5e524af4affa48bdb14f2c3cfab94121fbb5c72b5bd",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          25,
+          16,
+          231,
+          240
+        ],
+        "runtime_pixel_sha256": "fcd1a4073e5d088f54bc84aae4cc185f46bc45190ef97682b40a2f233ef2fdfb"
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -2018,6 +4972,170 @@
           "source_pixels": 2,
           "distance_ramp": 60
         }
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "tempered-strike-link",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Phoenix Temper Dominion (Omnic  Infernic).png",
+      "source_sha256": "6e958852b89f27facf3907f67d273b8ced375be9af78033c5bf03cf7abafcecc",
+      "runtime": "public\\assets\\conduits\\tempered-strike-link.png",
+      "before_sha256": "a6f0cf4d25d34c03346f0a8beea767756fb322227da8c46533e5d0e75687459f",
+      "after_sha256": "a6f0cf4d25d34c03346f0a8beea767756fb322227da8c46533e5d0e75687459f",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          20,
+          16,
+          235,
+          240
+        ],
+        "runtime_pixel_sha256": "acf43e4ebf4d48b397f809ffef8d0961654b7e8886d3793eabcdacfdc9261853"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "tension-governor",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Fractured Mercy Governor (Omnic  Chaotic).png",
+      "source_sha256": "b39f2a7b186c6fbbd17ef285dabb62ed500532b826c8ac0aec46f378f38c7624",
+      "runtime": "public\\assets\\conduits\\tension-governor.png",
+      "before_sha256": "735112afb696aaaf64777e85b9a56f51e56307ed2a15d2b4f3eca33e5ce4cc6c",
+      "after_sha256": "735112afb696aaaf64777e85b9a56f51e56307ed2a15d2b4f3eca33e5ce4cc6c",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          240
+        ],
+        "runtime_pixel_sha256": "cad2ca93d37286c4e1f5f2fb4db417e600776a70ecd55babcfbd4326c988e4c2"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "tidebound-reflector",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Leviathan Mercy Reflector (Omnic  Oceanic).png",
+      "source_sha256": "8d693f34491968a64e29aed4ec030c937de153d31b5d0c2c41e4ee459afe3b8e",
+      "runtime": "public\\assets\\conduits\\tidebound-reflector.png",
+      "before_sha256": "5439e8999af07e51e062fe04aae18c86a52a2aefe26377cc5557f1e9245a7e13",
+      "after_sha256": "5439e8999af07e51e062fe04aae18c86a52a2aefe26377cc5557f1e9245a7e13",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          26,
+          16,
+          229,
+          240
+        ],
+        "runtime_pixel_sha256": "b6b060fc333005273e3f0557404ae3c440d1ffbe2d877cea6fc40d9374beb2fb"
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "tranquilitic-accord-bastion",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Accord Seraph Sanctuary (Omnic  Tranquilitic).png",
+      "source_sha256": "e869e18e8bf5836406d6310b012fe22358fc323fc530207602b0786ed108b61e",
+      "runtime": "public\\assets\\conduits\\tranquilitic-accord-bastion.png",
+      "before_sha256": "9b04d23ac004996c891975d3f35c4f158aa81fecf3960f1b5372b711930e79e8",
+      "after_sha256": "9b04d23ac004996c891975d3f35c4f158aa81fecf3960f1b5372b711930e79e8",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          16,
+          16,
+          240,
+          239
+        ],
+        "runtime_pixel_sha256": "5b74ade105f9e859311fd66bdb8495a5564e26e4f02f0518044c3823c2527fa4"
       },
       "manual_review": {
         "source": "full-resolution original",
@@ -2291,6 +5409,47 @@
           "distance_ramp": 50
         },
         "reviewed_bottom_frame_rows": 2
+      },
+      "manual_review": {
+        "source": "full-resolution original",
+        "runtime_backgrounds": [
+          "dark",
+          "light"
+        ],
+        "magnified_candidates": true
+      }
+    },
+    {
+      "asset": "ward-stitch-spool",
+      "source_authority": "Art/provenance/kit-conduit-art-intake.json",
+      "source": "Art\\source\\kit-conduits\\Leviathan Ward Loom (Omnic  Oceanic).png",
+      "source_sha256": "d14ac377f5e682f70b5f2d682b076b97122ba63b34fb82c8d55d2a532390ec87",
+      "runtime": "public\\assets\\conduits\\ward-stitch-spool.png",
+      "before_sha256": "16607bddce83d8a2c5fc2813ae69470066295b5288cd70d29e835aa1a96ade4c",
+      "after_sha256": "16607bddce83d8a2c5fc2813ae69470066295b5288cd70d29e835aa1a96ade4c",
+      "previous_runtime": null,
+      "previous_runtime_sha256": null,
+      "verdict": "no-change",
+      "rationale": "Source and labeled enclosed openings inspected individually; preserve ivory metal, authored matching-color facets and painted shadows. Only selected connected openings keyed; no global interior color removal.",
+      "settings": {
+        "source_mode": "RGB",
+        "source_dimensions": [
+          1024,
+          1024
+        ],
+        "source_alpha_authoritative": false,
+        "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+        "runtime_dimensions": [
+          256,
+          256
+        ],
+        "runtime_content_bbox": [
+          29,
+          16,
+          226,
+          240
+        ],
+        "runtime_pixel_sha256": "17b7488a5824658260c36f7c5f1d6c42cf0dadc23748c9485149f7c6850af3d3"
       },
       "manual_review": {
         "source": "full-resolution original",

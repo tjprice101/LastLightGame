@@ -46,7 +46,7 @@ describe('Conduit Store and discovery routes', () => {
   it('belongs to Stores while retaining the contextual Character equipment route', () => {
     expect(isMenuPage('conduit-store')).toBe(true);
     expect(isMenuPage('stores')).toBe(true);
-    expect(inventoryHub()).toContain('data-page="conduit-store"');
+    expect(inventoryHub()).not.toContain('data-page="conduit-store"');
     expect(characterHub(starters[0], 'equipment')).toContain('data-page="conduit-store"');
     expect(characterHub(starters[0], 'equipment')).not.toContain('Artifact');
     expect(sanctuaryContext('conduit-store')).toBe('');

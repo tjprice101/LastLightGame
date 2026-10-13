@@ -72,7 +72,7 @@ describe('game-specific hub layouts', () => {
       expect(html).toContain('<strong>17408.76</strong>');
       expect(html).toContain('<strong>728.94</strong>');
     }
-    expect(inventoryHub(account).match(/9007199254740991/g)).toHaveLength(3);
+    expect(inventoryHub(account).match(/9007199254740991/g)).toHaveLength(4);
   });
   it.each(starters)('$name uses its real art, stats, passive, and ability costs', (starter) => {
     const home = homeHub(starter, false);
@@ -209,14 +209,14 @@ describe('game-specific hub layouts', () => {
     expect(characterDetail(starter, 'equipment')).toContain('Master slot');
     expect(characterDetail(starter, 'equipment')).toContain('Conduit slots');
   });
-  it.each(starters)('$name previews only the next form as a silhouette, without revealing its title', (starter) => {
+  it.each(starters)('$name previews only the next form as a silhouette, with its accessible form name', (starter) => {
     for (let evolution = 1; evolution < 6; evolution++) {
       const account = emptyAccount();
       account.characters[starter.id] = { level: 0, evolution };
       const detail = characterDetail(starter, 'upgrade-0', account);
-      expect(detail).toContain('class="evolution-silhouette"');
+      expect(detail).toContain('class="evolution-silhouette unreached-character-art"');
       expect(detail).toContain(`characters/${starter.art}-evo-${evolution + 1}.png`);
-      expect(detail).toContain(`alt="${characterName(starter.id, evolution)} next evolution silhouette"`);
+      expect(detail).toContain(`alt="${characterName(starter.id, evolution + 1)} next evolution silhouette"`);
       expect(detail).toContain('width="150" height="150"');
       expect(detail.match(/<img[^>]*characters\//g)).toHaveLength(1);
       expect(characterDetail(starter, 'upgrade-1', account)).not.toContain('evolution-silhouette');

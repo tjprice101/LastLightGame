@@ -1,17 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 import { deleteOfflineSave, loadOfflineSave, saveOfflineProgress } from '../game/save-file';
-import { exportOfflineSave, readSaveUpload } from '../presentation/offline-save';
+import { SAVE_KEY } from '../game/profile';
+import { exportOfflineSave, offlineSaveCode, readSaveCode, readSaveUpload } from '../presentation/offline-save';
 import { gameConfirm } from '../presentation/game-dialog';
-import { Button, Icon, Panel, Status } from './components';
+import { Button, Dialog, Icon, Panel, Status } from './components';
 
 export type OfflineChange = 'loaded' | 'deleted';
 
-export function OfflineSavePanel({ onChanged }: { onChanged: (change: OfflineChange) => void }) {
+export function OfflineSavePanel({ onChanged, compact = false, onSaveOnline }: {
+  onChanged: (change: OfflineChange) => void; compact?: boolean; onSaveOnline?: () => Promise<void>;
+}) {
   const input = useRef<HTMLInputElement>(null);
   const pending = useRef(false);
   const alive = useRef(true);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState({ message: '', error: false });
+  const [codeOpen, setCodeOpen] = useState(false);
+  const [filesOpen, setFilesOpen] = useState(false);
+  const [code, setCode] = useState('');
+  const hasBrowserSave = !compact || localStorage.getItem(SAVE_KEY) !== null;
   useEffect(() => {
     alive.current = true;
     return () => { alive.current = false; };
@@ -27,12 +34,28 @@ export function OfflineSavePanel({ onChanged }: { onChanged: (change: OfflineCha
       if (alive.current) setStatus({ message: error instanceof Error ? error.message : 'Offline save operation failed. Please try again.', error: true });
     } finally { pending.current = false; if (alive.current) setBusy(false); }
   };
-  return <Panel title="Offline save data" description="Saved automatically on this browser. Keep a file backup to restore progress or bring it to a new online account." className="ll-save-panel">
+  const load = async (save: ReturnType<typeof readSaveCode>): Promise<void> => {
+    if (!alive.current) return;
+    if (!await gameConfirm('Replace the offline save on this browser? An active offline battle will end. Your online account is not changed. Export a backup first if you want to keep this browser save.', { title: 'Load offline save', confirmLabel: 'Load save', danger: true })) return;
+    if (!alive.current) return;
+    loadOfflineSave(localStorage, save);
+    onChanged('loaded');
+  };
+  return <Panel title={compact ? 'Save data' : 'Offline save data'} description={compact ? hasBrowserSave ? 'Offline browser backup · Keep it private.' : 'No offline save on this browser yet.' : 'Saved automatically on this browser. Keep a file backup to restore progress or bring it to a new online account.'} className={`ll-save-panel${compact ? ' ll-save-panel--compact' : ''}`}>
+    {compact && <div className="ll-save-file-tools"><Button disabled={busy} onClick={() => setFilesOpen(true)}>File tools</Button></div>}
     <div className="ll-save-actions" aria-busy={busy}>
-      <Button disabled={busy} onClick={() => void run(() => { saveOfflineProgress(localStorage); setStatus({ message: 'Offline progress saved on this browser.', error: false }); })}><Icon name="save" />Save</Button>
-      <Button disabled={busy} onClick={() => void run(() => { exportOfflineSave(); setStatus({ message: 'Backup download requested. Keep the file somewhere safe.', error: false }); })}><Icon name="export" />Export Save File</Button>
-      <Button disabled={busy} onClick={() => input.current!.click()}><Icon name="load" />Load Save File</Button>
-      <Button tone="danger" disabled={busy} onClick={() => void run(async () => {
+      <Button disabled={busy || !hasBrowserSave && !onSaveOnline} onClick={() => void run(async () => {
+        if (onSaveOnline) { await onSaveOnline(); if (alive.current) setStatus({ message: 'Online progress saved.', error: false }); }
+        else { saveOfflineProgress(localStorage); setStatus({ message: 'Offline progress saved on this browser.', error: false }); }
+      })}><Icon name="save" />{onSaveOnline ? 'Save now' : compact ? 'Save offline' : 'Save'}</Button>
+      {compact && <Button disabled={busy || !hasBrowserSave} onClick={() => void run(async () => {
+        await navigator.clipboard.writeText(offlineSaveCode());
+        setStatus({ message: 'Offline save code copied. Keep it private; it contains your complete browser progress.', error: false });
+      })}>Copy save code</Button>}
+      {compact && <Button disabled={busy} onClick={() => { setCode(''); setCodeOpen(true); }}>Load save code</Button>}
+      {!compact && <Button disabled={busy} onClick={() => void run(() => { exportOfflineSave(); setStatus({ message: 'Backup download requested. Keep the file somewhere safe.', error: false }); })}><Icon name="export" />Export Save File</Button>}
+      {!compact && <Button disabled={busy} onClick={() => input.current!.click()}><Icon name="load" />Load Save File</Button>}
+      <Button tone="danger" disabled={busy || !hasBrowserSave} onClick={() => void run(async () => {
         if (!await gameConfirm('Delete only the offline save on this browser? Export a backup first if you want to keep it. Online account data is not deleted.', { title: 'Delete Save Data', confirmLabel: 'Delete offline save', danger: true })) return;
         if (!alive.current) return;
         deleteOfflineSave(localStorage);
@@ -53,5 +76,21 @@ export function OfflineSavePanel({ onChanged }: { onChanged: (change: OfflineCha
       }).finally(() => { picker.value = ''; });
     }} />
     <Status {...status} />
+    {filesOpen && <Dialog id="offline-file-tools" title="Offline save files" onClose={() => setFilesOpen(false)}>
+      <p>File backups affect only this browser&apos;s offline progress. They never replace an existing online account.</p>
+      <div className="ll-save-actions"><Button disabled={!hasBrowserSave} onClick={() => { setFilesOpen(false); void run(() => {
+        exportOfflineSave(); setStatus({ message: 'Backup download requested. Keep the file somewhere safe.', error: false });
+      }); }}>Export Save File</Button><Button onClick={() => { setFilesOpen(false); input.current!.click(); }}>Load Save File</Button></div>
+    </Dialog>}
+    {codeOpen && <Dialog id="offline-save-code" title="Load offline save code" onClose={() => { if (!busy) setCodeOpen(false); }} busy={busy}>
+      <p>This replaces only this browser&apos;s offline save, never your online account. Save codes are editable backups, not rewards.</p>
+      <label className="ll-field">Save code<textarea aria-label="Offline save code" value={code} onChange={event => setCode(event.currentTarget.value)} rows={5} disabled={busy} /></label>
+      <Button disabled={busy} onClick={() => void run(async () => {
+        const save = readSaveCode(code);
+        setCodeOpen(false);
+        await load(save);
+      })}>Review and load</Button>
+      <Status {...status} />
+    </Dialog>}
   </Panel>;
 }

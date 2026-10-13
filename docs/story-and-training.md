@@ -1,5 +1,24 @@
 # Story campaign and endless Training (D-160/D-164)
 
+**D-269 narrative:** [Let and Rise's founding canon](world-lore.md) now drives
+the shared prologue, six regional introductions and boss conclusions.
+Beacons reopen routes while both factions seek their creator's soul.
+Stage150 does not recover a soul or declare a victor. All stage identities,
+art, difficulty, unlocks and rewards remain unchanged.
+
+## Full-map framing and terrain anchors (D-261)
+
+World map uses the installed1456x816 artwork's native ratio, contained inside
+the available map area without cover-cropping or stretching. Beacons and roads
+share that exact canvas, so letterboxing/resizing never shifts terrain anchors.
+Infernic sits on the orange western plateau, Oceanic on the northeastern blue
+castle/coast, Atmospheric on the northern cloud mountain, Botanic on the southern
+green/gold woodland, Tranquilitic on the southwestern ivory mountain and Chaotic
+on the southeastern purple rift. Region sidebar numbering matches map beacons.
+Compact maps show44px numbered targets rather than overlapping name/status
+labels; full accessible names and sidebar progression remain available.
+No artwork, stage locks, rewards, save data or navigation rules change.
+
 ## Story-first progression and activity access (D-192)
 
 New starter selection opens Story. Online accounts with fewer than25 Story

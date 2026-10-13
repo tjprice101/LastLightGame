@@ -50,7 +50,7 @@ export async function accountRequest(
       access_token: data.access_token, refresh_token: data.refresh_token,
     });
     if (sessionError) throw new Error('Your session could not be saved. Please sign in again.');
-    return 'Signed in. Choose Play Online to continue.';
+    return 'Signed in.';
   }
   if (!('message' in data) || typeof data.message !== 'string') throw new Error('Account service response is incomplete.');
   return data.message;

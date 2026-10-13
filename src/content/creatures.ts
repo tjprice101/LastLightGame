@@ -1,5 +1,5 @@
 import { enemies, enemyIds, formatStat } from './combat';
-import { elements, dungeonStageCount, infusionModes, currencyModes, eventModes, machineModes, type ElementId, type InfusionModeId } from './activities';
+import { elements, getElement, dungeonStageCount, infusionModes, currencyModes, eventModes, machineModes, type ElementId, type InfusionModeId } from './activities';
 import { machineConduitLoot } from './machines';
 import { masterChest } from './master-conduits';
 import { machineComponentDrop } from './mechanical-components';
@@ -7,6 +7,7 @@ import { dungeonEncounter, dungeonVariants, materialLoot } from './dungeons';
 import { infusionEncounter, infusionLoot, infusionElements } from './infusions';
 import { fractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from './loot-random';
 import { storyEncounter, storyCreature, storyRules, storyLoot, storyBossBonus } from './story';
+import { devourerHabitats, elementEmotions, machineOrigin } from './world-lore';
 
 export interface Creature {
   id: string;
@@ -62,6 +63,14 @@ export function getCreature(id: string): Creature {
   const creature = creatures.find((entry) => entry.id === id);
   if (!creature) throw new Error(`Unknown glossary Elemental-Devourer: ${id}.`);
   return creature;
+}
+
+export function creatureLore(creature: Creature): string {
+  getCreature(creature.id);
+  if (creature.mode === 'machines') return `${creature.name} is one of those surviving wrecks. ${machineOrigin}`;
+  const inheritance = `${creature.name} is an Elemental-Devourer of Rise's creation, seeking her soul with stolen ${getElement(creature.element).name}: ${elementEmotions[creature.element]}.`;
+  if (creature.mode) return `${inheritance} ${devourerHabitats[creature.mode]}`;
+  return `${inheritance} Its search crosses ${creature.area}, where Let's Element-Bearers pursue their own creator's soul.`;
 }
 
 export interface CreatureLoot { id: string; minimum: number; maximum: number; chance: number; note?: string }

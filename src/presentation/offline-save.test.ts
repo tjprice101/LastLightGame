@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { emptyAccount } from '../game/account';
+import { emptyAccount, ACCOUNT_KEY } from '../game/account';
 import { EXPORTED_SAVE_KEY, loadOfflineSave, SAVE_FILE_LIMIT, validateSaveFile } from '../game/save-file';
-import { exportOfflineSave, readSaveUpload } from './offline-save';
+import { exportOfflineSave, offlineSaveCode, readSaveCode, readSaveUpload } from './offline-save';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createElement } from 'react';
 import { OfflineSavePanel } from '../ui/offline-save-panel';
@@ -20,6 +20,26 @@ function fixture() {
 }
 
 describe('offline save presentation', () => {
+  it('round-trips a complete private offline code without auth or settings data', () => {
+    const save = fixture();
+    const values = new Map<string, string>();
+    const storage = { getItem: (key: string) => values.get(key) ?? null,
+      setItem: (key: string, value: string) => { values.set(key, value); }, removeItem: (key: string) => { values.delete(key); } };
+    loadOfflineSave(storage, save);
+    storage.setItem('last-light.online-auth', 'secret');
+    storage.setItem('last-light.settings', 'preferences');
+    vi.stubGlobal('localStorage', storage);
+    const code = offlineSaveCode();
+    expect(code.startsWith('LLSAVE1:')).toBe(true);
+    expect(readSaveCode(`  ${code}\n`)).toEqual(save);
+    expect(atob(code.slice(8))).not.toContain('secret');
+    expect(atob(code.slice(8))).not.toContain('preferences');
+    expect(() => readSaveCode('invalid')).toThrow('LLSAVE1:');
+    expect(() => readSaveCode('LLSAVE1:%%%%')).toThrow();
+    expect(() => readSaveCode('LLSAVE1:e30=')).toThrow('supported');
+    expect(() => readSaveCode('LLSAVE1:' + 'A'.repeat(Math.ceil(SAVE_FILE_LIMIT / 3) * 4 + 1))).toThrow('4 MB');
+    expect(values.get(ACCOUNT_KEY)).toBe(JSON.stringify(save.account));
+  });
   it('keeps every save-data mount in Player info, not title or either Settings path', () => {
     const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');
     const settingsPaths = main.match(/settingsPanel\(motionPreference, bindings, speed\)[^\n]*/g);

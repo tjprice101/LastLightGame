@@ -39,13 +39,16 @@ describe('shared menu information', () => {
     expect(html).toContain('at most four ordinary Omnic Conduits, all matching their combat element');
     expect(html).toContain('Panel counts show distinct owned item types');
     expect(html).not.toMatch(/data-page="(?:stores|collections)"/);
-    expect(html).toContain('Visit Conduit Store');
+    expect(html).not.toContain('Visit Conduit Store');
   });
   it('keeps Collections rules separate from unique form kits', () => {
     const html = archives(emptyAccount());
+    const rules = html.match(/<dialog[^>]+id="collections-information"[\s\S]*?<\/dialog>/)?.[0];
+    expect(rules).toBeDefined();
     expect(html.match(/data-information="collections-information"/g)).toHaveLength(1);
     for (const starter of starters) {
-      expect(html.split(starter.description)).toHaveLength(2);
+      expect(rules).not.toContain(starter.description);
+      expect(html).toContain(starter.description);
     }
     expect(html).not.toContain('<details');
   });

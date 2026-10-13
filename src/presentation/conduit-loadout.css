@@ -54,7 +54,7 @@ html body .sanctuary-shell .conduit-loadout .loadout-member-tabs button[aria-pre
 
 /* Shared button surfaces use important gradients; keep this page flat without overriding disabled gray. */
 html body .sanctuary-shell .conduit-loadout :is(button, .ref-chip, .ref-link):not(:disabled):not([aria-disabled=true]) { background-image: none !important; box-shadow: none; }
-html body .sanctuary-shell .conduit-loadout :is(.loadout-member-tabs button, .loadout-actions > button, .loadout-owned-row > button, .loadout-filter-group button, .loadout-pager button) { text-align: center !important; justify-content: center !important; }
+html body .sanctuary-shell .conduit-loadout :is(.loadout-member-tabs button, .loadout-actions > button, .loadout-owned-row > button, .loadout-filter-group button, .loadout-pager button, .loadout-rule-button, .loadout-slot-target) { text-align: center !important; justify-content: center !important; justify-items: center !important; padding-inline: .4rem !important; }
 
 /* Two-panel layout. */
 html body .sanctuary-shell .loadout-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(20rem, 1fr); gap: .75rem; align-items: stretch; }

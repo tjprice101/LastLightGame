@@ -94,8 +94,8 @@
 .upgrade-stat-preview span { display: grid; padding: 8px; background: #ffffff08; border-radius: 8px; }
 .upgrade-stat-preview small { color: #bbb; }
 .upgrade-rules { margin-top: 14px; }
-.evolution-silhouette { display: grid; place-items: center; width: 100%; height: 150px; margin: 8px 0; border-radius: 10px; background: #e5e5e5; overflow: hidden; }
-.evolution-silhouette img { display: block; width: min(100%, 150px); height: 150px; object-fit: contain; filter: brightness(0); }
+.evolution-silhouette { display: grid; place-items: center; width: 100%; height: 150px; margin: 8px 0; border-radius: 10px; overflow: hidden; }
+.evolution-silhouette img { display: block; width: min(100%, 150px); height: 150px; object-fit: contain; }
 .dungeon-stage-label { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .dungeon-stage-label select { padding: 8px 16px; color: #fff; background: #171719; border: 1px solid #ffffff40; border-radius: 8px; }
 .dungeon-clear-report { padding: 12px 18px; border: 1px solid #ffffff40; border-radius: 12px; background: #151517; }

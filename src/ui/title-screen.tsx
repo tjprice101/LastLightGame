@@ -1,7 +1,7 @@
 import { Button, Icon } from './components';
 
-export function TitleScreen({ onOffline, onOnline, onPlayerInfo }: {
-  onOffline: () => void; onOnline: () => void; onPlayerInfo: () => void;
+export function TitleScreen({ onOffline, onOnline }: {
+  onOffline: () => void; onOnline: () => void;
 }) {
   return <section className="ll-ui ll-title" aria-label="Last Light">
     <div className="ll-title-identity"><p className="ll-kicker">WHEN ALL ELSE FADES</p>
@@ -10,9 +10,9 @@ export function TitleScreen({ onOffline, onOnline, onPlayerInfo }: {
       <p className="ll-title-subtitle">Carry a spark into the unknown.</p>
     </div>
     <div className="ll-title-controls"><div className="ll-title-play">
-      <Button id="online-account-open" tone="primary" onClick={onOnline}>Play Online<Icon name="arrow" /></Button>
+      <Button id="online-account-open" tone="primary" onClick={onOnline}>Sign-in / Create Account<Icon name="arrow" /></Button>
       <Button id="enter" onClick={onOffline}>Play Offline</Button>
-    </div><Button onClick={onPlayerInfo}>Player info</Button>
+    </div>
       <p className="ll-title-note">Your story begins with one Element-Bearer.</p>
     </div>
   </section>;

@@ -81,13 +81,12 @@ describe('Conduit Upgrade and account-aware icons', () => {
       characterDetail(getStarter('ember'), 'equipment', equipped), characterCopyManagement(equipped, 'all')]) {
       expect(html).toContain('data-conduit-upgrade="5"');
       expect(html).toContain('+297.5% Attack, -35% Health');
-      expect(html).toContain('data-page="conduit-upgrade"');
     }
     expect(conduitStore(equipped)).toContain('+12.5% Health');
     expect(homeHub(getStarter('ember'), false, equipped)).toContain('143');
     expect(equipped).toEqual(before);
     expect(isMenuPage('conduit-upgrade')).toBe(true);
-    expect(inventoryView(wallet())).toContain('data-page="conduit-upgrade"');
+    expect(inventoryView(wallet())).not.toContain('data-page="conduit-upgrade"');
   });
   it('shows the stage component loot only after defeat and uses saved icon levels in machine loot tables', () => {
     const account = wallet();

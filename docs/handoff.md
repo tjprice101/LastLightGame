@@ -1,5 +1,962 @@
 # Current state and handoff
 
+## Broken Mechanical Components are resource items
+
+- Moved positive component holdings from the Conduits balance line into the
+  Resources grid as normal item cards: shared full-size art, complete name,
+  exact Owned count and Details with actual upgrade use/drop rules.
+  Renamed Materials' visible panel/empty/error labels to Resources, retaining
+  stable internal section IDs. Counts include components as one resource type;
+  zero holdings omit the tile and components-only accounts are not empty.
+- Search/Components filter uses the same tile. No separate component stat,
+  account schema, transaction, drop or upgrade changes.
+- `npx vitest run src\presentation\inventory.test.ts
+  src\presentation\ui-copy.test.ts src\presentation\hub.test.ts
+  src\presentation\menu-information.test.ts
+  src\presentation\conduit-upgrade.test.ts src\presentation\sanctuary.test.ts
+  --maxWorkers=2`:80 passed. `npm run build`:passed, existing chunk advisory.
+- Browser DOM-only fixture at1367x640,390x768 and320x640: component and
+  adjacent material art dimensions identical, no horizontal overflow, Details
+  fit and restored focus, including maximum-safe quantity. Reloaded afterward;
+  no account writes. Local only, uncommitted and unpublished.
+
+## Black Diamonds Against The Light event and special banner (D-272)
+
+- Designed the complete "Black Diamonds Against The Light" special event mission
+  and banner mirroring the Passion of Crimson Roses structure with distinct
+  identities, elemental mechanics, and lore.
+- Six new pale-skinned Element-Bearers (3 5★, 3 6★; 3 female, 3 male; 2 Infernic,
+  1 Oceanic, 1 Botanic, 1 Tranquilitic, 1 Chaotic) with geometric black/white
+  ritual etchings, gemstone-faceted attire, and head-to-toe black/white/crimson
+  metal armor in their final forms with circling elemental black diamond gemstones,
+  full-view weapons, and rich rear elemental tapestries.
+- Roster: Dravok (Infernic 6★ Greatcleaver Tank/DPS), Vespera (Infernic 5★
+  Chakrams DPS/Burn), Talise (Oceanic 6★ Estoc & Aegis Tank/Shield), Malakor
+  (Chaotic 6★ Scythe Executioner), Theron (Botanic 5★ Glaive Ward/Buffer),
+  Selene (Tranquilitic 5★ Scepter Cleanser/Healer).
+- Event mission: 35-stage Lv.80-140 Kharonite mission with 20% capture rate on
+  Kharonite creatures up to Lv.120, 6 Kharonite materials replacing ordinary
+  mats for awakening/leveling these 6 characters.
+- Economy: 10 Null-Prismatica summon cost, 80/150 pity guarantees, dual banner
+  (Featured 6★ / Featured 5★), material fallbacks (50:30:17), Lv.80 Omnic
+  Kharonite duplicate compensation for owned 6★ Element-Bearers.
+- 93 complete generation-ready Midjourney art prompts:
+  - 78 character prompts (6 characters × 6 forms + 6 ability icons + 1 weapon)
+    in [Dravok](../Art/characters/Dravok%20Art.md), [Vespera](../Art/characters/Vespera%20Art.md),
+    [Talise](../Art/characters/Talise%20Art.md), [Malakor](../Art/characters/Malakor%20Art.md),
+    [Theron](../Art/characters/Theron%20Art.md), and [Selene](../Art/characters/Selene%20Art.md).
+  - 15 event prompts (6 Kharonite creature forms, 6 materials, 3:1 header,
+    16:9 battle arena, 16:9 summon artpiece) in
+    [Black Diamonds Against The Light](../Art/creatures/Black%20Diamonds%20Against%20The%20Light.md).
+- Prompts follow the established Rose-banner quality standard (D-116/D-119/D-120
+  interior density) with strict D-135 visible continuous safety margins and clean
+  screen edges:
+  - 50% (25% margin) -> 60% (20% margin) -> 72% (14% margin) -> 84% (8% margin)
+    -> 94% (3% margin) -> 96% (2% margin).
+  - `continuous visible solid-background safety margin on all four sides and corners, nothing touches crosses or disappears beyond the frame edges`.
+  - Body height 1/3 (Evo 1-4) -> 1/4 (Evo 5) -> 1/5 (Evo 6).
+- Validated with `python -m unittest discover -s tools -p test_black_diamonds_art_prompts.py`:
+  2/2 test suites passed, 100% prompt syntax, ratio, palette, margin, and containment coverage.
+
+## Inventory search, filters and concise Information (D-271)
+
+- Replaced the screenshot's long Information wall with four optional topics:
+  Finding items, Materials, Conduits and Masters & chests. All source/equipment/
+  activation rules remain available in short paragraphs and existing Details.
+- Added live name search (including Master bearer names), combined item type/
+  rarity/element filters, Clear and matching-positive-item-type status. Includes
+  components and chests; balances remain visible. Actual metadata drives
+  affinities, including matching Heaven/Abyss specialty recipes; no invented
+  element/rarity for Rosethorn, unrestricted items or chests.
+- Filtering preserves card/art/Details DOM and disclosure choices. Query and
+  selections survive menu refresh/history in memory and reset at title.
+  Explicit no-match states and unavailable-save errors remain. No economy,
+  account, art, transaction or acquisition changes.
+- `npx vitest run src\presentation\inventory.test.ts
+  src\presentation\menu-information.test.ts
+  src\presentation\information-topics.test.ts src\presentation\hub.test.ts
+  src\presentation\menu-history.test.ts src\presentation\selection-panel.test.ts
+  --maxWorkers=2`:65 passed. Search combination, metadata, escaped restoration,
+  no-match/Clear, preserved cards/disclosures, unavailable saves and short topic
+  paragraphs covered. Editor test discovery found no tests, so used existing CLI.
+- Browser DOM-only fixture with171 positive types and maximum-safe material/
+  component counts: no Inventory/tool horizontal overflow at1367x640,
+  1788x768,390x768 and320x640. All four topics at every size fit horizontally
+  and restored focus. Live name search returned only Vigil Core; the shared
+  type selection panel fit320px and choosing Chests returned only its chest.
+  No real account writes; fixture reloaded afterward.
+- `npm run build`:passed with the existing chunk-size advisory.
+  Edited Inventory/main diagnostics clean; `git diff --check`:passed.
+  Local only, no commit/deployment. No remaining feature decisions.
+
+## Let, Rise and the founding world canon (D-269)
+
+- Implemented the owner's origin story in shared content: Let/Infinity,
+  Rise/Nothingness (both destruction and binding), their coexistence and
+  civilization wars, division among their worlds and the factions' competing
+  search for their creator's soul. All six emotional themes are explicit.
+  [world-lore.md](world-lore.md) owns the current narrative contract.
+- Updated all16 playable human histories, including origins, stories, vows and
+  awakenings while retaining identities and kits. Updated all creature origins,
+  six Story introductions/conclusions, activity/event context and ordinary/
+  Master Conduit lore. Machines are destroyed collaborative prototypes, not
+  Rise's Devourer faction; their undiscovered labels also remain distinct.
+- Shared history appears in Story Prologue, global Help and Gameplay Information.
+  Optional Team Lore and individual Archive references expose human/captured
+  histories without restoring the rejected roster biography wall. Glossary
+  Lore is discovery-gated. Store, Inventory, Archives and Loadout share current
+  Conduit origins. Summon explains squad recruitment, not soul acquisition.
+- No stat, skill, combat, pool, reward, save, artwork or prompt changes for this
+  lore work. Infinity/Nothingness are not playable elements. No soul item,
+  creator recruitment or faction victory implemented; Story150 restores roads
+  and leaves the soul search unresolved. Further outcomes await owner direction.
+- Validation: focused17-file run passed338 tests. Final full regression command
+  `npm test -- --maxWorkers=2 --reporter=json --outputFile=<session-report>`
+  passed1931 tests. Reconciled stale Inventory-shortcut and shared silhouette
+  assertions with earlier approved UI changes; updated new origin/topic labels.
+  `npm run build` passed (existing large-chunk advisory only).
+  `node tools\bundle_server_game.mjs` regenerated the local server bundle;
+  no deployment. `git diff --check` passed; edited lore UI diagnostics clean.
+- Browser checked19 representative Lore/Prologue dialogs per viewport at
+  1367x640,1788x768,390x768 and320x640: bounds/focus restoration passed.
+  All16 human Level screens still fit1367x640 without content scrolling or
+  horizontal overflow. DOM-only fixtures, no real account writes; reloaded
+  afterward. Local only, uncommitted and unpublished.
+
+## Black Diamonds Against The Light event, characters and purposeful chaos art (D-270)
+
+- Full game design and mechanics specification created in [docs/black-diamonds.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/docs/black-diamonds.md):
+  6 original pale-white-skin characters with black and white ritual etchings,
+  element-imbued gemstone attire, and final Omnic black/white metal armor with
+  circling black diamond gemstones and red energy. Roster: 3 6-star (Dravok Infernic,
+  Talise Oceanic, Malakor Chaotic) and 3 5-star (Vespera Infernic, Theron Botanic,
+  Selene Tranquilitic); 3 female and 3 male. Full kits, passives, skills, ultimates,
+  stats, progression, and 35-stage event Lv. 80-140 with 6 black diamond materials,
+  Kharonite boss line, capture ceilings, 10-cost banner, pity, and duplicate conversions.
+- Complete Midjourney generation prompt suite created (93 prompts total across 7 packs):
+  - 6 Character packs: [Dravok Art.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/characters/Dravok%20Art.md), [Vespera Art.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/characters/Vespera%20Art.md), [Talise Art.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/characters/Talise%20Art.md), [Malakor Art.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/characters/Malakor%20Art.md), [Theron Art.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/characters/Theron%20Art.md), and [Selene Art.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/characters/Selene%20Art.md) (each containing Evo 1-6, 6 ability icons, and signature weapon).
+  - Event pack: [Black Diamonds Against The Light.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/creatures/Black%20Diamonds%20Against%20The%20Light.md) (6 Kharonite creature forms, 6 Black Diamond materials, 3:1 header, 16:9 arena, 16:9 summon artpiece).
+- Spacing and Purposeful Chaos escalation:
+  - Every character form strictly adheres to D-131 ensemble targets (50/60/72/84/94/96%),
+    margins (25/20/14/8/3/2%), body height (1/3 through Epic, 1/4 Legendary, 1/5 Omnic),
+    and D-135 continuous solid safety margin containment clauses.
+  - Escalating purposeful chaos progression: Evo. 1 pristine minimal geometry -> Evo. 2 nascent angular tension -> Evo. 3 energetic disruption -> Evo. 4 architectural purposeful chaos -> Evo. 5 dramatic kinetic tension with rear crystal lattice -> Evo. 6 supreme transcendent purposeful chaos with 16 wings, intersecting tilted shattered rings, multi-axis orbiting black diamonds, and rear mandala/lattice filling interior space with almost no dead space while keeping eyes and weapons in full view.
+- Validated via [test_black_diamonds_art_prompts.py](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/tools/test_black_diamonds_art_prompts.py): `python -m unittest discover -s tools -p test_black_diamonds_art_prompts.py` (2 tests, 93 prompt checks, all passed).
+
+## Cleaner captured-copy sale confirmation
+
+- Removed the internal capture UUID from sale confirmation text. Creature name,
+  exact payout and permanent-removal warning remain. Exact-copy transaction IDs
+  and protection checks are unchanged.
+- `npm run build`:passed with existing chunk advisory; main.ts diagnostics clean.
+  Local only, unpublished.
+
+## Larger featured banner characters
+
+- Doubled shared Summon lineup portrait slots from4.25rem to8.5rem, with
+  larger names/ownership marks and full contain-fitted artwork. Phones wrap
+  to two columns with headings above, shrinking only to available width.
+  No banner pool, rate, transaction, save or source-art changes.
+- Browser checked Standard's10 and Roses'3 characters at1367x640,1788x768,
+  390x768 and320x640, including ownership marks. Actual slots136px (previous68px),
+  reduced to115.5px at320px. No horizontal overflow or clipped card children.
+  DOM-only fixture; reloaded afterward without account writes.
+- `npx vitest run src\presentation\summon-layout.test.ts
+  src\presentation\roster.test.ts --maxWorkers=2`:17 passed. CSS diagnostics
+  clean. `npm run build`:passed with existing chunk-size advisory.
+  Local only, unpublished.
+
+## Collapsible Inventory and full Conduit background review (D-268)
+
+- Master Conduits & Chests, Materials and ordinary Conduits now use independent
+  native disclosures. All default open, with44px Expand/Collapse summaries.
+  State survives menu refresh/history in memory and resets at title; no wallet
+  writes. Existing currency, unavailable/empty states and chest opening remain.
+- Compact item cards show full names, exact counts, art and optional Details.
+  Full upgraded effects, fixed kit rules, lore, Master bearer rules, actual
+  material uses and chest rules moved into native styled dialogs, not narrow
+  text walls. Weapon specialty descriptions explicitly state their currently
+  disabled use. Wider cards/subgrid rows align adjacent labels/counts/buttons.
+- Browser geometry:182 populated cards at1367x640,1788x768,390x768 and320x640,
+  including maximum-safe material/chest counts: zero horizontal overflow,
+  clipped child text or misaligned name/count/Details rows. Seven representative
+  Details dialogs at each viewport opened/closed, fit horizontally/vertically
+  and restored focus. Native summary activation independently collapses/reopens
+  without account writes;44px targets verified. Keyboard automation was
+  inconclusive in the DOM-only title fixture, so no keyboard pass is claimed.
+  Fixtures reloaded after verification; no real account changes.
+- Art audit reviewed135 assets:85 ordinary,48 Masters, chest and reserve emblem.
+  Corrected22 definite enclosed Master background fields, archived prior exports,
+  retained original source hashes and refreshed shared byte-derived URLs.
+  All135 provenance/reproduction records verified. Painted shadows and genuine
+  matching colors remain. Ambiguous green overlapping Bliss's opal glass remains
+  untouched rather than risking destructive removal; no claim of zero possible
+  residual pixels. Full audit contract lives in art-workflow.md.
+- `npx vitest run src\presentation\inventory.test.ts
+  src\presentation\menu-information.test.ts src\presentation\ui-copy.test.ts
+  src\presentation\hub.test.ts src\presentation\menu-history.test.ts
+  src\game\master-conduits.test.ts --maxWorkers=2`:151 passed. Updated stale
+  hub assertions for repeated exact counts and the previously implemented
+  Collections-style silhouette/accessible next-form name.
+- Art validation: `python -m unittest discover -s tools -p
+  test_conduit_cleanup_review.py -q` (1 passed),
+  `python -m unittest discover -s tools -p "test_master_conduit_*.py" -q`
+  (7 passed), `python -m unittest discover -s tools -p
+  test_conduit_art_revisions.py -q` (3 passed).
+  `npm run build`:passed, existing chunk advisory only. Edited UI diagnostics
+  clean. Local only; no commit, publish or deployment.
+
+## Per-copy Quick Sell
+
+- Added Quick Sell to sellable captured-copy collection cards. Shared native
+  Information dialogs identify the copy and show the same actual payouts/
+  choices as the Sale tab, with Sell actions and existing protection reasons.
+- Reused saleControls and the existing exact-copy confirmation/transaction
+  handler. Opening/closing does not navigate or write saves. Locked copies
+  can inspect their offer; sale stays disabled. No new sale rules or payouts.
+- Tests cover five acquisition families, duplicate-copy binding, exact shared
+  offer markup, locked sale actions and unchanged accounts. Browser opened
+  four distinct offer types at1367x640,390x768 and320x640: correct options,
+  no dialog/page horizontal overflow, native focus restoration on close.
+  Fixtures are DOM-only and reloaded after validation.
+- `npx vitest run src\presentation\reference-ui.test.ts
+  src\presentation\upgrade-reference.test.ts src\game\heaven-abyss-sale.test.ts
+  --maxWorkers=2`:86 passed. `npm run build`:passed with existing chunk advisory.
+  Editor diagnostics clean. Local only, unpublished.
+
+## Compact Elemental-Devourer details (D-267)
+
+- Replaced the all-at-once captured detail grid with compact Stats & Skills,
+  Level, Sale and Conduits sub-menus. Removed duplicate collection/equipment
+  links; kept squad and Lock copy controls. Long names and portraits have
+  separate bounded header space; sale artwork uses compact slots.
+- Level now previews all seven actual equipped stat deltas and exact
+  owned/required costs. Retained skill/unavailable-slot dialogs, level120 cap,
+  Max Level, every sale payout/protection and full-page loadouts.
+- Tab switching preserves portrait/actions and records the existing in-memory
+  Team tab for history and refresh. No save writes on navigation or mechanics
+  changes. Regression tests cover five acquisition families, seven deltas,
+  exact costs, DOM preservation, ownership/protection and loadout hooks.
+- Browser checks covered all30 forms, three levels and three panels:
+  270 cases per viewport at1367x640,1788x768,390x768 and320x640.
+  Desktop panels fit without scrolling; no horizontal overflow. Final bounded
+  portrait check repeated all30 forms/three panels at all four sizes: no
+  portrait/text overlap or overflow. Read-only fixtures, no account writes.
+- `npx vitest run src\presentation\reference-ui.test.ts
+  src\presentation\upgrade-reference.test.ts src\game\max-level.test.ts
+  src\game\character-instances.test.ts --maxWorkers=2`:101 passed.
+  `npm run build`:passed with existing chunk advisory; editor diagnostics clean.
+  Local only, unpublished.
+
+## Inventory shortcut removal
+
+- Removed Store/Upgrade, per-Master Equip in Team and empty-state dungeon/store
+  shortcuts from Inventory holdings at owner request. Shared header navigation,
+  Information, exact holdings and owned chest use remain unchanged.
+- Updated regression expectations for empty/populated/unavailable inventories
+  and the previously removed Collections biography list.
+- `npx vitest run src\presentation\inventory.test.ts
+  src\presentation\ui-copy.test.ts src\presentation\menu-information.test.ts
+  --maxWorkers=2`:17 passed. `npm run build`:passed with existing chunk advisory.
+  Inventory editor diagnostics clean. Local only, unpublished.
+
+## Normal inventory chest tile
+
+- Removed the permanent full-width Cosmic Grand Master Chest card and its
+  labeled Open chest button. Positive chest stacks now occupy a normal slot
+  alongside owned Masters, with artwork, name, concise use hint and exact count.
+  Selecting the artwork retains the existing chooser/confirmation/opening flow.
+- No chest tile at zero holdings or unavailable saves. All-owned accounts
+  retain stacks with opening disabled. Drop rates, rewards and transactions
+  unchanged; no fixture account writes.
+- Browser geometry passed at1788x768,1367x640,390x768 and320x640, including
+  maximum-safe chest count: normal grid sizing, no horizontal overflow,80px
+  artwork click target. `npx vitest run src\presentation\inventory.test.ts
+  src\game\master-conduits.test.ts --maxWorkers=2`:95 passed.
+  `npm run build`:passed with existing chunk advisory; editor diagnostics clean.
+  Local only, unpublished.
+
+## Larger Summon banner artwork
+
+- Raised the shared banner hero width cap from31rem to38.75rem (+25%),
+  covering Standard, Roses and future banners using the same component.
+  Artwork retains16:9 sizing and remains bounded by its column on phones.
+- DOM-only browser checks measured496px to620px (+25%) for both banners
+  at1842x768 and1367x640; no horizontal overflow at those sizes or
+  390x768/320x640. No asset, summoning, cost, pity or save changes.
+- `npx vitest run src\presentation\summon-layout.test.ts
+  src\presentation\roster.test.ts --maxWorkers=2`:17 passed.
+  `npm run build`:passed with existing chunk advisory. CSS diagnostics clean.
+  Local only; no publication/deployment.
+
+## Compact Character Level tab
+
+- Leveling now shares the compact Evolution header, resource cards and
+  three-column seven-stat grid through a common growth layout hook.
+  Removed repeated progress/preview labels and placed Level up, Max Level
+  and rejection text together. Other tabs restore their existing header.
+- Preserved exact costs/stat deltas, caps, buttons, portrait DOM, confirmation
+  flows and transactions. No gameplay, account writes or art changes.
+- DOM-only browser fixtures checked all16 Element-Bearers across six forms
+  at level0, one below cap and cap, with a full squad and maximum Prismatica:
+  288 cases per viewport. No desktop scrolling at1367x640/1788x768; all
+  previews/resources/actions inside the viewport. No horizontal overflow at
+  390x768/320x640. Starter Level screen visually reviewed; fixtures reloaded.
+- `npx vitest run src\presentation\upgrade-reference.test.ts
+  src\presentation\reference-ui.test.ts src\game\max-level.test.ts
+  --maxWorkers=2`:88 passed. `npm run build`:passed with existing chunk advisory.
+  Editor diagnostics: no errors. Local only, unpublished.
+
+## Collections Information cleanup
+
+- Removed the roster-wide Element-Bearer identities/biographies section at
+  owner request. Gallery rules and individual combat-kit references remain.
+- Regression coverage checks the shared dialog retains ownership rules and
+  contains no character biography list. No gameplay or save changes.
+- `npx vitest run src\presentation\archives.test.ts --maxWorkers=2`:9 passed.
+  `npm run build`:passed with existing chunk advisory.
+  `git diff --check`:passed. Local only; no publication/deployment.
+
+## Archives artwork containment
+
+- Character and Conduit artwork now fits a dedicated7rem slot rather than
+  escaping its row through square aspect ratios and intrinsic image sizing.
+  Bounded wrappers/images use contain sizing; a small inset preserves portrait
+  idle motion, and Conduit frames reserve upgrade-meter space.
+- Shared card rows now include Character Archives so neighboring names align.
+  No source artwork, facing, silhouette policy, ownership gates, account writes
+  or gameplay changes.
+- DOM-only browser checks across126 Character forms and133 ordinary/Master
+  Conduit cards passed at1788x768,1367x640,390x768 and320x640:
+  no image/meter overflow, artwork/name overlap, misaligned name rows or
+  horizontal content overflow. Desktop Character gallery visually reviewed.
+- `npx vitest run src\presentation\archives.test.ts
+  src\presentation\reference-ui.test.ts src\presentation\upgrade-reference.test.ts
+  --maxWorkers=2`:80 passed. `npm run build`:passed with existing chunk advisory.
+  CSS editor diagnostics: no errors. Changes remain local, unpublished.
+
+## Consistent item-card text rows
+
+- Owner's Rosethorn Exchange screenshot showed wrapped ownership text pushing
+  prices to different heights. Material/Cosmetic/Conduit Store cards now share
+  naturally sized art/name/details/price rows using CSS subgrid, rather than
+  independent vertical flex layouts. Inventory materials, ordinary Conduits,
+  Masters and Conduit Collections use shared rows too.
+- Long names, descriptions and maximum holdings remain fully visible and
+  expand their shared row. No truncation, fixed text-height caps, smaller fonts,
+  DOM measurement scripts, account writes or action/selection changes.
+- DOM-only browser geometry checks passed all six surfaces at1788x768,
+ 1367x640,390x768 and320x640 with maximum-safe material holdings, all85 ordinary
+  Conduits and48 Masters: matching child top coordinates for adjacent cards,
+  no card/page horizontal overflow. At1788x768 all six Rosethorn name/details/
+  price positions are identical. Mobile single-column cards remain readable.
+- `npx vitest run src\presentation\reference-ui.test.ts
+  src\presentation\online-store-profile.test.ts src\presentation\inventory.test.ts
+  src\presentation\archives.test.ts src\presentation\conduit-menu-update.test.ts
+  --maxWorkers=2`:68 passed. `npm run build`:passed with existing chunk advisory.
+  CSS editor diagnostics: no errors. No publication/deployment/commits.
+
+## Conduit enclosed-background follow-up
+
+- Owner reports remaining backgrounds and explicitly chooses to preserve painted
+  ground shadows. Corrected Fieldbrace Coupler, Reserve Torque Crank, Horizon
+  Heartcase and Dawn Witness Array using reviewed source gap seeds, bounded
+  gradient tolerance and an empty Fieldbrace source-edge strip.
+  Precision Escapement's teal ground shadow stays unchanged.
+- Reviewed full-resolution sources,35 delivered-icon contact sheet and four
+  corrected dark/light composites. Cyan/green gems/lenses, pale metal, bronze
+  hardware and ground shadows remain. No runtime keying or gameplay changes.
+- Original hashes unchanged; prior four exports archived, intake and cumulative
+ 60-icon review records refreshed (9 corrections), shared byte-derived Conduit
+  revisions updated on every surface. Only these four runtime icons changed.
+- `python tools\intake_delivered_art.py --apply --regenerate` and
+  `python tools\conduit_cleanup_review.py --write`:passed.
+  `python -m unittest discover -s tools -p test_conduit_art_revisions.py -q`:
+ 1 passed. `npm run build`:passed with existing chunk advisory.
+  `python -m unittest discover -s tools -p test_conduit_cleanup_review.py -q`:
+ 2 passed, including all60 reproduction records and gap/shadow pixel checks.
+  Changes remain local; no publication/deployment/commits.
+
+## Compact Evolution and shared Collections silhouettes (D-266)
+
+- Evolution alone uses a compact desktop identity header, horizontal form
+  comparison, three-column seven-stat preview, compact resource cards and
+  adjacent action/rejection text. Removed repeated progress/preview headings
+  already covered by the header. No clipped values, hidden costs or changed
+  evolution rules; other tabs retain their existing portrait size.
+- Evolution and unreached Collections art share `unreached-character-art`:
+  same dark radial backing, black silhouette and subtle white outline/halo.
+  Removed white preview slab; next-form alt text now names the actual next
+  form. Asset revisions and facing remain shared. No art/source changes.
+- Captured-copy list remains contained/scrollable because holdings are uncapped.
+  Fixed its checkbox being stretched to full-row width by shared input rules;
+  labels retain44px targets, all copy details/protection reasons remain.
+- DOM-only browser checked all16 bearers/evolutions1-5 at1367x640:80/80 have
+  zero page/horizontal overflow with full squads, maximum-safe currency/
+  material holdings, first-clear notice and populated/protected fodder options.
+  Computed silhouette background/filter exactly match Collections.
+ 1788x768:80/80 fit;390x768:80/80 no horizontal overflow, accessible page scroll.
+  Fixtures never write accounts and are removed by reload.
+- `npx vitest run src\presentation\upgrade-reference.test.ts
+  src\presentation\archives.test.ts src\presentation\reference-ui.test.ts
+  src\game\evolution-fodder.test.ts src\presentation\ui-copy.test.ts
+  --maxWorkers=2`:97 passed, including all16 next-form asset/facing/style-hook
+  regressions across five evolutions. `npm run build`:passed with existing
+  chunk-size advisory. No publication, server deployment or commits.
+
+## Clearer character kits and charge payoffs
+
+- Owner requested all-character kit wording cleanup after Infernis's passive
+  appeared to earn meaningless charges. All10 resource bearers now have explicit
+  per-character spending explanations with skill, exact bonus, cap and zero-
+  charge behavior. Passive explains earning once; charge explanation explains
+  spending. Character, Collections and Battle references share this copy.
+  Battle counter tooltips no longer say "No standalone effect."
+- All16 generated kit descriptions avoid duplicated recovery, Burn duration
+  and shield-refresh wording. Passive footer states automatic while alive,
+  no action or Gauge cost. Gameplay numbers, triggers, costs, cooldowns,
+  recovery, snapshots, equipment independence, saves and RNG unchanged.
+- DOM-only browser fixtures checked all16 passive dialogs: correct charge
+  sections for10 resource bearers, none for other6, no ambiguous empty-effect
+  wording and no horizontal overflow. Infernis dialog explicitly shows Flame
+  Arc +8% each/up to24%, Last Flare +12% each/up to36%, all-charge spending,
+  and normal skill behavior at0. No account writes; fixture removed by reload.
+- `npx vitest run src\presentation\ability-status.test.ts
+  src\presentation\ally-buffs.test.ts src\content\combat.test.ts
+  src\game\starter-kits.test.ts src\game\kit-pilots.test.ts
+  src\presentation\ui-copy.test.ts --maxWorkers=2`:56 passed.
+  `npm test -- --maxWorkers=2`:1857 passed across134 files.
+  `node tools\bundle_server_game.mjs`:passed; server bundle refreshed locally.
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json --pretty false`:
+  passed. `npm run build`:passed with existing chunk-size advisory.
+- Wording/frontend changes remain local, not published or deployed. Previously
+  authorized recurring Master combat remains live. No commits.
+
+## Edge-filled circular navigation portrait
+
+- Header Profile remains72px but now has zero padding,50% circular clipping
+  and a100% size frame/cover-fitted portrait. Default portrait fills70x70 inner
+  area up to the button's1px circular border, replacing inset rounded square.
+  Selected thin/double/corner cosmetic frames remain; no picture/source/save
+  changes or Profile-page sizing changes.
+- DOM-only all four frame styles verified: default70px artwork, thin68px,
+  double62px (actual borders), corner70px; all circular/zero padding.
+  `npx vitest run src\presentation\profile-picture.test.ts
+  src\presentation\online-store-profile.test.ts --maxWorkers=2`:15/15 passed.
+  `npm run build`:passed with existing chunk advisory. No publication/commits.
+
+## Profile space/readability pass
+
+- Removed Profile Edit squad header button only; member links, Add a member,
+  Team editing and saving unchanged. Larger112-144px desktop portrait at short
+  heights (138px at768,115px at640; prior80px), up to176px on taller desktops.
+  Squad thumbnails56-64px; headline numbers28-32px; clearer account/collection
+  values. Balanced statistics rows use spare vertical space; desktop short
+  layout tightens gaps/bio and removes duplicated Story region caption.
+- DOM-only1367x640 and1788x768 fixtures: content scrollHeight equals clientHeight
+  after existing entrance animations. Checked populated three-Omnic-member squad,
+  five recent events,120-character bio, double-outline portrait and save widget
+  at1367x640:546/546, editor474/474, recent221/221. Phone390x768 has no horizontal
+  overflow and retains page scroll. Fixtures never write/fund account.
+- `npx vitest run src\presentation\online-store-profile.test.ts
+  src\presentation\profile-picture.test.ts src\presentation\reference-ui.test.ts
+  --maxWorkers=2`:51/51 passed, including removed Edit squad/navigation regression.
+  `npm run build`:passed with existing chunk advisory. No publication/commits.
+
+## Larger header wallet and Profile controls
+
+- Owner's header screenshot: currency cards now64px minimum/32px coin art,
+  Help/Collections/Settings56px with26px glyphs. Profile72px with60px frame/
+ 56px actual portrait (previous36px frame); symmetric padding centers artwork.
+  Generic unsigned profile icon36px. Exact balances, saved frame/picture,
+  accessibility and navigation unchanged.
+- DOM-only checks at320x640,390x768,1024x768 and1367x640 including maximum-safe
+  currency balances: no horizontal overflow; Profile remains fully on screen.
+  Actual desktop measured72px button/60px frame/56px art, utilities56px.
+  Presentation-only fixtures cleaned up by reload; no account writes.
+- `npx vitest run src\presentation\profile-picture.test.ts
+  src\presentation\ui-copy.test.ts src\presentation\reference-ui.test.ts
+  --maxWorkers=2`:43/43 passed. `npm run build`:passed with existing chunk advisory.
+  No commits/publication.
+
+## Full-suite UI assertion fixes
+
+- Fixed all17 previously reported failures. Sixteen upgrade-reference cases
+  expected obsolete collapsed `details`; now assert the approved always-visible
+  Stat & form preview, all seven stat deltas and absence of collapsed details
+  across all16 bearers/evolutions1-5 and both upgrade paths. No UI rollback.
+- The visible-copy failure was caused by D-264's new `shield/buff` phrase, not
+  unrelated older UI. Changed shared Master rules to `shield and buff`; generated
+  server bundle refreshed. Combat behavior is unchanged.
+- `npx vitest run src\presentation\upgrade-reference.test.ts
+  src\presentation\ui-copy.test.ts --maxWorkers=2`:26/26 passed.
+  `npm test -- --maxWorkers=2`:1855/1855 passed across134 files.
+  `node tools\bundle_server_game.mjs`, server-source TypeScript check and
+  `npm run build`:passed (existing chunk-size advisory only). This supersedes the
+  historical17-failure note below. No commits/publication/deployment in this fix;
+  previously deployed recurring Master combat remains live.
+
+## Compact bearer detail (D-265)
+
+- Removed redundant All Element-Bearers and Conduits/count header buttons.
+  Sidebar collection and persistent Conduits tab remain; squad actions move into
+  identity block. Captured lock/loadout controls unchanged.
+- Desktop portrait scales11-16rem by viewport height; phone15rem remains.
+  Reduced header/sidebar/panel gaps, stat-row padding/margins and skill button
+  padding; removed redundant Skills instruction. Complete portraits, exact seven
+  stats, four native ability dialogs, equipment/upgrades and44px targets retained.
+- DOM-only browser1367x640: original panels extended below827px; now all seven
+  stats/four skills fit through619px. Ordinary three-member sidebar and details
+  have558/558 content height (no scroll); max-form three-member squad leaves25px
+  sidebar scrolling, with stats/skills still fully visible. All16 Omnic detail
+  previews checked, skill buttons48px minimum. Phone390x768 retains240px portrait,
+ 48px skill targets and zero horizontal overflow; vertical page scroll remains.
+  No accounts/saves funded or modified; fixtures are presentation only.
+- `npx vitest run src\presentation\reference-ui.test.ts
+  src\presentation\conduit-loadout.test.ts src\game\master-conduits.test.ts
+  --maxWorkers=2`:155/155 passed. Updated removed-count assertion and added three
+  leader/member/nonmember compact-header cases. `npm run build`:passed with existing
+  chunk-size advisory. No commits/deployment.
+
+## Always-active complementary Masters (D-264)
+
+- Owner selects bearer enhancements, not a mandatory squad-wide aura. All48
+  Master rules and Astral Reserve earning now recur on every qualifying native
+  outcome (including multiple targets in one round). Ordinary Conduit
+  `usedRound`/`bankRound` limits and intrinsic kit gates are unchanged. Legacy
+  Master clock stamps are ignored without load writes/save migration.
+- Reviewed every Master against current intrinsic passives/resource loops.
+  Removed native charge grants, Flora/Rosetta copied healing and Nerithe copied
+  Normal Gauge; replaced with complementary shielding, protection, strikes or
+  cooldown effects. Preserve all48 IDs/names/art/acquisition/equipment.
+  Helios no longer extends Burn on every tick (otherwise Burn self-sustains);
+  it echoes Burn and converts a bounded portion into healing.
+- Rules stay globally enabled, but authored timed payoff durations/spend
+  conditions remain. Existing shield/Attack/protection refresh and caps,
+  no generated-source recursion, no revival, cooldown next-round floor, costs/
+  recovery and independent RNG/rewards remain. Catalogue/shared reference text,
+  Master doc table and generated art effect contracts updated; artwork unchanged.
+- `npx vitest run src\game\master-conduits.test.ts src\game\kit-conduits.test.ts
+  --maxWorkers=2`:161/161 passed. All48 tested for repeat effects with legacy
+  clock stamps, all16 banks repeat in one round/cap3, real AoE criticals each
+  trigger one strike, Burn expires, ordinary round gates remain. Existing
+  frozen Settings/Continue/Retry and atomic reward tests pass.
+- `python tools\build_master_conduit_art.py`; `python -m unittest discover -s tools
+  -p test_master_conduit_art.py -q`:3/3 passed. `node tools\bundle_server_game.mjs`
+  and server `npx tsc --project supabase\functions\game-operation\tsconfig.json
+  --pretty false`:passed. `npm run build`:passed with existing bundle advisory.
+  `git diff --check`:passed. No commits.
+- Full `npm test -- --maxWorkers=2`:1835 passed /17 failed in134 files. Failures
+  are unrelated presentation assertions:16 upgrade-reference expectations for
+  missing `.upgrade-benefits details`, one UI-copy unspaced-slash check. No Master,
+  ordinary Conduit, combat, reward or online test failures. Not changed here.
+- Final focused `npx vitest run src\game\master-conduits.test.ts
+  src\game\kit-conduits.test.ts src\online\server-game.test.ts
+  src\presentation\conduit-loadout.test.ts --maxWorkers=2`:218/218 passed.
+- Owner authorized online deployment. `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`:deployed
+  successfully (nonfatal Docker warning). `node tools\smoke_server_game.mjs
+  --masters`:passed with3 distinct native critical payoffs in one round despite
+  legacy stamps, no recursive strikes, frozen loadout, idempotent retry,
+  persisted checkpoint and quit. Added reproducible focused hosted option.
+  `node tools\smoke_server_game.mjs`:passed existing game/social/chat regression
+  checks after correcting the runner's helper block scope. All disposable
+  identities and cascading records cleaned up. Hosted combat is updated;
+  frontend descriptions await separate publication. No commits/pushes.
+
+## Centered Conduit control labels
+
+- Removed shared leading-padding offset from loadout Details/Upgrade/Remove,
+  slot targets and compact filter/member/pager controls via symmetric scoped
+  inline padding and centered text/grid alignment. No action or layout changes.
+- Browser DOM-only equipped fixture: Details/Upgrade/Remove text centers exactly
+  match button centers (0px offset),6.4px padding on both sides.
+- `npx vitest run src\presentation\conduit-loadout.test.ts --maxWorkers=2`:
+  30/30 passed. `npm run build`:passed with existing chunk-size advisory.
+
+## Larger character detail artwork
+
+- Owner requests substantially larger character art in the supplied Stats/Skills
+  detail header. Desktop portrait10rem→16rem; phone8rem→15rem with stacked header
+  identity/actions rather than squeezed columns. Shared captured detail header
+  follows the same sizing. Sources, contain/facing/idle DOM and gameplay unchanged.
+- DOM-only browser1367x640:256px square portrait, header655/655 and page1367/1367.
+  Phone390x768:240px square, header337/337 and page390/390; no horizontal overflow.
+- `npx vitest run src\presentation\reference-ui.test.ts --maxWorkers=2`:33/33 passed.
+  `npm run build`:TypeScript/Vite passed, existing bundle-size warning.
+
+## Locked profile artwork preview correction
+
+- Owner now requests real locked artwork behind Locked text: catalogue, selected
+  hero and usage examples show grayscale/1.5px blur with subdued brightness.
+  Overlay remains sharp with subtle dark text shadow. Only images receive filters.
+  This supersedes earlier profile-specific no-art locked-preview statements.
+  Unlock authorization, disabled Use and original installed PNGs are unchanged.
+- `npx vitest run src\presentation\profile-picture-browser.test.ts
+  src\presentation\online-store-profile.test.ts --maxWorkers=2`:17/17 passed.
+  `npm run build`:TypeScript/Vite passed; existing chunk-size warning only.
+
+## Reference-organized profile-picture selection (D-263)
+
+- Near-full-viewport native dialog now follows collection/detail reference:
+  breadcrumb/Back row, ownership ring, search/status/category filters, real
+  Default/Characters groups, equal220px cards with100px square portraits.
+  Preview has previous/next matching entry, rarity/form/In use badges, explicit
+  unlock requirement and compact Profile/Chat/Friends usage examples. Full names
+  remain visible; locked entries now show muted artwork per correction above. Already applied choice never
+  resaves. Keyboard preview arrows retain focus; Escape/Back restore caller focus.
+- Only real32 character pictures plus neutral default. Count includes default
+  (33 total) and explicitly displays character count out of32. No sample data,
+  fake New count, creature/achievement/event pictures or new account fields.
+  Existing profile queue/stale-editor safeguards/unlock authorization unchanged.
+- Browser DOM-only fixture1367x768: equal-top682px panels, no dialog overflow,
+  all33 cards220px and zero overflowing text.1367x640:608px dialog client/scroll,
+  aligned panels,308px collection viewport, Apply visible.390x768: no horizontal
+  overflow (dialog345/345 inner width), stacked panels/contained collection and
+  vertical dialog scrolling. No owner account/profile writes.
+- `npx vitest run src\presentation\profile-picture-browser.test.ts
+  src\presentation\online-store-profile.test.ts src\presentation\profile-picture.test.ts
+  --maxWorkers=2`:18/18 passed, including category/search combinations, filtered
+  preview navigation/focus, locked gating, in-use no-save and caller focus.
+  `npm run build`:TypeScript/Vite passed with existing bundle-size warning.
+  `git diff --check`:passed for touched docs; editor diagnostics clear.
+
+Earlier72px uniform-tile sizing below is superseded by this reference layout.
+
+## Consistent profile-picture catalogue tiles
+
+- All33 modal choices (including neutral/locked) use aligned72px square artwork
+  rows and equal220px card heights. Complete names and form labels remain visible.
+  Scoped dialog selectors override shared44px button minimums.
+- Browser1367x640 and390x768: all33 cards220px high, frames72x72, consistent9px
+  top offset, zero overflowing cards. Unlock/filter/selection behavior unchanged.
+- `npx vitest run src\presentation\profile-picture-browser.test.ts --maxWorkers=2`:
+  2/2 passed. `npm run build`:passed with existing chunk-size warning.
+
+## Installed vibrant profile portraits (D-262)
+
+- All32 root deliveries archived and installed.31 reviewed background keys
+  replaced with baked vibrant current-element gradient mosaics. Supplied subject
+  positions/scale stay unchanged, no cropping/resizing. Omnic Flora is identical
+  to the delivered bytes, including her original background, per owner choice.
+  Root originals retained; SHA256 provenance and per-source settings preserved.
+- `tools\intake_profile_picture_art.py --apply` reproduces exports and generated
+  URL revisions. Shared Profile/header/Friends/Chats/collection resolver now uses
+  square artwork, not combat portraits/mirrors; removed pending-art copy and
+  corrected catalogue image sizing. Ownership/Omnic unlocks/saves unchanged.
+  This supersedes all D-260 temporary-preview/pending-delivery status below.
+- `python tools\intake_profile_picture_art.py --apply`:32 installed; subsequent
+  rerun reproduced exactly. Python validation compares every archived/export
+  hash and reproduced bytes, original interior foreground pixels, geometry,
+  alpha bypass and six distinct deterministic mosaics.
+- `python -m unittest discover -s tools -p test_profile_picture_intake.py -q`:
+  3/3 passed. `npx vitest run src\presentation\profile-picture.test.ts
+  src\presentation\profile-picture-browser.test.ts src\content\profile-pictures.test.ts
+  src\presentation\online-store-profile.test.ts src\presentation\friend-chat.test.ts
+  src\presentation\reference-ui.test.ts --maxWorkers=2`:55/55 passed.
+  `npm run build`:TypeScript/Vite passed with existing chunk-size
+  advisory. `git diff --check`:passed; editor diagnostics clear.
+- Presentation-only browser: all36 rendered catalogue/preview images decoded at
+  1024-square. Grid72x72, desktop preview144x144, usage42x42. Phone390x768:
+  page390/390, dialog343/343 inner width,100x100 selected art, no horizontal
+  overflow; dialog retains contained vertical scrolling.
+- Real Profile/Friends markup plus header/chat presentation fixture: all square
+  images fit frames (90/100,34/44,32/36 and38/38 pixels respectively). Fixtures
+  modify DOM only and never persist a wallet/profile or unlock.
+- No account writes, runtime keying, new unlock rules, commits or outstanding
+  owner decisions. New profile pictures are installed, not pending.
+
+## Full world-map framing and terrain alignment (D-261)
+
+- Removed cover-cropped map framing. The native1456x816 contained canvas fits the
+  available map area; roads/beacons share its coordinates, including letterboxing.
+  Anchors now match orange western Infernic, northeastern blue Oceanic castle,
+  northern Atmospheric mountain, southern green/gold Botanic woodland,
+  southwestern ivory Tranquilitic mountain and southeastern Chaotic rift.
+- Marker circles are44px; compact-height/mobile maps show numbers without
+  overlapping name/status labels. Numbered sidebar retains names/progression and
+  accessible button labels remain complete. Artwork/locks/navigation/saves unchanged.
+- Browser presentation-only1367x640 fixture: main508/508, figure278/278 and
+  canvas423.59x237.39 (native ratio), full map/caption visible.390x768: page390/390
+  width, canvas304.63x170.72 native ratio, all six44x44 targets; no horizontal
+  overflow. Owner saves untouched.
+- `npx vitest run src\presentation\reference-ui.test.ts
+  src\content\story-art.test.ts --maxWorkers=2`:37/37 passed.
+  `npm run build`:TypeScript/Vite passed, existing chunk advisory.
+  `git diff --check`:passed; editor diagnostics clear. No commits.
+
+## Completed chats and earned profile pictures (D-260)
+
+### Final backend and integration status
+
+- Chat SQL, endpoint routing, independent rate limits, client validation and
+  profile-picture authorization are deployed to the existing linked project.
+  `20261012030000_friend_chat.sql` applied; `game-operation` redeployed. Private
+  accepted-friend DMs, explicit invite-only groups/counting pending invitations,
+  owner add/remove/transfer, unread/pin/mute/block and idempotent writes work.
+  Chat never changes gameplay account/session/revisions/RNG.
+- Backend agent verified `node tools\test_server_game_sql.mjs --predeploy-chat`
+  after fixing pin/mute incorrectly marking read, then deployed SQL runner and
+  `node tools\smoke_server_game.mjs` passed. Hosted smoke covers the full chat
+  session and unchanged revisions for both players; disposable identities/rows
+  cleaned and absence verified. Server bundle regenerated, function TypeScript/
+  Deno checks passed. All32 profile-picture unlocks are server-validated.
+- Main lifecycle/client transport is wired; View profile offers Message, block
+  acknowledgement also removes the peer from cached friend/request lists.
+  Retry IDs survive navigation until acknowledgement, account changes clear
+  state, messages appear only after confirmation. Fixed earlier-page exhaustion
+  being lost on newest-page polls and added its regression.
+- `npx vitest run src\online\server-game.test.ts
+  src\presentation\friend-chat.test.ts src\presentation\profile-picture-browser.test.ts
+  src\content\profile-pictures.test.ts src\presentation\online-store-profile.test.ts
+  src\presentation\reference-ui.test.ts --maxWorkers=2`:80/80 passed before the
+  additional pagination regression. Final rerun:81/81 passed. `npm run build`:passed,
+  existing chunk-size advisory only.
+- Dedicated32 square illustrations remain generation-only, not delivered.
+  Existing portraits are explicitly temporary previews.10-second polling is
+  intentional, not realtime push. No message edit/delete/report system; new
+  group members see earlier history and re-friending restores retained DM
+  history. No commits or outstanding owner decisions.
+- Final worktree inspection found32 new owner-named Base/Omnic PNGs at the root
+  during backend work. These unexpected files were not modified, processed or
+  installed in this task; their actual pixels/source/keys need review/intake.
+  This supersedes the earlier assumption that no source images had arrived.
+  Runtime still uses labelled canonical portrait previews.
+- The following progress notes preserve implementation history; their
+  contract-only/backend-pending statements are superseded by this final status.
+
+### Latest client integration
+
+- Backend agent returned the exact typed API, but **no chat SQL/routing/tests/
+  deployment yet**, then was explicitly resumed to finish those end-to-end.
+  Do not treat the contract-only response as a working backend.
+- Main now binds/disposes Chats on render/auth changes and uses separate
+  `chatOperation` without gameplay revisions. Adapter handles actual last-message
+  objects/inviter peers, refreshes the selected thread after sidebar mutations.
+  Account changes clear transient chats/drafts. Message action from View profile
+  opens the friend's DM. Group member controls include Block plus owner Remove;
+  pending invitations can be canceled and count toward10.
+- Both message and non-message mutations retain the same request ID on ambiguous
+  failure, with explicit retry. Definitive400/401/403/409 rejection unlocks
+  corrections. No optimistic messages. Group pickers use real artwork/radio/
+  checkbox selections, not a new native select. Muted chats are excluded from
+  aggregate unread. Polling retains drafts/scroll/older messages and excludes
+  blocked senders.
+- `npm run build`:TypeScript/Vite passed with existing chunk-size advisory.
+  Focused51-test run passed before two further chat tests; standalone
+  `npx vitest run src\presentation\friend-chat.test.ts --maxWorkers=2`:4/4 passed
+  including group retry IDs and definitive-message rejection.
+- Fixed mobile CSS rule order/grid auto-row sizing after inspecting actual
+  overlapping panels;390px now has no horizontal overflow and list/thread
+  panels463/463 and656/656 client/scroll (page scrolling, messages contained).
+  Desktop1367x640: layout500/500, both panels498/498, message viewport276px,
+  details498/763 intentional scroll, composer ends at559px. Collection mobile
+  dialog343/343 width, page390/390 and bottom752 within768px viewport.
+  Fixtures mutate DOM only. Final validation still pending server completion.
+
+- Owner clarified private and invite-only group text chats;500 characters,
+  10 members, owner-controlled membership, unread/pin/mute/block. No sharing
+  cards. Exactly32 profile pictures: acquisition/Omnic per16 bearers, plus
+  neutral; no creatures or intermediate forms.
+- Parent added typed picture catalogue/unlock rules, shared avatar resolver,
+  Change/Browse game-native collection with search/filters/locked requirements,
+  real usage previews and existing-save-queue selection. Legacy IDs map to
+  acquisition pictures; no new account fields/grants/load writes. Async result
+  rejects disconnected editors. Fixed an accidentally nested browse-click
+  listener during this work. Special square art remains pending; existing
+  character portraits are explicitly labelled temporary previews.
+- `Art/characters/Element-Bearer Profile Pictures.md` now contains32 original
+  1:1 portrait prompts.175-237 positive words each, exact Evo.1/6 references at
+  150, identity/signature/palette locks and10% margins. Profile-specific square
+  references are explicitly recognized by the general reference tests. No
+  delivered art or runtime image changes.
+- Parent's `friend-chat.ts`/CSS implements normalized presentation/controller:
+  searchable lists, conversation/composer, details, explicit invitations/member
+  controls, blocking, message escaping,10-second visible-only polling, draft/
+  scroll retention, disposal guards and idempotent retry IDs. Separate client
+  transport adapter and main lifecycle wiring are pending the delegated server
+  API contract. Chats navigation exists but must not be reported complete yet.
+- `npx vitest run src\presentation\friend-chat.test.ts
+  src\presentation\profile-picture-browser.test.ts src\content\profile-pictures.test.ts
+  src\presentation\online-store-profile.test.ts src\presentation\reference-ui.test.ts
+  --maxWorkers=2`:51/51 passed.
+  `python -m unittest discover -s tools -p test_profile_picture_art.py -q`:6 passed.
+  `python -m unittest discover -s tools -p test_character_style_references.py -q`:3 passed.
+  Agent's general art run has zero new-pack failures and128 unchanged failures
+  (100 Master/28 Machines). `git diff --check` passed.
+  Latest parent typecheck remained blocked by two profile-icon API type errors
+  while the server agent was implementing its authoritative32-ID expansion.
+- Presentation-only1367x640 fixture: collection dialog588/588 client/scroll,
+  grid230/1298 intentional scroll. Chat fixture with32 groups/40 messages/
+  10 members: document1367/1367 width; thread498/498, messages276/3248 and
+  details498/739 intentional contained scrolling. Mobile/final integrated
+  layout and full endpoint behavior still need verification. No owner data
+  modified by fixtures; no commits.
+- Running server agent `60f02109-2fd9-41da-b351-dbddeced071d` owns backend/client
+  types, SQL migrations/tests, deployment and hosted smoke. Await its completion
+  notification; consume report once, adapt normalized UI commands, wire main
+  bind/dispose/auth lifecycle and finish tests/build/docs. Art agent
+  `4b5e53ec-1d2c-4937-b7c6-59287cfb3916` completed its pack/test scope.
+
+## Friends reference and real presence (D-259)
+
+- Friends now shares the profile editor with a searchable accepted-friend
+  center and Add friend/Requests sidebar. Received/Sent switch only requests,
+  keep real count badges and survive refresh/actions/history. Actual artwork,
+  public codes, incoming actions and outgoing cancellation remain wired.
+  Remove friend is inside View profile with existing confirmation. No demo
+  codes/badges, Beacon Seeker, direct messages or chat rooms.
+- Owner approved real online/last-seen tracking. Only accepted friends receive
+  server-persisted lastSeenAt and online (last accepted touch within90 seconds).
+  Requests omit presence; old unavailable fields show unavailable, never fake
+  offline/history. Checkpoint updates only presence text while preserving
+  editor/search/tab DOM, caches current social response for future rendering.
+  Approximate activity window, not instant connection/sign-out detection.
+- `20261011090000_friend_presence.sql` deployed with
+  `npx supabase db push --linked --yes`; no function deployment required.
+  `node tools\test_server_game_sql.mjs --predeploy-presence`,
+  `node tools\test_server_game_sql.mjs` and `node tools\smoke_server_game.mjs`:
+  passed. Hosted tests cover accepted-friend privacy, never-seen status and
+  checkpoint tracking/social ordering; disposable accounts removed.
+- `npx vitest run src\presentation\online-store-profile.test.ts
+  src\presentation\reference-ui.test.ts src\ui\mount.test.tsx
+  src\online\server-game.test.ts --maxWorkers=2`:72/72 passed.
+  `npm run build`:TypeScript/Vite passed, existing chunk advisory.
+- Browser presentation-only30-friend/two-request fixture at1367x640:
+  content558/558, profile510/510, center454/454, sidebar456/456 client/scroll
+  heights; bounded lists keep all entries accessible and actions are44px.
+  Request pane111px with257px scroll content, intentionally contained.
+  Search/no-match and Sent tab event dispatch verified independently without
+  hiding friends. At390px, document390px/content371px with no horizontal
+  overflow and44px controls. Owner accounts/saves not mutated.
+  No commits or remaining owner decisions.
+
+## Starter Omnic alternate-skin prompt test
+
+- Added `Art/experiments/Starter Omnic Alternate Skins.md` with Obsidian Phoenix
+  Empress Infernis, Abyssal Pearl Emperor Tizu and Jade Blossom Empress Flora.
+  Owner's original Omnic image URLs preserved verbatim; exact Evo.6 style
+  reference retained at150. Identities/weapons/six wings unchanged, alternate
+  outfits only. Central80% ensemble/10% empty margin per side and contrasting
+  green/magenta/blue keys supersede old edge-fill wording in these tests only.
+  No gameplay skins, image intake or production prompt changes.
+- Indexed in Art/docs and workflow. Three copy-ready blocks validated with
+ 344/361/363 prose words (under380), one reference/negative list per block,
+  original image URLs and explicit margins. `python -m unittest discover -s
+  tools -p test_art_prompts.py`:28 tests ran,128 failures outside the new pack;
+  no new-pack failures after matching shared background/no-light-bloom clauses.
+  `git diff --check`:passed. Generated pixels and signed-link availability
+  remain unverified; visual review needed. No commits.
+
+## One-screen desktop profile (D-258)
+
+- Removed the height-triggered two-column fallback that pushed Squad/Recent
+  activity below the page on otherwise wide desktops. Compact desktop profile
+  uses portrait beside Display name, tighter spacing and naturally sized rows.
+  All six Story rows and five recent events remain visible; no panel overlap.
+  Actions retain44px targets, text sizes and profile/save/gameplay behavior.
+  Narrow screens still use page scrolling. Only redundant Auto-saves footer
+  is hidden in the compact arrangement; editor keeps the Auto-saves label.
+- Presentation-only fixture includes all16 bearers, three late-form squad
+  members,120-character bio and five beacon events. At1367x640 and1838x640,
+  content558/558, grid510/510 and every panel had matching client/scroll heights;
+  all six Story rows fit within their article and buttons were at least44px.
+  At1367x768, content686/686, grid638/638, zero overflowing statistics articles.
+  At390px, document width390 and content/client widths371/371, no internal
+  article overflow. Owner saves/accounts were not mutated.
+- `npx vitest run src\presentation\online-store-profile.test.ts
+  src\presentation\reference-ui.test.ts src\ui\mount.test.tsx --maxWorkers=2`:
+  47/47 passed. `npm run build`:TypeScript/Vite passed, existing chunk advisory.
+  No backend changes, commits or new owner decisions needed.
+
+## Signed-in profile reference (D-257)
+
+- Rebuilt the signed-in Player info screen around the owner's compact reference:
+  portrait/editor and public identifiers, four summary cards, always-visible
+  Story/Collection progress, account/pity/Save Data, and Squad/Recent activity.
+  Preserved global navigation and real canonical names/artwork. Catalog totals
+  are150 stages/six beacons,16 bearers,85 ordinary Conduits,30 capturable forms
+  and126 Character Archive forms; captured copies remain uncapped.
+- Meaningful missing reference features are approved: stable public friend code/
+  Player ID (not auth UUID), username/code requests,30 accepted friends for both
+  parties, forward-only online days/time and confirmed activity. No invented
+  historical metrics/events, Beacon Seeker badge or demo controls.
+- Compact Save now performs the guarded authoritative online checkpoint; timers
+  and manual saves cannot overlap or replace an active battle snapshot. Returned
+  metrics update only profile readouts. Copy/Load codes, Delete and File tools
+  manage only the private offline browser envelope; they never replace online
+  progress. Codes validate bounded UTF-8 envelopes and confirmed replacement
+  retains rollback/error handling. New-account import safeguards are unchanged.
+- Browser presentation-only fixtures at1367x768 included all16 bearers and the
+  longest authored Omnic names: content686/686 and grid648/648 client/scroll
+  heights, no nested profile scrolling, minimum44px buttons. At390px the page
+  has no horizontal overflow or internal panel scrollers; final activity is
+  reachable by page scrolling. No real save was funded or edited. Restored the
+  desktop viewport and reloaded the real two-action title afterward.
+- Focused validation:
+  `npx vitest run src\presentation\online-store-profile.test.ts
+  src\presentation\reference-ui.test.ts src\ui\opening.test.tsx
+  src\ui\mount.test.tsx src\presentation\offline-save.test.ts
+  src\presentation\selection-panel.test.ts src\presentation\autosave.test.ts
+  src\presentation\settings.test.ts src\online\server-game.test.ts --maxWorkers=2`:
+  113/113 passed. `npm run build`:passed TypeScript/Vite, existing chunk advisory.
+  `npx vitest run --maxWorkers=2`:1796/1812 passed, only16 known D-253
+  `upgrade-reference.test.ts` expectations of removed dropdowns remain unchanged.
+  Editor diagnostics and `git diff --check` passed.
+- `npx supabase db push --linked --yes` applied only
+  `20261010100000_profile_references.sql`; `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww` deployed the regenerated
+  endpoint. `node tools\test_server_game_sql.mjs`:passed against the deployed
+  database. `node tools\smoke_server_game.mjs`:passed against the deployed service,
+  including public codes/self-request rejection, forward-only metrics and
+  concurrent acceptances with independent revisions competing for the30th
+  friend. Exactly one succeeds; the other reports Friend limit reached, not a
+  revision conflict. Disposable identities/records removed. Initial smoke failure
+  was a self-code fixture error, corrected without backend changes.
+  No commits, remaining D-257 implementation gaps or open owner decisions.
+
+## Automatic online entry and minute autosave (D-256)
+
+- Successful sign-in/authenticated dialog entry proceeds online and closes the
+  dialog; failed connection offers Retry connection. Persisted sessions restore
+  on reload; offline entry cannot override a signed-in account. Explicit sign-out
+  retains its existing cleanup. Verification, recovery and new-account import/
+  starter safeguards remain. Recovery enters only after password update.
+- Initialized real gameplay starts a60-second nonoverlapping autosave timer.
+  Offline uses validated rollback-capable `saveOfflineProgress`; online uses
+  payload-free `checkpoint`, service-only row locking and re-saving of the
+  authoritative aggregate. No revision/receipt/RNG/reward changes, client
+  battle replacement, pending-request retries or debug/title writes.
+  Account/mode changes and page exit clean up; browser restoration restarts.
+- Separate polite "Your light endures. Progress saved." notice fades/removes
+  after1.8 seconds; reduced motion remains static. It does not steal focus or
+  replace existing errors. Save failures are explicit, with no success notice.
+- `npx vitest run src\online\server-game.test.ts src\ui\opening.test.tsx
+  src\presentation\autosave.test.ts src\online\account-client.test.ts
+  src\presentation\offline-save.test.ts --maxWorkers=2`:61/61 passed.
+  `npm run build`:passed, existing chunk advisory.
+  `npx vitest run --maxWorkers=2`:1785/1801 passed;16 pre-existing
+  `upgrade-reference.test.ts` assertions still expect the removed growth-preview
+  details dropdown (D-253), unrelated to authentication/autosave. Not changed.
+- `node tools\test_server_game_sql.mjs --predeploy-autosave`:passed in a
+  rolled-back hosted transaction. `npx supabase db push --linked --yes` and
+  `npx supabase functions deploy game-operation --project-ref ohtfgwomdfteaxubndww`:
+  deployed the migration and regenerated endpoint. `node tools\test_server_game_sql.mjs`
+  and `node tools\smoke_server_game.mjs`:passed against deployed service;
+  disposable test identities/records removed. Browser verified1.8-second CSS
+  and notice removal at1.9 seconds. No commits or new owner decisions needed.
+
+## Simplified title entry (D-255)
+
+- Removed title Player info and renamed title Play Online to
+  Sign-in / Create Account. Removed unused title callback; preserved existing
+  authentication/offline handlers and Player info elsewhere. Related title-entry
+  instructions use the new label.
+- Browser reload confirmed exactly the two requested title actions.
+  `npx vitest run src\ui\opening.test.tsx src\ui\mount.test.tsx
+  src\presentation\offline-save.test.ts --maxWorkers=2` passed27/27.
+  `npm run build` passed with the existing chunk advisory. No commits.
+
 ## Larger equipped Master artwork (D-254)
 
 - Increased equipped Master art/grid track64px ->112px, exactly75% larger.

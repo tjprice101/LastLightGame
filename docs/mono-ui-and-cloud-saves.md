@@ -1,5 +1,99 @@
 # Monochrome UI and cloud-save rollout
 
+## Independent friend chats and profile pictures (D-260)
+
+Deployed `20261012030000_friend_chat.sql` and updated `game-operation` provide
+private accepted-friend conversations, invite-only10-member groups and plain-text
+messages of1-500 characters after trimming. Pending invites count toward10.
+Separate `{requestId, chat}` operations never carry expectedRevision or mutate
+the gameplay aggregate. Every mutation is idempotent by player/request ID;
+changed payload on reuse rejects409. Limits:90 chat requests and30 sends per
+minute, independent of gameplay. Storage errors return503, not false success.
+Newest read/send/DM-open/invite acceptance mark read; history pages do not.
+Pin/mute preserve unread; muted conversations are omitted from aggregate unread.
+Blocking removes friendship/requests/pair invitations, hides blocked messages
+and prevents fresh requests/messages. Unblock does not restore friendship.
+
+The server validates all32 acquisition/Omnic profile IDs against actual ownership/
+evolution6. Legacy neutral/character icons remain accepted; loads never write.
+`node tools\test_server_game_sql.mjs --predeploy-chat`, deployed SQL runner,
+27 client/server tests and hosted smoke passed. Smoke checks unchanged gameplay
+revisions and cleans disposable users/rows. UI polls only visible Chats every10
+seconds and preserves draft/scroll state; there is no realtime push.
+[Full contract](menus-and-inventory.md#earned-profile-pictures-and-text-chats-d-260).
+
+## Accepted-friend presence (D-259)
+
+Deployed `20261011090000_friend_presence.sql` reuses persisted
+`private.profile_metrics.last_seen_at` from accepted server touches. Social
+responses include optional `online` boolean and `lastSeenAt` timestamp/null only
+for accepted friends. Online requires a nonfuture timestamp within90 seconds;
+never-seen friends return false/null. Requests omit presence. Client validation
+rejects malformed timestamps/booleans, online without a timestamp and leaked
+request presence; operation validation rejects client-supplied tracking fields.
+Read/checkpoint tracking precedes current social queries; gameplay revisions
+remain unchanged. No new function deployment was necessary.
+
+Predeploy rollback SQL, deployed SQL and hosted smoke passed, including presence
+privacy and checkpoint response ordering; disposable accounts were removed.
+[UI/privacy contract](menus-and-inventory.md#friends-reference-and-real-presence-d-259).
+
+## Profile references and forward-only metrics (D-257)
+
+The signed-in profile now uses the owner's compact reference, with real Story,
+catalog/ownership, squad, summons and per-banner pity data.
+[Full UI/save-code contract](menus-and-inventory.md#signed-in-profile-reference-layout-d-257).
+
+Optional public-profile fields `friendCode`, `playerId`, `daysPlayed`,
+`playTimeSeconds` and `recentActivity` preserve legacy response compatibility.
+Codes are stable unique `LL-XXXX-XXXX` uppercase hexadecimal; public Player ID
+is the code without `LL-`, not an auth UUID. Friend requests accept exactly one
+username or code. Acceptance serializes both users and the pair, enforcing30
+accepted friends for both parties without deleting legacy excess.
+
+Tracking uses server UTC dates and time. First presence counts one day and zero
+elapsed time. A later accepted touch adds whole seconds capped at60 only when
+the preceding touch is within90 seconds; longer gaps reset the baseline without
+counting absence. Dates advance only forward. Read/checkpoint and committed
+operations carry current metrics; repeated request IDs, rejected operations and
+conflicts do not duplicate tracking. Metrics never increment the game revision,
+advance RNG or import offline/historical playtime.
+
+The server keeps eight typed confirmed activity records; the compact UI shows
+five. Existing accounts do not get fictional backdated creation/history.
+New creation, starter/import, summons, Conduit purchases and Story clears are
+recorded from authoritative outcomes, with first regional beacon restoration
+annotated only for new clears. Clients escape all persisted text.
+
+Migration `20261010100000_profile_references.sql` and the regenerated
+`game-operation` endpoint are deployed. Predeploy rollback SQL, deployed SQL
+and hosted smoke checks pass. Hosted coverage includes self-code rejection,
+stable public identity, forward-only tracking, owner isolation and two
+independent-revision acceptances competing for the30th friend: exactly one
+succeeds and the other receives Friend limit reached. Disposable test accounts
+and cascading records are removed afterward.
+
+## Automatic online sessions and autosave (D-256)
+
+Successful authentication now enters online without another mode/play choice,
+and persisted sessions resume online on reload. Sign out before entering
+offline. Verification/recovery and the new-account one-time import safeguards
+remain intact. [UI and timing contract](menus-and-inventory.md#automatic-online-entry-and-minute-autosave-d-256).
+
+The `checkpoint` operation accepts no wallet/state payload. Its authenticated
+endpoint calls service-only `checkpoint_game_account`, locking and re-saving
+the current aggregate with an updated timestamp. Stale revisions are rejected;
+the gameplay revision, request receipts, RNG, currencies, profile and frozen
+run remain unchanged. Client checkpoints never replace displayed battle state
+or interfere with a pending gameplay operation. This is a real persisted write,
+not a read presented as a save. Immediate authoritative transactions remain
+the primary persistence path.
+
+Migration `20261010090000_autosave_checkpoint.sql` and the regenerated
+`game-operation` endpoint are deployed. Both pre-deployment rollback SQL tests
+and deployed SQL/hosted smoke tests pass, including stale checkpoint rejection,
+state/revision preservation, owner isolation and service-only permissions.
+
 ## Player Info owns save-data management (D-202)
 
 Owner moves **all save-file controls and information to Player info only**,

@@ -11,11 +11,13 @@ import { assetUrl } from './portrait';
 import { materialName } from '../content/dungeon-art';
 import './story.css';
 import { highestBearerLevel } from '../game/activity-access';
+import { storyPurpose } from '../content/world-lore';
+import { worldLore } from './world-lore';
 
 let selectedRegion: number | undefined;
 let selectedStage: number | undefined;
 let viewMode: 'stages' | 'map' = 'map';
-const mapPositions = [[14, 55], [38, 72], [45, 28], [62, 48], [82, 28], [84, 74]] as const;
+const mapPositions = [[24, 33], [73, 33], [47, 20], [50, 73], [23, 65], [80, 66]] as const;
 
 function stageDetail(stage: number, completed: number, unlocked: number, highestLevel: number): string {
   const encounter = storyEncounter(stage);
@@ -44,24 +46,24 @@ export function storyCampaign(account: Account | null, starterId: StarterId, sho
   const activeStage = selectedStage && storyEncounter(selectedStage).regionIndex === activeRegion ? selectedStage : Math.min(Math.max(unlocked, start), start + 24);
   return `<div class="story-campaign mono-story-campaign">
     <aside class="ref-story-region-sidebar"><header class="ref-story-region-heading"><span class="eyebrow">Regions · ${storyRegions.length}</span>
-      ${information('story-prologue-information', 'Opening prologue', `<h3>${starter.title}</h3><p>${starter.lore.story}</p><blockquote>${starter.lore.vow}</blockquote><p>The road disappears beneath a veil of dusk. A small light is not enough to light the world, but it is enough to take the first step.</p>`, 'Prologue')}
+      ${information('story-prologue-information', 'Let and Rise · Opening prologue', `${worldLore()}<h3>${starter.title}</h3><p>${starter.lore.story}</p><blockquote>${starter.lore.vow}</blockquote><p>${storyPurpose}</p>`, 'Prologue')}
       </header>
     <nav class="story-world-map" aria-label="Linear elemental regions">${storyRegions.map((region, index) => {
       const first = index * 25 + 1;
       return `<button type="button" data-story-region="${index}" aria-controls="story-region-${index}" aria-pressed="${index === activeRegion}" style="--element:${elementAccents[region.element]}">
-        <strong>${region.name}</strong><small>${elementLabel(region.element)} · ${first > unlocked ? 'Locked' : completed >= first + 24 ? 'Beacon restored' : `${Math.min(25, Math.max(0, completed - first + 1))} / 25 cleared`}</small></button>`;
+        <strong>${index + 1}. ${region.name}</strong><small>${elementLabel(region.element)} · ${first > unlocked ? 'Locked' : completed >= first + 24 ? 'Beacon restored' : `${Math.min(25, Math.max(0, completed - first + 1))} / 25 cleared`}</small></button>`;
     }).join('')}</nav></aside>
     <section class="ref-story-main">
     <header class="story-map-heading"><div data-story-region-heading>${regionHeading(activeRegion, completed, unlocked)}</div>
       <div class="mono-story-view-tabs" role="group" aria-label="Story view"><button type="button" data-story-view="stages" aria-pressed="${viewMode === 'stages'}">Stages</button><button type="button" data-story-view="map" aria-pressed="${viewMode === 'map'}">World map</button><button type="button" data-page="team">Team</button></div>
-      ${showInformation ? information('story-information', 'Story campaign', `<p>${storyRulesText}</p><p>Entry is free and uses your saved squad. Ordinary kills save their loot immediately; clearing the encounter unlocks the next stage. Quitting never removes earned rewards. Training keeps the former endless Adventure rules.</p>`) : ''}</header>
-    <figure class="story-map-art" ${viewMode !== 'map' ? 'hidden' : ''}><div class="ref-world-map"><img src="${assetUrl(`backgrounds/${storyWorldMap}`)}" alt="Six-beacon Story world map: Emberwake March, Glasswater Reach, Stormspan Heights, Rootstone Wilds, Stillhalo Vale and Riftbound Frontier" />
+      ${showInformation ? information('story-information', 'Story campaign', `<p>${storyPurpose}</p><p>${storyRulesText}</p><p>Entry is free and uses your saved squad. Ordinary kills save their loot immediately; clearing the encounter unlocks the next stage. Quitting never removes earned rewards. Training keeps the former endless Adventure rules.</p>`) : ''}</header>
+    <figure class="story-map-art" ${viewMode !== 'map' ? 'hidden' : ''}><div class="ref-world-map"><div class="ref-world-map-canvas"><img src="${assetUrl(`backgrounds/${storyWorldMap}`)}" width="1456" height="816" alt="Six-beacon Story world map: Emberwake March, Glasswater Reach, Stormspan Heights, Rootstone Wilds, Stillhalo Vale and Riftbound Frontier" />
       <svg class="ref-map-roads" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${mapPositions.slice(1).map((point, index) => `<line x1="${mapPositions[index][0]}" y1="${mapPositions[index][1]}" x2="${point[0]}" y2="${point[1]}" class="${completed >= (index + 1) * 25 ? 'is-restored' : ''}" vector-effect="non-scaling-stroke" />`).join('')}</svg>
       ${storyRegions.map((region, index) => {
         const cleared = Math.min(25, Math.max(0, completed - index * 25));
         const locked = index * 25 + 1 > unlocked;
         return `<button type="button" class="ref-map-node ${cleared === 25 ? 'is-restored' : locked ? 'is-locked' : 'is-open'}" style="left:${mapPositions[index][0]}%;top:${mapPositions[index][1]}%" data-story-map-region="${index}" aria-pressed="${index === activeRegion}" aria-label="${region.name}, ${locked ? 'locked' : `${cleared} of 25 cleared`}"><span>${cleared === 25 ? '&#10003;' : index + 1}</span><b>${region.name}</b><small>${locked ? 'Locked' : `${cleared} / 25`}</small></button>`;
-      }).join('')}</div><figcaption>Choose a beacon to view its region's stages.</figcaption></figure>
+      }).join('')}</div></div><figcaption>Choose a numbered beacon to view its region's stages.</figcaption></figure>
     ${storyRegions.map((region, index) => {
       const first = index * 25 + 1;
       const selected = index === activeRegion ? activeStage : Math.min(Math.max(unlocked, first), first + 24);
@@ -81,7 +83,7 @@ export function storyCampaign(account: Account | null, starterId: StarterId, sho
         <footer class="ref-story-entry" data-story-detail="${index}">${stageDetail(selected, completed, unlocked, highestBearerLevel(account))}</footer></section>`;
     }).join('')}
     </section>
-    <details class="story-prologue"><summary>Read opening prologue</summary><article class="story-panel lore-panel"><h2>${starter.title}</h2><p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote><p>The road disappears beneath a veil of dusk. A small light is not enough to light the world, but it is enough to take the first step.</p></article></details>
+    <details class="story-prologue"><summary>Read opening prologue</summary><article class="story-panel lore-panel"><h2>Let and Rise</h2>${worldLore()}<h3>${starter.title}</h3><p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote><p>${storyPurpose}</p></article></details>
     <button class="text-button" data-page="gameplay" data-training-activity>Training · Endless waves &rarr;</button>
   </div>`;
 }

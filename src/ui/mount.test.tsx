@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { act } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { mountTitle, mountStarterSelection, unmountTitle } from './mount';
+import { mountTitle, mountStarterSelection, unmountTitle, type OnlineSaveRequest } from './mount';
 import { loadOfflineSave } from '../game/save-file';
 import { emptyAccount } from '../game/account';
 vi.mock('../online/account-client', () => ({ onlineUsername: vi.fn().mockResolvedValue(null) }));
@@ -17,12 +17,30 @@ afterEach(async () => {
   vi.unstubAllGlobals();
 });
 describe('React and retained game-screen boundary', () => {
+  it('waits for the main online checkpoint and keeps offline controls distinct', async () => {
+    vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
+    const host = document.createElement('div');
+    let request!: OnlineSaveRequest;
+    host.addEventListener('player-save-online', event => { request = (event as CustomEvent<OnlineSaveRequest>).detail; });
+    await act(async () => { document.body.append(host); host.innerHTML = '<ll-player-save-data compact online-user="testuser"></ll-player-save-data>'; });
+    expect(host.textContent).toContain('No offline save on this browser yet.');
+    const save = Array.from(host.querySelectorAll('button')).find(button => button.textContent === 'Save now')!;
+    expect(save.disabled).toBe(false);
+    await act(async () => save.click());
+    expect(request).toBeDefined();
+    expect(host.textContent).not.toContain('Online progress saved.');
+    await act(async () => request.resolve());
+    expect(host.textContent).toContain('Online progress saved.');
+    const copy = Array.from(host.querySelectorAll('button')).find(button => button.textContent === 'Copy save code')!;
+    expect(copy.disabled).toBe(true);
+    expect(localStorage.length).toBe(0);
+  });
   it('replaces the title with organized starter selection and restores its selected state', async () => {
     vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
     const host = document.createElement('div');
     document.body.append(host);
     const selected = vi.fn();
-    await act(async () => mountTitle(host, { onOffline: vi.fn(), onOnline: vi.fn(), onPlayerInfo: vi.fn() }));
+    await act(async () => mountTitle(host, { onOffline: vi.fn(), onOnline: vi.fn() }));
     await act(async () => mountStarterSelection(host, {
       initialSelected: 'tide', onSelect: selected, onBegin: vi.fn().mockResolvedValue(undefined), onPlayerInfo: vi.fn(),
     }));
@@ -38,10 +56,11 @@ describe('React and retained game-screen boundary', () => {
     vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
     const host = document.createElement('div');
     document.body.append(host);
-    const props = { onOffline: vi.fn(), onOnline: vi.fn(), onPlayerInfo: vi.fn() };
+    const props = { onOffline: vi.fn(), onOnline: vi.fn() };
     await act(async () => mountTitle(host, props));
-    expect(host.querySelectorAll('button')).toHaveLength(3);
-    expect(host.textContent).toContain('Player info');
+    expect(host.querySelectorAll('button')).toHaveLength(2);
+    expect(host.textContent).not.toContain('Player info');
+    expect(host.textContent).toContain('Sign-in / Create Account');
     expect(host.textContent).not.toContain('Save File');
     await act(async () => { unmountTitle(); mountTitle(host, props); });
     expect(host.querySelector('#save-recovery')).toBeNull();

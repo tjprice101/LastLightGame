@@ -77,6 +77,10 @@ KEY_SETTINGS = {
     "Wardglass Transformer (Rare).png": {"keys": [[84, 252, 172]], "radius": 16},
 }
 GAP_SEEDS: dict[str, list[list[float]]] = {
+    "fieldbrace-coupler": [[0.29, 0.73], [0.75, 0.76], [0.49, 0.71]],
+    "reserve-torque-crank": [[0.35, 0.52], [0.65, 0.52], [0.50, 0.87]],
+    "horizon-heartcase": [[0.28, 0.78], [0.70, 0.79], [0.47, 0.82]],
+    "luminous-dawn-witness-array": [[0.43, 0.70], [0.58, 0.78]],
     "breach-pendulum": [[0.43, 0.275]],
     "chaotic-paradox-spindle": [
         [0.402, 0.601], [0.619, 0.579], [0.364258, 0.423828],
@@ -108,6 +112,11 @@ GAP_SEEDS: dict[str, list[list[float]]] = {
 }
 
 KEY_SETTINGS["Meridian Inverter (Legendary).png"]["row_gradient"] = True
+KEY_SETTINGS["Fieldbrace Coupler (Common).png"]["background_border_strips"] = {"right": 2}
+KEY_SETTINGS["Dawn Witness Array (Omnic  Luminous).png"]["row_gradient"] = True
+KEY_SETTINGS["Dawn Witness Array (Omnic  Luminous).png"]["background_regions"] = [
+    {"polygon": [[0.28, 0.55], [0.72, 0.55], [0.72, 0.90], [0.28, 0.90]], "radius": 40},
+]
 KEY_SETTINGS["Meridian Inverter (Legendary).png"]["background_border_strips"] = {
     "top": 2, "right": 2, "bottom": 2, "left": 2,
 }

@@ -7,6 +7,10 @@ import '../styles/ui.css';
 
 let titleRoot: Root | undefined;
 
+export interface OnlineSaveRequest {
+  resolve(): void;
+  reject(error: unknown): void;
+}
 export function unmountTitle(): void {
   titleRoot?.unmount();
   titleRoot = undefined;
@@ -37,6 +41,10 @@ class PlayerSaveElement extends HTMLElement {
     this.root = createRoot(this);
     this.classList.add('ll-ui');
     flushSync(() => this.root!.render(<PlayerSaveData
+      compact={this.hasAttribute('compact')} onlineUser={this.getAttribute('online-user') ?? undefined}
+      onSaveOnline={this.hasAttribute('compact') ? () => new Promise<void>((resolve, reject) => {
+        this.dispatchEvent(new CustomEvent<OnlineSaveRequest>('player-save-online', { detail: { resolve, reject }, bubbles: true }));
+      }) : undefined}
       onChanged={change => { this.dispatchEvent(new CustomEvent('offline-save-changed', { detail: change, bubbles: true })); }}
       onReady={() => { this.dispatchEvent(new CustomEvent('online-save-ready', { bubbles: true })); }}
       onAccount={() => { this.dispatchEvent(new CustomEvent('player-account-open', { bubbles: true })); }} />));

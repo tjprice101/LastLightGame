@@ -85,9 +85,15 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.4421, 0.1617],
+      [0.5584, 0.162],
+      [0.1069, 0.8136],
+      [0.1043, 0.3727],
+      [0.8789, 0.3978]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Five enclosed green source-backdrop gaps around the upper gears and lower side struts are cleared with reviewed seeds; retain the authored base and all blue-green mechanisms."
   },
   "master-tide-3": {
     "border_only": true,
@@ -103,9 +109,21 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.5699, 0.2498],
+      [0.4292, 0.2531],
+      [0.234, 0.4951],
+      [0.614258, 0.777344],
+      [0.3896, 0.7684],
+      [0.5275, 0.7711],
+      [0.4699, 0.773],
+      [0.273438, 0.273438],
+      [0.3694, 0.8046],
+      [0.2445, 0.7157],
+      [0.6077, 0.4596]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Eleven enclosed teal source-backdrop fields between the planetary rings and spokes are cleared; the visible brown, rose and turquoise device surfaces remain protected by the narrow source-key tolerance."
   },
   "master-sprout-1": {
     "border_only": true,
@@ -273,9 +291,12 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.3616, 0.5239],
+      [0.6355, 0.5288]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Two enclosed pale-teal backdrop patches behind the lower clock frame are cleared; retain the teal lens, pale metal and authored base."
   },
   "master-atmoso-3": {
     "border_only": true,
@@ -309,9 +330,13 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.49707, 0.149414],
+      [0.270508, 0.584961],
+      [0.731445, 0.579102]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Three pale-green backdrop openings behind the upper crown and lower side arches are cleared; preserve the orange lens, ivory structure and attached lower shadow."
   },
   "master-aurora-2": {
     "border_only": true,
@@ -327,9 +352,14 @@
       "source_pixels": 2,
       "distance_ramp": 45
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.6575, 0.6747],
+      [0.3406, 0.6742],
+      [0.7224, 0.6142],
+      [0.2737, 0.6138]
+    ],
     "foreground_polygons": [],
-    "review": "Source uses a uniform yellow-green background with a separate olive painted cast shadow beneath the lower wings; border-connected source-specific key removes backdrop, while preserve the attached olive shadow/base and all ivory wing metal. No enclosed background seeds needed."
+    "review": "Four yellow-green backdrop islands behind the lower wing joints are cleared with local seeds. The separate olive cast shadow beneath the wings (including the lower unseeded region), ivory metal and orange core remain."
   },
   "master-aurora-3": {
     "border_only": true,
@@ -345,9 +375,13 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.7192, 0.5902],
+      [0.2827, 0.5856],
+      [0.5993, 0.5912]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Three enclosed pale-green backdrops between the lower radial arms are cleared; preserve gold rays, central orange lens and pale mechanical details."
   },
   "master-bliss-1": {
     "border_only": true,
@@ -363,9 +397,15 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.3335, 0.2349],
+      [0.3248, 0.3767],
+      [0.46, 0.554],
+      [0.4254, 0.5159],
+      [0.1422, 0.5828]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Five enclosed gray-green backdrop fields inside the suspended frame and between its ribs are cleared; preserve the pale architecture, plumage and bottom shadow."
   },
   "master-bliss-2": {
     "border_only": true,
@@ -383,7 +423,7 @@
     },
     "background_seeds": [],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Pale-green candidate islands overlap the opal sphere reflections and glass body; preserve these visually ambiguous areas and lower hanging details rather than risk cutting subject facets. Border-connected backdrop and detached shadow are cleared."
   },
   "master-bliss-3": {
     "border_only": true,
@@ -399,9 +439,13 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.5359, 0.2118],
+      [0.407227, 0.304688],
+      [0.408203, 0.219727]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Three enclosed turquoise backdrop gaps in the feather-and-loom structure are cleared; retain the ivory feathers and teal mechanical accents."
   },
   "master-bruno-1": {
     "border_only": true,
@@ -435,9 +479,12 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.6097, 0.6227],
+      [0.6152, 0.3719]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Two pale-green fields between the lower rock plates and upper central slabs are cleared; retain orange seams, dark stone and the broad ground shadow."
   },
   "master-bruno-3": {
     "border_only": true,
@@ -471,9 +518,23 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.8727, 0.6746],
+      [0.1209, 0.6754],
+      [0.1969, 0.5439],
+      [0.7982, 0.5436],
+      [0.5919, 0.5943],
+      [0.4037, 0.5944],
+      [0.8273, 0.6182],
+      [0.1674, 0.6193],
+      [0.18, 0.7038],
+      [0.8175, 0.7047],
+      [0.6637, 0.6498],
+      [0.3318, 0.6505],
+      [0.6526, 0.5895]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Thirteen enclosed sage backdrop islands within the suspended outer ring and below the open appendages are cleared; preserve the ivory/mauve structures, dark center and dangling gold strands."
   },
   "master-disciple-2": {
     "border_only": true,
@@ -713,10 +774,18 @@
       [
         0.88,
         0.33
+      ],
+      [
+        0.2966,
+        0.3289
+      ],
+      [
+        0.2563,
+        0.6037
       ]
     ],
     "foreground_polygons": [],
-    "review": "Reviewed green backdrop islands inside the crescent-wing envelope (lower central field and left/right inner openings) seeded after visual confirmation; preserve purple wing surfaces, central bastion, and attached ground shadow. Green is not an authored Razor palette color; remove only matching backdrop components."
+    "review": "Six enclosed green backdrop islands inside the crescent-wing envelope are seeded after full-resolution review; preserve purple wing surfaces, central bastion and attached ground shadow. Green is not an authored Razor palette color."
   },
   "master-razor-2": {
     "border_only": true,
@@ -750,9 +819,12 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.5812, 0.6639],
+      [0.8368, 0.4343]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Two enclosed muted-green backdrop fields inside the lower clockwork and right inner crescent are cleared; preserve the dark-violet mechanism and its pointed facets."
   },
   "master-rosetta-1": {
     "border_only": true,
@@ -768,9 +840,14 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.3648, 0.4269],
+      [0.5082, 0.8006],
+      [0.668, 0.4294],
+      [0.4734, 0.4238]
+    ],
     "foreground_polygons": [],
-    "review": "Reviewed clear side-border row gradient key; preserve the authored subject and attached painted base/shadow, remove backdrop variation only.",
+    "review": "Four enclosed olive backdrop fields within the rose-wheel frame are cleared with row-gradient-matched seeds; preserve the roses, gold machinery and attached lower base/shadow.",
     "row_gradient": true
   },
   "master-rosetta-2": {
@@ -787,9 +864,12 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.5489, 0.542],
+      [0.4537, 0.5455]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Two enclosed dark-green backdrop openings inside the flower-and-gear assembly are cleared; preserve the red roses, cream wings and hanging details."
   },
   "master-rosetta-3": {
     "border_only": true,
@@ -805,9 +885,15 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.4052, 0.7444],
+      [0.4962, 0.1821],
+      [0.4902, 0.7208],
+      [0.2742, 0.4573],
+      [0.4027, 0.2431]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Five enclosed turquoise-green backdrop gaps through the rose medallion and lower frame are cleared; retain the roses, pale metal, gold fittings and central structure."
   },
   "master-thornia-1": {
     "border_only": true,
@@ -839,10 +925,30 @@
       [
         0.66,
         0.31
+      ],
+      [
+        0.697266,
+        0.4375
+      ],
+      [
+        0.293945,
+        0.4375
+      ],
+      [
+        0.7215,
+        0.5395
+      ],
+      [
+        0.2666,
+        0.5409
+      ],
+      [
+        0.3957,
+        0.6006
       ]
     ],
     "foreground_polygons": [],
-    "review": "Reviewed green backdrop islands visible through the rose-wheel lattice/inner arches seeded; preserve red roses, bronze rails and authored dark center. Green is the plain source key rather than a subject color."
+    "review": "Nine visually confirmed green backdrop fields visible through the rose-wheel lattice and inner arches are cleared; preserve red roses, bronze rails and authored dark center. Green is the plain source key rather than a subject color."
   },
   "master-thornia-2": {
     "border_only": true,
@@ -858,9 +964,15 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.7069, 0.2425],
+      [0.5119, 0.2313],
+      [0.5413, 0.6522],
+      [0.4081, 0.4027],
+      [0.7385, 0.6299]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Five enclosed pale-green backdrop openings within the rose wheels and inner assembly are cleared; preserve roses, white/gold metal, red blades and lower attached shadow."
   },
   "master-thornia-3": {
     "border_only": true,
@@ -876,9 +988,13 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.4613, 0.2962],
+      [0.5974, 0.3181],
+      [0.4401, 0.7004]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Three enclosed olive backdrop fields behind the upper wheel and central armor are cleared. The broad mauve ground cloud and olive shadow beneath the chassis remain unseeded."
   },
   "master-crinso-1": {
     "border_only": true,
@@ -894,9 +1010,12 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.5275, 0.376],
+      [0.6854, 0.5965]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Two enclosed sage backdrop gaps inside the rose-wheel structure are cleared; preserve the red/rose double blade, gold hub and detached authored sparks."
   },
   "master-crinso-2": {
     "border_only": true,
@@ -979,9 +1098,11 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.5431, 0.172]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "The enclosed muted-green backdrop pocket inside the upper wheel is cleared; preserve the red-gold sword and authored center."
   },
   "master-nerithe-1": {
     "border_only": true,
@@ -1051,9 +1172,13 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.7265, 0.6118],
+      [0.2298, 0.6097],
+      [0.4044, 0.4129]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Three broad muted-green source-backdrop islands behind the throne, inner figure and side columns are cleared; preserve violet crystal accents, stone architecture and the sand-colored ground plane."
   },
   "master-orvella-2": {
     "border_only": true,
@@ -1141,9 +1266,13 @@
       "source_pixels": 2,
       "distance_ramp": 55
     },
-    "background_seeds": [],
+    "background_seeds": [
+      [0.5498, 0.2023],
+      [0.5825, 0.268],
+      [0.4489, 0.5977]
+    ],
     "foreground_polygons": [],
-    "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+    "review": "Three enclosed teal backdrop fields behind the upper instrument and central pendulum are cleared; the lower unseeded teal cast shadow remains attached to the base."
   },
   "grand-master-chest": {
     "border_only": true,

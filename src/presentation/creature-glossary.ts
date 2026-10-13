@@ -1,4 +1,4 @@
-import { creatures, getCreature, creatureLoot } from '../content/creatures';
+import { creatures, getCreature, creatureLoot, creatureLore } from '../content/creatures';
 import { materialArt, materialName } from '../content/dungeon-art';
 import { formatStat } from '../content/combat';
 import { type Account } from '../game/account';
@@ -13,6 +13,7 @@ import { conduitIcon } from './conduit-store';
 import { mechanicalComponents } from '../content/mechanical-components';
 import { mechanicalComponentIcon } from './mechanical-component-icon';
 import { masterChest } from '../content/master-conduits';
+import { information } from './information';
 
 function lootTable(id: string, stage?: number, upgrades?: ConduitUpgrades): string {
   const creature = getCreature(id);
@@ -32,7 +33,7 @@ function lootTable(id: string, stage?: number, upgrades?: ConduitUpgrades): stri
 }
 
 export function creatureGlossary(account: Account | null): string {
-  if (!account) return '<p class="status" role="alert">Elemental-Devourer discoveries unavailable. Resolve the progression save error.</p>';
+  if (!account) return '<p class="status" role="alert">Elemental-Devourer and Machine discoveries unavailable. Resolve the progression save error.</p>';
   const seen = creatures.filter((creature) => account.creatures[creature.id]);
   const defeated = seen.filter((creature) => account.creatures[creature.id].defeated);
   const areas = [...new Set(creatures.map((creature) => creature.area))];
@@ -41,13 +42,15 @@ export function creatureGlossary(account: Account | null): string {
     </div>
     <div class="glossary-grid">${creatures.map((creature) => {
       const discovery = account.creatures[creature.id];
-      const name = discovery ? creature.name : 'Undiscovered Elemental-Devourer';
+      const kind = creature.mode === 'machines' ? 'Machine' : 'Elemental-Devourer';
+      const name = discovery ? creature.name : `Undiscovered ${kind}`;
       const stage = creature.stages[0] ?? 1;
       return `<article class="glossary-card ${discovery ? 'discovered' : 'undiscovered'}" data-creature="${creature.id}" data-area="${creature.area}">
         <div class="glossary-art">${creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${name}" width="220" height="220">`
-          : '<svg viewBox="0 0 100 100" aria-label="Elemental-Devourer artwork not supplied" role="img"><path d="M15 70Q0 40 25 35L20 10 40 25Q55 15 65 25L85 10 80 40Q100 65 80 80Q45 100 15 70Z" fill="currentColor"/></svg>'}</div>
+          : `<svg viewBox="0 0 100 100" aria-label="${kind} artwork not supplied" role="img"><path d="M15 70Q0 40 25 35L20 10 40 25Q55 15 65 25L85 10 80 40Q100 65 80 80Q45 100 15 70Z" fill="currentColor"/></svg>`}</div>
         <h2>${name}</h2>${discovery ? elementLabel(creature.element) : '<span class="quiet">Element undiscovered</span>'}<p>${creature.area}${creature.stages.length ? ` · Stages ${stage}-${creature.stages.at(-1)}` : ''}</p>
         ${discovery ? `<strong>${discovery.defeated ? 'Defeated' : 'Encountered'}</strong>` : ''}
+        ${discovery ? information(`creature-lore-${creature.id}`, creature.name, `<p>${creatureLore(creature)}</p>`, 'Lore') : ''}
         ${discovery?.defeated ? `<section class="creature-loot"><h3>Drop pool and chances</h3>
           <label>${creature.stages.length ? 'Stage' : 'Enemy level'} <select data-loot-stage="${creature.id}">${(creature.stages.length ? creature.stages : Array.from({ length: 120 }, (_, index) => index + 1)).map((value) => `<option>${value}</option>`).join('')}</select></label>
           <div class="glossary-loot">${lootTable(creature.id, stage, account.conduitUpgrades)}</div></section>` : ''}

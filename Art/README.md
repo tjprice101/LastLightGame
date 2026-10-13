@@ -16,10 +16,18 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
 
 ## Characters
 
+- [32 Element-Bearer profile portraits](characters/Element-Bearer%20Profile%20Pictures.md):
+  one acquisition and one Omnic portrait for each of16 bearers. New1:1
+  generation prompts plus32 installed delivered portraits;31 reviewed element
+  mosaics and unchanged Omnic Flora. [Intake contract](../docs/art-workflow.md#installed-mosaic-profile-portraits-d-262).
+
 - Starter lines: [Infernis](characters/Infernis%20Art.md), [Tizu](characters/Tizu%20Art.md),
   [Flora](characters/Flora%20Art.md); [shared starter history](characters/Starter%20Art.md).
 - Rose lines: [Rosetta](characters/Rosetta%20Art.md), [Thornia](characters/Thornia%20Art.md),
   [Crinso](characters/Crinso%20Art.md).
+- Black Diamonds lines: [Dravok](characters/Dravok%20Art.md), [Vespera](characters/Vespera%20Art.md),
+  [Talise](characters/Talise%20Art.md), [Malakor](characters/Malakor%20Art.md),
+  [Theron](characters/Theron%20Art.md), [Selene](characters/Selene%20Art.md).
 - Other lines: [Atmoso](characters/Atmoso%20Art.md), [Aurora](characters/Aurora%20Art.md),
   [Bliss](characters/Bliss%20Art.md), [Bruno](characters/Bruno%20Art.md),
   [Disciple](characters/Disciple%20Art.md), [Elise](characters/Elise%20Art.md),
@@ -36,7 +44,8 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
 - [Elemental dungeon packs](creatures/dungeons/README.md).
 - [Heaven/Abyss packs](creatures/gamemodes/README.md).
 - [Machines](creatures/Awaken%20the%20Machines.md), [Treasury](creatures/Crownfall%20Treasury.md),
-  [Sanctuary](creatures/Rosethorn%20Sanctuary.md), [Crimson Roses](creatures/Passion%20of%20Crimson%20Roses.md).
+  [Sanctuary](creatures/Rosethorn%20Sanctuary.md), [Crimson Roses](creatures/Passion%20of%20Crimson%20Roses.md),
+  [Black Diamonds Against The Light](creatures/Black%20Diamonds%20Against%20The%20Light.md).
 - Historical: [Flaming Depths](creatures/Flaming%20Depths.md).
 
 ## Items, actions and scenery
@@ -69,6 +78,11 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
 - [Workflow](../docs/art-workflow.md) and [handoff](../docs/handoff.md).
 
 ## Experiments
+
+- [Starter Omnic alternate skins](experiments/Starter%20Omnic%20Alternate%20Skins.md):
+  three owner-requested costume tests using original Omnic image references,
+  unchanged Evo.6 style reference,10% outer margins and contrasting keys.
+  Generation only; no playable skin system or installed artwork changes.
 
 - [Enemy style/palette pilot](experiments/Enemy%20Style%20Pilot.md):
   three low-weight reference alternatives, not production pack replacement.

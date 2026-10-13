@@ -1,0 +1,280 @@
+#app .sanctuary-shell .profile-layout {
+  display: grid; grid-template-columns: minmax(250px, 22%) minmax(0, 1fr) minmax(270px, 24%);
+  grid-template-rows: auto minmax(0, 1fr); align-items: stretch; gap: 14px;
+  height: 100%; min-height: 0;
+}
+#app .profile-layout [hidden] { display: none !important; }
+#app .profile-layout .ref-market-tabs { grid-column: 1 / -1; margin: 0; gap: 6px; }
+#app .profile-layout .ref-market-tabs button { min-height: 44px; font-size: 14px; }
+#app .profile-layout .profile-new-requests { margin-left: 8px; padding: 2px 6px; border-radius: 6px; background: #eee; color: #111; }
+#app .profile-layout .profile-accessible-heading {
+  position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%);
+}
+#app .profile-layout :is(.online-profile-panel, .online-profile-statistics, .ref-profile-right) {
+  min-width: 0; min-height: 0; overflow: visible;
+}
+#app .profile-layout .online-profile-panel {
+  padding: 14px 16px; gap: 4px; justify-content: flex-start; margin: 0; background: #131314;
+}
+#app .profile-layout .profile-main-avatar {
+  width: 100px; height: 100px; flex: none; margin: 0 auto 2px; border-radius: 50%;
+}
+#app .profile-layout :is(label, p, small, input, textarea, button) { font-size: 13px; line-height: 1.4; }
+#app .profile-layout label { gap: 4px; }
+#app .profile-layout :is(input, textarea) { padding: 8px 10px; }
+#app .profile-layout textarea { min-height: 88px; height: 88px; resize: vertical; }
+#app .profile-layout .ref-profile-code {
+  padding: 8px 10px; border: 1px solid #303034; border-radius: 10px; gap: 2px; background: #1a1a1c;
+}
+#app .profile-layout .ref-profile-code > div { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+#app .profile-layout .ref-profile-code b { font-size: 16px; letter-spacing: .04em; white-space: nowrap; }
+#app .profile-layout .ref-profile-code small { font-size: 11px; line-height: 1.4; }
+#app .profile-layout .ref-profile-code > span { display: flex; align-items: center; justify-content: space-between; gap: 4px; overflow-wrap: anywhere; }
+#app .profile-layout .ref-profile-code > span button { padding: 2px 4px; background: transparent; border: 0; text-decoration: underline; font-size: 11px; }
+#app .profile-layout .profile-icon-choices { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: end; }
+#app .profile-layout .profile-icon-choices legend { font-size: 11px; color: #b5b5bc; margin-bottom: 4px; }
+#app .profile-layout .profile-icon-choices > div { display: flex; gap: 4px; }
+#app .profile-layout .profile-icon-choices [data-profile-icon] {
+  width: 44px; height: 44px; min-height: 44px; padding: 3px; border-radius: 50%; display: grid; place-items: center; overflow: hidden;
+}
+#app .profile-layout .profile-icon-choices [aria-pressed="true"] { background: #eee; color: #111; border-color: #eee; }
+#app .profile-layout .profile-icon-choices :is(img, .character-idle) { display: block; width: 100%; height: 100%; object-fit: contain; }
+#app .profile-layout .profile-icon-picker { flex: 1; min-width: 72px; font-size: 0; gap: 0; }
+#app .profile-layout .profile-icon-picker .selection-trigger { width: 100%; padding: 5px; font-size: 11px; }
+#app .profile-layout .profile-icon-picker .selection-trigger { margin: 0; }
+#app .profile-layout .profile-picture-summary { display: flex; gap: 8px; align-items: center; justify-content: space-between; font-size: 11px; padding: 4px 0; }
+#app .profile-layout .profile-picture-summary button { min-height: 44px; padding: 4px 8px; }
+#app .profile-layout .profile-id-row,
+#app .profile-layout .profile-frame-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: #b5b5bc; }
+#app .profile-layout :is(.profile-id-row, .profile-frame-row) button { padding: 2px 0; background: transparent; border: 0; text-decoration: underline; font-size: 11px; }
+#app .profile-layout .ref-profile-save-note { margin: 0; font-size: 11px; }
+#app .profile-layout #online-profile-result:empty { display: none; }
+#app .profile-layout #online-profile-result { margin: 0; }
+#app .profile-layout .online-profile-statistics {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto minmax(205px, 1fr) auto; gap: 14px; align-content: start;
+}
+#app .profile-layout .online-profile-statistics article,
+#app .profile-layout .ref-profile-right > section {
+  min-height: 0; padding: 14px; margin: 0; overflow: visible; border: 1px solid #2d2d31; border-radius: 14px; background: #131314;
+}
+#app .profile-layout :is(h2, .ref-panel-heading) { margin: 0 0 12px; font-size: 11px; line-height: 1.4; letter-spacing: .08em; color: #b5b5bc; text-transform: uppercase; }
+#app .profile-layout .profile-metrics { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+#app .profile-layout .profile-metrics article { padding: 12px; }
+#app .profile-layout .profile-metric h2 { margin-bottom: 8px; font-size: 10px; letter-spacing: .07em; }
+#app .profile-layout .profile-metric p { margin: 0 0 8px; white-space: nowrap; color: #b5b5bc; }
+#app .profile-layout .profile-metric strong { font-size: 28px; color: #eee; }
+#app .profile-layout .profile-metric button { padding: 0; border: 0; background: transparent; min-height: 44px; text-align: left; font-size: 11px; margin: -10px 0 -12px; }
+#app .profile-layout progress {
+  display: block; width: 100%; min-width: 0; height: 5px; border: 0; border-radius: 6px; overflow: hidden;
+  appearance: none; background: #28282c; accent-color: #eee;
+}
+#app .profile-layout progress::-webkit-progress-bar { background: #28282c; border-radius: 6px; }
+#app .profile-layout progress::-webkit-progress-value { background: #eee; border-radius: 6px; }
+#app .profile-layout progress::-moz-progress-bar { background: #eee; border-radius: 6px; }
+#app .profile-layout .profile-story header { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: 6px; margin-bottom: 8px; }
+#app .profile-layout .profile-story header span { color: #b5b5bc; font-size: 10px; text-align: right; }
+#app .profile-layout .profile-progress-row {
+  display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(35px, 1fr) auto; gap: 10px; align-items: center;
+  padding: 6px 0; border-bottom: 1px solid #28282c; font-size: 13px; line-height: 1.3;
+}
+#app .profile-layout .profile-progress-row:last-child { border-bottom: 0; }
+#app .profile-layout .profile-progress-row > span { color: #b5b5bc; }
+#app .profile-layout .profile-progress-row.is-current > span { color: #eee; font-weight: 700; }
+#app .profile-layout .profile-progress-row b { font-size: 12px; white-space: nowrap; text-align: right; }
+#app .profile-layout .profile-collection p { font-size: 11px; color: #b5b5bc; }
+#app .profile-layout .profile-account dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; margin: 0 0 10px; font-size: 12px; }
+#app .profile-layout .profile-account dl > div { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; border-bottom: 1px solid #28282c; padding-bottom: 4px; }
+#app .profile-layout .profile-account :is(dt, dd) { margin: 0; font-size: 12px; line-height: 1.3; }
+#app .profile-layout .profile-account dd { color: #eee; font-weight: 700; text-align: right; }
+#app .profile-layout :is(.profile-pity-heading, .profile-pity-row) { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; font-size: 11px; padding: 4px 0; }
+#app .profile-layout .profile-pity-heading { color: #b5b5bc; }
+#app .profile-layout .profile-account > p { margin-bottom: 0; font-size: 10px; }
+#app .profile-layout ll-player-save-data { grid-column: auto; min-width: 0; }
+#app .profile-layout .ll-player-save-data--compact { gap: 4px; }
+#app .profile-layout .ll-save-panel--compact { padding: 14px; border-radius: 14px; background: #131314; box-shadow: none; }
+#app .profile-layout .ll-save-panel--compact { position: relative; }
+#app .profile-layout .ll-save-panel--compact .ll-panel-heading h3 { min-height: 30px; display: flex; align-items: center; }
+#app .profile-layout .ll-save-file-tools { position: absolute; top: 8px; right: 14px; }
+#app .profile-layout .ll-save-file-tools button { min-height: 44px; font-size: 11px; padding: 4px; border: 0; background: transparent; text-decoration: underline; }
+#app .profile-layout .ll-panel-heading h3 { font-size: 11px; color: #b5b5bc; text-transform: uppercase; letter-spacing: .08em; }
+#app .profile-layout .ll-panel-heading p { margin: 8px 0; font-size: 11px; line-height: 1.4; }
+#app .profile-layout .ll-save-actions { gap: 6px; }
+#app .profile-layout .ll-save-actions button { font-size: 12px; padding: 6px; min-height: 44px; justify-content: center; gap: 4px; }
+#app .profile-layout .ll-save-actions .ll-icon { width: 14px; height: 14px; }
+#app .profile-layout .profile-online-save { margin: 0; padding: 0 4px; color: #b5b5bc; font-size: 11px; }
+#app .profile-layout .ref-profile-right { gap: 14px; }
+#app .profile-layout .profile-squad { flex: none; }
+#app .profile-layout .profile-squad { display: block; }
+#app .profile-layout .profile-squad .ref-panel-heading { padding: 0; margin-bottom: 6px; border: 0; }
+#app .profile-layout .ref-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+#app .profile-layout .ref-panel-heading button { padding: 2px 0; min-width: 70px; background: transparent; border: 0; text-decoration: underline; font-size: 12px; }
+#app .profile-layout .ref-member-line { display: flex; gap: 6px; align-items: center; margin: 4px 0; min-width: 0; }
+#app .profile-layout .ref-member-row { flex: 1; min-width: 0; padding: 4px; gap: 8px; margin: 0; text-align: left; display: flex; align-items: center; }
+#app .profile-layout .ref-member-row > span:last-child { min-width: 0; }
+#app .profile-layout .ref-member-line > .ref-chip { position: static; flex: none; padding: 4px; min-width: 44px; }
+#app .profile-layout .ref-thumb { width: 44px; height: 44px; flex: none; }
+#app .profile-layout .ref-member-row b { display: block; font-size: 13px; }
+#app .profile-layout .ref-member-row small { display: block; margin-top: 2px; font-size: 11px; color: #b5b5bc; }
+#app .profile-layout .ref-empty-row { width: 100%; justify-content: center; margin-top: 6px; min-height: 44px; }
+#app .profile-layout .profile-recent { flex: 1; }
+#app .profile-layout .profile-recent ul { list-style: none; padding: 0; margin: 0; }
+#app .profile-layout .profile-recent li { padding: 5px 0; border-bottom: 1px solid #28282c; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 8px; }
+#app .profile-layout .profile-recent li b { grid-column: 1 / -1; font-size: 12px; line-height: 1.4; }
+#app .profile-layout .profile-recent :is(small, time) { font-size: 10px; line-height: 1.4; color: #b5b5bc; }
+#app .profile-layout .ref-profile-social { grid-column: 2; min-width: 0; }
+#app .profile-layout .online-friends { height: auto; overflow: visible; }
+#app .profile-layout .ref-profile-social { display: contents; }
+#app .profile-layout .profile-friends-list {
+  grid-column: 2; display: flex; flex-direction: column; min-width: 0; min-height: 0;
+  padding: 14px; margin: 0; gap: 12px;
+}
+#app .profile-layout .profile-friends-list .ref-panel-heading { margin: 0; }
+#app .profile-layout .profile-friends-sidebar {
+  grid-column: 3; display: flex; flex-direction: column; gap: 14px; min-width: 0; min-height: 0;
+}
+#app .profile-layout .profile-friends-sidebar > section {
+  margin: 0; padding: 14px; background: #131314; border: 1px solid #2d2d31; border-radius: 14px; min-width: 0;
+}
+#app .profile-layout .profile-add-friend { flex: none; display: block; }
+#app .profile-layout #online-friend-form { display: grid; gap: 8px; margin: 0; }
+#app .profile-layout #online-friend-form button { width: 100%; }
+#app .profile-layout .profile-add-friend p { margin: 8px 0 0; color: #b5b5bc; font-size: 11px; overflow-wrap: anywhere; }
+#app .profile-layout .profile-add-friend p button { padding: 2px 4px; background: transparent; border: 0; text-decoration: underline; }
+#app .profile-layout .profile-share-code { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+#app .profile-layout .profile-social-privacy { margin: 0; color: #b5b5bc; font-size: 11px; }
+#app .profile-layout .profile-friend-requests { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+#app .profile-layout .profile-friend-requests nav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+#app .profile-layout .profile-friend-requests [aria-pressed="true"] { background: #eee; color: #111; }
+#app .profile-layout :is(.profile-friend-list-scroll, [data-social-panel]) { overflow-y: auto; min-height: 0; scrollbar-gutter: stable; }
+#app .profile-layout .profile-friend-list-scroll { flex: 1; }
+#app .profile-layout :is(.profile-friend-list-scroll, .profile-friend-requests) ul { list-style: none; padding: 0; margin: 0; }
+#app .profile-layout .online-friend {
+  display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px;
+  padding: 10px; margin: 0 0 8px; background: #1a1a1c; border: 1px solid #303034; border-radius: 10px;
+}
+#app .profile-layout .online-friend .profile-frame-preview { width: 44px; height: 44px; font-size: 16px; margin: 0; }
+#app .profile-layout .online-friend :is(strong, p, small) { display: block; overflow-wrap: anywhere; }
+#app .profile-layout .online-friend p { margin: 2px 0; color: #b5b5bc; }
+#app .profile-layout .online-friend small { color: #b5b5bc; font-size: 11px; }
+#app .profile-layout .online-friend [data-online]::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 5px; border: 1px solid currentColor; border-radius: 50%; }
+#app .profile-layout .online-friend [data-online="true"]::before { background: currentColor; }
+#app .profile-layout .online-friend > div:last-child { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+#app .profile-layout .online-friend button { padding: 4px 8px; }
+#app .profile-layout .online-friend [data-information] { font-size: 11px; padding: 2px 0; }
+#app .profile-layout .online-friend-accepted { grid-template-columns: 44px minmax(0, 1fr) auto; }
+#app .profile-layout .online-friend-accepted > div:last-child { grid-column: auto; }
+#app .profile-layout .online-friend-accepted .information-modal p { font-size: 14px; }
+#app .profile-layout #online-friend-result { margin: 0; }
+#app .profile-layout #online-friend-result:empty { display: none; }
+#app .profile-layout .ref-bio-label { display: flex; justify-content: space-between; }
+#app .profile-layout .ll-dialog h2 { font-size: 22px; color: #eee; text-transform: none; letter-spacing: normal; }
+#app .profile-layout .ll-dialog :is(p, label) { font-size: 14px; }
+#app .profile-layout .ll-dialog textarea { height: auto; min-height: 160px; }
+@media (min-width: 1200px) and (max-height: 820px) {
+  #app .sanctuary-shell .profile-layout { gap: 10px; }
+  #app .profile-layout .online-profile-panel {
+    display: grid; grid-template-columns: 80px minmax(0, 1fr); grid-auto-rows: max-content;
+    align-content: start; padding: 10px 12px; gap: 2px 10px;
+  }
+  #app .profile-layout .online-profile-panel > * { grid-column: 1 / -1; }
+  #app .profile-layout .profile-main-avatar { grid-column: 1; grid-row: 1; width: 80px; height: 80px; margin: 0; }
+  #app .profile-layout .online-profile-panel > label:first-of-type { grid-column: 2; grid-row: 1; align-self: center; min-width: 0; }
+  #app .profile-layout textarea { min-height: 64px; height: 64px; }
+  #app .profile-layout .online-profile-statistics { gap: 8px; grid-template-rows: max-content max-content max-content; }
+  #app .profile-layout :is(.online-profile-statistics article, .ref-profile-right > section, .ll-save-panel--compact) { padding: 10px; }
+  #app .profile-layout .online-profile-statistics article { display: block; }
+  #app .profile-layout :is(h2, .ref-panel-heading) { margin-bottom: 8px; }
+  #app .profile-layout .profile-metrics { gap: 8px; }
+  #app .profile-layout .profile-metric p { margin-bottom: 4px; }
+  #app .profile-layout .profile-metric strong { font-size: 24px; }
+  #app .profile-layout .profile-metric h2 { margin-bottom: 4px; }
+  #app .profile-layout .profile-metric:has(button) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+  #app .profile-layout .profile-metric:has(button) h2 { grid-column: 1 / -1; }
+  #app .profile-layout .profile-metric:has(button) p { margin: 0; }
+  #app .profile-layout .profile-metric button { margin: 0; max-width: 64px; line-height: 1.2; }
+  #app .profile-layout .profile-story header { margin-bottom: 4px; }
+  #app .profile-layout .profile-story header h2 { margin: 0; }
+  #app .profile-layout .profile-progress-row { padding: 2px 0; }
+  #app .profile-layout .profile-account dl { margin-bottom: 6px; }
+  #app .profile-layout .profile-online-save { display: none; }
+  #app .profile-layout .profile-friends-sidebar > section { padding: 10px; }
+  #app .profile-layout .ref-profile-right { gap: 6px; }
+  #app .profile-layout .ref-member-line { margin: 0; }
+  #app .profile-layout .profile-recent { display: block; }
+  #app .profile-layout .profile-recent h2 { margin-bottom: 4px; }
+  #app .profile-layout .profile-recent li { padding: 0; gap: 0 8px; }
+  #app .profile-layout .profile-recent li b { grid-column: 1; grid-row: 1; }
+  #app .profile-layout .profile-recent li time { grid-column: 2; grid-row: 1; align-self: center; }
+  #app .profile-layout .profile-recent li small { grid-column: 1 / -1; grid-row: 2; }
+}
+@media (max-width: 1199px) {
+  #app .sanctuary-shell .sanctuary-content:has(.profile-layout) { overflow-y: auto; }
+  #app .sanctuary-shell .profile-layout { height: auto; grid-template-columns: minmax(240px, .8fr) minmax(0, 1.8fr); grid-template-rows: auto; align-items: start; }
+  #app .profile-layout .ref-profile-right { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #app .profile-layout .online-profile-statistics { grid-template-rows: auto; }
+  #app .profile-layout .profile-friends-sidebar { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #app .profile-layout :is(.profile-friend-list-scroll, [data-social-panel]) { max-height: 420px; }
+}
+@media (max-width: 760px) {
+  #app .sanctuary-shell .profile-layout { grid-template-columns: minmax(0, 1fr); }
+  #app .profile-layout :is(.ref-profile-right, .ref-profile-social) { grid-column: 1; }
+  #app .profile-layout .ref-profile-right { grid-template-columns: minmax(0, 1fr); }
+  #app .profile-layout .online-profile-statistics { grid-template-columns: minmax(0, 1fr); }
+  #app .profile-layout .profile-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #app .profile-layout .profile-account dl { font-size: 12px; }
+  #app .profile-layout :is(.profile-friends-list, .profile-friends-sidebar) { grid-column: 1; }
+  #app .profile-layout .profile-friends-sidebar { grid-template-columns: minmax(0, 1fr); }
+}
+.profile-picture-art { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: inherit; }
+@media (min-width: 1200px) {
+  #app .profile-layout .online-profile-panel { display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: max-content; align-content: start; gap: 4px; }
+  #app .profile-layout .online-profile-panel > * { grid-column: 1; grid-row: auto; }
+  #app .profile-layout .profile-main-avatar { box-sizing: border-box; grid-column: 1; grid-row: auto; width: clamp(112px, 20dvh, 176px); height: clamp(112px, 20dvh, 176px); margin: 0 auto; }
+  #app .profile-layout .online-profile-panel > label:first-of-type { grid-column: 1; grid-row: auto; }
+  #app .profile-layout .online-profile-statistics { grid-template-rows: max-content max-content max-content; align-content: space-between; }
+  #app .profile-layout .profile-metric strong { font-size: 32px; }
+  #app .profile-layout .profile-metric h2 { font-size: 12px; }
+  #app .profile-layout .profile-progress-row { padding-block: 4px; font-size: 14px; }
+  #app .profile-layout .profile-progress-row b { font-size: 14px; }
+  #app .profile-layout .profile-account :is(dt, dd) { font-size: 14px; }
+  #app .profile-layout :is(.profile-pity-heading, .profile-pity-row) { font-size: 13px; }
+  #app .profile-layout .profile-squad .ref-thumb { width: 64px; height: 64px; }
+  #app .profile-layout .profile-squad .ref-member-row b { font-size: 14px; }
+  #app .profile-layout .profile-squad .ref-member-row small { font-size: 13px; }
+  #app .profile-layout .profile-recent li b { font-size: 14px; }
+  #app .profile-layout .profile-recent :is(small, time) { font-size: 12px; }
+}
+@media (min-width: 1200px) and (max-height: 820px) {
+  #app .profile-layout .online-profile-panel { grid-template-columns: clamp(112px, 18dvh, 144px) minmax(0, 1fr); gap: 2px 8px; }
+  #app .profile-layout .online-profile-panel > * { grid-column: 1 / -1; }
+  #app .profile-layout .profile-main-avatar { grid-column: 1; grid-row: 1; width: clamp(112px, 18dvh, 144px); height: clamp(112px, 18dvh, 144px); margin: 0; }
+  #app .profile-layout .online-profile-panel > label:first-of-type { grid-column: 2; grid-row: 1; }
+  #app .profile-layout .profile-id-row { flex-wrap: wrap; gap: 2px; }
+  #app .profile-layout .ref-profile-code > div { flex-wrap: wrap; }
+  #app .profile-layout .profile-account dl { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 8px; }
+  #app .profile-layout .profile-account :is(dt, dd) { font-size: 13px; }
+  #app .profile-layout .profile-progress-row { gap: 6px; padding-block: 3px; }
+  #app .profile-layout .profile-metric strong { font-size: 30px; }
+  #app .profile-layout .profile-metric h2 { font-size: 11px; }
+  #app .profile-layout .profile-metric button { max-width: none; }
+  #app .profile-layout .profile-metric:has(button) { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+  #app .profile-layout .profile-metric button { min-height: 44px; font-size: 11px; }
+  #app .profile-layout .profile-recent { flex: 1; height: auto; }
+  #app .profile-layout .ref-profile-right { padding: 0; }
+}
+@media (min-width: 1200px) and (max-height: 700px) {
+  #app .sanctuary-shell .sanctuary-content:has(.profile-layout) { padding-block: .5rem; }
+  #app .profile-layout textarea { height: 48px; min-height: 48px; }
+  #app .profile-layout .profile-progress-row { padding-block: 2px; font-size: 13px; }
+  #app .profile-layout .profile-story header { display: block; }
+  #app .profile-layout .profile-story header span { display: none; }
+  #app .profile-layout .profile-metric strong { font-size: 28px; }
+  #app .profile-layout .profile-metric button { max-width: 70px; }
+  #app .profile-layout .online-profile-statistics { gap: 6px; }
+  #app .profile-layout :is(.profile-pity-heading, .profile-pity-row) { padding-block: 2px; }
+  #app .profile-layout .profile-account dl > div { padding-bottom: 2px; }
+  #app .profile-layout .profile-squad .ref-thumb { width: 56px; height: 56px; }
+  #app .profile-layout .profile-recent li b { font-size: 13px; }
+  #app .profile-layout .profile-recent :is(small, time) { font-size: 11px; }
+}

@@ -3,24 +3,28 @@ import type { FighterDefinition } from './combat';
 export const warCharacters = [
   {
     id: 'nerithe', stars: 6, name: 'Nerithe', role: 'Attacker', art: 'nerithe',
-    title: 'The cartographer of the shoreless sea', element: 'Oceanic', elementId: 'oceanic',
+    title: 'Sadness charted beyond the shoreless sea', element: 'Oceanic', elementId: 'oceanic',
     weapon: 'Surveyor trident', color: '#54c9d4',
-    description: 'A human tide-cartographer with a surveyor trident and an expanding dominion of folded currents.',
-    lore: { origin: 'The observatories above the spiral sea', story: 'Nerithe charted a current that never returned to shore. Following its meridians, she learned to fold distant tides around the people lost between them.', vow: 'No one is lost beyond my map.', awakening: 'An uncharted current answers.' },
+    description: 'A human Oceanic Element-Bearer shaped in Let’s image, Nerithe maps Sadness with a surveyor trident and folded currents.',
+    lore: { origin: 'The observatories above the spiral sea', story: 'From the spiral-sea observatories, Nerithe charted a current that never returned to shore. She learned Oceanic carries Sadness: a record of what is missing that can guide the living, not drown them. With her surveyor trident she folds distant tides around people lost between worlds. Let created human Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole those same elements. Both factions search for their creators’ souls, but neither has been reunited and no victor has emerged. Nerithe plots a route toward Let’s scattered soul while marking every voyager still unaccounted for.',
+      vow: 'No one is lost beyond my map.',
+      awakening: 'An uncharted current answers; its source is not yet found.' },
   },
   {
     id: 'orvella', stars: 6, name: 'Orvella', role: 'Tank', art: 'orvella',
-    title: 'The foundation that bears the world', element: 'Botanic', elementId: 'botanic',
+    title: 'Joy grows from foundations beneath the world', element: 'Botanic', elementId: 'botanic',
     weapon: 'Crystal mace', color: '#d2b59a',
-    description: 'A human foundation sovereign with a crystal mace and an ever-growing citadel of stone.',
-    lore: { origin: 'The vaults beneath the faultline', story: 'Orvella once braced a broken village gate with a mason\'s stone. She now carries the weight of buried citadels, raising their foundations to shelter those the world forgot.', vow: 'No shelter falls while I still stand.', awakening: 'The first foundation answers.' },
+    description: 'A human Botanic Element-Bearer shaped in Let’s image, Orvella’s crystal mace raises living foundations where Joy and Life can endure.',
+    lore: { origin: 'The vaults beneath the faultline', story: 'Orvella first braced a broken village gate with a mason’s stone. In the vaults beneath the faultline she found buried foundations, and with her crystal mace raised them into shelter for people the world had forgotten. Botanic holds Joy and Life together: she celebrates each home restored without pretending the losses never happened. Let made human Element-Bearers in his image; Rise made Elemental-Devourers in hers and broke convention to steal the same elements. Both sides seek their creators’ souls; neither has found or reunited one, and no one has won. Orvella follows Let’s trail between repairs, unwilling to leave a community for a promise of rule.',
+      vow: 'No shelter falls while I still stand.',
+      awakening: 'The first foundation answers, though its maker’s soul remains lost.' },
   },
   {
     id: 'vaelor', stars: 6, name: 'Vaelor', role: 'Attacker', art: 'vaelor',
-    title: 'The final chord of the broken sky', element: 'Atmospheric', elementId: 'atmospheric',
+    title: 'Calm holds the note between storms', element: 'Atmospheric', elementId: 'atmospheric',
     weapon: 'Resonance blade', color: '#e6d177',
-    description: 'A human storm conductor wielding a resonance blade amid branching thunder architecture.',
-    lore: { origin: 'The towers of the thunder choir', story: 'Vaelor listened for the missing rhythm between storms. With a small resonance blade, he followed that silence until the broken sky itself became his choir.', vow: 'Even a broken sky can sing again.', awakening: 'Quiet voltage finds its first rhythm.' },
+    description: 'A human Atmospheric Element-Bearer shaped in Let’s image, Vaelor finds Calm in the thunder choir with a resonance blade.',
+    lore: { origin: 'The towers of the thunder choir', story: 'Vaelor listened in the thunder-choir towers for the missing rhythm between storms. With a small resonance blade he followed the silence, learning that Atmospheric means Calm: the clear interval in which a broken sky can be heard without being forced to sing. Let created human Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole the same elements. Both factions seek their creators’ souls, still separate and unfound; the contest has no winner. Vaelor follows the quiet frequencies around rumors of Let’s soul, certain that the missing note must be heard before anyone can claim the final chord.', vow: 'Even a broken sky can sing again.', awakening: 'Quiet voltage finds its first rhythm, not its final chord.' },
   },
 ] as const;
 

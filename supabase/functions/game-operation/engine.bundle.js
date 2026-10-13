@@ -554,6 +554,11 @@ var kitConduitDesigns = [
 ];
 var convertedKitConduitIds = new Set(kitConduitDesigns.map((entry) => entry.id));
 
+// src/content/world-lore.ts
+var machineOrigin = "The Machines are destroyed prototypes from the time Let and Rise worked together. Their damaged mechanisms still awaken amid the ruins of that collaboration; they are not Elemental-Devourers created by Rise.";
+var conduitOrigin = "A Conduit is a surviving mechanism from the age of Let and Rise's collaboration, salvaged and restored for the present search. Elemental Light is the name used for the elemental energy within these devices, not a third creator or a recovered creator's soul.";
+var masterOrigin = "Master Conduits are restored mechanisms from Let and Rise's shared prototype work, attuned to a named Element-Bearer. Their power supports that bearer's search for Let's soul; owning one does not recover the soul or decide the contest.";
+
 // src/content/conduits.ts
 var commonConduits = [
   {
@@ -564,7 +569,7 @@ var commonConduits = [
     power: "Elemental Light",
     buff: { stat: "health", kind: "percent", amount: 5 },
     effect: "+5% Health",
-    lore: "An emergency life-support mechanism sealed beneath the battlefields of the ancient war. Its protected chamber still holds a fragment of Elemental Light."
+    lore: "An emergency life-support mechanism from Let and Rise's shared prototype work, sealed beneath the battlefields of their later rivalry. Its protected chamber still holds a reserve of elemental energy."
   },
   {
     id: "siegebound-drive",
@@ -584,7 +589,7 @@ var commonConduits = [
     power: "Mechanical",
     buff: { stat: "defense", kind: "percent", amount: 5 },
     effect: "+5% Defense",
-    lore: "A folding ward mechanism recovered from a forgotten defensive vault. Its layered plates remember the shape of the ancient war shields."
+    lore: "A folding ward mechanism recovered from a forgotten defensive vault. Its layered plates were adapted from the creators' shared prototypes into shields for the wars their rivalry provoked."
   },
   {
     id: "parallax-relay",
@@ -604,7 +609,7 @@ var commonConduits = [
     power: "Elemental Light",
     buff: { stat: "shatterCapacity", kind: "flat", amount: 5 },
     effect: "+5 Shatter Capacity",
-    lore: "A sealed accumulator buried to keep it from the armies of the ancient war. Elemental Light rests within its nested rings, waiting for a new bearer."
+    lore: "A sealed accumulator buried to keep it from the armies drawn into Let and Rise's rivalry. Elemental energy rests within its nested rings, waiting for a new bearer."
   }
 ];
 var additionalCommonConduits = [
@@ -726,7 +731,7 @@ var conduits = [
     price: null,
     power: "Elemental Light",
     art: entry.id,
-    lore: "A fully restored elemental masterpiece from the ancient white machine."
+    lore: "A fully restored elemental masterpiece recovered from one of Let and Rise's destroyed machine prototypes."
   })),
   ...omnicConduits.slice(10).map((entry) => ({
     ...entry,
@@ -734,10 +739,10 @@ var conduits = [
     price: null,
     power: "Elemental Light",
     art: entry.id,
-    lore: "A newly catalogued prismatic elemental masterpiece, awaiting its original reviewed artwork."
+    lore: "A prismatic elemental masterpiece restored from the mechanisms left behind when Let and Rise's collaboration ended."
   })),
   ...kitConduitDesigns.map((entry) => ({ ...entry, mechanic: "kit-interaction", power: "Elemental Light", art: entry.id }))
-];
+].map((entry) => ({ ...entry, lore: `${conduitOrigin} ${entry.lore}` }));
 var conduitUpgradeCap = 5;
 var conduitUpgradeCosts = [25, 50, 100, 175, 250];
 var conduitUpgradeRarityMultipliers = { Common: 1, Rare: 2, Legendary: 4, Omnic: 200 };
@@ -843,7 +848,7 @@ var masterChest = {
   art: "master-conduits/grand-master-chest.png",
   description: "Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward."
 };
-var masterRulesText = "The final Awaken the Machines boss (stage 100) independently has a 1% chance to drop a Cosmic Grand Master Chest. Open it in Inventory to choose one unowned Omnic Master for any Element-Bearer, even one not yet owned. One matching Master equips in its own slot; no ordinary slots, copies or upgrades are consumed. Masters have fixed kit effects and cannot be upgraded. Extra chests remain unopened when all 48 Masters are owned.";
+var masterRulesText = "The final Awaken the Machines boss (stage 100) independently has a 1% chance to drop a Cosmic Grand Master Chest. Open it in Inventory to choose one unowned Omnic Master for any Element-Bearer, even one not yet owned. One matching Master equips in its own slot; no ordinary slots, copies or upgrades are consumed. Masters are always-active bearer enhancements: every qualifying native outcome can apply their fixed effect, without a once-per-round activation limit. Generated Conduit effects cannot trigger them. Resource caps, shield and buff refresh limits, skill costs and recovery still apply. Masters cannot be upgraded. Extra chests remain unopened when all 48 Masters are owned.";
 function master(character, slot, name, effect, design, rule) {
   return {
     id: `master-${character}-${slot}`,
@@ -853,7 +858,8 @@ function master(character, slot, name, effect, design, rule) {
     art: `master-conduits/master-${character}-${slot}.png`,
     effect,
     design,
-    rule
+    rule,
+    lore: masterOrigin
   };
 }
 var masterConduits = [
@@ -861,23 +867,23 @@ var masterConduits = [
     "ember",
     1,
     "Helios Pyre Cathedral",
-    "When Burn from Infernis deals damage, the burning enemy takes an extra 50% of that Burn damage as a Conduit strike, and the Burn lasts one more enemy phase (maximum 3). Once per round.",
+    "Every damage tick of Infernis\u2019s own Burn adds a Conduit strike for 50% of the Burn damage and heals Infernis for 20% of that Burn damage (up to 10% max HP). Does not extend Burn.",
     "A furnace cathedral around a crimson miniature sun, twelve greatsword-shaped exhaust wings, stacked gold flame shutters and volcanic orbital rails",
-    { trigger: "burn-tick", outcomes: [{ kind: "strike", recipient: "struck", amount: 0, ratio: 0.5 }, { kind: "burn-clock", amount: 1 }] }
+    { trigger: "burn-tick", outcomes: [{ kind: "strike", recipient: "struck", amount: 0, ratio: 0.5 }, { kind: "heal", amount: 0, ratio: 0.2, cap: 0.1 }] }
   ),
   master(
     "ember",
     2,
     "Cinderstar Genesis Engine",
-    "Applying Burn stores 1 Astral Reserve (once per round, maximum 3). Flame Arc spends all of it: per reserve, gain 1 Infernic Embers charge and deal 15% Attack to every enemy (reduced by Defense).",
+    "Every native Burn application stores 1 Astral Reserve (maximum 3). Flame Arc spends all of it: per reserve, gain a shield worth 4% max HP and deal 15% Attack to every enemy (reduced by Defense).",
     "A split stellar ignition engine, three molten planet chambers, counter-rotating sword-tooth halos and branching crimson ignition conduits",
-    { trigger: "activation", actions: ["skill2"], bank: { trigger: "burn-applied", maximum: 3 }, outcomes: [{ kind: "charge", amount: 1 }, { kind: "strike", recipient: "all-enemies", amount: 0.15 }] }
+    { trigger: "activation", actions: ["skill2"], bank: { trigger: "burn-applied", maximum: 3 }, outcomes: [{ kind: "shield", amount: 0.04 }, { kind: "strike", recipient: "all-enemies", amount: 0.15 }] }
   ),
   master(
     "ember",
     3,
     "Unbroken Sunforge Throne",
-    "Spending Infernic Embers charges returns 10 Gauge per charge spent and shortens one skill cooldown by one round (never ready before next round). Once per round.",
+    "Every Infernic Embers spend returns 10 Gauge per charge spent and shortens one skill cooldown by one round (never ready before next round).",
     "A bronze-and-crimson sunforge throne machine, greatsword anvil at its heart, armored flare crowns and six immense mechanical flame fans",
     { trigger: "resource-spent", resources: ["ember"], outcomes: [{ kind: "gauge", amount: 0, ratio: 10 }, { kind: "cooldown", amount: 1 }] }
   ),
@@ -885,15 +891,15 @@ var masterConduits = [
     "tide",
     1,
     "Abyssal Shelter Observatory",
-    "When a shield Tizu made blocks an enemy hit, Tizu gains 1 Oceanic Protection charge and every ally\u2019s next enemy hit is reduced by 15%. Once per round.",
+    "Every enemy hit absorbed by Tizu\u2019s authored shields shortens one of her skill cooldowns by one round (never ready before next round) and refreshes 15% next-direct-hit protection for every ally.",
     "A sapphire pressure observatory, spear-shaped lighthouse spindle, nested diving-bell shields and immense tidal astrolabe fins",
-    { trigger: "shield-absorbed", outcomes: [{ kind: "charge", amount: 1 }, { kind: "protection", recipient: "all-allies", amount: 0.15 }] }
+    { trigger: "shield-absorbed", outcomes: [{ kind: "cooldown", amount: 1 }, { kind: "protection", recipient: "all-allies", amount: 0.15 }] }
   ),
   master(
     "tide",
     2,
     "Ocean Memory Worldpump",
-    "When a shield Tizu made blocks an enemy hit, store 1 Astral Reserve (once per round, maximum 3). Tidal Shelter spends all of it to heal every ally by 5% of Tizu\u2019s max HP per reserve.",
+    "Every enemy hit absorbed by Tizu\u2019s authored shields stores 1 Astral Reserve (maximum 3). Tidal Shelter spends all of it to heal every ally by 5% of Tizu\u2019s max HP per reserve.",
     "A world-sized tide pump enclosing three ocean planets, sapphire manifold crown, twelve spearhead vanes and interlocked platinum sea rings",
     { trigger: "activation", actions: ["skill2"], bank: { trigger: "shield-absorbed", maximum: 3 }, outcomes: [{ kind: "heal", recipient: "all-allies", amount: 0.05 }] }
   ),
@@ -901,7 +907,7 @@ var masterConduits = [
     "tide",
     3,
     "Undertow Sovereign Harpoon",
-    "When Tizu applies Weaken, it lasts one more enemy phase (maximum 3) and the enemy gains 2 Fracture Marks (Tizu\u2019s next hit on it is stronger). Once per round.",
+    "Every native Weaken application lasts one more enemy phase (maximum 3) and the enemy gains 2 personal Fracture Marks (Tizu\u2019s next hit on it is stronger, maximum 2 marks).",
     "A monumental spear-tip targeting engine, abyssal sapphire prisms, concentric current locks and six armored harpoon-wing arcs",
     { trigger: "weaken-applied", outcomes: [{ kind: "weaken-clock", amount: 1 }, { kind: "fracture", amount: 2 }] }
   ),
@@ -909,7 +915,7 @@ var masterConduits = [
     "sprout",
     1,
     "Worldseed Mercy Foundry",
-    "When Flora\u2019s own healing restores HP, the most injured other ally also gains a shield worth 50% of the HP restored (up to 15% of Flora\u2019s max HP). Once per round.",
+    "Every effective native heal by Flora gives the most injured other ally a shield worth 50% of the HP restored (up to 15% of Flora\u2019s max HP; refresh, not stack).",
     "An emerald seed foundry with ivory bow-limb gantries, twelve leaf-blade mechanical wings and a densely interwoven root orrery",
     { trigger: "heal", outcomes: [{ kind: "shield", recipient: "injured-other", amount: 0, ratio: 0.5, cap: 0.15 }] }
   ),
@@ -917,23 +923,23 @@ var masterConduits = [
     "sprout",
     2,
     "Briar Constellation Loom",
-    "When Flora\u2019s own healing restores HP, store 1 Astral Reserve (once per round, maximum 3). Briar Shot spends all of it: per reserve, gain 1 Botanic Renewal charge and 5 Gauge.",
+    "Every effective native heal by Flora stores 1 Astral Reserve (maximum 3). Briar Shot spends all of it: per reserve, add a 20% Attack Conduit strike to its target (reduced by Defense) and return 5 Gauge.",
     "A cosmic bowstring loom with three emerald seed planets, intertwined root escapements and vast ivory thorn-constellation fans",
-    { trigger: "activation", actions: ["skill1"], bank: { trigger: "heal", maximum: 3 }, outcomes: [{ kind: "charge", amount: 1 }, { kind: "gauge", amount: 5 }] }
+    { trigger: "activation", actions: ["skill1"], bank: { trigger: "heal", maximum: 3 }, outcomes: [{ kind: "strike", recipient: "struck", amount: 0.2 }, { kind: "gauge", amount: 5 }] }
   ),
   master(
     "sprout",
     3,
     "Evergreen Continuance Crucible",
-    "Last Flare reduces every ally\u2019s next enemy hit by 35% and heals the most injured ally by 10% of Flora\u2019s max HP. Once per round. Cannot revive.",
+    "Every Last Flare refreshes 35% next-direct-hit protection for every ally and shortens both of Flora\u2019s skill cooldowns by one round (never ready before next round).",
     "A sealed living-world crucible, emerald germination heart, ivory petal armor and six gigantic bow-branch sanctuary wings; no resurrection imagery",
-    { trigger: "activation", actions: ["ultimate"], outcomes: [{ kind: "protection", recipient: "all-allies", amount: 0.35 }, { kind: "heal", recipient: "injured", amount: 0.1 }] }
+    { trigger: "activation", actions: ["ultimate"], outcomes: [{ kind: "protection", recipient: "all-allies", amount: 0.35 }, { kind: "cooldown", amount: 1, bothSkills: true }] }
   ),
   master(
     "atmoso",
     1,
     "Sky Without End Turbine",
-    "A critical hit makes a follow-up gust strike the same enemy for 40% of the damage dealt (up to 100% of Attack). Once per round.",
+    "Every native critical hit adds a follow-up gust strike to the same enemy for 40% of the damage dealt (up to 100% of Attack).",
     "A turquoise sky-axis turbine, wind-staff core, twelve spiraling blade wings and immense counter-sweeping cyclone crowns",
     { trigger: "critical", outcomes: [{ kind: "strike", recipient: "struck", amount: 0, ratio: 0.4, cap: 1 }] }
   ),
@@ -941,15 +947,15 @@ var masterConduits = [
     "atmoso",
     2,
     "Horizon Cyclone Orrery",
-    "Critical hits store 1 Astral Reserve (once per round, maximum 3). Cyclone Weave spends all of it: per reserve, gain 1 Atmospheric Charge and 8 Gauge.",
+    "Every native critical hit stores 1 Astral Reserve (maximum 3). Cyclone Weave spends all of it: per reserve, refresh 10% next-direct-hit protection and return 8 Gauge.",
     "Three turquoise storm planets inside a staff-shaped horizon orrery, ivory turbine ramparts and layered compass-wing vaults",
-    { trigger: "activation", actions: ["skill2"], bank: { trigger: "critical", maximum: 3 }, outcomes: [{ kind: "charge", amount: 1 }, { kind: "gauge", amount: 8 }] }
+    { trigger: "activation", actions: ["skill2"], bank: { trigger: "critical", maximum: 3 }, outcomes: [{ kind: "protection", amount: 0.1 }, { kind: "gauge", amount: 8 }] }
   ),
   master(
     "atmoso",
     3,
     "Crosswind Imperial Drive",
-    "Razor Gale against an enemy at or below half HP adds a 60% Attack crosswind strike to it (reduced by Defense) and returns 20 Gauge. Once per round.",
+    "Every Razor Gale hit against an enemy at or below half HP adds a 60% Attack crosswind strike to it (reduced by Defense) and returns 20 Gauge.",
     "An imperial crosswind staff-drive with crossed turquoise pressure corridors, ivory gale armor and six monumental scythe-shaped wind wings",
     { trigger: "direct", actions: ["skill1"], belowHalf: true, outcomes: [{ kind: "strike", recipient: "struck", amount: 0.6 }, { kind: "gauge", amount: 20 }] }
   ),
@@ -957,7 +963,7 @@ var masterConduits = [
     "aurora",
     1,
     "Final Dawn Tribunal",
-    "When Aurora applies Weaken, it lasts one more enemy phase (maximum 3) and every ally gains 5 Gauge. Once per round.",
+    "Every native Weaken application lasts one more enemy phase (maximum 3) and returns 5 Gauge to every ally.",
     "An ivory solar tribunal mechanism, amber judgment lens, twelve lens-wing arches and descending platinum verdict locks",
     { trigger: "weaken-applied", outcomes: [{ kind: "weaken-clock", amount: 1 }, { kind: "gauge", recipient: "all-allies", amount: 5 }] }
   ),
@@ -965,7 +971,7 @@ var masterConduits = [
     "aurora",
     2,
     "Prismseal Astral Judiciary",
-    "Applying Weaken stores 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it to give every ally +10% Attack per reserve through next round.",
+    "Every native Weaken application stores 1 Astral Reserve (maximum 3). Last Flare spends all of it to give every ally +10% Attack per reserve through next round (refresh, not stack).",
     "Three amber lens planets in an ivory judiciary orrery, interlocking seal plates and vast empty-hand casting aperture wings",
     { trigger: "activation", actions: ["ultimate"], bank: { trigger: "weaken-applied", maximum: 3 }, outcomes: [{ kind: "boost", recipient: "all-allies", amount: 0.1 }] }
   ),
@@ -973,7 +979,7 @@ var masterConduits = [
     "aurora",
     3,
     "Merciful Eclipse Regulator",
-    "Direct damage against Aurora\u2019s existing Weaken heals the most injured other ally by 15% of Aurora\u2019s max HP and primes their next direct hit for 30% protection. Once per round.",
+    "Every native direct hit against Aurora\u2019s existing Weaken heals the most injured other ally by 15% of Aurora\u2019s max HP and refreshes their next-direct-hit protection at 30%.",
     "A white eclipse regulator surrounding an amber sun lens, twelve protective shutter petals and immense tiered celestial court rails",
     { trigger: "direct", ownWeaken: true, outcomes: [{ kind: "heal", recipient: "injured-other", amount: 0.15 }, { kind: "protection", recipient: "injured-other", amount: 0.3 }] }
   ),
@@ -981,31 +987,31 @@ var masterConduits = [
     "bliss",
     1,
     "Thousandfeather Zenith Loom",
-    "A critical hit heals the most injured other ally by 30% of the damage dealt (up to 15% of Bliss\u2019s max HP). Once per round.",
+    "Every native critical hit gives the most injured other ally a shield worth 30% of the damage dealt (up to 15% of Bliss\u2019s max HP; refresh, not stack).",
     "An ivory-and-rose feather loom, two immense mechanical warfan assemblies, platinum quill wings and densely nested celestial ribbon gears",
-    { trigger: "critical", outcomes: [{ kind: "heal", recipient: "injured-other", amount: 0, ratio: 0.3, cap: 0.15 }] }
+    { trigger: "critical", outcomes: [{ kind: "shield", recipient: "injured-other", amount: 0, ratio: 0.3, cap: 0.15 }] }
   ),
   master(
     "bliss",
     2,
     "Stillplume Planetary Ballet",
-    "Healing another ally stores 1 Astral Reserve (once per round, maximum 3). Warfeather Cut spends all of it: per reserve, gain 1 Botanic Renewal charge and strike the target for 15% Attack (reduced by Defense).",
+    "Every effective native heal of another ally stores 1 Astral Reserve (maximum 3). Warfeather Cut spends all of it: per reserve, shorten one skill cooldown by one round (never ready before next round) and strike the target for 15% Attack (reduced by Defense).",
     "Three rose opal planets dancing inside paired ivory fan rotors, counterbalanced feather crowns and platinum orbital ribbons",
-    { trigger: "activation", actions: ["skill1"], bank: { trigger: "heal", maximum: 3, other: true }, outcomes: [{ kind: "charge", amount: 1 }, { kind: "strike", recipient: "struck", amount: 0.15 }] }
+    { trigger: "activation", actions: ["skill1"], bank: { trigger: "heal", maximum: 3, other: true }, outcomes: [{ kind: "cooldown", amount: 1 }, { kind: "strike", recipient: "struck", amount: 0.15 }] }
   ),
   master(
     "bliss",
     3,
     "Quiet Heaven Fanforge",
-    "Last Flare heals the most injured other ally by 20% of Bliss\u2019s max HP and gives them 35% Attack through next round. Once per round; cannot revive.",
+    "Every Last Flare gives the most injured other ally a shield worth 20% of Bliss\u2019s max HP and 35% Attack through next round (refresh, not stack).",
     "A double-fan heaven forge, ivory-and-rose central feather heart, twelve platinum quill mandalas and monumental quiet-wing armor",
-    { trigger: "activation", actions: ["ultimate"], outcomes: [{ kind: "heal", recipient: "injured-other", amount: 0.2 }, { kind: "boost", recipient: "injured-other", amount: 0.35 }] }
+    { trigger: "activation", actions: ["ultimate"], outcomes: [{ kind: "shield", recipient: "injured-other", amount: 0.2 }, { kind: "boost", recipient: "injured-other", amount: 0.35 }] }
   ),
   master(
     "bruno",
     1,
     "Living Worldwall Atlas",
-    "Defending gives every ally a shield worth 12% of Bruno\u2019s max HP. Once per round.",
+    "Every Defense refreshes a shield for every ally worth 12% of Bruno\u2019s max HP (does not stack).",
     "A basalt-and-bronze atlas machine supporting a faceted ochre world, hammer-shaped axial pillar and twelve titanic faultplate wings",
     { trigger: "defense", outcomes: [{ kind: "shield", recipient: "all-allies", amount: 0.12 }] }
   ),
@@ -1013,7 +1019,7 @@ var masterConduits = [
     "bruno",
     2,
     "Quarry Planet Gravitas",
-    "When Bruno\u2019s shields grow, store 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it to strike every enemy for 25% Attack per reserve (reduced by Defense).",
+    "Every effective native shield increase by Bruno stores 1 Astral Reserve (maximum 3). Last Flare spends all of it to strike every enemy for 25% Attack per reserve (reduced by Defense).",
     "Three basalt quarry planets locked in bronze gravitic hammer cages, immense layered bedrock buttresses and ochre orbiting armor rails",
     { trigger: "activation", actions: ["ultimate"], bank: { trigger: "shield-grown", maximum: 3 }, outcomes: [{ kind: "strike", recipient: "all-enemies", amount: 0.25 }] }
   ),
@@ -1021,7 +1027,7 @@ var masterConduits = [
     "bruno",
     3,
     "Worldforge Hammer Dominion",
-    "When Bruno applies Weaken, the hammer\u2019s aftershock strikes that enemy for 60% Attack (reduced by Defense) and one skill cooldown shortens by one round. Once per round.",
+    "Every native Weaken application adds an aftershock strike to that enemy for 60% Attack (reduced by Defense) and shortens one skill cooldown by one round (never ready before next round).",
     "A bronze hammer-dominion engine, basalt shelter vaults, ochre crystal pistons and six massive mechanically linked mountain-wing plates",
     { trigger: "weaken-applied", outcomes: [{ kind: "strike", recipient: "struck", amount: 0.6 }, { kind: "cooldown", amount: 1 }] }
   ),
@@ -1029,7 +1035,7 @@ var masterConduits = [
     "disciple",
     1,
     "Unbound Mindcrown Synapse",
-    "Effective support from your abilities returns 20 Gauge to the lowest-Gauge other ally and gives them 30% next-direct-hit protection. Once per round.",
+    "Every effective native support outcome returns 20 Gauge to the lowest-Gauge other ally and refreshes their next-direct-hit protection at 30%.",
     "An amethyst synapse crown engine, scarlet mindflame channels, twelve open-palm-shaped mechanical arches and linked psychic orbital frames",
     { trigger: "support", outcomes: [{ kind: "gauge", recipient: "lowest-gauge-other", amount: 20 }, { kind: "protection", recipient: "lowest-gauge-other", amount: 0.3 }] }
   ),
@@ -1037,7 +1043,7 @@ var masterConduits = [
     "disciple",
     2,
     "Concord Planet Thoughtforge",
-    "Supporting another ally stores 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it to give every ally 8 Gauge per reserve.",
+    "Every effective native support outcome on another ally stores 1 Astral Reserve (maximum 3). Last Flare spends all of it to give every ally 8 Gauge per reserve.",
     "Three amethyst thought planets in scarlet-linked open orbital cages, empty-hand mindcrown apertures and monumental psychic lattice wings",
     { trigger: "activation", actions: ["ultimate"], bank: { trigger: "support", maximum: 3, other: true }, outcomes: [{ kind: "gauge", recipient: "all-allies", amount: 8 }] }
   ),
@@ -1045,7 +1051,7 @@ var masterConduits = [
     "disciple",
     3,
     "Sovereign Will Amplifier",
-    "Thoughtspark Benediction\u2019s hit shortens one of Disciple\u2019s skill cooldowns by one round and gives the lowest-Gauge other ally 15 Gauge. Once per round.",
+    "Every Thoughtspark Benediction hit shortens one of Disciple\u2019s skill cooldowns by one round (never ready before next round) and gives the lowest-Gauge other ally 15 Gauge.",
     "A black-amethyst will amplifier with scarlet triple-tier crown rings, huge open psychic handframes and twelve ornate inward-linked flame vanes",
     { trigger: "direct", actions: ["skill1"], outcomes: [{ kind: "cooldown", amount: 1 }, { kind: "gauge", recipient: "lowest-gauge-other", amount: 15 }] }
   ),
@@ -1053,15 +1059,15 @@ var masterConduits = [
     "elise",
     1,
     "Infinite Thunderwheel Arsenal",
-    "A critical hit shortens both skill cooldowns by one round (never ready before next round) and grants 1 Atmospheric Charge. Once per round.",
+    "Every native critical hit shortens both skill cooldowns by one round (never ready before next round) and refreshes Elise\u2019s shield to 20% of damage dealt (up to 10% max HP).",
     "Exactly two four-point shuriken-shaped thunderwheel rotors with open central grips, yellow-green voltage rails and twelve platinum lightning wings",
-    { trigger: "critical", outcomes: [{ kind: "cooldown", amount: 1, bothSkills: true }, { kind: "charge", amount: 1 }] }
+    { trigger: "critical", outcomes: [{ kind: "cooldown", amount: 1, bothSkills: true }, { kind: "shield", amount: 0, ratio: 0.2, cap: 0.1 }] }
   ),
   master(
     "elise",
     2,
     "Twin Star Planetary Ratchet",
-    "Critical hits store 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it: per reserve, both skill cooldowns shorten by one round and Elise gains 10 Gauge.",
+    "Every native critical hit stores 1 Astral Reserve (maximum 3). Last Flare spends all of it: per reserve, both skill cooldowns shorten by one round (never ready before next round) and Elise gains 10 Gauge.",
     "Three voltage planets held between two four-point star ratchets, yellow-green branching circuitry and huge platinum circuit-crown blades",
     { trigger: "activation", actions: ["ultimate"], bank: { trigger: "critical", maximum: 3 }, outcomes: [{ kind: "cooldown", amount: 1, bothSkills: true }, { kind: "gauge", amount: 10 }] }
   ),
@@ -1069,7 +1075,7 @@ var masterConduits = [
     "elise",
     3,
     "Storm Empress Execution Clock",
-    "Defeating an enemy with a direct hit returns 30 Gauge and gives Elise +30% Attack through next round. Once per round.",
+    "Every enemy defeated by a native direct hit returns 30 Gauge and refreshes Elise\u2019s +30% Attack through next round.",
     "A double-shuriken execution clock, segmented yellow-green circuit armor, twelve angular stormblade fans and layered four-point chronometer rails",
     { trigger: "direct", lethal: true, outcomes: [{ kind: "gauge", amount: 30 }, { kind: "boost", amount: 0.3 }] }
   ),
@@ -1077,7 +1083,7 @@ var masterConduits = [
     "razor",
     1,
     "Unbroken Midnight Bastion",
-    "Defense heals 18% max HP and grants 40% next-direct-hit protection. Once per round.",
+    "Every Defense heals 18% max HP and refreshes 40% next-direct-hit protection.",
     "An obsidian midnight bastion engine enclosing one night-sword spindle, violet crescent shield wings and enormous layered eclipse ramparts",
     { trigger: "defense", outcomes: [{ kind: "heal", amount: 0.18 }, { kind: "protection", amount: 0.4 }] }
   ),
@@ -1085,7 +1091,7 @@ var masterConduits = [
     "razor",
     2,
     "Eclipse Planet Watchtower",
-    "Defending stores 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it: per reserve, strike the target for 30% Attack (reduced by Defense) and reduce Razor\u2019s next enemy hit by 20% (maximum 60%).",
+    "Every Defense stores 1 Astral Reserve (maximum 3). Last Flare spends all of it: per reserve, strike the target for 30% Attack (reduced by Defense) and refresh Razor\u2019s next-direct-hit protection by 20% (maximum 60%).",
     "Three violet eclipse planets behind obsidian tower-shield cages, one night-sword axis and twelve monumental crescent watchtower wings",
     { trigger: "activation", actions: ["ultimate"], bank: { trigger: "defense", maximum: 3 }, outcomes: [{ kind: "strike", recipient: "struck", amount: 0.3 }, { kind: "protection", amount: 0.2 }] }
   ),
@@ -1093,7 +1099,7 @@ var masterConduits = [
     "razor",
     3,
     "Nightglass Counterblade Engine",
-    "Applying Weaken with your abilities places two personal Fracture Marks, capped at two, and grants 25% max-HP shield. Once per round.",
+    "Every native Weaken application places two personal Fracture Marks (maximum 2) and refreshes a shield worth 25% of Razor\u2019s max HP.",
     "An obsidian counterblade engine, violet nightglass gem chambers, sword-hilt locking clasps and immense double-crescent shield architecture",
     { trigger: "weaken-applied", outcomes: [{ kind: "fracture", amount: 2 }, { kind: "shield", amount: 0.25 }] }
   ),
@@ -1101,23 +1107,23 @@ var masterConduits = [
     "rosetta",
     1,
     "Rose Beyond the Sun Orrery",
-    "Applying Weaken with your abilities returns 20 Gauge and heals the most injured other ally by 12% of Rosetta\u2019s max HP. Once per round.",
+    "Every native Weaken application returns 20 Gauge and refreshes a shield on the most injured other ally worth 12% of Rosetta\u2019s max HP.",
     "A rose-gold solar bow orrery with crimson petal gears, ivory wing vaults and twelve enormous gilded thorn-mandala arches",
-    { trigger: "weaken-applied", outcomes: [{ kind: "gauge", amount: 20 }, { kind: "heal", recipient: "injured-other", amount: 0.12 }] }
+    { trigger: "weaken-applied", outcomes: [{ kind: "gauge", amount: 20 }, { kind: "shield", recipient: "injured-other", amount: 0.12 }] }
   ),
   master(
     "rosetta",
     2,
     "Virtuous Planet Rosegarden",
-    "When Rosetta\u2019s own healing restores HP, store 1 Astral Reserve (once per round, maximum 3). Golden Thorn Volley spends all of it: per reserve, gain 1 Rose Grace and heal every ally by 3% of Rosetta\u2019s max HP.",
+    "Every effective native heal by Rosetta stores 1 Astral Reserve (maximum 3). Golden Thorn Volley spends all of it: per reserve, shorten one skill cooldown by one round (never ready before next round) and refresh every ally\u2019s shield to 3% of Rosetta\u2019s max HP.",
     "Three rose planets in rose-gold garden cages, ivory bow-limb orbit rails and densely layered crimson petal cathedral wings",
-    { trigger: "activation", actions: ["skill1"], bank: { trigger: "heal", maximum: 3 }, outcomes: [{ kind: "charge", amount: 1 }, { kind: "heal", recipient: "all-allies", amount: 0.03 }] }
+    { trigger: "activation", actions: ["skill1"], bank: { trigger: "heal", maximum: 3 }, outcomes: [{ kind: "cooldown", amount: 1 }, { kind: "shield", recipient: "all-allies", amount: 0.03 }] }
   ),
   master(
     "rosetta",
     3,
     "Golden Thorn Judgment Loom",
-    "Direct damage against Rosetta\u2019s existing Weaken grants 45% Attack through next round and places two personal Fracture Marks, capped at two. Once per round.",
+    "Every native direct hit against Rosetta\u2019s existing Weaken refreshes +45% Attack through next round and places two personal Fracture Marks (maximum 2).",
     "A golden thorn targeting loom with one central rose-bow aperture, crimson rose mandalas, ivory prism petals and twelve sweeping thorn-wing rails",
     { trigger: "direct", ownWeaken: true, outcomes: [{ kind: "boost", amount: 0.45 }, { kind: "fracture", amount: 2 }] }
   ),
@@ -1125,15 +1131,15 @@ var masterConduits = [
     "thornia",
     1,
     "Forbidden Garden Worldlock",
-    "When a shield Thornia made blocks an enemy hit, thorns strike back at that enemy for 100% of the damage blocked (up to 100% of Attack) and Thornia gains 1 Thorn Aegis. Once per round.",
+    "Every enemy hit absorbed by Thornia\u2019s authored shields adds a counterstrike against the attacker for 100% of damage blocked (up to 100% of Attack) and returns 10 Gauge.",
     "A rose-gold forbidden worldlock, violet eclipse cage, crimson thorn greatsword axis and twelve immense gilded rose-shield fans",
-    { trigger: "shield-absorbed", outcomes: [{ kind: "strike", recipient: "attacker", amount: 0, ratio: 1, cap: 1 }, { kind: "charge", amount: 1 }] }
+    { trigger: "shield-absorbed", outcomes: [{ kind: "strike", recipient: "attacker", amount: 0, ratio: 1, cap: 1 }, { kind: "gauge", amount: 10 }] }
   ),
   master(
     "thornia",
     2,
     "Thousand-Rose Planetary Aegis",
-    "When a shield Thornia made blocks an enemy hit, store 1 Astral Reserve (once per round, maximum 3). Shadow Rose Cleave spends all of it to give every ally a shield worth 6% of Thornia\u2019s max HP per reserve.",
+    "Every enemy hit absorbed by Thornia\u2019s authored shields stores 1 Astral Reserve (maximum 3). Shadow Rose Cleave spends all of it to refresh every ally\u2019s shield to 6% of Thornia\u2019s max HP per reserve.",
     "Three crimson rose planets nested in golden aegis cages, violet thorn eclipse rails and massive interwoven rose-armored greatsword wings",
     { trigger: "activation", actions: ["skill2"], bank: { trigger: "shield-absorbed", maximum: 3 }, outcomes: [{ kind: "shield", recipient: "all-allies", amount: 0.06 }] }
   ),
@@ -1141,7 +1147,7 @@ var masterConduits = [
     "thornia",
     3,
     "Shadow Rose Sovereign Foundry",
-    "When Thornia applies Weaken, it lasts one more enemy phase (maximum 3) and Thornia heals 12% of her max HP. Once per round.",
+    "Every native Weaken application lasts one more enemy phase (maximum 3) and heals Thornia by 12% of her max HP.",
     "A violet-and-rose-gold shadow foundry, crimson thorn blade crucible, six immense rose-wing forge arches and dense golden petal countergears",
     { trigger: "weaken-applied", outcomes: [{ kind: "weaken-clock", amount: 1 }, { kind: "heal", amount: 0.12 }] }
   ),
@@ -1149,23 +1155,23 @@ var masterConduits = [
     "crinso",
     1,
     "Twin-Rose Singularity Drive",
-    "A critical hit grants 1 Rose Duality and +40% Attack through next round. Once per round.",
+    "Every native critical hit refreshes a shield worth 15% of Crinso\u2019s max HP and +40% Attack through next round.",
     "A rose-gold singularity drive around one connected double-ended blade axle, golden flame and crimson lightning halves with twelve thorn wings",
-    { trigger: "critical", outcomes: [{ kind: "charge", amount: 1 }, { kind: "boost", amount: 0.4 }] }
+    { trigger: "critical", outcomes: [{ kind: "shield", amount: 0.15 }, { kind: "boost", amount: 0.4 }] }
   ),
   master(
     "crinso",
     2,
     "Duality Planet Flamewheel",
-    "Applying Burn stores 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it: per reserve, Crinso heals 8% of max HP and gains 1 Rose Duality.",
+    "Every native Burn application stores 1 Astral Reserve (maximum 3). Last Flare spends all of it: per reserve, Crinso heals 8% of max HP and refreshes 10% next-direct-hit protection.",
     "Three crimson-gold planets inside one connected dual-edged sword wheel, nested rose hubs, opposed flame rails and lightning petal armor",
-    { trigger: "activation", actions: ["ultimate"], bank: { trigger: "burn-applied", maximum: 3 }, outcomes: [{ kind: "heal", amount: 0.08 }, { kind: "charge", amount: 1 }] }
+    { trigger: "activation", actions: ["ultimate"], bank: { trigger: "burn-applied", maximum: 3 }, outcomes: [{ kind: "heal", amount: 0.08 }, { kind: "protection", amount: 0.1 }] }
   ),
   master(
     "crinso",
     3,
     "Crimson Beauty Pyre Requiem",
-    "Direct damage against Crinso\u2019s existing Burn heals 15% max HP and extends that Burn by one phase, capped at three. Once per round.",
+    "Every native direct hit against Crinso\u2019s existing Burn heals 15% max HP and extends that Burn by one phase (maximum 3). Burn ticks do not extend themselves.",
     "A golden-crimson pyre requiem engine with a connected double-ended sword core, twelve rose lightning wings and ornate flame-petal crowns",
     { trigger: "direct", ownBurn: true, outcomes: [{ kind: "heal", amount: 0.15 }, { kind: "burn-clock", amount: 1 }] }
   ),
@@ -1173,15 +1179,15 @@ var masterConduits = [
     "nerithe",
     1,
     "Shoreless Meridian Worldchart",
-    "Normal Attack dealing direct damage returns 15 additional Gauge and grants 30% Attack through next round. Once per round.",
+    "Every native Normal Attack hit refreshes a shield worth 10% of Nerithe\u2019s max HP and +30% Attack through next round. Does not repeat her passive\u2019s Gauge award.",
     "A turquoise worldchart engine, surveyor-trident spindle, twelve ocean compass wings and immense folded meridian astrolabe rails",
-    { trigger: "direct", actions: ["light"], outcomes: [{ kind: "gauge", amount: 15 }, { kind: "boost", amount: 0.3 }] }
+    { trigger: "direct", actions: ["light"], outcomes: [{ kind: "shield", amount: 0.1 }, { kind: "boost", amount: 0.3 }] }
   ),
   master(
     "nerithe",
     2,
     "Folded Ocean Planetarium",
-    "Applying Weaken stores 1 Astral Reserve (once per round, maximum 3). Normal Attack spends all of it to strike the target for 25% Attack per reserve (reduced by Defense).",
+    "Every native Weaken application stores 1 Astral Reserve (maximum 3). Normal Attack spends all of it to strike the target for 25% Attack per reserve (reduced by Defense).",
     "Three turquoise ocean planets in folded ivory meridian cages, surveyor trident locking prongs and huge layered sea-map wings",
     { trigger: "activation", actions: ["light"], bank: { trigger: "weaken-applied", maximum: 3 }, outcomes: [{ kind: "strike", recipient: "struck", amount: 0.25 }] }
   ),
@@ -1189,7 +1195,7 @@ var masterConduits = [
     "nerithe",
     3,
     "Abyssal Surveyor Crown",
-    "Applying Weaken with your abilities places two personal Fracture Marks, capped at two, and grants 35% next-direct-hit protection. Once per round.",
+    "Every native Weaken application places two personal Fracture Marks (maximum 2) and refreshes 35% next-direct-hit protection.",
     "A turquoise abyssal crown surveyor, trident-shaped rangefinding lens, ivory ocean ramparts and twelve royal compass-blade wings",
     { trigger: "weaken-applied", outcomes: [{ kind: "fracture", amount: 2 }, { kind: "protection", amount: 0.35 }] }
   ),
@@ -1197,7 +1203,7 @@ var masterConduits = [
     "orvella",
     1,
     "Throne Beneath the World",
-    "Effective shield growth from your abilities grants 40% next-direct-hit protection and 15 Gauge. Once per round.",
+    "Every effective native shield increase by Orvella refreshes 40% next-direct-hit protection and returns 15 Gauge.",
     "An ivory-and-ochre planetary foundation throne, crystal-mace cornerstone, twelve monumental stone armor wings and immense bronze support arches",
     { trigger: "shield-grown", outcomes: [{ kind: "protection", amount: 0.4 }, { kind: "gauge", amount: 15 }] }
   ),
@@ -1205,7 +1211,7 @@ var masterConduits = [
     "orvella",
     2,
     "Deep Foundation Planetpress",
-    "When a shield Orvella made blocks an enemy hit, store 1 Astral Reserve (once per round, maximum 3). Keystone Reversal spends all of it: the target\u2019s Weaken from Orvella lasts one more enemy phase (maximum 3) and both skill cooldowns shorten by one round per reserve.",
+    "Every enemy hit absorbed by Orvella\u2019s authored shields stores 1 Astral Reserve (maximum 3). Keystone Reversal spends all of it: the target\u2019s own Weaken lasts one more enemy phase (maximum 3) and both skill cooldowns shorten by one round per reserve (never ready before next round).",
     "Three ochre foundation planets braced by bronze masonry press rings, crystal-mace piston and ivory world-bearing buttress wings",
     { trigger: "activation", actions: ["skill1"], bank: { trigger: "shield-absorbed", maximum: 3 }, outcomes: [{ kind: "weaken-clock", amount: 1 }, { kind: "cooldown", amount: 1, bothSkills: true }] }
   ),
@@ -1213,7 +1219,7 @@ var masterConduits = [
     "orvella",
     3,
     "Keystone Sovereign Counterweight",
-    "Direct damage against Orvella\u2019s existing Weaken gives the most injured other ally a shield worth 25% of her max HP and 30% Attack through next round. Once per round.",
+    "Every native direct hit against Orvella\u2019s existing Weaken refreshes the most injured other ally\u2019s shield to 25% of her max HP and +30% Attack through next round.",
     "An ochre keystone counterweight engine with crystal mace fulcrum, bronze celestial load rails and twelve ivory citadel shield wings",
     { trigger: "direct", ownWeaken: true, outcomes: [{ kind: "shield", recipient: "injured-other", amount: 0.25 }, { kind: "boost", recipient: "injured-other", amount: 0.3 }] }
   ),
@@ -1221,7 +1227,7 @@ var masterConduits = [
     "vaelor",
     1,
     "Final Chord Celestial Resonator",
-    "While Vaelor is at or below half HP, a direct hit heals Vaelor by 25% of the damage dealt (up to 15% of max HP) and returns 10 Gauge. Once per round.",
+    "While Vaelor is at or below half HP, every native direct hit heals Vaelor by 25% of damage dealt (up to 15% max HP) and returns 10 Gauge.",
     "A gold-and-black celestial resonator, resonance-blade tuning core, twelve immense thunder choir wings and branching frequency crown rails",
     { trigger: "direct", selfBelowHalf: true, outcomes: [{ kind: "heal", amount: 0, ratio: 0.25, cap: 0.15 }, { kind: "gauge", amount: 10 }] }
   ),
@@ -1229,7 +1235,7 @@ var masterConduits = [
     "vaelor",
     2,
     "Thunder Choir Planetary Fugue",
-    "Critical hits store 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it to strike every enemy for 20% Attack per reserve (reduced by Defense).",
+    "Every native critical hit stores 1 Astral Reserve (maximum 3). Last Flare spends all of it to strike every enemy for 20% Attack per reserve (reduced by Defense).",
     "Three gold thunder planets in black conducting cages, resonance-blade axis and vast branching voltage organ-wing architecture",
     { trigger: "activation", actions: ["ultimate"], bank: { trigger: "critical", maximum: 3 }, outcomes: [{ kind: "strike", recipient: "all-enemies", amount: 0.2 }] }
   ),
@@ -1237,7 +1243,7 @@ var masterConduits = [
     "vaelor",
     3,
     "Broken Sky Imperial Metronome",
-    "Defending tunes the next strike: +50% Attack through next round and 15 Gauge. Once per round.",
+    "Every Defense refreshes +50% Attack through next round and returns 15 Gauge.",
     "A black-and-gold sky metronome with resonance-blade pendulum, twelve thunder-frequency wings and enormous nested conductor halos",
     { trigger: "defense", outcomes: [{ kind: "boost", amount: 0.5 }, { kind: "gauge", amount: 15 }] }
   )
@@ -1322,7 +1328,7 @@ function machineConduitDrops(stage, random) {
 function bannerConduitBonus(random) {
   return rollTier(bannerPool, machineRules.bannerBonusChance, random);
 }
-var machineRulesText = `<p>${machineRules.stages} stages \xB7 Lv.10-120 \xB7 Boss every fifth stage. Each defeated enemy grants ordinary Prismatica and independently rolls Rare Conduits at 8%, Legendary at 3.5%, and Omnic at 1% from stage ${machineRules.omnicStage} onward. A successful tier roll awards one equally chosen Conduit: ${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary or ${machinePools.Omnic.length} element-specific Omnic. Multiple tiers may drop together; bosses use the same odds. All Common Conduits are Store-only and have no machine drop roll. ${machineComponentRulesText} No captures, evolution materials, Null-Prismatica or clear bonus.</p><p>One owned ordinary copy unlocks its name for every character. Each ordinary name can be upgraded account-wide five times using only components, adding 50% of the original stat modifiers each time, including penalties (3.5 times at +5). Kit effects and special mechanics are unchanged by upgrades. Up to four ordinary Omnic Conduits may occupy the eight ordinary slots; each must match that character's combat element.</p><p>${masterRulesText}</p>`;
+var machineRulesText = `<p>${machineOrigin}</p><p>${machineRules.stages} stages \xB7 Lv.10-120 \xB7 Boss every fifth stage. Each defeated enemy grants ordinary Prismatica and independently rolls Rare Conduits at 8%, Legendary at 3.5%, and Omnic at 1% from stage ${machineRules.omnicStage} onward. A successful tier roll awards one equally chosen Conduit: ${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary or ${machinePools.Omnic.length} element-specific Omnic. Multiple tiers may drop together; bosses use the same odds. All Common Conduits are Store-only and have no machine drop roll. ${machineComponentRulesText} No captures, evolution materials, Null-Prismatica or clear bonus.</p><p>One owned ordinary copy unlocks its name for every character. Each ordinary name can be upgraded account-wide five times using only components, adding 50% of the original stat modifiers each time, including penalties (3.5 times at +5). Kit effects and special mechanics are unchanged by upgrades. Up to four ordinary Omnic Conduits may occupy the eight ordinary slots; each must match that character's combat element.</p><p>${masterRulesText}</p>`;
 
 // src/content/flagships.ts
 var flagshipCharacters = [
@@ -1332,13 +1338,18 @@ var flagshipCharacters = [
     name: "Atmoso",
     role: "Attacker",
     art: "atmoso",
-    title: "Every road belongs to the wind",
+    title: "Calm charts a road through the broken sky",
     element: "Atmospheric",
     elementId: "atmospheric",
     weapon: "Wind staff",
     color: "#79d6cc",
-    description: "A wind caster who weaves sweeping gales through a crystal-tipped staff.",
-    lore: { origin: "The high roads of Sky-bound Rift", story: "Atmoso follows the winds that once carried messages between the mountain settlements. With a weathered staff and a patient ear, he gathers their scattered voices and opens new paths through the broken sky.", vow: "No road ends while the wind remembers.", awakening: "A familiar breeze finds a new direction." }
+    description: "A human Atmospheric Element-Bearer shaped in Let\u2019s image, Atmoso uses a crystal-tipped wind staff to turn Calm into open roads.",
+    lore: {
+      origin: "The high roads and mountain settlements of Sky-bound Rift",
+      story: "Atmoso once carried messages between Sky-bound Rift\u2019s mountain settlements with a weathered staff and an unusually patient ear. Atmospheric reflects Calm: he waits for each voice in the wind rather than forcing the gale to answer. Let created human Element-Bearers in his image, while Rise created Elemental-Devourers in hers and broke convention to steal the same elements. Both factions seek their creators\u2019 souls; neither has been reunited or crowned, and the race remains unresolved. Atmoso follows reports of Let\u2019s scattered soul as carefully as he charts a route home for each lost message.",
+      vow: "No road ends while the wind remembers.",
+      awakening: "A familiar breeze finds a new direction, not its maker."
+    }
   },
   {
     id: "aurora",
@@ -1346,13 +1357,13 @@ var flagshipCharacters = [
     name: "Aurora",
     role: "Support",
     art: "aurora",
-    title: "The dawn reveals a gentler judgment",
+    title: "Peace sees what every verdict leaves behind",
     element: "Tranquilitic",
     elementId: "tranquilitic",
     weapon: "Empty-hand light casting",
     color: "#eee2af",
-    description: "A light arbiter whose prismatic lenses restrain enemy attacks.",
-    lore: { origin: "The lens courts of Lustrous River", story: "Aurora inherited a lens that shows the consequences hidden behind every verdict. She left the courts to seek those their judgments overlooked, shaping the dawn into seals that temper violence rather than reward it.", vow: "Let the dawn reveal a better choice.", awakening: "A prism turns toward an unwritten verdict." }
+    description: "A human Tranquilitic Element-Bearer shaped in Let\u2019s image, Aurora casts light through prismatic lenses to defend Peace without wielding a weapon.",
+    lore: { origin: "The lens courts of Lustrous River", story: "Aurora inherited a lens in the Lustrous River courts that revealed the lives left outside every verdict. She set aside the courts\u2019 certainty and uses empty-handed light casting to temper violence, not to command obedience. Tranquilitic reflects Peace, the choice to make room for another answer. Let created human Element-Bearers in his image; Rise\u2019s Elemental-Devourers later stole the same elements. Both seek their creators\u2019 souls, but both remain unfound and no faction has won. Aurora studies the lens for signs of Let\u2019s soul, refusing to mistake a glimmer for its return.", vow: "Let the dawn reveal a better choice.", awakening: "A prism turns toward an unwritten verdict; the search continues." }
   },
   {
     id: "bliss",
@@ -1360,13 +1371,13 @@ var flagshipCharacters = [
     name: "Bliss",
     role: "Attacker",
     art: "bliss",
-    title: "Stillness carries a thousand feathers",
+    title: "Peace moves with a thousand careful feathers",
     element: "Tranquilitic",
     elementId: "tranquilitic",
     weapon: "Paired feather fans",
     color: "#a8ded5",
-    description: "A poised duelist whose paired feather fans turn quiet steps into sweeping strikes.",
-    lore: { origin: "The feather courts of City of Heaven", story: "Bliss learned that peace is not the absence of movement but the care taken with it. Her paired fans preserve the rhythm of a vanished feather court as she dances between danger and the people who cannot escape it.", vow: "My stillness will never mean surrender.", awakening: "A quiet feather settles into your hand." }
+    description: "A human Tranquilitic Element-Bearer shaped in Let\u2019s image, Bliss turns Peace into motion with her paired feather fans.",
+    lore: { origin: "The feather courts of City of Heaven", story: "Bliss learned in City of Heaven\u2019s feather courts that Peace is not stillness imposed on others, but attention to how each step affects them. Her paired fans preserve the court\u2019s rhythm as she draws danger away from those unable to flee. Let made human Element-Bearers in his image; Rise made Elemental-Devourers in hers and broke convention to steal their elements. Both factions seek their creators\u2019 souls, which remain unfound; no victor has emerged. Bliss follows the scattered traces of Let\u2019s soul, dancing between the pursuit and the people it threatens.", vow: "My stillness will never mean surrender.", awakening: "A quiet feather settles into your hand; the dance remains unfinished." }
   },
   {
     id: "bruno",
@@ -1374,13 +1385,13 @@ var flagshipCharacters = [
     name: "Bruno",
     role: "Tank",
     art: "bruno",
-    title: "A mountain stands where others cannot",
+    title: "Joy and life endure beneath falling stone",
     element: "Botanic",
     elementId: "botanic",
     weapon: "Stone hammer",
     color: "#c7a782",
-    description: "A quarry guardian whose stone hammer raises a shelter of living bedrock.",
-    lore: { origin: "The quarries of Precipice of the Earth", story: "Bruno stayed when the quarry walls began to fall. With a stone hammer and a promise to the workers, he shaped each broken slab into a new shelter. He now carries that promise wherever the earth can still offer refuge.", vow: "Stand behind me. We will hold.", awakening: "Bedrock answers a steady hand." }
+    description: "A human Botanic Element-Bearer shaped in Let\u2019s image, Bruno bears Joy and Life through a stone hammer and shelters of living bedrock.",
+    lore: { origin: "The quarries of Precipice of the Earth", story: "Bruno stayed when the quarries of Precipice began to collapse. With his stone hammer he made broken slabs into shelter, then shared the workers\u2019 relief as a kind of joy worth protecting. Botanic joins Joy with Life: even buried foundations can hold a future. Let created human Element-Bearers in his image, and Rise created Elemental-Devourers in hers, stealing the same elements; both factions now seek their creators\u2019 souls. Neither has found or reunited one, so Bruno guards the workers while tracing rumors of Let\u2019s soul, unwilling to call any faction\u2019s claim a victory.", vow: "Stand behind me. We will hold.", awakening: "Bedrock answers a steady hand; the foundation is not a throne." }
   },
   {
     id: "disciple",
@@ -1388,13 +1399,13 @@ var flagshipCharacters = [
     name: "Disciple",
     role: "Support",
     art: "disciple",
-    title: "Many wills become an unbroken crown",
+    title: "Mortality binds no mind to a single will",
     element: "Chaotic",
     elementId: "chaotic",
     weapon: "Empty-hand psychic casting",
     color: "#c68aea",
-    description: "A psychic caster who empowers allies with linked mindflame formations.",
-    lore: { origin: "The thought forges of Ruins of Chaos", story: "Disciple refused the thought forges that demanded a single will. He carries their fractured teachings into a new practice: minds may strengthen one another without surrendering their freedom. His open hands weave scarlet mindflame into a shared resolve.", vow: "Strength shared is freedom preserved.", awakening: "An unbound thought reaches for your own." }
+    description: "A human Chaotic Element-Bearer shaped in Let\u2019s image, Disciple uses open-handed psychic casting to share strength without binding another mind.",
+    lore: { origin: "The thought forges of Ruins of Chaos", story: "Disciple refused the thought forges of Ruins of Chaos when they demanded one will from every mind. His open hands now weave scarlet mindflame into a freely shared resolve. Chaotic bears Death and Destruction, facts of existence rather than a license to erase another person\u2019s choices. Let created human Element-Bearers in his image; Rise created Elemental-Devourers in hers and broke convention to steal the same elements. Both factions hunt their creators\u2019 souls, still unreunited, and neither has prevailed. Disciple searches for Let\u2019s scattered soul while resisting every promise that reunion must mean unquestioned rule.", vow: "Strength shared is freedom preserved.", awakening: "An unbound thought reaches for your own; no mind has claimed its maker." }
   },
   {
     id: "elise",
@@ -1402,13 +1413,13 @@ var flagshipCharacters = [
     name: "Elise",
     role: "Attacker",
     art: "elise",
-    title: "Thunder finds the smallest opening",
+    title: "Calm finds its way through the storm",
     element: "Atmospheric",
     elementId: "atmospheric",
     weapon: "Two four-point shuriken",
     color: "#b6e49a",
-    description: "A swift storm striker wielding exactly two four-point shuriken.",
-    lore: { origin: "The circuit paths of Galvanic Field", story: "Elise mapped the forgotten circuit paths with two small throwing stars and a fearless step. When the field fractured, she learned to follow its branching currents, striking the smallest opening before the storm could close it.", vow: "There is always another opening.", awakening: "Two sparks trace a path through the storm." }
+    description: "A human Atmospheric Element-Bearer shaped in Let\u2019s image, Elise reads a storm with exactly two four-point shuriken and a calm, measured step.",
+    lore: { origin: "The circuit paths of Galvanic Field", story: "Elise mapped the forgotten circuits of Galvanic Field with exactly two four-point shuriken and a steady eye. When the field fractured, she learned that Atmospheric Calm is not passivity: it is the pause in which a safe opening can be seen. Let made human Element-Bearers in his image; Rise\u2019s Elemental-Devourers stole the same elements, and both factions seek their creators\u2019 souls. Neither creator\u2019s soul has been found or reunited, and no one has won. Elise follows the field\u2019s branching currents for clues to Let\u2019s soul, but never at the cost of leaving a neighbor behind.", vow: "There is always another opening.", awakening: "Two sparks trace a path through the storm; the source remains distant." }
   },
   {
     id: "razor",
@@ -1416,13 +1427,13 @@ var flagshipCharacters = [
     name: "Razor",
     role: "Tank",
     art: "razor",
-    title: "Midnight keeps an unbroken watch",
+    title: "At midnight, destruction meets a steadfast guard",
     element: "Chaotic",
     elementId: "chaotic",
     weapon: "Night sword",
     color: "#bc9bef",
-    description: "A shadow sentinel whose single night sword guards an eclipse bastion.",
-    lore: { origin: "The nightwatch of Valley of Solitude", story: "Razor kept the last watch when the valley gates were abandoned. He learned to shape the surrounding darkness into a bastion rather than a threat, carrying one night sword and a vow that no frightened traveler would face midnight alone.", vow: "The night will find me standing.", awakening: "A silent sentinel answers your call." }
+    description: "A human Chaotic Element-Bearer shaped in Let\u2019s image, Razor guards the Valley with one night sword and an eclipse bastion.",
+    lore: { origin: "The nightwatch and abandoned gates of Valley of Solitude", story: "Razor kept watch after the Valley of Solitude gates were abandoned. He shaped the darkness around them into a bastion with one night sword, so frightened travelers could pass safely. Chaotic reflects Death and Destruction; Razor knows a guard must face both without turning protection into domination. Let created human Element-Bearers in his image, and Rise created Elemental-Devourers in hers, breaking convention to steal the same elements. Both factions seek their creators\u2019 souls, but neither has reunited one and no side has won. Razor tracks signs of Let\u2019s scattered soul between watches, never leaving the gate unguarded for a promised ending.", vow: "The night will find me standing.", awakening: "A silent sentinel answers your call, not the call of a found soul." }
   }
 ];
 var flagshipEvolutionTitles = {
@@ -1523,13 +1534,18 @@ var warCharacters = [
     name: "Nerithe",
     role: "Attacker",
     art: "nerithe",
-    title: "The cartographer of the shoreless sea",
+    title: "Sadness charted beyond the shoreless sea",
     element: "Oceanic",
     elementId: "oceanic",
     weapon: "Surveyor trident",
     color: "#54c9d4",
-    description: "A human tide-cartographer with a surveyor trident and an expanding dominion of folded currents.",
-    lore: { origin: "The observatories above the spiral sea", story: "Nerithe charted a current that never returned to shore. Following its meridians, she learned to fold distant tides around the people lost between them.", vow: "No one is lost beyond my map.", awakening: "An uncharted current answers." }
+    description: "A human Oceanic Element-Bearer shaped in Let\u2019s image, Nerithe maps Sadness with a surveyor trident and folded currents.",
+    lore: {
+      origin: "The observatories above the spiral sea",
+      story: "From the spiral-sea observatories, Nerithe charted a current that never returned to shore. She learned Oceanic carries Sadness: a record of what is missing that can guide the living, not drown them. With her surveyor trident she folds distant tides around people lost between worlds. Let created human Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole those same elements. Both factions search for their creators\u2019 souls, but neither has been reunited and no victor has emerged. Nerithe plots a route toward Let\u2019s scattered soul while marking every voyager still unaccounted for.",
+      vow: "No one is lost beyond my map.",
+      awakening: "An uncharted current answers; its source is not yet found."
+    }
   },
   {
     id: "orvella",
@@ -1537,13 +1553,18 @@ var warCharacters = [
     name: "Orvella",
     role: "Tank",
     art: "orvella",
-    title: "The foundation that bears the world",
+    title: "Joy grows from foundations beneath the world",
     element: "Botanic",
     elementId: "botanic",
     weapon: "Crystal mace",
     color: "#d2b59a",
-    description: "A human foundation sovereign with a crystal mace and an ever-growing citadel of stone.",
-    lore: { origin: "The vaults beneath the faultline", story: "Orvella once braced a broken village gate with a mason's stone. She now carries the weight of buried citadels, raising their foundations to shelter those the world forgot.", vow: "No shelter falls while I still stand.", awakening: "The first foundation answers." }
+    description: "A human Botanic Element-Bearer shaped in Let\u2019s image, Orvella\u2019s crystal mace raises living foundations where Joy and Life can endure.",
+    lore: {
+      origin: "The vaults beneath the faultline",
+      story: "Orvella first braced a broken village gate with a mason\u2019s stone. In the vaults beneath the faultline she found buried foundations, and with her crystal mace raised them into shelter for people the world had forgotten. Botanic holds Joy and Life together: she celebrates each home restored without pretending the losses never happened. Let made human Element-Bearers in his image; Rise made Elemental-Devourers in hers and broke convention to steal the same elements. Both sides seek their creators\u2019 souls; neither has found or reunited one, and no one has won. Orvella follows Let\u2019s trail between repairs, unwilling to leave a community for a promise of rule.",
+      vow: "No shelter falls while I still stand.",
+      awakening: "The first foundation answers, though its maker\u2019s soul remains lost."
+    }
   },
   {
     id: "vaelor",
@@ -1551,13 +1572,13 @@ var warCharacters = [
     name: "Vaelor",
     role: "Attacker",
     art: "vaelor",
-    title: "The final chord of the broken sky",
+    title: "Calm holds the note between storms",
     element: "Atmospheric",
     elementId: "atmospheric",
     weapon: "Resonance blade",
     color: "#e6d177",
-    description: "A human storm conductor wielding a resonance blade amid branching thunder architecture.",
-    lore: { origin: "The towers of the thunder choir", story: "Vaelor listened for the missing rhythm between storms. With a small resonance blade, he followed that silence until the broken sky itself became his choir.", vow: "Even a broken sky can sing again.", awakening: "Quiet voltage finds its first rhythm." }
+    description: "A human Atmospheric Element-Bearer shaped in Let\u2019s image, Vaelor finds Calm in the thunder choir with a resonance blade.",
+    lore: { origin: "The towers of the thunder choir", story: "Vaelor listened in the thunder-choir towers for the missing rhythm between storms. With a small resonance blade he followed the silence, learning that Atmospheric means Calm: the clear interval in which a broken sky can be heard without being forced to sing. Let created human Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole the same elements. Both factions seek their creators\u2019 souls, still separate and unfound; the contest has no winner. Vaelor follows the quiet frequencies around rumors of Let\u2019s soul, certain that the missing note must be heard before anyone can claim the final chord.", vow: "Even a broken sky can sing again.", awakening: "Quiet voltage finds its first rhythm, not its final chord." }
   }
 ];
 function isWarCharacter(value) {
@@ -1633,17 +1654,17 @@ var openingStarters = [
     name: "Infernis",
     role: "Attacker",
     art: "infernis",
-    title: "The spark that refuses to fade",
+    title: "Wrath that guards a fragile beginning",
     element: "Infernic",
     elementId: "infernic",
     weapon: "Greatsword",
     color: "#f39b6d",
-    description: "A fire-hearted wanderer with a wooden greatsword and a red scarf. Even the smallest spark can hold back the dark.",
+    description: "A human Infernic Element-Bearer shaped in Let\u2019s image, Infernis carries Wrath in a wooden greatsword and red scarf, turning fierce feeling toward protection.",
     lore: {
-      origin: "The watchfires of Ashen Vale",
-      story: "When the watchfires of Ashen Vale went cold, Infernis carried the last coal home in a clay lantern. With only a wooden training greatsword and a scarf sewn by the village keepers, she set out to rekindle the beacons. Infernis does not seek a throne or a legend - only a road where no traveler must face the darkness alone.",
-      vow: "If one spark remains, we can begin again.",
-      awakening: "The last coal answers your call."
+      origin: "The watchfires and village keepers of Ashen Vale",
+      story: "When Ashen Vale\u2019s watchfires failed, Infernis carried their last coal in a clay lantern, her wooden training greatsword in hand and the keepers\u2019 red scarf at her neck. As a human Element-Bearer made in Let\u2019s image, she knows Infernic answers Wrath: anger can burn a refuge down, or give someone the courage to defend it. Rise\u2019s Elemental-Devourers have stolen the same element, and both factions hunt their creators\u2019 scattered souls; Let\u2019s remains unreunited, and no side has won. Infernis follows the rumor of his soul not for a throne, but so no traveler must face the dark alone.",
+      vow: "Let my Wrath shelter the next beginning.",
+      awakening: "The last coal stirs; the missing soul is still ahead."
     }
   },
   {
@@ -1652,17 +1673,17 @@ var openingStarters = [
     name: "Tizu",
     role: "Tank",
     art: "tizu",
-    title: "A quiet tide. An unbroken will.",
+    title: "Sadness remembered, and carried safely",
     element: "Oceanic",
     elementId: "oceanic",
     weapon: "Spear",
     color: "#79c9eb",
-    description: "A blue-haired traveler with a simple spear and a blue sash. Where the world falls silent, the tide keeps moving.",
+    description: "A human Oceanic Element-Bearer shaped in Let\u2019s image, Tizu\u2019s blue hair, simple spear, and blue ferrykeeper sash follow remembered Sadness.",
     lore: {
-      origin: "The silent shores of Glasswater",
-      story: "Tizu grew up listening to the bells of Glasswater guide boats through the mist. On the night the bells fell silent, he tied his ferrykeeper sash around his waist and took a practice spear to the shore. He now follows a current only he can hear, searching for the missing keepers and promising to bring every lost voyager safely home.",
+      origin: "The ferry bells and silent shores of Glasswater",
+      story: "Tizu learned every Glasswater bell that guided boats through the mist. After the bells fell silent, he tied on his blue ferrykeeper sash and took a practice spear to the shore. His Oceanic element holds Sadness without letting grief become an anchor: he records the names of the missing keepers and follows currents that might bring them home. Let\u2019s first made human Element-Bearers in his image, while Rise made Elemental-Devourers who broke the old boundary and stole the same elements. Both search for their creators\u2019 souls, but neither has been reunited; Tizu seeks Let\u2019s without mistaking a hopeful current for proof.",
       vow: "No one is lost while the water remembers.",
-      awakening: "A forgotten current finds its way to you."
+      awakening: "A grieving current rises, but its source remains unknown."
     }
   },
   {
@@ -1671,17 +1692,17 @@ var openingStarters = [
     name: "Flora",
     role: "Healer & Support",
     art: "flora",
-    title: "Life takes root in the impossible",
+    title: "Joy gives life room to return",
     element: "Botanic",
     elementId: "botanic",
     weapon: "Bow",
     color: "#a9d58a",
-    description: "A green-haired archer with a wooden bow and a green neckerchief. A new beginning grows from a single seed.",
+    description: "A human Botanic Element-Bearer shaped in Let\u2019s image, Flora\u2019s wooden bow and green neckerchief accompany Joy and Life wherever hope can take root.",
     lore: {
-      origin: "The waking roots of Hollowgreen",
-      story: "Flora tended the smallest garden in Hollowgreen, where the old trees had stopped bearing leaves. One morning, a single seed unfurled beneath the gray branches. Carrying a simple bow and the gardeners' green neckerchief, she left to find soil where that fragile hope could flourish. Flora believes the world is not dying - it is waiting to be cared for.",
-      vow: "Give hope a place to take root.",
-      awakening: "A sleeping seed opens to your light."
+      origin: "The waking roots and gardeners of Hollowgreen",
+      story: "Flora tended a small garden in Hollowgreen after the old trees stopped bearing leaves. When one seed opened beneath the gray branches, she took her wooden bow and the gardeners\u2019 green neckerchief to find more ground worth tending. Botanic carries both Joy and Life: delight is not denial of loss, but the choice to make room for what can grow. Let created human Element-Bearers in his image; Rise\u2019s Elemental-Devourers later stole those same elements, and both factions now seek their creators\u2019 souls. Flora follows the still-unfound soul of Let, hoping its return might keep the worlds open to renewal; no faction has yet prevailed.",
+      vow: "Give joy and life a place to take root.",
+      awakening: "A sleeping seed opens; the search is not over."
     }
   }
 ];
@@ -1692,13 +1713,13 @@ var roseCharacters = [
     name: "Rosetta",
     role: "Attacker",
     art: "rosetta",
-    title: "Virtue takes flight beneath a crimson sun",
+    title: "Peace takes flight beneath a crimson sun",
     element: "Tranquilitic",
     elementId: "tranquilitic",
     weapon: "Bow",
     color: "#eee2af",
-    description: "A rose-bound archer whose golden thorns and crimson wings scatter the shadows.",
-    lore: { origin: "The gardens beneath sunny skies", story: "Rosetta carries a quiet vow through the rose gardens: passion must protect life, not possess it. Her bow draws golden thorns across the sky, opening a path for those trapped beneath the crimson canopy.", vow: "Let every rose shelter a beginning.", awakening: "A crimson petal turns toward the sun." }
+    description: "A human Tranquilitic Element-Bearer shaped in Let\u2019s image, Rosetta\u2019s bow, golden thorns, and crimson wings defend peace without demanding possession.",
+    lore: { origin: "The gardens beneath sunny skies", story: "Rosetta learned among the sunny rose gardens that peace is a practice, not a command to be silent. Her bow draws golden thorns through the crimson canopy to open an escape for those caught in others\u2019 quarrels. Tranquilitic reflects Peace, and she carries that meaning as one of the human Element-Bearers Let created in his image. Rise\u2019s Elemental-Devourers stole the same element; both factions seek their creators\u2019 souls, still unfound, and no victor can yet claim the world. Rosetta follows the rumors with care, wary of any peace bought by making one creator absolute.", vow: "Let every rose shelter a beginning.", awakening: "A crimson petal turns toward the sun; the soul is still sought." }
   },
   {
     id: "thornia",
@@ -1706,13 +1727,13 @@ var roseCharacters = [
     name: "Thornia",
     role: "Tank",
     art: "thornia",
-    title: "The forbidden garden keeps its promises",
+    title: "Destruction held to account at the garden gate",
     element: "Chaotic",
     elementId: "chaotic",
     weapon: "Greatsword",
     color: "#bc9bef",
-    description: "A shadow knight with a golden rose in her hair and a greatsword wrapped in crimson thorns.",
-    lore: { origin: "The forbidden garden", story: "Thornia once guarded a single golden rose at the edge of a forgotten garden. When its gates broke, she took up a greatsword and wove its thorns into armor, refusing to let beauty become another weapon against the defenseless.", vow: "No one crosses these thorns alone.", awakening: "The golden rose remembers its guardian." }
+    description: "A human Chaotic Element-Bearer shaped in Let\u2019s image, Thornia wears a golden rose in her hair and bears a crimson-thorn-wrapped greatsword.",
+    lore: { origin: "The forbidden garden", story: "Thornia guarded a single golden rose at the edge of the forbidden garden. When its gates broke, she wrapped crimson thorns around her greatsword and held the breach so its people could escape. Chaotic reflects Death and Destruction, truths she refuses to disguise as virtue or wield carelessly. Let created human Element-Bearers in his image; Rise created Elemental-Devourers in hers and broke convention to steal the same elements. Both factions seek their creators\u2019 souls, but neither soul has been reunited and no one has won. Thornia searches for Let\u2019s, intent on keeping destructive power from deciding who deserves to live.", vow: "No one crosses these thorns alone.", awakening: "The golden rose remembers its guardian, not a victor." }
   },
   {
     id: "crinso",
@@ -1720,13 +1741,13 @@ var roseCharacters = [
     name: "Crinso",
     role: "Attacker",
     art: "crinso",
-    title: "Beauty and ruin share a single edge",
+    title: "One blade, honest about death and renewal",
     element: "Chaotic",
     elementId: "chaotic",
     weapon: "Dual-edged sword",
     color: "#ed8bbe",
-    description: "A swift rose knight wielding one dual-edged sword, golden fire on one edge and crimson lightning on the other.",
-    lore: { origin: "The paths between twin roses", story: "Crinso learned that a garden needs both gentle tending and the strength to cut away what threatens it. His small double-edged dagger grew into a rose-centered blade as he followed that balance, carrying golden beauty and crimson destruction without surrendering to either.", vow: "I choose what grows beyond the storm.", awakening: "Two petals unfold around one resolve." }
+    description: "A human Chaotic Element-Bearer shaped in Let\u2019s image, Crinso wields one dual-edged sword: golden fire on one edge, crimson lightning on the other.",
+    lore: { origin: "The paths between twin roses", story: "On the paths between twin roses, Crinso learned that tending a garden sometimes means protecting what lives and sometimes accepting what must end. His small double-edged dagger became one rose-centered sword, golden fire and crimson lightning held in a single grip. Chaotic bears Death and Destruction, not a promise of cruelty. Let made human Element-Bearers in his image; Rise\u2019s Elemental-Devourers broke convention to steal their elements. Both sides hunt their creators\u2019 souls, still separate and unfound, and Crinso will not call the contest settled before either is found. He follows the trail of Let\u2019s soul while guarding the people caught between factions.", vow: "I choose what grows beyond the storm.", awakening: "Two petals unfold around one resolve; neither soul has returned." }
   }
 ];
 var starters = [...openingStarters, ...roseCharacters, ...flagshipCharacters, ...warCharacters];
@@ -1785,42 +1806,42 @@ var sharedNativeEffects = {
 // src/content/kit-pilots.ts
 var kitPilotDescriptions = {
   ember: {
-    passive: `While you are alive, Burn from your own abilities grants one charge of ${elementalEffectFamilies.burn.label} when it deals damage, at most once per enemy phase (maximum 3). The charges are not Burn and do nothing on their own.`,
+    passive: `While you are alive, Burn from your own abilities grants one charge of ${elementalEffectFamilies.burn.label} when it deals damage, at most once per enemy phase (maximum 3). Save these charges to strengthen Flame Arc or Last Flare.`,
     skill2: `Spends all ${elementalEffectFamilies.burn.label} charges for +8% outgoing damage per charge (maximum +24%); one spend for the whole activation.`,
     ultimate: `Spends all ${elementalEffectFamilies.burn.label} charges for +12% outgoing damage per charge (maximum +36%); one spend for the whole activation.`,
-    resource: { label: elementalEffectFamilies.burn.label, key: "ember", summary: `${elementalEffectFamilies.burn.label} is a counter of 0-3 charges this character keeps, shown under their health bar in battle. Gain 1 when Burn from this character's own abilities deals damage (at most once per enemy phase). Abilities that say they spend them use every charge at once for extra damage. Charges do nothing on their own.`, detail: `${elementalEffectFamilies.burn.label}: Skill 2 +8% outgoing damage per charge or Last Flare +12% per charge.`, effect: sharedNativeEffects.ember }
+    resource: { label: elementalEffectFamilies.burn.label, key: "ember", summary: "Save up to 3 charges from your own Burn damage, once per enemy phase while alive. Flame Arc spends them for +8% damage each; Last Flare spends them for +12% each.", detail: `${elementalEffectFamilies.burn.label}: Skill 2 +8% outgoing damage per charge or Last Flare +12% per charge.`, effect: sharedNativeEffects.ember }
   },
   ward: {
-    passive: `While you are alive, shields from your own abilities grant one charge of ${elementalEffectFamilies.ward.label} when they absorb a direct enemy hit, at most once per enemy phase across the team (maximum 3). The charges are not shield points and do nothing on their own.`,
+    passive: `While you are alive, shields from your own abilities grant one charge of ${elementalEffectFamilies.ward.label} when they absorb a direct enemy hit, at most once per enemy phase across the team (maximum 3). Save these charges to strengthen Undertow Thrust's Weaken or Last Flare's team shield.`,
     skill1: `Spends all ${elementalEffectFamilies.ward.label} charges for +5 percentage points Weaken per charge (maximum +15; total reduction capped at 60%).`,
     ultimate: `Spends all ${elementalEffectFamilies.ward.label} charges to increase this ability's team shield by 5% of your maximum Health per charge (maximum 15%). Each ally keeps the higher of their remaining shield and this new amount.`,
-    resource: { label: elementalEffectFamilies.ward.label, key: "ward", summary: `${elementalEffectFamilies.ward.label} is a counter of 0-3 charges this character keeps, shown under their health bar in battle. Gain 1 when a shield this character created blocks a direct enemy hit on any ally (at most once per enemy phase). Abilities that say they spend them use every charge at once for stronger Weaken or a bigger shield. Charges do nothing on their own.`, detail: `${elementalEffectFamilies.ward.label}: Skill 1 +5 percentage points Weaken per charge or Last Flare adds a shield worth 5% of caster maximum Health per charge.`, effect: sharedNativeEffects.ward }
+    resource: { label: elementalEffectFamilies.ward.label, key: "ward", summary: "Save up to 3 charges when your ability shield absorbs a direct enemy hit, once per enemy phase while alive. Skill 1 spends them to strengthen Weaken; Last Flare spends them for a larger team shield.", detail: `${elementalEffectFamilies.ward.label}: Skill 1 +5 percentage points Weaken per charge or Last Flare adds a shield worth 5% of caster maximum Health per charge.`, effect: sharedNativeEffects.ward }
   },
   bloom: {
-    passive: `While you are alive, healing from your own abilities or passive grants one charge of ${elementalEffectFamilies.bloom.label} when it restores missing HP, at most once per turn (maximum 3). Full-health targets and Conduit healing do not count. The charges are not healing and do nothing on their own.`,
-    resource: { label: elementalEffectFamilies.bloom.label, key: "bloom", summary: `${elementalEffectFamilies.bloom.label} is a counter of 0-3 charges this character keeps, shown under their health bar in battle. Gain 1 when this character's own healing restores missing HP (at most once per turn). Abilities that say they spend them use every charge at once for a bonus. Charges do nothing on their own.`, detail: `${elementalEffectFamilies.bloom.label} charges come from restoring missing HP with your own abilities or passive, once per turn, maximum 3.`, effect: sharedNativeEffects.bloom }
+    passive: `While you are alive, healing from your own abilities or passive grants one charge of ${elementalEffectFamilies.bloom.label} when it restores missing HP, at most once per turn (maximum 3). Full-health targets and Conduit healing do not count. Save these charges to strengthen Skill 1 or Last Flare.`,
+    resource: { label: elementalEffectFamilies.bloom.label, key: "bloom", summary: "Save up to 3 charges by restoring missing HP with your own kit, once per turn. Skill 1 spends them for extra damage. Last Flare spends them for extra healing (Flora) or team shield (Bliss). Conduit healing does not earn charges.", detail: `${elementalEffectFamilies.bloom.label}: Skill 1 spends charges for extra damage; Last Flare spends them for extra healing (Flora) or team shield (Bliss).`, effect: sharedNativeEffects.bloom }
   },
   tempest: {
-    passive: `A critical Normal Attack, Skill 1 or Skill 2 that deals damage grants one charge of ${elementalEffectFamilies.tempest.label}, at most once per use even against multiple enemies (maximum 3). Last Flare grants none. The charges do nothing on their own.`,
-    resource: { label: elementalEffectFamilies.tempest.label, key: "tempest", summary: `${elementalEffectFamilies.tempest.label} is a counter of 0-3 charges this character keeps, shown under their health bar in battle. Gain 1 when this character lands a critical hit with Normal Attack, Skill 1 or Skill 2. Abilities that say they spend them use every charge at once for extra damage. Charges do nothing on their own.`, detail: `${elementalEffectFamilies.tempest.label}: the skill that says it spends them gets +8% outgoing damage per charge; Last Flare gets +12% per charge.`, effect: sharedNativeEffects.tempest }
+    passive: `A critical Normal Attack, Skill 1 or Skill 2 that deals damage grants one charge of ${elementalEffectFamilies.tempest.label}, at most once per use even against multiple enemies (maximum 3). Last Flare grants none. Save these charges for the charge-spending skill or Last Flare's damage bonus.`,
+    resource: { label: elementalEffectFamilies.tempest.label, key: "tempest", summary: "Save up to 3 charges from damaging critical Normal Attacks or skills, once per use; Last Flare earns none. Skill 1 (Atmoso and Elise) or Skill 2 (Vaelor) spends them for +8% damage each; Last Flare spends them for +12% each.", detail: `${elementalEffectFamilies.tempest.label}: Skill 1 (Atmoso and Elise) or Skill 2 (Vaelor) spends charges for +8% damage each; Last Flare spends them for +12% each.`, effect: sharedNativeEffects.tempest }
   },
   "rose-grace": {
     passive: "While Rosetta is alive, her abilities or passive grant one Rose Grace charge when they restore missing HP, at most once per turn (maximum 3). Full-health targets and Conduit healing do not count.",
     skill1: "Spends all Rose Grace for +5 percentage points Weaken each (maximum +15; combined reduction capped at 60%).",
     ultimate: "Spends all Rose Grace for +10% outgoing damage each (maximum +30%); one spend for the whole activation.",
-    resource: { label: "Rose Grace", key: "roseGrace", summary: `Rose Grace is a counter of 0-3 charges this character keeps, shown under their health bar in battle. Gain 1 when Rosetta's own healing restores missing HP (at most once per turn). Skill 1 and Last Flare spend every charge at once for a bonus. Charges do nothing on their own.`, detail: "Rose Grace: Skill 1 +5 percentage points Weaken each or Last Flare +10% outgoing damage each.", effect: { family: "bloom", kind: "healing", origin: "rose", source: "living-self-authored-healing" } }
+    resource: { label: "Rose Grace", key: "roseGrace", summary: "Save up to 3 charges by restoring missing HP with Rosetta's own kit, once per turn while alive. Skill 1 spends them for stronger Weaken; Last Flare spends them for +10% damage each. Conduit healing does not earn charges.", detail: "Rose Grace: Skill 1 +5 percentage points Weaken each or Last Flare +10% outgoing damage each.", effect: { family: "bloom", kind: "healing", origin: "rose", source: "living-self-authored-healing" } }
   },
   "thorn-aegis": {
     passive: "While Thornia is alive, shields from her abilities grant one Thorn Aegis charge when they absorb a direct enemy hit, at most once per enemy phase across the team (maximum 3). Conduit shields do not count.",
     skill2: "Spends all Thorn Aegis for +5 percentage points Weaken each (maximum +15; combined reduction capped at 60%).",
     ultimate: "Spends all Thorn Aegis to add shield points equal to 5% of your maximum Health per charge (maximum 15%), before this ability's shield modifiers. Each ally keeps the higher of their remaining shield and this new amount.",
-    resource: { label: "Thorn Aegis", key: "thornAegis", summary: `Thorn Aegis is a counter of 0-3 charges this character keeps, shown under their health bar in battle. Gain 1 when a shield Thornia created blocks a direct enemy hit on any ally (at most once per enemy phase). Skill 2 and Last Flare spend every charge at once for a bonus. Charges do nothing on their own.`, detail: "Thorn Aegis: Skill 2 +5 percentage points Weaken each or Last Flare adds 5% caster maximum Health shield each.", effect: { family: "ward", kind: "shield-absorption", origin: "rose", source: "living-self-authored-shield" } }
+    resource: { label: "Thorn Aegis", key: "thornAegis", summary: "Save up to 3 charges when Thornia's ability shield absorbs a direct enemy hit, once per enemy phase while alive. Skill 2 spends them for stronger Weaken; Last Flare spends them for a larger team shield. Conduit shields do not earn charges.", detail: "Thorn Aegis: Skill 2 +5 percentage points Weaken each or Last Flare adds 5% caster maximum Health shield each.", effect: { family: "ward", kind: "shield-absorption", origin: "rose", source: "living-self-authored-shield" } }
   },
   "rose-duality": {
     passive: "While Crinso is alive, Burn from his abilities grants one Rose Duality charge when it deals damage, at most once per enemy phase (maximum 3). The charges are not Burn and are separate from the Ember Seals granted by the Cinder Testament Conduit.",
     skill1: "Spends all Rose Duality for +8% outgoing damage each (maximum +24%); one spend for the whole activation.",
     ultimate: "Spends all Rose Duality for +12% outgoing damage each (maximum +36%); one spend for the whole activation.",
-    resource: { label: "Rose Duality", key: "duality", summary: `Rose Duality is a counter of 0-3 charges this character keeps, shown under their health bar in battle. Gain 1 when Burn from Crinso's own abilities deals damage (at most once per enemy phase). Skill 1 and Last Flare spend every charge at once for extra damage. Charges do nothing on their own.`, detail: "Rose Duality: Skill 1 +8% outgoing damage each or Last Flare +12% each.", effect: { family: "burn", kind: "burn", origin: "rose", source: "living-self-authored-burn" } }
+    resource: { label: "Rose Duality", key: "duality", summary: "Save up to 3 charges from Crinso's own Burn damage, once per enemy phase while alive. Skill 1 spends them for +8% damage each; Last Flare spends them for +12% each. Separate from Conduit charges.", detail: "Rose Duality: Skill 1 +8% outgoing damage each or Last Flare +12% each.", effect: { family: "burn", kind: "burn", origin: "rose", source: "living-self-authored-burn" } }
   }
 };
 
@@ -1953,17 +1974,17 @@ function describeFighter(id, snapshot) {
     kit.passive.description = `+${pct(kit.passive.damageBonus)}% outgoing damage at or below 50% health.`;
     kit.abilities.skill1.description = `${pct(value("skill1", "damageMultiplier"))}% damage to one enemy; burn for ${Math.round(kit.stats.elementalDamage * value("skill1", "burnMultiplier"))} damage on its next two enemy phases.`;
     kit.abilities.skill2.description = `${pct(value("skill2", "damageMultiplier"))}% damage to every living enemy.`;
-    kit.abilities.ultimate.description = `${pct(value("ultimate", "damageMultiplier"))}% damage to every enemy; burn surviving targets for ${Math.round(kit.stats.elementalDamage * value("ultimate", "burnMultiplier"))} damage on their next two enemy phases. Recover next turn.`;
+    kit.abilities.ultimate.description = `${pct(value("ultimate", "damageMultiplier"))}% damage to every enemy; burn surviving targets for ${Math.round(kit.stats.elementalDamage * value("ultimate", "burnMultiplier"))} damage on their next two enemy phases.`;
   } else if (id === "tide") {
     kit.passive.description = `+${formatStat(kit.passive.defenseBonus)} defense, already included in displayed effective defense.`;
     kit.abilities.skill1.description = `${pct(value("skill1", "damageMultiplier"))}% damage to one enemy; reduce its next two enemy-phase attacks by ${pct(value("skill1", "weakenFraction"))}%.`;
-    kit.abilities.skill2.description = `Give every living ally ${formatStat(value("skill2", "shield"))} shield (refresh to at least ${formatStat(value("skill2", "shield"))}; does not stack).`;
-    kit.abilities.ultimate.description = `${pct(value("ultimate", "damageMultiplier"))}% damage to all enemies and ${formatStat(value("ultimate", "shield"))} shield for allies. Recover next turn.`;
+    kit.abilities.skill2.description = `Give every living ally ${formatStat(value("skill2", "shield"))} shield points.`;
+    kit.abilities.ultimate.description = `${pct(value("ultimate", "damageMultiplier"))}% damage to all enemies and ${formatStat(value("ultimate", "shield"))} shield points for every living ally.`;
   } else if (id === "sprout") {
     kit.passive.description = `At each new player turn, heal living allies by ${pct(kit.passive.healFraction)}% of their maximum health while Flora lives.`;
     kit.abilities.skill1.description = `${pct(value("skill1", "damageMultiplier"))}% damage to one enemy with +${pct(value("skill1", "critBonus"))} percentage points critical chance.`;
     kit.abilities.skill2.description = `Restore ${formatStat(value("skill2", "healing"))} health to every living ally; cannot revive. Increase living allies' outgoing attack damage by ${pct(value("skill2", "attackBoostFraction"))}% this and next player turn (refresh; does not stack).`;
-    kit.abilities.ultimate.description = `${pct(value("ultimate", "damageMultiplier"))}% damage to all enemies and heal living allies by ${formatStat(value("ultimate", "healing"))}. Recover next turn.`;
+    kit.abilities.ultimate.description = `${pct(value("ultimate", "damageMultiplier"))}% damage to all enemies and restore ${formatStat(value("ultimate", "healing"))} HP to every living ally; cannot revive.`;
   } else {
     kit.passive.description = kit.passive.lightGaugeBonus !== void 0 ? `Normal Attack gains ${formatStat(kit.passive.lightGaugeBonus)} additional Gauge, capped by Gauge capacity.` : kit.passive.healFraction > 0 ? `At each new player turn, heal living allies by ${pct(kit.passive.healFraction)}% of maximum health while this Element-Bearer lives.` : kit.passive.defenseBonus > 0 ? `+${formatStat(kit.passive.defenseBonus)} defense, included in effective defense.` : `+${pct(kit.passive.damageBonus)}% outgoing damage at or below 50% health.`;
     for (const action of ["skill1", "skill2", "ultimate"]) {
@@ -1974,10 +1995,10 @@ function describeFighter(id, snapshot) {
       if (strength.weakenFraction !== void 0) effects.push(`reduce surviving targets' next two enemy-phase attacks by ${pct(strength.weakenFraction)}%`);
       if (strength.critBonus !== void 0) effects.push(`+${pct(strength.critBonus)} percentage points critical chance`);
       if (strength.burnMultiplier !== void 0) effects.push(`burn surviving targets for ${Math.round(kit.stats.elementalDamage * strength.burnMultiplier)} damage on their next two enemy phases`);
-      if (strength.shield !== void 0) effects.push(`give every living ally ${formatStat(strength.shield)} shield (refresh; does not stack)`);
+      if (strength.shield !== void 0) effects.push(`give every living ally ${formatStat(strength.shield)} shield points`);
       if (strength.healing !== void 0) effects.push(`restore ${formatStat(strength.healing)} health to every living ally; cannot revive`);
       if (strength.attackBoostFraction !== void 0) effects.push(`increase living allies' outgoing attack damage by ${pct(strength.attackBoostFraction)}% this and next player turn (refresh; does not stack)`);
-      ability.description = `${effects.join("; ")}.${action === "ultimate" ? " Recover next turn." : ""}`;
+      ability.description = `${effects.join("; ")}.`;
     }
   }
   if (kit.pilot) {
@@ -2010,32 +2031,25 @@ function describeFighter(id, snapshot) {
       ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge (maximum +36%).`
     }
   };
-  if (kit.passive.description.includes("Gauge")) {
-    kit.passive.description += " Gauge (Shatter Gauge) is the meter under the health bar that fills as this character acts and takes hits; Skills and Last Flare spend it.";
-  }
   for (const [action, text2] of Object.entries(intrinsicActionCopy[id] ?? {})) {
     kit.abilities[action].description += ` ${text2}`;
   }
   for (const action of ["skill1", "skill2", "ultimate"]) {
     const ability = kit.abilities[action];
     if (ability.strength.shield !== void 0 || id === "bliss" && action === "ultimate") {
-      ability.description += " Shield absorbs damage before HP and lasts until used up. New shields keep the higher amount, rather than adding together.";
+      ability.description += " Shield: absorbs damage before HP; persists until depleted; refreshes to the higher amount.";
     }
     if (ability.strength.weakenFraction !== void 0) {
-      ability.description += " This is Weaken: it reduces enemy outgoing attack damage, not Defense.";
+      ability.description += " Weaken: outgoing attack damage reduction; Defense unchanged.";
     }
     if (ability.strength.critBonus !== void 0) {
-      ability.description += " The critical-chance bonus applies only to this attack, not future attacks.";
+      ability.description += " Critical chance bonus: this attack only.";
     }
     if (ability.strength.burnMultiplier !== void 0) {
-      ability.description += " Burn deals its damage once in each of the next two enemy phases and ignores Defense. A new Burn replaces the old one instead of adding to it.";
-    }
-    const resource = kit.pilot ? kitPilotDescriptions[kit.pilot].resource : void 0;
-    if (resource && ability.description.includes(`Spends all ${resource.label}`)) {
-      ability.description += ` What is ${resource.label}? ${resource.summary}`;
+      ability.description += " Burn ignores Defense and replaces existing Burn.";
     }
     if (action === "ultimate") {
-      ability.description += " Recovery means this character cannot act on the next player turn; allies may still act.";
+      ability.description += " Recovery: caster skips the next player turn.";
     }
   }
   return kit;
@@ -2861,50 +2875,50 @@ var storyRegions = [
   {
     element: "infernic",
     name: "Emberwake March",
-    introduction: "The road begins among cooling cinders. Recover the beacons before their embers vanish.",
+    introduction: "The search for Let's soul begins among cooling cinders. Rise's seekers wield the same Infernic Wrath. Restore the first beacon to reopen the road.",
     enemies: ["Cinderling", "Ashback Boar", "Coalcrest Moth", "Furnace Jackal"],
     boss: "Kilnheart Warden",
-    conclusion: "The first beacon burns again. Beyond the ash, a tide answers its light."
+    conclusion: "The first beacon burns again. Let's soul remains unfound; the road leads onward toward Oceanic Sadness."
   },
   {
     element: "oceanic",
     name: "Glasswater Reach",
-    introduction: "Broken causeways cross a silent sea. Follow the submerged bells toward the second beacon.",
+    introduction: "Oceanic Sadness echoes across the broken causeways of Glasswater. Follow the submerged bells toward the second beacon while Rise's seekers scour the same shores.",
     enemies: ["Tideglass Crab", "Foamfin Drake", "Pearlshell Turtle", "Current Ray"],
     boss: "Deepbell Leviathan",
-    conclusion: "The bells ring above the water. Their song carries into the stormlands."
+    conclusion: "The bells ring above the water. The search continues beyond these grieving shores, toward Atmospheric Calm."
   },
   {
     element: "atmospheric",
     name: "Stormspan Heights",
-    introduction: "Floating ridges drift beneath a gathering storm. Reconnect the wind bridges to reach the sky beacon.",
+    introduction: "Let named Atmospheric for Calm, even where its winds become a storm. Reconnect the sky bridges as Rise's Elemental-Devourers search the floating ridges.",
     enemies: ["Cloudhorn Ram", "Staticwing Kite", "Gusttail Lynx", "Thundercoil Serpent"],
     boss: "Tempest Crown Roc",
-    conclusion: "The sky paths steady. Beneath them, a green beacon struggles through stone."
+    conclusion: "The sky paths steady without deciding the creators' contest. Below, Botanic Joy and Life point toward the next road."
   },
   {
     element: "botanic",
     name: "Rootstone Wilds",
-    introduction: "Roots have sealed the old roads. Trace the living paths and return light to the buried garden.",
+    introduction: "Botanic carries Let's Joy and Life. Trace the living paths through sealed roads; Rise's seekers have stolen this power too and roam the buried garden.",
     enemies: ["Mossplate Beetle", "Briarback Stag", "Loamjaw Mole", "Fernmantle Basilisk"],
     boss: "Heartwood Colossus",
-    conclusion: "The garden opens its gates. A quiet procession leads toward the pale horizon."
+    conclusion: "The garden opens its gates. Neither creator's soul is here; a quiet procession leads toward Tranquilitic Peace."
   },
   {
     element: "tranquilitic",
     name: "Stillhalo Vale",
-    introduction: "A hush lies over abandoned sanctuaries. Gather the scattered vows before silence takes the fifth beacon.",
+    introduction: "Tranquilitic Peace rests over abandoned sanctuaries. Gather the scattered vows to restore the fifth beacon, remembering that Rise's creations can wield Peace as well.",
     enemies: ["Ivoryveil Moth", "Dewhalo Hart", "Vowcrest Crane", "Opalward Lion"],
     boss: "Serene Oathkeeper",
-    conclusion: "The vows become a guiding chorus. Only the last fractured beacon remains."
+    conclusion: "The vows become a guiding chorus. The search leads to the final route, where Chaotic Death and Destruction have fractured the frontier."
   },
   {
     element: "chaotic",
     name: "Riftbound Frontier",
-    introduction: "All restored lights converge at the broken frontier. Cross the fractures and confront the keeper of the final beacon.",
+    introduction: "Let named Chaotic for Death and Destruction; it is not exclusive to Rise or her Nothingness. Cross the fractures and confront her seekers at the final beacon.",
     enemies: ["Riftfang Hound", "Splinterhide Lizard", "Voidcrest Raven", "Faultcoil Wyrm"],
     boss: "Fracture Sovereign",
-    conclusion: "Six beacons answer one another. The world has not healed, but its roads are no longer dark."
+    conclusion: "Six beacons answer one another and the roads reopen. Neither Let's nor Rise's soul has been found. Both factions continue their search beyond the frontier."
   }
 ];
 function storyEncounter(stage) {
@@ -3576,19 +3590,20 @@ function resolveOmnicInteraction(state, owner, context, events) {
   }
   for (const conduit of interactions) {
     const { id, rule } = conduit;
+    const isMaster = owner.masterConduit === id;
     const memory = owner.omnicMemory?.[id] ?? {};
     const remember = () => {
       (owner.omnicMemory ??= {})[id] = memory;
     };
-    if (rule.bank?.trigger === context.trigger && (!rule.bank.other || !!context.target && context.target.id !== owner.id) && memory.bankRound !== state.round) {
+    if (rule.bank?.trigger === context.trigger && (!rule.bank.other || !!context.target && context.target.id !== owner.id) && (isMaster || memory.bankRound !== state.round)) {
       if ((memory.bank ?? 0) < rule.bank.maximum) {
         memory.bank = Math.min(rule.bank.maximum, (memory.bank ?? 0) + 1);
-        memory.bankRound = state.round;
+        if (!isMaster) memory.bankRound = state.round;
         remember();
         status2(events, owner, owner, `${conduit.name} stores ${owner.masterConduit === id ? "Astral Reserve" : "a reserve"} (${memory.bank}/${rule.bank.maximum})`, memory.bank);
       }
     }
-    if (rule.trigger !== context.trigger || memory.usedRound === state.round || !qualifies(owner, rule, context)) continue;
+    if (rule.trigger !== context.trigger || !isMaster && memory.usedRound === state.round || !qualifies(owner, rule, context)) continue;
     const scale = rule.bank ? Math.min(rule.bank.maximum, Math.max(0, memory.bank ?? 0)) : 1;
     if (scale <= 0) continue;
     let effective = false;
@@ -3611,7 +3626,7 @@ function resolveOmnicInteraction(state, owner, context, events) {
       selected.get(outcome.recipient ?? "self")
     ) || effective;
     if (effective) {
-      memory.usedRound = state.round;
+      if (!isMaster) memory.usedRound = state.round;
       if (rule.bank) memory.bank = 0;
       remember();
     }
@@ -5350,6 +5365,24 @@ function unlockedInfusionStage(account, mode) {
   return account.infusionStages[mode] ?? 1;
 }
 
+// src/content/profile-pictures.ts
+var profilePictures = starters.flatMap((character) => ["base", "omnic"].map((form) => ({
+  id: `profile:${character.id}:${form}`,
+  characterId: character.id,
+  form,
+  evolution: form === "base" ? 1 : 6,
+  name: characterName(character.id, form === "base" ? 1 : 6),
+  requirement: form === "base" ? `Own ${character.name}.` : `Reach Omnic with ${character.name}.`,
+  element: character.element
+})));
+function isProfilePictureId(value) {
+  return typeof value === "string" && profilePictures.some((picture) => picture.id === value);
+}
+function profilePictureUnlocked(account, id) {
+  const picture = profilePictures.find((entry) => entry.id === id);
+  return !!picture && ownedCharacters(account).includes(picture.characterId) && (picture.form === "base" || ownedProgress(account, picture.characterId).evolution === 6);
+}
+
 // src/game/activity-access.ts
 function highestBearerLevel(account) {
   let highest = 0;
@@ -5390,6 +5423,49 @@ function validateSaveFile(value) {
 }
 
 // supabase/functions/game-operation/engine.ts
+var chatMessageLength = 500;
+var chatGroupNameLength = 48;
+var chatGroupMembers = 10;
+function isProfileIcon(value) {
+  return value === "neutral" || isStarterId(value) || isProfilePictureId(value);
+}
+function profileIconUnlocked(account, icon) {
+  if (icon === "neutral") return true;
+  return isStarterId(icon) ? ownedCharacters(account).includes(icon) : profilePictureUnlocked(account, icon);
+}
+function profileActivityFor(operation, previousStoryCompleted, resolved, uuid2) {
+  if (operation.kind === "bootstrap") return {
+    id: uuid2(),
+    message: "Starter selected",
+    detail: `${operation.starterId} Element-Bearer`
+  };
+  if (operation.kind === "importSave") return {
+    id: uuid2(),
+    message: "Save imported",
+    detail: "Existing save moved online"
+  };
+  if (operation.kind === "summon" || operation.kind === "summonTen") return {
+    id: uuid2(),
+    message: "Summoned",
+    detail: `${operation.bannerId === "roses" ? "Crimson Roses" : "Standard"} \xB7 ${operation.kind === "summonTen" ? 10 : 1} draw${operation.kind === "summonTen" ? "s" : ""}`
+  };
+  if (operation.kind === "purchaseConduit") return {
+    id: uuid2(),
+    message: "Conduit purchased",
+    detail: getConduit(operation.id).name
+  };
+  if (resolved.response.result?.state.phase === "cleared" && resolved.game.run?.activity.kind === "story") {
+    const stage = resolved.game.run.activity.stage;
+    const completed = resolved.game.account.storyCompleted ?? 0;
+    const restoredBeacon = Math.floor(completed / 25) > Math.floor(previousStoryCompleted / 25);
+    return {
+      id: uuid2(),
+      message: "Story stage cleared",
+      detail: `${restoredBeacon ? "Beacon restored \xB7 " : ""}Story \xB7 Stage ${stage}`
+    };
+  }
+  return null;
+}
 var frames = ["default", "thin-outline", "double-outline", "corner-brackets"];
 function freshGame(username, createdAt = (/* @__PURE__ */ new Date()).toISOString()) {
   return { account: emptyAccount(), starterId: null, run: null, profile: {
@@ -5417,12 +5493,13 @@ function integer(value) {
   if (!Number.isSafeInteger(value) || value < 0) throw new Error("Invalid integer input.");
 }
 var operationKeys = {
-  friendRequest: ["username"],
+  friendRequest: ["username", "friendCode"],
   acceptFriendRequest: ["userId"],
   declineFriendRequest: ["userId"],
   cancelFriendRequest: ["userId"],
   removeFriend: ["userId"],
   read: [],
+  checkpoint: [],
   bootstrap: ["starterId"],
   importSave: ["save"],
   setSquad: ["ids"],
@@ -5459,7 +5536,7 @@ function validateRequest(value) {
   const op = value.operation;
   if (op.kind === "importSave") validateSaveFile(op.save);
   keys(op, ["kind", ...operationKeys[op.kind]]);
-  if (operationKeys[op.kind].some((key) => key !== "fodderIds" && key !== "saleOption" && !(key in op))) throw new Error("Missing operation field.");
+  if (operationKeys[op.kind].some((key) => key !== "fodderIds" && key !== "saleOption" && !(op.kind === "friendRequest" && (key === "username" || key === "friendCode")) && !(key in op))) throw new Error("Missing operation field.");
   for (const field of ["id", "character", "runId", "actorId", "targetId", "bannerId", "starterId", "element", "frame", "upgradeKind", "action", "saleOption"]) {
     if (field in op) text(op[field]);
   }
@@ -5491,10 +5568,63 @@ function validateRequest(value) {
     if (op.activity.kind !== "training") integer(op.activity.stage);
   }
   if (op.kind === "updateProfile") {
-    if (typeof op.displayName !== "string" || !op.displayName.trim().length || [...op.displayName].length > 16 || typeof op.bio !== "string" || [...op.bio].length > 120 || /[\u0000-\u001f\u007f]/.test(op.displayName + op.bio) || (typeof op.icon !== "string" || op.icon.length > 100)) throw new Error("Invalid profile fields.");
+    if (typeof op.displayName !== "string" || !op.displayName.trim().length || [...op.displayName].length > 16 || typeof op.bio !== "string" || [...op.bio].length > 120 || /[\u0000-\u001f\u007f]/.test(op.displayName + op.bio) || !isProfileIcon(op.icon)) throw new Error("Invalid profile fields.");
   }
-  if (op.kind === "friendRequest" && (typeof op.username !== "string" || !/^[a-z0-9_]{3,16}$/i.test(op.username))) throw new Error("Invalid friend username.");
+  if (op.kind === "friendRequest") {
+    const hasUsername = typeof op.username === "string";
+    const hasCode = typeof op.friendCode === "string";
+    if (hasUsername === hasCode || hasUsername && !/^[a-z0-9_]{3,16}$/i.test(op.username) || hasCode && !/^LL-[0-9A-F]{4}-[0-9A-F]{4}$/i.test(op.friendCode)) {
+      throw new Error("Enter a valid friend username or friend code.");
+    }
+  }
   if ("userId" in op && (typeof op.userId !== "string" || !/^[0-9a-f-]{36}$/i.test(op.userId))) throw new Error("Invalid friend user ID.");
+  return value;
+}
+var chatKeys = {
+  read: { required: [], optional: ["conversationId", "before"] },
+  direct: { required: ["userId"] },
+  createGroup: { required: ["name", "userIds"] },
+  send: { required: ["conversationId", "text"] },
+  invite: { required: ["conversationId", "userId"] },
+  respondInvite: { required: ["conversationId", "accept"] },
+  removeMember: { required: ["conversationId", "userId"] },
+  leave: { required: ["conversationId"] },
+  preferences: { required: ["conversationId"], optional: ["pinned", "muted"] },
+  block: { required: ["userId"] },
+  unblock: { required: ["userId"] }
+};
+var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+var chatControl = /[\u0000-\u0008\u000b-\u001f\u007f]/;
+function validateChatRequest(value) {
+  if (!record2(value)) throw new Error("Request must be an object.");
+  keys(value, ["requestId", "chat"]);
+  if (typeof value.requestId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value.requestId)) {
+    throw new Error("A UUID request ID is required.");
+  }
+  const op = value.chat;
+  if (!record2(op) || typeof op.kind !== "string" || !Object.hasOwn(chatKeys, op.kind)) throw new Error("Unknown chat operation.");
+  const shape = chatKeys[op.kind];
+  keys(op, ["kind", ...shape.required, ...shape.optional ?? []]);
+  if (shape.required.some((key) => !(key in op))) throw new Error("Missing chat field.");
+  for (const key of ["conversationId", "before", "userId"]) {
+    if (key in op && (typeof op[key] !== "string" || !uuid.test(op[key]))) throw new Error("Invalid chat identifier.");
+  }
+  for (const key of ["accept", "pinned", "muted"]) if (key in op && typeof op[key] !== "boolean") throw new Error("Invalid chat option.");
+  if ("before" in op && !("conversationId" in op)) throw new Error("Choose a conversation to page.");
+  if (op.kind === "preferences" && !("pinned" in op) && !("muted" in op)) throw new Error("Choose a chat preference.");
+  if ("text" in op) {
+    const body = typeof op.text === "string" ? op.text.trim() : "";
+    if (!body || [...body].length > chatMessageLength || chatControl.test(body.replace(/\r\n/g, "\n"))) {
+      throw new Error(`Messages must be 1-${chatMessageLength} characters of plain text.`);
+    }
+  }
+  if ("name" in op) {
+    const name = typeof op.name === "string" ? op.name.trim() : "";
+    if (!name || [...name].length > chatGroupNameLength || /[\u0000-\u001f\u007f]/.test(name)) throw new Error("Invalid group name.");
+  }
+  if ("userIds" in op && (!Array.isArray(op.userIds) || op.userIds.length > chatGroupMembers - 1 || !op.userIds.every((id) => typeof id === "string" && uuid.test(id)) || new Set(op.userIds.map((id) => id.toLowerCase())).size !== op.userIds.length)) {
+    throw new Error(`Invite up to ${chatGroupMembers - 1} distinct friends.`);
+  }
   return value;
 }
 var VirtualStorage = class {
@@ -5551,7 +5681,7 @@ function resolveOperation(previous, operation, entropy) {
   let result;
   let summon;
   let summons;
-  if (operation.kind === "read") return { game, response: publicGame(game, 0) };
+  if (operation.kind === "read" || operation.kind === "checkpoint") return { game, response: publicGame(game, 0) };
   if (operation.kind === "bootstrap") {
     if (game.starterId || Object.keys(game.account.characters).length) throw new Error("Starter has already been selected.");
     if (!["ember", "tide", "sprout"].includes(operation.starterId)) throw new Error("Invalid initial starter.");
@@ -5626,7 +5756,7 @@ function resolveOperation(previous, operation, entropy) {
       }
       case "updateProfile":
         if (!game.profile.ownedFrames.includes(operation.frame)) throw new Error("Choose an owned frame.");
-        if (operation.icon !== "neutral" && !ownedCharacters(game.account).includes(operation.icon)) throw new Error("Choose an owned profile icon.");
+        if (!profileIconUnlocked(game.account, operation.icon)) throw new Error("Choose an owned, unlocked profile picture.");
         Object.assign(game.profile, { displayName: operation.displayName.trim(), bio: operation.bio, icon: operation.icon, frame: operation.frame });
         break;
       case "enter": {
@@ -5707,13 +5837,16 @@ function resolveOperation(previous, operation, entropy) {
     game.account = loadAccount(storage);
   }
   game.account = validateAccount(game.account);
-  if (game.profile.icon !== "neutral" && !ownedCharacters(game.account).includes(game.profile.icon)) game.profile.icon = "neutral";
+  if (!isProfileIcon(game.profile.icon) || !profileIconUnlocked(game.account, game.profile.icon)) game.profile.icon = "neutral";
   return { game, response: { ...publicGame(game, 0), ...result ? { result } : {}, ...summon ? { summon } : {}, ...summons ? { summons } : {} } };
 }
 export {
   frames,
   freshGame,
+  profileActivityFor,
+  profileIconUnlocked,
   publicGame,
   resolveOperation,
+  validateChatRequest,
   validateRequest
 };

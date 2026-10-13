@@ -74,7 +74,7 @@ describe('full sanctuary UI', () => {
   it('separates holdings, stores and collections and exposes both Character categories', () => {
     expect(sanctuaryContext('inventory')).toBe('');
     expect(inventoryHub()).not.toMatch(/data-page="(?:archives|collections)"/);
-    expect(inventoryHub()).toContain('data-page="conduit-store"');
+    expect(inventoryHub()).not.toContain('data-page="conduit-store"');
     expect(sanctuaryContext('conduit-store')).toBe('');
     for (const page of ['archives', 'glossary'] as const) expect(sanctuaryContext(page)).toBe('');
     expect(sanctuaryContext('character')).toContain('data-character-category="bearers"');
@@ -97,7 +97,7 @@ describe('full sanctuary UI', () => {
     expect(html).not.toContain('artifact-slot');
     expect(html).not.toContain('Master Artifact');
     expect(html).not.toContain('equipment-panel');
-    expect(html).toContain('No materials yet');
+    expect(html).toContain('No resources yet');
     const account = emptyAccount();
     account.materials = { 'botanic-common': 3, 'chaotic-omnic': 1, 'oceanic-rare': 0 };
     const owned = inventoryHub(account);
@@ -105,7 +105,7 @@ describe('full sanctuary UI', () => {
     expect(owned).toContain('Soul of Chaotic');
     expect(owned).not.toContain('Shard of Aquatic');
     expect(owned).not.toContain('artifact-slot');
-    expect(inventoryHub(null)).toContain('Material inventory unavailable');
+    expect(inventoryHub(null)).toContain('Resource inventory unavailable');
   });
   it('keeps canonical dungeon and infusion content while separating activity categories', () => {
     const html = gameplayHub();

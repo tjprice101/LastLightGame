@@ -1,5 +1,6 @@
 import { type ElementId } from './activities';
 import { kitConduitDesigns, convertedKitConduitIds } from './kit-conduits';
+import { conduitOrigin } from './world-lore';
 
 export interface ConduitBuff {
  stat: 'health' | 'damage' | 'defense' | 'crit' | 'critMultiplier' | 'elementalDamage' | 'shatterCapacity';
@@ -16,19 +17,19 @@ type CommonConduitDesign = { id: string; name: string; rarity: 'Common'; price: 
 export const commonConduits = [
   { id: 'vigil-core', name: 'Vigil Core', rarity: 'Common', price: 1000,
     power: 'Elemental Light', buff: { stat: 'health', kind: 'percent', amount: 5 }, effect: '+5% Health',
-    lore: 'An emergency life-support mechanism sealed beneath the battlefields of the ancient war. Its protected chamber still holds a fragment of Elemental Light.' },
+    lore: 'An emergency life-support mechanism from Let and Rise\'s shared prototype work, sealed beneath the battlefields of their later rivalry. Its protected chamber still holds a reserve of elemental energy.' },
   { id: 'siegebound-drive', name: 'Siegebound Drive', rarity: 'Common', price: 1200,
     power: 'Mechanical', buff: { stat: 'damage', kind: 'percent', amount: 5 }, effect: '+5% Attack',
     lore: 'A compact force-transmission engine once hidden inside siege harnesses. Its interlocking gears survived centuries in a buried armory.' },
   { id: 'bastion-lock', name: 'Bastion Lock', rarity: 'Common', price: 1000,
     power: 'Mechanical', buff: { stat: 'defense', kind: 'percent', amount: 5 }, effect: '+5% Defense',
-    lore: 'A folding ward mechanism recovered from a forgotten defensive vault. Its layered plates remember the shape of the ancient war shields.' },
+    lore: 'A folding ward mechanism recovered from a forgotten defensive vault. Its layered plates were adapted from the creators\' shared prototypes into shields for the wars their rivalry provoked.' },
   { id: 'parallax-relay', name: 'Parallax Relay', rarity: 'Common', price: 1500,
     power: 'Elemental Light', buff: { stat: 'crit', kind: 'percentage-points', amount: 2 }, effect: '+2 percentage points Critical Rate',
     lore: 'A concealed targeting relay with a split crystal lens. A trace of Elemental Light aligns its two sightlines with uncanny precision.' },
   { id: 'fracture-reservoir', name: 'Fracture Reservoir', rarity: 'Common', price: 1200,
     power: 'Elemental Light', buff: { stat: 'shatterCapacity', kind: 'flat', amount: 5 }, effect: '+5 Shatter Capacity',
-    lore: 'A sealed accumulator buried to keep it from the armies of the ancient war. Elemental Light rests within its nested rings, waiting for a new bearer.' },
+    lore: 'A sealed accumulator buried to keep it from the armies drawn into Let and Rise\'s rivalry. Elemental energy rests within its nested rings, waiting for a new bearer.' },
 ] as const satisfies readonly CommonConduitDesign[];
 
 export const additionalCommonConduits = [
@@ -108,17 +109,17 @@ const omnicConduits = [
   { id: 'chaotic-paradox-spindle', name: 'Paradox Spindle', element: 'chaotic', mechanic: 'paradox', effect: '+60% Attack, +50% Elemental Damage, +40% Health. After Last Flare, prime +15% outgoing damage for your first offensive activation once normal recovery ends. No bonus during that Last Flare and no recovery bypass.', buffs: [{ stat: 'damage', kind: 'percent', amount: 60 }, { stat: 'elementalDamage', kind: 'percent', amount: 50 }, { stat: 'health', kind: 'percent', amount: 40 }] },
 ] as const satisfies readonly { id: string; name: string; element: ElementId; mechanic: ConduitMechanic; effect: string; buffs: readonly ConduitBuff[] }[];
 
-export const conduits = [
+export const conduits = ([
   ...commonConduits.map((entry) => ({ ...entry, art: entry.id, element: null, mechanic: null })),
   ...additionalCommonConduits.map((entry) => ({ ...entry, art: entry.id, element: null, mechanic: null })),
   ...recoveredConduits.map((entry) => ({ ...entry, price: null, power: 'Elemental Light', art: entry.id, element: null, mechanic: null })),
   ...expandedConduits.map((entry) => ({ ...entry, price: null, power: 'Elemental Light', art: entry.id, element: null, mechanic: null })),
   ...omnicConduits.slice(0, 10).map((entry) => ({ ...entry, rarity: 'Omnic' as const, price: null, power: 'Elemental Light', art: entry.id,
-    lore: 'A fully restored elemental masterpiece from the ancient white machine.' })),
+    lore: 'A fully restored elemental masterpiece recovered from one of Let and Rise\'s destroyed machine prototypes.' })),
   ...omnicConduits.slice(10).map((entry) => ({ ...entry, rarity: 'Omnic' as const, price: null, power: 'Elemental Light', art: entry.id,
-    lore: 'A newly catalogued prismatic elemental masterpiece, awaiting its original reviewed artwork.' })),
+    lore: 'A prismatic elemental masterpiece restored from the mechanisms left behind when Let and Rise\'s collaboration ended.' })),
   ...kitConduitDesigns.map((entry) => ({ ...entry, mechanic: 'kit-interaction' as const, power: 'Elemental Light', art: entry.id })),
-] as const;
+] as const).map(entry => ({ ...entry, lore: `${conduitOrigin} ${entry.lore}` }));
 
 export type Conduit = (typeof conduits)[number];
 export type ConduitId = Conduit['id'];

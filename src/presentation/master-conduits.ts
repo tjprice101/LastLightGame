@@ -15,7 +15,7 @@ export function masterChestIcon(): string {
 export function masterReference(id?: MasterConduitId | null): string {
   if (!id) return '';
   const entry = getMasterConduit(id);
-  return `<section class="master-reference"><h3>Master · ${entry.name}</h3><p>${entry.effect}</p><small>Fixed kit effect · Does not scale with Conduit upgrades</small></section>`;
+  return `<section class="master-reference"><h3>Master · ${entry.name}</h3><p>${entry.effect}</p><small>Always-active bearer enhancement · Recurs on qualifying native outcomes · Does not scale with Conduit upgrades</small><p>${entry.lore}</p></section>`;
 }
 export function masterEquipment(character: string, account: Account | null): string {
   if (!isStarterId(character)) return '<div class="ref-master-slot"><strong>Master slot</strong><p>Character Masters are for their named Element-Bearer only.</p></div>';

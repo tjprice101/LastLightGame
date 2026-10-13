@@ -857,7 +857,8 @@ class ArtPromptTests(unittest.TestCase):
                 self.assertIn("photorealism", negatives)
                 self.assertIn("3d render", negatives)
                 if "--sref" in body:
-                    self.assertIn("--ar 4:3", body)
+                    profile_portrait = path == art_path("characters", "Element-Bearer Profile Pictures.md", root=ROOT)
+                    self.assertIn("--ar 1:1" if profile_portrait else "--ar 4:3", body)
                     weight = 10 if path == art_path("experiments", "Enemy Style Pilot.md", root=ROOT) and index <= 3 else 150
                     self.assertRegex(body, rf" --sref https://\S+ --sw {weight}$")
                 else:

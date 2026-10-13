@@ -18,9 +18,20 @@ import { isPlayableDungeon } from '../../../src/content/dungeons';
 import { isInfusionMode } from '../../../src/content/infusions';
 import { isWarCharacter } from '../../../src/content/elemental-war';
 import type { Activity, GameOperation, GameRequest, GameResponse, OnlineProfile, ProfileFrame,
-  ServerBattleSession } from '../../../src/online/server-game';
+  ProfileActivity, ServerBattleSession, ChatOperation, ChatRequest } from '../../../src/online/server-game';
+import { isProfilePictureId, profilePictureUnlocked } from '../../../src/content/profile-pictures';
+// Runtime values stay local: importing server-game would bundle the browser Supabase client.
+const chatMessageLength = 500, chatGroupNameLength = 48, chatGroupMembers = 10;
+function isProfileIcon(value: unknown): value is OnlineProfile['icon'] {
+  return value === 'neutral' || isStarterId(value) || isProfilePictureId(value);
+}
+export function profileIconUnlocked(account: Account, icon: OnlineProfile['icon']): boolean {
+  if (icon === 'neutral') return true;
+  return isStarterId(icon) ? ownedCharacters(account).includes(icon) : profilePictureUnlocked(account, icon);
+}
 import type { CapturedCharacter } from '../../../src/game/character-instances';
 import type { ConduitLoadouts, ConduitUpgrades } from '../../../src/content/conduits';
+import { getConduit } from '../../../src/content/conduits';
 import { assertActivityAccess } from '../../../src/game/activity-access';
 import { validateSaveFile } from '../../../src/game/save-file';
 
@@ -38,6 +49,32 @@ export interface DurableGame {
   starterId: StarterId | null;
   profile: OnlineProfile;
   run: DurableRun | null;
+}
+export function profileActivityFor(operation: GameOperation, previousStoryCompleted: number,
+  resolved: { game: DurableGame; response: GameResponse }, uuid: () => string): Omit<ProfileActivity, 'at'> | null {
+  if (operation.kind === 'bootstrap') return {
+    id: uuid(), message: 'Starter selected', detail: `${operation.starterId} Element-Bearer`,
+  };
+  if (operation.kind === 'importSave') return {
+    id: uuid(), message: 'Save imported', detail: 'Existing save moved online',
+  };
+  if (operation.kind === 'summon' || operation.kind === 'summonTen') return {
+    id: uuid(), message: 'Summoned',
+    detail: `${operation.bannerId === 'roses' ? 'Crimson Roses' : 'Standard'} · ${operation.kind === 'summonTen' ? 10 : 1} draw${operation.kind === 'summonTen' ? 's' : ''}`,
+  };
+  if (operation.kind === 'purchaseConduit') return {
+    id: uuid(), message: 'Conduit purchased', detail: getConduit(operation.id).name,
+  };
+  if (resolved.response.result?.state.phase === 'cleared' && resolved.game.run?.activity.kind === 'story') {
+    const stage = resolved.game.run.activity.stage;
+    const completed = resolved.game.account.storyCompleted ?? 0;
+    const restoredBeacon = Math.floor(completed / 25) > Math.floor(previousStoryCompleted / 25);
+    return {
+      id: uuid(), message: 'Story stage cleared',
+      detail: `${restoredBeacon ? 'Beacon restored · ' : ''}Story · Stage ${stage}`,
+    };
+  }
+  return null;
 }
 export const frames: ProfileFrame[] = ['default', 'thin-outline', 'double-outline', 'corner-brackets'];
 export function freshGame(username: string, createdAt = new Date().toISOString()): DurableGame {
@@ -60,9 +97,9 @@ function integer(value: unknown): asserts value is number {
   if (!Number.isSafeInteger(value) || (value as number) < 0) throw new Error('Invalid integer input.');
 }
 const operationKeys: Record<GameOperation['kind'], string[]> = {
-  friendRequest: ['username'], acceptFriendRequest: ['userId'], declineFriendRequest: ['userId'],
+  friendRequest: ['username', 'friendCode'], acceptFriendRequest: ['userId'], declineFriendRequest: ['userId'],
   cancelFriendRequest: ['userId'], removeFriend: ['userId'],
-  read: [], bootstrap: ['starterId'], importSave: ['save'], setSquad: ['ids'], setCharacterLock: ['id', 'locked'],
+  read: [], checkpoint: [], bootstrap: ['starterId'], importSave: ['save'], setSquad: ['ids'], setCharacterLock: ['id', 'locked'],
   summon: ['bannerId'], summonTen: ['bannerId'], sellCurrencyCreature: ['id', 'saleOption'], purchaseConduit: ['id'],
   equipConduit: ['character', 'slot', 'conduit'], upgradeConduit: ['id', 'expectedLevel'],
   openMasterChest: ['id'], equipMasterConduit: ['character', 'conduit'],
@@ -84,7 +121,8 @@ export function validateRequest(value: unknown): GameRequest {
   const op = value.operation;
   if (op.kind === 'importSave') validateSaveFile(op.save);
   keys(op, ['kind', ...operationKeys[op.kind as GameOperation['kind']]]);
-  if (operationKeys[op.kind as GameOperation['kind']].some(key => key !== 'fodderIds' && key !== 'saleOption' && !(key in op))) throw new Error('Missing operation field.');
+  if (operationKeys[op.kind as GameOperation['kind']].some(key => key !== 'fodderIds' && key !== 'saleOption' &&
+      !(op.kind === 'friendRequest' && (key === 'username' || key === 'friendCode')) && !(key in op))) throw new Error('Missing operation field.');
   for (const field of ['id', 'character', 'runId', 'actorId', 'targetId', 'bannerId', 'starterId', 'element', 'frame', 'upgradeKind', 'action', 'saleOption']) {
     if (field in op) text(op[field]);
   }
@@ -119,11 +157,64 @@ export function validateRequest(value: unknown): GameRequest {
     if (typeof op.displayName !== 'string' || !op.displayName.trim().length || [...op.displayName].length > 16 ||
       typeof op.bio !== 'string' || [...op.bio].length > 120 ||
       /[\u0000-\u001f\u007f]/.test(op.displayName + op.bio) ||
-      (typeof op.icon !== 'string' || op.icon.length > 100)) throw new Error('Invalid profile fields.');
+      !isProfileIcon(op.icon)) throw new Error('Invalid profile fields.');
   }
-  if (op.kind === 'friendRequest' && (typeof op.username !== 'string' || !/^[a-z0-9_]{3,16}$/i.test(op.username))) throw new Error('Invalid friend username.');
+  if (op.kind === 'friendRequest') {
+    const hasUsername = typeof op.username === 'string';
+    const hasCode = typeof op.friendCode === 'string';
+    if (hasUsername === hasCode ||
+        (hasUsername && !/^[a-z0-9_]{3,16}$/i.test(op.username as string)) ||
+        (hasCode && !/^LL-[0-9A-F]{4}-[0-9A-F]{4}$/i.test(op.friendCode as string))) {
+      throw new Error('Enter a valid friend username or friend code.');
+    }
+  }
   if ('userId' in op && (typeof op.userId !== 'string' || !/^[0-9a-f-]{36}$/i.test(op.userId))) throw new Error('Invalid friend user ID.');
   return value as unknown as GameRequest;
+}
+const chatKeys: Record<ChatOperation['kind'], { required: string[]; optional?: string[] }> = {
+  read: { required: [], optional: ['conversationId', 'before'] }, direct: { required: ['userId'] },
+  createGroup: { required: ['name', 'userIds'] }, send: { required: ['conversationId', 'text'] },
+  invite: { required: ['conversationId', 'userId'] }, respondInvite: { required: ['conversationId', 'accept'] },
+  removeMember: { required: ['conversationId', 'userId'] }, leave: { required: ['conversationId'] },
+  preferences: { required: ['conversationId'], optional: ['pinned', 'muted'] },
+  block: { required: ['userId'] }, unblock: { required: ['userId'] },
+};
+const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const chatControl = /[\u0000-\u0008\u000b-\u001f\u007f]/;
+/** Shape-only validation; Postgres private.chat_operation owns every authorization rule. */
+export function validateChatRequest(value: unknown): ChatRequest {
+  if (!record(value)) throw new Error('Request must be an object.');
+  keys(value, ['requestId', 'chat']);
+  if (typeof value.requestId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value.requestId)) {
+    throw new Error('A UUID request ID is required.');
+  }
+  const op = value.chat;
+  if (!record(op) || typeof op.kind !== 'string' || !Object.hasOwn(chatKeys, op.kind)) throw new Error('Unknown chat operation.');
+  const shape = chatKeys[op.kind as ChatOperation['kind']];
+  keys(op, ['kind', ...shape.required, ...(shape.optional ?? [])]);
+  if (shape.required.some(key => !(key in op))) throw new Error('Missing chat field.');
+  for (const key of ['conversationId', 'before', 'userId']) {
+    if (key in op && (typeof op[key] !== 'string' || !uuid.test(op[key] as string))) throw new Error('Invalid chat identifier.');
+  }
+  for (const key of ['accept', 'pinned', 'muted']) if (key in op && typeof op[key] !== 'boolean') throw new Error('Invalid chat option.');
+  if ('before' in op && !('conversationId' in op)) throw new Error('Choose a conversation to page.');
+  if (op.kind === 'preferences' && !('pinned' in op) && !('muted' in op)) throw new Error('Choose a chat preference.');
+  if ('text' in op) {
+    const body = typeof op.text === 'string' ? op.text.trim() : '';
+    if (!body || [...body].length > chatMessageLength || chatControl.test(body.replace(/\r\n/g, '\n'))) {
+      throw new Error(`Messages must be 1-${chatMessageLength} characters of plain text.`);
+    }
+  }
+  if ('name' in op) {
+    const name = typeof op.name === 'string' ? op.name.trim() : '';
+    if (!name || [...name].length > chatGroupNameLength || /[\u0000-\u001f\u007f]/.test(name)) throw new Error('Invalid group name.');
+  }
+  if ('userIds' in op && (!Array.isArray(op.userIds) || op.userIds.length > chatGroupMembers - 1 ||
+      !op.userIds.every(id => typeof id === 'string' && uuid.test(id)) ||
+      new Set(op.userIds.map(id => (id as string).toLowerCase())).size !== op.userIds.length)) {
+    throw new Error(`Invite up to ${chatGroupMembers - 1} distinct friends.`);
+  }
+  return value as unknown as ChatRequest;
 }
 class VirtualStorage implements ProfileStorage {
   private items = new Map<string, string>();
@@ -174,7 +265,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
   let result: BattleResult | undefined;
   let summon: ReturnType<typeof summonCharacter> | undefined;
   let summons: SummonDraw[] | undefined;
-  if (operation.kind === 'read') return { game, response: publicGame(game, 0) };
+  if (operation.kind === 'read' || operation.kind === 'checkpoint') return { game, response: publicGame(game, 0) };
   if (operation.kind === 'bootstrap') {
     if (game.starterId || Object.keys(game.account.characters).length) throw new Error('Starter has already been selected.');
     if (!['ember', 'tide', 'sprout'].includes(operation.starterId)) throw new Error('Invalid initial starter.');
@@ -226,7 +317,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
       }
       case 'updateProfile':
         if (!game.profile.ownedFrames.includes(operation.frame)) throw new Error('Choose an owned frame.');
-        if (operation.icon !== 'neutral' && !ownedCharacters(game.account).includes(operation.icon)) throw new Error('Choose an owned profile icon.');
+        if (!profileIconUnlocked(game.account, operation.icon)) throw new Error('Choose an owned, unlocked profile picture.');
         Object.assign(game.profile, { displayName: operation.displayName.trim(), bio: operation.bio, icon: operation.icon, frame: operation.frame });
         break;
       case 'enter': {
@@ -291,6 +382,6 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
     game.account = loadAccount(storage);
   }
   game.account = validateAccount(game.account);
-  if (game.profile.icon !== 'neutral' && !ownedCharacters(game.account).includes(game.profile.icon)) game.profile.icon = 'neutral';
+  if (!isProfileIcon(game.profile.icon) || !profileIconUnlocked(game.account, game.profile.icon)) game.profile.icon = 'neutral';
   return { game, response: { ...publicGame(game, 0), ...(result ? { result } : {}), ...(summon ? { summon } : {}), ...(summons ? { summons } : {}) } };
 }

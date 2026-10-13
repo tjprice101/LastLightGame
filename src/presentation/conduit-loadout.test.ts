@@ -171,7 +171,8 @@ describe('Conduit loadout (D-229)', () => {
     expect(html).toContain('data-team-detail="ember" data-team-tab="equipment" aria-pressed="true"');
     expect(wallet).toEqual(before);
     const detail = referenceTeam(wallet, { view: 'detail', selected: 'ember', element: '', sort: 'level' });
-    expect(detail).toContain('<span data-conduit-count>1/8</span>');
+    expect(detail).not.toContain('data-conduit-count');
+    expect(detail).toContain('data-character-tab="equipment"');
   });
 
   it('summarizes equipped Conduits on the overview with an open-full-view action', () => {

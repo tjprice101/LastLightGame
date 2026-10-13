@@ -110,6 +110,7 @@ class CharacterStyleReferenceTests(unittest.TestCase):
         character_paths = {f"{name} Art.md" for name in
                            (*PACKS, "Infernis", "Flora", "Tizu")}
         character_paths.update(("Starter Art.md", GUIDE.name))
+        character_paths.add("Element-Bearer Profile Pictures.md")
         for path in (ROOT / "Art").rglob("*.md"):
             if path.name in character_paths:
                 continue

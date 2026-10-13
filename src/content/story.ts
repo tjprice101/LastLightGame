@@ -9,24 +9,24 @@ export const storyRules = { regionStages: 25, stages: 150, startingLevel: 1, max
 export const storyRegions: readonly {
   element: ElementId; name: string; introduction: string; enemies: readonly string[]; boss: string; conclusion: string;
 }[] = [
-  { element: 'infernic', name: 'Emberwake March', introduction: 'The road begins among cooling cinders. Recover the beacons before their embers vanish.',
+  { element: 'infernic', name: 'Emberwake March', introduction: 'The search for Let\'s soul begins among cooling cinders. Rise\'s seekers wield the same Infernic Wrath. Restore the first beacon to reopen the road.',
     enemies: ['Cinderling', 'Ashback Boar', 'Coalcrest Moth', 'Furnace Jackal'], boss: 'Kilnheart Warden',
-    conclusion: 'The first beacon burns again. Beyond the ash, a tide answers its light.' },
-  { element: 'oceanic', name: 'Glasswater Reach', introduction: 'Broken causeways cross a silent sea. Follow the submerged bells toward the second beacon.',
+    conclusion: 'The first beacon burns again. Let\'s soul remains unfound; the road leads onward toward Oceanic Sadness.' },
+  { element: 'oceanic', name: 'Glasswater Reach', introduction: 'Oceanic Sadness echoes across the broken causeways of Glasswater. Follow the submerged bells toward the second beacon while Rise\'s seekers scour the same shores.',
     enemies: ['Tideglass Crab', 'Foamfin Drake', 'Pearlshell Turtle', 'Current Ray'], boss: 'Deepbell Leviathan',
-    conclusion: 'The bells ring above the water. Their song carries into the stormlands.' },
-  { element: 'atmospheric', name: 'Stormspan Heights', introduction: 'Floating ridges drift beneath a gathering storm. Reconnect the wind bridges to reach the sky beacon.',
+    conclusion: 'The bells ring above the water. The search continues beyond these grieving shores, toward Atmospheric Calm.' },
+  { element: 'atmospheric', name: 'Stormspan Heights', introduction: 'Let named Atmospheric for Calm, even where its winds become a storm. Reconnect the sky bridges as Rise\'s Elemental-Devourers search the floating ridges.',
     enemies: ['Cloudhorn Ram', 'Staticwing Kite', 'Gusttail Lynx', 'Thundercoil Serpent'], boss: 'Tempest Crown Roc',
-    conclusion: 'The sky paths steady. Beneath them, a green beacon struggles through stone.' },
-  { element: 'botanic', name: 'Rootstone Wilds', introduction: 'Roots have sealed the old roads. Trace the living paths and return light to the buried garden.',
+    conclusion: 'The sky paths steady without deciding the creators\' contest. Below, Botanic Joy and Life point toward the next road.' },
+  { element: 'botanic', name: 'Rootstone Wilds', introduction: 'Botanic carries Let\'s Joy and Life. Trace the living paths through sealed roads; Rise\'s seekers have stolen this power too and roam the buried garden.',
     enemies: ['Mossplate Beetle', 'Briarback Stag', 'Loamjaw Mole', 'Fernmantle Basilisk'], boss: 'Heartwood Colossus',
-    conclusion: 'The garden opens its gates. A quiet procession leads toward the pale horizon.' },
-  { element: 'tranquilitic', name: 'Stillhalo Vale', introduction: 'A hush lies over abandoned sanctuaries. Gather the scattered vows before silence takes the fifth beacon.',
+    conclusion: 'The garden opens its gates. Neither creator\'s soul is here; a quiet procession leads toward Tranquilitic Peace.' },
+  { element: 'tranquilitic', name: 'Stillhalo Vale', introduction: 'Tranquilitic Peace rests over abandoned sanctuaries. Gather the scattered vows to restore the fifth beacon, remembering that Rise\'s creations can wield Peace as well.',
     enemies: ['Ivoryveil Moth', 'Dewhalo Hart', 'Vowcrest Crane', 'Opalward Lion'], boss: 'Serene Oathkeeper',
-    conclusion: 'The vows become a guiding chorus. Only the last fractured beacon remains.' },
-  { element: 'chaotic', name: 'Riftbound Frontier', introduction: 'All restored lights converge at the broken frontier. Cross the fractures and confront the keeper of the final beacon.',
+    conclusion: 'The vows become a guiding chorus. The search leads to the final route, where Chaotic Death and Destruction have fractured the frontier.' },
+  { element: 'chaotic', name: 'Riftbound Frontier', introduction: 'Let named Chaotic for Death and Destruction; it is not exclusive to Rise or her Nothingness. Cross the fractures and confront her seekers at the final beacon.',
     enemies: ['Riftfang Hound', 'Splinterhide Lizard', 'Voidcrest Raven', 'Faultcoil Wyrm'], boss: 'Fracture Sovereign',
-    conclusion: 'Six beacons answer one another. The world has not healed, but its roads are no longer dark.' },
+    conclusion: 'Six beacons answer one another and the roads reopen. Neither Let\'s nor Rise\'s soul has been found. Both factions continue their search beyond the frontier.' },
 ];
 
 export function storyEncounter(stage: number) {

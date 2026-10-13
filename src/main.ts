@@ -44,7 +44,7 @@ import { commands, defaultBindings, loadBindings, saveBindings, validateBindings
 import { BattleView, createSession, type BattleSession, type BattleAuthority, type BattleAuthorityResponse } from './presentation/battle-view';
 import { assertActivityAccess } from './game/activity-access';
 import { characterHub, characterInformation, homeHub, inventoryHub, isCharacterTab, updateCharacterTab } from './presentation/hub';
-import { bindInventory, type InventoryTab } from './presentation/inventory';
+import { bindInventory, defaultInventorySections, defaultInventoryFilters, inventorySections, inventoryFilters, type InventoryFilters, type InventorySections, type InventoryTab } from './presentation/inventory';
 import { loadAccount, ownedProgress, equippedSquad, ownedCharacters, setSquad, summonCharacter, summonCharacters, multiSummonCount, purchaseExchangeMaterial, saveAccountRewards, unlockedStage, unlockedInfusionStage, upgradeCharacter, evolutionFodderOptions, creatureSaleOffer, sellCurrencyCreature, type Account, type SummonDraw } from './game/account';
 import { getCreature } from './content/creatures';
 import { getSummonBanner, isSummonBannerId, type SummonBannerId } from './content/summon-banners';
@@ -69,18 +69,24 @@ import { summonReward, summonTenReward } from './presentation/summon-presentatio
 import { conduitReward } from './presentation/conduit-presentation';
 import './sanctuary-reference.css';
 import { openOnlineAccount as showOnlineAccount } from './presentation/online-account';
-import { onlineStores, onlineProfile, bindProfileEditor, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
+import { onlineStores, onlineProfile, bindProfileEditor, refreshProfileTracking, refreshFriendPresence, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
 import { gameOperation, GameOperationError, type GameOperation, type GameResponse, type Activity } from './online/server-game';
-import { onlineClient } from './online/account-client';
+import { onlineClient, onlineUsername } from './online/account-client';
+import { saveOfflineProgress } from './game/save-file';
+import { startAutosave, showAutosaveNotice } from './presentation/autosave';
+import { isProfilePictureId } from './content/profile-pictures';
+import { profilePicture } from './presentation/profile-picture';
+import { chooseProfilePicture } from './presentation/profile-picture-browser';
+import { bindFriendChat, onlineChatTransport, type ChatUiState } from './presentation/friend-chat';
 import './presentation/mono-reference.css';
 import { referenceHome } from './presentation/reference-home';
-import { referenceTeam, type ReferenceTeamView } from './presentation/reference-team';
+import { bindCaptureTabs, referenceTeam, type ReferenceTeamView } from './presentation/reference-team';
 import './presentation/reference-layout.css';
 import './presentation/leader-theme.css';
 import './presentation/button-style.css';
 import { installButtonStyle } from './presentation/button-style';
 import { applyLeaderTheme, leaderElement } from './presentation/leader-theme';
-import { mountTitle, mountPlayerInfo, mountStarterSelection, unmountTitle } from './ui/mount';
+import { mountTitle, mountPlayerInfo, mountStarterSelection, unmountTitle, type OnlineSaveRequest } from './ui/mount';
 import type { OfflineChange } from './ui/offline-save-panel';
 import { DebugProfileStorage, bindDebugPhrase } from './game/debug-profile';
 import './presentation/debug-profile.css';
@@ -130,13 +136,17 @@ let playMode: 'legacy' | 'online' = 'legacy';
 let onlineWallet: Account | null = null;
 let playerProfile: OnlineProfileDisplay | null = null;
 let socialDisplay: SocialDisplay | undefined;
+let chatIdentity: string | null = null;
+let chatUiState: ChatUiState = { drafts: new Map(), query: '' };
+let disposeFriendChat: (() => void) | null = null;
 let storeTab: 'materials' | 'cosmetics' = 'materials';
 let storeConduit: string | undefined;
 let upgradeConduitSelection: string | undefined;
 let storeRarity = '';
 let marketMaterial = 'infernic';
 let marketFrame = 'default';
-let profileTab: 'info' | 'friends' = 'info';
+let profileTab: 'info' | 'friends' | 'chats' = 'info';
+let friendRequestTab: 'incoming' | 'outgoing' = 'incoming';
 let playerInfoOpen = false;
 let onlineRevision = 0;
 let onlinePending: { operation: GameOperation; requestId: string; revision: number } | null = null;
@@ -147,7 +157,7 @@ function openOnlineAccount(onPlay?: () => Promise<void>): void {
     showError('Exit the debug profile before accessing online accounts. Your real account is unchanged.');
     return;
   }
-  showOnlineAccount(onPlay);
+  showOnlineAccount(onPlay ?? (() => enterOnline()));
 }
 
 function applyOnline(response: GameResponse, updateSession = true): void {
@@ -265,10 +275,7 @@ function updateProfileAvatar(): void {
   const preview = document.createElement('span');
   preview.className = 'profile-frame-preview online-header-avatar';
   preview.dataset.profileFrame = playerProfile.frame;
-  const icon = playerProfile.icon;
-  if (isStarterId(icon) && ownedCharacters(account).includes(icon)) {
-    preview.innerHTML = portrait(getStarter(icon));
-  } else preview.textContent = 'L/L';
+  preview.innerHTML = profilePicture(playerProfile.icon);
   avatar.replaceChildren(preview);
   avatar.setAttribute('aria-label', `Open profile for ${playerProfile.displayName}`);
 }
@@ -286,12 +293,15 @@ interface MenuSnapshot {
   storeTab: 'materials' | 'cosmetics';
   marketMaterial: string;
   marketFrame: string;
-  profileTab: 'info' | 'friends';
+  profileTab: 'info' | 'friends' | 'chats';
+  friendRequestTab: 'incoming' | 'outgoing';
   selectedCharacter: StarterId | null;
   selectedCapture: string | undefined;
   selectedBanner: SummonBannerId;
   summonRateStars?: string;
   inventoryTab: InventoryTab;
+  inventoryExpanded: InventorySections;
+  inventoryFilters: InventoryFilters;
   gallery: string | undefined;
   activities: { group: string; index: string }[];
   controls: { attributes: [string, string][]; value: string }[];
@@ -300,12 +310,16 @@ interface MenuSnapshot {
 }
 const menuHistory = new MenuHistory<MenuSnapshot>();
 let inventoryTab: InventoryTab = 'materials';
+let inventoryExpanded: InventorySections = { ...defaultInventorySections };
+let inventoryFilterState: InventoryFilters = { ...defaultInventoryFilters };
 
 function menuSnapshot(): MenuSnapshot {
   return {
     page: menuPage, hash: location.hash, characterTab, characterCategory, teamView, teamElement, teamSort,
-    storeConduit, upgradeConduitSelection, storeRarity, storeTab, marketMaterial, marketFrame, profileTab,
+    storeConduit, upgradeConduitSelection, storeRarity, storeTab, marketMaterial, marketFrame, profileTab, friendRequestTab,
     selectedCharacter, selectedCapture, selectedBanner, inventoryTab,
+    inventoryExpanded: menuPage === 'inventory' ? inventorySections(app) : { ...inventoryExpanded },
+    inventoryFilters: menuPage === 'inventory' ? inventoryFilters(app) : { ...inventoryFilterState },
     summonRateStars: app.querySelector<HTMLButtonElement>('[data-rate-stars][aria-pressed="true"]')?.dataset.rateStars,
     gallery: app.querySelector<HTMLElement>('[data-archive-gallery][aria-pressed="true"]')?.dataset.archiveGallery,
     activities: Array.from(app.querySelectorAll<HTMLButtonElement>('[data-activity-choice][aria-pressed="true"]')).map((button) => ({
@@ -351,10 +365,13 @@ async function backMenu(): Promise<void> {
     marketMaterial = previous.marketMaterial;
     marketFrame = previous.marketFrame;
     profileTab = previous.profileTab;
+    friendRequestTab = previous.friendRequestTab;
     selectedCharacter = previous.selectedCharacter;
     selectedCapture = previous.selectedCapture;
     selectedBanner = previous.selectedBanner;
     inventoryTab = previous.inventoryTab;
+    inventoryExpanded = { ...previous.inventoryExpanded };
+    inventoryFilterState = { ...previous.inventoryFilters };
     history.replaceState(null, '', `${location.pathname}${location.search}${previous.hash}`);
     renderMenu();
     if (previous.summonRateStars !== undefined) {
@@ -437,6 +454,13 @@ function showError(message: string): void {
 }
 
 function frame(body: string, battle = false, sanctuary = false): void {
+  disposeFriendChat?.();
+  disposeFriendChat = null;
+  const identity = playMode === 'online' ? playerProfile?.username ?? null : null;
+  if (identity !== chatIdentity) {
+    chatIdentity = identity;
+    chatUiState = { drafts: new Map(), query: '' };
+  }
   unmountTitle();
   applyLeaderTheme(document.documentElement, leaderElement(journey.profile ? account : null, battle ? battleSession?.state : undefined));
   document.body.classList.toggle('in-battle', battle);
@@ -457,7 +481,18 @@ function focusHeading(): void {
   app.querySelector<HTMLElement>('h1')?.focus();
 }
 
-function enter(): void {
+async function enter(): Promise<void> {
+  try {
+    if (!gameStorage.active && (playMode === 'online' ||
+      import.meta.env.VITE_SUPABASE_URL && await onlineUsername())) {
+      await enterOnline();
+      return;
+    }
+  } catch (error) {
+    console.error('Online entry failed', error);
+    showError(`Unable to open your online account. ${errorMessage(error)}`);
+    return;
+  }
   try {
     playerInfoOpen = false;
     playMode = 'legacy';
@@ -480,7 +515,6 @@ function renderTitle(): void {
   mountTitle(app.querySelector<HTMLElement>('#react-title')!, {
     onOffline: enter,
     onOnline: () => openOnlineAccount(() => enterOnline()),
-    onPlayerInfo: openPlayerInfo,
   });
 }
 
@@ -492,6 +526,61 @@ function openPlayerInfo(): void {
   playerInfoOpen = true;
   render();
   focusHeading();
+}
+
+let autosaveIdentity: string | null = null;
+let stopAutosave: (() => void) | null = null;
+let onlineCheckpointBusy = false;
+async function saveOnlineCheckpoint(): Promise<boolean> {
+  if (playMode !== 'online' || !playerProfile || onlineBusy || onlinePending || onlineCheckpointBusy) return false;
+  onlineCheckpointBusy = true;
+  const revision = onlineRevision;
+  const profile = playerProfile;
+  try {
+    let saved: GameResponse;
+    try { saved = await gameOperation({ kind: 'checkpoint' }, revision); }
+    catch (error) {
+      if (playMode !== 'online' || playerProfile !== profile || onlineBusy || onlinePending || revision !== onlineRevision) return false;
+      throw error;
+    }
+    if (playMode !== 'online' || playerProfile !== profile || onlineBusy || onlinePending || revision !== onlineRevision) return false;
+    if (saved.revision !== revision) throw new Error('Save check found newer online progress. Refresh your account before continuing.');
+    Object.assign(playerProfile, saved.profile);
+    refreshProfileTracking(app, playerProfile);
+    socialDisplay = saved.social;
+    refreshFriendPresence(app, saved.social);
+    return true;
+  } finally { onlineCheckpointBusy = false; }
+}
+
+app.addEventListener('player-save-online', event => {
+  const { resolve, reject } = (event as CustomEvent<OnlineSaveRequest>).detail;
+  void saveOnlineCheckpoint().then(saved => {
+    if (!saved) throw new Error('A save or game operation is pending. Finish or retry it, then save again.');
+    showAutosaveNotice();
+    resolve();
+  }).catch(reject);
+});
+function syncAutosave(): void {
+  const identity = !gameStorage.active && journey.screen !== 'title' && journey.profile
+    ? `${playMode}:${playerProfile?.username ?? journey.profile.starterId}` : null;
+  if (identity === autosaveIdentity) return;
+  stopAutosave?.();
+  stopAutosave = null;
+  autosaveIdentity = identity;
+  document.querySelector('.autosave-notice')?.remove();
+  if (!identity) return;
+  stopAutosave = startAutosave(async () => {
+    if (gameStorage.active || journey.screen === 'title' || !journey.profile) return false;
+    if (playMode === 'legacy') {
+      saveOfflineProgress(gameStorage);
+      return true;
+    }
+    return saveOnlineCheckpoint();
+  }, showAutosaveNotice, error => {
+    console.error('Autosave failed', error);
+    showError(`Autosave failed. ${errorMessage(error)}`);
+  });
 }
 
 function renderPlayerInfo(): void {
@@ -583,7 +672,7 @@ function renderMenu(firstArrival = false): void {
   bindStoryNavigation(app, account);
   bindProfileEditor(app, async edits => {
     if (playMode !== 'online' || !playerProfile) throw new Error('Your public profile is an online feature. Sign in to an online account to edit it.');
-    if (edits.icon !== 'neutral' && !isStarterId(edits.icon)) throw new Error('Choose a valid profile icon.');
+    if (edits.icon !== 'neutral' && !isStarterId(edits.icon) && !isProfilePictureId(edits.icon)) throw new Error('Choose a valid profile picture.');
     const frame = playerProfile.frame;
     if (frame !== 'default' && frame !== 'thin-outline' && frame !== 'double-outline' && frame !== 'corner-brackets') throw new Error('Choose a valid profile frame.');
     await performOnline({ kind: 'updateProfile', ...edits, icon: edits.icon, frame });
@@ -591,7 +680,27 @@ function renderMenu(firstArrival = false): void {
     console.error('Profile update failed', error);
     showError(errorMessage(error));
   });
-  bindInventory(app, (tab) => { inventoryTab = tab; });
+  if (playMode === 'online' && playerProfile && menuPage === 'profile' && profileTab === 'chats') {
+    const identity = playerProfile.username;
+    disposeFriendChat = bindFriendChat(app, chatUiState, () => socialDisplay?.friends ?? [], async (command, requestId) => {
+      if (playMode !== 'online' || playerProfile?.username !== identity) throw new Error('Sign in again to use chats.');
+      let response = await onlineChatTransport(command, requestId);
+      if (!response.selected && chatUiState.selected && response.view.conversations.some(chat => chat.id === chatUiState.selected)) {
+        response = await onlineChatTransport({ kind: 'read', conversationId: chatUiState.selected }, crypto.randomUUID());
+      }
+      if (playMode !== 'online' || playerProfile?.username !== identity) throw new Error('Your chat account changed. Open chats again.');
+      if (command.kind === 'block' && socialDisplay) {
+        socialDisplay = {
+          friends: socialDisplay.friends.filter(peer => peer.userId !== command.userId),
+          incoming: socialDisplay.incoming.filter(peer => peer.userId !== command.userId),
+          outgoing: socialDisplay.outgoing.filter(peer => peer.userId !== command.userId),
+        };
+      }
+      return response;
+    }, error => showError(errorMessage(error)));
+  }
+  bindInventory(app, (tab) => { inventoryTab = tab; }, (sections) => { inventoryExpanded = sections; }, (filters) => { inventoryFilterState = filters; });
+  bindCaptureTabs(app, (tab) => { characterTab = tab; });
   app.querySelector<HTMLButtonElement>('[data-open-master-chest]')?.addEventListener('click', async () => {
     if (masterOpening || gameDialogPending()) return;
     masterOpening = true;
@@ -894,7 +1003,7 @@ function renderMenu(firstArrival = false): void {
       const offer = creatureSaleOffer(currentAccount(), id, saleOption);
       if (offer.reasons.length) throw new Error(`Sale protected: ${offer.reasons.join(', ')}.`);
       const payout = saleLabel(offer);
-      if (!await gameConfirm(`Permanently sell ${getCreature(offer.copy.creatureId).name} (${id}) for ${payout}? This exact copy will be removed and cannot be restored.`, { title: 'Sell Elemental-Devourer', confirmLabel: 'Sell copy', danger: true })) return;
+      if (!await gameConfirm(`Permanently sell ${getCreature(offer.copy.creatureId).name} for ${payout}? This exact copy will be removed and cannot be restored.`, { title: 'Sell Elemental-Devourer', confirmLabel: 'Sell copy', danger: true })) return;
       account = playMode === 'online' ? (await performOnline({ kind: 'sellCurrencyCreature', id, ...(saleOption ? { saleOption } : {}) })).account : sellCurrencyCreature(gameStorage, id, saleOption);
       if (selectedCapture === id) {
         selectedCapture = undefined;
@@ -1091,6 +1200,8 @@ function renderMenu(firstArrival = false): void {
       resetConduitLoadoutView();
       menuPage = 'home';
       inventoryTab = 'materials';
+      inventoryExpanded = { ...defaultInventorySections };
+      inventoryFilterState = { ...defaultInventoryFilters };
       journey.screen = 'title';
       render();
       app.querySelector<HTMLButtonElement>('#enter')?.focus();
@@ -1114,11 +1225,11 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
   if (page === 'character' || page === 'team' || page === 'squad') return referenceTeam(account, {
     view: teamView, selected: selectedCharacter ?? starter.id, capture: selectedCapture, element: teamElement, sort: teamSort, tab: characterTab,
   });
-  if (page === 'inventory') return inventoryHub(account, inventoryTab);
+  if (page === 'inventory') return inventoryHub(account, inventoryTab, inventoryExpanded, inventoryFilterState);
   if (page === 'stores') return onlineStores(account, playerProfile, storeTab, marketMaterial, marketFrame);
   if (page === 'profile') return gameStorage.active
     ? '<section class="ref-panel"><h1 tabindex="-1">Debug Player info</h1><p>This test profile lives only in memory. Real save-data management and online accounts are disabled here.</p><p>Exit debug or reload to return to your real progress.</p><button class="text-button" data-exit-debug>Exit debug</button></section>'
-    : onlineProfile(account, playerProfile, socialDisplay, profileTab);
+    : onlineProfile(account, playerProfile, socialDisplay, profileTab, friendRequestTab);
   if (page === 'collections') return archives(account);
   if (page === 'conduit-store') return conduitStore(account, storeConduit, storeRarity);
   if (page === 'conduit-upgrade') return conduitUpgradeMenu(account, upgradeConduitSelection);
@@ -1131,6 +1242,7 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
 }
 
 function render(): void {
+  syncAutosave();
   if (playerInfoOpen) renderPlayerInfo();
   else if (journey.screen === 'title') renderTitle();
   else if (journey.screen === 'selection') renderSelection();
@@ -1183,15 +1295,19 @@ function refreshConduitMenu(): void {
 
 app.addEventListener('click', async event => {
   if (!(event.target instanceof Element)) return;
-  const button = event.target.closest<HTMLButtonElement>('[data-profile-tab], [data-copy-username]');
+  const button = event.target.closest<HTMLButtonElement>('[data-profile-tab], [data-copy-username], [data-copy-profile], [data-message-friend]');
   if (!button || button.disabled) return;
   try {
-    if (button.dataset.copyUsername) {
-      await navigator.clipboard.writeText(button.dataset.copyUsername);
+    if (button.dataset.copyUsername || button.dataset.copyProfile) {
+      await navigator.clipboard.writeText(button.dataset.copyUsername ?? button.dataset.copyProfile!);
       button.textContent = 'Copied';
     } else {
-      const tab = button.dataset.profileTab;
-      if (tab !== 'info' && tab !== 'friends') throw new Error('Unknown profile view.');
+      const tab = button.dataset.messageFriend ? 'chats' : button.dataset.profileTab;
+      if (button.dataset.messageFriend) {
+        if (chatUiState.retry) throw new Error('Retry your pending chat action before starting another message.');
+        chatUiState.openPeer = button.dataset.messageFriend;
+      }
+      if (tab !== 'info' && tab !== 'friends' && tab !== 'chats') throw new Error('Unknown profile view.');
       profileTab = tab;
       renderMenu();
     }
@@ -1207,6 +1323,22 @@ app.addEventListener('input', event => {
   app.querySelectorAll<HTMLElement>('[data-friend-name]').forEach(entry => {
     entry.hidden = !entry.dataset.friendName?.includes(query);
   });
+  const empty = app.querySelector<HTMLElement>('[data-friend-no-match]');
+  if (empty) empty.hidden = !query || !!app.querySelector('[data-friend-name]:not([hidden])');
+});
+
+app.addEventListener('click', event => {
+    if (!(event.target instanceof Element) || !event.target.closest('[data-browse-profile-pictures]')) return;
+    void (async () => {
+      if (!account || !playerProfile || playMode !== 'online') throw new Error('Sign in to choose a profile picture.');
+      const picker = app.querySelector<HTMLSelectElement>('[data-profile-icon-picker]');
+      if (!picker) throw new Error('Profile editor is unavailable.');
+      const selected = await chooseProfilePicture(account, playerProfile.icon);
+      if (!selected) return;
+      if (!picker.isConnected || !playerProfile || playMode !== 'online') throw new Error('Profile editor changed. Open it again to select your picture.');
+      picker.value = selected;
+      picker.dispatchEvent(new Event('change', { bubbles: true }));
+    })().catch(error => { console.error('Profile picture selection failed', error); showError(errorMessage(error)); });
 });
 
 app.addEventListener('click', async event => {
@@ -1442,7 +1574,9 @@ app.addEventListener('click', async event => {
       if (!await gameConfirm('Permanently unlock this profile frame for 10 Null-Prismatica? It has no gameplay effects.', { title: 'Cosmetic Store', confirmLabel: 'Buy frame' })) return;
       await performOnline({ kind: 'purchaseFrame', frame });
     } else {
-      await performOnline({ kind: 'updateProfile', displayName: playerProfile.displayName, bio: playerProfile.bio, icon: isStarterId(playerProfile.icon) ? playerProfile.icon : 'neutral', frame });
+      const icon = playerProfile.icon;
+      if (icon !== 'neutral' && !isStarterId(icon) && !isProfilePictureId(icon)) throw new Error('Invalid saved profile picture.');
+      await performOnline({ kind: 'updateProfile', displayName: playerProfile.displayName, bio: playerProfile.bio, icon, frame });
     }
     renderMenu();
     showError(button.dataset.buyFrame ? 'Profile frame purchased and saved. Equip it at any time.' : 'Profile frame equipped.');
@@ -1471,10 +1605,11 @@ app.addEventListener('click', async event => {
   }
   if (tab) {
     const category = tab.dataset.socialTab;
-    if (category !== 'friends' && category !== 'incoming' && category !== 'outgoing') {
+    if (category !== 'incoming' && category !== 'outgoing') {
       showError('Unknown friend list.');
       return;
     }
+    friendRequestTab = category;
     app.querySelectorAll<HTMLButtonElement>('[data-social-tab]').forEach(item => item.setAttribute('aria-pressed', String(item === tab)));
     app.querySelectorAll<HTMLElement>('[data-social-panel]').forEach(panel => { panel.hidden = panel.dataset.socialPanel !== category; });
   }
@@ -1499,8 +1634,10 @@ app.addEventListener('submit', async event => {
   event.preventDefault();
   try {
     if (playMode !== 'online') throw new Error('Sign in to add friends.');
-    const username = String(new FormData(event.target).get('username') ?? '').trim();
-    await performOnline({ kind: 'friendRequest', username });
+    const identity = String(new FormData(event.target).get('username') ?? '').trim();
+    await performOnline(/^LL-[0-9A-F]{4}-[0-9A-F]{4}$/i.test(identity)
+      ? { kind: 'friendRequest', friendCode: identity.toUpperCase() }
+      : { kind: 'friendRequest', username: identity });
     renderMenu();
     app.querySelector('#online-friend-result')!.textContent = 'Friend request sent.';
   } catch (error) {
@@ -1816,8 +1953,20 @@ document.addEventListener('keydown', (event) => {
   openOnlineAccount(enterOnline);
 });
 
+window.addEventListener('pagehide', () => {
+  stopAutosave?.();
+  stopAutosave = null;
+  autosaveIdentity = null;
+  document.querySelector('.autosave-notice')?.remove();
+});
+window.addEventListener('pageshow', syncAutosave);
 render();
 if (new URLSearchParams(location.hash.slice(1)).get('type') === 'recovery') openOnlineAccount();
+else if (!gameStorage.active && import.meta.env.VITE_SUPABASE_URL) {
+  void onlineUsername().then(async user => {
+    if (user && journey.screen === 'title' && !gameStorage.active) await enterOnline();
+  }).catch(error => { console.error('Online session restoration failed', error); showError(errorMessage(error)); });
+}
 if (settingsError) showError(settingsError);
 if (hotkeyError) showError([settingsError, hotkeyError].filter(Boolean).join(' '));
 if (speedError) showError([settingsError, hotkeyError, speedError].filter(Boolean).join(' '));

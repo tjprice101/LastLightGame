@@ -1,4 +1,4 @@
-"""Record and verify the manual D-177 review of all installed Conduit icons."""
+"""Record and verify the full manual review of installed Conduit artwork."""
 
 import argparse
 from hashlib import sha256
@@ -7,12 +7,34 @@ from pathlib import Path
 
 from art_library import art_path
 import intake_delivered_art
+import intake_kit_conduit_art
 import intake_machine_art
+import intake_master_conduit_art
 import intake_root_art
 
 ROOT = intake_delivered_art.ROOT
 OUTPUT = art_path("conduit-cleanup-review.json", root=ROOT)
+MASTER_PREVIOUS_RUNTIME = (
+    Path("Art") / "source" / "master-conduits" / "previous-runtime" /
+    "conduit-background-audit"
+)
 CHANGED_NOTES = {
+    "fieldbrace-coupler": (
+        "Follow-up review cleared mint backdrop trapped between the legs and body, "
+        "plus the empty right-edge strip; preserved cyan crystals and the painted blue ground shadow."
+    ),
+    "reserve-torque-crank": (
+        "Follow-up review cleared green backdrop inside both frame openings and "
+        "below the lower crossbar; preserved bronze hardware, cyan core and brown ground shadow."
+    ),
+    "horizon-heartcase": (
+        "Follow-up review cleared teal backdrop trapped between the lower limbs; "
+        "preserved ivory armor, opal core, purple limb and painted ground shadow."
+    ),
+    "luminous-dawn-witness-array": (
+        "Follow-up review matched the row-varying backdrop and cleared reviewed "
+        "tripod openings with a bounded local tolerance; preserved green lenses, pale metal and ground shadow."
+    ),
     "chaotic-paradox-spindle": (
         "Cleared the enclosed source-key pockets inside the dark mechanism and "
         "the two reviewed outer background traces; preserved the violet core and "
@@ -35,6 +57,94 @@ CHANGED_NOTES = {
         "Cleared the enclosed green-key triangle and two disconnected openings; "
         "preserved the steel triangle, blue crystal assembly and bronze fittings."
     ),
+    "master-tide-2": (
+        "Cleared five enclosed green backdrop fields between the orb frame and lower struts; "
+        "preserved the blue planetary core, pale metal and authored base."
+    ),
+    "master-tide-3": (
+        "Cleared eleven enclosed teal backdrop fields among the planetary rings and spokes; "
+        "preserved the red roses, bronze rails, dark center and turquoise details."
+    ),
+    "master-atmoso-2": (
+        "Cleared two pale-teal backdrop patches behind the lower clock frame; "
+        "preserved the central lens and pale mechanical structure."
+    ),
+    "master-aurora-1": (
+        "Cleared three enclosed pale-green fields behind the crown and lower side arches; "
+        "preserved the orange lens, ivory architecture and attached lower shadow."
+    ),
+    "master-aurora-2": (
+        "Cleared four enclosed yellow-green backdrop islands behind lower wing joints; "
+        "preserved the distinct olive cast shadow beneath the wings, ivory metal and orange core."
+    ),
+    "master-aurora-3": (
+        "Cleared three pale-green backdrop openings between lower radial arms; "
+        "preserved the gold rays, orange lens and pale mechanical details."
+    ),
+    "master-bliss-1": (
+        "Cleared five gray-green backdrop fields inside the suspended frame and between its ribs; "
+        "preserved the pale architecture, feathers, cables and lower shadow."
+    ),
+    "master-bliss-3": (
+        "Cleared three turquoise backdrop gaps inside the feather-and-loom structure; "
+        "preserved the ivory feathers and teal mechanical accents."
+    ),
+    "master-bruno-2": (
+        "Cleared two pale-green fields between the rock plates and upper central slabs; "
+        "preserved the orange seams, dark stone and broad ground shadow."
+    ),
+    "master-disciple-1": (
+        "Cleared thirteen enclosed sage backdrop islands within the suspended ring and open appendages; "
+        "preserved the structures, dark center and dangling gold strands."
+    ),
+    "master-razor-1": (
+        "Cleared two additional enclosed green backdrop fields within the crescent-wing envelope; "
+        "preserved the purple wing surfaces, central bastion and attached ground shadow."
+    ),
+    "master-razor-3": (
+        "Cleared two muted-green backdrop fields inside the lower clockwork and right inner crescent; "
+        "preserved the dark-violet mechanism and pointed facets."
+    ),
+    "master-rosetta-1": (
+        "Cleared four enclosed olive backdrop fields within the rose-wheel frame using its row-gradient key; "
+        "preserved the roses, gold machinery and attached lower base/shadow."
+    ),
+    "master-rosetta-2": (
+        "Cleared two enclosed dark-green backdrop openings inside the flower-and-gear assembly; "
+        "preserved the red roses, cream wings and hanging details."
+    ),
+    "master-rosetta-3": (
+        "Cleared five turquoise-green backdrop gaps through the rose medallion and lower frame; "
+        "preserved the roses, pale metal, gold fittings and central structure."
+    ),
+    "master-thornia-1": (
+        "Cleared five additional green backdrop fields visible through the rose-wheel lattice; "
+        "preserved red roses, bronze rails and the authored dark center."
+    ),
+    "master-thornia-2": (
+        "Cleared five pale-green backdrop openings within the rose wheels and inner assembly; "
+        "preserved the roses, white/gold metal, red blades and lower shadow."
+    ),
+    "master-thornia-3": (
+        "Cleared three olive backdrop fields behind the upper wheel and central armor; "
+        "preserved the broad mauve ground cloud and olive shadow beneath the chassis."
+    ),
+    "master-crinso-1": (
+        "Cleared two enclosed sage backdrop gaps inside the rose-wheel structure; "
+        "preserved the double blade, gold hub and detached sparks."
+    ),
+    "master-crinso-3": (
+        "Cleared the enclosed muted-green backdrop pocket inside the upper wheel; "
+        "preserved the red-gold device and authored center."
+    ),
+    "master-orvella-1": (
+        "Cleared three broad muted-green backdrop islands behind the throne and side columns; "
+        "preserved the violet crystals, stone architecture and sand-colored ground plane."
+    ),
+    "master-vaelor-3": (
+        "Cleared three enclosed teal backdrop fields behind the upper instrument and pendulum; "
+        "preserved the lower attached teal cast shadow."
+    ),
 }
 
 NO_CHANGE_NOTES = {
@@ -54,18 +164,15 @@ NO_CHANGE_NOTES = {
     "efflorescent-verdant-covenant": "The green leaves, gems and energy details are subject art and were preserved; no separate background gap was verified.",
     "efflorescent-worldtree-heart": "The green crown/core is authored subject detail; protected foreground and transparent outer gaps remain intact.",
     "falcon-sight": "The silver/blue aperture and detached-looking points are authored silhouette details; no residual background area remained.",
-    "fieldbrace-coupler": "The cyan/green pixels are confined to the crystals and metal reflections; the negative spaces are clear.",
     "fracture-reservoir": "The existing two reviewed gap seeds clear the source-key openings; cyan crystal and violet chamber pixels are retained.",
     "glassroot-gimbal": "The glass-green pixels are within the lens and gimbal; the open frame remains transparent.",
     "granite-hourglass": "The broad teal area below the mechanism is the source-authored cast shadow, not a key-field remnant; metal and crystal gaps are clear.",
     "hammerbalance-link": "The blue-green facets are part of the head and haft insets; the surrounding negative spaces are transparent.",
-    "horizon-heartcase": "The green/cyan pixels are contained in the opal and inset details; no disconnected backdrop region remained.",
     "immortal-vessel": "The pale wings and turquoise vessel core are intact, with no filled background in the open silhouette.",
     "infernic-cinder-testament": "The warm engine and detached sparks are retained; the low oval beneath it is the authored shadow.",
     "infernic-phoenix-reactor": "The orange fire and red mechanism are authored opaque subject shapes; openings are transparent.",
     "judgment-lens": "The central lens is protected subject art; no separate key-colored area remains in its frame.",
     "lifeline-flywheel": "The green-blue accents belong to the flywheel and core; the open ring and lower cavity are clear.",
-    "luminous-dawn-witness-array": "The pale green facets are part of the glass lenses and highlights; no detached background island was confirmed.",
     "luminous-seraph-mirror": "The ivory rays, gold frame and central mirror are preserved; the negative spaces are clear.",
     "ominous-eclipse-mantle": "The violet-black silhouette and small detached facets are authored subject details; the openings remain transparent.",
     "ominous-nightglass-archive": "The violet glass and dark frame are intentional subject colors; no separate backdrop remained.",
@@ -73,7 +180,6 @@ NO_CHANGE_NOTES = {
     "pale-bulwark-diadem": "The pale rays and blue gem remain opaque subject details; no enclosed background patch was visible.",
     "parallax-relay": "The cool metal and central blue facets remain intact; no residual keyed background is visible.",
     "precision-escapement": "The gold and cyan components are subject detail; the wheel openings remain transparent.",
-    "reserve-torque-crank": "The green-adjacent pixels fall within the cast shadow and bronze support details; no independent background patch was verified.",
     "resonance-crucible": "The cyan crystals and violet fittings are attached to the mechanism; the negative spaces are clear.",
     "sentinel-aperture": "The existing reviewed aperture seed clears its enclosed source-key opening; the cyan center and pale rim are preserved.",
     "siege-cantilever": "The pale blade, violet fittings and small detached facets are subject art; no background fill remained.",
@@ -110,6 +216,8 @@ def _asset_sources():
         "machines-art-intake.json": [],
         "delivered-root-art-intake.json": [],
         "root-art-intake.json": [],
+        "kit-conduit-art-intake.json": [],
+        "master-conduit-art-intake.json": [],
     }
     for manifest_name in files:
         path = art_path(manifest_name, root=ROOT)
@@ -128,8 +236,12 @@ def _asset_sources():
             asset = Path(record["runtime"].replace("\\", "/")).stem
             records[asset] = (dict(record, asset=asset, category="conduits"),
                               "Art/provenance/root-art-intake.json")
-    if len(records) != 60:
-        raise ValueError(f"Expected exactly60 installed Conduit source records, found {len(records)}.")
+    for record in files["kit-conduit-art-intake.json"]:
+        records[record["asset"]] = (record, "Art/provenance/kit-conduit-art-intake.json")
+    for record in files["master-conduit-art-intake.json"]:
+        records[record["asset"]] = (record, "Art/provenance/master-conduit-art-intake.json")
+    if len(records) != 135:
+        raise ValueError(f"Expected 135 Conduit-related source records, found {len(records)}.")
     return records
 
 
@@ -148,6 +260,12 @@ def _regenerate(record: dict, authority: str) -> tuple[bytes, dict]:
                        if item[1] == "conduits" and item[2] == asset_id)
         _, category, name, key = mapping
         return intake_machine_art.prepare(source, category, name, key)
+    if authority.endswith("kit-conduit-art-intake.json"):
+        settings = intake_kit_conduit_art.load_settings()[asset_id]
+        return intake_kit_conduit_art.prepare(source, settings)
+    if authority.endswith("master-conduit-art-intake.json"):
+        settings = intake_master_conduit_art.load_settings()[asset_id]
+        return intake_master_conduit_art.prepare(source, settings)
     asset = next(item for item in intake_delivered_art.assets()
                  if item.category == "conduits" and item.asset == asset_id)
     data, metadata = intake_delivered_art.prepare(source, asset)
@@ -156,6 +274,12 @@ def _regenerate(record: dict, authority: str) -> tuple[bytes, dict]:
 
 def review_document() -> dict:
     rows = []
+    prior_rows = {}
+    if OUTPUT.is_file():
+        prior_rows = {
+            row["asset"]: row
+            for row in json.loads(OUTPUT.read_text(encoding="utf-8")).get("assets", [])
+        }
     for asset_id, (record, authority) in sorted(_asset_sources().items()):
         source, runtime = _paths(record)
         source_hash = _digest(source)
@@ -167,17 +291,30 @@ def review_document() -> dict:
         if after_hash != installed_hash or after_hash != record["runtime_sha256"]:
             raise FileExistsError(f"Installed export does not reproduce from reviewed settings: {runtime}")
         if asset_id in CHANGED_NOTES:
-            previous_path = ROOT / record["previous_runtime"].replace("\\", "/")
-            before_hash = record["previous_runtime_sha256"]
-            if not previous_path.is_file() or _digest(previous_path) != before_hash:
+            if asset_id.startswith("master-"):
+                previous_path = ROOT / MASTER_PREVIOUS_RUNTIME / f"{asset_id}.png"
+            else:
+                previous = prior_rows.get(asset_id)
+                if not previous or not previous.get("previous_runtime"):
+                    raise FileNotFoundError(f"Missing prior runtime provenance for {asset_id}.")
+                previous_path = ROOT / previous["previous_runtime"].replace("\\", "/")
+            if not previous_path.is_file():
                 raise FileExistsError(f"Preserved prior export is missing or changed: {previous_path}")
+            before_hash = _digest(previous_path)
+            if (asset_id in prior_rows and prior_rows[asset_id].get("previous_runtime_sha256")
+                    and prior_rows[asset_id]["previous_runtime_sha256"] != before_hash):
+                raise FileExistsError(f"Preserved prior export hash changed: {previous_path}")
             verdict = "corrected"
             reason = CHANGED_NOTES[asset_id]
             previous_relative = str(previous_path.relative_to(ROOT)).replace("/", "\\")
         else:
             before_hash = after_hash
             verdict = "no-change"
-            reason = NO_CHANGE_NOTES[asset_id]
+            reason = NO_CHANGE_NOTES.get(
+                asset_id, record.get("settings", {}).get(
+                    "review", "Full-resolution source and dark/light composites reviewed; no definite background remnant was confirmed."
+                )
+            )
             previous_relative = None
         rows.append({
             "asset": asset_id,
@@ -198,17 +335,26 @@ def review_document() -> dict:
                 "magnified_candidates": True,
             },
         })
-    if set(_asset_sources()) != set(CHANGED_NOTES) | set(NO_CHANGE_NOTES):
-        missing = set(_asset_sources()) - set(CHANGED_NOTES) - set(NO_CHANGE_NOTES)
-        extra = (set(CHANGED_NOTES) | set(NO_CHANGE_NOTES)) - set(_asset_sources())
-        raise ValueError(f"Review notes do not match installed art; missing={sorted(missing)}, extra={sorted(extra)}")
+    assets_by_id = _asset_sources()
+    if not set(CHANGED_NOTES).issubset(assets_by_id):
+        raise ValueError(f"Cleanup notes reference missing assets: {sorted(set(CHANGED_NOTES) - set(assets_by_id))}")
+    if not set(NO_CHANGE_NOTES).issubset(assets_by_id):
+        raise ValueError(f"No-change notes reference missing assets: {sorted(set(NO_CHANGE_NOTES) - set(assets_by_id))}")
+    if len(rows) != 135:
+        raise ValueError(f"Expected 135 reviewed images; found {len(rows)}.")
+    master_count = sum(row["source_authority"].endswith("master-conduit-art-intake.json") for row in rows)
     return {
-        "review_id": "D-177",
-        "asset_count": 60,
+        "review_id": "D-177-full-audit",
+        "asset_count": 135,
+        "ordinary_conduit_count": 85,
+        "kit_conduit_count": 25,
+        "master_conduit_count": master_count,
+        "master_character_icon_count": 48,
+        "master_related_asset_count": master_count - 48,
         "changed_count": len(CHANGED_NOTES),
-        "undelivered_kit_icon_count": 25,
-        "undelivered_kit_icons_reviewed": False,
-        "review_method": "Manual source, dark/light runtime contact-sheet and magnified-candidate review; offline exporter reproduction.",
+        "undelivered_kit_icon_count": 0,
+        "kit_icons_reviewed": True,
+        "review_method": "Manual full-resolution source, dark/light source and installed-runtime composites, magnified enclosed-key candidate overlays, and source-specific offline exporter reproduction.",
         "assets": rows,
     }
 
@@ -231,7 +377,7 @@ if __name__ == "__main__":
     options = parser.parse_args()
     if options.write:
         write_review()
-        print("Verified and recorded all60 Conduit art reviews.")
+        print("Verified and recorded all 135 Conduit-related art reviews.")
     else:
         verify_review()
-        print("All60 Conduit review records reproduce from immutable sources.")
+        print("All 135 Conduit-related review records reproduce from immutable sources.")

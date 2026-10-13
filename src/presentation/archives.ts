@@ -24,7 +24,7 @@ import { getStarter } from '../content/starters';
 const galleries = [
   { id: 'characters', name: 'Character Archive', subtitle: 'Element-Bearers · Forms · Combat kits' },
   { id: 'conduits', name: 'Conduit Archive', subtitle: 'Ancient mechanisms · Effects · Ownership' },
-  { id: 'creatures', name: 'Elemental-Devourer Glossary', subtitle: 'Discoveries · Elements · Enemy loot' },
+  { id: 'creatures', name: 'Elemental-Devourer &amp; Machine Glossary', subtitle: 'Discoveries · Elements · Enemy loot' },
 ] as const;
 export type ArchiveGallery = (typeof galleries)[number]['id'];
 
@@ -49,17 +49,18 @@ function characterArchive(account: Account | null): string {
       const current = progress?.evolution === evolution;
       const kit = resolveFighter(starter.id, current ? progress : { level: 0, evolution, weaponRank: 0 }, current ? account?.conduitEquipment?.[starter.id] : undefined, current ? account?.conduitUpgrades : undefined);
       return `<article class="archive-card ${revealed ? 'archive-form-revealed' : 'archive-form-locked'}" data-archive-character="${starter.id}" data-form="${evolution}" data-filter-element="${starter.elementId}" data-filter-rarity="${evolutionRarity(evolution)}" data-filter-ownership="${!account ? 'unavailable' : owned ? 'owned' : 'unowned'}" data-filter-discovery="${!account ? 'unavailable' : revealed ? 'revealed' : 'locked'}" data-filter-stars="${starter.stars}">
-        <div class="archive-portrait">${portrait(starter, evolution)}</div>
+        <div class="archive-portrait${revealed ? '' : ' unreached-character-art'}">${portrait(starter, evolution)}</div>
         <h3>${characterName(starter.id, evolution)} · Evo.${evolution}</h3>
         ${elementLabel(starter.elementId)}${characterRating(starter.id, evolution)}
         <p class="archive-ownership">${!account ? 'Ownership unavailable' : !owned ? 'Not owned' : current ? `Current form · Lv.${progress?.level}` : revealed ? 'Reached form' : 'Evolution not reached'}</p>
         ${information(`archive-kit-${starter.id}-${evolution}`, `${characterName(starter.id, evolution)} · Evo.${evolution}`, `${characterRole(starter.id)}${elementLabel(starter.elementId)}${characterRating(starter.id, evolution)}
         <p class="archive-ownership">${!account ? 'Ownership unavailable' : !owned ? 'Not owned' : current ? `Current form · Lv.${progress?.level}` : revealed ? 'Reached form' : 'Evolution not reached'}</p>
         <p>${starter.weapon}</p>
+        <h3>Origin</h3><p>${starter.description}</p><p>${starter.lore.story}</p><blockquote>${starter.lore.vow}</blockquote>
         ${current ? '' : '<p class="quiet">Level 0 preview</p>'}
         <dl class="archive-stats"><div><dt>Health</dt><dd>${formatStat(kit.stats.health)}</dd></div>
           <div><dt>Attack</dt><dd>${formatStat(kit.stats.damage)}</dd></div><div><dt>Defense</dt><dd>${formatStat(kit.stats.defense)}</dd></div></dl>
-        <h3>${current ? 'Current combat kit' : 'Form combat-kit preview'}</h3>${kitResource(kit)}<p><strong>${kit.passive.name} · Passive</strong><br>${kit.passive.description}</p>
+        <h3>${current ? 'Current combat kit' : 'Form combat-kit preview'}</h3><p><strong>${kit.passive.name} · Passive</strong><br>${kit.passive.description}</p>${kitResource(kit, starter.id)}
           ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => `<p><strong>${kit.abilities[action].name}</strong>${abilityStatuses(kit.abilities[action].strength)}<br>${kit.abilities[action].description}</p>`).join('')}${current ? masterReference(account?.masterEquipment?.[starter.id]) : ''}`, 'Combat kit')}
       </article>`;
       });
@@ -87,7 +88,8 @@ function conduitArchive(account: Account | null): string {
     </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card" data-archive-master="${entry.id}">
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
       <p>Omnic Master · ${getStarter(entry.character).name}</p><p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
-      <p class="archive-effect">${entry.effect}</p><p>Choose from a Cosmic Grand Master Chest. Final Machines boss: 1% chest drop. Fixed kit effect; no upgrades.</p>
+      <p class="archive-effect">${entry.effect}</p><p>Choose from a Cosmic Grand Master Chest. Final Machines boss: 1% chest drop. Always-active bearer enhancement; no upgrades.</p>
+      ${information(`archive-master-${entry.id}`, entry.name, `<p>${entry.lore}</p><p>${entry.effect}</p>`, 'Details')}
     </article>`).join('')}</div>`;
 }
 
@@ -96,11 +98,11 @@ export function archives(account: Account | null, selected: ArchiveGallery = 'ch
     Current forms show saved equipped stats; other Element-Bearer forms preview level 0 without Conduits. Stars and form rarity are separate.
     Captured forms have a level cap of 120 and cannot evolve. Catalog previews do not grant ownership.</p>
     <h3>Conduits</h3><p>Owned Conduits reveal their artwork in color; unowned Conduits remain silhouettes. The catalog shows effects and owned counts. Equipment rules are in Character Information.</p>
-    <h3>Elemental-Devourer discovery and loot</h3><p>Encountering reveals identity and element. Defeating reveals exact stage loot.
+    <h3>Elemental-Devourer and Machine discovery</h3><p>Elemental-Devourers are Rise's creations. Machines are destroyed prototypes from her collaboration with Let, not her created faction.</p><p>Encountering reveals identity, element and lore. Defeating reveals exact stage loot.
     Quantities vary uniformly within each range; rarity rolls are independent and have no pity.
     Heaven, Abyss, Treasury and Sanctuary have a separate 20% capture chance per kill; Story, Training and elemental dungeons cannot grant captures.
     Captures retain defeated level, form and skills. Currency Elemental-Devourer sale prices are fixed by form; sale protections are in Character Information.</p>
-    <h3>Element-Bearer identities</h3>${starters.map((starter) => `<p><strong>${characterName(starter.id)}</strong> · ${starter.description}</p>`).join('')}`)}
+    `)}
     <nav class="archive-navigation" aria-label="Archive galleries">${galleries.map((gallery) =>
       `<button class="archive-gallery-button" data-archive-gallery="${gallery.id}" aria-controls="archive-${gallery.id}" aria-pressed="${selected === gallery.id}"><strong>${gallery.name}</strong><small>${gallery.subtitle}</small></button>`).join('')}</nav>
     ${!account ? '<p role="alert">Saved ownership and discoveries unavailable. Resolve the save error; public catalog previews remain available.</p>' : ''}

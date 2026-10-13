@@ -169,17 +169,17 @@ export function describeFighter(id: StarterId, snapshot: FighterDefinition): Fig
     kit.passive.description = `+${pct(kit.passive.damageBonus)}% outgoing damage at or below 50% health.`;
     kit.abilities.skill1.description = `${pct(value('skill1', 'damageMultiplier'))}% damage to one enemy; burn for ${Math.round(kit.stats.elementalDamage * value('skill1', 'burnMultiplier'))} damage on its next two enemy phases.`;
     kit.abilities.skill2.description = `${pct(value('skill2', 'damageMultiplier'))}% damage to every living enemy.`;
-    kit.abilities.ultimate.description = `${pct(value('ultimate', 'damageMultiplier'))}% damage to every enemy; burn surviving targets for ${Math.round(kit.stats.elementalDamage * value('ultimate', 'burnMultiplier'))} damage on their next two enemy phases. Recover next turn.`;
+    kit.abilities.ultimate.description = `${pct(value('ultimate', 'damageMultiplier'))}% damage to every enemy; burn surviving targets for ${Math.round(kit.stats.elementalDamage * value('ultimate', 'burnMultiplier'))} damage on their next two enemy phases.`;
   } else if (id === 'tide') {
     kit.passive.description = `+${formatStat(kit.passive.defenseBonus)} defense, already included in displayed effective defense.`;
     kit.abilities.skill1.description = `${pct(value('skill1', 'damageMultiplier'))}% damage to one enemy; reduce its next two enemy-phase attacks by ${pct(value('skill1', 'weakenFraction'))}%.`;
-    kit.abilities.skill2.description = `Give every living ally ${formatStat(value('skill2', 'shield'))} shield (refresh to at least ${formatStat(value('skill2', 'shield'))}; does not stack).`;
-    kit.abilities.ultimate.description = `${pct(value('ultimate', 'damageMultiplier'))}% damage to all enemies and ${formatStat(value('ultimate', 'shield'))} shield for allies. Recover next turn.`;
+    kit.abilities.skill2.description = `Give every living ally ${formatStat(value('skill2', 'shield'))} shield points.`;
+    kit.abilities.ultimate.description = `${pct(value('ultimate', 'damageMultiplier'))}% damage to all enemies and ${formatStat(value('ultimate', 'shield'))} shield points for every living ally.`;
   } else if (id === 'sprout') {
     kit.passive.description = `At each new player turn, heal living allies by ${pct(kit.passive.healFraction)}% of their maximum health while Flora lives.`;
     kit.abilities.skill1.description = `${pct(value('skill1', 'damageMultiplier'))}% damage to one enemy with +${pct(value('skill1', 'critBonus'))} percentage points critical chance.`;
     kit.abilities.skill2.description = `Restore ${formatStat(value('skill2', 'healing'))} health to every living ally; cannot revive. Increase living allies' outgoing attack damage by ${pct(value('skill2', 'attackBoostFraction'))}% this and next player turn (refresh; does not stack).`;
-    kit.abilities.ultimate.description = `${pct(value('ultimate', 'damageMultiplier'))}% damage to all enemies and heal living allies by ${formatStat(value('ultimate', 'healing'))}. Recover next turn.`;
+    kit.abilities.ultimate.description = `${pct(value('ultimate', 'damageMultiplier'))}% damage to all enemies and restore ${formatStat(value('ultimate', 'healing'))} HP to every living ally; cannot revive.`;
   } else {
     kit.passive.description = kit.passive.lightGaugeBonus !== undefined
       ? `Normal Attack gains ${formatStat(kit.passive.lightGaugeBonus)} additional Gauge, capped by Gauge capacity.`
@@ -195,10 +195,10 @@ export function describeFighter(id: StarterId, snapshot: FighterDefinition): Fig
       if (strength.weakenFraction !== undefined) effects.push(`reduce surviving targets' next two enemy-phase attacks by ${pct(strength.weakenFraction)}%`);
       if (strength.critBonus !== undefined) effects.push(`+${pct(strength.critBonus)} percentage points critical chance`);
       if (strength.burnMultiplier !== undefined) effects.push(`burn surviving targets for ${Math.round(kit.stats.elementalDamage * strength.burnMultiplier)} damage on their next two enemy phases`);
-      if (strength.shield !== undefined) effects.push(`give every living ally ${formatStat(strength.shield)} shield (refresh; does not stack)`);
+      if (strength.shield !== undefined) effects.push(`give every living ally ${formatStat(strength.shield)} shield points`);
       if (strength.healing !== undefined) effects.push(`restore ${formatStat(strength.healing)} health to every living ally; cannot revive`);
       if (strength.attackBoostFraction !== undefined) effects.push(`increase living allies' outgoing attack damage by ${pct(strength.attackBoostFraction)}% this and next player turn (refresh; does not stack)`);
-      ability.description = `${effects.join('; ')}.${action === 'ultimate' ? ' Recover next turn.' : ''}`;
+      ability.description = `${effects.join('; ')}.`;
     }
   }
   if (kit.pilot) {
@@ -246,7 +246,7 @@ export function describeFighter(id: StarterId, snapshot: FighterDefinition): Fig
       ability.description += ' Critical chance bonus: this attack only.';
     }
     if (ability.strength.burnMultiplier !== undefined) {
-      ability.description += ' Burn: 2 enemy phases; ignores Defense; replaces existing Burn.';
+      ability.description += ' Burn ignores Defense and replaces existing Burn.';
     }
     if (action === 'ultimate') {
       ability.description += ' Recovery: caster skips the next player turn.';

@@ -210,17 +210,18 @@ export function resolveOmnicInteraction(state: BattleState, owner: Combatant, co
   }
   for (const conduit of interactions) {
     const { id, rule } = conduit;
+    const isMaster = owner.masterConduit === id;
     const memory = owner.omnicMemory?.[id] ?? {};
     const remember = (): void => { (owner.omnicMemory ??= {})[id] = memory; };
-    if (rule.bank?.trigger === context.trigger && (!rule.bank.other || !!context.target && context.target.id !== owner.id) && memory.bankRound !== state.round) {
+    if (rule.bank?.trigger === context.trigger && (!rule.bank.other || !!context.target && context.target.id !== owner.id) && (isMaster || memory.bankRound !== state.round)) {
       if ((memory.bank ?? 0) < rule.bank.maximum) {
         memory.bank = Math.min(rule.bank.maximum, (memory.bank ?? 0) + 1);
-        memory.bankRound = state.round;
+        if (!isMaster) memory.bankRound = state.round;
         remember();
         status(events, owner, owner, `${conduit.name} stores ${owner.masterConduit === id ? 'Astral Reserve' : 'a reserve'} (${memory.bank}/${rule.bank.maximum})`, memory.bank);
       }
     }
-    if (rule.trigger !== context.trigger || memory.usedRound === state.round || !qualifies(owner, rule, context)) continue;
+    if (rule.trigger !== context.trigger || !isMaster && memory.usedRound === state.round || !qualifies(owner, rule, context)) continue;
     const scale = rule.bank ? Math.min(rule.bank.maximum, Math.max(0, memory.bank ?? 0)) : 1;
     if (scale <= 0) continue;
     let effective = false;
@@ -235,7 +236,7 @@ export function resolveOmnicInteraction(state: BattleState, owner: Combatant, co
     for (const outcome of rule.outcomes) effective = applyOutcome(state, owner, context, outcome, scale, conduit.name, events,
       selected.get(outcome.recipient ?? 'self')) || effective;
     if (effective) {
-      memory.usedRound = state.round;
+      if (!isMaster) memory.usedRound = state.round;
       if (rule.bank) memory.bank = 0;
       remember();
     }

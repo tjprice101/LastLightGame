@@ -29,6 +29,20 @@ html body #status .status-toast-close:focus-visible { outline: 2px solid var(--t
 html body #status [data-retry-online] { margin-top: .4rem; align-self: flex-start; }
 @keyframes status-toast-in { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
 html:root body .battle-screen > #status:not(:empty) { bottom: 5rem; }
+.autosave-notice {
+  position: fixed; right: 1rem; bottom: 1rem; z-index: 70; pointer-events: none;
+  max-width: calc(100vw - 2rem); padding: .65rem .9rem; border: 1px solid #555;
+  border-radius: .6rem; background: #17171bef; color: #eee;
+  font: 600 .9rem/1.4 var(--ui-font, Georgia, serif);
+  animation: autosave-notice 1800ms ease both;
+}
+@keyframes autosave-notice {
+  0% { opacity: 0; }
+  12%, 75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+:root[data-motion="reduced"] .autosave-notice,
+body.reduced-motion .autosave-notice { animation: none; }
 @media (max-width: 760px) {
   html:root body .sanctuary-shell > #status:not(:empty) { bottom: 5.5rem; }
 }

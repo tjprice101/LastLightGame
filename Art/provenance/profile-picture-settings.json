@@ -1,0 +1,700 @@
+{
+  "ember-base": {
+    "keys": [
+      [
+        12,
+        164,
+        124
+      ],
+      [
+        12,
+        156,
+        124
+      ],
+      [
+        20,
+        164,
+        124
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "ember-omnic": {
+    "keys": [
+      [
+        36,
+        68,
+        44
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "tide-base": {
+    "keys": [
+      [
+        140,
+        12,
+        92
+      ],
+      [
+        132,
+        12,
+        92
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "tide-omnic": {
+    "keys": [
+      [
+        132,
+        52,
+        76
+      ],
+      [
+        140,
+        52,
+        76
+      ],
+      [
+        140,
+        52,
+        84
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "sprout-base": {
+    "keys": [
+      [
+        36,
+        204,
+        236
+      ],
+      [
+        36,
+        212,
+        236
+      ],
+      [
+        36,
+        204,
+        244
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "sprout-omnic": {
+    "preserve_original": true
+  },
+  "atmoso-base": {
+    "keys": [
+      [
+        252,
+        68,
+        28
+      ],
+      [
+        252,
+        60,
+        28
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "atmoso-omnic": {
+    "keys": [
+      [
+        252,
+        188,
+        44
+      ],
+      [
+        252,
+        188,
+        52
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "aurora-base": {
+    "keys": [
+      [
+        212,
+        12,
+        20
+      ],
+      [
+        204,
+        12,
+        20
+      ],
+      [
+        212,
+        20,
+        20
+      ],
+      [
+        204,
+        20,
+        20
+      ]
+    ],
+    "radius": 48,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "aurora-omnic": {
+    "keys": [
+      [
+        4,
+        4,
+        4
+      ]
+    ],
+    "radius": 20,
+    "border_only": true,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "bliss-base": {
+    "keys": [
+      [
+        4,
+        148,
+        116
+      ],
+      [
+        12,
+        148,
+        124
+      ],
+      [
+        4,
+        148,
+        124
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "bliss-omnic": {
+    "keys": [
+      [
+        180,
+        196,
+        60
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "bruno-base": {
+    "keys": [
+      [
+        228,
+        28,
+        100
+      ],
+      [
+        228,
+        36,
+        100
+      ],
+      [
+        220,
+        28,
+        100
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "bruno-omnic": {
+    "keys": [
+      [
+        252,
+        68,
+        44
+      ],
+      [
+        252,
+        68,
+        52
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "crinso-base": {
+    "keys": [
+      [
+        28,
+        236,
+        132
+      ],
+      [
+        28,
+        244,
+        132
+      ],
+      [
+        20,
+        244,
+        132
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "crinso-omnic": {
+    "keys": [
+      [
+        68,
+        116,
+        68
+      ],
+      [
+        76,
+        116,
+        68
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "disciple-base": {
+    "keys": [
+      [
+        4,
+        116,
+        228
+      ],
+      [
+        4,
+        116,
+        236
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "disciple-omnic": {
+    "keys": [
+      [
+        52,
+        60,
+        220
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "elise-base": {
+    "keys": [
+      [
+        252,
+        180,
+        44
+      ],
+      [
+        252,
+        172,
+        44
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "elise-omnic": {
+    "keys": [
+      [
+        252,
+        172,
+        44
+      ],
+      [
+        252,
+        180,
+        44
+      ],
+      [
+        252,
+        180,
+        52
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "nerithe-base": {
+    "keys": [
+      [
+        252,
+        196,
+        60
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "nerithe-omnic": {
+    "keys": [
+      [
+        252,
+        164,
+        52
+      ],
+      [
+        252,
+        164,
+        44
+      ],
+      [
+        244,
+        164,
+        52
+      ],
+      [
+        252,
+        156,
+        52
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "orvella-base": {
+    "keys": [
+      [
+        44,
+        124,
+        92
+      ],
+      [
+        44,
+        124,
+        100
+      ],
+      [
+        52,
+        124,
+        100
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "orvella-omnic": {
+    "keys": [
+      [
+        36,
+        84,
+        36
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "razor-base": {
+    "keys": [
+      [
+        44,
+        172,
+        116
+      ],
+      [
+        36,
+        172,
+        116
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "razor-omnic": {
+    "keys": [
+      [
+        76,
+        124,
+        44
+      ],
+      [
+        76,
+        116,
+        44
+      ],
+      [
+        68,
+        124,
+        44
+      ],
+      [
+        68,
+        116,
+        44
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "rosetta-base": {
+    "keys": [
+      [
+        4,
+        204,
+        124
+      ],
+      [
+        4,
+        196,
+        124
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "rosetta-omnic": {
+    "keys": [
+      [
+        36,
+        132,
+        68
+      ],
+      [
+        36,
+        140,
+        68
+      ],
+      [
+        36,
+        140,
+        76
+      ],
+      [
+        36,
+        132,
+        76
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "thornia-base": {
+    "keys": [
+      [
+        12,
+        212,
+        164
+      ],
+      [
+        4,
+        212,
+        164
+      ],
+      [
+        12,
+        220,
+        164
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "thornia-omnic": {
+    "keys": [
+      [
+        108,
+        212,
+        100
+      ],
+      [
+        108,
+        220,
+        92
+      ],
+      [
+        108,
+        212,
+        92
+      ],
+      [
+        116,
+        220,
+        100
+      ],
+      [
+        116,
+        212,
+        100
+      ],
+      [
+        116,
+        212,
+        92
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "vaelor-base": {
+    "keys": [
+      [
+        252,
+        172,
+        4
+      ],
+      [
+        252,
+        164,
+        4
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  },
+  "vaelor-omnic": {
+    "keys": [
+      [
+        252,
+        172,
+        36
+      ],
+      [
+        252,
+        180,
+        36
+      ]
+    ],
+    "radius": 20,
+    "border_only": false,
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 30
+    }
+  }
+}

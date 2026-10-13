@@ -36,8 +36,21 @@ publishes the actual chest chance.
 character assignments, exact numeric effects, triggers and art designs.
 Effects include personal Burn/Weaken extension, Fracture Marks, healing,
 shields, Gauge returns, cooldown reduction, refresh-only Attack buffs, one-hit
-direct-damage protection, team-wide outcomes, kit-resource charges and fixed
-Conduit strikes. Every design is gated once per round.
+direct-damage protection, team-wide outcomes and fixed Conduit strikes.
+
+**D-264: always-active bearer enhancements.** An equipped Master remains enabled
+throughout its bearer's living battle participation; it does not activate once
+per round or need manual reactivation. Every qualifying native outcome can apply
+its enhancement, including multiple targets/hits in one round. This is not a
+mandatory squad-wide aura: existing explicitly team-targeted payoffs stay team
+targeted. Temporary payoff durations, next-hit protection and spend conditions
+remain explicit; always-active means the enhancement rule never switches off,
+not that a timed Attack payoff becomes a permanent stacked stat.
+
+All48 effects have been compared with authored passives and native resource
+loops. No Master repeats a native charge award, passive healing or Nerithe's
+Normal-only Gauge award. Instead they add complementary mechanics. Ordinary
+Conduits and intrinsic character round/phase limits are unchanged.
 
 D-226 makes every Master distinct (unique effect text and rule; each
 character's three Masters use three different trigger/bank pairs) and tied
@@ -45,35 +58,35 @@ to that character's kit:
 
 | Character | 1 | 2 (Astral Reserve) | 3 |
 |---|---|---|---|
-| Infernis | Burn ticks echo 50% as a strike, +1 Burn phase | Burn banks; Flame Arc gains Embers and hits all enemies | Spending Embers returns Gauge per charge and a cooldown |
-| Tizu | Blocked hits give a Ward charge and 15% team protection | Blocked hits bank; Tidal Shelter heals the team | Weaken lasts longer and places Fracture Marks |
-| Flora | Healing also shields the most injured other ally | Healing banks; Briar Shot gains Bloom and Gauge | Last Flare gives team protection and a heal |
-| Atmoso | Critical hits add a gust strike | Crits bank; Cyclone Weave gains Charge and Gauge | Razor Gale on an enemy at or below half HP adds a strike and Gauge |
-| Elise | Crits cut both cooldowns and add a Charge | Crits bank; Last Flare cuts cooldowns and returns Gauge | Defeating an enemy returns Gauge and Attack |
+| Infernis | Every own Burn tick echoes50% and heals20% (max10% HP); no self-extension | Burn banks; Flame Arc shields4% HP and strikes all enemies15% Attack per reserve | Spending Embers returns Gauge per charge and a cooldown |
+| Tizu | Blocked hits cut a cooldown and refresh15% team protection | Blocked hits bank; Tidal Shelter heals the team | Weaken lasts longer and places Fracture Marks |
+| Flora | Each native heal also shields the most injured other ally | Healing banks; Briar Shot strikes20% Attack and returns5 Gauge per reserve | Last Flare gives team protection and cuts both cooldowns |
+| Atmoso | Critical hits add a gust strike | Crits bank; Cyclone Weave refreshes10% protection and returns8 Gauge per reserve | Razor Gale on an enemy at or below half HP adds a strike and Gauge |
+| Elise | Crits cut both cooldowns and shield20% damage (max10% HP) | Crits bank; Last Flare cuts cooldowns and returns Gauge | Defeating an enemy returns Gauge and Attack |
 | Vaelor | Direct hits below half HP heal Vaelor and return Gauge | Crits bank; Last Flare strikes every enemy | Defending primes Attack and Gauge |
-| Crinso | Crits grant Duality and Attack | Burn banks; Last Flare heals and refills Duality | Hitting own Burn heals and extends Burn |
-| Rosetta | Weaken returns Gauge and heals an ally | Healing banks; Golden Thorn Volley grants Grace and team healing | Hitting own Weaken grants Attack and Fracture |
-| Thornia | Blocked hits strike back at the attacker and add Aegis | Blocked hits bank; Shadow Rose Cleave shields the team | Weaken lasts longer and heals Thornia |
+| Crinso | Crits refresh15% HP shield and40% Attack | Burn banks; Last Flare heals8% HP and refreshes10% protection per reserve | Hitting own Burn heals and extends Burn |
+| Rosetta | Weaken returns Gauge and shields an ally | Healing banks; Golden Thorn Volley cuts a cooldown and shields the team3% HP per reserve | Hitting own Weaken grants Attack and Fracture |
+| Thornia | Blocked hits strike back at the attacker and return10 Gauge | Blocked hits bank; Shadow Rose Cleave shields the team | Weaken lasts longer and heals Thornia |
 | Bruno | Defending shields the whole team | Shield growth banks; Last Flare strikes every enemy | Weaken triggers an aftershock strike and a cooldown |
 | Razor | Defending heals and primes protection | Defending banks; Last Flare strikes and primes protection | Weaken places Fracture and a shield |
 | Aurora | Weaken lasts longer and gives the team Gauge | Weaken banks; Last Flare gives the team Attack | Hitting own Weaken heals/protects an ally |
-| Bliss | Crits heal the most injured other ally | Healing others banks; Warfeather Cut gains Bloom and strikes | Last Flare heals and empowers an ally |
+| Bliss | Crits shield the most injured other ally | Healing others banks; Warfeather Cut cuts a cooldown and strikes | Last Flare shields and empowers an ally |
 | Disciple | Support returns Gauge and protection to an ally | Supporting others banks; Last Flare gives the team Gauge | Thoughtspark hits cut a cooldown and feed an ally Gauge |
-| Nerithe | Normal Attack returns Gauge and Attack | Weaken banks; Normal Attack strikes per reserve | Weaken places Fracture and protection |
+| Nerithe | Normal Attack refreshes10% HP shield and30% Attack (no copied passive Gauge) | Weaken banks; Normal Attack strikes per reserve | Weaken places Fracture and protection |
 | Orvella | Shield growth primes protection and Gauge | Blocked hits bank; Keystone Reversal extends Weaken and cuts cooldowns | Hitting own Weaken shields/empowers an ally |
 
 Conduit strikes are fixed damage: `Attack x amount x Attack/(Attack+Defense)`
 plus an optional share of the triggering damage, optionally capped by Attack.
 They never crit, roll RNG or retrigger Conduits, are absorbed by enemy shields
 first, and never occur on Defense. Defeats from strikes use the normal
-per-kill reward path (act/endTurn HP diff). Charges add the bearer's own kit
-resource (captured units excluded) up to 3. Weaken extension requires the
+per-kill reward path (act/endTurn HP diff). Masters do not grant native kit
+charges; those remain owned by authored abilities/passives. Weaken extension requires the
 bearer's own existing Weaken and caps at three phases. Reserve scaling also
 applies to boost (max 65%), protection (max 60%) and cooldown amounts.
 
 Sixteen banked designs introduce **Astral Reserve**, with different authored
-earn/spend actions and payoffs. It caps at three and earns at most once per
-round. The declared skill/Last Flare spends the bank only if its payoff has
+earn/spend actions and payoffs. It caps at three and earns on every qualifying
+native outcome, including repeated outcomes in the same round. The declared skill/Last Flare spends the bank only if its payoff has
 an actual effect. The field shows the real 0-3 counter; full reference gives
 the exact trigger and per-reserve payoff. An action may earn and spend in the
 same activation where its own effective outcome qualifies.
@@ -88,14 +101,17 @@ Shared safeguards:
   stack. A direct-hit trigger's buff benefits later hits/actions, not the hit
   that triggered it.
 - Burn extension requires the bearer's existing personal Burn and caps at three
-  phases. Fracture requires their existing Weaken, caps at two personal marks,
+  phases. Burn ticks never extend themselves; Helios now heals instead, so Burn
+  still expires without another native application/direct-hit extension.
+  Fracture requires their existing Weaken, caps at two personal marks,
   and uses the existing Fracture damage rules.
 - Protection refreshes one bounded charge against the next direct enemy hit.
   Cooldowns never become ready before next round; recovery/costs are unchanged.
 - Multi-effect ally selection is frozen before outcomes, so a heal/Gauge return
   cannot redirect the accompanying buff/shield to a different ally.
 
-Settings preserves reserve/interaction memory. New encounters reset memory;
+Settings preserves reserve/interaction memory. Legacy Master `usedRound` and
+`bankRound` stamps are ignored without rewriting loaded saves. New encounters reset memory;
 Continue, Training and Retry retain frozen equipment, not later menu changes.
 No new combat RNG, automatic revival, skill grants or affinity multipliers.
 
@@ -114,8 +130,13 @@ unlocks one Master in one save before presentation. Cancel spends nothing.
 Offline and authoritative server operations reuse the same helpers; online
 durable runs retain their Master snapshot through Retry.
 
-Server source and generated bundle are implemented locally. Hosted function
-deployment/frontend publication are separate and have not been performed.
+D-264 server source and generated bundle are deployed to the existing hosted
+`game-operation` function with owner approval. Hosted deterministic combat
+checks confirm three native AoE critical Master payoffs in one round despite
+legacy activation stamps, with no recursive strikes, one acknowledged
+revision, idempotent retry and frozen checkpoint persistence. Disposable
+identities/records are removed after checks. Frontend publication remains
+separate; updated descriptions/reference labels are local until published.
 
 ## Artwork
 
@@ -146,9 +167,17 @@ python -m unittest discover -s tools -p test_master_conduit_art.py
 npm test -- src\game\master-conduits.test.ts src\ui\master-choice-dialog.test.tsx --maxWorkers=2
 npm test -- --maxWorkers=2
 node tools\bundle_server_game.mjs
+npx tsc --project supabase\functions\game-operation\tsconfig.json --pretty false
 npm run build
+node tools\smoke_server_game.mjs --masters
+node tools\smoke_server_game.mjs
 ```
 
 Tests cover the exact 1% boundary/no off-stage entropy, all 48 rules, separate
 ordinary pools, real activation, one-write reward/opening failure paths,
 future-character choices, save files, equipment snapshots and server Retry.
+D-264 also covers all48 rules repeating within one round with legacy stamps,
+all16 banks accruing repeatedly up to three, ordinary round gates, native AoE
+criticals without recursion and finite Burn. The `--masters` hosted check
+creates one disposable identity and seeds deterministic combat only for that
+identity; it requires the existing authorized Supabase CLI access.

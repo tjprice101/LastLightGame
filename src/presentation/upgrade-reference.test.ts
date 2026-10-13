@@ -1,16 +1,22 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { emptyAccount } from '../game/account';
+import { creatureSaleOffer, emptyAccount } from '../game/account';
 import { getStarter, starters } from '../content/starters';
 import { characterEvolutionCost, characterLevelCost, characterLevelCap } from '../content/progression';
 import { materialName } from '../content/dungeon-art';
-import { referenceTeam } from './reference-team';
+import { bindCaptureTabs, referenceTeam } from './reference-team';
+import { createCreatureCopy, capturedLevelCost, resolveCapturedFighter } from '../game/character-instances';
+import { getCreature } from '../content/creatures';
+import { statChange } from './stat-change';
+import { saleControls } from './creature-sale';
 import { updateCharacterTab } from './hub';
 import { celebrateUpgrade } from './upgrade-celebration';
 import { presentUpgrade } from './upgrade-result';
 import { presentReward } from './reward-screen';
 import { reducedMotion } from './settings';
 import { bindInformation } from './information';
+import { archives } from './archives';
+import { characterName } from '../content/character-art';
 
 vi.mock('./reward-screen', () => ({ presentReward: vi.fn().mockResolvedValue(undefined) }));
 vi.mock('./settings', () => ({ reducedMotion: vi.fn(() => false) }));
@@ -22,6 +28,84 @@ afterEach(() => {
 });
 
 describe('reference Team upgrade presentation', () => {
+  it.each(['infusion:heavens:0', 'infusion:abyss:3', 'infusion:treasury:2', 'infusion:sanctuary:0', 'infusion:roses:2'])('opens exact per-copy Quick Sell choices for %s without changing ownership', creatureId => {
+    const account = emptyAccount();
+    account.characters.ember = { level: 0, evolution: 1 };
+    account.squad = ['ember'];
+    const first = createCreatureCopy(creatureId, getCreature(creatureId).stages[0], 119);
+    const locked = { ...first, instanceId: 'capture:00000000-0000-4000-8000-000000000001', locked: true };
+    account.capturedCharacters = [first, locked];
+    const before = structuredClone(account);
+    const host = document.createElement('main');
+    host.innerHTML = referenceTeam(account, { view: 'creatures', selected: 'ember', element: '', sort: 'level' });
+    document.body.append(host);
+    bindInformation(host);
+    for (const copy of [first, locked]) {
+      const trigger = host.querySelector<HTMLButtonElement>(`[data-information="quick-sale-${copy.instanceId}"]`)!;
+      const dialog = document.getElementById(`quick-sale-${copy.instanceId}`) as HTMLDialogElement;
+      expect(trigger.textContent).toBe('Quick Sell');
+      const expected = document.createElement('div');
+      expected.innerHTML = saleControls(creatureSaleOffer(account, copy.instanceId), copy.instanceId, 'Sell');
+      expect(dialog.querySelector('.information-content')?.innerHTML).toContain(expected.innerHTML);
+      dialog.showModal = vi.fn(() => dialog.setAttribute('open', ''));
+      dialog.close = vi.fn(() => dialog.removeAttribute('open'));
+      trigger.click();
+      expect(dialog.showModal).toHaveBeenCalledOnce();
+      const actions = dialog.querySelectorAll<HTMLButtonElement>('[data-sell-creature]');
+      expect(actions.length).toBeGreaterThan(0);
+      for (const button of Array.from(actions)) {
+        expect(button.dataset.sellCreature).toBe(copy.instanceId);
+        expect(button.disabled).toBe(copy.locked);
+      }
+      dialog.querySelector<HTMLButtonElement>('[data-close-information]')!.click();
+      expect(dialog.close).toHaveBeenCalledOnce();
+    }
+    expect(account).toEqual(before);
+  });
+  it.each(['infusion:heavens:0', 'infusion:abyss:3', 'infusion:treasury:2', 'infusion:sanctuary:0', 'infusion:roses:2'])('switches %s panels without replacing its portrait, copy or controls', creatureId => {
+    const account = emptyAccount();
+    account.characters.ember = { level: 0, evolution: 1 };
+    account.squad = ['ember'];
+    const copy = createCreatureCopy(creatureId, getCreature(creatureId).stages[0], 119);
+    account.capturedCharacters = [copy];
+    const before = structuredClone(account);
+    const host = document.createElement('div');
+    host.innerHTML = referenceTeam(account, { view: 'capture', selected: 'ember', capture: copy.instanceId, element: '', sort: 'level' });
+    const changed = vi.fn();
+    bindCaptureTabs(host, changed);
+    const image = host.querySelector('.ref-character-portrait img');
+    const levelButton = host.querySelector('[data-level-capture]');
+    const overview = host.querySelector<HTMLElement>('#capture-panel-overview')!;
+    const level = host.querySelector<HTMLElement>('#capture-panel-upgrade-1')!;
+    expect(overview.hidden).toBe(false);
+    expect(level.hidden).toBe(true);
+    host.querySelector<HTMLButtonElement>('[data-capture-tab="upgrade-1"]')!.click();
+    expect(changed).toHaveBeenLastCalledWith('upgrade-1');
+    expect(overview.hidden).toBe(true);
+    expect(level.hidden).toBe(false);
+    expect(host.querySelector('.ref-growth-detail')).not.toBeNull();
+    expect(level.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(7);
+    expect(level.textContent).toContain(`0 / ${capturedLevelCost(copy).fractalis}`);
+    const beforeStats = resolveCapturedFighter(copy).stats;
+    const afterStats = resolveCapturedFighter({ ...copy, level: 120 }).stats;
+    for (const [index, key] of (['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).entries()) {
+      const expected = document.createElement('div');
+      expected.innerHTML = statChange(beforeStats[key], afterStats[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '');
+      expect(level.querySelectorAll('.upgrade-stat-preview > span')[index].textContent).toContain(expected.textContent);
+    }
+    for (const [id, amount] of Object.entries(capturedLevelCost(copy).materials)) {
+      const row = Array.from(level.querySelectorAll('.upgrade-resources li')).find(row => row.querySelector('strong')?.textContent === materialName(id));
+      expect(row?.querySelector('span')?.textContent).toBe(`0 / ${amount}`);
+    }
+    host.querySelector<HTMLButtonElement>('[data-capture-tab="sale"]')!.click();
+    expect(host.querySelector<HTMLElement>('#capture-panel-sale')!.hidden).toBe(false);
+    expect(host.querySelector('.ref-growth-detail')).toBeNull();
+    expect(host.querySelector('.ref-character-portrait img')).toBe(image);
+    expect(host.querySelector('[data-level-capture]')).toBe(levelButton);
+    expect(host.querySelector('[data-character-tab="upgrade-0"]')).toBeNull();
+    expect(host.querySelector('[data-open-loadout]')).not.toBeNull();
+    expect(account).toEqual(before);
+  });
   it('switches sub-menus in place and shows ability details only in their dialog', () => {
     const account = emptyAccount();
     account.characters.tide = { level: 0, evolution: 1 };
@@ -45,6 +129,17 @@ describe('reference Team upgrade presentation', () => {
     expect(dialog.querySelector('[data-close-information]')?.textContent).toBe('×');
     dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     expect(dialog.close).toHaveBeenCalledOnce();
+    updateCharacterTab(host, getStarter('tide'), 'upgrade-1', account);
+    expect(host.querySelector('.ref-growth-detail')).not.toBeNull();
+    expect(host.querySelector('.ref-growth-action [data-max-level]')).not.toBeNull();
+    expect(header?.querySelector('img')).toBe(portrait);
+    updateCharacterTab(host, getStarter('tide'), 'upgrade-0', account);
+    expect(host.querySelector('.ref-evolution-detail')).not.toBeNull();
+    expect(header?.querySelector('img')).toBe(portrait);
+    updateCharacterTab(host, getStarter('tide'), 'overview', account);
+    expect(host.querySelector('.ref-growth-detail')).toBeNull();
+    expect(host.querySelector('.ref-evolution-detail')).toBeNull();
+    expect(host.querySelector('.ref-character-header')).toBe(header);
     updateCharacterTab(host, getStarter('tide'), 'equipment', account);
     expect(host.querySelector('.ref-character-header')).toBe(header);
     expect(header?.querySelector('img')).toBe(portrait);
@@ -75,9 +170,41 @@ describe('reference Team upgrade presentation', () => {
           expect(row?.querySelector('span')?.textContent).toBe(`0 / ${amount}`);
         }
         expect(host.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(7);
-        expect(host.querySelector('.upgrade-benefits details')?.hasAttribute('open')).toBe(false);
+        const preview = host.querySelector('.upgrade-benefits > .ref-growth-preview');
+        expect(preview).not.toBeNull();
+        expect(preview?.querySelector('.ref-growth-preview-heading')?.textContent).toBe(tab === 'upgrade-0' ? 'Stat & form preview' : 'Level & stat preview');
+        expect(preview?.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(7);
+        expect(host.querySelector('.upgrade-benefits details')).toBeNull();
+        expect(host.querySelector('.ref-growth-detail')).not.toBeNull();
+        expect(host.querySelectorAll('.upgrade-benefits h3')).toHaveLength(1);
+        expect(host.querySelector('.upgrade-progress')).toBeNull();
+        expect(host.querySelector(`.ref-growth-action [data-upgrade="${tab === 'upgrade-0' ? 'evolve' : 'level'}"]`)).not.toBeNull();
+        if (tab === 'upgrade-0') {
+          expect(host.querySelector('.ref-evolution-detail')).not.toBeNull();
+          expect(host.querySelectorAll('.upgrade-benefits h3')).toHaveLength(1);
+          expect(host.querySelector('.upgrade-progress')).toBeNull();
+          expect(host.querySelector('.ref-evolution-action [data-upgrade="evolve"]')).not.toBeNull();
+        }
       }
       expect(account).toEqual(before);
+    }
+  });
+  it.each(starters)('$name uses the Collections silhouette treatment and actual next form', starter => {
+    const account = emptyAccount();
+    account.characters[starter.id] = { level: 0, evolution: 1 };
+    account.squad = [starter.id];
+    const collection = document.createElement('div');
+    collection.innerHTML = archives(account);
+    for (let evolution = 1; evolution <= 5; evolution++) {
+      account.characters[starter.id] = { level: characterLevelCap(evolution), evolution };
+      const host = document.createElement('div');
+      host.innerHTML = referenceTeam(account, { view: 'detail', selected: starter.id, element: '', sort: 'level', tab: 'upgrade-0' });
+      const silhouette = host.querySelector('.evolution-silhouette.unreached-character-art img');
+      const archived = collection.querySelector(`[data-archive-character="${starter.id}"][data-form="${evolution + 1}"] .unreached-character-art img`);
+      expect(archived).not.toBeNull();
+      expect(silhouette?.getAttribute('src')).toBe(archived?.getAttribute('src'));
+      expect(silhouette?.getAttribute('data-mirrored')).toBe(archived?.getAttribute('data-mirrored'));
+      expect(silhouette?.getAttribute('alt')).toContain(characterName(starter.id, evolution + 1));
     }
   });
   it.each(['level', 'evolve'] as const)('plays %s celebration and then the saved stat reveal on the real Team markup', async kind => {

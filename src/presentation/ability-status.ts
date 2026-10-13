@@ -1,5 +1,6 @@
 import { type AbilityStrength, type FighterDefinition } from '../content/combat';
-import { kitPilotDescriptions } from '../content/kit-pilots';
+import { kitPilotDescriptions, kitResourceUses } from '../content/kit-pilots';
+import type { StarterId } from '../content/starters';
 import { elementalStatusArt } from '../content/status-art';
 import { statusIcon } from './status-icon';
 import { elementalEffectFamilies, type ElementalEffectFamily } from '../content/elemental-effects';
@@ -18,8 +19,9 @@ export function abilityStatuses(strength: AbilityStrength): string {
     `<span class="ability-status" data-effect-family="${family}" title="${elementalEffectFamilies[family].label} · ${label}">${statusIcon(family)}${label}</span>`).join('')}</span>` : '';
 }
 
-export function kitResource(kit: FighterDefinition): string {
+export function kitResource(kit: FighterDefinition, character?: StarterId): string {
   const resource = kit.pilot ? kitPilotDescriptions[kit.pilot].resource : undefined;
-  return resource ? `<span class="ability-status" data-effect-family="${resource.effect.family}" data-effect-origin="${resource.effect.origin}" title="${resource.summary}">
-    ${statusIcon(elementalStatusArt(resource.effect))}${resource.label}</span><p class="kit-resource-summary">${resource.summary}</p>` : '';
+  const usage = character ? kitResourceUses[character] : resource?.detail;
+  return resource ? `<span class="ability-status" data-effect-family="${resource.effect.family}" data-effect-origin="${resource.effect.origin}">
+    ${statusIcon(elementalStatusArt(resource.effect))}${resource.label} · Up to 3 charges</span><p class="kit-resource-summary"><strong>What the charges do:</strong> ${usage} Spending resets the saved charges to 0. At 0 charges, the skill still has its normal effect.</p>` : '';
 }

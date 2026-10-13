@@ -185,7 +185,7 @@
       "source": "Art\\source\\master-conduits\\Ocean Memory Worldpump (Omnic  Tizu).png",
       "source_sha256": "27fd42c791d5af9bb0c56aab891cd0e35a2aa38010c3d03a3f7c867f686c3ecb",
       "runtime": "public\\assets\\master-conduits\\master-tide-2.png",
-      "runtime_sha256": "664022444fc075280a13fd60621391efadb66bab03f2f77f5fcd586fc97dcd54",
+      "runtime_sha256": "e7c007d014cbe9d7dc03af67f4ce050a96fc563c5e7cfef0b04eada871bae73b",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -203,7 +203,7 @@
         233,
         240
       ],
-      "runtime_pixel_sha256": "55d2eb185ebbc0d8a83a66e7c4c8a34d11f5a532355128b54b5b2bb111666a5c",
+      "runtime_pixel_sha256": "dc765142421cc3ab92967cf64b917fa8cf3aa1c953712a4d6155bbbdb6c71683",
       "settings": {
         "border_only": true,
         "keys": [
@@ -218,9 +218,30 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.4421,
+            0.1617
+          ],
+          [
+            0.5584,
+            0.162
+          ],
+          [
+            0.1069,
+            0.8136
+          ],
+          [
+            0.1043,
+            0.3727
+          ],
+          [
+            0.8789,
+            0.3978
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Five enclosed green source-backdrop gaps around the upper gears and lower side struts are cleared with reviewed seeds; retain the authored base and all blue-green mechanisms."
       }
     },
     {
@@ -229,7 +250,7 @@
       "source": "Art\\source\\master-conduits\\Undertow Sovereign Harpoon (Omnic  Tizu).png",
       "source_sha256": "ce9b64f5bfcf1fce0dd9e19f77feaf4919ceabda261e9f5d22bc28cae49b0a37",
       "runtime": "public\\assets\\master-conduits\\master-tide-3.png",
-      "runtime_sha256": "00cee7803ea382d0320d67343ce1f644a61524bbad47b208360175cbc2b7f430",
+      "runtime_sha256": "a1012fef1dc20c3bffe40fc7bd86cff274128f62426eabdc602e0e40036e51df",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -247,7 +268,7 @@
         238,
         240
       ],
-      "runtime_pixel_sha256": "2e3e3805c6be6aad623fa68cf355110c35faa0a2fa4f149aaf6712c31b9148c0",
+      "runtime_pixel_sha256": "586657eb41b9d056449476c3c96c1972a3100ce8b5d2de69d25bebd499c323b6",
       "settings": {
         "border_only": true,
         "keys": [
@@ -262,9 +283,54 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.5699,
+            0.2498
+          ],
+          [
+            0.4292,
+            0.2531
+          ],
+          [
+            0.234,
+            0.4951
+          ],
+          [
+            0.614258,
+            0.777344
+          ],
+          [
+            0.3896,
+            0.7684
+          ],
+          [
+            0.5275,
+            0.7711
+          ],
+          [
+            0.4699,
+            0.773
+          ],
+          [
+            0.273438,
+            0.273438
+          ],
+          [
+            0.3694,
+            0.8046
+          ],
+          [
+            0.2445,
+            0.7157
+          ],
+          [
+            0.6077,
+            0.4596
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Eleven enclosed teal source-backdrop fields between the planetary rings and spokes are cleared; the visible brown, rose and turquoise device surfaces remain protected by the narrow source-key tolerance."
       }
     },
     {
@@ -529,7 +595,7 @@
       "source": "Art\\source\\master-conduits\\Horizon Cyclone Orrery (Omnic  Atmoso).png",
       "source_sha256": "bbe09b59dbc71c3827b8965dae8c346dfafa13e431525f781a31f320141dad41",
       "runtime": "public\\assets\\master-conduits\\master-atmoso-2.png",
-      "runtime_sha256": "212a00b26df6fca8eee241f645d72d6e6fc12fa05afae63139dbbc18211319fe",
+      "runtime_sha256": "4f55411cbc4ade63a298dde2c2c08d41b82382718f21a33b281d732d3631e65f",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -547,7 +613,7 @@
         238,
         240
       ],
-      "runtime_pixel_sha256": "a5976368e18cb625a71aca9ea2b585f13a037ed82229f74750558d0c2a1c5b28",
+      "runtime_pixel_sha256": "795b14e54a83433175cc6820511420b46b815681a9114abc76a14363c17ca494",
       "settings": {
         "border_only": true,
         "keys": [
@@ -562,9 +628,18 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.3616,
+            0.5239
+          ],
+          [
+            0.6355,
+            0.5288
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Two enclosed pale-teal backdrop patches behind the lower clock frame are cleared; retain the teal lens, pale metal and authored base."
       }
     },
     {
@@ -617,7 +692,7 @@
       "source": "Art\\source\\master-conduits\\Final Dawn Tribunal (Omnic  Aurora).png",
       "source_sha256": "4bc96d1a23b8db4f145101e4e59349f1f5b8b579601334cb909f3c5ff0a0b5ad",
       "runtime": "public\\assets\\master-conduits\\master-aurora-1.png",
-      "runtime_sha256": "155b6dd9f2c94e4fe28a18f4e304c1b590c84c52122d8df4c4bf86a4bf27fa79",
+      "runtime_sha256": "4019b0d04e19b8917ade6a9994c94e09ecda05732541c4a00e4718ba0761bed5",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -635,7 +710,7 @@
         240,
         237
       ],
-      "runtime_pixel_sha256": "1e6cd67fa0d3833aea73eb5e028062e51649f8257a09cc2c1f74434c4f449b91",
+      "runtime_pixel_sha256": "867d3364383c943e1f88ba303937be41a2b138bba762e74cebbe24c308331678",
       "settings": {
         "border_only": true,
         "keys": [
@@ -650,9 +725,22 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.49707,
+            0.149414
+          ],
+          [
+            0.270508,
+            0.584961
+          ],
+          [
+            0.731445,
+            0.579102
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Three pale-green backdrop openings behind the upper crown and lower side arches are cleared; preserve the orange lens, ivory structure and attached lower shadow."
       }
     },
     {
@@ -661,7 +749,7 @@
       "source": "Art\\source\\master-conduits\\Prismseal Astral Judiciary (Omnic  Aurora).png",
       "source_sha256": "0da2efbffdd65e33134e1da816d9d672db29ec46278ecc215e0ae46bd79d1062",
       "runtime": "public\\assets\\master-conduits\\master-aurora-2.png",
-      "runtime_sha256": "b199e02b7f8b0ae7d3de304cfc87ecfa193490e6b117b394ffa92f6b041b9834",
+      "runtime_sha256": "e69b31c9c69cd460fecc66e1694a63280dc1606bb456c9e89bcc5e9366db4ee4",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -679,7 +767,7 @@
         240,
         238
       ],
-      "runtime_pixel_sha256": "7f6da7db8e607eea91c99be1d2c3802467d83a47303152103661c32a13c16373",
+      "runtime_pixel_sha256": "31eeb87cbcca6a1a7937046c8629c655e2560b74d57d689ee8ac9bcdc86a62b3",
       "settings": {
         "border_only": true,
         "keys": [
@@ -694,9 +782,26 @@
           "source_pixels": 2,
           "distance_ramp": 45
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.6575,
+            0.6747
+          ],
+          [
+            0.3406,
+            0.6742
+          ],
+          [
+            0.7224,
+            0.6142
+          ],
+          [
+            0.2737,
+            0.6138
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Source uses a uniform yellow-green background with a separate olive painted cast shadow beneath the lower wings; border-connected source-specific key removes backdrop, while preserve the attached olive shadow/base and all ivory wing metal. No enclosed background seeds needed."
+        "review": "Four yellow-green backdrop islands behind the lower wing joints are cleared with local seeds. The separate olive cast shadow beneath the wings (including the lower unseeded region), ivory metal and orange core remain."
       }
     },
     {
@@ -705,7 +810,7 @@
       "source": "Art\\source\\master-conduits\\Merciful Eclipse Regulator (Omnic  Aurora).png",
       "source_sha256": "60fa5b3cc915ca2dff4ec33fa0243cae9e07be34c82b1c0b0cdab46b0b8a3ddb",
       "runtime": "public\\assets\\master-conduits\\master-aurora-3.png",
-      "runtime_sha256": "cbb45548c5466d0d44826c3a1657d704b0b81700fa42adc39b365fa4653ac57e",
+      "runtime_sha256": "89bfdd0e28beb8a5d32b01b6bf9bae231803da54ca5192e73fdf45dbfed5c6f9",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -723,7 +828,7 @@
         240,
         239
       ],
-      "runtime_pixel_sha256": "cf5a8c938257d3c6ae7f3d401a5dbeb47dd736e13e1b7a77144fc136ef28f2b4",
+      "runtime_pixel_sha256": "0b8bb4d22c7204f5e616c8c7ec4b88b1ca92220b515782818ca5200e08b82222",
       "settings": {
         "border_only": true,
         "keys": [
@@ -738,9 +843,22 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.7192,
+            0.5902
+          ],
+          [
+            0.2827,
+            0.5856
+          ],
+          [
+            0.5993,
+            0.5912
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Three enclosed pale-green backdrops between the lower radial arms are cleared; preserve gold rays, central orange lens and pale mechanical details."
       }
     },
     {
@@ -749,7 +867,7 @@
       "source": "Art\\source\\master-conduits\\Thousandfeather Zenith Loom (Omnic  Bliss).png",
       "source_sha256": "f3e3f37425433a610cd76fc81ee2348deedb126dac969efb68989262c4fa24e8",
       "runtime": "public\\assets\\master-conduits\\master-bliss-1.png",
-      "runtime_sha256": "ae58f8e6afb699a2a9e5d12a9c2cca099a1f2a9f7631ee7d1b251b22e258ee7a",
+      "runtime_sha256": "6972ce1c111483a9733e64d7883701065966ab4592811c8aac48e3be4e55cc3e",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -767,7 +885,7 @@
         240,
         239
       ],
-      "runtime_pixel_sha256": "99ea26cd42a200fbf02b5052d698ee8860ec1eee813bd79dd70128e88656a75c",
+      "runtime_pixel_sha256": "13512a33d7afb15f0f03dda44aac3b44a835c8de00b6b14ffa99830b0069119b",
       "settings": {
         "border_only": true,
         "keys": [
@@ -782,9 +900,30 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.3335,
+            0.2349
+          ],
+          [
+            0.3248,
+            0.3767
+          ],
+          [
+            0.46,
+            0.554
+          ],
+          [
+            0.4254,
+            0.5159
+          ],
+          [
+            0.1422,
+            0.5828
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Five enclosed gray-green backdrop fields inside the suspended frame and between its ribs are cleared; preserve the pale architecture, plumage and bottom shadow."
       }
     },
     {
@@ -828,7 +967,7 @@
         },
         "background_seeds": [],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Pale-green candidate islands overlap the opal sphere reflections and glass body; preserve these visually ambiguous areas and lower hanging details rather than risk cutting subject facets. Border-connected backdrop and detached shadow are cleared."
       }
     },
     {
@@ -837,7 +976,7 @@
       "source": "Art\\source\\master-conduits\\Quiet Heaven Fanforge (Omnic  Bliss).png",
       "source_sha256": "b55e612681b4b81bcc40beaab97ed3fc1d5b83943aa1bc3398a0b57ef37a8e03",
       "runtime": "public\\assets\\master-conduits\\master-bliss-3.png",
-      "runtime_sha256": "c7c42b71354dd9d293c55bc3106f015ace65dbe13d25c288d7e55104ddd75d2b",
+      "runtime_sha256": "bbdf7fd86faba88362f7c3ea0351925f737fc804e52bfb00dd6c66efd4cf64a2",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -855,7 +994,7 @@
         240,
         239
       ],
-      "runtime_pixel_sha256": "d2e90fac0ff54c9ed2c86a6c55edf8f79c7eb3333274f7ab192612b7965115a5",
+      "runtime_pixel_sha256": "42cbcceaf41dfb1785df803d2d0013bc815442664d3b9acde4eb427ac33ed950",
       "settings": {
         "border_only": true,
         "keys": [
@@ -870,9 +1009,22 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.5359,
+            0.2118
+          ],
+          [
+            0.407227,
+            0.304688
+          ],
+          [
+            0.408203,
+            0.219727
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Three enclosed turquoise backdrop gaps in the feather-and-loom structure are cleared; retain the ivory feathers and teal mechanical accents."
       }
     },
     {
@@ -925,7 +1077,7 @@
       "source": "Art\\source\\master-conduits\\Quarry Planet Gravitas (Omnic  Bruno).png",
       "source_sha256": "97bf8cba57ba8f517a4e5fd91788c44c8ecef0d5056f9fa910bbfea8d591b1d3",
       "runtime": "public\\assets\\master-conduits\\master-bruno-2.png",
-      "runtime_sha256": "2ab38a9fb8144ea4e6def076830f6f3dafdf46fcb3d2d216d325e717590ab558",
+      "runtime_sha256": "f1de203c6cca9f82e52ddab2cd176ad225175152e1038c99300569d6276754d5",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -943,7 +1095,7 @@
         240,
         230
       ],
-      "runtime_pixel_sha256": "110122614ceb4a72a554c27cde675c313f29a22edbd7a8179b542d730564f329",
+      "runtime_pixel_sha256": "d0ace484ea8a398f0f53d52ad37d3d0db29ff97379661794312a577406477ce7",
       "settings": {
         "border_only": true,
         "keys": [
@@ -958,9 +1110,18 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.6097,
+            0.6227
+          ],
+          [
+            0.6152,
+            0.3719
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Two pale-green fields between the lower rock plates and upper central slabs are cleared; retain orange seams, dark stone and the broad ground shadow."
       }
     },
     {
@@ -1013,7 +1174,7 @@
       "source": "Art\\source\\master-conduits\\Unbound Mindcrown Synapse (Omnic  Disciple).png",
       "source_sha256": "29c956e086c56a94b24f9de3effa72a8e412118d735fe1cdd5c5c8b0aacde2ee",
       "runtime": "public\\assets\\master-conduits\\master-disciple-1.png",
-      "runtime_sha256": "9f101908222ba72a72e277b69af975d4cfdfd8b49ace2eb785d5ede058ce0d30",
+      "runtime_sha256": "18a506934169ecf7d9832343c5493cff12bf8a0c5f70e72b4d15879544d30af1",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -1031,7 +1192,7 @@
         239,
         240
       ],
-      "runtime_pixel_sha256": "e155e25d8d2d743fa190f60744d10c58c7259c33171789061cf70e3674880d0d",
+      "runtime_pixel_sha256": "76f7077e549624020a73ff90443aa95bf42ab2f53a61dd0ea5138ca0cff060f3",
       "settings": {
         "border_only": true,
         "keys": [
@@ -1046,9 +1207,62 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.8727,
+            0.6746
+          ],
+          [
+            0.1209,
+            0.6754
+          ],
+          [
+            0.1969,
+            0.5439
+          ],
+          [
+            0.7982,
+            0.5436
+          ],
+          [
+            0.5919,
+            0.5943
+          ],
+          [
+            0.4037,
+            0.5944
+          ],
+          [
+            0.8273,
+            0.6182
+          ],
+          [
+            0.1674,
+            0.6193
+          ],
+          [
+            0.18,
+            0.7038
+          ],
+          [
+            0.8175,
+            0.7047
+          ],
+          [
+            0.6637,
+            0.6498
+          ],
+          [
+            0.3318,
+            0.6505
+          ],
+          [
+            0.6526,
+            0.5895
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Thirteen enclosed sage backdrop islands within the suspended outer ring and below the open appendages are cleared; preserve the ivory/mauve structures, dark center and dangling gold strands."
       }
     },
     {
@@ -1395,7 +1609,7 @@
       "source": "Art\\source\\master-conduits\\Unbroken Midnight Bastion (Omnic  Razor).png",
       "source_sha256": "bb5f4851e8b369d51e9ce3bac9eb46024649dc4fd68e735f22e6eedcabdb0ac2",
       "runtime": "public\\assets\\master-conduits\\master-razor-1.png",
-      "runtime_sha256": "baf6acd421b6cf827c642eab8d83b9bc3742f7ee6802f49fe8e8821047110a80",
+      "runtime_sha256": "f151961e0809ecc5246f592b503e638dafa73e3bef3be0dfee5400055d7bce4a",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -1413,7 +1627,7 @@
         240,
         235
       ],
-      "runtime_pixel_sha256": "da360b50ebb53d3df464c2423b38d8f22bb2edb0bcf5b191d008163abbf61705",
+      "runtime_pixel_sha256": "61ee787d2248f28a82f3322992a17c720d08074131c759f595be59908d6e4634",
       "settings": {
         "border_only": true,
         "keys": [
@@ -1444,10 +1658,18 @@
           [
             0.88,
             0.33
+          ],
+          [
+            0.2966,
+            0.3289
+          ],
+          [
+            0.2563,
+            0.6037
           ]
         ],
         "foreground_polygons": [],
-        "review": "Reviewed green backdrop islands inside the crescent-wing envelope (lower central field and left/right inner openings) seeded after visual confirmation; preserve purple wing surfaces, central bastion, and attached ground shadow. Green is not an authored Razor palette color; remove only matching backdrop components."
+        "review": "Six enclosed green backdrop islands inside the crescent-wing envelope are seeded after full-resolution review; preserve purple wing surfaces, central bastion and attached ground shadow. Green is not an authored Razor palette color."
       }
     },
     {
@@ -1500,7 +1722,7 @@
       "source": "Art\\source\\master-conduits\\Nightglass Counterblade Engine (Omnic  Razor).png",
       "source_sha256": "6bfc6bbc97a1163157d3df4c194554b7bdc8675d3ef5372dfe8452f5df4ee825",
       "runtime": "public\\assets\\master-conduits\\master-razor-3.png",
-      "runtime_sha256": "bc2075c6a5d849f68e4128521b7f3aa4205c54a9852c2c4db7512cde8387245c",
+      "runtime_sha256": "fa76b28c439d66fd851a07c184bdd4040276781ca49199a93f664466ee358200",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -1518,7 +1740,7 @@
         240,
         240
       ],
-      "runtime_pixel_sha256": "1b1d355e6a6b9e70029084585a208e59f0c20ef946927ef675c15ba23e559389",
+      "runtime_pixel_sha256": "b03f8181ea3a035951012f05568b21acabcc1a2c2b681a6a47f38f93f9b1a2fc",
       "settings": {
         "border_only": true,
         "keys": [
@@ -1533,9 +1755,18 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.5812,
+            0.6639
+          ],
+          [
+            0.8368,
+            0.4343
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Two enclosed muted-green backdrop fields inside the lower clockwork and right inner crescent are cleared; preserve the dark-violet mechanism and its pointed facets."
       }
     },
     {
@@ -1544,7 +1775,7 @@
       "source": "Art\\source\\master-conduits\\Rose Beyond the Sun Orrery (Omnic  Rosetta).png",
       "source_sha256": "d3e787e1b5cbb318bd7266f08d5b359b8b6bf39d139f417779ee4c110a58606f",
       "runtime": "public\\assets\\master-conduits\\master-rosetta-1.png",
-      "runtime_sha256": "1a3c6883c82cfa7cb55569f88caec4def4682d16207df4c829cc0814ea9b4ac8",
+      "runtime_sha256": "14b4d361b0074cfcf3be1eb08529831706b98591a54634283c16851aa6c4a19b",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -1562,7 +1793,7 @@
         240,
         237
       ],
-      "runtime_pixel_sha256": "4bb8979f80a27f2a842be1403809ebcb17edf0382575805e0dff36734040416a",
+      "runtime_pixel_sha256": "f5c6c90ffa17a9639146125399c88c7cbcc5f66ed27e30975547bec85cc75f7c",
       "settings": {
         "border_only": true,
         "keys": [
@@ -1577,9 +1808,26 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.3648,
+            0.4269
+          ],
+          [
+            0.5082,
+            0.8006
+          ],
+          [
+            0.668,
+            0.4294
+          ],
+          [
+            0.4734,
+            0.4238
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Reviewed clear side-border row gradient key; preserve the authored subject and attached painted base/shadow, remove backdrop variation only.",
+        "review": "Four enclosed olive backdrop fields within the rose-wheel frame are cleared with row-gradient-matched seeds; preserve the roses, gold machinery and attached lower base/shadow.",
         "row_gradient": true
       }
     },
@@ -1589,7 +1837,7 @@
       "source": "Art\\source\\master-conduits\\Virtuous Planet Rosegarden (Omnic  Rosetta).png",
       "source_sha256": "144e1fe8ac9005abf179507ced6ce6ae7d677e90015e04bbeda993c2fa0f2dc1",
       "runtime": "public\\assets\\master-conduits\\master-rosetta-2.png",
-      "runtime_sha256": "a42ea3b0dfc318627dc60644800e67ae0caac8406b1a6d6c1636e57c1f7f4e12",
+      "runtime_sha256": "2e556119ee172edca157c88f83d823723c95a4bb9030467ca414a30ac74f28c4",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -1607,7 +1855,7 @@
         238,
         240
       ],
-      "runtime_pixel_sha256": "96b63ab42d17798307108bd55b901b6d81d39bee46da13eed9cf43b668f26cef",
+      "runtime_pixel_sha256": "c767bc37d01752f64040b0f821b015e550c2590fe9ace64ada8dd38406d1b35d",
       "settings": {
         "border_only": true,
         "keys": [
@@ -1622,9 +1870,18 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.5489,
+            0.542
+          ],
+          [
+            0.4537,
+            0.5455
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Two enclosed dark-green backdrop openings inside the flower-and-gear assembly are cleared; preserve the red roses, cream wings and hanging details."
       }
     },
     {
@@ -1633,7 +1890,7 @@
       "source": "Art\\source\\master-conduits\\Golden Thorn Judgment Loom (Omnic  Rosetta).png",
       "source_sha256": "88652dc35a9b5a609a992081f2361e4b85e20f42d501ee0f8b5ac24878a3c7d5",
       "runtime": "public\\assets\\master-conduits\\master-rosetta-3.png",
-      "runtime_sha256": "f24cee15d3800516abe864266b3ad44cc2150b3f441e7a76ca340e7d7d39db71",
+      "runtime_sha256": "c479418959a67d3336252ab912fc4f72b517a681a7cd92e5b5fc1694b0bd3715",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -1651,7 +1908,7 @@
         240,
         239
       ],
-      "runtime_pixel_sha256": "8b53cdfa2b41e6f1dc7f7829db51cf021da3eea4d3c5cc718fd88005142a0052",
+      "runtime_pixel_sha256": "73c2dee2933fcfd87cab3a52e099a77f8a4e3b55f3611a9517d2bb3b46dde375",
       "settings": {
         "border_only": true,
         "keys": [
@@ -1666,9 +1923,30 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.4052,
+            0.7444
+          ],
+          [
+            0.4962,
+            0.1821
+          ],
+          [
+            0.4902,
+            0.7208
+          ],
+          [
+            0.2742,
+            0.4573
+          ],
+          [
+            0.4027,
+            0.2431
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Five enclosed turquoise-green backdrop gaps through the rose medallion and lower frame are cleared; retain the roses, pale metal, gold fittings and central structure."
       }
     },
     {
@@ -1677,7 +1955,7 @@
       "source": "Art\\source\\master-conduits\\Forbidden Garden Worldlock (Omnic  Thornia).png",
       "source_sha256": "4600b975e0e40ee5f74547cc2745a93ccce5877501efda48ee6538ddcf464bc1",
       "runtime": "public\\assets\\master-conduits\\master-thornia-1.png",
-      "runtime_sha256": "16af2bea6f20ad02377a3e263cc58b8b7017cbbf3bcedc4ca51e04d69264b041",
+      "runtime_sha256": "5b7b579d7d3a515c76957a3d29178cfdc606256fc5690d5d13d8a7db381d308e",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -1695,7 +1973,7 @@
         238,
         240
       ],
-      "runtime_pixel_sha256": "c2ac46571f71e8774afd65eeb76e4a31323c2d95295d1639763f84091a52f7ec",
+      "runtime_pixel_sha256": "3de92f7eba32dd0218dfc25bbbc522aba6a1e2dd45e7bcce1d5432f6c19617d1",
       "settings": {
         "border_only": true,
         "keys": [
@@ -1726,10 +2004,30 @@
           [
             0.66,
             0.31
+          ],
+          [
+            0.697266,
+            0.4375
+          ],
+          [
+            0.293945,
+            0.4375
+          ],
+          [
+            0.7215,
+            0.5395
+          ],
+          [
+            0.2666,
+            0.5409
+          ],
+          [
+            0.3957,
+            0.6006
           ]
         ],
         "foreground_polygons": [],
-        "review": "Reviewed green backdrop islands visible through the rose-wheel lattice/inner arches seeded; preserve red roses, bronze rails and authored dark center. Green is the plain source key rather than a subject color."
+        "review": "Nine visually confirmed green backdrop fields visible through the rose-wheel lattice and inner arches are cleared; preserve red roses, bronze rails and authored dark center. Green is the plain source key rather than a subject color."
       }
     },
     {
@@ -1738,7 +2036,7 @@
       "source": "Art\\source\\master-conduits\\Thousand-Rose Planetary Aegis (Omnic  Thornia).png",
       "source_sha256": "57a6e597e4f1682a328f3344934c66d6a2a5a551b2a729c677b9c5f72f3a07ac",
       "runtime": "public\\assets\\master-conduits\\master-thornia-2.png",
-      "runtime_sha256": "642a4a64d8a3f0e58129271e7977b725ae8eae275ce1eeaa6e7906bfd7509181",
+      "runtime_sha256": "2b52cae194c7ee3bde58f5d1418180d11d429ae9011eaf0ec689c60be593112f",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -1756,7 +2054,7 @@
         239,
         240
       ],
-      "runtime_pixel_sha256": "942ab5d2c1db8324d1e9ec41dfb091668e42c2d64d9cfab63d46e470bd06e6c9",
+      "runtime_pixel_sha256": "789802f6fdc68f48ce98c1a19bc630362d4f6f55516e3b4b68d07c78f731f453",
       "settings": {
         "border_only": true,
         "keys": [
@@ -1771,9 +2069,30 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.7069,
+            0.2425
+          ],
+          [
+            0.5119,
+            0.2313
+          ],
+          [
+            0.5413,
+            0.6522
+          ],
+          [
+            0.4081,
+            0.4027
+          ],
+          [
+            0.7385,
+            0.6299
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Five enclosed pale-green backdrop openings within the rose wheels and inner assembly are cleared; preserve roses, white/gold metal, red blades and lower attached shadow."
       }
     },
     {
@@ -1782,7 +2101,7 @@
       "source": "Art\\source\\master-conduits\\Shadow Rose Sovereign Foundry (Omnic  Thornia).png",
       "source_sha256": "b6ce5f85040d77a66e938f3eacc79f0937865acb5484985244d46dfa642a9baf",
       "runtime": "public\\assets\\master-conduits\\master-thornia-3.png",
-      "runtime_sha256": "5112c99147506fab925a1f79d941763afb9b8175a96eb4539eb7d94cbd0cf1d9",
+      "runtime_sha256": "000ce4e7a156f17dbd37dc20aecc319983e2e7e211f7de92608266a8aa1083cc",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -1800,7 +2119,7 @@
         240,
         238
       ],
-      "runtime_pixel_sha256": "c58f8ce5702066b18c0e1baafd6a89cb16774bf08d3556d24c29a494e490d109",
+      "runtime_pixel_sha256": "3abe000319985dc8df2016529c2b64d988fea88be6ec2bce083d573bf8b8d6d1",
       "settings": {
         "border_only": true,
         "keys": [
@@ -1815,9 +2134,22 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.4613,
+            0.2962
+          ],
+          [
+            0.5974,
+            0.3181
+          ],
+          [
+            0.4401,
+            0.7004
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Three enclosed olive backdrop fields behind the upper wheel and central armor are cleared. The broad mauve ground cloud and olive shadow beneath the chassis remain unseeded."
       }
     },
     {
@@ -1826,7 +2158,7 @@
       "source": "Art\\source\\master-conduits\\Twin-Rose Singularity Drive (Omnic  Crinso).png",
       "source_sha256": "d2b71869b9d8fa1ac286174ff703242e7407242720bcd9e9cb3939048bc00383",
       "runtime": "public\\assets\\master-conduits\\master-crinso-1.png",
-      "runtime_sha256": "6c62b14a77908d3e812cfa1b20393cf6573f81d68fbcb7e9a4ea4e47ba83ac91",
+      "runtime_sha256": "6a15558e16f357a7084c5cef11ed1b31a4addab50b6c746e25dc5e9405144058",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -1844,7 +2176,7 @@
         239,
         240
       ],
-      "runtime_pixel_sha256": "ce99b8cb2e495eb9916cf407fa5f492564f34050a257b245e54a709308ed2dfd",
+      "runtime_pixel_sha256": "10f5a01d1a94b2ee0af1e184077ed98645d3e072d6c4fc84b6491a91e8ce338d",
       "settings": {
         "border_only": true,
         "keys": [
@@ -1859,9 +2191,18 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.5275,
+            0.376
+          ],
+          [
+            0.6854,
+            0.5965
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Two enclosed sage backdrop gaps inside the rose-wheel structure are cleared; preserve the red/rose double blade, gold hub and detached authored sparks."
       }
     },
     {
@@ -1963,7 +2304,7 @@
       "source": "Art\\source\\master-conduits\\Crimson Beauty Pyre Requiem (Omnic  Crinso).png",
       "source_sha256": "88e36c9e288273bf5b4355ba5dd3306cbed81e1156e16f1f2d9688fa831b5bd9",
       "runtime": "public\\assets\\master-conduits\\master-crinso-3.png",
-      "runtime_sha256": "f157aabffee0327ab4471bf2121805d6ae64cbdb767348168a78bba75647312a",
+      "runtime_sha256": "dd9033b271e02ac6d2e6c3e88aab6caf1b39dca649f58a146dcc63a4d8fb804d",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -1981,7 +2322,7 @@
         240,
         239
       ],
-      "runtime_pixel_sha256": "8c4f21c336beac4684419dc51f62dca1c7af20aa96d757c7f062b086e1224487",
+      "runtime_pixel_sha256": "ac20d19fe84b3962b5f2742c3a14cb9f8dff0797ca6630abf715a3039ce087b8",
       "settings": {
         "border_only": true,
         "keys": [
@@ -1996,9 +2337,14 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.5431,
+            0.172
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "The enclosed muted-green backdrop pocket inside the upper wheel is cleared; preserve the red-gold sword and authored center."
       }
     },
     {
@@ -2139,7 +2485,7 @@
       "source": "Art\\source\\master-conduits\\Throne Beneath the World (Omnic  Orvella).png",
       "source_sha256": "9c6105c32bdc83abc2d92b501b6c2e9bf2c8252da9863af49da8d117a85bc81f",
       "runtime": "public\\assets\\master-conduits\\master-orvella-1.png",
-      "runtime_sha256": "f509d23c1c2e82503e567f13ce241cd07a2b01f8a32d5e503233f48ba74e199b",
+      "runtime_sha256": "99459b7e564eb641ef85ec6dc836eafad6e3d4f06bd04dcbd6ea1e55b60f6634",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -2157,7 +2503,7 @@
         240,
         236
       ],
-      "runtime_pixel_sha256": "487dec32b5a3fbe315cfb4103105aabb1d6a7e67bf82e90ffd6c487864e9e86c",
+      "runtime_pixel_sha256": "a3f08842e431eb1fe7fcb1828eb8ff46d62f8846b71ef3c4923a7cda8bca8f8c",
       "settings": {
         "border_only": true,
         "keys": [
@@ -2172,9 +2518,22 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.7265,
+            0.6118
+          ],
+          [
+            0.2298,
+            0.6097
+          ],
+          [
+            0.4044,
+            0.4129
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Three broad muted-green source-backdrop islands behind the throne, inner figure and side columns are cleared; preserve violet crystal accents, stone architecture and the sand-colored ground plane."
       }
     },
     {
@@ -2359,7 +2718,7 @@
       "source": "Art\\source\\master-conduits\\Broken Sky Imperial Metronome (Omnic  Vaelor).png",
       "source_sha256": "0d0761253403573a546d128605ca90329e68287e092cb4785f41ae324cb76f04",
       "runtime": "public\\assets\\master-conduits\\master-vaelor-3.png",
-      "runtime_sha256": "b5f3f15d29e7075ebc7bdac7695e345ac84ab22cd368a3209f046153ac04a66c",
+      "runtime_sha256": "9fb44dd852b6d06ebc51295d863f680bee3f512d5727c2afa6f0015c8dbd0a33",
       "source_mode": "RGB",
       "source_dimensions": [
         1024,
@@ -2377,7 +2736,7 @@
         235,
         240
       ],
-      "runtime_pixel_sha256": "f17b3556dc7a212dcc4eedceca9bb44cd5e022e0f32adf72b92ac5f1c3a8e7d6",
+      "runtime_pixel_sha256": "ca9795837d2004f07d56ee3cf4f5c1bee9ea5a8f3b194580e46c809900e50221",
       "settings": {
         "border_only": true,
         "keys": [
@@ -2392,9 +2751,22 @@
           "source_pixels": 2,
           "distance_ramp": 55
         },
-        "background_seeds": [],
+        "background_seeds": [
+          [
+            0.5498,
+            0.2023
+          ],
+          [
+            0.5825,
+            0.268
+          ],
+          [
+            0.4489,
+            0.5977
+          ]
+        ],
         "foreground_polygons": [],
-        "review": "Border-connected background keyed; retain intentional painted ground/shadow attached to the design; remove only cleanly keyed flat backdrop shadow."
+        "review": "Three enclosed teal backdrop fields behind the upper instrument and central pendulum are cleared; the lower unseeded teal cast shadow remains attached to the base."
       }
     },
     {

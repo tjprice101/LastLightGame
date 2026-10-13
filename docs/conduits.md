@@ -28,10 +28,13 @@ Existing saved upgrades remain unchanged, with no retroactive charge/refund.
 
 ## Identity
 
-Conduits replace Artifact terminology. They are mechanisms hidden long ago
-during an ancient war. Some are powered by **Elemental Light**, the source that
-gave every being their element and elemental powers. Mechanical devices remain
-distinct from Light-powered ones. No war name or faction has been invented.
+Conduits replace Artifact terminology. Under [D-269 founding canon](world-lore.md),
+they are surviving/restored mechanisms from Let and Rise's shared prototype
+work, some hidden during the wars their later rivalry provoked. Some hold
+**Elemental Light**, the term for their elemental energy, not the being or
+source that created every faction's elements. Let gave his human bearers their
+elements; Rise stole those powers for her Devourers. Mechanical devices remain
+distinct from elemental-energy-powered ones; neither device grants a creator's soul.
 Owner-approved Omnic equipment requires a matching combat element.
 
 ## Rarity presentation and expansion (D-124)

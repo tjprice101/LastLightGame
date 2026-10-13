@@ -1,5 +1,12 @@
 # Game vision
 
+**Founding canon (D-269):** Let, the first being, bears Infinity; his equal
+opposite Rise bears Nothingness. Their shared creation became rivalry, wars
+and a contest to find their scattered creators' souls. Let made human
+Element-Bearers; Rise made Elemental-Devourers and stole the same six emotional
+elements. Machines are wrecked prototypes from their collaboration.
+[World lore](world-lore.md) owns the exact history and present-day boundaries.
+
 **Intrinsic kits (D-163):** full-roster ability/passive redesign approved in
 batches; all16 complete through Roses then War (D-172). Simple capped
 stacks and meaningful buff/debuff setup/payoff choices work without equipment.

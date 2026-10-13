@@ -23,6 +23,7 @@ import { bannerPercent, bannerPityLimits, validateBannerPity, type BannerOutcome
 import { summonBanners, getSummonBanner, type SummonBannerId } from '../content/summon-banners';
 import { evolutionRarity } from '../content/progression';
 import { information } from './information';
+import { summonLore } from '../content/world-lore';
 import { characterName } from '../content/character-art';
 import { materialName } from '../content/dungeon-art';
 import { bannerMaterialTiers, bannerDuplicateMaterialAmount } from '../content/banner-materials';
@@ -336,7 +337,7 @@ export function summonHub(account: Account | null, selected: SummonBannerId = 's
     <button id="summon-ten" class="primary-button" ${!banner.available || account.lycalis < banner.cost * multiSummonCount ? 'disabled' : ''} aria-describedby="banner-cost-note">Summon 10-Pull · ${banner.cost * multiSummonCount} Null-Prismatica</button>
     <p id="banner-cost-note" class="quiet" ${banner.available && account.lycalis >= banner.cost ? 'hidden' : ''}>${!banner.available ? 'Banner unavailable.' : account.lycalis < banner.cost ? 'Not enough Null-Prismatica.' : ''}</p>
     ${account.lycalis < banner.cost ? '<button class="text-button" type="button" data-page="gameplay">Earn more in Gameplay &rarr;</button>' : ''}</div>
-    ${information('summon-information', 'Rates & Information', `${bannerRates(banner, pool)}<section class="summon-rules"><h3>Pity and reward rules</h3>
+    ${information('summon-information', 'Rates & Information', `${bannerRates(banner, pool)}<section class="summon-rules"><h3>The search for Let</h3><p>${summonLore}</p><h3>Pity and reward rules</h3>
       <p>Guaranteed on pull ${bannerPityLimits.highestStar} without a highest-star character. Any highest-star character resets this counter. Guaranteed on pull ${bannerPityLimits.unownedHighestStar} without a new highest-star character. A new highest-star character resets this counter.</p>
       <p>Counters are independent and belong to this banner. The ${bannerPityLimits.unownedHighestStar} guarantee takes priority if both are due; eligible guaranteed characters have equal odds. If all highest-star characters are owned, it awards a highest-star result using the normal duplicate reward and resets both counters. Current highest tier: ${highestStars}-star. Previously earned progress is retained; counters already past the new limit trigger the applicable guarantee on the next saved draw.</p>
       <p>Only successful saved draws advance pity. Menu visits, rejected draws and failed saves never count.</p>

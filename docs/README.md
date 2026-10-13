@@ -5,6 +5,60 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Founding canon (D-269):** Let/Infinity and Rise/Nothingness jointly created
+worlds, then split themselves after their rivalry drew civilizations into war.
+Their human Element-Bearers and Elemental-Devourers seek their respective
+creator's soul; all six elements have the owner's emotional themes.
+Machines are destroyed collaborative prototypes. Character, Story, creature,
+Conduit and in-game lore surfaces now use this canon without gameplay changes.
+[Complete canon and validation](world-lore.md).
+
+**Recurring Masters (D-264):** all48 are always-active bearer enhancements with
+no once-per-round activation/bank gate. Complementary effects replace copied
+native charge/passive awards; existing caps, nonrecursive sources, recovery and
+ordinary Conduit gates remain. [Contract](master-conduits.md#kit-mechanics).
+
+**World map framing (D-261):** full uncropped native-ratio map, terrain-aligned
+beacons/roads and numbered sidebar; compact maps keep44px targets without label
+overlap. [Contract](story-and-training.md#full-map-framing-and-terrain-anchors-d-261).
+
+**Profile picture collection (D-260):**32 earnable character pictures, acquisition
+and Omnic for each of16 bearers, plus the neutral default. Ownership/reached-form
+gates, searchable collection and selected usage previews. All32 special square
+portraits are installed (D-262):31 vibrant element mosaics, unchanged Omnic Flora.
+[32 generation prompts](../Art/characters/Element-Bearer%20Profile%20Pictures.md).
+Private/group text chats are implemented with500-character messages, invite-only
+10-member groups, unread/pin/mute/block and independent authoritative persistence.
+Hosted SQL/smoke passed; updates use10-second polling, not realtime push.
+[Chat and picture contract](menus-and-inventory.md#earned-profile-pictures-and-text-chats-d-260).
+
+**Friends reference and presence (D-259):** shared editor, searchable friends,
+Add friend/Received/Sent sidebar and real accepted-friend online/last-seen status.
+[Contract](menus-and-inventory.md#friends-reference-and-real-presence-d-259).
+
+**Starter Omnic skin tests:** three generation-only alternate costume prompts,
+owner-provided image references, visible10% outer margins and palette-specific
+contrasting backgrounds. No runtime skins or production prompt replacement.
+[Prompt pack](../Art/experiments/Starter%20Omnic%20Alternate%20Skins.md).
+
+**One-screen desktop profile (D-258):** short desktop screens retain three
+columns, a side-by-side portrait/name editor and compact progress/activity rows.
+All information fits at1367x640 and1838x640; phones retain readable page scrolling.
+[Contract](menus-and-inventory.md#one-screen-desktop-refinement-d-258).
+
+**Signed-in profile reference (D-257):** compact editor/summary/progress/save/
+squad/activity columns use real account and catalog data. Meaningful reference
+features add friend codes, a30-friend cap, forward-only online play metrics,
+confirmed activity and private offline save codes; no demo controls or title.
+[Contract](menus-and-inventory.md#signed-in-profile-reference-layout-d-257).
+
+**Automatic online entry and minute autosave (D-256):** successful sign-in/
+session restoration enters online without a second Play Online choice.
+Initialized real games save every minute, with a1.8-second flavorful notice.
+Server-only checkpoints preserve revisions, RNG and frozen runs; migration/
+endpoint deployed and hosted checks passed.
+[Contract](menus-and-inventory.md#automatic-online-entry-and-minute-autosave-d-256).
+
 **Readable Conduit cards (D-249):** larger art/text, smaller meters, unbroken
 action labels and full current effects in a game-native Details modal.
 [Contract](menus-and-inventory.md#readable-conduit-cards-and-details-d-249).
@@ -673,6 +727,7 @@ See [character naming](units-and-progression.md#global-character-display-names-d
 | [Archives and enemy elements](archives-and-elements.md) | Unified galleries, discovery locks, confirmed enemy typing and separate loot routing |
 | [Summoning and economy](summoning-and-economy.md) | Banners, odds, pity, currencies, reward transactions |
 | [Crimson Roses event and special banner](crimson-roses.md) | Lv.80-140 Roselius, capture ceiling, materials/sales, three EBs, banner odds/pity and art |
+| [Black Diamonds Against The Light event and special banner](black-diamonds.md) | 35-stage Lv.80-140 Kharonite mission, 6 materials, 6 new EBs (3 5★, 3 6★), 10-cost banner economics and 93 art prompts |
 | [Content guide](content-guide.md) | Adding units, skills, enemies, quests, and banners |
 | [Technical architecture](technical-architecture.md) | Stack decisions, module boundaries, saves, online services |
 | [Art workflow](art-workflow.md) | Existing visual direction, asset intake, provenance |

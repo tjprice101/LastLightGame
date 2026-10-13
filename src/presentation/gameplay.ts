@@ -17,6 +17,8 @@ import { getStarter } from '../content/starters';
 import { storyRulesText } from '../content/story';
 import { storyCampaign } from './story';
 import { activityAccess } from '../game/activity-access';
+import { devourerHabitats, elementEmotions, machineOrigin, storyPurpose, trainingLore, warLore } from '../content/world-lore';
+import { worldLore } from './world-lore';
 
 function dungeonEntry(element: (typeof elements)[number]['id'], account: Account | null): string {
   if (!account) return '<button disabled>Dungeon unavailable: resolve the save error</button>';
@@ -61,11 +63,12 @@ function activityFacts(stages: string, levels: string, drops: string): string {
 
 function gameplayInformation(): string {
   return informationTopics('gameplay-information', [
+    { id: 'origins', title: 'Let and Rise', summary: 'Infinity, Nothingness and the search for the creators', content: worldLore() },
     { id: 'start', title: 'Getting started', summary: 'Where to begin, unlocks and getting stronger', content: `<p>Clear Story stages for materials and currencies, then level and evolve in Team. Replay cleared stages when you need more materials.</p>
       <h4>Unlocks</h4><p>Your highest-level owned Element-Bearer unlocks activities, even when not in your squad. Captured Elemental-Devourers do not count.</p>
       <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li></ul>
       <h4>Tougher fights</h4><p>Higher-level enemies hit harder and take more hits. Level up, evolve and equip Conduits. Bring healing or shields for bosses.</p>` },
-    { id: 'story', title: 'Story', summary: 'Six regions ? 150 stages', content: `<p>${storyRulesText}</p>` },
+    { id: 'story', title: 'Story', summary: 'Six regions ? 150 stages', content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
     { id: 'training', title: 'Training', summary: 'Endless waves ? Prismatica', content: `<p>Each entry begins at wave 1 with your saved squad. Endless waves cap enemy level at 120.</p>
       <p>Per-kill Prismatica grows from 5-10 at Lv.1 to 15-30 at Lv.120. No materials, captures or Null-Prismatica.</p>` },
     { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, enemy levels ${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}.</p>
@@ -88,7 +91,7 @@ function gameplayInformation(): string {
       <p>Sell copies in Team. Locked, squad-assigned and Conduit-equipped copies are protected.</p>` },
     { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Event stages ? Rose materials', content: roseEventRules },
     { id: 'machines', title: 'Awaken the Machines', summary: 'Conduits ? components ? Masters', content: machineRulesText },
-    { id: 'war', title: 'Elemental War', summary: 'Human challengers ? rare recruits', content: `<p>${warRulesText}</p>` },
+    { id: 'war', title: 'Elemental War', summary: 'Human challengers ? rare recruits', content: `<p>${warLore}</p><p>${warRulesText}</p>` },
     { id: 'continuing', title: 'Continuing encounters', summary: 'HP, Gauge, Settings and quitting', content: `<p>Continue is manual. Staged activities restore HP between stages and retain Gauge.</p>
       <p>Training carries HP, Gauge and recovery into the next wave. Settings retains the current encounter; quitting ends the run.</p>` },
   ]);
@@ -109,14 +112,15 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       <article class="activity-card training-card">
         <header class="training-hero"><img src="${assetUrl('backgrounds/grassy-field.png')}" alt="" width="1456" height="816"><div><p class="eyebrow">Practice · Endless battles</p><h3>Training · Grassy Field</h3></div></header>
         <div class="training-details">${activityFacts('Endless waves', '1-120', 'Prismatica')}
-          <div class="training-summary"><p>Start at wave 1 with your saved squad. Continue at your own pace; HP and Gauge carry into the next wave.</p>${itemShowcase([{ id: 'fractalis' }], 'Rewards')}</div>
+          <div class="training-summary"><p>${trainingLore}</p><p>Start at wave 1 with your saved squad. Continue at your own pace; HP and Gauge carry into the next wave.</p>${itemShowcase([{ id: 'fractalis' }], 'Rewards')}</div>
           <footer class="training-entry"><p class="quiet">Rewards save after each defeat. Leaving ends the run.</p><button class="primary-button" data-page="battle">Enter Training</button></footer>
         </div></article></section>
     <section class="activity-group" id="gameplay-dungeons"><h2>Elemental material dungeons</h2>
       ${activityPicker(elements.map((element) => ({ name: element.dungeon })))}
       <div class="activity-grid">${elements.map((element, index) => `<article class="activity-card dungeon-card ${dungeonArt[element.id] ? 'has-dungeon-art' : ''}" data-element-index="${index}" style="--dungeon:${elementAccents[element.id]}">
         ${activityBanner(element.dungeon, dungeonArt[element.id] ? `banners/${dungeonArt[element.id]?.slug}.png` : null, `${element.dungeon} banner`, true)}
-        <p class="eyebrow">${element.name}</p>
+        <p class="eyebrow">${element.name} · ${elementEmotions[element.id]}</p>
+        <p>Rise's Elemental-Devourers search these ruins with the same ${element.name} power that Let gave his Element-Bearers.</p>
         ${activityFacts(`${elementalDungeonRules.stages} stages`, `${elementalDungeonRules.startingLevel}-${elementalDungeonRules.maximumLevel}`, 'Prismatica · Materials')}
         ${itemShowcase([{ id: 'fractalis' }, ...materialRarities.map((rarity) => ({ id: `${element.id}-${rarity.toLowerCase()}` }))], 'Rewards across stages')}
         ${dungeonEntry(element.id, account)}</article>`).join('')}</div></section>
@@ -124,7 +128,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       ${activityPicker(infusionModes.map((mode) => ({ name: mode.name })))}
       <div class="activity-grid">${infusionModes.map((mode) => `<article class="activity-card">
         ${activityBanner(mode.name, `banners/${mode.id}-banner.png`)}
-        <p class="eyebrow">${mode.energy} ENERGY</p>
+        <p>${devourerHabitats[mode.id]}</p>
         ${activityFacts(`${mode.stages} stages`, `${mode.startingLevel}-120`, 'Materials · Prismatica · Null-Prismatica · Captures')}
         <p>Evolution materials from Lv.75. Null-Prismatica from Lv.80.</p>
         ${itemShowcase([{ id: 'fractalis' }, { id: 'lycalis' }, ...specialtyMaterials.filter((item) => item.id.startsWith(`${mode.id}-`)).map((item) => ({ id: item.id }))], 'Currencies & specialty materials')}
@@ -134,11 +138,13 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       ${currencyModes.map((mode) => `<article class="activity-card">
         ${activityBanner(mode.name, `banners/${mode.id}-banner.png`, `${mode.name} banner`, true)}
         <p class="eyebrow">TRANQUILITIC · ${mode.id === 'treasury' ? 'PRISMATICA' : 'NULL-PRISMATICA'}</p>
+        <p>${devourerHabitats[mode.id]}</p>
         ${activityFacts(`${mode.stages} stages`, '65-120', mode.id === 'treasury' ? 'Prismatica · Captures' : 'Prismatica · Null-Prismatica · Captures')}
         ${itemShowcase(mode.id === 'treasury' ? [{ id: 'fractalis' }] : [{ id: 'fractalis' }, { id: 'lycalis' }], 'Currency rewards')}
         ${infusionEntry(mode, account)}</article>`).join('')}</section>
     <section class="activity-group" id="gameplay-machines"><h2>Awaken the Machines</h2><article class="activity-card">
-      ${activityBanner('Awaken the Machines', 'banners/machines-banner.png', 'Awaken the Machines: an ancient white machine awakens in an element-scorched wasteland.')}
+      ${activityBanner('Awaken the Machines', 'banners/machines-banner.png', 'Awaken the Machines: a destroyed prototype from Let and Rise\'s collaboration awakens in an element-scorched wasteland.')}
+      <p>${machineOrigin}</p>
       ${activityFacts(`${machineRules.stages} stages`, '10-120', 'Prismatica · Broken Mechanical Components · Conduits')}
       <p>Rare 8% · Legendary 3.5% · Omnic 1% from stage ${machineRules.omnicStage}</p>
       ${itemShowcase([{ id: 'mechanical-components' }], 'Conduit upgrade currency')}
@@ -153,6 +159,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
         return `<article class="activity-card" style="--dungeon:${elementAccents[mode.element]}">
           ${activityBanner(mode.name, `banners/${warEncounter(mode.character, 1).banner}`, `${mode.name} activity banner`, true)}
           <p class="eyebrow">${getStarter(mode.character).name} · ${elementLabel(mode.element)}</p>
+          <p>${getStarter(mode.character).description}</p><p>${warLore}</p>
           ${activityFacts('10 stages · One boss each', '90-140', 'Prismatica · Null-Prismatica · Final-boss recruitment')}
           ${itemShowcase([{ id: 'fractalis' }, { id: 'lycalis' }], 'Currency rewards')}
           <p>Final boss:1% base-form recruitment · Already owned:100 Null-Prismatica</p>

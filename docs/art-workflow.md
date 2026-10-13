@@ -1,5 +1,92 @@
 # Art and asset workflow
 
+## Full Conduit background audit
+
+All85 ordinary Conduit PNGs were reviewed:20 Machines,5 root originals,35
+delivered icons and25 kit Conduits. The48 character-specific Master icons were
+also reviewed, together with the Cosmic Grand Master Chest and Astral Reserve
+emblem. Review used the full-resolution source, source/runtime composites on
+dark and light backgrounds, and magnified enclosed-key candidate overlays.
+`Art/provenance/conduit-cleanup-review.json` records all135 reviewed files,
+source and export hashes, settings, notes, and retained-export history.
+
+Owner confirms painted ground shadows must remain. In addition to the prior
+nine ordinary-icon corrections,22 Master icons now clear definite enclosed
+flat backdrop fields: notably the fields behind Bliss's suspended loom, Tide's
+planetary spokes, Disciple's frame, and the throne and rose-wheel structures.
+The original sources and their hashes are unchanged. Previous Master exports
+are preserved byte-for-byte under
+`Art/source/master-conduits/previous-runtime/conduit-background-audit`.
+Matching green/cyan gems, pale metal and painted shadows remain; no global
+color removal or runtime keying is used. Ambiguous pale-green areas that overlap
+the opal glass in Bliss's three-orb Master remain untouched, as do authored
+ground planes and shadows.
+
+Reproduce Master exports with `python tools\intake_master_conduit_art.py --apply`;
+refresh their shared byte-derived URLs with
+`python tools\master_conduit_art_revisions.py --write`. The ordinary and Master
+revision generators are `python tools\conduit_art_revisions.py --write` and
+`python tools\master_conduit_art_revisions.py --write`. Refresh the full review
+record with `python tools\conduit_cleanup_review.py --write`.
+`python -m unittest discover -s tools -p test_conduit_cleanup_review.py -q`
+checks all135 source/export records, reproductions, transparent gap pixels and
+untouched shadow pixels.
+
+## Installed mosaic profile portraits (D-262)
+
+All32 delivered Base/Omnic PNGs are installed.31 reviewed backgrounds are replaced
+offline with vibrant gradient/triangular mosaics in each character's current
+gameplay element palette. Character pixels retain their original1024-square
+positions and scale; only keyed background/edge spill is processed. Existing
+source-clipped tips cannot be reconstructed. **Omnic Flora stays byte-for-byte
+unchanged**, including her original background, by explicit owner selection.
+
+Originals remain at the root and are archived under `Art/source/profile-pictures`.
+`Art/provenance/profile-picture-intake.json` records source/export SHA256 hashes;
+`profile-picture-settings.json` owns reviewed per-image keys and edge settings.
+Reproduce with `python tools\intake_profile_picture_art.py --apply`; optional
+`--review <directory>` emits composites/cutouts/contact sheets. Never redraft
+reviewed settings or apply another source generation's masks to these images.
+Externally modified runtime exports and conflicting archives reject overwrite.
+
+The generated `src/content/profile-picture-art.ts` owns byte-derived revisions.
+The shared resolver uses deployment-base square image URLs throughout Profile,
+header, Friends, Chats and picture collection, without combat-facing mirrors.
+No runtime background removal, ownership/unlock changes or account writes.
+Validate with `python -m unittest discover -s tools -p test_profile_picture_intake.py -q`
+and the profile-picture/browser/profile/chat Vitest tests.
+
+## Earned profile portrait pack (D-260)
+
+[Element-Bearer Profile Pictures](../Art/characters/Element-Bearer%20Profile%20Pictures.md)
+defines exactly32 square head-and-shoulders portraits: acquisition/Evo.1 and
+Omnic/Evo.6 for each of16 bearers. Preserve identity, authored simple base clothing
+or final regalia, eyes-only compact anime/cel rendering and locked subject palettes.
+Portrait framing is specific to profile art, not a production full-body change.
+Use exact Evo.1/6 character references at150, clear10% margins on every side and
+contrasting flat unlit keys. No names/text, reference costume copying, source glow
+or invented signed URLs. Expired references require refreshed owner links.
+
+The delivered illustrations are installed under D-262 above; this generation pack
+remains prompt guidance. Locked entries show requirements without revealing art.
+Never point to missing images or substitute other characters. Replacement intake
+must preserve originals/provenance and the shared resolver across all surfaces.
+`python -m unittest discover -s tools -p test_profile_picture_art.py -q`
+checks the32 IDs, signatures, reference suffixes, palettes, margins and word limits.
+
+## Starter Omnic alternate-skin experiment
+
+[Three copy-ready prompts](../Art/experiments/Starter%20Omnic%20Alternate%20Skins.md)
+preserve Infernis/Tizu/Flora identities, compact renderer, signature weapons and
+six final-form wings while changing costume/regalia. Owner supplies original
+Omnic image URLs; exact existing Evo.6 style URL stays at150. Requested central80%
+footprint/10% clearance per side replaces historical near-edge instructions only
+for these tests. Green/magenta/blue backgrounds contrast with locked palettes,
+without changing subject colors. Signed links may expire; request refreshed
+owner URLs, never substitute. Inspect actual pixels for identity, complete tips
+and clear margins; prompts do not guarantee model compliance. No generated
+outputs, runtime skins, asset intake or production prompt changes are implied.
+
 ## Character Master prompt pack (D-201)
 
 [Master Conduits.md](../Art/conduits/Master%20Conduits.md) contains 50 copy-ready

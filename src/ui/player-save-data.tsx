@@ -7,8 +7,10 @@ import { gameConfirm } from '../presentation/game-dialog';
 import { OfflineSavePanel, type OfflineChange } from './offline-save-panel';
 import { Button, Icon, Panel, Status } from './components';
 
-export function PlayerSaveData({ onChanged, onReady, onAccount }: {
+export function PlayerSaveData({ onChanged, onReady, onAccount, compact = false, onlineUser, onSaveOnline }: {
   onChanged: (change: OfflineChange) => void; onReady: () => Promise<void> | void; onAccount: () => void;
+  compact?: boolean; onlineUser?: string;
+  onSaveOnline?: () => Promise<void>;
 }) {
   const [username, setUsername] = useState<string | null>(null);
   const [eligible, setEligible] = useState<boolean | null>(null);
@@ -57,10 +59,18 @@ export function PlayerSaveData({ onChanged, onReady, onAccount }: {
   };
   useEffect(() => {
     alive.current = true;
+    if (compact && onlineUser) {
+      setUsername(onlineUser); setEligible(false); setBusy(false); lock.current = false;
+      return () => { alive.current = false; };
+    }
     void refresh().catch(report).finally(() => { lock.current = false; if (alive.current) setBusy(false); });
     return () => { alive.current = false; };
   }, []);
 
+  if (compact && onlineUser) return <div className="ll-player-save-data ll-player-save-data--compact">
+    <OfflineSavePanel onChanged={onChanged} compact onSaveOnline={onSaveOnline} />
+    <p className="profile-online-save">Online connected · Auto-saves every minute</p>
+  </div>;
   return <div className="ll-player-save-data">
     <OfflineSavePanel onChanged={onChanged} />
     <Panel title="Online save data" description={username ? `Signed in as ${username}. Online progress saves automatically to your account.` : 'Sign in or create an account to bring your offline progress online.'}>

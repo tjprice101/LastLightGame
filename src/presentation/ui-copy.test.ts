@@ -89,10 +89,9 @@ describe('visible UI copy', () => {
     expect(inventory).not.toContain('Earn materials in');
     expect(inventory).not.toContain('Main currency');
     expect(inventory).not.toContain('Premium currency');
-    expect(inventory).toContain('No materials yet');
-    expect(inventory).toContain('Broken Mechanical Components');
-    expect(inventory).toContain('data-page="conduit-upgrade"');
-    expect(inventory).toContain('data-page="gameplay"');
+    expect(inventory).toContain('No resources yet');
+    expect(inventory).not.toContain('data-inventory-resource="mechanical-components"');
+    expect(inventory).not.toContain('data-page=');
     const store = primary(conduitStore(account));
     expect(store).not.toContain('Purchase requires confirmation.');
     expect(store).not.toContain('Mechanical drive');

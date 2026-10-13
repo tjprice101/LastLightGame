@@ -1,5 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { freshGame, publicGame, resolveOperation, validateRequest } from './engine.bundle.js';
+import { freshGame, profileActivityFor, publicGame, resolveOperation, validateChatRequest, validateRequest } from './engine.bundle.js';
 const maximumRequestBytes = 4 * 1024 * 1024 + 8192;
 
 const url = Deno.env.get('SUPABASE_URL');
@@ -36,14 +36,35 @@ Deno.serve(async request => {
     const { data: identity, error: authError } = await admin.auth.getUser(authorization.slice(7));
     if (authError || !identity.user) return response(401, { error: 'Your online session expired.' }, origin);
     const user = identity.user.id;
-    const { data: allowed, error: limitError } = await admin.rpc('consume_game_attempt', { p_user: user });
-    if (limitError) return response(503, { error: 'Game rate-limit storage unavailable.' }, origin);
-    if (!allowed) return response(429, { error: 'Too many game operations. Wait one minute.' }, origin);
     if (Number(request.headers.get('content-length')) > maximumRequestBytes) return response(400, { error: 'Request too large.' }, origin);
     const body = await request.text();
     if (new TextEncoder().encode(body).length > maximumRequestBytes) return response(400, { error: 'Request too large.' }, origin);
     let parsed: unknown;
-    try { parsed = JSON.parse(body); } catch { return response(400, { error: 'Request must be JSON.' }, origin); }
+    let parseFailed = false;
+    try { parsed = JSON.parse(body); } catch { parseFailed = true; }
+    // Chat is a separate service-authoritative path: it never loads, revises or commits the game account.
+    if (!parseFailed && parsed && typeof parsed === 'object' && !Array.isArray(parsed) && 'chat' in parsed) {
+      if (body.length > 8192) return response(400, { error: 'Request too large.' }, origin);
+      const chat = validateChatRequest(parsed);
+      const { data: chatAllowed, error: chatLimitError } = await admin.rpc('consume_chat_attempt', {
+        p_user: user, p_send: chat.chat.kind === 'send',
+      });
+      if (chatLimitError) return response(503, { error: 'Chat rate-limit storage unavailable.' }, origin);
+      if (!chatAllowed) return response(429, { error: 'Too many chat requests. Wait one minute.' }, origin);
+      const { data: view, error: chatError } = await admin.rpc('chat_operation', {
+        p_user: user, p_request: chat.requestId, p_fingerprint: await fingerprint(chat.chat), p_operation: chat.chat,
+      });
+      if (chatError) {
+        if (chatError.code === 'P0001') return response(400, { error: chatError.message }, origin);
+        if (chatError.code === 'LL409') return response(409, { error: 'Request ID was already used with different input.' }, origin);
+        return response(503, { error: 'Chat was not acknowledged. Retry the same request ID.' }, origin);
+      }
+      return response(200, view, origin);
+    }
+    const { data: allowed, error: limitError } = await admin.rpc('consume_game_attempt', { p_user: user });
+    if (limitError) return response(503, { error: 'Game rate-limit storage unavailable.' }, origin);
+    if (!allowed) return response(429, { error: 'Too many game operations. Wait one minute.' }, origin);
+    if (parseFailed) return response(400, { error: 'Request must be JSON.' }, origin);
     const input = validateRequest(parsed);
     if (input.operation.kind !== 'importSave' && body.length > 8192) return response(400, { error: 'Request too large.' }, origin);
     const hash = await fingerprint(input);
@@ -59,10 +80,24 @@ Deno.serve(async request => {
       p_user: user, p_initial: freshGame(profile.username, profile.created_at),
     });
     if (loadError || !stored) return response(503, { error: 'Online account storage unavailable.' }, origin);
-    if (input.operation.kind === 'read') {
+    if (input.operation.kind === 'read' || input.operation.kind === 'checkpoint') {
+      let snapshot = stored;
+      if (input.operation.kind === 'checkpoint') {
+        const { data: checkpoint, error: saveError } = await admin.rpc('checkpoint_game_account', {
+          p_user: user, p_revision: input.expectedRevision,
+        });
+        if (saveError || !checkpoint) return response(503, { error: 'Online autosave was not acknowledged. Please retry.' }, origin);
+        if (checkpoint.conflict) return response(409, { error: 'Account changed. Refresh before continuing.', revision: checkpoint.revision }, origin);
+        snapshot = checkpoint;
+      }
+      const { data: profileReference, error: trackingError } = await admin.rpc('track_game_session', {
+        p_user: user, p_request: input.requestId,
+      });
+      if (trackingError || !profileReference) return response(503, { error: 'Online profile tracking unavailable. Retry the same request.' }, origin);
+      snapshot.state.profile = { ...snapshot.state.profile, ...profileReference };
       const { data: social, error: socialError } = await admin.rpc('game_social', { p_user: user });
       if (socialError) return response(503, { error: 'Social storage unavailable.' }, origin);
-      return response(200, { ...publicGame(stored.state, stored.revision), social }, origin);
+      return response(200, { ...publicGame(snapshot.state, snapshot.revision), social }, origin);
     }
     if (input.expectedRevision !== stored.revision) {
       const { data: retry, error: retryError } = await admin.rpc('find_game_request', {
@@ -77,11 +112,14 @@ Deno.serve(async request => {
       uuid: () => crypto.randomUUID(),
       random: () => crypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000,
     });
+    const activity = profileActivityFor(input.operation, stored.state.account.storyCompleted ?? 0,
+      resolved, () => crypto.randomUUID());
     const { data: committed, error: commitError } = await admin.rpc('commit_game_operation', {
       p_user: user, p_request: input.requestId, p_fingerprint: hash, p_revision: input.expectedRevision,
       p_state: resolved.game, p_response: resolved.response,
       p_social: ['friendRequest', 'acceptFriendRequest', 'declineFriendRequest', 'cancelFriendRequest', 'removeFriend']
         .includes(input.operation.kind) ? input.operation : null,
+      p_activity: activity,
     });
     if (commitError) {
       if (commitError.code === 'P0001') return response(400, { error: commitError.message }, origin);

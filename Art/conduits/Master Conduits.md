@@ -10,7 +10,7 @@ Character palettes come from tools\character_palette.py, not element-wide repain
 
 Art ID: `master-ember-1`. Character: Infernis. Master option: 1.
 
-Effect contract: When Burn from Infernis deals damage, the burning enemy takes an extra 50% of that Burn damage as a Conduit strike, and the Burn lasts one more enemy phase (maximum 3). Once per round.
+Effect contract: Every damage tick of Infernis’s own Burn adds a Conduit strike for 50% of the Burn damage and heals Infernis for 20% of that Burn damage (up to 10% max HP). Does not extend Burn.
 
 Catalogue design: A furnace cathedral around a crimson miniature sun, twelve greatsword-shaped exhaust wings, stacked gold flame shutters and volcanic orbital rails
 
@@ -22,7 +22,7 @@ one furnace cathedral around a crimson miniature sun, twelve greatsword-shaped e
 
 Art ID: `master-ember-2`. Character: Infernis. Master option: 2.
 
-Effect contract: Applying Burn stores 1 Astral Reserve (once per round, maximum 3). Flame Arc spends all of it: per reserve, gain 1 Infernic Embers charge and deal 15% Attack to every enemy (reduced by Defense).
+Effect contract: Every native Burn application stores 1 Astral Reserve (maximum 3). Flame Arc spends all of it: per reserve, gain a shield worth 4% max HP and deal 15% Attack to every enemy (reduced by Defense).
 
 Catalogue design: A split stellar ignition engine, three molten planet chambers, counter-rotating sword-tooth halos and branching crimson ignition conduits
 
@@ -34,7 +34,7 @@ one split stellar ignition engine, three molten planet chambers, counter-rotatin
 
 Art ID: `master-ember-3`. Character: Infernis. Master option: 3.
 
-Effect contract: Spending Infernic Embers charges returns 10 Gauge per charge spent and shortens one skill cooldown by one round (never ready before next round). Once per round.
+Effect contract: Every Infernic Embers spend returns 10 Gauge per charge spent and shortens one skill cooldown by one round (never ready before next round).
 
 Catalogue design: A bronze-and-crimson sunforge throne machine, greatsword anvil at its heart, armored flare crowns and six immense mechanical flame fans
 
@@ -46,7 +46,7 @@ one bronze-and-crimson sunforge throne machine, greatsword anvil at its heart, a
 
 Art ID: `master-tide-1`. Character: Tizu. Master option: 1.
 
-Effect contract: When a shield Tizu made blocks an enemy hit, Tizu gains 1 Oceanic Protection charge and every ally’s next enemy hit is reduced by 15%. Once per round.
+Effect contract: Every enemy hit absorbed by Tizu’s authored shields shortens one of her skill cooldowns by one round (never ready before next round) and refreshes 15% next-direct-hit protection for every ally.
 
 Catalogue design: A sapphire pressure observatory, spear-shaped lighthouse spindle, nested diving-bell shields and immense tidal astrolabe fins
 
@@ -58,7 +58,7 @@ one sapphire pressure observatory, spear-shaped lighthouse spindle, nested divin
 
 Art ID: `master-tide-2`. Character: Tizu. Master option: 2.
 
-Effect contract: When a shield Tizu made blocks an enemy hit, store 1 Astral Reserve (once per round, maximum 3). Tidal Shelter spends all of it to heal every ally by 5% of Tizu’s max HP per reserve.
+Effect contract: Every enemy hit absorbed by Tizu’s authored shields stores 1 Astral Reserve (maximum 3). Tidal Shelter spends all of it to heal every ally by 5% of Tizu’s max HP per reserve.
 
 Catalogue design: A world-sized tide pump enclosing three ocean planets, sapphire manifold crown, twelve spearhead vanes and interlocked platinum sea rings
 
@@ -70,7 +70,7 @@ one world-sized tide pump enclosing three ocean planets, sapphire manifold crown
 
 Art ID: `master-tide-3`. Character: Tizu. Master option: 3.
 
-Effect contract: When Tizu applies Weaken, it lasts one more enemy phase (maximum 3) and the enemy gains 2 Fracture Marks (Tizu’s next hit on it is stronger). Once per round.
+Effect contract: Every native Weaken application lasts one more enemy phase (maximum 3) and the enemy gains 2 personal Fracture Marks (Tizu’s next hit on it is stronger, maximum 2 marks).
 
 Catalogue design: A monumental spear-tip targeting engine, abyssal sapphire prisms, concentric current locks and six armored harpoon-wing arcs
 
@@ -82,7 +82,7 @@ one monumental spear-tip targeting engine, abyssal sapphire prisms, concentric c
 
 Art ID: `master-sprout-1`. Character: Flora. Master option: 1.
 
-Effect contract: When Flora’s own healing restores HP, the most injured other ally also gains a shield worth 50% of the HP restored (up to 15% of Flora’s max HP). Once per round.
+Effect contract: Every effective native heal by Flora gives the most injured other ally a shield worth 50% of the HP restored (up to 15% of Flora’s max HP; refresh, not stack).
 
 Catalogue design: An emerald seed foundry with ivory bow-limb gantries, twelve leaf-blade mechanical wings and a densely interwoven root orrery
 
@@ -94,7 +94,7 @@ one An emerald seed foundry with ivory bow-limb gantries, twelve leaf-blade mech
 
 Art ID: `master-sprout-2`. Character: Flora. Master option: 2.
 
-Effect contract: When Flora’s own healing restores HP, store 1 Astral Reserve (once per round, maximum 3). Briar Shot spends all of it: per reserve, gain 1 Botanic Renewal charge and 5 Gauge.
+Effect contract: Every effective native heal by Flora stores 1 Astral Reserve (maximum 3). Briar Shot spends all of it: per reserve, add a 20% Attack Conduit strike to its target (reduced by Defense) and return 5 Gauge.
 
 Catalogue design: A cosmic bowstring loom with three emerald seed planets, intertwined root escapements and vast ivory thorn-constellation fans
 
@@ -106,7 +106,7 @@ one cosmic bowstring loom with three emerald seed planets, intertwined root esca
 
 Art ID: `master-sprout-3`. Character: Flora. Master option: 3.
 
-Effect contract: Last Flare reduces every ally’s next enemy hit by 35% and heals the most injured ally by 10% of Flora’s max HP. Once per round. Cannot revive.
+Effect contract: Every Last Flare refreshes 35% next-direct-hit protection for every ally and shortens both of Flora’s skill cooldowns by one round (never ready before next round).
 
 Catalogue design: A sealed living-world crucible, emerald germination heart, ivory petal armor and six gigantic bow-branch sanctuary wings; no resurrection imagery
 
@@ -118,7 +118,7 @@ one sealed living-world crucible, emerald germination heart, ivory petal armor a
 
 Art ID: `master-atmoso-1`. Character: Atmoso. Master option: 1.
 
-Effect contract: A critical hit makes a follow-up gust strike the same enemy for 40% of the damage dealt (up to 100% of Attack). Once per round.
+Effect contract: Every native critical hit adds a follow-up gust strike to the same enemy for 40% of the damage dealt (up to 100% of Attack).
 
 Catalogue design: A turquoise sky-axis turbine, wind-staff core, twelve spiraling blade wings and immense counter-sweeping cyclone crowns
 
@@ -130,7 +130,7 @@ one turquoise sky-axis turbine, wind-staff core, twelve spiraling blade wings an
 
 Art ID: `master-atmoso-2`. Character: Atmoso. Master option: 2.
 
-Effect contract: Critical hits store 1 Astral Reserve (once per round, maximum 3). Cyclone Weave spends all of it: per reserve, gain 1 Atmospheric Charge and 8 Gauge.
+Effect contract: Every native critical hit stores 1 Astral Reserve (maximum 3). Cyclone Weave spends all of it: per reserve, refresh 10% next-direct-hit protection and return 8 Gauge.
 
 Catalogue design: Three turquoise storm planets inside a staff-shaped horizon orrery, ivory turbine ramparts and layered compass-wing vaults
 
@@ -142,7 +142,7 @@ one Three turquoise storm planets inside a staff-shaped horizon orrery, ivory tu
 
 Art ID: `master-atmoso-3`. Character: Atmoso. Master option: 3.
 
-Effect contract: Razor Gale against an enemy at or below half HP adds a 60% Attack crosswind strike to it (reduced by Defense) and returns 20 Gauge. Once per round.
+Effect contract: Every Razor Gale hit against an enemy at or below half HP adds a 60% Attack crosswind strike to it (reduced by Defense) and returns 20 Gauge.
 
 Catalogue design: An imperial crosswind staff-drive with crossed turquoise pressure corridors, ivory gale armor and six monumental scythe-shaped wind wings
 
@@ -154,7 +154,7 @@ one An imperial crosswind staff-drive with crossed turquoise pressure corridors,
 
 Art ID: `master-aurora-1`. Character: Aurora. Master option: 1.
 
-Effect contract: When Aurora applies Weaken, it lasts one more enemy phase (maximum 3) and every ally gains 5 Gauge. Once per round.
+Effect contract: Every native Weaken application lasts one more enemy phase (maximum 3) and returns 5 Gauge to every ally.
 
 Catalogue design: An ivory solar tribunal mechanism, amber judgment lens, twelve lens-wing arches and descending platinum verdict locks
 
@@ -166,7 +166,7 @@ one An ivory solar tribunal mechanism, amber judgment lens, twelve lens-wing arc
 
 Art ID: `master-aurora-2`. Character: Aurora. Master option: 2.
 
-Effect contract: Applying Weaken stores 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it to give every ally +10% Attack per reserve through next round.
+Effect contract: Every native Weaken application stores 1 Astral Reserve (maximum 3). Last Flare spends all of it to give every ally +10% Attack per reserve through next round (refresh, not stack).
 
 Catalogue design: Three amber lens planets in an ivory judiciary orrery, interlocking seal plates and vast empty-hand casting aperture wings
 
@@ -178,7 +178,7 @@ one Three amber lens planets in an ivory judiciary orrery, interlocking seal pla
 
 Art ID: `master-aurora-3`. Character: Aurora. Master option: 3.
 
-Effect contract: Direct damage against Aurora’s existing Weaken heals the most injured other ally by 15% of Aurora’s max HP and primes their next direct hit for 30% protection. Once per round.
+Effect contract: Every native direct hit against Aurora’s existing Weaken heals the most injured other ally by 15% of Aurora’s max HP and refreshes their next-direct-hit protection at 30%.
 
 Catalogue design: A white eclipse regulator surrounding an amber sun lens, twelve protective shutter petals and immense tiered celestial court rails
 
@@ -190,7 +190,7 @@ one white eclipse regulator surrounding an amber sun lens, twelve protective shu
 
 Art ID: `master-bliss-1`. Character: Bliss. Master option: 1.
 
-Effect contract: A critical hit heals the most injured other ally by 30% of the damage dealt (up to 15% of Bliss’s max HP). Once per round.
+Effect contract: Every native critical hit gives the most injured other ally a shield worth 30% of the damage dealt (up to 15% of Bliss’s max HP; refresh, not stack).
 
 Catalogue design: An ivory-and-rose feather loom, two immense mechanical warfan assemblies, platinum quill wings and densely nested celestial ribbon gears
 
@@ -202,7 +202,7 @@ one An ivory-and-rose feather loom, two immense mechanical warfan assemblies, pl
 
 Art ID: `master-bliss-2`. Character: Bliss. Master option: 2.
 
-Effect contract: Healing another ally stores 1 Astral Reserve (once per round, maximum 3). Warfeather Cut spends all of it: per reserve, gain 1 Botanic Renewal charge and strike the target for 15% Attack (reduced by Defense).
+Effect contract: Every effective native heal of another ally stores 1 Astral Reserve (maximum 3). Warfeather Cut spends all of it: per reserve, shorten one skill cooldown by one round (never ready before next round) and strike the target for 15% Attack (reduced by Defense).
 
 Catalogue design: Three rose opal planets dancing inside paired ivory fan rotors, counterbalanced feather crowns and platinum orbital ribbons
 
@@ -214,7 +214,7 @@ one Three rose opal planets dancing inside paired ivory fan rotors, counterbalan
 
 Art ID: `master-bliss-3`. Character: Bliss. Master option: 3.
 
-Effect contract: Last Flare heals the most injured other ally by 20% of Bliss’s max HP and gives them 35% Attack through next round. Once per round; cannot revive.
+Effect contract: Every Last Flare gives the most injured other ally a shield worth 20% of Bliss’s max HP and 35% Attack through next round (refresh, not stack).
 
 Catalogue design: A double-fan heaven forge, ivory-and-rose central feather heart, twelve platinum quill mandalas and monumental quiet-wing armor
 
@@ -226,7 +226,7 @@ one double-fan heaven forge, ivory-and-rose central feather heart, twelve platin
 
 Art ID: `master-bruno-1`. Character: Bruno. Master option: 1.
 
-Effect contract: Defending gives every ally a shield worth 12% of Bruno’s max HP. Once per round.
+Effect contract: Every Defense refreshes a shield for every ally worth 12% of Bruno’s max HP (does not stack).
 
 Catalogue design: A basalt-and-bronze atlas machine supporting a faceted ochre world, hammer-shaped axial pillar and twelve titanic faultplate wings
 
@@ -238,7 +238,7 @@ one basalt-and-bronze atlas machine supporting a faceted ochre world, hammer-sha
 
 Art ID: `master-bruno-2`. Character: Bruno. Master option: 2.
 
-Effect contract: When Bruno’s shields grow, store 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it to strike every enemy for 25% Attack per reserve (reduced by Defense).
+Effect contract: Every effective native shield increase by Bruno stores 1 Astral Reserve (maximum 3). Last Flare spends all of it to strike every enemy for 25% Attack per reserve (reduced by Defense).
 
 Catalogue design: Three basalt quarry planets locked in bronze gravitic hammer cages, immense layered bedrock buttresses and ochre orbiting armor rails
 
@@ -250,7 +250,7 @@ one Three basalt quarry planets locked in bronze gravitic hammer cages, immense 
 
 Art ID: `master-bruno-3`. Character: Bruno. Master option: 3.
 
-Effect contract: When Bruno applies Weaken, the hammer’s aftershock strikes that enemy for 60% Attack (reduced by Defense) and one skill cooldown shortens by one round. Once per round.
+Effect contract: Every native Weaken application adds an aftershock strike to that enemy for 60% Attack (reduced by Defense) and shortens one skill cooldown by one round (never ready before next round).
 
 Catalogue design: A bronze hammer-dominion engine, basalt shelter vaults, ochre crystal pistons and six massive mechanically linked mountain-wing plates
 
@@ -262,7 +262,7 @@ one bronze hammer-dominion engine, basalt shelter vaults, ochre crystal pistons 
 
 Art ID: `master-disciple-1`. Character: Disciple. Master option: 1.
 
-Effect contract: Effective authored support returns 20 Gauge to the lowest-Gauge other ally and gives them 30% next-direct-hit protection. Once per round.
+Effect contract: Every effective native support outcome returns 20 Gauge to the lowest-Gauge other ally and refreshes their next-direct-hit protection at 30%.
 
 Catalogue design: An amethyst synapse crown engine, scarlet mindflame channels, twelve open-palm-shaped mechanical arches and linked psychic orbital frames
 
@@ -274,7 +274,7 @@ one An amethyst synapse crown engine, scarlet mindflame channels, twelve open-pa
 
 Art ID: `master-disciple-2`. Character: Disciple. Master option: 2.
 
-Effect contract: Supporting another ally stores 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it to give every ally 8 Gauge per reserve.
+Effect contract: Every effective native support outcome on another ally stores 1 Astral Reserve (maximum 3). Last Flare spends all of it to give every ally 8 Gauge per reserve.
 
 Catalogue design: Three amethyst thought planets in scarlet-linked open orbital cages, empty-hand mindcrown apertures and monumental psychic lattice wings
 
@@ -286,7 +286,7 @@ one Three amethyst thought planets in scarlet-linked open orbital cages, empty-h
 
 Art ID: `master-disciple-3`. Character: Disciple. Master option: 3.
 
-Effect contract: Thoughtspark Benediction’s hit shortens one of Disciple’s skill cooldowns by one round and gives the lowest-Gauge other ally 15 Gauge. Once per round.
+Effect contract: Every Thoughtspark Benediction hit shortens one of Disciple’s skill cooldowns by one round (never ready before next round) and gives the lowest-Gauge other ally 15 Gauge.
 
 Catalogue design: A black-amethyst will amplifier with scarlet triple-tier crown rings, huge open psychic handframes and twelve ornate inward-linked flame vanes
 
@@ -298,7 +298,7 @@ one black-amethyst will amplifier with scarlet triple-tier crown rings, huge ope
 
 Art ID: `master-elise-1`. Character: Elise. Master option: 1.
 
-Effect contract: A critical hit shortens both skill cooldowns by one round (never ready before next round) and grants 1 Atmospheric Charge. Once per round.
+Effect contract: Every native critical hit shortens both skill cooldowns by one round (never ready before next round) and refreshes Elise’s shield to 20% of damage dealt (up to 10% max HP).
 
 Catalogue design: Exactly two four-point shuriken-shaped thunderwheel rotors with open central grips, yellow-green voltage rails and twelve platinum lightning wings
 
@@ -310,7 +310,7 @@ one Exactly two four-point shuriken-shaped thunderwheel rotors with open central
 
 Art ID: `master-elise-2`. Character: Elise. Master option: 2.
 
-Effect contract: Critical hits store 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it: per reserve, both skill cooldowns shorten by one round and Elise gains 10 Gauge.
+Effect contract: Every native critical hit stores 1 Astral Reserve (maximum 3). Last Flare spends all of it: per reserve, both skill cooldowns shorten by one round (never ready before next round) and Elise gains 10 Gauge.
 
 Catalogue design: Three voltage planets held between two four-point star ratchets, yellow-green branching circuitry and huge platinum circuit-crown blades
 
@@ -322,7 +322,7 @@ one Three voltage planets held between two four-point star ratchets, yellow-gree
 
 Art ID: `master-elise-3`. Character: Elise. Master option: 3.
 
-Effect contract: Defeating an enemy with a direct hit returns 30 Gauge and gives Elise +30% Attack through next round. Once per round.
+Effect contract: Every enemy defeated by a native direct hit returns 30 Gauge and refreshes Elise’s +30% Attack through next round.
 
 Catalogue design: A double-shuriken execution clock, segmented yellow-green circuit armor, twelve angular stormblade fans and layered four-point chronometer rails
 
@@ -334,7 +334,7 @@ one double-shuriken execution clock, segmented yellow-green circuit armor, twelv
 
 Art ID: `master-razor-1`. Character: Razor. Master option: 1.
 
-Effect contract: Defense heals 18% max HP and grants 40% next-direct-hit protection. Once per round.
+Effect contract: Every Defense heals 18% max HP and refreshes 40% next-direct-hit protection.
 
 Catalogue design: An obsidian midnight bastion engine enclosing one night-sword spindle, violet crescent shield wings and enormous layered eclipse ramparts
 
@@ -346,7 +346,7 @@ one An obsidian midnight bastion engine enclosing one night-sword spindle, viole
 
 Art ID: `master-razor-2`. Character: Razor. Master option: 2.
 
-Effect contract: Defending stores 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it: per reserve, strike the target for 30% Attack (reduced by Defense) and reduce Razor’s next enemy hit by 20% (maximum 60%).
+Effect contract: Every Defense stores 1 Astral Reserve (maximum 3). Last Flare spends all of it: per reserve, strike the target for 30% Attack (reduced by Defense) and refresh Razor’s next-direct-hit protection by 20% (maximum 60%).
 
 Catalogue design: Three violet eclipse planets behind obsidian tower-shield cages, one night-sword axis and twelve monumental crescent watchtower wings
 
@@ -358,7 +358,7 @@ one Three violet eclipse planets behind obsidian tower-shield cages, one night-s
 
 Art ID: `master-razor-3`. Character: Razor. Master option: 3.
 
-Effect contract: Applying authored Weaken places two personal Fracture Marks, capped at two, and grants 25% max-HP shield. Once per round.
+Effect contract: Every native Weaken application places two personal Fracture Marks (maximum 2) and refreshes a shield worth 25% of Razor’s max HP.
 
 Catalogue design: An obsidian counterblade engine, violet nightglass gem chambers, sword-hilt locking clasps and immense double-crescent shield architecture
 
@@ -370,7 +370,7 @@ one An obsidian counterblade engine, violet nightglass gem chambers, sword-hilt 
 
 Art ID: `master-rosetta-1`. Character: Rosetta. Master option: 1.
 
-Effect contract: Applying authored Weaken returns 20 Gauge and heals the most injured other ally by 12% of Rosetta’s max HP. Once per round.
+Effect contract: Every native Weaken application returns 20 Gauge and refreshes a shield on the most injured other ally worth 12% of Rosetta’s max HP.
 
 Catalogue design: A rose-gold solar bow orrery with crimson petal gears, ivory wing vaults and twelve enormous gilded thorn-mandala arches
 
@@ -382,7 +382,7 @@ one rose-gold solar bow orrery with crimson petal gears, ivory wing vaults and t
 
 Art ID: `master-rosetta-2`. Character: Rosetta. Master option: 2.
 
-Effect contract: When Rosetta’s own healing restores HP, store 1 Astral Reserve (once per round, maximum 3). Golden Thorn Volley spends all of it: per reserve, gain 1 Rose Grace and heal every ally by 3% of Rosetta’s max HP.
+Effect contract: Every effective native heal by Rosetta stores 1 Astral Reserve (maximum 3). Golden Thorn Volley spends all of it: per reserve, shorten one skill cooldown by one round (never ready before next round) and refresh every ally’s shield to 3% of Rosetta’s max HP.
 
 Catalogue design: Three rose planets in rose-gold garden cages, ivory bow-limb orbit rails and densely layered crimson petal cathedral wings
 
@@ -394,7 +394,7 @@ one Three rose planets in rose-gold garden cages, ivory bow-limb orbit rails and
 
 Art ID: `master-rosetta-3`. Character: Rosetta. Master option: 3.
 
-Effect contract: Direct damage against Rosetta’s existing Weaken grants 45% Attack through next round and places two personal Fracture Marks, capped at two. Once per round.
+Effect contract: Every native direct hit against Rosetta’s existing Weaken refreshes +45% Attack through next round and places two personal Fracture Marks (maximum 2).
 
 Catalogue design: A golden thorn targeting loom with one central rose-bow aperture, crimson rose mandalas, ivory prism petals and twelve sweeping thorn-wing rails
 
@@ -406,7 +406,7 @@ one golden thorn targeting loom with one central rose-bow aperture, crimson rose
 
 Art ID: `master-thornia-1`. Character: Thornia. Master option: 1.
 
-Effect contract: When a shield Thornia made blocks an enemy hit, thorns strike back at that enemy for 100% of the damage blocked (up to 100% of Attack) and Thornia gains 1 Thorn Aegis. Once per round.
+Effect contract: Every enemy hit absorbed by Thornia’s authored shields adds a counterstrike against the attacker for 100% of damage blocked (up to 100% of Attack) and returns 10 Gauge.
 
 Catalogue design: A rose-gold forbidden worldlock, violet eclipse cage, crimson thorn greatsword axis and twelve immense gilded rose-shield fans
 
@@ -418,7 +418,7 @@ one rose-gold forbidden worldlock, deep crimson eclipse cage, crimson thorn grea
 
 Art ID: `master-thornia-2`. Character: Thornia. Master option: 2.
 
-Effect contract: When a shield Thornia made blocks an enemy hit, store 1 Astral Reserve (once per round, maximum 3). Shadow Rose Cleave spends all of it to give every ally a shield worth 6% of Thornia’s max HP per reserve.
+Effect contract: Every enemy hit absorbed by Thornia’s authored shields stores 1 Astral Reserve (maximum 3). Shadow Rose Cleave spends all of it to refresh every ally’s shield to 6% of Thornia’s max HP per reserve.
 
 Catalogue design: Three crimson rose planets nested in golden aegis cages, violet thorn eclipse rails and massive interwoven rose-armored greatsword wings
 
@@ -430,7 +430,7 @@ one Three crimson rose planets nested in golden aegis cages, deep crimson thorn 
 
 Art ID: `master-thornia-3`. Character: Thornia. Master option: 3.
 
-Effect contract: When Thornia applies Weaken, it lasts one more enemy phase (maximum 3) and Thornia heals 12% of her max HP. Once per round.
+Effect contract: Every native Weaken application lasts one more enemy phase (maximum 3) and heals Thornia by 12% of her max HP.
 
 Catalogue design: A violet-and-rose-gold shadow foundry, crimson thorn blade crucible, six immense rose-wing forge arches and dense golden petal countergears
 
@@ -442,7 +442,7 @@ one deep crimson-and-rose-gold shadow foundry, crimson thorn blade crucible, six
 
 Art ID: `master-crinso-1`. Character: Crinso. Master option: 1.
 
-Effect contract: A critical hit grants 1 Rose Duality and +40% Attack through next round. Once per round.
+Effect contract: Every native critical hit refreshes a shield worth 15% of Crinso’s max HP and +40% Attack through next round.
 
 Catalogue design: A rose-gold singularity drive around one connected double-ended blade axle, golden flame and crimson lightning halves with twelve thorn wings
 
@@ -454,7 +454,7 @@ one rose-gold singularity drive around one connected double-ended blade axle, go
 
 Art ID: `master-crinso-2`. Character: Crinso. Master option: 2.
 
-Effect contract: Applying Burn stores 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it: per reserve, Crinso heals 8% of max HP and gains 1 Rose Duality.
+Effect contract: Every native Burn application stores 1 Astral Reserve (maximum 3). Last Flare spends all of it: per reserve, Crinso heals 8% of max HP and refreshes 10% next-direct-hit protection.
 
 Catalogue design: Three crimson-gold planets inside one connected dual-edged sword wheel, nested rose hubs, opposed flame rails and lightning petal armor
 
@@ -466,7 +466,7 @@ one Three crimson-gold planets inside one connected dual-edged sword wheel, nest
 
 Art ID: `master-crinso-3`. Character: Crinso. Master option: 3.
 
-Effect contract: Direct damage against Crinso’s existing Burn heals 15% max HP and extends that Burn by one phase, capped at three. Once per round.
+Effect contract: Every native direct hit against Crinso’s existing Burn heals 15% max HP and extends that Burn by one phase (maximum 3). Burn ticks do not extend themselves.
 
 Catalogue design: A golden-crimson pyre requiem engine with a connected double-ended sword core, twelve rose lightning wings and ornate flame-petal crowns
 
@@ -478,7 +478,7 @@ one golden-crimson pyre requiem engine with a connected double-ended sword core,
 
 Art ID: `master-nerithe-1`. Character: Nerithe. Master option: 1.
 
-Effect contract: Normal Attack dealing direct damage returns 15 additional Gauge and grants 30% Attack through next round. Once per round.
+Effect contract: Every native Normal Attack hit refreshes a shield worth 10% of Nerithe’s max HP and +30% Attack through next round. Does not repeat her passive’s Gauge award.
 
 Catalogue design: A turquoise worldchart engine, surveyor-trident spindle, twelve ocean compass wings and immense folded meridian astrolabe rails
 
@@ -490,7 +490,7 @@ one turquoise worldchart engine, surveyor-trident spindle, twelve ocean compass 
 
 Art ID: `master-nerithe-2`. Character: Nerithe. Master option: 2.
 
-Effect contract: Applying Weaken stores 1 Astral Reserve (once per round, maximum 3). Normal Attack spends all of it to strike the target for 25% Attack per reserve (reduced by Defense).
+Effect contract: Every native Weaken application stores 1 Astral Reserve (maximum 3). Normal Attack spends all of it to strike the target for 25% Attack per reserve (reduced by Defense).
 
 Catalogue design: Three turquoise ocean planets in folded ivory meridian cages, surveyor trident locking prongs and huge layered sea-map wings
 
@@ -502,7 +502,7 @@ one Three turquoise ocean planets in folded ivory meridian cages, surveyor tride
 
 Art ID: `master-nerithe-3`. Character: Nerithe. Master option: 3.
 
-Effect contract: Applying authored Weaken places two personal Fracture Marks, capped at two, and grants 35% next-direct-hit protection. Once per round.
+Effect contract: Every native Weaken application places two personal Fracture Marks (maximum 2) and refreshes 35% next-direct-hit protection.
 
 Catalogue design: A turquoise abyssal crown surveyor, trident-shaped rangefinding lens, ivory ocean ramparts and twelve royal compass-blade wings
 
@@ -514,7 +514,7 @@ one turquoise abyssal crown surveyor, trident-shaped rangefinding lens, ivory oc
 
 Art ID: `master-orvella-1`. Character: Orvella. Master option: 1.
 
-Effect contract: Effective authored shield growth grants 40% next-direct-hit protection and 15 Gauge. Once per round.
+Effect contract: Every effective native shield increase by Orvella refreshes 40% next-direct-hit protection and returns 15 Gauge.
 
 Catalogue design: An ivory-and-ochre planetary foundation throne, crystal-mace cornerstone, twelve monumental stone armor wings and immense bronze support arches
 
@@ -526,7 +526,7 @@ one An ivory-and-jasper red planetary foundation throne, crystal-mace cornerston
 
 Art ID: `master-orvella-2`. Character: Orvella. Master option: 2.
 
-Effect contract: When a shield Orvella made blocks an enemy hit, store 1 Astral Reserve (once per round, maximum 3). Keystone Reversal spends all of it: the target’s Weaken from Orvella lasts one more enemy phase (maximum 3) and both skill cooldowns shorten by one round per reserve.
+Effect contract: Every enemy hit absorbed by Orvella’s authored shields stores 1 Astral Reserve (maximum 3). Keystone Reversal spends all of it: the target’s own Weaken lasts one more enemy phase (maximum 3) and both skill cooldowns shorten by one round per reserve (never ready before next round).
 
 Catalogue design: Three ochre foundation planets braced by bronze masonry press rings, crystal-mace piston and ivory world-bearing buttress wings
 
@@ -538,7 +538,7 @@ one Three jasper red foundation planets braced by copper masonry press rings, cr
 
 Art ID: `master-orvella-3`. Character: Orvella. Master option: 3.
 
-Effect contract: Direct damage against Orvella’s existing Weaken gives the most injured other ally a shield worth 25% of her max HP and 30% Attack through next round. Once per round.
+Effect contract: Every native direct hit against Orvella’s existing Weaken refreshes the most injured other ally’s shield to 25% of her max HP and +30% Attack through next round.
 
 Catalogue design: An ochre keystone counterweight engine with crystal mace fulcrum, bronze celestial load rails and twelve ivory citadel shield wings
 
@@ -550,7 +550,7 @@ one An jasper red keystone counterweight engine with crystal mace fulcrum, coppe
 
 Art ID: `master-vaelor-1`. Character: Vaelor. Master option: 1.
 
-Effect contract: While Vaelor is at or below half HP, a direct hit heals Vaelor by 25% of the damage dealt (up to 15% of max HP) and returns 10 Gauge. Once per round.
+Effect contract: While Vaelor is at or below half HP, every native direct hit heals Vaelor by 25% of damage dealt (up to 15% max HP) and returns 10 Gauge.
 
 Catalogue design: A gold-and-black celestial resonator, resonance-blade tuning core, twelve immense thunder choir wings and branching frequency crown rails
 
@@ -562,7 +562,7 @@ one copper-and-navy celestial resonator, resonance-blade tuning core, twelve imm
 
 Art ID: `master-vaelor-2`. Character: Vaelor. Master option: 2.
 
-Effect contract: Critical hits store 1 Astral Reserve (once per round, maximum 3). Last Flare spends all of it to strike every enemy for 20% Attack per reserve (reduced by Defense).
+Effect contract: Every native critical hit stores 1 Astral Reserve (maximum 3). Last Flare spends all of it to strike every enemy for 20% Attack per reserve (reduced by Defense).
 
 Catalogue design: Three gold thunder planets in black conducting cages, resonance-blade axis and vast branching voltage organ-wing architecture
 
@@ -574,7 +574,7 @@ one Three copper thunder planets in navy conducting cages, resonance-blade axis 
 
 Art ID: `master-vaelor-3`. Character: Vaelor. Master option: 3.
 
-Effect contract: Defending tunes the next strike: +50% Attack through next round and 15 Gauge. Once per round.
+Effect contract: Every Defense refreshes +50% Attack through next round and returns 15 Gauge.
 
 Catalogue design: A black-and-gold sky metronome with resonance-blade pendulum, twelve thunder-frequency wings and enormous nested conductor halos
 
@@ -596,7 +596,7 @@ one cosmic and planetary locked grand mechanically flaming chest, enormous seale
 
 Art ID: `astral-reserve` (runtime public\assets\master-conduits\astral-reserve.png).
 
-Effect contract: personal stored Astral Reserve, once per round, capped at three; the equipped Master's exact trigger, spend action and per-reserve payout are the catalogue contracts above. Show actual count and label as readable text.
+Effect contract: personal stored Astral Reserve, earned on every qualifying native outcome, capped at three; the equipped Master's exact trigger, spend action and per-reserve payout are the catalogue contracts above. Show actual count and label as readable text.
 
 ```text
 one Astral Reserve storage emblem, one faceted ivory reserve crystal seated in a compact platinum clasp with three ink-blue storage notches, complete artwork fully inside the canvas, every mechanical ornament and effect tip visible, continuous safety margin on all four sides and corners, nothing touches or crosses the frame edges, small clean readable mechanic emblem with one protected central reserve crystal, three broad nested storage brackets, simple thick contours and few separated parts, no complex machine architecture, original fantasy machinery not modern electronics, strict subject palette lock: ONLY ivory platinum ink blue plus white black gold and platinum neutral details, prismatic and opal mean faceting within the listed palette not extra hues, no generic element repaint, subject palette excludes the key background, compact clean anime gacha collectible renderer, clean precise contours crisp cel shading smooth painted non-emissive highlights, opaque metal ceramic crystal and solid-color mechanical effects with crisp hard edges, whole ensemble at most 70% canvas width and height with at least 15% continuous outer clearance per side measured from every outermost tip, complete artwork fully inside the canvas, every mechanical ornament and effect tip visible, continuous safety margin on all four sides and corners, nothing touches or crosses the frame edges, pull back the entire ensemble uniformly never crop delete or simplify authored components to fit, plain solid green background (#00FF00), flat unlit color edge to edge and through all openings, subject colors unchanged, no glows or glowing visual effects, non-emissive painted highlights --ar 1:1 --niji 6 --s 100 --q 1 --no character, face, hands, scenery, horizon, flame, wings, machinery clutter, text, letters, numbers, runes, logo, watermark, interface, frame, cropping, photorealism, 3d render, modern electronics, floating tiny gadget, transparent energy, additive light, fog, background gradient, textured background, background vignette, background color spill, glow, glowing effects, light bloom, soft aura, haze, light spill

@@ -35,7 +35,7 @@ html body .banner-showcase-grid .element-emblem { width: 1.5rem; height: 1.5rem;
 }
 
 #app .sanctuary-shell .ref-team-detail:has(> .ref-character-header) { display: grid; grid-template-columns: minmax(0, 2fr) minmax(12rem, 1fr); grid-template-rows: auto auto; }
-#app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-portrait { width: 10rem; height: 10rem; }
+#app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-portrait { width: clamp(11rem, 30dvh, 16rem); height: clamp(11rem, 30dvh, 16rem); }
 #app .sanctuary-shell .ref-team-detail > .ref-character-submenus { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; align-self: start; }
 #app .sanctuary-shell .ref-team-detail > .ref-character-submenus button { min-height: 52px; }
 #app .sanctuary-shell .ref-team-detail:has(> .ref-character-header) > .ref-character-panels { grid-column: 1 / -1; }
@@ -47,7 +47,7 @@ html body .banner-showcase-grid .element-emblem { width: 1.5rem; height: 1.5rem;
   #app .sanctuary-shell .ref-team-detail > .ref-character-submenus { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
-  #app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-portrait { width: 8rem; height: 8rem; }
+  #app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-portrait { width: min(100%, 15rem); height: auto; aspect-ratio: 1; }
   #app .sanctuary-shell .ref-team-detail > .ref-character-submenus { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 :root[data-motion="reduced"] :is(.sanctuary-shell, .game-dialog, .information-modal, .online-account, .settings-drawer) button { transition: none; }
@@ -249,6 +249,8 @@ html body .sanctuary-shell .ref-add-card { display: grid; place-items: center; m
 .ref-empty { padding: 2rem 1rem; text-align: center; color: #a9a9ae; }
 html body .sanctuary-shell .ref-inventory { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; grid-auto-rows: auto; height: auto; align-items: start; position: relative; }
 .ref-inventory .inventory-introduction { grid-column: 1 / -1; padding: 0; border: 0; margin: 0; }
+.ref-inventory :is(.inventory-tools, .inventory-results) { grid-column: 1 / -1; }
+html body .sanctuary-shell .ref-inventory :is(.inventory-panel, .inventory-item, .ref-component-count, .inventory-results)[hidden] { display: none; }
 html body .sanctuary-shell .ref-inventory .inventory-currencies { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
 html body .sanctuary-shell .ref-inventory .inventory-currency { display: flex; flex-direction: row; align-items: center; padding: 1rem; border: 1px solid #2d2d31; margin: 0; }
 .ref-inventory .inventory-currency .currency-icon { width: 3rem; height: 3rem; }
@@ -259,7 +261,7 @@ html body .sanctuary-shell .ref-inventory .inventory-masters { grid-column: 1 / 
 html body .sanctuary-shell .ref-inventory .ref-scroll { flex: none; overflow: visible; }
 html body .sanctuary-shell .ref-inventory .ref-panel-heading { flex-wrap: wrap; }
 html body .sanctuary-shell .ref-inventory .ref-panel-heading > span { display: flex; flex-wrap: wrap; gap: .4rem; }
-.ref-inventory .inventory-item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 7rem), 1fr)); gap: .55rem; padding: 0; }
+.ref-inventory .inventory-item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 10rem), 1fr)); gap: .55rem; padding: 0; }
 .ref-inventory .inventory-item { border: 1px solid #2d2d31; background: #1a1a1c; border-radius: .6rem; padding: .5rem; min-width: 0; }
 .ref-inventory .inventory-item-art { width: 100%; height: 5rem; aspect-ratio: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
 html body .sanctuary-shell .ref-inventory .inventory-item-art :is(img, .conduit-icon-frame) { width: 100%; height: 100%; min-width: 0; min-height: 0; max-width: 100%; max-height: 100%; object-fit: contain; }
@@ -476,13 +478,14 @@ html body .sanctuary-shell .ref-story-entry { grid-column: 1 / -1; display: flex
 html body .sanctuary-shell .ref-story-entry > button { flex: none; min-height: 48px; font-size: .95rem; font-weight: 600; }
 html body .sanctuary-shell .mono-story-campaign .story-map-art { display: flex; flex: 1; flex-direction: column; min-height: 0; grid-column: auto; padding: 0; }
 html body .sanctuary-shell .mono-story-campaign :is(.story-region-panel, .story-map-art)[hidden] { display: none; }
-.ref-world-map { position: relative; height: 100%; min-height: 24rem; overflow: hidden; border-radius: .8rem; background: #1a1a1c; }
-.ref-world-map > img { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: cover; }
+.ref-world-map { position: relative; flex: 1; min-height: 12rem; overflow: hidden; border-radius: .8rem; background: #1a1a1c; container-type: size; display: grid; place-items: center; }
+.ref-world-map-canvas { position: relative; width: min(100cqw, calc(100cqh * 1456 / 816)); aspect-ratio: 1456 / 816; }
+.ref-world-map-canvas > img { display: block; height: 100%; width: 100%; object-fit: contain; }
 .ref-map-roads { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .ref-map-roads line { stroke: #55555b; stroke-width: 2; stroke-dasharray: 5 7; }
 .ref-map-roads line.is-restored { stroke: #f4f4f5; stroke-width: 3; stroke-dasharray: none; }
-html body .sanctuary-shell .ref-map-node { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: .2rem; padding: .25rem; background: none; border: 0; color: #f4f4f5; z-index: 1; }
-.ref-map-node > span { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: #242427; border: 2px solid #707076; font-weight: 700; }
+html body .sanctuary-shell .ref-map-node { position: absolute; transform: translate(-50%, -22px); display: flex; flex-direction: column; align-items: center; gap: .2rem; padding: 0; min-height: 44px; min-width: 44px; background: none; border: 0; color: #f4f4f5; z-index: 1; }
+.ref-map-node > span { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #242427; border: 2px solid #707076; font-weight: 700; }
 .ref-map-node.is-restored > span { background: #f4f4f5; color: #0b0b0c; border-color: #f4f4f5; }
 .ref-map-node.is-open > span { border-color: #f4f4f5; box-shadow: 0 0 0 5px #ffffff29; }
 .ref-map-node[aria-pressed="true"] > span { outline: 2px solid #f4f4f5; outline-offset: 4px; }
@@ -491,7 +494,14 @@ html body .sanctuary-shell .ref-map-node { position: absolute; transform: transl
 .ref-map-node small { font-size: .64rem; color: #a9a9ae; }
 .ref-map-node.is-locked { opacity: .75; }
 .ref-play #gameplay-story .story-map-art { display: flex; flex-direction: column; }
-.ref-play #gameplay-story .ref-world-map { flex: 1; min-height: 0; }
+.ref-play #gameplay-story .ref-world-map { flex: 1; min-height: 12rem; }
+@container (max-height: 360px) {
+  .ref-map-node :is(b, small) { display: none; }
+}
+@media (max-width: 700px) {
+  .ref-world-map { min-height: 16rem; }
+  .ref-map-node :is(b, small) { display: none; }
+}
 .mono-story-campaign :is(.story-prologue, [data-training-activity]) { display: none; }
 html body .sanctuary-shell .archives { height: 100%; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); gap: .6rem; }
 .archives > [data-information] { justify-self: end; min-height: 44px; }
@@ -531,8 +541,7 @@ html body .sanctuary-shell .ref-summon .summon-banner-navigation { display: flex
 .ref-summon-left .summon-pity-progress dt { font-size: .72rem; color: #a9a9ae; }
 .ref-summon-left .summon-pity-progress dd { font-size: .82rem; margin: .3rem 0; }
 html body .sanctuary-shell .ref-summon .ref-summon-hero { position: relative; padding: 0; overflow: hidden; }
-/* D-234: banner splash stays large but no longer fills the whole center column. */
-html body .sanctuary-shell .ref-summon .ref-summon-hero { width: 100%; max-width: min(100%, 31rem); margin-inline: auto; justify-self: center; }
+html body .sanctuary-shell .ref-summon .ref-summon-hero { width: 100%; max-width: min(100%, 38.75rem); margin-inline: auto; justify-self: center; }
 html body .sanctuary-shell .ref-summon-hero .summon-visual { aspect-ratio: 16 / 9; min-height: 0; display: block; }
 html body .sanctuary-shell .ref-summon-hero .summon-banner-art { height: 100%; min-height: 0; border: 0; border-radius: 0; aspect-ratio: auto; }
 .ref-summon-hero .summon-banner-art img { width: 100%; height: 100%; object-fit: cover; }
@@ -551,13 +560,18 @@ html body .sanctuary-shell .ref-summon .summon-featured-tier { display: flex; fl
 .summon-featured-tier + .summon-featured-tier { padding-left: 1.6rem; border-left: 1px solid #2d2d31; }
 .ref-summon .summon-featured-tier h3 { margin: 0; font-size: .9rem; color: #f4f4f5; white-space: nowrap; }
 .summon-featured-tier ul { display: flex; flex-wrap: wrap; gap: .55rem; margin: 0; padding: 0; list-style: none; }
-.summon-featured-tier li { position: relative; display: flex; flex-direction: column; align-items: center; gap: .25rem; width: 4.25rem; }
-.summon-featured-art { display: block; width: 4.25rem; height: 4.25rem; border: 1px solid #2d2d31; border-radius: .6rem; background: radial-gradient(circle at 50% 40%, #2a2a2e, #141416); overflow: hidden; }
+.summon-featured-tier li { position: relative; display: flex; flex-direction: column; align-items: center; gap: .4rem; width: 8.5rem; max-width: 100%; }
+.summon-featured-art { display: block; width: 100%; aspect-ratio: 1; border: 1px solid #2d2d31; border-radius: .6rem; background: radial-gradient(circle at 50% 40%, #2a2a2e, #141416); overflow: hidden; box-sizing: border-box; }
 .summon-featured-art .character-idle { display: block; width: 100%; height: 100%; animation: none; }
 .summon-featured-art img { width: 100%; height: 100%; object-fit: contain; }
-.summon-featured-name { max-width: 100%; font-size: .68rem; color: #c9c9ce; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.summon-featured-owned { position: absolute; top: .2rem; right: .2rem; display: grid; place-items: center; width: 1.05rem; height: 1.05rem; border-radius: 50%; background: #f4f4f5; color: #0b0b0c; font-size: .62rem; }
-@media (max-width: 700px) { .summon-featured-tier + .summon-featured-tier { padding-left: 0; border-left: 0; } }
+.summon-featured-name { max-width: 100%; font-size: .85rem; color: #c9c9ce; text-align: center; overflow-wrap: anywhere; }
+.summon-featured-owned { position: absolute; top: .35rem; right: .35rem; display: grid; place-items: center; width: 1.3rem; height: 1.3rem; border-radius: 50%; background: #f4f4f5; color: #0b0b0c; font-size: .75rem; }
+@media (max-width: 700px) {
+  .summon-featured-tier + .summon-featured-tier { padding-left: 0; border-left: 0; }
+  html body .sanctuary-shell .ref-summon .summon-featured-tier { flex-direction: column; align-items: stretch; width: 100%; }
+  .summon-featured-tier ul { justify-content: center; }
+  .summon-featured-tier li { width: min(8.5rem, calc((100% - .55rem) / 2)); }
+}
 .ref-summon-draw { overflow: visible; justify-content: flex-start; }
 .ref-summon-draw .summon-command { display: flex; flex-direction: column; gap: .8rem; border: 0; padding: 0; background: none; }
 .ref-summon-draw .currency-reward { font-size: .8rem; }
@@ -700,13 +714,17 @@ html body .sanctuary-shell .sanctuary-dock button { min-height: 48px; padding: .
 html body .sanctuary-shell .sanctuary-header .ui-icon { width: 1.25rem; height: 1.25rem; }
 html body .sanctuary-shell .sanctuary-wallet { min-width: 0; }
 html body .sanctuary-shell .sanctuary-header .currency-strip { min-width: 0; }
-html body .sanctuary-shell .sanctuary-header .currency-strip > button { min-width: 0; min-height: 48px; max-width: 12rem; border-radius: .75rem; padding: .5rem .7rem; }
-html body .sanctuary-shell .sanctuary-header .currency-strip strong { display: grid; gap: 0; font-size: 1rem; min-width: 0; text-align: left; }
+html body .sanctuary-shell .sanctuary-header .currency-strip > button { min-width: 0; min-height: 64px; max-width: 12rem; border-radius: .75rem; padding: .6rem .8rem; }
+html body .sanctuary-shell .sanctuary-header .currency-strip strong { display: grid; gap: 0; font-size: 1.1rem; min-width: 0; text-align: left; }
 html body .sanctuary-shell .sanctuary-header .currency-strip strong > span { overflow-wrap: anywhere; }
-html body .sanctuary-shell .sanctuary-header .currency-strip strong small { color: var(--menu-muted); font-size: .78rem; }
-html body .sanctuary-shell .sanctuary-header .currency-icon { width: 1.5rem; height: 1.5rem; }
-html body .sanctuary-shell .sanctuary-header .sanctuary-wallet > button.text-button { width: 48px; min-width: 48px; height: 48px; min-height: 48px; flex: 0 0 48px; padding: .6rem; font-size: 1.05rem; }
-html body .sanctuary-shell .online-header-avatar { width: 36px; height: 36px; }
+html body .sanctuary-shell .sanctuary-header .currency-strip strong small { color: var(--menu-muted); font-size: .85rem; }
+html body .sanctuary-shell .sanctuary-header .currency-icon { width: 2rem; height: 2rem; flex: none; }
+html body .sanctuary-shell .sanctuary-header .sanctuary-wallet > button.text-button { width: 56px; min-width: 56px; height: 56px; min-height: 56px; flex: 0 0 56px; padding: .6rem; font-size: 1.25rem; }
+html body .sanctuary-shell .sanctuary-header .sanctuary-wallet > button.text-button .ui-icon { width: 26px; height: 26px; }
+#app .sanctuary-shell .sanctuary-header .sanctuary-wallet > .sanctuary-profile-trigger { box-sizing: border-box; width: 72px; min-width: 72px; height: 72px; min-height: 72px; flex-basis: 72px; padding: 0 !important; border-radius: 50%; overflow: hidden; display: grid; place-items: center; }
+#app .sanctuary-shell .online-header-avatar { box-sizing: border-box; width: 100%; height: 100%; padding: 0; margin: 0; border-radius: 50%; overflow: hidden; }
+#app .sanctuary-shell .online-header-avatar .profile-picture-art { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+#app .sanctuary-shell .sanctuary-profile-trigger > .ui-icon { width: 36px; height: 36px; }
 html body .sanctuary-shell .sanctuary-content { padding: 1rem 1.15rem 1.35rem; font-size: .95rem; }
 html body .sanctuary-shell .sanctuary-content .ref-screen { gap: .8rem; }
 html body .sanctuary-shell .sanctuary-content .ref-panel { padding: .85rem; gap: .55rem; }
@@ -760,6 +778,38 @@ html body .sanctuary-shell :is(.ref-growth-summary, .ref-growth-cost, .ref-growt
 html body .sanctuary-shell .ref-character-panels .mono-growth-options > article { gap: .55rem; padding: .8rem; }
 html body .sanctuary-shell :is(.ref-product-grid, .ref-bearer-grid, .ref-capture-grid) { gap: .75rem; }
 html body .sanctuary-shell .ref-product { padding: .75rem; gap: .45rem; }
+html body .sanctuary-shell .ref-product-grid > .ref-product {
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: subgrid;
+  grid-row: span 4; align-items: start; justify-items: start; align-content: start;
+}
+html body .sanctuary-shell .ref-product-grid > .ref-product[data-store-conduit] { grid-row: span 5; }
+html body .sanctuary-shell .ref-product-grid > .ref-product > :is(b, small, .ref-chip) { margin: 0; }
+html body .sanctuary-shell .ref-product-grid > .ref-product > .ref-chip { align-self: start; }
+html body .sanctuary-shell .inventory-item-grid > .inventory-item {
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: subgrid;
+  grid-row: span 4; align-items: start; justify-items: center;
+}
+html body .sanctuary-shell .inventory-item-grid > .inventory-item[data-inventory-conduit],
+html body .sanctuary-shell .inventory-masters .inventory-item-grid > .inventory-item { grid-row: span 5; }
+html body .sanctuary-shell .inventory-item-grid > .inventory-item > :is(strong, small, p, .inventory-quantity) { margin: 0; }
+html body .sanctuary-shell .ref-inventory .inventory-panel > summary { min-height: 44px; margin: 0; }
+html body .sanctuary-shell .ref-inventory .inventory-panel:not([open]) > summary { border-bottom: 0; padding-bottom: 0; }
+html body .sanctuary-shell .inventory-item-grid > .inventory-item > [data-information] { align-self: start; }
+html body .sanctuary-shell .archive-grid > .archive-card {
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: subgrid;
+  grid-row: span 6; align-items: start;
+}
+html body .sanctuary-shell .archive-grid > .archive-card > :is(h3, p, .element-label, .character-rating, .rarity-badge, [data-information]) { margin: 0; }
+html body .sanctuary-shell .archive-panel .archive-card > :is(.archive-portrait, .archive-mechanism) {
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr);
+  height: 7rem; min-height: 0; aspect-ratio: auto; overflow: hidden; padding: .25rem; gap: 0; box-sizing: border-box;
+}
+html body .sanctuary-shell .archive-panel .archive-card > .archive-portrait :is(.character-idle, img),
+html body .sanctuary-shell .archive-panel .archive-card > .archive-mechanism :is(.conduit-icon-frame, .conduit-icon, .master-art) {
+  display: block; width: 100%; height: 100%; min-width: 0; min-height: 0;
+  max-width: 100%; max-height: 100%; aspect-ratio: auto; object-fit: contain; box-sizing: border-box;
+}
+html body .sanctuary-shell .archive-panel .archive-card > .archive-mechanism .conduit-icon-frame { padding-bottom: 12px; }
 html body .sanctuary-shell :is(.ref-market-tabs, .ref-segment, .archive-navigation, .ref-rarity-filter, .summon-banner-navigation, .banner-rate-filters) button { font-size: .85rem; line-height: 1.4; }
 html body .sanctuary-shell .ref-rate-tier table { font-size: .8rem; line-height: 1.5; }
 html body .sanctuary-shell .ref-rate-tier :is(th, td) { padding-block: .5rem; }
@@ -798,7 +848,7 @@ html body .sanctuary-shell :is(.ref-member-row, .ref-product, .ref-collection-ca
 }
 @media (max-width: 960px) {
   html body .sanctuary-shell .sanctuary-header { grid-template-columns: auto minmax(0, 1fr); gap: .6rem; padding: .6rem .75rem; }
-  html body .sanctuary-shell .sanctuary-header .sanctuary-wallet { grid-column: 2; grid-row: 1; display: grid; grid-template-columns: repeat(4, minmax(48px, 1fr)); justify-items: end; }
+  html body .sanctuary-shell .sanctuary-header .sanctuary-wallet { grid-column: 2; grid-row: 1; display: grid; grid-template-columns: repeat(3, minmax(56px, 1fr)) 72px; justify-items: end; }
   html body .sanctuary-shell .sanctuary-header .currency-strip { grid-column: 1 / -1; width: 100%; }
   html body .sanctuary-shell .sanctuary-content { padding: 1rem .75rem; }
   html body .sanctuary-shell .sanctuary-dock { justify-content: stretch; }
@@ -866,7 +916,7 @@ html body .sanctuary-shell .ref-capture-grid { grid-template-columns: repeat(aut
 html body .shell.sanctuary-shell { display: grid; height: 100dvh; min-height: 0; padding: 0; overflow: hidden; grid-template-rows: auto minmax(0, 1fr); }
 html body .sanctuary-shell .menu-screen.sanctuary-content { height: 100%; min-height: 0; overflow: auto; scrollbar-width: auto; scrollbar-gutter: stable; }
 
-#app .sanctuary-shell .ref-team-detail .ref-character-header { grid-template-columns: 10rem minmax(0, 1fr); width: 100%; max-width: 100%; box-sizing: border-box; padding: .65rem; gap: .4rem .8rem; background: linear-gradient(115deg, #24262b, #111113); border: 1px solid #ffffff1f; border-radius: .8rem; box-shadow: none; }
+#app .sanctuary-shell .ref-team-detail .ref-character-header { grid-template-columns: clamp(11rem, 30dvh, 16rem) minmax(0, 1fr); width: 100%; max-width: 100%; box-sizing: border-box; padding: .5rem; gap: .4rem .8rem; background: linear-gradient(115deg, #24262b, #111113); border: 1px solid #ffffff1f; border-radius: .8rem; box-shadow: none; }
 #app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-portrait { grid-row: 1 / 3; }
 #app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-identity { grid-column: 2; }
 html body .sanctuary-shell .ref-character-header .ref-character-portrait { width: 7rem; height: 7rem; padding: 0; background: none; border: 0; border-radius: 0; }
@@ -876,9 +926,91 @@ html body .sanctuary-shell .ref-character-header .ref-character-progress { gap: 
 #app .sanctuary-shell .ref-team-detail .ref-character-header-actions .ref-link { width: auto; }
 html body .sanctuary-shell .ref-character-header-actions button { padding-block: .3rem; }
 html body .sanctuary-shell .ref-team-sidebar .ref-panel-heading > button { font-size: .875rem; letter-spacing: normal; text-transform: none; padding: .3rem .5rem; }
+#app .sanctuary-shell .ref-bearer-detail { gap: .5rem; }
+#app .sanctuary-shell .ref-capture-panel[hidden] { display: none; }
+#app .sanctuary-shell .ref-capture-detail #capture-panel-sale { padding: .65rem .8rem; margin: 0; border: 1px solid #2d2d31; border-radius: .9rem; background: #131314; }
+#app .sanctuary-shell .ref-capture-detail #capture-panel-sale .item-showcase { margin: .4rem 0; padding: .5rem; }
+#app .sanctuary-shell .ref-capture-detail #capture-panel-sale .item-showcase-art { width: 48px; height: 48px; }
+#app .sanctuary-shell .ref-capture-detail #capture-panel-sale .item-showcase-art img { width: 100%; height: 100%; }
+#app .sanctuary-shell .ref-bearer-detail .ref-character-header .ref-character-portrait { grid-row: 1; }
+#app .sanctuary-shell .ref-bearer-detail .ref-character-header-actions { margin-top: .5rem; }
+#app .sanctuary-shell .ref-bearer-detail .ref-character-overview { gap: .6rem; }
+#app .sanctuary-shell .ref-bearer-detail .ref-character-overview > section { padding: .65rem .8rem; }
+#app .sanctuary-shell .ref-bearer-detail .ref-character-overview h3 { margin: 0 0 .4rem; padding-bottom: .3rem; }
+#app .sanctuary-shell .ref-bearer-detail .hub-stats > div { padding-block: .2rem; }
+#app .sanctuary-shell .ref-bearer-detail .hub-stats { margin-block: 0; }
+#app .sanctuary-shell .ref-bearer-detail .hub-stats small { margin-bottom: 0; }
+#app .sanctuary-shell .ref-bearer-detail .ref-ability-buttons { gap: .35rem; }
+#app .sanctuary-shell .ref-bearer-detail .ref-ability-buttons > button { min-height: 44px; padding-block: .3rem; }
+#app .sanctuary-shell .ref-bearer-detail .ref-ability-buttons > button small { margin-top: 0; }
+#app .sanctuary-shell .ref-bearer-detail .ref-ability-buttons > button .ability-icon { width: 36px; height: 36px; }
+#app .sanctuary-shell .ref-bearer-detail .ref-ability-buttons > button :is(strong, small) { line-height: 1.25; }
+#app .sanctuary-shell .ref-team:has(.ref-bearer-detail) .ref-team-sidebar { gap: .6rem; }
+#app .sanctuary-shell .ref-team:has(.ref-bearer-detail) .ref-team-sidebar .ref-panel { padding: .65rem; gap: .4rem; }
+#app .sanctuary-shell .ref-team:has(.ref-bearer-detail) .ref-team-sidebar .ref-member-row { gap: .5rem; padding-block: .35rem; }
+#app .sanctuary-shell .ref-team:has(.ref-bearer-detail) .ref-team-sidebar .ref-member-row b { font-size: .875rem; line-height: 1.25; }
+#app .sanctuary-shell .ref-team:has(.ref-bearer-detail) .ref-team-sidebar .ref-thumb { width: 40px; height: 40px; }
+#app .sanctuary-shell .ref-growth-detail .character-upgrade-grid { gap: .6rem; }
+#app .sanctuary-shell .ref-growth-detail .character-upgrade-grid > section { padding: .5rem .8rem; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-benefits h3 { margin: 0 0 .4rem; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-benefits .ref-growth-preview-heading { min-height: 0; padding: .3rem .5rem; }
+#app .sanctuary-shell .ref-growth-detail:not(.ref-evolution-detail) .hub-comparison { margin: .4rem 0; gap: .4rem; }
+#app .sanctuary-shell .ref-growth-detail:not(.ref-evolution-detail) .hub-comparison > div { padding: .4rem .5rem; }
+#app .sanctuary-shell .ref-evolution-detail .hub-comparison { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); margin: .4rem 0; gap: .4rem; }
+#app .sanctuary-shell .ref-evolution-detail .hub-comparison > div { padding: .4rem .5rem; display: grid; align-content: center; gap: .15rem; }
+#app .sanctuary-shell .ref-evolution-detail .hub-comparison > div:last-child { grid-template-columns: 88px minmax(0, 1fr); column-gap: .5rem; }
+#app .sanctuary-shell .ref-evolution-detail .hub-comparison > div:last-child > :is(small, strong) { grid-column: 2; }
+#app .sanctuary-shell .ref-evolution-detail .hub-comparison strong { margin: 0; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-silhouette { grid-column: 1; grid-row: 1 / 3; width: 88px; height: 88px; margin: 0; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-silhouette :is(.character-idle, img) { width: 100%; height: 100%; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-stat-preview { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .35rem; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-stat-preview > span { padding: .3rem .4rem; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-payment { display: flex; flex-direction: column; gap: .2rem; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-resources { margin: 0; gap: .35rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#app .sanctuary-shell .ref-growth-detail .upgrade-resources li { grid-template-columns: 32px minmax(0, 1fr); padding: .35rem .45rem; gap: .1rem .4rem; align-items: center; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-resources li :is(img, .currency-icon) { width: 24px; height: 24px; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-resources li :is(strong, span) { line-height: 1.25; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-resources li > span { margin: 0; white-space: normal; }
+#app .sanctuary-shell .ref-evolution-detail .currency-reward { display: flex; align-items: center; gap: .5rem; }
+#app .sanctuary-shell .ref-evolution-detail .currency-reward .currency-icon { width: 32px; height: 32px; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-fodder { margin: .1rem 0; padding: .25rem .5rem; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-fodder-list { max-height: clamp(64px, 10dvh, 96px); gap: .35rem; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy { padding: .3rem; gap: .4rem; min-height: 44px; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy > img { width: 40px; height: 40px; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-payment > h3 { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem; margin: 0; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-resources li > :is(img, .currency-icon) { grid-row: 1; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-resources li > strong { grid-column: 2; grid-row: 1; }
+#app .sanctuary-shell .ref-growth-detail .upgrade-resources li > span { grid-column: 1 / -1; grid-row: 2; overflow-wrap: anywhere; }
+#app .sanctuary-shell .ref-growth-detail .ref-growth-action { display: flex; flex-wrap: wrap; gap: .4rem .65rem; align-items: center; }
+#app .sanctuary-shell .ref-growth-detail .ref-growth-action > button { min-height: 44px; padding-block: .5rem; margin: 0; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-fodder p { line-height: 1.25; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy > input { width: 22px; min-width: 22px; height: 22px; min-height: 22px; flex: 0 0 22px; }
+@media (min-width: 1000px) {
+  #app .sanctuary-shell .sanctuary-content:has(.ref-growth-detail) { padding-block: .75rem; }
+  #app .sanctuary-shell .ref-bearer-detail:has(.ref-growth-detail) .ref-character-header { grid-template-columns: 6rem minmax(0, 1fr); }
+  #app .sanctuary-shell .ref-bearer-detail:has(.ref-growth-detail) .ref-character-header .ref-character-portrait { width: 6rem; height: 6rem; }
+  #app .sanctuary-shell .ref-bearer-detail:has(.ref-growth-detail) .ref-character-identity { display: grid; grid-template-columns: auto minmax(0, 1fr); align-content: center; align-items: center; gap: .15rem .5rem; }
+  #app .sanctuary-shell .ref-bearer-detail:has(.ref-growth-detail) .ref-character-identity > p { grid-column: 1 / -1; }
+  #app .sanctuary-shell .ref-bearer-detail:has(.ref-growth-detail) .ref-character-identity > h2 { margin: 0; }
+  #app .sanctuary-shell .ref-bearer-detail:has(.ref-growth-detail) .ref-character-progress { grid-column: 1 / -1; margin: 0; }
+  #app .sanctuary-shell .ref-bearer-detail:has(.ref-growth-detail) .ref-character-header-actions { grid-column: 1 / -1; margin: 0; }
+  #app .sanctuary-shell .ref-team:has(.ref-growth-detail) .ref-team-sidebar .ref-member-row { padding-block: .2rem; }
+  #app .sanctuary-shell .ref-team:has(.ref-growth-detail) .ref-team-sidebar { gap: .35rem; }
+  #app .sanctuary-shell .ref-team:has(.ref-growth-detail) .ref-team-sidebar .ref-panel-heading { padding-bottom: .3rem; }
+  #app .sanctuary-shell .ref-team:has(.ref-growth-detail) .ref-team-sidebar .ref-panel { padding-block: .4rem; }
+  #app .sanctuary-shell .ref-capture-detail .ref-character-header { grid-template-columns: 7rem minmax(0, 1fr); }
+  #app .sanctuary-shell .ref-capture-detail .ref-character-header .ref-character-portrait { width: 7rem; height: 7rem; min-width: 0; min-height: 0; }
+  #app .sanctuary-shell .ref-capture-detail .ref-character-header .ref-character-identity { display: block; }
+  #app .sanctuary-shell .ref-capture-detail .ref-character-identity > p { margin: 0 0 .25rem; }
+  #app .sanctuary-shell .ref-capture-detail .ref-character-identity > h2 { margin: 0 0 .25rem; }
+}
+@media (max-width: 999px) {
+  #app .sanctuary-shell .ref-growth-detail .upgrade-stat-preview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 640px) {
-  #app .sanctuary-shell .ref-team-detail .ref-character-header { grid-template-columns: 8rem minmax(0, 1fr); }
-  #app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-portrait { grid-row: 1; }
+  #app .sanctuary-shell .ref-team-detail .ref-character-header { grid-template-columns: minmax(0, 1fr); }
+  #app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-portrait { grid-row: 1; justify-self: center; margin: 0; }
+  #app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-identity { grid-column: 1; }
   html body .sanctuary-shell .ref-character-header .ref-character-portrait { width: 5rem; height: 5rem; margin: 0; }
   #app .sanctuary-shell .ref-team-detail .ref-character-header-actions { grid-column: 1 / -1; width: 100%; }
 }

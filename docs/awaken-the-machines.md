@@ -1,5 +1,11 @@
 # Awaken the Machines and expanded Conduits
 
+**D-269 origin:** Machines are destroyed prototypes from when Let and Rise
+worked together, not Rise's ordinary Elemental-Devourer creations. Damaged
+mechanisms awaken amid the ruins of their collaboration. Activity, Glossary
+and Conduit origins use [the shared canon](world-lore.md); forms, art, combat,
+drop pools, independent RNG and no-capture rules are unchanged.
+
 **D-201 final-boss chest:** stage 100 / Lv.120 boss independently has a 1% chance
 to drop one Cosmic Grand Master Chest. Open in Inventory for an unowned Master
 of your choice, including future characters. [48 Masters and exact rules](master-conduits.md).

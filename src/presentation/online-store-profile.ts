@@ -1,16 +1,23 @@
 import { elements } from '../content/activities';
 import { characterName } from '../content/character-art';
-import { getStarter, isStarterId } from '../content/starters';
-import { type Account, ownedCharacters } from '../game/account';
+import { getStarter, isStarterId, starters, type StarterId } from '../content/starters';
+import { type Account, ownedCharacters, ownedProgress, equippedSquad } from '../game/account';
 import { currencyIcon } from './currency-icon';
 import { materialArt, materialName } from '../content/dungeon-art';
 import { assetUrl } from './portrait';
 import { information } from './information';
-import { referenceTeamSidebar } from './reference-team';
 import { itemShowcase } from './item-showcase';
 import { portrait } from './portrait';
 import { exchangeProducts, exchangeQuantities } from '../content/material-exchange';
 import './online-store-profile.css';
+import { storyRegions, storyRules } from '../content/story';
+import { creatures } from '../content/creatures';
+import { conduits } from '../content/conduits';
+import { ownedCompanion } from './owned-companion';
+import './profile-layout.css';
+import { profilePictures, profilePictureUnlocked, canonicalProfilePicture } from '../content/profile-pictures';
+import { profilePicture } from './profile-picture';
+import { chatShell } from './friend-chat';
 
 export interface OnlineProfileDisplay {
   username: string;
@@ -21,6 +28,11 @@ export interface OnlineProfileDisplay {
   ownedFrames: readonly string[];
   createdAt: string;
   totalDraws: number;
+  friendCode?: string;
+  playerId?: string;
+  daysPlayed?: number;
+  playTimeSeconds?: number;
+  recentActivity?: readonly { id: string; message: string; detail: string; at: string }[];
 }
 
 export interface SocialPeerDisplay {
@@ -29,6 +41,8 @@ export interface SocialPeerDisplay {
   displayName: string;
   icon: string;
   frame: string;
+  online?: boolean;
+  lastSeenAt?: string | null;
 }
 export interface SocialDisplay {
   friends: readonly SocialPeerDisplay[];
@@ -36,24 +50,43 @@ export interface SocialDisplay {
   outgoing: readonly SocialPeerDisplay[];
 }
 
+export function friendPresence(peer: SocialPeerDisplay): string {
+  if (peer.online === undefined) return 'Status unavailable';
+  if (peer.online) return 'Online';
+  if (!peer.lastSeenAt) return 'Offline · Last seen unavailable';
+  return `Offline · Last seen ${new Date(peer.lastSeenAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}`;
+}
+
+export function refreshFriendPresence(host: HTMLElement, social: SocialDisplay): void {
+  for (const peer of social.friends) {
+    const row = Array.from(host.querySelectorAll<HTMLElement>('[data-presence-user]')).find(entry => entry.dataset.presenceUser === peer.userId);
+    if (!row) continue;
+    row.textContent = friendPresence(peer);
+    row.dataset.online = peer.online === undefined ? 'unknown' : String(peer.online);
+  }
+}
+
 function socialPeer(peer: SocialPeerDisplay, category: 'friends' | 'incoming' | 'outgoing'): string {
-  const icon = isStarterId(peer.icon) ? portrait(getStarter(peer.icon)) : '<span aria-hidden="true">L/L</span>';
+  const icon = profilePicture(peer.icon);
   const id = escape(peer.userId);
   const buttons = category === 'incoming'
     ? `<button data-friend-action="acceptFriendRequest" data-user-id="${id}">Accept</button><button data-friend-action="declineFriendRequest" data-user-id="${id}">Decline</button>`
     : category === 'outgoing' ? `<button data-friend-action="cancelFriendRequest" data-user-id="${id}">Cancel request</button>`
-    : `<button data-friend-action="removeFriend" data-user-id="${id}">Remove friend</button>`;
-  return `<li class="online-friend" data-friend-name="${escape(`${peer.displayName} ${peer.username}`.toLowerCase())}"><div class="profile-frame-preview" data-profile-frame="${escape(peer.frame)}">${icon}</div><div><strong>${escape(peer.displayName)}</strong><p>@${escape(peer.username)}</p>${category === 'friends' ? information(`friend-${id}`, escape(peer.displayName), `<div class="profile-frame-preview" data-profile-frame="${escape(peer.frame)}">${icon}</div><p>@${escape(peer.username)}</p><p>Public profile: display name, username, icon and frame.</p>`, 'View profile') : ''}</div><div>${buttons}</div></li>`;
+    : `<button data-message-friend="${id}">Message</button><button data-friend-action="removeFriend" data-user-id="${id}">Remove friend</button>`;
+  if (category === 'friends') return `<li class="online-friend online-friend-accepted" data-friend-name="${escape(`${peer.displayName} ${peer.username}`.toLowerCase())}"><div class="profile-frame-preview" data-profile-frame="${escape(peer.frame)}">${icon}</div><div><strong>${escape(peer.displayName)}</strong><p>@${escape(peer.username)}</p><small data-presence-user="${id}" data-online="${peer.online === undefined ? 'unknown' : String(peer.online)}">${escape(friendPresence(peer))}</small></div><div>${information(`friend-${id}`, escape(peer.displayName), `<div class="profile-frame-preview" data-profile-frame="${escape(peer.frame)}">${icon}</div><p>@${escape(peer.username)}</p><p>Public profile: display name, username, icon and frame.</p>${buttons}`, 'View profile')}</div></li>`;
+  return `<li class="online-friend"><div class="profile-frame-preview" data-profile-frame="${escape(peer.frame)}">${icon}</div><div><strong>${escape(peer.displayName)}</strong><p>@${escape(peer.username)}</p></div><div>${buttons}</div></li>`;
 }
 
-function socialPanel(social?: SocialDisplay): string {
-  if (!social) return '<section class="online-friends"><h2>Friends</h2><p role="status">Friends could not be loaded. Reconnect to your account.</p></section>';
-  return `<section class="online-friends ref-panel"><header class="ref-panel-heading">Friends · ${social.friends.length}<button data-refresh-social>Refresh</button></header>
-    <form id="online-friend-form"><label>Add a friend by username<input name="username" minlength="3" maxlength="16" pattern="[A-Za-z0-9_]{3,16}" autocomplete="off" required></label><button type="submit">Send request</button></form>
-    <p>Requests require acceptance. Friends see your username, display name, icon and frame, never your email or balances.</p>
-    <label class="ref-friend-search">Search friends<input data-friend-search type="search" placeholder="Name or username"></label><nav aria-label="Friends and requests"><button data-social-tab="friends" aria-pressed="true">Friends (${social.friends.length})</button><button data-social-tab="incoming" aria-pressed="false">Incoming (${social.incoming.length})</button><button data-social-tab="outgoing" aria-pressed="false">Outgoing (${social.outgoing.length})</button></nav>
-    ${(['friends', 'incoming', 'outgoing'] as const).map(category => `<div data-social-panel="${category}" ${category === 'friends' ? '' : 'hidden'}><ul>${social[category].map(peer => socialPeer(peer, category)).join('')}</ul>${social[category].length ? '' : `<p>${category === 'friends' ? 'No friends yet.' : category === 'incoming' ? 'No incoming requests.' : 'No outgoing requests.'}</p>`}</div>`).join('')}
-    <p id="online-friend-result" role="status"></p></section>`;
+function socialPanel(profile: OnlineProfileDisplay, social?: SocialDisplay, requestView: 'incoming' | 'outgoing' = 'incoming'): string {
+  return `<section class="online-friends profile-friends-list ref-panel"><header class="ref-panel-heading">Friends · ${social ? `${social.friends.length} / 30` : 'Unavailable'}<button data-refresh-social>Refresh</button></header>
+    <label class="ref-friend-search">Search friends<input data-friend-search type="search" placeholder="Name or username"></label>
+    <div class="profile-friend-list-scroll"><ul>${social?.friends.map(peer => socialPeer(peer, 'friends')).join('') ?? ''}</ul><p data-friend-empty ${social?.friends.length ? 'hidden' : ''}>${social ? 'No friends yet.' : 'Friends could not be loaded. Refresh to reconnect.'}</p><p data-friend-no-match hidden>No matching friends.</p></div><p class="profile-social-privacy">Friends see your public profile and online/last-seen status, never your email or balances. Online means activity within the last 90 seconds.</p><p id="online-friend-result" role="status"></p></section>
+    <aside class="profile-friends-sidebar"><section class="ref-panel profile-add-friend"><h2>Add a friend</h2>
+    <form id="online-friend-form"><label>Username or friend code<input name="username" minlength="3" maxlength="16" pattern="[A-Za-z0-9_-]{3,16}" autocomplete="off" placeholder="Username or LL-XXXX-XXXX" required></label><button type="submit">Send request</button></form>
+    ${profile.friendCode ? `<p class="profile-share-code" aria-label="Your friend code"><b>${escape(profile.friendCode)}</b><button type="button" data-copy-profile="${escape(profile.friendCode)}">Copy</button></p>` : '<p>Your code is unavailable. Refresh to reconnect.</p>'}
+    </section>
+    <section class="ref-panel profile-friend-requests"><h2>Requests · ${social ? social.incoming.length + social.outgoing.length : 'Unavailable'}</h2><nav aria-label="Friend requests"><button data-social-tab="incoming" aria-pressed="${requestView === 'incoming'}">Received (${social?.incoming.length ?? '—'})</button><button data-social-tab="outgoing" aria-pressed="${requestView === 'outgoing'}">Sent (${social?.outgoing.length ?? '—'})</button></nav>
+    ${(['incoming', 'outgoing'] as const).map(category => `<div data-social-panel="${category}" ${category === requestView ? '' : 'hidden'}><ul>${social?.[category].map(peer => socialPeer(peer, category)).join('') ?? ''}</ul>${social?.[category].length ? '' : `<p>${!social ? 'Requests unavailable. Refresh to reconnect.' : category === 'incoming' ? 'No incoming requests.' : 'No outgoing requests.'}</p>`}</div>`).join('')}</section></aside>`;
 }
 
 export const profileFrames = [
@@ -115,24 +148,67 @@ export function onlineStores(account: Account | null, profile: OnlineProfileDisp
   }).join('')}</div></div></section><aside class="ref-panel ref-store-detail"><header class="ref-panel-heading">Details</header><div class="profile-frame-preview ref-frame-hero" data-profile-frame="${choice.id}"><span>L/L</span></div><h2>${choice.name}</h2><p>Profile decoration only. No gameplay effects.</p><dl class="ref-detail-facts"><div><dt>Price</dt><dd>${choice.price ? `${choice.price} Null-Prismatica` : 'Free default frame'}</dd></div><div><dt>Ownership</dt><dd>${owned ? 'Owned permanently' : 'Not owned'}</dd></div></dl>${notice}<footer><button ${owned ? `data-equip-frame="${choice.id}"` : `data-buy-frame="${choice.id}"`} ${!online || profile?.frame === choice.id ? 'disabled' : ''}>${profile?.frame === choice.id ? 'Equipped' : owned ? 'Equip' : 'Buy frame'}</button></footer></aside></section>`;
 }
 
-export function onlineProfile(account: Account | null, profile: OnlineProfileDisplay | null, social?: SocialDisplay, view: 'info' | 'friends' = 'info'): string {
+function profilePlayTime(seconds: number | undefined): string {
+  if (seconds === undefined) return 'Tracking starts now';
+  return `${Math.floor(seconds / 3600).toLocaleString('en-US')} h ${Math.floor(seconds % 3600 / 60)} m`;
+}
+
+export function refreshProfileTracking(host: HTMLElement, profile: OnlineProfileDisplay): void {
+  const days = host.querySelector('[data-profile-days]');
+  const time = host.querySelector('[data-profile-time]');
+  if (days) days.textContent = profile.daysPlayed === undefined ? 'Tracking starts now' : profile.daysPlayed.toLocaleString('en-US');
+  if (time) time.textContent = profilePlayTime(profile.playTimeSeconds);
+}
+
+export function onlineProfile(account: Account | null, profile: OnlineProfileDisplay | null, social?: SocialDisplay, view: 'info' | 'friends' | 'chats' = 'info', requestView: 'incoming' | 'outgoing' = 'incoming'): string {
   if (!profile || !account) return `<section class="online-profile"><h1 tabindex="-1">Player info</h1><ll-player-save-data></ll-player-save-data></section>`;
+  const navigation = `<nav class="ref-market-tabs"><button data-profile-tab="info" aria-pressed="${view === 'info'}">Player info</button><button data-profile-tab="chats" aria-pressed="${view === 'chats'}">Chats <span data-chat-unread></span></button><button data-profile-tab="friends" aria-pressed="${view === 'friends'}">Friends · ${social?.friends.length ?? 'unavailable'}${social?.incoming.length ? `<span class="profile-new-requests">${social.incoming.length} new</span>` : ''}</button></nav>`;
+  if (view === 'chats') return `<section class="online-profile ref-screen ref-profile profile-chat-layout">${navigation}${chatShell()}</section>`;
   const ids = ownedCharacters(account);
-  const icon = isStarterId(profile.icon) && ids.includes(profile.icon)
-    ? portrait(getStarter(profile.icon)) : '<span aria-hidden="true">L/L</span>';
+  const canonicalIcon = canonicalProfilePicture(profile.icon);
+  const icon = canonicalIcon === 'neutral' || profilePictureUnlocked(account, canonicalIcon) ? profilePicture(profile.icon) : profilePicture('neutral');
   const beacons = Math.floor((account.storyCompleted ?? 0) / 25);
-  return `<section class="online-profile ref-screen ref-profile"><nav class="ref-market-tabs"><button data-profile-tab="info" aria-pressed="${view === 'info'}">Player info</button><button data-profile-tab="friends" aria-pressed="${view === 'friends'}">Friends · ${social?.friends.length ?? 0}</button></nav><form id="online-profile-form" class="online-profile-panel ref-panel"><h2>Profile</h2>
-    <div class="profile-frame-preview" data-profile-frame="${escape(profile.frame)}">${icon}</div>
-    <div class="ref-profile-code"><small>Username · Use this to add friends</small><b>@${escape(profile.username)}</b><button type="button" data-copy-username="${escape(profile.username)}">Copy username</button></div>
+  const completed = account.storyCompleted ?? 0;
+  const capturedForms = creatures.filter(creature => creature.mode && creature.mode !== 'machines');
+  const captured = new Set(account.capturedCharacters?.map(copy => copy.creatureId) ?? []);
+  const forms = ids.reduce((sum, id) => sum + ownedProgress(account, id).evolution, 0) + capturedForms.filter(creature => captured.has(creature.id)).length;
+  const currentRegion = storyRegions[Math.min(Math.floor(completed / storyRules.regionStages), storyRegions.length - 1)];
+  const number = (value: number) => value.toLocaleString('en-US');
+  const progress = (value: number, maximum: number, label: string) => `<progress value="${value}" max="${maximum}" aria-label="${escape(label)}">${value} / ${maximum}</progress>`;
+  const metric = (label: string, value: number, maximum: number, footer = '') => `<article class="profile-metric"><h2>${label}</h2><p><strong>${number(value)}</strong><span> / ${number(maximum)}</span></p>${footer || progress(value, maximum, label)}</article>`;
+  const collection = (label: string, value: number, maximum: number) => `<div class="profile-progress-row"><span>${label}</span>${progress(value, maximum, label)}<b>${number(value)}/${number(maximum)}</b></div>`;
+  const unlockedPictures = profilePictures.filter(picture => profilePictureUnlocked(account, picture.id));
+  const squad = ids.length || account.capturedCharacters?.length ? equippedSquad(account) : [];
+  const pity = (['standard', 'roses'] as const).map(id => {
+    const counters = account.bannerPity?.[id];
+    return `<div class="profile-pity-row"><span>${id === 'standard' ? 'Standard' : 'Roses'}</span><b>${counters?.highestStar ?? 0}/200</b><b>${counters?.unownedHighestStar ?? 0}/500</b></div>`;
+  }).join('');
+  const friendsMetric = social ? metric('Friends', social.friends.length, 30, `<button type="button" data-profile-tab="friends">${social.incoming.length} new requests</button>`)
+    : '<article class="profile-metric"><h2>Friends</h2><p>Unavailable</p><button type="button" data-profile-tab="friends">Reconnect to load</button></article>';
+  return `<section class="online-profile ref-screen ref-profile profile-layout">${navigation}<form id="online-profile-form" class="online-profile-panel ref-panel" aria-label="Edit public profile"><h2 class="profile-accessible-heading">Profile</h2>
+    <div class="profile-frame-preview profile-main-avatar" data-profile-frame="${escape(profile.frame)}">${icon}</div>
     <label>Display name<input name="displayName" value="${escape(profile.displayName)}" maxlength="16" required></label>
-    <fieldset class="ref-profile-icons"><legend>Icon</legend><label><input type="radio" name="icon" value="neutral" ${profile.icon === 'neutral' || !ids.some(id => id === profile.icon) ? 'checked' : ''}><span aria-label="Last Light">L/L</span></label>${ids.map(id => `<label><input type="radio" name="icon" value="${id}" ${profile.icon === id ? 'checked' : ''}><span aria-label="${characterName(id)}">${portrait(getStarter(id))}</span></label>`).join('')}</fieldset>
-    <label><span class="ref-bio-label">Bio <small data-bio-count>${profile.bio.length} / 120</small></span><textarea name="bio" maxlength="120" rows="4">${escape(profile.bio)}</textarea></label>
-    <p class="ref-profile-save-note">Changes save automatically when you finish editing a field.</p><button type="submit" data-profile-retry hidden>Retry saving profile</button><button type="button" data-online-signout>Sign out</button><p id="online-profile-result" role="status"></p></form>
-    <div class="online-profile-statistics" ${view !== 'info' ? 'hidden' : ''}><article class="ref-panel"><h2>Story progress</h2><dl><dt>Stages cleared</dt><dd>${account.storyCompleted ?? 0} / 150</dd><dt>Beacons restored</dt><dd>${beacons} / 6</dd></dl></article>
-    <article><h2>Collection</h2><dl><dt>Element-Bearers</dt><dd>${ids.length}</dd><dt>Captured Elemental-Devourers</dt><dd>${account.capturedCharacters?.length ?? 0}</dd><dt>Owned Conduit types</dt><dd>${Object.values(account.conduits ?? {}).filter(count => count > 0).length}</dd></dl></article>
-    <article><h2>Account</h2><dl><dt>Joined</dt><dd>${escape(new Date(profile.createdAt).toLocaleDateString('en-US'))}</dd><dt>Total summons</dt><dd>${profile.totalDraws}</dd></dl><p>Online account statistics only. Legacy activity is not imported.</p></article>
-    <article><h2>Profile frame</h2><p>${profileFrames.find(frame => frame.id === profile.frame)?.name ?? 'Default'}</p><button data-page="stores" data-cosmetic-store>Visit Cosmetic Store</button></article>${view === 'info' ? '<ll-player-save-data></ll-player-save-data>' : ''}</div><div class="ref-profile-social" ${view !== 'friends' ? 'hidden' : ''}>${socialPanel(social)}</div>
-    <aside class="ref-profile-right">${account.squad?.length ? referenceTeamSidebar(account, { view: 'formation', selected: ids[0] ?? 'ember', element: '', sort: 'level' }) : '<section class="ref-panel"><header class="ref-panel-heading">Squad</header><p>No squad saved.</p></section>'}<section class="ref-panel"><header class="ref-panel-heading">Recent activity</header><p>Activity history is not recorded. Your saved progress and totals are shown in Player info.</p></section></aside></section>`;
+    <div class="ref-profile-code"><small>Friend code · Share it to add friends</small>${profile.friendCode ? `<div><b>${escape(profile.friendCode)}</b><button type="button" data-copy-profile="${escape(profile.friendCode)}">Copy</button></div>` : '<p>Reconnect to receive your friend code.</p>'}<span>@${escape(profile.username)}</span></div>
+    <div class="profile-picture-summary"><span>${unlockedPictures.length} / 32 pictures unlocked</span><button type="button" data-browse-profile-pictures>Change / Browse</button></div><select name="icon" data-profile-icon-picker data-native-select hidden aria-label="Profile picture"><option value="neutral" ${canonicalIcon === 'neutral' ? 'selected' : ''}>Last Light</option>${unlockedPictures.map(picture => `<option value="${picture.id}" ${canonicalIcon === picture.id ? 'selected' : ''}>${escape(picture.name)}</option>`).join('')}</select>
+    <label><span class="ref-bio-label">Bio <small data-bio-count>${profile.bio.length} / 120</small></span><textarea name="bio" maxlength="120" rows="3">${escape(profile.bio)}</textarea></label>
+    <div class="profile-id-row"><span>Player ID ${profile.playerId ? `<button type="button" data-copy-profile="${escape(profile.playerId)}">${escape(profile.playerId)} · Copy</button>` : 'pending'}</span><span>Auto-saves</span></div>
+    <p class="ref-profile-save-note">Edits save when you finish a field.</p><button type="submit" data-profile-retry hidden>Retry saving profile</button><div class="profile-frame-row"><button type="button" data-page="stores" data-cosmetic-store>Frame · ${profileFrames.find(frame => frame.id === profile.frame)?.name ?? 'Default'}</button><button type="button" data-online-signout>Sign out</button></div><p id="online-profile-result" role="status"></p></form>
+    <div class="online-profile-statistics" ${view !== 'info' ? 'hidden' : ''}>
+      <div class="profile-metrics">${metric('Stages cleared', completed, storyRules.stages)}${metric('Beacons restored', beacons, storyRegions.length)}${metric('Element-Bearers', ids.length, starters.length)}${friendsMetric}</div>
+      <article class="profile-story"><header><h2>Story progress</h2><span>${currentRegion.name}</span></header>${storyRegions.map((region, index) => {
+        const cleared = Math.max(0, Math.min(storyRules.regionStages, completed - index * storyRules.regionStages));
+        return `<div class="profile-progress-row ${region === currentRegion ? 'is-current' : ''}"><span>${region.name}</span>${progress(cleared, storyRules.regionStages, `${region.name} stages cleared`)}<b>${cleared}/25</b></div>`;
+      }).join('')}</article>
+      <article class="profile-collection"><h2>Collection</h2>${collection('Element-Bearers', ids.length, starters.length)}${collection('Captured forms', capturedForms.filter(creature => captured.has(creature.id)).length, capturedForms.length)}${collection('Conduit types', conduits.filter(conduit => (account.conduits?.[conduit.id] ?? 0) > 0).length, conduits.length)}${collection('Forms reached', forms, starters.length * 6 + capturedForms.length)}<p>${number(account.capturedCharacters?.length ?? 0)} captured Elemental-Devourer copies</p></article>
+      <article class="profile-account"><h2>Account &amp; summons</h2><dl><div><dt>Joined</dt><dd>${escape(new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }))}</dd></div><div><dt>Days played</dt><dd data-profile-days>${profile.daysPlayed === undefined ? 'Tracking starts now' : number(profile.daysPlayed)}</dd></div><div><dt>Play time</dt><dd data-profile-time>${profilePlayTime(profile.playTimeSeconds)}</dd></div><div><dt>Total summons</dt><dd>${number(profile.totalDraws)}</dd></div></dl><div class="profile-pity-heading"><span>Banner</span><span>Since highest</span><span>Since unowned</span></div>${pity}<p>Online totals; earlier untracked activity is not estimated.</p></article>
+      ${view === 'info' ? `<ll-player-save-data compact online-user="${escape(profile.username)}"></ll-player-save-data>` : ''}
+    </div><div class="ref-profile-social" ${view !== 'friends' ? 'hidden' : ''}>${socialPanel(profile, social, requestView)}</div>
+    <aside class="ref-profile-right" ${view === 'friends' ? 'hidden' : ''}><section class="ref-panel profile-squad"><header class="ref-panel-heading">Squad · ${squad.length} of 3</header>${Array.from({ length: 3 }, (_, index) => {
+      const id = squad[index];
+      if (!id) return '<button type="button" class="ref-member-row ref-empty-row" data-team-view="formation">+ Add a member</button>';
+      const member = ownedCompanion(account, id);
+      return `<div class="ref-member-line"><button type="button" class="ref-member-row" ${isStarterId(id) ? `data-team-detail="${id}"` : `data-team-capture-detail="${id}"`}><span class="ref-thumb">${member.art}</span><span><b>${member.name}</b><small>${index ? 'Member' : 'Leader'} · Lv.${member.level}</small></span></button>${index ? `<button type="button" class="ref-chip" data-make-leader="${id}" aria-label="Make ${member.name} the leader">Lead</button>` : ''}</div>`;
+    }).join('')}</section><section class="ref-panel profile-recent"><h2>Recent activity</h2>${profile.recentActivity?.length ? `<ul>${profile.recentActivity.slice(0, 5).map(entry => `<li><b>${escape(entry.message)}</b><small>${escape(entry.detail)}</small><time datetime="${escape(entry.at)}">${escape(new Date(entry.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))}</time></li>`).join('')}</ul>` : '<p>New activity will appear here as you play. Earlier history is not reconstructed.</p>'}</section></aside></section>`;
 }
 
 export interface ProfileEdits {
@@ -154,6 +230,13 @@ export function bindProfileEditor(host: HTMLElement, save: (edits: ProfileEdits)
   let pending: ProfileEdits | undefined;
   let failed: ProfileEdits | undefined;
   let saving = false;
+  const iconPicker = form.querySelector<HTMLSelectElement>('[data-profile-icon-picker]');
+  const refreshIcon = (): void => {
+    if (!iconPicker) return;
+    const id = iconPicker.value;
+    const preview = form.querySelector('.profile-main-avatar');
+    if (preview) preview.innerHTML = profilePicture(id);
+  };
   const persist = async (): Promise<void> => {
     if (saving || !form.reportValidity()) return;
     saving = true;
@@ -186,6 +269,6 @@ export function bindProfileEditor(host: HTMLElement, save: (edits: ProfileEdits)
     form.querySelector<HTMLElement>('[data-bio-count]')!.textContent = `${read().bio.length} / 120`;
     result.textContent = 'Unsaved changes. Finish editing the field to save.';
   });
-  form.addEventListener('change', () => { pending = read(); void persist(); });
+  form.addEventListener('change', () => { refreshIcon(); pending = read(); void persist(); });
   form.addEventListener('submit', event => { event.preventDefault(); pending = read(); void persist(); });
 }

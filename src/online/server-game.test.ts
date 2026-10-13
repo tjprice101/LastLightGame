@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import { freshGame, resolveOperation, validateRequest, type DurableGame } from '../../supabase/functions/game-operation/engine';
-import { validateGameResponse, type GameOperation } from './server-game';
+import { describe, expect, it, vi } from 'vitest';
+import { freshGame, profileActivityFor, profileIconUnlocked as engineProfileIconUnlocked, resolveOperation, validateChatRequest, validateRequest, type DurableGame } from '../../supabase/functions/game-operation/engine';
+import { isProfileIcon, profileIconUnlocked, validateChatResponse, validateGameResponse, type GameOperation } from './server-game';
+import { profilePictures } from '../content/profile-pictures';
 import { createCreatureCopy } from '../game/character-instances';
 import { actAndAdvanceTurn } from '../game/battle';
 import { maxLevelPlan } from '../game/account';
@@ -84,6 +85,95 @@ describe('server authoritative game engine', () => {
     const entered = op(started(), { kind: 'enter', activity: { kind: 'story', stage: 1 } }).response;
     expect(validateGameResponse(entered)).toEqual(entered);
   });
+  it('validates optional public profile references and bounded recent activity while retaining legacy profiles', () => {
+    const response = op(started(), { kind: 'read' }).response;
+    expect(validateGameResponse(response)).toEqual(response);
+    const enriched = {
+      ...response,
+      profile: {
+        ...response.profile, friendCode: 'LL-A1B2-C3D4', playerId: 'A1B2-C3D4',
+        daysPlayed: 3, playTimeSeconds: 240,
+        recentActivity: [{
+          id: '00000000-0000-4000-8000-000000000001', message: 'Story stage cleared',
+          detail: 'Story · Stage 1', at: '2026-10-11T12:00:00.000Z',
+        }],
+      },
+    };
+    expect(validateGameResponse(enriched)).toEqual(enriched);
+    for (const profile of [
+      { ...enriched.profile, friendCode: 'not-a-code' },
+      { ...enriched.profile, playerId: 'FFFF-EEEE' },
+      { ...enriched.profile, daysPlayed: -1 },
+      { ...enriched.profile, playTimeSeconds: Number.MAX_SAFE_INTEGER + 1 },
+      { ...enriched.profile, recentActivity: Array(9).fill(enriched.profile.recentActivity[0]) },
+      { ...enriched.profile, recentActivity: [{ ...enriched.profile.recentActivity[0], detail: 'bad\ntext' }] },
+    ]) expect(() => validateGameResponse({ ...response, profile })).toThrow('incomplete');
+    const requestId = entropy.uuid();
+    expect(validateRequest({ requestId, expectedRevision: 0, operation: { kind: 'friendRequest', username: 'player_1' } }).operation.kind)
+      .toBe('friendRequest');
+    expect(validateRequest({ requestId, expectedRevision: 0, operation: { kind: 'friendRequest', friendCode: 'll-a1b2-c3d4' } }).operation.kind)
+      .toBe('friendRequest');
+    for (const operation of [
+      { kind: 'friendRequest' },
+      { kind: 'friendRequest', username: 'player_1', friendCode: 'LL-A1B2-C3D4' },
+      { kind: 'friendRequest', friendCode: 'bad-code' },
+    ]) expect(() => validateRequest({ requestId, expectedRevision: 0, operation })).toThrow();
+  });
+  it('validates real optional presence only on accepted friends, never on requests', () => {
+    const response = op(started(), { kind: 'read' }).response;
+    const peer = {
+      userId: entropy.uuid(), username: 'friend_1', displayName: 'Friend',
+      icon: 'neutral', frame: 'default',
+    };
+    const validate = (entry: unknown, key = 'friends') => validateGameResponse({
+      ...response, social: { friends: [], incoming: [], outgoing: [], [key]: [entry] },
+    });
+    for (const presence of [{}, { online: false, lastSeenAt: null },
+      { online: true, lastSeenAt: '2026-10-11T12:00:00.123456+00:00' },
+      { online: false, lastSeenAt: '2026-10-10T12:00:00Z' }]) {
+      expect(() => validate({ ...peer, ...presence })).not.toThrow();
+    }
+    for (const presence of [{ online: 'true' }, { online: 0 }, { lastSeenAt: 123 },
+      { lastSeenAt: 'yesterday' }, { lastSeenAt: '2026-10-11' },
+      { online: true, lastSeenAt: null }, { online: true }]) {
+      expect(() => validate({ ...peer, ...presence })).toThrow('incomplete');
+    }
+    for (const key of ['incoming', 'outgoing']) {
+      expect(() => validate(peer, key)).not.toThrow();
+      for (const presence of [{ online: false }, { lastSeenAt: null },
+        { online: undefined }, { lastSeenAt: '2026-10-11T12:00:00Z' }]) {
+        expect(() => validate({ ...peer, ...presence }, key)).toThrow('incomplete');
+      }
+    }
+    for (const kind of ['read', 'checkpoint']) {
+      expect(() => validateRequest({ requestId: entropy.uuid(), expectedRevision: 0,
+        operation: { kind, lastSeenAt: '2026-10-11T12:00:00Z' } })).toThrow();
+      expect(() => validateRequest({ requestId: entropy.uuid(), expectedRevision: 0,
+        operation: { kind, online: true } })).toThrow();
+    }
+  });
+  it('marks only a newly crossed 25-stage Story region as a restored Beacon', () => {
+    const makeResolved = (completed: number, stage: number) => {
+      const game = started();
+      game.account.storyCompleted = completed;
+      game.run = {
+        activity: { kind: 'story', stage }, roster: ['ember'], equipment: {}, captures: [],
+        upgrades: {}, session: {} as never,
+      };
+      const response = {
+        ...op(game, { kind: 'read' }).response,
+        result: { state: { phase: 'cleared' } } as never,
+      };
+      return { game, response } as ReturnType<typeof resolveOperation>;
+    };
+    const uuid = () => entropy.uuid();
+    const clear25 = profileActivityFor({ kind: 'endTurn', runId: entropy.uuid() }, 24, makeResolved(25, 25), uuid);
+    expect(clear25?.detail).toBe('Beacon restored · Story · Stage 25');
+    const laterStage = profileActivityFor({ kind: 'endTurn', runId: entropy.uuid() }, 25, makeResolved(26, 26), uuid);
+    expect(laterStage?.detail).toBe('Story · Stage 26');
+    const replay = profileActivityFor({ kind: 'endTurn', runId: entropy.uuid() }, 25, makeResolved(25, 1), uuid);
+    expect(replay?.detail).toBe('Story · Stage 1');
+  });
   it('starts fresh with exactly one approved starter once, no imported currency', () => {
     const first = started();
     expect(first.account.fractalis).toBe(0);
@@ -103,6 +193,18 @@ describe('server authoritative game engine', () => {
     expect(() => validateRequest({ ...base, expectedRevision: 1.1 })).toThrow('integer');
     expect(() => op(started(), { kind: 'setSquad', ids: ['tide'] })).toThrow();
     expect(() => op(rich(), { kind: 'upgradeCharacter', id: 'tide', upgradeKind: 'level', expected: { level: 0, evolution: 1 } })).toThrow('owned');
+  });
+  it('accepts only a payload-free checkpoint and preserves frozen server state without entropy', () => {
+    const request = { requestId: entropy.uuid(), expectedRevision: 1, operation: { kind: 'checkpoint' } };
+    expect(validateRequest(request)).toEqual(request);
+    expect(() => validateRequest({ ...request, operation: { kind: 'checkpoint', wallet: {} } })).toThrow('Unexpected');
+    const game = op(started(), { kind: 'enter', activity: { kind: 'training' } }).game;
+    const noEntropy = { seed: vi.fn(), uuid: vi.fn(), random: vi.fn() };
+    const result = resolveOperation(game, { kind: 'checkpoint' }, noEntropy);
+    expect(result.game).toEqual(game);
+    expect(noEntropy.seed).not.toHaveBeenCalled();
+    expect(noEntropy.uuid).not.toHaveBeenCalled();
+    expect(noEntropy.random).not.toHaveBeenCalled();
   });
   it('enforces all activity unlock gates and active-run exclusivity', () => {
     const game = started();
@@ -261,5 +363,86 @@ describe('server authoritative game engine', () => {
     expect(retried.run!.session.teamProgress).toEqual(original.session.teamProgress);
     expect(retried.run!.equipment).toEqual(original.equipment);
     expect(retried.account.fractalis).toBe(game.account.fractalis);
+  });
+});
+
+describe('profile pictures and chat contract', () => {
+  it('validates all 32 profile pictures authoritatively without automatic writes', () => {
+    expect(profilePictures).toHaveLength(32);
+    expect(new Set(profilePictures.map(p => p.id)).size).toBe(32);
+    const game = started();
+    const loaded = structuredClone(game);
+    expect(loaded).toEqual(game);
+    for (const picture of profilePictures) {
+      expect(isProfileIcon(picture.id)).toBe(true);
+      const owned = picture.characterId === 'ember';
+      expect(profileIconUnlocked(game.account, picture.id)).toBe(owned && picture.form === 'base');
+      expect(engineProfileIconUnlocked(game.account, picture.id)).toBe(owned && picture.form === 'base');
+      const request = { requestId: crypto.randomUUID(), expectedRevision: 1,
+        operation: { kind: 'updateProfile', displayName: 'tester', bio: '', icon: picture.id, frame: 'default' } };
+      expect(validateRequest(request).operation).toEqual(request.operation);
+      const attempt = () => op(game, request.operation as GameOperation);
+      if (owned && picture.form === 'base') expect(attempt().game.profile.icon).toBe(picture.id);
+      else expect(attempt).toThrow('unlocked profile picture');
+    }
+    const omnic = structuredClone(game);
+    omnic.account.characters.ember = { level: 0, evolution: 6, weaponRank: 0 };
+    expect(op(omnic, { kind: 'updateProfile', displayName: 'tester', bio: '', icon: 'profile:ember:omnic', frame: 'default' })
+      .game.profile.icon).toBe('profile:ember:omnic');
+    expect(game.profile.icon).toBe('neutral');
+  });
+
+  it('keeps legacy neutral and starter icons and rejects unknown picture IDs', () => {
+    const game = started();
+    expect(isProfileIcon('neutral') && isProfileIcon('ember') && isProfileIcon('tide')).toBe(true);
+    expect(profileIconUnlocked(game.account, 'neutral')).toBe(true);
+    expect(profileIconUnlocked(game.account, 'ember')).toBe(true);
+    expect(profileIconUnlocked(game.account, 'tide')).toBe(false);
+    for (const icon of ['profile:ember:epic', 'profile:unknown:base', 'profile:ember', '', 7]) {
+      expect(isProfileIcon(icon)).toBe(false);
+      expect(() => validateRequest({ requestId: crypto.randomUUID(), expectedRevision: 1,
+        operation: { kind: 'updateProfile', displayName: 'tester', bio: '', icon, frame: 'default' } })).toThrow('Invalid');
+    }
+  });
+
+  it('validates chat requests strictly', () => {
+    const id = () => crypto.randomUUID();
+    const conversationId = id();
+    const ok = [
+      { kind: 'read' }, { kind: 'read', conversationId }, { kind: 'read', conversationId, before: id() },
+      { kind: 'direct', userId: id() }, { kind: 'createGroup', name: 'Squad', userIds: [id(), id()] },
+      { kind: 'send', conversationId, text: ` ${'e'.repeat(500)} ` }, { kind: 'send', conversationId, text: 'a\r\nb' },
+      { kind: 'invite', conversationId, userId: id() }, { kind: 'respondInvite', conversationId, accept: false },
+      { kind: 'removeMember', conversationId, userId: id() }, { kind: 'leave', conversationId },
+      { kind: 'preferences', conversationId, pinned: true }, { kind: 'preferences', conversationId, muted: false },
+      { kind: 'block', userId: id() }, { kind: 'unblock', userId: id() },
+    ];
+    for (const chat of ok) expect(validateChatRequest({ requestId: id(), chat }).chat.kind).toBe(chat.kind);
+    const bad = [
+      { kind: 'read', before: id() }, { kind: 'read', conversationId: 'x' }, { kind: 'send', conversationId, text: '   ' },
+      { kind: 'send', conversationId, text: 'x'.repeat(501) }, { kind: 'send', conversationId, text: 'bell\u0007' },
+      { kind: 'send', conversationId, text: 'hi', extra: 1 }, { kind: 'createGroup', name: '', userIds: [] },
+      { kind: 'createGroup', name: 'x'.repeat(49), userIds: [] },
+      { kind: 'createGroup', name: 'ok', userIds: Array.from({ length: 10 }, id) },
+      { kind: 'createGroup', name: 'ok', userIds: [conversationId, conversationId] },
+      { kind: 'preferences', conversationId }, { kind: 'respondInvite', conversationId, accept: 'yes' },
+      { kind: 'invite', conversationId, userId: 'nope' }, { kind: 'sendCode', conversationId }, { kind: 'block' },
+    ];
+    for (const chat of bad) expect(() => validateChatRequest({ requestId: id(), chat })).toThrow();
+    expect(() => validateChatRequest({ requestId: 'x', chat: { kind: 'read' } })).toThrow();
+    expect(() => validateChatRequest({ requestId: id(), chat: { kind: 'read' }, expectedRevision: 1 })).toThrow();
+  });
+
+  it('validates chat responses with raw message text', () => {
+    const self = crypto.randomUUID(), peer = crypto.randomUUID(), conversationId = crypto.randomUUID();
+    const player = (userId: string, username: string) => ({ userId, username, displayName: username, icon: 'profile:ember:base', frame: 'default' });
+    const message = { id: crypto.randomUUID(), senderId: peer, senderName: '<b>p</b>', text: '<script>x</script>', createdAt: '2026-10-12T03:00:00Z' };
+    const response = { selfUserId: self, conversationId, hasMore: false, unreadTotal: 1, invitations: [], blocked: [],
+      messages: [message], conversations: [{ id: conversationId, kind: 'direct', name: 'p', ownerId: null,
+        members: [player(self, 'me_one'), player(peer, 'peer_two')], invited: [], unread: 1, pinned: false, muted: false,
+        lastMessage: message, createdAt: '2026-10-12T03:00:00Z' }] };
+    expect(validateChatResponse(response).messages[0].text).toBe('<script>x</script>');
+    expect(() => validateChatResponse({ ...response, messages: [{ ...message, text: 'x'.repeat(501) }] })).toThrow();
+    expect(() => validateChatResponse({ ...response, unreadTotal: -1 })).toThrow();
   });
 });

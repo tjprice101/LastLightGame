@@ -89,6 +89,14 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
             choice.classList.add('selection-option-with-art');
             choice.append(art);
           }
+          if (select.hasAttribute('data-profile-icon-picker') && isStarterId(option.value)) {
+            const art = document.createElement('span');
+            art.className = 'selection-option-art';
+            art.innerHTML = portrait(getStarter(option.value));
+            art.querySelector('img')?.setAttribute('alt', '');
+            choice.classList.add('selection-option-with-art');
+            choice.append(art);
+          }
           choice.append(text);
           choice.disabled = option.disabled || (option.parentElement instanceof HTMLOptGroupElement && option.parentElement.disabled);
           choice.setAttribute('aria-pressed', String(option.selected));
@@ -148,3 +156,5 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
 }
 import { isMasterConduitId } from '../content/master-conduits';
 import { masterConduitIcon } from './master-conduits';
+import { getStarter, isStarterId } from '../content/starters';
+import { portrait } from './portrait';

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { describeFighter, resolveFighter } from '../content/combat';
 import { abilityStatuses, kitResource } from './ability-status';
 import { elementalEffectFamilies } from '../content/elemental-effects';
-import { kitPilotDescriptions } from '../content/kit-pilots';
+import { kitPilotDescriptions, kitResourceUses } from '../content/kit-pilots';
 import { starters } from '../content/starters';
 
 describe('typed ability status labels', () => {
@@ -58,12 +58,32 @@ describe('typed ability status labels', () => {
         if (ability.strength.burnMultiplier !== undefined) expect(ability.description).toContain('ignores Defense');
       }
       if (resource) {
-        expect(kitResource(kit)).toContain(resource.summary);
-        expect(kitResource(kit)).not.toContain('What is');
+        expect(kitResource(kit, starter.id)).toContain(kitResourceUses[starter.id]);
+        expect(kitResource(kit, starter.id)).toContain('At 0 charges, the skill still has its normal effect.');
+        expect(kitResource(kit, starter.id)).not.toContain(resource.summary);
       }
     }
     expect(resolveFighter('tide').abilities.skill1.description).toContain('Weaken: outgoing attack damage reduction; Defense unchanged.');
     expect(resolveFighter('tide').abilities.skill1.description.split(/\s+/).length).toBeLessThanOrEqual(65);
+  });
+  it('explains earning and spending separately for every resource bearer without empty-effect wording', () => {
+    for (const starter of starters) {
+      const kit = resolveFighter(starter.id);
+      expect(JSON.stringify(kit)).not.toMatch(/do nothing|No standalone effect|Recover next turn/);
+      for (const ability of Object.values(kit.abilities)) {
+        expect(ability.description.match(/Recovery:/g)?.length ?? 0).toBeLessThanOrEqual(1);
+      }
+      if (!kit.pilot) {
+        expect(kitResource(kit, starter.id)).toBe('');
+        continue;
+      }
+      const usage = kitResourceUses[starter.id];
+      expect(usage).toBeDefined();
+      expect(usage).toContain('spends');
+      expect(kitResource(kit, starter.id)).toContain(usage);
+      expect(kitResource(kit, starter.id)).toContain('Up to 3 charges');
+      expect(kit.passive.description).toContain('maximum 3');
+    }
   });
   it('maps all native and Rose resource identities to delivered icons without parsing prose', () => {
     for (const [id, icon] of [['ember', 'burn'], ['tide', 'ward'], ['sprout', 'bloom'],

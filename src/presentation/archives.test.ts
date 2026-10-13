@@ -12,6 +12,15 @@ import { elementLabel } from './element-label';
 import { elementAssetIds } from '../content/element-migration';
 
 describe('unified Archives', () => {
+  it('keeps Collections Information focused on rules without a character biography list', () => {
+    const html = archives(emptyAccount());
+    const dialog = html.match(/<dialog\b[^>]*id="collections-information"[\s\S]*?<\/dialog>/)?.[0];
+    expect(dialog).toBeDefined();
+    expect(dialog).toContain('Catalog previews do not grant ownership.');
+    expect(dialog).not.toContain('Element-Bearer identities');
+    for (const starter of starters) expect(dialog).not.toContain(starter.description);
+  });
+
   it('keeps ownership, form rarity and effects visible without requiring detail dialogs', () => {
     const html = archives(emptyAccount(), 'conduits');
     expect(html).toContain('<div class="ref-archive-manage"><button class="text-button" data-page="conduit-store">');
@@ -115,7 +124,7 @@ describe('unified Archives', () => {
     expect(revealed).not.toContain('Drop pool and chances');
     const unavailable = archives(null);
     expect(unavailable).toContain('Ownership unavailable');
-    expect(unavailable).toContain('Elemental-Devourer discoveries unavailable');
+    expect(unavailable).toContain('Elemental-Devourer and Machine discoveries unavailable');
     expect(unavailable).not.toContain('Owned 0');
     expect(unavailable).not.toContain('<p class="archive-ownership">Not owned</p>');
     expect(unavailable).not.toContain('Art locked');

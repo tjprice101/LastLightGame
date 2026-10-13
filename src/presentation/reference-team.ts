@@ -5,17 +5,16 @@ import { characterLevelCap, evolutionRarity } from '../content/progression';
 import { formatStat, shatterGauge } from '../content/combat';
 import { ownedCharacters, ownedProgress, equippedSquad, characterProtection, creatureSaleOffer, isSellableCreatureMode, type Account } from '../game/account';
 import { saleControls } from './creature-sale';
-import { getCreature } from '../content/creatures';
+import { getCreature, creatureLore } from '../content/creatures';
 import { capturedProgress, capturedLevelCost, resolveCapturedFighter } from '../game/character-instances';
-import { portrait } from './portrait';
+import { assetUrl, portrait } from './portrait';
 import { ownedCompanion } from './owned-companion';
 import { characterDetail, stats, referenceEquipment } from './hub';
 import { squadHub } from './roster';
-import { itemShowcase } from './item-showcase';
-import { materialName } from '../content/dungeon-art';
+import { materialArt, materialName } from '../content/dungeon-art';
 import { information } from './information';
-import { filledConduitSlots } from './conduit-loadout';
-import { conduitSlotCount } from '../content/conduits';
+import { currencyIcon } from './currency-icon';
+import { statChange } from './stat-change';
 
 export type ReferenceTeamView = 'detail' | 'bearers' | 'creatures' | 'capture' | 'formation' | 'conduits' | 'capture-conduits';
 export interface ReferenceTeamState {
@@ -74,12 +73,15 @@ function captureGrid(account: Account): string {
       const protection = characterProtection(account, copy.instanceId);
       const position = equippedSquad(account).indexOf(copy.instanceId);
       const progress = capturedProgress(copy);
-      return `<article class="ref-collection-card"><button class="ref-card-art" data-team-capture-detail="${copy.instanceId}" aria-label="Open ${member.name}, copy ${index + 1}">${member.art}</button><div class="ref-card-caption"><b>${member.name}</b><small>★${progress.tier + 1} · ${member.element} · Lv.${progress.level} · Copy ${index + 1}</small>${position >= 0 ? `<span class="ref-chip ref-white">${position === 0 ? 'Leader' : 'In squad'}</span>` : ''}<button class="ref-chip ${protection.locked ? 'ref-white' : ''}" data-character-lock="${copy.instanceId}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Locked' : 'Lock'}</button></div></article>`;
+      const sale = isSellableCreatureMode(getCreature(copy.creatureId).mode) ? creatureSaleOffer(account, copy.instanceId) : null;
+      return `<article class="ref-collection-card"><button class="ref-card-art" data-team-capture-detail="${copy.instanceId}" aria-label="Open ${member.name}, copy ${index + 1}">${member.art}</button><div class="ref-card-caption"><b>${member.name}</b><small>★${progress.tier + 1} · ${member.element} · Lv.${progress.level} · Copy ${index + 1}</small>${position >= 0 ? `<span class="ref-chip ref-white">${position === 0 ? 'Leader' : 'In squad'}</span>` : ''}<button class="ref-chip ${protection.locked ? 'ref-white' : ''}" data-character-lock="${copy.instanceId}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Locked' : 'Lock'}</button>
+        ${sale ? information(`quick-sale-${copy.instanceId}`, `${member.name} · Copy ${index + 1}`, `<p>Sell this exact captured copy. Choose one payout when options are offered. Sale is permanent.</p>${saleControls(sale, copy.instanceId, 'Sell')}`, 'Quick Sell') : ''}</div></article>`;
     }).join('')}</div></div>` : '<div class="ref-empty"><b>No captured Elemental-Devourers yet</b><p>Defeat eligible enemies in Heaven, Abyss, Crownfall Treasury, Rosethorn Sanctuary or Passion of Crimson Roses.</p><button class="ref-button ref-outline" data-page="gameplay">Go to Play</button></div>'}
     <p id="character-lock-result" role="status"></p></section>`;
 }
 
-function captureDetail(account: Account, id: string): string {
+function captureDetail(account: Account, id: string, tab = 'overview'): string {
+  if (!isCaptureTab(tab)) throw new Error('Unknown Elemental-Devourer area.');
   const copy = account.capturedCharacters?.find(entry => entry.instanceId === id);
   if (!copy) throw new Error('Choose an owned captured Elemental-Devourer.');
   const creature = getCreature(copy.creatureId);
@@ -93,17 +95,25 @@ function captureDetail(account: Account, id: string): string {
   const missing = cost ? Object.entries(cost.materials).filter(([key, amount]) => (account.materials[key] ?? 0) < amount) : [];
   const canLevel = cost && account.fractalis >= cost.fractalis && !missing.length;
   const sale = isSellableCreatureMode(creature.mode) ? creatureSaleOffer(account, id) : null;
-  return `<section class="ref-team-detail ref-capture-detail" data-captured-copy="${id}">
+  const next = cost ? resolveCapturedFighter({ ...copy, level: progress.level + 1 }, account.conduitEquipment?.[id], account.conduitUpgrades).stats : null;
+  const resources = cost ? [{ name: 'Prismatica', owned: account.fractalis, needed: cost.fractalis, icon: currencyIcon('fractalis') },
+    ...Object.entries(cost.materials).map(([key, needed]) => {
+      const art = materialArt(key);
+      return { name: materialName(key), owned: account.materials[key] ?? 0, needed, icon: art ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" width="48" height="48">` : '' };
+    })] : [];
+  return `<section class="ref-team-detail ref-capture-detail ref-bearer-detail" data-captured-copy="${id}">
     <header class="ref-panel ref-character-header"><div class="ref-character-portrait">${member.art}</div>
       <div class="ref-character-identity"><p>${member.element} · Captured Elemental-Devourer · Copy ${index}</p><h2>${creature.name}</h2>
         <div class="ref-tags"><span class="ref-stars" aria-label="${progress.tier + 1}-star Elemental-Devourer">${'★'.repeat(progress.tier + 1)}</span><span class="ref-chip">${evolutionRarity(progress.tier + 1)}</span></div>
-        <div class="ref-character-progress"><div>Level ${formatStat(progress.level)} / 120<div class="ref-bar"><i style="width:${progress.level / 120 * 100}%"></i></div></div><div>Fixed form · Cannot evolve</div></div></div>
-      <div class="ref-character-header-actions"><button class="ref-link" data-team-view="creatures">← All captured Elemental-Devourers</button>
-        <button type="button" class="ref-chip" data-open-loadout>Conduits · <span data-conduit-count>${filledConduitSlots(id, account)}/${conduitSlotCount}</span></button>
+        <div class="ref-character-progress"><div>Level ${formatStat(progress.level)} / 120<div class="ref-bar"><i style="width:${progress.level / 120 * 100}%"></i></div></div><div>Fixed form · Cannot evolve</div></div>
+      <div class="ref-character-header-actions">
         ${squad[0] === id ? '<span class="ref-chip ref-white">Squad leader</span>' : squad.includes(id) ? `<button class="ref-chip" data-make-leader="${id}">♛ Make leader</button>` : '<button class="ref-chip" data-team-view="formation">Add to squad</button>'}
-        <button class="ref-chip" data-character-lock="${id}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Unlock' : 'Lock'} Elemental-Devourer</button></div>
+        <button class="ref-chip" data-character-lock="${id}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Unlock' : 'Lock'} copy</button>
+        ${information(`capture-lore-${id}`, creature.name, `<p>${creatureLore(creature)}</p><p>This is a captured copy in your squad. Its origin remains Rise's creation; capture does not change its element or retained kit.</p>`, 'Lore')}</div></div>
     </header>
-    <section class="hub-detail ref-character-panels" aria-label="Elemental-Devourer details and upgrades"><div class="character-detail-content"><div class="mono-character-quad">
+    <nav class="ref-character-submenus" aria-label="Elemental-Devourer sub-menus">${[['overview', 'Stats & Skills'], ['upgrade-1', 'Level'], ['sale', 'Sale']].map(([key, label]) => `<button type="button" data-capture-tab="${key}" aria-pressed="${tab === key}" aria-controls="capture-panel-${key}">${label}</button>`).join('')}<button type="button" data-open-loadout>Conduits</button></nav>
+    <section class="hub-detail ref-character-panels" aria-label="Elemental-Devourer details and upgrades"><div class="character-detail-content ref-organized-detail${tab === 'upgrade-1' ? ' ref-growth-detail' : ''}">
+    <div id="capture-panel-overview" class="ref-character-overview ref-capture-panel" ${tab === 'overview' ? '' : 'hidden'}>
       <section class="character-category mono-character-stats"><h3>Stats</h3>${stats(copy, undefined, false, account.conduitEquipment?.[id], account.conduitUpgrades)}</section>
       <section class="character-category character-combat"><h3>Skills</h3><div class="ref-ability-buttons">${(['skill1', 'skill2', 'ultimate'] as const).map(action => {
         const ability = kit.abilities[action];
@@ -113,13 +123,35 @@ function captureDetail(account: Account, id: string): string {
           `<article class="hub-ability"><h3>${unavailable ? label : ability.name}</h3><p>${ability.description}</p>${unavailable ? '<p>This slot is unavailable for this Elemental-Devourer.</p>' : `<p class="hub-cost">${label} · Costs ${shatterGauge.costs[action]} Shatter Gauge · ${ability.cooldown}-turn cooldown.</p>`}</article>`, `${label} details`,
           `<span><strong>${unavailable ? label : ability.name}</strong><small>${label} · ${unavailable ? 'Unavailable · ' : ''}View details</small></span>`);
       }).join('')}</div></section>
-      <section class="character-category mono-character-growth"><h3>Growth &amp; sale</h3><div class="mono-growth-options"><article><h4>Level up</h4>
-        ${cost ? itemShowcase([{ id: 'fractalis', amount: cost.fractalis }, ...Object.entries(cost.materials).map(([key, amount]) => ({ id: key, amount }))], 'Level cost') : '<p class="ref-growth-summary">Maximum level 120</p>'}
+    </div><div id="capture-panel-upgrade-1" class="ref-capture-panel" ${tab === 'upgrade-1' ? '' : 'hidden'}>
+      ${next ? `<div class="character-upgrade-grid"><section class="character-category upgrade-benefits"><div class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Level &amp; stat preview</h3>
+        <div class="hub-comparison"><div><small>CURRENT</small><strong>Lv.${progress.level}</strong></div><div><small>NEXT</small><strong>Lv.${progress.level + 1}</strong></div></div>
+        <div class="upgrade-stat-preview">${(['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).map(key => `<span><small>${({ health: 'Health', defense: 'Defense', damage: 'Attack', crit: 'Critical Rate', critMultiplier: 'Critical Damage', shatterCapacity: 'Shatter Capacity', elementalDamage: 'Elemental Damage' })[key]}</small><strong>${statChange(kit.stats[key], next[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '')}</strong></span>`).join('')}</div></div></section>
+        <section class="character-category upgrade-payment"><h3>Required resources <small class="resource-key">Owned / Required</small></h3><ul class="upgrade-resources">${resources.map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${resource.name}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>` : '<section class="character-category"><p class="ref-growth-summary">Maximum level 120</p>'}
+        <div class="ref-growth-action">
         ${cost ? `<button class="primary-button" data-level-capture="${id}" data-expected-level="${progress.level}" ${canLevel ? '' : 'disabled'}>Level up</button>` : ''}
         <button class="text-button" data-max-level="${id}" ${cost ? '' : 'disabled'}>Max Level</button>
-        ${cost && !canLevel ? `<p class="ref-growth-summary">${account.fractalis < cost.fractalis ? 'Not enough Prismatica. ' : ''}${missing.map(([key, amount]) => `Need ${amount} ${materialName(key)}; owned ${account.materials[key] ?? 0}.`).join(' ')}</p>` : ''}</article>
-        <article><h4>${sale ? 'Sell copy' : 'Fixed form'}</h4>${sale ? saleControls(sale, id) : '<p class="ref-growth-summary">This Elemental-Devourer cannot be sold or evolved.</p>'}</article></div><p id="character-lock-result" role="status"></p></section>
-    </div></div></section></section>`;
+        ${cost && !canLevel ? '<p class="quiet">Insufficient resources.</p>' : ''}</div></section>${next ? '</div>' : ''}
+    </div><section id="capture-panel-sale" class="character-category ref-capture-panel" ${tab === 'sale' ? '' : 'hidden'}><h3>${sale ? 'Sell copy' : 'Fixed form'}</h3>${sale ? saleControls(sale, id) : '<p class="ref-growth-summary">This Elemental-Devourer cannot be sold or evolved.</p>'}</section>
+    <p id="character-lock-result" role="status"></p></div></section></section>`;
+}
+
+export type CaptureTab = 'overview' | 'upgrade-1' | 'sale';
+export function isCaptureTab(value: unknown): value is CaptureTab {
+  return value === 'overview' || value === 'upgrade-1' || value === 'sale';
+}
+
+export function bindCaptureTabs(host: HTMLElement, onSelect: (tab: CaptureTab) => void): void {
+  const detail = host.querySelector('.ref-capture-detail');
+  if (!detail) return;
+  detail.querySelectorAll<HTMLButtonElement>('[data-capture-tab]').forEach(button => button.addEventListener('click', () => {
+    const tab = button.dataset.captureTab;
+    if (!isCaptureTab(tab)) throw new Error('Unknown Elemental-Devourer area.');
+    detail.querySelectorAll<HTMLElement>('.ref-capture-panel').forEach(panel => { panel.hidden = panel.id !== `capture-panel-${tab}`; });
+    detail.querySelectorAll<HTMLButtonElement>('[data-capture-tab]').forEach(candidate => candidate.setAttribute('aria-pressed', String(candidate === button)));
+    detail.querySelector('.character-detail-content')?.classList.toggle('ref-growth-detail', tab === 'upgrade-1');
+    onSelect(tab);
+  }));
 }
 
 /** Dedicated full-page Conduit loadout (the mock-up's "Open full conduit view"), without the Team sidebar or character header. */
@@ -148,7 +180,7 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
   else if (state.view === 'capture') {
     const copy = account.capturedCharacters?.find(entry => entry.instanceId === state.capture);
     if (!copy) throw new Error('Choose an owned captured Elemental-Devourer.');
-    content = captureDetail(account, copy.instanceId);
+    content = captureDetail(account, copy.instanceId, state.tab);
   } else {
     if (!account.characters[state.selected]) throw new Error('Choose an owned Element-Bearer.');
     const starter = getStarter(state.selected);
@@ -156,14 +188,15 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
     const squad = equippedSquad(account);
     const title = characterName(state.selected, progress.evolution).split(', ')[0];
     const cap = characterLevelCap(progress.evolution);
-    content = `<section class="ref-team-detail">
+    content = `<section class="ref-team-detail ref-bearer-detail">
       <header class="ref-panel ref-character-header hub-showcase"><div class="ref-character-portrait hub-portrait">${portrait(starter, progress.evolution)}</div>
         <div class="ref-character-identity"><p data-reference-prefix>${title} · ${starter.element} · ${starter.weapon}</p><h2 data-reference-name>${starter.name}</h2>
           <div class="ref-tags"><span class="ref-stars" aria-label="${starter.stars}-star Element-Bearer">${'★'.repeat(starter.stars)}</span><span class="ref-chip">${starter.role}</span><span class="ref-chip" data-reference-rarity>${evolutionRarity(progress.evolution)}</span></div>
           <div class="ref-character-progress"><div>Level <span data-reference-level>${formatStat(progress.level)} / ${cap}</span><div class="ref-bar"><i style="width:${progress.level / cap * 100}%"></i></div></div>
           <div><span data-reference-evolution>Evolution ${progress.evolution} / 6</span><div class="ref-pips">${Array.from({ length: 6 }, (_, index) => `<i class="${index < progress.evolution ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
-          <span data-owned-progress class="ref-sr-only">Lv.${progress.level} · Evo.${progress.evolution}</span></div>
-        <div class="ref-character-header-actions"><button class="ref-link" data-team-view="bearers">← All Element-Bearers · ${ownedCharacters(account).length}</button><button type="button" class="ref-chip" data-open-loadout>Conduits · <span data-conduit-count>${filledConduitSlots(starter.id, account)}/${conduitSlotCount}</span></button>${squad[0] === starter.id ? '<span class="ref-chip ref-white">Squad leader</span>' : squad.includes(starter.id) ? `<button class="ref-chip" data-make-leader="${starter.id}">♛ Make leader</button>` : '<button class="ref-chip" data-team-view="formation">Add to squad</button>'}</div>
+          <span data-owned-progress class="ref-sr-only">Lv.${progress.level} · Evo.${progress.evolution}</span>
+          <div class="ref-character-header-actions">${squad[0] === starter.id ? '<span class="ref-chip ref-white">Squad leader</span>' : squad.includes(starter.id) ? `<button class="ref-chip" data-make-leader="${starter.id}">♛ Make leader</button>` : '<button class="ref-chip" data-team-view="formation">Add to squad</button>'}
+          ${information(`bearer-lore-${starter.id}`, starter.name, `<p>${starter.description}</p><h3>${starter.lore.origin}</h3><p>${starter.lore.story}</p><blockquote>${starter.lore.vow}</blockquote>`, 'Lore')}</div></div>
       </header><nav class="ref-character-submenus" aria-label="Character sub-menus">${[
         ['overview', 'Stats & Skills'], ['upgrade-1', 'Level'], ['upgrade-0', 'Evolution'], ['equipment', 'Conduits'],
       ].map(([tab, label]) => `<button type="button" data-character-tab="${tab}" aria-pressed="${tab === (state.tab ?? 'overview')}">${label}</button>`).join('')}</nav>

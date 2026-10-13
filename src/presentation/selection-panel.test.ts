@@ -75,4 +75,24 @@ describe('scrollable selection panels', () => {
     expect(change).toHaveBeenCalledTimes(1);
     dispose();
   });
+  it('shows only the owned portrait options supplied by the profile picker', () => {
+    const host = document.createElement('main');
+    host.innerHTML = '<select name="icon" data-profile-icon-picker aria-label="Profile icon"><option value="neutral">Last Light</option><option value="tide">Tizu</option></select>';
+    document.body.append(host);
+    const dispose = bindSelectionPanels(host);
+    const dialog = document.querySelector<HTMLDialogElement>('.selection-modal')!;
+    dialog.showModal = vi.fn(() => { dialog.open = true; });
+    dialog.close = vi.fn(() => { dialog.open = false; dialog.dispatchEvent(new Event('close')); });
+    host.querySelector<HTMLButtonElement>('.selection-trigger')!.click();
+    const options = dialog.querySelectorAll<HTMLButtonElement>('.selection-option');
+    expect(options).toHaveLength(2);
+    expect(options[0].querySelector('img')).toBeNull();
+    expect(options[1].querySelector('img')?.getAttribute('src')).toContain('tizu');
+    const change = vi.fn();
+    host.addEventListener('change', change);
+    options[1].click();
+    expect(host.querySelector('select')?.value).toBe('tide');
+    expect(change).toHaveBeenCalledOnce();
+    dispose();
+  });
 });

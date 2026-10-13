@@ -81,14 +81,14 @@ afterEach(async () => {
 });
 
 describe('React opening screens', () => {
-  it('renders play and Player info navigation without save controls or writes', async () => {
-    const offline = vi.fn(), online = vi.fn(), info = vi.fn();
-    await render(<TitleScreen onOffline={offline} onOnline={online} onPlayerInfo={info} />);
-    expect(host.querySelectorAll('.ll-button')).toHaveLength(3);
-    await click('Play Offline'); await click('Play Online');
-    await click('Player info');
+  it('renders only account entry and offline play without save controls or writes', async () => {
+    const offline = vi.fn(), online = vi.fn();
+    await render(<TitleScreen onOffline={offline} onOnline={online} />);
+    expect(host.querySelectorAll('.ll-button')).toHaveLength(2);
+    await click('Play Offline'); await click('Sign-in / Create Account');
     expect(offline).toHaveBeenCalledOnce(); expect(online).toHaveBeenCalledOnce();
-    expect(info).toHaveBeenCalledOnce();
+    expect(host.textContent).not.toContain('Player info');
+    expect(host.textContent).not.toContain('Play Online');
     expect(localStorage.length).toBe(0);
     expect(host.textContent).not.toContain('save data');
     expect(host.querySelector('input[type=file]')).toBeNull();
@@ -147,6 +147,67 @@ describe('React opening screens', () => {
   });
 });
 
+describe('compact profile save controls', () => {
+  it('confirms code replacement and preserves the browser save when cancelled', async () => {
+    loadOfflineSave(localStorage, fixture());
+    const changed = vi.fn(), target = fixture();
+    target.account.fractalis = 900;
+    await render(<OfflineSavePanel compact onChanged={changed} />);
+    const enterCode = async () => {
+      await click('Load save code');
+      const textarea = host.querySelector<HTMLTextAreaElement>('[aria-label="Offline save code"]')!;
+      await act(async () => {
+        Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value')!.set!.call(textarea, 'LLSAVE1:' + btoa(JSON.stringify(target)));
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      await click('Review and load');
+    };
+    mocks.confirm.mockResolvedValueOnce(false);
+    await enterCode();
+    expect(mocks.confirm).toHaveBeenCalledOnce();
+    expect(JSON.parse(localStorage.getItem(ACCOUNT_KEY)!).fractalis).toBe(500);
+    expect(changed).not.toHaveBeenCalled();
+    await enterCode();
+    expect(JSON.parse(localStorage.getItem(ACCOUNT_KEY)!).fractalis).toBe(900);
+    expect(changed).toHaveBeenCalledExactlyOnceWith('loaded');
+    expect(mocks.operation).not.toHaveBeenCalled();
+  });
+  it('copies only the browser save and shows file tools in a separate dialog', async () => {
+    loadOfflineSave(localStorage, fixture());
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal('navigator', { clipboard: { writeText } });
+    await render(<PlayerSaveData compact onlineUser="fixtureuser" onChanged={vi.fn()} onReady={vi.fn()} onAccount={vi.fn()} />);
+    expect(mocks.operation).not.toHaveBeenCalled();
+    expect(host.textContent).toContain('Online connected');
+    await click('Copy save code');
+    expect(writeText).toHaveBeenCalledOnce();
+    expect(writeText.mock.calls[0][0]).toMatch(/^LLSAVE1:/);
+    expect(host.textContent).toContain('Offline save code copied');
+    expect(host.querySelector('dialog')).toBeNull();
+    await click('File tools');
+    expect(host.querySelector('dialog')?.getAttribute('aria-labelledby')).toBe('offline-file-tools-heading');
+    await click('Export Save File');
+    expect(mocks.export).toHaveBeenCalledOnce();
+    expect(host.querySelector('dialog')).toBeNull();
+  });
+  it('reports clipboard denial and malformed codes without changing either save', async () => {
+    loadOfflineSave(localStorage, fixture());
+    const before = localStorage.getItem(ACCOUNT_KEY);
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.stubGlobal('navigator', { clipboard: { writeText: vi.fn().mockRejectedValue(new Error('Clipboard denied')) } });
+    await render(<OfflineSavePanel compact onChanged={vi.fn()} />);
+    await click('Copy save code');
+    expect(host.querySelector('[role=alert]')?.textContent).toContain('Clipboard denied');
+    expect(host.textContent).not.toContain('Offline save code copied');
+    await click('Load save code');
+    await click('Review and load');
+    expect(host.querySelector('dialog [role=alert]')?.textContent).toContain('LLSAVE1:');
+    expect(localStorage.getItem(ACCOUNT_KEY)).toBe(before);
+    expect(mocks.operation).not.toHaveBeenCalled();
+    expect(log).toHaveBeenCalled();
+  });
+});
+
 describe('React account onboarding', () => {
   it('starts with sign-in, exposes registration/recovery, and closes on Escape with cleanup', async () => {
     const close = vi.fn();
@@ -179,10 +240,55 @@ describe('React account onboarding', () => {
     localStorage.setItem(PENDING_IMPORT_KEY, JSON.stringify({ username: 'fixtureuser', save: fixture(), requestId: crypto.randomUUID() }));
     await render(<OnlineAccountDialog onClose={close} onPlay={play} />);
     expect(host.querySelector('[name=save-choice]')).toBeNull();
-    await click('Play Online');
+    expect(host.textContent).not.toContain('Play Online');
     expect(mocks.operation).not.toHaveBeenCalled();
     expect(play).toHaveBeenCalledOnce(); expect(close).toHaveBeenCalledOnce();
     expect(localStorage.getItem(PENDING_IMPORT_KEY)).not.toBeNull();
+  });
+  it('enters online play immediately after successful sign-in', async () => {
+    const play = vi.fn().mockResolvedValue(undefined), close = vi.fn();
+    mocks.username.mockResolvedValueOnce(null).mockResolvedValue('fixtureuser');
+    await render(<OnlineAccountDialog onClose={close} onPlay={play} />);
+    await submit();
+    expect(play).toHaveBeenCalledOnce();
+    expect(close).toHaveBeenCalledOnce();
+    expect(host.textContent).not.toContain('Play Online');
+  });
+  it('reports failed automatic entry and retries without another sign-in', async () => {
+    mocks.username.mockResolvedValue('fixtureuser');
+    const play = vi.fn().mockRejectedValueOnce(new Error('Connection unavailable')).mockResolvedValue(undefined);
+    const close = vi.fn();
+    await render(<OnlineAccountDialog onClose={close} onPlay={play} />);
+    expect(host.querySelector('[role=alert]')?.textContent).toContain('Connection unavailable');
+    expect(close).not.toHaveBeenCalled();
+    await click('Retry connection');
+    expect(play).toHaveBeenCalledTimes(2);
+    expect(close).toHaveBeenCalledOnce();
+  });
+  it('keeps verification-required registration out of online play', async () => {
+    const play = vi.fn(), close = vi.fn();
+    await render(<OnlineAccountDialog onClose={close} onPlay={play} />);
+    await click('Create account');
+    await submit();
+    expect(play).not.toHaveBeenCalled();
+    expect(close).not.toHaveBeenCalled();
+    expect(host.textContent).toContain('Fixture registration accepted.');
+  });
+  it('does not enter a recovery session until the new password is saved', async () => {
+    const url = location.href;
+    history.replaceState(null, '', '#type=recovery');
+    try {
+      mocks.username.mockResolvedValue('fixtureuser');
+      const play = vi.fn().mockResolvedValue(undefined), close = vi.fn();
+      await render(<OnlineAccountDialog onClose={close} onPlay={play} />);
+      expect(play).not.toHaveBeenCalled();
+      const form = host.querySelector<HTMLFormElement>('.ll-password-reset')!;
+      form.querySelector<HTMLInputElement>('input')!.value = 'new-secure-password';
+      await act(async () => form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })));
+      expect(mocks.updateUser).toHaveBeenCalledWith({ password: 'new-secure-password' });
+      expect(play).toHaveBeenCalledOnce();
+      expect(close).toHaveBeenCalledOnce();
+    } finally { history.replaceState(null, '', url); }
   });
 });
 

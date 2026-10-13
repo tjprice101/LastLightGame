@@ -1,0 +1,991 @@
+{
+  "asset_count": 32,
+  "assets": [
+    {
+      "asset": "ember-base",
+      "incoming": "Infernis \u2014 Base.png",
+      "element": "infernic",
+      "source": "Art\\source\\profile-pictures\\ember-base.png",
+      "source_sha256": "b3ddebaf6f4d8201cd844cedb8b0307b63161f3ec47cad5356761c1fda387fa9",
+      "runtime": "public\\assets\\profile-pictures\\ember-base.png",
+      "runtime_sha256": "33741aad71991e7503eca35aa00327fe4f07820ea6aa7ba114064c17e1c22566",
+      "processing": {
+        "keys": [
+          [
+            12,
+            164,
+            124
+          ],
+          [
+            12,
+            156,
+            124
+          ],
+          [
+            20,
+            164,
+            124
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "ember-omnic",
+      "incoming": "Infernis \u2014 Omnic.png",
+      "element": "infernic",
+      "source": "Art\\source\\profile-pictures\\ember-omnic.png",
+      "source_sha256": "a71824c304e04ab31d79f406fcea37247c73f89a76794749e917f768feab2f49",
+      "runtime": "public\\assets\\profile-pictures\\ember-omnic.png",
+      "runtime_sha256": "7bb4d237522cd17684bc0af69a990c97384cad34e5285c293e7c665bcd5e90ed",
+      "processing": {
+        "keys": [
+          [
+            36,
+            68,
+            44
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "tide-base",
+      "incoming": "Tizu - Base.png",
+      "element": "oceanic",
+      "source": "Art\\source\\profile-pictures\\tide-base.png",
+      "source_sha256": "d7589d03129da7fba883812c24ed6d0f9da11fab1ad0452834c954e58d34fc7c",
+      "runtime": "public\\assets\\profile-pictures\\tide-base.png",
+      "runtime_sha256": "b49a8304f796afa9d8e2f33ba3d9d2231092607048a0f700e72026c211b3187f",
+      "processing": {
+        "keys": [
+          [
+            140,
+            12,
+            92
+          ],
+          [
+            132,
+            12,
+            92
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "tide-omnic",
+      "incoming": "Tizu - Omnic.png",
+      "element": "oceanic",
+      "source": "Art\\source\\profile-pictures\\tide-omnic.png",
+      "source_sha256": "c5b386cd9541f901c2d70ef3e60e707ce23e81ceaa20a8099d368c60c4922dc7",
+      "runtime": "public\\assets\\profile-pictures\\tide-omnic.png",
+      "runtime_sha256": "082eee58b3b5cb4424cb84d4b8394979ade3f3a4a558026383d0369ff08e4207",
+      "processing": {
+        "keys": [
+          [
+            132,
+            52,
+            76
+          ],
+          [
+            140,
+            52,
+            76
+          ],
+          [
+            140,
+            52,
+            84
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "sprout-base",
+      "incoming": "Flora - Base.png",
+      "element": "botanic",
+      "source": "Art\\source\\profile-pictures\\sprout-base.png",
+      "source_sha256": "054340ea381bf835764c68acd6af3f85ae53a414f73aacdc2515afd442a85831",
+      "runtime": "public\\assets\\profile-pictures\\sprout-base.png",
+      "runtime_sha256": "e88a6568082c7ac020110e7b092f5baff85d464120d90aedc75b7723cd84137e",
+      "processing": {
+        "keys": [
+          [
+            36,
+            204,
+            236
+          ],
+          [
+            36,
+            212,
+            236
+          ],
+          [
+            36,
+            204,
+            244
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "sprout-omnic",
+      "incoming": "Flora - Omnic.png",
+      "element": "botanic",
+      "source": "Art\\source\\profile-pictures\\sprout-omnic.png",
+      "source_sha256": "d81fae26fdc67083cdc774db9cf0b51509515a1b915adc11225c757848f47b95",
+      "runtime": "public\\assets\\profile-pictures\\sprout-omnic.png",
+      "runtime_sha256": "d81fae26fdc67083cdc774db9cf0b51509515a1b915adc11225c757848f47b95",
+      "processing": {
+        "preserve_original": true
+      }
+    },
+    {
+      "asset": "atmoso-base",
+      "incoming": "Atmoso - Base.png",
+      "element": "atmospheric",
+      "source": "Art\\source\\profile-pictures\\atmoso-base.png",
+      "source_sha256": "ecb4c5d0da25b4280ff19ec0a019b39b4f48526d29ab0eb235eeffaf18dc3aea",
+      "runtime": "public\\assets\\profile-pictures\\atmoso-base.png",
+      "runtime_sha256": "aa9e8dda1d08048052808390e7ea392cdf53618d1a4d5e4d2c5363f512831337",
+      "processing": {
+        "keys": [
+          [
+            252,
+            68,
+            28
+          ],
+          [
+            252,
+            60,
+            28
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "atmoso-omnic",
+      "incoming": "Atmoso - Omnic.png",
+      "element": "atmospheric",
+      "source": "Art\\source\\profile-pictures\\atmoso-omnic.png",
+      "source_sha256": "3a6daf1d1571bf557c118aef866ae118861197584d50230bfb788d6a906f312e",
+      "runtime": "public\\assets\\profile-pictures\\atmoso-omnic.png",
+      "runtime_sha256": "6c3a5a30e509f8903724fc806ccbfcbce290ce970236728e5c6a2f0e626aeb7e",
+      "processing": {
+        "keys": [
+          [
+            252,
+            188,
+            44
+          ],
+          [
+            252,
+            188,
+            52
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "aurora-base",
+      "incoming": "Aurora - Base.png",
+      "element": "tranquilitic",
+      "source": "Art\\source\\profile-pictures\\aurora-base.png",
+      "source_sha256": "6a41ba45f3afaadde67a3070138c753897e830c9796c700583be2fd2fc0d0e0c",
+      "runtime": "public\\assets\\profile-pictures\\aurora-base.png",
+      "runtime_sha256": "310f80af7ab8cbf6709611988897df283194e96798caed7c4cc4929b54ffad11",
+      "processing": {
+        "keys": [
+          [
+            212,
+            12,
+            20
+          ],
+          [
+            204,
+            12,
+            20
+          ],
+          [
+            212,
+            20,
+            20
+          ],
+          [
+            204,
+            20,
+            20
+          ]
+        ],
+        "radius": 48,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "aurora-omnic",
+      "incoming": "Aurora - Omnic.png",
+      "element": "tranquilitic",
+      "source": "Art\\source\\profile-pictures\\aurora-omnic.png",
+      "source_sha256": "968d076a9fa653b2081ad02944ff6fff1ee48320756f00625b99328c9e452bbd",
+      "runtime": "public\\assets\\profile-pictures\\aurora-omnic.png",
+      "runtime_sha256": "4e2902068e6681280940bc4a7acab0e63569cc27645af81ad1d3a33f2f7d3c40",
+      "processing": {
+        "keys": [
+          [
+            4,
+            4,
+            4
+          ]
+        ],
+        "radius": 20,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "bliss-base",
+      "incoming": "Bliss - Base.png",
+      "element": "tranquilitic",
+      "source": "Art\\source\\profile-pictures\\bliss-base.png",
+      "source_sha256": "ecc01f5328f4dd9c7a309c4703c2ebc7bd4298468714ce4879f2046872eb99eb",
+      "runtime": "public\\assets\\profile-pictures\\bliss-base.png",
+      "runtime_sha256": "20b951c2184836c98f66ce6a418c1a97f364415d980813c5b893fed6a41ec0c7",
+      "processing": {
+        "keys": [
+          [
+            4,
+            148,
+            116
+          ],
+          [
+            12,
+            148,
+            124
+          ],
+          [
+            4,
+            148,
+            124
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "bliss-omnic",
+      "incoming": "Bliss - Omnic.png",
+      "element": "tranquilitic",
+      "source": "Art\\source\\profile-pictures\\bliss-omnic.png",
+      "source_sha256": "917e3575df799ca2cad03abbc16ffebc7a8755c62662e6e83eb290ff2a6a64ad",
+      "runtime": "public\\assets\\profile-pictures\\bliss-omnic.png",
+      "runtime_sha256": "3477a51e88dcd0fe326390bb42025ed1cdf871f5cbe2558b6f7f6d817e6ebfd1",
+      "processing": {
+        "keys": [
+          [
+            180,
+            196,
+            60
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "bruno-base",
+      "incoming": "Bruno - Base.png",
+      "element": "botanic",
+      "source": "Art\\source\\profile-pictures\\bruno-base.png",
+      "source_sha256": "6f8ad8957e61f568cad27b29cd70b0e0eeaffe88f2a8a84934973f728df30c5c",
+      "runtime": "public\\assets\\profile-pictures\\bruno-base.png",
+      "runtime_sha256": "04b072c27af4f37d2ff3b8d19ce53fc1e3112ed1da41fb1a45de0737723d0b0b",
+      "processing": {
+        "keys": [
+          [
+            228,
+            28,
+            100
+          ],
+          [
+            228,
+            36,
+            100
+          ],
+          [
+            220,
+            28,
+            100
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "bruno-omnic",
+      "incoming": "Bruno - Omnic.png",
+      "element": "botanic",
+      "source": "Art\\source\\profile-pictures\\bruno-omnic.png",
+      "source_sha256": "92e5ad370c20b835e365cb6866a20516b25cd70db8923913d47e167d05a1a1c8",
+      "runtime": "public\\assets\\profile-pictures\\bruno-omnic.png",
+      "runtime_sha256": "0bec48e6cdf21798f8037ea3cf9390ed496d551256133f5f36a9b92b0dca90f7",
+      "processing": {
+        "keys": [
+          [
+            252,
+            68,
+            44
+          ],
+          [
+            252,
+            68,
+            52
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "crinso-base",
+      "incoming": "Crinso - Base.png",
+      "element": "chaotic",
+      "source": "Art\\source\\profile-pictures\\crinso-base.png",
+      "source_sha256": "af5f458dce8fc438bb8df9f27d85b1f67ff7bb4be1a0bbc0fa4b78cecd93d706",
+      "runtime": "public\\assets\\profile-pictures\\crinso-base.png",
+      "runtime_sha256": "3dad091f037fad38048b074ac167f1fdc14e010ec670c7102fa95b9ab2cc9828",
+      "processing": {
+        "keys": [
+          [
+            28,
+            236,
+            132
+          ],
+          [
+            28,
+            244,
+            132
+          ],
+          [
+            20,
+            244,
+            132
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "crinso-omnic",
+      "incoming": "Crinso - Omnic.png",
+      "element": "chaotic",
+      "source": "Art\\source\\profile-pictures\\crinso-omnic.png",
+      "source_sha256": "9a14eb5b5b1880ce33a897e343889d9730a594efec10038afdca34329446e242",
+      "runtime": "public\\assets\\profile-pictures\\crinso-omnic.png",
+      "runtime_sha256": "76b0890cb2da0cb1291ad6c3660fd32c1197f39e23d62e64463f5aca0f49f1a1",
+      "processing": {
+        "keys": [
+          [
+            68,
+            116,
+            68
+          ],
+          [
+            76,
+            116,
+            68
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "disciple-base",
+      "incoming": "Disciple - Base.png",
+      "element": "chaotic",
+      "source": "Art\\source\\profile-pictures\\disciple-base.png",
+      "source_sha256": "494fb702ca6bc45e170c37d21053dbb2b5bd89374d063355993aa9fa37f31dbf",
+      "runtime": "public\\assets\\profile-pictures\\disciple-base.png",
+      "runtime_sha256": "4540fac693963c236c980784f608eacbd7ba540f6a4b1a30c1da2227631ddd6d",
+      "processing": {
+        "keys": [
+          [
+            4,
+            116,
+            228
+          ],
+          [
+            4,
+            116,
+            236
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "disciple-omnic",
+      "incoming": "Disciple - Omnic.png",
+      "element": "chaotic",
+      "source": "Art\\source\\profile-pictures\\disciple-omnic.png",
+      "source_sha256": "fc091184163dadc05d70381193ea9f290d99355bfa51fda448d4511576379f3f",
+      "runtime": "public\\assets\\profile-pictures\\disciple-omnic.png",
+      "runtime_sha256": "fcc073360b2234f0ad5e1e33da4b8ba4143e722f81cc6eea1cf26d90b7559363",
+      "processing": {
+        "keys": [
+          [
+            52,
+            60,
+            220
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "elise-base",
+      "incoming": "Elise - Base.png",
+      "element": "atmospheric",
+      "source": "Art\\source\\profile-pictures\\elise-base.png",
+      "source_sha256": "3f3c52f0c38bf0a4db987bc9ab70a2a7eaf49b1fd9a0aa0df592fd883ede27b8",
+      "runtime": "public\\assets\\profile-pictures\\elise-base.png",
+      "runtime_sha256": "35063fd3fdfd12864ad716c1f15a86dbf9806282d5cbd8c58072d9d8267753e6",
+      "processing": {
+        "keys": [
+          [
+            252,
+            180,
+            44
+          ],
+          [
+            252,
+            172,
+            44
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "elise-omnic",
+      "incoming": "Elise - Omnic.png",
+      "element": "atmospheric",
+      "source": "Art\\source\\profile-pictures\\elise-omnic.png",
+      "source_sha256": "aa89b28584901f50d256d8789b3b7ed814a27e3437ceb5198bf79972524b44dd",
+      "runtime": "public\\assets\\profile-pictures\\elise-omnic.png",
+      "runtime_sha256": "6bb4919dec4faa976c9a990ab4f5f0957a7544973882e865870ba14e9869a63d",
+      "processing": {
+        "keys": [
+          [
+            252,
+            172,
+            44
+          ],
+          [
+            252,
+            180,
+            44
+          ],
+          [
+            252,
+            180,
+            52
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "nerithe-base",
+      "incoming": "Nerithe - Base.png",
+      "element": "oceanic",
+      "source": "Art\\source\\profile-pictures\\nerithe-base.png",
+      "source_sha256": "051a8a5e0236e56544eafcc1cbec09d3ac619160b3ac630197fa7b38734e1178",
+      "runtime": "public\\assets\\profile-pictures\\nerithe-base.png",
+      "runtime_sha256": "3b5f0ac70fe3f031220cd459057716c76c7b1a7add0e355e2cfc8f4cd2ecd474",
+      "processing": {
+        "keys": [
+          [
+            252,
+            196,
+            60
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "nerithe-omnic",
+      "incoming": "Nerithe - Omnic.png",
+      "element": "oceanic",
+      "source": "Art\\source\\profile-pictures\\nerithe-omnic.png",
+      "source_sha256": "19e6f41a199ac51d6e62be41f23e266e42aaafde69735156042fa717b435cb4a",
+      "runtime": "public\\assets\\profile-pictures\\nerithe-omnic.png",
+      "runtime_sha256": "df647bfa6882b4707848cabd67dea9ca5160afa8c0bc0010be7cbc3b8e09744e",
+      "processing": {
+        "keys": [
+          [
+            252,
+            164,
+            52
+          ],
+          [
+            252,
+            164,
+            44
+          ],
+          [
+            244,
+            164,
+            52
+          ],
+          [
+            252,
+            156,
+            52
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "orvella-base",
+      "incoming": "Orvella - Base.png",
+      "element": "botanic",
+      "source": "Art\\source\\profile-pictures\\orvella-base.png",
+      "source_sha256": "10bab121f4e696414af39ad7c1b3af5461d4ce1c91505a463f24517b20b9c171",
+      "runtime": "public\\assets\\profile-pictures\\orvella-base.png",
+      "runtime_sha256": "461c7eba3609c3c45f79d2b90175ae8495f889da1761abe55ab6a7c3bdf604b4",
+      "processing": {
+        "keys": [
+          [
+            44,
+            124,
+            92
+          ],
+          [
+            44,
+            124,
+            100
+          ],
+          [
+            52,
+            124,
+            100
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "orvella-omnic",
+      "incoming": "Orvella - Omnic.png",
+      "element": "botanic",
+      "source": "Art\\source\\profile-pictures\\orvella-omnic.png",
+      "source_sha256": "27d8b00992e88a1826bfe471e7dad24cc3fd9ee6578ce1a907ea1133f1161bba",
+      "runtime": "public\\assets\\profile-pictures\\orvella-omnic.png",
+      "runtime_sha256": "38addefdf8b5b5fbf4df3930ecd38208a235415bb81eb39f519923880ac0bd38",
+      "processing": {
+        "keys": [
+          [
+            36,
+            84,
+            36
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "razor-base",
+      "incoming": "Razor - Base.png",
+      "element": "chaotic",
+      "source": "Art\\source\\profile-pictures\\razor-base.png",
+      "source_sha256": "80b4c44754b52df8b527123a3111ba09720e7b41195b7d40ea468b844203f4d9",
+      "runtime": "public\\assets\\profile-pictures\\razor-base.png",
+      "runtime_sha256": "53964920907448376858b4af5dc76b1214b67b8a7ff0370fe09aad17245afca6",
+      "processing": {
+        "keys": [
+          [
+            44,
+            172,
+            116
+          ],
+          [
+            36,
+            172,
+            116
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "razor-omnic",
+      "incoming": "Razor - Omnic.png",
+      "element": "chaotic",
+      "source": "Art\\source\\profile-pictures\\razor-omnic.png",
+      "source_sha256": "f0fe7891dfff3e3f9013890c0c106212e36e270e2c42b5a6825da560b5ba9765",
+      "runtime": "public\\assets\\profile-pictures\\razor-omnic.png",
+      "runtime_sha256": "e2bd69f76214b46c93c3146469c5c071b1cdba4465404901036c44fc07fbd61a",
+      "processing": {
+        "keys": [
+          [
+            76,
+            124,
+            44
+          ],
+          [
+            76,
+            116,
+            44
+          ],
+          [
+            68,
+            124,
+            44
+          ],
+          [
+            68,
+            116,
+            44
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "rosetta-base",
+      "incoming": "Rosetta - Base.png",
+      "element": "tranquilitic",
+      "source": "Art\\source\\profile-pictures\\rosetta-base.png",
+      "source_sha256": "281e5fbc0819f154206ced26f2ffb47669e69ef7c67f9b33fc2b714d1ee37a8d",
+      "runtime": "public\\assets\\profile-pictures\\rosetta-base.png",
+      "runtime_sha256": "5c168b1288ddcc788765d72dc635c8159dc437d7812ebccb89f42d2297a1b3a9",
+      "processing": {
+        "keys": [
+          [
+            4,
+            204,
+            124
+          ],
+          [
+            4,
+            196,
+            124
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "rosetta-omnic",
+      "incoming": "Rosetta - Omnic.png",
+      "element": "tranquilitic",
+      "source": "Art\\source\\profile-pictures\\rosetta-omnic.png",
+      "source_sha256": "66d3904b19eefd1e4ae68c195b9fe6064ac57a1eb8993975925f57c8c43c2fa9",
+      "runtime": "public\\assets\\profile-pictures\\rosetta-omnic.png",
+      "runtime_sha256": "4c1265f332c2e32e2ec3926e1dc5bca185dbe236774a49c88510571a868fcd95",
+      "processing": {
+        "keys": [
+          [
+            36,
+            132,
+            68
+          ],
+          [
+            36,
+            140,
+            68
+          ],
+          [
+            36,
+            140,
+            76
+          ],
+          [
+            36,
+            132,
+            76
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "thornia-base",
+      "incoming": "Thornia - Base.png",
+      "element": "chaotic",
+      "source": "Art\\source\\profile-pictures\\thornia-base.png",
+      "source_sha256": "92908dfe5bdc7d49c5f197ce5c0946b04686e6816e6248760d0d04221cc33af1",
+      "runtime": "public\\assets\\profile-pictures\\thornia-base.png",
+      "runtime_sha256": "fa6498b3d978f67d69d69dc5415ce2998e3436aae1e8690cf6e848bdee8e687f",
+      "processing": {
+        "keys": [
+          [
+            12,
+            212,
+            164
+          ],
+          [
+            4,
+            212,
+            164
+          ],
+          [
+            12,
+            220,
+            164
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "thornia-omnic",
+      "incoming": "Thornia - Omnic.png",
+      "element": "chaotic",
+      "source": "Art\\source\\profile-pictures\\thornia-omnic.png",
+      "source_sha256": "97079a7928d40c0b52bd3d683ef645c5e8d403025874d9da0a22c4a225640384",
+      "runtime": "public\\assets\\profile-pictures\\thornia-omnic.png",
+      "runtime_sha256": "8ff11d2fc4e40566d8456e771c3833ae93fc1217228187b7ec33c633076abd8e",
+      "processing": {
+        "keys": [
+          [
+            108,
+            212,
+            100
+          ],
+          [
+            108,
+            220,
+            92
+          ],
+          [
+            108,
+            212,
+            92
+          ],
+          [
+            116,
+            220,
+            100
+          ],
+          [
+            116,
+            212,
+            100
+          ],
+          [
+            116,
+            212,
+            92
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "vaelor-base",
+      "incoming": "Vaelor - Base.png",
+      "element": "atmospheric",
+      "source": "Art\\source\\profile-pictures\\vaelor-base.png",
+      "source_sha256": "7d791971dd89d190e1c1c11b227e81fb02f98f5b1ad56b438232b0e10ac4303e",
+      "runtime": "public\\assets\\profile-pictures\\vaelor-base.png",
+      "runtime_sha256": "a631ad16ce031ee1b89d5d8ea6d015dd6a8432885c019c38d7d371d1138f0287",
+      "processing": {
+        "keys": [
+          [
+            252,
+            172,
+            4
+          ],
+          [
+            252,
+            164,
+            4
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    },
+    {
+      "asset": "vaelor-omnic",
+      "incoming": "Vaelor - Omnic.png",
+      "element": "atmospheric",
+      "source": "Art\\source\\profile-pictures\\vaelor-omnic.png",
+      "source_sha256": "752a2389c2577f98bf7d777efaa1423d855ed2c37ce9ae0aad72d9fbbe919218",
+      "runtime": "public\\assets\\profile-pictures\\vaelor-omnic.png",
+      "runtime_sha256": "938ca809368adb77a9928a57772fe2af58ac80ed582f091f417a5abbd7501522",
+      "processing": {
+        "keys": [
+          [
+            252,
+            172,
+            36
+          ],
+          [
+            252,
+            180,
+            36
+          ]
+        ],
+        "radius": 20,
+        "border_only": false,
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 30
+        }
+      }
+    }
+  ]
+}

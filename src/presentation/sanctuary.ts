@@ -1,6 +1,8 @@
 import { currencies } from '../content/progression';
 import { uiIcon } from './ui-icon';
 import { currencyIcon } from './currency-icon';
+import { informationTopics } from './information';
+import { worldLore } from './world-lore';
 
 export const sanctuaryPages = ['home', 'team', 'character', 'gameplay', 'events', 'inventory', 'stores', 'collections', 'squad', 'summon', 'story', 'battle', 'glossary', 'archives', 'conduit-store', 'conduit-upgrade', 'profile'] as const;
 export type MenuPage = (typeof sanctuaryPages)[number];
@@ -49,7 +51,10 @@ export function sanctuaryHeader(page: MenuPage, fractalis: number | null, lycali
       <button type="button" class="text-button" data-page="collections" aria-label="Open Collections">${uiIcon('story')}</button>
       <button id="open-settings" type="button" class="text-button" aria-label="Open Settings" aria-haspopup="dialog" aria-controls="settings-drawer">${uiIcon('settings')}</button>
       <button type="button" class="text-button sanctuary-profile-trigger" data-page="profile" aria-label="Open profile">${uiIcon('squad')}</button>
-      <dialog class="information-modal sanctuary-help-drawer" id="sanctuary-help" aria-labelledby="sanctuary-help-heading"><header class="drawer-heading"><h2 id="sanctuary-help-heading">${title}</h2><button type="button" class="drawer-close" data-close-information aria-label="Close Help">&times;</button></header><div class="information-content">${sanctuaryHelp(page)}</div></dialog>
+      <dialog class="information-modal sanctuary-help-drawer" id="sanctuary-help" aria-labelledby="sanctuary-help-heading"><header class="drawer-heading"><h2 id="sanctuary-help-heading">${title}</h2><button type="button" class="drawer-close" data-close-information aria-label="Close Help">&times;</button></header><div class="information-content">${informationTopics('sanctuary-help', [
+        { id: 'screen', title: `${title} help`, summary: 'Controls, progression and transactions', content: sanctuaryHelp(page) },
+        { id: 'origins', title: 'Let and Rise', summary: 'Origins of the world and the creators\' souls', content: worldLore() },
+      ])}</div></dialog>
       </div>
   </header>`;
 }

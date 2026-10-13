@@ -5,81 +5,187 @@ import { currencyIcon } from './currency-icon';
 import { conduitIcon, conduitRarity } from './conduit-store';
 import { materialArt, materialName } from '../content/dungeon-art';
 import { assetUrl } from './portrait';
-import { information } from './information';
+import { information, informationTopics } from './information';
 import './inventory.css';
-import { masterChest, masterConduits, masterRulesText } from '../content/master-conduits';
+import { masterChest, masterConduits } from '../content/master-conduits';
 import { masterChestIcon, masterConduitIcon } from './master-conduits';
 import { getStarter } from '../content/starters';
+import { specialtyMaterials } from '../content/infusions';
+import { roseMaterials } from '../content/roses';
+import { elementalMaterials, elements, materialRarities } from '../content/activities';
+import { escapeDialogText } from './game-dialog';
+import { mechanicalComponents, machineComponentRulesText } from '../content/mechanical-components';
 
 export type InventoryTab = 'materials' | 'conduits';
+export type InventorySection = InventoryTab | 'masters';
+export type InventorySections = Record<InventorySection, boolean>;
+export const defaultInventorySections: Readonly<InventorySections> = { masters: true, materials: true, conduits: true };
+export interface InventoryFilters { query: string; type: string; rarity: string; element: string }
+export const defaultInventoryFilters: Readonly<InventoryFilters> = { query: '', type: '', rarity: '', element: '' };
+
+function itemMetadata(name: string, type: string, rarity = '', element = ''): string {
+  return `data-inventory-entry data-item-name="${escapeDialogText(name)}" data-item-type="${type}" data-item-rarity="${rarity}" data-item-elements="${element}"`;
+}
+
+function materialMetadata(id: string): string {
+  const ordinary = elementalMaterials.find(entry => entry.id === id);
+  const rose = roseMaterials.find(entry => entry.id === id);
+  const specialty = specialtyMaterials.find(entry => entry.id === id);
+  return itemMetadata(materialName(id), 'materials', ordinary?.rarity ?? rose?.rarity ?? '',
+    ordinary?.elementId ?? (specialty ? elements.filter(element => id.startsWith(`${element.infusion}-`)).map(element => element.id).join(' ') : ''));
+}
+
+function inventoryInformation(): string {
+  return information('inventory-information', 'Inventory', informationTopics('inventory-help', [
+    { id: 'holdings', title: 'Finding items', summary: 'Search, filters and stack counts', content: '<p>Search by item name. Combine item type, rarity and element filters; Clear resets them. Currency balances stay visible.</p><p>Panel counts show distinct owned item types, not total stack quantities. Only positive stacks appear. Details explains each item.</p><p>Element filters use authored affinities or matching specialty recipes. No element finds items without one; it does not mean they are unusable.</p>' },
+    { id: 'materials', title: 'Materials', summary: 'Sources and banner bundles', content: '<p>Earn materials in Story, elemental dungeons, Heaven, Abyss and Passion of Crimson Roses.</p><p>Summons award Common, Uncommon or Rare material bundles instead of Devourers. Standard uses all six elements; Roses uses Rosethorn materials. Duplicate Element-Bearers convert into larger Rare bundles.</p><p>Check Level and Evolution for exact costs. Equipment and captured copies are managed in Team; galleries are in Collections.</p>' },
+    { id: 'conduits', title: 'Conduits', summary: 'Acquisition and equipment', content: '<p>Common Conduits are purchased in the Store; higher tiers drop in Awaken the Machines. Banners can also award a Legendary bonus.</p><p>One owned copy unlocks an ordinary Conduit for all characters. Equipping never consumes it.</p><p>Each character can equip at most four ordinary Omnic Conduits, all matching their combat element. Broken Mechanical Components fund ordinary Conduit upgrades.</p>' },
+    { id: 'masters', title: 'Masters & chests', summary: 'Choosing and using a Master', content: '<p>The final Machines boss (stage 100) has an independent 1% Cosmic Grand Master Chest drop chance.</p><p>Open its Inventory tile to choose one unowned Omnic Master, even for an unowned Element-Bearer. Opening consumes one chest but does not equip the Master. Extra chests stay unopened when all 48 Masters are owned.</p><p>A Master equips only to its named bearer, in a separate slot. It consumes no ordinary slots or copies and cannot be upgraded.</p><p>Every qualifying native outcome can trigger its fixed effect, without a once-per-round limit. Generated Conduit effects cannot trigger it. Resource caps, shield/buff refresh limits, skill costs and recovery still apply. See its Details for the exact effect.</p>' },
+  ]));
+}
 export function isInventoryTab(value: unknown): value is InventoryTab {
   return value === 'materials' || value === 'conduits';
 }
 
-export function inventoryView(account: Account | null, selected: InventoryTab = 'materials'): string {
+function materialDescription(id: string): string {
+  materialName(id);
+  if (id.endsWith('-weapon') && specialtyMaterials.some(material => material.id === id)) {
+    return 'A specialty weapon material retained in your inventory. Weapon upgrading is currently unavailable; this material is not spent by Level or Evolution.';
+  }
+  if (id.endsWith('-level') && specialtyMaterials.some(material => material.id === id)) {
+    return 'A specialty leveling material used by matching Element-Bearers in their Legendary and Omnic forms. Check Level for the exact amount required.';
+  }
+  if (id.endsWith('-evolution') && specialtyMaterials.some(material => material.id === id)) {
+    return 'A specialty evolution material used by matching Element-Bearers for their late-form evolutions. Check Evolution for the exact amount required.';
+  }
+  if (roseMaterials.some(material => material.id === id)) {
+    return 'A Rosethorn progression material for Rosetta, Thornia and Crinso. Their Level and Evolution previews show which tiers and quantities each upgrade uses.';
+  }
+  return 'An elemental progression material. Matching Level and Evolution recipes show the required tier and quantity before you spend it.';
+}
+
+export function inventoryView(account: Account | null, selected: InventoryTab = 'materials', sections: Readonly<InventorySections> = defaultInventorySections, filters: Readonly<InventoryFilters> = defaultInventoryFilters): string {
   const materials = Object.entries(account?.materials ?? {}).filter(([, amount]) => amount > 0);
+  const components = account?.mechanicalComponents ?? 0;
+  const resourceCount = materials.length + (components > 0 ? 1 : 0);
   const ownedConduits = conduits.filter((conduit) => (account?.conduits?.[conduit.id] ?? 0) > 0);
   const empty = (tab: InventoryTab) => `<div class="inventory-empty-slots" aria-hidden="true">${'<i></i>'.repeat(14)}</div>
-    <div class="inventory-empty"><h3>${tab === 'materials' ? 'No materials yet' : 'No Conduits owned yet'}</h3>
-    <button type="button" class="text-button" data-page="${tab === 'materials' ? 'gameplay' : 'conduit-store'}">${tab === 'materials' ? 'Go to dungeons &rarr;' : 'Visit Conduit Store &rarr;'}</button></div>`;
+    <div class="inventory-empty"><h3>${tab === 'materials' ? 'No resources yet' : 'No Conduits owned yet'}</h3></div>`;
   return `<section class="inventory-hub ref-screen ref-inventory" aria-label="Inventory holdings">
     <div class="inventory-introduction">
-    ${information('inventory-information', 'Inventory', `<p>Inventory lists saved currencies and owned materials and Conduit counts. Panel counts show distinct owned item types, not the sum of stack quantities. Only positive stacks appear.</p><p>Materials are earned in Story, elemental dungeons, Heaven, Abyss and Passion of Crimson Roses. Summon banners also award Common, Uncommon and Rare material bundles instead of Elemental-Devourers; Standard uses all six elements and Roses uses Rosethorn materials. Duplicate Element-Bearers convert into larger Rare bundles. Common Conduits are purchased in the Store; higher tiers drop in Awaken the Machines, with an additional Legendary bonus possible on banners. Equipment and Elemental-Devourer copies are managed in Team; galleries are in Collections. One owned ordinary Conduit unlocks it for all characters; equipping does not consume it. Each character can equip at most four ordinary Omnic Conduits, all matching their combat element.</p><p>${masterRulesText}</p>`)}</div>
+    ${inventoryInformation()}</div>
     <div class="inventory-currencies">${(['fractalis', 'lycalis'] as const).map((id) => `<article class="inventory-currency ref-panel" aria-label="${id === 'fractalis' ? 'Prismatica' : 'Null-Prismatica'} balance">
       ${currencyIcon(id)}<div><strong>${account ? account[id] : 'Unavailable'}</strong>
       <span>${id === 'fractalis' ? 'Prismatica' : 'Null-Prismatica'}</span></div></article>`).join('')}
       </div>
     ${!account ? '<p role="alert">Currency inventory unavailable. Check the save error.</p>' : ''}
-    <section class="inventory-panel ref-panel inventory-masters" aria-label="Master Conduits and chests">
-      <header class="ref-panel-heading">Masters · ${masterConduits.filter(entry => account?.masterConduits?.[entry.id] === 1).length} / 48</header>
-      <article class="inventory-item"><strong>${masterChest.name}</strong>${masterChestIcon()}
-        <span>Owned ${account?.masterChests ?? 0}</span><p>${masterChest.description}</p>
-        <button class="primary-button" data-open-master-chest ${!account || (account.masterChests ?? 0) < 1 || masterConduits.every(entry => account.masterConduits?.[entry.id] === 1) ? 'disabled' : ''}>Open chest · Choose a Master</button>
-        <small>Final Awaken the Machines boss only · 1% per defeat. When all Masters are owned, extra chests stay unopened.</small></article>
-      <ul class="inventory-item-grid">${masterConduits.filter(entry => account?.masterConduits?.[entry.id] === 1).map(entry => `<li class="inventory-item">${masterConduitIcon(entry.id)}<strong>${entry.name}</strong>
-        <small>Omnic Master · ${getStarter(entry.character).name}</small><p>${entry.effect}</p><button class="text-button" data-page="character">Equip in Team</button></li>`).join('')}</ul>
-    </section>
-    <section class="inventory-panel ref-panel" id="inventory-panel-materials" aria-label="Owned materials">
-    <header class="ref-panel-heading">Materials · ${account ? materials.length : 'Unavailable'}</header><div class="ref-scroll">
-    ${!account ? '<p role="alert">Material inventory unavailable. Check the save error.</p>' : materials.length
-      ? `<ul class="inventory-item-grid">${materials.map(([id, amount]) => {
+    <div class="inventory-tools" role="search" aria-label="Find owned items">
+      <label class="inventory-search">Search items<input type="search" data-inventory-query placeholder="Search item names" value="${escapeDialogText(filters.query)}" ${!account ? 'disabled' : ''}></label>
+      ${([
+        ['type', 'Item type', [['', 'All types'], ['materials', 'Materials'], ['conduits', 'Conduits'], ['masters', 'Master Conduits'], ['chests', 'Chests'], ['components', 'Components']]],
+        ['rarity', 'Rarity', [['', 'All rarities'], ...materialRarities.map(rarity => [rarity, rarity]), ['none', 'No rarity']]],
+        ['element', 'Element', [['', 'All elements'], ...elements.map(element => [element.id, element.name]), ['none', 'No element']]],
+      ] as const).map(([key, label, options]) => `<label>${label}<select data-inventory-filter="${key}" ${!account ? 'disabled' : ''}>${options.map(([value, text]) => `<option value="${value}" ${filters[key] === value ? 'selected' : ''}>${text}</option>`).join('')}</select></label>`).join('')}
+      <button type="button" class="text-button" data-inventory-clear ${!account ? 'disabled' : ''}>Clear</button>
+    </div>
+    <p class="inventory-results" data-inventory-results role="status" ${!account ? 'hidden' : ''}></p>
+    <details class="inventory-panel ref-panel inventory-masters" data-inventory-section="masters" ${sections.masters ? 'open' : ''}>
+      <summary class="ref-panel-heading">Master Conduits &amp; Chests · ${account ? masterConduits.filter(entry => account.masterConduits?.[entry.id] === 1).length : 'Unavailable'} / ${masterConduits.length}</summary>
+      ${!account ? '<p role="alert">Master inventory unavailable. Check the save error.</p>' : ''}
+      <ul class="inventory-item-grid">${(account?.masterChests ?? 0) > 0 ? `<li class="inventory-item" data-inventory-chest="${masterChest.id}" ${itemMetadata(masterChest.name, 'chests')}>
+        <button type="button" class="inventory-item-art inventory-chest-control" data-open-master-chest aria-label="Open ${masterChest.name} · Choose a Master" ${masterConduits.every(entry => account?.masterConduits?.[entry.id] === 1) ? 'disabled' : ''}>${masterChestIcon()}</button>
+        <strong>${masterChest.name}</strong><small>Consumable chest</small>
+        <span class="inventory-quantity">Owned ${account?.masterChests}</span>
+        ${information('inventory-chest-details', masterChest.name, `<div class="inventory-detail-art">${masterChestIcon()}</div><p>${masterChest.description}</p><p>Each opening consumes one chest and unlocks your chosen unowned Master; it does not equip the reward.</p><p>Final Awaken the Machines boss only: 1% chance per defeat. When all Masters are owned, extra chests stay unopened.</p>`, 'Details')}</li>` : ''}${masterConduits.filter(entry => account?.masterConduits?.[entry.id] === 1).map(entry => `<li class="inventory-item" data-inventory-master="${entry.id}" ${itemMetadata(`${entry.name} ${getStarter(entry.character).name}`, 'masters', entry.rarity, getStarter(entry.character).elementId)}><div class="inventory-item-art">${masterConduitIcon(entry.id)}</div><strong>${entry.name}</strong>
+        <small>Omnic Master · ${getStarter(entry.character).name}</small><span class="inventory-quantity">Owned 1</span>
+        ${information(`inventory-${entry.id}-details`, entry.name, `<div class="inventory-detail-art">${masterConduitIcon(entry.id)}</div><p>Omnic Master for ${getStarter(entry.character).name}.</p><h3>Effect</h3><p>${entry.effect}</p><p>Always active while equipped to its named Element-Bearer. No upgrades; generated Conduit effects cannot trigger it. Existing caps, skill costs and recovery still apply.</p><h3>Origin</h3><p>${entry.lore}</p>`, 'Details')}</li>`).join('')}</ul>
+      ${account && !(account.masterChests ?? 0) && !masterConduits.some(entry => account.masterConduits?.[entry.id] === 1) ? '<p class="inventory-empty">No Master Conduits or chests owned yet.</p>' : ''}
+    </details>
+    <details class="inventory-panel ref-panel" id="inventory-panel-materials" data-inventory-section="materials" ${sections.materials ? 'open' : ''}>
+    <summary class="ref-panel-heading">Resources · ${account ? resourceCount : 'Unavailable'}</summary><div class="ref-scroll">
+    ${!account ? '<p role="alert">Resource inventory unavailable. Check the save error.</p>' : resourceCount
+      ? `<ul class="inventory-item-grid">${components > 0 ? `<li class="inventory-item" data-inventory-resource="${mechanicalComponents.id}" ${itemMetadata(mechanicalComponents.name, 'components')}>
+        <div class="inventory-item-art">${mechanicalComponentIcon()}</div><strong>${mechanicalComponents.name}</strong><span class="inventory-quantity">Owned ${components}</span>
+        ${information('inventory-components-details', mechanicalComponents.name, `<div class="inventory-detail-art">${mechanicalComponentIcon()}</div><p>Owned ${components}</p><h3>Use</h3><p>Spend these resources to upgrade ordinary Conduits, up to +5. Masters cannot be upgraded. Check Conduit Upgrade for each exact cost.</p><h3>Source</h3><p>${machineComponentRulesText}</p>`, 'Details')}</li>` : ''}${materials.map(([id, amount]) => {
         const art = materialArt(id);
-        return `<li class="inventory-item" data-inventory-material="${id}"><div class="inventory-item-art">${art ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">` : '<span>Artwork pending</span>'}</div>
-          <strong>${materialName(id)}</strong><span class="inventory-quantity">Owned ${amount}</span></li>`;
-      }).join('')}</ul>` : empty('materials')}</div></section>
-    <section class="inventory-panel ref-panel" id="inventory-panel-conduits" aria-label="Owned Conduits">
-    <header class="ref-panel-heading">Conduits · ${account ? ownedConduits.length : 'Unavailable'}<span><button class="ref-link" data-page="conduit-upgrade">Upgrade</button><button class="ref-link" data-page="conduit-store">Store</button></span></header>
-    <p class="ref-component-count">${mechanicalComponentIcon()}<span>${account ? account.mechanicalComponents ?? 0 : 'Unavailable'} Broken Mechanical Components</span></p><div class="ref-scroll">
+        return `<li class="inventory-item" data-inventory-material="${id}" ${materialMetadata(id)}><div class="inventory-item-art">${art ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">` : '<span>Artwork pending</span>'}</div>
+          <strong>${materialName(id)}</strong><span class="inventory-quantity">Owned ${amount}</span>
+          ${information(`inventory-${id}-details`, materialName(id), `<p>Owned ${amount}</p><p>${materialDescription(id)}</p>`, 'Details')}</li>`;
+      }).join('')}</ul>` : empty('materials')}</div></details>
+    <details class="inventory-panel ref-panel" id="inventory-panel-conduits" data-inventory-section="conduits" ${sections.conduits ? 'open' : ''}>
+    <summary class="ref-panel-heading">Conduits · ${account ? ownedConduits.length : 'Unavailable'}</summary>
+    <div class="ref-scroll">
     ${!account ? '<p role="alert">Conduit inventory unavailable. Check the save error.</p>' : ownedConduits.length
-      ? `<ul class="inventory-item-grid">${ownedConduits.map((conduit) => `<li class="inventory-item" data-inventory-conduit="${conduit.id}">
-        <div class="inventory-item-art">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div><strong>${conduit.name}</strong>${conduitRarity(conduit.id)}<small>${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</small><span class="inventory-quantity">Owned ${account?.conduits?.[conduit.id]}</span></li>`).join('')}</ul>`
-      : empty('conduits')}</div></section>
+      ? `<ul class="inventory-item-grid">${ownedConduits.map((conduit) => `<li class="inventory-item" data-inventory-conduit="${conduit.id}" ${itemMetadata(conduit.name, 'conduits', conduit.rarity, conduit.element ?? '')}>
+        <div class="inventory-item-art">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div><strong>${conduit.name}</strong>${conduitRarity(conduit.id)}<span class="inventory-quantity">Owned ${account?.conduits?.[conduit.id]}</span>
+        ${information(`inventory-${conduit.id}-details`, conduit.name, `<div class="inventory-detail-art">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div><p>${conduit.rarity} Conduit · Upgrade +${account?.conduitUpgrades?.[conduit.id] ?? 0} of 5</p><h3>Effect</h3><p>${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</p>${'kitEffects' in conduit ? '<p>Upgrades scale the stat bonuses, not the fixed kit enhancement.</p>' : ''}<h3>Background</h3><p>${conduit.lore}</p><p>Owned ${account?.conduits?.[conduit.id]}. Equipping does not consume a copy; manage equipment in Team.</p>`, 'Details')}</li>`).join('')}</ul>`
+      : empty('conduits')}</div></details>
   </section>`;
 }
 
-export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) => void): void {
-  const tabs = Array.from(host.querySelectorAll<HTMLButtonElement>('[data-inventory-tab]'));
-  const select = (button: HTMLButtonElement, focus: boolean) => {
-    const tab = button.dataset.inventoryTab;
-    if (!isInventoryTab(tab)) throw new Error('Unknown Inventory category.');
-    for (const candidate of tabs) {
-      candidate.setAttribute('aria-selected', String(candidate === button));
-      candidate.tabIndex = candidate === button ? 0 : -1;
-      const panel = host.querySelector<HTMLElement>(`#${candidate.getAttribute('aria-controls')}`);
-      if (!panel) throw new Error('Inventory category panel is missing.');
-      panel.hidden = candidate !== button;
+export function inventorySections(host: HTMLElement): InventorySections {
+  const state = { ...defaultInventorySections };
+  host.querySelectorAll<HTMLDetailsElement>('[data-inventory-section]').forEach(panel => {
+    const section = panel.dataset.inventorySection;
+    if (section !== 'masters' && !isInventoryTab(section)) throw new Error('Unknown Inventory category.');
+    state[section] = panel.open;
+  });
+  return state;
+}
+
+export function inventoryFilters(host: HTMLElement): InventoryFilters {
+  const query = host.querySelector<HTMLInputElement>('[data-inventory-query]');
+  if (!query) throw new Error('Inventory search is missing.');
+  const state = { ...defaultInventoryFilters, query: query.value };
+  for (const key of ['type', 'rarity', 'element'] as const) {
+    const control = host.querySelector<HTMLSelectElement>(`[data-inventory-filter="${key}"]`);
+    if (!control) throw new Error('Inventory filter is missing.');
+    state[key] = control.value;
+  }
+  return state;
+}
+
+export function bindInventory(host: HTMLElement, onSelect: (tab: InventoryTab) => void, onToggle?: (state: InventorySections) => void, onFilter?: (state: InventoryFilters) => void): void {
+  if (!host.querySelector('.inventory-hub')) return;
+  const update = (): void => {
+    const state = inventoryFilters(host);
+    const query = state.query.trim().toLowerCase();
+    const active = Boolean(query || state.type || state.rarity || state.element);
+    const items = Array.from(host.querySelectorAll<HTMLElement>('[data-inventory-entry]'));
+    for (const item of items) {
+      const data = item.dataset;
+      item.hidden = !(data.itemName?.toLowerCase().includes(query)
+        && (!state.type || data.itemType === state.type)
+        && (!state.rarity || (state.rarity === 'none' ? !data.itemRarity : data.itemRarity === state.rarity))
+        && (!state.element || (state.element === 'none' ? !data.itemElements : data.itemElements?.split(' ').includes(state.element))));
     }
-    onSelect(tab);
-    if (focus) button.focus();
+    host.querySelectorAll<HTMLElement>('[data-inventory-section]').forEach(panel => {
+      panel.hidden = active && !panel.querySelector('[role="alert"]')
+        && !Array.from(panel.querySelectorAll<HTMLElement>('[data-inventory-entry]')).some(item => !item.hidden);
+    });
+    const count = items.filter(item => !item.hidden).length;
+    const result = host.querySelector<HTMLElement>('[data-inventory-results]');
+    if (!result) throw new Error('Inventory results status is missing.');
+    result.textContent = count ? `${count} of ${items.length} owned item types${active ? ' match' : ''}.`
+      : active ? 'No owned items match. Change your search or filters.' : 'No owned items yet.';
+    onFilter?.(state);
   };
-  tabs.forEach((button, index) => {
-    button.addEventListener('click', () => select(button, false));
-    button.addEventListener('keydown', (event) => {
-      const offset = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
-      if (!offset && event.key !== 'Home' && event.key !== 'End') return;
-      event.preventDefault();
-      const destination = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + offset + tabs.length) % tabs.length;
-      select(tabs[destination], true);
+  host.querySelector('[data-inventory-query]')?.addEventListener('input', update);
+  host.querySelectorAll('[data-inventory-filter]').forEach(control => control.addEventListener('change', update));
+  host.querySelector('[data-inventory-clear]')?.addEventListener('click', () => {
+    const query = host.querySelector<HTMLInputElement>('[data-inventory-query]')!;
+    query.value = '';
+    host.querySelectorAll<HTMLSelectElement>('[data-inventory-filter]').forEach(control => { control.value = ''; });
+    update();
+    query.focus({ preventScroll: true });
+  });
+  update();
+  host.querySelectorAll<HTMLDetailsElement>('[data-inventory-section]').forEach(panel => {
+    panel.addEventListener('toggle', () => {
+      const section = panel.dataset.inventorySection;
+      if (section !== 'masters' && !isInventoryTab(section)) throw new Error('Unknown Inventory category.');
+      if (panel.open && isInventoryTab(section)) onSelect(section);
+      onToggle?.(inventorySections(host));
     });
   });
 }

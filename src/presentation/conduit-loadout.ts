@@ -186,11 +186,11 @@ export function bindConduitLoadout(host: HTMLElement): void {
         const restrictions = conduit.rarity === 'Omnic' ? 'Matching combat element required. Maximum 4 Omnic Conduits in ordinary slots.' : '';
         void gameChoose(`${detail} ${stats} ${rule ?? ''} ${restrictions}`, [{ value: 'close', label: 'Close', primary: true }], 'close', {
           title: conduit.name,
-          messageHtml: `<div class="loadout-detail"><div class="loadout-detail-art">${conduitIcon(conduit.id, level)}</div><p>${escapeDialogText(detail)}</p><h3>Stat bonuses</h3><ul>${stats.split(' · ').map(stat => `<li>${escapeDialogText(stat)}</li>`).join('')}</ul>${rule ? `<h3>Special effect</h3><p>${escapeDialogText(rule)}</p>` : ''}${restrictions ? `<h3>Equipment rules</h3><p>${escapeDialogText(restrictions)}</p>` : ''}</div>`,
+          messageHtml: `<div class="loadout-detail"><div class="loadout-detail-art">${conduitIcon(conduit.id, level)}</div><p>${escapeDialogText(detail)}</p><h3>Stat bonuses</h3><ul>${stats.split(' · ').map(stat => `<li>${escapeDialogText(stat)}</li>`).join('')}</ul>${rule ? `<h3>Special effect</h3><p>${escapeDialogText(rule)}</p>` : ''}${restrictions ? `<h3>Equipment rules</h3><p>${escapeDialogText(restrictions)}</p>` : ''}<h3>Origin</h3><p>${escapeDialogText(conduit.lore)}</p></div>`,
         });
       } else if (isMasterConduitId(id)) {
         const master = getMasterConduit(id);
-        void showRule(`${master.name} · Master`, `${master.effect} Fixed kit effect; does not scale with Conduit upgrades.`);
+        void showRule(`${master.name} · Master`, `${master.effect} Always-active bearer enhancement; recurs on qualifying native outcomes. Does not scale with Conduit upgrades. ${master.lore}`);
       }
       return;
     }
@@ -267,7 +267,7 @@ function masterRow(owner: string, account: Account | null): string {
   return `<section class="ref-master-slot loadout-master" aria-label="Master slot">
     <span class="loadout-master-art">${current ? masterConduitIcon(current) : '<span class="loadout-master-empty" aria-hidden="true">M</span>'}</span>
     <span class="loadout-master-text"><small class="loadout-eyebrow">Master slot</small><b>${entry ? entry.name : 'No Master equipped'}</b>
-      <small>${entry ? 'Fixed kit effect · Omnic Master' : choices.length ? `${choices.length} owned for ${getStarter(owner).name}` : 'Found in Cosmic Grand Master Chests'}</small></span>
+      <small>${entry ? 'Always active · Omnic Master' : choices.length ? `${choices.length} owned for ${getStarter(owner).name}` : 'Found in Cosmic Grand Master Chests'}</small></span>
     <span class="loadout-master-select"><label for="master-${owner}" class="ref-sr-only">Master Conduit · ${getStarter(owner).name}</label><select id="master-${owner}" data-master-equipment="${owner}" ${!account ? 'disabled' : ''}>
       <option value="">No Master equipped</option>${choices.map(master => `<option value="${master.id}" ${master.id === current ? 'selected' : ''}>${master.name} · Omnic Master</option>`).join('')}</select></span>
     ${entry ? `<button type="button" class="loadout-rule-button" data-loadout-master-rule="${entry.id}" aria-label="${escapeDialogText(entry.name)} rule details">Details</button>` : ''}</section>`;
