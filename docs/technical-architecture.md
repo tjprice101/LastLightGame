@@ -65,7 +65,7 @@ material dungeons share this resolver; combat snapshots the fractional kit on
 entry. `formatStat` is display-only (up to two decimals), including battle logs,
 HUD and reports. Save version2 stores progress, not rounded derived stats;
 existing accounts automatically receive corrected growth without migration.
-Core growthG=(1+.03*level)^3*1.45^(evolution-1) is separate from bounded
+Core growthG=1+.15*level+1.5*(evolution-1) (D-288) is separate from bounded
 percentage potencyP=1+.003*level+.05*(evolution-1). Shared stat-growth.ts owns
 accelerating enemy endpoints; all activities use it.
 Creature catalog identities distinguish authored evolution forms. Walletv2

@@ -151,7 +151,7 @@ describe('Shatter Gauge', () => {
       const state = createBattle(12345, ['ember', 'tide', 'sprout'], { ember: progress, tide: progress, sprout: progress });
       state.allies.forEach((unit) => { unit.shatter = 100; unit.stats.crit = 0; });
       state.enemies.forEach((unit) => { unit.hp = 2000; unit.stats.crit = 0; });
-      const factor = 1.03 ** 3;
+      const factor = 1.15;
       expect(state.allies[0].stats.damage).toBeCloseTo(38 * factor);
       expect(state.allies[1].stats.defense).toBeCloseTo(24 * factor ** .7);
       expect(damageAmount(38.38, 1.01 * 1.6, 5, false)).toBe(55);

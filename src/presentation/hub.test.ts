@@ -26,7 +26,7 @@ describe('game-specific hub layouts', () => {
     const level = characterDetail(starters[0], 'upgrade-1', account);
     expect(level).toContain('stat-change--increase');
     expect(level).toContain('220 &rarr;');
-    expect(level).toContain('240.4</b>');
+    expect(level).toContain('253</b>');
     expect(level).toContain('aria-label="Increased to');
     expect(level).toContain('resource-missing');
     account.fractalis = 10000;
@@ -68,9 +68,9 @@ describe('game-specific hub layouts', () => {
     account.lycalis = Number.MAX_SAFE_INTEGER;
     account.materials = { 'infernic-common': Number.MAX_SAFE_INTEGER };
     for (const html of [homeHub(starters[0], false, account), characterDetail(starters[0], 'overview', account)]) {
-      expect(html).toContain('<strong>100787.57</strong>');
-      expect(html).toContain('<strong>17408.76</strong>');
-      expect(html).toContain('<strong>728.94</strong>');
+      expect(html).toContain('<strong>5335</strong>');
+      expect(html).toContain('<strong>921.5</strong>');
+      expect(html).toContain('<strong>93.17</strong>');
     }
     expect(inventoryHub(account).match(/9007199254740991/g)).toHaveLength(4);
   });
@@ -261,10 +261,10 @@ describe('game-specific hub layouts', () => {
   it('shows fractional growth consistently on Home, Overview and upgrade previews', () => {
     const account = emptyAccount();
     const preview = characterDetail(starters[0], 'upgrade-1', account);
-    for (const change of ['10 &rarr; 10.64', '38 &rarr; 41.52', '8 &rarr; 8.74']) expect(preview.replace(/<[^>]*>/g, '')).toContain(change);
+    for (const change of ['10 &rarr; 11.03', '38 &rarr; 43.7', '8 &rarr; 9.2']) expect(preview.replace(/<[^>]*>/g, '')).toContain(change);
     account.characters.ember = { level: 1, evolution: 1 };
     for (const html of [homeHub(starters[0], false, account), characterDetail(starters[0], 'overview', account)]) {
-      for (const value of ['10.64', '41.52', '8.74']) expect(html).toContain(`<strong>${value}</strong>`);
+      for (const value of ['11.03', '43.7', '9.2']) expect(html).toContain(`<strong>${value}</strong>`);
       expect(html).not.toContain('000000000');
     }
   });

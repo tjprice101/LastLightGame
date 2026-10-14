@@ -107,4 +107,26 @@ describe('battle animation speed', () => {
     applyBattleSpeed(2);
     expect(animation.updatePlaybackRate).not.toHaveBeenCalled();
   });
+
+  it('cancels both canvas and sprite playback when Reduce motion is enabled mid-attack', () => {
+    browser();
+    document.documentElement.dataset.motion = 'reduced';
+    vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
+    const events = new EventTarget();
+    vi.stubGlobal('window', events);
+    Object.assign(document, { addEventListener: vi.fn(), removeEventListener: vi.fn() });
+    const menu = { addEventListener: vi.fn(), close: vi.fn() };
+    const host = { querySelector: (selector: string) => selector === '#battle-menu' ? menu : null,
+      querySelectorAll: () => [], innerHTML: '', classList: { remove: vi.fn() } };
+    const session = { state: createBattle(1729, ['ember']), log: [], stageEvents: [], progress: { level: 0, evolution: 1 } };
+    const view = Reflect.construct(BattleView, [host, session, { nextAlly: 'KeyC', nextTarget: 'KeyT' }, () => {}]);
+    const runner = { clear: vi.fn(), destroy: vi.fn() };
+    const animation = { cancel: vi.fn() };
+    Reflect.set(view, 'vfxRunner', runner);
+    Reflect.get(view, 'animations').add(animation);
+    events.dispatchEvent(new Event('last-light-motion-change'));
+    expect(runner.clear).toHaveBeenCalledOnce();
+    expect(animation.cancel).toHaveBeenCalledOnce();
+    view.destroy();
+  });
 });

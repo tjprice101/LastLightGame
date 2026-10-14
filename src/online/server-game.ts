@@ -222,8 +222,12 @@ export async function gameOperation(operation: GameOperation, expectedRevision =
   requestId: string = crypto.randomUUID()): Promise<GameResponse> {
   const { data, error } = await onlineClient().functions.invoke('game-operation', {
     body: { requestId, expectedRevision, operation } satisfies GameRequest,
+    timeout: 30_000,
   });
   if (error) {
+    if ('context' in error && error.context instanceof Error && error.context.name === 'AbortError') {
+      throw new GameOperationError('The server did not respond within 30 seconds. Your action may already be saved. Retry the same request before continuing.');
+    }
     if ('context' in error && error.context instanceof Response) {
       const body = await error.context.json().catch(() => null) as { error?: string } | null;
       throw new GameOperationError(body?.error ?? 'Online operation failed.', error.context.status);

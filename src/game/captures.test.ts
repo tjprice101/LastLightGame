@@ -116,9 +116,9 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
     const weak = resolveCapturedFighter(early);
     const strong = resolveCapturedFighter(final);
     const bossKit = resolveCapturedFighter(boss);
-    expect(weak.stats.health).toBe(130000);
-    expect(strong.stats.health).toBe(200000);
-    expect(bossKit.stats.health).toBe(200000);
+    expect(weak.stats.health).toBe(2717);
+    expect(strong.stats.health).toBe(4180);
+    expect(bossKit.stats.health).toBe(4180);
     expect(weak.stats.damage).toBeLessThan(strong.stats.damage);
     expect(strong.stats.health).toBeLessThan(infusionEncounter('abyss', 35).stats.health);
     expect(bossKit.abilities.ultimate.name).toBe('Last Ruin: Cosmic Wrath');

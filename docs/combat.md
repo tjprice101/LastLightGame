@@ -10,53 +10,90 @@ reading future final state. Legacy shield events remain supported. This changes
 presentation metadata only, not combat math, effects, clocks or RNG.
 [Full UI/copy contract](menus-and-inventory.md#active-allied-effects-and-clear-ability-copy-d-211).
 
-## Enemy progression rebalance (D-192)
+## Progressive build reliance (D-288)
 
-The owner approves stronger real enemy stats and level-based activity access,
-not a hidden damage penalty for level gaps. Character stats, skills, costs,
-cooldowns, Defense mitigation, RNG and ordinary reward amounts are unchanged.
+The owner requests approximately linear playable growth against accelerating
+enemies, with Conduits and a reliable team increasingly necessary. This
+supersedes D-052/D-192's cubic character growth and former hostile endpoints,
+not level caps, acquisition, costs, RNG, rewards or activity access.
+All16 Element-Bearers use
+`G = 1 + .15*level + 1.5*(evolution-1)`: each level adds15% of base core
+stats and evolution adds150% of base, rather than compounding previous gains.
+HP/Attack/Elemental Damage, flat ability healing and shields use G; Defense
+retains G^0.7. Separate bounded percentage/Gauge/skill potency is unchanged.
+
 All hostile spawns share `enemyCombatStats`; Training retains each species'
-opening stats and converges on the shared endpoints.
-
-Ordinary normal-hit targets for unequipped Infernis are **2-4 hits at the same
-level, 3-5 at +5, and 5-8 at +8/+10**. Tests cover Lv.0/10/30/45/60/75/90/105
-at their pre-evolution caps, using actual noncritical attack events. Tizu/Flora
-retain lower normal Attack and their shield/healing roles; their upper hit-count
-allowance is 1.5 times the damage-starter target. None of the three can one-shot
-these higher-level enemies even with a critical Normal Attack.
-
-Growth combines cubic level growth, smooth increasing evolution-scale pressure,
-and extra late acceleration above Lv.110. Each stat is anchored to its opening
-value and exact Lv.120 endpoint; Defense uses a gentler exponent. Beyond120,
-the event-only extension is `(1 + .018 * (level-120))^2`, through140.
+opening stats and converges on shared endpoints. With steps S=level-1,
+span N=119, opening B, target T and initial rate R, the curve is
+`round(B*(1+S*R)*exp(log(T/(B*(1+N*R)))*(S/N)^2))`.
+HP/Attack/Defense rates are .30/.12/.15. This combines accessible early growth
+with smooth exponential acceleration, without the former Lv.110-120 spike.
+Ordinary openings remain83 HP/22 Attack/4 Defense; boss openings remain
+207.5/27.5/(16/3). Beyond120, the existing event-only extension is
+`(1 + .018 * (level-120))^2`, through140.
 
 | Lv.120 stat | Ordinary | Boss |
 | --- | --- | --- |
-| Health | 200,000 | 500,000 |
-| Attack | 40,000 | 50,000 |
-| Defense | 6,000 | 8,000 |
+| Health | 7,000 | 35,000 |
+| Attack | 1,200 | 3,000 |
+| Defense | 400 | 600 |
+
+Measured unequipped Infernis against ordinary same-level enemies:
+
+| Level / evolution | Player HP | Enemy HP | Noncritical Normal Attacks to defeat |
+| --- | --- | --- | --- |
+| 19 / 1 | 847 | 541 | 5 |
+| 60 / 3 | 2,860 | 1,904 | 5 |
+| 90 / 5 | 4,510 | 3,662 | 6 |
+| 105 / 6 | 5,335 | 5,046 | 7 |
+
+At enemy120, max-level unequipped Infernis needs11 Normals; the tested
+unupgraded late Conduit loadout needs at most6 and more than halves relative
+incoming ordinary damage. Lv.105 relative ordinary incoming damage exceeds
+Lv.19's by at least1.8x; late per-level hostile stat steps stay below5%.
+All16 Lv.19 base-form characters have less than3x corresponding standard/Story
+enemy HP and cannot one-shot with a critical Normal Attack.
 
 Story uses 90% shared HP and 75% shared Attack, with shared Defense. It remains
 easier than corresponding material encounters. All starters clear the first
 Story encounter at Lv.0 without gear across three seeds. Accessible Common
 Store loadouts support the opening material dungeon, Rare materials at the
-Lv.45 cap and form3 infusion at the Lv.60 cap. Built max-level squads clear
-the Lv.140 Rose boss; unbuilt solo final-boss clears are no longer required.
-This deliberately supersedes D-165's fixed late endpoints/old hostile curves
-and the historical all-roster unequipped solo-clear contract.
+Lv.45 cap and form3 infusion at the Lv.60 cap. Across three seeds,
+the complementary Infernis/Tizu/Flora squad clears final material bosses,
+all six staged creature/Machine activities and all three War bosses with a
+legal unupgraded late loadout. The same squad without gear loses every tested
+final staged creature/Machine boss. This is a regression benchmark, not a
+promise that every squad or rotation wins, or that no exceptional unbuilt
+strategy exists. Late loadout: Worldbreaker Drive, Immortal Vessel, Citadel
+Spine, Astral Prism, Siege Cantilever, Duplex Heart, Twinpulse Bellows and
+Springwell Pump. Existing three Rose/starter mixed-squad clear tests remain.
 
-Captured creatures **do not inherit hostile buffs**. Their playable
-HP/Attack/Defense use the original ordinary curve and fixed-form multiplier;
-all saved levels, skills and UUIDs remain. New Heaven/Abyss runs use the
+Captured creatures also use **linear playable growth**, not the hostile curve:
+base220 HP/38 Attack/16 Defense, factor `1+.15*level`, with Defense exponent.7
+and unchanged fixed-form multiplier `.65+.35*tier/5`.
+Their final-form Lv.120 reference is4,180 HP/722 Attack, not the former
+200,000 HP; otherwise captures would bypass the entire balance.
+Saved levels, retained skills, UUIDs, locks and holdings remain untouched.
+New Heaven/Abyss runs use the
 [cap-aligned schedule](gameplay-and-elements.md#two-infusion-modes).
 Existing runs without a schedule marker retain the old levels and loot across
 Continue/Retry; new entry locks never invalidate a frozen active run.
+Loading/Settings does not rewrite active combat stats. A rebuilt staged
+encounter or Retry resolves the current curves from frozen progress/gear;
+Training retains its allied run snapshot when advancing waves.
 
 Validation: `npm test -- src\game\enemy-progression.test.ts
 src\game\activity-access.test.ts src\game\defense-balance.test.ts
 src\content\stat-growth.test.ts src\game\crimson-roses.test.ts
 src\game\captures.test.ts src\online\server-game.test.ts --maxWorkers=2`.
 Run the full suite and regenerate the server bundle whenever these rules change.
+
+## Enemy progression rebalance (D-192)
+
+Historical hostile numeric tuning is superseded by D-288 above. D-192's
+highest-owned-Element-Bearer activity gates, cap-aligned infusion schedule,
+preserved legacy-run schedule/loot and absence of hidden level-gap penalties
+remain current.
 
 ## Progressive character choreography (D-191)
 
@@ -131,6 +168,23 @@ frame failures reject into the existing battle error path rather than hanging
 input. HP/shield/healing presentation runs at the authored charge/impact point;
 already-resolved combat, costs, cooldowns, RNG and rewards are unchanged.
 Reduced motion still bypasses animated effects.
+
+**Attack wait recovery (D-286):** canvas playback uses actual elapsed time,
+not a100ms-per-frame progress cap. Sparse frames therefore do not stretch the
+input lock; reaching the duration skips expired simulation/bloom work while
+still dispatching impact exactly once. Particle updates retain1/120-second
+maximum steps. In-flight VFX read the current battle speed, matching sprite
+animations. Cancellation remains available while waiting for impact numbers
+after the effect ends; enabling Reduce motion cancels both canvas and WAAPI
+playback. Resolved combat and rewards are never recalculated.
+
+Online battle actions display a server-confirmation message before effects
+start. Gameplay function requests abort after30 seconds if transport stalls,
+then use the existing error/unlock path. A timeout does not prove the server
+rolled back: retain the same request ID, revision and operation for an explicit
+retry, never issue an automatic replacement attack. The owner's transient
+crossed-out cursor report was not reproduced as a permanent freeze; disabled
+controls alone do not identify whether the delay is network or animation.
 
 **Bloom and fluid motion (D-284):** the studio and battle runner share a
 transparent emission surface, two cached downsampled blur passes and crisp
@@ -249,8 +303,10 @@ is no forced level-gap multiplier or Conduit requirement.
 The battle starts with only the saved starter and player/enemy turns. Each ally acts at
 most once, building an individual Shatter Gauge from normal attacks and
 incoming hits to pay for abilities. Only Last Flare forces full next-turn recovery.
-Directional drags execute on release; right-click Defense uses the action and
-reduces incoming damage by 10% until next player turn. Heavy Attack is removed.
+Directional drags execute on release; right-click an ally performs Normal Attack
+against the selected enemy, equivalent to dragging down (D-287). Defense remains
+in Battle menu, uses the action and reduces incoming damage by10% until next
+player turn. Heavy Attack is removed.
 Whenever no living teammate has a legal action, enemy phases resolve until
 someone can act or combat ends. Support/Defense count; Last Flare recovery still
 incurs a real enemy phase, automatically. Manual passing remains inside Battle

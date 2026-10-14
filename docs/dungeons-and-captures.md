@@ -66,9 +66,10 @@ No Heavy action, invented skill, permanent death or automatic deletion.
 
 - Start at the defeated enemy's actual level. Keep its ability names, multipliers
   and intervals unchanged when leveling; intervals become manual cooldowns.
-- Use the original playable **ordinary**, never boss, infusion stat curve at the current
-  level. HP/Attack/Defense multiply by `.65 + .35 * tier / 5` for fixed tier0-5.
-  Thus a Lv120 initial form has130k HP, final form200k, versus500k hostile bossHP.
+- Use D-288's separate **linear playable**, never hostile/boss, stat curve:
+  base220 HP/38 Attack/16 Defense, factor `1+.15*level`, Defense exponent.7.
+  HP/Attack/Defense multiply by `.65 + .35 * tier / 5` for fixed tier0-5.
+  Thus a Lv120 initial form has2,717 HP, final form4,180, versus35,000 hostile bossHP.
   Higher captured forms remain stronger at equal level; boss captures retain
   boss abilities but not boss stat bonuses.
 - Conduit buffs apply afterward, using the same shared stat helper as starters.

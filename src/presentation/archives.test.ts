@@ -72,7 +72,7 @@ describe('unified Archives', () => {
     expect(html).toContain(characterArt('ember', 2).title);
     expect(html).toContain('aria-label="Uncommon rarity"');
     expect(html).toContain('aria-label="5-star character"');
-    expect(html).toContain('<dd>334.95</dd>');
+    expect(html).toContain('<dd>577.5</dd>');
     expect(html).toContain('Current combat kit');
     expect(account).toEqual(before);
   });

@@ -88,7 +88,7 @@ describe('field readouts', () => {
     ally.shield = 25;
     ally.shatter = 20.5;
     const readout = unitReadout(ally);
-    for (const text of ['HP 240.4 / 240.4', 'DEF 10.64', 'Shatter Gauge 20.5 / 100.3', 'aria-valuenow="20.5"']) expect(readout).toContain(text);
+    for (const text of ['HP 253 / 253', 'DEF 11.03', 'Shatter Gauge 20.5 / 100.3', 'aria-valuenow="20.5"']) expect(readout).toContain(text);
     expect(readout).toContain('Shield 25');
     expect(unitReadout(ally, true)).toContain('Shield 25');
     for (const text of ['ATK', 'CRIT', 'Critical', 'Elemental', 'Ready', 'unit-status']) expect(readout).not.toContain(text);

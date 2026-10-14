@@ -152,7 +152,8 @@ Hold the character and drag **Up** for Last Flare, **Left** for Skill 1,
 the selected enemy. Drag at least 32 CSS pixels; a short drag, return to center,
 pointer cancellation or exact diagonal tie cancels without spending an action.
 No hold timer is required. Unavailable actions visibly explain their restriction
-and never spend gauge or a turn. Right-click the character for **Defense**.
+and never spend gauge or a turn. Right-click the character for **Normal Attack**
+against the selected enemy, as a shortcut equivalent to dragging down.
 Battle menu provides native keyboard/touch buttons, including Defense.
 Enemy units retain click-to-target and never trigger ally actions.
 The character glows white and shimmers only when Last Flare is currently usable:
@@ -284,11 +285,11 @@ Each living character may perform **one** action per player turn:
 
 | Action | Rule |
 | --- | --- |
-| Normal Attack | Drag down; 100% damage to one target; gain 20 Shatter Gauge |
+| Normal Attack | Drag down, right-click an ally or Battle menu Normal Attack button; 100% damage to one target; gain 20 Shatter Gauge |
 | Ability 1 | Character-specific effect; costs 25 Shatter Gauge; two-turn cooldown |
 | Ability 2 | Character-specific effect; costs 40 Shatter Gauge; three-turn cooldown |
 | Last Flare | Character-specific ultimate; costs 100 Shatter Gauge; no action next turn |
-| Defense | Right-click or Battle menu Defense button; consumes action, reduces incoming damage by 10% until next player turn |
+| Defense | Battle menu Defense button; consumes action, reduces incoming damage by 10% until next player turn |
 
 **Heavy Attack is removed**, not hidden behind another input. The internal `light`
 action ID now means Normal Attack and preserves the existing basic-attack PNG.
@@ -322,9 +323,9 @@ the character's one action.
 ## Stats and formulas
 
 Adventure enemies retain the wave1 values below. Later levels use shared
-accelerating curves starting at twice former HP/Attack growth and +2 initial
-Defense per wave, reaching200,000 HP/4,000 Attack/1,500 Defense at Lv120.
-Enemy levels plateau120 while waves continue. Characters follow cubic core growth
+accelerating curves reaching7,000 HP/1,200 Attack/400 Defense at Lv120 (D-288),
+without a sudden endgame spike. Species-specific openings converge on those
+shared endpoints. Enemy levels plateau120 while waves continue. Characters follow linear core growth
 and separate bounded potency; see [progression](units-and-progression.md).
 Seen creatures save at encounter entry; first kill unlocks the Home glossary's
 drop pool. Discoveries and rewards commit together before death presentation.

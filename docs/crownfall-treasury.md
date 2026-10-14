@@ -20,8 +20,10 @@ Sovereign Facet is the authored strike. Bosses retain a Last Ruin ultimate.
 Every form name ends with Gleamstone Slime except the base. No actual evolution
 mechanic: copies cannot change form. Hostile level is
 `round(65 + (stage-1)*55/24)`. Tier is `floor((stage-1)*6/25)`.
-Stats use the established accelerating enemy curve; Lv120 remains200k ordinary/
-400k bossHP. Captures use ordinary stats times fixed `.65+.35*tier/5`.
+Stats use D-288's accelerating enemy curve; Lv120 has7,000 ordinary/
+35,000 bossHP. Captures use separate linear playable stats times fixed
+`.65+.35*tier/5`; they never inherit hostile or boss growth.
+[Current balance](combat.md#progressive-build-reliance-d-288).
 Mode stage count is explicit, not the35-floor elemental/Heaven/Abyss constant.
 
 ## Mission loot

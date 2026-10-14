@@ -262,7 +262,7 @@ export function characterInformation(): string {
     <p>Element-Bearer level caps: ${Array.from({ length: characterGrowth.forms }, (_, index) => characterLevelCap(index + 1)).join(' / ')}.
     Evolution requires the current form's maximum level and preserves that level. Max Level previews affordable levels within the current cap, total costs and stat changes before confirmation.
     Captured Elemental-Devourers level independently to 120 and cannot evolve.</p>
-    <p>Core growth: (1 + 0.03 &times; level)&sup3; &times; 1.45^(evolution - 1). Defense uses core growth^0.7; percentage potency grows separately.
+    <p>Core growth: 1 + 0.15 &times; level + 1.5 &times; (evolution - 1). Defense uses core growth^0.7; percentage potency grows separately.
     Base Gauge gains, skill costs, cooldowns and durations do not scale with levels. Equipped Conduits may modify them as stated in their rules.
     Ability potency increases with levels and evolution; there are no separate ability upgrades.</p>
     <h3>Evolution fodder</h3><p>Evo.3→4 consumes 1 form 3+ Elemental-Devourer; Evo.4→5 consumes 2 form 4+; Evo.5→6 consumes 3 form 5+.

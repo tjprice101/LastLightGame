@@ -35,7 +35,22 @@ mutation increments revision. Keep the same UUID, revision and payload on networ
 retry; the server returns the original committed response. HTTP409 means reload
 and intentionally issue a new operation, not silently replay a purchase.
 
+The browser gameplay transport sets a30-second function-request timeout.
+An aborted connection leaves the server outcome ambiguous; it is not a server
+rejection or rollback. The client retains the same request ID/revision/payload
+and unlocks presentation with an explicit error so the player can retry that
+operation. No automatic second attack or browser-computed result. Battle shows
+"Waiting for the server to confirm this action..." while awaiting the response.
+Validate timeout/abort and identical-envelope retries with
+`npx vitest run src\online\server-game-transport.test.ts --maxWorkers=2`.
+
 Battle entry snapshots squad, progress, captures, equipment and upgrades.
+D-288 uses shared linear playable growth and smoothly accelerating hostile
+curves, including captured creatures. The regenerated engine bundle must be
+deployed alongside the client to keep online/menu stats consistent. No database
+migration or account rewrite is needed; this source change does not deploy it.
+Existing encounter snapshots remain unchanged on read. Rebuilt staged
+encounters/Retry use current curves with frozen progression/equipment.
 `act`/`endTurn` return actual `result` events plus the committed session. Await this
 response before animation; never compute or submit a client outcome. `continue`,
 `retry` and `quit` require the active runId. Continue requires cleared; retry

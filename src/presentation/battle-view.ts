@@ -112,7 +112,10 @@ export class BattleView {
     for (const animation of this.animations) animation.updatePlaybackRate(battleSpeed());
   };
   private onMotion = (): void => {
-    if (reducedMotion()) for (const animation of this.animations) animation.cancel();
+    if (reducedMotion()) {
+      this.vfxRunner?.clear();
+      for (const animation of this.animations) animation.cancel();
+    }
   };
 
   constructor(private host: HTMLElement, private session: BattleSession, private bindings: Bindings,
@@ -271,6 +274,8 @@ export class BattleView {
     this.busy = true;
     this.host.setAttribute('aria-busy', 'true');
     this.host.querySelectorAll<HTMLButtonElement>('button:not([data-battle-speed-choice])').forEach((button) => { button.disabled = true; });
+    const announcement = this.host.querySelector('#battle-announcement');
+    if (announcement) announcement.textContent = 'Waiting for the server to confirm this action...';
     try {
       const response = command !== 'endTurn' ? await this.authority.action(this.actorId, command, this.targetId)
         : state.phase === 'cleared' ? await (state.story || state.dungeon || state.infusion || state.war
@@ -494,7 +499,7 @@ export class BattleView {
             action: entry.action ?? 'light',
             sourceArtRect: sourceArt,
             targets,
-            speedMultiplier: battleSpeed(),
+            speedMultiplier: battleSpeed,
             onImpact: impact,
           })
         : impact();
@@ -618,7 +623,7 @@ export class BattleView {
       <footer class="battle-feedback">
       ${results}
       <p id="battle-error" role="alert" class="status"></p>
-      <div class="battle-footer-summary"><p id="battle-announcement" role="status">${complete ? `All ${stages} stages cleared. Return to Play to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Shatter Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your squad has fallen. Retry when ready; earned rewards are kept.' : 'Select a target. Drag an ally: ↑ Last Flare · ← Skill 1 · → Skill 2 · ↓ Normal. Right-click: Defense.'}</p>
+      <div class="battle-footer-summary"><p id="battle-announcement" role="status">${complete ? `All ${stages} stages cleared. Return to Play to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Shatter Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your squad has fallen. Retry when ready; earned rewards are kept.' : 'Select a target. Drag an ally: ↑ Last Flare · ← Skill 1 · → Skill 2 · ↓ Normal. Right-click: Normal Attack. Defense: Battle menu.'}</p>
       <span class="battle-footer-target"><strong>${actor.name}</strong><small>Target: ${state.enemies.find((enemy) => enemy.id === this.targetId)?.name ?? 'None'}</small></span></div>
       </footer>
       <dialog id="battle-menu" class="battle-menu" aria-labelledby="battle-menu-heading">
@@ -758,9 +763,9 @@ export class BattleView {
           if (this.busy || this.disposed) return;
           cancel();
           const id = button.dataset.unit;
-          if (!id) throw new Error('Defense actor is missing.');
+          if (!id) throw new Error('Normal Attack actor is missing.');
           this.actorId = id;
-          this.command('defend');
+          this.command('light');
         });
       }
       button.addEventListener('click', () => {
@@ -874,7 +879,7 @@ export class BattleView {
     return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
       <span class="battle-action-heading">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, action) : ''}<strong>${name}</strong></span>
       ${ability ? abilityStatuses(ability.strength) : ''}
-      ${action === 'light' ? `<span>Down · +${shatterGauge.gains[action]} Shatter Gauge</span>` : action === 'defend' ? '<span>Right-click, -10% incoming damage</span>' : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'}</span>`}
+      ${action === 'light' ? `<span>Down or right-click · +${shatterGauge.gains[action]} Shatter Gauge</span>` : action === 'defend' ? '<span>Battle menu · -10% incoming damage</span>' : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'}</span>`}
       ${ability ? `<span>Costs ${shatterGauge.costs[action]} Shatter Gauge${ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
       <small>${reason ?? 'Ready'}</small></button>`;
   }

@@ -2,7 +2,7 @@ import { elements, infusionModes, currencyModes, eventModes, machineModes, isCur
 import { machineEnemies } from './machines';
 import { type Stats } from './combat';
 import { lootRoll, rollDrop, scaledDrop } from './loot-random';
-import { capturedGrowth, enemyStat, enemyCombatStats } from './stat-growth';
+import { capturedGrowth, enemyCombatStats, playableGrowth } from './stat-growth';
 import { roseMaterials, roseMaterialUnlocks, roseFinalChances, roseSaleQuantities, roseFormStages } from './roses';
 
 export function isInfusionMode(value: unknown): value is InfusionModeId {
@@ -119,10 +119,13 @@ function creatureEnemyStats(level: number, boss: boolean, maximumLevel = 120): S
 }
 
 export function capturedEnemyStats(level: number, maximumLevel = 120): Stats {
+  if (!Number.isInteger(level) || level < 10 || level > maximumLevel ||
+      !Number.isInteger(maximumLevel) || maximumLevel < 120 || maximumLevel > 140) throw new Error('Invalid captured creature level.');
+  const factor = 1 + Math.min(level, 120) * playableGrowth.perLevel;
   return {
-    health: enemyStat(55, capturedGrowth.health, level, 10, .036, maximumLevel),
-    damage: enemyStat(32, capturedGrowth.damage, level, 10, .12, maximumLevel, .036),
-    defense: enemyStat(2, capturedGrowth.defense, level, 10, .08, maximumLevel),
+    health: capturedGrowth.health * factor,
+    damage: capturedGrowth.damage * factor,
+    defense: capturedGrowth.defense * factor ** .7,
     crit: .12, critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0,
   };
 }

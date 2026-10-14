@@ -5,7 +5,24 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Progression balance (D-288):** all16 Element-Bearers and captured creatures
+use linear playable growth; enemies accelerate smoothly across every mode.
+Early unbuilt entry remains viable, while final-boss benchmarks require a
+Conduit-equipped complementary squad. Caps, costs, holdings and rewards remain.
+[Current curves and measurable targets](combat.md#progressive-build-reliance-d-288).
+
+**Battle input (D-287):** right-click an ally now performs Normal Attack against
+the selected enemy. Drag-down remains equivalent; Defense stays in Battle menu.
+[Current controls](free-battle.md).
+
+**Future microtransactions:** payment architecture, PayPal Business settlement,
+provider alternatives, verified one-time currency fulfillment, testing and
+unresolved policies are recorded for later. No checkout or real-money purchases
+are enabled. [Design proposal](microtransactions-design.md).
+
 **Ability VFX preview verification:** both studios use base-aware module entries.
+Delayed-frame VFX timing, live speed/motion cancellation and explicit bounded
+online-action waits are implemented (D-286), without changing combat outcomes.
 Shared effect-only two-scale bloom is now functional in studio and battle;
 elapsed-time simulation and eased buildup/release improve all seven archetypes
 (D-284). All64 presets gained visible bloom in Chrome on/off comparisons, and

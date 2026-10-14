@@ -79,7 +79,7 @@ export function resolveCapturedFighter(copy: CapturedCharacter, equipment?: Cond
   const creature = getCreature(copy.creatureId);
   if (!creature.mode || creature.mode === 'machines') throw new Error('Captured Elemental-Devourer mode is missing or non-capturable.');
   const { level, tier, skills } = capturedProgress(copy);
-  // Captures keep their pre-rebalance playable curve, not the stronger hostile stats.
+  // Fixed forms use linear playable growth, never the accelerating hostile curve.
   const reference = capturedEnemyStats(level, creature.mode === 'roses' ? 140 : 120);
   const factor = .65 + .35 * tier / 5;
   const stats = { ...reference, health: reference.health * factor,

@@ -2,6 +2,7 @@ import { evolutionRecipes, evolutionRequirement, getElement, materialRarities, t
 import { specialtyId } from './infusions';
 import { getStarter, isRoseCharacter, type StarterId } from './starters';
 import { roseMaterials } from './roses';
+import { playableGrowth } from './stat-growth';
 
 export const currencies = [
   { id: 'fractalis', name: 'Prismatica', role: 'Main currency' },
@@ -11,7 +12,7 @@ export const currencies = [
 export const artifactSlots = Array.from({ length: 8 }, (_, index) => index + 1);
 // Opening Lv1 range; live per-enemy rewards use fractalisDrop(level).
 export const enemyFractalisDrop = { minimum: 5, maximum: 10 } as const;
-export const characterGrowth = { forms: 6, firstLevelCap: 30, levelsPerEvolution: 15, perLevel: 0.03, evolutionMultiplier: 1.45, exponent: 3 } as const;
+export const characterGrowth = { forms: 6, firstLevelCap: 30, levelsPerEvolution: 15, ...playableGrowth } as const;
 export function evolutionRarity(evolution: number): MaterialRarity {
   characterLevelCap(evolution);
   return materialRarities[evolution - 1];
@@ -106,8 +107,8 @@ export function characterGrowthFactor(progress: CharacterProgress): number {
   if (!Number.isInteger(progress.level) || progress.level < 0 || progress.level > cap) {
     throw new Error(`Character level must be an integer from 0 to ${cap}.`);
   }
-  return (1 + progress.level * characterGrowth.perLevel) ** characterGrowth.exponent *
-    characterGrowth.evolutionMultiplier ** (progress.evolution - 1);
+  return 1 + progress.level * characterGrowth.perLevel +
+    (progress.evolution - 1) * characterGrowth.perEvolution;
 }
 
 export function characterPotencyFactor(progress: CharacterProgress): number {
@@ -116,8 +117,8 @@ export function characterPotencyFactor(progress: CharacterProgress): number {
 }
 
 export const upgradePaths = [
-  { id: 'upgrade-0', name: 'Fracture & Evolution', detail: 'Preserve your level; multiply core growth by 1.45 and increase skill and passive potency.' },
-  { id: 'upgrade-1', name: 'Character level', detail: 'Accelerating cubic core-stat growth; bounded percentage stats and skill and passive potency.' },
+  { id: 'upgrade-0', name: 'Fracture & Evolution', detail: 'Preserve your level; add 150% of base core stats and increase skill and passive potency.' },
+  { id: 'upgrade-1', name: 'Character level', detail: 'Linear core-stat growth: add 15% of base per level. Later enemies accelerate; build Conduits and a reliable squad.' },
   { id: 'upgrade-3', name: 'Unique passive', detail: 'Upgrade the character\'s unique passive ability.' },
   { id: 'upgrade-4', name: 'Ability 1', detail: 'Upgrade the first active ability.' },
   { id: 'upgrade-5', name: 'Ability 2', detail: 'Upgrade the second active ability.' },

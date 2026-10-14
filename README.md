@@ -42,7 +42,7 @@ Those icons are prompts only until generated art is supplied.
 Inventory is available independently and within Character Upgrades.
 Adventure (formerly Free Battle) uses only your saved starter against
 endless Goblin/Imp/Rock Golem waves, with skills, passives, Shatter Gauge,
-Last Flares, directional drag controls, right-click Defense, ultimate-only recovery
+Last Flares, directional drag controls, right-click Normal Attack, Battle menu Defense, ultimate-only recovery
 turns, and configurable hotkeys. Supplied artwork has transparent runtime exports.
 Character leveling and evolution now spend Prismatica and own-element materials,
 persist progress and scale the combat kit everywhere. First account Fracture grants

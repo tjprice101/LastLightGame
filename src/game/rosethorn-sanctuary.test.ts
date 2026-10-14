@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { currencyModes, infusionStageCount } from '../content/activities';
+import { enemyGrowth } from '../content/stat-growth';
 import { capturedEnemyStats, infusionEncounter, infusionEnemies, infusionDrops, sanctuaryEnemyStats, sanctuarySalePrices, treasurySalePrices } from '../content/infusions';
 import { sanctuaryLycalisOdds, rollStagedLycalis, fractalisDrop } from '../content/loot-random';
 import { getCreature, creatureLoot } from '../content/creatures';
@@ -62,8 +63,8 @@ describe('Phase10 Rosethorn Sanctuary', () => {
         }
       }
     }
-    expect(sanctuaryEnemyStats(120, false).health).toBeCloseTo(200000);
-    expect(sanctuaryEnemyStats(120, true).health).toBeCloseTo(500000);
+    expect(sanctuaryEnemyStats(120, false).health).toBe(enemyGrowth.health);
+    expect(sanctuaryEnemyStats(120, true).health).toBe(enemyGrowth.bossHealth);
     for (const stage of [0, 26, NaN, 1.5]) expect(() => infusionEncounter('sanctuary', stage)).toThrow();
   });
   it('implements the exact 1-at 50% to 5-at 80% curve and validates RNG and level boundaries', () => {

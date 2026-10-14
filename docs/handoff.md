@@ -1,5 +1,122 @@
 # Current state and handoff
 
+## Linear playable growth and progressive build reliance (D-288)
+
+- Owner requests broad balance changes after reporting trivial same-level fights
+  and explicitly confirms increasingly needing Conduits and a reliable team.
+  All16 Element-Bearers now use `G=1+.15*level+1.5*(evolution-1)`, with
+  unchanged bounded potency and Defense exponent.7. Flat healing/shields follow
+  the same factor. Updated in-game growth descriptions and current system docs.
+- Hostiles in Story, Training, all material dungeons, both infusions, currency
+  activities, Machines, Roses and War use shared smooth accelerating growth.
+  Ordinary120 HP/Attack/Defense=7,000/1,200/400;
+  boss120=35,000/3,000/600. Preserve species openings, easier Story modifiers
+  and the existing event140 extension. Numeric endpoints are developer tuning.
+- Captures also become linear (220/38/16 reference bases, factor1+.15*level,
+  fixed-form multiplier unchanged), avoiding a200k-HP capture loophole.
+  No account/load writes, migration, grants, changed costs/caps/rewards/RNG or
+  altered saved identity/level/skills/locks/equipment. Existing encounter stats
+  stay frozen on read/Settings; rebuilt staged encounters/Retry use current
+  curves from frozen progress/gear. Training retains allied snapshots on Continue.
+- Measured Lv.19 base Infernis:847 HP against541 ordinary enemyHP, requiring5
+  noncritical Normals. Across all16 base-form characters, Lv.19 critical Normals
+  cannot one-shot ordinary/Story enemies; player/enemyHP ratio is below3.
+  Lv.105 Infernis needs7 same-level Normals; against enemy120, unbuilt needs11,
+  while the tested unupgraded late build needs at most6.
+- Regression simulations across three seeds retain unbuilt first-Story clears
+  and Common Store gear paths to early material/fodder milestones. Equipped
+  starter squads clear all final material/staged/War bosses; the same unbuilt
+  squad loses every tested final staged creature/Machine boss. Existing Rose/
+  starter mixed-squad benchmarks remain. No universal-win promise.
+- `npm test -- --maxWorkers=2`:2,074 passed,5 failed across142 files (140 passed).
+  Remaining unrelated failures: four byte-revision assertions in
+  `src/presentation/portrait.test.ts` for Rosetta/Thornia/Crinso/Bliss and one
+  source-text Settings regex in `src/presentation/offline-save.test.ts`.
+  All balance/gameplay/online regressions passed. An earlier full run also had
+  one sparse-frame VFX timeout; it passed in the final full run.
+- Final focused command: `npm test -- src\content\combat.test.ts
+  src\content\progression.test.ts src\content\stat-growth.test.ts
+  src\game\enemy-progression.test.ts src\game\defense-balance.test.ts
+  src\game\battle.test.ts src\game\crimson-roses.test.ts
+  src\game\captures.test.ts src\game\machines.test.ts
+  src\game\rosethorn-sanctuary.test.ts src\game\elemental-war.test.ts
+  src\presentation\archives.test.ts src\presentation\hub.test.ts
+  src\presentation\unit-readout.test.ts --maxWorkers=2`:360 passed across14 files.
+- `npm run build` through the existing Build Last Light task: TypeScript/Vite
+  passed, existing >500kB chunk advisory only.
+  `node tools\bundle_server_game.mjs`:generated authoritative bundle.
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json --pretty false`:
+  passed. Edited-file diagnostics passed.
+- Remaining: deploy matching client and regenerated `game-operation` bundle
+  together before claiming online rollout. No hosted deployment, browser account
+  changes or commit performed; the preview remains stopped. No further owner
+  choice is required for this tuning pass; production playtesting remains useful.
+  [Current numeric contract](combat.md#progressive-build-reliance-d-288).
+
+## Right-click Normal Attack shortcut (D-287)
+
+- Right-clicking an ally performs that ally's Normal Attack against the selected
+  enemy through the same local/authoritative command path as drag-down and the
+  modal Normal Attack button. Defense remains in Battle menu; no action math,
+  Gauge gains, targeting, cooldowns or save fields changed.
+- Updated field instructions, modal action hints, root README and current
+  combat/input documentation. Historical Defense mapping entries are explicitly
+  marked superseded rather than presenting them as current instructions.
+- `npx vitest run src\presentation\battle-shortcuts.test.ts
+  src\presentation\battle-chrome.test.ts src\presentation\battle-gesture.test.ts
+  src\presentation\gesture-guide.test.ts src\presentation\battle-authority.test.ts
+  src\presentation\battle-toolbar.test.ts --maxWorkers=2`:39 passed across6 files.
+  New DOM tests dispatch real contextmenu events for local/online fixtures,
+  selected enemy/right-clicked ally, exactly-one action, busy gating, enemy
+  exclusion and retained modal Defense. Existing jsdom canvas notices in toolbar
+  tests do not fail validation. `npm run build`:TypeScript/Vite passed with the
+  existing large-chunk advisory.
+- No remaining implementation or owner decision needed; no deployment/commit.
+  [Current controls](free-battle.md).
+
+## Future payments document and combat wait reliability (D-285/D-286)
+
+- Added [future microtransactions design](microtransactions-design.md):
+  PayPal Business settlement/withdrawals, fees/holds, Stripe and merchant-of-record
+  alternatives, platform constraints, sandbox/live setup, server capture and
+  verified webhooks, exactly-once atomic credit, paid/earned ledger, offline-import
+  implications, refunds/disputes, randomized-summon eligibility and validation.
+  Documentation only: no prices approved, credentials added or payments enabled.
+- Owner clarified the apparent freeze was a crossed-out cursor, resolved itself,
+  and requests fluid/optimized combat. Could not reproduce that exact incident.
+  It is the disabled-control cursor during server/animation waits, not evidence
+  identifying one cause. Found concrete lifecycle issues and corrected them:
+  VFX elapsed time no longer caps at100ms per frame; expired effects skip costly
+  simulation/bloom. Live speed changes now reach VFX. Reduce motion cancels both
+  canvas and sprite layers. Cancellation also settles a runner waiting for
+  impact presentation after its visual duration has elapsed.
+- Gameplay requests use the existing SDK's30-second abort timeout with explicit
+  error/unlock; battle displays server-confirmation status before effects start.
+  Ambiguous timeout retains request ID/revision/payload in the existing pending
+  operation path. No automatic attack retry, local server-result simulation,
+  account/reward/RNG/kit changes or server deployment.
+- `npx vitest run src\online\server-game-transport.test.ts
+  src\online\server-game.test.ts src\vfx\vfx-systems.test.ts
+  src\vfx\preview-dom.test.ts src\presentation\battle-authority.test.ts
+  src\presentation\battle-speed.test.ts src\presentation\battle-animations.test.ts
+  src\presentation\battle-impact.test.ts --maxWorkers=2`:99 passed across8 files.
+  Tests include a real Supabase SDK abort with simulated stalled fetch and
+  identical-envelope retry, sparse-frame1x/2x/3x timing, live VFX speed, late
+  cancellation and mid-action motion changes. VS Code test discovery found no
+  tests, so Vitest provided validation.
+- `npm run build`:TypeScript/Vite passed with existing large-chunk advisory.
+  Chrome actual BattleView:64 desktop actions and six phone/DPR2 multi-recipient
+  cases completed, every recipient lit, correct banner gating, no errors and
+  unchanged localStorage. Real canvas tests with250ms frame delivery covered
+  all seven archetypes at3x:1.014-1.267s completion,
+  one impact each and cancellation after duration settled; storage unchanged.
+  Diagnostics and `git diff --check` passed. No claim of universal60fps or a proven cause of the
+  owner's transient incident.
+- Remaining decisions: payment provider/country eligibility, pack pricing,
+  paid/earned spending rules, import treatment, taxes and refund/dispute policy
+  before a separately approved implementation. Changes remain uncommitted.
+  [Combat contract](combat.md#canvas-ability-previews-and-rendering-validation).
+
 ## Functional bloom and fluid ability motion (D-284)
 
 - Shared emission/blur compositor now supplies real bloom in both studios and
@@ -9061,7 +9178,7 @@ Her stable save/combat ID remains `sprout`, so existing saves still load.
 - Editor diagnostics and `git diff --check`: no errors.
 - Local browser checks: four release directions, selected Imp targeting, single
   committed action per gesture, short cancellation, denied ultimate, right-click
-  Defense, pointer cancellation/lost capture, ready shimmer and reduced-motion
+  Defense (historical mapping; superseded by D-287 Normal Attack), pointer cancellation/lost capture, ready shimmer and reduced-motion
   steady glow. Progressed capacity 140 still becomes ultimate-ready at cost 100.
 - Recent changes are local; no new GitHub Pages deployment is implied.
 - Earlier UI checks (before progression implementation): all seven destinations; real currency/owned Element-Bearer; eight
@@ -9225,7 +9342,8 @@ Her stable save/combat ID remains `sprout`, so existing saves still load.
   no unit-art alpha removal or square normalization is applied.
 - Character drag input executes on release: Up Last Flare, Left Skill1, Right
   Skill2, Down Normal. 32px threshold; short drags/cancellation/exact diagonal
-  ties do nothing. Selected enemy remains target. Right-click uses Defense:
+  ties do nothing. Selected enemy remains target. Historical right-click used
+  Defense (D-287 now maps it to Normal Attack; Defense is in Battle menu):
   consumes action, no gauge cost/gain, -10% incoming damage after defense and
   before shields until next player turn; one-damage floor and incoming +10 remain.
   Buttons/hotkeys are alternatives for touch/accessibility. Ultimate white

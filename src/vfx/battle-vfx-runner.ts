@@ -67,7 +67,7 @@ export class BattleVFXRunner {
     action: string;
     sourceArtRect: DOMRect;
     targets: readonly { artRect: DOMRect; support: boolean }[];
-    speedMultiplier?: number;
+    speedMultiplier?: number | (() => number);
     onImpact?: () => void | Promise<void>;
   }): Promise<void> {
     this.clear();
@@ -81,7 +81,9 @@ export class BattleVFXRunner {
       speedMultiplier = 1,
       onImpact,
     } = options;
-    if (!Number.isFinite(speedMultiplier) || speedMultiplier <= 0) {
+    const speed = (): number => typeof speedMultiplier === 'function' ? speedMultiplier() : speedMultiplier;
+    const initialSpeed = speed();
+    if (!Number.isFinite(initialSpeed) || initialSpeed <= 0) {
       throw new Error('Battle VFX speed must be positive.');
     }
     if (!targets.length) throw new Error('Battle VFX requires an affected target.');
@@ -157,14 +159,29 @@ export class BattleVFXRunner {
         }
 
         try {
-          const deltaSec = Math.max(0, Math.min((timestamp - lastTimestamp) / 1000, 0.1)) * speedMultiplier;
+          const playbackRate = speed();
+          if (!Number.isFinite(playbackRate) || playbackRate <= 0) throw new Error('Battle VFX speed must be positive.');
+          const deltaSec = Math.max(0, (timestamp - lastTimestamp) / 1000) * playbackRate;
           lastTimestamp = timestamp;
-          currentTime += deltaSec;
+          currentTime = Math.min(duration, currentTime + deltaSec);
 
           if (currentTime >= chargeDuration && !hasTriggeredImpact) {
             hasTriggeredImpact = true;
             impactFinished = Promise.resolve(onImpact?.());
             void impactFinished.catch(fail);
+          }
+
+          if (currentTime >= duration) {
+            this.clearCanvas();
+            this.currentAnimationId = null;
+            void impactFinished.then(() => {
+              if (this.activeAbortController === abortCtrl) {
+                this.activeAbortController = null;
+                this.activeResolver = null;
+              }
+              resolve();
+            }, fail);
+            return;
           }
 
           this.clearCanvas();
@@ -176,17 +193,7 @@ export class BattleVFXRunner {
           }
           this.renderer.composite(width, height);
 
-          if (currentTime >= duration) {
-            this.clearCanvas();
-            this.currentAnimationId = null;
-            this.activeAbortController = null;
-            if (this.activeResolver) {
-              this.activeResolver = null;
-              void impactFinished.then(resolve, reject);
-            }
-          } else {
-            this.currentAnimationId = requestAnimationFrame(step);
-          }
+          this.currentAnimationId = requestAnimationFrame(step);
         } catch (error) {
           fail(error);
         }

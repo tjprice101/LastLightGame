@@ -2071,37 +2071,27 @@ function isActionId(value) {
 }
 
 // src/content/stat-growth.ts
+var playableGrowth = { perLevel: 0.15, perEvolution: 1.5 };
 var enemyGrowth = {
   maximumLevel: 120,
-  health: 2e5,
-  bossHealth: 5e5,
-  damage: 4e4,
-  bossDamage: 5e4,
-  defense: 6e3,
-  bossDefense: 8e3
+  health: 7e3,
+  bossHealth: 35e3,
+  damage: 1200,
+  bossDamage: 3e3,
+  defense: 400,
+  bossDefense: 600
 };
-var capturedGrowth = {
-  health: 2e5,
-  bossHealth: 4e5,
-  damage: 4e3,
-  bossDamage: 6e3,
-  defense: 1500,
-  bossDefense: 2250
-};
-function combatGrowth(level) {
-  return (1 + level * 0.03) ** 3 * 1.45 ** Math.min(5, 5 * (level / 105) ** 1.4) * (1 + Math.max(0, level - 110) * 0.075) ** 2;
-}
+var capturedGrowth = { health: 220, damage: 38, defense: 16 };
 function enemyCombatStats(level, boss, opening) {
   if (!Number.isInteger(level) || level < 1 || level > 140) throw new Error("Enemy level must be from 1 to 140.");
   const bounded = Math.min(level, enemyGrowth.maximumLevel);
-  const growth = combatGrowth(bounded) / combatGrowth(1);
   const extension = (1 + Math.max(0, level - enemyGrowth.maximumLevel) * 0.018) ** 2;
-  const stat = (base, target, exponent = 1) => Math.round(base * growth ** exponent * (target / (base * (combatGrowth(enemyGrowth.maximumLevel) / combatGrowth(1)) ** exponent)) ** ((bounded - 1) / 119) * extension);
+  const stat = (base, target, rate) => Math.round(enemyStat(base, target, bounded, 1, rate) * extension);
   if (opening && ![opening.health, opening.damage, opening.defense].every((value) => Number.isFinite(value) && value > 0)) throw new Error("Invalid opening enemy stats.");
   return {
-    health: stat(opening?.health ?? (boss ? 207.5 : 83), boss ? enemyGrowth.bossHealth : enemyGrowth.health),
-    damage: stat(opening?.damage ?? (boss ? 27.5 : 22), boss ? enemyGrowth.bossDamage : enemyGrowth.damage),
-    defense: stat(opening?.defense ?? (boss ? 16 / 3 : 4), boss ? enemyGrowth.bossDefense : enemyGrowth.defense, 0.9)
+    health: stat(opening?.health ?? (boss ? 207.5 : 83), boss ? enemyGrowth.bossHealth : enemyGrowth.health, 0.3),
+    damage: stat(opening?.damage ?? (boss ? 27.5 : 22), boss ? enemyGrowth.bossDamage : enemyGrowth.damage, 0.12),
+    defense: stat(opening?.defense ?? (boss ? 16 / 3 : 4), boss ? enemyGrowth.bossDefense : enemyGrowth.defense, 0.15)
   };
 }
 function enemyStat(base, target, level, startingLevel, initialRate, maximumLevel = enemyGrowth.maximumLevel, extensionRate = initialRate) {
@@ -2252,10 +2242,12 @@ function creatureEnemyStats(level, boss, maximumLevel = 120) {
   };
 }
 function capturedEnemyStats(level, maximumLevel = 120) {
+  if (!Number.isInteger(level) || level < 10 || level > maximumLevel || !Number.isInteger(maximumLevel) || maximumLevel < 120 || maximumLevel > 140) throw new Error("Invalid captured creature level.");
+  const factor = 1 + Math.min(level, 120) * playableGrowth.perLevel;
   return {
-    health: enemyStat(55, capturedGrowth.health, level, 10, 0.036, maximumLevel),
-    damage: enemyStat(32, capturedGrowth.damage, level, 10, 0.12, maximumLevel, 0.036),
-    defense: enemyStat(2, capturedGrowth.defense, level, 10, 0.08, maximumLevel),
+    health: capturedGrowth.health * factor,
+    damage: capturedGrowth.damage * factor,
+    defense: capturedGrowth.defense * factor ** 0.7,
     crit: 0.12,
     critMultiplier: 1.5,
     shatterCapacity: 100,
@@ -2346,7 +2338,7 @@ function infusionDrops(mode, stage, random, schedule = "caps") {
 
 // src/content/progression.ts
 var artifactSlots = Array.from({ length: 8 }, (_, index) => index + 1);
-var characterGrowth = { forms: 6, firstLevelCap: 30, levelsPerEvolution: 15, perLevel: 0.03, evolutionMultiplier: 1.45, exponent: 3 };
+var characterGrowth = { forms: 6, firstLevelCap: 30, levelsPerEvolution: 15, ...playableGrowth };
 var fractureRules = {
   sourceTier: 1,
   destinationTier: 2,
@@ -2423,7 +2415,7 @@ function characterGrowthFactor(progress) {
   if (!Number.isInteger(progress.level) || progress.level < 0 || progress.level > cap) {
     throw new Error(`Character level must be an integer from 0 to ${cap}.`);
   }
-  return (1 + progress.level * characterGrowth.perLevel) ** characterGrowth.exponent * characterGrowth.evolutionMultiplier ** (progress.evolution - 1);
+  return 1 + progress.level * characterGrowth.perLevel + (progress.evolution - 1) * characterGrowth.perEvolution;
 }
 function characterPotencyFactor(progress) {
   characterGrowthFactor(progress);

@@ -368,6 +368,68 @@ describe('BattleVFXRunner Integration', () => {
     await rejected;
   });
 
+  it('finishes a delayed frame without stretching playback or rendering an expired effect', async () => {
+    const render = vi.spyOn(SlashVFXSystem.prototype, 'render');
+    const update = vi.spyOn(SlashVFXSystem.prototype, 'update');
+    const impact = vi.fn();
+    const runner = new BattleVFXRunner(canvas);
+    const pending = runner.playAttackVFX({ combatantId: 'ember', action: 'skill1', ...anchors, onImpact: impact });
+    timestamp += 10_000;
+    frame(timestamp);
+    await pending;
+    expect(impact).toHaveBeenCalledOnce();
+    expect(render).not.toHaveBeenCalled();
+    expect(update).not.toHaveBeenCalled();
+    runner.destroy();
+  });
+
+  it.each([1, 2, 3])('finishes sparse frames at the authored duration at %ix', async speedMultiplier => {
+    const runner = new BattleVFXRunner(canvas);
+    const duration = CHARACTER_PROFILES.ember.abilities.skill1.duration;
+    const impact = vi.fn();
+    let settled = false;
+    const pending = runner.playAttackVFX({ combatantId: 'ember', action: 'skill1', ...anchors,
+      speedMultiplier, onImpact: impact }).then(() => { settled = true; });
+    timestamp += (duration / speedMultiplier - .1) * 1000;
+    frame(timestamp);
+    await Promise.resolve();
+    expect(settled).toBe(false);
+    timestamp += 101;
+    frame(timestamp);
+    await pending;
+    expect(impact).toHaveBeenCalledOnce();
+    runner.destroy();
+  });
+
+  it('applies live speed changes without restarting or duplicating impact', async () => {
+    let speed = 1;
+    const render = vi.spyOn(SlashVFXSystem.prototype, 'render');
+    const impact = vi.fn();
+    const runner = new BattleVFXRunner(canvas);
+    const pending = runner.playAttackVFX({ combatantId: 'ember', action: 'skill1', ...anchors,
+      speedMultiplier: () => speed, onImpact: impact });
+    advance();
+    expect(render.mock.calls.at(-1)?.[0].t).toBeCloseTo(.1);
+    speed = 3;
+    advance();
+    expect(render.mock.calls.at(-1)?.[0].t).toBeCloseTo(.4);
+    for (let i = 0; i < 15; i++) advance();
+    await pending;
+    expect(impact).toHaveBeenCalledOnce();
+    runner.destroy();
+  });
+
+  it('settles cancellation even after the VFX ends while impact presentation is still pending', async () => {
+    const runner = new BattleVFXRunner(canvas);
+    const pending = runner.playAttackVFX({ combatantId: 'ember', action: 'skill1', ...anchors,
+      onImpact: () => new Promise<void>(() => {}) });
+    timestamp += 10_000;
+    frame(timestamp);
+    runner.clear();
+    await pending;
+    runner.destroy();
+  });
+
   it('rejects invisible anchors rather than drawing at invented positions', () => {
     const runner = new BattleVFXRunner(canvas);
     expect(() => runner.playAttackVFX({ combatantId: 'ember', action: 'skill1', ...anchors,

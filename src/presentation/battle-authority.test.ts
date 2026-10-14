@@ -4,7 +4,8 @@ import { BattleView, createSession, type BattleAuthority, type BattleAuthorityRe
 
 function authorityView(authority: BattleAuthority) {
   const session = createSession('ember');
-  const host = { setAttribute: vi.fn(), querySelectorAll: () => [] };
+  const announcement = { textContent: '' };
+  const host = { setAttribute: vi.fn(), querySelectorAll: () => [], querySelector: () => announcement };
   const view = Object.create(BattleView.prototype);
   const present = vi.fn(async (response: BattleAuthorityResponse) => { Object.assign(session, response.session); });
   Object.assign(view, { host, session, authority, actorId: 'ember', targetId: session.state.enemies[0].id,
@@ -30,6 +31,7 @@ describe('server-authoritative battle presentation', () => {
       expect(simulate).not.toHaveBeenCalled();
       expect(view.commitRewards).not.toHaveBeenCalled();
       expect(present).not.toHaveBeenCalled();
+      expect(view.host.querySelector().textContent).toContain('Waiting for the server');
       expect(session).toEqual(before);
       const committed = structuredClone(session);
       committed.state.enemies[0].hp = 1;

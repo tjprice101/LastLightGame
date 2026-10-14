@@ -12,11 +12,13 @@ no additional transaction, reward, growth or cost change.
 `upgrade-reference.test.ts` exercises actual Team markup, portrait-preserving
 updates, level/evolution celebrations, seven-stat reveal and reduced motion.
 
-**D-192:** character stat/cost/cap rules are unchanged. Stronger hostile scaling
-now rewards builds and squad utility. Activity access uses highest owned
+**D-288:** all16 Element-Bearers and captured creatures use linear playable
+growth against smoothly accelerating enemies. Conduits and a reliable squad
+become increasingly important. Caps/costs and D-192 access rules are unchanged.
+Activity access uses highest owned
 Element-Bearer level; Heaven/Abyss opens at50 with fodder/material levels aligned
-to the existing evolution caps. Captures retain their original playable stats.
-See [balance](combat.md#enemy-progression-rebalance-d-192) and
+to the existing evolution caps. Captures use a separate linear playable curve.
+See [balance](combat.md#progressive-build-reliance-d-288) and
 [fodder access](evolution-fodder.md).
 
 ## Animated upgrade results (D-185)
@@ -275,10 +277,11 @@ See the [active expansion phases](roadmap.md#active-owner-requested-expansion-ph
   to the cap, not 10. Evolving requires reaching the current form's cap.
 - Evolution **preserves the current level**. This supersedes the earlier reset
   to level 0 and repeated level-30 cap.
-- Core growth is **`G = (1 + .03 * level)^3 * 1.45^(evolution - 1)`**.
-  Each evolution multiplies core growth by1.45, preserving level. Levels follow
-  an accelerating cubic curve. This supersedes the former additive1%/10% rule.
-  At Lv105/Evo6, starters have roughly87,000-119,000 HP before equipment.
+- Core growth is **`G = 1 + .15*level + 1.5*(evolution - 1)`** (D-288).
+  Each level adds15% of base core stats; each evolution adds150% of base.
+  Neither compounds earlier increases. This supersedes D-052's cubic curve
+  and multiplicative evolution growth. At Lv105/Evo6, G=24.25 and starters
+  have4,607.5-6,305 HP before equipment.
 - HP, Attack and Elemental Damage scale byG; effective Defense scales byG^0.7.
   Percentage/resource/skill potency uses **`P = 1 + .003*level + .05*(evolution-1)`**
   instead of multiplying large HP growth into critical chances or coefficients.
@@ -352,7 +355,7 @@ confirmation, and keeps the portrait/rail mounted after tab changes and upgrades
 
 All seven retain fractional growth from original base; never round resolved stats
 to integers. Effective defense scales the combined base and passive contribution
-byG^0.7. Lv.1 Infernis has10.64 defense,41.52 attack and8.74 elemental damage
+byG^0.7. Lv.1 Infernis has11.03 defense,43.7 attack and9.2 elemental damage
 when formatted for display.
 Zero-base stats remain zero (Tizu/Flora have no damaging elemental status yet);
 percentage growth does not create a new ability or a nonzero base.
@@ -488,7 +491,7 @@ See [Sanctuary rules](rosethorn-sanctuary.md).
 ## Progression decisions
 
 Specify XP thresholds, material costs, and additional unlock conditions.
-Preserve the confirmed six caps, accelerating growth, level preservation and first
+Preserve the confirmed six caps, D-288 linear playable growth, level preservation and first
 Fracture +10 Null-Prismatica reward.
 Evolution must define source form, destination form, prerequisites, and how
 level/XP/skills/equipment transfer. Do not silently reset invested progress.

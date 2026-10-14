@@ -247,7 +247,7 @@ Other portraits/icons/equipment/packs untouched; pause for her Omnic review.
 Event duplicates have `acquisition:"banner-duplicate"`, Lv.80, capturedStage29,
 and that stage's authored skills. Only final Treasury Lv.50 and final Roselius
 Lv.80 allow below-stage levels with this provenance; mission captures cannot
-forge the exception. Roselius use ordinary stats, `.65+.35*tier/5`, never boss
+forge the exception. Roselius use D-288's linear playable stats, `.65+.35*tier/5`, never hostile/boss
 stats, fixed forms and independent leveling to120. Their levels use Seed rather
 than Luminous Seed. Locks, squads and any equipped Conduit protect sales/fodder.
 

@@ -239,7 +239,7 @@ explicit definition override before implementation.
 Quantities/costs and Lv.0 start are now defined in
 [progression](units-and-progression.md); infusion counts/tiers remain unresolved.
 Six-form caps are now 30/45/60/75/90/105; evolution preserves level. Stats follow
-an accelerating cubic core-stat curve with separate bounded skill/passive
+an additive linear core-stat curve (D-288) with separate bounded skill/passive
 strength. This supersedes the old reset-to-0 and repeated level-30 caps.
 The first account Fracture grants +10 saved Null-Prismatica once.
 No later Fracture Null-Prismatica rewards assumed. See [growth rules](units-and-progression.md).
@@ -248,13 +248,13 @@ No later Fracture Null-Prismatica rewards assumed. See [growth rules](units-and-
 
 ### Shared enemy growth and discovery
 
-`src/content/stat-growth.ts` owns Lv120 endpoints: ordinaryHP200,000,
-Attack4,000, Defense1,500; bossHP400,000, Attack6,000, Defense2,250.
+`src/content/stat-growth.ts` owns D-288 Lv120 endpoints: ordinaryHP7,000,
+Attack1,200, Defense400; bossHP35,000, Attack3,000, Defense600.
 For baseB, targetT, initial rateR, stepsS and spanN:
 `round(B*(1+S*R)*exp(log(T/(B*(1+N*R)))*(S/N)^2))`.
-This preserves opening stats, doubles initial former growth and accelerates to
-the approved endpoints. Adventure initial HP/Attack rate.24 (formerly.12),
-Defense rate2/baseDefense (formerly additive1); enemy level follows wave, capped120.
+This preserves opening stats and accelerates smoothly to the tuned endpoints.
+Training retains species openings; shared HP/Attack/Defense rates are.30/.12/.15.
+Enemy level follows wave, capped120.
 Waves continue after120 without further stat growth.
 
 Home's Creature Glossary lists97 authored forms. Entry saves encounters;
@@ -290,9 +290,9 @@ This is a drop reference, not capture/pity or a second source of rewards.
   the Lv.60/75/90 character caps block progression.
   Forms occupy stages1-6/7-12/13-18/19-24/25-30/31-35.
   Two ordinary enemies, one stronger boss every fifth stage.
-  Stats use [D-192's hostile curve](combat.md#enemy-progression-rebalance-d-192).
-  At Lv120:200,000 ordinaryHP/500,000 bossHP,40,000/50,000 Attack
-  and6,000/8,000 Defense. Captured playable stats retain the original curve.
+  Stats use [D-288's hostile curve](combat.md#progressive-build-reliance-d-288).
+  At Lv120:7,000 ordinaryHP/35,000 bossHP,1,200/3,000 Attack
+  and400/600 Defense. Captured playable stats use a separate linear curve.
   Crit12%, multiplier1.5. Scarlet Judgment/Cosmic Wrath strikes every3 ordinary
   turns or2 boss turns, coefficient `1.2+(stage-1)*.384/34`.
   The final coefficient remains 1.584.

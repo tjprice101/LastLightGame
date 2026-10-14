@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { conduits, conduitBuffs, validateConduitSlots, type ConduitId, type ConduitSlots } from '../content/conduits';
 import { elements } from '../content/activities';
+import { enemyGrowth } from '../content/stat-growth';
 import { infusionEncounter } from '../content/infusions';
 import { machineConduitDrops, machineConduitLoot, bannerConduitBonus, machineEnemies, isBannerConduitEligible } from '../content/machines';
 import { creatureLoot, getCreature } from '../content/creatures';
@@ -96,8 +97,8 @@ describe('machine content and exact probabilities', () => {
       expect(encounter.level).toBe(Math.round(10 + (stage - 1) * 110 / 99));
     }
     expect(new Set(Array.from({ length: 100 }, (_, index) => infusionEncounter('machines', index + 1).enemy.name)).size).toBe(6);
-    expect(infusionEncounter('machines', 100).stats.health).toBe(500000);
-    expect(infusionEncounter('machines', 99).stats.health).toBeLessThan(200000);
+    expect(infusionEncounter('machines', 100).stats.health).toBe(enemyGrowth.bossHealth);
+    expect(infusionEncounter('machines', 99).stats.health).toBeLessThan(enemyGrowth.health);
     for (const [tier, [first, last]] of [[1, 17], [18, 34], [35, 50], [51, 67], [68, 84], [85, 100]].entries()) {
       expect(getCreature(`infusion:machines:${tier}`).stages).toEqual(Array.from({ length: last - first + 1 }, (_, index) => first + index));
     }

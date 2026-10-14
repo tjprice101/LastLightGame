@@ -4,6 +4,7 @@ import { warCharacters, warFighters } from '../content/war-characters';
 import { availableStarters, getStarter } from '../content/starters';
 import { characterArt } from '../content/character-art';
 import { characterLevelCap, characterEvolutionCost, characterLevelCost } from '../content/progression';
+import { enemyCombatStats } from '../content/stat-growth';
 import { standardBannerPool } from '../content/standard-banner';
 import { roseBannerPool } from '../content/rose-banner';
 import { createWarBattle, act, endTurn, nextStage, nextWave, type BattleResult } from './battle';
@@ -65,7 +66,7 @@ describe('Elemental War', () => {
           expect.objectContaining({ name: warFighters[character].abilities.ultimate.name, every: 6, action: 'ultimate' }),
         ]);
       }
-      expect(warEncounter(character, 10).stats.health).toBe(924800);
+      expect(warEncounter(character, 10).stats.health).toBe(enemyCombatStats(140, true).health);
     }
     for (const stage of [0, 11, NaN, 1.5]) expect(() => warEncounter('orvella', stage)).toThrow();
   });

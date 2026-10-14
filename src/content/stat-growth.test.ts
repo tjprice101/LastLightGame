@@ -23,7 +23,7 @@ describe('accelerating enemy stat curves', () => {
 
   it('applies the same endpoints to shortened dungeons, both infusion modes and Adventure', () => {
     for (const element of playableDungeons) {
-      expect(dungeonEncounter(element, 34).stats.health).toBeLessThan(200_000);
+      expect(dungeonEncounter(element, 34).stats.health).toBeLessThan(enemyGrowth.health);
       expect(dungeonEncounter(element, 35).stats).toMatchObject(enemyCombatStats(120, true));
     }
     for (const mode of ['heavens', 'abyss'] as const) expect(infusionEncounter(mode, 35).stats.health).toBe(enemyGrowth.bossHealth);

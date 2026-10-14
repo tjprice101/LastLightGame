@@ -76,7 +76,7 @@ describe('Passion of Crimson Roses integration', () => {
       expect(encounter.background).toBe('roses-arena.png');
       expect(getCreature(`infusion:roses:${encounter.tier}`).stages).toContain(stage);
     }
-    expect(roseEnemyStats(120, false).health).toBe(200000);
+    expect(roseEnemyStats(120, false).health).toBe(enemyCombatStats(120, false).health);
     expect(roseEnemyStats(140, false).health).toBe(enemyCombatStats(140, false).health);
     expect(roseEnemyStats(140, true).health).toBe(enemyCombatStats(140, true).health);
     expect(roseEnemyStats(140, true).health).toBeGreaterThan(roseEnemyStats(140, false).health);
@@ -97,6 +97,7 @@ describe('Passion of Crimson Roses integration', () => {
 
   it('retains Crinso as the burn source across enemy phases without Infernis in the squad', () => {
     const state = createInfusionBattle('roses', 35, 1, 'crinso', { level: 105, evolution: 6 });
+    state.enemies[0].stats.damage = 1;
     state.allies[0].shatter = 100;
     let burning = act(state, 'crinso', 'skill2', state.enemies[0].id).state;
     expect(burning.enemies[0].burn).toMatchObject({ sourceId: 'crinso', turns: 2 });
