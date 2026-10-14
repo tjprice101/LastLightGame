@@ -13,11 +13,85 @@ from PIL import Image, ImageDraw
 
 import intake_character_refresh as characters
 import intake_starter_refresh as starters
+import intake_delivered_art as delivered
+import intake_elemental_war_art as war
 from portrait_pocket_settings import load_corrections
 import reprocess_portrait_pockets as correction
 
 
 class PortraitPocketTests(unittest.TestCase):
+    def test_local_keys_do_not_widen_the_original_black_matte_or_touch_other_regions(self):
+        image = Image.new("RGB", (100, 100), "black")
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((10, 10, 90, 90), fill=(20, 20, 20))
+        draw.rectangle((20, 20, 30, 30), fill=(45, 110, 35))
+        draw.rectangle((60, 60, 70, 70), fill=(45, 110, 35))
+        settings = {
+            "keys": [[0, 0, 0]], "radius": 10, "border_only": True,
+            "background_regions": [{
+                "polygon": [[.1, .1], [.4, .1], [.4, .4], [.1, .4]],
+                "keys": [[45, 110, 35]], "radius": 40,
+            }],
+            "background_seeds": [[.25, .25]],
+        }
+        result = characters.clean(image, settings)
+        self.assertEqual(result.getpixel((25, 25))[3], 0)
+        self.assertEqual(result.getpixel((65, 65)), (45, 110, 35, 255))
+        self.assertEqual(result.getpixel((15, 15)), (20, 20, 20, 255))
+
+    def test_latest_delivered_source_takes_priority_over_historical_refresh(self):
+        with patch.object(characters, "prepare", side_effect=AssertionError("Superseded source")), \
+                patch.object(delivered, "prepare", return_value=(
+                    b"new-candidate", {"processing": {"method": "reviewed current source"}})):
+            planned, _ = correction.plan(["rosetta-evo-6"])
+        self.assertEqual(len(planned), 1)
+        self.assertEqual(planned[0][0]["manifest"], str(delivered.MANIFEST.relative_to(correction.ROOT)))
+        self.assertIn("delivered-root-art", planned[0][0]["before"]["source"])
+
+    def test_current_delivery_and_war_holes_clear_without_erasing_subject_details(self):
+        preserved = {
+            "rosetta-evo-6": [(600, 365), (100, 100), (500, 455)],
+            "thornia-evo-6": [(560, 391), (820, 370), (572, 565)],
+            "crinso-evo-6": [(600, 375), (601, 251), (562, 510)],
+            "crinso-evo-5": [(575, 340), (571, 180), (600, 530)],
+            "bliss-evo-2": [(572, 143), (628, 377), (620, 550)],
+            "bliss-evo-3": [(1090, 370), (1190, 800), (700, 1150)],
+            "bliss-evo-6": [(623, 370), (540, 267), (350, 559)],
+            "orvella-evo-6": [(590, 345), (366, 211), (557, 695), (580, 868)],
+        }
+        current = {asset.asset: (asset.source, delivered._settings(asset))
+                   for asset in delivered.assets() if asset.asset in preserved}
+        war_settings = war.load_settings()
+        current["orvella-evo-6"] = (
+            characters.ROOT / "Art" / "source" / "elemental-war" / "characters" / "orvella-evo-6.png",
+            war_settings["orvella-evo-6"])
+        for asset, (path, settings) in current.items():
+            with self.subTest(asset=asset), Image.open(path) as source:
+                result = characters.clean(source, settings)
+                for x, y in settings["background_seeds"]:
+                    point = (round(x * source.width), round(y * source.height))
+                    self.assertEqual(result.getpixel(point)[3], 0, (asset, point))
+                for point in preserved[asset]:
+                    self.assertEqual(result.getpixel(point), (*source.getpixel(point), 255),
+                                     (asset, point))
+
+    def test_latest_correction_histories_reproduce_and_keep_original_sources(self):
+        for module in (delivered, war):
+            document = json.loads(module.MANIFEST.read_text())
+            for row in document["assets"]:
+                if row.get("category") != "characters":
+                    continue
+                self.assertEqual(characters.digest(characters.ROOT / row["source"]), row["source_sha256"])
+                for previous in row.get("processing_history", []):
+                    path = characters.ROOT / previous.get("runtime", previous.get("previous_runtime"))
+                    self.assertEqual(characters.digest(path), previous["runtime_sha256"])
+                    with Image.open(characters.ROOT / row["source"]) as source:
+                        image = characters.standardize_sprite(
+                            characters.clean(source, previous["processing"]), 960, 864)
+                        buffer = BytesIO()
+                        image.save(buffer, format="PNG", optimize=True)
+                        self.assertEqual(buffer.getvalue(), path.read_bytes())
+
     def test_local_radius_never_expands_cleanup_outside_reviewed_polygon(self):
         image = Image.new("RGB", (100, 100), "white")
         draw = ImageDraw.Draw(image)

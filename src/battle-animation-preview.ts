@@ -21,6 +21,7 @@ function select(id: string): HTMLSelectElement {
 
 const character = select('preview-character');
 const evolution = select('preview-evolution');
+const formation = select('preview-formation');
 const mode = select('preview-mode');
 const action = select('preview-action');
 const speed = select('preview-speed');
@@ -57,9 +58,19 @@ function rebuild(entrance: boolean): void {
       ? { mode: mode.value, stage: infusionStageCount(mode.value) }
       : null;
   if (destination === null) throw new Error('Invalid preview battle.');
-  session = createSession(character.value, progress, destination);
+  const ids = formation.value === 'solo' ? [character.value]
+    : formation.value === 'squad' ? [character.value,
+        ...(['ember', 'tide', 'sprout'] as const).filter(id => id !== character.value).slice(0, 2)]
+    : null;
+  if (!ids) throw new Error('Invalid preview formation.');
+  session = createSession(character.value, progress, destination, {
+    ids, progress: Object.fromEntries(ids.map(id => [id, progress])),
+  });
   session.entrancePending = entrance;
   session.state.allies[0].shatter = 100;
+  if (formation.value === 'squad') {
+    for (const ally of session.state.allies) ally.hp *= .65;
+  }
   for (const enemy of session.state.enemies) {
     enemy.stats.health = Math.max(enemy.stats.health, session.state.allies[0].stats.damage * 100);
     enemy.hp = enemy.stats.health;
@@ -87,7 +98,7 @@ function run(operation: () => void): void {
     errorRegion.textContent = failure instanceof Error ? failure.message : 'Animation studio failed.';
   }
 }
-for (const control of [character, evolution, mode]) control.addEventListener('change', () => run(() => rebuild(true)));
+for (const control of [character, evolution, formation, mode]) control.addEventListener('change', () => run(() => rebuild(false)));
 speed.addEventListener('change', () => run(() => applyBattleSpeed(parseBattleSpeed(speed.value))));
 document.getElementById('preview-entrance')?.addEventListener('click', () => run(() => rebuild(true)));
 document.getElementById('preview-play')?.addEventListener('click', () => run(() => {
@@ -98,4 +109,4 @@ document.getElementById('preview-play')?.addEventListener('click', () => run(() 
   button.click();
 }));
 window.addEventListener('pagehide', () => view?.destroy(), { once: true });
-run(() => rebuild(true));
+run(() => rebuild(false));

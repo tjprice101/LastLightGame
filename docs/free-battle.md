@@ -69,7 +69,7 @@ unchanged; no bottom action bar is restored.
 
 Disclosure/action controls, victory/defeat sheets, Settings, damage numbers,
 turn cues and cut-in typography follow the same charcoal/white/serif hierarchy.
-Skill and ultimate cut-ins retain elemental artwork effects and readable copy.
+Last Flare cut-ins retain elemental artwork effects and readable copy.
 High-specificity field selectors in this stylesheet deliberately supersede
 legacy transparent-readout rules in `neutral-theme.css`; do not add competing
 readout overrides there.
@@ -255,10 +255,11 @@ animation interruption/error retains the resolved state and existing error repor
 
 ### Activity loading and encounter entrance
 
-Entering Adventure or any elemental dungeon uses a brief black curtain with a
+Entering Adventure or any elemental dungeon uses a black curtain with a
 small **Loading!** label and progress track in the bottom-right corner. The
-curtain fades in (220ms), the destination renders behind it, supplied visible
-artwork decodes, then the curtain fades away (220ms). The bar tracks preparation/
+curtain fades in (800ms, D-281), the destination renders behind it, supplied visible
+artwork decodes, then the curtain fades away (800ms), both with ease-in-out.
+The bar tracks preparation/
 decoded images, not network byte progress. Missing/pending dungeon art uses its
 existing neutral visuals rather than requesting nonexistent images.
 
@@ -433,16 +434,23 @@ not a global battle shortcut.
 
 ### Skill portrait cut-ins and enemy skill kits
 
-All character Skill1/Skill2/Last Flare attacks (including heal/shield skills)
-begin with an angled elemental portrait ribbon using current evolution art,
-character name and actual ability name. Skill banners slide in from the ally
-side and all last **3500ms at1x**, including Last Flare and enemy skills/ultimates.
+Field ability light uses the shared two-scale emission bloom and elapsed-time
+simulation described in the [canvas rendering contract](combat.md#canvas-ability-previews-and-rendering-validation)
+(D-284). Smoothed release, trails and localized Last Flare radiance change only
+presentation; targeting, impact callbacks, costs, combat RNG and saved rewards
+are unchanged.
+
+Only Last Flare/ultimate attacks begin with an angled elemental portrait ribbon
+using current evolution art, character name and actual ability name (D-283).
+Normal attacks, Defense, Skill1 and Skill2 skip the banner, including support
+skills; their battlefield VFX and impact presentation remain.
+Last Flare banners slide in from the ally side and last **3500ms at1x**.
 Last Flare retains its taller ornate sigil/portrait and stronger framing.
 The reveal takes12%, a stationary reading hold runs from12% to90%, and a
 stationary opacity fade-out takes the final10% (350ms at1x), without sliding or
 scaling away. No drifting/zooming copy
-during that hold. High-level enemy skills (Lv50+) use mirrored enemy-side
-cut-ins; boss ultimates receive the same enhanced ultimate treatment.
+during that hold. High-level enemy ultimates (Lv50+) use mirrored enemy-side
+cut-ins; ordinary enemy skills do not show banners.
 Owner chose to retain speed scaling: divide these durations by1/2/3 normally,
 including live speed updates. Total duration is3500/1750/about1167ms at1/2/3x;
 the stationary reading hold is2730/1365/910ms respectively.

@@ -73,6 +73,15 @@ def clean(image, settings):
         ImageDraw.Draw(area).polygon(
             [(round(x * width), round(y * height)) for x, y in region["polygon"]], fill=255)
         selected = np.asarray(area) > 0
+        if "keys" in region:
+            local_keys = np.asarray(region["keys"], dtype=np.float32)
+            local_distances = np.asarray([
+                np.sqrt(np.sum((rgb - color) ** 2, axis=2)) for color in local_keys])
+            local_distance = local_distances.min(axis=0)
+            selected &= local_distance < distance
+            key = np.broadcast_to(key, rgb.shape).copy()
+            key[selected] = local_keys[local_distances.argmin(axis=0)[selected]]
+            distance[selected] = local_distance[selected]
         radii[selected] = region["radius"]
     eligible = distance <= radii
     protected = Image.new("L", image.size)

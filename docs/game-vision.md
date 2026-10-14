@@ -7,6 +7,19 @@ Element-Bearers; Rise made Elemental-Devourers and stole the same six emotional
 elements. Machines are wrecked prototypes from their collaboration.
 [World lore](world-lore.md) owns the exact history and present-day boundaries.
 
+**Future story (D-275):** the owner's slow-burn moral reversal leads through
+Nyrasma and Brink of Oblivion to finding both creators, resisting annihilation
+and reconciling bearers/Devourers and Let/Rise. This is documented future
+direction only; no chapters, creator stats/elements or acquisitions are live.
+[Spoiler roadmap](story-roadmap.md).
+
+**Music (D-274):** original170 BPM instrumental orchestral rock/metal,
+expressive lead guitar instead of a singer, gentle piano/celestial contrasts
+and optional wordless choir. [23 SUNO cue briefs](../Music/README.md)
+cover Main Theme, six Story regions and16 current activity themes (D-277);
+seven owner-delivered tracks now play in menus and the six paired Story/
+material-dungeon settings (D-280). Other activity tracks remain pending.
+
 **Intrinsic kits (D-163):** full-roster ability/passive redesign approved in
 batches; all16 complete through Roses then War (D-172). Simple capped
 stacks and meaningful buff/debuff setup/payoff choices work without equipment.

@@ -108,9 +108,97 @@ at `/LastLightGame/animation-preview.html` by the existing Vite dev server.
 Choose any of the 16 characters, six evolutions, actions, speed and activity;
 Play animation resets its in-memory fixture; Replay entrance shows the real
 slide-in. Real BattleView and pure combat resolution are used, but there is no
-storage, account, server or reward persistence. The preview is not a production
-build entry. Hidden-browser timing fixtures advance finite timelines explicitly;
+storage, account, server or reward persistence. Both preview HTML pages are
+bundled build entries, but the battle studio retains its development-only guard.
+Hidden-browser timing fixtures advance finite timelines explicitly;
 those checks are not claims of natural wall-clock playback or owner approval.
+
+### Canvas ability previews and rendering validation
+
+The optical studio at `/LastLightGame/vfx-preview.html` exposes the16 character
+profiles and four action tiers (64 presets). Seven procedural archetypes render
+their geometry and optical passes; Last Flare includes character-specific
+geometry. Shared archetypes are not proof that every ordinary skill has a
+wholly distinct design. Owner visual approval remains separate from rendering
+validation.
+
+BattleView mounts the pointer-transparent canvas inside the positioned arena.
+The runner uses its actual CSS dimensions and DPR-scaled backing buffer, with
+caster/target centers relative to the canvas. Invalid/invisible anchors report
+errors instead of substituting guessed positions. Frames clear the physical
+buffer and isolate drawing state; cancellation settles pending playback and
+frame failures reject into the existing battle error path rather than hanging
+input. HP/shield/healing presentation runs at the authored charge/impact point;
+already-resolved combat, costs, cooldowns, RNG and rewards are unchanged.
+Reduced motion still bypasses animated effects.
+
+**Bloom and fluid motion (D-284):** the studio and battle runner share a
+transparent emission surface, two cached downsampled blur passes and crisp
+foreground compositing. Only effect light enters bloom, never portraits,
+scenery or arena dimming. The optical studio's Bloom switch now controls this
+actual pass; Camera Shake also controls its softened continuous motion.
+Particles advance in steps no larger than1/120 second using elapsed animation
+time. Studio scrubbing reconstructs a fresh simulation rather than retaining
+stale particles or impact state.
+
+All seven archetypes have eased buildup/release and bounded completion fades.
+Projectile trails use analytic time samples, damping is elapsed-time based,
+volley hit light decays, and Last Flare replaces the broad white wash with
+localized radiance. Character-specific Last Flare geometry includes curved
+flames, wind ribbons, branches/leaves, psychic lenses, growing lightning and
+arched bastions. Ordinary skills still share archetypes; this polish is not a
+claim of64 wholly different systems or guaranteed frame rates.
+
+**Last Flare banners (D-283):** portrait cut-ins occur only for `ultimate`
+actions (Last Flare and eligible enemy ultimates). Skill1/Skill2, including
+support skills, play battlefield effects without the banner. Last Flare
+duration, speed scaling, reduced-motion skips and cleanup remain unchanged.
+
+**Affected-unit visuals (D-282):** each activation runs independent VFX
+instances for every actual damage/heal/shield/buff recipient on one shared
+canvas timeline. Team support also includes full-health living allies and the
+caster; fallen allies are excluded. Use pre-impact displayed HP so lethal
+hits still animate on their targets. Mixed Last Flares cover enemies and
+supported allies together. Support effects originate on each recipient,
+offensive effects retain the caster origin, and each target is deduplicated.
+Impact presentation runs once per activation; arena dimming runs once rather
+than multiplying with the number of recipients.
+
+Field attacks no longer instantiate the legacy CSS impact bloom, signature
+star/pentagram or trail overlays. Canvas effects replace those layers;
+portrait cut-ins, sprite choreography, damage numbers and genuine status
+readouts remain. This changes presentation only, not ability targeting/math.
+
+Preview stages fill the viewport space remaining below their controls, not a
+second full viewport. Sprites use arena-relative dimensions. Compact battle
+previews keep enemy and ally columns separated. The optical transport remains
+visible; its sidebar scrolls within a bounded panel.
+The battle studio's Formation selector supports Solo or Three allies using
+in-memory units only. Three-allies previews start partially injured to make
+healing visible; Training supplies three enemies for area-attack inspection.
+No account ownership, progress, resources or rewards are written.
+Phone squad previews use compact full-value readouts with portraits in their
+nameplate headers, retaining HP, Gauge, resources, real statuses and44px
+controls. Both artwork anchors and complete readouts must fit the arena,
+including support buffs and enemy debuffs after an action.
+
+Validation: run `npx vitest run src\vfx\vfx-systems.test.ts
+src\vfx\preview-dom.test.ts src\presentation\battle-animations.test.ts
+src\presentation\battle-authority.test.ts src\presentation\battle-impact.test.ts
+src\presentation\battle-health.test.ts
+src\presentation\battle-speed.test.ts src\presentation\battle-squad-art.test.ts
+--maxWorkers=2`, then `npm run build`. Mock canvas tests establish lifecycle
+behavior, not visible rendering. Browser validation must additionally measure
+nontransparent lit effect pixels, complete action playback, actual HP/effect
+updates, canvas/arena alignment and viewport containment.
+For bloom/motion regression coverage, include
+`src\presentation\battle-cutin.test.ts` and `src\game\battle.test.ts`.
+Real Chrome on/off comparisons verified added glow for all64 studio presets;
+all64 BattleView actions were also checked on desktop and at390x844/DPR2 for
+lit recipient pixels, Last Flare-only banners, settled input locks, absent
+legacy overlays and unchanged localStorage. The phone sweep additionally
+verified complete readout containment. Pixel checks do not replace owner
+visual approval or establish smoothness on every device.
 
 **Battle presentation (D-187):** all battle animations play by default regardless
 of device motion preferences; only the in-game Reduce motion selection disables

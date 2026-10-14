@@ -1,5 +1,299 @@
 # Current state and handoff
 
+## Functional bloom and fluid ability motion (D-284)
+
+- Shared emission/blur compositor now supplies real bloom in both studios and
+  BattleView. Cached narrow/wide blur buffers preserve crisp cores without
+  blooming portraits/scenery or multiplying arena dimming. Studio Bloom and
+  Camera Shake switches work; scrubbing reconstructs fresh simulation state.
+- All seven archetypes use smoother buildup/release and completion fades.
+  Elapsed-time bounded stepping, time-based damping and analytic projectile
+  tails reduce frame-rate-dependent motion. Volley hit bloom fades instead of
+  lingering; ultimates use localized light instead of a full-screen white wash.
+  Refined individual Last Flare geometry for flames, wind, lightning, psychic
+  lenses, branches/leaves, spiral currents, dual ribbons and arched bastions.
+- Fixed phone Three-allies preview overflow using compact controls/header and
+  full-value readouts with portrait headers. Actual HP, Gauge, native resources,
+  buffs/debuffs and44px controls remain. No gameplay layout redesign.
+- Real Chrome: personally inspected16 character contact sheets (four actions
+  at gather/release/decay); all64 studio bloom on/off comparisons gained lit
+  pixels. All64 actual BattleView actions passed desktop and390x844/DPR2 checks:
+  every dispatched recipient lit, no legacy overlays, ultimate-only banners,
+  no runtime errors, settled busy locks and unchanged localStorage. Phone
+  checks additionally verified complete nameplate/readout containment.
+- `npx vitest run src\vfx\vfx-systems.test.ts src\vfx\preview-dom.test.ts
+  src\presentation\battle-cutin.test.ts src\presentation\battle-health.test.ts
+  src\presentation\battle-impact.test.ts src\presentation\battle-animations.test.ts
+  src\presentation\battle-authority.test.ts src\presentation\battle-speed.test.ts
+  src\game\battle.test.ts --maxWorkers=2`:164 passed across9 files.
+  `npm run build`:TypeScript/Vite passed; existing large-chunk advisory remains.
+  Diagnostics and `git diff --check` passed. VS Code test discovery returned no
+  tests, so the repository's Vitest runner supplied validation.
+- Shared ordinary-skill archetypes and historical unwired studio layer/reticle
+  controls remain; this is not64 unique systems, a universal frame-rate promise
+  or owner visual approval. No owner decision blocks this request. Combat math,
+  targeting, RNG, account/reward persistence and supplied art are unchanged.
+  Changes remain local/uncommitted; unrelated worktree changes preserved.
+  [Contract](combat.md#canvas-ability-previews-and-rendering-validation).
+
+## Last Flare-only ability banners (D-283)
+
+- Shared portrait-cue dispatch now allows only ultimate/Last Flare actions.
+  Normal Attack, Defense, Skill1/Skill2 and ordinary enemy skills skip banners
+  in both gameplay and the battle preview. Battlefield VFX are unchanged.
+- Last Flare and eligible enemy ultimate banners retain their3500ms base
+  duration, stationary reading hold, speed scaling, reduced-motion skip,
+  portrait facing and failure/disposal cleanup. No combat/save/RNG changes.
+- `npx vitest run src\presentation\battle-cutin.test.ts
+  src\presentation\battle-impact.test.ts src\presentation\battle-animations.test.ts
+  src\presentation\battle-speed.test.ts --maxWorkers=2`:63 passed across4 files,
+  including action eligibility for all16 characters and ultimate cleanup.
+  `npm run build`:TypeScript/Vite passed with existing large-chunk advisory.
+- No remaining implementation or owner decision needed for this request.
+  [Contract](free-battle.md#skill-portrait-cut-ins-and-enemy-skill-kits).
+
+## Multi-recipient ability VFX and legacy overlay removal (D-282)
+
+- Ability effects now cover each actual enemy/ally recipient, with the caster
+  included for team support. Full-health living allies still receive support
+  visuals, fallen allies do not, and targets killed by the current hit retain
+  their pre-impact anchors. Mixed Last Flares cover both sides.
+- Each recipient has independent simulation state on a shared canvas timeline;
+  allied support is centered on that ally. Deduplicated targets, one impact
+  callback and primary-only arena dimming prevent cross-target interference.
+- Removed field-only CSS impact blooms, signature stars/pentagrams and trails.
+  Canvas VFX, sprite movement, portrait cut-ins, numbers and status readouts
+  remain. Combat calculations, costs, RNG and atomic rewards are unchanged.
+- Battle preview adds Solo/Three allies. Three allies start partially injured
+  in memory only; choose Training to see attacks on three enemies. No saves,
+  ownership/resource grants or account reward transactions occur.
+- `npx vitest run src\vfx\vfx-systems.test.ts src\vfx\preview-dom.test.ts
+  src\presentation\battle-health.test.ts src\presentation\battle-impact.test.ts
+  src\presentation\battle-animations.test.ts src\presentation\battle-authority.test.ts
+  src\presentation\battle-speed.test.ts src\game\battle.test.ts --maxWorkers=2`:
+  129 passed across8 files. `npm run build`: passed TypeScript and Vite,
+  with the existing large-chunk advisory.
+- Real isolated Chrome: Flora/Tizu Skill2 and Disciple Last Flare dispatched
+  to3 allies; Infernis Skill2 to3 enemies; Tizu/Flora Last Flare to all6;
+  Infernis Skill1 to just1 enemy. Every dispatched anchor produced lit canvas
+  pixels, all actions completed, legacy field overlays remained absent, no
+  runtime errors and localStorage unchanged. Browser evidence is session-local.
+- Shared ordinary-skill archetypes and historical optical studio controls
+  remain as documented below; this change does not introduce new designs.
+  Owner visual approval remains separate. Local changes are uncommitted;
+  unrelated worktree changes preserved.
+
+## Ability VFX rendering and preview containment verification
+
+- Completed the pending preview-layout/runner corrections. Battle preview fills
+  the space below its controls; arena-relative sprites and separate phone
+  columns prevent offscreen/overlapping combatants. Optical canvas and transport
+  shrink into the available viewport; sidebar scrolling remains contained.
+- Canvas backing size follows the actual arena and DPR. Frames clear in
+  physical pixels and isolate context state. Invalid anchors/speed report
+  errors, cancellation settles pending playback, and asynchronous/frame errors
+  cannot leave combat waiting indefinitely. BattleView reports initialization
+  failures and presents actual HP/shield/healing at the VFX charge/impact point.
+  No combat calculations, rewards, account transactions or source art changed.
+- Real isolated Chrome validation (not mocked drawing): all64 studio presets
+  produced lit pixels; all64 actions played through real BattleView with
+  nonzero visible effect pixels, completed input locks and no runtime errors.
+  Infernis Skill1 additionally played in all10 studio modes, including Story,
+  Training, dungeons and War; localStorage was unchanged. Layouts measured at
+  1280x720,960x540 and390x844; canvas/arena bounds matched and preview regions
+  stayed within the viewport. Phone screenshots confirmed separated units.
+- `npx vitest run src\vfx\vfx-systems.test.ts src\vfx\preview-dom.test.ts
+  src\presentation\battle-animations.test.ts src\presentation\battle-authority.test.ts
+  src\presentation\battle-impact.test.ts src\presentation\battle-speed.test.ts
+  src\presentation\battle-squad-art.test.ts src\game\battle.test.ts --maxWorkers=2`:
+  107 passed across8 files. `npm run build`:passed, including TypeScript and
+  all3 HTML entries, with the existing large-chunk advisory. Diagnostics and
+  `git diff --check`:passed.
+- Integrated VS Code browser CDP still timed out; isolated Chrome provided
+  actual pixel/layout evidence without using the owner's account. Rendering
+  validation is not owner visual approval or proof of distinct ordinary-skill
+  designs: shared archetypes remain. Several historical studio layer/reticle
+  controls remain unwired and particle telemetry is illustrative, not measured.
+  Battle studio remains development-only despite its bundled HTML entry.
+  [Contract](combat.md#canvas-ability-previews-and-rendering-validation).
+  Changes are local and uncommitted; unrelated worktree changes preserved.
+
+## Root music cleanup
+
+- Owner approved removal of redundant root MP3 deliveries. All seven original
+  filenames/bytes remain under Music/source; runtime copies remain under
+  public/assets/music. Verified each against its recorded SHA256 before removal.
+- Intake now reproduces from archived sources when root deliveries are absent,
+  skips copying a source over itself and rejects recorded-source hash changes.
+  Manifest delivery names remain historical provenance. Playback is unchanged.
+- Verification: `python tools\intake_music.py` passed after removal; all seven
+  archive/runtime hashes match the unchanged manifest, and no delivered root
+  MP3s remain. `git diff --check` passed. Local, uncommitted.
+
+## Music crossfades and slower loading curtains (D-281)
+
+- Replaced hard soundtrack swaps with1.6-second crossfades using at most two
+  looping decks. Incoming playback must succeed before fading the old song.
+  Undelivered modes fade to silence; same-track Settings/Continue/Retry still
+  preserve playback. Volume scales both envelopes; mute/hidden/dispose clear
+  timers and outgoing playback. Rapid swaps ignore stale play promises.
+  Incoming failures surface errors and keep the outgoing song for retry.
+- Activity transition curtains now ease to black over800ms and reveal over
+  800ms (formerly220ms each). Existing artwork readiness/timeout, loading hold,
+  input locks and focus restoration remain. Reduced motion skips visual fades;
+  battle speed does not affect either music or curtain duration.
+- Updated [Music contract](../Music/README.md), menu and encounter specs.
+  No changes to assets, assignments, audio source bytes, combat, saves or RNG.
+- `npx vitest run src\presentation\music.test.ts
+  src\presentation\activity-transition.test.ts src\presentation\settings-panel.test.ts
+  src\presentation\battle-entrance.test.ts src\presentation\battle-authority.test.ts
+  src\presentation\battle-speed.test.ts --maxWorkers=2`:62 passed.
+  `npm run build`:passed with existing large-chunk advisory. Diagnostics and
+  `git diff --check` passed.
+- Browser controlled-visibility fixture played actual MP3s: both decks were
+  playing at approximately17.5% midpoint volume, then the outgoing source was
+  released and incoming reached35%, with no errors. Because this integrated
+  tab is hidden, visual WAAPI was checked by controlled seeking: opacity
+  0/.5/1 for fade-in and1/.5/0 for reveal, each800ms. Curtain removed and input
+  restored; fixtures cleaned, no account writes. Local, uncommitted.
+
+## Delivered soundtrack wiring (D-280)
+
+- Installed seven root MP3 deliveries: Celestial Pilgrimage for title/selection/
+  nonbattle menus, and six tracks shared between each Story region and its
+  matching material dungeon. [Music index](../Music/README.md) owns exact names.
+  Training/infusions/currency farms/Roses/Machines/War remain silent without
+  delivered tracks; no guessed substitutes or sound-effect integration.
+- One looping player waits for interaction, changes tracks without overlap,
+  pauses hidden tabs and retains position through same-track renders, Settings,
+  Continue/Retry and mute/volume changes. BattleView's optional rendered-state
+  callback covers offline/online Story boundaries and reconstructed sessions.
+- Music volume/mute save independently on this device (default35%, unmuted),
+  with labelled Settings controls and explicit storage/media failure notices.
+  Browser autoplay denial waits for another interaction; tempo/combat unchanged.
+- `python tools\intake_music.py` preserves originals under Music/source,
+  installs byte-identical public/assets/music copies, and records seven SHA256
+  hashes/sizes/paths. Root deliveries retained; no trimming/transcoding.
+  No seamless-loop edits, other activity tracks or audio uploads.
+- Verification: `npx vitest run src\presentation\music.test.ts
+  src\presentation\settings-panel.test.ts src\presentation\battle-speed.test.ts
+  src\presentation\battle-authority.test.ts src\presentation\battle-entrance.test.ts
+  src\presentation\battle-results.test.ts --maxWorkers=2`:52 passed.
+  `npm run build`:passed (existing large-chunk advisory).
+  Intake rerun passed; root/archive/runtime/build copies match all seven hashes.
+  Browser decoded all seven MP3s (about210-265 seconds) and a controlled
+  visibility/interaction fixture confirmed real looping playback at35% and
+  hidden-tab pause. Settings DOM fixture at320px had no horizontal overflow,
+  with44px volume and50px mute targets. Fixtures cleared; no account writes.
+  Editor diagnostics and `git diff --check` passed. Local, uncommitted.
+
+## Shared crystal-power sound prompts (D-279)
+
+- Replaced the per-character pack with five [shared action prompts](../Music/sound-effects/character-abilities.md):
+  unchanged Normal Attack/Defense and new default Skill1, Skill2 and
+  Ultimate/Last Flare. Concrete crystal fractures, shattering, rushing hiss,
+  low pressure and brief glass resonance replace character-specific lore.
+- The power cues target0.9/1.2/1.5 seconds, with immediate onset and increasing
+  weight/texture, not volume or cinematic buildup. They are neutral releases,
+  not damage/heal/shield outcomes. Passive accents are byte-for-byte unchanged.
+  The former default-actions file links to the consolidated source.
+- Supersedes the per-character pack described in D-276/D-278 below. Updated
+  library/index references; documentation-only checks cover five cue blocks,
+  durations, default text preservation, passive hash, links and whitespace.
+  No generated audio, runtime integration, gameplay changes or deployment.
+
+## Quick, powerful ultimate sound briefs (D-278)
+
+- Revised all16 [ultimate prompts](../Music/sound-effects/character-abilities.md)
+  to1.2-1.5-second targets including the tail: immediate sweep/pulse, one
+  powerful event, short clean decay. Removed long gathering, rising and
+  cinematic sequences; power comes from dense texture/weight, not volume.
+- Preserved ability names, weapons and actual attack/support distinctions,
+  including Disciple's buff/shield and mixed attack/protection/healing cues.
+  Ordinary skills, passive accents and shared default actions are unchanged.
+  [Shared effect contract](../Music/sound-effects/README.md) reflects the correction.
+- Documentation-only validation checked all48 named ability blocks,16 short
+  ultimate targets, onset/power/no-buildup constraints and relative links;
+  `git diff --check` passed. No build/unit suite needed. No audio generated,
+  runtime timing changed, commit or deployment performed.
+
+## Remaining Story and activity music briefs (D-277)
+
+- Added Stillhalo and Riftbound individual SUNO briefs plus a16-cue activity
+  pack: Training, all six current material dungeons, Heaven/Abyss,
+  Treasury/Sanctuary, Roses, Machines and Nerithe/Orvella/Vaelor War.
+  [Music index](../Music/README.md) now covers23 cues including the original5.
+- Every new style prompt retains170 BPM, expressive lead guitar as singer,
+  no lead vocals/lyrics/speech, wordless choir, nocturne piano/pads, spacious
+  verses, crushing orchestral refrains, celestial bridge and harmony finale.
+  Distinct motifs separate similar elemental settings; Machines recalls
+  shared prototype origins and War themes remain human challenges.
+- Regional/mode themes, not one track per numbered encounter. Planned Black
+  Diamonds and future chapters are not covered by this current-mode pack.
+  No generated audio, runtime wiring, gameplay or future-story implementation.
+- Documentation-only verification checked18 new style prompts under1000
+  characters, required sound constraints,16 distinct activity cue IDs and
+  relative index links; `git diff --check` passed. No build needed.
+  Local only, uncommitted and unpublished.
+
+## ElevenLabs character sound-effect prompts (D-276)
+
+- Added [sound-effect library](../Music/sound-effects/README.md), shared default
+  Attack/Defense,48 named skills/ultimates across all16 live humans, and16
+  optional passive/charge accents. Includes individual copyable prompts,
+  duration suggestions, looping-off workflow and original/export preservation.
+- Read current base/Rose, flagship, War kits and consolidated charge rules.
+  Prompts distinguish weaponless casting, attack/Weaken, Burn, healing,
+  shielding and empowerment. Disciple's support-only skills do not imply
+  damage; Aurora is not recast as a healer. Passive/charge candidates require
+  actual eligible outcomes; constant Defense bonuses default to silence.
+- No music/vocals/choir, new triggers, stats, gameplay, generated audio,
+  service uploads, dependencies or runtime wiring. Planned Black Diamonds,
+  enemies, creators and Conduits are outside the current16-human pack.
+- Documentation-only validation compared all48 ability and16 passive names
+  against current content, counted66 prompt blocks and checked library links/
+  whitespace. No build/unit suite necessary. Local, uncommitted, unpublished.
+
+## SUNO music briefs and future campaign documentation (D-274/D-275)
+
+- Created [Music](../Music/README.md) with an index, shared170 BPM instrumental
+  orchestral rock/metal direction, generation/review workflow and future source/
+  export filing convention. Five individual briefs cover Main Theme, Emberwake,
+  Glasswater, Stormspan and Rootstone, each with a copyable style prompt and
+  distinct arrangement. Guitar is the melodic "singer"; no lead vocals/lyrics/
+  speech, optional wordless choir only. No audio generated, installed or wired.
+- Added [future story roadmap](story-roadmap.md): all seven chapters and
+  intermission, Rise's papers, Let's message/wisp, Nyrasma, Brink of Oblivion,
+  the moral reversal, survival/creator alliance and eventual reconciliation/
+  Let acquisition. Chapter2 is5x25, intermission3x25; Chapter1 keeps6x25.
+- All new story outcomes are documentation-only spoilers. Current story,
+  dialogue, saves, rewards, creatures and Infinity/Nothingness mechanics remain
+  unchanged. Exact scripts/placement, later regions/stage counts, machine
+  lineage, creator stats/elements/kits and Rise's recruitment remain future
+  authorship/implementation details, not invented approved gameplay.
+- Linked Music/roadmap from documentation index, vision, founding canon and
+  Story spec; recorded approved direction in decision log. Documentation-only:
+  no build/unit suite needed. Local document checks verified five briefs and
+  relative links; `git diff --check` passed. No commit, generation or deployment.
+
+## Play activity bottom clearance (D-273)
+
+- Shared activity groups now reserve4rem plus bottom safe-area inset after
+  all content, including Event details outside its card. Matching scroll-padding
+  helps keep scrolled/focused controls away from the edge. Specificity protects
+  Training from its older zero-padding override. No text, artwork, mechanics,
+  navigation or transaction changes.
+- Browser checked all8 categories and all selectable sub-modes (17 views per
+  viewport) at1367x640,1788x768,390x768 and320x640. At maximum page scroll,
+  final visible text/controls had approximately64px or more clearance
+  (smallest measured63.875px from subpixel rounding), no horizontal overflow.
+  Locked-account DOM-only fixtures, no real saves; reloaded afterward.
+- `npx vitest run src\presentation\reference-ui.test.ts
+  src\presentation\information-topics.test.ts
+  src\presentation\sanctuary.test.ts --maxWorkers=2`:47 passed.
+  `npm run build`:passed with existing chunk advisory. CSS diagnostics clean;
+  `git diff --check`:passed. Local only, uncommitted and unpublished.
+
 ## Broken Mechanical Components are resource items
 
 - Moved positive component holdings from the Conduits balance line into the

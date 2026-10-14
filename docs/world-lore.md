@@ -84,6 +84,12 @@ Infinity/Nothingness are narrative powers, not new playable combat elements.
 Source art, prompts and historical decision/provenance records are unchanged.
 Further story outcomes remain for owner direction and future gameplay.
 
+**D-275 future direction:** the owner has now supplied the
+[seven-chapter spoiler outline](story-roadmap.md), including Rise's papers,
+the moral reversal, Nyrasma and eventual coexistence. That document records
+future narrative, not current in-game knowledge or implemented outcomes.
+Do not reveal its twists in current Help/Prologue or award either creator.
+
 ## Validation
 
 `npx vitest run src\content\character-lore.test.ts

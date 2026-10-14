@@ -94,8 +94,20 @@ import './presentation/conduit-loadout.css';
 import './presentation/status-toast.css';
 import { saleLabel } from './presentation/creature-sale';
 import { applyConduitSearch, bindConduitLoadout, resetConduitLoadoutView } from './presentation/conduit-loadout';
+import { BackgroundMusic, battleMusic, defaultMusicPreferences, loadMusicPreferences, saveMusicPreferences } from './presentation/music';
 
 const gameStorage = new DebugProfileStorage(window.localStorage, import.meta.env.DEV);
+let musicPreferences = { ...defaultMusicPreferences };
+let musicSettingsError = '';
+const music = new BackgroundMusic(new Audio(), document, showError);
+try {
+  musicPreferences = loadMusicPreferences(window.localStorage);
+} catch (error) {
+  console.error('Could not load Last Light music settings', error);
+  musicSettingsError = `Music settings could not be loaded. ${errorMessage(error)} Save a music setting to repair them.`;
+}
+music.configure(musicPreferences);
+import.meta.hot?.dispose(() => music.dispose());
 
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('Application root is missing.');
@@ -475,6 +487,7 @@ function frame(body: string, battle = false, sanctuary = false): void {
     ${sanctuary ? '' : '<footer><span>AN ORIGINAL GACHA RPG</span><span>A WORLD WAITING TO AWAKEN</span></footer>'}
   </div>`;
   if (gameStorage.active) app.insertAdjacentHTML('beforeend', '<aside class="debug-profile-banner" aria-label="Debug profile"><strong>DEBUG · Isolated test profile</strong><button type="button" class="text-button" data-exit-debug>Exit debug</button></aside>');
+  music.setTrack(battle ? battleSession ? battleMusic(battleSession.state) : null : 'main-theme');
 }
 
 function focusHeading(): void {
@@ -659,7 +672,7 @@ function renderMenu(firstArrival = false): void {
     </header>${walletError ? '<p class="status" id="wallet-error" role="alert"></p>' : ''}
     <div id="battle-root"></div>` : sanctuary}
     <dialog id="settings-drawer" class="settings-drawer" aria-labelledby="settings-heading">
-    ${settingsPanel(motionPreference, bindings, speed)}
+    ${settingsPanel(motionPreference, bindings, speed, musicPreferences)}
     ${menuPage === 'battle' ? `<p class="currency-reward">${currencyIcon('fractalis')}<span>Prismatica <strong id="fractalis-balance">${fractalis ?? 'Unavailable'}</strong></span></p>` : ''}
     <p id="settings-error" class="status" role="alert"></p>
   </dialog>
@@ -971,7 +984,7 @@ function renderMenu(firstArrival = false): void {
       if (premium) premium.textContent = String(account.lycalis);
       const error = app.querySelector('#wallet-error');
       if (error) error.textContent = '';
-    }, backMenu, playMode === 'online' ? battleAuthority() : undefined);
+    }, backMenu, playMode === 'online' ? battleAuthority() : undefined, (state) => music.setTrack(battleMusic(state)));
   }
   const walletStatus = app.querySelector('#wallet-error');
   updateProfileAvatar();
@@ -1141,6 +1154,29 @@ function renderMenu(firstArrival = false): void {
       showError(`${saved ? 'Your 10-pull rewards are saved, but their presentation could not complete. Check Team and Inventory.' : 'The 10-pull was not completed. Nothing was spent.'} ${errorMessage(error)}`);
     }
   });
+  const musicVolume = app.querySelector<HTMLInputElement>('#music-volume');
+  const musicMuted = app.querySelector<HTMLInputElement>('#music-muted');
+  const saveMusic = (): void => {
+    if (!musicVolume || !musicMuted) throw new Error('Music settings controls are missing.');
+    try {
+      const next = { volume: Number(musicVolume.value), muted: musicMuted.checked };
+      saveMusicPreferences(window.localStorage, next);
+      musicPreferences = next;
+      music.configure(next);
+      musicSettingsError = '';
+    } catch (error) {
+      console.error('Could not save Last Light music settings', error);
+      musicVolume.value = String(musicPreferences.volume);
+      musicMuted.checked = musicPreferences.muted;
+      musicSettingsError = `Music settings were not changed. ${errorMessage(error)}`;
+      showError(musicSettingsError);
+    }
+    const output = app.querySelector<HTMLOutputElement>('#music-volume-value');
+    if (output) output.value = `${musicPreferences.volume}%`;
+  };
+  musicVolume?.addEventListener('input', saveMusic);
+  musicMuted?.addEventListener('change', saveMusic);
+  if (musicSettingsError) showError(musicSettingsError);
   const settingsForm = app.querySelector<HTMLFormElement>('#settings-form');
   settingsForm?.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -1238,7 +1274,7 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
   if (page === 'gameplay') return gameplayHub(account);
   if (page === 'story') return gameplayHub(account);
   if (page === 'events') return roseEvent(account);
-  return settingsPanel(motionPreference, bindings, speed);
+  return settingsPanel(motionPreference, bindings, speed, musicPreferences);
 }
 
 function render(): void {
@@ -1968,5 +2004,6 @@ else if (!gameStorage.active && import.meta.env.VITE_SUPABASE_URL) {
   }).catch(error => { console.error('Online session restoration failed', error); showError(errorMessage(error)); });
 }
 if (settingsError) showError(settingsError);
+if (musicSettingsError) showError(musicSettingsError);
 if (hotkeyError) showError([settingsError, hotkeyError].filter(Boolean).join(' '));
 if (speedError) showError([settingsError, hotkeyError, speedError].filter(Boolean).join(' '));

@@ -40,7 +40,7 @@ describe('attack presentation impact boundary', () => {
     Object.assign(view, {
       session: { state: result.state },
       displayedHealth: healthSnapshot([...before.allies, ...before.enemies]),
-      host: { querySelector: (selector: string) => selector.includes('ember') ? source
+      host: { querySelector: (selector: string) => selector.endsWith(' .battle-art') ? art : selector.includes('ember') ? source
         : selector.includes(damage.target) ? target : { textContent: '' }, append: () => {} },
     });
     let finishWindup = () => {};
@@ -48,7 +48,7 @@ describe('attack presentation impact boundary', () => {
     const windup = new Promise<void>((resolve) => { finishWindup = resolve; });
     const visuals = new Promise<void>((resolve) => { finishVisuals = resolve; });
     let calls = 0;
-    view.play = () => ++calls <= 2 ? windup : visuals;
+    view.play = () => ++calls === 1 ? windup : visuals;
     const originalDocument = globalThis.document;
     Object.defineProperty(globalThis, 'document', { configurable: true, value: {
       documentElement: { dataset: { motion: 'system' } },

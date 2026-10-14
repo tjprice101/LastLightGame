@@ -6,6 +6,18 @@ Beacons reopen routes while both factions seek their creator's soul.
 Stage150 does not recover a soul or declare a victor. All stage identities,
 art, difficulty, unlocks and rewards remain unchanged.
 
+**D-275 future story, not implemented:** this campaign is the foundation for
+Chapter1, **Search the Six Beacons of Emotion**. Rise's transcription shards
+and the future final-boss machine/note/wisp are documentation-only, as are
+Nyrasma's125 stages, the75-stage pursuit and Chapters3-7.
+[Spoiler roadmap and unresolved details](story-roadmap.md).
+The [Music library](../Music/README.md) supplies generation briefs for the
+Main Theme, all six regional battle themes and every current battle activity;
+seven delivered tracks are now installed (D-280): the menu theme and one
+shared theme for each Story region and matching material dungeon. Training
+and other undelivered modes stay silent. See the Music index for assignments,
+Settings volume/mute and playback validation.
+
 ## Full-map framing and terrain anchors (D-261)
 
 World map uses the installed1456x816 artwork's native ratio, contained inside

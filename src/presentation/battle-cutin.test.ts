@@ -5,10 +5,11 @@ import { act, createBattle, createDungeonBattle, createInfusionBattle, endTurn }
 import { unitFacingAttributes } from './unit-facing';
 import { readdirSync } from 'node:fs';
 import { assetUrl } from './portrait';
+import { starters } from '../content/starters';
 
 afterEach(() => vi.unstubAllGlobals());
 
-describe('skill portrait cut-ins', () => {
+describe('Last Flare portrait cut-ins', () => {
   it('shares field-facing metadata for every supplied portrait on both sides, including captured allies', () => {
     const panel = { className: '', setAttribute: vi.fn(), style: { setProperty: vi.fn() }, innerHTML: '',
       querySelector: () => ({ textContent: '' }) };
@@ -53,7 +54,7 @@ describe('skill portrait cut-ins', () => {
       querySelector: () => art };
     const view = Object.create(BattleView.prototype);
     Object.assign(view, { session: { state }, disposed: false, play: vi.fn(async () => {}),
-      host: { append: vi.fn(), querySelector: (selector: string) => selector.includes(combatant.id) ? source
+      host: { append: vi.fn(), querySelector: (selector: string) => selector.endsWith(' .battle-art') ? art : selector.includes(combatant.id) ? source
         : selector.includes(defender.id) ? target : { textContent: '' } } });
     const impact = vi.fn(async () => {});
     await Reflect.apply(Reflect.get(BattleView.prototype, 'animate'), view, [{
@@ -66,22 +67,31 @@ describe('skill portrait cut-ins', () => {
     expect(impact).toHaveBeenCalledOnce();
   });
 
-  it('shows character skills and supportive abilities with consistent duration and actual form progression', () => {
+  it('shows only Last Flare with consistent duration and actual form progression', () => {
     const state = createBattle(1, ['tide'], { tide: { level: 105, evolution: 6 } });
     state.allies[0].shatter = 100;
     const skill = act(state, 'tide', 'skill2', state.enemies[0].id).events[0];
     const ultimate = act(state, 'tide', 'ultimate', state.enemies[0].id).events[0];
     const basic = act(state, 'tide', 'light', state.enemies[0].id).events[0];
     expect(portraitCue(state.allies[0], basic)).toBeNull();
-    expect(portraitCue(state.allies[0], skill)).toMatchObject({ ultimate: false, power: 1, name: state.allies[0].kit!.abilities.skill2.name });
-    expect(portraitCue(state.allies[0], skill)?.duration).toBe(3500);
+    expect(portraitCue(state.allies[0], skill)).toBeNull();
     expect(portraitCue(state.allies[0], ultimate)?.duration).toBe(3500);
     expect(portraitCue(state.allies[0], ultimate)?.ultimate).toBe(true);
     const young = { ...state.allies[0], level: 0, evolution: 1 };
-    expect(portraitCue(young, skill)?.power).toBe(0);
+    expect(portraitCue(young, ultimate)?.power).toBe(0);
   });
 
-  it('only shows enemy skills from 50 and distinguishes boss ultimates', () => {
+  it.each(starters.map(unit => unit.id))('skips ordinary skill banners for %s while keeping Last Flare', id => {
+    const unit = createBattle(1, [id]).allies[0];
+    for (const action of ['light', 'defend', 'skill1', 'skill2', 'ultimate'] as const) {
+      const cue = portraitCue(unit, { kind: 'attack', source: id, target: id, action,
+        abilityName: 'Ability check', message: 'Ability check', amount: 0, critical: false });
+      if (action === 'ultimate') expect(cue).toMatchObject({ ultimate: true, duration: 3500 });
+      else expect(cue).toBeNull();
+    }
+  });
+
+  it('skips ordinary enemy skills and preserves high-level boss ultimate banners', () => {
     const early = createDungeonBattle('infernic', 1, 1, 'ember', { level: 0, evolution: 1 });
     early.round = 3;
     const event = endTurn(early).events.find((event) => event.kind === 'attack')!;
@@ -93,12 +103,12 @@ describe('skill portrait cut-ins', () => {
       const attack = endTurn(state).events.find((event) => event.kind === 'attack')!;
       expect(portraitCue(state.enemies[0], attack)).toMatchObject({ ultimate: true, power: 1, duration: 3500 });
     }
-    expect(portraitCue({ ...early.enemies[0], level: 50 }, event)).not.toBeNull();
+    expect(portraitCue({ ...early.enemies[0], level: 50 }, event)).toBeNull();
   });
 
   it.each([1, 2, 3])('keeps a measurable reading hold while still scaling at %ix', (speed) => {
     const state = createBattle(1, ['ember'], { ember: { level: 0, evolution: 1 } });
-    for (const action of ['skill1', 'ultimate'] as const) {
+    for (const action of ['ultimate'] as const) {
       const cue = portraitCue(state.allies[0], { kind: 'attack', source: 'ember', target: state.enemies[0].id,
         action, abilityName: 'Reading-time check', message: 'Reading-time check', amount: 0, critical: false })!;
       expect(cue.duration).toBe(3500);
@@ -136,7 +146,7 @@ describe('skill portrait cut-ins', () => {
     vi.stubGlobal('matchMedia', () => ({ matches: false }));
     const state = createBattle(1, ['ember'], { ember: { level: 105, evolution: 6 } });
     state.allies[0].shatter = 100;
-    const entry = act(state, 'ember', 'skill1', state.enemies[0].id).events[0];
+    const entry = act(state, 'ember', 'ultimate', state.enemies[0].id).events[0];
     const source = { querySelector: () => ({}), getBoundingClientRect: () => ({ x: 100, y: 100 }) };
     const target = { getBoundingClientRect: () => ({ x: 0, y: 100 }) };
     const view = Object.create(BattleView.prototype);

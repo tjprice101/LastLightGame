@@ -1,0 +1,157 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Last Light - Ability VFX Studio</title>
+  </head>
+  <body>
+    <!-- Top Bar -->
+    <header class="vfx-header">
+      <div class="vfx-brand">
+        <span class="vfx-badge">VFX GRAPH</span>
+        <div class="vfx-title">
+          <h1>Wisping Flame Attack VFX Studio</h1>
+          <p>Unity-grade optical stack: Anamorphic glare, multi-tier bloom, serpentine ribbon flight & shockwave detonation.</p>
+        </div>
+      </div>
+      <div class="vfx-quick-actions">
+        <button id="btn-replay" class="primary">⚡ Trigger Attack</button>
+        <button id="btn-loop-toggle" class="active">🔁 Loop: On</button>
+        <button id="btn-reticles-toggle" class="active">🎯 Reticles: On</button>
+        <a href="/LastLightGame/animation-preview.html" style="color: #60a5fa; font-size: 13px; text-decoration: none; padding: 6px 12px; border: 1px solid var(--border-subtle); border-radius: 6px; background: #161c2b;">⚔️ In-Battle Studio</a>
+        <a href="/LastLightGame/" style="color: var(--accent-gold); font-size: 13px; text-decoration: none; padding: 6px 12px; border: 1px solid var(--border-subtle); border-radius: 6px; background: #161c2b;">Return to Game</a>
+      </div>
+    </header>
+
+    <!-- Studio Grid -->
+    <div class="vfx-studio-layout">
+      <!-- Main Interactive Viewport -->
+      <section class="vfx-viewport-container">
+        <!-- Interactive Overlay Hints -->
+        <div class="vfx-canvas-hint">
+          <span>💡 Click or drag anywhere to set custom target reticle</span>
+        </div>
+
+        <div class="vfx-telemetry">
+          <span id="telemetry-fps">60 FPS</span>
+          <span>•</span>
+          <span id="telemetry-frametime">1.2ms</span>
+          <span>•</span>
+          <strong id="telemetry-particles">0 PARTICLES</strong>
+        </div>
+
+        <!-- Canvas Stage -->
+        <div class="vfx-canvas-wrapper">
+          <canvas id="vfx-canvas"></canvas>
+        </div>
+
+        <!-- Transport & Timeline Bar -->
+        <div class="vfx-transport">
+          <div class="vfx-timeline-row">
+            <span id="phase-pill" class="vfx-phase-pill">Gathering & Vortex</span>
+            <input id="timeline-scrubber" type="range" class="vfx-scrubber" min="0" max="100" step="0.1" value="0" />
+            <span id="time-display" class="vfx-time-display">0.00s / 3.20s</span>
+          </div>
+
+          <div class="vfx-controls-row">
+            <div class="vfx-btn-group">
+              <button id="btn-play-pause"><span>⏸ Pause</span></button>
+            </div>
+
+            <div class="vfx-btn-group">
+              <span style="font-size: 11px; color: var(--text-muted); margin-right: 4px;">PLAYBACK SPEED:</span>
+              <button class="speed-btn" data-speed="0.1">0.1x (Matrix)</button>
+              <button class="speed-btn" data-speed="0.25">0.25x</button>
+              <button class="speed-btn" data-speed="0.5">0.5x</button>
+              <button class="speed-btn active" data-speed="1.0">1.0x</button>
+              <button class="speed-btn" data-speed="2.0">2.0x</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sidebar: Palettes & Layer Inspector -->
+      <aside class="vfx-sidebar">
+        <!-- Character & Ability Selector -->
+        <div class="vfx-panel-section">
+          <h3>Element-Bearer Abilities</h3>
+          <div style="display: grid; gap: 8px; margin-bottom: 12px;">
+            <label style="font-size: 11px; color: var(--text-muted); display: grid; gap: 4px;">
+              CHARACTER PRESET
+              <select id="vfx-character-select" style="min-height: 40px; padding: 6px 10px; background: #131926; color: #fff; border: 1px solid var(--border-subtle); border-radius: 6px; font-weight: 600;"></select>
+            </label>
+            <div id="vfx-ability-buttons" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;"></div>
+          </div>
+          <div id="vfx-ability-card" style="padding: 10px; background: #0c101a; border: 1px solid #2d374d; border-radius: 6px; font-size: 11px; display: grid; gap: 6px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong id="vfx-ability-title" style="color: var(--accent-gold); font-size: 13px;">Last Flare: Dawnfire</strong>
+              <span id="vfx-archetype-badge" style="font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #3b82f6; color: #fff; text-transform: uppercase;">CATACLYSM</span>
+            </div>
+            <div id="vfx-ability-details" style="color: #94a3b8;">Element: Infernic · Weapon: Greatsword</div>
+            <p id="vfx-ability-desc" style="color: #cbd5e1; margin: 0; line-height: 1.4;">Solar eclipse caldera eruption with sky-piercing volcanic magma pillars.</p>
+          </div>
+        </div>
+
+        <!-- Palettes Section -->
+        <div class="vfx-panel-section">
+          <h3>Elemental Palettes</h3>
+          <div id="palette-container" class="vfx-palette-grid"></div>
+        </div>
+
+        <!-- Optical & Particle Layers -->
+        <div class="vfx-panel-section">
+          <h3>VFX Layers & Passes</h3>
+          <div class="vfx-layers-list">
+            <div class="layer-toggle-row">
+              <label><input type="checkbox" data-layer="bloom" checked /> Multi-Tier Bloom</label>
+              <span class="layer-tag">POST-FX</span>
+            </div>
+            <div class="layer-toggle-row">
+              <label><input type="checkbox" data-layer="anamorphicGlare" checked /> Anamorphic Glare & Flares</label>
+              <span class="layer-tag">LENS OPTIC</span>
+            </div>
+            <div class="layer-toggle-row">
+              <label><input type="checkbox" data-layer="shockwave" checked /> Refraction Shockwave</label>
+              <span class="layer-tag">DISTORT</span>
+            </div>
+            <div class="layer-toggle-row">
+              <label><input type="checkbox" data-layer="core" checked /> Core Plasma & Mantle</label>
+              <span class="layer-tag">EMITTER</span>
+            </div>
+            <div class="layer-toggle-row">
+              <label><input type="checkbox" data-layer="ribbon" checked /> Fluid Ribbon Trail</label>
+              <span class="layer-tag">GEOMETRY</span>
+            </div>
+            <div class="layer-toggle-row">
+              <label><input type="checkbox" data-layer="wisps" checked /> Trailing Wisps & Tendrils</label>
+              <span class="layer-tag">TURBULENCE</span>
+            </div>
+            <div class="layer-toggle-row">
+              <label><input type="checkbox" data-layer="embers" checked /> Embers, Sparks & Smoke</label>
+              <span class="layer-tag">PHYSICS</span>
+            </div>
+            <div class="layer-toggle-row">
+              <label><input type="checkbox" data-layer="groundGlow" checked /> Dynamic Ground Lighting & Scorch</label>
+              <span class="layer-tag">LIGHTING</span>
+            </div>
+            <div class="layer-toggle-row">
+              <label><input type="checkbox" data-layer="cameraShake" checked /> Camera Shake on Impact</label>
+              <span class="layer-tag">CAMERA</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Technical Breakdown Callout -->
+        <div class="vfx-note">
+          <strong>VFX Architecture:</strong>
+          <p style="margin-top: 4px;">
+            Features Euler particle integration with drag & upward thermal buoyancy, curl-noise wisp branching, procedural Catmull-style tapering ribbon quads, and screen-space additive bloom buffers with chromatic aberration streaks.
+          </p>
+        </div>
+      </aside>
+    </div>
+
+    <script type="module" src="./src/vfx/wisping-flame-preview.ts"></script>
+  </body>
+</html>

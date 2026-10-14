@@ -377,6 +377,8 @@ html body .sanctuary-shell .ref-play .activity-categories a[aria-current] { back
 .ref-play .activity-categories strong { font-size: .85rem; }
 .ref-play .activity-categories small { font-size: .68rem; color: #707076; }
 html body .sanctuary-shell .ref-play .activity-group { grid-column: 2; grid-row: 1; display: grid; grid-template-columns: 15rem minmax(0, 1fr); grid-template-rows: auto; gap: .9rem; height: auto; min-height: 0; padding: 0; margin: 0; border: 0; background: none; overflow: visible; align-self: start; }
+#app .sanctuary-shell .ref-play > .activity-group { padding-bottom: calc(4rem + env(safe-area-inset-bottom)); }
+html body .sanctuary-shell .sanctuary-content:has(.ref-play) { scroll-padding-bottom: calc(4rem + env(safe-area-inset-bottom)); }
 .ref-play .activity-group > h2 { display: none; }
 html body .sanctuary-shell .ref-play .activity-picker { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; min-height: 0; overflow: auto; padding: .95rem; border: 1px solid #2d2d31; border-radius: .9rem; background: #131314; margin: 0; }
 .ref-play .activity-picker::before { content: "Location"; font-size: .8rem; font-weight: 600; margin-bottom: .6rem; }

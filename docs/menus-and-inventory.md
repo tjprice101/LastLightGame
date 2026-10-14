@@ -1,5 +1,15 @@
 # Menus and inventory
 
+## Play bottom clearance (D-273)
+
+Every Play activity group reserves4rem plus the device bottom safe-area inset
+after its content. The shared rule includes Story, Training, dungeons, infusions,
+Machines, War, currency farms and Events, including external Event details.
+The page scroll container uses matching bottom scroll-padding so focused
+controls can be brought clear of the screen edge. Preserve natural page
+scrolling, complete information, existing44px targets and separate list/dialog
+scrolling; do not shrink text or clip content to force one-screen fitting.
+
 ## Resources are owned items
 
 Inventory's Resources grid includes progression materials and positive stacks
@@ -2141,9 +2151,13 @@ Full character stats remain available in these menus; the battle field displays
 only HP, Defense and Shatter Gauge for allies, and HP/Defense for enemies.
 
 Changing sanctuary destinations, entering a dungeon/Adventure, or opening a
-character shortcut from Home uses a brief black loading curtain with a small
+character shortcut from Home uses a black loading curtain with a small
 bottom-right **Loading!** track. Content renders and artwork decodes behind it;
 input is inert until the curtain clears and destination heading regains focus.
+Under D-281, fade to black and reveal each take800ms with ease-in-out rather
+than the former220ms. The loading hold and artwork readiness remain unchanged;
+reduced motion still skips the fades. Music changes use a separate1.6-second
+crossfade, independent of battle animation speed; see the [Music contract](../Music/README.md).
 Same-page taps, character tab updates, and gameplay category filters do not fade.
 Unavailable activities remain unavailable and do not pretend to load a fight.
 Reduced motion uses a short static loading indicator. See the

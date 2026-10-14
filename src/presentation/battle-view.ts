@@ -7,7 +7,7 @@ import { masterReference } from './master-conduits';
 import { type CharacterProgress } from '../content/progression';
 import { dungeonEncounter, type PlayableDungeon } from '../content/dungeons';
 import { commands, type Bindings, type Command } from '../game/hotkeys';
-import { attackFlair, attackEffectMarkup, attackPose, signatureMarkup } from './battle-effects';
+import { attackFlair, attackPose } from './battle-effects';
 import './battle-cinematic.css';
 import { battleResults } from './battle-results';
 import './battle-results.css';
@@ -27,7 +27,7 @@ import { elementLabel } from './element-label';
 import { unitFacingAttributes } from './unit-facing';
 import { gestureGuide, updateGestureGuide } from './gesture-guide';
 import { unitReadout } from './unit-readout';
-import { healthAfterEvent, healthSnapshot, impactEvents } from './battle-health';
+import { healthAfterEvent, healthSnapshot, impactEvents, attackEffectTargets } from './battle-health';
 import { enemyDebuffs } from './battle-status';
 import { characterRole } from './character-role';
 import { activityTransitionPending, transitionActivity, waitForActivityTransition } from './activity-transition';
@@ -49,6 +49,7 @@ import './battle-mono.css';
 import { abilityStatuses, kitResource } from './ability-status';
 import { buffSnapshot, type BattleBuffSnapshot } from '../game/battle-buffs';
 import { allyBuffs } from './ally-buffs';
+import { BattleVFXRunner } from '../vfx/battle-vfx-runner';
 
 export interface BattleSession { state: BattleState; log: string[]; runId: string; progress: CharacterProgress; teamProgress?: Partial<Record<StarterId, CharacterProgress>>; stageEvents: BattleEvent[]; entrancePending?: boolean; resultsVisible?: boolean }
 export interface BattleAuthorityResponse { session: BattleSession; result?: BattleResult }
@@ -102,6 +103,7 @@ export class BattleView {
   private busy = false;
   private disposed = false;
   private dragging = false;
+  private vfxRunner: BattleVFXRunner | null = null;
   private displayedHealth = new Map<string, number>();
   private displayedBuffs = new Map<string, BattleBuffSnapshot>();
   private animations = new Set<Animation>();
@@ -115,7 +117,7 @@ export class BattleView {
 
   constructor(private host: HTMLElement, private session: BattleSession, private bindings: Bindings,
     private commitRewards: (result: BattleResult) => void, private quit?: () => Promise<void>,
-    private authority?: BattleAuthority) {
+    private authority?: BattleAuthority, private stateChanged?: (state: BattleState) => void) {
     this.targetId = session.state.enemies.find((enemy) => enemy.hp > 0)?.id ?? '';
     this.actorId = session.state.allies[0]?.id ?? '';
     this.render();
@@ -186,6 +188,8 @@ export class BattleView {
   destroy(): void {
     this.disposed = true;
     this.dragging = false;
+    this.vfxRunner?.destroy();
+    this.vfxRunner = null;
     this.host.classList.remove('battle-entering');
     document.removeEventListener('keydown', this.onKey);
     this.motion.removeEventListener('change', this.onMotion);
@@ -335,12 +339,16 @@ export class BattleView {
           }
           if (reducedMotion() && entry.kind !== 'reward') continue;
           const impacts = entry.kind === 'attack' ? impactEvents(result.events, index) : [];
+          const effectTargets = entry.kind === 'attack'
+            ? attackEffectTargets(entry, impacts.map(index => result.events[index]),
+                [...this.session.state.allies, ...this.session.state.enemies], this.displayedHealth)
+            : [];
           await this.animate(entry, async () => {
             await Promise.all(impacts.map((impact) => {
               presented.add(impact);
               return this.animate(result.events[impact]);
             }));
-          });
+          }, effectTargets);
         }
       }
     } catch (error) {
@@ -406,7 +414,8 @@ export class BattleView {
     }
   }
 
-  private async animate(entry: BattleEvent, impact: () => Promise<void> = async () => {}): Promise<void> {
+  private async animate(entry: BattleEvent, impact: () => Promise<void> = async () => {},
+    effectTargets: readonly string[] = [entry.target]): Promise<void> {
     const source = this.host.querySelector<HTMLElement>(`[data-unit="${entry.source}"]`);
     const target = this.host.querySelector<HTMLElement>(`[data-unit="${entry.target}"]`);
     if (entry.kind === 'reward') {
@@ -462,73 +471,40 @@ export class BattleView {
       }
       const flair = attackFlair(combatant, entry.action, entry.enhancedAttack);
       const support = entry.source === entry.target;
-      const color = source.style.getPropertyValue('--element');
       const sourceArt = source.querySelector('.battle-art')?.getBoundingClientRect();
-      const targetArt = target.querySelector('.battle-art')?.getBoundingClientRect();
-      if (!sourceArt || !targetArt) throw new Error('Cinematic attack anchors are missing.');
-      const effect = document.createElement('span');
-      effect.className = `attack-effect cinematic-impact flair-${flair.family} action-${entry.action}`;
-      effect.innerHTML = attackEffectMarkup(flair);
-      effect.dataset.power = String(flair.power);
-      effect.dataset.signature = flair.signature;
-      effect.setAttribute('aria-hidden', 'true');
-      effect.style.setProperty('--element', color);
-      effect.style.setProperty('--flair-duration', `${flair.duration}ms`);
-      effect.style.opacity = '0';
-      target.querySelector('.battle-art')?.append(effect);
-      const trail = document.createElement('span');
-      trail.className = `cinematic-trail flair-${flair.family}`;
-      trail.setAttribute('aria-hidden', 'true');
-      trail.style.setProperty('--element', color);
-      const dx = targetArt.x + targetArt.width / 2 - sourceArt.x - sourceArt.width / 2;
-      const dy = targetArt.y + targetArt.height / 2 - sourceArt.y - sourceArt.height / 2;
-      const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-      trail.style.left = `${sourceArt.x + sourceArt.width / 2}px`;
-      trail.style.top = `${sourceArt.y + sourceArt.height / 2}px`;
-      trail.style.width = `${Math.hypot(dx, dy)}px`;
-      trail.style.opacity = '0';
-      if (!support) this.host.append(trail);
-      const casting = document.createElement('span');
-      casting.className = `attack-effect cinematic-impact cinematic-cast flair-${flair.family}`;
-      casting.innerHTML = signatureMarkup(flair);
-      casting.setAttribute('aria-hidden', 'true');
-      casting.style.setProperty('--element', color);
-      casting.style.setProperty('--flair-duration', `${flair.windup}ms`);
-      casting.style.opacity = '0';
-      source.querySelector('.battle-art')?.append(casting);
+      if (!sourceArt) throw new Error('Cinematic caster anchor is missing.');
+      const targets = effectTargets.map(id => {
+        const unit = [...this.session.state.allies, ...this.session.state.enemies].find(unit => unit.id === id);
+        const artRect = this.host.querySelector(`[data-unit="${id}"] .battle-art`)?.getBoundingClientRect();
+        if (!unit || !artRect) throw new Error('Affected combatant artwork is missing.');
+        return { artRect, support: unit.side === combatant.side };
+      });
       const label = this.host.querySelector('#battle-announcement');
       if (label) label.textContent = entry.message;
-      try {
-        const pose = attackPose(flair, distance, vertical, support);
-        await Promise.all([this.play(sprite, [
-          { transform: 'translate(0,0) scale(1)' },
+      const pose = attackPose(flair, distance, vertical, support);
+      await this.play(sprite, [
+        { transform: 'translate(0,0) scale(1)' },
+        { transform: pose },
+      ], flair.windup);
+      if (this.disposed || reducedMotion()) return;
+      const vfxPromise = this.vfxRunner && !reducedMotion()
+        ? this.vfxRunner.playAttackVFX({
+            combatantId: combatant.definitionId,
+            element: combatant.element,
+            action: entry.action ?? 'light',
+            sourceArtRect: sourceArt,
+            targets,
+            speedMultiplier: battleSpeed(),
+            onImpact: impact,
+          })
+        : impact();
+      await Promise.all([
+        this.play(sprite, [
           { transform: pose },
-        ], flair.windup), this.play(casting, [
-          { opacity: 0, transform: 'scale(.25) rotate(-35deg)' },
-          { opacity: .65, transform: `scale(${.8 + flair.power * .5}) rotate(0deg)`, offset: .75 },
-          { opacity: 0, transform: `scale(${1 + flair.power * .6}) rotate(15deg)` },
-        ], flair.windup)]);
-        if (this.disposed || reducedMotion()) return;
-        effect.style.opacity = '1';
-        effect.classList.add('effect-active');
-        await Promise.all([
-          this.play(sprite, [
-            { transform: pose },
-            { transform: 'translate(0,0) scale(1)' },
-          ], Math.round(flair.duration * .65)),
-          this.play(effect, [
-            { opacity: 0, transform: 'scale(.35) rotate(-15deg)' },
-            { opacity: .85, transform: `scale(${flair.size}) rotate(0deg)`, offset: .25 },
-            { opacity: 0, transform: `scale(${flair.size * 1.35}) rotate(35deg)` },
-          ], flair.duration),
-          ...(support ? [] : [this.play(trail, [
-            { opacity: 0, transform: `rotate(${angle}deg) scaleX(.05)` },
-            { opacity: .75, transform: `rotate(${angle}deg) scaleX(1)`, offset: .35 },
-            { opacity: 0, transform: `rotate(${angle}deg) scaleX(1)` },
-          ], flair.duration)]),
-          impact(),
-        ]);
-      } finally { effect.remove(); trail.remove(); casting.remove(); }
+          { transform: 'translate(0,0) scale(1)' },
+        ], Math.round(flair.duration * .65)),
+        vfxPromise,
+      ]);
     } else if ((entry.kind === 'damage' || entry.kind === 'heal' || entry.kind === 'shield') && target) {
       {
         const unit = [...this.session.state.allies, ...this.session.state.enemies].find((unit) => unit.id === entry.target);
@@ -605,6 +581,7 @@ export class BattleView {
   private render(): void {
     this.dragging = false;
     const state = this.session.state;
+    this.stateChanged?.(state);
     if (!state.enemies.some((enemy) => enemy.id === this.targetId && enemy.hp > 0)) this.targetId = state.enemies.find((enemy) => enemy.hp > 0)?.id ?? '';
     if (!state.allies.some((ally) => ally.id === this.actorId && ally.hp > 0 &&
         (state.phase !== 'player' || actionUnavailable(state, ally, 'light') === null))) {
@@ -635,6 +612,7 @@ export class BattleView {
       <div class="battle-header-actions"><span data-battle-toolbar-slot></span><button id="open-battle-menu" class="battle-chrome-button" aria-haspopup="dialog" aria-controls="battle-menu">Battle menu</button>
       ${state.phase !== 'player' ? `<button data-result-show class="battle-turn-button">${state.phase === 'cleared' ? 'View victory' : 'View results'}</button>` : ''}</div></div>
       <div class="battle-arena">
+      <canvas class="battle-vfx-canvas" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;"></canvas>
       <div class="battle-side enemies" style="--enemy-count:${state.enemies.length}" role="group" aria-label="Enemies on the left">${state.enemies.map((unit) => this.unit(unit)).join('')}</div>
       <div class="battle-side allies ${state.allies.length === 1 ? 'solo' : 'squad'}" role="group" aria-label="Your squad on the right">${state.allies.map((unit) => this.unit(unit)).join('')}</div></div>
       <footer class="battle-feedback">
@@ -676,6 +654,17 @@ export class BattleView {
         Settings preserves the current run. ${this.authority ? 'Signing back in restores the server-saved run.' : 'Reloading resets battle progress, not saved rewards.'}</p></div>
       </section>
       <section class="battle-log"><h3>Battle log (${this.session.log.length} recent events)</h3><ol>${this.session.log.map((line) => `<li>${line}</li>`).join('')}</ol></section></div></dialog>`;
+    this.vfxRunner?.destroy();
+    this.vfxRunner = null;
+    const vfxCanvas = this.host.querySelector<HTMLCanvasElement>('.battle-vfx-canvas');
+    if (vfxCanvas) {
+      try {
+        this.vfxRunner = new BattleVFXRunner(vfxCanvas);
+      } catch (error) {
+        console.error('Battle VFX initialization failed', error);
+        this.error('Ability effects could not initialize. Combat remains available.');
+      }
+    }
     if (toolbar) {
       toolbar.querySelectorAll<HTMLButtonElement>('button').forEach(button => {
         button.disabled = !!this.busy && !button.hasAttribute('data-battle-speed-choice');

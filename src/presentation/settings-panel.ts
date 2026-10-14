@@ -2,11 +2,18 @@ import { type MotionPreference } from './settings';
 import { commands, allowedCodes, keyLabel, type Bindings } from '../game/hotkeys';
 import { battleSpeeds, type BattleSpeed } from './battle-speed';
 import { information } from './information';
+import { defaultMusicPreferences, type MusicPreferences } from './music';
 
-export function settingsPanel(motion: MotionPreference, bindings: Bindings, speed: BattleSpeed): string {
+export function settingsPanel(motion: MotionPreference, bindings: Bindings, speed: BattleSpeed, music: MusicPreferences = defaultMusicPreferences): string {
   return `<header class="drawer-heading"><div><h2 id="settings-heading">Settings</h2></div>
     <button id="close-settings" class="drawer-close" aria-label="Close settings">&times;</button></header>
     ${information('settings-information', 'Settings information', '<p>Settings save on this device. Animation speed changes presentation only, not combat or rewards. Animations play unless you select Reduce motion here; device preferences do not disable them. Selection keys switch allies or targets; they cannot attack or end a turn. Use distinct physical keys. Typing and browser shortcuts are not intercepted.</p><p>Drag characters to act or use Battle menu controls. Turns advance automatically while no living ally can act. Stages require Continue.</p>')}
+    <section class="settings-panel"><h3>Music</h3>
+      <label for="music-volume">Music volume <output id="music-volume-value" for="music-volume">${music.volume}%</output></label>
+      <input id="music-volume" type="range" min="0" max="100" step="1" value="${music.volume}" aria-describedby="music-description">
+      <label for="music-muted"><input id="music-muted" type="checkbox" ${music.muted ? 'checked' : ''}> Mute music</label>
+      <p id="music-description">Saved automatically on this device. Music starts after an interaction and pauses while this tab is hidden. Activities without delivered tracks stay silent.</p>
+    </section>
     <section class="settings-panel"><h3>Battle presentation</h3>
       <label for="settings-battle-speed">Animation speed</label>
       <select id="settings-battle-speed" data-battle-speed aria-describedby="speed-description">${battleSpeeds.map((value) =>

@@ -103,7 +103,12 @@ export function attackPose(flair: AttackFlair, distance: number, vertical: numbe
 }
 
 export function attackEffectMarkup(flair: AttackFlair): string {
-  return `<span class="flair-core"></span>${signatureMarkup(flair)}
+  return `<span class="flair-core"></span>
+    <span class="flair-optical-bloom" aria-hidden="true"></span>
+    <span class="flair-anamorphic-streak" aria-hidden="true"></span>
+    <span class="flair-glare-burst" aria-hidden="true"></span>
+    <span class="flair-distortion-ring" aria-hidden="true"></span>
+    ${signatureMarkup(flair)}
     ${Array.from({ length: flair.arcs }, (_, index) =>
     `<span class="flair-arc" style="--rotation:${index * 360 / flair.arcs}deg;--arc:${index}"></span>`).join('')}
     ${Array.from({ length: flair.rings }, (_, index) =>

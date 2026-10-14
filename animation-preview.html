@@ -1,21 +1,262 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Last Light - Battle animation preview</title>
     <style>
-      body { margin: 0; background: #090b12; color: #eee; display: flex; flex-direction: column; height: 100svh; }
-      .preview-controls { position: relative; z-index: 30; display: flex; flex-wrap: wrap; align-items: end; gap: 10px; padding: 14px 20px; background: #11151f; border-bottom: 1px solid #424957; }
-      .preview-controls h1 { font-size: 18px; margin: 0; }
-      .preview-controls p { font-size: 12px; margin: 4px 0 0; }
-      .preview-controls label { display: grid; gap: 3px; font-size: 12px; }
-      .preview-controls select, .preview-controls button { min-height: 44px; padding: 8px 12px; background: #202634; color: white; border: 1px solid #647086; border-radius: 6px; }
-      .preview-controls :focus-visible { outline: 2px solid white; outline-offset: 3px; }
-      .preview-controls #preview-error { width: 100%; color: #ffb1b1; }
-      .preview-stage.battle-screen { position: relative; min-height: 0; flex: 1; overflow: hidden; }
-      #battle-root { height: 100%; }
-      @media (max-width: 700px) { body { height: auto; } .preview-controls { padding: 10px; } .preview-controls > div { width: 100%; } .preview-stage.battle-screen { min-height: 650px; } }
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        height: 100dvh;
+        overflow: hidden;
+        background: #090b12;
+        color: #eee;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      .preview-controls {
+        flex: 0 0 auto;
+        position: relative;
+        z-index: 30;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 12px;
+        padding: 8px 16px;
+        background: #11151f;
+        border-bottom: 1px solid #424957;
+      }
+      .preview-controls h1 { font-size: 15px; margin: 0; white-space: nowrap; }
+      .preview-controls p { font-size: 11px; margin: 2px 0 0; color: #94a3b8; }
+      .preview-controls label { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #cbd5e1; }
+      .preview-controls select, .preview-controls button {
+        min-height: 44px;
+        padding: 4px 10px;
+        background: #202634;
+        color: white;
+        border: 1px solid #647086;
+        border-radius: 6px;
+        font-size: 12px;
+      }
+      .preview-controls button#preview-play {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        border-color: #fb923c;
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(249, 115, 22, 0.4);
+      }
+      .preview-controls button#preview-play:hover {
+        background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+      }
+      .preview-controls button#preview-entrance {
+        cursor: pointer;
+      }
+      .preview-controls :focus-visible { outline: 2px solid white; outline-offset: 2px; }
+      .preview-controls #preview-error { width: 100%; color: #ffb1b1; margin: 0; font-size: 12px; }
+      .preview-controls #preview-error:empty { display: none; }
+      .preview-nav-links {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+      }
+      .preview-link-btn {
+        color: #60a5fa;
+        font-size: 12px;
+        text-decoration: none;
+        padding: 6px 10px;
+        border: 1px solid #647086;
+        border-radius: 6px;
+        background: #202634;
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+      }
+      .preview-link-btn:hover {
+        background: #283348;
+        border-color: #93c5fd;
+      }
+
+      /* Lock preview-stage to flex remainder so it never scrolls out of the viewport */
+      html body .preview-stage.battle-screen {
+        position: relative !important;
+        flex: 1 1 0 !important;
+        min-height: 0 !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow: hidden !important;
+      }
+      html body .preview-stage.battle-screen #battle-root {
+        height: 100% !important;
+        min-height: 0 !important;
+        display: grid !important;
+        grid-template-rows: auto minmax(0, 1fr) auto !important;
+        overflow: hidden !important;
+      }
+      html body .preview-stage.battle-screen .battle-scenery {
+        position: absolute !important;
+        inset: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        z-index: -2 !important;
+      }
+      html body .preview-stage.battle-screen #battle-root .battle-arena {
+        position: relative !important;
+        isolation: isolate !important;
+        container-type: size !important;
+        min-height: 0 !important;
+        height: 100% !important;
+        overflow: visible !important;
+      }
+      /* Scale fighter art relative to arena container rather than 100dvh */
+      html body .preview-stage.battle-screen #battle-root .allies.solo .battle-art,
+      html body .preview-stage.battle-screen #battle-root .enemies .battle-unit:only-child .battle-art {
+        width: min(100%, calc(220px * var(--unit-scale, 1)), 34cqh, 30cqw) !important;
+        max-height: 34cqh !important;
+      }
+      html body .preview-stage.battle-screen #battle-root .battle-art {
+        width: min(100%, calc(150px * var(--unit-scale, 1)), 25cqh, 22cqw) !important;
+        max-height: 25cqh !important;
+      }
+      @media (max-width: 540px) {
+        .preview-controls {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 6px 10px;
+        }
+        .preview-controls > div,
+        .preview-controls #preview-error { grid-column: 1 / -1; }
+        .preview-controls label {
+          display: grid;
+          grid-template-columns: auto minmax(0, 1fr);
+          align-items: center;
+          min-width: 0;
+          gap: 2px;
+        }
+        .preview-controls select { width: 100%; min-width: 0; }
+        .preview-nav-links { margin-left: 0; justify-content: center; flex-wrap: wrap; }
+        html body .preview-stage.battle-screen #battle-root .battle-top {
+          grid-template-columns: minmax(0, 1fr) auto !important;
+          gap: 2px !important;
+          padding: 4px 8px !important;
+        }
+        html body .preview-stage.battle-screen #battle-root .battle-progress {
+          grid-column: 1 / -1;
+          grid-row: 2;
+          padding: 2px 6px;
+          font-size: 10px;
+        }
+        html body .preview-stage.battle-screen #battle-root .battle-header-actions {
+          grid-column: 2;
+          grid-row: 1;
+        }
+        html body .preview-stage.battle-screen #battle-root .battle-feedback {
+          padding: 4px 8px !important;
+        }
+        html body .preview-stage.battle-screen #battle-root #battle-announcement {
+          font-size: 10px;
+          line-height: 1.2;
+        }
+        html body .preview-stage.battle-screen #battle-root .battle-arena {
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: .5rem;
+          padding: 4px !important;
+        }
+        html body .preview-stage.battle-screen #battle-root .battle-side {
+          width: 100%;
+          flex-direction: column !important;
+          gap: 2px !important;
+        }
+        html body .preview-stage.battle-screen #battle-root .battle-side .battle-unit {
+          position: relative;
+          padding: 1px !important;
+          height: auto !important;
+          flex: 0 1 auto;
+          flex-direction: row !important;
+          align-items: center;
+          margin: 0 !important;
+          translate: none !important;
+          max-height: 100%;
+          gap: .2rem;
+        }
+        html body .preview-stage.battle-screen #battle-root .allies .battle-unit {
+          flex-direction: row-reverse !important;
+        }
+        html body .preview-stage.battle-screen #battle-root .battle-side .unit-nameplate {
+          flex: 1 1 100% !important;
+          width: 100% !important;
+          font-size: 11px !important;
+          line-height: 1.15 !important;
+        }
+        html body .preview-stage.battle-screen #battle-root .allies.squad .battle-art,
+        html body .preview-stage.battle-screen #battle-root .enemies .battle-art {
+          flex-shrink: 0;
+          width: min(52px, 18cqh, 15cqw) !important;
+        }
+        html body .preview-stage.battle-screen #battle-root :is(.allies.squad, .enemies) .battle-art {
+          position: absolute;
+          top: 4px;
+          right: 4px;
+          z-index: 4;
+          width: 44px !important;
+        }
+        html body .preview-stage.battle-screen #battle-root :is(.allies.squad, .enemies) .unit-name {
+          padding: 4px 50px 4px 4px !important;
+          min-height: 48px;
+          font-size: 10px !important;
+          line-height: 1.1 !important;
+        }
+        html body .preview-stage.battle-screen #battle-root :is(.allies.squad, .enemies) .unit-readout {
+          padding: 3px 4px !important;
+          gap: 1px !important;
+          grid-template-columns: minmax(0, 1fr) !important;
+        }
+        html body .preview-stage.battle-screen #battle-root :is(.allies.squad, .enemies) .unit-readout :is(.unit-health, .unit-gauge, .unit-stats) {
+          font-size: 10px !important;
+          line-height: 1.1 !important;
+        }
+        html body .preview-stage.battle-screen #battle-root :is(.allies.squad, .enemies) .battle-status-badge {
+          padding: 1px 3px !important;
+          font-size: 10px !important;
+          line-height: 1.1 !important;
+        }
+        html body .preview-stage.battle-screen #battle-root .allies.squad .shatter-track {
+          margin: 0 !important;
+        }
+        html body .preview-stage.battle-screen #battle-root .allies.squad .unit-active-buffs {
+          gap: 2px;
+        }
+        html body .preview-stage.battle-screen #battle-root :is(.allies.squad, .enemies) .status-icon {
+          width: 12px !important;
+          height: 12px !important;
+          margin-right: 2px;
+        }
+        html body .preview-stage.battle-screen #battle-root .allies.squad .unit-kit-resource > span {
+          display: flex;
+          align-items: center;
+        }
+        html body .preview-stage.battle-screen #battle-root .battle-debuffs {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 2px;
+        }
+        html body .preview-stage.battle-screen #battle-root .allies.solo .battle-art,
+        html body .preview-stage.battle-screen #battle-root .enemies .battle-unit:only-child .battle-art {
+          position: static;
+          width: min(100%, 22cqh) !important;
+          max-height: 22cqh !important;
+        }
+        html body .preview-stage.battle-screen #battle-root .enemies .battle-unit:only-child .unit-name {
+          padding-right: 4px !important;
+        }
+      }
     </style>
   </head>
   <body>
@@ -23,13 +264,18 @@
       <div><h1>Battle animation studio</h1><p>All 16 Element-Bearers. Real battle renderer. In-memory only; no account or reward writes.</p></div>
       <label>Element-Bearer<select id="preview-character"></select></label>
       <label>Evolution<select id="preview-evolution"></select></label>
+      <label>Formation<select id="preview-formation"><option value="solo">Solo</option><option value="squad">Three allies</option></select></label>
       <label>Battle<select id="preview-mode"></select></label>
       <label>Action<select id="preview-action"><option value="light">Normal Attack</option><option value="skill1">Skill 1</option><option value="skill2">Skill 2</option><option value="ultimate" selected>Last Flare</option></select></label>
       <label>Speed<select id="preview-speed"><option>1</option><option>2</option><option>3</option></select></label>
       <button id="preview-play">Play animation</button><button id="preview-entrance">Replay entrance</button>
+      <div class="preview-nav-links">
+        <a class="preview-link-btn" href="./vfx-preview.html">✨ Optical VFX Studio</a>
+        <a class="preview-link-btn" href="./" style="color: #facc15;">🏰 Return to Game</a>
+      </div>
       <p id="preview-error" role="alert"></p>
     </header>
     <main class="preview-stage battle-screen"><div id="battle-root"></div></main>
-    <script type="module" src="/src/battle-animation-preview.ts"></script>
+    <script type="module" src="./src/battle-animation-preview.ts"></script>
   </body>
 </html>

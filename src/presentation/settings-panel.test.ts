@@ -3,6 +3,15 @@ import { settingsPanel } from './settings-panel';
 import { defaultBindings, commands } from '../game/hotkeys';
 
 describe('shared settings drawer', () => {
+  it('shows saved music volume and mute with labelled controls', () => {
+    const html = settingsPanel('system', defaultBindings, 1, { volume: 72, muted: true });
+    expect(html).toContain('for="music-volume"');
+    expect(html).toContain('value="72"');
+    expect(html).toContain('72%</output>');
+    expect(html).toContain('id="music-muted" type="checkbox" checked');
+    expect(html).toContain('aria-describedby="music-description"');
+    expect(html).toContain('Activities without delivered tracks stay silent');
+  });
   it('groups presentation, motion and selection keys with an accessible close control', () => {
     const html = settingsPanel('system', defaultBindings, 1);
     for (const text of ['Battle presentation', 'Motion &amp; accessibility', 'Selection keys',

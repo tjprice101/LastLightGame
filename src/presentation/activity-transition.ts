@@ -1,6 +1,7 @@
 import { reducedMotion } from './settings';
 
 let active: Promise<void> | null = null;
+export const activityFadeDuration = 800;
 
 export function activityTransitionPending(): boolean {
   return active !== null;
@@ -15,7 +16,7 @@ async function fade(overlay: HTMLElement, from: number, to: number): Promise<voi
     overlay.style.opacity = String(to);
     return;
   }
-  const animation = overlay.animate([{ opacity: from }, { opacity: to }], { duration: 220, fill: 'forwards', easing: 'ease-in-out' });
+  const animation = overlay.animate([{ opacity: from }, { opacity: to }], { duration: activityFadeDuration, fill: 'forwards', easing: 'ease-in-out' });
   try {
     await animation.finished;
     overlay.style.opacity = String(to);

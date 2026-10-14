@@ -6,7 +6,7 @@ import { attackFlair, signatureMarkup } from './battle-effects';
 
 export function portraitCue(unit: Combatant, event: BattleEvent) {
   const action = event.action;
-  if (event.kind !== 'attack' || (action !== 'skill1' && action !== 'skill2' && action !== 'ultimate')) return null;
+  if (event.kind !== 'attack' || action !== 'ultimate') return null;
   if (unit.side === 'enemy' && (unit.level ?? 0) < 50) return null;
   const ultimate = action === 'ultimate';
   const power = attackFlair(unit, action).power;

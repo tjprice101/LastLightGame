@@ -22,6 +22,44 @@
 .battle-screen .battle-context-actions .battle-action-heading { display: flex; align-items: center; gap: 8px; }
 .battle-screen .attack-effect.cinematic-impact { inset: -8%; border: 0; box-shadow: none; background: none; border-radius: 0; overflow: visible; }
 .cinematic-impact > span { position: absolute; pointer-events: none; }
+.flair-optical-bloom { inset: -25%; border-radius: 50%; background: radial-gradient(circle, #ffffffcc 0%, var(--element) 38%, transparent 72%); mix-blend-mode: screen; opacity: 0; z-index: 1; filter: blur(4px); }
+.flair-anamorphic-streak { top: calc(50% - 2px); left: -60%; width: 220%; height: 4px; background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--element) 30%, transparent) 20%, #ffffff 50%, color-mix(in srgb, var(--element) 30%, transparent) 80%, transparent 100%); mix-blend-mode: screen; opacity: 0; z-index: 6; border-radius: 4px; box-shadow: 0 0 12px var(--element), 0 0 24px var(--element); }
+.flair-glare-burst { inset: 15%; background: radial-gradient(ellipse at center, #ffffff 0%, color-mix(in srgb, var(--element) 80%, white) 25%, transparent 65%); clip-path: polygon(50% 0%, 53% 47%, 100% 50%, 53% 53%, 50% 100%, 47% 53%, 0% 50%, 47% 47%); mix-blend-mode: screen; opacity: 0; z-index: 5; filter: drop-shadow(0 0 8px var(--element)); }
+.flair-distortion-ring { inset: -5%; border-radius: 50%; border: 2px solid color-mix(in srgb, var(--element) 70%, white); box-shadow: 0 0 14px var(--element), inset 0 0 8px var(--element); opacity: 0; z-index: 2; }
+.cinematic-impact.effect-active .flair-optical-bloom { animation: flair-bloom-burst calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; }
+.cinematic-impact.effect-active .flair-anamorphic-streak { animation: flair-streak-flash calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; }
+.cinematic-impact.effect-active .flair-glare-burst { animation: flair-glare-spin calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; }
+.cinematic-impact.effect-active .flair-distortion-ring { animation: flair-shockwave-expand calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; }
+
+/* Action tier radiance scaling */
+.action-skill1 .flair-optical-bloom { inset: -35%; filter: blur(6px); }
+.action-skill1 .flair-anamorphic-streak { height: 6px; box-shadow: 0 0 18px var(--element), 0 0 36px var(--element); }
+.action-skill2 .flair-optical-bloom { inset: -45%; filter: blur(8px); }
+.action-skill2 .flair-anamorphic-streak { height: 7px; width: 260%; left: -80%; box-shadow: 0 0 24px var(--element), 0 0 48px var(--element); }
+.action-skill2 .flair-glare-burst { inset: 5%; }
+.action-ultimate .flair-optical-bloom { inset: -60%; filter: blur(12px); background: radial-gradient(circle, #ffffffff 0%, color-mix(in srgb, var(--element) 80%, white) 28%, var(--element) 55%, transparent 78%); }
+.action-ultimate .flair-anamorphic-streak { height: 10px; width: 340%; left: -120%; box-shadow: 0 0 28px var(--element), 0 0 56px #fff, 0 0 84px var(--element); }
+.action-ultimate .flair-glare-burst { inset: -10%; filter: drop-shadow(0 0 16px #fff) drop-shadow(0 0 24px var(--element)); }
+.action-ultimate .flair-distortion-ring { border-width: 3px; box-shadow: 0 0 22px var(--element), inset 0 0 16px #fff; }
+
+/* Character Signature Nuances */
+.sig-cleave .flair-core { background: radial-gradient(circle, #fff 15%, #ff8800 45%, #ff220088 65%, transparent 75%); }
+.sig-trident .flair-core { background: radial-gradient(circle, #fff 15%, #00e5ff 45%, #0066ff88 65%, transparent 75%); }
+.sig-petal .flair-core { background: radial-gradient(circle, #fff 15%, #55ff77 45%, #00aa3388 65%, transparent 75%); }
+.sig-cyclone .flair-core { background: radial-gradient(circle, #fff 15%, #a7f3d0 45%, #10b98188 65%, transparent 75%); }
+.sig-lens .flair-core { background: radial-gradient(circle, #fff 25%, #fef08a 50%, #eab30888 70%, transparent 80%); }
+.sig-feather .flair-core { background: radial-gradient(circle, #fff 20%, #fde047 50%, #ca8a0488 70%, transparent 80%); }
+.sig-fault .flair-core { background: radial-gradient(circle, #fff 15%, #f59e0b 45%, #b4530988 65%, transparent 75%); }
+.sig-mind .flair-core { background: radial-gradient(circle, #fff 15%, #c084fc 45%, #7e22ce88 65%, transparent 75%); }
+.sig-star .flair-core { background: radial-gradient(circle, #fff 20%, #38bdf8 50%, #0284c788 70%, transparent 80%); }
+.sig-eclipse .flair-core { background: radial-gradient(circle, #10061e 20%, #c084fc 45%, #4c1d9588 70%, transparent 80%); }
+.sig-rose .flair-core { background: radial-gradient(circle, #fff 15%, #fb7185 45%, #e11d4888 65%, transparent 75%); }
+.sig-thorn .flair-core { background: radial-gradient(circle, #fff 15%, #f43f5e 45%, #88133788 65%, transparent 75%); }
+.sig-twin .flair-core { background: radial-gradient(circle, #fff 15%, #fb923c 40%, #f43f5e88 65%, transparent 75%); }
+.sig-meridian .flair-core { background: radial-gradient(circle, #fff 15%, #22d3ee 45%, #0891b288 65%, transparent 75%); }
+.sig-citadel .flair-core { background: radial-gradient(circle, #fff 15%, #4ade80 45%, #15803d88 65%, transparent 75%); }
+.sig-resonance .flair-core { background: radial-gradient(circle, #fff 15%, #34d399 45%, #05966988 65%, transparent 75%); }
+
 .flair-signature { position: absolute; inset: calc(8% - var(--crown) * 7%); width: calc(84% + var(--crown) * 14%); height: calc(84% + var(--crown) * 14%); overflow: visible; rotate: var(--rotation); color: var(--element); filter: drop-shadow(0 0 6px var(--element)); pointer-events: none; }
 .flair-signature path { fill: color-mix(in srgb, var(--element) 8%, transparent); stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .cinematic-impact.effect-active .flair-signature { animation: flair-crown calc(var(--flair-duration) / var(--battle-speed, 1)) ease-out both; }
@@ -77,6 +115,30 @@
   from { opacity: 0; scale: .3; transform: rotate(-80deg); }
   30% { opacity: .9; }
   to { opacity: 0; scale: 1.35; transform: rotate(100deg); }
+}
+@keyframes flair-bloom-burst {
+  0% { opacity: 0; transform: scale(.25); }
+  20% { opacity: 1; transform: scale(.85); }
+  60% { opacity: .75; transform: scale(1.15); }
+  100% { opacity: 0; transform: scale(1.45); }
+}
+@keyframes flair-streak-flash {
+  0% { opacity: 0; transform: scaleX(.05); }
+  15% { opacity: 1; transform: scaleX(1.1); }
+  45% { opacity: .85; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1.25); }
+}
+@keyframes flair-glare-spin {
+  0% { opacity: 0; transform: scale(.2) rotate(0deg); }
+  25% { opacity: 1; transform: scale(1) rotate(45deg); }
+  70% { opacity: .7; transform: scale(1.2) rotate(90deg); }
+  100% { opacity: 0; transform: scale(1.4) rotate(135deg); }
+}
+@keyframes flair-shockwave-expand {
+  0% { opacity: 0; transform: scale(.1); border-width: 4px; }
+  25% { opacity: .9; transform: scale(.7); }
+  65% { opacity: .5; transform: scale(1.3); border-width: 2px; }
+  100% { opacity: 0; transform: scale(1.75); border-width: 1px; }
 }
 html[data-motion="reduced"] .cinematic-impact > span { animation: none; }
 @media (max-width: 700px) {

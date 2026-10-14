@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { activityTransitionPending, transitionActivity } from './activity-transition';
+import { activityFadeDuration, activityTransitionPending, transitionActivity } from './activity-transition';
 import { reducedMotion } from './settings';
 
 vi.mock('./settings', () => ({ reducedMotion: vi.fn(() => false) }));
@@ -13,14 +13,14 @@ afterEach(() => {
 function fixture(images: { decode: () => Promise<void>; alt?: string }[] = []) {
   vi.useFakeTimers();
   const bar = { style: { width: '' } };
-  const fades: { frames: Keyframe[]; finish: () => void }[] = [];
+  const fades: { frames: Keyframe[]; options: KeyframeAnimationOptions; finish: () => void }[] = [];
   const overlay = {
     className: '', innerHTML: '', style: { opacity: '' }, remove: vi.fn(),
     querySelector: () => bar,
-    animate: (frames: Keyframe[]) => {
+    animate: (frames: Keyframe[], options: KeyframeAnimationOptions) => {
       let finish = () => {};
       const finished = new Promise<void>((resolve) => { finish = resolve; });
-      fades.push({ frames, finish });
+      fades.push({ frames, options, finish });
       return { finished, cancel: vi.fn() };
     },
   };
@@ -41,6 +41,9 @@ describe('activity black loading transition', () => {
     expect(f.overlay.innerHTML).toContain('Loading!');
     expect(f.overlay.innerHTML).toContain('role="status"');
     expect(enter).not.toHaveBeenCalled();
+    expect(activityFadeDuration).toBe(800);
+    expect(f.fades[0].options).toEqual({ duration: 800, fill: 'forwards', easing: 'ease-in-out' });
+    expect(f.fades[0].frames).toEqual([{ opacity: 0 }, { opacity: 1 }]);
     f.fades[0].finish();
     await vi.advanceTimersByTimeAsync(0);
     expect(enter).toHaveBeenCalledOnce();
@@ -50,6 +53,8 @@ describe('activity black loading transition', () => {
     await vi.advanceTimersByTimeAsync(180);
     expect(f.bar.style.width).toBe('100%');
     expect(f.fades).toHaveLength(2);
+    expect(f.fades[1].options.duration).toBe(800);
+    expect(f.fades[1].frames).toEqual([{ opacity: 1 }, { opacity: 0 }]);
     expect(f.root.inert).toBe(true);
     f.fades[1].finish();
     await transition;

@@ -1,0 +1,58 @@
+[
+  {
+    "cue": "main-theme",
+    "delivery": "Last Light OST - Main Menu Theme, Celestial Pilgrimage.mp3",
+    "source": "Music/source/main-theme/Last Light OST - Main Menu Theme, Celestial Pilgrimage.mp3",
+    "runtime": "public/assets/music/main-theme.mp3",
+    "sha256": "6ab9e184cd552aaa03be6e8747490407de37e6482c47ffb229ef7ea027849af6",
+    "bytes": 6217254
+  },
+  {
+    "cue": "infernic",
+    "delivery": "Last Light OST [Emberwake and Flaming Depths Battle Theme] -Volcanic Wrath.mp3",
+    "source": "Music/source/infernic/Last Light OST [Emberwake and Flaming Depths Battle Theme] -Volcanic Wrath.mp3",
+    "runtime": "public/assets/music/infernic.mp3",
+    "sha256": "14f4c9d0cabf62ef7e216609ab8f4f20ac204696848cff4cf039040df714db51",
+    "bytes": 5927236
+  },
+  {
+    "cue": "oceanic",
+    "delivery": "Last Light OST [Glasswater and Oceanic Valley Battle Theme] - Oceanic Sorrow.mp3",
+    "source": "Music/source/oceanic/Last Light OST [Glasswater and Oceanic Valley Battle Theme] - Oceanic Sorrow.mp3",
+    "runtime": "public/assets/music/oceanic.mp3",
+    "sha256": "72d34ec4e88bfbe541e825728a559a3219ad4641c30b4b25c70a882519ebefc2",
+    "bytes": 5795698
+  },
+  {
+    "cue": "atmospheric",
+    "delivery": "Last Light OST [Stormspan and Sky-bound Rift] - Storm-Sky Resolve.mp3",
+    "source": "Music/source/atmospheric/Last Light OST [Stormspan and Sky-bound Rift] - Storm-Sky Resolve.mp3",
+    "runtime": "public/assets/music/atmospheric.mp3",
+    "sha256": "449f45bc5b9ee6509fd719599c98edf309e2df24999a627b9ea3e24cf7860f2d",
+    "bytes": 5984833
+  },
+  {
+    "cue": "botanic",
+    "delivery": "Last Light OST [Rootstone and Garden of Beauty Battle Theme] - Forest Majesty.mp3",
+    "source": "Music/source/botanic/Last Light OST [Rootstone and Garden of Beauty Battle Theme] - Forest Majesty.mp3",
+    "runtime": "public/assets/music/botanic.mp3",
+    "sha256": "351990ec671a5e293cbca584af971936499f957af3a65de5a0c0f4ffefa25234",
+    "bytes": 5639868
+  },
+  {
+    "cue": "tranquilitic",
+    "delivery": "Last Light OST [Stillhalo Vale and City of Heaven Battle Theme] - Defending the Serene.mp3",
+    "source": "Music/source/tranquilitic/Last Light OST [Stillhalo Vale and City of Heaven Battle Theme] - Defending the Serene.mp3",
+    "runtime": "public/assets/music/tranquilitic.mp3",
+    "sha256": "c4527db16bf0ecac962f1972c577a516965e50df16f1960510ce9ab2e122611b",
+    "bytes": 5893361
+  },
+  {
+    "cue": "chaotic",
+    "delivery": "Last Light OST [Riftbound Frontier and Ruins of Chaos] - Fractured Frontier.mp3",
+    "source": "Music/source/chaotic/Last Light OST [Riftbound Frontier and Ruins of Chaos] - Fractured Frontier.mp3",
+    "runtime": "public/assets/music/chaotic.mp3",
+    "sha256": "746d88f1f8b27fcca5b55c7a2ce9942b0fdd92d62bdc046bfdd3b2c49b0fb027",
+    "bytes": 4808473
+  }
+]

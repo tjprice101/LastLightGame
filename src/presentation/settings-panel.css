@@ -22,6 +22,10 @@
 .settings-panel [role="status"]:empty, .settings-drawer > .status:empty { display: none; }
 .settings-drawer .settings-panel [role="status"]:not(:empty) { color: #c4e5ce; margin-bottom: 0; }
 .settings-trigger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 14px; border: 1px solid #ffffff35; border-radius: 12px; background: #ffffff06; color: #f5f5f5; font: 600 13px "Segoe UI", sans-serif; cursor: pointer; }
+.settings-panel #music-volume { width: 100%; min-height: 44px; accent-color: #ddd; }
+.settings-panel label[for="music-muted"] { display: flex; align-items: center; gap: 12px; min-height: 44px; cursor: pointer; }
+.settings-panel #music-muted { width: 22px; height: 22px; accent-color: #ddd; }
+.settings-panel input:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .settings-trigger .ui-icon { width: 20px; height: 20px; }
 .settings-drawer button:focus-visible, .settings-drawer select:focus-visible, .settings-drawer summary:focus-visible, .drawer-close:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 @media (hover: hover) { .drawer-close:hover, .settings-trigger:hover { background: #ffffff10; border-color: #ffffff70; } }

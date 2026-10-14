@@ -10,6 +10,8 @@ from PIL import Image
 
 import intake_character_refresh as characters
 import intake_starter_refresh as starters
+import intake_delivered_art as delivered
+import intake_elemental_war_art as war
 from prepare_art import ROOT
 
 
@@ -18,21 +20,39 @@ def plan(assets):
         raise ValueError("Select distinct portrait IDs explicitly.")
     planned = []
     manifests = {}
-    for module in (characters, starters):
+    delivered_assets = {asset.asset: asset for asset in delivered.assets()
+                        if asset.category == "characters"}
+    for module in (characters, starters, delivered, war):
         document = json.loads(module.MANIFEST.read_text(encoding="utf-8"))
-        settings = module.load_settings()
+        settings = ({asset: delivered._settings(value) for asset, value in delivered_assets.items()}
+                    if module is delivered else module.load_settings())
         manifests[module.MANIFEST] = document
         for row in document["assets"]:
             asset = row["asset"]
             if asset not in assets:
                 continue
+            if module in (delivered, war) and row.get("category") != "characters":
+                continue
+            if module is characters and asset in delivered_assets:
+                continue
             for key in ("source", "runtime", "previous_runtime"):
+                if key not in row:
+                    continue
                 if characters.digest(ROOT / row[key]) != row[f"{key}_sha256"]:
                     raise FileExistsError(f"Portrait changed since intake: {row[key]}")
             for previous in row.get("processing_history", []):
-                if characters.digest(ROOT / previous["runtime"]) != previous["runtime_sha256"]:
-                    raise FileExistsError(f"Correction history changed: {previous['runtime']}")
-            output = module.prepare(ROOT / row["source"], settings[asset])
+                previous_path = previous.get("runtime", previous.get("previous_runtime"))
+                if characters.digest(ROOT / previous_path) != previous["runtime_sha256"]:
+                    raise FileExistsError(f"Correction history changed: {previous_path}")
+            if module is delivered:
+                output, metadata = module.prepare(ROOT / row["source"], delivered_assets[asset])
+                processing = metadata["processing"]
+            elif module is war:
+                output = module.prepare(ROOT / row["source"], settings[asset], "characters")
+                processing = settings[asset]
+            else:
+                output = module.prepare(ROOT / row["source"], settings[asset])
+                processing = settings[asset]
             if isinstance(output, Image.Image):
                 buffer = BytesIO()
                 output.save(buffer, format="PNG", optimize=True)
@@ -44,7 +64,7 @@ def plan(assets):
             if backup.exists() and characters.digest(backup) != row["runtime_sha256"]:
                 raise FileExistsError(f"Conflicting correction backup: {backup}")
             record = {"asset": asset, "manifest": str(module.MANIFEST.relative_to(ROOT)),
-                      "before": row, "processing": settings[asset], "runtime_sha256": output_hash,
+                      "before": row, "processing": processing, "runtime_sha256": output_hash,
                       "backup": str(backup.relative_to(ROOT))}
             planned.append((record, output))
     if {row["asset"] for row, _ in planned} != set(assets):

@@ -5,6 +5,39 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Ability VFX preview verification:** both studios use base-aware module entries.
+Shared effect-only two-scale bloom is now functional in studio and battle;
+elapsed-time simulation and eased buildup/release improve all seven archetypes
+(D-284). All64 presets gained visible bloom in Chrome on/off comparisons, and
+all64 BattleView actions passed desktop and phone/DPR2 recipient checks.
+Arena-relative canvas sizing, bounded preview layouts, charge-timed impacts and
+explicit playback-error handling are implemented. Actual Chrome pixels were
+checked for all64 presets in the studio and real BattleView. Rendering success
+does not establish unique geometry or owner visual approval for every skill.
+[Preview contract and validation](combat.md#canvas-ability-previews-and-rendering-validation).
+
+**Sound-effect briefs (D-276/D-279):** five shared ElevenLabs action prompts:
+Normal Attack, Defense and three crystal/energy power tiers (Skill1, Skill2,
+Ultimate). Replaces the per-character ability pack with concrete audible
+textures and quick releases;16 optional passive/charge accents are unchanged.
+No generated audio or runtime wiring.
+[Sound-effect library](../Music/sound-effects/README.md).
+
+**Music (D-274/D-277/D-280):**23 SUNO-ready instrumental orchestral rock/metal
+cues at170 BPM: Main Theme, all six Story regions and16 current activity
+themes. Guitar-led with optional wordless choir, no lead singing.
+Seven delivered MP3s are installed: menu theme plus six shared Story-region/
+material-dungeon tracks. Other modes stay silent. Device-only volume/mute,
+interaction-gated playback and hidden-tab pause; originals/hash manifest retained.
+Song changes now crossfade over1.6 seconds; activity curtains fade in/out over
+800ms each with reduced-motion skips (D-281).
+[Music library and prompts](../Music/README.md).
+
+**Future campaign spoilers (D-275):** owner-approved seven-chapter outline,
+Rise's transcription trail, Nyrasma, the pursuit to Brink of Oblivion and
+creator reconciliation/recruitment. Documentation only; current Story and
+creator mechanics unchanged. [Future story roadmap](story-roadmap.md).
+
 **Founding canon (D-269):** Let/Infinity and Rise/Nothingness jointly created
 worlds, then split themselves after their rivalry drew civilizations into war.
 Their human Element-Bearers and Elemental-Devourers seek their respective
