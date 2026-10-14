@@ -25,7 +25,21 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
-      - run: npm run build
+      - name: Build configured online client
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL || secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          node --input-type=module -e '
+            const url = process.env.VITE_SUPABASE_URL;
+            const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+            if (!/^https:\/\/[a-z]+\.supabase\.co$/.test(url ?? "") ||
+                !key?.startsWith("sb_publishable_")) {
+              console.error("::error::Online account configuration is missing or invalid. Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in repository Actions variables or secrets, then rerun deployment. Never use a service-role or secret key.");
+              process.exit(1);
+            }
+          '
+          npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
