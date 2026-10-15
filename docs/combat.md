@@ -28,6 +28,17 @@ stats, RNG, rewards and saved snapshots are unchanged.
 Cramped landscape arenas retain vertical scrolling when full readouts cannot
 fit, keeping cards reachable without painting over the footer.
 
+### Battlefield silhouette contrast
+
+Every battlefield sprite has a static alpha-following dark edge, narrow pale
+rim and soft dark shadow. This separates green/brown enemies from matching
+scenery and retains contrast against both light and dark backgrounds, even
+when unselected. The filter is confined to sprite images, not rectangular art
+slots, readouts or VFX. Selected/ultimate glows and fallen grayscale/opacity
+remain on their existing outer wrappers. No recoloring, artwork changes,
+additional animation, sizing or facing changes; captured allies share the
+same treatment. Menus and cut-ins are unaffected.
+
 ## Allied effect presentation (D-211)
 
 The shared HP readout displays actual remaining Shield, timed outgoing Damage

@@ -26,6 +26,7 @@ html body .battle-screen #battle-root .battle-art { order: initial; margin: 0; f
 .unit-nameplate { display: flex; flex-direction: column; width: min(16rem, 50%); flex: 0 1 16rem; min-width: 0; }
 html body .battle-screen #battle-root .battle-arena { container-type: size; grid-template-columns: repeat(2, minmax(0, 1fr)); --battle-art-base: min(180px, calc(48cqh / var(--battle-rows, 3)), 11cqw); }
 html body .battle-screen #battle-root .battle-art { width: calc(var(--battle-art-base) * var(--unit-scale, 1)); max-width: 44%; flex-shrink: 0; }
+html body .battle-screen #battle-root .battle-sprite img { filter: drop-shadow(0 1px 1px #080b10) drop-shadow(0 0 2px #ffffffd9) drop-shadow(0 2px 6px #080b10b3); }
 @media (min-width: 761px) {
   html body .battle-screen #battle-root .allies.squad { gap: 0; }
   html body .battle-screen #battle-root .allies.squad .battle-unit { gap: .4rem; }

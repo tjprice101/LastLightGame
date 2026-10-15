@@ -23,4 +23,8 @@ describe('shared artwork-led battle sizing', () => {
     expect(css).toContain('.battle-arena { overflow-y: auto; overflow-x: hidden; }');
     expect(css).toContain('.battle-side { height: auto; max-height: none; }');
   });
+  it('separates all sprite silhouettes from bright and dark scenery without replacing state filters', () => {
+    expect(css).toContain('#battle-root .battle-sprite img { filter: drop-shadow(0 1px 1px #080b10) drop-shadow(0 0 2px #ffffffd9) drop-shadow(0 2px 6px #080b10b3); }');
+    expect(css).toContain('.ultimate-ready .battle-art { filter: drop-shadow(0 0 12px #fff) drop-shadow(0 0 22px #fff9); }');
+  });
 });

@@ -1,5 +1,25 @@
 # Current state and handoff
 
+## Battlefield sprite contrast
+
+- Owner screenshot shows unselected green enemies blending into Botanic
+  scenery. Shared battlefield sprite images now have an alpha-following dark
+  edge, narrow pale rim and soft shadow, independent of selection. Both sides
+  and captured copies share the treatment; colors, bytes, scale, facing,
+  VFX, menus/cut-ins and gameplay/account behavior are unchanged.
+  [Contract](combat.md#battlefield-silhouette-contrast).
+- `npm test -- src\presentation\battle-squad-art.test.ts
+  src\presentation\battle-scale.test.ts src\presentation\battle-impact.test.ts
+  src\presentation\battle-cutin.test.ts --maxWorkers=2`:49 passed.
+  `npm run build`:passed, existing chunk-size advisory only.
+  Edited CSS/test diagnostics are clean.
+- Presentation-only browser fixture reviewed with Loamjaw Mole/Mossplate Beetle
+  against their real forest arena at1600x1000. At488x1055, verified every sprite
+  receives the contour, image width is identical with/without it, selected glow
+  and fallen grayscale/opacity remain intact, and no horizontal overflow.
+  Preview screenshot stays in session artifacts; no owner save writes.
+  Local changes only, not deployed.
+
 ## Artwork-led battle size consistency
 
 - Owner reports small large-creature sprites and oversized characters, then
