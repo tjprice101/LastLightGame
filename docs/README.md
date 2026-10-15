@@ -824,7 +824,6 @@ See [character naming](units-and-progression.md#global-character-display-names-d
 | [Archives and enemy elements](archives-and-elements.md) | Unified galleries, discovery locks, confirmed enemy typing and separate loot routing |
 | [Summoning and economy](summoning-and-economy.md) | Banners, odds, pity, currencies, reward transactions |
 | [Crimson Roses event and special banner](crimson-roses.md) | Lv.80-140 Roselius, capture ceiling, materials/sales, three EBs, banner odds/pity and art |
-| [Black Diamonds Against The Light event and special banner](black-diamonds.md) | 35-stage Lv.80-140 Kharonite mission, 6 materials, 6 new EBs (3 5★, 3 6★), 10-cost banner economics and 93 art prompts |
 | [Content guide](content-guide.md) | Adding units, skills, enemies, quests, and banners |
 | [Technical architecture](technical-architecture.md) | Stack decisions, module boundaries, saves, online services |
 | [Art workflow](art-workflow.md) | Existing visual direction, asset intake, provenance |

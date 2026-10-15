@@ -25,9 +25,6 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
   [Flora](characters/Flora%20Art.md); [shared starter history](characters/Starter%20Art.md).
 - Rose lines: [Rosetta](characters/Rosetta%20Art.md), [Thornia](characters/Thornia%20Art.md),
   [Crinso](characters/Crinso%20Art.md).
-- Black Diamonds lines: [Dravok](characters/Dravok%20Art.md), [Vespera](characters/Vespera%20Art.md),
-  [Talise](characters/Talise%20Art.md), [Malakor](characters/Malakor%20Art.md),
-  [Theron](characters/Theron%20Art.md), [Selene](characters/Selene%20Art.md).
 - Other lines: [Atmoso](characters/Atmoso%20Art.md), [Aurora](characters/Aurora%20Art.md),
   [Bliss](characters/Bliss%20Art.md), [Bruno](characters/Bruno%20Art.md),
   [Disciple](characters/Disciple%20Art.md), [Elise](characters/Elise%20Art.md),
@@ -44,8 +41,7 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
 - [Elemental dungeon packs](creatures/dungeons/README.md).
 - [Heaven/Abyss packs](creatures/gamemodes/README.md).
 - [Machines](creatures/Awaken%20the%20Machines.md), [Treasury](creatures/Crownfall%20Treasury.md),
-  [Sanctuary](creatures/Rosethorn%20Sanctuary.md), [Crimson Roses](creatures/Passion%20of%20Crimson%20Roses.md),
-  [Black Diamonds Against The Light](creatures/Black%20Diamonds%20Against%20The%20Light.md).
+  [Sanctuary](creatures/Rosethorn%20Sanctuary.md), [Crimson Roses](creatures/Passion%20of%20Crimson%20Roses.md).
 - Historical: [Flaming Depths](creatures/Flaming%20Depths.md).
 
 ## Items, actions and scenery

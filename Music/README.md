@@ -104,7 +104,7 @@ The [activity prompt pack](prompts/activity-modes.md) adds16 distinct cues:
 
 All current battle activity modes and all six Story regions are covered.
 These are regional/mode themes, not hundreds of separate numbered-stage songs.
-Planned Black Diamonds, future chapters and nonbattle menu/reward jingles are
+Future chapters and nonbattle menu/reward jingles are
 not part of this current-mode expansion. Only the seven delivered tracks above
 are installed; all other activity briefs remain ungenerated/unwired.
 

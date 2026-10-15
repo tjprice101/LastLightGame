@@ -11,6 +11,11 @@
 - [Contributor workflow](development-guide.md#line-endings-and-concurrent-changes)
   documents normalization, one-checkout publication and LF-only remote API
   edits. This does not suppress genuine conflicting changes.
+- `git add --renormalize .`:no existing tracked content required conversion.
+  Verified all four previously conflicted index blobs contain LF, LF/CRLF
+  sample text hashes identically through Git's policy, a real PNG retains its
+  unfiltered hash, VS Code configuration parses and `git diff --check` passes.
+  Policy/settings/docs only; no gameplay tests required. Not committed/pushed.
 
 ## Compact Conduit reward dialogs
 
@@ -792,8 +797,8 @@ undeployed status below are superseded by D-289 above.
   verses, crushing orchestral refrains, celestial bridge and harmony finale.
   Distinct motifs separate similar elemental settings; Machines recalls
   shared prototype origins and War themes remain human challenges.
-- Regional/mode themes, not one track per numbered encounter. Planned Black
-  Diamonds and future chapters are not covered by this current-mode pack.
+- Regional/mode themes, not one track per numbered encounter. Future chapters
+  are not covered by this current-mode pack.
   No generated audio, runtime wiring, gameplay or future-story implementation.
 - Documentation-only verification checked18 new style prompts under1000
   characters, required sound constraints,16 distinct activity cue IDs and
@@ -812,8 +817,8 @@ undeployed status below are superseded by D-289 above.
   damage; Aurora is not recast as a healer. Passive/charge candidates require
   actual eligible outcomes; constant Defense bonuses default to silence.
 - No music/vocals/choir, new triggers, stats, gameplay, generated audio,
-  service uploads, dependencies or runtime wiring. Planned Black Diamonds,
-  enemies, creators and Conduits are outside the current16-human pack.
+  service uploads, dependencies or runtime wiring. Enemies, creators and
+  Conduits are outside the current16-human pack.
 - Documentation-only validation compared all48 ability and16 passive names
   against current content, counted66 prompt blocks and checked library links/
   whitespace. No build/unit suite necessary. Local, uncommitted, unpublished.
@@ -877,44 +882,6 @@ undeployed status below are superseded by D-289 above.
   adjacent material art dimensions identical, no horizontal overflow, Details
   fit and restored focus, including maximum-safe quantity. Reloaded afterward;
   no account writes. Local only, uncommitted and unpublished.
-
-## Black Diamonds Against The Light event and special banner (D-272)
-
-- Designed the complete "Black Diamonds Against The Light" special event mission
-  and banner mirroring the Passion of Crimson Roses structure with distinct
-  identities, elemental mechanics, and lore.
-- Six new pale-skinned Element-Bearers (3 5★, 3 6★; 3 female, 3 male; 2 Infernic,
-  1 Oceanic, 1 Botanic, 1 Tranquilitic, 1 Chaotic) with geometric black/white
-  ritual etchings, gemstone-faceted attire, and head-to-toe black/white/crimson
-  metal armor in their final forms with circling elemental black diamond gemstones,
-  full-view weapons, and rich rear elemental tapestries.
-- Roster: Dravok (Infernic 6★ Greatcleaver Tank/DPS), Vespera (Infernic 5★
-  Chakrams DPS/Burn), Talise (Oceanic 6★ Estoc & Aegis Tank/Shield), Malakor
-  (Chaotic 6★ Scythe Executioner), Theron (Botanic 5★ Glaive Ward/Buffer),
-  Selene (Tranquilitic 5★ Scepter Cleanser/Healer).
-- Event mission: 35-stage Lv.80-140 Kharonite mission with 20% capture rate on
-  Kharonite creatures up to Lv.120, 6 Kharonite materials replacing ordinary
-  mats for awakening/leveling these 6 characters.
-- Economy: 10 Null-Prismatica summon cost, 80/150 pity guarantees, dual banner
-  (Featured 6★ / Featured 5★), material fallbacks (50:30:17), Lv.80 Omnic
-  Kharonite duplicate compensation for owned 6★ Element-Bearers.
-- 93 complete generation-ready Midjourney art prompts:
-  - 78 character prompts (6 characters × 6 forms + 6 ability icons + 1 weapon)
-    in [Dravok](../Art/characters/Dravok%20Art.md), [Vespera](../Art/characters/Vespera%20Art.md),
-    [Talise](../Art/characters/Talise%20Art.md), [Malakor](../Art/characters/Malakor%20Art.md),
-    [Theron](../Art/characters/Theron%20Art.md), and [Selene](../Art/characters/Selene%20Art.md).
-  - 15 event prompts (6 Kharonite creature forms, 6 materials, 3:1 header,
-    16:9 battle arena, 16:9 summon artpiece) in
-    [Black Diamonds Against The Light](../Art/creatures/Black%20Diamonds%20Against%20The%20Light.md).
-- Prompts follow the established Rose-banner quality standard (D-116/D-119/D-120
-  interior density) with strict D-135 visible continuous safety margins and clean
-  screen edges:
-  - 50% (25% margin) -> 60% (20% margin) -> 72% (14% margin) -> 84% (8% margin)
-    -> 94% (3% margin) -> 96% (2% margin).
-  - `continuous visible solid-background safety margin on all four sides and corners, nothing touches crosses or disappears beyond the frame edges`.
-  - Body height 1/3 (Evo 1-4) -> 1/4 (Evo 5) -> 1/5 (Evo 6).
-- Validated with `python -m unittest discover -s tools -p test_black_diamonds_art_prompts.py`:
-  2/2 test suites passed, 100% prompt syntax, ratio, palette, margin, and containment coverage.
 
 ## Inventory search, filters and concise Information (D-271)
 
@@ -980,26 +947,6 @@ undeployed status below are superseded by D-289 above.
   All16 human Level screens still fit1367x640 without content scrolling or
   horizontal overflow. DOM-only fixtures, no real account writes; reloaded
   afterward. Local only, uncommitted and unpublished.
-
-## Black Diamonds Against The Light event, characters and purposeful chaos art (D-270)
-
-- Full game design and mechanics specification created in [docs/black-diamonds.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/docs/black-diamonds.md):
-  6 original pale-white-skin characters with black and white ritual etchings,
-  element-imbued gemstone attire, and final Omnic black/white metal armor with
-  circling black diamond gemstones and red energy. Roster: 3 6-star (Dravok Infernic,
-  Talise Oceanic, Malakor Chaotic) and 3 5-star (Vespera Infernic, Theron Botanic,
-  Selene Tranquilitic); 3 female and 3 male. Full kits, passives, skills, ultimates,
-  stats, progression, and 35-stage event Lv. 80-140 with 6 black diamond materials,
-  Kharonite boss line, capture ceilings, 10-cost banner, pity, and duplicate conversions.
-- Complete Midjourney generation prompt suite created (93 prompts total across 7 packs):
-  - 6 Character packs: [Dravok Art.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/characters/Dravok%20Art.md), [Vespera Art.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/characters/Vespera%20Art.md), [Talise Art.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/characters/Talise%20Art.md), [Malakor Art.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/characters/Malakor%20Art.md), [Theron Art.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/characters/Theron%20Art.md), and [Selene Art.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/characters/Selene%20Art.md) (each containing Evo 1-6, 6 ability icons, and signature weapon).
-  - Event pack: [Black Diamonds Against The Light.md](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/Art/creatures/Black%20Diamonds%20Against%20The%20Light.md) (6 Kharonite creature forms, 6 Black Diamond materials, 3:1 header, 16:9 arena, 16:9 summon artpiece).
-- Spacing and Purposeful Chaos escalation:
-  - Every character form strictly adheres to D-131 ensemble targets (50/60/72/84/94/96%),
-    margins (25/20/14/8/3/2%), body height (1/3 through Epic, 1/4 Legendary, 1/5 Omnic),
-    and D-135 continuous solid safety margin containment clauses.
-  - Escalating purposeful chaos progression: Evo. 1 pristine minimal geometry -> Evo. 2 nascent angular tension -> Evo. 3 energetic disruption -> Evo. 4 architectural purposeful chaos -> Evo. 5 dramatic kinetic tension with rear crystal lattice -> Evo. 6 supreme transcendent purposeful chaos with 16 wings, intersecting tilted shattered rings, multi-axis orbiting black diamonds, and rear mandala/lattice filling interior space with almost no dead space while keeping eyes and weapons in full view.
-- Validated via [test_black_diamonds_art_prompts.py](c:/Users/creat/Downloads/Coding/Projects/Last%20Light/tools/test_black_diamonds_art_prompts.py): `python -m unittest discover -s tools -p test_black_diamonds_art_prompts.py` (2 tests, 93 prompt checks, all passed).
 
 ## Cleaner captured-copy sale confirmation
 
