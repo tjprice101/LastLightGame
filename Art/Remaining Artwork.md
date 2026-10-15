@@ -68,6 +68,8 @@ scenery is opaque/full-bleed. Never manually erase matching pale subject colors.
 Creating prompts did not install images. The subsequent D-318 intake archives
 all18 delivered originals under `Art/source/calamity`, exports reviewed cutouts
 and pixel-intact arenas, and connects their shared byte-revisioned resolvers.
+Updated Heavenfall Seraph/White Pyre Hierophant originals live in its
+`replacements` subfolder; initial sources and prior exports remain preserved.
 Inventory/results/reveal/loot share tier chest art; each tier shares its arena.
 Boss discovery, field and cut-ins share each reviewed boss. Archived originals
 remain intact; verified duplicate root copies were removed at the owner's

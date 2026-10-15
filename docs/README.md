@@ -7,6 +7,8 @@ It is intended to make features easy to locate, extend, and hand off.
 
 **Calamity artwork (D-318):** all eighteen delivered originals are archived and
 installed: twelve boss cutouts, three shared tier chests and three tier arenas.
+Owner-approved Seraph/Hierophant replacements now preserve both source/export
+generations and refresh the same runtime IDs across every surface.
 The Last Scarlet Bloom follow-up delivery completes the set. All related
 runtime surfaces use shared revisioned art. Current missing-art queue is27 native
 symbols. Complete-set release `71a5de2` is deployed on Pages and the authoritative server;

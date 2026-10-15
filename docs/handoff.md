@@ -1,5 +1,39 @@
 # Current state and handoff
 
+## Calamity Seraph/Hierophant replacements (D-318 follow-up)
+
+- Owner explicitly approves processing both new root sources. Updated
+  Heavenfall Seraph/White Pyre Hierophant originals are archived under
+  `Art/source/calamity/replacements`, while first-delivery sources and two
+  former runtime exports remain preserved with settings/hashes in manifest
+  `previous_exports`.18 active images,20 historical/current delivered originals.
+- Reviewed all28 Seraph and24 Hierophant enclosed backdrop components, including
+  magnified collar/hand/robe details, on dark/light source-resolution composites.
+  Preserve pale wings/flame, red ribbons/gems, dark armor/thorns and shadows.
+  Both stay frontal at existing boss scale; stable art IDs/shared revisions
+  cover all tiers, previews, field/cut-ins and discovery/Collections.
+- `tools/intake_calamity_art.py` now requires explicit `--replace` for changed
+  sources, preserves prior runtime exports and supports reproduction from the
+  new archive paths. Safety tests reject implicit replacement/modified runtime;
+  historical sources/exports reproduce exactly from preserved settings.
+- Both root duplicates removed only after matching archive/manifest SHA-256;
+  all16 unaffected manifest records/runtime images match the prior release.
+  Ordinary `python tools\intake_calamity_art.py --apply` reproduces all18 active
+  images from archives alone and verifies both historical exports.
+- Validation: `python -m unittest discover -s tools -p test_calamity_art.py -v`
+  passes5 tests (current/historical reproduction, protected pixels, supplied
+  alpha and replacement/runtime safety).
+  `npm test -- src\content\calamity-art.test.ts src\presentation\calamity.test.ts src\presentation\battle-scale.test.ts --maxWorkers=2`
+  passes64 tests/3 files; `npm run build` passes type-check/production build
+  with the inherited chunk-size advisory. Editor diagnostics and
+  `git diff --check` pass.
+- Unsaved browser fixtures verify all6 replacement encounters: old snapshots
+  resolve matching new revisioned field/cut-in URLs, front/unmirrored, no
+  session/account writes. Both960px images load; narrow390px battlefield
+  has390px scroll width and contains the boss. Fixture DOM/listeners removed.
+- No combat, RNG, reward, server-rule or account changes; no authority deployment
+  required. Pages publication/hosted byte verification pending below.
+
 ## Final Calamity boss delivered (D-318 follow-up)
 
 - Owner delivers `The Last Scarlet Bloom.png` at root, completing twelve bosses

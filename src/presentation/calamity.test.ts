@@ -13,6 +13,8 @@ import { creatureGlossary, bindCreatureGlossary } from './creature-glossary';
 import { calamityArenaArt, calamityBossArt, calamityChestArt } from '../content/calamity-art';
 import { lootArt, lootItems } from './battle-loot';
 import { unitFacing } from './unit-facing';
+import { portraitCutin } from './battle-cutin';
+import { assetUrl } from './portrait';
 
 const confirmation = vi.hoisted(() => vi.fn(async () => false));
 vi.mock('./game-dialog', async importOriginal => ({ ...await importOriginal<typeof import('./game-dialog')>(),
@@ -33,6 +35,39 @@ afterEach(() => {
 });
 
 describe('Calamity presentation', () => {
+  it.each(['heavens', 'sanctuary'] as const)('shares the current %s replacement art across tiers, old snapshots, cut-ins and catalog', activity => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: vi.fn() });
+    Object.defineProperty(HTMLDialogElement.prototype, 'close', { configurable: true, value: vi.fn() });
+    const art = calamityBossArt[activity];
+    const expected = assetUrl(`enemies/${art}.png`);
+    for (const tier of [1, 2, 3] as const) {
+      const session = createSession('ember', { level: 105, evolution: 6 }, { activity, tier });
+      session.entrancePending = false;
+      delete session.state.enemies[0].art;
+      const before = structuredClone(session);
+      const host = document.createElement('div');
+      document.body.append(host);
+      const commit = vi.fn();
+      const view = new BattleView(host, session, { nextAlly: 'KeyC', nextTarget: 'KeyT' }, commit);
+      try {
+        expect(host.querySelector<HTMLImageElement>('.enemies .battle-sprite img')!.getAttribute('src')).toBe(expected);
+        expect(host.querySelector('.enemies .battle-sprite img')!.getAttribute('data-mirrored')).toBe('false');
+        const cutin = portraitCutin(session.state.enemies[0], { ultimate: true, power: 1, name: 'Authored ultimate', duration: 3500 }, art, '#ed4545');
+        expect(cutin.querySelector('img')!.getAttribute('src')).toBe(expected);
+        expect(session).toEqual(before);
+        expect(commit).not.toHaveBeenCalled();
+      } finally { view.destroy(); host.remove(); }
+    }
+    const account = emptyAccount();
+    account.creatures[`calamity:${activity}`] = { defeated: true };
+    document.body.innerHTML = calamitySection(activity, account) + creatureGlossary(account);
+    const images = Array.from(document.querySelectorAll<HTMLImageElement>(`.calamity-tier-boss, [data-creature="calamity:${activity}"] .glossary-art img`));
+    expect(images).toHaveLength(4);
+    for (const image of images) {
+      expect(image.getAttribute('src')).toBe(expected);
+    }
+  });
   it('binds every EX entry independently of normal dungeon entry and confirms before transition', async () => {
     const account = emptyAccount();
     account.normalFinalClears = Object.fromEntries(calamityActivities.map(activity => [activity.id, true]));

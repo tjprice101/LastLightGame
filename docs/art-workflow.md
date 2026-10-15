@@ -2,6 +2,30 @@
 
 ## Calamity delivery intake (D-318)
 
+### Updated Heavenfall Seraph and White Pyre Hierophant
+
+Owner-approved replacement originals live under
+`Art/source/calamity/replacements`. The first delivery remains in
+`Art/source/calamity`; its former runtime exports remain under
+`Art/source/calamity/previous-runtime`. Each active manifest record retains
+the former source/export hashes, settings and locations in `previous_exports`.
+There are18 active images,20 preserved delivered originals and two historical
+runtime exports. Never apply the first delivery's gap seeds to these replacements.
+
+The new Seraph has28 reviewed enclosed backdrop components; the Hierophant
+has24. Review includes magnified collar/hand/robe gaps plus dark/light
+source-resolution composites. Preserve white wings/flame, red ribbons/gems,
+black armor/thorns and painted shadows. Both are genuinely frontal and retain
+existing scale/IDs. Byte-derived revisions refresh all tier previews, field,
+cut-ins and Collections, including old frozen encounters without account writes.
+
+The initial replacement command is
+`python tools\intake_calamity_art.py --apply --replace calamity-boss-heavens calamity-boss-sanctuary`.
+Subsequent reproduction uses ordinary `--apply` from the archived replacements.
+Changed sources require explicit replacement; modified existing exports and
+conflicting archives are rejected. Root duplicates are removed only after
+archive/source/export verification. All other16 active images remain unchanged.
+
 Eighteen owner-delivered root PNGs are archived byte-for-byte under
 `Art/source/calamity`; the duplicate root copies were subsequently removed
 at the owner's request after matching both copies against recorded SHA-256

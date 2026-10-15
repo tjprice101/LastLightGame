@@ -92,10 +92,10 @@
       "asset": "calamity-boss-sanctuary",
       "incoming": "White Pyre Hierophant.png",
       "category": "enemies",
-      "source": "Art\\source\\calamity\\White Pyre Hierophant.png",
-      "source_sha256": "a52ea5c8b334fceb95bc22f2338eecc53fab7d7b180a71515adcb8bef4866b0a",
+      "source": "Art\\source\\calamity\\replacements\\White Pyre Hierophant.png",
+      "source_sha256": "4f8466e4212ba1dcfdea8f90a59a905b5a7e4d358af8cd3ee93239ded70aa755",
       "runtime": "public\\assets\\enemies\\calamity-boss-sanctuary.png",
-      "runtime_sha256": "ba68f54c99d6c1bac951ac08898168e525b9bed33e2b5af3b334d966754f72c3",
+      "runtime_sha256": "44ecad9bc66e17466b035470c7647ddbb155da61683218893d2895d67aba21b1",
       "source_mode": "RGB",
       "source_dimensions": [
         1232,
@@ -109,143 +109,280 @@
       ],
       "runtime_content_bbox": [
         48,
-        125,
+        137,
         912,
-        835
+        822
       ],
-      "runtime_pixel_sha256": "02c0996c2abea66cf2b42a7b7924aab8c7973c15ae96a0bb9603e2f5cbea614a",
+      "runtime_pixel_sha256": "baf5630c345308763f897170d2f54a050e6595351ad8d3cac37da14f04a81a9d",
       "settings": {
-        "keys": [
-          [
-            71,
-            120,
-            98
-          ]
-        ],
         "row_gradient": true,
         "radius": 26,
         "border_only": true,
         "background_seeds": [
           [
-            0.5762987,
-            0.2047414
+            0.3790584,
+            0.169181
           ],
           [
-            0.5470779,
-            0.2403017
+            0.6314935,
+            0.1702586
           ],
           [
-            0.4569805,
-            0.2672414
+            0.3725649,
+            0.1939655
           ],
           [
-            0.5462662,
-            0.2564655
+            0.637987,
+            0.1961207
           ],
           [
-            0.4659091,
-            0.2715517
+            0.2102273,
+            0.2176724
           ],
           [
-            0.2272727,
-            0.2747845
+            0.7962662,
+            0.2198276
           ],
           [
-            0.4042208,
-            0.2887931
+            0.3725649,
+            0.21875
           ],
           [
-            0.5698052,
-            0.2855603
+            0.4862013,
+            0.3071121
           ],
           [
-            0.5868506,
-            0.3135776
+            0.1193182,
+            0.4105603
           ],
           [
-            0.6128247,
-            0.3922414
+            0.9074675,
+            0.4116379
           ],
           [
-            0.8676948,
-            0.3846983
+            0.8887987,
+            0.4213362
           ],
           [
-            0.3441558,
-            0.3760776
+            0.9050325,
+            0.4213362
           ],
           [
-            0.1298701,
-            0.3599138
+            0.099026,
+            0.4213362
           ],
           [
-            0.1647727,
-            0.3609914
+            0.3977273,
+            0.450431
           ],
           [
-            0.6006494,
-            0.3696121
+            0.8912338,
+            0.6411638
+          ],
+          [
+            0.1201299,
+            0.6411638
+          ],
+          [
+            0.1144481,
+            0.6810345
+          ],
+          [
+            0.3961039,
+            0.8038793
+          ],
+          [
+            0.7061688,
+            0.8286638
+          ],
+          [
+            0.5349026,
+            0.8275862
+          ],
+          [
+            0.4650974,
+            0.8372845
+          ],
+          [
+            0.7305195,
+            0.8480603
           ],
           [
             0.4107143,
-            0.3760776
+            0.8448276
           ],
           [
-            0.3839286,
-            0.4040948
-          ],
-          [
-            0.6030844,
-            0.4170259
-          ],
-          [
-            0.6444805,
-            0.4838362
-          ],
-          [
-            0.213474,
-            0.7122845
-          ],
-          [
-            0.7881494,
-            0.7575431
-          ],
-          [
-            0.4991883,
-            0.7747845
-          ],
-          [
-            0.2646104,
-            0.7230603
-          ],
-          [
-            0.7524351,
-            0.7413793
-          ],
-          [
-            0.7532468,
-            0.7898707
-          ],
-          [
-            0.4975649,
-            0.8976293
+            0.5779221,
+            0.9256466
           ]
         ],
         "edge_cleanup": {
           "source_pixels": 1,
           "distance_ramp": 18
         },
-        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
-      }
+        "review": "Owner-approved replacement. Reviewed original, all24 indexed enclosed backdrop components, magnified collar/hand/robe gaps and source-resolution dark/light composites. Preserve ivory wings/flame, red ribbons/gems, black armor/thorns and painted ground shadow. Genuine front-facing pose."
+      },
+      "previous_exports": [
+        {
+          "asset": "calamity-boss-sanctuary",
+          "incoming": "White Pyre Hierophant.png",
+          "category": "enemies",
+          "source": "Art\\source\\calamity\\White Pyre Hierophant.png",
+          "source_sha256": "a52ea5c8b334fceb95bc22f2338eecc53fab7d7b180a71515adcb8bef4866b0a",
+          "runtime": "Art\\source\\calamity\\previous-runtime\\calamity-boss-sanctuary-ba68f54c99d6.png",
+          "runtime_sha256": "ba68f54c99d6c1bac951ac08898168e525b9bed33e2b5af3b334d966754f72c3",
+          "source_mode": "RGB",
+          "source_dimensions": [
+            1232,
+            928
+          ],
+          "source_alpha_authoritative": false,
+          "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+          "runtime_dimensions": [
+            960,
+            960
+          ],
+          "runtime_content_bbox": [
+            48,
+            125,
+            912,
+            835
+          ],
+          "runtime_pixel_sha256": "02c0996c2abea66cf2b42a7b7924aab8c7973c15ae96a0bb9603e2f5cbea614a",
+          "settings": {
+            "keys": [
+              [
+                71,
+                120,
+                98
+              ]
+            ],
+            "row_gradient": true,
+            "radius": 26,
+            "border_only": true,
+            "background_seeds": [
+              [
+                0.5762987,
+                0.2047414
+              ],
+              [
+                0.5470779,
+                0.2403017
+              ],
+              [
+                0.4569805,
+                0.2672414
+              ],
+              [
+                0.5462662,
+                0.2564655
+              ],
+              [
+                0.4659091,
+                0.2715517
+              ],
+              [
+                0.2272727,
+                0.2747845
+              ],
+              [
+                0.4042208,
+                0.2887931
+              ],
+              [
+                0.5698052,
+                0.2855603
+              ],
+              [
+                0.5868506,
+                0.3135776
+              ],
+              [
+                0.6128247,
+                0.3922414
+              ],
+              [
+                0.8676948,
+                0.3846983
+              ],
+              [
+                0.3441558,
+                0.3760776
+              ],
+              [
+                0.1298701,
+                0.3599138
+              ],
+              [
+                0.1647727,
+                0.3609914
+              ],
+              [
+                0.6006494,
+                0.3696121
+              ],
+              [
+                0.4107143,
+                0.3760776
+              ],
+              [
+                0.3839286,
+                0.4040948
+              ],
+              [
+                0.6030844,
+                0.4170259
+              ],
+              [
+                0.6444805,
+                0.4838362
+              ],
+              [
+                0.213474,
+                0.7122845
+              ],
+              [
+                0.7881494,
+                0.7575431
+              ],
+              [
+                0.4991883,
+                0.7747845
+              ],
+              [
+                0.2646104,
+                0.7230603
+              ],
+              [
+                0.7524351,
+                0.7413793
+              ],
+              [
+                0.7532468,
+                0.7898707
+              ],
+              [
+                0.4975649,
+                0.8976293
+              ]
+            ],
+            "edge_cleanup": {
+              "source_pixels": 1,
+              "distance_ramp": 18
+            },
+            "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+          }
+        }
+      ]
     },
     {
       "asset": "calamity-boss-heavens",
       "incoming": "Heavenfall Seraph.png",
       "category": "enemies",
-      "source": "Art\\source\\calamity\\Heavenfall Seraph.png",
-      "source_sha256": "be07a1feb6f85c3a5fdc982cdc3c2310f69327505b1cd68bd53abce83939009c",
+      "source": "Art\\source\\calamity\\replacements\\Heavenfall Seraph.png",
+      "source_sha256": "a94a85395b17a5f735b954a03f87583a6256ba9574c20d50129b3709793f7ade",
       "runtime": "public\\assets\\enemies\\calamity-boss-heavens.png",
-      "runtime_sha256": "3874a7d5c3ceac2995136f3aaaa45f2a79abb8f49507464348654a0e4cf30bc6",
+      "runtime_sha256": "fd31e3fdfc94502dc24aa639497328ee93f6917d8a936de2f612f467163866c1",
       "source_mode": "RGB",
       "source_dimensions": [
         1232,
@@ -259,98 +396,251 @@
       ],
       "runtime_content_bbox": [
         48,
-        153,
+        151,
         912,
-        807
+        808
       ],
-      "runtime_pixel_sha256": "e67c6191dc7594745bc3d20f8f09377af060093cbd487e00b445b8135244f4b8",
+      "runtime_pixel_sha256": "116c7e01d3f1c51f951aa13d92cb59eb386ab995bf6f65bd677339d3b094d724",
       "settings": {
-        "keys": [
-          [
-            131,
-            154,
-            142
-          ]
-        ],
         "row_gradient": true,
         "radius": 26,
         "border_only": true,
         "background_seeds": [
           [
-            0.3668831,
-            0.3717672
+            0.536526,
+            0.200431
           ],
           [
-            0.1777597,
-            0.3653017
+            0.5186688,
+            0.1950431
           ],
           [
-            0.7394481,
-            0.5894397
+            0.487013,
+            0.1982759
           ],
           [
-            0.6501623,
-            0.5765086
+            0.4683442,
+            0.231681
           ],
           [
-            0.3376623,
-            0.5765086
+            0.4050325,
+            0.2866379
           ],
           [
-            0.4017857,
-            0.6228448
+            0.4131494,
+            0.3071121
           ],
           [
-            0.5933442,
-            0.6228448
+            0.5738636,
+            0.3071121
           ],
           [
-            0.7589286,
+            0.6055195,
+            0.3760776
+          ],
+          [
+            0.4683442,
+            0.3523707
+          ],
+          [
+            0.5162338,
+            0.3523707
+          ],
+          [
+            0.6371753,
+            0.3976293
+          ],
+          [
+            0.325487,
+            0.4903017
+          ],
+          [
+            0.6339286,
+            0.4665948
+          ],
+          [
+            0.6582792,
+            0.4881466
+          ],
+          [
+            0.3904221,
+            0.5290948
+          ],
+          [
+            0.6071429,
+            0.5107759
+          ],
+          [
+            0.6071429,
+            0.5366379
+          ],
+          [
+            0.6363636,
+            0.5086207
+          ],
+          [
+            0.3400974,
+            0.5517241
+          ],
+          [
+            0.6696429,
             0.6584052
           ],
           [
-            0.2232143,
-            0.6616379
+            0.3149351,
+            0.6271552
           ],
           [
-            0.2475649,
-            0.6530172
+            0.2962662,
+            0.6422414
           ],
           [
-            0.6087662,
-            0.6605603
+            0.8157468,
+            0.6648707
           ],
           [
-            0.4180195,
-            0.6594828
+            0.5430195,
+            0.8588362
           ],
           [
-            0.898539,
-            0.8017241
+            0.6233766,
+            0.7532328
           ],
           [
-            0.5892857,
-            0.8415948
+            0.5316558,
+            0.7273707
           ],
           [
-            0.3628247,
-            0.9439655
+            0.5219156,
+            0.7855603
           ],
           [
-            0.2613636,
-            0.9525862
-          ],
-          [
-            0.1712662,
-            0.9536638
+            0.3125,
+            0.9655172
           ]
         ],
         "edge_cleanup": {
           "source_pixels": 1,
           "distance_ramp": 18
         },
-        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
-      }
+        "review": "Owner-approved replacement. Reviewed original, all28 indexed enclosed backdrop components, magnified collar/hand/robe gaps and source-resolution dark/light composites. Preserve ivory wings/flame, red ribbons/gems, black armor/thorns and painted ground shadow. Genuine front-facing pose."
+      },
+      "previous_exports": [
+        {
+          "asset": "calamity-boss-heavens",
+          "incoming": "Heavenfall Seraph.png",
+          "category": "enemies",
+          "source": "Art\\source\\calamity\\Heavenfall Seraph.png",
+          "source_sha256": "be07a1feb6f85c3a5fdc982cdc3c2310f69327505b1cd68bd53abce83939009c",
+          "runtime": "Art\\source\\calamity\\previous-runtime\\calamity-boss-heavens-3874a7d5c3ce.png",
+          "runtime_sha256": "3874a7d5c3ceac2995136f3aaaa45f2a79abb8f49507464348654a0e4cf30bc6",
+          "source_mode": "RGB",
+          "source_dimensions": [
+            1232,
+            928
+          ],
+          "source_alpha_authoritative": false,
+          "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+          "runtime_dimensions": [
+            960,
+            960
+          ],
+          "runtime_content_bbox": [
+            48,
+            153,
+            912,
+            807
+          ],
+          "runtime_pixel_sha256": "e67c6191dc7594745bc3d20f8f09377af060093cbd487e00b445b8135244f4b8",
+          "settings": {
+            "keys": [
+              [
+                131,
+                154,
+                142
+              ]
+            ],
+            "row_gradient": true,
+            "radius": 26,
+            "border_only": true,
+            "background_seeds": [
+              [
+                0.3668831,
+                0.3717672
+              ],
+              [
+                0.1777597,
+                0.3653017
+              ],
+              [
+                0.7394481,
+                0.5894397
+              ],
+              [
+                0.6501623,
+                0.5765086
+              ],
+              [
+                0.3376623,
+                0.5765086
+              ],
+              [
+                0.4017857,
+                0.6228448
+              ],
+              [
+                0.5933442,
+                0.6228448
+              ],
+              [
+                0.7589286,
+                0.6584052
+              ],
+              [
+                0.2232143,
+                0.6616379
+              ],
+              [
+                0.2475649,
+                0.6530172
+              ],
+              [
+                0.6087662,
+                0.6605603
+              ],
+              [
+                0.4180195,
+                0.6594828
+              ],
+              [
+                0.898539,
+                0.8017241
+              ],
+              [
+                0.5892857,
+                0.8415948
+              ],
+              [
+                0.3628247,
+                0.9439655
+              ],
+              [
+                0.2613636,
+                0.9525862
+              ],
+              [
+                0.1712662,
+                0.9536638
+              ]
+            ],
+            "edge_cleanup": {
+              "source_pixels": 1,
+              "distance_ramp": 18
+            },
+            "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+          }
+        }
+      ]
     },
     {
       "asset": "calamity-boss-abyss",

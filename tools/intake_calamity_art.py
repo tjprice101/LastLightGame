@@ -28,6 +28,7 @@ BOSSES = (
     ("tranquilitic", "Silent Meridian"),
     ("chaotic", "The Scarlet Unmaking"),
 )
+REPLACEMENTS = {"calamity-boss-sanctuary", "calamity-boss-heavens"}
 
 
 def assets(root=ROOT):
@@ -36,7 +37,8 @@ def assets(root=ROOT):
              for tier in ("Slayer", "Master", "Omnipotent")]
     rows += [(f"calamity-arena-ex-{tier}", f"EX+{tier} Battle Arena.png", "backgrounds")
              for tier in (1, 2, 3)]
-    return [(asset, incoming, category, root / "Art" / "source" / "calamity" / incoming,
+    return [(asset, incoming, category, root / "Art" / "source" / "calamity" /
+             (Path("replacements") / incoming if asset in REPLACEMENTS else Path(incoming)),
              root / "public" / "assets" / category / f"{asset}.png")
             for asset, incoming, category in rows]
 
@@ -71,7 +73,7 @@ def prepare(source, settings, category):
         }
 
 
-def preflight(root=ROOT):
+def preflight(root=ROOT, replacements=()):
     settings = json.loads(SETTINGS.read_text(encoding="utf-8"))
     rows = assets(root)
     if set(settings) != {row[0] for row in rows}:
@@ -87,8 +89,11 @@ def preflight(root=ROOT):
         if archived.exists() and digest(archived) != source_hash:
             raise FileExistsError(f"Conflicting archived original: {archived}")
         old = old_records.get(asset)
-        if old and old["source_sha256"] != source_hash:
+        replacing = bool(old and old["source_sha256"] != source_hash)
+        if replacing and asset not in replacements:
             raise FileExistsError(f"Calamity source changed: {asset}")
+        if replacing and (not runtime.is_file() or digest(root / old["source"]) != old["source_sha256"]):
+            raise FileExistsError(f"Missing or changed previous Calamity source/export: {asset}")
         if runtime.exists() and (not old or digest(runtime) != old["runtime_sha256"]):
             raise FileExistsError(f"Untracked or changed runtime: {runtime}")
         entry = settings[asset]
@@ -100,13 +105,25 @@ def preflight(root=ROOT):
                   "source": str(archived.relative_to(root)), "source_sha256": source_hash,
                   "runtime": str(runtime.relative_to(root)), "runtime_sha256": sha256(output).hexdigest(),
                   **metadata, "settings": entry}
+        if old and old.get("previous_exports"):
+            record["previous_exports"] = old["previous_exports"]
+        if replacing:
+            historical = dict(old)
+            historical.pop("previous_exports", None)
+            historical["runtime"] = str(
+                Path("Art") / "source" / "calamity" / "previous-runtime" /
+                f"{asset}-{old['runtime_sha256'][:12]}.png")
+            history_path = root / historical["runtime"]
+            if history_path.exists() and digest(history_path) != old["runtime_sha256"]:
+                raise FileExistsError(f"Conflicting previous Calamity export: {history_path}")
+            record["previous_exports"] = [*record.get("previous_exports", []), historical]
         planned.append((source, archived, runtime, output, record))
     return planned
 
 
-def review(directory):
+def review(directory, replacements=()):
     directory.mkdir(parents=True, exist_ok=True)
-    planned = preflight()
+    planned = preflight(replacements=replacements)
     cutouts = [row for row in planned if row[-1]["category"] != "backgrounds"]
     for background, color in (("dark", "#24242b"), ("light", "#f5f5f5")):
         for start in range(0, len(cutouts), 6):
@@ -136,10 +153,19 @@ def write_revisions(planned):
     REVISIONS.write_text("\n".join([*lines, "};", ""]), encoding="utf-8")
 
 
-def intake(apply=False):
-    planned = preflight()
+def intake(apply=False, replacements=()):
+    planned = preflight(replacements=replacements)
     if apply:
         for source, archived, runtime, output, record in planned:
+            for historical in record.get("previous_exports", []):
+                history_path = ROOT / historical["runtime"]
+                if not history_path.exists():
+                    if digest(runtime) != historical["runtime_sha256"]:
+                        raise ValueError(f"Previous export verification failed: {runtime}")
+                    history_path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(runtime, history_path)
+                if digest(history_path) != historical["runtime_sha256"]:
+                    raise ValueError(f"Previous export archive changed: {history_path}")
             archived.parent.mkdir(parents=True, exist_ok=True)
             runtime.parent.mkdir(parents=True, exist_ok=True)
             if not archived.exists():
@@ -161,8 +187,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--review", type=Path)
     parser.add_argument("--apply", action="store_true")
+    parser.add_argument("--replace", nargs="+", choices=sorted(REPLACEMENTS), default=[])
     args = parser.parse_args()
     if args.review:
-        review(args.review)
+        review(args.review, args.replace)
     else:
-        intake(args.apply)
+        intake(args.apply, args.replace)
