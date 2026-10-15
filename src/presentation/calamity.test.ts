@@ -4,7 +4,8 @@ import { calamityActivities, calamityBuildGuidance, calamityChest, calamityChest
 import { emptyAccount } from '../game/account';
 import { gameplayHub } from './gameplay';
 import { inventoryView, bindInventory } from './inventory';
-import { bindCalamityEntries, calamityLoot, calamityOpeningReward, calamitySection, calamityCadence } from './calamity';
+import { bindActivityDifficulties, bindCalamityEntries, calamityLoot, calamityOpeningReward, calamitySection, calamityCadence } from './calamity';
+import { roseEvent } from './rose-event';
 import { unitReadout } from './unit-readout';
 import { battleResults, encounterRewards } from './battle-results';
 import { BattleView, createSession } from './battle-view';
@@ -102,10 +103,12 @@ describe('Calamity presentation', () => {
     expect(report).not.toHaveBeenCalled();
   });
 
-  it('lists all 36 exact tiers separately below eligible normal stages, never Story/Training/War', () => {
+  it('lists all 36 exact tiers in separate difficulty panels, never Story/Training/War', () => {
     const account = emptyAccount();
     account.characters.ember = { level: 105, evolution: 6 };
     document.body.innerHTML = gameplayHub(account);
+    expect(document.querySelectorAll('[data-activity-difficulty]')).toHaveLength(12);
+    expect(document.querySelectorAll('[data-difficulty-panel="calamity"][hidden]')).toHaveLength(12);
     expect(document.querySelectorAll('[data-calamity]')).toHaveLength(36);
     for (const activity of calamityActivities) {
       const section = document.querySelector(`[data-calamity="${activity.id}"]`)!.closest('.calamity-section')!;
@@ -126,6 +129,68 @@ describe('Calamity presentation', () => {
     expect(document.querySelector<HTMLButtonElement>('[data-calamity-tier="1"]')!.disabled).toBe(false);
     expect(document.querySelector<HTMLButtonElement>('[data-calamity-tier="2"]')!.disabled).toBe(true);
     expect(document.body.textContent).toContain('Clear Calamity EX+1');
+  });
+
+  it.each(calamityActivities)('switches $id difficulty without mixing drops, changing stages, or writing holdings', activity => {
+    const account = emptyAccount();
+    account.characters.ember = { level: 105, evolution: 6 };
+    account.normalFinalClears = { [activity.id]: true };
+    const before = structuredClone(account);
+    document.body.innerHTML = gameplayHub(account);
+    bindActivityDifficulties(document.body);
+    const group = document.querySelector<HTMLElement>(`[data-activity-difficulty="${activity.id}"]`)!;
+    const normal = group.querySelector<HTMLElement>('[data-difficulty-panel="normal"]')!;
+    const calamity = group.querySelector<HTMLElement>('[data-difficulty-panel="calamity"]')!;
+    const tabs = group.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+    const stage = normal.querySelector<HTMLSelectElement>('select')!;
+    stage.value = '1';
+    expect(normal.hidden).toBe(false);
+    expect(calamity.hidden).toBe(true);
+    tabs[1].click();
+    expect(normal.hidden).toBe(true);
+    expect(calamity.hidden).toBe(false);
+    expect(tabs[1].getAttribute('aria-selected')).toBe('true');
+    expect(tabs[1].getAttribute('aria-controls')).toBe(calamity.id);
+    expect(calamity.querySelector('[data-infusion], [data-dungeon]')).toBeNull();
+    expect(calamity.querySelector<HTMLButtonElement>('[data-calamity-tier="1"]')!.disabled).toBe(false);
+    expect(calamity.textContent).toContain('One sealed tier chest per victory');
+    for (const tier of [1, 2, 3] as const) {
+      const chest = calamityChest(activity.id, tier);
+      const card = calamity.querySelector(`[data-calamity-tier="${tier}"]`)!.closest('.calamity-tier')!;
+      expect(card.textContent).toContain(`${chest.fractalis} Prismatica`);
+      expect(card.textContent).toContain(`${chest.lycalis} Null-Prismatica`);
+      expect(card.textContent).toContain(`${chest.bundles} bundle rolls`);
+    }
+    tabs[0].click();
+    expect(normal.hidden).toBe(false);
+    expect(calamity.hidden).toBe(true);
+    expect(stage.value).toBe('1');
+    expect(group.querySelector('[data-difficulty-panel="normal"]')).toBe(normal);
+    expect(account).toEqual(before);
+  });
+
+  it('supports roving keyboard tabs and isolates independent activity choices', () => {
+    document.body.innerHTML = gameplayHub(null);
+    bindActivityDifficulties(document.body);
+    const tabs = document.querySelectorAll<HTMLButtonElement>('[data-activity-difficulty="heavens"] [role="tab"]');
+    for (const [start, key, selected] of [[0, 'ArrowRight', 1], [1, 'ArrowRight', 0], [0, 'ArrowLeft', 1], [1, 'Home', 0], [0, 'End', 1]] as const) {
+      tabs[start].dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+      expect(document.activeElement).toBe(tabs[selected]);
+      expect(tabs[selected].tabIndex).toBe(0);
+      expect(tabs[1 - selected].tabIndex).toBe(-1);
+      expect(tabs[selected].getAttribute('aria-selected')).toBe('true');
+    }
+    expect(document.querySelector<HTMLElement>('[data-activity-difficulty="abyss"] [data-difficulty-panel="calamity"]')!.hidden).toBe(true);
+    expect(document.querySelectorAll('[data-calamity]:not([disabled])')).toHaveLength(0);
+  });
+
+  it('offers the same difficulty panels on the standalone Events route', () => {
+    document.body.innerHTML = roseEvent(emptyAccount());
+    bindActivityDifficulties(document.body);
+    document.querySelector<HTMLButtonElement>('[data-difficulty="calamity"]')!.click();
+    expect(document.querySelector<HTMLElement>('[data-difficulty-panel="normal"]')!.hidden).toBe(true);
+    expect(document.querySelector<HTMLElement>('[data-difficulty-panel="calamity"]')!.hidden).toBe(false);
+    expect(document.querySelectorAll('[data-calamity="roses"]')).toHaveLength(3);
   });
 
   it.each(calamityActivities)('shows exact fixed contents, every weighted $id bundle and saved reveal values', activity => {

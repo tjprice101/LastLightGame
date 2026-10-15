@@ -1,5 +1,31 @@
 # Current state and handoff
 
+## Separate Calamity difficulty tabs (D-320)
+
+- Owner requests a separate clickable difficulty view instead of Calamity
+  controls/rewards appended below normal missions. All twelve eligible
+  activities and standalone Crimson Roses Events now share Normal / Calamity
+  tabs, initially Normal.
+- Each difficulty owns its mission display. Calamity shows activity name,
+  three-tier boss levels, installed arenas/boss/chest art, chest-only victory
+  drops, fixed chest currencies/Master chests/bundles and exact View Loot.
+  Normal facts, reward showcases and stage entry controls are hidden, not
+  destroyed. Unlock reasons, warnings and validated entry remain unchanged.
+- Keyboard Left/Right wrap, Home/End, selected/tab-panel relationships and
+  roving focus are wired. Back snapshots restore difficulty independently
+  per activity alongside normal stages and activity choices. Settings preserves
+  the menu DOM. No save writes, mechanics, rewards or authority changes.
+- Validation: focused three-file difficulty/banner/history suite passes69
+  tests. `npm test -- --maxWorkers=2` passes3,906 tests/170 files (inherited
+  jsdom canvas warnings). `npm run build` passes (inherited chunk advisory).
+- Unsaved desktop/narrow-browser fixture confirms Normal/Calamity content
+  isolation, keyboard focus, all12 visible Calamity images loaded, and no
+  horizontal overflow at measured1280/488/320 CSS widths. localStorage stays
+  empty; no transactions or account funding. Fixture removed after review.
+- Publication verification is recorded below after deployment.
+- The27 untracked delivered native-status PNGs remain untouched; their art
+  intake is separate work. No new artwork or authority deployment is needed.
+
 ## Exponential hostile pursuit and intentional walls (D-319)
 
 - Owner requests game-wide exponential enemies without changing characters to

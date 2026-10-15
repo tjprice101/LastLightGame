@@ -29,7 +29,7 @@ import { getConduit, isConduitId, conduitEffect } from './content/conduits';
 import { purchaseConduit, equipConduit, setCharacterLock, ownedCharacterInstances, levelCapturedCharacter } from './game/account';
 import { openMasterChest, openCalamityChest, equipMasterConduit, unequipAllConduits } from './game/account';
 import { parseCalamityChestId, calamityChest } from './content/calamity';
-import { bindCalamityEntries, calamityOpeningReward } from './presentation/calamity';
+import { bindActivityDifficulties, bindCalamityEntries, calamityOpeningReward } from './presentation/calamity';
 import { getMasterConduit, isMasterConduitId } from './content/master-conduits';
 import { chooseMasterConduit } from './ui/master-choice-dialog';
 import { masterReward } from './presentation/master-conduits';
@@ -318,6 +318,7 @@ interface MenuSnapshot {
   inventoryFilters: InventoryFilters;
   gallery: string | undefined;
   activities: { group: string; index: string }[];
+  difficulties: { activity: string; difficulty: string }[];
   controls: { attributes: [string, string][]; value: string }[];
   panels: { key: string; top: number; left: number }[];
   scroll: number;
@@ -338,6 +339,10 @@ function menuSnapshot(): MenuSnapshot {
     gallery: app.querySelector<HTMLElement>('[data-archive-gallery][aria-pressed="true"]')?.dataset.archiveGallery,
     activities: Array.from(app.querySelectorAll<HTMLButtonElement>('[data-activity-choice][aria-pressed="true"]')).map((button) => ({
       group: button.closest('.activity-group')?.id ?? '', index: button.dataset.activityChoice ?? '',
+    })),
+    difficulties: Array.from(app.querySelectorAll<HTMLButtonElement>('[data-difficulty][aria-selected="true"]')).map(button => ({
+      activity: button.closest<HTMLElement>('[data-activity-difficulty]')!.dataset.activityDifficulty!,
+      difficulty: button.dataset.difficulty!,
     })),
     controls: Array.from(app.querySelectorAll<HTMLSelectElement>('.sanctuary-content select:not([data-conduit-slot]):not([data-capture-conduit])')).map((control) => ({
       attributes: Array.from(control.attributes).filter((attribute) => attribute.name === 'id' || attribute.name.startsWith('data-') && attribute.name !== 'data-selection-source').map((attribute) => [attribute.name, attribute.value]),
@@ -365,7 +370,7 @@ async function backMenu(): Promise<void> {
   await transitionActivity(async () => {
     const fallback: MenuSnapshot | undefined = menuPage === 'battle' ? {
       ...menuSnapshot(), page: 'gameplay', hash: '', gallery: undefined,
-      activities: [], controls: [], panels: [], scroll: 0,
+      activities: [], difficulties: [], controls: [], panels: [], scroll: 0,
     } : undefined;
     if (menuPage === 'battle' && playMode === 'online' && battleSession) await performOnline({ kind: 'quit', runId: battleSession.runId });
     const previous = menuHistory.back(fallback);
@@ -398,6 +403,7 @@ async function backMenu(): Promise<void> {
       filter.click();
     }
     for (const activity of previous.activities) app.querySelector<HTMLButtonElement>(`#${activity.group} [data-activity-choice="${activity.index}"]`)?.click();
+    for (const saved of previous.difficulties) app.querySelector<HTMLButtonElement>(`[data-activity-difficulty="${saved.activity}"] [data-difficulty="${saved.difficulty}"]`)?.click();
     if (previous.gallery) app.querySelector<HTMLButtonElement>(`[data-archive-gallery="${previous.gallery}"]`)?.click();
     for (const saved of previous.controls) {
       const control = Array.from(app.querySelectorAll<HTMLSelectElement>('.sanctuary-content select')).find((candidate) =>
@@ -688,6 +694,7 @@ function renderMenu(firstArrival = false): void {
   applyConduitSearch(app, conduitSearch);
   bindConduitLoadout(app);
   bindGameplayNavigation(app);
+  bindActivityDifficulties(app);
   bindStoryNavigation(app, account);
   bindProfileEditor(app, async edits => {
     if (playMode !== 'online' || !playerProfile) throw new Error('Your public profile is an online feature. Sign in to an online account to edit it.');

@@ -24,6 +24,27 @@ Frozen pre-art encounters resolve current artwork without resetting battle or
 writing account data. Tier arenas remain pixel-intact opaque scenery; cutouts
 use reviewed offline key removal. See [intake workflow](art-workflow.md#calamity-delivery-intake-d-318).
 
+## Difficulty tabs (D-320)
+
+Each eligible activity has accessible Normal / Calamity tabs. Normal is the
+default and retains its existing banner, facts, reward showcase, stage selector
+and entry action. Calamity replaces that panel rather than appending below it:
+its activity-specific heading, three-tier facts, boss/arena artwork, chest-only
+victory drops, fixed chest contents, exact weighted View Loot and EX entry
+controls appear together. Normal rewards and controls are hidden in this view.
+The standalone Crimson Roses Events page uses the same component.
+
+Tabs support Left/Right wrapping, Home/End, focus and selected-state semantics.
+Switching preserves the normal stage selector and DOM without account writes.
+Caller-based Back restores each activity's selected difficulty alongside its
+normal stage and activity choice; menu Settings retains the existing DOM.
+Locked tiers remain visible with their existing requirements, confirmation and
+entry validation. Story, Training and Elemental War gain no difficulty tabs.
+
+Validate with `npm test -- src/presentation/calamity.test.ts
+src/presentation/activity-banner.test.ts src/presentation/menu-history.test.ts
+--maxWorkers=2` and desktop/narrow-browser checks.
+
 ## Scope and encounters
 
 Three optional EX challenges for each of twelve activities:

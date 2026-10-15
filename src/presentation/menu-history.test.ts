@@ -3,6 +3,13 @@ import { readFileSync } from 'node:fs';
 import { MenuHistory } from './menu-history';
 
 describe('menu traversal history', () => {
+  it('captures and restores activity difficulty independently of normal-stage selections', () => {
+    const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');
+    expect(main).toContain('difficulties: Array.from(app.querySelectorAll<HTMLButtonElement>(\'[data-difficulty][aria-selected="true"]\'))');
+    expect(main).toContain('for (const saved of previous.difficulties)');
+    expect(main).toContain('[data-activity-difficulty="${saved.activity}"] [data-difficulty="${saved.difficulty}"]');
+    expect(main).toContain('bindActivityDifficulties(app);');
+  });
   it('wires toolbar and result exits to the same server-owning Back flow with a resume fallback', () => {
     const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');
     const back = main.slice(main.indexOf('async function backMenu('), main.indexOf('\ntry {', main.indexOf('async function backMenu(')));

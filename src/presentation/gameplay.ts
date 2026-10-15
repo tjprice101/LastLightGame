@@ -20,17 +20,17 @@ import { storyCampaign } from './story';
 import { activityAccess } from '../game/activity-access';
 import { devourerHabitats, elementEmotions, machineOrigin, storyPurpose, trainingLore, warLore } from '../content/world-lore';
 import { worldLore } from './world-lore';
-import { calamitySection } from './calamity';
+import { activityDifficulty } from './calamity';
 
 function dungeonEntry(element: (typeof elements)[number]['id'], account: Account | null): string {
   if (!isPlayableDungeon(element)) throw new Error('Unknown elemental dungeon.');
-  if (!account) return `<button disabled>Dungeon unavailable: resolve the save error</button>${calamitySection(element, account)}`;
+  if (!account) return '<button disabled>Dungeon unavailable: resolve the save error</button>';
   const unlocked = unlockedStage(account, element);
   const access = activityAccess(account, { kind: 'dungeon', element, stage: unlocked });
   return `<footer class="activity-entry"><label class="dungeon-stage-label">Stage
     <select data-dungeon-stage="${element}" aria-label="${elements.find((entry) => entry.id === element)?.dungeon} stage">${Array.from({ length: unlocked }, (_, stage) => `<option value="${stage + 1}" ${stage + 1 === unlocked ? 'selected' : ''}>${stage + 1}</option>`).join('')}</select></label>
     <button class="primary-button" data-dungeon="${element}" ${access.unlocked ? '' : 'disabled'}>${access.unlocked ? 'Enter dungeon' : 'Locked'}</button>
-    ${access.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks at ${access.requirement}. Your highest: Lv.${access.level}.</p>`}</footer>${calamitySection(element, account)}`;
+    ${access.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks at ${access.requirement}. Your highest: Lv.${access.level}.</p>`}</footer>`;
 }
 
 const activityCategories = [
@@ -121,31 +121,35 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
     <section class="activity-group" id="gameplay-dungeons"><h2>Elemental material dungeons</h2>
       ${activityPicker(elements.map((element) => ({ name: element.dungeon })))}
       <div class="activity-grid">${elements.map((element, index) => `<article class="activity-card dungeon-card ${dungeonArt[element.id] ? 'has-dungeon-art' : ''}" data-element-index="${index}" style="--dungeon:${elementAccents[element.id]}">
+        ${activityDifficulty(element.id, `
         ${activityBanner(element.dungeon, dungeonArt[element.id] ? `banners/${dungeonArt[element.id]?.slug}.png` : null, `${element.dungeon} banner`, true)}
         <p class="eyebrow">${element.name} · ${elementEmotions[element.id]}</p>
         <p>Rise's Elemental-Devourers search these ruins with the same ${element.name} power that Let gave his Element-Bearers.</p>
         ${activityFacts(`${elementalDungeonRules.stages} stages`, `${elementalDungeonRules.startingLevel}-${elementalDungeonRules.maximumLevel}`, 'Prismatica · Materials')}
         ${itemShowcase([{ id: 'fractalis' }, ...materialRarities.map((rarity) => ({ id: `${element.id}-${rarity.toLowerCase()}` }))], 'Rewards across stages')}
-        ${dungeonEntry(element.id, account)}</article>`).join('')}</div></section>
+        ${dungeonEntry(element.id, account)}`, account)}</article>`).join('')}</div></section>
     <section class="activity-group" id="gameplay-infusion"><h2>Evolution infusion</h2>
       ${activityPicker(infusionModes.map((mode) => ({ name: mode.name })))}
       <div class="activity-grid">${infusionModes.map((mode) => `<article class="activity-card">
+        ${activityDifficulty(mode.id, `
         ${activityBanner(mode.name, `banners/${mode.id}-banner.png`)}
         <p>${devourerHabitats[mode.id]}</p>
         ${activityFacts(`${mode.stages} stages`, `${mode.startingLevel}-120`, 'Materials · Prismatica · Null-Prismatica · Captures')}
         <p>Evolution materials from Lv.75. Null-Prismatica from Lv.80.</p>
         ${itemShowcase([{ id: 'fractalis' }, { id: 'lycalis' }, ...specialtyMaterials.filter((item) => item.id.startsWith(`${mode.id}-`)).map((item) => ({ id: item.id }))], 'Currencies & specialty materials')}
-        ${infusionEntry(mode, account)}</article>`).join('')}</div></section>
+        ${infusionEntry(mode, account)}`, account)}</article>`).join('')}</div></section>
     <section class="activity-group" id="gameplay-currency"><h2>Currency farms</h2>
       ${activityPicker(currencyModes.map((mode) => ({ name: mode.name })))}
       ${currencyModes.map((mode) => `<article class="activity-card">
+        ${activityDifficulty(mode.id, `
         ${activityBanner(mode.name, `banners/${mode.id}-banner.png`, `${mode.name} banner`, true)}
         <p class="eyebrow">TRANQUILITIC · ${mode.id === 'treasury' ? 'PRISMATICA' : 'NULL-PRISMATICA'}</p>
         <p>${devourerHabitats[mode.id]}</p>
         ${activityFacts(`${mode.stages} stages`, '65-120', mode.id === 'treasury' ? 'Prismatica · Captures' : 'Prismatica · Null-Prismatica · Captures')}
         ${itemShowcase(mode.id === 'treasury' ? [{ id: 'fractalis' }] : [{ id: 'fractalis' }, { id: 'lycalis' }], 'Currency rewards')}
-        ${infusionEntry(mode, account)}</article>`).join('')}</section>
+        ${infusionEntry(mode, account)}`, account)}</article>`).join('')}</section>
     <section class="activity-group" id="gameplay-machines"><h2>Awaken the Machines</h2><article class="activity-card">
+      ${activityDifficulty('machines', `
       ${activityBanner('Awaken the Machines', 'banners/machines-banner.png', 'Awaken the Machines: a destroyed prototype from Let and Rise\'s collaboration awakens in an element-scorched wasteland.')}
       <p>${machineOrigin}</p>
       ${activityFacts(`${machineRules.stages} stages`, '10-120', 'Prismatica · Broken Mechanical Components · Conduits')}
@@ -153,7 +157,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       <p>Unowned Conduits only. A completed rarity awards no Conduit or replacement reward.</p>
       ${itemShowcase([{ id: 'mechanical-components' }], 'Conduit upgrade currency')}
       <button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button>
-      ${infusionEntry({ id: 'machines', name: 'Awaken the Machines' }, account)}
+      ${infusionEntry({ id: 'machines', name: 'Awaken the Machines' }, account)}`, account)}
       </article></section>
     <section class="activity-group" id="gameplay-war"><h2>Elemental War</h2>
       ${activityPicker(elementalWars)}

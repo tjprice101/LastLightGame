@@ -1,5 +1,21 @@
 # Menus and inventory
 
+## Activity difficulty tabs (D-320)
+
+The twelve Calamity-enabled activities offer Normal / Calamity tabs, including
+Crimson Roses on both Gameplay and Events. Normal is selected initially.
+Each panel owns its own mission information, reward details and entry controls:
+Calamity shows its three boss tiers and sealed-chest drops, not the normal
+mission's currencies, materials or captures. View Loot retains exact chest
+contents and weighted bundle probabilities.
+
+Keyboard Left/Right, Home/End and roving tab focus follow the selected panel.
+Normal stage controls and portrait/banner DOM survive difficulty switches.
+Difficulty is transient menu state, captured/restored by caller-based Back
+alongside activity/stage selections; Settings preserves the menu DOM. No save,
+unlock, battle, reward or confirmation behavior changes. Story, Training and
+Elemental War remain unchanged. See [Calamity](calamity-mode.md#difficulty-tabs-d-320).
+
 ## Native identities and explicit ally selection (D-316)
 
 All sixteen Element-Bearers expose their current role, play loop, passive and

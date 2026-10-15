@@ -5,6 +5,12 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Activity difficulty tabs (D-320):** all twelve eligible activities now separate
+Normal and Calamity mission information, rewards and entry controls. Normal
+defaults; keyboard switching and caller-history restoration retain stage
+selection without account writes. Standalone Roses Events uses the same tabs.
+[Contract and checks](calamity-mode.md#difficulty-tabs-d-320).
+
 **Exponential enemy pursuit (D-319, published `25e05a7`):** game-wide hostile stats now follow one
 smooth exponential curve through185; Calamity uses actual145/160/185 stats.
 Characters/captures/equipment/rewards are unchanged. Intentional walls replace
