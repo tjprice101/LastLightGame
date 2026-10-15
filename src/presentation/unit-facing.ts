@@ -1,6 +1,17 @@
 type Facing = 'left' | 'right' | 'front';
 
 const sourceFacing: Record<string, Facing> = {
+  'calamity-boss-treasury': 'front',
+  'calamity-boss-sanctuary': 'front',
+  'calamity-boss-heavens': 'front',
+  'calamity-boss-abyss': 'right',
+  'calamity-boss-machines': 'front',
+  'calamity-boss-infernic': 'right',
+  'calamity-boss-oceanic': 'right',
+  'calamity-boss-atmospheric': 'left',
+  'calamity-boss-botanic': 'front',
+  'calamity-boss-tranquilitic': 'front',
+  'calamity-boss-chaotic': 'front',
   'story-oceanic-0': 'front',
   'story-infernic-0': 'front',
   'story-infernic-1': 'left',

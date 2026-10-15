@@ -2,10 +2,27 @@
 
 The owner requests implementation with placeholder art and delegates final
 boss mechanics, loot weights/quantities and difficulty tuning. Free entry,
-no defeat penalty, verifiable-final-clear access and no new arenas/headers/audio
-are approved. Neutral named pending artwork is intentional; no installed art
-is repainted or borrowed. Publish the client and authoritative server together;
-local implementation is not hosted deployment.
+no defeat penalty and verifiable-final-clear access are approved. Client/server
+implementation is deployed under the2026-10-15 release. D-318 installs the
+seventeen delivered images; only The Last Scarlet Bloom keeps pending artwork.
+
+## Current artwork delivery scope (D-317)
+
+Owner now requests the remaining Midjourney art and explicitly chooses three
+shared chest images (Slayer/Master/Omnipotent) and three shared arena images
+(EX+1/2/3), each reused across all twelve activities. Twelve boss identities
+retain one image each across their three levels. This18-image generation scope
+supersedes the original36-icon chest plan and previous no-new-arena scope;
+new headers/audio remain excluded. Mechanics, chest IDs/names/counts and loot
+are unchanged. [Copy-ready prompts](../Art/creatures/Calamity.md) and
+[complete missing-art checklist](../Art/Remaining%20Artwork.md).
+Eleven bosses, three tier chests and three tier arenas are now installed (D-318).
+Only The Last Scarlet Bloom is undelivered. Shared
+`src/content/calamity-art.ts` mappings cover catalog/spawns, field/cut-ins,
+Play tier cards, Inventory, loot references, drops, results and opening reveals.
+Frozen pre-art encounters resolve current artwork without resetting battle or
+writing account data. Tier arenas remain pixel-intact opaque scenery; cutouts
+use reviewed offline key removal. See [intake workflow](art-workflow.md#calamity-delivery-intake-d-318).
 
 ## Scope and encounters
 
@@ -26,7 +43,8 @@ Three optional EX challenges for each of twelve activities:
 | tranquilitic | City of Heaven | Silent Meridian |
 | chaotic | Ruins of Chaos | The Scarlet Unmaking |
 
-Exactly36 encounters, twelve boss identities and36 distinct chest variants.
+Exactly36 encounters, twelve boss identities and36 named chest variants sharing
+three installed tier images.
 Story, endless Training, all three Elemental War activities and unspecified
 future events are excluded.
 
@@ -186,11 +204,11 @@ focus restoration remain available. No selling, equipping or bulk opening.
 
 Palette: red/white elemental energy against black/white material/body colors;
 not a new combat element or global recolor. Named neutral placeholders have no
-missing PNG requests or unrelated borrowed artwork. Future delivery requires
-twelve boss designs and twelve chest silhouettes with three distinguishable
-tier treatments (36 icons); preserve compact anime/cel rendering, full margins
-and opaque non-glowing generated cutout powers. Runtime VFX may remain radiant.
-New arena/header/audio work is excluded. Boss discovery and Collections use
+missing PNG requests or unrelated borrowed artwork. Current delivery requires
+twelve boss designs, three shared tier chest icons and three shared tier arenas;
+preserve compact anime/cel rendering, full margins and opaque non-glowing
+generated cutout powers. Runtime VFX and arena scenery may remain radiant.
+New header/audio work is excluded. Boss discovery and Collections use
 stable `calamity:<activity>` IDs; none is capturable.
 
 ## Persistence and authoritative operation contract
@@ -239,5 +257,6 @@ Settings CSS policy failure is unrelated to Calamity. Production TypeScript/
 Vite build, authoritative bundle generation and server type-check passed.
 Unsaved browser fixtures verified entry/cancellation, neutral boss rendering,
 Inventory loot, one atomic EX+3 opening and narrow/desktop saved-reward reveal
-containment without modifying real storage. Final artwork and coordinated
-hosted publication/smoke remain outstanding.
+containment without modifying real storage. That placeholder-era verification
+is historical; [current intake/release verification](handoff.md) supersedes it.
+Only the Rose Calamity boss remains missing from the18-image Calamity set.

@@ -5,6 +5,18 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Calamity artwork (D-318):** seventeen delivered originals are archived and
+installed: eleven boss cutouts, three shared tier chests and three tier arenas.
+All related runtime surfaces use shared revisioned art; The Last Scarlet Bloom
+alone remains pending. Current missing-art queue is28 images including27 native
+symbols. [Intake/reproduction](art-workflow.md#calamity-delivery-intake-d-318),
+[current verification/release state](handoff.md).
+
+**Remaining-art prompts (D-317):** [45-image generation queue](../Art/Remaining%20Artwork.md)
+contains12 Calamity bosses,3 shared tier chest icons,3 shared tier arenas and27
+native-status symbols. Owner explicitly chooses tier-shared chest/arena art.
+Prompt-only; existing installed artwork and live deployment remain unchanged.
+
 **Published2026-10-15:** pending D-303 through D-316 client/server changes are
 live, including progression costs, capture cap60, equipment controls, the133
 Conduit effects, Calamity and all16 distinct native identities. Pages CI passed

@@ -1,5 +1,17 @@
 # Art library
 
+## Current missing-art queue (D-317 / D-318)
+
+[Current28-image checklist](Remaining%20Artwork.md):
+[Calamity](creatures/Calamity.md) retains all18 original prompts, but eleven
+bosses, three shared tier chest icons and three shared tier arenas are installed.
+Only The Last Scarlet Bloom is missing.
+[Native identity symbols](ui/Native%20Identity%20Status%20Icons.md) has27 pending
+trophy-backed status pictograms. Copy-ready prompts and filenames included.
+See [reviewed intake](../docs/art-workflow.md#calamity-delivery-intake-d-318).
+Existing85 ordinary/48 Master
+Conduits, Master chest and all current materials already have artwork.
+
 **Current character generation policy (D-159):** all16 lines use individually
 locked subject palettes and explicit unwanted-color negatives. Keep exact
 portrait references at150; icons/weapons remain reference-free.
@@ -48,12 +60,12 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
 
 - [48 character Masters, choice chest and Astral Reserve](conduits/Master%20Conduits.md):
   D-201 combined 50-prompt pack, cosmic machinery and character palettes;
-  runtime mechanics implemented, PNG artwork pending.
+  runtime mechanics and delivered PNG artwork installed.
 
 - [Conduits](conduits/Conduits.md), [35 added Conduits](conduits/Conduit%20Expansion.md).
 - [25 reborn Omnic kit Conduits](conduits/Kit%20Conduits.md): D-176 converts
   existing25 IDs to unique new Omnic mechanics/full elemental masterpieces;
-  individual palette locks, original Machines Omnic epicness; icons still pending.
+  individual palette locks, original Machines Omnic epicness; all25 icons installed.
 - [Currencies](items/Currencies.md), [Components](items/Broken%20Mechanical%20Components.md).
 - [Universal actions](ui/Universal%20Action%20Icons.md), [Battle statuses](ui/Battle%20Status%20Icons.md):
   D-173 nine-symbol shared elemental-family/Rose checklist, replacing40;

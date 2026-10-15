@@ -2,6 +2,7 @@ import { type BattleState, type Combatant } from '../game/battle';
 import { characterLevelCap } from '../content/progression';
 import { isStarterId } from '../content/starters';
 import { enemies } from '../content/combat';
+import { getCreature } from '../content/creatures';
 
 const characterScales = [1, 1.08, 1.16, 1.3, 1.5, 1.65] as const;
 
@@ -51,6 +52,10 @@ const artworkSizes: readonly (readonly [number, readonly string[]])[] = [
     'story-atmospheric-3', 'story-botanic-3', 'story-tranquilitic-boss',
   ]],
   [1.75, [
+    'calamity-boss-treasury', 'calamity-boss-sanctuary', 'calamity-boss-heavens',
+    'calamity-boss-abyss', 'calamity-boss-machines', 'calamity-boss-infernic',
+    'calamity-boss-oceanic', 'calamity-boss-atmospheric', 'calamity-boss-botanic',
+    'calamity-boss-tranquilitic', 'calamity-boss-chaotic',
     'abyss-night-without-end', 'abyss-worldfall-reverie', 'atlas-of-the-crystal-summit',
     'celestial-leviathan', 'crowncoil-kirin', 'crowned-phoenix', 'crownfault-behemoth',
     'crownray-kirin', 'crownvoid-behemoth', 'crownwind-roc',
@@ -77,7 +82,8 @@ export function battleArtScale(_state: BattleState, unit: Combatant): number {
     characterLevelCap(evolution);
     return characterScales[evolution - 1];
   }
-  const art = unit.color ? unit.art
+  const art = unit.definitionId.startsWith('calamity:') ? getCreature(unit.definitionId).art
+    : unit.color ? unit.art
     : unit.definitionId === 'goblin' || unit.definitionId === 'imp' || unit.definitionId === 'golem'
       ? enemies[unit.definitionId].art : unit.art;
   if (!art) return 1;

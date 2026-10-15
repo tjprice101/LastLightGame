@@ -1,5 +1,61 @@
 # Art and asset workflow
 
+## Calamity delivery intake (D-318)
+
+Seventeen owner-delivered root PNGs are archived byte-for-byte under
+`Art/source/calamity`; root copies remain intact. Eleven bosses export to
+`public/assets/enemies`, three shared tier chests to `public/assets/items`,
+and three shared tier arenas to `public/assets/backgrounds`. The Last Scarlet
+Bloom was not delivered and remains a named placeholder, never substituted.
+
+`tools/intake_calamity_art.py` uses the existing offline connected-matte cleaner,
+per-source row-gradient keys and individually reviewed normalized enclosed-gap
+seeds from `Art/provenance/calamity-art-settings.json`. Full source/indexed
+pocket overlays and dark/light composites were reviewed. Keep authored ivory,
+gold, orange flames, cyan eyes/water, neutral armor and painted ground shadows.
+No blanket removal of subject hues; supplied transparency bypasses keying.
+Boss exports are960px with864px maximum content, chests256px with224px content.
+Arenas retain original1456x816 pixels and opacity. Padding cannot reconstruct
+already source-clipped tips.
+
+`Art/provenance/calamity-art-intake.json` records source/export/pixel hashes,
+settings and dimensions. `src/content/calamity-art-revisions.ts` is generated
+from actual PNG bytes. Shared mappings connect field/cut-ins/Collections,
+Play tier previews, tier arenas, Inventory, loot/results and opening reveals.
+Reviewed source facing and boss-scale metadata apply to all three levels and
+pre-art frozen snapshots without gameplay/account changes.
+
+Reproduce: `python tools\intake_calamity_art.py --apply`.
+Review: `python tools\intake_calamity_art.py --review <review-directory>`.
+Validate: `python -m unittest discover -s tools -p test_calamity_art.py -v`
+and the focused Calamity/battle-scale Vitest suites. Existing files with
+untracked changes or conflicting archived originals are rejected before intake.
+
+## Remaining-art generation queue (D-317)
+
+[Current checklist](../Art/Remaining%20Artwork.md) and the generated
+[Calamity](../Art/creatures/Calamity.md) /
+[native-status](../Art/ui/Native%20Identity%20Status%20Icons.md) packs contain45
+copy-ready prompts. Owner chooses3 shared tier chests and3 shared tier arenas,
+not36 chest exports or twelve sets of scenery. Twelve boss cutouts and27
+new native-state pictograms complete the original45-image queue. D-318 installs
+seventeen Calamity images; the current queue is one Rose boss plus27 symbols.
+Existing133 Conduits, all48
+current materials, Master chest, character portraits and ability art are not
+replacement requests. Older War family/weapon concept prompts are optional,
+not active production dependencies.
+
+Owner's follow-up specifies a raised mechanic symbol over a trophy-like
+crest and short stepped pedestal for all27 native icons. Keep the backing
+subordinate, character-palette matched and inside the same cutout margins;
+it is not a scenic background or a generic gold trophy cup.
+
+Reproduce with `python tools\build_pending_art.py`; validate with
+`python -m unittest discover -s tools -p test_pending_art.py -v`.
+No generated images, reviewed intake, asset URL changes or deployment are
+implied. Preserve cutout safety margins/keys and full-bleed16:9 arenas; use
+no style-reference flags on these non-character-portrait images.
+
 ## Full Conduit background audit
 
 All85 ordinary Conduit PNGs were reviewed:20 Machines,5 root originals,35

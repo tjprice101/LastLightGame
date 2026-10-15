@@ -16,7 +16,7 @@ import { elementalMaterials, elements, materialRarities } from '../content/activ
 import { escapeDialogText } from './game-dialog';
 import { mechanicalComponents, machineComponentRulesText } from '../content/mechanical-components';
 import { calamityChest, parseCalamityChestId } from '../content/calamity';
-import { calamityLoot } from './calamity';
+import { calamityLoot, calamityChestIcon } from './calamity';
 
 export type InventoryTab = 'materials' | 'conduits';
 export type InventorySection = InventoryTab | 'masters';
@@ -99,7 +99,7 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
         const { activity, tier } = parseCalamityChestId(id);
         const chest = calamityChest(activity, tier);
         return `<li class="inventory-item" data-inventory-chest="${id}" ${itemMetadata(chest.name, 'chests')}>
-          <div class="inventory-item-art"><span class="calamity-placeholder">${escapeDialogText(chest.name)} · Artwork pending</span></div>
+          <div class="inventory-item-art">${calamityChestIcon(tier)}</div>
           <strong>${escapeDialogText(chest.name)}</strong><span class="inventory-quantity">Owned ${count}</span>
           ${information(`inventory-${id}-loot`, chest.name, calamityLoot(activity, tier), 'View Loot')}
           <button type="button" class="primary-button" data-open-calamity-chest="${id}">Open one chest</button></li>`;

@@ -371,7 +371,7 @@ export function createCalamityBattle(activity: CalamityActivityId, tier: Calamit
   state.calamity = { activity, tier };
   const unit = combatant(`calamity-${activity}`, `calamity:${activity}`, encounter.name, 'enemy', encounter.stats, encounter.element);
   Object.assign(unit, { level: encounter.level, boss: true, color: '#df3548', enemySkills: encounter.skills,
-    creatureId: `calamity:${activity}` });
+    creatureId: `calamity:${activity}`, art: getCreature(`calamity:${activity}`).art });
   state.enemies = [unit];
   return state;
 }

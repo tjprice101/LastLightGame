@@ -1,0 +1,1546 @@
+{
+  "asset_count": 17,
+  "missing_bosses": [
+    "roses"
+  ],
+  "assets": [
+    {
+      "asset": "calamity-boss-treasury",
+      "incoming": "Crown of the Ruined Vault.png",
+      "category": "enemies",
+      "source": "Art\\source\\calamity\\Crown of the Ruined Vault.png",
+      "source_sha256": "b7c3470ed1746132cb56e79c263188a18b322d53c78e986cd3e01f15ceca6568",
+      "runtime": "public\\assets\\enemies\\calamity-boss-treasury.png",
+      "runtime_sha256": "4c5364d07fb861a561973fe6b619589e7acb96f603a2cbba98d79f62b75d7d89",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_content_bbox": [
+        48,
+        155,
+        912,
+        804
+      ],
+      "runtime_pixel_sha256": "1a9858d2091ef8d029470c7e1036e17f8e9807bbef084d991bab344ca589849d",
+      "settings": {
+        "keys": [
+          [
+            76,
+            172,
+            154
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.0868506,
+            0.4234914
+          ],
+          [
+            0.8173701,
+            0.4978448
+          ],
+          [
+            0.3701299,
+            0.5840517
+          ],
+          [
+            0.7069805,
+            0.65625
+          ],
+          [
+            0.362013,
+            0.6702586
+          ],
+          [
+            0.3425325,
+            0.825431
+          ],
+          [
+            0.7199675,
+            0.8900862
+          ],
+          [
+            0.6063312,
+            0.9019397
+          ],
+          [
+            0.351461,
+            0.90625
+          ],
+          [
+            0.6282468,
+            0.9030172
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+      }
+    },
+    {
+      "asset": "calamity-boss-sanctuary",
+      "incoming": "White Pyre Hierophant.png",
+      "category": "enemies",
+      "source": "Art\\source\\calamity\\White Pyre Hierophant.png",
+      "source_sha256": "a52ea5c8b334fceb95bc22f2338eecc53fab7d7b180a71515adcb8bef4866b0a",
+      "runtime": "public\\assets\\enemies\\calamity-boss-sanctuary.png",
+      "runtime_sha256": "ba68f54c99d6c1bac951ac08898168e525b9bed33e2b5af3b334d966754f72c3",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_content_bbox": [
+        48,
+        125,
+        912,
+        835
+      ],
+      "runtime_pixel_sha256": "02c0996c2abea66cf2b42a7b7924aab8c7973c15ae96a0bb9603e2f5cbea614a",
+      "settings": {
+        "keys": [
+          [
+            71,
+            120,
+            98
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5762987,
+            0.2047414
+          ],
+          [
+            0.5470779,
+            0.2403017
+          ],
+          [
+            0.4569805,
+            0.2672414
+          ],
+          [
+            0.5462662,
+            0.2564655
+          ],
+          [
+            0.4659091,
+            0.2715517
+          ],
+          [
+            0.2272727,
+            0.2747845
+          ],
+          [
+            0.4042208,
+            0.2887931
+          ],
+          [
+            0.5698052,
+            0.2855603
+          ],
+          [
+            0.5868506,
+            0.3135776
+          ],
+          [
+            0.6128247,
+            0.3922414
+          ],
+          [
+            0.8676948,
+            0.3846983
+          ],
+          [
+            0.3441558,
+            0.3760776
+          ],
+          [
+            0.1298701,
+            0.3599138
+          ],
+          [
+            0.1647727,
+            0.3609914
+          ],
+          [
+            0.6006494,
+            0.3696121
+          ],
+          [
+            0.4107143,
+            0.3760776
+          ],
+          [
+            0.3839286,
+            0.4040948
+          ],
+          [
+            0.6030844,
+            0.4170259
+          ],
+          [
+            0.6444805,
+            0.4838362
+          ],
+          [
+            0.213474,
+            0.7122845
+          ],
+          [
+            0.7881494,
+            0.7575431
+          ],
+          [
+            0.4991883,
+            0.7747845
+          ],
+          [
+            0.2646104,
+            0.7230603
+          ],
+          [
+            0.7524351,
+            0.7413793
+          ],
+          [
+            0.7532468,
+            0.7898707
+          ],
+          [
+            0.4975649,
+            0.8976293
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+      }
+    },
+    {
+      "asset": "calamity-boss-heavens",
+      "incoming": "Heavenfall Seraph.png",
+      "category": "enemies",
+      "source": "Art\\source\\calamity\\Heavenfall Seraph.png",
+      "source_sha256": "be07a1feb6f85c3a5fdc982cdc3c2310f69327505b1cd68bd53abce83939009c",
+      "runtime": "public\\assets\\enemies\\calamity-boss-heavens.png",
+      "runtime_sha256": "3874a7d5c3ceac2995136f3aaaa45f2a79abb8f49507464348654a0e4cf30bc6",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_content_bbox": [
+        48,
+        153,
+        912,
+        807
+      ],
+      "runtime_pixel_sha256": "e67c6191dc7594745bc3d20f8f09377af060093cbd487e00b445b8135244f4b8",
+      "settings": {
+        "keys": [
+          [
+            131,
+            154,
+            142
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.3668831,
+            0.3717672
+          ],
+          [
+            0.1777597,
+            0.3653017
+          ],
+          [
+            0.7394481,
+            0.5894397
+          ],
+          [
+            0.6501623,
+            0.5765086
+          ],
+          [
+            0.3376623,
+            0.5765086
+          ],
+          [
+            0.4017857,
+            0.6228448
+          ],
+          [
+            0.5933442,
+            0.6228448
+          ],
+          [
+            0.7589286,
+            0.6584052
+          ],
+          [
+            0.2232143,
+            0.6616379
+          ],
+          [
+            0.2475649,
+            0.6530172
+          ],
+          [
+            0.6087662,
+            0.6605603
+          ],
+          [
+            0.4180195,
+            0.6594828
+          ],
+          [
+            0.898539,
+            0.8017241
+          ],
+          [
+            0.5892857,
+            0.8415948
+          ],
+          [
+            0.3628247,
+            0.9439655
+          ],
+          [
+            0.2613636,
+            0.9525862
+          ],
+          [
+            0.1712662,
+            0.9536638
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+      }
+    },
+    {
+      "asset": "calamity-boss-abyss",
+      "incoming": "Abyssal Nullmaw.png",
+      "category": "enemies",
+      "source": "Art\\source\\calamity\\Abyssal Nullmaw.png",
+      "source_sha256": "d5d5e1dd47dfc81f491c6bee8c462ddb9dd3a8423b24075af22a5270454f623e",
+      "runtime": "public\\assets\\enemies\\calamity-boss-abyss.png",
+      "runtime_sha256": "02415ed75c92a87f0a5e2657c5366c4b50096807683dff2357f2a88c57ef59e9",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_content_bbox": [
+        48,
+        134,
+        912,
+        825
+      ],
+      "runtime_pixel_sha256": "2e7bda5654f87f5544921c5d112183ca69996edf22aaaba6fa7b75c0ecdc4858",
+      "settings": {
+        "keys": [
+          [
+            132,
+            149,
+            116
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5056818,
+            0.3006466
+          ],
+          [
+            0.5097403,
+            0.4978448
+          ],
+          [
+            0.4155844,
+            0.4913793
+          ],
+          [
+            0.8271104,
+            0.5355603
+          ],
+          [
+            0.6737013,
+            0.5528017
+          ],
+          [
+            0.8027597,
+            0.5517241
+          ],
+          [
+            0.6599026,
+            0.5840517
+          ],
+          [
+            0.6842532,
+            0.5862069
+          ],
+          [
+            0.7353896,
+            0.7349138
+          ],
+          [
+            0.1826299,
+            0.7133621
+          ],
+          [
+            0.9155844,
+            0.6702586
+          ],
+          [
+            0.8287338,
+            0.7898707
+          ],
+          [
+            0.7410714,
+            0.8426724
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+      }
+    },
+    {
+      "asset": "calamity-boss-machines",
+      "incoming": "Catastrophe Prime.png",
+      "category": "enemies",
+      "source": "Art\\source\\calamity\\Catastrophe Prime.png",
+      "source_sha256": "a22d707b58066a76f28b32c833d3a5ce33080418426b1b8faa8349a68ffe4a45",
+      "runtime": "public\\assets\\enemies\\calamity-boss-machines.png",
+      "runtime_sha256": "f6c59bb10cef213fc196fd8d46c43f98b330cbda3762aa1438ab9ff119ec2d85",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_content_bbox": [
+        48,
+        138,
+        912,
+        822
+      ],
+      "runtime_pixel_sha256": "ce85fba5af5cd1a50a5e481f858f278f54d9931db88d24a1bdcd33e7118acc6d",
+      "settings": {
+        "keys": [
+          [
+            76,
+            204,
+            180
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4423701,
+            0.4601293
+          ],
+          [
+            0.5576299,
+            0.4515086
+          ],
+          [
+            0.6688312,
+            0.8685345
+          ],
+          [
+            0.599026,
+            0.6853448
+          ],
+          [
+            0.411526,
+            0.6896552
+          ],
+          [
+            0.4212662,
+            0.7596983
+          ],
+          [
+            0.4310065,
+            0.7693966
+          ],
+          [
+            0.2849026,
+            0.955819
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+      }
+    },
+    {
+      "asset": "calamity-boss-infernic",
+      "incoming": "Ashcrown Cataclysm.png",
+      "category": "enemies",
+      "source": "Art\\source\\calamity\\Ashcrown Cataclysm.png",
+      "source_sha256": "3e404814fd0140df51bfbe828106b1b6409c1d0e116e1d8d1d16674180d3eead",
+      "runtime": "public\\assets\\enemies\\calamity-boss-infernic.png",
+      "runtime_sha256": "08fb21e2881174886fac562d1186c263ceb871b70b7242f3010ee2a5f6619849",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_content_bbox": [
+        48,
+        130,
+        912,
+        830
+      ],
+      "runtime_pixel_sha256": "923577eec98df172be8a3719bfc85bca24ebaf983554f4788ef2f76ac84ca308",
+      "settings": {
+        "keys": [
+          [
+            83,
+            202,
+            167
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.2037338,
+            0.575431
+          ],
+          [
+            0.2857143,
+            0.7284483
+          ],
+          [
+            0.5405844,
+            0.9084052
+          ],
+          [
+            0.6566558,
+            0.887931
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+      }
+    },
+    {
+      "asset": "calamity-boss-oceanic",
+      "incoming": "Leviathan of the White Wake.png",
+      "category": "enemies",
+      "source": "Art\\source\\calamity\\Leviathan of the White Wake.png",
+      "source_sha256": "3723258f5d210a7596dfce4945a9dcf44ab4ae817d30649b84b428414c4da994",
+      "runtime": "public\\assets\\enemies\\calamity-boss-oceanic.png",
+      "runtime_sha256": "1e91f6c62bef3fe7e87484cf641601b91ed08cb985307220c9b7d5ed9cc4a0b4",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_content_bbox": [
+        48,
+        146,
+        912,
+        813
+      ],
+      "runtime_pixel_sha256": "960a099e98a60a95924356af930046740f40f596719d314dd26040df744e1e2a",
+      "settings": {
+        "keys": [
+          [
+            67,
+            194,
+            165
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.1550325,
+            0.4256466
+          ],
+          [
+            0.4529221,
+            0.362069
+          ],
+          [
+            0.6087662,
+            0.4418103
+          ],
+          [
+            0.5730519,
+            0.5032328
+          ],
+          [
+            0.174513,
+            0.5603448
+          ],
+          [
+            0.3887987,
+            0.6971983
+          ],
+          [
+            0.4155844,
+            0.705819
+          ],
+          [
+            0.5803571,
+            0.7834052
+          ],
+          [
+            0.6850649,
+            0.7726293
+          ],
+          [
+            0.2353896,
+            0.8297414
+          ],
+          [
+            0.2711039,
+            0.84375
+          ],
+          [
+            0.2483766,
+            0.8825431
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+      }
+    },
+    {
+      "asset": "calamity-boss-atmospheric",
+      "incoming": "Riftstorm Harbinger.png",
+      "category": "enemies",
+      "source": "Art\\source\\calamity\\Riftstorm Harbinger.png",
+      "source_sha256": "67befd1db31eadb0d6e4a4c30828db0b23c593225bd5711df88f70e3914438d8",
+      "runtime": "public\\assets\\enemies\\calamity-boss-atmospheric.png",
+      "runtime_sha256": "5076094c0df139ba644de20ba868d15178f585a3301b0831aa22787de320d39f",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_content_bbox": [
+        48,
+        142,
+        912,
+        817
+      ],
+      "runtime_pixel_sha256": "75c0931ab2ce4a3ae6d17029088d12653ac9987bbd7f6f74bcc62bc1eeae9efa",
+      "settings": {
+        "keys": [
+          [
+            97,
+            133,
+            121
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4935065,
+            0.0818966
+          ],
+          [
+            0.5121753,
+            0.1357759
+          ],
+          [
+            0.450487,
+            0.1099138
+          ],
+          [
+            0.7435065,
+            0.3609914
+          ],
+          [
+            0.6201299,
+            0.3329741
+          ],
+          [
+            0.2402597,
+            0.3911638
+          ],
+          [
+            0.6339286,
+            0.5721983
+          ],
+          [
+            0.3336039,
+            0.518319
+          ],
+          [
+            0.1607143,
+            0.5517241
+          ],
+          [
+            0.2767857,
+            0.7165948
+          ],
+          [
+            0.2313312,
+            0.6821121
+          ],
+          [
+            0.4943182,
+            0.7489224
+          ],
+          [
+            0.4788961,
+            0.7532328
+          ],
+          [
+            0.6298701,
+            0.7931034
+          ],
+          [
+            0.3725649,
+            0.7737069
+          ],
+          [
+            0.5681818,
+            0.856681
+          ],
+          [
+            0.4017857,
+            0.8178879
+          ],
+          [
+            0.6582792,
+            0.8674569
+          ],
+          [
+            0.5300325,
+            0.8362069
+          ],
+          [
+            0.4050325,
+            0.8415948
+          ],
+          [
+            0.3741883,
+            0.8793103
+          ],
+          [
+            0.6079545,
+            0.9094828
+          ],
+          [
+            0.4586039,
+            0.9331897
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+      }
+    },
+    {
+      "asset": "calamity-boss-botanic",
+      "incoming": "Pallid Root Sovereign.png",
+      "category": "enemies",
+      "source": "Art\\source\\calamity\\Pallid Root Sovereign.png",
+      "source_sha256": "5fb767a04b1fb74b6fff8e2adeee84a6dc70aec53a1146becb0aa87ced1d2197",
+      "runtime": "public\\assets\\enemies\\calamity-boss-botanic.png",
+      "runtime_sha256": "1f495e01000acd473d54978ab3d271823b53fed2b1c02106143533934b21fa70",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_content_bbox": [
+        48,
+        153,
+        912,
+        807
+      ],
+      "runtime_pixel_sha256": "67d4c294e830eb3bddbfc70820e4b04aec86084cf49c7bb729bec80697c24f8c",
+      "settings": {
+        "keys": [
+          [
+            104,
+            124,
+            112
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.2337662,
+            0.2295259
+          ],
+          [
+            0.7970779,
+            0.2543103
+          ],
+          [
+            0.4586039,
+            0.2359914
+          ],
+          [
+            0.6469156,
+            0.2403017
+          ],
+          [
+            0.7516234,
+            0.2898707
+          ],
+          [
+            0.3798701,
+            0.262931
+          ],
+          [
+            0.3741883,
+            0.2661638
+          ],
+          [
+            0.8173701,
+            0.2866379
+          ],
+          [
+            0.3262987,
+            0.3157328
+          ],
+          [
+            0.711039,
+            0.3415948
+          ],
+          [
+            0.7313312,
+            0.3793103
+          ],
+          [
+            0.8100649,
+            0.3696121
+          ],
+          [
+            0.3043831,
+            0.3760776
+          ],
+          [
+            0.8051948,
+            0.3900862
+          ],
+          [
+            0.762987,
+            0.4148707
+          ],
+          [
+            0.8165584,
+            0.4342672
+          ],
+          [
+            0.762987,
+            0.4428879
+          ],
+          [
+            0.7418831,
+            0.4073276
+          ],
+          [
+            0.7418831,
+            0.4202586
+          ],
+          [
+            0.7215909,
+            0.4353448
+          ],
+          [
+            0.8133117,
+            0.4719828
+          ],
+          [
+            0.6550325,
+            0.4946121
+          ],
+          [
+            0.648539,
+            0.5150862
+          ],
+          [
+            0.3262987,
+            0.518319
+          ],
+          [
+            0.1826299,
+            0.7025862
+          ],
+          [
+            0.3181818,
+            0.5549569
+          ],
+          [
+            0.0836039,
+            0.5377155
+          ],
+          [
+            0.3433442,
+            0.5743534
+          ],
+          [
+            0.726461,
+            0.6153017
+          ],
+          [
+            0.7483766,
+            0.7392241
+          ],
+          [
+            0.7126623,
+            0.6357759
+          ],
+          [
+            0.3409091,
+            0.669181
+          ],
+          [
+            0.6258117,
+            0.8900862
+          ],
+          [
+            0.5105519,
+            0.8512931
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+      }
+    },
+    {
+      "asset": "calamity-boss-tranquilitic",
+      "incoming": "Silent Meridian.png",
+      "category": "enemies",
+      "source": "Art\\source\\calamity\\Silent Meridian.png",
+      "source_sha256": "054633583d970e0dc25b26458faff3e47ce644a1afb4c7808469e870943d275f",
+      "runtime": "public\\assets\\enemies\\calamity-boss-tranquilitic.png",
+      "runtime_sha256": "dec0d7f0ca863d320b7f907d712867e98f0da7e64ca24ba6591a34c7520758e0",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_content_bbox": [
+        48,
+        139,
+        912,
+        821
+      ],
+      "runtime_pixel_sha256": "199ae9dd082bed2d2d3981a994e01224c905840029ca529646fb686dcb35a8ac",
+      "settings": {
+        "keys": [
+          [
+            63,
+            118,
+            98
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4334416,
+            0.1002155
+          ],
+          [
+            0.4480519,
+            0.1788793
+          ],
+          [
+            0.5121753,
+            0.1788793
+          ],
+          [
+            0.4480519,
+            0.2543103
+          ],
+          [
+            0.4326299,
+            0.2758621
+          ],
+          [
+            0.4082792,
+            0.3060345
+          ],
+          [
+            0.6038961,
+            0.3297414
+          ],
+          [
+            0.3628247,
+            0.5387931
+          ],
+          [
+            0.6461039,
+            0.5700431
+          ],
+          [
+            0.3595779,
+            0.606681
+          ],
+          [
+            0.3701299,
+            0.6239224
+          ],
+          [
+            0.6371753,
+            0.6584052
+          ],
+          [
+            0.3457792,
+            0.731681
+          ],
+          [
+            0.6599026,
+            0.7209052
+          ],
+          [
+            0.6493506,
+            0.7737069
+          ],
+          [
+            0.262987,
+            0.8211207
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+      }
+    },
+    {
+      "asset": "calamity-boss-chaotic",
+      "incoming": "The Scarlet Unmaking.png",
+      "category": "enemies",
+      "source": "Art\\source\\calamity\\The Scarlet Unmaking.png",
+      "source_sha256": "7ed1edab08b93bf30271a1e30b54b6b0e65b075ac99489b8bea5a8a9aa5e61a9",
+      "runtime": "public\\assets\\enemies\\calamity-boss-chaotic.png",
+      "runtime_sha256": "a3b7afb7cd2945ec774bbdec580fc930f0a6c47c43809cbbd9926bbe13a51b06",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_content_bbox": [
+        48,
+        150,
+        912,
+        809
+      ],
+      "runtime_pixel_sha256": "16478b71ffaa8863781172c05b7c67c0905a75891e4a6896bfaf567568abbb79",
+      "settings": {
+        "keys": [
+          [
+            95,
+            137,
+            123
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4805195,
+            0.1185345
+          ],
+          [
+            0.512987,
+            0.1196121
+          ],
+          [
+            0.4650974,
+            0.1336207
+          ],
+          [
+            0.5357143,
+            0.2273707
+          ],
+          [
+            0.5349026,
+            0.2532328
+          ],
+          [
+            0.3287338,
+            0.3060345
+          ],
+          [
+            0.4675325,
+            0.2521552
+          ],
+          [
+            0.4310065,
+            0.3221983
+          ],
+          [
+            0.5308442,
+            0.3534483
+          ],
+          [
+            0.4561688,
+            0.3631466
+          ],
+          [
+            0.4155844,
+            0.3793103
+          ],
+          [
+            0.5982143,
+            0.3890086
+          ],
+          [
+            0.3944805,
+            0.4396552
+          ],
+          [
+            0.6542208,
+            0.4784483
+          ],
+          [
+            0.2938312,
+            0.518319
+          ],
+          [
+            0.6688312,
+            0.6810345
+          ],
+          [
+            0.3303571,
+            0.8232759
+          ],
+          [
+            0.6866883,
+            0.8329741
+          ],
+          [
+            0.7142857,
+            0.8771552
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+      }
+    },
+    {
+      "asset": "calamity-chest-slayer",
+      "incoming": "EX+Slayer Chest.png",
+      "category": "items",
+      "source": "Art\\source\\calamity\\EX+Slayer Chest.png",
+      "source_sha256": "00a4a785370c2388d5be8cc8a8bef7c2a1c4939262187ff1e60251a4eb399359",
+      "runtime": "public\\assets\\items\\calamity-chest-slayer.png",
+      "runtime_sha256": "a30c0f3c7fc65ca2b0f199f0dfad5b1fbd3c21d5e66767efc0fc4b6164cc4614",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        23,
+        16,
+        233,
+        240
+      ],
+      "runtime_pixel_sha256": "541a7391aa2de3a39753ed2ddf2ac6e3f0ad4307dffb047b0b8ec642fb41f42e",
+      "settings": {
+        "keys": [
+          [
+            144,
+            202,
+            182
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.1923828,
+            0.3681641
+          ],
+          [
+            0.2392578,
+            0.8125
+          ],
+          [
+            0.7978516,
+            0.8144531
+          ],
+          [
+            0.2949219,
+            0.8076172
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original and enclosed ribbon/foot/crown gaps. Preserve pale ornaments, gems, red ribbons and authored ground shadow."
+      }
+    },
+    {
+      "asset": "calamity-chest-master",
+      "incoming": "EX+Master Chest.png",
+      "category": "items",
+      "source": "Art\\source\\calamity\\EX+Master Chest.png",
+      "source_sha256": "c62fd9a51245ee4d2e264b462fbad9cfc2f8c669fb401744da20e398eba654bf",
+      "runtime": "public\\assets\\items\\calamity-chest-master.png",
+      "runtime_sha256": "58493f2b1c167bb8b118c4115d92a05d027e11479d2dbda0f9c4a30e4c1b663b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        16,
+        19,
+        240,
+        237
+      ],
+      "runtime_pixel_sha256": "3d024da5f8f21c49d61a0e1e0f3a88b7c01ed6f9719ab955388ea8605fe783cf",
+      "settings": {
+        "keys": [
+          [
+            126,
+            217,
+            186
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.1777344,
+            0.6679688
+          ],
+          [
+            0.3085938,
+            0.9003906
+          ],
+          [
+            0.5234375,
+            0.9003906
+          ],
+          [
+            0.7226562,
+            0.9101562
+          ],
+          [
+            0.2802734,
+            0.9101562
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original and enclosed ribbon/foot/crown gaps. Preserve pale ornaments, gems, red ribbons and authored ground shadow."
+      }
+    },
+    {
+      "asset": "calamity-chest-omnipotent",
+      "incoming": "EX+Omnipotent Chest.png",
+      "category": "items",
+      "source": "Art\\source\\calamity\\EX+Omnipotent Chest.png",
+      "source_sha256": "3e19ce9c3656ac989586f142a502d439c56bb04015fa530735851de3c0ba70d7",
+      "runtime": "public\\assets\\items\\calamity-chest-omnipotent.png",
+      "runtime_sha256": "172c9a47e949b259f9f4d78793e6f3b8f5b103c9ca17a21abec65d908c915424",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_content_bbox": [
+        29,
+        16,
+        227,
+        240
+      ],
+      "runtime_pixel_sha256": "dc8f2b6ce8cb4f426408867f023cc4cd9bf63270d4bf145d857b140a5fd4474b",
+      "settings": {
+        "keys": [
+          [
+            49,
+            137,
+            127
+          ]
+        ],
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4873047,
+            0.0957031
+          ],
+          [
+            0.8339844,
+            0.4082031
+          ],
+          [
+            0.1601562,
+            0.40625
+          ],
+          [
+            0.8457031,
+            0.5234375
+          ],
+          [
+            0.1650391,
+            0.5224609
+          ],
+          [
+            0.2548828,
+            0.5654297
+          ],
+          [
+            0.7412109,
+            0.5576172
+          ],
+          [
+            0.7832031,
+            0.6611328
+          ],
+          [
+            0.2646484,
+            0.6132812
+          ],
+          [
+            0.2929688,
+            0.6679688
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original and enclosed ribbon/foot/crown gaps. Preserve pale ornaments, gems, red ribbons and authored ground shadow."
+      }
+    },
+    {
+      "asset": "calamity-arena-ex-1",
+      "incoming": "EX+1 Battle Arena.png",
+      "category": "backgrounds",
+      "source": "Art\\source\\calamity\\EX+1 Battle Arena.png",
+      "source_sha256": "f0971d88c7938cc579c52ac6775e1a08774be8113ed5ae40cab0a304e25822ca",
+      "runtime": "public\\assets\\backgrounds\\calamity-arena-ex-1.png",
+      "runtime_sha256": "4da8d229483a1367b89fd55997e4f5df3744bfbd033cbfb4cefa32f0bffa49b7",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "opaque original-size scenery",
+      "runtime_dimensions": [
+        1456,
+        816
+      ],
+      "runtime_content_bbox": [
+        0,
+        0,
+        1456,
+        816
+      ],
+      "runtime_pixel_sha256": "6fc59c66af547321a4cd0dbfd47a6926a900c86b22267bd2660dc23cff2596ed",
+      "settings": {
+        "processing": "opaque-original-size"
+      }
+    },
+    {
+      "asset": "calamity-arena-ex-2",
+      "incoming": "EX+2 Battle Arena.png",
+      "category": "backgrounds",
+      "source": "Art\\source\\calamity\\EX+2 Battle Arena.png",
+      "source_sha256": "f6075152f9ea09f6c63b81480ee0faad9bd268494be67f805f9bcb37b4b36ce0",
+      "runtime": "public\\assets\\backgrounds\\calamity-arena-ex-2.png",
+      "runtime_sha256": "6c50d49b662ef3946b30ae95496d0a06c02fe4cbcffde68f04547e7fcc60a2fc",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "opaque original-size scenery",
+      "runtime_dimensions": [
+        1456,
+        816
+      ],
+      "runtime_content_bbox": [
+        0,
+        0,
+        1456,
+        816
+      ],
+      "runtime_pixel_sha256": "3bca4e3a4a4defd93f60d3e27d908fb5d72bfcaf781598a860137b0e70a2580b",
+      "settings": {
+        "processing": "opaque-original-size"
+      }
+    },
+    {
+      "asset": "calamity-arena-ex-3",
+      "incoming": "EX+3 Battle Arena.png",
+      "category": "backgrounds",
+      "source": "Art\\source\\calamity\\EX+3 Battle Arena.png",
+      "source_sha256": "ca13251057439b57862cbfebfb2f1478af8265fb0bf409eb09d1bb4f11b90b41",
+      "runtime": "public\\assets\\backgrounds\\calamity-arena-ex-3.png",
+      "runtime_sha256": "f988bb1abcc90d24d19d2925cdebe5c275ca562d63ad6f9437b76ba29131eef1",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1456,
+        816
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "opaque original-size scenery",
+      "runtime_dimensions": [
+        1456,
+        816
+      ],
+      "runtime_content_bbox": [
+        0,
+        0,
+        1456,
+        816
+      ],
+      "runtime_pixel_sha256": "a5bf099a77ce3c3e2c49cb485e27d254968ebdcc3555742daded5ce6c1622528",
+      "settings": {
+        "processing": "opaque-original-size"
+      }
+    }
+  ]
+}

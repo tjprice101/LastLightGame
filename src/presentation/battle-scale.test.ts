@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle } from '../game/battle';
+import { createBattle, createCalamityBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle } from '../game/battle';
+import { calamityActivities } from '../content/calamity';
 import { playableDungeons } from '../content/dungeons';
 import { battleArtScale, enemyArtworkScales } from './battle-scale';
 import { creatures } from '../content/creatures';
@@ -22,6 +23,15 @@ describe('battlefield visual rank', () => {
     for (const scale of enemyArtworkScales.values()) {
       expect(scale).toBeGreaterThanOrEqual(.65);
       expect(scale).toBeLessThanOrEqual(1.75);
+    }
+  });
+  it.each(calamityActivities)('keeps the delivered $id Calamity boss imposing across tiers and old snapshots', activity => {
+    for (const tier of [1, 2, 3] as const) {
+      const state = createCalamityBattle(activity.id, tier, 1729, 'ember', { level: 0, evolution: 1 });
+      const unit = state.enemies[0];
+      expect(battleArtScale(state, unit)).toBe(activity.id === 'roses' ? 1 : 1.75);
+      delete unit.art;
+      expect(battleArtScale(state, unit)).toBe(activity.id === 'roses' ? 1 : 1.75);
     }
   });
   it.each(['heavens', 'abyss'] as const)('%s follows artwork rather than inflating the same design on boss stages', (mode) => {

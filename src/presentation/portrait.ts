@@ -7,6 +7,7 @@ import { masterConduitArtRevisions } from '../content/master-conduit-art-revisio
 import { abilityArtRevisions } from '../content/ability-art-revisions';
 import { storyArtRevisions } from '../content/story-art-revisions';
 import { statusArtRevisions } from '../content/status-art-revisions';
+import { calamityArtRevisions } from '../content/calamity-art-revisions';
 
 export function assetUrl(path: string): string {
   const url = `${import.meta.env.BASE_URL}assets/${path}`;
@@ -18,7 +19,7 @@ export function assetUrl(path: string): string {
     ? characterArtRevisions[character[1]]
     : conduit ? conduitArtRevisions[conduit[1]]
       : master ? masterConduitArtRevisions[master[1]]
-      : ability ? abilityArtRevisions[ability[1]] : statusArtRevisions[path] ?? storyArtRevisions[path];
+      : ability ? abilityArtRevisions[ability[1]] : statusArtRevisions[path] ?? storyArtRevisions[path] ?? calamityArtRevisions[path];
   return revision ? `${url}?v=${revision}` : url;
 }
 

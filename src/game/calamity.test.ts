@@ -10,6 +10,7 @@ import { characterLevelCap } from '../content/progression';
 import type { StarterId } from '../content/starters';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { playNativeBenchmark } from './native-benchmark-pilot';
+import { calamityBossArt } from '../content/calamity-art';
 
 const tiers = [1, 2, 3] as const;
 const cases = calamityActivities.flatMap(activity => tiers.map(tier => ({ activity: activity.id, tier })));
@@ -38,7 +39,7 @@ describe('isolated Calamity definitions and rewards', () => {
     expect(state.enemies).toHaveLength(1);
     expect(state.enemies[0]).toMatchObject({ name: calamityActivities.find(entry => entry.id === activity)!.boss,
       level: [145, 160, 185][tier - 1], boss: true });
-    expect(state.enemies[0].art).toBeUndefined();
+    expect(state.enemies[0].art).toBe(calamityBossArt[activity]);
     expect(state.enemies[0].creatureId).toBe(`calamity:${activity}`);
     expect(creatureLoot(getCreature(`calamity:${activity}`), tier)).toEqual([
       expect.objectContaining({ id: calamityChestId(activity, tier), minimum: 1, maximum: 1, chance: 1 }),

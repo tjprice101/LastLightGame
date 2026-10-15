@@ -10,6 +10,9 @@ import { battleResults, encounterRewards } from './battle-results';
 import { BattleView, createSession } from './battle-view';
 import { restartHistoricalConduitSession } from './conduit-compatibility';
 import { creatureGlossary, bindCreatureGlossary } from './creature-glossary';
+import { calamityArenaArt, calamityBossArt, calamityChestArt } from '../content/calamity-art';
+import { lootArt, lootItems } from './battle-loot';
+import { unitFacing } from './unit-facing';
 
 const confirmation = vi.hoisted(() => vi.fn(async () => false));
 vi.mock('./game-dialog', async importOriginal => ({ ...await importOriginal<typeof import('./game-dialog')>(),
@@ -63,8 +66,11 @@ describe('Calamity presentation', () => {
     expect(document.querySelectorAll('[data-calamity]')).toHaveLength(36);
     for (const activity of calamityActivities) {
       const section = document.querySelector(`[data-calamity="${activity.id}"]`)!.closest('.calamity-section')!;
-      expect(section.querySelectorAll('img')).toHaveLength(0);
+      expect(section.querySelectorAll('.calamity-tier-boss')).toHaveLength(activity.id === 'roses' ? 0 : 3);
       for (const tier of [1, 2, 3] as const) {
+        const card = section.querySelector(`[data-calamity-tier="${tier}"]`)!.closest('.calamity-tier')!;
+        expect(card.querySelector<HTMLImageElement>('.calamity-tier-arena')!.src).toContain(calamityArenaArt[tier]);
+        expect(card.querySelector<HTMLImageElement>('.calamity-chest-art')!.src).toContain(calamityChestArt[tier]);
         expect(section.textContent).toContain(calamityEncounter(activity.id, tier).name);
         expect(section.textContent).toContain(`Lv.${calamityEncounter(activity.id, tier).level}`);
         expect(section.textContent).toContain(calamityChest(activity.id, tier).name);
@@ -95,7 +101,7 @@ describe('Calamity presentation', () => {
       const reveal = calamityOpeningReward(chest.id, reward);
       expect(reveal.details).toContain(`${reward.fractalis} Prismatica`);
       expect(reveal.details).toContain(`${reward.lycalis} Null-Prismatica`);
-      expect(reveal.art).not.toContain('<img');
+      expect(reveal.art).toContain(`items/${calamityChestArt[tier]}.png?v=`);
       expect(reveal.details).toContain('already saved');
     }
   });
@@ -110,6 +116,7 @@ describe('Calamity presentation', () => {
     expect(document.querySelectorAll('[data-open-calamity-chest]')).toHaveLength(1);
     expect(document.querySelector('[data-open-calamity-chest]')!.textContent).toBe('Open one chest');
     expect(document.body.textContent).toContain('Owned 2');
+    expect(document.querySelector<HTMLImageElement>('[data-inventory-chest] img')!.src).toContain('items/calamity-chest-omnipotent.png?v=');
     const type = document.querySelector<HTMLSelectElement>('[data-inventory-filter="type"]')!;
     type.value = 'chests';
     type.dispatchEvent(new Event('change'));
@@ -129,7 +136,8 @@ describe('Calamity presentation', () => {
     expect(html).toContain('Open your saved chest in Inventory');
     expect(html).not.toContain('data-result-continue');
     expect(html).not.toContain('250000');
-    expect(html).not.toContain('assets/');
+    expect(html).toContain('items/calamity-chest-master.png?v=');
+    expect(lootArt(lootItems(reward)[0])).toContain('items/calamity-chest-master.png?v=');
   });
 
   it('shows an authored warning before every replay, and cancellation preserves the frozen encounter', async () => {
@@ -137,6 +145,7 @@ describe('Calamity presentation', () => {
     Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: vi.fn() });
     Object.defineProperty(HTMLDialogElement.prototype, 'close', { configurable: true, value: vi.fn() });
     const session = createSession('ember', { level: 105, evolution: 6 }, { activity: 'infernic', tier: 3 });
+    delete session.state.enemies[0].art;
     session.state.phase = 'cleared';
     session.entrancePending = false;
     const host = document.createElement('div');
@@ -145,7 +154,9 @@ describe('Calamity presentation', () => {
     const view = new BattleView(host, session, { nextAlly: 'KeyC', nextTarget: 'KeyT' }, commit);
     Object.assign(view, { enterEncounter: vi.fn(async () => {}) });
     try {
-      expect(host.querySelector('.battle-scenery')!.tagName).toBe('DIV');
+      expect(host.querySelector<HTMLImageElement>('.battle-scenery')!.src).toContain('backgrounds/calamity-arena-ex-3.png?v=');
+      expect(host.querySelector<HTMLImageElement>('.enemies .battle-sprite img')!.src).toContain('enemies/calamity-boss-infernic.png?v=');
+      expect(session.state.enemies[0].art).toBeUndefined();
       expect(host.querySelector('[data-result-continue]')).toBeNull();
       const before = structuredClone(session);
       host.querySelector<HTMLButtonElement>('.battle-results [data-result-restart]')!.click();
@@ -185,7 +196,7 @@ describe('Calamity presentation', () => {
     document.body.innerHTML = creatureGlossary(account);
     bindCreatureGlossary(document.body);
     const card = document.querySelector(`[data-creature="${id}"]`)!;
-    expect(card.querySelector('.glossary-art img')).toBeNull();
+    expect(card.querySelector<HTMLImageElement>('.glossary-art img')!.src).toContain('enemies/calamity-boss-treasury.png?v=');
     expect(card.textContent).toContain('Not capturable');
     expect(card.textContent).toContain(calamityChest('treasury', 1).name);
     const select = card.querySelector<HTMLSelectElement>('[data-loot-stage]')!;
@@ -194,5 +205,16 @@ describe('Calamity presentation', () => {
     expect(card.querySelector('.glossary-loot')!.textContent).toContain(calamityChest('treasury', 3).name);
     expect(card.querySelector('.glossary-loot')!.textContent).toContain('2 Cosmic Grand Master Chests');
     expect(document.querySelector('[data-creature="calamity:machines"]')!.textContent).toContain('Undiscovered Calamity boss');
+    expect(document.querySelector('[data-creature="calamity:roses"] .glossary-art img')).toBeNull();
+  });
+
+  it.each(calamityActivities)('routes all $id tiers to shared chest art without changing actual loot', activity => {
+    for (const tier of [1, 2, 3] as const) {
+      const id = calamityChestId(activity.id, tier);
+      expect(lootArt({ id })).toContain(`items/${calamityChestArt[tier]}.png?v=`);
+      const art = calamityBossArt[activity.id];
+      if (art) expect(unitFacing(art, 'enemy').mirrored).toBe(activity.id === 'atmospheric');
+      else expect(activity.id).toBe('roses');
+    }
   });
 });

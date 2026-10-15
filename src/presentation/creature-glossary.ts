@@ -15,7 +15,7 @@ import { mechanicalComponentIcon } from './mechanical-component-icon';
 import { masterChest } from '../content/master-conduits';
 import { information } from './information';
 import { calamityChest, calamityEncounter, isCalamityTier, parseCalamityChestId } from '../content/calamity';
-import { calamityLoot } from './calamity';
+import { calamityLoot, calamityChestIcon } from './calamity';
 
 function lootTable(id: string, stage?: number, upgrades?: ConduitUpgrades, ownedConduits?: Account['conduits']): string {
   const creature = getCreature(id);
@@ -30,7 +30,7 @@ function lootTable(id: string, stage?: number, upgrades?: ConduitUpgrades, owned
       const conduit = isConduitId(drop.id) ? getConduit(drop.id) : null;
       if (drop.id.startsWith('calamity:')) {
         const { activity, tier } = parseCalamityChestId(drop.id);
-        return `<tr><td><strong>${calamityChest(activity, tier).name}</strong><small>Sealed chest · Artwork pending · Open in Inventory</small></td><td>${drop.minimum}-${drop.maximum}</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
+        return `<tr><td>${calamityChestIcon(tier)}<strong>${calamityChest(activity, tier).name}</strong><small>Sealed chest · Open in Inventory</small></td><td>${drop.minimum}-${drop.maximum}</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
       }
       if (drop.id === masterChest.id) return `<tr><td>${masterChest.name}</td><td>1</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
       if (drop.id === mechanicalComponents.id) return `<tr><td>${mechanicalComponentIcon()} <strong>${mechanicalComponents.name}</strong></td><td>${drop.minimum}-${drop.maximum}</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;

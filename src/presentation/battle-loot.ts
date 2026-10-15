@@ -11,6 +11,7 @@ import { getStarter } from '../content/starters';
 import { characterName } from '../content/character-art';
 import { masterChest } from '../content/master-conduits';
 import { calamityChest, parseCalamityChestId } from '../content/calamity';
+import { calamityChestArt } from '../content/calamity-art';
 
 export function lootMotion(random: () => number = Math.random) {
   return { size: .75 + lootRoll(random) * .6, scatter: (lootRoll(random) - .5) * 14,
@@ -62,6 +63,7 @@ export function lootArt(item: { id: string; art?: string }): string | undefined 
   return item.id === 'fractalis' ? currencyArt('fractalis')
     : item.id === 'lycalis' ? currencyArt('lycalis')
     : item.id === mechanicalComponents.id ? currencyArt('mechanical-components')
+    : item.id.startsWith('calamity:') ? assetUrl(`items/${calamityChestArt[parseCalamityChestId(item.id).tier]}.png`)
     : item.art ? assetUrl(`${item.id.startsWith('recruitment:') ? 'characters' : item.id.startsWith('conduit:') ? 'conduits' : item.id.startsWith('capture:') ? 'enemies' : 'materials'}/${item.art}.png`) : undefined;
 }
 

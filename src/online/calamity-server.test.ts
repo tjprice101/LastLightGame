@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { freshGame, publicGame, resolveOperation, validateRequest, type DurableGame } from '../../supabase/functions/game-operation/engine';
 import { calamityActivities, calamityChest, calamityChestId } from '../content/calamity';
+import { calamityBossArt } from '../content/calamity-art';
 import { activityAccess } from '../game/activity-access';
 import { validateGameResponse, type GameOperation } from './server-game';
 
@@ -42,7 +43,7 @@ describe('authoritative Calamity operations', () => {
     expect(game.account.creatures[`calamity:${definition.id}`]).toEqual({ defeated: false });
     const frozen = structuredClone(game.run!);
     const enemy = game.run!.session.state.enemies[0];
-    expect(enemy.art).toBeUndefined();
+    expect(enemy.art).toBe(calamityBossArt[definition.id]);
     enemy.hp = 1;
     const runId = game.run!.session.runId;
     const cleared = op(game, { kind: 'act', runId, actorId: 'ember', action: 'light', targetId: enemy.id });

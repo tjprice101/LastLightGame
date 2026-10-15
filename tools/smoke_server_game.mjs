@@ -398,8 +398,12 @@ async function smokeNativeCalamity(client, userId, username) {
   assert.equal(opened.account.calamityChests[chestId] ?? 0, 0);
   const persisted = await invoke({ kind: 'read' }, opened.revision);
   assert.deepEqual(persisted.account, opened.account);
-  assert.equal((await invoke({ kind: 'quit', runId }, opened.revision)).session, null);
-  console.log('Hosted native/Calamity smoke passed: rules3, explicit Tizu/Disciple recipients, Lv185 EX3 chest-only victory, atomic opening with two Master chests, idempotent action/opening and persisted holdings.');
+  const quit = await invoke({ kind: 'quit', runId }, opened.revision);
+  assert.equal(quit.session, null);
+  const entered = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'treasury', tier: 1 } }, quit.revision);
+  assert.equal(entered.session.state.enemies[0].art, 'calamity-boss-treasury');
+  assert.equal((await invoke({ kind: 'quit', runId: entered.session.runId }, entered.revision)).session, null);
+  console.log('Hosted native/Calamity smoke passed: rules3, explicit Tizu/Disciple recipients, Lv185 EX3 chest-only victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned Calamity artwork.');
 }
 
 async function smokeGuaranteedComponents(client, userId, username) {

@@ -2,6 +2,12 @@
 .calamity-tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 1rem; }
 .calamity-tier { padding: .8rem; border: 1px solid #785757; border-radius: 8px; }
 .calamity-tier h4 { margin-top: 0; }
+.calamity-tier-scene { position: relative; isolation: isolate; display: grid; place-items: center; aspect-ratio: 16 / 10; margin-bottom: .8rem; overflow: hidden; border-radius: 6px; }
+.calamity-tier-arena { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; }
+.calamity-tier-boss { width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+.calamity-chest-art { display: block; width: 96px; height: 96px; max-width: 100%; object-fit: contain; margin: .5rem auto; }
+.inventory-item-art .calamity-chest-art { width: 100%; height: 100%; margin: 0; }
+.reward-screen .calamity-chest-art { width: 100%; height: 100%; margin: 0; }
 .calamity-section table { width: 100%; border-collapse: collapse; }
 .calamity-section th, .calamity-section td { text-align: left; padding: .4rem; }
 .calamity-placeholder { display: grid; place-items: center; min-height: 96px; color: #fff; border: 1px solid #a94646; padding: 1rem; }

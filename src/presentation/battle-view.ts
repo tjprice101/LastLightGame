@@ -4,6 +4,7 @@ import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, actionUnavailable, createBattle, createCalamityBattle, createDungeonBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, withMasterLoadouts, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
 import { calamityEncounter, isCalamityActivityId, isCalamityTier, type CalamityActivityId, type CalamityTier } from '../content/calamity';
 import { confirmCalamity, calamityCadence } from './calamity';
+import { calamityBossArt, calamityArenaArt } from '../content/calamity-art';
 import type { MasterLoadouts } from '../content/master-conduits';
 import { masterReference } from './master-conduits';
 import { type CharacterProgress } from '../content/progression';
@@ -96,6 +97,11 @@ function definition(unit: Combatant): { art: string | null; color: string } {
   if (unit.side === 'ally' && isStarterId(unit.definitionId)) {
     const form = characterArt(unit.definitionId, unit.evolution ?? 1);
     return { art: form.available ? form.art : null, color: getStarter(unit.definitionId).color };
+  }
+  if (unit.definitionId.startsWith('calamity:')) {
+    const activity = unit.definitionId.slice('calamity:'.length);
+    if (!isCalamityActivityId(activity)) throw new Error('Unknown Calamity boss artwork identity.');
+    return { art: calamityBossArt[activity] ?? null, color: unit.color ?? '#ed4545' };
   }
   if (unit.color) return { art: unit.art ?? null, color: unit.color };
   if (unit.definitionId === 'goblin' || unit.definitionId === 'imp' || unit.definitionId === 'golem') {
@@ -706,7 +712,7 @@ export class BattleView {
       ? describeFighter(actor.definitionId, actor.kit) : actor.kit;
     if (!kit) throw new Error('Ally combat kit is missing.');
     if (state.calamity !== undefined && (!state.calamity || !isCalamityActivityId(state.calamity.activity) || !isCalamityTier(state.calamity.tier))) throw new Error('Unsupported saved Calamity encounter.');
-    const dungeon = state.calamity ? { ...calamityEncounter(state.calamity.activity, state.calamity.tier), stage: 1, background: null, color: '#ed4545' }
+    const dungeon = state.calamity ? { ...calamityEncounter(state.calamity.activity, state.calamity.tier), stage: 1, background: calamityArenaArt[state.calamity.tier], color: '#ed4545' }
       : state.story ? storyEncounter(state.story.storyStage)
       : state.war ? warEncounter(state.war.character, state.war.stage)
       : state.infusion ? infusionEncounter(state.infusion.mode, state.infusion.stage)

@@ -11,6 +11,7 @@ import { storyEncounter, storyCreature, storyRules, storyLoot, storyBossBonus } 
 import { devourerHabitats, elementEmotions, machineOrigin } from './world-lore';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 import { calamityActivities, calamityChest, isCalamityTier, type CalamityActivityId } from './calamity';
+import { calamityBossArt } from './calamity-art';
 
 export interface Creature {
   id: string;
@@ -61,7 +62,7 @@ function catalog(): Creature[] {
   }
   for (const activity of calamityActivities) {
     result.push({ id: `calamity:${activity.id}`, name: activity.boss, area: `${activity.name} · Calamity`,
-      element: activity.element, calamity: activity.id, stages: [1, 2, 3] });
+      art: calamityBossArt[activity.id], element: activity.element, calamity: activity.id, stages: [1, 2, 3] });
   }
   return result;
 }

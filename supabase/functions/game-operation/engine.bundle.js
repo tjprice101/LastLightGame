@@ -4720,6 +4720,21 @@ function calamityEncounter(activity, tier) {
   return { name: definition.boss, level, element: definition.element, stats, skills, description: pattern.description };
 }
 
+// src/content/calamity-art.ts
+var calamityBossArt = {
+  treasury: "calamity-boss-treasury",
+  sanctuary: "calamity-boss-sanctuary",
+  heavens: "calamity-boss-heavens",
+  abyss: "calamity-boss-abyss",
+  machines: "calamity-boss-machines",
+  infernic: "calamity-boss-infernic",
+  oceanic: "calamity-boss-oceanic",
+  atmospheric: "calamity-boss-atmospheric",
+  botanic: "calamity-boss-botanic",
+  tranquilitic: "calamity-boss-tranquilitic",
+  chaotic: "calamity-boss-chaotic"
+};
+
 // src/content/creatures.ts
 function catalog() {
   const result = enemyIds.map((id) => ({
@@ -4780,6 +4795,7 @@ function catalog() {
       id: `calamity:${activity.id}`,
       name: activity.boss,
       area: `${activity.name} \xB7 Calamity`,
+      art: calamityBossArt[activity.id],
       element: activity.element,
       calamity: activity.id,
       stages: [1, 2, 3]
@@ -7074,7 +7090,8 @@ function createCalamityBattle(activity, tier, seed2, starter, progress, roster =
     boss: true,
     color: "#df3548",
     enemySkills: encounter2.skills,
-    creatureId: `calamity:${activity}`
+    creatureId: `calamity:${activity}`,
+    art: getCreature(`calamity:${activity}`).art
   });
   state.enemies = [unit];
   return state;

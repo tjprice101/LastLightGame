@@ -1,0 +1,1081 @@
+{
+  "calamity-boss-treasury": {
+    "keys": [
+      [
+        76,
+        172,
+        154
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.0868506,
+        0.4234914
+      ],
+      [
+        0.8173701,
+        0.4978448
+      ],
+      [
+        0.3701299,
+        0.5840517
+      ],
+      [
+        0.7069805,
+        0.65625
+      ],
+      [
+        0.362013,
+        0.6702586
+      ],
+      [
+        0.3425325,
+        0.825431
+      ],
+      [
+        0.7199675,
+        0.8900862
+      ],
+      [
+        0.6063312,
+        0.9019397
+      ],
+      [
+        0.351461,
+        0.90625
+      ],
+      [
+        0.6282468,
+        0.9030172
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+  },
+  "calamity-boss-sanctuary": {
+    "keys": [
+      [
+        71,
+        120,
+        98
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.5762987,
+        0.2047414
+      ],
+      [
+        0.5470779,
+        0.2403017
+      ],
+      [
+        0.4569805,
+        0.2672414
+      ],
+      [
+        0.5462662,
+        0.2564655
+      ],
+      [
+        0.4659091,
+        0.2715517
+      ],
+      [
+        0.2272727,
+        0.2747845
+      ],
+      [
+        0.4042208,
+        0.2887931
+      ],
+      [
+        0.5698052,
+        0.2855603
+      ],
+      [
+        0.5868506,
+        0.3135776
+      ],
+      [
+        0.6128247,
+        0.3922414
+      ],
+      [
+        0.8676948,
+        0.3846983
+      ],
+      [
+        0.3441558,
+        0.3760776
+      ],
+      [
+        0.1298701,
+        0.3599138
+      ],
+      [
+        0.1647727,
+        0.3609914
+      ],
+      [
+        0.6006494,
+        0.3696121
+      ],
+      [
+        0.4107143,
+        0.3760776
+      ],
+      [
+        0.3839286,
+        0.4040948
+      ],
+      [
+        0.6030844,
+        0.4170259
+      ],
+      [
+        0.6444805,
+        0.4838362
+      ],
+      [
+        0.213474,
+        0.7122845
+      ],
+      [
+        0.7881494,
+        0.7575431
+      ],
+      [
+        0.4991883,
+        0.7747845
+      ],
+      [
+        0.2646104,
+        0.7230603
+      ],
+      [
+        0.7524351,
+        0.7413793
+      ],
+      [
+        0.7532468,
+        0.7898707
+      ],
+      [
+        0.4975649,
+        0.8976293
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+  },
+  "calamity-boss-heavens": {
+    "keys": [
+      [
+        131,
+        154,
+        142
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.3668831,
+        0.3717672
+      ],
+      [
+        0.1777597,
+        0.3653017
+      ],
+      [
+        0.7394481,
+        0.5894397
+      ],
+      [
+        0.6501623,
+        0.5765086
+      ],
+      [
+        0.3376623,
+        0.5765086
+      ],
+      [
+        0.4017857,
+        0.6228448
+      ],
+      [
+        0.5933442,
+        0.6228448
+      ],
+      [
+        0.7589286,
+        0.6584052
+      ],
+      [
+        0.2232143,
+        0.6616379
+      ],
+      [
+        0.2475649,
+        0.6530172
+      ],
+      [
+        0.6087662,
+        0.6605603
+      ],
+      [
+        0.4180195,
+        0.6594828
+      ],
+      [
+        0.898539,
+        0.8017241
+      ],
+      [
+        0.5892857,
+        0.8415948
+      ],
+      [
+        0.3628247,
+        0.9439655
+      ],
+      [
+        0.2613636,
+        0.9525862
+      ],
+      [
+        0.1712662,
+        0.9536638
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+  },
+  "calamity-boss-abyss": {
+    "keys": [
+      [
+        132,
+        149,
+        116
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.5056818,
+        0.3006466
+      ],
+      [
+        0.5097403,
+        0.4978448
+      ],
+      [
+        0.4155844,
+        0.4913793
+      ],
+      [
+        0.8271104,
+        0.5355603
+      ],
+      [
+        0.6737013,
+        0.5528017
+      ],
+      [
+        0.8027597,
+        0.5517241
+      ],
+      [
+        0.6599026,
+        0.5840517
+      ],
+      [
+        0.6842532,
+        0.5862069
+      ],
+      [
+        0.7353896,
+        0.7349138
+      ],
+      [
+        0.1826299,
+        0.7133621
+      ],
+      [
+        0.9155844,
+        0.6702586
+      ],
+      [
+        0.8287338,
+        0.7898707
+      ],
+      [
+        0.7410714,
+        0.8426724
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+  },
+  "calamity-boss-machines": {
+    "keys": [
+      [
+        76,
+        204,
+        180
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.4423701,
+        0.4601293
+      ],
+      [
+        0.5576299,
+        0.4515086
+      ],
+      [
+        0.6688312,
+        0.8685345
+      ],
+      [
+        0.599026,
+        0.6853448
+      ],
+      [
+        0.411526,
+        0.6896552
+      ],
+      [
+        0.4212662,
+        0.7596983
+      ],
+      [
+        0.4310065,
+        0.7693966
+      ],
+      [
+        0.2849026,
+        0.955819
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+  },
+  "calamity-boss-infernic": {
+    "keys": [
+      [
+        83,
+        202,
+        167
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.2037338,
+        0.575431
+      ],
+      [
+        0.2857143,
+        0.7284483
+      ],
+      [
+        0.5405844,
+        0.9084052
+      ],
+      [
+        0.6566558,
+        0.887931
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+  },
+  "calamity-boss-oceanic": {
+    "keys": [
+      [
+        67,
+        194,
+        165
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.1550325,
+        0.4256466
+      ],
+      [
+        0.4529221,
+        0.362069
+      ],
+      [
+        0.6087662,
+        0.4418103
+      ],
+      [
+        0.5730519,
+        0.5032328
+      ],
+      [
+        0.174513,
+        0.5603448
+      ],
+      [
+        0.3887987,
+        0.6971983
+      ],
+      [
+        0.4155844,
+        0.705819
+      ],
+      [
+        0.5803571,
+        0.7834052
+      ],
+      [
+        0.6850649,
+        0.7726293
+      ],
+      [
+        0.2353896,
+        0.8297414
+      ],
+      [
+        0.2711039,
+        0.84375
+      ],
+      [
+        0.2483766,
+        0.8825431
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+  },
+  "calamity-boss-atmospheric": {
+    "keys": [
+      [
+        97,
+        133,
+        121
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.4935065,
+        0.0818966
+      ],
+      [
+        0.5121753,
+        0.1357759
+      ],
+      [
+        0.450487,
+        0.1099138
+      ],
+      [
+        0.7435065,
+        0.3609914
+      ],
+      [
+        0.6201299,
+        0.3329741
+      ],
+      [
+        0.2402597,
+        0.3911638
+      ],
+      [
+        0.6339286,
+        0.5721983
+      ],
+      [
+        0.3336039,
+        0.518319
+      ],
+      [
+        0.1607143,
+        0.5517241
+      ],
+      [
+        0.2767857,
+        0.7165948
+      ],
+      [
+        0.2313312,
+        0.6821121
+      ],
+      [
+        0.4943182,
+        0.7489224
+      ],
+      [
+        0.4788961,
+        0.7532328
+      ],
+      [
+        0.6298701,
+        0.7931034
+      ],
+      [
+        0.3725649,
+        0.7737069
+      ],
+      [
+        0.5681818,
+        0.856681
+      ],
+      [
+        0.4017857,
+        0.8178879
+      ],
+      [
+        0.6582792,
+        0.8674569
+      ],
+      [
+        0.5300325,
+        0.8362069
+      ],
+      [
+        0.4050325,
+        0.8415948
+      ],
+      [
+        0.3741883,
+        0.8793103
+      ],
+      [
+        0.6079545,
+        0.9094828
+      ],
+      [
+        0.4586039,
+        0.9331897
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+  },
+  "calamity-boss-botanic": {
+    "keys": [
+      [
+        104,
+        124,
+        112
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.2337662,
+        0.2295259
+      ],
+      [
+        0.7970779,
+        0.2543103
+      ],
+      [
+        0.4586039,
+        0.2359914
+      ],
+      [
+        0.6469156,
+        0.2403017
+      ],
+      [
+        0.7516234,
+        0.2898707
+      ],
+      [
+        0.3798701,
+        0.262931
+      ],
+      [
+        0.3741883,
+        0.2661638
+      ],
+      [
+        0.8173701,
+        0.2866379
+      ],
+      [
+        0.3262987,
+        0.3157328
+      ],
+      [
+        0.711039,
+        0.3415948
+      ],
+      [
+        0.7313312,
+        0.3793103
+      ],
+      [
+        0.8100649,
+        0.3696121
+      ],
+      [
+        0.3043831,
+        0.3760776
+      ],
+      [
+        0.8051948,
+        0.3900862
+      ],
+      [
+        0.762987,
+        0.4148707
+      ],
+      [
+        0.8165584,
+        0.4342672
+      ],
+      [
+        0.762987,
+        0.4428879
+      ],
+      [
+        0.7418831,
+        0.4073276
+      ],
+      [
+        0.7418831,
+        0.4202586
+      ],
+      [
+        0.7215909,
+        0.4353448
+      ],
+      [
+        0.8133117,
+        0.4719828
+      ],
+      [
+        0.6550325,
+        0.4946121
+      ],
+      [
+        0.648539,
+        0.5150862
+      ],
+      [
+        0.3262987,
+        0.518319
+      ],
+      [
+        0.1826299,
+        0.7025862
+      ],
+      [
+        0.3181818,
+        0.5549569
+      ],
+      [
+        0.0836039,
+        0.5377155
+      ],
+      [
+        0.3433442,
+        0.5743534
+      ],
+      [
+        0.726461,
+        0.6153017
+      ],
+      [
+        0.7483766,
+        0.7392241
+      ],
+      [
+        0.7126623,
+        0.6357759
+      ],
+      [
+        0.3409091,
+        0.669181
+      ],
+      [
+        0.6258117,
+        0.8900862
+      ],
+      [
+        0.5105519,
+        0.8512931
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+  },
+  "calamity-boss-tranquilitic": {
+    "keys": [
+      [
+        63,
+        118,
+        98
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.4334416,
+        0.1002155
+      ],
+      [
+        0.4480519,
+        0.1788793
+      ],
+      [
+        0.5121753,
+        0.1788793
+      ],
+      [
+        0.4480519,
+        0.2543103
+      ],
+      [
+        0.4326299,
+        0.2758621
+      ],
+      [
+        0.4082792,
+        0.3060345
+      ],
+      [
+        0.6038961,
+        0.3297414
+      ],
+      [
+        0.3628247,
+        0.5387931
+      ],
+      [
+        0.6461039,
+        0.5700431
+      ],
+      [
+        0.3595779,
+        0.606681
+      ],
+      [
+        0.3701299,
+        0.6239224
+      ],
+      [
+        0.6371753,
+        0.6584052
+      ],
+      [
+        0.3457792,
+        0.731681
+      ],
+      [
+        0.6599026,
+        0.7209052
+      ],
+      [
+        0.6493506,
+        0.7737069
+      ],
+      [
+        0.262987,
+        0.8211207
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+  },
+  "calamity-boss-chaotic": {
+    "keys": [
+      [
+        95,
+        137,
+        123
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.4805195,
+        0.1185345
+      ],
+      [
+        0.512987,
+        0.1196121
+      ],
+      [
+        0.4650974,
+        0.1336207
+      ],
+      [
+        0.5357143,
+        0.2273707
+      ],
+      [
+        0.5349026,
+        0.2532328
+      ],
+      [
+        0.3287338,
+        0.3060345
+      ],
+      [
+        0.4675325,
+        0.2521552
+      ],
+      [
+        0.4310065,
+        0.3221983
+      ],
+      [
+        0.5308442,
+        0.3534483
+      ],
+      [
+        0.4561688,
+        0.3631466
+      ],
+      [
+        0.4155844,
+        0.3793103
+      ],
+      [
+        0.5982143,
+        0.3890086
+      ],
+      [
+        0.3944805,
+        0.4396552
+      ],
+      [
+        0.6542208,
+        0.4784483
+      ],
+      [
+        0.2938312,
+        0.518319
+      ],
+      [
+        0.6688312,
+        0.6810345
+      ],
+      [
+        0.3303571,
+        0.8232759
+      ],
+      [
+        0.6866883,
+        0.8329741
+      ],
+      [
+        0.7142857,
+        0.8771552
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+  },
+  "calamity-chest-slayer": {
+    "keys": [
+      [
+        144,
+        202,
+        182
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.1923828,
+        0.3681641
+      ],
+      [
+        0.2392578,
+        0.8125
+      ],
+      [
+        0.7978516,
+        0.8144531
+      ],
+      [
+        0.2949219,
+        0.8076172
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original and enclosed ribbon/foot/crown gaps. Preserve pale ornaments, gems, red ribbons and authored ground shadow."
+  },
+  "calamity-chest-master": {
+    "keys": [
+      [
+        126,
+        217,
+        186
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.1777344,
+        0.6679688
+      ],
+      [
+        0.3085938,
+        0.9003906
+      ],
+      [
+        0.5234375,
+        0.9003906
+      ],
+      [
+        0.7226562,
+        0.9101562
+      ],
+      [
+        0.2802734,
+        0.9101562
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original and enclosed ribbon/foot/crown gaps. Preserve pale ornaments, gems, red ribbons and authored ground shadow."
+  },
+  "calamity-chest-omnipotent": {
+    "keys": [
+      [
+        49,
+        137,
+        127
+      ]
+    ],
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.4873047,
+        0.0957031
+      ],
+      [
+        0.8339844,
+        0.4082031
+      ],
+      [
+        0.1601562,
+        0.40625
+      ],
+      [
+        0.8457031,
+        0.5234375
+      ],
+      [
+        0.1650391,
+        0.5224609
+      ],
+      [
+        0.2548828,
+        0.5654297
+      ],
+      [
+        0.7412109,
+        0.5576172
+      ],
+      [
+        0.7832031,
+        0.6611328
+      ],
+      [
+        0.2646484,
+        0.6132812
+      ],
+      [
+        0.2929688,
+        0.6679688
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original and enclosed ribbon/foot/crown gaps. Preserve pale ornaments, gems, red ribbons and authored ground shadow."
+  },
+  "calamity-arena-ex-1": {
+    "processing": "opaque-original-size"
+  },
+  "calamity-arena-ex-2": {
+    "processing": "opaque-original-size"
+  },
+  "calamity-arena-ex-3": {
+    "processing": "opaque-original-size"
+  }
+}

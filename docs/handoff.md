@@ -1,5 +1,77 @@
 # Current state and handoff
 
+## Calamity artwork installed (D-318)
+
+- Owner requests background removal and full wiring of delivered root images.
+  All17 originals are preserved byte-for-byte in `Art/source/calamity`; root
+  copies remain. Eleven bosses and three tier chests have reviewed transparent
+  exports; three shared EX arenas remain opaque and pixel-intact.
+- Per-source row-gradient keys and individually reviewed enclosed-gap seeds
+  preserve pale armor, gold/orange powers, cyan eye/water detail and painted
+  shadows. Source-resolution overlays and dark/light composites were reviewed.
+  Some source tips touch the original edges; padding does not recreate them.
+- Shared mappings/revisions wire catalog/spawns, field/cut-ins, reviewed facing
+  and size, tier cards/arenas, Inventory/loot references, drops/results and
+  saved opening reveals. Old frozen snapshots acquire current art in display
+  resolution only; no encounter restart, combat, RNG or account changes.
+- The Last Scarlet Bloom was not delivered and remains neutral. All27 new
+  trophy-backed mechanic icons remain prompt-only. Current remaining queue is
+  **28** images; the original45 prompts are retained as generation provenance.
+- Reproduce with `python tools\intake_calamity_art.py --apply`.
+  `python -m unittest discover -s tools -p test_calamity_art.py -v`:
+  **3 passed**, checking17 archived hashes/exact exports, arena pixels,
+  all reviewed gap seeds, supplied alpha and protected eye/shadow pixels.
+  `python -m unittest discover -s tools -p test_pending_art.py -v`:
+  **4 passed** after regenerating accurate delivery status.
+- Focused four-suite Vitest run: **169 passed**. Initial full regression
+  exposed missing new-boss size metadata; wired all11 and added twelve
+  cross-tier/pre-art size cases rather than bypassing the check.
+  Final `npm test -- --maxWorkers=2`: **3,869 passed in170 files**.
+  No skips or altered gameplay expectations.
+- Production TypeScript/Vite build passed (existing large-chunk advisory).
+  `node tools\bundle_server_game.mjs` and
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json` passed.
+- Browser unsaved fixtures verified all36 old-snapshot encounters:33 show
+  delivered bosses, three Rose tiers retain placeholders, every tier selects
+  its arena, and all combat states remain unchanged. All17 asset URLs decoded.
+  At390px CSS viewport the tier cards/Inventory have no horizontal overflow;
+  the skippable saved EX+3 opening image stays within its art stage. Fixture,
+  dialog and listeners were removed; real localStorage remained identical.
+- Publication follows the owner's automatic-deployment direction: client first
+  so new PNGs exist before the authority begins emitting their art IDs.
+  Hosted publication verification will be appended after deployment.
+
+## Remaining-art prompts prepared (D-317)
+
+- Owner requests missing-art prompts and clarifies3 shared chest images and3
+  shared arena images, one per tier across all activities. Twelve bosses stay
+  activity-specific and reuse each image across levels145/160/185.
+- [Current45-image queue](../Art/Remaining%20Artwork.md) links18 Calamity
+  prompts and27 native-state pictograms, each with a filename and complete
+  copy-ready prompt. Cutouts use opaque powers, contrasting keys and15%
+  continuous safety margins; full-bleed tier arenas allow environmental bloom.
+- Owner's follow-up gives all27 mechanic icons a dominant raised symbol over
+  a trophy-like crest with side flourishes and a short stepped pedestal.
+  Character palettes, distinct symbols and flat cutout keys remain; backing
+  is an ornamental object, not scenery or a generic gold cup. Reproduce from
+  the updated generator rather than editing generated prompt blocks.
+- Actual catalog/filesystem audit: all85 ordinary/48 Master Conduits, the Master
+  chest/Astral Reserve and48 current material definitions have installed PNGs.
+  Only12 Calamity identities lack art among163 catalog creatures. Retain
+  installed ability portraits and universal Normal/Defense icons.
+- Prompt generation uses `python tools\build_pending_art.py`; focused
+  reproduction/scope/style validation uses
+  `python -m unittest discover -s tools -p test_pending_art.py -v`.
+  All4 focused tests pass, including checks of all27 trophy backings.
+  The broader `test_art_prompts.py` run reports131
+  existing assertions across older packs (28 test methods,0 errors);
+  neither new pack has a failing assertion after matching the shared contracts.
+  Existing unrelated prompt packs/tests were not rewritten to hide failures.
+  These are prompts, not generated/reviewed artwork or a runtime deployment.
+  Shared chest/arena art must be connected across every surface after delivery.
+- Existing live client/server release remains unchanged. No account edits,
+  image intake, automatic re-keying or missing-image URLs were introduced.
+
 ## Coordinated release deployed (2026-10-15)
 
 - Owner explicitly requests deploying all pending work. This supersedes
