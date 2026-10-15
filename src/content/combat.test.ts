@@ -4,6 +4,16 @@ import { openingStarters as starters, starters as roster } from './starters';
 import { characterLevelCap, characterGrowthFactor, characterPotencyFactor } from './progression';
 
 describe('character stat and kit growth', () => {
+  it.each(roster)('$name has no ordinary skill cooldown at any evolution', starter => {
+    for (let evolution = 1; evolution <= 6; evolution++) {
+      const kit = resolveFighter(starter.id, { level: 0, evolution });
+      for (const action of ['skill1', 'skill2'] as const) {
+        expect(fighters[starter.id].abilities[action].cooldown).toBe(0);
+        expect(kit.abilities[action].cooldown).toBe(0);
+      }
+      expect(kit.abilities.ultimate.cooldown).toBe(fighters[starter.id].abilities.ultimate.cooldown);
+    }
+  });
   it.each(roster)('$name explains actual ability effects without changing frozen kits', starter => {
     const original = resolveFighter(starter.id);
     const before = structuredClone(original);

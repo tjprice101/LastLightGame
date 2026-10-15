@@ -120,7 +120,7 @@ function captureDetail(account: Account, id: string, tab = 'overview'): string {
         const label = action === 'skill1' ? 'Skill 1' : action === 'skill2' ? 'Skill 2' : 'Last Flare';
         const unavailable = kit.unavailableActions?.includes(action);
         return information(`creature-${id}-${action}`, unavailable ? label : ability.name,
-          `<article class="hub-ability"><h3>${unavailable ? label : ability.name}</h3><p>${ability.description}</p>${unavailable ? '<p>This slot is unavailable for this Elemental-Devourer.</p>' : `<p class="hub-cost">${label} · Costs ${shatterGauge.costs[action]} Shatter Gauge · ${ability.cooldown}-turn cooldown.</p>`}</article>`, `${label} details`,
+          `<article class="hub-ability"><h3>${unavailable ? label : ability.name}</h3><p>${ability.description}</p>${unavailable ? '<p>This slot is unavailable for this Elemental-Devourer.</p>' : `<p class="hub-cost">${label} · Costs ${shatterGauge.costs[action]} Shatter Gauge · ${ability.cooldown ? `${ability.cooldown}-turn cooldown` : 'No cooldown'}.</p>`}</article>`, `${label} details`,
           `<span><strong>${unavailable ? label : ability.name}</strong><small>${label} · ${unavailable ? 'Unavailable · ' : ''}View details</small></span>`);
       }).join('')}</div></section>
     </div><div id="capture-panel-upgrade-1" class="ref-capture-panel" ${tab === 'upgrade-1' ? '' : 'hidden'}>

@@ -351,9 +351,6 @@ export function actionUnavailable(state: BattleState, actor: Combatant, action: 
   if (action === 'ultimate' && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
   const gaugeCost = actionGaugeCost(actor, action);
   if (actor.shatter < gaugeCost) return `Requires ${gaugeCost} Shatter Gauge.`;
-  if ((action === 'skill1' || action === 'skill2') && actor.readyRound[action] > state.round) {
-    return `Ready on turn ${actor.readyRound[action]}.`;
-  }
   return null;
 }
 
@@ -594,7 +591,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   if (action === 'ultimate') actor.recoverThrough = state.round + 1;
   actor.shatter -= actionGaugeCost(actor, action);
   gainShatter(actor, shatterGauge.gains[action] + (action === 'light' ? (definition.passive.lightGaugeBonus ?? 0) : 0), events);
-  if (action === 'skill1' || action === 'skill2') actor.readyRound[action] = state.round + definition.abilities[action].cooldown;
+  if (action === 'skill1' || action === 'skill2') actor.readyRound[action] = state.round;
   if (action === 'ultimate' && actor.captured) actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
   const stormstepBonus = (action === 'skill1' && actor.conduitCharges?.stormstepSkill1) ||
     (action === 'skill2' && actor.conduitCharges?.stormstepSkill2) ? .1 : 0;

@@ -1470,8 +1470,8 @@ var flagshipFighters = {
     stats: { health: 205, defense: 9, damage: 39, crit: 0.2, shatterCapacity: 100, critMultiplier: 1.6, elementalDamage: 0 },
     passive: { name: "Gale Cadence", description: "+15% outgoing damage at or below 50% health.", damageBonus: 0.15, defenseBonus: 0, healFraction: 0 },
     abilities: {
-      skill1: { name: "Razor Gale", description: "180% damage to one enemy.", cooldown: 2, strength: { damageMultiplier: 1.8 } },
-      skill2: { name: "Cyclone Weave", description: "120% damage to every living enemy.", cooldown: 3, targets: "all-enemies", strength: { damageMultiplier: 1.2 } },
+      skill1: { name: "Razor Gale", description: "180% damage to one enemy.", cooldown: 0, strength: { damageMultiplier: 1.8 } },
+      skill2: { name: "Cyclone Weave", description: "120% damage to every living enemy.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.2 } },
       ultimate: { name: "Last Flare: Sky Without End", description: "290% damage to every living enemy. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.9 } }
     }
   },
@@ -1479,8 +1479,8 @@ var flagshipFighters = {
     stats: { health: 215, defense: 10, damage: 32, crit: 0.12, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: "Lens of Diminishment", description: "+6 defense, included in effective defense.", damageBonus: 0, defenseBonus: 6, healFraction: 0 },
     abilities: {
-      skill1: { name: "Gleamseal", description: "140% damage to one enemy; weaken by 30% for two enemy phases.", cooldown: 2, strength: { damageMultiplier: 1.4, weakenFraction: 0.3 } },
-      skill2: { name: "Eclipse Mandate", description: "90% damage to every living enemy; weaken by 25% for two enemy phases.", cooldown: 3, targets: "all-enemies", strength: { damageMultiplier: 0.9, weakenFraction: 0.25 } },
+      skill1: { name: "Gleamseal", description: "140% damage to one enemy; weaken by 30% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.4, weakenFraction: 0.3 } },
+      skill2: { name: "Eclipse Mandate", description: "90% damage to every living enemy; weaken by 25% for two enemy phases.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 0.9, weakenFraction: 0.25 } },
       ultimate: { name: "Last Flare: Final Dawn Verdict", description: "220% damage to every living enemy; weaken by 40% for two enemy phases. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.2, weakenFraction: 0.4 } }
     }
   },
@@ -1489,8 +1489,8 @@ var flagshipFighters = {
     stats: { health: 210, defense: 10, damage: 42, crit: 0.25, shatterCapacity: 100, critMultiplier: 1.7, elementalDamage: 0 },
     passive: { name: "Stillfeather Tempo", description: "+20% outgoing damage at or below 50% health.", damageBonus: 0.2, defenseBonus: 0, healFraction: 0 },
     abilities: {
-      skill1: { name: "Warfeather Cut", description: "175% damage to one enemy with +15 percentage points critical chance.", cooldown: 2, strength: { damageMultiplier: 1.75, critBonus: 0.15 } },
-      skill2: { name: "Quietstorm Flourish", description: "125% damage to every living enemy with +10 percentage points critical chance; restore 12 health to every living ally, no revival.", cooldown: 3, targets: "all-enemies", strength: { damageMultiplier: 1.25, critBonus: 0.1, healing: 12 } },
+      skill1: { name: "Warfeather Cut", description: "175% damage to one enemy with +15 percentage points critical chance.", cooldown: 0, strength: { damageMultiplier: 1.75, critBonus: 0.15 } },
+      skill2: { name: "Quietstorm Flourish", description: "125% damage to every living enemy with +10 percentage points critical chance; restore 12 health to every living ally, no revival.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.25, critBonus: 0.1, healing: 12 } },
       ultimate: { name: "Last Flare: Thousandfeather Stillness", description: "300% damage to every living enemy with +20 percentage points critical chance. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3, critBonus: 0.2 } }
     }
   },
@@ -1498,8 +1498,8 @@ var flagshipFighters = {
     stats: { health: 285, defense: 18, damage: 29, crit: 0.08, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: "Faultbound Resolve", description: "+9 defense, included in effective defense.", damageBonus: 0, defenseBonus: 9, healFraction: 0 },
     abilities: {
-      skill1: { name: "Seismic Hammerfall", description: "155% damage to one enemy; weaken by 20% for two enemy phases.", cooldown: 2, strength: { damageMultiplier: 1.55, weakenFraction: 0.2 } },
-      skill2: { name: "Citadel Mantle", description: "Give every living ally 32 shield (refresh; does not stack).", cooldown: 3, targets: "all-allies", strength: { shield: 32 } },
+      skill1: { name: "Seismic Hammerfall", description: "155% damage to one enemy; weaken by 20% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.55, weakenFraction: 0.2 } },
+      skill2: { name: "Citadel Mantle", description: "Give every living ally 32 shield (refresh; does not stack).", cooldown: 0, targets: "all-allies", strength: { shield: 32 } },
       ultimate: { name: "Last Flare: Worldwall Ascendant", description: "230% damage to every living enemy and 45 shield for allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.3, shield: 45 } }
     }
   },
@@ -1507,8 +1507,8 @@ var flagshipFighters = {
     stats: { health: 240, defense: 11, damage: 36, crit: 0.12, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: "Shared Mindflame", description: "+15% outgoing damage at or below 50% health.", damageBonus: 0.15, defenseBonus: 0, healFraction: 0 },
     abilities: {
-      skill1: { name: "Thoughtspark Benediction", description: "150% damage to one enemy; increase living allies' outgoing attack damage by 20% this and next player turn (refresh; does not stack).", cooldown: 2, strength: { damageMultiplier: 1.5, attackBoostFraction: 0.2 } },
-      skill2: { name: "Concord of Chaos", description: "Increase living allies' outgoing attack damage by 30% this and next player turn and give 20 shield (refresh; does not stack).", cooldown: 3, targets: "all-allies", strength: { attackBoostFraction: 0.3, shield: 20 } },
+      skill1: { name: "Thoughtspark Benediction", description: "150% damage to one enemy; increase living allies' outgoing attack damage by 20% this and next player turn (refresh; does not stack).", cooldown: 0, strength: { damageMultiplier: 1.5, attackBoostFraction: 0.2 } },
+      skill2: { name: "Concord of Chaos", description: "Increase living allies' outgoing attack damage by 30% this and next player turn and give 20 shield (refresh; does not stack).", cooldown: 0, targets: "all-allies", strength: { attackBoostFraction: 0.3, shield: 20 } },
       ultimate: { name: "Last Flare: Unbound Mindcrown", description: "Increase living allies' outgoing attack damage by 40% this and next player turn and give 40 shield (refresh; does not stack). Recover next turn.", cooldown: 0, targets: "all-allies", strength: { attackBoostFraction: 0.4, shield: 40 } }
     }
   },
@@ -1517,8 +1517,8 @@ var flagshipFighters = {
     stats: { health: 195, defense: 8, damage: 40, crit: 0.25, shatterCapacity: 100, critMultiplier: 1.7, elementalDamage: 0 },
     passive: { name: "Stormwheel Rhythm", description: "+15% outgoing damage at or below 50% health.", damageBonus: 0.15, defenseBonus: 0, healFraction: 0 },
     abilities: {
-      skill1: { name: "Voltstar Cut", description: "170% damage to one enemy with +20 percentage points critical chance.", cooldown: 2, strength: { damageMultiplier: 1.7, critBonus: 0.2 } },
-      skill2: { name: "Crosscurrent Volley", description: "115% damage to every living enemy.", cooldown: 3, targets: "all-enemies", strength: { damageMultiplier: 1.15 } },
+      skill1: { name: "Voltstar Cut", description: "170% damage to one enemy with +20 percentage points critical chance.", cooldown: 0, strength: { damageMultiplier: 1.7, critBonus: 0.2 } },
+      skill2: { name: "Crosscurrent Volley", description: "115% damage to every living enemy.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.15 } },
       ultimate: { name: "Last Flare: Infinite Thunderwheel", description: "285% damage to every living enemy with +15 percentage points critical chance. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.85, critBonus: 0.15 } }
     }
   },
@@ -1526,8 +1526,8 @@ var flagshipFighters = {
     stats: { health: 290, defense: 19, damage: 32, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: "Unbroken Night", description: "+10 defense, included in effective defense.", damageBonus: 0, defenseBonus: 10, healFraction: 0 },
     abilities: {
-      skill1: { name: "Nightcleave", description: "165% damage to one enemy; weaken by 25% for two enemy phases.", cooldown: 2, strength: { damageMultiplier: 1.65, weakenFraction: 0.25 } },
-      skill2: { name: "Eclipse Bastion", description: "Give every living ally 35 shield (refresh; does not stack).", cooldown: 3, targets: "all-allies", strength: { shield: 35 } },
+      skill1: { name: "Nightcleave", description: "165% damage to one enemy; weaken by 25% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.65, weakenFraction: 0.25 } },
+      skill2: { name: "Eclipse Bastion", description: "Give every living ally 35 shield (refresh; does not stack).", cooldown: 0, targets: "all-allies", strength: { shield: 35 } },
       ultimate: { name: "Last Flare: Unbroken Midnight", description: "240% damage to every living enemy and 50 shield for allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.4, shield: 50 } }
     }
   }
@@ -1639,8 +1639,8 @@ var warFighters = {
     stats: { health: 235, defense: 13, damage: 40, crit: 0.18, shatterCapacity: 100, critMultiplier: 1.6, elementalDamage: 0 },
     passive: { name: "Uncharted Current", description: "Normal Attack gains 5 additional Gauge, capped by Gauge capacity.", damageBonus: 0, defenseBonus: 0, healFraction: 0, lightGaugeBonus: 5 },
     abilities: {
-      skill1: { name: "Meridian Break", description: "170% damage to one enemy; weaken its next two enemy-phase attacks by 20%.", cooldown: 2, strength: { damageMultiplier: 1.7, weakenFraction: 0.2 } },
-      skill2: { name: "Fold the Sea", description: "130% damage to all enemies; weaken surviving targets by 15% for two enemy phases.", cooldown: 3, targets: "all-enemies", strength: { damageMultiplier: 1.3, weakenFraction: 0.15 } },
+      skill1: { name: "Meridian Break", description: "170% damage to one enemy; weaken its next two enemy-phase attacks by 20%.", cooldown: 0, strength: { damageMultiplier: 1.7, weakenFraction: 0.2 } },
+      skill2: { name: "Fold the Sea", description: "130% damage to all enemies; weaken surviving targets by 15% for two enemy phases.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.3, weakenFraction: 0.15 } },
       ultimate: { name: "Ocean Beyond the Map", description: "300% damage to all enemies; weaken surviving targets by 30% for two enemy phases. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3, weakenFraction: 0.3 } }
     }
   },
@@ -1648,8 +1648,8 @@ var warFighters = {
     stats: { health: 300, defense: 20, damage: 32, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: "Load-Bearing Will", description: "+10 defense, already included in effective defense.", damageBonus: 0, defenseBonus: 10, healFraction: 0 },
     abilities: {
-      skill1: { name: "Keystone Reversal", description: "160% damage to one enemy; weaken its next two enemy-phase attacks by 25%.", cooldown: 2, strength: { damageMultiplier: 1.6, weakenFraction: 0.25 } },
-      skill2: { name: "Raise the Faultline", description: "Give every living ally 40 shield; refreshes rather than stacks.", cooldown: 3, targets: "all-allies", strength: { shield: 40 } },
+      skill1: { name: "Keystone Reversal", description: "160% damage to one enemy; weaken its next two enemy-phase attacks by 25%.", cooldown: 0, strength: { damageMultiplier: 1.6, weakenFraction: 0.25 } },
+      skill2: { name: "Raise the Faultline", description: "Give every living ally 40 shield; refreshes rather than stacks.", cooldown: 0, targets: "all-allies", strength: { shield: 40 } },
       ultimate: { name: "Worldweight Citadel", description: "260% damage to all enemies and 65 shield to living allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.6, shield: 65 } }
     }
   },
@@ -1658,8 +1658,8 @@ var warFighters = {
     stats: { health: 210, defense: 11, damage: 45, crit: 0.22, shatterCapacity: 100, critMultiplier: 1.65, elementalDamage: 8 },
     passive: { name: "Standing Thunder", description: "+25% outgoing damage at or below half health.", damageBonus: 0.25, defenseBonus: 0, healFraction: 0 },
     abilities: {
-      skill1: { name: "Forked Cadence", description: "180% damage to one enemy with +20 percentage points critical chance.", cooldown: 2, strength: { damageMultiplier: 1.8, critBonus: 0.2 } },
-      skill2: { name: "Resonance Cascade", description: "140% damage to all enemies.", cooldown: 3, targets: "all-enemies", strength: { damageMultiplier: 1.4 } },
+      skill1: { name: "Forked Cadence", description: "180% damage to one enemy with +20 percentage points critical chance.", cooldown: 0, strength: { damageMultiplier: 1.8, critBonus: 0.2 } },
+      skill2: { name: "Resonance Cascade", description: "140% damage to all enemies.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.4 } },
       ultimate: { name: "Last Chord of the Sky", description: "330% damage to all enemies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3.3 } }
     }
   }
@@ -1885,8 +1885,8 @@ var fighters = {
     stats: { health: 220, defense: 10, damage: 38, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 8 },
     passive: { name: "Unbroken Ember", description: "+20% outgoing damage at or below 50% health.", damageBonus: 0.2, defenseBonus: 0, healFraction: 0 },
     abilities: {
-      skill1: { name: "Cinder Cleave", description: "160% damage to one enemy; burn for 8 damage on its next two enemy phases.", cooldown: 2, strength: { damageMultiplier: 1.6, burnMultiplier: 1 } },
-      skill2: { name: "Flame Arc", description: `110% damage to every living enemy. ${kitPilotDescriptions.ember.skill2}`, cooldown: 3, strength: { damageMultiplier: 1.1 } },
+      skill1: { name: "Cinder Cleave", description: "160% damage to one enemy; burn for 8 damage on its next two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.6, burnMultiplier: 1 } },
+      skill2: { name: "Flame Arc", description: `110% damage to every living enemy. ${kitPilotDescriptions.ember.skill2}`, cooldown: 0, strength: { damageMultiplier: 1.1 } },
       ultimate: { name: "Last Flare: Dawnfire", description: `280% damage to every enemy; burn surviving targets for 6 damage on their next two enemy phases. Recover next turn. ${kitPilotDescriptions.ember.ultimate}`, cooldown: 0, strength: { damageMultiplier: 2.8, burnMultiplier: 0.75 } }
     }
   },
@@ -1895,8 +1895,8 @@ var fighters = {
     stats: { health: 260, defense: 16, damage: 30, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: "Stillwater Guard", description: "+8 defense, already included in displayed effective defense.", damageBonus: 0, defenseBonus: 8, healFraction: 0 },
     abilities: {
-      skill1: { name: "Undertow Thrust", description: `150% damage to one enemy; reduce its next two enemy-phase attacks by 25%. ${kitPilotDescriptions.ward.skill1}`, cooldown: 2, strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
-      skill2: { name: "Tidal Shelter", description: "Give every living ally 25 shield (refresh to at least 25; does not stack).", cooldown: 3, strength: { shield: 25 } },
+      skill1: { name: "Undertow Thrust", description: `150% damage to one enemy; reduce its next two enemy-phase attacks by 25%. ${kitPilotDescriptions.ward.skill1}`, cooldown: 0, strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
+      skill2: { name: "Tidal Shelter", description: "Give every living ally 25 shield (refresh to at least 25; does not stack).", cooldown: 0, strength: { shield: 25 } },
       ultimate: { name: "Last Flare: Ocean Memory", description: `220% damage to all enemies and 35 shield for allies. Recover next turn. ${kitPilotDescriptions.ward.ultimate}`, cooldown: 0, strength: { damageMultiplier: 2.2, shield: 35 } }
     }
   },
@@ -1905,8 +1905,8 @@ var fighters = {
     stats: { health: 190, defense: 8, damage: 32, crit: 0.2, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: "Root of Hope", description: "At each new player turn, heal living allies by 5% of their maximum health while Flora lives.", damageBonus: 0, defenseBonus: 0, healFraction: 0.05 },
     abilities: {
-      skill1: { name: "Briar Shot", description: `150% damage to one enemy with +20 percentage points critical chance. Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge (maximum +30%).`, cooldown: 2, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
-      skill2: { name: "Verdant Renewal", description: "Restore 30 health to every living ally; cannot revive. Increase living allies' outgoing attack damage by 10% this and next player turn (refresh; does not stack).", cooldown: 3, strength: { healing: 30, attackBoostFraction: 0.1 } },
+      skill1: { name: "Briar Shot", description: `150% damage to one enemy with +20 percentage points critical chance. Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge (maximum +30%).`, cooldown: 0, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
+      skill2: { name: "Verdant Renewal", description: "Restore 30 health to every living ally; cannot revive. Increase living allies' outgoing attack damage by 10% this and next player turn (refresh; does not stack).", cooldown: 0, strength: { healing: 30, attackBoostFraction: 0.1 } },
       ultimate: { name: "Last Flare: Worldseed", description: `180% damage to all enemies and heal living allies by 55. Recover next turn. Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge (maximum +45%).`, cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } }
     }
   },
@@ -1915,8 +1915,8 @@ var fighters = {
     stats: { health: 225, defense: 11, damage: 43, crit: 0.2, shatterCapacity: 100, critMultiplier: 1.6, elementalDamage: 0 },
     passive: { name: "Virtuous Bloom", description: "At each new player turn, heal living allies by 2% of maximum health while Rosetta lives.", damageBonus: 0, defenseBonus: 0, healFraction: 0.02 },
     abilities: {
-      skill1: { name: "Golden Thorn Volley", description: "170% damage to one enemy; reduce surviving targets' attacks by 20% for two enemy phases.", cooldown: 2, strength: { damageMultiplier: 1.7, weakenFraction: 0.2 } },
-      skill2: { name: "Crimson Skyfall", description: "120% damage to every living enemy; weaken by 15% for two enemy phases.", cooldown: 3, targets: "all-enemies", strength: { damageMultiplier: 1.2, weakenFraction: 0.15 } },
+      skill1: { name: "Golden Thorn Volley", description: "170% damage to one enemy; reduce surviving targets' attacks by 20% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.7, weakenFraction: 0.2 } },
+      skill2: { name: "Crimson Skyfall", description: "120% damage to every living enemy; weaken by 15% for two enemy phases.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.2, weakenFraction: 0.15 } },
       ultimate: { name: "Last Flare: Rose Beyond the Sun", description: "300% damage to every living enemy; weaken by 30% for two enemy phases. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3, weakenFraction: 0.3 } }
     }
   },
@@ -1925,8 +1925,8 @@ var fighters = {
     stats: { health: 280, defense: 17, damage: 31, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: "Forbidden Garden", description: "+9 defense, included in effective defense.", damageBonus: 0, defenseBonus: 9, healFraction: 0 },
     abilities: {
-      skill1: { name: "Gilded Thorn Guard", description: "Give every living ally 30 shield (refresh; does not stack).", cooldown: 2, targets: "all-allies", strength: { shield: 30 } },
-      skill2: { name: "Shadow Rose Cleave", description: "180% damage to one enemy; weaken by 20% for two enemy phases.", cooldown: 3, strength: { damageMultiplier: 1.8, weakenFraction: 0.2 } },
+      skill1: { name: "Gilded Thorn Guard", description: "Give every living ally 30 shield (refresh; does not stack).", cooldown: 0, targets: "all-allies", strength: { shield: 30 } },
+      skill2: { name: "Shadow Rose Cleave", description: "180% damage to one enemy; weaken by 20% for two enemy phases.", cooldown: 0, strength: { damageMultiplier: 1.8, weakenFraction: 0.2 } },
       ultimate: { name: "Last Flare: Thousand-Rose Dominion", description: "240% damage to all enemies and 40 shield for allies. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 2.4, shield: 40 } }
     }
   },
@@ -1935,8 +1935,8 @@ var fighters = {
     stats: { health: 205, defense: 9, damage: 41, crit: 0.25, shatterCapacity: 100, critMultiplier: 1.7, elementalDamage: 9 },
     passive: { name: "Rose Duality", description: "+15% outgoing damage at or below 50% health.", damageBonus: 0.15, defenseBonus: 0, healFraction: 0 },
     abilities: {
-      skill1: { name: "Golden Edge", description: "180% damage to one enemy with +15 percentage points critical chance.", cooldown: 2, strength: { damageMultiplier: 1.8, critBonus: 0.15 } },
-      skill2: { name: "Crimson Rupture", description: "120% damage to every living enemy; burn for 9 on two enemy phases.", cooldown: 3, targets: "all-enemies", strength: { damageMultiplier: 1.2, burnMultiplier: 1 } },
+      skill1: { name: "Golden Edge", description: "180% damage to one enemy with +15 percentage points critical chance.", cooldown: 0, strength: { damageMultiplier: 1.8, critBonus: 0.15 } },
+      skill2: { name: "Crimson Rupture", description: "120% damage to every living enemy; burn for 9 on two enemy phases.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.2, burnMultiplier: 1 } },
       ultimate: { name: "Last Flare: Blossoming Cataclysm", description: "310% damage to every living enemy; burn for 14 on two enemy phases. Recover next turn.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 3.1, burnMultiplier: 1.5 } }
     }
   }
@@ -2967,8 +2967,10 @@ function storyMaterialLoot(stage) {
   const { element, level } = storyEncounter(stage);
   const growth = ((level - 1) / 54) ** 2;
   const minimum = 1 + Math.floor(2 * growth);
-  const drops = [{ id: `${element}-common`, minimum, maximum: minimum * 2, chance: 1 }];
-  if (level >= 23) drops.push({ id: `${element}-uncommon`, minimum, maximum: minimum * 2, chance: 0.25 + 0.55 * (level - 23) / 32 });
+  const drops = [
+    { id: `${element}-common`, minimum, maximum: minimum * 2, chance: 1 },
+    { id: `${element}-uncommon`, minimum, maximum: minimum * 2, chance: 0.25 + 0.55 * (level - 1) / 54 }
+  ];
   return drops.map((drop) => bossLootRange(drop, bossLootMultiplier({ story: { storyStage: stage } })));
 }
 function storyDrops(stage, random) {
@@ -3124,7 +3126,7 @@ function resolveCapturedFighter(copy, equipment, upgrades) {
     if (!skill) kit.unavailableActions?.push(action);
     else kit.abilities[action] = {
       name: skill.name,
-      cooldown: skill.every,
+      cooldown: action === "ultimate" ? skill.every : 0,
       description: `${formatStat(skill.multiplier * 100)}% damage to one enemy; retained enemy skill.`,
       strength: { damageMultiplier: skill.multiplier }
     };
@@ -3850,9 +3852,6 @@ function actionUnavailable(state, actor, action) {
   if (action === "ultimate" && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
   const gaugeCost = actionGaugeCost(actor, action);
   if (actor.shatter < gaugeCost) return `Requires ${gaugeCost} Shatter Gauge.`;
-  if ((action === "skill1" || action === "skill2") && actor.readyRound[action] > state.round) {
-    return `Ready on turn ${actor.readyRound[action]}.`;
-  }
   return null;
 }
 function actionGaugeCost(actor, action) {
@@ -4106,7 +4105,7 @@ function act(previous, actorId, action, targetId) {
   if (action === "ultimate") actor.recoverThrough = state.round + 1;
   actor.shatter -= actionGaugeCost(actor, action);
   gainShatter(actor, shatterGauge.gains[action] + (action === "light" ? definition.passive.lightGaugeBonus ?? 0 : 0), events);
-  if (action === "skill1" || action === "skill2") actor.readyRound[action] = state.round + definition.abilities[action].cooldown;
+  if (action === "skill1" || action === "skill2") actor.readyRound[action] = state.round;
   if (action === "ultimate" && actor.captured) actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
   const stormstepBonus = action === "skill1" && actor.conduitCharges?.stormstepSkill1 || action === "skill2" && actor.conduitCharges?.stormstepSkill2 ? 0.1 : 0;
   if (action === "skill1") delete actor.conduitCharges?.stormstepSkill1;

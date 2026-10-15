@@ -1,5 +1,30 @@
 # Current state and handoff
 
+## Successive-turn squad skills (D-300)
+
+- Owner requests no ability cooldowns except Last Flare and explicitly includes
+  captured Elemental-Devourers. All16 Element-Bearers'32 ordinary skill fields
+  are zero; captured Skill1/Skill2 resolve with no cooldown while retaining raw
+  saved enemy intervals. Old readiness dates in resumed runs no longer block
+  these skills. Updated Battle/Character/captured references accordingly.
+  [Contract](combat.md#successive-turn-squad-abilities-d-300).
+- Gauge costs, one action per turn, missing captured slots, enemy schedules,
+  Last Flare100 Gauge/next-turn recovery and captured ultimate cooldowns remain.
+  No account migration/load writes, auto-refills or Conduit redesign.
+  More frequent skills now let the tested soloLv38/Evo2 Infernis clear early
+  material stages; final unbuilt solo clears still fail. Updated that exact
+  balance expectation rather than changing enemy stats.
+- `node tools\bundle_server_game.mjs`:regenerated shared server artifact.
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`:passed.
+  `npm test -- --maxWorkers=2`:all2,223 tests passed in146 files, including
+  all16 character repeat-skill cases, captured repeats, old snapshots,
+  authoritative-operation repeats and retained Last Flare restrictions.
+  `npm run build`:passed, existing chunk-size advisory only.
+  Edited-source diagnostics and `git diff --check`:passed.
+- Local client/server source and bundle only. Both client and game-operation
+  function must be published for hosted parity; neither deployed in this task.
+  No owner accounts or live sessions modified.
+
 ## Battlefield sprite contrast
 
 - Owner screenshot shows unselected green enemies blending into Botanic

@@ -18,6 +18,33 @@ function started() { return op(freshGame('tester'), { kind: 'bootstrap', starter
 function rich() { const game = started(); game.account.fractalis = 1000000; game.account.lycalis = 1000; return game; }
 
 describe('server authoritative game engine', () => {
+  it.each(['skill1', 'skill2'] as const)('accepts successive %s actions in resumed Element-Bearer and captured runs', action => {
+    for (const captured of [false, true]) {
+      const game = started();
+      const copy = createCreatureCopy('infusion:abyss:0', 1);
+      if (captured) {
+        game.account.capturedCharacters = [copy];
+        game.account.squad = [copy.instanceId];
+      }
+      let current = op(game, { kind: 'enter', activity: { kind: 'training' } }).game;
+      const state = current.run!.session.state;
+      const actor = state.allies[0];
+      actor.shatter = 100;
+      actor.readyRound[action] = 99;
+      actor.kit!.abilities[action].cooldown = 5;
+      state.enemies.forEach(enemy => { enemy.hp = enemy.stats.health = 100000; enemy.stats.damage = 1; });
+      const command: GameOperation = { kind: 'act', runId: current.run!.session.runId,
+        actorId: actor.id, action, targetId: state.enemies[0].id };
+      const first = op(current, command);
+      current = first.game;
+      expect(current.run!.session.state.round).toBe(2);
+      const second = op(current, command);
+      expect(second.response.result!.events).toContainEqual(expect.objectContaining({
+        kind: 'attack', source: actor.id, action,
+      }));
+      expect(validateGameResponse(second.response)).toEqual(second.response);
+    }
+  });
   it.each(['player', 'cleared', 'defeat'] as const)('quits a %s run without changing saved rewards or progress', phase => {
     const entered = op(started(), { kind: 'enter', activity: { kind: 'training' } }).game;
     entered.run!.session.state.phase = phase;

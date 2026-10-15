@@ -72,7 +72,8 @@ No Heavy action, invented skill, permanent death or automatic deletion.
 ### Fixed-form growth and ratings
 
 - Start at the defeated enemy's actual level. Keep its ability names, multipliers
-  and intervals unchanged when leveling; intervals become manual cooldowns.
+  and saved intervals unchanged when leveling. Under D-300, Skill1/Skill2 have
+  no manual cooldown; only retained Last Flare uses its enemy interval.
 - Use D-288's separate **linear playable**, never hostile/boss, stat curve:
   base220 HP/38 Attack/16 Defense, factor `1+.15*level`, Defense exponent.7.
   HP/Attack/Defense multiply by `.65 + .35 * tier / 5` for fixed tier0-5.

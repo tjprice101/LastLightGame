@@ -40,6 +40,25 @@ function seeded() {
 }
 
 describe('20% capture rewards and retained fixed-form Elemental-Devourers', () => {
+  it.each(['skill1', 'skill2'] as const)('repeats captured %s on the next turn, preserving saved intervals and Gauge costs', action => {
+    const captured = copy();
+    const before = structuredClone(captured);
+    let state = createBattle(1729, [captured.instanceId], {}, {}, [captured]);
+    const actor = state.allies[0];
+    actor.shatter = 100;
+    actor.readyRound[action] = 99;
+    actor.kit!.abilities[action].cooldown = 5;
+    state.enemies.forEach(enemy => { enemy.hp = enemy.stats.health = 100000; enemy.stats.damage = 1; });
+    expect(resolveCapturedFighter(captured).abilities[action].cooldown).toBe(0);
+    state = act(state, actor.id, action, state.enemies[0].id).state;
+    expect(() => act(state, actor.id, action, state.enemies[0].id)).toThrow('already acted');
+    state = endTurn(state).state;
+    expect(actionUnavailable(state, state.allies[0], action)).toBeNull();
+    expect(() => act(state, actor.id, action, state.enemies[0].id)).not.toThrow();
+    state.allies[0].shatter = 0;
+    expect(actionUnavailable(state, state.allies[0], action)).toContain('Shatter Gauge');
+    expect(captured).toEqual(before);
+  });
   it.each(['skill1', 'skill2'] as const)('keeps Votive Roselius %s usable at its actual Gauge cost', (action) => {
     const votive = createCreatureCopy('infusion:roses:1', 6);
     const state = createBattle(1729, [votive.instanceId], {}, {}, [votive]);
@@ -144,7 +163,7 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
       const expected = damageAmount(actor.stats.damage, actor.kit!.abilities.skill2.strength.damageMultiplier!, target.stats.defense, false);
       const result = act(session.state, actor.id, 'skill2', target.id);
       expect(result.events.find((event) => event.kind === 'damage')?.amount).toBe(expected);
-      expect(result.state.allies[0].readyRound.skill2).toBe(6);
+      expect(result.state.allies[0].readyRound.skill2).toBe(session.state.round);
       expect(actionUnavailable(session.state, actor, 'ultimate')).toContain('does not have');
       session.state.phase = 'cleared';
       const advanced = destination ? nextStage(session.state, mixed.characters) : nextWave(session.state);

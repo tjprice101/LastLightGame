@@ -53,8 +53,8 @@ export const warFighters: Record<WarCharacterId, FighterDefinition> = {
     stats: { health: 235, defense: 13, damage: 40, crit: .18, shatterCapacity: 100, critMultiplier: 1.6, elementalDamage: 0 },
     passive: { name: 'Uncharted Current', description: 'Normal Attack gains 5 additional Gauge, capped by Gauge capacity.', damageBonus: 0, defenseBonus: 0, healFraction: 0, lightGaugeBonus: 5 },
     abilities: {
-      skill1: { name: 'Meridian Break', description: '170% damage to one enemy; weaken its next two enemy-phase attacks by 20%.', cooldown: 2, strength: { damageMultiplier: 1.7, weakenFraction: .2 } },
-      skill2: { name: 'Fold the Sea', description: '130% damage to all enemies; weaken surviving targets by 15% for two enemy phases.', cooldown: 3, targets: 'all-enemies', strength: { damageMultiplier: 1.3, weakenFraction: .15 } },
+      skill1: { name: 'Meridian Break', description: '170% damage to one enemy; weaken its next two enemy-phase attacks by 20%.', cooldown: 0, strength: { damageMultiplier: 1.7, weakenFraction: .2 } },
+      skill2: { name: 'Fold the Sea', description: '130% damage to all enemies; weaken surviving targets by 15% for two enemy phases.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 1.3, weakenFraction: .15 } },
       ultimate: { name: 'Ocean Beyond the Map', description: '300% damage to all enemies; weaken surviving targets by 30% for two enemy phases. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 3, weakenFraction: .3 } },
     },
   },
@@ -62,8 +62,8 @@ export const warFighters: Record<WarCharacterId, FighterDefinition> = {
     stats: { health: 300, defense: 20, damage: 32, crit: .1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: 'Load-Bearing Will', description: '+10 defense, already included in effective defense.', damageBonus: 0, defenseBonus: 10, healFraction: 0 },
     abilities: {
-      skill1: { name: 'Keystone Reversal', description: '160% damage to one enemy; weaken its next two enemy-phase attacks by 25%.', cooldown: 2, strength: { damageMultiplier: 1.6, weakenFraction: .25 } },
-      skill2: { name: 'Raise the Faultline', description: 'Give every living ally 40 shield; refreshes rather than stacks.', cooldown: 3, targets: 'all-allies', strength: { shield: 40 } },
+      skill1: { name: 'Keystone Reversal', description: '160% damage to one enemy; weaken its next two enemy-phase attacks by 25%.', cooldown: 0, strength: { damageMultiplier: 1.6, weakenFraction: .25 } },
+      skill2: { name: 'Raise the Faultline', description: 'Give every living ally 40 shield; refreshes rather than stacks.', cooldown: 0, targets: 'all-allies', strength: { shield: 40 } },
       ultimate: { name: 'Worldweight Citadel', description: '260% damage to all enemies and 65 shield to living allies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 2.6, shield: 65 } },
     },
   },
@@ -72,8 +72,8 @@ export const warFighters: Record<WarCharacterId, FighterDefinition> = {
     stats: { health: 210, defense: 11, damage: 45, crit: .22, shatterCapacity: 100, critMultiplier: 1.65, elementalDamage: 8 },
     passive: { name: 'Standing Thunder', description: '+25% outgoing damage at or below half health.', damageBonus: .25, defenseBonus: 0, healFraction: 0 },
     abilities: {
-      skill1: { name: 'Forked Cadence', description: '180% damage to one enemy with +20 percentage points critical chance.', cooldown: 2, strength: { damageMultiplier: 1.8, critBonus: .2 } },
-      skill2: { name: 'Resonance Cascade', description: '140% damage to all enemies.', cooldown: 3, targets: 'all-enemies', strength: { damageMultiplier: 1.4 } },
+      skill1: { name: 'Forked Cadence', description: '180% damage to one enemy with +20 percentage points critical chance.', cooldown: 0, strength: { damageMultiplier: 1.8, critBonus: .2 } },
+      skill2: { name: 'Resonance Cascade', description: '140% damage to all enemies.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 1.4 } },
       ultimate: { name: 'Last Chord of the Sky', description: '330% damage to all enemies. Recover next turn.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 3.3 } },
     },
   },

@@ -1,5 +1,22 @@
 # Combat specification
 
+## Successive-turn squad abilities (D-300)
+
+Skill1 and Skill2 have no cooldown for all16 Element-Bearers and all captured
+Elemental-Devourers. They can repeat on consecutive player turns, provided the
+caster is alive, has not acted this turn and can pay the unchanged25/40 Gauge
+cost. This does not grant extra same-turn actions or refill Gauge.
+Existing run snapshots' old skill readiness dates do not block ordinary skills;
+their frozen stats, potency, equipment and resources remain unchanged.
+
+Last Flare retains its100 Gauge cost and mandatory full next-turn recovery.
+Captured Last Flare also retains its original enemy-interval cooldown.
+Missing captured slots remain unavailable. Hostile skill schedules and saved
+capture interval metadata are unchanged; ordinary retained intervals no longer
+create playable cooldowns. Existing cooldown-reduction Conduit rules are not
+rebalanced or replaced and cannot grant additional actions.
+This supersedes earlier ordinary-skill cooldown requirements.
+
 ## Artwork-led battlefield sizes
 
 Battlefield size follows the design, not a solo/squad bonus or the encounter's

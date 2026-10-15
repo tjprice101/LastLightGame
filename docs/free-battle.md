@@ -260,7 +260,7 @@ Integer rounding may make adjacent HP/attack increments differ by one.
 Edit [Adventure scaling](../src/content/combat.ts) to tune the fixed increments.
 Clear a wave, then explicitly choose Next wave.
 Continue until defeat, exit, or a confirmed restart. Health, shields, Shatter Gauge,
-skill cooldowns, and recovery carry between waves; defeated allies stay defeated.
+retained Last Flare cooldowns, and recovery carry between waves; defeated allies stay defeated.
 Flora' living passive still applies at the new-turn boundary.
 
 Leaving Adventure during animation cancels presentation and ends the run; already
@@ -363,8 +363,8 @@ Each living character may perform **one** action per player turn:
 | Action | Rule |
 | --- | --- |
 | Normal Attack | Drag down, right-click an ally or Battle menu Normal Attack button; 100% damage to one target; gain 20 Shatter Gauge |
-| Ability 1 | Character-specific effect; costs 25 Shatter Gauge; two-turn cooldown |
-| Ability 2 | Character-specific effect; costs 40 Shatter Gauge; three-turn cooldown |
+| Ability 1 | Character-specific effect; costs 25 Shatter Gauge; no cooldown |
+| Ability 2 | Character-specific effect; costs 40 Shatter Gauge; no cooldown |
 | Last Flare | Character-specific ultimate; costs 100 Shatter Gauge; no action next turn |
 | Defense | Battle menu Defense button; consumes action, reduces incoming damage by 10% until next player turn |
 
@@ -389,12 +389,13 @@ dungeon/infusion stages in the same run, but reset on quit, mode switch,
 retry/replay, restart or reload. Next-stage continuation still refreshes HP
 and cooldowns; it no longer resets Shatter Gauge.
 
-Skills do not force recovery. Cooldown "2" means using it on turn
-1 makes it usable again on turn 3; cooldown "3" becomes usable on turn 4.
+Skills do not force recovery or cooldowns for any squad member (D-300).
+Skill1/Skill2 may repeat on successive turns, including for captured allies.
 A Last Flare on turn 1 blocks every action on turn 2 and allows actions again
 on turn 3. The rule also applies when a wave is cleared by that action.
-Normal, Defense, and skills allow another action on the next turn (subject to gauge
-and the selected skill's cooldown). Support skills still spend gauge and consume
+Normal, Defense, and skills allow another action on the next turn (subject to Gauge).
+Captured Last Flare retains its enemy-interval cooldown in addition to recovery.
+Support skills still spend Gauge and consume
 the character's one action.
 
 ## Stats and formulas
@@ -479,7 +480,7 @@ random living ally. This is not an authoritative or monetized online battle syst
 
 Validate phase, living actor, action allowance, recovery, resources, cooldown, and
 target -> clone state -> spend action/Shatter Gauge, apply attack gauge gain, and
-set ultimate recovery/skill cooldown -> damage and
+set ultimate recovery/retained Last Flare cooldown -> damage and
 statuses -> support effects -> outcome check.
 Invalid operations throw explicit errors without modifying the previous state.
 

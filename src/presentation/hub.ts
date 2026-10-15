@@ -276,7 +276,7 @@ export function characterInformation(): string {
     Eight ordinary slots and one character-specific Master slot are available. Up to four ordinary Omnic Conduits may be equipped, each matching the character's combat element. Masters are Omnic, use only their named Element-Bearer, and have fixed kit effects without upgrades.
     Rare and Legendary drops come from Awaken the Machines; Omnic drops unlock at stage ${machineRules.omnicStage}. Legendary banner bonuses are separate from the main draw.
     Equipment changes save immediately and apply to the next run, not an active run.</p>
-    <h3>Captured abilities</h3><p>Captures retain their defeated form and skills. Enemy skill intervals become manual cooldowns.
+    <h3>Captured abilities</h3><p>Captures retain their defeated form and skills. Skill 1 and Skill 2 have no cooldown; only retained Last Flare intervals become manual cooldowns.
     Missing ability slots remain unavailable. Stats use ordinary growth without boss bonuses.</p>`);
 }
 

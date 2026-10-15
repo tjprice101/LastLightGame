@@ -85,7 +85,7 @@ describe('shared starter elemental loops', () => {
     expect(weakened.state.enemies[0].weakenFraction).toBeCloseTo(.4);
     expect(weakened.state.enemies[0].weakened).toBe(2);
     expect(weakened.state.allies[0].pilot?.ward).toBe(0);
-    expect(weakened.state.allies[0].readyRound.skill1).toBe(state.round + 2);
+    expect(weakened.state.allies[0].readyRound.skill1).toBe(state.round);
 
     const ultimateState = encounter('tide');
     ultimateState.allies[0].pilot = { ward: 3 };

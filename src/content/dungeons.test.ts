@@ -56,7 +56,7 @@ describe('elemental material dungeons', () => {
         if (action) state = act(state, actor.id, action, state.enemies.find((enemy) => enemy.hp > 0)!.id).state;
         if (state.phase === 'player') state = endTurn(state).state;
       }
-      expect(state.phase, `${element} stage ${stage}`).toBe('defeat');
+      expect(state.phase, `${element} stage ${stage}`).toBe(stage === 1 ? 'cleared' : 'defeat');
     }
   });
   it('guarantees Seeds, gates each higher rarity exactly and checks probability boundaries', () => {

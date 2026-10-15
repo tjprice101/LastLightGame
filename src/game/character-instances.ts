@@ -97,7 +97,7 @@ export function resolveCapturedFighter(copy: CapturedCharacter, equipment?: Cond
   for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
     const skill = skills.find((entry) => entry.action === action);
     if (!skill) kit.unavailableActions?.push(action);
-    else kit.abilities[action] = { name: skill.name, cooldown: skill.every,
+    else kit.abilities[action] = { name: skill.name, cooldown: action === 'ultimate' ? skill.every : 0,
       description: `${formatStat(skill.multiplier * 100)}% damage to one enemy; retained enemy skill.`, strength: { damageMultiplier: skill.multiplier } };
   }
   if (equipment) validateConduitElement(equipment, creature.element);

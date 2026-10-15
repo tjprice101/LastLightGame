@@ -462,9 +462,10 @@ can lead and the starter can be removed, but the squad cannot be empty.
 Saving does not consume/remove ownership. Summons start unequipped.
 
 Every battle mode snapshots equipped IDs and each member's progress at run entry.
-Each living character has one action per turn, separate Gauge/recovery/cooldowns
+Each living character has one action per turn, separate Gauge and Last Flare recovery
 and its existing tank/healer/attacker kit. Continue retains the roster and each
-Gauge; staged encounters reset HP/cooldowns, Adventure carries encounter state.
+Gauge; staged encounters reset HP/retained ultimate cooldowns, Adventure carries encounter state.
+Skill1/Skill2 have no cooldown for either Element-Bearers or captured squad members (D-300).
 Replay retains the run's progress snapshot and team, with fresh Gauge.
 Squad edits affect the next run; Settings retains the current run.
 See [summoning](summoning-and-economy.md) and [tests](../src/game/squad.test.ts).

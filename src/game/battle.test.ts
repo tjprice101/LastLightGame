@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { enemies, fighters, type ActionId } from '../content/combat';
-import { openingStarters as starters } from '../content/starters';
+import { openingStarters as starters, starters as roster } from '../content/starters';
 import { act, actionUnavailable, createBattle, damageAmount, elementalCritFactor, endTurn, nextWave, rollCritical, type BattleState } from './battle';
 import { characterGrowthFactor, characterPotencyFactor } from '../content/progression';
 import { enemyCombatStats, enemyGrowth } from '../content/stat-growth';
@@ -21,6 +21,17 @@ function use(state: BattleState, id: string, action: ActionId): BattleState {
 }
 
 describe('Adventure damage and turns', () => {
+  it.each(roster)('$name can repeat either ordinary skill on consecutive turns', starter => {
+    for (const action of ['skill1', 'skill2'] as const) {
+      let state = createBattle(12345, [starter.id]);
+      state.allies[0].shatter = 100;
+      state.enemies.forEach(enemy => { enemy.hp = enemy.stats.health = 100000; enemy.stats.damage = 1; });
+      state = use(state, starter.id, action);
+      state = endTurn(state).state;
+      expect(actionUnavailable(state, state.allies[0], action)).toBeNull();
+      expect(() => use(state, starter.id, action)).not.toThrow();
+    }
+  });
   it('uses attack-relative diminishing Defense, rounds the mitigated hit, and retains 150% crits and a one-damage floor', () => {
     expect(damageAmount(38, 1, 5, false)).toBe(34);
     expect(damageAmount(38, 1.8, 5, false)).toBe(60);
@@ -54,13 +65,18 @@ describe('Adventure damage and turns', () => {
     expect(state.round).toBe(3);
     expect(actionUnavailable(state, state.allies[0], 'light')).toBeNull();
   });
-  it('skills do not cause recovery; cooldown expires on its exact round', () => {
-    let state = use(controlled(), 'ember', 'skill1');
+  it.each(['skill1', 'skill2'] as const)('%s can repeat on successive turns without cooldown or recovery', (action) => {
+    const previous = controlled();
+    previous.allies[0].readyRound[action] = 99;
+    previous.allies[0].kit!.abilities[action].cooldown = 3;
+    let state = use(previous, 'ember', action);
+    expect(state.allies[0].recoverThrough).toBe(0);
+    expect(() => use(state, 'ember', action)).toThrow('already acted');
     state = endTurn(state).state;
-    expect(actionUnavailable(state, state.allies[0], 'light')).toBeNull();
-    expect(actionUnavailable(state, state.allies[0], 'skill1')).toBe('Ready on turn 3.');
-    state = endTurn(state).state;
-    expect(actionUnavailable(state, state.allies[0], 'skill1')).toBeNull();
+    expect(actionUnavailable(state, state.allies[0], action)).toBeNull();
+    expect(() => use(state, 'ember', action)).not.toThrow();
+    state.allies[0].shatter = 0;
+    expect(actionUnavailable(state, state.allies[0], action)).toContain('Shatter Gauge');
   });
   it.each(['light', 'defend', 'skill1', 'skill2'] as const)('%s allows attacking on the very next turn', (action) => {
     const acted = use(controlled(), 'ember', action);
@@ -186,7 +202,7 @@ describe('Shatter Gauge', () => {
       const burn = Math.round(8 * factor * potency);
       expect(result.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(actor.stats.damage, 1.6 * potency, 5, true, actor.stats.critMultiplier));
       expect(result.state.enemies[0].burn).toEqual({ damage: burn, turns: 2, sourceId: 'ember', origin: 'native' });
-      expect(result.state.allies[0].readyRound.skill1).toBe(3);
+      expect(result.state.allies[0].readyRound.skill1).toBe(state.round);
       expect(result.state.allies[0].shatter).toBe(89);
       expect(endTurn(result.state).events.find((entry) => entry.kind === 'damage' && entry.source === 'ember')?.amount).toBe(burn);
       expect(damageAmount(100, 1, 0, true, 2.1)).toBe(210);

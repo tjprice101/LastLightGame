@@ -1,5 +1,15 @@
 # Authoritative game operation
 
+## Successive-turn squad skills (D-300)
+
+The shared engine removes Skill1/Skill2 cooldowns for Element-Bearers and
+captured squad members, including old readiness dates in resumed snapshots.
+Gauge costs, one action per turn, Last Flare recovery/ultimate cooldowns,
+enemy schedules and saved capture intervals remain unchanged.
+Regenerate with `node tools\bundle_server_game.mjs` and deploy the function
+alongside the client for online parity. No database migration or load-time
+account writes. This source update alone does not publish the new behavior.
+
 ## Repeatable final-boss quantities (D-294)
 
 The generated engine and deployed function include the shared5x terminal
