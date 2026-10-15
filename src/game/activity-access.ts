@@ -20,7 +20,7 @@ export function activityAccess(account: Account, activity: Activity) {
     const valid = isCalamityActivityId(activity.activity) && isCalamityTier(activity.tier);
     const highestTier = valid ? calamityUnlockedTier(account, activity.activity) : 0;
     const unlocked = valid && activity.tier <= highestTier;
-    const requirement = highestTier === 0 ? 'Clear the normal final boss (a verified final-clear receipt also qualifies)'
+    const requirement = highestTier === 0 ? 'Defeat this activity\'s final boss on Normal'
       : `Clear Calamity EX+${activity.tier - 1}`;
     return { unlocked, minimumLevel: 0, level: highestBearerLevel(account), requirement };
   }

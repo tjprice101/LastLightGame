@@ -1,5 +1,24 @@
 # Menus and inventory
 
+## Plain language and reward alignment (D-321)
+
+Use short, natural English in player-facing activity descriptions, boss rules,
+reward details and help. Say what the player fights, earns, spends or must do.
+Keep exact amounts, chances, unlocks, timing and meaningful restrictions.
+Do not fill these screens with implementation terms, save/receipt internals,
+design commentary or repeated assurances about unchanged systems. Show save
+status once; keep actionable error messages and post-save failure warnings.
+
+Calamity tier cards share rows for their artwork, headings, boss descriptions,
+reward sections and actions. Reward names align left, quantities right; omit
+Master-chest entries for tiers that do not contain them. Reward showcases share
+image/name/quantity rows so long names do not stagger their counts.
+
+Boss previews use square framing, dimmed scenery and a subtle contrast edge.
+Battle scenery is also dimmed for Calamity; bosses retain a contrast edge in
+the field, ultimate cut-ins and revealed Collections entries. Hidden silhouettes,
+source images, subject colors, facing and mechanics remain unchanged.
+
 ## Activity difficulty tabs (D-320)
 
 The twelve Calamity-enabled activities offer Normal / Calamity tabs, including

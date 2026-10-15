@@ -26,7 +26,7 @@ export function portraitCutin(unit: Combatant, cue: NonNullable<ReturnType<typeo
   panel.style.setProperty('--cutin-power', String(cue.power));
   panel.innerHTML = `<span class="cutin-architecture" aria-hidden="true">${signatureMarkup(flair)}</span><span class="cutin-streaks" aria-hidden="true"></span><span class="cutin-sigil" aria-hidden="true"></span>
     <span class="cutin-crest" aria-hidden="true"><span></span></span><span class="cutin-edge cutin-edge-top" aria-hidden="true"></span><span class="cutin-edge cutin-edge-bottom" aria-hidden="true"></span>
-    <span class="cutin-portrait" aria-hidden="true">${art ? `<img src="${assetUrl(`${isStarterId(unit.definitionId) && !unit.captured ? 'characters' : 'enemies'}/${art}.png`)}" alt="" ${unitFacingAttributes(art, unit.side)} width="960" height="960">`
+    <span class="cutin-portrait" aria-hidden="true">${art ? `<img ${unit.definitionId.startsWith('calamity:') ? 'class="calamity-boss-contrast"' : ''} src="${assetUrl(`${isStarterId(unit.definitionId) && !unit.captured ? 'characters' : 'enemies'}/${art}.png`)}" alt="" ${unitFacingAttributes(art, unit.side)} width="960" height="960">`
       : '<span class="pending-enemy-art"><span></span></span>'}</span>
     <span class="cutin-copy"><small>${cue.ultimate ? unit.boss ? 'BOSS ULTIMATE' : 'LAST FLARE' : unit.side === 'enemy' ? 'ENEMY SKILL' : 'SKILL RELEASE'}</small><strong></strong><span></span><i class="cutin-divider" aria-hidden="true"></i></span>`;
   const name = panel.querySelector('.cutin-copy strong');

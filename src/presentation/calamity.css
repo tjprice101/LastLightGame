@@ -9,11 +9,22 @@
 .activity-difficulty .calamity-section > h3 { margin: 0 0 1rem; font-size: clamp(1.25rem, 2.2vw, 2rem); line-height: 1.25; overflow-wrap: anywhere; }
 .calamity-section { margin-block: 1.5rem; padding: 1rem; border: 1px solid #a94646; border-radius: 12px; background: #211b1b; color: #fff; }
 .calamity-tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 1rem; }
-.calamity-tier { padding: .8rem; border: 1px solid #785757; border-radius: 8px; }
-.calamity-tier h4 { margin-top: 0; }
-.calamity-tier-scene { position: relative; isolation: isolate; display: grid; place-items: center; aspect-ratio: 16 / 10; margin-bottom: .8rem; overflow: hidden; border-radius: 6px; }
-.calamity-tier-arena { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; }
-.calamity-tier-boss { width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+.calamity-tier { display: grid; grid-template-rows: subgrid; grid-row: span 7; gap: .75rem; min-width: 0; padding: .8rem; border: 1px solid #785757; border-radius: 8px; text-align: left; }
+.calamity-tier h4, .calamity-tier p { margin: 0; }
+.calamity-tier header p { margin-top: .4rem; }
+.calamity-tier-scene { position: relative; isolation: isolate; display: grid; place-items: center; aspect-ratio: 1; overflow: hidden; border-radius: 6px; background: #111; }
+.calamity-tier-arena { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; filter: brightness(.35) saturate(.65); }
+.calamity-tier-boss { width: 100%; height: 100%; min-height: 0; object-fit: contain; filter: drop-shadow(0 2px 2px #000) drop-shadow(0 0 8px #ffffff60); }
+.calamity-tier-reward { display: grid; grid-template-rows: subgrid; grid-row: span 3; }
+.calamity-reward-list { display: grid; gap: .5rem; margin: 0; padding: 0; list-style: none; }
+.calamity-reward-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: .5rem; }
+.calamity-reward-list span { overflow-wrap: anywhere; }
+.calamity-reward-list strong { font-variant-numeric: tabular-nums; text-align: right; }
+.calamity-tier-actions { display: flex; flex-direction: column; gap: .5rem; align-self: end; }
+.calamity-tier-actions button { width: 100%; min-height: 44px; text-align: left; }
+.calamity-tier-actions .activity-unlock-hint { min-height: 2.8em; }
+.calamity-boss-contrast, html body .battle-screen #battle-root .battle-sprite img.calamity-boss-contrast { filter: drop-shadow(0 2px 2px #000) drop-shadow(0 0 6px #ffffff80); }
+#battle-root .battle-scenery.calamity-scenery { filter: brightness(.55) saturate(.8); }
 .calamity-chest-art { display: block; width: 96px; height: 96px; max-width: 100%; object-fit: contain; margin: .5rem auto; }
 .inventory-item-art .calamity-chest-art { width: 100%; height: 100%; margin: 0; }
 .reward-screen .calamity-chest-art { width: 100%; height: 100%; margin: 0; }

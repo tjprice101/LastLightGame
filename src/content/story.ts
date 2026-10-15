@@ -3,7 +3,7 @@ import { type Stats } from './combat';
 import { elementAccents } from './dungeon-art';
 import { enemyCombatStats } from './stat-growth';
 import { rollDrop, storyFractalisDrop } from './loot-random';
-import { bossLootMultiplier, bossLootRange, finalBossLootText } from './final-boss-loot';
+import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 import { storyRegionArt } from './story-art';
 import { enemyAbilityMultiplier } from './enemy-skills';
 
@@ -80,7 +80,7 @@ export function storyDrops(stage: number, random: () => number): Record<string, 
   }));
 }
 
-export const storyRulesText = `Six regions in a fixed order, 25 stages each, enemy levels 1-55. Enemy level and boss rank determine combat strength consistently across activities; higher-level enemies demand stronger Conduits and a reliable squad. Common and Uncommon matching-element materials only; no captures. Regional bosses grant a one-time account bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and growing 15% per region. Base per-kill Prismatica rises in a straight line by enemy level: 5-10 at Lv.1, +2 minimum per level, 113-226 at Lv.55. Every regional boss multiplies ordinary Prismatica and material quantities by 5, including replays; first-clear bonuses do not multiply or repeat. Continue restores HP and retains Gauge. ${finalBossLootText}`;
+export const storyRulesText = `Six regions with 25 stages each, at enemy levels 1-55. Enemies drop Common and Uncommon materials that match their region. No captures. Each regional boss gives a first-clear bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and increasing 15% per region. Ordinary Prismatica drops rise from 5-10 at Lv.1 to 113-226 at Lv.55. Regional bosses give 5x Prismatica and materials on every clear; first-clear bonuses do not multiply or repeat. Continue restores HP and keeps your Gauge.`;
 
 export function storyLoot(stage: number) {
   return [bossLootRange({ id: 'fractalis', ...storyFractalisDrop(storyEncounter(stage).level) },

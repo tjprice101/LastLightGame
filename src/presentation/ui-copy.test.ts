@@ -33,6 +33,15 @@ import { join } from 'node:path';
 const textContent = (markup: string) => markup.replace(/<[^>]*>/g, ' ');
 
 describe('visible UI copy', () => {
+  it('uses player-facing language in activity, loot, Inventory and summon descriptions', () => {
+    const account = emptyAccount();
+    for (const html of [gameplayHub(account), roseEvent(account), inventoryView(account), summonHub(account)]) {
+      const text = textContent(html);
+      expect(text).not.toMatch(/\bauthored\b|\batomically\b|independent weighted bundle rolls|linear interpolation|intentional difficulty walls|base quantity rounds|verified final-clear receipt/i);
+    }
+    expect(gameplayHub(account)).toContain('The boss drops nothing else.');
+    expect(gameplayHub(account)).toContain('Every Machine drops Broken Mechanical Components');
+  });
   it('never uses affinity aliases in element filters or presentation data sources', () => {
     const account = emptyAccount();
     account.characters = Object.fromEntries(starters.map(starter => [starter.id, { level: 0, evolution: 1 }]));

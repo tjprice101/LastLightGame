@@ -120,4 +120,4 @@ import { type InfusionModeId } from './activities';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 
 const range = (drop: ScaledDrop) => `${drop.minimum.toLocaleString('en-US')}-${drop.maximum.toLocaleString('en-US')}`;
-export const treasuryPrismaticaText = `Guaranteed per-kill Prismatica starts at ${range(treasuryFractalisDrop(65))} at Lv.65 and multiplies up to a base ${range(treasuryFractalisDrop(120))} at Lv.120. The stage 25 final boss awards ${range(bossLootRange(treasuryFractalisDrop(120), 5))} on every clear. Earlier stages keep their existing curve.`;
+export const treasuryPrismaticaText = `Each enemy drops ${range(treasuryFractalisDrop(65))} Prismatica at Lv.65, rising to ${range(treasuryFractalisDrop(120))} at Lv.120. The stage 25 final boss awards ${range(bossLootRange(treasuryFractalisDrop(120), 5))} on every clear.`;

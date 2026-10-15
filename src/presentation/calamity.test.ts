@@ -157,9 +157,13 @@ describe('Calamity presentation', () => {
     for (const tier of [1, 2, 3] as const) {
       const chest = calamityChest(activity.id, tier);
       const card = calamity.querySelector(`[data-calamity-tier="${tier}"]`)!.closest('.calamity-tier')!;
-      expect(card.textContent).toContain(`${chest.fractalis} Prismatica`);
-      expect(card.textContent).toContain(`${chest.lycalis} Null-Prismatica`);
-      expect(card.textContent).toContain(`${chest.bundles} bundle rolls`);
+      const rewards = Array.from(card.querySelectorAll('.calamity-tier-reward li')).map(row => row.textContent);
+      expect(rewards).toContain(`Prismatica${chest.fractalis.toLocaleString('en-US')}`);
+      expect(rewards).toContain(`Null-Prismatica${chest.lycalis}`);
+      expect(rewards).toContain(`Random rewards${chest.bundles}`);
+      expect(rewards.filter(row => row?.includes('Cosmic Grand Master Chests'))).toEqual(
+        chest.masterChests ? [`Cosmic Grand Master Chests${chest.masterChests}`] : []);
+      expect(card.querySelector('.calamity-tier-actions [data-calamity]')).not.toBeNull();
     }
     tabs[0].click();
     expect(normal.hidden).toBe(false);
@@ -197,20 +201,24 @@ describe('Calamity presentation', () => {
     for (const tier of [1, 2, 3] as const) {
       const chest = calamityChest(activity.id, tier);
       const html = calamityLoot(activity.id, tier);
-      expect(html).toContain(`${chest.fractalis} Prismatica`);
-      expect(html).toContain(`${chest.lycalis} Null-Prismatica`);
-      expect(html).toContain(`${chest.bundles} independent weighted bundle rolls`);
+      document.body.innerHTML = html;
+      expect(document.body.textContent).toContain(`Prismatica${chest.fractalis.toLocaleString('en-US')}`);
+      expect(document.body.textContent).toContain(`Null-Prismatica${chest.lycalis}`);
+      expect(document.body.textContent).toContain(`Random rewards${chest.bundles}`);
+      expect(html).toContain('Each random reward is chosen separately');
       for (const row of calamityLootTable(activity.id)) {
         expect(html).toContain(row.label);
-        expect(html).toContain(`<td>${row.weight}</td>`);
+        const totalWeight = calamityLootTable(activity.id).reduce((total, entry) => total + entry.weight, 0);
+        expect(html).toContain(`<td>${Number((row.weight / totalWeight * 100).toFixed(6))}%</td>`);
         expect(html).toContain(`${row.min}-${row.max}`);
       }
+      expect(html).not.toContain('<th>Weight</th>');
       const reward = rollCalamityChest(activity.id, tier, () => .1);
       const reveal = calamityOpeningReward(chest.id, reward);
       expect(reveal.details).toContain(`${reward.fractalis} Prismatica`);
       expect(reveal.details).toContain(`${reward.lycalis} Null-Prismatica`);
       expect(reveal.art).toContain(`items/${calamityChestArt[tier]}.png?v=`);
-      expect(reveal.details).toContain('already saved');
+      expect(reveal.savedLabel).toBe('Rewards saved');
     }
   });
 
@@ -263,7 +271,10 @@ describe('Calamity presentation', () => {
     Object.assign(view, { enterEncounter: vi.fn(async () => {}) });
     try {
       expect(host.querySelector<HTMLImageElement>('.battle-scenery')!.src).toContain('backgrounds/calamity-arena-ex-3.png?v=');
+      expect(host.querySelector('.battle-scenery')!.classList.contains('calamity-scenery')).toBe(true);
       expect(host.querySelector<HTMLImageElement>('.enemies .battle-sprite img')!.src).toContain('enemies/calamity-boss-infernic.png?v=');
+      expect(host.querySelector('.enemies .battle-sprite img')!.classList.contains('calamity-boss-contrast')).toBe(true);
+      expect(host.querySelector('.allies .battle-sprite img')!.classList.contains('calamity-boss-contrast')).toBe(false);
       expect(session.state.enemies[0].art).toBeUndefined();
       expect(host.querySelector('[data-result-continue]')).toBeNull();
       const before = structuredClone(session);
@@ -292,9 +303,9 @@ describe('Calamity presentation', () => {
     const session = createSession('ember', undefined, { activity: 'oceanic', tier: 2 });
     session.state.enemies[0].shield = 4321;
     expect(unitReadout(session.state.enemies[0], true, [], 4)).toContain('Shield 4321');
-    expect(calamityCadence('oceanic', 4)).toContain('Barrier refresh: phase 4');
-    expect(calamityCadence('oceanic', 6)).toContain('White Wake: phase 9');
-    expect(calamityCadence('oceanic', 6)).toContain('Leviathan Breach: phase 6');
+    expect(calamityCadence('oceanic', 4)).toContain('Shield refresh: turn 4');
+    expect(calamityCadence('oceanic', 6)).toContain('White Wake: turn 9');
+    expect(calamityCadence('oceanic', 6)).toContain('Leviathan Breach: turn 6');
   });
 
   it('uses real gated discoveries and exact EX chest labels in Collections without captures or invented artwork', () => {
@@ -305,15 +316,17 @@ describe('Calamity presentation', () => {
     bindCreatureGlossary(document.body);
     const card = document.querySelector(`[data-creature="${id}"]`)!;
     expect(card.querySelector<HTMLImageElement>('.glossary-art img')!.src).toContain('enemies/calamity-boss-treasury.png?v=');
+    expect(card.querySelector('.glossary-art img')!.classList.contains('calamity-boss-contrast')).toBe(true);
     expect(card.textContent).toContain('Not capturable');
     expect(card.textContent).toContain(calamityChest('treasury', 1).name);
     const select = card.querySelector<HTMLSelectElement>('[data-loot-stage]')!;
     select.value = '3';
     select.dispatchEvent(new Event('change'));
     expect(card.querySelector('.glossary-loot')!.textContent).toContain(calamityChest('treasury', 3).name);
-    expect(card.querySelector('.glossary-loot')!.textContent).toContain('2 Cosmic Grand Master Chests');
+    expect(card.querySelector('.glossary-loot')!.textContent).toContain('Cosmic Grand Master Chests2');
     expect(document.querySelector('[data-creature="calamity:machines"]')!.textContent).toContain('Undiscovered Calamity boss');
     expect(document.querySelector<HTMLImageElement>('[data-creature="calamity:roses"] .glossary-art img')!.src).toContain('enemies/calamity-boss-roses.png?v=');
+    expect(document.querySelector('[data-creature="calamity:roses"] .glossary-art img')!.classList.contains('calamity-boss-contrast')).toBe(false);
   });
 
   it.each(calamityActivities)('routes all $id tiers to shared chest art without changing actual loot', activity => {

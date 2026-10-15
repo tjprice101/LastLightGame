@@ -71,32 +71,31 @@ function gameplayInformation(): string {
       <h4>Unlocks</h4><p>Your highest-level owned Element-Bearer unlocks activities, even when not in your squad. Captured Elemental-Devourers do not count.</p>
       <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li></ul>
       <h4>Tougher fights</h4><p>Higher-level enemies hit harder and take more hits. Level up, evolve and equip Conduits. Bring healing or shields for bosses.</p>` },
-    { id: 'story', title: 'Story', summary: 'Six regions ? 150 stages', content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
-    { id: 'training', title: 'Training', summary: 'Endless waves ? Prismatica', content: `<p>Each entry begins at wave 1 with your saved squad. Endless waves cap enemy level at 120.</p>
+    { id: 'story', title: 'Story', summary: 'Six regions, 150 stages', content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
+    { id: 'training', title: 'Training', summary: 'Endless battles for Prismatica', content: `<p>Start at wave 1 with your saved squad. Enemy levels stop rising at Lv.120.</p>
       <p>Per-kill Prismatica grows from 5-10 at Lv.1 to 15-30 at Lv.120. No materials, captures or Null-Prismatica.</p>` },
     { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, enemy levels ${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}.</p>
       <p>Materials match the dungeon's element. Quantities and rare chances increase with level. No captures or Null-Prismatica.</p>
       <p>Defeated Elemental-Devourer entries in Collections show exact stage drop tables.</p>` },
-    { id: 'infusion', title: 'Evolution infusion', summary: 'Heaven & Abyss ? evolution items', content: `<p>Enemy levels 50-120. Form 3 begins at Lv.65, form 4 at Lv.75 and form 5 at Lv.85.</p>
-      <p>Evolution and level specialty materials unlock at Lv.75. Bonus Epic / Legendary / Omnic unlock at 80 / 100 / 115.
-      Heaven draws bonus materials from its four associated elements; Abyss draws from its two.</p>
-      <p>No Null-Prismatica below Lv.80. From Lv.80, each kill independently rolls it: none / 1 / 2 / 3 = 90 / 8 / 1.5 / 0.5%; at Lv.120 = 75 / 10 / 10 / 5%, with linear interpolation. The stage 35 final boss instead awards none / 5 / 10 / 15 at those same chances.</p>
-      <p>Each kill has a separate 20% capture chance. Copies retain form and kit, with defeated level capped at 60.</p>
-      ${infusionModes.map((mode) => `<p><strong>${mode.name}</strong> ? Enemy element: ${elementLabel(infusionEnemyElements[mode.id])}
-        ? Material pool: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</p>`).join('')}` },
+    { id: 'infusion', title: 'Evolution infusion', summary: 'Evolution materials from Heaven and Abyss', content: `<p>Enemy levels 50-120. Form 3 begins at Lv.65, form 4 at Lv.75 and form 5 at Lv.85.</p>
+      <p>Evolution and leveling materials unlock at Lv.75. Bonus Epic, Legendary and Omnic materials unlock at Lv.80, Lv.100 and Lv.115.</p>
+      <p>Null-Prismatica starts dropping at Lv.80: an 8% chance of 1, 1.5% of 2, and 0.5% of 3. By Lv.120, these chances rise steadily to 10%, 10% and 5%. The stage 35 boss gives 5, 10 or 15 instead, at the same chances.</p>
+      <p>Each enemy has a separate 20% capture chance. Captured copies keep their form and skills, at up to Lv.60.</p>
+      ${infusionModes.map((mode) => `<p><strong>${mode.name}</strong> - Enemy element: ${elementLabel(infusionEnemyElements[mode.id])}.
+        Materials: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</p>`).join('')}` },
     { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages at levels 65-120, six fixed forms and a boss every fifth stage. Earlier bosses and ordinary enemies use the same payouts; final bosses award 5x currency quantities. No farm materials or separate clear bonus.</p>
-      <p>Each kill has a separate 20% capture chance. Copies retain form and kit, with defeated level capped at 60.</p>
+      <p>Each enemy has a separate 20% capture chance. Captured copies keep their form and skills, at up to Lv.60.</p>
       <h4>Crownfall Treasury</h4><p>${treasuryPrismaticaText} No Null-Prismatica.
       Common through Omnic Elemental-Devourer sales: ${treasurySalePrices.map((price) => price.toLocaleString('en-US')).join(' / ')} Prismatica.</p>
       <h4>Rosethorn Sanctuary</h4><p>Ordinary Prismatica 7-14 at Lv.65 to 15-30 at Lv.120.
-      One independent Null-Prismatica roll: 50% of 1 at Lv.65 to a final-boss 80% of 25. Chance is linear; base quantity rounds the linear 1-5 curve before the final 5x boost.
+      Null-Prismatica: a 50% chance of 1 at Lv.65, rising steadily to an 80% chance of 5 at Lv.120. The final boss gives 25 instead, at the same 80% chance.
       Common through Omnic sales: ${sanctuarySalePrices.map((price) => `${price.fractalis.toLocaleString('en-US')} Prismatica + ${price.lycalis} Null-Prismatica`).join(' / ')}.</p>
       <p>Sell copies in Team. Locked, squad-assigned and Conduit-equipped copies are protected.</p>` },
-    { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Event stages ? Rose materials', content: roseEventRules },
-    { id: 'machines', title: 'Awaken the Machines', summary: 'Conduits ? components ? Masters', content: machineRulesText },
-    { id: 'war', title: 'Elemental War', summary: 'Human challengers ? rare recruits', content: `<p>${warLore}</p><p>${warRulesText}</p>` },
-    { id: 'continuing', title: 'Continuing encounters', summary: 'HP, Gauge, Settings and quitting', content: `<p>Continue is manual. Staged activities restore HP between stages and retain Gauge.</p>
-      <p>Training carries HP, Gauge and recovery into the next wave. Settings retains the current encounter; quitting ends the run.</p>` },
+    { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Rosethorn materials', content: roseEventRules },
+    { id: 'machines', title: 'Awaken the Machines', summary: 'Conduits, components and Masters', content: machineRulesText },
+    { id: 'war', title: 'Elemental War', summary: 'Defeat challengers for a chance to recruit them', content: `<p>${warLore}</p><p>${warRulesText}</p>` },
+    { id: 'continuing', title: 'Between battles', summary: 'Health, Gauge and leaving a run', content: `<p>Choose Continue when ready. Staged activities restore HP between stages and keep your Gauge.</p>
+      <p>Training carries HP, Gauge and recovery into the next wave. Opening Settings pauses the run; quitting ends it.</p>` },
   ]);
 }
 

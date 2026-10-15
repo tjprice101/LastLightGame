@@ -155,29 +155,29 @@ interface CalamityPattern {
 }
 export const calamityPatterns: Record<CalamityActivityId, CalamityPattern> = {
   treasury: { strike: 'Vaultbreaker', every: 3, multiplier: 1.5, ruin: 'Crown Collapse', ruinEvery: 6, ruinMultiplier: 2.4,
-    description: 'Vaultbreaker every 3 phases; Crown Collapse replaces it every 6. Defend before phase 6 and burst between collapses.' },
+    description: 'Uses Vaultbreaker every 3 enemy turns. Crown Collapse replaces it every 6 turns.' },
   sanctuary: { strike: 'White Pyre', every: 2, multiplier: 1.3, ruin: 'Reliquary Descent', ruinEvery: 5, ruinMultiplier: 1.9,
-    shieldEvery: 3, shieldFraction: .025, description: 'White Pyre every 2 phases, Descent every 5. Refreshes a 2.5% max-HP barrier every 3 phases before attacking; break it with focused damage.' },
+    shieldEvery: 3, shieldFraction: .025, description: 'Uses White Pyre every 2 enemy turns and Reliquary Descent every 5. Before attacking every 3 turns, refreshes a shield worth 2.5% of its max HP.' },
   heavens: { strike: 'Scarlet Volley', every: 2, multiplier: 1.25, ruin: 'Heavenfall', ruinEvery: 7, ruinMultiplier: 2.2,
-    hits: 3, description: 'Every attack splits its total into 3 impacts on one target. Volley every 2 phases; Heavenfall every 7. Layer shields before volleys.' },
+    hits: 3, description: 'Each attack hits one target 3 times, splitting its damage across the hits. Uses Scarlet Volley every 2 enemy turns and Heavenfall every 7.' },
   abyss: { strike: 'Nullmaw Hunt', every: 3, multiplier: 1.4, ruin: 'Starless Pursuit', ruinEvery: 5, ruinMultiplier: 2,
-    targeting: 'lowest', description: 'Always targets the lowest current HP fraction (taunt can redirect). Hunt every 3 phases, Pursuit every 5. Protect and heal the weakest member.' },
+    targeting: 'lowest', description: 'Targets the ally with the lowest percentage of HP remaining, unless taunted. Uses Nullmaw Hunt every 3 enemy turns and Starless Pursuit every 5.' },
   machines: { strike: 'Prototype Discharge', every: 4, multiplier: 2, ruin: 'Catastrophe Cascade', ruinEvery: 8, ruinMultiplier: 2.7,
-    description: 'Normal attacks while charging. Discharge every 4 phases, Cascade every 8. Spend the charge window building shields and saving Defense.' },
+    description: 'Uses Prototype Discharge every 4 enemy turns. Catastrophe Cascade replaces it every 8. Uses Normal Attacks between skills.' },
   roses: { strike: 'Thorn Requiem', every: 2, multiplier: 1.4, ruin: 'Final Scarlet Bloom', ruinEvery: 6, ruinMultiplier: 2.1,
-    healEvery: 4, healFraction: .015, description: 'Requiem every 2 phases, Final Bloom every 6. Restores 1.5% max HP every 4 phases before attacking; maintain damage through restoration windows.' },
+    healEvery: 4, healFraction: .015, description: 'Uses Thorn Requiem every 2 enemy turns and Final Scarlet Bloom every 6. Heals 1.5% of its max HP before attacking every 4 turns.' },
   infernic: { strike: 'Cinder Torrent', every: 2, multiplier: 1.6, ruin: 'Ashcrown Eruption', ruinEvery: 5, ruinMultiplier: 2.3,
-    description: 'Torrent every 2 phases and Eruption every 5 create sustained direct pressure. Weaken and regular healing are more reliable than waiting for a single burst.' },
+    description: 'Uses Cinder Torrent every 2 enemy turns and Ashcrown Eruption every 5.' },
   oceanic: { strike: 'White Wake', every: 3, multiplier: 1.55, ruin: 'Leviathan Breach', ruinEvery: 6, ruinMultiplier: 2.2,
-    shieldEvery: 4, shieldFraction: .04, description: 'Wake every 3 phases, Breach every 6. Refreshes a 4% max-HP barrier every 4 phases. Save damage for barrier breaks.' },
+    shieldEvery: 4, shieldFraction: .04, description: 'Uses White Wake every 3 enemy turns and Leviathan Breach every 6. Before attacking every 4 turns, refreshes a shield worth 4% of its max HP.' },
   atmospheric: { strike: 'Riftstorm Talons', every: 3, multiplier: 1.7, ruin: 'Sky Fracture', ruinEvery: 7, ruinMultiplier: 2.3,
-    hits: 4, description: 'Every attack splits its total into 4 impacts on one target. Talons every 3 phases, Sky Fracture every 7. Plan mitigation before the announced storm cadence.' },
+    hits: 4, description: 'Each attack hits one target 4 times, splitting its damage across the hits. Uses Riftstorm Talons every 3 enemy turns and Sky Fracture every 7.' },
   botanic: { strike: 'Pallid Thorns', every: 3, multiplier: 1.3, ruin: 'Root Cathedral', ruinEvery: 8, ruinMultiplier: 2.1,
-    healEvery: 3, healFraction: .025, description: 'Thorns every 3 phases, Cathedral every 8. Restores 2.5% max HP every 3 phases; sustained damage must exceed restoration.' },
+    healEvery: 3, healFraction: .025, description: 'Uses Pallid Thorns every 3 enemy turns and Root Cathedral every 8. Heals 2.5% of its max HP before attacking every 3 turns.' },
   tranquilitic: { strike: 'Meridian Sweep', every: 4, multiplier: 1.6, ruin: 'Silent Convergence', ruinEvery: 7, ruinMultiplier: 2.2,
-    shieldEvery: 2, shieldFraction: .02, description: 'Refreshes a 2% max-HP barrier on even phases. Sweep every 4 phases, Convergence every 7. Burst during odd-phase openings.' },
+    shieldEvery: 2, shieldFraction: .02, description: 'Before attacking every 2 enemy turns, refreshes a shield worth 2% of its max HP. Uses Meridian Sweep every 4 turns and Silent Convergence every 7.' },
   chaotic: { strike: 'Fractal Disjunction', every: 2, multiplier: 1.35, ruin: 'Scarlet Unmaking', ruinEvery: 5, ruinMultiplier: 2.1,
-    targeting: 'highest', description: 'Always targets the highest current HP fraction (taunt can redirect). Disjunction every 2 phases, Unmaking every 5. Spread mitigation instead of relying on one wounded tank.' },
+    targeting: 'highest', description: 'Targets the ally with the highest percentage of HP remaining, unless taunted. Uses Fractal Disjunction every 2 enemy turns and Scarlet Unmaking every 5.' },
 };
 export function calamityEncounter(activity: CalamityActivityId, tier: CalamityTier) {
   const definition = calamityActivity(activity);
@@ -191,9 +191,9 @@ export function calamityEncounter(activity: CalamityActivityId, tier: CalamityTi
   ];
   return { name: definition.boss, level, element: definition.element, stats, skills, description: pattern.description };
 }
-export const calamityBuildGuidance = 'Exponential enemy growth creates intentional difficulty walls. Build target: a complementary squad with eight +5 Conduits per member, including four matching-element Omnic Conduits, and a suitable Master. Any legal squad may attempt it; full equipment is not a guaranteed victory.';
+export const calamityBuildGuidance = 'Designed for strong teams with eight +5 Conduits per member, including four matching-element Omnic Conduits, and a suitable Master. You can enter with any legal squad, but even full equipment may not be enough.';
 
 export function calamityWarning(activity: CalamityActivityId, tier: CalamityTier): string {
   const encounter = calamityEncounter(activity, tier);
-  return `Calamity EX+${tier} - Level ${encounter.level} boss. ${calamityBuildGuidance} One boss. Victory awards one ${calamityChest(activity, tier).name}; no ordinary drops or captures. Free entry; no defeat penalty. ${encounter.description}`;
+  return `${encounter.name} - Calamity EX+${tier}, Lv.${encounter.level}. ${calamityBuildGuidance} Victory earns one ${calamityChest(activity, tier).name}. No other drops or captures. Entry is free, and losing costs nothing. ${encounter.description}`;
 }

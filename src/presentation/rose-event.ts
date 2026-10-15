@@ -9,15 +9,13 @@ import { infusionEntry } from './activity-entry';
 import { devourerHabitats } from '../content/world-lore';
 import { activityDifficulty } from './calamity';
 
-export const roseEventRules = `<p>${devourerHabitats.roses} Rosetta, Thornia and Crinso are Let's human Element-Bearers; their rose-gold inheritance does not make them Rise's creations.</p><p>35 stages, levels 80-140; a boss every fifth stage. Ordinary stages contain two enemies, boss stages one.
-    Six increasingly formidable Tranquilitic Roselius forms use golden thorns and crimson roses.</p>
-    <p>20% independent capture chance only at enemy levels 120 or below. Above 120, no captures. Captured copies retain form and skills, with level capped at 60, and never evolve.
-    Final-form Lv.60 copies are special-banner duplicate rewards, not high-level mission captures.</p>
-    <p>Each kill grants ordinary level-scaled Prismatica and rolls unlocked Rosethorn materials independently. No Null-Prismatica or clear bonus.
-    Bosses and ordinary enemies have identical reward odds. The stage 35 final boss awards 5x Prismatica and successful material quantities on every clear; earlier bosses are unchanged. Exact stage drops appear in the defeated Elemental-Devourer Glossary.</p>
+export const roseEventRules = `<p>${devourerHabitats.roses}</p><p>35 stages at levels 80-140. Fight two enemies per stage, or one boss every fifth stage.</p>
+    <p>Enemies at Lv.120 or below have a 20% capture chance. Captured copies keep their form and skills, at up to Lv.60, and cannot evolve.</p>
+    <p>Each enemy drops Prismatica and has a separate chance to drop each unlocked Rosethorn material. No Null-Prismatica.
+    Bosses use the same drop chances. The stage 35 boss gives 5x Prismatica and materials on every clear. Check View Loot in Collections for exact drops.</p>
     <p>Sales exchange one copy for its form's material: ${roseMaterials.map((material, index) => `${roseSaleQuantities[index]} ${material.name}`).join(', ')}.
     Locked, squad and Conduit-equipped copies cannot be sold or consumed.</p>
-    <p>Rosetta, Thornia and Crinso use these materials for leveling and evolution. Late evolutions consume explicitly selected Roselius forms 3+ / 4+ / 5+ in quantities 1 / 2 / 3.
+    <p>Rosetta, Thornia and Crinso use these materials for leveling and evolution. Late evolutions also use 1 form 3+ Roselius, then 2 form 4+ copies, then 3 form 5+ copies. You choose which copies to use.
     Every evolution requires the current form's max level.</p>
     <p>This event and its banner remain available without an expiry until an end date is announced.</p>`;
 

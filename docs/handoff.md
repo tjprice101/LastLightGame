@@ -1,5 +1,43 @@
 # Current state and handoff
 
+## Clearer rewards, bosses and player-facing English (D-321)
+
+- Owner requests aligned reward text/buttons, clearer boss images and short,
+  useful English throughout activity/reward information.
+- Calamity cards share grid rows through artwork, identity, mechanic text,
+  reward/chest/counts and actions. Names/counts use separate aligned columns;
+  tiers without Master chests omit that row. Shared item showcases align
+  artwork/name/quantity rows even when names wrap.
+- Square boss previews are larger, with dimmed/desaturated arena backdrops
+  and a subtle contrasting edge. Calamity battle scenery is dimmed, and
+  contrast edges cover field, ultimate cut-ins and discovered Collections.
+  Undiscovered silhouettes and artwork pixels/facing are unchanged.
+- Rewrote all12 boss descriptions, guidance, warnings, timing/loot/reference
+  and opening text; retained actual skill names, schedules, hit counts,
+  shields/healing and targeting. Shared content feeds entry/battle/Collections
+  and authority. Removed implementation receipt wording from unlock hints
+  without changing unlock validation.
+- Plain-language pass covers Story, Training, dungeon/infusion/currency help,
+  Machines/components/Masters, Roses, Inventory, summon bonus rules and battle
+  results. Exact loot chances/quantities remain; loot dialogs show probabilities
+  instead of raw weights. Removed repeated save assurances and irrelevant
+  implementation/design commentary; real errors still report failure.
+- Browser fixtures: all12 activities at1000/650/320 container widths pass36
+  alignment/overflow checks, reward/entry/View Loot rows agree within1px.
+  Measured320px viewport has no overflow and shared showcase count rows align.
+  Fixtures leave localStorage empty; no account funding or transactions.
+- Validation: `npm test -- --maxWorkers=2` passes3,907 tests/170 files
+  (inherited jsdom canvas warnings). After the last loot-table label cleanup,
+  `npm test -- src/presentation/calamity.test.ts --maxWorkers=2` passes49 tests.
+  `npm run build` passes type-check/production build (inherited chunk advisory).
+  `node tools\bundle_server_game.mjs` and
+  `npx tsc -p supabase\functions\game-operation\tsconfig.json` pass.
+  Editor diagnostics and `git diff --check` pass.
+- Authority bundle includes shared description changes; combat rules stay4.
+  No mechanics, rewards, RNG, save schema or compatibility restart change.
+  Publication verification follows deployment.
+- The27 delivered root native-status PNGs remain untouched and untracked.
+
 ## Separate Calamity difficulty tabs (D-320)
 
 - Owner requests a separate clickable difficulty view instead of Calamity

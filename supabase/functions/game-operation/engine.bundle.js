@@ -83,7 +83,6 @@ function evolutionRequirement(elementId, from) {
 
 // src/content/final-boss-loot.ts
 var finalBossLootMultiplier = 5;
-var finalBossLootText = "Final bosses award 5x normal currency, material and component quantities on every clear, including replays. Rare-drop, capture and recruitment chances, Conduit and chest counts, recruitment duplicate conversions and one-time Story bonuses are unchanged. Training has no final boss. Calamity bosses award only one activity chest; neither that chest nor its contents use the 5x multiplier.";
 function bossLootMultiplier(activity, boss = true) {
   if (!boss) return 1;
   const final = activity.story ? activity.story.storyStage >= 25 && activity.story.storyStage <= 150 && activity.story.storyStage % 25 === 0 : activity.dungeon ? activity.dungeon.stage === dungeonStageCount : activity.infusion ? activity.infusion.stage === infusionStageCount(activity.infusion.mode) : activity.war ? activity.war.stage === warStageCount : false;
@@ -175,7 +174,7 @@ function treasuryFractalisDrop(level) {
   return { minimum, maximum: minimum * 2, chance: 1 };
 }
 var range = (drop) => `${drop.minimum.toLocaleString("en-US")}-${drop.maximum.toLocaleString("en-US")}`;
-var treasuryPrismaticaText = `Guaranteed per-kill Prismatica starts at ${range(treasuryFractalisDrop(65))} at Lv.65 and multiplies up to a base ${range(treasuryFractalisDrop(120))} at Lv.120. The stage 25 final boss awards ${range(bossLootRange(treasuryFractalisDrop(120), 5))} on every clear. Earlier stages keep their existing curve.`;
+var treasuryPrismaticaText = `Each enemy drops ${range(treasuryFractalisDrop(65))} Prismatica at Lv.65, rising to ${range(treasuryFractalisDrop(120))} at Lv.120. The stage 25 final boss awards ${range(bossLootRange(treasuryFractalisDrop(120), 5))} on every clear.`;
 
 // src/content/conduit-redesign.ts
 var conduitRedesign = {
@@ -2099,7 +2098,7 @@ function machineComponentDrop(stage) {
     note: "Guaranteed per defeated machine; the final boss multiplies the base stage quantity by 5. Used only for Conduit upgrades."
   };
 }
-var machineComponentRulesText = `Every defeated machine guarantees Broken Mechanical Components: ${mechanicalComponents.firstQuantity} per enemy at stage 1, rising linearly by stage to a base ${mechanicalComponents.finalQuantity} at stage ${infusionStageCount("machines")}, rounded to whole components. The final boss awards 5x that quantity (${mechanicalComponents.finalQuantity * 5}); earlier bosses use the ordinary stage quantity.`;
+var machineComponentRulesText = `Every Machine drops Broken Mechanical Components for Conduit upgrades: ${mechanicalComponents.firstQuantity} at stage 1, increasing steadily to ${mechanicalComponents.finalQuantity} at stage ${infusionStageCount("machines")}. The final boss drops ${mechanicalComponents.finalQuantity * 5}.`;
 function rollMachineComponents(stage, random) {
   const drop = machineComponentDrop(stage);
   return lootRoll(random) < drop.chance ? drop.minimum : 0;
@@ -2114,7 +2113,7 @@ var masterChest = {
   art: "master-conduits/grand-master-chest.png",
   description: "Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward."
 };
-var masterRulesText = "The final Awaken the Machines boss (stage 100) independently has a 1% chance to drop a Cosmic Grand Master Chest. Opening any Calamity EX+Omnipotent chest also guarantees two Cosmic Grand Master Chests. Open them in Inventory to choose one unowned Omnic Master each for any Element-Bearer, even one not yet owned. One matching Master equips in its own slot; no ordinary slots, copies or upgrades are consumed. Each Master has its own fixed bearer enhancement, transformations and explicitly stated activation, round or encounter limits. Generated outcomes cannot recursively activate native or Conduit triggers. Native resource clocks, skill costs, readiness and recovery remain unless that Master explicitly changes them. Masters cannot be upgraded. Extra chests remain unopened when all 48 Masters are owned.";
+var masterRulesText = "The final Awaken the Machines boss (stage 100) has a separate 1% chance to drop a Cosmic Grand Master Chest. Every Calamity EX+Omnipotent chest contains two. Open a Master chest in Inventory to choose one unowned Omnic Master, even for an Element-Bearer you do not own yet. A Master equips only to its named bearer, in a separate slot, without using up the copy. It cannot be upgraded. Check Details for its effect and limits. Extra chests stay unopened once you own all 48 Masters.";
 function master(character, slot, name, design) {
   return {
     id: `master-${character}-${slot}`,
@@ -2486,7 +2485,12 @@ function machineConduitDrops(stage, random, owned = {}) {
 function bannerConduitBonus(random) {
   return rollTier(bannerPool, machineRules.bannerBonusChance, random);
 }
-var machineRulesText = `<p>${machineOrigin}</p><p>${machineRules.stages} stages \xB7 Lv.10-120 \xB7 Boss every fifth stage. Each defeated enemy grants ordinary Prismatica and independently rolls Rare Conduits at 8%, Legendary at 3.5%, and Omnic at 1% from stage ${machineRules.omnicStage} onward. A successful tier roll awards one equally chosen unowned Conduit from that rarity's catalog: ${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary or ${machinePools.Omnic.length} element-specific Omnic. Already-owned names cannot drop. If every name in the rolled rarity is owned, no Conduit or replacement reward is granted. Multiple tiers may drop together; bosses use the same odds. All Common Conduits are Store-only and have no machine drop roll. ${machineComponentRulesText} No captures, evolution materials, Null-Prismatica or clear bonus.</p><p>One owned ordinary copy unlocks its name for every character. Each ordinary name can be upgraded account-wide five times using only components, adding 50% of the original stat modifiers each time, including penalties (3.5 times at +5). Kit effects and special mechanics are unchanged by upgrades. Up to four ordinary Omnic Conduits may occupy the eight ordinary slots; each must match that character's combat element.</p><p>${masterRulesText}</p>`;
+var machineRulesText = `<p>${machineOrigin}</p>
+  <p>${machineRules.stages} stages, Lv.10-120, with a boss every fifth stage. Each enemy drops Prismatica and can drop an unowned Conduit: Rare 8%, Legendary 3.5%, and Omnic 1% from stage ${machineRules.omnicStage}.</p>
+  <p>Each rarity has a separate drop chance, so several can drop together. Unowned names within a rarity are equally likely: ${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary and ${machinePools.Omnic.length} Omnic in total. If you own every name in a rarity, that rarity gives no reward. Bosses use the same chances. Common Conduits are sold in the Store, not dropped here.</p>
+  <p>${machineComponentRulesText} No captures, evolution materials or Null-Prismatica.</p>
+  <p>One copy unlocks an ordinary Conduit for all characters. Use components to upgrade it up to +5 for your whole account; Details shows the effect at each level. Each character has eight ordinary slots and can equip up to four matching-element Omnic Conduits.</p>
+  <p>${masterRulesText}</p>`;
 
 // src/content/flagships.ts
 var flagshipCharacters = [
@@ -4412,7 +4416,6 @@ function storyDrops(stage, random) {
     return amount === void 0 ? [] : [[drop.id, amount]];
   }));
 }
-var storyRulesText = `Six regions in a fixed order, 25 stages each, enemy levels 1-55. Enemy level and boss rank determine combat strength consistently across activities; higher-level enemies demand stronger Conduits and a reliable squad. Common and Uncommon matching-element materials only; no captures. Regional bosses grant a one-time account bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and growing 15% per region. Base per-kill Prismatica rises in a straight line by enemy level: 5-10 at Lv.1, +2 minimum per level, 113-226 at Lv.55. Every regional boss multiplies ordinary Prismatica and material quantities by 5, including replays; first-clear bonuses do not multiply or repeat. Continue restores HP and retains Gauge. ${finalBossLootText}`;
 
 // src/content/calamity.ts
 var calamityActivities = [
@@ -4579,7 +4582,7 @@ var calamityPatterns = {
     ruin: "Crown Collapse",
     ruinEvery: 6,
     ruinMultiplier: 2.4,
-    description: "Vaultbreaker every 3 phases; Crown Collapse replaces it every 6. Defend before phase 6 and burst between collapses."
+    description: "Uses Vaultbreaker every 3 enemy turns. Crown Collapse replaces it every 6 turns."
   },
   sanctuary: {
     strike: "White Pyre",
@@ -4590,7 +4593,7 @@ var calamityPatterns = {
     ruinMultiplier: 1.9,
     shieldEvery: 3,
     shieldFraction: 0.025,
-    description: "White Pyre every 2 phases, Descent every 5. Refreshes a 2.5% max-HP barrier every 3 phases before attacking; break it with focused damage."
+    description: "Uses White Pyre every 2 enemy turns and Reliquary Descent every 5. Before attacking every 3 turns, refreshes a shield worth 2.5% of its max HP."
   },
   heavens: {
     strike: "Scarlet Volley",
@@ -4600,7 +4603,7 @@ var calamityPatterns = {
     ruinEvery: 7,
     ruinMultiplier: 2.2,
     hits: 3,
-    description: "Every attack splits its total into 3 impacts on one target. Volley every 2 phases; Heavenfall every 7. Layer shields before volleys."
+    description: "Each attack hits one target 3 times, splitting its damage across the hits. Uses Scarlet Volley every 2 enemy turns and Heavenfall every 7."
   },
   abyss: {
     strike: "Nullmaw Hunt",
@@ -4610,7 +4613,7 @@ var calamityPatterns = {
     ruinEvery: 5,
     ruinMultiplier: 2,
     targeting: "lowest",
-    description: "Always targets the lowest current HP fraction (taunt can redirect). Hunt every 3 phases, Pursuit every 5. Protect and heal the weakest member."
+    description: "Targets the ally with the lowest percentage of HP remaining, unless taunted. Uses Nullmaw Hunt every 3 enemy turns and Starless Pursuit every 5."
   },
   machines: {
     strike: "Prototype Discharge",
@@ -4619,7 +4622,7 @@ var calamityPatterns = {
     ruin: "Catastrophe Cascade",
     ruinEvery: 8,
     ruinMultiplier: 2.7,
-    description: "Normal attacks while charging. Discharge every 4 phases, Cascade every 8. Spend the charge window building shields and saving Defense."
+    description: "Uses Prototype Discharge every 4 enemy turns. Catastrophe Cascade replaces it every 8. Uses Normal Attacks between skills."
   },
   roses: {
     strike: "Thorn Requiem",
@@ -4630,7 +4633,7 @@ var calamityPatterns = {
     ruinMultiplier: 2.1,
     healEvery: 4,
     healFraction: 0.015,
-    description: "Requiem every 2 phases, Final Bloom every 6. Restores 1.5% max HP every 4 phases before attacking; maintain damage through restoration windows."
+    description: "Uses Thorn Requiem every 2 enemy turns and Final Scarlet Bloom every 6. Heals 1.5% of its max HP before attacking every 4 turns."
   },
   infernic: {
     strike: "Cinder Torrent",
@@ -4639,7 +4642,7 @@ var calamityPatterns = {
     ruin: "Ashcrown Eruption",
     ruinEvery: 5,
     ruinMultiplier: 2.3,
-    description: "Torrent every 2 phases and Eruption every 5 create sustained direct pressure. Weaken and regular healing are more reliable than waiting for a single burst."
+    description: "Uses Cinder Torrent every 2 enemy turns and Ashcrown Eruption every 5."
   },
   oceanic: {
     strike: "White Wake",
@@ -4650,7 +4653,7 @@ var calamityPatterns = {
     ruinMultiplier: 2.2,
     shieldEvery: 4,
     shieldFraction: 0.04,
-    description: "Wake every 3 phases, Breach every 6. Refreshes a 4% max-HP barrier every 4 phases. Save damage for barrier breaks."
+    description: "Uses White Wake every 3 enemy turns and Leviathan Breach every 6. Before attacking every 4 turns, refreshes a shield worth 4% of its max HP."
   },
   atmospheric: {
     strike: "Riftstorm Talons",
@@ -4660,7 +4663,7 @@ var calamityPatterns = {
     ruinEvery: 7,
     ruinMultiplier: 2.3,
     hits: 4,
-    description: "Every attack splits its total into 4 impacts on one target. Talons every 3 phases, Sky Fracture every 7. Plan mitigation before the announced storm cadence."
+    description: "Each attack hits one target 4 times, splitting its damage across the hits. Uses Riftstorm Talons every 3 enemy turns and Sky Fracture every 7."
   },
   botanic: {
     strike: "Pallid Thorns",
@@ -4671,7 +4674,7 @@ var calamityPatterns = {
     ruinMultiplier: 2.1,
     healEvery: 3,
     healFraction: 0.025,
-    description: "Thorns every 3 phases, Cathedral every 8. Restores 2.5% max HP every 3 phases; sustained damage must exceed restoration."
+    description: "Uses Pallid Thorns every 3 enemy turns and Root Cathedral every 8. Heals 2.5% of its max HP before attacking every 3 turns."
   },
   tranquilitic: {
     strike: "Meridian Sweep",
@@ -4682,7 +4685,7 @@ var calamityPatterns = {
     ruinMultiplier: 2.2,
     shieldEvery: 2,
     shieldFraction: 0.02,
-    description: "Refreshes a 2% max-HP barrier on even phases. Sweep every 4 phases, Convergence every 7. Burst during odd-phase openings."
+    description: "Before attacking every 2 enemy turns, refreshes a shield worth 2% of its max HP. Uses Meridian Sweep every 4 turns and Silent Convergence every 7."
   },
   chaotic: {
     strike: "Fractal Disjunction",
@@ -4692,7 +4695,7 @@ var calamityPatterns = {
     ruinEvery: 5,
     ruinMultiplier: 2.1,
     targeting: "highest",
-    description: "Always targets the highest current HP fraction (taunt can redirect). Disjunction every 2 phases, Unmaking every 5. Spread mitigation instead of relying on one wounded tank."
+    description: "Targets the ally with the highest percentage of HP remaining, unless taunted. Uses Fractal Disjunction every 2 enemy turns and Scarlet Unmaking every 5."
   }
 };
 function calamityEncounter(activity, tier) {
@@ -8782,7 +8785,7 @@ function activityAccess(account, activity) {
     const valid = isCalamityActivityId(activity.activity) && isCalamityTier(activity.tier);
     const highestTier = valid ? calamityUnlockedTier(account, activity.activity) : 0;
     const unlocked = valid && activity.tier <= highestTier;
-    const requirement2 = highestTier === 0 ? "Clear the normal final boss (a verified final-clear receipt also qualifies)" : `Clear Calamity EX+${activity.tier - 1}`;
+    const requirement2 = highestTier === 0 ? "Defeat this activity's final boss on Normal" : `Clear Calamity EX+${activity.tier - 1}`;
     return { unlocked, minimumLevel: 0, level: highestBearerLevel(account), requirement: requirement2 };
   }
   const minimumLevel = activity.kind === "dungeon" ? 30 : activity.kind === "war" ? 85 : activity.kind !== "infusion" ? 0 : activity.mode === "machines" ? 10 : activity.mode === "treasury" || activity.mode === "sanctuary" ? 60 : activity.mode === "roses" ? 75 : 50;

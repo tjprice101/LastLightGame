@@ -253,7 +253,8 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     account.capturedCharacters = [createCreatureCopy('infusion:sanctuary:5')];
     account.creatures['infusion:sanctuary:5'] = { defeated: true };
     expect(gameplayHub(account)).toContain('data-infusion="sanctuary"');
-    expect(gameplayHub(account)).toContain('50% of 1 at Lv.65 to a final-boss 80% of 25');
+    expect(gameplayHub(account)).toContain('a 50% chance of 1 at Lv.65');
+    expect(gameplayHub(account)).toContain('The final boss gives 25 instead, at the same 80% chance.');
     expect(characterCopyManagement(account)).toContain('30,000 Prismatica + 10 Null-Prismatica');
     const glossary = creatureGlossary(account);
     expect(glossary).toContain('aria-label="Sale value"');

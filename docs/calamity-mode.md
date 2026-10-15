@@ -26,6 +26,15 @@ use reviewed offline key removal. See [intake workflow](art-workflow.md#calamity
 
 ## Difficulty tabs (D-320)
 
+D-321 aligns tier reward sections and action buttons, lists chest amounts as
+name/quantity rows, and omits zero Master-chest rows. View Loot keeps exact
+probabilities and quantities without exposing internal weights. Boss descriptions
+use plain English and enemy turns instead of developer wording or strategy
+claims. Current text resolves across entry cards, warnings, battle references
+and Collections. Larger square previews separate the boss from dimmed arena
+art; contrast edges also cover field, cut-ins and discovered gallery images.
+These are text/style changes, not enemy, loot, unlock or source-art changes.
+
 Each eligible activity has accessible Normal / Calamity tabs. Normal is the
 default and retains its existing banner, facts, reward showcase, stage selector
 and entry action. Calamity replaces that panel rather than appending below it:

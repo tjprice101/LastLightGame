@@ -5,6 +5,12 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Clearer rewards and descriptions (D-321):** Calamity rewards/actions and shared
+reward showcases align by row. Boss artwork stands out from dimmer scenery
+across previews and battles, with contrast edges in revealed galleries/cut-ins.
+Activity, chest and help text uses plain English, with exact odds/amounts kept.
+[Copy and presentation policy](menus-and-inventory.md#plain-language-and-reward-alignment-d-321).
+
 **Activity difficulty tabs (D-320):** all twelve eligible activities now separate
 Normal and Calamity mission information, rewards and entry controls. Normal
 defaults; keyboard switching and caller-history restoration retain stage

@@ -25,7 +25,8 @@ describe('encounter result overlays', () => {
     expect(html).toContain('assets/currencies/fractalis.png');
     expect(html).not.toContain('assets/materials/fractalis.png');
     expect(html).toContain('Seed of Infernic');
-    expect(html).toContain('already saved');
+    expect(html).toContain('Rewards saved.');
+    expect(html).not.toContain('This summary does not grant extra rewards');
     expect(html).toContain('data-result-continue');
     expect(html).toContain('data-result-quit');
     expect(html).toContain('data-result-dismiss');

@@ -60,12 +60,22 @@ export function calamityLoot(activity: CalamityActivityId, tier: CalamityTier): 
   const chest = calamityChest(activity, tier);
   const rows = calamityLootTable(activity);
   const weight = rows.reduce((sum, row) => sum + row.weight, 0);
-  return `${calamityChestIcon(tier)}<p>${escapeDialogText(chest.name)}</p><h3>Fixed contents</h3>
-    <p>${chest.fractalis} Prismatica · ${chest.lycalis} Null-Prismatica · ${chest.masterChests} Cosmic Grand Master Chests</p>
-    <p>${chest.bundles} independent weighted bundle rolls. Quantities below are per bundle.</p>
-    <table><thead><tr><th>Bundle</th><th>Weight</th><th>Chance per roll</th><th>Quantity</th></tr></thead><tbody>${rows.map(row =>
-    `<tr><td>${escapeDialogText(row.label)}</td><td>${row.weight}</td><td>${Number((row.weight / weight * 100).toFixed(6))}%</td><td>${row.min}-${row.max}</td></tr>`).join('')}</tbody></table>
-    <p>Opening consumes one chest and saves its actual contents once. Repeated bundles combine. No captures or recruitment.</p>`;
+  return `${calamityChestIcon(tier)}<p>${escapeDialogText(chest.name)}</p><h3>Guaranteed contents</h3>
+    ${calamityChestContents(activity, tier)}
+    <p>Each random reward is chosen separately from this table. The same reward can appear more than once.</p>
+    <table><thead><tr><th>Reward</th><th>Chance per reward</th><th>Quantity</th></tr></thead><tbody>${rows.map(row =>
+    `<tr><td>${escapeDialogText(row.label)}</td><td>${Number((row.weight / weight * 100).toFixed(6))}%</td><td>${row.min}-${row.max}</td></tr>`).join('')}</tbody></table>
+    <p>Open in Inventory to receive these rewards. Opening uses one chest.</p>`;
+}
+
+function calamityChestContents(activity: CalamityActivityId, tier: CalamityTier): string {
+  const chest = calamityChest(activity, tier);
+  return `<ul class="calamity-reward-list">
+    <li><span>Prismatica</span><strong>${chest.fractalis.toLocaleString('en-US')}</strong></li>
+    <li><span>Null-Prismatica</span><strong>${chest.lycalis}</strong></li>
+    ${chest.masterChests ? `<li><span>Cosmic Grand Master Chests</span><strong>${chest.masterChests}</strong></li>` : ''}
+    <li><span>Random rewards</span><strong>${chest.bundles}</strong></li>
+  </ul>`;
 }
 
 export function calamitySection(activity: CalamityActivityId, account: Account | null): string {
@@ -76,7 +86,7 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
     <dl class="activity-facts"><div><dt>Stages</dt><dd>3 EX tiers · One boss each</dd></div>
       <div><dt>Enemy levels</dt><dd>${([1, 2, 3] as const).map(tier => calamityEncounter(activity, tier).level).join(' / ')}</dd></div>
       <div><dt>Drops</dt><dd>One sealed tier chest per victory</dd></div></dl>
-    <p>No entry cost. No ordinary currency, materials, captures or Conduit drops from the boss. Open the saved chest explicitly in Inventory for its contents.</p>
+    <p>Free entry. Defeat the boss to earn a chest, then open it in Inventory. The boss drops nothing else.</p>
     <p>${escapeDialogText(calamityBuildGuidance)}</p>
     <div class="calamity-tiers">${([1, 2, 3] as const).map(tier => {
       const encounter = calamityEncounter(activity, tier);
@@ -87,13 +97,14 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
         <img class="calamity-tier-arena" draggable="false" src="${assetUrl(`backgrounds/${calamityArenaArt[tier]}`)}" alt="" width="1456" height="816">
         ${art ? `<img class="calamity-tier-boss" draggable="false" src="${assetUrl(`enemies/${art}.png`)}" alt="${escapeDialogText(encounter.name)}" width="960" height="960">`
           : `<span class="calamity-placeholder">${escapeDialogText(encounter.name)} · Artwork pending</span>`}</div>
-        <h4>EX+${tier} · ${escapeDialogText(encounter.name)}</h4><p>Lv.${encounter.level} · ${escapeDialogText(encounter.element)}</p>
-        <p>${escapeDialogText(encounter.description)}</p><p>Victory: 1 ${escapeDialogText(chest.name)}</p>
-        ${calamityChestIcon(tier)}
-        <p class="calamity-chest-contents">Chest contents: ${chest.fractalis} Prismatica · ${chest.lycalis} Null-Prismatica · ${chest.masterChests} Cosmic Grand Master Chests · ${chest.bundles} bundle rolls.</p>
+        <header><h4>EX+${tier} · ${escapeDialogText(encounter.name)}</h4><p>Lv.${encounter.level} · ${escapeDialogText(encounter.element)}</p></header>
+        <p class="calamity-boss-description">${escapeDialogText(encounter.description)}</p>
+        <section class="calamity-tier-reward" aria-label="Victory reward"><p>Victory: 1 ${escapeDialogText(chest.name)}</p>
+        ${calamityChestIcon(tier)}${calamityChestContents(activity, tier)}</section>
+        <footer class="calamity-tier-actions">
         <button class="primary-button" data-calamity="${activity}" data-calamity-tier="${tier}" ${access?.unlocked ? '' : 'disabled'}>Enter EX+${tier}</button>
-        ${access?.unlocked ? '' : `<p class="activity-unlock-hint">${account ? escapeDialogText(access!.requirement) : 'Resolve the save error before entering.'}</p>`}
-        ${information(`calamity-${activity}-${tier}-loot`, `${chest.name} · View Loot`, calamityLoot(activity, tier), 'View Loot')}</article>`;
+        <p class="activity-unlock-hint">${access?.unlocked ? '' : account ? escapeDialogText(access!.requirement) : 'Resolve the save error before entering.'}</p>
+        ${information(`calamity-${activity}-${tier}-loot`, `${chest.name} · View Loot`, calamityLoot(activity, tier), 'View Loot')}</footer></article>`;
     }).join('')}</div></section>`;
 }
 
@@ -125,10 +136,10 @@ export function calamityCadence(activity: CalamityActivityId, round: number): st
   const nextPhase = (every: number): number => round + (every - round % every) % every;
   let strikePhase = nextPhase(pattern.every);
   while (strikePhase % pattern.ruinEvery === 0) strikePhase += pattern.every;
-  const entries = [`${pattern.strike}: phase ${strikePhase}`, `${pattern.ruin}: phase ${nextPhase(pattern.ruinEvery)} (replaces the ordinary strike)`];
-  if (pattern.shieldEvery) entries.push(`Barrier refresh: phase ${nextPhase(pattern.shieldEvery)}`);
-  if (pattern.healEvery) entries.push(`Restoration: phase ${nextPhase(pattern.healEvery)}`);
-  return `<p class="calamity-cadence">Authored cadence · Current enemy phase ${round} · ${entries.map(escapeDialogText).join(' · ')}.</p>`;
+  const entries = [`${pattern.strike}: turn ${strikePhase}`, `${pattern.ruin}: turn ${nextPhase(pattern.ruinEvery)} (replaces the other skill)`];
+  if (pattern.shieldEvery) entries.push(`Shield refresh: turn ${nextPhase(pattern.shieldEvery)}`);
+  if (pattern.healEvery) entries.push(`Healing: turn ${nextPhase(pattern.healEvery)}`);
+  return `<p class="calamity-cadence">Enemy turn ${round} · ${entries.map(escapeDialogText).join(' · ')}.</p>`;
 }
 
 export function calamityOpeningReward(id: string, reward: ReturnType<typeof openCalamityChest>['reward']): RewardPresentation {
@@ -146,6 +157,6 @@ export function calamityOpeningReward(id: string, reward: ReturnType<typeof open
     ...(reward.masterChests ? [`${reward.masterChests} Cosmic Grand Master Chests`] : []),
   ];
   return { title: 'Calamity chest opened', name: chest.name, art: calamityChestIcon(tier),
-    details: `<ul>${lines.map(line => `<li>${escapeDialogText(line)}</li>`).join('')}</ul><p>These contents are already saved. No equipment was changed.</p>`,
-    accent: '#ed4545', animationLabel: 'Opening your saved chest reward…', savedLabel: 'Chest contents saved' };
+    details: `<ul>${lines.map(line => `<li>${escapeDialogText(line)}</li>`).join('')}</ul>`,
+    accent: '#ed4545', animationLabel: 'Opening chest…', savedLabel: 'Rewards saved' };
 }
