@@ -1,0 +1,553 @@
+﻿
+> last-light-game@0.1.0 test
+> vitest run --run src\game\conduit-roster.test.ts src\game\conduit-redesign.test.ts src\game\kit-conduits.test.ts src\game\conduit-equipment.test.ts src\game\master-conduits.test.ts src\game\conduit-native-compatibility.test.ts
+
+
+ RUN  v4.1.11 C:/Users/creat/Downloads/Coding/Projects/Last Light
+
+ ❯ src/game/conduit-redesign.test.ts (50 tests | 3 failed) 112ms
+     × conserves exactly one native charge with Sunforge while applying the three-charge bonus 12ms
+     × retains native resource caps unless the equipped kit owns expanded Bloom 2ms
+     × replaces native team support with concentrated shield or pure Gauge support 4ms
+ ❯ src/game/conduit-roster.test.ts (1116 tests | 37 failed) 1088ms
+     × 'starvein-conductor' executes its exact replacement, with no old stat bundle 10ms
+     × 'atmospheric-storm-clock' executes its exact replacement, with no old stat bundle 2ms
+     × 'botanic-graft-covenant' executes its exact replacement, with no old stat bundle 2ms
+     × 'botanic-graft-covenant' cannot run without the named equipment 1ms
+     × 'starvein-conductor' executes its exact replacement, with no old stat bundle 2ms
+     × 'atmospheric-storm-clock' executes its exact replacement, with no old stat bundle 1ms
+     × 'botanic-graft-covenant' executes its exact replacement, with no old stat bundle 1ms
+     × 'botanic-graft-covenant' cannot run without the named equipment 1ms
+     × 'starvein-conductor' executes its exact replacement, with no old stat bundle 1ms
+     × 'atmospheric-storm-clock' executes its exact replacement, with no old stat bundle 1ms
+     × 'botanic-graft-covenant' executes its exact replacement, with no old stat bundle 1ms
+     × 'botanic-graft-covenant' cannot run without the named equipment 1ms
+     × 'starvein-conductor' executes its exact replacement, with no old stat bundle 1ms
+     × 'atmospheric-storm-clock' executes its exact replacement, with no old stat bundle 1ms
+     × 'botanic-graft-covenant' executes its exact replacement, with no old stat bundle 1ms
+     × 'botanic-graft-covenant' cannot run without the named equipment 1ms
+     × 'starvein-conductor' executes its exact replacement, with no old stat bundle 6ms
+     × 'atmospheric-storm-clock' executes its exact replacement, with no old stat bundle 1ms
+     × 'botanic-graft-covenant' executes its exact replacement, with no old stat bundle 1ms
+     × 'botanic-graft-covenant' cannot run without the named equipment 1ms
+     × 'starvein-conductor' executes its exact replacement, with no old stat bundle 1ms
+     × 'atmospheric-storm-clock' executes its exact replacement, with no old stat bundle 1ms
+     × 'botanic-graft-covenant' executes its exact replacement, with no old stat bundle 1ms
+     × 'botanic-graft-covenant' cannot run without the named equipment 1ms
+     × 'master-ember-3' executes its unique native transformation or bounded effect 5ms
+     × 'master-tide-2' executes its unique native transformation or bounded effect 3ms
+     × 'master-disciple-1' executes its unique native transformation or bounded effect 1ms
+     × 'master-rosetta-1' executes its unique native transformation or bounded effect 2ms
+     × 'master-thornia-2' executes its unique native transformation or bounded effect 2ms
+     × 'master-nerithe-2' executes its unique native transformation or bounded effect 2ms
+     × 'master-vaelor-2' executes its unique native transformation or bounded effect 1ms
+     × 'master-ember-3' cannot run without that matching Master 2ms
+     × 'master-tide-2' cannot run without that matching Master 1ms
+     × 'master-disciple-1' cannot run without that matching Master 1ms
+     × 'master-rosetta-1' cannot run without that matching Master 1ms
+     × 'master-thornia-2' cannot run without that matching Master 1ms
+     × 'master-vaelor-2' cannot run without that matching Master 1ms
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+⎯⎯⎯⎯⎯⎯ Failed Tests 40 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/game/conduit-redesign.test.ts > redesigned Master transformations > conserves exactly one native charge 
+with Sunforge while applying the three-charge bonus
+AssertionError: expected 3 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 3
+
+ ❯ src/game/conduit-redesign.test.ts:339:49
+    337|     f.owner.pilot = { ember: 3 };
+    338|     const result = act(f.state, f.owner.id, 'skill2', f.target.id);
+    339|     expect(result.state.allies[0].pilot?.ember).toBe(2);
+       |                                                 ^
+    340|   });
+    341|   it('retains native resource caps unless the equipped kit owns expand…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/40]⎯
+
+ FAIL  src/game/conduit-redesign.test.ts > redesigned Master transformations > retains native resource caps unless the 
+equipped kit owns expanded Bloom
+AssertionError: expected 5 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 5
+
+ ❯ src/game/conduit-redesign.test.ts:345:49
+    343|     f.owner.pilot = { bloom: 5 };
+    344|     const result = act(f.state, f.owner.id, 'skill1', f.target.id);
+    345|     expect(result.state.allies[0].pilot?.bloom).toBe(0);
+       |                                                 ^
+    346|     expect(result.events.some(event => event.message.includes('spends …
+    347|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/40]⎯
+
+ FAIL  src/game/conduit-redesign.test.ts > redesigned Master transformations > replaces native team support with 
+concentrated shield or pure Gauge support
+Error: Choose a living ally target.
+ ❯ act src/game/battle.ts:581:11
+    579|   if (allyTargeted && !previous.allies.some(ally => ally.id === target…
+    580|     (!nativeAbility.excludeSelf || ally.id !== actorId || previous.all…
+    581|     throw new Error(nativeAbility.excludeSelf ? 'Choose another living…
+       |           ^
+    582|   }
+    583|   const support = native ? action === 'defend' || allyTargeted || (act…
+ ❯ src/game/conduit-redesign.test.ts:352:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +0 > 'starvein-conductor' executes its 
+exact replacement, with no old stat bundle
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +1 > 'starvein-conductor' executes its 
+exact replacement, with no old stat bundle
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +2 > 'starvein-conductor' executes its 
+exact replacement, with no old stat bundle
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +3 > 'starvein-conductor' executes its 
+exact replacement, with no old stat bundle
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +4 > 'starvein-conductor' executes its 
+exact replacement, with no old stat bundle
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +5 > 'starvein-conductor' executes its 
+exact replacement, with no old stat bundle
+AssertionError: expected 1000 to be 950 // Object.is equality
+
+- Expected
++ Received
+
+- 950
++ 1000
+
+ ❯ exercise src/game/conduit-roster.test.ts:190:24
+    188|     case 'starvein-conductor': {
+    189|       const ctx = context('skill1');
+    190|       expect(owner.hp).toBe(enabled ? 950 : 1000);
+       |                        ^
+    191|       expect(applyConduitBurn(state, owner, target, 100, ctx)).toBe(Ma…
+    192|       break;
+ ❯ src/game/conduit-roster.test.ts:463:93
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +0 > 'atmospheric-storm-clock' executes its 
+exact replacement, with no old stat bundle
+AssertionError: expected 100 to be close to 85, received difference is 15, but expected 0.005
+ ❯ exercise src/game/conduit-roster.test.ts:430:64
+    428|     case 'atmospheric-storm-clock':
+    429|       finish('skill1', true); finish('skill1', true); finish('skill1',…
+    430|       expect(conduitActionCost(owner, 'ultimate', state, 100)).toBeClo…
+       |                                                                ^
+    431|       break;
+    432|     case 'botanic-graft-covenant':
+ ❯ src/game/conduit-roster.test.ts:463:93
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +0 > 'botanic-graft-covenant' executes its 
+exact replacement, with no old stat bundle
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +1 > 'botanic-graft-covenant' executes its 
+exact replacement, with no old stat bundle
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +2 > 'botanic-graft-covenant' executes its 
+exact replacement, with no old stat bundle
+AssertionError: expected undefined to be 4 // Object.is equality
+
+- Expected:
+4
+
++ Received:
+undefined
+
+ ❯ exercise src/game/conduit-roster.test.ts:435:34
+    433|       owner.hp = 100;
+    434|       for (let i = 0; i < 6; i++) { state.round++; nativeHeal(state, o…
+    435|       expect(owner.pilot?.bloom).toBe(3 + s(1, 2));
+       |                                  ^
+    436|       break;
+    437|     case 'tranquilitic-accord-bastion':
+ ❯ src/game/conduit-roster.test.ts:463:93
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +0 > 'botanic-graft-covenant' cannot run 
+without the named equipment
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +1 > 'botanic-graft-covenant' cannot run 
+without the named equipment
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +2 > 'botanic-graft-covenant' cannot run 
+without the named equipment
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +3 > 'botanic-graft-covenant' cannot run 
+without the named equipment
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +4 > 'botanic-graft-covenant' cannot run 
+without the named equipment
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +5 > 'botanic-graft-covenant' cannot run 
+without the named equipment
+AssertionError: expected undefined to be 3 // Object.is equality
+
+- Expected:
+3
+
++ Received:
+undefined
+
+ ❯ exercise src/game/conduit-roster.test.ts:435:34
+    433|       owner.hp = 100;
+    434|       for (let i = 0; i < 6; i++) { state.round++; nativeHeal(state, o…
+    435|       expect(owner.pilot?.bloom).toBe(3 + s(1, 2));
+       |                                  ^
+    436|       break;
+    437|     case 'tranquilitic-accord-bastion':
+ ❯ src/game/conduit-roster.test.ts:464:76
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +1 > 'atmospheric-storm-clock' executes its 
+exact replacement, with no old stat bundle
+AssertionError: expected 100 to be close to 82, received difference is 18, but expected 0.005
+ ❯ exercise src/game/conduit-roster.test.ts:430:64
+    428|     case 'atmospheric-storm-clock':
+    429|       finish('skill1', true); finish('skill1', true); finish('skill1',…
+    430|       expect(conduitActionCost(owner, 'ultimate', state, 100)).toBeClo…
+       |                                                                ^
+    431|       break;
+    432|     case 'botanic-graft-covenant':
+ ❯ src/game/conduit-roster.test.ts:463:93
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +2 > 'atmospheric-storm-clock' executes its 
+exact replacement, with no old stat bundle
+AssertionError: expected 100 to be close to 79, received difference is 21, but expected 0.005
+ ❯ exercise src/game/conduit-roster.test.ts:430:64
+    428|     case 'atmospheric-storm-clock':
+    429|       finish('skill1', true); finish('skill1', true); finish('skill1',…
+    430|       expect(conduitActionCost(owner, 'ultimate', state, 100)).toBeClo…
+       |                                                                ^
+    431|       break;
+    432|     case 'botanic-graft-covenant':
+ ❯ src/game/conduit-roster.test.ts:463:93
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +3 > 'atmospheric-storm-clock' executes its 
+exact replacement, with no old stat bundle
+AssertionError: expected 100 to be close to 76, received difference is 24, but expected 0.005
+ ❯ exercise src/game/conduit-roster.test.ts:430:64
+    428|     case 'atmospheric-storm-clock':
+    429|       finish('skill1', true); finish('skill1', true); finish('skill1',…
+    430|       expect(conduitActionCost(owner, 'ultimate', state, 100)).toBeClo…
+       |                                                                ^
+    431|       break;
+    432|     case 'botanic-graft-covenant':
+ ❯ src/game/conduit-roster.test.ts:463:93
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +3 > 'botanic-graft-covenant' executes its 
+exact replacement, with no old stat bundle
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +4 > 'botanic-graft-covenant' executes its 
+exact replacement, with no old stat bundle
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +5 > 'botanic-graft-covenant' executes its 
+exact replacement, with no old stat bundle
+AssertionError: expected undefined to be 5 // Object.is equality
+
+- Expected:
+5
+
++ Received:
+undefined
+
+ ❯ exercise src/game/conduit-roster.test.ts:435:34
+    433|       owner.hp = 100;
+    434|       for (let i = 0; i < 6; i++) { state.round++; nativeHeal(state, o…
+    435|       expect(owner.pilot?.bloom).toBe(3 + s(1, 2));
+       |                                  ^
+    436|       break;
+    437|     case 'tranquilitic-accord-bastion':
+ ❯ src/game/conduit-roster.test.ts:463:93
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +4 > 'atmospheric-storm-clock' executes its 
+exact replacement, with no old stat bundle
+AssertionError: expected 100 to be close to 73, received difference is 27, but expected 0.005
+ ❯ exercise src/game/conduit-roster.test.ts:430:64
+    428|     case 'atmospheric-storm-clock':
+    429|       finish('skill1', true); finish('skill1', true); finish('skill1',…
+    430|       expect(conduitActionCost(owner, 'ultimate', state, 100)).toBeClo…
+       |                                                                ^
+    431|       break;
+    432|     case 'botanic-graft-covenant':
+ ❯ src/game/conduit-roster.test.ts:463:93
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every ordinary Conduit at upgrade +5 > 'atmospheric-storm-clock' executes its 
+exact replacement, with no old stat bundle
+AssertionError: expected 100 to be close to 70, received difference is 30, but expected 0.005
+ ❯ exercise src/game/conduit-roster.test.ts:430:64
+    428|     case 'atmospheric-storm-clock':
+    429|       finish('skill1', true); finish('skill1', true); finish('skill1',…
+    430|       expect(conduitActionCost(owner, 'ultimate', state, 100)).toBeClo…
+       |                                                                ^
+    431|       break;
+    432|     case 'botanic-graft-covenant':
+ ❯ src/game/conduit-roster.test.ts:463:93
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-ember-3' executes its unique native 
+transformation or bounded effect
+AssertionError: expected 3 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 3
+
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:490:61
+    488|     case 'master-ember-3':
+    489|       owner.pilot = { ember: 3 };
+    490|       expect(attack('skill2').state.allies[0].pilot?.ember).toBe(enabl…
+       |                                                             ^
+    491|       break;
+    492|     case 'master-tide-1':
+ ❯ src/game/conduit-roster.test.ts:772:103
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-tide-2' executes its unique native 
+transformation or bounded effect
+Error: Choose a living ally target.
+ ❯ act src/game/battle.ts:581:11
+    579|   if (allyTargeted && !previous.allies.some(ally => ally.id === target…
+    580|     (!nativeAbility.excludeSelf || ally.id !== actorId || previous.all…
+    581|     throw new Error(nativeAbility.excludeSelf ? 'Choose another living…
+       |           ^
+    582|   }
+    583|   const support = native ? action === 'defend' || allyTargeted || (act…
+ ❯ attack src/game/conduit-roster.test.ts:475:40
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:500:22
+ ❯ src/game/conduit-roster.test.ts:772:103
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-disciple-1' executes its unique 
+native transformation or bounded effect
+Error: Choose a living ally target.
+ ❯ act src/game/battle.ts:581:11
+    579|   if (allyTargeted && !previous.allies.some(ally => ally.id === target…
+    580|     (!nativeAbility.excludeSelf || ally.id !== actorId || previous.all…
+    581|     throw new Error(nativeAbility.excludeSelf ? 'Choose another living…
+       |           ^
+    582|   }
+    583|   const support = native ? action === 'defend' || allyTargeted || (act…
+ ❯ attack src/game/conduit-roster.test.ts:475:40
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:598:22
+ ❯ src/game/conduit-roster.test.ts:772:103
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-rosetta-1' executes its unique 
+native transformation or bounded effect
+AssertionError: expected 300 to be greater than 300
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:649:41
+    647|       ally.hp = 300;
+    648|       const result = endTurn(state);
+    649|       expect(result.state.allies[1].hp).toBeGreaterThan(300);
+       |                                         ^
+    650|       const heals = result.events.filter(event => event.kind === 'heal…
+    651|       expect(heals).toHaveLength(enabled ? 1 : 3);
+ ❯ src/game/conduit-roster.test.ts:772:103
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-thornia-2' executes its unique 
+native transformation or bounded effect
+AssertionError: expected [ { kind: 'damage', …(8) } ] to have a length of 3 but got 1
+
+- Expected
++ Received
+
+- 3
++ 1
+
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:674:99
+    672|       owner.pilot = { thornAegis: 3 };
+    673|       const result = attack('skill2');
+    674|       expect(result.events.filter(event => event.kind === 'damage' && …
+       |                                                                                                   ^
+    675|       expect(result.state.enemies[1].weakened).toBe(enabled ? 1 : 0);
+    676|       expect(result.state.allies[0].pilot?.thornAegis).toBe(0);
+ ❯ src/game/conduit-roster.test.ts:772:103
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-nerithe-2' executes its unique 
+native transformation or bounded effect
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:718:68
+    716|     case 'master-nerithe-2': {
+    717|       const result = attack('skill2');
+    718|       expect(result.events.some(event => event.kind === 'damage')).toB…
+       |                                                                    ^
+    719|       expect(result.state.allies.every(unit => unit.omnicProtection ==…
+    720|       break;
+ ❯ src/game/conduit-roster.test.ts:772:103
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-vaelor-2' executes its unique native 
+transformation or bounded effect
+AssertionError: expected 3 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 3
+
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:755:53
+    753|       owner.pilot = { tempest: 3 };
+
+ Test Files  2 failed | 4 passed (6)
+    754|       const result = attack('skill2');
+    755|       expect(result.state.allies[0].pilot?.tempest).toBe(enabled ? 2 :…
+       |                                                     ^
+    756|       expect(result.state.enemies[0].weakenOrigin).toBe(enabled ? 'con…
+    757|       expect(result.state.enemies[0].weakened).toBe(enabled ? 1 : 0);
+ ❯ src/game/conduit-roster.test.ts:772:103
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-ember-3' cannot run without that 
+matching Master
+AssertionError: expected 3 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 3
+
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:490:61
+    488|     case 'master-ember-3':
+    489|       owner.pilot = { ember: 3 };
+    490|       expect(attack('skill2').state.allies[0].pilot?.ember).toBe(enabl…
+       |                                                             ^
+    491|       break;
+    492|     case 'master-tide-1':
+ ❯ src/game/conduit-roster.test.ts:773:83
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-tide-2' cannot run without that 
+matching Master
+Error: Choose a living ally target.
+ ❯ act src/game/battle.ts:581:11
+    579|   if (allyTargeted && !previous.allies.some(ally => ally.id === target…
+    580|     (!nativeAbility.excludeSelf || ally.id !== actorId || previous.all…
+    581|     throw new Error(nativeAbility.excludeSelf ? 'Choose another living…
+       |           ^
+    582|   }
+    583|   const support = native ? action === 'defend' || allyTargeted || (act…
+ ❯ attack src/game/conduit-roster.test.ts:475:40
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:500:22
+ ❯ src/game/conduit-roster.test.ts:773:83
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-disciple-1' cannot run without that 
+matching Master
+Error: Choose a living ally target.
+ ❯ act src/game/battle.ts:581:11
+    579|   if (allyTargeted && !previous.allies.some(ally => ally.id === target…
+    580|     (!nativeAbility.excludeSelf || ally.id !== actorId || previous.all…
+    581|     throw new Error(nativeAbility.excludeSelf ? 'Choose another living…
+       |           ^
+    582|   }
+    583|   const support = native ? action === 'defend' || allyTargeted || (act…
+ ❯ attack src/game/conduit-roster.test.ts:475:40
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:598:22
+ ❯ src/game/conduit-roster.test.ts:773:83
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-rosetta-1' cannot run without that 
+matching Master
+AssertionError: expected 300 to be greater than 300
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:649:41
+    647|       ally.hp = 300;
+    648|       const result = endTurn(state);
+    649|       expect(result.state.allies[1].hp).toBeGreaterThan(300);
+       |                                         ^
+    650|       const heals = result.events.filter(event => event.kind === 'heal…
+    651|       expect(heals).toHaveLength(enabled ? 1 : 3);
+ ❯ src/game/conduit-roster.test.ts:773:83
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-thornia-2' cannot run without that 
+matching Master
+AssertionError: expected 3 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 3
+
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:676:56
+    674|       expect(result.events.filter(event => event.kind === 'damage' && …
+    675|       expect(result.state.enemies[1].weakened).toBe(enabled ? 1 : 0);
+    676|       expect(result.state.allies[0].pilot?.thornAegis).toBe(0);
+       |                                                        ^
+    677|       break;
+    678|     }
+ ❯ src/game/conduit-roster.test.ts:773:83
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/40]⎯
+
+ FAIL  src/game/conduit-roster.test.ts > every fixed Master replacement > 'master-vaelor-2' cannot run without that 
+matching Master
+AssertionError: expected 3 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 3
+
+ ❯ exerciseMaster src/game/conduit-roster.test.ts:755:53
+    753|       owner.pilot = { tempest: 3 };
+    754|       const result = attack('skill2');
+    755|       expect(result.state.allies[0].pilot?.tempest).toBe(enabled ? 2 :…
+      Tests  40 failed | 1168 passed (1208)
+       |                                                     ^
+    756|       expect(result.state.enemies[0].weakenOrigin).toBe(enabled ? 'con…
+    757|       expect(result.state.enemies[0].weakened).toBe(enabled ? 1 : 0);
+ ❯ src/game/conduit-roster.test.ts:773:83
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/40]⎯
+
+   Start at  09:27:53
+   Duration  3.00s (transform 6.16s, setup 0ms, import 9.46s, tests 1.95s, environment 1ms)
+
