@@ -38,17 +38,21 @@ function gainResource(owner: Combatant, key: KitPilotResourceKey, events: Battle
     if (current[roundKey] === round) return;
     current[roundKey] = round;
   }
-  if ((current[key] ?? 0) >= 3) return;
+  const maximum = key === 'bloom' && owner.conduits?.includes('botanic-graft-covenant') ? 3 + ((owner.conduitRuntime?.numbers.graftBonus ?? 1)) : 3;
+  if ((current[key] ?? 0) >= maximum) return;
   current[key] = (current[key] ?? 0) + 1;
   const label = resourceLabel(key);
-  status(events, owner, owner, `${owner.name} gains ${label} (${current[key]}/3).`, resourceEffect(owner));
+  status(events, owner, owner, `${owner.name} gains ${label} (${current[key]}/${maximum}).`, resourceEffect(owner));
 }
 
 function spendResource(actor: Combatant, key: KitPilotResourceKey, events: BattleEvent[]): number {
   if (!nativeOwner(actor)) return 0;
-  const count = Math.min(3, Math.max(0, actor.pilot?.[key] ?? 0));
+  const maximum = key === 'bloom' && actor.conduits?.includes('botanic-graft-covenant') ? 3 + (actor.conduitRuntime?.numbers.graftBonus ?? 1) : 3;
+  const available = Math.min(maximum, Math.max(0, actor.pilot?.[key] ?? 0));
+  const selective = (key === 'ember' && actor.masterConduit === 'master-ember-3') || (key === 'tempest' && actor.masterConduit === 'master-vaelor-2');
+  const count = selective && actor.conduitRuntime?.numbers.ordinaryResourceSpend ? Math.min(1, available) : available;
   if (count <= 0) return 0;
-  charges(actor)[key] = 0;
+  charges(actor)[key] = available - count;
   const label = resourceLabel(key);
   status(events, actor, actor, `${actor.name} spends ${count} ${label}.`, resourceEffect(actor));
   return count;
@@ -69,7 +73,9 @@ export function pilotOutgoingBonus(actor: Combatant, action: ActionId, events: B
   const skill = actor.definitionId === 'atmoso' || actor.definitionId === 'elise' ? 'skill1'
     : actor.definitionId === 'vaelor' ? 'skill2' : rule.skill;
   if (!(action === skill || (action === 'ultimate' && rule.ultimate !== undefined))) return 0;
-  return spendResource(actor, rule.key, events) * (action === 'ultimate' ? rule.ultimate ?? 0 : rule.ordinary);
+  const spent = spendResource(actor, rule.key, events);
+  const effective = actor.masterConduit === 'master-ember-3' && action === 'skill2' && spent > 0 ? 3 : spent;
+  return effective * (action === 'ultimate' ? rule.ultimate ?? 0 : rule.ordinary);
 }
 
 export function pilotPrepareStarter(actor: Combatant, action: ActionId, events: BattleEvent[]): {

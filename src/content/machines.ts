@@ -27,34 +27,32 @@ export const machineEnemies = [
   { name: 'Ouroboros of the First Dawn', art: 'ouroboros-first-dawn', element: 'chaotic', skill: 'Genesis Overdrive', theme: 'compact opal-and-ivory mechanized celestial dragon coiled around a restored core, sixteen magnificent vaned wings and prismatic regalia' },
 ] as const;
 
-export function machineConduitLoot(stage: number) {
+export function machineConduitLoot(stage: number, owned: Partial<Record<ConduitId, number>> = {}) {
   validateMachineStage(stage);
-  return [
-    ...machinePools.Rare.map((conduit) => ({ id: conduit.id, minimum: 1, maximum: 1,
-      chance: machineRules.rareChance / machinePools.Rare.length,
-      note: 'Independent Rare tier roll, then equal choice within the tier; bosses use the same odds.' })),
-    ...machinePools.Legendary.map((conduit) => ({ id: conduit.id, minimum: 1, maximum: 1,
-      chance: machineRules.legendaryChance / machinePools.Legendary.length,
-      note: 'Independent Legendary tier roll, then equal choice within the tier; bosses use the same odds.' })),
-    ...(stage >= machineRules.omnicStage ? machinePools.Omnic.map((conduit) => ({ id: conduit.id, minimum: 1, maximum: 1,
-      chance: machineRules.omnicChance / machinePools.Omnic.length,
-      note: 'Independent Omnic tier roll, then equal choice within the tier; bosses use the same odds.' })) : []),
-  ];
+  return (['Rare', 'Legendary', 'Omnic'] as const).filter(rarity => rarity !== 'Omnic' || stage >= machineRules.omnicStage).flatMap((rarity) => {
+    const pool = machinePools[rarity];
+    const remaining = pool.filter((conduit) => !(owned[conduit.id] ?? 0)).length;
+    const chance = rarity === 'Rare' ? machineRules.rareChance : rarity === 'Legendary' ? machineRules.legendaryChance : machineRules.omnicChance;
+    return pool.map((conduit) => ({ id: conduit.id, minimum: 1, maximum: 1,
+      chance: (owned[conduit.id] ?? 0) > 0 || !remaining ? 0 : chance / remaining,
+      note: `Independent ${rarity} tier roll, then equal choice among unowned Conduits in that tier. Owned names have 0% chance; a complete tier awards no Conduit or replacement. Bosses use the same odds.` }));
+  });
 }
 
 function rollTier(pool: readonly { id: ConduitId }[], chance: number, random: () => number): ConduitId | undefined {
   if (lootRoll(random) >= chance) return undefined;
-  if (!pool.length) throw new Error('Conduit reward pool is empty.');
-  return pool[Math.floor(lootRoll(random) * pool.length)].id;
+  // Keep the independent stream aligned even when a completed tier awards nothing.
+  const choice = lootRoll(random);
+  return pool.length ? pool[Math.floor(choice * pool.length)].id : undefined;
 }
 
-export function machineConduitDrops(stage: number, random: () => number): Partial<Record<ConduitId, number>> {
+export function machineConduitDrops(stage: number, random: () => number, owned: Partial<Record<ConduitId, number>> = {}): Partial<Record<ConduitId, number>> {
   validateMachineStage(stage);
   const drops: Partial<Record<ConduitId, number>> = {};
   for (const [pool, chance] of [[machinePools.Rare, machineRules.rareChance], [machinePools.Legendary, machineRules.legendaryChance],
     [machinePools.Omnic, stage >= machineRules.omnicStage ? machineRules.omnicChance : 0]] as const) {
     if (!chance) continue;
-    const id = rollTier(pool, chance, random);
+    const id = rollTier(pool.filter((conduit) => !(owned[conduit.id] ?? 0)), chance, random);
     if (id) drops[id] = 1;
   }
   return drops;
@@ -64,4 +62,4 @@ export function bannerConduitBonus(random: () => number): ConduitId | undefined 
   return rollTier(bannerPool, machineRules.bannerBonusChance, random);
 }
 
-export const machineRulesText = `<p>${machineOrigin}</p><p>${machineRules.stages} stages · Lv.10-120 · Boss every fifth stage. Each defeated enemy grants ordinary Prismatica and independently rolls Rare Conduits at 8%, Legendary at 3.5%, and Omnic at 1% from stage ${machineRules.omnicStage} onward. A successful tier roll awards one equally chosen Conduit: ${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary or ${machinePools.Omnic.length} element-specific Omnic. Multiple tiers may drop together; bosses use the same odds. All Common Conduits are Store-only and have no machine drop roll. ${machineComponentRulesText} No captures, evolution materials, Null-Prismatica or clear bonus.</p><p>One owned ordinary copy unlocks its name for every character. Each ordinary name can be upgraded account-wide five times using only components, adding 50% of the original stat modifiers each time, including penalties (3.5 times at +5). Kit effects and special mechanics are unchanged by upgrades. Up to four ordinary Omnic Conduits may occupy the eight ordinary slots; each must match that character's combat element.</p><p>${masterRulesText}</p>`;
+export const machineRulesText = `<p>${machineOrigin}</p><p>${machineRules.stages} stages · Lv.10-120 · Boss every fifth stage. Each defeated enemy grants ordinary Prismatica and independently rolls Rare Conduits at 8%, Legendary at 3.5%, and Omnic at 1% from stage ${machineRules.omnicStage} onward. A successful tier roll awards one equally chosen unowned Conduit from that rarity's catalog: ${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary or ${machinePools.Omnic.length} element-specific Omnic. Already-owned names cannot drop. If every name in the rolled rarity is owned, no Conduit or replacement reward is granted. Multiple tiers may drop together; bosses use the same odds. All Common Conduits are Store-only and have no machine drop roll. ${machineComponentRulesText} No captures, evolution materials, Null-Prismatica or clear bonus.</p><p>One owned ordinary copy unlocks its name for every character. Each ordinary name can be upgraded account-wide five times using only components, adding 50% of the original stat modifiers each time, including penalties (3.5 times at +5). Kit effects and special mechanics are unchanged by upgrades. Up to four ordinary Omnic Conduits may occupy the eight ordinary slots; each must match that character's combat element.</p><p>${masterRulesText}</p>`;

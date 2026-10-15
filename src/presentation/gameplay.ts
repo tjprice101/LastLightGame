@@ -20,16 +20,17 @@ import { storyCampaign } from './story';
 import { activityAccess } from '../game/activity-access';
 import { devourerHabitats, elementEmotions, machineOrigin, storyPurpose, trainingLore, warLore } from '../content/world-lore';
 import { worldLore } from './world-lore';
+import { calamitySection } from './calamity';
 
 function dungeonEntry(element: (typeof elements)[number]['id'], account: Account | null): string {
-  if (!account) return '<button disabled>Dungeon unavailable: resolve the save error</button>';
   if (!isPlayableDungeon(element)) throw new Error('Unknown elemental dungeon.');
+  if (!account) return `<button disabled>Dungeon unavailable: resolve the save error</button>${calamitySection(element, account)}`;
   const unlocked = unlockedStage(account, element);
   const access = activityAccess(account, { kind: 'dungeon', element, stage: unlocked });
   return `<footer class="activity-entry"><label class="dungeon-stage-label">Stage
     <select data-dungeon-stage="${element}" aria-label="${elements.find((entry) => entry.id === element)?.dungeon} stage">${Array.from({ length: unlocked }, (_, stage) => `<option value="${stage + 1}" ${stage + 1 === unlocked ? 'selected' : ''}>${stage + 1}</option>`).join('')}</select></label>
     <button class="primary-button" data-dungeon="${element}" ${access.unlocked ? '' : 'disabled'}>${access.unlocked ? 'Enter dungeon' : 'Locked'}</button>
-    ${access.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks at ${access.requirement}. Your highest: Lv.${access.level}.</p>`}</footer>`;
+    ${access.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks at ${access.requirement}. Your highest: Lv.${access.level}.</p>`}</footer>${calamitySection(element, account)}`;
 }
 
 const activityCategories = [
@@ -80,11 +81,11 @@ function gameplayInformation(): string {
       <p>Evolution and level specialty materials unlock at Lv.75. Bonus Epic / Legendary / Omnic unlock at 80 / 100 / 115.
       Heaven draws bonus materials from its four associated elements; Abyss draws from its two.</p>
       <p>No Null-Prismatica below Lv.80. From Lv.80, each kill independently rolls it: none / 1 / 2 / 3 = 90 / 8 / 1.5 / 0.5%; at Lv.120 = 75 / 10 / 10 / 5%, with linear interpolation. The stage 35 final boss instead awards none / 5 / 10 / 15 at those same chances.</p>
-      <p>Each kill has a separate 20% capture chance. Copies retain defeated level, form and kit.</p>
+      <p>Each kill has a separate 20% capture chance. Copies retain form and kit, with defeated level capped at 60.</p>
       ${infusionModes.map((mode) => `<p><strong>${mode.name}</strong> ? Enemy element: ${elementLabel(infusionEnemyElements[mode.id])}
         ? Material pool: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</p>`).join('')}` },
     { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages at levels 65-120, six fixed forms and a boss every fifth stage. Earlier bosses and ordinary enemies use the same payouts; final bosses award 5x currency quantities. No farm materials or separate clear bonus.</p>
-      <p>Each kill has a separate 20% capture chance. Copies retain defeated level, form and kit.</p>
+      <p>Each kill has a separate 20% capture chance. Copies retain form and kit, with defeated level capped at 60.</p>
       <h4>Crownfall Treasury</h4><p>${treasuryPrismaticaText} No Null-Prismatica.
       Common through Omnic Elemental-Devourer sales: ${treasurySalePrices.map((price) => price.toLocaleString('en-US')).join(' / ')} Prismatica.</p>
       <h4>Rosethorn Sanctuary</h4><p>Ordinary Prismatica 7-14 at Lv.65 to 15-30 at Lv.120.
@@ -149,6 +150,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       <p>${machineOrigin}</p>
       ${activityFacts(`${machineRules.stages} stages`, '10-120', 'Prismatica · Broken Mechanical Components · Conduits')}
       <p>Rare 8% · Legendary 3.5% · Omnic 1% from stage ${machineRules.omnicStage}</p>
+      <p>Unowned Conduits only. A completed rarity awards no Conduit or replacement reward.</p>
       ${itemShowcase([{ id: 'mechanical-components' }], 'Conduit upgrade currency')}
       <button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button>
       ${infusionEntry({ id: 'machines', name: 'Awaken the Machines' }, account)}

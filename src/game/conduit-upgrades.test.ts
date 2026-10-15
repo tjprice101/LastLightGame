@@ -269,20 +269,20 @@ describe('account-wide five-step Conduit restoration', () => {
     const progress = { level: 105, evolution: 6, weaponRank: 4 };
     const base = resolveFighter('ember', progress).stats;
     const stats = resolveFighter('ember', progress, equipment, upgrades).stats;
-    expect(stats.damage).toBeCloseTo(base.damage * 3.975);
-    expect(stats.health).toBeCloseTo(base.health * .65);
-    expect(stats.crit).toBeCloseTo(base.crit + .07);
-    expect(stats.shatterCapacity).toBeCloseTo(base.shatterCapacity + 17.5);
+    expect(stats.damage).toBeCloseTo(base.damage);
+    expect(stats.health).toBeCloseTo(base.health * .79);
+    expect(stats.crit).toBeCloseTo(base.crit);
+    expect(stats.shatterCapacity).toBeCloseTo(base.shatterCapacity + 35);
     const capped = { ...base, crit: .98 };
     applyConduitBuffs(capped, equipment, upgrades);
-    expect(capped.crit).toBeCloseTo(1.05);
+    expect(capped.crit).toBeCloseTo(.98);
     const copy = createCreatureCopy('infusion:heavens:0', 1, 80);
     const capturedBase = resolveCapturedFighter(copy).stats;
     const captured = resolveCapturedFighter(copy, equipment, upgrades).stats;
-    expect(captured.damage).toBeCloseTo(capturedBase.damage * 3.975);
-    expect(captured.health).toBeCloseTo(capturedBase.health * .65);
+    expect(captured.damage).toBeCloseTo(capturedBase.damage);
+    expect(captured.health).toBeCloseTo(capturedBase.health * .79);
     expect(resolveFighter('ember', progress).stats).toEqual(base);
-    expect(conduitEffect(conduits.find((c) => c.id === 'worldbreaker-drive')!, 5)).toBe('+297.5% Attack, -35% Health');
+    expect(conduitEffect(conduits.find((c) => c.id === 'worldbreaker-drive')!, 5)).toContain('+70% Last Flare direct damage; -21% maximum HP');
   });
   const destinations = [undefined, ...playableDungeons.map((element) => ({ element, stage: 1 })),
     ...(['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines'] as const).map((mode) => ({ mode, stage: 1 }))];
@@ -293,7 +293,7 @@ describe('account-wide five-step Conduit restoration', () => {
     const session = createSession('ember', progress, destination, { ids: ['ember'], progress: { ember: progress }, equipment: { ember: slots }, upgrades });
     upgrades['vigil-core'] = 5;
     expect(session.state.conduitUpgrades).toEqual({ 'vigil-core': 3 });
-    expect(session.state.allies[0].stats.health).toBeCloseTo(resolveFighter('ember', progress).stats.health * 1.125);
+    expect(session.state.allies[0].stats.health).toBeCloseTo(resolveFighter('ember', progress).stats.health * 1.15);
     session.state.phase = 'cleared';
     session.state.componentSeed = 42;
     const next = (destination ? nextStage(session.state, progress) : nextWave(session.state)).state;

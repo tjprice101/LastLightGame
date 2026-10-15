@@ -4,6 +4,7 @@ import { evolutionRarity } from '../content/progression';
 import { elements, materialRarities } from '../content/activities';
 import { resolveFighter, formatStat } from '../content/combat';
 import { conduits, conduitEffect } from '../content/conduits';
+import { readableEffect } from './effect-copy';
 import { ownedProgress, type Account } from '../game/account';
 import { portrait, assetUrl } from './portrait';
 import { creatures } from '../content/creatures';
@@ -59,8 +60,8 @@ function characterArchive(account: Account | null): string {
         ${current ? '' : '<p class="quiet">Level 0 preview</p>'}
         <dl class="archive-stats"><div><dt>Health</dt><dd>${formatStat(kit.stats.health)}</dd></div>
           <div><dt>Attack</dt><dd>${formatStat(kit.stats.damage)}</dd></div><div><dt>Defense</dt><dd>${formatStat(kit.stats.defense)}</dd></div></dl>
-        <h3>${current ? 'Current combat kit' : 'Form combat-kit preview'}</h3><p><strong>${kit.passive.name} · Passive</strong><br>${kit.passive.description}</p>${kitResource(kit, starter.id)}
-          ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => `<p><strong>${kit.abilities[action].name}</strong>${abilityStatuses(kit.abilities[action].strength)}<br>${kit.abilities[action].description}</p>`).join('')}${current ? masterReference(account?.masterEquipment?.[starter.id]) : ''}`, 'Combat kit')}
+        <h3>${current ? 'Current combat kit' : 'Form combat-kit preview'}</h3><p><strong>${kit.passive.name} · Passive</strong><br>${readableEffect(kit.passive.description)}</p>${kitResource(kit, starter.id)}
+          ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => `<p><strong>${kit.abilities[action].name}</strong>${abilityStatuses(kit.abilities[action].strength)}<br>${readableEffect(kit.abilities[action].description)}</p>`).join('')}${current ? masterReference(account?.masterEquipment?.[starter.id]) : ''}`, 'Combat kit')}
       </article>`;
       });
     }).join('')}${capturedForms.map((creature) => {
@@ -82,26 +83,26 @@ function conduitArchive(account: Account | null): string {
       <div class="archive-mechanism">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div>
       <h3>${conduit.name}</h3>${conduitRarity(conduit.id)}
       <p class="archive-ownership">${account ? `Owned ${account.conduits?.[conduit.id] ?? 0}` : 'Ownership unavailable'}</p>
-      <p class="archive-effect">${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</p>
+      <p class="archive-effect">${readableEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))}</p>
       ${information(`archive-conduit-${conduit.id}`, conduit.name, conduitDetails(conduit.id, account?.conduitUpgrades?.[conduit.id], (account?.conduits?.[conduit.id] ?? 0) > 0), 'Details')}
     </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card" data-archive-master="${entry.id}">
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
       <p>Omnic Master · ${getStarter(entry.character).name}</p><p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
-      <p class="archive-effect">${entry.effect}</p><p>Choose from a Cosmic Grand Master Chest. Final Machines boss: 1% chest drop. Always-active bearer enhancement; no upgrades.</p>
-      ${information(`archive-master-${entry.id}`, entry.name, `<p>${entry.lore}</p><p>${entry.effect}</p>`, 'Details')}
+      <p class="archive-effect">${readableEffect(entry.effect)}</p><p>Choose from a Cosmic Grand Master Chest. Final Machines boss: 1% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Named bearer enhancement; no upgrades.</p>
+      ${information(`archive-master-${entry.id}`, entry.name, `<p>${entry.lore}</p><p>${readableEffect(entry.effect)}</p>`, 'Details')}
     </article>`).join('')}</div>`;
 }
 
 export function archives(account: Account | null, selected: ArchiveGallery = 'characters'): string {
   return `<section class="archives"><header class="archive-toolbar"><div><h2>Collections</h2><p>Browse forms, Conduits and enemy discoveries.</p></div>${information('collections-information', 'Collections', `<h3>Character</h3><p>Reached Element-Bearer forms and owned captured forms reveal in color; other forms remain silhouettes.
     Current forms show saved equipped stats; other Element-Bearer forms preview level 0 without Conduits. Stars and form rarity are separate.
-    Captured forms have a level cap of 120 and cannot evolve. Catalog previews do not grant ownership.</p>
+    Captured forms have a level cap of 60 and cannot evolve. Higher-level captures are reduced to 60. Catalog previews do not grant ownership.</p>
     <h3>Conduits</h3><p>Owned Conduits reveal their artwork in color; unowned Conduits remain silhouettes. The catalog shows effects and owned counts. Equipment rules are in Character Information.</p>
     <h3>Elemental-Devourer and Machine discovery</h3><p>Elemental-Devourers are Rise's creations. Machines are destroyed prototypes from her collaboration with Let, not her created faction.</p><p>Encountering reveals identity, element and lore. Defeating reveals exact stage loot.
     Use View Loot below an enemy to browse its stage-specific amounts and rates. Each Conduit drop has View Details for its effects and lore.
     Base quantities vary uniformly; final bosses multiply sampled quantities by5. Rarity rolls are independent and have no pity.
     Heaven, Abyss, Treasury and Sanctuary have a separate 20% capture chance per kill; Story, Training and elemental dungeons cannot grant captures.
-    Captures retain defeated level, form and skills. Currency Elemental-Devourer sale prices are fixed by form; sale protections are in Character Information.</p>
+    Captures retain form and skills, with defeated level capped at 60. Currency Elemental-Devourer sale prices are fixed by form; sale protections are in Character Information.</p>
     `)}</header>
     <nav class="archive-navigation" aria-label="Archive galleries">${galleries.map((gallery) =>
       `<button class="archive-gallery-button" data-archive-gallery="${gallery.id}" aria-controls="archive-${gallery.id}" aria-pressed="${selected === gallery.id}"><strong>${gallery.name}</strong><small>${gallery.subtitle}</small></button>`).join('')}</nav>

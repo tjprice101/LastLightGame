@@ -7,7 +7,7 @@ import { fighters, resolveFighter } from '../content/combat';
 import type { ConduitLoadouts } from '../content/conduits';
 import { standardBannerPool } from '../content/standard-banner';
 import { playableDungeons } from '../content/dungeons';
-import { characterEvolutionRequirement, characterLevelCost, characterPotencyFactor } from '../content/progression';
+import { characterEvolutionRequirement, characterLevelCost } from '../content/progression';
 import { abilityIcon } from '../presentation/ability-icon';
 import { characterRole } from '../presentation/character-role';
 import { archives } from '../presentation/archives';
@@ -16,6 +16,7 @@ import { ACCOUNT_KEY, emptyAccount, equipConduit, loadAccount, saveAccount, setS
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { act, createBattle, damageAmount, endTurn, nextStage, nextWave } from './battle';
 import { createCreatureCopy } from './character-instances';
+import { benchmarkTarget } from './native-benchmark-pilot';
 
 function storage() {
   const map = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
@@ -61,7 +62,7 @@ describe('playable flagship roster', () => {
       const state = createBattle(12345, [character.id]);
       state.allies[0].shatter = 100;
       state.enemies.forEach((unit) => { unit.hp = 10000; unit.stats.health = 10000; });
-      const result = act(state, character.id, action, state.enemies[0].id);
+      const result = act(state, character.id, action, benchmarkTarget(state, state.allies[0], action));
       expect(result.state.allies[0].spent).toBe(true);
       if (action !== 'light' && action !== 'defend') {
         expect(result.events.find((entry) => entry.kind === 'attack')?.abilityName).toBe(fighters[character.id].abilities[action].name);
@@ -143,56 +144,68 @@ describe('playable flagship roster', () => {
 });
 
 describe('Disciple ally empowerment', () => {
-  it('empowers captured allies too and carries the remaining duration through Adventure Continue', () => {
+  it('instructs a selected captured ally, consumes after its action, and resets Instructions on Continue', () => {
     const copy = createCreatureCopy('infusion:heavens:0');
     const state = createBattle(12345, ['disciple', copy.instanceId, 'bruno'], {}, {}, [copy]);
     state.allies.forEach((unit) => { unit.shatter = 100; unit.stats.crit = 0; });
     state.enemies.forEach((unit) => { unit.hp = 1000000; unit.stats.health = 1000000; });
-    const supported = act(state, 'disciple', 'skill1', state.enemies[0].id).state;
-    expect(supported.allies[1].attackBoost).toEqual({ fraction: .2, throughRound: 2, sourceId: 'disciple' });
+    const supported = act(state, 'disciple', 'skill1', copy.instanceId).state;
+    expect(supported.allies[1].attackBoost).toBeUndefined();
+    expect(supported.allies[1].native?.instruction).toEqual({ kind: 'strike', owner: 'disciple', throughRound: 2 });
+    expect(supported.allies[2].native?.instruction).toBeUndefined();
     const result = act(supported, copy.instanceId, 'light', supported.enemies[0].id);
     expect(result.events.find((entry) => entry.kind === 'damage')?.amount)
-      .toBe(damageAmount(supported.allies[1].stats.damage, 1.2, supported.enemies[0].stats.defense, false));
+      .toBe(damageAmount(supported.allies[1].stats.damage, 1.3, supported.enemies[0].stats.defense, false));
+    expect(result.state.allies[1].native?.instruction).toBeUndefined();
     result.state.phase = 'cleared';
     result.state.enemies.forEach((unit) => { unit.hp = 0; });
     const next = nextWave(result.state).state;
     expect(next.round).toBe(2);
-    expect(next.allies[1].attackBoost).toEqual({ fraction: .2, throughRound: 2, sourceId: 'disciple' });
+    expect(next.allies[1].native?.instruction).toBeUndefined();
+    expect(next.allies[1].attackBoost).toBeUndefined();
   });
-  it('boosts actual damage for living allies, persists on clone/resume, and expires after the next turn', () => {
+  it('boosts only the chosen next action, persists on clone/resume, and expires by the next turn end', () => {
     const state = controlled();
     const original = structuredClone(state);
-    const result = act(state, 'disciple', 'skill1', state.enemies[0].id);
+    const result = act(state, 'disciple', 'skill1', 'elise');
     expect(state).toEqual(original);
-    expect(result.state.allies.every((ally) => ally.attackBoost?.fraction === .2)).toBe(true);
-    expect(result.events.filter((entry) => entry.kind === 'status')).toHaveLength(3);
+    expect(result.state.allies.every((ally) => ally.attackBoost === undefined)).toBe(true);
+    expect(result.state.allies[2].native?.instruction?.kind).toBe('strike');
+    expect(result.state.allies.slice(0, 2).every(ally => ally.native?.instruction === undefined)).toBe(true);
+    expect(result.events.filter((entry) => entry.kind === 'status')).toHaveLength(1);
     const resumed = structuredClone(result.state);
     const attack = act(resumed, 'elise', 'light', resumed.enemies[0].id);
-    expect(attack.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(40, 1.2, state.enemies[0].stats.defense, false));
-    const next = endTurn(attack.state).state;
-    expect(next.allies[2].attackBoost).toEqual({ fraction: .2, throughRound: 2, sourceId: 'disciple' });
-    expect(endTurn(next).state.allies.every((ally) => ally.attackBoost === undefined)).toBe(true);
+    expect(attack.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(40, 1.3, state.enemies[0].stats.defense, false));
+    expect(attack.state.allies[2].native?.instruction).toBeUndefined();
+    const next = endTurn(result.state).state;
+    expect(next.allies[2].native?.instruction).toEqual({ kind: 'strike', owner: 'disciple', throughRound: 2 });
+    expect(endTurn(next).state.allies.every((ally) => ally.native?.instruction === undefined)).toBe(true);
   });
-  it('refreshes instead of stacking, protects dead allies, and gives the advertised shields', () => {
+  it('Shelter replaces the one Instruction, rejects dead targets, and Resolve grants no immediate shield', () => {
     let state = controlled();
     state.allies[1].hp = 0;
     state.allies.forEach((ally) => { ally.shield = 0; });
-    state = act(state, 'disciple', 'skill2', '').state;
-    expect(state.allies[0].attackBoost?.fraction).toBe(.3);
-    expect(state.allies[0].shield).toBe(20);
-    expect(state.allies[1].attackBoost).toBeUndefined();
+    expect(() => act(state, 'disciple', 'skill2', 'bruno')).toThrow('living ally');
+    state = act(state, 'disciple', 'skill2', 'disciple').state;
+    expect(state.allies[0].native?.instruction?.kind).toBe('shelter');
+    expect(state.allies[0].shield).toBe(0);
+    expect(state.allies[1].native?.instruction).toBeUndefined();
     expect(state.allies[1].shield).toBe(0);
     state = endTurn(state).state;
-    state = act(state, 'disciple', 'skill1', state.enemies[0].id).state;
-    expect(state.allies[0].attackBoost).toEqual({ fraction: .3, throughRound: 3, sourceId: 'disciple' });
+    state = act(state, 'disciple', 'skill1', 'elise').state;
+    expect(state.allies[0].native?.instruction).toBeUndefined();
+    expect(state.allies[2].native?.instruction).toEqual({ kind: 'strike', owner: 'disciple', throughRound: 3 });
     const ultimate = controlled();
     const result = act(ultimate, 'disciple', 'ultimate', '');
-    expect(result.state.allies[0].attackBoost?.fraction).toBe(.4);
+    expect(result.state.allies.every(ally => ally.native?.instruction?.kind === 'resolve')).toBe(true);
+    expect(result.state.allies.every(ally => ally.attackBoost === undefined)).toBe(true);
+    expect(result.state.allies.map(ally => ally.shield)).toEqual(ultimate.allies.map(ally => ally.shield));
     expect(result.state.allies[0].recoverThrough).toBe(2);
     const growth = { level: 105, evolution: 6 };
     const kit = resolveFighter('disciple', growth);
-    expect(kit.abilities.skill1.strength.attackBoostFraction).toBeCloseTo(.2 * characterPotencyFactor(growth));
-    expect(kit.abilities.ultimate.strength.attackBoostFraction).toBe(.5);
-    expect(kit.abilities.ultimate.description).toContain('50%');
+    expect(kit.abilities.skill1.strength).toEqual({});
+    expect(kit.abilities.ultimate.strength).toEqual({});
+    expect(kit.abilities.skill1.description).toContain('30% outgoing direct damage');
+    expect(kit.abilities.skill2.description).toContain('35% native healing/shield amount');
   });
 });

@@ -4,6 +4,7 @@ import { dungeonEncounter, playableDungeons } from './dungeons';
 import { infusionEncounter } from './infusions';
 import { act, actionUnavailable, createBattle, createDungeonBattle, createInfusionBattle, endTurn, nextWave } from '../game/battle';
 import { starters } from './starters';
+import { benchmarkTarget } from '../game/native-benchmark-pilot';
 
 describe('accelerating enemy stat curves', () => {
   it('keeps opening values, doubles initial health/attack growth and reaches exact endgame thresholds', () => {
@@ -56,7 +57,7 @@ describe('accelerating enemy stat curves', () => {
           const actor = state.allies[0];
           const priorities = starter.id === 'disciple' ? ['skill1', 'skill2', 'light'] as const : ['ultimate', 'skill1', 'light'] as const;
           const action = priorities.find((id) => !actionUnavailable(state, actor, id));
-          if (action) state = act(state, actor.id, action, state.enemies.find((enemy) => enemy.hp > 0)!.id).state;
+          if (action) state = act(state, actor.id, action, benchmarkTarget(state, actor, action)).state;
           if (state.phase === 'player') state = endTurn(state).state;
         }
         expect(state.phase, `${starter.name}, seed ${seed}, ${initial.infusion?.mode ?? 'dungeon'}`).toBe('defeat');

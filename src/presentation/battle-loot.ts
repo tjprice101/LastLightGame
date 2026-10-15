@@ -10,6 +10,7 @@ import { createConduitUpgradeMeter } from './conduit-upgrade-meter';
 import { getStarter } from '../content/starters';
 import { characterName } from '../content/character-art';
 import { masterChest } from '../content/master-conduits';
+import { calamityChest, parseCalamityChestId } from '../content/calamity';
 
 export function lootMotion(random: () => number = Math.random) {
   return { size: .75 + lootRoll(random) * .6, scatter: (lootRoll(random) - .5) * 14,
@@ -27,6 +28,7 @@ export function lootLayout(count: number, viewportWidth: number, viewportHeight 
 export interface LootItem { id: string; name: string; amount: number; art?: string; color: string; upgradeLevel?: number }
 export function lootItems(event: BattleEvent): LootItem[] {
   if (event.kind !== 'reward') throw new Error('Loot presentation requires a reward event.');
+  const calamity = event.calamityChest ? parseCalamityChestId(event.calamityChest) : null;
   return [
     { id: 'fractalis', name: 'Prismatica', amount: event.amount, art: undefined, color: '#ffffff' },
     ...((event.lycalis ?? 0) + (event.recruitmentOutcome === 'duplicate' ? 100 : 0) > 0
@@ -38,6 +40,7 @@ export function lootItems(event: BattleEvent): LootItem[] {
     }] : []),
     ...(event.mechanicalComponents ? [{ id: mechanicalComponents.id, name: mechanicalComponents.name, amount: event.mechanicalComponents, color: '#ffffff' }] : []),
     ...(event.masterChests ? [{ id: masterChest.id, name: masterChest.name, amount: event.masterChests, color: '#ded0ff' }] : []),
+    ...(calamity ? [{ id: event.calamityChest!, name: calamityChest(calamity.activity, calamity.tier).name, amount: 1, color: '#ed4545' }] : []),
     ...Object.entries(event.conduits ?? {}).map(([id, amount]) => {
       if (!isConduitId(id)) throw new Error('Unknown Conduit in loot receipt.');
       const conduit = getConduit(id);
@@ -52,7 +55,7 @@ export function lootItems(event: BattleEvent): LootItem[] {
     })),
     ...(event.capture ? [{ id: `capture:${event.capture.creatureId}`, name: `${getCreature(event.capture.creatureId).name} Elemental-Devourer`,
       amount: 1, art: getCreature(event.capture.creatureId).art, color: '#f3df9b' }] : []),
-  ];
+  ].filter(item => item.amount > 0);
 }
 
 export function lootArt(item: { id: string; art?: string }): string | undefined {

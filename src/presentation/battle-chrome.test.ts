@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { playableDungeons } from '../content/dungeons';
 import { BattleView, createSession } from './battle-view';
 import { elementLabel } from './element-label';
+import { nativeIdentities } from '../content/native-identities';
 
 function markup(session: ReturnType<typeof createSession>): string {
   const menu = { addEventListener: () => {}, close: () => {}, showModal: () => {} };
@@ -19,9 +20,10 @@ describe('shared battle chrome', () => {
     session.state.allies[0].kit!.abilities.skill1.description = 'Consumes all Blooms.';
     const before = structuredClone(session);
     const html = markup(session);
-    expect(html).toContain('Botanic Renewal charges');
+    expect(html).toContain(nativeIdentities.sprout.playLoop);
+    expect(html).toContain(nativeIdentities.sprout.abilities.skill1.description);
     expect(html).not.toContain('Consumes all Blooms.');
-    expect(html).toContain('title="Botanic Renewal · Healing"');
+    expect(html).not.toContain('Botanic Renewal charges');
     expect(session).toEqual(before);
   });
   it('moves the existing toolbar into the header on every render without replacing its controls', () => {

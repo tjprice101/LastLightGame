@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { enemies, fighters, type ActionId } from '../content/combat';
 import { openingStarters as starters, starters as roster } from '../content/starters';
 import { act, actionUnavailable, createBattle, damageAmount, elementalCritFactor, endTurn, nextWave, rollCritical, type BattleState } from './battle';
-import { characterGrowthFactor, characterPotencyFactor } from '../content/progression';
+import { characterGrowthFactor } from '../content/progression';
 import { enemyCombatStats, enemyGrowth } from '../content/stat-growth';
+import { benchmarkTarget } from './native-benchmark-pilot';
+import { nativeBalance } from '../content/native-balance';
 
 function controlled(): BattleState {
   const state = createBattle(12345, ['ember', 'tide', 'sprout']);
@@ -17,7 +19,8 @@ function controlled(): BattleState {
   return state;
 }
 function use(state: BattleState, id: string, action: ActionId): BattleState {
-  return act(state, id, action, state.enemies[0].id).state;
+  const actor = state.allies.find(unit => unit.id === id)!;
+  return act(state, id, action, benchmarkTarget(state, actor, action)).state;
 }
 
 describe('Adventure damage and turns', () => {
@@ -173,12 +176,13 @@ describe('Shatter Gauge', () => {
       state.enemies.forEach((unit) => { unit.hp = 2000; unit.stats.crit = 0; });
       const factor = 1.15;
       expect(state.allies[0].stats.damage).toBeCloseTo(38 * factor);
-      expect(state.allies[1].stats.defense).toBeCloseTo(24 * factor ** .7);
+      expect(state.allies[1].stats.defense).toBeCloseTo(16 * factor ** .7);
       expect(damageAmount(38.38, 1.01 * 1.6, 5, false)).toBe(55);
       expect(damageAmount(50, 1, state.allies[0].stats.defense, false)).toBe(Math.round(2500 / (50 + 10 * factor ** .7)));
-      expect(use(state, 'tide', 'skill2').allies[0].shield).toBeCloseTo(25 * factor);
+      expect(use(state, 'tide', 'skill2').allies[0].shield).toBeCloseTo(220 * factor * nativeBalance.tizu.shelter);
       state.allies[0].hp = 100;
-      expect(use(state, 'sprout', 'skill2').allies[0].hp).toBeCloseTo(100 + 30 * factor);
+      expect(use(state, 'sprout', 'skill2').allies[0].hp).toBe(100);
+      expect(use(state, 'sprout', 'ultimate').allies[0].hp).toBeCloseTo(100 + 220 * factor * nativeBalance.flora.immediateHeal);
       state.phase = 'cleared';
       state.enemies.forEach((unit) => { unit.hp = 0; });
       expect(nextWave(state).state.allies[0].stats.damage).toBeCloseTo(38 * factor);
@@ -197,52 +201,54 @@ describe('Shatter Gauge', () => {
       state.allies[0].stats.crit = 1;
       const result = act(state, 'ember', 'skill1', state.enemies[0].id);
       const actor = state.allies[0];
-      const factor = characterGrowthFactor({ level: 30, evolution: 2 });
-      const potency = characterPotencyFactor({ level: 30, evolution: 2 });
-      const burn = Math.round(8 * factor * potency);
-      expect(result.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(actor.stats.damage, 1.6 * potency, 5, true, actor.stats.critMultiplier));
-      expect(result.state.enemies[0].burn).toEqual({ damage: burn, turns: 2, sourceId: 'ember', origin: 'native' });
+      const burn = Math.round(actor.stats.damage * .25);
+      expect(result.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(actor.stats.damage, 1.6 * nativeBalance.skillDamageScale, 5, true, actor.stats.critMultiplier));
+      expect(result.state.enemies[0].burn).toEqual({ damage: burn, turns: 3, sourceId: 'ember', origin: 'native' });
       expect(result.state.allies[0].readyRound.skill1).toBe(state.round);
       expect(result.state.allies[0].shatter).toBe(89);
-      expect(endTurn(result.state).events.find((entry) => entry.kind === 'damage' && entry.source === 'ember')?.amount).toBe(burn);
+      expect(endTurn(result.state).events.find((entry) => entry.kind === 'damage' && entry.source === 'ember')?.amount).toBe(Math.round(burn));
       expect(damageAmount(100, 1, 0, true, 2.1)).toBe(210);
       expect(() => damageAmount(100, 1, 0, true, NaN)).toThrow('Invalid damage');
     });
 
-    it('scales Infernis passive magnitude without changing its health threshold', () => {
+    it('Infernis no longer gains a passive damage bonus at any low-health threshold', () => {
       const state = grown();
       state.allies[0].hp = state.allies[0].stats.health / 2;
       const result = act(state, 'ember', 'light', state.enemies[0].id);
-      expect(result.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(state.allies[0].stats.damage, 1 + .2 * 1.14, 5, false));
+      expect(result.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(state.allies[0].stats.damage, 1, 5, false));
       state.allies[0].hp += 1;
       expect(act(state, 'ember', 'light', state.enemies[0].id).events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(state.allies[0].stats.damage, 1, 5, false));
     });
 
-    it('uses grown shields, weakening and effective defense', () => {
+    it('uses recipient-HP barriers and fixed one-window Weaken without an old flat Defense passive', () => {
       const state = grown();
       const factor = characterGrowthFactor({ level: 30, evolution: 2 });
-      expect(state.allies[1].stats.defense).toBeCloseTo(24 * factor ** .7);
-      for (const unit of use(state, 'tide', 'skill2').allies) expect(unit.shield).toBeCloseTo(25 * factor);
-      for (const unit of use(state, 'tide', 'ultimate').allies) expect(unit.shield).toBeCloseTo(35 * factor);
+      expect(state.allies[1].stats.defense).toBeCloseTo(16 * factor ** .7);
+      const sheltered = use(state, 'tide', 'skill2');
+      expect(sheltered.allies[0].shield).toBeCloseTo(state.allies[0].stats.health * nativeBalance.tizu.shelter);
+      expect(sheltered.allies.slice(1).every(unit => unit.shield === 0)).toBe(true);
+      for (const unit of use(state, 'tide', 'ultimate').allies) expect(unit.shield).toBeCloseTo(unit.stats.health * nativeBalance.tizu.oceanMemory);
       const weakened = use(state, 'tide', 'skill1');
-      expect(weakened.enemies[0].weakenFraction).toBeCloseTo(.25 * 1.14);
-      expect(weakened.enemies[0].weakened).toBe(2);
+      expect(weakened.enemies[0].weakenFraction).toBe(.25);
+      expect(weakened.enemies[0].weakened).toBe(1);
       weakened.allies.forEach((unit) => { unit.stats.defense = 0; });
       const result = endTurn(weakened);
       const target = result.state.allies.find((unit) => unit.id === result.events.find((entry) => entry.source === state.enemies[0].id && entry.kind === 'damage')?.target);
-      expect(result.events.find((entry) => entry.source === state.enemies[0].id && entry.kind === 'damage')?.amount).toBe(Math.max(1, Math.round(23 * (1 - .25 * 1.14)) - (target?.stats.defense ?? 0)));
+      expect(result.events.find((entry) => entry.source === state.enemies[0].id && entry.kind === 'damage')?.amount).toBe(damageAmount(23, .75, target!.stats.defense, false));
     });
 
-    it('uses grown healing and passive heal percentage without revival', () => {
+    it('uses fixed HP-fraction healing, delayed Seeds and no unconditional passive healing or revival', () => {
       const state = grown();
       state.allies[0].hp = 100;
       state.allies[1].hp = 0;
       const factor = characterGrowthFactor({ level: 30, evolution: 2 });
-      expect(use(state, 'sprout', 'skill2').allies[0].hp).toBeCloseTo(100 + 30 * factor);
-      expect(use(state, 'sprout', 'ultimate').allies[0].hp).toBeCloseTo(100 + 55 * factor);
+      expect(use(state, 'sprout', 'skill2').allies[0].hp).toBe(100);
+      expect(use(state, 'sprout', 'ultimate').allies[0].hp).toBeCloseTo(100 + 220 * factor * nativeBalance.flora.immediateHeal);
       expect(use(state, 'sprout', 'skill2').allies[1].hp).toBe(0);
       state.allies.forEach((unit) => { unit.shield = 1000; });
-      expect(endTurn(state).state.allies[0].hp).toBe(100 + Math.round(220 * factor * .05 * 1.14));
+      expect(endTurn(state).state.allies[0].hp).toBe(100);
+      const seeded = use(state, 'sprout', 'skill2');
+      expect(endTurn(seeded).state.allies[0].hp).toBeCloseTo(100 + 220 * factor * nativeBalance.flora.seed);
       expect(state.allies[0].hp).toBe(100);
     });
 
@@ -310,7 +316,7 @@ describe('Shatter Gauge', () => {
     clear.allies[0].shatter = 55;
     clear.allies[0].hp = 100;
     const next = nextWave(clear).state;
-    expect(next.allies[0].hp).toBe(111);
+    expect(next.allies[0].hp).toBe(100);
     expect(next.allies.map((unit) => unit.shatter)).toEqual([55, 0, 0]);
   });
 });
@@ -353,7 +359,7 @@ describe('solo starter battles', () => {
     expect(state.allies).toHaveLength(1);
     expect(state.allies[0].id).toBe(id);
     expect(state.allies[0].shatter).toBe(0);
-    expect(state.allies[0].stats.defense).toBe(fighters[id].stats.defense + (id === 'tide' ? 8 : 0));
+    expect(state.allies[0].stats.defense).toBe(fighters[id].stats.defense);
     const acted = use(state, id, 'light');
     const next = endTurn(acted).state;
     expect(next.allies).toHaveLength(1);
@@ -374,47 +380,51 @@ describe('solo starter battles', () => {
 });
 
 describe('starter abilities and passives', () => {
-  it('Infernis passive activates at exactly half health, not above', () => {
+  it('Infernis direct damage is unchanged across the retired low-health threshold', () => {
     const state = controlled();
     state.allies[0].hp = 111;
     expect(use(state, 'ember', 'light').enemies[0].hp).toBe(1966);
     state.allies[0].hp = 110;
-    expect(use(state, 'ember', 'light').enemies[0].hp).toBe(1960);
+    expect(use(state, 'ember', 'light').enemies[0].hp).toBe(1966);
   });
-  it('Cinder Cleave burns for exactly two enemy phases', () => {
+  it('Cinder Cleave burns for exactly three enemy phases with Attack-based ticks', () => {
     let state = use(controlled(), 'ember', 'skill1');
-    expect(state.enemies[0].hp).toBe(1946);
+    const directHp = 2000 - damageAmount(38, 1.6 * nativeBalance.skillDamageScale, 5, false);
+    expect(state.enemies[0].hp).toBe(directHp);
     state = endTurn(state).state;
-    expect(state.enemies[0].hp).toBe(1938);
+    expect(state.enemies[0].hp).toBe(directHp - 10);
+    expect(state.enemies[0].burn.turns).toBe(2);
+    state = endTurn(state).state;
+    expect(state.enemies[0].hp).toBe(directHp - 20);
     expect(state.enemies[0].burn.turns).toBe(1);
     state = endTurn(state).state;
-    expect(state.enemies[0].hp).toBe(1930);
+    expect(state.enemies[0].hp).toBe(directHp - 30);
     expect(state.enemies[0].burn.turns).toBe(0);
-    expect(endTurn(state).state.enemies[0].hp).toBe(1930);
+    expect(endTurn(state).state.enemies[0].hp).toBe(directHp - 30);
   });
   it('Flame Arc and Dawnfire hit every enemy', () => {
     const state = controlled();
-    expect(use(state, 'ember', 'skill2').enemies.map((unit) => unit.hp)).toEqual([1963, 1961, 1970]);
-    expect(use(state, 'ember', 'ultimate').enemies.map((unit) => unit.hp)).toEqual([1906, 1901, 1924]);
+    expect(use(state, 'ember', 'skill2').enemies.map((unit) => unit.hp)).toEqual(state.enemies.map(unit => 2000 - damageAmount(38, 1.1 * nativeBalance.skillDamageScale, unit.stats.defense, false)));
+    expect(use(state, 'ember', 'ultimate').enemies.map((unit) => unit.hp)).toEqual(state.enemies.map(unit => 2000 - damageAmount(38, 2 * nativeBalance.skillDamageScale, unit.stats.defense, false)));
   });
-  it('Tizu passive adds eight defense and Undertow weakens two attacks', () => {
+  it('Tizu has no passive flat Defense and Undertow weakens one enemy-phase window', () => {
     let state = controlled();
-    expect(state.allies[1].stats.defense).toBe(fighters.tide.stats.defense + 8);
+    expect(state.allies[1].stats.defense).toBe(fighters.tide.stats.defense);
     state = use(state, 'tide', 'skill1');
-    expect(state.enemies[0].hp).toBe(1961);
-    expect(state.enemies[0].weakened).toBe(2);
-    state = endTurn(state).state;
+    expect(state.enemies[0].hp).toBe(2000 - damageAmount(30, 1.5 * nativeBalance.skillDamageScale, 5, false));
     expect(state.enemies[0].weakened).toBe(1);
     state = endTurn(state).state;
     expect(state.enemies[0].weakened).toBe(0);
+    state = endTurn(state).state;
+    expect(state.enemies[0].weakened).toBe(0);
   });
-  it('Tidal Shelter refreshes shields; Ocean Memory damages all and gives 35 shields', () => {
+  it('Tidal Shelter protects the selected ally; Ocean Memory shields the team without damage', () => {
     const state = controlled();
     state.allies[0].shield = 30;
-    expect(use(state, 'tide', 'skill2').allies.map((unit) => unit.shield)).toEqual([30, 25, 25]);
+    expect(use(state, 'tide', 'skill2').allies.map((unit) => unit.shield)).toEqual([220 * nativeBalance.tizu.shelter, 0, 0]);
     const ultimate = use(state, 'tide', 'ultimate');
-    expect(ultimate.allies.map((unit) => unit.shield)).toEqual([35, 35, 35]);
-    expect(ultimate.enemies.map((unit) => unit.hp)).toEqual([1943, 1940, 1956]);
+    expect(ultimate.allies.map((unit) => unit.shield)).toEqual(state.allies.map(unit => unit.stats.health * nativeBalance.tizu.oceanMemory));
+    expect(ultimate.enemies.map((unit) => unit.hp)).toEqual([2000, 2000, 2000]);
   });
   it('Undertow reduces outgoing damage by 25% with the same Defense mitigation', () => {
     const state = controlled();
@@ -435,35 +445,37 @@ describe('starter abilities and passives', () => {
     expect(after.allies.map((unit) => unit.hp)).toEqual(state.allies.map((unit) => unit.hp));
     expect(after.allies.reduce((sum, unit) => sum + unit.shield, 0)).toBeLessThan(3000);
   });
-  it('Flora heals living allies at the start of the turn and does not revive', () => {
+  it('Flora does not heal automatically between encounters and does not revive', () => {
     const state = controlled();
     state.enemies.forEach((unit) => { unit.hp = 0; });
     state.allies[0].hp = 100;
     state.allies[1].hp = 0;
     state.phase = 'cleared';
     const after = nextWave(state).state;
-    expect(after.allies.map((unit) => unit.hp)).toEqual([111, 0, 190]);
+    expect(after.allies.map((unit) => unit.hp)).toEqual([100, 0, 190]);
     state.allies[2].hp = 0;
     expect(nextWave(state).state.allies[0].hp).toBe(100);
   });
-  it('Briar Shot gains exactly 20 percentage points critical chance', () => {
+  it('Briar Shot has no retired critical bonus and instead plants delayed recovery', () => {
     const state = controlled();
-    // Seed 12345 has a first roll above 0.2, so this remains noncritical.
-    expect(use(state, 'sprout', 'skill1').enemies[0].hp).toBe(1958);
-    state.seed = 1; // First roll is below 0.2: only the skill's bonus can crit.
+    expect(use(state, 'sprout', 'skill1').enemies[0].hp).toBe(2000 - damageAmount(32, 1.4 * nativeBalance.skillDamageScale, 5, false));
+    state.seed = 1;
     const result = act(state, 'sprout', 'skill1', state.enemies[0].id);
-    expect(result.events.find((entry) => entry.kind === 'damage')?.critical).toBe(true);
-    expect(result.state.enemies[0].hp).toBe(1938);
+    expect(result.events.find((entry) => entry.kind === 'damage')?.critical).toBe(false);
+    expect(result.state.allies[2].native?.seeds?.ember).toEqual({ fraction: nativeBalance.flora.seed, dueRound: 2 });
   });
-  it('Renewal and Worldseed heal, respect caps, do not revive, and ultimate damages all', () => {
+  it('Renewal plants without an empty-harvest heal; Worldseed heals and seeds without damage or revival', () => {
     const state = controlled();
     state.allies[0].hp = 100;
     state.allies[1].hp = 0;
     const support = use(state, 'sprout', 'skill2');
-    expect(support.allies.map((unit) => unit.hp)).toEqual([130, 0, 190]);
+    expect(support.allies.map((unit) => unit.hp)).toEqual([100, 0, 190]);
     const ultimate = use(state, 'sprout', 'ultimate');
-    expect(ultimate.allies.map((unit) => unit.hp)).toEqual([155, 0, 190]);
-    expect(ultimate.enemies.map((unit) => unit.hp)).toEqual([1950, 1947, 1961]);
+    expect(ultimate.allies.map((unit) => unit.hp)).toEqual([100 + 220 * nativeBalance.flora.immediateHeal, 0, 190]);
+    expect(ultimate.enemies.map((unit) => unit.hp)).toEqual([2000, 2000, 2000]);
+    expect(ultimate.allies[2].native?.seeds).toEqual({
+      ember: { fraction: nativeBalance.flora.empoweredSeed, dueRound: 2 }, sprout: { fraction: nativeBalance.flora.empoweredSeed, dueRound: 2 },
+    });
   });
   it.each(starters)('$name has two implemented abilities and a consistently named ultimate', (starter) => {
     expect(fighters[starter.id].abilities.ultimate.name).toMatch(/^Last Flare: .+/);

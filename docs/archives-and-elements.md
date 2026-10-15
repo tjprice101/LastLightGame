@@ -30,6 +30,9 @@ stage/Training-level selector, real item artwork, quantities, percentages,
 one-time-bonus annotations and applicable captured-copy sale values.
 Stage changes use the same runtime `creatureLoot` tables, including final5x
 quantities, independent premium outcomes and Machine Omnic stage gates.
+The dialog explicitly states that these are chances per defeated enemy at the
+selected stage, not a promise that every listed item appears on each clear.
+Only100% drops are guaranteed; one-time Story bonuses retain their annotations.
 Repeated drop/tier-roll explanations appear once per distinct rule after
 the table, not beneath every Conduit name. Amount/rate columns remain readable
 at320px; only the intentional dialog contains scrolling.

@@ -1,5 +1,12 @@
 # Story campaign and endless Training (D-160/D-164)
 
+**D-301 replay/online parity:** staged victories offer Replay stage, including
+regional bosses and stage150. Fresh HP/Gauge and receipt namespace; frozen
+squad and saved rewards retained, no repeated first-clear bonuses.
+The hostedLv23 Uncommon gate was stale server code, not the current D-297
+loot contract. Client and server must deploy together; only100% drops are
+guaranteed. [Contract and validation](free-battle.md#victory-stage-replay-and-online-loot-parity-d-301).
+
 **D-294 final loot:** every regional boss (25/50/75/100/125/150) awards5x its
 existing per-kill Prismatica/material quantities on every clear and replay.
 Sample base quantity first; material chances remain unchanged. Regional

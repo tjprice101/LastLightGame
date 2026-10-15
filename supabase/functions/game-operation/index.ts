@@ -1,5 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { freshGame, profileActivityFor, publicGame, resolveOperation, validateChatRequest, validateRequest } from './engine.bundle.js';
+import { conduitRulesVersion, freshGame, profileActivityFor, publicGame, resolveOperation, validateChatRequest, validateRequest } from './engine.bundle.js';
 const maximumRequestBytes = 4 * 1024 * 1024 + 8192;
 
 const url = Deno.env.get('SUPABASE_URL');
@@ -72,6 +72,7 @@ Deno.serve(async request => {
       p_user: user, p_request: input.requestId, p_fingerprint: hash,
     });
     if (cacheError) return response(409, { error: 'Request ID was already used with different input.' }, origin);
+    // This includes the saved Calamity opening receipt; never resolve a second roll.
     if (cached) return response(200, cached, origin);
     const { data: profile, error: profileError } = await admin.from('player_profiles')
       .select('username,created_at').eq('user_id', user).single();
@@ -97,6 +98,25 @@ Deno.serve(async request => {
       snapshot.state.profile = { ...snapshot.state.profile, ...profileReference };
       const { data: social, error: socialError } = await admin.rpc('game_social', { p_user: user });
       if (socialError) return response(503, { error: 'Social storage unavailable.' }, origin);
+      if (snapshot.state.run && snapshot.state.run.session.state.conduitRulesVersion !== conduitRulesVersion) {
+        const resolved = resolveOperation(snapshot.state, input.operation, {
+          seed: () => crypto.getRandomValues(new Uint32Array(1))[0] || 1,
+          uuid: () => crypto.randomUUID(),
+          random: () => crypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000,
+        });
+        resolved.response.social = social;
+        // Reads use the loaded revision; checkpoints already validated the caller's revision above.
+        const { data: committed, error: commitError } = await admin.rpc('commit_game_operation', {
+          p_user: user, p_request: input.requestId, p_fingerprint: hash, p_revision: snapshot.revision,
+          p_state: resolved.game, p_response: resolved.response, p_social: null, p_activity: null,
+        });
+        if (commitError) {
+          if (commitError.code === 'P0001') return response(400, { error: commitError.message }, origin);
+          return response(503, { error: 'The operation was not acknowledged. Retry the same request ID.' }, origin);
+        }
+        if (committed?.conflict) return response(409, { error: 'Account changed. Reload before issuing a new operation.', revision: committed.revision }, origin);
+        return response(200, committed, origin);
+      }
       return response(200, { ...publicGame(snapshot.state, snapshot.revision), social }, origin);
     }
     if (input.expectedRevision !== stored.revision) {

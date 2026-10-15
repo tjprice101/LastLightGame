@@ -1,5 +1,38 @@
 # Training (formerly Adventure)
 
+## Victory-stage replay and online loot parity (D-301)
+
+Every staged victory sheet offers **Replay stage**, alongside Continue where
+another stage exists and Quit/Return. Includes Story regional/terminal bosses,
+all material dungeons, Heaven/Abyss, Treasury/Sanctuary, Roses, Machines and
+Elemental War. Final stages can replay directly without leaving the results.
+Training keeps its Next wave and defeat-only Restart flow.
+
+Replay uses the existing restart path with a fresh run/receipt ID, full HP and
+fresh Gauge, keeping the frozen squad/progression/captures/equipment/upgrades/
+Masters. It clears encounter events and starts a new entrance. Saved rewards
+and unlocks remain; restarting never claims the previous loot again.
+Subsequent kills earn ordinary replay drops, not repeated Story first-clear
+bonuses. Online retry accepts defeat or cleared staged encounters, not active
+or cleared Training runs; stale IDs and ambiguous request retries keep their
+existing validation/idempotency. New enemies can add ordinary seen discoveries.
+
+The online loot discrepancy was a separately stale game-operation function:
+hosted version12 still gated Story Uncommon materials atLv23, despite D-297
+client tables listing a roll fromLv1. Website pushes deploy Pages only, not
+the game server. Regenerate/deploy the shared server bundle with loot changes.
+No chance increases, guaranteed rare drops, retroactive grants or save rewrite.
+View Loot explicitly distinguishes per-kill chances from guaranteed100% drops.
+
+Validation: `npm test -- src\game\loot-table-parity.test.ts
+src\presentation\battle-results.test.ts src\presentation\battle-exit.test.ts
+src\online\server-game.test.ts --maxWorkers=2`.
+The live-table tests compare actual drops/guarantees at every Training level,
+Story/dungeon/other activity stage and War boss; hosted smoke
+`node tools\smoke_server_game.mjs --loot-parity` also checks early Story
+Uncommon reachability, each final boss, atomic persisted holdings and direct
+victory replay/idempotency using only disposable accounts.
+
 ## Repeatable final-boss loot (D-294)
 
 Owner approves **5x existing currency, material and component quantities** on

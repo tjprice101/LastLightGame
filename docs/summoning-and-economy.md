@@ -161,7 +161,7 @@ all6-star, equally sharing1.1% total (1.1% /3 each); first three Roselius
 split98.9% with50:30:17 weights.10 Null-Prismatica, separate200/500 highest-star
 counters (all three eligible;500 equally selects unowned, all-owned fallback),
 usual500 priority/all-owned reset, one atomic cost/reward/pity save.
-Owned event EBs convert to an Omnic Roselius at Lv.80 with Stage29 kit and
+Owned event EBs convert to an Omnic Roselius at Lv.60 (D-305) with Stage29 kit and
 explicit duplicate provenance, usable or saleable for6 Soul of Rosethorn.
 Roses does not alter Standard's separate pool or Lv.50 Treasury conversion;
 D-122 subsequently expands Standard with the seven approved flagships.

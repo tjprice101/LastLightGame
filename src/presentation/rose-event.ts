@@ -10,8 +10,8 @@ import { devourerHabitats } from '../content/world-lore';
 
 export const roseEventRules = `<p>${devourerHabitats.roses} Rosetta, Thornia and Crinso are Let's human Element-Bearers; their rose-gold inheritance does not make them Rise's creations.</p><p>35 stages, levels 80-140; a boss every fifth stage. Ordinary stages contain two enemies, boss stages one.
     Six increasingly formidable Tranquilitic Roselius forms use golden thorns and crimson roses.</p>
-    <p>20% independent capture chance only at enemy levels 120 or below. Above 120, no captures. Captured copies retain level and skills, can level to 120 and never evolve.
-    Final-form Lv.80 copies are special-banner duplicate rewards, not high-level mission captures.</p>
+    <p>20% independent capture chance only at enemy levels 120 or below. Above 120, no captures. Captured copies retain form and skills, with level capped at 60, and never evolve.
+    Final-form Lv.60 copies are special-banner duplicate rewards, not high-level mission captures.</p>
     <p>Each kill grants ordinary level-scaled Prismatica and rolls unlocked Rosethorn materials independently. No Null-Prismatica or clear bonus.
     Bosses and ordinary enemies have identical reward odds. The stage 35 final boss awards 5x Prismatica and successful material quantities on every clear; earlier bosses are unchanged. Exact stage drops appear in the defeated Elemental-Devourer Glossary.</p>
     <p>Sales exchange one copy for its form's material: ${roseMaterials.map((material, index) => `${roseSaleQuantities[index]} ${material.name}`).join(', ')}.

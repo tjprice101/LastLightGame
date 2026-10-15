@@ -1,4 +1,5 @@
-import type { Account } from './account';
+import { calamityUnlockedTier, type Account } from './account';
+import { isCalamityActivityId, isCalamityTier } from '../content/calamity';
 import type { Activity } from '../online/server-game';
 import { starters } from '../content/starters';
 import { characterGrowthFactor } from '../content/progression';
@@ -15,6 +16,14 @@ export function highestBearerLevel(account: Account): number {
 }
 
 export function activityAccess(account: Account, activity: Activity) {
+  if (activity.kind === 'calamity') {
+    const valid = isCalamityActivityId(activity.activity) && isCalamityTier(activity.tier);
+    const highestTier = valid ? calamityUnlockedTier(account, activity.activity) : 0;
+    const unlocked = valid && activity.tier <= highestTier;
+    const requirement = highestTier === 0 ? 'Clear the normal final boss (a verified final-clear receipt also qualifies)'
+      : `Clear Calamity EX+${activity.tier - 1}`;
+    return { unlocked, minimumLevel: 0, level: highestBearerLevel(account), requirement };
+  }
   const minimumLevel = activity.kind === 'dungeon' ? 30 : activity.kind === 'war' ? 85
     : activity.kind !== 'infusion' ? 0 : activity.mode === 'machines' ? 10
     : activity.mode === 'treasury' || activity.mode === 'sanctuary' ? 60

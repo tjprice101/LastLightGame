@@ -4,6 +4,7 @@ import type { StarterId } from '../content/starters';
 import { elementalStatusArt } from '../content/status-art';
 import { statusIcon } from './status-icon';
 import { elementalEffectFamilies, type ElementalEffectFamily } from '../content/elemental-effects';
+import { nativeIdentities } from '../content/native-identities';
 
 export function abilityStatuses(strength: AbilityStrength): string {
   const effects: readonly [number | undefined, ElementalEffectFamily, string][] = [
@@ -20,6 +21,10 @@ export function abilityStatuses(strength: AbilityStrength): string {
 }
 
 export function kitResource(kit: FighterDefinition, character?: StarterId): string {
+  if (kit.nativeIdentity) {
+    const identity = character ? nativeIdentities[character] : undefined;
+    return identity ? `<p class="kit-resource-summary native-identity"><strong>${identity.role}</strong> · ${identity.playLoop}</p>` : '';
+  }
   const resource = kit.pilot ? kitPilotDescriptions[kit.pilot].resource : undefined;
   const usage = character ? kitResourceUses[character] : resource?.detail;
   return resource ? `<span class="ability-status" data-effect-family="${resource.effect.family}" data-effect-origin="${resource.effect.origin}">

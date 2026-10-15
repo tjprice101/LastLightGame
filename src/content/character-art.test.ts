@@ -44,13 +44,15 @@ describe('six-form character artwork', () => {
     for (const invalid of [0, 7, 1.5, NaN]) expect(() => characterArt(starter.id, invalid)).toThrow();
     for (const invalid of [0, 7, 1.5, NaN]) expect(() => characterName(starter.id, invalid)).toThrow();
   });
-  it.each(openingStarters)('$name has the exact approved Evo.6 recipe and fourth-band Seed leveling', (starter) => {
+  it.each(openingStarters)('$name has the exact Evo.6 recipe and cumulative late leveling materials', (starter) => {
     expect(evolutionCost(starter.elementId, { level: 90, evolution: 5 })).toEqual({
       fractalis: 4800,
       materials: { [`${starter.elementId}-epic`]: 25, [`${starter.elementId}-legendary`]: 10, 'heavens-evolution': 10 },
     });
     expect(levelCost(starter.elementId, { level: 90, evolution: 6 })).toEqual({
-      fractalis: 192, materials: { [`${starter.elementId}-common`]: 4, 'heavens-level': 1 },
+      fractalis: 192, materials: { [`${starter.elementId}-common`]: 4, [`${starter.elementId}-uncommon`]: 1,
+        [`${starter.elementId}-rare`]: 1, [`${starter.elementId}-epic`]: 1,
+        [`${starter.elementId}-legendary`]: 1, [`${starter.elementId}-omnic`]: 1, 'heavens-level': 1 },
     });
     expect(characterHub(starter, 'upgrade-0', { ...emptyAccount(), characters: { [starter.id]: { level: 90, evolution: 5 } } })).toContain('NEXT');
   });

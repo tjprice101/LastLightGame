@@ -48,8 +48,10 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--final-loot')) {
-    await smokeFinalLoot(client, created.user.id, username);
+  if (process.argv.includes('--native-calamity')) {
+    await smokeNativeCalamity(client, created.user.id, username);
+  } else if (process.argv.includes('--final-loot') || process.argv.includes('--loot-parity')) {
+    await smokeFinalLoot(client, created.user.id, username, process.argv.includes('--loot-parity'));
   } else if (process.argv.includes('--masters')) {
     await smokeRecurringMaster(client, created.user.id, username);
   } else if (process.argv.includes('--balance')) {
@@ -336,6 +338,70 @@ try {
   console.log('Hosted smoke identities and cascading gameplay records removed.');
 }
 
+async function smokeNativeCalamity(client, userId, username) {
+  const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+  let game = freshGame(username);
+  game.starterId = 'ember';
+  game.account.characters = Object.fromEntries(['tide', 'disciple', 'ember']
+    .map(id => [id, { level: 105, evolution: 6 }]));
+  game.account.squad = ['tide', 'disciple', 'ember'];
+  game.account.normalFinalClears = { treasury: true };
+  game.account.calamityClears = { treasury: 2 };
+  game = resolveOperation(game, {
+    kind: 'enter', activity: { kind: 'calamity', activity: 'treasury', tier: 3 },
+  }, entropy).game;
+  game.run.session.state.allies.forEach(ally => { ally.shatter = 100; });
+  game.run.session.state.enemies[0].hp = 1;
+  assert.ok(ids.includes(userId), 'Only disposable identities may receive fixtures');
+  const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+  assert.equal(seeded.error, null);
+  async function invoke(operation, revision, requestId = randomUUID()) {
+    const result = await client.functions.invoke('game-operation', {
+      body: { operation, expectedRevision: revision, requestId },
+    });
+    if (result.error) throw new Error(`Hosted native/Calamity ${operation.kind} failed (${result.error.context?.status ?? 'transport'}).`);
+    return result.data;
+  }
+  let response = await invoke({ kind: 'read' }, 0);
+  assert.equal(response.session.state.conduitRulesVersion, 3);
+  assert.equal(response.session.state.enemies[0].level, 185);
+  const runId = response.session.runId;
+  for (const [actorId, action, targetId] of [
+    ['tide', 'skill2', 'disciple'], ['disciple', 'skill1', 'ember'],
+  ]) {
+    response = await invoke({ kind: 'act', runId, actorId, action, targetId }, response.revision);
+  }
+  const disciple = response.session.state.allies.find(ally => ally.id === 'disciple');
+  const ember = response.session.state.allies.find(ally => ally.id === 'ember');
+  assert.ok(disciple.shield > 0);
+  assert.equal(ember.native.instruction.kind, 'strike');
+  assert.equal(ember.native.instruction.owner, 'disciple');
+  const operation = { kind: 'act', runId, actorId: 'ember', action: 'light',
+    targetId: response.session.state.enemies[0].id };
+  const revision = response.revision;
+  const requestId = randomUUID();
+  response = await invoke(operation, revision, requestId);
+  assert.deepEqual(await invoke(operation, revision, requestId), response);
+  assert.equal(response.session.state.phase, 'cleared');
+  const chestId = 'calamity:treasury:3';
+  assert.equal(response.account.calamityChests[chestId], 1);
+  assert.equal(response.account.fractalis, 0);
+  assert.equal(response.account.lycalis, 0);
+  const open = { kind: 'openCalamityChest', id: chestId, expectedCount: 1 };
+  const openId = randomUUID();
+  const opened = await invoke(open, response.revision, openId);
+  assert.deepEqual(await invoke(open, response.revision, openId), opened);
+  assert.equal(opened.calamityOpening.masterChests, 2);
+  assert.equal(opened.account.masterChests, 2);
+  assert.equal(opened.account.fractalis, opened.calamityOpening.fractalis);
+  assert.equal(opened.account.lycalis, opened.calamityOpening.lycalis);
+  assert.equal(opened.account.calamityChests[chestId] ?? 0, 0);
+  const persisted = await invoke({ kind: 'read' }, opened.revision);
+  assert.deepEqual(persisted.account, opened.account);
+  assert.equal((await invoke({ kind: 'quit', runId }, opened.revision)).session, null);
+  console.log('Hosted native/Calamity smoke passed: rules3, explicit Tizu/Disciple recipients, Lv185 EX3 chest-only victory, atomic opening with two Master chests, idempotent action/opening and persisted holdings.');
+}
+
 async function smokeGuaranteedComponents(client, userId, username) {
   const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
   let game = freshGame(username);
@@ -388,9 +454,16 @@ async function smokeGuaranteedComponents(client, userId, username) {
   console.log('Hosted component smoke passed: actual stage1 kills and near-defeated stage100 boss guarantee 3/625 components, atomic balances and idempotent reward retry. No owner accounts modified.');
 }
 
-async function smokeFinalLoot(firstClient, firstId, firstUsername) {
+async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly = false) {
   const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
   const activities = [
+    ...(includeEarly ? [
+      ...[1, 24].map(stage => ({ kind: 'story', stage })),
+      ...['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic']
+        .map(element => ({ kind: 'dungeon', element, stage: 1 })),
+      ...['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines'].map(mode => ({ kind: 'infusion', mode, stage: 1 })),
+      { kind: 'infusion', mode: 'machines', stage: 75 },
+    ] : []),
     ...[25, 50, 75, 100, 125, 150].map(stage => ({ kind: 'story', stage })),
     ...['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic']
       .map(element => ({ kind: 'dungeon', element, stage: 35 })),
@@ -423,6 +496,7 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername) {
     game.account.warStages = { nerithe: 10, orvella: 10, vaelor: 10 };
     game = resolveOperation(game, { kind: 'enter', activity }, entropy).game;
     const state = game.run.session.state;
+    state.allies[0].shatter = 100;
     state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
     state.rewardSeed = 0; state.componentSeed = 0; state.conduitSeed = 0;
     state.masterChestSeed = 0; state.lycalisSeed = activity.kind === 'war' ? 1 : 15500;
@@ -436,33 +510,60 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername) {
       return result.data;
     }
     const read = await invoke({ kind: 'read' }, 0);
-    const operation = { kind: 'act', runId: read.session.runId, actorId: 'ember', action: 'light', targetId: state.enemies[0].id };
+    const operation = { kind: 'act', runId: read.session.runId, actorId: 'ember', action: 'skill2', targetId: state.enemies[0].id };
     const expected = resolveOperation(game, operation, entropy).response;
     const requestId = randomUUID();
     const actual = await invoke(operation, read.revision, requestId);
     assert.equal(actual.session.state.phase, 'cleared');
     const rewards = actual.result.events.filter(event => event.kind === 'reward');
-    assert.equal(rewards.length, 1);
+    assert.equal(rewards.length, state.enemies.length);
     assert.deepEqual(rewards, expected.result.events.filter(event => event.kind === 'reward'));
-    assert.equal((rewards[0].amount - (rewards[0].storyBonus?.fractalis ?? 0)) % 5, 0);
-    for (const quantity of Object.values(rewards[0].materials ?? {})) assert.equal(quantity % 5, 0);
-    if (activity.mode === 'machines') {
+    const final = activity.kind === 'story' ? activity.stage % 25 === 0 : activity.kind === 'war' ? activity.stage === 10
+      : activity.kind === 'dungeon' ? activity.stage === 35 : activity.stage === (activity.mode === 'machines' ? 100 : ['treasury', 'sanctuary'].includes(activity.mode) ? 25 : 35);
+    if (final) {
+      assert.equal((rewards[0].amount - (rewards[0].storyBonus?.fractalis ?? 0)) % 5, 0);
+      for (const quantity of Object.values(rewards[0].materials ?? {})) assert.equal(quantity % 5, 0);
+    }
+    if (activity.kind === 'story') {
+      const element = state.enemies[0].element;
+      for (const reward of rewards) assert.ok(reward.materials[`${element}-uncommon`] > 0, 'Listed Story Uncommon material must be reachable below Lv.23 too.');
+    }
+    if (activity.mode === 'machines' && final) {
       assert.equal(rewards[0].mechanicalComponents, 625);
       assert.equal(rewards[0].masterChests, 1);
       assert.deepEqual(Object.values(rewards[0].conduits), [1, 1, 1]);
     }
-    if (activity.mode === 'treasury') assert.equal(rewards[0].amount, 24300);
+    if (activity.mode === 'treasury' && final) assert.equal(rewards[0].amount, 24300);
     if (activity.kind === 'war') assert.equal(rewards[0].amount, 25000);
-    if (activity.mode === 'sanctuary' || activity.kind === 'war') assert.equal(rewards[0].lycalis, 25);
+    if ((activity.mode === 'sanctuary' || activity.kind === 'war') && final) assert.equal(rewards[0].lycalis, 25);
     for (const key of ['fractalis', 'lycalis', 'materials', 'mechanicalComponents', 'conduits', 'masterChests', 'storyCompleted', 'receipts']) {
       assert.deepEqual(actual.account[key], expected.account[key], `${activity.kind} ${key}`);
     }
     assert.deepEqual(await invoke(operation, read.revision, requestId), actual);
     const persisted = await invoke({ kind: 'read' }, actual.revision);
     assert.deepEqual(persisted.account, actual.account);
-    await invoke({ kind: 'quit', runId: actual.session.runId }, persisted.revision);
+    if (includeEarly) {
+      const replayId = randomUUID();
+      const replay = { kind: 'retry', runId: actual.session.runId };
+      const replayed = await invoke(replay, persisted.revision, replayId);
+      assert.deepEqual(await invoke(replay, persisted.revision, replayId), replayed);
+      assert.notEqual(replayed.session.runId, actual.session.runId);
+      assert.equal(replayed.session.state.phase, 'player');
+      assert.equal(replayed.session.state.wave, activity.stage);
+      assert.equal(replayed.session.state.allies[0].shatter, 0);
+      assert.equal(replayed.session.state.allies[0].hp, replayed.session.state.allies[0].stats.health);
+      assert.deepEqual(replayed.session.stageEvents, []);
+      const { creatures: replayDiscoveries, ...replayHoldings } = replayed.account;
+      const { creatures: priorDiscoveries, ...priorHoldings } = actual.account;
+      assert.deepEqual(replayHoldings, priorHoldings);
+      for (const [id, discovery] of Object.entries(priorDiscoveries)) assert.deepEqual(replayDiscoveries[id], discovery);
+      for (const [id, discovery] of Object.entries(replayDiscoveries)) {
+        if (!priorDiscoveries[id]) assert.deepEqual(discovery, { defeated: false });
+      }
+      await invoke({ kind: 'quit', runId: replayed.session.runId }, replayed.revision);
+    } else await invoke({ kind: 'quit', runId: actual.session.runId }, persisted.revision);
   }
-  console.log('Hosted final-loot smoke passed: all 21 endpoints (six Story regions, six dungeons, six other activities, three War bosses), exact 5x payouts, unchanged rare counts, separate first-clear bonuses, atomic persisted accounts and idempotent retries. No owner accounts modified.');
+  console.log(`Hosted ${includeEarly ? 'loot-parity/replay' : 'final-loot'} smoke passed: ${activities.length} activity/stage cases, exact client/server rewards, boosted final quantities, unchanged rare counts, separate first-clear bonuses, atomic persisted accounts and idempotent retries${includeEarly ? ', reachable early Story Uncommon drops and victory replays with fresh HP/Gauge and no extra claim' : ''}. No owner accounts modified.`);
 }
 
 async function smokeEnemyBalance(client, userId, username) {

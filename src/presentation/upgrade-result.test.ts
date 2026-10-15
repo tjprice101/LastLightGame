@@ -59,14 +59,14 @@ describe('saved upgrade stat results', () => {
 
   it('supports single and bulk captured-copy leveling with that copy’s actual stats and identity', () => {
     const before = emptyAccount();
-    const copy = createCreatureCopy('infusion:treasury:0', 1, 65);
+    const copy = createCreatureCopy('infusion:heavens:0', 1, 50);
     before.capturedCharacters = [copy];
-    for (const level of [66, 90]) {
+    for (const level of [51, 60]) {
       const after = structuredClone(before);
       after.capturedCharacters![0].level = level;
       const result = upgradeResult(before, after, copy.instanceId, 'level');
       expect(result.name).toContain('Copy 1');
-      expect(result.details).toContain(`Level 65 → ${level}`);
+      expect(result.details).toContain(`Level 50 → ${level}`);
       expect(result.details).not.toContain('Evolution');
       expect(result.details).toContain(statChange(resolveCapturedFighter(copy).stats.health,
         resolveCapturedFighter(after.capturedCharacters![0]).stats.health));

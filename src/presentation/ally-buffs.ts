@@ -8,7 +8,7 @@ export function allyBuffs(buffs: BattleBuffSnapshot, round: number): string {
     `<span class="battle-status-badge" data-buff="${id}" title="${detail}">${icon ? statusIcon(icon) : ''}${label}</span>`;
   return [
     buffs.shield > 0 && badge('shield', `Shield ${formatStat(buffs.shield)}`,
-      'Active shield: absorbs damage before HP. Remains until used up; a new shield keeps the higher amount.', 'ward'),
+      'Active shield: absorbs damage before HP. Duration and refresh rules follow its originating ability or Conduit.', 'ward'),
     buffs.attackBoost && buffs.attackBoost.throughRound >= round && badge('attack',
       `Damage +${formatStat(buffs.attackBoost.fraction * 100)}% · through turn ${buffs.attackBoost.throughRound}`,
       'Active bonus to outgoing attack damage. Refreshes without stacking.', 'focus'),

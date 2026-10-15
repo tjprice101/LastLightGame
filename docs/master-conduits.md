@@ -1,5 +1,16 @@
 # Character Master Conduits (D-201)
 
+**Current D-313 mechanics:** all48
+[approved Master transformations](conduit-redesign.md#master-roster-48)
+are implemented locally. Their complete rows replace every old effect,
+reserve bank and uniform recurring-trigger claim below. Three fixed alternatives
+per character now have individual limits, including approved rescues, action
+changes, shields, control and native-resource transformations. Only explicitly
+approved native passive replacements can earn their documented native resources;
+generated assists/strikes/heals never feed native loops.
+Acquisition, matching slots, artwork and non-upgradeability are unchanged.
+Client/server publication is still pending.
+
 ## Acquisition and choice
 
 There are **48 Omnic Masters: three for each of the 16 Element-Bearers**.
@@ -8,8 +19,11 @@ machine tier rolls, banners, the Store or Conduit upgrades.
 
 The final Awaken the Machines boss, **stage 100 / Lv.120**, independently has
 a **1% chance** to drop one **Cosmic Grand Master Chest**. Repeat final clears
-are eligible. No other boss, creature or activity drops it. A separate chest
-RNG stream preserves combat and all existing reward streams.
+are eligible. This remains the only ordinary direct enemy drop. Under D-315,
+opening any [Calamity EX+Omnipotent chest](calamity-mode.md) additionally grants
+exactly two Cosmic Grand Master Chests, including when all48 Masters are owned.
+Calamity bosses themselves drop only their activity/tier chest. Separate RNG
+streams preserve combat and all existing reward streams.
 
 Open a chest from Inventory, choose an unowned Master, then confirm. The owner
 approves choices for any named Element-Bearer, including one not yet owned.
@@ -30,7 +44,19 @@ owned Masters; Collections lists all 48 with ownership. Character and Battle
 references show the equipped effect. The final creature's loot reference
 publishes the actual chest chance.
 
-## Kit mechanics
+## Current kit mechanics (D-313)
+
+The [typed catalogue](../src/content/master-conduits.ts) retains all48 stable
+IDs, assignments, art and exact descriptions from the approved roster.
+[The shared runtime](../src/game/conduit-runtime.ts) implements the individual
+rows; there is no old `.rule`/Astral Reserve resolver or generic recurring limit.
+Native and generated provenance, ordinary-before-Master resolution, shield
+layers, action caps, rescue precedence and snapshot restarts follow the
+[shared resolution contract](conduit-redesign.md#healing-shields-gauge-and-targeting).
+Executable paired coverage for every Master lives in
+[conduit-roster.test.ts](../src/game/conduit-roster.test.ts).
+
+## Historical kit mechanics (before D-313; not current effects)
 
 [The typed catalogue](../src/content/master-conduits.ts) owns all 48 names,
 character assignments, exact numeric effects, triggers and art designs.

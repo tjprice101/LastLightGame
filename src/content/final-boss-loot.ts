@@ -1,7 +1,7 @@
 import { dungeonStageCount, infusionStageCount, warStageCount, type InfusionModeId } from './activities';
 
 export const finalBossLootMultiplier = 5;
-export const finalBossLootText = 'Final bosses award 5x normal currency, material and component quantities on every clear, including replays. Rare-drop, capture and recruitment chances, Conduit and chest counts, recruitment duplicate conversions and one-time Story bonuses are unchanged. Training has no final boss.';
+export const finalBossLootText = 'Final bosses award 5x normal currency, material and component quantities on every clear, including replays. Rare-drop, capture and recruitment chances, Conduit and chest counts, recruitment duplicate conversions and one-time Story bonuses are unchanged. Training has no final boss. Calamity bosses award only one activity chest; neither that chest nor its contents use the 5x multiplier.';
 
 export function bossLootMultiplier(activity: {
   story?: { storyStage: number };

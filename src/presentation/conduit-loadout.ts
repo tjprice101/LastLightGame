@@ -1,4 +1,4 @@
-import { conduits, conduitBuffs, conduitColor, conduitEquipReason, conduitSlotCount, conduitUpgradeCap, getConduit, isConduitId, type Conduit, type ConduitBuff, type ConduitSlots } from '../content/conduits';
+import { conduits, conduitBuffs, conduitEffect, conduitColor, conduitEquipReason, conduitSlotCount, conduitUpgradeCap, getConduit, isConduitId, type Conduit, type ConduitBuff, type ConduitSlots } from '../content/conduits';
 import { resolveFighter, formatStat } from '../content/combat';
 import { getStarter, isStarterId } from '../content/starters';
 import { getElement, type ElementId } from '../content/activities';
@@ -53,11 +53,9 @@ export function conduitBuffLine(conduit: Conduit, level = 0): string {
   }).join(' · ');
 }
 
-/** Kit/mechanic rule text beyond the stat buffs, if the Conduit has one. */
-export function conduitRuleText(conduit: Conduit): string | null {
-  if (!('mechanic' in conduit) && !('kitEffects' in conduit)) return null;
-  const split = conduit.effect.indexOf('. ');
-  return split < 0 ? null : conduit.effect.slice(split + 2);
+/** Complete effect at the displayed upgrade level, including conditional mechanics. */
+export function conduitRuleText(conduit: Conduit, level = 0): string {
+  return conduitEffect(conduit, level);
 }
 
 export function conduitMatchesSearch(conduit: Conduit, query: string): boolean {
@@ -179,18 +177,18 @@ export function bindConduitLoadout(host: HTMLElement): void {
       if (data.loadoutRule !== undefined && isConduitId(id)) {
         const conduit = getConduit(id);
         const level = Number(control.dataset.loadoutDetailLevel ?? 0);
-        const rule = conduitRuleText(conduit);
+        const rule = conduitRuleText(conduit, level);
         const element = conduit.element ? getElement(conduit.element).name : 'Any element';
         const detail = `${conduit.rarity} · Level ${level} of ${conduitUpgradeCap} · ${element}.`;
         const stats = conduitBuffLine(conduit, level);
         const restrictions = conduit.rarity === 'Omnic' ? 'Matching combat element required. Maximum 4 Omnic Conduits in ordinary slots.' : '';
         void gameChoose(`${detail} ${stats} ${rule ?? ''} ${restrictions}`, [{ value: 'close', label: 'Close', primary: true }], 'close', {
           title: conduit.name,
-          messageHtml: `<div class="loadout-detail"><div class="loadout-detail-art">${conduitIcon(conduit.id, level)}</div><p>${escapeDialogText(detail)}</p><h3>Stat bonuses</h3><ul>${stats.split(' · ').map(stat => `<li>${escapeDialogText(stat)}</li>`).join('')}</ul>${rule ? `<h3>Special effect</h3><p>${escapeDialogText(rule)}</p>` : ''}${restrictions ? `<h3>Equipment rules</h3><p>${escapeDialogText(restrictions)}</p>` : ''}<h3>Origin</h3><p>${escapeDialogText(conduit.lore)}</p></div>`,
+          messageHtml: `<div class="loadout-detail"><div class="loadout-detail-art">${conduitIcon(conduit.id, level)}</div><p>${escapeDialogText(detail)}</p>${stats ? `<h3>Stat bonuses</h3><ul>${stats.split(' · ').map(stat => `<li>${escapeDialogText(stat)}</li>`).join('')}</ul>` : ''}<h3>Complete effect</h3><p>${escapeDialogText(rule)}</p>${restrictions ? `<h3>Equipment rules</h3><p>${escapeDialogText(restrictions)}</p>` : ''}<h3>Origin</h3><p>${escapeDialogText(conduit.lore)}</p></div>`,
         });
       } else if (isMasterConduitId(id)) {
         const master = getMasterConduit(id);
-        void showRule(`${master.name} · Master`, `${master.effect} Always-active bearer enhancement; recurs on qualifying native outcomes. Does not scale with Conduit upgrades. ${master.lore}`);
+        void showRule(`${master.name} · Master`, `${master.effect} Triggers and limits as stated above. Does not scale with Conduit upgrades. ${master.lore}`);
       }
       return;
     }
@@ -288,7 +286,7 @@ function slotCard(owner: string, captured: boolean, element: ElementId, slots: C
     return `<article class="ref-equipment-slot loadout-slot is-empty" data-loadout-slot="${index}" aria-label="Slot ${index + 1} · Empty">${target}
       <span class="loadout-slot-plus">${select}</span><small class="loadout-empty-label">Empty</small></article>`;
   }
-  const next = level < conduitUpgradeCap ? `next level ${conduitBuffLine(conduit, level + 1)}` : 'Maximum';
+  const next = level < conduitUpgradeCap ? `next level ${conduitEffect(conduit, level + 1)}` : 'Maximum';
   return `<article class="ref-equipment-slot loadout-slot" data-loadout-slot="${index}" data-loadout-slot-name="${conduit.name}" style="--loadout-accent:${conduitColor(conduit)}">
     <div class="loadout-slot-main"><span class="loadout-slot-art">${conduitIcon(conduit.id, level)}</span><div class="loadout-slot-controls">${target}<button type="button" class="loadout-rule-button" data-loadout-rule="${conduit.id}" data-loadout-detail-level="${level}" aria-label="${conduit.name} details">Details</button></div></div>
     <span class="loadout-slot-body"><b class="loadout-slot-name">${conduit.name}</b>
@@ -341,11 +339,12 @@ export function conduitLoadout(owner: string, name: string, element: ElementId, 
   const captured = !isStarterId(owner);
   const filled = slots.filter((entry) => entry !== null).length;
   const shortName = isStarterId(owner) ? getStarter(owner).name : name;
+  const hasEquipment = filled > 0 || !!(isStarterId(owner) && account?.masterEquipment?.[owner]);
   return `<section class="ref-equipment conduit-loadout" aria-label="${name} equipment" data-character-equipment="${owner}" data-loadout-signature="${slots.map(entry => entry ?? '').join(',')}" data-loadout-first-empty="${slots.indexOf(null)}">
     <header class="loadout-header"><button type="button" class="loadout-back" ${captured ? `data-team-capture-detail="${owner}"` : `data-team-detail="${owner}"`}>← Back to ${shortName}</button>
       <div class="loadout-title"><h3>${shortName} · Conduits</h3><p>${filled} of ${conduitSlotCount} slots filled</p></div>${memberTabs(owner, account)}</header>
     <div class="loadout-layout">
-      <section class="ref-panel loadout-slots" aria-label="Loadout"><header class="ref-panel-heading"><span>Loadout · ${filled} of ${conduitSlotCount}</span></header>
+      <section class="ref-panel loadout-slots" aria-label="Loadout"><header class="ref-panel-heading"><span>Loadout · ${filled} of ${conduitSlotCount}</span><button type="button" class="text-button loadout-clear" data-loadout-clear data-loadout-owner="${owner}" aria-label="Unequip all Conduits${captured ? '' : ', including Master'} from ${escapeDialogText(shortName)}" ${hasEquipment && account ? '' : 'disabled'}>Unequip All</button></header>
         ${masterRow(owner, account)}
         <div class="ref-equipment-grid loadout-grid">${artifactSlots.map((_, index) => slotCard(owner, captured, element, slots, index, account)).join('')}</div>
         ${account ? totalBonuses(owner, account) : ''}

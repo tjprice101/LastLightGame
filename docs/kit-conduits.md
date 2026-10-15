@@ -1,5 +1,14 @@
 # Kit-focused Conduits (D-160/D-162)
 
+**Current D-313 effects:** these25 stable IDs retain D-176's Omnic acquisition,
+matching-element/four-Omnic restrictions, ownership, upgrades and artwork.
+Their entire old stat bundles, reserve rules and special-effect non-scaling
+policy are replaced by the [approved converted-Omnic rows](conduit-redesign.md#ordinary-roster-converted-omnic-identities-25).
+Effects now scale through+5, including specifically approved resurrection,
+recovery and action preparations. Native character kits remain unchanged.
+Historical mechanic text below is not additive or an active restriction on
+these approved rows. Implemented locally; not yet deployed.
+
 ## Current approved Omnic replacement (D-176)
 
 Owner explicitly chooses replacing these same25 items, not adding25 more.

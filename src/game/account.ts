@@ -4,16 +4,16 @@ import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, chara
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
 import { type InfusionModeId } from '../content/activities';
 import { getStarter, isStarterId, starters, type StarterId } from '../content/starters';
-import { isPlayableDungeon, playableDungeons, materialLoot, type PlayableDungeon } from '../content/dungeons';
+import { isPlayableDungeon, playableDungeons, materialLoot, dungeonVariants, type PlayableDungeon } from '../content/dungeons';
 import { loadProfile, type ProfileStorage } from './profile';
 import { type BattleResult } from './battle';
 import { materialName } from '../content/dungeon-art';
 import { getCreature } from '../content/creatures';
-import { getConduit, isConduitId, validateConduitSlots, normalizeLegacyKitSlots, validateConduitElement, conduitSlotCount, validateConduitUpgrades, conduitUpgradeCost, type ConduitId, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
+import { getConduit, isConduitId, validateConduitSlots, normalizeLegacyKitSlots, validateConduitElement, conduitSlotCount, validateConduitUpgrades, conduitUpgradeCost, conduitUpgradeCap, type ConduitId, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
 import { machineComponentDrop } from '../content/mechanical-components';
 import { bannerConduitBonus, machineConduitLoot } from '../content/machines';
 import { isMasterConduitId, masterChest, validateMasterCharacter, type MasterConduitId, type MasterLoadouts } from '../content/master-conduits';
-import { validateCapturedCharacters, validateCharacterLocks, capturedProgress, capturedLevelCost, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
+import { validateCapturedCharacters, validateCharacterLocks, capturedProgress, capturedLevelCost, capturedLevelCap, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
 import { infusionEncounter, infusionLoot, infusionElements, creatureSaleOptions } from '../content/infusions';
 import { standardBanner, resolveBannerPull, validateBannerPity, type StandardBannerEntry, type BannerPity } from '../content/standard-banner';
 import { bannerDuplicateMaterials, type BannerMaterialReward } from '../content/banner-materials';
@@ -24,6 +24,7 @@ import { isWarCharacter, warEncounter, warLoot, warStageCount, type WarCharacter
 import { canonicalElement, isLegacyElement } from '../content/element-migration';
 import { storyEncounter, storyCreature, storyRules, storyBossBonus, storyMaterialLoot } from '../content/story';
 import { bossLootMultiplier, bossLootRange } from '../content/final-boss-loot';
+import { calamityChest, calamityChestId, calamityEncounter, isCalamityActivityId, isCalamityTier, parseCalamityChestId, rollCalamityChest, type CalamityActivityId } from '../content/calamity';
 
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
@@ -41,6 +42,10 @@ export interface Account {
   conduitUpgrades?: ConduitUpgrades;
   mechanicalComponents?: number;
   masterChests?: number;
+  calamityChests?: Record<string, number>;
+  calamityClears?: Partial<Record<CalamityActivityId, number>>;
+  normalFinalClears?: Partial<Record<CalamityActivityId, boolean>>;
+  calamitySeed?: number;
   masterConduits?: Partial<Record<MasterConduitId, number>>;
   masterEquipment?: MasterLoadouts;
   firstFracture: boolean;
@@ -83,6 +88,35 @@ export function validateAccount(value: unknown): Account {
   const account = emptyAccount();
   account.fractalis = value.fractalis;
   account.lycalis = value.lycalis;
+  if (value.calamityChests !== undefined) {
+    if (!record(value.calamityChests)) throw new Error('Invalid saved Calamity chest inventory.');
+    account.calamityChests = {};
+    for (const [id, amount] of Object.entries(value.calamityChests)) {
+      parseCalamityChestId(id);
+      if (!count(amount)) throw new Error('Invalid saved Calamity chest count.');
+      account.calamityChests[id] = amount;
+    }
+  }
+  if (value.calamityClears !== undefined) {
+    if (!record(value.calamityClears)) throw new Error('Invalid saved Calamity progress.');
+    account.calamityClears = {};
+    for (const [id, tier] of Object.entries(value.calamityClears)) {
+      if (!isCalamityActivityId(id) || !count(tier) || tier > 3) throw new Error('Invalid saved Calamity clear.');
+      account.calamityClears[id] = tier;
+    }
+  }
+  if (value.normalFinalClears !== undefined) {
+    if (!record(value.normalFinalClears)) throw new Error('Invalid saved final-clear evidence.');
+    account.normalFinalClears = {};
+    for (const [id, cleared] of Object.entries(value.normalFinalClears)) {
+      if (!isCalamityActivityId(id) || typeof cleared !== 'boolean') throw new Error('Invalid saved final-clear evidence.');
+      account.normalFinalClears[id] = cleared;
+    }
+  }
+  if (value.calamitySeed !== undefined) {
+    if (!count(value.calamitySeed) || value.calamitySeed < 1 || value.calamitySeed > 0xffffffff) throw new Error('Invalid saved Calamity seed.');
+    account.calamitySeed = value.calamitySeed;
+  }
   if (value.mechanicalComponents !== undefined) {
     if (!count(value.mechanicalComponents)) throw new Error('Invalid saved Broken Mechanical Components balance.');
     account.mechanicalComponents = value.mechanicalComponents;
@@ -414,6 +448,16 @@ export function equipConduit(storage: ProfileStorage, character: string, slot: n
   account.conduitEquipment = { ...account.conduitEquipment, [character]: validateConduitSlots(slots) };
   return saveAccount(storage, account);
 }
+export function unequipAllConduits(storage: ProfileStorage, character: string): Account {
+  if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before changing equipment.');
+  const account = loadAccount(storage);
+  if (!ownedCharacterInstances(account).includes(character)) throw new Error('Choose an owned character.');
+  account.conduitEquipment = { ...account.conduitEquipment, [character]: Array<null>(conduitSlotCount).fill(null) };
+  if (isStarterId(character) && account.masterEquipment?.[character]) {
+    account.masterEquipment = { ...account.masterEquipment, [character]: null };
+  }
+  return saveAccount(storage, account);
+}
 export function openMasterChest(storage: ProfileStorage, id: MasterConduitId): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before opening a Master chest.');
   if (!isMasterConduitId(id)) throw new Error('Choose a valid Master Conduit.');
@@ -423,6 +467,64 @@ export function openMasterChest(storage: ProfileStorage, id: MasterConduitId): A
   account.masterChests = (account.masterChests ?? 0) - 1;
   account.masterConduits = { ...account.masterConduits, [id]: 1 };
   return saveAccount(storage, account);
+}
+export function calamityUnlockedTier(account: Account, activity: CalamityActivityId): number {
+  if (!isCalamityActivityId(activity)) throw new Error('Unknown Calamity activity.');
+  if (account.normalFinalClears?.[activity] !== true) {
+    const dungeon = isPlayableDungeon(activity);
+    const finalStage = dungeon ? dungeonStageCount : infusionStageCount(activity);
+    const access = dungeon ? account.dungeonStages[activity] : account.infusionStages[activity];
+    const boss = dungeon ? `dungeon-${activity}-${finalStage}-0` : `infusion-${activity}-${finalStage}-0`;
+    // Historical sessions used randomUUID run IDs; floor access alone is not victory evidence.
+    const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (access !== finalStage || !account.receipts.some((entry) =>
+      entry.length === 37 + boss.length && uuid.test(entry.slice(0, 36)) && entry.slice(36) === `:${boss}`)) return 0;
+  }
+  return Math.min(3, (account.calamityClears?.[activity] ?? 0) + 1);
+}
+
+export interface CalamityChestResult {
+  account: Account;
+  chest: ReturnType<typeof calamityChest>;
+  reward: ReturnType<typeof rollCalamityChest>;
+}
+
+export function openCalamityChest(storage: ProfileStorage, id: string, expectedCount: number): CalamityChestResult {
+  if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before opening a Calamity chest.');
+  const { activity, tier } = parseCalamityChestId(id);
+  const account = loadAccount(storage);
+  const available = account.calamityChests?.[id] ?? 0;
+  if (!count(expectedCount) || expectedCount < 1 || available !== expectedCount) {
+    throw new Error('Calamity chest count changed. Review the current inventory before retrying.');
+  }
+  let seed = account.calamitySeed ?? 0x9e3779b9;
+  const reward = rollCalamityChest(activity, tier, () => {
+    seed ^= seed << 13;
+    seed ^= seed >>> 17;
+    seed ^= seed << 5;
+    seed >>>= 0;
+    return seed / 0x100000000;
+  });
+  const add = (current: number, amount: number): number => {
+    if (!count(amount) || !count(current + amount)) throw new Error('Calamity reward inventory capacity reached.');
+    return current + amount;
+  };
+  account.fractalis = add(account.fractalis, reward.fractalis);
+  account.lycalis = add(account.lycalis, reward.lycalis);
+  for (const [material, amount] of Object.entries(reward.materials)) {
+    if (!isMaterial(material)) throw new Error('Invalid Calamity material reward.');
+    account.materials[material] = add(account.materials[material] ?? 0, amount);
+  }
+  for (const [conduit, amount] of Object.entries(reward.conduits)) {
+    if (!isConduitId(conduit)) throw new Error('Invalid Calamity Conduit reward.');
+    account.conduits = { ...account.conduits, [conduit]: add(account.conduits?.[conduit] ?? 0, amount) };
+  }
+  account.mechanicalComponents = add(account.mechanicalComponents ?? 0, reward.mechanicalComponents);
+  account.masterChests = add(account.masterChests ?? 0, reward.masterChests);
+  account.calamityChests = { ...account.calamityChests, [id]: available - 1 };
+  account.calamitySeed = seed;
+  const saved = saveAccount(storage, account);
+  return { account: saved, chest: calamityChest(activity, tier), reward };
 }
 export function equipMasterConduit(storage: ProfileStorage, character: StarterId, id: MasterConduitId | null): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before equipping a Master.');
@@ -435,6 +537,43 @@ export function equipMasterConduit(storage: ProfileStorage, character: StarterId
   account.masterEquipment = { ...account.masterEquipment, [character]: id };
   return saveAccount(storage, account);
 }
+export interface ConduitMaxLevelPlan {
+  id: ConduitId;
+  currentLevel: number;
+  targetLevel: number;
+  cost: number;
+}
+
+export function conduitMaxLevelPlan(account: Account, id: ConduitId): ConduitMaxLevelPlan {
+  if (!isConduitId(id)) throw new Error('Unknown Conduit.');
+  if ((account.conduits?.[id] ?? 0) < 1) throw new Error('Choose an owned Conduit to upgrade.');
+  const conduit = getConduit(id);
+  const currentLevel = account.conduitUpgrades?.[id] ?? 0;
+  let targetLevel = currentLevel;
+  let cost = 0;
+  while (targetLevel < conduitUpgradeCap) {
+    const nextCost = conduitUpgradeCost(conduit, targetLevel);
+    if (nextCost === null) throw new Error('Conduit upgrade cost is missing.');
+    if (cost + nextCost > (account.mechanicalComponents ?? 0)) break;
+    cost += nextCost;
+    targetLevel++;
+  }
+  return { id, currentLevel, targetLevel, cost };
+}
+
+export function upgradeConduitToMaximum(storage: ProfileStorage, expected: ConduitMaxLevelPlan): Account {
+  if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before upgrading Conduits.');
+  const account = loadAccount(storage);
+  const plan = conduitMaxLevelPlan(account, expected.id);
+  if (plan.currentLevel !== expected.currentLevel || plan.targetLevel !== expected.targetLevel || plan.cost !== expected.cost) {
+    throw new Error('This Conduit Max Level preview changed. Review the current level and cost before retrying.');
+  }
+  if (plan.targetLevel === plan.currentLevel) throw new Error('No additional Conduit upgrades are affordable within the current cap.');
+  account.mechanicalComponents = (account.mechanicalComponents ?? 0) - plan.cost;
+  account.conduitUpgrades = { ...account.conduitUpgrades, [plan.id]: plan.targetLevel };
+  return saveAccount(storage, account);
+}
+
 export function upgradeConduit(storage: ProfileStorage, id: ConduitId, expectedLevel: number): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before upgrading Conduits.');
   if (!isConduitId(id)) throw new Error('Unknown Conduit.');
@@ -500,7 +639,54 @@ export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: '
 }
 export function saveAccountRewards(storage: ProfileStorage, result: BattleResult, runId: string): Account {
   const account = loadAccount(storage);
+  if (result.state.calamity !== undefined) {
+    const activity = result.state.calamity;
+    if (!record(activity) || !isCalamityActivityId(activity.activity) || !isCalamityTier(activity.tier) ||
+        result.state.dungeon || result.state.infusion || result.state.story || result.state.war ||
+        !['player', 'cleared', 'defeat'].includes(result.state.phase) || result.state.wave !== 1 || result.state.enemies.length !== 1 ||
+        activity.tier > calamityUnlockedTier(account, activity.activity)) {
+      throw new Error('Invalid or locked Calamity encounter.');
+    }
+    const boss = result.state.enemies[0];
+    const encounter = calamityEncounter(activity.activity, activity.tier);
+    const rewards = result.events.filter((event) => event.kind === 'reward');
+    const reward = rewards[0];
+    const id = calamityChestId(activity.activity, activity.tier);
+    if (!boss.boss || !Number.isFinite(boss.hp) || boss.creatureId !== `calamity:${activity.activity}` ||
+        boss.id !== `calamity-${activity.activity}` || boss.definitionId !== `calamity:${activity.activity}` ||
+        boss.side !== 'enemy' || boss.element !== encounter.element || boss.level !== encounter.level || boss.name !== encounter.name) {
+      throw new Error('Invalid Calamity boss.');
+    }
+    getCreature(boss.creatureId);
+    if (rewards.length === 0 && result.state.phase !== 'cleared' && boss.hp > 0) {
+      if (result.events.some((event) => event.calamityChest !== undefined || event.capture !== undefined ||
+          event.recruitment !== undefined || event.recruitmentOutcome !== undefined)) throw new Error('Invalid Calamity reward payload.');
+      if (account.creatures[boss.creatureId]) return account;
+      account.creatures[boss.creatureId] = { defeated: false };
+      return saveAccount(storage, account);
+    }
+    if (result.state.phase !== 'cleared' || boss.hp > 0 || rewards.length !== 1 ||
+        reward.source !== boss.id || reward.target !== boss.id || reward.amount !== 0 ||
+        reward.critical !== false || reward.calamityChest !== id ||
+        Object.entries(reward).some(([key, value]) => value !== undefined &&
+          !['kind', 'source', 'target', 'amount', 'critical', 'message', 'calamityChest'].includes(key)) ||
+        result.events.some((event) => event !== reward && event.calamityChest !== undefined)) {
+      throw new Error('Invalid Calamity chest reward.');
+    }
+    const receipt = `${runId}:${boss.id}`;
+    if (account.receipts.includes(receipt)) return account;
+    const amount = (account.calamityChests?.[id] ?? 0) + 1;
+    if (!count(amount)) throw new Error('Calamity chest inventory capacity reached.');
+    account.calamityChests = { ...account.calamityChests, [id]: amount };
+    account.calamityClears = { ...account.calamityClears,
+      [activity.activity]: Math.max(account.calamityClears?.[activity.activity] ?? 0, activity.tier) };
+    account.creatures[boss.creatureId] = { defeated: true };
+    account.receipts.push(receipt);
+    return saveAccount(storage, account);
+  }
+  if (result.events.some((event) => event.calamityChest !== undefined)) throw new Error('Calamity chests require a Calamity encounter.');
   let changed = false;
+  const rewardedEnemies = new Set<string>();
   const recruitments: { reward: BattleResult['events'][number]; character: WarCharacterId; outcome: 'new' | 'duplicate' }[] = [];
   const storyBonuses: { reward: BattleResult['events'][number]; bonus: ReturnType<typeof storyBossBonus> }[] = [];
   const story = result.state.story;
@@ -621,10 +807,10 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     }
     if (reward.conduits !== undefined) {
       if (result.state.infusion?.mode !== 'machines') throw new Error('Conduit drops require Awaken the Machines.');
-      const eligible = machineConduitLoot(result.state.infusion.stage);
+      const eligible = machineConduitLoot(result.state.infusion.stage, account.conduits);
       const tiers = new Set<string>();
       for (const [id, amount] of Object.entries(reward.conduits)) {
-        if (!isConduitId(id) || amount !== 1 || !eligible.some((drop) => drop.id === id)) throw new Error('Invalid machine Conduit reward.');
+        if (!isConduitId(id) || amount !== 1 || !eligible.some((drop) => drop.id === id && drop.chance > 0)) throw new Error('Invalid machine Conduit reward: only unowned eligible names may drop.');
         const rarity = getConduit(id).rarity;
         if (tiers.has(rarity)) throw new Error('Only one Conduit per tier may drop per enemy.');
         tiers.add(rarity);
@@ -669,7 +855,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       const creature = getCreature(reward.capture.creatureId);
       const stage = result.state.infusion?.stage;
       if (!creature.mode || creature.mode === 'machines' || !stage || creature.mode !== result.state.infusion?.mode ||
-          enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== enemy.level ||
+          enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== Math.min(capturedLevelCap, enemy.level) ||
           enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? 'legacy').level ||
           (creature.mode === 'roses' && enemy.level > roseCaptureMaximumLevel)) {
         throw new Error('Invalid captured enemy reward.');
@@ -677,6 +863,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       const copy = createCreatureCopy(creature.id, stage, enemy.level);
       account.capturedCharacters = validateCapturedCharacters([...(account.capturedCharacters ?? []), copy]);
     }
+    rewardedEnemies.add(enemy.id);
     account.receipts.push(receipt);
     changed = true;
   }
@@ -712,6 +899,29 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     }
     if ((account.storyCompleted ?? 0) < story.storyStage) {
       account.storyCompleted = story.storyStage;
+      changed = true;
+    }
+  }
+  if (!story && !war && result.state.phase === 'cleared' && result.state.enemies.length === 1) {
+    const boss = result.state.enemies[0];
+    let normalActivity: CalamityActivityId | undefined;
+    if (boss.boss && boss.hp <= 0 && boss.creatureId &&
+        rewardedEnemies.has(boss.id) &&
+        account.receipts.includes(`${runId}:${boss.id}`)) {
+      if (dungeon && !infusion && isPlayableDungeon(dungeon.element) && dungeon.stage === dungeonStageCount &&
+          result.state.wave === dungeon.stage && boss.id === `dungeon-${dungeon.element}-${dungeon.stage}-0` &&
+          boss.level === elementalEnemyLevel(dungeon.stage) && boss.element === dungeon.element &&
+          dungeonVariants(dungeon.element, dungeon.stage).some((variant) => variant.creatureId === boss.creatureId)) {
+        normalActivity = dungeon.element;
+      } else if (infusion && !dungeon && isInfusionMode(infusion.mode) && infusion.stage === infusionStageCount(infusion.mode) &&
+          result.state.wave === infusion.stage && boss.id === `infusion-${infusion.mode}-${infusion.stage}-0`) {
+        const encounter = infusionEncounter(infusion.mode, infusion.stage, infusion.schedule ?? 'legacy');
+        if (boss.level === encounter.level && boss.element === encounter.enemy.element &&
+            boss.creatureId === `infusion:${infusion.mode}:${encounter.tier}`) normalActivity = infusion.mode;
+      }
+    }
+    if (normalActivity && account.normalFinalClears?.[normalActivity] !== true) {
+      account.normalFinalClears = { ...account.normalFinalClears, [normalActivity]: true };
       changed = true;
     }
   }
@@ -777,7 +987,7 @@ export function maxLevelPlan(account: Account, id: string): MaxLevelPlan {
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
   const current = starter ? ownedProgress(account, starter.id) : copy ? capturedProgress(copy) : null;
   if (!current) throw new Error('Character progress is missing.');
-  const cap = starter ? characterLevelCap(ownedProgress(account, starter.id).evolution) : 120;
+  const cap = starter ? characterLevelCap(ownedProgress(account, starter.id).evolution) : capturedLevelCap;
   const cost: UpgradeCost = { fractalis: 0, materials: {} };
   let targetLevel = current.level;
   while (targetLevel < cap) {

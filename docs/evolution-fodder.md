@@ -48,6 +48,31 @@ eligible substitutes for Heaven/Abyss fodder.
 
 ## Explicit selection and protection
 
+### Expanded evolution picker (D-309)
+
+The organized Evolution screen gives captured-copy selection its own full-width
+section below the stat/resource preview, rather than a64-96px list inside the
+payment column. Responsive cards show96px desktop/72px mobile portraits, copy
+identity, level/form/rating and complete eligibility/protection reasons.
+Eligible copies appear first without changing their saved copy numbers;
+unavailable copies remain visible and disabled.
+
+Checkbox selection updates the exact selected/required count, eligible total
+and progress meter. Selected cards gain the viewed bearer's accent and explicit
+Selected text; excessive selection keeps Evolve disabled and explains why.
+Missing eligible copies show the required form/activity and protection guidance.
+No copy is auto-selected, and selection itself never consumes or writes data.
+The existing permanent-consumption confirmation and atomic revalidation remain.
+
+Lists grow naturally for small collections and retain a bounded tall scroll area
+for large holdings. Cards stack on phones; names and protection reasons wrap.
+Hover/focus/selection feedback is presentation-only, with transitions disabled
+for either reduced-motion setting. This supersedes the compact list dimensions,
+not eligibility, resource requirements or irreversible-consumption protections.
+
+Validate `src/presentation/upgrade-reference.test.ts` and
+`src/game/evolution-fodder.test.ts`, plus desktop/mobile layout and live selection.
+
 Character / Fracture-Evolution shows each saved copy with portrait, form rating,
 level and copy number. Nothing is auto-selected. Select exactly the required
 number of distinct instance IDs; too few/many keeps Evolve disabled.

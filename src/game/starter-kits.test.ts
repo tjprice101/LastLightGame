@@ -1,156 +1,136 @@
 import { describe, expect, it } from 'vitest';
 import { resolveFighter } from '../content/combat';
-import { elementalEffectFamilies } from '../content/elemental-effects';
-import type { ConduitSlots } from '../content/conduits';
-import { unitReadout } from '../presentation/unit-readout';
-import { act, createBattle, damageAmount, endTurn, nextWave, type BattleEvent, type BattleState } from './battle';
-import { pilotAuthoredShieldAbsorbed, pilotBurnDamage, pilotEffectiveHeal, pilotOutgoingBonus } from './kit-pilots';
+import { nativeBalance } from '../content/native-balance';
+import { act, createBattle, damageAmount, endTurn, nextWave, type BattleState } from './battle';
 
 function encounter(...roster: string[]): BattleState {
   const state = createBattle(7, roster);
   state.enemies = [state.enemies[0]];
-  state.allies.forEach((unit) => { unit.shatter = 100; unit.stats.crit = 0; });
-  state.enemies[0].hp = state.enemies[0].stats.health = 100_000;
-  state.enemies[0].stats.defense = 0;
-  state.enemies[0].stats.damage = 100;
-  state.enemies[0].stats.crit = 0;
+  state.allies.forEach(unit => {
+    unit.shatter = 100; unit.stats.crit = 0; unit.stats.damage = 100;
+    unit.hp = unit.stats.health = 1000;
+  });
+  Object.assign(state.enemies[0].stats, { health: 100_000, defense: 0, damage: 0, crit: 0 });
+  state.enemies[0].hp = 100_000;
   return state;
 }
 
-describe('shared starter elemental loops', () => {
-  it('Infernis earns shared Ember from effective own Burn once per enemy phase and spends once per activation', () => {
+function use(state: BattleState, id: string, action: 'skill1' | 'skill2' | 'ultimate', target = state.enemies[0].id) {
+  const actor = state.allies.find(unit => unit.id === id)!;
+  actor.spent = false; actor.shatter = 100; actor.recoverThrough = 0;
+  if (actor.conduitRuntime) actor.conduitRuntime.numbers.actions = 0;
+  return act(state, id, action, target);
+}
+
+describe('distinct no-equipment starter identities', () => {
+  it('Infernis banks three Attack-based fire phases without a personal charge bank', () => {
     const state = encounter('ember');
-    const actor = state.allies[0];
-    const first = act(state, actor.id, 'skill1', state.enemies[0].id);
-    const phase = endTurn(first.state);
-    expect(phase.state.allies[0].pilot?.ember).toBe(1);
-    expect(phase.events.some((event) => event.message.includes('gains Infernic Embers'))).toBe(true);
-    const events: BattleEvent[] = [];
-    for (let round = 1; round <= 4; round++) {
-      phase.state.round = round;
-      pilotBurnDamage(phase.state, phase.state.allies[0], 10, events);
-      pilotBurnDamage(phase.state, phase.state.allies[0], 10, events);
-    }
-    expect(phase.state.allies[0].pilot?.ember).toBe(3);
-    const skill = act(phase.state, actor.id, 'skill2', phase.state.enemies[0].id);
-    expect(skill.events.filter((event) => event.message.includes('spends 3 Infernic Embers'))).toHaveLength(1);
-    expect(skill.state.allies[0].pilot?.ember).toBe(0);
-    expect(skill.events.find((event) => event.kind === 'damage')?.amount)
-      .toBe(damageAmount(actor.stats.damage, 1.1 * 1.24, 0, false, actor.stats.critMultiplier));
-    expect(resolveFighter('ember').abilities.skill2.description).toContain('Spends all Infernic Embers');
+    const result = use(state, 'ember', 'skill1');
+    expect(result.events.find(event => event.kind === 'damage')?.amount).toBe(damageAmount(100, 1.6 * nativeBalance.skillDamageScale, 0, false));
+    expect(result.state.allies[0].native?.burns?.[state.enemies[0].id]).toEqual({ damage: 25, turns: 3 });
+    const phase = endTurn(result.state);
+    expect(phase.events.find(event => event.nativeKind === 'burn')?.amount).toBe(25);
+    expect(phase.state.allies[0].native?.burns?.[state.enemies[0].id]?.turns).toBe(2);
+    expect(phase.state.allies[0].pilot).toBeUndefined();
+    expect(state.allies[0].native).toBeUndefined();
   });
 
-  it('keeps native Ember and owned Cinder Conduit Ember Seal charges independent with the original additive damage', () => {
-    const conduitSlots: ConduitSlots = ['infernic-cinder-testament', null, null, null, null, null, null, null];
-    const state = createBattle(7, ['ember'], {}, { ember: conduitSlots });
-    state.enemies = [state.enemies[0]];
-    state.allies[0].shatter = 100;
-    state.allies[0].stats.crit = 0;
-    state.enemies[0].hp = state.enemies[0].stats.health = 100_000;
-    state.enemies[0].stats.defense = 0;
-    state.enemies[0].stats.damage = 0;
-    const first = act(state, 'ember', 'skill1', state.enemies[0].id);
-    const phase = endTurn(first.state).state;
-    expect(phase.allies[0].pilot?.ember).toBe(1);
-    expect(phase.allies[0].conduitCharges?.emberSeals).toBe(1);
-    phase.allies[0].pilot!.ember = 2;
-    const before = structuredClone(phase);
-    const hit = act(phase, 'ember', 'skill2', phase.enemies[0].id);
-    const actor = phase.allies[0];
-    expect(hit.events.find((event) => event.kind === 'damage')?.amount).toBe(
-      damageAmount(actor.stats.damage, 1.1 * (1 + .05 + .16), 0, false, actor.stats.critMultiplier),
-    );
-    expect(hit.state.allies[0].pilot?.ember).toBe(0);
-    expect(hit.state.allies[0].conduitCharges?.emberSeals).toBeUndefined();
-    expect(phase.allies[0].pilot?.ember).toBe(2);
-    expect(state.allies[0].conduitCharges).toBeUndefined();
-    expect(before.allies[0].conduitCharges?.emberSeals).toBe(1);
+  it('detonation spends at most two stored phases and leaves other owners’ Burn untouched', () => {
+    let state = use(encounter('ember'), 'ember', 'skill1').state;
+    state.enemies.push({ ...structuredClone(state.enemies[0]), id: 'other' });
+    delete state.allies[0].native!.burns!.other;
+    state.enemies[1].burn = { damage: 7, turns: 3, sourceId: 'another-owner' };
+    const result = use(state, 'ember', 'skill2');
+    expect(result.events.filter(event => event.nativeKind === 'detonation').map(event => event.amount)).toEqual([50]);
+    expect(result.state.allies[0].native?.burns?.[state.enemies[0].id]?.turns).toBe(1);
+    expect(result.state.enemies[1].burn).toEqual(state.enemies[1].burn);
   });
 
-  it('Tizu earns shared Ward from actual authored shield absorption; it no longer primes a shield-survival charge', () => {
-    const state = encounter('tide');
-    const shield = act(state, 'tide', 'skill2', state.enemies[0].id);
-    const phase = endTurn(shield.state);
-    expect(phase.state.allies[0].pilot?.ward).toBe(1);
-    expect(Object.keys(phase.state.allies[0].pilot ?? {})).not.toContain('shelterWard');
-    expect(Object.keys(phase.state.allies[0].pilot ?? {})).not.toContain('shelterSourceId');
-    expect(phase.events.some((event) => event.message.includes('Shelter Charge'))).toBe(false);
-    expect(unitReadout(phase.state.allies[0])).toContain('Oceanic Protection 1 / 3');
+  it('Dawnfire invests stronger fire rather than detonating, and weaker refresh cannot downgrade it', () => {
+    const state = encounter('ember');
+    const flare = use(state, 'ember', 'ultimate');
+    expect(flare.events.some(event => event.nativeKind === 'detonation')).toBe(false);
+    expect(flare.events.find(event => event.kind === 'damage')?.amount).toBe(200 * nativeBalance.skillDamageScale);
+    expect(flare.state.allies[0].recoverThrough).toBe(state.round + 1);
+    const refreshed = use(flare.state, 'ember', 'skill1');
+    expect(refreshed.state.allies[0].native?.burns?.[state.enemies[0].id]).toEqual({ damage: 45, turns: 3 });
   });
 
-  it('Ward spending strengthens only Tizu authored Weaken/shield values, with refresh and cooldown rules intact', () => {
-    const state = encounter('tide');
-    state.allies[0].pilot = { ward: 3 };
-    const weakened = act(state, 'tide', 'skill1', state.enemies[0].id);
-    expect(weakened.state.enemies[0].weakenFraction).toBeCloseTo(.4);
-    expect(weakened.state.enemies[0].weakened).toBe(2);
-    expect(weakened.state.allies[0].pilot?.ward).toBe(0);
-    expect(weakened.state.allies[0].readyRound.skill1).toBe(state.round);
-
-    const ultimateState = encounter('tide');
-    ultimateState.allies[0].pilot = { ward: 3 };
-    ultimateState.allies[0].shield = 1_000;
-    const ultimate = act(ultimateState, 'tide', 'ultimate', ultimateState.enemies[0].id);
-    expect(ultimate.state.allies[0].shield).toBe(1_000);
-    expect(ultimate.state.allies.slice(1).every((unit) => unit.shield === 35 + 260 * .15)).toBe(true);
-    expect(ultimate.state.allies[0].pilot?.ward).toBe(0);
-    expect(ultimate.state.allies[0].recoverThrough).toBe(ultimateState.round + 1);
+  it('Tizu requires a living ally target and grants only that recipient the tuned short barrier', () => {
+    const state = encounter('tide', 'ember');
+    expect(() => use(state, 'tide', 'skill2')).toThrow('living ally');
+    const result = use(state, 'tide', 'skill2', 'ember');
+    expect(result.state.allies.map(unit => unit.shield)).toEqual([0, 1000 * nativeBalance.tizu.shelter]);
+    expect(result.state.allies[0].shatter).toBe(60);
+    expect(endTurn(result.state).state.allies[1].shield).toBe(0);
+    expect(result.state.allies[0].pilot).toBeUndefined();
   });
 
-  it('Flora earns shared Bloom from effective authored healing once per round, including self healing', () => {
-    const state = encounter('sprout');
-    const actor = state.allies[0];
-    const events: BattleEvent[] = [];
-    pilotEffectiveHeal(state, actor, actor, 0, events);
-    pilotEffectiveHeal(state, actor, actor, 10, events);
-    pilotEffectiveHeal(state, actor, state.enemies[0], 10, events);
-    expect(actor.pilot?.bloom).toBe(1);
-    state.round++;
-    pilotEffectiveHeal(state, actor, actor, 10, events);
-    expect(actor.pilot?.bloom).toBe(2);
-
-    const ability = encounter('sprout');
-    ability.allies.forEach((unit) => { unit.hp -= 60; });
-    const renewal = act(ability, 'sprout', 'skill2', ability.enemies[0].id);
-    expect(renewal.state.allies[0].pilot?.bloom).toBe(1);
-    expect(renewal.events.filter((event) => event.message.includes('gains Botanic Renewal'))).toHaveLength(1);
-    const passive = endTurn(renewal.state);
-    expect(passive.state.allies[0].pilot?.bloom).toBe(2);
+  it('Tizu weakens exactly one window without Ward spending and can repeat a funded skill next turn', () => {
+    const result = use(encounter('tide'), 'tide', 'skill1');
+    expect(result.state.enemies[0].weakenFraction).toBe(.25);
+    expect(result.state.enemies[0].weakened).toBe(1);
+    expect(result.state.allies[0].readyRound.skill1).toBe(result.state.round);
+    const phase = endTurn(result.state);
+    expect(phase.state.enemies[0].weakened).toBe(0);
+    const repeated = use(phase.state, 'tide', 'skill1');
+    expect(repeated.events.find(event => event.kind === 'damage')?.amount).toBe(150 * nativeBalance.skillDamageScale);
   });
 
-  it('Bliss earns Bloom from another ally healing only and spends at her authored rates', () => {
-    const state = encounter('bliss', 'ember');
-    const actor = state.allies[0];
-    const events: BattleEvent[] = [];
-    pilotEffectiveHeal(state, actor, actor, 10, events);
-    expect(actor.pilot).toBeUndefined();
-    pilotEffectiveHeal(state, actor, state.allies[1], 10, events);
-    pilotEffectiveHeal(state, actor, state.allies[1], 10, events);
-    expect(actor.pilot?.bloom).toBe(1);
-    actor.pilot!.bloom = 3;
-    const baseline = structuredClone(state);
-    baseline.allies[0].pilot = undefined;
-    const skill = act(state, actor.id, 'skill1', state.enemies[0].id);
-    const plain = act(baseline, actor.id, 'skill1', baseline.enemies[0].id);
-    expect(skill.events.find((event) => event.kind === 'damage')?.amount)
-      .toBe(plain.events.find((event) => event.kind === 'damage')?.amount! * 1.24);
-    expect(skill.state.allies[0].pilot?.bloom).toBe(0);
-    expect(resolveFighter('bliss').abilities.skill1.description).toContain('+8% outgoing damage per charge');
-    const ultimateState = encounter('bliss');
-    ultimateState.allies[0].pilot = { bloom: 2 };
-    const ultimate = act(ultimateState, 'bliss', 'ultimate', ultimateState.enemies[0].id);
-    expect(ultimate.state.allies[0].shield).toBe(ultimateState.allies[0].stats.health * .1);
+  it('Ocean Memory is a non-damaging two-phase team barrier with mandatory recovery', () => {
+    const state = encounter('tide', 'ember');
+    const result = use(state, 'tide', 'ultimate');
+    expect(result.events.filter(event => event.kind === 'damage')).toHaveLength(0);
+    expect(result.state.allies.map(unit => unit.shield)).toEqual([1000 * nativeBalance.tizu.oceanMemory, 1000 * nativeBalance.tizu.oceanMemory]);
+    expect(result.state.allies[0].recoverThrough).toBe(state.round + 1);
+    expect(result.state.allies[1].conduitRuntime?.layers).toContainEqual(expect.objectContaining({
+      owner: 'tide', native: true, firstReduction: .3, expiresAfterPhase: state.round + 1,
+    }));
   });
 
-  it('shared counter metadata is typed and each new wave clears native state without clearing independent Conduit charges', () => {
-    expect(elementalEffectFamilies.bloom.element).toBe('botanic');
-    const state = encounter('sprout');
-    state.allies[0].pilot = { bloom: 2, bloomRound: state.round };
+  it('Flora has no automatic passive healing: empty harvest plants, then delivers at next player turn', () => {
+    const state = encounter('sprout', 'ember');
+    state.allies.forEach(unit => { unit.hp = 500; });
+    expect(endTurn(state).events.some(event => event.kind === 'heal')).toBe(false);
+    const planted = use(state, 'sprout', 'skill2');
+    expect(planted.events.some(event => event.kind === 'heal')).toBe(false);
+    expect(planted.state.allies[0].attackBoost).toBeUndefined();
+    const delivered = endTurn(planted.state);
+    expect(delivered.events.filter(event => event.kind === 'heal').map(event => event.amount)).toEqual([1000 * nativeBalance.flora.seed, 1000 * nativeBalance.flora.seed]);
+    expect(delivered.state.allies[0].native?.seeds).toEqual({});
+    expect(delivered.state.allies[0].pilot).toBeUndefined();
+  });
+
+  it('Briar chooses lowest health fraction and an emergency harvest heals only existing Seeds', () => {
+    const state = encounter('sprout', 'ember', 'tide');
+    state.allies[0].hp = 700; state.allies[1].hp = state.allies[2].hp = 500;
+    const planted = use(state, 'sprout', 'skill1');
+    expect(Object.keys(planted.state.allies[0].native?.seeds ?? {})).toEqual(['ember']);
+    const harvest = use(planted.state, 'sprout', 'skill2');
+    expect(harvest.events.filter(event => event.kind === 'heal').map(event => [event.target, event.amount])).toEqual([['ember', 1000 * nativeBalance.flora.seed]]);
+    expect(Object.keys(harvest.state.allies[0].native?.seeds ?? {})).toHaveLength(3);
+  });
+
+  it('Worldseed heals immediately, preserves empowered delivery and never revives', () => {
+    const state = encounter('sprout', 'ember', 'tide');
+    state.allies[0].hp = state.allies[1].hp = 500;
+    state.allies[2].hp = 0;
+    const flare = use(state, 'sprout', 'ultimate');
+    expect(flare.events.filter(event => event.kind === 'heal').map(event => event.amount)).toEqual([1000 * nativeBalance.flora.immediateHeal, 1000 * nativeBalance.flora.immediateHeal]);
+    expect(flare.state.allies[2].hp).toBe(0);
+    const normal = use(flare.state, 'sprout', 'skill1');
+    expect(Object.values(normal.state.allies[0].native?.seeds ?? {}).map(seed => seed.fraction)).toEqual([nativeBalance.flora.empoweredSeed, nativeBalance.flora.empoweredSeed]);
+    expect(resolveFighter('sprout').abilities.ultimate.strength).toEqual({});
+  });
+
+  it('new encounters reset native investments and independent encounter Conduit charges without mutating the source', () => {
+    const state = use(encounter('ember'), 'ember', 'skill1').state;
     state.allies[0].conduitCharges = { normalMomentum: true };
     state.phase = 'cleared';
+    state.enemies.forEach(enemy => { enemy.hp = 0; });
     const next = nextWave(state).state;
-    expect(next.allies[0].pilot).toBeUndefined();
-    expect(next.allies[0].conduitCharges?.normalMomentum).toBe(true);
-    expect(unitReadout(next.allies[0], true)).toContain('Botanic Renewal 0 / 3');
+    expect(next.allies[0].native).toEqual({});
+    expect(next.allies[0].conduitCharges?.normalMomentum).toBeUndefined();
+    expect(Object.keys(state.allies[0].native?.burns ?? {})).toHaveLength(1);
   });
 });

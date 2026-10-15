@@ -18,7 +18,7 @@ function copy(tier = 0, boss = false, index = 1): CapturedCharacter {
   const stage = boss ? tier === 5 ? 35 : 5 : tier === 0 ? 1 : tier === 5 ? 31 : 7;
   const encounter = infusionEncounter('abyss', stage);
   return { instanceId: `capture:00000000-0000-4000-8000-${String(index).padStart(12, '0')}`,
-    creatureId: `infusion:abyss:${encounter.tier}`, level: Math.round(80 + (stage - 1) * 40 / 34), capturedStage: stage, locked: false,
+    creatureId: `infusion:abyss:${encounter.tier}`, level: Math.min(60, encounter.level), capturedStage: stage, locked: false,
     skills: enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier) };
 }
 function storage(): ProfileStorage {
@@ -33,7 +33,8 @@ function seeded() {
   account.capturedCharacters = [copy(), copy(0, false, 2)];
   account.squad = ['ember'];
   account.fractalis = 10000;
-  account.materials['chaotic-common'] = 100;
+  account.materials = { 'chaotic-common': 100, 'chaotic-uncommon': 100, 'chaotic-rare': 100,
+    'chaotic-epic': 100, 'chaotic-legendary': 100 };
   account.conduits = { 'vigil-core': 1, 'siegebound-drive': 1 };
   saveAccount(saved, account);
   return { saved, account };
@@ -128,16 +129,16 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
     const drops = (state: typeof a) => endTurn(state).events.filter((event) => event.kind === 'reward').map((event) => [event.amount, event.materials]);
     expect(drops(a)).toEqual(drops(b));
   });
-  it('keeps early level 120 forms weaker than final forms and removes boss stat bonuses', () => {
+  it('caps overlevelled forms at 60, keeps early forms weaker and removes boss stat bonuses', () => {
     const early = { ...copy(), level: 120 };
     const final = { ...copy(5), level: 120 };
     const boss = { ...copy(5, true), level: 120 };
     const weak = resolveCapturedFighter(early);
     const strong = resolveCapturedFighter(final);
     const bossKit = resolveCapturedFighter(boss);
-    expect(weak.stats.health).toBe(2717);
-    expect(strong.stats.health).toBe(4180);
-    expect(bossKit.stats.health).toBe(4180);
+    expect(weak.stats.health).toBe(1430);
+    expect(strong.stats.health).toBe(2200);
+    expect(bossKit.stats.health).toBe(2200);
     expect(weak.stats.damage).toBeLessThan(strong.stats.damage);
     expect(strong.stats.health).toBeLessThan(infusionEncounter('abyss', 35).stats.health);
     expect(bossKit.abilities.ultimate.name).toBe('Last Ruin: Cosmic Wrath');
@@ -177,20 +178,20 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
     const { saved, account } = seeded();
     const first = account.capturedCharacters![0];
     const second = account.capturedCharacters![1];
-    const leveled = levelCapturedCharacter(saved, first.instanceId, 80);
-    expect(leveled.capturedCharacters?.[0].level).toBe(81);
-    expect(leveled.capturedCharacters?.[1].level).toBe(80);
-    expect(leveled.fractalis).toBe(9828);
-    expect(leveled.materials['chaotic-common']).toBe(97);
-    expect(() => levelCapturedCharacter(saved, first.instanceId, 80)).toThrow('changed');
+    const leveled = levelCapturedCharacter(saved, first.instanceId, 50);
+    expect(leveled.capturedCharacters?.[0].level).toBe(51);
+    expect(leveled.capturedCharacters?.[1].level).toBe(50);
+    expect(leveled.fractalis).toBe(9888);
+    expect(leveled.materials['chaotic-common']).toBe(98);
+    expect(() => levelCapturedCharacter(saved, first.instanceId, 50)).toThrow('changed');
     const equipped = equipConduit(saved, first.instanceId, 0, 'vigil-core');
     expect(resolveCapturedFighter(equipped.capturedCharacters![0], equipped.conduitEquipment?.[first.instanceId]).stats.health)
-      .toBeCloseTo(resolveCapturedFighter(equipped.capturedCharacters![0]).stats.health * 1.05);
+      .toBeCloseTo(resolveCapturedFighter(equipped.capturedCharacters![0]).stats.health * 1.06);
     expect(equipped.conduitEquipment?.[second.instanceId]).toBeUndefined();
     const max = loadAccount(saved);
     max.capturedCharacters![0].level = 120;
     saveAccount(saved, max);
-    expect(() => levelCapturedCharacter(saved, first.instanceId, 120)).toThrow('Maximum');
+    expect(() => levelCapturedCharacter(saved, first.instanceId, 60)).toThrow('Maximum');
     expect(() => validateAccount({ ...max, capturedCharacters: [{ ...first, level: 121 }] })).toThrow();
     const copyHtml = characterCopyManagement(equipped);
     expect(copyHtml).toContain(`Copy 1 · Lv.${equipped.capturedCharacters![0].level}`);
@@ -198,7 +199,7 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
     const homeHtml = homeHub(getStarter('ember'), false, { ...equipped, squad: [first.instanceId] });
     expect(homeHtml).not.toContain('Fixed form');
     expect(homeHtml).toContain('Cannot evolve.');
-    expect(homeHtml).toContain('Level cap 120');
+    expect(homeHtml).toContain('Level cap 60');
   });
   it('presents captured rewards as enemy icons and reveals only owned forms in Character Archive', () => {
     const { account } = seeded();
@@ -281,11 +282,11 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
     const write = saved.setItem;
     saved.setItem = () => { throw new Error('Write denied'); };
     const id = account.capturedCharacters![0].instanceId;
-    expect(() => levelCapturedCharacter(saved, id, 80)).toThrow('Write denied');
+    expect(() => levelCapturedCharacter(saved, id, 50)).toThrow('Write denied');
     expect(() => equipConduit(saved, id, 0, 'vigil-core')).toThrow('Write denied');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     saved.setItem = write;
-    expect(levelCapturedCharacter(saved, id, 80).capturedCharacters?.[0].level).toBe(81);
+    expect(levelCapturedCharacter(saved, id, 50).capturedCharacters?.[0].level).toBe(51);
     expect(equipConduit(saved, id, 0, 'vigil-core').conduitEquipment?.[id]?.[0]).toBe('vigil-core');
   });
 });

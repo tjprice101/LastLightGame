@@ -5,6 +5,13 @@ import { applyBattleSpeed, battleSpeed } from './battle-speed';
 import { BattleView, createSession, type BattleAuthority } from './battle-view';
 
 vi.mock('./settings', () => ({ reducedMotion: () => false }));
+vi.mock('../vfx/battle-vfx-runner', () => ({
+  BattleVFXRunner: class {
+    clear() {}
+    destroy() {}
+    playAttackVFX() { return Promise.resolve(); }
+  },
+}));
 
 beforeEach(() => {
   Object.defineProperty(HTMLDialogElement.prototype, 'close', {
@@ -42,6 +49,59 @@ function fixture(authority?: BattleAuthority) {
 }
 
 describe('retained battle toolbar controls', () => {
+  it('announces errors without locking play, fades after three seconds and clears the message', () => {
+    vi.useFakeTimers();
+    const f = fixture();
+    try {
+      Reflect.apply(Reflect.get(f.view, 'error'), f.view, ['This action is unavailable.']);
+      const error = f.host.querySelector<HTMLElement>('#battle-error')!;
+      expect(error.getAttribute('role')).toBe('alert');
+      expect(error.getAttribute('aria-atomic')).toBe('true');
+      expect(error.textContent).toBe('This action is unavailable.');
+      expect(f.host.getAttribute('aria-busy')).not.toBe('true');
+      expect(f.host.querySelector<HTMLButtonElement>('#open-battle-menu')!.disabled).toBe(false);
+      expect(document.activeElement).not.toBe(error);
+      vi.advanceTimersByTime(2999);
+      expect(error.classList.contains('is-fading')).toBe(false);
+      vi.advanceTimersByTime(1);
+      expect(error.classList.contains('is-fading')).toBe(true);
+      vi.advanceTimersByTime(250);
+      expect(error.textContent).toBe('');
+    } finally { f.view.destroy(); vi.useRealTimers(); }
+  });
+
+  it('restarts the full lifetime for a new error, including while the previous one is fading', () => {
+    vi.useFakeTimers();
+    const f = fixture();
+    const show = (message: string) => Reflect.apply(Reflect.get(f.view, 'error'), f.view, [message]);
+    try {
+      show('First rejection');
+      vi.advanceTimersByTime(3000);
+      show('Latest rejection');
+      const error = f.host.querySelector<HTMLElement>('#battle-error')!;
+      expect(error.classList.contains('is-fading')).toBe(false);
+      vi.advanceTimersByTime(250);
+      expect(error.textContent).toBe('Latest rejection');
+      vi.advanceTimersByTime(2750);
+      expect(error.classList.contains('is-fading')).toBe(true);
+      vi.advanceTimersByTime(250);
+      expect(error.textContent).toBe('');
+    } finally { f.view.destroy(); vi.useRealTimers(); }
+  });
+
+  it.each(['render', 'destroy'] as const)('cancels pending error timers on %s', operation => {
+    vi.useFakeTimers();
+    const f = fixture();
+    try {
+      Reflect.apply(Reflect.get(f.view, 'error'), f.view, ['Temporary rejection']);
+      expect(vi.getTimerCount()).toBeGreaterThan(0);
+      Reflect.apply(Reflect.get(f.view, operation), f.view, []);
+      expect(vi.getTimerCount()).toBe(0);
+      vi.advanceTimersByTime(4000);
+      if (operation === 'render') expect(f.host.querySelector('#battle-error')?.textContent).toBe('');
+    } finally { f.view.destroy(); vi.useRealTimers(); }
+  });
+
   it.each(['entrance', 'local', 'online'] as const)('keeps speed usable during %s and unlocks retained utilities afterwards', async phase => {
     let finish!: () => void;
     const pending = new Promise<void>(resolve => { finish = resolve; });

@@ -1,5 +1,36 @@
 # Awaken the Machines and expanded Conduits
 
+## Unowned-only enemy Conduit drops (D-312)
+
+Machines now choose uniformly among **unowned ordinary Conduit names within
+each successful rarity roll**. Rare8%, Legendary3.5%, Omnic1% from stage75,
+independent tier rolls and equal boss/ordinary odds remain unchanged. Once
+every name in a rarity is owned, that roll grants no Conduit, compensation,
+cross-tier reroll or replacement reward. One kill can still grant different
+rarities together. Common entries remain Store-only.
+
+Eligibility uses current account ownership, not equipped gear. New awards
+become ineligible immediately for later kills, including multiple kills in one
+action. Continue, Replay, Settings and historical online-run resumes retain or
+refresh this information without changing frozen fighter stats/equipment.
+Reward persistence also rejects already-owned names atomically; receipt
+retries remain idempotent. Old duplicate counts and upgrades are untouched.
+The rarity-selection RNG draw is still consumed on successful completed-tier
+rolls, preserving stream alignment; combat/currency/components/Master-chest
+RNG are unchanged.
+
+View Loot shows current account-specific per-name chances, including0% for
+owned entries. The remaining names share their unchanged tier total.
+The separate banner bonus and final-boss Cosmic Grand Master Chest remain
+unchanged; duplicate protection here applies to ordinary enemy Conduit drops,
+not chest items or banner bonuses.
+
+Validation: `npm test -- src\game\machines.test.ts
+src\online\server-game.test.ts src\presentation\creature-loot-dialog.test.ts
+src\game\kit-conduits.test.ts src\game\loot-table-parity.test.ts --maxWorkers=2`.
+Regenerate the shared server bundle and coordinate website/server deployment;
+this change does not publish itself.
+
 **D-293 death-loot presentation:** every awarded Conduit appears in the
 defeated Machine's actual-receipt loot burst, with its supplied icon, exact
 quantity, rarity/palette beam, bright core/base glare and snapshotted upgrade

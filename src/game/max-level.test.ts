@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { ACCOUNT_KEY, emptyAccount, levelCharacterToMaximum, loadAccount, maxLevelPlan, saveAccount, type Account } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
-import { capturedProgress, capturedLevelCost } from './character-instances';
+import { capturedProgress, capturedLevelCost, createCreatureCopy } from './character-instances';
 import { levelCost } from '../content/progression';
 import { maxLevelPreview } from '../presentation/max-level';
+import { materialRarities } from '../content/activities';
 
 function storage() {
   const values = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
@@ -21,7 +22,8 @@ function funded(): Account {
   account.characters.ember = { level: 0, evolution: 1, weaponRank: 3 };
   account.fractalis = 100000;
   account.lycalis = 100;
-  account.materials = { 'infernic-common': 1000, 'heavens-level': 1000, 'tranquilitic-common': 1000 };
+  account.materials = { 'heavens-level': 1000, ...Object.fromEntries(
+    ['infernic', 'tranquilitic'].flatMap(element => materialRarities.map(rarity => [`${element}-${rarity.toLowerCase()}`, 1000]))) };
   account.squad = ['ember'];
   account.receipts = ['keep-this-receipt'];
   return account;
@@ -75,11 +77,11 @@ describe('Max Level plans and transactions', () => {
     expect(after.materials['infernic-common']).toBe(970);
     for (const key of ['lycalis', 'squad', 'receipts', 'firstFracture'] as const) expect(after[key]).toEqual(before[key]);
   });
-  it('levels exact captured IDs to 120 retaining form, locks, gear and kit', () => {
+  it('levels exact captured IDs to 60 retaining form, locks, gear and kit', () => {
     const store = storage();
     const account = funded();
     const id = 'capture:00000000-0000-4000-8000-000000000001';
-    const original = { instanceId: id, creatureId: 'infusion:treasury:5', locked: true };
+    const original = { ...createCreatureCopy('infusion:heavens:0', 1), instanceId: id, locked: true };
     account.capturedCharacters = [original, { ...original, instanceId: 'capture:00000000-0000-4000-8000-000000000002' }];
     account.squad = [id];
     account.conduits = { 'vigil-core': 1 };
@@ -88,18 +90,19 @@ describe('Max Level plans and transactions', () => {
     const progress = capturedProgress(original);
     const plan = maxLevelPlan(before, id);
     let expectedCurrency = 0;
-    let expectedMaterials = 0;
-    for (let level = progress.level; level < 120; level++) {
+    const expectedMaterials: Record<string, number> = {};
+    for (let level = progress.level; level < 60; level++) {
       const cost = capturedLevelCost({ ...original, level });
       expectedCurrency += cost.fractalis;
-      expectedMaterials += cost.materials['tranquilitic-common'];
+      for (const [id, amount] of Object.entries(cost.materials)) expectedMaterials[id] = (expectedMaterials[id] ?? 0) + amount;
     }
-    expect(plan.targetLevel).toBe(120);
-    expect(plan.cost).toEqual({ fractalis: expectedCurrency, materials: { 'tranquilitic-common': expectedMaterials } });
+    expect(plan.cap).toBe(60);
+    expect(plan.targetLevel).toBe(60);
+    expect(plan.cost).toEqual({ fractalis: expectedCurrency, materials: expectedMaterials });
     const writes = store.writes();
     const after = levelCharacterToMaximum(store.saved, plan);
     expect(store.writes()).toBe(writes + 1);
-    expect(after.capturedCharacters?.[0]).toMatchObject({ ...original, level: 120, capturedStage: progress.stage, skills: progress.skills });
+    expect(after.capturedCharacters?.[0]).toMatchObject({ ...original, level: 60, capturedStage: progress.stage, skills: progress.skills });
     expect(after.capturedCharacters?.[1]).toEqual(before.capturedCharacters?.[1]);
     expect(after.conduitEquipment).toEqual(before.conduitEquipment);
     expect(after.squad).toEqual(before.squad);

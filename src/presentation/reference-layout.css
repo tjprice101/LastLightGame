@@ -940,6 +940,8 @@ html body .sanctuary-shell .ref-character-header .ref-character-progress { gap: 
 html body .sanctuary-shell .ref-character-header-actions button { padding-block: .3rem; }
 html body .sanctuary-shell .ref-team-sidebar .ref-panel-heading > button { font-size: .875rem; letter-spacing: normal; text-transform: none; padding: .3rem .5rem; }
 #app .sanctuary-shell .ref-bearer-detail { gap: .5rem; }
+#app .sanctuary-shell .ref-character-identity .ref-tags .element-label { flex-wrap: nowrap; font-size: .875rem; color: inherit; }
+#app .sanctuary-shell .ref-character-identity .element-emblem { width: 36px; height: 36px; flex-basis: 36px; }
 #app .sanctuary-shell .ref-capture-panel[hidden] { display: none; }
 #app .sanctuary-shell .ref-capture-detail #capture-panel-sale { padding: .65rem .8rem; margin: 0; border: 1px solid #2d2d31; border-radius: .9rem; background: #131314; }
 #app .sanctuary-shell .ref-capture-detail #capture-panel-sale .item-showcase { margin: .4rem 0; padding: .5rem; }
@@ -986,17 +988,17 @@ html body .sanctuary-shell .ref-team-sidebar .ref-panel-heading > button { font-
 #app .sanctuary-shell .ref-growth-detail .upgrade-resources li > span { margin: 0; white-space: normal; }
 #app .sanctuary-shell .ref-evolution-detail .currency-reward { display: flex; align-items: center; gap: .5rem; }
 #app .sanctuary-shell .ref-evolution-detail .currency-reward .currency-icon { width: 32px; height: 32px; }
-#app .sanctuary-shell .ref-evolution-detail .evolution-fodder { margin: .1rem 0; padding: .25rem .5rem; }
-#app .sanctuary-shell .ref-evolution-detail .evolution-fodder-list { max-height: clamp(64px, 10dvh, 96px); gap: .35rem; }
-#app .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy { padding: .3rem; gap: .4rem; min-height: 44px; }
-#app .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy > img { width: 40px; height: 40px; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-fodder { margin: 1rem 0; padding: clamp(14px, 2vw, 24px); width: 100%; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-fodder-list { max-height: clamp(320px, 60dvh, 680px); gap: 12px; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy { padding: 16px; gap: 12px; min-height: 168px; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy > img { width: 96px; height: 96px; }
 #app .sanctuary-shell .ref-growth-detail .upgrade-payment > h3 { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem; margin: 0; }
 #app .sanctuary-shell .ref-growth-detail .upgrade-resources li > :is(img, .currency-icon) { grid-row: 1; }
 #app .sanctuary-shell .ref-growth-detail .upgrade-resources li > strong { grid-column: 2; grid-row: 1; }
 #app .sanctuary-shell .ref-growth-detail .upgrade-resources li > span { grid-column: 1 / -1; grid-row: 2; overflow-wrap: anywhere; }
 #app .sanctuary-shell .ref-growth-detail .ref-growth-action { display: flex; flex-wrap: wrap; gap: .4rem .65rem; align-items: center; }
 #app .sanctuary-shell .ref-growth-detail .ref-growth-action > button { min-height: 44px; padding-block: .5rem; margin: 0; }
-#app .sanctuary-shell .ref-evolution-detail .evolution-fodder p { line-height: 1.25; }
+#app .sanctuary-shell .ref-evolution-detail .evolution-fodder p { line-height: 1.5; }
 #app .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy > input { width: 22px; min-width: 22px; height: 22px; min-height: 22px; flex: 0 0 22px; }
 @media (min-width: 1000px) {
   #app .sanctuary-shell .sanctuary-content:has(.ref-growth-detail) { padding-block: .75rem; }
@@ -1021,6 +1023,8 @@ html body .sanctuary-shell .ref-team-sidebar .ref-panel-heading > button { font-
   #app .sanctuary-shell .ref-growth-detail .upgrade-stat-preview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 640px) {
+  #app .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy { padding: 12px; gap: 10px; }
+  #app .sanctuary-shell .ref-evolution-detail .evolution-fodder-copy > img { width: 72px; height: 72px; }
   #app .sanctuary-shell .ref-team-detail .ref-character-header { grid-template-columns: minmax(0, 1fr); }
   #app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-portrait { grid-row: 1; justify-self: center; margin: 0; }
   #app .sanctuary-shell .ref-team-detail .ref-character-header .ref-character-identity { grid-column: 1; }

@@ -31,7 +31,7 @@ export function attackEffectTargets(attack: BattleEvent, impacts: readonly Battl
   const targets = new Set(impacts.map(event => event.target));
   const ability = attack.action && attack.action !== 'light' && attack.action !== 'defend'
     ? source.kit?.abilities[attack.action] : undefined;
-  if (ability && (ability.targets === 'all-allies' || ability.strength.shield !== undefined ||
+  if (ability && ability.targets !== 'one-ally' && (ability.targets === 'all-allies' || ability.strength.shield !== undefined ||
       ability.strength.healing !== undefined || ability.strength.attackBoostFraction !== undefined)) {
     for (const unit of units) {
       if (unit.side === source.side && (health.get(unit.id) ?? 0) > 0) targets.add(unit.id);

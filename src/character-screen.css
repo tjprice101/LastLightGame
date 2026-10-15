@@ -142,17 +142,39 @@ html[data-motion="reduced"] .upgrade-celebration-label, html[data-motion="reduce
   .character-stat-groups { grid-template-columns: minmax(0, 1fr); }
   .character-stat-groups > :nth-child(n) { grid-column: 1; grid-row: auto; }
 }
-.evolution-fodder { min-width: 0; margin: 16px 0; padding: 12px; border: 1px solid #ffffff30; border-radius: 12px; }
-.evolution-fodder-list { display: grid; gap: 10px; max-height: 440px; overflow-y: auto; }
-.evolution-fodder-copy { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 10px; background: #ffffff05; border-radius: 10px; }
+.evolution-fodder { min-width: 0; margin: 16px 0; padding: 20px; border: 1px solid #ffffff30; border-radius: 16px; }
+.evolution-fodder-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 12px; max-height: clamp(320px, 60dvh, 680px); overflow-y: auto; padding: 4px; scrollbar-gutter: stable; }
+.evolution-fodder-copy { display: grid; grid-template-columns: 24px 96px minmax(0, 1fr); align-items: center; align-content: center; gap: 12px; min-width: 0; min-height: 168px; padding: 16px; background: #ffffff05; border: 1px solid #ffffff25; border-radius: 12px; transition: background-color .18s, border-color .18s, box-shadow .18s; }
 .evolution-fodder-copy > input { width: 22px; height: 22px; flex-shrink: 0; }
-.evolution-fodder-copy > img { width: 64px; height: 64px; object-fit: contain; flex-shrink: 0; }
+.evolution-fodder-copy > img { width: 96px; height: 96px; object-fit: contain; flex-shrink: 0; }
 .evolution-fodder-copy > span { min-width: 0; overflow-wrap: anywhere; }
-.evolution-fodder-copy strong, .evolution-fodder-copy small { display: block; }
+.evolution-fodder-info { grid-column: 3; }
+.evolution-fodder-copy strong, .evolution-fodder-copy small { display: block; line-height: 1.45; }
 .evolution-fodder-copy .character-rating { margin: 6px 0; }
-.evolution-fodder-copy:has(input:disabled) { opacity: .65; }
-.evolution-fodder-copy:has(input:checked) { outline: 1px solid var(--element); }
-@media (max-width: 480px) {
-  .evolution-fodder-copy { flex-wrap: wrap; }
-  .evolution-fodder-copy > span { flex: 1 1 100%; }
+.evolution-fodder-copy:has(input:not(:disabled)) { cursor: pointer; }
+.evolution-fodder-copy:has(input:not(:disabled)):hover { background: #ffffff0d; border-color: #ffffff70; }
+.evolution-fodder-copy:has(input:disabled) { background: #ffffff02; }
+.evolution-fodder-copy:has(input:disabled) .evolution-fodder-state { color: #bdbdc5; }
+.evolution-fodder-copy:has(input:checked) { border-color: var(--element); background: color-mix(in srgb, var(--element) 12%, #131314); box-shadow: inset 3px 0 var(--element); }
+.evolution-fodder-copy:has(input:focus-visible) { outline: 2px solid #fff; outline-offset: 2px; }
+.evolution-fodder-progress { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; margin-block: 12px; }
+.evolution-fodder-progress meter { flex: 1 1 160px; min-width: 0; max-width: 300px; height: 14px; accent-color: var(--element); }
+.evolution-fodder-progress p { margin: 0; }
+.evolution-fodder[data-selection-state="complete"] { border-color: var(--element); }
+.evolution-fodder[data-selection-state="excess"] [data-fodder-status] { color: #ffb1a5; }
+.evolution-fodder-warning, .evolution-fodder-empty { font-size: .875rem; line-height: 1.5; }
+.evolution-fodder-empty { padding: 12px; background: #ffffff08; border: 1px dashed #ffffff40; border-radius: 10px; }
+.evolution-fodder-state { display: inline-block; margin-top: 8px; font-size: .8rem; font-weight: 700; }
+.evolution-fodder-copy .fodder-selected, .evolution-fodder-copy:has(input:checked) .fodder-unselected { display: none; }
+.evolution-fodder-copy:has(input:checked) .fodder-selected { display: inline; }
+@media (max-width: 640px) {
+  .evolution-fodder { padding: 14px; }
+  .evolution-fodder-copy { grid-template-columns: 24px 72px minmax(0, 1fr); gap: 10px; padding: 12px; }
+  .evolution-fodder-copy > img { width: 72px; height: 72px; }
 }
+@media (max-width: 480px) {
+  .evolution-fodder-copy { grid-template-columns: 24px minmax(0, 1fr); }
+  .evolution-fodder-info { grid-column: 1 / -1; }
+}
+:root[data-motion="reduced"] .evolution-fodder-copy { transition: none; }
+body.reduced-motion .evolution-fodder-copy { transition: none; }

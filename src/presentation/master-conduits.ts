@@ -15,7 +15,7 @@ export function masterChestIcon(): string {
 export function masterReference(id?: MasterConduitId | null): string {
   if (!id) return '';
   const entry = getMasterConduit(id);
-  return `<section class="master-reference"><h3>Master · ${entry.name}</h3><p>${entry.effect}</p><small>Always-active bearer enhancement · Recurs on qualifying native outcomes · Does not scale with Conduit upgrades</small><p>${entry.lore}</p></section>`;
+  return `<section class="master-reference"><h3>Master · ${entry.name}</h3><p>${entry.effect}</p><small>Named Element-Bearer only · Triggers and limits as stated above · Does not scale with Conduit upgrades</small><p>${entry.lore}</p></section>`;
 }
 export function masterEquipment(character: string, account: Account | null): string {
   if (!isStarterId(character)) return '<div class="ref-master-slot"><strong>Master slot</strong><p>Character Masters are for their named Element-Bearer only.</p></div>';
@@ -25,7 +25,7 @@ export function masterEquipment(character: string, account: Account | null): str
     ${current ? masterConduitIcon(current) : ''}
     <select id="master-${character}" data-master-equipment="${character}" ${!account ? 'disabled' : ''}>
       <option value="">No Master equipped</option>${choices.map(entry => `<option value="${entry.id}" ${entry.id === current ? 'selected' : ''}>${entry.name} · Omnic Master</option>`).join('')}</select>
-    ${masterReference(current)}<p>One character-specific Master, separate from eight ordinary slots. Find choice chests on the final Machines boss (1%).</p></section>`;
+    ${masterReference(current)}<p>One character-specific Master, separate from eight ordinary slots. Find choice chests on the final Machines boss (1%) or open any Calamity EX+3 chest for two guaranteed choice chests.</p></section>`;
 }
 export function masterReward(id: MasterConduitId, account: Account): RewardPresentation {
   if (account.masterConduits?.[id] !== 1) throw new Error('Saved Master reward is not owned.');

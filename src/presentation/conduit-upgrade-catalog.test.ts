@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { conduits, getConduit, type ConduitId } from '../content/conduits';
+import { conduits, conduitEffect, getConduit, type ConduitId } from '../content/conduits';
 import { emptyAccount, type Account } from '../game/account';
 import { bindConduitUpgrades, conduitUpgradeMenu, updateConduitUpgradeMenu } from './conduit-upgrade';
 import { bindSelectionPanels } from './selection-panel';
+import { readableEffect } from './effect-copy';
 
 afterEach(() => document.body.replaceChildren());
 
@@ -150,21 +151,17 @@ describe('owned Conduit upgrade catalog', () => {
     expect(f.host.textContent).not.toContain('Prismatica required');
   });
 
-  it('shows immutable special mechanics once, keeping horizontal level cards compact and exact', () => {
-    const special = conduits.filter(conduit => conduit.mechanic);
-    expect(special.length).toBeGreaterThan(0);
-    for (const conduit of special) {
+  it('shows complete upgraded mechanics at all six levels without falsely marking them immutable', () => {
+    expect(conduits).toHaveLength(85);
+    for (const conduit of conduits) {
       const root = document.createElement('div');
       root.innerHTML = conduitUpgradeMenu({ ...emptyAccount(), conduits: { [conduit.id]: 1 } }, conduit.id);
-      const separator = conduit.effect.indexOf('. ');
-      expect(separator).toBeGreaterThan(0);
-      const mechanic = conduit.effect.slice(separator + 2);
-      expect(root.querySelector('#conduit-upgrade-special-effect')!.textContent).toContain(conduit.effect);
-      expect(root.querySelector('.conduit-upgrade-values')!.textContent).not.toContain(mechanic);
+      expect(root.textContent).not.toContain('Special effect unchanged');
+      expect(root.querySelector('.conduit-upgrade-values')!.textContent).toContain(readableEffect(conduitEffect(conduit, 0)));
+      expect(root.querySelector('.conduit-upgrade-values')!.textContent).toContain(readableEffect(conduitEffect(conduit, 1)));
       const cards = root.querySelectorAll('.ref-effect-progression article');
       expect(cards).toHaveLength(6);
-      expect(cards[0].querySelector('p')!.textContent).toBe(conduit.effect.slice(0, separator));
-      expect(Array.from(cards).every(card => !card.textContent!.includes(mechanic))).toBe(true);
+      Array.from(cards).forEach((card, level) => expect(card.querySelector('p')!.textContent).toBe(readableEffect(conduitEffect(conduit, level))));
       expect(root.querySelector('[data-expected-upgrade]')!.getAttribute('data-expected-upgrade')).toBe('0');
     }
   });

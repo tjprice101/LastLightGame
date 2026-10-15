@@ -9,6 +9,12 @@ import { validateSaveFile } from '../game/save-file';
 import { getSummonBanner } from '../content/summon-banners';
 import { enemyCombatStats } from '../content/stat-growth';
 import { enemyAbilityMultiplier, enemySkills } from '../content/enemy-skills';
+import { playableDungeons } from '../content/dungeons';
+import { infusionStageCount, type InfusionModeId } from '../content/activities';
+import { elementalWars } from '../content/elemental-war';
+import { characterLevelCost } from '../content/progression';
+import { capturedLevelCost } from '../game/character-instances';
+import { conduits } from '../content/conduits';
 
 let sequence = 0;
 const entropy = { seed: () => 7321, random: () => .9,
@@ -18,6 +24,135 @@ function started() { return op(freshGame('tester'), { kind: 'bootstrap', starter
 function rich() { const game = started(); game.account.fractalis = 1000000; game.account.lycalis = 1000; return game; }
 
 describe('server authoritative game engine', () => {
+  it('excludes owned Machines drops on entry, persisted-run resume, Continue and stage replay', () => {
+    let game = rich();
+    game.account.storyCompleted = 25;
+    game.account.characters.ember = { level: 105, evolution: 6 };
+    game.account.infusionStages = { machines: 100 };
+    game.account.conduits = Object.fromEntries(conduits.map(c => [c.id, 2]));
+    const inventory = structuredClone(game.account.conduits);
+    game = op(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: 75 } }).game;
+    expect(game.run!.session.state.machineConduits).toEqual(inventory);
+    for (const transition of ['continue', 'retry'] as const) {
+      // Historical run snapshots lack ownership; account holdings are authoritative.
+      delete game.run!.session.state.machineConduits;
+      game.run!.session.state.conduitSeed = 1;
+      game.run!.session.state.allies[0].shatter = 100;
+      game.run!.session.state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
+      const before = structuredClone(game);
+      const response = op(game, { kind: 'act', runId: game.run!.session.runId,
+        actorId: 'ember', action: 'skill2', targetId: game.run!.session.state.enemies[0].id });
+      expect(response.response.result!.events.find(event => event.kind === 'reward')!.conduits).toEqual({});
+      expect(response.game.account.conduits).toEqual(inventory);
+      expect(game).toEqual(before);
+      game = op(response.game, { kind: transition, runId: response.game.run!.session.runId }).game;
+      expect(game.run!.session.state.machineConduits).toEqual(inventory);
+    }
+  });
+  it('authoritatively clears selected ordinary/Master equipment while preserving the frozen active battle and other owners', () => {
+    let game = rich();
+    game.account.characters.tide = { level: 0, evolution: 1 };
+    game.account.conduits = { 'vigil-core': 1 };
+    game.account.conduitEquipment = { ember: ['vigil-core', null, null, null, null, null, null, null],
+      tide: ['vigil-core', null, null, null, null, null, null, null] };
+    game.account.masterConduits = { 'master-ember-1': 1 };
+    game.account.masterEquipment = { ember: 'master-ember-1' };
+    game = op(game, { kind: 'enter', activity: { kind: 'training' } }).game;
+    const before = structuredClone(game);
+    const operation = { kind: 'unequipAllConduits' as const, character: 'ember' };
+    expect(validateRequest({ requestId: crypto.randomUUID(), expectedRevision: 0, operation }).operation).toEqual(operation);
+    const after = op(game, operation).game;
+    expect(after.account.conduitEquipment?.ember).toEqual(Array(8).fill(null));
+    expect(after.account.masterEquipment?.ember).toBeNull();
+    expect(after.account.conduitEquipment?.tide).toEqual(before.account.conduitEquipment?.tide);
+    expect(after.account.conduits).toEqual(before.account.conduits);
+    expect(after.account.masterConduits).toEqual(before.account.masterConduits);
+    expect(after.run).toEqual(before.run);
+    expect(game).toEqual(before);
+    expect(() => op(game, { kind: 'unequipAllConduits', character: 'sprout' })).toThrow('owned character');
+    expect(game).toEqual(before);
+  });
+
+  it.each(['ember', 'rosetta', 'capture'] as const)('enforces cumulative leveling rarities for %s on single and Max Level requests', kind => {
+    const game = rich();
+    const progress = { level: 90, evolution: 6 };
+    game.account.characters.ember = progress;
+    game.account.characters.rosetta = { ...progress };
+    const copy = createCreatureCopy('infusion:heavens:0', 1, 59);
+    game.account.capturedCharacters = [copy];
+    const id = kind === 'capture' ? copy.instanceId : kind;
+    const cost = kind === 'capture' ? capturedLevelCost(copy) : characterLevelCost(kind, progress);
+    game.account.materials = { ...cost.materials };
+    const operation: GameOperation = kind === 'capture'
+      ? { kind: 'levelCaptured', id, expectedLevel: 59 }
+      : { kind: 'upgradeCharacter', id: kind, upgradeKind: 'level', expected: progress };
+    const initial = structuredClone(game);
+    for (const material of Object.keys(cost.materials)) {
+      const missing = structuredClone(game);
+      delete missing.account.materials[material];
+      const before = structuredClone(missing);
+      expect(() => op(missing, operation)).toThrow('Not enough');
+      expect(missing).toEqual(before);
+      expect(maxLevelPlan(missing.account, id).targetLevel).toBe(kind === 'capture' ? 59 : 90);
+    }
+    const single = op(game, operation).game;
+    const expected = maxLevelPlan(game.account, id);
+    expect(expected.targetLevel).toBe(kind === 'capture' ? 60 : 91);
+    expect(expected.cost).toEqual(cost);
+    const bulk = op(game, { kind: 'levelMax', id, expected }).game;
+    expect(bulk.account).toEqual(single.account);
+    expect(game).toEqual(initial);
+    expect(bulk.account.materials).toEqual(Object.fromEntries(Object.keys(cost.materials).map(material => [material, 0])));
+    expect(bulk.account.fractalis).toBe(game.account.fractalis - cost.fractalis);
+    const stale = structuredClone(expected);
+    delete stale.cost.materials[Object.keys(cost.materials).find(material => material.endsWith('-rare'))!];
+    expect(() => op(game, { kind: 'levelMax', id, expected: stale })).toThrow('changed');
+    expect(game).toEqual(initial);
+  });
+
+  const replayModes: InfusionModeId[] = ['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines'];
+  const replayActivities = [
+    ...[1, 25, 150].map(stage => ({ kind: 'story' as const, stage })),
+    ...playableDungeons.map(element => ({ kind: 'dungeon' as const, element, stage: 35 })),
+    ...replayModes.map(mode => ({ kind: 'infusion' as const, mode, stage: infusionStageCount(mode) })),
+    ...elementalWars.map(war => ({ kind: 'war' as const, character: war.character, stage: 10 })),
+  ];
+  it.each(replayActivities)('replays a cleared $kind stage $stage with fresh receipts and no extra claim', activity => {
+    const game = started();
+    game.account.characters.ember = { level: 105, evolution: 6 };
+    game.account.storyCompleted = 150;
+    game.account.dungeonStages = Object.fromEntries(playableDungeons.map(element => [element, 35]));
+    game.account.infusionStages = Object.fromEntries(replayModes.map(mode => [mode, infusionStageCount(mode)]));
+    game.account.warStages = { nerithe: 10, orvella: 10, vaelor: 10 };
+    const entered = op(game, { kind: 'enter', activity }).game;
+    const state = entered.run!.session.state;
+    state.allies[0].shatter = 100;
+    state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
+    const cleared = op(entered, { kind: 'act', runId: entered.run!.session.runId,
+      actorId: 'ember', action: 'skill2', targetId: state.enemies[0].id }).game;
+    expect(cleared.run!.session.state.phase).toBe('cleared');
+    const replayed = op(cleared, { kind: 'retry', runId: cleared.run!.session.runId }).game;
+    expect(replayed.run!.activity).toEqual(activity);
+    expect(replayed.run!.session.runId).not.toBe(cleared.run!.session.runId);
+    expect(replayed.run!.session.state.phase).toBe('player');
+    expect(replayed.run!.session.state.allies[0].hp).toBe(replayed.run!.session.state.allies[0].stats.health);
+    expect(replayed.run!.session.state.allies[0].shatter).toBe(0);
+    expect(replayed.run!.session.stageEvents).toEqual([]);
+    expect(replayed.account).toEqual(cleared.account);
+    expect(replayed.run!.session.teamProgress).toEqual(cleared.run!.session.teamProgress);
+    expect(replayed.run!.equipment).toEqual(cleared.run!.equipment);
+    expect(replayed.run!.captures).toEqual(cleared.run!.captures);
+    expect(replayed.run!.upgrades).toEqual(cleared.run!.upgrades);
+    expect(replayed.run!.masters).toEqual(cleared.run!.masters);
+    expect(() => op(replayed, { kind: 'retry', runId: cleared.run!.session.runId })).toThrow('active');
+    const replayState = replayed.run!.session.state;
+    replayState.allies[0].shatter = 100;
+    replayState.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
+    const again = op(replayed, { kind: 'act', runId: replayed.run!.session.runId,
+      actorId: 'ember', action: 'skill2', targetId: replayState.enemies[0].id });
+    expect(again.game.account.fractalis).toBeGreaterThan(cleared.account.fractalis);
+    expect(validateGameResponse(again.response)).toEqual(again.response);
+  });
   it.each(['skill1', 'skill2'] as const)('accepts successive %s actions in resumed Element-Bearer and captured runs', action => {
     for (const captured of [false, true]) {
       const game = started();
@@ -254,10 +389,7 @@ describe('server authoritative game engine', () => {
     const makeResolved = (completed: number, stage: number) => {
       const game = started();
       game.account.storyCompleted = completed;
-      game.run = {
-        activity: { kind: 'story', stage }, roster: ['ember'], equipment: {}, captures: [],
-        upgrades: {}, session: {} as never,
-      };
+      game.run = op(game, { kind: 'enter', activity: { kind: 'story', stage } }).game.run;
       const response = {
         ...op(game, { kind: 'read' }).response,
         result: { state: { phase: 'cleared' } } as never,

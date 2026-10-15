@@ -4,6 +4,7 @@ import { characterRole } from './character-role';
 import { characterHub, homeHub } from './hub';
 import { BattleView } from './battle-view';
 import { createBattle } from '../game/battle';
+import { nativeIdentities } from '../content/native-identities';
 
 describe('character role medals', () => {
   it('classifies the current kits without changing combat stats', () => {
@@ -19,7 +20,7 @@ describe('character role medals', () => {
   it.each(starters)('shows $name role text and decorative medal across menus and battle', (starter) => {
     const badge = characterRole(starter.id);
     expect(badge).toContain(`data-character-role="${starter.role}"`);
-    expect(badge).toContain(`<span>${starter.role}</span>`);
+    expect(badge).toContain(`<span>${nativeIdentities[starter.id].role}</span>`);
     expect(badge).toContain('aria-hidden="true"');
     expect(homeHub(starter, false)).toContain(badge);
     expect(characterHub(starter, 'overview')).toContain(badge);

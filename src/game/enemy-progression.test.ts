@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { enemyCombatStats } from '../content/stat-growth';
 import { resolveFighter } from '../content/combat';
-import { act, actAndAdvanceTurn, createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, damageAmount, endTurn, actionUnavailable, nextWave, type BattleState } from './battle';
+import { act, actAndAdvanceTurn, createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, damageAmount, endTurn, actionUnavailable, nextWave, withMasterLoadouts, type BattleState } from './battle';
 import { elementalEnemyLevel, infusionStageCount } from '../content/activities';
 import { resolveCapturedFighter, createCreatureCopy, capturedProgress } from './character-instances';
 import { capturedEnemyStats, infusionEncounter } from '../content/infusions';
@@ -12,35 +12,25 @@ import { storyEncounter } from '../content/story';
 import { enemyAbilityMultiplier, enemySkills } from '../content/enemy-skills';
 import { characterLevelCap } from '../content/progression';
 import { validateCapturedCharacters } from './character-instances';
+import { benchmarkTarget, playNativeBenchmark } from './native-benchmark-pilot';
 
-const lateSlots = ['worldbreaker-drive', 'immortal-vessel', 'citadel-spine', 'astral-prism',
-  'siege-cantilever', 'duplex-heart', 'twinpulse-bellows', 'springwell-pump'] as const;
+const lateSlots = ['vigil-core', 'immortal-vessel', 'citadel-spine', 'horizon-heartcase',
+  'bastion-lock', 'springwell-pump', 'wardglass-transformer', 'siegebound-drive'] as const;
 const team = ['ember', 'tide', 'sprout'] as const;
 const lateProgress = Object.fromEntries(team.map(id => [id, { level: 105, evolution: 6 }]));
-const lateEquipment: ConduitLoadouts = Object.fromEntries(team.map(id => [id, [...lateSlots]]));
+const lateEquipment: ConduitLoadouts = {
+  ember: [...lateSlots.slice(0, 5), 'siege-cantilever', 'resonance-crucible', 'infernic-cinder-testament'],
+  tide: [...lateSlots.slice(0, 5), 'opal-indexer', 'wardglass-transformer', 'ward-stitch-spool'],
+  sprout: [...lateSlots.slice(0, 5), 'springwell-pump', 'coilfeed-ratchet', 'botanic-graft-covenant'],
+};
+const lateUpgrades = Object.fromEntries([...lateSlots, ...Object.values(lateEquipment).flat()].map(id => [id, 5]));
 const commonSlots = ['vigil-core', 'siegebound-drive', 'bastion-lock', 'parallax-relay',
   'fieldbrace-coupler', 'reserve-torque-crank', 'crosspin-governor', 'precision-escapement'] as const;
 const commonEquipment: ConduitLoadouts = Object.fromEntries(team.map(id => [id, [...commonSlots]]));
+const lateMasters = { ember: 'master-ember-1', tide: 'master-tide-3', sprout: 'master-sprout-1' } as const;
 
 function playSquad(initial: BattleState): BattleState {
-  let state = initial;
-  for (let step = 0; state.phase === 'player' && step < 600; step++) {
-    const actor = state.allies.find(unit => unit.hp > 0 && !actionUnavailable(state, unit, 'light'));
-    if (!actor) {
-      state = endTurn(state).state;
-      continue;
-    }
-    const priorities = actor.definitionId === 'sprout' && state.allies.some(unit => unit.hp > 0 && unit.hp < unit.stats.health * .65)
-      ? ['skill2', 'ultimate', 'skill1', 'light'] as const
-      : actor.definitionId === 'tide' && state.allies.some(unit => unit.hp > 0 && unit.shield < 100)
-      ? ['skill2', 'ultimate', 'skill1', 'light'] as const
-      : ['ultimate', 'skill1', 'skill2', 'light'] as const;
-    const action = priorities.find(id => !actionUnavailable(state, actor, id));
-    const target = state.enemies.find(enemy => enemy.hp > 0);
-    if (!action || !target) throw new Error('The balance fixture has no legal action/target.');
-    state = actAndAdvanceTurn(state, actor.id, action, target.id).state;
-  }
-  return state;
+  return playNativeBenchmark(initial);
 }
 
 describe('hostile progression balance', () => {
@@ -90,10 +80,14 @@ describe('hostile progression balance', () => {
       for (const stat of ['health', 'damage', 'defense'] as const) expect(after[stat] / before[stat]).toBeLessThan(1.05);
     }
     const plain = resolveFighter('ember', lateProgress.ember);
-    const built = resolveFighter('ember', lateProgress.ember, [...lateSlots]);
+    const built = resolveFighter('ember', lateProgress.ember, [...lateSlots], lateUpgrades);
     const enemy = enemyCombatStats(120, false);
     expect(Math.ceil(enemy.health / damageAmount(plain.stats.damage, 1, enemy.defense, false))).toBeGreaterThanOrEqual(13);
-    expect(Math.ceil(enemy.health / damageAmount(built.stats.damage, 1, enemy.defense, false))).toBeLessThanOrEqual(8);
+    const basic = createBattle(1729, ['ember'], lateProgress, { ember: [...lateSlots] }, [], lateUpgrades);
+    basic.enemies = [basic.enemies[0]];
+    basic.enemies[0].stats = { ...enemy }; basic.enemies[0].hp = enemy.health; basic.allies[0].stats.crit = 0;
+    const enhanced = act(basic, 'ember', 'light', basic.enemies[0].id).events.find(event => event.kind === 'damage')!.amount;
+    expect(enhanced).toBeGreaterThan(damageAmount(built.stats.damage, 1, enemy.defense, false));
     expect(damageAmount(enemy.damage, 1, built.stats.defense, false) / built.stats.health)
       .toBeLessThan(damageAmount(enemy.damage, 1, plain.stats.defense, false) / plain.stats.health * .5);
   });
@@ -102,21 +96,21 @@ describe('hostile progression balance', () => {
     'requires a built reliable squad for the final %s boss, without making it impossible', mode => {
       for (const seed of [1, 1729, 12345]) {
         const stage = infusionStageCount(mode);
-        const create = (gear: ConduitLoadouts) => createInfusionBattle(mode, stage, seed, 'ember', lateProgress.ember, team, lateProgress, gear);
-        expect(playSquad(create(lateEquipment)).phase, `${mode} built seed ${seed}`).toBe('cleared');
+        const create = (gear: ConduitLoadouts) => createInfusionBattle(mode, stage, seed, 'ember', lateProgress.ember, team, lateProgress, gear, [], lateUpgrades);
+        expect(playSquad(withMasterLoadouts(create(lateEquipment), lateMasters)).phase, `${mode} built seed ${seed}`).toBe('cleared');
         expect(playSquad(create({})).phase, `${mode} unbuilt seed ${seed}`).toBe('defeat');
       }
     });
 
   it.each(playableDungeons)('keeps built squads viable at the final %s material boss', element => {
     for (const seed of [1, 1729, 12345]) {
-      expect(playSquad(createDungeonBattle(element, 35, seed, 'ember', lateProgress.ember, team, lateProgress, lateEquipment)).phase).toBe('cleared');
+      expect(playSquad(withMasterLoadouts(createDungeonBattle(element, 35, seed, 'ember', lateProgress.ember, team, lateProgress, lateEquipment, [], lateUpgrades), lateMasters)).phase).toBe('cleared');
     }
   });
 
   it.each(['nerithe', 'orvella', 'vaelor'] as const)('keeps the final %s War boss viable for a built squad', id => {
     for (const seed of [1, 1729, 12345]) {
-      expect(playSquad(createWarBattle(id, 10, seed, 'ember', lateProgress.ember, team, lateProgress, lateEquipment)).phase).toBe('cleared');
+      expect(playSquad(withMasterLoadouts(createWarBattle(id, 10, seed, 'ember', lateProgress.ember, team, lateProgress, lateEquipment, [], lateUpgrades), lateMasters)).phase).toBe('cleared');
     }
   });
 
@@ -228,7 +222,7 @@ describe('hostile progression balance', () => {
       state.allies[0].shatter = state.allies[0].stats.shatterCapacity;
       state.allies[0].stats.crit = 0;
       if (!actionUnavailable(state, state.allies[0], 'skill1')) {
-        const hit = act(state, id, 'skill1', state.enemies[0].id).events.find(event => event.kind === 'damage');
+        const hit = act(state, id, 'skill1', benchmarkTarget(state, state.allies[0], 'skill1')).events.find(event => event.kind === 'damage');
         if (hit) expect(hit.amount).toBeLessThan(enemy.health * .8);
       }
     }
@@ -253,8 +247,8 @@ describe('hostile progression balance', () => {
   it('resolves legacy and new captures on linear playable growth without mutating saved copies', () => {
     for (const mode of ['heavens', 'abyss'] as const) {
       const legacy = { instanceId: 'capture:00000000-0000-4000-8000-000000000001', creatureId: `infusion:${mode}:0`, locked: false };
-      expect(capturedProgress(legacy).level).toBe(80);
-      expect(resolveCapturedFighter(legacy).stats.health).toBe(capturedEnemyStats(80).health * .65);
+      expect(capturedProgress(legacy).level).toBe(60);
+      expect(resolveCapturedFighter(legacy).stats.health).toBe(capturedEnemyStats(60).health * .65);
       const current = createCreatureCopy(`infusion:${mode}:0`, 1);
       const before = structuredClone(current);
       expect(current.level).toBe(50);

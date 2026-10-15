@@ -6,6 +6,7 @@ import { flagshipFighters } from './flagships';
 import { warFighters, warActionNames, isWarCharacter } from './war-characters';
 import { kitPilotDescriptions, type KitPilot } from './kit-pilots';
 import { elementalEffectFamilies } from './elemental-effects';
+import { nativeIdentities } from './native-identities';
 
 export const actionIds = ['light', 'skill1', 'skill2', 'ultimate', 'defend'] as const;
 export type ActionId = (typeof actionIds)[number];
@@ -38,8 +39,9 @@ export interface AbilityStrength {
   healing?: number;
   attackBoostFraction?: number;
 }
-export interface Ability { name: string; description: string; cooldown: number; strength: AbilityStrength; targets?: 'all-enemies' | 'all-allies' }
+export interface Ability { name: string; description: string; cooldown: number; strength: AbilityStrength; targets?: 'all-enemies' | 'all-allies' | 'one-ally'; excludeSelf?: boolean }
 export interface FighterDefinition {
+  nativeIdentity?: true;
   pilot?: KitPilot;
   stats: Stats;
   passive: { name: string; description: string; damageBonus: number; defenseBonus: number; healFraction: number; lightGaugeBonus?: number };
@@ -112,6 +114,18 @@ export const fighters: Record<StarterId, FighterDefinition> = {
   },
 };
 
+for (const id of Object.keys(fighters) as StarterId[]) {
+  const identity = nativeIdentities[id];
+  const kit = fighters[id];
+  delete kit.pilot;
+  kit.nativeIdentity = true;
+  kit.passive = {
+    ...identity.passive, damageBonus: 0, defenseBonus: 0, healFraction: 0,
+    ...(id === 'nerithe' ? { lightGaugeBonus: 5 } : {}),
+  };
+  kit.abilities = structuredClone(identity.abilities);
+}
+
 export const enemyIds = ['goblin', 'imp', 'golem'] as const;
 export const adventureScaling = { healthPerWave: 0.24, damagePerWave: 0.24, defensePerWave: 2 } as const;
 export type EnemyId = (typeof enemyIds)[number];
@@ -143,6 +157,7 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
   kit.passive.damageBonus = Math.min(.75, base.passive.damageBonus * potency);
   kit.passive.healFraction = Math.min(.1, base.passive.healFraction * potency);
   for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
+    if (kit.nativeIdentity) continue;
     const strength = kit.abilities[action].strength;
     for (const key of ['damageMultiplier', 'burnMultiplier', 'weakenFraction', 'critBonus', 'shield', 'healing', 'attackBoostFraction'] as const) {
       const value = strength[key];
@@ -159,6 +174,15 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
 
 export function describeFighter(id: StarterId, snapshot: FighterDefinition): FighterDefinition {
   const kit = structuredClone(snapshot);
+  if (kit.nativeIdentity) {
+    const identity = nativeIdentities[id];
+    kit.passive.description = identity.passive.description;
+    for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
+      kit.abilities[action].description = identity.abilities[action].description;
+    }
+    kit.abilities.ultimate.description += ' Recovery: caster skips the next player turn.';
+    return kit;
+  }
   const pct = (value: number) => formatStat(value * 100);
   const value = (action: 'skill1' | 'skill2' | 'ultimate', key: keyof AbilityStrength): number => {
     const amount = kit.abilities[action].strength[key];

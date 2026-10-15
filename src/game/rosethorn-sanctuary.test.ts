@@ -108,7 +108,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     expect(account.lycalis).toBe(25);
     expect(account.fractalis).toBeGreaterThanOrEqual(15);
     expect(account.materials).toEqual({});
-    expect(account.capturedCharacters?.[0].level).toBe(120);
+    expect(account.capturedCharacters?.[0].level).toBe(60);
     expect(account.capturedCharacters?.[0].skills).toEqual(result.state.enemies[0].enemySkills);
     expect(account.infusionStages.sanctuary).toBe(25);
     expect(loadAccount(saved)).toEqual(account);
@@ -140,16 +140,19 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     const account = loadAccount(saved);
     account.capturedCharacters = [copy, other, createCreatureCopy('infusion:sanctuary:5')];
     account.fractalis = 10000;
-    account.materials = { 'tranquilitic-common': 10 };
+    account.materials = { 'tranquilitic-common': 10, 'tranquilitic-uncommon': 1, 'tranquilitic-rare': 1, 'tranquilitic-epic': 1 };
     saveAccount(saved, account);
     expect(evolutionFodderOptions(account, 'tranquilitic', 3).every((entry) => !entry.eligible)).toBe(true);
-    const upgraded = levelCapturedCharacter(saved, copy.instanceId, 65);
-    expect(upgraded.capturedCharacters?.[0].level).toBe(66);
-    expect(upgraded.capturedCharacters?.[1].level).toBe(65);
+    const raw = saved.getItem(ACCOUNT_KEY);
+    expect(() => levelCapturedCharacter(saved, copy.instanceId, 60)).toThrow('Maximum');
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
+    const upgraded = loadAccount(saved);
+    expect(upgraded.capturedCharacters?.[0].level).toBe(60);
+    expect(upgraded.capturedCharacters?.[1].level).toBe(60);
     expect(creatureSaleOffer(upgraded, copy.instanceId)).toMatchObject(sanctuarySalePrices[0]);
-    expect(() => validateCapturedCharacters([{ ...copy, level: 64 }])).toThrow();
+    expect(() => validateCapturedCharacters([{ ...copy, level: 59 }])).toThrow();
     expect(() => validateCapturedCharacters([{ ...copy, acquisition: 'banner-duplicate' }])).toThrow();
-    expect(resolveCapturedFighter(copy).stats.health).toBeCloseTo(capturedEnemyStats(65).health * .65);
+    expect(resolveCapturedFighter(copy).stats.health).toBeCloseTo(capturedEnemyStats(60).health * .65);
     for (const ids of [[copy.instanceId, other.instanceId], ['ember', copy.instanceId]]) {
       const state = createInfusionBattle('sanctuary', 24, 1, 'ember', { level: 0, evolution: 1 }, ids,
         { ember: { level: 0, evolution: 1 } }, {}, [copy, other]);

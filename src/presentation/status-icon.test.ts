@@ -21,15 +21,18 @@ describe('delivered shared elemental status icons', () => {
     }
   });
 
-  it('uses broad family art except the three exact Rose resource specializations', () => {
+  it('preserves delivered family mappings without assigning retired Rose counters to new native identities', () => {
     expect(elementalStatusArt(sharedNativeEffects.ember)).toBe('burn');
     expect(elementalStatusArt(sharedNativeEffects.ward)).toBe('ward');
     expect(elementalStatusArt(sharedNativeEffects.bloom)).toBe('bloom');
     expect(elementalStatusArt(sharedNativeEffects.tempest)).toBe('tempest');
     for (const [id, art] of [['rosetta', 'rose-grace'], ['thornia', 'thorn-aegis'], ['crinso', 'rose-duality']] as const) {
-      const unit = createBattle(7, [id]).allies[0];
-      expect(unitReadout(unit, true)).toContain(`data-status-art="${art}"`);
-      expect(unitReadout(unit, true)).toContain('0 / 3');
+      const state = createBattle(7, [id]);
+      const unit = state.allies[0];
+      const readout = unitReadout(unit, true, state.allies, state.round, state);
+      expect(readout).not.toContain(`data-status-art="${art}"`);
+      expect(readout).not.toContain('unit-kit-resource');
+      if (id === 'crinso') expect(readout).toContain('Combo: 0 / 3');
       unit.hp = 0;
       expect(unitReadout(unit, true)).not.toContain('status-icon');
     }
@@ -53,14 +56,17 @@ describe('delivered shared elemental status icons', () => {
     expect(enemyDebuffs(before)).toContain('Burn 8.5');
   });
 
-  it('shares relevant equipment art without merging charges or decorating unrelated effects', () => {
+  it('keeps redesigned equipment protections textual without borrowing unrelated elemental icons', () => {
     const unit = createBattle().allies[0];
     unit.conduitCharges = { burnFocus: true, weakenPierce: true, normalMomentum: true, verdantNormal: true };
-    const html = unitReadout(unit);
-    for (const art of ['focus', 'suppression', 'bloom']) expect(html).toContain(`data-status-art="${art}"`);
-    expect(html).toContain('<span class="unit-stats">Next offensive skill: +10% outgoing damage.</span>');
-    const compact = unitReadout(unit, true);
-    expect(compact).not.toContain('data-status-art="focus"');
-    expect(compact).not.toContain('ignores 20% Defense');
+    unit.conduitRuntime = { numbers: { windveil: 1, criticalSeal: 1 }, owners: {} };
+    for (const compact of [false, true]) {
+      const html = unitReadout(unit, compact);
+      expect(html).toContain('Windveil: avoids the next enemy Normal Attack.');
+      expect(html).toContain('Critical Seal: the next enemy critical hit loses its critical multiplier.');
+      for (const art of ['focus', 'suppression', 'bloom']) expect(html).not.toContain(`data-status-art="${art}"`);
+      expect(html).not.toContain('Next offensive skill: +10% outgoing damage.');
+      expect(html).not.toContain('ignores 20% Defense');
+    }
   });
 });

@@ -1,5 +1,53 @@
 # Conduit upgrades and Broken Mechanical Components
 
+## Current effect scaling (D-313)
+
+All85 ordinary Conduits now upgrade their complete
+[approved effects](conduit-redesign.md), not only generic stat bundles.
+Continuous endpoints interpolate at `level / 5`; discrete counts/durations
+change at+3. Listed passive stats and penalties keep `1 + .5 * level`.
+Fixed numbers, trigger restrictions and Masters never secretly scale.
+Current/next/+5 Details, single/Max confirmations, receipts and frozen battle
+references use the same level-resolved descriptions. Costs and saved levels
+are unchanged. The stat-only descriptions below are historical where they
+conflict with D-313. Implemented locally, awaiting coordinated publication.
+
+## Max Level (D-306)
+
+The selected ordinary Conduit's upgrade screen offers **Max Level** beside
+the existing one-step upgrade. Like character Max Level, it reaches the highest
+affordable upgrade, not necessarily the cap. It sums each existing rarity-aware
+step from the current level through at most+5; partial progress never skips
+a step or changes its cost. For example, a Common at+0 with829 components
+reaches+5 for600 total, leaving229; with174 it reaches+2 for75, leaving99.
+Masters remain non-upgradeable.
+
+The button displays the affordable target and total cost and is disabled at+5
+or if the next step is unaffordable. A game-native confirmation previews the
+current/target effects (including increased penalties) and exact total spending.
+`conduitMaxLevelPlan` is shared by UI and authoritative transactions;
+`upgradeConduitToMaximum` rereads ownership, level and resources and rejects
+changed/forged previews before one atomic component/upgrade write. No sequence
+of per-level requests or saves is used. Online `maxConduit` validates the same
+preview and never falls back to offline spending.
+
+Cancellation, missing ownership/profile, stale previews, insufficient funds,
+the cap and persistence failures spend nothing. Copies, other resources,
+other names' upgrades/equipment and frozen active combat snapshots survive.
+One post-save receipt presents the actual target level and total spending;
+filters/page/selection remain, focus returns to the action or cap status.
+Single and Max Level share a pending guard against overlapping clicks.
+
+Validation: `conduit-max-level.test.ts` in game/presentation covers exact
+affordability boundaries for all85 ordinary names/rarities/current levels,
+partial/full upgrades, one-write persistence, no-op/stale/failed-save rejection,
+strict online requests and frozen combat snapshots, confirmation/cancel/errors,
+duplicate binding/clicks, authoritative routing and saved-receipt behavior.
+Publish the regenerated game-operation bundle together with the client.
+
+**D-302 review is approved and implemented under D-313 above.**
+Master upgrades remain excluded; costs and saved levels are preserved.
+
 ## Confirmed scope (D-130)
 
 Owner requests stage-increasing per-enemy component drops in Awaken the Machines,

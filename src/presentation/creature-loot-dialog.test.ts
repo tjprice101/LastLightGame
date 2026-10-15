@@ -7,6 +7,7 @@ import { emptyAccount } from '../game/account';
 import { creatures, creatureLoot } from '../content/creatures';
 import { conduits, getConduit, conduitEffect, isConduitId } from '../content/conduits';
 import { formatStat } from '../content/combat';
+import { readableEffect } from './effect-copy';
 
 const showModalDescriptor = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'showModal');
 const closeDescriptor = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'close');
@@ -43,6 +44,29 @@ function mount(allDefeated = false) {
 }
 
 describe('enemy loot dialogs and Conduit details', () => {
+  it('shows account-specific owned/unowned chances on initial display and stage changes', () => {
+    const account = emptyAccount();
+    account.conduits = Object.fromEntries(conduits.filter(c => c.rarity === 'Rare' && c.id !== 'duplex-heart').map(c => [c.id, 2]));
+    account.creatures = { 'infusion:machines:0': { defeated: true } };
+    const host = document.createElement('main');
+    host.innerHTML = creatureGlossary(account);
+    document.body.append(host);
+    bindCreatureGlossary(host, account.conduitUpgrades, account.conduits);
+    const dialog = document.getElementById('creature-loot-infusion:machines:0')!;
+    const check = () => {
+      const rows = Array.from(dialog.querySelectorAll('tbody tr'));
+      for (const conduit of conduits.filter(c => c.rarity === 'Rare')) {
+        const row = rows.find(row => row.textContent?.includes(`${conduit.name} · Rare`))!;
+        expect(row.children[2].textContent).toBe(conduit.id === 'duplex-heart' ? '8%' : '0%');
+      }
+      expect(dialog.textContent).toContain('a complete tier awards no Conduit or replacement');
+    };
+    check();
+    const select = dialog.querySelector<HTMLSelectElement>('[data-loot-stage]')!;
+    select.value = '5';
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    check();
+  });
   it('puts a View Loot button on every enemy, preserving encountered/undiscovered loot gates', () => {
     const { host, account, before } = mount();
     for (const creature of creatures) {
@@ -139,8 +163,8 @@ describe('enemy loot dialogs and Conduit details', () => {
     const dialogs = new Map(Array.from(template.content.querySelectorAll('dialog')).map(dialog => [dialog.id, dialog]));
     for (const conduit of conduits) {
       const dialog = dialogs.get(`archive-conduit-${conduit.id}`)!;
-      expect(dialog.textContent).toContain(conduitEffect(conduit, 0));
-      expect(dialog.textContent).toContain(conduitEffect(conduit, 5));
+      expect(dialog.textContent).toContain(readableEffect(conduitEffect(conduit, 0)));
+      expect(dialog.textContent).toContain(readableEffect(conduitEffect(conduit, 5)));
       expect(dialog.textContent).toContain(conduit.lore);
       expect(dialog.textContent).toContain(conduit.power);
       expect(dialog.querySelector('.conduit-details-art')?.classList.contains('unreached-character-art')).toBe(true);

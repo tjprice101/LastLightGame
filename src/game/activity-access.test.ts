@@ -90,7 +90,7 @@ describe('highest-owned Element-Bearer activity access', () => {
     const runId = game.run!.session.runId;
     game = resolveOperation(game, { kind: 'endTurn', runId }, entropy).game;
     expect(game.run!.session.state.phase).toBe('cleared');
-    expect(game.account.capturedCharacters?.every(copy => copy.level === 80)).toBe(true);
+    expect(game.account.capturedCharacters?.every(copy => copy.level === 60)).toBe(true);
     game.account.characters.ember = { level: 0, evolution: 1 };
     game = resolveOperation(game, { kind: 'continue', runId }, entropy).game;
     expect(game.run!.session.state.infusion?.schedule).toBe('legacy');

@@ -1,5 +1,101 @@
 # Authoritative game operation
 
+## Native identities (D-316)
+
+All sixteen Element-Bearers use the shared distinct native kits and combat
+rules version3. Ally-targeted actions require an explicit living recipient;
+hostile selection remains separate. Historical current encounters restart
+with frozen teams/equipment and saved rewards retained. Current-version
+encounters resume unchanged. All133 Conduits use the current compatibility
+rules; no account migration, grants or automatic unequips are required.
+
+The owner authorized coordinated publication of all pending client/server
+changes on2026-10-15. Regenerate/type-check the bundle and deploy
+`game-operation` alongside the Pages release. Historical local-only notices
+below describe earlier implementation stages, not this publication approval.
+
+The2026-10-15 function deployment succeeded. Hosted
+`node tools\smoke_server_game.mjs --native-calamity` verifies rules3,
+explicit ally recipients, a Lv185 EX3 chest-only victory, atomic opening
+with two Master chests, idempotency and persisted holdings. All disposable
+identities/cascading records are removed; no owner accounts are changed.
+
+## Calamity
+
+`enter` accepts `{kind:"calamity",activity,tier}` for the twelve authored
+activities and tiers 1–3 only. The shared account gate requires a recorded
+normal final clear for EX1, then the preceding Calamity tier. Historical stage
+unlocks alone do not grant access: an exact current final-boss UUIDv4 receipt
+paired with final-stage access also qualifies read-only. Otherwise the normal
+final must be replayed. Each encounter is a single boss; `continue` rejects.
+Retry/replay preserves frozen team progress, captures, Conduits,
+upgrades and Masters, creates a fresh receipt namespace and never advances tier.
+The client shows the authored warning before every entry and retry/replay.
+
+Victory atomically saves one sealed chest, not its contents. Inventory sends
+`{kind:"openCalamityChest",id,expectedCount}`. The shared transaction validates
+the stack, consumes exactly one and saves all fixed/weighted contents and the
+separate Calamity seed together. `calamityOpening` returns the actual saved
+receipt. Existing request fingerprints/revisions/cache keep transport retries
+idempotent; no second roll or client-supplied reward is accepted.
+
+Bosses/chests use named neutral pending artwork. Bosses have their own
+`calamity:activity` catalog discovery IDs, never capture or recruitment
+identities. EX3 chests each contain two Master choice chests.
+The coordinated content/account/battle implementation is local.
+`node tools\bundle_server_game.mjs` regenerated `engine.bundle.js`, and
+`npx tsc --project supabase\functions\game-operation\tsconfig.json` passed.
+Publish client/server together only with explicit approval, then run hosted
+parity smoke. No deployment is implied by the generated-bundle refresh.
+
+## Complete Conduit redesign (D-313)
+
+The shared engine uses all133 approved effects and rules version2. Historical
+sessions restart their current encounter with frozen team/progression/equipment,
+a fresh receipt namespace and visible saved-rewards notice. Action/end/Continue/
+retry requests against the historical state return only that replacement;
+the stale command is not executed. Current sessions retain their fast path.
+Historical read/checkpoint requests commit the restart through the normal
+revision/fingerprint/cache/RPC path before returning it. Retrying an acknowledged
+request returns the same run ID; failed/conflicting commits expose no phantom
+replacement or account grant.
+
+Regenerate with `node tools\bundle_server_game.mjs`; validate with
+`npx tsc --project supabase\functions\game-operation\tsconfig.json`.
+Shared online and HTTP compatibility tests cover frozen gear, reward retention,
+idempotency and failed persistence. The redesign is local, not hosted:
+publish the server and client together only with explicit approval.
+
+## Machines duplicate protection (D-312)
+
+Machines rolls exclude already-owned ordinary Conduits within each rarity.
+Completed rarities grant nothing; no compensation or alternate-tier roll.
+Ownership refreshes from the authoritative account on entry, every battle
+operation, old-run resume and retry, independently of frozen equipment.
+Each resolved kill also reserves its new drops for later kills in that action.
+Reward validation rejects duplicate names before persistence. Existing owned
+counts/upgrades, rarity chances, banner bonuses and Master chests are unchanged.
+Regenerate `engine.bundle.js` using `node tools\bundle_server_game.mjs` and
+type-check with `npx tsc --project supabase\functions\game-operation\tsconfig.json`.
+Coordinated client/server publication is still required; no deployment implied.
+
+## Victory replay and loot parity (D-301)
+
+`retry` accepts defeat or cleared non-Training stages, creates a fresh receipt
+namespace and encounter, and keeps frozen run loadouts/progress. Holdings and
+first-clear eligibility are not re-awarded on replay; new enemy identities
+may add seen discoveries. Continue still advances, replay never does.
+
+Hosted version12 predates D-297 and still gated Story Uncommon drops belowLv23.
+Pages pushes do not deploy this function. Generate the engine bundle, type-check
+and explicitly deploy the server whenever shared reward rules change.
+`node tools\smoke_server_game.mjs --loot-parity` checks36 early/final activity
+cases, exact client/server drop parity, early Story Uncommon reachability,
+saved rewards and idempotent victory replay using disposable identities.
+The owner-approved server deployment passed this hosted smoke on2026-10-14;
+all disposable accounts/cascading records were removed. No database migration,
+owner account edits or retroactive grants. This deployment also activates D-300.
+
 ## Successive-turn squad skills (D-300)
 
 The shared engine removes Skill1/Skill2 cooldowns for Element-Bearers and
@@ -8,7 +104,8 @@ Gauge costs, one action per turn, Last Flare recovery/ultimate cooldowns,
 enemy schedules and saved capture intervals remain unchanged.
 Regenerate with `node tools\bundle_server_game.mjs` and deploy the function
 alongside the client for online parity. No database migration or load-time
-account writes. This source update alone does not publish the new behavior.
+account writes. Deployed with D-301; future source edits still require explicit
+server publication rather than just a website push.
 
 ## Repeatable final-boss quantities (D-294)
 

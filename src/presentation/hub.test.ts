@@ -4,6 +4,8 @@ import { characterDetail, characterHub, characterInformation, characterTabs, hom
 import { emptyAccount } from '../game/account';
 import { abilityIcons } from './ability-icon';
 import { characterName } from '../content/character-art';
+import { nativeIdentities } from '../content/native-identities';
+import { formatStat, resolveFighter } from '../content/combat';
 
 describe('game-specific hub layouts', () => {
   it.each([1, 2, 3, 4, 5])('blocks evolving form %i until its level cap, even with resources', (evolution) => {
@@ -88,7 +90,7 @@ describe('game-specific hub layouts', () => {
     expect(overview).toContain('Costs 25 Shatter Gauge');
     expect(overview).toContain('Costs 40 Shatter Gauge');
     expect(overview).toContain('Costs 100 Shatter Gauge');
-    if (starter.id === 'tide') expect(home).toContain('<strong>24</strong>');
+    if (starter.id === 'tide') expect(home).toContain(`<strong>${formatStat(resolveFighter('tide').stats.defense)}</strong>`);
   });
   it('offers overview, seven upgrade areas, and inventory with real progression costs', () => {
     expect(characterTabs).toHaveLength(8);
@@ -224,7 +226,7 @@ describe('game-specific hub layouts', () => {
     const final = { ...emptyAccount(), characters: { [starter.id]: { level: 105, evolution: 6 } } };
     expect(characterDetail(starter, 'upgrade-0', final)).not.toContain('evolution-silhouette');
   });
-  it('renders funded upgrades, scaled combat descriptions, final caps and real inventory', () => {
+  it('renders funded upgrades, fixed native coefficients, final caps and real inventory', () => {
     const account = emptyAccount();
     account.fractalis = 500;
     account.materials['infernic-common'] = 20;
@@ -236,7 +238,7 @@ describe('game-specific hub layouts', () => {
     expect(evolve).not.toContain('PREVIEW');
     expect(evolve).not.toContain('Materials coming later');
     expect(characterDetail(starters[0], 'upgrade-1', account)).toContain('Level cap reached');
-    expect(characterDetail(starters[0], 'overview', account)).toContain('174.4% damage');
+    expect(characterDetail(starters[0], 'overview', account)).toContain(nativeIdentities.ember.abilities.skill1.description);
     expect(homeHub(starters[0], false, account)).toContain('Lv.30 · Evo.1');
     account.characters.ember = { level: 105, evolution: 6 };
     expect(characterDetail(starters[0], 'upgrade-0', account)).toContain('Final evolution reached');

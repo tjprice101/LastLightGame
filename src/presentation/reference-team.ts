@@ -6,7 +6,7 @@ import { formatStat, shatterGauge } from '../content/combat';
 import { ownedCharacters, ownedProgress, equippedSquad, characterProtection, creatureSaleOffer, isSellableCreatureMode, type Account } from '../game/account';
 import { saleControls } from './creature-sale';
 import { getCreature, creatureLore } from '../content/creatures';
-import { capturedProgress, capturedLevelCost, resolveCapturedFighter } from '../game/character-instances';
+import { capturedProgress, capturedLevelCost, capturedLevelCap, resolveCapturedFighter } from '../game/character-instances';
 import { assetUrl, portrait } from './portrait';
 import { ownedCompanion } from './owned-companion';
 import { characterDetail, stats, referenceEquipment } from './hub';
@@ -15,6 +15,7 @@ import { materialArt, materialName } from '../content/dungeon-art';
 import { information } from './information';
 import { currencyIcon } from './currency-icon';
 import { statChange } from './stat-change';
+import { elementLabel } from './element-label';
 
 export type ReferenceTeamView = 'detail' | 'bearers' | 'creatures' | 'capture' | 'formation' | 'conduits' | 'capture-conduits';
 export interface ReferenceTeamState {
@@ -91,7 +92,7 @@ function captureDetail(account: Account, id: string, tab = 'overview'): string {
   const protection = characterProtection(account, id);
   const squad = equippedSquad(account);
   const index = (account.capturedCharacters ?? []).indexOf(copy) + 1;
-  const cost = progress.level < 120 ? capturedLevelCost(copy) : null;
+  const cost = progress.level < capturedLevelCap ? capturedLevelCost(copy) : null;
   const missing = cost ? Object.entries(cost.materials).filter(([key, amount]) => (account.materials[key] ?? 0) < amount) : [];
   const canLevel = cost && account.fractalis >= cost.fractalis && !missing.length;
   const sale = isSellableCreatureMode(creature.mode) ? creatureSaleOffer(account, id) : null;
@@ -103,9 +104,9 @@ function captureDetail(account: Account, id: string, tab = 'overview'): string {
     })] : [];
   return `<section class="ref-team-detail ref-capture-detail ref-bearer-detail" data-captured-copy="${id}">
     <header class="ref-panel ref-character-header"><div class="ref-character-portrait">${member.art}</div>
-      <div class="ref-character-identity"><p>${member.element} · Captured Elemental-Devourer · Copy ${index}</p><h2>${creature.name}</h2>
-        <div class="ref-tags"><span class="ref-stars" aria-label="${progress.tier + 1}-star Elemental-Devourer">${'★'.repeat(progress.tier + 1)}</span><span class="ref-chip">${evolutionRarity(progress.tier + 1)}</span></div>
-        <div class="ref-character-progress"><div>Level ${formatStat(progress.level)} / 120<div class="ref-bar"><i style="width:${progress.level / 120 * 100}%"></i></div></div><div>Fixed form · Cannot evolve</div></div>
+      <div class="ref-character-identity"><p>Captured Elemental-Devourer · Copy ${index}</p><h2>${creature.name}</h2>
+        <div class="ref-tags">${elementLabel(creature.element)}<span class="ref-stars" aria-label="${progress.tier + 1}-star Elemental-Devourer">${'★'.repeat(progress.tier + 1)}</span><span class="ref-chip">${evolutionRarity(progress.tier + 1)}</span></div>
+        <div class="ref-character-progress"><div>Level ${formatStat(progress.level)} / ${capturedLevelCap}<div class="ref-bar"><i style="width:${progress.level / capturedLevelCap * 100}%"></i></div></div><div>Fixed form · Cannot evolve</div></div>
       <div class="ref-character-header-actions">
         ${squad[0] === id ? '<span class="ref-chip ref-white">Squad leader</span>' : squad.includes(id) ? `<button class="ref-chip" data-make-leader="${id}">♛ Make leader</button>` : '<button class="ref-chip" data-team-view="formation">Add to squad</button>'}
         <button class="ref-chip" data-character-lock="${id}" data-lock-value="${!protection.locked}" aria-pressed="${protection.locked}">${protection.locked ? 'Unlock' : 'Lock'} copy</button>
@@ -127,7 +128,7 @@ function captureDetail(account: Account, id: string, tab = 'overview'): string {
       ${next ? `<div class="character-upgrade-grid"><section class="character-category upgrade-benefits"><div class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Level &amp; stat preview</h3>
         <div class="hub-comparison"><div><small>CURRENT</small><strong>Lv.${progress.level}</strong></div><div><small>NEXT</small><strong>Lv.${progress.level + 1}</strong></div></div>
         <div class="upgrade-stat-preview">${(['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).map(key => `<span><small>${({ health: 'Health', defense: 'Defense', damage: 'Attack', crit: 'Critical Rate', critMultiplier: 'Critical Damage', shatterCapacity: 'Shatter Capacity', elementalDamage: 'Elemental Damage' })[key]}</small><strong>${statChange(kit.stats[key], next[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '')}</strong></span>`).join('')}</div></div></section>
-        <section class="character-category upgrade-payment"><h3>Required resources <small class="resource-key">Owned / Required</small></h3><ul class="upgrade-resources">${resources.map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${resource.name}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>` : '<section class="character-category"><p class="ref-growth-summary">Maximum level 120</p>'}
+        <section class="character-category upgrade-payment"><h3>Required resources <small class="resource-key">Owned / Required</small></h3><ul class="upgrade-resources">${resources.map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${resource.name}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>` : `<section class="character-category"><p class="ref-growth-summary">Maximum level ${capturedLevelCap}</p>`}
         <div class="ref-growth-action">
         ${cost ? `<button class="primary-button" data-level-capture="${id}" data-expected-level="${progress.level}" ${canLevel ? '' : 'disabled'}>Level up</button>` : ''}
         <button class="text-button" data-max-level="${id}" ${cost ? '' : 'disabled'}>Max Level</button>
@@ -190,8 +191,8 @@ export function referenceTeam(account: Account | null, state: ReferenceTeamState
     const cap = characterLevelCap(progress.evolution);
     content = `<section class="ref-team-detail ref-bearer-detail">
       <header class="ref-panel ref-character-header hub-showcase"><div class="ref-character-portrait hub-portrait">${portrait(starter, progress.evolution)}</div>
-        <div class="ref-character-identity"><p data-reference-prefix>${title} · ${starter.element} · ${starter.weapon}</p><h2 data-reference-name>${starter.name}</h2>
-          <div class="ref-tags"><span class="ref-stars" aria-label="${starter.stars}-star Element-Bearer">${'★'.repeat(starter.stars)}</span><span class="ref-chip">${starter.role}</span><span class="ref-chip" data-reference-rarity>${evolutionRarity(progress.evolution)}</span></div>
+        <div class="ref-character-identity"><p data-reference-prefix>${title} · ${starter.weapon}</p><h2 data-reference-name>${starter.name}</h2>
+          <div class="ref-tags">${elementLabel(starter.elementId)}<span class="ref-stars" aria-label="${starter.stars}-star Element-Bearer">${'★'.repeat(starter.stars)}</span><span class="ref-chip">${starter.role}</span><span class="ref-chip" data-reference-rarity>${evolutionRarity(progress.evolution)}</span></div>
           <div class="ref-character-progress"><div>Level <span data-reference-level>${formatStat(progress.level)} / ${cap}</span><div class="ref-bar"><i style="width:${progress.level / cap * 100}%"></i></div></div>
           <div><span data-reference-evolution>Evolution ${progress.evolution} / 6</span><div class="ref-pips">${Array.from({ length: 6 }, (_, index) => `<i class="${index < progress.evolution ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
           <span data-owned-progress class="ref-sr-only">Lv.${progress.level} · Evo.${progress.evolution}</span>

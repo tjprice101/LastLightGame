@@ -27,7 +27,9 @@ import { conduitStore, updateConduitStore } from './presentation/conduit-store';
 import { conduitUpgradeMenu, bindConduitUpgrades, updateConduitUpgradeMenu } from './presentation/conduit-upgrade';
 import { getConduit, isConduitId, conduitEffect } from './content/conduits';
 import { purchaseConduit, equipConduit, setCharacterLock, ownedCharacterInstances, levelCapturedCharacter } from './game/account';
-import { openMasterChest, equipMasterConduit } from './game/account';
+import { openMasterChest, openCalamityChest, equipMasterConduit, unequipAllConduits } from './game/account';
+import { parseCalamityChestId, calamityChest } from './content/calamity';
+import { bindCalamityEntries, calamityOpeningReward } from './presentation/calamity';
 import { getMasterConduit, isMasterConduitId } from './content/master-conduits';
 import { chooseMasterConduit } from './ui/master-choice-dialog';
 import { masterReward } from './presentation/master-conduits';
@@ -42,8 +44,9 @@ import { createBackdrop } from './presentation/backdrop';
 import { applyMotion, loadMotion, saveMotion, reducedMotion, type MotionPreference } from './presentation/settings';
 import { commands, defaultBindings, loadBindings, saveBindings, validateBindings } from './game/hotkeys';
 import { BattleView, createSession, type BattleSession, type BattleAuthority, type BattleAuthorityResponse } from './presentation/battle-view';
+import { restartHistoricalConduitSession } from './presentation/conduit-compatibility';
 import { assertActivityAccess } from './game/activity-access';
-import { characterHub, characterInformation, homeHub, inventoryHub, isCharacterTab, updateCharacterTab } from './presentation/hub';
+import { characterHub, characterInformation, homeHub, inventoryHub, isCharacterTab, updateCharacterTab, updateEvolutionSelection } from './presentation/hub';
 import { bindInventory, defaultInventorySections, defaultInventoryFilters, inventorySections, inventoryFilters, type InventoryFilters, type InventorySections, type InventoryTab } from './presentation/inventory';
 import { loadAccount, ownedProgress, equippedSquad, ownedCharacters, setSquad, summonCharacter, summonCharacters, multiSummonCount, purchaseExchangeMaterial, saveAccountRewards, unlockedStage, unlockedInfusionStage, upgradeCharacter, evolutionFodderOptions, creatureSaleOffer, sellCurrencyCreature, type Account, type SummonDraw } from './game/account';
 import { getCreature } from './content/creatures';
@@ -716,6 +719,41 @@ function renderMenu(firstArrival = false): void {
     }, error => showError(errorMessage(error)));
   }
   bindInventory(app, (tab) => { inventoryTab = tab; }, (sections) => { inventoryExpanded = sections; }, (filters) => { inventoryFilterState = filters; });
+  app.querySelectorAll<HTMLButtonElement>('[data-open-calamity-chest]').forEach(button => button.addEventListener('click', async () => {
+    if (masterOpening || gameDialogPending() || onlineBusy || onlinePending) return;
+    masterOpening = true;
+    let saved = false;
+    try {
+      const id = button.dataset.openCalamityChest!;
+      const { activity, tier } = parseCalamityChestId(id);
+      const chest = calamityChest(activity, tier);
+      const expectedCount = currentAccount().calamityChests?.[id] ?? 0;
+      if (!expectedCount) throw new Error('This chest is no longer owned.');
+      if (!await gameConfirm(`Open one ${chest.name}? One chest will be consumed and its actual contents saved. Owned: ${expectedCount}.`, { title: 'Open Calamity chest', confirmLabel: 'Open one chest' })) return;
+      let reward;
+      if (playMode === 'online') {
+        const response = await performOnline({ kind: 'openCalamityChest', id, expectedCount });
+        saved = true;
+        if (!response.calamityOpening || response.calamityOpening.id !== id) throw new Error('The server omitted the saved chest receipt. Check Inventory.');
+        reward = response.calamityOpening;
+      } else {
+        const result = openCalamityChest(gameStorage, id, expectedCount);
+        account = result.account;
+        reward = result.reward;
+        saved = true;
+      }
+      renderMenu();
+      await presentReward(calamityOpeningReward(id, reward));
+      const focus = app.querySelector<HTMLButtonElement>('[data-open-calamity-chest]') ?? app.querySelector<HTMLElement>('h1');
+      if (focus) {
+        if (focus.tagName !== 'BUTTON') focus.tabIndex = -1;
+        focus.focus({ preventScroll: true });
+      }
+    } catch (error) {
+      console.error('Calamity chest opening failed', error);
+      showError(`${saved ? 'Chest contents are saved, but their presentation could not complete. Check Inventory.' : playMode === 'online' && onlinePending ? 'The opening is awaiting confirmation. Retry the pending operation; do not open another chest.' : 'The chest was not opened.'} ${errorMessage(error)}`);
+    } finally { masterOpening = false; }
+  }));
   bindCaptureTabs(app, (tab) => { characterTab = tab; });
   app.querySelector<HTMLButtonElement>('[data-open-master-chest]')?.addEventListener('click', async () => {
     if (masterOpening || gameDialogPending()) return;
@@ -737,12 +775,13 @@ function renderMenu(firstArrival = false): void {
       showError(`${saved ? 'Your Master is saved, but its presentation could not complete. Check Inventory.' : 'The chest was not opened.'} ${errorMessage(error)}`);
     } finally { masterOpening = false; }
   });
-  bindCreatureGlossary(app, account?.conduitUpgrades);
+  bindCreatureGlossary(app, account?.conduitUpgrades, account?.conduits);
   bindArchives(app);
   bindSquadPreview(app, account);
   bindSummonRates(app);
   bindConduitUpgrades(app, gameStorage, (updated) => { account = updated; refreshConduitMenu(); }, showError,
-    playMode === 'online' ? async (id, expectedLevel) => (await performOnline({ kind: 'upgradeConduit', id, expectedLevel })).account : undefined);
+    playMode === 'online' ? async (id, expectedLevel) => (await performOnline({ kind: 'upgradeConduit', id, expectedLevel })).account : undefined,
+    playMode === 'online' ? async expected => (await performOnline({ kind: 'maxConduit', expected })).account : undefined);
   app.querySelectorAll<HTMLSelectElement>('[data-battle-speed]').forEach((speedControl) => speedControl.addEventListener('change', (event) => {
     if (!(event.currentTarget instanceof HTMLSelectElement)) throw new Error('Battle speed control is missing.');
     const control = event.currentTarget;
@@ -859,6 +898,15 @@ function renderMenu(firstArrival = false): void {
       }
     });
   });
+  bindCalamityEntries(app, currentAccount, async (activity, tier) => {
+    await transitionActivity(async () => {
+      account = currentAccount();
+      assertActivityAccess(account, { kind: 'calamity', activity, tier });
+      await enterBattle({ kind: 'calamity', activity, tier }, { activity, tier });
+      visitMenu('battle');
+      renderMenu();
+    });
+  }, () => activityTransitionPending() || onlineBusy || onlinePending !== null, error => showError(errorMessage(error)));
   app.querySelectorAll<HTMLButtonElement>('[data-war]').forEach((button) => {
     button.addEventListener('click', async () => {
       try {
@@ -965,6 +1013,7 @@ function renderMenu(firstArrival = false): void {
       battleSession = squadSession(account);
     }
     try {
+      if (playMode === 'legacy') restartHistoricalConduitSession(battleSession);
       if (playMode === 'legacy') account = saveAccountRewards(gameStorage, { state: battleSession.state, events: [] }, battleSession.runId);
     } catch (error) {
       console.error('Elemental-Devourer discovery could not be saved', error);
@@ -987,7 +1036,10 @@ function renderMenu(firstArrival = false): void {
       if (premium) premium.textContent = String(account.lycalis);
       const error = app.querySelector('#wallet-error');
       if (error) error.textContent = '';
-    }, backMenu, playMode === 'online' ? battleAuthority() : undefined, (state) => music.setTrack(battleMusic(state)));
+    }, backMenu, playMode === 'online' ? battleAuthority() : undefined, (state) => {
+      if (playMode === 'legacy' && state.infusion?.mode === 'machines') state.machineConduits = { ...currentAccount().conduits };
+      music.setTrack(battleMusic(state));
+    });
   }
   const walletStatus = app.querySelector('#wallet-error');
   updateProfileAvatar();
@@ -1322,7 +1374,8 @@ function refreshConduitMenu(): void {
   } else if (menuPage === 'conduit-upgrade') {
     updateConduitUpgradeMenu(app, account, upgradeConduitSelection);
     bindConduitUpgrades(app, gameStorage, updated => { account = updated; refreshConduitMenu(); }, showError,
-      playMode === 'online' ? async (id, expectedLevel) => (await performOnline({ kind: 'upgradeConduit', id, expectedLevel })).account : undefined);
+      playMode === 'online' ? async (id, expectedLevel) => (await performOnline({ kind: 'upgradeConduit', id, expectedLevel })).account : undefined,
+      playMode === 'online' ? async expected => (await performOnline({ kind: 'maxConduit', expected })).account : undefined);
   } else throw new Error('No active Conduit menu to update.');
   if (account) {
     const main = app.querySelector('#fractalis-balance');
@@ -1529,6 +1582,7 @@ app.addEventListener('click', async event => {
     showError('The previous operation is confirmed and saved.');
     if (response.summon && operation.kind === 'summon') await presentReward(summonReward(response.summon, operation.bannerId));
     if (response.summons && operation.kind === 'summonTen') await presentReward(summonTenReward(response.account, response.summons, operation.bannerId));
+    if (response.calamityOpening && operation.kind === 'openCalamityChest') await presentReward(calamityOpeningReward(operation.id, response.calamityOpening));
   } catch (error) {
     console.error('Pending online operation retry failed', error);
     showError(errorMessage(error));
@@ -1748,17 +1802,12 @@ app.addEventListener('click', async (event) => {
 
 app.addEventListener('change', (event) => {
   if (!(event.target instanceof HTMLInputElement) || !event.target.matches('[data-evolution-fodder]')) return;
-  const button = app.querySelector<HTMLButtonElement>('[data-upgrade="evolve"]');
-  const status = app.querySelector<HTMLElement>('[data-fodder-status]');
-  if (!button || !status) {
-    console.error('Evolution selection controls are missing.');
+  try {
+    updateEvolutionSelection(app);
+  } catch (error) {
+    console.error('Evolution selection unavailable', error);
     showError('Evolution selection unavailable. Reopen the evolution screen.');
-    return;
   }
-  const selected = app.querySelectorAll('[data-evolution-fodder]:checked').length;
-  const required = Number(button.dataset.fodderCount);
-  button.disabled = button.dataset.upgradeBlocked === 'true' || selected !== required;
-  status.textContent = `${selected} / ${required} selected${selected > required ? ' · Select fewer Elemental-Devourers' : ''}`;
 });
 
 app.addEventListener('click', (event) => {
@@ -1922,12 +1971,22 @@ async function openConduitPage(): Promise<void> {
 
 app.addEventListener('click', async (event) => {
   if (!(event.target instanceof Element)) return;
-  const button = event.target.closest<HTMLButtonElement>('[data-loadout-equip], [data-loadout-unequip]');
+  const button = event.target.closest<HTMLButtonElement>('[data-loadout-equip], [data-loadout-unequip], [data-loadout-clear]');
   if (!button || button.disabled || onlineBusy) return;
   const owner = button.dataset.loadoutOwner ?? '';
   const starter = isStarterId(owner);
   try {
     if (menuPage !== 'team' || (starter ? owner !== selectedCharacter : owner !== selectedCapture)) throw new Error('Choose an owned character before equipping.');
+    if (button.hasAttribute('data-loadout-clear')) {
+      account = playMode === 'online' ? (await performOnline({ kind: 'unequipAllConduits', character: owner })).account
+        : unequipAllConduits(gameStorage, owner);
+      if (starter) updateCharacterTab(app, getStarter(owner), 'equipment', account);
+      else renderMenu();
+      const status = app.querySelector('#conduit-equipment-result');
+      if (status) status.textContent = `All Conduits${starter ? ', including the Master,' : ''} unequipped. Owned Conduits and upgrades are unchanged.`;
+      app.querySelector<HTMLElement>('.loadout-back')?.focus({ preventScroll: true });
+      return;
+    }
     const equip = button.dataset.loadoutEquip;
     if (equip !== undefined && !isConduitId(equip)) throw new Error('Unknown Conduit.');
     const slot = Number(equip !== undefined ? button.dataset.loadoutTarget : button.dataset.loadoutUnequip);

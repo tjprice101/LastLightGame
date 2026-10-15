@@ -14,7 +14,7 @@ import { characterLevelCap, characterLevelCost, characterEvolutionCost, characte
 import { materialArt, materialName } from '../content/dungeon-art';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { fractalisDrop } from '../content/loot-random';
-import { createBattle, createInfusionBattle, act, actAndAdvanceTurn, actionUnavailable, endTurn, nextStage } from './battle';
+import { createBattle, createInfusionBattle, act, endTurn, nextStage, withMasterLoadouts } from './battle';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, summonCharacter, sellCurrencyCreature,
   creatureSaleOffer, setSquad, evolutionFodderOptions, upgradeCharacter, maxLevelPlan, levelCharacterToMaximum } from './account';
 import { SAVE_KEY, saveStarter, type ProfileStorage } from './profile';
@@ -28,6 +28,7 @@ import { portrait } from '../presentation/portrait';
 import { abilityIcon } from '../presentation/ability-icon';
 import { battleResults } from '../presentation/battle-results';
 import { createSession } from '../presentation/battle-view';
+import { playNativeBenchmark } from './native-benchmark-pilot';
 
 function storage() {
   const map = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
@@ -96,21 +97,19 @@ describe('Passion of Crimson Roses integration', () => {
     expect(roseCaptureAllowed(level)).toBe(level <= 120);
   });
 
-  it('retains Crinso as the burn source across enemy phases without Infernis in the squad', () => {
+  it('Crinso maintains a direct single-target edge combo in the Rose event without authoring Burn', () => {
     const state = createInfusionBattle('roses', 35, 1, 'crinso', { level: 105, evolution: 6 });
     state.enemies[0].stats.damage = 1;
     state.allies[0].shatter = 100;
-    let burning = act(state, 'crinso', 'skill2', state.enemies[0].id).state;
-    expect(burning.enemies[0].burn).toMatchObject({ sourceId: 'crinso', turns: 2 });
-    for (let phase = 0; phase < 2; phase++) {
-      const result = endTurn(burning);
-      expect(result.events).toContainEqual(expect.objectContaining({
-        kind: 'damage', source: 'crinso', target: state.enemies[0].id,
-        periodic: true, amount: burning.enemies[0].burn.damage,
-      }));
-      burning = result.state;
-    }
-    expect(burning.enemies[0].burn.turns).toBe(0);
+    const first = act(state, 'crinso', 'skill1', state.enemies[0].id);
+    expect(first.state.allies[0].native).toMatchObject({ edge: 'gold', combo: 0 });
+    const next = endTurn(first.state).state;
+    next.allies[0].shatter = 100;
+    const crimson = act(next, 'crinso', 'skill2', next.enemies[0].id);
+    expect(crimson.state.allies[0].native).toMatchObject({ edge: 'crimson', combo: 1 });
+    expect(crimson.state.enemies.every(enemy => enemy.burn.turns === 0)).toBe(true);
+    expect(crimson.events.filter(event => event.kind === 'damage' && event.source === 'crinso')).toHaveLength(1);
+    expect(endTurn(crimson.state).events.some(event => event.periodic && event.source === 'crinso')).toBe(false);
   });
 
   it('keeps combat and material RNG independent of Roselius capture rolls', () => {
@@ -133,24 +132,25 @@ describe('Passion of Crimson Roses integration', () => {
     ['rosetta', 'thornia', 'sprout'],
   ] as const)('allows the built max-level %s/%s/%s squad to clear the140 boss', (...team) => {
     const progress = Object.fromEntries(team.map((id) => [id, { level: 105, evolution: 6 }]));
+    const roles = {
+      ember: ['siege-cantilever', 'resonance-crucible', 'infernic-cinder-testament'],
+      tide: ['opal-indexer', 'wardglass-transformer', 'ward-stitch-spool'],
+      sprout: ['springwell-pump', 'coilfeed-ratchet', 'botanic-graft-covenant'],
+      rosetta: ['wardglass-transformer', 'duplex-heart', 'tranquilitic-accord-bastion'],
+      thornia: ['lifeline-flywheel', 'duplex-heart', 'siege-cantilever'],
+      crinso: ['breach-pendulum', 'lifeline-flywheel', 'verdict-caliper'],
+    } as const;
     const equipment = Object.fromEntries(team.map(id => [id, [
-      'worldbreaker-drive', 'immortal-vessel', 'citadel-spine', 'astral-prism',
-      'siege-cantilever', 'duplex-heart', 'twinpulse-bellows', 'springwell-pump',
+      'vigil-core', 'immortal-vessel', 'citadel-spine', 'horizon-heartcase',
+      team[0] === 'ember' ? 'bastion-lock' : 'sentinel-aperture', ...roles[id],
     ] satisfies ConduitSlots]));
+    const masters = {
+      ember: 'master-ember-1', tide: 'master-tide-3', sprout: 'master-sprout-1',
+      rosetta: 'master-rosetta-1', thornia: 'master-thornia-3', crinso: 'master-crinso-3',
+    } as const;
     for (const seed of [1, 1729, 12345]) {
-      let state = createInfusionBattle('roses', 35, seed, team[0], progress[team[0]], team, progress, equipment);
-      for (let step = 0; state.phase === 'player' && step < 600; step++) {
-        const actor = state.allies.find((unit) => unit.hp > 0 && !actionUnavailable(state, unit, 'light'));
-        if (!actor) {
-          state = endTurn(state).state;
-          continue;
-        }
-        const action = (['ultimate', 'skill1', 'skill2', 'light'] as const)
-          .find((id) => !actionUnavailable(state, actor, id));
-        const target = state.enemies.find((enemy) => enemy.hp > 0);
-        if (!action || !target) throw new Error('The endgame fixture has no legal action/target.');
-        state = actAndAdvanceTurn(state, actor.id, action, target.id).state;
-      }
+      const upgrades = Object.fromEntries(Object.values(equipment).flatMap(slots => slots.flatMap(id => id ? [[id, 5]] : [])));
+      const state = playNativeBenchmark(withMasterLoadouts(createInfusionBattle('roses', 35, seed, team[0], progress[team[0]], team, progress, equipment, [], upgrades), masters));
       expect(state.phase, `seed ${seed}`).toBe('cleared');
     }
   });
@@ -233,7 +233,8 @@ describe('Passion of Crimson Roses integration', () => {
     expect(() => createCreatureCopy('infusion:roses:5')).toThrow();
     const duplicate = createCreatureCopy('infusion:roses:5', undefined, 80, 'banner-duplicate');
     expect(() => validateCapturedCharacters([{ ...duplicate, acquisition: undefined }])).toThrow();
-    expect(() => validateCapturedCharacters([{ ...duplicate, level: 79 }])).toThrow();
+    expect(() => validateCapturedCharacters([{ ...duplicate, level: 59 }])).toThrow();
+    expect(validateCapturedCharacters([{ ...duplicate, level: 79 }])[0].level).toBe(60);
   });
 
   it.each(roseMaterials.map((_, tier) => tier))('exchanges form%i for its own materials in one protected-safe write', (tier) => {

@@ -1,0 +1,38 @@
+.native-kit-state,
+.native-state-row {
+  display: grid;
+  gap: .15rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.native-kit-state { margin-block: .3rem; font-size: .8rem; }
+#battle-root .unit-readout .native-kit-state { grid-column: 1 / -1; }
+.native-state-row small,
+.native-forecast { font-size: .75rem; line-height: 1.35; }
+.native-state-row[data-native-label="Beat"][data-native-value="Crescendo"] {
+  padding: .3rem;
+  border: 1px solid currentColor;
+  color: white;
+}
+.native-identity { line-height: 1.5; }
+.native-ally-picker { max-width: min(38rem, calc(100vw - 2rem)); }
+.native-ally-choices { display: grid; gap: .6rem; margin-block: 1rem; }
+.native-ally-choices button { display: grid; gap: .25rem; min-height: 44px; text-align: left; }
+#battle-root .native-mechanic-cue {
+  position: absolute;
+  inset: 20%;
+  z-index: 12;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  color: var(--element, white);
+}
+.native-mechanic-cue svg { width: 100%; height: 100%; overflow: visible; }
+.native-mechanic-cue span {
+  position: absolute;
+  bottom: 0;
+  padding: .2rem .4rem;
+  background: #111e;
+  color: white;
+  font-size: .8rem;
+}

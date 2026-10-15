@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { describeFighter, fighters, formatStat, resolveFighter, shatterGauge } from './combat';
 import { openingStarters as starters, starters as roster } from './starters';
 import { characterLevelCap, characterGrowthFactor, characterPotencyFactor } from './progression';
+import { nativeIdentities } from './native-identities';
+import { nativeBalance } from './native-balance';
 
 describe('character stat and kit growth', () => {
   it.each(roster)('$name has no ordinary skill cooldown at any evolution', starter => {
@@ -33,7 +35,7 @@ describe('character stat and kit growth', () => {
       expect(ability.description).not.toMatch(/\bauthored\b/);
     }
     expect(kit.passive.description).not.toMatch(/\beffective authored\b/);
-    if (starter.id === 'bliss') expect(kit.passive.description).toContain('another living ally');
+    expect(kit.passive.description).toBe(nativeIdentities[starter.id].passive.description);
   });
   it.each(starters)('$name preserves its original base kit without mutating definitions', (starter) => {
     const original = structuredClone(fighters[starter.id]);
@@ -47,7 +49,7 @@ describe('character stat and kit growth', () => {
       expect(kit.abilities[action].strength).toEqual(original.abilities[action].strength);
       expect(kit.abilities[action].cooldown).toBe(original.abilities[action].cooldown);
     }
-    if (starter.id === 'sprout') expect(kit.abilities.ultimate.description).toContain('spent before healing');
+    if (starter.id === 'sprout') expect(kit.abilities.ultimate.description).toContain(`${nativeBalance.flora.empoweredSeed * 100}% at next player-turn start`);
     kit.stats.health = 1;
     expect(fighters[starter.id]).toEqual(original);
   });
@@ -71,7 +73,7 @@ describe('character stat and kit growth', () => {
         for (const key of ['damageMultiplier', 'burnMultiplier', 'shield', 'healing'] as const) {
           const value = base.abilities[action].strength[key];
           if (value === undefined) expect(kit.abilities[action].strength[key]).toBeUndefined();
-          else expect(kit.abilities[action].strength[key]).toBeCloseTo(value * (key === 'shield' || key === 'healing' ? factor : potency));
+          else expect(kit.abilities[action].strength[key]).toBe(value);
         }
         expect(kit.abilities[action].strength.weakenFraction ?? 0).toBeLessThanOrEqual(.5);
         expect(kit.abilities[action].strength.critBonus ?? 0).toBeLessThanOrEqual(.5);
@@ -82,21 +84,25 @@ describe('character stat and kit growth', () => {
     expect(shatterGauge.gains.light).toBe(20);
   });
 
-  it('descriptions use the same resolved flat and percentage strengths as combat', () => {
+  it('descriptions retain fixed native percentages while Attack and HP grow independently', () => {
     const progress = { level: 30, evolution: 2 };
     const factor = characterGrowthFactor(progress);
-    const potency = characterPotencyFactor(progress);
     const ember = resolveFighter('ember', progress);
-    expect(ember.abilities.skill1.description).toContain(`${formatStat(1.6 * potency * 100)}%`);
-    expect(ember.abilities.skill1.description).toContain(`burn for ${Math.round(8 * factor * potency)} damage`);
-    expect(ember.passive.description).toContain(`+${formatStat(.2 * potency * 100)}%`);
+    expect(ember.stats.damage).toBeCloseTo(fighters.ember.stats.damage * factor);
+    expect(ember.abilities.skill1.description).toContain(`${160 * nativeBalance.skillDamageScale}% direct damage`);
+    expect(ember.abilities.skill1.description).toContain('25% of caster Attack');
+    expect(ember.passive.damageBonus).toBe(0);
     const tide = resolveFighter('tide', progress);
-    expect(tide.passive.description).toContain(`+${formatStat(8 * factor ** .7)} defense`);
-    expect(tide.abilities.skill1.description).toContain(`${formatStat(.25 * potency * 100)}%`);
-    expect(tide.abilities.skill2.description).toContain(`${formatStat(25 * factor)} shield`);
+    expect(tide.passive.defenseBonus).toBe(0);
+    expect(tide.abilities.skill1.strength.weakenFraction).toBe(.25);
+    expect(tide.abilities.skill1.description).toContain('next one enemy-phase');
+    expect(tide.abilities.skill2.description).toContain(`${nativeBalance.tizu.shelter * 100}% of recipient maximum HP`);
     const flora = resolveFighter('sprout', progress);
-    expect(flora.abilities.skill2.description).toContain(`${formatStat(30 * factor)} health`);
-    expect(flora.passive.description).toContain(`${formatStat(.05 * potency * 100)}%`);
+    expect(flora.abilities.skill2.strength).toEqual({});
+    expect(flora.abilities.skill2.description).toContain(`${nativeBalance.flora.seed * 100}% recipient maximum HP`);
+    expect(flora.passive.healFraction).toBe(0);
+    expect(flora.passive.description).toContain('next player-turn start');
+    expect(ember.stats.crit).toBeCloseTo(fighters.ember.stats.crit * characterPotencyFactor(progress));
   });
 
   it.each(starters)('$name reaches bounded linear endgame stats before equipment and keeps percentage stats meaningful', (starter) => {

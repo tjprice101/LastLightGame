@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { battleResults, encounterRewards } from './battle-results';
 import { BattleView } from './battle-view';
-import { act, createBattle, createDungeonBattle, createInfusionBattle, endTurn, nextWave, type BattleEvent } from '../game/battle';
+import { act, createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, endTurn, nextWave, type BattleEvent } from '../game/battle';
 
 afterEach(() => vi.unstubAllGlobals());
 const reward = (source: string, amount: number, materials: Record<string, number> = {}): BattleEvent => ({
@@ -29,7 +29,7 @@ describe('encounter result overlays', () => {
     expect(html).toContain('data-result-continue');
     expect(html).toContain('data-result-quit');
     expect(html).toContain('data-result-dismiss');
-    expect(html).not.toContain('data-result-restart');
+    expect(html).toContain('data-result-restart>Replay stage');
   });
 
   it('shows Victory only for cleared encounters, including burn kills; never on ordinary turns', () => {
@@ -50,13 +50,17 @@ describe('encounter result overlays', () => {
 
   it('does not offer invalid continuation at final stages and keeps defeat earnings with retry/quit options', () => {
     const finalStates = [createDungeonBattle('infernic', 35, 1, 'ember', { level: 105, evolution: 6 }),
-      createInfusionBattle('abyss', 35, 1, 'ember', { level: 105, evolution: 6 })];
+      createInfusionBattle('abyss', 35, 1, 'ember', { level: 105, evolution: 6 }),
+      createInfusionBattle('machines', 100, 1, 'ember', { level: 105, evolution: 6 }),
+      createStoryBattle(150, 1, 'ember', { level: 105, evolution: 6 }),
+      createWarBattle('nerithe', 10, 1, 'ember', { level: 105, evolution: 6 })];
     for (const state of finalStates) {
       state.phase = 'cleared';
       const html = battleResults(state, []);
       expect(html).toContain('Activity complete');
       expect(html).toContain('Return to Gameplay');
       expect(html).not.toContain('data-result-continue');
+      expect(html).toContain('data-result-restart>Replay stage');
     }
     const state = createBattle();
     state.phase = 'defeat';

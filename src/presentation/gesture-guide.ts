@@ -2,8 +2,9 @@ import { actionUnavailable, type BattleState, type Combatant } from '../game/bat
 import { shatterGauge, basicActionName, type ActionId } from '../content/combat';
 import { abilityIcon } from './ability-icon';
 import { isStarterId } from '../content/starters';
+import { allyTargetHint, nativeActionHint } from './native-kit-presentation';
 
-export function gestureGuide(state: BattleState, actor: Combatant): string {
+export function gestureGuide(state: BattleState, actor: Combatant, enemyTargetId?: string): string {
   if (!actor.kit) throw new Error('Gesture guide requires an owned character kit.');
   const starterId = actor.definitionId;
   const directions = [
@@ -18,14 +19,14 @@ export function gestureGuide(state: BattleState, actor: Combatant): string {
     <path d="m140 106 34 34-34 34-34-34Zm0-80 8 10-8 10-8-10Zm114 114-10 8-10-8 10-8ZM140 254l-8-10 8-10 8 10ZM26 140l10-8 10 8-10 8"/>
     </svg>${directions.map(({ action, direction, arrow, label }) => {
       const reason = actionUnavailable(state, actor, action);
-      return `<span class="gesture-direction gesture-${direction}" data-gesture-action="${action}" data-available="${!reason}">
+      return `<span class="gesture-direction gesture-${direction}" data-gesture-action="${action}" data-available="${!reason}" title="${nativeActionHint(state, actor, action, enemyTargetId)}">
         <span class="gesture-arrow">${arrow}</span>${isStarterId(starterId) ? abilityIcon(starterId, action) : ''}
-        <strong>${label}</strong><small>${reason ? 'Unavailable' : action === 'light' ? `+${shatterGauge.gains.light} Gauge` : `${shatterGauge.costs[action]} Gauge`}</small></span>`;
+        <strong>${label}</strong><small>${reason ? 'Unavailable' : action === 'light' ? `+${shatterGauge.gains.light} Gauge` : `${shatterGauge.costs[action]} Gauge`}${allyTargetHint(actor, action) ? ' · Choose ally' : ''}</small></span>`;
     }).join('')}<span class="gesture-center" aria-hidden="true">DRAG</span>
     <span class="gesture-status" role="status">Choose a direction · Release near center to cancel</span>`;
 }
 
-export function updateGestureGuide(guide: HTMLElement, state: BattleState, actor: Combatant, action: Exclude<ActionId, 'defend'> | null): void {
+export function updateGestureGuide(guide: HTMLElement, state: BattleState, actor: Combatant, action: Exclude<ActionId, 'defend'> | null, enemyTargetId?: string): void {
   if (!actor.kit) throw new Error('Gesture combat kit is missing.');
   guide.querySelectorAll<HTMLElement>('[data-gesture-action]').forEach((direction) => {
     direction.dataset.selected = String(direction.dataset.gestureAction === action);
@@ -33,5 +34,5 @@ export function updateGestureGuide(guide: HTMLElement, state: BattleState, actor
   const status = guide.querySelector('.gesture-status');
   if (!status) throw new Error('Gesture status is missing.');
   const name = action === null ? 'Choose a direction' : action === 'light' ? basicActionName(actor.definitionId, action) : actor.kit.abilities[action].name;
-  status.textContent = `${name} · ${action ? actionUnavailable(state, actor, action) ?? 'Release to use' : 'Release near center to cancel'}`;
+  status.textContent = `${name} · ${action ? actionUnavailable(state, actor, action) ?? (allyTargetHint(actor, action) ? `Release to choose recipient · ${allyTargetHint(actor, action)}` : `Release to use${nativeActionHint(state, actor, action, enemyTargetId) ? ` · ${nativeActionHint(state, actor, action, enemyTargetId)}` : ''}`) : 'Release near center to cancel'}`;
 }

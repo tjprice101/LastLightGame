@@ -83,7 +83,7 @@ function evolutionRequirement(elementId, from) {
 
 // src/content/final-boss-loot.ts
 var finalBossLootMultiplier = 5;
-var finalBossLootText = "Final bosses award 5x normal currency, material and component quantities on every clear, including replays. Rare-drop, capture and recruitment chances, Conduit and chest counts, recruitment duplicate conversions and one-time Story bonuses are unchanged. Training has no final boss.";
+var finalBossLootText = "Final bosses award 5x normal currency, material and component quantities on every clear, including replays. Rare-drop, capture and recruitment chances, Conduit and chest counts, recruitment duplicate conversions and one-time Story bonuses are unchanged. Training has no final boss. Calamity bosses award only one activity chest; neither that chest nor its contents use the 5x multiplier.";
 function bossLootMultiplier(activity, boss = true) {
   if (!boss) return 1;
   const final = activity.story ? activity.story.storyStage >= 25 && activity.story.storyStage <= 150 && activity.story.storyStage % 25 === 0 : activity.dungeon ? activity.dungeon.stage === dungeonStageCount : activity.infusion ? activity.infusion.stage === infusionStageCount(activity.infusion.mode) : activity.war ? activity.war.stage === warStageCount : false;
@@ -99,9 +99,9 @@ function bossLootRange(drop, multiplier) {
 
 // src/content/loot-random.ts
 function lootRoll(random) {
-  const value = random();
-  if (!Number.isFinite(value) || value < 0 || value >= 1) throw new Error("Loot roll must be in [0, 1).");
-  return value;
+  const value2 = random();
+  if (!Number.isFinite(value2) || value2 < 0 || value2 >= 1) throw new Error("Loot roll must be in [0, 1).");
+  return value2;
 }
 function infusionLycalisOdds(level) {
   if (!Number.isInteger(level) || level < 50 || level > 120) throw new Error("Null-Prismatica drops require an infusion enemy level from 50 to 120.");
@@ -177,10 +177,1346 @@ function treasuryFractalisDrop(level) {
 var range = (drop) => `${drop.minimum.toLocaleString("en-US")}-${drop.maximum.toLocaleString("en-US")}`;
 var treasuryPrismaticaText = `Guaranteed per-kill Prismatica starts at ${range(treasuryFractalisDrop(65))} at Lv.65 and multiplies up to a base ${range(treasuryFractalisDrop(120))} at Lv.120. The stage 25 final boss awards ${range(bossLootRange(treasuryFractalisDrop(120), 5))} on every clear. Earlier stages keep their existing curve.`;
 
-// src/content/kit-conduits.ts
-function stats(first, second, third) {
-  return [first, second, third].map((stat, index) => ({ stat, kind: "percent", amount: [60, 50, 40][index] }));
+// src/content/conduit-redesign.ts
+var conduitRedesign = {
+  "vigil-core": {
+    "description": "+6% -> +21% maximum HP.",
+    "ranges": [
+      {
+        "base": 6,
+        "maximum": 21,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "siegebound-drive": {
+    "description": "+8% -> +16% Normal Attack direct damage.",
+    "ranges": [
+      {
+        "base": 8,
+        "maximum": 16,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "bastion-lock": {
+    "description": "+10% -> +35% Defense.",
+    "ranges": [
+      {
+        "base": 10,
+        "maximum": 35,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "parallax-relay": {
+    "description": "The first offensive activation each encounter has +15 -> +30 pp Critical Rate, capped at 100%. Consume once even if it hits several enemies.",
+    "ranges": [
+      {
+        "base": 15,
+        "maximum": 30,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "fracture-reservoir": {
+    "description": "+10 -> +35 Gauge capacity; enter a fresh encounter with 5 -> 10 Gauge, capped by that capacity. Not reapplied by Settings or round changes.",
+    "ranges": [
+      {
+        "base": 10,
+        "maximum": 35,
+        "percent": false,
+        "step": false
+      },
+      {
+        "base": 5,
+        "maximum": 10,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "prism-splinter-socket": {
+    "description": "+10% -> +20% Skill 1 direct damage.",
+    "ranges": [
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "precision-escapement": {
+    "description": "+10% -> +35% Critical Damage multiplier. No Critical Rate increase.",
+    "ranges": [
+      {
+        "base": 10,
+        "maximum": 35,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "fieldbrace-coupler": {
+    "description": "Take 4% -> 8% less direct enemy damage while you have any shield immediately before impact. Applies to the whole hit even if it breaks the shield.",
+    "ranges": [
+      {
+        "base": 4,
+        "maximum": 8,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "reserve-torque-crank": {
+    "description": "Defense grants 3 -> 6 Gauge, once per Defense action.",
+    "ranges": [
+      {
+        "base": 3,
+        "maximum": 6,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "crosspin-governor": {
+    "description": "+10% -> +20% Skill 2 direct damage.",
+    "ranges": [
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "duplex-heart": {
+    "description": "After the first direct enemy hit each phase that actually removes your HP, heal the most injured other living ally for 5% -> 10% H. Cannot heal yourself or revive.",
+    "ranges": [
+      {
+        "base": 5,
+        "maximum": 10,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "spearwheel-engine": {
+    "description": "Skill 1 ignores 15% -> 30% enemy Defense. Does not bypass shields.",
+    "ranges": [
+      {
+        "base": 15,
+        "maximum": 30,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "falcon-sight": {
+    "description": "Two consecutive noncritical offensive activations prime your next offensive activation to critically hit. That activation also gains +10% -> +20% Critical Damage multiplier. A native critical clears the count; AoE counts once and the primed activation uses one consumed charge for all its targets. No additional RNG roll.",
+    "ranges": [
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "aegis-capacitor": {
+    "description": "When any shield on you absorbs positive direct enemy damage, gain 4 -> 8 Gauge once per enemy phase. Full-block and partial-block hits qualify; no HP loss is required.",
+    "ranges": [
+      {
+        "base": 4,
+        "maximum": 8,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "springwell-pump": {
+    "description": "+20% -> +40% native active-ability healing offered before missing-HP clipping. Does not improve passive or Conduit healing.",
+    "ranges": [
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "twinpulse-bellows": {
+    "description": "Your second consecutive Normal Attack gains +25% -> +50% direct damage. The sequence then resets; any other manual action resets it too. A target change does not reset it.",
+    "ranges": [
+      {
+        "base": 25,
+        "maximum": 50,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "glassroot-gimbal": {
+    "description": "Gain Critical Rate proportional to missing HP: up to +12 -> +24 pp at 75% missing HP, capped there. Snapshot before the offensive activation.",
+    "ranges": [
+      {
+        "base": 12,
+        "maximum": 24,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "lifeline-flywheel": {
+    "description": "After a native offensive activation, heal yourself for 8% -> 16% of its actual direct HP damage, capped at 4% -> 8% H per activation. Does not count overkill, shields, Burn or generated strikes.",
+    "ranges": [
+      {
+        "base": 8,
+        "maximum": 16,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 4,
+        "maximum": 8,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "sentinel-aperture": {
+    "description": "Reduce the final direct damage of enemy critical hits against you by 25% -> 50%. Ordinary noncritical hits are unchanged.",
+    "ranges": [
+      {
+        "base": 25,
+        "maximum": 50,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "wardglass-transformer": {
+    "description": "+20% -> +40% native shield amount offered before refresh comparison. Generated shields are unchanged.",
+    "ranges": [
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "hammerbalance-link": {
+    "description": "+12% -> +42% Attack; -4% -> -14% Defense.",
+    "ranges": [
+      {
+        "base": 12,
+        "maximum": 42,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": -4,
+        "maximum": -14,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "breach-pendulum": {
+    "description": "After a native offensive activation, offer yourself a refresh-only shield equal to 8% -> 16% of its total actual direct HP damage, capped at 5% -> 10% H. No shield from Burn, overkill, absorbed damage or generated strikes.",
+    "ranges": [
+      {
+        "base": 8,
+        "maximum": 16,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 5,
+        "maximum": 10,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "coilfeed-ratchet": {
+    "description": "Skill 2 costs 3 -> 6 less Gauge, minimum 1 after all ordinary-skill discounts. Does not change Last Flare or grant Gauge.",
+    "ranges": [
+      {
+        "base": 3,
+        "maximum": 6,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "opal-indexer": {
+    "description": "Your native Weaken applications last +1 -> +2 enemy phases, maximum 6 remaining phases. Reapplication refreshes rather than adds durations. Does not grant Weaken to a kit without it.",
+    "ranges": [
+      {
+        "base": 1,
+        "maximum": 2,
+        "percent": false,
+        "step": true
+      }
+    ]
+  },
+  "resonance-crucible": {
+    "description": "+20% -> +40% damage to Burn natively applied by you. Snapshot potency at application; no duration change or new Burn.",
+    "ranges": [
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "worldbreaker-drive": {
+    "description": "+35% -> +70% Last Flare direct damage; -6% -> -21% maximum HP. Recovery remains.",
+    "ranges": [
+      {
+        "base": 35,
+        "maximum": 70,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": -6,
+        "maximum": -21,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "immortal-vessel": {
+    "description": "+25% -> +87.5% maximum HP; -6% -> -21% Attack. No resurrection or healing proc.",
+    "ranges": [
+      {
+        "base": 25,
+        "maximum": 87.5,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": -6,
+        "maximum": -21,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "citadel-spine": {
+    "description": "+25% -> +87.5% Defense; -6% -> -21% Elemental Damage. Native shield offers additionally include 10% -> 20% D.",
+    "ranges": [
+      {
+        "base": 25,
+        "maximum": 87.5,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": -6,
+        "maximum": -21,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "astral-prism": {
+    "description": "+25% -> +87.5% Elemental Damage; -6% -> -21% Defense. A zero native Elemental Damage stat remains zero.",
+    "ranges": [
+      {
+        "base": 25,
+        "maximum": 87.5,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": -6,
+        "maximum": -21,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "judgment-lens": {
+    "description": "Native skill/Last Flare critical damage is +40% -> +80%; your Normal Attacks cannot critically hit. Last Flare/native critical resources still follow their normal eligibility.",
+    "ranges": [
+      {
+        "base": 40,
+        "maximum": 80,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "siege-cantilever": {
+    "description": "Your natively all-enemy abilities gain +60% -> +120% direct damage when exactly one enemy is alive at activation start. Does not improve originally single-target abilities or support outcomes.",
+    "ranges": [
+      {
+        "base": 60,
+        "maximum": 120,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "nullsong-transmission": {
+    "description": "+40% -> +80% Normal Attack direct damage; -12% -> -24% Skill 1/Skill 2 direct damage. Last Flare is unchanged.",
+    "ranges": [
+      {
+        "base": 40,
+        "maximum": 80,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": -12,
+        "maximum": -24,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "horizon-heartcase": {
+    "description": "+20% -> +70% maximum HP; -4% -> -14% Defense. At the start of your forced Last Flare recovery turn, restore 15% -> 30% of missing HP once.",
+    "ranges": [
+      {
+        "base": 20,
+        "maximum": 70,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": -4,
+        "maximum": -14,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 15,
+        "maximum": 30,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "stasis-reliquary": {
+    "description": "Once per encounter, a lethal direct hit leaves you at 1 HP and prevents further direct HP loss for that enemy phase. Next player turn you cannot manually act, even if otherwise ready. Duration and skip do not scale; at that turn's start gain a shield of 10% -> 20% H. Burn can still defeat you.",
+    "ranges": [
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "granite-hourglass": {
+    "description": "At the next player-turn start, gain a refresh-only shield equal to 30% -> 60% of actual direct HP damage you lost in the preceding enemy phase, capped at 10% -> 20% H. Clear the ledger after settlement; no effect while fallen.",
+    "ranges": [
+      {
+        "base": 30,
+        "maximum": 60,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "pale-bulwark-diadem": {
+    "description": "While you are above 75% HP, take 15% -> 30% less direct damage. Below or at 75% HP, native shields you cast on yourself are 25% -> 50% stronger instead. Snapshot each hit/offer separately.",
+    "ranges": [
+      {
+        "base": 15,
+        "maximum": 30,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 25,
+        "maximum": 50,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "starvein-conductor": {
+    "description": "Before an ability that natively applies Burn, pay 5% H, leaving at least 1 HP. If the full cost cannot be paid, the bonus does not apply. That activation's Burn deals +40% -> +80% damage. Self-payment is not damage taken, cannot trigger effects and does not affect direct damage.",
+    "ranges": [
+      {
+        "base": 40,
+        "maximum": 80,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "meridian-inverter": {
+    "description": "Your native shield abilities restore living allies' HP instead of offering their authored shields, at 75% -> 150% of the final native shield offer. They no longer create native shield growth/absorption resources. Existing unrelated shields remain.",
+    "ranges": [
+      {
+        "base": 75,
+        "maximum": 150,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "execution-orrery": {
+    "description": "Native direct damage gains +50% -> +100% against a target at or below 25% HP immediately before that target's hit. No instant execution, extra action or kill reward.",
+    "ranges": [
+      {
+        "base": 50,
+        "maximum": 100,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "verdict-caliper": {
+    "description": "Your offensive activations cannot crit, but gain +35% -> +70% direct damage. Burn is unchanged; no critical-trigger effects can fire from these activations.",
+    "ranges": [
+      {
+        "base": 35,
+        "maximum": 70,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "infernic-phoenix-reactor": {
+    "description": "Once per encounter, after a hostile lethal hit/tick, revive yourself at 25% -> 50% H after that hit resolves. Gauge becomes 0; keep spent/recovery dates and cannot act until a later legal turn. The charge is consumed before restoration.",
+    "ranges": [
+      {
+        "base": 25,
+        "maximum": 50,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "aquatic-leviathan-pump": {
+    "description": "Total actual absorption during an enemy phase by your native shields becomes a healing pool equal to 30% -> 60% of the blocked damage, capped at 10% -> 20% H. At next player-turn start, divide the pool equally among living injured allies, clipping each share without redistribution. Requires you alive at settlement.",
+    "ranges": [
+      {
+        "base": 30,
+        "maximum": 60,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "tectonic-atlas-bastion": {
+    "description": "Defense taunts all living enemies for that enemy phase and reduces direct damage to you by 10% -> 20%. Only one squad taunt can be active; latest legal taunt wins.",
+    "ranges": [
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "efflorescent-worldtree-heart": {
+    "description": "Your native active-ability overhealing plants a seed on that recipient worth 50% -> 100% of the wasted heal, capped at 10% -> 20% H. At next player-turn start, the seed heals that living recipient once; stronger seed refreshes, never stacks.",
+    "ranges": [
+      {
+        "base": 50,
+        "maximum": 100,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "voltaic-thunderbird-coil": {
+    "description": "Once per offensive activation with a native critical HP hit, arc to the healthiest other living enemy for 30% -> 60% of that first critical's actual HP damage, capped at 50% -> 100% A. No other enemy means no arc.",
+    "ranges": [
+      {
+        "base": 30,
+        "maximum": 60,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 50,
+        "maximum": 100,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "atmospheric-griffin-turbine": {
+    "description": "After your Normal Attack deals direct HP damage, each other living ally gains 3 -> 6 Gauge, once per activation. No return to you and no gain on shield-only damage.",
+    "ranges": [
+      {
+        "base": 3,
+        "maximum": 6,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "luminous-seraph-mirror": {
+    "description": "A native critical activation heals each living ally for 8% -> 16% of its total direct HP damage, capped at 3% -> 6% H per ally per activation.",
+    "ranges": [
+      {
+        "base": 8,
+        "maximum": 16,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 3,
+        "maximum": 6,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "ominous-eclipse-mantle": {
+    "description": "When a native damaging skill hits your already-Weakened target, consume one remaining phase of your Weaken after impact to ignore 40% -> 60% of that target's Defense for this hit. One consumption per target per activation; never consume another owner's Weaken.",
+    "ranges": [
+      {
+        "base": 40,
+        "maximum": 60,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "tranquilitic-kirin-cradle": {
+    "description": "Defense heals the lowest-HP-ratio living ally for 50% -> 100% D, capped at 10% -> 20% H. Self is eligible; no shield or Gauge is granted.",
+    "ranges": [
+      {
+        "base": 50,
+        "maximum": 100,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "chaotic-ouroboros-core": {
+    "description": "On Last Flare, convert only Gauge above its actual paid cost into a refresh-only self shield: 0.3% -> 0.6% H per excess Gauge, capped at 15% -> 30% H. Consume that excess Gauge, even if a stronger shield makes the offer redundant; normal recovery remains.",
+    "ranges": [
+      {
+        "base": 0.3,
+        "maximum": 0.6,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 15,
+        "maximum": 30,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "infernic-cinder-testament": {
+    "description": "Each consecutive damaging tick of your Burn on the same enemy adds +20% -> +40% Burn damage per preceding tick, capped at +60% -> +120%. Reapplying Burn resets this item's tick streak on that target.",
+    "ranges": [
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 60,
+        "maximum": 120,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "aquatic-undertide-chronometer": {
+    "description": "Your first native Weaken application to each enemy postpones its next scheduled skill by 1 -> 2 enemy phases; it uses Normal Attack when postponed. Later schedule intervals shift by the same amount. Once per enemy per encounter, including bosses.",
+    "ranges": [
+      {
+        "base": 1,
+        "maximum": 2,
+        "percent": false,
+        "step": true
+      }
+    ]
+  },
+  "tectonic-faultkeeper-loom": {
+    "description": "While defending, intercept 30% -> 60% of each other ally's incoming post-mitigation direct damage, up to 20% -> 40% H routed total per phase. Your shield then absorbs routed damage; it is not mitigated a second time.",
+    "ranges": [
+      {
+        "base": 30,
+        "maximum": 60,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "efflorescent-verdant-covenant": {
+    "description": "Your effective native active heal of another ally primes +20% -> +40% direct damage for that recipient's next Skill 1 or Skill 2, consumed once for the entire activation. Stronger refresh wins; Last Flare/Normal do not consume it.",
+    "ranges": [
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "voltaic-stormstep-dynamo": {
+    "description": "Switching directly between Skill 1 and Skill 2 gives the new action +25% -> +50% direct damage. Repeating a slot, using Normal/Defense/Last Flare, or a non-damaging new action breaks the chain. First action receives no bonus.",
+    "ranges": [
+      {
+        "base": 25,
+        "maximum": 50,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "atmospheric-skythread-rudder": {
+    "description": "Defense primes one Tailwind. Your next ordinary skill costs 10 -> 20 less Gauge, minimum 1 after discounts. Consume only on legal activation; refresh one charge, never stack.",
+    "ranges": [
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "luminous-dawn-witness-array": {
+    "description": "Each noncritical Normal Attack stores a Witness, maximum 3. Your next native critical activation consumes all Witnesses, adding 15% -> 30% A per Witness as one generated strike to its primary target, after native damage. No strike if that target has fallen.",
+    "ranges": [
+      {
+        "base": 15,
+        "maximum": 30,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "ominous-nightglass-archive": {
+    "description": "A native damaging skill places one personal Fracture on each surviving target, maximum 3 per owner/target. Your Normal Attack consumes them for +10% -> +20% direct damage each. Marks are placed after impact; the current skill never consumes them by default.",
+    "ranges": [
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "tranquilitic-stillhour-carillon": {
+    "description": "At the start of your forced Last Flare recovery turn, gain 15 -> 30 Gauge once and give the lowest-Gauge other living ally the same amount. No gain on an ordinary unspent turn, stasis skip or missing action slot.",
+    "ranges": [
+      {
+        "base": 15,
+        "maximum": 30,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "chaotic-paradox-spindle": {
+    "description": "During forced Last Flare recovery, permit one manual Normal Attack at 50% -> 75% normal direct damage. No skills/Defense; Normal costs/gains and native triggers remain. The recovery date is not shortened and no second action is allowed.",
+    "ranges": [
+      {
+        "base": 50,
+        "maximum": 75,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "tempered-strike-link": {
+    "description": "A Normal Attack against your existing Burn consumes one remaining Burn phase after native impact and adds one generated strike equal to 80% -> 160% of that Burn's current next-tick damage, capped at 80% -> 160% A. One detonation per activation; if native damage kills the target, do not consume or strike.",
+    "ranges": [
+      {
+        "base": 80,
+        "maximum": 160,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 80,
+        "maximum": 160,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "mending-valve": {
+    "description": "A native direct kill heals the most injured living ally for 8% -> 16% H, once per activation regardless of kills. Self is eligible.",
+    "ranges": [
+      {
+        "base": 8,
+        "maximum": 16,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "ward-stitch-spool": {
+    "description": "Each native shield offer additionally stitches 25% -> 50% of that offer onto that recipient's surviving shield, after normal refresh, capped at 30% -> 60% R total shield. If already above the cap, do not reduce it. This added layer is Conduit-origin.",
+    "ranges": [
+      {
+        "base": 25,
+        "maximum": 50,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 30,
+        "maximum": 60,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "cinder-metering-nozzle": {
+    "description": "When an enemy carrying your native Burn dies with phases remaining, copy that remaining Burn to the healthiest living enemy at 25% -> 50% tick potency. A stronger existing Burn is not overwritten. Copied Burn cannot spread again or trigger any Conduit/native resource.",
+    "ranges": [
+      {
+        "base": 25,
+        "maximum": 50,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "pulse-trigger-pawl": {
+    "description": "A Skill 1/Skill 2 activation that deals native critical HP damage refunds 8 -> 16 Gauge once, capped at that action's actual paid cost. No refund on Normal, Last Flare or generated hits.",
+    "ranges": [
+      {
+        "base": 8,
+        "maximum": 16,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "firstlight-cam": {
+    "description": "After a native damaging Normal Attack, donate up to 8 -> 16 of your remaining Gauge to the lowest-Gauge other living ally, capped by their free capacity. Debit and credit the same amount; no recipient means no cost.",
+    "ranges": [
+      {
+        "base": 8,
+        "maximum": 16,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "secondbeat-rack": {
+    "description": "If an enemy carrying your native Weaken dies, transfer its remaining duration and reduction to the highest-Attack living enemy. Transfer potency is 60% -> 100% of the old reduction, duration at most 3. Stronger existing Weaken wins; transferred Weaken cannot transfer again or generate resources.",
+    "ranges": [
+      {
+        "base": 60,
+        "maximum": 100,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "flare-focusing-iris": {
+    "description": "On an actual native Infernic Embers spend, add a generated strike to each enemy already carrying your Burn for 25% -> 50% of its next-tick damage per spent charge, capped at 60% -> 120% A per target per activation. No added Burn phase is consumed or granted.",
+    "ranges": [
+      {
+        "base": 25,
+        "maximum": 50,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 60,
+        "maximum": 120,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "clearwater-manifold": {
+    "description": "Native Gauge gain that would exceed your capacity instead gives the lowest-Gauge other living ally 50% -> 100% of that overflow, capped at 20 -> 40 Gauge per player round including its enemy phase. Never routes Conduit-origin Gauge or relays another overflow.",
+    "ranges": [
+      {
+        "base": 50,
+        "maximum": 100,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "aegis-return-spring": {
+    "description": "Native shield growth on another ally primes one Critical Seal on them. Their next enemy critical direct hit is resolved with multiplier 1 instead of the rolled critical multiplier, then the seal is consumed. Grant at most 1 -> 2 seals total across the team per round; each recipient holds one. Critical RNG/result identity is otherwise unchanged.",
+    "ranges": [
+      {
+        "base": 1,
+        "maximum": 2,
+        "percent": false,
+        "step": true
+      }
+    ]
+  },
+  "emberlife-kiln": {
+    "description": "Actual HP damage from your native Burn heals you for 20% -> 40% of that damage, capped at 6% -> 12% H total per enemy phase. No healing from propagated Burn or generated echoes.",
+    "ranges": [
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 6,
+        "maximum": 12,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "tension-governor": {
+    "description": "Native Weaken you apply is +5 -> +10 pp stronger, capped at 60% total reduction. Duration is unchanged; does not create Weaken.",
+    "ranges": [
+      {
+        "base": 5,
+        "maximum": 10,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "covercharge-drum": {
+    "description": "After a native active team heal, redirect 40% -> 80% of the total overheal to the most injured other living ally, capped at 10% -> 20% H per activation. This is immediate generated healing, not another native heal or a saved seed.",
+    "ranges": [
+      {
+        "base": 40,
+        "maximum": 80,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "sootwake-crucible": {
+    "description": "Your damaging native Burn tick primes one Sootwake on that enemy. The next other ally's native direct hit against it gains +20% -> +40% damage and consumes the Sootwake. Expires at the end of the following player round; refresh one mark, never stack. Cannot be consumed by you or generated damage.",
+    "ranges": [
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "tidebound-reflector": {
+    "description": "Once per enemy phase, the first direct hit absorbed by any shield on you reflects 20% -> 40% of actual blocked damage to its attacker, capped at 30% -> 60% A. No second Defense reduction on this echo; no reflection of reflected/routed damage.",
+    "ranges": [
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 30,
+        "maximum": 60,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "pressurecrest-governor": {
+    "description": "Every 3 -> 2 offensive activations with native critical HP damage earn one Windveil, maximum one held. Windveil completely avoids the next enemy Normal Attack against you, then is consumed; scheduled skills cannot be avoided. Avoided hits provide no incoming-hit Gauge or absorption trigger.",
+    "ranges": [
+      {
+        "base": 3,
+        "maximum": 2,
+        "percent": false,
+        "step": true
+      }
+    ]
+  },
+  "rootbound-triage-vault": {
+    "description": "When your native active heal leaves a living recipient below 20% -> 40% R, automatically spend 15 of your remaining Gauge, if available, to heal them toward that threshold, limited to 10% -> 20% H extra. Once per activation; choose the lowest-HP-ratio eligible recipient after the native team heal. No useful restoration means no payment.",
+    "ranges": [
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "solace-anchor": {
+    "description": "Once per encounter, permit Defense as a free manual preparation before your normal action, costing 10 Gauge. Gain 10% -> 20% additional direct-damage reduction for the current enemy phase. Not allowed while spent/recovering; the charge is consumed before applying Defense and no second free Defense is possible.",
+    "ranges": [
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "ruinselect-prism": {
+    "description": "Skill 1 may consume your existing personal Fractures as well as Normal Attack, for +15% -> +30% Skill 1 direct damage per mark, maximum 3. Grants no marks, consumes before impact and never consumes another owner's marks.",
+    "ranges": [
+      {
+        "base": 15,
+        "maximum": 30,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "infernic-pyre-census": {
+    "description": "Every third damaging native Burn tick on a given enemy becomes a Census tick for +75% -> +150% damage. Track damaging ticks across native refreshes; reset when Burn expires or changes owner. Generated/propagated Burn does not count. No critical roll or cooldown effect.",
+    "ranges": [
+      {
+        "base": 75,
+        "maximum": 150,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "oceanic-shared-tide-pump": {
+    "description": "When an ally protected by your native shield is hit, other living allies' shields from you may absorb up to 30% -> 60% of the post-mitigation hit before the target's own shield. Draw from other shields in squad order; never spend HP or apply mitigation twice.",
+    "ranges": [
+      {
+        "base": 30,
+        "maximum": 60,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "atmospheric-storm-clock": {
+    "description": "Three native critical offensive activations prime one Storm Clock. Your next Last Flare costs 15 -> 30 less Gauge, minimum 70 after all Last Flare discounts; consuming it resets the counter. No recharge from Last Flare itself. Captured ultimate intervals/recovery remain.",
+    "ranges": [
+      {
+        "base": 15,
+        "maximum": 30,
+        "percent": false,
+        "step": false
+      }
+    ]
+  },
+  "botanic-graft-covenant": {
+    "description": "Flora's newly planted native Seeds store +20% -> +40% healing. Apply once when planted, including empowered Seeds; refresh rather than stack. No new resource or Seed for another kit.",
+    "ranges": [
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "tranquilitic-accord-bastion": {
+    "description": "Your first effective native support of another ally per encounter grants that ally one Accord. Their next lethal direct hit instead leaves 1 HP, consumes Accord and gives a refresh-only shield of 10% -> 20% H after the hit. Only one Accord granted per bearer per encounter, no revival and no immunity to later hits.",
+    "ranges": [
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "chaotic-fault-verdict": {
+    "description": "After the first native critical HP hit of an offensive activation, if its target survives, consume up to 10% H of your current shield to add 50% -> 100% of the shield actually spent as generated damage to that target, capped at 50% -> 100% A. Once per activation; a fallen target means no payment and no search for a different critical target.",
+    "ranges": [
+      {
+        "base": 50,
+        "maximum": 100,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 50,
+        "maximum": 100,
+        "percent": true,
+        "step": false
+      }
+    ]
+  },
+  "master-ember-1": {
+    "description": "When Infernis's native Burn would expire from ticking, pay 3% H to keep it for one further phase, only if Infernis is above 50% HP and can pay while remaining above 1 HP. At most two paid extensions per native application per target. Paid extensions are generated clock changes and cannot create more extension allowances.",
+    "ranges": []
+  },
+  "master-ember-2": {
+    "description": "Flame Arc becomes a single-target siege strike with double its native direct-damage coefficient. Only the selected target's owned Burn can detonate. It retains its cost; Last Flare remains all-enemy.",
+    "ranges": []
+  },
+  "master-ember-3": {
+    "description": "Flame Arc detonates at most one remaining owned Burn tick per target for twice that tick's damage, consuming only one tick. No owned Burn means no detonation. Last Flare still applies its ordinary Burn.",
+    "ranges": []
+  },
+  "master-tide-1": {
+    "description": "The first direct enemy hit per ally per encounter that completely breaks Tizu's native shield cannot spill damage into that ally's HP. The shield must absorb positive damage and be exhausted by this hit. No protection on an unshielded target or later shield breaks.",
+    "ranges": []
+  },
+  "master-tide-2": {
+    "description": "Tidal Shelter gives the explicitly selected living ally three times its native shield offer, with the same one-phase expiry. Other allies and Ocean Memory remain unchanged. Stillwater Gauge requires a full hit absorbed by Tizu's own native shield.",
+    "ranges": []
+  },
+  "master-tide-3": {
+    "description": "An enemy carrying Tizu's native Weaken targets Tizu with single-target hostile actions while he lives. Attacks retain the enemy's ordinary critical roll, Weaken and damage calculation. Newest active forced-target effect wins; area attacks are unchanged.",
+    "ranges": []
+  },
+  "master-sprout-1": {
+    "description": "Add a 2% R team heal after each living ally's first native ordinary-skill activation that round, including Flora's. Maximum three pulses per round; no pulse from Last Flare, assists, Conduit effects or a fallen Flora. Seeds remain unchanged; no retired Bloom is earned.",
+    "ranges": []
+  },
+  "master-sprout-2": {
+    "description": "A damaging Skill 1 adds Rootbind to its surviving target. Its next scheduled skill is replaced by Normal Attack, then Rootbind ends. Each enemy can be Rootbound once per encounter; normal attacks do not consume it. Skill 1's direct damage and Seed remain.",
+    "ranges": []
+  },
+  "master-sprout-3": {
+    "description": "Once per encounter, Worldseed also revives fallen other allies at 30% R after its ordinary damage/healing resolves. They return with 0 Gauge, spent until next player turn, and unchanged recovery dates; no native healing/resource triggers from resurrection. Flora must live to cast it and still pays/recover normally.",
+    "ranges": []
+  },
+  "master-atmoso-1": {
+    "description": "Normal Attack becomes all-enemy at 70% of its usual direct coefficient per target. Gauge gain, action cost and action-based triggers happen once per activation, not once per enemy. It does not charge Atmoso's own Cyclone.",
+    "ranges": []
+  },
+  "master-atmoso-2": {
+    "description": "Cyclone Weave gives Atmoso a Counterwind until his next action. Each direct enemy hit he survives adds 15% outgoing damage to that action, up to 45%; shield absorption qualifies. Clear on the next manual action even if it has no direct damage. No extra counterattack or critical roll.",
+    "ranges": []
+  },
+  "master-atmoso-3": {
+    "description": "Critical Rate above 100%, computed before the ordinary cap, becomes bonus native direct damage at 1% per excess pp, maximum +50%. Actual critical chance still caps at 100%; no benefit from noncritical-only Verdict Caliper.",
+    "ranges": []
+  },
+  "master-aurora-1": {
+    "description": "Enemies carrying Aurora's unconsumed native Seal have 15% less effective Defense against allied native direct attacks. Exposure ends when the Seal is consumed or expires; no stacking stat mutation.",
+    "ranges": []
+  },
+  "master-aurora-2": {
+    "description": "Aurora's Last Flare adds a Judgment Seal to each surviving enemy for two enemy phases. Sealed enemies cannot critically hit, though the ordinary critical RNG draw is still consumed. Recasting refreshes the seal; does not cancel a scheduled skill.",
+    "ranges": []
+  },
+  "master-aurora-3": {
+    "description": "After an enemy carrying Aurora's unconsumed native Seal removes an ally's HP with a direct hit, heal the most injured other living ally for 50% of that HP loss, capped at 10% H per enemy phase. No revival or routed-damage trigger; a special that consumes the Seal no longer qualifies.",
+    "ranges": []
+  },
+  "master-bliss-1": {
+    "description": "Before Skill 2, automatically pay 10% H if Bliss can remain at 1 HP or more. Divide that paid HP equally as additional native healing for the other living allies, in any posture. Her ordinary posture effects remain. No other living ally means no payment; no retired Bloom is created.",
+    "ranges": []
+  },
+  "master-bliss-2": {
+    "description": "Warfeather Cut becomes two impacts against the same selected target, each at 70% of the original final direct damage. Reuse one critical result; costs, native resource spending/earning and equipment triggers resolve once for the activation's combined actual HP damage. Stop if the first hit kills; never retarget the second.",
+    "ranges": []
+  },
+  "master-bliss-3": {
+    "description": "Once per encounter, Bliss's Last Flare gives the lowest-Gauge other living ally one Quiet Feather. Their next legal Skill 1 costs no Gauge; consume before activation. It grants no action, missing skill, cooldown bypass or recovery bypass. Other discounts cannot turn the zero cost into a refund.",
+    "ranges": []
+  },
+  "master-bruno-1": {
+    "description": "The first direct enemy hit against Bruno each enemy phase cannot remove more than 20% H after shield absorption. It still spends his shield normally. Later hits, Burn and routed damage are uncapped by this Master.",
+    "ranges": []
+  },
+  "master-bruno-2": {
+    "description": "Bruno's Last Flare direct damage uses D in place of A in both the native coefficient and the mitigation ratio, `D/(D + enemy Defense)`. Normal critical/outgoing multipliers still apply; other actions stay Attack-based.",
+    "ranges": []
+  },
+  "master-bruno-3": {
+    "description": "Each damaging Skill 1 permanently removes 15% of the target's encounter-entry Defense, capped at 30% total per enemy. In exchange, Skill 2 Cover redirects 35% rather than 50%. Reset excavation on a fresh encounter; no Weaken or stat recursion.",
+    "ranges": []
+  },
+  "master-disciple-1": {
+    "description": "Disciple's native Instructions expire two player rounds later. They still enhance only the recipient's next native action and retain the single ordinary Instruction limit. No generated buff or extra action.",
+    "ranges": []
+  },
+  "master-disciple-2": {
+    "description": "After Last Flare, link living allies through the end of the next two player rounds. Native positive Gauge gains to a linked ally are split equally among currently living linked allies; clip full recipients without redistribution. Total offered Gauge is conserved, costs/refunds/generated income are not shared, and the link ends if Disciple falls.",
+    "ranges": []
+  },
+  "master-disciple-3": {
+    "description": "After Strike Instruction, its explicitly selected living recipient makes one generated assist at 40% A against the first living enemy in formation order. No extra RNG, critical, Gauge, resources, action spend, Instruction consumption or recursive equipment triggers. Once per Disciple activation.",
+    "ranges": []
+  },
+  "master-elise-1": {
+    "description": "Elise's native critical direct hits ignore 50% enemy Defense, but their final critical multiplier is fixed at 1.5, including elemental criticals, regardless of Critical Damage modifiers. Noncritical hits retain ordinary mitigation; shields remain shield-first.",
+    "ranges": []
+  },
+  "master-elise-2": {
+    "description": "Last Flare resolves four impacts per original target, each 30% of the original final damage. Reuse the native critical result per target; costs, recovery and Conduit/native resource triggers happen once per activation using combined HP damage. Never retarget impacts from fallen enemies.",
+    "ranges": []
+  },
+  "master-elise-3": {
+    "description": "Once per encounter, Elise's native direct kill clears her spent flag so she may choose one additional legal action that same player turn. Keep Gauge, readiness and recovery dates unchanged; a kill during Last Flare cannot bypass its recovery. Consume permission before clearing spent.",
+    "ranges": []
+  },
+  "master-razor-1": {
+    "description": "While defending, Razor parries the first scheduled enemy skill targeting him each enemy phase: reduce that hit's direct damage by 50%, then reflect 50% of the prevented damage to the surviving attacker, capped at 100% A. Normal Attacks do not consume the parry. Reflection is generated and cannot reflect again.",
+    "ranges": []
+  },
+  "master-razor-2": {
+    "description": "Before Last Flare, consume Razor's entire existing shield to add +2% direct damage per 1% H actually spent, maximum +60%. Last Flare's new native shields are offered afterward and cannot fund that same cast. No preexisting shield means no bonus.",
+    "ranges": []
+  },
+  "master-razor-3": {
+    "description": "Razor's first Skill 1 hit on each surviving enemy Silences it once per encounter: its next scheduled skill becomes Normal Attack, then Silence ends. Normal Attacks do not consume Silence. No Weaken or additional Wounds are granted.",
+    "ranges": []
+  },
+  "master-rosetta-1": {
+    "description": "Replace the two-contributor Quarry shield payout with one 48% R shield on the lowest-HP-ratio living ally, including a non-contributor. The same once-per-turn contribution gate remains; no passive heal or retired Grace.",
+    "ranges": []
+  },
+  "master-rosetta-2": {
+    "description": "After Skill 2 hits the Quarry, send up to two generated ricochets, one per distinct other contributor this turn, to different other living enemies in descending HP order. Each deals 25% of the primary hit's actual direct HP damage. Unused ricochets vanish.",
+    "ranges": []
+  },
+  "master-rosetta-3": {
+    "description": "Last Flare primes one Golden Opening on the surviving Quarry. The next other ally's native direct hit consumes it for +40% damage. One Opening per enemy; no stacking, expiry extension, or benefit to Rosetta herself.",
+    "ranges": []
+  },
+  "master-thornia-1": {
+    "description": "Replace a trap's ordinary hostile-activation retaliation with one generated 40% A strike against every living enemy. Consume one trap charge as usual; no response to harmless activations or a fallen Thornia.",
+    "ranges": []
+  },
+  "master-thornia-2": {
+    "description": "Skill 2 against a target with three native trap charges strikes all living enemies at its native direct coefficient, applying generated 15% Weaken for one phase to secondary survivors. Consume its ordinary selected-target trap charge once; aggregate equipment triggers once.",
+    "ranges": []
+  },
+  "master-thornia-3": {
+    "description": "Gilded Thorn Guard links its living other recipients to Thornia until next player-turn start. On the first otherwise-lethal direct hit to a linked ally that phase, route up to 20% H of the would-be HP loss into Thornia's shield/HP; preserve the ally only if this removes the full lethal excess. Once total per enemy phase; Thornia can fall and does not self-resurrect.",
+    "ranges": []
+  },
+  "master-crinso-1": {
+    "description": "A native critical Gold Skill 1 stores its actual critical multiplier minus one, capped at +50% outgoing damage for the next Crimson Skill 2. One refresh-only imprint, consumed once on activation; no Burn or extra critical roll.",
+    "ranges": []
+  },
+  "master-crinso-2": {
+    "description": "Before Crimson Skill 2, consume up to 10% H of current shield. After its direct hit, deal one generated strike at 50% of shield actually spent, capped at 50% A. No paid shield means no strike; no Burn, new RNG or generated resource hooks.",
+    "ranges": []
+  },
+  "master-crinso-3": {
+    "description": "Native offensive activations alternate Gold and Crimson, starting Gold. Gold gives +30% direct damage; Crimson heals Crinso for 20% of actual direct HP damage, capped at 10% H. Last Flare gets both and resets the next activation to Gold. Defense does not advance polarity; no extra personal resource bank.",
+    "ranges": []
+  },
+  "master-nerithe-1": {
+    "description": "Nerithe's Normal Attack marks its surviving target as Charted. One other ally's next single-target native damaging skill copies a generated 40%-damage echo to each different Charted enemy, then clears all Charts. No echo to the original target; Charts neither generate Gauge nor replace her fixed Normal-only +5 passive.",
+    "ranges": []
+  },
+  "master-nerithe-2": {
+    "description": "Fold the Sea becomes a pure team support skill: no direct damage or Weaken. It gives each living ally 15 native Gauge and 15% next-direct-hit protection. Retain its Skill 2 Gauge cost and one-action use; effects cannot exceed actual capacity or stack protection.",
+    "ranges": []
+  },
+  "master-nerithe-3": {
+    "description": "Ocean Beyond the Map deals 50% less direct damage but no longer imposes next-turn recovery. Its 100 Gauge base cost, native Weaken and one-action limit remain; it does not grant another action on the cast turn.",
+    "ranges": []
+  },
+  "master-orvella-1": {
+    "description": "Foundation starts with half its usual shared durability. On creation each living ally also receives a generated plate equal to 5% H, capped at 15% R. Plates refresh without stacking, absorb as Conduit shields and grant no native shield resource.",
+    "ranges": []
+  },
+  "master-orvella-2": {
+    "description": "After Foundation creation, spend its durability as equal healing shares for living injured allies. Total paid/healed is the minimum of 25% of remaining durability, 5% H and eligible ally count times their smallest missing-HP amount. Debit exactly actual restoration; no injured ally means no payment.",
+    "ranges": []
+  },
+  "master-orvella-3": {
+    "description": "Orvella gains +20% of her encounter-entry D per living ally protected by any positive shield or her active positive shared Foundation, maximum +60%. Count each ally once. Recalculate before each hit/offer without mutating entry Defense or HP.",
+    "ranges": []
+  },
+  "master-vaelor-1": {
+    "description": "Last Chord of the Sky pays 20% of Vaelor's current HP immediately before impact, leaving at least 1 HP, for +75% direct damage. This payment is mandatory while equipped, is not hostile damage and grants no incoming-hit effects. Gauge cost and next-turn recovery remain.",
+    "ranges": []
+  },
+  "master-vaelor-2": {
+    "description": "Skill 2 cast during Rise also applies generated Weaken of 15% for one enemy phase to surviving direct-hit targets. No retired Tempest spending, native resource hooks, or overwrite of stronger Weaken. Tune/Crescendo and Last Flare are unchanged.",
+    "ranges": []
+  },
+  "master-vaelor-3": {
+    "description": "Once per encounter, Vaelor's Defense may clear the spent flag of the highest-Gauge other living spent ally who is not recovering. Vaelor spends his own action; the recipient still pays their next action's full costs and follows readiness/recovery. No eligible ally means the permission is retained.",
+    "ranges": []
+  }
+};
+function redesignValue(level, base, maximum) {
+  if (!Number.isInteger(level) || level < 0 || level > 5) throw new Error("Invalid Conduit effect level.");
+  return base + (maximum - base) * level / 5;
 }
+function redesignStep(level, base, maximum) {
+  redesignValue(level, base, maximum);
+  return level < 3 ? base : maximum;
+}
+function redesignEffect(id, level = 0) {
+  const design = conduitRedesign[id];
+  if (!design) throw new Error("Missing redesigned Conduit definition: " + id);
+  redesignValue(level, 0, 0);
+  let index = 0;
+  return design.description.replace(
+    /([+-]?\d+(?:\.\d+)?)(%?)\s*->\s*([+-]?\d+(?:\.\d+)?)(%?)/g,
+    (_match, first, leftUnit, _last, rightUnit) => {
+      const range2 = design.ranges[index++];
+      const amount = range2.step ? redesignStep(level, range2.base, range2.maximum) : redesignValue(level, range2.base, range2.maximum);
+      return (first.startsWith("+") && amount >= 0 ? "+" : "") + Number(amount.toFixed(8)).toString() + (leftUnit || rightUnit);
+    }
+  );
+}
+
+// src/content/kit-conduits.ts
 var kitConduitDesigns = [
   {
     id: "tempered-strike-link",
@@ -189,14 +1525,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "infernic",
     element: "infernic",
-    buffs: stats("damage", "defense", "health"),
-    kitEffects: { rule: {
-      trigger: "direct",
-      actions: ["light"],
-      bank: { trigger: "burn-tick", maximum: 3 },
-      outcomes: [{ kind: "gauge", recipient: "self", amount: 2 }]
-    } },
-    effect: "+60% Attack, +50% Defense, +40% Health. Actual Burn damage from your abilities banks one Temper per round (max 3). An effective Normal Attack spends all Temper for 2 Gauge each, once per round.",
+    buffs: [],
+    effect: redesignEffect("tempered-strike-link"),
     lore: "The reborn striking engine tempers its reserve in genuine embers before releasing a measured return.",
     artDesign: "fully reborn articulated striking-link engine with a readable protected crimson ceramic pivot, six majestic phoenix blade fans, nested orange siege rings, a crown of interlocking impact vanes and densely layered scarlet ribbons"
   },
@@ -207,13 +1537,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "botanic",
     element: "botanic",
-    buffs: stats("health", "elementalDamage", "defense"),
-    kitEffects: { rule: {
-      trigger: "defense",
-      bank: { trigger: "heal", maximum: 3 },
-      outcomes: [{ kind: "gauge", recipient: "injured", amount: 3 }]
-    } },
-    effect: "+60% Health, +50% Elemental Damage, +40% Defense. Effective healing from your abilities banks one Sap per round (max 3). Defense spends all Sap to grant the most injured living ally 3 Gauge each, once per round.",
+    buffs: [],
+    effect: redesignEffect("mending-valve"),
     lore: "A restored restoration valve stores only the pulse of health actually returned.",
     artDesign: "fully reborn flower-valve cathedral with a readable protected ivory restoration channel, six majestic jade leaf fans, nested root rings, a petal crown and densely layered emerald covenant ribbons between articulated shutters"
   },
@@ -224,9 +1549,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "oceanic",
     element: "oceanic",
-    buffs: stats("defense", "health", "elementalDamage"),
-    kitEffects: { rule: { trigger: "shield-absorbed", outcomes: [{ kind: "shield", recipient: "self", amount: 0, ratio: 0.25, cap: 0.03 }] } },
-    effect: "+60% Defense, +50% Health, +40% Elemental Damage. Actual direct absorption by a shield from your abilities refreshes your own Conduit shield to 25% of absorbed damage, capped at 3% of your max HP, once per round.",
+    buffs: [],
+    effect: redesignEffect("ward-stitch-spool"),
     lore: "A completed ward loom recovers the tension spent protecting a living vessel.",
     artDesign: "fully reborn sapphire ward loom with a readable protected spool between pearl guides, six majestic shell fans, nested tidal rings, a leviathan crest crown and densely layered opaque blue ward ribbons"
   },
@@ -237,15 +1561,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "infernic",
     element: "infernic",
-    buffs: stats("elementalDamage", "damage", "defense"),
-    kitEffects: { rule: {
-      trigger: "direct",
-      actions: ["skill1", "skill2", "ultimate"],
-      ownBurn: true,
-      bank: { trigger: "burn-applied", maximum: 1 },
-      outcomes: [{ kind: "burn-clock", amount: 1 }]
-    } },
-    effect: "+60% Elemental Damage, +50% Attack, +40% Defense. An effective Burn application from your abilities banks one Cinder relay per round (refresh only). A later damaging skill hitting your existing Burn spends it to extend that Burn by one phase, capped at 3 remaining phases, once per round; never adds Burn.",
+    buffs: [],
+    effect: redesignEffect("cinder-metering-nozzle"),
     lore: "The restored nozzle holds an ember clock rather than creating a flame from nothing.",
     artDesign: "fully reborn triangular cinder observatory with a readable protected three-baffle nozzle, six majestic orange flame fans, nested scarlet clock rings, an ember crown and densely layered opaque crimson pressure ribbons"
   },
@@ -256,13 +1573,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "atmospheric",
     element: "atmospheric",
-    buffs: stats("damage", "critMultiplier", "defense"),
-    kitEffects: { rule: {
-      trigger: "defense",
-      bank: { trigger: "critical", maximum: 1 },
-      outcomes: [{ kind: "cooldown", recipient: "self", amount: 1 }]
-    } },
-    effect: "+60% Attack, +50% Critical Damage multiplier, +40% Defense. An effective critical direct activation banks one Sky tooth per round (refresh only). Defense spends it to shorten your longest available ordinary-skill cooldown by one, never before next round, once per round.",
+    buffs: [],
+    effect: redesignEffect("pulse-trigger-pawl"),
     lore: "A sovereign wind escapement returns a successful pressure pulse to a guarded timing wheel.",
     artDesign: "fully reborn teal ratchet escapement with a readable protected ceramic tooth, six majestic turbine feather fans, nested timing rings, an ivory sky crown and densely layered opaque wind ribbons"
   },
@@ -273,14 +1585,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "tranquilitic",
     element: "tranquilitic",
-    buffs: stats("damage", "health", "defense"),
-    kitEffects: { rule: {
-      trigger: "direct",
-      actions: ["light"],
-      bank: { trigger: "support", maximum: 1, other: true },
-      outcomes: [{ kind: "cooldown", recipient: "injured-other", amount: 1 }]
-    } },
-    effect: "+60% Attack, +50% Health, +40% Defense. Effective support from your abilities to another ally banks one Concordance per round. Your next effective Normal Attack spends it to shorten the most injured other ally\u2019s longest available ordinary-skill cooldown by one, never before next round, once per round.",
+    buffs: [],
+    effect: redesignEffect("firstlight-cam"),
     lore: "A restored opening cam aligns an allied mechanism only after genuine support.",
     artDesign: "fully reborn ivory concordance cam with a readable protected opening joint, six majestic petal fans, nested precision rings, a pearl sanctuary crown and densely layered turquoise support ribbons between articulated arms"
   },
@@ -291,15 +1597,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "chaotic",
     element: "chaotic",
-    buffs: stats("damage", "elementalDamage", "defense"),
-    kitEffects: { rule: {
-      trigger: "direct",
-      actions: ["light"],
-      ownWeaken: true,
-      bank: { trigger: "weaken-applied", maximum: 1 },
-      outcomes: [{ kind: "fracture", amount: 1 }]
-    } },
-    effect: "+60% Attack, +50% Elemental Damage, +40% Defense. An effective Weaken application from your abilities banks one Rupture per round. A later effective Normal Attack on your Weakened target spends it to place one personal Fracture Mark after impact (max 2), once per round.",
+    buffs: [],
+    effect: redesignEffect("secondbeat-rack"),
     lore: "The reborn offset rack measures actual suppression before indexing a new fracture.",
     artDesign: "fully reborn obsidian toothed-rack throne with a readable protected double jaw, six majestic fractured blade fans, nested violet fault rings, a crimson rupture crown and densely layered opaque tension ribbons"
   },
@@ -310,13 +1609,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "infernic",
     element: "infernic",
-    buffs: stats("elementalDamage", "health", "damage"),
-    kitEffects: { rule: {
-      trigger: "resource-spent",
-      resources: ["ember"],
-      outcomes: [{ kind: "shield", recipient: "injured", amount: 0, ratio: 0.04, cap: 0.12 }]
-    } },
-    effect: "+60% Elemental Damage, +50% Health, +40% Attack. Actually spending your Infernic Embers refreshes the most injured living ally\u2019s Conduit shield to 4% of your max HP per spent stack (max 12%), once per round; no resource is granted.",
+    buffs: [],
+    effect: redesignEffect("flare-focusing-iris"),
     lore: "An enthroned iris returns spent native embers as a protective coronation.",
     artDesign: "fully reborn scarlet six-leaf focusing iris with a readable protected faceted central crystal, six majestic phoenix shield fans, nested coronation rings, an ivory siege crown and densely layered orange protective ribbons"
   },
@@ -327,9 +1621,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "oceanic",
     element: "oceanic",
-    buffs: stats("health", "defense", "elementalDamage"),
-    kitEffects: { rule: { trigger: "shield-absorbed", outcomes: [{ kind: "gauge", recipient: "lowest-gauge-other", amount: 4 }] } },
-    effect: "+60% Health, +50% Defense, +40% Elemental Damage. Actual direct absorption by a shield from your abilities grants the lowest-Gauge other living ally 4 Gauge, once per round; no eligible ally means no effect.",
+    buffs: [],
+    effect: redesignEffect("clearwater-manifold"),
     lore: "A restored manifold routes consumed ward pressure to a separate protected chamber.",
     artDesign: "fully reborn three-chamber sapphire manifold with a readable protected return piston, six majestic pearl tide fans, nested channel rings, an abyssal shell crown and densely layered opaque blue return ribbons"
   },
@@ -340,13 +1633,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "tranquilitic",
     element: "tranquilitic",
-    buffs: stats("defense", "health", "elementalDamage"),
-    kitEffects: { rule: {
-      trigger: "defense",
-      bank: { trigger: "shield-grown", maximum: 1 },
-      outcomes: [{ kind: "boost", recipient: "injured-other", amount: 0.08 }]
-    } },
-    effect: "+60% Defense, +50% Health, +40% Elemental Damage. Actually increasing a shield with your abilities banks one Covenant per round. Defense spends it to refresh the most injured other living ally\u2019s outgoing Attack buff to 8% through next round, never stacking or replacing a stronger buff, once per round.",
+    buffs: [],
+    effect: redesignEffect("aegis-return-spring"),
     lore: "The restored spring releases protected pressure as a brief ally covenant.",
     artDesign: "fully reborn pearl shield-spring crown with a readable protected compression cage, six majestic sanctuary plate fans, nested covenant rings, an ivory aegis crown and densely layered turquoise return ribbons"
   },
@@ -357,9 +1645,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "infernic",
     element: "infernic",
-    buffs: stats("health", "elementalDamage", "damage"),
-    kitEffects: { rule: { trigger: "burn-tick", outcomes: [{ kind: "heal", recipient: "injured-other", amount: 0, ratio: 0.25, cap: 0.02 }] } },
-    effect: "+60% Health, +50% Elemental Damage, +40% Attack. Actual Burn HP damage from your abilities restores the most injured other living ally by 25% of that damage, capped at 2% of your max HP, once per round. This Conduit healing does not count as ability healing and cannot build Botanic Renewal.",
+    buffs: [],
+    effect: redesignEffect("emberlife-kiln"),
     lore: "The completed kiln salvages a measured ember pulse without pretending it is native restoration.",
     artDesign: "fully reborn vaulted crimson lifeforge with a readable protected ceramic kiln core, six majestic phoenix petal fans, nested life-channel rings, an ivory furnace crown and densely layered orange restoration ribbons"
   },
@@ -370,13 +1657,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "chaotic",
     element: "chaotic",
-    buffs: stats("defense", "elementalDamage", "health"),
-    kitEffects: { rule: {
-      trigger: "direct",
-      ownWeaken: true,
-      outcomes: [{ kind: "shield", recipient: "injured-other", amount: 0, ratio: 0.1, cap: 0.03 }]
-    } },
-    effect: "+60% Defense, +50% Elemental Damage, +40% Health. Effective direct HP damage to a target already carrying Weaken from your abilities refreshes the most injured other living ally\u2019s Conduit shield to 10% of damage, capped at 3% of your max HP, once per round.",
+    buffs: [],
+    effect: redesignEffect("tension-governor"),
     lore: "A completed suppression governor diverts a precise fraction of weakened resistance to a separate ward.",
     artDesign: "fully reborn obsidian twin-jaw governor with a readable protected counterweight, six majestic violet fault fans, nested tension rings, a crimson mercy crown and densely layered opaque fractured ribbons"
   },
@@ -387,9 +1669,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "botanic",
     element: "botanic",
-    buffs: stats("defense", "health", "elementalDamage"),
-    kitEffects: { rule: { trigger: "heal", other: true, outcomes: [{ kind: "shield", recipient: "self", amount: 0.04 }] } },
-    effect: "+60% Defense, +50% Health, +40% Elemental Damage. Actually healing another ally with your abilities refreshes your own Conduit shield to 4% of your max HP, once per round; full-health refreshes do not qualify.",
+    buffs: [],
+    effect: redesignEffect("covercharge-drum"),
     lore: "A restored living drum closes its own plates only when another vessel is truly repaired.",
     artDesign: "fully reborn jade armored heart drum with a readable protected reserve wheel, six majestic root plate fans, nested grove rings, a gray stone leaf crown and densely layered emerald protective ribbons"
   },
@@ -400,14 +1681,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "infernic",
     element: "infernic",
-    buffs: stats("damage", "health", "defense"),
-    kitEffects: { rule: {
-      trigger: "direct",
-      actions: ["light"],
-      ownBurn: true,
-      outcomes: [{ kind: "shield", recipient: "self", amount: 0, ratio: 0.1, cap: 0.04 }]
-    } },
-    effect: "+60% Attack, +50% Health, +40% Defense. Effective Normal Attack HP damage to your already Burning target refreshes your own Conduit shield to 10% of damage, capped at 4% of your max HP, once per round; the first Burn application does not qualify.",
+    buffs: [],
+    effect: redesignEffect("sootwake-crucible"),
     lore: "The reborn crucible reflects an existing ember channel into a measured self-ward.",
     artDesign: "fully reborn scarlet siege mirror crucible with a readable protected thorn aperture, six majestic phoenix armor fans, nested sootwake rings, an ivory targeting crown and densely layered orange reflection ribbons"
   },
@@ -418,9 +1693,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "oceanic",
     element: "oceanic",
-    buffs: stats("health", "defense", "damage"),
-    kitEffects: { rule: { trigger: "shield-grown", outcomes: [{ kind: "shield", recipient: "injured", amount: 0.05 }] } },
-    effect: "+60% Health, +50% Defense, +40% Attack. Actually increasing a shield with your abilities refreshes the most injured living ally\u2019s Conduit shield to at least 5% of your max HP, once per round; stronger shields remain unchanged.",
+    buffs: [],
+    effect: redesignEffect("tidebound-reflector"),
     lore: "A completed tide reflector directs a genuine ward expansion toward the vessel under greatest strain.",
     artDesign: "fully reborn sapphire shell reflector with a readable protected faceted mirror, six majestic ivory tidal plate fans, nested mercy rings, a leviathan pearl crown and densely layered opaque blue shelter ribbons"
   },
@@ -431,9 +1705,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "atmospheric",
     element: "atmospheric",
-    buffs: stats("critMultiplier", "damage", "health"),
-    kitEffects: { rule: { trigger: "critical", outcomes: [{ kind: "shield", recipient: "injured-other", amount: 0, ratio: 0.1, cap: 0.03 }] } },
-    effect: "+60% Critical Damage multiplier, +50% Attack, +40% Health. Effective critical direct HP damage refreshes the most injured other living ally\u2019s Conduit shield to 10% of damage, capped at 3% of your max HP, once per round; shield-only hits do not create shelter.",
+    buffs: [],
+    effect: redesignEffect("pressurecrest-governor"),
     lore: "A restored pressure crest directs real critical impact into an ally shelter rather than another attack.",
     artDesign: "fully reborn teal feather-vane sovereign with a readable protected pressure governor, six majestic turbine shelter fans, nested calibrated rings, an ivory tempest crown and densely layered opaque wind ribbons"
   },
@@ -444,9 +1717,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "botanic",
     element: "botanic",
-    buffs: stats("health", "defense", "elementalDamage"),
-    kitEffects: { rule: { trigger: "heal", belowHalf: true, outcomes: [{ kind: "cooldown", recipient: "target", amount: 1 }] } },
-    effect: "+60% Health, +50% Defense, +40% Elemental Damage. Effective healing from your abilities on an ally at or below half HP before healing shortens that recipient\u2019s longest available ordinary-skill cooldown by one, never before next round, once per round. It neither revives nor bypasses recovery.",
+    buffs: [],
+    effect: redesignEffect("rootbound-triage-vault"),
     lore: "A restored triage vault repairs one timing channel only under genuine pre-heal strain.",
     artDesign: "fully reborn ivory restoration vault with a readable protected triage chamber, six majestic emerald root fans, nested sanctuary rings, a gray stone petal crown and densely layered jade restoration ribbons"
   },
@@ -457,13 +1729,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "tranquilitic",
     element: "tranquilitic",
-    buffs: stats("defense", "health", "damage"),
-    kitEffects: { rule: {
-      trigger: "defense",
-      bank: { trigger: "support", maximum: 1, other: true },
-      outcomes: [{ kind: "gauge", recipient: "injured-other", amount: 5 }]
-    } },
-    effect: "+60% Defense, +50% Health, +40% Attack. Effective healing, shield growth or Attack support from your abilities to another ally banks one Witness per round (refresh only). Defense spends it to grant the most injured other living ally 5 Gauge, once per round; Defense still spends your action.",
+    buffs: [],
+    effect: redesignEffect("solace-anchor"),
     lore: "A completed sanctuary anchor stores the witness of a genuine covenant before releasing a reserve.",
     artDesign: "fully reborn ivory sanctuary anchor with a readable protected locking joint, six majestic fortress fans, nested solace rings, a pearl witness crown and densely layered turquoise covenant ribbons"
   },
@@ -474,9 +1741,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "chaotic",
     element: "chaotic",
-    buffs: stats("elementalDamage", "damage", "health"),
-    kitEffects: { rule: { trigger: "fracture-spent", outcomes: [{ kind: "gauge", recipient: "lowest-gauge-other", amount: 0, ratio: 2 }] } },
-    effect: "+60% Elemental Damage, +50% Attack, +40% Health. Actually consuming your personal Fracture Marks with an effective Normal Attack grants the lowest-Gauge other living ally 2 Gauge per consumed Mark (max 4), once per round. It creates no marks and never consumes another owner\u2019s marks.",
+    buffs: [],
+    effect: redesignEffect("ruinselect-prism"),
     lore: "The restored selection orrery routes spent personal fractures to one allied reserve.",
     artDesign: "fully reborn fractured obsidian selection orrery with a readable protected central prism, six majestic violet targeting fans, nested fault rings, a crimson parliamentary crown and densely layered opaque precision ribbons"
   },
@@ -487,9 +1753,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "infernic",
     element: "infernic",
-    buffs: stats("damage", "elementalDamage", "health"),
-    kitEffects: { rule: { trigger: "burn-tick", lethal: true, outcomes: [{ kind: "cooldown", recipient: "self", amount: 1, bothSkills: true }] } },
-    effect: "+60% Attack, +50% Elemental Damage, +40% Health. A Burn tick from your abilities that actually defeats its target shortens both of your available ordinary-skill cooldowns by one, never before next round, once per round. Burn retains its source and HP-side damage semantics.",
+    buffs: [],
+    effect: redesignEffect("infernic-pyre-census"),
     lore: "The completed census records only an ember channel that truly closes.",
     artDesign: "fully reborn crimson census engine with a readable protected three-counter core, six majestic phoenix requiem fans, nested siege rings, an ivory ember crown and densely layered opaque orange census ribbons"
   },
@@ -500,13 +1765,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "oceanic",
     element: "oceanic",
-    buffs: stats("health", "defense", "elementalDamage"),
-    kitEffects: { rule: {
-      trigger: "shield-absorbed",
-      other: true,
-      outcomes: [{ kind: "heal", recipient: "target", amount: 0, ratio: 0.3, cap: 0.03 }]
-    } },
-    effect: "+60% Health, +50% Defense, +40% Elemental Damage. Actual direct absorption by a shield from your abilities on another living ally restores that recipient by 30% of absorbed damage, capped at 3% of your max HP, once per round. Conduit healing cannot build healing charges such as Botanic Renewal.",
+    buffs: [],
+    effect: redesignEffect("oceanic-shared-tide-pump"),
     lore: "A completed tide pump repairs the vessel whose own ward actually bore the pressure.",
     artDesign: "fully reborn sapphire lifesea pump with a readable protected three-chamber heart, six majestic pearl shield fans, nested tide rings, a silver leviathan crown and densely layered opaque blue restoration ribbons"
   },
@@ -517,9 +1777,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "atmospheric",
     element: "atmospheric",
-    buffs: stats("damage", "critMultiplier", "defense"),
-    kitEffects: { rule: { trigger: "resource-spent", resources: ["tempest"], outcomes: [{ kind: "gauge", recipient: "self", amount: 0, ratio: 2 }] } },
-    effect: "+60% Attack, +50% Critical Damage multiplier, +40% Defense. Actually spending intrinsic Atmospheric Charge returns 2 Gauge per spent stack (max 6), once per round. No resource is granted, action costs and recovery remain, and account upgrades never scale this return.",
+    buffs: [],
+    effect: redesignEffect("atmospheric-storm-clock"),
     lore: "A completed storm clock returns a bounded native pressure reserve without moving the combat clock.",
     artDesign: "fully reborn teal chronarch clock with a readable protected escapement, six majestic turbine feather fans, nested ivory timing rings, a tempest crown and densely layered opaque wind and electric zigzag ribbons"
   },
@@ -530,13 +1789,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "botanic",
     element: "botanic",
-    buffs: stats("health", "elementalDamage", "defense"),
-    kitEffects: { rule: {
-      trigger: "resource-spent",
-      resources: ["bloom"],
-      outcomes: [{ kind: "shield", recipient: "injured", amount: 0, ratio: 0.03, cap: 0.09 }]
-    } },
-    effect: "+60% Health, +50% Elemental Damage, +40% Defense. Actually spending your Botanic Renewal refreshes the most injured living ally\u2019s Conduit shield to 3% of your max HP per spent stack (max 9%), once per round; it grants neither healing nor resources.",
+    buffs: [],
+    effect: redesignEffect("botanic-graft-covenant"),
     lore: "The completed graft engine translates a spent native restoration reserve into one protective covenant.",
     artDesign: "fully reborn emerald graft engine with a readable protected restoration chamber, six majestic articulated root fans, nested covenant rings, an ivory petal crown and densely layered jade protective ribbons across gray stone braces"
   },
@@ -547,9 +1801,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "tranquilitic",
     element: "tranquilitic",
-    buffs: stats("defense", "health", "elementalDamage"),
-    kitEffects: { rule: { trigger: "support", other: true, outcomes: [{ kind: "protection", recipient: "target", amount: 0.1 }] } },
-    effect: "+60% Defense, +50% Health, +40% Elemental Damage. Effective healing, shield growth or Attack support from your abilities to another living ally gives that recipient one 10% direct-hit protection charge, refresh only, once per round. It is consumed on their next direct enemy hit, never reduces Burn and resets each encounter.",
+    buffs: [],
+    effect: redesignEffect("tranquilitic-accord-bastion"),
     lore: "A completed accord bastion binds real support to one bounded protective witness.",
     artDesign: "fully reborn ivory accord bastion with a readable protected sanctuary lock, six majestic seraph fortress fans, nested pearl covenant rings, a turquoise peace crown and densely layered opaque sanctuary ribbons"
   },
@@ -560,13 +1813,8 @@ var kitConduitDesigns = [
     price: null,
     theme: "chaotic",
     element: "chaotic",
-    buffs: stats("elementalDamage", "damage", "health"),
-    kitEffects: { rule: {
-      trigger: "resource-spent",
-      resources: ["thornAegis", "duality"],
-      outcomes: [{ kind: "heal", recipient: "self", amount: 0, ratio: 0.02, cap: 0.06 }]
-    } },
-    effect: "+60% Elemental Damage, +50% Attack, +40% Health. Actually spending your Thorn Aegis or Rose Duality restores your own HP by 2% of max HP per spent charge (max 6%), once per round. This is Conduit healing, not healing from Rose abilities; no resource, Weaken or Burn is granted.",
+    buffs: [],
+    effect: redesignEffect("chaotic-fault-verdict"),
     lore: "The completed fault selector distinguishes a genuinely spent Rose reserve from an unearned echo.",
     artDesign: "fully reborn obsidian rosefault selector with a readable protected forked prism, six majestic crimson thorn fans, nested violet precision rings, a fractured rose crown and densely layered opaque crimson and amethyst fault ribbons"
   }
@@ -586,8 +1834,8 @@ var commonConduits = [
     rarity: "Common",
     price: 1e3,
     power: "Elemental Light",
-    buff: { stat: "health", kind: "percent", amount: 5 },
-    effect: "+5% Health",
+    buffs: [{ stat: "health", kind: "percent", amount: 6 }],
+    effect: redesignEffect("vigil-core"),
     lore: "An emergency life-support mechanism from Let and Rise's shared prototype work, sealed beneath the battlefields of their later rivalry. Its protected chamber still holds a reserve of elemental energy."
   },
   {
@@ -596,8 +1844,8 @@ var commonConduits = [
     rarity: "Common",
     price: 1200,
     power: "Mechanical",
-    buff: { stat: "damage", kind: "percent", amount: 5 },
-    effect: "+5% Attack",
+    buffs: [],
+    effect: redesignEffect("siegebound-drive"),
     lore: "A compact force-transmission engine once hidden inside siege harnesses. Its interlocking gears survived centuries in a buried armory."
   },
   {
@@ -606,8 +1854,8 @@ var commonConduits = [
     rarity: "Common",
     price: 1e3,
     power: "Mechanical",
-    buff: { stat: "defense", kind: "percent", amount: 5 },
-    effect: "+5% Defense",
+    buffs: [{ stat: "defense", kind: "percent", amount: 10 }],
+    effect: redesignEffect("bastion-lock"),
     lore: "A folding ward mechanism recovered from a forgotten defensive vault. Its layered plates were adapted from the creators' shared prototypes into shields for the wars their rivalry provoked."
   },
   {
@@ -616,8 +1864,8 @@ var commonConduits = [
     rarity: "Common",
     price: 1500,
     power: "Elemental Light",
-    buff: { stat: "crit", kind: "percentage-points", amount: 2 },
-    effect: "+2 percentage points Critical Rate",
+    buffs: [],
+    effect: redesignEffect("parallax-relay"),
     lore: "A concealed targeting relay with a split crystal lens. A trace of Elemental Light aligns its two sightlines with uncanny precision."
   },
   {
@@ -626,8 +1874,8 @@ var commonConduits = [
     rarity: "Common",
     price: 1200,
     power: "Elemental Light",
-    buff: { stat: "shatterCapacity", kind: "flat", amount: 5 },
-    effect: "+5 Shatter Capacity",
+    buffs: [{ stat: "shatterCapacity", kind: "flat", amount: 10 }],
+    effect: redesignEffect("fracture-reservoir"),
     lore: "A sealed accumulator buried to keep it from the armies drawn into Let and Rise's rivalry. Elemental energy rests within its nested rings, waiting for a new bearer."
   }
 ];
@@ -638,8 +1886,8 @@ var additionalCommonConduits = [
     rarity: "Common",
     price: 1600,
     power: "Elemental Light",
-    buff: { stat: "elementalDamage", kind: "percent", amount: 5 },
-    effect: "+5% Elemental Damage",
+    buffs: [],
+    effect: redesignEffect("prism-splinter-socket"),
     lore: "A bronze triangular clamp preserves one split crystal, its paired facets still carrying a trace of Elemental Light."
   },
   {
@@ -648,8 +1896,8 @@ var additionalCommonConduits = [
     rarity: "Common",
     price: 1800,
     power: "Mechanical",
-    buff: { stat: "critMultiplier", kind: "percent", amount: 8 },
-    effect: "+8% Critical Damage multiplier",
+    buffs: [{ stat: "critMultiplier", kind: "percent", amount: 10 }],
+    effect: redesignEffect("precision-escapement"),
     lore: "A compact clock escapement turns an offset sight disc with measured force, preserving the timing of a perfect strike."
   },
   {
@@ -658,8 +1906,8 @@ var additionalCommonConduits = [
     rarity: "Common",
     price: 1400,
     power: "Mechanical",
-    buffs: [{ stat: "health", kind: "percent", amount: 3 }, { stat: "defense", kind: "percent", amount: 3 }],
-    effect: "+3% Health, +3% Defense",
+    buffs: [],
+    effect: redesignEffect("fieldbrace-coupler"),
     lore: "Two bronze field braces close around a ceramic cushion, distributing strain across the bearer\u2019s frame."
   },
   {
@@ -668,8 +1916,8 @@ var additionalCommonConduits = [
     rarity: "Common",
     price: 1500,
     power: "Mechanical",
-    buffs: [{ stat: "damage", kind: "percent", amount: 3 }, { stat: "health", kind: "percent", amount: 3 }],
-    effect: "+3% Attack, +3% Health",
+    buffs: [],
+    effect: redesignEffect("reserve-torque-crank"),
     lore: "A folded hand-crank winds a sealed reserve cylinder, trading compact force for a steadier reserve."
   },
   {
@@ -678,66 +1926,66 @@ var additionalCommonConduits = [
     rarity: "Common",
     price: 1500,
     power: "Elemental Light",
-    buffs: [{ stat: "damage", kind: "percent", amount: 3 }, { stat: "defense", kind: "percent", amount: 3 }],
-    effect: "+3% Attack, +3% Defense",
+    buffs: [],
+    effect: redesignEffect("crosspin-governor"),
     lore: "A bronze cross-shaped governor balances two armored counterweights around a stable central pin."
   }
 ];
 var expandedConduits = [
-  { id: "twinpulse-bellows", name: "Twinpulse Bellows", rarity: "Rare", buffs: [{ stat: "health", kind: "percent", amount: 15 }, { stat: "damage", kind: "percent", amount: 12 }], effect: "+15% Health, +12% Attack", lore: "Double silver bellows drive a piston through two measured pulses." },
-  { id: "glassroot-gimbal", name: "Glassroot Gimbal", rarity: "Rare", buffs: [{ stat: "health", kind: "percent", amount: 15 }, { stat: "critMultiplier", kind: "percent", amount: 15 }], effect: "+15% Health, +15% Critical Damage multiplier", lore: "A spherical silver gimbal suspends a faceted reservoir beside its calibrated sight rings." },
-  { id: "lifeline-flywheel", name: "Lifeline Flywheel", rarity: "Rare", buffs: [{ stat: "health", kind: "percent", amount: 15 }, { stat: "shatterCapacity", kind: "flat", amount: 15 }], effect: "+15% Health, +15 Shatter Capacity", lore: "Braided channels feed an open flywheel that holds a measured reserve." },
-  { id: "sentinel-aperture", name: "Sentinel Aperture", rarity: "Rare", buffs: [{ stat: "defense", kind: "percent", amount: 15 }, { stat: "crit", kind: "percentage-points", amount: 4 }], effect: "+15% Defense, +4 percentage points Critical Rate", lore: "A shutter iris sits within an armored silver disc, opening only along a precise line." },
-  { id: "wardglass-transformer", name: "Wardglass Transformer", rarity: "Rare", buffs: [{ stat: "defense", kind: "percent", amount: 15 }, { stat: "elementalDamage", kind: "percent", amount: 12 }], effect: "+15% Defense, +12% Elemental Damage", lore: "Two crystal-insulated towers channel elemental pressure through stepped silver plates." },
-  { id: "hammerbalance-link", name: "Hammerbalance Link", rarity: "Rare", buffs: [{ stat: "damage", kind: "percent", amount: 15 }, { stat: "defense", kind: "percent", amount: 12 }], effect: "+15% Attack, +12% Defense", lore: "A hinged counterweight beam steadies a central impact joint." },
-  { id: "breach-pendulum", name: "Breach Pendulum", rarity: "Rare", buffs: [{ stat: "damage", kind: "percent", amount: 15 }, { stat: "critMultiplier", kind: "percent", amount: 15 }], effect: "+15% Attack, +15% Critical Damage multiplier", lore: "A silver pendulum blade swings inside an open fork frame." },
-  { id: "coilfeed-ratchet", name: "Coilfeed Ratchet", rarity: "Rare", buffs: [{ stat: "damage", kind: "percent", amount: 15 }, { stat: "shatterCapacity", kind: "flat", amount: 15 }], effect: "+15% Attack, +15 Shatter Capacity", lore: "A toothed silver ratchet feeds a coiled accumulator in measured increments." },
-  { id: "opal-indexer", name: "Opal Indexer", rarity: "Rare", buffs: [{ stat: "elementalDamage", kind: "percent", amount: 12 }, { stat: "crit", kind: "percentage-points", amount: 4 }], effect: "+12% Elemental Damage, +4 percentage points Critical Rate", lore: "Five inset opal lenses mark positions on a finely balanced silver indexing wheel." },
-  { id: "resonance-crucible", name: "Resonance Crucible", rarity: "Rare", buffs: [{ stat: "elementalDamage", kind: "percent", amount: 15 }, { stat: "critMultiplier", kind: "percent", amount: 15 }], effect: "+15% Elemental Damage, +15% Critical Damage multiplier", lore: "A crystal bridge joins two silver chambers, holding elemental resonance under pressure." },
-  { id: "siege-cantilever", name: "Siege Cantilever", rarity: "Legendary", buffs: [{ stat: "damage", kind: "percent", amount: 85 }, { stat: "defense", kind: "percent", amount: -10 }], effect: "+85% Attack, -10% Defense", lore: "An ivory siege arm projects from a narrow platinum pivot, sacrificing armor for reach." },
-  { id: "nullsong-transmission", name: "Nullsong Transmission", rarity: "Legendary", buffs: [{ stat: "damage", kind: "percent", amount: 85 }, { stat: "elementalDamage", kind: "percent", amount: -10 }], effect: "+85% Attack, -10% Elemental Damage", lore: "A platinum gear train turns inside silent crystal baffles, redirecting power from elemental channels." },
-  { id: "horizon-heartcase", name: "Horizon Heartcase", rarity: "Legendary", buffs: [{ stat: "health", kind: "percent", amount: 85 }, { stat: "defense", kind: "percent", amount: -10 }], effect: "+85% Health, -10% Defense", lore: "A white radial life chamber opens broad reserve vanes while its ward plates retract." },
-  { id: "stasis-reliquary", name: "Stasis Reliquary", rarity: "Legendary", buffs: [{ stat: "health", kind: "percent", amount: 85 }, { stat: "critMultiplier", kind: "percent", amount: -10 }], effect: "+85% Health, -10% Critical Damage multiplier", lore: "A platinum preservation capsule protects its reserve behind locked targeting rings." },
-  { id: "granite-hourglass", name: "Granite Hourglass", rarity: "Legendary", buffs: [{ stat: "defense", kind: "percent", amount: 85 }, { stat: "damage", kind: "percent", amount: -10 }], effect: "+85% Defense, -10% Attack", lore: "Twin armored cones throttle the drive between them to reinforce a dense shell." },
-  { id: "pale-bulwark-diadem", name: "Pale Bulwark Diadem", rarity: "Legendary", buffs: [{ stat: "defense", kind: "percent", amount: 85 }, { stat: "health", kind: "percent", amount: -10 }], effect: "+85% Defense, -10% Health", lore: "A crown-shaped fortress lattice folds inward around a narrow reserve core." },
-  { id: "starvein-conductor", name: "Starvein Conductor", rarity: "Legendary", buffs: [{ stat: "elementalDamage", kind: "percent", amount: 85 }, { stat: "health", kind: "percent", amount: -10 }], effect: "+85% Elemental Damage, -10% Health", lore: "White conductor branches carry a bright current around a deliberately drained life vessel." },
-  { id: "meridian-inverter", name: "Meridian Inverter", rarity: "Legendary", buffs: [{ stat: "elementalDamage", kind: "percent", amount: 85 }, { stat: "critMultiplier", kind: "percent", amount: -10 }], effect: "+85% Elemental Damage, -10% Critical Damage multiplier", lore: "A platinum reversing prism displaces its precision lenses to redirect elemental force." },
-  { id: "execution-orrery", name: "Execution Orrery", rarity: "Legendary", buffs: [{ stat: "critMultiplier", kind: "percent", amount: 85 }, { stat: "defense", kind: "percent", amount: -10 }], effect: "+85% Critical Damage multiplier, -10% Defense", lore: "An asymmetric celestial orrery folds its armor outward to align a decisive strike." },
-  { id: "verdict-caliper", name: "Verdict Caliper", rarity: "Legendary", buffs: [{ stat: "critMultiplier", kind: "percent", amount: 85 }, { stat: "elementalDamage", kind: "percent", amount: -10 }], effect: "+85% Critical Damage multiplier, -10% Elemental Damage", lore: "White precision jaws hold a throttled elemental core at an exact point." }
+  { id: "twinpulse-bellows", name: "Twinpulse Bellows", rarity: "Rare", buffs: [], effect: redesignEffect("twinpulse-bellows"), lore: "Double silver bellows drive a piston through two measured pulses." },
+  { id: "glassroot-gimbal", name: "Glassroot Gimbal", rarity: "Rare", buffs: [], effect: redesignEffect("glassroot-gimbal"), lore: "A spherical silver gimbal suspends a faceted reservoir beside its calibrated sight rings." },
+  { id: "lifeline-flywheel", name: "Lifeline Flywheel", rarity: "Rare", buffs: [], effect: redesignEffect("lifeline-flywheel"), lore: "Braided channels feed an open flywheel that holds a measured reserve." },
+  { id: "sentinel-aperture", name: "Sentinel Aperture", rarity: "Rare", buffs: [], effect: redesignEffect("sentinel-aperture"), lore: "A shutter iris sits within an armored silver disc, opening only along a precise line." },
+  { id: "wardglass-transformer", name: "Wardglass Transformer", rarity: "Rare", buffs: [], effect: redesignEffect("wardglass-transformer"), lore: "Two crystal-insulated towers channel elemental pressure through stepped silver plates." },
+  { id: "hammerbalance-link", name: "Hammerbalance Link", rarity: "Rare", buffs: [{ stat: "damage", kind: "percent", amount: 12 }, { stat: "defense", kind: "percent", amount: -4 }], effect: redesignEffect("hammerbalance-link"), lore: "A hinged counterweight beam steadies a central impact joint." },
+  { id: "breach-pendulum", name: "Breach Pendulum", rarity: "Rare", buffs: [], effect: redesignEffect("breach-pendulum"), lore: "A silver pendulum blade swings inside an open fork frame." },
+  { id: "coilfeed-ratchet", name: "Coilfeed Ratchet", rarity: "Rare", buffs: [], effect: redesignEffect("coilfeed-ratchet"), lore: "A toothed silver ratchet feeds a coiled accumulator in measured increments." },
+  { id: "opal-indexer", name: "Opal Indexer", rarity: "Rare", buffs: [], effect: redesignEffect("opal-indexer"), lore: "Five inset opal lenses mark positions on a finely balanced silver indexing wheel." },
+  { id: "resonance-crucible", name: "Resonance Crucible", rarity: "Rare", buffs: [], effect: redesignEffect("resonance-crucible"), lore: "A crystal bridge joins two silver chambers, holding elemental resonance under pressure." },
+  { id: "siege-cantilever", name: "Siege Cantilever", rarity: "Legendary", buffs: [], effect: redesignEffect("siege-cantilever"), lore: "An ivory siege arm projects from a narrow platinum pivot, sacrificing armor for reach." },
+  { id: "nullsong-transmission", name: "Nullsong Transmission", rarity: "Legendary", buffs: [], effect: redesignEffect("nullsong-transmission"), lore: "A platinum gear train turns inside silent crystal baffles, redirecting power from elemental channels." },
+  { id: "horizon-heartcase", name: "Horizon Heartcase", rarity: "Legendary", buffs: [{ stat: "health", kind: "percent", amount: 20 }, { stat: "defense", kind: "percent", amount: -4 }], effect: redesignEffect("horizon-heartcase"), lore: "A white radial life chamber opens broad reserve vanes while its ward plates retract." },
+  { id: "stasis-reliquary", name: "Stasis Reliquary", rarity: "Legendary", buffs: [], effect: redesignEffect("stasis-reliquary"), lore: "A platinum preservation capsule protects its reserve behind locked targeting rings." },
+  { id: "granite-hourglass", name: "Granite Hourglass", rarity: "Legendary", buffs: [], effect: redesignEffect("granite-hourglass"), lore: "Twin armored cones throttle the drive between them to reinforce a dense shell." },
+  { id: "pale-bulwark-diadem", name: "Pale Bulwark Diadem", rarity: "Legendary", buffs: [], effect: redesignEffect("pale-bulwark-diadem"), lore: "A crown-shaped fortress lattice folds inward around a narrow reserve core." },
+  { id: "starvein-conductor", name: "Starvein Conductor", rarity: "Legendary", buffs: [], effect: redesignEffect("starvein-conductor"), lore: "White conductor branches carry a bright current around a deliberately drained life vessel." },
+  { id: "meridian-inverter", name: "Meridian Inverter", rarity: "Legendary", buffs: [], effect: redesignEffect("meridian-inverter"), lore: "A platinum reversing prism displaces its precision lenses to redirect elemental force." },
+  { id: "execution-orrery", name: "Execution Orrery", rarity: "Legendary", buffs: [], effect: redesignEffect("execution-orrery"), lore: "An asymmetric celestial orrery folds its armor outward to align a decisive strike." },
+  { id: "verdict-caliper", name: "Verdict Caliper", rarity: "Legendary", buffs: [], effect: redesignEffect("verdict-caliper"), lore: "White precision jaws hold a throttled elemental core at an exact point." }
 ];
 var recoveredConduits = [
-  { id: "duplex-heart", name: "Duplex Heart", rarity: "Rare", buffs: [{ stat: "health", kind: "percent", amount: 15 }, { stat: "defense", kind: "percent", amount: 12 }], effect: "+15% Health, +12% Defense", lore: "Twin silver chambers restore a broken machine\u2019s life-support and armor lattice." },
-  { id: "spearwheel-engine", name: "Spearwheel Engine", rarity: "Rare", buffs: [{ stat: "damage", kind: "percent", amount: 15 }, { stat: "elementalDamage", kind: "percent", amount: 15 }], effect: "+15% Attack, +15% Elemental Damage", lore: "Interlocked silver flywheels translate elemental pressure into striking force." },
-  { id: "falcon-sight", name: "Falcon Sight", rarity: "Rare", buffs: [{ stat: "crit", kind: "percentage-points", amount: 4 }, { stat: "damage", kind: "percent", amount: 12 }], effect: "+4 percentage points Critical Rate, +12% Attack", lore: "A split-wing targeting lens rejoins two forgotten sightlines." },
-  { id: "aegis-capacitor", name: "Aegis Capacitor", rarity: "Rare", buffs: [{ stat: "defense", kind: "percent", amount: 15 }, { stat: "shatterCapacity", kind: "flat", amount: 15 }], effect: "+15% Defense, +15 Shatter Capacity", lore: "Silver ward plates protect a restored ring accumulator." },
-  { id: "springwell-pump", name: "Springwell Pump", rarity: "Rare", buffs: [{ stat: "health", kind: "percent", amount: 15 }, { stat: "elementalDamage", kind: "percent", amount: 12 }], effect: "+15% Health, +12% Elemental Damage", lore: "Two balanced impellers carry Elemental Light through a sealed silver vessel." },
-  { id: "worldbreaker-drive", name: "Worldbreaker Drive", rarity: "Legendary", buffs: [{ stat: "damage", kind: "percent", amount: 85 }, { stat: "health", kind: "percent", amount: -10 }], effect: "+85% Attack, -10% Health", lore: "An ivory siege crown diverts its life-support reserve into a tremendous striking engine." },
-  { id: "immortal-vessel", name: "Immortal Vessel", rarity: "Legendary", buffs: [{ stat: "health", kind: "percent", amount: 85 }, { stat: "damage", kind: "percent", amount: -10 }], effect: "+85% Health, -10% Attack", lore: "Platinum sanctuary chambers preserve their bearer by slowing the force-transmission drive." },
-  { id: "citadel-spine", name: "Citadel Spine", rarity: "Legendary", buffs: [{ stat: "defense", kind: "percent", amount: 85 }, { stat: "elementalDamage", kind: "percent", amount: -10 }], effect: "+85% Defense, -10% Elemental Damage", lore: "An articulated white fortress folds around its core, sacrificing elemental output for armor." },
-  { id: "astral-prism", name: "Astral Prism", rarity: "Legendary", buffs: [{ stat: "elementalDamage", kind: "percent", amount: 85 }, { stat: "defense", kind: "percent", amount: -10 }], effect: "+85% Elemental Damage, -10% Defense", lore: "A platinum prism unfolds its protective plates into an extraordinary elemental focus." },
-  { id: "judgment-lens", name: "Judgment Lens", rarity: "Legendary", buffs: [{ stat: "critMultiplier", kind: "percent", amount: 85 }, { stat: "health", kind: "percent", amount: -10 }], effect: "+85% Critical Damage multiplier, -10% Health", lore: "Nested ivory lenses magnify a perfect strike at the expense of their bearer\u2019s reserve." }
+  { id: "duplex-heart", name: "Duplex Heart", rarity: "Rare", buffs: [], effect: redesignEffect("duplex-heart"), lore: "Twin silver chambers restore a broken machine\u2019s life-support and armor lattice." },
+  { id: "spearwheel-engine", name: "Spearwheel Engine", rarity: "Rare", buffs: [], effect: redesignEffect("spearwheel-engine"), lore: "Interlocked silver flywheels translate elemental pressure into striking force." },
+  { id: "falcon-sight", name: "Falcon Sight", rarity: "Rare", buffs: [], effect: redesignEffect("falcon-sight"), lore: "A split-wing targeting lens rejoins two forgotten sightlines." },
+  { id: "aegis-capacitor", name: "Aegis Capacitor", rarity: "Rare", buffs: [], effect: redesignEffect("aegis-capacitor"), lore: "Silver ward plates protect a restored ring accumulator." },
+  { id: "springwell-pump", name: "Springwell Pump", rarity: "Rare", buffs: [], effect: redesignEffect("springwell-pump"), lore: "Two balanced impellers carry Elemental Light through a sealed silver vessel." },
+  { id: "worldbreaker-drive", name: "Worldbreaker Drive", rarity: "Legendary", buffs: [{ stat: "health", kind: "percent", amount: -6 }], effect: redesignEffect("worldbreaker-drive"), lore: "An ivory siege crown diverts its life-support reserve into a tremendous striking engine." },
+  { id: "immortal-vessel", name: "Immortal Vessel", rarity: "Legendary", buffs: [{ stat: "health", kind: "percent", amount: 25 }, { stat: "damage", kind: "percent", amount: -6 }], effect: redesignEffect("immortal-vessel"), lore: "Platinum sanctuary chambers preserve their bearer by slowing the force-transmission drive." },
+  { id: "citadel-spine", name: "Citadel Spine", rarity: "Legendary", buffs: [{ stat: "defense", kind: "percent", amount: 25 }, { stat: "elementalDamage", kind: "percent", amount: -6 }], effect: redesignEffect("citadel-spine"), lore: "An articulated white fortress folds around its core, sacrificing elemental output for armor." },
+  { id: "astral-prism", name: "Astral Prism", rarity: "Legendary", buffs: [{ stat: "elementalDamage", kind: "percent", amount: 25 }, { stat: "defense", kind: "percent", amount: -6 }], effect: redesignEffect("astral-prism"), lore: "A platinum prism unfolds its protective plates into an extraordinary elemental focus." },
+  { id: "judgment-lens", name: "Judgment Lens", rarity: "Legendary", buffs: [], effect: redesignEffect("judgment-lens"), lore: "Nested ivory lenses magnify a perfect strike at the expense of their bearer\u2019s reserve." }
 ];
 var omnicConduits = [
-  { id: "infernic-phoenix-reactor", name: "Phoenix Reactor", element: "infernic", mechanic: "burn-focus", effect: "+60% Attack, +50% Elemental Damage, +40% Health. Inflicting Burn grants +5 percentage points Critical Rate for your next offensive activation; refreshes, never stacks.", buffs: [{ stat: "damage", kind: "percent", amount: 60 }, { stat: "elementalDamage", kind: "percent", amount: 50 }, { stat: "health", kind: "percent", amount: 40 }] },
-  { id: "aquatic-leviathan-pump", name: "Leviathan Pump", element: "oceanic", mechanic: "shield-heal", effect: "+60% Health, +50% Defense, +40% Attack. When your ability increases an ally's shield, restore 5% of your maximum HP, once per activation; cannot revive.", buffs: [{ stat: "health", kind: "percent", amount: 60 }, { stat: "defense", kind: "percent", amount: 50 }, { stat: "damage", kind: "percent", amount: 40 }] },
-  { id: "tectonic-atlas-bastion", name: "Atlas Bastion", element: "botanic", mechanic: "defense-ward", effect: "+60% Defense, +50% Health, +40% Attack. Entering Defense grants a shield worth 10% of your maximum HP; refreshes, never stacks.", buffs: [{ stat: "defense", kind: "percent", amount: 60 }, { stat: "health", kind: "percent", amount: 50 }, { stat: "damage", kind: "percent", amount: 40 }] },
-  { id: "efflorescent-worldtree-heart", name: "Worldtree Heart", element: "botanic", mechanic: "renewal", effect: "+60% Health, +50% Elemental Damage, +40% Defense. At each new player turn, restore 2% of your maximum HP; cannot revive.", buffs: [{ stat: "health", kind: "percent", amount: 60 }, { stat: "elementalDamage", kind: "percent", amount: 50 }, { stat: "defense", kind: "percent", amount: 40 }] },
-  { id: "voltaic-thunderbird-coil", name: "Thunderbird Coil", element: "atmospheric", mechanic: "critical-gauge", effect: "+60% Attack, +50% Elemental Damage, +40% Defense. An activation that critically hits an enemy restores 5 Shatter Gauge, once per activation.", buffs: [{ stat: "damage", kind: "percent", amount: 60 }, { stat: "elementalDamage", kind: "percent", amount: 50 }, { stat: "defense", kind: "percent", amount: 40 }] },
-  { id: "atmospheric-griffin-turbine", name: "Griffin Turbine", element: "atmospheric", mechanic: "normal-momentum", effect: "+60% Attack, +50% Defense, +40% Health. Normal Attack empowers your next offensive skill by 10% outgoing damage; refreshes, never stacks.", buffs: [{ stat: "damage", kind: "percent", amount: 60 }, { stat: "defense", kind: "percent", amount: 50 }, { stat: "health", kind: "percent", amount: 40 }] },
-  { id: "luminous-seraph-mirror", name: "Seraph Mirror", element: "tranquilitic", mechanic: "defeat-gauge", effect: "+60% Elemental Damage, +50% Health, +40% Defense. Defeating an enemy with an offensive activation restores 5 Shatter Gauge, once per activation.", buffs: [{ stat: "elementalDamage", kind: "percent", amount: 60 }, { stat: "health", kind: "percent", amount: 50 }, { stat: "defense", kind: "percent", amount: 40 }] },
-  { id: "ominous-eclipse-mantle", name: "Eclipse Mantle", element: "chaotic", mechanic: "weaken-pierce", effect: "+60% Attack, +50% Health, +40% Defense. Inflicting Weaken makes your next offensive activation ignore 20% of enemy Defense; refreshes, never stacks.", buffs: [{ stat: "damage", kind: "percent", amount: 60 }, { stat: "health", kind: "percent", amount: 50 }, { stat: "defense", kind: "percent", amount: 40 }] },
-  { id: "tranquilitic-kirin-cradle", name: "Kirin Cradle", element: "tranquilitic", mechanic: "defense-heal", effect: "+60% Health, +50% Defense, +40% Elemental Damage. Entering Defense restores 5% of your maximum HP; cannot revive.", buffs: [{ stat: "health", kind: "percent", amount: 60 }, { stat: "defense", kind: "percent", amount: 50 }, { stat: "elementalDamage", kind: "percent", amount: 40 }] },
-  { id: "chaotic-ouroboros-core", name: "Ouroboros Core", element: "chaotic", mechanic: "ultimate-ward", effect: "+60% Attack, +50% Elemental Damage, +40% Health. Last Flare grants a shield worth 15% of your maximum HP; refreshes, never stacks. Recovery still applies.", buffs: [{ stat: "damage", kind: "percent", amount: 60 }, { stat: "elementalDamage", kind: "percent", amount: 50 }, { stat: "health", kind: "percent", amount: 40 }] },
-  { id: "infernic-cinder-testament", name: "Cinder Testament", element: "infernic", mechanic: "ember-seals", effect: "+60% Elemental Damage, +50% Attack, +40% Defense. When your Burn damages an enemy, gain one Ember Seal, at most once per enemy phase and three total. Your next damaging skill consumes all seals for +5% outgoing damage per seal.", buffs: [{ stat: "elementalDamage", kind: "percent", amount: 60 }, { stat: "damage", kind: "percent", amount: 50 }, { stat: "defense", kind: "percent", amount: 40 }] },
-  { id: "aquatic-undertide-chronometer", name: "Undertide Chronometer", element: "oceanic", mechanic: "undertide-cooldown", effect: "+60% Defense, +50% Health, +40% Elemental Damage. Your damaging skill hitting a Weakened enemy reduces your other ordinary skill cooldown by one, at most once per player turn; never reduces Last Flare recovery.", buffs: [{ stat: "defense", kind: "percent", amount: 60 }, { stat: "health", kind: "percent", amount: 50 }, { stat: "elementalDamage", kind: "percent", amount: 40 }] },
-  { id: "tectonic-faultkeeper-loom", name: "Faultkeeper Loom", element: "botanic", mechanic: "faultkeeper-ward", effect: "+60% Health, +50% Defense, +40% Elemental Damage. The first direct enemy hit after each Defense deals 15% less damage to you; consumes the ward even if shield absorbs the hit.", buffs: [{ stat: "health", kind: "percent", amount: 60 }, { stat: "defense", kind: "percent", amount: 50 }, { stat: "elementalDamage", kind: "percent", amount: 40 }] },
-  { id: "efflorescent-verdant-covenant", name: "Verdant Covenant", element: "botanic", mechanic: "verdant-covenant", effect: "+60% Elemental Damage, +50% Health, +40% Attack. When your healing restores another living ally, that ally gains +10% outgoing Normal Attack damage for its next Normal Attack; refreshes, never stacks.", buffs: [{ stat: "elementalDamage", kind: "percent", amount: 60 }, { stat: "health", kind: "percent", amount: 50 }, { stat: "damage", kind: "percent", amount: 40 }] },
-  { id: "voltaic-stormstep-dynamo", name: "Stormstep Dynamo", element: "atmospheric", mechanic: "stormstep", effect: "+60% Attack, +50% Defense, +40% Elemental Damage. Skill 1 primes +10% outgoing damage for Skill 2; Skill 2 primes the same for Skill 1. One charge per slot; the current slot charge is consumed before priming the other, with no same-activation bonus.", buffs: [{ stat: "damage", kind: "percent", amount: 60 }, { stat: "defense", kind: "percent", amount: 50 }, { stat: "elementalDamage", kind: "percent", amount: 40 }] },
-  { id: "atmospheric-skythread-rudder", name: "Skythread Rudder", element: "atmospheric", mechanic: "skythread", effect: "+60% Defense, +50% Attack, +40% Health. Defense grants one Tailwind charge. Your next ordinary skill costs five less Gauge, minimum one; consumed only on legal activation, refreshes rather than stacks.", buffs: [{ stat: "defense", kind: "percent", amount: 60 }, { stat: "damage", kind: "percent", amount: 50 }, { stat: "health", kind: "percent", amount: 40 }] },
-  { id: "luminous-dawn-witness-array", name: "Dawn Witness Array", element: "tranquilitic", mechanic: "dawn-witness", effect: "+60% Health, +50% Elemental Damage, +40% Defense. A noncritical Normal Attack grants +3 percentage points Critical Rate for your next offensive activation, up to three charges. Critical activations use then clear all charges.", buffs: [{ stat: "health", kind: "percent", amount: 60 }, { stat: "elementalDamage", kind: "percent", amount: 50 }, { stat: "defense", kind: "percent", amount: 40 }] },
-  { id: "ominous-nightglass-archive", name: "Nightglass Archive", element: "chaotic", mechanic: "nightglass", effect: "+60% Elemental Damage, +50% Defense, +40% Attack. Your damaging skill applies one Fracture Mark to each surviving target, maximum two per bearer and target. Your next Normal Attack consumes those marks for +8% outgoing damage each.", buffs: [{ stat: "elementalDamage", kind: "percent", amount: 60 }, { stat: "defense", kind: "percent", amount: 50 }, { stat: "damage", kind: "percent", amount: 40 }] },
-  { id: "tranquilitic-stillhour-carillon", name: "Stillhour Carillon", element: "tranquilitic", mechanic: "stillhour", effect: "+60% Health, +50% Attack, +40% Defense. After Defense, the first direct enemy hit you survive grants +8 Shatter Gauge once; shield-absorbed hits qualify, damage over time does not.", buffs: [{ stat: "health", kind: "percent", amount: 60 }, { stat: "damage", kind: "percent", amount: 50 }, { stat: "defense", kind: "percent", amount: 40 }] },
-  { id: "chaotic-paradox-spindle", name: "Paradox Spindle", element: "chaotic", mechanic: "paradox", effect: "+60% Attack, +50% Elemental Damage, +40% Health. After Last Flare, prime +15% outgoing damage for your first offensive activation once normal recovery ends. No bonus during that Last Flare and no recovery bypass.", buffs: [{ stat: "damage", kind: "percent", amount: 60 }, { stat: "elementalDamage", kind: "percent", amount: 50 }, { stat: "health", kind: "percent", amount: 40 }] }
+  { id: "infernic-phoenix-reactor", name: "Phoenix Reactor", element: "infernic", effect: redesignEffect("infernic-phoenix-reactor"), buffs: [] },
+  { id: "aquatic-leviathan-pump", name: "Leviathan Pump", element: "oceanic", effect: redesignEffect("aquatic-leviathan-pump"), buffs: [] },
+  { id: "tectonic-atlas-bastion", name: "Atlas Bastion", element: "botanic", effect: redesignEffect("tectonic-atlas-bastion"), buffs: [] },
+  { id: "efflorescent-worldtree-heart", name: "Worldtree Heart", element: "botanic", effect: redesignEffect("efflorescent-worldtree-heart"), buffs: [] },
+  { id: "voltaic-thunderbird-coil", name: "Thunderbird Coil", element: "atmospheric", effect: redesignEffect("voltaic-thunderbird-coil"), buffs: [] },
+  { id: "atmospheric-griffin-turbine", name: "Griffin Turbine", element: "atmospheric", effect: redesignEffect("atmospheric-griffin-turbine"), buffs: [] },
+  { id: "luminous-seraph-mirror", name: "Seraph Mirror", element: "tranquilitic", effect: redesignEffect("luminous-seraph-mirror"), buffs: [] },
+  { id: "ominous-eclipse-mantle", name: "Eclipse Mantle", element: "chaotic", effect: redesignEffect("ominous-eclipse-mantle"), buffs: [] },
+  { id: "tranquilitic-kirin-cradle", name: "Kirin Cradle", element: "tranquilitic", effect: redesignEffect("tranquilitic-kirin-cradle"), buffs: [] },
+  { id: "chaotic-ouroboros-core", name: "Ouroboros Core", element: "chaotic", effect: redesignEffect("chaotic-ouroboros-core"), buffs: [] },
+  { id: "infernic-cinder-testament", name: "Cinder Testament", element: "infernic", effect: redesignEffect("infernic-cinder-testament"), buffs: [] },
+  { id: "aquatic-undertide-chronometer", name: "Undertide Chronometer", element: "oceanic", effect: redesignEffect("aquatic-undertide-chronometer"), buffs: [] },
+  { id: "tectonic-faultkeeper-loom", name: "Faultkeeper Loom", element: "botanic", effect: redesignEffect("tectonic-faultkeeper-loom"), buffs: [] },
+  { id: "efflorescent-verdant-covenant", name: "Verdant Covenant", element: "botanic", effect: redesignEffect("efflorescent-verdant-covenant"), buffs: [] },
+  { id: "voltaic-stormstep-dynamo", name: "Stormstep Dynamo", element: "atmospheric", effect: redesignEffect("voltaic-stormstep-dynamo"), buffs: [] },
+  { id: "atmospheric-skythread-rudder", name: "Skythread Rudder", element: "atmospheric", effect: redesignEffect("atmospheric-skythread-rudder"), buffs: [] },
+  { id: "luminous-dawn-witness-array", name: "Dawn Witness Array", element: "tranquilitic", effect: redesignEffect("luminous-dawn-witness-array"), buffs: [] },
+  { id: "ominous-nightglass-archive", name: "Nightglass Archive", element: "chaotic", effect: redesignEffect("ominous-nightglass-archive"), buffs: [] },
+  { id: "tranquilitic-stillhour-carillon", name: "Stillhour Carillon", element: "tranquilitic", effect: redesignEffect("tranquilitic-stillhour-carillon"), buffs: [] },
+  { id: "chaotic-paradox-spindle", name: "Paradox Spindle", element: "chaotic", effect: redesignEffect("chaotic-paradox-spindle"), buffs: [] }
 ];
 var conduits = [
   ...commonConduits.map((entry) => ({ ...entry, art: entry.id, element: null, mechanic: null })),
@@ -760,21 +2008,21 @@ var conduits = [
     art: entry.id,
     lore: "A prismatic elemental masterpiece restored from the mechanisms left behind when Let and Rise's collaboration ended."
   })),
-  ...kitConduitDesigns.map((entry) => ({ ...entry, mechanic: "kit-interaction", power: "Elemental Light", art: entry.id }))
-].map((entry) => ({ ...entry, lore: `${conduitOrigin} ${entry.lore}` }));
+  ...kitConduitDesigns.map((entry) => ({ ...entry, power: "Elemental Light", art: entry.id }))
+].map((entry) => ({ ...entry, mechanic: null, lore: `${conduitOrigin} ${entry.lore}` }));
 var conduitUpgradeCap = 5;
 var conduitUpgradeCosts = [25, 50, 100, 175, 250];
 var conduitUpgradeRarityMultipliers = { Common: 1, Rare: 2, Legendary: 4, Omnic: 200 };
-function validateConduitUpgradeLevel(value) {
-  if (typeof value !== "number" || !Number.isInteger(value) || value < 0 || value > conduitUpgradeCap) {
+function validateConduitUpgradeLevel(value2) {
+  if (typeof value2 !== "number" || !Number.isInteger(value2) || value2 < 0 || value2 > conduitUpgradeCap) {
     throw new Error("Conduit upgrade level must be an integer from 0 to 5.");
   }
-  return value;
+  return value2;
 }
-function validateConduitUpgrades(value) {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) throw new Error("Invalid saved Conduit upgrades.");
+function validateConduitUpgrades(value2) {
+  if (typeof value2 !== "object" || value2 === null || Array.isArray(value2)) throw new Error("Invalid saved Conduit upgrades.");
   const result = {};
-  for (const [id, level] of Object.entries(value)) {
+  for (const [id, level] of Object.entries(value2)) {
     if (!isConduitId(id)) throw new Error("Unknown upgraded Conduit.");
     result[id] = validateConduitUpgradeLevel(level);
   }
@@ -786,23 +2034,23 @@ function conduitUpgradeCost(conduit, level) {
   return cost === void 0 ? null : cost * conduitUpgradeRarityMultipliers[conduit.rarity];
 }
 var conduitSlotCount = 8;
-function validateConduitSlots(value) {
-  if (!Array.isArray(value) || value.length !== conduitSlotCount || !value.every((id) => id === null || isConduitId(id))) throw new Error("Invalid Conduit slots.");
-  const ids = value.filter((id) => id !== null);
+function validateConduitSlots(value2) {
+  if (!Array.isArray(value2) || value2.length !== conduitSlotCount || !value2.every((id) => id === null || isConduitId(id))) throw new Error("Invalid Conduit slots.");
+  const ids = value2.filter((id) => id !== null);
   if (new Set(ids).size !== ids.length) throw new Error("Each named Conduit can be equipped only once per character.");
   if (ids.filter((id) => getConduit(id).rarity === "Omnic").length > 4) throw new Error("Equip at most four Omnic Conduits per character.");
-  return [...value];
+  return [...value2];
 }
-function normalizeLegacyKitSlots(value, element) {
-  if (!Array.isArray(value) || value.length !== conduitSlotCount || !value.every((id) => id === null || isConduitId(id))) {
+function normalizeLegacyKitSlots(value2, element) {
+  if (!Array.isArray(value2) || value2.length !== conduitSlotCount || !value2.every((id) => id === null || isConduitId(id))) {
     throw new Error("Invalid Conduit slots.");
   }
-  const ids = value.filter((id) => id !== null);
+  const ids = value2.filter((id) => id !== null);
   if (new Set(ids).size !== ids.length) throw new Error("Each named Conduit can be equipped only once per character.");
-  const originalSlots = value.map((id) => id !== null && convertedKitConduitIds.has(id) ? null : id);
+  const originalSlots = value2.map((id) => id !== null && convertedKitConduitIds.has(id) ? null : id);
   validateConduitElement(originalSlots, element);
   let capacity = 4 - originalSlots.filter((id) => id !== null && getConduit(id).rarity === "Omnic").length;
-  const normalized = value.map((id) => {
+  const normalized = value2.map((id) => {
     if (id === null || !convertedKitConduitIds.has(id)) return id;
     if (getConduit(id).element !== element || capacity <= 0) return null;
     capacity--;
@@ -818,11 +2066,10 @@ function validateConduitElement(equipment, element) {
 }
 function conduitBuffs(conduit, level = 0) {
   validateConduitUpgradeLevel(level);
-  const buffs = "buff" in conduit ? [conduit.buff] : conduit.buffs;
-  return buffs.map((buff) => ({ ...buff, amount: buff.amount * (1 + 0.5 * level) }));
+  return conduit.buffs.map((buff) => ({ ...buff, amount: buff.amount * (1 + 0.5 * level) }));
 }
-function isConduitId(value) {
-  return conduits.some((conduit) => conduit.id === value);
+function isConduitId(value2) {
+  return conduits.some((conduit) => conduit.id === value2);
 }
 function getConduit(id) {
   const conduit = conduits.find((entry) => entry.id === id);
@@ -867,17 +2114,16 @@ var masterChest = {
   art: "master-conduits/grand-master-chest.png",
   description: "Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward."
 };
-var masterRulesText = "The final Awaken the Machines boss (stage 100) independently has a 1% chance to drop a Cosmic Grand Master Chest. Open it in Inventory to choose one unowned Omnic Master for any Element-Bearer, even one not yet owned. One matching Master equips in its own slot; no ordinary slots, copies or upgrades are consumed. Masters are always-active bearer enhancements: every qualifying native outcome can apply their fixed effect, without a once-per-round activation limit. Generated Conduit effects cannot trigger them. Resource caps, shield and buff refresh limits, skill costs and recovery still apply. Masters cannot be upgraded. Extra chests remain unopened when all 48 Masters are owned.";
-function master(character, slot, name, effect, design, rule) {
+var masterRulesText = "The final Awaken the Machines boss (stage 100) independently has a 1% chance to drop a Cosmic Grand Master Chest. Opening any Calamity EX+Omnipotent chest also guarantees two Cosmic Grand Master Chests. Open them in Inventory to choose one unowned Omnic Master each for any Element-Bearer, even one not yet owned. One matching Master equips in its own slot; no ordinary slots, copies or upgrades are consumed. Each Master has its own fixed bearer enhancement, transformations and explicitly stated activation, round or encounter limits. Generated outcomes cannot recursively activate native or Conduit triggers. Native resource clocks, skill costs, readiness and recovery remain unless that Master explicitly changes them. Masters cannot be upgraded. Extra chests remain unopened when all 48 Masters are owned.";
+function master(character, slot, name, design) {
   return {
     id: `master-${character}-${slot}`,
     character,
     name,
     rarity: "Omnic",
     art: `master-conduits/master-${character}-${slot}.png`,
-    effect,
+    effect: redesignEffect(`master-${character}-${slot}`),
     design,
-    rule,
     lore: masterOrigin
   };
 }
@@ -886,389 +2132,293 @@ var masterConduits = [
     "ember",
     1,
     "Helios Pyre Cathedral",
-    "Every damage tick of Infernis\u2019s own Burn adds a Conduit strike for 50% of the Burn damage and heals Infernis for 20% of that Burn damage (up to 10% max HP). Does not extend Burn.",
-    "A furnace cathedral around a crimson miniature sun, twelve greatsword-shaped exhaust wings, stacked gold flame shutters and volcanic orbital rails",
-    { trigger: "burn-tick", outcomes: [{ kind: "strike", recipient: "struck", amount: 0, ratio: 0.5 }, { kind: "heal", amount: 0, ratio: 0.2, cap: 0.1 }] }
+    "A furnace cathedral around a crimson miniature sun, twelve greatsword-shaped exhaust wings, stacked gold flame shutters and volcanic orbital rails"
   ),
   master(
     "ember",
     2,
     "Cinderstar Genesis Engine",
-    "Every native Burn application stores 1 Astral Reserve (maximum 3). Flame Arc spends all of it: per reserve, gain a shield worth 4% max HP and deal 15% Attack to every enemy (reduced by Defense).",
-    "A split stellar ignition engine, three molten planet chambers, counter-rotating sword-tooth halos and branching crimson ignition conduits",
-    { trigger: "activation", actions: ["skill2"], bank: { trigger: "burn-applied", maximum: 3 }, outcomes: [{ kind: "shield", amount: 0.04 }, { kind: "strike", recipient: "all-enemies", amount: 0.15 }] }
+    "A split stellar ignition engine, three molten planet chambers, counter-rotating sword-tooth halos and branching crimson ignition conduits"
   ),
   master(
     "ember",
     3,
     "Unbroken Sunforge Throne",
-    "Every Infernic Embers spend returns 10 Gauge per charge spent and shortens one skill cooldown by one round (never ready before next round).",
-    "A bronze-and-crimson sunforge throne machine, greatsword anvil at its heart, armored flare crowns and six immense mechanical flame fans",
-    { trigger: "resource-spent", resources: ["ember"], outcomes: [{ kind: "gauge", amount: 0, ratio: 10 }, { kind: "cooldown", amount: 1 }] }
+    "A bronze-and-crimson sunforge throne machine, greatsword anvil at its heart, armored flare crowns and six immense mechanical flame fans"
   ),
   master(
     "tide",
     1,
     "Abyssal Shelter Observatory",
-    "Every enemy hit absorbed by Tizu\u2019s authored shields shortens one of her skill cooldowns by one round (never ready before next round) and refreshes 15% next-direct-hit protection for every ally.",
-    "A sapphire pressure observatory, spear-shaped lighthouse spindle, nested diving-bell shields and immense tidal astrolabe fins",
-    { trigger: "shield-absorbed", outcomes: [{ kind: "cooldown", amount: 1 }, { kind: "protection", recipient: "all-allies", amount: 0.15 }] }
+    "A sapphire pressure observatory, spear-shaped lighthouse spindle, nested diving-bell shields and immense tidal astrolabe fins"
   ),
   master(
     "tide",
     2,
     "Ocean Memory Worldpump",
-    "Every enemy hit absorbed by Tizu\u2019s authored shields stores 1 Astral Reserve (maximum 3). Tidal Shelter spends all of it to heal every ally by 5% of Tizu\u2019s max HP per reserve.",
-    "A world-sized tide pump enclosing three ocean planets, sapphire manifold crown, twelve spearhead vanes and interlocked platinum sea rings",
-    { trigger: "activation", actions: ["skill2"], bank: { trigger: "shield-absorbed", maximum: 3 }, outcomes: [{ kind: "heal", recipient: "all-allies", amount: 0.05 }] }
+    "A world-sized tide pump enclosing three ocean planets, sapphire manifold crown, twelve spearhead vanes and interlocked platinum sea rings"
   ),
   master(
     "tide",
     3,
     "Undertow Sovereign Harpoon",
-    "Every native Weaken application lasts one more enemy phase (maximum 3) and the enemy gains 2 personal Fracture Marks (Tizu\u2019s next hit on it is stronger, maximum 2 marks).",
-    "A monumental spear-tip targeting engine, abyssal sapphire prisms, concentric current locks and six armored harpoon-wing arcs",
-    { trigger: "weaken-applied", outcomes: [{ kind: "weaken-clock", amount: 1 }, { kind: "fracture", amount: 2 }] }
+    "A monumental spear-tip targeting engine, abyssal sapphire prisms, concentric current locks and six armored harpoon-wing arcs"
   ),
   master(
     "sprout",
     1,
     "Worldseed Mercy Foundry",
-    "Every effective native heal by Flora gives the most injured other ally a shield worth 50% of the HP restored (up to 15% of Flora\u2019s max HP; refresh, not stack).",
-    "An emerald seed foundry with ivory bow-limb gantries, twelve leaf-blade mechanical wings and a densely interwoven root orrery",
-    { trigger: "heal", outcomes: [{ kind: "shield", recipient: "injured-other", amount: 0, ratio: 0.5, cap: 0.15 }] }
+    "An emerald seed foundry with ivory bow-limb gantries, twelve leaf-blade mechanical wings and a densely interwoven root orrery"
   ),
   master(
     "sprout",
     2,
     "Briar Constellation Loom",
-    "Every effective native heal by Flora stores 1 Astral Reserve (maximum 3). Briar Shot spends all of it: per reserve, add a 20% Attack Conduit strike to its target (reduced by Defense) and return 5 Gauge.",
-    "A cosmic bowstring loom with three emerald seed planets, intertwined root escapements and vast ivory thorn-constellation fans",
-    { trigger: "activation", actions: ["skill1"], bank: { trigger: "heal", maximum: 3 }, outcomes: [{ kind: "strike", recipient: "struck", amount: 0.2 }, { kind: "gauge", amount: 5 }] }
+    "A cosmic bowstring loom with three emerald seed planets, intertwined root escapements and vast ivory thorn-constellation fans"
   ),
   master(
     "sprout",
     3,
     "Evergreen Continuance Crucible",
-    "Every Last Flare refreshes 35% next-direct-hit protection for every ally and shortens both of Flora\u2019s skill cooldowns by one round (never ready before next round).",
-    "A sealed living-world crucible, emerald germination heart, ivory petal armor and six gigantic bow-branch sanctuary wings; no resurrection imagery",
-    { trigger: "activation", actions: ["ultimate"], outcomes: [{ kind: "protection", recipient: "all-allies", amount: 0.35 }, { kind: "cooldown", amount: 1, bothSkills: true }] }
+    "A sealed living-world crucible, emerald germination heart, ivory petal armor and six gigantic bow-branch sanctuary wings; no resurrection imagery"
   ),
   master(
     "atmoso",
     1,
     "Sky Without End Turbine",
-    "Every native critical hit adds a follow-up gust strike to the same enemy for 40% of the damage dealt (up to 100% of Attack).",
-    "A turquoise sky-axis turbine, wind-staff core, twelve spiraling blade wings and immense counter-sweeping cyclone crowns",
-    { trigger: "critical", outcomes: [{ kind: "strike", recipient: "struck", amount: 0, ratio: 0.4, cap: 1 }] }
+    "A turquoise sky-axis turbine, wind-staff core, twelve spiraling blade wings and immense counter-sweeping cyclone crowns"
   ),
   master(
     "atmoso",
     2,
     "Horizon Cyclone Orrery",
-    "Every native critical hit stores 1 Astral Reserve (maximum 3). Cyclone Weave spends all of it: per reserve, refresh 10% next-direct-hit protection and return 8 Gauge.",
-    "Three turquoise storm planets inside a staff-shaped horizon orrery, ivory turbine ramparts and layered compass-wing vaults",
-    { trigger: "activation", actions: ["skill2"], bank: { trigger: "critical", maximum: 3 }, outcomes: [{ kind: "protection", amount: 0.1 }, { kind: "gauge", amount: 8 }] }
+    "Three turquoise storm planets inside a staff-shaped horizon orrery, ivory turbine ramparts and layered compass-wing vaults"
   ),
   master(
     "atmoso",
     3,
     "Crosswind Imperial Drive",
-    "Every Razor Gale hit against an enemy at or below half HP adds a 60% Attack crosswind strike to it (reduced by Defense) and returns 20 Gauge.",
-    "An imperial crosswind staff-drive with crossed turquoise pressure corridors, ivory gale armor and six monumental scythe-shaped wind wings",
-    { trigger: "direct", actions: ["skill1"], belowHalf: true, outcomes: [{ kind: "strike", recipient: "struck", amount: 0.6 }, { kind: "gauge", amount: 20 }] }
+    "An imperial crosswind staff-drive with crossed turquoise pressure corridors, ivory gale armor and six monumental scythe-shaped wind wings"
   ),
   master(
     "aurora",
     1,
     "Final Dawn Tribunal",
-    "Every native Weaken application lasts one more enemy phase (maximum 3) and returns 5 Gauge to every ally.",
-    "An ivory solar tribunal mechanism, amber judgment lens, twelve lens-wing arches and descending platinum verdict locks",
-    { trigger: "weaken-applied", outcomes: [{ kind: "weaken-clock", amount: 1 }, { kind: "gauge", recipient: "all-allies", amount: 5 }] }
+    "An ivory solar tribunal mechanism, amber judgment lens, twelve lens-wing arches and descending platinum verdict locks"
   ),
   master(
     "aurora",
     2,
     "Prismseal Astral Judiciary",
-    "Every native Weaken application stores 1 Astral Reserve (maximum 3). Last Flare spends all of it to give every ally +10% Attack per reserve through next round (refresh, not stack).",
-    "Three amber lens planets in an ivory judiciary orrery, interlocking seal plates and vast empty-hand casting aperture wings",
-    { trigger: "activation", actions: ["ultimate"], bank: { trigger: "weaken-applied", maximum: 3 }, outcomes: [{ kind: "boost", recipient: "all-allies", amount: 0.1 }] }
+    "Three amber lens planets in an ivory judiciary orrery, interlocking seal plates and vast empty-hand casting aperture wings"
   ),
   master(
     "aurora",
     3,
     "Merciful Eclipse Regulator",
-    "Every native direct hit against Aurora\u2019s existing Weaken heals the most injured other ally by 15% of Aurora\u2019s max HP and refreshes their next-direct-hit protection at 30%.",
-    "A white eclipse regulator surrounding an amber sun lens, twelve protective shutter petals and immense tiered celestial court rails",
-    { trigger: "direct", ownWeaken: true, outcomes: [{ kind: "heal", recipient: "injured-other", amount: 0.15 }, { kind: "protection", recipient: "injured-other", amount: 0.3 }] }
+    "A white eclipse regulator surrounding an amber sun lens, twelve protective shutter petals and immense tiered celestial court rails"
   ),
   master(
     "bliss",
     1,
     "Thousandfeather Zenith Loom",
-    "Every native critical hit gives the most injured other ally a shield worth 30% of the damage dealt (up to 15% of Bliss\u2019s max HP; refresh, not stack).",
-    "An ivory-and-rose feather loom, two immense mechanical warfan assemblies, platinum quill wings and densely nested celestial ribbon gears",
-    { trigger: "critical", outcomes: [{ kind: "shield", recipient: "injured-other", amount: 0, ratio: 0.3, cap: 0.15 }] }
+    "An ivory-and-rose feather loom, two immense mechanical warfan assemblies, platinum quill wings and densely nested celestial ribbon gears"
   ),
   master(
     "bliss",
     2,
     "Stillplume Planetary Ballet",
-    "Every effective native heal of another ally stores 1 Astral Reserve (maximum 3). Warfeather Cut spends all of it: per reserve, shorten one skill cooldown by one round (never ready before next round) and strike the target for 15% Attack (reduced by Defense).",
-    "Three rose opal planets dancing inside paired ivory fan rotors, counterbalanced feather crowns and platinum orbital ribbons",
-    { trigger: "activation", actions: ["skill1"], bank: { trigger: "heal", maximum: 3, other: true }, outcomes: [{ kind: "cooldown", amount: 1 }, { kind: "strike", recipient: "struck", amount: 0.15 }] }
+    "Three rose opal planets dancing inside paired ivory fan rotors, counterbalanced feather crowns and platinum orbital ribbons"
   ),
   master(
     "bliss",
     3,
     "Quiet Heaven Fanforge",
-    "Every Last Flare gives the most injured other ally a shield worth 20% of Bliss\u2019s max HP and 35% Attack through next round (refresh, not stack).",
-    "A double-fan heaven forge, ivory-and-rose central feather heart, twelve platinum quill mandalas and monumental quiet-wing armor",
-    { trigger: "activation", actions: ["ultimate"], outcomes: [{ kind: "shield", recipient: "injured-other", amount: 0.2 }, { kind: "boost", recipient: "injured-other", amount: 0.35 }] }
+    "A double-fan heaven forge, ivory-and-rose central feather heart, twelve platinum quill mandalas and monumental quiet-wing armor"
   ),
   master(
     "bruno",
     1,
     "Living Worldwall Atlas",
-    "Every Defense refreshes a shield for every ally worth 12% of Bruno\u2019s max HP (does not stack).",
-    "A basalt-and-bronze atlas machine supporting a faceted ochre world, hammer-shaped axial pillar and twelve titanic faultplate wings",
-    { trigger: "defense", outcomes: [{ kind: "shield", recipient: "all-allies", amount: 0.12 }] }
+    "A basalt-and-bronze atlas machine supporting a faceted ochre world, hammer-shaped axial pillar and twelve titanic faultplate wings"
   ),
   master(
     "bruno",
     2,
     "Quarry Planet Gravitas",
-    "Every effective native shield increase by Bruno stores 1 Astral Reserve (maximum 3). Last Flare spends all of it to strike every enemy for 25% Attack per reserve (reduced by Defense).",
-    "Three basalt quarry planets locked in bronze gravitic hammer cages, immense layered bedrock buttresses and ochre orbiting armor rails",
-    { trigger: "activation", actions: ["ultimate"], bank: { trigger: "shield-grown", maximum: 3 }, outcomes: [{ kind: "strike", recipient: "all-enemies", amount: 0.25 }] }
+    "Three basalt quarry planets locked in bronze gravitic hammer cages, immense layered bedrock buttresses and ochre orbiting armor rails"
   ),
   master(
     "bruno",
     3,
     "Worldforge Hammer Dominion",
-    "Every native Weaken application adds an aftershock strike to that enemy for 60% Attack (reduced by Defense) and shortens one skill cooldown by one round (never ready before next round).",
-    "A bronze hammer-dominion engine, basalt shelter vaults, ochre crystal pistons and six massive mechanically linked mountain-wing plates",
-    { trigger: "weaken-applied", outcomes: [{ kind: "strike", recipient: "struck", amount: 0.6 }, { kind: "cooldown", amount: 1 }] }
+    "A bronze hammer-dominion engine, basalt shelter vaults, ochre crystal pistons and six massive mechanically linked mountain-wing plates"
   ),
   master(
     "disciple",
     1,
     "Unbound Mindcrown Synapse",
-    "Every effective native support outcome returns 20 Gauge to the lowest-Gauge other ally and refreshes their next-direct-hit protection at 30%.",
-    "An amethyst synapse crown engine, scarlet mindflame channels, twelve open-palm-shaped mechanical arches and linked psychic orbital frames",
-    { trigger: "support", outcomes: [{ kind: "gauge", recipient: "lowest-gauge-other", amount: 20 }, { kind: "protection", recipient: "lowest-gauge-other", amount: 0.3 }] }
+    "An amethyst synapse crown engine, scarlet mindflame channels, twelve open-palm-shaped mechanical arches and linked psychic orbital frames"
   ),
   master(
     "disciple",
     2,
     "Concord Planet Thoughtforge",
-    "Every effective native support outcome on another ally stores 1 Astral Reserve (maximum 3). Last Flare spends all of it to give every ally 8 Gauge per reserve.",
-    "Three amethyst thought planets in scarlet-linked open orbital cages, empty-hand mindcrown apertures and monumental psychic lattice wings",
-    { trigger: "activation", actions: ["ultimate"], bank: { trigger: "support", maximum: 3, other: true }, outcomes: [{ kind: "gauge", recipient: "all-allies", amount: 8 }] }
+    "Three amethyst thought planets in scarlet-linked open orbital cages, empty-hand mindcrown apertures and monumental psychic lattice wings"
   ),
   master(
     "disciple",
     3,
     "Sovereign Will Amplifier",
-    "Every Thoughtspark Benediction hit shortens one of Disciple\u2019s skill cooldowns by one round (never ready before next round) and gives the lowest-Gauge other ally 15 Gauge.",
-    "A black-amethyst will amplifier with scarlet triple-tier crown rings, huge open psychic handframes and twelve ornate inward-linked flame vanes",
-    { trigger: "direct", actions: ["skill1"], outcomes: [{ kind: "cooldown", amount: 1 }, { kind: "gauge", recipient: "lowest-gauge-other", amount: 15 }] }
+    "A black-amethyst will amplifier with scarlet triple-tier crown rings, huge open psychic handframes and twelve ornate inward-linked flame vanes"
   ),
   master(
     "elise",
     1,
     "Infinite Thunderwheel Arsenal",
-    "Every native critical hit shortens both skill cooldowns by one round (never ready before next round) and refreshes Elise\u2019s shield to 20% of damage dealt (up to 10% max HP).",
-    "Exactly two four-point shuriken-shaped thunderwheel rotors with open central grips, yellow-green voltage rails and twelve platinum lightning wings",
-    { trigger: "critical", outcomes: [{ kind: "cooldown", amount: 1, bothSkills: true }, { kind: "shield", amount: 0, ratio: 0.2, cap: 0.1 }] }
+    "Exactly two four-point shuriken-shaped thunderwheel rotors with open central grips, yellow-green voltage rails and twelve platinum lightning wings"
   ),
   master(
     "elise",
     2,
     "Twin Star Planetary Ratchet",
-    "Every native critical hit stores 1 Astral Reserve (maximum 3). Last Flare spends all of it: per reserve, both skill cooldowns shorten by one round (never ready before next round) and Elise gains 10 Gauge.",
-    "Three voltage planets held between two four-point star ratchets, yellow-green branching circuitry and huge platinum circuit-crown blades",
-    { trigger: "activation", actions: ["ultimate"], bank: { trigger: "critical", maximum: 3 }, outcomes: [{ kind: "cooldown", amount: 1, bothSkills: true }, { kind: "gauge", amount: 10 }] }
+    "Three voltage planets held between two four-point star ratchets, yellow-green branching circuitry and huge platinum circuit-crown blades"
   ),
   master(
     "elise",
     3,
     "Storm Empress Execution Clock",
-    "Every enemy defeated by a native direct hit returns 30 Gauge and refreshes Elise\u2019s +30% Attack through next round.",
-    "A double-shuriken execution clock, segmented yellow-green circuit armor, twelve angular stormblade fans and layered four-point chronometer rails",
-    { trigger: "direct", lethal: true, outcomes: [{ kind: "gauge", amount: 30 }, { kind: "boost", amount: 0.3 }] }
+    "A double-shuriken execution clock, segmented yellow-green circuit armor, twelve angular stormblade fans and layered four-point chronometer rails"
   ),
   master(
     "razor",
     1,
     "Unbroken Midnight Bastion",
-    "Every Defense heals 18% max HP and refreshes 40% next-direct-hit protection.",
-    "An obsidian midnight bastion engine enclosing one night-sword spindle, violet crescent shield wings and enormous layered eclipse ramparts",
-    { trigger: "defense", outcomes: [{ kind: "heal", amount: 0.18 }, { kind: "protection", amount: 0.4 }] }
+    "An obsidian midnight bastion engine enclosing one night-sword spindle, violet crescent shield wings and enormous layered eclipse ramparts"
   ),
   master(
     "razor",
     2,
     "Eclipse Planet Watchtower",
-    "Every Defense stores 1 Astral Reserve (maximum 3). Last Flare spends all of it: per reserve, strike the target for 30% Attack (reduced by Defense) and refresh Razor\u2019s next-direct-hit protection by 20% (maximum 60%).",
-    "Three violet eclipse planets behind obsidian tower-shield cages, one night-sword axis and twelve monumental crescent watchtower wings",
-    { trigger: "activation", actions: ["ultimate"], bank: { trigger: "defense", maximum: 3 }, outcomes: [{ kind: "strike", recipient: "struck", amount: 0.3 }, { kind: "protection", amount: 0.2 }] }
+    "Three violet eclipse planets behind obsidian tower-shield cages, one night-sword axis and twelve monumental crescent watchtower wings"
   ),
   master(
     "razor",
     3,
     "Nightglass Counterblade Engine",
-    "Every native Weaken application places two personal Fracture Marks (maximum 2) and refreshes a shield worth 25% of Razor\u2019s max HP.",
-    "An obsidian counterblade engine, violet nightglass gem chambers, sword-hilt locking clasps and immense double-crescent shield architecture",
-    { trigger: "weaken-applied", outcomes: [{ kind: "fracture", amount: 2 }, { kind: "shield", amount: 0.25 }] }
+    "An obsidian counterblade engine, violet nightglass gem chambers, sword-hilt locking clasps and immense double-crescent shield architecture"
   ),
   master(
     "rosetta",
     1,
     "Rose Beyond the Sun Orrery",
-    "Every native Weaken application returns 20 Gauge and refreshes a shield on the most injured other ally worth 12% of Rosetta\u2019s max HP.",
-    "A rose-gold solar bow orrery with crimson petal gears, ivory wing vaults and twelve enormous gilded thorn-mandala arches",
-    { trigger: "weaken-applied", outcomes: [{ kind: "gauge", amount: 20 }, { kind: "shield", recipient: "injured-other", amount: 0.12 }] }
+    "A rose-gold solar bow orrery with crimson petal gears, ivory wing vaults and twelve enormous gilded thorn-mandala arches"
   ),
   master(
     "rosetta",
     2,
     "Virtuous Planet Rosegarden",
-    "Every effective native heal by Rosetta stores 1 Astral Reserve (maximum 3). Golden Thorn Volley spends all of it: per reserve, shorten one skill cooldown by one round (never ready before next round) and refresh every ally\u2019s shield to 3% of Rosetta\u2019s max HP.",
-    "Three rose planets in rose-gold garden cages, ivory bow-limb orbit rails and densely layered crimson petal cathedral wings",
-    { trigger: "activation", actions: ["skill1"], bank: { trigger: "heal", maximum: 3 }, outcomes: [{ kind: "cooldown", amount: 1 }, { kind: "shield", recipient: "all-allies", amount: 0.03 }] }
+    "Three rose planets in rose-gold garden cages, ivory bow-limb orbit rails and densely layered crimson petal cathedral wings"
   ),
   master(
     "rosetta",
     3,
     "Golden Thorn Judgment Loom",
-    "Every native direct hit against Rosetta\u2019s existing Weaken refreshes +45% Attack through next round and places two personal Fracture Marks (maximum 2).",
-    "A golden thorn targeting loom with one central rose-bow aperture, crimson rose mandalas, ivory prism petals and twelve sweeping thorn-wing rails",
-    { trigger: "direct", ownWeaken: true, outcomes: [{ kind: "boost", amount: 0.45 }, { kind: "fracture", amount: 2 }] }
+    "A golden thorn targeting loom with one central rose-bow aperture, crimson rose mandalas, ivory prism petals and twelve sweeping thorn-wing rails"
   ),
   master(
     "thornia",
     1,
     "Forbidden Garden Worldlock",
-    "Every enemy hit absorbed by Thornia\u2019s authored shields adds a counterstrike against the attacker for 100% of damage blocked (up to 100% of Attack) and returns 10 Gauge.",
-    "A rose-gold forbidden worldlock, violet eclipse cage, crimson thorn greatsword axis and twelve immense gilded rose-shield fans",
-    { trigger: "shield-absorbed", outcomes: [{ kind: "strike", recipient: "attacker", amount: 0, ratio: 1, cap: 1 }, { kind: "gauge", amount: 10 }] }
+    "A rose-gold forbidden worldlock, violet eclipse cage, crimson thorn greatsword axis and twelve immense gilded rose-shield fans"
   ),
   master(
     "thornia",
     2,
     "Thousand-Rose Planetary Aegis",
-    "Every enemy hit absorbed by Thornia\u2019s authored shields stores 1 Astral Reserve (maximum 3). Shadow Rose Cleave spends all of it to refresh every ally\u2019s shield to 6% of Thornia\u2019s max HP per reserve.",
-    "Three crimson rose planets nested in golden aegis cages, violet thorn eclipse rails and massive interwoven rose-armored greatsword wings",
-    { trigger: "activation", actions: ["skill2"], bank: { trigger: "shield-absorbed", maximum: 3 }, outcomes: [{ kind: "shield", recipient: "all-allies", amount: 0.06 }] }
+    "Three crimson rose planets nested in golden aegis cages, violet thorn eclipse rails and massive interwoven rose-armored greatsword wings"
   ),
   master(
     "thornia",
     3,
     "Shadow Rose Sovereign Foundry",
-    "Every native Weaken application lasts one more enemy phase (maximum 3) and heals Thornia by 12% of her max HP.",
-    "A violet-and-rose-gold shadow foundry, crimson thorn blade crucible, six immense rose-wing forge arches and dense golden petal countergears",
-    { trigger: "weaken-applied", outcomes: [{ kind: "weaken-clock", amount: 1 }, { kind: "heal", amount: 0.12 }] }
+    "A violet-and-rose-gold shadow foundry, crimson thorn blade crucible, six immense rose-wing forge arches and dense golden petal countergears"
   ),
   master(
     "crinso",
     1,
     "Twin-Rose Singularity Drive",
-    "Every native critical hit refreshes a shield worth 15% of Crinso\u2019s max HP and +40% Attack through next round.",
-    "A rose-gold singularity drive around one connected double-ended blade axle, golden flame and crimson lightning halves with twelve thorn wings",
-    { trigger: "critical", outcomes: [{ kind: "shield", amount: 0.15 }, { kind: "boost", amount: 0.4 }] }
+    "A rose-gold singularity drive around one connected double-ended blade axle, golden flame and crimson lightning halves with twelve thorn wings"
   ),
   master(
     "crinso",
     2,
     "Duality Planet Flamewheel",
-    "Every native Burn application stores 1 Astral Reserve (maximum 3). Last Flare spends all of it: per reserve, Crinso heals 8% of max HP and refreshes 10% next-direct-hit protection.",
-    "Three crimson-gold planets inside one connected dual-edged sword wheel, nested rose hubs, opposed flame rails and lightning petal armor",
-    { trigger: "activation", actions: ["ultimate"], bank: { trigger: "burn-applied", maximum: 3 }, outcomes: [{ kind: "heal", amount: 0.08 }, { kind: "protection", amount: 0.1 }] }
+    "Three crimson-gold planets inside one connected dual-edged sword wheel, nested rose hubs, opposed flame rails and lightning petal armor"
   ),
   master(
     "crinso",
     3,
     "Crimson Beauty Pyre Requiem",
-    "Every native direct hit against Crinso\u2019s existing Burn heals 15% max HP and extends that Burn by one phase (maximum 3). Burn ticks do not extend themselves.",
-    "A golden-crimson pyre requiem engine with a connected double-ended sword core, twelve rose lightning wings and ornate flame-petal crowns",
-    { trigger: "direct", ownBurn: true, outcomes: [{ kind: "heal", amount: 0.15 }, { kind: "burn-clock", amount: 1 }] }
+    "A golden-crimson pyre requiem engine with a connected double-ended sword core, twelve rose lightning wings and ornate flame-petal crowns"
   ),
   master(
     "nerithe",
     1,
     "Shoreless Meridian Worldchart",
-    "Every native Normal Attack hit refreshes a shield worth 10% of Nerithe\u2019s max HP and +30% Attack through next round. Does not repeat her passive\u2019s Gauge award.",
-    "A turquoise worldchart engine, surveyor-trident spindle, twelve ocean compass wings and immense folded meridian astrolabe rails",
-    { trigger: "direct", actions: ["light"], outcomes: [{ kind: "shield", amount: 0.1 }, { kind: "boost", amount: 0.3 }] }
+    "A turquoise worldchart engine, surveyor-trident spindle, twelve ocean compass wings and immense folded meridian astrolabe rails"
   ),
   master(
     "nerithe",
     2,
     "Folded Ocean Planetarium",
-    "Every native Weaken application stores 1 Astral Reserve (maximum 3). Normal Attack spends all of it to strike the target for 25% Attack per reserve (reduced by Defense).",
-    "Three turquoise ocean planets in folded ivory meridian cages, surveyor trident locking prongs and huge layered sea-map wings",
-    { trigger: "activation", actions: ["light"], bank: { trigger: "weaken-applied", maximum: 3 }, outcomes: [{ kind: "strike", recipient: "struck", amount: 0.25 }] }
+    "Three turquoise ocean planets in folded ivory meridian cages, surveyor trident locking prongs and huge layered sea-map wings"
   ),
   master(
     "nerithe",
     3,
     "Abyssal Surveyor Crown",
-    "Every native Weaken application places two personal Fracture Marks (maximum 2) and refreshes 35% next-direct-hit protection.",
-    "A turquoise abyssal crown surveyor, trident-shaped rangefinding lens, ivory ocean ramparts and twelve royal compass-blade wings",
-    { trigger: "weaken-applied", outcomes: [{ kind: "fracture", amount: 2 }, { kind: "protection", amount: 0.35 }] }
+    "A turquoise abyssal crown surveyor, trident-shaped rangefinding lens, ivory ocean ramparts and twelve royal compass-blade wings"
   ),
   master(
     "orvella",
     1,
     "Throne Beneath the World",
-    "Every effective native shield increase by Orvella refreshes 40% next-direct-hit protection and returns 15 Gauge.",
-    "An ivory-and-ochre planetary foundation throne, crystal-mace cornerstone, twelve monumental stone armor wings and immense bronze support arches",
-    { trigger: "shield-grown", outcomes: [{ kind: "protection", amount: 0.4 }, { kind: "gauge", amount: 15 }] }
+    "An ivory-and-ochre planetary foundation throne, crystal-mace cornerstone, twelve monumental stone armor wings and immense bronze support arches"
   ),
   master(
     "orvella",
     2,
     "Deep Foundation Planetpress",
-    "Every enemy hit absorbed by Orvella\u2019s authored shields stores 1 Astral Reserve (maximum 3). Keystone Reversal spends all of it: the target\u2019s own Weaken lasts one more enemy phase (maximum 3) and both skill cooldowns shorten by one round per reserve (never ready before next round).",
-    "Three ochre foundation planets braced by bronze masonry press rings, crystal-mace piston and ivory world-bearing buttress wings",
-    { trigger: "activation", actions: ["skill1"], bank: { trigger: "shield-absorbed", maximum: 3 }, outcomes: [{ kind: "weaken-clock", amount: 1 }, { kind: "cooldown", amount: 1, bothSkills: true }] }
+    "Three ochre foundation planets braced by bronze masonry press rings, crystal-mace piston and ivory world-bearing buttress wings"
   ),
   master(
     "orvella",
     3,
     "Keystone Sovereign Counterweight",
-    "Every native direct hit against Orvella\u2019s existing Weaken refreshes the most injured other ally\u2019s shield to 25% of her max HP and +30% Attack through next round.",
-    "An ochre keystone counterweight engine with crystal mace fulcrum, bronze celestial load rails and twelve ivory citadel shield wings",
-    { trigger: "direct", ownWeaken: true, outcomes: [{ kind: "shield", recipient: "injured-other", amount: 0.25 }, { kind: "boost", recipient: "injured-other", amount: 0.3 }] }
+    "An ochre keystone counterweight engine with crystal mace fulcrum, bronze celestial load rails and twelve ivory citadel shield wings"
   ),
   master(
     "vaelor",
     1,
     "Final Chord Celestial Resonator",
-    "While Vaelor is at or below half HP, every native direct hit heals Vaelor by 25% of damage dealt (up to 15% max HP) and returns 10 Gauge.",
-    "A gold-and-black celestial resonator, resonance-blade tuning core, twelve immense thunder choir wings and branching frequency crown rails",
-    { trigger: "direct", selfBelowHalf: true, outcomes: [{ kind: "heal", amount: 0, ratio: 0.25, cap: 0.15 }, { kind: "gauge", amount: 10 }] }
+    "A gold-and-black celestial resonator, resonance-blade tuning core, twelve immense thunder choir wings and branching frequency crown rails"
   ),
   master(
     "vaelor",
     2,
     "Thunder Choir Planetary Fugue",
-    "Every native critical hit stores 1 Astral Reserve (maximum 3). Last Flare spends all of it to strike every enemy for 20% Attack per reserve (reduced by Defense).",
-    "Three gold thunder planets in black conducting cages, resonance-blade axis and vast branching voltage organ-wing architecture",
-    { trigger: "activation", actions: ["ultimate"], bank: { trigger: "critical", maximum: 3 }, outcomes: [{ kind: "strike", recipient: "all-enemies", amount: 0.2 }] }
+    "Three gold thunder planets in black conducting cages, resonance-blade axis and vast branching voltage organ-wing architecture"
   ),
   master(
     "vaelor",
     3,
     "Broken Sky Imperial Metronome",
-    "Every Defense refreshes +50% Attack through next round and returns 15 Gauge.",
-    "A black-and-gold sky metronome with resonance-blade pendulum, twelve thunder-frequency wings and enormous nested conductor halos",
-    { trigger: "defense", outcomes: [{ kind: "boost", amount: 0.5 }, { kind: "gauge", amount: 15 }] }
+    "A black-and-gold sky metronome with resonance-blade pendulum, twelve thunder-frequency wings and enormous nested conductor halos"
   )
 ];
-function isMasterConduitId(value) {
-  return masterConduits.some((entry) => entry.id === value);
+function isMasterConduitId(value2) {
+  return masterConduits.some((entry) => entry.id === value2);
 }
 function getMasterConduit(id) {
   const entry = masterConduits.find((entry2) => entry2.id === id);
@@ -1299,38 +2449,27 @@ var machineEnemies = [
   { name: "Crowned Phoenix", art: "crowned-phoenix", element: "infernic", skill: "Sunforge Rebirth", theme: "crimson-and-ivory mechanized phoenix, eight magnificent blade-feather wings and platinum crown" },
   { name: "Ouroboros of the First Dawn", art: "ouroboros-first-dawn", element: "chaotic", skill: "Genesis Overdrive", theme: "compact opal-and-ivory mechanized celestial dragon coiled around a restored core, sixteen magnificent vaned wings and prismatic regalia" }
 ];
-function machineConduitLoot(stage) {
+function machineConduitLoot(stage, owned = {}) {
   validateMachineStage(stage);
-  return [
-    ...machinePools.Rare.map((conduit) => ({
+  return ["Rare", "Legendary", "Omnic"].filter((rarity) => rarity !== "Omnic" || stage >= machineRules.omnicStage).flatMap((rarity) => {
+    const pool = machinePools[rarity];
+    const remaining = pool.filter((conduit) => !(owned[conduit.id] ?? 0)).length;
+    const chance = rarity === "Rare" ? machineRules.rareChance : rarity === "Legendary" ? machineRules.legendaryChance : machineRules.omnicChance;
+    return pool.map((conduit) => ({
       id: conduit.id,
       minimum: 1,
       maximum: 1,
-      chance: machineRules.rareChance / machinePools.Rare.length,
-      note: "Independent Rare tier roll, then equal choice within the tier; bosses use the same odds."
-    })),
-    ...machinePools.Legendary.map((conduit) => ({
-      id: conduit.id,
-      minimum: 1,
-      maximum: 1,
-      chance: machineRules.legendaryChance / machinePools.Legendary.length,
-      note: "Independent Legendary tier roll, then equal choice within the tier; bosses use the same odds."
-    })),
-    ...stage >= machineRules.omnicStage ? machinePools.Omnic.map((conduit) => ({
-      id: conduit.id,
-      minimum: 1,
-      maximum: 1,
-      chance: machineRules.omnicChance / machinePools.Omnic.length,
-      note: "Independent Omnic tier roll, then equal choice within the tier; bosses use the same odds."
-    })) : []
-  ];
+      chance: (owned[conduit.id] ?? 0) > 0 || !remaining ? 0 : chance / remaining,
+      note: `Independent ${rarity} tier roll, then equal choice among unowned Conduits in that tier. Owned names have 0% chance; a complete tier awards no Conduit or replacement. Bosses use the same odds.`
+    }));
+  });
 }
 function rollTier(pool, chance, random) {
   if (lootRoll(random) >= chance) return void 0;
-  if (!pool.length) throw new Error("Conduit reward pool is empty.");
-  return pool[Math.floor(lootRoll(random) * pool.length)].id;
+  const choice = lootRoll(random);
+  return pool.length ? pool[Math.floor(choice * pool.length)].id : void 0;
 }
-function machineConduitDrops(stage, random) {
+function machineConduitDrops(stage, random, owned = {}) {
   validateMachineStage(stage);
   const drops = {};
   for (const [pool, chance] of [
@@ -1339,7 +2478,7 @@ function machineConduitDrops(stage, random) {
     [machinePools.Omnic, stage >= machineRules.omnicStage ? machineRules.omnicChance : 0]
   ]) {
     if (!chance) continue;
-    const id = rollTier(pool, chance, random);
+    const id = rollTier(pool.filter((conduit) => !(owned[conduit.id] ?? 0)), chance, random);
     if (id) drops[id] = 1;
   }
   return drops;
@@ -1347,7 +2486,7 @@ function machineConduitDrops(stage, random) {
 function bannerConduitBonus(random) {
   return rollTier(bannerPool, machineRules.bannerBonusChance, random);
 }
-var machineRulesText = `<p>${machineOrigin}</p><p>${machineRules.stages} stages \xB7 Lv.10-120 \xB7 Boss every fifth stage. Each defeated enemy grants ordinary Prismatica and independently rolls Rare Conduits at 8%, Legendary at 3.5%, and Omnic at 1% from stage ${machineRules.omnicStage} onward. A successful tier roll awards one equally chosen Conduit: ${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary or ${machinePools.Omnic.length} element-specific Omnic. Multiple tiers may drop together; bosses use the same odds. All Common Conduits are Store-only and have no machine drop roll. ${machineComponentRulesText} No captures, evolution materials, Null-Prismatica or clear bonus.</p><p>One owned ordinary copy unlocks its name for every character. Each ordinary name can be upgraded account-wide five times using only components, adding 50% of the original stat modifiers each time, including penalties (3.5 times at +5). Kit effects and special mechanics are unchanged by upgrades. Up to four ordinary Omnic Conduits may occupy the eight ordinary slots; each must match that character's combat element.</p><p>${masterRulesText}</p>`;
+var machineRulesText = `<p>${machineOrigin}</p><p>${machineRules.stages} stages \xB7 Lv.10-120 \xB7 Boss every fifth stage. Each defeated enemy grants ordinary Prismatica and independently rolls Rare Conduits at 8%, Legendary at 3.5%, and Omnic at 1% from stage ${machineRules.omnicStage} onward. A successful tier roll awards one equally chosen unowned Conduit from that rarity's catalog: ${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary or ${machinePools.Omnic.length} element-specific Omnic. Already-owned names cannot drop. If every name in the rolled rarity is owned, no Conduit or replacement reward is granted. Multiple tiers may drop together; bosses use the same odds. All Common Conduits are Store-only and have no machine drop roll. ${machineComponentRulesText} No captures, evolution materials, Null-Prismatica or clear bonus.</p><p>One owned ordinary copy unlocks its name for every character. Each ordinary name can be upgraded account-wide five times using only components, adding 50% of the original stat modifiers each time, including penalties (3.5 times at +5). Kit effects and special mechanics are unchanged by upgrades. Up to four ordinary Omnic Conduits may occupy the eight ordinary slots; each must match that character's combat element.</p><p>${masterRulesText}</p>`;
 
 // src/content/flagships.ts
 var flagshipCharacters = [
@@ -1600,8 +2739,8 @@ var warCharacters = [
     lore: { origin: "The towers of the thunder choir", story: "Vaelor listened in the thunder-choir towers for the missing rhythm between storms. With a small resonance blade he followed the silence, learning that Atmospheric means Calm: the clear interval in which a broken sky can be heard without being forced to sing. Let created human Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole the same elements. Both factions seek their creators\u2019 souls, still separate and unfound; the contest has no winner. Vaelor follows the quiet frequencies around rumors of Let\u2019s soul, certain that the missing note must be heard before anyone can claim the final chord.", vow: "Even a broken sky can sing again.", awakening: "Quiet voltage finds its first rhythm, not its final chord." }
   }
 ];
-function isWarCharacter(value) {
-  return warCharacters.some((character) => character.id === value);
+function isWarCharacter(value2) {
+  return warCharacters.some((character) => character.id === value2);
 }
 var warEvolutionTitles = {
   nerithe: [
@@ -1777,8 +2916,8 @@ function isRoseCharacter(id) {
 function isAvailableStarter(id) {
   return availableStarters.some((starter) => starter.id === id);
 }
-function isStarterId(value) {
-  return starters.some((starter) => starter.id === value);
+function isStarterId(value2) {
+  return starters.some((starter) => starter.id === value2);
 }
 function getStarter(id) {
   const starter = starters.find((entry) => entry.id === id);
@@ -1864,6 +3003,262 @@ var kitPilotDescriptions = {
   }
 };
 
+// src/content/native-balance.ts
+var nativeBalance = {
+  skillDamageScale: 1.6,
+  flora: { seed: 0.5, empoweredSeed: 0.65, immediateHeal: 0.5 },
+  tizu: { shelter: 0.45, oceanMemory: 0.35 }
+};
+
+// src/content/native-identities.ts
+function ability(name, description, damageMultiplier, targets, excludeSelf) {
+  return {
+    name,
+    description,
+    cooldown: 0,
+    strength: damageMultiplier === void 0 ? {} : { damageMultiplier },
+    ...targets ? { targets } : {},
+    ...excludeSelf ? { excludeSelf } : {}
+  };
+}
+var nativeIdentities = {
+  ember: {
+    role: "Persistent fire specialist",
+    playLoop: "Maintain personal Burn across enemy phases or trade its remaining ticks for immediate detonation.",
+    passive: {
+      name: "Unbroken Ember",
+      description: "Infernis Burn lasts three enemy phases. Reapplying refreshes to three phases and retains the stronger tick; it never stacks or ticks immediately. No low-health bonus or Ember bank."
+    },
+    abilities: {
+      skill1: ability("Cinder Cleave", "160% direct damage to one enemy; apply personal Burn at 25% of caster Attack per enemy phase for three enemy phases.", 1.6),
+      skill2: ability("Flame Arc", "110% direct damage to all enemies. On each survivor, consume up to two remaining phases of Infernis Burn and immediately deal their exact stored tick damage. Other owners\u2019 Burn is untouched; without personal Burn there is no detonation.", 1.1, "all-enemies"),
+      ultimate: ability("Last Flare: Dawnfire", "200% direct damage to all enemies; refresh personal Burn at 45% of caster Attack per phase for three enemy phases, retaining stronger ticks. No immediate detonation; Burn continues during recovery while Infernis lives.", 2, "all-enemies")
+    }
+  },
+  tide: {
+    role: "Precise barrier protector",
+    playLoop: "Inspect the next enemy threat and choose the ally who needs a short-lived barrier.",
+    passive: {
+      name: "Stillwater Guard",
+      description: "When Tizu\u2019s own ability shield fully absorbs an enemy direct hit with zero HP loss, its recipient gains 8 Gauge, once per recipient per enemy phase. No Ward bank or flat Defense bonus."
+    },
+    abilities: {
+      skill1: { ...ability("Undertow Thrust", "150% direct damage to one enemy; apply 25% Weaken to its next one enemy-phase attack window. Weaken reduces outgoing direct damage, not Defense.", 1.5), strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
+      skill2: ability("Tidal Shelter", `Select one living ally; refresh a shield worth ${nativeBalance.tizu.shelter * 100}% of recipient maximum HP, expiring after the next enemy phase. Does not shield the whole team.`, void 0, "one-ally"),
+      ultimate: ability("Last Flare: Ocean Memory", `Shield all living allies for ${nativeBalance.tizu.oceanMemory * 100}% of recipient maximum HP through the next two enemy phases. Their first direct hit while this shield remains receives 30% damage reduction before shield absorption. No direct attack.`, void 0, "all-allies")
+    }
+  },
+  sprout: {
+    role: "Delayed recovery gardener",
+    playLoop: "Plant recovery before damage, then choose whether to wait for delivery or harvest immediately.",
+    passive: {
+      name: "Root of Hope",
+      description: `Each living ally can hold one Flora Seed. At next player-turn start it restores ${nativeBalance.flora.seed * 100}% of recipient maximum HP and disappears, requiring Flora alive. Seeds never stack or revive; replacement resets delivery time. No automatic team healing or Bloom bank.`
+    },
+    abilities: {
+      skill1: ability("Briar Shot", "140% direct damage to one enemy; plant a Seed on the living ally with the lowest HP fraction, breaking ties by squad order.", 1.4),
+      skill2: ability("Verdant Renewal", `Immediately harvest all existing Seeds for their stored healing (${nativeBalance.flora.seed * 100}% recipient maximum HP normally; ${nativeBalance.flora.empoweredSeed * 100}% for empowered Seeds), then plant a new Seed on every living ally. Empty harvest heals nothing. A normal Seed never overwrites an empowered pending Seed; no revive or Attack buff.`, void 0, "all-allies"),
+      ultimate: ability("Last Flare: Worldseed", `Immediately heal every living ally by ${nativeBalance.flora.immediateHeal * 100}% of recipient maximum HP, then plant an empowered Seed restoring ${nativeBalance.flora.empoweredSeed * 100}% at next player-turn start while Flora lives. No direct damage or revival.`, void 0, "all-allies")
+    }
+  },
+  atmoso: {
+    role: "Delayed wind-field attacker",
+    playLoop: "Create Cyclone before allies act, then weigh a larger delayed release against immediate pressure.",
+    passive: {
+      name: "Gale Cadence",
+      description: "While Cyclone is active, each other living ally\u2019s completed native action adds one Gust, once per ally per player turn, cap 4. No critical-earned Tempest or low-health bonus."
+    },
+    abilities: {
+      skill1: ability("Razor Gale", "180% direct damage to one enemy; release an existing Cyclone early against all living enemies and end the field.", 1.8),
+      skill2: ability("Cyclone Weave", "Release an existing Cyclone first, then create a fresh empty Cyclone lasting two enemy phases. At the second phase end, release 70% caster Attack plus 30% per Gust, cap 190%, against all living enemies as fixed noncritical native damage. Gusts never carry over; Atmoso must live to release.", void 0, "all-enemies"),
+      ultimate: ability("Last Flare: Sky Without End", "Release any active Cyclone at its actual Gust value, then deal 200% direct damage to all enemies. Does not create a field.", 2, "all-enemies")
+    }
+  },
+  elise: {
+    role: "Two-shuriken placement duelist",
+    playLoop: "Lodge blades across enemies for coverage or converge both on one target before recall.",
+    passive: {
+      name: "Stormwheel Rhythm",
+      description: "Exactly two native shuriken begin held. Each is held or lodged in one living enemy; blades return harmlessly when their target dies. No Tempest counter."
+    },
+    abilities: {
+      skill1: ability("Voltstar Cut", "Throw one held blade for 110% direct damage to the selected enemy and lodge it. With none held, deal a 140% direct strike without moving blades. Both may lodge in one target.", 1.1),
+      skill2: ability("Crosscurrent Volley", "Recall all lodged blades: each deals a 90% caster Attack fixed noncritical strike to its target; two on the same target add one 60% convergence strike. With both held, instead deal one 140% direct strike to the selected enemy. Recall generates no Gauge or extra critical rolls.", 1.4),
+      ultimate: ability("Last Flare: Infinite Thunderwheel", "Recall lodged blades with the same 90% per blade and single 60% convergence rule, then deal one 260% direct strike to the selected enemy. Both blades end held regardless of survival; no baseline area damage.", 2.6)
+    }
+  },
+  bliss: {
+    role: "Action-order dancer",
+    playLoop: "Act first for offense or last for modest recovery and shielding; solo always opens.",
+    passive: {
+      name: "Stillfeather Tempo",
+      description: "Each native action is Opening if no other living ally has acted this player turn, Closing if all have, or Passing otherwise. Solo is always Opening, never both. No healing-earned Bloom bank."
+    },
+    abilities: {
+      skill1: ability("Warfeather Cut", "170% direct damage to one enemy. Opening adds 25 percentage points Critical Rate to this attack; Closing heals the most injured other living ally for 6% of recipient maximum HP. Passing adds neither.", 1.7),
+      skill2: ability("Quietstorm Flourish", "120% direct damage to all enemies. Opening grants living allies 10% outgoing direct damage until this player turn ends; Closing refreshes a 6% recipient maximum HP team shield through the next enemy phase. Passing adds neither.", 1.2, "all-enemies"),
+      ultimate: ability("Last Flare: Thousandfeather Stillness", "250% direct damage to all enemies. Opening adds 30 percentage points Critical Rate to this attack; Closing heals other living allies for 10% of recipient maximum HP. Passing has no bonus.", 2.5, "all-enemies")
+    }
+  },
+  bruno: {
+    role: "Deliberate damage interceptor",
+    playLoop: "Cover a vulnerable ally while managing the redirected damage Bruno can safely endure.",
+    passive: {
+      name: "Faultbound Resolve",
+      description: "Reduce damage redirected to Bruno by 25%, only for his interception. No flat Defense bonus, retaliation or absorbed-damage resource."
+    },
+    abilities: {
+      skill1: ability("Seismic Hammerfall", "190% direct damage to one enemy. No Weaken.", 1.9),
+      skill2: ability("Citadel Mantle", "Choose another living ally to Cover through the next enemy phase: redirect 50% of its post-mitigation direct incoming damage to Bruno. Only one covered ally; recasting replaces it. Solo fallback gives Bruno 20% direct-damage reduction for that phase. Redirected damage cannot redirect again.", void 0, "one-ally", true),
+      ultimate: ability("Last Flare: Worldwall Ascendant", "Cover every other living ally for two enemy phases, redirecting 40% per hit; replace single-target Cover. Bruno receives a personal shield worth 20% of caster maximum HP for that duration. No direct damage.", void 0, "all-allies")
+    }
+  },
+  disciple: {
+    role: "Conditional ally instructor",
+    playLoop: "Act before a chosen ally and match its next action to Strike, Shelter or Resolve.",
+    passive: {
+      name: "Shared Mindflame",
+      description: "Maintain one Instruction on one chosen living ally, including self. It expires after that ally\u2019s next native action or at the end of the next player turn. Replacement discards the old one. New Instructions activate after the granting action finishes, never amplifying or consuming themselves."
+    },
+    abilities: {
+      skill1: ability("Thoughtspark Benediction", "Give one living ally Strike: its next native damaging action gains 30% outgoing direct damage. A support action consumes it without benefit.", void 0, "one-ally"),
+      skill2: ability("Concord of Chaos", "Give one living ally Shelter: its next native heal or shield action gains 35% native healing/shield amount. A purely damaging action consumes it without benefit. Does not amplify Conduit-generated outcomes.", void 0, "one-ally"),
+      ultimate: ability("Last Flare: Unbound Mindcrown", "Give Resolve to all living allies: their next native action receives Strike and/or Shelter according to its actual effects (30% outgoing direct damage and 35% native healing/shields). Replace current Instructions, expiring by the end of the next player turn. Hybrid actions use both parts once without recursion; no direct damage or permanent Attack buff.", void 0, "all-allies")
+    }
+  },
+  aurora: {
+    role: "Hostile skill forecaster",
+    playLoop: "Forecast the scheduled special that matters and time a Seal or ultimate-specific protection.",
+    passive: {
+      name: "Lens of Diminishment",
+      description: "Battle reference always shows each living enemy\u2019s next scheduled special/ultimate and due enemy-phase number, or explicitly states none is scheduled. Does not change scheduling or RNG."
+    },
+    abilities: {
+      skill1: ability("Gleamseal", "Seal one enemy: its next scheduled special/ultimate within three enemy phases deals 40% less direct damage. Only that activation consumes the Seal; Normal Attacks are unaffected and scheduling is unchanged. Refresh duration while retaining the stronger personal Seal; never stack."),
+      skill2: ability("Eclipse Mandate", "100% direct damage to all enemies; Seal each survivor for 25% less direct damage from its next scheduled special/ultimate within three enemy phases. Refresh duration and retain the stronger personal reduction; never stack.", 1, "all-enemies"),
+      ultimate: ability("Last Flare: Final Dawn Verdict", "For two enemy phases, all living allies take 50% less direct damage from hostile ultimates specifically. No attack, Weaken, or protection against Normal Attacks or ordinary skills.", void 0, "all-allies")
+    }
+  },
+  razor: {
+    role: "Wounds-powered revenge duelist",
+    playLoop: "Bank actual enemy-inflicted HP loss, then choose a small cashout or a larger finisher.",
+    passive: {
+      name: "Unbroken Night",
+      description: "Bank actual direct enemy HP loss suffered by Razor as Wounds, cap 30% of caster maximum HP. Shields, redirected damage, Burn, self-costs and generated effects add nothing. Healing does not erase Wounds."
+    },
+    abilities: {
+      skill1: ability("Nightcleave", "160% direct damage to one enemy; spend up to 10% caster maximum HP of Wounds for a fixed noncritical Defense-mitigated strike whose Attack power equals the amount spent. No Wounds still permits the ordinary attack.", 1.6),
+      skill2: ability("Eclipse Bastion", "Reduce Razor\u2019s direct incoming damage by 30% for the next enemy phase. At phase end, if he lost direct HP, refresh a personal shield equal to that loss, capped at 12% caster maximum HP, through the following enemy phase. No team shield or immediate revenge."),
+      ultimate: ability("Last Flare: Unbroken Midnight", "220% direct damage to one enemy; spend all Wounds before a fixed noncritical Defense-mitigated strike using twice the amount spent as Attack power, cap 60% caster maximum HP. No life steal or revival.", 2.2)
+    }
+  },
+  rosetta: {
+    role: "Coordinated quarry hunter",
+    playLoop: "Mark a Quarry, coordinate distinct allies\u2019 hits, then cash out after contributors act.",
+    passive: {
+      name: "Virtuous Bloom",
+      description: "Maintain one personal Quarry. Track distinct living allies landing native direct hits on it this player turn. Once two different allies hit, refresh an 8% recipient maximum HP shield on those contributors, once per player turn total. No passive healing, Burn or Rose Grace bank."
+    },
+    abilities: {
+      skill1: ability("Golden Thorn Volley", "160% direct damage to one enemy and designate it Quarry until it dies or Rosetta marks another. This hit counts as her contribution. Re-marking preserves current-turn history; changing targets clears it.", 1.6),
+      skill2: ability("Crimson Skyfall", "200% direct damage to a living Quarry, plus 25% coefficient per distinct other ally who hit it this turn, cap 250%. Without a living Quarry, deal 160% to the selected enemy. Does not mark.", 2),
+      ultimate: ability("Last Flare: Rose Beyond the Sun", "300% direct damage to the Quarry or selected fallback. With at least two distinct Quarry contributors this turn, heal living contributors for 10% of recipient maximum HP; never heal nonparticipants.", 3)
+    }
+  },
+  thornia: {
+    role: "Enemy-action thorn trapper",
+    playLoop: "Trap a threatening attacker for retaliation or spend a charge for immediate pressure.",
+    passive: {
+      name: "Forbidden Garden",
+      description: "One personal trap per enemy, up to three charges. When it completes a direct damaging action against any ally, spend one charge for a 60% caster Attack fixed noncritical strike. Once per activation, not hit or target; shielded damage counts, fully prevented/no-damage actions do not. No Thorn Aegis bank."
+    },
+    abilities: {
+      skill1: ability("Gilded Thorn Guard", "Place three personal trap charges on the selected enemy for three enemy phases. Refresh to three, never add; no direct damage. Stronger traps cannot be downgraded."),
+      skill2: ability("Shadow Rose Cleave", "170% direct damage to one enemy. If it has a personal trap, consume one charge for an additional 80% caster Attack fixed noncritical strike, sacrificing a future retaliation.", 1.7),
+      ultimate: ability("Last Flare: Thousand-Rose Dominion", "140% direct damage to all enemies; place an empowered three-charge personal trap on each survivor for three enemy phases, with 90% caster Attack fixed noncritical retaliation.", 1.4, "all-enemies")
+    }
+  },
+  crinso: {
+    role: "Alternating-edge combo duelist",
+    playLoop: "Alternate Gold and Crimson ordinary skills to build Combo, then choose when to spend the combination.",
+    passive: {
+      name: "Rose Duality",
+      description: "Ordinary skills use Gold or Crimson edge. Switching advances Combo by 1, cap 3; repeating resets to 0. The first edge establishes stance at Combo 0. Normal Attack and Defense neither build nor break it. No Burn, low-health bonus or fire charges."
+    },
+    abilities: {
+      skill1: ability("Golden Edge", "160% direct damage to one enemy; if the previous ordinary skill was Crimson, ignore 20% of effective Defense for this attack. Resolve the attack, then update edge/Combo to Gold.", 1.6),
+      skill2: ability("Crimson Rupture", "200% direct damage to one enemy; if the previous ordinary skill was Gold, add 40% coefficient (240% total). Resolve, then update edge/Combo to Crimson. No area damage or Burn.", 2),
+      ultimate: ability("Last Flare: Blossoming Cataclysm", "260% direct damage to one enemy plus 45% coefficient per stored Combo, cap 395%. At Combo 3 ignore 30% effective Defense. Consume Combo and clear previous edge before damage.", 2.6)
+    }
+  },
+  nerithe: {
+    role: "Survey and precision-pierce attacker",
+    playLoop: "Survey with Normal Attacks, then spend one point, move the map or save three for a finisher.",
+    passive: {
+      name: "Uncharted Current",
+      description: "Normal Attack gains exactly 5 additional Gauge and adds one personal Survey point to its target, cap 3. Only one surveyed target; surveying another removes old points. Survey disappears when its target dies. No other action gains the additional Gauge."
+    },
+    abilities: {
+      skill1: ability("Meridian Break", "180% direct damage to the surveyed target or selected fallback. Spend up to one Survey point to ignore 25% effective Defense; without a point there is no pierce. No Weaken.", 1.8),
+      skill2: ability("Fold the Sea", "Move the current Survey designation and points to the selected living enemy, then deal 130% direct damage to all enemies. With no Survey it remains an area attack and creates no points.", 1.3, "all-enemies"),
+      ultimate: ability("Ocean Beyond the Map", "280% direct damage to the surveyed target or selected fallback; consume all Survey points for 15% effective Defense ignore each, cap 45%. No extra area attack or debuff.", 2.8)
+    }
+  },
+  orvella: {
+    role: "Finite-durability team architect",
+    playLoop: "Build a shared Foundation, repair it efficiently or sacrifice its remaining durability for pressure.",
+    passive: {
+      name: "Load-Bearing Will",
+      description: "One Foundation may exist with finite durability. Before personal shields, it absorbs up to 20% of each direct hit\u2019s post-mitigation damage on living allies, limited by remaining durability. No independent turn, targetability or creature ID. Simultaneous area shares are allocated proportionally, not first-ally-first."
+    },
+    abilities: {
+      skill1: ability("Keystone Reversal", "140% direct damage to one enemy; repair an existing Foundation by 8% caster maximum HP up to its original maximum. Without a Foundation deal 180% instead. Never creates one.", 1.4),
+      skill2: ability("Raise the Faultline", "Create a Foundation with 30% caster maximum HP durability for three enemy phases. Recasting replaces it at full durability; never stacks, detonates or grants personal shields.", void 0, "all-allies"),
+      ultimate: ability("Worldweight Citadel", "200% direct damage to all enemies. Consume an existing Foundation for an extra fixed noncritical Defense-mitigated strike against each enemy using remaining durability as Attack power, cap 30% caster maximum HP. Does not create a Foundation.", 2, "all-enemies")
+    }
+  },
+  vaelor: {
+    role: "Deterministic three-beat burst attacker",
+    playLoop: "Use Rise to prepare a Crescendo finisher, balancing the global beat against available Gauge.",
+    passive: {
+      name: "Standing Thunder",
+      description: "Beat follows each global player turn: Tune \u2192 Rise \u2192 Crescendo \u2192 Tune, starting Tune at encounter entry. Advance once even during recovery or inability to act. No critical-earned Tempest, low-health bonus or ally-action-order condition."
+    },
+    abilities: {
+      skill1: ability("Forked Cadence", "170% direct damage to one enemy; on Tune add 30 percentage points Critical Rate to this attack. Other beats retain 170%.", 1.7),
+      skill2: ability("Resonance Cascade", "120% direct damage to all enemies; on Rise refresh 20% outgoing direct damage on Vaelor through the end of his next player turn. Refreshes, never stacks; does not buff the team.", 1.2, "all-enemies"),
+      ultimate: ability("Last Chord of the Sky", "260% direct damage to all enemies, or 340% on Crescendo. Usable on every beat; normal recovery spends the following Tune turn after a Crescendo cast.", 2.6, "all-enemies")
+    }
+  }
+};
+var directDescriptionCoefficients = {
+  ember: [[160], [110], [200]],
+  tide: [[150], [], []],
+  sprout: [[140], [], []],
+  atmoso: [[180], [], [200]],
+  elise: [[110, 140], [140], [260]],
+  bliss: [[170], [120], [250]],
+  bruno: [[190], [], []],
+  disciple: [[], [], []],
+  aurora: [[], [100], []],
+  razor: [[160], [], [220]],
+  rosetta: [[160], [200, 25, 250, 160], [300]],
+  thornia: [[], [170], [140]],
+  crinso: [[160], [200, 40, 240], [260, 45, 395]],
+  nerithe: [[180], [130], [280]],
+  orvella: [[140, 180], [], [200]],
+  vaelor: [[170], [120], [260, 340]]
+};
+for (const id of Object.keys(nativeIdentities)) {
+  for (const [index, action] of ["skill1", "skill2", "ultimate"].entries()) {
+    const definition = nativeIdentities[id].abilities[action];
+    if (definition.strength.damageMultiplier !== void 0) definition.strength.damageMultiplier *= nativeBalance.skillDamageScale;
+    const coefficients = directDescriptionCoefficients[id][index];
+    definition.description = definition.description.replace(/(\d+(?:\.\d+)?)%/g, (text2, amount) => coefficients.includes(Number(amount)) ? `${Number(amount) * nativeBalance.skillDamageScale}%` : text2);
+  }
+}
+var nativeIdentityIds = Object.keys(nativeIdentities);
+
 // src/content/combat.ts
 var actionIds = ["light", "skill1", "skill2", "ultimate", "defend"];
 function basicActionName(id, action) {
@@ -1941,14 +3336,28 @@ var fighters = {
     }
   }
 };
+for (const id of Object.keys(fighters)) {
+  const identity = nativeIdentities[id];
+  const kit = fighters[id];
+  delete kit.pilot;
+  kit.nativeIdentity = true;
+  kit.passive = {
+    ...identity.passive,
+    damageBonus: 0,
+    defenseBonus: 0,
+    healFraction: 0,
+    ...id === "nerithe" ? { lightGaugeBonus: 5 } : {}
+  };
+  kit.abilities = structuredClone(identity.abilities);
+}
 var enemyIds = ["goblin", "imp", "golem"];
 var enemies = {
   goblin: { name: "Goblin", art: "goblin", element: "botanic", stats: { health: 110, defense: 5, damage: 23, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
   imp: { name: "Imp", art: "imp", element: "infernic", stats: { health: 90, defense: 3, damage: 28, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
   golem: { name: "Rock Golem", art: "rock-golem", element: "botanic", stats: { health: 160, defense: 15, damage: 20, crit: 0.05, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } }
 };
-function formatStat(value) {
-  return String(Number(value.toFixed(2)));
+function formatStat(value2) {
+  return String(Number(value2.toFixed(2)));
 }
 function resolveFighter(id, progress, equipment, upgrades) {
   const base = fighters[id];
@@ -1968,10 +3377,11 @@ function resolveFighter(id, progress, equipment, upgrades) {
   kit.passive.damageBonus = Math.min(0.75, base.passive.damageBonus * potency);
   kit.passive.healFraction = Math.min(0.1, base.passive.healFraction * potency);
   for (const action of ["skill1", "skill2", "ultimate"]) {
+    if (kit.nativeIdentity) continue;
     const strength = kit.abilities[action].strength;
     for (const key of ["damageMultiplier", "burnMultiplier", "weakenFraction", "critBonus", "shield", "healing", "attackBoostFraction"]) {
-      const value = strength[key];
-      if (value !== void 0) strength[key] = value * (key === "shield" || key === "healing" ? factor : potency);
+      const value2 = strength[key];
+      if (value2 !== void 0) strength[key] = value2 * (key === "shield" || key === "healing" ? factor : potency);
     }
     if (strength.weakenFraction !== void 0) strength.weakenFraction = Math.min(0.5, strength.weakenFraction);
     if (strength.critBonus !== void 0) strength.critBonus = Math.min(0.5, strength.critBonus);
@@ -1983,41 +3393,50 @@ function resolveFighter(id, progress, equipment, upgrades) {
 }
 function describeFighter(id, snapshot) {
   const kit = structuredClone(snapshot);
-  const pct = (value2) => formatStat(value2 * 100);
-  const value = (action, key) => {
+  if (kit.nativeIdentity) {
+    const identity = nativeIdentities[id];
+    kit.passive.description = identity.passive.description;
+    for (const action of ["skill1", "skill2", "ultimate"]) {
+      kit.abilities[action].description = identity.abilities[action].description;
+    }
+    kit.abilities.ultimate.description += " Recovery: caster skips the next player turn.";
+    return kit;
+  }
+  const pct = (value3) => formatStat(value3 * 100);
+  const value2 = (action, key) => {
     const amount = kit.abilities[action].strength[key];
     if (amount === void 0) throw new Error(`Missing ${id} ${action} strength: ${key}.`);
     return amount;
   };
   if (id === "ember") {
     kit.passive.description = `+${pct(kit.passive.damageBonus)}% outgoing damage at or below 50% health.`;
-    kit.abilities.skill1.description = `${pct(value("skill1", "damageMultiplier"))}% damage to one enemy; burn for ${Math.round(kit.stats.elementalDamage * value("skill1", "burnMultiplier"))} damage on its next two enemy phases.`;
-    kit.abilities.skill2.description = `${pct(value("skill2", "damageMultiplier"))}% damage to every living enemy.`;
-    kit.abilities.ultimate.description = `${pct(value("ultimate", "damageMultiplier"))}% damage to every enemy; burn surviving targets for ${Math.round(kit.stats.elementalDamage * value("ultimate", "burnMultiplier"))} damage on their next two enemy phases.`;
+    kit.abilities.skill1.description = `${pct(value2("skill1", "damageMultiplier"))}% damage to one enemy; burn for ${Math.round(kit.stats.elementalDamage * value2("skill1", "burnMultiplier"))} damage on its next two enemy phases.`;
+    kit.abilities.skill2.description = `${pct(value2("skill2", "damageMultiplier"))}% damage to every living enemy.`;
+    kit.abilities.ultimate.description = `${pct(value2("ultimate", "damageMultiplier"))}% damage to every enemy; burn surviving targets for ${Math.round(kit.stats.elementalDamage * value2("ultimate", "burnMultiplier"))} damage on their next two enemy phases.`;
   } else if (id === "tide") {
     kit.passive.description = `+${formatStat(kit.passive.defenseBonus)} defense, already included in displayed effective defense.`;
-    kit.abilities.skill1.description = `${pct(value("skill1", "damageMultiplier"))}% damage to one enemy; reduce its next two enemy-phase attacks by ${pct(value("skill1", "weakenFraction"))}%.`;
-    kit.abilities.skill2.description = `Give every living ally ${formatStat(value("skill2", "shield"))} shield points.`;
-    kit.abilities.ultimate.description = `${pct(value("ultimate", "damageMultiplier"))}% damage to all enemies and ${formatStat(value("ultimate", "shield"))} shield points for every living ally.`;
+    kit.abilities.skill1.description = `${pct(value2("skill1", "damageMultiplier"))}% damage to one enemy; reduce its next two enemy-phase attacks by ${pct(value2("skill1", "weakenFraction"))}%.`;
+    kit.abilities.skill2.description = `Give every living ally ${formatStat(value2("skill2", "shield"))} shield points.`;
+    kit.abilities.ultimate.description = `${pct(value2("ultimate", "damageMultiplier"))}% damage to all enemies and ${formatStat(value2("ultimate", "shield"))} shield points for every living ally.`;
   } else if (id === "sprout") {
     kit.passive.description = `At each new player turn, heal living allies by ${pct(kit.passive.healFraction)}% of their maximum health while Flora lives.`;
-    kit.abilities.skill1.description = `${pct(value("skill1", "damageMultiplier"))}% damage to one enemy with +${pct(value("skill1", "critBonus"))} percentage points critical chance.`;
-    kit.abilities.skill2.description = `Restore ${formatStat(value("skill2", "healing"))} health to every living ally; cannot revive. Increase living allies' outgoing attack damage by ${pct(value("skill2", "attackBoostFraction"))}% this and next player turn (refresh; does not stack).`;
-    kit.abilities.ultimate.description = `${pct(value("ultimate", "damageMultiplier"))}% damage to all enemies and restore ${formatStat(value("ultimate", "healing"))} HP to every living ally; cannot revive.`;
+    kit.abilities.skill1.description = `${pct(value2("skill1", "damageMultiplier"))}% damage to one enemy with +${pct(value2("skill1", "critBonus"))} percentage points critical chance.`;
+    kit.abilities.skill2.description = `Restore ${formatStat(value2("skill2", "healing"))} health to every living ally; cannot revive. Increase living allies' outgoing attack damage by ${pct(value2("skill2", "attackBoostFraction"))}% this and next player turn (refresh; does not stack).`;
+    kit.abilities.ultimate.description = `${pct(value2("ultimate", "damageMultiplier"))}% damage to all enemies and restore ${formatStat(value2("ultimate", "healing"))} HP to every living ally; cannot revive.`;
   } else {
     kit.passive.description = kit.passive.lightGaugeBonus !== void 0 ? `Normal Attack gains ${formatStat(kit.passive.lightGaugeBonus)} additional Gauge, capped by Gauge capacity.` : kit.passive.healFraction > 0 ? `At each new player turn, heal living allies by ${pct(kit.passive.healFraction)}% of maximum health while this Element-Bearer lives.` : kit.passive.defenseBonus > 0 ? `+${formatStat(kit.passive.defenseBonus)} defense, included in effective defense.` : `+${pct(kit.passive.damageBonus)}% outgoing damage at or below 50% health.`;
     for (const action of ["skill1", "skill2", "ultimate"]) {
-      const ability = kit.abilities[action];
-      const strength = ability.strength;
+      const ability2 = kit.abilities[action];
+      const strength = ability2.strength;
       const effects = [];
-      if (strength.damageMultiplier !== void 0) effects.push(`${pct(strength.damageMultiplier)}% damage to ${ability.targets === "all-enemies" ? "every living enemy" : "one enemy"}`);
+      if (strength.damageMultiplier !== void 0) effects.push(`${pct(strength.damageMultiplier)}% damage to ${ability2.targets === "all-enemies" ? "every living enemy" : "one enemy"}`);
       if (strength.weakenFraction !== void 0) effects.push(`reduce surviving targets' next two enemy-phase attacks by ${pct(strength.weakenFraction)}%`);
       if (strength.critBonus !== void 0) effects.push(`+${pct(strength.critBonus)} percentage points critical chance`);
       if (strength.burnMultiplier !== void 0) effects.push(`burn surviving targets for ${Math.round(kit.stats.elementalDamage * strength.burnMultiplier)} damage on their next two enemy phases`);
       if (strength.shield !== void 0) effects.push(`give every living ally ${formatStat(strength.shield)} shield points`);
       if (strength.healing !== void 0) effects.push(`restore ${formatStat(strength.healing)} health to every living ally; cannot revive`);
       if (strength.attackBoostFraction !== void 0) effects.push(`increase living allies' outgoing attack damage by ${pct(strength.attackBoostFraction)}% this and next player turn (refresh; does not stack)`);
-      ability.description = `${effects.join("; ")}.`;
+      ability2.description = `${effects.join("; ")}.`;
     }
   }
   if (kit.pilot) {
@@ -2054,39 +3473,39 @@ function describeFighter(id, snapshot) {
     kit.abilities[action].description += ` ${text2}`;
   }
   for (const action of ["skill1", "skill2", "ultimate"]) {
-    const ability = kit.abilities[action];
-    if (ability.strength.shield !== void 0 || id === "bliss" && action === "ultimate") {
-      ability.description += " Shield: absorbs damage before HP; persists until depleted; refreshes to the higher amount.";
+    const ability2 = kit.abilities[action];
+    if (ability2.strength.shield !== void 0 || id === "bliss" && action === "ultimate") {
+      ability2.description += " Shield: absorbs damage before HP; persists until depleted; refreshes to the higher amount.";
     }
-    if (ability.strength.weakenFraction !== void 0) {
-      ability.description += " Weaken: outgoing attack damage reduction; Defense unchanged.";
+    if (ability2.strength.weakenFraction !== void 0) {
+      ability2.description += " Weaken: outgoing attack damage reduction; Defense unchanged.";
     }
-    if (ability.strength.critBonus !== void 0) {
-      ability.description += " Critical chance bonus: this attack only.";
+    if (ability2.strength.critBonus !== void 0) {
+      ability2.description += " Critical chance bonus: this attack only.";
     }
-    if (ability.strength.burnMultiplier !== void 0) {
-      ability.description += " Burn ignores Defense and replaces existing Burn.";
+    if (ability2.strength.burnMultiplier !== void 0) {
+      ability2.description += " Burn ignores Defense and replaces existing Burn.";
     }
     if (action === "ultimate") {
-      ability.description += " Recovery: caster skips the next player turn.";
+      ability2.description += " Recovery: caster skips the next player turn.";
     }
   }
   return kit;
 }
-function applyConduitBuffs(stats2, equipment, upgrades) {
+function applyConduitBuffs(stats, equipment, upgrades) {
   if (equipment) for (const conduitId of validateConduitSlots(equipment)) {
     if (conduitId === null) continue;
     for (const buff of conduitBuffs(getConduit(conduitId), upgrades?.[conduitId] ?? 0)) {
-      if (buff.kind === "percent") stats2[buff.stat] *= 1 + buff.amount / 100;
+      if (buff.kind === "percent") stats[buff.stat] *= 1 + buff.amount / 100;
       else if (buff.kind === "percentage-points") {
-        const value = Math.max(0, stats2[buff.stat] + buff.amount / 100);
-        stats2[buff.stat] = buff.stat === "crit" ? value : Math.min(1, value);
-      } else stats2[buff.stat] += buff.amount;
+        const value2 = Math.max(0, stats[buff.stat] + buff.amount / 100);
+        stats[buff.stat] = buff.stat === "crit" ? value2 : Math.min(1, value2);
+      } else stats[buff.stat] += buff.amount;
     }
   }
 }
-function isActionId(value) {
-  return actionIds.some((action) => action === value);
+function isActionId(value2) {
+  return actionIds.some((action) => action === value2);
 }
 
 // src/content/stat-growth.ts
@@ -2126,14 +3545,14 @@ function enemyAbilityMultiplier(level) {
   if (!Number.isInteger(level) || level < 1 || level > 140) throw new Error("Enemy level must be from 1 to 140.");
   return 1.2 + (level - 1) * 4e-3;
 }
-function enemySkills(level, boss, strike2, multiplier) {
-  if (!Number.isInteger(level) || level < 1 || !strike2.trim() || !Number.isFinite(multiplier) || multiplier < 1) {
+function enemySkills(level, boss, strike, multiplier) {
+  if (!Number.isInteger(level) || level < 1 || !strike.trim() || !Number.isFinite(multiplier) || multiplier < 1) {
     throw new Error("Enemy skills require a valid level, name and damage multiplier.");
   }
-  const first = { name: strike2, multiplier, every: boss ? 2 : 3, action: "skill1" };
+  const first = { name: strike, multiplier, every: boss ? 2 : 3, action: "skill1" };
   if (level < 50) return [first];
   return [first, {
-    name: boss ? `Last Ruin: ${strike2}` : `Overdrive: ${strike2}`,
+    name: boss ? `Last Ruin: ${strike}` : `Overdrive: ${strike}`,
     multiplier: boss ? Math.max(2.6, multiplier * 1.65) : multiplier * 1.25,
     every: boss ? 6 : 5,
     action: boss ? "ultimate" : "skill2"
@@ -2165,8 +3584,8 @@ function roseDuplicateMinimumLevel(creatureId) {
 }
 
 // src/content/infusions.ts
-function isInfusionMode(value) {
-  return [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].some((entry) => entry.id === value);
+function isInfusionMode(value2) {
+  return [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].some((entry) => entry.id === value2);
 }
 function infusionElements(mode) {
   if (!isInfusionMode(mode)) throw new Error("Unknown infusion mode.");
@@ -2306,14 +3725,14 @@ function infusionEncounter(mode, stage, schedule = "caps") {
   const startingLevel = definition.startingLevel;
   const level = mode === "heavens" || mode === "abyss" ? schedule === "legacy" ? Math.round(80 + (stage - 1) * 40 / 34) : infusionEnemyLevel(stage) : Math.round(startingLevel + (stage - 1) * ((mode === "roses" ? 140 : 120) - startingLevel) / (stages - 1));
   const boss = stage % 5 === 0;
-  const stats2 = mode === "treasury" ? treasuryEnemyStats(level, boss) : mode === "sanctuary" ? sanctuaryEnemyStats(level, boss) : mode === "roses" ? roseEnemyStats(level, boss) : mode === "machines" ? creatureEnemyStats(level, boss) : infusionEnemyStats(level, boss);
+  const stats = mode === "treasury" ? treasuryEnemyStats(level, boss) : mode === "sanctuary" ? sanctuaryEnemyStats(level, boss) : mode === "roses" ? roseEnemyStats(level, boss) : mode === "machines" ? creatureEnemyStats(level, boss) : infusionEnemyStats(level, boss);
   const [name, art] = infusionEnemies[mode][tier];
   return {
     name: definition.name,
     stage,
     level,
     boss,
-    stats: stats2,
+    stats,
     tier,
     forms: 6,
     enemy: { name, art, element: mode === "machines" ? machineEnemies[tier].element : infusionEnemyElements[mode] },
@@ -2390,13 +3809,30 @@ var evolutionBalance = [
   { fractalis: 2400, amounts: [25, 10] },
   { fractalis: 4800, amounts: [25, 10] }
 ];
+var levelingMaterialTiers = [
+  { rarity: "Uncommon", destination: 31 },
+  { rarity: "Rare", destination: 46 },
+  { rarity: "Epic", destination: 61 },
+  { rarity: "Legendary", destination: 76 },
+  { rarity: "Omnic", destination: 91 }
+];
+function levelingMaterials(element, destination) {
+  if (element !== "rosethorn") getElement(element);
+  if (!Number.isInteger(destination) || destination < 1 || destination > 120) {
+    throw new Error("Leveling destination must be an integer from 1 to 120.");
+  }
+  return {
+    [`${element}-common`]: Math.ceil(destination / 30),
+    ...Object.fromEntries(levelingMaterialTiers.filter((tier) => destination >= tier.destination).map((tier) => [`${element}-${tier.rarity.toLowerCase()}`, 1]))
+  };
+}
 function levelCost(element, progress) {
   getElement(element);
   characterGrowthFactor(progress);
   if (progress.level === characterLevelCap(progress.evolution)) throw new Error("Reach the next evolution to raise the level cap.");
   const destination = progress.level + 1;
   return { fractalis: 10 + 2 * destination, materials: {
-    [`${element}-common`]: Math.ceil(destination / 30),
+    ...levelingMaterials(element, destination),
     ...progress.evolution >= 5 ? { [specialtyId(element, "level")]: 1 } : {}
   } };
 }
@@ -2423,10 +3859,9 @@ function characterLevelCap(evolution) {
 function characterLevelCost(id, progress) {
   const cost = levelCost(getStarter(id).elementId, progress);
   if (!isRoseCharacter(id)) return cost;
-  return { fractalis: cost.fractalis, materials: {
-    [roseMaterials[0].id]: Math.ceil((progress.level + 1) / 30),
-    ...progress.evolution >= 5 ? { [roseMaterials[5].id]: 1 } : {}
-  } };
+  const materials = levelingMaterials("rosethorn", progress.level + 1);
+  if (progress.evolution >= 5) materials[roseMaterials[5].id] = (materials[roseMaterials[5].id] ?? 0) + 1;
+  return { fractalis: cost.fractalis, materials };
 }
 function characterEvolutionCost(id, progress) {
   const cost = evolutionCost(getStarter(id).elementId, progress);
@@ -2483,13 +3918,13 @@ var elementMigration = {
   tranquilitic: "tranquilitic",
   chaotic: "chaotic"
 };
-function isLegacyElement(value) {
-  return legacyElementIds.some((id) => id === value);
+function isLegacyElement(value2) {
+  return legacyElementIds.some((id) => id === value2);
 }
-function canonicalElement(value) {
-  if (value === "oceanic" || value === "botanic") return value;
-  if (!isLegacyElement(value)) throw new Error(`Unknown element: ${value}.`);
-  return elementMigration[value];
+function canonicalElement(value2) {
+  if (value2 === "oceanic" || value2 === "botanic") return value2;
+  if (!isLegacyElement(value2)) throw new Error(`Unknown element: ${value2}.`);
+  return elementMigration[value2];
 }
 var elementSources = {
   infernic: ["infernic"],
@@ -2756,8 +4191,8 @@ var dungeonEnemies = {
 
 // src/content/dungeons.ts
 var playableDungeons = elements.map((element) => element.id);
-function isPlayableDungeon(value) {
-  return playableDungeons.some((element) => element === value);
+function isPlayableDungeon(value2) {
+  return playableDungeons.some((element) => element === value2);
 }
 function dungeonVariants(element, stage) {
   if (!isPlayableDungeon(element)) throw new Error("Dungeon is not playable.");
@@ -2785,13 +4220,13 @@ function dungeonEncounter(element, stage, family = 0) {
   if (!Number.isInteger(family) || family < 0 || family >= variants.length) throw new Error("Invalid dungeon enemy family.");
   const variant = variants[family];
   const boss = stage % 5 === 0;
-  const stats2 = enemyCombatStats(level, boss);
+  const stats = enemyCombatStats(level, boss);
   return {
     name: getElement(element).dungeon,
     level,
     stage,
     boss,
-    stats: stats2,
+    stats,
     ...variant,
     color: elementAccents[element],
     background: art ? `${art.slug}.png` : null,
@@ -2931,7 +4366,7 @@ function storyEncounter(stage) {
   const regionStage = (stage - 1) % storyRules.regionStages + 1;
   const level = Math.round(storyRules.startingLevel + (stage - 1) * (storyRules.maximumLevel - storyRules.startingLevel) / (storyRules.stages - 1));
   const boss = regionStage === storyRules.regionStages;
-  const stats2 = enemyCombatStats(level, boss);
+  const stats = enemyCombatStats(level, boss);
   return {
     ...region,
     name: region.name,
@@ -2940,7 +4375,7 @@ function storyEncounter(stage) {
     regionStage,
     level,
     boss,
-    stats: stats2,
+    stats,
     color: elementAccents[region.element],
     background: storyRegionArt[region.element]?.background ?? null,
     abilityMultiplier: enemyAbilityMultiplier(level)
@@ -2980,6 +4415,310 @@ function storyDrops(stage, random) {
   }));
 }
 var storyRulesText = `Six regions in a fixed order, 25 stages each, enemy levels 1-55. Enemy level and boss rank determine combat strength consistently across activities; higher-level enemies demand stronger Conduits and a reliable squad. Common and Uncommon matching-element materials only; no captures. Regional bosses grant a one-time account bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and growing 15% per region. Base per-kill Prismatica rises in a straight line by enemy level: 5-10 at Lv.1, +2 minimum per level, 113-226 at Lv.55. Every regional boss multiplies ordinary Prismatica and material quantities by 5, including replays; first-clear bonuses do not multiply or repeat. Continue restores HP and retains Gauge. ${finalBossLootText}`;
+
+// src/content/calamity.ts
+var calamityActivities = [
+  { id: "treasury", name: "Crownfall Treasury", boss: "Crown of the Ruined Vault", element: "tranquilitic" },
+  { id: "sanctuary", name: "Rosethorn Sanctuary", boss: "White Pyre Hierophant", element: "tranquilitic" },
+  { id: "heavens", name: "Soar to Heaven", boss: "Heavenfall Seraph", element: "tranquilitic" },
+  { id: "abyss", name: "Delve into the Abyss", boss: "Abyssal Nullmaw", element: "chaotic" },
+  { id: "machines", name: "Awaken the Machines", boss: "Catastrophe Prime", element: "chaotic" },
+  { id: "roses", name: "Passion of Crimson Roses", boss: "The Last Scarlet Bloom", element: "tranquilitic" },
+  { id: "infernic", name: "Flaming Depths", boss: "Ashcrown Cataclysm", element: "infernic" },
+  { id: "oceanic", name: "Oceanic Valley", boss: "Leviathan of the White Wake", element: "oceanic" },
+  { id: "atmospheric", name: "Sky-bound Rift", boss: "Riftstorm Harbinger", element: "atmospheric" },
+  { id: "botanic", name: "Garden of Beauty", boss: "Pallid Root Sovereign", element: "botanic" },
+  { id: "tranquilitic", name: "City of Heaven", boss: "Silent Meridian", element: "tranquilitic" },
+  { id: "chaotic", name: "Ruins of Chaos", boss: "The Scarlet Unmaking", element: "chaotic" }
+];
+function isCalamityActivityId(value2) {
+  return calamityActivities.some((activity) => activity.id === value2);
+}
+function isCalamityTier(value2) {
+  return value2 === 1 || value2 === 2 || value2 === 3;
+}
+function calamityActivity(id) {
+  const activity = calamityActivities.find((entry) => entry.id === id);
+  if (!activity) throw new Error("Unknown Calamity activity.");
+  return activity;
+}
+function calamityChestId(activity, tier) {
+  calamityActivity(activity);
+  if (!isCalamityTier(tier)) throw new Error("Invalid Calamity tier.");
+  return `calamity:${activity}:${tier}`;
+}
+function parseCalamityChestId(id) {
+  const match = /^calamity:([a-z]+):([123])$/.exec(id);
+  const tier = match ? Number(match[2]) : 0;
+  if (!match || !isCalamityActivityId(match[1]) || !isCalamityTier(tier)) throw new Error("Invalid Calamity chest identity.");
+  return { activity: match[1], tier };
+}
+function calamityChest(activity, tier) {
+  const id = calamityChestId(activity, tier);
+  const title = ["Slayer", "Master", "Omnipotent"][tier - 1];
+  return {
+    id,
+    name: `${calamityActivity(activity).name} EX+${title} Chest`,
+    fractalis: [1e5, 25e4, 5e5][tier - 1],
+    lycalis: [50, 70, 100][tier - 1],
+    bundles: [3, 5, 7][tier - 1],
+    masterChests: tier === 3 ? 2 : 0
+  };
+}
+function materialRows(ids) {
+  return ids.map((material, index) => ({
+    label: material.name,
+    id: material.id,
+    kind: "material",
+    weight: [10, 15, 25, 25, 15, 10][index],
+    min: [30, 20, 15, 10, 6, 3][index],
+    max: [60, 40, 30, 20, 12, 6][index]
+  }));
+}
+function calamityLootTable(activity) {
+  calamityActivity(activity);
+  if (activity === "treasury") return [
+    { label: "Prismatica cache", kind: "fractalis", weight: 70, min: 25e3, max: 5e4 },
+    { label: "Prismatica vault", kind: "fractalis", weight: 25, min: 75e3, max: 1e5 },
+    { label: "Prismatica crown reserve", kind: "fractalis", weight: 5, min: 2e5, max: 25e4 }
+  ];
+  if (activity === "sanctuary") return [
+    { label: "Null-Prismatica cache", kind: "lycalis", weight: 70, min: 5, max: 10 },
+    { label: "Null-Prismatica reliquary", kind: "lycalis", weight: 25, min: 15, max: 25 },
+    { label: "Null-Prismatica pyre reserve", kind: "lycalis", weight: 5, min: 40, max: 50 }
+  ];
+  if (activity === "machines") return [
+    { label: "Broken Mechanical Components", kind: "components", weight: 60, min: 100, max: 200 },
+    ...["Rare", "Legendary", "Omnic"].flatMap((rarity, index) => {
+      const pool = conduits.filter((conduit) => conduit.rarity === rarity);
+      return pool.map((conduit) => ({
+        label: conduit.name,
+        kind: "conduit",
+        id: conduit.id,
+        weight: [20, 15, 5][index] / pool.length,
+        min: 1,
+        max: 1
+      }));
+    })
+  ];
+  if (activity === "roses") return materialRows(roseMaterials);
+  if (activity === "heavens" || activity === "abyss") {
+    const pool = elements.filter((element) => element.infusion === activity);
+    return [
+      {
+        label: activity === "heavens" ? "Crown of the Scarlet Oath" : "Heart of the Shattered Void",
+        id: `${activity}-evolution`,
+        kind: "material",
+        weight: 35,
+        min: 5,
+        max: 10
+      },
+      {
+        label: activity === "heavens" ? "Chalice of the Undying Dawn" : "Hourglass of Endless Wrath",
+        id: `${activity}-level`,
+        kind: "material",
+        weight: 35,
+        min: 10,
+        max: 20
+      },
+      ...pool.flatMap((element) => ["Epic", "Legendary", "Omnic"].map((rarity, index) => ({
+        label: `${element.name} ${rarity} Material`,
+        id: `${element.id}-${rarity.toLowerCase()}`,
+        kind: "material",
+        weight: [15, 10, 5][index] / pool.length,
+        min: [10, 6, 3][index],
+        max: [20, 12, 6][index]
+      })))
+    ];
+  }
+  return materialRows(materialRarities.map((rarity) => ({
+    id: `${activity}-${rarity.toLowerCase()}`,
+    name: `${calamityActivity(activity).name} ${rarity} Material`
+  })));
+}
+function rollCalamityChest(activity, tier, roll2) {
+  const chest = calamityChest(activity, tier);
+  const reward = {
+    id: chest.id,
+    name: chest.name,
+    fractalis: chest.fractalis,
+    lycalis: chest.lycalis,
+    masterChests: chest.masterChests,
+    materials: {},
+    conduits: {},
+    mechanicalComponents: 0
+  };
+  const table = calamityLootTable(activity);
+  const random = () => {
+    const value2 = roll2();
+    if (!Number.isFinite(value2) || value2 < 0 || value2 >= 1) throw new Error("Calamity loot roll must be in [0, 1).");
+    return value2;
+  };
+  const totalWeight = table.reduce((sum, row) => sum + row.weight, 0);
+  for (let bundle = 0; bundle < chest.bundles; bundle++) {
+    let pick = random() * totalWeight;
+    const row = table.find((entry) => {
+      pick -= entry.weight;
+      return pick < 0;
+    }) ?? table[table.length - 1];
+    const amount = row.min + Math.floor(random() * (row.max - row.min + 1));
+    if (row.kind === "fractalis" || row.kind === "lycalis") reward[row.kind] += amount;
+    else if (row.kind === "components") reward.mechanicalComponents += amount;
+    else if (row.kind === "material" && row.id) reward.materials[row.id] = (reward.materials[row.id] ?? 0) + amount;
+    else if (row.kind === "conduit" && row.id) {
+      const id = conduits.find((conduit) => conduit.id === row.id)?.id;
+      if (!id) throw new Error("Unknown Calamity Conduit reward.");
+      reward.conduits[id] = (reward.conduits[id] ?? 0) + amount;
+    } else throw new Error("Malformed Calamity loot row.");
+  }
+  return reward;
+}
+var calamityPatterns = {
+  treasury: {
+    strike: "Vaultbreaker",
+    every: 3,
+    multiplier: 1.5,
+    ruin: "Crown Collapse",
+    ruinEvery: 6,
+    ruinMultiplier: 2.4,
+    description: "Vaultbreaker every 3 phases; Crown Collapse replaces it every 6. Defend before phase 6 and burst between collapses."
+  },
+  sanctuary: {
+    strike: "White Pyre",
+    every: 2,
+    multiplier: 1.3,
+    ruin: "Reliquary Descent",
+    ruinEvery: 5,
+    ruinMultiplier: 1.9,
+    shieldEvery: 3,
+    shieldFraction: 0.025,
+    description: "White Pyre every 2 phases, Descent every 5. Refreshes a 2.5% max-HP barrier every 3 phases before attacking; break it with focused damage."
+  },
+  heavens: {
+    strike: "Scarlet Volley",
+    every: 2,
+    multiplier: 1.25,
+    ruin: "Heavenfall",
+    ruinEvery: 7,
+    ruinMultiplier: 2.2,
+    hits: 3,
+    description: "Every attack splits its total into 3 impacts on one target. Volley every 2 phases; Heavenfall every 7. Layer shields before volleys."
+  },
+  abyss: {
+    strike: "Nullmaw Hunt",
+    every: 3,
+    multiplier: 1.4,
+    ruin: "Starless Pursuit",
+    ruinEvery: 5,
+    ruinMultiplier: 2,
+    targeting: "lowest",
+    description: "Always targets the lowest current HP fraction (taunt can redirect). Hunt every 3 phases, Pursuit every 5. Protect and heal the weakest member."
+  },
+  machines: {
+    strike: "Prototype Discharge",
+    every: 4,
+    multiplier: 2,
+    ruin: "Catastrophe Cascade",
+    ruinEvery: 8,
+    ruinMultiplier: 2.7,
+    description: "Normal attacks while charging. Discharge every 4 phases, Cascade every 8. Spend the charge window building shields and saving Defense."
+  },
+  roses: {
+    strike: "Thorn Requiem",
+    every: 2,
+    multiplier: 1.4,
+    ruin: "Final Scarlet Bloom",
+    ruinEvery: 6,
+    ruinMultiplier: 2.1,
+    healEvery: 4,
+    healFraction: 0.015,
+    description: "Requiem every 2 phases, Final Bloom every 6. Restores 1.5% max HP every 4 phases before attacking; maintain damage through restoration windows."
+  },
+  infernic: {
+    strike: "Cinder Torrent",
+    every: 2,
+    multiplier: 1.6,
+    ruin: "Ashcrown Eruption",
+    ruinEvery: 5,
+    ruinMultiplier: 2.3,
+    description: "Torrent every 2 phases and Eruption every 5 create sustained direct pressure. Weaken and regular healing are more reliable than waiting for a single burst."
+  },
+  oceanic: {
+    strike: "White Wake",
+    every: 3,
+    multiplier: 1.55,
+    ruin: "Leviathan Breach",
+    ruinEvery: 6,
+    ruinMultiplier: 2.2,
+    shieldEvery: 4,
+    shieldFraction: 0.04,
+    description: "Wake every 3 phases, Breach every 6. Refreshes a 4% max-HP barrier every 4 phases. Save damage for barrier breaks."
+  },
+  atmospheric: {
+    strike: "Riftstorm Talons",
+    every: 3,
+    multiplier: 1.7,
+    ruin: "Sky Fracture",
+    ruinEvery: 7,
+    ruinMultiplier: 2.3,
+    hits: 4,
+    description: "Every attack splits its total into 4 impacts on one target. Talons every 3 phases, Sky Fracture every 7. Plan mitigation before the announced storm cadence."
+  },
+  botanic: {
+    strike: "Pallid Thorns",
+    every: 3,
+    multiplier: 1.3,
+    ruin: "Root Cathedral",
+    ruinEvery: 8,
+    ruinMultiplier: 2.1,
+    healEvery: 3,
+    healFraction: 0.025,
+    description: "Thorns every 3 phases, Cathedral every 8. Restores 2.5% max HP every 3 phases; sustained damage must exceed restoration."
+  },
+  tranquilitic: {
+    strike: "Meridian Sweep",
+    every: 4,
+    multiplier: 1.6,
+    ruin: "Silent Convergence",
+    ruinEvery: 7,
+    ruinMultiplier: 2.2,
+    shieldEvery: 2,
+    shieldFraction: 0.02,
+    description: "Refreshes a 2% max-HP barrier on even phases. Sweep every 4 phases, Convergence every 7. Burst during odd-phase openings."
+  },
+  chaotic: {
+    strike: "Fractal Disjunction",
+    every: 2,
+    multiplier: 1.35,
+    ruin: "Scarlet Unmaking",
+    ruinEvery: 5,
+    ruinMultiplier: 2.1,
+    targeting: "highest",
+    description: "Always targets the highest current HP fraction (taunt can redirect). Disjunction every 2 phases, Unmaking every 5. Spread mitigation instead of relying on one wounded tank."
+  }
+};
+function calamityEncounter(activity, tier) {
+  const definition = calamityActivity(activity);
+  if (!isCalamityTier(tier)) throw new Error("Invalid Calamity tier.");
+  const level = [145, 160, 185][tier - 1];
+  const base = enemyCombatStats(140, true);
+  const healthScale = [1.1, 1.5, 1.9][tier - 1];
+  const attackScale = [1.01, 1.04, 1.08][tier - 1];
+  const defenseScale = [1.02, 1.06, 1.1][tier - 1];
+  const stats = {
+    ...base,
+    health: Math.round(base.health * healthScale),
+    damage: Math.round(base.damage * attackScale),
+    defense: Math.round(base.defense * defenseScale),
+    crit: 0.08
+  };
+  const pattern = calamityPatterns[activity];
+  const skills = [
+    { name: pattern.strike, multiplier: pattern.multiplier, every: pattern.every, action: "skill1" },
+    { name: pattern.ruin, multiplier: pattern.ruinMultiplier, every: pattern.ruinEvery, action: "ultimate" }
+  ];
+  return { name: definition.boss, level, element: definition.element, stats, skills, description: pattern.description };
+}
 
 // src/content/creatures.ts
 function catalog() {
@@ -3036,6 +4775,16 @@ function catalog() {
       });
     }
   }
+  for (const activity of calamityActivities) {
+    result.push({
+      id: `calamity:${activity.id}`,
+      name: activity.boss,
+      area: `${activity.name} \xB7 Calamity`,
+      element: activity.element,
+      calamity: activity.id,
+      stages: [1, 2, 3]
+    });
+  }
   return result;
 }
 var creatures = catalog();
@@ -3046,13 +4795,14 @@ function getCreature(id) {
 }
 
 // src/game/character-instances.ts
-function isCapturedInstanceId(value) {
-  return typeof value === "string" && /^capture:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value);
+var capturedLevelCap = 60;
+function isCapturedInstanceId(value2) {
+  return typeof value2 === "string" && /^capture:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value2);
 }
-function validateCapturedCharacters(value) {
-  if (!Array.isArray(value)) throw new Error("Invalid saved captured Elemental-Devourers.");
+function validateCapturedCharacters(value2) {
+  if (!Array.isArray(value2)) throw new Error("Invalid saved captured Elemental-Devourers.");
   const seen = /* @__PURE__ */ new Set();
-  return value.map((entry) => {
+  return value2.map((entry) => {
     if (typeof entry !== "object" || entry === null || !("instanceId" in entry) || !("creatureId" in entry) || !("locked" in entry) || !isCapturedInstanceId(entry.instanceId) || typeof entry.creatureId !== "string" || typeof entry.locked !== "boolean" || seen.has(entry.instanceId)) {
       throw new Error("Invalid or duplicate captured-character instance.");
     }
@@ -3071,8 +4821,8 @@ function validateCapturedCharacters(value) {
       const candidates = [expected.abilityMultiplier, expected.legacyAbilityMultiplier].map((multiplier) => enemySkills(expected.level, expected.boss, expected.ability, multiplier));
       const retained = entry.skills;
       const valid = candidates.find((skills) => retained.length === skills.length && retained.every((skill, index) => typeof skill === "object" && skill !== null && skill.name === skills[index].name && skill.multiplier === skills[index].multiplier && skill.every === skills[index].every && skill.action === skills[index].action));
-      if (!valid || entry.level < (copy.acquisition === "banner-duplicate" ? roseDuplicateMinimumLevel(creature.id) : expected.level)) throw new Error("Invalid retained enemy abilities or level.");
-      copy.level = entry.level;
+      if (!valid || entry.level < Math.min(capturedLevelCap, copy.acquisition === "banner-duplicate" ? roseDuplicateMinimumLevel(creature.id) : expected.level)) throw new Error("Invalid retained enemy abilities or level.");
+      copy.level = Math.min(capturedLevelCap, entry.level);
       copy.capturedStage = entry.capturedStage;
       copy.skills = valid;
     } else if ("skills" in entry || "capturedStage" in entry || "acquisition" in entry) throw new Error("Incomplete captured Elemental-Devourer progression.");
@@ -3087,7 +4837,7 @@ function capturedProgress(copy) {
   const encounter2 = infusionEncounter(creature.mode, stage);
   const legacyLevel = creature.mode === "heavens" || creature.mode === "abyss" ? Math.round(80 + (stage - 1) * 40 / 34) : encounter2.level;
   return {
-    level: copy.level ?? legacyLevel,
+    level: Math.min(capturedLevelCap, copy.level ?? legacyLevel),
     stage,
     tier: encounter2.tier,
     skills: copy.skills ?? enemySkills(encounter2.level, encounter2.boss, encounter2.ability, encounter2.legacyAbilityMultiplier)
@@ -3095,9 +4845,12 @@ function capturedProgress(copy) {
 }
 function capturedLevelCost(copy) {
   const { level } = capturedProgress(copy);
-  if (level >= 120) throw new Error("Maximum captured Elemental-Devourer level reached.");
+  if (level >= capturedLevelCap) throw new Error(`Maximum captured Elemental-Devourer level ${capturedLevelCap} reached.`);
   const creature = getCreature(copy.creatureId);
-  return { fractalis: 10 + 2 * (level + 1), materials: { [creature.mode === "roses" ? roseMaterials[0].id : `${creature.element}-common`]: Math.ceil((level + 1) / 30) } };
+  return {
+    fractalis: 10 + 2 * (level + 1),
+    materials: levelingMaterials(creature.mode === "roses" ? "rosethorn" : creature.element, level + 1)
+  };
 }
 function resolveCapturedFighter(copy, equipment, upgrades) {
   const creature = getCreature(copy.creatureId);
@@ -3105,14 +4858,14 @@ function resolveCapturedFighter(copy, equipment, upgrades) {
   const { level, tier, skills } = capturedProgress(copy);
   const reference = capturedEnemyStats(level, creature.mode === "roses" ? 140 : 120);
   const factor = 0.65 + 0.35 * tier / 5;
-  const stats2 = {
+  const stats = {
     ...reference,
     health: reference.health * factor,
     damage: reference.damage * factor,
     defense: reference.defense * factor
   };
   const kit = {
-    stats: stats2,
+    stats,
     passive: { name: "Retained enemy form", description: "Fixed captured form; no additional passive bonus.", damageBonus: 0, defenseBonus: 0, healFraction: 0 },
     abilities: {
       skill1: { name: "Unavailable", description: "This form has no retained first skill.", cooldown: 0, strength: {} },
@@ -3135,10 +4888,10 @@ function resolveCapturedFighter(copy, equipment, upgrades) {
   applyConduitBuffs(kit.stats, equipment, upgrades);
   return kit;
 }
-function validateCharacterLocks(value, owned) {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) throw new Error("Invalid saved character locks.");
+function validateCharacterLocks(value2, owned) {
+  if (typeof value2 !== "object" || value2 === null || Array.isArray(value2)) throw new Error("Invalid saved character locks.");
   const locks = {};
-  for (const [id, locked] of Object.entries(value)) {
+  for (const [id, locked] of Object.entries(value2)) {
     if (!isStarterId(id) || owned[id] === void 0 || typeof locked !== "boolean") throw new Error("Character locks require an owned character.");
     locks[id] = locked;
   }
@@ -3197,7 +4950,7 @@ function warEncounter(character, stage) {
   const level = Math.round(90 + 50 * (stage - 1) / 9);
   const evolution = Math.min(6, stage === 10 ? 6 : Math.ceil(stage / 2));
   const starter = getStarter(character);
-  const stats2 = enemyCombatStats(level, true);
+  const stats = enemyCombatStats(level, true);
   const kit = warFighters[character];
   const skills = enemySkills(level, true, kit.abilities.skill1.name, enemyAbilityMultiplier(level));
   const ultimate = skills.find((skill) => skill.action === "ultimate");
@@ -3214,7 +4967,7 @@ function warEncounter(character, stage) {
     enemyName: characterName(character, evolution),
     art: characterArt(character, evolution).art,
     color: starter.color,
-    stats: stats2,
+    stats,
     skills,
     background: `elemental-war-${character}-arena.png`,
     banner: `elemental-war-${character}-banner.png`
@@ -3233,9 +4986,9 @@ function warLoot(stage) {
 function rollWarRewards(stage, currencyRandom, premiumRandom, recruitmentRandom) {
   const loot = warLoot(stage);
   const roll2 = (random) => {
-    const value = random();
-    if (!Number.isFinite(value) || value < 0 || value >= 1) throw new Error("Invalid Elemental War reward roll.");
-    return value;
+    const value2 = random();
+    if (!Number.isFinite(value2) || value2 < 0 || value2 >= 1) throw new Error("Invalid Elemental War reward roll.");
+    return value2;
   };
   const amount = rollDrop({ ...loot.fractalis, chance: 1 }, currencyRandom);
   if (amount === void 0) throw new Error("Guaranteed Elemental War currency did not drop.");
@@ -3325,16 +5078,20 @@ function gainResource(owner, key, events, roundKey, round) {
     if (current[roundKey] === round) return;
     current[roundKey] = round;
   }
-  if ((current[key] ?? 0) >= 3) return;
+  const maximum = key === "bloom" && owner.conduits?.includes("botanic-graft-covenant") ? 3 + (owner.conduitRuntime?.numbers.graftBonus ?? 1) : 3;
+  if ((current[key] ?? 0) >= maximum) return;
   current[key] = (current[key] ?? 0) + 1;
   const label = resourceLabel(key);
-  status(events, owner, owner, `${owner.name} gains ${label} (${current[key]}/3).`, resourceEffect(owner));
+  status(events, owner, owner, `${owner.name} gains ${label} (${current[key]}/${maximum}).`, resourceEffect(owner));
 }
 function spendResource(actor, key, events) {
   if (!nativeOwner(actor)) return 0;
-  const count2 = Math.min(3, Math.max(0, actor.pilot?.[key] ?? 0));
+  const maximum = key === "bloom" && actor.conduits?.includes("botanic-graft-covenant") ? 3 + (actor.conduitRuntime?.numbers.graftBonus ?? 1) : 3;
+  const available = Math.min(maximum, Math.max(0, actor.pilot?.[key] ?? 0));
+  const selective = key === "ember" && actor.masterConduit === "master-ember-3" || key === "tempest" && actor.masterConduit === "master-vaelor-2";
+  const count2 = selective && actor.conduitRuntime?.numbers.ordinaryResourceSpend ? Math.min(1, available) : available;
   if (count2 <= 0) return 0;
-  charges(actor)[key] = 0;
+  charges(actor)[key] = available - count2;
   const label = resourceLabel(key);
   status(events, actor, actor, `${actor.name} spends ${count2} ${label}.`, resourceEffect(actor));
   return count2;
@@ -3350,7 +5107,9 @@ function pilotOutgoingBonus(actor, action, events) {
   if (!rule) return 0;
   const skill = actor.definitionId === "atmoso" || actor.definitionId === "elise" ? "skill1" : actor.definitionId === "vaelor" ? "skill2" : rule.skill;
   if (!(action === skill || action === "ultimate" && rule.ultimate !== void 0)) return 0;
-  return spendResource(actor, rule.key, events) * (action === "ultimate" ? rule.ultimate ?? 0 : rule.ordinary);
+  const spent = spendResource(actor, rule.key, events);
+  const effective = actor.masterConduit === "master-ember-3" && action === "skill2" && spent > 0 ? 3 : spent;
+  return effective * (action === "ultimate" ? rule.ultimate ?? 0 : rule.ordinary);
 }
 function pilotPrepareStarter(actor, action, events) {
   const bonus = { damage: 0, weaken: 0, shield: 0, healing: 1 };
@@ -3402,234 +5161,1687 @@ function pilotAfterDirectActivation(actor, action, events, effectiveCritical = f
   }
 }
 
-// src/game/kit-conduits.ts
-var enemyRecipients = ["struck", "attacker", "all-enemies"];
-function recipient(state, owner, target, choice = "self") {
-  if (enemyRecipients.includes(choice) || choice === "all-allies") return void 0;
-  if (choice === "self") return owner.hp > 0 ? owner : void 0;
-  if (choice === "target") return target?.side === "ally" && target.hp > 0 ? target : void 0;
-  const eligible = state.allies.filter((unit) => unit.hp > 0 && (choice === "injured" || unit.id !== owner.id));
-  return eligible.sort((a, b) => choice === "lowest-gauge-other" ? a.shatter - b.shatter : a.hp / a.stats.health - b.hp / b.stats.health)[0];
+// src/game/native-kits.ts
+var living = (state) => state.allies.filter((unit) => unit.hp > 0);
+var foes = (state) => state.enemies.filter((unit) => unit.hp > 0);
+var hasNativeIdentity = (unit) => !unit.captured && unit.kit?.nativeIdentity === true;
+var nativeMemory = (unit) => unit.native ??= {};
+function status2(events, owner, target, message, amount = 0) {
+  events.push({ kind: "status", source: owner.id, target: target.id, amount, critical: false, origin: "native", message });
 }
-function status2(events, owner, target, name, amount) {
+function fixed(state, owner, target, power, kind, events, bypass = false) {
+  if (owner.hp <= 0 || target.hp <= 0 || power <= 0) return;
+  const attack = kind === "revenge" || kind === "demolition" ? power : owner.stats.damage;
+  const damage = bypass ? Math.round(power) : damageAmount(attack, power / attack, nativeTargetDefense(state, target), false);
+  const absorbed = Math.min(target.shield, damage);
+  target.shield -= absorbed;
+  const loss = Math.min(target.hp, damage - absorbed);
+  target.hp -= loss;
   events.push({
-    kind: "status",
+    kind: "damage",
+    source: owner.id,
+    target: target.id,
+    amount: loss,
+    critical: false,
+    origin: "native",
+    nativeKind: kind,
+    periodic: kind === "burn",
+    shieldRemaining: target.shield,
+    shieldAbsorbed: absorbed,
+    debuffs: debuffSnapshot(target),
+    message: `${owner.name}: ${kind} deals ${loss} damage to ${target.name}${absorbed ? ` (${absorbed} shield absorbed)` : ""}.`
+  });
+}
+function seed(state, owner, target, fraction, events) {
+  fraction *= nativeSupportMultiplier(state, owner);
+  if (equipped(owner, "botanic-graft-covenant")) fraction *= 1 + value(state, owner, "botanic-graft-covenant", 0.2, 0.4);
+  const seeds = nativeMemory(owner).seeds ??= {};
+  if ((seeds[target.id]?.fraction ?? 0) > fraction) return;
+  seeds[target.id] = { fraction, dueRound: state.round + 1 };
+  status2(events, owner, target, `${target.name} holds a ${fraction * 100}% Seed for the next player turn.`);
+}
+function releaseCyclone(state, owner, events) {
+  const field = owner.native?.cyclone;
+  if (!field) return;
+  delete owner.native.cyclone;
+  for (const target of foes(state)) fixed(state, owner, target, owner.stats.damage * (0.7 + 0.3 * field.gusts), "cyclone", events);
+}
+function recall(state, owner, events) {
+  const blades = nativeMemory(owner).blades ??= [null, null];
+  const targets = [...blades];
+  blades[0] = blades[1] = null;
+  for (const id of targets) {
+    const target = state.enemies.find((enemy) => enemy.id === id && enemy.hp > 0);
+    if (target) fixed(state, owner, target, owner.stats.damage * 0.9, "recall", events);
+  }
+  if (targets[0] && targets[0] === targets[1]) {
+    const target = state.enemies.find((enemy) => enemy.id === targets[0] && enemy.hp > 0);
+    if (target) fixed(state, owner, target, owner.stats.damage * 0.6, "recall", events);
+  }
+}
+function nativeInstructionDamage(state, owner) {
+  const instruction = owner.native?.instruction;
+  return instruction && instruction.throughRound >= state.round && living(state).some((unit) => unit.id === instruction.owner) && instruction.kind !== "shelter" ? 1.3 : 1;
+}
+function nativeSupportMultiplier(state, owner) {
+  const instruction = owner.native?.instruction;
+  return instruction && instruction.throughRound >= state.round && living(state).some((unit) => unit.id === instruction.owner) && instruction.kind !== "strike" ? 1.35 : 1;
+}
+function nativeAction(state, owner, action, targetId, events, direct, activation) {
+  const memory = nativeMemory(owner);
+  const target = state.enemies.find((enemy) => enemy.id === targetId && enemy.hp > 0);
+  const ally = state.allies.find((unit) => unit.id === targetId && unit.hp > 0);
+  const hit = (coefficient, all = false, pierce = 0, crit = 0, chosen = target) => direct(all ? foes(state) : chosen ? [chosen] : [], coefficient * (action === "light" ? 1 : nativeBalance.skillDamageScale), pierce, crit);
+  const allies = living(state);
+  const other = allies.filter((unit) => unit.id !== owner.id);
+  const acted = other.filter((unit) => unit.spent).length;
+  const posture = acted === 0 ? "opening" : acted === other.length ? "closing" : "passing";
+  const shield = (recipient, fraction, phases, firstReduction = 0) => nativeShield(
+    state,
+    owner,
+    recipient,
+    recipient.stats.health * fraction,
+    events,
+    { throughPhase: state.round + phases - 1, firstReduction }
+  );
+  const burn = (recipient, fraction) => {
+    const burns = memory.burns ??= {};
+    const previous = burns[recipient.id];
+    const damage = applyConduitBurn(state, owner, recipient, owner.stats.damage * fraction, activation);
+    burns[recipient.id] = { damage: Math.max(previous?.damage ?? 0, damage), turns: 3 };
+    recipient.burn = { ...burns[recipient.id], sourceId: owner.id, origin: "native" };
+    status2(events, owner, recipient, `${recipient.name}: Infernis Burn, ${burns[recipient.id].damage} per phase for 3 phases.`);
+  };
+  if (action === "defend") return;
+  if (action === "light") {
+    hit(1);
+    if (owner.definitionId === "nerithe" && target?.hp) {
+      memory.survey = { target: target.id, points: Math.min(3, memory.survey?.target === target.id ? memory.survey.points + 1 : 1) };
+    }
+    return;
+  }
+  switch (owner.definitionId) {
+    case "ember":
+      if (action === "skill1") {
+        hit(1.6);
+        if (target?.hp) burn(target, 0.25);
+      }
+      if (action === "skill2") {
+        hit(1.1, true);
+        for (const enemy of foes(state).filter((enemy2) => !equipped(owner, "master-ember-2") || enemy2.id === targetId)) {
+          const stored = memory.burns?.[enemy.id];
+          if (!stored) continue;
+          const conserved = equipped(owner, "master-ember-3");
+          const ticks = Math.min(conserved ? 1 : 2, stored.turns);
+          stored.turns -= ticks;
+          activation.spent.ember = (activation.spent.ember ?? 0) + ticks;
+          fixed(state, owner, enemy, stored.damage * ticks * (conserved ? 2 : 1), "detonation", events, true);
+          if (enemy.burn.sourceId === owner.id) enemy.burn.turns = stored.turns;
+        }
+      }
+      if (action === "ultimate") {
+        hit(2, true);
+        for (const enemy of foes(state)) burn(enemy, 0.45);
+      }
+      break;
+    case "tide":
+      if (action === "skill1") {
+        hit(1.5);
+        if (target?.hp) applyConduitWeaken(state, owner, target, 0.25, events, action, 1);
+      }
+      if (action === "skill2" && ally) shield(ally, nativeBalance.tizu.shelter * (equipped(owner, "master-tide-2") ? 3 : 1), 1);
+      if (action === "ultimate") for (const recipient of allies) shield(recipient, nativeBalance.tizu.oceanMemory, 2, 0.3);
+      break;
+    case "sprout":
+      if (action === "skill1") {
+        hit(1.4);
+        const recipient = [...allies].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+        if (recipient) seed(state, owner, recipient, nativeBalance.flora.seed, events);
+      }
+      if (action === "skill2") {
+        for (const recipient of allies) {
+          const pending2 = memory.seeds?.[recipient.id];
+          if (pending2) nativeHeal(state, owner, recipient, recipient.stats.health * pending2.fraction, events, true, activation, false);
+        }
+        delete memory.seeds;
+        for (const recipient of allies) seed(state, owner, recipient, nativeBalance.flora.seed, events);
+      }
+      if (action === "ultimate") for (const recipient of allies) {
+        nativeHeal(state, owner, recipient, recipient.stats.health * nativeBalance.flora.immediateHeal, events, true, activation);
+        seed(state, owner, recipient, nativeBalance.flora.empoweredSeed, events);
+      }
+      break;
+    case "atmoso":
+      if (action === "skill1") {
+        hit(1.8);
+        releaseCyclone(state, owner, events);
+      }
+      if (action === "skill2") {
+        releaseCyclone(state, owner, events);
+        memory.cyclone = { gusts: 0, phases: 2, contributors: {} };
+      }
+      if (action === "ultimate") {
+        releaseCyclone(state, owner, events);
+        hit(2, true);
+      }
+      break;
+    case "elise": {
+      const blades = memory.blades ??= [null, null];
+      if (action === "skill1") {
+        const held = blades.indexOf(null);
+        hit(held < 0 ? 1.4 : 1.1);
+        if (held >= 0 && target?.hp) blades[held] = target.id;
+      }
+      if (action === "skill2") {
+        if (blades.every((blade) => blade === null)) hit(1.4);
+        else recall(state, owner, events);
+      }
+      if (action === "ultimate") {
+        recall(state, owner, events);
+        hit(2.6);
+      }
+      break;
+    }
+    case "bliss":
+      if (action === "skill1") {
+        hit(1.7, false, 0, posture === "opening" ? 0.25 : 0);
+        if (posture === "closing") {
+          const recipient = [...other].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+          if (recipient) nativeHeal(state, owner, recipient, recipient.stats.health * 0.06, events, true, activation);
+        }
+      }
+      if (action === "skill2") {
+        hit(1.2, true);
+        if (posture === "opening") for (const recipient of allies) {
+          const prior = recipient.attackBoost?.throughRound ?? 0;
+          if (prior < state.round || (recipient.attackBoost?.fraction ?? 0) <= 0.1)
+            recipient.attackBoost = { fraction: 0.1, throughRound: state.round, sourceId: owner.id, origin: "native" };
+        }
+        if (posture === "closing") for (const recipient of allies) shield(recipient, 0.06, 1);
+        if (activation.healExtra > 0) for (const recipient of other)
+          nativeHeal(state, owner, recipient, 0, events, true, activation);
+      }
+      if (action === "ultimate") {
+        hit(2.5, true, 0, posture === "opening" ? 0.3 : 0);
+        if (posture === "closing") for (const recipient of other)
+          nativeHeal(state, owner, recipient, recipient.stats.health * 0.1, events, true, activation);
+      }
+      break;
+    case "bruno":
+      if (action === "skill1") hit(1.9);
+      if (action === "skill2") {
+        if (!other.length) memory.reduction = { fraction: 0.2, throughPhase: state.round };
+        else if (ally && ally.id !== owner.id) memory.cover = { targets: [ally.id], fraction: equipped(owner, "master-bruno-3") ? 0.35 : 0.5, throughPhase: state.round };
+      }
+      if (action === "ultimate") {
+        memory.cover = { targets: other.map((unit) => unit.id), fraction: 0.4, throughPhase: state.round + 1 };
+        nativeShield(state, owner, owner, owner.stats.health * 0.2, events, { throughPhase: state.round + 1 });
+      }
+      break;
+    case "disciple": {
+      for (const recipient of state.allies) if (recipient.native?.instruction?.owner === owner.id)
+        delete recipient.native.instruction;
+      const recipients = action === "ultimate" ? allies : ally ? [ally] : [];
+      for (const recipient of recipients) {
+        nativeMemory(recipient).instruction = {
+          kind: action === "skill1" ? "strike" : action === "skill2" ? "shelter" : "resolve",
+          owner: owner.id,
+          throughRound: state.round + (equipped(owner, "master-disciple-1") ? 3 : 1)
+        };
+        status2(events, owner, recipient, `${recipient.name} receives ${action === "skill1" ? "Strike" : action === "skill2" ? "Shelter" : "Resolve"} Instruction.`);
+      }
+      break;
+    }
+    case "aurora":
+      if (action === "skill2") hit(1, true);
+      if (action !== "ultimate") {
+        const seals = memory.seals ??= {};
+        for (const enemy of action === "skill1" ? target ? [target] : [] : foes(state)) {
+          seals[enemy.id] = { fraction: Math.max(seals[enemy.id]?.fraction ?? 0, action === "skill1" ? 0.4 : 0.25), throughPhase: state.round + 2 };
+          status2(events, owner, enemy, `${enemy.name} sealed through enemy phase ${state.round + 2}.`);
+        }
+      } else memory.ultimateWardThrough = state.round + 1;
+      break;
+    case "razor":
+      if (action === "skill2") memory.bastion = { throughPhase: state.round, loss: 0 };
+      else {
+        const spent = Math.min(memory.wounds ?? 0, owner.stats.health * (action === "skill1" ? 0.1 : 0.3));
+        memory.wounds = (memory.wounds ?? 0) - spent;
+        hit(action === "skill1" ? 1.6 : 2.2);
+        if (target?.hp) fixed(state, owner, target, spent * (action === "ultimate" ? 2 : 1), "revenge", events);
+        if (action === "skill1" && target?.hp && equipped(owner, "master-razor-3") && !gear(target).numbers[`silenced:${owner.id}`]) {
+          gear(target).numbers[`silenced:${owner.id}`] = 1;
+          gear(target).numbers.silence = 1;
+        }
+      }
+      break;
+    case "rosetta": {
+      let quarry = memory.quarry;
+      if (action === "skill1" && target) {
+        if (quarry?.target !== target.id) quarry = memory.quarry = { target: target.id, round: state.round, contributors: [] };
+        hit(1.6);
+      } else {
+        const marked = foes(state).find((enemy) => enemy.id === quarry?.target);
+        const contributors = quarry?.round === state.round ? quarry.contributors : [];
+        hit(action === "ultimate" ? 3 : marked ? Math.min(2.5, 2 + 0.25 * contributors.filter((id) => id !== owner.id).length) : 1.6, false, 0, 0, marked ?? target);
+        if (action === "ultimate" && contributors.length >= 2) for (const recipient of allies.filter((unit) => contributors.includes(unit.id)))
+          nativeHeal(state, owner, recipient, recipient.stats.health * 0.1, events, true, activation);
+      }
+      break;
+    }
+    case "thornia": {
+      const traps = memory.traps ??= {};
+      if (action === "skill2") {
+        const charged = traps[targetId]?.charges === 3;
+        hit(1.7, charged && equipped(owner, "master-thornia-2"));
+        if (charged && equipped(owner, "master-thornia-2")) for (const enemy of foes(state)) {
+          if (enemy.id !== targetId) {
+            enemy.weakened = Math.max(enemy.weakened, 1);
+            enemy.weakenFraction = Math.max(enemy.weakenFraction, 0.15);
+            enemy.weakenSourceId = owner.id;
+            enemy.weakenOrigin = "conduit";
+          }
+        }
+        if (target?.hp && (traps[target.id]?.charges ?? 0) > 0) {
+          traps[target.id].charges--;
+          fixed(state, owner, target, owner.stats.damage * 0.8, "trap", events);
+        }
+      } else {
+        if (action === "ultimate") hit(1.4, true);
+        for (const enemy of action === "skill1" ? target ? [target] : [] : foes(state)) {
+          traps[enemy.id] = { charges: 3, coefficient: Math.max(traps[enemy.id]?.coefficient ?? 0, action === "ultimate" ? 0.9 : 0.6), throughPhase: state.round + 2 };
+          status2(events, owner, enemy, `${enemy.name}: 3 Thorn trap charges through enemy phase ${state.round + 2}.`);
+        }
+      }
+      break;
+    }
+    case "crinso":
+      if (action === "skill1") {
+        hit(1.6, false, memory.edge === "crimson" ? 0.2 : 0);
+        memory.combo = memory.edge === "crimson" ? Math.min(3, (memory.combo ?? 0) + 1) : 0;
+        memory.edge = "gold";
+      } else if (action === "skill2") {
+        hit(memory.edge === "gold" ? 2.4 : 2);
+        memory.combo = memory.edge === "gold" ? Math.min(3, (memory.combo ?? 0) + 1) : 0;
+        memory.edge = "crimson";
+      } else {
+        const combo = memory.combo ?? 0;
+        memory.combo = 0;
+        delete memory.edge;
+        activation.spent.duality = combo;
+        hit(2.6 + 0.45 * combo, false, combo === 3 ? 0.3 : 0);
+      }
+      break;
+    case "nerithe": {
+      if (action === "skill2" && equipped(owner, "master-nerithe-2")) break;
+      const surveyed = foes(state).find((enemy) => enemy.id === memory.survey?.target);
+      if (action === "skill2") {
+        if (memory.survey && target) memory.survey.target = target.id;
+        hit(1.3, true);
+      } else {
+        const spent = surveyed ? Math.min(memory.survey?.points ?? 0, action === "skill1" ? 1 : 3) : 0;
+        if (memory.survey) memory.survey.points -= spent;
+        hit(action === "skill1" ? 1.8 : 2.8, false, spent * (action === "skill1" ? 0.25 : 0.15), 0, surveyed ?? target);
+      }
+      break;
+    }
+    case "orvella":
+      if (action === "skill1") {
+        hit(memory.foundation ? 1.4 : 1.8);
+        if (memory.foundation) memory.foundation.durability = Math.min(memory.foundation.maximum, memory.foundation.durability + owner.stats.health * 0.08);
+      } else if (action === "skill2") {
+        const plating = equipped(owner, "master-orvella-1");
+        const maximum = owner.stats.health * (plating ? 0.15 : 0.3);
+        memory.foundation = { durability: maximum, maximum, throughPhase: state.round + 2 };
+        if (plating) for (const recipient of allies)
+          generatedShield(owner, recipient, Math.min(recipient.stats.health * 0.15, owner.stats.health * 0.05), events, true, recipient.stats.health * 0.15, true);
+      } else {
+        const power = Math.min(memory.foundation?.durability ?? 0, owner.stats.health * 0.3);
+        delete memory.foundation;
+        hit(2, true);
+        for (const enemy of foes(state)) fixed(state, owner, enemy, power, "demolition", events);
+      }
+      break;
+    case "vaelor":
+      if (action === "skill1") hit(1.7, false, 0, (memory.beat ?? 0) === 0 ? 0.3 : 0);
+      if (action === "skill2") {
+        hit(1.2, true);
+        if (memory.beat === 1) owner.attackBoost = {
+          fraction: Math.max(owner.attackBoost?.fraction ?? 0, 0.2),
+          throughRound: Math.max(owner.attackBoost?.throughRound ?? 0, state.round + 1),
+          sourceId: owner.id,
+          origin: "native"
+        };
+      }
+      if (action === "ultimate") hit((memory.beat ?? 0) === 2 ? 3.4 : 2.6, true);
+      break;
+    default:
+      throw new Error(`Missing native identity for ${owner.definitionId}.`);
+  }
+}
+function nativeAfterAction(state, owner, action, priorInstruction, events) {
+  if (priorInstruction && owner.native?.instruction === priorInstruction) delete owner.native.instruction;
+  for (const caster of living(state).filter(hasNativeIdentity)) {
+    const field = caster.native?.cyclone;
+    if (field && caster.id !== owner.id && field.contributors[owner.id] !== state.round) {
+      field.contributors[owner.id] = state.round;
+      field.gusts = Math.min(4, field.gusts + 1);
+      status2(events, caster, caster, `Cyclone holds ${field.gusts}/4 Gusts.`);
+    }
+  }
+  nativeCleanup(state);
+}
+function nativePrimaryHit(state, attacker, target, effective, events) {
+  if (!effective) return;
+  for (const owner of living(state).filter(hasNativeIdentity)) {
+    const quarry = owner.native?.quarry;
+    if (!quarry || quarry.target !== target.id) continue;
+    if (quarry.round !== state.round) {
+      quarry.round = state.round;
+      quarry.contributors = [];
+    }
+    if (!quarry.contributors.includes(attacker.id)) quarry.contributors.push(attacker.id);
+    if (quarry.contributors.length >= 2 && quarry.paidRound !== state.round) {
+      quarry.paidRound = state.round;
+      const contributors = living(state).filter((unit) => quarry.contributors.includes(unit.id));
+      if (equipped(owner, "master-rosetta-1")) {
+        const recipient = [...living(state)].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+        if (recipient) nativeShield(state, owner, recipient, recipient.stats.health * 0.48, events);
+      } else for (const ally of contributors) nativeShield(state, owner, ally, ally.stats.health * 0.08, events);
+    }
+  }
+}
+function nativeIncomingMultiplier(state, enemy, target, action, events) {
+  let multiplier = 1;
+  if (target.native?.reduction && target.native.reduction.throughPhase >= state.round) multiplier *= 1 - target.native.reduction.fraction;
+  if (target.native?.bastion && target.native.bastion.throughPhase >= state.round) multiplier *= 0.7;
+  let hostile = enemy.native?.hostileReduction;
+  if (hostile === void 0) {
+    hostile = 1;
+    for (const owner of living(state).filter(hasNativeIdentity)) {
+      if (action !== "light") {
+        const seal = owner.native?.seals?.[enemy.id];
+        if (seal && seal.throughPhase >= state.round) {
+          hostile *= 1 - seal.fraction;
+          delete owner.native.seals[enemy.id];
+          status2(events, owner, enemy, `${enemy.name}'s Seal is consumed by its special.`);
+        }
+      }
+      if (action === "ultimate" && (owner.native?.ultimateWardThrough ?? 0) >= state.round) hostile *= 0.5;
+    }
+    nativeMemory(enemy).hostileReduction = hostile;
+  }
+  return multiplier * hostile;
+}
+function nativeRouteDamage(state, enemy, target, amount, events, redirect) {
+  let remaining = amount;
+  const bruno = living(state).find((unit) => unit.id !== target.id && unit.native?.cover && unit.native.cover.throughPhase >= state.round && unit.native.cover.targets.includes(target.id));
+  if (bruno?.native?.cover) {
+    const routed = remaining * bruno.native.cover.fraction;
+    remaining -= routed;
+    redirect(bruno, routed * 0.75);
+  }
+  for (const owner of living(state)) {
+    const foundation = owner.native?.foundation;
+    if (!foundation || foundation.throughPhase < state.round) continue;
+    const absorbed = Math.min(foundation.durability, remaining * 0.2);
+    foundation.durability -= absorbed;
+    remaining -= absorbed;
+    status2(events, owner, target, `Foundation absorbs ${absorbed}; ${foundation.durability} durability remains.`, absorbed);
+    if (foundation.durability <= 0) delete owner.native.foundation;
+  }
+  return remaining;
+}
+function nativeDirectHpLoss(state, target, loss, events) {
+  if (hasNativeIdentity(target) && target.definitionId === "razor" && loss > 0) {
+    const memory = nativeMemory(target);
+    memory.wounds = Math.min(target.stats.health * 0.3, (memory.wounds ?? 0) + loss);
+    if (memory.bastion?.throughPhase === state.round) memory.bastion.loss += loss;
+    status2(events, target, target, `${target.name} banks ${memory.wounds} Wounds.`, memory.wounds);
+  }
+}
+function nativeAbsorbedHit(state, target, nativeOwners, loss, events) {
+  if (loss !== 0) return;
+  for (const [id, absorbed] of nativeOwners) {
+    const owner = living(state).find((unit) => unit.id === id && hasNativeIdentity(unit) && unit.definitionId === "tide");
+    const key = `stillwater:${id}`;
+    if (!owner || absorbed <= 0 || gear(target).numbers[key] === state.round) continue;
+    gear(target).numbers[key] = state.round;
+    nativeGauge(state, target, 8, events);
+  }
+}
+function nativeEnemyCompleted(state, enemy, damaging, events) {
+  if (!damaging) return;
+  for (const owner of living(state).filter(hasNativeIdentity)) {
+    const trap = owner.native?.traps?.[enemy.id];
+    if (trap && trap.charges > 0 && trap.throughPhase >= state.round) {
+      trap.charges--;
+      if (equipped(owner, "master-thornia-1")) {
+        for (const target of foes(state)) generatedStrike(state, owner, target, owner.stats.damage * 0.4, events, false);
+      } else fixed(state, owner, enemy, owner.stats.damage * trap.coefficient, "trap", events);
+    }
+  }
+}
+function nativeBurnPhase(state, enemy, events) {
+  for (const owner of living(state).filter(hasNativeIdentity)) {
+    const burn = owner.native?.burns?.[enemy.id];
+    if (!burn || burn.turns <= 0 || enemy.hp <= 0) continue;
+    const otherBurn = enemy.burn.sourceId !== owner.id ? enemy.burn : void 0;
+    enemy.burn = { ...burn, sourceId: owner.id, origin: "native" };
+    const tick = conduitBurnTick(state, owner, enemy);
+    burn.turns--;
+    enemy.burn.turns = burn.turns;
+    const previous = enemy.hp;
+    fixed(state, owner, enemy, tick, "burn", events, true);
+    afterConduitBurn(state, owner, enemy, previous - enemy.hp, events);
+    burn.turns = enemy.burn.turns;
+    if (otherBurn) enemy.burn = otherBurn;
+  }
+}
+function nativePhaseEnd(state, events) {
+  for (const owner of living(state).filter(hasNativeIdentity)) {
+    const memory = nativeMemory(owner);
+    if (memory.cyclone && --memory.cyclone.phases <= 0) releaseCyclone(state, owner, events);
+    if (memory.bastion && memory.bastion.throughPhase <= state.round) {
+      if (memory.bastion.loss > 0) nativeShield(state, owner, owner, Math.min(memory.bastion.loss, owner.stats.health * 0.12), events, { throughPhase: state.round + 1 });
+      delete memory.bastion;
+    }
+    if (memory.cover && memory.cover.throughPhase <= state.round) delete memory.cover;
+    if (memory.reduction && memory.reduction.throughPhase <= state.round) delete memory.reduction;
+    if (memory.foundation && memory.foundation.throughPhase <= state.round) delete memory.foundation;
+    for (const [id, trap] of Object.entries(memory.traps ?? {})) if (trap.throughPhase <= state.round || trap.charges <= 0) delete memory.traps[id];
+    for (const [id, seal] of Object.entries(memory.seals ?? {})) if (seal.throughPhase <= state.round) delete memory.seals[id];
+  }
+  nativeCleanup(state);
+}
+function nativeTurnStart(state, events) {
+  for (const owner of living(state).filter(hasNativeIdentity)) {
+    const memory = nativeMemory(owner);
+    if (owner.definitionId === "vaelor" && memory.beatRound !== state.round) {
+      memory.beat = ((memory.beat ?? 0) + 1) % 3;
+      memory.beatRound = state.round;
+    }
+    const healing = { healed: 0, overheal: 0 };
+    for (const [id, pending2] of Object.entries(memory.seeds ?? {})) {
+      if (pending2.dueRound > state.round) continue;
+      delete memory.seeds[id];
+      const target = living(state).find((unit) => unit.id === id);
+      if (target) nativeHeal(state, owner, target, target.stats.health * pending2.fraction, events, true, healing, false);
+    }
+    finishNativeHealing(state, owner, healing, events);
+  }
+  for (const ally of state.allies) if (ally.native?.instruction && ally.native.instruction.throughRound < state.round) delete ally.native.instruction;
+}
+function nativeCleanup(state) {
+  const live = new Set(foes(state).map((unit) => unit.id));
+  for (const enemy of state.enemies) {
+    if (enemy.burn.origin !== "conduit" && state.allies.some((owner) => owner.id === enemy.burn.sourceId && hasNativeIdentity(owner) && owner.hp <= 0))
+      enemy.burn.turns = 0;
+  }
+  for (const ally of state.allies) {
+    if (!ally.native) continue;
+    if (ally.hp <= 0) {
+      delete ally.native;
+      continue;
+    }
+    if (ally.native.instruction && !living(state).some((owner) => owner.id === ally.native?.instruction?.owner))
+      delete ally.native.instruction;
+    if (ally.native.blades) ally.native.blades = ally.native.blades.map((id) => id && live.has(id) ? id : null);
+    if (ally.native.survey && !live.has(ally.native.survey.target)) delete ally.native.survey;
+    if (ally.native.quarry && !live.has(ally.native.quarry.target)) delete ally.native.quarry;
+    for (const key of ["burns", "traps", "seals"])
+      for (const id of Object.keys(ally.native[key] ?? {})) if (!live.has(id)) delete ally.native[key][id];
+  }
+}
+
+// src/game/conduit-runtime.ts
+var conduitRulesVersion = 3;
+function gear(unit) {
+  return unit.conduitRuntime ??= { numbers: {}, owners: {} };
+}
+function equipped(unit, id) {
+  return unit.conduits?.some((slot) => slot === id) === true || !unit.captured && unit.masterConduit === id;
+}
+function value(state, unit, id, base, maximum) {
+  const range2 = conduitRedesign[id]?.ranges.find((range3) => Math.abs(range3.base - base) < 1e-9 && Math.abs(range3.maximum - maximum) < 1e-9 || Math.abs(range3.base / 100 - base) < 1e-9 && Math.abs(range3.maximum / 100 - maximum) < 1e-9);
+  if (!range2) throw new Error(`Unregistered coefficient for ${id} on ${unit.id}: ${base} -> ${maximum}.`);
+  const scale = Math.abs(range2.base - base) < 1e-9 ? 1 : 0.01;
+  return redesignValue(state.conduitUpgrades?.[id] ?? 0, range2.base, range2.maximum) * scale;
+}
+function step(state, id, base, maximum) {
+  const range2 = conduitRedesign[id]?.ranges.find((range3) => range3.step && range3.base === base && range3.maximum === maximum);
+  if (!range2) throw new Error(`Unregistered stepped coefficient for ${id}: ${base} -> ${maximum}.`);
+  return redesignStep(state.conduitUpgrades?.[id] ?? 0, range2.base, range2.maximum);
+}
+function alive(state) {
+  return state.allies.filter((unit) => unit.hp > 0);
+}
+function injured(state, owner, other = false) {
+  return alive(state).filter((unit) => (!other || unit.id !== owner.id) && unit.hp < unit.stats.health).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+}
+function lowestGauge(state, owner) {
+  return alive(state).filter((unit) => unit.id !== owner.id && unit.shatter < unit.stats.shatterCapacity).sort((a, b) => a.shatter - b.shatter)[0];
+}
+function healthiestEnemy(state, excluded) {
+  return state.enemies.filter((unit) => unit.hp > 0 && unit.id !== excluded).sort((a, b) => b.hp - a.hp)[0];
+}
+function emit(events, kind, owner, target, amount, message, native = false) {
+  events.push({
+    kind,
     source: owner.id,
     target: target.id,
     amount,
     critical: false,
-    message: `${owner.name}: ${name}.`,
-    debuffs: debuffSnapshot(target),
-    ...target.side === "ally" ? { buffs: buffSnapshot(target) } : {}
+    origin: native ? "native" : "conduit",
+    message,
+    ...target.side === "ally" ? { buffs: buffSnapshot(target) } : { debuffs: debuffSnapshot(target) },
+    ...kind === "shield" || kind === "damage" ? { shieldRemaining: target.shield } : {}
   });
 }
-function applyOutcome(state, owner, context, outcome, scale, name, events, resolved) {
-  if (outcome.recipient === "all-allies" && !resolved) {
-    let any = false;
-    for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
-      any = applyOutcome(state, owner, context, outcome, scale, name, events, { target: ally }) || any;
-    }
-    return any;
-  }
-  if (outcome.kind === "strike") return strike(state, owner, context, outcome, scale, name, events);
-  if (outcome.kind === "charge") {
-    const resource = owner.kit?.pilot ? kitPilotDescriptions[owner.kit.pilot].resource : void 0;
-    if (!resource || owner.captured) return false;
-    const current = owner.pilot?.[resource.key] ?? 0;
-    const next = Math.min(3, current + Math.round(outcome.amount * scale));
-    if (next <= current) return false;
-    owner.pilot = { ...owner.pilot, [resource.key]: next };
-    status2(events, owner, owner, `${name} grants ${next - current} ${resource.label} (${next}/3)`, next - current);
-    return true;
-  }
-  if (outcome.kind === "weaken-clock") {
-    const enemy = context.target;
-    if (!enemy || enemy.side !== "enemy" || enemy.hp <= 0 || enemy.weakened <= 0 || enemy.weakenSourceId !== owner.id) return false;
-    const next = Math.min(3, enemy.weakened + outcome.amount);
-    if (next <= enemy.weakened) return false;
-    enemy.weakened = next;
-    status2(events, owner, enemy, `${name} extends existing Weaken to ${next} enemy phases`, outcome.amount);
-    return true;
-  }
-  const target = resolved ? resolved.target : recipient(state, owner, context.target, outcome.recipient);
-  if (outcome.kind === "burn-clock") {
-    const enemy = context.target;
-    if (!enemy || enemy.hp <= 0 || enemy.burn.turns <= 0 || enemy.burn.sourceId !== owner.id) return false;
-    const next = Math.min(3, enemy.burn.turns + outcome.amount);
-    if (next <= enemy.burn.turns) return false;
-    enemy.burn.turns = next;
-    status2(events, owner, enemy, `${name} extends existing Burn to ${next} phases`, outcome.amount);
-    return true;
-  }
-  if (outcome.kind === "fracture") {
-    const enemy = context.target;
-    if (!enemy || enemy.hp <= 0 || enemy.weakened <= 0 || enemy.weakenSourceId !== owner.id) return false;
-    const marks = enemy.conduitMarks?.[owner.id] ?? 0;
-    if (marks >= 2) return false;
-    const gained = Math.min(2 - marks, outcome.amount);
-    enemy.conduitMarks = { ...enemy.conduitMarks, [owner.id]: marks + gained };
-    status2(events, owner, enemy, `${name} places ${gained} personal Fracture Mark${gained === 1 ? "" : "s"}`, gained);
-    return true;
-  }
-  if (!target) return false;
-  const triggerAmount = context.trigger === "resource-spent" ? (context.amount ?? 0) * owner.stats.health : context.hpDamage ?? context.amount ?? 0;
-  if (outcome.kind === "heal" || outcome.kind === "shield") {
-    const desired = Math.max(0, Math.round(Math.min(
-      owner.stats.health * outcome.amount + triggerAmount * (outcome.ratio ?? 0),
-      outcome.cap === void 0 ? Infinity : owner.stats.health * outcome.cap
-    ) * scale));
-    const amount = outcome.kind === "heal" ? Math.min(target.stats.health - target.hp, desired) : Math.max(0, desired - target.shield);
-    if (amount <= 0) return false;
-    if (outcome.kind === "heal") target.hp += amount;
-    else {
-      target.shield += amount;
-      delete target.pilot?.authoredShieldSourceId;
-    }
-    events.push({
-      kind: outcome.kind,
-      source: owner.id,
-      target: target.id,
-      amount,
-      critical: false,
-      message: `${owner.name}: ${name} ${outcome.kind === "heal" ? "restores" : "wards"} ${target.name} for ${amount} (Conduit effect).`,
-      buffs: buffSnapshot(target),
-      ...outcome.kind === "shield" ? { shieldRemaining: target.shield } : {}
-    });
-    return true;
-  }
-  if (outcome.kind === "gauge") {
-    const desired = (outcome.amount + (context.amount ?? 0) * (outcome.ratio ?? 0)) * scale;
-    const amount = Math.min(target.stats.shatterCapacity - target.shatter, desired);
-    if (amount <= 0) return false;
-    target.shatter += amount;
-    status2(events, owner, target, `${name} returns ${amount} Gauge to ${target.name}`, amount);
-    return true;
-  }
-  if (outcome.kind === "cooldown") {
-    const available = ["skill1", "skill2"].filter((action) => !!target.kit && !target.kit.unavailableActions?.includes(action) && target.readyRound[action] > state.round + 1).sort((a, b) => target.readyRound[b] - target.readyRound[a]);
-    const selected = outcome.bothSkills ? available : available.slice(0, 1);
-    if (!selected.length) return false;
-    const rounds = Math.round(outcome.amount * scale);
-    for (const action of selected) target.readyRound[action] = Math.max(state.round + 1, target.readyRound[action] - rounds);
-    status2(events, owner, target, `${name} reindexes ${target.name}'s skill cooldown (never before next round)`, outcome.amount);
-    return true;
-  }
-  if (outcome.kind === "boost") {
-    const prior = target.attackBoost && target.attackBoost.throughRound >= state.round ? target.attackBoost.fraction : 0;
-    const offered = Math.min(0.65, Math.round(outcome.amount * scale * 1e3) / 1e3);
-    const fraction = Math.max(prior, offered);
-    const throughRound = Math.max(target.attackBoost?.throughRound ?? 0, state.round + 1);
-    if (prior === fraction && target.attackBoost?.throughRound === throughRound) return false;
-    target.attackBoost = {
-      fraction,
-      throughRound,
-      sourceId: prior > offered ? target.attackBoost?.sourceId : owner.id,
-      origin: prior > offered ? target.attackBoost?.origin : "conduit"
-    };
-    status2(events, owner, target, `${name} lends ${formatStat(fraction * 100)}% Attack through next round`, fraction * 100);
-    return true;
-  }
-  if (outcome.kind === "protection") {
-    const amount = Math.min(0.6, Math.round(outcome.amount * scale * 1e3) / 1e3);
-    if ((target.omnicProtection ?? 0) >= amount) return false;
-    target.omnicProtection = amount;
-    status2(events, owner, target, `${name} primes one ${formatStat(amount * 100)}% direct-hit protection`, amount * 100);
-    return true;
-  }
-  return false;
+function generatedHeal(owner, target, offer, events) {
+  if (!target || target.hp <= 0) return 0;
+  const amount = Math.min(target.stats.health - target.hp, Math.max(0, Math.round(offer)));
+  if (amount <= 0) return 0;
+  target.hp += amount;
+  emit(events, "heal", owner, target, amount, `${owner.name}'s Conduit restores ${amount} HP to ${target.name}.`);
+  return amount;
 }
-function strike(state, owner, context, outcome, scale, name, events) {
-  if (context.trigger === "defense") return false;
-  const choice = outcome.recipient ?? "struck";
-  const enemies2 = choice === "all-enemies" ? state.enemies.filter((unit) => unit.hp > 0) : [choice === "attacker" ? context.attacker : context.target].filter((unit) => !!unit && unit.side === "enemy" && unit.hp > 0);
-  const echo = context.trigger === "resource-spent" ? 0 : (context.hpDamage ?? context.amount ?? 0) * (outcome.ratio ?? 0);
-  let dealt = false;
-  for (const enemy of enemies2) {
-    const base = owner.stats.damage;
-    const mitigation = base > 0 ? base / (base + enemy.stats.defense) : 0;
-    const raw = base * outcome.amount * mitigation + echo;
-    if (raw <= 0) continue;
-    const amount = Math.max(1, Math.round(Math.min(raw, outcome.cap === void 0 ? Infinity : base * outcome.cap) * scale));
-    const absorbed = Math.min(enemy.shield, amount);
-    enemy.shield -= absorbed;
-    const loss = Math.min(enemy.hp, amount - absorbed);
-    enemy.hp -= loss;
-    if (enemy.hp === 0) {
-      delete enemy.conduitMarks;
-      delete enemy.pilot;
-    }
-    events.push({
-      kind: "damage",
-      source: owner.id,
-      target: enemy.id,
-      amount: loss,
-      critical: false,
-      message: `${enemy.name}: ${formatStat(loss)} damage from ${name} (Conduit strike)${absorbed ? `, ${formatStat(absorbed)} shield absorbed` : ""}${enemy.hp === 0 ? " - defeated" : ""}.`,
-      shieldRemaining: enemy.shield,
-      debuffs: debuffSnapshot(enemy)
-    });
-    dealt = true;
-  }
-  return dealt;
+function generatedGauge(owner, target, offer, events, native = false) {
+  if (!target || target.hp <= 0) return 0;
+  const amount = Math.min(target.stats.shatterCapacity - target.shatter, Math.max(0, offer));
+  if (amount <= 0) return 0;
+  target.shatter += amount;
+  emit(events, "status", owner, target, amount, native ? `${target.name} gains ${amount} Shatter Gauge.` : `${owner.name}'s Conduit gives ${target.name} ${amount} Gauge.`, native);
+  return amount;
 }
-function qualifies(owner, rule, context) {
-  return (!rule.actions || !!context.action && rule.actions.includes(context.action)) && (!rule.other || !!context.target && context.target.id !== owner.id) && (!rule.belowHalf || !!context.target && (context.beforeHp ?? context.target.hp) <= context.target.stats.health / 2) && (!rule.ownBurn || context.ownBurn === true) && (!rule.ownWeaken || context.ownWeaken === true) && (!rule.lethal || context.lethal === true) && (!rule.selfBelowHalf || owner.hp <= owner.stats.health / 2) && (!rule.resources || !!context.resource && rule.resources.includes(context.resource));
-}
-function resolveOmnicInteraction(state, owner, context, events) {
-  if (owner.side !== "ally" || owner.hp <= 0 || context.trigger !== "defense" && (context.amount ?? 0) <= 0) return;
-  const interactions = [];
-  for (const id of owner.conduits ?? []) {
-    if (id) {
-      const conduit = getConduit(id);
-      if ("kitEffects" in conduit) interactions.push({ id, name: conduit.name, rule: conduit.kitEffects.rule });
+function layers(unit) {
+  const memory = gear(unit);
+  const list = memory.layers ??= [];
+  const recorded = list.reduce((sum, layer) => sum + layer.amount, 0);
+  if (recorded < unit.shield) list.unshift({
+    amount: unit.shield - recorded,
+    owner: unit.pilot?.authoredShieldSourceId ?? unit.id,
+    native: !!unit.pilot?.authoredShieldSourceId
+  });
+  if (recorded > unit.shield) {
+    let excess = recorded - unit.shield;
+    for (const layer of list) {
+      const spent = Math.min(layer.amount, excess);
+      layer.amount -= spent;
+      excess -= spent;
     }
   }
-  if (owner.masterConduit) {
-    if (owner.captured) throw new Error("Captured Elemental-Devourers cannot equip character Master Conduits.");
-    validateMasterCharacter(owner.masterConduit, owner.definitionId);
-    interactions.push(getMasterConduit(owner.masterConduit));
+  return list;
+}
+function generatedShield(owner, target, offer, events, additive = false, cap = Infinity, plate = false) {
+  if (!target || target.hp <= 0) return 0;
+  const list = layers(target);
+  const amount = Math.max(0, Math.round(additive ? Math.min(offer, cap - target.shield) : offer - target.shield));
+  if (amount <= 0) return 0;
+  list.push({ amount, owner: owner.id, native: false, ...plate ? { plate } : {} });
+  target.shield += amount;
+  emit(events, "shield", owner, target, amount, `${owner.name}'s Conduit shields ${target.name} for ${amount}.`);
+  return amount;
+}
+function expireNativeShields(state, events) {
+  for (const target of [...state.allies, ...state.enemies]) {
+    const list = layers(target);
+    const expiredByOwner = /* @__PURE__ */ new Map();
+    for (const layer of list) {
+      if (!layer.native || layer.expiresAfterPhase === void 0 || layer.expiresAfterPhase > state.round) continue;
+      expiredByOwner.set(layer.owner, (expiredByOwner.get(layer.owner) ?? 0) + layer.amount);
+      target.shield -= layer.amount;
+      layer.amount = 0;
+    }
+    if (!expiredByOwner.size) continue;
+    gear(target).layers = list.filter((layer) => layer.amount > 0);
+    for (const [id, amount] of expiredByOwner) {
+      if (amount <= 0) continue;
+      const owner = state.allies.find((ally) => ally.id === id) ?? target;
+      emit(events, "status", owner, target, amount, `${target.name} loses ${Math.round(amount)} expired native shield.`, true);
+    }
   }
-  for (const conduit of interactions) {
-    const { id, rule } = conduit;
-    const isMaster = owner.masterConduit === id;
-    const memory = owner.omnicMemory?.[id] ?? {};
-    const remember = () => {
-      (owner.omnicMemory ??= {})[id] = memory;
-    };
-    if (rule.bank?.trigger === context.trigger && (!rule.bank.other || !!context.target && context.target.id !== owner.id) && (isMaster || memory.bankRound !== state.round)) {
-      if ((memory.bank ?? 0) < rule.bank.maximum) {
-        memory.bank = Math.min(rule.bank.maximum, (memory.bank ?? 0) + 1);
-        if (!isMaster) memory.bankRound = state.round;
-        remember();
-        status2(events, owner, owner, `${conduit.name} stores ${owner.masterConduit === id ? "Astral Reserve" : "a reserve"} (${memory.bank}/${rule.bank.maximum})`, memory.bank);
+}
+function consumeShield(unit, amount) {
+  const list = layers(unit);
+  let remaining = amount;
+  const native = /* @__PURE__ */ new Map();
+  const before = /* @__PURE__ */ new Map();
+  for (const layer of list) if (layer.native) before.set(layer.owner, (before.get(layer.owner) ?? 0) + layer.amount);
+  for (const layer of [...list.filter((layer2) => !layer2.plate), ...list.filter((layer2) => layer2.plate)]) {
+    const spent = Math.min(layer.amount, remaining);
+    layer.amount -= spent;
+    remaining -= spent;
+    unit.shield -= spent;
+    if (layer.native && spent > 0) native.set(layer.owner, (native.get(layer.owner) ?? 0) + spent);
+    if (remaining <= 0) break;
+  }
+  const broken = /* @__PURE__ */ new Set();
+  for (const [id, total] of before) if ((native.get(id) ?? 0) >= total && total > 0) broken.add(id);
+  gear(unit).layers = list.filter((layer) => layer.amount > 0);
+  return { absorbed: amount - remaining, native, broken };
+}
+function payShield(unit, amount) {
+  return consumeShield(unit, Math.min(unit.shield, Math.max(0, amount))).absorbed;
+}
+function generatedStrike(state, owner, target, offer, events, mitigated = true) {
+  if (!target || target.hp <= 0 || offer <= 0) return 0;
+  const damage = Math.max(1, Math.round(mitigated ? offer : offer * owner.stats.damage / Math.max(1, owner.stats.damage + effectiveDefense(state, target))));
+  const absorbed = consumeShield(target, damage).absorbed;
+  const loss = Math.min(target.hp, damage - absorbed);
+  target.hp -= loss;
+  emit(events, "damage", owner, target, loss, `${owner.name}'s Conduit strikes ${target.name} for ${loss}.`);
+  return loss;
+}
+function initializeConduits(state) {
+  state.conduitRulesVersion = conduitRulesVersion;
+  for (const unit of [...state.allies, ...state.enemies]) {
+    gear(unit).numbers.entryDefense = unit.stats.defense;
+    if (unit.side === "ally" && equipped(unit, "fracture-reservoir")) {
+      unit.shatter = Math.min(unit.stats.shatterCapacity, unit.shatter + value(state, unit, "fracture-reservoir", 5, 10));
+    }
+  }
+}
+function effectiveDefense(state, unit) {
+  let defense = unit.stats.defense;
+  const n = unit.conduitRuntime?.numbers ?? {};
+  if (equipped(unit, "master-orvella-3") && unit.hp > 0) {
+    const foundation = unit.native?.foundation;
+    const protectedByFoundation = foundation && foundation.durability > 0 && foundation.throughPhase >= state.round;
+    defense += (n.entryDefense ?? defense) * 0.2 * alive(state).filter((ally) => ally.shield > 0 || protectedByFoundation).length;
+  }
+  if (unit.side === "enemy") {
+    defense = Math.max(0, defense - (n.excavated ?? 0));
+  }
+  return defense;
+}
+function nativeTargetDefense(state, target) {
+  const exposed = alive(state).some((owner) => equipped(owner, "master-aurora-1") && nativeControl(state, owner, target));
+  return effectiveDefense(state, target) * (exposed ? 0.85 : 1);
+}
+function nativeControl(state, owner, target) {
+  return (owner.native?.seals?.[target.id]?.throughPhase ?? 0) >= state.round || target.weakened > 0 && target.weakenSourceId === owner.id && target.weakenOrigin !== "conduit";
+}
+function conduitActionCost(actor, action, state, base) {
+  const n = actor.conduitRuntime?.numbers ?? {};
+  if (action === "defend") return equipped(actor, "solace-anchor") && !n.solaceUsed && actor.shatter >= 10 ? 10 : 0;
+  if (action === "skill1" && n.quietFeather) return 0;
+  let discount = 0;
+  if (action === "skill2" && equipped(actor, "coilfeed-ratchet")) discount += value(state, actor, "coilfeed-ratchet", 3, 6);
+  if ((action === "skill1" || action === "skill2") && n.tailwind && equipped(actor, "atmospheric-skythread-rudder")) {
+    discount += value(state, actor, "atmospheric-skythread-rudder", 10, 20);
+  }
+  if (action === "ultimate" && n.stormCount >= 3 && equipped(actor, "atmospheric-storm-clock")) {
+    discount += value(state, actor, "atmospheric-storm-clock", 15, 30);
+  }
+  return base === 0 ? 0 : Math.max(action === "ultimate" ? 70 : 1, base - discount);
+}
+function recoveryNormal(actor) {
+  return equipped(actor, "chaotic-paradox-spindle");
+}
+function conduitActionBlocked(actor, state) {
+  const n = actor.conduitRuntime?.numbers ?? {};
+  return n.stasisSkip === state.round || n.revivedRound === state.round || n.actionsRound === state.round && (n.actions >= 2 || actor.recoverThrough >= state.round && n.actions >= 1);
+}
+function prepareConduitAction(state, actor, action, paid, nativeAll) {
+  const n = gear(actor).numbers;
+  const ctx = {
+    action,
+    paid,
+    bonus: 0,
+    criticalBonus: 0,
+    guaranteed: false,
+    forbidden: false,
+    all: nativeAll,
+    nativeAll,
+    scale: 1,
+    impacts: 1,
+    hits: [],
+    overheal: 0,
+    healed: 0,
+    spent: {},
+    healExtra: 0,
+    shieldBurn: 0,
+    burnPaid: false,
+    freeDefense: false,
+    openingBurns: Object.fromEntries(state.enemies.filter((enemy) => enemy.hp > 0 && enemy.burn.turns > 0 && enemy.burn.sourceId === actor.id && enemy.burn.origin !== "conduit").map((enemy) => [enemy.id, conduitBurnTick(state, actor, enemy)])),
+    eclipseTargets: []
+  };
+  n.ordinaryResourceSpend = action === "skill2" ? 1 : 0;
+  if (n.actionsRound !== state.round) {
+    n.actionsRound = state.round;
+    n.actions = 0;
+  }
+  if (action === "defend" && equipped(actor, "solace-anchor") && !n.solaceUsed && paid === 10) {
+    n.solaceUsed = 1;
+    n.solaceRound = state.round;
+    ctx.freeDefense = true;
+  } else n.actions++;
+  if (action === "skill1") delete n.quietFeather;
+  if (action === "skill1" || action === "skill2") delete n.tailwind;
+  if (action === "defend") {
+    delete n.counterwind;
+    delete n.counterwindActive;
+    n.normalSequence = 0;
+    n.previousSkill = 0;
+    return ctx;
+  }
+  const offensive = action === "light" || actor.kit?.abilities[action].strength.damageMultiplier !== void 0;
+  if (offensive && equipped(actor, "parallax-relay") && !n.opening) {
+    ctx.criticalBonus += value(state, actor, "parallax-relay", 0.15, 0.3);
+    n.opening = 1;
+  }
+  if (equipped(actor, "glassroot-gimbal")) ctx.criticalBonus += value(state, actor, "glassroot-gimbal", 0.12, 0.24) * Math.min(1, (1 - actor.hp / actor.stats.health) / 0.75);
+  ctx.guaranteed = equipped(actor, "falcon-sight") && (n.noncritical ?? 0) >= 2;
+  ctx.forbidden = equipped(actor, "verdict-caliper") || action === "light" && equipped(actor, "judgment-lens");
+  if (equipped(actor, "verdict-caliper")) ctx.bonus += value(state, actor, "verdict-caliper", 0.35, 0.7);
+  if (action === "light") {
+    if (equipped(actor, "siegebound-drive")) ctx.bonus += value(state, actor, "siegebound-drive", 0.08, 0.16);
+    if (equipped(actor, "nullsong-transmission")) ctx.bonus += value(state, actor, "nullsong-transmission", 0.4, 0.8);
+    if (equipped(actor, "twinpulse-bellows")) {
+      n.normalSequence = (n.normalSequence ?? 0) + 1;
+      if (n.normalSequence === 2) {
+        ctx.bonus += value(state, actor, "twinpulse-bellows", 0.25, 0.5);
+        n.normalSequence = 0;
       }
     }
-    if (rule.trigger !== context.trigger || !isMaster && memory.usedRound === state.round || !qualifies(owner, rule, context)) continue;
-    const scale = rule.bank ? Math.min(rule.bank.maximum, Math.max(0, memory.bank ?? 0)) : 1;
-    if (scale <= 0) continue;
-    let effective = false;
-    const selected = /* @__PURE__ */ new Map();
-    if (owner.masterConduit === id) {
-      for (const outcome of rule.outcomes) {
-        const choice = outcome.recipient ?? "self";
-        if (choice === "all-allies" || enemyRecipients.includes(choice)) continue;
-        if (!selected.has(choice)) selected.set(choice, { target: recipient(state, owner, context.target, choice) });
+    if (actor.recoverThrough >= state.round && recoveryNormal(actor)) ctx.scale *= value(state, actor, "chaotic-paradox-spindle", 0.5, 0.75);
+    if (equipped(actor, "master-atmoso-1")) {
+      ctx.all = true;
+      ctx.scale *= 0.7;
+    }
+  } else {
+    n.normalSequence = 0;
+    if (action === "skill1" && equipped(actor, "prism-splinter-socket")) ctx.bonus += value(state, actor, "prism-splinter-socket", 0.1, 0.2);
+    if (action === "skill2" && equipped(actor, "crosspin-governor")) ctx.bonus += value(state, actor, "crosspin-governor", 0.1, 0.2);
+    if (action !== "ultimate" && equipped(actor, "nullsong-transmission")) ctx.bonus += value(state, actor, "nullsong-transmission", -0.12, -0.24);
+    if (action !== "ultimate" && equipped(actor, "voltaic-stormstep-dynamo") && n.previousSkill && n.previousSkill !== (action === "skill1" ? 1 : 2)) {
+      ctx.bonus += value(state, actor, "voltaic-stormstep-dynamo", 0.25, 0.5);
+    }
+    if (action !== "ultimate" && n.verdant) {
+      ctx.bonus += n.verdant;
+      delete n.verdant;
+    }
+  }
+  n.previousSkill = offensive ? action === "skill1" ? 1 : action === "skill2" ? 2 : 0 : 0;
+  if (nativeAll && state.enemies.filter((enemy) => enemy.hp > 0).length === 1 && equipped(actor, "siege-cantilever")) ctx.bonus += value(state, actor, "siege-cantilever", 0.6, 1.2);
+  if (action === "ultimate") {
+    if (equipped(actor, "atmospheric-storm-clock") && n.stormCount >= 3) n.stormCount = 0;
+    if (equipped(actor, "worldbreaker-drive")) ctx.bonus += value(state, actor, "worldbreaker-drive", 0.35, 0.7);
+    if (equipped(actor, "master-nerithe-3")) ctx.scale *= 0.5;
+    if (equipped(actor, "master-elise-2")) {
+      ctx.impacts = 4;
+      ctx.scale *= 1.2;
+    }
+    if (equipped(actor, "master-razor-2")) ctx.bonus += Math.min(0.6, payShield(actor, actor.shield) / actor.stats.health * 2);
+    if (equipped(actor, "master-vaelor-1")) {
+      actor.hp -= Math.min(actor.hp - 1, actor.hp * 0.2);
+      ctx.bonus += 0.75;
+    }
+    if (equipped(actor, "chaotic-ouroboros-core")) {
+      const excess = actor.shatter;
+      actor.shatter = 0;
+      n.excessShield = Math.min(
+        value(state, actor, "chaotic-ouroboros-core", 0.15, 0.3),
+        excess * value(state, actor, "chaotic-ouroboros-core", 3e-3, 6e-3)
+      ) * actor.stats.health;
+    }
+  }
+  if (action === "skill2" && equipped(actor, "master-ember-2")) {
+    ctx.all = false;
+    ctx.scale *= 2;
+  }
+  if (action === "skill1" && equipped(actor, "master-bliss-2")) {
+    ctx.impacts = 2;
+    ctx.scale *= 1.4;
+  }
+  if (action === "skill2" && equipped(actor, "master-crinso-2")) ctx.shieldBurn = Math.min(payShield(actor, actor.stats.health * 0.1) * 0.5, actor.stats.damage * 0.5);
+  if (action === "skill2" && equipped(actor, "master-bliss-1")) {
+    const count2 = alive(state).filter((ally) => ally.id !== actor.id).length;
+    if (count2 && actor.hp - actor.stats.health * 0.1 >= 1) {
+      ctx.healExtra = actor.stats.health * 0.1 / count2;
+      actor.hp -= actor.stats.health * 0.1;
+    }
+  }
+  if (equipped(actor, "master-atmoso-2") && n.counterwind) {
+    if (offensive) ctx.bonus += n.counterwind;
+    delete n.counterwind;
+    delete n.counterwindActive;
+  }
+  if (equipped(actor, "master-crinso-3")) {
+    if (!n.crimson || action === "ultimate") ctx.bonus += 0.3;
+  }
+  if (action === "skill2" && hasNativeIdentity(actor) && equipped(actor, "master-crinso-1")) {
+    ctx.bonus += n.goldImprint ?? 0;
+    delete n.goldImprint;
+  }
+  return ctx;
+}
+function conduitHitModifiers(state, actor, target, ctx, critical) {
+  let bonus = ctx.bonus;
+  let pierce = 0;
+  const action = ctx.action;
+  if (target.hp <= target.stats.health * 0.25 && equipped(actor, "execution-orrery")) bonus += value(state, actor, "execution-orrery", 0.5, 1);
+  if (action === "skill1" && equipped(actor, "spearwheel-engine")) pierce += value(state, actor, "spearwheel-engine", 0.15, 0.3);
+  if (action !== "light" && target.weakened > 0 && target.weakenSourceId === actor.id && target.weakenOrigin !== "conduit" && equipped(actor, "ominous-eclipse-mantle")) {
+    pierce += value(state, actor, "ominous-eclipse-mantle", 0.4, 0.6);
+    ctx.eclipseTargets.push(target.id);
+  }
+  if (action === "light" || action === "skill1" && equipped(actor, "ruinselect-prism")) {
+    const marks = target.conduitMarks?.[actor.id] ?? 0;
+    if (marks) {
+      bonus += marks * (action === "light" ? value(state, actor, "ominous-nightglass-archive", 0.1, 0.2) : value(state, actor, "ruinselect-prism", 0.15, 0.3));
+      delete target.conduitMarks?.[actor.id];
+    }
+  }
+  const targetMemory = gear(target);
+  for (const owner of state.allies) {
+    if (owner.id === actor.id) continue;
+    if (targetMemory.numbers[`soot:${owner.id}`] >= state.round) {
+      bonus += value(state, owner, "sootwake-crucible", 0.2, 0.4);
+      delete targetMemory.numbers[`soot:${owner.id}`];
+    }
+    if (targetMemory.numbers[`opening:${owner.id}`] && (hasNativeIdentity(owner) || target.weakened > 0 && target.weakenSourceId === owner.id)) {
+      bonus += 0.4;
+      if (!hasNativeIdentity(owner)) target.weakened--;
+      delete targetMemory.numbers[`opening:${owner.id}`];
+    }
+  }
+  if (equipped(actor, "master-atmoso-3") && !ctx.forbidden) bonus += Math.min(0.5, Math.max(0, actor.stats.crit + ctx.criticalBonus - 1));
+  if (critical && equipped(actor, "master-elise-1")) pierce += 0.5;
+  return {
+    bonus: Math.min(3, bonus),
+    pierce: Math.min(0.75, pierce),
+    attack: ctx.action === "ultimate" && equipped(actor, "master-bruno-2") ? effectiveDefense(state, actor) : actor.stats.damage,
+    ...critical && equipped(actor, "master-elise-1") ? { critMultiplier: 1.5 } : {}
+  };
+}
+function applyConduitBurn(state, owner, target, base, ctx) {
+  let bonus = 0;
+  if (equipped(owner, "resonance-crucible")) bonus += value(state, owner, "resonance-crucible", 0.2, 0.4);
+  if (equipped(owner, "starvein-conductor")) {
+    const payment = owner.stats.health * 0.05;
+    if (!ctx.burnPaid && owner.hp - payment >= 1) {
+      owner.hp -= payment;
+      ctx.burnPaid = true;
+    }
+    if (ctx.burnPaid) bonus += value(state, owner, "starvein-conductor", 0.4, 0.8);
+  }
+  const damage = Math.round((base + ctx.shieldBurn) * (1 + Math.min(3, bonus)));
+  if (target.burn.turns <= 0 || damage >= target.burn.damage) {
+    const n = gear(target).numbers;
+    n[`cinder:${owner.id}`] = 0;
+    n[`extensions:${owner.id}`] = 0;
+    if (target.burn.sourceId !== owner.id || target.burn.turns <= 0) n[`census:${owner.id}`] = 0;
+  }
+  return damage;
+}
+function afterConduitImpact(owner, target, ctx) {
+  if (ctx.eclipseTargets.includes(target.id) && target.weakened > 0 && target.weakenSourceId === owner.id) {
+    target.weakened--;
+    if (!target.weakened) {
+      target.weakenFraction = 0;
+      delete target.weakenSourceId;
+      delete target.weakenOrigin;
+    }
+  }
+}
+function applyConduitWeaken(state, owner, target, fraction, events, action = "skill1", baseDuration = 2) {
+  if (equipped(owner, "master-bruno-3") && action === "skill1") {
+    gear(target).numbers.excavated = Math.min(
+      (gear(target).numbers.entryDefense ?? target.stats.defense) * 0.3,
+      (gear(target).numbers.excavated ?? 0) + (gear(target).numbers.entryDefense ?? target.stats.defense) * 0.15
+    );
+    emit(events, "status", owner, target, gear(target).numbers.excavated, `${target.name}'s encounter Defense is excavated.`);
+    return;
+  }
+  const duration = baseDuration + (equipped(owner, "opal-indexer") ? step(state, "opal-indexer", 1, 2) : 0);
+  const strength = Math.min(0.6, fraction + (equipped(owner, "tension-governor") ? value(state, owner, "tension-governor", 0.05, 0.1) : 0));
+  if (target.weakened > 0 && target.weakenFraction > strength) {
+    emit(events, "status", owner, target, target.weakenFraction, `${target.name}'s stronger Weaken remains unchanged.`);
+    return;
+  }
+  target.weakened = Math.min(6, duration);
+  target.weakenFraction = strength;
+  target.weakenSourceId = owner.id;
+  target.weakenOrigin = owner.kit?.pilot === "rose-grace" || owner.kit?.pilot === "thorn-aegis" || owner.kit?.pilot === "rose-duality" ? "rose" : "native";
+  const n = gear(target).numbers;
+  if (equipped(owner, "aquatic-undertide-chronometer") && !n[`undertide:${owner.id}`]) {
+    n[`undertide:${owner.id}`] = 1;
+    n.scheduleShift = (n.scheduleShift ?? 0) + step(state, "aquatic-undertide-chronometer", 1, 2);
+  }
+  if (equipped(owner, "master-razor-3") && !n[`silenced:${owner.id}`]) {
+    n[`silenced:${owner.id}`] = 1;
+    n.silence = 1;
+  }
+  if (equipped(owner, "master-tide-3")) applyTaunt(owner, target);
+  emit(events, "status", owner, target, strength, `${target.name} has ${Math.round(strength * 100)}% Weaken for ${target.weakened} enemy phases.`, true);
+}
+function supportEffect(state, owner, target, events) {
+  if (owner.id !== target.id && equipped(owner, "tranquilitic-accord-bastion") && !gear(owner).numbers.accordUsed && !gear(target).owners.accord) {
+    gear(owner).numbers.accordUsed = 1;
+    gear(target).owners.accord = owner.id;
+    emit(events, "status", owner, target, 1, `${target.name} receives one Accord lethal-hit protection.`);
+  }
+}
+function nativeHeal(state, owner, target, offer, events, active, ctx, instruction = active) {
+  if (target.hp <= 0) return 0;
+  if (instruction) offer *= nativeSupportMultiplier(state, owner);
+  let bonus = active && equipped(owner, "springwell-pump") ? value(state, owner, "springwell-pump", 0.2, 0.4) : 0;
+  bonus = Math.min(2, bonus);
+  offer = Math.max(0, offer * (1 + bonus) + (active && owner.id !== target.id ? ctx?.healExtra ?? 0 : 0));
+  const restored = Math.min(target.stats.health - target.hp, offer);
+  const wasted = offer - restored;
+  if (ctx) {
+    ctx.overheal += wasted;
+    ctx.healed += restored;
+  }
+  if (active && wasted > 0 && equipped(owner, "efflorescent-worldtree-heart")) {
+    const seed2 = Math.min(
+      owner.stats.health * value(state, owner, "efflorescent-worldtree-heart", 0.1, 0.2),
+      wasted * value(state, owner, "efflorescent-worldtree-heart", 0.5, 1)
+    );
+    const key = `seed:${owner.id}`;
+    gear(target).numbers[key] = Math.max(gear(target).numbers[key] ?? 0, seed2);
+  }
+  if (restored <= 0) return 0;
+  target.hp += restored;
+  emit(events, "heal", owner, target, restored, `${owner.name} restores ${restored} HP to ${target.name}.`, true);
+  pilotEffectiveHeal(state, owner, target, restored, events);
+  supportEffect(state, owner, target, events);
+  if (active && owner.id !== target.id && equipped(owner, "efflorescent-verdant-covenant")) gear(target).numbers.verdant = Math.max(gear(target).numbers.verdant ?? 0, value(state, owner, "efflorescent-verdant-covenant", 0.2, 0.4));
+  return restored;
+}
+function finishNativeHealing(state, owner, ctx, events) {
+  if (equipped(owner, "covercharge-drum") && ctx.overheal > 0)
+    generatedHeal(owner, injured(state, owner, true), Math.min(
+      ctx.overheal * value(state, owner, "covercharge-drum", 0.4, 0.8),
+      owner.stats.health * value(state, owner, "covercharge-drum", 0.1, 0.2)
+    ), events);
+  if (equipped(owner, "rootbound-triage-vault") && ctx.healed > 0 && owner.shatter >= 15) {
+    const threshold = value(state, owner, "rootbound-triage-vault", 0.2, 0.4);
+    const ally = alive(state).filter((ally2) => ally2.hp < ally2.stats.health * threshold).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+    if (ally) {
+      const restored = generatedHeal(owner, ally, Math.min(
+        ally.stats.health * threshold - ally.hp,
+        owner.stats.health * value(state, owner, "rootbound-triage-vault", 0.1, 0.2)
+      ), events);
+      if (restored > 0) owner.shatter -= 15;
+    }
+  }
+}
+function nativeShield(state, owner, target, offer, events, options = {}) {
+  if (target.hp <= 0) return;
+  offer *= nativeSupportMultiplier(state, owner);
+  let bonus = equipped(owner, "wardglass-transformer") ? value(state, owner, "wardglass-transformer", 0.2, 0.4) : 0;
+  if (owner.id === target.id && owner.hp <= owner.stats.health * 0.75 && equipped(owner, "pale-bulwark-diadem")) bonus += value(state, owner, "pale-bulwark-diadem", 0.25, 0.5);
+  offer *= 1 + Math.min(2, bonus);
+  if (equipped(owner, "citadel-spine")) offer += effectiveDefense(state, owner) * value(state, owner, "citadel-spine", 0.1, 0.2);
+  if (equipped(owner, "meridian-inverter")) {
+    generatedHeal(owner, target, offer * value(state, owner, "meridian-inverter", 0.75, 1.5), events);
+    return;
+  }
+  const plate = equipped(owner, "master-orvella-1");
+  const finalOffer = offer * (plate ? 0.5 : 1);
+  const list = layers(target);
+  const existing = target.shield - (plate ? list.filter((layer) => layer.plate).reduce((sum, layer) => sum + layer.amount, 0) : 0);
+  const gained = Math.max(0, finalOffer - existing);
+  const owned = list.filter((layer) => layer.native && layer.owner === owner.id && layer.amount > 0);
+  for (const layer of owned) {
+    if (options.throughPhase !== void 0 && layer.expiresAfterPhase !== void 0)
+      layer.expiresAfterPhase = Math.max(layer.expiresAfterPhase, options.throughPhase);
+  }
+  if (options.firstReduction !== void 0 && owned.length) {
+    for (const layer of owned) delete layer.firstReduction;
+    owned[0].firstReduction = options.firstReduction;
+  }
+  if (gained > 0) {
+    list.push({
+      amount: gained,
+      owner: owner.id,
+      native: true,
+      ...options.throughPhase !== void 0 ? { expiresAfterPhase: options.throughPhase } : {},
+      ...options.firstReduction !== void 0 && !owned.length ? { firstReduction: options.firstReduction } : {}
+    });
+    target.shield += gained;
+    target.pilot ??= {};
+    target.pilot.authoredShieldSourceId = owner.id;
+    supportEffect(state, owner, target, events);
+    if (target.id !== owner.id && equipped(owner, "aegis-return-spring")) {
+      const n = gear(owner).numbers;
+      if (n.sealRound !== state.round) {
+        n.sealRound = state.round;
+        n.seals = 0;
+      }
+      if (n.seals < step(state, "aegis-return-spring", 1, 2) && !gear(target).numbers.criticalSeal) {
+        gear(target).numbers.criticalSeal = 1;
+        n.seals++;
       }
     }
-    for (const outcome of rule.outcomes) effective = applyOutcome(
-      state,
+  }
+  emit(events, "shield", owner, target, gained, `${target.name} has ${target.shield} shield.`, true);
+  if (equipped(owner, "ward-stitch-spool")) generatedShield(
+    owner,
+    target,
+    offer * value(state, owner, "ward-stitch-spool", 0.25, 0.5),
+    events,
+    true,
+    target.stats.health * value(state, owner, "ward-stitch-spool", 0.3, 0.6)
+  );
+  if (plate) {
+    const prior = layers(target).filter((layer) => layer.plate && layer.owner === owner.id).reduce((sum, layer) => sum + layer.amount, 0);
+    const amount = Math.max(0, Math.min(target.stats.health * 0.15, Math.round(offer * 0.5)) - prior);
+    generatedShield(owner, target, amount, events, true, Infinity, true);
+  }
+}
+function nativeGauge(state, target, offer, events) {
+  if (offer <= 0 || target.hp <= 0) return;
+  const link = state.allies.find((owner) => owner.hp > 0 && equipped(owner, "master-disciple-2") && (gear(owner).numbers.linkThrough ?? 0) >= state.round && gear(target).owners.link === owner.id);
+  const overflow = Math.max(0, target.shatter + offer - target.stats.shatterCapacity);
+  if (link) {
+    const linked = alive(state).filter((ally) => gear(ally).owners.link === link.id);
+    for (const ally of linked) generatedGauge(target, ally, offer / linked.length, events);
+  } else generatedGauge(target, target, offer, events, true);
+  if (overflow > 0 && equipped(target, "clearwater-manifold")) {
+    const n = gear(target).numbers;
+    if (n.overflowRound !== state.round) {
+      n.overflowRound = state.round;
+      n.overflow = 0;
+    }
+    const amount = Math.min(overflow * value(state, target, "clearwater-manifold", 0.5, 1), value(state, target, "clearwater-manifold", 20, 40) - n.overflow);
+    n.overflow += generatedGauge(target, lowestGauge(state, target), amount, events);
+  }
+}
+function recordConduitHit(ctx, target, amount, critical, criticalMultiplier) {
+  ctx.hits.push({ target: target.id, damage: amount, critical, criticalMultiplier });
+}
+function finishConduitAction(state, owner, ctx, events) {
+  const n = gear(owner).numbers;
+  finishNativeHealing(state, owner, ctx, events);
+  if (equipped(owner, "master-nerithe-2") && ctx.action === "skill2") {
+    for (const ally of alive(state)) {
+      nativeGauge(state, ally, 15, events);
+      ally.omnicProtection = Math.max(ally.omnicProtection ?? 0, 0.15);
+    }
+  }
+  const damage = ctx.hits.reduce((sum, hit) => sum + hit.damage, 0);
+  const critical = ctx.hits.find((hit) => hit.critical && hit.damage > 0);
+  const primaryHit = ctx.hits[0];
+  const target = state.enemies.find((enemy) => enemy.id === primaryHit?.target);
+  const killed = ctx.hits.some((hit) => hit.damage > 0 && state.enemies.some((enemy) => enemy.id === hit.target && enemy.hp <= 0));
+  if (critical && ctx.action !== "ultimate" && equipped(owner, "atmospheric-storm-clock"))
+    n.stormCount = Math.min(3, (n.stormCount ?? 0) + 1);
+  if (!damage && ctx.action !== "defend") n.previousSkill = 0;
+  if (ctx.action === "defend") {
+    if (equipped(owner, "reserve-torque-crank")) generatedGauge(owner, owner, value(state, owner, "reserve-torque-crank", 3, 6), events);
+    if (equipped(owner, "atmospheric-skythread-rudder")) n.tailwind = 1;
+    if (equipped(owner, "tranquilitic-kirin-cradle")) generatedHeal(
       owner,
-      context,
-      outcome,
-      scale,
-      conduit.name,
-      events,
-      selected.get(outcome.recipient ?? "self")
-    ) || effective;
-    if (effective) {
-      if (!isMaster) memory.usedRound = state.round;
-      if (rule.bank) memory.bank = 0;
-      remember();
+      alive(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0],
+      Math.min(effectiveDefense(state, owner) * value(state, owner, "tranquilitic-kirin-cradle", 0.5, 1), owner.stats.health * value(state, owner, "tranquilitic-kirin-cradle", 0.1, 0.2)),
+      events
+    );
+    if (equipped(owner, "tectonic-atlas-bastion")) {
+      n.tauntRound = state.round;
+      for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0)) {
+        applyTaunt(owner, enemy);
+      }
+    }
+    if (equipped(owner, "master-vaelor-3") && !n.donationUsed) {
+      const ally = alive(state).filter((ally2) => ally2.id !== owner.id && ally2.spent && ally2.recoverThrough < state.round && !conduitActionBlocked(ally2, state)).sort((a, b) => b.shatter - a.shatter)[0];
+      if (ally) {
+        n.donationUsed = 1;
+        ally.spent = false;
+        emit(events, "status", owner, ally, 1, `${owner.name} donates an action to ${ally.name}.`);
+      }
+    }
+    return;
+  }
+  for (const id of owner.conduits ?? []) {
+    if (!id) continue;
+    switch (id) {
+      case "falcon-sight":
+        if (ctx.hits.length) n.noncritical = ctx.guaranteed || ctx.hits.some((hit) => hit.critical) ? 0 : Math.min(2, (n.noncritical ?? 0) + 1);
+        break;
+      case "lifeline-flywheel":
+        generatedHeal(owner, owner, Math.min(damage * value(state, owner, id, 0.08, 0.16), owner.stats.health * value(state, owner, id, 0.04, 0.08)), events);
+        break;
+      case "breach-pendulum":
+        generatedShield(owner, owner, Math.min(damage * value(state, owner, id, 0.08, 0.16), owner.stats.health * value(state, owner, id, 0.05, 0.1)), events);
+        break;
+      case "voltaic-thunderbird-coil":
+        if (critical) generatedStrike(state, owner, healthiestEnemy(state, critical.target), Math.min(critical.damage * value(state, owner, id, 0.3, 0.6), owner.stats.damage * value(state, owner, id, 0.5, 1)), events);
+        break;
+      case "atmospheric-griffin-turbine":
+        if (ctx.action === "light" && damage > 0) for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) generatedGauge(owner, ally, value(state, owner, id, 3, 6), events);
+        break;
+      case "luminous-seraph-mirror":
+        if (critical) for (const ally of alive(state)) generatedHeal(owner, ally, Math.min(damage * value(state, owner, id, 0.08, 0.16), owner.stats.health * value(state, owner, id, 0.03, 0.06)), events);
+        break;
+      case "chaotic-ouroboros-core":
+        if (ctx.action === "ultimate") {
+          generatedShield(owner, owner, n.excessShield ?? 0, events);
+          delete n.excessShield;
+        }
+        break;
+      case "luminous-dawn-witness-array":
+        if (ctx.hits.some((hit) => hit.critical)) {
+          if (target?.hp && (n.witness ?? 0) > 0) {
+            generatedStrike(state, owner, target, owner.stats.damage * n.witness * value(state, owner, id, 0.15, 0.3), events, false);
+            n.witness = 0;
+          }
+        } else if (ctx.action === "light") n.witness = Math.min(3, (n.witness ?? 0) + 1);
+        break;
+      case "ominous-nightglass-archive":
+        if (ctx.action !== "light") for (const hit of ctx.hits) {
+          const enemy = state.enemies.find((enemy2) => enemy2.id === hit.target && enemy2.hp > 0);
+          if (enemy) {
+            enemy.conduitMarks ??= {};
+            enemy.conduitMarks[owner.id] = Math.min(3, (enemy.conduitMarks[owner.id] ?? 0) + 1);
+          }
+        }
+        break;
+      case "tempered-strike-link":
+        if (ctx.action === "light" && target && target.hp > 0 && target.burn.turns > 0 && target.burn.sourceId === owner.id && target.burn.origin !== "conduit") {
+          const tick = conduitBurnTick(state, owner, target);
+          target.burn.turns--;
+          generatedStrike(state, owner, target, Math.min(tick * value(state, owner, id, 0.8, 1.6), owner.stats.damage * value(state, owner, id, 0.8, 1.6)), events);
+        }
+        break;
+      case "mending-valve":
+        if (killed) generatedHeal(owner, injured(state, owner), owner.stats.health * value(state, owner, id, 0.08, 0.16), events);
+        break;
+      case "pulse-trigger-pawl":
+        if (critical && (ctx.action === "skill1" || ctx.action === "skill2")) generatedGauge(owner, owner, Math.min(ctx.paid, value(state, owner, id, 8, 16)), events);
+        break;
+      case "firstlight-cam":
+        if (ctx.action === "light" && damage > 0) {
+          const ally = lowestGauge(state, owner);
+          const amount = generatedGauge(owner, ally, Math.min(owner.shatter, value(state, owner, id, 8, 16)), events);
+          owner.shatter -= amount;
+        }
+        break;
+      case "flare-focusing-iris":
+        if ((ctx.spent.ember ?? 0) > 0) for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && ctx.openingBurns[enemy2.id] !== void 0)) {
+          generatedStrike(state, owner, enemy, Math.min(ctx.openingBurns[enemy.id] * ctx.spent.ember * value(state, owner, id, 0.25, 0.5), owner.stats.damage * value(state, owner, id, 0.6, 1.2)), events);
+        }
+        break;
+      case "pressurecrest-governor":
+        if (critical) {
+          n.windCriticals = (n.windCriticals ?? 0) + 1;
+          if (n.windCriticals >= step(state, id, 3, 2)) {
+            n.windCriticals = 0;
+            n.windveil = 1;
+          }
+        }
+        break;
+      case "chaotic-fault-verdict":
+        if (critical) {
+          const enemy = state.enemies.find((enemy2) => enemy2.id === critical.target && enemy2.hp > 0);
+          if (enemy) generatedStrike(state, owner, enemy, Math.min(payShield(owner, owner.stats.health * 0.1) * value(state, owner, id, 0.5, 1), owner.stats.damage * value(state, owner, id, 0.5, 1)), events);
+        }
+        break;
+    }
+  }
+  switch (owner.masterConduit) {
+    case "master-bruno-3":
+      if (hasNativeIdentity(owner) && ctx.action === "skill1" && damage > 0 && target?.hp) {
+        const memory = gear(target).numbers;
+        const base = memory.entryDefense ?? target.stats.defense;
+        memory.excavated = Math.min(base * 0.3, (memory.excavated ?? 0) + base * 0.15);
+        emit(events, "status", owner, target, memory.excavated, `${target.name}'s encounter Defense is excavated.`);
+      }
+      break;
+    case "master-sprout-2":
+      if (ctx.action === "skill1" && damage > 0 && target && target.hp > 0 && !gear(target).numbers[`rooted:${owner.id}`]) {
+        gear(target).numbers[`rooted:${owner.id}`] = 1;
+        gear(target).numbers.rootbind = 1;
+      }
+      break;
+    case "master-sprout-3":
+      if (ctx.action === "ultimate" && !n.revivalUsed) {
+        const fallen = state.allies.filter((ally) => ally.id !== owner.id && ally.hp <= 0);
+        if (fallen.length) {
+          n.revivalUsed = 1;
+          for (const ally of fallen) revive(state, owner, ally, 0.3, events);
+        }
+      }
+      break;
+    case "master-atmoso-2":
+      if (ctx.action === "skill2") {
+        n.counterwindActive = 1;
+        n.counterwind = 0;
+      }
+      break;
+    case "master-aurora-2":
+      if (ctx.action === "ultimate") for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0)) gear(enemy).numbers.judgmentThrough = state.round + 1;
+      break;
+    case "master-bliss-3":
+      if (ctx.action === "ultimate" && !n.featherUsed) {
+        const ally = alive(state).filter((ally2) => ally2.id !== owner.id && !ally2.kit?.unavailableActions?.includes("skill1")).sort((a, b) => a.shatter - b.shatter)[0];
+        if (ally) {
+          n.featherUsed = 1;
+          gear(ally).numbers.quietFeather = 1;
+        }
+      }
+      break;
+    case "master-disciple-2":
+      if (ctx.action === "ultimate") {
+        n.linkThrough = state.round + 2;
+        for (const ally of alive(state)) gear(ally).owners.link = owner.id;
+      }
+      break;
+    case "master-disciple-3":
+      if (ctx.action === "skill1") {
+        const instructed = alive(state).find((ally2) => ally2.native?.instruction?.owner === owner.id && ally2.native.instruction.kind === "strike");
+        const ally = hasNativeIdentity(owner) ? instructed : alive(state).filter((ally2) => ally2.id !== owner.id).sort((a, b) => b.stats.damage - a.stats.damage)[0];
+        const victim = hasNativeIdentity(owner) ? state.enemies.find((enemy) => enemy.hp > 0) : target;
+        if (ally && victim?.hp && (hasNativeIdentity(owner) || damage > 0)) {
+          if (!ally.kit) throw new Error("The assisting squad member has no frozen ability kit.");
+          const passive = ally.hp <= ally.stats.health / 2 ? 1 + ally.kit.passive.damageBonus : 1;
+          const buff = ally.attackBoost && ally.attackBoost.throughRound >= state.round ? 1 + ally.attackBoost.fraction : 1;
+          generatedStrike(state, ally, victim, ally.stats.damage * 0.4 * passive * buff, events, false);
+        }
+      }
+      break;
+    case "master-elise-3":
+      if (killed && !n.resetUsed && n.actions < 2 && owner.recoverThrough < state.round) {
+        n.resetUsed = 1;
+        owner.spent = false;
+      }
+      break;
+    case "master-rosetta-2":
+      if (ctx.action === "skill2" && hasNativeIdentity(owner) || ctx.action === "skill1" && (ctx.spent.roseGrace ?? 0) > 0) {
+        const count2 = hasNativeIdentity(owner) ? Math.min(2, owner.native?.quarry?.contributors.filter((id) => id !== owner.id).length ?? 0) : ctx.spent.roseGrace;
+        for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && enemy2.id !== target?.id).sort((a, b) => b.hp - a.hp).slice(0, count2)) generatedStrike(state, owner, enemy, (primaryHit?.damage ?? 0) * 0.25, events);
+      }
+      break;
+    case "master-rosetta-3":
+      if (ctx.action === "ultimate") for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && (hasNativeIdentity(owner) ? enemy2.id === owner.native?.quarry?.target : enemy2.weakened > 0 && enemy2.weakenSourceId === owner.id))) gear(enemy).numbers[`opening:${owner.id}`] = 1;
+      break;
+    case "master-thornia-3":
+      if (ctx.action === "skill1") for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) {
+        gear(ally).owners.guardian = owner.id;
+        gear(ally).numbers.guardianRound = state.round;
+      }
+      break;
+    case "master-crinso-1":
+      if (ctx.action === "skill1" && primaryHit?.critical && target?.hp) {
+        if (hasNativeIdentity(owner)) n.goldImprint = Math.min(0.5, Math.max(0, primaryHit.criticalMultiplier - 1));
+        else gear(target).numbers[`imprint:${owner.id}`] = primaryHit.criticalMultiplier;
+      }
+      break;
+    case "master-crinso-2":
+      if (hasNativeIdentity(owner) && ctx.action === "skill2" && target?.hp && ctx.shieldBurn > 0)
+        generatedStrike(state, owner, target, ctx.shieldBurn, events, false);
+      break;
+    case "master-crinso-3":
+      if (!ctx.hits.length) break;
+      if (ctx.action === "ultimate" || n.crimson) generatedHeal(owner, owner, Math.min(damage * 0.2, owner.stats.health * 0.1), events);
+      n.crimson = ctx.action === "ultimate" ? 0 : n.crimson ? 0 : 1;
+      break;
+    case "master-nerithe-1":
+      if (ctx.action === "light" && target?.hp) gear(target).owners.chart = owner.id;
+      break;
+    case "master-orvella-2":
+      if (ctx.action === "skill2") {
+        const allies = alive(state).filter((ally) => ally.hp < ally.stats.health);
+        if (allies.length) {
+          const reserve = hasNativeIdentity(owner) ? owner.native?.foundation?.durability ?? 0 : owner.shield;
+          const amount = Math.min(reserve * 0.25, owner.stats.health * 0.05, allies.length * Math.min(...allies.map((ally) => ally.stats.health - ally.hp)));
+          let total = 0;
+          for (const ally of allies) total += generatedHeal(owner, ally, Math.floor(amount / allies.length), events);
+          if (hasNativeIdentity(owner) && owner.native?.foundation) owner.native.foundation.durability -= total;
+          else payShield(owner, total);
+        }
+      }
+      break;
+    case "master-vaelor-2":
+      if (ctx.action === "skill2" && (hasNativeIdentity(owner) ? owner.native?.beat === 1 : (ctx.spent.tempest ?? 0) > 0)) for (const hit of ctx.hits) {
+        const enemy = state.enemies.find((enemy2) => enemy2.id === hit.target && enemy2.hp > 0);
+        if (enemy && (enemy.weakened <= 0 || enemy.weakenFraction < 0.15)) {
+          enemy.weakened = 1;
+          enemy.weakenFraction = 0.15;
+          enemy.weakenSourceId = owner.id;
+          enemy.weakenOrigin = "conduit";
+        }
+      }
+      break;
+  }
+  for (const flora of alive(state).filter((ally) => equipped(ally, "master-sprout-1"))) {
+    if (ctx.action !== "skill1" && ctx.action !== "skill2") continue;
+    const key = `pulse:${owner.id}`;
+    if (gear(flora).numbers[key] === state.round) continue;
+    gear(flora).numbers[key] = state.round;
+    for (const ally of alive(state)) nativeHeal(state, flora, ally, ally.stats.health * 0.02, events, false);
+  }
+  if ((ctx.action === "skill1" || ctx.action === "skill2") && !ctx.all && damage > 0) {
+    for (const nerithe of alive(state).filter((ally) => ally.id !== owner.id && equipped(ally, "master-nerithe-1"))) {
+      for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && enemy2.id !== target?.id && gear(enemy2).owners.chart === nerithe.id)) generatedStrike(state, owner, enemy, damage * 0.4, events);
+      for (const enemy of state.enemies) if (gear(enemy).owners.chart === nerithe.id) delete gear(enemy).owners.chart;
+    }
+  }
+}
+function revive(state, owner, target, fraction, events) {
+  target.hp = Math.max(1, Math.round(target.stats.health * fraction));
+  target.shatter = 0;
+  target.spent = true;
+  gear(target).numbers.revivedRound = state.round;
+  emit(events, "heal", owner, target, target.hp, `${target.name} is revived by a Conduit at ${target.hp} HP; cannot act this turn.`);
+}
+function rescue(state, target, loss, events, direct) {
+  if (loss < target.hp) return loss;
+  const n = gear(target).numbers;
+  const accord = state.allies.find((owner) => owner.id === gear(target).owners.accord);
+  if (direct && accord) {
+    delete gear(target).owners.accord;
+    n.accordShield = accord.stats.health * value(state, accord, "tranquilitic-accord-bastion", 0.1, 0.2);
+    return Math.max(0, target.hp - 1);
+  }
+  if (direct && equipped(target, "stasis-reliquary") && !n.stasisUsed) {
+    n.stasisUsed = 1;
+    n.stasisProtectedRound = state.round;
+    n.stasisSkip = state.round + 1;
+    return Math.max(0, target.hp - 1);
+  }
+  return loss;
+}
+function afterConduitHpLoss(state, target, events) {
+  const n = gear(target).numbers;
+  if (n.accordShield) {
+    generatedShield(target, target, n.accordShield, events);
+    delete n.accordShield;
+  }
+  if (target.hp <= 0 && equipped(target, "infernic-phoenix-reactor") && !n.phoenixUsed) {
+    n.phoenixUsed = 1;
+    revive(state, target, target, value(state, target, "infernic-phoenix-reactor", 0.25, 0.5), events);
+  }
+}
+function conduitBurnTick(state, owner, target) {
+  if (target.burn.origin === "conduit") return target.burn.damage;
+  const n = gear(target).numbers;
+  const cinderKey = `cinder:${owner.id}`, censusKey = `census:${owner.id}`, imprint = `imprint:${owner.id}`;
+  let bonus = 0;
+  if (equipped(owner, "infernic-cinder-testament")) bonus += Math.min(
+    value(state, owner, "infernic-cinder-testament", 0.6, 1.2),
+    (n[cinderKey] ?? 0) * value(state, owner, "infernic-cinder-testament", 0.2, 0.4)
+  );
+  if (equipped(owner, "infernic-pyre-census") && ((n[censusKey] ?? 0) + 1) % 3 === 0) bonus += value(state, owner, "infernic-pyre-census", 0.75, 1.5);
+  return Math.round(target.burn.damage * (1 + bonus) * (n[imprint] ?? 1));
+}
+function afterConduitBurn(state, owner, target, damage, events) {
+  if (target.burn.origin !== "conduit") delete gear(target).numbers[`imprint:${owner.id}`];
+  if (damage <= 0 || target.burn.origin === "conduit") return;
+  const tn = gear(target).numbers, n = gear(owner).numbers;
+  tn[`cinder:${owner.id}`] = (tn[`cinder:${owner.id}`] ?? 0) + 1;
+  tn[`census:${owner.id}`] = (tn[`census:${owner.id}`] ?? 0) + 1;
+  if (owner.hp > 0 && equipped(owner, "emberlife-kiln")) {
+    if (n.burnHealRound !== state.round) {
+      n.burnHealRound = state.round;
+      n.burnHeal = 0;
+    }
+    n.burnHeal += generatedHeal(owner, owner, Math.min(
+      damage * value(state, owner, "emberlife-kiln", 0.2, 0.4),
+      owner.stats.health * value(state, owner, "emberlife-kiln", 0.06, 0.12) - n.burnHeal
+    ), events);
+  }
+  if (equipped(owner, "sootwake-crucible") && target.hp > 0) tn[`soot:${owner.id}`] = state.round + 1;
+  if (target.burn.turns === 0 && target.hp > 0 && owner.hp > owner.stats.health * 0.5 && equipped(owner, "master-ember-1") && (tn[`extensions:${owner.id}`] ?? 0) < 2 && owner.hp - owner.stats.health * 0.03 > 1) {
+    owner.hp -= owner.stats.health * 0.03;
+    target.burn.turns = 1;
+    tn[`extensions:${owner.id}`] = (tn[`extensions:${owner.id}`] ?? 0) + 1;
+    emit(events, "status", owner, target, 1, `${owner.name} pays HP to sustain Burn for one phase.`);
+  }
+  if (target.burn.turns <= 0) {
+    delete tn[`cinder:${owner.id}`];
+    delete tn[`census:${owner.id}`];
+  }
+}
+function conduitDeaths(state, previous, events) {
+  for (const enemy of state.enemies.filter((enemy2) => enemy2.hp <= 0 && previous.enemies.some((prior) => prior.id === enemy2.id && prior.hp > 0))) {
+    if (gear(enemy).numbers.deathProcessed) continue;
+    gear(enemy).numbers.deathProcessed = 1;
+    const owner = state.allies.find((ally) => ally.id === enemy.burn.sourceId);
+    if (owner && enemy.burn.turns > 0 && enemy.burn.origin !== "conduit" && equipped(owner, "cinder-metering-nozzle")) {
+      const target = healthiestEnemy(state);
+      const damage = conduitBurnTick(state, owner, enemy) * value(state, owner, "cinder-metering-nozzle", 0.25, 0.5);
+      if (target && (target.burn.turns <= 0 || target.burn.damage < damage)) target.burn = { damage, turns: enemy.burn.turns, sourceId: owner.id, origin: "conduit" };
+    }
+    const suppressor = state.allies.find((ally) => ally.id === enemy.weakenSourceId);
+    if (suppressor && enemy.weakened > 0 && enemy.weakenOrigin !== "conduit" && equipped(suppressor, "secondbeat-rack")) {
+      const target = state.enemies.filter((unit) => unit.hp > 0).sort((a, b) => b.stats.damage - a.stats.damage)[0];
+      const fraction = enemy.weakenFraction * value(state, suppressor, "secondbeat-rack", 0.6, 1);
+      if (target && (target.weakened <= 0 || target.weakenFraction < fraction)) {
+        target.weakened = Math.min(3, enemy.weakened);
+        target.weakenFraction = fraction;
+        target.weakenSourceId = suppressor.id;
+        target.weakenOrigin = "conduit";
+        emit(events, "status", suppressor, target, fraction, `${target.name} inherits generated Weaken.`);
+      }
+    }
+  }
+}
+function applyTaunt(owner, enemy) {
+  const memory = gear(enemy);
+  memory.owners.taunt = owner.id;
+  memory.numbers.tauntSequence = (memory.numbers.tauntSequence ?? 0) + 1;
+  memory.numbers[`taunt:${owner.id}`] = memory.numbers.tauntSequence;
+}
+function forcedConduitTarget(state, enemy, randomTarget) {
+  const memory = gear(enemy);
+  const owner = alive(state).filter((ally) => memory.numbers[`taunt:${ally.id}`] && (equipped(ally, "master-tide-3") && enemy.weakened > 0 && enemy.weakenSourceId === ally.id || equipped(ally, "tectonic-atlas-bastion") && gear(ally).numbers.tauntRound === state.round)).sort((a, b) => memory.numbers[`taunt:${b.id}`] - memory.numbers[`taunt:${a.id}`])[0];
+  if (owner) memory.owners.taunt = owner.id;
+  else delete memory.owners.taunt;
+  return owner ?? randomTarget;
+}
+function conduitSuppressSkill(enemy) {
+  const n = gear(enemy).numbers;
+  if (!n.rootbind && !n.silence) return false;
+  delete n.rootbind;
+  delete n.silence;
+  return true;
+}
+function nativeShieldActivationMultiplier(enemy, target) {
+  const memory = gear(enemy);
+  const prefix = "nativeWardReduction:";
+  if (enemy.native === void 0) {
+    for (const key2 of Object.keys(memory.numbers)) if (key2.startsWith(prefix)) delete memory.numbers[key2];
+  }
+  const key = `${prefix}${target.id}`;
+  if (memory.numbers[key] !== void 0) return memory.numbers[key];
+  let multiplier = 1;
+  for (const layer of layers(target)) {
+    if (!layer.native || !layer.firstReduction || layer.firstReduction <= 0) continue;
+    multiplier *= 1 - Math.min(1, layer.firstReduction);
+    delete layer.firstReduction;
+  }
+  if (multiplier < 1) memory.numbers[key] = multiplier;
+  return multiplier;
+}
+function conduitIncoming(state, enemy, target, damage, critical, scheduled, events, action = scheduled ? "skill1" : "light") {
+  const n = gear(target).numbers;
+  if (!scheduled && n.windveil) {
+    delete n.windveil;
+    emit(events, "status", target, target, 0, `${target.name}'s Windveil avoids the Normal Attack.`);
+    return;
+  }
+  const shieldBefore = target.shield;
+  let equipmentMultiplier = 1;
+  if (shieldBefore > 0 && equipped(target, "fieldbrace-coupler")) equipmentMultiplier *= 1 - value(state, target, "fieldbrace-coupler", 0.04, 0.08);
+  if (critical && equipped(target, "sentinel-aperture")) equipmentMultiplier *= 1 - value(state, target, "sentinel-aperture", 0.25, 0.5);
+  if (target.hp > target.stats.health * 0.75 && equipped(target, "pale-bulwark-diadem")) equipmentMultiplier *= 1 - value(state, target, "pale-bulwark-diadem", 0.15, 0.3);
+  if (target.defending && equipped(target, "tectonic-atlas-bastion")) equipmentMultiplier *= 1 - value(state, target, "tectonic-atlas-bastion", 0.1, 0.2);
+  if (n.solaceRound === state.round) equipmentMultiplier *= 1 - value(state, target, "solace-anchor", 0.1, 0.2);
+  const wardMultiplier = nativeShieldActivationMultiplier(enemy, target);
+  const nativeMultiplier = nativeIncomingMultiplier(state, enemy, target, action, events) * wardMultiplier;
+  const defendingMultiplier = target.defending ? 1 - defenseMode.damageReduction : 1;
+  const hasParry = scheduled && target.defending && equipped(target, "master-razor-1") && n.parryRound !== state.round;
+  const temporaryMultiplier = (parry) => defendingMultiplier * equipmentMultiplier * nativeMultiplier * (parry ? 0.5 : 1);
+  const totalMultiplier = (parry) => (state.conduitRulesVersion ?? 0) >= 3 ? Math.max(0.4, temporaryMultiplier(parry)) : temporaryMultiplier(parry);
+  let reflection = 0;
+  const beforeParry = damage * totalMultiplier(false);
+  let offered = damage * totalMultiplier(hasParry);
+  if (hasParry) {
+    n.parryRound = state.round;
+    reflection = Math.min(target.stats.damage, Math.max(0, beforeParry - offered) * 0.5);
+  }
+  let remaining = Math.max(1, Math.round(offered));
+  const postMitigation = remaining;
+  remaining = nativeRouteDamage(
+    state,
+    enemy,
+    target,
+    remaining,
+    events,
+    (recipient, redirected) => routedDamage(state, enemy, recipient, redirected, events, true)
+  );
+  const networks = alive(state).filter((ally) => equipped(ally, "oceanic-shared-tide-pump") && layers(target).some((layer) => layer.native && layer.owner === ally.id && layer.amount > 0));
+  for (const network of networks) {
+    let budget = Math.min(remaining, postMitigation * value(state, network, "oceanic-shared-tide-pump", 0.3, 0.6));
+    for (const ally of alive(state).filter((ally2) => ally2.id !== target.id)) {
+      const list = layers(ally);
+      const available = list.filter((layer) => layer.native && layer.owner === network.id).reduce((sum, layer) => sum + layer.amount, 0);
+      const amount = Math.min(budget, available);
+      if (amount <= 0) continue;
+      let consume = amount;
+      for (const layer of list.filter((layer2) => layer2.native && layer2.owner === network.id)) {
+        const spent = Math.min(consume, layer.amount);
+        layer.amount -= spent;
+        ally.shield -= spent;
+        consume -= spent;
+      }
+      budget -= amount;
+      remaining -= amount;
+      pilotAuthoredShieldAbsorbed(state, network.id, amount, events);
+      absorbedNative(state, network, ally, enemy, amount, false, events);
+      emit(events, "shield", network, ally, -amount, `${ally.name}'s linked shield absorbs ${amount} for ${target.name}.`);
+    }
+  }
+  for (const protector of alive(state).filter((ally) => ally.id !== target.id && ally.defending && equipped(ally, "tectonic-faultkeeper-loom"))) {
+    const pn = gear(protector).numbers;
+    if (pn.interceptRound !== state.round) {
+      pn.interceptRound = state.round;
+      pn.intercepted = 0;
+    }
+    const amount = Math.min(remaining * value(state, protector, "tectonic-faultkeeper-loom", 0.3, 0.6), protector.stats.health * value(state, protector, "tectonic-faultkeeper-loom", 0.2, 0.4) - pn.intercepted);
+    if (amount <= 0) continue;
+    pn.intercepted += amount;
+    remaining -= amount;
+    routedDamage(state, enemy, protector, amount, events);
+  }
+  const absorbed = consumeShield(target, remaining);
+  let loss = remaining - absorbed.absorbed;
+  for (const [id, amount] of absorbed.native) {
+    const owner = state.allies.find((ally) => ally.id === id);
+    if (!owner) continue;
+    const broke = absorbed.broken.has(id);
+    if (equipped(owner, "master-tide-1") && broke && !n[`tideBreak:${id}`]) {
+      n[`tideBreak:${id}`] = 1;
+      loss = 0;
+    }
+    pilotAuthoredShieldAbsorbed(state, id, amount, events);
+    absorbedNative(state, owner, target, enemy, amount, broke, events);
+  }
+  if (absorbed.absorbed > 0 && target.hp > 0) {
+    if (equipped(target, "aegis-capacitor") && n.batteryRound !== state.round) {
+      n.batteryRound = state.round;
+      generatedGauge(target, target, value(state, target, "aegis-capacitor", 4, 8), events);
+    }
+    if (equipped(target, "tidebound-reflector") && n.reflectRound !== state.round) {
+      n.reflectRound = state.round;
+      generatedStrike(state, target, enemy, Math.min(absorbed.absorbed * value(state, target, "tidebound-reflector", 0.2, 0.4), target.stats.damage * value(state, target, "tidebound-reflector", 0.3, 0.6)), events);
+    }
+  }
+  if (equipped(target, "master-bruno-1") && n.limiterRound !== state.round) {
+    n.limiterRound = state.round;
+    loss = Math.min(loss, target.stats.health * 0.2);
+  }
+  const guardian = state.allies.find((ally) => ally.id === gear(target).owners.guardian && ally.hp > 0);
+  if (guardian && loss >= target.hp && n.guardianRound === state.round && gear(guardian).numbers.guardianUsedRound !== state.round) {
+    gear(guardian).numbers.guardianUsedRound = state.round;
+    const routed = Math.min(loss - target.hp + 1, guardian.stats.health * 0.2);
+    loss -= routed;
+    routedDamage(state, enemy, guardian, routed, events);
+  }
+  if (n.stasisProtectedRound === state.round) loss = 0;
+  loss = Math.min(target.hp, rescue(state, target, loss, events, true));
+  const fullyAbsorbedNative = loss === 0 && absorbed.absorbed >= postMitigation ? new Map([...absorbed.native].filter(([, amount]) => amount >= postMitigation)) : /* @__PURE__ */ new Map();
+  nativeAbsorbedHit(state, target, fullyAbsorbedNative, loss, events);
+  nativeGauge(state, target, shatterGauge.incomingHit, events);
+  target.hp -= loss;
+  emit(events, "damage", enemy, target, loss, `${target.name}: ${Math.round(loss)} damage${critical ? " (critical)" : ""}${absorbed.absorbed ? `, ${Math.round(absorbed.absorbed)} shield absorbed` : ""}.`, true);
+  events[events.length - 1].shieldAbsorbed = absorbed.absorbed;
+  events[events.length - 1].critical = critical;
+  nativeDirectHpLoss(state, target, loss, events);
+  afterConduitHpLoss(state, target, events);
+  if (reflection > 0) generatedStrike(state, target, enemy, reflection, events);
+  if (loss > 0) {
+    n.phaseLoss = (n.phaseLoss ?? 0) + loss;
+    if (target.hp > 0 && equipped(target, "duplex-heart") && n.duplexRound !== state.round) {
+      n.duplexRound = state.round;
+      generatedHeal(target, injured(state, target, true), target.stats.health * value(state, target, "duplex-heart", 0.05, 0.1), events);
+    }
+    const aurora = state.allies.find((ally) => ally.hp > 0 && equipped(ally, "master-aurora-3") && nativeControl(state, ally, enemy));
+    if (aurora) {
+      const an = gear(aurora).numbers;
+      if (an.repairRound !== state.round) {
+        an.repairRound = state.round;
+        an.repaired = 0;
+      }
+      const recipient = alive(state).filter((ally) => ally.id !== target.id && ally.hp < ally.stats.health).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+      an.repaired += generatedHeal(aurora, recipient, Math.min(loss * 0.5, aurora.stats.health * 0.1 - an.repaired), events);
+    }
+  }
+  if (target.hp > 0) {
+    if (n.counterwindActive) n.counterwind = Math.min(0.45, (n.counterwind ?? 0) + 0.15);
+  }
+}
+function routedDamage(state, enemy, target, amount, events, nativeRedirect = false) {
+  const absorbed = consumeShield(target, amount).absorbed;
+  const loss = Math.min(target.hp, amount - absorbed);
+  target.hp -= loss;
+  emit(events, "damage", enemy, target, loss, `${target.name} intercepts ${Math.round(amount)} damage (Conduit routing).`);
+  if (nativeRedirect) {
+    events[events.length - 1].origin = "native";
+    events[events.length - 1].nativeKind = "redirect";
+  }
+}
+function absorbedNative(state, owner, target, enemy, amount, broken, events) {
+  if (owner.hp <= 0) return;
+  const n = gear(owner).numbers;
+  if (equipped(owner, "aquatic-leviathan-pump")) n.absorption = (n.absorption ?? 0) + amount;
+  if (broken && equipped(owner, "master-thornia-1") && n.thornsRound !== state.round) {
+    n.thornsRound = state.round;
+    for (const foe of state.enemies.filter((foe2) => foe2.hp > 0)) generatedStrike(state, owner, foe, Math.min(amount * 0.4, effectiveDefense(state, owner) * 0.5), events);
+  }
+}
+function conduitTurnStart(state, events) {
+  for (const owner of alive(state)) {
+    const n = gear(owner).numbers;
+    if (equipped(owner, "granite-hourglass") && (n.phaseLoss ?? 0) > 0) generatedShield(owner, owner, Math.min(n.phaseLoss * value(state, owner, "granite-hourglass", 0.3, 0.6), owner.stats.health * value(state, owner, "granite-hourglass", 0.1, 0.2)), events);
+    n.phaseLoss = 0;
+    if (n.stasisSkip === state.round) generatedShield(owner, owner, owner.stats.health * value(state, owner, "stasis-reliquary", 0.1, 0.2), events);
+    if (owner.recoverThrough >= state.round) {
+      if (equipped(owner, "horizon-heartcase")) generatedHeal(owner, owner, (owner.stats.health - owner.hp) * value(state, owner, "horizon-heartcase", 0.15, 0.3), events);
+      if (equipped(owner, "tranquilitic-stillhour-carillon")) {
+        const amount = value(state, owner, "tranquilitic-stillhour-carillon", 15, 30);
+        generatedGauge(owner, owner, amount, events);
+        generatedGauge(owner, lowestGauge(state, owner), amount, events);
+      }
+    }
+    if (equipped(owner, "aquatic-leviathan-pump") && (n.absorption ?? 0) > 0) {
+      const pool = Math.min(n.absorption * value(state, owner, "aquatic-leviathan-pump", 0.3, 0.6), owner.stats.health * value(state, owner, "aquatic-leviathan-pump", 0.1, 0.2));
+      const recipients = alive(state).filter((ally) => ally.hp < ally.stats.health);
+      for (const ally of recipients) generatedHeal(owner, ally, pool / recipients.length, events);
+    }
+    n.absorption = 0;
+    for (const source of state.allies) {
+      const key = `seed:${source.id}`;
+      const offer = gear(owner).numbers[key];
+      if (offer) {
+        delete gear(owner).numbers[key];
+        generatedHeal(source, owner, offer, events);
+      }
     }
   }
 }
@@ -3644,11 +6856,12 @@ function withMasterLoadouts(state, masters = {}) {
     const id = masters[ally.definitionId];
     if (id) ally.masterConduit = id;
   }
+  if (state.conduitRulesVersion === void 0) initializeConduits(state);
   return state;
 }
-function createWarBattle(character, stage, seed, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}) {
+function createWarBattle(character, stage, seed2, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}) {
   const encounter2 = warEncounter(character, stage);
-  const state = createBattle(seed, roster, teamProgress, equipment, captures, upgrades);
+  const state = createBattle(seed2, roster, teamProgress, equipment, captures, upgrades);
   const unit = combatant(`war-${character}-${stage}`, character, encounter2.enemyName, "enemy", encounter2.stats, encounter2.element);
   Object.assign(unit, {
     level: encounter2.level,
@@ -3661,21 +6874,21 @@ function createWarBattle(character, stage, seed, starter, progress, roster = [st
   state.wave = stage;
   state.war = { character, stage };
   state.enemies = [unit];
-  state.lycalisSeed = (seed ^ 2692095333) >>> 0 || 1;
-  state.recruitmentSeed = (seed ^ 3875765969) >>> 0 || 1;
+  state.lycalisSeed = (seed2 ^ 2692095333) >>> 0 || 1;
+  state.recruitmentSeed = (seed2 ^ 3875765969) >>> 0 || 1;
   return state;
 }
 function warRewardRoll(state, key) {
-  const value = state[key];
-  if (value === void 0 || value === 0) throw new Error("Elemental War reward stream is missing.");
-  let seed = value;
-  seed ^= seed << 13;
-  seed ^= seed >>> 17;
-  seed ^= seed << 5;
-  state[key] = seed >>> 0;
+  const value2 = state[key];
+  if (value2 === void 0 || value2 === 0) throw new Error("Elemental War reward stream is missing.");
+  let seed2 = value2;
+  seed2 ^= seed2 << 13;
+  seed2 ^= seed2 >>> 17;
+  seed2 ^= seed2 << 5;
+  state[key] = seed2 >>> 0;
   return state[key] / 4294967296;
 }
-function combatant(id, definitionId, name, side, stats2, element) {
+function combatant(id, definitionId, name, side, stats, element) {
   return {
     id,
     definitionId,
@@ -3683,8 +6896,8 @@ function combatant(id, definitionId, name, side, stats2, element) {
     element,
     side,
     level: null,
-    stats: { ...stats2 },
-    hp: stats2.health,
+    stats: { ...stats },
+    hp: stats.health,
     shield: 0,
     shatter: shatterGauge.starting,
     spent: false,
@@ -3697,6 +6910,24 @@ function combatant(id, definitionId, name, side, stats2, element) {
     defending: false
   };
 }
+function capCapturedBattleLevels(state) {
+  for (const unit of state.allies) {
+    if (!unit.captured) continue;
+    if (unit.captured.level !== void 0) unit.captured.level = Math.min(capturedLevelCap, unit.captured.level);
+    if (unit.level === null || unit.level <= capturedLevelCap) continue;
+    const before = capturedEnemyStats(unit.level, 140);
+    const after = capturedEnemyStats(capturedLevelCap);
+    for (const stat of ["health", "damage", "defense"]) {
+      const ratio = after[stat] / before[stat];
+      unit.stats[stat] *= ratio;
+      if (unit.kit) unit.kit.stats[stat] *= ratio;
+    }
+    const healthRatio = after.health / before.health;
+    unit.hp *= healthRatio;
+    unit.shield *= healthRatio;
+    unit.level = capturedLevelCap;
+  }
+}
 function spawnWave(wave) {
   const level = Math.min(wave, enemyGrowth.maximumLevel);
   return ["goblin", "imp", "golem"].map((id, index) => {
@@ -3704,24 +6935,24 @@ function spawnWave(wave) {
     const unit = combatant(`enemy-${wave}-${index}`, id, definition.name, "enemy", enemyCombatStats(level, false), definition.element);
     unit.level = level;
     unit.creatureId = `adventure:${id}`;
-    const strike2 = id === "goblin" ? "Wildwood Ambush" : id === "imp" ? "Cinder Mischief" : "Faultline Crush";
-    unit.enemySkills = enemySkills(level, false, strike2, enemyAbilityMultiplier(level));
+    const strike = id === "goblin" ? "Wildwood Ambush" : id === "imp" ? "Cinder Mischief" : "Faultline Crush";
+    unit.enemySkills = enemySkills(level, false, strike, enemyAbilityMultiplier(level));
     return unit;
   });
 }
-function createBattle(seed = 1729, roster = ["ember"], progress = {}, equipment = {}, captures = [], upgrades = {}) {
-  if (!Number.isInteger(seed) || seed < 1 || seed > 4294967295) throw new Error("Battle seed must be a nonzero uint32.");
+function createBattle(seed2 = 1729, roster = ["ember"], progress = {}, equipment = {}, captures = [], upgrades = {}) {
+  if (!Number.isInteger(seed2) || seed2 < 1 || seed2 > 4294967295) throw new Error("Battle seed must be a nonzero uint32.");
   if (!roster.length || roster.length > 3 || new Set(roster).size !== roster.length || !roster.every((id) => isStarterId(id) || captures.some((copy) => copy.instanceId === id))) {
     throw new Error("Battle roster requires distinct valid starters.");
   }
   const snapshot = validateConduitUpgrades(upgrades);
-  return {
+  const state = {
     wave: 1,
     round: 1,
     phase: "player",
-    seed,
-    rewardSeed: seed,
-    captureSeed: seed,
+    seed: seed2,
+    rewardSeed: seed2,
+    captureSeed: seed2,
     conduitUpgrades: snapshot,
     allies: roster.map((id) => {
       if (!isStarterId(id)) {
@@ -3734,6 +6965,7 @@ function createBattle(seed = 1729, roster = ["ember"], progress = {}, equipment 
         unit2.level = capturedProgress(copy).level;
         unit2.evolution = capturedProgress(copy).tier + 1;
         unit2.captured = structuredClone(copy);
+        if (unit2.captured.level !== void 0) unit2.captured.level = unit2.level;
         unit2.creatureId = creature.id;
         unit2.art = creature.art;
         unit2.color = elementAccents[creature.element];
@@ -3744,6 +6976,7 @@ function createBattle(seed = 1729, roster = ["ember"], progress = {}, equipment 
       const kit = resolveFighter(id, progress[id], equipment[id], snapshot);
       const unit = combatant(starter.id, starter.id, characterName(id, progress[id]?.evolution), "ally", kit.stats, starter.elementId);
       unit.kit = kit;
+      if (id === "vaelor") unit.native = { beat: 0, beatRound: 1 };
       unit.level = progress[id]?.level ?? null;
       unit.evolution = progress[id]?.evolution ?? 1;
       if (equipment[id]) unit.conduits = [...equipment[id]];
@@ -3751,10 +6984,12 @@ function createBattle(seed = 1729, roster = ["ember"], progress = {}, equipment 
     }),
     enemies: spawnWave(1)
   };
+  initializeConduits(state);
+  return state;
 }
-function createDungeonBattle(element, stage, seed, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}, encounterSeed) {
-  const state = createBattle(seed, roster, teamProgress, equipment, captures, upgrades);
-  let familySeed = encounterSeed ?? ((seed ^ 2654435769) >>> 0 || 1);
+function createDungeonBattle(element, stage, seed2, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}, encounterSeed) {
+  const state = createBattle(seed2, roster, teamProgress, equipment, captures, upgrades);
+  let familySeed = encounterSeed ?? ((seed2 ^ 2654435769) >>> 0 || 1);
   if (!Number.isInteger(familySeed) || familySeed < 1 || familySeed > 4294967295) throw new Error("Invalid dungeon encounter seed.");
   const encounter2 = dungeonEncounter(element, stage);
   state.wave = stage;
@@ -3778,10 +7013,10 @@ function createDungeonBattle(element, stage, seed, starter, progress, roster = [
   });
   return state;
 }
-function createStoryBattle(stage, seed, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}, encounterSeed) {
+function createStoryBattle(stage, seed2, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}, encounterSeed) {
   const encounter2 = storyEncounter(stage);
-  const state = createBattle(seed, roster, teamProgress, equipment, captures, upgrades);
-  let familySeed = encounterSeed ?? ((seed ^ 2654435769) >>> 0 || 1);
+  const state = createBattle(seed2, roster, teamProgress, equipment, captures, upgrades);
+  let familySeed = encounterSeed ?? ((seed2 ^ 2654435769) >>> 0 || 1);
   if (!Number.isInteger(familySeed) || familySeed < 1 || familySeed > 4294967295) throw new Error("Invalid Story encounter seed.");
   state.wave = stage;
   state.story = { storyStage: stage };
@@ -3805,16 +7040,16 @@ function createStoryBattle(stage, seed, starter, progress, roster = [starter], t
   return state;
 }
 function roll(state) {
-  let seed = state.seed;
-  seed ^= seed << 13;
-  seed ^= seed >>> 17;
-  seed ^= seed << 5;
-  state.seed = seed >>> 0;
+  let seed2 = state.seed;
+  seed2 ^= seed2 << 13;
+  seed2 ^= seed2 >>> 17;
+  seed2 ^= seed2 << 5;
+  state.seed = seed2 >>> 0;
   return state.seed / 4294967296;
 }
-function createInfusionBattle(mode, stage, seed, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}, schedule = "caps") {
+function createInfusionBattle(mode, stage, seed2, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}, schedule = "caps") {
   const encounter2 = infusionEncounter(mode, stage, schedule);
-  const state = createBattle(seed, roster, teamProgress, equipment, captures, upgrades);
+  const state = createBattle(seed2, roster, teamProgress, equipment, captures, upgrades);
   state.wave = stage;
   state.infusion = { mode, stage, schedule };
   state.enemies = Array.from({ length: encounter2.boss ? 1 : 2 }, (_, index) => {
@@ -3827,6 +7062,21 @@ function createInfusionBattle(mode, stage, seed, starter, progress, roster = [st
     unit.enemySkills = enemySkills(encounter2.level, encounter2.boss, encounter2.ability, encounter2.abilityMultiplier);
     return unit;
   });
+  return state;
+}
+function createCalamityBattle(activity, tier, seed2, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}) {
+  const encounter2 = calamityEncounter(activity, tier);
+  const state = createBattle(seed2, roster, teamProgress, equipment, captures, upgrades);
+  state.calamity = { activity, tier };
+  const unit = combatant(`calamity-${activity}`, `calamity:${activity}`, encounter2.name, "enemy", encounter2.stats, encounter2.element);
+  Object.assign(unit, {
+    level: encounter2.level,
+    boss: true,
+    color: "#df3548",
+    enemySkills: encounter2.skills,
+    creatureId: `calamity:${activity}`
+  });
+  state.enemies = [unit];
   return state;
 }
 var elementalCritFactor = 1.5;
@@ -3848,15 +7098,16 @@ function actionUnavailable(state, actor, action) {
   if (action !== "light" && action !== "defend" && actor.kit?.unavailableActions?.includes(action)) return "This captured form does not have this ability.";
   if (actor.hp <= 0) return "This character is defeated.";
   if (actor.spent) return "This character has already acted this turn.";
-  if (actor.recoverThrough >= state.round) return "Recovering this turn after Last Flare.";
+  if (conduitActionBlocked(actor, state)) return "This character cannot take another action this turn.";
+  if (actor.recoverThrough >= state.round && !(action === "light" && recoveryNormal(actor))) return "Recovering this turn after Last Flare.";
   if (action === "ultimate" && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
-  const gaugeCost = actionGaugeCost(actor, action);
+  const gaugeCost = actionGaugeCost(actor, action, state);
   if (actor.shatter < gaugeCost) return `Requires ${gaugeCost} Shatter Gauge.`;
   return null;
 }
-function actionGaugeCost(actor, action) {
+function actionGaugeCost(actor, action, state) {
   const cost = shatterGauge.costs[action];
-  return (action === "skill1" || action === "skill2") && actor.conduitCharges?.skythread && hasMechanic(actor, "skythread") ? Math.max(1, cost - 5) : cost;
+  return conduitActionCost(actor, action, state, cost);
 }
 function event(events, kind, source, target, amount, message, critical = false) {
   events.push({
@@ -3900,30 +7151,20 @@ function hurt(target, amount, source, events, critical = false, periodic = false
     events[events.length - 1].debuffs = debuffSnapshot(target);
   }
 }
-function gainShatter(target, amount, events) {
-  const gained = Math.min(target.stats.shatterCapacity - target.shatter, amount);
-  if (gained <= 0) return;
-  target.shatter += gained;
-  event(events, "status", target, target, gained, `${target.name} gains ${formatStat(gained)} Shatter Gauge (${formatStat(target.shatter)} / ${formatStat(target.stats.shatterCapacity)}).`);
-}
-function healTeam(state, source, amount, events, percent = false) {
+function healTeam(state, source, amount, events, percent = false, ctx) {
   for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
-    const restored = Math.min(ally.stats.health - ally.hp, percent ? Math.max(1, Math.round(ally.stats.health * amount)) : amount);
-    if (restored <= 0) continue;
-    const beforeHp = ally.hp;
-    ally.hp += restored;
-    event(events, "heal", source, ally, restored, `${source.name} restores ${formatStat(restored)} health to ${ally.name}.`);
-    pilotEffectiveHeal(state, source, ally, restored, events);
-    resolveOmnicInteraction(state, source, { trigger: "heal", target: ally, amount: restored, beforeHp }, events);
-    resolveOmnicInteraction(state, source, { trigger: "support", target: ally, amount: restored }, events);
-    if (source.id !== ally.id && hasMechanic(source, "verdant-covenant")) {
-      ally.conduitCharges = { ...ally.conduitCharges, verdantNormal: true };
-      event(events, "status", source, ally, 10, `${ally.name}'s next Normal Attack gains +10% outgoing damage (refresh; does not stack).`);
-    }
+    nativeHeal(state, source, ally, percent ? Math.max(1, Math.round(ally.stats.health * amount)) : amount, events, !percent, ctx);
   }
 }
 function shieldTeam(state, source, amount, events, authored = true) {
-  for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
+  const recipients = state.allies.filter((unit) => unit.hp > 0);
+  const concentrated = equipped(source, "master-tide-2");
+  const selected = concentrated ? [...recipients].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health).slice(0, 1) : recipients;
+  for (const ally of selected) {
+    if (authored) {
+      nativeShield(state, source, ally, amount * (concentrated ? 3 : 1), events);
+      continue;
+    }
     const gained = Math.max(0, amount - ally.shield);
     if (gained > 0) {
       delete ally.pilot?.authoredShieldSourceId;
@@ -3935,8 +7176,6 @@ function shieldTeam(state, source, amount, events, authored = true) {
     ally.shield = Math.max(ally.shield, amount);
     event(events, "shield", source, ally, gained, `${ally.name} has ${formatStat(ally.shield)} shield.`);
     if (authored && gained > 0) {
-      resolveOmnicInteraction(state, source, { trigger: "shield-grown", target: ally, amount: gained }, events);
-      resolveOmnicInteraction(state, source, { trigger: "support", target: ally, amount: gained }, events);
     }
   }
 }
@@ -3948,14 +7187,27 @@ function awardDefeats(previous, state, events) {
   for (const enemy of state.enemies) {
     if (enemy.hp > 0 || !previous.enemies.some((unit) => unit.id === enemy.id && unit.hp > 0)) continue;
     const rewardRoll = () => {
-      let seed = state.rewardSeed;
-      seed ^= seed << 13;
-      seed ^= seed >>> 17;
-      seed ^= seed << 5;
-      state.rewardSeed = seed >>> 0;
+      let seed2 = state.rewardSeed;
+      seed2 ^= seed2 << 13;
+      seed2 ^= seed2 >>> 17;
+      seed2 ^= seed2 << 5;
+      state.rewardSeed = seed2 >>> 0;
       return state.rewardSeed / 4294967296;
     };
     if (enemy.level === null) throw new Error("Enemy reward level is missing.");
+    if (state.calamity) {
+      const chest = calamityChest(state.calamity.activity, state.calamity.tier);
+      events.push({
+        kind: "reward",
+        source: enemy.id,
+        target: enemy.id,
+        amount: 0,
+        critical: false,
+        calamityChest: chest.id,
+        message: `${enemy.name} dropped 1 ${chest.name}.`
+      });
+      continue;
+    }
     if (state.war) {
       const reward = rollWarRewards(
         state.war.stage,
@@ -3985,36 +7237,37 @@ function awardDefeats(previous, state, events) {
     let capture;
     let lycalis = 0;
     const mechanicalComponents2 = state.infusion?.mode === "machines" ? rollMachineComponents(state.infusion.stage, () => {
-      let seed = state.componentSeed ?? ((previous.rewardSeed ^ 1821285621) >>> 0 || 1);
-      seed ^= seed << 13;
-      seed ^= seed >>> 17;
-      seed ^= seed << 5;
-      state.componentSeed = seed >>> 0;
+      let seed2 = state.componentSeed ?? ((previous.rewardSeed ^ 1821285621) >>> 0 || 1);
+      seed2 ^= seed2 << 13;
+      seed2 ^= seed2 >>> 17;
+      seed2 ^= seed2 << 5;
+      state.componentSeed = seed2 >>> 0;
       return state.componentSeed / 4294967296;
     }) : 0;
     const conduits2 = state.infusion?.mode === "machines" ? machineConduitDrops(state.infusion.stage, () => {
-      let seed = state.conduitSeed ?? ((previous.rewardSeed ^ 2769414579) >>> 0 || 1);
-      seed ^= seed << 13;
-      seed ^= seed >>> 17;
-      seed ^= seed << 5;
-      state.conduitSeed = seed >>> 0;
+      let seed2 = state.conduitSeed ?? ((previous.rewardSeed ^ 2769414579) >>> 0 || 1);
+      seed2 ^= seed2 << 13;
+      seed2 ^= seed2 >>> 17;
+      seed2 ^= seed2 << 5;
+      state.conduitSeed = seed2 >>> 0;
       return state.conduitSeed / 4294967296;
-    }) : void 0;
+    }, state.machineConduits) : void 0;
+    if (conduits2) state.machineConduits = { ...state.machineConduits, ...conduits2 };
     const masterChests = state.infusion?.mode === "machines" ? masterChestDrops(state.infusion.stage, enemy.boss === true, () => {
-      let seed = state.masterChestSeed ?? ((previous.rewardSeed ^ 2135587861) >>> 0 || 1);
-      seed ^= seed << 13;
-      seed ^= seed >>> 17;
-      seed ^= seed << 5;
-      state.masterChestSeed = seed >>> 0;
+      let seed2 = state.masterChestSeed ?? ((previous.rewardSeed ^ 2135587861) >>> 0 || 1);
+      seed2 ^= seed2 << 13;
+      seed2 ^= seed2 >>> 17;
+      seed2 ^= seed2 << 5;
+      state.masterChestSeed = seed2 >>> 0;
       return state.masterChestSeed / 4294967296;
     }) : 0;
     if (state.infusion && state.infusion.mode !== "machines" && enemy.creatureId) {
-      let seed = state.captureSeed ?? state.seed;
-      seed ^= seed << 13;
-      seed ^= seed >>> 17;
-      seed ^= seed << 5;
-      state.captureSeed = seed >>> 0;
-      if ((state.infusion.mode !== "roses" || roseCaptureAllowed(enemy.level)) && captureSucceeds(state.captureSeed / 4294967296)) capture = { creatureId: enemy.creatureId, level: enemy.level };
+      let seed2 = state.captureSeed ?? state.seed;
+      seed2 ^= seed2 << 13;
+      seed2 ^= seed2 >>> 17;
+      seed2 ^= seed2 << 5;
+      state.captureSeed = seed2 >>> 0;
+      if ((state.infusion.mode !== "roses" || roseCaptureAllowed(enemy.level)) && captureSucceeds(state.captureSeed / 4294967296)) capture = { creatureId: enemy.creatureId, level: Math.min(capturedLevelCap, enemy.level) };
       if (state.infusion.mode !== "treasury" && state.infusion.mode !== "roses") lycalis = rollStagedLycalis(state.infusion.mode, enemy.level, () => {
         let premiumSeed = state.lycalisSeed ?? ((previous.seed ^ 2654435769) >>> 0 || 1);
         premiumSeed ^= premiumSeed << 13;
@@ -4041,33 +7294,9 @@ function awardDefeats(previous, state, events) {
     });
   }
 }
-function captureSucceeds(value) {
-  if (!Number.isFinite(value) || value < 0 || value >= 1) throw new Error("Capture roll must be in [0, 1).");
-  return value < 0.2;
-}
-function hasMechanic(unit, mechanic) {
-  return unit.conduits?.some((id) => id !== null && getConduit(id).mechanic === mechanic) ?? false;
-}
-function conduitShield(actor, fraction, events) {
-  const amount = Math.round(actor.stats.health * fraction);
-  const gained = Math.max(0, amount - actor.shield);
-  if (gained > 0) delete actor.pilot?.authoredShieldSourceId;
-  actor.shield = Math.max(actor.shield, amount);
-  if (gained > 0) event(events, "shield", actor, actor, gained, `${actor.name}'s Conduit grants ${formatStat(gained)} shield.`);
-}
-function conduitHeal(actor, fraction, events) {
-  const restored = Math.min(actor.stats.health - actor.hp, Math.round(actor.stats.health * fraction));
-  if (actor.hp <= 0 || restored <= 0) return;
-  actor.hp += restored;
-  event(events, "heal", actor, actor, restored, `${actor.name}'s Conduit restores ${formatStat(restored)} health.`);
-}
-function chargeConduit(actor, key, events, effect) {
-  actor.conduitCharges = { ...actor.conduitCharges, [key]: true };
-  event(events, "status", actor, actor, 0, `${actor.name}: ${effect} (refresh; does not stack).`);
-}
-function primeConduitCharge(actor, key, events, effect) {
-  actor.conduitCharges = { ...actor.conduitCharges, [key]: true };
-  event(events, "status", actor, actor, 0, `${actor.name}: ${effect} (refresh; does not stack).`);
+function captureSucceeds(value2) {
+  if (!Number.isFinite(value2) || value2 < 0 || value2 >= 1) throw new Error("Capture roll must be in [0, 1).");
+  return value2 < 0.2;
 }
 function act(previous, actorId, action, targetId) {
   if (!isActionId(action)) throw new Error("Unknown combat action.");
@@ -4075,7 +7304,13 @@ function act(previous, actorId, action, targetId) {
   if (!original) throw new Error("Unknown team member.");
   const reason = actionUnavailable(previous, original, action);
   if (reason) throw new Error(reason);
-  const support = action === "defend" || action !== "light" && original.kit?.abilities[action].targets === "all-allies" || action === "skill2" && (original.definitionId === "tide" || original.definitionId === "sprout") && !original.captured;
+  const native = hasNativeIdentity(original);
+  const nativeAbility = action === "light" || action === "defend" ? void 0 : original.kit?.abilities[action];
+  const allyTargeted = native && nativeAbility?.targets === "one-ally";
+  if (allyTargeted && !previous.allies.some((ally) => ally.id === targetId && ally.hp > 0 && (!nativeAbility.excludeSelf || ally.id !== actorId || previous.allies.filter((unit) => unit.hp > 0).length === 1))) {
+    throw new Error(nativeAbility.excludeSelf ? "Choose another living ally to protect." : "Choose a living ally target.");
+  }
+  const support = native ? action === "defend" || allyTargeted || action !== "light" && nativeAbility?.strength.damageMultiplier === void 0 && nativeAbility?.targets !== "all-enemies" && !(original.definitionId === "thornia" && action === "skill1") && !(original.definitionId === "aurora" && action === "skill1") : action === "defend" || action === "skill2" && equipped(original, "master-nerithe-2") || action !== "light" && original.kit?.abilities[action].targets === "all-allies" || action === "skill2" && (original.definitionId === "tide" || original.definitionId === "sprout") && !original.captured;
   if (!support && !previous.enemies.some((enemy) => enemy.id === targetId && enemy.hp > 0)) {
     throw new Error("Choose a living enemy target.");
   }
@@ -4087,54 +7322,72 @@ function act(previous, actorId, action, targetId) {
   const strength = action === "light" || action === "defend" ? null : definition.abilities[action].strength;
   const events = [];
   const name = action === "light" || action === "defend" ? basicActionName(actor.definitionId, action) : definition.abilities[action].name;
+  const paid = actionGaugeCost(actor, action, state);
+  const nativeAll = native ? nativeAbility?.targets === "all-enemies" : !actor.captured && (action === "ultimate" || action === "skill2" && actor.definitionId === "ember" || action !== "light" && action !== "defend" && definition.abilities[action].targets === "all-enemies");
+  actor.shatter -= paid;
+  const activation = prepareConduitAction(state, actor, action, paid, nativeAll);
+  const priorInstruction = actor.native?.instruction;
   if (action === "defend") {
-    actor.spent = true;
+    actor.spent = !activation.freeDefense;
     actor.defending = true;
     const defenseReduction = defenseMode.damageReduction;
     event(events, "status", actor, actor, defenseReduction * 100, `${actor.name} enters ${name}: incoming ${defenseReduction > defenseMode.damageReduction ? "direct " : ""}damage reduced by ${formatStat(defenseReduction * 100)}% until the next player turn.`);
-    if (hasMechanic(actor, "defense-ward")) conduitShield(actor, 0.1, events);
-    if (hasMechanic(actor, "defense-heal")) conduitHeal(actor, 0.05, events);
-    if (hasMechanic(actor, "faultkeeper-ward")) primeConduitCharge(actor, "faultkeeperWard", events, "the next direct enemy hit deals 15% less damage");
-    if (hasMechanic(actor, "stillhour")) primeConduitCharge(actor, "stillhour", events, "the first direct enemy hit you survive grants 8 Shatter Gauge");
-    if (hasMechanic(actor, "skythread")) primeConduitCharge(actor, "skythread", events, "your next ordinary skill costs 5 less Shatter Gauge");
-    resolveOmnicInteraction(state, actor, { trigger: "defense", action }, events);
+    finishConduitAction(state, actor, activation, events);
+    nativeAfterAction(state, actor, action, priorInstruction, events);
     return { state, events };
   }
   events.push({ kind: "attack", source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action, abilityName: name });
   actor.spent = true;
-  if (action === "ultimate") actor.recoverThrough = state.round + 1;
-  actor.shatter -= actionGaugeCost(actor, action);
-  gainShatter(actor, shatterGauge.gains[action] + (action === "light" ? definition.passive.lightGaugeBonus ?? 0 : 0), events);
+  if (action === "ultimate" && !equipped(actor, "master-nerithe-3")) actor.recoverThrough = state.round + 1;
+  nativeGauge(state, actor, shatterGauge.gains[action] + (action === "light" ? definition.passive.lightGaugeBonus ?? 0 : 0), events);
   if (action === "skill1" || action === "skill2") actor.readyRound[action] = state.round;
   if (action === "ultimate" && actor.captured) actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
-  const stormstepBonus = action === "skill1" && actor.conduitCharges?.stormstepSkill1 || action === "skill2" && actor.conduitCharges?.stormstepSkill2 ? 0.1 : 0;
-  if (action === "skill1") delete actor.conduitCharges?.stormstepSkill1;
-  if (action === "skill2") delete actor.conduitCharges?.stormstepSkill2;
-  if (action === "skill1" || action === "skill2") delete actor.conduitCharges?.skythread;
+  if (native) {
+    const direct = (selected, coefficient, pierce = 0, criticalBonus = 0) => {
+      const targets = activation.all ? state.enemies.filter((enemy) => enemy.hp > 0) : nativeAll ? selected.filter((enemy) => enemy.id === targetId) : selected;
+      for (const target of targets) {
+        if (target.hp <= 0) continue;
+        const rolled = rollCritical(state, actor.stats.crit + criticalBonus + activation.criticalBonus);
+        const critical = !activation.forbidden && (activation.guaranteed || rolled.critical);
+        const elemental = critical && rolled.elemental;
+        const modifiers = conduitHitModifiers(state, actor, target, activation, critical);
+        const criticalMultiplier = modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) * (critical && action !== "light" && equipped(actor, "judgment-lens") ? 1 + value(state, actor, "judgment-lens", 0.4, 0.8) : 1) * (critical && activation.guaranteed && equipped(actor, "falcon-sight") ? 1 + value(state, actor, "falcon-sight", 0.1, 0.2) : 1);
+        const boost = actor.attackBoost && actor.attackBoost.throughRound >= state.round ? 1 + actor.attackBoost.fraction : 1;
+        const offered = damageAmount(
+          modifiers.attack,
+          coefficient * activation.scale * boost * nativeInstructionDamage(state, actor) * (1 + modifiers.bonus),
+          nativeTargetDefense(state, target) * (1 - Math.min(1, pierce + modifiers.pierce)),
+          critical,
+          criticalMultiplier
+        );
+        const shieldBefore = target.shield;
+        let hpDamage = 0;
+        for (let impact = 0; impact < activation.impacts && target.hp > 0; impact++) {
+          const portion = Math.floor(offered / activation.impacts) + (impact === activation.impacts - 1 ? offered % activation.impacts : 0);
+          hurt(target, portion, actor, events, critical, false, 0, elemental);
+          events[events.length - 1].origin = "native";
+          hpDamage += events[events.length - 1].amount;
+        }
+        recordConduitHit(activation, target, hpDamage, critical, criticalMultiplier);
+        afterConduitImpact(actor, target, activation);
+        nativePrimaryHit(state, actor, target, hpDamage > 0 || shieldBefore > target.shield, events);
+      }
+    };
+    nativeAction(state, actor, action, targetId, events, direct, activation);
+    nativeAfterAction(state, actor, action, priorInstruction, events);
+    finishConduitAction(state, actor, activation, events);
+    conduitDeaths(state, previous, events);
+    nativeCleanup(state);
+    checkOutcome(state);
+    awardDefeats(previous, state, events);
+    return { state, events };
+  }
   const priorResources = { ...actor.pilot };
   const starterBonus = pilotPrepareStarter(actor, action, events);
-  let hitWeakenedEnemy = false;
-  let effectiveDirectDamage = false;
   let effectiveCriticalDamage = false;
   if (!support) {
     const pilotBonus = pilotOutgoingBonus(actor, action, events) + starterBonus.damage;
-    const emberBonus = action !== "light" ? 0.05 * (actor.conduitCharges?.emberSeals ?? 0) : 0;
-    const paradoxBonus = actor.conduitCharges?.paradox ? 0.15 : 0;
-    const verdantBonus = action === "light" && actor.conduitCharges?.verdantNormal ? 0.1 : 0;
-    const dawnWitnessCharges = actor.conduitCharges?.dawnWitness ?? 0;
-    const critBonus = (actor.conduitCharges?.burnFocus ? 0.05 : 0) + 0.03 * dawnWitnessCharges;
-    const pierce = actor.conduitCharges?.weakenPierce ? 0.2 : 0;
-    const momentum = action !== "light" && actor.conduitCharges?.normalMomentum ? 0.1 : 0;
-    if (actor.conduitCharges) {
-      delete actor.conduitCharges.burnFocus;
-      delete actor.conduitCharges.weakenPierce;
-      if (action !== "light") delete actor.conduitCharges.normalMomentum;
-      if (action === "light") delete actor.conduitCharges.verdantNormal;
-      delete actor.conduitCharges.paradox;
-      if (action !== "light") delete actor.conduitCharges.emberSeals;
-      delete actor.conduitCharges.dawnWitness;
-    }
-    const all = !actor.captured && (action === "ultimate" || action === "skill2" && actor.definitionId === "ember" || action !== "light" && definition.abilities[action].targets === "all-enemies");
+    const all = activation.all || action === "skill2" && equipped(actor, "master-thornia-2") && (priorResources.thornAegis ?? 0) >= 3;
     const targets = state.enemies.filter((enemy) => enemy.hp > 0 && (all || enemy.id === targetId));
     let multiplier = 1;
     if (strength) {
@@ -4143,119 +7396,54 @@ function act(previous, actorId, action, targetId) {
     }
     if (actor.hp <= actor.stats.health / 2) multiplier *= 1 + definition.passive.damageBonus;
     if (actor.attackBoost && actor.attackBoost.throughRound >= state.round) multiplier *= 1 + actor.attackBoost.fraction;
-    const additiveOutgoingBonus = momentum + emberBonus + stormstepBonus + paradoxBonus + verdantBonus + pilotBonus;
-    hitWeakenedEnemy = (action === "skill1" || action === "skill2") && targets.some((target) => target.weakened > 0);
-    let burned = false;
-    let weakened = false;
-    let hitCritical = false;
     for (const target of targets) {
-      const { critical, elemental } = rollCritical(state, actor.stats.crit + (strength?.critBonus ?? 0) + critBonus);
-      hitCritical ||= critical;
-      const marks = action === "light" ? target.conduitMarks?.[actor.id] ?? 0 : 0;
-      if (marks && target.conduitMarks) {
-        delete target.conduitMarks[actor.id];
-        if (!Object.keys(target.conduitMarks).length) delete target.conduitMarks;
-      }
-      const criticalMultiplier = actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1);
+      const rolled = rollCritical(state, actor.stats.crit + (strength?.critBonus ?? 0) + activation.criticalBonus);
+      const critical = !activation.forbidden && (activation.guaranteed || rolled.critical);
+      const elemental = critical && rolled.elemental;
+      const modifiers = conduitHitModifiers(state, actor, target, activation, critical);
+      const criticalMultiplier = modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) * (critical && action !== "light" && equipped(actor, "judgment-lens") ? 1 + value(state, actor, "judgment-lens", 0.4, 0.8) : 1) * (critical && activation.guaranteed && equipped(actor, "falcon-sight") ? 1 + value(state, actor, "falcon-sight", 0.1, 0.2) : 1);
       const priorShield = target.shield;
       const priorBurnTurns = target.burn.turns;
-      const ownBurn = target.burn.turns > 0 && target.burn.sourceId === actor.id;
-      const ownWeaken = target.weakened > 0 && target.weakenSourceId === actor.id;
-      hurt(target, damageAmount(
-        actor.stats.damage,
-        multiplier * (1 + additiveOutgoingBonus) * (1 + marks * 0.08),
-        target.stats.defense * (1 - Math.min(0.75, pierce)),
+      const secondaryCleave = action === "skill2" && equipped(actor, "master-thornia-2") && target.id !== targetId;
+      const offered = damageAmount(
+        modifiers.attack,
+        multiplier * activation.scale * (secondaryCleave ? 0.5 : 1) * (1 + pilotBonus) * (1 + modifiers.bonus) * nativeInstructionDamage(state, actor),
+        nativeTargetDefense(state, target) * (1 - modifiers.pierce),
         critical,
         criticalMultiplier
-      ), actor, events, critical, false, 0, elemental);
-      const hpDamage = events[events.length - 1].amount;
-      effectiveDirectDamage ||= events[events.length - 1].amount > 0;
-      const effectiveHit = events[events.length - 1].amount > 0 || priorShield > target.shield;
+      );
+      let hpDamage = 0;
+      for (let impact = 0; impact < activation.impacts && target.hp > 0; impact++) {
+        const portion = Math.floor(offered / activation.impacts) + (impact === activation.impacts - 1 ? offered % activation.impacts : 0);
+        hurt(target, portion, actor, events, critical, false, 0, elemental);
+        events[events.length - 1].origin = "native";
+        hpDamage += events[events.length - 1].amount;
+      }
+      recordConduitHit(activation, target, hpDamage, critical, criticalMultiplier);
+      afterConduitImpact(actor, target, activation);
+      const effectiveHit = hpDamage > 0 || priorShield > target.shield;
+      nativePrimaryHit(state, actor, target, effectiveHit, events);
       effectiveCriticalDamage ||= critical && effectiveHit;
-      const actualDamage = hpDamage + priorShield - target.shield;
-      resolveOmnicInteraction(state, actor, { trigger: "direct", action, target, amount: actualDamage, hpDamage, ownBurn, ownWeaken, lethal: target.hp === 0 }, events);
-      if (critical) resolveOmnicInteraction(state, actor, { trigger: "critical", action, target, amount: actualDamage, hpDamage }, events);
-      if (marks && effectiveHit) resolveOmnicInteraction(state, actor, { trigger: "fracture-spent", action, target, amount: marks }, events);
-      if (marks) event(events, "status", actor, target, 0, `${target.name} loses ${marks} Fracture Mark${marks === 1 ? "" : "s"} from ${actor.name}.`);
       if (target.hp > 0 && strength?.burnMultiplier !== void 0) {
-        const damage = Math.round(actor.stats.elementalDamage * strength.burnMultiplier);
-        const previousBurn = { ...target.burn };
+        const damage = applyConduitBurn(state, actor, target, actor.stats.elementalDamage * strength.burnMultiplier, activation);
         const clockExtension = Math.max(0, target.burn.turns - priorBurnTurns);
-        target.burn = { damage, turns: Math.min(3, 2 + clockExtension), sourceId: actor.id, origin: actor.kit?.pilot === "rose-duality" ? "rose" : "native" };
-        event(events, "status", actor, target, damage, `${target.name} burns for ${target.burn.turns === 2 ? "two" : "three"} enemy phases.`);
-        if (damage > 0 && (previousBurn.sourceId !== actor.id || previousBurn.damage < damage || previousBurn.turns < 2)) {
-          resolveOmnicInteraction(state, actor, { trigger: "burn-applied", action, target, amount: damage }, events);
+        if (target.burn.turns <= 0 || damage >= target.burn.damage) {
+          target.burn = { damage, turns: Math.min(6, 2 + clockExtension), sourceId: actor.id, origin: actor.kit?.pilot === "rose-duality" ? "rose" : "native" };
+          event(events, "status", actor, target, damage, `${target.name} burns for ${target.burn.turns} enemy phases.`);
         }
-        burned = true;
       }
       if (target.hp > 0 && strength?.weakenFraction !== void 0) {
-        const previousWeaken = { turns: target.weakened, fraction: target.weakenFraction, source: target.weakenSourceId };
-        target.weakened = 2;
-        target.weakenSourceId = actor.id;
-        target.weakenOrigin = actor.kit?.pilot === "rose-grace" || actor.kit?.pilot === "thorn-aegis" || actor.kit?.pilot === "rose-duality" ? "rose" : "native";
-        const weakenBonus = starterBonus.weaken;
-        target.weakenFraction = weakenBonus > 0 ? Math.min(0.6, strength.weakenFraction + weakenBonus) : strength.weakenFraction;
-        event(events, "status", actor, target, 0, `${target.name} is weakened for two enemy phases.`);
-        if (target.weakenFraction > 0 && (previousWeaken.source !== actor.id || previousWeaken.turns < 2 || previousWeaken.fraction < target.weakenFraction)) {
-          resolveOmnicInteraction(state, actor, { trigger: "weaken-applied", action, target, amount: target.weakenFraction }, events);
-        }
-        weakened = true;
-      }
-      if (target.hp > 0 && action !== "light" && hasMechanic(actor, "nightglass")) {
-        const priorMarks = target.conduitMarks?.[actor.id] ?? 0;
-        if (priorMarks < 2) {
-          target.conduitMarks = { ...target.conduitMarks, [actor.id]: priorMarks + 1 };
-          event(events, "status", actor, target, priorMarks + 1, `${target.name} gains a Fracture Mark from ${actor.name} (${priorMarks + 1}/2).`);
-        }
-      }
-    }
-    if (burned && hasMechanic(actor, "burn-focus")) chargeConduit(actor, "burnFocus", events, "next offensive activation gains +5 percentage points Critical Rate");
-    if (weakened && hasMechanic(actor, "weaken-pierce")) chargeConduit(actor, "weakenPierce", events, "next offensive activation ignores 20% Defense");
-    if (action === "light" && hasMechanic(actor, "normal-momentum")) chargeConduit(actor, "normalMomentum", events, "next offensive skill gains +10% outgoing damage");
-    if (hitCritical && hasMechanic(actor, "critical-gauge")) gainShatter(actor, 5, events);
-    if (action === "light" && hasMechanic(actor, "dawn-witness")) {
-      if (hitCritical) {
-        if (actor.conduitCharges) delete actor.conduitCharges.dawnWitness;
-      } else {
-        const charges2 = Math.min(3, dawnWitnessCharges + 1);
-        actor.conduitCharges = { ...actor.conduitCharges, dawnWitness: charges2 };
-        event(
-          events,
-          "status",
-          actor,
-          actor,
-          charges2 * 3,
-          `${actor.name} gains Dawn Witness (+${charges2 * 3} percentage points Critical Rate on the next offensive activation; maximum three charges).`
-        );
-      }
-    }
-    if ((action === "skill1" || action === "skill2") && hitWeakenedEnemy && hasMechanic(actor, "undertide-cooldown") && actor.conduitCharges?.undertideUsedRound !== state.round) {
-      actor.conduitCharges = { ...actor.conduitCharges, undertideUsedRound: state.round };
-      const otherSkill = action === "skill1" ? "skill2" : "skill1";
-      if (actor.readyRound[otherSkill] > state.round) {
-        actor.readyRound[otherSkill] = Math.max(state.round, actor.readyRound[otherSkill] - 1);
-        event(events, "status", actor, actor, 1, `${actor.name}'s ${otherSkill === "skill1" ? "Skill 1" : "Skill 2"} cooldown is reduced by one turn.`);
+        applyConduitWeaken(state, actor, target, (strength.weakenFraction + starterBonus.weaken) * (secondaryCleave ? 0.5 : 1), events, action, secondaryCleave ? 1 : 2);
       }
     }
   }
-  for (const resource of ["ember", "bloom", "tempest", "thornAegis", "duality"]) {
-    const spent = (priorResources[resource] ?? 0) - (actor.pilot?.[resource] ?? 0);
-    if (!actor.captured && spent > 0) resolveOmnicInteraction(state, actor, { trigger: "resource-spent", action, resource, amount: Math.min(3, spent) }, events);
-  }
+  for (const resource of ["ember", "bloom", "tempest", "thornAegis", "duality", "roseGrace"]) activation.spent[resource] = Math.max(0, (priorResources[resource] ?? 0) - (actor.pilot?.[resource] ?? 0));
   pilotAfterDirectActivation(actor, action, events, effectiveCriticalDamage);
-  if ((action === "skill1" || action === "skill2") && hasMechanic(actor, "stormstep")) {
-    primeConduitCharge(
-      actor,
-      action === "skill1" ? "stormstepSkill2" : "stormstepSkill1",
-      events,
-      `the next ${action === "skill1" ? "Skill 2" : "Skill 1"} gains +10% outgoing damage`
-    );
-  }
   if (strength?.shield !== void 0 || starterBonus.shield > 0) {
     shieldTeam(state, actor, (strength?.shield ?? 0) + starterBonus.shield, events);
   }
   if (strength?.healing !== void 0) {
-    healTeam(state, actor, strength.healing * starterBonus.healing, events);
+    healTeam(state, actor, strength.healing * starterBonus.healing, events, false, activation);
   }
   if (strength?.attackBoostFraction !== void 0) {
     for (const ally of state.allies.filter((unit) => unit.hp > 0)) {
@@ -4265,7 +7453,7 @@ function act(previous, actorId, action, targetId) {
       const sourceId = fraction >= prior ? actor.id : previousSourceId;
       ally.attackBoost = {
         fraction: Math.max(prior, fraction),
-        throughRound: state.round + 1,
+        throughRound: state.round + (equipped(actor, "master-disciple-1") ? 3 : 1),
         ...sourceId ? { sourceId } : {},
         ...fraction < prior && ally.attackBoost?.origin === "conduit" ? { origin: "conduit" } : {}
       };
@@ -4277,24 +7465,12 @@ function act(previous, actorId, action, targetId) {
         ally.attackBoost.fraction * 100,
         `${ally.name}: outgoing attack damage +${formatStat(ally.attackBoost.fraction * 100)}% this and next player turn (refresh; does not stack).`
       );
-      if (fraction > prior) resolveOmnicInteraction(state, actor, { trigger: "support", action, target: ally, amount: fraction - prior }, events);
+      if (fraction > prior) supportEffect(state, actor, ally, events);
     }
   }
-  if (hasMechanic(actor, "shield-heal") && events.some((entry) => entry.kind === "shield" && entry.source === actor.id && entry.amount > 0)) conduitHeal(actor, 0.05, events);
-  if (hasMechanic(actor, "defeat-gauge") && events.some((entry) => entry.kind === "damage" && entry.source === actor.id && state.enemies.some((enemy) => enemy.id === entry.target && enemy.hp === 0))) gainShatter(actor, 5, events);
-  if (action === "ultimate" && hasMechanic(actor, "ultimate-ward")) conduitShield(actor, 0.15, events);
-  if (action === "ultimate" && hasMechanic(actor, "paradox")) primeConduitCharge(
-    actor,
-    "paradox",
-    events,
-    "your first offensive activation after normal recovery gains +15% outgoing damage"
-  );
-  resolveOmnicInteraction(state, actor, {
-    trigger: "activation",
-    action,
-    amount: 1,
-    target: support ? void 0 : state.enemies.find((enemy) => enemy.id === targetId)
-  }, events);
+  nativeAfterAction(state, actor, action, priorInstruction, events);
+  finishConduitAction(state, actor, activation, events);
+  conduitDeaths(state, previous, events);
   checkOutcome(state);
   awardDefeats(previous, state, events);
   return { state, events };
@@ -4305,11 +7481,16 @@ function newTurn(state, events) {
     ally.spent = false;
     ally.defending = false;
     if (ally.attackBoost && ally.attackBoost.throughRound < state.round) delete ally.attackBoost;
-    if (hasMechanic(ally, "renewal")) conduitHeal(ally, 0.02, events);
   }
+  conduitTurnStart(state, events);
+  nativeTurnStart(state, events);
   for (const ally of state.allies.filter((unit) => unit.hp > 0 && (unit.kit?.passive.healFraction ?? 0) > 0)) {
     if (!ally.kit) throw new Error("Passive combat kit is missing.");
-    healTeam(state, ally, ally.kit.passive.healFraction, events, true);
+    if (equipped(ally, "master-sprout-1")) continue;
+    if (equipped(ally, "master-rosetta-1")) {
+      const target = state.allies.filter((unit) => unit.hp > 0).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+      if (target) nativeHeal(state, ally, target, target.stats.health * (target.hp < target.stats.health * 0.5 ? 0.12 : 0.06), events, false);
+    } else healTeam(state, ally, ally.kit.passive.healFraction, events, true);
   }
   events.push({ kind: "turn", source: "", target: "", amount: state.round, critical: false, message: `Turn ${state.round}. Only Last Flare forces next-turn recovery.` });
 }
@@ -4319,64 +7500,68 @@ function endTurn(previous) {
   const events = [];
   for (const enemy of state.enemies) {
     if (enemy.hp <= 0) continue;
-    if (enemy.burn.turns > 0) {
+    const nativeBurnOwner = enemy.burn.origin !== "conduit" && state.allies.find((unit) => unit.id === enemy.burn.sourceId && hasNativeIdentity(unit) && (unit.native?.burns?.[enemy.id] || unit.hp <= 0));
+    nativeBurnPhase(state, enemy, events);
+    if (enemy.burn.turns > 0 && !nativeBurnOwner) {
       enemy.burn.turns--;
       const source = state.allies.find((unit) => unit.id === (enemy.burn.sourceId ?? "ember"));
       if (!source) throw new Error("Burn source is missing.");
       const priorHp = enemy.hp;
-      hurt(enemy, enemy.burn.damage, source, events, false, true);
-      pilotBurnDamage(state, source, priorHp - enemy.hp, events);
-      resolveOmnicInteraction(state, source, { trigger: "burn-tick", target: enemy, amount: priorHp - enemy.hp, lethal: enemy.hp === 0 }, events);
-      if (enemy.hp < priorHp && source.hp > 0 && hasMechanic(source, "ember-seals") && source.conduitCharges?.emberSealRound !== state.round && (source.conduitCharges?.emberSeals ?? 0) < 3) {
-        const seals = (source.conduitCharges?.emberSeals ?? 0) + 1;
-        source.conduitCharges = { ...source.conduitCharges, emberSeals: seals, emberSealRound: state.round };
-        event(events, "status", source, source, seals, `${source.name} gains an Ember Seal (${seals}/3; at most one per enemy phase).`);
-      }
+      hurt(enemy, conduitBurnTick(state, source, enemy), source, events, false, true);
+      events[events.length - 1].origin = enemy.burn.origin === "conduit" ? "conduit" : "native";
+      if (enemy.burn.origin !== "conduit") pilotBurnDamage(state, source, priorHp - enemy.hp, events);
+      afterConduitBurn(state, source, enemy, priorHp - enemy.hp, events);
     }
     if (enemy.hp <= 0) continue;
-    const living = state.allies.filter((unit) => unit.hp > 0);
-    if (!living.length) break;
-    const target = living[Math.floor(roll(state) * living.length)];
-    const critical = roll(state) < enemy.stats.crit;
-    const ability = scheduledEnemySkill(enemy.enemySkills ?? [], state.round);
+    const living2 = state.allies.filter((unit) => unit.hp > 0);
+    if (!living2.length) break;
+    const pattern = state.calamity ? calamityPatterns[state.calamity.activity] : void 0;
+    let selected = living2[Math.floor(roll(state) * living2.length)];
+    if (pattern?.targeting) selected = [...living2].sort((a, b) => (a.hp / a.stats.health - b.hp / b.stats.health) * (pattern.targeting === "lowest" ? 1 : -1))[0];
+    const target = forcedConduitTarget(state, enemy, selected);
+    if (pattern?.shieldEvery && state.round % pattern.shieldEvery === 0) {
+      const shield = Math.round(enemy.stats.health * (pattern.shieldFraction ?? 0));
+      const gained = Math.max(0, shield - enemy.shield);
+      enemy.shield = Math.max(shield, enemy.shield);
+      event(events, "shield", enemy, enemy, gained, `${enemy.name} refreshes its barrier to ${enemy.shield}.`);
+      events[events.length - 1].shieldRemaining = enemy.shield;
+    }
+    if (pattern?.healEvery && state.round % pattern.healEvery === 0) {
+      const restored = Math.min(enemy.stats.health - enemy.hp, Math.round(enemy.stats.health * (pattern.healFraction ?? 0)));
+      enemy.hp += restored;
+      event(events, "heal", enemy, enemy, restored, `${enemy.name} restores ${restored} HP.`);
+    }
+    const rolledCritical = roll(state) < enemy.stats.crit;
+    const critical = rolledCritical && !((gear(enemy).numbers.judgmentThrough ?? 0) >= state.round);
+    const scheduleRound = state.round - (gear(enemy).numbers.scheduleShift ?? 0);
+    let ability2 = scheduleRound > 0 ? scheduledEnemySkill(enemy.enemySkills ?? [], scheduleRound) : void 0;
+    if (ability2 && conduitSuppressSkill(enemy)) ability2 = void 0;
     events.push({
       kind: "attack",
       source: enemy.id,
       target: target.id,
       amount: 0,
       critical: false,
-      message: ability ? `${enemy.name} uses ${ability.name} on ${target.name}.` : `${enemy.name} attacks ${target.name}.`,
-      action: ability?.action ?? "light",
-      enhancedAttack: !!ability,
-      abilityName: ability?.name
+      message: ability2 ? `${enemy.name} uses ${ability2.name} on ${target.name}.` : `${enemy.name} attacks ${target.name}.`,
+      action: ability2?.action ?? "light",
+      enhancedAttack: !!ability2,
+      abilityName: ability2?.name
     });
-    const multiplier = (ability?.multiplier ?? 1) * (enemy.weakened > 0 ? 1 - enemy.weakenFraction : 1);
-    const faultkeeperWard = target.conduitCharges?.faultkeeperWard === true;
-    if (faultkeeperWard && target.conduitCharges) {
-      delete target.conduitCharges.faultkeeperWard;
-      event(events, "status", target, target, 15, `${target.name}'s Faultkeeper ward reduces this direct hit by 15%.`);
-    }
-    const priorShield = target.shield;
-    const shieldSourceId = target.pilot?.authoredShieldSourceId;
+    const multiplier = (ability2?.multiplier ?? 1) * (enemy.weakened > 0 ? 1 - enemy.weakenFraction : 1);
     const omnicProtection = target.omnicProtection ?? 0;
     delete target.omnicProtection;
-    hurt(
-      target,
-      damageAmount(enemy.stats.damage, multiplier, target.stats.defense, critical, enemy.stats.critMultiplier),
-      enemy,
-      events,
-      critical,
-      false,
-      omnicProtection > 0 ? 1 - (1 - (faultkeeperWard ? 0.15 : 0)) * (1 - omnicProtection) : faultkeeperWard ? 0.15 : 0
-    );
-    pilotAuthoredShieldAbsorbed(state, shieldSourceId, priorShield - target.shield, events);
-    const shieldOwner = state.allies.find((ally) => ally.id === shieldSourceId);
-    if (shieldOwner) resolveOmnicInteraction(state, shieldOwner, { trigger: "shield-absorbed", target, attacker: enemy, amount: priorShield - target.shield }, events);
-    if (target.hp > 0 && target.conduitCharges?.stillhour) {
-      delete target.conduitCharges.stillhour;
-      gainShatter(target, 8, events);
+    const criticalMultiplier = critical && gear(target).numbers.criticalSeal ? 1 : enemy.stats.critMultiplier;
+    if (critical) delete gear(target).numbers.criticalSeal;
+    const incoming = damageAmount(enemy.stats.damage, multiplier, effectiveDefense(state, target), critical, criticalMultiplier) * (1 - omnicProtection);
+    const hits = pattern?.hits ?? 1;
+    const total = Math.round(incoming);
+    const damageStart = events.length;
+    delete enemy.native;
+    for (let hit = 0; hit < hits && target.hp > 0; hit++) {
+      const amount = hit === hits - 1 ? total - Math.floor(total / hits) * (hits - 1) : Math.floor(total / hits);
+      conduitIncoming(state, enemy, target, hits === 1 ? incoming : amount, critical, !!ability2, events, ability2?.action ?? "light");
     }
-    gainShatter(target, shatterGauge.incomingHit, events);
+    nativeEnemyCompleted(state, enemy, events.slice(damageStart).some((entry) => entry.kind === "damage" && entry.source === enemy.id && (entry.amount > 0 || (entry.shieldAbsorbed ?? 0) > 0)), events);
     if (enemy.hp > 0 && enemy.weakened > 0) {
       enemy.weakened--;
       if (enemy.weakened === 0) enemy.weakenFraction = 0;
@@ -4391,7 +7576,11 @@ function endTurn(previous) {
         enemy.weakened > 0 ? `${enemy.name}'s Weaken has ${enemy.weakened} enemy phase remaining.` : `${enemy.name}'s Weaken expires.`
       );
     }
+    conduitDeaths(state, previous, events);
   }
+  nativePhaseEnd(state, events);
+  expireNativeShields(state, events);
+  conduitDeaths(state, previous, events);
   checkOutcome(state);
   if (state.phase === "player") newTurn(state, events);
   awardDefeats(previous, state, events);
@@ -4440,15 +7629,14 @@ function nextStage(previous, progress) {
   for (const ally of state.allies) {
     const prior = previous.allies.find((unit) => unit.id === ally.id);
     if (!prior) throw new Error("Continuing character is missing from the previous encounter.");
-    ally.shatter = Math.min(prior.shatter, ally.stats.shatterCapacity);
+    ally.shatter = Math.min(
+      prior.shatter + (equipped(ally, "fracture-reservoir") ? value(state, ally, "fracture-reservoir", 5, 10) : 0),
+      ally.stats.shatterCapacity
+    );
     if (prior.masterConduit) ally.masterConduit = prior.masterConduit;
-    if (prior.conduitCharges) {
-      ally.conduitCharges = { ...prior.conduitCharges };
-      delete ally.conduitCharges.emberSealRound;
-      delete ally.conduitCharges.undertideUsedRound;
-    }
   }
   if (previous.conduitSeed !== void 0) state.conduitSeed = previous.conduitSeed;
+  if (previous.machineConduits !== void 0) state.machineConduits = { ...previous.machineConduits };
   if (previous.componentSeed !== void 0) state.componentSeed = previous.componentSeed;
   if (previous.masterChestSeed !== void 0) state.masterChestSeed = previous.masterChestSeed;
   if (previous.war) {
@@ -4466,6 +7654,7 @@ function nextStage(previous, progress) {
   }] };
 }
 function nextWave(previous) {
+  if (previous.calamity) throw new Error("Calamity has one boss. Return to the activity or replay this challenge.");
   if (previous.story || previous.dungeon || previous.infusion || previous.war) throw new Error("Staged activities must be started as separate encounters.");
   if (previous.phase !== "cleared") throw new Error("Defeat this wave before advancing.");
   const state = structuredClone(previous);
@@ -4473,11 +7662,19 @@ function nextWave(previous) {
   state.wave++;
   state.enemies = spawnWave(state.wave);
   state.phase = "player";
-  for (const ally of state.allies) delete ally.pilot;
+  for (const ally of state.allies) {
+    delete ally.pilot;
+    delete ally.native;
+  }
+  for (const ally of state.allies) if (ally.definitionId === "vaelor") ally.native = { beat: 0, beatRound: state.round + 1 };
   for (const ally of state.allies) {
     delete ally.omnicMemory;
     delete ally.omnicProtection;
+    const layers2 = ally.conduitRuntime?.layers;
+    ally.conduitRuntime = { numbers: {}, owners: {}, ...layers2 ? { layers: layers2 } : {} };
+    delete ally.conduitCharges;
   }
+  initializeConduits(state);
   newTurn(state, events);
   events.push({ kind: "turn", source: "", target: "", amount: state.wave, critical: false, message: `Wave ${state.wave}: enemies grow stronger. Health, shields, Shatter Gauge and recovery carry over.` });
   const advanced = advanceUnavailableTurns(state);
@@ -4518,11 +7715,11 @@ function bannerDuplicateMaterials(event2, random) {
 var bannerPityLimits = { highestStar: 80, unownedHighestStar: 150 };
 var savedBannerPityBounds = { highestStar: 200, unownedHighestStar: 500 };
 var bannerCharacterTierRates = { 5: 0.01, 6: 1e-3 };
-function validateBannerPity(value) {
-  if (typeof value !== "object" || value === null || Array.isArray(value) || !("highestStar" in value) || typeof value.highestStar !== "number" || !Number.isInteger(value.highestStar) || value.highestStar < 0 || value.highestStar >= savedBannerPityBounds.highestStar || !("unownedHighestStar" in value) || typeof value.unownedHighestStar !== "number" || !Number.isInteger(value.unownedHighestStar) || value.unownedHighestStar < 0 || value.unownedHighestStar >= savedBannerPityBounds.unownedHighestStar) {
+function validateBannerPity(value2) {
+  if (typeof value2 !== "object" || value2 === null || Array.isArray(value2) || !("highestStar" in value2) || typeof value2.highestStar !== "number" || !Number.isInteger(value2.highestStar) || value2.highestStar < 0 || value2.highestStar >= savedBannerPityBounds.highestStar || !("unownedHighestStar" in value2) || typeof value2.unownedHighestStar !== "number" || !Number.isInteger(value2.unownedHighestStar) || value2.unownedHighestStar < 0 || value2.unownedHighestStar >= savedBannerPityBounds.unownedHighestStar) {
     throw new Error("Invalid saved banner pity counters.");
   }
-  return { highestStar: value.highestStar, unownedHighestStar: value.unownedHighestStar };
+  return { highestStar: value2.highestStar, unownedHighestStar: value2.unownedHighestStar };
 }
 function resolveBannerPull(pool, ownedCharacters2, counters, random) {
   const pity = validateBannerPity(counters);
@@ -4631,8 +7828,8 @@ var summonBanners = [
   { ...standardBanner, pool: standardBannerPool },
   { ...roseBanner, pool: roseBannerPool }
 ];
-function isSummonBannerId(value) {
-  return summonBanners.some((banner) => banner.id === value);
+function isSummonBannerId(value2) {
+  return summonBanners.some((banner) => banner.id === value2);
 }
 function getSummonBanner(id) {
   const banner = summonBanners.find((entry) => entry.id === id);
@@ -4668,8 +7865,8 @@ function exchangeProduct(id) {
   if (!product) throw new Error("Unknown Material Exchange product.");
   return product;
 }
-function isExchangeQuantity(value) {
-  return exchangeQuantities.includes(value);
+function isExchangeQuantity(value2) {
+  return exchangeQuantities.includes(value2);
 }
 
 // src/game/account.ts
@@ -4677,11 +7874,11 @@ var ACCOUNT_KEY = "last-light.wallet";
 function emptyAccount() {
   return { version: 5, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
-function count(value) {
-  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0;
+function count(value2) {
+  return typeof value2 === "number" && Number.isSafeInteger(value2) && value2 >= 0;
 }
-function record(value) {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+function record(value2) {
+  return typeof value2 === "object" && value2 !== null && !Array.isArray(value2);
 }
 function migrateLegacyDungeonStage(stage, version) {
   if (!count(stage) || stage < 1 || stage > (version === 2 ? 50 : dungeonStageCount)) throw new Error("Invalid saved dungeon stage.");
@@ -4695,68 +7892,97 @@ function migrateLegacyDungeonStage(stage, version) {
   }
   return unlocked;
 }
-function validateAccount(value) {
-  if (!record(value) || value.version !== 2 && value.version !== 3 && value.version !== 4 && value.version !== 5 || !count(value.fractalis) || !count(value.lycalis) || !record(value.materials) || !record(value.characters) || !record(value.dungeonStages) || typeof value.firstFracture !== "boolean" || !Array.isArray(value.receipts) || !value.receipts.every((receipt) => typeof receipt === "string") || new Set(value.receipts).size !== value.receipts.length) {
+function validateAccount(value2) {
+  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
     throw new Error("The local progression save is invalid or unsupported. It has not been overwritten.");
   }
   const account = emptyAccount();
-  account.fractalis = value.fractalis;
-  account.lycalis = value.lycalis;
-  if (value.mechanicalComponents !== void 0) {
-    if (!count(value.mechanicalComponents)) throw new Error("Invalid saved Broken Mechanical Components balance.");
-    account.mechanicalComponents = value.mechanicalComponents;
+  account.fractalis = value2.fractalis;
+  account.lycalis = value2.lycalis;
+  if (value2.calamityChests !== void 0) {
+    if (!record(value2.calamityChests)) throw new Error("Invalid saved Calamity chest inventory.");
+    account.calamityChests = {};
+    for (const [id, amount] of Object.entries(value2.calamityChests)) {
+      parseCalamityChestId(id);
+      if (!count(amount)) throw new Error("Invalid saved Calamity chest count.");
+      account.calamityChests[id] = amount;
+    }
   }
-  if (value.masterChests !== void 0) {
-    if (!count(value.masterChests)) throw new Error("Invalid saved Master chest count.");
-    account.masterChests = value.masterChests;
+  if (value2.calamityClears !== void 0) {
+    if (!record(value2.calamityClears)) throw new Error("Invalid saved Calamity progress.");
+    account.calamityClears = {};
+    for (const [id, tier] of Object.entries(value2.calamityClears)) {
+      if (!isCalamityActivityId(id) || !count(tier) || tier > 3) throw new Error("Invalid saved Calamity clear.");
+      account.calamityClears[id] = tier;
+    }
   }
-  if (value.masterConduits !== void 0) {
-    if (!record(value.masterConduits)) throw new Error("Invalid saved Master Conduit inventory.");
+  if (value2.normalFinalClears !== void 0) {
+    if (!record(value2.normalFinalClears)) throw new Error("Invalid saved final-clear evidence.");
+    account.normalFinalClears = {};
+    for (const [id, cleared] of Object.entries(value2.normalFinalClears)) {
+      if (!isCalamityActivityId(id) || typeof cleared !== "boolean") throw new Error("Invalid saved final-clear evidence.");
+      account.normalFinalClears[id] = cleared;
+    }
+  }
+  if (value2.calamitySeed !== void 0) {
+    if (!count(value2.calamitySeed) || value2.calamitySeed < 1 || value2.calamitySeed > 4294967295) throw new Error("Invalid saved Calamity seed.");
+    account.calamitySeed = value2.calamitySeed;
+  }
+  if (value2.mechanicalComponents !== void 0) {
+    if (!count(value2.mechanicalComponents)) throw new Error("Invalid saved Broken Mechanical Components balance.");
+    account.mechanicalComponents = value2.mechanicalComponents;
+  }
+  if (value2.masterChests !== void 0) {
+    if (!count(value2.masterChests)) throw new Error("Invalid saved Master chest count.");
+    account.masterChests = value2.masterChests;
+  }
+  if (value2.masterConduits !== void 0) {
+    if (!record(value2.masterConduits)) throw new Error("Invalid saved Master Conduit inventory.");
     account.masterConduits = {};
-    for (const [id, amount] of Object.entries(value.masterConduits)) {
+    for (const [id, amount] of Object.entries(value2.masterConduits)) {
       if (!isMasterConduitId(id) || amount !== 0 && amount !== 1) throw new Error("Invalid saved Master Conduit unlock.");
       account.masterConduits[id] = amount;
     }
   }
-  if (value.bannerPity !== void 0) {
-    if (!record(value.bannerPity)) throw new Error("Invalid saved banner pity.");
+  if (value2.bannerPity !== void 0) {
+    if (!record(value2.bannerPity)) throw new Error("Invalid saved banner pity.");
     account.bannerPity = {};
-    for (const [id, counters] of Object.entries(value.bannerPity)) {
+    for (const [id, counters] of Object.entries(value2.bannerPity)) {
       if (!isSummonBannerId(id)) throw new Error("Unknown saved pity banner.");
       account.bannerPity[id] = validateBannerPity(counters);
     }
   }
-  account.firstFracture = value.firstFracture;
-  account.receipts = [...value.receipts];
-  if (value.storyCompleted !== void 0) {
-    if (!count(value.storyCompleted) || value.storyCompleted > storyRules.stages) throw new Error("Invalid saved Story progress.");
-    account.storyCompleted = value.storyCompleted;
+  account.firstFracture = value2.firstFracture;
+  account.receipts = [...value2.receipts];
+  if (value2.storyCompleted !== void 0) {
+    if (!count(value2.storyCompleted) || value2.storyCompleted > storyRules.stages) throw new Error("Invalid saved Story progress.");
+    account.storyCompleted = value2.storyCompleted;
   }
-  if (value.warStages !== void 0) {
-    if (!record(value.warStages)) throw new Error("Invalid saved Elemental War progress.");
+  if (value2.warStages !== void 0) {
+    if (!record(value2.warStages)) throw new Error("Invalid saved Elemental War progress.");
     account.warStages = {};
-    for (const [id, stage] of Object.entries(value.warStages)) {
+    for (const [id, stage] of Object.entries(value2.warStages)) {
       if (!isWarCharacter(id) || !count(stage) || stage < 1 || stage > warStageCount) throw new Error("Invalid saved Elemental War stage.");
       account.warStages[id] = stage;
     }
   }
-  if (value.conduits !== void 0) {
-    if (!record(value.conduits)) throw new Error("Invalid saved Conduit inventory.");
+  if (value2.conduits !== void 0) {
+    if (!record(value2.conduits)) throw new Error("Invalid saved Conduit inventory.");
     account.conduits = {};
-    for (const [id, amount] of Object.entries(value.conduits)) {
+    for (const [id, amount] of Object.entries(value2.conduits)) {
       if (!isConduitId(id) || !count(amount)) throw new Error("Invalid saved Conduit inventory.");
       account.conduits[id] = amount;
     }
   }
-  if (value.conduitUpgrades !== void 0) {
-    account.conduitUpgrades = validateConduitUpgrades(value.conduitUpgrades);
+  if (value2.conduitUpgrades !== void 0) {
+    account.conduitUpgrades = validateConduitUpgrades(value2.conduitUpgrades);
     for (const id of Object.keys(account.conduitUpgrades)) {
       if (!isConduitId(id) || (account.conduits?.[id] ?? 0) < 1) throw new Error("Conduit upgrades require an owned Conduit.");
     }
   }
-  for (const [id, amount] of Object.entries(value.materials)) {
+  for (const [id, amount] of Object.entries(value2.materials)) {
     let canonicalId = id;
-    if (value.version < 4) {
+    if (value2.version < 4) {
       const [element, rarity] = id.split("-");
       if (isLegacyElement(element) && id === `${element}-${rarity}`) canonicalId = `${canonicalElement(element)}-${rarity}`;
     }
@@ -4765,7 +7991,7 @@ function validateAccount(value) {
     if (!count(total)) throw new Error(`Merged material balance exceeds the supported maximum: ${canonicalId}. The save has not been overwritten.`);
     account.materials[canonicalId] = total;
   }
-  for (const [id, progress] of Object.entries(value.characters)) {
+  for (const [id, progress] of Object.entries(value2.characters)) {
     if (!isStarterId(id) || !record(progress) || typeof progress.level !== "number" || typeof progress.evolution !== "number") {
       throw new Error("Invalid saved character progress.");
     }
@@ -4778,18 +8004,18 @@ function validateAccount(value) {
     characterGrowthFactor(entry);
     account.characters[id] = entry;
   }
-  if (value.capturedCharacters !== void 0) account.capturedCharacters = validateCapturedCharacters(value.capturedCharacters);
-  if (value.characterLocks !== void 0) account.characterLocks = validateCharacterLocks(value.characterLocks, account.characters);
-  if (value.squad !== void 0) {
-    if (!Array.isArray(value.squad) || value.squad.length < 1 || value.squad.length > 3 || new Set(value.squad).size !== value.squad.length || !value.squad.every((id) => typeof id === "string" && ownedCharacterInstances(account).includes(id))) {
+  if (value2.capturedCharacters !== void 0) account.capturedCharacters = validateCapturedCharacters(value2.capturedCharacters);
+  if (value2.characterLocks !== void 0) account.characterLocks = validateCharacterLocks(value2.characterLocks, account.characters);
+  if (value2.squad !== void 0) {
+    if (!Array.isArray(value2.squad) || value2.squad.length < 1 || value2.squad.length > 3 || new Set(value2.squad).size !== value2.squad.length || !value2.squad.every((id) => typeof id === "string" && ownedCharacterInstances(account).includes(id))) {
       throw new Error("Invalid saved squad. Equip one to three distinct owned characters.");
     }
-    account.squad = [...value.squad];
+    account.squad = [...value2.squad];
   }
-  if (value.masterEquipment !== void 0) {
-    if (!record(value.masterEquipment)) throw new Error("Invalid saved Master equipment.");
+  if (value2.masterEquipment !== void 0) {
+    if (!record(value2.masterEquipment)) throw new Error("Invalid saved Master equipment.");
     account.masterEquipment = {};
-    for (const [character, id] of Object.entries(value.masterEquipment)) {
+    for (const [character, id] of Object.entries(value2.masterEquipment)) {
       if (!isStarterId(character) || !account.characters[character]) throw new Error("Master equipment requires an owned Element-Bearer.");
       if (id !== null) {
         if (!isMasterConduitId(id) || account.masterConduits?.[id] !== 1) throw new Error("Master equipment requires an owned Master Conduit.");
@@ -4798,10 +8024,10 @@ function validateAccount(value) {
       account.masterEquipment[character] = id;
     }
   }
-  if (value.conduitEquipment !== void 0) {
-    if (!record(value.conduitEquipment)) throw new Error("Invalid saved Conduit equipment.");
+  if (value2.conduitEquipment !== void 0) {
+    if (!record(value2.conduitEquipment)) throw new Error("Invalid saved Conduit equipment.");
     account.conduitEquipment = {};
-    for (const [id, slots] of Object.entries(value.conduitEquipment)) {
+    for (const [id, slots] of Object.entries(value2.conduitEquipment)) {
       if (!ownedCharacterInstances(account).includes(id)) throw new Error("Conduit equipment requires an owned character.");
       const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
       const element = isStarterId(id) ? getStarter(id).elementId : copy ? getCreature(copy.creatureId).element : void 0;
@@ -4809,26 +8035,26 @@ function validateAccount(value) {
       if (!Array.isArray(slots) || slots.some((conduit) => conduit !== null && (!isConduitId(conduit) || !(account.conduits?.[conduit] ?? 0)))) {
         throw new Error("Conduit equipment requires an owned Conduit.");
       }
-      const equipped = value.version < 5 ? normalizeLegacyKitSlots(slots, element) : validateConduitSlots(slots);
-      validateConduitElement(equipped, element);
-      account.conduitEquipment[id] = equipped;
+      const equipped2 = value2.version < 5 ? normalizeLegacyKitSlots(slots, element) : validateConduitSlots(slots);
+      validateConduitElement(equipped2, element);
+      account.conduitEquipment[id] = equipped2;
     }
   }
-  for (const [id, stage] of Object.entries(value.dungeonStages)) {
-    const canonicalId = value.version >= 4 ? id : isLegacyElement(id) ? canonicalElement(id) : id;
-    if (!isPlayableDungeon(canonicalId) || !count(stage) || stage < 1 || stage > (value.version === 2 ? 50 : dungeonStageCount)) throw new Error("Invalid saved dungeon stage.");
-    const migratedStage = value.version >= 4 ? stage : migrateLegacyDungeonStage(stage, value.version === 2 ? 2 : 3);
+  for (const [id, stage] of Object.entries(value2.dungeonStages)) {
+    const canonicalId = value2.version >= 4 ? id : isLegacyElement(id) ? canonicalElement(id) : id;
+    if (!isPlayableDungeon(canonicalId) || !count(stage) || stage < 1 || stage > (value2.version === 2 ? 50 : dungeonStageCount)) throw new Error("Invalid saved dungeon stage.");
+    const migratedStage = value2.version >= 4 ? stage : migrateLegacyDungeonStage(stage, value2.version === 2 ? 2 : 3);
     account.dungeonStages[canonicalId] = Math.max(account.dungeonStages[canonicalId] ?? 1, migratedStage);
   }
-  if (value.infusionStages !== void 0) {
-    if (!record(value.infusionStages)) throw new Error("Invalid saved infusion stages.");
-    for (const [id, stage] of Object.entries(value.infusionStages)) {
-      if (!isInfusionMode(id) || !count(stage) || stage < 1 || stage > (value.version === 2 && (id === "heavens" || id === "abyss") ? 25 : infusionStageCount(id))) throw new Error("Invalid saved infusion stage.");
-      account.infusionStages[id] = value.version === 2 && (id === "heavens" || id === "abyss") ? 1 + Math.round((stage - 1) * (dungeonStageCount - 1) / 24) : stage;
+  if (value2.infusionStages !== void 0) {
+    if (!record(value2.infusionStages)) throw new Error("Invalid saved infusion stages.");
+    for (const [id, stage] of Object.entries(value2.infusionStages)) {
+      if (!isInfusionMode(id) || !count(stage) || stage < 1 || stage > (value2.version === 2 && (id === "heavens" || id === "abyss") ? 25 : infusionStageCount(id))) throw new Error("Invalid saved infusion stage.");
+      account.infusionStages[id] = value2.version === 2 && (id === "heavens" || id === "abyss") ? 1 + Math.round((stage - 1) * (dungeonStageCount - 1) / 24) : stage;
     }
-    if (value.creatures !== void 0) {
-      if (!record(value.creatures)) throw new Error("Invalid saved Elemental-Devourer discoveries.");
-      for (const [id, entry] of Object.entries(value.creatures)) {
+    if (value2.creatures !== void 0) {
+      if (!record(value2.creatures)) throw new Error("Invalid saved Elemental-Devourer discoveries.");
+      for (const [id, entry] of Object.entries(value2.creatures)) {
         getCreature(id);
         if (!record(entry) || typeof entry.defeated !== "boolean") throw new Error("Invalid saved Elemental-Devourer discovery.");
         account.creatures[id] = { defeated: entry.defeated };
@@ -4839,8 +8065,8 @@ function validateAccount(value) {
 }
 function loadAccount(storage) {
   const raw = storage.getItem(ACCOUNT_KEY);
-  const value = raw === null ? null : JSON.parse(raw);
-  const account = raw === null ? emptyAccount() : record(value) && value.version === 1 && count(value.fractalis) ? { ...emptyAccount(), fractalis: value.fractalis } : validateAccount(value);
+  const value2 = raw === null ? null : JSON.parse(raw);
+  const account = raw === null ? emptyAccount() : record(value2) && value2.version === 1 && count(value2.fractalis) ? { ...emptyAccount(), fractalis: value2.fractalis } : validateAccount(value2);
   const profile = loadProfile(storage);
   if (profile) {
     account.characters[profile.starterId] ??= { level: 0, evolution: 1 };
@@ -5017,6 +8243,16 @@ function equipConduit(storage, character, slot, conduit) {
   account.conduitEquipment = { ...account.conduitEquipment, [character]: validateConduitSlots(slots) };
   return saveAccount(storage, account);
 }
+function unequipAllConduits(storage, character) {
+  if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before changing equipment.");
+  const account = loadAccount(storage);
+  if (!ownedCharacterInstances(account).includes(character)) throw new Error("Choose an owned character.");
+  account.conduitEquipment = { ...account.conduitEquipment, [character]: Array(conduitSlotCount).fill(null) };
+  if (isStarterId(character) && account.masterEquipment?.[character]) {
+    account.masterEquipment = { ...account.masterEquipment, [character]: null };
+  }
+  return saveAccount(storage, account);
+}
 function openMasterChest(storage, id) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before opening a Master chest.");
   if (!isMasterConduitId(id)) throw new Error("Choose a valid Master Conduit.");
@@ -5027,6 +8263,55 @@ function openMasterChest(storage, id) {
   account.masterConduits = { ...account.masterConduits, [id]: 1 };
   return saveAccount(storage, account);
 }
+function calamityUnlockedTier(account, activity) {
+  if (!isCalamityActivityId(activity)) throw new Error("Unknown Calamity activity.");
+  if (account.normalFinalClears?.[activity] !== true) {
+    const dungeon = isPlayableDungeon(activity);
+    const finalStage = dungeon ? dungeonStageCount : infusionStageCount(activity);
+    const access = dungeon ? account.dungeonStages[activity] : account.infusionStages[activity];
+    const boss = dungeon ? `dungeon-${activity}-${finalStage}-0` : `infusion-${activity}-${finalStage}-0`;
+    const uuid2 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    if (access !== finalStage || !account.receipts.some((entry) => entry.length === 37 + boss.length && uuid2.test(entry.slice(0, 36)) && entry.slice(36) === `:${boss}`)) return 0;
+  }
+  return Math.min(3, (account.calamityClears?.[activity] ?? 0) + 1);
+}
+function openCalamityChest(storage, id, expectedCount) {
+  if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before opening a Calamity chest.");
+  const { activity, tier } = parseCalamityChestId(id);
+  const account = loadAccount(storage);
+  const available = account.calamityChests?.[id] ?? 0;
+  if (!count(expectedCount) || expectedCount < 1 || available !== expectedCount) {
+    throw new Error("Calamity chest count changed. Review the current inventory before retrying.");
+  }
+  let seed2 = account.calamitySeed ?? 2654435769;
+  const reward = rollCalamityChest(activity, tier, () => {
+    seed2 ^= seed2 << 13;
+    seed2 ^= seed2 >>> 17;
+    seed2 ^= seed2 << 5;
+    seed2 >>>= 0;
+    return seed2 / 4294967296;
+  });
+  const add = (current, amount) => {
+    if (!count(amount) || !count(current + amount)) throw new Error("Calamity reward inventory capacity reached.");
+    return current + amount;
+  };
+  account.fractalis = add(account.fractalis, reward.fractalis);
+  account.lycalis = add(account.lycalis, reward.lycalis);
+  for (const [material, amount] of Object.entries(reward.materials)) {
+    if (!isMaterial(material)) throw new Error("Invalid Calamity material reward.");
+    account.materials[material] = add(account.materials[material] ?? 0, amount);
+  }
+  for (const [conduit, amount] of Object.entries(reward.conduits)) {
+    if (!isConduitId(conduit)) throw new Error("Invalid Calamity Conduit reward.");
+    account.conduits = { ...account.conduits, [conduit]: add(account.conduits?.[conduit] ?? 0, amount) };
+  }
+  account.mechanicalComponents = add(account.mechanicalComponents ?? 0, reward.mechanicalComponents);
+  account.masterChests = add(account.masterChests ?? 0, reward.masterChests);
+  account.calamityChests = { ...account.calamityChests, [id]: available - 1 };
+  account.calamitySeed = seed2;
+  const saved = saveAccount(storage, account);
+  return { account: saved, chest: calamityChest(activity, tier), reward };
+}
 function equipMasterConduit(storage, character, id) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before equipping a Master.");
   const account = loadAccount(storage);
@@ -5036,6 +8321,34 @@ function equipMasterConduit(storage, character, id) {
     validateMasterCharacter(id, character);
   }
   account.masterEquipment = { ...account.masterEquipment, [character]: id };
+  return saveAccount(storage, account);
+}
+function conduitMaxLevelPlan(account, id) {
+  if (!isConduitId(id)) throw new Error("Unknown Conduit.");
+  if ((account.conduits?.[id] ?? 0) < 1) throw new Error("Choose an owned Conduit to upgrade.");
+  const conduit = getConduit(id);
+  const currentLevel = account.conduitUpgrades?.[id] ?? 0;
+  let targetLevel = currentLevel;
+  let cost = 0;
+  while (targetLevel < conduitUpgradeCap) {
+    const nextCost = conduitUpgradeCost(conduit, targetLevel);
+    if (nextCost === null) throw new Error("Conduit upgrade cost is missing.");
+    if (cost + nextCost > (account.mechanicalComponents ?? 0)) break;
+    cost += nextCost;
+    targetLevel++;
+  }
+  return { id, currentLevel, targetLevel, cost };
+}
+function upgradeConduitToMaximum(storage, expected) {
+  if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before upgrading Conduits.");
+  const account = loadAccount(storage);
+  const plan = conduitMaxLevelPlan(account, expected.id);
+  if (plan.currentLevel !== expected.currentLevel || plan.targetLevel !== expected.targetLevel || plan.cost !== expected.cost) {
+    throw new Error("This Conduit Max Level preview changed. Review the current level and cost before retrying.");
+  }
+  if (plan.targetLevel === plan.currentLevel) throw new Error("No additional Conduit upgrades are affordable within the current cap.");
+  account.mechanicalComponents = (account.mechanicalComponents ?? 0) - plan.cost;
+  account.conduitUpgrades = { ...account.conduitUpgrades, [plan.id]: plan.targetLevel };
   return saveAccount(storage, account);
 }
 function upgradeConduit(storage, id, expectedLevel) {
@@ -5102,7 +8415,45 @@ function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
 }
 function saveAccountRewards(storage, result, runId) {
   const account = loadAccount(storage);
+  if (result.state.calamity !== void 0) {
+    const activity = result.state.calamity;
+    if (!record(activity) || !isCalamityActivityId(activity.activity) || !isCalamityTier(activity.tier) || result.state.dungeon || result.state.infusion || result.state.story || result.state.war || !["player", "cleared", "defeat"].includes(result.state.phase) || result.state.wave !== 1 || result.state.enemies.length !== 1 || activity.tier > calamityUnlockedTier(account, activity.activity)) {
+      throw new Error("Invalid or locked Calamity encounter.");
+    }
+    const boss = result.state.enemies[0];
+    const encounter2 = calamityEncounter(activity.activity, activity.tier);
+    const rewards = result.events.filter((event2) => event2.kind === "reward");
+    const reward = rewards[0];
+    const id = calamityChestId(activity.activity, activity.tier);
+    if (!boss.boss || !Number.isFinite(boss.hp) || boss.creatureId !== `calamity:${activity.activity}` || boss.id !== `calamity-${activity.activity}` || boss.definitionId !== `calamity:${activity.activity}` || boss.side !== "enemy" || boss.element !== encounter2.element || boss.level !== encounter2.level || boss.name !== encounter2.name) {
+      throw new Error("Invalid Calamity boss.");
+    }
+    getCreature(boss.creatureId);
+    if (rewards.length === 0 && result.state.phase !== "cleared" && boss.hp > 0) {
+      if (result.events.some((event2) => event2.calamityChest !== void 0 || event2.capture !== void 0 || event2.recruitment !== void 0 || event2.recruitmentOutcome !== void 0)) throw new Error("Invalid Calamity reward payload.");
+      if (account.creatures[boss.creatureId]) return account;
+      account.creatures[boss.creatureId] = { defeated: false };
+      return saveAccount(storage, account);
+    }
+    if (result.state.phase !== "cleared" || boss.hp > 0 || rewards.length !== 1 || reward.source !== boss.id || reward.target !== boss.id || reward.amount !== 0 || reward.critical !== false || reward.calamityChest !== id || Object.entries(reward).some(([key, value2]) => value2 !== void 0 && !["kind", "source", "target", "amount", "critical", "message", "calamityChest"].includes(key)) || result.events.some((event2) => event2 !== reward && event2.calamityChest !== void 0)) {
+      throw new Error("Invalid Calamity chest reward.");
+    }
+    const receipt = `${runId}:${boss.id}`;
+    if (account.receipts.includes(receipt)) return account;
+    const amount = (account.calamityChests?.[id] ?? 0) + 1;
+    if (!count(amount)) throw new Error("Calamity chest inventory capacity reached.");
+    account.calamityChests = { ...account.calamityChests, [id]: amount };
+    account.calamityClears = {
+      ...account.calamityClears,
+      [activity.activity]: Math.max(account.calamityClears?.[activity.activity] ?? 0, activity.tier)
+    };
+    account.creatures[boss.creatureId] = { defeated: true };
+    account.receipts.push(receipt);
+    return saveAccount(storage, account);
+  }
+  if (result.events.some((event2) => event2.calamityChest !== void 0)) throw new Error("Calamity chests require a Calamity encounter.");
   let changed = false;
+  const rewardedEnemies = /* @__PURE__ */ new Set();
   const recruitments = [];
   const storyBonuses = [];
   const story = result.state.story;
@@ -5197,10 +8548,10 @@ function saveAccountRewards(storage, result, runId) {
     }
     if (reward.conduits !== void 0) {
       if (result.state.infusion?.mode !== "machines") throw new Error("Conduit drops require Awaken the Machines.");
-      const eligible = machineConduitLoot(result.state.infusion.stage);
+      const eligible = machineConduitLoot(result.state.infusion.stage, account.conduits);
       const tiers = /* @__PURE__ */ new Set();
       for (const [id, amount] of Object.entries(reward.conduits)) {
-        if (!isConduitId(id) || amount !== 1 || !eligible.some((drop) => drop.id === id)) throw new Error("Invalid machine Conduit reward.");
+        if (!isConduitId(id) || amount !== 1 || !eligible.some((drop) => drop.id === id && drop.chance > 0)) throw new Error("Invalid machine Conduit reward: only unowned eligible names may drop.");
         const rarity = getConduit(id).rarity;
         if (tiers.has(rarity)) throw new Error("Only one Conduit per tier may drop per enemy.");
         tiers.add(rarity);
@@ -5238,12 +8589,13 @@ function saveAccountRewards(storage, result, runId) {
     if (reward.capture) {
       const creature = getCreature(reward.capture.creatureId);
       const stage = result.state.infusion?.stage;
-      if (!creature.mode || creature.mode === "machines" || !stage || creature.mode !== result.state.infusion?.mode || enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== enemy.level || enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? "legacy").level || creature.mode === "roses" && enemy.level > roseCaptureMaximumLevel) {
+      if (!creature.mode || creature.mode === "machines" || !stage || creature.mode !== result.state.infusion?.mode || enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== Math.min(capturedLevelCap, enemy.level) || enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? "legacy").level || creature.mode === "roses" && enemy.level > roseCaptureMaximumLevel) {
         throw new Error("Invalid captured enemy reward.");
       }
       const copy = createCreatureCopy(creature.id, stage, enemy.level);
       account.capturedCharacters = validateCapturedCharacters([...account.capturedCharacters ?? [], copy]);
     }
+    rewardedEnemies.add(enemy.id);
     account.receipts.push(receipt);
     changed = true;
   }
@@ -5277,6 +8629,22 @@ function saveAccountRewards(storage, result, runId) {
     }
     if ((account.storyCompleted ?? 0) < story.storyStage) {
       account.storyCompleted = story.storyStage;
+      changed = true;
+    }
+  }
+  if (!story && !war && result.state.phase === "cleared" && result.state.enemies.length === 1) {
+    const boss = result.state.enemies[0];
+    let normalActivity;
+    if (boss.boss && boss.hp <= 0 && boss.creatureId && rewardedEnemies.has(boss.id) && account.receipts.includes(`${runId}:${boss.id}`)) {
+      if (dungeon && !infusion && isPlayableDungeon(dungeon.element) && dungeon.stage === dungeonStageCount && result.state.wave === dungeon.stage && boss.id === `dungeon-${dungeon.element}-${dungeon.stage}-0` && boss.level === elementalEnemyLevel(dungeon.stage) && boss.element === dungeon.element && dungeonVariants(dungeon.element, dungeon.stage).some((variant) => variant.creatureId === boss.creatureId)) {
+        normalActivity = dungeon.element;
+      } else if (infusion && !dungeon && isInfusionMode(infusion.mode) && infusion.stage === infusionStageCount(infusion.mode) && result.state.wave === infusion.stage && boss.id === `infusion-${infusion.mode}-${infusion.stage}-0`) {
+        const encounter2 = infusionEncounter(infusion.mode, infusion.stage, infusion.schedule ?? "legacy");
+        if (boss.level === encounter2.level && boss.element === encounter2.enemy.element && boss.creatureId === `infusion:${infusion.mode}:${encounter2.tier}`) normalActivity = infusion.mode;
+      }
+    }
+    if (normalActivity && account.normalFinalClears?.[normalActivity] !== true) {
+      account.normalFinalClears = { ...account.normalFinalClears, [normalActivity]: true };
       changed = true;
     }
   }
@@ -5327,7 +8695,7 @@ function maxLevelPlan(account, id) {
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
   const current = starter ? ownedProgress(account, starter.id) : copy ? capturedProgress(copy) : null;
   if (!current) throw new Error("Character progress is missing.");
-  const cap = starter ? characterLevelCap(ownedProgress(account, starter.id).evolution) : 120;
+  const cap = starter ? characterLevelCap(ownedProgress(account, starter.id).evolution) : capturedLevelCap;
   const cost = { fractalis: 0, materials: {} };
   let targetLevel = current.level;
   while (targetLevel < cap) {
@@ -5384,8 +8752,8 @@ var profilePictures = starters.flatMap((character) => ["base", "omnic"].map((for
   requirement: form === "base" ? `Own ${character.name}.` : `Reach Omnic with ${character.name}.`,
   element: character.element
 })));
-function isProfilePictureId(value) {
-  return typeof value === "string" && profilePictures.some((picture) => picture.id === value);
+function isProfilePictureId(value2) {
+  return typeof value2 === "string" && profilePictures.some((picture) => picture.id === value2);
 }
 function profilePictureUnlocked(account, id) {
   const picture = profilePictures.find((entry) => entry.id === id);
@@ -5404,6 +8772,13 @@ function highestBearerLevel(account) {
   return highest;
 }
 function activityAccess(account, activity) {
+  if (activity.kind === "calamity") {
+    const valid = isCalamityActivityId(activity.activity) && isCalamityTier(activity.tier);
+    const highestTier = valid ? calamityUnlockedTier(account, activity.activity) : 0;
+    const unlocked = valid && activity.tier <= highestTier;
+    const requirement2 = highestTier === 0 ? "Clear the normal final boss (a verified final-clear receipt also qualifies)" : `Clear Calamity EX+${activity.tier - 1}`;
+    return { unlocked, minimumLevel: 0, level: highestBearerLevel(account), requirement: requirement2 };
+  }
   const minimumLevel = activity.kind === "dungeon" ? 30 : activity.kind === "war" ? 85 : activity.kind !== "infusion" ? 0 : activity.mode === "machines" ? 10 : activity.mode === "treasury" || activity.mode === "sanctuary" ? 60 : activity.mode === "roses" ? 75 : 50;
   const firstRegion = activity.kind === "infusion" && activity.mode === "machines";
   const level = highestBearerLevel(account);
@@ -5418,25 +8793,35 @@ function assertActivityAccess(account, activity) {
 
 // src/game/save-file.ts
 var SAVE_FILE_LIMIT = 4 * 1024 * 1024;
-function validateSaveFile(value) {
-  if (!value || typeof value !== "object" || !("format" in value) || value.format !== "last-light-save" || !("version" in value) || value.version !== 1 || !("profile" in value) || !("account" in value)) {
+function validateSaveFile(value2) {
+  if (!value2 || typeof value2 !== "object" || !("format" in value2) || value2.format !== "last-light-save" || !("version" in value2) || value2.version !== 1 || !("profile" in value2) || !("account" in value2)) {
     throw new Error("Choose a supported Last Light save file.");
   }
-  const profile = loadProfile({ getItem: () => JSON.stringify(value.profile), setItem() {
+  const profile = loadProfile({ getItem: () => JSON.stringify(value2.profile), setItem() {
   }, removeItem() {
   } });
   if (!profile) throw new Error("The save file is missing its starter.");
-  const account = validateAccount(value.account);
+  const account = validateAccount(value2.account);
   if (!account.characters[profile.starterId] || !account.squad?.length) throw new Error("The save file is missing its owned starter or squad.");
   return { format: "last-light-save", version: 1, profile, account };
+}
+
+// src/presentation/conduit-compatibility.ts
+var conduitRestartNotice = "Native kit and equipment rules updated. This encounter restarted at the current stage with your original squad and equipment. All previously saved rewards are kept.";
+function atTrainingWave(state, wave) {
+  if (wave <= 1) return state;
+  const spawned = nextWave({ ...structuredClone(state), wave: wave - 1, phase: "cleared" });
+  state.wave = wave;
+  state.enemies = spawned.state.enemies;
+  return state;
 }
 
 // supabase/functions/game-operation/engine.ts
 var chatMessageLength = 500;
 var chatGroupNameLength = 48;
 var chatGroupMembers = 10;
-function isProfileIcon(value) {
-  return value === "neutral" || isStarterId(value) || isProfilePictureId(value);
+function isProfileIcon(value2) {
+  return value2 === "neutral" || isStarterId(value2) || isProfilePictureId(value2);
 }
 function profileIconUnlocked(account, icon) {
   if (icon === "neutral") return true;
@@ -5489,17 +8874,17 @@ function freshGame(username, createdAt = (/* @__PURE__ */ new Date()).toISOStrin
     statistics: { storyCompleted: 0, ownedBearers: 0, capturedCreatures: 0, discoveredCreatures: 0 }
   } };
 }
-function record2(value) {
-  return !!value && typeof value === "object" && !Array.isArray(value);
+function record2(value2) {
+  return !!value2 && typeof value2 === "object" && !Array.isArray(value2);
 }
-function keys(value, allowed) {
-  if (Object.keys(value).some((key) => !allowed.includes(key))) throw new Error("Unexpected request field.");
+function keys(value2, allowed) {
+  if (Object.keys(value2).some((key) => !allowed.includes(key))) throw new Error("Unexpected request field.");
 }
-function text(value, maximum = 100) {
-  if (typeof value !== "string" || !value.length || value.length > maximum) throw new Error("Invalid text input.");
+function text(value2, maximum = 100) {
+  if (typeof value2 !== "string" || !value2.length || value2.length > maximum) throw new Error("Invalid text input.");
 }
-function integer(value) {
-  if (!Number.isSafeInteger(value) || value < 0) throw new Error("Invalid integer input.");
+function integer(value2) {
+  if (!Number.isSafeInteger(value2) || value2 < 0) throw new Error("Invalid integer input.");
 }
 var operationKeys = {
   friendRequest: ["username", "friendCode"],
@@ -5519,8 +8904,11 @@ var operationKeys = {
   purchaseConduit: ["id"],
   equipConduit: ["character", "slot", "conduit"],
   upgradeConduit: ["id", "expectedLevel"],
+  maxConduit: ["expected"],
+  unequipAllConduits: ["character"],
   openMasterChest: ["id"],
   equipMasterConduit: ["character", "conduit"],
+  openCalamityChest: ["id", "expectedCount"],
   upgradeCharacter: ["id", "upgradeKind", "expected", "fodderIds"],
   levelCaptured: ["id", "expectedLevel"],
   levelMax: ["id", "expected"],
@@ -5534,22 +8922,26 @@ var operationKeys = {
   retry: ["runId"],
   quit: ["runId"]
 };
-function validateRequest(value) {
-  if (!record2(value)) throw new Error("Request must be an object.");
-  keys(value, ["requestId", "expectedRevision", "operation"]);
-  if (typeof value.requestId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value.requestId)) {
+function validateRequest(value2) {
+  if (!record2(value2)) throw new Error("Request must be an object.");
+  keys(value2, ["requestId", "expectedRevision", "operation"]);
+  if (typeof value2.requestId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value2.requestId)) {
     throw new Error("A UUID request ID is required.");
   }
-  integer(value.expectedRevision);
-  if (!record2(value.operation) || typeof value.operation.kind !== "string" || !Object.hasOwn(operationKeys, value.operation.kind)) throw new Error("Unknown game operation.");
-  const op = value.operation;
+  integer(value2.expectedRevision);
+  if (!record2(value2.operation) || typeof value2.operation.kind !== "string" || !Object.hasOwn(operationKeys, value2.operation.kind)) throw new Error("Unknown game operation.");
+  const op = value2.operation;
   if (op.kind === "importSave") validateSaveFile(op.save);
   keys(op, ["kind", ...operationKeys[op.kind]]);
   if (operationKeys[op.kind].some((key) => key !== "fodderIds" && key !== "saleOption" && !(op.kind === "friendRequest" && (key === "username" || key === "friendCode")) && !(key in op))) throw new Error("Missing operation field.");
   for (const field of ["id", "character", "runId", "actorId", "targetId", "bannerId", "starterId", "element", "frame", "upgradeKind", "action", "saleOption"]) {
     if (field in op) text(op[field]);
   }
-  for (const field of ["slot", "expectedLevel", "quantity"]) if (field in op) integer(op[field]);
+  for (const field of ["slot", "expectedLevel", "quantity", "expectedCount"]) if (field in op) integer(op[field]);
+  if (op.kind === "openCalamityChest") {
+    parseCalamityChestId(op.id);
+    if (op.expectedCount < 1) throw new Error("Choose an owned Calamity chest.");
+  }
   if ("locked" in op && typeof op.locked !== "boolean") throw new Error("Invalid lock.");
   for (const field of ["ids", "fodderIds"]) if (field in op) {
     if (!Array.isArray(op[field]) || op[field].length > 3 || !op[field].every((id) => typeof id === "string" && id.length > 0 && id.length <= 100)) throw new Error("Invalid character IDs.");
@@ -5560,6 +8952,12 @@ function validateRequest(value) {
     integer(op.expected.level);
     integer(op.expected.evolution);
     if ("weaponRank" in op.expected) integer(op.expected.weaponRank);
+  }
+  if (op.kind === "maxConduit") {
+    if (!record2(op.expected)) throw new Error("Invalid Conduit Max Level preview.");
+    keys(op.expected, ["id", "currentLevel", "targetLevel", "cost"]);
+    text(op.expected.id);
+    for (const field of ["currentLevel", "targetLevel", "cost"]) integer(op.expected[field]);
   }
   if (op.kind === "levelMax") {
     if (!record2(op.expected) || op.expected.id !== op.id) throw new Error("Invalid Max Level preview.");
@@ -5572,9 +8970,14 @@ function validateRequest(value) {
     for (const amount of Object.values(op.expected.cost.materials)) integer(amount);
   }
   if (op.kind === "enter") {
-    if (!record2(op.activity) || !["training", "story", "dungeon", "infusion", "war"].includes(String(op.activity.kind))) throw new Error("Invalid activity.");
-    keys(op.activity, op.activity.kind === "training" ? ["kind"] : op.activity.kind === "story" ? ["kind", "stage"] : ["kind", "stage", op.activity.kind === "dungeon" ? "element" : op.activity.kind === "infusion" ? "mode" : "character"]);
-    if (op.activity.kind !== "training") integer(op.activity.stage);
+    if (!record2(op.activity) || !["training", "story", "dungeon", "infusion", "war", "calamity"].includes(String(op.activity.kind))) throw new Error("Invalid activity.");
+    if (op.activity.kind === "calamity") {
+      keys(op.activity, ["kind", "activity", "tier"]);
+      if (!isCalamityActivityId(op.activity.activity) || !isCalamityTier(op.activity.tier)) throw new Error("Invalid Calamity activity or tier.");
+    } else {
+      keys(op.activity, op.activity.kind === "training" ? ["kind"] : op.activity.kind === "story" ? ["kind", "stage"] : ["kind", "stage", op.activity.kind === "dungeon" ? "element" : op.activity.kind === "infusion" ? "mode" : "character"]);
+      if (op.activity.kind !== "training") integer(op.activity.stage);
+    }
   }
   if (op.kind === "updateProfile") {
     if (typeof op.displayName !== "string" || !op.displayName.trim().length || [...op.displayName].length > 16 || typeof op.bio !== "string" || [...op.bio].length > 120 || /[\u0000-\u001f\u007f]/.test(op.displayName + op.bio) || !isProfileIcon(op.icon)) throw new Error("Invalid profile fields.");
@@ -5587,7 +8990,7 @@ function validateRequest(value) {
     }
   }
   if ("userId" in op && (typeof op.userId !== "string" || !/^[0-9a-f-]{36}$/i.test(op.userId))) throw new Error("Invalid friend user ID.");
-  return value;
+  return value2;
 }
 var chatKeys = {
   read: { required: [], optional: ["conversationId", "before"] },
@@ -5604,13 +9007,13 @@ var chatKeys = {
 };
 var uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 var chatControl = /[\u0000-\u0008\u000b-\u001f\u007f]/;
-function validateChatRequest(value) {
-  if (!record2(value)) throw new Error("Request must be an object.");
-  keys(value, ["requestId", "chat"]);
-  if (typeof value.requestId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value.requestId)) {
+function validateChatRequest(value2) {
+  if (!record2(value2)) throw new Error("Request must be an object.");
+  keys(value2, ["requestId", "chat"]);
+  if (typeof value2.requestId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value2.requestId)) {
     throw new Error("A UUID request ID is required.");
   }
-  const op = value.chat;
+  const op = value2.chat;
   if (!record2(op) || typeof op.kind !== "string" || !Object.hasOwn(chatKeys, op.kind)) throw new Error("Unknown chat operation.");
   const shape = chatKeys[op.kind];
   keys(op, ["kind", ...shape.required, ...shape.optional ?? []]);
@@ -5634,7 +9037,7 @@ function validateChatRequest(value) {
   if ("userIds" in op && (!Array.isArray(op.userIds) || op.userIds.length > chatGroupMembers - 1 || !op.userIds.every((id) => typeof id === "string" && uuid.test(id)) || new Set(op.userIds.map((id) => id.toLowerCase())).size !== op.userIds.length)) {
     throw new Error(`Invite up to ${chatGroupMembers - 1} distinct friends.`);
   }
-  return value;
+  return value2;
 }
 var VirtualStorage = class {
   items = /* @__PURE__ */ new Map();
@@ -5645,15 +9048,18 @@ var VirtualStorage = class {
   getItem(key) {
     return this.items.get(key) ?? null;
   }
-  setItem(key, value) {
-    this.items.set(key, value);
+  setItem(key, value2) {
+    this.items.set(key, value2);
   }
   removeItem(key) {
     this.items.delete(key);
   }
 };
 function publicGame(game, revision) {
-  const account = game.account;
+  const account = validateAccount(game.account);
+  if (game.run) validateRunActivity(game.run);
+  const session = game.run ? structuredClone(game.run.session) : null;
+  if (session) capCapturedBattleLevels(session.state);
   const profile = { ...game.profile, statistics: {
     storyCompleted: account.storyCompleted ?? 0,
     ownedBearers: ownedCharacters(account).length,
@@ -5665,31 +9071,73 @@ function publicGame(game, revision) {
     account: structuredClone(account),
     starterId: game.starterId,
     profile,
-    session: game.run ? structuredClone(game.run.session) : null,
+    session,
     social: { friends: [], incoming: [], outgoing: [] }
   };
 }
+function validateRunActivity(run) {
+  validateRequest({
+    requestId: "00000000-0000-4000-8000-000000000001",
+    expectedRevision: 0,
+    operation: { kind: "enter", activity: run.activity }
+  });
+  const calamity = run.session.state.calamity;
+  if (run.activity.kind === "calamity") {
+    if (!record2(calamity) || !isCalamityActivityId(calamity.activity) || !isCalamityTier(calamity.tier) || calamity.activity !== run.activity.activity || calamity.tier !== run.activity.tier) throw new Error("Unsupported saved Calamity encounter.");
+  } else if (calamity !== void 0) throw new Error("Unsupported saved Calamity encounter.");
+}
 function gate(account, activity, entering = true) {
   if (entering) assertActivityAccess(account, activity);
+  if (activity.kind === "calamity") {
+    assertActivityAccess(account, activity);
+    return;
+  }
   if (activity.kind === "training") return;
   if (!Number.isInteger(activity.stage) || activity.stage < 1) throw new Error("Invalid stage.");
   const maximum = activity.kind === "story" ? unlockedStoryStage(account) : activity.kind === "dungeon" && isPlayableDungeon(activity.element) ? unlockedStage(account, activity.element) : activity.kind === "infusion" && isInfusionMode(activity.mode) ? unlockedInfusionStage(account, activity.mode) : activity.kind === "war" && isWarCharacter(activity.character) ? unlockedWarStage(account, activity.character) : 0;
   if (activity.stage > maximum) throw new Error("Activity stage is locked or unavailable.");
 }
-function encounter(game, run, seed) {
+function encounter(game, run, seed2, trainingWave = 1) {
   const s = run.session;
   if (!game.starterId) throw new Error("Choose a starter first.");
-  const args = [seed, game.starterId, s.progress, run.roster, s.teamProgress, run.equipment, run.captures, run.upgrades];
+  const teamProgress = s.teamProgress ?? { [game.starterId]: s.progress };
+  const masters = run.masters ?? Object.fromEntries((s.state?.allies ?? []).filter((unit) => unit.masterConduit).map((unit) => [unit.definitionId, unit.masterConduit]));
+  const args = [seed2, game.starterId, s.progress, run.roster, teamProgress, run.equipment, run.captures, run.upgrades];
   const a = run.activity;
-  return withMasterLoadouts(a.kind === "training" ? createBattle(seed, run.roster, s.teamProgress, run.equipment, run.captures, run.upgrades) : a.kind === "story" ? createStoryBattle(a.stage, ...args) : a.kind === "dungeon" ? createDungeonBattle(a.element, a.stage, ...args) : a.kind === "infusion" ? createInfusionBattle(a.mode, a.stage, ...args, s.state ? s.state.infusion?.schedule ?? "legacy" : "caps") : createWarBattle(a.character, a.stage, ...args), run.masters);
+  const state = withMasterLoadouts(a.kind === "training" ? atTrainingWave(createBattle(seed2, run.roster, teamProgress, run.equipment, run.captures, run.upgrades), trainingWave) : a.kind === "calamity" ? createCalamityBattle(a.activity, a.tier, ...args) : a.kind === "story" ? createStoryBattle(a.stage, ...args) : a.kind === "dungeon" ? createDungeonBattle(a.element, a.stage, ...args) : a.kind === "infusion" ? createInfusionBattle(a.mode, a.stage, ...args, s.state ? s.state.infusion?.schedule ?? "legacy" : "caps") : createWarBattle(a.character, a.stage, ...args), masters);
+  if (state.infusion?.mode === "machines") state.machineConduits = { ...game.account.conduits };
+  return state;
 }
 function resolveOperation(previous, operation, entropy) {
   validateRequest({ requestId: "00000000-0000-4000-8000-000000000001", expectedRevision: 0, operation });
   const game = structuredClone(previous);
+  game.account = validateAccount(game.account);
+  if (game.run) {
+    validateRunActivity(game.run);
+    game.run.captures = validateCapturedCharacters(game.run.captures);
+    capCapturedBattleLevels(game.run.session.state);
+  }
+  if (game.run && game.run.session.state.conduitRulesVersion !== conduitRulesVersion) {
+    const run = game.run;
+    if ("runId" in operation && operation.runId !== run.session.runId) throw new Error("This battle run is no longer active.");
+    if (operation.kind !== "quit") {
+      const wave = run.session.state.wave;
+      run.session.state = encounter(game, run, entropy.seed(), wave);
+      run.session.runId = entropy.uuid();
+      run.session.stageEvents = [];
+      run.session.entrancePending = true;
+      run.session.resultsVisible = false;
+      run.session.log = [...run.session.log, conduitRestartNotice].slice(-100);
+      if (operation.kind === "act" || operation.kind === "endTurn" || operation.kind === "continue" || operation.kind === "retry") {
+        return { game, response: publicGame(game, 0) };
+      }
+    }
+  }
   const storage = new VirtualStorage(game);
   let result;
   let summon;
   let summons;
+  let calamityOpening;
   if (operation.kind === "read" || operation.kind === "checkpoint") return { game, response: publicGame(game, 0) };
   if (operation.kind === "bootstrap") {
     if (game.starterId || Object.keys(game.account.characters).length) throw new Error("Starter has already been selected.");
@@ -5731,14 +9179,34 @@ function resolveOperation(previous, operation, entropy) {
       case "equipConduit":
         equipConduit(storage, operation.character, operation.slot, operation.conduit);
         break;
+      case "unequipAllConduits":
+        unequipAllConduits(storage, operation.character);
+        break;
       case "openMasterChest":
         openMasterChest(storage, operation.id);
         break;
+      case "openCalamityChest": {
+        const reward = openCalamityChest(storage, operation.id, operation.expectedCount).reward;
+        calamityOpening = {
+          id: reward.id,
+          name: reward.name,
+          fractalis: reward.fractalis,
+          lycalis: reward.lycalis,
+          materials: reward.materials,
+          conduits: reward.conduits,
+          mechanicalComponents: reward.mechanicalComponents,
+          masterChests: reward.masterChests
+        };
+        break;
+      }
       case "equipMasterConduit":
         equipMasterConduit(storage, operation.character, operation.conduit);
         break;
       case "upgradeConduit":
         upgradeConduit(storage, operation.id, operation.expectedLevel);
+        break;
+      case "maxConduit":
+        upgradeConduitToMaximum(storage, operation.expected);
         break;
       case "upgradeCharacter":
         if (!isStarterId(operation.id) || !ownedCharacters(game.account).includes(operation.id)) throw new Error("Choose an owned Element-Bearer.");
@@ -5807,6 +9275,7 @@ function resolveOperation(previous, operation, entropy) {
           game.run = null;
           break;
         }
+        if (state.infusion?.mode === "machines") state.machineConduits = { ...game.account.conduits };
         if (operation.kind === "act") {
           if (!isActionId(operation.action)) throw new Error("Invalid battle action.");
           const actor = state.allies.find((a) => a.id === operation.actorId);
@@ -5820,6 +9289,7 @@ function resolveOperation(previous, operation, entropy) {
           const advanced = advanceUnavailableTurns(first.state);
           result = { state: advanced.state, events: [...first.events, ...advanced.events] };
         } else if (operation.kind === "continue") {
+          if (state.calamity || run.activity.kind === "calamity") throw new Error("Calamity ends after one boss. Enter the next tier from Play.");
           if (state.phase !== "cleared") throw new Error("Clear the encounter before continuing.");
           result = state.dungeon || state.infusion || state.war || state.story ? nextStage(state, run.session.teamProgress) : nextWave(state);
           if (run.activity.kind !== "training") run.activity.stage++;
@@ -5827,7 +9297,9 @@ function resolveOperation(previous, operation, entropy) {
           run.session.stageEvents = [];
           run.session.entrancePending = true;
         } else {
-          if (state.phase !== "defeat") throw new Error("Retry is only available after defeat.");
+          if (state.phase !== "defeat" && run.activity.kind !== "calamity" && !(state.phase === "cleared" && run.activity.kind !== "training")) {
+            throw new Error("Retry requires defeat or a cleared stage.");
+          }
           run.session.runId = entropy.uuid();
           run.session.stageEvents = [];
           run.session.entrancePending = true;
@@ -5847,9 +9319,10 @@ function resolveOperation(previous, operation, entropy) {
   }
   game.account = validateAccount(game.account);
   if (!isProfileIcon(game.profile.icon) || !profileIconUnlocked(game.account, game.profile.icon)) game.profile.icon = "neutral";
-  return { game, response: { ...publicGame(game, 0), ...result ? { result } : {}, ...summon ? { summon } : {}, ...summons ? { summons } : {} } };
+  return { game, response: { ...publicGame(game, 0), ...result ? { result } : {}, ...summon ? { summon } : {}, ...summons ? { summons } : {}, ...calamityOpening ? { calamityOpening } : {} } };
 }
 export {
+  conduitRulesVersion,
   frames,
   freshGame,
   profileActivityFor,

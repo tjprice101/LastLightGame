@@ -5,6 +5,80 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Distinct native identities (D-316):** all16 approved character replacements
+are implemented locally, with explicit ally targeting, different turn/target/
+timing decisions, accurate native readouts and mechanic VFX. Dependent equipment
+is adapted without changing133 IDs or investments. Shared rules version3
+restarts only historical current encounters with frozen teams and saved rewards
+retained. Current tuning preserves the confirmed early solo-clear and endgame
+victory requirements. Publication remains separate.
+[Native contract](character-identity-redesign.md),
+[133-item compatibility matrix](character-conduit-compatibility.md),
+[validation/release status](handoff.md).
+
+**Complete Conduit redesign (D-313):** all85 ordinary and48 Master effects
+are implemented locally from the approved133-row roster. Old stat bundles and
+reserve rules are replaced; ordinary abilities scale through+5, Masters stay
+fixed. Ownership, costs, art and acquisition are preserved. Historical encounters
+restart their current stage with frozen equipment and saved rewards retained.
+The character redesign is subsequently implemented under D-316; Calamity is
+implemented locally under D-315.
+[Current contract and validation](conduit-redesign.md).
+
+**Machines duplicate protection (D-312):** enemy Conduit rolls select only
+unowned names within the rolled rarity; completed rarities grant nothing.
+Rates, banner bonuses, Master chests and historical holdings are preserved.
+[Exact rules](awaken-the-machines.md#unowned-only-enemy-conduit-drops-d-312).
+
+**Distinct character review (D-311), implemented by D-316:** the original full
+roster review established unique native loops, especially Infernis/Crinso.
+The current contract above supersedes the review-only status and first-pass
+numbers. [Complete roster and tuning](character-identity-redesign.md).
+
+**Character element medals (D-310):** bearer/captured detail headers show the
+member's matching36px combat-element medal and readable name, retained across
+tabs and refreshes. [Header contract](menus-and-inventory.md#character-header-element-medals-d-310).
+
+**Expanded evolution picker (D-309):** full-width captured-copy cards, larger
+portraits, eligible-first ordering and live selection progress replace the
+cramped evolution list. Exact-copy protections and costs remain unchanged.
+[Presentation contract](evolution-fodder.md#expanded-evolution-picker-d-309).
+
+**Calamity Mode (D-308/D-315):** twelve eligible activities, each with three
+single-boss EX stages at145/160/185. Guaranteed repeatable tier chests, curated
+3/5/7 independent loot bundles, sequential clear-based unlocks and strong entry
+warnings, free entry/no defeat penalty and placeholder artwork are implemented
+locally, including Inventory openings and authoritative operations. Finalized
+bosses, exact tables and measured tuning follow the owner's delegation; normal
+final victory evidence is required rather than inferred from unlocked stages.
+Client/server publication and final artwork remain pending.
+[Current contract and validation](calamity-mode.md).
+
+**Per-member attack grid (D-307):** holding any available squad member opens
+their own directional attack guide. Root-level placement prevents staggered
+members from sending it off-screen; all three positions and captured copies
+share the behavior. [Interaction and validation](combat.md#per-member-holddrag-attack-grid-d-307).
+
+**Conduit Max Level (D-306):** selected ordinary Conduits can upgrade to the
+highest affordable level through+5 in one confirmed transaction. Existing
+rarity costs, ownership, effects and active run snapshots are preserved.
+[Rules and validation](conduit-upgrades.md#max-level-d-306).
+
+**Captured level cap (D-305):** captured Elemental-Devourers cannot exceed60.
+Higher-level captures and historical saved copies reduce to60, retaining form,
+skills and ownership. Enemy levels/eligibility and Element-Bearer progression
+stay unchanged. [Compatibility and tests](character-instances.md#level-60-ceiling-d-305).
+
+**Higher-rarity leveling (D-303):** all squad members require cumulative
+Uncommon/Rare/Epic/Legendary/Omnic materials at destination31/46/61/76/91.
+Roses/Roselius use equivalent Rosethorn tiers; existing specialty costs remain
+additional. Single levels and Max Level share one recipe.
+[Exact costs and validation](units-and-progression.md#cumulative-leveling-rarities-d-303).
+
+**Conduit redesign review (D-302):** completed; subsequently approved and
+implemented locally under D-313. The [complete133-entry roster](conduit-redesign.md)
+owns exact effects, upgrade endpoints and shared interaction limits.
+
 **Enemy art containment (D-296):** shared fixed artwork slots keep complete
 enemy images and undiscovered silhouettes above names/descriptions in every
 glossary context. Original PNGs are unchanged; all151 cards verified at
@@ -794,7 +868,7 @@ Structural checks do not mean generated artwork is approved.
 [Crimson Roses](crimson-roses.md) is the D-100 playable event/special banner:
 35 stages80-140, capturable Roselius only through enemy Lv.120, six Rosethorn
 materials, protected material sales and Rosetta/Thornia/Crinso's real six-form
-kits. Separate10-Null-Prismatica special draws,6-star pity and Lv.80 Omnic Roselius
+kits. Separate10-Null-Prismatica special draws,6-star pity and Lv.60 Omnic Roselius
 duplicates preserve Standard's pool and conversion. Its54 art prompts are
 generation-ready; supplied artwork remains pending.
 

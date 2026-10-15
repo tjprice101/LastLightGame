@@ -1,6 +1,6 @@
 import { formatStat } from '../content/combat';
 import { kitPilotDescriptions } from '../content/kit-pilots';
-import { type Combatant } from '../game/battle';
+import { type BattleState, type Combatant } from '../game/battle';
 import { enemyStatusReadout } from './battle-status';
 import { elementalStatusArt, type StatusArtId } from '../content/status-art';
 import { statusIcon } from './status-icon';
@@ -9,17 +9,21 @@ import { astralReserveArt, getMasterConduit } from '../content/master-conduits';
 import { assetUrl } from './portrait';
 import { buffSnapshot } from '../game/battle-buffs';
 import { allyBuffs } from './ally-buffs';
+import { conduitStatusReadout } from './conduit-status';
+import { nativeStateReadout } from './native-kit-presentation';
 
-export function unitReadout(unit: Combatant, compact = false, owners: readonly Combatant[] = [], round = 0): string {
+export function unitReadout(unit: Combatant, compact = false, owners: readonly Combatant[] = [], round = 0, state?: BattleState): string {
   const health = `<span class="unit-health">HP ${formatStat(unit.hp)} / ${formatStat(unit.stats.health)}</span>`;
   const defense = `<span class="unit-stats">DEF ${formatStat(unit.stats.defense)}`;
   const core = compact ? health : `${health}${defense}</span>`;
-  if (unit.side === 'enemy') return `${core}${enemyStatusReadout(unit, owners)}`;
-  const resourceDescriptor = !unit.captured && unit.kit?.pilot ? kitPilotDescriptions[unit.kit.pilot].resource : undefined;
+  if (unit.side === 'enemy') return `${core}${unit.definitionId.startsWith('calamity:') ? `<span class="unit-active-buffs">${unit.hp > 0 ? allyBuffs(buffSnapshot(unit), round) : ''}</span>` : ''}${enemyStatusReadout(unit, owners)}${conduitStatusReadout(unit, round, owners)}`;
+  const resourceDescriptor = !unit.captured && !unit.kit?.nativeIdentity && unit.kit?.pilot ? kitPilotDescriptions[unit.kit.pilot].resource : undefined;
   const resourceCount = resourceDescriptor ? unit.pilot?.[resourceDescriptor.key] ?? 0 : 0;
+  const resourceMaximum = resourceDescriptor?.key === 'bloom' ? 3 + (unit.conduitRuntime?.numbers.graftBonus ?? 0) : 3;
+  const resourceSummary = resourceDescriptor?.summary.replace('Save up to 3 charges', `Save up to ${resourceMaximum} charges`);
   const charge = (text: string, icon?: StatusArtId): string =>
     `<span class="unit-stats">${icon ? statusIcon(icon) : ''}${text}</span>`;
-  const charges = compact ? '' : [
+  const charges = compact || unit.conduitRuntime ? '' : [
     unit.conduitCharges?.burnFocus && charge('Next offensive action: +5 percentage points Crit.', 'focus'),
     unit.conduitCharges?.normalMomentum && charge('Next offensive skill: +10% outgoing damage.'),
     unit.conduitCharges?.weakenPierce && charge('Next offensive action: ignores 20% Defense.', 'suppression'),
@@ -37,10 +41,8 @@ export function unitReadout(unit: Combatant, compact = false, owners: readonly C
       ? [charge(`${getConduit(id).name}: stored reserve ${memory.bank}.`)] : []),
   ].filter(Boolean).join('');
   const resource = unit.hp <= 0 || !resourceDescriptor ? ''
-    : `<span data-effect-family="${resourceDescriptor.effect.family}" data-effect-kind="${resourceDescriptor.effect.kind}" data-effect-origin="${resourceDescriptor.effect.origin}" data-effect-source="${resourceDescriptor.effect.source}" title="${resourceDescriptor.summary} ${resourceDescriptor.detail}">${statusIcon(elementalStatusArt(resourceDescriptor.effect))}${resourceDescriptor.label} ${resourceCount} / 3 charges</span>`;
-  const master = unit.masterConduit ? getMasterConduit(unit.masterConduit) : undefined;
-  const reserve = master?.rule.bank && unit.hp > 0 ? `<span class="unit-stats unit-master-reserve" data-master-reserve="${master.id}" title="${master.effect}"><img src="${assetUrl(astralReserveArt)}" alt="" width="18" height="18">Astral Reserve ${unit.omnicMemory?.[master.id]?.bank ?? 0} / ${master.rule.bank.maximum}</span>` : '';
-  return `${core}<span class="unit-active-buffs">${allyBuffs(buffSnapshot(unit), round)}</span>
+    : `<span data-effect-family="${resourceDescriptor.effect.family}" data-effect-kind="${resourceDescriptor.effect.kind}" data-effect-origin="${resourceDescriptor.effect.origin}" data-effect-source="${resourceDescriptor.effect.source}" title="${resourceSummary} ${resourceDescriptor.detail}">${statusIcon(elementalStatusArt(resourceDescriptor.effect))}${resourceDescriptor.label} ${resourceCount} / ${resourceMaximum} charges</span>`;
+  return `${core}<span class="unit-active-buffs">${allyBuffs(buffSnapshot(unit), round)}</span>${conduitStatusReadout(unit, round, owners)}
     <span class="shatter-track" role="meter" aria-label="${unit.name} Shatter Gauge" aria-valuemin="0" aria-valuemax="${unit.stats.shatterCapacity}" aria-valuenow="${unit.shatter}"><span style="width:${unit.shatter / unit.stats.shatterCapacity * 100}%"></span></span>
-    <span class="unit-gauge">${compact ? 'Gauge' : 'Shatter Gauge'} ${formatStat(unit.shatter)} / ${formatStat(unit.stats.shatterCapacity)}</span>${resource ? `<span class="unit-gauge unit-kit-resource">${resource}</span>` : ''}${reserve}${charges}`;
+    <span class="unit-gauge">${compact ? 'Gauge' : 'Shatter Gauge'} ${formatStat(unit.shatter)} / ${formatStat(unit.stats.shatterCapacity)}</span>${state ? nativeStateReadout(state, unit) : ''}${resource ? `<span class="unit-gauge unit-kit-resource">${resource}</span>` : ''}${charges}`;
 }

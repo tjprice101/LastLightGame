@@ -23,7 +23,7 @@ describe('automatic enemy turn after the final available action', () => {
     state.allies[1].shatter = 40;
     const first = actAndAdvanceTurn(state, 'ember', 'light', state.enemies[0].id);
     expect(first.state.round).toBe(1);
-    const second = actAndAdvanceTurn(first.state, 'tide', 'skill2', '');
+    const second = actAndAdvanceTurn(first.state, 'tide', 'skill2', 'ember');
     expect(second.state.round).toBe(1);
     const final = actAndAdvanceTurn(second.state, 'sprout', 'defend', '');
     expect(final.state.round).toBe(2);

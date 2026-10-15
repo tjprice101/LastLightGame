@@ -4,7 +4,8 @@ import { infusionEncounter, capturedEnemyStats } from '../content/infusions';
 import { enemySkills, type EnemySkill } from '../content/enemy-skills';
 import { applyConduitBuffs, formatStat, type FighterDefinition } from '../content/combat';
 import { validateConduitElement, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
-import { roseDuplicateMinimumLevel, roseCaptureMaximumLevel, roseMaterials } from '../content/roses';
+import { roseDuplicateMinimumLevel, roseCaptureMaximumLevel } from '../content/roses';
+import { levelingMaterials } from '../content/progression';
 
 export interface CapturedCharacter {
   instanceId: string;
@@ -16,6 +17,7 @@ export interface CapturedCharacter {
   acquisition?: 'banner-duplicate';
 }
 export type CharacterLocks = Partial<Record<StarterId, boolean>>;
+export const capturedLevelCap = 60;
 
 export function isCapturedInstanceId(value: unknown): value is string {
   return typeof value === 'string' && /^capture:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value);
@@ -51,8 +53,8 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
         typeof skill === 'object' && skill !== null && skill.name === skills[index].name &&
         skill.multiplier === skills[index].multiplier && skill.every === skills[index].every && skill.action === skills[index].action));
       if (!valid ||
-        entry.level < (copy.acquisition === 'banner-duplicate' ? roseDuplicateMinimumLevel(creature.id)! : expected.level)) throw new Error('Invalid retained enemy abilities or level.');
-      copy.level = entry.level;
+        entry.level < Math.min(capturedLevelCap, copy.acquisition === 'banner-duplicate' ? roseDuplicateMinimumLevel(creature.id)! : expected.level)) throw new Error('Invalid retained enemy abilities or level.');
+      copy.level = Math.min(capturedLevelCap, entry.level);
       copy.capturedStage = entry.capturedStage;
       copy.skills = valid;
     } else if ('skills' in entry || 'capturedStage' in entry || 'acquisition' in entry) throw new Error('Incomplete captured Elemental-Devourer progression.');
@@ -67,15 +69,16 @@ export function capturedProgress(copy: CapturedCharacter) {
   const stage = copy.capturedStage ?? creature.stages[0];
   const encounter = infusionEncounter(creature.mode, stage);
   const legacyLevel = creature.mode === 'heavens' || creature.mode === 'abyss' ? Math.round(80 + (stage - 1) * 40 / 34) : encounter.level;
-  return { level: copy.level ?? legacyLevel, stage, tier: encounter.tier,
+  return { level: Math.min(capturedLevelCap, copy.level ?? legacyLevel), stage, tier: encounter.tier,
     skills: copy.skills ?? enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.legacyAbilityMultiplier) };
 }
 
 export function capturedLevelCost(copy: CapturedCharacter) {
   const { level } = capturedProgress(copy);
-  if (level >= 120) throw new Error('Maximum captured Elemental-Devourer level reached.');
+  if (level >= capturedLevelCap) throw new Error(`Maximum captured Elemental-Devourer level ${capturedLevelCap} reached.`);
   const creature = getCreature(copy.creatureId);
-  return { fractalis: 10 + 2 * (level + 1), materials: { [creature.mode === 'roses' ? roseMaterials[0].id : `${creature.element}-common`]: Math.ceil((level + 1) / 30) } };
+  return { fractalis: 10 + 2 * (level + 1),
+    materials: levelingMaterials(creature.mode === 'roses' ? 'rosethorn' : creature.element, level + 1) };
 }
 
 export function resolveCapturedFighter(copy: CapturedCharacter, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): FighterDefinition {

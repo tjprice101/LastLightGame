@@ -70,7 +70,7 @@ describe('Last Flare portrait cut-ins', () => {
   it('shows only Last Flare with consistent duration and actual form progression', () => {
     const state = createBattle(1, ['tide'], { tide: { level: 105, evolution: 6 } });
     state.allies[0].shatter = 100;
-    const skill = act(state, 'tide', 'skill2', state.enemies[0].id).events[0];
+    const skill = act(state, 'tide', 'skill2', 'tide').events[0];
     const ultimate = act(state, 'tide', 'ultimate', state.enemies[0].id).events[0];
     const basic = act(state, 'tide', 'light', state.enemies[0].id).events[0];
     expect(portraitCue(state.allies[0], basic)).toBeNull();

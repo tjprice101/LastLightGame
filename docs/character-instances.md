@@ -4,7 +4,7 @@ Captured Elemental-Devourer Team details now share the compact Element-Bearer
 layout, with Stats & Skills, Level, Sale and Conduits sub-menus. Level includes
 an exact seven-stat next-level preview and owned/required resources; Sale keeps
 authored payouts and protections. Lock copy and squad actions remain in the
-header. Forms remain fixed and capped at120. See
+header. Forms remain fixed and capped at60. See
 [the current menu contract](menus-and-inventory.md).
 
 ## Phase5 foundation
@@ -15,7 +15,28 @@ Phase6 adds actual captures/playable kits; Phase7 adds protected-safe evolution
 fodder. Phase9 adds Treasury captures, banner creature awards and Treasury sales.
 Phase10 adds Sanctuary wisps and protected-safe dual-currency sales.
 D-100 adds [Roselius](crimson-roses.md): captures only through enemy Lv.120,
-material sales and the special banner's Omnic Lv.80 duplicate reward.
+material sales and the special banner's Omnic duplicate reward (now Lv.60).
+
+## Level 60 ceiling (D-305)
+
+All owned captured Elemental-Devourers cap at60, including Roselius and banner
+awards. Higher-level enemies still use their authored hostile stats and capture
+eligibility; successful captures join at `min(enemyLevel,60)`, retaining the
+source form, stage and exact skills. Treasury duplicate awards remain Lv50;
+the former Lv80 Roselius duplicate now joins at60.
+
+Valid historical explicit levels61-120 normalize read-only to60; metadata-free
+copies also resolve at60 at most. The next successful account transaction
+persists normalized levels, without extra load writes, refunds or grants.
+UUIDs, forms, locks, skills, equipment, squads and all other holdings survive.
+Malformed metadata still rejects. Single-level and Max Level cannot pass60;
+their cap/previews/resources use the same shared constant. Element-Bearer
+progression and enemy encounter/drop levels are unchanged.
+
+Resumed online battle snapshots also cap at60 without refreshing the team from
+menu data. Existing HP/shield proportions and spent/Gauge/cooldown state remain;
+playable HP/Attack/Defense and their kit snapshots scale down on the same
+linear playable curve. This adjustment is idempotent and does not heal/revive.
 
 - Captured duplicates are separate records, never merged or counted as a single
   playable copy. Each has a stable `capture:<UUID>` instance ID, a registered
@@ -50,7 +71,7 @@ dungeons remain ineligible.
 - `characterProtection`: authoritative manual-lock and current-squad protection.
 - `setCharacterLock`: rereads the account and atomically persists one lock change.
 - `summonCharacter`: creates first-authored-stage creature copies or the selected
-  banner's validated final duplicate (Treasury Lv50 / Roselius Lv80), with cost
+  banner's validated final duplicate (Treasury Lv50 / Roselius Lv60), with cost
   and pity in one write.
 - `creatureSaleOffer`/`sellCurrencyCreature`: exact-copy sale prices by form,
   rejecting manual/squad/Conduit protection and saving currency/removal together.
@@ -71,14 +92,14 @@ use the same instance identities through Home, battle and replay/Continue.
 Each new saved capture includes `level`, `capturedStage` and `skills` alongside
 the Phase5 identity/lock fields. Stage must belong to its registered form;
 skills must structurally match the defeated stage's authored hostile kit.
-Level may increase from that initial enemy level through120, never decrease.
+Level may increase from `min(initial enemy level,60)` through60.
 Exceptions: final Treasury banner duplicates have
 `acquisition: "banner-duplicate"` with initial Lv50 and Stage22 retained kit;
-final Roselius special-banner duplicates use initial Lv80 and Stage29 retained
+final Roselius special-banner duplicates use initial Lv60 and Stage29 retained
 kit. Validator permits only these source/forms below the stage's hostile level,
-never below50/80 respectively. Ordinary captures and ordinary banner awards
+never below50/60 respectively. Ordinary captures and ordinary banner awards
 retain the usual minimum. Roselius source stages above enemy Lv.120 reject
-without the exact final-form duplicate provenance; their owned level cap is120.
+without the exact final-form duplicate provenance; their owned level cap is60.
 Partial/invalid metadata explicitly rejects the save; no silent reset.
 
 Legacy Phase5 records without all three metadata fields resolve in memory to
@@ -90,6 +111,12 @@ This compatibility rule is not the level assigned to new real captures.
 receipts. `levelCapturedCharacter` rereads ownership, checks expected level/funds,
 and atomically updates only that copy. Squad and Conduit ownership validation
 include capture IDs. Captures never evolve; skills do not grow with levels.
+**D-303:** leveling uses cumulative higher-rarity materials: one Uncommon from
+destination31 and Rare46, retaining Common
+`ceil(destination/30)` and all previous tiers. Roselius use Rosethorn equivalents;
+other copies use their combat element. No Element-Bearer specialty surcharge,
+retroactive cost; D-305 reduces historical levels above60. Single/Max Level share the
+[exact progression recipe](units-and-progression.md#cumulative-leveling-rarities-d-303).
 See [capture rules](dungeons-and-captures.md) for exact stats/costs/actions.
 All-mode battle factories freeze equipment/skills/progress per instance;
 Continue/replay use those run snapshots, never menu edits.

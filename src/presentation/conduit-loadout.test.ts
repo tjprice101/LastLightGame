@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { emptyAccount, type Account } from '../game/account';
 import { createCreatureCopy } from '../game/character-instances';
 import { applyConduitSearch, bindConduitLoadout, conduitBuffLine, conduitLoadout, conduitLoadoutPageSize, conduitLoadoutView, conduitMatchesSearch, conduitRuleText, conduitSummary, filledConduitSlots, resetConduitLoadoutView } from './conduit-loadout';
-import { conduits, getConduit } from '../content/conduits';
+import { conduits, getConduit, conduitEffect } from '../content/conduits';
 import { referenceTeam } from './reference-team';
 import { updateCharacterTab } from './hub';
 import { getStarter } from '../content/starters';
@@ -16,6 +16,32 @@ function account(): Account {
 
 describe('Conduit loadout (D-229)', () => {
   beforeEach(() => resetConduitLoadoutView());
+
+  it('offers Unequip All directly in the loadout and enables it for ordinary, Master-only and captured gear', () => {
+    const wallet = account();
+    const host = document.createElement('div');
+    const button = () => host.querySelector<HTMLButtonElement>('[data-loadout-clear]')!;
+    host.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
+    expect(button().disabled).toBe(false);
+    expect(button().textContent).toBe('Unequip All');
+    expect(button().dataset.loadoutOwner).toBe('ember');
+    expect(button().getAttribute('aria-label')).toContain('including Master');
+    expect(button().closest('.loadout-slots')).not.toBeNull();
+    wallet.conduitEquipment = {};
+    host.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
+    expect(button().disabled).toBe(true);
+    wallet.masterEquipment = { ember: 'master-ember-1' };
+    host.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
+    expect(button().disabled).toBe(false);
+    const copy = createCreatureCopy('infusion:treasury:0');
+    wallet.capturedCharacters = [copy];
+    wallet.conduitEquipment = { [copy.instanceId]: ['vigil-core', null, null, null, null, null, null, null] };
+    host.innerHTML = conduitLoadout(copy.instanceId, 'Copy', 'tranquilitic', wallet);
+    expect(button().disabled).toBe(false);
+    expect(button().getAttribute('aria-label')).not.toContain('Master');
+    host.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', null);
+    expect(button().disabled).toBe(true);
+  });
 
   it('shows filled slot cards with art, level, next level, upgrade and unequip actions', () => {
     const wallet = account();
@@ -34,7 +60,7 @@ describe('Conduit loadout (D-229)', () => {
     expect(html).toContain('conduit-icon-frame');
     expect(html).toContain('data-conduit-upgrade="2"');
     expect(html).toContain('data-loadout-rule="siegebound-drive" data-loadout-detail-level="2"');
-    expect(html).toContain('Level 2 of 5 · next level +12.5% Attack');
+    expect(html).toContain(`Level 2 of 5 · next level ${conduitEffect(getConduit('siegebound-drive'), 3)}`);
     expect(html).toContain('data-page="conduit-upgrade" data-upgrade-target="siegebound-drive"');
     expect(html).toContain('data-loadout-unequip="0" data-loadout-owner="ember"');
     expect(html).toContain('data-master-equipment="ember"');
@@ -57,31 +83,34 @@ describe('Conduit loadout (D-229)', () => {
   });
 
   it('totals actual stat changes with before and after values', () => {
-    const html = conduitLoadout('ember', 'Infernis', 'infernic', account());
+    const wallet = account();
+    wallet.conduitEquipment = { ember: ['vigil-core', null, null, null, null, null, null, null] };
+    const html = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
     expect(html).toContain('Total bonuses');
-    expect(html).toMatch(/<span>Attack<\/span><strong><span class="stat-change stat-change--increase">\+10%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--increase">[\d,.]+<\/span><\/strong>/);
+    expect(html).toMatch(/<span>Health<\/span><strong><span class="stat-change stat-change--increase">\+6%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--increase">[\d,.]+<\/span><\/strong>/);
     expect(conduitLoadout('tide', 'Tizu', 'oceanic', account())).toContain('No stat changes yet');
   });
 
   it('marks actual penalties red and gains green without changing the displayed values', () => {
     const wallet = account();
-    wallet.conduitEquipment = { ember: ['siege-cantilever', null, null, null, null, null, null, null] };
+    wallet.conduitEquipment = { ember: ['worldbreaker-drive', 'bastion-lock', null, null, null, null, null, null] };
+    wallet.conduitUpgrades = {};
     const html = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
-    expect(html).toMatch(/<span>Attack<\/span><strong><span class="stat-change stat-change--increase">\+85%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--increase">[\d,.]+<\/span><\/strong>/);
-    expect(html).toMatch(/<span>Defense<\/span><strong><span class="stat-change stat-change--decrease">-10%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--decrease">[\d,.]+<\/span><\/strong>/);
+    expect(html).toMatch(/<span>Defense<\/span><strong><span class="stat-change stat-change--increase">\+10%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--increase">[\d,.]+<\/span><\/strong>/);
+    expect(html).toMatch(/<span>Health<\/span><strong><span class="stat-change stat-change--decrease">-6%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--decrease">[\d,.]+<\/span><\/strong>/);
   });
 
   it('colors net results relative to the unequipped base, not an individual penalty', () => {
     const wallet = account();
-    wallet.conduitEquipment = { ember: ['siege-cantilever', 'bastion-lock', null, null, null, null, null, null] };
-    wallet.conduitUpgrades = { 'bastion-lock': 5 };
+    wallet.conduitEquipment = { ember: ['astral-prism', 'bastion-lock', null, null, null, null, null, null] };
+    wallet.conduitUpgrades = { 'bastion-lock': 5, 'astral-prism': 5 };
     const dom = document.createElement('div');
     dom.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
     const defense = Array.from(dom.querySelectorAll('.loadout-bonus-row')).find(row => row.firstElementChild?.textContent === 'Defense')!;
     expect(defense.querySelectorAll('.stat-change--increase')).toHaveLength(2);
     expect(defense.querySelector('.stat-change--decrease')).toBeNull();
     expect(defense.querySelector('.loadout-base-stat')?.classList.contains('stat-change')).toBe(false);
-    wallet.conduitUpgrades = { 'bastion-lock': 2 };
+    wallet.conduitUpgrades = { 'bastion-lock': 0, 'astral-prism': 5 };
     const lower = document.createElement('div');
     lower.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
     const lowerDefense = Array.from(lower.querySelectorAll('.loadout-bonus-row')).find(row => row.firstElementChild?.textContent === 'Defense')!;
@@ -151,8 +180,9 @@ describe('Conduit loadout (D-229)', () => {
   });
 
   it('formats compact buff lines and counts filled slots', () => {
-    expect(conduitBuffLine(getConduit('parallax-relay'))).toBe('+2 pts Critical rate');
-    expect(conduitBuffLine(getConduit('siegebound-drive'), 2)).toBe('+10% Attack');
+    expect(conduitBuffLine(getConduit('parallax-relay'))).toBe('');
+    expect(conduitBuffLine(getConduit('precision-escapement'))).toBe('+10% Critical multiplier');
+    expect(conduitBuffLine(getConduit('vigil-core'), 2)).toBe('+12% Health');
     expect(filledConduitSlots('ember', account())).toBe(1);
     expect(filledConduitSlots('tide', account())).toBe(0);
   });
@@ -244,7 +274,7 @@ describe('Conduit loadout (D-229)', () => {
     expect(loadout.querySelector('.ref-master-slot.loadout-master [data-master-equipment="ember"]')).not.toBeNull();
     expect(loadout.querySelector('[data-loadout-master-rule="master-ember-1"]')).not.toBeNull();
     expect(loadout.querySelectorAll('.loadout-grid > [data-loadout-slot]')).toHaveLength(8);
-    expect(loadout.querySelector('.loadout-bonuses .loadout-bonus-strip .loadout-bonus-row')).not.toBeNull();
+    expect(loadout.querySelector('.loadout-bonuses')?.textContent).toContain('No stat changes yet');
     expect(host.querySelectorAll('.loadout-slot.is-empty .loadout-slot-plus [data-conduit-slot]')).toHaveLength(7);
     expect(host.querySelector('[data-loadout-unequip="0"]')?.textContent).toBe('Remove');
     expect(host.querySelector('.loadout-owned-list.ref-scroll')).toBeNull();
@@ -358,7 +388,7 @@ describe('Conduit loadout (D-229)', () => {
     const html = conduitLoadout('ember', 'Infernis', kit!.element ?? 'infernic', wallet);
     expect(html).toContain(`data-loadout-rule="${kit!.id}"`);
     expect(html).not.toContain(conduitRuleText(kit!)!);
-    expect(conduitRuleText(getConduit('siegebound-drive'))).toBeNull();
+    expect(conduitRuleText(getConduit('siegebound-drive'))).toBe(conduitEffect(getConduit('siegebound-drive')));
   });
 
   it('opens complete upgraded Omnic stats and mechanics in a Details dialog', async () => {
@@ -385,10 +415,9 @@ describe('Conduit loadout (D-229)', () => {
       const dialog = document.querySelector<HTMLDialogElement>('.game-dialog')!;
       expect(dialog.open).toBe(true);
       expect(dialog.textContent).toContain('Level 5 of 5');
-      expect(dialog.textContent).toContain('+210% Attack');
-      expect(dialog.textContent).toContain(conduitRuleText(conduit));
+      expect(dialog.textContent).toContain(conduitEffect(conduit, 5));
       expect(dialog.textContent).toContain('Maximum 4 Omnic');
-      expect(dialog.querySelectorAll('li')).toHaveLength(conduitBuffLine(conduit, 5).split(' · ').length);
+      expect(dialog.textContent).toContain('Once per encounter');
       dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
       await Promise.resolve();
       expect(document.querySelector('.game-dialog')).toBeNull();

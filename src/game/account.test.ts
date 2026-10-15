@@ -16,7 +16,7 @@ function storage(): ProfileStorage {
 function funded(saved: ProfileStorage) {
   const account = emptyAccount();
   account.fractalis = 100000;
-  account.materials = { 'infernic-common': 1000, 'infernic-uncommon': 1000, 'infernic-rare': 1000, 'infernic-epic': 1000, 'infernic-legendary': 1000, 'heavens-evolution': 1000, 'heavens-level': 1000 };
+  account.materials = { 'infernic-common': 1000, 'infernic-uncommon': 1000, 'infernic-rare': 1000, 'infernic-epic': 1000, 'infernic-legendary': 1000, 'infernic-omnic': 1000, 'heavens-evolution': 1000, 'heavens-level': 1000 };
   account.capturedCharacters = Array.from({ length: 6 }, (_, index) => ({
     instanceId: `capture:00000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`, creatureId: 'infusion:heavens:5', locked: false,
   }));
@@ -146,7 +146,7 @@ describe('persistent progression transactions', () => {
       }
     }
     expect(totalCost).toBe(21480);
-    expect(spent).toEqual({ 'infernic-common': 280, 'infernic-uncommon': 35, 'infernic-rare': 35, 'infernic-epic': 35, 'infernic-legendary': 10, 'heavens-evolution': 15, 'heavens-level': 30 });
+    expect(spent).toEqual({ 'infernic-common': 280, 'infernic-uncommon': 110, 'infernic-rare': 95, 'infernic-epic': 80, 'infernic-legendary': 40, 'infernic-omnic': 15, 'heavens-evolution': 15, 'heavens-level': 30 });
     expect(account.fractalis).toBe(100000 - totalCost);
     expect(account.characters.ember).toEqual({ level: 105, evolution: 6 });
     expect(account.capturedCharacters).toHaveLength(0);

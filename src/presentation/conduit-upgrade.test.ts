@@ -16,6 +16,8 @@ import { battleResults, encounterRewards } from './battle-results';
 import { createInfusionBattle, type BattleEvent } from '../game/battle';
 import { gameConfirm } from './game-dialog';
 import { presentReward } from './reward-screen';
+import { conduitEffect, getConduit } from '../content/conduits';
+import { resolveFighter, formatStat } from '../content/combat';
 
 vi.mock('./game-dialog', async (importOriginal) => ({
   ...await importOriginal<typeof import('./game-dialog')>(), gameConfirm: vi.fn(),
@@ -36,8 +38,8 @@ describe('Conduit Upgrade and account-aware icons', () => {
     expect(html.match(/data-select-upgrade-conduit=/g)).toHaveLength(2);
     expect(html.match(/data-upgrade-card=/g)).toHaveLength(1);
     expect(html).toContain('data-expected-upgrade="4"');
-    expect(html).toContain('+255% Attack, -30% Health');
-    expect(html).toContain('+297.5% Attack, -35% Health');
+    expect(html).toContain(conduitEffect(getConduit('worldbreaker-drive'), 4));
+    expect(html).toContain(conduitEffect(getConduit('worldbreaker-drive'), 5));
     expect(html).toContain('Upgrade to +5 · 1000 components');
     expect(html).toMatch(/data-upgrade-conduit="worldbreaker-drive"[^>]+disabled/);
     account.mechanicalComponents = 1000;
@@ -80,10 +82,11 @@ describe('Conduit Upgrade and account-aware icons', () => {
     for (const html of [inventoryView(equipped, 'conduits'), archives(equipped, 'conduits'),
       characterDetail(getStarter('ember'), 'equipment', equipped), characterCopyManagement(equipped, 'all')]) {
       expect(html).toContain('data-conduit-upgrade="5"');
-      expect(html).toContain('+297.5% Attack, -35% Health');
+      expect(html).toContain(conduitEffect(getConduit('worldbreaker-drive'), 5));
     }
-    expect(conduitStore(equipped)).toContain('+12.5% Health');
-    expect(homeHub(getStarter('ember'), false, equipped)).toContain('143');
+    expect(conduitStore(equipped)).toContain(conduitEffect(getConduit('vigil-core'), 3));
+    expect(homeHub(getStarter('ember'), false, equipped)).toContain(formatStat(resolveFighter('ember',
+      equipped.characters.ember, equipped.conduitEquipment.ember, equipped.conduitUpgrades).stats.health));
     expect(equipped).toEqual(before);
     expect(isMenuPage('conduit-upgrade')).toBe(true);
     expect(inventoryView(wallet())).not.toContain('data-page="conduit-upgrade"');

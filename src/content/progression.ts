@@ -42,12 +42,32 @@ export const evolutionBalance = [
   { fractalis: 4800, amounts: [25, 10] },
 ] as const;
 
+export const levelingMaterialTiers = [
+  { rarity: 'Uncommon', destination: 31 },
+  { rarity: 'Rare', destination: 46 },
+  { rarity: 'Epic', destination: 61 },
+  { rarity: 'Legendary', destination: 76 },
+  { rarity: 'Omnic', destination: 91 },
+] as const satisfies readonly { rarity: MaterialRarity; destination: number }[];
+
+export function levelingMaterials(element: ElementId | 'rosethorn', destination: number): Record<string, number> {
+  if (element !== 'rosethorn') getElement(element);
+  if (!Number.isInteger(destination) || destination < 1 || destination > 120) {
+    throw new Error('Leveling destination must be an integer from 1 to 120.');
+  }
+  return {
+    [`${element}-common`]: Math.ceil(destination / 30),
+    ...Object.fromEntries(levelingMaterialTiers.filter((tier) => destination >= tier.destination)
+      .map((tier) => [`${element}-${tier.rarity.toLowerCase()}`, 1])),
+  };
+}
+
 export function levelCost(element: ElementId, progress: CharacterProgress): UpgradeCost {
   getElement(element);
   characterGrowthFactor(progress);
   if (progress.level === characterLevelCap(progress.evolution)) throw new Error('Reach the next evolution to raise the level cap.');
   const destination = progress.level + 1;
-  return { fractalis: 10 + 2 * destination, materials: { [`${element}-common`]: Math.ceil(destination / 30),
+  return { fractalis: 10 + 2 * destination, materials: { ...levelingMaterials(element, destination),
     ...(progress.evolution >= 5 ? { [specialtyId(element, 'level')]: 1 } : {}) } };
 }
 
@@ -77,10 +97,9 @@ export function characterLevelCap(evolution: number): number {
 export function characterLevelCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
   const cost = levelCost(getStarter(id).elementId, progress);
   if (!isRoseCharacter(id)) return cost;
-  return { fractalis: cost.fractalis, materials: {
-    [roseMaterials[0].id]: Math.ceil((progress.level + 1) / 30),
-    ...(progress.evolution >= 5 ? { [roseMaterials[5].id]: 1 } : {}),
-  } };
+  const materials = levelingMaterials('rosethorn', progress.level + 1);
+  if (progress.evolution >= 5) materials[roseMaterials[5].id] = (materials[roseMaterials[5].id] ?? 0) + 1;
+  return { fractalis: cost.fractalis, materials };
 }
 
 export function characterEvolutionCost(id: StarterId, progress: CharacterProgress): UpgradeCost {

@@ -1,4 +1,4 @@
-import { conduits, getConduit, conduitEffect, validateConduitUpgradeLevel, type ConduitId, type ConduitSlots } from '../content/conduits';
+import { conduits, getConduit, conduitEffect, validateConduitUpgradeLevel, type ConduitId, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
 import { type Account } from '../game/account';
 import { currencyIcon } from './currency-icon';
 import { assetUrl } from './portrait';
@@ -6,12 +6,13 @@ import './conduit-store.css';
 import { information } from './information';
 import { conduitUpgradeMeter } from './conduit-upgrade-meter';
 import { isBannerConduitEligible } from '../content/machines';
+import { readableEffect } from './effect-copy';
 
 export function conduitDetails(id: ConduitId, level = 0, revealArt = true): string {
   const conduit = getConduit(id);
   return `<div class="conduit-details-art${revealArt ? '' : ' unreached-character-art'}">${conduitIcon(id, level)}</div>${conduitRarity(id)}
-    <dl><dt>Current effect (+${level})</dt><dd>${conduitEffect(conduit, level)}</dd>
-    <dt>At +5</dt><dd>${conduitEffect(conduit, 5)}</dd></dl>
+    <dl><dt>Current effect (+${level})</dt><dd>${readableEffect(conduitEffect(conduit, level))}</dd>
+    <dt>At +5</dt><dd>${readableEffect(conduitEffect(conduit, 5))}</dd></dl>
     <p>${conduit.lore}</p><p>${conduit.power}</p>
     <p>${conduit.price !== null ? `${conduit.price.toLocaleString('en-US')} Prismatica in the Conduit Store` : 'Awaken the Machines drop'}${isBannerConduitEligible(id) ? ' · Eligible for the 0.5% Legendary bonus tier on successful banner draws' : ''}</p>`;
 }
@@ -26,15 +27,15 @@ export function conduitRarity(id: ConduitId): string {
   const rarity = getConduit(id).rarity;
   return `<span class="rarity-badge conduit-rarity conduit-${rarity.toLowerCase()}">${rarity}</span>`;
 }
-export function kitConduitRules(equipment?: ConduitSlots): string {
+export function kitConduitRules(equipment?: ConduitSlots, upgrades: ConduitUpgrades = {}): string {
   const rules = (equipment ?? []).flatMap((id) => {
     if (id === null) return [];
     const conduit = getConduit(id);
-    return 'kitEffects' in conduit
-      ? [`<li><strong>${conduit.name}:</strong> ${conduit.effect.slice(conduit.effect.indexOf('. ') + 2)}</li>`] : [];
+    const level = upgrades[id] ?? 0;
+    return [`<li><strong>${conduit.name} +${level}:</strong> ${readableEffect(conduitEffect(conduit, level))}</li>`];
   });
   return rules.length ? `<section class="equipped-kit-rules"><h3>Equipped kit rules</h3>
-    <p>Ability descriptions show the character’s base abilities. These equipped rules apply during combat; account upgrades scale stats, not these rules.</p>
+    <p>Ability descriptions show the character’s base abilities. These complete equipped effects apply during combat at the displayed upgrade levels. Ordinary upgrades scale each effect as specified; Masters remain fixed.</p>
     <ul>${rules.join('')}</ul></section>` : '';
 }
 export function conduitInventory(account: Account | null): string {

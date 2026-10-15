@@ -6,7 +6,6 @@ import { resolveFighter } from '../content/combat';
 import { conduits } from '../content/conduits';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { createBattle, createInfusionBattle, withMasterLoadouts, act, endTurn, nextStage, nextWave, type BattleEvent } from './battle';
-import { resolveOmnicInteraction } from './kit-conduits';
 import { ACCOUNT_KEY, emptyAccount, saveAccount, loadAccount, validateAccount, openMasterChest, equipMasterConduit, equipConduit, saveAccountRewards, type Account } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { createSession } from '../presentation/battle-view';
@@ -48,26 +47,19 @@ describe('character Masters and chest contracts', () => {
     expect(masterConduits.every(entry => entry.rarity === 'Omnic' && entry.art === `master-conduits/${entry.id}.png`)).toBe(true);
     expect(conduits).toHaveLength(85);
   });
-  it('gives every Master a distinct effect and a distinct rule within each character', () => {
+  it('gives every Master a distinct complete effect within each character', () => {
     expect(new Set(masterConduits.map(entry => entry.effect)).size).toBe(48);
-    const signature = (entry: (typeof masterConduits)[number]) => JSON.stringify(entry.rule);
-    expect(new Set(masterConduits.map(signature)).size).toBe(48);
-    const shapes = masterConduits.map(entry => `${entry.rule.trigger}:${entry.rule.bank?.trigger ?? ''}:${
-      entry.rule.outcomes.map(outcome => `${outcome.kind}/${outcome.recipient ?? 'self'}`).join('+')}`);
-    expect(new Set(shapes).size).toBeGreaterThanOrEqual(40);
     for (const character of starters) {
       const own = masterConduits.filter(entry => entry.character === character.id);
-      expect(new Set(own.map(entry => entry.rule.trigger + (entry.rule.bank?.trigger ?? ''))).size).toBe(3);
+      expect(new Set(own.map(entry => entry.effect)).size).toBe(3);
     }
   });
-  it('keeps every enhancement recurring without copying passive healing, Gauge or native charges', () => {
+  it('removes obsolete uniform bank metadata and states every fixed enhancement completely', () => {
     for (const entry of masterConduits) {
-      expect(entry.effect).not.toMatch(/once per round/i);
-      expect(entry.rule.outcomes.some(outcome => outcome.kind === 'charge')).toBe(false);
-      const passive = resolveFighter(entry.character).passive;
-      if (passive.healFraction > 0) expect(entry.rule.outcomes.some(outcome => outcome.kind === 'heal')).toBe(false);
-      if (passive.lightGaugeBonus) expect(entry.rule.outcomes.some(outcome => outcome.kind === 'gauge')).toBe(false);
-      if (entry.rule.trigger === 'burn-tick') expect(entry.rule.outcomes.some(outcome => outcome.kind === 'burn-clock')).toBe(false);
+      expect(entry.effect.length).toBeGreaterThan(100);
+      expect(entry).not.toHaveProperty('rule');
+      expect(entry.effect).not.toContain('Astral Reserve');
+      expect(entry.effect).not.toContain('->');
     }
   });
   it('rolls exactly below 1%, only final boss, without consuming entropy elsewhere', () => {
@@ -182,171 +174,6 @@ describe('character Masters and chest contracts', () => {
 });
 
 describe('all Master rules and frozen sessions', () => {
-  it.each(masterConduits)('$name remains active for subsequent qualifying outcomes in the same round without extra RNG', entry => {
-    const { state, owner, target } = masterState(entry.id);
-    if (entry.rule.bank) owner.omnicMemory = { [entry.id]: { bank: 3 } };
-    const ally = state.allies[1];
-    const enemyTrigger = ['direct', 'critical', 'burn-applied', 'weaken-applied', 'burn-tick', 'activation'].includes(entry.rule.trigger);
-    const context = { trigger: entry.rule.trigger, action: entry.rule.actions?.[0], target: enemyTrigger ? target : ally,
-      amount: entry.rule.trigger === 'resource-spent' ? 2 : 10, hpDamage: 10, ownBurn: true, ownWeaken: true,
-      lethal: true, beforeHp: 1, resource: entry.rule.resources?.[0], attacker: target };
-    const events: BattleEvent[] = [];
-    resolveOmnicInteraction(state, owner, context, events);
-    expect(events.length).toBeGreaterThan(0);
-    expect(owner.omnicMemory?.[entry.id]?.usedRound).toBeUndefined();
-    expect(owner.shatter).toBeLessThanOrEqual(owner.stats.shatterCapacity);
-    expect(owner.shield).toBeLessThanOrEqual(owner.stats.health * .45 + 1);
-    state.allies.forEach(ally => {
-      ally.hp = ally.stats.health / 2;
-      ally.shatter = 0;
-      ally.shield = 0;
-      ally.readyRound = { skill1: 9, skill2: 10 };
-      delete ally.attackBoost;
-      delete ally.omnicProtection;
-    });
-    target.hp = 10000;
-    target.burn.turns = 2;
-    target.weakened = 2;
-    delete target.conduitMarks;
-    owner.omnicMemory = { ...owner.omnicMemory, [entry.id]: {
-      ...(entry.rule.bank ? { bank: 3 } : {}), usedRound: state.round, bankRound: state.round,
-    } };
-    const count = events.length;
-    resolveOmnicInteraction(state, owner, context, events);
-    expect(events.length).toBeGreaterThan(count);
-    expect(state.seed).toBe(1729);
-    if (entry.rule.bank) expect(owner.omnicMemory?.[entry.id]?.bank).toBe(0);
-  });
-  it('banks only effective authored events, caps at three, keeps same chosen recipient for multiple rewards', () => {
-    const { state, owner } = masterState('master-sprout-2');
-    const events: BattleEvent[] = [];
-    resolveOmnicInteraction(state, owner, { trigger: 'heal', target: owner, amount: 0 }, events);
-    expect(owner.omnicMemory).toBeUndefined();
-    for (let round = 1; round <= 5; round++) {
-      state.round = round;
-      resolveOmnicInteraction(state, owner, { trigger: 'heal', target: owner, amount: 1 }, events);
-      resolveOmnicInteraction(state, owner, { trigger: 'heal', target: owner, amount: 1 }, events);
-    }
-    expect(owner.omnicMemory?.['master-sprout-2']?.bank).toBe(3);
-    const pair = masterState('master-disciple-1');
-    const third = createBattle(1, ['tide']).allies[0]; pair.state.allies.push(third);
-    const combined: BattleEvent[] = [];
-    resolveOmnicInteraction(pair.state, pair.owner, { trigger: 'support', target: pair.state.allies[1], amount: 1 }, combined);
-    expect(combined.map(event => event.target)).toEqual([pair.state.allies[1].id, pair.state.allies[1].id]);
-  });
-  it.each(masterConduits.filter(entry => entry.rule.bank))('$name banks each qualifying native outcome in one round up to three', entry => {
-    const { state, owner } = masterState(entry.id);
-    const bank = entry.rule.bank!;
-    const events: BattleEvent[] = [];
-    for (let index = 0; index < 5; index++) {
-      resolveOmnicInteraction(state, owner, { trigger: bank.trigger, target: state.allies[1], amount: 1 }, events);
-      expect(owner.omnicMemory?.[entry.id]?.bank).toBe(Math.min(3, index + 1));
-    }
-    expect(owner.omnicMemory?.[entry.id]?.bankRound).toBeUndefined();
-  });
-  it('preserves ordinary Conduit round limits beside a recurring equipped Master', () => {
-    const ordinary = conduits.find(entry => 'kitEffects' in entry && entry.kitEffects.rule.trigger === 'critical' && !('bank' in entry.kitEffects.rule));
-    if (!ordinary || !('kitEffects' in ordinary)) throw new Error('Missing ordinary critical rule fixture.');
-    const { state, owner, target } = masterState('master-atmoso-1');
-    owner.conduits = [ordinary.id, null, null, null, null, null, null, null];
-    const events: BattleEvent[] = [];
-    const context = { trigger: 'critical' as const, target, amount: 10, hpDamage: 10 };
-    resolveOmnicInteraction(state, owner, context, events);
-    expect(owner.omnicMemory?.[ordinary.id]?.usedRound).toBe(state.round);
-    const memory = structuredClone(owner.omnicMemory?.[ordinary.id]);
-    const before = target.hp;
-    const count = events.length;
-    resolveOmnicInteraction(state, owner, context, events);
-    expect(owner.omnicMemory?.[ordinary.id]).toEqual(memory);
-    expect(target.hp).toBeLessThan(before);
-    expect(events.slice(count).every(event => event.message.includes('Sky Without End Turbine'))).toBe(true);
-  });
-  it('repeats every native AoE critical payoff, not just the first target, and never recursively triggers on strikes', () => {
-    const { state, owner } = masterState('master-atmoso-1');
-    owner.shatter = owner.stats.shatterCapacity;
-    owner.readyRound.skill2 = state.round;
-    owner.stats.crit = 1;
-    state.enemies.forEach(enemy => { enemy.hp = enemy.stats.health = 10000; });
-    const result = act(state, owner.id, 'skill2', state.enemies[0].id);
-    const followups = result.events.filter(event => event.kind === 'damage' && event.message.includes('Sky Without End Turbine'));
-    expect(followups).toHaveLength(state.enemies.length);
-    expect(new Set(followups.map(event => event.target)).size).toBe(state.enemies.length);
-    expect(result.state.allies[0].omnicMemory?.['master-atmoso-1']?.usedRound).toBeUndefined();
-  });
-  it('does not make Burn self-sustaining when each tick receives the persistent Master enhancement', () => {
-    const { state, owner, target } = masterState('master-ember-1');
-    state.enemies.forEach(enemy => {
-      enemy.hp = enemy.stats.health = 10000;
-      enemy.stats.damage = 0;
-      enemy.stats.crit = 0;
-      enemy.burn = { damage: 10, turns: 2, sourceId: owner.id };
-    });
-    const first = endTurn(state);
-    expect(first.events.filter(event => event.kind === 'damage' && event.message.includes('Helios Pyre Cathedral'))).toHaveLength(state.enemies.length);
-    expect(first.state.enemies[0].burn.turns).toBe(1);
-    const second = endTurn(first.state);
-    expect(second.state.enemies.find(enemy => enemy.id === target.id)?.burn.turns).toBe(0);
-    expect(endTurn(second.state).events.some(event => event.message.includes('Helios Pyre Cathedral'))).toBe(false);
-  });
-  it('refreshes bounded Attack through next round without stacking', () => {
-    const { state, owner, target } = masterState('master-crinso-1');
-    const events: BattleEvent[] = [];
-    resolveOmnicInteraction(state, owner, { trigger: 'critical', action: 'skill1', target, amount: 10 }, events);
-    expect(owner.attackBoost).toMatchObject({ fraction: .4, throughRound: 2 });
-    state.round = 2;
-    resolveOmnicInteraction(state, owner, { trigger: 'critical', action: 'skill1', target, amount: 10 }, events);
-    expect(owner.attackBoost).toMatchObject({ fraction: .4, throughRound: 3 });
-  });
-  it('actually applies Master activation after Last Flare without bypassing recovery', () => {
-    const { state, owner, target } = masterState('master-aurora-2');
-    owner.shatter = 100;
-    owner.omnicMemory = { 'master-aurora-2': { bank: 3 } };
-    const result = act(state, owner.id, 'ultimate', target.id);
-    for (const ally of result.state.allies) expect(ally.attackBoost).toMatchObject({ fraction: .3, origin: 'conduit' });
-    expect(result.state.allies[0].omnicMemory?.['master-aurora-2']?.bank).toBe(0);
-    expect(result.state.allies[0].recoverThrough).toBeGreaterThanOrEqual(state.round + 1);
-  });
-  it('team-wide outcomes reach every living ally without duplicating native kit charges', () => {
-    const tide = masterState('master-tide-1');
-    tide.state.allies[1].hp = 0;
-    resolveOmnicInteraction(tide.state, tide.owner, { trigger: 'shield-absorbed', target: tide.owner, attacker: tide.target, amount: 5 }, []);
-    expect(tide.owner.omnicProtection).toBe(.15);
-    expect(tide.state.allies[1].omnicProtection).toBeUndefined();
-    expect(tide.owner.pilot?.ward ?? 0).toBe(0);
-    const ember = masterState('master-ember-2');
-    ember.owner.pilot = { ...ember.owner.pilot, ember: 2 };
-    ember.owner.omnicMemory = { 'master-ember-2': { bank: 3 } };
-    const before = ember.state.enemies.map(enemy => enemy.hp);
-    resolveOmnicInteraction(ember.state, ember.owner, { trigger: 'activation', action: 'skill2', target: ember.target, amount: 1 }, []);
-    expect(ember.owner.pilot?.ember).toBe(2);
-    expect(ember.owner.shield).toBe(Math.round(ember.owner.stats.health * .12));
-    ember.state.enemies.forEach((enemy, index) => { if (before[index] > 0) expect(enemy.hp).toBeLessThan(before[index]); });
-  });
-  it('extends only the owner\'s own Weaken, up to three phases', () => {
-    const { state, owner, target } = masterState('master-tide-3');
-    resolveOmnicInteraction(state, owner, { trigger: 'weaken-applied', target, amount: .2 }, []);
-    expect(target.weakened).toBe(3);
-    expect(target.conduitMarks?.[owner.id]).toBe(2);
-    const other = masterState('master-aurora-1');
-    other.target.weakenSourceId = 'someone-else';
-    resolveOmnicInteraction(other.state, other.owner, { trigger: 'weaken-applied', target: other.target, amount: .2 }, []);
-    expect(other.target.weakened).toBe(2);
-  });
-  it('a Conduit strike that defeats an enemy during the enemy phase is rewarded and clears the wave', () => {
-    const state = withMasterLoadouts(createBattle(1729, ['thornia']), { thornia: 'master-thornia-1' });
-    const owner = state.allies[0];
-    owner.shield = 50; owner.pilot = { ...owner.pilot, authoredShieldSourceId: owner.id };
-    state.enemies.forEach((enemy, index) => { enemy.hp = index === 0 ? 1 : 0; });
-    const result = endTurn(state);
-    expect(result.events.some(event => event.message.includes('Conduit strike'))).toBe(true);
-    expect(result.state.enemies[0].hp).toBe(0);
-    expect(result.events.filter(event => event.kind === 'reward' && event.source === state.enemies[0].id)).toHaveLength(1);
-    expect(result.state.phase).toBe('cleared');
-  });
-  it('defense never deals Conduit damage', () => {
-    for (const entry of masterConduits.filter(item => item.rule.trigger === 'defense'))
-      expect(entry.rule.outcomes.some(outcome => outcome.kind === 'strike')).toBe(false);
-  });
   it('freezes gear through Settings cloning, Continue, Training and Retry session construction', () => {
     const session = createSession('ember', { level: 0, evolution: 1 }, { storyStage: 1 },
       { ids: ['ember'], progress: { ember: { level: 0, evolution: 1 } }, masters: { ember: 'master-ember-2' } });
@@ -372,8 +199,7 @@ describe('all Master rules and frozen sessions', () => {
     expect(inventoryView(account)).toContain('data-open-master-chest');
     expect(archives(account, 'conduits').match(/data-archive-master=/g)).toHaveLength(48);
     const { owner } = masterState('master-ember-2');
-    expect(unitReadout(owner, true)).toContain('Astral Reserve 0 / 3');
-    expect(unitReadout(owner, true)).toMatch(/assets\/master-conduits\/astral-reserve\.png\?v=[0-9a-f]{16}/);
+    expect(unitReadout(owner, true)).not.toContain('Astral Reserve');
     expect(team).toMatch(/assets\/master-conduits\/master-ember-2\.png\?v=[0-9a-f]{16}" alt="Cinderstar Genesis Engine"/);
     expect(inventoryView(account)).toMatch(/assets\/master-conduits\/grand-master-chest\.png\?v=[0-9a-f]{16}/);
     expect(inventoryView(account)).not.toContain('Artwork pending');

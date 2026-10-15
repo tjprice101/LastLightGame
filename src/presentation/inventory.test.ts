@@ -4,7 +4,7 @@ import { emptyAccount } from '../game/account';
 import { bindInventory, inventorySections, inventoryFilters, inventoryView, isInventoryTab } from './inventory';
 import { sanctuaryHeader } from './sanctuary';
 import { masterChest, masterConduits } from '../content/master-conduits';
-import { conduits, conduitEffect } from '../content/conduits';
+import { conduits, conduitEffect, getConduit } from '../content/conduits';
 import { bindInformation } from './information';
 
 afterEach(() => document.body.replaceChildren());
@@ -70,7 +70,7 @@ describe('reference Inventory layout', () => {
     expect(html).toContain('Seed of Infernic');
     expect(html).toContain('Soul of Rosethorn');
     expect(html).toContain('Vigil Core');
-    expect(html).toContain('+5% Health');
+    expect(html).toContain(conduitEffect(getConduit('vigil-core'), 0));
     expect(html).toContain('Owned 3');
     expect(html).not.toContain('Shard of Aquatic');
     expect(html).not.toContain('Bastion Lock');

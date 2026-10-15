@@ -1,5 +1,585 @@
 # Current state and handoff
 
+## Coordinated release authorized (2026-10-15)
+
+- Owner explicitly requests deploying all pending work. This supersedes
+  local-only publication restrictions in the historical implementation entries.
+- Fixed the remaining release-blocking motion-policy regression: evolution
+  fodder transitions follow the explicit in-game reduced-motion setting,
+  rather than an independent device media query. No test was skipped.
+- Final full `npm test -- --maxWorkers=2`: **3,843 passed,0 failed**.
+  **Build Last Light** (`npm run build`) passed TypeScript/Vite with the
+  existing large-chunk advisory. Authority bundle regenerated and
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json` passed.
+- `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --no-verify-jwt` succeeded. Docker-not-running warning
+  did not prevent the hosted asset upload/deployment.
+- `node tools\smoke_server_game.mjs --native-calamity` passed against the
+  deployed server: rules3, explicit Tizu shield and Disciple Instruction
+  recipients, Lv185 EX3 chest-only victory, atomic chest opening including
+  two Master chests, action/opening idempotency and persisted holdings.
+  Disposable identity and cascading records were removed; no owner data edited.
+- Pages publication follows the repository push and required CI checks.
+  Named neutral Calamity artwork remains intentional pending delivery.
+
+## Sixteen distinct native identities implemented locally (D-316)
+
+- Implements the approved [native identity redesign](character-identity-redesign.md)
+  for all sixteen Element-Bearers, replacing historical shared rotations rather
+  than layering more counters over them. Infernis uses owned Burn/detonation;
+  Crinso uses alternating Gold/Crimson actions and Combo without native Burn.
+  Other identities include delayed Seeds, Instructions, Cover, Cyclone,
+  held/lodged blades, forecast Seals, Wounds, Quarry contributions, traps,
+  Survey, shared Foundation and global-turn music.
+- Explicit living-ally selection is wired through every member's hold grid
+  and Battle menu, offline and online. Cancel/Escape preserves Gauge/turn and
+  restores focus; the hostile target remains independent. Current references,
+  owner/recipient/expiry readouts and resolved mechanic VFX replace retired
+  shared resources. Captured source kits, missing slots and level60 cap remain.
+- All133 existing Conduits retain IDs, holdings, upgrades, art and acquisition.
+  Native-dependent effects are adapted to actual mechanics; independent
+  equipment resources remain independent. The generated
+  [full compatibility matrix](character-conduit-compatibility.md) records every
+  item. Exhaustive ordinary effects across six upgrade levels and all48 Masters
+  are tested with/without equipment. Delayed healing settles real effective
+  healing/overheal once, not a second fictitious skill activation.
+- Owner-approved tuning preserves base stats, Gauge costs, recovery and enemy
+  strength. Primary native skill direct coefficients use1.6, not Normal Attack
+  or fixed follow-ups; exact support tuning is in the current contract.
+  The unequipped Lv38/Evo2 Infernis solo dungeon clear is preserved. Infernis
+  did not previously heal; its balance repair is damage/Burn rotation, not
+  replacement healing. Existing endgame seeds, victory thresholds and legal
+  equipment budgets are retained with new-kit-aware targets/builds/rotations.
+- Combat rules version3 restarts only historical current encounters, keeping
+  frozen teams/equipment and previously saved rewards. Current-version resume
+  remains intact; authority persists the restart before exposing it and rejects
+  stale actions. No account migration, grants, refunds or automatic unequips.
+  Production hostiles still select one ally per activation; simultaneous
+  hostile AoE was not introduced. Foundation allocation has separate tests.
+- Final focused assertion/matrix check passed **74 tests in4 files**:
+  `npm test -- src\presentation\ally-buffs.test.ts src\presentation\conduit-compatibility.test.ts src\presentation\conduit-http-compatibility.test.ts src\game\conduit-redesign.test.ts --maxWorkers=2`.
+  Final full `npm test -- --maxWorkers=2` passed **3,842 tests, with1 failure
+  of3,843**. The sole failure is the inherited
+  `src/presentation/settings.test.ts` reduced-motion CSS policy assertion
+  against `src/character-screen.css`; it is not skipped, hidden or changed.
+- Production TypeScript/Vite build passed (existing >500k chunk advisory).
+  `node tools\bundle_server_game.mjs` regenerated the authority bundle;
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json` passed.
+  Edited runtime/test diagnostics reported no errors.
+- Unsaved browser checks verified cancellation with unchanged Gauge/state,
+  Tizu's exact2214 shield on explicitly selected Disciple, and nonleader
+  Disciple's25-Gauge Strike Instruction on Aurora without changing the enemy
+  target. At390x800 CSS pixels the picker fit with no horizontal overflow;
+  recipient buttons exceeded44px. Aurora's next-skill forecast and owned
+  shield/Instruction expiry readouts were visible.
+  The browser document remained hidden, preventing real-time WAAPI playback;
+  checks used in-memory reduced motion and do not establish full animation
+  visual approval. Fixture was destroyed, original motion restored, title
+  retained and real localStorage verified unchanged.
+- Local only: no commit, push, deployment or real-account writes. Coordinated
+  client/server publication and a hosted smoke remain pending authorization.
+  No owner decisions remain open for this approved scope.
+
+## Calamity Mode implemented locally (D-315)
+
+- Implements the approved [Calamity contract](calamity-mode.md): twelve
+  eligible activities, each with three single-boss EX stages at145/160/185,
+  sequential permanent unlocks, free entry, no defeat penalty and explicit
+  entry/replay warnings. Story, Training and Elemental War remain excluded.
+  This supersedes the historical D-308 planning-only status below.
+- Twelve distinct boss patterns, scoped endgame stats, visible cadence/
+  counterplay, neutral named placeholder bosses/chests and discovery-gated
+  Collections are wired throughout. No borrowed/missing PNGs, new arenas,
+  headers or audio; ordinary enemy levels, player caps and native kits remain.
+- Every victory/replay atomically saves exactly one held chest, clear,
+  discovery and receipt, with no ordinary drops/captures or extra first-clear
+  grant. Inventory confirms one opening, saves fixed currencies plus3/5/7
+  activity bundles, then reveals the saved outcome. EX+3 also grants two
+  existing Cosmic Grand Master Chests, even when all Masters are owned.
+- Optional walletv5 fields preserve old saves read-only. New normal-final
+  victories establish access; historical access requires an exact current
+  final-boss UUIDv4 receipt and matching final-stage access, otherwise replay
+  the normal final. Dedicated opening RNG, safe-integer/stale-count checks,
+  denied-write preservation and receipt deduplication share offline/server
+  transactions. Strict online schemas and frozen replay/resume are connected;
+  an unsupported Calamity descriptor never falls back to Training.
+- Final targeted command passed **309 tests in7 files**:
+  `npm test -- src\game\calamity.test.ts src\game\calamity-account.test.ts src\presentation\calamity.test.ts src\online\calamity-server.test.ts src\online\calamity-http.test.ts src\content\world-lore.test.ts src\game\conduit-equipment.test.ts --maxWorkers=2`.
+  Coverage includes all36 encounters/chests, exact tables/rewards, schedules,
+  measured legal squad difficulty, access/history, atomic failure paths,
+  Inventory warnings/reveal, independent menu binding and HTTP idempotency.
+- Final `npm test -- --maxWorkers=2`: **3,669 passed,1 failed of3,670;
+  163 passing files of164**. The sole failure remains the inherited
+  `src/presentation/settings.test.ts` CSS policy assertion against D-309's
+  device-only reduced-motion query in `src/character-screen.css`; not hidden,
+  disabled or changed. An earlier full run also hit the existing randomized
+  Conduit-equipment critical-hit assertion; its targeted rerun and final full
+  run passed.
+- `npm run build` via **Build Last Light** passed TypeScript/Vite (existing
+  >500k chunk advisory). `node tools\bundle_server_game.mjs` regenerated the
+  authoritative bundle; `npx tsc --project supabase\functions\game-operation\tsconfig.json`
+  passed. Edited-file diagnostics and `git diff --check` passed.
+- Unsaved browser fixtures checked all36 cards, warning cancellation/entry,
+  the Lv145 boss and neutral scenery. Inventory's76-row Machines loot dialog
+  and saved reward reveal fit the narrow viewport without horizontal overflow;
+  reveal also fit desktop, retained focus and supported Skip/Continue.
+  One Map-backed EX+3 opening made exactly one write, consumed one chest and
+  persisted100 base Null-Prismatica plus two Master chests. Real localStorage
+  was unchanged; fixtures were discarded and the title restored.
+- Local only: no commit, push, owner grants, database migration or deployment.
+  Final boss/chest artwork remains pending; client and generated server need
+  coordinated authorized publication and a hosted smoke. No owner decisions
+  remain open for this approved scope.
+
+## Nonblocking battle errors (D-314)
+
+- Battle rejection/failure messages now float above the footer without affecting
+  battlefield or footer geometry. Alerts wrap within the viewport, pass clicks
+  through and never steal focus or introduce busy states.
+- Three-second display plus250ms fade/clear; new errors restart the lifetime,
+  reduced motion disables the transition, render/disposal cancel timers.
+- Validation: four targeted presentation suites passed29 tests (toolbar,
+  squad gestures, authority and exit). Browser fixtures confirmed unchanged
+  arena height/footer position, viewport-contained alerts, pointer pass-through,
+  fading/clearing and enabled Menu at desktop/mobile widths.
+- `npm run build` passed (TypeScript and Vite; existing large-chunk advisory).
+  Edited-file diagnostics and `git diff --check` passed. Reduced-motion browser
+  check confirmed zero-duration transition; preview made no account writes.
+- Local only; no account writes, combat/economy changes or deployment.
+
+## Complete Conduit redesign (D-313)
+
+- Owner approves implementing the entire [D-302 roster](conduit-redesign.md):
+  **85 ordinary Conduits and48 character Masters**, including flagged
+  resurrection/action-economy/routing/kit transformations. Unlisted old stat
+  bundles and reserve rules are removed, not retained underneath new prose.
+  Stable IDs, art, rarity, prices/acquisition, ownership, saved upgrades,
+  component costs and native character kits are preserved. D-311 character
+  redesign remains a proposal; Calamity is subsequently approved under D-315.
+- `tools/build_conduit_redesign.mjs` generates all133 exact descriptions and
+  coefficient ranges from the approved tables. Continuous ordinary effects
+  interpolate through+5; integer counts/durations step at+3; listed stat
+  modifiers/penalties retain1+.5*level. Masters are fixed. Catalog metadata
+  exposes only current stats/effects; the old executable reserve resolver is
+  retired, retaining only historical snapshot types.
+- Shared typed combat resolves actual native HP loss, owner/origin shield
+  layers, Burn/Weaken clocks, generated nonrecursive effects, enemy scheduling/
+  forced targets, support conversions, resource transforms, recovery exceptions,
+  rescues and at-most-two manual actions. Targeted fixes cover rejected weaker
+  applications, foreign/generated shield preservation, Foundation refresh
+  separation, latest still-active taunts, no Crinso Defense polarity advance,
+  native assist passives/buffs, full-Gauge Quiet Feather eligibility and no
+  donated action on the round a member is revived.
+- All effect/upgrade/Details/reference surfaces share current level-specific
+  descriptions. Permanent stat totals include only listed stats; accessible
+  readouts show real controls/protections/plates and linked Gauge income, not
+  shared damage or retired reserves.
+- Owner chooses **restart the current historical encounter**, not mixed old/new
+  combat. Rules version2 preserves frozen squad/progression/captures/loadouts/
+  upgrades and saved rewards, reconstructs fresh encounter resources and receipt
+  ID, and shows a visible notice. Offline/online resume, Settings and stale
+  commands use the same policy. Authoritative historical read/checkpoint commits
+  the restart atomically/idempotently before returning it; failed persistence
+  cannot expose an unsaved replacement or execute the stale command.
+- Executable roster coverage: all85 ordinary names at six levels, equipped/
+  unequipped (**1,020 cases**), plus all48 Masters equipped/unequipped
+  (**96 cases**), and focused interactions/provenance/clock/permission tests.
+  Final120/140 activity/dungeon/War benchmarks retain actual enemy stats and
+  unbuilt defeats. Legal role-specific+5 builds and matching Masters clear the
+  tested starter, Rose and mixed-team final encounters across seeds1/1729/12345;
+  no rejected giant generic buffs or boss nerfs were restored to pass them.
+- Final full command `npm test -- --maxWorkers=2`:
+  **3,375 passed,1 failed of3,376;158 passing files of159**.
+  The sole remaining failure is the inherited unrelated
+  `src/presentation/settings.test.ts` CSS policy assertion against the D-309
+  device-only reduced-motion query in `src/character-screen.css`. It was not
+  hidden, disabled or changed as part of this equipment work.
+- `npm run build` via **Build Last Light** passed (existing >500k chunk
+  advisory). `node tools\build_conduit_redesign.mjs` regenerated133 definitions;
+  `node tools\bundle_server_game.mjs` regenerated the checked-in engine;
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json` passed.
+  `python -m unittest discover -s tools -p test_kit_conduit_art.py`:2 passed.
+  Editor diagnostics and `git diff --check` clean.
+- Final specialized Rose/Crinso rotation and interaction recheck:
+  `npm test -- src\game\crimson-roses.test.ts src\game\conduit-redesign.test.ts --maxWorkers=2`:
+  **122 passed in2 files**.
+- Browser smoke loads the local title and an in-memory, unsaved upgraded
+  loadout, showing four paginated cards and no retired Omnic bundles. No owner
+  account/storage was funded or changed. The browser stalled on a later
+  viewport/frame check, so no completed mobile visual-validation claim.
+- Local only: no commit, push, account grant, database migration or deployment.
+  Publish the client and generated authoritative server together only after
+  explicit approval; hosted parity smoke remains a release step.
+
+## Machines unowned-only Conduit drops (D-312)
+
+- Owner requests no duplicate enemy Conduit drops and confirms equal selection
+  among unowned names in each rolled rarity. A completed rarity grants no
+  Conduit, compensation or alternate-tier reroll. Rare8%/Legendary3.5%/Omnic1%
+  from stage75 and independent boss/ordinary odds remain unchanged.
+- Shared resolver filters account ownership; each resolved kill reserves its
+  awards before later kills in the action. Battle state carries that inventory
+  through Continue/replay; offline rendering refreshes from current holdings.
+  Server entry/retry/actions refresh from the authoritative account, including
+  historical run snapshots missing inventory. Frozen fighter loadouts remain
+  untouched. Atomic reward validation rejects owned names, preserving receipts,
+  write-failure retries and historical duplicate counts/upgrades.
+- Account-specific View Loot initially and on stage changes shows owned names
+  at0% and evenly divides the unchanged tier chance among remaining names.
+  Activity/rules text explains completed tiers. Banner bonuses, final-boss
+  Master chests, components, currencies and their RNG remain unchanged.
+- Verified **328 tests in9 files passed**:
+  `npm test -- src\game\machines.test.ts src\online\server-game.test.ts src\presentation\creature-loot-dialog.test.ts src\game\kit-conduits.test.ts src\game\loot-table-parity.test.ts src\game\master-conduits.test.ts src\game\account.test.ts src\game\banner-pity.test.ts src\presentation\battle-exit.test.ts --maxWorkers=2`.
+  Covers exact tier boundaries, remaining-name probabilities, exhausted pools,
+  two successful Rare rolls in one AoE awarding the last name once, unchanged
+  RNG streams, invalid/failed writes, receipt retries, preserved investments,
+  offline replay and authoritative entry/Continue/replay/historical resume.
+- `npm run build` passed via Build Last Light task (existing >500k chunk
+  advisory). `node tools\bundle_server_game.mjs` regenerated the checked-in
+  engine; `npx tsc --project supabase\functions\game-operation\tsconfig.json`
+  passed. Editor diagnostics clean; no current full-regression claim.
+- [Exact specification](awaken-the-machines.md#unowned-only-enemy-conduit-drops-d-312),
+  Conduits/index/decision log/server deployment notes updated. Local only:
+  no commit, push or deployment. Website and server need coordinated
+  publication; prior D-301 deployment permission is not blanket approval.
+
+## Distinct character redesign review (D-311)
+
+- Owner rejects copycat ability setups/play patterns across all16 bearers,
+  specifically Infernis versus Crinso. Explicitly chooses complete16-character
+  design review before implementation, not immediate combat edits.
+- Audited actual combat/flagship/War definitions and current D-173 native loops:
+  repeated low-HP passives, tank shield/AoE ultimates, Atmospheric crit-charge
+  engines and Weaken ladders. [Complete proposal](character-identity-redesign.md)
+  defines replacement passive/Skill1/Skill2/Last Flare, numeric first pass,
+  decisions and trade-offs for every character.
+- Proposed contrasts: Infernis Burn maintenance/detonation versus Crinso
+  alternating direct duel combo; Tizu timed barrier, Bruno interception,
+  Razor HP-loss revenge, Orvella finite shared structure; Atmoso delayed field,
+  Elise two-blade placement/recall, Vaelor three-turn rhythm; Flora delayed
+  Seeds, Bliss allied action order, Disciple ally instruction, Aurora hostile
+  forecasts, Rosetta coordinated quarry, Thornia enemy-triggered trap,
+  Nerithe Normal-earned Survey/pierce.
+- New ally targeting/pipeline, caps, provenance, snapshot transition and numbers
+  remain proposals needing approval. Preserve acquisition/owned investment,
+  base stats/growth, costs, successive-turn ordinary skills, Last Flare recovery
+  and captured cap60. D-302133-item equipment proposal needs compatibility
+  review before either dependent redesign ships; no silent loss of owned effects.
+- Documentation-only, no live mechanics/assets/account/server changes, tests
+  or builds. Index/current kit spec/equipment proposal/decision log updated.
+  Prior local features and deployment status preserved. Await owner roster
+  review and implementation approval.
+
+## Character-header element medals (D-310)
+
+- Owner requests matching medal in the shown character detail header. Reused
+  `elementLabel` for all16 bearers and captured detail headers,36px beside
+  stars/role/rarity with readable element name. Captured copies use actual
+  combat element, not infusion/fodder family. Removed duplicate plain element
+  from prefix; upgrade refresh matches it and preserves medal image DOM.
+- `npm test -- src\presentation\upgrade-reference.test.ts
+  src\presentation\reference-ui.test.ts --maxWorkers=2`:86 tests in2 files passed.
+  All16 headers, refresh identity and captured elements covered. Build Last Light
+  (`npm run build`) passed with existing chunk advisory; edited TS diagnostics
+  clean. In-memory Crinso fixture at1440/390px loads the correct Chaotic medal
+  at36px without page overflow. No owner account/save changes.
+- Presentation-only, local/not committed/pushed/deployed. Calamity remains
+  planning-only; previous unrelated local work preserved.
+
+## Expanded evolution copy picker (D-309)
+
+- Owner screenshot targets captured-copy selection inside Evolution. Removed
+  the64-96px compact list/40px portraits; organized detail now places the picker
+  full-width below stat/resources, with96px desktop/72px mobile portraits,
+  responsive cards and a tall bounded list for large holdings.
+- Eligible-first ordering preserves saved copy numbers and every disabled
+  protected copy/reason. Live selection updates progress, eligible total,
+  ready/excess text, selected labels and viewed-bearer accent. Missing eligible
+  copies get activity/form/protection guidance; irreversible consumption stays
+  explicit. No eligibility, save, cost, confirmation or transaction changes.
+- Shared `updateEvolutionSelection` replaces inline main-handler updates and
+  retains explicit missing-control errors. New presentation tests cover
+  full-width placement, sorting/protections, exact-count/over-selection,
+  insufficient resources, meter/status updates and no account mutation.
+- Validation: `npm test -- src\presentation\upgrade-reference.test.ts
+  src\game\evolution-fodder.test.ts src\presentation\reference-ui.test.ts
+  src\presentation\upgrade-result.test.ts --maxWorkers=2`:102 tests in4 files
+  passed. Build Last Light (`npm run build`) passed with existing chunk advisory;
+  edited-file diagnostics clean. Browser in-memory fixture verifies larger
+  cards and live selection with no owner-save changes. Final fixtures at
+  1440/390/320px show no page/card horizontal overflow,96/72px portraits,
+  full-width picker and visible six-star ratings/reasons. Actual checkbox click
+  updates the meter/status, accent border/background and Evolve readiness.
+  Focused `git diff --check` passed; fixture cleared by page reload.
+- Local only, not committed/pushed/deployed. Calamity remains planning-only.
+
+## Calamity Mode planning only (D-308)
+
+- Owner requests a plan, not implementation. Confirmed12 activities (six named
+  farms/infusions/Machines/event plus six material dungeons),36 EX stages,
+  single activity-specific boss at145/160/185, same identity across its tiers.
+  Excludes Story, Training and all Elemental War activities.
+- Clarifications confirmed: unlimited replay guarantees one matching chest per
+  victory; normal final clear then sequential EX clears unlock permanently;
+  chest replaces all normal kill drops/captures/recruitment; chest opens later
+  from Inventory;3/5/7 independent curated activity loot bundles, not quantity
+  multipliers; EX+3 grants two existing Cosmic Grand Master Chests.
+- Fixed chest currencies:100k/250k/500k Prismatica and50/70/100
+  Null-Prismatica. Red/white energy versus black/white materials and unique
+  activity chest designs; explicit unforgiving entry warnings.
+- [Full plan](calamity-mode.md) separates confirmed requirements from proposed
+  boss roster, activity loot candidates, difficulty direction, UI/persistence/
+  online rollout and required tests. Current stat helpers reject>140; isolate
+  Calamity rather than altering ordinary tuning. Current direct Master-chest
+  validator is Machines-final-only; add a separate validated opening source.
+- Economy impact explicit:24 EX+3 openings yield48 selectable Master chests.
+  No secret cap/entry price/drop chance is approved. Exact tables/mechanics,
+  measurable difficulty, historical final-clear evidence, free-entry policy
+  and optional arena/header/audio scope remain review items.
+- Documentation-only: no gameplay, saves, assets, server changes or deployment.
+  Tests/build not run for this planning-only task. Existing local D-303 through
+  D-307 changes and publication status remain untouched.
+
+## Per-member squad attack grid and leveling recheck (D-307)
+
+- Reproduced the second member's guide off-screen at1440x1000: the staggered
+  button's40px CSS translate establishes a fixed-position containing block,
+  offsetting the already viewport-based guide coordinates a second time.
+  The guide now mounts directly under the battle root, tracks the held actor,
+  preserves their element accent and cleans up on cancellation/lost capture/
+  disposal. All three slots retain the existing offline/online actor dispatch;
+  no combat math, Gauge costs, cooldown rules, RNG or saves change.
+- Added `src/presentation/battle-squad-gestures.test.ts`: own icons/availability,
+  per-member status, all three positions' one-time offline/online dispatch,
+  captured squad member, center cancellation, lost capture, disposal, pending
+  pointers and unavailable actors.
+- D-303 already routes single leveling, Max Level, previews and authoritative
+  transactions through the cumulative31/46/61/76/91 recipe. Rechecked boundaries,
+  all16 Element-Bearers, Rosethorn and additive specialty costs. Preserve D-305:
+  captured copies stop at60 and therefore do not spend higher tiers above60.
+- `npm test -- src\presentation\battle-squad-gestures.test.ts
+  src\presentation\battle-shortcuts.test.ts src\presentation\battle-gesture.test.ts
+  src\presentation\gesture-guide.test.ts src\game\leveling-materials.test.ts
+  src\game\max-level.test.ts src\online\server-game.test.ts --maxWorkers=2`:
+  all134 tests in7 files passed.
+  Build Last Light (`npm run build`):passed with existing chunk-size advisory.
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`:passed.
+- In-memory browser fixtures at1440x1000 and390x844 confirm each member's
+  guide stays inside the viewport, with its own actor/element and visible phone
+  status. Pointer events were dispatched with fixture-only capture shims;
+  native pointer capture was not browser-validated. No owner data modified.
+  Fixture was disposed and page reloaded; edited-file diagnostics and focused
+  `git diff --check` passed.
+- Local only: no commit, push or deployment. D-303 through D-306 still need
+  coordinated client/server publication; D-307 is client presentation only.
+
+## Conduit Max Level (D-306)
+
+- Owner requests Max Level on the existing Conduit upgrade screen, like
+  character Max Level. Added alongside single-step upgrades: highest affordable
+  target up to+5, exact sum of existing rarity costs, game-native confirmation
+  with current/target effects and penalties, one component/upgrade save.
+  Common+0 with829 reaches+5 for600 and leaves229; partial affordability
+  advances only through fully funded sequential steps. Masters stay unchanged.
+- Shared `conduitMaxLevelPlan`/`upgradeConduitToMaximum` validate ownership,
+  expected level/target/cost and current funds; stale/forged/no-op requests or
+  failed writes spend nothing. New strict authoritative `maxConduit` operation
+  is wired to both menu binding paths; generated server bundle refreshed.
+  Online never uses an offline fallback or repeated per-level requests.
+- Both action types share a pending guard across refresh/rebind. Tests caught
+  and fixed duplicate-click early returns releasing another action's guard.
+  Actual saved final level/total drives one receipt; filters/selection/page,
+  other holdings/upgrades/gear and frozen active battle snapshots survive.
+- `npm test -- src\game\conduit-max-level.test.ts
+  src\game\conduit-upgrades.test.ts
+  src\presentation\conduit-max-level.test.ts
+  src\presentation\conduit-upgrade.test.ts
+  src\presentation\conduit-upgrade-catalog.test.ts
+  src\presentation\conduit-menu-update.test.ts
+  src\presentation\reference-ui.test.ts
+  src\online\server-game.test.ts --maxWorkers=2`:all325 tests in8 files passed.
+  Includes all85 ordinary names' exact affordability boundaries and all upgrade
+  starting levels, UI click/confirmation/cancellation/errors and online atomicity.
+  `node tools\bundle_server_game.mjs`:passed.
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`:passed.
+  Build Last Light (`npm run build`):passed, existing chunk-size advisory.
+  Final focused rerun after Information text:29 tests in4 files passed.
+  Edited-file diagnostics and `git diff --check`:passed.
+- Browser in-memory fixture confirms+0->+5 for600 from829: exactly one write,
+  remaining229, correct saved receipt and cap/status focus. Enabled Max Level
+  fits at390px with a49px target. No owner save or account was modified;
+  fixture and temporary presentation styling were cleared by reload.
+- Local only: no commit, push or deployment. Coordinated client/game-operation
+  publication remains needed for D-303 through D-306. D-302's Conduit redesign
+  remains review-only; this convenience feature does not implement its effects.
+
+## Captured Elemental-Devourer level60 ceiling (D-305)
+
+- Owner requests all captured copies cap at60, with higher-level captures
+  restored to60. Shared `capturedLevelCap` drives creation, validation,
+  metadata-free progress, playable stats, single-level and Max Level, plus
+  both captured detail layouts. Higher-level kill reward events and persisted
+  copies agree on60; source stage, fixed form and exact hostile skills remain.
+  Rose duplicate awards now join at60; Treasury duplicates remain50.
+- Valid historical levels61-120 normalize without load-time writes or refunds.
+  First successful transaction persists normalized data. Identity, locks,
+  equipment, currencies, ownership, squads and skill provenance survive.
+  Invalid metadata still rejects. Captured leveling uses Common/Uncommon/Rare
+  through60; D-303's higher tiers still apply to Element-Bearers.
+- Online read/public responses and resumed snapshots also cap existing copies.
+  Snapshot HP/Attack/Defense scale on the existing linear playable curve,
+  preserving HP/shield proportions and Gauge/spent/recovery/cooldown state;
+  no menu-team refresh, healing, revival or RNG/reward changes. Enemy
+  encounter levels and Rose enemy120 capture eligibility remain unchanged.
+- Tests cover every authored capturable form, real capped rewards in all five
+  modes, atomic/receipt-deduplicated saves, forged reward rejection, old-save
+  read-only normalization, max/stale-level rejection and idempotent active-run
+  adjustment. Updated older fixtures/assertions to the new approved ceiling.
+- Build Last Light task (`npm run build`):passed, existing chunk-size advisory.
+  `node tools\bundle_server_game.mjs`:passed.
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`:passed.
+  `npm test -- --maxWorkers=2`:all2,304 tests in149 files passed.
+  Edited-file diagnostics and `git diff --check`:passed.
+  Browser presentation-only fixture: a Lv120 source becomes Lv60, details show
+  Level60/60 and Maximum level60 with no level-up action. No owner save changed.
+- Local only; no commit/push/deployment. Coordinate client and authoritative
+  game-operation publication, including pending D-303/D-304. No further owner
+  design decision is needed; D-302 Conduit redesign remains review-only.
+
+## Direct Unequip All control (D-304)
+
+- Owner requests a button directly in the viewed member's Conduit screen and
+  explicitly includes the Master. Loadout heading now offers Unequip All,
+  disabled when neither ordinary nor Master gear is equipped. Captured
+  Elemental-Devourers use the same control without a Master.
+- Shared `unequipAllConduits` validates profile/current ownership, clears all
+  eight slots and any equipped matching Master in one save. Strict online
+  operation/dispatch and regenerated engine bundle use the same transaction.
+  Ownership/upgrades, currencies, other members and frozen active runs remain.
+  Existing click handler refreshes the full page/status and restores focus
+  to Back; existing online busy/error handling applies.
+- `node tools\bundle_server_game.mjs`:passed.
+  `npm test -- src\game\conduit-equipment.test.ts
+  src\presentation\conduit-loadout.test.ts
+  src\online\server-game.test.ts --maxWorkers=2`:107 tests passed.
+  `npm test -- --maxWorkers=2`:all2,297 tests in148 files passed.
+  Build Last Light task (`npm run build`):passed, existing chunk-size advisory.
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`:passed.
+  Edited TypeScript diagnostics and `git diff --check`:passed.
+- Browser presentation-only fixture verifies the direct button is enabled
+  with gear, has a45.6px target and fits its heading at390px width; no owner
+  save modified. Atomic persistence/captured/Master-only eligibility and frozen
+  online-run preservation are covered by the tests above.
+- Local only: no commit, push or server deployment. Publish client and
+  authoritative game-operation together for online availability, including
+  the pending D-303 leveling rules. D-302 redesign remains review-only.
+
+## Cumulative higher-rarity leveling costs (D-303)
+
+- Owner requests higher elemental rarities as levels rise, explicitly includes
+  captured Elemental-Devourers and equivalent Rosethorn rarities for Roses,
+  and selects cumulative destination thresholds31/46/61/76/91. Every level
+  requires one of each unlocked Uncommon/Rare/Epic/Legendary/Omnic tier,
+  plus unchanged `ceil(destination/30)` Common and Prismatica.
+  [Exact recipe](units-and-progression.md#cumulative-leveling-rarities-d-303).
+- Shared `levelingMaterials` drives all16 Element-Bearers and captured
+  single-level/Max Level previews and transactions. Rose Element-Bearer
+  Evo5/6 Soul surcharge is added, not overwritten: destination91+ costs
+  two Souls, while captured Roselius cost one. Existing matching ordinary
+  specialty items, evolution recipes, caps, saved levels and holdings remain.
+  No migration, retroactive spending, new rewards or load-time writes.
+- Character Information explains the cumulative schedule from the same typed
+  thresholds. Existing Character/captured cost surfaces render the complete
+  recipe automatically; Max Level stops before missing higher tiers.
+  Authoritative single/bulk tests reject every missing material and stale
+  Common-only previews without mutating inputs or spending partial costs.
+- `node tools\bundle_server_game.mjs`:passed, shared engine regenerated.
+  `npm test -- src\game\leveling-materials.test.ts
+  src\game\max-level.test.ts src\game\account.test.ts
+  src\game\captures.test.ts src\online\server-game.test.ts
+  src\presentation\upgrade-reference.test.ts
+  src\presentation\menu-information.test.ts --maxWorkers=2`:198 passed.
+  Initial full-suite failures were old Common-only fixture budgets/expected
+  recipes; updated them to fund/assert the approved cumulative tiers.
+  Final `npm test -- --maxWorkers=2`:all2,293 tests in148 files passed.
+  `npm run build`:passed, existing chunk-size advisory.
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`:passed.
+  Edited TypeScript diagnostics and `git diff --check`:passed.
+- Local implementation/source/bundle only; not committed, pushed or deployed.
+  D-301's already-hosted reward/replay correction remains live; D-303 requires
+  coordinated website and game-operation publication for matching visible/
+  authoritative leveling costs. Prior publication approval was D-301-specific.
+  Prior dirty replay work and D-302 review proposal are preserved; Conduit
+  mechanics remain unchanged and still await owner review.
+
+## Complete Conduit redesign proposal (D-302)
+
+- Owner requests genuinely distinct effects across every character feature,
+  explicitly includes85 ordinary Conduits plus48 character Masters, authorizes
+  creative proposals affecting any mechanic, and chooses upgrade-scaled special
+  effects with explicit caps. Owner then selects a complete design roster for
+  review before combat implementation.
+- [Review deliverable](conduit-redesign.md) covers all133 existing IDs/names,
+  rarity/element/character assignments, exact ordinary +0/+5 effects and
+  interpolation/threshold rules,48 fixed Master designs, coverage categories,
+  interaction precedence and implementation/validation gates.
+  Removes repeated stat-bundle/Astral-Reserve templates in the proposal and
+  replaces obsolete ordinary-skill cooldown reductions with useful roles.
+- R/T/G/K flags call out resurrection/lethal prevention, action/recovery
+  changes, routing/threat and skill/resource/control transformations for
+  individual review. No new economy, acquisition or Master upgrade system
+  proposed. Existing owned IDs/levels/art/prices/drop rules remain.
+- Status: documentation-only design, not approved detailed mechanics, not
+  implemented, not deployed. Live stat-only upgrades, existing Master rules
+  and all account/combat behavior remain unchanged. Earlier D-301 dirty work
+  is preserved; no commit or server/client publication performed here.
+- Verification: inline `node --input-type=module` catalog/TypeScript-AST audit
+  passed all133 unique exact IDs/names,10/15/15/45 ordinary rarity counts,
+  all45 element assignments,48 Masters, complete row numbers, distinct effect
+  text and proposal file-link targets. `git diff --check`:passed. These are
+  coverage checks, not gameplay/balance tests; no build/suite needed for docs.
+- Next: owner review of the roster and flagged mechanics, stat-bundle removal/
+  scaling and active-run compatibility. Then implement all affected runtime,
+  UI, shared server and tests coherently; do not activate descriptions without
+  their mechanics or mix new rules with old frozen stat snapshots.
+
+## Victory replay and hosted loot parity (D-301)
+
+- Owner requests Replay stage and reports advertised rewards missing in the
+  published online game. Confirmed live game-operation version12, last updated
+  2026-10-14 06:20UTC, still used the oldLv23 Story Uncommon gate. Downloaded
+  source to isolated session artifacts; hosted smoke reproduced missing early
+  Uncommon drops while local/client tables expected them.
+- Added Replay stage to every staged victory, including terminal stages.
+  Reuses restart controls; online retry now permits cleared staged encounters
+  as well as defeat. Fresh run/receipts/HP/Gauge, same frozen squad/loadouts,
+  saved rewards/unlocks retained. No claim/bonus repeat; new enemies may add
+  seen discoveries. Active/cleared Training retry restrictions remain.
+  [Contract](free-battle.md#victory-stage-replay-and-online-loot-parity-d-301).
+- View Loot now explicitly explains per-enemy chances versus guaranteed100%
+  drops. No probability increases or retroactive grants. New local parity
+  tests cover all120 Training levels,150 Story stages,210 dungeon stages,
+  255 other activity stages and30 War bosses, actual rewards/guarantees and
+  belowLv23 Uncommon reachability. Existing boundary tests retain exact odds.
+- `npm test -- --maxWorkers=2`:all2,260 tests passed in147 files.
+  `npm run build`:passed, existing chunk-size advisory.
+  `node tools\bundle_server_game.mjs`, server TypeScript and smoke-script syntax
+  check:passed. Edited diagnostics and `git diff --check`:passed.
+  Browser fixture at1600x1000/488x1055/400x710 shows44px Replay controls,
+  no horizontal overflow; shortest viewport scrolls to the reachable button.
+- Owner explicitly approved live server publication. Ran
+  `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --no-verify-jwt`:succeeded.
+  `node tools\smoke_server_game.mjs --loot-parity`:passed36 live early/final
+  cases with exact local/server rewards, boosted final amounts, unchanged
+  rare counts, separate first-clear bonuses, persisted accounts, idempotency,
+  early Uncommon drops and victory replay. All disposable identities and
+  cascading records removed; no owner account/session edits.
+- Server fix is live and includes D-300 no-cooldown skills. Website Replay
+  button/copy/tests/docs remain local for the next normal repository push;
+  no commit or Pages publication performed here. Pages pushes do not deploy
+  game-operation; shared-rule changes require explicit server deployment.
+
 ## Successive-turn squad skills (D-300)
 
 - Owner requests no ability cooldowns except Last Flare and explicitly includes
@@ -21,7 +601,8 @@
   authoritative-operation repeats and retained Last Flare restrictions.
   `npm run build`:passed, existing chunk-size advisory only.
   Edited-source diagnostics and `git diff --check`:passed.
-- Local client/server source and bundle only. Both client and game-operation
+- Historical completion status (server subsequently deployed under D-301):
+  local client/server source and bundle only. Both client and game-operation
   function must be published for hosted parity; neither deployed in this task.
   No owner accounts or live sessions modified.
 

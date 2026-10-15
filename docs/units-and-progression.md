@@ -1,5 +1,56 @@
 # Units and progression
 
+**D-305:** captured Elemental-Devourers now cap at60. New captures/banner awards
+and existing valid saved copies above60 reduce to60, preserving form and skills.
+Enemy levels and Element-Bearer progression are unchanged.
+[Capture compatibility](character-instances.md#level-60-ceiling-d-305).
+
+## Cumulative leveling rarities (D-303)
+
+Leveling all Element-Bearers and captured Elemental-Devourers now requires
+higher material rarities as the **destination level** rises. Keep
+`ceil(destination / 30)` Common materials and add **one of every unlocked
+higher rarity per level**, cumulatively:
+
+| Destination level | Higher rarities required (one each per level) |
+| --- | --- |
+| 1-30 | None |
+| 31-45 | Uncommon |
+| 46-60 | Uncommon, Rare |
+| 61-75 | Uncommon, Rare, Epic |
+| 76-90 | Uncommon, Rare, Epic, Legendary |
+| 91-120 | Uncommon, Rare, Epic, Legendary, Omnic |
+
+This table does not raise level caps: Element-Bearers still cap at105 and
+captured copies at60 (D-305). Use the member's combat element; Rosetta, Thornia,
+Crinso and captured Roselius instead use equivalent Rosethorn rarities.
+Prismatica stays `10 + 2 * destination`. Existing Evo5/6 specialty surcharges
+remain **additional**, independent of destination level:
+
+- Ordinary Element-Bearers: one matching Heaven/Abyss leveling specialty.
+- Rose Element-Bearers: one Soul of Rosethorn. At destination91+, this adds
+  to the ordinary Omnic requirement, so the cost is **two Souls per level**.
+- Captured copies: no Element-Bearer specialty surcharge; late Roselius pay
+  no Omnic leveling materials because their cap is60.
+
+The shared `levelingMaterials` resolver drives ordinary and character-aware
+single levels, captured levels, affordability, Max Level accumulation and every
+existing cost preview. Max Level stops before the first unaffordable tier; it
+cannot skip a threshold or buy later levels first. Transactions reread resources
+and save the full cost/progress once; insufficient materials, stale previews or
+failed writes leave persisted data unchanged.
+
+Higher-tier farming is intentional: requirements use destination level, not
+the level at which a material first drops. Existing dungeon/event unlocks,
+drop odds, evolution recipes, rewards, holdings and saved levels are unchanged.
+No retroactive charges, grants, migration or load-time writes.
+
+Validation includes every threshold's before/after recipe, all16 Element-Bearers,
+captured elemental/Rosethorn families through60, additive Rose Souls, exact
+single/Max deductions, missing-material rejection, failed-save preservation,
+rendered costs and authoritative single/bulk parity. The generated server engine
+must be published with the client before claiming online availability.
+
 ## Reference Team upgrade animation correction (D-198)
 
 Saved level/evolution/Max Level presentation uses the shared
@@ -289,7 +340,7 @@ See the [active expansion phases](roadmap.md#active-owner-requested-expansion-ph
   Later evolutions grant no Null-Prismatica in this pass.
 - Owned starters begin at **Lv.0 / Evo.1**, preserving the existing base combat
   kit. There is no battle XP.
-- Leveling consumes Prismatica and Common material of the character's element.
+- Leveling consumes Prismatica and cumulative elemental rarities under D-303.
   Creature consumption is temporarily omitted with owner approval, not removed
   from the long-term evolution design. Evo5/6 levels also consume one matching
   specialty leveling item; artifacts remain unimplemented.
@@ -297,12 +348,14 @@ See the [active expansion phases](roadmap.md#active-owner-requested-expansion-ph
 ### First-pass philosophy and editable costs
 
 Frequent small upgrades make ordinary dungeon rewards useful; evolution is a
-larger milestone funded by adjacent material rarities. Rare drops are not required
-for ordinary levels. No Null-Prismatica is spent and no materials are granted on migration.
+larger milestone funded by adjacent material rarities. D-303 also requires higher
+rarities for ordinary levels at the destination thresholds above.
+No Null-Prismatica is spent and no materials are granted on migration.
 These are implemented tuning defaults, not finalized production grind targets.
 
 Each destination level costs **10 + 2 x destination level Prismatica** and
-**ceil(destination level / 30) Seeds** of its element:
+**ceil(destination level / 30) Seeds** of its element, plus the D-303 cumulative
+higher-tier materials:
 
 | Destination level | Seeds per level |
 | --- | --- |
@@ -320,9 +373,10 @@ Each destination level costs **10 + 2 x destination level Prismatica** and
 | 5 -> 6 | 90 | 4,800 | 25 Crests + 10 Hearts (Legendary) |
 
 From Lv.0/Evo.1 through Lv.105/Evo.6: **21,480 Prismatica, 280 Seeds,
-35 Blooms, 35 Shards, 35 Crests and 10 Hearts**. Omnic Souls remain collectible
-but have no spending recipe yet. Only one level is bought per
-confirmation; bulk leveling and independent skill purchases remain open.
+110 Blooms, 95 Shards, 80 Crests, 40 Hearts and15 Souls** for ordinary
+non-Rose Element-Bearers, including unchanged evolution recipes.
+Single-level and confirmed Max Level transactions use these same recipes;
+independent skill purchases remain unimplemented.
 Also required: 15 matching specialty evolution items (5 for4->5, 10 for5->6)
 and30 specialty leveling items for the normal cap-to-cap path through Evo5/6.
 The leveling surcharge is form-based even for preserved levels below80.
@@ -470,8 +524,8 @@ Replay retains the run's progress snapshot and team, with fresh Gauge.
 Squad edits affect the next run; Settings retains the current run.
 See [summoning](summoning-and-economy.md) and [tests](../src/game/squad.test.ts).
 
-Heaven/Abyss captures are separate owned instances: retain defeated level/form
-and hostile skills, independently level to120, equip eight ordinary Conduits,
+Heaven/Abyss captures are separate owned instances: retain defeated form
+and hostile skills, with defeated level capped at60, equip eight ordinary Conduits,
 use Normal/Defense and manual shared-Gauge retained abilities. Missing skills
 are unavailable. No evolution/Fracture or starter upgrade paths. Ordinary stats
 gain a permanent fixed-form multiplier, not boss bonuses; later forms have

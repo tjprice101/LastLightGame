@@ -1,0 +1,243 @@
+# Calamity Mode (D-308 / D-315)
+
+The owner requests implementation with placeholder art and delegates final
+boss mechanics, loot weights/quantities and difficulty tuning. Free entry,
+no defeat penalty, verifiable-final-clear access and no new arenas/headers/audio
+are approved. Neutral named pending artwork is intentional; no installed art
+is repainted or borrowed. Publish the client and authoritative server together;
+local implementation is not hosted deployment.
+
+## Scope and encounters
+
+Three optional EX challenges for each of twelve activities:
+
+| Activity ID | Activity | Calamity boss |
+| --- | --- | --- |
+| treasury | Crownfall Treasury | Crown of the Ruined Vault |
+| sanctuary | Rosethorn Sanctuary | White Pyre Hierophant |
+| heavens | Soar to Heaven | Heavenfall Seraph |
+| abyss | Delve into the Abyss | Abyssal Nullmaw |
+| machines | Awaken the Machines | Catastrophe Prime |
+| roses | Passion of Crimson Roses | The Last Scarlet Bloom |
+| infernic | Flaming Depths | Ashcrown Cataclysm |
+| oceanic | Oceanic Valley | Leviathan of the White Wake |
+| atmospheric | Sky-bound Rift | Riftstorm Harbinger |
+| botanic | Garden of Beauty | Pallid Root Sovereign |
+| tranquilitic | City of Heaven | Silent Meridian |
+| chaotic | Ruins of Chaos | The Scarlet Unmaking |
+
+Exactly36 encounters, twelve boss identities and36 distinct chest variants.
+Story, endless Training, all three Elemental War activities and unspecified
+future events are excluded.
+
+| Stage | One boss level | Guaranteed chest |
+| --- | ---: | --- |
+| EX+1 |145| EX+Slayer |
+| EX+2 |160| EX+Master |
+| EX+3 |185| EX+Omnipotent |
+
+The same activity-specific boss appears at all three levels. No ordinary waves,
+player cap increase, entry cost, energy or defeat penalty. Normal final victory
+permanently unlocks EX+1; EX+1 victory unlocks EX+2; EX+2 unlocks EX+3.
+Highest normal *unlocked* stage does not prove its boss was beaten. New actual
+final victories record evidence atomically. A historical UUIDv4 run receipt
+ending in the exact current normal final-boss ID, paired with final-stage
+access for that activity, also qualifies read-only. Partial matches, arbitrary
+receipt text, old Machines stage35 and counters alone do not qualify. Players
+without verifiable evidence must defeat the normal final stage again.
+No load-time writes or retroactive grants.
+
+Calamity is a discriminated activity, never invented normal stage numbers.
+Normal stage counts and progress are unchanged. Entry, replay and API access
+validate eligibility; retries/replays retain frozen squad, progress, equipment,
+upgrades, Masters and captured copies. Settings/resume preserve the encounter.
+No auto-advance between EX tiers.
+
+## Chest-only victory
+
+Every victory/replay awards exactly one matching chest, with unlimited replay.
+There are no ordinary kill currencies, materials, components, Conduits,
+Master-chest rolls, captures or recruitment alongside it. The first clear
+unlocks the next EX tier but does not award an extra chest. The normal final
+boss5x quantity multiplier affects neither chest counts nor contents.
+
+Chest, tier clear, discovery and deduplicated reward receipt commit atomically.
+Results present the saved chest; no second claim or opening occurs on victory.
+Open later in Inventory. The stable chest ID is `calamity:<activity>:<tier>`.
+Display name: `<Activity name> EX+<Slayer|Master|Omnipotent> Chest`.
+
+| Tier | Prismatica | Null-Prismatica | Independent activity bundles | Cosmic Grand Master Chests |
+| --- | ---: | ---: | ---: | ---: |
+| Slayer |100,000|50|3|0|
+| Master |250,000|70|5|0|
+| Omnipotent |500,000|100|7|2|
+
+Unlimited guaranteed replay and its repeatable premium/Master income are
+intentional. Do not add daily limits, entry costs, diminishing returns or
+compensating drop chances. Existing Master chests still select any unowned
+Master, including an unowned bearer's; they grant no character or automatic
+equipment. If all48 Masters are owned, Master chests remain held, and opening
+a Calamity Omnipotent chest must still succeed.
+
+## Exact activity bundle tables
+
+All three EX tiers share their activity's table. Each bundle independently
+selects one weighted row and a uniform inclusive integer quantity. Repeated
+draws can merge in the receipt. The typed source of truth is
+[`src/content/calamity.ts`](../src/content/calamity.ts); normal kill resolvers
+are not reused.
+
+| Activity | Exact distribution per independent bundle |
+| --- | --- |
+| Treasury |70%:25,000-50,000 Prismatica;25%:75,000-100,000;5%:200,000-250,000|
+| Sanctuary |70%:5-10 Null-Prismatica;25%:15-25;5%:40-50|
+| Heaven |35%:5-10 Crown of the Scarlet Oath;35%:10-20 Chalice of the Undying Dawn;15%:10-20 Epic,10%:6-12 Legendary,5%:3-6 Omnic materials; each elemental tier equally divided among Infernic/Oceanic/Atmospheric/Botanic|
+| Abyss |35%:5-10 Heart of the Shattered Void;35%:10-20 Hourglass of Endless Wrath;15%:10-20 Epic,10%:6-12 Legendary,5%:3-6 Omnic materials; each elemental tier equally divided among Tranquilitic/Chaotic|
+| Machines |60%:100-200 Broken Mechanical Components;20%:one Rare Conduit;15%:one Legendary;5%:one Omnic; equal selection among names within the chosen rarity|
+| Roses |Seed10%:30-60; Bud15%:20-40; Bloom25%:15-30; Crest25%:10-20; Heart15%:6-12; Soul10%:3-6|
+| Each material dungeon |Own-element Common10%:30-60; Uncommon15%:20-40; Rare25%:15-30; Epic25%:10-20; Legendary15%:6-12; Omnic10%:3-6|
+
+No character grants, captured copies, Master unlocks or extra Master chests in
+random bundles. Disabled weapon-only materials are excluded. Ordinary Conduit
+copies from chest bundles can repeat, including already-owned names; D-312's
+unowned-only rule applies to normal Machines **enemy** rolls, not curated chest
+openings. No automatic equipment or alteration of saved upgrades.
+
+## Boss skills and counterplay
+
+Skills target one member and retain ordinary critical, Weaken, Defense, shield
+and taunt behavior. Ultimate cadence takes priority over primary cadence;
+other phases use Normal Attack. Phase numbers start at1. Cadence and numeric
+mechanics are exposed before entry and in battle reference.
+
+| Activity | Primary | Ultimate | Distinct behavior / counterplay |
+| --- | --- | --- | --- |
+| Treasury |Vaultbreaker1.5x every3|Crown Collapse2.4x every6|Defend before phase6; burst between collapses|
+| Sanctuary |White Pyre1.3x every2|Reliquary Descent1.9x every5|Refresh barrier to2.5% max HP every3; focus damage to break it|
+| Heaven |Scarlet Volley1.25x every2|Heavenfall2.2x every7|Every attack splits total into3 impacts; layer shields|
+| Abyss |Nullmaw Hunt1.4x every3|Starless Pursuit2x every5|Targets lowest living HP fraction; heal/protect the weakest member|
+| Machines |Prototype Discharge2x every4|Catastrophe Cascade2.7x every8|Charge window uses Normal attacks; save Defense and shielding for discharge|
+| Roses |Thorn Requiem1.4x every2|Final Scarlet Bloom2.1x every6|Restores1.5% max HP every4; maintain damage through restoration|
+| Infernic |Cinder Torrent1.6x every2|Ashcrown Eruption2.3x every5|Sustained direct pressure; regular Weaken/healing, no new player Burn status|
+| Oceanic |White Wake1.55x every3|Leviathan Breach2.2x every6|Refresh barrier to4% max HP every4; save burst for barrier breaks|
+| Atmospheric |Riftstorm Talons1.7x every3|Sky Fracture2.3x every7|Every attack splits total into4 impacts; plan mitigation before storms|
+| Botanic |Pallid Thorns1.3x every3|Root Cathedral2.1x every8|Restores2.5% max HP every3; sustained damage must exceed restoration|
+| Tranquilitic |Meridian Sweep1.6x every4|Silent Convergence2.2x every7|Refresh barrier to2% max HP on even phases; burst through odd-phase openings|
+| Chaotic |Fractal Disjunction1.35x every2|Scarlet Unmaking2.1x every5|Targets highest living HP fraction; spread mitigation rather than relying on a wounded tank|
+
+Barriers refresh rather than stack; restoration cannot exceed max HP. Both
+occur after a surviving boss's Burn tick and before its attack. HP-target
+selection uses stable squad order for ties; active taunts can redirect it.
+Multi-impact incoming totals are computed once, split into integer shares with
+the remainder on the last impact, and stop if the target falls. Existing
+per-impact equipment effects apply.
+
+No instant kills, immunity, revival, lockouts, mandatory enrage, percentage-HP
+execution, new consumables or changes to the player's native kit.
+
+## Isolated stats and measured difficulty
+
+Ordinary hostile stat helpers retain their1-140 bounds and exact outputs.
+Only Calamity derives these profiles from the existing Lv140 boss baseline:
+
+| EX | Level | HP multiplier | Attack multiplier | Defense multiplier | Crit |
+| --- | ---: | ---: | ---: | ---: | ---: |
+|1|145|1.1|1.01|1.02|8%|
+|2|160|1.5|1.04|1.06|8%|
+|3|185|1.9|1.08|1.1|8%|
+
+Round each scaled stat once; preserve baseline critical multiplier/other stats.
+Difficulty comes from sustained endgame encounters and visible pressure
+patterns, not silently increasing player caps or nerfing ordinary enemies.
+
+Seeded acceptance targets use seeds1/1729/12345 across all12 activities:
+
+- A legal+5 Infernis/Tizu/Flora build must clear at least30/24/20 of36
+  EX1/EX2/EX3 cases, with victories taking10-350 phases.
+- A complementary Rosetta/Thornia/Flora build must clear all36 per tier in
+  10-250 phases.
+- Treasury must defeat an undeveloped solo starter and ungeared max-level
+  starter squad at all three tiers.
+- Initial324-fight measurement: starter32/27/24 wins, mixed36/36/36,
+  Rose trio33/33/18. These are reproducible build/rotation measurements, not
+  population win-rate claims or a promise every legal squad can win.
+
+## Navigation, warnings and placeholder art
+
+Each eligible activity exposes a separate Calamity section below its normal
+stages, without renumbering them. Cards show EX tier, boss, exact level,
+single-boss format, guaranteed chest and unmet unlock requirement. View Loot
+shows fixed contents and exact bundle odds.
+
+Every entry/replay uses a styled in-game confirmation, adapted to activity/tier:
+
+> Calamity EX+3 - Level185 boss. An unforgiving endgame challenge. A fully
+> developed, optimized squad is strongly recommended. One boss. Victory awards
+> one matching EX+Omnipotent chest; no ordinary drops or captures.
+
+Include explicit Enter/Cancel, free entry/no defeat penalty and boss counterplay.
+Retain focus, keyboard/Escape,44px targets and reduced motion. No browser
+alert/confirm/prompt. Results retain manual replay/exit, not automatic advancement.
+
+Inventory groups named tier chests with exact counts, details and explicit
+single-chest Open confirmation. Commit the transaction before the existing
+skippable reward reveal; reveal never rolls or claims again. Continue/Escape and
+focus restoration remain available. No selling, equipping or bulk opening.
+
+Palette: red/white elemental energy against black/white material/body colors;
+not a new combat element or global recolor. Named neutral placeholders have no
+missing PNG requests or unrelated borrowed artwork. Future delivery requires
+twelve boss designs and twelve chest silhouettes with three distinguishable
+tier treatments (36 icons); preserve compact anime/cel rendering, full margins
+and opaque non-glowing generated cutout powers. Runtime VFX may remain radiant.
+New arena/header/audio work is excluded. Boss discovery and Collections use
+stable `calamity:<activity>` IDs; none is capturable.
+
+## Persistence and authoritative operation contract
+
+Optional walletv5 fields: `normalFinalClears`, `calamityClears`,
+`calamityChests`, `calamitySeed`. Validate activity IDs, tiers, booleans,
+safe-integer counts and nonzero uint32 RNG. Old saves read without writes or
+loss of unrelated fields; invalid data is rejected rather than overwritten.
+Do not infer clears from a highest-unlocked counter or arbitrary receipt text.
+
+`openCalamityChest(id, expectedCount)` rereads holdings and checks stale counts.
+It consumes exactly one chest, makes3/5/7 independent draws from its own
+persisted stream and validates all merged totals before one save. Denied writes,
+overflow or stale holdings preserve chest, currencies, other rewards and RNG.
+Normal combat/reward/capture/banner/Master-chest streams are unaffected.
+
+Online entry/replay/open use strict shared schemas, existing request UUID and
+revision/idempotency handling, frozen sessions and the same transactions.
+Do not weaken Machines-only validation of ordinary direct Master-chest drops:
+the EX3 grant is validated through chest opening, not a forged enemy payload.
+Never route an unsupported Calamity descriptor to Training.
+
+## Validation and release
+
+Focused suites:
+
+- `src/game/calamity.test.ts`: all36 encounters/chests, weighted row bounds,
+  independent3/5/7 draws, no ordinary RNG/rewards, isolated caps, boss
+  rhythms/targeting, catalog loot and seeded difficulty targets.
+- `src/game/calamity-account.test.ts`: optional-save validation, normal-final
+  evidence, sequential locks, receipt retries, forged rewards, discovery,
+  atomic opening/stale counts/denied writes/overflow, independent RNG and
+  all-Masters-owned handling.
+- Calamity presentation/authoritative suites: warnings, access, frozen
+  replay/resume, Inventory, exact saved reveal and strict operations.
+
+Before release run targeted and full regression, production build, regenerate
+the authoritative engine bundle, server type-check and desktop/mobile browser
+checks. Coordinate client/server publication separately; no deployment or
+account grants are implied by local implementation.
+
+Local verification: the seven-suite focused command recorded in
+[handoff](handoff.md#calamity-mode-implemented-locally-d-315) passed309 tests.
+Final full regression passed3,669 of3,670 tests; the remaining inherited
+Settings CSS policy failure is unrelated to Calamity. Production TypeScript/
+Vite build, authoritative bundle generation and server type-check passed.
+Unsaved browser fixtures verified entry/cancellation, neutral boss rendering,
+Inventory loot, one atomic EX+3 opening and narrow/desktop saved-reward reveal
+containment without modifying real storage. Final artwork and coordinated
+hosted publication/smoke remain outstanding.

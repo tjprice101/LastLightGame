@@ -1,5 +1,11 @@
 # Dungeons and captured enemies
 
+**D-305:** all owned captured Elemental-Devourers cap at60. Higher-level
+captures join at60, retaining form/stage/skills; existing copies normalize
+read-only and persist on the next successful save. Enemy levels, capture
+chances/eligibility, rewards and Element-Bearer levels are unchanged.
+[Compatibility and active-run rules](character-instances.md#level-60-ceiling-d-305).
+
 **D-294 final-boss loot:** dungeon35 and Heaven/Abyss35 multiply their
 existing currency/material quantities by5 on every clear/replay. Successful
 final stacks are15-30 and Prismatica75-150. Heaven/Abyss premium outcomes
@@ -47,7 +53,7 @@ and [Character instances](character-instances.md) for persistence/protection.
   Crownfall Treasury and Rosethorn Sanctuary grant the same20% captures.
   [Passion of Crimson Roses](crimson-roses.md) also grants20% captures, but only
   for enemies at levels120 or below. Its35 stages run80-140; captures remain
-  capped120. Omnic Roselius come from the special banner's Lv.80 duplicate
+  capped60. Omnic Roselius come from the special banner's Lv.60 duplicate
   conversion, not above-cap mission captures.
 - Every activity accepts1-3 distinct owned instances, including all-captured
   squads and captured leaders. Two copies of the same species are allowed.
@@ -60,7 +66,7 @@ characters are Element-Bearers; enemies and captured units remain creatures:
 | Surface | Actual character | Captured enemy |
 | --- | --- | --- |
 | Actions | Normal, Ability 1, Ability 2, Last Flare, Defense | Normal, Defense, and the skills/ultimate actually present on the defeated enemy |
-| Progression | Character level, Fracture, existing saved upgrade bonuses | Independent levels up to120 and eight ordinary Conduit slots |
+| Progression | Character level, Fracture, existing saved upgrade bonuses | Independent levels up to60 and eight ordinary Conduit slots |
 | Evolution | Confirmed character Fracture rules | Never evolves or Fractures |
 | Combat role | Authored elemental kit | Manually controlled retained kit; no invented passive bonus |
 | Ownership today | Saved starter IDs/progress | Separate stable capture UUIDs, level/stage/skills, locks and equipment |
@@ -71,20 +77,22 @@ No Heavy action, invented skill, permanent death or automatic deletion.
 
 ### Fixed-form growth and ratings
 
-- Start at the defeated enemy's actual level. Keep its ability names, multipliers
+- Start at the defeated enemy's level capped at60. Keep its ability names, multipliers
   and saved intervals unchanged when leveling. Under D-300, Skill1/Skill2 have
   no manual cooldown; only retained Last Flare uses its enemy interval.
 - Use D-288's separate **linear playable**, never hostile/boss, stat curve:
   base220 HP/38 Attack/16 Defense, factor `1+.15*level`, Defense exponent.7.
   HP/Attack/Defense multiply by `.65 + .35 * tier / 5` for fixed tier0-5.
-  Thus a Lv120 initial form has2,717 HP, final form4,180, versus35,000 hostile bossHP.
+  Thus a Lv60 initial form has1,430 HP, final form2,200, versus35,000 hostile bossHP at120.
   Higher captured forms remain stronger at equal level; boss captures retain
   boss abilities but not boss stat bonuses.
 - Conduit buffs apply afterward, using the same shared stat helper as starters.
 - Each level costs `10 + 2 * nextLevel` Prismatica and
   `ceil(nextLevel / 30)` Common materials matching the creature's combat element.
-  These are editable first-pass numbers in `capturedLevelCost`.
-  Roselius instead use Seed of Rosethorn; all older creature costs are unchanged.
+  D-303 adds one of each higher rarity cumulatively at destination31 Uncommon,
+  46 Rare; the60 cap prevents higher leveling tiers. Roselius use equivalent Rosethorn
+  materials, not only Seeds. Captures have no Element-Bearer specialty surcharge.
+  Single and Max Level use the [same shared recipe](units-and-progression.md#cumulative-leveling-rarities-d-303).
 - Fixed form1-6 sets acquisition stars1-6 and rarity Common through Omnic.
   Leveling changes neither rating. This approved later-form capture exception
   supersedes reserving every4-6-star unit exclusively for special banners.

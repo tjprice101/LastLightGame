@@ -1,0 +1,43 @@
+import type { Combatant } from '../game/battle';
+import { formatStat } from '../content/combat';
+import { escapeDialogText } from './game-dialog';
+
+export function conduitStatusSnapshot(unit: Combatant): NonNullable<Combatant['conduitRuntime']> & { weakened?: number; weakenSourceId?: string } {
+  return structuredClone(unit.hp > 0 ? { ...unit.conduitRuntime ?? { numbers: {}, owners: {} },
+    weakened: unit.weakened, weakenSourceId: unit.weakenSourceId } : { numbers: {}, owners: {} });
+}
+
+export function conduitStatuses(snapshot: ReturnType<typeof conduitStatusSnapshot>, round: number,
+  owners: readonly Pick<Combatant, 'id' | 'name' | 'hp' | 'conduitRuntime' | 'masterConduit' | 'conduits'>[] = []): string {
+  const n = snapshot.numbers;
+  const labels: { id: string; text: string }[] = [];
+  const add = (id: string, text: string): void => { labels.push({ id, text }); };
+  const owner = (id: string) => owners.find(unit => unit.id === id && unit.hp > 0);
+  if (n.windveil) add('windveil', 'Windveil: avoids the next enemy Normal Attack.');
+  if (n.criticalSeal) add('critical-seal', 'Critical Seal: the next enemy critical hit loses its critical multiplier.');
+  if (n.rootbind) add('rootbind', 'Rootbind: next scheduled enemy skill becomes a Normal Attack.');
+  if (n.silence) add('silence', 'Silence: next scheduled enemy skill becomes a Normal Attack.');
+  if (n.stasisProtectedRound === round) add('stasis-protection', 'Stasis protection: direct HP loss prevented for this enemy phase; Burn still applies.');
+  if (n.stasisSkip && n.stasisSkip >= round) add('stasis-skip',
+    n.stasisSkip === round ? 'Stasis: cannot act this turn.' : `Stasis: cannot act on turn ${n.stasisSkip}.`);
+  if (snapshot.owners.accord) add('accord', `Accord: one lethal direct hit prevented; shield follows · ${owner(snapshot.owners.accord)?.name ?? snapshot.owners.accord}.`);
+  if (n.quietFeather) add('quiet-feather', 'Quiet Feather: next legal Skill 1 costs no Gauge; no extra action or recovery bypass.');
+  const guardian = owner(snapshot.owners.guardian);
+  if (guardian && n.guardianRound === round && guardian.conduitRuntime?.numbers.guardianUsedRound !== round) {
+    add('guardian', `Guardian: lethal-hit interception · ${guardian.name}.`);
+  }
+  const taunt = owner(snapshot.owners.taunt);
+  if (taunt && ((taunt.masterConduit === 'master-tide-3' && (snapshot.weakened ?? 0) > 0 && snapshot.weakenSourceId === taunt.id)
+    || (taunt.conduits?.includes('tectonic-atlas-bastion') && taunt.conduitRuntime?.numbers.tauntRound === round))) {
+    add('taunt', `Taunt: directed toward ${taunt.name}.`);
+  }
+  const link = owner(snapshot.owners.link);
+  if (link && (link.conduitRuntime?.numbers.linkThrough ?? -1) >= round) add('link', `Linked Gauge income · ${link.name}.`);
+  const plates = snapshot.layers?.filter(layer => layer.plate && layer.amount > 0) ?? [];
+  if (plates.length) add('plates', `Shield plates: ${plates.length} · ${formatStat(plates.reduce((sum, layer) => sum + layer.amount, 0))} shield.`);
+  return labels.map(({ id, text }) => `<span class="battle-status-badge" data-conduit-status="${id}">${escapeDialogText(text)}</span>`).join('');
+}
+
+export function conduitStatusReadout(unit: Combatant, round: number, owners: readonly Combatant[] = []): string {
+  return `<span class="unit-conduit-statuses">${conduitStatuses(conduitStatusSnapshot(unit), round, owners)}</span>`;
+}

@@ -1,5 +1,5 @@
 import { conduits, getConduit, isConduitId, conduitEffect, conduitUpgradeCap, conduitUpgradeCost, conduitUpgradeCosts, conduitUpgradeRarityMultipliers, type ConduitId } from '../content/conduits';
-import { upgradeConduit, type Account } from '../game/account';
+import { upgradeConduit, conduitMaxLevelPlan, upgradeConduitToMaximum, type ConduitMaxLevelPlan, type Account } from '../game/account';
 import { type ProfileStorage } from '../game/profile';
 import { conduitIcon, conduitRarity } from './conduit-store';
 import { mechanicalComponentIcon } from './mechanical-component-icon';
@@ -9,6 +9,7 @@ import { machineComponentRulesText } from '../content/mechanical-components';
 import { gameConfirm } from './game-dialog';
 import { presentReward } from './reward-screen';
 import { conduitReward } from './conduit-presentation';
+import { readableEffect } from './effect-copy';
 
 const pageSize = 6;
 interface CatalogState { query: string; rarity: string; status: string; sort: string; page: number }
@@ -16,6 +17,7 @@ type OwnedEntry = { id: ConduitId; copies: number; level: number };
 const catalogStates = new WeakMap<HTMLElement, CatalogState>();
 const boundCatalogs = new WeakSet<HTMLElement>();
 const boundUpgrades = new WeakSet<HTMLButtonElement>();
+const pendingUpgrades = new WeakSet<HTMLElement>();
 const initialState = (): CatalogState => ({ query: '', rarity: '', status: '', sort: 'name', page: 0 });
 const escapeAttribute = (value: string): string => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
@@ -52,8 +54,7 @@ function ownedEntries(account: Account | null): OwnedEntry[] {
 function upgradeStatEffect(id: ConduitId, level: number): string {
   const conduit = getConduit(id);
   const effect = conduitEffect(conduit, level);
-  const separator = effect.indexOf('. ');
-  return conduit.mechanic && separator !== -1 ? effect.slice(0, separator) : effect;
+  return readableEffect(effect);
 }
 
 export function conduitUpgradeMenu(account: Account | null, selected?: string): string {
@@ -65,7 +66,8 @@ function renderConduitUpgradeMenu(account: Account | null, selected: string | un
   const choice = owned.find(entry => entry.id === selected) ?? owned[0];
   const entries = ownedEntries(account);
   const costInformation = Object.entries(conduitUpgradeRarityMultipliers).map(([rarity, multiplier]) =>
-    `<p>${rarity}: ${conduitUpgradeCosts.map((cost) => cost * multiplier).join(' / ')} components for +1 through +5.</p>`).join('');
+    `<p>${rarity}: ${conduitUpgradeCosts.map((cost) => cost * multiplier).join(' / ')} components for +1 through +5.</p>`).join('')
+    + '<p>Max Level upgrades the selected Conduit to the highest level you can afford, up to +5. Its confirmation shows the total component cost and target effect, including penalties. All selected upgrades save together; no copies or other resources are spent.</p>';
   return `<section class="conduit-upgrade-menu ref-screen ref-conduit-upgrade" data-upgrade-owned="${escapeAttribute(JSON.stringify(entries))}" data-upgrade-components="${account?.mechanicalComponents ?? 0}">
     <nav class="ref-market-tabs"><button aria-current="page">Conduit Upgrade</button><button data-page="conduit-store">Conduit Store →</button></nav>
     <aside class="ref-panel ref-upgrade-owned"><header class="ref-panel-heading">Owned · ${owned.length}</header>
@@ -81,12 +83,14 @@ function renderConduitUpgradeMenu(account: Account | null, selected: string | un
       const level = account.conduitUpgrades?.[choice.id] ?? 0;
       const cost = conduitUpgradeCost(choice, level);
       const affordable = cost !== null && (account.mechanicalComponents ?? 0) >= cost;
+      const maximum = conduitMaxLevelPlan(account, choice.id);
       return `<section class="ref-panel ref-upgrade-detail" data-upgrade-card="${choice.id}"><div class="ref-upgrade-identity"><div class="ref-store-hero">${conduitIcon(choice.id, level)}</div><div>${choice.mechanic ? `<div class="ref-upgrade-special">${information('conduit-upgrade-special-effect', `${choice.name} · Special effect`, `<p>${choice.effect}</p><p>Special mechanics are unchanged by upgrades. Only the listed stat modifiers scale.</p>`, 'Special effect · unchanged')}</div>` : ''}<h2>${choice.name}</h2>${conduitRarity(choice.id)}<p>Upgrade +${level} / ${conduitUpgradeCap} · Owned ${account.conduits?.[choice.id]}</p><div class="ref-pips" aria-hidden="true">${Array.from({ length: conduitUpgradeCap }, (_, index) => `<i class="${index < level ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
       <section class="conduit-upgrade-values"><div><h4>Current · +${level}</h4><p>${upgradeStatEffect(choice.id, level)}</p></div><span aria-hidden="true">→</span><div>${cost !== null ? `<h4>Next · +${level + 1}</h4><p>${upgradeStatEffect(choice.id, level + 1)}</p>` : '<h4>Maximum · +5</h4><p>Maximum upgrade reached.</p>'}</div></section>
       <header class="ref-panel-heading">Effect by upgrade${choice.mechanic ? '<span>Special effect unchanged</span>' : ''}</header><div class="ref-effect-progression">${Array.from({ length: conduitUpgradeCap + 1 }, (_, upgrade) => `<article class="${upgrade === level ? 'is-current' : ''}" ${upgrade === level ? 'aria-current="step"' : ''}><small>+${upgrade}${upgrade === level ? ' · Current' : ''}</small><p>${upgradeStatEffect(choice.id, upgrade)}</p></article>`).join('')}</div>
       <aside class="ref-panel ref-upgrade-resources"><header class="ref-panel-heading">Required resources</header><article class="component-balance">${mechanicalComponentIcon()}<div><strong id="mechanical-components-balance">${account.mechanicalComponents ?? 0}</strong><span>Broken Mechanical Components</span></div></article>
       <p class="conduit-upgrade-cost">${cost === null ? 'No further upgrades' : `${cost} Broken Mechanical Components required`}</p>${cost === null ? '<p>Maximum upgrade reached.</p>' : `<meter min="0" max="${cost}" value="${Math.min(account.mechanicalComponents ?? 0, cost)}" aria-label="Components towards upgrade"></meter>`}
       <footer><button class="primary-button" type="button" data-upgrade-conduit="${choice.id}" data-expected-upgrade="${level}" ${affordable ? '' : 'disabled'}>${cost === null ? 'Maximum upgrade +5' : `Upgrade to +${level + 1} · ${cost} components`}</button>
+      <button class="primary-button" type="button" data-upgrade-conduit="${choice.id}" data-max-conduit data-expected-upgrade="${level}" data-target-upgrade="${maximum.targetLevel}" data-total-cost="${maximum.cost}" ${maximum.targetLevel > level ? '' : 'disabled'}>Max Level${maximum.targetLevel > level ? ` · +${maximum.targetLevel} · ${maximum.cost} components` : ''}</button>
       ${cost !== null && !affordable ? '<p class="quiet">Not enough Broken Mechanical Components.</p>' : ''}<button class="ref-link" data-page="gameplay" data-machine-activity>Earn components →</button></footer></aside></section>`;
     })() : `<section class="ref-panel ref-empty"><p ${account ? '' : 'role="alert"'}>${account ? 'No owned Conduits to upgrade.' : 'Conduit upgrades unavailable. Resolve the save error.'}</p><button class="ref-link" data-page="conduit-store">Open Conduit Store →</button></section>`}
     <div class="ref-upgrade-information">
@@ -97,38 +101,45 @@ function renderConduitUpgradeMenu(account: Account | null, selected: string | un
 
 export function bindConduitUpgrades(host: HTMLElement, storage: ProfileStorage,
   refresh: (account: Account) => void, reportError: (message: string) => void,
-  performUpgrade?: (id: ConduitId, level: number) => Promise<Account>): void {
+  performUpgrade?: (id: ConduitId, level: number) => Promise<Account>,
+  performMaximum?: (expected: ConduitMaxLevelPlan) => Promise<Account>): void {
   bindUpgradeCatalog(host);
-  let pending = false;
   host.querySelectorAll<HTMLButtonElement>('[data-upgrade-conduit]').forEach((button) => {
     if (boundUpgrades.has(button)) return;
     boundUpgrades.add(button);
     button.addEventListener('click', async () => {
+      if (button.disabled || pendingUpgrades.has(host)) return;
+      pendingUpgrades.add(host);
       let saved = false;
       try {
-        if (button.disabled || pending) return;
-        pending = true;
         const id = button.dataset.upgradeConduit;
         if (!isConduitId(id)) throw new Error('Unknown Conduit.');
         const level = Number(button.dataset.expectedUpgrade);
         const conduit = getConduit(id);
-        const cost = conduitUpgradeCost(conduit, level);
+        const maximum = button.dataset.maxConduit !== undefined;
+        const targetLevel = maximum ? Number(button.dataset.targetUpgrade) : level + 1;
+        const cost = maximum ? Number(button.dataset.totalCost) : conduitUpgradeCost(conduit, level);
         if (cost === null) throw new Error('This Conduit is already fully upgraded.');
-        if (!await gameConfirm(`Spend ${cost} Broken Mechanical Components to upgrade ${conduit.name} from +${level} to +${level + 1} account-wide? Current: ${conduitEffect(conduit, level)}. Next: ${conduitEffect(conduit, level + 1)}. Penalties also grow. No copies or other currency are spent.`, { title: 'Upgrade Conduit', confirmLabel: 'Upgrade' })) return;
-        const account = performUpgrade ? await performUpgrade(id, level) : upgradeConduit(storage, id, level);
+        if (!Number.isSafeInteger(cost) || cost <= 0 || !Number.isInteger(targetLevel) || targetLevel <= level || targetLevel > conduitUpgradeCap) throw new Error('Invalid Conduit upgrade preview.');
+        if (!await gameConfirm(`Spend ${cost} Broken Mechanical Components to upgrade ${conduit.name} from +${level} to +${targetLevel} account-wide? Current: ${conduitEffect(conduit, level)}. ${maximum ? 'Target' : 'Next'}: ${conduitEffect(conduit, targetLevel)}. Penalties also grow. No copies or other currency are spent.${maximum ? ' This is the highest affordable level, up to +5.' : ''}`, { title: maximum ? 'Max Level Conduit' : 'Upgrade Conduit', confirmLabel: maximum ? 'Max Level' : 'Upgrade' })) return;
+        const plan: ConduitMaxLevelPlan = { id, currentLevel: level, targetLevel, cost };
+        if (maximum && performUpgrade && !performMaximum) throw new Error('Online Conduit Max Level is unavailable.');
+        const account = maximum
+          ? performMaximum ? await performMaximum(plan) : upgradeConduitToMaximum(storage, plan)
+          : performUpgrade ? await performUpgrade(id, level) : upgradeConduit(storage, id, level);
         saved = true;
         refresh(account);
         const status = host.querySelector<HTMLElement>('#conduit-upgrade-result');
         if (!status) throw new Error('Conduit upgrade status is missing.');
-        status.textContent = `${conduit.name} upgraded to +${level + 1}. ${cost} Broken Mechanical Components spent. Applies account-wide to new runs.`;
+        status.textContent = `${conduit.name} upgraded to +${targetLevel}. ${cost} Broken Mechanical Components spent. Applies account-wide to new runs.`;
         await presentReward(conduitReward(id, account, 'Conduit upgraded', `${cost} Broken Mechanical Components spent`));
-        const next = host.querySelector<HTMLButtonElement>(`[data-upgrade-conduit="${id}"]`);
+        const next = host.querySelector<HTMLButtonElement>(`[data-upgrade-conduit="${id}"]${maximum ? '[data-max-conduit]' : ':not([data-max-conduit])'}`);
         if (next && !next.disabled) next.focus({ preventScroll: true });
         else status.focus({ preventScroll: true });
       } catch (error) {
         console.error('Conduit upgrade rejected', error);
         reportError(`${saved ? 'Conduit upgrade is saved, but its presentation could not complete.' : 'Conduit upgrade was not completed.'} ${error instanceof Error ? error.message : String(error)}`);
-      } finally { pending = false; }
+      } finally { pendingUpgrades.delete(host); }
     });
   });
 }
@@ -155,7 +166,7 @@ export function updateConduitUpgradeMenu(host: HTMLElement, account: Account | n
   const earnComponents = resource?.querySelector('[data-machine-activity]');
   const active = document.activeElement;
   const focusedAction = active instanceof HTMLElement && panel.contains(active)
-    ? active.hasAttribute('data-upgrade-conduit') ? 'upgrade' : active.hasAttribute('data-machine-activity') ? 'earn' : undefined
+    ? active.hasAttribute('data-max-conduit') ? 'maximum' : active.hasAttribute('data-upgrade-conduit') ? 'upgrade' : active.hasAttribute('data-machine-activity') ? 'earn' : undefined
     : undefined;
   panel.className = updated.className;
   if (updated.dataset.upgradeCard) panel.dataset.upgradeCard = updated.dataset.upgradeCard;
@@ -168,7 +179,7 @@ export function updateConduitUpgradeMenu(host: HTMLElement, account: Account | n
     if (earnComponents) resource.querySelector('[data-machine-activity]')?.replaceWith(earnComponents);
   }
   if (focusedAction) {
-    const target = panel.querySelector<HTMLButtonElement>(focusedAction === 'upgrade' ? '[data-upgrade-conduit]' : '[data-machine-activity]');
+    const target = panel.querySelector<HTMLButtonElement>(focusedAction === 'maximum' ? '[data-max-conduit]' : focusedAction === 'upgrade' ? '[data-upgrade-conduit]:not([data-max-conduit])' : '[data-machine-activity]');
     if (target && !target.disabled) target.focus({ preventScroll: true });
     else current.querySelector<HTMLElement>('#conduit-upgrade-result')?.focus({ preventScroll: true });
   }

@@ -55,7 +55,7 @@ describe('isolated development profile', () => {
     for (const creature of creatures.filter(creature => creature.mode && creature.mode !== 'machines')) {
       const copies = account.capturedCharacters?.filter(copy => copy.creatureId === creature.id) ?? [];
       expect(copies).toHaveLength(3);
-      expect(copies.every(copy => capturedProgress(copy).level === 120)).toBe(true);
+      expect(copies.every(copy => capturedProgress(copy).level === 60)).toBe(true);
     }
     expect(account.conduitEquipment).toBeUndefined();
     expect(account.masterEquipment).toBeUndefined();

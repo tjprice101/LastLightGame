@@ -30,7 +30,7 @@ describe('Let and Rise founding canon', () => {
     for (const creature of creatures) {
       const lore = creatureLore(creature);
       expect(lore).toContain(creature.name);
-      if (creature.mode === 'machines') {
+      if (creature.mode === 'machines' || creature.calamity === 'machines') {
         expect(lore).toContain(machineOrigin);
         expect(lore).not.toContain('is an Elemental-Devourer of Rise');
       } else {

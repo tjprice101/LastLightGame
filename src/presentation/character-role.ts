@@ -1,4 +1,5 @@
 import { getStarter, type StarterId } from '../content/starters';
+import { nativeIdentities } from '../content/native-identities';
 
 const symbols = {
   Attacker: '<path d="m9 15 8-8 2-2 1 4-9 9M7 13l6 6M9 17l-3 3-2-2 3-3"/>',
@@ -9,5 +10,5 @@ const symbols = {
 
 export function characterRole(id: StarterId): string {
   const { role } = getStarter(id);
-  return `<span class="character-role" data-character-role="${role}"><span class="role-medal" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">${symbols[role]}</svg></span><span>${role}</span></span>`;
+  return `<span class="character-role" data-character-role="${role}"><span class="role-medal" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">${symbols[role]}</svg></span><span>${nativeIdentities[id].role}</span></span>`;
 }

@@ -5,6 +5,10 @@ import { MenuHistory } from './menu-history';
 
 vi.mock('./settings', () => ({ reducedMotion: () => true }));
 vi.mock('../vfx/battle-vfx-runner', () => ({ BattleVFXRunner: class { destroy() {} } }));
+vi.mock('./activity-transition', () => ({
+  activityTransitionPending: () => false,
+  transitionActivity: async (enter: () => void) => { enter(); },
+}));
 
 afterEach(() => {
   document.body.replaceChildren();
@@ -14,19 +18,19 @@ afterEach(() => {
   Reflect.deleteProperty(HTMLElement.prototype, 'scrollIntoView');
 });
 
-function fixture(phase: 'cleared' | 'defeat', exit: () => Promise<void>, online: boolean) {
+function fixture(phase: 'cleared' | 'defeat', exit: () => Promise<void>, online: boolean, staged: boolean | 'machines' = false) {
   vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
   Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: vi.fn() });
   Object.defineProperty(HTMLDialogElement.prototype, 'close', {
     configurable: true, value: function (this: HTMLDialogElement) { this.open = false; },
   });
-  const session = createSession('ember');
+  const session = createSession('ember', undefined, staged === 'machines' ? { mode: 'machines', stage: 75 } : staged ? { storyStage: 25 } : undefined);
   session.entrancePending = false;
   session.state.phase = phase;
   session.resultsVisible = true;
   const host = document.createElement('div');
   document.body.append(host);
-  const unexpected = vi.fn(async () => { throw new Error('Exit must not use combat authority.'); });
+  const unexpected = vi.fn<BattleAuthority['retry']>(async () => { throw new Error('Exit must not use combat authority.'); });
   const authority: BattleAuthority | undefined = online ? {
     action: unexpected, endTurn: unexpected, nextStage: unexpected, nextWave: unexpected, retry: unexpected,
   } : undefined;
@@ -36,6 +40,41 @@ function fixture(phase: 'cleared' | 'defeat', exit: () => Promise<void>, online:
 }
 
 describe('battle results exit', () => {
+  it('retains acquired Machines ownership when the offline Replay stage button creates a fresh encounter', async () => {
+    const f = fixture('cleared', vi.fn(), false, 'machines');
+    f.session.state.machineConduits = { 'duplex-heart': 2, 'worldbreaker-drive': 1 };
+    const before = structuredClone(f.session);
+    Object.assign(f.view, { enterEncounter: vi.fn(async () => {}) });
+    try {
+      f.host.querySelector<HTMLButtonElement>('.battle-results [data-result-restart]')!.click();
+      await vi.waitFor(() => expect(f.session.runId).not.toBe(before.runId));
+      expect(f.session.state.infusion?.stage).toBe(75);
+      expect(f.session.state.machineConduits).toEqual(before.state.machineConduits);
+      expect(f.session.state.machineConduits).not.toBe(before.state.machineConduits);
+      expect(f.commit).not.toHaveBeenCalled();
+    } finally { f.view.destroy(); }
+  });
+  it.each([false, true])('replays a victory stage through its bound button (online: %s)', async online => {
+    const f = fixture('cleared', vi.fn(), online, true);
+    const before = structuredClone(f.session);
+    const fresh = createSession('ember', undefined, { storyStage: 25 });
+    const enter = vi.fn(async () => {});
+    Object.assign(f.view, { enterEncounter: enter });
+    if (online) f.unexpected.mockResolvedValue({ session: fresh });
+    try {
+      const button = f.host.querySelector<HTMLButtonElement>('.battle-results [data-result-restart]')!;
+      expect(button.textContent).toBe('Replay stage');
+      button.click();
+      await vi.waitFor(() => expect(f.session.runId).not.toBe(before.runId));
+      expect(f.session.state.story?.storyStage).toBe(25);
+      expect(f.session.state.phase).toBe('player');
+      expect(f.session.stageEvents).toEqual([]);
+      expect(f.session.state.allies[0].shatter).toBe(0);
+      expect(f.commit).not.toHaveBeenCalled();
+      expect(f.unexpected).toHaveBeenCalledTimes(online ? 1 : 0);
+      expect(enter).toHaveBeenCalledOnce();
+    } finally { f.view.destroy(); }
+  });
   it.each(['cleared', 'defeat'] as const)('returns a resumed online %s run through one exit callback', async phase => {
     const history = new MenuHistory<{ page: string }>();
     let page = 'battle';

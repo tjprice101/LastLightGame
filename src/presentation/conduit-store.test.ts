@@ -31,7 +31,7 @@ describe('Conduit Store and discovery routes', () => {
     }
     expect(html).toContain('ref-store-detail');
     expect(conduits.map((entry) => entry.price)).toEqual([1000, 1200, 1000, 1500, 1200]);
-    expect(conduits.map((entry) => entry.buff.amount)).toEqual([5, 5, 5, 2, 5]);
+    expect(conduits.map(entry => entry.buffs.map(buff => buff.amount))).toEqual([[6], [], [10], [], [10]]);
     expect(additionalCommonConduits.map((entry) => entry.price)).toEqual([1600, 1800, 1400, 1500, 1500]);
   });
   it('shows owned quantities, empty/error states and unaffordable disabled buttons', () => {

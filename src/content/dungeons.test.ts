@@ -10,6 +10,7 @@ import { readFileSync } from 'node:fs';
 import { enemyCombatStats } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
 import type { ConduitLoadouts } from './conduits';
+import { benchmarkTarget, playNativeBenchmark } from '../game/native-benchmark-pilot';
 
 describe('elemental material dungeons', () => {
   it('enables exactly the ten canonical elements and rejects unknown dungeons', () => {
@@ -50,12 +51,7 @@ describe('elemental material dungeons', () => {
     });
     for (const stage of [1, 35]) {
       let state = createDungeonBattle(element, stage, 1729, 'ember', stage === 1 ? { level: 38, evolution: 2 } : { level: 105, evolution: 6 });
-      for (let turn = 0; state.phase === 'player' && turn < 100; turn++) {
-        const actor = state.allies[0];
-        const action = (['ultimate', 'skill1', 'light'] as const).find((action) => !actionUnavailable(state, actor, action));
-        if (action) state = act(state, actor.id, action, state.enemies.find((enemy) => enemy.hp > 0)!.id).state;
-        if (state.phase === 'player') state = endTurn(state).state;
-      }
+      state = playNativeBenchmark(state);
       expect(state.phase, `${element} stage ${stage}`).toBe(stage === 1 ? 'cleared' : 'defeat');
     }
   });
@@ -88,7 +84,7 @@ describe('elemental material dungeons', () => {
           ? ['skill2', 'ultimate', 'skill1', 'light'] as const : ['ultimate', 'skill1', 'skill2', 'light'] as const;
         const action = priorities.find(action => !actionUnavailable(state, actor, action));
         if (!action) throw new Error('Early material fixture has no legal action.');
-        state = actAndAdvanceTurn(state, actor.id, action, state.enemies.find(enemy => enemy.hp > 0)!.id).state;
+        state = actAndAdvanceTurn(state, actor.id, action, benchmarkTarget(state, actor, action)).state;
       }
       expect(state.phase, `${starter.name} stage ${stage}`).toBe('cleared');
       expect(turns).toBeLessThan(100);

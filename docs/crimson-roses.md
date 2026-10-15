@@ -78,11 +78,11 @@ approved playable implementation alongside Midjourney packs:
 - Six total materials: Seed, Bud, Bloom, Crest, Heart and Soul of Rosethorn,
   Common through Omnic. These are a new chain, not renamed Sanctuary materials.
 - Captures can fight or sell for their form's material. **Only defeated enemies
-  at levels120 or below can be captured.** Existing captured cap120 is unchanged.
+  at levels120 or below can be captured.** D-305 caps owned levels at60, retaining source form and skills.
 - Special banner follows the approved existing10 cost and independent200/500
   highest-star pity. All three EBs share1.1% equally (1.1% /3 each); the first three Roselius
   forms split98.9% with50:30:17 weights.
-- Duplicate event EBs award an Omnic Roselius at **Lv.80**, with its final-form
+- Duplicate event EBs award an Omnic Roselius at **Lv.60** under D-305, with its final-form
   kit, usable in battle or sold for Soul. Standard's Treasury Lv.50 conversion
   and fifteen outcomes remain unchanged.
 - First-pass roles approved: Rosetta area damage/debuff, Thornia thorn-armored
@@ -247,11 +247,11 @@ ensemble span/2% edge margins, compact eyes-only anatomy/renderer/identity and
 clear face/bow window/narrow key channels. No glow/scenery or runtime changes.
 Other portraits/icons/equipment/packs untouched; pause for her Omnic review.
 
-Event duplicates have `acquisition:"banner-duplicate"`, Lv.80, capturedStage29,
+Event duplicates have `acquisition:"banner-duplicate"`, Lv.60, capturedStage29,
 and that stage's authored skills. Only final Treasury Lv.50 and final Roselius
-Lv.80 allow below-stage levels with this provenance; mission captures cannot
+Lv.60 allow below-stage levels with this provenance; mission captures cannot
 forge the exception. Roselius use D-288's linear playable stats, `.65+.35*tier/5`, never hostile/boss
-stats, fixed forms and independent leveling to120. Their levels use Seed rather
+stats, fixed forms and a level60 cap. Their levels use Seed rather
 than Luminous Seed. Locks, squads and any equipped Conduit protect sales/fodder.
 
 | Evolution | Required level | Prismatica | Materials | Selected Roselius |

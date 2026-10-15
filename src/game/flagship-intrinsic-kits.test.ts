@@ -1,169 +1,181 @@
 import { describe, expect, it } from 'vitest';
 import { resolveFighter } from '../content/combat';
-import { elementalEffectFamilies } from '../content/elemental-effects';
-import { enemyDebuffs } from '../presentation/battle-status';
-import { act, createBattle, damageAmount, endTurn, nextWave } from './battle';
+import { nativeIdentityIds } from '../content/native-identities';
+import { nativeBalance } from '../content/native-balance';
+import { act, createBattle, damageAmount, endTurn, nextWave, type BattleState } from './battle';
+import { nativeForecast, nativeIncomingMultiplier, nativeRouteDamage } from './native-kits';
 
-const availablePilots = ['atmoso', 'elise', 'vaelor', 'aurora', 'bliss', 'bruno', 'disciple', 'razor', 'nerithe', 'orvella'] as const;
-
-function encounter(...roster: string[]) {
+function encounter(...roster: string[]): BattleState {
   const state = createBattle(1729, roster);
-  state.enemies = [state.enemies[0]];
-  for (const ally of state.allies) {
-    ally.shatter = ally.stats.shatterCapacity;
-    ally.stats.crit = 0;
-  }
-  const enemy = state.enemies[0];
-  enemy.hp = enemy.stats.health = 1_000_000;
-  enemy.stats.defense = 0;
-  enemy.stats.damage = 32;
-  enemy.stats.crit = 0;
+  state.enemies = [state.enemies[0], { ...structuredClone(state.enemies[0]), id: 'second-target' }];
+  state.allies.forEach(unit => {
+    unit.shatter = 100; unit.stats.crit = 0; unit.stats.damage = 100;
+    unit.hp = unit.stats.health = 1000;
+  });
+  state.enemies.forEach(unit => {
+    unit.hp = unit.stats.health = 100_000; unit.stats.defense = 0; unit.stats.damage = 0; unit.stats.crit = 0;
+    unit.enemySkills = [{ name: 'Trial', every: 2, multiplier: 2, action: 'skill1' },
+      { name: 'Final Trial', every: 6, multiplier: 3, action: 'ultimate' }];
+  });
   return state;
 }
+function use(state: BattleState, id: string, action: 'light' | 'skill1' | 'skill2' | 'ultimate' | 'defend', target = state.enemies[0].id) {
+  const actor = state.allies.find(unit => unit.id === id)!;
+  actor.spent = false; actor.shatter = 100; actor.recoverThrough = 0;
+  if (actor.conduitRuntime) actor.conduitRuntime.numbers.actions = 0;
+  return act(state, id, action, target);
+}
 
-describe('consolidated flagship effects', () => {
-  it('limits shared counters to the approved pilots and leaves the removed flagship loops native-free', () => {
-    expect((['atmoso', 'elise', 'vaelor'] as const).map((id) => resolveFighter(id).pilot)).toEqual(['tempest', 'tempest', 'tempest']);
-    expect(resolveFighter('bliss').pilot).toBe('bloom');
-    for (const id of availablePilots.slice(3, 4).concat(availablePilots.slice(5))) {
-      expect(resolveFighter(id).pilot).toBeUndefined();
-    }
-    expect(elementalEffectFamilies.tempest.element).toBe('atmospheric');
-    expect(elementalEffectFamilies.focus.element).toBe('tranquilitic');
+describe('distinct flagship native identities', () => {
+  it.each(nativeIdentityIds)('%s replaces retired shared pilots rather than layering a second personal bank', id => {
+    const kit = resolveFighter(id);
+    expect(kit.nativeIdentity).toBe(true);
+    expect(kit.pilot).toBeUndefined();
+    expect(kit.passive).toMatchObject({ damageBonus: 0, defenseBonus: 0, healFraction: 0 });
+    expect(encounter(id).allies[0].pilot).toBeUndefined();
   });
 
-  it('defines the live pilot applicability for every authored Element-Bearer, including starter, Rose and War exceptions', () => {
-    expect((['ember', 'tide', 'sprout', 'rosetta', 'thornia', 'crinso', 'atmoso', 'aurora',
-      'bliss', 'bruno', 'disciple', 'elise', 'razor', 'nerithe', 'orvella', 'vaelor'] as const)
-      .map((id) => resolveFighter(id).pilot)).toEqual([
-      'ember', 'ward', 'bloom', 'rose-grace', 'thorn-aegis', 'rose-duality', 'tempest', undefined,
-      'bloom', undefined, undefined, 'tempest', undefined, undefined, undefined, 'tempest',
-    ]);
+  it('Atmoso earns Gusts from other allies once per turn, not from his criticals', () => {
+    let state = use(encounter('atmoso', 'ember', 'tide'), 'atmoso', 'skill2').state;
+    state = use(state, 'ember', 'defend').state;
+    state = use(state, 'ember', 'light').state;
+    state = use(state, 'tide', 'defend').state;
+    expect(state.allies[0].native?.cyclone?.gusts).toBe(2);
+    state.allies[0].stats.crit = 1;
+    const release = use(state, 'atmoso', 'skill1');
+    expect(release.events.filter(event => event.nativeKind === 'cyclone').map(event => event.amount)).toEqual([130, 130]);
+    expect(release.state.allies[0].native?.cyclone).toBeUndefined();
+    expect(release.state.allies[0].pilot).toBeUndefined();
   });
 
-  it.each([
-    { id: 'atmoso', action: 'skill1' as const },
-    { id: 'elise', action: 'skill1' as const },
-    { id: 'vaelor', action: 'skill2' as const },
-  ])('$id earns Tempest from any effective critical direct activation and spends before the same activation can earn again', ({ id, action }) => {
-    const state = encounter(id);
-    const actor = state.allies[0];
-    const ability = actor.kit!.abilities[action];
-    // Exactly 100% total: a skill crit bonus above that would add an Elemental Crit roll.
-    actor.stats.crit = 1 - (ability.strength.critBonus ?? 0);
-    actor.pilot = { tempest: 3 };
-    const before = structuredClone(state);
-    const ordinary = act(state, actor.id, action, state.enemies[0].id);
-    const baseline = structuredClone(before);
-    baseline.allies[0].kit!.pilot = undefined;
-    const withoutPilot = act(baseline, actor.id, action, state.enemies[0].id);
-    expect(ordinary.events.find((event) => event.kind === 'damage')?.amount).toBe(
-      damageAmount(actor.stats.damage, ability.strength.damageMultiplier! * 1.24, 0, true, actor.stats.critMultiplier),
-    );
-    expect(ordinary.state.allies[0].pilot?.tempest).toBe(1);
-    expect(ordinary.events.findIndex((event) => event.message.includes('spends 3 Atmospheric Charge')))
-      .toBeLessThan(ordinary.events.findIndex((event) => event.kind === 'damage'));
-    expect(ordinary.state.seed).toBe(withoutPilot.state.seed);
-    expect(state).toEqual(before);
+  it('Atmoso recasting releases old wind before restarting empty and releases naturally after two phases', () => {
+    let state = use(encounter('atmoso'), 'atmoso', 'skill2').state;
+    const recast = use(state, 'atmoso', 'skill2');
+    expect(recast.events.filter(event => event.nativeKind === 'cyclone').map(event => event.amount)).toEqual([70, 70]);
+    expect(recast.state.allies[0].native?.cyclone?.gusts).toBe(0);
+    const first = endTurn(recast.state);
+    expect(first.events.some(event => event.nativeKind === 'cyclone')).toBe(false);
+    const second = endTurn(first.state);
+    expect(second.events.filter(event => event.nativeKind === 'cyclone').map(event => event.amount)).toEqual([70, 70]);
   });
 
-  it('spends Tempest across an AoE then awards only one new stack from multiple existing critical rolls', () => {
-    const state = encounter('vaelor');
-    const actor = state.allies[0];
-    const second = structuredClone(state.enemies[0]);
-    second.id = 'second-target';
-    state.enemies.push(second);
-    actor.stats.crit = 1;
-    actor.pilot = { tempest: 3 };
-    const baseline = structuredClone(state);
-    baseline.allies[0].pilot = undefined;
-    const result = act(state, actor.id, 'skill2', state.enemies[0].id);
-    const plain = act(baseline, actor.id, 'skill2', baseline.enemies[0].id);
-    expect(result.events.filter((event) => event.kind === 'damage')).toHaveLength(2);
-    expect(result.events.filter((event) => event.message.includes('gains Atmospheric Charge'))).toHaveLength(1);
-    expect(result.state.allies[0].pilot?.tempest).toBe(1);
-    expect(result.state.seed).toBe(plain.state.seed);
-    expect(result.events.findIndex((event) => event.message.includes('spends 3 Atmospheric Charge')))
-      .toBeLessThan(result.events.findIndex((event) => event.kind === 'damage'));
-    for (const hit of result.events.filter((event) => event.kind === 'damage')) {
-      expect(hit.amount).toBe(damageAmount(actor.stats.damage, 1.4 * 1.24, 0, true, actor.stats.critMultiplier));
-    }
+  it('Elise uses two persistent placements and one noncritical convergence strike, with no recall RNG', () => {
+    let state = use(encounter('elise'), 'elise', 'skill1').state;
+    state = use(state, 'elise', 'skill1').state;
+    expect(state.allies[0].native?.blades).toEqual([state.enemies[0].id, state.enemies[0].id]);
+    const noBlade = use(state, 'elise', 'skill1');
+    expect(noBlade.events.find(event => event.kind === 'damage')?.amount).toBe(140 * nativeBalance.skillDamageScale);
+    const beforeSeed = state.seed;
+    const recall = use(state, 'elise', 'skill2');
+    expect(recall.events.filter(event => event.nativeKind === 'recall').map(event => event.amount)).toEqual([90, 90, 60]);
+    expect(recall.events.every(event => !event.critical)).toBe(true);
+    expect(recall.state.seed).toBe(beforeSeed);
+    expect(recall.state.allies[0].native?.blades).toEqual([null, null]);
   });
 
-  it('counts effective critical shield absorption for Tempest but Last Flare never earns it', () => {
-    const shielded = encounter('elise');
-    shielded.allies[0].stats.crit = 1;
-    shielded.enemies[0].shield = 100_000;
-    const absorbed = act(shielded, 'elise', 'light', shielded.enemies[0].id);
-    expect(absorbed.state.allies[0].pilot?.tempest).toBe(1);
-
-    const ultimate = encounter('vaelor');
-    ultimate.allies[0].stats.crit = 1;
-    ultimate.allies[0].pilot = { tempest: 2 };
-    const flare = act(ultimate, 'vaelor', 'ultimate', ultimate.enemies[0].id);
-    expect(flare.state.allies[0].pilot?.tempest).toBe(0);
-    expect(flare.events.some((event) => event.message.includes('gains Atmospheric Charge'))).toBe(false);
-    expect(flare.state.allies[0].recoverThrough).toBe(ultimate.round + 1);
+  it('Elise split placement covers separate targets but Last Flare remains one direct target', () => {
+    let state = use(encounter('elise'), 'elise', 'skill1').state;
+    state = use(state, 'elise', 'skill1', state.enemies[1].id).state;
+    const flare = use(state, 'elise', 'ultimate');
+    expect(flare.events.filter(event => event.nativeKind === 'recall').map(event => event.amount)).toEqual([90, 90]);
+    expect(flare.events.filter(event => event.kind === 'damage' && !event.nativeKind).map(event => event.amount)).toEqual([260 * nativeBalance.skillDamageScale]);
+    expect(flare.state.allies[0].native?.blades).toEqual([null, null]);
   });
 
-  it('keeps Aurora authored damage and Weaken with no native pilot, marks, or Precision bonus', () => {
-    const state = encounter('aurora', 'bliss');
-    const actor = state.allies[0];
-    expect(actor.pilot).toBeUndefined();
-    const first = act(state, actor.id, 'skill1', state.enemies[0].id);
-    expect(first.state.enemies[0].pilot).toBeUndefined();
-    expect(first.state.enemies[0].weakenFraction).toBe(.3);
-    expect(first.events.some((event) => event.elementalEffect?.family === 'focus')).toBe(false);
-    expect(enemyDebuffs(first.events.find((event) => event.kind === 'damage')!.debuffs!)).not.toContain('Focus');
-
-    const phase = endTurn(first.state).state;
-    phase.allies[0].shatter = 100;
-    const before = structuredClone(phase);
-    const result = act(phase, actor.id, 'ultimate', phase.enemies[0].id);
-    const baseline = structuredClone(before);
-    const plain = act(baseline, actor.id, 'ultimate', baseline.enemies[0].id);
-    expect(result.state.enemies[0].pilot).toBeUndefined();
-    expect(result.state.allies.every((ally) => ally.pilot === undefined)).toBe(true);
-    expect(result.events.find((event) => event.kind === 'damage')?.amount).toBe(plain.events.find((event) => event.kind === 'damage')?.amount);
-    expect(result.state.seed).toBe(plain.state.seed);
-    expect(result.state.enemies[0].weakenFraction).toBe(.4);
-    expect(resolveFighter('aurora').abilities.skill1.description).toContain('by 30%');
+  it('Bliss opening grants offense, passing neither payoff, and closing restores a different ally', () => {
+    const opening = use(encounter('bliss', 'ember', 'tide'), 'bliss', 'skill2');
+    expect(opening.state.allies.every(unit => unit.attackBoost?.fraction === .1)).toBe(true);
+    let state = encounter('bliss', 'ember', 'tide');
+    state.allies[1].hp = 500;
+    state = use(state, 'ember', 'defend').state;
+    const passing = use(state, 'bliss', 'skill1');
+    expect(passing.state.allies[1].hp).toBe(500);
+    expect(passing.events.find(event => event.kind === 'damage')?.amount).toBe(170 * nativeBalance.skillDamageScale);
+    state = use(state, 'tide', 'defend').state;
+    const closing = use(state, 'bliss', 'skill1');
+    expect(closing.state.allies[1].hp).toBe(560);
+    const solo = use(encounter('bliss'), 'bliss', 'skill2');
+    expect(solo.state.allies[0].shield).toBe(0);
+    expect(solo.state.allies[0].attackBoost?.fraction).toBe(.1);
   });
 
-  it('preserves Disciple active buff source/expiry and removes only the additional Concord stack loop', () => {
-    const state = encounter('disciple', 'elise');
-    const skill = act(state, 'disciple', 'skill1', state.enemies[0].id);
-    expect(skill.state.allies[1].attackBoost).toEqual({ fraction: .2, throughRound: state.round + 1, sourceId: 'disciple' });
-    expect(skill.state.allies[0].pilot).toBeUndefined();
-    expect(skill.state.allies[1].pilot).toBeUndefined();
-    expect(endTurn(endTurn(skill.state).state).state.allies[1].attackBoost).toBeUndefined();
-    const kit = resolveFighter('disciple');
-    expect(kit.abilities.skill1.strength.attackBoostFraction).toBe(.2);
-    expect(kit.abilities.skill2.strength.attackBoostFraction).toBe(.3);
-    expect(kit.abilities.ultimate.strength.attackBoostFraction).toBe(.4);
+  it('Bruno explicitly selects another ally, replaces Cover, and reduces only redirected damage', () => {
+    let state = use(encounter('bruno', 'ember', 'tide'), 'bruno', 'skill2', 'ember').state;
+    const redirected: number[] = [];
+    expect(nativeRouteDamage(state, state.enemies[0], state.allies[1], 100, [], (_, amount) => redirected.push(amount))).toBe(50);
+    expect(redirected).toEqual([37.5]);
+    expect(nativeRouteDamage(state, state.enemies[0], state.allies[2], 100, [], () => {})).toBe(100);
+    expect(() => use(state, 'bruno', 'skill2', 'bruno')).toThrow('another living ally');
+    state = use(state, 'bruno', 'skill2', 'tide').state;
+    expect(state.allies[0].native?.cover?.targets).toEqual(['tide']);
+    const solo = use(encounter('bruno'), 'bruno', 'skill2', 'bruno');
+    expect(solo.state.allies[0].native?.reduction?.fraction).toBe(.2);
   });
 
-  it('keeps Bloom spending on Bliss distinct while the new cap-three counter is shared with Flora', () => {
-    const state = encounter('bliss');
-    const actor = state.allies[0];
-    actor.pilot = { bloom: 3 };
-    const result = act(state, actor.id, 'ultimate', state.enemies[0].id);
-    expect(result.state.allies[0].shield).toBe(actor.stats.health * .15);
-    expect(result.state.allies[0].pilot?.bloom).toBe(0);
-    expect(result.state.allies[0].recoverThrough).toBe(state.round + 1);
-    expect(resolveFighter('bliss').abilities.skill1.description).toContain('+8% outgoing damage per charge');
-    expect(resolveFighter('bliss').abilities.ultimate.description).toContain("5% of this caster's maximum Health per charge");
+  it('Disciple commands a selected ally, expires after one action, and never grants permanent Attack stats', () => {
+    let state = use(encounter('disciple', 'ember', 'tide'), 'disciple', 'skill1', 'ember').state;
+    expect(state.allies[1].attackBoost).toBeUndefined();
+    const strike = use(state, 'ember', 'light');
+    expect(strike.events.find(event => event.kind === 'damage')?.amount).toBe(130);
+    expect(strike.state.allies[1].native?.instruction).toBeUndefined();
+    state = use(state, 'disciple', 'skill2', 'tide').state;
+    const barrier = use(state, 'tide', 'skill2', 'ember');
+    expect(barrier.state.allies[1].shield).toBe(1000 * nativeBalance.tizu.shelter * 1.35);
+    expect(barrier.state.allies[2].native?.instruction).toBeUndefined();
   });
 
-  it('creates fresh shared state on a new encounter and preserves independent active Conduit effects', () => {
-    const state = encounter('atmoso');
-    state.allies[0].pilot = { tempest: 2 };
+  it('Disciple self-instruction activates after granting and a wrong-type action consumes without benefit', () => {
+    let state = use(encounter('disciple', 'ember'), 'disciple', 'skill1', 'disciple').state;
+    expect(state.allies[0].native?.instruction?.kind).toBe('strike');
+    expect(use(state, 'disciple', 'defend').state.allies[0].native?.instruction).toBeUndefined();
+    state = use(state, 'disciple', 'skill2', 'ember').state;
+    const wrong = use(state, 'ember', 'light');
+    expect(wrong.events.find(event => event.kind === 'damage')?.amount).toBe(100);
+    expect(wrong.state.allies[1].native?.instruction).toBeUndefined();
+  });
+
+  it('Disciple replacing an ordinary Instruction discards the old recipient rather than commanding two allies', () => {
+    let state = use(encounter('disciple', 'ember', 'tide'), 'disciple', 'skill1', 'ember').state;
+    state = endTurn(state).state;
+    state = use(state, 'disciple', 'skill2', 'tide').state;
+    expect(state.allies[1].native?.instruction).toBeUndefined();
+    expect(state.allies[2].native?.instruction?.kind).toBe('shelter');
+  });
+
+  it('Aurora forecasts specials and retains a stronger single-target Seal without damage or Weaken', () => {
+    let state = encounter('aurora', 'ember');
+    expect(nativeForecast(state, state.allies[0])[0]).toContain('enemy phase 2');
+    const seal = use(state, 'aurora', 'skill1');
+    expect(seal.events.some(event => event.kind === 'damage')).toBe(false);
+    expect(seal.state.enemies[0].weakened).toBe(0);
+    state = use(seal.state, 'aurora', 'skill2').state;
+    expect(state.allies[0].native?.seals?.[state.enemies[0].id]?.fraction).toBe(.4);
+    expect(state.allies[0].native?.seals?.[state.enemies[1].id]?.fraction).toBe(.25);
+    expect(nativeIncomingMultiplier(state, state.enemies[0], state.allies[1], 'light', [])).toBe(1);
+  });
+
+  it('Razor has a personal defensive stance, not a team barrier or flat Defense passive', () => {
+    const state = encounter('razor', 'ember');
+    const result = use(state, 'razor', 'skill2');
+    expect(result.state.allies.every(unit => unit.shield === 0)).toBe(true);
+    expect(result.state.allies[0].native?.bastion).toEqual({ throughPhase: state.round, loss: 0 });
+    expect(nativeIncomingMultiplier(result.state, result.state.enemies[0], result.state.allies[0], 'light', [])).toBeCloseTo(.7);
+    const ordinary = use(encounter('razor'), 'razor', 'skill1');
+    expect(ordinary.events.find(event => event.kind === 'damage')?.amount).toBe(damageAmount(100, 1.6 * nativeBalance.skillDamageScale, 0, false));
+    expect(ordinary.events.some(event => event.nativeKind === 'revenge')).toBe(false);
+  });
+
+  it('new encounters clear field investments without mutating a Settings clone or retaining encounter gear charges', () => {
+    const state = use(encounter('atmoso'), 'atmoso', 'skill2').state;
+    state.allies[0].native!.cyclone!.gusts = 2;
     state.allies[0].conduitCharges = { normalMomentum: true };
+    const settings = structuredClone(state);
+    settings.allies[0].native!.cyclone!.gusts = 1;
+    expect(state.allies[0].native?.cyclone?.gusts).toBe(2);
     state.phase = 'cleared';
-    state.enemies.forEach((enemy) => { enemy.hp = 0; });
+    state.enemies.forEach(enemy => { enemy.hp = 0; });
     const next = nextWave(state).state;
-    expect(next.allies[0].pilot).toBeUndefined();
-    expect(next.allies[0].conduitCharges?.normalMomentum).toBe(true);
-    expect(state.allies[0].pilot?.tempest).toBe(2);
+    expect(next.allies[0].native?.cyclone).toBeUndefined();
+    expect(next.allies[0].conduitCharges?.normalMomentum).toBeUndefined();
   });
 });

@@ -1,4 +1,4 @@
-import { type Combatant } from '../game/battle';
+import { type BattleEvent, type Combatant } from '../game/battle';
 import { isStarterId, type StarterId } from '../content/starters';
 
 type Motion = 'slash' | 'thrust' | 'bow' | 'cast' | 'hammer' | 'twin' | 'guard';
@@ -100,6 +100,43 @@ export function attackPose(flair: AttackFlair, distance: number, vertical: numbe
   const tilt = { slash: 9, thrust: 0, bow: -7, cast: 0, hammer: -14, twin: 12, guard: 5 }[flair.motion] * direction;
   const reach = flair.motion === 'bow' ? -.18 : flair.motion === 'thrust' ? 1 : .65;
   return `translate(${distance * reach}px,${vertical}px) rotate(${tilt}deg) scale(${1.04 + flair.power * .1})`;
+}
+
+export interface NativeMechanicCue {
+  label: string;
+  path: string;
+  motion: 'recall' | 'grow' | 'break' | 'guard' | 'slash';
+}
+
+export function nativeMechanicCue(unit: Combatant | undefined, event: BattleEvent): NativeMechanicCue | null {
+  if (event.origin === 'conduit') return null;
+  const cues: Record<string, NativeMechanicCue> = {
+    burn: { label: 'Banked fire', path: 'M50 90Q10 65 40 25L48 50 65 10Q100 65 50 90Z', motion: 'grow' },
+    detonation: { label: 'Burn detonation', path: 'M50 5 60 35 90 15 70 45 95 60 65 65 55 95 40 70 10 80 30 50 5 30 40 35Z', motion: 'break' },
+    cyclone: { label: 'Cyclone release', path: 'M15 72Q95 88 80 30Q60 2 26 28Q8 58 56 64Q83 49 55 34M8 44Q50 4 92 42', motion: 'grow' },
+    recall: { label: 'Shuriken recall', path: 'M50 20 58 42 80 50 58 58 50 80 42 58 20 50 42 42ZM25 15Q90 5 90 65M90 65 78 52M90 65 97 48', motion: 'recall' },
+    revenge: { label: 'Wounds spent', path: 'M80 10 20 90M65 15A35 35 0 1 0 65 85M25 55 45 75', motion: 'slash' },
+    trap: { label: 'Thorn trap', path: 'M10 85 35 25 45 50 50 10 60 50 70 25 90 85 50 65ZM20 80 50 40 80 80', motion: 'grow' },
+    demolition: { label: 'Foundation demolition', path: 'M10 80V30H30V15H40V35H60V15H70V30H90V80M50 25 40 50 60 65 45 90', motion: 'break' },
+    redirect: { label: 'Cover interception', path: 'M50 10 85 25V50Q85 75 50 90Q15 75 15 50V25ZM5 50H65M50 35 65 50 50 65', motion: 'guard' },
+  };
+  if (event.nativeKind && event.origin === 'native') return cues[event.nativeKind] ?? null;
+  if (!unit?.kit?.nativeIdentity || unit.captured) return null;
+  if (event.kind === 'heal' && unit.definitionId === 'sprout' && event.origin === 'native') {
+    return { label: 'Garden recovery', path: 'M50 85V45M50 60Q10 60 20 20Q55 20 50 60M50 45Q90 45 80 10Q45 10 50 45', motion: 'grow' };
+  }
+  if (event.kind !== 'attack' || event.action === 'light' || event.action === 'defend') return null;
+  if (unit.definitionId === 'crinso') return {
+    label: event.action === 'skill1' ? 'Gold edge' : event.action === 'skill2' ? 'Crimson edge' : 'Combo finisher',
+    path: event.action === 'skill1' ? 'M15 85 85 15M10 65 35 90M60 10 90 40' : 'M15 15 85 85M10 35 35 10M65 90 90 65',
+    motion: 'slash',
+  };
+  if (unit.definitionId === 'atmoso' && event.action === 'skill2') return { ...cues.cyclone, label: 'Cyclone field' };
+  if (unit.definitionId === 'elise' && event.action === 'skill1') return { ...cues.recall, label: 'Voltstar Cut', motion: 'slash' };
+  if (unit.definitionId === 'orvella' && event.action === 'skill2') return { ...cues.demolition, label: 'Foundation raised', motion: 'grow' };
+  if (unit.definitionId === 'tide' && event.action === 'skill2') return { ...cues.redirect, label: 'Tidal Shelter' };
+  if (unit.definitionId === 'bruno' && event.action === 'skill2') return { ...cues.redirect, label: 'Cover chosen ally' };
+  return null;
 }
 
 export function attackEffectMarkup(flair: AttackFlair): string {

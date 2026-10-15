@@ -1,5 +1,38 @@
 # Conduits and Conduit Store
 
+**D-316 native compatibility:** the approved sixteen-character replacement is
+implemented locally alongside explicitly adapted dependent effects. The
+[133-item matrix](character-conduit-compatibility.md) and
+[current exact roster](conduit-redesign.md) supersede retired resource/slot
+references. IDs, holdings, upgrades, art and acquisition remain unchanged.
+Shared rules version3 restarts historical current encounters only; frozen
+investments and already saved rewards are preserved. No automatic unequips,
+refunds, account migration or publication.
+
+**Current D-313 combat contract:** the owner approved and all133 reviewed
+effects are implemented locally: [85 ordinary and48 Masters](conduit-redesign.md).
+Each row replaces its old bundles; unlisted passive stats are removed.
+Ordinary effects scale through+5 using their exact endpoints and thresholds;
+Masters remain fixed. Only listed passive stats enter permanent stat totals.
+IDs, art, prices, rarity, acquisition, ownership and saved upgrades are unchanged.
+Historical combat/stat tables below are superseded by that roster, not additive.
+The website and authoritative server have not yet published this redesign.
+
+**D-312:** Machines enemy drops exclude already-owned ordinary names, choosing
+equally among the remaining names in each unchanged rarity roll. A completed
+rarity grants nothing and has no replacement reward. Preserve historical
+duplicate counts/upgrades, banner bonuses and Master-chest drops.
+[Exact eligibility and persistence rules](awaken-the-machines.md#unowned-only-enemy-conduit-drops-d-312).
+
+**D-304:** The full loadout offers Unequip All for the currently viewed owned
+member, clearing eight ordinary slots plus their Master in one atomic operation.
+Captured Elemental-Devourers clear only ordinary gear. Ownership, upgrades,
+other members' equipment and frozen battle loadouts are preserved. See the
+[equipment screen contract](menus-and-inventory.md#dedicated-conduit-loadout-page-d-238).
+
+**D-302 review completed by D-313:** the comprehensive equipment redesign
+is approved and replaces historical combat rules below, not acquisition.
+
 **D-201 current Master slot:** [48 character Masters](master-conduits.md) now
 equip in one separate matching slot, superseding historical reserved-Master
 statements. Final Machines boss has an independent 1% choice-chest drop.

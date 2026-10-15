@@ -1,5 +1,42 @@
 # Menus and inventory
 
+## Native identities and explicit ally selection (D-316)
+
+All sixteen Element-Bearers expose their current role, play loop, passive and
+exact native actions in Character and battle references. Battlefield readouts
+show actual owned resources, recipients, expiry and Aurora's next scheduled
+enemy skill rather than historical shared counters. See the
+[native identity contract](character-identity-redesign.md).
+
+An ally-targeted action opens the same named recipient picker from the
+selected member's hold grid or Battle menu, including nonleaders. Only living
+allies are eligible; self is offered when legal. Confirming submits that exact
+recipient without changing the hostile target. Cancel/Escape spends no Gauge
+or action and restores focus. Disposal closes the picker; stale battle state
+must be selected again. Offline and authoritative online actions share this
+behavior. The dialog retains contained scrolling, readable full descriptions
+and44px targets on narrow screens.
+
+Mechanic cues describe resolved native events; they do not grant damage,
+healing, resources or equipment activations. Existing reduced-motion,
+presentation speed and disposal apply. Validate recipient selection,
+cancellation, nonleader controls, references and mechanic cues with
+`src/presentation/native-kit-presentation.test.ts`.
+
+## Character-header element medals (D-310)
+
+Element-Bearer detail headers show their canonical combat-element medal and
+name beside stars/role/rarity, using the shared element-label resolver and
+installed emblem artwork. Captured member headers use the captured creature's
+combat element, not its infusion/fodder family. Medals are36px and remain
+visible across Stats, Level, Evolution and Conduit tabs and upgrade refreshes.
+The prefix retains form title/weapon without repeating the element as plain
+text. Medal images are decorative beside the readable element name; header
+tags wrap on phones. No artwork, stats, element rules or account data change.
+
+Validate all16 bearer headers, captured combat elements and portrait/medal DOM
+preservation in `src/presentation/upgrade-reference.test.ts`.
+
 ## Battle exit after resume or defeat (D-292)
 
 Battle results Quit delegates to the same Back flow as toolbar Leave, rather
@@ -631,6 +668,19 @@ mutation, refresh retention and net-color direction, plus shared UI/copy suites.
 
 ## Dedicated Conduit loadout page (D-238)
 
+**D-306:** Conduit Upgrade also offers Max Level for the selected ordinary
+Conduit. It previews the highest affordable target (up to+5), summed component
+cost and target effects, then saves all steps atomically after confirmation.
+Single-step upgrading stays available. [Rules and validation](conduit-upgrades.md#max-level-d-306).
+
+**D-304:** Unequip All is available directly beside the Loadout heading for the
+viewed owned Element-Bearer or captured Elemental-Devourer. It clears all eight
+ordinary slots and the Element-Bearer's Master together in one validated save
+or authoritative online operation. It is disabled when nothing is equipped.
+Unlocks, upgrades, other members and active battle snapshots remain unchanged.
+The refreshed page announces success; failures explicitly report unchanged
+equipment. Focus returns to the member's Back button after the action.
+
 Team's Conduits tab and the Stats & Skills summary's Full view/Open full Conduit
 view actions open a dedicated page, not an equipment panel beneath the character
 portrait. Captured Elemental-Devourer details use the same summary and full-page
@@ -1078,7 +1128,7 @@ creation offers a backup prompt and an import-or-fresh choice.
 Captured creature details use the same compact identity header and four-panel
 Stats / Skills / Growth / Conduits composition as Element-Bearers, rather than
 the inherited tall portrait and single scrolling control column. Header shows
-actual copy number, canonical element, fixed-form stars/rarity, level120 cap,
+actual copy number, canonical element, fixed-form stars/rarity, level60 cap (D-305),
 lock and squad/leader actions. Collection cards share artwork/caption styling
 and show actual stars, element, level and squad membership.
 

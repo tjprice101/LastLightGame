@@ -1,4 +1,7 @@
-import type { Account, MaxLevelPlan, summonCharacter, SummonDraw } from '../game/account';
+import type { Account, MaxLevelPlan, ConduitMaxLevelPlan, summonCharacter, SummonDraw } from '../game/account';
+import { calamityChest, calamityLootTable, isCalamityActivityId, isCalamityTier, parseCalamityChestId, type CalamityActivityId, type CalamityTier, type CalamityOpening } from '../content/calamity';
+import { isConduitId } from '../content/conduits';
+import { materialName } from '../content/dungeon-art';
 import type { BattleState, BattleEvent, BattleResult } from '../game/battle';
 import type { CharacterProgress } from '../content/progression';
 import { isStarterId, type StarterId } from '../content/starters';
@@ -43,6 +46,7 @@ export interface OnlineProfile {
 }
 export interface ProfileActivity { id: string; message: string; detail: string; at: string }
 export type Activity = { kind: 'training' } | { kind: 'story'; stage: number } |
+  { kind: 'calamity'; activity: CalamityActivityId; tier: CalamityTier } |
   { kind: 'dungeon'; element: ElementId; stage: number } |
   { kind: 'infusion'; mode: InfusionModeId; stage: number } |
   { kind: 'war'; character: WarCharacterId; stage: number };
@@ -70,9 +74,12 @@ export type GameOperation =
   | { kind: 'sellCurrencyCreature'; id: string; saleOption?: string }
   | { kind: 'purchaseConduit'; id: ConduitId }
   | { kind: 'equipConduit'; character: string; slot: number; conduit: ConduitId | null }
+  | { kind: 'unequipAllConduits'; character: string }
   | { kind: 'openMasterChest'; id: MasterConduitId }
+  | { kind: 'openCalamityChest'; id: string; expectedCount: number }
   | { kind: 'equipMasterConduit'; character: StarterId; conduit: MasterConduitId | null }
   | { kind: 'upgradeConduit'; id: ConduitId; expectedLevel: number }
+  | { kind: 'maxConduit'; expected: ConduitMaxLevelPlan }
   | { kind: 'upgradeCharacter'; id: StarterId; upgradeKind: 'level' | 'evolve' | 'weapon'; expected: CharacterProgress; fodderIds?: string[] }
   | { kind: 'levelCaptured'; id: string; expectedLevel: number }
   | { kind: 'levelMax'; id: string; expected: MaxLevelPlan }
@@ -102,6 +109,7 @@ export interface GameResponse {
   result?: BattleResult;
   summon?: ReturnType<typeof summonCharacter>;
   summons?: SummonDraw[];
+  calamityOpening?: CalamityOpening;
   social: OnlineSocial;
 }
 export class GameOperationError extends Error {
@@ -112,6 +120,31 @@ function object(value: unknown): value is Record<string, unknown> {
 }
 function safeCount(value: unknown): boolean {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
+}
+function validCalamityOpening(value: unknown): boolean {
+  if (!object(value) || typeof value.id !== 'string') return false;
+  try {
+    const { activity, tier } = parseCalamityChestId(value.id);
+    const chest = calamityChest(activity, tier);
+    const reward = value;
+    const rows = calamityLootTable(activity);
+    const fields = ['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'masterChests'];
+    if (Object.keys(reward).length !== fields.length || Object.keys(reward).some(key => !fields.includes(key)) ||
+      !['fractalis', 'lycalis', 'mechanicalComponents', 'masterChests'].every(key => safeCount(reward[key])) ||
+      reward.name !== chest.name ||
+      reward.masterChests !== chest.masterChests || !object(reward.materials) || !object(reward.conduits)) return false;
+    for (const [field, kind, base] of [['fractalis', 'fractalis', chest.fractalis], ['lycalis', 'lycalis', chest.lycalis], ['mechanicalComponents', 'components', 0]] as const) {
+      const maximum = Math.max(0, ...rows.filter(row => row.kind === kind).map(row => row.max)) * chest.bundles;
+      if ((reward[field] as number) < base || (reward[field] as number) > base + maximum) return false;
+    }
+    for (const [id, count] of Object.entries(reward.materials)) {
+      materialName(id);
+      const row = rows.find(row => row.kind === 'material' && row.id === id);
+      if (!row || !safeCount(count) || count === 0 || (count as number) > row.max * chest.bundles) return false;
+    }
+    return Object.entries(reward.conduits).every(([id, count]) => isConduitId(id) && safeCount(count) && count !== 0 &&
+      (count as number) <= chest.bundles && rows.some(row => row.kind === 'conduit' && row.id === id));
+  } catch { return false; }
 }
 const profileFrames: readonly string[] = ['default', 'thin-outline', 'double-outline', 'corner-brackets'];
 function validSummonDraw(draw: unknown): boolean {
@@ -154,6 +187,8 @@ function profileActivity(value: unknown): value is ProfileActivity {
 }
 function battleState(value: unknown): boolean {
   return object(value) && ['player', 'cleared', 'defeat'].includes(String(value.phase)) &&
+    (value.calamity === undefined || object(value.calamity) &&
+      Object.keys(value.calamity).length === 2 && isCalamityActivityId(value.calamity.activity) && isCalamityTier(value.calamity.tier)) &&
     safeCount(value.wave) && safeCount(value.round) && typeof value.seed === 'number' &&
     Array.isArray(value.allies) && value.allies.length > 0 && value.allies.length <= 3 &&
     Array.isArray(value.enemies) && value.enemies.length > 0 &&
@@ -165,7 +200,16 @@ function battleEvents(value: unknown): boolean {
   return Array.isArray(value) && value.every(event => object(event) &&
     ['attack', 'damage', 'heal', 'shield', 'status', 'turn', 'reward'].includes(String(event.kind)) &&
     typeof event.source === 'string' && typeof event.target === 'string' &&
-    typeof event.amount === 'number' && Number.isFinite(event.amount) && typeof event.message === 'string');
+    typeof event.amount === 'number' && Number.isFinite(event.amount) && typeof event.message === 'string' &&
+    (event.calamityChest === undefined || validCalamityRewardEvent(event)));
+}
+function validCalamityRewardEvent(event: Record<string, unknown>): boolean {
+  try {
+    if (event.kind !== 'reward' || event.amount !== 0 || typeof event.calamityChest !== 'string' ||
+      ['capture', 'recruitment', 'materials', 'conduits', 'lycalis', 'mechanicalComponents', 'masterChests'].some(key => key in event)) return false;
+    parseCalamityChestId(event.calamityChest);
+    return true;
+  } catch { return false; }
 }
 export function validateGameResponse(value: unknown): GameResponse {
   const invalid = () => { throw new GameOperationError('The server returned an incomplete response.'); };
@@ -209,6 +253,7 @@ export function validateGameResponse(value: unknown): GameResponse {
   if (value.summon !== undefined && (!object(value.summon) || !object(value.summon.account) || !validSummonDraw(value.summon))) return invalid();
   if (value.summons !== undefined && (!Array.isArray(value.summons) || value.summons.length !== 10 ||
     !value.summons.every(validSummonDraw))) return invalid();
+  if (value.calamityOpening !== undefined && !validCalamityOpening(value.calamityOpening)) return invalid();
   try {
     const account = validateAccount(value.account);
     if (value.starterId !== null && !account.characters[value.starterId]) return invalid();

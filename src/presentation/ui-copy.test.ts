@@ -3,7 +3,8 @@ import { emptyAccount } from '../game/account';
 import { createBattle } from '../game/battle';
 import { openingStarters, starters } from '../content/starters';
 import { elements } from '../content/activities';
-import { conduits } from '../content/conduits';
+import { conduits, conduitEffect, getConduit } from '../content/conduits';
+import { readableEffect } from './effect-copy';
 import { defaultBindings } from '../game/hotkeys';
 import { homeHub, characterHub } from './hub';
 import { gameplayHub } from './gameplay';
@@ -95,7 +96,7 @@ describe('visible UI copy', () => {
     const store = primary(conduitStore(account));
     expect(store).not.toContain('Purchase requires confirmation.');
     expect(store).not.toContain('Mechanical drive');
-    expect(store).toContain('+5% Health');
+    expect(store).toContain(conduitEffect(getConduit('vigil-core')));
     expect(store).toContain('data-buy-conduit="vigil-core"');
     expect(store).toContain('Prismatica');
     const upgrades = primary(conduitUpgradeMenu(account));
@@ -174,12 +175,14 @@ describe('visible UI copy', () => {
       conduitStore(account), battleResults(battle, []),
       ...battle.allies.map((unit) => unitReadout(unit)),
       ...elements.map((element) => element.affinity),
-      ...conduits.map((conduit) => conduit.effect),
+      ...conduits.map((conduit) => readableEffect(conduit.effect)),
     ];
     for (const markup of surfaces) {
       const text = textContent(markup);
       expect(text).not.toContain('~');
-      expect(text).not.toMatch(/\S\/|\/\S/);
+      // Preserve the approved literal mitigation formula; prose alternatives and counts still require spacing.
+      const prose = text.replaceAll('`D/(D + enemy Defense)`', '');
+      expect(prose, prose.match(/.{0,35}(?:\S\/|\/\S).{0,35}/g)?.join('\n')).not.toMatch(/\S\/|\/\S/);
       expect(text).not.toMatch(/\b(?:levels?|forms?|stage|quantities|separate|Rare|Legendary|Omnic)\d/i);
     }
     expect(textContent(characterHub(openingStarters[0], 'upgrade-1', account))).toMatch(/Owned \/ Required/);

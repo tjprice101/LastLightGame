@@ -87,7 +87,9 @@ describe('repeatable final-boss 5x quantity contract', () => {
     expect(account.fractalis).toBe(expectedCurrency);
     expect(saveAccountRewards(saved, result, 'final')).toEqual(account);
     expect(write).toHaveBeenCalledOnce();
-    expect(saveAccountRewards(saved, clear(create()), 'replay').fractalis).toBe(expectedCurrency * 2);
+    const replay = create();
+    if (replay.infusion?.mode === 'machines') replay.machineConduits = { ...account.conduits };
+    expect(saveAccountRewards(saved, clear(replay), 'replay').fractalis).toBe(expectedCurrency * 2);
     expect(write).toHaveBeenCalledTimes(2);
   });
 

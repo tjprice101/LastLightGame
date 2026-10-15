@@ -54,7 +54,7 @@ Real captures retain defeated level, stage and kit; ordinary Standard awards
 start at their fixed form's first stage. No Sanctuary Lv50 duplicate exception:
 the existing duplicate-EB Treasury reward remains unchanged.
 
-Copies can level independently to120, equip ordinary Conduits and participate
+Copies join at the level60 cap (D-305), equip ordinary Conduits and participate
 in mixed/all-creature squads across every mode. Captured stats are ordinary
 enemy stats times `.65+.35*tier/5`; never boss stats. Continue/replay/Settings
 retain per-instance run snapshots. Sanctuary's stage cap25 drives validation,

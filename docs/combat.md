@@ -1,5 +1,72 @@
 # Combat specification
 
+## Distinct native identities and ally targeting (D-316)
+
+All16 Element-Bearers use the approved
+[native identity contract and current tuning](character-identity-redesign.md),
+replacing rather than stacking old native passives/charges. Captured members
+retain their source kits, missing-slot rules and level60 ceiling. Normal Attack,
+Defense, base stats, critical fundamentals, Gauge costs and recovery remain.
+
+Tizu Skill2, Bruno Skill2 and Disciple Skill1/2 require an explicit living-ally
+selection from either hold-grid or Battle menu. Opening/cancelling that picker
+spends nothing and submits no authority command. Bruno excludes himself when
+another living ally exists; solo Cover explicitly offers self. The selected
+enemy is independent and unchanged. Confirmed recipients are revalidated before
+any action state mutates; disposal closes the picker and restores focus safely.
+
+Native primary direct impacts aggregate equipment triggers once. Fixed native
+follow-ups carry typed provenance and cannot crit, earn Gauge, consume another
+Instruction or recursively activate equipment actions. Cover routes its share
+once with25% reduction, without a second Defense/redirect/Foundation/Wounds
+pass. Finite Foundation absorbs20% of remaining direct damage before personal
+shields. Shared temporary damage reductions cap at60%; Burn bypass, precise
+Weaken, ordinary critical RNG, shields and existing lethal safeguards remain.
+
+Readouts show actual state/owners/targets/clocks, including Bliss posture,
+Tizu timed shields, Aurora's next scheduled special, blade locations, Seeds,
+Combo, Quarry and finite durability. Mechanic VFX reuse the impact ledger,
+speed/reduced-motion controls and disposal rather than simulate extra actions.
+Rules version3 restarts only historical current encounters with frozen teams
+and saved rewards retained; current runs survive Settings/resume unchanged.
+See [equipment compatibility](character-conduit-compatibility.md) and the
+[handoff](handoff.md) for validation and separate publication requirements.
+
+## Nonblocking battle errors (D-314)
+
+Rejected actions and battle operation failures use a pointer-transparent alert
+overlay just above the footer. The message never contributes to footer height
+or shifts the battlefield, steals focus, or introduces an action lock. Existing
+operation/presentation busy states remain unchanged. Keep accessible alert
+announcements and the existing error logging.
+
+Messages remain visible for three seconds, fade over250ms, then clear. A new
+error replaces the previous message and restarts its lifetime, even during the
+fade. Reduced motion removes the opacity transition. A battle render dismisses
+the current message; rendering and disposal cancel its pending timers.
+Validate timing, replacement, cleanup and retained controls with
+`src/presentation/battle-toolbar.test.ts`; check unchanged arena/footer geometry,
+viewport bounds and pointer pass-through in desktop/mobile browser fixtures.
+
+## Per-member hold/drag attack grid (D-307)
+
+Press and hold any available allied battlefield member to show that member's
+Normal Attack, Skill1, Skill2 and Last Flare directions, icons, Gauge costs and
+availability. All three squad positions use the same interaction, including
+captured Elemental-Devourers. Releasing a direction commands the pressed member,
+not the leader, in offline and authoritative online play. Existing action,
+Gauge, missing-slot, recovery and Last Flare restrictions remain unchanged.
+
+The fixed-position guide is attached directly to the battle root, not inside
+the member button: staggered/transformed units otherwise create a containing
+block and push the viewport-positioned grid off-screen. Preserve the member's
+element accent and clamp the guide near their artwork within the viewport.
+Center release, pointer cancellation, lost capture and disposal remove it;
+concurrent pointers cannot replace an active guide or cause duplicate actions.
+
+Validate with `src/presentation/battle-squad-gestures.test.ts`, existing
+gesture/shortcut tests, and three-member desktop/mobile browser fixtures.
+
 ## Successive-turn squad abilities (D-300)
 
 Skill1 and Skill2 have no cooldown for all16 Element-Bearers and all captured

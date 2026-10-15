@@ -1,5 +1,14 @@
 # Intrinsic character kit rework (D-163 / D-170 / D-172)
 
+**D-316 current contract:** all16 native kits are replaced locally by the
+approved [distinct character identities](character-identity-redesign.md).
+Infernis Burn/detonation and Crinso alternating edges are separate; delayed
+Seeds, blade placement, order/Beat timing, interception, Instructions, forecasts,
+Quarry, traps, Survey and finite Foundation replace shared charge loops.
+The historical rules below are retained as design history, not active bonuses.
+See the [133-item compatibility audit](character-conduit-compatibility.md) for
+equipment adaptations; client/server publication remains separate.
+
 ## Charge and passive readability
 
 Character, Collections and Battle references put the actual passive first,

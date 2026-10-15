@@ -10,6 +10,8 @@ import { sanctuaryHeader, sanctuaryContext, isMenuPage } from './sanctuary';
 import { inventoryHub, characterHub } from './hub';
 import { elementLabel } from './element-label';
 import { elementAssetIds } from '../content/element-migration';
+import { formatStat, resolveFighter } from '../content/combat';
+import { readableEffect } from './effect-copy';
 
 describe('unified Archives', () => {
   it('keeps Collections Information focused on rules without a character biography list', () => {
@@ -72,7 +74,7 @@ describe('unified Archives', () => {
     expect(html).toContain(characterArt('ember', 2).title);
     expect(html).toContain('aria-label="Uncommon rarity"');
     expect(html).toContain('aria-label="5-star character"');
-    expect(html).toContain('<dd>577.5</dd>');
+    expect(html).toContain(`<dd>${formatStat(resolveFighter('ember', account.characters.ember, account.conduitEquipment.ember).stats.health)}</dd>`);
     expect(html).toContain('Current combat kit');
     expect(account).toEqual(before);
   });
@@ -84,7 +86,7 @@ describe('unified Archives', () => {
     for (const conduit of conduits) {
       expect(html).toContain(`data-archive-conduit="${conduit.id}"`);
       expect(html).toContain(`class="archive-card ${conduit.id === 'bastion-lock' ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-conduit="${conduit.id}"`);
-      expect(html).toContain(conduit.effect);
+      expect(html).toContain(readableEffect(conduit.effect));
     }
     expect(html).toContain('Owned 3');
     const conduitsSection = html.slice(html.indexOf('id="archive-conduits"'), html.indexOf('id="archive-creatures"'));

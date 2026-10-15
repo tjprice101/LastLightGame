@@ -1,6 +1,7 @@
 import { enemies, enemyIds, formatStat } from './combat';
 import { elements, getElement, dungeonStageCount, infusionModes, currencyModes, eventModes, machineModes, type ElementId, type InfusionModeId } from './activities';
 import { machineConduitLoot } from './machines';
+import type { ConduitId } from './conduits';
 import { masterChest } from './master-conduits';
 import { machineComponentDrop } from './mechanical-components';
 import { dungeonEncounter, dungeonVariants, materialLoot } from './dungeons';
@@ -9,6 +10,7 @@ import { fractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from './loot-
 import { storyEncounter, storyCreature, storyRules, storyLoot, storyBossBonus } from './story';
 import { devourerHabitats, elementEmotions, machineOrigin } from './world-lore';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
+import { calamityActivities, calamityChest, isCalamityTier, type CalamityActivityId } from './calamity';
 
 export interface Creature {
   id: string;
@@ -19,6 +21,7 @@ export interface Creature {
   dungeonElement?: ElementId;
   mode?: InfusionModeId;
   story?: true;
+  calamity?: CalamityActivityId;
   stages: number[];
 }
 
@@ -56,6 +59,10 @@ function catalog(): Creature[] {
         area: encounter.name, element: encounter.enemy.element, mode, stages: [stage] });
     }
   }
+  for (const activity of calamityActivities) {
+    result.push({ id: `calamity:${activity.id}`, name: activity.boss, area: `${activity.name} · Calamity`,
+      element: activity.element, calamity: activity.id, stages: [1, 2, 3] });
+  }
   return result;
 }
 
@@ -68,16 +75,23 @@ export function getCreature(id: string): Creature {
 
 export function creatureLore(creature: Creature): string {
   getCreature(creature.id);
-  if (creature.mode === 'machines') return `${creature.name} is one of those surviving wrecks. ${machineOrigin}`;
+  const calamity = creature.calamity ? ` It guards ${creature.area}, where red and white elemental energy clashes against black and white material forms. One identity appears at levels 145, 160 and 185; no capture or recruitment is possible.` : '';
+  if (creature.mode === 'machines' || creature.calamity === 'machines') return `${creature.name} is one of those surviving wrecks. ${machineOrigin}${calamity}`;
   const inheritance = `${creature.name} is an Elemental-Devourer of Rise's creation, seeking her soul with stolen ${getElement(creature.element).name}: ${elementEmotions[creature.element]}.`;
+  if (creature.calamity) return `${inheritance}${calamity}`;
   if (creature.mode) return `${inheritance} ${devourerHabitats[creature.mode]}`;
   return `${inheritance} Its search crosses ${creature.area}, where Let's Element-Bearers pursue their own creator's soul.`;
 }
 
 export interface CreatureLoot { id: string; minimum: number; maximum: number; chance: number; note?: string }
-export function creatureLoot(creature: Creature, stage?: number): CreatureLoot[] {
+export function creatureLoot(creature: Creature, stage?: number, ownedConduits?: Partial<Record<ConduitId, number>>): CreatureLoot[] {
   getCreature(creature.id);
   if (creature.stages.length && (stage === undefined || !creature.stages.includes(stage))) throw new Error('Choose a stage where this Elemental-Devourer appears.');
+  if (creature.calamity) {
+    if (!isCalamityTier(stage)) throw new Error('Choose a Calamity EX tier.');
+    return [{ id: calamityChest(creature.calamity, stage).id, minimum: 1, maximum: 1, chance: 1,
+      note: 'Exactly one chest per victory. Open later in Inventory. No ordinary rewards, captures or 5x multiplier.' }];
+  }
   if (creature.story && stage !== undefined) {
     const loot: CreatureLoot[] = storyLoot(stage);
     if (storyEncounter(stage).boss) {
@@ -94,7 +108,7 @@ export function creatureLoot(creature: Creature, stage?: number): CreatureLoot[]
     : creature.mode && stage !== undefined ? { infusion: { mode: creature.mode, stage } } : {});
   const loot: CreatureLoot[] = [{ id: 'fractalis', ...bossLootRange(creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level, creature.mode === 'roses' ? 140 : 120), multiplier) }];
   if (creature.mode === 'treasury') return loot;
-  if (creature.mode === 'machines' && stage !== undefined) return [...loot, machineComponentDrop(stage), ...machineConduitLoot(stage),
+  if (creature.mode === 'machines' && stage !== undefined) return [...loot, machineComponentDrop(stage), ...machineConduitLoot(stage, ownedConduits),
     ...(stage === masterChest.stage ? [{ id: masterChest.id, minimum: 1, maximum: 1, chance: masterChest.chance,
       note: 'Final boss only. Open in Inventory to choose one unowned character-specific Omnic Master Conduit.' }] : [])];
   if (creature.dungeonElement && stage !== undefined) {

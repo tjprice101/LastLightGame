@@ -241,7 +241,8 @@ describe('replacement reference screen structures', () => {
     expect(detail.match(/data-open-loadout/g)).toHaveLength(1);
     expect(detail).toContain('data-team-view="formation">Edit squad');
     expect(detail.match(/aria-haspopup="dialog"/g)).toHaveLength(4);
-    expect(detail).toContain(`data-level-capture="${first.instanceId}"`);
+    expect(detail).not.toContain(`data-level-capture="${first.instanceId}"`);
+    expect(detail).toContain('Maximum level 60');
     expect(detail).toContain(`data-max-level="${first.instanceId}"`);
   });
 
@@ -288,7 +289,7 @@ describe('replacement reference screen structures', () => {
     wallet.capturedCharacters = [copy];
     const html = referenceTeam(wallet, { view: 'capture', selected: 'ember', capture: copy.instanceId, element: '', sort: 'level' });
     expect(html).toContain(`data-sell-creature="${copy.instanceId}" >Sell copy`);
-    expect(html).toContain('Maximum level 120');
+    expect(html).toContain('Maximum level 60');
     expect(html).not.toContain('data-level-capture');
     expect(html).not.toContain('data-upgrade-kind="evolve"');
   });
@@ -317,7 +318,7 @@ describe('replacement reference screen structures', () => {
     expect(store).toContain('data-buy-conduit="bastion-lock" disabled');
     const upgrade = conduitUpgradeMenu(wallet, 'worldbreaker-drive');
     expect(upgrade.match(/data-select-upgrade-conduit=/g)).toHaveLength(2);
-    expect(upgrade.match(/data-upgrade-conduit=/g)).toHaveLength(1);
+    expect(upgrade.match(/data-upgrade-conduit=/g)).toHaveLength(2);
     expect(upgrade).toContain('data-upgrade-conduit="worldbreaker-drive"');
     expect(upgrade.match(/class="is-current"/g)).toHaveLength(1);
     expect(wallet).toEqual(before);

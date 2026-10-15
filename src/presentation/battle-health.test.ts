@@ -18,7 +18,11 @@ describe('impact-synchronized health presentation', () => {
 
   describe('ability visual recipients', () => {
     function recipients(state: ReturnType<typeof createBattle>, action: 'light' | 'skill1' | 'skill2' | 'ultimate') {
-      const result = act(state, state.allies[0].id, action, state.enemies[0].id);
+      const actor = state.allies[0];
+      const ability = action === 'light' ? undefined : actor.kit?.abilities[action];
+      const target = ability?.targets === 'one-ally'
+        ? state.allies.find(unit => unit.hp > 0 && (!ability.excludeSelf || unit.id !== actor.id)) ?? actor : state.enemies[0];
+      const result = act(state, actor.id, action, target.id);
       const index = result.events.findIndex(event => event.kind === 'attack');
       const impacts = impactEvents(result.events, index).map(index => result.events[index]);
       return { result, targets: attackEffectTargets(result.events[index], impacts,
@@ -47,11 +51,11 @@ describe('impact-synchronized health presentation', () => {
       expect(recipients(state, 'skill2').targets.sort()).toEqual(['ember', 'sprout']);
     });
 
-    it('shows mixed Last Flare damage and shielding on enemies and all living allies', () => {
+    it('shows Tizu Last Flare shielding only on living allies, not enemies', () => {
       const state = createBattle(1729, ['tide', 'ember', 'sprout']);
       state.allies[0].shatter = 100;
       expect(recipients(state, 'ultimate').targets).toEqual([
-        ...state.enemies.map(unit => unit.id), ...state.allies.map(unit => unit.id),
+        ...state.allies.map(unit => unit.id),
       ]);
     });
 
