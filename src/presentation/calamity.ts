@@ -10,6 +10,7 @@ import { type RewardPresentation } from './reward-screen';
 import { calamityBossArt, calamityChestArt, calamityArenaArt } from '../content/calamity-art';
 import { assetUrl } from './portrait';
 import './calamity.css';
+import { enemyStrength } from './enemy-strength';
 
 export function activityDifficulty(activity: CalamityActivityId, normal: string, account: Account | null): string {
   const name = calamityActivities.find(entry => entry.id === activity)?.name;
@@ -98,7 +99,7 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
         ${art ? `<img class="calamity-tier-boss" draggable="false" src="${assetUrl(`enemies/${art}.png`)}" alt="${escapeDialogText(encounter.name)}" width="960" height="960">`
           : `<span class="calamity-placeholder">${escapeDialogText(encounter.name)} · Artwork pending</span>`}</div>
         <header><h4>EX+${tier} · ${escapeDialogText(encounter.name)}</h4><p>Lv.${encounter.level} · ${escapeDialogText(encounter.element)}</p></header>
-        <p class="calamity-boss-description">${escapeDialogText(encounter.description)}</p>
+        <div class="calamity-boss-description">${enemyStrength({ ...encounter, boss: true })}<p>${escapeDialogText(encounter.description)}</p></div>
         <section class="calamity-tier-reward" aria-label="Victory reward"><p>Victory: 1 ${escapeDialogText(chest.name)}</p>
         ${calamityChestIcon(tier)}${calamityChestContents(activity, tier)}</section>
         <footer class="calamity-tier-actions">

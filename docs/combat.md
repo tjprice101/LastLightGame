@@ -1,5 +1,14 @@
 # Combat specification
 
+## Visible level baseline (D-322)
+
+Level and rank set the same hostile base stats across activities; the existing
+overlapping level ranges are intentional, not hidden activity multipliers.
+Stage-entry previews show actual HP/Attack/Defense and any difference from a
+standard same-level enemy. Boss shields, healing, targeting and skill patterns
+remain separate mechanics, not promised damage values.
+See [activity previews and validation](menus-and-inventory.md#visible-enemy-strength-d-322).
+
 ## Distinct native identities and ally targeting (D-316)
 
 All16 Element-Bearers use the approved

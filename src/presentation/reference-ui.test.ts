@@ -33,7 +33,9 @@ describe('replacement reference screen structures', () => {
     expect(training).toContain('class="training-hero"');
     expect(training).toContain(assetUrl('backgrounds/grassy-field.png'));
     expect(training).toContain('class="training-details"');
-    expect(training.match(/<dt>/g)).toHaveLength(3);
+    expect(training.match(/<dt>/g)).toHaveLength(6);
+    expect(training).toContain('Lv.1 · Standard enemy');
+    expect(training).toContain('First wave');
     expect(training).toContain('class="training-entry"');
     expect(training.match(/data-page="battle"/g)).toHaveLength(1);
     expect(training).not.toContain('activity-picker');

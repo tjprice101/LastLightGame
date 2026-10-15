@@ -1,7 +1,7 @@
 import { elements, elementalDungeonRules, elementalEnemyLevel, infusionModes, currencyModes, materialRarities } from '../content/activities';
 import { assetUrl } from './portrait';
 import { dungeonArt, elementAccents } from '../content/dungeon-art';
-import { isPlayableDungeon } from '../content/dungeons';
+import { dungeonEncounter, isPlayableDungeon } from '../content/dungeons';
 import { emptyAccount, unlockedStage, unlockedWarStage, ownedCharacters, type Account } from '../game/account';
 import { treasuryPrismaticaText } from '../content/loot-random';
 import { infusionEnemyElements, treasurySalePrices, sanctuarySalePrices, specialtyMaterials } from '../content/infusions';
@@ -21,13 +21,15 @@ import { activityAccess } from '../game/activity-access';
 import { devourerHabitats, elementEmotions, machineOrigin, storyPurpose, trainingLore, warLore } from '../content/world-lore';
 import { worldLore } from './world-lore';
 import { activityDifficulty } from './calamity';
+import { enemyStrength } from './enemy-strength';
+import { enemyCombatStats } from '../content/stat-growth';
 
 function dungeonEntry(element: (typeof elements)[number]['id'], account: Account | null): string {
   if (!isPlayableDungeon(element)) throw new Error('Unknown elemental dungeon.');
   if (!account) return '<button disabled>Dungeon unavailable: resolve the save error</button>';
   const unlocked = unlockedStage(account, element);
   const access = activityAccess(account, { kind: 'dungeon', element, stage: unlocked });
-  return `<footer class="activity-entry"><label class="dungeon-stage-label">Stage
+  return `${enemyStrength(dungeonEncounter(element, unlocked))}<footer class="activity-entry"><label class="dungeon-stage-label">Stage
     <select data-dungeon-stage="${element}" aria-label="${elements.find((entry) => entry.id === element)?.dungeon} stage">${Array.from({ length: unlocked }, (_, stage) => `<option value="${stage + 1}" ${stage + 1 === unlocked ? 'selected' : ''}>${stage + 1}</option>`).join('')}</select></label>
     <button class="primary-button" data-dungeon="${element}" ${access.unlocked ? '' : 'disabled'}>${access.unlocked ? 'Enter dungeon' : 'Locked'}</button>
     ${access.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks at ${access.requirement}. Your highest: Lv.${access.level}.</p>`}</footer>`;
@@ -71,6 +73,7 @@ function gameplayInformation(): string {
       <h4>Unlocks</h4><p>Your highest-level owned Element-Bearer unlocks activities, even when not in your squad. Captured Elemental-Devourers do not count.</p>
       <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li></ul>
       <h4>Tougher fights</h4><p>Higher-level enemies hit harder and take more hits. Level up, evolve and equip Conduits. Bring healing or shields for bosses.</p>` },
+    { id: 'enemy-strength', title: 'Enemy strength', summary: 'Levels, boss stats and special attacks', content: '<p>Enemy level sets the same base stats in every activity. Bosses have more HP, Attack and Defense; their bonuses appear beside the selected stage.</p><p>Shields, healing, repeated hits and special attacks can make a fight harder without changing its level. Calamity lists these mechanics beside each boss. Attack is the base stat, not the damage of every hit.</p>' },
     { id: 'story', title: 'Story', summary: 'Six regions, 150 stages', content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
     { id: 'training', title: 'Training', summary: 'Endless battles for Prismatica', content: `<p>Start at wave 1 with your saved squad. Enemy levels stop rising at Lv.120.</p>
       <p>Per-kill Prismatica grows from 5-10 at Lv.1 to 15-30 at Lv.120. No materials, captures or Null-Prismatica.</p>` },
@@ -115,6 +118,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
         <header class="training-hero"><img src="${assetUrl('backgrounds/grassy-field.png')}" alt="" width="1456" height="816"><div><p class="eyebrow">Practice · Endless battles</p><h3>Training · Grassy Field</h3></div></header>
         <div class="training-details">${activityFacts('Endless waves', '1-120', 'Prismatica')}
           <div class="training-summary"><p>${trainingLore}</p><p>Start at wave 1 with your saved squad. Continue at your own pace; HP and Gauge carry into the next wave.</p>${itemShowcase([{ id: 'fractalis' }], 'Rewards')}</div>
+          <div><h4>First wave</h4>${enemyStrength({ level: 1, boss: false, stats: enemyCombatStats(1, false) })}</div>
           <footer class="training-entry"><p class="quiet">Rewards save after each defeat. Leaving ends the run.</p><button class="primary-button" data-page="battle">Enter Training</button></footer>
         </div></article></section>
     <section class="activity-group" id="gameplay-dungeons"><h2>Elemental material dungeons</h2>
@@ -170,7 +174,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
           ${activityFacts('10 stages · One boss each', '90-140', 'Prismatica · Null-Prismatica · Final-boss recruitment')}
           ${itemShowcase([{ id: 'fractalis' }, { id: 'lycalis' }], 'Currency rewards')}
           <p>Final boss:1% base-form recruitment · Already owned:100 Null-Prismatica</p>
-          ${account ? `<footer class="activity-entry"><label class="dungeon-stage-label">Stage
+          ${account ? `${enemyStrength(warEncounter(mode.character, unlocked))}<footer class="activity-entry"><label class="dungeon-stage-label">Stage
             <select data-war-stage="${mode.character}" aria-label="${mode.name} stage" ${account ? '' : 'disabled'}>${Array.from({ length: unlocked }, (_, index) =>
               `<option value="${index + 1}" ${index + 1 === unlocked ? 'selected' : ''}>${index + 1} · Lv.${warEncounter(mode.character, index + 1).level}</option>`).join('')}</select></label>
             <button class="primary-button" data-war="${mode.character}" ${access?.unlocked ? '' : 'disabled'}>${access?.unlocked ? 'Enter trial · Free' : 'Locked'}</button>

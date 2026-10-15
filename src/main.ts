@@ -59,6 +59,7 @@ import { characterLevelCost, characterEvolutionCost, evolutionRarity } from './c
 import { materialName } from './content/dungeon-art';
 import { capturedProgress } from './game/character-instances';
 import { gameplayHub, bindGameplayNavigation } from './presentation/gameplay';
+import { bindEnemyStrength } from './presentation/enemy-strength';
 import { storyCampaign, bindStoryNavigation } from './presentation/story';
 import { storyEncounter } from './content/story';
 import { unlockedStoryStage } from './game/account';
@@ -410,7 +411,7 @@ async function backMenu(): Promise<void> {
         saved.attributes.every(([name, value]) => candidate.getAttribute(name) === value));
       if (!control || !Array.from(control.options).some((option) => option.value === saved.value && !option.disabled)) continue;
       control.value = saved.value;
-      if (control.matches('[data-character-filter], #glossary-area, [data-loot-stage], #squad-form select')) control.dispatchEvent(new Event('change', { bubbles: true }));
+      if (control.matches('[data-character-filter], #glossary-area, [data-loot-stage], #squad-form select, [data-dungeon-stage], [data-infusion-stage], [data-war-stage]')) control.dispatchEvent(new Event('change', { bubbles: true }));
     }
     for (const saved of previous.panels) {
       const panel = app.querySelector<HTMLElement>(`[data-menu-scroll="${saved.key}"], .activity-group[id="${saved.key}"]`);
@@ -694,6 +695,7 @@ function renderMenu(firstArrival = false): void {
   applyConduitSearch(app, conduitSearch);
   bindConduitLoadout(app);
   bindGameplayNavigation(app);
+  bindEnemyStrength(app);
   bindActivityDifficulties(app);
   bindStoryNavigation(app, account);
   bindProfileEditor(app, async edits => {

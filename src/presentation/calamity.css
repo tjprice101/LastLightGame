@@ -1,3 +1,11 @@
+.enemy-strength { min-width: 0; margin-block: .75rem; padding: .75rem; border: 1px solid #ffffff30; border-radius: 8px; background: #111b; }
+.enemy-strength h4 { margin: 0 0 .5rem; font-size: 1rem; }
+.enemy-strength dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin: 0; }
+.enemy-strength dl > div { min-width: 0; }
+.enemy-strength dt { font-size: .8rem; color: #bdbdc6; }
+.enemy-strength dd { margin: .25rem 0 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.enemy-strength p { margin: .75rem 0 0; font-size: .8rem; line-height: 1.5; }
+.calamity-boss-description > p { margin-top: .75rem; }
 .activity-difficulty, .activity-difficulty [role="tabpanel"] { min-width: 0; }
 .activity-difficulty [data-difficulty-panel="normal"] { display: flex; flex-direction: column; gap: 1rem; }
 .activity-difficulty [data-difficulty-panel="normal"] > p { margin: 0; }

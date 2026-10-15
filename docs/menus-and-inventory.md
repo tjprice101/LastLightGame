@@ -1,5 +1,23 @@
 # Menus and inventory
 
+## Visible enemy strength (D-322)
+
+Activity entries show the selected enemy's level, rank and actual HP, Attack
+and Defense. Story updates with its selected stage; Training previews wave1.
+Dungeon, infusion, currency, Machines, Roses and War selectors refresh the
+preview on every change, including restored Back selections. Calamity shows
+each tier's actual stats beside its special mechanics.
+
+Compare displayed stats with a standard enemy at the same level, showing only
+nonzero differences as percentages. These are stat comparisons, not damage
+forecasts or flat Defense mitigation. Gameplay Information explains the shared
+level baseline and the additional challenge from shields, healing and skills.
+Existing overlapping activity level ranges remain intentional. No hidden
+activity multipliers, level rescheduling, account writes or combat changes.
+
+Validate with `npm test -- src/presentation/enemy-strength.test.ts src/content/stat-growth.test.ts --maxWorkers=2`
+and narrow-screen ordinary/boss stage switches.
+
 ## Plain language and reward alignment (D-321)
 
 Use short, natural English in player-facing activity descriptions, boss rules,

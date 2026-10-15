@@ -1,5 +1,35 @@
 # Current state and handoff
 
+## Visible level-based enemy strength (D-322)
+
+- Owner clarifies that equal-level enemies should share a baseline, with tougher
+  variants visibly explained. This supersedes the earlier strict activity-band
+  interpretation. Existing factories already use shared exponential level/rank
+  stats; no curve, schedule, combat, reward or save change was needed.
+- Shared previews show actual selected enemy HP/Attack/Defense and percentage
+  differences from a standard same-level enemy. Dungeon/infusion/currency/
+  Machines/Roses/War stage changes refresh repeatedly; Back restoration
+  dispatches the same change event. Story selection refreshes its detail;
+  Training shows wave1. All36 Calamity tiers include actual boss stats beside
+  their existing shield/heal/targeting/attack rules.
+- Gameplay Information explains level/rank and special-pattern differences.
+  Stat comparisons do not claim to predict damage or flat Defense mitigation.
+- Dedicated tests cover exact values, modified-stat comparisons, all15 normal
+  selectors, repeated changes, difficulty isolation, all36 tiers, Story selection
+  and account immutability.
+- `npm test -- --maxWorkers=2` passes3,910 tests/171 files; `npm run build`
+  passes type-check and production build. Existing jsdom canvas warnings and
+  bundle-size advisory remain. Editor diagnostics and `git diff --check` pass.
+- Browser fixtures check56 visible previews per viewport at1000/650/320px,
+  with no preview or container overflow. Repeated ordinary/boss Heaven stage
+  changes match real factory stats. Story ordinary/regional-boss selections
+  also match at320px. Training's preview was moved out of its horizontal summary
+  after browser testing exposed squeezing. Fixtures removed; localStorage
+  remains empty, with no account funding or transactions.
+- This is client presentation only; the authority/curve remain rules4 and
+  need no redeployment. Publication verification will be recorded after release.
+- The27 root native-status PNGs remain untouched.
+
 ## Clearer rewards, bosses and player-facing English (D-321)
 
 - Owner requests aligned reward text/buttons, clearer boss images and short,

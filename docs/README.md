@@ -5,6 +5,12 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Visible enemy strength (D-322):** activity entries show selected-stage level,
+rank, actual HP/Attack/Defense and differences from a standard same-level
+enemy. Calamity keeps its special mechanics alongside these stats. Existing
+overlapping ranges and the shared exponential curve remain unchanged.
+[Contract and checks](menus-and-inventory.md#visible-enemy-strength-d-322).
+
 **Clearer rewards and descriptions (D-321):** Calamity rewards/actions and shared
 reward showcases align by row. Boss artwork stands out from dimmer scenery
 across previews and battles, with contrast edges in revealed galleries/cut-ins.
