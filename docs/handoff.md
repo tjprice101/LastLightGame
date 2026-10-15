@@ -22,7 +22,13 @@
   isolation, keyboard focus, all12 visible Calamity images loaded, and no
   horizontal overflow at measured1280/488/320 CSS widths. localStorage stays
   empty; no transactions or account funding. Fixture removed after review.
-- Publication verification is recorded below after deployment.
+- Release `7ac60ec` published automatically by Pages run `38803717125`:
+  full regression suite, configured online production build and deploy pass.
+  Hosted gameplay bundle `battle-mono-B0Ya_3VP.js` returns HTTP200, matches
+  local production bytes (SHA-256
+  `7cd53c4f9e81158ab5913555137bdb3e287679b9a46a93cff35443634c2d9600`)
+  and contains the difficulty controls and chest-only mission summary.
+  No authority redeploy: this release changes presentation only.
 - The27 untracked delivered native-status PNGs remain untouched; their art
   intake is separate work. No new artwork or authority deployment is needed.
 
