@@ -153,7 +153,7 @@ def intake(apply=False):
             "assets": [row[-1] for row in planned],
         }, indent=2) + "\n", encoding="utf-8")
         write_revisions(planned)
-    print(f"{len(planned)} Calamity assets {'installed' if apply else 'validated (dry run)'}. Root originals retained.")
+    print(f"{len(planned)} Calamity assets {'installed' if apply else 'validated (dry run)'}. Archived originals preserved; intake does not delete root copies.")
 
 
 if __name__ == "__main__":

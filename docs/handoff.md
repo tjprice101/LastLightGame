@@ -3,8 +3,10 @@
 ## Calamity artwork installed (D-318)
 
 - Owner requests background removal and full wiring of delivered root images.
-  All17 originals are preserved byte-for-byte in `Art/source/calamity`; root
-  copies remain. Eleven bosses and three tier chests have reviewed transparent
+  All17 originals are preserved byte-for-byte in `Art/source/calamity`; duplicate
+  root copies were subsequently removed at the owner's request after matching
+  source/archive hashes against provenance. Root image count is now zero.
+  Eleven bosses and three tier chests have reviewed transparent
   exports; three shared EX arenas remain opaque and pixel-intact.
 - Per-source row-gradient keys and individually reviewed enclosed-gap seeds
   preserve pale armor, gold/orange powers, cyan eye/water detail and painted
@@ -53,8 +55,8 @@
   Disposable identities and cascading records were removed.
 - No owner decision is needed. Remaining work is delivery/review of the one
   Rose boss and27 native symbols, not further runtime wiring of delivered art.
-  Duplicate root PNGs and old `conduit-list.txt` / `owned-tests.txt` diagnostics
-  remain untracked and untouched; authoritative source archives are committed.
+  Old `conduit-list.txt` / `owned-tests.txt` diagnostics remain untracked and
+  untouched; authoritative source archives are committed.
 
 ## Remaining-art prompts prepared (D-317)
 

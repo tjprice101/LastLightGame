@@ -3,7 +3,9 @@
 ## Calamity delivery intake (D-318)
 
 Seventeen owner-delivered root PNGs are archived byte-for-byte under
-`Art/source/calamity`; root copies remain intact. Eleven bosses export to
+`Art/source/calamity`; the17 duplicate root copies were subsequently removed
+at the owner's request after matching both copies against recorded SHA-256
+hashes. Eleven bosses export to
 `public/assets/enemies`, three shared tier chests to `public/assets/items`,
 and three shared tier arenas to `public/assets/backgrounds`. The Last Scarlet
 Bloom was not delivered and remains a named placeholder, never substituted.

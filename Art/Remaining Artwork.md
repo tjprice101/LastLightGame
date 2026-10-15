@@ -71,8 +71,9 @@ Creating prompts did not install images. The subsequent D-318 intake archives
 the17 delivered originals under `Art/source/calamity`, exports reviewed cutouts
 and pixel-intact arenas, and connects their shared byte-revisioned resolvers.
 Inventory/results/reveal/loot share tier chest art; each tier shares its arena.
-Boss discovery, field and cut-ins share each reviewed boss. Root originals
-remain intact. No account, reward or combat-rule changes are part of intake.
+Boss discovery, field and cut-ins share each reviewed boss. Archived originals
+remain intact; verified duplicate root copies were removed at the owner's
+request. No account, reward or combat-rule changes are part of intake.
 
 Reproduce both prompt packs:
 `python tools\build_pending_art.py`.
