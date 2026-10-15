@@ -109,7 +109,7 @@ NEGATIVE = ("text, letters, words, numbers, runes, logo, watermark, interface, c
             "glow, light bloom, soft aura, haze, light spill")
 
 
-def cutout(subject, ratio="1:1", key="green", palette=None):
+def cutout(subject, ratio="1:1", key="green", palette=None, negative=NEGATIVE):
     colors = palette or "scarlet red pure white ivory black obsidian and neutral gray only"
     return (
         f"{subject}, complete design fully inside the canvas with all outer tips visible, "
@@ -119,7 +119,7 @@ def cutout(subject, ratio="1:1", key="green", palette=None):
         "rather than deleting ornaments, "
         f"plain solid {key} background, flat unlit color edge to edge and through all openings, "
         "subject colors unchanged, no glows or glowing visual effects "
-        f"--ar {ratio} --niji 6 --s 100 --q 1 --no {NEGATIVE}"
+        f"--ar {ratio} --niji 6 --s 100 --q 1 --no {negative}"
     )
 
 
@@ -214,18 +214,20 @@ Keep counts, recipient/owner, turn/phase expiry, blade location and enemy-skill
 forecast as accessible HTML. The symbol never replaces those exact values.
 One image represents a state; do not generate one image per stack/recipient.
 
-## Trophy-style symbol backing
+## Ability-icon picture frame
 
-Every mechanic symbol sits prominently in front of an ornamental trophy-like
-crest backing, raised above a short stepped award pedestal. The backing is
-part of the cutout object, not scenery or a rectangular image background.
-Use a consistent upright award silhouette: beveled crest, two upward-swept
-side flourishes and a compact plinth. Adapt materials and accents to each
-character's palette; do not make every award gold or add a generic trophy cup.
-The mechanic symbol stays larger, brighter and more readable than its subdued
-backing. Preserve each state's distinct geometry, including paired variants.
-The complete symbol, crest, flourishes and pedestal share the existing outer
-safety margin. Flat key color remains visible around and through the object.
+Every mechanic symbol sits inside a square ornamental ability-icon frame,
+like a small picture frame viewed straight on. A continuous beveled rim
+surrounds a recessed opaque inset panel with the symbol centered within it.
+The frame and inset use subdued shades of the character's palette; the symbol
+stays dominant, unobscured and readable. Preserve each state's distinct
+geometry, including paired variants. Keep the same square frame construction
+across the set, with restrained character-specific corner accents.
+This supersedes the earlier trophy interpretation: no award crest, trophy cup,
+pedestal, plinth or supporting base. The frame is part of the illustrated icon,
+not a surrounding interface screenshot. The complete framed tile stays inside
+the existing safety margin. Flat key color surrounds the tile; the recessed
+panel inside the frame is authored artwork, not background to remove.
 
 Infernis Burn and ordinary Tizu/personal shields reuse delivered Burn/Ward art.
 Existing9 family/Rose icons stay archived and available for independent effects;
@@ -243,15 +245,16 @@ Nothing is wired or installed until original images are delivered and reviewed.
         palette, key = PALETTES[owner]
         text += block(
             f"{owner}: {label}", f"status-native-{slug}.png",
-            "One face-free mechanic symbol over a trophy-style crest and pedestal; no text, numbers or surrounding interface.",
+            "One face-free mechanic symbol inside an ability-icon picture frame; no text, numbers or surrounding interface.",
             cutout(f"one square gacha JRPG native-status pictogram, {design}, "
-                   "mechanic symbol in raised foreground relief over a trophy-like crest backing, "
-                   "beveled crest with two upward-swept side flourishes on a short stepped award pedestal, "
-                   "subdued backing in the same character palette, dominant unobscured symbol above the pedestal, "
-                   "one integrated cutout award emblem rather than a trophy cup or scenery, "
+                   "mechanic symbol centered inside a square ornamental ability-icon picture frame viewed straight on, "
+                   "continuous beveled rim surrounding a recessed opaque inset panel, restrained corner accents, "
+                   "subdued frame and inset in the same character palette, dominant unobscured symbol fully contained within the inner opening, "
+                   "one integrated framed icon tile with a continuous square outer silhouette, "
                    "large readable central geometry with restrained interior detail "
                    "and strong silhouette at small display sizes",
-                   key=key, palette=palette))
+                   key=key, palette=palette,
+                   negative=NEGATIVE.replace("card border, ", "") + ", trophy, award cup, pedestal, plinth, supporting base"))
     return text.rstrip() + "\n"
 
 

@@ -19,6 +19,8 @@ all3,869 tests and the hosted native/Calamity smoke passed.
 **Remaining-art prompts (D-317):** [45-image generation queue](../Art/Remaining%20Artwork.md)
 contains12 Calamity bosses,3 shared tier chest icons,3 shared tier arenas and27
 native-status symbols. Owner explicitly chooses tier-shared chest/arena art.
+Native symbols use ability-icon picture frames with opaque inset panels,
+not trophy crests or pedestals (owner clarification).
 Prompt-only; existing installed artwork and live deployment remain unchanged.
 
 **Published2026-10-15:** pending D-303 through D-316 client/server changes are

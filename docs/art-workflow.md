@@ -74,10 +74,13 @@ current materials, Master chest, character portraits and ability art are not
 replacement requests. Older War family/weapon concept prompts are optional,
 not active production dependencies.
 
-Owner's follow-up specifies a raised mechanic symbol over a trophy-like
-crest and short stepped pedestal for all27 native icons. Keep the backing
-subordinate, character-palette matched and inside the same cutout margins;
-it is not a scenic background or a generic gold trophy cup.
+Owner clarifies all27 native symbols belong inside an ability-icon picture
+frame, not a literal trophy. Use a front-facing square beveled rim around a
+recessed opaque inset, subdued character-palette colors and a dominant symbol
+fully inside the opening. No award crest, pedestal or plinth. The inset is
+authored artwork to retain; only the exterior flat key is removable backdrop.
+Keep the complete tile inside existing cutout margins. This supersedes the
+earlier trophy/stepped-base interpretation.
 
 Reproduce with `python tools\build_pending_art.py`; validate with
 `python -m unittest discover -s tools -p test_pending_art.py -v`.

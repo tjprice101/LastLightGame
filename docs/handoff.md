@@ -1,5 +1,25 @@
 # Current state and handoff
 
+## Native-status frame clarification (D-317)
+
+- Owner corrects the prior trophy interpretation: all27 symbols belong inside
+  square ability-icon picture frames, with a continuous beveled rim, opaque
+  recessed panel and dominant centered symbol. No award crest, trophy,
+  pedestal or plinth; retain character palettes, distinct symbols, filenames
+  and outer cutout margins. The panel is artwork, not removable backdrop.
+- Updated generator, generated pack, checklist and art workflow. Native
+  negatives no longer forbid the requested border and explicitly exclude
+  trophies/bases; Calamity prompts remain unchanged.
+- This supersedes trophy-backed descriptions in historical entries below.
+  All27 images remain undelivered; no runtime artwork or gameplay changes.
+- Validation: `python -m unittest discover -s tools -p test_pending_art.py -v`
+  passes all4 tests, including all27 frame/exclusion checks and exact
+  regeneration. Editor diagnostics and `git diff --check` pass.
+  Broader `python -m unittest discover -s tools -p test_art_prompts.py -v`
+  runs28 tests but reports131 existing subtest failures in unchanged Master
+  Conduits (100), Machines (28) and Calamity (3) prompt blocks; no native
+  frame failures. Those unrelated prompt contracts are not changed here.
+
 ## Calamity Seraph/Hierophant replacements (D-318 follow-up)
 
 - Owner explicitly approves processing both new root sources. Updated

@@ -7,7 +7,7 @@
 bosses, three shared tier chest icons and three shared tier arenas are installed.
 The Last Scarlet Bloom is now installed too; no Calamity artwork is missing.
 [Native identity symbols](ui/Native%20Identity%20Status%20Icons.md) has27 pending
-trophy-backed status pictograms. Copy-ready prompts and filenames included.
+ability-picture-framed status pictograms. Copy-ready prompts and filenames included.
 See [reviewed intake](../docs/art-workflow.md#calamity-delivery-intake-d-318).
 Existing85 ordinary/48 Master
 Conduits, Master chest and all current materials already have artwork.

@@ -46,18 +46,23 @@ class PendingArtTests(unittest.TestCase):
                 negatives = [word.strip() for word in prompt.split("--no ")[1].split(",")]
                 self.assertNotIn(key, negatives)
 
-    def test_every_native_symbol_has_a_subordinate_trophy_backing(self):
+    def test_every_native_symbol_has_an_ability_picture_frame_not_a_trophy(self):
         blocks = re.findall(r"```text\n(.*?)\n```", native_document(), re.S)
         self.assertEqual(len(blocks), 27)
         for (_, _, _, design), prompt in zip(STATUSES, blocks):
             with self.subTest(design=design):
                 self.assertIn(design, prompt)
-                self.assertIn("mechanic symbol in raised foreground relief", prompt)
-                self.assertIn("trophy-like crest backing", prompt)
-                self.assertIn("short stepped award pedestal", prompt)
-                self.assertIn("subdued backing in the same character palette", prompt)
+                positive, negative = prompt.split("--no ")
+                self.assertIn("square ornamental ability-icon picture frame viewed straight on", positive)
+                self.assertIn("continuous beveled rim surrounding a recessed opaque inset panel", positive)
+                self.assertIn("subdued frame and inset in the same character palette", positive)
                 self.assertIn("dominant unobscured symbol", prompt)
-                self.assertIn("rather than a trophy cup or scenery", prompt)
+                self.assertIn("fully contained within the inner opening", positive)
+                for word in ("trophy", "pedestal", "plinth", "award", "crest"):
+                    self.assertNotIn(word, positive)
+                for word in ("trophy", "pedestal", "plinth", "supporting base"):
+                    self.assertIn(word, negative)
+                self.assertNotIn("card border", negative)
                 self.assertIn("plain solid", prompt)
 
 

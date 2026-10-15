@@ -5,6 +5,14 @@ specifications own detailed rules; link them here rather than duplicating them.
 
 ## Confirmed direction
 
+D-317 clarification (2026-10-15): the owner means a mechanic symbol **within
+an ability-icon picture frame**, not a literal trophy. All27 native prompts
+now use a front-facing square beveled rim and opaque recessed inset, with
+subdued character-palette framing and a dominant centered symbol. No trophy,
+award crest, pedestal or plinth. This supersedes the trophy-backing wording
+in the original record below; filenames, symbol identities and runtime remain
+unchanged. [Current prompts](../Art/ui/Native%20Identity%20Status%20Icons.md).
+
 | ID | Decision | Basis |
 | --- | --- | --- |
 | D-318 | Archive/copy all18 delivered Calamity originals, including the follow-up Last Scarlet Bloom; remove only reviewed boss/chest backdrops offline and preserve arena pixels, subject colors and painted shadows. Install12 bosses plus3 shared tier chests/3 shared tier arenas across all relevant surfaces, with byte URL revisions, reviewed facing/scale and display-only fallback for pre-art snapshots. Install approved Heavenfall Seraph/White Pyre Hierophant replacements under the same IDs, preserving both source/export generations and settings/hash history. Remove verified duplicate root copies at owner request. No gameplay, reward, RNG or account changes. | Owner requests background removal, copying and full wiring of delivered Calamity artwork, then root cleanup, supplies the missing Rose boss and explicitly requests both updated boss PNGs be processed and wired. [Intake/reproduction](art-workflow.md#calamity-delivery-intake-d-318). |

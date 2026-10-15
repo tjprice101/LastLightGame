@@ -20,9 +20,9 @@ proposals. All twelve delivered bosses are reviewed and installed.
 
 ## Generation priority
 
-1. Twenty-seven status symbols over trophy-like crest/pedestal backings:
-   complements exact native-state text. The backing is part of the cutout
-   emblem, not scenery; use each character's palette, not blanket gold. Existing
+1. Twenty-seven status symbols inside square ability-icon picture frames:
+   complements exact native-state text. A beveled rim surrounds an opaque
+   inset panel; no trophy or pedestal. Use each character's palette, not blanket gold. Existing
    Burn and shield artwork is reused; counts and expiry are never painted text.
 
 ## What does not need regeneration
