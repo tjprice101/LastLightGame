@@ -1,27 +1,29 @@
 import { infusionStageCount, validateMachineStage } from './activities';
 import { lootRoll } from './loot-random';
+import { bossLootMultiplier } from './final-boss-loot';
 
 export const mechanicalComponents = {
   id: 'mechanical-components',
   name: 'Broken Mechanical Components',
   art: null,
-  firstChance: .25,
+  firstChance: 1,
   finalChance: 1,
-  firstQuantity: 1,
-  finalQuantity: 100,
+  firstQuantity: 3,
+  finalQuantity: 125,
 } as const;
 
 export function machineComponentDrop(stage: number) {
   validateMachineStage(stage);
   const progress = (stage - 1) / (infusionStageCount('machines') - 1);
   const quantity = Math.round(mechanicalComponents.firstQuantity +
-    (mechanicalComponents.finalQuantity - mechanicalComponents.firstQuantity) * progress ** 2);
+    (mechanicalComponents.finalQuantity - mechanicalComponents.firstQuantity) * progress) *
+    bossLootMultiplier({ infusion: { mode: 'machines', stage } });
   return { id: mechanicalComponents.id, minimum: quantity, maximum: quantity,
     chance: mechanicalComponents.firstChance + (mechanicalComponents.finalChance - mechanicalComponents.firstChance) * progress,
-    note: 'One independent roll per defeated machine; ordinary enemies and bosses use the same odds. Used only for Conduit upgrades.' };
+    note: 'Guaranteed per defeated machine; the final boss multiplies the base stage quantity by 5. Used only for Conduit upgrades.' };
 }
 
-export const machineComponentRulesText = `Broken Mechanical Components have a separate per-kill roll: ${mechanicalComponents.firstChance * 100}% chance of ${mechanicalComponents.firstQuantity} at stage 1, rising linearly to ${mechanicalComponents.finalChance * 100}% chance of ${mechanicalComponents.finalQuantity} at stage ${infusionStageCount('machines')}. Quantity grows quadratically by stage and is rounded; ordinary enemies and bosses use the same odds.`;
+export const machineComponentRulesText = `Every defeated machine guarantees Broken Mechanical Components: ${mechanicalComponents.firstQuantity} per enemy at stage 1, rising linearly by stage to a base ${mechanicalComponents.finalQuantity} at stage ${infusionStageCount('machines')}, rounded to whole components. The final boss awards 5x that quantity (${mechanicalComponents.finalQuantity * 5}); earlier bosses use the ordinary stage quantity.`;
 
 export function rollMachineComponents(stage: number, random: () => number): number {
   const drop = machineComponentDrop(stage);

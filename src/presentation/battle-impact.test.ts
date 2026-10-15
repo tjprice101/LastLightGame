@@ -7,6 +7,7 @@ describe('attack presentation impact boundary', () => {
   it('keeps automatic enemy-phase burn ticks separate from the triggering skill impact', () => {
     const state = createBattle(1729, ['ember']);
     state.allies[0].shatter = state.allies[0].stats.shatterCapacity;
+    state.enemies[0].hp = state.enemies[0].stats.health = 200;
     const result = actAndAdvanceTurn(state, 'ember', 'skill1', state.enemies[0].id);
     const periodicIndex = result.events.findIndex((event) => event.periodic);
     expect(periodicIndex).toBeGreaterThan(0);
@@ -17,8 +18,9 @@ describe('attack presentation impact boundary', () => {
     before.allies[0].stats.crit = 0;
     const result = actAndAdvanceTurn(before, 'ember', 'light', before.enemies[0].id);
     const damage = result.events[impactEvents(result.events, 0)[0]];
+    const originalHP = before.enemies[0].stats.health;
     const bar = { style: { width: '100%' } };
-    const hp = { textContent: 'HP 110 / 110' };
+    const hp = { textContent: `HP ${originalHP} / ${originalHP}` };
     const classes = new Set<string>();
     const numbers: { textContent: string }[] = [];
     const sprite = {};
@@ -59,13 +61,13 @@ describe('attack presentation impact boundary', () => {
     try {
       const animate = Reflect.get(BattleView.prototype, 'animate');
       const presentation = Reflect.apply(animate, view, [result.events[0], () => Reflect.apply(animate, view, [damage])]);
-      expect(hp.textContent).toBe('HP 110 / 110');
+      expect(hp.textContent).toBe(`HP ${originalHP} / ${originalHP}`);
       expect(bar.style.width).toBe('100%');
       expect(numbers).toHaveLength(0);
       finishWindup();
       for (let frame = 0; frame < 12; frame++) await Promise.resolve();
-      expect(hp.textContent).toBe(`HP ${110 - damage.amount} / 110`);
-      expect(Number.parseFloat(bar.style.width)).toBeCloseTo((110 - damage.amount) / 110 * 100);
+      expect(hp.textContent).toBe(`HP ${originalHP - damage.amount} / ${originalHP}`);
+      expect(Number.parseFloat(bar.style.width)).toBeCloseTo((originalHP - damage.amount) / originalHP * 100);
       expect(numbers[0].textContent).toBe(`-${damage.amount}`);
       finishVisuals();
       await presentation;

@@ -1,5 +1,14 @@
 # Elemental War
 
+## Consistent hostile difficulty (D-289)
+
+Trial enemies use the same complete hostile stats and level-based skill
+coefficient as equal-level bosses in every other activity. They no longer
+inherit playable character critical/Gauge/elemental stats or a fixed first-skill
+coefficient. Authored first/ultimate names,10-stage levels,140 extension,
+portraits, rewards and playable kits remain unchanged.
+[Shared numeric contract](combat.md#consistent-level-and-rank-difficulty-d-289).
+
 ## Readable trial cards (D-213)
 
 All three trial cards use a solid-surface title below their banner art, readable
@@ -203,10 +212,11 @@ With `t = (stage - 1) / 9`:
 
 - Guaranteed Prismatica, uniform integer quantity from
   `round(1500 + 3500*t*t)` to `round(2500 + 5500*t*t)`.
-  Stage1:1500-2500; stage10:5000-8000.
+  Stage1:1500-2500; stage10 base5000-8000, sampled then multiplied by5
+  under D-294:25,000-40,000 on every final clear/replay.
 - Independent Null-Prismatica chance `0.30 + 0.30*t`.
   A success grants `round(1 + 4*t)`.
-  Stage1:30% for1; stage10:60% for5.
+  Stage1:30% for1; stage10:60% for25 after the5x boost.
 - Final boss alone separately rolls `0.01` recruitment, regardless of currency
   outcomes. No recruitment pity; the chance never rises after failed attempts.
 - Approved owned-result conversion: **100 Null-Prismatica**, only on a successful

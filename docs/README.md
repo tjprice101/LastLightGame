@@ -5,6 +5,52 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Enemy art containment (D-296):** shared fixed artwork slots keep complete
+enemy images and undiscovered silhouettes above names/descriptions in every
+glossary context. Original PNGs are unchanged; all151 cards verified at
+desktop/tablet/phone widths.
+[Contract](archives-and-elements.md#shared-enemy-artwork-containment-d-296).
+
+**Enemy loot dialogs (D-295):** compact enemy cards open stage-specific drops
+through View Loot. Each Conduit drop opens shared View Details; existing
+discovery gates, percentages, upgrades and modal focus are preserved.
+[Current contract](archives-and-elements.md#enemy-loot-and-conduit-details-dialogs-d-295).
+
+**Repeatable final-boss loot (D-294):** existing currency/material/component
+quantities are5x at all terminal activity bosses and all six Story region bosses,
+including replays. Earlier bosses, Training, rare chances/counts, recruitment
+conversions and separate first-clear bonuses remain unchanged.
+[Contract and payout examples](free-battle.md#repeatable-final-boss-loot-d-294).
+
+**Larger death loot (D-293):** all dropped stacks are50% larger, including
+captured creatures. Machine Conduits have distinct radiant beams and remain
+part of the actual per-kill receipt; viewport-wrapped loot preserves timing,
+reduced motion and unchanged rewards.
+[Visual contract](free-battle.md#larger-death-loot-and-machine-conduit-beams-d-293).
+
+**Battle exit repair (D-292):** Quit/Leave share one server-owning Back flow.
+Actual callers are preserved; resumed online battles with empty history exit
+to Gameplay instead of getting stranded after their session is deleted.
+Saved rewards and explicit pending-operation retries remain unchanged.
+[Exit contract](free-battle.md#reliable-battle-exit-d-292).
+
+**Collections repairs (D-291):** compact top filters, readable naturally
+scrolling galleries, reliable gallery/card visibility and synchronized Reset.
+Captured reveal gating, bounded artwork and native details/loot controls are
+preserved and verified on desktop and phones. No account/gameplay changes.
+[Current contract](archives-and-elements.md#collections-layout-and-controls-d-291).
+
+**Consistent enemy difficulty (D-289):** stronger early/midgame hostiles,
+extra exponential acceleration above25 and identical complete stats/skill power
+at equal level and ordinary/boss rank across all activities. Story discounts,
+Training species-stat overrides and War playable-stat inheritance are removed.
+Boss rank and enemy count still affect total encounter difficulty. Existing
+captured kits and active encounter snapshots are preserved.
+The authoritative battle-server update is deployed and verified with disposable
+hosted accounts, including actual Lv60 mode parity. Quit/re-enter an existing
+battle to rebuild its frozen encounter with current tuning.
+[Current measurements and validation](combat.md#consistent-level-and-rank-difficulty-d-289).
+
 **Progression balance (D-288):** all16 Element-Bearers and captured creatures
 use linear playable growth; enemies accelerate smoothly across every mode.
 Early unbuilt entry remains viable, while final-boss benchmarks require a
@@ -511,7 +557,8 @@ Stable IDs/ownership unchanged; no new starter artwork delivered.
 
 **Machine endgame (D-139):** [Awaken the Machines](awaken-the-machines.md) now
 has100 stages spread across Lv.10-120, Omnic drops from75 and sharply increasing
-BMC drops (25% for1 -> guaranteed100 per enemy). Maxing one Omnic Conduit
+BMC drops. D-290 now guarantees3 per enemy at stage1, scaling linearly to125
+at stage100, including bosses. Maxing one Omnic Conduit
 costs120000 BMC; [cost/drop table](conduit-upgrades.md). Existing saves retained.
 
 **Conduit meters (D-138):** shared five-square icon meters fill shiny white

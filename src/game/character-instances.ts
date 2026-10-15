@@ -44,10 +44,13 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
           !('skills' in entry) || !Array.isArray(entry.skills)) throw new Error('Invalid captured Elemental-Devourer progression.');
       const expected = infusionEncounter(creature.mode, entry.capturedStage);
       if (creature.mode === 'roses' && copy.acquisition !== 'banner-duplicate' && expected.level > roseCaptureMaximumLevel) throw new Error('Roselius above level 120 cannot be captured.');
-      const valid = enemySkills(expected.level, expected.boss, expected.ability, expected.abilityMultiplier);
-      if (entry.skills.length !== valid.length || !entry.skills.every((skill, index) =>
-        typeof skill === 'object' && skill !== null && skill.name === valid[index].name &&
-        skill.multiplier === valid[index].multiplier && skill.every === valid[index].every && skill.action === valid[index].action) ||
+      const candidates = [expected.abilityMultiplier, expected.legacyAbilityMultiplier]
+        .map(multiplier => enemySkills(expected.level, expected.boss, expected.ability, multiplier));
+      const retained = entry.skills;
+      const valid = candidates.find(skills => retained.length === skills.length && retained.every((skill, index) =>
+        typeof skill === 'object' && skill !== null && skill.name === skills[index].name &&
+        skill.multiplier === skills[index].multiplier && skill.every === skills[index].every && skill.action === skills[index].action));
+      if (!valid ||
         entry.level < (copy.acquisition === 'banner-duplicate' ? roseDuplicateMinimumLevel(creature.id)! : expected.level)) throw new Error('Invalid retained enemy abilities or level.');
       copy.level = entry.level;
       copy.capturedStage = entry.capturedStage;
@@ -65,7 +68,7 @@ export function capturedProgress(copy: CapturedCharacter) {
   const encounter = infusionEncounter(creature.mode, stage);
   const legacyLevel = creature.mode === 'heavens' || creature.mode === 'abyss' ? Math.round(80 + (stage - 1) * 40 / 34) : encounter.level;
   return { level: copy.level ?? legacyLevel, stage, tier: encounter.tier,
-    skills: copy.skills ?? enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier) };
+    skills: copy.skills ?? enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.legacyAbilityMultiplier) };
 }
 
 export function capturedLevelCost(copy: CapturedCharacter) {

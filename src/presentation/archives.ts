@@ -10,8 +10,7 @@ import { creatures } from '../content/creatures';
 import { capturedRating } from './owned-companion';
 import { characterRating } from './character-rating';
 import { characterRole } from './character-role';
-import { conduitIcon, conduitRarity } from './conduit-store';
-import { isBannerConduitEligible } from '../content/machines';
+import { conduitIcon, conduitRarity, conduitDetails } from './conduit-store';
 import { creatureGlossary } from './creature-glossary';
 import { elementLabel } from './element-label';
 import { information } from './information';
@@ -31,15 +30,15 @@ export type ArchiveGallery = (typeof galleries)[number]['id'];
 function characterArchive(account: Account | null): string {
   const capturedForms = creatures.filter((creature) => creature.mode && creature.mode !== 'machines');
   const total = starters.length * 6 + capturedForms.length;
-  return `<div class="ref-archive-manage"><button class="ref-link" data-page="character">Manage Element-Bearers →</button></div>
-    <div class="archive-filters" role="group" aria-label="Character archive filters">
+  return `<div class="archive-filters" role="group" aria-label="Character archive filters">
       <label>Element<select data-character-filter="element"><option value="">All elements</option>${elements.map((element) => `<option value="${element.id}">${element.name}</option>`).join('')}</select></label>
       <label>Rarity<select data-character-filter="rarity"><option value="">All rarities</option>${materialRarities.map((rarity) => `<option>${rarity}</option>`).join('')}</select></label>
-      <label>Character ownership<select data-character-filter="ownership"><option value="">All characters</option><option value="owned">Owned</option><option value="unowned">Not owned</option></select></label>
+      <label>Ownership<select data-character-filter="ownership"><option value="">All characters</option><option value="owned">Owned</option><option value="unowned">Not owned</option></select></label>
       <label>Form discovery<select data-character-filter="discovery"><option value="">All forms</option><option value="revealed">Reached</option><option value="locked">Unreached</option></select></label>
       <label>Stars<select data-character-filter="stars"><option value="">All stars</option>${[1, 2, 3, 4, 5, 6].map((stars) => `<option value="${stars}">${stars}-star</option>`).join('')}</select></label>
       <button class="text-button" data-reset-character-filters>Reset filters</button>
-    </div><p data-character-filter-result role="status">${total} / ${total} forms shown</p>
+    </div><div class="archive-results-toolbar"><p data-character-filter-result role="status">${total} / ${total} forms shown</p>
+      <div class="ref-archive-manage"><button class="ref-link" data-page="character">Manage Element-Bearers →</button></div></div>
     <div class="archive-grid">${starters.flatMap((starter) => {
       const owned = !!account?.characters[starter.id];
       const progress = owned && account ? ownedProgress(account, starter.id) : undefined;
@@ -69,7 +68,7 @@ function characterArchive(account: Account | null): string {
       const tier = Number(creature.id.split(':').at(-1));
       const owned = copies.length > 0;
       return `<article class="archive-card ${owned ? 'archive-form-revealed' : 'archive-form-locked'}" data-archive-character="${creature.id}" data-form="${tier + 1}" data-filter-element="${creature.element}" data-filter-rarity="${materialRarities[tier]}" data-filter-ownership="${!account ? 'unavailable' : owned ? 'owned' : 'unowned'}" data-filter-discovery="${!account ? 'unavailable' : owned ? 'revealed' : 'locked'}"       data-filter-stars="${tier + 1}">
-        <div class="archive-portrait">${creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="960" height="960">` : '<span>Artwork pending</span>'}</div>
+        <div class="archive-portrait${owned ? '' : ' unreached-character-art'}">${creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="960" height="960">` : '<span>Artwork pending</span>'}</div>
         <h3>${creature.name}</h3>${elementLabel(creature.element)}${capturedRating(creature.id)}
         <p class="archive-ownership">${!account ? 'Ownership unavailable' : owned ? `Owned copies ${copies.length}` : 'Not owned'}</p>
         <p>${creature.area} · Stages ${creature.stages[0]}-${creature.stages.at(-1)}</p>
@@ -84,7 +83,7 @@ function conduitArchive(account: Account | null): string {
       <h3>${conduit.name}</h3>${conduitRarity(conduit.id)}
       <p class="archive-ownership">${account ? `Owned ${account.conduits?.[conduit.id] ?? 0}` : 'Ownership unavailable'}</p>
       <p class="archive-effect">${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</p>
-      ${information(`archive-conduit-${conduit.id}`, conduit.name, `<strong>${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</strong><p>${conduit.lore}</p><p>${conduit.power} · ${conduit.price !== null ? `${conduit.price.toLocaleString('en-US')} Prismatica` : 'Awaken the Machines drop'}${isBannerConduitEligible(conduit.id) ? ' · Eligible for the 0.5% Legendary bonus tier on successful banner draws' : ''}</p>`, 'Details')}
+      ${information(`archive-conduit-${conduit.id}`, conduit.name, conduitDetails(conduit.id, account?.conduitUpgrades?.[conduit.id], (account?.conduits?.[conduit.id] ?? 0) > 0), 'Details')}
     </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card" data-archive-master="${entry.id}">
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
       <p>Omnic Master · ${getStarter(entry.character).name}</p><p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
@@ -94,15 +93,16 @@ function conduitArchive(account: Account | null): string {
 }
 
 export function archives(account: Account | null, selected: ArchiveGallery = 'characters'): string {
-  return `<section class="archives">${information('collections-information', 'Collections', `<h3>Character</h3><p>Reached Element-Bearer forms and owned captured forms reveal in color; other forms remain silhouettes.
+  return `<section class="archives"><header class="archive-toolbar"><div><h2>Collections</h2><p>Browse forms, Conduits and enemy discoveries.</p></div>${information('collections-information', 'Collections', `<h3>Character</h3><p>Reached Element-Bearer forms and owned captured forms reveal in color; other forms remain silhouettes.
     Current forms show saved equipped stats; other Element-Bearer forms preview level 0 without Conduits. Stars and form rarity are separate.
     Captured forms have a level cap of 120 and cannot evolve. Catalog previews do not grant ownership.</p>
     <h3>Conduits</h3><p>Owned Conduits reveal their artwork in color; unowned Conduits remain silhouettes. The catalog shows effects and owned counts. Equipment rules are in Character Information.</p>
     <h3>Elemental-Devourer and Machine discovery</h3><p>Elemental-Devourers are Rise's creations. Machines are destroyed prototypes from her collaboration with Let, not her created faction.</p><p>Encountering reveals identity, element and lore. Defeating reveals exact stage loot.
-    Quantities vary uniformly within each range; rarity rolls are independent and have no pity.
+    Use View Loot below an enemy to browse its stage-specific amounts and rates. Each Conduit drop has View Details for its effects and lore.
+    Base quantities vary uniformly; final bosses multiply sampled quantities by5. Rarity rolls are independent and have no pity.
     Heaven, Abyss, Treasury and Sanctuary have a separate 20% capture chance per kill; Story, Training and elemental dungeons cannot grant captures.
     Captures retain defeated level, form and skills. Currency Elemental-Devourer sale prices are fixed by form; sale protections are in Character Information.</p>
-    `)}
+    `)}</header>
     <nav class="archive-navigation" aria-label="Archive galleries">${galleries.map((gallery) =>
       `<button class="archive-gallery-button" data-archive-gallery="${gallery.id}" aria-controls="archive-${gallery.id}" aria-pressed="${selected === gallery.id}"><strong>${gallery.name}</strong><small>${gallery.subtitle}</small></button>`).join('')}</nav>
     ${!account ? '<p role="alert">Saved ownership and discoveries unavailable. Resolve the save error; public catalog previews remain available.</p>' : ''}
@@ -113,6 +113,8 @@ export function archives(account: Account | null, selected: ArchiveGallery = 'ch
 }
 
 export function bindArchives(host: HTMLElement): void {
+  const scrollPanel = host.querySelector('.archives')?.closest<HTMLElement>('.sanctuary-content');
+  if (scrollPanel) scrollPanel.dataset.menuScroll = 'collections';
   const filters = Array.from(host.querySelectorAll<HTMLSelectElement>('[data-character-filter]'));
   const cards = Array.from(host.querySelectorAll<HTMLElement>('[data-archive-character]'));
   const filterCards = (): void => {
@@ -128,8 +130,10 @@ export function bindArchives(host: HTMLElement): void {
   };
   filters.forEach((filter) => filter.addEventListener('change', filterCards));
   host.querySelector('[data-reset-character-filters]')?.addEventListener('click', () => {
-    filters.forEach((filter) => { filter.value = ''; });
-    filterCards();
+    filters.forEach((filter) => {
+      filter.value = '';
+      filter.dispatchEvent(new Event('change', { bubbles: true }));
+    });
   });
   host.querySelectorAll<HTMLButtonElement>('[data-archive-gallery]').forEach((button) => {
     button.addEventListener('click', () => {
@@ -146,4 +150,5 @@ export function bindArchives(host: HTMLElement): void {
       host.querySelector<HTMLElement>(`#archive-${selected}-heading`)?.focus({ preventScroll: true });
     });
   });
+  if (filters.length) filterCards();
 }

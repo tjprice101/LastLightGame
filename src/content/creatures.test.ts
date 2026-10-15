@@ -136,7 +136,7 @@ describe('saved Elemental-Devourer discoveries and glossary', () => {
       expect(pool.slice(1)).toEqual(materialLoot(creature.dungeonElement!, stage));
     }
     const final = creatureLoot(getCreature('infusion:heavens:5'), 35);
-    expect(final.find((entry) => entry.id === 'heavens-level')).toMatchObject({ minimum: 3, maximum: 6, chance: 1 });
+    expect(final.find((entry) => entry.id === 'heavens-level')).toMatchObject({ minimum: 15, maximum: 30, chance: 1 });
     expect(final.find((entry) => entry.id === 'infernic-epic')?.chance).toBeCloseTo(.85 / 4);
     expect(final.find((entry) => entry.id === 'oceanic-legendary')?.chance).toBeCloseTo(.65 / 4);
     expect(final.find((entry) => entry.id === 'atmospheric-omnic')?.chance).toBeCloseTo(.4 / 4);

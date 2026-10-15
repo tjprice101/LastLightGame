@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { lootBurst, lootItems, lootMotion } from './battle-loot';
+import { lootBurst, lootItems, lootLayout, lootMotion } from './battle-loot';
 import { BattleView } from './battle-view';
-import { act, createDungeonBattle, type BattleEvent } from '../game/battle';
+import { act, createDungeonBattle, createInfusionBattle, type BattleEvent } from '../game/battle';
+import { conduits, conduitColor } from '../content/conduits';
 
 class Node {
   dataset: Record<string, string> = {};
@@ -24,6 +25,11 @@ class Node {
 }
 afterEach(() => vi.unstubAllGlobals());
 
+function fixtureDrop(element: Element | undefined): Node {
+  if (!(element instanceof Node)) throw new Error('Loot fixture node is missing.');
+  return element;
+}
+
 function documentFixture(reduced = false) {
   vi.stubGlobal('document', { createElement: () => new Node(), documentElement: { dataset: { motion: reduced ? 'reduced' : 'system' } } });
   vi.stubGlobal('matchMedia', () => ({ matches: false }));
@@ -35,6 +41,75 @@ const reward: BattleEvent = { kind: 'reward', source: 'enemy', target: '', amoun
   critical: false, message: 'Loot', materials: { 'heavens-weapon': 2, 'oceanic-epic': 1, 'chaotic-omnic': 1 } };
 
 describe('enemy-death loot presentation', () => {
+  it('shows an actual Machine Conduit award as a named radiant-beam drop beside its other rewards', () => {
+    documentFixture();
+    const state = createInfusionBattle('machines', 1, 1729, 'ember', { level: 105, evolution: 6 });
+    state.conduitSeed = 1;
+    state.enemies[0].hp = 1;
+    const result = act(state, 'ember', 'light', state.enemies[0].id);
+    const event = result.events.find(event => event.kind === 'reward')!;
+    expect(Object.keys(event.conduits ?? {})).not.toHaveLength(0);
+    const before = structuredClone(event);
+    const burst = lootBurst(event, () => .5);
+    for (const [id, amount] of Object.entries(event.conduits ?? {})) {
+      const drop = fixtureDrop(Array.from(burst.children).find(drop => fixtureDrop(drop).dataset.lootId === `conduit:${id}`));
+      expect(drop.className).toBe('loot-drop loot-conduit');
+      expect(drop.children[0].className).toBe('loot-beam');
+      expect(drop.title).toContain(`+${amount}`);
+    }
+    expect(event).toEqual(before);
+  });
+
+  it('gives every Machine-tier Conduit its own artwork, beam color and saved upgrade marker', () => {
+    documentFixture();
+    const eligible = conduits.filter(conduit => conduit.rarity !== 'Common');
+    const event = { ...reward, materials: undefined, conduits: Object.fromEntries(eligible.map(conduit => [conduit.id, 1])) };
+    const burst = lootBurst(event, () => .5);
+    eligible.forEach((conduit, index) => {
+      const drop = fixtureDrop(burst.children[index + 1]);
+      expect(drop.dataset.lootId).toBe(`conduit:${conduit.id}`);
+      expect(drop.className).toBe('loot-drop loot-conduit');
+      expect(drop.children[0].className).toBe('loot-beam');
+      expect(drop.properties.get('--loot-color')).toBe(conduitColor(conduit));
+      expect(drop.children[1].src).toContain(`assets/conduits/${conduit.art}.png`);
+      expect(drop.children[2].className).toContain('loot-upgrade-marker');
+      expect(drop.title).toContain(conduit.name);
+    });
+  });
+
+  it('enlarges every drop, including captured creatures and recruitment, by exactly 50%', () => {
+    documentFixture();
+    const event: BattleEvent = { ...reward, lycalis: 3, mechanicalComponents: 125, masterChests: 1,
+      conduits: { 'aegis-capacitor': 1 }, capture: { creatureId: 'infusion:treasury:0', level: 65 },
+      recruitment: 'nerithe', recruitmentOutcome: 'new' };
+    const before = structuredClone(event);
+    for (const random of [0, .5, .999999]) {
+      const burst = lootBurst(event, () => random);
+      const scale = lootMotion(() => random).size * 1.5;
+      Array.from(burst.children).forEach(drop =>
+        expect(fixtureDrop(drop).style.getPropertyValue('--loot-size')).toBe(String(scale)));
+      const captured = fixtureDrop(Array.from(burst.children).find(drop => fixtureDrop(drop).dataset.lootId.startsWith('capture:')));
+      expect(captured.children[1].src).toContain('assets/enemies/');
+      expect(captured.children[0].className).toBe('loot-beam');
+    }
+    expect(event).toEqual(before);
+  });
+
+  it.each([320, 390, 1280])('wraps larger loot into viewport-bounded rows at %ipx', width => {
+    documentFixture();
+    vi.stubGlobal('innerWidth', width);
+    const burst = lootBurst(reward, () => .5);
+    const layout = lootLayout(burst.childElementCount, width);
+    expect(layout.spread * 2).toBeLessThanOrEqual(width);
+    const large = lootLayout(13, width, 740);
+    expect(large.top + large.bottom).toBeLessThanOrEqual(740);
+    const positions = Array.from(burst.children).map(drop => ({
+      x: parseFloat(fixtureDrop(drop).style.getPropertyValue('--loot-x')),
+      y: parseFloat(fixtureDrop(drop).style.getPropertyValue('--loot-y')),
+    }));
+    expect(positions.every(position => Math.abs(position.x) + 52 <= width / 2)).toBe(true);
+    if (width === 320) expect(new Set(positions.map(position => position.y)).size).toBe(2);
+  });
   it.each([0, 3, 5])('shows the snapshotted Conduit level %i as five squares', (level) => {
     documentFixture();
     const burst = lootBurst({ ...reward, materials: undefined, conduits: { 'vigil-core': 1 },

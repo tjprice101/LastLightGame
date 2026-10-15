@@ -16,6 +16,14 @@ export function lootMotion(random: () => number = Math.random) {
     height: (lootRoll(random) - .5) * 24, duration: 850 + Math.floor(lootRoll(random) * 1000) };
 }
 
+export function lootLayout(count: number, viewportWidth: number, viewportHeight = innerHeight) {
+  const columns = Math.min(count, Math.max(1, Math.floor((viewportWidth - 104) / 82) + 1));
+  const rows = Math.ceil(count / columns);
+  const rowGap = Math.min(140, Math.max(0, viewportHeight - 272) / Math.max(1, rows - 1));
+  return { columns, spread: (columns - 1) * 41 + 52,
+    rowGap, bottom: (rows - 1) * rowGap + 76, top: 196 };
+}
+
 export interface LootItem { id: string; name: string; amount: number; art?: string; color: string; upgradeLevel?: number }
 export function lootItems(event: BattleEvent): LootItem[] {
   if (event.kind !== 'reward') throw new Error('Loot presentation requires a reward event.');
@@ -60,14 +68,17 @@ export function lootBurst(event: BattleEvent, random: () => number = Math.random
   burst.setAttribute('role', 'status');
   burst.setAttribute('aria-label', `Collected ${lootItems(event).map((item) => `${item.amount} ${item.name}`).join(', ')}`);
   const items = lootItems(event);
+  const layout = lootLayout(items.length, innerWidth);
   items.forEach((item, index) => {
     const motion = lootMotion(random);
     const drop = document.createElement('span');
-    drop.className = 'loot-drop';
+    drop.className = `loot-drop${item.id.startsWith('conduit:') ? ' loot-conduit' : ''}`;
+    drop.dataset.lootId = item.id;
     drop.style.setProperty('--loot-color', item.color);
-    drop.style.setProperty('--loot-x', `${(index - (items.length - 1) / 2) * 38 + motion.scatter}px`);
-    drop.style.setProperty('--loot-y', `${motion.height}px`);
-    drop.style.setProperty('--loot-size', String(motion.size));
+    const rowCount = Math.min(layout.columns, items.length - Math.floor(index / layout.columns) * layout.columns);
+    drop.style.setProperty('--loot-x', `${(index % layout.columns - (rowCount - 1) / 2) * 82 + motion.scatter}px`);
+    drop.style.setProperty('--loot-y', `${Math.floor(index / layout.columns) * layout.rowGap + motion.height}px`);
+    drop.style.setProperty('--loot-size', String(motion.size * 1.5));
     drop.dataset.pickupDuration = String(motion.duration);
     const beam = document.createElement('span');
     beam.className = 'loot-beam';
@@ -86,7 +97,7 @@ export function lootBurst(event: BattleEvent, random: () => number = Math.random
     } else {
       const token = document.createElement('span');
       token.className = 'loot-token';
-      token.textContent = item.id === mechanicalComponents.id ? 'Artwork pending' : item.name.split(' ')[0];
+      token.textContent = item.id === mechanicalComponents.id || item.id.startsWith('conduit:') ? 'Artwork pending' : item.name.split(' ')[0];
       drop.append(token);
     }
     const quantity = document.createElement('strong');

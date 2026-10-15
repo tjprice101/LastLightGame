@@ -46,9 +46,9 @@ describe('Phase10 Rosethorn Sanctuary', () => {
       const random = vi.fn(() => 0);
       expect(infusionDrops('sanctuary', stage, random)).toEqual({});
       expect(random).not.toHaveBeenCalled();
-      const odds = sanctuaryLycalisOdds(encounter.level);
+      const odds = sanctuaryLycalisOdds(encounter.level).map(drop => ({ ...drop, amount: drop.amount * (stage === 25 ? 5 : 1) }));
       expect(creatureLoot(getCreature(`infusion:sanctuary:${encounter.tier}`), stage)).toEqual([
-        { id: 'fractalis', ...fractalisDrop(encounter.level) },
+        { id: 'fractalis', ...fractalisDrop(encounter.level), ...(stage === 25 ? { minimum: 75, maximum: 150, quantityMultiplier: 5 } : {}) },
         { id: 'lycalis', minimum: odds[1].amount, maximum: odds[1].amount, chance: odds[1].chance, note: expect.any(String) },
       ]);
       for (const burn of [false, true]) {
@@ -85,7 +85,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     for (const burn of [false, true]) {
       const premium = defeat(25, burn);
       const none = defeat(25, burn, 1);
-      expect(premium.events.find((entry) => entry.kind === 'reward')?.lycalis).toBe(5);
+      expect(premium.events.find((entry) => entry.kind === 'reward')?.lycalis).toBe(25);
       expect(none.events.find((entry) => entry.kind === 'reward')?.lycalis).toBeUndefined();
       expect(premium.state.rewardSeed).toBe(none.state.rewardSeed);
       expect(premium.state.captureSeed).toBe(none.state.captureSeed);
@@ -105,7 +105,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     const spy = vi.spyOn(saved, 'setItem');
     const account = saveAccountRewards(saved, result, 'run');
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(account.lycalis).toBe(5);
+    expect(account.lycalis).toBe(25);
     expect(account.fractalis).toBeGreaterThanOrEqual(15);
     expect(account.materials).toEqual({});
     expect(account.capturedCharacters?.[0].level).toBe(120);
@@ -250,7 +250,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     account.capturedCharacters = [createCreatureCopy('infusion:sanctuary:5')];
     account.creatures['infusion:sanctuary:5'] = { defeated: true };
     expect(gameplayHub(account)).toContain('data-infusion="sanctuary"');
-    expect(gameplayHub(account)).toContain('50% of 1 at Lv.65 to 80% of 5 at Lv.120');
+    expect(gameplayHub(account)).toContain('50% of 1 at Lv.65 to a final-boss 80% of 25');
     expect(characterCopyManagement(account)).toContain('30,000 Prismatica + 10 Null-Prismatica');
     const glossary = creatureGlossary(account);
     expect(glossary).toContain('aria-label="Sale value"');

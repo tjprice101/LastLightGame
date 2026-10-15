@@ -14,6 +14,7 @@ import { gameplayHub } from '../presentation/gameplay';
 import { homeHub } from '../presentation/hub';
 import { getStarter } from '../content/starters';
 import { type ConduitLoadouts } from '../content/conduits';
+import { enemyCombatStats } from '../content/stat-growth';
 
 function storage() {
   const values = new Map<string, string>([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
@@ -72,13 +73,15 @@ describe('six-region linear Story contract', () => {
     expect(() => storyBossBonus(24)).toThrow();
   });
 
-  it('has easier encounters than overlapping material dungeon levels, and only the two low material tiers', () => {
+  it('uses the same level/rank combat strength as other modes, with only two low material tiers', () => {
     for (let stage = 1; stage <= 150; stage++) {
       const encounter = storyEncounter(stage);
+      expect(encounter.stats).toEqual(enemyCombatStats(encounter.level, encounter.boss));
       const materials = storyMaterialLoot(stage);
       expect(materials[0].id).toBe(`${encounter.element}-common`);
       expect(materials.every((drop) => /-(common|uncommon)$/.test(drop.id))).toBe(true);
-      expect(materials.length).toBe(encounter.level < 23 ? 1 : 2);
+      expect(materials).toHaveLength(2);
+      expect(materials[1].chance).toBeCloseTo(.25 + .55 * (encounter.level - 1) / 54, 12);
       expect(storyDrops(stage, () => 0)).toEqual(Object.fromEntries(materials.map((drop) => [drop.id, drop.minimum])));
       for (const creature of creatures.filter((entry) => entry.story && entry.stages.includes(stage))) {
         const pool = creatureLoot(creature, stage);
@@ -88,13 +91,15 @@ describe('six-region linear Story contract', () => {
         const dungeonStage = Array.from({ length: 35 }, (_, index) => index + 1).find((floor) =>
           dungeonEncounter(encounter.element, floor).level >= encounter.level && dungeonEncounter(encounter.element, floor).boss === encounter.boss)!;
         const dungeon = dungeonEncounter(encounter.element, dungeonStage);
-        expect(encounter.stats.health).toBeLessThan(dungeon.stats.health);
-        expect(encounter.stats.damage).toBeLessThan(dungeon.stats.damage);
+        expect(encounter.stats.health).toBeLessThanOrEqual(dungeon.stats.health);
+        expect(encounter.stats.damage).toBeLessThanOrEqual(dungeon.stats.damage);
+        if (encounter.level === dungeon.level) expect(encounter.stats).toEqual(dungeon.stats);
       }
     }
     expect(storyLoot(150).map((drop) => drop.id)).toEqual(['fractalis', 'chaotic-common', 'chaotic-uncommon']);
+    expect(storyMaterialLoot(1)[1].chance).toBeCloseTo(.25);
     expect(storyMaterialLoot(150)[1].chance).toBeCloseTo(.8);
-    expect(storyMaterialLoot(150)[0]).toMatchObject({ minimum: 3, maximum: 6 });
+    expect(storyMaterialLoot(150)[0]).toMatchObject({ minimum: 15, maximum: 30 });
     expect(() => storyDrops(150, () => 1)).toThrow();
   });
 

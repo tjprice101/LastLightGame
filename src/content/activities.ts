@@ -17,6 +17,7 @@ export const elementalMaterials = elements.flatMap((element) => materialRarities
   name: `${element.name} ${rarity} Material`,
 })));
 export const dungeonStageCount = 35;
+export const warStageCount = 10;
 export const elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 38, maximumLevel: 120, maximumLevelStage: dungeonStageCount } as const;
 export const infusionModes = [
   { id: 'heavens', name: 'Soar to Heaven', energy: 'Light', enemyTheme: 'Dawnthorn Slime evolution line', stages: dungeonStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },

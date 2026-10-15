@@ -22,19 +22,29 @@ stats and evolution adds150% of base, rather than compounding previous gains.
 HP/Attack/Elemental Damage, flat ability healing and shields use G; Defense
 retains G^0.7. Separate bounded percentage/Gauge/skill potency is unchanged.
 
-All hostile spawns share `enemyCombatStats`; Training retains each species'
-opening stats and converges on shared endpoints. With steps S=level-1,
-span N=119, opening B, target T and initial rate R, the curve is
-`round(B*(1+S*R)*exp(log(T/(B*(1+N*R)))*(S/N)^2))`.
-HP/Attack/Defense rates are .30/.12/.15. This combines accessible early growth
-with smooth exponential acceleration, without the former Lv.110-120 spike.
+### Consistent level-and-rank difficulty (D-289)
+
+The owner reports the six Story regions remain too easy and requests stronger,
+consistent enemies across all activities, with above-player-level enemies taking
+meaningful effort. All hostile spawns share the complete `enemyCombatStats`
+result: Story, Training, material dungeons, infusions, currency missions,
+Machines, Roses and War. Species retain names, elements, artwork and skill
+names, not different opening stats or critical rates. No Story discounts.
+Equal level and rank mean equal stats and scheduled skill strength; bosses
+remain stronger than ordinary enemies. Enemy count and player squad/build still
+affect total encounter difficulty. There is no hidden player-level modifier.
+
+With bounded level L=min(level,120), opening B, target T and initial rate R:
+`round(B*(1+(L-1)*R)*exp(log(T/(B*(1+119*R)))*max(0,L-25)/95))`.
+HP/Attack/Defense rates are .45/.25/.30. The accessible linear opening now
+has extra exponential acceleration above25, without a late-level spike.
 Ordinary openings remain83 HP/22 Attack/4 Defense; boss openings remain
 207.5/27.5/(16/3). Beyond120, the existing event-only extension is
 `(1 + .018 * (level-120))^2`, through140.
 
 | Lv.120 stat | Ordinary | Boss |
 | --- | --- | --- |
-| Health | 7,000 | 35,000 |
+| Health | 9,000 | 35,000 |
 | Attack | 1,200 | 3,000 |
 | Defense | 400 | 600 |
 
@@ -42,23 +52,36 @@ Measured unequipped Infernis against ordinary same-level enemies:
 
 | Level / evolution | Player HP | Enemy HP | Noncritical Normal Attacks to defeat |
 | --- | --- | --- | --- |
-| 19 / 1 | 847 | 541 | 5 |
-| 60 / 3 | 2,860 | 1,904 | 5 |
-| 90 / 5 | 4,510 | 3,662 | 6 |
-| 105 / 6 | 5,335 | 5,046 | 7 |
+| 19 / 1 | 847 | 755 | 7 |
+| 60 / 3 | 2,860 | 2,945 | 8 |
+| 90 / 5 | 4,510 | 5,452 | 9 |
+| 105 / 6 | 5,335 | 7,076 | 11 |
 
-At enemy120, max-level unequipped Infernis needs11 Normals; the tested
-unupgraded late Conduit loadout needs at most6 and more than halves relative
+At enemy120, max-level unequipped Infernis needs at least13 Normals; the tested
+unupgraded late Conduit loadout needs at most8 and more than halves relative
 incoming ordinary damage. Lv.105 relative ordinary incoming damage exceeds
-Lv.19's by at least1.8x; late per-level hostile stat steps stay below5%.
+Lv.19's by at least1.2x; late per-level hostile stat steps stay below5%.
 All16 Lv.19 base-form characters have less than3x corresponding standard/Story
 enemy HP and cannot one-shot with a critical Normal Attack.
 
-Story uses 90% shared HP and 75% shared Attack, with shared Defense. It remains
-easier than corresponding material encounters. All starters clear the first
-Story encounter at Lv.0 without gear across three seeds. Accessible Common
-Store loadouts support the opening material dungeon, Rare materials at the
-Lv.45 cap and form3 infusion at the Lv.60 cap. Across three seeds,
+Every Lv.60 ordinary enemy has2,945 HP/428 Attack/108 Defense; a Lv.60 boss
+has8,665/691/151. Shared Crit12%, critical multiplier1.5, Gauge capacity100
+and Elemental Damage0. First skill coefficient is `1.2+(level-1)*.004`,
+with shared ordinary/boss schedules and second-skill priority.
+Across all16 Element-Bearers at legal progression caps, an ordinary enemy
+ten levels higher requires at least7 noncritical Normals, has more than15%
+greater raw hits-to-kill than its same-level counterpart, and deals a
+noncritical Normal exceeding10% player maximum HP. Actual available Skill1
+direct hits stay below80% enemy HP. For unequipped Lv.19 Infernis, enemy29
+takes11 Normals instead of7 at19; incoming Normals rise from12% to19% HP.
+These are no-gear benchmarks, not immunity to a well-built powerful skill.
+
+All starters clear the first Story encounter at Lv.0 without gear across three
+seeds. Each initial starter can clear the first regional boss solo atLv15 with
+Common Store gear, before recruitment. A complementary same-level Common-geared
+squad clears all six regional bosses. Accessible Common Store squad loadouts
+also support the opening material dungeon, Rare materials at the Lv.45 cap and
+form3 infusion at the Lv.60 cap. Across three seeds,
 the complementary Infernis/Tizu/Flora squad clears final material bosses,
 all six staged creature/Machine activities and all three War bosses with a
 legal unupgraded late loadout. The same squad without gear loses every tested
@@ -74,6 +97,10 @@ and unchanged fixed-form multiplier `.65+.35*tier/5`.
 Their final-form Lv.120 reference is4,180 HP/722 Attack, not the former
 200,000 HP; otherwise captures would bypass the entire balance.
 Saved levels, retained skills, UUIDs, locks and holdings remain untouched.
+Captured-kit validation accepts either an exact complete current or historical
+authored skill set, not a mixed/forged set. Existing saved coefficients remain
+unchanged; metadata-free historical copies resolve historical skills. New
+captures retain the defeated enemy's current level-based skills. No load write.
 New Heaven/Abyss runs use the
 [cap-aligned schedule](gameplay-and-elements.md#two-infusion-modes).
 Existing runs without a schedule marker retain the old levels and loot across
@@ -87,6 +114,8 @@ src\game\activity-access.test.ts src\game\defense-balance.test.ts
 src\content\stat-growth.test.ts src\game\crimson-roses.test.ts
 src\game\captures.test.ts src\online\server-game.test.ts --maxWorkers=2`.
 Run the full suite and regenerate the server bundle whenever these rules change.
+Signed-in battles execute the deployed Edge Function, not localhost combat code;
+deploy the regenerated server bundle for tuning to reach online players.
 
 ## Enemy progression rebalance (D-192)
 

@@ -42,7 +42,7 @@ describe('offline save presentation', () => {
   });
   it('keeps every save-data mount in Player info, not title or either Settings path', () => {
     const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');
-    const settingsPaths = main.match(/settingsPanel\(motionPreference, bindings, speed\)[^\n]*/g);
+    const settingsPaths = main.match(/settingsPanel\(motionPreference, bindings, speed, musicPreferences\)[^\n]*/g);
     expect(settingsPaths).toHaveLength(2);
     for (const path of settingsPaths!) expect(path).not.toMatch(/offlineSave|playerSave|ll-player-save/);
     expect(main).toContain('playerInfoOpen = !response.starterId && !progressReady');

@@ -1,5 +1,37 @@
 # Menus and inventory
 
+## Battle exit after resume or defeat (D-292)
+
+Battle results Quit delegates to the same Back flow as toolbar Leave, rather
+than issuing its own server quit before navigation. Preserve server
+confirmation/error handling and saved rewards. The real caller wins whenever
+history exists; a resumed online battle with empty history returns to Gameplay
+with clean controls/scroll. Nonbattle Back does not acquire a default destination.
+See [exit contract](free-battle.md#reliable-battle-exit-d-292).
+
+## Collections reorganization and control repairs (D-291)
+
+Collections uses a title/Information toolbar, wrapping gallery buttons,
+compact top filters and natural-height card results. Counts and management
+links no longer compete with a tall filter sidebar. Filters wrap into two
+columns on ordinary phones and one on very narrow screens, retaining44px
+selection actions. Use the page scroller rather than nested/clipped filter or
+results panes; its position participates in caller-based history.
+
+Gallery/filter hidden states override layout display rules. Reset clears all
+five backing selects and refreshes the shared selection-panel labels.
+Gallery switches preserve controls, card DOM and discovery/ownership gates.
+Combat kit, Details, Information and stage-specific loot remain functional.
+Unowned captured-form artwork uses the same silhouette as unreached human
+forms. No account, acquisition, reward or combat behavior changes.
+
+Archive cards now use flexible natural content flow, not shared subgrid rows
+whose child counts differ between humans, captured forms and Masters.
+Art stays inside11rem contain-fitted slots, including creature images and
+pending SVGs; names and loot never overlap it. Keep readable full text and
+existing entrance/reduced-motion behavior. See the
+[gallery contract and validation](archives-and-elements.md#collections-layout-and-controls-d-291).
+
 ## Play bottom clearance (D-273)
 
 Every Play activity group reserves4rem plus the device bottom safe-area inset
@@ -113,19 +145,20 @@ banners and future lineups without changing banner artwork, odds or acquisition.
 Item catalog cards share naturally sized content rows using CSS subgrid.
 Material Exchange, Cosmetic Store and Conduit Store align artwork, names,
 rarity/ownership, effects (when present) and price/count chips across each
-visual row. Inventory material/Conduit/Master grids and Conduit Collections
-use the same row-sharing approach. A longer name/count/effect expands the
+visual row. Inventory material/Conduit/Master grids
+use the same row-sharing approach; Collections uses D-291's flexible cards.
+A longer name/count/effect expands the
 shared row rather than shifting adjacent fields independently.
 Keep complete text and exact amounts: no fixed-height clipping, ellipsis,
 line clamps, smaller fonts or script-measured heights. Responsive column
 changes rebuild shared rows automatically; selected styling and actions remain.
 
-Character and Conduit Archives reserve a bounded7rem artwork row. Portrait
+Character and Conduit Archives reserve a bounded11rem artwork row under D-291. Portrait
 wrappers, ordinary Conduit frames and Master art fit that row with contain
 sizing instead of growing from intrinsic image dimensions or square aspect
 ratios. A small inset accommodates portrait idle motion; Conduit frames reserve
 space for their upgrade meter. Names and details stay outside the artwork row,
-with shared card rows preserving neighboring name alignment. Keep complete
+with natural card flow keeping names and actions readable. Keep complete
 silhouettes, facing and full text; do not resize source assets to repair layout.
 
 Evolution uses a dedicated compact desktop layout: smaller identity portrait
@@ -928,6 +961,9 @@ Conduit Store artwork stays inside its card or bounded 200px detail stage;
 the icon frame must not inherit a flex basis/aspect ratio that overlaps titles,
 rarity or effects. Upgrade detail artwork uses the same contained stage.
 Preserve source artwork and upgrade meters rather than masking overflow.
+The Required resources Broken Mechanical Components image renders at1.4x
+visual scale inside its unchanged44px layout slot. Only that image scales;
+the resource panel, balance text, cost meter and action controls keep their size.
 
 Selecting a Store item or owned upgrade target updates its detail/action panels
 without rebuilding the menu shell, header or catalog/owned list. Selection

@@ -8,7 +8,7 @@ describe('impact-synchronized health presentation', () => {
     const state = createBattle(1729, ['ember']);
     const snapshot = healthSnapshot([...state.allies, ...state.enemies]);
     const result = actAndAdvanceTurn(state, 'ember', 'light', state.enemies[0].id);
-    expect(snapshot.get(state.enemies[0].id)).toBe(110);
+    expect(snapshot.get(state.enemies[0].id)).toBe(state.enemies[0].stats.health);
     for (const event of result.events) {
       const unit = [...state.allies, ...state.enemies].find((unit) => unit.id === event.target);
       if (unit) snapshot.set(unit.id, healthAfterEvent(snapshot.get(unit.id)!, unit.stats.health, event));

@@ -3,6 +3,15 @@ import { readFileSync } from 'node:fs';
 import { MenuHistory } from './menu-history';
 
 describe('menu traversal history', () => {
+  it('wires toolbar and result exits to the same server-owning Back flow with a resume fallback', () => {
+    const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');
+    const back = main.slice(main.indexOf('async function backMenu('), main.indexOf('\ntry {', main.indexOf('async function backMenu(')));
+    expect(back).toContain("page: 'gameplay'");
+    expect(back).toContain('menuHistory.back(fallback)');
+    expect(back).toContain("await performOnline({ kind: 'quit', runId: battleSession.runId })");
+    expect(main).toContain("try { await backMenu(); }");
+    expect(main).toContain("}, backMenu, playMode === 'online' ? battleAuthority()");
+  });
   it('opens character detail on a fresh Team visit without changing Back restoration', () => {
     const main = readFileSync(new URL('../main.ts', import.meta.url), 'utf8');
     const visit = main.slice(main.indexOf('function visitMenu('), main.indexOf('async function backMenu('));
@@ -38,5 +47,13 @@ describe('menu traversal history', () => {
     history.visit({ page: 'home' }, 'squad');
     history.clear();
     expect(history.previous).toBeUndefined();
+  });
+  it('uses a battle-resume destination only when there is no actual caller', () => {
+    const history = new MenuHistory<{ page: string; stage?: number }>();
+    const fallback = { page: 'gameplay' };
+    expect(history.back(fallback)).toEqual(fallback);
+    history.visit({ page: 'story', stage: 19 }, 'battle');
+    expect(history.back(fallback)).toEqual({ page: 'story', stage: 19 });
+    expect(() => history.back()).toThrow('no previous');
   });
 });

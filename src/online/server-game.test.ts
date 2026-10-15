@@ -7,6 +7,8 @@ import { actAndAdvanceTurn } from '../game/battle';
 import { maxLevelPlan } from '../game/account';
 import { validateSaveFile } from '../game/save-file';
 import { getSummonBanner } from '../content/summon-banners';
+import { enemyCombatStats } from '../content/stat-growth';
+import { enemyAbilityMultiplier, enemySkills } from '../content/enemy-skills';
 
 let sequence = 0;
 const entropy = { seed: () => 7321, random: () => .9,
@@ -16,6 +18,75 @@ function started() { return op(freshGame('tester'), { kind: 'bootstrap', starter
 function rich() { const game = started(); game.account.fractalis = 1000000; game.account.lycalis = 1000; return game; }
 
 describe('server authoritative game engine', () => {
+  it.each(['player', 'cleared', 'defeat'] as const)('quits a %s run without changing saved rewards or progress', phase => {
+    const entered = op(started(), { kind: 'enter', activity: { kind: 'training' } }).game;
+    entered.run!.session.state.phase = phase;
+    const account = structuredClone(entered.account);
+    const runId = entered.run!.session.runId;
+    const exited = op(entered, { kind: 'quit', runId });
+    expect(exited.game.run).toBeNull();
+    expect(exited.response.session).toBeNull();
+    expect(exited.game.account).toEqual(account);
+    expect(validateGameResponse(exited.response)).toEqual(exited.response);
+    expect(entered.run!.session.runId).toBe(runId);
+  });
+  it.each([1, 25, 50, 75, 100])('atomically guarantees current component quantities on authoritative Machine stage %s kills', stage => {
+    const game = started();
+    game.account.storyCompleted = 25;
+    game.account.characters.ember = { level: 105, evolution: 6 };
+    game.account.infusionStages = { machines: 100 };
+    const entered = op(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage } }).game;
+    const state = entered.run!.session.state;
+    state.allies[0].shatter = 100;
+    state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
+    const result = op(entered, { kind: 'act', runId: entered.run!.session.runId,
+      actorId: 'ember', action: 'skill2', targetId: state.enemies[0].id });
+    const quantity = Math.round(3 + 122 * (stage - 1) / 99) * (stage === 100 ? 5 : 1);
+    const rewards = result.response.result!.events.filter(event => event.kind === 'reward');
+    expect(rewards).toHaveLength(state.enemies.length);
+    for (const reward of rewards) expect(reward.mechanicalComponents).toBe(quantity);
+    expect(result.game.account.mechanicalComponents).toBe(quantity * state.enemies.length);
+    expect(validateGameResponse(result.response)).toEqual(result.response);
+    expect(entered.account.mechanicalComponents ?? 0).toBe(0);
+  });
+  it('uses shared hostile stats and skill power through authoritative activity entries', () => {
+    const game = started();
+    game.account.characters.ember = { level: 105, evolution: 6 };
+    game.account.storyCompleted = 150;
+    game.account.dungeonStages = { infernic: 35 };
+    game.account.infusionStages = { heavens: 35 };
+    for (const activity of [
+      { kind: 'training' },
+      { kind: 'story', stage: 149 },
+      { kind: 'story', stage: 150 },
+      { kind: 'dungeon', element: 'infernic', stage: 8 },
+      { kind: 'infusion', mode: 'heavens', stage: 5 },
+    ] as const) {
+      const result = op(game, { kind: 'enter', activity });
+      for (const enemy of result.game.run!.session.state.enemies) {
+        expect(enemy.stats).toEqual(enemyCombatStats(enemy.level!, enemy.boss ?? false));
+        const skills = enemySkills(enemy.level!, enemy.boss ?? false, enemy.enemySkills![0].name, enemyAbilityMultiplier(enemy.level!));
+        expect(enemy.enemySkills).toEqual(skills);
+      }
+      expect(validateGameResponse(result.response)).toEqual(result.response);
+    }
+  });
+  it('preserves older active encounter snapshots on read and refreshes stats only on new entry', () => {
+    const entered = op(started(), { kind: 'enter', activity: { kind: 'story', stage: 1 } }).game;
+    const enemy = entered.run!.session.state.enemies[0];
+    enemy.stats.health += 17;
+    enemy.hp += 17;
+    enemy.stats.damage += 9;
+    enemy.enemySkills![0].multiplier += .3;
+    const original = structuredClone(entered);
+    const read = op(entered, { kind: 'read' });
+    expect(read.game).toEqual(original);
+    expect(read.response.session!.state.enemies[0]).toEqual(enemy);
+    const exited = op(read.game, { kind: 'quit', runId: entered.run!.session.runId }).game;
+    const fresh = op(exited, { kind: 'enter', activity: { kind: 'story', stage: 1 } });
+    expect(fresh.game.run!.session.state.enemies[0].stats).toEqual(enemyCombatStats(1, false));
+    expect(entered).toEqual(original);
+  });
   it.each(['standard', 'roses'] as const)('commits and validates %s material draws and Rare duplicate conversions', bannerId => {
     const game = rich();
     const result = op(game, { kind: 'summon', bannerId });

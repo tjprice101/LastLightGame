@@ -252,7 +252,9 @@ describe('machine rewards and atomic saves', () => {
     expect(markup).toContain('<dd>100 stages</dd>');
     expect(markup).toContain('<dd>10-120</dd>');
     expect(markup).toContain('Omnic 1% from stage 75');
-    expect(markup).toContain('100% chance of 100 at stage 100');
+    expect(markup).toContain('Every defeated machine guarantees Broken Mechanical Components: 3 per enemy at stage 1');
+    expect(markup).toContain('rising linearly by stage to a base 125 at stage 100');
+    expect(markup).toContain('The final boss awards 5x that quantity (625)');
     expect(markup).toContain('value="100" selected');
     expect(validateAccount({ ...loadAccount(saved), infusionStages: { machines: 100 } }).infusionStages.machines).toBe(100);
     expect(() => validateAccount({ ...loadAccount(saved), infusionStages: { machines: 101 } })).toThrow('stage');

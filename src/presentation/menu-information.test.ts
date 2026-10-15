@@ -24,8 +24,8 @@ describe('shared menu information', () => {
     expect(html.match(/data-information="gameplay-information"/g)).toHaveLength(1);
     expect(html).toContain('data-information="story-prologue-information"');
     expect(html).toContain('data-information="gameplay-information"');
-    expect(html).toContain('50% of 1 at Lv.65 to 80% of 5 at Lv.120');
-    expect(html).toContain('133-266 at Lv.65) and multiplies up to 20x by Lv.120 (4,860-9,720)');
+    expect(html).toContain('50% of 1 at Lv.65 to a final-boss 80% of 25');
+    expect(html).toContain('stage 25 final boss awards 24,300-48,600');
     expect(html).toContain('Continue is manual.');
     expect(html.match(/<details/g)).toHaveLength(1);
     expect(html).toContain('<details class="story-prologue">');

@@ -15,7 +15,7 @@ function authorityView(authority: BattleAuthority) {
 }
 
 function transport(action: BattleAuthority['action']): BattleAuthority {
-  return { action, endTurn: vi.fn(), nextStage: vi.fn(), nextWave: vi.fn(), retry: vi.fn(), quit: vi.fn() };
+  return { action, endTurn: vi.fn(), nextStage: vi.fn(), nextWave: vi.fn(), retry: vi.fn() };
 }
 
 describe('server-authoritative battle presentation', () => {

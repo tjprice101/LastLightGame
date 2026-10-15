@@ -29,6 +29,35 @@ and artifact deployment on pushes to `main` or manual dispatch.
 Repository Settings -> Pages -> Source must be **GitHub Actions**.
 The workflow environment is `github-pages`; the repository must permit Actions.
 
+### Online account configuration
+
+Vite embeds online account settings at build time. The ignored `.env.local`
+configures this computer only; GitHub Actions cannot read it.
+
+For local development, copy `.env.example` to `.env.local` and fill in the
+existing project's URL and **publishable** client key. Restart Vite after changes.
+Never use a Supabase service-role or secret key in any `VITE_` setting.
+
+For GitHub Pages, set these repository Actions variables under
+Settings -> Secrets and variables -> Actions -> Variables:
+
+- `VITE_SUPABASE_URL`: the existing project's HTTPS Supabase URL.
+- `VITE_SUPABASE_PUBLISHABLE_KEY`: its `sb_publishable_` client key.
+
+The deployment build accepts repository Actions secrets with the same names
+instead; a variable takes precedence if both exist. Use the same configuration
+as the working local build, without committing `.env.local` or keys.
+These settings belong to the **build** job, not only the `github-pages`
+deployment environment. Missing/invalid configuration stops the build before
+artifact upload, keeping the previous deployment intact.
+
+After setting or changing either value, run the deployment workflow again
+against the updated workflow on `main`, then reload the published game.
+Changing variables alone does not update an already-published JavaScript bundle.
+Check that Play online opens without the configuration error, then sign in
+with an existing account to verify authentication. No account reset, new
+Supabase project or save deletion is required.
+
 [Vite configuration](../vite.config.ts) sets `/LastLightGame/` as the base.
 Change it if renaming the repository or deploying at another URL root.
 Avoid absolute asset paths that bypass this base. Screens use in-page state, not
@@ -51,6 +80,10 @@ Do not commit `dist` or `node_modules`; CI uses the committed lockfile.
 - Windows `npm ci` reports an esbuild file lock: stop this project's dev/preview
   server before restoring dependencies; do not terminate other projects' processes.
 - Old deployed build: inspect Actions and Pages deployment status; refresh after success.
+- "Online accounts are not configured for this deployment": the bundle was
+  built without valid online account settings. Follow
+  [online account configuration](#online-account-configuration) and rebuild;
+  this is not a bad password or lost save.
 - Large bundle warning: Phaser currently accounts for most of the approximately
   1.2 MB uncompressed bundle. Do not suppress the warning as a performance fix.
   Profile load/frames on target devices before expanding runtime assets.

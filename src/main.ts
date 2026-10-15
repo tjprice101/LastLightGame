@@ -270,7 +270,6 @@ function battleAuthority(): BattleAuthority {
     nextStage: () => authorityReply({ kind: 'continue', runId: runId() }),
     nextWave: () => authorityReply({ kind: 'continue', runId: runId() }),
     retry: () => authorityReply({ kind: 'retry', runId: runId() }),
-    quit: () => performOnline({ kind: 'quit', runId: runId() }),
   };
 }
 
@@ -361,8 +360,12 @@ function visitMenu(page: MenuPage): void {
 async function backMenu(): Promise<void> {
   if (activityTransitionPending()) return;
   await transitionActivity(async () => {
+    const fallback: MenuSnapshot | undefined = menuPage === 'battle' ? {
+      ...menuSnapshot(), page: 'gameplay', hash: '', gallery: undefined,
+      activities: [], controls: [], panels: [], scroll: 0,
+    } : undefined;
     if (menuPage === 'battle' && playMode === 'online' && battleSession) await performOnline({ kind: 'quit', runId: battleSession.runId });
-    const previous = menuHistory.back();
+    const previous = menuHistory.back(fallback);
     battleSession = null;
     menuPage = previous.page;
     characterTab = previous.characterTab;

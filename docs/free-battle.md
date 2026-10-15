@@ -1,5 +1,45 @@
 # Training (formerly Adventure)
 
+## Repeatable final-boss loot (D-294)
+
+Owner approves **5x existing currency, material and component quantities** on
+every terminal-boss kill, including replays. Story applies this separately to
+each region's boss at25/50/75/100/125/150. Other endpoints are dungeon35,
+Heaven/Abyss35, Treasury/Sanctuary25, Roses35, Machines100 and each War mode10.
+Endless Training has no terminal boss and remains unchanged.
+
+The original quantity is sampled first, then multiplied by5. This preserves
+the original chance decisions, quantity distribution and number/order of RNG
+draws; boosted ranges contain multiples of5 rather than every integer.
+Earlier bosses/ordinary enemies retain their existing quantities.
+No new clear transaction, retroactive grant or second reward roll.
+Account validation uses the same terminal ranges and quantity lattice;
+all currencies/items/discovery/receipts/unlocks still commit once before VFX.
+Rejected/overflow/denied persistence leaves the complete stored wallet intact.
+
+Examples:
+
+| Final encounter | Payout |
+| --- | --- |
+| Material dungeon35 |75-150 Prismatica;15-30 per successful material roll |
+| Heaven/Abyss35 |75-150 Prismatica;15-30 specialty/bonus stacks; premium0/5/10/15 at75/10/10/5% |
+| Treasury25 |24,300-48,600 Prismatica |
+| Sanctuary25 |75-150 Prismatica;80% chance of25 Null-Prismatica |
+| Roses35 |90-180 Prismatica;15-30 per successful Rosethorn roll |
+| Machines100 |75-150 Prismatica; guaranteed625 Broken Mechanical Components |
+| War10 |25,000-40,000 Prismatica;60% chance of25 Null-Prismatica |
+
+Conduit/chest counts remain one per successful roll. Their chances, capture
+chances/counts, War recruitment1%, owned-recruit conversion100 Null-Prismatica
+and separate one-time Story regional bonuses are unchanged. Live Collections
+loot tables, Gameplay Information and Battle menu explain the same rule.
+
+Shared implementation: [classifier/range helper](../src/content/final-boss-loot.ts),
+[reward engine](../src/game/battle.ts), [atomic validator](../src/game/account.ts).
+Validate with `npm test -- src\game\final-boss-loot.test.ts --maxWorkers=2`;
+hosted smoke is `node tools\smoke_server_game.mjs --final-loot`, using only
+disposable identities and near-defeated final-boss fixtures.
+
 **D-164:** the existing endless engine described below is now presented as
 Training, with stable legacy IDs and unchanged wave/loot/Continue rules.
 Home's campaign is the separate [150-stage Story map](story-and-training.md),
@@ -24,6 +64,43 @@ force next-turn recovery, superseding the earlier heavy-attack recovery rule.
 This is not production balance or a rewarded story mode.
 
 ## Entering and leaving
+
+### Larger death loot and Machine Conduit beams (D-293)
+
+All enemy-death drops render at1.5 times their previous randomized size:
+currency, materials, components, chests/pending tokens, Conduits, recruitments
+and captured creatures. Nominal artwork is54px rather than36px, retaining
+independent75%-135% variation (40.5px through just under72.9px).
+The whole stack, beam, quantity and snapshotted upgrade marker scale together.
+Results/menu artwork and source PNG bytes are unchanged.
+
+Each awarded Machine Conduit remains a separate actual-receipt loot stack,
+with supplied icon, exact quantity, rarity/palette beam and a bright core/base
+glare. It accompanies the defeated enemy's ordinary rewards before automatic
+visual collection. Conduit artwork is never replaced by another device.
+Wrap larger stacks into spaced rows and clamp the burst around the defeated
+enemy to viewport bounds; reserve room for beams and quantity labels.
+
+Keep850-1849ms independent pickup times, live1x/2x/3x speed, reduced-motion
+static receipts, death fade and disposal cleanup. No extra roll, claim or
+save: animation only presents already-resolved rewards. Drop chances,
+quantities, RNG streams and acquisition rules do not change.
+
+### Reliable battle exit (D-292)
+
+Results Quit and toolbar Leave use the same caller-navigation exit flow.
+That flow alone confirms the online `quit` operation before returning; the
+results view must not separately delete the run first. Failed/ambiguous server
+operations remain visible and retryable with the same pending request.
+Saved kill rewards are retained and no new rewards are written during exit.
+
+Normal entries return to their actual caller with its existing selections and
+scroll. Online runs resumed after reconnect/reload have no in-memory caller;
+their exit returns to Gameplay with clean transient controls instead of failing
+on empty history. This fallback is battle-only: ordinary menu Back still
+requires history. Cleared, defeated and unfinished runs all support exit.
+An already-confirmed quit retry can finish navigation without looking for the
+now-deleted session. Settings Return to title retains its own confirmation.
 
 ### Battle animation speed
 
@@ -322,10 +399,11 @@ the character's one action.
 
 ## Stats and formulas
 
-Adventure enemies retain the wave1 values below. Later levels use shared
-accelerating curves reaching7,000 HP/1,200 Attack/400 Defense at Lv120 (D-288),
-without a sudden endgame spike. Species-specific openings converge on those
-shared endpoints. Enemy levels plateau120 while waves continue. Characters follow linear core growth
+Training enemies use identical wave1 values below. Later levels use shared
+accelerating curves reaching9,000 HP/1,200 Attack/400 Defense at Lv120 (D-289),
+with extra exponential acceleration above25, without a sudden endgame spike.
+Species retain identity, not different stats; equal-level/rank hostiles are
+consistent across activities. Enemy levels plateau120 while waves continue. Characters follow linear core growth
 and separate bounded potency; see [progression](units-and-progression.md).
 Seen creatures save at encounter entry; first kill unlocks the Home glossary's
 drop pool. Discoveries and rewards commit together before death presentation.
@@ -338,9 +416,9 @@ drop pool. Discoveries and rewards commit together before death presentation.
 
 | Enemy (wave 1) | HP | Defense | Damage | Critical chance |
 | --- | --- | --- | --- | --- |
-| Goblin | 110 | 5 | 23 | 10% |
-| Imp | 90 | 3 | 28 | 15% |
-| Rock Golem | 160 | 15 | 20 | 5% |
+| Goblin | 83 | 4 | 22 | 12% |
+| Imp | 83 | 4 | 22 | 12% |
+| Rock Golem | 83 | 4 | 22 | 12% |
 
 Damage (D-165): `max(1, round(baseDamage * multiplier * criticalModifier /
 (1 + defense / baseDamage)))`; zero base Attack resolves to the one-damage floor.
@@ -470,7 +548,7 @@ impact/HP updates occur only after cut-in and windup. No extra attacks/reward ro
 Every real enemy has exactly one skill belowLv50, two atLv50+, including Adventure.
 Adventure primary skills are Wildwood Ambush/Cinder Mischief/Faultline Crush,
 multiplier`1.2+(level-1)*.004`, every3 turns. Dungeon/infusion primary skills
-retain authored names and stage coefficients, every3 ordinary turns/every2 boss
+retain authored names but use the same level coefficient, every3 ordinary turns/every2 boss
 turns. FromLv50, ordinary secondary **Overdrive** is1.25x primary damage every5
 turns; boss secondary **Last Ruin** is an ultimate,
 `max(2.6, primary*1.65)`, every6 turns. BelowLv50 bosses have one non-ultimate

@@ -95,14 +95,14 @@ describe('Elemental War', () => {
 
   it('enforces exact currency ranges, independent premium and final-only1% boundaries', () => {
     expect(warLoot(1)).toMatchObject({ fractalis: { minimum: 1500, maximum: 2500 }, lycalis: { chance: .3, quantity: 1 } });
-    expect(warLoot(10)).toMatchObject({ fractalis: { minimum: 5000, maximum: 8000 }, lycalis: { chance: .6, quantity: 5 } });
+    expect(warLoot(10)).toMatchObject({ fractalis: { minimum: 25000, maximum: 40000 }, lycalis: { chance: .6, quantity: 25 } });
     const recruitment = vi.fn(() => 0);
     for (let stage = 1; stage < 10; stage++) {
       expect(rollWarRewards(stage, () => 0, () => .99, recruitment).recruitment).toBe(false);
     }
     expect(recruitment).not.toHaveBeenCalled();
-    expect(rollWarRewards(10, () => 0, () => .6, () => .009999)).toEqual({ amount: 5000, lycalis: 0, recruitment: true });
-    expect(rollWarRewards(10, () => .999999, () => .599999, () => .01)).toEqual({ amount: 8000, lycalis: 5, recruitment: false });
+    expect(rollWarRewards(10, () => 0, () => .6, () => .009999)).toEqual({ amount: 25000, lycalis: 0, recruitment: true });
+    expect(rollWarRewards(10, () => .999999, () => .599999, () => .01)).toEqual({ amount: 40000, lycalis: 25, recruitment: false });
     for (const invalid of [-1, 1, NaN, Infinity]) expect(() => rollWarRewards(10, () => invalid, () => 0, () => 0)).toThrow();
     const source = createWarBattle('vaelor', 10, 20, 'ember', { level: 105, evolution: 6 });
     source.enemies[0].hp = 1;

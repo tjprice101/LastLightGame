@@ -14,7 +14,7 @@ describe('Information topic menus', () => {
     const list = dialog.querySelector<HTMLElement>('.information-topic-list')!;
     const panels = () => Array.from(dialog.querySelectorAll<HTMLElement>('[data-info-panel]'));
     const topics = Array.from(list.querySelectorAll<HTMLButtonElement>('[data-info-topic]')).map(button => button.dataset.infoTopic);
-    expect(topics).toEqual(['origins', 'start', 'story', 'training', 'dungeons', 'infusion', 'currency', 'roses', 'machines', 'war', 'continuing']);
+    expect(topics).toEqual(['final-loot', 'origins', 'start', 'story', 'training', 'dungeons', 'infusion', 'currency', 'roses', 'machines', 'war', 'continuing']);
     host.querySelector<HTMLButtonElement>('[data-information="gameplay-information"]')!.click();
     expect(list.hidden).toBe(false);
     expect(panels().every(panel => panel.hidden)).toBe(true);

@@ -25,17 +25,26 @@ for export provenance and regeneration.
 
 ## Implemented editable first-pass balance
 
+Saved Conduit upgrade/acquisition dialogs use compact artwork capped at120px
+and16% of viewport height, rather than the shared400px portrait stage.
+Compact receipt spacing keeps the name, rarity, upgrade/owned counts, effect,
+actual spending and equipment note together. Long receipts retain scrolling;
+Continue remains outside the scroll area. Other Conduit surfaces and summon
+portrait sizing are unchanged.
+
 Exact drop odds, quantities and costs below are developer tuning under the
 existing delegated balance direction, not additional owner-authored numbers.
 
-- Only defeated **Awaken the Machines** enemies roll components, every stage
-  and form. Ordinary enemies and bosses use identical odds.
-- D-139 expands the mode to100 stages. Stage1:25% chance of1;
-  stage100:100% chance of100.
-- With `t = (stage - 1) / 99`, chance is `.25 + .75*t`;
-  quantity on success is `round(1 + 99*t*t)`. Quantity grows quadratically,
-  while chance grows linearly. No separate quantity roll.
-- Each kill makes one independent component roll using `componentSeed`.
+- D-290: every defeated **Awaken the Machines** enemy guarantees components,
+  every stage and form. D-294 gives the final boss5x quantities.
+- Stage1 gives3 per enemy; stage100's base125 becomes a guaranteed625.
+  This supersedes D-139's chance-based/quadratic drop curve and D-290's final
+  payout only. Earlier bosses keep the ordinary stage quantity.
+- With `t = (stage - 1) / 99`, quantity is `round(3 + 122*t)`.
+  Base quantity grows linearly with whole-unit rounding; chance is always100%.
+  Multiply by5 only at stage100; no extra RNG call or clear grant.
+- Each kill retains one independent component RNG draw using `componentSeed`
+  for stream compatibility; its value cannot change the guaranteed quantity.
   Combat, Conduit, Prismatica, material, capture and Null-Prismatica RNG are unchanged.
 - No components from other activities, banners, clears, stores, sales or
   retroactive grants. Components are a currency, not evolution materials.
@@ -53,8 +62,8 @@ Owner requires rarity scaling and extremely expensive Omnic max upgrades
 (D-139); these exact1x/2x/4x/200x multipliers are editable
 developer tuning. They multiply the existing five-step Common cost curve.
 Common/Rare/Legendary costs are unchanged. One Omnic name costs120000 total;
-its final step alone costs50000. At stage100's guaranteed100 per enemy,
-funding all five steps from zero takes1200 kills, before spending elsewhere.
+its final step alone costs50000. At stage100's guaranteed625 per enemy,
+funding all five steps from zero takes192 kills, before spending elsewhere.
 This is a long-term late-stage farm rather than a quick upgrade.
 Already-saved levels stay intact: no retroactive charge, refund or load write.
 The shared rarity-aware cost resolver controls affordability, displayed cost,
@@ -65,15 +74,15 @@ confirmation, saved-success text and transaction spending.
 Creature loot tables use the same drop API, revealed only after defeating that
 creature at a valid stage.
 
-| Machine stage | Chance | BMC per successful drop |
+| Machine stage | Chance | BMC per defeated enemy |
 | --- | --- | --- |
-|1 |25% |1 |
-|25 |43.18% |7 |
-|50 |62.12% |25 |
-|75 |81.06% |56 |
-|100 |100% |100 |
+|1 |100% |3 |
+|25 |100% |33 |
+|50 |100% |63 |
+|75 |100% |94 |
+|100 |100% |625 (base125 times5) |
 
-Chance examples round for this table only; runtime uses the exact formula.
+Quantities use the same whole-unit rounding as the runtime formula.
 Owner confirms Lv.10-120 spread across100 stages and Omnic drops from75.
 Existing saved unlock numbers stay unchanged, not rescaled; newly entered
 encounters use the longer level/form curve. Saved ownership/discovery IDs and

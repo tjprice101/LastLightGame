@@ -1,5 +1,26 @@
 # Authoritative game operation
 
+## Repeatable final-boss quantities (D-294)
+
+The generated engine and deployed function include the shared5x terminal
+currency/material/component quantity rule. Six Story regional bosses and all
+other staged activity endpoints participate on every clear/replay; Training
+and earlier bosses do not. Preserve sampled quantities/RNG, rare chances and
+counts, separate first-clear bonuses and100 Null-Prismatica recruitment
+conversions. Machine final BMC is625 (base125 times5), superseding D-290's
+terminal payout only. No database migration or retroactive grants.
+
+Validation: `node tools\bundle_server_game.mjs`, server TypeScript and
+`npx --yes deno check supabase\functions\game-operation\index.ts`, then
+`npx supabase functions deploy game-operation --project-ref
+ohtfgwomdfteaxubndww --no-verify-jwt`.
+`node tools\smoke_server_game.mjs --final-loot` passed all21 endpoints against
+the deployed function, checking exact client/server rewards, separately
+decorated Story first bonuses, atomic account persistence, unchanged rare
+counts and request idempotency. All disposable accounts were removed.
+`node tools\smoke_server_game.mjs --components` also passed real stage1/100
+kills with exact3/625 components, atomic totals and idempotent retries.
+
 ## Friend chats (D-260)
 
 Authenticated `chatOperation(operation, requestId)` sends `{requestId, chat}`
@@ -45,11 +66,13 @@ Validate timeout/abort and identical-envelope retries with
 `npx vitest run src\online\server-game-transport.test.ts --maxWorkers=2`.
 
 Battle entry snapshots squad, progress, captures, equipment and upgrades.
-D-288 uses shared linear playable growth and smoothly accelerating hostile
-curves, including captured creatures. The regenerated engine bundle must be
+D-288 uses shared linear playable growth, including captured creatures.
+D-289 strengthens hostile growth and unifies full stats and level-based skill
+power across all activities at equal level/rank, with no Story discount.
+The regenerated engine bundle must be
 deployed alongside the client to keep online/menu stats consistent. No database
 migration or account rewrite is needed; this source change does not deploy it.
-Existing encounter snapshots remain unchanged on read. Rebuilt staged
+Existing encounter snapshots and historical captured skills remain unchanged on read. Rebuilt staged
 encounters/Retry use current curves with frozen progression/equipment.
 `act`/`endTurn` return actual `result` events plus the committed session. Await this
 response before animation; never compute or submit a client outcome. `continue`,
@@ -57,12 +80,32 @@ response before animation; never compute or submit a client outcome. `continue`,
 requires defeat and replaces runId. Quit disposes the run without undoing rewards.
 Reload/read resumes the saved run. Settings is purely client presentation.
 
+D-292 client exit repair: results Quit delegates to toolbar Leave's shared
+Back flow, which owns the one server quit. Resumed runs have no transient
+caller history and return to Gameplay; normal entries retain the real caller.
+Pending quit retries confirm the original response before navigating without
+requiring the deleted session. No server contract/deployment or save migration
+is required for this client repair.
+
 D-192 entry locks use highest-level owned Element-Bearer, not squad/captured
 levels. New Heaven/Abyss runs use the cap-aligned50-120 schedule; existing
 marker-free runs retain legacy floor levels/loot. Continue/Retry preserves the
 frozen team and does not reapply new entry locks. Regenerate the bundle when
 changing these shared rules. Hosted smoke verifies fresh-account first-stage
 locks and the stronger opening Story enemy without funding test accounts.
+`node tools\smoke_server_game.mjs --balance` uses a separate disposable,
+zero-currency progression fixture to verify actual hosted Lv60 Training/Heaven
+ordinary parity, material boss stats, shared skill coefficients and unchanged
+read snapshots. It never edits owner accounts and cleans its identity afterward.
+D-289's bundle has been deployed and both hosted smoke commands passed;
+existing encounters remain frozen until rebuilt or quit/re-entered.
+
+D-290 guarantees per-kill Machine components,3 at stage1 through125 at stage100,
+with rounded linear interpolation and exact atomic reward validation.
+The updated bundle is deployed. `node tools\smoke_server_game.mjs --components`
+passed hosted stage1 kills and a disposable near-defeated final-boss fixture,
+checking exact3/125 quantities, account totals and idempotent reward retries.
+The identity is cleaned afterward; no owner accounts or starting currency grants.
 
 Only the Edge Function service role can call aggregate load/commit RPCs.
 Authentication is verified through Auth.getUser. SQL serializes writes with
@@ -71,6 +114,11 @@ one transaction. Rate limit is120 requests/minute/user, including retries.
 Seeds, summons and capture identifiers originate on the server.
 
 Validation and deployment:
+
+For a shared balance-only change, no database migration is required. Regenerate
+the bundle, run TypeScript/Deno checks and combat/online regressions, then deploy
+the function and run hosted smoke. The SQL commands below are for schema changes,
+not prerequisites to redeploy unchanged schemas.
 
 ```powershell
 npx vitest run src\online\server-game.test.ts --maxWorkers=2

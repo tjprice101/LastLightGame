@@ -27,13 +27,15 @@ export function sanctuaryLycalisOdds(level: number) {
   return [{ amount: 0, chance: 1 - chance }, { amount: Math.round(1 + 4 * growth), chance }];
 }
 
-export function stagedLycalisOdds(mode: InfusionModeId, level: number) {
+export function stagedLycalisOdds(mode: InfusionModeId, level: number, stage?: number) {
   if (mode === 'treasury' || mode === 'roses' || mode === 'machines') throw new Error('This mode does not award Null-Prismatica drops.');
-  return mode === 'sanctuary' ? sanctuaryLycalisOdds(level) : infusionLycalisOdds(level);
+  const multiplier = stage === undefined ? 1 : bossLootMultiplier({ infusion: { mode, stage } });
+  return (mode === 'sanctuary' ? sanctuaryLycalisOdds(level) : infusionLycalisOdds(level))
+    .map(outcome => ({ ...outcome, amount: outcome.amount * multiplier }));
 }
 
-export function rollStagedLycalis(mode: InfusionModeId, level: number, random: () => number): number {
-  return rollLycalisOdds(stagedLycalisOdds(mode, level), random);
+export function rollStagedLycalis(mode: InfusionModeId, level: number, random: () => number, stage?: number): number {
+  return rollLycalisOdds(stagedLycalisOdds(mode, level, stage), random);
 }
 
 function rollLycalisOdds(odds: readonly { amount: number; chance: number }[], random: () => number): number {
@@ -55,6 +57,7 @@ export interface ScaledDrop {
   minimum: number;
   maximum: number;
   chance: number;
+  quantityMultiplier?: number;
 }
 
 export function scaledDrop(level: number, startingLevel: number, unlockLevel: number,
@@ -75,11 +78,13 @@ export function scaledDrop(level: number, startingLevel: number, unlockLevel: nu
 }
 
 export function rollDrop(drop: ScaledDrop, random: () => number): number | undefined {
+  const multiplier = drop.quantityMultiplier ?? 1;
   if (!Number.isSafeInteger(drop.minimum) || !Number.isSafeInteger(drop.maximum) ||
+      !Number.isSafeInteger(multiplier) || multiplier < 1 || drop.minimum % multiplier !== 0 || drop.maximum % multiplier !== 0 ||
       drop.minimum < 1 || drop.maximum < drop.minimum || !Number.isFinite(drop.chance) ||
       drop.chance <= 0 || drop.chance > 1) throw new Error('Invalid loot drop range or chance.');
   if (drop.chance < 1 && lootRoll(random) >= drop.chance) return undefined;
-  return drop.minimum + Math.floor(lootRoll(random) * (drop.maximum - drop.minimum + 1));
+  return (drop.minimum / multiplier + Math.floor(lootRoll(random) * ((drop.maximum - drop.minimum) / multiplier + 1))) * multiplier;
 }
 
 export function fractalisDrop(level: number, maximumLevel = 120): ScaledDrop {
@@ -112,7 +117,7 @@ export function treasuryFractalisDrop(level: number): ScaledDrop {
   return { minimum, maximum: minimum * 2, chance: 1 };
 }
 import { type InfusionModeId } from './activities';
+import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 
 const range = (drop: ScaledDrop) => `${drop.minimum.toLocaleString('en-US')}-${drop.maximum.toLocaleString('en-US')}`;
-/** Player-facing Treasury payout rule, generated from the live formulas. */
-export const treasuryPrismaticaText = `Guaranteed per-kill Prismatica starts at the Story line for the same enemy level (${range(treasuryFractalisDrop(65))} at Lv.65) and multiplies up to ${treasuryPrismaticaBoost.finalMultiplier}x by Lv.120 (${range(treasuryFractalisDrop(120))}); the multiplier grows faster each stage.`;
+export const treasuryPrismaticaText = `Guaranteed per-kill Prismatica starts at ${range(treasuryFractalisDrop(65))} at Lv.65 and multiplies up to a base ${range(treasuryFractalisDrop(120))} at Lv.120. The stage 25 final boss awards ${range(bossLootRange(treasuryFractalisDrop(120), 5))} on every clear. Earlier stages keep their existing curve.`;

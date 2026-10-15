@@ -9,8 +9,8 @@ export class MenuHistory<T extends { page: string }> {
     if (current.page !== destination && current.page !== 'battle') this.entries.push(current);
   }
 
-  back(): T {
-    const previous = this.entries.pop();
+  back(fallback?: T): T {
+    const previous = this.entries.pop() ?? fallback;
     if (!previous) throw new Error('There is no previous menu.');
     return previous;
   }

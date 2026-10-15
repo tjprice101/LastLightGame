@@ -1,9 +1,89 @@
 # Archives and enemy elements
 
+## Shared enemy artwork containment (D-296)
+
+Owner reports late Machine silhouettes overlapping card names/descriptions.
+The current Collections path already has the D-291 bounded artwork row;
+containment now lives in shared glossary styles too, rather than depending
+on the surrounding Archives class. Artwork uses a fixed-height row with
+zero-minimum grid tracks and100% contain-fitted image/SVG dimensions.
+The base glossary slot remains220px; Collections retains11rem.
+Its overflow boundary prevents art from painting over later labels, without
+cropping the contained source silhouette or changing any PNG/facing/discovery.
+
+Native Chrome measures all151 enemy cards on both Collections and standalone
+glossary surfaces at1280/953/390/320px: image/SVG bounds must remain inside
+the art slot and above the name; no horizontal page overflow. Includes
+undiscovered late Machine forms and seen/defeated entries. The owner's exact
+overlap was not reproduced in the pre-change current Collections layout;
+refresh an older client to receive current styles.
+
+## Enemy loot and Conduit details dialogs (D-295)
+
+Every enemy card has **View Loot** below identity/lore/artwork status. Loot is
+no longer expanded inside the gallery card. Undiscovered or merely encountered
+enemies retain a disabled button and explicit defeat-to-reveal message; only
+defeated entries can open their exact loot table. No discovery/ownership grants.
+
+View Loot opens a styled native Information dialog containing the existing
+stage/Training-level selector, real item artwork, quantities, percentages,
+one-time-bonus annotations and applicable captured-copy sale values.
+Stage changes use the same runtime `creatureLoot` tables, including final5x
+quantities, independent premium outcomes and Machine Omnic stage gates.
+Repeated drop/tier-roll explanations appear once per distinct rule after
+the table, not beneath every Conduit name. Amount/rate columns remain readable
+at320px; only the intentional dialog contains scrolling.
+
+Every Conduit row has **View Details**. It opens that Conduit's shared reference
+inside a second native dialog: artwork/rarity, saved-upgrade current effect,
+maximum +5 effect, lore, power and acquisition/banner eligibility.
+The Conduit Archive uses the same content, retaining unowned-art silhouettes.
+Details close/Escape returns focus to its loot button without closing the loot
+dialog, resetting the selected stage or losing the list's scroll. Closing loot
+returns focus to the enemy's View Loot button. Browsing never writes accounts.
+
+Validation: `npm test -- src\presentation\creature-loot-dialog.test.ts
+src\presentation\archives-controls.test.ts src\presentation\archives.test.ts
+src\content\creatures.test.ts src\presentation\information-topics.test.ts
+src\presentation\conduit-upgrade.test.ts src\presentation\ui-copy.test.ts
+--maxWorkers=2`. The new catalog-wide tests cover discovery gates, every
+enemy's first/last stage, all Conduit buttons, unique dialog IDs, dynamic
+rebinding, nested Escape and unchanged accounts. Native Chrome at1280/390/320px
+checks geometry, actual nested modals and browser focus restoration.
+
+## Collections layout and controls (D-291)
+
+Collections has one title/Information toolbar, three gallery choices and a
+natural-height results area. Character filters sit above the cards in a compact
+wrapping grid: one desktop row, two columns on ordinary phones and one column
+when space is too narrow. Counts and the management shortcut sit between
+filters and results. Keep44px controls, complete labels and page scrolling;
+there are no separately scrolling filter or card panes.
+
+Exactly one gallery is visible. Filtered character and activity cards stay
+truly hidden despite later layout styles. All five character filters combine;
+Reset restores both backing select values and visible selection-panel labels.
+Switching galleries preserves controls and artwork DOM. The Collections page
+scroller participates in the existing caller-history scroll snapshots without
+wallet writes.
+
+Character, Conduit and creature art use bounded11rem contain-fitted rows.
+Creature images and pending-art SVGs cannot overflow into names or loot.
+Cards use natural content flow rather than sharing incompatible subgrid rows;
+names, effects, exact stats and Details remain readable and reachable.
+Unowned captured portraits share the unreached-form silhouette treatment.
+Information, Combat kit, Details, activity selection and stage loot retain
+their existing dialogs, discovery gates and source tables.
+
+Validation: archive catalog/DOM controls, selection-panel and menu-history
+tests; actual Chrome at1858/1280/390/320px for visible galleries, selection
+choices, Reset, stage loot, art containment, last-card reachability and no
+horizontal overflow. Wait for the existing entrance animations to finish when
+capturing screenshots; their temporary opacity is not a locked-card style.
+
 ## Implemented Phases4/6
 
-Home's **Archives** shortcut opens one submenu containing three gallery choices,
-each with its own banner header:
+Home's **Archives** shortcut opens one submenu containing three gallery choices:
 
 - **Character Archive:** all16 authored Element-Bearers with separate cards for
   every evolution (96 forms), plus30 fixed Heaven/Abyss/Treasury/Sanctuary/Roselius
@@ -19,8 +99,8 @@ each with its own banner header:
   Gallery switching preserves filters. Unavailable saves keep all portraits
   locked without falsely classifying characters as unowned. Browsing never
   grants ownership.
-  Portrait areas scale as full-width squares rather than fixed240px boxes,
-  letting wide cards display larger evolution art while retaining the complete
+  Portrait areas use full-width bounded11rem rows,
+  retaining the complete
   supplied silhouette, weapons, effects and transparent padding.
   Captured forms reveal only when at least one instance of that exact form is
   owned; Creature discovery alone does not unlock them. Their stars1-6 and rarity
@@ -105,7 +185,8 @@ and loot gating remain unchanged. See
 - `src/content/creatures.ts`: complete typed catalog and separate loot routing.
 - `src/game/battle.ts`: required combatant element at every spawn.
 - `src/presentation/battle-view.ts`: enemy nameplate and menu labels.
-- Tests: `src/presentation/archives.test.ts`, `src/content/creatures.test.ts`,
+- Tests: `src/presentation/archives.test.ts`,
+  `src/presentation/archives-controls.test.ts`, `src/content/creatures.test.ts`,
   existing infusion/material/integration tests and `tools/test_art_prompts.py`.
 
 Add new galleries to the central Archives gallery list rather than proliferating

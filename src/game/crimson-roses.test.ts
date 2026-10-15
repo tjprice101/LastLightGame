@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { bossLootRange } from '../content/final-boss-loot';
 import { eventModes, infusionStageCount } from '../content/activities';
 import { capturedEnemyStats, infusionEncounter, infusionDrops, infusionLoot, roseEnemyStats } from '../content/infusions';
 import { enemyCombatStats } from '../content/stat-growth';
@@ -160,7 +161,7 @@ describe('Passion of Crimson Roses integration', () => {
       const result = defeat(stage, burn);
       const rewards = result.events.filter((event) => event.kind === 'reward');
       expect(rewards).toHaveLength(encounter.boss ? 1 : 2);
-      const range = fractalisDrop(encounter.level, 140);
+      const range = bossLootRange(fractalisDrop(encounter.level, 140), stage === 35 ? 5 : 1);
       const store = storage();
       saveAccount(store.saved, funded());
       store.reset();
@@ -195,16 +196,16 @@ describe('Passion of Crimson Roses integration', () => {
     const first = infusionLoot('roses', 1).specialties;
     expect(first).toEqual([{ id: 'rosethorn-common', minimum: 1, maximum: 2, chance: 1 }]);
     const final = infusionLoot('roses', 35).specialties;
-    expect(final.map((drop) => [drop.minimum, drop.maximum])).toEqual(Array.from({ length: 6 }, () => [3, 6]));
+    expect(final.map((drop) => [drop.minimum, drop.maximum])).toEqual(Array.from({ length: 6 }, () => [15, 30]));
     expect(final.map((drop) => drop.chance)).toEqual([1, .98, .9, .8, .6, .35]);
     for (let stage = 1; stage <= 35; stage++) {
       const encounter = infusionEncounter('roses', stage);
       const creature = getCreature(`infusion:roses:${encounter.tier}`);
-      expect(creatureLoot(creature, stage)).toEqual([{ id: 'fractalis', ...fractalisDrop(encounter.level, 140) },
+      expect(creatureLoot(creature, stage)).toEqual([{ id: 'fractalis', ...bossLootRange(fractalisDrop(encounter.level, 140), stage === 35 ? 5 : 1) },
         ...infusionLoot('roses', stage).specialties]);
     }
-    expect(infusionDrops('roses', 35, () => 0)).toEqual(Object.fromEntries(roseMaterials.map((material) => [material.id, 3])));
-    expect(infusionDrops('roses', 35, () => .999999)).toEqual({ 'rosethorn-common': 6 });
+    expect(infusionDrops('roses', 35, () => 0)).toEqual(Object.fromEntries(roseMaterials.map((material) => [material.id, 15])));
+    expect(infusionDrops('roses', 35, () => .999999)).toEqual({ 'rosethorn-common': 30 });
   });
 
   it('rejects forged event captures, premium/material payouts, living/wrong-stage sources and failed writes atomically', () => {

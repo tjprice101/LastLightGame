@@ -11,6 +11,7 @@ describe('saved summon reward presentation', () => {
     const account = { ...emptyAccount(), conduits: { 'vigil-core': 2 }, conduitUpgrades: { 'vigil-core': 3 } };
     const before = structuredClone(account);
     const reward = conduitReward('vigil-core', account, 'Conduit upgraded', '100 components spent');
+    expect(reward.art).toContain('class="conduit-reward-art"');
     expect(reward.art).toContain('data-conduit-upgrade="3"');
     expect(reward.details).toContain('+12.5% Health');
     expect(reward.details).toContain('Owned 2');
@@ -28,6 +29,7 @@ describe('saved summon reward presentation', () => {
     const reward = summonReward(result, 'roses');
     expect(reward.title).toBe('Element-Bearer summoned');
     expect(reward.art).toContain('characters/');
+    expect(reward.art).not.toContain('conduit-reward-art');
     expect(reward.details).toContain('6-star character');
     expect(reward.details).toContain('Lv.0 · Evo.1');
     expect(reward.details).toContain('10 Null-Prismatica spent');

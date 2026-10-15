@@ -35,7 +35,7 @@ describe('reference activity banners', () => {
       expect(war).toContain(`10 · Lv.${warEncounter(mode.character, 10).level}</option>`);
     }
     expect(war.match(/class="activity-entry"/g)).toHaveLength(3);
-    expect(war.match(/class="activity-unlock-hint"/g)).toHaveLength(3);
+    expect(war).not.toContain('class="activity-unlock-hint"');
     expect(account).toEqual(before);
   });
   it('retains all staged entry selectors inside real entry footers and all named reward panels', () => {
@@ -51,5 +51,33 @@ describe('reference activity banners', () => {
     expect(html).toContain('Conduit upgrade currency');
     expect(html).toContain('Passion of Crimson Roses</h3>');
     expect(gameplayHub(null)).not.toContain('class="activity-entry"');
+  });
+  it.each([
+    [0, 0, 15],
+    [10, 24, 15],
+    [10, 25, 14],
+    [29, 25, 14],
+    [30, 25, 8],
+    [50, 25, 6],
+    [60, 25, 4],
+    [75, 25, 3],
+    [85, 25, 0],
+  ])('shows requirements only for locked entries at Lv.%i with %i Story clears', (level, storyCompleted, lockedCount) => {
+    const account = emptyAccount();
+    account.characters.ember = { level, evolution: 6 };
+    account.storyCompleted = storyCompleted;
+    const before = structuredClone(account);
+    const html = gameplayHub(account);
+    const entries = [...html.matchAll(/<footer class="activity-entry">([\s\S]*?)<\/footer>/g)]
+      .map(match => match[1]);
+    expect(entries).toHaveLength(15);
+    expect(entries.filter(entry => entry.includes('class="activity-unlock-hint"'))).toHaveLength(lockedCount);
+    for (const entry of entries) {
+      const locked = entry.includes('>Locked</button>');
+      expect(entry.includes('class="activity-unlock-hint"')).toBe(locked);
+      expect(entry.includes('Your highest:')).toBe(locked);
+      if (locked) expect(entry).toContain('Unlocks at ');
+    }
+    expect(account).toEqual(before);
   });
 });

@@ -3,7 +3,9 @@ import { machineEnemies } from './machines';
 import { type Stats } from './combat';
 import { lootRoll, rollDrop, scaledDrop } from './loot-random';
 import { capturedGrowth, enemyCombatStats, playableGrowth } from './stat-growth';
+import { enemyAbilityMultiplier } from './enemy-skills';
 import { roseMaterials, roseMaterialUnlocks, roseFinalChances, roseSaleQuantities, roseFormStages } from './roses';
+import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 
 export function isInfusionMode(value: unknown): value is InfusionModeId {
   return [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].some((entry) => entry.id === value);
@@ -113,9 +115,7 @@ export function roseEnemyStats(level: number, boss: boolean): Stats {
   return creatureEnemyStats(level, boss, 140);
 }
 function creatureEnemyStats(level: number, boss: boolean, maximumLevel = 120): Stats {
-  return {
-    ...enemyCombatStats(Math.min(level, maximumLevel), boss),
-    crit: .12, critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0 };
+  return enemyCombatStats(Math.min(level, maximumLevel), boss);
 }
 
 export function capturedEnemyStats(level: number, maximumLevel = 120): Stats {
@@ -155,7 +155,9 @@ export function infusionEncounter(mode: InfusionModeId, stage: number, schedule:
   const [name, art] = infusionEnemies[mode][tier];
   return { name: definition.name, stage, level, boss, stats, tier, forms: 6,
     enemy: { name, art, element: mode === 'machines' ? machineEnemies[tier].element : infusionEnemyElements[mode] }, color: mode === 'machines' ? '#dddddd' : mode === 'heavens' ? '#ff6565' : mode === 'abyss' ? '#f464d4' : mode === 'sanctuary' ? '#e7a7bf' : mode === 'roses' ? '#d36b7d' : '#eed78b', background: `${mode}-arena.png`,
-    ability: mode === 'machines' ? machineEnemies[tier].skill : mode === 'heavens' ? 'Scarlet Judgment' : mode === 'abyss' ? 'Cosmic Wrath' : mode === 'sanctuary' ? 'Hallowed Rosefire' : mode === 'roses' ? 'Golden Thorn Benediction' : 'Sovereign Facet', abilityMultiplier: 1.2 + (stage - 1) / (stages - 1) * (mode === 'roses' ? .65 : 24 * .016) };
+    ability: mode === 'machines' ? machineEnemies[tier].skill : mode === 'heavens' ? 'Scarlet Judgment' : mode === 'abyss' ? 'Cosmic Wrath' : mode === 'sanctuary' ? 'Hallowed Rosefire' : mode === 'roses' ? 'Golden Thorn Benediction' : 'Sovereign Facet',
+    abilityMultiplier: enemyAbilityMultiplier(level),
+    legacyAbilityMultiplier: 1.2 + (stage - 1) / (stages - 1) * (mode === 'roses' ? .65 : 24 * .016) };
 }
 export const infusionDropTable = [
   { rarity: 'epic', level: 80, chance: .15, finalChance: .85, quantity: 3 },
@@ -169,21 +171,22 @@ export const specialtyDropTable = [
 ] as const;
 export function infusionLoot(mode: InfusionModeId, stage: number, schedule: InfusionSchedule = 'caps') {
   const { level } = infusionEncounter(mode, stage, schedule);
+  const multiplier = bossLootMultiplier({ infusion: { mode, stage } });
   if (isCurrencyMode(mode) || mode === 'machines') return { specialties: [], bonuses: [] };
   if (mode === 'roses') return {
     specialties: roseMaterials.flatMap((material, tier) => {
       const drop = scaledDrop(level, 80, roseMaterialUnlocks[tier], tier === 0 ? 1 : roseFinalChances[tier] / 2, roseFinalChances[tier], 3, 140);
-      return drop ? [{ id: material.id, ...drop }] : [];
+      return drop ? [bossLootRange({ id: material.id, ...drop }, multiplier)] : [];
     }), bonuses: [],
   };
   const specialties = specialtyDropTable.flatMap((entry) => {
     const unlock = schedule === 'legacy' ? entry.purpose === 'weapon' ? 80 : entry.purpose === 'evolution' ? 93 : 100 : entry.level;
     const drop = scaledDrop(level, schedule === 'legacy' ? 80 : 50, unlock, 1, 1, entry.quantity);
-    return drop ? [{ id: `${mode}-${entry.purpose}`, ...drop }] : [];
+    return drop ? [bossLootRange({ id: `${mode}-${entry.purpose}`, ...drop }, multiplier)] : [];
   });
   const bonuses = infusionDropTable.flatMap((entry) => {
     const drop = scaledDrop(level, schedule === 'legacy' ? 80 : 50, entry.level, entry.chance, entry.finalChance, entry.quantity);
-    return drop ? [{ rarity: entry.rarity, ...drop }] : [];
+    return drop ? [bossLootRange({ rarity: entry.rarity, ...drop }, multiplier)] : [];
   });
   return { specialties, bonuses };
 }

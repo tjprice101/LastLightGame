@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { bossLootRange } from '../content/final-boss-loot';
 import { infusionEncounter, infusionEnemies, infusionLoot, infusionDrops, treasurySalePrices } from '../content/infusions';
 import { treasuryFractalisDrop } from '../content/loot-random';
 import { creatureLoot, getCreature } from '../content/creatures';
@@ -51,7 +52,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
       const random = vi.fn(() => 0);
       expect(infusionDrops('treasury', stage, random)).toEqual({});
       expect(random).not.toHaveBeenCalled();
-      const range = treasuryFractalisDrop(encounter.level);
+      const range = bossLootRange(treasuryFractalisDrop(encounter.level), stage === 25 ? 5 : 1);
       expect(creatureLoot(getCreature(`infusion:treasury:${encounter.tier}`), stage)).toEqual([{ id: 'fractalis', ...range }]);
       for (const burn of [false, true]) {
         const result = defeat(stage, burn);
@@ -128,7 +129,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     expect(view.host.innerHTML).not.toContain('enemies/undefined');
     const account = emptyAccount();
     expect(gameplayHub(account)).toContain('data-infusion="treasury"');
-    expect(gameplayHub(account)).toContain('133-266 at Lv.65) and multiplies up to 20x by Lv.120 (4,860-9,720)');
+    expect(gameplayHub(account)).toContain('stage 25 final boss awards 24,300-48,600');
     expect(gameplayHub(account)).toContain('assets/banners/treasury-banner.png');
     expect(archives(account).match(/data-archive-character=/g)).toHaveLength(126);
   });

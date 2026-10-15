@@ -1,5 +1,12 @@
 # Dungeons and captured enemies
 
+**D-294 final-boss loot:** dungeon35 and Heaven/Abyss35 multiply their
+existing currency/material quantities by5 on every clear/replay. Successful
+final stacks are15-30 and Prismatica75-150. Heaven/Abyss premium outcomes
+become0/5/10/15 at the unchanged75/10/10/5% chances. Capture chance20%,
+one-copy count and captured level/form/kit are unchanged. Earlier bosses use
+ordinary stage payouts. [Shared contract](free-battle.md#repeatable-final-boss-loot-d-294).
+
 **D-192:** activity locks use highest-owned Element-Bearer level, not squad leader
 or captures. Heaven/Abyss entry starts at50 with cap-aligned floors; new hostile
 stats do not increase playable capture stats. Existing explicit capture levels,

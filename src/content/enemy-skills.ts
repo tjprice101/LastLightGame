@@ -5,6 +5,11 @@ export interface EnemySkill {
   action: 'skill1' | 'skill2' | 'ultimate';
 }
 
+export function enemyAbilityMultiplier(level: number): number {
+  if (!Number.isInteger(level) || level < 1 || level > 140) throw new Error('Enemy level must be from 1 to 140.');
+  return 1.2 + (level - 1) * .004;
+}
+
 export function enemySkills(level: number, boss: boolean, strike: string, multiplier: number): EnemySkill[] {
   if (!Number.isInteger(level) || level < 1 || !strike.trim() || !Number.isFinite(multiplier) || multiplier < 1) {
     throw new Error('Enemy skills require a valid level, name and damage multiplier.');

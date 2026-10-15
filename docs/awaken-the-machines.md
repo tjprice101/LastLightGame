@@ -1,5 +1,13 @@
 # Awaken the Machines and expanded Conduits
 
+**D-293 death-loot presentation:** every awarded Conduit appears in the
+defeated Machine's actual-receipt loot burst, with its supplied icon, exact
+quantity, rarity/palette beam, bright core/base glare and snapshotted upgrade
+meter. All dropped stacks across activities are50% larger, including currency,
+components and captured-creature portraits in capturable modes. Responsive
+rows preserve viewport fit. Pickup timing, reduced motion, rewards/RNG and
+atomic saves are unchanged. [Visual contract](free-battle.md#larger-death-loot-and-machine-conduit-beams-d-293).
+
 **D-269 origin:** Machines are destroyed prototypes from when Let and Rise
 worked together, not Rise's ordinary Elemental-Devourer creations. Damaged
 mechanisms awaken amid the ruins of their collaboration. Activity, Glossary
@@ -129,11 +137,17 @@ grants. Stage75 is the exact Omnic unlock, not level-derived. Source-of-truth:
 [machines.ts](../src/content/machines.ts); Creature gallery uses its per-entry
 odds only after defeat discovery, at the selected real stage.
 
-BMC has one separate roll per kill: chance25%->100% linearly across100 stages,
-successful quantity1->100 quadratically (rounded). Bosses/ordinary use the
-same odds. [Upgrade economy](conduit-upgrades.md) owns the formula/cost table;
+BMC is guaranteed on every kill (D-290):3 per enemy at stage1, scaling
+linearly to a base125 at stage100 with whole-unit rounding. D-294 multiplies
+the final boss's currency/component quantities by5:625 BMC and75-150
+Prismatica on every final clear/replay. Earlier bosses/ordinary use the
+same stage quantity; no additional clear payout. The independent component
+RNG draw is retained for compatibility, not drop chance.
+[Upgrade economy](conduit-upgrades.md) owns the formula/cost table;
 Omnic restoration is5000/10000/20000/35000/50000 BMC (120000 total).
-Exact quantities/costs are developer balance, not extra owner-authored numbers.
+The owner sets the3/125 base endpoints and5x final-boss boost; upgrade costs
+remain unchanged developer tuning. Conduit/chest chances and one-per-roll
+quantities are unchanged.
 
 ## Saves, equipment and atomicity
 

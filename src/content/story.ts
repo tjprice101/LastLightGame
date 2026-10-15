@@ -3,7 +3,9 @@ import { type Stats } from './combat';
 import { elementAccents } from './dungeon-art';
 import { enemyCombatStats } from './stat-growth';
 import { rollDrop, storyFractalisDrop } from './loot-random';
+import { bossLootMultiplier, bossLootRange, finalBossLootText } from './final-boss-loot';
 import { storyRegionArt } from './story-art';
+import { enemyAbilityMultiplier } from './enemy-skills';
 
 export const storyRules = { regionStages: 25, stages: 150, startingLevel: 1, maximumLevel: 55 } as const;
 export const storyRegions: readonly {
@@ -37,14 +39,10 @@ export function storyEncounter(stage: number) {
   const level = Math.round(storyRules.startingLevel + (stage - 1) *
     (storyRules.maximumLevel - storyRules.startingLevel) / (storyRules.stages - 1));
   const boss = regionStage === storyRules.regionStages;
-  const combat = enemyCombatStats(level, boss);
-  const stats: Stats = {
-    ...combat, health: Math.round(combat.health * .9), damage: Math.round(combat.damage * .75),
-    crit: .05, critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0,
-  };
+  const stats: Stats = enemyCombatStats(level, boss);
   return { ...region, name: region.name, stage, regionIndex, regionStage, level, boss, stats,
     color: elementAccents[region.element], background: storyRegionArt[region.element]?.background ?? null,
-    abilityMultiplier: 1.15 + (level - 1) * .003 };
+    abilityMultiplier: enemyAbilityMultiplier(level) };
 }
 
 export function storyCreature(stage: number, identity: number): { id: string; name: string; art?: string } {
@@ -68,9 +66,11 @@ export function storyMaterialLoot(stage: number) {
   const { element, level } = storyEncounter(stage);
   const growth = ((level - 1) / 54) ** 2;
   const minimum = 1 + Math.floor(2 * growth);
-  const drops = [{ id: `${element}-common`, minimum, maximum: minimum * 2, chance: 1 }];
-  if (level >= 23) drops.push({ id: `${element}-uncommon`, minimum, maximum: minimum * 2, chance: .25 + .55 * (level - 23) / 32 });
-  return drops;
+  const drops = [
+    { id: `${element}-common`, minimum, maximum: minimum * 2, chance: 1 },
+    { id: `${element}-uncommon`, minimum, maximum: minimum * 2, chance: .25 + .55 * (level - 1) / 54 },
+  ];
+  return drops.map(drop => bossLootRange(drop, bossLootMultiplier({ story: { storyStage: stage } })));
 }
 
 export function storyDrops(stage: number, random: () => number): Record<string, number> {
@@ -80,8 +80,9 @@ export function storyDrops(stage: number, random: () => number): Record<string, 
   }));
 }
 
-export const storyRulesText = 'Six regions in a fixed order, 25 stages each, enemy levels 1-55. Common and Uncommon matching-element materials only; no captures. Regional bosses grant a one-time account bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and growing 15% per region. Every kill drops Prismatica on a straight line by enemy level: 5-10 at Lv.1, +2 minimum per level, 113-226 at Lv.55. Replays grant ordinary per-kill loot only. Continue restores HP and retains Gauge.';
+export const storyRulesText = `Six regions in a fixed order, 25 stages each, enemy levels 1-55. Enemy level and boss rank determine combat strength consistently across activities; higher-level enemies demand stronger Conduits and a reliable squad. Common and Uncommon matching-element materials only; no captures. Regional bosses grant a one-time account bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and growing 15% per region. Base per-kill Prismatica rises in a straight line by enemy level: 5-10 at Lv.1, +2 minimum per level, 113-226 at Lv.55. Every regional boss multiplies ordinary Prismatica and material quantities by 5, including replays; first-clear bonuses do not multiply or repeat. Continue restores HP and retains Gauge. ${finalBossLootText}`;
 
 export function storyLoot(stage: number) {
-  return [{ id: 'fractalis', ...storyFractalisDrop(storyEncounter(stage).level) }, ...storyMaterialLoot(stage)];
+  return [bossLootRange({ id: 'fractalis', ...storyFractalisDrop(storyEncounter(stage).level) },
+    bossLootMultiplier({ story: { storyStage: stage } })), ...storyMaterialLoot(stage)];
 }

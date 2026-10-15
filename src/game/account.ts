@@ -4,7 +4,7 @@ import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, chara
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
 import { type InfusionModeId } from '../content/activities';
 import { getStarter, isStarterId, starters, type StarterId } from '../content/starters';
-import { isPlayableDungeon, playableDungeons, type PlayableDungeon } from '../content/dungeons';
+import { isPlayableDungeon, playableDungeons, materialLoot, type PlayableDungeon } from '../content/dungeons';
 import { loadProfile, type ProfileStorage } from './profile';
 import { type BattleResult } from './battle';
 import { materialName } from '../content/dungeon-art';
@@ -14,7 +14,7 @@ import { machineComponentDrop } from '../content/mechanical-components';
 import { bannerConduitBonus, machineConduitLoot } from '../content/machines';
 import { isMasterConduitId, masterChest, validateMasterCharacter, type MasterConduitId, type MasterLoadouts } from '../content/master-conduits';
 import { validateCapturedCharacters, validateCharacterLocks, capturedProgress, capturedLevelCost, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
-import { infusionEncounter, infusionLoot, creatureSaleOptions } from '../content/infusions';
+import { infusionEncounter, infusionLoot, infusionElements, creatureSaleOptions } from '../content/infusions';
 import { standardBanner, resolveBannerPull, validateBannerPity, type StandardBannerEntry, type BannerPity } from '../content/standard-banner';
 import { bannerDuplicateMaterials, type BannerMaterialReward } from '../content/banner-materials';
 import { getSummonBanner, isSummonBannerId, type SummonBannerId } from '../content/summon-banners';
@@ -23,6 +23,7 @@ import { exchangeProduct, isExchangeQuantity } from '../content/material-exchang
 import { isWarCharacter, warEncounter, warLoot, warStageCount, type WarCharacterId } from '../content/elemental-war';
 import { canonicalElement, isLegacyElement } from '../content/element-migration';
 import { storyEncounter, storyCreature, storyRules, storyBossBonus, storyMaterialLoot } from '../content/story';
+import { bossLootMultiplier, bossLootRange } from '../content/final-boss-loot';
 
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
@@ -529,6 +530,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     if (account.receipts.includes(receipt)) continue;
     const enemy = result.state.enemies.find((unit) => unit.id === reward.source);
     if (!enemy || enemy.level === null) throw new Error('Enemy reward source is missing.');
+    const multiplier = bossLootMultiplier(result.state, enemy.boss === true);
     if (reward.masterChests !== undefined) {
       const activity = result.state.infusion;
       if (reward.masterChests !== 1 || activity?.mode !== 'machines' || activity.stage !== masterChest.stage ||
@@ -544,18 +546,18 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     if (story) {
       const stage = story.storyStage;
       const encounter = storyEncounter(stage);
-      const range = storyFractalisDrop(encounter.level);
+      const range = bossLootRange(storyFractalisDrop(encounter.level), multiplier);
       const materialPool = storyMaterialLoot(stage);
       if (enemy.hp > 0 || reward.capture !== undefined || reward.conduits !== undefined ||
           reward.mechanicalComponents !== undefined || reward.lycalis !== undefined || reward.storyBonus !== undefined ||
           reward.recruitment !== undefined || reward.recruitmentOutcome !== undefined ||
-          !count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum ||
+          !count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum || reward.amount % multiplier !== 0 ||
           !record(reward.materials) || !count(reward.materials[`${encounter.element}-common`])) {
         throw new Error('Invalid Story reward.');
       }
       for (const [id, amount] of Object.entries(reward.materials)) {
         const drop = materialPool.find((entry) => entry.id === id);
-        if (!drop || !count(amount) || amount < drop.minimum || amount > drop.maximum) throw new Error('Invalid Story material drop.');
+        if (!drop || !count(amount) || amount < drop.minimum || amount > drop.maximum || amount % multiplier !== 0) throw new Error('Invalid Story material drop.');
         account.materials[id] = (account.materials[id] ?? 0) + amount;
       }
       account.fractalis += reward.amount;
@@ -580,7 +582,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
           enemy.level !== encounter.level || enemy.element !== encounter.element || enemy.evolution !== encounter.evolution || !enemy.boss ||
           enemy.creatureId || reward.capture !== undefined || reward.materials !== undefined ||
           reward.conduits !== undefined || reward.mechanicalComponents !== undefined ||
-          !count(reward.amount) || reward.amount < loot.fractalis.minimum || reward.amount > loot.fractalis.maximum ||
+          !count(reward.amount) || reward.amount < loot.fractalis.minimum || reward.amount > loot.fractalis.maximum || reward.amount % multiplier !== 0 ||
           (reward.lycalis !== undefined && reward.lycalis !== loot.lycalis.quantity) ||
           reward.recruitmentOutcome !== undefined ||
           (reward.recruitment !== undefined && (stage !== warStageCount || reward.recruitment !== character))) {
@@ -599,13 +601,16 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       continue;
     }
     if (reward.recruitment !== undefined || reward.recruitmentOutcome !== undefined) throw new Error('Recruitment requires Elemental War.');
-    const range = result.state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, result.state.infusion?.mode === 'roses' ? 140 : 120);
+    const range = bossLootRange(result.state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, result.state.infusion?.mode === 'roses' ? 140 : 120), multiplier);
     if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === 'roses' || result.state.infusion.mode === 'machines') &&
         (enemy.hp > 0 || !enemy.creatureId || getCreature(enemy.creatureId).mode !== result.state.infusion.mode ||
           !getCreature(enemy.creatureId).stages.includes(result.state.infusion.stage) ||
           enemy.level !== infusionEncounter(result.state.infusion.mode, result.state.infusion.stage, result.state.infusion.schedule ?? 'legacy').level)) throw new Error('Invalid currency-farm reward source.');
-    if (!count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum) throw new Error('Invalid enemy Prismatica drop.');
+    if (!count(reward.amount) || reward.amount < range.minimum || reward.amount > range.maximum || reward.amount % multiplier !== 0) throw new Error('Invalid enemy Prismatica drop.');
     account.fractalis += reward.amount;
+    if (result.state.infusion?.mode === 'machines' && reward.mechanicalComponents === undefined) {
+      throw new Error('Awaken the Machines rewards require Broken Mechanical Components.');
+    }
     if (reward.mechanicalComponents !== undefined) {
       if (result.state.infusion?.mode !== 'machines') throw new Error('Broken Mechanical Components only drop in Awaken the Machines.');
       const drop = machineComponentDrop(result.state.infusion.stage);
@@ -632,7 +637,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
           !result.state.infusion || result.state.infusion.mode === 'treasury' || result.state.infusion.mode === 'roses' || result.state.infusion.mode === 'machines' || creature?.mode !== result.state.infusion.mode ||
           !creature.stages.includes(result.state.infusion.stage) || enemy.hp > 0 ||
           enemy.level !== infusionEncounter(result.state.infusion.mode, result.state.infusion.stage, result.state.infusion.schedule ?? 'legacy').level ||
-          !stagedLycalisOdds(result.state.infusion.mode, enemy.level).some((outcome) => outcome.amount === reward.lycalis)) {
+          !stagedLycalisOdds(result.state.infusion.mode, enemy.level, result.state.infusion.stage).some((outcome) => outcome.amount === reward.lycalis)) {
         throw new Error('Invalid enemy Null-Prismatica reward.');
       }
       account.lycalis += reward.lycalis;
@@ -643,8 +648,21 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       if (!count(amount) || !isMaterial(id)) throw new Error('Invalid enemy material drop.');
       if (result.state.infusion?.mode === 'roses') {
         const drop = infusionLoot('roses', result.state.infusion.stage).specialties.find((entry) => entry.id === id);
-        if (!drop || amount < drop.minimum || amount > drop.maximum) throw new Error('Invalid Rosethorn material drop.');
+        if (!drop || amount < drop.minimum || amount > drop.maximum || amount % multiplier !== 0) throw new Error('Invalid Rosethorn material drop.');
       } else if (roseMaterials.some((material) => material.id === id)) throw new Error('Rosethorn materials only drop in Passion of Crimson Roses.');
+      if (multiplier > 1) {
+        const activity = result.state.infusion;
+        const pool = result.state.dungeon ? materialLoot(result.state.dungeon.element, result.state.dungeon.stage)
+          : activity ? (() => {
+            const loot = infusionLoot(activity.mode, activity.stage, activity.schedule ?? 'legacy');
+            return [...loot.specialties, ...loot.bonuses.flatMap(drop => infusionElements(activity.mode)
+              .map(element => ({ ...drop, id: `${element.id}-${drop.rarity}` })))];
+          })() : [];
+        const drop = pool.find(drop => drop.id === id);
+        if (!drop || amount < drop.minimum || amount > drop.maximum || amount % multiplier !== 0) {
+          throw new Error('Invalid final-boss material drop.');
+        }
+      }
       account.materials[id] = (account.materials[id] ?? 0) + amount;
     }
     if (reward.capture) {

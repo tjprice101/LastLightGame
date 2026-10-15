@@ -85,7 +85,7 @@ function rebuild(entrance: boolean): void {
       const result = endTurn(session.state);
       return { session: { ...session, state: result.state }, result };
     },
-    nextStage: unsupported, nextWave: unsupported, retry: unsupported, quit: unsupported,
+    nextStage: unsupported, nextWave: unsupported, retry: unsupported,
   };
   view = new BattleView(battleHost, session, defaultBindings, () => {
     throw new Error('Preview must never persist rewards.');

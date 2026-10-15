@@ -15,6 +15,7 @@ import { infusionEntry } from './activity-entry';
 import { elementalWars, warEncounter, warRulesText } from '../content/elemental-war';
 import { getStarter } from '../content/starters';
 import { storyRulesText } from '../content/story';
+import { finalBossLootText } from '../content/final-boss-loot';
 import { storyCampaign } from './story';
 import { activityAccess } from '../game/activity-access';
 import { devourerHabitats, elementEmotions, machineOrigin, storyPurpose, trainingLore, warLore } from '../content/world-lore';
@@ -28,7 +29,7 @@ function dungeonEntry(element: (typeof elements)[number]['id'], account: Account
   return `<footer class="activity-entry"><label class="dungeon-stage-label">Stage
     <select data-dungeon-stage="${element}" aria-label="${elements.find((entry) => entry.id === element)?.dungeon} stage">${Array.from({ length: unlocked }, (_, stage) => `<option value="${stage + 1}" ${stage + 1 === unlocked ? 'selected' : ''}>${stage + 1}</option>`).join('')}</select></label>
     <button class="primary-button" data-dungeon="${element}" ${access.unlocked ? '' : 'disabled'}>${access.unlocked ? 'Enter dungeon' : 'Locked'}</button>
-    <p class="activity-unlock-hint">${access.unlocked ? 'Unlocked' : 'Unlocks at'} ${access.requirement}. Your highest: Lv.${access.level}.</p></footer>`;
+    ${access.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks at ${access.requirement}. Your highest: Lv.${access.level}.</p>`}</footer>`;
 }
 
 const activityCategories = [
@@ -63,6 +64,7 @@ function activityFacts(stages: string, levels: string, drops: string): string {
 
 function gameplayInformation(): string {
   return informationTopics('gameplay-information', [
+    { id: 'final-loot', title: 'Final-boss loot', summary: '5x quantities on every final clear', content: `<p>${finalBossLootText}</p><p>Story applies this at all six regional bosses (25, 50, 75, 100, 125 and 150). Other staged activities apply it only at their last stage; earlier bosses are unchanged.</p>` },
     { id: 'origins', title: 'Let and Rise', summary: 'Infinity, Nothingness and the search for the creators', content: worldLore() },
     { id: 'start', title: 'Getting started', summary: 'Where to begin, unlocks and getting stronger', content: `<p>Clear Story stages for materials and currencies, then level and evolve in Team. Replay cleared stages when you need more materials.</p>
       <h4>Unlocks</h4><p>Your highest-level owned Element-Bearer unlocks activities, even when not in your squad. Captured Elemental-Devourers do not count.</p>
@@ -77,16 +79,16 @@ function gameplayInformation(): string {
     { id: 'infusion', title: 'Evolution infusion', summary: 'Heaven & Abyss ? evolution items', content: `<p>Enemy levels 50-120. Form 3 begins at Lv.65, form 4 at Lv.75 and form 5 at Lv.85.</p>
       <p>Evolution and level specialty materials unlock at Lv.75. Bonus Epic / Legendary / Omnic unlock at 80 / 100 / 115.
       Heaven draws bonus materials from its four associated elements; Abyss draws from its two.</p>
-      <p>No Null-Prismatica below Lv.80. From Lv.80, each kill independently rolls it: none / 1 / 2 / 3 = 90 / 8 / 1.5 / 0.5%; at Lv.120 = 75 / 10 / 10 / 5%, with linear interpolation.</p>
+      <p>No Null-Prismatica below Lv.80. From Lv.80, each kill independently rolls it: none / 1 / 2 / 3 = 90 / 8 / 1.5 / 0.5%; at Lv.120 = 75 / 10 / 10 / 5%, with linear interpolation. The stage 35 final boss instead awards none / 5 / 10 / 15 at those same chances.</p>
       <p>Each kill has a separate 20% capture chance. Copies retain defeated level, form and kit.</p>
       ${infusionModes.map((mode) => `<p><strong>${mode.name}</strong> ? Enemy element: ${elementLabel(infusionEnemyElements[mode.id])}
         ? Material pool: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</p>`).join('')}` },
-    { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages at levels 65-120, six fixed forms and a boss every fifth stage. Boss and ordinary enemies use the same payouts. No farm materials or clear bonus.</p>
+    { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages at levels 65-120, six fixed forms and a boss every fifth stage. Earlier bosses and ordinary enemies use the same payouts; final bosses award 5x currency quantities. No farm materials or separate clear bonus.</p>
       <p>Each kill has a separate 20% capture chance. Copies retain defeated level, form and kit.</p>
       <h4>Crownfall Treasury</h4><p>${treasuryPrismaticaText} No Null-Prismatica.
       Common through Omnic Elemental-Devourer sales: ${treasurySalePrices.map((price) => price.toLocaleString('en-US')).join(' / ')} Prismatica.</p>
       <h4>Rosethorn Sanctuary</h4><p>Ordinary Prismatica 7-14 at Lv.65 to 15-30 at Lv.120.
-      One independent Null-Prismatica roll: 50% of 1 at Lv.65 to 80% of 5 at Lv.120. Chance is linear; quantity rounds the linear 1-5 curve.
+      One independent Null-Prismatica roll: 50% of 1 at Lv.65 to a final-boss 80% of 25. Chance is linear; base quantity rounds the linear 1-5 curve before the final 5x boost.
       Common through Omnic sales: ${sanctuarySalePrices.map((price) => `${price.fractalis.toLocaleString('en-US')} Prismatica + ${price.lycalis} Null-Prismatica`).join(' / ')}.</p>
       <p>Sell copies in Team. Locked, squad-assigned and Conduit-equipped copies are protected.</p>` },
     { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Event stages ? Rose materials', content: roseEventRules },
@@ -167,7 +169,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
             <select data-war-stage="${mode.character}" aria-label="${mode.name} stage" ${account ? '' : 'disabled'}>${Array.from({ length: unlocked }, (_, index) =>
               `<option value="${index + 1}" ${index + 1 === unlocked ? 'selected' : ''}>${index + 1} · Lv.${warEncounter(mode.character, index + 1).level}</option>`).join('')}</select></label>
             <button class="primary-button" data-war="${mode.character}" ${access?.unlocked ? '' : 'disabled'}>${access?.unlocked ? 'Enter trial · Free' : 'Locked'}</button>
-            <p class="activity-unlock-hint">${access?.unlocked ? 'Unlocked' : 'Unlocks at'} ${access?.requirement}. Your highest: Lv.${access?.level}.</p></footer>`
+            ${access?.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks at ${access?.requirement}. Your highest: Lv.${access?.level}.</p>`}</footer>`
               : '<button disabled>Elemental War unavailable: resolve the save error</button>'}
         </article>`;
       }).join('')}</section>

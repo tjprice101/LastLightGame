@@ -13,12 +13,15 @@ The owner subsequently capped sale Null-Prismatica at1-10 per copy. The exact
 intermediate sale values and mission chance curve are developer-selected tuning:
 
 - Level65: **50% none /50% one Null-Prismatica** per kill.
-- Level120: **20% none /80% five Null-Prismatica** per kill.
+- Level120 base: **20% none /80% five Null-Prismatica** per kill.
+  D-294 multiplies the final stage25 successful amount by5: **80% of25**
+  on every clear/replay, with the same20% no-premium chance.
 - For growth `g=(level-65)/55`, chance is `0.5+0.3*g` and the successful
   quantity is `round(1+4*g)`. This is one roll, not five independent rolls.
-- Ordinary enemies and bosses use identical payouts. No clear bonus.
+- Earlier bosses and ordinary enemies use identical payouts. The final boss
+  multiplies both currency quantities by5; no separate clear bonus.
 - Ordinary Prismatica remains the shared level-scaled range:7-14 at65,
-  15-30 at120. No material drops or infusion specialties.
+  base15-30 at120, final stage25 payout75-150. No material drops or infusion specialties.
 - Independent20% capture chance per defeated enemy. Null-Prismatica, ordinary currency,
   capture and combat RNG remain separate.
 

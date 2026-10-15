@@ -5,6 +5,8 @@ import { legacyDungeonEnemies, legacyDungeonStrikes, type DungeonEnemy } from '.
 import { elementSources, type LegacyElementId } from './element-migration';
 import { scaledDrop, rollDrop } from './loot-random';
 import { enemyCombatStats } from './stat-growth';
+import { enemyAbilityMultiplier } from './enemy-skills';
+import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 
 export const playableDungeons = elements.map((element) => element.id);
 export type PlayableDungeon = (typeof playableDungeons)[number];
@@ -33,16 +35,12 @@ export function dungeonEncounter(element: PlayableDungeon, stage: number, family
   if (!Number.isInteger(family) || family < 0 || family >= variants.length) throw new Error('Invalid dungeon enemy family.');
   const variant = variants[family];
   const boss = stage % 5 === 0;
-  const stats: Stats = {
-    ...enemyCombatStats(level, boss),
-    crit: Math.min(0.25, 0.05 + (level - 10) * 0.002),
-    critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0,
-  };
+  const stats: Stats = enemyCombatStats(level, boss);
   return {
     name: getElement(element).dungeon, level, stage, boss, stats, ...variant,
     color: elementAccents[element],
     background: art ? `${art.slug}.png` : null,
-    abilityMultiplier: 1.2 + (stage - 1) / (elementalDungeonRules.stages - 1) * 49 * 0.012,
+    abilityMultiplier: enemyAbilityMultiplier(level),
   };
 }
 
@@ -64,7 +62,7 @@ export function materialLoot(element: ElementId, stage: number) {
     const drop = scaledDrop(level, 10, entry.level, entry.chance, entry.finalChance, entry.quantity);
     if (drop) loot.push({ id: `${element}-${entry.rarity}`, ...drop });
   }
-  return loot;
+  return loot.map(drop => bossLootRange(drop, bossLootMultiplier({ dungeon: { stage } })));
 }
 
 export function materialDrops(element: ElementId, stage: number, random: () => number): Record<string, number> {

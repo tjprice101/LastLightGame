@@ -8,7 +8,7 @@ import { materialName } from '../content/dungeon-art';
 import { infusionEncounter, infusionDrops } from '../content/infusions';
 import { dungeonStageCount, infusionStageCount, type InfusionModeId, type ElementId } from '../content/activities';
 import { enemyGrowth, enemyCombatStats } from '../content/stat-growth';
-import { enemySkills, scheduledEnemySkill, type EnemySkill } from '../content/enemy-skills';
+import { enemyAbilityMultiplier, enemySkills, scheduledEnemySkill, type EnemySkill } from '../content/enemy-skills';
 import { getConduit, isConduitId, validateConduitUpgrades, type ConduitId, type ConduitSlots, type ConduitLoadouts, type ConduitMechanic, type ConduitUpgrades } from '../content/conduits';
 import { rollMachineComponents } from '../content/mechanical-components';
 import { machineConduitDrops } from '../content/machines';
@@ -27,6 +27,7 @@ import { pilotAfterDirectActivation, pilotAuthoredShieldAbsorbed, pilotBurnDamag
 import { resolveOmnicInteraction, type OmnicMemory } from './kit-conduits';
 import { masterChestDrops, validateMasterCharacter, type MasterConduitId, type MasterLoadouts } from '../content/master-conduits';
 import { storyEncounter, storyCreature, storyDrops, storyRules } from '../content/story';
+import { bossLootMultiplier, bossLootRange } from '../content/final-boss-loot';
 
 export interface Combatant {
   id: string;
@@ -154,9 +155,7 @@ export function createWarBattle(character: WarCharacterId, stage: number, seed: 
   equipment: ConduitLoadouts = {}, captures: readonly CapturedCharacter[] = [], upgrades: ConduitUpgrades = {}): BattleState {
   const encounter = warEncounter(character, stage);
   const state = createBattle(seed, roster, teamProgress, equipment, captures, upgrades);
-  const unit = combatant(`war-${character}-${stage}`, character, encounter.enemyName, 'enemy', {
-    ...resolveFighter(character).stats, ...encounter.stats,
-  }, encounter.element);
+  const unit = combatant(`war-${character}-${stage}`, character, encounter.enemyName, 'enemy', encounter.stats, encounter.element);
   Object.assign(unit, { level: encounter.level, evolution: encounter.evolution, art: encounter.art,
     color: encounter.color, boss: true, enemySkills: encounter.skills });
   state.wave = stage;
@@ -190,15 +189,11 @@ function spawnWave(wave: number): Combatant[] {
   const level = Math.min(wave, enemyGrowth.maximumLevel);
   return (['goblin', 'imp', 'golem'] as const).map((id, index) => {
     const definition = enemies[id];
-    const unit = combatant(`enemy-${wave}-${index}`, id, definition.name, 'enemy', {
-      ...definition.stats,
-      ...enemyCombatStats(level, false, definition.stats),
-      crit: definition.stats.crit,
-    }, definition.element);
+    const unit = combatant(`enemy-${wave}-${index}`, id, definition.name, 'enemy', enemyCombatStats(level, false), definition.element);
     unit.level = level;
     unit.creatureId = `adventure:${id}`;
     const strike = id === 'goblin' ? 'Wildwood Ambush' : id === 'imp' ? 'Cinder Mischief' : 'Faultline Crush';
-    unit.enemySkills = enemySkills(level, false, strike, 1.2 + (level - 1) * .004);
+    unit.enemySkills = enemySkills(level, false, strike, enemyAbilityMultiplier(level));
     return unit;
   });
 }
@@ -465,7 +460,8 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
         message: `${enemy.name} dropped ${reward.amount} Prismatica${reward.lycalis ? ` and ${reward.lycalis} Null-Prismatica` : ''}.` });
       continue;
     }
-    const amount = rollDrop(state.story ? storyFractalisDrop(enemy.level) : state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === 'roses' ? 140 : 120), rewardRoll);
+    const amount = rollDrop(bossLootRange(state.story ? storyFractalisDrop(enemy.level) : state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === 'roses' ? 140 : 120),
+      bossLootMultiplier(state, enemy.boss === true)), rewardRoll);
     if (amount === undefined) throw new Error('Guaranteed Prismatica reward did not drop.');
     const materials = state.story ? storyDrops(state.story.storyStage, rewardRoll)
       : state.infusion ? infusionDrops(state.infusion.mode, state.infusion.stage, rewardRoll, state.infusion.schedule ?? 'legacy')
@@ -511,7 +507,7 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
         premiumSeed ^= premiumSeed << 5;
         state.lycalisSeed = premiumSeed >>> 0;
         return state.lycalisSeed / 0x100000000;
-      });
+      }, state.infusion.stage);
     }
     events.push({ kind: 'reward', source: enemy.id, target: '', amount, critical: false,
       ...(materials ? { materials } : {}),

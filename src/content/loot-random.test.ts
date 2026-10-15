@@ -4,6 +4,7 @@ import { storyEncounter, storyLoot, storyRules } from './story';
 import { materialDrops, materialLoot, materialDropTable } from './dungeons';
 import { infusionDrops, infusionLoot, infusionEncounter } from './infusions';
 import { elementalEnemyLevel, elements } from './activities';
+import { bossLootRange, bossLootMultiplier } from './final-boss-loot';
 
 describe('Story and Treasury Prismatica (D-225)', () => {
   it('gives Story a constant per-level step, so Prismatica rises linearly across all stages', () => {
@@ -15,7 +16,7 @@ describe('Story and Treasury Prismatica (D-225)', () => {
     expect(storyFractalisDrop(55)).toEqual({ minimum: 113, maximum: 226, chance: 1 });
     for (const level of [0, 121, 1.5, NaN]) expect(() => storyFractalisDrop(level)).toThrow();
     for (let stage = 1; stage <= storyRules.stages; stage += 1) {
-      const range = storyFractalisDrop(storyEncounter(stage).level);
+      const range = bossLootRange(storyFractalisDrop(storyEncounter(stage).level), bossLootMultiplier({ story: { storyStage: stage } }));
       expect(storyLoot(stage).find((drop) => drop.id === 'fractalis')).toMatchObject(range);
     }
   });
@@ -38,16 +39,16 @@ describe('plentiful loot quantities', () => {
     for (const element of elements) for (let stage = 1; stage <= 35; stage++) {
       for (const drop of materialLoot(element.id, stage)) {
         expect(drop.minimum).toBeGreaterThanOrEqual(1);
-        expect(drop.minimum).toBeLessThanOrEqual(3);
-        expect(drop.maximum).toBeLessThanOrEqual(6);
+        expect(drop.minimum).toBeLessThanOrEqual(stage === 35 ? 15 : 3);
+        expect(drop.maximum).toBeLessThanOrEqual(stage === 35 ? 30 : 6);
       }
     }
     for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= 35; stage++) {
       const pool = infusionLoot(mode, stage);
       for (const drop of [...pool.specialties, ...pool.bonuses]) {
         expect(drop.minimum).toBeGreaterThanOrEqual(1);
-        expect(drop.minimum).toBeLessThanOrEqual(3);
-        expect(drop.maximum).toBeLessThanOrEqual(6);
+        expect(drop.minimum).toBeLessThanOrEqual(stage === 35 ? 15 : 3);
+        expect(drop.maximum).toBeLessThanOrEqual(stage === 35 ? 30 : 6);
       }
     }
     expect(materialLoot('infernic', 1)[0]).toMatchObject({ minimum: 1, maximum: 2 });
@@ -77,9 +78,9 @@ describe('plentiful loot quantities', () => {
         .toBe(elementalEnemyLevel(stage) >= entry.level);
     }
     const final = materialLoot('infernic', 35);
-    expect(final.map(({ minimum, maximum }) => [minimum, maximum])).toEqual(Array.from({ length: 6 }, () => [3, 6]));
+    expect(final.map(({ minimum, maximum }) => [minimum, maximum])).toEqual(Array.from({ length: 6 }, () => [15, 30]));
     final.forEach((drop, index) => expect(drop.chance).toBeCloseTo([1, .98, .90, .80, .60, .35][index]));
-    expect(materialDrops('infernic', 35, () => .99999)).toEqual({ 'infernic-common': 6 });
+    expect(materialDrops('infernic', 35, () => .99999)).toEqual({ 'infernic-common': 30 });
     for (let index = 1; index < final.length; index++) {
       const sequence = [0, ...Array<number>((index - 1) * 2).fill(0), final[index].chance];
       const drops = materialDrops('infernic', 35, () => sequence.shift() ?? .999999);
@@ -105,7 +106,7 @@ describe('plentiful loot quantities', () => {
     for (const mode of ['heavens', 'abyss'] as const) {
       const pool = infusionLoot(mode, 35);
       for (const drop of [...pool.specialties, ...pool.bonuses]) {
-        expect([drop.minimum, drop.maximum]).toEqual([3, 6]);
+        expect([drop.minimum, drop.maximum]).toEqual([15, 30]);
       }
     }
     for (let level = 2; level <= 120; level++) expect(fractalisDrop(level).minimum).toBeGreaterThanOrEqual(fractalisDrop(level - 1).minimum);

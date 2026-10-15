@@ -30,7 +30,7 @@ function fixture(online = false) {
     return { session: { ...session, state: result.state }, result };
   });
   const authority: BattleAuthority | undefined = online
-    ? { action, endTurn: vi.fn(), nextStage: vi.fn(), nextWave: vi.fn(), retry: vi.fn(), quit: vi.fn() }
+    ? { action, endTurn: vi.fn(), nextStage: vi.fn(), nextWave: vi.fn(), retry: vi.fn() }
     : undefined;
   const view = new BattleView(host, session, { nextAlly: 'KeyC', nextTarget: 'KeyT' }, commit, undefined, authority);
   return { session, host, commit, action, view };

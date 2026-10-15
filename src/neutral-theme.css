@@ -169,6 +169,8 @@ html[data-motion="reduced"] .activity-loading-track > span { transition: none; }
 .loot-drop { position: absolute; left: var(--loot-x); top: var(--loot-y); width: 36px; height: 36px; translate: -50% -50%; scale: var(--loot-size, 1); color: #fff; text-align: center; }
 .loot-drop img { position: relative; width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 7px var(--loot-color)); }
 .loot-beam { position: absolute; bottom: 12px; left: 12px; width: 12px; height: 90px; background: linear-gradient(transparent, var(--loot-color)); box-shadow: 0 8px 12px var(--loot-color); opacity: .85; border-radius: 50% 50% 0 0; }
+.loot-conduit .loot-beam { background: linear-gradient(transparent, var(--loot-color) 70%, #fff); box-shadow: 0 0 12px var(--loot-color), 0 8px 18px var(--loot-color); }
+.loot-conduit .loot-beam::after { content: ""; position: absolute; width: 42px; height: 12px; bottom: -3px; left: -15px; border-radius: 50%; background: radial-gradient(ellipse, #fff 10%, var(--loot-color) 40%, transparent 75%); }
 .loot-token { position: relative; display: grid; place-items: center; width: 32px; height: 32px; border: 2px solid var(--loot-color); border-radius: 50%; background: #25232c; font: bold 10px Georgia, serif; box-shadow: 0 0 10px var(--loot-color); }
 .loot-drop strong { position: relative; display: block; font: bold 15px Arial, sans-serif; text-shadow: 0 1px 4px #000, 0 0 8px #000; }
 @keyframes unit-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }

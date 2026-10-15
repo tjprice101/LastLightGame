@@ -9,7 +9,7 @@ import { elementLabel } from './element-label';
 import { creatureSaleValue, creatureSaleOptions } from '../content/infusions';
 import { isCurrencyMode } from '../content/activities';
 import { getConduit, isConduitId, type ConduitUpgrades } from '../content/conduits';
-import { conduitIcon } from './conduit-store';
+import { conduitIcon, conduitDetails } from './conduit-store';
 import { mechanicalComponents } from '../content/mechanical-components';
 import { mechanicalComponentIcon } from './mechanical-component-icon';
 import { masterChest } from '../content/master-conduits';
@@ -19,17 +19,21 @@ function lootTable(id: string, stage?: number, upgrades?: ConduitUpgrades): stri
   const creature = getCreature(id);
   const sale = creature.mode && isCurrencyMode(creature.mode) ? creatureSaleValue(creature.mode, Number(creature.id.split(':').at(-1))) : null;
   const choices = creature.mode === 'heavens' || creature.mode === 'abyss' ? creatureSaleOptions(creature.mode, Number(creature.id.split(':').at(-1))) : null;
+  const drops = creatureLoot(creature, stage);
+  const rollNotes = [...new Set(drops.flatMap(drop => drop.note && !creature.story ? [drop.note] : []))];
   return `<table><caption>Per-enemy loot at ${creature.stages.length ? `Stage ${stage}` : `Enemy level ${stage ?? 1}`}</caption>
-    <thead><tr><th>Drop</th><th>Amount</th><th>Chance</th></tr></thead><tbody>${creatureLoot(getCreature(id), stage).map((drop) => {
+    <colgroup><col class="loot-drop-column"><col><col></colgroup>
+    <thead><tr><th scope="col">Drop</th><th scope="col">Amount</th><th scope="col">Chance</th></tr></thead><tbody>${drops.map((drop) => {
       const currency = drop.id === 'fractalis' || drop.id === 'lycalis' ? drop.id : null;
       const conduit = isConduitId(drop.id) ? getConduit(drop.id) : null;
-      if (drop.id === masterChest.id) return `<tr><td>${masterChest.name}<small>${drop.note}</small></td><td>1</td><td>1%</td></tr>`;
-      if (drop.id === mechanicalComponents.id) return `<tr><td>${mechanicalComponentIcon()} ${mechanicalComponents.name}<small>${drop.note ?? ''}</small></td><td>${drop.minimum}-${drop.maximum}</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
+      if (drop.id === masterChest.id) return `<tr><td>${masterChest.name}</td><td>1</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
+      if (drop.id === mechanicalComponents.id) return `<tr><td>${mechanicalComponentIcon()} <strong>${mechanicalComponents.name}</strong></td><td>${drop.minimum}-${drop.maximum}</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
       const art = currency || conduit ? undefined : materialArt(drop.id);
       return `<tr><td>${currency ? currencyIcon(currency) : conduit ? conduitIcon(conduit.id, upgrades?.[conduit.id]) : art ? `<img draggable="false" src="${assetUrl(`materials/${art}.png`)}" alt="" width="28" height="28">` : ''}
-        ${currency === 'fractalis' ? 'Prismatica' : currency === 'lycalis' ? 'Null-Prismatica' : conduit ? `${conduit.name} · ${conduit.rarity}` : materialName(drop.id)}${drop.note ? `<small>${drop.note}</small>` : ''}</td>
+        <strong>${currency === 'fractalis' ? 'Prismatica' : currency === 'lycalis' ? 'Null-Prismatica' : conduit ? `${conduit.name} · ${conduit.rarity}` : materialName(drop.id)}</strong>        ${drop.note && creature.story ? `<small>${drop.note}</small>` : ''}
+        ${conduit ? information(`loot-conduit-${id}-${conduit.id}`, conduit.name, conduitDetails(conduit.id, upgrades?.[conduit.id]), 'View Details') : ''}</td>
         <td>${drop.minimum}-${drop.maximum}</td><td>${formatStat(drop.chance * 100)}%</td></tr>`;
-    }).join('')}</tbody></table>${sale ? itemShowcase([{ id: 'fractalis', amount: sale.fractalis }, ...(sale.lycalis ? [{ id: 'lycalis', amount: sale.lycalis }] : [])], 'Sale value') : ''}${choices ? itemShowcase(choices.flatMap((option) => option.lycalis ? [{ id: 'lycalis', amount: option.lycalis }] : Object.entries(option.materials).map(([key, amount]) => ({ id: key, amount }))), 'Sale value \u00b7 choose one') : ''}`;
+    }).join('')}</tbody></table>    ${rollNotes.length ? `<section class="loot-roll-notes" aria-label="Drop roll rules">${rollNotes.map(note => `<p>${note}</p>`).join('')}</section>` : ''}${sale ? itemShowcase([{ id: 'fractalis', amount: sale.fractalis }, ...(sale.lycalis ? [{ id: 'lycalis', amount: sale.lycalis }] : [])], 'Sale value') : ''}${choices ? itemShowcase(choices.flatMap((option) => option.lycalis ? [{ id: 'lycalis', amount: option.lycalis }] : Object.entries(option.materials).map(([key, amount]) => ({ id: key, amount }))), 'Sale value \u00b7 choose one') : ''}`;
 }
 
 export function creatureGlossary(account: Account | null): string {
@@ -51,10 +55,11 @@ export function creatureGlossary(account: Account | null): string {
         <h2>${name}</h2>${discovery ? elementLabel(creature.element) : '<span class="quiet">Element undiscovered</span>'}<p>${creature.area}${creature.stages.length ? ` · Stages ${stage}-${creature.stages.at(-1)}` : ''}</p>
         ${discovery ? `<strong>${discovery.defeated ? 'Defeated' : 'Encountered'}</strong>` : ''}
         ${discovery ? information(`creature-lore-${creature.id}`, creature.name, `<p>${creatureLore(creature)}</p>`, 'Lore') : ''}
-        ${discovery?.defeated ? `<section class="creature-loot"><h3>Drop pool and chances</h3>
-          <label>${creature.stages.length ? 'Stage' : 'Enemy level'} <select data-loot-stage="${creature.id}">${(creature.stages.length ? creature.stages : Array.from({ length: 120 }, (_, index) => index + 1)).map((value) => `<option>${value}</option>`).join('')}</select></label>
-          <div class="glossary-loot">${lootTable(creature.id, stage, account.conduitUpgrades)}</div></section>` : ''}
         ${discovery && !creature.art ? '<p class="quiet">Artwork pending</p>' : ''}
+        ${discovery?.defeated ? information(`creature-loot-${creature.id}`, `${creature.name} · Loot`, `<section class="creature-loot"><h3>Drop pool and chances</h3>
+          <label>${creature.stages.length ? 'Stage' : 'Enemy level'} <select data-loot-stage="${creature.id}">${(creature.stages.length ? creature.stages : Array.from({ length: 120 }, (_, index) => index + 1)).map((value) => `<option>${value}</option>`).join('')}</select></label>
+          <div class="glossary-loot">${lootTable(creature.id, stage, account.conduitUpgrades)}</div></section>`, 'View Loot')
+          : '<button type="button" class="text-button" disabled>View Loot</button><p class="quiet">Defeat this enemy to reveal its loot.</p>'}
       </article>`;
     }).join('')}</div>`;
 }

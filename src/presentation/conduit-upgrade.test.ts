@@ -95,7 +95,7 @@ describe('Conduit Upgrade and account-aware icons', () => {
     account.creatures['infusion:machines:0'].defeated = true;
     const html = creatureGlossary(account);
     expect(html).toContain('Broken Mechanical Components');
-    expect(html).toContain('<td>1-1</td><td>25%</td>');
+    expect(html).toContain('<td>3-3</td><td>100%</td>');
     expect(html).toContain('currencies/mechanical-components.png');
   });
   it('includes actual component stacks and snapshotted Conduit levels in loot/results without extra awards', () => {

@@ -87,10 +87,10 @@ describe('persistent progression transactions', () => {
     expect(result.state.phase).toBe('cleared');
     const account = saveAccountRewards(saved, result, `run-${element}`);
     expect(account.materials).toEqual({
-      [`${element}-common`]: 3, [`${element}-uncommon`]: 3, [`${element}-rare`]: 3,
-      [`${element}-epic`]: 3, [`${element}-legendary`]: 3, [`${element}-omnic`]: 3,
+      [`${element}-common`]: 15, [`${element}-uncommon`]: 15, [`${element}-rare`]: 15,
+      [`${element}-epic`]: 15, [`${element}-legendary`]: 15, [`${element}-omnic`]: 15,
     });
-    expect(account.fractalis).toBe(15);
+    expect(account.fractalis).toBe(75);
     expect(unlockedStage(loadAccount(saved), element)).toBe(35);
     expect(saveAccountRewards(saved, result, `run-${element}`)).toEqual(account);
     for (const other of playableDungeons.filter((id) => id !== element)) expect(unlockedStage(account, other)).toBe(1);

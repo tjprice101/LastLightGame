@@ -17,6 +17,12 @@ Phases6/7. See [creature infusion](evolution-fodder.md) and the
 
 ## Activity organization
 
+Activity entry footers show unlock requirements and the highest owned
+Element-Bearer level only while locked. Once the current account meets all
+requirements, omit that hint entirely, including the completed Machines
+regional-clear condition. Stage selectors and enabled entry actions remain;
+shared access validation and Information references are unchanged.
+
 Gameplay is a new primary sanctuary tab alongside Home, Character Upgrades and
 Events, superseding the earlier exactly-three-screen layout.
 It groups **Story**, **Training**, **Elemental material dungeons**, **Evolution infusion**,
@@ -67,14 +73,11 @@ elemental damage bonuses, resistances, or revised battle balance.
   Arenas/material icons use the surviving canonical pack. Two enemies per ordinary
   stage; one stronger boss every fifth stage.
   Enemy lineup index is `floor((stage-1) * pack.length / 35)`.
-- Stats use the shared accelerating curve below, starting at Lv10 HP55/110
-  and Attack32/48 for ordinary/boss; Defense2. HP initial rate .024
-  doubles former .012 growth; Attack uses the shared .12 early growth (D-165).
-  Defense initial rate .08 on base2 doubles
-  former additive .08. Crit `.05+(level-10)*.002`, bounded at .25.
+- Stats use the complete shared level/rank curve below (D-289), without
+  activity-specific opening stats or critical rates. Crit12%, multiplier1.5.
 - Every enemy, including Stage1 enemies, has a periodic elemental strike: multiplier
-  `1.2+(stage-1)*.588/34`, every two boss turns or three ordinary turns.
-  The final coefficient remains 1.788, matching the former Stage50 endpoint.
+  `1.2+(level-1)*.004`, every two boss turns or three ordinary turns.
+  The Lv120 coefficient is1.676, identical across activities.
   This is an editable direct-damage ability, not a new elemental status system.
   BelowLv50 the strike is its only skill. AtLv50+ ordinary enemies gain an
   Overdrive variant at1.25x the first skill's multiplier every5 turns.
@@ -178,14 +181,14 @@ intended to take effort without making rare rewards impossible.
 
 First-pass drops per defeated dungeon enemy (including burn kills):
 
-| Material | Unlock enemy level / first floor | Chance at unlock -> Lv120 | Lv120 quantity |
+| Material | Unlock enemy level / first floor | Chance at unlock -> Lv120 | Final boss35 quantity (D-294) |
 | --- | --- | --- | --- |
-| Seed / Common | 10 / 1 | Guaranteed | 3-6 |
-| Bloom / Uncommon | 23 / 1 (entryLv38) | 25% -> 98% | 3-6 |
-| Shard / Rare | 48 / 5 | 12% -> 90% | 3-6 |
-| Crest / Epic | 73 / 16 | 6% -> 80% | 3-6 |
-| Heart / Legendary | 98 / 26 | 2.5% -> 60% | 3-6 |
-| Soul / Omnic | 120 / 35 | 35% at Lv120 | 3-6 |
+| Seed / Common | 10 / 1 | Guaranteed | 15-30 |
+| Bloom / Uncommon | 23 / 1 (entryLv38) | 25% -> 98% | 15-30 |
+| Shard / Rare | 48 / 5 | 12% -> 90% | 15-30 |
+| Crest / Epic | 73 / 16 | 6% -> 80% | 15-30 |
+| Heart / Legendary | 98 / 26 | 2.5% -> 60% | 15-30 |
+| Soul / Omnic | 120 / 35 | 35% at Lv120 | 15-30 |
 
 All prior enemy-level gates remain intact. Soul only unlocks at the endpoint,
 so its old 1% starting chance is replaced by the final 35% chance there.
@@ -195,11 +198,13 @@ Each successful drop independently rolls an inclusive integer from minimum to
 twice minimum. Chances interpolate from the unlock chance to the final chance
 using `((L-U)/(120-U))^1.4`; the Lv120-only unlock uses its final chance directly.
 These curves live in [loot-random.ts](../src/content/loot-random.ts).
-Q is 3 for every material: stacks progress from 1-2 to 2-4 to 3-6,
-so final quantities are only triple baseline, not the earlier oversized payouts.
+Q is3 for every material: base stacks progress from1-2 to2-4 to3-6.
+D-294 samples that base quantity, then multiplies by5 at the terminal boss:
+15/20/25/30. Earlier bosses and ordinary enemies keep the original curve.
 
 These rolls are independent, so multiple rarities may drop together.
-Bosses use the same per-enemy table, no hidden multiplier or pity.
+Earlier bosses use the ordinary per-enemy table. Final boss35 gets the explicit
+5x quantity multiplier on every clear/replay, with no extra roll or pity.
 Prismatica per enemy scales from 5-10 at Lv1 to 15-30 at Lv120 in every mode:
 `minimum = 5 + floor(10*((L-1)/119)^2)`, maximum = twice minimum.
 Adventure remains endless, with loot/stats capped at enemy Lv120.
@@ -248,12 +253,15 @@ No later Fracture Null-Prismatica rewards assumed. See [growth rules](units-and-
 
 ### Shared enemy growth and discovery
 
-`src/content/stat-growth.ts` owns D-288 Lv120 endpoints: ordinaryHP7,000,
+`src/content/stat-growth.ts` owns D-289 Lv120 endpoints: ordinaryHP9,000,
 Attack1,200, Defense400; bossHP35,000, Attack3,000, Defense600.
-For baseB, targetT, initial rateR, stepsS and spanN:
-`round(B*(1+S*R)*exp(log(T/(B*(1+N*R)))*(S/N)^2))`.
-This preserves opening stats and accelerates smoothly to the tuned endpoints.
-Training retains species openings; shared HP/Attack/Defense rates are.30/.12/.15.
+For baseB, targetT, initial rateR and bounded levelL=min(level,120):
+`round(B*(1+(L-1)*R)*exp(log(T/(B*(1+119*R)))*max(0,L-25)/95))`.
+Shared HP/Attack/Defense rates are.45/.25/.30, with extra exponential
+acceleration above25. Ordinary Lv1 openings83/22/4; boss207.5/27.5/(16/3).
+All activities use the same full stats and level-based skills for the same rank.
+Story has no discount, Training no species overrides, and War no playable-stat
+inheritance. Boss rank and enemy count remain intentional differences.
 Enemy level follows wave, capped120.
 Waves continue after120 without further stat growth.
 
@@ -291,11 +299,12 @@ This is a drop reference, not capture/pity or a second source of rewards.
   Forms occupy stages1-6/7-12/13-18/19-24/25-30/31-35.
   Two ordinary enemies, one stronger boss every fifth stage.
   Stats use [D-288's hostile curve](combat.md#progressive-build-reliance-d-288).
-  At Lv120:7,000 ordinaryHP/35,000 bossHP,1,200/3,000 Attack
+  At Lv120:9,000 ordinaryHP/35,000 bossHP,1,200/3,000 Attack
   and400/600 Defense. Captured playable stats use a separate linear curve.
   Crit12%, multiplier1.5. Scarlet Judgment/Cosmic Wrath strikes every3 ordinary
-  turns or2 boss turns, coefficient `1.2+(stage-1)*.384/34`.
-  The final coefficient remains 1.584.
+  turns or2 boss turns, coefficient `1.2+(level-1)*.004` (D-289).
+  The Lv120 coefficient is1.676. Existing captured kits preserve exact
+  historical coefficients; only new copies retain the new hostile skills.
   All infusion enemies start aboveLv50 and therefore have two skills: ordinary
   Overdrive every5 turns at1.25x this coefficient, or boss Last Ruin ultimate
   every6 turns at`max(2.6, coefficient*1.65)`. The ultimate replaces the scheduled
@@ -312,12 +321,12 @@ This is a drop reference, not capture/pity or a second source of rewards.
   to their **four Heaven/two Abyss affinities**, matching their specialty group.
 - Per defeat: guaranteed weapon material from Lv50/Stage1; evolution and
   leveling materials from Lv75/Stage19. The quantity curve starts at50;
-  all final specialty stacks remain3-6.
+  final specialty stacks are15-30 after D-294's5x quantity boost.
   Preserved supplemental level unlocks: EpicLv80/Stage22,
   LegendaryLv100/Stage30, OmnicLv115/Stage34. Chances grow from15%/6%/2%
-  to85%/65%/40%; successful final stacks are3-6 for each rarity.
+  to85%/65%/40%; successful final stacks are15-30 for each rarity.
   Each successful rarity roll chooses **one** of the mode's eligible elements uniformly,
-  not every element. Final Prismatica is15-30. Phase6 adds20% captures per kill,
+  not every element. Final Prismatica is75-150. Phase6 adds20% captures per kill,
   ordinary enemies and bosses alike; no guaranteed rare pool or pity.
   Enemy-death stacks vary visually from75-135% size, with randomized scatter and
   independent850-1849ms automatic pickup. Reduced motion keeps a static650ms

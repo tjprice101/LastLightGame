@@ -20,7 +20,7 @@ Sovereign Facet is the authored strike. Bosses retain a Last Ruin ultimate.
 Every form name ends with Gleamstone Slime except the base. No actual evolution
 mechanic: copies cannot change form. Hostile level is
 `round(65 + (stage-1)*55/24)`. Tier is `floor((stage-1)*6/25)`.
-Stats use D-288's accelerating enemy curve; Lv120 has7,000 ordinary/
+Stats use D-289's shared level/rank enemy curve; Lv120 has9,000 ordinary/
 35,000 bossHP. Captures use separate linear playable stats times fixed
 `.65+.35*tier/5`; they never inherit hostile or boss growth.
 [Current balance](combat.md#progressive-build-reliance-d-288).
@@ -32,7 +32,9 @@ Each newly defeated enemy awards one uniform integer in the Prismatica range:
 `minimum=round(storyMinimum(level)*(1+19*((level-65)/55)^2))`, maximum=`minimum*2`,
 where `storyMinimum=5+2*(level-1)` is the D-225 linear Story line. Treasury
 equals Story at the same level on entry (133-266 at65), then the multiplier
-accelerates to20x: 4,860-9,720 at120. Same boss/ordinary rates.
+accelerates to20x: base4,860-9,720 at120. D-294 multiplies the stage25
+final boss's sampled quantity by5:24,300-48,600 on every clear/replay.
+Earlier boss/ordinary rates remain equal. Capture chance/count is unchanged.
 No second ordinary currency roll, Null-Prismatica, materials or clear bonus.
 Reward RNG and20% capture RNG remain separate. Burn/AOE share the normal
 newly-dead path. Dead units cannot roll again.

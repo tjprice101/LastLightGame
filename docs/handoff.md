@@ -1,6 +1,441 @@
 # Current state and handoff
 
+## Compact Conduit reward dialogs
+
+- Owner screenshot shows the upgraded Conduit image pushing saved details
+  below the dialog fold. Shared Conduit receipts now use a compact120px/16dvh
+  art stage and tighter text spacing. Purchases reuse the same receipt layout;
+  catalog/equipment icons and summon portraits are unchanged.
+  All exact effects, costs, ownership, meters and Continue/Skip remain.
+  [Contract](conduit-upgrades.md#implemented-editable-first-pass-balance).
+- `npm test -- src\presentation\summon-presentation.test.ts
+  src\presentation\reward-screen.test.ts
+  src\presentation\conduit-upgrade.test.ts --maxWorkers=2`:25 passed.
+  Build Last Light (`npm run build`):passed, existing chunk advisory only.
+  Edited-file diagnostics and `git diff --check`:passed.
+- Local browser fixture uses the actual saved Prism Splinter Socket+1 markup
+  and application CSS, with no transactions/save changes. At three desktop/
+  mobile viewport settings, the complete receipt and Continue fit with zero
+  content scrolling/horizontal overflow after reveal animations finish.
+  Localhost5173 is responsive. Not published to GitHub Pages.
+
+## Hide satisfied activity unlock requirements
+
+- Owner requests removing completed unlock conditions. Dungeon, infusion,
+  currency, Machines, War and Rose event entry footers now omit requirements
+  and highest-level hints when unlocked. Locked entries retain their hints
+  and disabled actions; stage choices and access validation are unchanged.
+  [Contract](gameplay-and-elements.md#activity-organization).
+- `npm test -- src\presentation\activity-banner.test.ts --maxWorkers=2`:
+  13 passed, including9 account/threshold cases across all15 staged entries,
+  the Machines regional-clear prerequisite and account immutability.
+  Build Last Light (`npm run build`) passed with the existing chunk-size
+  advisory; edited-file diagnostics and `git diff --check` passed.
+  No save/server change or deployment.
+
+## GitHub Pages online configuration repair
+
+- Owner reports "Online accounts are not configured for this deployment"
+  on the published game. The live main bundle checked on2026-10-14 contains
+  the account client but neither the project URL nor a publishable key.
+  Local ignored `.env.local` has valid settings; the committed Pages workflow
+  did not pass either setting into its build. This error occurs before any
+  authentication request and does not establish account loss or server failure.
+- Pages build now receives `VITE_SUPABASE_URL` and
+  `VITE_SUPABASE_PUBLISHABLE_KEY` from repository Actions variables, falling
+  back to same-name secrets. An explicit guard rejects missing/invalid values
+  and server secret keys before building/uploading. No keys are committed.
+  [Setup and recovery](development-guide.md#online-account-configuration).
+- Validation: exact workflow guard passed5 cases (valid local configuration,
+  missing URL, missing key, server secret and placeholder URL);
+  `npm test -- src\online\account-client.test.ts --maxWorkers=2`:9 passed;
+  Build Last Light (`npm run build`):passed with existing chunk-size warning.
+- Owner authorized GitHub access and publication, then approved fixing CI
+  blockers. Both repository Actions variables are configured from local
+  settings. Only the workflow, generated portrait revisions, offline-save
+  regression test and deterministic VFX test clock were published; unrelated
+  dirty game changes remain local.
+- Previous two deployments failed before publication: stale portrait hashes
+  and a Settings source assertion missing the existing music argument.
+  Regenerated hashes without changing PNGs and updated the assertion.
+  The next run exposed real-clock jitter in a synthetic-frame VFX test; its
+  performance clock now follows the controlled frame timestamp, preserving
+  timing/impact assertions and production behavior.
+- Published commits: `a358e11` (workflow), `bc80f3a` (existing blockers),
+  `1597d71` (deterministic test clock). Actions run38588307547 passed all2079
+  tests, production build and Pages deployment on2026-10-14.
+  Local targeted suites:22 portrait/offline-save tests and28 VFX tests passed.
+  `git diff --check` for the four published files passed.
+- Live `main-ZT8ggXca.js` verified to contain both account settings;
+  Supabase public authentication settings and account-auth OPTIONS return200.
+  No account/session/save resets or server changes. Actual owner credential
+  login remains untested; no passwords requested. This does not publish the
+  unrelated uncommitted balance/loot work in this workspace.
+
+## Story uncommon consistency fix (D-297)
+
+- Owner reports Story text says Common+Uncommon rewards while early Story
+  fights only dropped Common. Story now always includes both tiers from the
+  first encounter onward: Common stays guaranteed; Uncommon chance scales
+  linearly from25% at Lv1 to80% at Lv55 with the same quantity curve.
+- Applied in the shared Story source table, so combat rewards, Collections
+  loot tables, stage-detail rewards and account validation stay consistent.
+  Element IDs, quantities and first-clear bonuses are unchanged.
+- Updated Story documentation to remove the outdated Lv23 unlock wording.
+- Validation:
+  `npm test -- src\game\story.test.ts src\content\creatures.test.ts
+  src\game\account.test.ts src\presentation\story.test.ts
+  src\presentation\gameplay.test.ts --maxWorkers=2` (52 passed),
+  plus Build Last Light (`npm run build`) passed.
+
+## Shared enemy art containment (D-296)
+
+- Owner screenshot shows late undiscovered Machine portraits painting over
+  card text. Current Collections already passes D-291 containment checks;
+  exact screenshot overlap was not reproduced before this change.
+- Promoted bounded art-row rules to shared glossary styles: fixed220px base
+  slot, zero-minimum grid tracks,100% contain-fitted images/SVGs and an overflow
+  boundary. Collections keeps its existing11rem slot. No source/runtime PNG,
+  facing, silhouette/discovery, reward or save changes.
+  [Contract](archives-and-elements.md#shared-enemy-artwork-containment-d-296).
+- Native isolated Chrome verifies all151 cards at1280/953/390/320px on both
+  Collections and standalone glossary: artwork inside its slot and above the
+  name, no horizontal overflow. Includes the late Machine silhouettes in the
+  supplied screenshot. Reports/screenshots/script in session artifacts;
+  temporary profile and spawned browser cleaned; no owner save writes.
+- `npm test -- src\presentation\archives-controls.test.ts
+  src\presentation\archives.test.ts src\content\creatures.test.ts
+  --maxWorkers=2`:21 passed across3 files. Build Last Light (`npm run build`):
+  TypeScript/Vite passed with existing large-chunk advisory.
+  `git diff --check`:passed. Client-only, no deployment/commit/new dependency.
+  Localhost remains running; refresh an older client to pick up current styles.
+
+## Enemy View Loot and Conduit View Details (D-295)
+
+- Owner requests moving long enemy tables behind View Loot and opening each
+  Conduit's information from its loot row. Every enemy card now has View Loot
+  beneath identity/lore/artwork status; previously visible loot is contained in
+  a native Information dialog. Undiscovered/encountered entries keep a disabled
+  button plus defeat-to-reveal explanation. Existing discovery gates remain.
+- Dialog retains live stage/Training-level amounts/percentages, bonus notes,
+  sale previews and upgrade meters. Shared drop-roll explanations are deduped
+  below the table instead of repeated in narrow rows. Amount/Chance headings
+  remain separated and the table fits320px without horizontal scrolling.
+- Each Conduit has View Details, with shared saved-upgrade/current/+5 effects,
+  art/rarity/lore/power/acquisition/banner eligibility. Archive uses the same
+  reference, retaining unowned-art silhouettes. Native nested close/Escape
+  returns focus to the Conduit button; loot selection/scroll remains intact.
+  Loot close returns to the original enemy button. Browsing writes nothing.
+  [Current contract](archives-and-elements.md#enemy-loot-and-conduit-details-dialogs-d-295).
+- `npm test -- src\presentation\creature-loot-dialog.test.ts
+  src\presentation\archives-controls.test.ts src\presentation\archives.test.ts
+  src\content\creatures.test.ts src\presentation\information-topics.test.ts
+  src\presentation\conduit-upgrade.test.ts src\presentation\ui-copy.test.ts
+  --maxWorkers=2`:43 passed across7 files. New5 tests exercise all enemies'
+  first/last loot stages, every Conduit row/details, unique IDs, dynamic stage
+  changes, nested Escape, silhouettes, upgrade levels and unchanged accounts.
+- Build Last Light (`npm run build`):TypeScript/Vite passed with existing
+  large-chunk advisory. Edited-file diagnostics and `git diff --check`:passed.
+  Native isolated Chrome1280/390/320px verifies modal/table bounds, separated
+  headings, actual upgrade-aware details, Escape/focus return and compact cards.
+  Screenshots/report live in session artifacts; exact temporary browser profile
+  and spawned process cleaned. No owner saves changed.
+- Client-only: no server deployment, account/save/reward changes or new
+  dependencies. Localhost remains running; no commit or unresolved decision.
+
+## Repeatable final-boss rewards (D-294)
+
+- Owner selects5x existing currency/material/component quantities, including
+  every replay and all six Story regional bosses, and approves deploying the
+  validated signed-in engine. Shared terminal classifier covers21 endpoints:
+  six Story bosses25/50/75/100/125/150; six material dungeons35;
+  Heaven/Abyss35, Treasury/Sanctuary25, Roses35, Machines100; three War modes10.
+  Endless Training and earlier ordinary/boss encounters are unchanged.
+- Sample the original quantity before multiplying by5, preserving every
+  probability decision and RNG draw. Final ranges use the5-unit lattice.
+  Conduit/chest counts remain1 per successful roll; capture/recruitment chances,
+  owned-recruit conversion100 and separate Story first-clear bonuses are unchanged.
+  No extra clear transaction, load write, retroactive reward or schema change.
+- Exact examples: Machine final625 BMC; dungeon/infusion/Rose final successful
+  materials15-30; Treasury24,300-48,600 Prismatica; War25,000-40,000 plus60%
+  chance of25 Null-Prismatica. Sanctuary final80% chance of25; Heaven/Abyss
+  final0/5/10/15 at75/10/10/5%. All save in the existing atomic kill receipt.
+  [Current specification](free-battle.md#repeatable-final-boss-loot-d-294).
+- Updated runtime tables, validator (including final quantity divisibility),
+  Collections loot, Gameplay Information/Battle menu/event rules and related
+  mode docs. New32-test endpoint suite covers all21 real kills, replay/dedupe,
+  all regional first bonuses, unchanged rare counts, sample/RNG/premium parity,
+  forged quantity rejection, overflow and denied persistence.
+- `npm test -- --maxWorkers=2`:2,159 passed;5 existing unrelated failures across
+ 2 files (offline-save Settings source-regex, Rosetta/Thornia/Crinso/Bliss
+  portrait-byte revisions). All reward, authoritative server and Information
+  suites pass. An additional focused10-file economy/help run passed154 tests.
+- `npm test -- src\game\final-boss-loot.test.ts --maxWorkers=2`:32 passed.
+- Build Last Light (`npm run build`):TypeScript/Vite passed; existing large-chunk
+  advisory only. `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json --pretty false`
+  and `npx --yes deno check supabase\functions\game-operation\index.ts`:passed.
+  Edited-file diagnostics, smoke syntax and `git diff --check`:passed.
+- `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --no-verify-jwt`:deployed successfully despite the existing
+  Docker-not-running warning. `node tools\smoke_server_game.mjs --final-loot`:
+  all21 real hosted endpoints passed exact local/server rewards, first bonuses,
+  atomic persisted accounts and same-request idempotency. Smoke lattice checks
+  subtract separately decorated Story bonuses before testing base5x loot.
+  All disposable identities/cascading records removed; no owner account touched.
+- `node tools\smoke_server_game.mjs --components`:hosted stage1/stage100 actual
+  kills passed exact3/625 components, atomic totals and idempotent retries;
+  all disposable identities/cascading records removed.
+- Localhost remains responsive at the existing5173 URL. No commit made, payment
+  implementation added or further owner decision required for this reward change.
+
+## Larger death loot and Machine Conduit beams (D-293)
+
+- Owner requests acquired Machine Conduits as visible beam loot and all dropped
+  items50% larger, explicitly including captured creature copies.
+  Existing actual reward events already include Conduits in the shared burst;
+  strengthened their presentation with dedicated Conduit class/beam core/base
+  glare, retaining real icon, name, exact quantity and snapshotted upgrade meter.
+- Shared drop scale is exactly existing randomized size times1.5. All receipt
+  categories participate: currencies, materials, components, chests/tokens,
+  Conduits, recruitments and captures. Nominal artwork36->54px; randomized
+  output40.5px to just under72.9px. Entire beam/quantity/meter scales too;
+  no source PNG, menu/results icon, reward quantity or gameplay change.
+- Shared layout spaces drops82px apart, wraps narrow views into rows and
+  reserves beam/label bounds around the death anchor. Row gaps adapt to
+  viewport height for larger receipts. Keep existing850-1849ms pickup timing,
+  live battle speed, static reduced-motion dwell, cleanup and save-before-VFX.
+  No extra rolls/claims or transactions.
+- Six added regressions validate an actual seeded Machine kill's Conduit
+  icon/beam, every non-Common catalog Conduit, exact1.5 multiplier for every
+  receipt category and randomized endpoint, capture portrait and responsive
+  bounds at320/390/1280px.
+- `npm test -- src\presentation\battle-loot.test.ts
+  src\presentation\battle-results.test.ts src\game\machines.test.ts
+  --maxWorkers=2`:53 passed across3 files.
+- Build Last Light task (`npm run build`):TypeScript/Vite passed with existing
+  large-chunk advisory. Edited-file diagnostics and `git diff --check`:passed.
+  Localhost HTTP200.
+- Isolated real Chrome with actual Machine receipt and mixed fixture at
+  1280x720/390x844/320x740 verifies maximum randomized enlarged dimensions,
+  loaded Conduit/capture icons, visible in-bounds beams, Conduit base glare,
+  viewport fit, unchanged receipt and collection cleanup. Screenshots/report
+  are session-only artifacts; temporary Chrome processes/profiles cleaned.
+- Localhost serves the client change. No server bundle/deployment, account
+  edits, migration, commit or owner decision needed; no work remains.
+  [Visual contract](free-battle.md#larger-death-loot-and-machine-conduit-beams-d-293).
+
+## Battle Quit/Leave navigation repair (D-292)
+
+- Owner reports Quit after defeat or during a battle fails to return and
+  reports a missing session. Found connected client defects: `enterOnline`
+  clears transient history when resuming, but Back required a previous entry;
+  results Quit also deleted the server run before attempting that navigation.
+  Subsequent results clicks then required the already-deleted local session.
+- Results Quit now delegates only to the same Back callback as toolbar Leave.
+  That flow owns the single online quit/confirmation. Removed unused quit
+  from the combat-authority interface, its preview implementation and fixtures.
+  Failed/ambiguous server exits still surface errors and preserve same-request
+  retries; no catch-and-ignore or new server behavior.
+- Back preserves actual caller snapshots when present. For a battle only,
+  empty history returns to Gameplay with clean transient filters/panels/hash
+  and top scroll. Ordinary menu Back still errors on missing history.
+  A previously confirmed quit with null session can finish navigation.
+  Settings title confirmation, rewards, run snapshots and account data remain.
+- Added four real BattleView DOM regressions for cleared/defeated online
+  results, offline caller restoration, rejected-exit retry and repeated-click
+  suppression. History tests cover fallback versus actual callers and main
+  wiring; authoritative tests confirm player/cleared/defeat quit returns null
+  session without changing saved account/rewards/progress.
+- `npm test -- src\presentation\battle-exit.test.ts
+  src\presentation\battle-authority.test.ts
+  src\presentation\menu-history.test.ts
+  src\presentation\battle-toolbar.test.ts
+  src\presentation\battle-shortcuts.test.ts
+  src\presentation\battle-results.test.ts
+  src\online\server-game.test.ts --maxWorkers=2`:62 passed across7 files.
+  VS Code test discovery unavailable; used existing Vitest CLI. Existing
+  jsdom canvas-not-implemented notices remain in neighboring toolbar tests.
+- Build Last Light task (`npm run build`):TypeScript/Vite passed with existing
+  large-chunk advisory. Edited-file diagnostics and `git diff --check`:passed.
+  Localhost HTTP200. Shared browser CDP connection timed out, so no owner
+  account/browser actions were performed or claimed.
+- Client fix is served by running localhost; refresh/reconnect to load it.
+  No server deployment, migration, account edits or commit. No owner decision
+  or unimplemented work remains for this request.
+  [Exit contract](free-battle.md#reliable-battle-exit-d-292).
+
+## Collections layout and control repairs (D-291)
+
+- Reorganized Collections into a title/Information toolbar, three gallery
+  choices, compact top filters, result/management row and natural-height cards.
+  Filters use one desktop row, two columns at390px and one at320px.
+  Removed clipped/nested results scrolling and inherited160px filter growth.
+- Fixed high-specificity layout rules overriding gallery/card `hidden` states.
+  Reset now dispatches change for every backing filter so visible selection
+  labels refresh. Initial filtering runs after binding. Gallery switches keep
+  filter/card DOM. Marked the actual Collections page scroller for existing
+  caller-history snapshots; no new account state or writes.
+- Restored unowned captured-form silhouettes. Collections cards use flexible
+  content flow rather than mismatched subgrid child counts; unrelated Team
+  card layout remains unchanged. Larger readable names/status/effects and
+  bounded11rem Character/Conduit/creature art keep content separate.
+  Fixed creature images and pending SVGs overflowing their artwork row.
+- `npm test -- src\presentation\archives.test.ts
+  src\presentation\archives-controls.test.ts
+  src\presentation\selection-panel.test.ts
+  src\presentation\menu-history.test.ts --maxWorkers=2`:22 passed across4
+  files. Earlier surrounding run including `sanctuary.test.ts`:31 passed
+  across5 files. Five new DOM tests cover combined filters/empty/Reset,
+  selection dialogs/focus, gallery preservation, Information/kit/Details,
+  live activity/stage loot and captured reveal gating.
+  VS Code test discovery did not find these files; used existing Vitest CLI.
+- Build Last Light task (`npm run build`):TypeScript/Vite passed; existing
+  large-chunk advisory only. Edited-file diagnostics:passed.
+- Isolated real Chrome at1858x768/1280x720/390x844/320x740 passed:
+  exactly one computed-visible gallery,126 initial forms,6 Infernic matches,
+  actual selection choice/Reset labels, Machine activity filtering/stage loot,
+  native kit dialog, art containment, last-card reachability and no horizontal
+  overflow. Phone filter panel reduced from481px to261px at390px.
+  Settled ancestor opacity is1; earlier dim screenshots captured the existing
+  gallery entrance animation mid-flight. Preserved animations/reduced motion.
+  Session-only verification artifacts remain outside the repo; isolated Chrome
+  processes/profiles and the earlier stalled profile were cleaned up.
+- Localhost serves the finished client changes. No server deployment, asset-byte
+  change, account edits, commit or owner decision is needed. Nothing remains
+  unimplemented for this request. [Contract](archives-and-elements.md#collections-layout-and-controls-d-291).
+
+## Guaranteed linear Machine components (D-290)
+
+- Owner requests guaranteed components from every defeated Machine enemy,
+  starting at3 per enemy, with linear stage growth; selects about125 at the
+  final stage. Implemented exactly `round(3+122*(stage-1)/99)` across100 stages:
+  stages1/25/50/75/100 give3/33/63/94/125 each, including bosses.
+- Shared drop API updates real battle rewards, Creature loot tables, activity
+  and upgrade Information dialogs. Preserve one isolated component RNG draw per
+  kill for compatibility; it no longer affects the guaranteed outcome.
+  No changes to other RNG/drop rates, costs, currencies, gear or account schemas.
+  No extra clear rewards or retroactive grants.
+- Atomic reward validation now requires the exact current stage component
+  quantity for Machine kills, rejecting omitted/forged amounts and overflow
+  before any save. Existing receipt deduplication and one-write rewards remain.
+  Historical already-presented/saved rewards are not re-awarded.
+- All100 stages validate guaranteed RNG endpoints, every actual enemy's AoE
+  reward, exact source-table parity, persisted totals and duplicate receipts.
+  Authoritative engine tests cover1/25/50/75/100 with real activity gates.
+  Updated the manually authored Master-chest reward fixture to include125
+  required final-boss components without changing chest rules.
+- `npm test -- src\game\conduit-upgrades.test.ts src\game\machines.test.ts
+  src\presentation\conduit-upgrade.test.ts src\content\creatures.test.ts
+  src\online\server-game.test.ts src\presentation\battle-results.test.ts
+  src\game\account.test.ts src\game\master-conduits.test.ts --maxWorkers=2`:
+  395 passed across8 files.
+- Full `npm test -- --maxWorkers=2`:2,106 passed,6 failed across142 files.
+  One coupled missing-component Master fixture was fixed and its full89-test
+  file passed afterward. The other five are unchanged baseline portrait-byte/
+  offline-save Settings source-regex failures. No unrelated fixes.
+- Build Last Light task (`npm run build`):TypeScript/Vite passed with existing
+  large-chunk advisory. `node tools\bundle_server_game.mjs`, Edge Function
+  TypeScript and `npx --yes deno check
+  supabase\functions\game-operation\index.ts`:passed. Edited-file diagnostics,
+  hosted-smoke syntax and `git diff --check`:passed.
+- Owner explicitly authorizes this online rollout.
+  `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --no-verify-jwt`:deployed successfully; no DB migration.
+  `node tools\smoke_server_game.mjs --components`:passed hosted actual stage1
+  kills and near-defeated stage100 boss fixture at3/125, exact account totals
+  and idempotent kill retries. Disposable zero-starting-currency identity and
+  cascading data removed; no owner-account edits. No commit.
+- Guaranteed drops are live in signed-in combat and localhost. Upgrade costs
+  remain unchanged. No owner decision or implementation remains for this request.
+  [Current economy and table](conduit-upgrades.md#implemented-editable-first-pass-balance).
+
+## Required-resource component artwork size
+
+- Enlarged only the Broken Mechanical Components PNG in Conduit Upgrade's
+  Required resources row by40% using a scoped image transform. Retained the44px
+  layout slot, panel dimensions, balance/cost text and action positions.
+  Other component-art surfaces and source/runtime PNG bytes are unchanged.
+- `npm test -- src\presentation\conduit-upgrade.test.ts
+  src\presentation\conduit-upgrade-catalog.test.ts --maxWorkers=2`:17 passed
+  across2 files. Edited CSS diagnostics:passed.
+- Isolated headless Chrome checked actual rendered menu markup at1440px and390px:
+  image61.6px versus44px unscaled; resource panel and text rectangles identical
+  with/without the transform, no artwork/text overlap. No account/save changes.
+  Integrated browser connection timed out; isolated Chrome/profile cleaned up.
+- Localhost serves this CSS immediately; no server/economy change or deployment
+  is required. [Presentation contract](menus-and-inventory.md#conduit-panel-fit-and-in-place-updates-d-204).
+
+## Consistent stronger enemies and hosted rollout (D-289)
+
+- Owner reports the six Story regions remain too easy, requests equal-level
+  enemy consistency everywhere and a struggle against higher-level foes.
+  Owner confirms signed-in testing and explicitly approves deploying the
+  validated battle-server update. Localhost previously served new menus while
+  signed-in combat still used the older hosted rules.
+- All hostile factories now use complete shared level/rank stats and
+  `enemyAbilityMultiplier(level)`. Removed Story HP/Attack/Crit discounts,
+  Training species opening/Crit overrides, dungeon stage/Crit differences,
+  infusion stage coefficients and War playable-stat inheritance/fixed1.55.
+  Preserve authored identities/art/elements/skill names and boss distinction.
+  Encounter enemy count remains mode-specific; identical stats do not promise
+  identical total encounter difficulty.
+- Stronger shared opening rates HP/Attack/Defense=.45/.25/.30, with extra
+  exponential acceleration above25. Ordinary120=9,000/1,200/400;
+  boss120=35,000/3,000/600. The140 event extension is unchanged.
+  Linear playable/capture growth, costs/caps, access, RNG streams, rewards,
+  mitigation, ownership and equipment rules remain. No migration or grants.
+- Actual Lv60 ordinary enemies:2,945 HP/428 Attack/108 Defense; bosses:
+  8,665/691/151. Crit12%, critical multiplier1.5 for both. Unequipped Infernis19
+  takes7 Normals to defeat enemy19 versus11 against enemy29; incoming
+  ordinary Normals rise from12% to19% maximum HP. All16-character +10-level
+  benchmarks validate actual hit counts, incoming pressure and availableSkill1
+  direct hits, not just increasing raw stats.
+- New regressions check all real factories/stages including legacy infusion
+  schedules, three-seed six-regional-boss Common-equipped squad clears,
+  first regional bonus solo atLv15/Common gear for all three initial starters,
+  accessible material/fodder milestones and late built-versus-unbuilt squads.
+  Updated unrelated arithmetic/presentation fixtures to control the enemy stats
+  they depend on, without changing their underlying mechanic assertions.
+- Preserve complete exact historical captured skill sets and metadata-free
+  legacy defaults, while new captures retain the current hostile skills.
+  Reject mixed/forged sets. Authoritative read preserves older active encounter
+  snapshots; quit/re-enter rebuilds with current stats. No load-time rewrites.
+- Final `npm test -- --maxWorkers=2`:2,100 passed,6 failed across142 files
+  (139 passed). Five unchanged baseline failures: four portrait-byte assertions
+  for Rosetta/Thornia/Crinso/Bliss and one offline-save Settings source regex.
+  Sixth is an unrelated timing-sensitive VFX live-speed assertion; focused rerun
+  passed. All combat, balance, capture and authoritative regressions passed.
+- `npm test -- src\game\enemy-progression.test.ts
+  src\online\server-game.test.ts src\vfx\vfx-systems.test.ts --maxWorkers=2`:
+  125 passed across3 files, including the VFX timing rerun. Earlier focused
+  enemy-progression/dungeons/battle run:143 passed across3 files.
+- `npm run build` via Build Last Light task:TypeScript/Vite passed, existing
+  >500kB chunk advisory only. `node tools\bundle_server_game.mjs` generated the
+  final authoritative bundle. `npx tsc --project
+  supabase\functions\game-operation\tsconfig.json --pretty false` and
+  `npx --yes deno check supabase\functions\game-operation\index.ts`:passed.
+  Editor diagnostics and `git diff --check`:passed.
+- `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --no-verify-jwt`:deployed successfully. CLI warned Docker
+  was not running but asset upload/deployment succeeded. No database migration.
+  `node tools\smoke_server_game.mjs`:passed hosted auth, gates, actual kills/
+  rewards, idempotency/CAS, profile/social/chat and current first-Story stats.
+  `node tools\smoke_server_game.mjs --balance`:passed actual hosted Lv60
+  Training/Heaven ordinary parity, material boss stats, common skill coefficient,
+  frozen reads and quit using a zero-currency disposable progression fixture.
+  Both runs removed all disposable identities/cascading records.
+- Localhost remains running: `http://127.0.0.1:5173/LastLightGame/` returnedHTTP200.
+  Existing battles intentionally retain their frozen current encounter; quit
+  and re-enter to test the new tuning. Server update is live; no static-client
+  publication, owner-account edits or commit performed. No owner choice remains
+  for this pass. Further playtesting remains useful.
+  [Current contract](combat.md#consistent-level-and-rank-difficulty-d-289).
+
 ## Linear playable growth and progressive build reliance (D-288)
+
+Historical completed phase; hostile coefficients, Story/species exceptions and
+undeployed status below are superseded by D-289 above.
 
 - Owner requests broad balance changes after reporting trivial same-level fights
   and explicitly confirms increasingly needing Conduits and a reliable team.
@@ -3692,7 +4127,8 @@ developer tuning within the scope.
   stage; one regional boss every25. Independent continuing encounter RNG;
   shared enemy growth/skill helpers with easier Story stat envelope.
   Story creatures/scenery are neutral art-pending, not borrowed/missing PNGs.
-- Guaranteed Common materials; Uncommon starts at enemyLv23. No higher
+- Guaranteed Common materials; Uncommon rolls from enemyLv1 at25% chance
+  and rises linearly to80% by Lv55. No higher
   materials/specialties/captures/Conduits/components/recruitments in Story.
   Ordinary per-kill currency remains level-scaled.
 - Optional walletv4 storyCompleted0-150 defaults0 read-only. Validated

@@ -11,7 +11,7 @@ export function conduitReward(id: ConduitId, account: Account, title: string, re
   const level = account.conduitUpgrades?.[id] ?? 0;
   return {
     title, name: conduit.name, accent: '#ffffff', animationLabel: 'Ancient mechanism restored',
-    art: conduitIcon(id, level),
+    art: `<span class="conduit-reward-art">${conduitIcon(id, level)}</span>`,
     details: `${conduitRarity(id)}<p>Upgrade +${level} · Owned ${owned}</p>
       <p>${escapeDialogText(conduitEffect(conduit, level))}</p><p>${escapeDialogText(receipt)}</p><p>Account-wide unlock · Not auto-equipped</p>`,
   };

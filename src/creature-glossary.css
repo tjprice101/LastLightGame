@@ -4,8 +4,8 @@
 .glossary-card { min-width: 0; border: 1px solid #ffffff20; border-radius: 12px; padding: 16px; background: #121218; }
 .glossary-card[hidden] { display: none; }
 .glossary-card h2 { font-size: 1.1rem; }
-.glossary-art { display: grid; place-items: center; min-height: 220px; background: radial-gradient(ellipse, #ffffff0c, transparent 70%); }
-.glossary-art img, .glossary-art svg { width: 220px; max-width: 100%; height: 220px; object-fit: contain; color: #968ea6; }
+.glossary-art { display: grid; place-items: center; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); height: 220px; min-height: 0; overflow: hidden; background: radial-gradient(ellipse, #ffffff0c, transparent 70%); }
+.glossary-art img, .glossary-art svg { width: 100%; max-width: 100%; height: 100%; max-height: 100%; min-height: 0; object-fit: contain; color: #968ea6; }
 .glossary-card.undiscovered, .archive-card.archive-form-locked { background: #121218; }
 .glossary-card.undiscovered .glossary-art, .unreached-character-art {
   background: radial-gradient(ellipse, #ffffff0c, transparent 70%);
@@ -19,3 +19,16 @@
 .glossary-loot th, .glossary-loot td { padding: 8px 4px; text-align: left; border-bottom: 1px solid #ffffff15; }
 .glossary-loot td small { display: block; opacity: .65; }
 .glossary-loot img { width: 56px; height: 56px; vertical-align: middle; object-fit: contain; }
+.glossary-card > [data-information^="creature-loot-"] { display: block; margin-top: .75rem; }
+.creature-loot .glossary-loot table { font-size: .9rem; }
+.creature-loot .loot-drop-column { width: 48%; }
+.creature-loot .glossary-loot th { font-size: .75rem; white-space: nowrap; }
+.creature-loot .glossary-loot td { vertical-align: top; }
+.creature-loot .glossary-loot td > strong { display: block; }
+.creature-loot .glossary-loot [data-information] { display: block; min-height: 44px; margin-top: .25rem; }
+.creature-loot .glossary-loot .conduit-icon-frame { width: 56px; height: 56px; }
+.creature-loot .glossary-loot .information-content { font-size: 1rem; }
+.conduit-details-art .conduit-icon-frame,
+.creature-loot .glossary-loot .conduit-details-art .conduit-icon-frame { width: 120px; height: 120px; }
+.glossary-loot .conduit-details-art img { width: 120px; height: 120px; }
+.loot-roll-notes { margin-top: 1rem; }

@@ -128,9 +128,12 @@ First-pass numbers are editable developer tuning, not a production-balance claim
 
 ## Per-kill rewards
 
-No Null-Prismatica and no stage-clear award. Boss/ordinary reward tables match.
+No Null-Prismatica and no separate stage-clear award. Earlier boss/ordinary
+reward tables match; D-294 multiplies stage35's currency/material quantities
+by5 on every clear/replay without altering rare-drop or capture chances.
 Prismatica uses the existing quadratic quantity curve extended to140 only here:
-9-18 at80,15-30 at120,18-36 at140. Materials roll independently by rarity.
+9-18 at80,15-30 at120, base18-36 at140; final stage35 pays90-180.
+Materials roll independently by rarity.
 
 | Material | Stable ID | Unlock level | Chance at unlock ->140 |
 | --- | --- | --- | --- |
@@ -142,7 +145,7 @@ Prismatica uses the existing quadratic quantity curve extended to140 only here:
 |Soul |`rosethorn-omnic` |130 |17.5% ->35% |
 
 Quantity minimum is `1+floor(2*((level-80)/60)^2)`, maximum twice that.
-Every successful final drop is3-6. Chance progress uses the shared power1.4
+Every successful final drop is15-30 after the D-2945x terminal-boss quantity boost. Chance progress uses the shared power1.4
 curve from each unlock to140. [infusionLoot](../src/content/infusions.ts)
 is authoritative for battles, stage previews and defeated Creature loot.
 Capture uses the existing independent20% RNG, gated before acquisition by

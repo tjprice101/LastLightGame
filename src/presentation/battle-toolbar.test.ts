@@ -49,7 +49,7 @@ describe('retained battle toolbar controls', () => {
       await pending;
       return { session: f.session, result: { state: f.session.state, events: [] } };
     });
-    const authority: BattleAuthority = { action, endTurn: action, nextStage: action, nextWave: action, retry: action, quit: vi.fn() };
+    const authority: BattleAuthority = { action, endTurn: action, nextStage: action, nextWave: action, retry: action };
     const f = fixture(phase === 'online' ? authority : undefined);
     Reflect.set(f.view, 'play', () => pending);
     Reflect.set(f.view, 'animate', () => pending);
@@ -85,7 +85,7 @@ describe('retained battle toolbar controls', () => {
 
   it('unlocks the same toolbar after a rejected server action without losing speed listeners', async () => {
     const rejected = vi.fn(async () => { throw new Error('Action rejected'); });
-    const f = fixture({ action: rejected, endTurn: rejected, nextStage: rejected, nextWave: rejected, retry: rejected, quit: vi.fn() });
+    const f = fixture({ action: rejected, endTurn: rejected, nextStage: rejected, nextWave: rejected, retry: rejected });
     const before = structuredClone(f.session);
     try {
       await Reflect.apply(Reflect.get(f.view, 'authoritativeCommand'), f.view, ['light']);

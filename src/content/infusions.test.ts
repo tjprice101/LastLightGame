@@ -90,8 +90,8 @@ describe('playable Heaven and Abyss', () => {
     for (const mode of ['heavens', 'abyss'] as const) for (const [index, element] of elements.filter((entry) => entry.infusion === mode).entries()) {
       const selection = (index + .5) / elements.filter((entry) => entry.infusion === mode).length;
       expect(infusionDrops(mode, 35, draws([0, 0, 0, 0, 0, selection, 0, 0, selection, 0, 0, selection]))).toEqual({
-        [`${mode}-weapon`]: 3, [`${mode}-evolution`]: 3, [`${mode}-level`]: 3,
-        [`${element.id}-epic`]: 3, [`${element.id}-legendary`]: 3, [`${element.id}-omnic`]: 3,
+        [`${mode}-weapon`]: 15, [`${mode}-evolution`]: 15, [`${mode}-level`]: 15,
+        [`${element.id}-epic`]: 15, [`${element.id}-legendary`]: 15, [`${element.id}-omnic`]: 15,
       });
     }
     for (const [rarity, stage] of [['epic', 22], ['legendary', 30], ['omnic', 34]] as const) {
@@ -139,7 +139,7 @@ describe('playable Heaven and Abyss', () => {
     expect(unlockedInfusionStage(first, mode === 'heavens' ? 'abyss' : 'heavens')).toBe(1);
     expect(saveAccountRewards(saved, result, mode)).toEqual(first);
     const final = createInfusionBattle(mode, 35, 1729, 'ember', { level: 105, evolution: 6 });
-    expect(infusionEncounter(mode, 35).abilityMultiplier).toBeCloseTo(1.584);
+    expect(infusionEncounter(mode, 35).abilityMultiplier).toBeCloseTo(1.676);
     final.phase = 'cleared';
     final.enemies[0].hp = 0;
     saveAccountRewards(saved, { state: final, events: [] }, 'final');

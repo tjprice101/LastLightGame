@@ -214,7 +214,8 @@ describe('BattleVFXRunner Integration', () => {
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(() => createMockContext2D());
     vi.spyOn(canvas, 'getContext').mockImplementation(() => ctx);
     vi.spyOn(canvas, 'getBoundingClientRect').mockReturnValue(new DOMRect(100, 150, 960, 540));
-    timestamp = performance.now();
+    timestamp = 0;
+    vi.spyOn(performance, 'now').mockImplementation(() => timestamp);
     vi.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => { frame = callback; return 1; });
     vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {});
   });

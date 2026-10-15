@@ -2,12 +2,14 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { dungeonEncounter, isPlayableDungeon, materialDrops, materialDropTable, playableDungeons } from './dungeons';
-import { act, actionUnavailable, createDungeonBattle, endTurn, nextWave } from '../game/battle';
+import { act, actAndAdvanceTurn, actionUnavailable, createDungeonBattle, endTurn, nextWave } from '../game/battle';
 import { starters } from './starters';
 import { elements, elementalEnemyLevel } from './activities';
 import { dungeonArt } from './dungeon-art';
 import { readFileSync } from 'node:fs';
 import { enemyCombatStats } from './stat-growth';
+import { enemyAbilityMultiplier } from './enemy-skills';
+import type { ConduitLoadouts } from './conduits';
 
 describe('elemental material dungeons', () => {
   it('enables exactly the ten canonical elements and rejects unknown dungeons', () => {
@@ -43,8 +45,8 @@ describe('elemental material dungeons', () => {
   });
   it.each(playableDungeons)('%s grants only its own materials; final bosses reject unbuilt solo clears', (element) => {
     expect(materialDrops(element, 35, () => 0)).toEqual({
-      [`${element}-common`]: 3, [`${element}-uncommon`]: 3, [`${element}-rare`]: 3,
-      [`${element}-epic`]: 3, [`${element}-legendary`]: 3, [`${element}-omnic`]: 3,
+      [`${element}-common`]: 15, [`${element}-uncommon`]: 15, [`${element}-rare`]: 15,
+      [`${element}-epic`]: 15, [`${element}-legendary`]: 15, [`${element}-omnic`]: 15,
     });
     for (const stage of [1, 35]) {
       let state = createDungeonBattle(element, stage, 1729, 'ember', stage === 1 ? { level: 38, evolution: 2 } : { level: 105, evolution: 6 });
@@ -54,12 +56,12 @@ describe('elemental material dungeons', () => {
         if (action) state = act(state, actor.id, action, state.enemies.find((enemy) => enemy.hp > 0)!.id).state;
         if (state.phase === 'player') state = endTurn(state).state;
       }
-      expect(state.phase, `${element} stage ${stage}`).toBe(stage === 35 ? 'defeat' : 'cleared');
+      expect(state.phase, `${element} stage ${stage}`).toBe('defeat');
     }
   });
   it('guarantees Seeds, gates each higher rarity exactly and checks probability boundaries', () => {
     expect(materialDrops('infernic', 1, () => 0)).toEqual({ 'infernic-common': 1, 'infernic-uncommon': 1 });
-    expect(materialDrops('infernic', 35, () => 0.99)).toEqual({ 'infernic-common': 6 });
+    expect(materialDrops('infernic', 35, () => 0.99)).toEqual({ 'infernic-common': 30 });
     for (const entry of materialDropTable) {
       const stage = Array.from({ length: 35 }, (_, i) => i + 1).find((value) => elementalEnemyLevel(value) >= entry.level)!;
       if (stage > 1) expect(materialDrops('oceanic', stage - 1, () => 0)[`oceanic-${entry.rarity}`]).toBeUndefined();
@@ -67,32 +69,41 @@ describe('elemental material dungeons', () => {
     }
     expect(() => materialDrops('infernic', 6, () => 1)).toThrow();
   });
-  it.each(starters)('$name can clear early stages; progression alone does not solo-clear final bosses', (starter) => {
+  it.each(starters)('$name can clear early material stages with Common gear and complementary allies', (starter) => {
     if (!isPlayableDungeon(starter.elementId)) throw new Error('Starter dungeon is unavailable.');
-    for (const stage of [1, 5, 35]) {
-      const progress = stage === 35 ? { level: 105, evolution: 6 } : { level: 45, evolution: 2 };
-      let state = createDungeonBattle(starter.elementId, stage, 1729, starter.id, progress);
+    const roster = [...new Set([starter.id, 'tide', 'sprout', 'ember'] as const)].slice(0, 3);
+    const progress = { level: 45, evolution: 2 };
+    const teamProgress = Object.fromEntries(roster.map(id => [id, progress]));
+    const equipment: ConduitLoadouts = Object.fromEntries(roster.map(id => [id, [
+      'vigil-core', 'siegebound-drive', 'bastion-lock', 'parallax-relay',
+      'fieldbrace-coupler', 'reserve-torque-crank', 'crosspin-governor', 'precision-escapement',
+    ]]));
+    for (const stage of [1, 5]) {
+      let state = createDungeonBattle(starter.elementId, stage, 1729, starter.id, progress, roster, teamProgress, equipment);
       let turns = 0;
       while (state.phase === 'player' && turns++ < 100) {
-        const actor = state.allies[0];
-        const action = (['ultimate', 'skill1', 'light'] as const).find((action) => !actionUnavailable(state, actor, action));
-        if (action) state = act(state, actor.id, action, state.enemies.find((enemy) => enemy.hp > 0)!.id).state;
-        if (state.phase === 'player') state = endTurn(state).state;
+        const actor = state.allies.find(ally => ally.hp > 0 && !actionUnavailable(state, ally, 'light'));
+        if (!actor) { state = endTurn(state).state; continue; }
+        const priorities = actor.id === 'sprout' && state.allies.some(ally => ally.hp > 0 && ally.hp < ally.stats.health * .65)
+          ? ['skill2', 'ultimate', 'skill1', 'light'] as const : ['ultimate', 'skill1', 'skill2', 'light'] as const;
+        const action = priorities.find(action => !actionUnavailable(state, actor, action));
+        if (!action) throw new Error('Early material fixture has no legal action.');
+        state = actAndAdvanceTurn(state, actor.id, action, state.enemies.find(enemy => enemy.hp > 0)!.id).state;
       }
-      expect(state.phase, `${starter.name} stage ${stage}`).toBe(stage === 35 ? 'defeat' : 'cleared');
+      expect(state.phase, `${starter.name} stage ${stage}`).toBe('cleared');
       expect(turns).toBeLessThan(100);
       expect(() => nextWave(state)).toThrow('separate encounters');
     }
   });
   it('preserves final enemy endpoints while increasing loot', () => {
     const encounter = dungeonEncounter('infernic', 35);
-    expect(encounter.abilityMultiplier).toBeCloseTo(1.788);
+    expect(encounter.abilityMultiplier).toBe(enemyAbilityMultiplier(120));
     expect(encounter.level).toBe(120);
-    expect(encounter.stats).toMatchObject({ ...enemyCombatStats(120, true), crit: .25 });
+    expect(encounter.stats).toEqual(enemyCombatStats(120, true));
     expect(materialDropTable.map((drop) => drop.level)).toEqual([23, 48, 73, 98, 120]);
     expect(materialDrops('infernic', 35, () => 0)).toEqual({
-      'infernic-common': 3, 'infernic-uncommon': 3, 'infernic-rare': 3,
-      'infernic-epic': 3, 'infernic-legendary': 3, 'infernic-omnic': 3,
+      'infernic-common': 15, 'infernic-uncommon': 15, 'infernic-rare': 15,
+      'infernic-epic': 15, 'infernic-legendary': 15, 'infernic-omnic': 15,
     });
   });
   it('uses stronger periodic enemy abilities, including weakening and Defense mitigation', () => {

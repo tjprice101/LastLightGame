@@ -13,7 +13,7 @@ export const roseEventRules = `<p>${devourerHabitats.roses} Rosetta, Thornia and
     <p>20% independent capture chance only at enemy levels 120 or below. Above 120, no captures. Captured copies retain level and skills, can level to 120 and never evolve.
     Final-form Lv.80 copies are special-banner duplicate rewards, not high-level mission captures.</p>
     <p>Each kill grants ordinary level-scaled Prismatica and rolls unlocked Rosethorn materials independently. No Null-Prismatica or clear bonus.
-    Bosses and ordinary enemies have identical reward odds. Exact stage drops appear in the defeated Elemental-Devourer Glossary.</p>
+    Bosses and ordinary enemies have identical reward odds. The stage 35 final boss awards 5x Prismatica and successful material quantities on every clear; earlier bosses are unchanged. Exact stage drops appear in the defeated Elemental-Devourer Glossary.</p>
     <p>Sales exchange one copy for its form's material: ${roseMaterials.map((material, index) => `${roseSaleQuantities[index]} ${material.name}`).join(', ')}.
     Locked, squad and Conduit-equipped copies cannot be sold or consumed.</p>
     <p>Rosetta, Thornia and Crinso use these materials for leveling and evolution. Late evolutions consume explicitly selected Roselius forms 3+ / 4+ / 5+ in quantities 1 / 2 / 3.

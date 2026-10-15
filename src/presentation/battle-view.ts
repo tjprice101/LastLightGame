@@ -35,7 +35,8 @@ import { entranceFrames } from './battle-entrance';
 import { infusionEncounter } from '../content/infusions';
 import { treasuryPrismaticaText } from '../content/loot-random';
 import { battleArtScale } from './battle-scale';
-import { lootBurst } from './battle-loot';
+import { lootBurst, lootLayout } from './battle-loot';
+import { finalBossLootText } from '../content/final-boss-loot';
 import { type InfusionModeId } from '../content/activities';
 import { characterRating } from './character-rating';
 import { getConduit, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
@@ -59,7 +60,6 @@ export interface BattleAuthority {
   nextStage(): Promise<BattleAuthorityResponse>;
   nextWave(): Promise<BattleAuthorityResponse>;
   retry(): Promise<BattleAuthorityResponse>;
-  quit(): Promise<unknown>;
 }
 export function createSession(starterId: StarterId, progress: CharacterProgress = { level: 0, evolution: 1 }, dungeon?: { element: PlayableDungeon; stage: number } | { mode: InfusionModeId; stage: number } | { character: WarCharacterId; stage: number } | { storyStage: number },
   team?: { ids: readonly string[]; progress: Partial<Record<StarterId, CharacterProgress>>; equipment?: ConduitLoadouts; captures?: readonly CapturedCharacter[]; upgrades?: ConduitUpgrades; masters?: MasterLoadouts }): BattleSession {
@@ -429,9 +429,9 @@ export class BattleView {
       if (!art) throw new Error('Defeated enemy artwork is missing.');
       const bounds = art.getBoundingClientRect();
       const burst = lootBurst(entry);
-      const spread = burst.childElementCount * 38 / 2 + 24;
-      burst.style.left = `${Math.max(Math.min(spread, innerWidth / 2), Math.min(innerWidth - spread, bounds.x + bounds.width / 2))}px`;
-      burst.style.top = `${Math.min(innerHeight - 45, bounds.y + bounds.height * .8)}px`;
+      const layout = lootLayout(burst.childElementCount, innerWidth);
+      burst.style.left = `${Math.max(Math.min(layout.spread, innerWidth / 2), Math.min(innerWidth - layout.spread, bounds.x + bounds.width / 2))}px`;
+      burst.style.top = `${Math.max(Math.min(layout.top, innerHeight / 2), Math.min(innerHeight - layout.bottom, bounds.y + bounds.height * .8))}px`;
       try {
         if (!reducedMotion()) await this.play(art, [{ opacity: 1 }, { opacity: 0, transform: 'translateY(-10px) scale(.95)' }], 280);
         if (this.disposed) return;
@@ -658,6 +658,7 @@ export class BattleView {
         ${state.story ? 'Story Prismatica rises in a straight line with enemy level (+2 minimum per level)' : state.infusion?.mode === 'treasury' ? 'Treasury Prismatica multiplies the Story line' : 'Prismatica drops grow from 5-10 at level 1 to 15-30 at level 120'} and save with the defeated enemy's rewards. Material stacks grow to 3-6 per successful drop. Quitting ends this run; ${dungeon ? 'unlocked stages can be replayed from Play' : 'entering again starts at wave 1'}.
         Settings preserves the current run. ${this.authority ? 'Signing back in restores the server-saved run.' : 'Reloading resets battle progress, not saved rewards.'}</p></div>
       </section>
+      <p class="quiet">${finalBossLootText}</p>
       <section class="battle-log"><h3>Battle log (${this.session.log.length} recent events)</h3><ol>${this.session.log.map((line) => `<li>${line}</li>`).join('')}</ol></section></div></dialog>`;
     this.vfxRunner?.destroy();
     this.vfxRunner = null;
@@ -804,7 +805,6 @@ export class BattleView {
       this.busy = true;
       try {
         if (!this.quit) throw new Error('Battle exit is unavailable.');
-        if (this.authority) await this.authority.quit();
         await this.quit();
       } catch (error) {
         console.error('Battle exit failed', error);

@@ -8,6 +8,7 @@ import { infusionEncounter, infusionLoot, infusionElements } from './infusions';
 import { fractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from './loot-random';
 import { storyEncounter, storyCreature, storyRules, storyLoot, storyBossBonus } from './story';
 import { devourerHabitats, elementEmotions, machineOrigin } from './world-lore';
+import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 
 export interface Creature {
   id: string;
@@ -89,7 +90,9 @@ export function creatureLoot(creature: Creature, stage?: number): CreatureLoot[]
   if (!creature.stages.length && stage !== undefined && (!Number.isInteger(stage) || stage < 1 || stage > 120)) throw new Error('Choose a Training enemy level from 1 to 120.');
   const level = creature.dungeonElement && stage !== undefined ? dungeonEncounter(creature.dungeonElement, stage).level
     : creature.mode && stage !== undefined ? infusionEncounter(creature.mode, stage).level : stage ?? 1;
-  const loot: CreatureLoot[] = [{ id: 'fractalis', ...(creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level, creature.mode === 'roses' ? 140 : 120)) }];
+  const multiplier = bossLootMultiplier(creature.dungeonElement && stage !== undefined ? { dungeon: { stage } }
+    : creature.mode && stage !== undefined ? { infusion: { mode: creature.mode, stage } } : {});
+  const loot: CreatureLoot[] = [{ id: 'fractalis', ...bossLootRange(creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level, creature.mode === 'roses' ? 140 : 120), multiplier) }];
   if (creature.mode === 'treasury') return loot;
   if (creature.mode === 'machines' && stage !== undefined) return [...loot, machineComponentDrop(stage), ...machineConduitLoot(stage),
     ...(stage === masterChest.stage ? [{ id: masterChest.id, minimum: 1, maximum: 1, chance: masterChest.chance,
@@ -98,7 +101,7 @@ export function creatureLoot(creature: Creature, stage?: number): CreatureLoot[]
     loot.push(...materialLoot(creature.dungeonElement, stage));
   } else if (creature.mode && stage !== undefined) {
     const pool = infusionLoot(creature.mode, stage);
-    const odds = creature.mode === 'roses' ? [] : stagedLycalisOdds(creature.mode, level);
+    const odds = creature.mode === 'roses' ? [] : stagedLycalisOdds(creature.mode, level, stage);
     loot.push(...odds.filter((outcome) => outcome.amount > 0).map((outcome) => ({
       id: 'lycalis', minimum: outcome.amount, maximum: outcome.amount, chance: outcome.chance,
       note: `One independent Null-Prismatica roll per kill; outcomes are mutually exclusive. No Null-Prismatica: ${formatStat(odds[0].chance * 100)}%. Ordinary enemies and bosses use the same odds.`,

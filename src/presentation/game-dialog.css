@@ -28,6 +28,14 @@
 .reward-art img { width: 100%; height: 100%; object-fit: contain; }
 .reward-art .character-idle { display: block; width: 100%; height: 100%; animation: none; }
 .reward-art > .conduit-icon-frame { width: 100%; height: 100%; }
+.reward-screen:has(.conduit-reward-art) .reward-stage,
+.reward-screen:has(.conduit-reward-art) .reward-art { min-height: 0; height: min(120px, 16dvh); }
+.reward-screen:has(.conduit-reward-art) .reward-art { width: min(120px, 100%); }
+.reward-screen:has(.conduit-reward-art) :is(.reward-content, .reward-details) { display: flow-root; }
+.conduit-reward-art, .conduit-reward-art > .conduit-icon-frame { display: block; width: 100%; height: 100%; }
+.reward-screen:has(.conduit-reward-art) .reward-halo { width: min(120px, 16dvh); }
+.reward-screen:has(.conduit-reward-art) .reward-animation-label { font-size: .95rem; margin: .35rem 0; }
+.reward-screen:has(.conduit-reward-art) .reward-details :is(h3, p) { margin: .35rem 0; }
 .reward-halo { position: absolute; width: min(360px, 65vw); aspect-ratio: 1; border-radius: 50%; border: 2px solid var(--reward-accent, #fff); box-shadow: 0 0 60px var(--reward-accent, #fff), inset 0 0 40px #ffffff30; opacity: .45; }
 .reward-portal { position: absolute; width: min(180px, 35vw); aspect-ratio: 1; border: 3px solid #fff; transform: rotate(45deg); box-shadow: 0 0 65px var(--reward-accent, #fff), inset 0 0 45px var(--reward-accent, #fff); }
 .reward-portal::before, .reward-portal::after { content: ''; position: absolute; inset: -24px; border: 1px solid var(--reward-accent, #fff); }

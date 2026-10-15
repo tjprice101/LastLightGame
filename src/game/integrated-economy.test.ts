@@ -28,18 +28,18 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     const sanctuary = mission('sanctuary');
     saveAccountRewards(saved, treasury, 'treasury');
     const farmed = saveAccountRewards(saved, sanctuary, 'sanctuary');
-    expect(farmed.lycalis).toBe(5);
+    expect(farmed.lycalis).toBe(25);
     expect(farmed.capturedCharacters?.map((copy) => copy.creatureId))
       .toEqual(['infusion:treasury:5', 'infusion:sanctuary:5']);
     const wisp = farmed.capturedCharacters![1];
     const sold = sellCurrencyCreature(saved, wisp.instanceId);
-    expect(sold.lycalis).toBe(15);
+    expect(sold.lycalis).toBe(35);
     expect(sold.fractalis).toBe(farmed.fractalis + 30000);
     expect(sold.creatures[wisp.creatureId]).toEqual({ defeated: true });
     expect(sold.receipts).toEqual(farmed.receipts);
     const draw = summonCharacter(saved, () => 0);
     expect(draw.duplicate).toBe(true);
-    expect(draw.account.lycalis).toBe(5);
+    expect(draw.account.lycalis).toBe(25);
     expect(draw.account.characters.ember).toEqual(original.characters.ember);
     expect(draw.materials).toEqual({ id: 'infernic-rare', amount: 15 });
     expect(draw.copy).toBeUndefined();
@@ -54,12 +54,15 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     equipConduit(saved, retained.instanceId, 0, null);
     const final = sellCurrencyCreature(saved, retained.instanceId);
     expect(final.fractalis).toBe(bought.fractalis + 300000);
-    expect(final.lycalis).toBe(5);
+    expect(final.lycalis).toBe(25);
     expect(final.bannerPity).toEqual(draw.account.bannerPity);
     expect(final.capturedCharacters).toEqual([]);
     expect(loadAccount(saved)).toEqual(final);
     expect(saveAccountRewards(saved, sanctuary, 'sanctuary')).toEqual(final);
     expect(saveAccountRewards(saved, treasury, 'treasury')).toEqual(final);
+    summonCharacter(saved, () => .02);
+    summonCharacter(saved, () => .02);
+    expect(loadAccount(saved).lycalis).toBe(5);
     const before = saved.getItem(ACCOUNT_KEY);
     const random = vi.fn(() => 0);
     expect(() => summonCharacter(saved, random)).toThrow('requires');

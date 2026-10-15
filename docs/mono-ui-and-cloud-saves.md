@@ -373,6 +373,10 @@ provided its publishable client key. Local Vite configuration is stored in
 ignored `.env.local`; `.env.example` contains placeholders only. CLI project
 linking, identity/gameplay/social migrations, username authentication and game
 operation endpoints are deployed and connected to the browser.
+GitHub Pages requires the same two Vite settings in repository Actions
+variables or secrets; local `.env.local` is not available to CI. The deployment
+workflow passes them into the build and rejects missing/invalid configuration
+before publishing. See [deployment setup](development-guide.md#online-account-configuration).
 Username/password login is approved; registration also collects email for
 verification/recovery. Supabase password auth uses email internally: resolve
 username privately on the server, never expose an email lookup directory or

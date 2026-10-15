@@ -5,6 +5,16 @@ import { assetUrl } from './portrait';
 import './conduit-store.css';
 import { information } from './information';
 import { conduitUpgradeMeter } from './conduit-upgrade-meter';
+import { isBannerConduitEligible } from '../content/machines';
+
+export function conduitDetails(id: ConduitId, level = 0, revealArt = true): string {
+  const conduit = getConduit(id);
+  return `<div class="conduit-details-art${revealArt ? '' : ' unreached-character-art'}">${conduitIcon(id, level)}</div>${conduitRarity(id)}
+    <dl><dt>Current effect (+${level})</dt><dd>${conduitEffect(conduit, level)}</dd>
+    <dt>At +5</dt><dd>${conduitEffect(conduit, 5)}</dd></dl>
+    <p>${conduit.lore}</p><p>${conduit.power}</p>
+    <p>${conduit.price !== null ? `${conduit.price.toLocaleString('en-US')} Prismatica in the Conduit Store` : 'Awaken the Machines drop'}${isBannerConduitEligible(id) ? ' · Eligible for the 0.5% Legendary bonus tier on successful banner draws' : ''}</p>`;
+}
 
 export function conduitIcon(id: ConduitId, level = 0): string {
   const conduit = getConduit(id);

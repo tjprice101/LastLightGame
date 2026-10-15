@@ -1,5 +1,12 @@
 # Story campaign and endless Training (D-160/D-164)
 
+**D-294 final loot:** every regional boss (25/50/75/100/125/150) awards5x its
+existing per-kill Prismatica/material quantities on every clear and replay.
+Sample base quantity first; material chances remain unchanged. Regional
+first-clear Prismatica/Null-Prismatica bonuses remain separate and unchanged.
+Training has no endpoint and receives no multiplier.
+[Shared contract](free-battle.md#repeatable-final-boss-loot-d-294).
+
 **D-269 narrative:** [Let and Rise's founding canon](world-lore.md) now drives
 the shared prologue, six regional introductions and boss conclusions.
 Beacons reopen routes while both factions seek their creator's soul.
@@ -114,10 +121,11 @@ stays pending. Prompt files remain the generation reference, not source images.
 - Use a separate xorshift encounter stream, seeded from the battle seed with
   the established salt and continued across stages. Sampling never consumes
   combat, loot, capture or premium RNG.
-- D-192 uses the shared hostile curve with90% resulting HP and75% Attack,
-  retaining shared Defense. This supersedes D-164/D-165's earlier envelope.
-  It keeps Story easier than overlapping material dungeons while higher-level
-  enemies take meaningful hits and threaten underleveled teams.
+- D-289 removes the historical D-192 HP/Attack discounts. Story uses the
+  exact same full stats, critical rates and level-based skill strength as every
+  other activity for equal level and boss/ordinary rank. Stronger opening growth
+  and extra acceleration above25 make higher-level enemies harder; no hidden
+  player-level penalty. [Current curve and measurements](combat.md#consistent-level-and-rank-difficulty-d-289).
 - Every real spawn uses `enemy-skills.ts`: one skill belowLv50, two at50+,
   with ordinary boss ultimate priority. Existing combat rules remain.
 
@@ -127,13 +135,13 @@ Every kill gives the linear Story Prismatica range from `storyFractalisDrop`
 (D-225): minimum `5+2*(level-1)`, maximum double, so5-10 at Lv1 and113-226 at
 Lv55, a constant step per level and therefore per stage. Crownfall Treasury
 pays exactly this line at the same enemy level on entry, then multiplies it up
-to20x by Lv120. Kills also give matching-element **Common** materials. **Uncommon**
-materials unlock at enemyLv23; no Rare/Epic/Legendary/Omnic material, specialty,
+to20x by Lv120. Kills also give matching-element **Common** materials and
+**Uncommon** materials from the first Story enemy onward; no Rare/Epic/Legendary/Omnic material, specialty,
 Conduit, component, recruitment or capture is eligible in Story.
 
 Common minimum grows quadratically from1 atLv1 to3 atLv55, maximum twice
-minimum. Uncommon uses that quantity range and a linear25% chance at23 to80%
-at55. Both tiers reuse the existing dungeon material IDs/art/recipe meaning.
+minimum. Uncommon uses that quantity range and a linear25% chance atLv1 to80%
+atLv55. Both tiers reuse the existing dungeon material IDs/art/recipe meaning.
 These quantity/chance curves are editable developer tuning.
 
 On an account's first successful regional boss clear, the ordinary kill
@@ -218,7 +226,7 @@ Captured character galleries/pools are unchanged because Story cannot capture.
 ## Validation
 
 - `src/game/story.test.ts`: all150 stages, exact six reward pairs,30 unique
-  identities, actual loot gates/ranges, easier overlapping dungeon encounters,
+  identities, actual loot gates/ranges, equal-level/rank encounter parity,
   separate continuing RNG, mixed/all-captured snapshots, legacy read-only
   behavior, partial clears, atomic first/replay/deduplicated rewards, overflow,
   denied-write retry, forged/locked/rewardless clears, real Burn kills,

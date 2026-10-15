@@ -9,7 +9,11 @@ function controlled(): BattleState {
   const state = createBattle(12345, ['ember', 'tide', 'sprout']);
   state.allies.forEach((unit) => { unit.shatter = 100; });
   for (const unit of [...state.allies, ...state.enemies]) unit.stats.crit = 0;
-  for (const enemy of state.enemies) { enemy.hp = 2000; enemy.stats.health = 2000; }
+  for (const enemy of state.enemies) {
+    if (enemy.definitionId !== 'goblin' && enemy.definitionId !== 'imp' && enemy.definitionId !== 'golem') throw new Error('Unexpected controlled enemy.');
+    enemy.stats = { ...enemies[enemy.definitionId].stats, crit: 0, health: 2000 };
+    enemy.hp = 2000;
+  }
   return state;
 }
 function use(state: BattleState, id: string, action: ActionId): BattleState {
@@ -168,7 +172,7 @@ describe('Shatter Gauge', () => {
       const progress = { level: 30, evolution: 2 };
       const state = createBattle(12345, ['ember', 'tide', 'sprout'], { ember: progress, tide: progress, sprout: progress });
       state.allies.forEach((unit) => { unit.shatter = 114; unit.stats.crit = 0; });
-      state.enemies.forEach((unit) => { unit.hp = 20_000; unit.stats.health = 20_000; unit.stats.crit = 0; });
+      state.enemies.forEach((unit) => { unit.hp = 20_000; unit.stats.health = 20_000; unit.stats.crit = 0; unit.stats.defense = 5; unit.stats.damage = 23; });
       return state;
     }
 
@@ -308,7 +312,7 @@ describe('solo starter battles', () => {
     expect(createBattle(12345).wave).toBe(1);
     expect(createBattle(12345).enemies.map((enemy) => enemy.level)).toEqual([1, 1, 1]);
   });
-  it('uses accelerating HP/attack/defense with double initial growth and increasing levels', () => {
+  it('uses identical level-based combat stats for all Training species', () => {
     let state = createBattle(12345);
     for (let wave = 1; wave <= 20; wave++) {
       expect(state.wave).toBe(wave);
@@ -316,13 +320,9 @@ describe('solo starter battles', () => {
         if (unit.definitionId !== 'goblin' && unit.definitionId !== 'imp' && unit.definitionId !== 'golem') {
           throw new Error('Unexpected enemy definition.');
         }
-        const base = enemies[unit.definitionId].stats;
         expect(unit.level).toBe(wave);
-        expect(unit.stats.health).toBe(enemyCombatStats(wave, false, base).health);
+        expect(unit.stats).toEqual(enemyCombatStats(wave, false));
         expect(unit.hp).toBe(unit.stats.health);
-        expect(unit.stats.damage).toBe(enemyCombatStats(wave, false, base).damage);
-        expect(unit.stats.defense).toBe(enemyCombatStats(wave, false, base).defense);
-        expect(unit.stats.crit).toBe(base.crit);
       }
       state.phase = 'cleared';
       state.enemies.forEach((enemy) => { enemy.hp = 0; });
@@ -480,7 +480,7 @@ describe('wave lifecycle', () => {
     expect(next.wave).toBe(2);
     expect(next.round).toBe(3);
     expect(next.enemies.map((unit) => unit.definitionId)).toEqual(['goblin', 'imp', 'golem']);
-    expect(next.enemies[0].stats.health).toBe(enemyCombatStats(2, false, enemies.goblin.stats).health);
+    expect(next.enemies[0].stats.health).toBe(enemyCombatStats(2, false).health);
     expect(actionUnavailable(next, next.allies[0], 'light')).toBeNull();
     expect(next.allies[0].shatter).toBe(30);
   });

@@ -42,7 +42,7 @@ describe('attack-relative Defense balance', () => {
   it('makes Lv13 Story and Machines direct hits cost at least 9% of every unequipped Lv0 starter HP', () => {
     expect(storyEncounter(35).level).toBe(13);
     expect(infusionEncounter('machines', 4).level).toBe(13);
-    expect(storyEncounter(35).stats.damage).toBe(Math.round(enemyCombatStats(13, false).damage * .75));
+    expect(storyEncounter(35).stats).toEqual(enemyCombatStats(13, false));
     expect(infusionEncounter('machines', 4).stats.damage).toBe(enemyCombatStats(13, false).damage);
     for (const id of ['ember', 'tide', 'sprout'] as const) {
       for (const state of [
@@ -56,7 +56,7 @@ describe('attack-relative Defense balance', () => {
         expect(hits.length).toBeGreaterThan(0);
         for (const hit of hits) {
           expect(hit.amount).toBeGreaterThanOrEqual(state.allies[0].stats.health * .09);
-          expect(hit.amount).toBeLessThan(state.allies[0].stats.health * .4);
+          expect(hit.amount).toBeLessThan(state.allies[0].stats.health * .5);
         }
         expect(state).toEqual(original);
       }
@@ -75,7 +75,7 @@ describe('attack-relative Defense balance', () => {
     expect(endTurn(training).events.some((event) => event.kind === 'damage' && event.amount! > 1)).toBe(true);
   });
 
-  it('preserves shared late endpoints and easier Story Attack at overlapping dungeon levels', () => {
+  it('preserves shared late endpoints and identical Story Attack at overlapping levels', () => {
     for (const boss of [false, true]) {
       let last = 0;
       for (let level = 10; level <= 120; level++) {
@@ -89,7 +89,7 @@ describe('attack-relative Defense balance', () => {
     for (const mode of ['heavens', 'abyss', 'treasury', 'sanctuary', 'machines'] as const) {
       expect(infusionEncounter(mode, infusionStageCount(mode)).stats.damage).toBe(enemyGrowth.bossDamage);
     }
-    expect(storyEncounter(1).stats.damage).toBe(17);
+    expect(storyEncounter(1).stats.damage).toBe(22);
     expect(stagedEnemyAttack(121, true, 10, 140)).toBeGreaterThan(enemyGrowth.bossDamage);
     expect(stagedEnemyAttack(140, true, 10, 140)).toBe(Math.round(enemyGrowth.bossDamage * 1.36 ** 2));
   });

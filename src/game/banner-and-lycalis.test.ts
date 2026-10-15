@@ -137,7 +137,7 @@ describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
       const creature = getCreature(`infusion:${mode}:${tier}`);
       for (const stage of creature.stages) {
         const loot = creatureLoot(creature, stage).filter((entry) => entry.id === 'lycalis');
-        expect(loot.map((entry) => [entry.minimum, entry.maximum])).toEqual(infusionEncounter(mode, stage).level < 80 ? [] : [[1, 1], [2, 2], [3, 3]]);
+        expect(loot.map((entry) => [entry.minimum, entry.maximum])).toEqual(infusionEncounter(mode, stage).level < 80 ? [] : stage === 35 ? [[5, 5], [10, 10], [15, 15]] : [[1, 1], [2, 2], [3, 3]]);
         expect(loot.every((entry) => entry.note?.includes('mutually exclusive'))).toBe(true);
       }
     }
