@@ -4727,6 +4727,7 @@ var calamityBossArt = {
   heavens: "calamity-boss-heavens",
   abyss: "calamity-boss-abyss",
   machines: "calamity-boss-machines",
+  roses: "calamity-boss-roses",
   infernic: "calamity-boss-infernic",
   oceanic: "calamity-boss-oceanic",
   atmospheric: "calamity-boss-atmospheric",

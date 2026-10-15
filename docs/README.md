@@ -5,11 +5,11 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
-**Calamity artwork (D-318):** seventeen delivered originals are archived and
-installed: eleven boss cutouts, three shared tier chests and three tier arenas.
-All related runtime surfaces use shared revisioned art; The Last Scarlet Bloom
-alone remains pending. Current missing-art queue is28 images including27 native
-symbols. Release `d3a6568` is deployed on Pages and the authoritative server;
+**Calamity artwork (D-318):** all eighteen delivered originals are archived and
+installed: twelve boss cutouts, three shared tier chests and three tier arenas.
+The Last Scarlet Bloom follow-up delivery completes the set. All related
+runtime surfaces use shared revisioned art. Current missing-art queue is27 native
+symbols. Initial release `d3a6568` is deployed on Pages and the authoritative server;
 all3,869 tests and the hosted native/Calamity smoke passed.
 [Intake/reproduction](art-workflow.md#calamity-delivery-intake-d-318),
 [current verification/release state](handoff.md).

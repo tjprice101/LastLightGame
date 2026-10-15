@@ -20,6 +20,7 @@ BOSSES = (
     ("heavens", "Heavenfall Seraph"),
     ("abyss", "Abyssal Nullmaw"),
     ("machines", "Catastrophe Prime"),
+    ("roses", "The Last Scarlet Bloom"),
     ("infernic", "Ashcrown Cataclysm"),
     ("oceanic", "Leviathan of the White Wake"),
     ("atmospheric", "Riftstorm Harbinger"),
@@ -74,7 +75,7 @@ def preflight(root=ROOT):
     settings = json.loads(SETTINGS.read_text(encoding="utf-8"))
     rows = assets(root)
     if set(settings) != {row[0] for row in rows}:
-        raise ValueError("Settings must cover exactly the 17 delivered Calamity assets.")
+        raise ValueError(f"Settings must cover exactly the {len(rows)} delivered Calamity assets.")
     previous = json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.exists() else {}
     old_records = {row["asset"]: row for row in previous.get("assets", [])}
     planned = []
@@ -149,7 +150,7 @@ def intake(apply=False):
             if digest(runtime) != record["runtime_sha256"]:
                 raise ValueError(f"Export verification failed: {runtime}")
         MANIFEST.write_text(json.dumps({
-            "asset_count": len(planned), "missing_bosses": ["roses"],
+            "asset_count": len(planned), "missing_bosses": [],
             "assets": [row[-1] for row in planned],
         }, indent=2) + "\n", encoding="utf-8")
         write_revisions(planned)

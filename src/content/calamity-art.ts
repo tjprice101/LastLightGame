@@ -1,11 +1,12 @@
 import type { CalamityActivityId, CalamityTier } from './calamity';
 
-export const calamityBossArt: Readonly<Partial<Record<CalamityActivityId, string>>> = {
+export const calamityBossArt: Readonly<Record<CalamityActivityId, string>> = {
   treasury: 'calamity-boss-treasury',
   sanctuary: 'calamity-boss-sanctuary',
   heavens: 'calamity-boss-heavens',
   abyss: 'calamity-boss-abyss',
   machines: 'calamity-boss-machines',
+  roses: 'calamity-boss-roses',
   infernic: 'calamity-boss-infernic',
   oceanic: 'calamity-boss-oceanic',
   atmospheric: 'calamity-boss-atmospheric',

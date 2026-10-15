@@ -345,7 +345,7 @@ async function smokeNativeCalamity(client, userId, username) {
   game.account.characters = Object.fromEntries(['tide', 'disciple', 'ember']
     .map(id => [id, { level: 105, evolution: 6 }]));
   game.account.squad = ['tide', 'disciple', 'ember'];
-  game.account.normalFinalClears = { treasury: true };
+  game.account.normalFinalClears = { treasury: true, roses: true };
   game.account.calamityClears = { treasury: 2 };
   game = resolveOperation(game, {
     kind: 'enter', activity: { kind: 'calamity', activity: 'treasury', tier: 3 },
@@ -402,8 +402,12 @@ async function smokeNativeCalamity(client, userId, username) {
   assert.equal(quit.session, null);
   const entered = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'treasury', tier: 1 } }, quit.revision);
   assert.equal(entered.session.state.enemies[0].art, 'calamity-boss-treasury');
-  assert.equal((await invoke({ kind: 'quit', runId: entered.session.runId }, entered.revision)).session, null);
-  console.log('Hosted native/Calamity smoke passed: rules3, explicit Tizu/Disciple recipients, Lv185 EX3 chest-only victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned Calamity artwork.');
+  const leave = await invoke({ kind: 'quit', runId: entered.session.runId }, entered.revision);
+  assert.equal(leave.session, null);
+  const rose = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'roses', tier: 1 } }, leave.revision);
+  assert.equal(rose.session.state.enemies[0].art, 'calamity-boss-roses');
+  assert.equal((await invoke({ kind: 'quit', runId: rose.session.runId }, rose.revision)).session, null);
+  console.log('Hosted native/Calamity smoke passed: rules3, explicit Tizu/Disciple recipients, Lv185 EX3 chest-only victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned Treasury/Rose Calamity artwork.');
 }
 
 async function smokeGuaranteedComponents(client, userId, username) {

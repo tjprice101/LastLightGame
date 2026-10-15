@@ -4,9 +4,9 @@
 
 | Pack | Images | What to generate |
 | --- | ---: | --- |
-| [Calamity](creatures/Calamity.md) |1|The Last Scarlet Bloom boss; the other17 images are installed|
+| [Calamity](creatures/Calamity.md) |0|All18 images installed, including The Last Scarlet Bloom|
 | [Native identity symbols](ui/Native%20Identity%20Status%20Icons.md) |27|Small pictograms for the new native states; not replacement ability art|
-| **Current queue** |**28**|Original PNGs; filenames and individual prompts are in the packs|
+| **Current queue** |**27**|Original PNGs; filenames and individual prompts are in the packs|
 
 The owner explicitly chooses **three chest images total**, shared by all
 activities according to Slayer/Master/Omnipotent tier, and **three arena images
@@ -16,13 +16,11 @@ levels and reward contents remain separate HTML. This supersedes the earlier
 
 Bosses remain twelve distinct identities, one image per activity reused across
 all three levels. Suggested detailed visual designs in the pack are generation
-proposals. Eleven delivered bosses are reviewed and installed; only the Rose
-boss is still pending.
+proposals. All twelve delivered bosses are reviewed and installed.
 
 ## Generation priority
 
-1. The Last Scarlet Bloom boss cutout, reused across the three Rose EX tiers.
-2. Twenty-seven status symbols over trophy-like crest/pedestal backings:
+1. Twenty-seven status symbols over trophy-like crest/pedestal backings:
    complements exact native-state text. The backing is part of the cutout
    emblem, not scenery; use each character's palette, not blanket gold. Existing
    Burn and shield artwork is reused; counts and expiry are never painted text.
@@ -35,8 +33,8 @@ A2026-10-15 catalog/filesystem check found:
 - Cosmic Grand Master Chest and Astral Reserve artwork already exist.
 - All48 current elemental, specialty and Rosethorn material definitions resolve
   to installed PNGs, including the items used in Calamity chest loot.
-- Of163 catalog creature identities, only The Last Scarlet Bloom lacks art;
-  all162 other identities have installed referenced PNGs after D-318 intake.
+- All163 catalog creature identities have installed referenced PNGs after
+  D-318 intake, including all twelve Calamity bosses.
 - All three shared Calamity tier chest icons and all three arenas are installed.
 - Current character portraits, profile portraits and action icons are retained.
   The new kits deliberately reuse the installed character-specific ability
@@ -55,7 +53,7 @@ A2026-10-15 catalog/filesystem check found:
 The [Elemental War family banner](ui/Elemental%20War.md) and standalone
 Nerithe/Orvella/Vaelor weapon illustrations have existing prompts but no
 installed production slots. They are optional concept/delivery backlog, not
-missing artwork in the current28-image production queue. The three actual
+missing artwork in the current27-image production queue. The three actual
 War activity banners/arenas and all required ability icons are already installed.
 Old prompt-pack statements that25 kit Conduits or48 Masters are still pending
 are historical; the intake records and actual exports take precedence.
@@ -68,7 +66,7 @@ Cutouts retain their specified flat contrasting key and complete margins;
 scenery is opaque/full-bleed. Never manually erase matching pale subject colors.
 
 Creating prompts did not install images. The subsequent D-318 intake archives
-the17 delivered originals under `Art/source/calamity`, exports reviewed cutouts
+all18 delivered originals under `Art/source/calamity`, exports reviewed cutouts
 and pixel-intact arenas, and connects their shared byte-revisioned resolvers.
 Inventory/results/reveal/loot share tier chest art; each tier shares its arena.
 Boss discovery, field and cut-ins share each reviewed boss. Archived originals

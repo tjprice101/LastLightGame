@@ -1077,5 +1077,105 @@
   },
   "calamity-arena-ex-3": {
     "processing": "opaque-original-size"
+  },
+  "calamity-boss-roses": {
+    "row_gradient": true,
+    "radius": 26,
+    "border_only": true,
+    "background_seeds": [
+      [
+        0.5649351,
+        0.1153017
+      ],
+      [
+        0.411526,
+        0.1411638
+      ],
+      [
+        0.5016234,
+        0.1799569
+      ],
+      [
+        0.4602273,
+        0.1885776
+      ],
+      [
+        0.5673701,
+        0.1939655
+      ],
+      [
+        0.424513,
+        0.237069
+      ],
+      [
+        0.6006494,
+        0.231681
+      ],
+      [
+        0.5982143,
+        0.2909483
+      ],
+      [
+        0.4456169,
+        0.299569
+      ],
+      [
+        0.5689935,
+        0.3017241
+      ],
+      [
+        0.5454545,
+        0.299569
+      ],
+      [
+        0.3595779,
+        0.4137931
+      ],
+      [
+        0.5811688,
+        0.4989224
+      ],
+      [
+        0.625,
+        0.6336207
+      ],
+      [
+        0.3555195,
+        0.6228448
+      ],
+      [
+        0.6753247,
+        0.6357759
+      ],
+      [
+        0.325487,
+        0.6670259
+      ],
+      [
+        0.2654221,
+        0.6971983
+      ],
+      [
+        0.3027597,
+        0.7489224
+      ],
+      [
+        0.6761364,
+        0.737069
+      ],
+      [
+        0.7191558,
+        0.7510776
+      ],
+      [
+        0.7508117,
+        0.7758621
+      ]
+    ],
+    "edge_cleanup": {
+      "source_pixels": 1,
+      "distance_ramp": 18
+    },
+    "review": "Reviewed original and all22 indexed enclosed backdrop gaps on source-resolution dark/light composites. Preserve ivory rose/feathers, black thorn rings, scarlet petals, neutral drapery and painted ground shadow. Genuine frontal pose."
   }
 }

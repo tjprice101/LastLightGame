@@ -5,6 +5,7 @@ export const calamityArtRevisions: Readonly<Record<string, string>> = {
   'enemies/calamity-boss-heavens.png': '3874a7d5c3ce',
   'enemies/calamity-boss-abyss.png': '02415ed75c92',
   'enemies/calamity-boss-machines.png': 'f6c59bb10cef',
+  'enemies/calamity-boss-roses.png': '43ffde48c345',
   'enemies/calamity-boss-infernic.png': '08fb21e28811',
   'enemies/calamity-boss-oceanic.png': '1e91f6c62bef',
   'enemies/calamity-boss-atmospheric.png': '5076094c0df1',

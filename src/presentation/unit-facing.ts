@@ -6,6 +6,7 @@ const sourceFacing: Record<string, Facing> = {
   'calamity-boss-heavens': 'front',
   'calamity-boss-abyss': 'right',
   'calamity-boss-machines': 'front',
+  'calamity-boss-roses': 'front',
   'calamity-boss-infernic': 'right',
   'calamity-boss-oceanic': 'right',
   'calamity-boss-atmospheric': 'left',

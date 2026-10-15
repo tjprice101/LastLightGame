@@ -1,8 +1,6 @@
 {
-  "asset_count": 17,
-  "missing_bosses": [
-    "roses"
-  ],
+  "asset_count": 18,
+  "missing_bosses": [],
   "assets": [
     {
       "asset": "calamity-boss-treasury",
@@ -528,6 +526,133 @@
           "distance_ramp": 18
         },
         "review": "Reviewed original, indexed enclosed-key overlay and dark/light composites. Clear only listed backdrop pockets; preserve ivory, red powers, neutral armor shading and painted ground shadows."
+      }
+    },
+    {
+      "asset": "calamity-boss-roses",
+      "incoming": "The Last Scarlet Bloom.png",
+      "category": "enemies",
+      "source": "Art\\source\\calamity\\The Last Scarlet Bloom.png",
+      "source_sha256": "43cc8465ab16c5f86b11d2272c9129854e009113f6975deb28db8f8aed24122d",
+      "runtime": "public\\assets\\enemies\\calamity-boss-roses.png",
+      "runtime_sha256": "43ffde48c345602fe9a5983d07352c7d7261cb243002fddb71ebfd3898da8363",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1232,
+        928
+      ],
+      "source_alpha_authoritative": false,
+      "processing": "reviewed connected row-gradient key, enclosed seeds and edge decontamination",
+      "runtime_dimensions": [
+        960,
+        960
+      ],
+      "runtime_content_bbox": [
+        48,
+        162,
+        912,
+        797
+      ],
+      "runtime_pixel_sha256": "0af2375d345c98946565fc71eb1de5e050cbd664c0a5fd19d5ee28f8c257ed71",
+      "settings": {
+        "row_gradient": true,
+        "radius": 26,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5649351,
+            0.1153017
+          ],
+          [
+            0.411526,
+            0.1411638
+          ],
+          [
+            0.5016234,
+            0.1799569
+          ],
+          [
+            0.4602273,
+            0.1885776
+          ],
+          [
+            0.5673701,
+            0.1939655
+          ],
+          [
+            0.424513,
+            0.237069
+          ],
+          [
+            0.6006494,
+            0.231681
+          ],
+          [
+            0.5982143,
+            0.2909483
+          ],
+          [
+            0.4456169,
+            0.299569
+          ],
+          [
+            0.5689935,
+            0.3017241
+          ],
+          [
+            0.5454545,
+            0.299569
+          ],
+          [
+            0.3595779,
+            0.4137931
+          ],
+          [
+            0.5811688,
+            0.4989224
+          ],
+          [
+            0.625,
+            0.6336207
+          ],
+          [
+            0.3555195,
+            0.6228448
+          ],
+          [
+            0.6753247,
+            0.6357759
+          ],
+          [
+            0.325487,
+            0.6670259
+          ],
+          [
+            0.2654221,
+            0.6971983
+          ],
+          [
+            0.3027597,
+            0.7489224
+          ],
+          [
+            0.6761364,
+            0.737069
+          ],
+          [
+            0.7191558,
+            0.7510776
+          ],
+          [
+            0.7508117,
+            0.7758621
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 1,
+          "distance_ramp": 18
+        },
+        "review": "Reviewed original and all22 indexed enclosed backdrop gaps on source-resolution dark/light composites. Preserve ivory rose/feathers, black thorn rings, scarlet petals, neutral drapery and painted ground shadow. Genuine frontal pose."
       }
     },
     {

@@ -132,9 +132,9 @@ def calamity_document():
 
 Owner's current sharing direction: **12 boss images + 3 chest images + 3 arena
 images = 18 images**. All prompts below are complete and copy-ready.
-Seventeen originals are now delivered and installed: eleven bosses, all three
-chests and all three arenas. Only **The Last Scarlet Bloom** remains undelivered.
-Retain the other prompts as generation provenance, not replacement requests.
+All eighteen originals are now delivered and installed: twelve bosses, all
+three chests and all three arenas, including **The Last Scarlet Bloom**.
+Retain these prompts as generation provenance, not replacement requests.
 See [the current contract](../../docs/calamity-mode.md).
 
 ## Delivery rules

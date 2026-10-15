@@ -1,5 +1,39 @@
 # Current state and handoff
 
+## Final Calamity boss delivered (D-318 follow-up)
+
+- Owner delivers `The Last Scarlet Bloom.png` at root, completing twelve bosses
+  and all18 Calamity images. Preserve original bytes under `Art/source/calamity`;
+  remove only the verified duplicate root copy, as already requested.
+- Reviewed the source and all22 indexed enclosed-key pockets on full-resolution
+  dark/light composites. Per-source settings preserve ivory roses/feathers,
+  scarlet petals, dark thorn rings, drapery and the painted ground shadow.
+- Shared boss mapping now requires all twelve activities at compile time.
+  Rose tiers1/2/3 share the new image across previews, field/cut-ins, catalog/
+  Collections and old frozen snapshots. Genuine frontal pose,1.75 boss scale,
+  revisioned deployment-base URL. No gameplay/account changes.
+- Current outstanding art is27 trophy-backed native symbols only; all45
+  original prompts remain as provenance. The generated Calamity pack's existing
+  unsaved status-only edit was superseded by this actual complete-delivery status;
+  no prompt design or parameters were changed.
+- `python -m unittest discover -s tools -p test_calamity_art.py -v`:
+  **3 passed** for all18 archives/exports, arena pixels, gap seeds, authoritative
+  alpha and protected artwork pixels. `test_pending_art.py`: **4 passed**.
+  Final `npm test -- --maxWorkers=2`: **3,869 passed in170 files**.
+  **Build Last Light** (`npm run build`) passed (existing large-chunk advisory).
+  Authority bundle regeneration/server TypeScript check passed.
+- Unsaved browser fixtures verified the Rose boss across all three old-snapshot
+  tiers with correct tier arenas, no mirroring/state changes/placeholders.
+  All three960px images loaded;390px CSS viewport has no horizontal overflow.
+  Fixture/listeners were disposed, real localStorage remained identical.
+- The single verified Rose root duplicate is removed. During work, new root
+  `Heavenfall Seraph.png` and `White Pyre Hierophant.png` appeared with different
+  bytes from the installed archives. Left untouched and excluded from this
+  Rose-only release; do not delete or silently replace archived originals.
+  Intake correctly rejects those conflicts until a separate reviewed
+  replacement is authorized.
+- Hosted publication verification follows after deployment.
+
 ## Calamity artwork installed (D-318)
 
 - Owner requests background removal and full wiring of delivered root images.

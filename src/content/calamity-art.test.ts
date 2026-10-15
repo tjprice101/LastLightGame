@@ -9,9 +9,9 @@ import { getCreature } from './creatures';
 import { assetUrl } from '../presentation/portrait';
 
 describe('delivered Calamity artwork', () => {
-  it('has exactly eleven boss cutouts and three tier-shared chests and arenas', () => {
-    expect(Object.keys(calamityBossArt)).toHaveLength(11);
-    expect(calamityBossArt.roses).toBeUndefined();
+  it('has all twelve boss cutouts and three tier-shared chests and arenas', () => {
+    expect(Object.keys(calamityBossArt)).toHaveLength(12);
+    expect(calamityBossArt.roses).toBe('calamity-boss-roses');
     expect(new Set(Object.values(calamityChestArt)).size).toBe(3);
     expect(new Set(Object.values(calamityArenaArt)).size).toBe(3);
     for (const activity of calamityActivities) {
@@ -19,7 +19,7 @@ describe('delivered Calamity artwork', () => {
     }
   });
 
-  it('resolves all seventeen installed files with exact byte revisions and deployment-base URLs', () => {
+  it('resolves all eighteen installed files with exact byte revisions and deployment-base URLs', () => {
     const paths = [
       ...Object.values(calamityBossArt).map(art => `enemies/${art}.png`),
       ...Object.values(calamityChestArt).map(art => `items/${art}.png`),

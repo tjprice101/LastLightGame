@@ -56,6 +56,7 @@ const artworkSizes: readonly (readonly [number, readonly string[]])[] = [
     'calamity-boss-abyss', 'calamity-boss-machines', 'calamity-boss-infernic',
     'calamity-boss-oceanic', 'calamity-boss-atmospheric', 'calamity-boss-botanic',
     'calamity-boss-tranquilitic', 'calamity-boss-chaotic',
+    'calamity-boss-roses',
     'abyss-night-without-end', 'abyss-worldfall-reverie', 'atlas-of-the-crystal-summit',
     'celestial-leviathan', 'crowncoil-kirin', 'crowned-phoenix', 'crownfault-behemoth',
     'crownray-kirin', 'crownvoid-behemoth', 'crownwind-roc',

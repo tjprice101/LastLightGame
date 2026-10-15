@@ -14,8 +14,8 @@ class CalamityArtTests(unittest.TestCase):
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
         settings = json.loads(SETTINGS.read_text(encoding="utf-8"))
         records = {row["asset"]: row for row in manifest["assets"]}
-        self.assertEqual(manifest["asset_count"], 17)
-        self.assertEqual(manifest["missing_bosses"], ["roses"])
+        self.assertEqual(manifest["asset_count"], 18)
+        self.assertEqual(manifest["missing_bosses"], [])
         for asset, incoming, category, source, runtime in assets():
             with self.subTest(asset=asset):
                 record = records[asset]
@@ -53,6 +53,7 @@ class CalamityArtTests(unittest.TestCase):
             "calamity-boss-oceanic": [(645, 350)],
             "calamity-boss-treasury": [(90, 875)],
             "calamity-chest-slayer": [(500, 900)],
+            "calamity-boss-roses": [(600, 235), (600, 810), (530, 888)],
         }
         for asset, points in samples.items():
             with Image.open(rows[asset]) as original:

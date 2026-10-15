@@ -2,13 +2,16 @@
 
 ## Calamity delivery intake (D-318)
 
-Seventeen owner-delivered root PNGs are archived byte-for-byte under
-`Art/source/calamity`; the17 duplicate root copies were subsequently removed
+Eighteen owner-delivered root PNGs are archived byte-for-byte under
+`Art/source/calamity`; the duplicate root copies were subsequently removed
 at the owner's request after matching both copies against recorded SHA-256
-hashes. Eleven bosses export to
+hashes. Twelve bosses export to
 `public/assets/enemies`, three shared tier chests to `public/assets/items`,
 and three shared tier arenas to `public/assets/backgrounds`. The Last Scarlet
-Bloom was not delivered and remains a named placeholder, never substituted.
+Bloom follow-up delivery completes all twelve bosses. Its22 reviewed enclosed
+background pockets are cleared while preserving ivory roses/feathers, scarlet
+petals, dark thorn rings, drapery and the painted shadow. The genuine frontal
+pose stays unmirrored and uses the same1.75 boss scale across all three tiers.
 
 `tools/intake_calamity_art.py` uses the existing offline connected-matte cleaner,
 per-source row-gradient keys and individually reviewed normalized enclosed-gap
@@ -41,7 +44,7 @@ untracked changes or conflicting archived originals are rejected before intake.
 copy-ready prompts. Owner chooses3 shared tier chests and3 shared tier arenas,
 not36 chest exports or twelve sets of scenery. Twelve boss cutouts and27
 new native-state pictograms complete the original45-image queue. D-318 installs
-seventeen Calamity images; the current queue is one Rose boss plus27 symbols.
+all eighteen Calamity images; the current queue is27 native symbols only.
 Existing133 Conduits, all48
 current materials, Master chest, character portraits and ability art are not
 replacement requests. Older War family/weapon concept prompts are optional,

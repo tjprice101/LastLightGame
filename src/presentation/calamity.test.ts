@@ -66,7 +66,7 @@ describe('Calamity presentation', () => {
     expect(document.querySelectorAll('[data-calamity]')).toHaveLength(36);
     for (const activity of calamityActivities) {
       const section = document.querySelector(`[data-calamity="${activity.id}"]`)!.closest('.calamity-section')!;
-      expect(section.querySelectorAll('.calamity-tier-boss')).toHaveLength(activity.id === 'roses' ? 0 : 3);
+      expect(section.querySelectorAll('.calamity-tier-boss')).toHaveLength(3);
       for (const tier of [1, 2, 3] as const) {
         const card = section.querySelector(`[data-calamity-tier="${tier}"]`)!.closest('.calamity-tier')!;
         expect(card.querySelector<HTMLImageElement>('.calamity-tier-arena')!.src).toContain(calamityArenaArt[tier]);
@@ -205,7 +205,7 @@ describe('Calamity presentation', () => {
     expect(card.querySelector('.glossary-loot')!.textContent).toContain(calamityChest('treasury', 3).name);
     expect(card.querySelector('.glossary-loot')!.textContent).toContain('2 Cosmic Grand Master Chests');
     expect(document.querySelector('[data-creature="calamity:machines"]')!.textContent).toContain('Undiscovered Calamity boss');
-    expect(document.querySelector('[data-creature="calamity:roses"] .glossary-art img')).toBeNull();
+    expect(document.querySelector<HTMLImageElement>('[data-creature="calamity:roses"] .glossary-art img')!.src).toContain('enemies/calamity-boss-roses.png?v=');
   });
 
   it.each(calamityActivities)('routes all $id tiers to shared chest art without changing actual loot', activity => {
@@ -213,8 +213,8 @@ describe('Calamity presentation', () => {
       const id = calamityChestId(activity.id, tier);
       expect(lootArt({ id })).toContain(`items/${calamityChestArt[tier]}.png?v=`);
       const art = calamityBossArt[activity.id];
-      if (art) expect(unitFacing(art, 'enemy').mirrored).toBe(activity.id === 'atmospheric');
-      else expect(activity.id).toBe('roses');
+      expect(art).toBeDefined();
+      expect(unitFacing(art, 'enemy').mirrored).toBe(activity.id === 'atmospheric');
     }
   });
 });

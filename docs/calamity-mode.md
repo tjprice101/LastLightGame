@@ -4,7 +4,7 @@ The owner requests implementation with placeholder art and delegates final
 boss mechanics, loot weights/quantities and difficulty tuning. Free entry,
 no defeat penalty and verifiable-final-clear access are approved. Client/server
 implementation is deployed under the2026-10-15 release. D-318 installs the
-seventeen delivered images; only The Last Scarlet Bloom keeps pending artwork.
+eighteen delivered images, including the follow-up The Last Scarlet Bloom.
 
 ## Current artwork delivery scope (D-317)
 
@@ -16,8 +16,8 @@ supersedes the original36-icon chest plan and previous no-new-arena scope;
 new headers/audio remain excluded. Mechanics, chest IDs/names/counts and loot
 are unchanged. [Copy-ready prompts](../Art/creatures/Calamity.md) and
 [complete missing-art checklist](../Art/Remaining%20Artwork.md).
-Eleven bosses, three tier chests and three tier arenas are now installed (D-318).
-Only The Last Scarlet Bloom is undelivered. Shared
+All twelve bosses, three tier chests and three tier arenas are installed (D-318).
+The Last Scarlet Bloom follow-up completes the set. Shared
 `src/content/calamity-art.ts` mappings cover catalog/spawns, field/cut-ins,
 Play tier cards, Inventory, loot references, drops, results and opening reveals.
 Frozen pre-art encounters resolve current artwork without resetting battle or
@@ -259,4 +259,4 @@ Unsaved browser fixtures verified entry/cancellation, neutral boss rendering,
 Inventory loot, one atomic EX+3 opening and narrow/desktop saved-reward reveal
 containment without modifying real storage. That placeholder-era verification
 is historical; [current intake/release verification](handoff.md) supersedes it.
-Only the Rose Calamity boss remains missing from the18-image Calamity set.
+All18 images in the Calamity set are now installed.

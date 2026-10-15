@@ -2,10 +2,10 @@
 
 ## Current missing-art queue (D-317 / D-318)
 
-[Current28-image checklist](Remaining%20Artwork.md):
-[Calamity](creatures/Calamity.md) retains all18 original prompts, but eleven
+[Current27-image checklist](Remaining%20Artwork.md):
+[Calamity](creatures/Calamity.md) retains all18 original prompts, and all twelve
 bosses, three shared tier chest icons and three shared tier arenas are installed.
-Only The Last Scarlet Bloom is missing.
+The Last Scarlet Bloom is now installed too; no Calamity artwork is missing.
 [Native identity symbols](ui/Native%20Identity%20Status%20Icons.md) has27 pending
 trophy-backed status pictograms. Copy-ready prompts and filenames included.
 See [reviewed intake](../docs/art-workflow.md#calamity-delivery-intake-d-318).
