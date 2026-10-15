@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { enemyCombatStats, enemyGrowth, enemyStat } from './stat-growth';
+import { enemyCombatStats, enemyExponentialRates, enemyGrowth, enemyStat } from './stat-growth';
+import { calamityActivities, calamityEncounter } from './calamity';
+import { resolveFighter } from './combat';
 import { dungeonEncounter, playableDungeons } from './dungeons';
 import { infusionEncounter } from './infusions';
 import { act, actionUnavailable, createBattle, createDungeonBattle, createInfusionBattle, endTurn, nextWave } from '../game/battle';
@@ -7,6 +9,45 @@ import { starters } from './starters';
 import { benchmarkTarget } from '../game/native-benchmark-pilot';
 
 describe('accelerating enemy stat curves', () => {
+  it('uses one shifted exponential from the opening through185 without120/140 plateaus or Calamity multipliers', () => {
+    for (const boss of [false, true]) {
+      const opening = enemyCombatStats(1, boss);
+      expect(opening).toMatchObject({ health: boss ? 208 : 83, damage: boss ? 28 : 22, defense: boss ? 5 : 4 });
+      for (let level = 1; level <= 185; level++) {
+        const stats = enemyCombatStats(level, boss);
+        for (const [stat, base, slope] of [
+          ['health', boss ? 207.5 : 83, .45],
+          ['damage', boss ? 27.5 : 22, .25],
+          ['defense', boss ? 16 / 3 : 4, .30],
+        ] as const) {
+          const rate = enemyExponentialRates[stat];
+          expect(stats[stat]).toBe(Math.round(base * (1 + slope * Math.expm1(rate * (level - 1)) / rate)));
+          expect(Number.isSafeInteger(stats[stat])).toBe(true);
+          if (level >= 21) {
+            const before = enemyCombatStats(level - 20, boss)[stat];
+            const middle = enemyCombatStats(level - 10, boss)[stat];
+            expect(Math.abs((stats[stat] - middle) - (middle - before) * Math.exp(rate * 10))).toBeLessThan(3);
+          }
+        }
+      }
+    }
+    for (const { id } of calamityActivities) for (const tier of [1, 2, 3] as const) {
+      const encounter = calamityEncounter(id, tier);
+      expect(encounter.stats).toEqual(enemyCombatStats(encounter.level, true));
+    }
+    for (const value of [0, -1, 186, NaN, Infinity, 1.5]) expect(() => enemyCombatStats(value, false)).toThrow();
+  });
+
+  it.each(starters)('$name retains playable growth while hostile relative pressure compounds', ({ id }) => {
+    const early = resolveFighter(id, { level: 60, evolution: 3 }).stats;
+    const late = resolveFighter(id, { level: 105, evolution: 6 }).stats;
+    const before = enemyCombatStats(60, false);
+    const after = enemyCombatStats(105, false);
+    for (const stat of ['health', 'damage', 'defense'] as const) {
+      expect(after[stat] / before[stat]).toBeGreaterThan(late[stat] / early[stat]);
+      expect(enemyCombatStats(185, true)[stat] / enemyCombatStats(120, true)[stat]).toBeGreaterThan(3.5);
+    }
+  });
   it('keeps opening values, doubles initial health/attack growth and reaches exact endgame thresholds', () => {
     expect(enemyStat(110, 200_000, 1, 1, .24)).toBe(110);
     expect(enemyStat(110, 200_000, 2, 1, .24)).toBe(136);

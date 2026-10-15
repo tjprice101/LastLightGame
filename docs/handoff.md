@@ -1,5 +1,53 @@
 # Current state and handoff
 
+## Exponential hostile pursuit and intentional walls (D-319)
+
+- Owner requests game-wide exponential enemies without changing characters to
+  keep pace. Explicit follow-ups preserve the four-Omnic cap and choose
+  difficulty-only rather than a gear entry gate. Calamity's build target is a
+  complementary fully developed squad, eight +5 ordinary pieces/member,
+  including four relevant matching-element Omnic, and suitable Masters.
+- All real hostile spawns now use
+  `round(B*(1+S*expm1(R*(L-1))/R))` through185: HP S=.45/R=.026,
+  Attack .25/.024, Defense .30/.020. Opening B remains83/22/4 ordinary and
+  207.5/27.5/(16/3) boss, final rounding only. No25/120/140 curve splice;
+  Calamity uses its actual145/160/185 levels, same12% Crit profile.
+- Calamity boss HP/Attack/Defense:145=148411/8819/1350,
+  160=220814/12753/1849,185=426076/23450/3097. Stats compound while characters
+  and captures retain their existing playable growth/kits. Equipment effects,
+  slots/upgrades, economy/rewards/RNG, unlocks and level schedules/caps unchanged.
+- Existing shared compatibility restart advances to rules4: restart only the
+  historical current encounter at its current stage/wave with frozen squad,
+  progress/equipment/upgrades/Masters, retain saved rewards/account holdings,
+  fresh receipt/run ID, stale-input rejection and explicit notice.
+- Replaced easy-clear targets, not failures with character buffs.648 simulations:
+  two squads (Infernis/Tizu/Flora, Rosetta/Thornia/Flora), three gear variants,
+  all12 bosses/3tiers/3seeds. EX1 prior mixed+5 wins8/36 and16/36; four-Omnic+0
+  both0/36; four-Omnic+5 candidates0/36 and1/36. Every tested EX2/EX3 case loses,
+  no timeouts. Candidates are not exhaustive optimization; EX2/EX3 viability is
+  not demonstrated. Walls are intentional; clever lower-rarity wins are allowed.
+  Full reproducible report/fixtures: `docs/calamity-mode.md` and
+  `src/game/calamity.test.ts` (`CALAMITY_DIFFICULTY_REPORT=1`).
+- Early Story/Common regional checks remain; old solo material-entry and
+  guaranteed Common-only fodder/final Rose/War clears are retired. Assertions
+  now measure those walls while retaining shared spawn parity, unchanged
+  character/capture growth and successful earlier team routes.
+- Validation: `$env:CALAMITY_DIFFICULTY_REPORT='1'; npm test -- --maxWorkers=2`
+  passes3,891 tests/170 files, including the648 measurements, per-level exact
+  curve/compounding/safe-integer checks, all-mode spawned-stat parity,
+  version3-to4 offline/authority restart and no-gear-admission regression.
+  `npm run build` passes type-check/production build (inherited chunk advisory).
+  `node tools\bundle_server_game.mjs` and
+  `npx tsc -p supabase\functions\game-operation\tsconfig.json` pass.
+  Editor diagnostics and `git diff --check` pass.
+- Unsaved narrow-browser fixture verifies guidance in activity cards and
+  styled confirmation, cancellation, gearless eligibility with normal-final
+  unlock, exact120/140/145/160/185 boss stats and no horizontal fixture overflow.
+  No localStorage changes; fixture/dialog removed after cancellation.
+- Publication pending; regenerated authority must deploy alongside client.
+  Hosted smoke's forced1-HP victory is a reward/transaction test, not proof
+  that a live-stat EX3 boss can be beaten.
+
 ## Native-status frame clarification (D-317)
 
 - Owner corrects the prior trophy interpretation: all27 symbols belong inside

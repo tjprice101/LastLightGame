@@ -3510,29 +3510,27 @@ function isActionId(value2) {
 
 // src/content/stat-growth.ts
 var playableGrowth = { perLevel: 0.15, perEvolution: 1.5 };
+var enemyExponentialRates = { health: 0.026, damage: 0.024, defense: 0.02 };
+function hostileStat(base, initialRate, rate, level) {
+  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate));
+}
 var enemyGrowth = {
   maximumLevel: 120,
-  health: 9e3,
-  bossHealth: 35e3,
-  damage: 1200,
-  bossDamage: 3e3,
-  defense: 400,
-  bossDefense: 600
+  maximumHostileLevel: 185,
+  health: hostileStat(83, 0.45, enemyExponentialRates.health, 120),
+  bossHealth: hostileStat(207.5, 0.45, enemyExponentialRates.health, 120),
+  damage: hostileStat(22, 0.25, enemyExponentialRates.damage, 120),
+  bossDamage: hostileStat(27.5, 0.25, enemyExponentialRates.damage, 120),
+  defense: hostileStat(4, 0.3, enemyExponentialRates.defense, 120),
+  bossDefense: hostileStat(16 / 3, 0.3, enemyExponentialRates.defense, 120)
 };
 var capturedGrowth = { health: 220, damage: 38, defense: 16 };
 function enemyCombatStats(level, boss) {
-  if (!Number.isInteger(level) || level < 1 || level > 140) throw new Error("Enemy level must be from 1 to 140.");
-  const bounded = Math.min(level, enemyGrowth.maximumLevel);
-  const extension = (1 + Math.max(0, level - enemyGrowth.maximumLevel) * 0.018) ** 2;
-  const stat = (base, target, rate) => {
-    const linear = 1 + (bounded - 1) * rate;
-    const acceleration = Math.log(target / (base * (1 + 119 * rate)));
-    return Math.round(base * linear * Math.exp(acceleration * Math.max(0, bounded - 25) / 95) * extension);
-  };
+  if (!Number.isInteger(level) || level < 1 || level > enemyGrowth.maximumHostileLevel) throw new Error("Enemy level must be from 1 to 185.");
   return {
-    health: stat(boss ? 207.5 : 83, boss ? enemyGrowth.bossHealth : enemyGrowth.health, 0.45),
-    damage: stat(boss ? 27.5 : 22, boss ? enemyGrowth.bossDamage : enemyGrowth.damage, 0.25),
-    defense: stat(boss ? 16 / 3 : 4, boss ? enemyGrowth.bossDefense : enemyGrowth.defense, 0.3),
+    health: hostileStat(boss ? 207.5 : 83, 0.45, enemyExponentialRates.health, level),
+    damage: hostileStat(boss ? 27.5 : 22, 0.25, enemyExponentialRates.damage, level),
+    defense: hostileStat(boss ? 16 / 3 : 4, 0.3, enemyExponentialRates.defense, level),
     crit: 0.12,
     critMultiplier: 1.5,
     shatterCapacity: 100,
@@ -4701,17 +4699,7 @@ function calamityEncounter(activity, tier) {
   const definition = calamityActivity(activity);
   if (!isCalamityTier(tier)) throw new Error("Invalid Calamity tier.");
   const level = [145, 160, 185][tier - 1];
-  const base = enemyCombatStats(140, true);
-  const healthScale = [1.1, 1.5, 1.9][tier - 1];
-  const attackScale = [1.01, 1.04, 1.08][tier - 1];
-  const defenseScale = [1.02, 1.06, 1.1][tier - 1];
-  const stats = {
-    ...base,
-    health: Math.round(base.health * healthScale),
-    damage: Math.round(base.damage * attackScale),
-    defense: Math.round(base.defense * defenseScale),
-    crit: 0.08
-  };
+  const stats = enemyCombatStats(level, true);
   const pattern = calamityPatterns[activity];
   const skills = [
     { name: pattern.strike, multiplier: pattern.multiplier, every: pattern.every, action: "skill1" },
@@ -5712,7 +5700,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = 3;
+var conduitRulesVersion = 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }
@@ -8825,7 +8813,7 @@ function validateSaveFile(value2) {
 }
 
 // src/presentation/conduit-compatibility.ts
-var conduitRestartNotice = "Native kit and equipment rules updated. This encounter restarted at the current stage with your original squad and equipment. All previously saved rewards are kept.";
+var conduitRestartNotice = "Combat rules updated, including exponential enemy growth. This encounter restarted at the current stage with your original squad and equipment. All previously saved rewards are kept.";
 function atTrainingWave(state, wave) {
   if (wave <= 1) return state;
   const spawned = nextWave({ ...structuredClone(state), wave: wave - 1, phase: "cleared" });

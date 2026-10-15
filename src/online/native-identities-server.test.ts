@@ -51,10 +51,11 @@ describe('native identity authoritative parity and restart', () => {
     expect(game).toEqual(before);
   });
 
-  it.each(['read', 'checkpoint', 'act'] as const)('restarts version2 through %s without applying stale commands or replacing frozen squad', kind => {
+  it.each([2, 3].flatMap(version => (['read', 'checkpoint', 'act'] as const).map(kind => ({ version, kind }))))(
+    'restarts version$version through $kind without applying stale commands or replacing frozen squad', ({ version, kind }) => {
     const game = ready(['crinso', 'tide']);
     const runId = game.run!.session.runId;
-    game.run!.session.state.conduitRulesVersion = 2;
+    game.run!.session.state.conduitRulesVersion = version;
     game.run!.session.state.allies[0].hp = 1;
     game.run!.session.state.allies[0].pilot = { duality: 3 };
     game.run!.session.state.allies[0].native = { combo: 3, edge: 'crimson' };

@@ -157,62 +157,58 @@ Equal level and rank mean equal stats and scheduled skill strength; bosses
 remain stronger than ordinary enemies. Enemy count and player squad/build still
 affect total encounter difficulty. There is no hidden player-level modifier.
 
-With bounded level L=min(level,120), opening B, target T and initial rate R:
-`round(B*(1+(L-1)*R)*exp(log(T/(B*(1+119*R)))*max(0,L-25)/95))`.
-HP/Attack/Defense rates are .45/.25/.30. The accessible linear opening now
-has extra exponential acceleration above25, without a late-level spike.
-Ordinary openings remain83 HP/22 Attack/4 Defense; boss openings remain
-207.5/27.5/(16/3). Beyond120, the existing event-only extension is
-`(1 + .018 * (level-120))^2`, through140.
+### Smooth exponential pursuit and intentional walls (D-319)
 
-| Lv.120 stat | Ordinary | Boss |
+Owner explicitly requests game-wide exponential hostile growth, not character
+buffs to keep pace. This supersedes the old D-289 endpoints, quadratic event
+extension and easy-clear/upper-hits-to-kill targets. Difficulty walls are
+intentional. No hidden player-level adjustment or encounter-specific stat
+discount; Story, Training, dungeons, infusions, events, War and Calamity all use
+one level/rank curve. Activity level schedules and Training's level120 cap stay.
+
+For level L from1 through185, opening B, initial slope S and exponent R:
+`round(B * (1 + S * expm1(R * (L - 1)) / R))`.
+HP uses S=.45/R=.026, Attack .25/.024, Defense .30/.020. Ordinary openings are
+83/22/4 and boss openings207.5/27.5/(16/3), rounded only at the final boundary.
+The shifted exponential retains opening values and readable early steps;
+increments compound continuously, with no knots/plateaus at25,120 or140.
+Calamity uses its actual145/160/185 levels, not small multipliers on140.
+
+| Level | Ordinary HP / Attack / Defense | Boss HP / Attack / Defense |
 | --- | --- | --- |
-| Health | 9,000 | 35,000 |
-| Attack | 1,200 | 3,000 |
-| Defense | 400 | 600 |
+|1|83 /22 /4|208 /28 /5|
+|38|2,406 /350 /70|6,014 /437 /93|
+|60|5,307 /737 /139|13,268 /921 /186|
+|105|20,107 /2,574 /424|50,269 /3,217 /566|
+|120|30,344 /3,778 /592|75,860 /4,723 /790|
+|140|51,962 /6,234 /911|129,906 /7,792 /1,215|
+|145|59,364 /7,055 /1,013|148,411 /8,819 /1,350|
+|160|88,325 /10,202 /1,387|220,814 /12,753 /1,849|
+|185|170,430 /18,760 /2,323|426,076 /23,450 /3,097|
 
-Measured unequipped Infernis against ordinary same-level enemies:
+Shared Crit12%, critical multiplier1.5, Gauge capacity100 and Elemental
+Damage0 remain; Calamity now shares that same critical profile rather than
+its former8% override. Authored skills, boss patterns, targets and intervals
+are unchanged. Character stats/kits, captured playable stats/retained skills,
+equipment effects/+5 cap, acquisition, costs, rewards and unlocks are unchanged.
+Eight ordinary slots retain the four matching-element Omnic maximum and
+separate Master. Calamity's build target is a complementary fully developed
+team with eight +5 pieces/member, including four relevant Omnic and a suitable
+Master. Owner explicitly selects difficulty-only, not an equipment entry gate:
+any legal team may attempt it, and clever lower-rarity builds may win.
 
-| Level / evolution | Player HP | Enemy HP | Noncritical Normal Attacks to defeat |
-| --- | --- | --- | --- |
-| 19 / 1 | 847 | 755 | 7 |
-| 60 / 3 | 2,860 | 2,945 | 8 |
-| 90 / 5 | 4,510 | 5,452 | 9 |
-| 105 / 6 | 5,335 | 7,076 | 11 |
+Early Story entry and regional/Common-team checks remain, but solo material
+entry and Common-only fodder access are no longer guaranteed. The old mixed
+starter build loses all tested final Roses/War encounters, while final material
+bosses and non-Rose staged bosses still have tested built routes. Common-only
+fodder measurements include both wins and defeats. No character adjustment is
+made to turn these losses into victories.
 
-At enemy120, max-level unequipped Infernis needs at least13 Normals; the tested
-unupgraded late Conduit loadout needs at most8 and more than halves relative
-incoming ordinary damage. Lv.105 relative ordinary incoming damage exceeds
-Lv.19's by at least1.2x; late per-level hostile stat steps stay below5%.
-All16 Lv.19 base-form characters have less than3x corresponding standard/Story
-enemy HP and cannot one-shot with a critical Normal Attack.
-
-Every Lv.60 ordinary enemy has2,945 HP/428 Attack/108 Defense; a Lv.60 boss
-has8,665/691/151. Shared Crit12%, critical multiplier1.5, Gauge capacity100
-and Elemental Damage0. First skill coefficient is `1.2+(level-1)*.004`,
-with shared ordinary/boss schedules and second-skill priority.
-Across all16 Element-Bearers at legal progression caps, an ordinary enemy
-ten levels higher requires at least7 noncritical Normals, has more than15%
-greater raw hits-to-kill than its same-level counterpart, and deals a
-noncritical Normal exceeding10% player maximum HP. Actual available Skill1
-direct hits stay below80% enemy HP. For unequipped Lv.19 Infernis, enemy29
-takes11 Normals instead of7 at19; incoming Normals rise from12% to19% HP.
-These are no-gear benchmarks, not immunity to a well-built powerful skill.
-
-All starters clear the first Story encounter at Lv.0 without gear across three
-seeds. Each initial starter can clear the first regional boss solo atLv15 with
-Common Store gear, before recruitment. A complementary same-level Common-geared
-squad clears all six regional bosses. Accessible Common Store squad loadouts
-also support the opening material dungeon, Rare materials at the Lv.45 cap and
-form3 infusion at the Lv.60 cap. Across three seeds,
-the complementary Infernis/Tizu/Flora squad clears final material bosses,
-all six staged creature/Machine activities and all three War bosses with a
-legal unupgraded late loadout. The same squad without gear loses every tested
-final staged creature/Machine boss. This is a regression benchmark, not a
-promise that every squad or rotation wins, or that no exceptional unbuilt
-strategy exists. Late loadout: Worldbreaker Drive, Immortal Vessel, Citadel
-Spine, Astral Prism, Siege Cantilever, Duplex Heart, Twinpulse Bellows and
-Springwell Pump. Existing three Rose/starter mixed-squad clear tests remain.
+The [Calamity report](calamity-mode.md#isolated-stats-and-measured-difficulty)
+measures648 seeded fights across two squads, three gear variants, twelve bosses
+and three tiers. Four-Omnic +5 is a target, not proof of synergy or guaranteed
+victory. All tested EX2/EX3 builds currently lose; do not describe those tiers
+as proven clearable or lower the enemy curve to satisfy the retired clear floors.
 
 Captured creatures also use **linear playable growth**, not the hostile curve:
 base220 HP/38 Attack/16 Defense, factor `1+.15*level`, with Defense exponent.7
@@ -228,9 +224,11 @@ New Heaven/Abyss runs use the
 [cap-aligned schedule](gameplay-and-elements.md#two-infusion-modes).
 Existing runs without a schedule marker retain the old levels and loot across
 Continue/Retry; new entry locks never invalidate a frozen active run.
-Loading/Settings does not rewrite active combat stats. A rebuilt staged
-encounter or Retry resolves the current curves from frozen progress/gear;
-Training retains its allied run snapshot when advancing waves.
+Combat rules version4 uses the existing compatibility restart: a historical
+current encounter restarts once at its current stage/wave with the frozen
+squad/progress/gear/upgrades/Masters and a fresh receipt/run ID. Retain all saved
+rewards/holdings, reject stale actions and show the restart notice. Current
+version4 sessions stay untouched by Settings. No load-time account rewrite.
 
 Validation: `npm test -- src\game\enemy-progression.test.ts
 src\game\activity-access.test.ts src\game\defense-balance.test.ts

@@ -5,6 +5,15 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Exponential enemy pursuit (D-319):** game-wide hostile stats now follow one
+smooth exponential curve through185; Calamity uses actual145/160/185 stats.
+Characters/captures/equipment/rewards are unchanged. Intentional walls replace
+old clear-rate guarantees. Four matching Omnic within eight +5 slots/member
+is the Calamity build target, not a hard entry gate or victory guarantee.
+[Curve](combat.md#smooth-exponential-pursuit-and-intentional-walls-d-319),
+[648-fight measurements](calamity-mode.md#isolated-stats-and-measured-difficulty),
+[validation/publication](handoff.md).
+
 **Calamity artwork (D-318):** all eighteen delivered originals are archived and
 installed: twelve boss cutouts, three shared tier chests and three tier arenas.
 Owner-approved Seraph/Hierophant replacements now preserve both source/export

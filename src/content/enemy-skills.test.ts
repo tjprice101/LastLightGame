@@ -50,6 +50,7 @@ describe('level-dependent enemy skill kits', () => {
 
   it('emits named real skills and heavy boss ultimates, while retaining one damage resolution and seed determinism', () => {
     const initial = createInfusionBattle('abyss', 35, 1729, 'tide', { level: 105, evolution: 6 });
+    initial.allies[0].hp = initial.allies[0].stats.health = 1_000_000;
     const health = initial.enemies[0].hp;
     const damage: number[] = [];
     for (const round of [1, 2, 6]) {

@@ -155,30 +155,52 @@ execution, new consumables or changes to the player's native kit.
 
 ## Isolated stats and measured difficulty
 
-Ordinary hostile stat helpers retain their1-140 bounds and exact outputs.
-Only Calamity derives these profiles from the existing Lv140 boss baseline:
+D-319 supersedes the former140-based mild tier multipliers and starter/mixed
+clear-rate floors. All hostile modes use the same smooth shifted exponential
+[curve](combat.md#smooth-exponential-pursuit-and-intentional-walls-d-319).
+Calamity passes its actual level into that curve:
 
-| EX | Level | HP multiplier | Attack multiplier | Defense multiplier | Crit |
+| EX | Level | HP | Attack | Defense | Crit |
 | --- | ---: | ---: | ---: | ---: | ---: |
-|1|145|1.1|1.01|1.02|8%|
-|2|160|1.5|1.04|1.06|8%|
-|3|185|1.9|1.08|1.1|8%|
+|1|145|148,411|8,819|1,350|12%|
+|2|160|220,814|12,753|1,849|12%|
+|3|185|426,076|23,450|3,097|12%|
 
-Round each scaled stat once; preserve baseline critical multiplier/other stats.
-Difficulty comes from sustained endgame encounters and visible pressure
-patterns, not silently increasing player caps or nerfing ordinary enemies.
+Round once; no activity/player-level discounts or artificial stat caps.
+Character strength/caps/kits and all equipment effects remain unchanged.
+Intended pursuit: a complementary team with all eight ordinary slots at+5,
+including four relevant matching-element Omnic pieces, plus a suitable Master.
+The owner retains the four-Omnic limit and explicitly chooses difficulty-only:
+no equipment entry gate, and exceptional lower-rarity strategies are valid.
+Full rarity/rank is not automatically synergy or a guaranteed clear.
 
-Seeded acceptance targets use seeds1/1729/12345 across all12 activities:
+Current measurements use seeds1/1729/12345, all12 bosses, all3 tiers, both
+Lv105/Evo6 squads, three gear variants:648 fights, no timed-out simulations.
+Same native-aware pilot/Masters are used for each squad's controls.
 
-- A legal+5 Infernis/Tizu/Flora build must clear at least30/24/20 of36
-  EX1/EX2/EX3 cases, with victories taking10-350 phases.
-- A complementary Rosetta/Thornia/Flora build must clear all36 per tier in
-  10-250 phases.
-- Treasury must defeat an undeveloped solo starter and ungeared max-level
-  starter squad at all three tiers.
-- Initial324-fight measurement: starter32/27/24 wins, mixed36/36/36,
-  Rose trio33/33/18. These are reproducible build/rotation measurements, not
-  population win-rate claims or a promise every legal squad can win.
+| Squad / build | EX1 wins /36 | EX2 wins /36 | EX3 wins /36 |
+| --- | ---: | ---: | ---: |
+|Infernis/Tizu/Flora, prior mixed-rarity+5|8|0|0|
+|Infernis/Tizu/Flora, four Omnic/member+0|0|0|0|
+|Infernis/Tizu/Flora, four Omnic/member+5|0|0|0|
+|Rosetta/Thornia/Flora, prior mixed-rarity+5|16|0|0|
+|Rosetta/Thornia/Flora, four Omnic/member+0|0|0|0|
+|Rosetta/Thornia/Flora, four Omnic/member+5|1|0|0|
+
+Exact legal eight-slot/Master fixtures are in `src/game/calamity.test.ts`.
+The four-Omnic sets are role-specific **candidate builds**, not a claim of
+exhaustive optimization. Prior mixed-rarity builds can outperform less
+synergistic higher-rarity sets. None of these candidates proves EX2/EX3
+clearable; their losses are intentional measured walls, not a reason to buff
+characters or flatten enemy growth. Further build/rotation searches remain
+possible, with no promise every team can win.
+
+Reproduce the full per-boss report in PowerShell:
+`$env:CALAMITY_DIFFICULTY_REPORT='1'; npm test -- src\game\calamity.test.ts --maxWorkers=2`.
+Each JSON row reports wins/defeats/timeouts plus individual boss/seed outcomes,
+rounds and remaining boss HP fraction. A step-limit timeout is never a defeat.
+Both undeveloped solo and unequipped developed Treasury controls still lose.
+No account saves/rewards are used in these simulations.
 
 ## Navigation, warnings and placeholder art
 
@@ -189,8 +211,11 @@ shows fixed contents and exact bundle odds.
 
 Every entry/replay uses a styled in-game confirmation, adapted to activity/tier:
 
-> Calamity EX+3 - Level185 boss. An unforgiving endgame challenge. A fully
-> developed, optimized squad is strongly recommended. One boss. Victory awards
+> Calamity EX+3 - Level185 boss. Exponential enemy growth creates intentional
+> difficulty walls. Build target: a complementary squad with eight +5 Conduits per
+> member, including four matching-element Omnic Conduits, and a suitable Master.
+> Any legal squad may attempt it; full equipment is not a guaranteed victory.
+> One boss. Victory awards
 > one matching EX+Omnipotent chest; no ordinary drops or captures.
 
 Include explicit Enter/Cancel, free entry/no defeat penalty and boss counterplay.

@@ -5,7 +5,7 @@ import { act, actAndAdvanceTurn, actionUnavailable, createCalamityBattle, endTur
   withMasterLoadouts, type BattleState } from './battle';
 import { enemyCombatStats } from '../content/stat-growth';
 import { enemyAbilityMultiplier } from '../content/enemy-skills';
-import type { ConduitLoadouts } from '../content/conduits';
+import { getConduit, validateConduitSlots, type ConduitLoadouts, type ConduitSlots } from '../content/conduits';
 import { characterLevelCap } from '../content/progression';
 import type { StarterId } from '../content/starters';
 import { creatureLoot, getCreature } from '../content/creatures';
@@ -22,7 +22,6 @@ const equipment: ConduitLoadouts = {
   tide: [...base, 'opal-indexer', 'wardglass-transformer', 'ward-stitch-spool'],
   sprout: [...base, 'springwell-pump', 'coilfeed-ratchet', 'botanic-graft-covenant'],
 };
-const upgrades = Object.fromEntries(Object.values(equipment).flat().map(id => [id, 5]));
 const masters = { ember: 'master-ember-1', tide: 'master-tide-3', sprout: 'master-sprout-1' } as const;
 
 function play(initial: BattleState) {
@@ -117,7 +116,7 @@ describe('isolated Calamity definitions and rewards', () => {
       expect(() => parseCalamityChestId(id)).toThrow();
     }
     expect(() => calamityEncounter('machines', 4 as CalamityTier)).toThrow();
-    expect(() => enemyCombatStats(145, true)).toThrow();
+    expect(() => enemyCombatStats(186, true)).toThrow();
     expect(() => enemyAbilityMultiplier(185)).toThrow();
     expect(characterLevelCap(6)).toBe(105);
   });
@@ -174,38 +173,61 @@ describe('Calamity visible boss patterns', () => {
 });
 
 describe('Calamity seeded difficulty benchmarks', () => {
-  it.each(tiers)('retains a viable non-Rose/non-War starter route at EX+%s across three seeds', tier => {
-    const results = calamityActivities.flatMap(({ id }) => [1, 1729, 12345].map(seed => {
-      const state = createCalamityBattle(id, tier, seed, 'ember', progress.ember, team, progress, equipment, [], upgrades);
-      const result = play(withMasterLoadouts(state, masters));
-      return { activity: id, seed, phase: result.phase, rounds: result.round, survivors: result.allies.filter(ally => ally.hp > 0).length };
-    }));
-    expect(results.every(result => result.phase !== 'player')).toBe(true);
-    expect(results.filter(result => result.phase === 'cleared').length).toBeGreaterThanOrEqual([30, 24, 20][tier - 1]);
-    expect(results.filter(result => result.phase === 'cleared').every(result => result.rounds >= 10 && result.rounds <= 350)).toBe(true);
-  });
-  it.each(tiers)('permits complementary mixed squads at EX+%s rather than one lucky build/seed', tier => {
-    const roles = {
-      sprout: ['springwell-pump', 'coilfeed-ratchet', 'botanic-graft-covenant'],
-      rosetta: ['wardglass-transformer', 'verdict-caliper', 'tranquilitic-accord-bastion'],
-      thornia: ['lifeline-flywheel', 'breach-pendulum', 'verdict-caliper'],
-    } as const;
+  it.each(tiers)('measures four-Omnic candidate squads and intentional difficulty walls at EX+%s', tier => {
     const roster = ['rosetta', 'thornia', 'sprout'] as const satisfies readonly StarterId[];
     const progress = Object.fromEntries(roster.map(id => [id, { level: 105, evolution: 6 }]));
-    const equipment: ConduitLoadouts = Object.fromEntries(roster.map(id => [id, [
-      ...base.slice(0, 4), 'sentinel-aperture', ...roles[id],
-    ]]));
-    const upgrades = Object.fromEntries(Object.values(equipment).flat().map(id => [id, 5]));
-    for (const { id } of calamityActivities) for (const seed of [1, 1729, 12345]) {
-      const state = createCalamityBattle(id, tier, seed, 'rosetta', progress.rosetta, roster, progress, equipment, [], upgrades);
-      const result = play(withMasterLoadouts(state, {
-        rosetta: 'master-rosetta-1', thornia: 'master-thornia-3', sprout: 'master-sprout-1',
-      }));
-      expect(result.phase, `${id} seed ${seed}`).toBe('cleared');
-      expect(result.round, `${id} seed ${seed}`).toBeGreaterThanOrEqual(10);
-      expect(result.round, `${id} seed ${seed}`).toBeLessThanOrEqual(250);
+    const omnic = {
+      ember: ['infernic-cinder-testament', 'emberlife-kiln', 'sootwake-crucible', 'infernic-pyre-census'],
+      tide: ['aquatic-undertide-chronometer', 'ward-stitch-spool', 'clearwater-manifold', 'tidebound-reflector'],
+      sprout: ['efflorescent-verdant-covenant', 'covercharge-drum', 'rootbound-triage-vault', 'botanic-graft-covenant'],
+      rosetta: ['tranquilitic-stillhour-carillon', 'firstlight-cam', 'aegis-return-spring', 'tranquilitic-accord-bastion'],
+      thornia: ['chaotic-paradox-spindle', 'tension-governor', 'ruinselect-prism', 'chaotic-fault-verdict'],
+    } as const;
+    const full = Object.fromEntries(Object.entries(omnic).map(([id, slots]) => {
+      const regular: ConduitSlots = id === 'sprout' ? ['springwell-pump', 'coilfeed-ratchet'] :
+        id === 'rosetta' || id === 'thornia' ? ['horizon-heartcase', 'verdict-caliper'] :
+        ['horizon-heartcase', 'bastion-lock'];
+      return [id, ['immortal-vessel', 'citadel-spine', ...regular, ...slots] satisfies ConduitSlots];
+    }));
+    const oldMixed: ConduitLoadouts = {
+      ...equipment,
+      rosetta: [...base.slice(0, 4), 'sentinel-aperture', 'wardglass-transformer', 'verdict-caliper', 'tranquilitic-accord-bastion'],
+      thornia: [...base.slice(0, 4), 'sentinel-aperture', 'lifeline-flywheel', 'breach-pendulum', 'verdict-caliper'],
+    };
+    const fullUpgrades = Object.fromEntries(Object.values(full).flat().map(id => [id, 5]));
+    for (const slots of Object.values(full)) {
+      expect(validateConduitSlots(slots)).toEqual(slots);
+      expect(slots.filter(id => id && getConduit(id).rarity === 'Omnic')).toHaveLength(4);
+      expect(slots.every(id => id && fullUpgrades[id] === 5)).toBe(true);
     }
-  });
+    for (const squad of [
+      { name: 'starters', roster: team, progress: Object.fromEntries(team.map(id => [id, { level: 105, evolution: 6 }])), leader: 'ember' as const, masters },
+      { name: 'mixed', roster, progress, leader: 'rosetta' as const, masters: { rosetta: 'master-rosetta-1', thornia: 'master-thornia-3', sprout: 'master-sprout-1' } as const },
+    ]) {
+      for (const build of ['old-mixed', 'four-omnic-0', 'four-omnic-5'] as const) {
+        const gear = build === 'old-mixed' ? oldMixed : full;
+        const levels = build === 'old-mixed' ? Object.fromEntries(Object.values(oldMixed).flat().map(id => [id, 5]))
+          : build === 'four-omnic-5' ? fullUpgrades : {};
+        const results = calamityActivities.flatMap(({ id }) => [1, 1729, 12345].map(seed => {
+          const state = createCalamityBattle(id, tier, seed, squad.leader, squad.progress[squad.leader],
+            squad.roster, squad.progress, gear, [], levels);
+          const result = play(withMasterLoadouts(state, squad.masters));
+          return { activity: id, seed, phase: result.phase, rounds: result.round,
+            bossRemaining: result.enemies[0].hp / result.enemies[0].stats.health };
+        }));
+        const summary = { tier, squad: squad.name, build,
+          wins: results.filter(result => result.phase === 'cleared').length,
+          defeats: results.filter(result => result.phase === 'defeat').length,
+          timeouts: results.filter(result => result.phase === 'player').length };
+        if (process.env.CALAMITY_DIFFICULTY_REPORT === '1') process.stdout.write(JSON.stringify({ ...summary, results }) + '\n');
+        expect(results).toHaveLength(36);
+        expect(summary.timeouts).toBe(0);
+        expect(results.every(result => result.rounds > 0 && Number.isFinite(result.bossRemaining))).toBe(true);
+        if (build === 'four-omnic-0' || tier > 1) expect(summary.defeats).toBe(36);
+        if (tier === 1 && squad.name === 'mixed' && build === 'four-omnic-5') expect(summary.wins).toBeGreaterThan(0);
+      }
+    }
+  }, 60_000);
   it('rejects an undeveloped solo starter at every tier', () => {
     for (const tier of tiers) {
       const result = play(createCalamityBattle('treasury', tier, 1729, 'ember', { level: 0, evolution: 1 }));

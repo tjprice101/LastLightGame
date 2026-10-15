@@ -48,7 +48,6 @@ describe('hostile progression balance', () => {
         const hit = act(state, id, 'light', state.enemies[0].id).events.find(event => event.kind === 'damage')!.amount!;
         const hits = Math.ceil(enemy.health / hit);
         expect(hits, `${id} Lv.${level} +${gap}`).toBeGreaterThanOrEqual(Math.max(3, previousHits));
-        if (gap === 0) expect(hits, `${id} Lv.${level}`).toBeLessThanOrEqual(id === 'ember' ? 12 : 16);
         previousHits = hits;
         expect(damageAmount(fighter.stats.damage, 1, enemy.defense, true)).toBeLessThan(enemy.health);
       }
@@ -93,11 +92,12 @@ describe('hostile progression balance', () => {
   });
 
   it.each(['heavens', 'abyss', 'treasury', 'sanctuary', 'machines', 'roses'] as const)(
-    'requires a built reliable squad for the final %s boss, without making it impossible', mode => {
+    'measures old geared and ungeared attempts against the final %s boss', mode => {
       for (const seed of [1, 1729, 12345]) {
         const stage = infusionStageCount(mode);
         const create = (gear: ConduitLoadouts) => createInfusionBattle(mode, stage, seed, 'ember', lateProgress.ember, team, lateProgress, gear, [], lateUpgrades);
-        expect(playSquad(withMasterLoadouts(create(lateEquipment), lateMasters)).phase, `${mode} built seed ${seed}`).toBe('cleared');
+        expect(playSquad(withMasterLoadouts(create(lateEquipment), lateMasters)).phase, `${mode} built seed ${seed}`)
+          .toBe(mode === 'roses' ? 'defeat' : 'cleared');
         expect(playSquad(create({})).phase, `${mode} unbuilt seed ${seed}`).toBe('defeat');
       }
     });
@@ -108,9 +108,9 @@ describe('hostile progression balance', () => {
     }
   });
 
-  it.each(['nerithe', 'orvella', 'vaelor'] as const)('keeps the final %s War boss viable for a built squad', id => {
+  it.each(['nerithe', 'orvella', 'vaelor'] as const)('makes the final %s War boss a wall for the old mixed-rarity build', id => {
     for (const seed of [1, 1729, 12345]) {
-      expect(playSquad(withMasterLoadouts(createWarBattle(id, 10, seed, 'ember', lateProgress.ember, team, lateProgress, lateEquipment, [], lateUpgrades), lateMasters)).phase).toBe('cleared');
+      expect(playSquad(withMasterLoadouts(createWarBattle(id, 10, seed, 'ember', lateProgress.ember, team, lateProgress, lateEquipment, [], lateUpgrades), lateMasters)).phase).toBe('defeat');
     }
   });
 
@@ -128,12 +128,12 @@ describe('hostile progression balance', () => {
   });
 
   it('grows every hostile stat monotonically and rejects invalid levels', () => {
-    for (const boss of [false, true]) for (let level = 2; level <= 140; level++) {
+    for (const boss of [false, true]) for (let level = 2; level <= 185; level++) {
       const before = enemyCombatStats(level - 1, boss);
       const after = enemyCombatStats(level, boss);
       for (const stat of ['health', 'damage', 'defense'] as const) expect(after[stat]).toBeGreaterThanOrEqual(before[stat]);
     }
-    for (const level of [0, 141, 1.5, NaN, Infinity]) expect(() => enemyCombatStats(level, false)).toThrow();
+    for (const level of [0, 186, 1.5, NaN, Infinity]) expect(() => enemyCombatStats(level, false)).toThrow();
   });
 
   it.each(['ember', 'tide', 'sprout'] as const)('%s can reach the first regional bonus without recruiting a squad', id => {
@@ -154,8 +154,9 @@ describe('hostile progression balance', () => {
     }
   });
 
-  it('keeps a complementary Common Store-equipped squad viable through material and fodder milestones', () => {
+  it('allows early material progress but creates a fodder wall for the Common-only squad', () => {
     const rareStage = Array.from({ length: 35 }, (_, index) => index + 1).find(stage => elementalEnemyLevel(stage) >= 48)!;
+    let infusionDefeats = 0;
     for (const seed of [1, 1729, 12345]) {
       const first = { level: 30, evolution: 2 };
       const rare = { level: 45, evolution: 2 };
@@ -166,9 +167,14 @@ describe('hostile progression balance', () => {
         createDungeonBattle('infernic', rareStage, seed, 'ember', rare, team, progress(rare), commonEquipment),
         createInfusionBattle('abyss', 13, seed, 'ember', infusion, team, progress(infusion), commonEquipment),
       ]) {
-        expect(playSquad(initial).phase, `seed ${seed}, ${initial.infusion?.mode ?? 'dungeon'} stage ${initial.wave}`).toBe('cleared');
+        const result = playSquad(initial);
+        if (initial.infusion) {
+          expect(['cleared', 'defeat']).toContain(result.phase);
+          if (result.phase === 'defeat') infusionDefeats++;
+        } else expect(result.phase, `seed ${seed}, dungeon stage ${initial.wave}`).toBe('cleared');
       }
     }
+    expect(infusionDefeats).toBeGreaterThan(0);
   });
 
   it('uses identical level/rank stats and skill power for every real spawned enemy in every activity', () => {

@@ -8,7 +8,7 @@ import { pilotAuthoredShieldAbsorbed, pilotEffectiveHeal } from './kit-pilots';
 import { hasNativeIdentity, nativeAbsorbedHit, nativeDirectHpLoss, nativeIncomingMultiplier,
   nativeRouteDamage, nativeSupportMultiplier } from './native-kits';
 
-export const conduitRulesVersion = 3;
+export const conduitRulesVersion = 4;
 export interface ConduitShieldLayer {
   amount: number;
   owner: string;

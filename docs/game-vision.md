@@ -1,5 +1,12 @@
 # Game vision
 
+**Difficulty pursuit (D-319):** enemies grow smoothly exponentially game-wide,
+outpacing unchanged playable growth. Intentional walls encourage better teams
+and builds, not character buffs or guaranteed easy clears. Calamity targets
+fully upgraded eight-slot builds with four relevant Omnic and a suitable Master;
+any legal squad may attempt, and clever lower-rarity strategies remain valid.
+[Current curve and measurements](combat.md#smooth-exponential-pursuit-and-intentional-walls-d-319).
+
 **Founding canon (D-269):** Let, the first being, bears Infinity; his equal
 opposite Rise bears Nothingness. Their shared creation became rivalry, wars
 and a contest to find their scattered creators' souls. Let made human

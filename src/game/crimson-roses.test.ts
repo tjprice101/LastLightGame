@@ -130,7 +130,7 @@ describe('Passion of Crimson Roses integration', () => {
     ['rosetta', 'thornia', 'crinso'],
     ['ember', 'tide', 'sprout'],
     ['rosetta', 'thornia', 'sprout'],
-  ] as const)('allows the built max-level %s/%s/%s squad to clear the140 boss', (...team) => {
+  ] as const)('does not guarantee a140 boss clear for the old %s/%s/%s build', (...team) => {
     const progress = Object.fromEntries(team.map((id) => [id, { level: 105, evolution: 6 }]));
     const roles = {
       ember: ['siege-cantilever', 'resonance-crucible', 'infernic-cinder-testament'],
@@ -148,11 +148,14 @@ describe('Passion of Crimson Roses integration', () => {
       ember: 'master-ember-1', tide: 'master-tide-3', sprout: 'master-sprout-1',
       rosetta: 'master-rosetta-1', thornia: 'master-thornia-3', crinso: 'master-crinso-3',
     } as const;
+    let defeats = 0;
     for (const seed of [1, 1729, 12345]) {
       const upgrades = Object.fromEntries(Object.values(equipment).flatMap(slots => slots.flatMap(id => id ? [[id, 5]] : [])));
       const state = playNativeBenchmark(withMasterLoadouts(createInfusionBattle('roses', 35, seed, team[0], progress[team[0]], team, progress, equipment, [], upgrades), masters));
-      expect(state.phase, `seed ${seed}`).toBe('cleared');
+      expect(['cleared', 'defeat'], `seed ${seed}`).toContain(state.phase);
+      if (state.phase === 'defeat') defeats++;
     }
+    expect(defeats).toBeGreaterThan(0);
   });
 
   it.each(Array.from({ length: 35 }, (_, index) => index + 1))('commits actual stage%i rewards and capture eligibility without a clear grant or reroll', (stage) => {

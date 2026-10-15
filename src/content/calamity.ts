@@ -183,12 +183,7 @@ export function calamityEncounter(activity: CalamityActivityId, tier: CalamityTi
   const definition = calamityActivity(activity);
   if (!isCalamityTier(tier)) throw new Error('Invalid Calamity tier.');
   const level = [145, 160, 185][tier - 1];
-  const base = enemyCombatStats(140, true);
-  const healthScale = [1.1, 1.5, 1.9][tier - 1];
-  const attackScale = [1.01, 1.04, 1.08][tier - 1];
-  const defenseScale = [1.02, 1.06, 1.1][tier - 1];
-  const stats: Stats = { ...base, health: Math.round(base.health * healthScale),
-    damage: Math.round(base.damage * attackScale), defense: Math.round(base.defense * defenseScale), crit: .08 };
+  const stats: Stats = enemyCombatStats(level, true);
   const pattern = calamityPatterns[activity];
   const skills: EnemySkill[] = [
     { name: pattern.strike, multiplier: pattern.multiplier, every: pattern.every, action: 'skill1' },
@@ -196,7 +191,9 @@ export function calamityEncounter(activity: CalamityActivityId, tier: CalamityTi
   ];
   return { name: definition.boss, level, element: definition.element, stats, skills, description: pattern.description };
 }
+export const calamityBuildGuidance = 'Exponential enemy growth creates intentional difficulty walls. Build target: a complementary squad with eight +5 Conduits per member, including four matching-element Omnic Conduits, and a suitable Master. Any legal squad may attempt it; full equipment is not a guaranteed victory.';
+
 export function calamityWarning(activity: CalamityActivityId, tier: CalamityTier): string {
   const encounter = calamityEncounter(activity, tier);
-  return `Calamity EX+${tier} - Level ${encounter.level} boss. An unforgiving endgame challenge. A fully developed, optimized squad is strongly recommended. One boss. Victory awards one ${calamityChest(activity, tier).name}; no ordinary drops or captures. Free entry; no defeat penalty. ${encounter.description}`;
+  return `Calamity EX+${tier} - Level ${encounter.level} boss. ${calamityBuildGuidance} One boss. Victory awards one ${calamityChest(activity, tier).name}; no ordinary drops or captures. Free entry; no defeat penalty. ${encounter.description}`;
 }

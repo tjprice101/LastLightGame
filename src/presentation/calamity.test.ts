@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { calamityActivities, calamityChest, calamityChestId, calamityEncounter, calamityLootTable, calamityWarning, rollCalamityChest } from '../content/calamity';
+import { calamityActivities, calamityBuildGuidance, calamityChest, calamityChestId, calamityEncounter, calamityLootTable, calamityWarning, rollCalamityChest } from '../content/calamity';
 import { emptyAccount } from '../game/account';
 import { gameplayHub } from './gameplay';
 import { inventoryView, bindInventory } from './inventory';
@@ -35,6 +35,14 @@ afterEach(() => {
 });
 
 describe('Calamity presentation', () => {
+  it('shows the shared build target without inventing an equipment admission gate', () => {
+    const account = emptyAccount();
+    account.normalFinalClears = { machines: true };
+    document.body.innerHTML = calamitySection('machines', account);
+    expect(document.body.textContent).toContain(calamityBuildGuidance);
+    expect(calamityWarning('machines', 1)).toContain(calamityBuildGuidance);
+    expect(document.querySelector<HTMLButtonElement>('[data-calamity-tier="1"]')!.disabled).toBe(false);
+  });
   it.each(['heavens', 'sanctuary'] as const)('shares the current %s replacement art across tiers, old snapshots, cut-ins and catalog', activity => {
     vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
     Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: vi.fn() });

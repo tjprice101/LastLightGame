@@ -1,4 +1,4 @@
-import { calamityActivities, calamityChest, calamityEncounter, calamityLootTable, calamityPatterns, calamityWarning,
+import { calamityActivities, calamityBuildGuidance, calamityChest, calamityEncounter, calamityLootTable, calamityPatterns, calamityWarning,
   parseCalamityChestId, isCalamityActivityId, isCalamityTier, type CalamityActivityId, type CalamityTier } from '../content/calamity';
 import { type Account, type openCalamityChest } from '../game/account';
 import { activityAccess, assertActivityAccess } from '../game/activity-access';
@@ -32,6 +32,7 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
   if (!definition) throw new Error('Unknown Calamity activity.');
   return `<section class="calamity-section" aria-label="${escapeDialogText(definition.name)} Calamity">
     <h3>Calamity</h3><p>One boss per tier. No entry cost. A victory saves one sealed chest; open it explicitly in Inventory.</p>
+    <p>${escapeDialogText(calamityBuildGuidance)}</p>
     <div class="calamity-tiers">${([1, 2, 3] as const).map(tier => {
       const encounter = calamityEncounter(activity, tier);
       const chest = calamityChest(activity, tier);

@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { createClient } from '@supabase/supabase-js';
 import assert from 'node:assert/strict';
-import { freshGame, resolveOperation } from '../supabase/functions/game-operation/engine.bundle.js';
+import { conduitRulesVersion, freshGame, resolveOperation } from '../supabase/functions/game-operation/engine.bundle.js';
 
 // Secrets are captured in memory, never printed or persisted.
 const keysResult = spawnSync(process.platform === 'win32' ? 'npx.cmd' : 'npx',
@@ -363,7 +363,7 @@ async function smokeNativeCalamity(client, userId, username) {
     return result.data;
   }
   let response = await invoke({ kind: 'read' }, 0);
-  assert.equal(response.session.state.conduitRulesVersion, 3);
+  assert.equal(response.session.state.conduitRulesVersion, conduitRulesVersion);
   assert.equal(response.session.state.enemies[0].level, 185);
   const runId = response.session.runId;
   for (const [actorId, action, targetId] of [
@@ -402,12 +402,16 @@ async function smokeNativeCalamity(client, userId, username) {
   assert.equal(quit.session, null);
   const entered = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'treasury', tier: 1 } }, quit.revision);
   assert.equal(entered.session.state.enemies[0].art, 'calamity-boss-treasury');
+  assert.equal(entered.session.state.enemies[0].stats.health, 148411);
+  assert.equal(entered.session.state.enemies[0].stats.damage, 8819);
+  assert.equal(entered.session.state.enemies[0].stats.defense, 1350);
   const leave = await invoke({ kind: 'quit', runId: entered.session.runId }, entered.revision);
   assert.equal(leave.session, null);
   const rose = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'roses', tier: 1 } }, leave.revision);
   assert.equal(rose.session.state.enemies[0].art, 'calamity-boss-roses');
+  assert.deepEqual(rose.session.state.enemies[0].stats, entered.session.state.enemies[0].stats);
   assert.equal((await invoke({ kind: 'quit', runId: rose.session.runId }, rose.revision)).session, null);
-  console.log('Hosted native/Calamity smoke passed: rules3, explicit Tizu/Disciple recipients, Lv185 EX3 chest-only victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned Treasury/Rose Calamity artwork.');
+  console.log(`Hosted native/Calamity smoke passed: rules${conduitRulesVersion}, explicit Tizu/Disciple recipients, Lv185 EX3 chest-only fixture victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned Treasury/Rose exponential stats and artwork.`);
 }
 
 async function smokeGuaranteedComponents(client, userId, username) {

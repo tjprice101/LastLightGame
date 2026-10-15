@@ -91,6 +91,6 @@ describe('attack-relative Defense balance', () => {
     }
     expect(storyEncounter(1).stats.damage).toBe(22);
     expect(stagedEnemyAttack(121, true, 10, 140)).toBeGreaterThan(enemyGrowth.bossDamage);
-    expect(stagedEnemyAttack(140, true, 10, 140)).toBe(Math.round(enemyGrowth.bossDamage * 1.36 ** 2));
+    expect(stagedEnemyAttack(140, true, 10, 140)).toBe(enemyCombatStats(140, true).damage);
   });
 });
