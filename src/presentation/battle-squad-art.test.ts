@@ -1,18 +1,26 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-describe('squad battle art sizing (D-227)', () => {
+describe('shared artwork-led battle sizing', () => {
   const css = readFileSync(new URL('./battle-mono.css', import.meta.url), 'utf8');
 
-  it('sizes desktop squad allies from the arena container', () => {
-    expect(css).toMatch(/\.battle-arena \{ container-type: size; \}/);
-    expect(css).toMatch(/\.allies\.squad \.battle-art \{ width: min\(100%, calc\(150px \* var\(--unit-scale, 1\)\), 38cqh, 24cqw\); \}/);
-    expect(css).toMatch(/\.allies\.squad \.battle-unit:first-child \{ margin-top: 0; \}/);
-    expect(css).toMatch(/\.allies\.squad \.battle-unit:last-child \{ margin-bottom: 0; \}/);
+  it('uses one arena-relative baseline for both sides and reserves room for all rows', () => {
+    expect(css).toContain('container-type: size; grid-template-columns: repeat(2, minmax(0, 1fr))');
+    expect(css).toContain('--battle-art-base: min(180px, calc(48cqh / var(--battle-rows, 3)), 11cqw)');
+    expect(css).toContain('.battle-art { width: calc(var(--battle-art-base) * var(--unit-scale, 1)); max-width: 44%; flex-shrink: 0; }');
+    expect(css).not.toMatch(/\.allies\.(?:solo|squad) \.battle-art/);
+    expect(css).not.toMatch(/\.battle-unit:only-child \.battle-art/);
+    expect(css).not.toContain('margin-block: -5cqh');
   });
 
-  it('raises phone squad art above the generic unit cap', () => {
-    expect(css).toMatch(/\.allies\.squad \.battle-art \{ width: min\(100%, calc\(120px \* var\(--unit-scale, 1\)\), 17dvh\); \}/);
-    expect(css).toMatch(/\.allies\.squad \.battle-art \{ width: min\(100%, 16dvh\); \}/);
+  it('preserves artwork size ratios on phones instead of replacing them with fixed caps', () => {
+    expect(css).toContain('--battle-art-base: min(100px, calc(88cqw / var(--battle-rows, 3) / 1.75), 18cqh)');
+    expect(css).toContain('.battle-art { max-width: 100%; }');
+    expect(css).not.toMatch(/\.battle-art \{ width: min\(100%, \d+dvh\)/);
+  });
+  it('keeps full readouts reachable in cramped landscape arenas rather than painting over the footer', () => {
+    expect(css).toContain('@media (max-height: 540px) and (min-width: 541px)');
+    expect(css).toContain('.battle-arena { overflow-y: auto; overflow-x: hidden; }');
+    expect(css).toContain('.battle-side { height: auto; max-height: none; }');
   });
 });

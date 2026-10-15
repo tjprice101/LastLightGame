@@ -1,5 +1,30 @@
 # Current state and handoff
 
+## Artwork-led battle size consistency
+
+- Owner reports small large-creature sprites and oversized characters, then
+  clarifies all characters should be consistent while enemy artwork dictates
+  small/large presence. Removed solo/side sizing bonuses, reduced common
+  character ensemble inflation and reviewed151 enemy designs into six bounded
+  artwork-keyed bands. Story now participates; captured copies, merged dungeon
+  families and War character forms use their actual artwork identity.
+  [Contract](combat.md#artwork-led-battlefield-sizes).
+- Equal arena columns share one roster-aware responsive base. Mobile retains
+  scale metadata, no longer flattening all designs to fixed viewport caps.
+  No art bytes, facing, menus/cut-ins, combat math, saves or server changes.
+-16 browser fixture/viewport combinations (stag pair, small creatures,
+  colossus and full late-form squads at desktop/tablet/two phone settings)
+  preserve measured scale ratios, keep artwork inside the arena, avoid own
+  label overlap and have no horizontal overflow. Four additional short-wide
+  fixtures checked: solo cases fit; a full squad at488px viewport height with
+  200px reserved header/footer scrolls inside the arena. Verified the final
+  allied card is reachable at the scroll endpoint, without footer overlap.
+- Final validation: `npm test -- --maxWorkers=2` passed all2,185 tests in146
+  files. `npm run build` passed TypeScript/Vite with the existing chunk-size
+  advisory. Edited source diagnostics are clean. Changes are local only;
+  no deployment, gameplay/account changes or owner save writes.
+  Contact sheets and geometry report are session artifacts; no account writes.
+
 ## Prevent line-ending-only merge conflicts
 
 - Four resolved merge conflicts contained identical fixes with LF locally

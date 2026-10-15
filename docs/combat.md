@@ -1,5 +1,33 @@
 # Combat specification
 
+## Artwork-led battlefield sizes
+
+Battlefield size follows the design, not a solo/squad bonus or the encounter's
+boss flag. All16 Element-Bearers share the same body baseline, with bounded
+ensemble scales1/1.08/1.16/1.3/1.5/1.65 across their six forms. War opponents
+use the identical character-form scale. This replaces the previous up-to2.7x
+form inflation and separate solo ally/solo enemy sizing.
+
+All151 installed enemy designs have reviewed artwork-keyed size bands
+(.65/.85/1/1.25/1.5/1.75). Small wisps, insects and minor creatures stay small;
+stags, large beasts and armored bodies are substantial; leviathans and colossi
+have imposing complete silhouettes. Story is explicitly covered, rather than
+falling through to the smallest generic scale. Briarback Stag is1.25 compared
+with Evo3 characters1.16; Mossplate Beetle is.65 and Heartwood Colossus1.75.
+No name-based guessing, level multiplier or additional boss inflation.
+Captured copies keep the same artwork scale in any activity; merged dungeon
+families use the actual rendered artwork rather than the first family's tier.
+Named artwork-pending tokens stay neutral; unreviewed image IDs report an error.
+
+Both sides use equal-width arena columns and one responsive base constrained
+by arena height, width and the larger roster count. Phones retain the same
+artwork ratios, instead of discarding the scale variable. This supersedes
+D-227's side-specific squad caps/negative overlap margins, not facing,
+silhouettes, gestures, cut-ins or artwork exports. Exact character/enemy
+stats, RNG, rewards and saved snapshots are unchanged.
+Cramped landscape arenas retain vertical scrolling when full readouts cannot
+fit, keeping cards reachable without painting over the footer.
+
 ## Allied effect presentation (D-211)
 
 The shared HP readout displays actual remaining Shield, timed outgoing Damage
