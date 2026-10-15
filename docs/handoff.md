@@ -1,6 +1,6 @@
 # Current state and handoff
 
-## Coordinated release authorized (2026-10-15)
+## Coordinated release deployed (2026-10-15)
 
 - Owner explicitly requests deploying all pending work. This supersedes
   local-only publication restrictions in the historical implementation entries.
@@ -19,8 +19,22 @@
   recipients, Lv185 EX3 chest-only victory, atomic chest opening including
   two Master chests, action/opening idempotency and persisted holdings.
   Disposable identity and cascading records were removed; no owner data edited.
-- Pages publication follows the repository push and required CI checks.
-  Named neutral Calamity artwork remains intentional pending delivery.
+- Release commits `b712294` and `59c9ffb` are pushed to main. The first CI
+  attempt exposed Windows-only fixture paths in four tests; corrected with
+  `node:path.join`, with65 focused tests passing. No checks were bypassed.
+- [Pages run38765260493](https://github.com/tjprice101/LastLightGame/actions/runs/38765260493)
+  passed all **3,843 tests in169 files**, configured production build and
+  deployment. [Hosted game](https://tjprice101.github.io/LastLightGame/)
+  loads the current `main-C2dl8gGj.js` and
+  `battle-mono-Bhdv3Oc6.js` bundles with HTTP200; the battle bundle contains
+  current native identities/Instructions and Calamity. Hosted title and
+  configured online sign-in dialog render without account edits.
+- `node tools\smoke_server_game.mjs --loot-parity` also passed all36 live
+  early/final activity cases, exact rewards, first-clear separation, atomic
+  persistence, idempotency and victory replay. Disposable identities and
+  cascading records were removed.
+- Website and matching authority are live. Named neutral Calamity artwork
+  remains intentional pending delivery; no deployment decision remains open.
 
 ## Sixteen distinct native identities implemented locally (D-316)
 

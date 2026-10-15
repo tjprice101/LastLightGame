@@ -5,6 +5,13 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Published2026-10-15:** pending D-303 through D-316 client/server changes are
+live, including progression costs, capture cap60, equipment controls, the133
+Conduit effects, Calamity and all16 distinct native identities. Pages CI passed
+all3,843 tests; hosted native/Calamity and36-case loot parity smokes passed.
+Earlier local-only notices below are historical implementation status.
+See [verified release](handoff.md#coordinated-release-deployed-2026-10-15).
+
 **Distinct native identities (D-316):** all16 approved character replacements
 are implemented locally, with explicit ally targeting, different turn/target/
 timing decisions, accurate native readouts and mechanic VFX. Dependent equipment
