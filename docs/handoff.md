@@ -39,7 +39,22 @@
   dialog and listeners were removed; real localStorage remained identical.
 - Publication follows the owner's automatic-deployment direction: client first
   so new PNGs exist before the authority begins emitting their art IDs.
-  Hosted publication verification will be appended after deployment.
+  Release `d3a6568` is pushed and deployed.
+  [Pages run38785101423](https://github.com/tjprice101/LastLightGame/actions/runs/38785101423)
+  passed full regression, configured build and deployment. Hosted
+  `main-Ds6byOJX.js` returns200 and contains current boss/chest/arena mappings.
+  All17 hosted PNGs match local SHA-256 bytes exactly.
+- After the client/assets were live,
+  `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --no-verify-jwt` succeeded (harmless Docker warning).
+  `node tools\smoke_server_game.mjs --native-calamity` passed: rules3,
+  explicit recipients, Lv185 chest-only win, atomic opening/two Master chests,
+  idempotency/persistence and a fresh server-spawned boss with installed art.
+  Disposable identities and cascading records were removed.
+- No owner decision is needed. Remaining work is delivery/review of the one
+  Rose boss and27 native symbols, not further runtime wiring of delivered art.
+  Duplicate root PNGs and old `conduit-list.txt` / `owned-tests.txt` diagnostics
+  remain untracked and untouched; authoritative source archives are committed.
 
 ## Remaining-art prompts prepared (D-317)
 

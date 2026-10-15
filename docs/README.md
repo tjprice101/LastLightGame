@@ -9,7 +9,9 @@ It is intended to make features easy to locate, extend, and hand off.
 installed: eleven boss cutouts, three shared tier chests and three tier arenas.
 All related runtime surfaces use shared revisioned art; The Last Scarlet Bloom
 alone remains pending. Current missing-art queue is28 images including27 native
-symbols. [Intake/reproduction](art-workflow.md#calamity-delivery-intake-d-318),
+symbols. Release `d3a6568` is deployed on Pages and the authoritative server;
+all3,869 tests and the hosted native/Calamity smoke passed.
+[Intake/reproduction](art-workflow.md#calamity-delivery-intake-d-318),
 [current verification/release state](handoff.md).
 
 **Remaining-art prompts (D-317):** [45-image generation queue](../Art/Remaining%20Artwork.md)
