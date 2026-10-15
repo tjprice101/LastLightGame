@@ -44,9 +44,20 @@
   styled confirmation, cancellation, gearless eligibility with normal-final
   unlock, exact120/140/145/160/185 boss stats and no horizontal fixture overflow.
   No localStorage changes; fixture/dialog removed after cancellation.
-- Publication pending; regenerated authority must deploy alongside client.
-  Hosted smoke's forced1-HP victory is a reward/transaction test, not proof
-  that a live-stat EX3 boss can be beaten.
+- Release `25e05a7` deployed: Pages run `38802116676` passes3,891 tests/170
+  files, configured production build and publication. Hosted
+  `main-D_eFtmX7.js` and its referenced `battle-mono-CITWpgdY.js` match local
+  production SHA-256; the battle chunk contains the exponential curve and
+  shared build guidance.
+- After client publication,
+  `npx supabase functions deploy game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`
+  succeeds (Docker-not-running warning is nonblocking).
+  `node tools\smoke_server_game.mjs --native-calamity` passes rules4,
+  explicit recipients, fresh145 boss exact exponential stats across Treasury/
+  Rose, chest-only rewards, atomic openings/two Masters, idempotency and saved
+  holdings. Disposable identities/cascading test records removed.
+  Its forced1-HP EX3 victory is a transaction test, not evidence of live-stat
+  EX3 viability. No remaining publication work or owner decisions.
 
 ## Native-status frame clarification (D-317)
 

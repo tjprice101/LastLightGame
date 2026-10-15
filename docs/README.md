@@ -5,7 +5,7 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
-**Exponential enemy pursuit (D-319):** game-wide hostile stats now follow one
+**Exponential enemy pursuit (D-319, published `25e05a7`):** game-wide hostile stats now follow one
 smooth exponential curve through185; Calamity uses actual145/160/185 stats.
 Characters/captures/equipment/rewards are unchanged. Intentional walls replace
 old clear-rate guarantees. Four matching Omnic within eight +5 slots/member
