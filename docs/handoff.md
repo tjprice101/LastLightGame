@@ -31,8 +31,15 @@
   resolve matching new revisioned field/cut-in URLs, front/unmirrored, no
   session/account writes. Both960px images load; narrow390px battlefield
   has390px scroll width and contains the boss. Fixture DOM/listeners removed.
+- Release `5d31125` published successfully by Pages run `38789489665`:
+  `npm test` passes3,871 tests/170 files; configured production build and
+  deployment pass. All18 hosted Calamity PNG SHA-256 values match provenance,
+  and hosted `main-BRLCg8Fp.js` contains both new byte revisions
+  (`fd31e3fdfc94` Seraph / `44ecad9bc66e` Hierophant). Both hosted replacement
+  images load at960x960 in-browser.
 - No combat, RNG, reward, server-rule or account changes; no authority deployment
-  required. Pages publication/hosted byte verification pending below.
+  required. All12 bosses remain complete; only27 native mechanic symbols are
+  still undelivered. No remaining owner decisions for this replacement intake.
 
 ## Final Calamity boss delivered (D-318 follow-up)
 
