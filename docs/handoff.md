@@ -32,7 +32,17 @@
   Rose-only release; do not delete or silently replace archived originals.
   Intake correctly rejects those conflicts until a separate reviewed
   replacement is authorized.
-- Hosted publication verification follows after deployment.
+- Release `71a5de2` is pushed and live:
+  [Pages run38787434855](https://github.com/tjprice101/LastLightGame/actions/runs/38787434855)
+  passed full regression, configured build and deployment. All18 hosted PNGs
+  match local SHA-256 bytes, including `calamity-boss-roses`.
+- After client/art availability, the authoritative `game-operation` deployment
+  succeeded. `node tools\smoke_server_game.mjs --native-calamity` passed,
+  including a fresh hosted Rose encounter with the exact installed art ID;
+  recipient targeting, chest-only win, atomic opening, persistence/idempotency
+  remain correct. Disposable identities/cascading records were removed.
+- No Calamity artwork remains missing. The two newly different root images
+  noted above are not part of this release and remain untouched.
 
 ## Calamity artwork installed (D-318)
 
