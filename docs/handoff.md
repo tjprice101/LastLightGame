@@ -35,7 +35,18 @@
   Editor diagnostics and `git diff --check` pass.
 - Authority bundle includes shared description changes; combat rules stay4.
   No mechanics, rewards, RNG, save schema or compatibility restart change.
-  Publication verification follows deployment.
+- Release `9231580` is live: Pages run `38806382699` passes the full suite,
+  configured online build and deployment. Hosted
+  `battle-mono-B3rJ1s3A.js` and `battle-mono-BT7dxM8O.css` return HTTP200
+  and match local production bytes. Deployed assets contain aligned reward
+  lists, plain chest-only text, boss contrast and dimmed scenery.
+- `npx supabase functions deploy game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`
+  succeeds (nonblocking Docker warning). Then
+  `node tools\smoke_server_game.mjs --native-calamity` passes rules4,
+  exact exponential spawn stats/art, explicit support recipients, chest-only
+  victory/opening, idempotency and persisted holdings. Disposable identities
+  and their records are removed. This is transaction verification, not a new
+  difficulty/clearability benchmark.
 - The27 delivered root native-status PNGs remain untouched and untracked.
 
 ## Separate Calamity difficulty tabs (D-320)
