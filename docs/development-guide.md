@@ -20,6 +20,26 @@ Build runs strict TypeScript validation before generating `dist`.
 Vitest covers opening/save state, combat formulas and all starter kits, turn
 recovery/cooldown/waves, content invariants, motion preferences, and hotkey validation.
 
+### Line endings and concurrent changes
+
+[Git attributes](../.gitattributes) keep detected text files LF in Git and on
+checkout, regardless of the developer's global `core.autocrlf` setting.
+Windows `.bat` and `.cmd` working copies use CRLF. Binary artwork/audio is
+automatically detected and left untouched. The shared
+[VS Code settings](../.vscode/settings.json) also default new files to LF.
+
+After changing this policy, start with a clean worktree and run
+`git add --renormalize .`, then review `git diff --cached` before committing.
+Do not normalize unrelated work while another contributor has edits in progress.
+
+Publish fixes through the same local Git checkout whenever possible. Avoid
+editing the same fixes separately through GitHub's file API while local work
+is pending: API uploads preserve submitted bytes and bypass local Git
+normalization. If remote edits are necessary, submit LF text, then fetch and
+integrate those commits before committing overlapping local changes.
+This prevents line-ending-only conflicts, not legitimate competing edits;
+review real conflicts rather than automatically choosing one side.
+
 ## Deployment
 
 Remote: [LastLightGame](https://github.com/tjprice101/LastLightGame).

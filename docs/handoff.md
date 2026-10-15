@@ -1,5 +1,17 @@
 # Current state and handoff
 
+## Prevent line-ending-only merge conflicts
+
+- Four resolved merge conflicts contained identical fixes with LF locally
+  and CRLF in GitHub API commits. No repository attributes previously existed;
+  this computer's global Git `core.autocrlf=true` was the only policy.
+- Added shared `.gitattributes`: auto-detected text uses LF in Git/checkout;
+  Windows batch/command scripts use CRLF working copies, binary files retain
+  their bytes. Workspace VS Code defaults new files to LF.
+- [Contributor workflow](development-guide.md#line-endings-and-concurrent-changes)
+  documents normalization, one-checkout publication and LF-only remote API
+  edits. This does not suppress genuine conflicting changes.
+
 ## Compact Conduit reward dialogs
 
 - Owner screenshot shows the upgraded Conduit image pushing saved details
