@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { conduits, type ConduitId, type ConduitSlots } from '../content/conduits';
 import { masterConduits } from '../content/master-conduits';
 import { starters, type StarterId } from '../content/starters';
@@ -11,7 +12,7 @@ import { applyConduitBurn, applyConduitWeaken, conduitActionCost, conduitBurnTic
   nativeGauge, nativeHeal, nativeShield, prepareConduitAction, recordConduitHit, initializeConduits, forcedConduitTarget } from './conduit-runtime';
 
 it('documents each of the 133 owned equipment IDs exactly once in the generated compatibility matrix', () => {
-  const matrix = readFileSync('docs\\character-conduit-compatibility.md', 'utf8');
+  const matrix = readFileSync(join('docs', 'character-conduit-compatibility.md'), 'utf8');
   const ids = [...matrix.matchAll(/^\| `([^`]+)` \| (?:Adapted|Retained) \|/gm)].map(match => match[1]);
   expect(ids).toHaveLength(133);
   expect(new Set(ids).size).toBe(133);

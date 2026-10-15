@@ -1,9 +1,10 @@
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import ts from 'typescript';
 import { describe, expect, it, vi } from 'vitest';
 import * as engine from '../../supabase/functions/game-operation/engine';
 
-const source = readFileSync('supabase\\functions\\game-operation\\index.ts', 'utf8');
+const source = readFileSync(join('supabase', 'functions', 'game-operation', 'index.ts'), 'utf8');
 const executable = ts.transpileModule(source.replace(/^import .*;\r?$/gm, ''),
   { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText;
 const requestId = '00000000-0000-4000-8000-000000000001';

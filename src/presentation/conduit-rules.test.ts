@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { conduits, conduitEffect, type ConduitSlots } from '../content/conduits';
 import { masterConduits } from '../content/master-conduits';
@@ -34,7 +35,7 @@ describe('complete equipped Conduit rules', () => {
     Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
     expect(host.innerHTML).toContain(kitConduitRules(slots, session.state.conduitUpgrades));
     expect(host.innerHTML).toContain(masterReference('master-ember-3'));
-    const hub = readFileSync('src\\presentation\\hub.ts', 'utf8');
+    const hub = readFileSync(join('src', 'presentation', 'hub.ts'), 'utf8');
     const callers = hub.match(/kitConduitRules\([^\n]+?\)/g) ?? [];
     expect(callers).toHaveLength(3);
     for (const caller of callers) expect(caller).toContain('account?.conduitUpgrades');
