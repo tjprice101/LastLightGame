@@ -1,5 +1,20 @@
 # Menus and inventory
 
+## Compact Normal activity panels (D-330)
+
+Every Normal activity panel uses the shared `activityLayout(media, details)`
+helper in `src/presentation/activity-layout.ts`, mirroring Calamity's compact
+tier panel. The left column holds the banner (name overlaid), eyebrow, lore,
+the three-column facts row and short drop/odds notes; the right column holds
+the compact reward showcase, related links, the selected-stage enemy strength
+and an inline Stage/Enter row. Training uses a side-by-side hero and details
+card. At desktop widths (≥961px) every panel fits 1280×720 through 1920×1080
+without page scrolling. Infusion, currency and Elemental War location pickers
+become a horizontal row above the card; the ten-dungeon picker stays a column.
+Narrow screens stack the columns, scroll normally and share Calamity's compact
+header, horizontal activity rail and unsplit dock labels. Presentation only:
+all text, numbers, data hooks, Back history and 44px targets are unchanged.
+
 ## Sealed Calamitic shop (D-324)
 
 Market and Conduit Store always expose Calamitic Conduits. Before any saved

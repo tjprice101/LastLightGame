@@ -1,0 +1,75 @@
+.activity-layout { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.activity-layout-media, .activity-layout-details { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+.activity-layout-media > p, .activity-layout-details > p { margin: 0; }
+
+@media (min-width: 961px) {
+  #app .activity-layout { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); align-items: start; gap: 1rem; }
+  #app .activity-layout-media { gap: .6rem; }
+  #app .activity-layout-details { gap: .6rem; }
+  #app .activity-layout .activity-banner { position: relative; overflow: hidden; border-radius: .6rem; }
+  #app .activity-layout .activity-banner .dungeon-banner { display: block; width: 100%; height: clamp(8rem, 26vh, 16rem); object-fit: cover; }
+  #app .activity-layout .activity-banner > h3 { position: absolute; inset: auto 0 0; margin: 0; padding: 1.5rem .85rem .6rem; background: linear-gradient(transparent, #080808e6 45%); color: #f4f4f5; font-size: clamp(1.1rem, 1.6vw, 1.5rem); line-height: 1.25; text-wrap: balance; }
+  #app .activity-layout-media > p { font-size: .8rem; line-height: 1.5; }
+  #app .activity-layout-details > p { font-size: .8rem; line-height: 1.45; }
+  #app .activity-layout .activity-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; margin: 0; }
+  #app .activity-layout .activity-facts > div { padding: .4rem .55rem; }
+  #app .activity-layout .activity-facts dd { margin-top: .15rem; font-size: .75rem; line-height: 1.35; }
+  #app .activity-layout .item-showcase { margin: 0; padding: .5rem .6rem; border-radius: .6rem; }
+  #app .activity-layout .item-showcase h4 { margin: 0 0 .4rem; font-size: .75rem; }
+  #app .activity-layout .item-showcase ul { grid-template-columns: repeat(auto-fill, minmax(4.75rem, 1fr)); gap: .4rem; }
+  #app .activity-layout .item-showcase li { display: flex; flex-direction: column; align-items: center; gap: .25rem; grid-row: auto; }
+  #app .activity-layout .item-showcase-art { width: 44px; height: 44px; border-radius: .5rem; }
+  #app .activity-layout .item-showcase-art img, #app .activity-layout .item-showcase-art svg { width: 38px; height: 38px; }
+  #app .activity-layout .item-showcase-name { font-size: .68rem; line-height: 1.3; }
+  #app .activity-layout .item-showcase-pending { padding: 2px; font-size: .55rem; }
+  #app .activity-layout .text-button { align-self: flex-start; min-height: 44px; }
+  #app .activity-layout .enemy-strength { margin: 0; padding: .5rem .65rem; }
+  #app .activity-layout .enemy-strength h4 { margin-bottom: .3rem; font-size: .85rem; }
+  #app .activity-layout .enemy-strength dd { margin-top: .1rem; }
+  #app .activity-layout .activity-entry { margin: 0; padding: 0; gap: .5rem; align-items: center; border-top: 0; }
+  #app .activity-layout .activity-entry .dungeon-stage-label { display: flex; align-items: center; gap: .5rem; }
+  #app .activity-layout .activity-entry .dungeon-stage-label > :is(select, .selection-trigger) { flex: 1 1 auto; min-width: 0; width: auto; }
+  #app .ref-play .activity-group:is(#gameplay-infusion, #gameplay-currency, #gameplay-war) { grid-template-columns: minmax(0, 1fr); gap: .5rem; }
+  #app .ref-play .activity-group:is(#gameplay-infusion, #gameplay-currency, #gameplay-war) .activity-picker { grid-column: 1; grid-row: auto; flex-direction: row; flex-wrap: wrap; gap: .35rem; padding: 0; border: 0; background: none; }
+  #app .ref-play .activity-group:is(#gameplay-infusion, #gameplay-currency, #gameplay-war) .activity-picker::before { content: none; }
+  #app .ref-play .activity-group:is(#gameplay-infusion, #gameplay-currency, #gameplay-war) .activity-picker button { flex: 1 1 140px; padding: .4rem .6rem; }
+  #app .ref-play .activity-group:is(#gameplay-infusion, #gameplay-currency, #gameplay-war) .activity-card { grid-column: 1; grid-row: auto; }
+  #app .ref-play .activity-card:has(> .activity-layout, > .activity-difficulty .activity-layout) { gap: .5rem; padding: .75rem; }
+  #app .activity-difficulty:has([data-difficulty="normal"][aria-selected="true"]) > .activity-difficulty-tabs { margin-bottom: .5rem; padding-bottom: .35rem; }
+
+  #app .ref-play #gameplay-adventure .training-card { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
+  #app .ref-play #gameplay-adventure .training-hero { height: auto; min-height: 100%; }
+  #app .ref-play #gameplay-adventure .training-hero > img { position: absolute; inset: 0; }
+  #app .ref-play #gameplay-adventure .training-details { gap: .6rem; padding: 1rem; align-content: start; }
+  #app .ref-play #gameplay-adventure .training-summary { flex-direction: column; align-items: stretch; gap: .6rem; }
+  #app .ref-play #gameplay-adventure .training-summary > p { font-size: .8rem; line-height: 1.5; }
+  #app .ref-play #gameplay-adventure .training-details h4 { margin: 0 0 .3rem; }
+  #app .ref-play #gameplay-adventure .enemy-strength { margin: 0; padding: .5rem .65rem; }
+  #app .ref-play #gameplay-adventure .training-entry { padding-top: .6rem; }
+}
+
+@media (min-width: 961px) and (max-width: 1400px) {
+  #app .sanctuary-shell:has(.ref-play .activity-group) .sanctuary-dock button { padding: .5rem; font-size: .85rem; white-space: nowrap; overflow-wrap: normal; }
+}
+
+@media (max-width: 960px) {
+  #app .ref-play:has(.activity-group) .ref-activity-sidebar { padding: .5rem; }
+  #app .ref-play:has(.activity-group) .ref-activity-sidebar > :is(header, button) { display: none; }
+  #app .ref-play:has(.activity-group) .activity-categories { display: flex; flex-direction: row; gap: .25rem; overflow-x: auto; }
+  #app .ref-play:has(.activity-group) .ref-activity-section { display: contents; }
+  #app .ref-play:has(.activity-group) .activity-categories a { flex: 0 0 auto; width: auto; min-height: 44px; padding: .5rem .65rem; }
+  #app .ref-play:has(.activity-group) .activity-categories :is(h3, small) { display: none; }
+  #app .ref-play:has(.activity-group) .activity-categories strong { font-size: .85rem; white-space: nowrap; }
+  #app .sanctuary-shell:has(.ref-play .activity-group) .sanctuary-header { display: block; min-height: 0; padding: .4rem .6rem; }
+  #app .sanctuary-shell:has(.ref-play .activity-group) .sanctuary-brand { display: none; }
+  #app .sanctuary-shell:has(.ref-play .activity-group) .sanctuary-wallet { display: grid; grid-template-columns: minmax(0, 1fr) repeat(4, 44px); gap: .25rem; width: 100%; }
+  #app .sanctuary-shell:has(.ref-play .activity-group) .currency-strip { display: flex; flex-direction: row; grid-column: 1; width: 100%; min-width: 0; gap: .25rem; }
+  #app .sanctuary-shell:has(.ref-play .activity-group) .currency-strip button { min-height: 44px; padding: .35rem .5rem; gap: .35rem; }
+  #app .sanctuary-shell:has(.ref-play .activity-group) .currency-strip small { display: none; }
+  #app .sanctuary-shell:has(.ref-play .activity-group) .currency-strip button { flex: 1 1 0; min-width: 0; }
+  #app .sanctuary-shell:has(.ref-play .activity-group) .currency-strip .currency-icon { flex: 0 0 20px; width: 20px; height: 20px; }
+  #app .sanctuary-shell:has(.ref-play .activity-group) .currency-strip strong { min-width: 0; overflow-wrap: anywhere; font-size: .8rem; }
+  #app .sanctuary-shell:has(.ref-play .activity-group) .sanctuary-wallet > button { width: 44px; min-width: 44px; height: 44px; min-height: 44px; padding: .5rem; }
+  #app .sanctuary-shell:has(.ref-play .activity-group) .sanctuary-dock { min-height: 0; padding: .35rem; }
+  #app .sanctuary-shell:has(.ref-play .activity-group) .sanctuary-dock button { min-width: 0; min-height: 44px; padding: .4rem .15rem; gap: .2rem; font-size: .75rem; overflow-wrap: normal; white-space: nowrap; }
+}

@@ -1,5 +1,18 @@
 # Current state and handoff
 
+## Compact Normal activity panels (D-330)
+
+- `src/presentation/activity-layout.ts`/`.css` wrap every Normal activity panel
+  (dungeons, infusions, currency farms, Machines, Elemental War, Roses) in a
+  two-column desktop grid; Training uses a side-by-side hero/details card.
+  Short location pickers (infusion/currency/War) are a horizontal row; the
+  ten-dungeon picker stays a column. Narrow screens reuse Calamity's compact
+  header, horizontal activity rail (selected category scrolled into view) and
+  unsplit dock labels.
+- Verified in isolated Chrome with production CSS: all22 Normal cards fit
+  1336×768/1280×720/1577×768/1920×1080 (max bottom686px) and have no
+  horizontal overflow at390/320px. `npm run build` passes.
+
 ## Neutral guide-style player text (D-329)
 
 - Removed prescriptive advice from player-facing text: Calamity's build

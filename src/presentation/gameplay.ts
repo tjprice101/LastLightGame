@@ -11,6 +11,7 @@ import { itemShowcase } from './item-showcase';
 import { roseEvent, roseEventRules } from './rose-event';
 import { machineRules, machineRulesText } from '../content/machines';
 import { activityBanner } from './activity-banner';
+import { activityLayout } from './activity-layout';
 import { infusionEntry } from './activity-entry';
 import { elementalWars, warEncounter, warRulesText } from '../content/elemental-war';
 import { getStarter } from '../content/starters';
@@ -122,54 +123,54 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
     <section class="activity-group" id="gameplay-dungeons"><h2>Elemental material dungeons</h2>
       ${activityPicker(elements.map((element) => ({ name: element.dungeon })))}
       <div class="activity-grid">${elements.map((element, index) => `<article class="activity-card dungeon-card ${dungeonArt[element.id] ? 'has-dungeon-art' : ''}" data-element-index="${index}" style="--dungeon:${elementAccents[element.id]}">
-        ${activityDifficulty(element.id, `
+        ${activityDifficulty(element.id, activityLayout(`
         ${activityBanner(element.dungeon, dungeonArt[element.id] ? `banners/${dungeonArt[element.id]?.slug}.png` : null, `${element.dungeon} banner`, true)}
         <p class="eyebrow">${element.name} · ${elementEmotions[element.id]}</p>
         <p>Rise's Elemental-Devourers search these ruins with the same ${element.name} power that Let gave his Element-Bearers.</p>
-        ${activityFacts(`${elementalDungeonRules.stages} stages`, `${elementalDungeonRules.startingLevel}-${elementalDungeonRules.maximumLevel}`, 'Prismatica · Materials')}
+        ${activityFacts(`${elementalDungeonRules.stages} stages`, `${elementalDungeonRules.startingLevel}-${elementalDungeonRules.maximumLevel}`, 'Prismatica · Materials')}`, `
         ${itemShowcase([{ id: 'fractalis' }, ...materialRarities.map((rarity) => ({ id: `${element.id}-${rarity.toLowerCase()}` }))], 'Rewards across stages')}
-        ${dungeonEntry(element.id, account)}`, account)}</article>`).join('')}</div></section>
+        ${dungeonEntry(element.id, account)}`), account)}</article>`).join('')}</div></section>
     <section class="activity-group" id="gameplay-infusion"><h2>Evolution infusion</h2>
       ${activityPicker(infusionModes.map((mode) => ({ name: mode.name })))}
       <div class="activity-grid">${infusionModes.map((mode) => `<article class="activity-card">
-        ${activityDifficulty(mode.id, `
+        ${activityDifficulty(mode.id, activityLayout(`
         ${activityBanner(mode.name, `banners/${mode.id}-banner.png`)}
         <p>${devourerHabitats[mode.id]}</p>
         ${activityFacts(`${mode.stages} stages`, `${mode.startingLevel}-120`, 'Materials · Prismatica · Null-Prismatica · Captures')}
-        <p>Evolution materials from Lv.75. Null-Prismatica from Lv.80.</p>
+        <p>Evolution materials from Lv.75. Null-Prismatica from Lv.80.</p>`, `
         ${itemShowcase([{ id: 'fractalis' }, { id: 'lycalis' }, ...specialtyMaterials.filter((item) => item.id.startsWith(`${mode.id}-`)).map((item) => ({ id: item.id }))], 'Currencies & specialty materials')}
-        ${infusionEntry(mode, account)}`, account)}</article>`).join('')}</div></section>
+        ${infusionEntry(mode, account)}`), account)}</article>`).join('')}</div></section>
     <section class="activity-group" id="gameplay-currency"><h2>Currency farms</h2>
       ${activityPicker(currencyModes.map((mode) => ({ name: mode.name })))}
       ${currencyModes.map((mode) => `<article class="activity-card">
-        ${activityDifficulty(mode.id, `
+        ${activityDifficulty(mode.id, activityLayout(`
         ${activityBanner(mode.name, `banners/${mode.id}-banner.png`, `${mode.name} banner`, true)}
         <p class="eyebrow">TRANQUILITIC · ${mode.id === 'treasury' ? 'PRISMATICA' : 'NULL-PRISMATICA'}</p>
         <p>${devourerHabitats[mode.id]}</p>
-        ${activityFacts(`${mode.stages} stages`, '65-120', mode.id === 'treasury' ? 'Prismatica · Captures' : 'Prismatica · Null-Prismatica · Captures')}
+        ${activityFacts(`${mode.stages} stages`, '65-120', mode.id === 'treasury' ? 'Prismatica · Captures' : 'Prismatica · Null-Prismatica · Captures')}`, `
         ${itemShowcase(mode.id === 'treasury' ? [{ id: 'fractalis' }] : [{ id: 'fractalis' }, { id: 'lycalis' }], 'Currency rewards')}
-        ${infusionEntry(mode, account)}`, account)}</article>`).join('')}</section>
+        ${infusionEntry(mode, account)}`), account)}</article>`).join('')}</section>
     <section class="activity-group" id="gameplay-machines"><h2>Awaken the Machines</h2><article class="activity-card">
-      ${activityDifficulty('machines', `
+      ${activityDifficulty('machines', activityLayout(`
       ${activityBanner('Awaken the Machines', 'banners/machines-banner.png', 'Awaken the Machines: a destroyed prototype from Let and Rise\'s collaboration awakens in an element-scorched wasteland.')}
       <p>${machineOrigin}</p>
       ${activityFacts(`${machineRules.stages} stages`, '10-120', 'Prismatica · Broken Mechanical Components · Conduits')}
       <p>Rare 8% · Legendary 3.5% · Omnic 1% from stage ${machineRules.omnicStage}</p>
-      <p>Unowned Conduits only. A completed rarity awards no Conduit or replacement reward.</p>
+      <p>Unowned Conduits only. A completed rarity awards no Conduit or replacement reward.</p>`, `
       ${itemShowcase([{ id: 'mechanical-components' }], 'Conduit upgrade currency')}
       <button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button>
-      ${infusionEntry({ id: 'machines', name: 'Awaken the Machines' }, account)}`, account)}
+      ${infusionEntry({ id: 'machines', name: 'Awaken the Machines' }, account)}`), account)}
       </article></section>
     <section class="activity-group" id="gameplay-war"><h2>Elemental War</h2>
       ${activityPicker(elementalWars)}
       ${elementalWars.map((mode) => {
         const unlocked = account ? unlockedWarStage(account, mode.character) : 1;
         const access = account ? activityAccess(account, { kind: 'war', character: mode.character, stage: unlocked }) : null;
-        return `<article class="activity-card" style="--dungeon:${elementAccents[mode.element]}">
+        return `<article class="activity-card" style="--dungeon:${elementAccents[mode.element]}">${activityLayout(`
           ${activityBanner(mode.name, `banners/${warEncounter(mode.character, 1).banner}`, `${mode.name} activity banner`, true)}
           <p class="eyebrow">${getStarter(mode.character).name} · ${elementLabel(mode.element)}</p>
           <p>${getStarter(mode.character).description}</p><p>${warLore}</p>
-          ${activityFacts('10 stages · One boss each', '90-140', 'Prismatica · Null-Prismatica · Final-boss recruitment')}
+          ${activityFacts('10 stages · One boss each', '90-140', 'Prismatica · Null-Prismatica · Final-boss recruitment')}`, `
           ${itemShowcase([{ id: 'fractalis' }, { id: 'lycalis' }], 'Currency rewards')}
           <p>Final boss:1% base-form recruitment · Already owned:100 Null-Prismatica</p>
           ${account ? `${enemyStrength(warEncounter(mode.character, unlocked))}<footer class="activity-entry"><label class="dungeon-stage-label">Stage
@@ -177,7 +178,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
               `<option value="${index + 1}" ${index + 1 === unlocked ? 'selected' : ''}>${index + 1} · Lv.${warEncounter(mode.character, index + 1).level}</option>`).join('')}</select></label>
             <button class="primary-button" data-war="${mode.character}" ${access?.unlocked ? '' : 'disabled'}>${access?.unlocked ? 'Enter trial · Free' : 'Locked'}</button>
             ${access?.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks at ${access?.requirement}. Your highest: Lv.${access?.level}.</p>`}</footer>`
-              : '<button disabled>Elemental War unavailable: resolve the save error</button>'}
+              : '<button disabled>Elemental War unavailable: resolve the save error</button>'}`)}
         </article>`;
       }).join('')}</section>
     <section class="activity-group" id="gameplay-story"><h2>Story</h2>
@@ -217,6 +218,11 @@ export function bindGameplayNavigation(host: HTMLElement): void {
       if (link.hash === `#${id}`) link.setAttribute('aria-current', 'true');
       else link.removeAttribute('aria-current');
     });
+    const current = links.find((link) => link.hash === `#${id}`);
+    const rail = current?.closest<HTMLElement>('.activity-categories');
+    if (current && rail && rail.scrollWidth > rail.clientWidth) {
+      rail.scrollLeft += current.getBoundingClientRect().left - rail.getBoundingClientRect().left - 8;
+    }
   };
   const requested = location.hash.slice(1);
   select(groups.some((group) => group.id === requested) ? requested : 'gameplay-story');
