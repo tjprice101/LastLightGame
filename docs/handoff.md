@@ -27,7 +27,13 @@
   after browser testing exposed squeezing. Fixtures removed; localStorage
   remains empty, with no account funding or transactions.
 - This is client presentation only; the authority/curve remain rules4 and
-  need no redeployment. Publication verification will be recorded after release.
+  need no redeployment.
+- Release `e5529ae` is live. Pages run `38809419156` completed successfully
+  (build and deploy). All six JS/CSS assets referenced by the hosted entry
+  return HTTP200 and match local production bytes. Hosted
+  `main-CtvLwlt2.js` contains enemy-strength previews, same-level comparisons
+  and the Training first-wave preview; SHA256:
+  `0103ff28930b6e0cedf23a394b530b8b0452c071c3d64ed3b776daf769bae789`.
 - The27 root native-status PNGs remain untouched.
 
 ## Clearer rewards, bosses and player-facing English (D-321)
