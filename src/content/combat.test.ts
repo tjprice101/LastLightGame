@@ -49,7 +49,7 @@ describe('character stat and kit growth', () => {
       expect(kit.abilities[action].strength).toEqual(original.abilities[action].strength);
       expect(kit.abilities[action].cooldown).toBe(original.abilities[action].cooldown);
     }
-    if (starter.id === 'sprout') expect(kit.abilities.ultimate.description).toContain(`${nativeBalance.flora.empoweredSeed * 100}% at next player-turn start`);
+    if (starter.id === 'sprout') expect(kit.abilities.ultimate.description).toContain(`${nativeBalance.flora.empoweredSeed * 100}% at the start of the next player turn`);
     kit.stats.health = 1;
     expect(fighters[starter.id]).toEqual(original);
   });
@@ -90,18 +90,18 @@ describe('character stat and kit growth', () => {
     const ember = resolveFighter('ember', progress);
     expect(ember.stats.damage).toBeCloseTo(fighters.ember.stats.damage * factor);
     expect(ember.abilities.skill1.description).toContain(`${160 * nativeBalance.skillDamageScale}% direct damage`);
-    expect(ember.abilities.skill1.description).toContain('25% of caster Attack');
+    expect(ember.abilities.skill1.description).toContain('25% of [Infernis]’s Attack');
     expect(ember.passive.damageBonus).toBe(0);
     const tide = resolveFighter('tide', progress);
     expect(tide.passive.defenseBonus).toBe(0);
     expect(tide.abilities.skill1.strength.weakenFraction).toBe(.25);
-    expect(tide.abilities.skill1.description).toContain('next one enemy-phase');
-    expect(tide.abilities.skill2.description).toContain(`${nativeBalance.tizu.shelter * 100}% of recipient maximum HP`);
+    expect(tide.abilities.skill1.description).toContain('for the next enemy phase');
+    expect(tide.abilities.skill2.description).toContain(`${nativeBalance.tizu.shelter * 100}% of its maximum HP`);
     const flora = resolveFighter('sprout', progress);
     expect(flora.abilities.skill2.strength).toEqual({});
-    expect(flora.abilities.skill2.description).toContain(`${nativeBalance.flora.seed * 100}% recipient maximum HP`);
+    expect(flora.abilities.skill2.description).toContain(`${nativeBalance.flora.seed * 100}% of maximum HP`);
     expect(flora.passive.healFraction).toBe(0);
-    expect(flora.passive.description).toContain('next player-turn start');
+    expect(flora.passive.description).toContain('start of the next player turn');
     expect(ember.stats.crit).toBeCloseTo(fighters.ember.stats.crit * characterPotencyFactor(progress));
   });
 

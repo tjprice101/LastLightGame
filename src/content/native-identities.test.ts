@@ -34,31 +34,31 @@ describe('approved sixteen native identities', () => {
   });
 
   it('describes the shared tuned HP fractions and preserves stronger pending Seed rules', () => {
-    expect(nativeIdentities.tide.abilities.skill2.description).toContain(`${nativeBalance.tizu.shelter * 100}% of recipient maximum HP`);
-    expect(nativeIdentities.tide.abilities.ultimate.description).toContain(`${nativeBalance.tizu.oceanMemory * 100}% of recipient maximum HP`);
-    expect(nativeIdentities.sprout.passive.description).toContain(`${nativeBalance.flora.seed * 100}% of recipient maximum HP`);
-    expect(nativeIdentities.sprout.abilities.skill2.description).toContain(`${nativeBalance.flora.seed * 100}% recipient maximum HP normally`);
-    expect(nativeIdentities.sprout.abilities.skill2.description).toContain(`${nativeBalance.flora.empoweredSeed * 100}% for empowered Seeds`);
-    expect(nativeIdentities.sprout.abilities.skill2.description).toContain('A normal Seed never overwrites an empowered pending Seed');
-    expect(nativeIdentities.sprout.abilities.ultimate.description).toContain(`${nativeBalance.flora.immediateHeal * 100}% of recipient maximum HP`);
-    expect(nativeIdentities.sprout.abilities.ultimate.description).toContain(`${nativeBalance.flora.empoweredSeed * 100}% at next player-turn start`);
+    expect(nativeIdentities.tide.abilities.skill2.description).toContain(`${nativeBalance.tizu.shelter * 100}% of its maximum HP`);
+    expect(nativeIdentities.tide.abilities.ultimate.description).toContain(`${nativeBalance.tizu.oceanMemory * 100}% of their maximum HP`);
+    expect(nativeIdentities.sprout.passive.description).toContain(`${nativeBalance.flora.seed * 100}% of its holder’s maximum HP`);
+    expect(nativeIdentities.sprout.abilities.skill2.description).toContain(`${nativeBalance.flora.seed * 100}% of maximum HP`);
+    expect(nativeIdentities.sprout.abilities.skill2.description).toContain(`${nativeBalance.flora.empoweredSeed * 100}% for an [Empowered Seed]`);
+    expect(nativeIdentities.sprout.abilities.skill2.description).toContain('A new [Seed] never replaces a pending [Empowered Seed]');
+    expect(nativeIdentities.sprout.abilities.ultimate.description).toContain(`${nativeBalance.flora.immediateHeal * 100}% of its maximum HP`);
+    expect(nativeIdentities.sprout.abilities.ultimate.description).toContain(`${nativeBalance.flora.empoweredSeed * 100}% at the start of the next player turn`);
   });
 
   it('scales conditional direct coefficients once without changing fixed follow-ups, Burn, pierce or support', () => {
     const scale = nativeBalance.skillDamageScale;
     expect(nativeIdentities.crinso.abilities.skill2.description).toContain(`${200 * scale}% direct damage`);
-    expect(nativeIdentities.crinso.abilities.skill2.description).toContain(`add ${40 * scale}% coefficient (${240 * scale}% total)`);
+    expect(nativeIdentities.crinso.abilities.skill2.description).toContain(`increased by ${40 * scale}% (${240 * scale}% total)`);
     expect(nativeIdentities.crinso.abilities.ultimate.description).toContain(`${260 * scale}% direct damage`);
-    expect(nativeIdentities.crinso.abilities.ultimate.description).toContain(`${45 * scale}% coefficient per stored Combo, cap ${395 * scale}%`);
-    expect(nativeIdentities.crinso.abilities.ultimate.description).toContain('ignore 30% effective Defense');
-    expect(nativeIdentities.rosetta.abilities.skill2.description).toContain(`${25 * scale}% coefficient per distinct other ally who hit it this turn, cap ${250 * scale}%`);
-    expect(nativeIdentities.vaelor.abilities.ultimate.description).toContain(`${340 * scale}% on Crescendo`);
-    expect(nativeIdentities.elise.abilities.skill2.description).toContain('90% caster Attack fixed noncritical strike');
-    expect(nativeIdentities.elise.abilities.skill2.description).toContain('60% convergence strike');
-    expect(nativeIdentities.elise.abilities.skill2.description).toContain(`${140 * scale}% direct strike`);
-    expect(nativeIdentities.ember.abilities.skill1.description).toContain('Burn at 25% of caster Attack');
-    expect(nativeIdentities.atmoso.abilities.skill2.description).toContain('70% caster Attack plus 30% per Gust, cap 190%');
-    expect(nativeIdentities.thornia.abilities.ultimate.description).toContain('90% caster Attack fixed noncritical retaliation');
+    expect(nativeIdentities.crinso.abilities.ultimate.description).toContain(`${45 * scale}% per [Combo] (up to ${395 * scale}% at 3 [Combo])`);
+    expect(nativeIdentities.crinso.abilities.ultimate.description).toContain('ignores 30% of the target’s Defense');
+    expect(nativeIdentities.rosetta.abilities.skill2.description).toContain(`${25 * scale}% for each other ally who hit it this player turn (up to ${250 * scale}%)`);
+    expect(nativeIdentities.vaelor.abilities.ultimate.description).toContain(`${340 * scale}% on [Crescendo]`);
+    expect(nativeIdentities.elise.abilities.skill2.description).toContain('90% of [Elise]’s Attack and cannot critically hit');
+    expect(nativeIdentities.elise.abilities.skill2.description).toContain('one extra 60% strike');
+    expect(nativeIdentities.elise.abilities.skill2.description).toContain(`${140 * scale}% direct damage`);
+    expect(nativeIdentities.ember.abilities.skill1.description).toContain('[Burn] dealing 25% of [Infernis]’s Attack');
+    expect(nativeIdentities.atmoso.abilities.skill2.description).toContain('70% of [Atmoso]’s Attack plus 30% per [Gust] (up to 190%)');
+    expect(nativeIdentities.thornia.abilities.ultimate.description).toContain('deal 90% of [Thornia]’s Attack and cannot critically hit');
   });
 
   it.each(nativeIdentityIds)('%s replaces every old native slot and passive without mutating stat growth', id => {
@@ -113,7 +113,7 @@ describe('approved sixteen native identities', () => {
       .map(action => `${id}:${action}`));
     expect(targeted.sort()).toEqual(['bruno:skill2', 'disciple:skill1', 'disciple:skill2', 'tide:skill2']);
     expect(fighters.bruno.abilities.skill2.excludeSelf).toBe(true);
-    expect(fighters.bruno.abilities.skill2.description).toContain('Solo fallback');
+    expect(fighters.bruno.abilities.skill2.description).toContain('If [Bruno] is the only living ally');
     expect(fighters.tide.abilities.skill2.excludeSelf).toBeUndefined();
     expect(fighters.disciple.abilities.skill1.excludeSelf).toBeUndefined();
     expect(fighters.disciple.abilities.skill2.excludeSelf).toBeUndefined();
@@ -168,6 +168,20 @@ describe('current-state copy', () => {
     const text = JSON.stringify([nativeIdentities, conduitRedesign]);
     for (const remnant of [/retired/i, /no longer/i, /low-health bonus/i, /\b(Ember|Ward|Bloom) bank/i, /fire charges/i, /Tempest counter/i, /instead of offering/i, /Does not change scheduling/i]) {
       expect(text).not.toMatch(remnant);
+    }
+  });
+
+  it('names referenced abilities and statuses explicitly in [brackets]', () => {
+    const crinso = nativeIdentities.crinso;
+    expect(crinso.passive.description).toContain('[Golden Edge]');
+    expect(crinso.passive.description).toContain('[Crimson Rupture]');
+    expect(JSON.stringify(crinso)).not.toMatch(/\b(Gold|Crimson) edge\b/i);
+    expect(nativeIdentities.ember.abilities.skill1.description).toContain('[Burn]');
+    for (const id of nativeIdentityIds) {
+      const identity = nativeIdentities[id];
+      for (const text of [identity.passive.description, ...actions.map(action => identity.abilities[action].description)]) {
+        expect(text.split('[').length).toBe(text.split(']').length);
+      }
     }
   });
 });

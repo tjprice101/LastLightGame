@@ -205,7 +205,7 @@ describe('Disciple ally empowerment', () => {
     const kit = resolveFighter('disciple', growth);
     expect(kit.abilities.skill1.strength).toEqual({});
     expect(kit.abilities.ultimate.strength).toEqual({});
-    expect(kit.abilities.skill1.description).toContain('30% outgoing direct damage');
-    expect(kit.abilities.skill2.description).toContain('35% native healing/shield amount');
+    expect(kit.abilities.skill1.description).toContain('30% more direct damage');
+    expect(kit.abilities.skill2.description).toContain('35% larger');
   });
 });

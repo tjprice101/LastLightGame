@@ -600,8 +600,8 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
       'Lodge two blades; recall for fixed strikes and convergence.',
       blades.map(id => state.enemies.some(enemy => enemy.id === id) ? 'native-elise-lodged-blade' : 'native-elise-held-blade'), true);
   }
-  if (unit.definitionId === 'crinso') add('Combo', `${memory.combo ?? 0}/3 · ${memory.edge ?? 'No edge'}`,
-    'Alternate Gold and Crimson; Last Flare consumes the combination.',
+  if (unit.definitionId === 'crinso') add('Combo', `${memory.combo ?? 0}/3 · ${memory.edge === 'gold' ? 'Last: Golden Edge' : memory.edge === 'crimson' ? 'Last: Crimson Rupture' : 'New chain'}`,
+    'Alternate Golden Edge and Crimson Rupture to build Combo; Last Flare spends it.',
     ['native-crinso-combo', ...(memory.edge ? [`native-crinso-${memory.edge}-edge` as const] : [])], true);
   if (unit.definitionId === 'vaelor') add('Beat', ['Tune', 'Rise', 'Crescendo'][memory.beat ?? 0],
     'Advances every global player turn, including recovery.', [(['native-vaelor-tune', 'native-vaelor-rise', 'native-vaelor-crescendo'] as const)[memory.beat ?? 0]], true);
@@ -618,14 +618,14 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
     `${memory.quarry.round === state.round ? memory.quarry.contributors.length : 0} distinct contributors this turn.`, ['native-rosetta-quarry']);
   if (memory.cover) add('Cover', memory.cover.targets.map(id => state.allies.find(ally => ally.id === id)?.name ?? id).join(', '),
     `Redirect ${memory.cover.fraction * 100}% through enemy phase ${memory.cover.throughPhase}.`, ['native-bruno-cover']);
-  if (memory.instruction) add('Instruction', memory.instruction.kind, `Next native action; expires after player turn ${memory.instruction.throughRound}.`,
+  if (memory.instruction) add('Instruction', memory.instruction.kind[0].toUpperCase() + memory.instruction.kind.slice(1), `Next action; expires after player turn ${memory.instruction.throughRound}.`,
     [`native-disciple-${memory.instruction.kind}`]);
-  for (const [id, pending] of Object.entries(memory.seeds ?? {})) add('Seed', `${pending.fraction * 100}%`,
+  for (const [id, pending] of Object.entries(memory.seeds ?? {})) add(pending.fraction >= nativeBalance.flora.empoweredSeed ? 'Empowered Seed' : 'Seed', `${pending.fraction * 100}%`,
     `${state.allies.find(ally => ally.id === id)?.name}: player turn ${pending.dueRound}.`,
     [pending.fraction >= nativeBalance.flora.empoweredSeed ? 'native-flora-empowered-seed' : 'native-flora-seed']);
   for (const [id, burn] of Object.entries(memory.burns ?? {})) if (burn.turns > 0) add('Burn', `${Math.round(burn.damage)} × ${burn.turns}`,
     state.enemies.find(enemy => enemy.id === id)?.name ?? id, ['burn']);
-  for (const [id, trap] of Object.entries(memory.traps ?? {})) add('Thorns', `${trap.charges} charges`,
+  for (const [id, trap] of Object.entries(memory.traps ?? {})) add(trap.coefficient >= .9 ? 'Empowered Thorn Trap' : 'Thorn Trap', `${trap.charges} charges`,
     `${state.enemies.find(enemy => enemy.id === id)?.name}; through phase ${trap.throughPhase}.`,
     [trap.coefficient >= .9 ? 'native-thornia-empowered-trap' : 'native-thornia-trap']);
   for (const [id, seal] of Object.entries(memory.seals ?? {})) add('Seal', `${seal.fraction * 100}%`,

@@ -15,6 +15,8 @@ import { creatureGlossary } from './creature-glossary';
 import { summonHub } from './roster';
 import { bindInformation } from './information';
 
+const plain = (text?: string | null): string => (text ?? '').replace(/\[([^[\]]+)\]/g, '$1');
+
 describe('canon across information and lore surfaces', () => {
   it('shares complete founding history through Help, Gameplay and both Story prologue surfaces', () => {
     const account = emptyAccount();
@@ -23,10 +25,10 @@ describe('canon across information and lore surfaces', () => {
     const prologues = [host.querySelector('#story-prologue-information'), host.querySelector('.story-prologue')];
     for (const surface of [worldLore(), sanctuaryHeader('home', 0), gameplayHub(account),
       ...prologues.map(prologue => prologue?.innerHTML ?? '')]) {
-      for (const entry of worldHistory) expect(surface).toContain(entry.text);
-      expect(surface).toContain(machineOrigin);
+      for (const entry of worldHistory) expect(plain(surface)).toContain(entry.text);
+      expect(plain(surface)).toContain(machineOrigin);
     }
-    for (const prologue of prologues) expect(prologue?.textContent).toContain(storyPurpose);
+    for (const prologue of prologues) expect(plain(prologue?.textContent)).toContain(storyPurpose);
   });
 
   it('keeps individual character histories optional instead of restoring the Collections text wall', () => {
@@ -35,12 +37,12 @@ describe('canon across information and lore surfaces', () => {
     const before = structuredClone(account);
     const team = document.createElement('main');
     team.innerHTML = referenceTeam(account, { view: 'detail', selected: 'ember', element: '', sort: 'name' });
-    expect(team.querySelector('#bearer-lore-ember')?.textContent).toContain(getStarter('ember').lore.story);
+    expect(plain(team.querySelector('#bearer-lore-ember')?.textContent)).toContain(getStarter('ember').lore.story);
     expect(team.querySelector('[data-information="bearer-lore-ember"]')?.textContent).toBe('Lore');
     const collection = document.createElement('main');
     collection.innerHTML = archives(account);
     expect(collection.querySelector('#collections-information')?.textContent).not.toContain(getStarter('ember').lore.story);
-    expect(collection.querySelector('#archive-kit-ember-1')?.textContent).toContain(getStarter('ember').lore.story);
+    expect(plain(collection.querySelector('#archive-kit-ember-1')?.textContent)).toContain(getStarter('ember').lore.story);
     expect(account).toEqual(before);
   });
 
@@ -55,10 +57,10 @@ describe('canon across information and lore surfaces', () => {
     const host = document.createElement('main');
     host.innerHTML = creatureGlossary(account);
     expect(host.querySelectorAll('[data-information]')).toHaveLength(1);
-    expect(host.querySelector('dialog')?.textContent).toContain(creatureLore(creature));
+    expect(plain(host.querySelector('dialog')?.textContent)).toContain(creatureLore(creature));
     const capture = document.createElement('main');
     capture.innerHTML = referenceTeam(account, { view: 'capture', capture: copy.instanceId, selected: 'ember', element: '', sort: 'name' });
-    expect(capture.querySelector(`[id="capture-lore-${copy.instanceId}"]`)?.textContent).toContain(creatureLore(creature));
+    expect(plain(capture.querySelector(`[id="capture-lore-${copy.instanceId}"]`)?.textContent)).toContain(creatureLore(creature));
     const machine = host.querySelector(`[data-creature="${creatures.find(entry => entry.mode === 'machines')!.id}"]`)!;
     expect(machine.querySelector('dialog')).toBeNull();
     expect(machine.querySelector('h2')?.textContent).toBe('Undiscovered Machine');

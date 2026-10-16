@@ -14,7 +14,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "siegebound-drive": {
-    "description": "+8% -> +16% Normal Attack direct damage.",
+    "description": "+8% -> +16% [Normal Attack] direct damage.",
     "ranges": [
       {
         "base": 8,
@@ -36,7 +36,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "parallax-relay": {
-    "description": "The first offensive activation each encounter has +15 -> +30 pp Critical Rate, capped at 100%. Consume once even if it hits several enemies.",
+    "description": "The first offensive activation each encounter has +15 -> +30 percentage points of Critical Rate, capped at 100%. Consume once even if it hits several enemies.",
     "ranges": [
       {
         "base": 15,
@@ -64,7 +64,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "prism-splinter-socket": {
-    "description": "+10% -> +20% Skill 1 direct damage.",
+    "description": "+10% -> +20% [Skill 1] direct damage.",
     "ranges": [
       {
         "base": 10,
@@ -97,7 +97,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "reserve-torque-crank": {
-    "description": "Defense grants 3 -> 6 Gauge, once per Defense action.",
+    "description": "[Defense] grants 3 -> 6 Gauge, once per [Defense] action.",
     "ranges": [
       {
         "base": 3,
@@ -108,7 +108,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "crosspin-governor": {
-    "description": "+10% -> +20% Skill 2 direct damage.",
+    "description": "+10% -> +20% [Skill 2] direct damage.",
     "ranges": [
       {
         "base": 10,
@@ -119,7 +119,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "duplex-heart": {
-    "description": "After the first direct enemy hit each phase that actually removes your HP, heal the most injured other living ally for 5% -> 10% H. Cannot heal yourself or revive.",
+    "description": "After the first direct enemy hit each phase that actually removes your HP, heal the most injured other living ally for 5% -> 10% of your maximum HP. Cannot heal yourself or revive.",
     "ranges": [
       {
         "base": 5,
@@ -130,7 +130,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "spearwheel-engine": {
-    "description": "Skill 1 ignores 15% -> 30% enemy Defense. Does not bypass shields.",
+    "description": "[Skill 1] ignores 15% -> 30% enemy Defense. Does not bypass shields.",
     "ranges": [
       {
         "base": 15,
@@ -174,7 +174,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "twinpulse-bellows": {
-    "description": "Your second consecutive Normal Attack gains +25% -> +50% direct damage. The sequence then resets; any other manual action resets it too. A target change does not reset it.",
+    "description": "Your second consecutive [Normal Attack] gains +25% -> +50% direct damage. The sequence then resets; any other manual action resets it too. A target change does not reset it.",
     "ranges": [
       {
         "base": 25,
@@ -185,7 +185,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "glassroot-gimbal": {
-    "description": "Gain Critical Rate proportional to missing HP: up to +12 -> +24 pp at 75% missing HP, capped there. Snapshot before the offensive activation.",
+    "description": "Gain Critical Rate proportional to missing HP: up to +12 -> +24 percentage points at 75% missing HP, capped there. Snapshot before the offensive activation.",
     "ranges": [
       {
         "base": 12,
@@ -196,7 +196,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "lifeline-flywheel": {
-    "description": "After a native offensive activation, heal yourself for 8% -> 16% of its actual direct HP damage, capped at 4% -> 8% H per activation. Does not count overkill, shields, Burn or generated strikes.",
+    "description": "After a native offensive activation, heal yourself for 8% -> 16% of its actual direct HP damage, capped at 4% -> 8% of your maximum HP per activation. Does not count overkill, shields, [Burn] or generated strikes.",
     "ranges": [
       {
         "base": 8,
@@ -252,7 +252,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "breach-pendulum": {
-    "description": "After a native offensive activation, offer yourself a refresh-only shield equal to 8% -> 16% of its total actual direct HP damage, capped at 5% -> 10% H. No shield from Burn, overkill, absorbed damage or generated strikes.",
+    "description": "After a native offensive activation, offer yourself a refresh-only shield equal to 8% -> 16% of its total actual direct HP damage, capped at 5% -> 10% of your maximum HP. No shield from [Burn], overkill, absorbed damage or generated strikes.",
     "ranges": [
       {
         "base": 8,
@@ -269,7 +269,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "coilfeed-ratchet": {
-    "description": "Skill 2 costs 3 -> 6 less Gauge, minimum 1 after all ordinary-skill discounts. Does not change Last Flare or grant Gauge.",
+    "description": "[Skill 2] costs 3 -> 6 less Gauge, minimum 1 after all ordinary-skill discounts. Does not change [Last Flare] or grant Gauge.",
     "ranges": [
       {
         "base": 3,
@@ -280,7 +280,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "opal-indexer": {
-    "description": "Your native Weaken applications last +1 -> +2 enemy phases, maximum 6 remaining phases. Reapplication refreshes rather than adds durations. Does not grant Weaken to a kit without it.",
+    "description": "Your native [Weaken] applications last +1 -> +2 enemy phases, maximum 6 remaining phases. Reapplication refreshes rather than adds durations. Does not grant [Weaken] to a kit without it.",
     "ranges": [
       {
         "base": 1,
@@ -291,7 +291,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "resonance-crucible": {
-    "description": "+20% -> +40% damage to Burn natively applied by you. Snapshot potency at application; no duration change or new Burn.",
+    "description": "+20% -> +40% damage to [Burn] natively applied by you. Snapshot potency at application; no duration change or new [Burn].",
     "ranges": [
       {
         "base": 20,
@@ -302,7 +302,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "worldbreaker-drive": {
-    "description": "+35% -> +70% Last Flare direct damage; -6% -> -21% maximum HP. Recovery remains.",
+    "description": "+35% -> +70% [Last Flare] direct damage; -6% -> -21% maximum HP. Recovery remains.",
     "ranges": [
       {
         "base": 35,
@@ -336,7 +336,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "citadel-spine": {
-    "description": "+25% -> +87.5% Defense; -6% -> -21% Elemental Damage. Native shield offers additionally include 10% -> 20% D.",
+    "description": "+25% -> +87.5% Defense; -6% -> -21% Elemental Damage. Native shield offers additionally include 10% -> 20% of your Defense.",
     "ranges": [
       {
         "base": 25,
@@ -376,7 +376,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "judgment-lens": {
-    "description": "Native skill/Last Flare critical damage is +40% -> +80%; your Normal Attacks cannot critically hit. Last Flare/native critical resources still follow their normal eligibility.",
+    "description": "Native skill/[Last Flare] critical damage is +40% -> +80%; your [Normal Attacks] cannot critically hit. [Last Flare]/native critical resources still follow their normal eligibility.",
     "ranges": [
       {
         "base": 40,
@@ -398,7 +398,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "nullsong-transmission": {
-    "description": "+40% -> +80% Normal Attack direct damage; -12% -> -24% Skill 1/Skill 2 direct damage. Last Flare is unchanged.",
+    "description": "+40% -> +80% [Normal Attack] direct damage; -12% -> -24% [Skill 1]/[Skill 2] direct damage. [Last Flare] is unchanged.",
     "ranges": [
       {
         "base": 40,
@@ -415,7 +415,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "horizon-heartcase": {
-    "description": "+20% -> +70% maximum HP; -4% -> -14% Defense. At the start of your forced Last Flare recovery turn, restore 15% -> 30% of missing HP once.",
+    "description": "+20% -> +70% maximum HP; -4% -> -14% Defense. At the start of your forced [Last Flare] recovery turn, restore 15% -> 30% of missing HP once.",
     "ranges": [
       {
         "base": 20,
@@ -438,7 +438,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "stasis-reliquary": {
-    "description": "Once per encounter, a lethal direct hit leaves you at 1 HP and prevents further direct HP loss for that enemy phase. Next player turn you cannot manually act, even if otherwise ready. Duration and skip do not scale; at that turn's start gain a shield of 10% -> 20% H. Burn can still defeat you.",
+    "description": "Once per encounter, a lethal direct hit leaves you at 1 HP and prevents further direct HP loss for that enemy phase. Next player turn you cannot manually act, even if otherwise ready. Duration and skip do not scale; at that turn's start gain a shield of 10% -> 20% of your maximum HP. [Burn] can still defeat you.",
     "ranges": [
       {
         "base": 10,
@@ -449,7 +449,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "granite-hourglass": {
-    "description": "At the next player-turn start, gain a refresh-only shield equal to 30% -> 60% of actual direct HP damage you lost in the preceding enemy phase, capped at 10% -> 20% H. Clear the ledger after settlement; no effect while fallen.",
+    "description": "At the next player-turn start, gain a refresh-only shield equal to 30% -> 60% of actual direct HP damage you lost in the preceding enemy phase, capped at 10% -> 20% of your maximum HP. Clear the ledger after settlement; no effect while fallen.",
     "ranges": [
       {
         "base": 30,
@@ -483,7 +483,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "starvein-conductor": {
-    "description": "Before an ability that natively applies Burn, pay 5% H, leaving at least 1 HP. If the full cost cannot be paid, the bonus does not apply. That activation's Burn deals +40% -> +80% damage. Self-payment is not damage taken, cannot trigger effects and does not affect direct damage.",
+    "description": "Before an ability that natively applies [Burn], pay 5% of your maximum HP, leaving at least 1 HP. If the full cost cannot be paid, the bonus does not apply. That activation's [Burn] deals +40% -> +80% damage. Self-payment is not damage taken, cannot trigger effects and does not affect direct damage.",
     "ranges": [
       {
         "base": 40,
@@ -516,7 +516,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "verdict-caliper": {
-    "description": "Your offensive activations cannot crit, but gain +35% -> +70% direct damage. Burn is unchanged; no critical-trigger effects can fire from these activations.",
+    "description": "Your offensive activations cannot crit, but gain +35% -> +70% direct damage. [Burn] is unchanged; no critical-trigger effects can fire from these activations.",
     "ranges": [
       {
         "base": 35,
@@ -527,7 +527,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "infernic-phoenix-reactor": {
-    "description": "Once per encounter, after a hostile lethal hit/tick, revive yourself at 25% -> 50% H after that hit resolves. Gauge becomes 0; keep spent/recovery dates and cannot act until a later legal turn. The charge is consumed before restoration.",
+    "description": "Once per encounter, after a hostile lethal hit/tick, revive yourself at 25% -> 50% of your maximum HP after that hit resolves. Gauge becomes 0; keep spent/recovery dates and cannot act until a later legal turn. The charge is consumed before restoration.",
     "ranges": [
       {
         "base": 25,
@@ -538,7 +538,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "aquatic-leviathan-pump": {
-    "description": "Total actual absorption during an enemy phase by your native shields becomes a healing pool equal to 30% -> 60% of the blocked damage, capped at 10% -> 20% H. At next player-turn start, divide the pool equally among living injured allies, clipping each share without redistribution. Requires you alive at settlement.",
+    "description": "Total actual absorption during an enemy phase by your native shields becomes a healing pool equal to 30% -> 60% of the blocked damage, capped at 10% -> 20% of your maximum HP. At next player-turn start, divide the pool equally among living injured allies, clipping each share without redistribution. Requires you alive at settlement.",
     "ranges": [
       {
         "base": 30,
@@ -555,7 +555,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tectonic-atlas-bastion": {
-    "description": "Defense taunts all living enemies for that enemy phase and reduces direct damage to you by 10% -> 20%. Only one squad taunt can be active; latest legal taunt wins.",
+    "description": "[Defense] taunts all living enemies for that enemy phase and reduces direct damage to you by 10% -> 20%. Only one squad taunt can be active; latest legal taunt wins.",
     "ranges": [
       {
         "base": 10,
@@ -566,7 +566,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "efflorescent-worldtree-heart": {
-    "description": "Your native active-ability overhealing plants a seed on that recipient worth 50% -> 100% of the wasted heal, capped at 10% -> 20% H. At next player-turn start, the seed heals that living recipient once; stronger seed refreshes, never stacks.",
+    "description": "Your native active-ability overhealing plants a seed on that recipient worth 50% -> 100% of the wasted heal, capped at 10% -> 20% of your maximum HP. At next player-turn start, the seed heals that living recipient once; stronger seed refreshes, never stacks.",
     "ranges": [
       {
         "base": 50,
@@ -583,7 +583,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "voltaic-thunderbird-coil": {
-    "description": "Once per offensive activation with a native critical HP hit, arc to the healthiest other living enemy for 30% -> 60% of that first critical's actual HP damage, capped at 50% -> 100% A. No other enemy means no arc.",
+    "description": "Once per offensive activation with a native critical HP hit, arc to the healthiest other living enemy for 30% -> 60% of that first critical's actual HP damage, capped at 50% -> 100% of your Attack. No other enemy means no arc.",
     "ranges": [
       {
         "base": 30,
@@ -600,7 +600,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "atmospheric-griffin-turbine": {
-    "description": "After your Normal Attack deals direct HP damage, each other living ally gains 3 -> 6 Gauge, once per activation. No return to you and no gain on shield-only damage.",
+    "description": "After your [Normal Attack] deals direct HP damage, each other living ally gains 3 -> 6 Gauge, once per activation. No return to you and no gain on shield-only damage.",
     "ranges": [
       {
         "base": 3,
@@ -611,7 +611,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "luminous-seraph-mirror": {
-    "description": "A native critical activation heals each living ally for 8% -> 16% of its total direct HP damage, capped at 3% -> 6% H per ally per activation.",
+    "description": "A native critical activation heals each living ally for 8% -> 16% of its total direct HP damage, capped at 3% -> 6% of your maximum HP per ally per activation.",
     "ranges": [
       {
         "base": 8,
@@ -628,7 +628,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "ominous-eclipse-mantle": {
-    "description": "When a native damaging skill hits your already-Weakened target, consume one remaining phase of your Weaken after impact to ignore 40% -> 60% of that target's Defense for this hit. One consumption per target per activation; never consume another owner's Weaken.",
+    "description": "When a native damaging skill hits your target already affected by [Weaken], consume one remaining phase of your [Weaken] after impact to ignore 40% -> 60% of that target's Defense for this hit. One consumption per target per activation; never consume another owner's [Weaken].",
     "ranges": [
       {
         "base": 40,
@@ -639,7 +639,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tranquilitic-kirin-cradle": {
-    "description": "Defense heals the lowest-HP-ratio living ally for 50% -> 100% D, capped at 10% -> 20% H. Self is eligible; no shield or Gauge is granted.",
+    "description": "[Defense] heals the lowest-HP-ratio living ally for 50% -> 100% of your Defense, capped at 10% -> 20% of your maximum HP. Self is eligible; no shield or Gauge is granted.",
     "ranges": [
       {
         "base": 50,
@@ -656,7 +656,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "chaotic-ouroboros-core": {
-    "description": "On Last Flare, convert only Gauge above its actual paid cost into a refresh-only self shield: 0.3% -> 0.6% H per excess Gauge, capped at 15% -> 30% H. Consume that excess Gauge, even if a stronger shield makes the offer redundant; normal recovery remains.",
+    "description": "On [Last Flare], convert only Gauge above its actual paid cost into a refresh-only self shield: 0.3% -> 0.6% of your maximum HP per excess Gauge, capped at 15% -> 30% of your maximum HP. Consume that excess Gauge, even if a stronger shield makes the offer redundant; normal recovery remains.",
     "ranges": [
       {
         "base": 0.3,
@@ -673,7 +673,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "infernic-cinder-testament": {
-    "description": "Each consecutive damaging tick of your Burn on the same enemy adds +20% -> +40% Burn damage per preceding tick, capped at +60% -> +120%. Reapplying Burn resets this item's tick streak on that target.",
+    "description": "Each consecutive damaging tick of your [Burn] on the same enemy adds +20% -> +40% [Burn] damage per preceding tick, capped at +60% -> +120%. Reapplying [Burn] resets this item's tick streak on that target.",
     "ranges": [
       {
         "base": 20,
@@ -690,7 +690,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "aquatic-undertide-chronometer": {
-    "description": "Your first native Weaken application to each enemy postpones its next scheduled skill by 1 -> 2 enemy phases; it uses Normal Attack when postponed. Later schedule intervals shift by the same amount. Once per enemy per encounter, including bosses.",
+    "description": "Your first native [Weaken] application to each enemy postpones its next scheduled skill by 1 -> 2 enemy phases; it uses [Normal Attack] when postponed. Later schedule intervals shift by the same amount. Once per enemy per encounter, including bosses.",
     "ranges": [
       {
         "base": 1,
@@ -701,7 +701,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tectonic-faultkeeper-loom": {
-    "description": "While defending, intercept 30% -> 60% of each other ally's incoming post-mitigation direct damage, up to 20% -> 40% H routed total per phase. Your shield then absorbs routed damage; it is not mitigated a second time.",
+    "description": "While defending, intercept 30% -> 60% of each other ally's incoming post-mitigation direct damage, up to 20% -> 40% of your maximum HP routed total per phase. Your shield then absorbs routed damage; it is not mitigated a second time.",
     "ranges": [
       {
         "base": 30,
@@ -718,7 +718,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "efflorescent-verdant-covenant": {
-    "description": "Your effective native active heal of another ally primes +20% -> +40% direct damage for that recipient's next Skill 1 or Skill 2, consumed once for the entire activation. Stronger refresh wins; Last Flare/Normal do not consume it.",
+    "description": "Your effective native active heal of another ally primes +20% -> +40% direct damage for that recipient's next [Skill 1] or [Skill 2], consumed once for the entire activation. Stronger refresh wins; [Last Flare] and [Normal Attack] do not consume it.",
     "ranges": [
       {
         "base": 20,
@@ -729,7 +729,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "voltaic-stormstep-dynamo": {
-    "description": "Switching directly between Skill 1 and Skill 2 gives the new action +25% -> +50% direct damage. Repeating a slot, using Normal/Defense/Last Flare, or a non-damaging new action breaks the chain. First action receives no bonus.",
+    "description": "Switching directly between [Skill 1] and [Skill 2] gives the new action +25% -> +50% direct damage. Repeating a slot, using [Normal Attack]/[Defense]/[Last Flare], or a non-damaging new action breaks the chain. First action receives no bonus.",
     "ranges": [
       {
         "base": 25,
@@ -740,7 +740,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "atmospheric-skythread-rudder": {
-    "description": "Defense primes one Tailwind. Your next ordinary skill costs 10 -> 20 less Gauge, minimum 1 after discounts. Consume only on legal activation; refresh one charge, never stack.",
+    "description": "[Defense] primes one [Tailwind]. Your next ordinary skill costs 10 -> 20 less Gauge, minimum 1 after discounts. Consume only on legal activation; refresh one charge, never stack.",
     "ranges": [
       {
         "base": 10,
@@ -751,7 +751,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "luminous-dawn-witness-array": {
-    "description": "Each noncritical Normal Attack stores a Witness, maximum 3. Your next native critical activation consumes all Witnesses, adding 15% -> 30% A per Witness as one generated strike to its primary target, after native damage. No strike if that target has fallen.",
+    "description": "Each noncritical [Normal Attack] stores a [Witness], maximum 3. Your next native critical activation consumes all [Witnesses], adding 15% -> 30% of your Attack per [Witness] as one generated strike to its primary target, after native damage. No strike if that target has fallen.",
     "ranges": [
       {
         "base": 15,
@@ -762,7 +762,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "ominous-nightglass-archive": {
-    "description": "A native damaging skill places one personal Fracture on each surviving target, maximum 3 per owner/target. Your Normal Attack consumes them for +10% -> +20% direct damage each. Marks are placed after impact; the current skill never consumes them by default.",
+    "description": "A native damaging skill places one personal [Fracture] on each surviving target, maximum 3 per owner/target. Your [Normal Attack] consumes them for +10% -> +20% direct damage each. Marks are placed after impact; the current skill never consumes them by default.",
     "ranges": [
       {
         "base": 10,
@@ -773,7 +773,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tranquilitic-stillhour-carillon": {
-    "description": "At the start of your forced Last Flare recovery turn, gain 15 -> 30 Gauge once and give the lowest-Gauge other living ally the same amount. No gain on an ordinary unspent turn, stasis skip or missing action slot.",
+    "description": "At the start of your forced [Last Flare] recovery turn, gain 15 -> 30 Gauge once and give the lowest-Gauge other living ally the same amount. No gain on an ordinary unspent turn, stasis skip or missing action slot.",
     "ranges": [
       {
         "base": 15,
@@ -784,7 +784,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "chaotic-paradox-spindle": {
-    "description": "During forced Last Flare recovery, permit one manual Normal Attack at 50% -> 75% normal direct damage. No skills/Defense; Normal costs/gains and native triggers remain. The recovery date is not shortened and no second action is allowed.",
+    "description": "During forced [Last Flare] recovery, permit one manual [Normal Attack] at 50% -> 75% normal direct damage. No skills or [Defense]; [Normal Attack] Gauge costs and gains and native triggers remain. The recovery date is not shortened and no second action is allowed.",
     "ranges": [
       {
         "base": 50,
@@ -795,7 +795,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tempered-strike-link": {
-    "description": "A Normal Attack against your existing Burn consumes one remaining Burn phase after native impact and adds one generated strike equal to 80% -> 160% of that Burn's current next-tick damage, capped at 80% -> 160% A. One detonation per activation; if native damage kills the target, do not consume or strike.",
+    "description": "A [Normal Attack] against your existing [Burn] consumes one remaining [Burn] phase after native impact and adds one generated strike equal to 80% -> 160% of that [Burn]'s current next-tick damage, capped at 80% -> 160% of your Attack. One detonation per activation; if native damage kills the target, do not consume or strike.",
     "ranges": [
       {
         "base": 80,
@@ -812,7 +812,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "mending-valve": {
-    "description": "A native direct kill heals the most injured living ally for 8% -> 16% H, once per activation regardless of kills. Self is eligible.",
+    "description": "A native direct kill heals the most injured living ally for 8% -> 16% of your maximum HP, once per activation regardless of kills. Self is eligible.",
     "ranges": [
       {
         "base": 8,
@@ -823,7 +823,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "ward-stitch-spool": {
-    "description": "Each native shield offer additionally stitches 25% -> 50% of that offer onto that recipient's surviving shield, after normal refresh, capped at 30% -> 60% R total shield. If already above the cap, do not reduce it. This added layer is Conduit-origin.",
+    "description": "Each native shield offer additionally stitches 25% -> 50% of that offer onto that recipient's surviving shield, after normal refresh, capped at 30% -> 60% of the recipient’s maximum HP in total shield. If already above the cap, do not reduce it. This added layer is Conduit-origin.",
     "ranges": [
       {
         "base": 25,
@@ -840,7 +840,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "cinder-metering-nozzle": {
-    "description": "When an enemy carrying your native Burn dies with phases remaining, copy that remaining Burn to the healthiest living enemy at 25% -> 50% tick potency. A stronger existing Burn is not overwritten. Copied Burn cannot spread again or trigger any Conduit/native resource.",
+    "description": "When an enemy carrying your native [Burn] dies with phases remaining, copy that remaining [Burn] to the healthiest living enemy at 25% -> 50% tick potency. A stronger existing [Burn] is not overwritten. Copied [Burn] cannot spread again or trigger any Conduit/native resource.",
     "ranges": [
       {
         "base": 25,
@@ -851,7 +851,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "pulse-trigger-pawl": {
-    "description": "A Skill 1/Skill 2 activation that deals native critical HP damage refunds 8 -> 16 Gauge once, capped at that action's actual paid cost. No refund on Normal, Last Flare or generated hits.",
+    "description": "A [Skill 1]/[Skill 2] activation that deals native critical HP damage refunds 8 -> 16 Gauge once, capped at that action's actual paid cost. No refund on [Normal Attack], [Last Flare] or generated hits.",
     "ranges": [
       {
         "base": 8,
@@ -862,7 +862,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "firstlight-cam": {
-    "description": "After a native damaging Normal Attack, donate up to 8 -> 16 of your remaining Gauge to the lowest-Gauge other living ally, capped by their free capacity. Debit and credit the same amount; no recipient means no cost.",
+    "description": "After a native damaging [Normal Attack], donate up to 8 -> 16 of your remaining Gauge to the lowest-Gauge other living ally, capped by their free capacity. Debit and credit the same amount; no recipient means no cost.",
     "ranges": [
       {
         "base": 8,
@@ -873,7 +873,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "secondbeat-rack": {
-    "description": "If an enemy carrying your native Weaken dies, transfer its remaining duration and reduction to the highest-Attack living enemy. Transfer potency is 60% -> 100% of the old reduction, duration at most 3. Stronger existing Weaken wins; transferred Weaken cannot transfer again or generate resources.",
+    "description": "If an enemy carrying your native [Weaken] dies, transfer its remaining duration and reduction to the highest-Attack living enemy. Transfer potency is 60% -> 100% of the old reduction, duration at most 3. Stronger existing [Weaken] wins; transferred [Weaken] cannot transfer again or generate resources.",
     "ranges": [
       {
         "base": 60,
@@ -884,7 +884,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "flare-focusing-iris": {
-    "description": "On an actual native Infernic Embers spend, add a generated strike to each enemy already carrying your Burn for 25% -> 50% of its next-tick damage per spent charge, capped at 60% -> 120% A per target per activation. No added Burn phase is consumed or granted.",
+    "description": "On an actual native [Infernic Embers] spend, add a generated strike to each enemy already carrying your [Burn] for 25% -> 50% of its next-tick damage per spent charge, capped at 60% -> 120% of your Attack per target per activation. No added [Burn] phase is consumed or granted.",
     "ranges": [
       {
         "base": 25,
@@ -918,7 +918,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "aegis-return-spring": {
-    "description": "Native shield growth on another ally primes one Critical Seal on them. Their next enemy critical direct hit is resolved with multiplier 1 instead of the rolled critical multiplier, then the seal is consumed. Grant at most 1 -> 2 seals total across the team per round; each recipient holds one. Critical RNG/result identity is otherwise unchanged.",
+    "description": "Native shield growth on another ally primes one [Critical Seal] on them. Their next enemy critical direct hit is resolved with multiplier 1 instead of the rolled critical multiplier, then the seal is consumed. Grant at most 1 -> 2 seals total across the team per round; each recipient holds one. Critical RNG/result identity is otherwise unchanged.",
     "ranges": [
       {
         "base": 1,
@@ -929,7 +929,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "emberlife-kiln": {
-    "description": "Actual HP damage from your native Burn heals you for 20% -> 40% of that damage, capped at 6% -> 12% H total per enemy phase. No healing from propagated Burn or generated echoes.",
+    "description": "Actual HP damage from your native [Burn] heals you for 20% -> 40% of that damage, capped at 6% -> 12% of your maximum HP total per enemy phase. No healing from propagated [Burn] or generated echoes.",
     "ranges": [
       {
         "base": 20,
@@ -946,7 +946,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tension-governor": {
-    "description": "Native Weaken you apply is +5 -> +10 pp stronger, capped at 60% total reduction. Duration is unchanged; does not create Weaken.",
+    "description": "Native [Weaken] you apply is +5 -> +10 percentage points stronger, capped at 60% total reduction. Duration is unchanged; does not create [Weaken].",
     "ranges": [
       {
         "base": 5,
@@ -957,7 +957,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "covercharge-drum": {
-    "description": "After a native active team heal, redirect 40% -> 80% of the total overheal to the most injured other living ally, capped at 10% -> 20% H per activation. This is immediate generated healing, not another native heal or a saved seed.",
+    "description": "After a native active team heal, redirect 40% -> 80% of the total overheal to the most injured other living ally, capped at 10% -> 20% of your maximum HP per activation. This is immediate generated healing, not another native heal or a saved seed.",
     "ranges": [
       {
         "base": 40,
@@ -974,7 +974,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "sootwake-crucible": {
-    "description": "Your damaging native Burn tick primes one Sootwake on that enemy. The next other ally's native direct hit against it gains +20% -> +40% damage and consumes the Sootwake. Expires at the end of the following player round; refresh one mark, never stack. Cannot be consumed by you or generated damage.",
+    "description": "Your damaging native [Burn] tick primes one [Sootwake] on that enemy. The next other ally's native direct hit against it gains +20% -> +40% damage and consumes the [Sootwake]. Expires at the end of the following player round; refresh one mark, never stack. Cannot be consumed by you or generated damage.",
     "ranges": [
       {
         "base": 20,
@@ -985,7 +985,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tidebound-reflector": {
-    "description": "Once per enemy phase, the first direct hit absorbed by any shield on you reflects 20% -> 40% of actual blocked damage to its attacker, capped at 30% -> 60% A. No second Defense reduction on this echo; no reflection of reflected/routed damage.",
+    "description": "Once per enemy phase, the first direct hit absorbed by any shield on you reflects 20% -> 40% of actual blocked damage to its attacker, capped at 30% -> 60% of your Attack. No second Defense reduction on this echo; no reflection of reflected/routed damage.",
     "ranges": [
       {
         "base": 20,
@@ -1002,7 +1002,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "pressurecrest-governor": {
-    "description": "Every 3 -> 2 offensive activations with native critical HP damage earn one Windveil, maximum one held. Windveil completely avoids the next enemy Normal Attack against you, then is consumed; scheduled skills cannot be avoided. Avoided hits provide no incoming-hit Gauge or absorption trigger.",
+    "description": "Every 3 -> 2 offensive activations with native critical HP damage earn one [Windveil], maximum one held. [Windveil] completely avoids the next enemy [Normal Attack] against you, then is consumed; scheduled skills cannot be avoided. Avoided hits provide no incoming-hit Gauge or absorption trigger.",
     "ranges": [
       {
         "base": 3,
@@ -1013,7 +1013,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "rootbound-triage-vault": {
-    "description": "When your native active heal leaves a living recipient below 20% -> 40% R, automatically spend 15 of your remaining Gauge, if available, to heal them toward that threshold, limited to 10% -> 20% H extra. Once per activation; choose the lowest-HP-ratio eligible recipient after the native team heal. No useful restoration means no payment.",
+    "description": "When your native active heal leaves a living recipient below 20% -> 40% of the recipient’s maximum HP, automatically spend 15 of your remaining Gauge, if available, to heal them toward that threshold, limited to 10% -> 20% of your maximum HP extra. Once per activation; choose the lowest-HP-ratio eligible recipient after the native team heal. No useful restoration means no payment.",
     "ranges": [
       {
         "base": 20,
@@ -1030,7 +1030,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "solace-anchor": {
-    "description": "Once per encounter, permit Defense as a free manual preparation before your normal action, costing 10 Gauge. Gain 10% -> 20% additional direct-damage reduction for the current enemy phase. Not allowed while spent/recovering; the charge is consumed before applying Defense and no second free Defense is possible.",
+    "description": "Once per encounter, permit [Defense] as a free manual preparation before your normal action, costing 10 Gauge. Gain 10% -> 20% additional direct-damage reduction for the current enemy phase. Not allowed while spent/recovering; the charge is consumed before applying [Defense] and no second free [Defense] is possible.",
     "ranges": [
       {
         "base": 10,
@@ -1041,7 +1041,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "ruinselect-prism": {
-    "description": "Skill 1 may consume your existing personal Fractures as well as Normal Attack, for +15% -> +30% Skill 1 direct damage per mark, maximum 3. Grants no marks, consumes before impact and never consumes another owner's marks.",
+    "description": "[Skill 1] may consume your existing personal [Fractures] as well as [Normal Attack], for +15% -> +30% [Skill 1] direct damage per mark, maximum 3. Grants no marks, consumes before impact and never consumes another owner's marks.",
     "ranges": [
       {
         "base": 15,
@@ -1052,7 +1052,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "infernic-pyre-census": {
-    "description": "Every third damaging native Burn tick on a given enemy becomes a Census tick for +75% -> +150% damage. Track damaging ticks across native refreshes; reset when Burn expires or changes owner. Generated/propagated Burn does not count. No critical roll or cooldown effect.",
+    "description": "Every third damaging native [Burn] tick on a given enemy becomes a [Census] tick for +75% -> +150% damage. Track damaging ticks across native refreshes; reset when [Burn] expires or changes owner. Generated/propagated [Burn] does not count. No critical roll or cooldown effect.",
     "ranges": [
       {
         "base": 75,
@@ -1074,7 +1074,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "atmospheric-storm-clock": {
-    "description": "Three native critical offensive activations prime one Storm Clock. Your next Last Flare costs 15 -> 30 less Gauge, minimum 70 after all Last Flare discounts; consuming it resets the counter. No recharge from Last Flare itself. Captured ultimate intervals/recovery remain.",
+    "description": "Three native critical offensive activations prime one [Storm Clock]. Your next [Last Flare] costs 15 -> 30 less Gauge, minimum 70 after all [Last Flare] discounts; consuming it resets the counter. No recharge from [Last Flare] itself. Captured ultimate intervals/recovery remain.",
     "ranges": [
       {
         "base": 15,
@@ -1085,7 +1085,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "botanic-graft-covenant": {
-    "description": "Flora's newly planted native Seeds store +20% -> +40% healing. Apply once when planted, including empowered Seeds; refresh rather than stack. No new resource or Seed for another kit.",
+    "description": "[Flora]'s newly planted native [Seeds] store +20% -> +40% healing. Apply once when planted, including empowered [Seeds]; refresh rather than stack. No new resource or [Seed] for another kit.",
     "ranges": [
       {
         "base": 20,
@@ -1096,7 +1096,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tranquilitic-accord-bastion": {
-    "description": "Your first effective native support of another ally per encounter grants that ally one Accord. Their next lethal direct hit instead leaves 1 HP, consumes Accord and gives a refresh-only shield of 10% -> 20% H after the hit. Only one Accord granted per bearer per encounter, no revival and no immunity to later hits.",
+    "description": "Your first effective native support of another ally per encounter grants that ally one [Accord]. Their next lethal direct hit instead leaves 1 HP, consumes [Accord] and gives a refresh-only shield of 10% -> 20% of your maximum HP after the hit. Only one [Accord] granted per bearer per encounter, no revival and no immunity to later hits.",
     "ranges": [
       {
         "base": 10,
@@ -1107,7 +1107,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "chaotic-fault-verdict": {
-    "description": "After the first native critical HP hit of an offensive activation, if its target survives, consume up to 10% H of your current shield to add 50% -> 100% of the shield actually spent as generated damage to that target, capped at 50% -> 100% A. Once per activation; a fallen target means no payment and no search for a different critical target.",
+    "description": "After the first native critical HP hit of an offensive activation, if its target survives, consume your current shield worth up to 10% of your maximum HP to add 50% -> 100% of the shield actually spent as generated damage to that target, capped at 50% -> 100% of your Attack. Once per activation; a fallen target means no payment and no search for a different critical target.",
     "ranges": [
       {
         "base": 50,
@@ -1124,195 +1124,195 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "master-ember-1": {
-    "description": "When Infernis's native Burn would expire from ticking, pay 3% H to keep it for one further phase, only if Infernis is above 50% HP and can pay while remaining above 1 HP. At most two paid extensions per native application per target. Paid extensions are generated clock changes and cannot create more extension allowances.",
+    "description": "When [Infernis]'s native [Burn] would expire from ticking, pay 3% of your maximum HP to keep it for one further phase, only if [Infernis] is above 50% HP and can pay while remaining above 1 HP. At most two paid extensions per native application per target. Paid extensions are generated clock changes and cannot create more extension allowances.",
     "ranges": []
   },
   "master-ember-2": {
-    "description": "Flame Arc becomes a single-target siege strike with double its native direct-damage coefficient. Only the selected target's owned Burn can detonate. It retains its cost; Last Flare remains all-enemy.",
+    "description": "[Flame Arc] becomes a single-target siege strike with double its native direct-damage coefficient. Only the selected target's owned [Burn] can detonate. It retains its cost; [Last Flare] remains all-enemy.",
     "ranges": []
   },
   "master-ember-3": {
-    "description": "Flame Arc detonates at most one remaining owned Burn tick per target for twice that tick's damage, consuming only one tick. No owned Burn means no detonation. Last Flare still applies its ordinary Burn.",
+    "description": "[Flame Arc] detonates at most one remaining owned [Burn] tick per target for twice that tick's damage, consuming only one tick. No owned [Burn] means no detonation. [Last Flare] still applies its ordinary [Burn].",
     "ranges": []
   },
   "master-tide-1": {
-    "description": "The first direct enemy hit per ally per encounter that completely breaks Tizu's native shield cannot spill damage into that ally's HP. The shield must absorb positive damage and be exhausted by this hit. No protection on an unshielded target or later shield breaks.",
+    "description": "The first direct enemy hit per ally per encounter that completely breaks [Tizu]'s native shield cannot spill damage into that ally's HP. The shield must absorb positive damage and be exhausted by this hit. No protection on an unshielded target or later shield breaks.",
     "ranges": []
   },
   "master-tide-2": {
-    "description": "Tidal Shelter gives the explicitly selected living ally three times its native shield offer, with the same one-phase expiry. Other allies and Ocean Memory remain unchanged. Stillwater Gauge requires a full hit absorbed by Tizu's own native shield.",
+    "description": "[Tidal Shelter] gives the explicitly selected living ally three times its native shield offer, with the same one-phase expiry. Other allies and [Last Flare: Ocean Memory] remain unchanged. Stillwater Gauge requires a full hit absorbed by [Tizu]'s own native shield.",
     "ranges": []
   },
   "master-tide-3": {
-    "description": "An enemy carrying Tizu's native Weaken targets Tizu with single-target hostile actions while he lives. Attacks retain the enemy's ordinary critical roll, Weaken and damage calculation. Newest active forced-target effect wins; area attacks are unchanged.",
+    "description": "An enemy carrying [Tizu]'s native [Weaken] targets [Tizu] with single-target hostile actions while he lives. Attacks retain the enemy's ordinary critical roll, [Weaken] and damage calculation. Newest active forced-target effect wins; area attacks are unchanged.",
     "ranges": []
   },
   "master-sprout-1": {
-    "description": "Add a 2% R team heal after each living ally's first native ordinary-skill activation that round, including Flora's. Maximum three pulses per round; no pulse from Last Flare, assists, Conduit effects or a fallen Flora. Seeds remain unchanged.",
+    "description": "Add a 2% of the recipient’s maximum HP team heal after each living ally's first native ordinary-skill activation that round, including [Flora]'s. Maximum three pulses per round; no pulse from [Last Flare], assists, Conduit effects or a fallen [Flora]. [Seeds] remain unchanged.",
     "ranges": []
   },
   "master-sprout-2": {
-    "description": "A damaging Skill 1 adds Rootbind to its surviving target. Its next scheduled skill is replaced by Normal Attack, then Rootbind ends. Each enemy can be Rootbound once per encounter; normal attacks do not consume it. Skill 1's direct damage and Seed remain.",
+    "description": "A damaging [Skill 1] adds [Rootbind] to its surviving target. Its next scheduled skill is replaced by [Normal Attack], then [Rootbind] ends. Each enemy can be affected by [Rootbind] once per encounter; [Normal Attack] does not consume it. [Skill 1]'s direct damage and [Seed] remain.",
     "ranges": []
   },
   "master-sprout-3": {
-    "description": "Once per encounter, Worldseed also revives fallen other allies at 30% R after its ordinary damage/healing resolves. They return with 0 Gauge, spent until next player turn, and unchanged recovery dates; no native healing/resource triggers from resurrection. Flora must live to cast it and still pays/recover normally.",
+    "description": "Once per encounter, [Last Flare: Worldseed] also revives fallen other allies at 30% of the recipient’s maximum HP after its ordinary damage/healing resolves. They return with 0 Gauge, spent until next player turn, and unchanged recovery dates; no native healing/resource triggers from resurrection. [Flora] must live to cast it and still pays/recover normally.",
     "ranges": []
   },
   "master-atmoso-1": {
-    "description": "Normal Attack becomes all-enemy at 70% of its usual direct coefficient per target. Gauge gain, action cost and action-based triggers happen once per activation, not once per enemy. It does not charge Atmoso's own Cyclone.",
+    "description": "[Normal Attack] becomes all-enemy at 70% of its usual direct coefficient per target. Gauge gain, action cost and action-based triggers happen once per activation, not once per enemy. It does not charge [Atmoso]'s own [Cyclone].",
     "ranges": []
   },
   "master-atmoso-2": {
-    "description": "Cyclone Weave gives Atmoso a Counterwind until his next action. Each direct enemy hit he survives adds 15% outgoing damage to that action, up to 45%; shield absorption qualifies. Clear on the next manual action even if it has no direct damage. No extra counterattack or critical roll.",
+    "description": "[Cyclone Weave] gives [Atmoso] a [Counterwind] until his next action. Each direct enemy hit he survives adds 15% outgoing damage to that action, up to 45%; shield absorption qualifies. Clear on the next manual action even if it has no direct damage. No extra counterattack or critical roll.",
     "ranges": []
   },
   "master-atmoso-3": {
-    "description": "Critical Rate above 100%, computed before the ordinary cap, becomes bonus native direct damage at 1% per excess pp, maximum +50%. Actual critical chance still caps at 100%; no benefit from noncritical-only Verdict Caliper.",
+    "description": "Critical Rate above 100%, computed before the ordinary cap, becomes bonus native direct damage at 1% per excess percentage point, maximum +50%. Actual critical chance still caps at 100%; no benefit from noncritical-only [Verdict Caliper].",
     "ranges": []
   },
   "master-aurora-1": {
-    "description": "Enemies carrying Aurora's unconsumed native Seal have 15% less effective Defense against allied native direct attacks. Exposure ends when the Seal is consumed or expires; no stacking stat mutation.",
+    "description": "Enemies carrying [Aurora]'s unconsumed native [Seal] have 15% less effective Defense against allied native direct attacks. Exposure ends when the [Seal] is consumed or expires; no stacking stat mutation.",
     "ranges": []
   },
   "master-aurora-2": {
-    "description": "Aurora's Last Flare adds a Judgment Seal to each surviving enemy for two enemy phases. Sealed enemies cannot critically hit, though the ordinary critical RNG draw is still consumed. Recasting refreshes the seal; does not cancel a scheduled skill.",
+    "description": "[Aurora]'s [Last Flare] adds a [Judgment Seal] to each surviving enemy for two enemy phases. Sealed enemies cannot critically hit, though the ordinary critical RNG draw is still consumed. Recasting refreshes the seal; does not cancel a scheduled skill.",
     "ranges": []
   },
   "master-aurora-3": {
-    "description": "After an enemy carrying Aurora's unconsumed native Seal removes an ally's HP with a direct hit, heal the most injured other living ally for 50% of that HP loss, capped at 10% H per enemy phase. No revival or routed-damage trigger; a special that consumes the Seal does not qualify.",
+    "description": "After an enemy carrying [Aurora]'s unconsumed native [Seal] removes an ally's HP with a direct hit, heal the most injured other living ally for 50% of that HP loss, capped at 10% of your maximum HP per enemy phase. No revival or routed-damage trigger; a special that consumes the [Seal] does not qualify.",
     "ranges": []
   },
   "master-bliss-1": {
-    "description": "Before Skill 2, automatically pay 10% H if Bliss can remain at 1 HP or more. Divide that paid HP equally as additional native healing for the other living allies, in any posture. Her ordinary posture effects remain. With no other living ally, no HP is paid.",
+    "description": "Before [Skill 2], automatically pay 10% of your maximum HP if [Bliss] can remain at 1 HP or more. Divide that paid HP equally as additional native healing for the other living allies, in any posture. Her usual posture effects still apply. With no other living ally, no HP is paid.",
     "ranges": []
   },
   "master-bliss-2": {
-    "description": "Warfeather Cut becomes two impacts against the same selected target, each at 70% of the original final direct damage. Reuse one critical result; costs, native resource spending/earning and equipment triggers resolve once for the activation's combined actual HP damage. Stop if the first hit kills; never retarget the second.",
+    "description": "[Warfeather Cut] becomes two impacts against the same selected target, each at 70% of the original final direct damage. Reuse one critical result; costs, native resource spending/earning and equipment triggers resolve once for the activation's combined actual HP damage. Stop if the first hit kills; never retarget the second.",
     "ranges": []
   },
   "master-bliss-3": {
-    "description": "Once per encounter, Bliss's Last Flare gives the lowest-Gauge other living ally one Quiet Feather. Their next legal Skill 1 costs no Gauge; consume before activation. It grants no action, missing skill, cooldown bypass or recovery bypass. Other discounts cannot turn the zero cost into a refund.",
+    "description": "Once per encounter, [Bliss]'s [Last Flare] gives the lowest-Gauge other living ally one [Quiet Feather]. Their next legal [Skill 1] costs no Gauge; consume before activation. It grants no action, missing skill, cooldown bypass or recovery bypass. Other discounts cannot turn the zero cost into a refund.",
     "ranges": []
   },
   "master-bruno-1": {
-    "description": "The first direct enemy hit against Bruno each enemy phase cannot remove more than 20% H after shield absorption. It still spends his shield normally. Later hits, Burn and routed damage are uncapped by this Master.",
+    "description": "The first direct enemy hit against [Bruno] each enemy phase cannot remove more than 20% of your maximum HP after shield absorption. It still spends his shield normally. Later hits, [Burn] and routed damage are uncapped by this Master.",
     "ranges": []
   },
   "master-bruno-2": {
-    "description": "Bruno's Last Flare direct damage uses D in place of A in both the native coefficient and the mitigation ratio, `D/(D + enemy Defense)`. Normal critical/outgoing multipliers still apply; other actions stay Attack-based.",
+    "description": "[Bruno]'s [Last Flare] direct damage uses [Bruno]'s Defense in place of his Attack, both for its damage percentage and for mitigation (his Defense divided by his Defense plus the enemy's Defense). Ordinary critical and outgoing-damage multipliers still apply; other actions stay Attack-based.",
     "ranges": []
   },
   "master-bruno-3": {
-    "description": "Each damaging Skill 1 permanently removes 15% of the target's encounter-entry Defense, capped at 30% total per enemy. In exchange, Skill 2 Cover redirects 35% rather than 50%. Reset excavation on a fresh encounter; no Weaken or stat recursion.",
+    "description": "Each damaging [Skill 1] permanently removes 15% of the target's encounter-entry Defense, capped at 30% total per enemy. In exchange, [Skill 2] [Cover] redirects 35% rather than 50%. Reset excavation on a fresh encounter; no [Weaken] or stat recursion.",
     "ranges": []
   },
   "master-disciple-1": {
-    "description": "Disciple's native Instructions expire two player rounds later. They still enhance only the recipient's next native action and retain the single ordinary Instruction limit. No generated buff or extra action.",
+    "description": "[Disciple]'s native [Instructions] expire two player rounds later. They still enhance only the recipient's next native action and retain the single ordinary [Instruction] limit. No generated buff or extra action.",
     "ranges": []
   },
   "master-disciple-2": {
-    "description": "After Last Flare, link living allies through the end of the next two player rounds. Native positive Gauge gains to a linked ally are split equally among currently living linked allies; clip full recipients without redistribution. Total offered Gauge is conserved, costs/refunds/generated income are not shared, and the link ends if Disciple falls.",
+    "description": "After [Last Flare], link living allies through the end of the next two player rounds. Native positive Gauge gains to a linked ally are split equally among currently living linked allies; clip full recipients without redistribution. Total offered Gauge is conserved, costs/refunds/generated income are not shared, and the link ends if [Disciple] falls.",
     "ranges": []
   },
   "master-disciple-3": {
-    "description": "After Strike Instruction, its explicitly selected living recipient makes one generated assist at 40% A against the first living enemy in formation order. No extra RNG, critical, Gauge, resources, action spend, Instruction consumption or recursive equipment triggers. Once per Disciple activation.",
+    "description": "After [Strike] [Instruction], its explicitly selected living recipient makes one generated assist at 40% of your Attack against the first living enemy in formation order. No extra RNG, critical, Gauge, resources, action spend, [Instruction] consumption or recursive equipment triggers. Once per [Disciple] activation.",
     "ranges": []
   },
   "master-elise-1": {
-    "description": "Elise's native critical direct hits ignore 50% enemy Defense, but their final critical multiplier is fixed at 1.5, including elemental criticals, regardless of Critical Damage modifiers. Noncritical hits retain ordinary mitigation; shields remain shield-first.",
+    "description": "[Elise]'s native critical direct hits ignore 50% enemy Defense, but their final critical multiplier is fixed at 1.5, including elemental criticals, regardless of Critical Damage modifiers. Noncritical hits retain ordinary mitigation; shields remain shield-first.",
     "ranges": []
   },
   "master-elise-2": {
-    "description": "Last Flare resolves four impacts per original target, each 30% of the original final damage. Reuse the native critical result per target; costs, recovery and Conduit/native resource triggers happen once per activation using combined HP damage. Never retarget impacts from fallen enemies.",
+    "description": "[Last Flare] resolves four impacts per original target, each 30% of the original final damage. Reuse the native critical result per target; costs, recovery and Conduit/native resource triggers happen once per activation using combined HP damage. Never retarget impacts from fallen enemies.",
     "ranges": []
   },
   "master-elise-3": {
-    "description": "Once per encounter, Elise's native direct kill clears her spent flag so she may choose one additional legal action that same player turn. Keep Gauge, readiness and recovery dates unchanged; a kill during Last Flare cannot bypass its recovery. Consume permission before clearing spent.",
+    "description": "Once per encounter, [Elise]'s native direct kill clears her spent flag so she may choose one additional legal action that same player turn. Keep Gauge, readiness and recovery dates unchanged; a kill during [Last Flare] cannot bypass its recovery. Consume permission before clearing spent.",
     "ranges": []
   },
   "master-razor-1": {
-    "description": "While defending, Razor parries the first scheduled enemy skill targeting him each enemy phase: reduce that hit's direct damage by 50%, then reflect 50% of the prevented damage to the surviving attacker, capped at 100% A. Normal Attacks do not consume the parry. Reflection is generated and cannot reflect again.",
+    "description": "While defending, [Razor] parries the first scheduled enemy skill targeting him each enemy phase: reduce that hit's direct damage by 50%, then reflect 50% of the prevented damage to the surviving attacker, capped at 100% of your Attack. [Normal Attacks] do not consume the parry. Reflection is generated and cannot reflect again.",
     "ranges": []
   },
   "master-razor-2": {
-    "description": "Before Last Flare, consume Razor's entire existing shield to add +2% direct damage per 1% H actually spent, maximum +60%. Last Flare's new native shields are offered afterward and cannot fund that same cast. No preexisting shield means no bonus.",
+    "description": "Before [Last Flare], consume [Razor]'s entire existing shield to add +2% direct damage per 1% of your maximum HP actually spent, maximum +60%. [Last Flare]'s new native shields are offered afterward and cannot fund that same cast. No preexisting shield means no bonus.",
     "ranges": []
   },
   "master-razor-3": {
-    "description": "Razor's first Skill 1 hit on each surviving enemy Silences it once per encounter: its next scheduled skill becomes Normal Attack, then Silence ends. Normal Attacks do not consume Silence.",
+    "description": "[Razor]'s first [Skill 1] hit on each surviving enemy applies [Silence] once per encounter: its next scheduled skill becomes [Normal Attack], then [Silence] ends. [Normal Attacks] do not consume [Silence].",
     "ranges": []
   },
   "master-rosetta-1": {
-    "description": "Replace the two-contributor Quarry shield payout with one 48% R shield on the lowest-HP-ratio living ally, including a non-contributor. Contributions are limited to once per turn.",
+    "description": "Replace the two-contributor [Quarry] shield payout with one 48% of the recipient’s maximum HP shield on the lowest-HP-ratio living ally, including a non-contributor. Contributions are limited to once per turn.",
     "ranges": []
   },
   "master-rosetta-2": {
-    "description": "After Skill 2 hits the Quarry, send up to two generated ricochets, one per distinct other contributor this turn, to different other living enemies in descending HP order. Each deals 25% of the primary hit's actual direct HP damage. Unused ricochets vanish.",
+    "description": "After [Skill 2] hits the [Quarry], send up to two generated ricochets, one per distinct other contributor this turn, to different other living enemies in descending HP order. Each deals 25% of the primary hit's actual direct HP damage. Unused ricochets vanish.",
     "ranges": []
   },
   "master-rosetta-3": {
-    "description": "Last Flare primes one Golden Opening on the surviving Quarry. The next other ally's native direct hit consumes it for +40% damage. One Opening per enemy; no stacking, expiry extension, or benefit to Rosetta herself.",
+    "description": "[Last Flare] primes one [Golden Opening] on the surviving [Quarry]. The next other ally's native direct hit consumes it for +40% damage. One [Golden Opening] per enemy; no stacking, expiry extension, or benefit to [Rosetta] herself.",
     "ranges": []
   },
   "master-thornia-1": {
-    "description": "Replace a trap's ordinary hostile-activation retaliation with one generated 40% A strike against every living enemy. Consume one trap charge as usual; no response to harmless activations or a fallen Thornia.",
+    "description": "Replace a trap's ordinary hostile-activation retaliation with one generated strike dealing 40% of your Attack to every living enemy. Consume one trap charge as usual; no response to harmless activations or a fallen [Thornia].",
     "ranges": []
   },
   "master-thornia-2": {
-    "description": "Skill 2 against a target with three native trap charges strikes all living enemies at its native direct coefficient, applying generated 15% Weaken for one phase to secondary survivors. Consume its ordinary selected-target trap charge once; aggregate equipment triggers once.",
+    "description": "[Skill 2] against a target with three native trap charges strikes all living enemies at its native direct coefficient, applying generated 15% [Weaken] for one phase to secondary survivors. Consume its ordinary selected-target trap charge once; aggregate equipment triggers once.",
     "ranges": []
   },
   "master-thornia-3": {
-    "description": "Gilded Thorn Guard links its living other recipients to Thornia until next player-turn start. On the first otherwise-lethal direct hit to a linked ally that phase, route up to 20% H of the would-be HP loss into Thornia's shield/HP; preserve the ally only if this removes the full lethal excess. Once total per enemy phase; Thornia can fall and does not self-resurrect.",
+    "description": "[Gilded Thorn Guard] links its living other recipients to [Thornia] until next player-turn start. On the first otherwise-lethal direct hit to a linked ally that phase, route up to 20% of your maximum HP of the would-be HP loss into [Thornia]'s shield/HP; preserve the ally only if this removes the full lethal excess. Once total per enemy phase; [Thornia] can fall and does not self-resurrect.",
     "ranges": []
   },
   "master-crinso-1": {
-    "description": "A native critical Gold Skill 1 stores its actual critical multiplier minus one, capped at +50% outgoing damage for the next Crimson Skill 2. One refresh-only imprint, consumed once on activation; no Burn or extra critical roll.",
+    "description": "A native critical [Golden Edge] stores its actual critical multiplier minus one, capped at +50% outgoing damage for the next [Crimson Rupture]. One refresh-only imprint, consumed once on activation; no [Burn] or extra critical roll.",
     "ranges": []
   },
   "master-crinso-2": {
-    "description": "Before Crimson Skill 2, consume up to 10% H of current shield. After its direct hit, deal one generated strike at 50% of shield actually spent, capped at 50% A. No paid shield means no strike; no Burn, new RNG or generated resource hooks.",
+    "description": "Before [Crimson Rupture], consume current shield worth up to 10% of your maximum HP. After its direct hit, deal one generated strike at 50% of shield actually spent, capped at 50% of your Attack. No paid shield means no strike; no [Burn], new RNG or generated resource hooks.",
     "ranges": []
   },
   "master-crinso-3": {
-    "description": "Native offensive activations alternate Gold and Crimson, starting Gold. Gold gives +30% direct damage; Crimson heals Crinso for 20% of actual direct HP damage, capped at 10% H. Last Flare gets both and resets the next activation to Gold. Defense does not advance polarity; no extra personal resource bank.",
+    "description": "Native offensive activations alternate between a Gold bonus and a Crimson bonus, starting with Gold. Gold: +30% direct damage. Crimson: heals [Crinso] for 20% of actual direct HP damage, capped at 10% of your maximum HP. [Last Flare] receives both bonuses and makes the next activation Gold. [Defense] does not advance the alternation.",
     "ranges": []
   },
   "master-nerithe-1": {
-    "description": "Nerithe's Normal Attack marks its surviving target as Charted. One other ally's next single-target native damaging skill copies a generated 40%-damage echo to each different Charted enemy, then clears all Charts. No echo to the original target; Charts neither generate Gauge nor replace her fixed Normal-only +5 passive.",
+    "description": "[Nerithe]'s [Normal Attack] applies [Charted] to its surviving target. One other ally's next single-target native damaging skill copies a generated echo dealing 40% of its damage to each different enemy affected by [Charted], then clears all [Charted]. No echo to the original target; [Charted] neither generate Gauge nor replace her fixed [Normal Attack]-only +5 passive.",
     "ranges": []
   },
   "master-nerithe-2": {
-    "description": "Fold the Sea becomes a pure team support skill: no direct damage or Weaken. It gives each living ally 15 native Gauge and 15% next-direct-hit protection. Retain its Skill 2 Gauge cost and one-action use; effects cannot exceed actual capacity or stack protection.",
+    "description": "[Fold the Sea] becomes a pure team support skill: no direct damage or [Weaken]. It gives each living ally 15 native Gauge and 15% next-direct-hit protection. Retain its [Skill 2] Gauge cost and one-action use; effects cannot exceed actual capacity or stack protection.",
     "ranges": []
   },
   "master-nerithe-3": {
-    "description": "Ocean Beyond the Map deals 50% less direct damage and imposes no next-turn recovery. Its 100 Gauge base cost, native Weaken and one-action limit remain; it does not grant another action on the cast turn.",
+    "description": "[Ocean Beyond the Map] deals 50% less direct damage and imposes no next-turn recovery. Its 100 Gauge base cost, native [Weaken] and one-action limit remain; it does not grant another action on the cast turn.",
     "ranges": []
   },
   "master-orvella-1": {
-    "description": "Foundation starts with half its usual shared durability. On creation each living ally also receives a generated plate equal to 5% H, capped at 15% R. Plates refresh without stacking, absorb as Conduit shields and grant no native shield resource.",
+    "description": "[Foundation] starts with half its usual shared durability. On creation each living ally also receives a generated plate equal to 5% of your maximum HP, capped at 15% of the recipient’s maximum HP. Plates refresh without stacking, absorb as Conduit shields and grant no native shield resource.",
     "ranges": []
   },
   "master-orvella-2": {
-    "description": "After Foundation creation, spend its durability as equal healing shares for living injured allies. Total paid/healed is the minimum of 25% of remaining durability, 5% H and eligible ally count times their smallest missing-HP amount. Debit exactly actual restoration; no injured ally means no payment.",
+    "description": "After [Foundation] creation, spend its durability as equal healing shares for living injured allies. Total paid/healed is the minimum of 25% of remaining durability, 5% of your maximum HP and eligible ally count times their smallest missing-HP amount. Debit exactly actual restoration; no injured ally means no payment.",
     "ranges": []
   },
   "master-orvella-3": {
-    "description": "Orvella gains +20% of her encounter-entry D per living ally protected by any positive shield or her active positive shared Foundation, maximum +60%. Count each ally once. Recalculate before each hit/offer without mutating entry Defense or HP.",
+    "description": "[Orvella] gains +20% of her encounter-entry D per living ally protected by any positive shield or her active positive shared [Foundation], maximum +60%. Count each ally once. Recalculate before each hit/offer without mutating entry Defense or HP.",
     "ranges": []
   },
   "master-vaelor-1": {
-    "description": "Last Chord of the Sky pays 20% of Vaelor's current HP immediately before impact, leaving at least 1 HP, for +75% direct damage. This payment is mandatory while equipped, is not hostile damage and grants no incoming-hit effects. Gauge cost and next-turn recovery remain.",
+    "description": "[Last Chord of the Sky] pays 20% of [Vaelor]'s current HP immediately before impact, leaving at least 1 HP, for +75% direct damage. This payment is mandatory while equipped, is not hostile damage and grants no incoming-hit effects. Gauge cost and next-turn recovery remain.",
     "ranges": []
   },
   "master-vaelor-2": {
-    "description": "Skill 2 cast during Rise also applies generated Weaken of 15% for one enemy phase to surviving direct-hit targets. A stronger existing Weaken is not overwritten. Tune/Crescendo and Last Flare are unchanged.",
+    "description": "[Skill 2] cast during [Rise] also applies generated [Weaken] of 15% for one enemy phase to surviving direct-hit targets. A stronger existing [Weaken] is not overwritten. [Tune]/[Crescendo] and [Last Flare] are unchanged.",
     "ranges": []
   },
   "master-vaelor-3": {
-    "description": "Once per encounter, Vaelor's Defense may clear the spent flag of the highest-Gauge other living spent ally who is not recovering. Vaelor spends his own action; the recipient still pays their next action's full costs and follows readiness/recovery. No eligible ally means the permission is retained.",
+    "description": "Once per encounter, [Vaelor]'s [Defense] may clear the spent flag of the highest-Gauge other living spent ally who is not recovering. [Vaelor] spends his own action; the recipient still pays their next action's full costs and follows readiness/recovery. No eligible ally means the permission is retained.",
     "ranges": []
   }
 };

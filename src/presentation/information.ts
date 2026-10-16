@@ -1,11 +1,12 @@
 import { escapeDialogText } from './game-dialog';
+import { bracketReferences } from './reference-text';
 
 export function information(id: string, title: string, content: string, label = 'Information', triggerContent = label): string {
   return `<button type="button" class="text-button" data-information="${id}" aria-haspopup="dialog">${triggerContent}</button>
     <dialog class="information-modal" id="${id}" aria-labelledby="${id}-heading">
       <header class="drawer-heading"><h2 id="${id}-heading">${title}</h2>
         <button type="button" class="drawer-close" data-close-information aria-label="Close ${escapeDialogText(label)}">&times;</button></header>
-      <div class="information-content">${content}</div>
+      <div class="information-content">${bracketReferences(content)}</div>
     </dialog>`;
 }
 
@@ -17,7 +18,7 @@ export function informationTopics(id: string, topics: readonly InformationTopic[
     <nav class="information-topic-list" aria-label="Topics">${topics.map(topic => `<button type="button" data-info-topic="${topic.id}"><strong>${topic.title}</strong><span>${topic.summary}</span><b aria-hidden="true">&rsaquo;</b></button>`).join('')}</nav>
     ${topics.map(topic => `<section class="information-topic" data-info-panel="${topic.id}" hidden aria-labelledby="${id}-${topic.id}-heading">
       <button type="button" class="text-button information-topic-back" data-info-back>&lsaquo; All topics</button>
-      <h3 id="${id}-${topic.id}-heading">${topic.title}</h3>${topic.content}</section>`).join('')}</div>`;
+      <h3 id="${id}-${topic.id}-heading">${topic.title}</h3>${bracketReferences(topic.content)}</section>`).join('')}</div>`;
 }
 
 function showInformationTopic(dialog: Element, topic: string | null): void {

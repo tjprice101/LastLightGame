@@ -20,6 +20,8 @@ import { archives } from '../presentation/archives';
 import { machineComponentDrop } from '../content/mechanical-components';
 import { createSession } from '../presentation/battle-view';
 
+const plain = (text?: string | null): string => (text ?? '').replace(/\[([^[\]]+)\]/g, '$1');
+
 function sequence(...values: number[]): () => number {
   let index = 0;
   return () => {
@@ -342,7 +344,7 @@ describe('machine rewards and atomic saves', () => {
     expect(markup).toContain('<dd>100 stages</dd>');
     expect(markup).toContain('<dd>10-120</dd>');
     expect(markup).toContain('Omnic 1% from stage 75');
-    expect(markup).toContain('Every Machine drops Broken Mechanical Components for Conduit upgrades: 3 at stage 1');
+    expect(plain(markup)).toContain('Every Machine drops Broken Mechanical Components for Conduit upgrades: 3 at stage 1');
     expect(markup).toContain('increasing steadily to 125 at stage 100');
     expect(markup).toContain('The final boss drops 625.');
     expect(markup).toContain('value="100" selected');

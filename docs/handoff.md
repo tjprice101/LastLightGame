@@ -1,5 +1,14 @@
 # Current state and handoff
 
+## Explicit abilities and [bracketed] references (D-333)
+
+- Rewrote all16 kits in `content/native-identities.ts` to name and define every
+  resource/state; Crinso Combo readout shows Last: Golden Edge / Crimson Rupture.
+- All Conduit/Master/Calamitic descriptions bracket referenced names and expand
+  shorthand. `bracketReferences` (presentation/reference-text.ts) wraps Information
+  dialog content and the battle rules reference; headings/buttons/labels untouched.
+- Validate: reference-text.test.ts, native-identities.test.ts, ui-copy.test.ts.
+
 ## Conduit rules only on Conduit screens (D-332)
 
 - Removed the "Equipped kit rules" list and Master reference from Character ability

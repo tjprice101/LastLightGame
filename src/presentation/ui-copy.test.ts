@@ -30,6 +30,8 @@ import { onlineStores } from './online-store-profile';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
+const plain = (text?: string | null): string => (text ?? '').replace(/\[([^[\]]+)\]/g, '$1');
+
 const textContent = (markup: string) => markup.replace(/<[^>]*>/g, ' ');
 
 describe('visible UI copy', () => {
@@ -40,7 +42,7 @@ describe('visible UI copy', () => {
       expect(text).not.toMatch(/\bauthored\b|\batomically\b|independent weighted bundle rolls|linear interpolation|intentional difficulty walls|base quantity rounds|verified final-clear receipt/i);
     }
     expect(gameplayHub(account)).toContain('The boss drops nothing else.');
-    expect(gameplayHub(account)).toContain('Every Machine drops Broken Mechanical Components');
+    expect(plain(gameplayHub(account))).toContain('Every Machine drops Broken Mechanical Components');
   });
   it('never uses affinity aliases in element filters or presentation data sources', () => {
     const account = emptyAccount();
@@ -115,7 +117,7 @@ describe('visible UI copy', () => {
     expect(upgrades).toContain('Next · +1');
     const gameplay = gameplayHub(account);
     expect(primary(gameplay)).not.toContain(machineComponentRulesText);
-    expect(gameplay).toContain(machineComponentRulesText);
+    expect(plain(gameplay)).toContain(plain(machineComponentRulesText));
     expect(primary(gameplay)).toContain('Rare 8% · Legendary 3.5% · Omnic 1% from stage 75');
     expect(primary(gameplay)).not.toContain('no battles or rewards yet');
     expect(primary(squadHub(account))).not.toContain('Save to apply changes.');

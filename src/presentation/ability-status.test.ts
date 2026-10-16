@@ -50,8 +50,8 @@ describe('typed ability status labels', () => {
         if (ability.strength.burnMultiplier !== undefined) expect(ability.description).toContain('ignores Defense');
       }
     }
-    expect(resolveFighter('tide').abilities.skill1.description).toContain('25% Weaken');
-    expect(resolveFighter('tide').abilities.skill1.description).toContain('one enemy-phase');
+    expect(resolveFighter('tide').abilities.skill1.description).toContain('25% [Weaken]');
+    expect(resolveFighter('tide').abilities.skill1.description).toContain('for the next enemy phase');
     expect(resolveFighter('tide').abilities.skill1.description.split(/\s+/).length).toBeLessThanOrEqual(65);
   });
   it('retains exact actions without generic resource or recovery instructions', () => {
