@@ -1,5 +1,64 @@
 # Current state and handoff
 
+## Calamitic Conduits (D-324)
+
+- Owner approves full implementation now: five universal Rise-only devices
+  above Omnic, chest tokens rather than direct device drops, no extra
+  Calamitic equipment cap and five upgrades more expensive than Omnic.
+  [Complete effects, prices and boundaries](calamitic-conduits.md).
+- The90 ordinary/48 Master catalog preserves all original IDs/investments.
+  New devices are World-Eater's Orrery, Causality Funeral Engine,
+  Horizon-Cleaving Godpress, Throne of Borrowed Tomorrows and Cathedral of
+  the Final Equation. Generated effects remain independent of native loops,
+  critical RNG and rewards. Defense-triggered lethal discharges now finalize
+  actual deaths/results/rewards through the ordinary shared path.
+- Every EX+1/2/3 chest gives1/3/8 guaranteed Calamitic Tokens on opening,
+  preserving its other contents and random draws. Each device costs100 tokens,
+  once account-wide. Actual saved EX clears alone unlock the shop. Before that,
+  its large locked screen contains exactly the requested quote, no products,
+  balance, requirements or hints. Market always shows the destination.
+- Inventory, Collections, acquisition/receipt text, equipment rarity sorting,
+  Upgrade filters/Max Level and battle resource readouts are wired.
+  Ordinary store controls/focus are preserved on in-place updates. Calamitic
+  detail effects use full-width stacked labels rather than squeezed columns.
+- Optional safe-integer token balances default0 read-only on legacy wallets.
+  Open/purchase operations remain one-write atomic, overflow-safe, authority-
+  validated and idempotent; existing opened chests receive no retrospective
+  awards. No account/character buffs, load writes or wallet version bump.
+- Upgrades cost10k/20k/40k/70k/100k Broken Mechanical Components,
+  total240k, twice Omnic. All exact new prices/payouts/effect values are
+  editable developer tuning, distinguished from owner-confirmed rules.
+- [Six art prompts](../Art/conduits/Calamitic%20Conduits.md) cover all five
+  machines and Calamitic Tokens; all six exports remain pending. Named neutral
+  placeholders make no missing-image requests. The original133-item matrix
+  links to the separate new registry/tests; its generator remains reproducible.
+- `npm test -- --maxWorkers=2`:4,012 tests/174 files pass. The focused
+  new/coupled UI/runtime regression run passes169 tests/10 files.
+  Runtime coverage checks every effect equipped/unequipped at all six levels,
+  exact shield splitting, debt/cap/timing, borrowed-turn recovery, generated
+  kills and universal/captured equipment with the separate four-Omnic rule.
+- `npm run build` passes TypeScript and production build.
+  `node tools\bundle_server_game.mjs` and
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json` pass.
+  `python -m unittest discover -s tools -p test_pending_art.py -v`:4 pass.
+  `node --check tools\smoke_server_game.mjs` and editor diagnostics pass.
+  Existing jsdom canvas warnings and Vite large-chunk advisory remain.
+- Isolated browser fixtures at1280/320px cover locked/unlocked shop,
+  Inventory/Upgrade and maximum-safe-integer token/component balances:
+  no horizontal/element overflow, exactly five unlocked products, zero locked
+  products and exact lock text. Final shop detail hero stays144px and effect
+  labels retain normal full-width text. No signed-in account is funded,
+  mutated or transacted for these fixtures.
+- Coordinated authority/Pages publication and disposable hosted
+  `--calamitic-economy`, `--native-calamity` and `--loot-parity` checks are
+  pending below. The new smoke covers real1/3/8 receipts, legacy balances,
+  lock/duplicate rejection,100-token spending and idempotent retries.
+- The receipt adds a required field. There is no existing wire-schema
+  negotiation, so already-open old tabs must reload before opening chests.
+  An old parser may reject a response after the server saved it; same-request
+  retries are deduplicated and refreshing restores the authoritative balance.
+  Save/battle versions are deliberately unchanged.
+
 ## Delivered native identity status icons (D-323)
 
 - Owner requests moving/wiring all27 root native-status PNGs and removing their

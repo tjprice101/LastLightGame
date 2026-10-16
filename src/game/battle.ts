@@ -33,6 +33,7 @@ import { initializeConduits, equipped, gear, value, effectiveDefense, nativeTarg
   prepareConduitAction, conduitHitModifiers, recordConduitHit, finishConduitAction, applyConduitBurn, applyConduitWeaken,
   nativeHeal, nativeShield, nativeGauge, supportEffect, conduitTurnStart, conduitIncoming, conduitBurnTick, afterConduitBurn,
   conduitDeaths, forcedConduitTarget, conduitSuppressSkill, expireNativeShields, type ConduitRuntimeState, type ConduitActivation } from './conduit-runtime';
+import { calamiticActionReason, calamiticShieldBypass, settleCalamiticDebt } from './calamitic-conduits';
 import { hasNativeIdentity, nativeAction, nativeAfterAction, nativePrimaryHit, nativeInstructionDamage, nativeCleanup,
   nativeBurnPhase, nativeEnemyCompleted, nativePhaseEnd, nativeTurnStart, type NativeKitState, type NativeDamageKind } from './native-kits';
 
@@ -400,6 +401,8 @@ export function actionUnavailable(state: BattleState, actor: Combatant, action: 
   if (action !== 'light' && action !== 'defend' && actor.kit?.unavailableActions?.includes(action)) return 'This captured form does not have this ability.';
   if (actor.hp <= 0) return 'This character is defeated.';
   if (actor.spent) return 'This character has already acted this turn.';
+  const calamiticReason = calamiticActionReason(state, actor, action);
+  if (calamiticReason) return calamiticReason;
   if (conduitActionBlocked(actor, state)) return 'This character cannot take another action this turn.';
   if (actor.recoverThrough >= state.round && !(action === 'light' && recoveryNormal(actor))) return 'Recovering this turn after Last Flare.';
   if (action === 'ultimate' && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
@@ -419,11 +422,12 @@ function event(events: BattleEvent[], kind: BattleEvent['kind'], source: Combata
     ...(kind === 'status' || kind === 'damage' ? { debuffs: debuffSnapshot(target) } : {}) });
 }
 
-function hurt(target: Combatant, amount: number, source: Combatant, events: BattleEvent[], critical = false, periodic = false, conduitReduction = 0, elementalCritical = false): void {
+function hurt(target: Combatant, amount: number, source: Combatant, events: BattleEvent[], critical = false, periodic = false, conduitReduction = 0, elementalCritical = false, shieldBypass = 0): void {
   if (conduitReduction > 0) amount = Math.max(1, Math.round(amount * (1 - conduitReduction)));
   if (target.defending) amount = Math.max(1, Math.round(amount * (1 - Math.min(.5,
     defenseMode.damageReduction))));
-  const absorbed = Math.min(target.shield, amount);
+  const bypassed = Math.floor(amount * shieldBypass);
+  const absorbed = Math.min(target.shield, amount - bypassed);
   target.shield -= absorbed;
   const loss = Math.min(target.hp, amount - absorbed);
   target.hp -= loss;
@@ -610,6 +614,10 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
     event(events, 'status', actor, actor, defenseReduction * 100, `${actor.name} enters ${name}: incoming ${defenseReduction > defenseMode.damageReduction ? 'direct ' : ''}damage reduced by ${formatStat(defenseReduction * 100)}% until the next player turn.`);
     finishConduitAction(state, actor, activation, events);
     nativeAfterAction(state, actor, action, priorInstruction, events);
+    conduitDeaths(state, previous, events);
+    nativeCleanup(state);
+    checkOutcome(state);
+    awardDefeats(previous, state, events);
     return { state, events };
   }
   events.push({ kind: 'attack', source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action, abilityName: name });
@@ -639,7 +647,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
         let hpDamage = 0;
         for (let impact = 0; impact < activation.impacts && target.hp > 0; impact++) {
           const portion = Math.floor(offered / activation.impacts) + (impact === activation.impacts - 1 ? offered % activation.impacts : 0);
-          hurt(target, portion, actor, events, critical, false, 0, elemental);
+          hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor));
           events[events.length - 1].origin = 'native';
           hpDamage += events[events.length - 1].amount;
         }
@@ -689,7 +697,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
       let hpDamage = 0;
       for (let impact = 0; impact < activation.impacts && target.hp > 0; impact++) {
         const portion = Math.floor(offered / activation.impacts) + (impact === activation.impacts - 1 ? offered % activation.impacts : 0);
-        hurt(target, portion, actor, events, critical, false, 0, elemental);
+        hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor));
         events[events.length - 1].origin = 'native';
         hpDamage += events[events.length - 1].amount;
       }
@@ -769,6 +777,7 @@ export function endTurn(previous: BattleState): BattleResult {
   if (previous.phase !== 'player') throw new Error('There is no active player turn.');
   const state = structuredClone(previous);
   const events: BattleEvent[] = [];
+  settleCalamiticDebt(state, events);
   for (const enemy of state.enemies) {
     if (enemy.hp <= 0) continue;
     const nativeBurnOwner = enemy.burn.origin !== 'conduit' && state.allies.find(unit => unit.id === enemy.burn.sourceId &&

@@ -25,6 +25,7 @@ import { canonicalElement, isLegacyElement } from '../content/element-migration'
 import { storyEncounter, storyCreature, storyRules, storyBossBonus, storyMaterialLoot } from '../content/story';
 import { bossLootMultiplier, bossLootRange } from '../content/final-boss-loot';
 import { calamityChest, calamityChestId, calamityEncounter, isCalamityActivityId, isCalamityTier, parseCalamityChestId, rollCalamityChest, type CalamityActivityId } from '../content/calamity';
+import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCalamiticConduitId } from '../content/calamitic-conduits';
 
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
@@ -41,6 +42,7 @@ export interface Account {
   conduitEquipment?: ConduitLoadouts;
   conduitUpgrades?: ConduitUpgrades;
   mechanicalComponents?: number;
+  calamiticTokens?: number;
   masterChests?: number;
   calamityChests?: Record<string, number>;
   calamityClears?: Partial<Record<CalamityActivityId, number>>;
@@ -88,6 +90,10 @@ export function validateAccount(value: unknown): Account {
   const account = emptyAccount();
   account.fractalis = value.fractalis;
   account.lycalis = value.lycalis;
+  if (value.calamiticTokens !== undefined) {
+    if (!count(value.calamiticTokens)) throw new Error('Invalid saved Calamitic Token balance.');
+    account.calamiticTokens = value.calamiticTokens;
+  }
   if (value.calamityChests !== undefined) {
     if (!record(value.calamityChests)) throw new Error('Invalid saved Calamity chest inventory.');
     account.calamityChests = {};
@@ -428,6 +434,15 @@ export function purchaseConduit(storage: ProfileStorage, id: ConduitId): Account
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before visiting the Conduit Store.');
   if (!isConduitId(id)) throw new Error('Unknown Conduit.');
   const conduit = getConduit(id);
+  if (isCalamiticConduitId(id)) {
+    const account = loadAccount(storage);
+    if (!calamiticStoreUnlocked(account)) throw new Error(calamiticLockMessage);
+    if ((account.conduits?.[id] ?? 0) > 0) throw new Error('This Calamitic Conduit is already owned.');
+    if ((account.calamiticTokens ?? 0) < calamiticTokenPrice) throw new Error(`Not enough Calamitic Tokens. ${conduit.name} costs ${calamiticTokenPrice}.`);
+    account.calamiticTokens = (account.calamiticTokens ?? 0) - calamiticTokenPrice;
+    account.conduits = { ...account.conduits, [id]: 1 };
+    return saveAccount(storage, account);
+  }
   if (conduit.price === null) throw new Error('This Conduit is earned from drops, not sold in the Store.');
   const account = loadAccount(storage);
   if (account.fractalis < conduit.price) throw new Error(`Not enough Prismatica. ${conduit.name} costs ${conduit.price}.`);
@@ -520,6 +535,7 @@ export function openCalamityChest(storage: ProfileStorage, id: string, expectedC
     account.conduits = { ...account.conduits, [conduit]: add(account.conduits?.[conduit] ?? 0, amount) };
   }
   account.mechanicalComponents = add(account.mechanicalComponents ?? 0, reward.mechanicalComponents);
+  account.calamiticTokens = add(account.calamiticTokens ?? 0, reward.calamiticTokens);
   account.masterChests = add(account.masterChests ?? 0, reward.masterChests);
   account.calamityChests = { ...account.calamityChests, [id]: available - 1 };
   account.calamitySeed = seed;
@@ -712,6 +728,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     }
   }
   for (const reward of result.events.filter((event) => event.kind === 'reward')) {
+    if ('calamiticTokens' in reward) throw new Error('Calamitic Tokens only come from opening Calamity chests.');
     const receipt = `${runId}:${reward.source}`;
     if (account.receipts.includes(receipt)) continue;
     const enemy = result.state.enemies.find((unit) => unit.id === reward.source);

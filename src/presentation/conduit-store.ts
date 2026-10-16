@@ -7,6 +7,7 @@ import { information } from './information';
 import { conduitUpgradeMeter } from './conduit-upgrade-meter';
 import { isBannerConduitEligible } from '../content/machines';
 import { readableEffect } from './effect-copy';
+import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCalamiticConduitId } from '../content/calamitic-conduits';
 
 export function conduitDetails(id: ConduitId, level = 0, revealArt = true): string {
   const conduit = getConduit(id);
@@ -14,7 +15,7 @@ export function conduitDetails(id: ConduitId, level = 0, revealArt = true): stri
     <dl><dt>Current effect (+${level})</dt><dd>${readableEffect(conduitEffect(conduit, level))}</dd>
     <dt>At +5</dt><dd>${readableEffect(conduitEffect(conduit, 5))}</dd></dl>
     <p>${conduit.lore}</p><p>${conduit.power}</p>
-    <p>${conduit.price !== null ? `${conduit.price.toLocaleString('en-US')} Prismatica in the Conduit Store` : 'Awaken the Machines drop'}${isBannerConduitEligible(id) ? ' · Eligible for the 0.5% Legendary bonus tier on successful banner draws' : ''}</p>`;
+    <p>${isCalamiticConduitId(id) ? `${calamiticTokenPrice} Calamitic Tokens in Rise's Conduit Store · Universal` : conduit.price !== null ? `${conduit.price.toLocaleString('en-US')} Prismatica in the Conduit Store` : 'Awaken the Machines drop'}${isBannerConduitEligible(id) ? ' · Eligible for the 0.5% Legendary bonus tier on successful banner draws' : ''}</p>`;
 }
 
 export function conduitIcon(id: ConduitId, level = 0): string {
@@ -48,14 +49,21 @@ export function conduitInventory(account: Account | null): string {
     </section>`;
 }
 export function conduitStore(account: Account | null, selected?: string, rarity = ''): string {
-  const catalog = conduits.filter(entry => entry.price !== null && (!rarity || entry.rarity === rarity));
+  const calamitic = rarity === 'Calamitic';
+  const navigation = `<nav class="ref-market-tabs"><button data-page="stores">Material Exchange</button><button data-page="stores" data-market-cosmetics>Cosmetic Store</button><button data-store-rarity="" ${calamitic ? '' : 'aria-current="page"'}>Conduit Store</button><button data-store-rarity="Calamitic" ${calamitic ? 'aria-current="page"' : ''}>Calamitic Conduits</button><button data-page="conduit-upgrade">Upgrade &rarr;</button></nav>`;
+  if (calamitic && !calamiticStoreUnlocked(account)) return `<section class="conduit-store ref-screen ref-conduit-store" data-store-mode="locked">${navigation}<div class="calamitic-store-lock" role="region" aria-label="Calamitic Conduits locked"><span class="calamitic-lock-symbol" aria-hidden="true"></span><p>${calamiticLockMessage}</p></div></section>`;
+  const catalog = conduits.filter(entry => calamitic ? entry.rarity === 'Calamitic' : entry.price !== null && (!rarity || entry.rarity === rarity));
   const choice = catalog.find(entry => entry.id === selected) ?? catalog[0];
-  return `<section class="conduit-store ref-screen ref-conduit-store"><nav class="ref-market-tabs"><button data-page="stores">Material Exchange</button><button data-page="stores" data-market-cosmetics>Cosmetic Store</button><button aria-current="page">Conduit Store</button><button data-page="conduit-upgrade">Upgrade →</button></nav>
-    <aside class="ref-panel"><h3>Rarity</h3><nav class="ref-rarity-filter">${['', ...new Set(conduits.filter(entry => entry.price !== null).map(entry => entry.rarity))].map(value => `<button data-store-rarity="${value}" aria-pressed="${value === rarity}">${value || 'All'}<small>${conduits.filter(entry => entry.price !== null && (!value || entry.rarity === value)).length}</small></button>`).join('')}</nav></aside>
-    <section class="ref-panel ref-store-catalog"><header class="ref-panel-heading">Recovered ancient mechanisms · ${catalog.length}</header><div class="ref-scroll"><div class="ref-product-grid">${catalog.map(conduit => `<button class="ref-product" data-store-conduit="${conduit.id}" aria-pressed="${conduit.id === choice?.id}">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}<b>${conduit.name}</b><small>${conduit.rarity}</small><small>${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</small><span class="ref-chip">${account?.conduits?.[conduit.id] ? `Owned ${account.conduits[conduit.id]}` : `${conduit.price} Prismatica`}</span></button>`).join('')}</div></div></section>
+  const cost = calamitic ? calamiticTokenPrice : choice?.price;
+  const currency = calamitic ? 'Calamitic Tokens' : 'Prismatica';
+  const balance = calamitic ? account?.calamiticTokens ?? 0 : account?.fractalis ?? 0;
+  const owned = !!choice && (account?.conduits?.[choice.id] ?? 0) > 0;
+  return `<section class="conduit-store ref-screen ref-conduit-store" data-store-mode="${calamitic ? 'calamitic' : 'ordinary'}">${navigation}
+    <aside class="ref-panel"><h3>${calamitic ? 'Calamitic' : 'Rarity'}</h3>${calamitic ? `<p>Universal &middot; Above Omnic</p><p>${currencyIcon('calamitic-tokens')}<strong>${balance.toLocaleString('en-US')}</strong> Calamitic Tokens</p><p>One copy unlocks each creation for your whole collection.</p>` : `<nav class="ref-rarity-filter">${['', ...new Set(conduits.filter(entry => entry.price !== null).map(entry => entry.rarity))].map(value => `<button data-store-rarity="${value}" aria-pressed="${value === rarity}">${value || 'All'}<small>${conduits.filter(entry => entry.price !== null && (!value || entry.rarity === value)).length}</small></button>`).join('')}</nav>`}</aside>
+    <section class="ref-panel ref-store-catalog"><header class="ref-panel-heading">${calamitic ? "Rise's prized creations" : 'Recovered ancient mechanisms'} &middot; ${catalog.length}</header><div class="ref-scroll"><div class="ref-product-grid">${catalog.map(conduit => `<button class="ref-product" data-store-conduit="${conduit.id}" aria-pressed="${conduit.id === choice?.id}">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}<b>${conduit.name}</b><small>${conduit.rarity}${calamitic ? ' &middot; Universal' : ''}</small><small>${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</small><span class="ref-chip">${account?.conduits?.[conduit.id] ? `Owned ${account.conduits[conduit.id]}` : `${calamitic ? calamiticTokenPrice : conduit.price} ${currency}`}</span></button>`).join('')}</div></div></section>
     <aside class="ref-panel ref-store-detail">${choice ? `<header class="ref-panel-heading">Details</header><div class="ref-store-hero">${conduitIcon(choice.id, account?.conduitUpgrades?.[choice.id])}</div><h2>${choice.name}</h2>${conduitRarity(choice.id)}<p>${choice.lore}</p><dl class="ref-detail-facts"><div><dt>Current effect</dt><dd>${conduitEffect(choice, account?.conduitUpgrades?.[choice.id])}</dd></div><div><dt>At +5</dt><dd>${conduitEffect(choice, 5)}</dd></div><div><dt>Owned</dt><dd>${account?.conduits?.[choice.id] ?? 0}</dd></div></dl>
-      <footer><p class="conduit-price">${currencyIcon('fractalis')}<strong>${choice.price} Prismatica</strong></p><button class="primary-button" data-buy-conduit="${choice.id}" ${!account || choice.price === null || account.fractalis < choice.price ? 'disabled' : ''}>Buy one · ${choice.price}</button>${account && choice.price !== null && account.fractalis < choice.price ? '<p class="quiet">Not enough Prismatica.</p>' : ''}</footer>` : '<p>No Conduits match this filter.</p>'}
-    ${information('store-information', 'Conduit purchases', '<p>Purchase with Prismatica. One owned copy unlocks a Conduit for all owned characters. Each character can equip each name once. Additional copies do not increase its effect.</p><p>Equip Conduits in Character. Purchases require confirmation.</p>')}
+      <footer><p class="conduit-price">${currencyIcon(calamitic ? 'calamitic-tokens' : 'fractalis')}<strong>${cost} ${currency}</strong></p><button class="primary-button" data-buy-conduit="${choice.id}" ${!account || cost === null || cost === undefined || balance < cost || (calamitic && owned) ? 'disabled' : ''}>${calamitic && owned ? 'Owned' : `Buy one &middot; ${cost}`}</button>${account && cost != null && balance < cost && !(calamitic && owned) ? `<p class="quiet">Not enough ${currency}.</p>` : ''}</footer>` : '<p>No Conduits match this filter.</p>'}
+    ${information('store-information', 'Conduit purchases', `<p>Purchase with ${currency}. One owned copy unlocks a Conduit for all owned characters. Each character can equip each name once. ${calamitic ? 'Calamitic Conduits work on every element, including captured Elemental-Devourers. They use ordinary slots without an extra rarity limit. Each creation can be purchased once.' : 'Additional copies do not increase its effect.'}</p><p>Equip Conduits in Character. Purchases require confirmation.</p>`)}
     ${!account ? '<p role="alert">Store unavailable. Resolve the save error before purchasing.</p>' : ''}
     <p id="conduit-purchase-result" role="status"></p></aside></section>`;
 }
@@ -66,6 +74,16 @@ export function updateConduitStore(host: HTMLElement, account: Account | null, s
   const template = document.createElement('template');
   template.innerHTML = conduitStore(account, selected, rarity);
   const next = template.content;
+  const nextStore = next.querySelector<HTMLElement>('.ref-conduit-store');
+  if (!nextStore) throw new Error('Conduit Store replacement is missing.');
+  if (current.dataset.storeMode !== nextStore.dataset.storeMode) {
+    current.replaceWith(nextStore);
+    return;
+  }
+  if (current.dataset.storeMode === 'locked') return;
+  const sidebar = current.querySelector(':scope > aside.ref-panel');
+  const nextSidebar = nextStore.querySelector(':scope > aside.ref-panel');
+  if (current.dataset.storeMode === 'calamitic' && sidebar && nextSidebar) sidebar.replaceWith(nextSidebar);
   const catalog = current.querySelector<HTMLElement>('.ref-store-catalog');
   const nextCatalog = next.querySelector<HTMLElement>('.ref-store-catalog');
   const detail = current.querySelector<HTMLElement>('.ref-store-detail');

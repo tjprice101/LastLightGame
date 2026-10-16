@@ -1,5 +1,18 @@
 # Menus and inventory
 
+## Sealed Calamitic shop (D-324)
+
+Market and Conduit Store always expose Calamitic Conduits. Before any saved
+EX clear, a large locked panel shows exactly "Rise deems you UNWORTHY of her
+most prized creations." No products, balance, unlock hint or Information
+dialog appear. Unowned Collections entries remain hidden until unlocked.
+The unlocked view offers five universal100-token devices, current/+5 effects,
+Rise-only lore, exact balances and disabled Owned buttons. Inventory includes
+Calamitic Tokens; holdings, equipment and Upgrade include the new rarity.
+Same-route shop switching preserves caller history without account writes.
+Neutral pending-art placeholders never request unprovided images.
+[Full contract and checks](calamitic-conduits.md).
+
 ## Visible enemy strength (D-322)
 
 Activity entries show the selected enemy's level, rank and actual HP, Attack

@@ -7,6 +7,8 @@ import { debuffSnapshot } from './battle-debuffs';
 import { pilotAuthoredShieldAbsorbed, pilotEffectiveHeal } from './kit-pilots';
 import { hasNativeIdentity, nativeAbsorbedHit, nativeDirectHpLoss, nativeIncomingMultiplier,
   nativeRouteDamage, nativeSupportMultiplier } from './native-kits';
+import { prepareCalamiticAction, afterCalamiticAction, calamiticSiegeBonus, deferCalamiticDamage,
+  bankCalamiticDamage } from './calamitic-conduits';
 
 export const conduitRulesVersion = 4;
 export interface ConduitShieldLayer {
@@ -235,6 +237,7 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
   if (action === 'defend' && equipped(actor, 'solace-anchor') && !n.solaceUsed && paid === 10) {
     n.solaceUsed = 1; n.solaceRound = state.round; ctx.freeDefense = true;
   } else n.actions++;
+  if (prepareCalamiticAction(state, actor, action)) ctx.freeDefense = true;
   if (action === 'skill1') delete n.quietFeather;
   if (action === 'skill1' || action === 'skill2') delete n.tailwind;
   if (action === 'defend') {
@@ -303,7 +306,7 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
   return ctx;
 }
 export function conduitHitModifiers(state: BattleState, actor: Combatant, target: Combatant, ctx: ConduitActivation, critical: boolean): { bonus: number; pierce: number; attack: number; critMultiplier?: number } {
-  let bonus = ctx.bonus;
+  let bonus = ctx.bonus + calamiticSiegeBonus(state, actor, target);
   let pierce = 0;
   const action = ctx.action;
   if (target.hp <= target.stats.health * .25 && equipped(actor, 'execution-orrery')) bonus += value(state, actor, 'execution-orrery', .5, 1);
@@ -526,6 +529,7 @@ export function finishConduitAction(state: BattleState, owner: Combatant, ctx: C
       const ally = alive(state).filter(ally => ally.id !== owner.id && ally.spent && ally.recoverThrough < state.round && !conduitActionBlocked(ally, state)).sort((a, b) => b.shatter - a.shatter)[0];
       if (ally) { n.donationUsed = 1; ally.spent = false; emit(events, 'status', owner, ally, 1, `${owner.name} donates an action to ${ally.name}.`); }
     }
+    afterCalamiticAction(state, owner, ctx.action, events);
     return;
   }
   for (const id of owner.conduits ?? []) {
@@ -709,6 +713,7 @@ export function finishConduitAction(state: BattleState, owner: Combatant, ctx: C
       for (const enemy of state.enemies) if (gear(enemy).owners.chart === nerithe.id) delete gear(enemy).owners.chart;
     }
   }
+  afterCalamiticAction(state, owner, ctx.action, events);
 }
 function revive(state: BattleState, owner: Combatant, target: Combatant, fraction: number, events: BattleEvent[]): void {
   target.hp = Math.max(1, Math.round(target.stats.health * fraction)); target.shatter = 0; target.spent = true;
@@ -909,6 +914,7 @@ export function conduitIncoming(state: BattleState, enemy: Combatant, target: Co
     loss -= routed; routedDamage(state, enemy, guardian, routed, events);
   }
   if (n.stasisProtectedRound === state.round) loss = 0;
+  loss = deferCalamiticDamage(state, target, loss, events);
   loss = Math.min(target.hp, rescue(state, target, loss, events, true));
   const fullyAbsorbedNative = loss === 0 && absorbed.absorbed >= postMitigation
     ? new Map([...absorbed.native].filter(([, amount]) => amount >= postMitigation))
@@ -916,6 +922,7 @@ export function conduitIncoming(state: BattleState, enemy: Combatant, target: Co
   nativeAbsorbedHit(state, target, fullyAbsorbedNative, loss, events);
   nativeGauge(state, target, shatterGauge.incomingHit, events);
   target.hp -= loss;
+  bankCalamiticDamage(state, loss);
   emit(events, 'damage', enemy, target, loss, `${target.name}: ${Math.round(loss)} damage${critical ? ' (critical)' : ''}${absorbed.absorbed ? `, ${Math.round(absorbed.absorbed)} shield absorbed` : ''}.`, true);
   events[events.length - 1].shieldAbsorbed = absorbed.absorbed;
   events[events.length - 1].critical = critical;

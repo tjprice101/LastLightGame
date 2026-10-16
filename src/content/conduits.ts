@@ -2,6 +2,7 @@ import { type ElementId } from './activities';
 import { kitConduitDesigns, convertedKitConduitIds } from './kit-conduits';
 import { conduitOrigin } from './world-lore';
 import { redesignEffect } from './conduit-redesign';
+import { calamiticConduits, calamiticEffect, isCalamiticConduitId } from './calamitic-conduits';
 
 export interface ConduitBuff {
  stat: 'health' | 'damage' | 'defense' | 'crit' | 'critMultiplier' | 'elementalDamage' | 'shatterCapacity';
@@ -116,7 +117,10 @@ export const conduits = ([
   ...omnicConduits.slice(10).map((entry) => ({ ...entry, rarity: 'Omnic' as const, price: null, power: 'Elemental Light', art: entry.id,
     lore: 'A prismatic elemental masterpiece restored from the mechanisms left behind when Let and Rise\'s collaboration ended.' })),
   ...kitConduitDesigns.map((entry) => ({ ...entry, power: 'Elemental Light', art: entry.id })),
-] as const).map(entry => ({ ...entry, mechanic: null, lore: `${conduitOrigin} ${entry.lore}` }));
+  ...calamiticConduits.map(entry => ({ ...entry, rarity: 'Calamitic' as const, price: null, power: "Rise's annihilation machinery",
+    art: null, element: null, mechanic: null, buffs: [] as readonly ConduitBuff[], effect: calamiticEffect(entry.id) })),
+] as const).map(entry => ({ ...entry, mechanic: null,
+  lore: isCalamiticConduitId(entry.id) ? entry.lore : `${conduitOrigin} ${entry.lore}` }));
 
 export type Conduit = (typeof conduits)[number];
 export type ConduitId = Conduit['id'];
@@ -125,7 +129,7 @@ export type ConduitLoadouts = Partial<Record<string, ConduitSlots>>;
 export type ConduitUpgrades = Partial<Record<ConduitId, number>>;
 export const conduitUpgradeCap = 5;
 export const conduitUpgradeCosts = [25, 50, 100, 175, 250] as const;
-export const conduitUpgradeRarityMultipliers = { Common: 1, Rare: 2, Legendary: 4, Omnic: 200 } as const satisfies Record<Conduit['rarity'], number>;
+export const conduitUpgradeRarityMultipliers = { Common: 1, Rare: 2, Legendary: 4, Omnic: 200, Calamitic: 400 } as const satisfies Record<Conduit['rarity'], number>;
 export function validateConduitUpgradeLevel(value: unknown): number {
   if (typeof value !== 'number' || !Number.isInteger(value) || value < 0 || value > conduitUpgradeCap) {
     throw new Error('Conduit upgrade level must be an integer from 0 to 5.');
@@ -185,10 +189,10 @@ export function conduitBuffs(conduit: Conduit, level = 0): readonly ConduitBuff[
 }
 export function conduitEffect(conduit: Conduit, level = 0): string {
   validateConduitUpgradeLevel(level);
-  return redesignEffect(conduit.id, level);
+  return isCalamiticConduitId(conduit.id) ? calamiticEffect(conduit.id, level) : redesignEffect(conduit.id, level);
 }
 export function conduitColor(conduit: Conduit): string {
-  return conduit.rarity === 'Common' ? '#c39874' : conduit.rarity === 'Rare' ? '#c7cbd1' :
+  return conduit.rarity === 'Calamitic' ? '#ff1744' : conduit.rarity === 'Common' ? '#c39874' : conduit.rarity === 'Rare' ? '#c7cbd1' :
     conduit.rarity === 'Legendary' ? '#f1f0e9' : '#ded0ff';
 }
 export function conduitEquipReason(conduit: Conduit, element: ElementId, slots: ConduitSlots, slot: number): string | null {

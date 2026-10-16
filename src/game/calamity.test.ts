@@ -64,11 +64,12 @@ describe('isolated Calamity definitions and rewards', () => {
     let calls = 0;
     const reward = rollCalamityChest(activity, tier, () => { calls++; return 0; });
     expect(Object.keys(reward).sort()).toEqual([
-      'conduits', 'fractalis', 'id', 'lycalis', 'masterChests', 'materials', 'mechanicalComponents', 'name',
+      'calamiticTokens', 'conduits', 'fractalis', 'id', 'lycalis', 'masterChests', 'materials', 'mechanicalComponents', 'name',
     ]);
     const chest = calamityChest(activity, tier);
     expect(calls).toBe(chest.bundles * 2);
     expect(reward.masterChests).toBe(tier === 3 ? 2 : 0);
+    expect(reward.calamiticTokens).toBe([1, 3, 8][tier - 1]);
     expect(reward.fractalis).toBe(chest.fractalis + (activity === 'treasury' ? chest.bundles * 25_000 : 0));
     expect(reward.lycalis).toBe(chest.lycalis + (activity === 'sanctuary' ? chest.bundles * 5 : 0));
     expect(parseCalamityChestId(chest.id)).toEqual({ activity, tier });

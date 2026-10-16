@@ -464,9 +464,9 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
   expect(state.seed).toBe(1729);
 }
 
-describe.each([0, 1, 2, 3, 4, 5])('every ordinary Conduit at upgrade +%i', level => {
-  it.each(conduits)('$id executes its exact replacement, with no old stat bundle', entry => exercise(entry.id, level, true));
-  it.each(conduits)('$id cannot run without the named equipment', entry => exercise(entry.id, level, false));
+describe.each([0, 1, 2, 3, 4, 5])('every pre-Calamitic ordinary Conduit at upgrade +%i', level => {
+  it.each(conduits.filter(entry => entry.rarity !== 'Calamitic'))('$id executes its exact replacement, with no old stat bundle', entry => exercise(entry.id, level, true));
+  it.each(conduits.filter(entry => entry.rarity !== 'Calamitic'))('$id cannot run without the named equipment', entry => exercise(entry.id, level, false));
 });
 
 function exerciseMaster(id: MasterConduitId, enabled: boolean): void {

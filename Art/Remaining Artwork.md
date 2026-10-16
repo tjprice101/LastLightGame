@@ -6,7 +6,8 @@
 | --- | ---: | --- |
 | [Calamity](creatures/Calamity.md) |0|All18 images installed, including The Last Scarlet Bloom|
 | [Native identity symbols](ui/Native%20Identity%20Status%20Icons.md) |0|All27 delivered symbols are archived, cleaned and installed (D-323)|
-| **Current queue** |**0**|Both requested production packs are installed; prompts remain generation references|
+| [Calamitic Conduits](conduits/Calamitic%20Conduits.md) |6|Five Calamitic machine icons and one Calamitic Tokens icon; prompt-only, not installed|
+| **Current queue** |**6**|Generate the six pending Calamitic images; all other listed production packs are installed|
 
 The owner explicitly chooses **three chest images total**, shared by all
 activities according to Slayer/Master/Omnipotent tier, and **three arena images
@@ -34,6 +35,9 @@ A2026-10-15 catalog/filesystem check found:
 - Cosmic Grand Master Chest and Astral Reserve artwork already exist.
 - All48 current elemental, specialty and Rosethorn material definitions resolve
   to installed PNGs, including the items used in Calamity chest loot.
+- The five new Calamitic Conduit icons and shared Calamitic Tokens icon are
+  prompt-only in [Calamitic Conduits](conduits/Calamitic%20Conduits.md); none
+  has been generated, installed or assigned an image URL.
 - All163 catalog creature identities have installed referenced PNGs after
   D-318 intake, including all twelve Calamity bosses.
 - All three shared Calamity tier chest icons and all three arenas are installed.
@@ -76,7 +80,9 @@ Boss discovery, field and cut-ins share each reviewed boss. Archived originals
 remain intact; verified duplicate root copies were removed at the owner's
 request. No account, reward or combat-rule changes are part of intake.
 
-Reproduce both prompt packs:
+The existing generator and tests cover the installed Calamity and Native status
+prompt packs; they do not generate or install the six new Calamitic images.
+Reproduce those existing packs:
 `python tools\build_pending_art.py`.
 Validate:
 `python -m unittest discover -s tools -p test_pending_art.py -v`.

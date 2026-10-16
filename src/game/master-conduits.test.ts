@@ -45,7 +45,7 @@ describe('character Masters and chest contracts', () => {
     expect(new Set(masterConduits.map(entry => entry.name)).size).toBe(48);
     for (const character of starters) expect(masterConduits.filter(entry => entry.character === character.id)).toHaveLength(3);
     expect(masterConduits.every(entry => entry.rarity === 'Omnic' && entry.art === `master-conduits/${entry.id}.png`)).toBe(true);
-    expect(conduits).toHaveLength(85);
+    expect(conduits).toHaveLength(90);
   });
   it('gives every Master a distinct complete effect within each character', () => {
     expect(new Set(masterConduits.map(entry => entry.effect)).size).toBe(48);

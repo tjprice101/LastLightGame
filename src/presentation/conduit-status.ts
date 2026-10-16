@@ -13,6 +13,11 @@ export function conduitStatuses(snapshot: ReturnType<typeof conduitStatusSnapsho
   const labels: { id: string; text: string }[] = [];
   const add = (id: string, text: string): void => { labels.push({ id, text }); };
   const owner = (id: string) => owners.find(unit => unit.id === id && unit.hp > 0);
+  if (n.calamiticOrrery) add('calamitic-orrery', `World-Eater reserve: ${formatStat(n.calamiticOrrery)} force · Defense releases it.`);
+  if (n.calamiticDebt) add('calamitic-debt', `Funeral debt: ${formatStat(n.calamiticDebt)} HP · paid before enemy phase ${n.calamiticDebtDue}.`);
+  if (n.calamiticThroneArmed === round) add('calamitic-throne', 'Borrowed tomorrow: one Normal Attack or ordinary skill available; using it costs next turn.');
+  if (n.calamiticThroneSkip >= round) add('calamitic-throne-skip', `Throne debt: cannot act on player turn ${n.calamiticThroneSkip}.`);
+  if (n.calamiticEquation) add('calamitic-equation', `Final Equation: ${n.calamiticEquation.toString(2).replace(/0/g, '').length} / 3 different actions.`);
   if (n.windveil) add('windveil', 'Windveil: avoids the next enemy Normal Attack.');
   if (n.criticalSeal) add('critical-seal', 'Critical Seal: the next enemy critical hit loses its critical multiplier.');
   if (n.rootbind) add('rootbind', 'Rootbind: next scheduled enemy skill becomes a Normal Attack.');

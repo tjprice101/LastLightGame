@@ -128,10 +128,11 @@ function validCalamityOpening(value: unknown): boolean {
     const chest = calamityChest(activity, tier);
     const reward = value;
     const rows = calamityLootTable(activity);
-    const fields = ['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'masterChests'];
+    const fields = ['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests'];
     if (Object.keys(reward).length !== fields.length || Object.keys(reward).some(key => !fields.includes(key)) ||
-      !['fractalis', 'lycalis', 'mechanicalComponents', 'masterChests'].every(key => safeCount(reward[key])) ||
+      !['fractalis', 'lycalis', 'mechanicalComponents', 'calamiticTokens', 'masterChests'].every(key => safeCount(reward[key])) ||
       reward.name !== chest.name ||
+      reward.calamiticTokens !== chest.calamiticTokens ||
       reward.masterChests !== chest.masterChests || !object(reward.materials) || !object(reward.conduits)) return false;
     for (const [field, kind, base] of [['fractalis', 'fractalis', chest.fractalis], ['lycalis', 'lycalis', chest.lycalis], ['mechanicalComponents', 'components', 0]] as const) {
       const maximum = Math.max(0, ...rows.filter(row => row.kind === kind).map(row => row.max)) * chest.bundles;
@@ -201,12 +202,13 @@ function battleEvents(value: unknown): boolean {
     ['attack', 'damage', 'heal', 'shield', 'status', 'turn', 'reward'].includes(String(event.kind)) &&
     typeof event.source === 'string' && typeof event.target === 'string' &&
     typeof event.amount === 'number' && Number.isFinite(event.amount) && typeof event.message === 'string' &&
+    !('calamiticTokens' in event) &&
     (event.calamityChest === undefined || validCalamityRewardEvent(event)));
 }
 function validCalamityRewardEvent(event: Record<string, unknown>): boolean {
   try {
     if (event.kind !== 'reward' || event.amount !== 0 || typeof event.calamityChest !== 'string' ||
-      ['capture', 'recruitment', 'materials', 'conduits', 'lycalis', 'mechanicalComponents', 'masterChests'].some(key => key in event)) return false;
+      ['capture', 'recruitment', 'materials', 'conduits', 'lycalis', 'mechanicalComponents', 'masterChests', 'calamiticTokens'].some(key => key in event)) return false;
     parseCalamityChestId(event.calamityChest);
     return true;
   } catch { return false; }

@@ -12,6 +12,7 @@ import { capturedRating } from './owned-companion';
 import { characterRating } from './character-rating';
 import { characterRole } from './character-role';
 import { conduitIcon, conduitRarity, conduitDetails } from './conduit-store';
+import { calamiticStoreUnlocked } from '../content/calamitic-conduits';
 import { creatureGlossary } from './creature-glossary';
 import { elementLabel } from './element-label';
 import { information } from './information';
@@ -79,7 +80,7 @@ function characterArchive(account: Account | null): string {
 
 function conduitArchive(account: Account | null): string {
   return `<div class="ref-archive-manage"><button class="text-button" data-page="conduit-store">Conduit Store &rarr;</button><button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button></div>
-    <div class="archive-grid">${conduits.map((conduit) => `<article class="archive-card ${(account?.conduits?.[conduit.id] ?? 0) > 0 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-conduit="${conduit.id}">
+    <div class="archive-grid">${conduits.filter(conduit => conduit.rarity !== 'Calamitic' || calamiticStoreUnlocked(account)).map((conduit) => `<article class="archive-card ${(account?.conduits?.[conduit.id] ?? 0) > 0 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-conduit="${conduit.id}">
       <div class="archive-mechanism">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div>
       <h3>${conduit.name}</h3>${conduitRarity(conduit.id)}
       <p class="archive-ownership">${account ? `Owned ${account.conduits?.[conduit.id] ?? 0}` : 'Ownership unavailable'}</p>

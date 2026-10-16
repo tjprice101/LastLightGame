@@ -138,7 +138,7 @@ export function onlineStores(account: Account | null, profile: OnlineProfileDisp
   const navigation = `<nav class="online-store-tabs" aria-label="Stores">
     <button data-store-tab="materials" aria-pressed="${tab === 'materials'}">Material Exchange</button>
     <button data-store-tab="cosmetics" aria-pressed="${tab === 'cosmetics'}">Cosmetic Store</button>
-    <button data-page="conduit-store">Conduit Store</button></nav>`;
+    <button data-page="conduit-store">Conduit Store</button><button data-page="conduit-store" data-market-calamitic>Calamitic Conduits</button></nav>`;
   if (tab === 'materials') return materialExchange(account, selectedMaterial, navigation);
   const choice = profileFrames.find(frame => frame.id === selectedFrame) ?? profileFrames[0];
   const owned = choice.id === 'default' || profile?.ownedFrames.includes(choice.id);

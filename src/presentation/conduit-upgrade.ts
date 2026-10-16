@@ -31,7 +31,7 @@ function catalogPage(entries: OwnedEntry[], components: number, selected: string
         : state.status === 'available' ? cost !== null && components >= cost : cost !== null));
   }).sort((a, b) => {
     const first = getConduit(a.id), second = getConduit(b.id);
-    const rarities = ['Common', 'Rare', 'Legendary', 'Omnic'];
+    const rarities = ['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'];
     const delta = state.sort === 'rarity' ? rarities.indexOf(second.rarity) - rarities.indexOf(first.rarity)
       : state.sort === 'level' ? b.level - a.level : 0;
     return delta || first.name.localeCompare(second.name) || a.id.localeCompare(b.id);
@@ -74,8 +74,8 @@ function renderConduitUpgradeMenu(account: Account | null, selected: string | un
       <div class="ref-upgrade-tools"><label class="ref-upgrade-search"><span class="ref-sr-only">Search owned Conduits</span><input type="search" data-upgrade-search placeholder="Search Conduits…" value="${escapeAttribute(state.query)}"></label>
       <label class="ref-upgrade-sort"><span class="ref-sr-only">Sort owned Conduits</span><select data-upgrade-sort>${[['name', 'Name A–Z'], ['rarity', 'Rarity highest'], ['level', 'Upgrade highest']].map(([value, label]) => `<option value="${value}" ${state.sort === value ? 'selected' : ''}>${label}</option>`).join('')}</select></label></div>
       <div class="ref-upgrade-filters">
-      <div class="ref-upgrade-chips" role="group" aria-label="Filter owned Conduits by rarity">${[['', 'All'], ...['Common', 'Rare', 'Legendary', 'Omnic'].map(rarity => [rarity, rarity])].map(([value, label]) => `<button type="button" data-upgrade-rarity-chip="${value}" aria-pressed="${state.rarity === value}">${label}</button>`).join('')}</div>
-      <select hidden data-native-select data-upgrade-rarity aria-label="Rarity"><option value="">All rarities</option>${['Common', 'Rare', 'Legendary', 'Omnic'].map(rarity => `<option ${state.rarity === rarity ? 'selected' : ''}>${rarity}</option>`).join('')}</select>
+      <div class="ref-upgrade-chips" role="group" aria-label="Filter owned Conduits by rarity">${[['', 'All'], ...['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'].map(rarity => [rarity, rarity])].map(([value, label]) => `<button type="button" data-upgrade-rarity-chip="${value}" aria-pressed="${state.rarity === value}">${label}</button>`).join('')}</div>
+      <select hidden data-native-select data-upgrade-rarity aria-label="Rarity"><option value="">All rarities</option>${['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'].map(rarity => `<option ${state.rarity === rarity ? 'selected' : ''}>${rarity}</option>`).join('')}</select>
       <div class="ref-upgrade-chips" role="group" aria-label="Filter owned Conduits by upgrade status">${[['', 'All'], ['available', 'Can upgrade'], ['unfinished', 'Below maximum'], ['maximum', 'Maximum +5']].map(([value, label]) => `<button type="button" data-upgrade-status-chip="${value}" aria-pressed="${state.status === value}">${label}</button>`).join('')}</div>
       <select hidden data-native-select data-upgrade-status aria-label="Status">${[['', 'All statuses'], ['available', 'Can upgrade'], ['unfinished', 'Below maximum'], ['maximum', 'Maximum +5']].map(([value, label]) => `<option value="${value}" ${state.status === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div>
       <div class="ref-upgrade-catalog">${catalogPage(entries, account?.mechanicalComponents ?? 0, choice?.id, state)}</div></aside>

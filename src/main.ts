@@ -28,6 +28,7 @@ import { conduitUpgradeMenu, bindConduitUpgrades, updateConduitUpgradeMenu } fro
 import { getConduit, isConduitId, conduitEffect } from './content/conduits';
 import { purchaseConduit, equipConduit, setCharacterLock, ownedCharacterInstances, levelCapturedCharacter } from './game/account';
 import { openMasterChest, openCalamityChest, equipMasterConduit, unequipAllConduits } from './game/account';
+import { calamiticTokenPrice, isCalamiticConduitId } from './content/calamitic-conduits';
 import { parseCalamityChestId, calamityChest } from './content/calamity';
 import { bindActivityDifficulties, bindCalamityEntries, calamityOpeningReward } from './presentation/calamity';
 import { getMasterConduit, isMasterConduitId } from './content/master-conduits';
@@ -1359,14 +1360,15 @@ function bindConduitPurchases(): void {
         if (!isConduitId(id)) throw new Error('Unknown Conduit.');
         const conduit = getConduit(id);
         const current = currentAccount();
-        if (!await gameConfirm(`Buy one ${conduit.name} for ${conduit.price} Prismatica? ${conduitEffect(conduit, current.conduitUpgrades?.[id])} when equipped. One owned copy unlocks it for every character; extra copies add no equipment benefit.`, { title: 'Purchase Conduit', confirmLabel: 'Buy one' })) return;
+        const cost = isCalamiticConduitId(id) ? `${calamiticTokenPrice} Calamitic Tokens` : `${conduit.price} Prismatica`;
+        if (!await gameConfirm(`Buy one ${conduit.name} for ${cost}? ${conduitEffect(conduit, current.conduitUpgrades?.[id])} when equipped. One owned copy unlocks it for every character; extra copies add no equipment benefit.`, { title: 'Purchase Conduit', confirmLabel: 'Buy one' })) return;
         account = playMode === 'online' ? (await performOnline({ kind: 'purchaseConduit', id })).account : purchaseConduit(gameStorage, id);
         saved = true;
         refreshConduitMenu();
         const result = app.querySelector('#conduit-purchase-result');
         if (!result) throw new Error('Conduit purchase status is missing.');
         result.textContent = `${conduit.name} purchased. Owned ${account.conduits?.[id]}.`;
-        await presentReward(conduitReward(id, account, 'Conduit acquired', `${conduit.price} Prismatica spent`));
+        await presentReward(conduitReward(id, account, 'Conduit acquired', `${cost} spent`));
         app.querySelector<HTMLButtonElement>(`[data-buy-conduit="${id}"]`)?.focus({ preventScroll: true });
       } catch (error) {
         console.error('Conduit purchase rejected', error);
@@ -1918,6 +1920,7 @@ app.addEventListener('click', async (event) => {
     await transitionActivity(() => {
       if (target) upgradeConduitSelection = target;
       visitMenu(destination);
+      if (destination === 'conduit-store') storeRarity = button.hasAttribute('data-market-calamitic') ? 'Calamitic' : '';
       renderMenu();
     });
 

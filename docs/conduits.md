@@ -1,5 +1,11 @@
 # Conduits and Conduit Store
 
+**D-324:** [five Calamitic creations](calamitic-conduits.md) extend the catalog
+to90 ordinary plus48 Masters. Universal, token-purchased and above Omnic,
+they retain eight ordinary slots/unique names with no extra Calamitic cap.
+The existing four-Omnic maximum is separate. Rise alone built these devices;
+the earlier collaborative-prototype lore still applies to the original85.
+
 **D-316 native compatibility:** the approved sixteen-character replacement is
 implemented locally alongside explicitly adapted dependent effects. The
 [133-item matrix](character-conduit-compatibility.md) and

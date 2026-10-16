@@ -93,9 +93,9 @@ describe('machine content and exact probabilities', () => {
     expect(bannerConduitBonus(sequence(0, 0))).toBe('worldbreaker-drive');
   });
   it('authors the exact catalog and distinct stats/penalties/elements without selling drops', () => {
-    expect(conduits).toHaveLength(85);
-    expect(new Set(conduits.map((entry) => entry.id)).size).toBe(85);
-    for (const [rarity, count] of [['Common', 10], ['Rare', 15], ['Legendary', 15], ['Omnic', 45]] as const) {
+    expect(conduits).toHaveLength(90);
+    expect(new Set(conduits.map((entry) => entry.id)).size).toBe(90);
+    for (const [rarity, count] of [['Common', 10], ['Rare', 15], ['Legendary', 15], ['Omnic', 45], ['Calamitic', 5]] as const) {
       const pool = conduits.filter((entry) => entry.rarity === rarity);
       expect(pool).toHaveLength(count);
       for (const conduit of pool) {
@@ -111,7 +111,7 @@ describe('machine content and exact probabilities', () => {
         ...Array<string>(7).fill('atmospheric'), ...Array<string>(8).fill('botanic'),
         ...Array<string>(8).fill('tranquilitic'), ...Array<string>(8).fill('chaotic')].sort());
     expect(conduits.filter((entry) => entry.price !== null)).toHaveLength(10);
-    expect(conduits.filter((entry) => entry.art === null)).toHaveLength(0);
+    expect(conduits.filter((entry) => entry.art === null)).toHaveLength(5);
     expect(conduits.filter((entry) => entry.art === entry.id)).toHaveLength(85);
   });
   it('has100 stages 10-120, six distinct machines, every fifth-stage boss and no missing art URLs', () => {

@@ -47,7 +47,7 @@ export function calamityChest(activity: CalamityActivityId, tier: CalamityTier) 
   const title = ['Slayer', 'Master', 'Omnipotent'][tier - 1];
   return { id, name: `${calamityActivity(activity).name} EX+${title} Chest`,
     fractalis: [100_000, 250_000, 500_000][tier - 1], lycalis: [50, 70, 100][tier - 1],
-    bundles: [3, 5, 7][tier - 1], masterChests: tier === 3 ? 2 : 0 };
+    calamiticTokens: [1, 3, 8][tier - 1], bundles: [3, 5, 7][tier - 1], masterChests: tier === 3 ? 2 : 0 };
 }
 
 export interface CalamityLootRow {
@@ -109,12 +109,14 @@ export interface CalamityOpening {
   materials: Record<string, number>;
   conduits: Partial<Record<ConduitId, number>>;
   mechanicalComponents: number;
+  calamiticTokens: number;
   masterChests: number;
 }
 export function rollCalamityChest(activity: CalamityActivityId, tier: CalamityTier, roll: () => number): CalamityOpening {
   const chest = calamityChest(activity, tier);
   const reward: CalamityOpening = { id: chest.id, name: chest.name, fractalis: chest.fractalis,
-    lycalis: chest.lycalis, masterChests: chest.masterChests, materials: {}, conduits: {}, mechanicalComponents: 0 };
+    lycalis: chest.lycalis, calamiticTokens: chest.calamiticTokens, masterChests: chest.masterChests,
+    materials: {}, conduits: {}, mechanicalComponents: 0 };
   const table = calamityLootTable(activity);
   const random = () => {
     const value = roll();

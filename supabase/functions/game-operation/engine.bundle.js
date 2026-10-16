@@ -1825,6 +1825,59 @@ var machineOrigin = "The Machines are destroyed prototypes from the time Let and
 var conduitOrigin = "A Conduit is a surviving mechanism from the age of Let and Rise's collaboration, salvaged and restored for the present search. Elemental Light is the name used for the elemental energy within these devices, not a third creator or a recovered creator's soul.";
 var masterOrigin = "Master Conduits are restored mechanisms from Let and Rise's shared prototype work, attuned to a named Element-Bearer. Their power supports that bearer's search for Let's soul; owning one does not recover the soul or decide the contest.";
 
+// src/content/calamitic-conduits.ts
+var calamiticTokenPrice = 100;
+var calamiticLockMessage = "Rise deems you UNWORTHY of her most prized creations.";
+function calamiticStoreUnlocked(account) {
+  return !!account && Object.values(account.calamityClears ?? {}).some((tier) => tier !== void 0 && tier >= 1);
+}
+var calamiticPower = redesignValue;
+var calamiticConduits = [
+  {
+    id: "calamitic-world-eater-orrery",
+    name: "World-Eater's Orrery",
+    lore: "Rise suspended an annihilation furnace inside counter-rotating planetary rings. Every wound suffered by its bearers winds the machinery toward a single, deliberate ending."
+  },
+  {
+    id: "calamitic-causality-funeral-engine",
+    name: "Causality Funeral Engine",
+    lore: "Paired black-metal vaults bind the interval between impact and consequence. Rise built them to postpone destruction until her chosen moment, never to forgive it."
+  },
+  {
+    id: "calamitic-horizon-cleaving-godpress",
+    name: "Horizon-Cleaving Godpress",
+    lore: "Opposing white-metal jaws close around an impossible horizon. Rise designed its crimson rails to press through barriers without mistaking protection for invulnerability."
+  },
+  {
+    id: "calamitic-throne-borrowed-tomorrows",
+    name: "Throne of Borrowed Tomorrows",
+    lore: "An empty command throne controls a canopy of interlocking timeworks. Rise could order its machinery to consume tomorrow before today had ended."
+  },
+  {
+    id: "calamitic-cathedral-final-equation",
+    name: "Cathedral of the Final Equation",
+    lore: "Three monumental cipher-engines turn around a captive crimson aperture. Rise built their closing equation to erase whatever she had chosen, not to worship it."
+  }
+];
+function isCalamiticConduitId(id) {
+  return calamiticConduits.some((conduit) => conduit.id === id);
+}
+function calamiticEffect(id, level = 0) {
+  const amount = (base, maximum) => Number(calamiticPower(level, base, maximum).toFixed(6));
+  switch (id) {
+    case "calamitic-world-eater-orrery":
+      return `Store ${amount(40, 80)}% of actual direct enemy HP damage suffered by living squad members, up to ${amount(400, 800)}% of your Attack. Defense empties this reserve into one shield-first strike against the healthiest enemy, using normal Defense mitigation. Generated damage, shields and self-costs cannot fill it.`;
+    case "calamitic-causality-funeral-engine":
+      return `Defer ${amount(40, 60)}% of direct enemy damage that would reach your HP after shields, up to ${amount(30, 50)}% of your maximum HP per enemy phase. Pay the exact debt at the start of the next enemy phase, before attacks. Debt bypasses shields and protection, can defeat you and cannot be deferred again. Routed damage is not deferred.`;
+    case "calamitic-horizon-cleaving-godpress":
+      return `${amount(40, 60)}% of your native direct damage bypasses enemy shields. While the target has a shield, your native direct damage is also +${amount(30, 60)}%. The remaining damage spends shields normally; Burn and generated strikes are unchanged.`;
+    case "calamitic-throne-borrowed-tomorrows":
+      return `Once every three player turns, Defense lets you choose one further non-Defense, non-Last-Flare action that turn. Taking it grants ${amount(10, 30)} Gauge after paying its normal cost, but you cannot act on the next player turn. No borrowed action means no lost turn. Recovery and unavailable skills remain enforced.`;
+    case "calamitic-cathedral-final-equation":
+      return `Choose three different action types in succession to complete the Equation. Repeating a type restarts the sequence with that action. The third action releases ${amount(120, 240)}% of your Attack, split equally among living enemies as shield-first strikes using normal Defense mitigation, then clears the sequence. No extra critical rolls, Gauge or native effects.`;
+  }
+}
+
 // src/content/conduits.ts
 var commonConduits = [
   {
@@ -2007,11 +2060,26 @@ var conduits = [
     art: entry.id,
     lore: "A prismatic elemental masterpiece restored from the mechanisms left behind when Let and Rise's collaboration ended."
   })),
-  ...kitConduitDesigns.map((entry) => ({ ...entry, power: "Elemental Light", art: entry.id }))
-].map((entry) => ({ ...entry, mechanic: null, lore: `${conduitOrigin} ${entry.lore}` }));
+  ...kitConduitDesigns.map((entry) => ({ ...entry, power: "Elemental Light", art: entry.id })),
+  ...calamiticConduits.map((entry) => ({
+    ...entry,
+    rarity: "Calamitic",
+    price: null,
+    power: "Rise's annihilation machinery",
+    art: null,
+    element: null,
+    mechanic: null,
+    buffs: [],
+    effect: calamiticEffect(entry.id)
+  }))
+].map((entry) => ({
+  ...entry,
+  mechanic: null,
+  lore: isCalamiticConduitId(entry.id) ? entry.lore : `${conduitOrigin} ${entry.lore}`
+}));
 var conduitUpgradeCap = 5;
 var conduitUpgradeCosts = [25, 50, 100, 175, 250];
-var conduitUpgradeRarityMultipliers = { Common: 1, Rare: 2, Legendary: 4, Omnic: 200 };
+var conduitUpgradeRarityMultipliers = { Common: 1, Rare: 2, Legendary: 4, Omnic: 200, Calamitic: 400 };
 function validateConduitUpgradeLevel(value2) {
   if (typeof value2 !== "number" || !Number.isInteger(value2) || value2 < 0 || value2 > conduitUpgradeCap) {
     throw new Error("Conduit upgrade level must be an integer from 0 to 5.");
@@ -4462,6 +4530,7 @@ function calamityChest(activity, tier) {
     name: `${calamityActivity(activity).name} EX+${title} Chest`,
     fractalis: [1e5, 25e4, 5e5][tier - 1],
     lycalis: [50, 70, 100][tier - 1],
+    calamiticTokens: [1, 3, 8][tier - 1],
     bundles: [3, 5, 7][tier - 1],
     masterChests: tier === 3 ? 2 : 0
   };
@@ -4544,6 +4613,7 @@ function rollCalamityChest(activity, tier, roll2) {
     name: chest.name,
     fractalis: chest.fractalis,
     lycalis: chest.lycalis,
+    calamiticTokens: chest.calamiticTokens,
     masterChests: chest.masterChests,
     materials: {},
     conduits: {},
@@ -5177,10 +5247,10 @@ var nativeMemory = (unit) => unit.native ??= {};
 function status2(events, owner, target, message, amount = 0) {
   events.push({ kind: "status", source: owner.id, target: target.id, amount, critical: false, origin: "native", message });
 }
-function fixed(state, owner, target, power, kind, events, bypass = false) {
-  if (owner.hp <= 0 || target.hp <= 0 || power <= 0) return;
-  const attack = kind === "revenge" || kind === "demolition" ? power : owner.stats.damage;
-  const damage = bypass ? Math.round(power) : damageAmount(attack, power / attack, nativeTargetDefense(state, target), false);
+function fixed(state, owner, target, power2, kind, events, bypass = false) {
+  if (owner.hp <= 0 || target.hp <= 0 || power2 <= 0) return;
+  const attack = kind === "revenge" || kind === "demolition" ? power2 : owner.stats.damage;
+  const damage = bypass ? Math.round(power2) : damageAmount(attack, power2 / attack, nativeTargetDefense(state, target), false);
   const absorbed = Math.min(target.shield, damage);
   target.shield -= absorbed;
   const loss = Math.min(target.hp, damage - absorbed);
@@ -5504,10 +5574,10 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
         if (plating) for (const recipient of allies)
           generatedShield(owner, recipient, Math.min(recipient.stats.health * 0.15, owner.stats.health * 0.05), events, true, recipient.stats.health * 0.15, true);
       } else {
-        const power = Math.min(memory.foundation?.durability ?? 0, owner.stats.health * 0.3);
+        const power2 = Math.min(memory.foundation?.durability ?? 0, owner.stats.health * 0.3);
         delete memory.foundation;
         hit(2, true);
-        for (const enemy of foes(state)) fixed(state, owner, enemy, power, "demolition", events);
+        for (const enemy of foes(state)) fixed(state, owner, enemy, power2, "demolition", events);
       }
       break;
     case "vaelor":
@@ -5699,6 +5769,126 @@ function nativeCleanup(state) {
     if (ally.native.quarry && !live.has(ally.native.quarry.target)) delete ally.native.quarry;
     for (const key of ["burns", "traps", "seals"])
       for (const id of Object.keys(ally.native[key] ?? {})) if (!live.has(id)) delete ally.native[key][id];
+  }
+}
+
+// src/game/calamitic-conduits.ts
+function power(state, owner, id, base, maximum) {
+  return calamiticPower(state.conduitUpgrades?.[id] ?? 0, base, maximum);
+}
+function status3(owner, amount, message, events) {
+  events.push({ kind: "status", source: owner.id, target: owner.id, amount, critical: false, origin: "conduit", message });
+}
+function calamiticActionReason(state, owner, action) {
+  const n = owner.conduitRuntime?.numbers;
+  if (n?.calamiticThroneSkip === state.round) return "Tomorrow is owed to the Throne; cannot act this turn.";
+  if (n?.calamiticThroneArmed === state.round && (action === "ultimate" || action === "defend")) {
+    return "The borrowed action must be a Normal Attack or an available ordinary skill.";
+  }
+  return null;
+}
+function prepareCalamiticAction(state, owner, action) {
+  if (!equipped(owner, "calamitic-throne-borrowed-tomorrows")) return false;
+  const n = gear(owner).numbers;
+  if (n.calamiticThroneArmed === state.round && action !== "defend") {
+    delete n.calamiticThroneArmed;
+    n.calamiticThroneSkip = state.round + 1;
+    n.calamiticThroneReady = state.round + 3;
+    n.calamiticThroneGrant = state.round;
+    return false;
+  }
+  if (action === "defend" && (n.calamiticThroneReady ?? 0) <= state.round && n.calamiticThroneDefended !== state.round) {
+    n.calamiticThroneDefended = state.round;
+    n.calamiticThroneArmed = state.round;
+    return true;
+  }
+  return false;
+}
+function afterCalamiticAction(state, owner, action, events) {
+  if (owner.hp <= 0) return;
+  const n = gear(owner).numbers;
+  if (n.calamiticThroneArmed === state.round && action === "defend") {
+    status3(owner, 1, `${owner.name} may borrow one Normal Attack or ordinary skill; using it costs the next player turn.`, events);
+  }
+  if (n.calamiticThroneGrant === state.round) {
+    delete n.calamiticThroneGrant;
+    generatedGauge(owner, owner, power(state, owner, "calamitic-throne-borrowed-tomorrows", 10, 30), events);
+    status3(owner, state.round + 1, `${owner.name} borrowed tomorrow and cannot act on turn ${state.round + 1}.`, events);
+  }
+  if (action === "defend" && equipped(owner, "calamitic-world-eater-orrery") && (n.calamiticOrrery ?? 0) > 0) {
+    const reserve = n.calamiticOrrery;
+    n.calamiticOrrery = 0;
+    const target = state.enemies.filter((enemy) => enemy.hp > 0).sort((a, b) => b.hp - a.hp)[0];
+    status3(owner, reserve, `${owner.name}'s World-Eater's Orrery releases ${Math.round(reserve)} stored force.`, events);
+    generatedStrike(state, owner, target, reserve, events, false);
+  }
+  if (equipped(owner, "calamitic-cathedral-final-equation")) {
+    const bit = 1 << ["light", "defend", "skill1", "skill2", "ultimate"].indexOf(action);
+    const previous = n.calamiticEquation ?? 0;
+    const mask = previous & bit ? bit : previous | bit;
+    const count2 = mask.toString(2).replace(/0/g, "").length;
+    n.calamiticEquation = count2 === 3 ? 0 : mask;
+    status3(owner, count2, `${owner.name}'s Final Equation: ${count2} / 3 different actions${count2 === 3 ? " \u2014 discharge" : ""}.`, events);
+    if (count2 === 3) {
+      const targets = state.enemies.filter((enemy) => enemy.hp > 0);
+      const offer = owner.stats.damage * power(state, owner, "calamitic-cathedral-final-equation", 1.2, 2.4);
+      for (const target of targets) generatedStrike(state, owner, target, offer / targets.length, events, false);
+    }
+  }
+}
+function calamiticShieldBypass(state, owner) {
+  return equipped(owner, "calamitic-horizon-cleaving-godpress") ? power(state, owner, "calamitic-horizon-cleaving-godpress", 0.4, 0.6) : 0;
+}
+function calamiticSiegeBonus(state, owner, target) {
+  return target.shield > 0 && equipped(owner, "calamitic-horizon-cleaving-godpress") ? power(state, owner, "calamitic-horizon-cleaving-godpress", 0.3, 0.6) : 0;
+}
+function deferCalamiticDamage(state, owner, offered, events) {
+  if (offered <= 0 || !equipped(owner, "calamitic-causality-funeral-engine")) return offered;
+  const n = gear(owner).numbers;
+  if (n.calamiticDeferredRound !== state.round) {
+    n.calamiticDeferredRound = state.round;
+    n.calamiticDeferredPhase = 0;
+  }
+  const budget = Math.max(0, owner.stats.health * power(state, owner, "calamitic-causality-funeral-engine", 0.3, 0.5) - n.calamiticDeferredPhase);
+  const deferred = Math.min(Math.floor(budget), Math.floor(offered * power(state, owner, "calamitic-causality-funeral-engine", 0.4, 0.6)));
+  if (deferred <= 0) return offered;
+  n.calamiticDebt = (n.calamiticDebt ?? 0) + deferred;
+  n.calamiticDebtDue = state.round + 1;
+  n.calamiticDeferredPhase += deferred;
+  status3(owner, deferred, `${owner.name}'s Funeral Engine defers ${deferred} HP damage until enemy phase ${state.round + 1}.`, events);
+  return offered - deferred;
+}
+function bankCalamiticDamage(state, loss) {
+  if (loss <= 0) return;
+  for (const owner of state.allies.filter((ally) => ally.hp > 0 && equipped(ally, "calamitic-world-eater-orrery"))) {
+    const n = gear(owner).numbers;
+    n.calamiticOrrery = Math.min(
+      owner.stats.damage * power(state, owner, "calamitic-world-eater-orrery", 4, 8),
+      (n.calamiticOrrery ?? 0) + loss * power(state, owner, "calamitic-world-eater-orrery", 0.4, 0.8)
+    );
+  }
+}
+function settleCalamiticDebt(state, events) {
+  for (const owner of state.allies) {
+    const n = owner.conduitRuntime?.numbers;
+    if (!n || !n.calamiticDebt || n.calamiticDebtDue > state.round) continue;
+    const debt = n.calamiticDebt;
+    delete n.calamiticDebt;
+    delete n.calamiticDebtDue;
+    if (owner.hp <= 0) continue;
+    const loss = Math.min(owner.hp, debt);
+    owner.hp -= loss;
+    events.push({
+      kind: "damage",
+      source: owner.id,
+      target: owner.id,
+      amount: loss,
+      critical: false,
+      origin: "conduit",
+      periodic: true,
+      shieldRemaining: owner.shield,
+      message: `${owner.name} pays ${loss} HP to the Funeral Engine${owner.hp === 0 ? " \u2014 defeated" : ""}.`
+    });
   }
 }
 
@@ -5925,6 +6115,7 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     n.solaceRound = state.round;
     ctx.freeDefense = true;
   } else n.actions++;
+  if (prepareCalamiticAction(state, actor, action)) ctx.freeDefense = true;
   if (action === "skill1") delete n.quietFeather;
   if (action === "skill1" || action === "skill2") delete n.tailwind;
   if (action === "defend") {
@@ -6026,7 +6217,7 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
   return ctx;
 }
 function conduitHitModifiers(state, actor, target, ctx, critical) {
-  let bonus = ctx.bonus;
+  let bonus = ctx.bonus + calamiticSiegeBonus(state, actor, target);
   let pierce = 0;
   const action = ctx.action;
   if (target.hp <= target.stats.health * 0.25 && equipped(actor, "execution-orrery")) bonus += value(state, actor, "execution-orrery", 0.5, 1);
@@ -6303,6 +6494,7 @@ function finishConduitAction(state, owner, ctx, events) {
         emit(events, "status", owner, ally, 1, `${owner.name} donates an action to ${ally.name}.`);
       }
     }
+    afterCalamiticAction(state, owner, ctx.action, events);
     return;
   }
   for (const id of owner.conduits ?? []) {
@@ -6529,6 +6721,7 @@ function finishConduitAction(state, owner, ctx, events) {
       for (const enemy of state.enemies) if (gear(enemy).owners.chart === nerithe.id) delete gear(enemy).owners.chart;
     }
   }
+  afterCalamiticAction(state, owner, ctx.action, events);
 }
 function revive(state, owner, target, fraction, events) {
   target.hp = Math.max(1, Math.round(target.stats.health * fraction));
@@ -6772,11 +6965,13 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
     routedDamage(state, enemy, guardian, routed, events);
   }
   if (n.stasisProtectedRound === state.round) loss = 0;
+  loss = deferCalamiticDamage(state, target, loss, events);
   loss = Math.min(target.hp, rescue(state, target, loss, events, true));
   const fullyAbsorbedNative = loss === 0 && absorbed.absorbed >= postMitigation ? new Map([...absorbed.native].filter(([, amount]) => amount >= postMitigation)) : /* @__PURE__ */ new Map();
   nativeAbsorbedHit(state, target, fullyAbsorbedNative, loss, events);
   nativeGauge(state, target, shatterGauge.incomingHit, events);
   target.hp -= loss;
+  bankCalamiticDamage(state, loss);
   emit(events, "damage", enemy, target, loss, `${target.name}: ${Math.round(loss)} damage${critical ? " (critical)" : ""}${absorbed.absorbed ? `, ${Math.round(absorbed.absorbed)} shield absorbed` : ""}.`, true);
   events[events.length - 1].shieldAbsorbed = absorbed.absorbed;
   events[events.length - 1].critical = critical;
@@ -7107,6 +7302,8 @@ function actionUnavailable(state, actor, action) {
   if (action !== "light" && action !== "defend" && actor.kit?.unavailableActions?.includes(action)) return "This captured form does not have this ability.";
   if (actor.hp <= 0) return "This character is defeated.";
   if (actor.spent) return "This character has already acted this turn.";
+  const calamiticReason = calamiticActionReason(state, actor, action);
+  if (calamiticReason) return calamiticReason;
   if (conduitActionBlocked(actor, state)) return "This character cannot take another action this turn.";
   if (actor.recoverThrough >= state.round && !(action === "light" && recoveryNormal(actor))) return "Recovering this turn after Last Flare.";
   if (action === "ultimate" && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
@@ -7130,13 +7327,14 @@ function event(events, kind, source, target, amount, message, critical = false) 
     ...kind === "status" || kind === "damage" ? { debuffs: debuffSnapshot(target) } : {}
   });
 }
-function hurt(target, amount, source, events, critical = false, periodic = false, conduitReduction = 0, elementalCritical = false) {
+function hurt(target, amount, source, events, critical = false, periodic = false, conduitReduction = 0, elementalCritical = false, shieldBypass = 0) {
   if (conduitReduction > 0) amount = Math.max(1, Math.round(amount * (1 - conduitReduction)));
   if (target.defending) amount = Math.max(1, Math.round(amount * (1 - Math.min(
     0.5,
     defenseMode.damageReduction
   ))));
-  const absorbed = Math.min(target.shield, amount);
+  const bypassed = Math.floor(amount * shieldBypass);
+  const absorbed = Math.min(target.shield, amount - bypassed);
   target.shield -= absorbed;
   const loss = Math.min(target.hp, amount - absorbed);
   target.hp -= loss;
@@ -7343,6 +7541,10 @@ function act(previous, actorId, action, targetId) {
     event(events, "status", actor, actor, defenseReduction * 100, `${actor.name} enters ${name}: incoming ${defenseReduction > defenseMode.damageReduction ? "direct " : ""}damage reduced by ${formatStat(defenseReduction * 100)}% until the next player turn.`);
     finishConduitAction(state, actor, activation, events);
     nativeAfterAction(state, actor, action, priorInstruction, events);
+    conduitDeaths(state, previous, events);
+    nativeCleanup(state);
+    checkOutcome(state);
+    awardDefeats(previous, state, events);
     return { state, events };
   }
   events.push({ kind: "attack", source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action, abilityName: name });
@@ -7373,7 +7575,7 @@ function act(previous, actorId, action, targetId) {
         let hpDamage = 0;
         for (let impact = 0; impact < activation.impacts && target.hp > 0; impact++) {
           const portion = Math.floor(offered / activation.impacts) + (impact === activation.impacts - 1 ? offered % activation.impacts : 0);
-          hurt(target, portion, actor, events, critical, false, 0, elemental);
+          hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor));
           events[events.length - 1].origin = "native";
           hpDamage += events[events.length - 1].amount;
         }
@@ -7424,7 +7626,7 @@ function act(previous, actorId, action, targetId) {
       let hpDamage = 0;
       for (let impact = 0; impact < activation.impacts && target.hp > 0; impact++) {
         const portion = Math.floor(offered / activation.impacts) + (impact === activation.impacts - 1 ? offered % activation.impacts : 0);
-        hurt(target, portion, actor, events, critical, false, 0, elemental);
+        hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor));
         events[events.length - 1].origin = "native";
         hpDamage += events[events.length - 1].amount;
       }
@@ -7507,6 +7709,7 @@ function endTurn(previous) {
   if (previous.phase !== "player") throw new Error("There is no active player turn.");
   const state = structuredClone(previous);
   const events = [];
+  settleCalamiticDebt(state, events);
   for (const enemy of state.enemies) {
     if (enemy.hp <= 0) continue;
     const nativeBurnOwner = enemy.burn.origin !== "conduit" && state.allies.find((unit) => unit.id === enemy.burn.sourceId && hasNativeIdentity(unit) && (unit.native?.burns?.[enemy.id] || unit.hp <= 0));
@@ -7908,6 +8111,10 @@ function validateAccount(value2) {
   const account = emptyAccount();
   account.fractalis = value2.fractalis;
   account.lycalis = value2.lycalis;
+  if (value2.calamiticTokens !== void 0) {
+    if (!count(value2.calamiticTokens)) throw new Error("Invalid saved Calamitic Token balance.");
+    account.calamiticTokens = value2.calamiticTokens;
+  }
   if (value2.calamityChests !== void 0) {
     if (!record(value2.calamityChests)) throw new Error("Invalid saved Calamity chest inventory.");
     account.calamityChests = {};
@@ -8232,6 +8439,15 @@ function purchaseConduit(storage, id) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before visiting the Conduit Store.");
   if (!isConduitId(id)) throw new Error("Unknown Conduit.");
   const conduit = getConduit(id);
+  if (isCalamiticConduitId(id)) {
+    const account2 = loadAccount(storage);
+    if (!calamiticStoreUnlocked(account2)) throw new Error(calamiticLockMessage);
+    if ((account2.conduits?.[id] ?? 0) > 0) throw new Error("This Calamitic Conduit is already owned.");
+    if ((account2.calamiticTokens ?? 0) < calamiticTokenPrice) throw new Error(`Not enough Calamitic Tokens. ${conduit.name} costs ${calamiticTokenPrice}.`);
+    account2.calamiticTokens = (account2.calamiticTokens ?? 0) - calamiticTokenPrice;
+    account2.conduits = { ...account2.conduits, [id]: 1 };
+    return saveAccount(storage, account2);
+  }
   if (conduit.price === null) throw new Error("This Conduit is earned from drops, not sold in the Store.");
   const account = loadAccount(storage);
   if (account.fractalis < conduit.price) throw new Error(`Not enough Prismatica. ${conduit.name} costs ${conduit.price}.`);
@@ -8315,6 +8531,7 @@ function openCalamityChest(storage, id, expectedCount) {
     account.conduits = { ...account.conduits, [conduit]: add(account.conduits?.[conduit] ?? 0, amount) };
   }
   account.mechanicalComponents = add(account.mechanicalComponents ?? 0, reward.mechanicalComponents);
+  account.calamiticTokens = add(account.calamiticTokens ?? 0, reward.calamiticTokens);
   account.masterChests = add(account.masterChests ?? 0, reward.masterChests);
   account.calamityChests = { ...account.calamityChests, [id]: available - 1 };
   account.calamitySeed = seed2;
@@ -8483,6 +8700,7 @@ function saveAccountRewards(storage, result, runId) {
     }
   }
   for (const reward of result.events.filter((event2) => event2.kind === "reward")) {
+    if ("calamiticTokens" in reward) throw new Error("Calamitic Tokens only come from opening Calamity chests.");
     const receipt = `${runId}:${reward.source}`;
     if (account.receipts.includes(receipt)) continue;
     const enemy = result.state.enemies.find((unit) => unit.id === reward.source);
@@ -9204,6 +9422,7 @@ function resolveOperation(previous, operation, entropy) {
           materials: reward.materials,
           conduits: reward.conduits,
           mechanicalComponents: reward.mechanicalComponents,
+          calamiticTokens: reward.calamiticTokens,
           masterChests: reward.masterChests
         };
         break;

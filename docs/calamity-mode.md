@@ -114,11 +114,17 @@ Results present the saved chest; no second claim or opening occurs on victory.
 Open later in Inventory. The stable chest ID is `calamity:<activity>:<tier>`.
 Display name: `<Activity name> EX+<Slayer|Master|Omnipotent> Chest`.
 
-| Tier | Prismatica | Null-Prismatica | Independent activity bundles | Cosmic Grand Master Chests |
-| --- | ---: | ---: | ---: | ---: |
-| Slayer |100,000|50|3|0|
-| Master |250,000|70|5|0|
-| Omnipotent |500,000|100|7|2|
+| Tier | Prismatica | Null-Prismatica | Independent activity bundles | Cosmic Grand Master Chests | Calamitic Tokens |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Slayer |100,000|50|3|0|1|
+| Master |250,000|70|5|0|3|
+| Omnipotent |500,000|100|7|2|8|
+
+D-324 adds guaranteed tokens without changing existing contents or random
+draws. Spend them in the [Calamitic Conduit shop](calamitic-conduits.md);
+none of its five creations drop directly. The shop opens after any actual
+saved EX clear. Tokens commit with chest opening, not on victory. Existing
+unopened chests qualify; opened chests receive no retrospective tokens.
 
 Unlimited guaranteed replay and its repeatable premium/Master income are
 intentional. Do not add daily limits, entry costs, diminishing returns or

@@ -30,7 +30,7 @@ describe('unified Archives', () => {
     expect(card).toContain('aria-label="5-star character"');
     expect(card).toContain('aria-label="Common rarity"');
     expect(card).toContain('<p class="archive-ownership">Not owned</p>');
-    expect(html.match(/class="archive-effect"/g)).toHaveLength(conduits.length + masterConduits.length);
+    expect(html.match(/class="archive-effect"/g)).toHaveLength(conduits.filter(entry => entry.rarity !== 'Calamitic').length + masterConduits.length);
   });
   it('disables native image drag previews so locked art cannot reveal its colored drag ghost', () => {
     const html = archives(emptyAccount());
@@ -82,6 +82,7 @@ describe('unified Archives', () => {
   it('catalogs every Conduit with supplied artwork, effects and saved counts', () => {
     const account = emptyAccount();
     account.conduits = { 'bastion-lock': 3 };
+    account.calamityClears = { machines: 1 };
     const html = archives(account, 'conduits');
     for (const conduit of conduits) {
       expect(html).toContain(`data-archive-conduit="${conduit.id}"`);
@@ -94,7 +95,8 @@ describe('unified Archives', () => {
     expect(conduitsSection.match(/assets\/master-conduits\/master-[a-z]+-[123]\.png\?v=[0-9a-f]{16}/g)).toHaveLength(48);
     expect(conduitsSection.match(/data-archive-master=/g)).toHaveLength(48);
     for (const conduit of conduits) {
-      expect(html).toContain(`assets/conduits/${conduit.art}.png`);
+      if (conduit.art) expect(html).toContain(`assets/conduits/${conduit.art}.png`);
+      else expect(html).toContain('Artwork pending');
     }
     const fullArchive = archives(account);
     for (const gallery of ['characters', 'conduits', 'creatures']) {
@@ -106,7 +108,7 @@ describe('unified Archives', () => {
     for (const account of [emptyAccount(), { ...emptyAccount(), conduits: { 'vigil-core': 0 } }, null]) {
       const before = structuredClone(account);
       const html = archives(account, 'conduits');
-      expect(html.match(/class="archive-card archive-conduit-locked"/g)).toHaveLength(conduits.length);
+      expect(html.match(/class="archive-card archive-conduit-locked"/g)).toHaveLength(conduits.filter(entry => entry.rarity !== 'Calamitic').length);
       expect(html).not.toContain('archive-conduit-revealed');
       expect(html).toContain('unowned Conduits remain silhouettes');
       if (!account) expect(html).toContain('Ownership unavailable');

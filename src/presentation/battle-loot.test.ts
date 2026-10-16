@@ -62,7 +62,7 @@ describe('enemy-death loot presentation', () => {
 
   it('gives every Machine-tier Conduit its own artwork, beam color and saved upgrade marker', () => {
     documentFixture();
-    const eligible = conduits.filter(conduit => conduit.rarity !== 'Common');
+    const eligible = conduits.filter(conduit => ['Rare', 'Legendary', 'Omnic'].includes(conduit.rarity));
     const event = { ...reward, materials: undefined, conduits: Object.fromEntries(eligible.map(conduit => [conduit.id, 1])) };
     const burst = lootBurst(event, () => .5);
     eligible.forEach((conduit, index) => {

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { freshGame, publicGame, resolveOperation, validateRequest, type DurableGame } from '../../supabase/functions/game-operation/engine';
 import { calamityActivities, calamityChest, calamityChestId } from '../content/calamity';
 import { calamityBossArt } from '../content/calamity-art';
+import { calamiticConduits, calamiticTokenPrice } from '../content/calamitic-conduits';
 import { activityAccess } from '../game/activity-access';
 import { validateGameResponse, type GameOperation } from './server-game';
 
@@ -53,6 +54,9 @@ describe('authoritative Calamity operations', () => {
     expect(cleared.response.result!.events.filter(event => event.kind === 'reward')).toEqual([
       expect.objectContaining({ amount: 0, calamityChest: id }),
     ]);
+    expect(() => validateGameResponse({ ...cleared.response, result: { ...cleared.response.result!,
+      events: cleared.response.result!.events.map(event => event.kind === 'reward'
+        ? { ...event, calamiticTokens: 1 } : event) } })).toThrow('incomplete');
     expect(game.account.calamityChests?.[id]).toBe(1);
     expect(game.account.creatures[`calamity:${definition.id}`]).toEqual({ defeated: true });
     expect(game.account.calamityClears?.[definition.id]).toBe(3);
@@ -92,11 +96,13 @@ describe('authoritative Calamity operations', () => {
     expect(opened.game.account.fractalis).toBe(reward.fractalis);
     expect(reward.fractalis).toBeGreaterThan(calamityChest('treasury', 3).fractalis);
     expect(validateGameResponse(opened.response).calamityOpening).toEqual(reward);
-    expect(Object.keys(reward).sort()).toEqual(['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'masterChests'].sort());
+    expect(Object.keys(reward).sort()).toEqual(['id', 'name', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests'].sort());
+    expect(reward.calamiticTokens).toBe(8);
     expect(() => op(opened.game, { kind: 'openCalamityChest', id, expectedCount: 2 })).toThrow('count changed');
     expect(() => validateGameResponse({ ...opened.response, calamityOpening: { ...reward, bundles: 7 } })).toThrow('incomplete');
     expect(() => validateGameResponse({ ...opened.response, calamityOpening: { ...reward, name: 'Invented chest' } })).toThrow('incomplete');
     expect(() => validateGameResponse({ ...opened.response, calamityOpening: { ...reward, conduits: { 'vigil-core': 1 } } })).toThrow('incomplete');
+    expect(() => validateGameResponse({ ...opened.response, calamityOpening: { ...reward, calamiticTokens: 7 } })).toThrow('incomplete');
   });
 
   it.each(calamityActivities)('validates actual saved $id openings at every tier', definition => {
@@ -110,9 +116,24 @@ describe('authoritative Calamity operations', () => {
       const response = validateGameResponse(opened.response);
       expect(response.calamityOpening?.id).toBe(id);
       expect(response.calamityOpening?.masterChests).toBe(tier === 3 ? 2 : 0);
+      expect(response.calamityOpening?.calamiticTokens).toBe([1, 3, 8][tier - 1]);
       expect(response.account.calamityChests?.[id]).toBe(0);
       expect(response.account.calamitySeed).not.toBe(seed);
     }
+  });
+
+  it.each(calamiticConduits)('authoritatively purchases $name for tokens with no client-supplied price', ({ id }) => {
+    const game = ready();
+    game.account.calamiticTokens = calamiticTokenPrice + 17;
+    const operation = { kind: 'purchaseConduit', id } as const;
+    const request = validateRequest({ requestId: crypto.randomUUID(), expectedRevision: 0, operation });
+    expect(request.operation).toEqual(operation);
+    const resolved = op(game, request.operation);
+    expect(resolved.game.account.calamiticTokens).toBe(17);
+    expect(resolved.game.account.conduits?.[id]).toBe(1);
+    expect(validateGameResponse(resolved.response).account.conduits?.[id]).toBe(1);
+    expect(() => validateRequest({ requestId: crypto.randomUUID(), expectedRevision: 0,
+      operation: { ...operation, price: calamiticTokenPrice, calamiticTokens: calamiticTokenPrice } })).toThrow('Unexpected request field');
   });
 
   it.each([
@@ -124,6 +145,7 @@ describe('authoritative Calamity operations', () => {
     { kind: 'openCalamityChest', id: 'calamity:infernic:1', expectedCount: 1.5 },
     { kind: 'openCalamityChest', id: 'calamity:war:1', expectedCount: 1 },
     { kind: 'openCalamityChest', id: 'calamity:infernic:1', expectedCount: 1, reward: {} },
+    { kind: 'purchaseConduit', id: calamiticConduits[0].id, price: calamiticTokenPrice },
   ])('rejects malformed request %j', operation => {
     expect(() => validateRequest({ requestId: crypto.randomUUID(), expectedRevision: 0, operation })).toThrow();
   });

@@ -80,13 +80,13 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
     <div class="inventory-currencies">${(['fractalis', 'lycalis'] as const).map((id) => `<article class="inventory-currency ref-panel" aria-label="${id === 'fractalis' ? 'Prismatica' : 'Null-Prismatica'} balance">
       ${currencyIcon(id)}<div><strong>${account ? account[id] : 'Unavailable'}</strong>
       <span>${id === 'fractalis' ? 'Prismatica' : 'Null-Prismatica'}</span></div></article>`).join('')}
-      </div>
+      <article class="inventory-currency ref-panel" aria-label="Calamitic Tokens balance">${currencyIcon('calamitic-tokens')}<div><strong>${account ? (account.calamiticTokens ?? 0) : 'Unavailable'}</strong><span>Calamitic Tokens</span></div></article></div>
     ${!account ? '<p role="alert">Currency inventory unavailable. Check the save error.</p>' : ''}
     <div class="inventory-tools" role="search" aria-label="Find owned items">
       <label class="inventory-search">Search items<input type="search" data-inventory-query placeholder="Search item names" value="${escapeDialogText(filters.query)}" ${!account ? 'disabled' : ''}></label>
       ${([
         ['type', 'Item type', [['', 'All types'], ['materials', 'Materials'], ['conduits', 'Conduits'], ['masters', 'Master Conduits'], ['chests', 'Chests'], ['components', 'Components']]],
-        ['rarity', 'Rarity', [['', 'All rarities'], ...materialRarities.map(rarity => [rarity, rarity]), ['none', 'No rarity']]],
+        ['rarity', 'Rarity', [['', 'All rarities'], ...materialRarities.map(rarity => [rarity, rarity]), ['Calamitic', 'Calamitic'], ['none', 'No rarity']]],
         ['element', 'Element', [['', 'All elements'], ...elements.map(element => [element.id, element.name]), ['none', 'No element']]],
       ] as const).map(([key, label, options]) => `<label>${label}<select data-inventory-filter="${key}" ${!account ? 'disabled' : ''}>${options.map(([value, text]) => `<option value="${value}" ${filters[key] === value ? 'selected' : ''}>${text}</option>`).join('')}</select></label>`).join('')}
       <button type="button" class="text-button" data-inventory-clear ${!account ? 'disabled' : ''}>Clear</button>

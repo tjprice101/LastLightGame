@@ -50,6 +50,8 @@ try {
   }
   if (process.argv.includes('--native-calamity')) {
     await smokeNativeCalamity(client, created.user.id, username);
+  } else if (process.argv.includes('--calamitic-economy')) {
+    await smokeCalamiticEconomy(client, created.user.id, username);
   } else if (process.argv.includes('--final-loot') || process.argv.includes('--loot-parity')) {
     await smokeFinalLoot(client, created.user.id, username, process.argv.includes('--loot-parity'));
   } else if (process.argv.includes('--masters')) {
@@ -412,6 +414,129 @@ async function smokeNativeCalamity(client, userId, username) {
   assert.deepEqual(rose.session.state.enemies[0].stats, entered.session.state.enemies[0].stats);
   assert.equal((await invoke({ kind: 'quit', runId: rose.session.runId }, rose.revision)).session, null);
   console.log(`Hosted native/Calamity smoke passed: rules${conduitRulesVersion}, explicit Tizu/Disciple recipients, Lv185 EX3 chest-only fixture victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned Treasury/Rose exponential stats and artwork.`);
+}
+
+async function smokeCalamiticEconomy(client, userId, username) {
+  const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+  let game = freshGame(username);
+  game.starterId = 'ember';
+  game.account.characters = { ember: { level: 105, evolution: 6 } };
+  game.account.squad = ['ember'];
+  game.account.normalFinalClears = { treasury: true };
+  assert.equal(Object.hasOwn(game.account, 'calamiticTokens'), false, 'The fixture exercises legacy accounts without a token field.');
+  game = resolveOperation(game, {
+    kind: 'enter', activity: { kind: 'calamity', activity: 'treasury', tier: 1 },
+  }, entropy).game;
+  game.run.session.state.enemies[0].hp = 1;
+  assert.ok(ids.includes(userId), 'Only disposable identities may receive fixtures');
+  const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+  assert.equal(seeded.error, null);
+
+  async function invoke(clientForCall, operation, revision, requestId = randomUUID()) {
+    const result = await clientForCall.functions.invoke('game-operation', {
+      body: { operation, expectedRevision: revision, requestId },
+    });
+    if (result.error) {
+      const body = await result.error.context?.clone().json().catch(() => null);
+      const failure = new Error(`Hosted Calamitic ${operation.kind} rejected (${result.error.context?.status ?? 'transport'}): ${body?.error ?? 'No server error detail.'}`);
+      failure.status = result.error.context?.status;
+      throw failure;
+    }
+    return result.data;
+  }
+
+  const expectedTokens = [1, 3, 8];
+  for (const [index, tier] of [1, 2, 3].entries()) {
+    let tierClient = client;
+    if (tier > 1) {
+      const tierUsername = `smoke_${randomUUID().slice(0, 8)}`;
+      const password = randomUUID() + randomUUID();
+      const { data: tierUser, error } = await admin.auth.admin.createUser({
+        email: `${tierUsername}@example.invalid`, password, email_confirm: true,
+        user_metadata: { username: tierUsername },
+      });
+      if (error || !tierUser.user) throw new Error(`Hosted EX${tier} smoke identity creation failed.`);
+      ids.push(tierUser.user.id);
+      tierClient = createClient(url, clientKey, { auth: { persistSession: false } });
+      const { error: loginError } = await tierClient.auth.signInWithPassword({
+        email: `${tierUsername}@example.invalid`, password,
+      });
+      if (loginError) throw new Error(`Hosted EX${tier} smoke identity authentication failed.`);
+      let tierGame = freshGame(tierUsername);
+      tierGame.starterId = 'ember';
+      tierGame.account.characters = { ember: { level: 105, evolution: 6 } };
+      tierGame.account.squad = ['ember'];
+      tierGame.account.normalFinalClears = { treasury: true };
+      tierGame.account.calamityClears = { treasury: tier - 1 };
+      tierGame = resolveOperation(tierGame, {
+        kind: 'enter', activity: { kind: 'calamity', activity: 'treasury', tier },
+      }, entropy).game;
+      tierGame.run.session.state.enemies[0].hp = 1;
+      const tierSeed = await admin.rpc('load_game_account', { p_user: tierUser.user.id, p_initial: tierGame });
+      assert.equal(tierSeed.error, null);
+    }
+
+    let response = await invoke(tierClient, { kind: 'read' }, 0);
+    assert.equal(Object.hasOwn(response.account, 'calamiticTokens'), false,
+      `EX${tier} legacy fixture reads without a token field or load-time write.`);
+    if (tier === 1) {
+      await assert.rejects(invoke(tierClient,
+        { kind: 'purchaseConduit', id: 'calamitic-world-eater-orrery' }, response.revision),
+      error => error.status === 400 && error.message.includes('UNWORTHY'));
+    }
+    const runId = response.session.runId;
+    const attack = { kind: 'act', runId, actorId: 'ember', action: 'light',
+      targetId: response.session.state.enemies[0].id };
+    response = await invoke(tierClient, attack, response.revision);
+    assert.equal(response.session.state.phase, 'cleared');
+    const chestId = `calamity:treasury:${tier}`;
+    assert.equal(response.account.calamityChests[chestId], 1);
+    const open = { kind: 'openCalamityChest', id: chestId, expectedCount: 1 };
+    const openId = randomUUID();
+    const opening = await invoke(tierClient, open, response.revision, openId);
+    assert.equal(opening.calamityOpening.calamiticTokens, expectedTokens[index],
+      `EX${tier} chest reports its exact token receipt.`);
+    assert.equal(opening.account.calamiticTokens,
+      expectedTokens.slice(0, index + 1).reduce((sum, amount) => sum + amount, 0));
+    assert.deepEqual(await invoke(tierClient, open, response.revision, openId), opening,
+      `EX${tier} chest retry returns the saved receipt without another grant.`);
+    response = await invoke(tierClient, { kind: 'quit', runId }, opening.revision);
+  }
+
+  const purchaseUsername = `smoke_${randomUUID().slice(0, 8)}`;
+  const password = randomUUID() + randomUUID();
+  const { data: created, error } = await admin.auth.admin.createUser({
+    email: `${purchaseUsername}@example.invalid`, password, email_confirm: true,
+    user_metadata: { username: purchaseUsername },
+  });
+  if (error || !created.user) throw new Error('Hosted Calamitic purchase identity creation failed.');
+  ids.push(created.user.id);
+  const purchaser = createClient(url, clientKey, { auth: { persistSession: false } });
+  const { error: loginError } = await purchaser.auth.signInWithPassword({
+    email: `${purchaseUsername}@example.invalid`, password,
+  });
+  if (loginError) throw new Error('Hosted Calamitic purchase identity authentication failed.');
+  const purchaseGame = freshGame(purchaseUsername);
+  purchaseGame.starterId = 'ember';
+  purchaseGame.account.characters = { ember: { level: 0, evolution: 1 } };
+  purchaseGame.account.squad = ['ember'];
+  purchaseGame.account.calamiticTokens = 100;
+  purchaseGame.account.calamityClears = { infernic: 1 };
+  const lockedSeed = await admin.rpc('load_game_account', {
+    p_user: created.user.id, p_initial: purchaseGame,
+  });
+  assert.equal(lockedSeed.error, null);
+  const buyer = await invoke(purchaser, { kind: 'read' }, 0);
+  const purchase = { kind: 'purchaseConduit', id: 'calamitic-world-eater-orrery' };
+  const purchaseId = randomUUID();
+  const purchased = await invoke(purchaser, purchase, buyer.revision, purchaseId);
+  assert.equal(purchased.account.calamiticTokens, 0, 'The server deducts exactly 100 tokens.');
+  assert.equal(purchased.account.conduits[purchase.id], 1);
+  assert.deepEqual(await invoke(purchaser, purchase, buyer.revision, purchaseId), purchased,
+    'Purchase retry returns the same committed receipt.');
+  await assert.rejects(invoke(purchaser, purchase, purchased.revision),
+    error => error.status === 400 && error.message.includes('already owned'));
+  console.log('Hosted Calamitic economy smoke passed: legacy token balance, exact EX1/EX2/EX3 receipts (1/3/8), opening idempotency, locked-store rejection, recorded-clear unlock, exact 100-token purchase, purchase idempotency, and duplicate rejection.');
 }
 
 async function smokeGuaranteedComponents(client, userId, username) {

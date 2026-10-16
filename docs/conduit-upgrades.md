@@ -105,6 +105,12 @@ existing delegated balance direction, not additional owner-authored numbers.
 | Rare |50 |100 |200 |350 |500 |1200 |
 | Legendary |100 |200 |400 |700 |1000 |2400 |
 | Omnic |5000 |10000 |20000 |35000 |50000 |120000 |
+| Calamitic |10000 |20000 |40000 |70000 |100000 |240000 |
+
+D-324 adds [five universal Calamitic creations](calamitic-conduits.md) with the
+same five account-wide upgrades at400x the base curve, twice Omnic. Their
+separate typed effects scale linearly through+5; no copies or tokens are spent
+on upgrades. The owner approves greater-than-Omnic costs, not these exact numbers.
 
 Owner requires rarity scaling and extremely expensive Omnic max upgrades
 (D-139); these exact1x/2x/4x/200x multipliers are editable

@@ -74,6 +74,7 @@ function calamityChestContents(activity: CalamityActivityId, tier: CalamityTier)
   return `<ul class="calamity-reward-list">
     <li><span>Prismatica</span><strong>${chest.fractalis.toLocaleString('en-US')}</strong></li>
     <li><span>Null-Prismatica</span><strong>${chest.lycalis}</strong></li>
+    <li><span>Calamitic Tokens</span><strong>${chest.calamiticTokens}</strong></li>
     ${chest.masterChests ? `<li><span>Cosmic Grand Master Chests</span><strong>${chest.masterChests}</strong></li>` : ''}
     <li><span>Random rewards</span><strong>${chest.bundles}</strong></li>
   </ul>`;
@@ -149,6 +150,7 @@ export function calamityOpeningReward(id: string, reward: ReturnType<typeof open
   const lines = [
     ...(reward.fractalis ? [`${reward.fractalis} Prismatica`] : []),
     ...(reward.lycalis ? [`${reward.lycalis} Null-Prismatica`] : []),
+    ...(reward.calamiticTokens ? [`${reward.calamiticTokens} Calamitic Tokens`] : []),
     ...Object.entries(reward.materials).map(([material, amount]) => `${amount} ${materialName(material)}`),
     ...Object.entries(reward.conduits).map(([conduit, amount]) => {
       if (!isConduitId(conduit)) throw new Error('Unknown Conduit in chest receipt.');

@@ -18,7 +18,7 @@ const statLabels: Record<ConduitBuff['stat'], string> = {
 };
 
 export const conduitLoadoutPageSize = 4;
-const rarityOrder = ['Common', 'Rare', 'Legendary', 'Omnic'] as const;
+const rarityOrder = ['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'] as const;
 type RarityFilter = '' | (typeof rarityOrder)[number];
 type EquipmentFilter = 'all' | 'equipped' | 'unequipped';
 export type ConduitLoadoutSort = 'rarity' | 'level' | 'name' | 'ready';
@@ -348,7 +348,7 @@ export function conduitLoadout(owner: string, name: string, element: ElementId, 
         ${masterRow(owner, account)}
         <div class="ref-equipment-grid loadout-grid">${artifactSlots.map((_, index) => slotCard(owner, captured, element, slots, index, account)).join('')}</div>
         ${account ? totalBonuses(owner, account) : ''}
-        <p class="ref-equipment-note">Up to four matching Omnic Conduits. One name per character.</p>
+        <p class="ref-equipment-note">Up to four matching Omnic Conduits. Calamitic Conduits work on every element and use ordinary slots, with no extra limit. One name per character.</p>
       </section>
       ${ownedList(owner, element, slots, account)}
     </div>

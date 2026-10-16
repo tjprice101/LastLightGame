@@ -4,6 +4,7 @@ import ts from 'typescript';
 import { describe, expect, it, vi } from 'vitest';
 import * as engine from '../../supabase/functions/game-operation/engine';
 import { calamityChestId } from '../content/calamity';
+import { calamiticConduits } from '../content/calamitic-conduits';
 import { validateGameResponse, type GameOperation } from './server-game';
 
 const source = readFileSync(join('supabase', 'functions', 'game-operation', 'index.ts'), 'utf8');
@@ -11,10 +12,14 @@ const executable = ts.transpileModule(source.replace(/^import .*;\r?$/gm, ''),
   { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.None } }).outputText;
 const requestId = '00000000-0000-4000-8000-000000000001';
 const chestId = calamityChestId('treasury', 3);
-function harness() {
+function harness(kind: 'chest' | 'purchase' = 'chest') {
   const entropy = { seed: () => 7321, random: () => .9, uuid: () => crypto.randomUUID() };
   const game = engine.resolveOperation(engine.freshGame('tester'), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
   game.account.calamityChests = { [chestId]: 2 };
+  if (kind === 'purchase') {
+    game.account.calamityClears = { infernic: 1 };
+    game.account.calamiticTokens = 125;
+  }
   let stored = { state: structuredClone(game), revision: 7 };
   const cached = new Map<string, { fingerprint: unknown; response: unknown }>();
   let failure: 'fail' | 'conflict' | undefined;
@@ -42,10 +47,12 @@ function harness() {
   let handler!: (request: Request) => Promise<Response>;
   const Deno = { env: { get: () => 'configured' }, serve: (callback: typeof handler) => { handler = callback; } };
   new Function('Deno', 'createClient', ...Object.keys(engine), executable)(Deno, () => admin, ...Object.values(engine));
-  const send = (operation: GameOperation = { kind: 'openCalamityChest', id: chestId, expectedCount: 2 }, revision = 7) =>
+  const send = (operation: GameOperation = kind === 'chest'
+    ? { kind: 'openCalamityChest', id: chestId, expectedCount: 2 }
+    : { kind: 'purchaseConduit', id: calamiticConduits[0].id }, revision = 7, id = requestId) =>
     handler(new Request('http://localhost/game-operation', { method: 'POST',
       headers: { authorization: 'Bearer test-session', 'content-type': 'application/json' },
-      body: JSON.stringify({ requestId, expectedRevision: revision, operation }) }));
+      body: JSON.stringify({ requestId: id, expectedRevision: revision, operation }) }));
   return { send, rpc, original: game, stored: () => stored, fail: (mode: typeof failure) => { failure = mode; } };
 }
 
@@ -58,6 +65,7 @@ describe('Calamity HTTP persistence and retries', () => {
     expect(first.account.calamityChests?.[chestId]).toBe(1);
     expect(first.account.masterChests).toBe(2);
     expect(first.calamityOpening?.id).toBe(chestId);
+    expect(first.calamityOpening?.calamiticTokens).toBe(8);
     const seed = h.stored().state.account.calamitySeed;
     const retry = await h.send();
     expect(retry.status).toBe(200);
@@ -83,5 +91,23 @@ describe('Calamity HTTP persistence and retries', () => {
     expect((await h.send(undefined, 6)).status).toBe(409);
     expect(h.rpc.mock.calls.some(([name]) => name === 'commit_game_operation')).toBe(false);
     expect(h.stored().state).toEqual(h.original);
+  });
+
+  it('authoritatively purchases once and returns the same saved receipt on retry', async () => {
+    const h = harness('purchase');
+    const operation = { kind: 'purchaseConduit', id: calamiticConduits[0].id } as const;
+    const response = await h.send(operation, 7, requestId);
+    expect(response.status).toBe(200);
+    const first = validateGameResponse(await response.json());
+    expect(first.account.calamiticTokens).toBe(25);
+    expect(first.account.conduits?.[calamiticConduits[0].id]).toBe(1);
+    const retry = await h.send(operation, 7, requestId);
+    expect(retry.status).toBe(200);
+    expect(await retry.json()).toEqual(first);
+    expect(h.stored().state.account.calamiticTokens).toBe(25);
+    expect(h.rpc.mock.calls.filter(([name]) => name === 'commit_game_operation')).toHaveLength(1);
+    const forged = await h.send({ ...operation, price: 1 } as GameOperation, 7, '00000000-0000-4000-8000-000000000002');
+    expect(forged.status).toBe(400);
+    expect(h.rpc.mock.calls.filter(([name]) => name === 'commit_game_operation')).toHaveLength(1);
   });
 });

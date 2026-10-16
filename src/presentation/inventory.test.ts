@@ -43,7 +43,7 @@ describe('reference Inventory layout', () => {
   });
   it('renders both holdings panels simultaneously with currency art and decorative empty slots', () => {
     const html = inventoryView(emptyAccount());
-    expect(html.match(/class="inventory-currency ref-panel"/g)).toHaveLength(2);
+    expect(html.match(/class="inventory-currency ref-panel"/g)).toHaveLength(3);
     for (const id of ['fractalis', 'lycalis']) expect(html).toContain(`currencies/${id}.png`);
     expect(html).toContain('id="inventory-panel-materials" data-inventory-section="materials" open');
     expect(html).toContain('id="inventory-panel-conduits" data-inventory-section="conduits" open');

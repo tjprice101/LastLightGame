@@ -62,6 +62,10 @@ weapons, palettes and combat identities remain intact.
   Individual designs retain their identities and exact effects. The existing
   term Elemental Light describes their elemental energy, not an independent
   creator or a recovered soul. Masters remain named-bearer enhancements.
+- **Calamitic Conduits (D-324):** five colossal annihilation mechanisms built
+  by Rise alone to destroy whatever she wished. These later black/white/crimson
+  creations are not the original collaborative prototypes and do not reveal
+  either creator's soul. [Identities and acquisition](calamitic-conduits.md).
 
 ## In-game surfaces
 

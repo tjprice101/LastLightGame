@@ -1,9 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { calamityActivities, calamityChest, calamityChestId, rollCalamityChest, type CalamityActivityId } from '../content/calamity';
 import { infusionStageCount } from '../content/activities';
 import { isPlayableDungeon } from '../content/dungeons';
 import { masterConduits } from '../content/master-conduits';
-import { ACCOUNT_KEY, calamityUnlockedTier, emptyAccount, loadAccount, openCalamityChest, saveAccount, saveAccountRewards, validateAccount, type Account } from './account';
+import { calamiticConduits, calamiticLockMessage, calamiticTokenPrice } from '../content/calamitic-conduits';
+import { ACCOUNT_KEY, calamityUnlockedTier, emptyAccount, loadAccount, openCalamityChest, purchaseConduit, saveAccount, saveAccountRewards, validateAccount, type Account } from './account';
 import { act, createCalamityBattle, createDungeonBattle, createInfusionBattle, type BattleEvent, type BattleResult } from './battle';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 
@@ -84,6 +85,8 @@ describe('Calamity account transactions', () => {
       expect(opened.account.conduits ?? {}).toEqual(opened.reward.conduits);
       expect(opened.account.masterChests).toBe(opened.reward.masterChests);
       expect(opened.account.calamitySeed).toBeGreaterThan(0);
+      expect(opened.reward.calamiticTokens).toBe([1, 3, 8][tier - 1]);
+      expect(opened.account.calamiticTokens).toBe([1, 3, 8][tier - 1]);
       expect(writes()).toBe(after + 1);
     },
   );
@@ -97,6 +100,8 @@ describe('Calamity account transactions', () => {
     { calamityClears: { infernic: -1 } }, { calamityClears: { infernic: 4 } },
     { calamityClears: { infernic: 1.5 } }, { normalFinalClears: [] },
     { normalFinalClears: { invalid: true } }, { normalFinalClears: { infernic: 1 } },
+    { calamiticTokens: -1 }, { calamiticTokens: 0.5 }, { calamiticTokens: Number.MAX_SAFE_INTEGER + 1 },
+    { calamiticTokens: '1' }, { calamiticTokens: null },
     { calamitySeed: 0 }, { calamitySeed: -1 }, { calamitySeed: 0.5 },
     { calamitySeed: 0x100000000 }, { calamitySeed: '1' },
     { calamityChests: null }, { calamityClears: null }, { normalFinalClears: null }, { calamitySeed: null },
@@ -120,11 +125,17 @@ describe('Calamity account transactions', () => {
     expect(calamityUnlockedTier(account, 'infernic')).toBe(0);
     expect(calamityUnlockedTier(account, 'machines')).toBe(0);
     expect(account.calamitySeed).toBeUndefined();
+    expect(account.calamiticTokens).toBeUndefined();
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     expect(writes()).toBe(before);
+    const legacyRaw = JSON.stringify({ ...emptyAccount(), version: 4 });
+    saved.setItem(ACCOUNT_KEY, legacyRaw);
+    expect(loadAccount(saved).calamiticTokens).toBeUndefined();
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(legacyRaw);
     expect(validateAccount({ ...emptyAccount(), calamityClears: { infernic: 0 },
       normalFinalClears: { infernic: false }, calamityChests: { [calamityChestId('infernic', 1)]: 0 },
-      calamitySeed: 0xffffffff }).calamitySeed).toBe(0xffffffff);
+      calamitySeed: 0xffffffff, calamiticTokens: Number.MAX_SAFE_INTEGER }).calamiticTokens).toBe(Number.MAX_SAFE_INTEGER);
+    expect(validateAccount({ ...emptyAccount(), calamiticTokens: 0 }).calamiticTokens).toBe(0);
   });
 
   it.each(calamityActivities)('$id recognizes exact historical UUID kill receipts with final-stage access without writes', ({ id }) => {
@@ -262,7 +273,7 @@ describe('Calamity account transactions', () => {
     expect(saveAccountRewards(saved, result, 'legacy').normalFinalClears).toBeUndefined();
   });
 
-  it.each(['materials', 'capture', 'lycalis', 'conduits', 'mechanicalComponents', 'masterChests', 'recruitment', 'recruitmentOutcome', 'storyBonus'])(
+  it.each(['materials', 'capture', 'lycalis', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests', 'recruitment', 'recruitmentOutcome', 'storyBonus'])(
     'rejects forbidden %s payload before receipt deduplication', (key) => {
       const { saved } = storage();
       prepared(saved, 'infernic');
@@ -339,7 +350,7 @@ describe('Calamity account transactions', () => {
     expect(writes()).toBe(before);
   });
 
-  it.each(['denied', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'masterChests'] as const)(
+  it.each(['denied', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests'] as const)(
     'failed %s opening preserves chest count and RNG for an identical retry', (failure) => {
       const { saved, deny, allow } = storage();
       const activity = failure === 'materials' ? 'infernic' : 'machines';
@@ -354,6 +365,7 @@ describe('Calamity account transactions', () => {
       if (failure === 'materials') for (const material of Object.keys(expected.materials)) account.materials[material] = Number.MAX_SAFE_INTEGER;
       if (failure === 'conduits') account.conduits = Object.fromEntries(Object.keys(expected.conduits).map((conduit) => [conduit, Number.MAX_SAFE_INTEGER]));
       if (failure === 'mechanicalComponents') account.mechanicalComponents = Number.MAX_SAFE_INTEGER;
+      if (failure === 'calamiticTokens') account.calamiticTokens = Number.MAX_SAFE_INTEGER;
       if (failure === 'masterChests') account.masterChests = Number.MAX_SAFE_INTEGER;
       saveAccount(saved, account);
       const raw = saved.getItem(ACCOUNT_KEY);
@@ -366,6 +378,7 @@ describe('Calamity account transactions', () => {
       account.materials = {};
       account.conduits = {};
       account.mechanicalComponents = 0;
+      account.calamiticTokens = 0;
       account.masterChests = 0;
       saveAccount(saved, account);
       expect(openCalamityChest(saved, id, 1).reward).toEqual(expected);
@@ -412,5 +425,63 @@ describe('Calamity account transactions', () => {
     expect(opened.reward.masterChests).toBe(2);
     expect(opened.account.masterChests).toBe(2);
     expect(opened.account.masterConduits).toEqual(account.masterConduits);
+  });
+
+  it('purchases Calamitic Conduits for exactly 100 tokens after any recorded Calamity victory', () => {
+    for (const { id } of calamiticConduits) {
+      const { saved, writes } = storage();
+      const account = emptyAccount();
+      account.calamityClears = { infernic: 1 };
+      account.calamiticTokens = calamiticTokenPrice;
+      saveAccount(saved, account);
+      const before = writes();
+      const purchased = purchaseConduit(saved, id);
+      expect(writes()).toBe(before + 1);
+      expect(purchased.calamiticTokens).toBe(0);
+      expect(purchased.conduits?.[id]).toBe(1);
+    }
+  });
+
+  it('keeps Calamitic purchase locked without an EX tier clear even with normal-final access and a chest', () => {
+    const { saved, writes } = storage();
+    const account = emptyAccount();
+    account.normalFinalClears = { infernic: true };
+    account.dungeonStages.infernic = 35;
+    account.calamityChests = { [calamityChestId('infernic', 1)]: 1 };
+    account.calamiticTokens = calamiticTokenPrice;
+    saveAccount(saved, account);
+    const raw = saved.getItem(ACCOUNT_KEY);
+    const before = writes();
+    expect(() => purchaseConduit(saved, calamiticConduits[0].id)).toThrow(calamiticLockMessage);
+    expect(writes()).toBe(before);
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
+  });
+
+  it('rejects insufficient funds, duplicate ownership and failed saves without changing the token balance', () => {
+    const { saved } = storage();
+    const account = emptyAccount();
+    account.calamityClears = { machines: 1 };
+    account.calamiticTokens = calamiticTokenPrice - 1;
+    saveAccount(saved, account);
+    const id = calamiticConduits[0].id;
+    const raw = saved.getItem(ACCOUNT_KEY);
+    expect(() => purchaseConduit(saved, id)).toThrow('Not enough Calamitic Tokens');
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
+    account.calamiticTokens = calamiticTokenPrice;
+    saveAccount(saved, account);
+    const owned = loadAccount(saved);
+    owned.conduits = { [id]: 1 };
+    saveAccount(saved, owned);
+    const ownedRaw = saved.getItem(ACCOUNT_KEY);
+    expect(() => purchaseConduit(saved, id)).toThrow('already owned');
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(ownedRaw);
+    const unowned = loadAccount(saved);
+    delete unowned.conduits;
+    saveAccount(saved, unowned);
+    const beforeFailure = saved.getItem(ACCOUNT_KEY);
+    const denied = vi.spyOn(saved, 'setItem').mockImplementation(() => { throw new Error('Storage denied.'); });
+    expect(() => purchaseConduit(saved, id)).toThrow('Storage denied');
+    expect(denied).toHaveBeenCalledTimes(1);
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(beforeFailure);
   });
 });

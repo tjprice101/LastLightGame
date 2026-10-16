@@ -183,6 +183,7 @@ describe('account-wide five-step Conduit restoration', () => {
       Rare: [50, 100, 200, 350, 500],
       Legendary: [100, 200, 400, 700, 1000],
       Omnic: [5000, 10000, 20000, 35000, 50000],
+      Calamitic: [10000, 20000, 40000, 70000, 100000],
     }[conduit.rarity];
     const saved = storage();
     for (let level = 0; level < 5; level++) {

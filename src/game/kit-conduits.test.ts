@@ -40,10 +40,10 @@ function battle(id: ConduitId): BattleState {
 }
 
 describe('replacement Omnic catalog, acquisition and stable identity', () => {
-  it('replaces exactly25 entries, retains85 identities, and authors unique bounded interactions and epic devices', () => {
+  it('replaces exactly25 entries, retains90 identities, and authors unique bounded interactions and epic devices', () => {
     expect(kitConduitDesigns).toHaveLength(25);
-    expect(conduits).toHaveLength(85);
-    for (const [rarity, count] of [['Common', 10], ['Rare', 15], ['Legendary', 15], ['Omnic', 45]] as const) {
+    expect(conduits).toHaveLength(90);
+    for (const [rarity, count] of [['Common', 10], ['Rare', 15], ['Legendary', 15], ['Omnic', 45], ['Calamitic', 5]] as const) {
       expect(conduits.filter((entry) => entry.rarity === rarity)).toHaveLength(count);
     }
     expect(new Set(kitConduitDesigns.map((entry) => entry.id)).size).toBe(25);

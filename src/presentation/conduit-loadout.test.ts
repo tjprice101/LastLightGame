@@ -331,7 +331,7 @@ describe('Conduit loadout (D-229)', () => {
     host.querySelector<HTMLSelectElement>('[data-loadout-sort]')!.value = 'rarity';
     host.querySelector<HTMLSelectElement>('[data-loadout-sort]')!.dispatchEvent(new Event('change', { bubbles: true }));
     const rarities = visibleIds(host).map(id => getConduit(id as never).rarity);
-    expect(rarities[0]).toBe('Omnic');
+    expect(rarities[0]).toBe('Calamitic');
     expect(wallet).toEqual(before);
   });
 

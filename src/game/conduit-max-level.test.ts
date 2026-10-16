@@ -16,7 +16,7 @@ function fixture() {
 }
 
 describe('Conduit Max Level plans and transactions', () => {
-  it('uses each rarity cost and every exact affordability boundary for all 85 ordinary names', () => {
+  it('uses each rarity cost and every exact affordability boundary for all 90 ordinary names', () => {
     for (const conduit of conduits) for (let currentLevel = 0; currentLevel <= 5; currentLevel++) {
       const account = { ...emptyAccount(), conduits: { [conduit.id]: 1 },
         conduitUpgrades: { [conduit.id]: currentLevel }, mechanicalComponents: 0 };

@@ -158,6 +158,7 @@ describe('enemy loot dialogs and Conduit details', () => {
 
   it('shares complete upgrade-aware effect/lore information with the Conduit Archive', () => {
     const account = emptyAccount();
+    account.calamityClears = { machines: 1 };
     const template = document.createElement('template');
     template.innerHTML = archives(account);
     const dialogs = new Map(Array.from(template.content.querySelectorAll('dialog')).map(dialog => [dialog.id, dialog]));
