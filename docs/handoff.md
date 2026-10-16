@@ -34,7 +34,12 @@
   horizontal container overflow or overflowing native rows. Visual review
   confirms the illustrated frames remain visible. Fixtures are removed and
   localStorage remains empty; no account funding or transactions.
-- Publication verification follows after the release deploys.
+- Release `2e59c21` is live. Pages run `38850541522` passes build/tests/deploy.
+  All27 hosted native PNGs return HTTP200 with SHA256 matching the installed
+  exports. All six JS/CSS entry assets return HTTP200 and match the tested
+  production bytes. Hosted `main-CFSOhxBa.js` contains all27 mappings and the
+  accessible native readout markup; SHA256:
+  `eeaed645a619df8eafb9c9ddad0f097b0e66622aee21fff01aacccda096838f2`.
 
 ## Visible level-based enemy strength (D-322)
 
