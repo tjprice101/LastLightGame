@@ -1,5 +1,11 @@
 # Current state and handoff
 
+## Current-state descriptions only (D-331)
+
+- Removed remnant clauses ("No Burn, low-health bonus or fire charges", "No Ember bank",
+  "no retired Bloom", "no longer ...") from all 16 native kits and the redesigned
+  Conduits. Mechanics and numbers unchanged; a regression test bans these phrases.
+
 ## Field cards show live values only
 
 - Removed the white SVG "native mechanic cue" overlays (Banked fire, Burn

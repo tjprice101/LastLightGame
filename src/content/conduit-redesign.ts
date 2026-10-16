@@ -494,7 +494,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "meridian-inverter": {
-    "description": "Your native shield abilities restore living allies' HP instead of offering their authored shields, at 75% -> 150% of the final native shield offer. They no longer create native shield growth/absorption resources. Existing unrelated shields remain.",
+    "description": "Your native shield abilities restore living allies' HP at 75% -> 150% of the final native shield amount and grant no shield. Existing unrelated shields remain.",
     "ranges": [
       {
         "base": 75,
@@ -1148,7 +1148,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-sprout-1": {
-    "description": "Add a 2% R team heal after each living ally's first native ordinary-skill activation that round, including Flora's. Maximum three pulses per round; no pulse from Last Flare, assists, Conduit effects or a fallen Flora. Seeds remain unchanged; no retired Bloom is earned.",
+    "description": "Add a 2% R team heal after each living ally's first native ordinary-skill activation that round, including Flora's. Maximum three pulses per round; no pulse from Last Flare, assists, Conduit effects or a fallen Flora. Seeds remain unchanged.",
     "ranges": []
   },
   "master-sprout-2": {
@@ -1180,11 +1180,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-aurora-3": {
-    "description": "After an enemy carrying Aurora's unconsumed native Seal removes an ally's HP with a direct hit, heal the most injured other living ally for 50% of that HP loss, capped at 10% H per enemy phase. No revival or routed-damage trigger; a special that consumes the Seal no longer qualifies.",
+    "description": "After an enemy carrying Aurora's unconsumed native Seal removes an ally's HP with a direct hit, heal the most injured other living ally for 50% of that HP loss, capped at 10% H per enemy phase. No revival or routed-damage trigger; a special that consumes the Seal does not qualify.",
     "ranges": []
   },
   "master-bliss-1": {
-    "description": "Before Skill 2, automatically pay 10% H if Bliss can remain at 1 HP or more. Divide that paid HP equally as additional native healing for the other living allies, in any posture. Her ordinary posture effects remain. No other living ally means no payment; no retired Bloom is created.",
+    "description": "Before Skill 2, automatically pay 10% H if Bliss can remain at 1 HP or more. Divide that paid HP equally as additional native healing for the other living allies, in any posture. Her ordinary posture effects remain. With no other living ally, no HP is paid.",
     "ranges": []
   },
   "master-bliss-2": {
@@ -1240,11 +1240,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-razor-3": {
-    "description": "Razor's first Skill 1 hit on each surviving enemy Silences it once per encounter: its next scheduled skill becomes Normal Attack, then Silence ends. Normal Attacks do not consume Silence. No Weaken or additional Wounds are granted.",
+    "description": "Razor's first Skill 1 hit on each surviving enemy Silences it once per encounter: its next scheduled skill becomes Normal Attack, then Silence ends. Normal Attacks do not consume Silence.",
     "ranges": []
   },
   "master-rosetta-1": {
-    "description": "Replace the two-contributor Quarry shield payout with one 48% R shield on the lowest-HP-ratio living ally, including a non-contributor. The same once-per-turn contribution gate remains; no passive heal or retired Grace.",
+    "description": "Replace the two-contributor Quarry shield payout with one 48% R shield on the lowest-HP-ratio living ally, including a non-contributor. Contributions are limited to once per turn.",
     "ranges": []
   },
   "master-rosetta-2": {
@@ -1288,7 +1288,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-nerithe-3": {
-    "description": "Ocean Beyond the Map deals 50% less direct damage but no longer imposes next-turn recovery. Its 100 Gauge base cost, native Weaken and one-action limit remain; it does not grant another action on the cast turn.",
+    "description": "Ocean Beyond the Map deals 50% less direct damage and imposes no next-turn recovery. Its 100 Gauge base cost, native Weaken and one-action limit remain; it does not grant another action on the cast turn.",
     "ranges": []
   },
   "master-orvella-1": {
@@ -1308,7 +1308,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-vaelor-2": {
-    "description": "Skill 2 cast during Rise also applies generated Weaken of 15% for one enemy phase to surviving direct-hit targets. No retired Tempest spending, native resource hooks, or overwrite of stronger Weaken. Tune/Crescendo and Last Flare are unchanged.",
+    "description": "Skill 2 cast during Rise also applies generated Weaken of 15% for one enemy phase to surviving direct-hit targets. A stronger existing Weaken is not overwritten. Tune/Crescendo and Last Flare are unchanged.",
     "ranges": []
   },
   "master-vaelor-3": {

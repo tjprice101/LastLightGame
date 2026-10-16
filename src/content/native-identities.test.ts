@@ -161,3 +161,13 @@ describe('approved sixteen native identities', () => {
     expect(described.nativeIdentity).toBeUndefined();
   });
 });
+
+describe('current-state copy', () => {
+  it('describes only current kit and Conduit behavior, never retired mechanics', async () => {
+    const { conduitRedesign } = await import('./conduit-redesign');
+    const text = JSON.stringify([nativeIdentities, conduitRedesign]);
+    for (const remnant of [/retired/i, /no longer/i, /low-health bonus/i, /\b(Ember|Ward|Bloom) bank/i, /fire charges/i, /Tempest counter/i, /instead of offering/i, /Does not change scheduling/i]) {
+      expect(text).not.toMatch(remnant);
+    }
+  });
+});
