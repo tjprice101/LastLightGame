@@ -5,6 +5,13 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Nonblocking artwork loading (D-328):** navigation no longer waits on hidden
+tabs, closed dialogs or offscreen images, or rejects a successful render after
+12 seconds. Visible art gets a1500ms budget; slow images continue loading,
+real failures have per-image Retry controls. Menu art defaults to lazy loading.
+Calamity also has larger boss art, readable reward rows and compact narrow-screen
+navigation/header/dock. [Runtime contract](art-workflow.md#runtime-artwork-loading-and-recovery-d-328).
+
 **Calamity layout refresh (D-327):** one selected EX tier replaces three tall
 columns across all twelve activities and standalone Roses. Boss art, stats,
 rewards and entry fit together on desktop; detailed rules use native dialogs.

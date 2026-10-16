@@ -1,5 +1,43 @@
 # Current state and handoff
 
+## Nonblocking artwork and further Calamity corrections (D-328)
+
+- Owner reports "Artwork loading timed out" on every live refresh. Root loader
+  awaited all non-lazy img decodes in the entire rendered page, including
+  hidden activity/tier panels and closed dialogs, then rejected successful
+  navigation after12 seconds. This was not a missing-file deployment fix.
+- Transition readiness now excludes hidden/closed/offscreen art, promotes only
+  visible images to eager loading and caps the artwork hold at1500ms. Slow
+  images continue loading after reveal, without a timeout error or repeating
+  entry/account actions. Actual failures log errors; entry/render errors still
+  reject and restore the previous inert state. Fades/entrance mechanics remain.
+- Shared body-level artwork handling defaults menu img nodes to async/native
+  lazy loading (explicit attributes and battle loading retained), logs actual
+  failures and offers one per-image Retry outside existing action buttons.
+  Success removes it. Same-origin retries retain path/revision; foreign signed
+  URLs are unchanged. Calamity bosses keep their scene-specific Retry.
+- Calamity boss framing is larger, reward rows are more readable, redundant
+  chest copy is shorter and desktop dock labels no longer split. Narrow
+  Calamity Gameplay navigation/header/dock are compact, instead of letting
+  the activity rail occupy the first screen.44px actions and exact values
+  remain; Normal composition is unchanged.
+- `npm test -- src/presentation/activity-transition.test.ts
+  src/presentation/artwork-loading.test.ts src/presentation/calamity.test.ts
+  src/presentation/battle-entrance.test.ts src/presentation/menu-history.test.ts
+  --maxWorkers=2` passes88 tests/5 files; `npm run build` passes with the existing
+  chunk advisory. Tests cover hidden/offscreen skips, slow/failed/late images,
+  actual error logs, lazy policies, retry identity, click isolation and disposal.
+- Isolated Chrome verifies the actual Gameplay/Header composition with built
+  CSS across36 tiers at five sizes (180 cases), no horizontal overflow and
+  desktop panels within1280x720/1577x768. Hidden never-resolving image decodes
+  are never invoked; an on-screen stalled decode still reveals/restores input
+  in under3.4s including both800ms fades. Real blocked currency art does not
+  abort navigation; its generic Retry restores the256px image. The Calamity
+  Retry independently restores a blocked960px boss. All18 live Calamity images
+  decode successfully. No account data/storage modifications.
+- [Runtime specification](art-workflow.md#runtime-artwork-loading-and-recovery-d-328)
+  and [Calamity presentation](calamity-mode.md#compact-tier-browser-d-327).
+
 ## Compact Calamity browser and artwork investigation (D-327)
 
 - Replaced the three tall cards with accessible EX+1/2/3 tabs and one selected

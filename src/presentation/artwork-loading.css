@@ -1,0 +1,17 @@
+#app .artwork-retry, .artwork-retry {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  max-width: 100%;
+  padding: .5rem .75rem;
+  border: 1px solid #c77f7f;
+  border-radius: .5rem;
+  background: #211717;
+  color: #fff;
+  font-size: .85rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}

@@ -2316,10 +2316,14 @@ only HP, Defense and Shatter Gauge for allies, and HP/Defense for enemies.
 
 Changing sanctuary destinations, entering a dungeon/Adventure, or opening a
 character shortcut from Home uses a black loading curtain with a small
-bottom-right **Loading!** track. Content renders and artwork decodes behind it;
-input is inert until the curtain clears and destination heading regains focus.
+bottom-right **Loading!** track. Content renders behind it. D-328 gives only
+visible, on-screen artwork a1500ms decode budget, excluding hidden tabs,
+closed dialogs and offscreen lists. Slow images continue loading after reveal;
+they cannot turn a successful navigation into an "Artwork loading timed out"
+error. Real failures are logged and have per-image Retry controls. Input is
+inert until the curtain clears and destination heading regains focus.
 Under D-281, fade to black and reveal each take800ms with ease-in-out rather
-than the former220ms. The loading hold and artwork readiness remain unchanged;
+than the former220ms. D-328 changes artwork readiness to the bounded policy above;
 reduced motion still skips the fades. Music changes use a separate1.6-second
 crossfade, independent of battle animation speed; see the [Music contract](../Music/README.md).
 Same-page taps, character tab updates, and gameplay category filters do not fade.

@@ -2,6 +2,7 @@ import { reducedMotion } from './settings';
 
 let active: Promise<void> | null = null;
 export const activityFadeDuration = 800;
+export const artworkWaitDuration = 1500;
 
 export function activityTransitionPending(): boolean {
   return active !== null;
@@ -46,20 +47,29 @@ async function runTransition(enter: () => void | Promise<void>): Promise<void> {
     await fade(overlay, 0, 1);
     bar.style.width = '35%';
     await enter();
-    const images = Array.from(root.querySelectorAll<HTMLImageElement>('img:not([loading="lazy"])'));
+    // Hidden tabs, closed dialogs and offscreen galleries must not gate navigation.
+    const images = Array.from(root.querySelectorAll<HTMLImageElement>('img')).filter(image => {
+      if (image.closest('[hidden], dialog:not([open])')) return false;
+      const rect = image.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.right > 0
+        && rect.top < window.innerHeight && rect.left < window.innerWidth;
+    });
     let loaded = 0;
+    let waiting = true;
     const loading = Promise.all(images.map(async (image) => {
+      image.loading = 'eager';
       try { await image.decode(); }
-      catch (error) { throw new Error(`Activity artwork could not load: ${image.alt || image.src}`, { cause: error }); }
+      catch (error) { console.error('Activity artwork could not load', image.currentSrc || image.src, error); }
       loaded++;
-      bar.style.width = `${35 + loaded / images.length * 65}%`;
+      if (waiting) bar.style.width = `${35 + loaded / images.length * 65}%`;
     }));
     let timeout: ReturnType<typeof setTimeout> | undefined;
     try {
-      await Promise.race([loading, new Promise<never>((_, reject) => {
-        timeout = setTimeout(() => reject(new Error('Activity artwork loading timed out. Please retry or reload.')), 12000);
+      await Promise.race([loading, new Promise<void>(resolve => {
+        timeout = setTimeout(resolve, artworkWaitDuration);
       })]);
     } finally {
+      waiting = false;
       clearTimeout(timeout);
     }
     bar.style.width = '100%';

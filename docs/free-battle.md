@@ -369,7 +369,12 @@ animation interruption/error retains the resolved state and existing error repor
 Entering Adventure or any elemental dungeon uses a black curtain with a
 small **Loading!** label and progress track in the bottom-right corner. The
 curtain fades in (800ms, D-281), the destination renders behind it, supplied visible
-artwork decodes, then the curtain fades away (800ms), both with ease-in-out.
+artwork gets a bounded1500ms decode opportunity, then the curtain fades away
+(800ms), both with ease-in-out. D-328 excludes hidden panels, closed dialogs
+and below-viewport art from this wait. Visible images are promoted to eager
+loading; remaining menu art uses native lazy loading unless explicitly authored
+otherwise. Slow images continue loading after reveal and never reject a
+successfully rendered destination.
 The bar tracks preparation/
 decoded images, not network byte progress. Missing/pending dungeon art uses its
 existing neutral visuals rather than requesting nonexistent images.
@@ -386,8 +391,11 @@ not replay an already completed entrance.
 Other sanctuary navigation and readable story/event activity destinations also
 use the curtain, while same-screen character tabs and category filtering remain
 instant. Repeated navigation shares the active transition rather than duplicating
-entry. Input/focus restore after loading; artwork failures/timeouts surface errors
-and remove the curtain. Encounter state and earned rewards are preserved.
+entry. Input/focus restore after loading. Actual image failures are logged and
+offer a per-image Retry control throughout the UI (Calamity bosses keep their
+scene-specific error control). Merely exceeding the artwork wait budget is not
+an operation failure. Render/entry errors still reject and remove the curtain;
+the previous inert state is restored. Encounter state and earned rewards are preserved.
 Both game/device reduced motion skip fading/sliding and show a short static
 loading indicator before revealing the ready encounter.
 

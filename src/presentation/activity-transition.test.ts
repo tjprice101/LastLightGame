@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { activityFadeDuration, activityTransitionPending, transitionActivity } from './activity-transition';
+import { activityFadeDuration, artworkWaitDuration, activityTransitionPending, transitionActivity } from './activity-transition';
 import { reducedMotion } from './settings';
 
 vi.mock('./settings', () => ({ reducedMotion: vi.fn(() => false) }));
@@ -8,9 +8,10 @@ afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
   vi.mocked(reducedMotion).mockReturnValue(false);
+  vi.restoreAllMocks();
 });
 
-function fixture(images: { decode: () => Promise<void>; alt?: string }[] = []) {
+function fixture(images: { decode: () => Promise<void>; alt?: string; hidden?: boolean; offscreen?: boolean }[] = []) {
   vi.useFakeTimers();
   const bar = { style: { width: '' } };
   const fades: { frames: Keyframe[]; options: KeyframeAnimationOptions; finish: () => void }[] = [];
@@ -24,10 +25,16 @@ function fixture(images: { decode: () => Promise<void>; alt?: string }[] = []) {
       return { finished, cancel: vi.fn() };
     },
   };
-  const root = { inert: false, querySelectorAll: () => images, querySelector: () => ({ focus: vi.fn() }) };
+  const prepared = images.map(image => ({
+    ...image, src: 'test.png', loading: 'lazy',
+    closest: () => image.hidden ? {} : null,
+    getBoundingClientRect: () => ({ width: 100, height: 100, top: image.offscreen ? 1000 : 0, left: 0, bottom: image.offscreen ? 1100 : 100, right: 100 }),
+  }));
+  const root = { inert: false, querySelectorAll: () => prepared, querySelector: () => ({ focus: vi.fn() }) };
   const append = vi.fn();
   vi.stubGlobal('document', { querySelector: () => root, createElement: () => overlay, body: { append } });
-  return { root, overlay, fades, bar, append };
+  vi.stubGlobal('window', { innerWidth: 1280, innerHeight: 720 });
+  return { root, overlay, fades, bar, append, images: prepared };
 }
 
 describe('activity black loading transition', () => {
@@ -87,11 +94,15 @@ describe('activity black loading transition', () => {
     expect(activityTransitionPending()).toBe(false);
   });
 
-  it('reports failed artwork loading and preserves the previous inert state', async () => {
+  it('logs failed artwork without rejecting a successful navigation and preserves the previous inert state', async () => {
     vi.mocked(reducedMotion).mockReturnValue(true);
     const f = fixture([{ alt: 'Missing ally', decode: () => Promise.reject(new Error('Decode failure')) }]);
+    const report = vi.spyOn(console, 'error').mockImplementation(() => {});
     f.root.inert = true;
-    await expect(transitionActivity(() => {})).rejects.toThrow('Activity artwork could not load: Missing ally');
+    const transition = transitionActivity(() => {});
+    await vi.runAllTimersAsync();
+    await transition;
+    expect(report).toHaveBeenCalledWith('Activity artwork could not load', 'test.png', expect.any(Error));
     expect(f.root.inert).toBe(true);
     expect(f.overlay.remove).toHaveBeenCalledOnce();
     expect(vi.getTimerCount()).toBe(0);
@@ -105,13 +116,44 @@ describe('activity black loading transition', () => {
     expect(f.overlay.remove).toHaveBeenCalledOnce();
   });
 
-  it('times out unresponsive artwork and restores controls', async () => {
+  it('reveals a successful screen after the bounded artwork wait while slow images keep loading', async () => {
     vi.mocked(reducedMotion).mockReturnValue(true);
     const f = fixture([{ decode: () => new Promise<void>(() => {}) }]);
-    const assertion = expect(transitionActivity(() => {})).rejects.toThrow('loading timed out');
-    await vi.advanceTimersByTimeAsync(12000);
-    await assertion;
+    const transition = transitionActivity(() => {});
+    await vi.advanceTimersByTimeAsync(artworkWaitDuration + 120);
+    await transition;
     expect(f.root.inert).toBe(false);
     expect(f.overlay.remove).toHaveBeenCalledOnce();
+  });
+
+  it('does not mutate a removed loading bar when artwork completes after the wait budget', async () => {
+    vi.mocked(reducedMotion).mockReturnValue(true);
+    let finish = () => {};
+    const f = fixture([{ decode: () => new Promise<void>(resolve => { finish = resolve; }) }]);
+    const transition = transitionActivity(() => {});
+    await vi.advanceTimersByTimeAsync(artworkWaitDuration + 120);
+    await transition;
+    expect(f.bar.style.width).toBe('100%');
+    finish();
+    await Promise.resolve();
+    expect(f.bar.style.width).toBe('100%');
+    expect(activityTransitionPending()).toBe(false);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('never decodes hidden panels, closed dialogs or below-viewport artwork during navigation', async () => {
+    vi.mocked(reducedMotion).mockReturnValue(true);
+    const hidden = vi.fn(() => new Promise<void>(() => {}));
+    const offscreen = vi.fn(() => new Promise<void>(() => {}));
+    const visible = vi.fn(() => Promise.resolve());
+    const f = fixture([{ decode: hidden, hidden: true }, { decode: offscreen, offscreen: true }, { decode: visible }]);
+    const transition = transitionActivity(() => {});
+    await vi.advanceTimersByTimeAsync(120);
+    await transition;
+    expect(hidden).not.toHaveBeenCalled();
+    expect(offscreen).not.toHaveBeenCalled();
+    expect(visible).toHaveBeenCalledOnce();
+    expect(f.images.map(image => image.loading)).toEqual(['lazy', 'lazy', 'eager']);
+    expect(vi.getTimerCount()).toBe(0);
   });
 });

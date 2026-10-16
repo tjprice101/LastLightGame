@@ -41,6 +41,7 @@ import { applyBattleSpeed, battleSpeeds, loadBattleSpeed, parseBattleSpeed, save
 import { celebrateUpgrade } from './presentation/upgrade-celebration';
 import { presentUpgrade } from './presentation/upgrade-result';
 import { activityTransitionPending, transitionActivity } from './presentation/activity-transition';
+import { bindArtworkLoading } from './presentation/artwork-loading';
 import { createBackdrop } from './presentation/backdrop';
 import { applyMotion, loadMotion, saveMotion, reducedMotion, type MotionPreference } from './presentation/settings';
 import { commands, defaultBindings, loadBindings, saveBindings, validateBindings } from './game/hotkeys';
@@ -117,6 +118,7 @@ import.meta.hot?.dispose(() => music.dispose());
 const root = document.querySelector<HTMLElement>('#app');
 if (!root) throw new Error('Application root is missing.');
 const app = root;
+bindArtworkLoading(document.body);
 bindInformation(app);
 bindSelectionPanels(app);
 installButtonStyle(document.body);

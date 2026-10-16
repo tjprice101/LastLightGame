@@ -22,7 +22,7 @@
 .activity-difficulty:has([data-difficulty="calamity"][aria-selected="true"]) > .activity-difficulty-tabs { margin-bottom: .5rem; }
 .calamity-section { margin-block: 1.5rem; padding: .75rem; border: 1px solid #a94646; border-radius: 12px; background: #211b1b; color: #fff; min-width: 0; }
 #app .calamity-section .calamity-heading { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .5rem; }
-#app .calamity-section .calamity-heading h3 { margin: 0; font-size: clamp(1.1rem, 1.6vw, 1.5rem); line-height: 1.25; letter-spacing: normal; text-transform: none; }
+#app .calamity-section .calamity-heading h3 { margin: 0; font-size: clamp(1.1rem, 1.6vw, 1.5rem); line-height: 1.25; letter-spacing: normal; text-transform: none; text-wrap: balance; }
 #app .calamity-section .calamity-heading p { margin: .3rem 0 0; font-size: .85rem; line-height: 1.4; }
 .calamity-heading > div { min-width: 0; }
 .calamity-heading > button { flex: 0 0 auto; min-height: 44px; }
@@ -38,7 +38,7 @@
 .calamity-tier-arena { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; filter: brightness(.35) saturate(.65); }
 .calamity-tier-boss { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; padding-bottom: 70px; object-fit: contain; filter: drop-shadow(0 2px 2px #000) drop-shadow(0 0 8px #ffffff60); }
 .calamity-boss-heading { position: absolute; inset: auto 0 0; padding: .75rem; background: linear-gradient(transparent, #080808e8 20%); }
-.calamity-tier-details { display: grid; gap: .65rem; align-content: start; min-width: 0; line-height: 1.4; }
+.calamity-tier-details { display: grid; gap: .5rem; align-content: start; min-width: 0; line-height: 1.4; }
 #app .calamity-section .calamity-boss-heading h4 { font-size: clamp(1.05rem, 1.5vw, 1.4rem); line-height: 1.25; overflow-wrap: anywhere; }
 #app .calamity-section .calamity-boss-heading p { margin-top: .2rem; font-size: .85rem; text-transform: capitalize; }
 #app .calamity-section .enemy-strength { margin: 0; padding: .65rem; }
@@ -53,7 +53,7 @@
 .calamity-chest-heading small { display: block; margin-top: .2rem; color: #c7c3c3; }
 #app .calamity-chest-heading .calamity-chest-art { flex: 0 0 52px; width: 52px; height: 52px; margin: 0; }
 .calamity-reward-list { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
-#app .calamity-reward-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .5rem; margin: 0; padding: 0; font-size: .85rem; line-height: 1.35; }
+#app .calamity-reward-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .6rem; margin: 0; padding: 0; font-size: .9rem; line-height: 1.5; }
 .calamity-reward-list span { overflow-wrap: anywhere; }
 .calamity-reward-list strong { font-variant-numeric: tabular-nums; text-align: right; }
 #app .calamity-reward-list .currency-reward { display: flex; align-items: center; gap: .4rem; min-width: 0; }
@@ -73,13 +73,43 @@
 .calamity-section th, .calamity-section td { text-align: left; padding: .4rem; }
 .calamity-placeholder { display: grid; place-items: center; min-height: 96px; color: #fff; border: 1px solid #a94646; padding: 1rem; }
 @media (min-width: 1200px) {
-  #app .calamity-section .calamity-tier { grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); }
+  #app .calamity-section .calamity-tier { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
   .calamity-tier-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .calamity-tier-actions { grid-column: 1 / -1; }
 }
 @media (max-width: 700px) {
   #app .calamity-section .calamity-heading { flex-wrap: wrap; }
   #app .calamity-section .calamity-tier { grid-template-columns: minmax(0, 1fr); }
-  .calamity-tier-scene { min-height: 0; height: clamp(240px, 60vw, 300px); }
+  .calamity-tier-scene { min-height: 0; height: clamp(180px, 45vw, 240px); }
+  .calamity-tier-boss { padding-bottom: 48px; }
+  .calamity-boss-heading { padding: .5rem; }
+  #app .calamity-section .calamity-boss-heading h4 { font-size: 1rem; }
+  #app .calamity-section .calamity-boss-heading p { font-size: .8rem; }
+  .calamity-heading > button { width: 100%; }
   #app .calamity-tier-tabs button { flex-direction: column; gap: .2rem; padding: .5rem; }
+}
+@media (max-width: 960px) {
+  #app .ref-play:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .ref-activity-sidebar { padding: .5rem; }
+  #app .ref-play:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .ref-activity-sidebar > :is(header, button) { display: none; }
+  #app .ref-play:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .activity-categories { display: flex; flex-direction: row; gap: .25rem; overflow-x: auto; }
+  #app .ref-play:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .ref-activity-section { display: contents; }
+  #app .ref-play:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .activity-categories a { flex: 0 0 auto; padding: .5rem .65rem; }
+  #app .ref-play:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .activity-categories :is(h3, small) { display: none; }
+  #app .ref-play:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .activity-categories strong { font-size: .85rem; white-space: nowrap; }
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .sanctuary-header { display: block; min-height: 0; padding: .4rem .6rem; }
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .sanctuary-brand { display: none; }
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .sanctuary-wallet { display: grid; grid-template-columns: minmax(0, 1fr) repeat(4, 44px); gap: .25rem; width: 100%; }
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .currency-strip { display: flex; flex-direction: row; grid-column: 1; width: 100%; min-width: 0; gap: .25rem; }
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .currency-strip button { min-height: 44px; padding: .35rem .5rem; gap: .35rem; }
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .currency-strip small { display: none; }
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .currency-strip button { flex: 1 1 0; min-width: 0; }
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .currency-strip .currency-icon { flex: 0 0 20px; width: 20px; height: 20px; }
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .currency-strip strong { min-width: 0; overflow-wrap: anywhere; font-size: .8rem; }
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .sanctuary-wallet > button { width: 44px; min-width: 44px; height: 44px; min-height: 44px; padding: .5rem; }
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .sanctuary-dock { min-height: 0; padding: .35rem; }
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .sanctuary-dock button { min-width: 0; min-height: 44px; padding: .4rem .15rem; gap: .2rem; font-size: .75rem; overflow-wrap: normal; white-space: nowrap; }
+}
+@media (min-width: 961px) and (max-width: 1400px) {
+  #app .sanctuary-shell:has(.activity-group:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .sanctuary-dock button { padding: .5rem; font-size: .85rem; white-space: nowrap; overflow-wrap: normal; }
+  #app .calamity-section { padding: .5rem; }
 }

@@ -129,7 +129,7 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
         <div class="calamity-boss-description">${enemyStrength({ ...encounter, boss: true })}
           ${information(`${prefix}-${tier}-mechanics`, `${escapeDialogText(encounter.name)} · Boss abilities`, `<p>${escapeDialogText(encounter.description)}</p>`, 'Boss abilities')}</div>
         <section class="calamity-tier-reward" aria-label="Victory reward">
-          <div class="calamity-chest-heading">${calamityChestIcon(tier)}<div><h5>Victory reward</h5><p>1 ${escapeDialogText(chest.name.replace(`${definition.name} `, ''))}</p><small>Open in Inventory. Contains:</small></div></div>
+          <div class="calamity-chest-heading">${calamityChestIcon(tier)}<div><h5>Victory reward</h5><p>1 ${escapeDialogText(chest.name.replace(`${definition.name} `, ''))}</p><small>Open in Inventory.</small></div></div>
           ${calamityChestContents(activity, tier)}</section>
         <footer class="calamity-tier-actions">
         <button class="primary-button" data-calamity="${activity}" data-calamity-tier="${tier}" ${access?.unlocked ? '' : 'disabled'}>Enter EX+${tier}</button>

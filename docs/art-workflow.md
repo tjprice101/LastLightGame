@@ -1,5 +1,29 @@
 # Art and asset workflow
 
+## Runtime artwork loading and recovery (D-328)
+
+`presentation/artwork-loading.ts` owns a single body-level capture listener
+for real image failures/successes and observes new image nodes. Menu images
+default to async decoding and native lazy loading; explicit loading attributes
+and battle image loading remain intact. This avoids eagerly fetching all
+hidden activity cards, tier panels, dialogs and galleries on each render.
+The transition loader promotes only currently visible on-screen images to
+eager loading and waits at most1500ms for them. Slow artwork keeps loading
+without rejecting navigation, repeating an account action or trapping input.
+
+Actual failed image requests log their URL and offer one adjacent Retry button.
+Retries preserve the path/byte revision and add a fresh request parameter for
+same-origin images only; external signed URLs are not edited. A successful
+load removes the retry control. Retry buttons sit outside existing links/buttons,
+do not trigger their navigation/actions and do not substitute unrelated art.
+Calamity bosses retain their scene-specific recovery control.
+
+No background removal, image bytes, asset revisions, deployment base, gameplay
+or account data change. See [loading/entrance contract](free-battle.md#activity-loading-and-encounter-entrance).
+Validate `npm test -- src/presentation/activity-transition.test.ts
+src/presentation/artwork-loading.test.ts src/presentation/battle-entrance.test.ts
+--maxWorkers=2` plus a fresh-browser slow/failed-image navigation test.
+
 ## Delivered Calamitic artwork (D-325)
 
 All six supplied root PNGs are archived byte-for-byte under

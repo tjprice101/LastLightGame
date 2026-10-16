@@ -28,6 +28,16 @@ use reviewed offline key removal. See [intake workflow](art-workflow.md#calamity
 
 ### Compact tier browser (D-327)
 
+D-328 adds larger boss framing and more readable reward rows, shortens the
+repeated chest copy and prevents desktop dock labels splitting into individual
+letters. While Calamity is selected on narrow Gameplay screens, activity
+navigation becomes a compact horizontal chooser rather than a full-height rail;
+the currency/utility header and bottom dock retain their actions in compact
+44px controls. Normal screens keep their existing composition. Mobile
+Calamity art uses a180-240px scene instead of a large square. Exact balances,
+rewards, locks, keyboard tabs and native dialogs remain intact. Desktop
+panels still fit at1280x720; mobile content scrolls rather than clipping.
+
 The owner rejects the tall, crowded three-column presentation. All twelve
 activities and standalone Roses now show EX+1/2/3 as keyboard-accessible tier
 tabs, with one boss panel visible at a time. Desktop keeps the boss/arena,
