@@ -2,4 +2,5 @@
 export const currencyArtRevisions: Readonly<Record<string, string>> = {
   'fractalis': '286ac742e7045b0b',
   'lycalis': 'aa20d2a455a9099c',
+  'calamitic-tokens': '1902911f782abda4',
 };

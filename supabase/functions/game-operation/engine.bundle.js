@@ -2066,7 +2066,7 @@ var conduits = [
     rarity: "Calamitic",
     price: null,
     power: "Rise's annihilation machinery",
-    art: null,
+    art: entry.id,
     element: null,
     mechanic: null,
     buffs: [],

@@ -11,6 +11,8 @@ import { calamityLoot, calamityOpeningReward } from './calamity';
 import { rollCalamityChest } from '../content/calamity';
 import { conduitStatuses } from './conduit-status';
 import { currencyIcon, currencyArt } from './currency-icon';
+import { currencyArtRevisions } from '../content/currency-art-revisions';
+import { conduitArtRevisions } from '../content/conduit-art-revisions';
 
 afterEach(() => { document.body.replaceChildren(); });
 const first = calamiticConduits[0].id;
@@ -34,6 +36,7 @@ describe('Calamitic market and shared surfaces', () => {
       const lock = host.querySelector('.calamitic-store-lock')!;
       expect(lock.textContent).toBe(calamiticLockMessage);
       expect(host.querySelectorAll('[data-buy-conduit], [data-store-conduit], dialog')).toHaveLength(0);
+      expect(host.querySelectorAll('img')).toHaveLength(0);
       expect(host.textContent).not.toMatch(/beat|defeat|unlock|EX\+|Tokens|100|Artwork pending/i);
       for (const design of calamiticConduits) expect(host.textContent).not.toContain(design.name);
       expect(account).toEqual(before);
@@ -41,14 +44,17 @@ describe('Calamitic market and shared surfaces', () => {
     }
   });
 
-  it('shows five universal pending-art creations after any recorded EX clear and prevents duplicate purchases', () => {
+  it('shows five universal illustrated creations after any recorded EX clear and prevents duplicate purchases', () => {
     const account = unlocked();
     const host = render(conduitStore(account, first, 'Calamitic'));
     expect(host.querySelectorAll('[data-store-conduit]')).toHaveLength(5);
     expect(host.textContent).toContain('Universal');
     expect(host.textContent).toContain('100 Calamitic Tokens');
     expect(host.querySelector<HTMLButtonElement>('[data-buy-conduit]')!.disabled).toBe(false);
-    expect(host.querySelectorAll('img')).toHaveLength(0);
+    for (const design of calamiticConduits) {
+      expect(host.querySelector(`img[src*="${design.id}.png?v=${conduitArtRevisions[design.id]}"]`)).not.toBeNull();
+    }
+    expect(host.querySelector(`img[src="${currencyArt('calamitic-tokens')}"]`)).not.toBeNull();
     updateConduitStore(host, { ...account, calamiticTokens: 0, conduits: { [first]: 1 } }, first, 'Calamitic');
     expect(host.querySelector<HTMLButtonElement>('[data-buy-conduit]')!.disabled).toBe(true);
     expect(host.querySelector('[data-buy-conduit]')!.textContent).toBe('Owned');
@@ -79,11 +85,12 @@ describe('Calamitic market and shared surfaces', () => {
     expect(upgrade.textContent).toContain('10000 / 20000 / 40000 / 70000 / 100000');
     expect(conduitDetails(first)).toContain("Rise's Conduit Store");
     expect(conduitDetails(first)).not.toContain('Awaken the Machines drop');
-    expect(conduitIcon(first)).not.toContain('<img');
+    expect(conduitIcon(first)).toContain(`${first}.png?v=${conduitArtRevisions[first]}`);
     expect(archives(emptyAccount(), 'conduits')).not.toContain(first);
     expect(archives(account, 'conduits')).toContain(first);
-    expect(currencyIcon('calamitic-tokens')).not.toContain('<img');
-    expect(() => currencyArt('calamitic-tokens')).toThrow('not been delivered');
+    expect(currencyIcon('calamitic-tokens')).toContain('<img');
+    expect(currencyArt('calamitic-tokens')).toBe(`${import.meta.env.BASE_URL}assets/currencies/calamitic-tokens.png?v=${currencyArtRevisions['calamitic-tokens']}`);
+    expect(inventory.innerHTML).toContain(currencyArt('calamitic-tokens'));
   });
 
   it('shows exact tokens in every tier preview and in the saved opening receipt', () => {
@@ -91,8 +98,10 @@ describe('Calamitic market and shared surfaces', () => {
       const preview = render(calamityLoot('machines', tier));
       const row = Array.from(preview.querySelectorAll('li')).find(row => row.textContent?.includes('Calamitic Tokens'));
       expect(row?.querySelector('strong')?.textContent).toBe(String(tokens));
+      expect(row?.querySelector('img')?.getAttribute('src')).toBe(currencyArt('calamitic-tokens'));
       const reward = rollCalamityChest('machines', tier, () => 0);
       expect(calamityOpeningReward(`calamity:machines:${tier}`, reward).details).toContain(`${tokens} Calamitic Tokens`);
+      expect(calamityOpeningReward(`calamity:machines:${tier}`, reward).details).toContain(currencyArt('calamitic-tokens'));
     }
   });
 

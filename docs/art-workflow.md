@@ -1,5 +1,42 @@
 # Art and asset workflow
 
+## Delivered Calamitic artwork (D-325)
+
+All six supplied root PNGs are archived byte-for-byte under
+`Art/source/calamitic`, including the singular delivered `Calamitic Token.png`.
+The five machines resolve through their stable catalog IDs in
+`public/assets/conduits`; the shared currency uses
+`public/assets/currencies/calamitic-tokens.png`. All exports are256px RGBA with
+at most224px content. Existing90 ordinary Conduits now all have installed art.
+
+`Art/provenance/calamitic-art-settings.json` records per-source row-gradient
+keys,101 individually reviewed enclosed-gap seeds, edge decontamination and
+base-only darker green spill regions. The machinery, pale metal, crimson
+ribbons, floating fragments and near-black Throne shadow remain. Internal
+details are not globally hue-deleted. Supplied alpha bypasses cleanup.
+Cathedral's top tip is already at the source edge; export padding does not
+reconstruct clipped source detail or establish the requested original margins.
+`calamitic-art-intake.json` records original/export and decoded-pixel hashes.
+
+Reproduce and validate from archived sources:
+
+```powershell
+python tools\intake_calamitic_art.py
+python tools\intake_calamitic_art.py --apply
+python tools\conduit_art_revisions.py --write
+python -c "import sys;sys.path.insert(0,'tools');from intake_prism_currency_art import write_revisions;write_revisions()"
+python -m unittest discover -s tools -p test_calamitic_art.py -v
+```
+
+Review with `--review <directory>` for dark/light sheets and source-resolution
+composites. Root cleanup additionally requires `--apply --remove-incoming
+--reviewed`, with every archive/export hash verified before deletion.
+Existing85 Conduit exports and other currencies are not reprocessed.
+Shared deployment-base revisioned resolvers cover shop, Inventory, Collections,
+equipment, upgrades and receipts. Calamity previews/opening receipts use the
+same token icon. The exact sealed-shop message still reveals no art/products.
+No combat, economy, ownership, RNG or persistence rules change.
+
 ## Delivered native identity status icons (D-323)
 
 All27 owner-delivered root PNGs are archived byte-for-byte under

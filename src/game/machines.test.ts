@@ -111,8 +111,8 @@ describe('machine content and exact probabilities', () => {
         ...Array<string>(7).fill('atmospheric'), ...Array<string>(8).fill('botanic'),
         ...Array<string>(8).fill('tranquilitic'), ...Array<string>(8).fill('chaotic')].sort());
     expect(conduits.filter((entry) => entry.price !== null)).toHaveLength(10);
-    expect(conduits.filter((entry) => entry.art === null)).toHaveLength(5);
-    expect(conduits.filter((entry) => entry.art === entry.id)).toHaveLength(85);
+    expect(conduits.filter((entry) => entry.art === null)).toHaveLength(0);
+    expect(conduits.filter((entry) => entry.art === entry.id)).toHaveLength(90);
   });
   it('has100 stages 10-120, six distinct machines, every fifth-stage boss and no missing art URLs', () => {
     for (let stage = 1; stage <= 100; stage++) {

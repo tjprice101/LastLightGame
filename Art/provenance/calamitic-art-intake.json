@@ -1,0 +1,810 @@
+{
+  "asset_count": 6,
+  "canvas": 256,
+  "content_limit": 224,
+  "assets": [
+    {
+      "asset": "calamitic-tokens",
+      "incoming": "Calamitic Token.png",
+      "category": "currencies",
+      "source": "Art/source/calamitic/Calamitic Token.png",
+      "source_sha256": "bb179a5c7d08d5fb2182798dfb236390430cc857fa96ca3446d5f1a9dc0ee7a7",
+      "runtime": "public/assets/currencies/calamitic-tokens.png",
+      "runtime_sha256": "1902911f782abda46b94d7d104400d6b1b649cffac4ff95a4a2ef6378b33e4ab",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "c3f42d57f2d950c5bf572137681642e52308c744c164b4e18eb82441b5f99e8e",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "cf1ee0b900977f0571d579a3eee74ee6229ea8941bd9704dc3646d2c90ab28e3",
+      "runtime_content_bbox": [
+        16,
+        17,
+        240,
+        238
+      ],
+      "settings": {
+        "row_gradient": true,
+        "radius": 36,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "background_seeds": [],
+        "review": "Exterior yellow-green gradient only; preserve red energy, pale metal, dark rim and painted inset."
+      }
+    },
+    {
+      "asset": "calamitic-cathedral-final-equation",
+      "incoming": "Cathedral of the Final Equation.png",
+      "category": "conduits",
+      "source": "Art/source/calamitic/Cathedral of the Final Equation.png",
+      "source_sha256": "05ebe3933b7d3707d93f5477f9335cdf48d62b4d6247a16c1d23672cf114cb6d",
+      "runtime": "public/assets/conduits/calamitic-cathedral-final-equation.png",
+      "runtime_sha256": "27a5991a96016148db8bfadc6a1f7617f69e2253ce1d0445af667b4b261ed111",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "47fbfe85c2abdacc36d0c48425aa41ebf6abafcdbb0647115a70e4ad23149f9c",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "b8f874dc86abb6e1465c4ce1117b17f60aab1534e4553545f8ac8fccd5cc10e5",
+      "runtime_content_bbox": [
+        16,
+        18,
+        240,
+        238
+      ],
+      "settings": {
+        "row_gradient": true,
+        "radius": 60,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 3,
+          "distance_ramp": 100
+        },
+        "background_seeds": [
+          [
+            0.4775392,
+            0.33593762
+          ],
+          [
+            0.53320279,
+            0.3076173
+          ],
+          [
+            0.53710897,
+            0.31445362
+          ],
+          [
+            0.49218788,
+            0.40918002
+          ],
+          [
+            0.52050819,
+            0.41210916
+          ],
+          [
+            0.74707073,
+            0.42578079
+          ],
+          [
+            0.58203105,
+            0.47167992
+          ],
+          [
+            0.44433565,
+            0.51953115
+          ],
+          [
+            0.57324265,
+            0.51953115
+          ],
+          [
+            0.42285166,
+            0.55566383
+          ],
+          [
+            0.39257825,
+            0.77148486
+          ],
+          [
+            0.41113311,
+            0.68945305
+          ],
+          [
+            0.59765578,
+            0.68749996
+          ],
+          [
+            0.87695276,
+            0.77148486
+          ],
+          [
+            0.1269529,
+            0.77929722
+          ],
+          [
+            0.89746072,
+            0.78125031
+          ],
+          [
+            0.06738313,
+            0.8369139
+          ],
+          [
+            0.94628899,
+            0.83886699
+          ],
+          [
+            0.40527384,
+            0.84570331
+          ],
+          [
+            0.41015607,
+            0.86230508
+          ],
+          [
+            0.60839828,
+            0.86328113
+          ],
+          [
+            0.42675784,
+            0.8798829
+          ],
+          [
+            0.57128955,
+            0.88671922
+          ]
+        ],
+        "review": "23 indexed key-colored apertures, inner rings, side machinery and lower openwork; retain white metal, red core fragments and base shadow. Base-only darker green spill keys exclude the retained near-black shadow.",
+        "background_regions": [
+          {
+            "polygon": [
+              [
+                0,
+                0.89
+              ],
+              [
+                1,
+                0.89
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            "keys": [
+              [
+                95,
+                115,
+                35
+              ],
+              [
+                65,
+                90,
+                20
+              ],
+              [
+                130,
+                155,
+                45
+              ]
+            ],
+            "radius": 28
+          }
+        ]
+      }
+    },
+    {
+      "asset": "calamitic-causality-funeral-engine",
+      "incoming": "Causality Funeral Engine.png",
+      "category": "conduits",
+      "source": "Art/source/calamitic/Causality Funeral Engine.png",
+      "source_sha256": "54f46860a0055cf9fb711020bb47b0f5396afc8bd9ee4f0fbae9c6444c36afab",
+      "runtime": "public/assets/conduits/calamitic-causality-funeral-engine.png",
+      "runtime_sha256": "b349929b2d39ea77d9f2800d26e6d47cb6c727bdb662f55745593e6570e11b8b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "4dcd7d3ad504a576b83b51bf58b87e112362a399327b2efa997639990bc6d29a",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "267e1ae09e846d9fb4d81483c8c5e45ec130c9afe8b5320c44d4ab51a508a54c",
+      "runtime_content_bbox": [
+        19,
+        16,
+        236,
+        240
+      ],
+      "settings": {
+        "row_gradient": true,
+        "radius": 60,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 3,
+          "distance_ramp": 100
+        },
+        "background_seeds": [
+          [
+            0.48242142,
+            0.30566421
+          ],
+          [
+            0.46289052,
+            0.51464892
+          ],
+          [
+            0.51562497,
+            0.52539042
+          ],
+          [
+            0.23339885,
+            0.5722656
+          ],
+          [
+            0.46874979,
+            0.63281242
+          ],
+          [
+            0.56835942,
+            0.82031213
+          ],
+          [
+            0.52734351,
+            0.71289014
+          ],
+          [
+            0.53906206,
+            0.74707073
+          ],
+          [
+            0.40820297,
+            0.85937495
+          ],
+          [
+            0.58984342,
+            0.85937495
+          ]
+        ],
+        "review": "10 indexed gaps between cables, crimson crossbars, uprights and feet; preserve ivory rails, pale reflections and red flames. Base-only darker green spill keys exclude the retained near-black shadow.",
+        "background_regions": [
+          {
+            "polygon": [
+              [
+                0,
+                0.89
+              ],
+              [
+                1,
+                0.89
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            "keys": [
+              [
+                95,
+                115,
+                35
+              ],
+              [
+                65,
+                90,
+                20
+              ],
+              [
+                130,
+                155,
+                45
+              ]
+            ],
+            "radius": 28
+          }
+        ]
+      }
+    },
+    {
+      "asset": "calamitic-horizon-cleaving-godpress",
+      "incoming": "Horizon-Cleaving Godpress.png",
+      "category": "conduits",
+      "source": "Art/source/calamitic/Horizon-Cleaving Godpress.png",
+      "source_sha256": "53090305fbcbe80cefbca8bdd09bc2ad791abe61805a4486496b762625d5e946",
+      "runtime": "public/assets/conduits/calamitic-horizon-cleaving-godpress.png",
+      "runtime_sha256": "ebc759c07443f56ba43f99e505f1e3d0cc9bb2fdcbaf1d1c3f2427201bf3f8c7",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "da4142e9c7a979050a02b6f53048196d2d1ee27bd2721c4b545e204a1b7e227d",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "4aa8b9f20ed77d4b59c787bf27f4d7844224b5b1a2ace83b4019c18b60cc09b8",
+      "runtime_content_bbox": [
+        18,
+        16,
+        238,
+        240
+      ],
+      "settings": {
+        "row_gradient": true,
+        "radius": 60,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 3,
+          "distance_ramp": 100
+        },
+        "background_seeds": [
+          [
+            0.76269545,
+            0.09765654
+          ],
+          [
+            0.24218726,
+            0.09960963
+          ],
+          [
+            0.35253939,
+            0.12109363
+          ],
+          [
+            0.62695314,
+            0.12109363
+          ],
+          [
+            0.79785109,
+            0.32812525
+          ],
+          [
+            0.14355467,
+            0.42968797
+          ],
+          [
+            0.81347681,
+            0.45214802
+          ],
+          [
+            0.86328113,
+            0.44238256
+          ],
+          [
+            0.31054644,
+            0.46191447
+          ],
+          [
+            0.69043009,
+            0.46289052
+          ],
+          [
+            0.32031289,
+            0.59960987
+          ],
+          [
+            0.23828108,
+            0.60156296
+          ],
+          [
+            0.31445362,
+            0.66210978
+          ],
+          [
+            0.69043009,
+            0.66308582
+          ],
+          [
+            0.34570307,
+            0.64355491
+          ],
+          [
+            0.65039023,
+            0.64257787
+          ],
+          [
+            0.65820359,
+            0.72460968
+          ],
+          [
+            0.34277393,
+            0.74707073
+          ],
+          [
+            0.77050782,
+            0.88964835
+          ],
+          [
+            0.17675822,
+            0.8906254
+          ],
+          [
+            0.89843776,
+            0.90429703
+          ],
+          [
+            0.31445362,
+            0.92773412
+          ],
+          [
+            0.45507815,
+            0.92675808
+          ],
+          [
+            0.6562495,
+            0.92675808
+          ],
+          [
+            0.71777336,
+            0.92968721
+          ],
+          [
+            0.27148462,
+            0.92968721
+          ],
+          [
+            0.23144576,
+            0.92968721
+          ],
+          [
+            0.75878927,
+            0.92968721
+          ],
+          [
+            0.8154299,
+            0.92968721
+          ],
+          [
+            0.17187499,
+            0.93066426
+          ]
+        ],
+        "review": "30 indexed openwork and flame-loop pockets; preserve pale teeth, armor, red/white ribbons, interior machinery and ground shadow. Base-only darker green spill keys exclude the retained near-black shadow.",
+        "background_regions": [
+          {
+            "polygon": [
+              [
+                0,
+                0.89
+              ],
+              [
+                1,
+                0.89
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            "keys": [
+              [
+                95,
+                115,
+                35
+              ],
+              [
+                65,
+                90,
+                20
+              ],
+              [
+                130,
+                155,
+                45
+              ]
+            ],
+            "radius": 28
+          }
+        ]
+      }
+    },
+    {
+      "asset": "calamitic-throne-borrowed-tomorrows",
+      "incoming": "Throne of Borrowed Tomorrows.png",
+      "category": "conduits",
+      "source": "Art/source/calamitic/Throne of Borrowed Tomorrows.png",
+      "source_sha256": "df346af3a775c4bdc4bb037525111091f095d811a2caaaff322352b9ea456073",
+      "runtime": "public/assets/conduits/calamitic-throne-borrowed-tomorrows.png",
+      "runtime_sha256": "e464850e5dd5161685c18a2aaf4b05652570c2295b196af76cc970d845833480",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "e327d81a836c988459aba58446794ad4d9c934eb150e1c92e0c7ccf15eb3daca",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "84db8e5ae9952aa5a6d3d00d78efe13dbda7211b94d6351fb008b9e918497d07",
+      "runtime_content_bbox": [
+        36,
+        16,
+        219,
+        240
+      ],
+      "settings": {
+        "row_gradient": true,
+        "radius": 60,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 3,
+          "distance_ramp": 100
+        },
+        "background_seeds": [
+          [
+            0.31542966,
+            0.38281279
+          ],
+          [
+            0.3916012,
+            0.27343771
+          ],
+          [
+            0.66894509,
+            0.24902358
+          ],
+          [
+            0.34081984,
+            0.27929698
+          ],
+          [
+            0.645508,
+            0.26367226
+          ],
+          [
+            0.54296924,
+            0.32812525
+          ],
+          [
+            0.4560542,
+            0.31738275
+          ],
+          [
+            0.64843714,
+            0.47558611
+          ],
+          [
+            0.59570269,
+            0.33789071
+          ],
+          [
+            0.6367186,
+            0.39355429
+          ],
+          [
+            0.42675784,
+            0.35937471
+          ],
+          [
+            0.39648443,
+            0.3808597
+          ],
+          [
+            0.63183637,
+            0.50878865
+          ],
+          [
+            0.6259761,
+            0.59667974
+          ],
+          [
+            0.27441376,
+            0.59960987
+          ],
+          [
+            0.26269521,
+            0.84277317
+          ],
+          [
+            0.4130862,
+            0.85253863
+          ],
+          [
+            0.47265597,
+            0.85449172
+          ],
+          [
+            0.709961,
+            0.85742186
+          ],
+          [
+            0.27148462,
+            0.86035199
+          ],
+          [
+            0.67968759,
+            0.88183599
+          ],
+          [
+            0.71777336,
+            0.87109349
+          ],
+          [
+            0.71093705,
+            0.8691404
+          ]
+        ],
+        "review": "23 indexed canopy, cable, armrest and lower openwork gaps; preserve clock face/hands, metal filigree, crimson hanging energy and painted shadow. Base-only darker green spill keys exclude the retained near-black shadow.",
+        "background_regions": [
+          {
+            "polygon": [
+              [
+                0,
+                0.89
+              ],
+              [
+                1,
+                0.89
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            "keys": [
+              [
+                95,
+                115,
+                35
+              ],
+              [
+                65,
+                90,
+                20
+              ],
+              [
+                130,
+                155,
+                45
+              ]
+            ],
+            "radius": 28
+          }
+        ]
+      }
+    },
+    {
+      "asset": "calamitic-world-eater-orrery",
+      "incoming": "World-Eater's Orrery.png",
+      "category": "conduits",
+      "source": "Art/source/calamitic/World-Eater's Orrery.png",
+      "source_sha256": "a8c78da0c91b6f354d5505189f5c784b6471dc743a154b1e9fa1155004969f89",
+      "runtime": "public/assets/conduits/calamitic-world-eater-orrery.png",
+      "runtime_sha256": "2e9ee72fb64d83e3c207790bbf3a921fc23f140ecbe3f81274db472ca7d18d60",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "8c6de104afffdae5cd6b688710d01ea9dc7968a03e519980a0fe36fc96d33b83",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "3bf2d09930a9edbdd89c7840269224b2a5f08ec007f18ffcc298f560bd77aa79",
+      "runtime_content_bbox": [
+        18,
+        16,
+        238,
+        240
+      ],
+      "settings": {
+        "row_gradient": true,
+        "radius": 60,
+        "border_only": true,
+        "edge_cleanup": {
+          "source_pixels": 3,
+          "distance_ramp": 100
+        },
+        "background_seeds": [
+          [
+            0.71679732,
+            0.21484399
+          ],
+          [
+            0.38769502,
+            0.29199257
+          ],
+          [
+            0.69043009,
+            0.42285166
+          ],
+          [
+            0.47265597,
+            0.37402339
+          ],
+          [
+            0.51953115,
+            0.38183575
+          ],
+          [
+            0.20312544,
+            0.50585951
+          ],
+          [
+            0.2861333,
+            0.43750034
+          ],
+          [
+            0.62109387,
+            0.48632861
+          ],
+          [
+            0.32519512,
+            0.47656215
+          ],
+          [
+            0.33789071,
+            0.52441438
+          ],
+          [
+            0.19335899,
+            0.66015669
+          ],
+          [
+            0.46289052,
+            0.67480437
+          ],
+          [
+            0.22949267,
+            0.72949191
+          ],
+          [
+            0.36914016,
+            0.72363264
+          ],
+          [
+            0.81445286,
+            0.85449172
+          ]
+        ],
+        "review": "15 indexed ring/spoke/shaft gaps; preserve floating metal satellites, pale struts, dark rings, red flecks and complete barrel tips."
+      }
+    }
+  ]
+}

@@ -1,5 +1,49 @@
 # Current state and handoff
 
+## Delivered Calamitic artwork (D-325)
+
+- All six supplied root PNGs are archived byte-for-byte under
+  `Art/source/calamitic`; five stable Conduit exports and the shared
+  `calamitic-tokens` currency export are installed. All90 ordinary Conduits
+  now have artwork. Exact original/export/pixel hashes and101 reviewed gap
+  seeds live in the Calamitic provenance/settings records.
+- Offline row-gradient connected cleanup, local base spill keys and edge
+  decontamination preserve pale metalwork, red energy, floating fragments and
+  the Throne's near-black shadow. Dark/light and source-resolution composites
+  were reviewed. Cathedral's tip is source-edge limited, not reconstructed.
+- Shared byte-derived URLs wire the store, Inventory, equipment, upgrades,
+  Collections and receipts; token art also appears in Calamity loot previews
+  and saved opening receipts. Locked shop stays exact-message-only with no
+  products or images. Existing85 Conduit/currency exports and all combat,
+  economy, save and RNG behavior are unchanged.
+- Six verified root duplicates are removed only after byte-verified archival,
+  export and manifest writes. Archive-only reproduction and conflict/cleanup
+  safety tests are included. [Reproduction](art-workflow.md#delivered-calamitic-artwork-d-325).
+- `python -m unittest discover -s tools -p test_calamitic_art.py -v`:5 pass.
+  `test_conduit_art_revisions.py`:1 pass; `test_pending_art.py`:4 pass.
+  Archive-only `python tools\intake_calamitic_art.py --apply` reproduces all
+  six bytes exactly. All88 previously tracked Conduit/currency files remain
+  byte-identical against the prior release.
+- `npm test -- --run src\game\calamitic-conduits.test.ts
+  src\presentation\calamitic-conduits.test.ts
+  src\presentation\machine-art.test.ts --maxWorkers=2`:75 pass.
+  Final `npm test -- --maxWorkers=2`:4,012 tests/174 files pass.
+  `npm run build`, `node tools\bundle_server_game.mjs` and
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json` pass.
+  Editor diagnostics and `git diff --check` are clean; existing canvas/chunk
+  warnings remain.
+- Broader `python -m unittest discover -s tools -p test_art_prompts.py -v`
+  still has137 pre-existing failures across28 tests. Re-running its unchanged
+  HEAD prompt contents through the same harness produces identical failure
+  signatures, no new failures. Unrelated historical prompts are not rewritten.
+- Isolated1280/320px browser fixtures load all five revised machine URLs and
+  the token, zero broken images and no horizontal/product/detail overflow.
+  No signed-in account is changed or transacted. Source-scale dark/light
+  review additionally covers every complex gap and the preserved Throne shadow.
+- Matching art-only authority metadata deployed successfully with
+  `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --no-verify-jwt`; the Docker warning is nonblocking.
+
 ## Calamitic Conduits (D-324)
 
 - Owner approves full implementation now: five universal Rise-only devices
@@ -29,8 +73,7 @@
   total240k, twice Omnic. All exact new prices/payouts/effect values are
   editable developer tuning, distinguished from owner-confirmed rules.
 - [Six art prompts](../Art/conduits/Calamitic%20Conduits.md) cover all five
-  machines and Calamitic Tokens; all six exports remain pending. Named neutral
-  placeholders make no missing-image requests. The original133-item matrix
+  machines and Calamitic Tokens; D-325 now installs all six exports. The original133-item matrix
   links to the separate new registry/tests; its generator remains reproducible.
 - `npm test -- --maxWorkers=2`:4,012 tests/174 files pass. The focused
   new/coupled UI/runtime regression run passes169 tests/10 files.

@@ -67,7 +67,7 @@ No original, runtime image, recorded source path or recorded hash was rewritten.
 - [Conduits](conduits/Conduits.md), [35 added Conduits](conduits/Conduit%20Expansion.md).
 - [Calamitic Conduits](conduits/Calamitic%20Conduits.md): five new
   Rise-authored Calamitic machine icons plus the Calamitic Tokens icon;
-  all six images remain pending.
+  all six delivered images are archived, cleaned and installed (D-325).
 - [25 reborn Omnic kit Conduits](conduits/Kit%20Conduits.md): D-176 converts
   existing25 IDs to unique new Omnic mechanics/full elemental masterpieces;
   individual palette locks, original Machines Omnic epicness; all25 icons installed.

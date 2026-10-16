@@ -25,7 +25,7 @@ describe('Calamitic universal equipment', () => {
     expect(new Set(calamiticConduits.map(entry => entry.id)).size).toBe(5);
     for (const design of calamiticConduits) {
       const entry = getConduit(design.id);
-      expect(entry).toMatchObject({ rarity: 'Calamitic', element: null, art: null, price: null, buffs: [] });
+      expect(entry).toMatchObject({ rarity: 'Calamitic', element: null, art: entry.id, price: null, buffs: [] });
       expect(entry.lore).not.toContain('shared prototype');
       for (const element of elements) expect(conduitEquipReason(entry, element.id, Array(8).fill(null), 0)).toBeNull();
       expect([0, 1, 2, 3, 4].map(level => conduitUpgradeCost(entry, level))).toEqual([10000, 20000, 40000, 70000, 100000]);

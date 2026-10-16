@@ -10,7 +10,8 @@ They are not collaborative Let/Rise prototypes.
 
 The owner explicitly chooses chest tokens rather than direct Conduit drops,
 no additional Calamitic equipment limit, five component-funded upgrades more
-expensive than Omnic, and full implementation with pending artwork.
+expensive than Omnic, and full implementation. All six delivered artwork
+exports are installed under D-325.
 Exact prices, token quantities and effect coefficients below are editable
 developer tuning, not owner-authored numbers.
 
@@ -108,10 +109,11 @@ on a new encounter. No load-time writes, new RNG stream or native-kit changes.
 ## Artwork and validation
 
 [Six generation prompts](../Art/conduits/Calamitic%20Conduits.md) cover the five
-devices and Calamitic Tokens. All are pending; use named neutral placeholders,
-not missing PNG URLs or substituted Omnic/currency artwork. The item cutout
-contract keeps swirling powers opaque and bounded, with no baked source bloom
-or spill. Runtime presentation may add light separately after reviewed intake.
+devices and Calamitic Tokens. All six delivered originals are archived and
+their reviewed transparent exports are installed (D-325). Shared revisioned
+resolvers cover the five catalog devices and token across menus, equipment,
+previews and saved receipts. The sealed shop still reveals only its exact
+message. [Source authority, reproduction and validation](art-workflow.md#delivered-calamitic-artwork-d-325).
 
 Focused validation:
 

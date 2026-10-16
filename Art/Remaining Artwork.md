@@ -6,8 +6,8 @@
 | --- | ---: | --- |
 | [Calamity](creatures/Calamity.md) |0|All18 images installed, including The Last Scarlet Bloom|
 | [Native identity symbols](ui/Native%20Identity%20Status%20Icons.md) |0|All27 delivered symbols are archived, cleaned and installed (D-323)|
-| [Calamitic Conduits](conduits/Calamitic%20Conduits.md) |6|Five Calamitic machine icons and one Calamitic Tokens icon; prompt-only, not installed|
-| **Current queue** |**6**|Generate the six pending Calamitic images; all other listed production packs are installed|
+| [Calamitic Conduits](conduits/Calamitic%20Conduits.md) |0|All five machines and the shared token are archived, cleaned and installed (D-325)|
+| **Current queue** |**0**|All listed production packs are installed|
 
 The owner explicitly chooses **three chest images total**, shared by all
 activities according to Slayer/Master/Omnipotent tier, and **three arena images
@@ -31,13 +31,13 @@ counts and expiry remain HTML. [Reproduction and checks](../docs/art-workflow.md
 
 A2026-10-15 catalog/filesystem check found:
 
-- All85 ordinary Conduits and48 Master Conduits have their referenced PNGs.
+- All90 ordinary Conduits and48 Master Conduits have their referenced PNGs.
 - Cosmic Grand Master Chest and Astral Reserve artwork already exist.
 - All48 current elemental, specialty and Rosethorn material definitions resolve
   to installed PNGs, including the items used in Calamity chest loot.
-- The five new Calamitic Conduit icons and shared Calamitic Tokens icon are
-  prompt-only in [Calamitic Conduits](conduits/Calamitic%20Conduits.md); none
-  has been generated, installed or assigned an image URL.
+- The five Calamitic Conduit icons and shared token are installed through
+  revisioned catalog/currency resolvers. Original bytes and reviewed gap settings
+  are preserved. [Intake](../docs/art-workflow.md#delivered-calamitic-artwork-d-325).
 - All163 catalog creature identities have installed referenced PNGs after
   D-318 intake, including all twelve Calamity bosses.
 - All three shared Calamity tier chest icons and all three arenas are installed.
@@ -81,7 +81,8 @@ remain intact; verified duplicate root copies were removed at the owner's
 request. No account, reward or combat-rule changes are part of intake.
 
 The existing generator and tests cover the installed Calamity and Native status
-prompt packs; they do not generate or install the six new Calamitic images.
+prompt packs. `tools/intake_calamitic_art.py` reproduces the six delivered
+Calamitic exports from archived sources.
 Reproduce those existing packs:
 `python tools\build_pending_art.py`.
 Validate:

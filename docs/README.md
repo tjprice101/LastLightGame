@@ -9,7 +9,8 @@ It is intended to make features easy to locate, extend, and hand off.
 above Omnic, guaranteed1/3/8 chest tokens and a100-token shop. Market always
 shows the destination; until an actual EX clear, only the exact sealed message
 appears. Five expensive upgrades, all battle effects and authoritative atomic
-transactions are implemented; six artwork exports remain pending.
+transactions are implemented. D-325 installs all six delivered artwork
+exports with archived originals and reviewed offline cleanup.
 [System contract and validation](calamitic-conduits.md).
 
 **Native identity artwork (D-323):** all27 delivered symbols are archived,

@@ -17,13 +17,8 @@ describe('supplied machine artwork integration', () => {
   it('registers every new Conduit through the shared equipment/archive/loot resolvers', () => {
     const supplied = conduits.filter((entry) => entry.art !== null);
     const pending = conduits.filter((entry) => entry.art === null);
-    expect(supplied).toHaveLength(85);
-    expect(pending).toHaveLength(5);
-    expect(pending.every(entry => entry.rarity === 'Calamitic')).toBe(true);
-    for (const conduit of pending) {
-      expect(conduitIcon(conduit.id)).not.toContain('<img');
-      expect(lootArt({ id: `conduit:${conduit.id}` })).toBeUndefined();
-    }
+    expect(supplied).toHaveLength(90);
+    expect(pending).toHaveLength(0);
     for (const conduit of supplied) {
       expect(conduit.art).toBe(conduit.id);
       const path = `conduits/${conduit.id}.png`;
