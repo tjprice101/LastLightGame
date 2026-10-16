@@ -43,6 +43,10 @@
 - Matching art-only authority metadata deployed successfully with
   `npx supabase functions deploy game-operation --project-ref
   ohtfgwomdfteaxubndww --no-verify-jwt`; the Docker warning is nonblocking.
+- Release `b6fc46e` is live. Pages run `38857034237` passes tests/build/deploy.
+  All six hosted PNG SHA-256 values match reviewed exports, and all six
+  entry JavaScript/CSS files return200 and match the production build bytes.
+  Reload an already-open game tab to pick up the new revisioned artwork.
 
 ## Calamitic Conduits (D-324)
 
