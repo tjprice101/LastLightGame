@@ -21,7 +21,7 @@ function ability(name: string, description: string, damageMultiplier?: number, t
 export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   ember: {
     role: 'Persistent fire specialist',
-    playLoop: 'Maintain personal Burn across enemy phases or trade its remaining ticks for immediate detonation.',
+    playLoop: 'Personal Burn persists across enemy phases; its remaining ticks can instead detonate at once.',
     passive: {
       name: 'Unbroken Ember',
       description: 'Infernis Burn lasts three enemy phases. Reapplying refreshes to three phases and retains the stronger tick; it never stacks or ticks immediately. No low-health bonus or Ember bank.',
@@ -34,7 +34,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   tide: {
     role: 'Precise barrier protector',
-    playLoop: 'Inspect the next enemy threat and choose the ally who needs a short-lived barrier.',
+    playLoop: 'Places a short-lived barrier on one chosen ally ahead of the next enemy attack.',
     passive: {
       name: 'Stillwater Guard',
       description: 'When Tizu’s own ability shield fully absorbs an enemy direct hit with zero HP loss, its recipient gains 8 Gauge, once per recipient per enemy phase. No Ward bank or flat Defense bonus.',
@@ -47,7 +47,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   sprout: {
     role: 'Delayed recovery gardener',
-    playLoop: 'Plant recovery before damage, then choose whether to wait for delivery or harvest immediately.',
+    playLoop: 'Plants delayed recovery that is delivered later or harvested immediately.',
     passive: {
       name: 'Root of Hope',
       description: `Each living ally can hold one Flora Seed. At next player-turn start it restores ${nativeBalance.flora.seed * 100}% of recipient maximum HP and disappears, requiring Flora alive. Seeds never stack or revive; replacement resets delivery time. No automatic team healing or Bloom bank.`,
@@ -60,7 +60,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   atmoso: {
     role: 'Delayed wind-field attacker',
-    playLoop: 'Create Cyclone before allies act, then weigh a larger delayed release against immediate pressure.',
+    playLoop: 'Cyclone placed before allies act releases later for a larger effect, or immediately for a smaller one.',
     passive: {
       name: 'Gale Cadence',
       description: 'While Cyclone is active, each other living ally’s completed native action adds one Gust, once per ally per player turn, cap 4. No critical-earned Tempest or low-health bonus.',
@@ -73,7 +73,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   elise: {
     role: 'Two-shuriken placement duelist',
-    playLoop: 'Lodge blades across enemies for coverage or converge both on one target before recall.',
+    playLoop: 'Lodges two shuriken across enemies or both in one target, then recalls them.',
     passive: {
       name: 'Stormwheel Rhythm',
       description: 'Exactly two native shuriken begin held. Each is held or lodged in one living enemy; blades return harmlessly when their target dies. No Tempest counter.',
@@ -86,7 +86,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   bliss: {
     role: 'Action-order dancer',
-    playLoop: 'Act first for offense or last for modest recovery and shielding; solo always opens.',
+    playLoop: 'Acting first adds offense; acting last adds modest recovery and shielding. A solo Disciple always acts first.',
     passive: {
       name: 'Stillfeather Tempo',
       description: 'Each native action is Opening if no other living ally has acted this player turn, Closing if all have, or Passing otherwise. Solo is always Opening, never both. No healing-earned Bloom bank.',
@@ -99,7 +99,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   bruno: {
     role: 'Deliberate damage interceptor',
-    playLoop: 'Cover a vulnerable ally while managing the redirected damage Bruno can safely endure.',
+    playLoop: 'Covers an ally; Bruno takes the damage redirected from them.',
     passive: {
       name: 'Faultbound Resolve',
       description: 'Reduce damage redirected to Bruno by 25%, only for his interception. No flat Defense bonus, retaliation or absorbed-damage resource.',
@@ -112,7 +112,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   disciple: {
     role: 'Conditional ally instructor',
-    playLoop: 'Act before a chosen ally and match its next action to Strike, Shelter or Resolve.',
+    playLoop: 'Sets Strike, Shelter or Resolve for a chosen ally; the bonus applies when that ally’s next action matches.',
     passive: {
       name: 'Shared Mindflame',
       description: 'Maintain one Instruction on one chosen living ally, including self. It expires after that ally’s next native action or at the end of the next player turn. Replacement discards the old one. New Instructions activate after the granting action finishes, never amplifying or consuming themselves.',
@@ -125,7 +125,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   aurora: {
     role: 'Hostile skill forecaster',
-    playLoop: 'Forecast the scheduled special that matters and time a Seal or ultimate-specific protection.',
+    playLoop: 'Shows scheduled enemy specials, which a Seal or ultimate-specific protection can answer.',
     passive: {
       name: 'Lens of Diminishment',
       description: 'Battle reference always shows each living enemy’s next scheduled special/ultimate and due enemy-phase number, or explicitly states none is scheduled. Does not change scheduling or RNG.',
@@ -138,7 +138,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   razor: {
     role: 'Wounds-powered revenge duelist',
-    playLoop: 'Bank actual enemy-inflicted HP loss, then choose a small cashout or a larger finisher.',
+    playLoop: 'Banks HP lost to enemy attacks, spent on a small cashout or a larger finisher.',
     passive: {
       name: 'Unbroken Night',
       description: 'Bank actual direct enemy HP loss suffered by Razor as Wounds, cap 30% of caster maximum HP. Shields, redirected damage, Burn, self-costs and generated effects add nothing. Healing does not erase Wounds.',
@@ -151,7 +151,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   rosetta: {
     role: 'Coordinated quarry hunter',
-    playLoop: 'Mark a Quarry, coordinate distinct allies’ hits, then cash out after contributors act.',
+    playLoop: 'Marks a Quarry; hits from different allies add to it, and it cashes out after they act.',
     passive: {
       name: 'Virtuous Bloom',
       description: 'Maintain one personal Quarry. Track distinct living allies landing native direct hits on it this player turn. Once two different allies hit, refresh an 8% recipient maximum HP shield on those contributors, once per player turn total. No passive healing, Burn or Rose Grace bank.',
@@ -164,7 +164,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   thornia: {
     role: 'Enemy-action thorn trapper',
-    playLoop: 'Trap a threatening attacker for retaliation or spend a charge for immediate pressure.',
+    playLoop: 'Traps an enemy to retaliate when it attacks; a charge can instead deal damage immediately.',
     passive: {
       name: 'Forbidden Garden',
       description: 'One personal trap per enemy, up to three charges. When it completes a direct damaging action against any ally, spend one charge for a 60% caster Attack fixed noncritical strike. Once per activation, not hit or target; shielded damage counts, fully prevented/no-damage actions do not. No Thorn Aegis bank.',
@@ -177,7 +177,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   crinso: {
     role: 'Alternating-edge combo duelist',
-    playLoop: 'Alternate Gold and Crimson ordinary skills to build Combo, then choose when to spend the combination.',
+    playLoop: 'Alternating Gold and Crimson ordinary skills builds Combo, which is spent separately.',
     passive: {
       name: 'Rose Duality',
       description: 'Ordinary skills use Gold or Crimson edge. Switching advances Combo by 1, cap 3; repeating resets to 0. The first edge establishes stance at Combo 0. Normal Attack and Defense neither build nor break it. No Burn, low-health bonus or fire charges.',
@@ -190,7 +190,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   nerithe: {
     role: 'Survey and precision-pierce attacker',
-    playLoop: 'Survey with Normal Attacks, then spend one point, move the map or save three for a finisher.',
+    playLoop: 'Normal Attacks earn Survey points. One point is spent or moves the map; three power a finisher.',
     passive: {
       name: 'Uncharted Current',
       description: 'Normal Attack gains exactly 5 additional Gauge and adds one personal Survey point to its target, cap 3. Only one surveyed target; surveying another removes old points. Survey disappears when its target dies. No other action gains the additional Gauge.',
@@ -203,7 +203,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   orvella: {
     role: 'Finite-durability team architect',
-    playLoop: 'Build a shared Foundation, repair it efficiently or sacrifice its remaining durability for pressure.',
+    playLoop: 'Builds a shared Foundation with finite durability that can be repaired or spent for damage.',
     passive: {
       name: 'Load-Bearing Will',
       description: 'One Foundation may exist with finite durability. Before personal shields, it absorbs up to 20% of each direct hit’s post-mitigation damage on living allies, limited by remaining durability. No independent turn, targetability or creature ID. Simultaneous area shares are allocated proportionally, not first-ally-first.',
@@ -216,7 +216,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
   },
   vaelor: {
     role: 'Deterministic three-beat burst attacker',
-    playLoop: 'Use Rise to prepare a Crescendo finisher, balancing the global beat against available Gauge.',
+    playLoop: 'Rise prepares a Crescendo finisher from a global beat and available Gauge.',
     passive: {
       name: 'Standing Thunder',
       description: 'Beat follows each global player turn: Tune → Rise → Crescendo → Tune, starting Tune at encounter entry. Advance once even during recovery or inability to act. No critical-earned Tempest, low-health bonus or ally-action-order condition.',

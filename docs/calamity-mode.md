@@ -50,8 +50,10 @@ clipping rewards or shrinking touch targets.
 The boss name and level sit on its scene. Chest names omit the repeated activity
 name in the compact preview only; full names remain in loot dialogs and receipts.
 Reward names align left, counts right, and token art is22px within the row.
-Detailed boss abilities and build guidance use existing native Information
+Detailed boss abilities and Calamity rules use existing native Information
 dialogs; exact mechanics and weighted loot remain available, not truncated.
+D-329: the internal balance target below is never shown to players; the UI
+states rules, levels, stats and rewards without recommending team builds.
 All buttons retain44px minimum targets. Back restores each selected EX tier
 alongside the selected difficulty; Settings retains the current DOM.
 

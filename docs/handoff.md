@@ -1,5 +1,18 @@
 # Current state and handoff
 
+## Neutral guide-style player text (D-329)
+
+- Removed prescriptive advice from player-facing text: Calamity's build
+  guidance/"Rules & team requirements" (now "Calamity rules"), Story stage
+  advice (now "Highest owned Element-Bearer: Lv.N"), Home Story card advice,
+  Gameplay/Home/Story help, "Getting started"/"Tougher fights" topics (now
+  "Unlocks") and rail headings "Start here"/"Grow your team" (now
+  "Story"/"Progression"). All16 native character playstyle summaries are
+  third-person mechanic descriptions rather than instructions.
+- Internal Calamity balance targets remain in docs only. No mechanics, rewards,
+  unlocks or saves changed. `npm run build` passes; full `npm test` passes
+  4,032 tests/175 files.
+
 ## Nonblocking artwork and further Calamity corrections (D-328)
 
 - **Released:** implementation `aaf0e67` is live. Pages run`38927892055`

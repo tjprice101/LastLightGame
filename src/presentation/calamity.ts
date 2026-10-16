@@ -1,4 +1,4 @@
-import { calamityActivities, calamityBuildGuidance, calamityChest, calamityEncounter, calamityLootTable, calamityPatterns, calamityWarning,
+import { calamityActivities, calamityChest, calamityEncounter, calamityLootTable, calamityPatterns, calamityWarning,
   parseCalamityChestId, isCalamityActivityId, isCalamityTier, type CalamityActivityId, type CalamityTier } from '../content/calamity';
 import { type Account, type openCalamityChest } from '../game/account';
 import { activityAccess, assertActivityAccess } from '../game/activity-access';
@@ -107,7 +107,7 @@ export function calamitySection(activity: CalamityActivityId, account: Account |
   return `<section class="calamity-section" data-calamity-tiers="${activity}" aria-label="${escapeDialogText(definition.name)} Calamity">
     <div class="calamity-heading"><div><h3>${escapeDialogText(definition.name)} · Calamity</h3>
       <p>Free entry. One sealed tier chest per victory.</p></div>
-      ${information(`${prefix}-rules`, 'Calamity rules', `<p>Defeat one boss to earn one chest. Open it in Inventory to receive its contents. The boss drops nothing else.</p><p>${escapeDialogText(calamityBuildGuidance)}</p>`, 'Rules & team requirements')}</div>
+      ${information(`${prefix}-rules`, 'Calamity rules', '<p>Defeat one boss to earn one chest. Open it in Inventory to receive its contents. The boss drops nothing else. Entry is free, and losing costs nothing.</p>', 'Calamity rules')}</div>
     <div class="calamity-tier-tabs" role="tablist" aria-label="Calamity tier">
       ${([1, 2, 3] as const).map(tier => `<button type="button" role="tab" id="${prefix}-${tier}-tab" data-calamity-choice="${tier}"
         aria-controls="${prefix}-${tier}-panel" aria-selected="${tier === 1}" tabindex="${tier === 1 ? 0 : -1}">

@@ -47,9 +47,9 @@ const activityCategories = [
 ] as const;
 
 const activitySections = [
-  ['Start here', ['story']],
+  ['Story', ['story']],
   ['Practice', ['adventure']],
-  ['Grow your team', ['dungeons', 'infusion', 'machines', 'war']],
+  ['Progression', ['dungeons', 'infusion', 'machines', 'war']],
   ['Earn currency', ['currency']],
   ['Events', ['events']],
 ] as const;
@@ -69,10 +69,8 @@ function gameplayInformation(): string {
   return informationTopics('gameplay-information', [
     { id: 'final-loot', title: 'Final-boss loot', summary: '5x quantities on every final clear', content: `<p>${finalBossLootText}</p><p>Story applies this at all six regional bosses (25, 50, 75, 100, 125 and 150). Other staged activities apply it only at their last stage; earlier bosses are unchanged.</p>` },
     { id: 'origins', title: 'Let and Rise', summary: 'Infinity, Nothingness and the search for the creators', content: worldLore() },
-    { id: 'start', title: 'Getting started', summary: 'Where to begin, unlocks and getting stronger', content: `<p>Clear Story stages for materials and currencies, then level and evolve in Team. Replay cleared stages when you need more materials.</p>
-      <h4>Unlocks</h4><p>Your highest-level owned Element-Bearer unlocks activities, even when not in your squad. Captured Elemental-Devourers do not count.</p>
-      <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li></ul>
-      <h4>Tougher fights</h4><p>Higher-level enemies hit harder and take more hits. Level up, evolve and equip Conduits. Bring healing or shields for bosses.</p>` },
+    { id: 'start', title: 'Unlocks', summary: 'Activity level requirements', content: `<p>Story is open from the start. Other activities open at your highest-level owned Element-Bearer's level, even when that Element-Bearer is not in your squad. Captured Elemental-Devourers do not count.</p>
+      <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li></ul>` },
     { id: 'enemy-strength', title: 'Enemy strength', summary: 'Levels, boss stats and special attacks', content: '<p>Enemy level sets the same base stats in every activity. Bosses have more HP, Attack and Defense. Stat changes appear beside the selected stage and below enemy HP in battle: red means higher, blue means lower, compared with a standard enemy at that level.</p><p>Shields, healing, repeated hits and special attacks can make a fight harder without changing its level. Calamity lists these mechanics beside each boss. Attack is the base stat, not the damage of every hit.</p>' },
     { id: 'story', title: 'Story', summary: 'Six regions, 150 stages', content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
     { id: 'training', title: 'Training', summary: 'Endless battles for Prismatica', content: `<p>Start at wave 1 with your saved squad. Enemy levels stop rising at Lv.120.</p>

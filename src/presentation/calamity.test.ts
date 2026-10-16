@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { calamityActivities, calamityBuildGuidance, calamityChest, calamityChestId, calamityEncounter, calamityLootTable, calamityWarning, rollCalamityChest } from '../content/calamity';
+import { calamityActivities, calamityChest, calamityChestId, calamityEncounter, calamityLootTable, calamityWarning, rollCalamityChest } from '../content/calamity';
 import { emptyAccount } from '../game/account';
 import { gameplayHub } from './gameplay';
 import { inventoryView, bindInventory } from './inventory';
@@ -96,12 +96,13 @@ describe('Calamity presentation', () => {
     expect(document.querySelector<HTMLElement>('[data-calamity-panel="1"]')!.hidden).toBe(false);
   });
 
-  it('shows the shared build target without inventing an equipment admission gate', () => {
+  it('states rules without prescribing team builds or inventing an equipment admission gate', () => {
     const account = emptyAccount();
     account.normalFinalClears = { machines: true };
     document.body.innerHTML = calamitySection('machines', account);
-    expect(document.body.textContent).toContain(calamityBuildGuidance);
-    expect(calamityWarning('machines', 1)).toContain(calamityBuildGuidance);
+    const text = `${document.body.textContent} ${calamityWarning('machines', 1)}`;
+    expect(text).not.toMatch(/designed for|strong teams|may not be enough|team requirements|recommend/i);
+    expect(text).toContain('Calamity rules');
     expect(document.querySelector<HTMLButtonElement>('[data-calamity-tier="1"]')!.disabled).toBe(false);
   });
   it.each(['heavens', 'sanctuary'] as const)('shares the current %s replacement art across tiers, old snapshots, cut-ins and catalog', activity => {

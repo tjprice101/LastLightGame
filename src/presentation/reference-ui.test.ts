@@ -46,7 +46,7 @@ describe('replacement reference screen structures', () => {
     wallet.storyCompleted = 26;
     const before = structuredClone(wallet);
     const html = gameplayHub(wallet);
-    for (const label of ['Start here', 'Practice', 'Grow your team', 'Earn currency', 'Events']) {
+    for (const label of ['Story', 'Practice', 'Progression', 'Earn currency', 'Events']) {
       expect(html).toContain(`<h3>${label}</h3>`);
     }
     for (const category of ['story', 'adventure', 'dungeons', 'infusion', 'machines', 'war', 'currency', 'events']) {

@@ -193,9 +193,7 @@ export function calamityEncounter(activity: CalamityActivityId, tier: CalamityTi
   ];
   return { name: definition.boss, level, element: definition.element, stats, skills, description: pattern.description };
 }
-export const calamityBuildGuidance = 'Designed for strong teams with eight +5 Conduits per member, including four matching-element Omnic Conduits, and a suitable Master. You can enter with any legal squad, but even full equipment may not be enough.';
-
 export function calamityWarning(activity: CalamityActivityId, tier: CalamityTier): string {
   const encounter = calamityEncounter(activity, tier);
-  return `${encounter.name} - Calamity EX+${tier}, Lv.${encounter.level}. ${calamityBuildGuidance} Victory earns one ${calamityChest(activity, tier).name}. No other drops or captures. Entry is free, and losing costs nothing. ${encounter.description}`;
+  return `${encounter.name} - Calamity EX+${tier}, Lv.${encounter.level}. Victory earns one ${calamityChest(activity, tier).name}. No other drops or captures. Entry is free, and losing costs nothing. ${encounter.description}`;
 }

@@ -24,7 +24,7 @@ function stageDetail(stage: number, completed: number, unlocked: number, highest
   const encounter = storyEncounter(stage);
   return `<div class="ref-story-entry-summary"><p>Stage ${encounter.regionStage} · Lv. ${encounter.level} · ${encounter.name}${encounter.boss ? ' · Regional boss' : ''} · Free entry</p>
     ${enemyStrength(encounter)}
-    <p>${encounter.level >= highestLevel + 8 ? 'Tough fight. Level up in Team or replay earlier stages.' : encounter.boss ? 'Boss ahead. Bring healing or shields.' : 'Earn materials here. Level up in Team.'}</p>
+    <p>Highest owned Element-Bearer: Lv. ${highestLevel}</p>
     <p class="ref-story-kill-loot"><strong>Per-kill rewards:</strong> ${storyLoot(stage).map((drop) => `${drop.id === 'fractalis' ? 'Prismatica' : materialName(drop.id)} ${drop.minimum}–${drop.maximum} (${Math.round(drop.chance * 100)}%)`).join(' · ')}</p></div>
     <button type="button" class="primary-button" data-story-enter="${stage}" ${stage > unlocked ? 'disabled' : ''}>${stage > unlocked ? 'Locked stage' : stage <= completed ? 'Replay stage' : 'Enter stage'} ${encounter.regionStage} &rarr;</button>`;
 }
