@@ -46,6 +46,10 @@
   atomic/idempotent chest rewards and persistence. Both hosted smoke
   identities/cascading records are removed after success; no real player
   data is modified.
+- Release `e3f9202` is live. Pages run `38861459499` passes tests/build/deploy.
+  All six hosted entry JS/CSS assets return200 and match the tested production
+  bytes. Refresh already-open tabs for the new enemy labels; existing frozen
+  encounters retain their snapshot stats until the next fresh encounter.
 
 ## Delivered Calamitic artwork (D-325)
 
