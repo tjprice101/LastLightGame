@@ -773,8 +773,8 @@ export class BattleView {
         Captured Elemental-Devourers cannot exceed level 60; higher-level captures are reduced to 60 without changing their form or skills.
         ${state.story ? 'Story Prismatica rises in a straight line with enemy level (+2 minimum per level)' : state.infusion?.mode === 'treasury' ? 'Treasury Prismatica multiplies the Story line' : 'Prismatica drops grow from 5-10 at level 1 to 15-30 at level 120'} and save with the defeated enemy's rewards. Material stacks grow to 3-6 per successful drop. Quitting ends this run; ${dungeon ? 'unlocked stages can be replayed from Play' : 'entering again starts at wave 1'}.
         Settings preserves the current run. ${this.authority ? 'Signing back in restores the server-saved run.' : 'Reloading resets battle progress, not saved rewards.'}</p></div>
-      </section>
       ${state.calamity ? '' : `<p class="quiet">${finalBossLootText}</p>`}
+      </section>
       <section class="battle-log"><h3>Battle log (${this.session.log.length} recent events)</h3><ol>${this.session.log.map((line) => `<li>${line}</li>`).join('')}</ol></section></div></dialog>`;
     this.vfxRunner?.destroy();
     this.vfxRunner = null;

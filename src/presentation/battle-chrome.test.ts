@@ -96,6 +96,21 @@ describe('shared battle chrome', () => {
     expect(html).toContain('saved rewards');
     expect(html).not.toContain('saved locally');
   });
+  it('keeps the Battle menu grid to its four section panels', () => {
+    for (const session of [createSession('ember', progress), createSession('ember', progress, { storyStage: 150 })]) {
+      const html = markup(session);
+      const menu = html.slice(html.indexOf('class="battle-utilities"'), html.indexOf('</dialog>'));
+      // Only <section> panels may sit directly in the grid; stray elements push the log into an extra row.
+      let depth = 0;
+      const direct: string[] = [];
+      for (const [, closing, tag, attrs] of menu.slice(menu.indexOf('>') + 1).matchAll(/<(\/?)(section|p|div)\b([^>]*)>/g)) {
+        if (closing) { depth--; continue; }
+        if (depth === 0) direct.push(`${tag}${/class="([^"]*)"/.exec(attrs)?.[1] ? `.${/class="([^"]*)"/.exec(attrs)![1]}` : ''}`);
+        depth++;
+      }
+      expect(direct).toEqual(['section.battle-combat-menu', 'section.battle-unit-intel', 'section.battle-help', 'section.battle-log']);
+    }
+  });
   it('shows Story stage 150 with delivered regional art, narrative and final-stage controls', () => {
     const session = createSession('ember', progress, { storyStage: 150 });
     let html = markup(session);
