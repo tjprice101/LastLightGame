@@ -29,15 +29,15 @@ export function activityDifficulty(activity: CalamityActivityId, normal: string,
 }
 
 export function bindActivityDifficulties(host: HTMLElement): void {
-  host.querySelectorAll<HTMLElement>('[data-activity-difficulty]').forEach(group => {
-    const tabs = Array.from(group.querySelectorAll<HTMLButtonElement>('[data-difficulty]'));
-    const panels = Array.from(group.querySelectorAll<HTMLElement>('[data-difficulty-panel]'));
+  const bindTabs = (group: HTMLElement, tabSelector: string, panelSelector: string): void => {
+    const tabs = Array.from(group.querySelectorAll<HTMLButtonElement>(tabSelector));
+    const panels = Array.from(group.querySelectorAll<HTMLElement>(panelSelector));
     const select = (tab: HTMLButtonElement): void => {
       tabs.forEach(button => {
         button.setAttribute('aria-selected', String(button === tab));
         button.tabIndex = button === tab ? 0 : -1;
       });
-      panels.forEach(panel => { panel.hidden = panel.dataset.difficultyPanel !== tab.dataset.difficulty; });
+      panels.forEach(panel => { panel.hidden = panel.id !== tab.getAttribute('aria-controls'); });
     };
     tabs.forEach((tab, index) => {
       tab.addEventListener('click', () => { select(tab); });
@@ -50,6 +50,25 @@ export function bindActivityDifficulties(host: HTMLElement): void {
         select(tabs[next]);
         tabs[next].focus();
       });
+    });
+  };
+  host.querySelectorAll<HTMLElement>('[data-activity-difficulty]').forEach(group =>
+    bindTabs(group, '[data-difficulty]', '[data-difficulty-panel]'));
+  host.querySelectorAll<HTMLElement>('[data-calamity-tiers]').forEach(group =>
+    bindTabs(group, '[data-calamity-choice]', '[data-calamity-panel]'));
+  host.querySelectorAll<HTMLImageElement>('.calamity-tier-boss').forEach(image => {
+    const scene = image.closest<HTMLElement>('.calamity-tier-scene')!;
+    const error = scene.querySelector<HTMLElement>('[data-calamity-art-error]')!;
+    const showError = (): void => { error.hidden = false; image.hidden = true; };
+    image.addEventListener('error', showError);
+    image.addEventListener('load', () => { error.hidden = true; image.hidden = false; });
+    if (image.complete && !image.naturalWidth) showError();
+    error.querySelector('button')!.addEventListener('click', () => {
+      const url = new URL(image.src, location.href);
+      url.searchParams.set('retry', String(Date.now()));
+      error.hidden = true;
+      image.hidden = false;
+      image.src = url.href;
     });
   });
 }
@@ -84,30 +103,38 @@ function calamityChestContents(activity: CalamityActivityId, tier: CalamityTier)
 export function calamitySection(activity: CalamityActivityId, account: Account | null): string {
   const definition = calamityActivities.find(entry => entry.id === activity);
   if (!definition) throw new Error('Unknown Calamity activity.');
-  return `<section class="calamity-section" aria-label="${escapeDialogText(definition.name)} Calamity">
-    <h3>${escapeDialogText(definition.name)} · Calamity</h3>
-    <dl class="activity-facts"><div><dt>Stages</dt><dd>3 EX tiers · One boss each</dd></div>
-      <div><dt>Enemy levels</dt><dd>${([1, 2, 3] as const).map(tier => calamityEncounter(activity, tier).level).join(' / ')}</dd></div>
-      <div><dt>Drops</dt><dd>One sealed tier chest per victory</dd></div></dl>
-    <p>Free entry. Defeat the boss to earn a chest, then open it in Inventory. The boss drops nothing else.</p>
-    <p>${escapeDialogText(calamityBuildGuidance)}</p>
+  const prefix = `calamity-${activity}`;
+  return `<section class="calamity-section" data-calamity-tiers="${activity}" aria-label="${escapeDialogText(definition.name)} Calamity">
+    <div class="calamity-heading"><div><h3>${escapeDialogText(definition.name)} · Calamity</h3>
+      <p>Free entry. One sealed tier chest per victory.</p></div>
+      ${information(`${prefix}-rules`, 'Calamity rules', `<p>Defeat one boss to earn one chest. Open it in Inventory to receive its contents. The boss drops nothing else.</p><p>${escapeDialogText(calamityBuildGuidance)}</p>`, 'Rules & team requirements')}</div>
+    <div class="calamity-tier-tabs" role="tablist" aria-label="Calamity tier">
+      ${([1, 2, 3] as const).map(tier => `<button type="button" role="tab" id="${prefix}-${tier}-tab" data-calamity-choice="${tier}"
+        aria-controls="${prefix}-${tier}-panel" aria-selected="${tier === 1}" tabindex="${tier === 1 ? 0 : -1}">
+        <strong>EX+${tier}</strong><span>Lv.${calamityEncounter(activity, tier).level}</span></button>`).join('')}
+    </div>
     <div class="calamity-tiers">${([1, 2, 3] as const).map(tier => {
       const encounter = calamityEncounter(activity, tier);
       const chest = calamityChest(activity, tier);
       const access = account ? activityAccess(account, { kind: 'calamity', activity, tier }) : null;
       const art = calamityBossArt[activity];
-      return `<article class="calamity-tier"><div class="calamity-tier-scene">
+      return `<article class="calamity-tier" role="tabpanel" id="${prefix}-${tier}-panel" data-calamity-panel="${tier}" aria-labelledby="${prefix}-${tier}-tab" ${tier === 1 ? '' : 'hidden'}>
+        <div class="calamity-tier-scene">
         <img class="calamity-tier-arena" draggable="false" src="${assetUrl(`backgrounds/${calamityArenaArt[tier]}`)}" alt="" width="1456" height="816">
         ${art ? `<img class="calamity-tier-boss" draggable="false" src="${assetUrl(`enemies/${art}.png`)}" alt="${escapeDialogText(encounter.name)}" width="960" height="960">`
-          : `<span class="calamity-placeholder">${escapeDialogText(encounter.name)} · Artwork pending</span>`}</div>
-        <header><h4>EX+${tier} · ${escapeDialogText(encounter.name)}</h4><p>Lv.${encounter.level} · ${escapeDialogText(encounter.element)}</p></header>
-        <div class="calamity-boss-description">${enemyStrength({ ...encounter, boss: true })}<p>${escapeDialogText(encounter.description)}</p></div>
-        <section class="calamity-tier-reward" aria-label="Victory reward"><p>Victory: 1 ${escapeDialogText(chest.name)}</p>
-        ${calamityChestIcon(tier)}${calamityChestContents(activity, tier)}</section>
+          : `<span class="calamity-placeholder">${escapeDialogText(encounter.name)} · Artwork pending</span>`}
+        <header class="calamity-boss-heading"><h4>${escapeDialogText(encounter.name)}</h4><p>Lv.${encounter.level} · ${escapeDialogText(encounter.element)}</p></header>
+        <div class="calamity-art-error" data-calamity-art-error role="alert" hidden><p>Boss image could not load.</p><button type="button">Retry image</button></div></div>
+        <div class="calamity-tier-details">
+        <div class="calamity-boss-description">${enemyStrength({ ...encounter, boss: true })}
+          ${information(`${prefix}-${tier}-mechanics`, `${escapeDialogText(encounter.name)} · Boss abilities`, `<p>${escapeDialogText(encounter.description)}</p>`, 'Boss abilities')}</div>
+        <section class="calamity-tier-reward" aria-label="Victory reward">
+          <div class="calamity-chest-heading">${calamityChestIcon(tier)}<div><h5>Victory reward</h5><p>1 ${escapeDialogText(chest.name.replace(`${definition.name} `, ''))}</p><small>Open in Inventory. Contains:</small></div></div>
+          ${calamityChestContents(activity, tier)}</section>
         <footer class="calamity-tier-actions">
         <button class="primary-button" data-calamity="${activity}" data-calamity-tier="${tier}" ${access?.unlocked ? '' : 'disabled'}>Enter EX+${tier}</button>
         <p class="activity-unlock-hint">${access?.unlocked ? '' : account ? escapeDialogText(access!.requirement) : 'Resolve the save error before entering.'}</p>
-        ${information(`calamity-${activity}-${tier}-loot`, `${chest.name} · View Loot`, calamityLoot(activity, tier), 'View Loot')}</footer></article>`;
+        ${information(`calamity-${activity}-${tier}-loot`, `${chest.name} · View Loot`, calamityLoot(activity, tier), 'View Loot')}</footer></div></article>`;
     }).join('')}</div></section>`;
 }
 

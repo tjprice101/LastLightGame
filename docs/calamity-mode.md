@@ -26,12 +26,53 @@ use reviewed offline key removal. See [intake workflow](art-workflow.md#calamity
 
 ## Difficulty tabs (D-320)
 
+### Compact tier browser (D-327)
+
+The owner rejects the tall, crowded three-column presentation. All twelve
+activities and standalone Roses now show EX+1/2/3 as keyboard-accessible tier
+tabs, with one boss panel visible at a time. Desktop keeps the boss/arena,
+actual stats and signed scaling, fixed chest contents and Enter/View Loot
+together. Activity choices become a compact horizontal row while Calamity is
+selected; Normal keeps its existing layout and stage controls. Narrow screens
+stack without horizontal overflow and retain page scrolling, rather than
+clipping rewards or shrinking touch targets.
+
+The boss name and level sit on its scene. Chest names omit the repeated activity
+name in the compact preview only; full names remain in loot dialogs and receipts.
+Reward names align left, counts right, and token art is22px within the row.
+Detailed boss abilities and build guidance use existing native Information
+dialogs; exact mechanics and weighted loot remain available, not truncated.
+All buttons retain44px minimum targets. Back restores each selected EX tier
+alongside the selected difficulty; Settings retains the current DOM.
+
+Failed boss images show an explicit error and a user-triggered Retry image
+button. Retry preserves the canonical path and byte revision, adding only a
+cache-busting request parameter; no replacement artwork or automatic retry loop.
+No art bytes, combat, unlocks, rewards or account data change.
+
+Investigation on2026-10-16 found all705 deployed PNGs returning200, image/png
+and matching local file sizes. All18 Calamity images also matched downloaded
+bytes/revisions and decoded in fresh Chrome. The owner's existing-tab failure
+was not reproduced; this evidence does not establish its cause or prove it
+fixed. Do not claim deleted files or a cache diagnosis without request evidence.
+
+Validation: `npm test -- src/presentation/calamity.test.ts
+src/presentation/enemy-strength.test.ts src/content/calamity-art.test.ts
+src/presentation/menu-history.test.ts src/presentation/activity-banner.test.ts
+--maxWorkers=2` passes89 tests/5 files; `npm run build` passes.
+Production-CSS browser checks cover all36 entries at1577x768,1280x720,
+1920x1080,390x844 and320x780. Desktop panel bottoms stay within700/696px
+at the two smaller desktop sizes; all sizes have no horizontal overflow.
+Verify one visible tier, keyboard wrap/Home/End, independent choices, exact
+rewards, native dialogs, and an actual blocked-image failure followed by retry.
+
 D-321 aligns tier reward sections and action buttons, lists chest amounts as
 name/quantity rows, and omits zero Master-chest rows. View Loot keeps exact
 probabilities and quantities without exposing internal weights. Boss descriptions
 use plain English and enemy turns instead of developer wording or strategy
 claims. Current text resolves across entry cards, warnings, battle references
-and Collections. Larger square previews separate the boss from dimmed arena
+and Collections. D-327 supersedes its three-column square previews; the scene
+still separates the boss from dimmed arena
 art; contrast edges also cover field, cut-ins and discovered gallery images.
 These are text/style changes, not enemy, loot, unlock or source-art changes.
 

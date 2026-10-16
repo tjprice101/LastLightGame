@@ -321,6 +321,7 @@ interface MenuSnapshot {
   gallery: string | undefined;
   activities: { group: string; index: string }[];
   difficulties: { activity: string; difficulty: string }[];
+  calamityTiers: { activity: string; tier: string }[];
   controls: { attributes: [string, string][]; value: string }[];
   panels: { key: string; top: number; left: number }[];
   scroll: number;
@@ -345,6 +346,10 @@ function menuSnapshot(): MenuSnapshot {
     difficulties: Array.from(app.querySelectorAll<HTMLButtonElement>('[data-difficulty][aria-selected="true"]')).map(button => ({
       activity: button.closest<HTMLElement>('[data-activity-difficulty]')!.dataset.activityDifficulty!,
       difficulty: button.dataset.difficulty!,
+    })),
+    calamityTiers: Array.from(app.querySelectorAll<HTMLButtonElement>('[data-calamity-choice][aria-selected="true"]')).map(button => ({
+      activity: button.closest<HTMLElement>('[data-calamity-tiers]')!.dataset.calamityTiers!,
+      tier: button.dataset.calamityChoice!,
     })),
     controls: Array.from(app.querySelectorAll<HTMLSelectElement>('.sanctuary-content select:not([data-conduit-slot]):not([data-capture-conduit])')).map((control) => ({
       attributes: Array.from(control.attributes).filter((attribute) => attribute.name === 'id' || attribute.name.startsWith('data-') && attribute.name !== 'data-selection-source').map((attribute) => [attribute.name, attribute.value]),
@@ -372,7 +377,7 @@ async function backMenu(): Promise<void> {
   await transitionActivity(async () => {
     const fallback: MenuSnapshot | undefined = menuPage === 'battle' ? {
       ...menuSnapshot(), page: 'gameplay', hash: '', gallery: undefined,
-      activities: [], difficulties: [], controls: [], panels: [], scroll: 0,
+      activities: [], difficulties: [], calamityTiers: [], controls: [], panels: [], scroll: 0,
     } : undefined;
     if (menuPage === 'battle' && playMode === 'online' && battleSession) await performOnline({ kind: 'quit', runId: battleSession.runId });
     const previous = menuHistory.back(fallback);
@@ -406,6 +411,7 @@ async function backMenu(): Promise<void> {
     }
     for (const activity of previous.activities) app.querySelector<HTMLButtonElement>(`#${activity.group} [data-activity-choice="${activity.index}"]`)?.click();
     for (const saved of previous.difficulties) app.querySelector<HTMLButtonElement>(`[data-activity-difficulty="${saved.activity}"] [data-difficulty="${saved.difficulty}"]`)?.click();
+    for (const saved of previous.calamityTiers) app.querySelector<HTMLButtonElement>(`[data-calamity-tiers="${saved.activity}"] [data-calamity-choice="${saved.tier}"]`)?.click();
     if (previous.gallery) app.querySelector<HTMLButtonElement>(`[data-archive-gallery="${previous.gallery}"]`)?.click();
     for (const saved of previous.controls) {
       const control = Array.from(app.querySelectorAll<HTMLSelectElement>('.sanctuary-content select')).find((candidate) =>

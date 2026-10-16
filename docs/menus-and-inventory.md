@@ -50,12 +50,14 @@ Do not fill these screens with implementation terms, save/receipt internals,
 design commentary or repeated assurances about unchanged systems. Show save
 status once; keep actionable error messages and post-save failure warnings.
 
-Calamity tier cards share rows for their artwork, headings, boss descriptions,
-reward sections and actions. Reward names align left, quantities right; omit
+Calamity uses the [compact tier browser](calamity-mode.md#compact-tier-browser-d-327)
+instead of three tall side-by-side cards. One selected boss, stats, chest
+contents and entry action share the desktop panel; detailed abilities, team
+requirements and loot tables remain in native dialogs. Reward names align left, quantities right; omit
 Master-chest entries for tiers that do not contain them. Reward showcases share
 image/name/quantity rows so long names do not stagger their counts.
 
-Boss previews use square framing, dimmed scenery and a subtle contrast edge.
+Boss previews use contained artwork, dimmed scenery and a subtle contrast edge.
 Battle scenery is also dimmed for Calamity; bosses retain a contrast edge in
 the field, ultimate cut-ins and revealed Collections entries. Hidden silhouettes,
 source images, subject colors, facing and mechanics remain unchanged.

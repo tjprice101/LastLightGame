@@ -8,6 +8,9 @@ describe('menu traversal history', () => {
     expect(main).toContain('difficulties: Array.from(app.querySelectorAll<HTMLButtonElement>(\'[data-difficulty][aria-selected="true"]\'))');
     expect(main).toContain('for (const saved of previous.difficulties)');
     expect(main).toContain('[data-activity-difficulty="${saved.activity}"] [data-difficulty="${saved.difficulty}"]');
+    expect(main).toContain('calamityTiers: Array.from(app.querySelectorAll<HTMLButtonElement>(\'[data-calamity-choice][aria-selected="true"]\'))');
+    expect(main).toContain('for (const saved of previous.calamityTiers)');
+    expect(main).toContain('[data-calamity-tiers="${saved.activity}"] [data-calamity-choice="${saved.tier}"]');
     expect(main).toContain('bindActivityDifficulties(app);');
     expect(main).toContain('bindEnemyStrength(app);');
     expect(main).toContain("[data-dungeon-stage], [data-infusion-stage], [data-war-stage]')) control.dispatchEvent(new Event('change', { bubbles: true }))");

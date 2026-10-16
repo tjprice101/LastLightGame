@@ -1,5 +1,39 @@
 # Current state and handoff
 
+## Compact Calamity browser and artwork investigation (D-327)
+
+- Replaced the three tall cards with accessible EX+1/2/3 tabs and one selected
+  boss panel across all12 activities and standalone Roses Events. Desktop
+  presents boss/arena, stats/scaling, aligned fixed chest contents and entry
+  together. Horizontal activity choices apply only while Calamity is selected.
+  Long abilities/build guidance use existing native dialogs; full loot remains
+  exact. Token art is bounded22px, controls retain44px targets.
+- Back snapshots restore each selected EX tier independently of difficulty and
+  normal stage. Settings keeps the DOM. No mechanics, rewards, unlocks, artwork
+  bytes, authority bundle or account persistence changes.
+- Boss-image failures now show explicit error/Retry. Manual retry retains the
+  canonical asset path and byte revision and bypasses a cached failed request;
+  no guessed substitute, silent fallback or automatic retry loop.
+- Live audit:705/705 PNGs return200/image/png with matching local file sizes.
+  All18 Calamity downloads match local bytes/revisions, and all18 decode in
+  isolated fresh Chrome. The reported existing-tab failure remains unconfirmed;
+  no established root cause or claim that a broad missing-art bug was fixed.
+- Validation: `npm test -- src/presentation/calamity.test.ts
+  src/presentation/enemy-strength.test.ts src/content/calamity-art.test.ts
+  src/presentation/menu-history.test.ts src/presentation/activity-banner.test.ts
+  --maxWorkers=2` passes89 tests/5 files. `npm run build` passes with the existing
+  chunk-size advisory. New coverage checks all12 independent tier browsers,
+  keyboard wrap/Home/End, exact rewards, revision-preserving error/retry and
+  history wiring.
+- Isolated Chrome uses actual Gameplay/Header renderers with production CSS,
+  no player-account writes. All36 entries checked at1577x768,1280x720,
+  1920x1080,390x844 and320x780:180 cases, no horizontal overflow. Desktop panel
+  bottoms stay below700px/696px at the two smaller desktop sizes. Mobile keeps
+  scrolling rather than clipping. Screenshots reviewed; all non-lazy images in
+  the328-image fixture decode locally. An actual blocked boss request displays the error; unblocking
+  and pressing Retry restores the960px image and clears the error.
+- [Contract and verification](calamity-mode.md#compact-tier-browser-d-327).
+
 ## Phase3 hostile difficulty (D-326)
 
 - Owner confirms5% higher hostile HP/Attack/Defense, not steeper exponential

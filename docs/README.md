@@ -5,6 +5,14 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Calamity layout refresh (D-327):** one selected EX tier replaces three tall
+columns across all twelve activities and standalone Roses. Boss art, stats,
+rewards and entry fit together on desktop; detailed rules use native dialogs.
+Failed boss images have an explicit Retry control. All705 hosted PNGs are
+present; the reported existing-tab art failure remains unconfirmed in a fresh
+browser, not diagnosed as deleted files.
+[Contract and validation](calamity-mode.md#compact-tier-browser-d-327).
+
 **Phase3 enemy difficulty (D-326):** all fresh enemy HP/Attack/Defense use
 1.05 times the existing unrounded exponential curve. Characters/captures,
 rates, levels and rewards are unchanged. Activity and field/menu readouts show

@@ -36,6 +36,66 @@ afterEach(() => {
 });
 
 describe('Calamity presentation', () => {
+  it.each(calamityActivities)('keeps one $id tier visible and preserves independent difficulty and stage choices', activity => {
+    const account = emptyAccount();
+    const before = structuredClone(account);
+    document.body.innerHTML = gameplayHub(account);
+    bindActivityDifficulties(document.body);
+    const section = document.querySelector<HTMLElement>(`[data-calamity-tiers="${activity.id}"]`)!;
+    const tabs = Array.from(section.querySelectorAll<HTMLButtonElement>('[data-calamity-choice]'));
+    const panels = Array.from(section.querySelectorAll<HTMLElement>('[data-calamity-panel]'));
+    const check = (index: number): void => {
+      expect(panels.filter(panel => !panel.hidden)).toEqual([panels[index]]);
+      tabs.forEach((tab, current) => {
+        expect(tab.getAttribute('aria-selected')).toBe(String(current === index));
+        expect(tab.tabIndex).toBe(current === index ? 0 : -1);
+        expect(tab.getAttribute('aria-controls')).toBe(panels[current].id);
+        expect(panels[current].getAttribute('aria-labelledby')).toBe(tab.id);
+      });
+    };
+    check(0);
+    tabs[2].click();
+    check(2);
+    for (const [start, key, selected] of [[2, 'ArrowRight', 0], [0, 'ArrowLeft', 2], [2, 'Home', 0], [0, 'End', 2]] as const) {
+      tabs[start].dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+      check(selected);
+      expect(document.activeElement).toBe(tabs[selected]);
+    }
+    const group = section.closest('[data-activity-difficulty]')!;
+    group.querySelector<HTMLButtonElement>('[data-difficulty="calamity"]')!.click();
+    group.querySelector<HTMLButtonElement>('[data-difficulty="normal"]')!.click();
+    group.querySelector<HTMLButtonElement>('[data-difficulty="calamity"]')!.click();
+    check(2);
+    for (const other of Array.from(document.querySelectorAll<HTMLElement>('[data-calamity-tiers]'))) {
+      if (other !== section) expect(other.querySelector<HTMLElement>('[data-calamity-panel="1"]')!.hidden).toBe(false);
+    }
+    expect(account).toEqual(before);
+  });
+
+  it('reports a failed boss image and retries its versioned URL without changing tiers or art identity', () => {
+    document.body.innerHTML = calamitySection('machines', emptyAccount());
+    bindActivityDifficulties(document.body);
+    const image = document.querySelector<HTMLImageElement>('.calamity-tier-boss')!;
+    const error = document.querySelector<HTMLElement>('[data-calamity-art-error]')!;
+    const original = new URL(image.src);
+    image.dispatchEvent(new Event('error'));
+    expect(error.hidden).toBe(false);
+    expect(error.textContent).toContain('Boss image could not load.');
+    expect(image.hidden).toBe(true);
+    error.querySelector('button')!.click();
+    const retry = new URL(image.src);
+    expect(retry.pathname).toBe(original.pathname);
+    expect(retry.searchParams.get('v')).toBe(original.searchParams.get('v'));
+    expect(retry.searchParams.has('retry')).toBe(true);
+    expect(error.hidden).toBe(true);
+    image.dispatchEvent(new Event('error'));
+    expect(error.hidden).toBe(false);
+    image.dispatchEvent(new Event('load'));
+    expect(error.hidden).toBe(true);
+    expect(image.hidden).toBe(false);
+    expect(document.querySelector<HTMLElement>('[data-calamity-panel="1"]')!.hidden).toBe(false);
+  });
+
   it('shows the shared build target without inventing an equipment admission gate', () => {
     const account = emptyAccount();
     account.normalFinalClears = { machines: true };

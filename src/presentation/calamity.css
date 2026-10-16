@@ -14,23 +14,56 @@
 .activity-difficulty-tabs [aria-selected="true"] { border-bottom: 3px solid currentColor; font-weight: 700; }
 .activity-difficulty [hidden] { display: none !important; }
 .activity-difficulty .calamity-section { margin-block: 0; }
-.activity-difficulty .calamity-section > h3 { margin: 0 0 1rem; font-size: clamp(1.25rem, 2.2vw, 2rem); line-height: 1.25; overflow-wrap: anywhere; }
-.calamity-section { margin-block: 1.5rem; padding: 1rem; border: 1px solid #a94646; border-radius: 12px; background: #211b1b; color: #fff; }
-.calamity-tiers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 1rem; }
-.calamity-tier { display: grid; grid-template-rows: subgrid; grid-row: span 7; gap: .75rem; min-width: 0; padding: .8rem; border: 1px solid #785757; border-radius: 8px; text-align: left; }
-.calamity-tier h4, .calamity-tier p { margin: 0; }
-.calamity-tier header p { margin-top: .4rem; }
-.calamity-tier-scene { position: relative; isolation: isolate; display: grid; place-items: center; aspect-ratio: 1; overflow: hidden; border-radius: 6px; background: #111; }
+#app .ref-play .activity-group:has(.activity-card:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) { grid-template-columns: minmax(0, 1fr); gap: .5rem; }
+#app .ref-play .activity-group:has(.activity-card:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .activity-picker { grid-column: 1; grid-row: auto; flex-direction: row; flex-wrap: wrap; gap: .35rem; padding: 0; }
+#app .ref-play .activity-group:has(.activity-card:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .activity-picker::before { content: none; }
+#app .ref-play .activity-group:has(.activity-card:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .activity-picker button { flex: 1 1 100px; padding: .4rem .6rem; }
+#app .ref-play .activity-group:has(.activity-card:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .activity-card { grid-column: 1; grid-row: auto; padding: .5rem; }
+.activity-difficulty:has([data-difficulty="calamity"][aria-selected="true"]) > .activity-difficulty-tabs { margin-bottom: .5rem; }
+.calamity-section { margin-block: 1.5rem; padding: .75rem; border: 1px solid #a94646; border-radius: 12px; background: #211b1b; color: #fff; min-width: 0; }
+#app .calamity-section .calamity-heading { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .5rem; }
+#app .calamity-section .calamity-heading h3 { margin: 0; font-size: clamp(1.1rem, 1.6vw, 1.5rem); line-height: 1.25; letter-spacing: normal; text-transform: none; }
+#app .calamity-section .calamity-heading p { margin: .3rem 0 0; font-size: .85rem; line-height: 1.4; }
+.calamity-heading > div { min-width: 0; }
+.calamity-heading > button { flex: 0 0 auto; min-height: 44px; }
+.calamity-tier-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin-bottom: .5rem; }
+#app .calamity-tier-tabs button { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-height: 44px; padding: .55rem .85rem; font-size: .9rem; }
+.calamity-tier-tabs [aria-selected="true"] { outline: 2px solid var(--leader-accent, #e5a4a4); outline-offset: -2px; }
+.calamity-tier-tabs span { font-size: .8rem; opacity: .8; }
+.calamity-tiers { min-width: 0; }
+#app .calamity-section .calamity-tier { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 1fr); gap: 1rem; min-width: 0; padding: 0; text-align: left; }
+.calamity-section [hidden] { display: none !important; }
+#app .calamity-section .calamity-tier h4, #app .calamity-section .calamity-tier p { margin: 0; }
+.calamity-tier-scene { position: relative; isolation: isolate; display: grid; place-items: center; min-width: 0; min-height: 300px; overflow: hidden; border-radius: 8px; background: #111; }
 .calamity-tier-arena { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover; filter: brightness(.35) saturate(.65); }
-.calamity-tier-boss { width: 100%; height: 100%; min-height: 0; object-fit: contain; filter: drop-shadow(0 2px 2px #000) drop-shadow(0 0 8px #ffffff60); }
-.calamity-tier-reward { display: grid; grid-template-rows: subgrid; grid-row: span 3; }
-.calamity-reward-list { display: grid; gap: .5rem; margin: 0; padding: 0; list-style: none; }
-.calamity-reward-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: .5rem; }
+.calamity-tier-boss { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; padding-bottom: 70px; object-fit: contain; filter: drop-shadow(0 2px 2px #000) drop-shadow(0 0 8px #ffffff60); }
+.calamity-boss-heading { position: absolute; inset: auto 0 0; padding: .75rem; background: linear-gradient(transparent, #080808e8 20%); }
+.calamity-tier-details { display: grid; gap: .65rem; align-content: start; min-width: 0; line-height: 1.4; }
+#app .calamity-section .calamity-boss-heading h4 { font-size: clamp(1.05rem, 1.5vw, 1.4rem); line-height: 1.25; overflow-wrap: anywhere; }
+#app .calamity-section .calamity-boss-heading p { margin-top: .2rem; font-size: .85rem; text-transform: capitalize; }
+#app .calamity-section .enemy-strength { margin: 0; padding: .65rem; }
+#app .calamity-section .enemy-strength h4 { font-size: .85rem; margin-bottom: .35rem; }
+.calamity-boss-description { display: grid; gap: .35rem; align-content: start; }
+.calamity-boss-description > button { justify-self: start; min-height: 44px; }
+.calamity-tier-reward { min-width: 0; padding: .65rem; border: 1px solid #ffffff25; border-radius: 8px; background: #1118; }
+.calamity-chest-heading { display: flex; align-items: center; gap: .6rem; margin-bottom: .5rem; }
+.calamity-chest-heading > div { min-width: 0; }
+#app .calamity-chest-heading h5 { margin: 0 0 .2rem; font-size: .85rem; }
+#app .calamity-chest-heading p { font-size: .85rem; line-height: 1.35; overflow-wrap: anywhere; }
+.calamity-chest-heading small { display: block; margin-top: .2rem; color: #c7c3c3; }
+#app .calamity-chest-heading .calamity-chest-art { flex: 0 0 52px; width: 52px; height: 52px; margin: 0; }
+.calamity-reward-list { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+#app .calamity-reward-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .5rem; margin: 0; padding: 0; font-size: .85rem; line-height: 1.35; }
 .calamity-reward-list span { overflow-wrap: anywhere; }
 .calamity-reward-list strong { font-variant-numeric: tabular-nums; text-align: right; }
-.calamity-tier-actions { display: flex; flex-direction: column; gap: .5rem; align-self: end; }
-.calamity-tier-actions button { width: 100%; min-height: 44px; text-align: left; }
-.calamity-tier-actions .activity-unlock-hint { min-height: 2.8em; }
+#app .calamity-reward-list .currency-reward { display: flex; align-items: center; gap: .4rem; min-width: 0; }
+#app .calamity-reward-list .currency-icon { flex: 0 0 22px; width: 22px; height: 22px; margin: 0; }
+#app .calamity-section .calamity-tier-actions { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .4rem .6rem; align-items: start; margin: 0; padding: 0; }
+#app .calamity-tier-actions button { min-height: 44px; padding: .6rem 1rem; }
+#app .calamity-tier-actions .activity-unlock-hint { grid-column: 1 / -1; grid-row: 2; min-height: 0; font-size: .8rem; line-height: 1.4; }
+.calamity-tier-actions .activity-unlock-hint:empty { display: none; }
+.calamity-art-error { position: relative; margin: 1rem; padding: 1rem; background: #161010ee; border: 1px solid #a94646; border-radius: 8px; text-align: center; }
+.calamity-art-error button { margin-top: .75rem; min-height: 44px; }
 .calamity-boss-contrast, html body .battle-screen #battle-root .battle-sprite img.calamity-boss-contrast { filter: drop-shadow(0 2px 2px #000) drop-shadow(0 0 6px #ffffff80); }
 #battle-root .battle-scenery.calamity-scenery { filter: brightness(.55) saturate(.8); }
 .calamity-chest-art { display: block; width: 96px; height: 96px; max-width: 100%; object-fit: contain; margin: .5rem auto; }
@@ -39,3 +72,14 @@
 .calamity-section table { width: 100%; border-collapse: collapse; }
 .calamity-section th, .calamity-section td { text-align: left; padding: .4rem; }
 .calamity-placeholder { display: grid; place-items: center; min-height: 96px; color: #fff; border: 1px solid #a94646; padding: 1rem; }
+@media (min-width: 1200px) {
+  #app .calamity-section .calamity-tier { grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); }
+  .calamity-tier-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .calamity-tier-actions { grid-column: 1 / -1; }
+}
+@media (max-width: 700px) {
+  #app .calamity-section .calamity-heading { flex-wrap: wrap; }
+  #app .calamity-section .calamity-tier { grid-template-columns: minmax(0, 1fr); }
+  .calamity-tier-scene { min-height: 0; height: clamp(240px, 60vw, 300px); }
+  #app .calamity-tier-tabs button { flex-direction: column; gap: .2rem; padding: .5rem; }
+}
