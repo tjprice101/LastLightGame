@@ -2,6 +2,10 @@
 
 ## Nonblocking artwork and further Calamity corrections (D-328)
 
+- **Released:** implementation `aaf0e67` is live. Pages run`38927892055`
+  passed the full `npm test` suite (4,032 tests/175 files), configured online
+  production build and deployment. All six hosted entry JS/CSS resources
+  returned200 and matched the tested local production bytes exactly.
 - Owner reports "Artwork loading timed out" on every live refresh. Root loader
   awaited all non-lazy img decodes in the entire rendered page, including
   hidden activity/tier panels and closed dialogs, then rejected successful
