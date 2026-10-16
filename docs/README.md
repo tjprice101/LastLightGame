@@ -5,6 +5,12 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Native identity artwork (D-323):** all27 delivered symbols are archived,
+background-cleaned offline and installed. Typed battle state selects the
+correct icon/variant beside exact native-state values and clocks. Ability
+frames and inset artwork remain; the active native/Calamity artwork queue is
+complete. [Intake and validation](art-workflow.md#delivered-native-identity-status-icons-d-323).
+
 **Visible enemy strength (D-322):** activity entries show selected-stage level,
 rank, actual HP/Attack/Defense and differences from a standard same-level
 enemy. Calamity keeps its special mechanics alongside these stats. Existing
@@ -37,7 +43,7 @@ installed: twelve boss cutouts, three shared tier chests and three tier arenas.
 Owner-approved Seraph/Hierophant replacements now preserve both source/export
 generations and refresh the same runtime IDs across every surface.
 The Last Scarlet Bloom follow-up delivery completes the set. All related
-runtime surfaces use shared revisioned art. Current missing-art queue is27 native
+runtime surfaces use shared revisioned art. D-323 subsequently completes all27 native
 symbols. Complete-set release `71a5de2` is deployed on Pages and the authoritative server;
 all3,869 tests and the hosted native/Calamity smoke passed.
 [Intake/reproduction](art-workflow.md#calamity-delivery-intake-d-318),

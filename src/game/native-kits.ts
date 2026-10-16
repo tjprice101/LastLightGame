@@ -3,6 +3,7 @@ import { damageAmount, type BattleEvent, type BattleState, type Combatant } from
 import { scheduledEnemySkill } from '../content/enemy-skills';
 import { debuffSnapshot } from './battle-debuffs';
 import { nativeBalance } from '../content/native-balance';
+import type { StatusArtId } from '../content/status-art';
 import { applyConduitBurn, applyConduitWeaken, nativeGauge, nativeHeal, nativeShield,
   conduitBurnTick, afterConduitBurn, gear, equipped, value, nativeTargetDefense,
   generatedShield, generatedStrike, finishNativeHealing } from './conduit-runtime';
@@ -564,36 +565,68 @@ export function nativeForecast(state: BattleState, unit: Combatant): string[] {
   });
 }
 
-export function nativeReadout(state: BattleState, unit: Combatant): { label: string; value: string; description: string }[] {
+export interface NativeReadoutRow {
+  label: string;
+  value: string;
+  description: string;
+  icons?: readonly StatusArtId[];
+}
+
+export function nativeReadout(state: BattleState, unit: Combatant): NativeReadoutRow[] {
   if (!hasNativeIdentity(unit) && !unit.native?.instruction) return [];
   const memory = unit.native ?? {};
-  const rows: { label: string; value: string; description: string }[] = [];
-  const add = (label: string, value: string, description: string) => rows.push({ label, value, description });
+  const rows: NativeReadoutRow[] = [];
+  const add = (label: string, value: string, description: string, icons: readonly StatusArtId[] = []) =>
+    rows.push({ label, value, description, icons });
   if (hasNativeIdentity(unit) && unit.definitionId === 'bliss') {
     const others = living(state).filter(ally => ally.id !== unit.id);
     const acted = others.filter(ally => ally.spent).length;
-    add('Posture', acted === 0 ? 'Opening' : acted === others.length ? 'Closing' : 'Passing',
-      'Changes with the other living squad members who have acted this player turn.');
+    const posture = acted === 0 ? 'opening' : acted === others.length ? 'closing' : 'passing';
+    add('Posture', posture[0].toUpperCase() + posture.slice(1),
+      'Changes with the other living squad members who have acted this player turn.', [`native-bliss-${posture}`]);
   }
   for (const recipient of state.allies) {
     const shields = recipient.conduitRuntime?.layers?.filter(layer => layer.native && layer.owner === unit.id &&
       layer.amount > 0 && layer.expiresAfterPhase !== undefined) ?? [];
     for (const layer of shields) add('Shield', `${Math.round(layer.amount)}`,
-      `${recipient.name}; expires after enemy phase ${layer.expiresAfterPhase}${layer.firstReduction ? '; first-hit reduction ready' : ''}.`);
+      `${recipient.name}; expires after enemy phase ${layer.expiresAfterPhase}${layer.firstReduction ? '; first-hit reduction ready' : ''}.`, ['ward']);
   }
-  if (memory.cyclone) add('Cyclone', `${memory.cyclone.gusts}/4 Gusts`, `${memory.cyclone.phases} enemy phases until release.`);
-  if (unit.definitionId === 'elise') add('Shuriken', (memory.blades ?? [null, null]).map(id => state.enemies.find(enemy => enemy.id === id)?.name ?? 'Held').join(' / '), 'Lodge two blades; recall for fixed strikes and convergence.');
-  if (unit.definitionId === 'crinso') add('Combo', `${memory.combo ?? 0}/3 · ${memory.edge ?? 'No edge'}`, 'Alternate Gold and Crimson; Last Flare consumes the combination.');
-  if (unit.definitionId === 'vaelor') add('Beat', ['Tune', 'Rise', 'Crescendo'][memory.beat ?? 0], 'Advances every global player turn, including recovery.');
-  if (memory.foundation) add('Foundation', `${Math.ceil(memory.foundation.durability)}/${Math.ceil(memory.foundation.maximum)}`, `Shared durability through enemy phase ${memory.foundation.throughPhase}.`);
-  if (unit.definitionId === 'razor') add('Wounds', `${Math.round(memory.wounds ?? 0)}`, `Cap ${Math.round(unit.stats.health * .3)}; actual direct enemy HP loss only.`);
-  if (memory.survey) add('Survey', `${memory.survey.points}/3`, state.enemies.find(enemy => enemy.id === memory.survey?.target)?.name ?? '');
-  if (memory.quarry) add('Quarry', state.enemies.find(enemy => enemy.id === memory.quarry?.target)?.name ?? '', `${memory.quarry.round === state.round ? memory.quarry.contributors.length : 0} distinct contributors this turn.`);
-  if (memory.cover) add('Cover', memory.cover.targets.map(id => state.allies.find(ally => ally.id === id)?.name ?? id).join(', '), `Redirect ${memory.cover.fraction * 100}% through enemy phase ${memory.cover.throughPhase}.`);
-  if (memory.instruction) add('Instruction', memory.instruction.kind, `Next native action; expires after player turn ${memory.instruction.throughRound}.`);
-  for (const [id, pending] of Object.entries(memory.seeds ?? {})) add('Seed', `${pending.fraction * 100}%`, `${state.allies.find(ally => ally.id === id)?.name}: player turn ${pending.dueRound}.`);
-  for (const [id, burn] of Object.entries(memory.burns ?? {})) if (burn.turns > 0) add('Burn', `${Math.round(burn.damage)} × ${burn.turns}`, state.enemies.find(enemy => enemy.id === id)?.name ?? id);
-  for (const [id, trap] of Object.entries(memory.traps ?? {})) add('Thorns', `${trap.charges} charges`, `${state.enemies.find(enemy => enemy.id === id)?.name}; through phase ${trap.throughPhase}.`);
-  for (const [id, seal] of Object.entries(memory.seals ?? {})) add('Seal', `${seal.fraction * 100}%`, `${state.enemies.find(enemy => enemy.id === id)?.name}; through phase ${seal.throughPhase}.`);
+  if (memory.cyclone) add('Cyclone', `${memory.cyclone.gusts}/4 Gusts`, `${memory.cyclone.phases} enemy phases until release.`, ['native-atmoso-cyclone']);
+  if (unit.definitionId === 'elise') {
+    const blades = memory.blades ?? [null, null];
+    add('Shuriken', blades.map(id => state.enemies.find(enemy => enemy.id === id)?.name ?? 'Held').join(' / '),
+      'Lodge two blades; recall for fixed strikes and convergence.',
+      blades.map(id => state.enemies.some(enemy => enemy.id === id) ? 'native-elise-lodged-blade' : 'native-elise-held-blade'));
+  }
+  if (unit.definitionId === 'crinso') add('Combo', `${memory.combo ?? 0}/3 · ${memory.edge ?? 'No edge'}`,
+    'Alternate Gold and Crimson; Last Flare consumes the combination.',
+    ['native-crinso-combo', ...(memory.edge ? [`native-crinso-${memory.edge}-edge` as const] : [])]);
+  if (unit.definitionId === 'vaelor') add('Beat', ['Tune', 'Rise', 'Crescendo'][memory.beat ?? 0],
+    'Advances every global player turn, including recovery.', [(['native-vaelor-tune', 'native-vaelor-rise', 'native-vaelor-crescendo'] as const)[memory.beat ?? 0]]);
+  if (memory.foundation) add('Foundation', `${Math.ceil(memory.foundation.durability)}/${Math.ceil(memory.foundation.maximum)}`,
+    `Shared durability through enemy phase ${memory.foundation.throughPhase}.`, ['native-orvella-foundation']);
+  if (unit.definitionId === 'razor') add('Wounds', `${Math.round(memory.wounds ?? 0)}`,
+    `Cap ${Math.round(unit.stats.health * .3)}; actual direct enemy HP loss only.`, ['native-razor-wounds']);
+  if (memory.bastion && memory.bastion.throughPhase >= state.round) add('Bastion', '30% direct-hit reduction',
+    `Through enemy phase ${memory.bastion.throughPhase}; ${Math.round(memory.bastion.loss)} HP lost stored for the following shield.`, ['native-razor-bastion']);
+  if (memory.ultimateWardThrough !== undefined && memory.ultimateWardThrough >= state.round) add('Ultimate Ward', '50% ultimate damage reduction',
+    `Through enemy phase ${memory.ultimateWardThrough}.`, ['native-aurora-ultimate-ward']);
+  if (memory.survey) add('Survey', `${memory.survey.points}/3`, state.enemies.find(enemy => enemy.id === memory.survey?.target)?.name ?? '', ['native-nerithe-survey']);
+  if (memory.quarry) add('Quarry', state.enemies.find(enemy => enemy.id === memory.quarry?.target)?.name ?? '',
+    `${memory.quarry.round === state.round ? memory.quarry.contributors.length : 0} distinct contributors this turn.`, ['native-rosetta-quarry']);
+  if (memory.cover) add('Cover', memory.cover.targets.map(id => state.allies.find(ally => ally.id === id)?.name ?? id).join(', '),
+    `Redirect ${memory.cover.fraction * 100}% through enemy phase ${memory.cover.throughPhase}.`, ['native-bruno-cover']);
+  if (memory.instruction) add('Instruction', memory.instruction.kind, `Next native action; expires after player turn ${memory.instruction.throughRound}.`,
+    [`native-disciple-${memory.instruction.kind}`]);
+  for (const [id, pending] of Object.entries(memory.seeds ?? {})) add('Seed', `${pending.fraction * 100}%`,
+    `${state.allies.find(ally => ally.id === id)?.name}: player turn ${pending.dueRound}.`,
+    [pending.fraction >= nativeBalance.flora.empoweredSeed ? 'native-flora-empowered-seed' : 'native-flora-seed']);
+  for (const [id, burn] of Object.entries(memory.burns ?? {})) if (burn.turns > 0) add('Burn', `${Math.round(burn.damage)} × ${burn.turns}`,
+    state.enemies.find(enemy => enemy.id === id)?.name ?? id, ['burn']);
+  for (const [id, trap] of Object.entries(memory.traps ?? {})) add('Thorns', `${trap.charges} charges`,
+    `${state.enemies.find(enemy => enemy.id === id)?.name}; through phase ${trap.throughPhase}.`,
+    [trap.coefficient >= .9 ? 'native-thornia-empowered-trap' : 'native-thornia-trap']);
+  for (const [id, seal] of Object.entries(memory.seals ?? {})) add('Seal', `${seal.fraction * 100}%`,
+    `${state.enemies.find(enemy => enemy.id === id)?.name}; through phase ${seal.throughPhase}.`, ['native-aurora-seal']);
   return rows;
 }

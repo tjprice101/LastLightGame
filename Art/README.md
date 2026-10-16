@@ -1,13 +1,15 @@
 # Art library
 
-## Current missing-art queue (D-317 / D-318)
+## Completed native/Calamity artwork queue (D-317 / D-318 / D-323)
 
-[Current27-image checklist](Remaining%20Artwork.md):
+[Delivery checklist](Remaining%20Artwork.md):
 [Calamity](creatures/Calamity.md) retains all18 original prompts, and all twelve
 bosses, three shared tier chest icons and three shared tier arenas are installed.
 The Last Scarlet Bloom is now installed too; no Calamity artwork is missing.
-[Native identity symbols](ui/Native%20Identity%20Status%20Icons.md) has27 pending
-ability-picture-framed status pictograms. Copy-ready prompts and filenames included.
+[Native identity symbols](ui/Native%20Identity%20Status%20Icons.md) has27 installed
+ability-picture-framed status pictograms. Originals are preserved under
+`source/abilities/native-statuses`; frames/insets remain intact after exterior
+background cleanup. See [native intake](../docs/art-workflow.md#delivered-native-identity-status-icons-d-323).
 See [reviewed intake](../docs/art-workflow.md#calamity-delivery-intake-d-318).
 Existing85 ordinary/48 Master
 Conduits, Master chest and all current materials already have artwork.

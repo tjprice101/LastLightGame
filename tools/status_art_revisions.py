@@ -3,11 +3,13 @@
 import argparse
 from hashlib import sha256
 from pathlib import Path
+from build_pending_art import STATUSES
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = ROOT / "src" / "content" / "status-art-revisions.ts"
 ASSETS = ("burn", "ward", "bloom", "tempest", "focus", "suppression",
-          "rose-grace", "thorn-aegis", "rose-duality")
+          "rose-grace", "thorn-aegis", "rose-duality",
+          *(f"native-{suffix}" for suffix, _, _, _ in STATUSES))
 
 
 def revision_source():

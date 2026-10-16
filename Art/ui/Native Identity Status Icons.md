@@ -1,15 +1,16 @@
 # Native identity status symbols
 
-**27 new pictograms**, not new ability portraits or UI screenshots.
-These cover the D-316 native states that currently use accurate live text.
+**27 delivered pictograms**, not new ability portraits or UI screenshots.
+These cover the D-316 native states alongside their accurate live text.
 Existing character-specific passive/Skill1/Skill2/Last Flare images remain
 installed; all Normal/Defense actions already use the two universal images.
 Do not regenerate64 ability images just because mechanics changed.
 
 ## Delivery and mapping
 
-Each filename below is a proposed intake filename, not a registered asset URL.
-Supply square PNG originals. Exports can later become256px icons after review.
+All27 originals are archived under `Art/source/abilities/native-statuses`.
+Reviewed256px transparent exports are installed under
+`public/assets/abilities/statuses` with the filenames below (D-323).
 Use the owner's character palettes, not a universal rainbow status palette.
 Keep counts, recipient/owner, turn/phase expiry, blade location and enemy-skill
 forecast as accessible HTML. The symbol never replaces those exact values.
@@ -39,7 +40,10 @@ Quarry/Survey share one symbol each across targets; numeric progress stays text.
 All prompts are reference-free, opaque/no-glow cutouts with continuous margins.
 Background keys are exempt from subject palette locks. Current VFX remain
 procedural animations; these PNGs are status symbols, not animation sprite sheets.
-Nothing is wired or installed until original images are delivered and reviewed.
+All27 are reviewed and wired through typed native-state metadata and the shared
+status resolver. Reproduce with `python tools\intake_native_status_art.py --apply`
+and `python tools\status_art_revisions.py --write`. The prompts below remain
+the generation reference; do not regenerate or repaint the delivered originals.
 
 ### Flora: Flora Seed
 

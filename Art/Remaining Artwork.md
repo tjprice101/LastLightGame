@@ -5,8 +5,8 @@
 | Pack | Images | What to generate |
 | --- | ---: | --- |
 | [Calamity](creatures/Calamity.md) |0|All18 images installed, including The Last Scarlet Bloom|
-| [Native identity symbols](ui/Native%20Identity%20Status%20Icons.md) |27|Small pictograms for the new native states; not replacement ability art|
-| **Current queue** |**27**|Original PNGs; filenames and individual prompts are in the packs|
+| [Native identity symbols](ui/Native%20Identity%20Status%20Icons.md) |0|All27 delivered symbols are archived, cleaned and installed (D-323)|
+| **Current queue** |**0**|Both requested production packs are installed; prompts remain generation references|
 
 The owner explicitly chooses **three chest images total**, shared by all
 activities according to Slayer/Master/Omnipotent tier, and **three arena images
@@ -18,12 +18,13 @@ Bosses remain twelve distinct identities, one image per activity reused across
 all three levels. Suggested detailed visual designs in the pack are generation
 proposals. All twelve delivered bosses are reviewed and installed.
 
-## Generation priority
+## Native status delivery complete
 
-1. Twenty-seven status symbols inside square ability-icon picture frames:
-   complements exact native-state text. A beveled rim surrounds an opaque
-   inset panel; no trophy or pedestal. Use each character's palette, not blanket gold. Existing
-   Burn and shield artwork is reused; counts and expiry are never painted text.
+Twenty-seven status symbols inside ability-icon picture frames now complement
+exact native-state text. Original bytes are archived under
+`source/abilities/native-statuses`; transparent256px exports preserve the
+frames and illustrated inset panels. Existing Burn and shield artwork is reused;
+counts and expiry remain HTML. [Reproduction and checks](../docs/art-workflow.md#delivered-native-identity-status-icons-d-323).
 
 ## What does not need regeneration
 
@@ -53,7 +54,7 @@ A2026-10-15 catalog/filesystem check found:
 The [Elemental War family banner](ui/Elemental%20War.md) and standalone
 Nerithe/Orvella/Vaelor weapon illustrations have existing prompts but no
 installed production slots. They are optional concept/delivery backlog, not
-missing artwork in the current27-image production queue. The three actual
+missing artwork in the completed native/Calamity production queue. The three actual
 War activity banners/arenas and all required ability icons are already installed.
 Old prompt-pack statements that25 kit Conduits or48 Masters are still pending
 are historical; the intake records and actual exports take precedence.

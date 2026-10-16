@@ -6,6 +6,7 @@ import { nativeForecast, nativeReadout } from '../game/native-kits';
 import { createGameDialog, escapeDialogText } from './game-dialog';
 import './native-kit.css';
 import { readableEffect } from './effect-copy';
+import { statusIcon } from './status-icon';
 
 export function nativeIdentityReference(unit: Combatant): string {
   if (unit.captured || !unit.kit?.nativeIdentity || !isStarterId(unit.definitionId)) return '';
@@ -19,7 +20,7 @@ export function nativeStateReadout(state: BattleState, unit: Combatant): string 
   const forecast = nativeForecast(state, unit);
   if (!rows.length && !forecast.length) return '';
   return `<span class="native-kit-state" aria-label="Native battle state">${rows.map(row =>
-    `<span class="native-state-row" data-native-label="${escapeDialogText(row.label)}" data-native-value="${escapeDialogText(row.value)}"><strong>${escapeDialogText(row.label)}: ${escapeDialogText(row.value.replace(/(\d)\/(?=\d)/g, '$1 / '))}</strong><small>${escapeDialogText(readableEffect(row.description))}</small></span>`).join('')}${forecast.map(line =>
+    `<span class="native-state-row" data-native-label="${escapeDialogText(row.label)}" data-native-value="${escapeDialogText(row.value)}"><strong>${(row.icons ?? []).map(statusIcon).join('')}${escapeDialogText(row.label)}: ${escapeDialogText(row.value.replace(/(\d)\/(?=\d)/g, '$1 / '))}</strong><small>${escapeDialogText(readableEffect(row.description))}</small></span>`).join('')}${forecast.map(line =>
     `<span class="native-forecast">${escapeDialogText(line)}</span>`).join('')}</span>`;
 }
 

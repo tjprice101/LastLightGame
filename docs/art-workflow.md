@@ -1,5 +1,43 @@
 # Art and asset workflow
 
+## Delivered native identity status icons (D-323)
+
+All27 owner-delivered root PNGs are archived byte-for-byte under
+`Art/source/abilities/native-statuses`. Reviewed256px RGBA exports with224px
+maximum content live under `public/assets/abilities/statuses`. Source/export/
+decoded-pixel hashes and settings are recorded in
+`Art/provenance/native-status-art-intake.json`; root duplicates are removed
+only after both archived and runtime bytes verify.
+
+`tools/intake_native_status_art.py` reuses the established offline status
+cleaner. Each source uses its own sampled row-gradient key, exterior-connected
+matte and reviewed enclosed-frame gap seeds. Disciple Strike's brighter mint
+crescent pockets use bounded local radii. Review includes source contact sheets,
+indexed pockets and dark/light exports. Keep the complete ability-picture frame
+and its opaque illustrated inset, pale feathers, same-hued gems, elemental
+details and painted shadows. No blanket hue removal or runtime keying.
+Future supplied-alpha originals bypass cleanup and retain their alpha.
+
+Typed native readout metadata selects all27 symbols from actual battle state:
+Seeds/empowered Seeds, Cyclone, both Shuriken locations, three Postures, three
+Instructions, Aurora Seal/Ultimate Ward, Wounds/Bastion, Quarry, both Traps,
+Combo/Gold/Crimson, Survey, Foundation, three Beats and Cover. Ordinary native
+Burn and shields reuse their existing art. The shared status resolver supplies
+deployment-base URLs and byte-derived revisions across field and Battle-menu
+readouts; icons are decorative alongside unchanged HTML values, owners,
+targets, clocks and forecasts. Active Bastion/Ultimate Ward now have explicit
+readout rows for their existing effects. No combat, reward, RNG or save change.
+
+Reproduce:
+`python tools\intake_native_status_art.py --apply`
+then `python tools\status_art_revisions.py --write`.
+Review:
+`python tools\intake_native_status_art.py --review <review-directory>`.
+Root cleanup additionally requires `--remove-incoming --reviewed`.
+Validate with
+`python -m unittest discover -s tools -p test_native_status_art.py -v`,
+the existing status/prompt tests and the native-status/native-kit Vitest suites.
+
 ## Calamity delivery intake (D-318)
 
 ### Updated Heavenfall Seraph and White Pyre Hierophant
@@ -68,7 +106,8 @@ untracked changes or conflicting archived originals are rejected before intake.
 copy-ready prompts. Owner chooses3 shared tier chests and3 shared tier arenas,
 not36 chest exports or twelve sets of scenery. Twelve boss cutouts and27
 new native-state pictograms complete the original45-image queue. D-318 installs
-all eighteen Calamity images; the current queue is27 native symbols only.
+all eighteen Calamity images; D-323 installs all27 native symbols, completing
+the original queue.
 Existing133 Conduits, all48
 current materials, Master chest, character portraits and ability art are not
 replacement requests. Older War family/weapon concept prompts are optional,
@@ -84,8 +123,9 @@ earlier trophy/stepped-base interpretation.
 
 Reproduce with `python tools\build_pending_art.py`; validate with
 `python -m unittest discover -s tools -p test_pending_art.py -v`.
-No generated images, reviewed intake, asset URL changes or deployment are
-implied. Preserve cutout safety margins/keys and full-bleed16:9 arenas; use
+Prompt generation alone does not imply reviewed intake or deployment; the
+D-318/D-323 sections above record the actual deliveries. Preserve cutout safety
+margins/keys and full-bleed16:9 arenas; use
 no style-reference flags on these non-character-portrait images.
 
 ## Full Conduit background audit

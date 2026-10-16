@@ -1,0 +1,1502 @@
+{
+  "asset_count": 27,
+  "canvas": 256,
+  "content_limit": 224,
+  "assets": [
+    {
+      "asset": "status-native-flora-seed",
+      "incoming": "Flora Flora Seed.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Flora Flora Seed.png",
+      "source_sha256": "ee957f8989e5ac786c70f9fa9841a027be74db86e77d25a34eb2fe49be33a9a7",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-flora-seed.png",
+      "runtime_sha256": "9f0bf13dcbab3da1575a5d35d46ea4d2d482b4c681a21f38764d56cc3c55a7aa",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "3ab5e4a74ec19e0bc4201418f2af4fe42875f234ff25abe3327678e97d0865a2",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "8c7a74748cd3a5313dbf429288e6e22149e16e0ea79280fbf370c448adb1dfaf",
+      "runtime_content_bbox": [
+        29,
+        16,
+        227,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.4526,
+            0.1183
+          ],
+          [
+            0.5024,
+            0.0968
+          ],
+          [
+            0.8475,
+            0.7977
+          ],
+          [
+            0.1574,
+            0.2141
+          ],
+          [
+            0.8475,
+            0.2141
+          ],
+          [
+            0.1554,
+            0.8035
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and indexed pocket review: clear six exterior frame curls; preserve green seed, ivory leaves, gold frame, teal inset and painted lower shadow."
+      }
+    },
+    {
+      "asset": "status-native-flora-empowered-seed",
+      "incoming": "Flora Empowered Seed.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Flora Empowered Seed.png",
+      "source_sha256": "5c99f4c48fe3daeaaaaa2c518d78a87f56e0ec35032aaf47ec64574162b02fbc",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-flora-empowered-seed.png",
+      "runtime_sha256": "82ae8fb4189fa24d3ce25deabd80f0b8089edf5885e477ecebfe2319155cde32",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "2aa71ac53d72ef5565321b72360f0b961ad2523628c2901703062f3af54d6550",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "5f42cae790f24432a9bef4576155ffe89b36e15584f574598266b74d87b84df7",
+      "runtime_content_bbox": [
+        17,
+        16,
+        238,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6364,
+            0.2014
+          ],
+          [
+            0.2991,
+            0.2542
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and indexed pocket review: clear two exterior leaf gaps; preserve green seed, moss leaves, pink frame, dark inset and painted shadow."
+      }
+    },
+    {
+      "asset": "status-native-atmoso-cyclone",
+      "incoming": "Atmoso Cyclone and Gusts.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Atmoso Cyclone and Gusts.png",
+      "source_sha256": "b0ccfc2feabdd75ae4fa4141123ad6570050451ec89474c6a93ba6ea234209f5",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-atmoso-cyclone.png",
+      "runtime_sha256": "9d23439e4133cb1b8b0ef14872e567d03b113760fb67ac2f97a149721a67f190",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "61caf6dfc2ef4184f477b975ec3bb7c39ec7463bbad722293a0e3d940b34eb37",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "0e52801e1ccbfa484b2b6a1be38e756a41413c46b8fb10ccfd2ac7806578c17b",
+      "runtime_content_bbox": [
+        18,
+        16,
+        238,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve teal vanes, ivory feathers, navy inset and silver frame; exterior pink only."
+      }
+    },
+    {
+      "asset": "status-native-elise-held-blade",
+      "incoming": "Elise Held Shuriken.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Elise Held Shuriken.png",
+      "source_sha256": "abc42af95305361fbea0bb37cd2130863687d3533a3f5c4ec4fae2521871e78b",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-elise-held-blade.png",
+      "runtime_sha256": "c0df93fbbe28f81eaa48b5a8bdbeb1c8152ee3b4504d22efd699e37b12bfda6e",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "ed307790ddc650fe7b90355ea630467175c461981b70800360b366fb24a35f48",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "a9aec8d5759f78500e2d4ff892aa600ed0977894f7f87dc68bb2ad8171c2760c",
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        239
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve lime inset and flecks, silver blade and charcoal ornament; exterior violet only."
+      }
+    },
+    {
+      "asset": "status-native-elise-lodged-blade",
+      "incoming": "Elise Lodged Shuriken.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Elise Lodged Shuriken.png",
+      "source_sha256": "348153f8cc10ffd297d9dcaebb3d5a861c213f2650f7f0c8646c09990e2454c8",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-elise-lodged-blade.png",
+      "runtime_sha256": "923a8dd57286c7f120c638cb492964ea2848263b9024a7b68053350f3e1a930d",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "cc2c4dc3462c24474f6fd43232015d7b65e2ad79e2832a941a199fddffe22089",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "bd5ca07b11af340e8776fdc91cb3f296c10ea7758e1b3fdbcc1f7b5715121ed2",
+      "runtime_content_bbox": [
+        18,
+        16,
+        238,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve mint blades, silver frame, violet inset and white shards; exterior magenta only."
+      }
+    },
+    {
+      "asset": "status-native-bliss-opening",
+      "incoming": "Bliss Opening Posture.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Bliss Opening Posture.png",
+      "source_sha256": "10792857ade28828beb978afde8f4cfa56d1fa79df5fee532f4206bbe467ebd6",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-bliss-opening.png",
+      "runtime_sha256": "ebda287113bc764fd1ab9dad749939bd70e24cbe3f1b350c0ddf945776eb1b97",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "d02e69887e4029e099911c0428be9afd728a748ab7d433362111796e50073fdf",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "c76ab9182f24298d775ae23d4ce3ac621ce58cdd87c905175c7d4ca950c08e57",
+      "runtime_content_bbox": [
+        18,
+        16,
+        238,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve ivory feathers, gold frame and teal inset; exterior green only."
+      }
+    },
+    {
+      "asset": "status-native-bliss-passing",
+      "incoming": "Bliss Passing Posture.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Bliss Passing Posture.png",
+      "source_sha256": "1026c7c716f24a5eaccb2a3cf780b1f9ccef491e786be59a537dd85ea63e6554",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-bliss-passing.png",
+      "runtime_sha256": "8c66cfe351da20a0b3092b276ef5f2eae78206334c1ff6cdf4307ec315184d12",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "4bd70125a684cfb0a94b21ae4c90ab43d25f2ab8a6e193ba6228e1ba4106d0a8",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "0f15faa5165240bf53f1e238424fde91c23e0bd65ea551096ebef5d03ce8094f",
+      "runtime_content_bbox": [
+        23,
+        16,
+        233,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.5963,
+            0.8377
+          ],
+          [
+            0.8348,
+            0.6109
+          ],
+          [
+            0.3783,
+            0.1623
+          ],
+          [
+            0.172,
+            0.3949
+          ],
+          [
+            0.5503,
+            0.1466
+          ],
+          [
+            0.8348,
+            0.4115
+          ],
+          [
+            0.4399,
+            0.1496
+          ],
+          [
+            0.8514,
+            0.5425
+          ],
+          [
+            0.4233,
+            0.172
+          ],
+          [
+            0.5464,
+            0.8563
+          ],
+          [
+            0.8573,
+            0.4506
+          ],
+          [
+            0.1662,
+            0.4291
+          ],
+          [
+            0.8446,
+            0.4311
+          ],
+          [
+            0.1535,
+            0.5474
+          ],
+          [
+            0.3715,
+            0.8328
+          ],
+          [
+            0.1584,
+            0.4497
+          ],
+          [
+            0.8495,
+            0.4673
+          ],
+          [
+            0.565,
+            0.8847
+          ],
+          [
+            0.8416,
+            0.1984
+          ],
+          [
+            0.5787,
+            0.1241
+          ],
+          [
+            0.8211,
+            0.7722
+          ],
+          [
+            0.8387,
+            0.5679
+          ],
+          [
+            0.40625,
+            0.830078125
+          ],
+          [
+            0.4604,
+            0.1466
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and indexed openwork review: clear exterior gold-scroll pockets only; preserve feathered staff, gems, gold rails, complete pastel inset and painted lower shadow."
+      }
+    },
+    {
+      "asset": "status-native-bliss-closing",
+      "incoming": "Bliss Closing Posture.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Bliss Closing Posture.png",
+      "source_sha256": "524e7f7ea92c09c40be7aadfdf709e9dedd7cfa273e5c04a5c5319635ff50f31",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-bliss-closing.png",
+      "runtime_sha256": "32ddcfb8c1a02d52fd795498b2a8cc6818ef982d77a4bed9857926147ebed399",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "13f7246a4f969a66619fdb1f18c23a917725e3e1a41dc82a36c9b6a936c32595",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "85c6adb4302162d8cb1f45bce942b79d159564cf995075972bc44534d5f89dbe",
+      "runtime_content_bbox": [
+        17,
+        16,
+        238,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve ivory feathers, pearl shield, gold frame and ornate teal inset; exterior teal only."
+      }
+    },
+    {
+      "asset": "status-native-disciple-strike",
+      "incoming": "Disciple Strike Instruction.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Disciple Strike Instruction.png",
+      "source_sha256": "7224fece283c85a213f652412cd01aa7e41e9717f91938472a8a81eb95e855e0",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-disciple-strike.png",
+      "runtime_sha256": "a514ef7171a2496bc0c11f49e3ebf8dcd2ecc10dc6ad298eca9e5237efdaf2a5",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "beed118f416f1514f11ef97b5b31f07bae25ac7271bccf4729e3553be7d4cb30",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "bfb64aec01f2b88f8106c52ecc1075b25a57cb1b609230cc43e81b335c43faa3",
+      "runtime_content_bbox": [
+        19,
+        16,
+        237,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.7058,
+            0.1584
+          ],
+          [
+            0.2972,
+            0.1417
+          ],
+          [
+            0.6764,
+            0.1877
+          ],
+          [
+            0.390625,
+            0.1416015625
+          ],
+          [
+            0.2978515625,
+            0.25390625
+          ],
+          [
+            0.732421875,
+            0.2734375
+          ]
+        ],
+        "background_regions": [
+          {
+            "polygon": [
+              [
+                0.18,
+                0.06
+              ],
+              [
+                0.43,
+                0.06
+              ],
+              [
+                0.43,
+                0.32
+              ],
+              [
+                0.18,
+                0.32
+              ]
+            ],
+            "radius": 60
+          },
+          {
+            "polygon": [
+              [
+                0.57,
+                0.06
+              ],
+              [
+                0.82,
+                0.06
+              ],
+              [
+                0.82,
+                0.32
+              ],
+              [
+                0.57,
+                0.32
+              ]
+            ],
+            "radius": 60
+          }
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and indexed pocket review: clear the brighter mint gradients inside both outer crescent gaps with bounded local radii; preserve violet planes, silver rim, purple inset and painted shadows."
+      }
+    },
+    {
+      "asset": "status-native-disciple-shelter",
+      "incoming": "Disciple Shelter Instruction.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Disciple Shelter Instruction.png",
+      "source_sha256": "f415fbcb9d30c018b992174df44d17e9e002df951589cc9fa604d5ea4fd2682f",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-disciple-shelter.png",
+      "runtime_sha256": "0ae94ca274903cf19dad120791ed3bda99c1b435b6dd8d87a8618ce2e1c00d44",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "dba28c90c6815e2cd2ab843dbe579676011b99ba697313541128fa23452b149d",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "ef86cd460bb2a67565a82a706723c73ea152f97b8fd132529e4e72678bd70ba9",
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.2786,
+            0.741
+          ],
+          [
+            0.7185,
+            0.2454
+          ],
+          [
+            0.2786,
+            0.2454
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and indexed pocket review: clear three enclosed outer crescent gaps; preserve violet orb, silver rim, inset and complete outer arms."
+      }
+    },
+    {
+      "asset": "status-native-disciple-resolve",
+      "incoming": "Disciple Resolve Instruction.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Disciple Resolve Instruction.png",
+      "source_sha256": "4dae47474e8cd8cd5eb0c8e6ef3c9be305f226e35b789250e34fd60040f5c8ac",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-disciple-resolve.png",
+      "runtime_sha256": "d3c7e37ed4e8b7b8dc82e819a4afcc1da5d78d084b6cb0d791ac0a1e1c87898f",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "88a0141472197b4b7388c8a434f82f115964cda827ba6518711db48ab5a43dca",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "9e593fac7d0b280ae56f27f83c826559c9e5a03d20b4e06daf8ea78a772336be",
+      "runtime_content_bbox": [
+        26,
+        16,
+        240,
+        237
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve violet wings, shield, silver rim and purple inset; exterior mint only."
+      }
+    },
+    {
+      "asset": "status-native-aurora-seal",
+      "incoming": "Aurora Special-Skill Seal.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Aurora Special-Skill Seal.png",
+      "source_sha256": "7a109c652155e46ff0b8190cee85f47a921478eb07dc3599c273a3e28b7378d4",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-aurora-seal.png",
+      "runtime_sha256": "5ccca2b86de4e708355798cd05d19e37431c2bf4ee9b7aa74a6305c2af5945e6",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "0aa2e85d78d758125b7f745a29c4d04b50e8ea5615914e5db758c636f5bc3b63",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "0768c9d6d2d8390cce25eddd05e4a908fa0bf2b68eb48cda0ec40c1944837b51",
+      "runtime_content_bbox": [
+        29,
+        16,
+        227,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve amber lens, blue crystal inset and gold frame; exterior blue only."
+      }
+    },
+    {
+      "asset": "status-native-aurora-ultimate-ward",
+      "incoming": "Aurora Ultimate Ward.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Aurora Ultimate Ward.png",
+      "source_sha256": "7868e5f3c7e52d718f5bb15567280202f493678e0b7e7b44d55a47238c3b4dec",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-aurora-ultimate-ward.png",
+      "runtime_sha256": "46ef4e86dc4655acb4dec6d2b25a565d8accfbeebca51651f8fd04d948ab4023",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "bbf260e72595b68a2c683eeef32304ac87b4f6472dc4bff8eddd43f28295b011",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "78722a20841068d1f0faecec9147bec9eceb46a8578b49a7b164fa9deca0623a",
+      "runtime_content_bbox": [
+        18,
+        16,
+        238,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.1975,
+            0.6461
+          ],
+          [
+            0.8016,
+            0.6461
+          ],
+          [
+            0.3353,
+            0.7781
+          ],
+          [
+            0.1642,
+            0.7077
+          ],
+          [
+            0.7107,
+            0.2639
+          ],
+          [
+            0.8358,
+            0.7077
+          ],
+          [
+            0.3754,
+            0.1828
+          ],
+          [
+            0.4164,
+            0.1388
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and magnified pocket review: clear exterior wing/curl gaps; preserve cyan lens facets, pearl, ivory wings, gold curls, pale inset and navy bevels."
+      }
+    },
+    {
+      "asset": "status-native-razor-wounds",
+      "incoming": "Razor Stored Wounds.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Razor Stored Wounds.png",
+      "source_sha256": "47f8a439e7ed6a5ccf77aaae253742711082933607ab0bdb68d810ab8e2ffb8f",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-razor-wounds.png",
+      "runtime_sha256": "6051357bfa4ee43134c33e1675ffba6d33779fd6f7ce1680358dbafa2a1b66fe",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "10a28e3b089e0d5e51c838cb3cdb5dad711505ee907cb223bb9baf634db6c546",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "68f0d0896a743e2d80ab6c51cc30e749fc9e295ff096b5f81ab92d17f16aaf07",
+      "runtime_content_bbox": [
+        16,
+        16,
+        239,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve pale silver armor frame, purple fractured inset and shadow; exterior yellow-green only."
+      }
+    },
+    {
+      "asset": "status-native-razor-bastion",
+      "incoming": "Razor Bastion.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Razor Bastion.png",
+      "source_sha256": "4196f7f73b632074f53ba880e461ad256e50b62ad030f1aad32542cf91dbe14c",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-razor-bastion.png",
+      "runtime_sha256": "957a8d9722d6113e9984bd5f0a495ab3d6c5dab35ead75815a6ab4a06d1abfec",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "f5cef987a95cc3dae8c0d58a27dc6e602983a9cb2de798dde0d422778f0c7172",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "6219d7321a3cbd0d7b9ca3b375a235c1ebc57aef442a5f17696e5cf36b7a1012",
+      "runtime_content_bbox": [
+        16,
+        20,
+        240,
+        236
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.1642,
+            0.6022
+          ],
+          [
+            0.8348,
+            0.6012
+          ],
+          [
+            0.5015,
+            0.2053
+          ],
+          [
+            0.5152,
+            0.8201
+          ],
+          [
+            0.3001,
+            0.5728
+          ],
+          [
+            0.7009,
+            0.5718
+          ],
+          [
+            0.5494,
+            0.2903
+          ],
+          [
+            0.4497,
+            0.2913
+          ],
+          [
+            0.3216,
+            0.4223
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and indexed pocket review: clear nine exterior diamond/crescent gaps; preserve violet crescents, black shield and complete silver frame."
+      }
+    },
+    {
+      "asset": "status-native-rosetta-quarry",
+      "incoming": "Rosetta Quarry and Contributors.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Rosetta Quarry and Contributors.png",
+      "source_sha256": "abdd1462bc42dd72f77dada2ce8266c0fd033dcde5f8ba2a0d7b92e4a13b22d6",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-rosetta-quarry.png",
+      "runtime_sha256": "9cdcbde8592c29aebcd91a97509247bd6b2271e8ee8c5374bf3ff25613b28910",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "67ed3b93b4616b41f1a7feaa022aa3434e08184af49299153b5b97848dbb3868",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "4a7dc19aabd8abd6b84ca0895c64d3ca0e0f024bea25bfb574f08452e73ab58d",
+      "runtime_content_bbox": [
+        20,
+        16,
+        236,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.3333,
+            0.7918
+          ],
+          [
+            0.6706,
+            0.7937
+          ],
+          [
+            0.3304,
+            0.2102
+          ],
+          [
+            0.6686,
+            0.2082
+          ],
+          [
+            0.7908,
+            0.6628
+          ],
+          [
+            0.2072,
+            0.3392
+          ],
+          [
+            0.7977,
+            0.3402
+          ],
+          [
+            0.2131,
+            0.6628
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and indexed pocket review: clear eight exterior feather/frame gaps; preserve red rose, ivory inset, ivory feathers and teal gems."
+      }
+    },
+    {
+      "asset": "status-native-thornia-trap",
+      "incoming": "Thornia Thorn Trap.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Thornia Thorn Trap.png",
+      "source_sha256": "eb9b310dbd5fb7b4796c50cd824ec6ca3c220bfc25b3d15e504bda0303132482",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-thornia-trap.png",
+      "runtime_sha256": "6e78b344dd2bec67384082439d7ab8a450830db1048bd6e86f12aa5af4d5ad7c",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "8fafde6e852d9df45b0cd027d96c47a7054345f76d32126b1a50dc623964ab4e",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "7c51aeaa0d9cfe77ecb2b26188f5997b41abcbfc72e571b04dad5f91ba433cad",
+      "runtime_content_bbox": [
+        16,
+        16,
+        239,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.8182,
+            0.6178
+          ],
+          [
+            0.1779,
+            0.6178
+          ],
+          [
+            0.8583984375,
+            0.546875
+          ],
+          [
+            0.1994,
+            0.5787
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and indexed pocket review: clear four exterior thorn curls; preserve crimson rose, charcoal thorn rim, silver inset and pink facets."
+      }
+    },
+    {
+      "asset": "status-native-thornia-empowered-trap",
+      "incoming": "Thornia Empowered Thorn Trap.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Thornia Empowered Thorn Trap.png",
+      "source_sha256": "73d02e128a1ca25c5bde4792683d60ecd8479640f1a34ce37e47fd01932f1060",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-thornia-empowered-trap.png",
+      "runtime_sha256": "868e4751cc614edb69e6b668d0290de0be772c9b70249e56e277d0a35209c356",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "72e895dab5e255ca26dbe2c8b74977eed8fc8d4cb720eb228522da0cba54c354",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "362b65c6bb946eac742c319b66c4970c025c2981714b1c149c9789b5b36cf518",
+      "runtime_content_bbox": [
+        16,
+        18,
+        240,
+        238
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.2776,
+            0.2639
+          ],
+          [
+            0.7224,
+            0.2649
+          ],
+          [
+            0.2786,
+            0.7351
+          ],
+          [
+            0.7224,
+            0.7361
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and indexed pocket review: clear four exterior thorn-frame gaps; preserve red thorn inset, ivory highlights, dark rim and pointed petals."
+      }
+    },
+    {
+      "asset": "status-native-crinso-gold-edge",
+      "incoming": "Crinso Gold Edge.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Crinso Gold Edge.png",
+      "source_sha256": "e65528bc7709934e3eed705cae7578302ab0f59f1b4297bc3a098b2ad0810079",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-crinso-gold-edge.png",
+      "runtime_sha256": "c2454038fd4bff911b84dc815895df1f8a80b2b10cbc5e7d750a86b81de73126",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "ae9602c838b0e7c6c4c69170dfbb815214f0cedbf15ceb1f98288829269477fa",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "3a2f49b46ba9305c0214625e4f9d36626661b8c3963182d443369ffe2564afb6",
+      "runtime_content_bbox": [
+        16,
+        16,
+        239,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve gold blade, amber flame inset, gold frame, ivory shards and brown shadow; exterior pale green only."
+      }
+    },
+    {
+      "asset": "status-native-crinso-crimson-edge",
+      "incoming": "Crinso Crimson Edge.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Crinso Crimson Edge.png",
+      "source_sha256": "3136b5818fd44dd208c8c00d7de923ccbca782d80d26fada1c0941e7aed99786",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-crinso-crimson-edge.png",
+      "runtime_sha256": "54fff4e080dc6a838af700bfc1551883c59acddb5bf2bbb534376bea9d62759b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "58f23dc6075a67aada2dd40c6ea2adefc6e91fed5c25bdd4cf7fada2d6d7b4be",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "358295cb6e495e5fcecf2ef79b60b97ddbe469a6eaf50230183e37afb31d4ca4",
+      "runtime_content_bbox": [
+        19,
+        16,
+        237,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve red blade, ivory roses, dark thorn inset and frame; exterior muted green only."
+      }
+    },
+    {
+      "asset": "status-native-crinso-combo",
+      "incoming": "Crinso Alternating Combo.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Crinso Alternating Combo.png",
+      "source_sha256": "ccce0367a8d66762ced6b7444ad64778bac6ce92f09cf4de6f24574857e2fa87",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-crinso-combo.png",
+      "runtime_sha256": "1cf7b9920db3ae1ef9d2bbeed1fdb9937bc1e6120b13a179967f6b3216f2cd0d",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "c35e150724a80080de60e2d640799d8c5f9b04c3d061b23d93d5224472522808",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "d01ca908afa49786b85961a5313b90d7a60c0f9b884c70da9f88ded64231ffc9",
+      "runtime_content_bbox": [
+        20,
+        16,
+        235,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.8925,
+            0.5044
+          ],
+          [
+            0.1105,
+            0.5103
+          ],
+          [
+            0.5005,
+            0.9218
+          ],
+          [
+            0.4428,
+            0.8944
+          ],
+          [
+            0.5005,
+            0.0841
+          ],
+          [
+            0.5611,
+            0.8925
+          ],
+          [
+            0.0821,
+            0.4878
+          ],
+          [
+            0.9218,
+            0.4868
+          ],
+          [
+            0.1222,
+            0.5806
+          ],
+          [
+            0.8944,
+            0.4467
+          ],
+          [
+            0.5523,
+            0.0909
+          ],
+          [
+            0.1134,
+            0.4467
+          ],
+          [
+            0.8768,
+            0.5826
+          ],
+          [
+            0.4438,
+            0.089
+          ],
+          [
+            0.4516,
+            0.9208
+          ],
+          [
+            0.0938,
+            0.5435
+          ],
+          [
+            0.5601,
+            0.1163
+          ],
+          [
+            0.5894,
+            0.8944
+          ],
+          [
+            0.4184,
+            0.8964
+          ],
+          [
+            0.9052,
+            0.5484
+          ],
+          [
+            0.5445,
+            0.9189
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and indexed openwork review: clear 21 exterior chain/rose-frame pockets; preserve rose hub, complete chains, gold frame, dark inset and red facets."
+      }
+    },
+    {
+      "asset": "status-native-nerithe-survey",
+      "incoming": "Nerithe Survey.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Nerithe Survey.png",
+      "source_sha256": "6fb1ab75f99eb2481b73676736b4013de7adfe62b9f19baab0df747d61204fcc",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-nerithe-survey.png",
+      "runtime_sha256": "d8fa9a7787374c5f6ae649736dc2a3ac523ad712233980d5e768c790b69b42b6",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "2d9be06f6724c8104b21dfe0ee9308a7a648b6283c3c03d17f678a5d1635e85c",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "3faa8df07ccb761653b509ab9415b73261e1144df46045af811e9ee5f03242c9",
+      "runtime_content_bbox": [
+        23,
+        16,
+        232,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve turquoise waves, ivory trident, gold frame and sea-chart inset; exterior dark teal only."
+      }
+    },
+    {
+      "asset": "status-native-orvella-foundation",
+      "incoming": "Orvella Shared Foundation.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Orvella Shared Foundation.png",
+      "source_sha256": "699cd47879c1ab4d4b20aee53e02bbf985b64aceb75e32f15c7f7834912e98f2",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-orvella-foundation.png",
+      "runtime_sha256": "4a752231c47b18dfc1801b579f098fbf63ab73c864a99b8e61e0d0b13b11c267",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "6fad2c7125b70fcf822e8e367369119bafe86db524ae575a16d170ec2b012c3c",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "73a90601bdfaac905f7262c7bc11f7e603975fb5db3ea305167ecc7ff4bb72ba",
+      "runtime_content_bbox": [
+        16,
+        17,
+        240,
+        238
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve violet geode, ivory wings and inset, copper frame and painted shadow; exterior muted teal only."
+      }
+    },
+    {
+      "asset": "status-native-vaelor-tune",
+      "incoming": "Vaelor Tune Beat.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Vaelor Tune Beat.png",
+      "source_sha256": "e7239077acf5553ea487dd3904e4a69cbf08789bf4a81144f09a25846800008d",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-vaelor-tune.png",
+      "runtime_sha256": "b8e504f2974e28a47979907fe781952491c49a6d489539ea79cf6a382bdb1c3a",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "b0d4d97699bf24462605deaac2e9f0a034a9844b9af70c7eccfdec6bd57b5162",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "f67b0924852835d1cbb4c1416028778db29bdaf4efc26f9a6ca8419b8120c253",
+      "runtime_content_bbox": [
+        23,
+        16,
+        233,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve navy dial, ivory inset, copper rim and cyan crystal tips; exterior mint only."
+      }
+    },
+    {
+      "asset": "status-native-vaelor-rise",
+      "incoming": "Vaelor Rise Beat.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Vaelor Rise Beat.png",
+      "source_sha256": "02cf8c41d4faf7f8726c297015128bdcc6443d7d604af3c845ed286322dbc92f",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-vaelor-rise.png",
+      "runtime_sha256": "514a0331aa29c211f1191f0ceccd25c60f23b143c6a452d2e412a1c183064812",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "b3fe83c806239613c2b12603bec6c1aceeb887f3808c002b35b8656c0aa85ac8",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "b8351b8fb5e921b648a4ef2c8d8459279c58e77192e09170f70471f7aa6576cf",
+      "runtime_content_bbox": [
+        18,
+        16,
+        237,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.6168,
+            0.8133
+          ],
+          [
+            0.3842,
+            0.8123
+          ],
+          [
+            0.4066,
+            0.2121
+          ],
+          [
+            0.5963,
+            0.2121
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and indexed pocket review: clear four exterior ring/curl gaps; preserve ivory tuning symbol, navy inset, gold rim and cyan crystal tips."
+      }
+    },
+    {
+      "asset": "status-native-vaelor-crescendo",
+      "incoming": "Vaelor Crescendo Beat.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Vaelor Crescendo Beat.png",
+      "source_sha256": "e0238826778ac8c3dc1c0a0a7f9bb9e41bd52491011782e77c0d700acd6c7a33",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-vaelor-crescendo.png",
+      "runtime_sha256": "09de22e2b5ae996fd066c1774ab0a274176ac94bc7ea9bbeb57532727500d1a9",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "51453fff27bcac21d9fb6e158b6da9885719ff52887ee730b6112b87eaedf986",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "98314450990b5f9ff53a659caadee2ace18a9e7232ad4173d54a2813955afae3",
+      "runtime_content_bbox": [
+        16,
+        16,
+        240,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [
+          [
+            0.8759,
+            0.6305
+          ],
+          [
+            0.8759,
+            0.3851
+          ],
+          [
+            0.1261,
+            0.6315
+          ],
+          [
+            0.1261,
+            0.3861
+          ]
+        ],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Dark/light and indexed pocket review: clear four exterior ring loops; preserve navy/ivory illustrated inset, blue facets, gold rim and cyan gems."
+      }
+    },
+    {
+      "asset": "status-native-bruno-cover",
+      "incoming": "Bruno Cover.png",
+      "source": "Art\\source\\abilities\\native-statuses\\Bruno Cover.png",
+      "source_sha256": "e483876df69f39f8e709ed032fac43c24bc2997c528dcd9cd54b4389ebb9865c",
+      "runtime": "public\\assets\\abilities\\statuses\\status-native-bruno-cover.png",
+      "runtime_sha256": "2092bb8b94004d8ce2d6d8ba4d7d8d0e2c10491c9e79fce37797ea375ae5d74b",
+      "source_mode": "RGB",
+      "source_dimensions": [
+        1024,
+        1024
+      ],
+      "source_pixel_sha256": "052e646ef62a2d7aa2fd7e338b80f5bc9d1b8a758e12314ff1e0a1ec10414631",
+      "source_alpha_authoritative": false,
+      "processing": "reviewed border-connected RGB key and explicit enclosed gaps",
+      "runtime_dimensions": [
+        256,
+        256
+      ],
+      "runtime_pixel_sha256": "802494104888f1a62ca978fb14857efada8956b3a4c6fb1885859f387bfef683",
+      "runtime_content_bbox": [
+        20,
+        16,
+        236,
+        240
+      ],
+      "settings": {
+        "radius": 34,
+        "row_gradient": true,
+        "border_only": true,
+        "background_seeds": [],
+        "edge_cleanup": {
+          "source_pixels": 2,
+          "distance_ramp": 40
+        },
+        "review": "Preserve amber shield inset, bronze rim, arrow and sparks; exterior orange only."
+      }
+    }
+  ]
+}

@@ -1,5 +1,41 @@
 # Current state and handoff
 
+## Delivered native identity status icons (D-323)
+
+- Owner requests moving/wiring all27 root native-status PNGs and removing their
+  backgrounds. Originals are byte-preserved under
+  `Art/source/abilities/native-statuses`;256px transparent exports are installed
+  with224px content limits and hashes/settings in
+  `Art/provenance/native-status-art-intake.json`.
+- Reuse the existing offline connected row-gradient cleaner with per-source
+  reviewed gap seeds and bounded Disciple Strike mint-pocket radii. Preserve
+  the illustrated frame/inset, gems, feathers, powers and painted shadows.
+  Dark/light contact sheets and indexed pocket review cover all27.
+- Typed native readout metadata selects every paired/three-state variant from
+  actual memory, with generic Burn/shield art retained. Field and Battle-menu
+  readouts share decorative icons beside exact HTML text/values/owners/clocks.
+  Added readout-only rows for active Bastion/Ultimate Ward; no effect changes.
+- Shared status URL revisions cover all36 old/new icons. Generation references
+  and current art queue now record both requested packs as complete.
+- `python tools\intake_native_status_art.py --apply --remove-incoming --reviewed`
+  verifies source/archive/export hashes before removing only the27 root copies.
+  Root PNG count is0; all27 archives and27 exports remain. Archive-only
+  reproduction passes after cleanup, including all original nine status icons.
+- `npm test -- --maxWorkers=2` passes3,913 tests/172 files. After correcting
+  the new test's captured fixture to use a real captured copy, the focused
+  native-status/native-kit/status-icon suites pass76 tests/4 files.
+  `npm run build` passes type-check and production build.
+  `python -m unittest discover -s tools -p 'test_*status_art*.py' -v`
+  passes22 tests; `python -m unittest discover -s tools -p test_pending_art.py -v`
+  passes4. Existing jsdom canvas warnings and bundle advisory remain.
+- Browser gallery and14 actual typed readouts load45 images, covering all27
+  native assets with revisioned URLs. Native row icons render at28px.
+  At1280px desktop and a real320px iframe viewport, there are no failed images,
+  horizontal container overflow or overflowing native rows. Visual review
+  confirms the illustrated frames remain visible. Fixtures are removed and
+  localStorage remains empty; no account funding or transactions.
+- Publication verification follows after the release deploys.
+
 ## Visible level-based enemy strength (D-322)
 
 - Owner clarifies that equal-level enemies should share a baseline, with tougher

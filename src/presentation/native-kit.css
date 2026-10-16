@@ -9,6 +9,7 @@
 #battle-root .unit-readout .native-kit-state { grid-column: 1 / -1; }
 .native-state-row small,
 .native-forecast { font-size: .75rem; line-height: 1.35; }
+html body .battle-screen #battle-root .native-state-row .status-icon { width: 28px; height: 28px; }
 .native-state-row[data-native-label="Beat"][data-native-value="Crescendo"] {
   padding: .3rem;
   border: 1px solid currentColor;
