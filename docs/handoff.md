@@ -33,6 +33,10 @@
   the328-image fixture decode locally. An actual blocked boss request displays the error; unblocking
   and pressing Retry restores the960px image and clears the error.
 - [Contract and verification](calamity-mode.md#compact-tier-browser-d-327).
+- Release `7c7f724` is live. Pages run `38925405406` passes the full
+  `npm test` suite (4,027 tests/174 files), production build and deployment.
+  All six hosted entry JS/CSS files return200 and match the tested local
+  production bytes. No authority deployment is needed for this UI-only change.
 
 ## Phase3 hostile difficulty (D-326)
 
