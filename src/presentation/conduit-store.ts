@@ -28,17 +28,6 @@ export function conduitRarity(id: ConduitId): string {
   const rarity = getConduit(id).rarity;
   return `<span class="rarity-badge conduit-rarity conduit-${rarity.toLowerCase()}">${rarity}</span>`;
 }
-export function kitConduitRules(equipment?: ConduitSlots, upgrades: ConduitUpgrades = {}): string {
-  const rules = (equipment ?? []).flatMap((id) => {
-    if (id === null) return [];
-    const conduit = getConduit(id);
-    const level = upgrades[id] ?? 0;
-    return [`<li><strong>${conduit.name} +${level}:</strong> ${readableEffect(conduitEffect(conduit, level))}</li>`];
-  });
-  return rules.length ? `<section class="equipped-kit-rules"><h3>Equipped kit rules</h3>
-    <p>Ability descriptions show the character’s base abilities. These complete equipped effects apply during combat at the displayed upgrade levels. Ordinary upgrades scale each effect as specified; Masters remain fixed.</p>
-    <ul>${rules.join('')}</ul></section>` : '';
-}
 export function conduitInventory(account: Account | null): string {
   return `<section class="inventory-section"><div class="conduit-section-heading"><h2>Conduits</h2></div>
     ${!account ? '<p role="alert">Conduit inventory unavailable. Check the save error.</p>' :

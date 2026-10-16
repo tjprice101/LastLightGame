@@ -8,7 +8,7 @@ import { act, createBattle, createInfusionBattle, endTurn, nextStage, nextWave, 
 import { ACCOUNT_KEY, emptyAccount, saveAccount, loadAccount, purchaseConduit, equipConduit, saveAccountRewards, upgradeConduit } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { createCreatureCopy } from './character-instances';
-import { conduitInventory, conduitStore, kitConduitRules } from '../presentation/conduit-store';
+import { conduitInventory, conduitStore } from '../presentation/conduit-store';
 import { archives } from '../presentation/archives';
 import { createSession } from '../presentation/battle-view';
 import { unitReadout } from '../presentation/unit-readout';
@@ -89,7 +89,7 @@ describe('replacement Omnic catalog, acquisition and stable identity', () => {
     for (const entry of kitConduitDesigns) {
       expect(conduitInventory(account)).toContain(entry.name);
       expect(archives(account, 'conduits')).toContain(entry.name);
-      expect(kitConduitRules(slots(entry.id))).toContain(readableEffect(conduitEffect(getConduit(entry.id))));
+      expect(archives(account, 'conduits')).toContain(readableEffect(conduitEffect(getConduit(entry.id))));
       expect(conduitStore(account)).not.toContain(entry.name);
       expect(() => purchaseConduit(saved, entry.id)).toThrow('not sold');
     }

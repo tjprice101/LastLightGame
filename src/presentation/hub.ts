@@ -15,7 +15,7 @@ import { characterRole } from './character-role';
 import { currencyIcon } from './currency-icon';
 import { inventoryView, type InventoryTab, type InventorySections, type InventoryFilters } from './inventory';
 import { conduits, conduitEquipReason, conduitSlotCount, conduitEffect, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
-import { conduitIcon, kitConduitRules } from './conduit-store';
+import { conduitIcon } from './conduit-store';
 import { capturedProgress, resolveCapturedFighter, type CapturedCharacter } from '../game/character-instances';
 import { capturedRating } from './owned-companion';
 import { information } from './information';
@@ -28,7 +28,7 @@ import { storyEncounter, storyRules } from '../content/story';
 import { unlockedStoryStage } from '../game/account';
 import { abilityStatuses, kitResource } from './ability-status';
 import { readableEffect } from './effect-copy';
-import { masterEquipment, masterReference } from './master-conduits';
+import { masterEquipment } from './master-conduits';
 import { applyConduitSearch, conduitLoadout, filledConduitSlots } from './conduit-loadout';
 
 export const characterTabs = [
@@ -312,21 +312,19 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
   const kit = resolveFighter(starter.id, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades);
   let detail: string;
   if (selectedTab === 'overview' && organized) {
-    const rules = kitConduitRules(account?.conduitEquipment?.[starter.id], account?.conduitUpgrades) + masterReference(account?.masterEquipment?.[starter.id]);
     detail = `<div class="ref-character-overview"><section class="character-category"><h3>Stats</h3>${stats(starter, progress, false, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)}</section>
       <section class="character-category"><h3>Skills</h3><div class="ref-ability-buttons">
       ${(['passive', 'skill1', 'skill2', 'ultimate'] as const).map(action => {
         const label = action === 'passive' ? 'Passive' : action === 'skill1' ? 'Skill 1' : action === 'skill2' ? 'Skill 2' : 'Last Flare';
         const content = action === 'passive' ? `<article class="hub-ability"><h3>${kit.passive.name}</h3><p>${readableEffect(kit.passive.description)}</p>${kitResource(kit, starter.id)}<p>Passive: automatic while alive. No action or Gauge cost.</p></article>`
           : ability(starter, action, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades);
-        return information(`character-${starter.id}-${action}`, `${label} · ${action === 'passive' ? kit.passive.name : kit.abilities[action].name}`, content + rules, `${label} details`,
+        return information(`character-${starter.id}-${action}`, `${label} · ${action === 'passive' ? kit.passive.name : kit.abilities[action].name}`, content, `${label} details`,
           `${abilityIcon(starter.id, action)}<span><strong>${action === 'passive' ? kit.passive.name : kit.abilities[action].name}</strong><small>${label} · View details</small></span>`);
       }).join('')}</div></section></div>`;
   } else if (selectedTab === 'overview') {
     detail = `<div class="mono-character-quad"><section class="character-category mono-character-stats"><h3>Stats</h3>${stats(starter, progress, false, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)}</section><section class="character-category character-combat"><h3>Skills</h3><div class="character-ability-grid">
       <article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name} · Passive</span></h3><p>${readableEffect(kit.passive.description)}</p>${kitResource(kit, starter.id)}</article>
-      ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => ability(starter, action, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)).join('')}</div>
-      ${kitConduitRules(account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)}${masterReference(account?.masterEquipment?.[starter.id])}</section>
+      ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => ability(starter, action, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)).join('')}</div></section>
       <section class="character-category mono-character-growth"><h3>Growth</h3><div class="mono-growth-options"><article><h4>Level up</h4>${upgradePanel(starter, false, account, false, true)}</article><article><h4>Evolve</h4>${upgradePanel(starter, true, account, false, true)}</article></div><p id="upgrade-result" role="status"></p></section>
       <section class="character-category mono-character-conduits"><h3>Conduits</h3>${equipment(starter, account, true)}</section></div>`;
   } else if (selectedTab === 'equipment') {
@@ -337,7 +335,7 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
     if (!upgradePaths.some((path) => path.id === selectedTab)) throw new Error('Unknown upgrade definition.');
     const specific = selectedTab === 'upgrade-3' ? `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name}</span></h3><p>${readableEffect(kit.passive.description)}</p>${kitResource(kit, starter.id)}</article>`
       : ability(starter, selectedTab === 'upgrade-4' ? 'skill1' : selectedTab === 'upgrade-5' ? 'skill2' : 'ultimate', progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades);
-    detail = `<section class="character-category"><h3>Current effect</h3>${specific}${kitConduitRules(account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)}${masterReference(account?.masterEquipment?.[starter.id])}</section>`;
+    detail = `<section class="character-category"><h3>Current effect</h3>${specific}</section>`;
   }
   return `<h2 id="upgrade-heading" tabindex="-1">${tab.label}</h2><div class="character-detail-content${organized ? ' ref-organized-detail' : ''}${organized && (selectedTab === 'upgrade-0' || selectedTab === 'upgrade-1') ? ' ref-growth-detail' : ''}${organized && selectedTab === 'upgrade-0' ? ' ref-evolution-detail' : ''}">${detail}</div>`;
 }

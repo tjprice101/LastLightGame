@@ -6,7 +6,6 @@ import { calamityEncounter, isCalamityActivityId, isCalamityTier, type CalamityA
 import { confirmCalamity, calamityCadence } from './calamity';
 import { calamityBossArt, calamityArenaArt } from '../content/calamity-art';
 import type { MasterLoadouts } from '../content/master-conduits';
-import { masterReference } from './master-conduits';
 import { type CharacterProgress } from '../content/progression';
 import { dungeonEncounter, type PlayableDungeon } from '../content/dungeons';
 import { commands, type Bindings, type Command } from '../game/hotkeys';
@@ -22,7 +21,6 @@ import { assetUrl } from './portrait';
 import { reducedMotion } from './settings';
 import { battleSpeed } from './battle-speed';
 import { abilityIcon } from './ability-icon';
-import { kitConduitRules } from './conduit-store';
 import { dragAction } from './battle-gesture';
 import { characterArt } from '../content/character-art';
 import { elementalDungeonRules, dungeonStageCount, infusionStageCount, isCurrencyMode } from '../content/activities';
@@ -728,7 +726,6 @@ export class BattleView {
       ${state.calamity ? `<p>${calamityEncounter(state.calamity.activity, state.calamity.tier).description}</p>${calamityCadence(state.calamity.activity, state.round)}<p>Victory earns one chest. Open it in Inventory. Choose another tier from Play.</p>` : ''}
       <button id="restart-battle" data-result-restart class="text-button">${state.calamity ? 'Replay tier' : dungeon ? 'Replay stage' : 'Restart Training'}</button>
       <div class="actor-info"><strong>${actor.name}</strong><span class="passive-summary">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, 'passive') : ''}<span>Passive: ${kit.passive.name} &mdash; ${readableEffect(kit.passive.description)}</span></span>${kitResource(kit, isStarterId(actor.definitionId) ? actor.definitionId : undefined)}</div>
-      ${kitConduitRules(actor.conduits, state.conduitUpgrades)}${masterReference(actor.masterConduit)}
       <section class="enemy-skill-guide"><h3>Enemy skills and timing</h3>${state.enemies.map((enemy) => `<p><strong>${enemy.name} · Lv.${enemy.level}${enemy.boss ? ' · Boss' : ''}</strong></p><ul>${(enemy.enemySkills ?? []).map((skill) =>
         `<li>${skill.name}${skill.action === 'ultimate' ? ' (Ultimate)' : ''}: ${formatStat(skill.multiplier * 100)}% Attack, every ${skill.every} turns${state.round % skill.every === 0 ? ' · Due this turn' : ''}.</li>`).join('')}</ul>`).join('')}
         <p class="quiet">One attack per enemy turn. The second skill takes priority on overlapping schedules; boss ultimates take highest priority. Normal attacks on other turns.</p></section>

@@ -1,5 +1,11 @@
 # Current state and handoff
 
+## Conduit rules only on Conduit screens (D-332)
+
+- Removed the "Equipped kit rules" list and Master reference from Character ability
+  views, the battle ability reference and the Archive combat kit; `kitConduitRules` was
+  deleted. Conduit equipment/Inventory/Store/Archive Conduit views still show effects.
+
 ## Current-state descriptions only (D-331)
 
 - Removed remnant clauses ("No Burn, low-health bonus or fire charges", "No Ember bank",
