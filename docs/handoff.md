@@ -1,5 +1,13 @@
 # Current state and handoff
 
+## Field cards show live values only
+
+- Battlefield unit cards no longer print static rule sentences under native
+  counters (Bliss Posture, Elise Shuriken, Crinso Combo, Vaelor Beat). Those
+  explanations remain in the Battle menu unit reference and ability details.
+  Live state text (targets, recipients, expiry turns) stays on the field.
+  `NativeReadoutRow.rule` marks static text.
+
 ## Compact Normal activity panels (D-330)
 
 - `src/presentation/activity-layout.ts`/`.css` wrap every Normal activity panel

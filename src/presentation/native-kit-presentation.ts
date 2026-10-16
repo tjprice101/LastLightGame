@@ -14,13 +14,14 @@ export function nativeIdentityReference(unit: Combatant): string {
   return `<p class="native-identity"><strong>${escapeDialogText(identity.role)}</strong> · ${escapeDialogText(identity.playLoop)}</p>`;
 }
 
-export function nativeStateReadout(state: BattleState, unit: Combatant): string {
+export function nativeStateReadout(state: BattleState, unit: Combatant, compact = false): string {
   if (unit.captured || !unit.kit?.nativeIdentity || unit.hp <= 0) return '';
   const rows = nativeReadout(state, unit);
   const forecast = nativeForecast(state, unit);
   if (!rows.length && !forecast.length) return '';
+  // Field cards show only live values; static rule text lives in the Battle menu reference.
   return `<span class="native-kit-state" aria-label="Native battle state">${rows.map(row =>
-    `<span class="native-state-row" data-native-label="${escapeDialogText(row.label)}" data-native-value="${escapeDialogText(row.value)}"><strong>${(row.icons ?? []).map(statusIcon).join('')}${escapeDialogText(row.label)}: ${escapeDialogText(row.value.replace(/(\d)\/(?=\d)/g, '$1 / '))}</strong><small>${escapeDialogText(readableEffect(row.description))}</small></span>`).join('')}${forecast.map(line =>
+    `<span class="native-state-row" data-native-label="${escapeDialogText(row.label)}" data-native-value="${escapeDialogText(row.value)}"><strong>${(row.icons ?? []).map(statusIcon).join('')}${escapeDialogText(row.label)}: ${escapeDialogText(row.value.replace(/(\d)\/(?=\d)/g, '$1 / '))}</strong>${(compact && row.rule) || !row.description ? '' : `<small>${escapeDialogText(readableEffect(row.description))}</small>`}</span>`).join('')}${forecast.map(line =>
     `<span class="native-forecast">${escapeDialogText(line)}</span>`).join('')}</span>`;
 }
 

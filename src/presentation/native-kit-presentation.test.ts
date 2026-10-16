@@ -14,7 +14,7 @@ import { unitReadout } from './unit-readout';
 import { createCreatureCopy } from '../game/character-instances';
 
 const nativeHelpers = vi.hoisted(() => ({
-  nativeReadout: vi.fn((): { label: string; value: string; description: string }[] => []),
+  nativeReadout: vi.fn((): { label: string; value: string; description: string; rule?: boolean }[] => []),
   nativeForecast: vi.fn((): string[] => []),
 }));
 vi.mock('../game/native-kits', async importOriginal => ({
@@ -217,6 +217,22 @@ describe('native identities and state widgets', () => {
     }
     actor.hp = 0;
     expect(nativeStateReadout(state, actor)).toBe('');
+  });
+
+  it('omits static rule text from field cards but keeps it in the Battle menu reference', () => {
+    const state = createBattle(1);
+    const actor = state.allies[0];
+    actor.kit = resolveFighter('ember', { level: 0, evolution: 1 });
+    nativeHelpers.nativeReadout.mockReturnValue([
+      { label: 'Combo', value: '0/3 · No edge', description: 'Alternate Gold and Crimson.', rule: true },
+      { label: 'Seed', value: '50%', description: 'Tizu: player turn 2.' },
+    ]);
+    nativeHelpers.nativeForecast.mockReturnValue([]);
+    const field = unitReadout(actor, true, state.allies, state.round, state);
+    expect(field).toContain('Combo: 0 / 3 · No edge');
+    expect(field).not.toContain('Alternate Gold and Crimson');
+    expect(field).toContain('Tizu: player turn 2.');
+    expect(unitReadout(actor, false, state.allies, state.round, state)).toContain('Alternate Gold and Crimson');
   });
 
   it('keeps one-ally shield VFX on the selected recipient rather than implying a team shield', () => {

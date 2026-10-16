@@ -570,20 +570,22 @@ export interface NativeReadoutRow {
   value: string;
   description: string;
   icons?: readonly StatusArtId[];
+  /** Description is static rule text (kept in the Battle menu reference, omitted from field cards). */
+  rule?: boolean;
 }
 
 export function nativeReadout(state: BattleState, unit: Combatant): NativeReadoutRow[] {
   if (!hasNativeIdentity(unit) && !unit.native?.instruction) return [];
   const memory = unit.native ?? {};
   const rows: NativeReadoutRow[] = [];
-  const add = (label: string, value: string, description: string, icons: readonly StatusArtId[] = []) =>
-    rows.push({ label, value, description, icons });
+  const add = (label: string, value: string, description: string, icons: readonly StatusArtId[] = [], rule = false) =>
+    rows.push({ label, value, description, icons, ...(rule ? { rule } : {}) });
   if (hasNativeIdentity(unit) && unit.definitionId === 'bliss') {
     const others = living(state).filter(ally => ally.id !== unit.id);
     const acted = others.filter(ally => ally.spent).length;
     const posture = acted === 0 ? 'opening' : acted === others.length ? 'closing' : 'passing';
     add('Posture', posture[0].toUpperCase() + posture.slice(1),
-      'Changes with the other living squad members who have acted this player turn.', [`native-bliss-${posture}`]);
+      'Changes with the other living squad members who have acted this player turn.', [`native-bliss-${posture}`], true);
   }
   for (const recipient of state.allies) {
     const shields = recipient.conduitRuntime?.layers?.filter(layer => layer.native && layer.owner === unit.id &&
@@ -596,13 +598,13 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
     const blades = memory.blades ?? [null, null];
     add('Shuriken', blades.map(id => state.enemies.find(enemy => enemy.id === id)?.name ?? 'Held').join(' / '),
       'Lodge two blades; recall for fixed strikes and convergence.',
-      blades.map(id => state.enemies.some(enemy => enemy.id === id) ? 'native-elise-lodged-blade' : 'native-elise-held-blade'));
+      blades.map(id => state.enemies.some(enemy => enemy.id === id) ? 'native-elise-lodged-blade' : 'native-elise-held-blade'), true);
   }
   if (unit.definitionId === 'crinso') add('Combo', `${memory.combo ?? 0}/3 · ${memory.edge ?? 'No edge'}`,
     'Alternate Gold and Crimson; Last Flare consumes the combination.',
-    ['native-crinso-combo', ...(memory.edge ? [`native-crinso-${memory.edge}-edge` as const] : [])]);
+    ['native-crinso-combo', ...(memory.edge ? [`native-crinso-${memory.edge}-edge` as const] : [])], true);
   if (unit.definitionId === 'vaelor') add('Beat', ['Tune', 'Rise', 'Crescendo'][memory.beat ?? 0],
-    'Advances every global player turn, including recovery.', [(['native-vaelor-tune', 'native-vaelor-rise', 'native-vaelor-crescendo'] as const)[memory.beat ?? 0]]);
+    'Advances every global player turn, including recovery.', [(['native-vaelor-tune', 'native-vaelor-rise', 'native-vaelor-crescendo'] as const)[memory.beat ?? 0]], true);
   if (memory.foundation) add('Foundation', `${Math.ceil(memory.foundation.durability)}/${Math.ceil(memory.foundation.maximum)}`,
     `Shared durability through enemy phase ${memory.foundation.throughPhase}.`, ['native-orvella-foundation']);
   if (unit.definitionId === 'razor') add('Wounds', `${Math.round(memory.wounds ?? 0)}`,
