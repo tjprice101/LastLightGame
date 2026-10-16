@@ -3,6 +3,7 @@ import { enemyCombatStats } from '../content/stat-growth';
 import { dungeonEncounter, isPlayableDungeon } from '../content/dungeons';
 import { infusionEncounter, isInfusionMode } from '../content/infusions';
 import { isWarCharacter, warEncounter } from '../content/elemental-war';
+import './enemy-strength.css';
 
 interface EnemyStrength {
   level: number;
@@ -10,21 +11,37 @@ interface EnemyStrength {
   stats: Stats;
 }
 
-export function enemyStrength(encounter: EnemyStrength): string {
+function strengthValues(encounter: EnemyStrength) {
   const standard = enemyCombatStats(encounter.level, false);
-  const values = [
+  return [
     ['HP', encounter.stats.health, standard.health],
     ['Attack', encounter.stats.damage, standard.damage],
     ['Defense', encounter.stats.defense, standard.defense],
   ] as const;
+}
+
+export function enemyStrengthModifiers(encounter: EnemyStrength): string {
+  const values = strengthValues(encounter);
   const differences = values.filter(([, value, base]) => value !== base);
+  const comparison = `standard Lv.${encounter.level} enemy`;
+  return `<span class="enemy-scaling" data-enemy-scaling>
+    <span class="enemy-scaling-label">${differences.length
+      ? `${encounter.boss ? 'Boss' : 'Activity'} scaling vs ${comparison}`
+      : `Standard Lv.${encounter.level} stats`}</span>
+    ${differences.map(([label, value, base]) => {
+      const change = (value / base - 1) * 100;
+      const magnitude = Number(Math.abs(change).toFixed(1));
+      return `<span class="enemy-scaling-${change > 0 ? 'increased' : 'decreased'}" data-scaled-stat="${label}">${label} ${change > 0 ? '+' : '-'}${magnitude || '&lt;0.1'}%</span>`;
+    }).join(' ')}
+  </span>`;
+}
+
+export function enemyStrength(encounter: EnemyStrength): string {
+  const values = strengthValues(encounter);
   return `<section class="enemy-strength" data-enemy-strength aria-label="Enemy strength">
     <h4>Lv.${encounter.level} · ${encounter.boss ? 'Boss' : 'Standard enemy'}</h4>
     <dl>${values.map(([label, value]) => `<div><dt>${label}</dt><dd>${formatStat(value)}</dd></div>`).join('')}</dl>
-    <p>${differences.length ? `Compared with a standard Lv.${encounter.level} enemy: ${differences.map(([label, value, base]) => {
-      const change = (value / base - 1) * 100;
-      return `${change > 0 ? '+' : ''}${Number(change.toFixed(1))}% ${label}`;
-    }).join(' · ')}.` : 'Standard stats for this level.'}</p>
+    ${enemyStrengthModifiers(encounter)}
     </section>`;
 }
 

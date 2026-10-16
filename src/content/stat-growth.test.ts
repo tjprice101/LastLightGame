@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { enemyCombatStats, enemyExponentialRates, enemyGrowth, enemyStat } from './stat-growth';
+import { enemyCombatStats, enemyExponentialRates, enemyGrowth, enemyStat, enemyStrengthMultiplier } from './stat-growth';
 import { calamityActivities, calamityEncounter } from './calamity';
 import { resolveFighter } from './combat';
 import { dungeonEncounter, playableDungeons } from './dungeons';
@@ -12,7 +12,8 @@ describe('accelerating enemy stat curves', () => {
   it('uses one shifted exponential from the opening through185 without120/140 plateaus or Calamity multipliers', () => {
     for (const boss of [false, true]) {
       const opening = enemyCombatStats(1, boss);
-      expect(opening).toMatchObject({ health: boss ? 208 : 83, damage: boss ? 28 : 22, defense: boss ? 5 : 4 });
+      expect(enemyStrengthMultiplier).toBe(1.05);
+      expect(opening).toMatchObject({ health: boss ? 218 : 87, damage: boss ? 29 : 23, defense: boss ? 6 : 4 });
       for (let level = 1; level <= 185; level++) {
         const stats = enemyCombatStats(level, boss);
         for (const [stat, base, slope] of [
@@ -21,7 +22,9 @@ describe('accelerating enemy stat curves', () => {
           ['defense', boss ? 16 / 3 : 4, .30],
         ] as const) {
           const rate = enemyExponentialRates[stat];
-          expect(stats[stat]).toBe(Math.round(base * (1 + slope * Math.expm1(rate * (level - 1)) / rate)));
+          const original = base * (1 + slope * Math.expm1(rate * (level - 1)) / rate);
+          expect(stats[stat]).toBe(Math.round(original * 1.05));
+          expect(Math.abs(stats[stat] - original * 1.05)).toBeLessThanOrEqual(.5);
           expect(Number.isSafeInteger(stats[stat])).toBe(true);
           if (level >= 21) {
             const before = enemyCombatStats(level - 20, boss)[stat];

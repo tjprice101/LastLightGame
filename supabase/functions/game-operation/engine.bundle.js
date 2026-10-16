@@ -3583,8 +3583,9 @@ function isActionId(value2) {
 // src/content/stat-growth.ts
 var playableGrowth = { perLevel: 0.15, perEvolution: 1.5 };
 var enemyExponentialRates = { health: 0.026, damage: 0.024, defense: 0.02 };
+var enemyStrengthMultiplier = 1.05;
 function hostileStat(base, initialRate, rate, level) {
-  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate));
+  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate) * enemyStrengthMultiplier);
 }
 var enemyGrowth = {
   maximumLevel: 120,

@@ -56,7 +56,7 @@ describe('attack-relative Defense balance', () => {
         expect(hits.length).toBeGreaterThan(0);
         for (const hit of hits) {
           expect(hit.amount).toBeGreaterThanOrEqual(state.allies[0].stats.health * .09);
-          expect(hit.amount).toBeLessThan(state.allies[0].stats.health * .5);
+          expect(hit.amount).toBeLessThan(state.allies[0].stats.health * .55);
         }
         expect(state).toEqual(original);
       }
@@ -89,7 +89,7 @@ describe('attack-relative Defense balance', () => {
     for (const mode of ['heavens', 'abyss', 'treasury', 'sanctuary', 'machines'] as const) {
       expect(infusionEncounter(mode, infusionStageCount(mode)).stats.damage).toBe(enemyGrowth.bossDamage);
     }
-    expect(storyEncounter(1).stats.damage).toBe(22);
+    expect(storyEncounter(1).stats.damage).toBe(23);
     expect(stagedEnemyAttack(121, true, 10, 140)).toBeGreaterThan(enemyGrowth.bossDamage);
     expect(stagedEnemyAttack(140, true, 10, 140)).toBe(enemyCombatStats(140, true).damage);
   });

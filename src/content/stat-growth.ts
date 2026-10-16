@@ -1,7 +1,8 @@
 export const playableGrowth = { perLevel: .15, perEvolution: 1.5 } as const;
 export const enemyExponentialRates = { health: .026, damage: .024, defense: .020 } as const;
+export const enemyStrengthMultiplier = 1.05;
 function hostileStat(base: number, initialRate: number, rate: number, level: number): number {
-  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate));
+  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate) * enemyStrengthMultiplier);
 }
 export const enemyGrowth = { maximumLevel: 120, maximumHostileLevel: 185,
   health: hostileStat(83, .45, enemyExponentialRates.health, 120),

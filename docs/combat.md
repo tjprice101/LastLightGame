@@ -1,5 +1,47 @@
 # Combat specification
 
+## Phase3 hostile strength and visible scaling (D-326)
+
+Owner selects a5% increase to hostile HP, Attack and Defense, not a5%
+increase to exponential rates. `enemyStrengthMultiplier=1.05` multiplies the
+unrounded shared shifted-exponential result before its one final rounding.
+Rates, level ranges, ordinary/boss base ratios, skill patterns, critical stats,
+shields, healing, rewards and RNG are unchanged. At very low Defense, integer
+rounding may leave a displayed stat unchanged or make its rounded increase
+larger than5%; do not apply another multiplier in individual activity spawns.
+Training, Story, all material/infusion/currency/Machines/Rose activities,
+Elemental War and every Calamity tier share this curve. Playable characters,
+captured copies and their growth/equipment are not strengthened or rebalanced.
+
+The standard for every enemy identity is the shared ordinary enemy at its
+actual level. Boss rank is an explicit modifier, not a hidden activity bonus.
+There are currently no additional per-species or per-activity stat multipliers.
+Activity previews and compact/full battle readouts compare actual immutable
+spawn stats with that baseline. Above-baseline HP/Attack/Defense show signed
+red percentages; below-baseline stats show signed blue percentages. Each stat
+is colored separately; unchanged stats are omitted and an unchanged enemy
+shows "Standard Lv.N stats." The comparison labels boss scaling explicitly.
+Current HP loss, shield size, Burn, Weaken and other temporary effects do not
+alter the spawn-stat comparison; existing effect readouts remain separate.
+Small nonzero changes below0.05% show signed `<0.1%`, never a misleading zero.
+
+Existing frozen encounters are preserved through Settings/resume without
+load-time rewrites or a rules-version restart. Fresh encounters use the new
+curve. A historical snapshot's actual stats can therefore show below-current-
+baseline scaling. Client and generated authority must deploy together for
+new-spawn parity; no wallet migration or retrospective reward changes.
+
+The former Rosetta/Thornia/Flora four-Omnic+5 benchmark now loses all36 EX+1
+activity/seed cases after this intentional increase. Preserve that difficulty
+wall rather than buffing characters or weakening enemies to restore old wins.
+The Lv13-vs-unequipped-Lv0 regression retains its9% minimum-hit check; its
+former50% upper bound becomes55% to allow the selected stronger Attack.
+
+Validate exact1.05 pre-round output at every level1-185 and both ranks with
+`src/content/stat-growth.test.ts`; activity/field/menu comparisons and mixed
+red/blue signs with `src/presentation/enemy-strength.test.ts`; full progression,
+Calamity and authority tests plus narrow-screen battlefield layout.
+
 ## Visible level baseline (D-322)
 
 Level and rank set the same hostile base stats across activities; the existing

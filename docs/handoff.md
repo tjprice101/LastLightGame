@@ -1,5 +1,52 @@
 # Current state and handoff
 
+## Phase3 hostile difficulty (D-326)
+
+- Owner confirms5% higher hostile HP/Attack/Defense, not steeper exponential
+  rates. One shared1.05 multiplier before rounding covers every fresh spawn
+  across Training, Story, dungeons, infusions, currency modes, Machines,
+  Roses, War and Calamity. Playable/captured growth, equipment, levels,
+  mechanics, RNG and rewards remain unchanged.
+- Existing same-level ordinary baseline is authoritative for all enemy
+  identities. Boss rank changes HP/Attack/Defense; no further hidden activity
+  multipliers currently exist. Actual spawn-stat comparisons now appear
+  below enemy HP in compact and full readouts as well as stage previews.
+  Red signed stat increases and blue signed reductions work independently.
+  Standard enemies show neutral level text; temporary debuffs/damage/shields
+  remain separate. No color-only meaning, zero rounding or clipped labels.
+- Existing frozen runs survive Settings/resume unchanged. No wallet writes,
+  rules restart or migration. Fresh client/authority encounters use the new
+  curve; historical snapshot comparisons reflect their actual retained stats.
+- The previous mixed four-Omnic+5 EX+1 pilot now loses36/36 cases, an
+  intentional difficulty wall. No character buffs or enemy rollback added.
+  [Detailed contract](combat.md#phase3-hostile-strength-and-visible-scaling-d-326).
+- Validation: `npm test -- --maxWorkers=2` passes4,014 tests/174 files.
+  Focused curve/progression/Defense/Calamity/readout/authority run passes280
+  tests/7 files; final readout/toolbar run passes20 tests/3 files.
+  Exact1.05 pre-round results are checked at every level1-185 and both ranks.
+  Actual field/full readouts cover every activity and Calamity tier, mixed
+  increase/reduction signs, tiny nonzero changes and unchanged temporary
+  effects. The strengthened Lv13 hits retain the9% floor; the old upper
+  regression bound intentionally changes50% to55%.
+- `npm run build`, `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`,
+  `node --check tools\smoke_server_game.mjs`, editor diagnostics and
+  `git diff --check` pass. Existing Vite chunk/canvas advisories remain.
+- Actual BattleView fixture and responsive clones at320/390/1280px show
+  signed stat labels below HP without document/label overflow. Computed red
+  is rgb(255,146,146), blue rgb(134,197,255); button accessible names include
+  the exact percentages. Fixtures/handlers are disposed without account
+  changes, transactions or real battle actions.
+- Matching authority deployed via `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  `node tools\smoke_server_game.mjs --balance` verifies exact Lv60 ordinary
+  5573HP/774Attack/146Defense and boss13932/967/195 across live activities,
+  unchanged skill schedules and frozen reads. `--native-calamity` verifies
+  fresh EX+1 bosses155831HP/9260Attack/1418Defense plus unchanged targeting,
+  atomic/idempotent chest rewards and persistence. Both hosted smoke
+  identities/cascading records are removed after success; no real player
+  data is modified.
+
 ## Delivered Calamitic artwork (D-325)
 
 - All six supplied root PNGs are archived byte-for-byte under

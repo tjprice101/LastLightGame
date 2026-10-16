@@ -225,7 +225,10 @@ describe('Calamity seeded difficulty benchmarks', () => {
         expect(summary.timeouts).toBe(0);
         expect(results.every(result => result.rounds > 0 && Number.isFinite(result.bossRemaining))).toBe(true);
         if (build === 'four-omnic-0' || tier > 1) expect(summary.defeats).toBe(36);
-        if (tier === 1 && squad.name === 'mixed' && build === 'four-omnic-5') expect(summary.wins).toBeGreaterThan(0);
+        if (tier === 1 && squad.name === 'mixed' && build === 'four-omnic-5') {
+          expect(summary.wins).toBe(0);
+          expect(summary.defeats).toBe(36);
+        }
       }
     }
   }, 60_000);

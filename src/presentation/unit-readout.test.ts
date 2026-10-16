@@ -57,7 +57,7 @@ describe('field readouts', () => {
     enemy.shield = 20;
     enemy.burn = { damage: 8, turns: 2 };
     const readout = unitReadout(enemy);
-    expect(readout).toContain('<span class="unit-health">HP 83 / 83</span><span class="unit-stats">DEF 4</span>');
+    expect(readout).toContain('<span class="unit-health">HP 87 / 87</span><span class="unit-stats">DEF 4</span>');
     expect(readout).toContain('Burn 8 · 2 enemy phases');
     expect(unitReadout(enemy, true)).toContain('data-debuff="burn"');
     for (const label of ['ATK', 'CRIT', 'Shield', 'Shatter', 'Burning', 'Ready', 'Critical', 'Elemental']) expect(readout).not.toContain(label);

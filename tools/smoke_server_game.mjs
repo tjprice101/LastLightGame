@@ -111,7 +111,7 @@ try {
   assert.equal(enter.session.state.story.storyStage, 1);
   assert.equal(enter.session.state.allies[0].definitionId, 'ember');
   assert.deepEqual(enter.session.state.enemies[0].stats, {
-    health: 83, damage: 22, defense: 4, crit: .12,
+    health: 87, damage: 23, defense: 4, crit: .12,
     critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0,
   });
   const checkpoint = await call({ kind: 'checkpoint' }, enter.revision);
@@ -404,9 +404,9 @@ async function smokeNativeCalamity(client, userId, username) {
   assert.equal(quit.session, null);
   const entered = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'treasury', tier: 1 } }, quit.revision);
   assert.equal(entered.session.state.enemies[0].art, 'calamity-boss-treasury');
-  assert.equal(entered.session.state.enemies[0].stats.health, 148411);
-  assert.equal(entered.session.state.enemies[0].stats.damage, 8819);
-  assert.equal(entered.session.state.enemies[0].stats.defense, 1350);
+  assert.equal(entered.session.state.enemies[0].stats.health, 155831);
+  assert.equal(entered.session.state.enemies[0].stats.damage, 9260);
+  assert.equal(entered.session.state.enemies[0].stats.defense, 1418);
   const leave = await invoke({ kind: 'quit', runId: entered.session.runId }, entered.revision);
   assert.equal(leave.session, null);
   const rose = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'roses', tier: 1 } }, leave.revision);
@@ -731,9 +731,9 @@ async function smokeEnemyBalance(client, userId, username) {
     if (result.error) throw new Error(`Hosted balance ${operation.kind} failed (${result.error.context?.status ?? 'transport'}).`);
     return result.data;
   }
-  const ordinary = { health: 2945, damage: 428, defense: 108, crit: .12,
+  const ordinary = { health: 5573, damage: 774, defense: 146, crit: .12,
     critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0 };
-  const boss = { ...ordinary, health: 8665, damage: 691, defense: 151 };
+  const boss = { ...ordinary, health: 13932, damage: 967, defense: 195 };
   let response = await invoke({ kind: 'continue', runId: game.run.session.runId }, 0);
   for (const activity of [null, { kind: 'infusion', mode: 'heavens', stage: 9 },
     { kind: 'dungeon', element: 'infernic', stage: 10 }]) {

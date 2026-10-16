@@ -15,6 +15,16 @@ Neutral pending-art placeholders never request unprovided images.
 
 ## Visible enemy strength (D-322)
 
+D-326 extends this same comparison into compact battlefield and full Battle
+menu readouts, directly below enemy HP. Red signed percentages identify higher
+HP/Attack/Defense; blue signed percentages identify lower stats. Neutral text
+names the standard enemy's level, or labels boss/activity scaling against it.
+These are actual spawn-stat differences, not estimates from damage taken or
+temporary debuffs. Mixed increases/reductions retain independent colors and
+signed text; labels wrap rather than truncate on phones.
+All hostile base stats rise5% before rounding under
+[the Phase3 contract](combat.md#phase3-hostile-strength-and-visible-scaling-d-326).
+
 Activity entries show the selected enemy's level, rank and actual HP, Attack
 and Defense. Story updates with its selected stage; Training previews wave1.
 Dungeon, infusion, currency, Machines, Roses and War selectors refresh the

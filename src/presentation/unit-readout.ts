@@ -11,12 +11,13 @@ import { buffSnapshot } from '../game/battle-buffs';
 import { allyBuffs } from './ally-buffs';
 import { conduitStatusReadout } from './conduit-status';
 import { nativeStateReadout } from './native-kit-presentation';
+import { enemyStrengthModifiers } from './enemy-strength';
 
 export function unitReadout(unit: Combatant, compact = false, owners: readonly Combatant[] = [], round = 0, state?: BattleState): string {
   const health = `<span class="unit-health">HP ${formatStat(unit.hp)} / ${formatStat(unit.stats.health)}</span>`;
   const defense = `<span class="unit-stats">DEF ${formatStat(unit.stats.defense)}`;
   const core = compact ? health : `${health}${defense}</span>`;
-  if (unit.side === 'enemy') return `${core}${unit.definitionId.startsWith('calamity:') ? `<span class="unit-active-buffs">${unit.hp > 0 ? allyBuffs(buffSnapshot(unit), round) : ''}</span>` : ''}${enemyStatusReadout(unit, owners)}${conduitStatusReadout(unit, round, owners)}`;
+  if (unit.side === 'enemy') return `${core}${unit.level !== null ? enemyStrengthModifiers({ level: unit.level, boss: unit.boss === true, stats: unit.stats }) : ''}${unit.definitionId.startsWith('calamity:') ? `<span class="unit-active-buffs">${unit.hp > 0 ? allyBuffs(buffSnapshot(unit), round) : ''}</span>` : ''}${enemyStatusReadout(unit, owners)}${conduitStatusReadout(unit, round, owners)}`;
   const resourceDescriptor = !unit.captured && !unit.kit?.nativeIdentity && unit.kit?.pilot ? kitPilotDescriptions[unit.kit.pilot].resource : undefined;
   const resourceCount = resourceDescriptor ? unit.pilot?.[resourceDescriptor.key] ?? 0 : 0;
   const resourceMaximum = resourceDescriptor?.key === 'bloom' ? 3 + (unit.conduitRuntime?.numbers.graftBonus ?? 0) : 3;

@@ -13,6 +13,9 @@ import { gameplayHub } from './gameplay';
 import { storyCampaign, bindStoryNavigation } from './story';
 import { bindActivityDifficulties } from './calamity';
 import { bindEnemyStrength, enemyStrength } from './enemy-strength';
+import { unitReadout } from './unit-readout';
+import { createBattle, createCalamityBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle } from '../game/battle';
+import { playableDungeons } from '../content/dungeons';
 
 afterEach(() => document.body.replaceChildren());
 
@@ -23,18 +26,68 @@ function expectStats(panel: Element, encounter: { level: number; boss: boolean; 
 }
 
 describe('visible enemy strength', () => {
+  it('shows signed actual HP/Attack/Defense scaling in both field and full readouts for every activity', () => {
+    const states = [
+      createBattle(), createStoryBattle(1, 1729, 'ember', { level: 0, evolution: 1 }), createStoryBattle(25, 1729, 'ember', { level: 0, evolution: 1 }),
+      ...playableDungeons.map(element => createDungeonBattle(element, 35, 1729, 'ember', { level: 0, evolution: 1 })),
+      ...(['heavens', 'abyss', 'treasury', 'sanctuary', 'machines', 'roses'] as const).map(mode => createInfusionBattle(mode, 5, 1729, 'ember', { level: 0, evolution: 1 })),
+      ...(['nerithe', 'orvella', 'vaelor'] as const).map(character => createWarBattle(character, 10, 1729, 'ember', { level: 0, evolution: 1 })),
+      ...calamityActivities.flatMap(activity => ([1, 2, 3] as const).map(tier => createCalamityBattle(activity.id, tier, 1729, 'ember', { level: 0, evolution: 1 }))),
+    ];
+    for (const state of states) for (const enemy of state.enemies) {
+      for (const compact of [true, false]) {
+        document.body.innerHTML = unitReadout(enemy, compact);
+        expect(document.querySelectorAll('[data-enemy-scaling]')).toHaveLength(1);
+        expect(document.body.textContent).toContain(enemy.boss
+          ? `Boss scaling vs standard Lv.${enemy.level} enemy` : `Standard Lv.${enemy.level} stats`);
+        const baseline = enemyCombatStats(enemy.level!, false);
+        for (const [label, key] of [['HP', 'health'], ['Attack', 'damage'], ['Defense', 'defense']] as const) {
+          const badge = document.querySelector(`[data-scaled-stat="${label}"]`);
+          if (enemy.stats[key] === baseline[key]) expect(badge).toBeNull();
+          else {
+            expect(badge?.classList.contains('enemy-scaling-increased')).toBe(true);
+            expect(badge?.textContent).toBe(`${label} +${Number(((enemy.stats[key] / baseline[key] - 1) * 100).toFixed(1))}%`);
+          }
+        }
+      }
+    }
+    for (const ally of states[0].allies) expect(unitReadout(ally)).not.toContain('data-enemy-scaling');
+  });
+
+  it('distinguishes reductions from increases without color alone and ignores damage taken or temporary effects', () => {
+    const enemy = createBattle().enemies[0];
+    enemy.level = 55;
+    const standard = enemyCombatStats(55, false);
+    enemy.stats = { ...standard, health: standard.health * 1.5, damage: standard.damage * .8 };
+    enemy.hp = 1;
+    enemy.shield = 100;
+    enemy.weakened = 2;
+    enemy.weakenFraction = .3;
+    const before = structuredClone(enemy);
+    document.body.innerHTML = unitReadout(enemy, true);
+    expect(document.querySelector('.enemy-scaling-label')?.textContent).toBe('Activity scaling vs standard Lv.55 enemy');
+    expect(document.querySelector('.enemy-scaling-increased')?.textContent).toBe('HP +50%');
+    expect(document.querySelector('.enemy-scaling-decreased')?.textContent).toBe('Attack -20%');
+    expect(document.querySelector('[data-scaled-stat="Defense"]')).toBeNull();
+    expect(document.body.textContent).toContain('Weaken -30%');
+    expect(enemy).toEqual(before);
+    enemy.stats.damage = standard.damage * .99999;
+    document.body.innerHTML = unitReadout(enemy, true);
+    expect(document.querySelector('.enemy-scaling-decreased')?.textContent).toBe('Attack -<0.1%');
+  });
+
   it('shows exact stats and real same-level differences, not an activity difficulty label', () => {
     for (const level of [1, 38, 55, 120, 140, 145, 160, 185]) {
       for (const boss of [false, true]) {
         const stats = enemyCombatStats(level, boss);
         document.body.innerHTML = enemyStrength({ level, boss, stats });
         expectStats(document.body, { level, boss, stats });
-        expect(document.body.textContent).toContain(boss ? `Compared with a standard Lv.${level} enemy:` : 'Standard stats for this level.');
+        expect(document.body.textContent).toContain(boss ? `Boss scaling vs standard Lv.${level} enemy` : `Standard Lv.${level} stats`);
       }
     }
     const stats = { ...enemyCombatStats(100, false), defense: enemyCombatStats(100, false).defense * 2 };
     document.body.innerHTML = enemyStrength({ level: 100, boss: false, stats });
-    expect(document.body.textContent).toContain('+100% Defense');
+    expect(document.body.textContent).toContain('Defense +100%');
     expect(document.body.textContent).not.toContain('+0%');
   });
 

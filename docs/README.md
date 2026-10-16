@@ -5,6 +5,12 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Phase3 enemy difficulty (D-326):** all fresh enemy HP/Attack/Defense use
+1.05 times the existing unrounded exponential curve. Characters/captures,
+rates, levels and rewards are unchanged. Activity and field/menu readouts show
+actual same-level baseline differences with signed red increases and blue
+reductions; boss scaling is explicit. [Contract](combat.md#phase3-hostile-strength-and-visible-scaling-d-326).
+
 **Calamitic Conduits (D-324):** five universal Rise-only creations add a rarity
 above Omnic, guaranteed1/3/8 chest tokens and a100-token shop. Market always
 shows the destination; until an actual EX clear, only the exact sealed message

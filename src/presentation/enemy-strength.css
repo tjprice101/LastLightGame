@@ -1,0 +1,14 @@
+.enemy-scaling {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  grid-column: 1 / -1;
+  min-width: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.enemy-scaling > .enemy-scaling-label { flex-basis: 100%; color: #d0d0d0; }
+.enemy-scaling > .enemy-scaling-increased { color: #ff9292; }
+.enemy-scaling > .enemy-scaling-decreased { color: #86c5ff; }
