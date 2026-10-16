@@ -2,6 +2,10 @@
 
 ## Field cards show live values only
 
+- Removed the white SVG "native mechanic cue" overlays (Banked fire, Burn
+  detonation, Gold/Crimson edge, Cyclone, Shuriken recall, Thorn trap, Cover,
+  etc.) that played over units on attacks and native damage. Attack animations,
+  ability VFX, cut-ins and damage numbers are unchanged.
 - Battlefield unit cards no longer print static rule sentences under native
   counters (Bliss Posture, Elise Shuriken, Crinso Combo, Vaelor Beat). Those
   explanations remain in the Battle menu unit reference and ability details.

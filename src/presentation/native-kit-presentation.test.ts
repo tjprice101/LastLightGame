@@ -6,7 +6,6 @@ import type { StarterId } from '../content/starters';
 import { createBattle, type BattleEvent } from '../game/battle';
 import { BattleView, createSession, type BattleAuthority } from './battle-view';
 import { allyTargetCandidates, allyTargetHint, nativeIdentityReference, nativeStateReadout, needsAllyTarget } from './native-kit-presentation';
-import { nativeMechanicCue } from './battle-effects';
 import { attackEffectTargets, healthSnapshot } from './battle-health';
 import { gestureGuide, updateGestureGuide } from './gesture-guide';
 import { kitResource } from './ability-status';
@@ -246,33 +245,5 @@ describe('native identities and state widgets', () => {
     guide.innerHTML = gestureGuide(state, actor);
     updateGestureGuide(guide, state, actor, 'skill2');
     expect(guide.textContent).toContain('Choose ally');
-  });
-});
-
-describe('mechanics-specific native cues', () => {
-  it.each(['burn', 'detonation', 'cyclone', 'recall', 'revenge', 'trap', 'demolition', 'redirect'] as const)(
-    'identifies %s follow-ups without implying another primary action', nativeKind => {
-      const state = createBattle(1);
-      const actor = state.allies[0];
-      actor.kit = resolveFighter('ember', { level: 0, evolution: 1 });
-      const event = { kind: 'damage', source: actor.id, target: 'enemy-1-0', amount: 2, message: '', origin: 'native', nativeKind } as BattleEvent;
-      expect(nativeMechanicCue(actor, event)?.label).toBeTruthy();
-      expect(nativeMechanicCue(actor, { ...event, origin: 'conduit' })).toBeNull();
-    });
-
-  it('distinguishes Gold and Crimson in text, not only color', () => {
-    const actor = createBattle(1, ['crinso']).allies[0];
-    actor.kit = resolveFighter('crinso', { level: 0, evolution: 1 });
-    const event = { kind: 'attack', source: actor.id, target: 'enemy-1-0', amount: 0, message: '', action: 'skill1' } as BattleEvent;
-    expect(nativeMechanicCue(actor, event)?.label).toBe('Gold edge');
-    expect(nativeMechanicCue(actor, { ...event, action: 'skill2' })?.label).toBe('Crimson edge');
-  });
-
-  it('shows typed native interception even when the hostile attacker remains the damage source', () => {
-    const enemy = createBattle(1).enemies[0];
-    const event = { kind: 'damage', source: enemy.id, target: 'bruno', amount: 5, message: '',
-      origin: 'native', nativeKind: 'redirect' } as BattleEvent;
-    expect(nativeMechanicCue(enemy, event)?.label).toBe('Cover interception');
-    expect(nativeMechanicCue(enemy, { ...event, origin: 'conduit' })).toBeNull();
   });
 });

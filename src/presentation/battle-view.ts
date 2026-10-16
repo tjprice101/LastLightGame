@@ -10,7 +10,7 @@ import { masterReference } from './master-conduits';
 import { type CharacterProgress } from '../content/progression';
 import { dungeonEncounter, type PlayableDungeon } from '../content/dungeons';
 import { commands, type Bindings, type Command } from '../game/hotkeys';
-import { attackFlair, attackPose, nativeMechanicCue } from './battle-effects';
+import { attackFlair, attackPose } from './battle-effects';
 import './battle-cinematic.css';
 import { battleResults } from './battle-results';
 import './battle-results.css';
@@ -221,7 +221,7 @@ export class BattleView {
     for (const animation of this.animations) animation.cancel();
     this.animations.clear();
     this.host.querySelector<HTMLDialogElement>('#battle-menu')?.close();
-    this.host.querySelectorAll('.battle-turn-cue,.portrait-cutin,.gesture-choice,.native-mechanic-cue').forEach((cue) => cue.remove());
+    this.host.querySelectorAll('.battle-turn-cue,.portrait-cutin,.gesture-choice').forEach((cue) => cue.remove());
   }
 
   private onKey = (event: KeyboardEvent): void => {
@@ -502,30 +502,6 @@ export class BattleView {
     }
   }
 
-  private async mechanicCue(entry: BattleEvent, target: Element): Promise<void> {
-    if (reducedMotion() || this.disposed) return;
-    const source = [...this.session.state.allies, ...this.session.state.enemies].find(unit => unit.id === entry.source);
-    const cue = nativeMechanicCue(source, entry);
-    if (!cue) return;
-    const visual = document.createElement('span');
-    visual.className = 'native-mechanic-cue';
-    visual.dataset.nativeMechanic = cue.motion;
-    visual.setAttribute('aria-hidden', 'true');
-    visual.innerHTML = `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3"><path d="${cue.path}"/></svg><span>${cue.label}</span>`;
-    target.append(visual);
-    const start = cue.motion === 'recall' ? 'translateX(-35%) rotate(-70deg) scale(1.1)'
-      : cue.motion === 'slash' ? 'rotate(-20deg) scale(.6)' : 'scale(.4)';
-    const end = cue.motion === 'recall' ? 'translateX(30%) rotate(70deg) scale(.3)'
-      : cue.motion === 'break' ? 'scale(1.6)' : 'scale(1.15)';
-    try {
-      await this.play(visual, [
-        { opacity: 0, transform: start },
-        { opacity: 1, transform: 'scale(1)', offset: .3 },
-        { opacity: 0, transform: end },
-      ], 650);
-    } finally { visual.remove(); }
-  }
-
   private async animate(entry: BattleEvent, impact: () => Promise<void> = async () => {},
     effectTargets: readonly string[] = [entry.target]): Promise<void> {
     const source = this.host.querySelector<HTMLElement>(`[data-unit="${entry.source}"]`);
@@ -612,7 +588,6 @@ export class BattleView {
           })
         : impact();
       await Promise.all([
-        this.mechanicCue(entry, target),
         this.play(sprite, [
           { transform: pose },
           { transform: 'translate(0,0) scale(1)' },
@@ -643,12 +618,12 @@ export class BattleView {
       amount.textContent = `${entry.kind === 'damage' ? '-' : '+'}${formatStat(entry.amount)}${entry.elementalCritical ? ' ELEMENTAL CRIT' : entry.critical ? ' CRIT' : ''}`;
       target.append(amount);
       try {
-        await Promise.all([this.mechanicCue(entry, target), this.play(amount, [
+        await this.play(amount, [
           { opacity: 1, transform: 'translateY(6px) scale(.75)' },
           { opacity: 1, transform: 'translateY(-8px) scale(1.18)', offset: .18 },
           { opacity: 1, transform: 'translateY(-24px) scale(1)', offset: .7 },
           { opacity: 0, transform: 'translateY(-48px) scale(.95)' },
-        ], 850)]);
+        ], 850);
       } finally { amount.remove(); }
     } else if (entry.kind === 'status' && target && entry.debuffs) {
       this.updateDebuffs(target, entry);
