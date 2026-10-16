@@ -496,8 +496,8 @@ async function smokeCalamiticEconomy(client, userId, username) {
     const opening = await invoke(tierClient, open, response.revision, openId);
     assert.equal(opening.calamityOpening.calamiticTokens, expectedTokens[index],
       `EX${tier} chest reports its exact token receipt.`);
-    assert.equal(opening.account.calamiticTokens,
-      expectedTokens.slice(0, index + 1).reduce((sum, amount) => sum + amount, 0));
+    assert.equal(opening.account.calamiticTokens, expectedTokens[index],
+      `EX${tier} disposable account receives no prior-tier token balance.`);
     assert.deepEqual(await invoke(tierClient, open, response.revision, openId), opening,
       `EX${tier} chest retry returns the saved receipt without another grant.`);
     response = await invoke(tierClient, { kind: 'quit', runId }, opening.revision);

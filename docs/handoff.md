@@ -49,10 +49,31 @@
   products and exact lock text. Final shop detail hero stays144px and effect
   labels retain normal full-width text. No signed-in account is funded,
   mutated or transacted for these fixtures.
-- Coordinated authority/Pages publication and disposable hosted
-  `--calamitic-economy`, `--native-calamity` and `--loot-parity` checks are
-  pending below. The new smoke covers real1/3/8 receipts, legacy balances,
-  lock/duplicate rejection,100-token spending and idempotent retries.
+- Release `5c5cf2d` is live. Pages run `38855027224` passes build/tests/deploy.
+  `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --no-verify-jwt` deploys the matching generated engine.
+  Its Docker-not-running notice does not prevent the successful hosted build.
+- Hosted `node tools\smoke_server_game.mjs --native-calamity` passes rules4,
+  explicit recipients, actual Lv185 EX3 chest-only victory, atomic opening/
+  Master rewards, idempotency and current exponential stats/artwork.
+  `node tools\smoke_server_game.mjs --loot-parity` passes all36 exact
+  client/server reward/replay cases. Disposable identities and cascading records
+  are removed; no owner accounts are modified.
+- All six hosted JS/CSS entry assets return HTTP200 and match the tested
+  production bytes. Shared chunks include the exact lock text, all five stable
+  IDs and token field. Hosted `main-piOSghOr.js` SHA256:
+  `d993bdf552d9f22dc50fa13570da036bc90d05607c2ba8be8e3214c62b780856`.
+- Hosted `node tools\smoke_server_game.mjs --calamitic-economy` passes:
+  legacy balances, exact1/3/8 receipts, chest/purchase idempotency, locked-shop
+  rejection, actual-clear unlock,100-token spending and duplicate rejection.
+  All disposable identities/cascading records are removed. Its initial3 vs4
+  assertion was a smoke-fixture mistake: separate tier identities cannot
+  accumulate each other's tokens. Only that assertion changed; the deployed
+  economy needed no correction or redeployment. Script syntax check passes.
+- Six newly arrived root PNGs (five device names and `Calamitic Token.png`)
+  were observed after deployment verification and left untouched. Their
+  archival, reviewed background cleanup and runtime installation are not part
+  of this completed implementation; current exports remain pending.
 - The receipt adds a required field. There is no existing wire-schema
   negotiation, so already-open old tabs must reload before opening chests.
   An old parser may reject a response after the server saved it; same-request
