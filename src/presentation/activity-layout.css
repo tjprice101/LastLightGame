@@ -16,11 +16,11 @@
   #app .activity-layout .activity-facts dd { margin-top: .15rem; font-size: .75rem; line-height: 1.35; }
   #app .activity-layout .item-showcase { margin: 0; padding: .5rem .6rem; border-radius: .6rem; }
   #app .activity-layout .item-showcase h4 { margin: 0 0 .4rem; font-size: .75rem; }
-  #app .activity-layout .item-showcase ul { grid-template-columns: repeat(auto-fill, minmax(4.75rem, 1fr)); gap: .4rem; }
+  #app .activity-layout .item-showcase ul { grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr)); gap: .5rem; }
   #app .activity-layout .item-showcase li { display: flex; flex-direction: column; align-items: center; gap: .25rem; grid-row: auto; }
-  #app .activity-layout .item-showcase-art { width: 44px; height: 44px; border-radius: .5rem; }
-  #app .activity-layout .item-showcase-art img, #app .activity-layout .item-showcase-art svg { width: 38px; height: 38px; }
-  #app .activity-layout .item-showcase-name { font-size: .68rem; line-height: 1.3; }
+  #app .activity-layout .item-showcase-art { width: 76px; height: 76px; border-radius: .65rem; }
+  #app .activity-layout .item-showcase-art img, #app .activity-layout .item-showcase-art svg { width: 68px; height: 68px; }
+  #app .activity-layout .item-showcase-name { font-size: .72rem; line-height: 1.3; }
   #app .activity-layout .item-showcase-pending { padding: 2px; font-size: .55rem; }
   #app .activity-layout .text-button { align-self: flex-start; min-height: 44px; }
   #app .activity-layout .enemy-strength { margin: 0; padding: .5rem .65rem; }
