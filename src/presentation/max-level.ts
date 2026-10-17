@@ -19,12 +19,12 @@ export function maxLevelPreview(account: Account, id: string): { html: string; p
   const labels = { health: 'Health', defense: 'Defense', damage: 'Attack', crit: 'Critical rate',
     critMultiplier: 'Critical multiplier', shatterCapacity: 'Shatter capacity', elementalDamage: 'Elemental damage' } as const;
   return { plan, html: `<h2 id="max-level-heading">Max Level</h2>
-    <p>Level ${plan.currentLevel} &rarr; ${plan.targetLevel}</p>
+    <p>Level ${plan.currentLevel} &rarr; ${plan.targetLevel} · Cap ${plan.cap}</p>
     ${itemShowcase([{ id: 'fractalis', amount: plan.cost.fractalis }, ...Object.entries(plan.cost.materials).map(([id, amount]) => ({ id, amount }))], 'Total cost')}
     <h3>Stat changes</h3><div class="upgrade-stat-preview">${Object.entries(labels).map(([key, label]) => {
       const stat = key as keyof typeof labels;
       return `<span><small>${label}</small><strong>${statChange(before[stat], after[stat], stat === 'crit' ? '%' : stat === 'critMultiplier' ? 'x' : '')}</strong></span>`;
     }).join('')}</div>
-    <p>${plan.targetLevel === plan.currentLevel ? 'Insufficient resources for the next level.' : `Level ${isStarterId(id) ? characterName(id, progress?.evolution) : 'this Elemental-Devourer'} to ${plan.targetLevel}?`}</p>
+    <p>${plan.targetLevel === plan.currentLevel ? plan.currentLevel === plan.cap ? 'Level cap reached.' : 'Insufficient resources for the next level.' : `Level ${isStarterId(id) ? characterName(id, progress?.evolution) : 'this Elemental-Devourer'} to ${plan.targetLevel}?`}</p>
     <button type="button" class="primary-button" data-confirm-max-level ${plan.targetLevel === plan.currentLevel ? 'disabled' : ''}>Confirm leveling</button>` };
 }

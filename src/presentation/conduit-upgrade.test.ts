@@ -53,12 +53,11 @@ describe('Conduit Upgrade and account-aware icons', () => {
     expect(html).toContain('data-machine-activity');
     expect(html).not.toContain('artwork pending');
     expect(html).toContain('currencies/mechanical-components.png');
-    expect(conduitIcon('worldbreaker-drive', 4)).toContain('data-conduit-upgrade=\"4\"');
+    expect(conduitIcon('worldbreaker-drive', 4)).toContain('aria-label="Worldbreaker Drive · Upgrade +4 of 5"');
     expect(conduitIcon('worldbreaker-drive', 4)).toContain('class="conduit-upgrade-meter" data-upgrade-level="4" aria-hidden="true"');
-    for (const level of [-1, 1.5, NaN]) expect(() => conduitIcon('vigil-core', level)).toThrow();
-    expect(conduitIcon('vigil-core', 6)).toContain('data-upgrade-level="6"');
+    for (const level of [-1, 6, 1.5, NaN]) expect(() => conduitIcon('vigil-core', level)).toThrow();
   });
-  it('disables unaffordable upgrades beyond +5 and distinguishes empty from unavailable holdings', () => {
+  it('disables unaffordable/final upgrades and distinguishes empty from unavailable holdings', () => {
     const account = wallet();
     account.mechanicalComponents = 24;
     account.conduitUpgrades['worldbreaker-drive'] = 5;
@@ -66,8 +65,7 @@ describe('Conduit Upgrade and account-aware icons', () => {
     expect(html).toMatch(/data-upgrade-conduit="vigil-core"[^>]+disabled/);
     const max = conduitUpgradeMenu(account, 'worldbreaker-drive');
     expect(max).toMatch(/data-upgrade-conduit="worldbreaker-drive"[^>]+disabled/);
-    expect(max).toContain('Upgrade to +6');
-    expect(max).not.toContain('Maximum upgrade');
+    expect(max).toContain('Maximum upgrade +5');
     expect(html).toContain('Not enough Broken Mechanical Components');
     expect(conduitUpgradeMenu(emptyAccount())).toContain('No owned Conduits to upgrade');
     expect(conduitUpgradeMenu(null)).toContain('role="alert"');

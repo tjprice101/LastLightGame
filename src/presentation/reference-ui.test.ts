@@ -152,7 +152,7 @@ describe('replacement reference screen structures', () => {
     const html = referenceTeam(wallet, { view: 'detail', selected: 'ember', element: '', sort: 'level' });
     expect(html).toContain('ref-team-sidebar');
     expect(html).toContain('ref-character-header');
-    expect(html).toContain('data-reference-level>12</span>');
+    expect(html).toContain('data-reference-level>12 / 30');
     expect(html.match(/class="is-filled"/g)).toHaveLength(1);
     for (const heading of ['Stats', 'Skills']) expect(html).toContain(`>${heading}</h3>`);
     for (const tab of ['overview', 'upgrade-1', 'upgrade-0', 'equipment']) expect(html).toContain(`data-character-tab="${tab}"`);
@@ -243,8 +243,8 @@ describe('replacement reference screen structures', () => {
     expect(detail.match(/data-open-loadout/g)).toHaveLength(1);
     expect(detail).toContain('data-team-view="formation">Edit squad');
     expect(detail.match(/aria-haspopup="dialog"/g)).toHaveLength(4);
-    expect(detail).toContain(`data-level-capture="${first.instanceId}"`);
-    expect(detail).not.toContain('Maximum level');
+    expect(detail).not.toContain(`data-level-capture="${first.instanceId}"`);
+    expect(detail).toContain('Maximum level 60');
     expect(detail).toContain(`data-max-level="${first.instanceId}"`);
   });
 
@@ -285,14 +285,14 @@ describe('replacement reference screen structures', () => {
     expect(wallet).toEqual(before);
   });
 
-  it('retains an available sale outside the squad and keeps Elemental-Devourer leveling without an evolution action', () => {
+  it('retains an available sale outside the squad and caps Elemental-Devourer growth without an evolution action', () => {
     const wallet = account();
     const copy = createCreatureCopy('infusion:treasury:0', 1, 120);
     wallet.capturedCharacters = [copy];
     const html = referenceTeam(wallet, { view: 'capture', selected: 'ember', capture: copy.instanceId, element: '', sort: 'level' });
     expect(html).toContain(`data-sell-creature="${copy.instanceId}" >Sell copy`);
-    expect(html).not.toContain('Maximum level');
-    expect(html).toContain(`data-level-capture="${copy.instanceId}"`);
+    expect(html).toContain('Maximum level 60');
+    expect(html).not.toContain('data-level-capture');
     expect(html).not.toContain('data-upgrade-kind="evolve"');
   });
 

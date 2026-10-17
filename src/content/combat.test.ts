@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { describeFighter, fighters, formatStat, resolveFighter, shatterGauge } from './combat';
 import { openingStarters as starters, starters as roster } from './starters';
-import { evolutionLevelRequirement, characterGrowthFactor, characterPotencyFactor } from './progression';
+import { characterLevelCap, characterGrowthFactor, characterPotencyFactor } from './progression';
 import { nativeIdentities } from './native-identities';
 import { nativeBalance } from './native-balance';
 
@@ -56,7 +56,7 @@ describe('character stat and kit growth', () => {
 
   it.each(roster)('$name uses linear core growth and separate bounded potency through every level/form', (starter) => {
     const base = resolveFighter(starter.id);
-    for (let evolution = 1; evolution <= 6; evolution++) for (let level = 0; level <= evolutionLevelRequirement(evolution); level++) {
+    for (let evolution = 1; evolution <= 6; evolution++) for (let level = 0; level <= characterLevelCap(evolution); level++) {
       const progress = { level, evolution };
       const kit = resolveFighter(starter.id, progress);
       const factor = 1 + level * .15 + (evolution - 1) * 1.5;
@@ -123,9 +123,8 @@ describe('character stat and kit growth', () => {
     expect(kit.stats.health).toBeCloseTo(220 * 1.15);
     expect(kit.stats.defense).toBeCloseTo(10 * 1.15 ** .7);
     expect(formatStat(38.38000000000001)).toBe('38.38');
-    expect(() => resolveFighter('ember', { level: 31, evolution: 1 })).not.toThrow();
-    expect(() => resolveFighter('ember', { level: 500, evolution: 6 })).not.toThrow();
-    expect(() => resolveFighter('ember', { level: -1, evolution: 1 })).toThrow();
+    expect(() => resolveFighter('ember', { level: 31, evolution: 1 })).toThrow('0 to 30');
+    expect(() => resolveFighter('ember', { level: 106, evolution: 6 })).toThrow('0 to 105');
     expect(() => resolveFighter('ember', { level: 90, evolution: 7 })).toThrow('1 to 6');
   });
 });

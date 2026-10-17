@@ -38,7 +38,7 @@ function fixture(components = 829, online?: (plan: ConduitMaxLevelPlan) => Promi
 }
 
 describe('Conduit Max Level control', () => {
-  it('shows the highest affordable target/total and permits further levels beyond +5', () => {
+  it('shows exact highest affordable target/total and disables empty or capped previews', () => {
     const f = fixture(174);
     expect(f.maximum().textContent).toBe('Max Level · +2 · 75 components');
     expect(f.maximum().disabled).toBe(false);
@@ -47,8 +47,7 @@ describe('Conduit Max Level control', () => {
     expect(f.maximum().disabled).toBe(true);
     updateConduitUpgradeMenu(f.host, { ...emptyAccount(), conduits: { 'vigil-core': 1 },
       mechanicalComponents: 100000, conduitUpgrades: { 'vigil-core': 5 } });
-    expect(f.maximum().disabled).toBe(false);
-    expect(Number(f.maximum().dataset.targetUpgrade)).toBeGreaterThan(5);
+    expect(f.maximum().disabled).toBe(true);
     expect(conduitUpgradeMenu(null)).not.toContain('data-max-conduit');
     expect(conduitUpgradeMenu(emptyAccount())).not.toContain('data-max-conduit');
   });
@@ -60,7 +59,7 @@ describe('Conduit Max Level control', () => {
     expect(gameConfirm).toHaveBeenCalledTimes(1);
     expect(gameConfirm).toHaveBeenCalledWith(expect.stringContaining('Spend 600 Broken Mechanical Components'), { title: 'Max Level Conduit', confirmLabel: 'Max Level' });
     expect(gameConfirm).toHaveBeenCalledWith(expect.stringContaining('from +0 to +5'), expect.anything());
-    expect(gameConfirm).toHaveBeenCalledWith(expect.stringContaining('Current: +6% to your maximum HP.. Target: +21% to your maximum HP.'), expect.anything());
+    expect(gameConfirm).toHaveBeenCalledWith(expect.stringContaining('Current: +6% to your maximum HP. Target: +21% to your maximum HP.'), expect.anything());
     expect(write).toHaveBeenCalledTimes(1);
     expect(loadAccount(f.storage)).toMatchObject({ mechanicalComponents: 229, conduitUpgrades: { 'vigil-core': 5 }, conduits: { 'vigil-core': 2 } });
     expect(f.refresh).toHaveBeenCalledTimes(1);

@@ -97,13 +97,13 @@ function conduitArchive(account: Account | null): string {
 export function archives(account: Account | null, selected: ArchiveGallery = 'characters'): string {
   return `<section class="archives"><header class="archive-toolbar"><div><h2>Collections</h2><p>Browse forms, Conduits and enemy discoveries.</p></div>${information('collections-information', 'Collections', `<h3>Character</h3><p>Reached Element-Bearer forms and owned captured forms reveal in color; other forms remain silhouettes.
     Current forms show saved equipped stats; other Element-Bearer forms preview level 0 without Conduits. Stars and form rarity are separate.
-    Captured forms keep their defeated level, have no level limit and cannot evolve. Catalog previews do not grant ownership.</p>
+    Captured forms have a level cap of 60 and cannot evolve. Higher-level captures are reduced to 60. Catalog previews do not grant ownership.</p>
     <h3>Conduits</h3><p>Owned Conduits reveal their artwork in color; unowned Conduits remain silhouettes. The catalog shows effects and owned counts. Equipment rules are in Character Information.</p>
     <h3>Elemental-Devourer and Machine discovery</h3><p>Elemental-Devourers are Rise's creations. Machines are destroyed prototypes from her collaboration with Let, not her created faction.</p><p>Encountering reveals identity, element and lore. Defeating reveals exact stage loot.
     Use View Loot below an enemy to browse its stage-specific amounts and rates. Each Conduit drop has View Details for its effects and lore.
     Base quantities vary uniformly; final bosses multiply sampled quantities by5. Rarity rolls are independent and have no pity.
     Heaven, Abyss, Treasury and Sanctuary have a separate 20% capture chance per kill; Story, Training and elemental dungeons cannot grant captures.
-    Captures retain form, skills and defeated level. Currency Elemental-Devourer sale prices are fixed by form; sale protections are in Character Information.</p>
+    Captures retain form and skills, with defeated level capped at 60. Currency Elemental-Devourer sale prices are fixed by form; sale protections are in Character Information.</p>
     `)}</header>
     <nav class="archive-navigation" aria-label="Archive galleries">${galleries.map((gallery) =>
       `<button class="archive-gallery-button" data-archive-gallery="${gallery.id}" aria-controls="archive-${gallery.id}" aria-pressed="${selected === gallery.id}"><strong>${gallery.name}</strong><small>${gallery.subtitle}</small></button>`).join('')}</nav>

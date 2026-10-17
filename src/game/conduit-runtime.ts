@@ -87,9 +87,18 @@ function emit(events: BattleEvent[], kind: BattleEvent['kind'], owner: Combatant
     ...(target.side === 'ally' ? { buffs: buffSnapshot(target) } : { debuffs: debuffSnapshot(target) }),
     ...(kind === 'shield' || kind === 'damage' ? { shieldRemaining: target.shield } : {}) });
 }
+export function overhealShield(owner: Combatant, target: Combatant, excess: number, events: BattleEvent[]): number {
+  const amount = Math.round(excess) - target.shield;
+  if (amount <= 0 || target.hp <= 0) return 0;
+  target.shield += amount;
+  emit(events, 'shield', owner, target, amount, `${target.name}'s excess healing becomes a ${target.shield} Shield.`);
+  return amount;
+}
 export function generatedHeal(owner: Combatant, target: Combatant | undefined, offer: number, events: BattleEvent[]): number {
   if (!target || target.hp <= 0) return 0;
-  const amount = Math.min(target.stats.health - target.hp, Math.max(0, Math.round(offer)));
+  const healing = Math.max(0, Math.round(offer));
+  const amount = Math.min(target.stats.health - target.hp, healing);
+  overhealShield(owner, target, healing - Math.max(0, amount), events);
   if (amount <= 0) return 0;
   target.hp += amount;
   emit(events, 'heal', owner, target, amount, `${owner.name}'s Conduit restores ${amount} HP to ${target.name}.`);
@@ -410,6 +419,7 @@ export function nativeHeal(state: BattleState, owner: Combatant, target: Combata
     const key = `seed:${owner.id}`;
     gear(target).numbers[key] = (gear(target).numbers[key] ?? 0) + seed;
   }
+  overhealShield(owner, target, wasted, events);
   if (restored <= 0) return 0;
   target.hp += restored;
   emit(events, 'heal', owner, target, restored, `${owner.name} restores ${restored} HP to ${target.name}.`, true);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { elements, evolutionRequirement } from '../content/activities';
-import { evolutionLevelRequirement, evolutionCost } from '../content/progression';
+import { characterLevelCap, evolutionCost } from '../content/progression';
 import { getStarter } from '../content/starters';
 import { ACCOUNT_KEY, emptyAccount, evolutionFodderOptions, loadAccount, saveAccount, setCharacterLock, upgradeCharacter } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
@@ -15,7 +15,7 @@ function setup(evolution = 3) {
   const storage: ProfileStorage = { getItem: (key) => values.get(key) ?? null,
     setItem: (key, value) => { values.set(key, value); }, removeItem: (key) => { values.delete(key); } };
   const account = emptyAccount();
-  account.characters.ember = { level: evolutionLevelRequirement(evolution), evolution, weaponRank: 3 };
+  account.characters.ember = { level: characterLevelCap(evolution), evolution, weaponRank: 3 };
   account.fractalis = 10000;
   account.lycalis = 17;
   account.firstFracture = true;

@@ -10,7 +10,7 @@ import { starters } from '../content/starters';
 import { playableDungeons } from '../content/dungeons';
 import { storyEncounter } from '../content/story';
 import { enemyAbilityMultiplier, enemySkills } from '../content/enemy-skills';
-import { evolutionLevelRequirement } from '../content/progression';
+import { characterLevelCap } from '../content/progression';
 import { validateCapturedCharacters } from './character-instances';
 import { benchmarkTarget, playNativeBenchmark } from './native-benchmark-pilot';
 
@@ -145,7 +145,7 @@ describe('hostile progression balance', () => {
 
   it.each([25, 50, 75, 100, 125, 150])('keeps Story regional boss %s viable for a same-level Common-equipped squad', stage => {
     const level = storyEncounter(stage).level;
-    const evolution = Array.from({ length: 6 }, (_, index) => index + 1).find(form => evolutionLevelRequirement(form) >= level)!;
+    const evolution = Array.from({ length: 6 }, (_, index) => index + 1).find(form => characterLevelCap(form) >= level)!;
     const progress = { level, evolution };
     for (const seed of [1, 1729, 12345]) {
       const initial = createStoryBattle(stage, seed, 'ember', progress, team,
@@ -214,7 +214,7 @@ describe('hostile progression balance', () => {
 
   it.each(starters)('$name struggles against enemies ten levels above its legal evolution across progression', ({ id }) => {
     for (const level of [19, 30, 45, 60, 75, 90, 105]) {
-      const evolution = Array.from({ length: 6 }, (_, index) => index + 1).find(form => evolutionLevelRequirement(form) >= level)!;
+      const evolution = Array.from({ length: 6 }, (_, index) => index + 1).find(form => characterLevelCap(form) >= level)!;
       const fighter = resolveFighter(id, { level, evolution });
       const enemy = enemyCombatStats(level + 10, false);
       const same = enemyCombatStats(level, false);
@@ -253,8 +253,8 @@ describe('hostile progression balance', () => {
   it('resolves legacy and new captures on linear playable growth without mutating saved copies', () => {
     for (const mode of ['heavens', 'abyss'] as const) {
       const legacy = { instanceId: 'capture:00000000-0000-4000-8000-000000000001', creatureId: `infusion:${mode}:0`, locked: false };
-      expect(capturedProgress(legacy).level).toBe(80);
-      expect(resolveCapturedFighter(legacy).stats.health).toBe(capturedEnemyStats(80).health * .65);
+      expect(capturedProgress(legacy).level).toBe(60);
+      expect(resolveCapturedFighter(legacy).stats.health).toBe(capturedEnemyStats(60).health * .65);
       const current = createCreatureCopy(`infusion:${mode}:0`, 1);
       const before = structuredClone(current);
       expect(current.level).toBe(50);

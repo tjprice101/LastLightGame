@@ -15,8 +15,8 @@ import { elementLabel } from './element-label';
 import { assetUrl } from './portrait';
 import { ownedCharacterInstances } from '../game/account';
 import { ownedCompanion, capturedRating } from './owned-companion';
-import { capturedProgress, capturedLevelCost, resolveCapturedFighter } from '../game/character-instances';
-import { conduits, getConduit, conduitEffect, conduitEquipReason, conduitSlotCount, conduitSlotsShown, type ConduitSlots } from '../content/conduits';
+import { capturedProgress, capturedLevelCost, capturedLevelCap, resolveCapturedFighter } from '../game/character-instances';
+import { conduits, getConduit, conduitEffect, conduitEquipReason, conduitSlotCount, type ConduitSlots } from '../content/conduits';
 import { conduitIcon } from './conduit-store';
 import { itemShowcase } from './item-showcase';
 import { bannerPercent, bannerPityLimits, validateBannerPity, type BannerOutcome } from '../content/standard-banner';
@@ -47,18 +47,18 @@ export function characterCopyManagement(account: Account | null, category: 'all'
       const creature = getCreature(copy.creatureId);
       const progress = capturedProgress(copy);
       const kit = resolveCapturedFighter(copy, account.conduitEquipment?.[copy.instanceId], account.conduitUpgrades);
-      const cost = capturedLevelCost(copy);
+      const cost = progress.level < capturedLevelCap ? capturedLevelCost(copy) : null;
       const sale = isSellableCreatureMode(creature.mode) ? creatureSaleOffer(account, copy.instanceId) : null;
       const slots: ConduitSlots = account.conduitEquipment?.[copy.instanceId] ?? Array.from({ length: conduitSlotCount }, () => null);
       return `<article class="archive-card" data-captured-copy="${copy.instanceId}"><div class="captured-stage"><div class="archive-portrait">${compact ? ownedCompanion(account, copy.instanceId).art : creature.art ? `<img src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="960" height="960">` : '<span>Artwork pending</span>'}</div>
         <h3>${creature.name}</h3>${elementLabel(creature.element)}${capturedRating(creature.id)}<p>Copy ${index + 1} · Lv.${progress.level}</p></div><div class="captured-controls">${lockControl(account, copy.instanceId)}
         <p>HP ${formatStat(kit.stats.health)} · Attack ${formatStat(kit.stats.damage)} · Defense ${formatStat(kit.stats.defense)}</p>
         <section class="captured-abilities"><h4>Retained abilities</h4>${progress.skills.map((skill) => `<p>${skill.name}: ${formatStat(skill.multiplier * 100)}% Attack · ${skill.action === 'ultimate' ? `${kit.abilities.ultimate.cooldown}-turn cooldown` : 'No cooldown'} · ${skill.action}</p>`).join('')}</section>
-        <button class="primary-button" data-level-capture="${copy.instanceId}" data-expected-level="${progress.level}" ${account.fractalis < cost.fractalis || Object.entries(cost.materials).some(([id, amount]) => (account.materials[id] ?? 0) < amount) ? 'disabled' : ''}>Level up · ${cost.fractalis} Prismatica</button>
+        <button class="primary-button" data-level-capture="${copy.instanceId}" data-expected-level="${progress.level}" ${!cost || account.fractalis < cost.fractalis || Object.entries(cost.materials).some(([id, amount]) => (account.materials[id] ?? 0) < amount) ? 'disabled' : ''}>${cost ? `Level up · ${cost.fractalis} Prismatica` : `Maximum level ${capturedLevelCap}`}</button>
         <button class="text-button" type="button" data-max-level="${copy.instanceId}">Max Level</button>
-        ${itemShowcase([{ id: 'fractalis', amount: cost.fractalis }, ...Object.entries(cost.materials).map(([id, amount]) => ({ id, amount }))], 'Level cost')}
+        ${cost ? itemShowcase([{ id: 'fractalis', amount: cost.fractalis }, ...Object.entries(cost.materials).map(([id, amount]) => ({ id, amount }))], 'Level cost') : ''}
         ${sale ? saleControls(sale, copy.instanceId, `Sell copy · ${saleLabel(sale)}`) : ''}
-        <section class="captured-equipment"><h4>Conduits</h4><button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button><p>Omnic: matching combat element only.</p>${Array.from({ length: conduitSlotsShown(slots) }, (_, index) => slots[index] ?? null).map((equipped, slot) => `<label>${equipped ? conduitIcon(equipped, account.conduitUpgrades?.[equipped]) : ''}Slot ${slot + 1}<select data-capture-conduit="${copy.instanceId}" data-capture-slot="${slot}"><option value="">Empty</option>${conduits.filter((conduit) => (account.conduits?.[conduit.id] ?? 0) > 0).map((conduit) => {
+        <section class="captured-equipment"><h4>Conduits</h4><button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button><p>Omnic: matching combat element only; at most four equipped.</p>${slots.map((equipped, slot) => `<label>${equipped ? conduitIcon(equipped, account.conduitUpgrades?.[equipped]) : ''}Slot ${slot + 1}<select data-capture-conduit="${copy.instanceId}" data-capture-slot="${slot}"><option value="">Empty</option>${conduits.filter((conduit) => (account.conduits?.[conduit.id] ?? 0) > 0).map((conduit) => {
           const reason = conduitEquipReason(conduit, creature.element, slots, slot);
           return `<option value="${conduit.id}" ${equipped === conduit.id ? 'selected' : ''} ${reason ? 'disabled' : ''}>${conduit.name} · ${conduit.rarity} · +${account.conduitUpgrades?.[conduit.id] ?? 0}${reason ? ` · ${reason}` : ''}</option>`;
         }).join('')}</select>${equipped ? `<span>${conduitEffect(getConduit(equipped), account.conduitUpgrades?.[equipped])}</span>` : ''}</label>`).join('')}</section>

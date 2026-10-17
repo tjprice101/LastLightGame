@@ -118,9 +118,10 @@ function creatureEnemyStats(level: number, boss: boolean, maximumLevel = 120): S
   return enemyCombatStats(Math.min(level, maximumLevel), boss);
 }
 
-export function capturedEnemyStats(level: number): Stats {
-  if (!Number.isSafeInteger(level) || level < 1) throw new Error('Invalid captured creature level.');
-  const factor = 1 + level * playableGrowth.perLevel;
+export function capturedEnemyStats(level: number, maximumLevel = 120): Stats {
+  if (!Number.isInteger(level) || level < 10 || level > maximumLevel ||
+      !Number.isInteger(maximumLevel) || maximumLevel < 120 || maximumLevel > 140) throw new Error('Invalid captured creature level.');
+  const factor = 1 + Math.min(level, 120) * playableGrowth.perLevel;
   return {
     health: capturedGrowth.health * factor,
     damage: capturedGrowth.damage * factor,

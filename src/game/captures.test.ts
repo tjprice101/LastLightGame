@@ -129,10 +129,10 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
     const drops = (state: typeof a) => endTurn(state).events.filter((event) => event.kind === 'reward').map((event) => [event.amount, event.materials]);
     expect(drops(a)).toEqual(drops(b));
   });
-  it('keeps early forms weaker at equal levels and removes boss stat bonuses', () => {
-    const early = { ...copy(), level: 60 };
-    const final = { ...copy(5), level: 60 };
-    const boss = { ...copy(5, true), level: 60 };
+  it('caps overlevelled forms at 60, keeps early forms weaker and removes boss stat bonuses', () => {
+    const early = { ...copy(), level: 120 };
+    const final = { ...copy(5), level: 120 };
+    const boss = { ...copy(5, true), level: 120 };
     const weak = resolveCapturedFighter(early);
     const strong = resolveCapturedFighter(final);
     const bossKit = resolveCapturedFighter(boss);
@@ -191,15 +191,15 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
     const max = loadAccount(saved);
     max.capturedCharacters![0].level = 120;
     saveAccount(saved, max);
-    expect(() => levelCapturedCharacter(saved, first.instanceId, 120)).toThrow('Not enough');
-    expect(() => validateAccount({ ...max, capturedCharacters: [{ ...first, level: 0 }] })).toThrow();
+    expect(() => levelCapturedCharacter(saved, first.instanceId, 60)).toThrow('Maximum');
+    expect(() => validateAccount({ ...max, capturedCharacters: [{ ...first, level: 121 }] })).toThrow();
     const copyHtml = characterCopyManagement(equipped);
     expect(copyHtml).toContain(`Copy 1 · Lv.${equipped.capturedCharacters![0].level}`);
     expect(copyHtml).not.toContain('Fixed form');
     const homeHtml = homeHub(getStarter('ember'), false, { ...equipped, squad: [first.instanceId] });
     expect(homeHtml).not.toContain('Fixed form');
     expect(homeHtml).toContain('Cannot evolve.');
-    expect(homeHtml).not.toContain('Level cap');
+    expect(homeHtml).toContain('Level cap 60');
   });
   it('presents captured rewards as enemy icons and reveals only owned forms in Character Archive', () => {
     const { account } = seeded();

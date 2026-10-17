@@ -4,7 +4,7 @@ Captured Elemental-Devourer Team details now share the compact Element-Bearer
 layout, with Stats & Skills, Level, Sale and Conduits sub-menus. Level includes
 an exact seven-stat next-level preview and owned/required resources; Sale keeps
 authored payouts and protections. Lock copy and squad actions remain in the
-header. Forms remain fixed; levels are uncapped (D-334). See
+header. Forms remain fixed and capped at60. See
 [the current menu contract](menus-and-inventory.md).
 
 ## Phase5 foundation

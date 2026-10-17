@@ -3,7 +3,7 @@ import { warEncounter, warLoot, rollWarRewards, elementalWars } from '../content
 import { warCharacters, warFighters } from '../content/war-characters';
 import { availableStarters, getStarter } from '../content/starters';
 import { characterArt } from '../content/character-art';
-import { evolutionLevelRequirement, characterEvolutionCost, characterLevelCost } from '../content/progression';
+import { characterLevelCap, characterEvolutionCost, characterLevelCost } from '../content/progression';
 import { enemyCombatStats } from '../content/stat-growth';
 import { standardBannerPool } from '../content/standard-banner';
 import { roseBannerPool } from '../content/rose-banner';
@@ -78,7 +78,7 @@ describe('Elemental War', () => {
       expect(getStarter(id).stars).toBe(6);
       expect(standardBannerPool().some((entry) => entry.id === id)).toBe(false);
       expect(roseBannerPool().some((entry) => entry.id === id)).toBe(false);
-      expect(evolutionLevelRequirement(6)).toBe(105);
+      expect(characterLevelCap(6)).toBe(105);
       expect(characterLevelCost(id, { level: 0, evolution: 1 }).fractalis).toBeGreaterThan(0);
       expect(characterEvolutionCost(id, { level: 30, evolution: 1 }).materials).toBeDefined();
       for (const action of ['passive', 'light', 'skill1', 'skill2', 'ultimate', 'defend'] as const) {

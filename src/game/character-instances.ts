@@ -17,8 +17,7 @@ export interface CapturedCharacter {
   acquisition?: 'banner-duplicate';
 }
 export type CharacterLocks = Partial<Record<StarterId, boolean>>;
-/** Older saves stored captures clamped to this level; accept them without rewriting. */
-const legacyCapturedLevelFloor = 60;
+export const capturedLevelCap = 60;
 
 export function isCapturedInstanceId(value: unknown): value is string {
   return typeof value === 'string' && /^capture:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value);
@@ -42,7 +41,7 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
       copy.acquisition = entry.acquisition;
     }
     if ('level' in entry) {
-      if (!Number.isInteger(entry.level) || typeof entry.level !== 'number' || entry.level < 1 || !Number.isSafeInteger(entry.level) ||
+      if (!Number.isInteger(entry.level) || typeof entry.level !== 'number' || entry.level < 1 || entry.level > 120 ||
           !('capturedStage' in entry) || typeof entry.capturedStage !== 'number' || !creature.stages.includes(entry.capturedStage) ||
           !('skills' in entry) || !Array.isArray(entry.skills)) throw new Error('Invalid captured Elemental-Devourer progression.');
       const expected = infusionEncounter(creature.mode, entry.capturedStage);
@@ -54,8 +53,8 @@ export function validateCapturedCharacters(value: unknown): CapturedCharacter[] 
         typeof skill === 'object' && skill !== null && skill.name === skills[index].name &&
         skill.multiplier === skills[index].multiplier && skill.every === skills[index].every && skill.action === skills[index].action));
       if (!valid ||
-        entry.level < Math.min(legacyCapturedLevelFloor, copy.acquisition === 'banner-duplicate' ? roseDuplicateMinimumLevel(creature.id)! : expected.level)) throw new Error('Invalid retained enemy abilities or level.');
-      copy.level = entry.level;
+        entry.level < Math.min(capturedLevelCap, copy.acquisition === 'banner-duplicate' ? roseDuplicateMinimumLevel(creature.id)! : expected.level)) throw new Error('Invalid retained enemy abilities or level.');
+      copy.level = Math.min(capturedLevelCap, entry.level);
       copy.capturedStage = entry.capturedStage;
       copy.skills = valid;
     } else if ('skills' in entry || 'capturedStage' in entry || 'acquisition' in entry) throw new Error('Incomplete captured Elemental-Devourer progression.');
@@ -70,12 +69,13 @@ export function capturedProgress(copy: CapturedCharacter) {
   const stage = copy.capturedStage ?? creature.stages[0];
   const encounter = infusionEncounter(creature.mode, stage);
   const legacyLevel = creature.mode === 'heavens' || creature.mode === 'abyss' ? Math.round(80 + (stage - 1) * 40 / 34) : encounter.level;
-  return { level: copy.level ?? legacyLevel, stage, tier: encounter.tier,
+  return { level: Math.min(capturedLevelCap, copy.level ?? legacyLevel), stage, tier: encounter.tier,
     skills: copy.skills ?? enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.legacyAbilityMultiplier) };
 }
 
 export function capturedLevelCost(copy: CapturedCharacter) {
   const { level } = capturedProgress(copy);
+  if (level >= capturedLevelCap) throw new Error(`Maximum captured Elemental-Devourer level ${capturedLevelCap} reached.`);
   const creature = getCreature(copy.creatureId);
   return { fractalis: 10 + 2 * (level + 1),
     materials: levelingMaterials(creature.mode === 'roses' ? 'rosethorn' : creature.element, level + 1) };
@@ -86,7 +86,7 @@ export function resolveCapturedFighter(copy: CapturedCharacter, equipment?: Cond
   if (!creature.mode || creature.mode === 'machines') throw new Error('Captured Elemental-Devourer mode is missing or non-capturable.');
   const { level, tier, skills } = capturedProgress(copy);
   // Fixed forms use linear playable growth, never the accelerating hostile curve.
-  const reference = capturedEnemyStats(level);
+  const reference = capturedEnemyStats(level, creature.mode === 'roses' ? 140 : 120);
   const factor = .65 + .35 * tier / 5;
   const stats = { ...reference, health: reference.health * factor,
     damage: reference.damage * factor, defense: reference.defense * factor };

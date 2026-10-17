@@ -1,4 +1,4 @@
-import { conduits, getConduit, isConduitId, conduitEffect, conduitUpgradeCost, baseConduitUpgradeCost, conduitUpgradeRarityMultipliers, type ConduitId } from '../content/conduits';
+import { conduits, getConduit, isConduitId, conduitEffect, conduitUpgradeCap, conduitUpgradeCost, conduitUpgradeCosts, conduitUpgradeRarityMultipliers, type ConduitId } from '../content/conduits';
 import { upgradeConduit, conduitMaxLevelPlan, upgradeConduitToMaximum, type ConduitMaxLevelPlan, type Account } from '../game/account';
 import { type ProfileStorage } from '../game/profile';
 import { conduitIcon, conduitRarity } from './conduit-store';
@@ -27,7 +27,8 @@ function catalogPage(entries: OwnedEntry[], components: number, selected: string
     const cost = conduitUpgradeCost(conduit, entry.level);
     return conduit.name.toLowerCase().includes(state.query.trim().toLowerCase())
       && (!state.rarity || conduit.rarity === state.rarity)
-      && (!state.status || (state.status === 'available' && components >= cost));
+      && (!state.status || (state.status === 'maximum' ? cost === null
+        : state.status === 'available' ? cost !== null && components >= cost : cost !== null));
   }).sort((a, b) => {
     const first = getConduit(a.id), second = getConduit(b.id);
     const rarities = ['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'];
@@ -40,7 +41,7 @@ function catalogPage(entries: OwnedEntry[], components: number, selected: string
   const start = state.page * pageSize;
   return `<div class="ref-upgrade-catalog-grid" aria-label="Owned Conduits to upgrade">${filtered.slice(start, start + pageSize).map(entry => {
     const conduit = getConduit(entry.id);
-    return `<button type="button" class="ref-member-row ${entry.id === selected ? 'is-selected' : ''}" aria-pressed="${entry.id === selected}" data-select-upgrade-conduit="${entry.id}"><span class="ref-thumb">${conduitIcon(entry.id, entry.level)}</span><span><b>${conduit.name}</b><small>${conduit.rarity} · +${entry.level}</small><small>Owned ${entry.copies}</small></span></button>`;
+    return `<button type="button" class="ref-member-row ${entry.id === selected ? 'is-selected' : ''}" aria-pressed="${entry.id === selected}" data-select-upgrade-conduit="${entry.id}"><span class="ref-thumb">${conduitIcon(entry.id, entry.level)}</span><span><b>${conduit.name}</b><small>${conduit.rarity} · +${entry.level} / ${conduitUpgradeCap}</small><small>Owned ${entry.copies}</small></span></button>`;
   }).join('') || '<p class="ref-upgrade-no-matches">No matching owned Conduits. Adjust your filters.</p>'}</div>
     <nav class="ref-upgrade-pagination" aria-label="Owned Conduit pages"><button type="button" data-upgrade-page="-1" aria-label="Previous owned Conduit page" ${state.page === 0 ? 'disabled' : ''}>←</button><span role="status">${filtered.length ? `${start + 1}–${Math.min(start + pageSize, filtered.length)} of ${filtered.length}` : '0 of 0'} · Page ${state.page + 1} / ${pages}</span><button type="button" data-upgrade-page="1" aria-label="Next owned Conduit page" ${state.page + 1 === pages ? 'disabled' : ''}>→</button></nav>`;
 }
@@ -65,8 +66,8 @@ function renderConduitUpgradeMenu(account: Account | null, selected: string | un
   const choice = owned.find(entry => entry.id === selected) ?? owned[0];
   const entries = ownedEntries(account);
   const costInformation = Object.entries(conduitUpgradeRarityMultipliers).map(([rarity, multiplier]) =>
-    `<p>${rarity}: ${[0, 1, 2, 3, 4].map((level) => baseConduitUpgradeCost(level) * multiplier).join(' / ')} components for +1 through +5, then ${100 * multiplier} more for each further level.</p>`).join('')
-    + '<p>Upgrades have no limit. Max Level upgrades the selected Conduit to the highest level you can afford. Its confirmation shows the total component cost and target effect, including penalties. All selected upgrades save together; no copies or other resources are spent.</p>';
+    `<p>${rarity}: ${conduitUpgradeCosts.map((cost) => cost * multiplier).join(' / ')} components for +1 through +5.</p>`).join('')
+    + '<p>Max Level upgrades the selected Conduit to the highest level you can afford, up to +5. Its confirmation shows the total component cost and target effect, including penalties. All selected upgrades save together; no copies or other resources are spent.</p>';
   return `<section class="conduit-upgrade-menu ref-screen ref-conduit-upgrade" data-upgrade-owned="${escapeAttribute(JSON.stringify(entries))}" data-upgrade-components="${account?.mechanicalComponents ?? 0}">
     <nav class="ref-market-tabs"><button aria-current="page">Conduit Upgrade</button><button data-page="conduit-store">Conduit Store →</button></nav>
     <aside class="ref-panel ref-upgrade-owned"><header class="ref-panel-heading">Owned · ${owned.length}</header>
@@ -75,20 +76,20 @@ function renderConduitUpgradeMenu(account: Account | null, selected: string | un
       <div class="ref-upgrade-filters">
       <div class="ref-upgrade-chips" role="group" aria-label="Filter owned Conduits by rarity">${[['', 'All'], ...['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'].map(rarity => [rarity, rarity])].map(([value, label]) => `<button type="button" data-upgrade-rarity-chip="${value}" aria-pressed="${state.rarity === value}">${label}</button>`).join('')}</div>
       <select hidden data-native-select data-upgrade-rarity aria-label="Rarity"><option value="">All rarities</option>${['Common', 'Rare', 'Legendary', 'Omnic', 'Calamitic'].map(rarity => `<option ${state.rarity === rarity ? 'selected' : ''}>${rarity}</option>`).join('')}</select>
-      <div class="ref-upgrade-chips" role="group" aria-label="Filter owned Conduits by upgrade status">${[['', 'All'], ['available', 'Can upgrade']].map(([value, label]) => `<button type="button" data-upgrade-status-chip="${value}" aria-pressed="${state.status === value}">${label}</button>`).join('')}</div>
-      <select hidden data-native-select data-upgrade-status aria-label="Status">${[['', 'All statuses'], ['available', 'Can upgrade']].map(([value, label]) => `<option value="${value}" ${state.status === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div>
+      <div class="ref-upgrade-chips" role="group" aria-label="Filter owned Conduits by upgrade status">${[['', 'All'], ['available', 'Can upgrade'], ['unfinished', 'Below maximum'], ['maximum', 'Maximum +5']].map(([value, label]) => `<button type="button" data-upgrade-status-chip="${value}" aria-pressed="${state.status === value}">${label}</button>`).join('')}</div>
+      <select hidden data-native-select data-upgrade-status aria-label="Status">${[['', 'All statuses'], ['available', 'Can upgrade'], ['unfinished', 'Below maximum'], ['maximum', 'Maximum +5']].map(([value, label]) => `<option value="${value}" ${state.status === value ? 'selected' : ''}>${label}</option>`).join('')}</select></div>
       <div class="ref-upgrade-catalog">${catalogPage(entries, account?.mechanicalComponents ?? 0, choice?.id, state)}</div></aside>
     ${account && choice ? (() => {
       const level = account.conduitUpgrades?.[choice.id] ?? 0;
       const cost = conduitUpgradeCost(choice, level);
-      const affordable = (account.mechanicalComponents ?? 0) >= cost;
+      const affordable = cost !== null && (account.mechanicalComponents ?? 0) >= cost;
       const maximum = conduitMaxLevelPlan(account, choice.id);
-      return `<section class="ref-panel ref-upgrade-detail" data-upgrade-card="${choice.id}"><div class="ref-upgrade-identity"><div class="ref-store-hero">${conduitIcon(choice.id, level)}</div><div>${choice.mechanic ? `<div class="ref-upgrade-special">${information('conduit-upgrade-special-effect', `${choice.name} · Special effect`, `<p>${choice.effect}</p><p>Special mechanics are unchanged by upgrades. Only the listed stat modifiers scale.</p>`, 'Special effect · unchanged')}</div>` : ''}<h2>${choice.name}</h2>${conduitRarity(choice.id)}<p>Upgrade +${level} · Owned ${account.conduits?.[choice.id]}</p></div></div>
-      <section class="conduit-upgrade-values"><div><h4>Current · +${level}</h4><p>${upgradeStatEffect(choice.id, level)}</p></div><span aria-hidden="true">→</span><div><h4>Next · +${level + 1}</h4><p>${upgradeStatEffect(choice.id, level + 1)}</p></div></section>
-      <header class="ref-panel-heading">Effect by upgrade${choice.mechanic ? '<span>Special effect unchanged</span>' : ''}</header><div class="ref-effect-progression">${Array.from({ length: 6 }, (_, index) => index + Math.max(0, level - 1)).map((upgrade) => `<article class="${upgrade === level ? 'is-current' : ''}" ${upgrade === level ? 'aria-current="step"' : ''}><small>+${upgrade}${upgrade === level ? ' · Current' : ''}</small><p>${upgradeStatEffect(choice.id, upgrade)}</p></article>`).join('')}</div>
+      return `<section class="ref-panel ref-upgrade-detail" data-upgrade-card="${choice.id}"><div class="ref-upgrade-identity"><div class="ref-store-hero">${conduitIcon(choice.id, level)}</div><div>${choice.mechanic ? `<div class="ref-upgrade-special">${information('conduit-upgrade-special-effect', `${choice.name} · Special effect`, `<p>${choice.effect}</p><p>Special mechanics are unchanged by upgrades. Only the listed stat modifiers scale.</p>`, 'Special effect · unchanged')}</div>` : ''}<h2>${choice.name}</h2>${conduitRarity(choice.id)}<p>Upgrade +${level} / ${conduitUpgradeCap} · Owned ${account.conduits?.[choice.id]}</p><div class="ref-pips" aria-hidden="true">${Array.from({ length: conduitUpgradeCap }, (_, index) => `<i class="${index < level ? 'is-filled' : ''}"></i>`).join('')}</div></div></div>
+      <section class="conduit-upgrade-values"><div><h4>Current · +${level}</h4><p>${upgradeStatEffect(choice.id, level)}</p></div><span aria-hidden="true">→</span><div>${cost !== null ? `<h4>Next · +${level + 1}</h4><p>${upgradeStatEffect(choice.id, level + 1)}</p>` : '<h4>Maximum · +5</h4><p>Maximum upgrade reached.</p>'}</div></section>
+      <header class="ref-panel-heading">Effect by upgrade${choice.mechanic ? '<span>Special effect unchanged</span>' : ''}</header><div class="ref-effect-progression">${Array.from({ length: conduitUpgradeCap + 1 }, (_, upgrade) => `<article class="${upgrade === level ? 'is-current' : ''}" ${upgrade === level ? 'aria-current="step"' : ''}><small>+${upgrade}${upgrade === level ? ' · Current' : ''}</small><p>${upgradeStatEffect(choice.id, upgrade)}</p></article>`).join('')}</div>
       <aside class="ref-panel ref-upgrade-resources"><header class="ref-panel-heading">Required resources</header><article class="component-balance">${mechanicalComponentIcon()}<div><strong id="mechanical-components-balance">${account.mechanicalComponents ?? 0}</strong><span>Broken Mechanical Components</span></div></article>
-      <p class="conduit-upgrade-cost">${cost} Broken Mechanical Components required</p><meter min="0" max="${cost}" value="${Math.min(account.mechanicalComponents ?? 0, cost)}" aria-label="Components towards upgrade"></meter>
-      <footer><button class="primary-button" type="button" data-upgrade-conduit="${choice.id}" data-expected-upgrade="${level}" ${affordable ? '' : 'disabled'}>Upgrade to +${level + 1} · ${cost} components</button>
+      <p class="conduit-upgrade-cost">${cost === null ? 'No further upgrades' : `${cost} Broken Mechanical Components required`}</p>${cost === null ? '<p>Maximum upgrade reached.</p>' : `<meter min="0" max="${cost}" value="${Math.min(account.mechanicalComponents ?? 0, cost)}" aria-label="Components towards upgrade"></meter>`}
+      <footer><button class="primary-button" type="button" data-upgrade-conduit="${choice.id}" data-expected-upgrade="${level}" ${affordable ? '' : 'disabled'}>${cost === null ? 'Maximum upgrade +5' : `Upgrade to +${level + 1} · ${cost} components`}</button>
       <button class="primary-button" type="button" data-upgrade-conduit="${choice.id}" data-max-conduit data-expected-upgrade="${level}" data-target-upgrade="${maximum.targetLevel}" data-total-cost="${maximum.cost}" ${maximum.targetLevel > level ? '' : 'disabled'}>Max Level${maximum.targetLevel > level ? ` · +${maximum.targetLevel} · ${maximum.cost} components` : ''}</button>
       ${cost !== null && !affordable ? '<p class="quiet">Not enough Broken Mechanical Components.</p>' : ''}<button class="ref-link" data-page="gameplay" data-machine-activity>Earn components →</button></footer></aside></section>`;
     })() : `<section class="ref-panel ref-empty"><p ${account ? '' : 'role="alert"'}>${account ? 'No owned Conduits to upgrade.' : 'Conduit upgrades unavailable. Resolve the save error.'}</p><button class="ref-link" data-page="conduit-store">Open Conduit Store →</button></section>`}
@@ -118,8 +119,9 @@ export function bindConduitUpgrades(host: HTMLElement, storage: ProfileStorage,
         const maximum = button.dataset.maxConduit !== undefined;
         const targetLevel = maximum ? Number(button.dataset.targetUpgrade) : level + 1;
         const cost = maximum ? Number(button.dataset.totalCost) : conduitUpgradeCost(conduit, level);
-        if (!Number.isSafeInteger(cost) || cost <= 0 || !Number.isInteger(targetLevel) || targetLevel <= level) throw new Error('Invalid Conduit upgrade preview.');
-        if (!await gameConfirm(`Spend ${cost} Broken Mechanical Components to upgrade ${conduit.name} from +${level} to +${targetLevel} account-wide? Current: ${conduitEffect(conduit, level)}. ${maximum ? 'Target' : 'Next'}: ${conduitEffect(conduit, targetLevel)}. Penalties also grow. No copies or other currency are spent.${maximum ? ' This is the highest affordable level.' : ''}`, { title: maximum ? 'Max Level Conduit' : 'Upgrade Conduit', confirmLabel: maximum ? 'Max Level' : 'Upgrade' })) return;
+        if (cost === null) throw new Error('This Conduit is already fully upgraded.');
+        if (!Number.isSafeInteger(cost) || cost <= 0 || !Number.isInteger(targetLevel) || targetLevel <= level || targetLevel > conduitUpgradeCap) throw new Error('Invalid Conduit upgrade preview.');
+        if (!await gameConfirm(`Spend ${cost} Broken Mechanical Components to upgrade ${conduit.name} from +${level} to +${targetLevel} account-wide? Current: ${conduitEffect(conduit, level).replace(/\.$/, '')}. ${maximum ? 'Target' : 'Next'}: ${conduitEffect(conduit, targetLevel).replace(/\.$/, '')}. Penalties also grow. No copies or other currency are spent.${maximum ? ' This is the highest affordable level, up to +5.' : ''}`, { title: maximum ? 'Max Level Conduit' : 'Upgrade Conduit', confirmLabel: maximum ? 'Max Level' : 'Upgrade' })) return;
         const plan: ConduitMaxLevelPlan = { id, currentLevel: level, targetLevel, cost };
         if (maximum && performUpgrade && !performMaximum) throw new Error('Online Conduit Max Level is unavailable.');
         const account = maximum

@@ -1,20 +1,19 @@
 # Current state and handoff
 
-## Clear Conduit wording and uncapped progression (D-334)
+## Clear Conduit wording, uncapped stacks and overheal Shields (D-334)
 
 - All Conduit descriptions use one glossary (`content/conduit-glossary.ts`):
   Attack Action, Bonus Strike, Direct Damage, Shield, Enemy Turn, Round, Battle.
   Inventory Information has a "Conduit terms" topic listing them.
-- Removed caps: character/captured levels (Max Level batches up to10,000 levels),
-  Conduit upgrade levels (+5 is the reference, effects keep scaling), ordinary
-  slot count (eight minimum), four-Omnic limit, kit stack maximums (Razor Wounds,
-  Combo, Gust, Survey, pilot charges), per-round/per-phase frequency guards and
-  Conduit trigger limits. Evolution needs the form's level requirement.
-- Kept: squad size1-3, Gauge100, natural bounds (crit<=100%, heals<=missing HP,
-  minimum1 damage), durations, enemy curves, currency overflow guards, Roselius
-  capture eligibility<=120. Bonus Strikes never retrigger on-hit effects.
-- Calamity difficulty test now allows a few wins/timeouts for fully upgraded builds.
-- Validate: full suite, `npm run build`, `node tools/bundle_server_game.mjs`.
+- Removed: kit stack maximums (Razor Wounds, Combo, Gust, Survey, pilot charges),
+  per-round/per-phase guards and Conduit trigger frequency limits.
+- Unchanged by owner direction: character level caps per evolution, captured
+  level60, Conduit upgrades +5 maximum, eight ordinary slots, four-Omnic limit.
+- Healing above maximum HP (`nativeHeal`/`generatedHeal`) becomes a Shield equal
+  to the excess, raising but never stacking onto the current Shield.
+- Balance shift: old Roses build now clears the stage-140 boss; fully upgraded
+  Calamity builds win some EX+1 runs (mixed squads some EX+2). EX+3 stays a wall.
+- Validate: conduit-native-compatibility.test.ts, calamity.test.ts, full suite.
 
 ## Explicit abilities and [bracketed] references (D-333)
 

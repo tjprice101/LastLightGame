@@ -1,7 +1,8 @@
-import { conduits, conduitBuffs, conduitEffect, conduitColor, conduitEquipReason, conduitSlotCount, conduitSlotsShown, getConduit, isConduitId, type Conduit, type ConduitBuff, type ConduitSlots } from '../content/conduits';
+import { conduits, conduitBuffs, conduitEffect, conduitColor, conduitEquipReason, conduitSlotCount, conduitUpgradeCap, getConduit, isConduitId, type Conduit, type ConduitBuff, type ConduitSlots } from '../content/conduits';
 import { resolveFighter, formatStat } from '../content/combat';
 import { getStarter, isStarterId } from '../content/starters';
 import { getElement, type ElementId } from '../content/activities';
+import { artifactSlots } from '../content/progression';
 import { getMasterConduit, isMasterConduitId, masterConduits } from '../content/master-conduits';
 import { equippedSquad, ownedProgress, type Account } from '../game/account';
 import { resolveCapturedFighter } from '../game/character-instances';
@@ -178,7 +179,7 @@ export function bindConduitLoadout(host: HTMLElement): void {
         const level = Number(control.dataset.loadoutDetailLevel ?? 0);
         const rule = conduitRuleText(conduit, level);
         const element = conduit.element ? getElement(conduit.element).name : 'Any element';
-        const detail = `${conduit.rarity} · Level ${level} · ${element}.`;
+        const detail = `${conduit.rarity} · Level ${level} of ${conduitUpgradeCap} · ${element}.`;
         const stats = conduitBuffLine(conduit, level);
         const restrictions = conduit.rarity === 'Omnic' ? 'Matching combat element required. Maximum 4 Omnic Conduits in ordinary slots.' : '';
         void gameChoose(`${detail} ${stats} ${rule ?? ''} ${restrictions}`, [{ value: 'close', label: 'Close', primary: true }], 'close', {
@@ -206,7 +207,7 @@ export function bindConduitLoadout(host: HTMLElement): void {
     } else if (data.loadoutSelectSlot !== undefined) {
       const loadout = control.closest<HTMLElement>('.conduit-loadout');
       const slot = Number(data.loadoutSelectSlot);
-      if (!loadout || !Number.isInteger(slot) || slot < 0) return;
+      if (!loadout || !Number.isInteger(slot) || slot < 0 || slot >= conduitSlotCount) return;
       view.target = { owner: loadout.dataset.characterEquipment ?? '', slot, signature: loadout.dataset.loadoutSignature ?? '' };
     }
     applyLoadoutView(host);
@@ -222,8 +223,7 @@ export function bindConduitLoadout(host: HTMLElement): void {
 }
 
 function slotsFor(id: string, account: Account | null): ConduitSlots {
-  const saved = account?.conduitEquipment?.[id] ?? Array<null>(conduitSlotCount).fill(null);
-  return Array.from({ length: conduitSlotsShown(saved) }, (_, index) => saved[index] ?? null);
+  return account?.conduitEquipment?.[id] ?? Array<null>(conduitSlotCount).fill(null);
 }
 
 export function filledConduitSlots(id: string, account: Account | null): number {
@@ -272,7 +272,7 @@ function masterRow(owner: string, account: Account | null): string {
 }
 
 function slotCard(owner: string, captured: boolean, element: ElementId, slots: ConduitSlots, index: number, account: Account | null): string {
-  const slot = index + 1;
+  const slot = artifactSlots[index];
   const selected = slots[index];
   const conduit = selected ? getConduit(selected) : null;
   const level = conduit ? account?.conduitUpgrades?.[conduit.id] ?? 0 : 0;
@@ -286,11 +286,11 @@ function slotCard(owner: string, captured: boolean, element: ElementId, slots: C
     return `<article class="ref-equipment-slot loadout-slot is-empty" data-loadout-slot="${index}" aria-label="Slot ${index + 1} · Empty">${target}
       <span class="loadout-slot-plus">${select}</span><small class="loadout-empty-label">Empty</small></article>`;
   }
-  const next = `next level ${conduitEffect(conduit, level + 1)}`;
+  const next = level < conduitUpgradeCap ? `next level ${conduitEffect(conduit, level + 1)}` : 'Maximum';
   return `<article class="ref-equipment-slot loadout-slot" data-loadout-slot="${index}" data-loadout-slot-name="${conduit.name}" style="--loadout-accent:${conduitColor(conduit)}">
     <div class="loadout-slot-main"><span class="loadout-slot-art">${conduitIcon(conduit.id, level)}</span><div class="loadout-slot-controls">${target}<button type="button" class="loadout-rule-button" data-loadout-rule="${conduit.id}" data-loadout-detail-level="${level}" aria-label="${conduit.name} details">Details</button></div></div>
     <span class="loadout-slot-body"><b class="loadout-slot-name">${conduit.name}</b>
-      <small class="loadout-level" title="Level ${level} · ${next}">${conduit.rarity} · Lv ${level}<span class="ref-sr-only"> · Level ${level} · ${next}</span></small></span>
+      <small class="loadout-level" title="Level ${level} of ${conduitUpgradeCap} · ${next}">${conduit.rarity} · Lv ${level} / ${conduitUpgradeCap}<span class="ref-sr-only"> · Level ${level} of ${conduitUpgradeCap} · ${next}</span></small></span>
     <div class="loadout-actions"><button type="button" class="ref-chip" data-page="conduit-upgrade" data-upgrade-target="${conduit.id}">Upgrade</button>
       <button type="button" class="ref-chip" data-loadout-unequip="${index}" data-loadout-owner="${owner}" ${!account ? 'disabled' : ''}>Remove</button></div>
     <span class="loadout-swap" hidden>${select}</span></article>`;
@@ -310,10 +310,10 @@ function ownedList(owner: string, element: ElementId, slots: ConduitSlots, accou
     <div class="loadout-owned-list">${owned.length ? owned.map((conduit, order) => {
       const level = account?.conduitUpgrades?.[conduit.id] ?? 0;
       const equipped = slots.includes(conduit.id);
-      const reasons = slots.map((_, index) => conduitEquipReason(conduit, element, slots, index) ?? '');
+      const reasons = artifactSlots.map((_, index) => conduitEquipReason(conduit, element, slots, index) ?? '');
       const reason = equipped ? null : firstEmpty < 0 ? 'All slots full' : reasons[firstEmpty] || null;
       return `<article class="loadout-owned-row${equipped ? ' is-equipped' : ''}" data-loadout-conduit="${conduit.id}" data-loadout-name="${conduit.name}" data-loadout-rarity="${conduit.rarity}" data-loadout-level="${level}" data-loadout-order="${order}" data-loadout-reasons="${reasons.join('|')}"${order >= conduitLoadoutPageSize ? ' hidden' : ''}><span class="loadout-owned-art">${conduitIcon(conduit.id, level)}</span>
-        <span class="loadout-owned-text"><b>${conduit.name}</b><small>${conduit.rarity} · Lv ${level}</small>${equipped ? '<small>Equipped on this character</small>' : `<small class="loadout-reason" data-loadout-reason${reason ? '' : ' hidden'}>${reason ?? ''}</small>`}</span>
+        <span class="loadout-owned-text"><b>${conduit.name}</b><small>${conduit.rarity} · Lv ${level} / ${conduitUpgradeCap}</small>${equipped ? '<small>Equipped on this character</small>' : `<small class="loadout-reason" data-loadout-reason${reason ? '' : ' hidden'}>${reason ?? ''}</small>`}</span>
         <button type="button" class="loadout-rule-button" data-loadout-rule="${conduit.id}" data-loadout-detail-level="${level}" aria-label="${conduit.name} details">Details</button>
         ${equipped ? '<span class="ref-chip ref-white">Equipped</span>'
           : `<button type="button" class="ref-chip" data-loadout-equip="${conduit.id}" data-loadout-owner="${owner}" data-loadout-target="${firstEmpty}" ${reason || !account ? 'disabled' : ''}${!account ? ' data-loadout-locked' : ''}>Equip</button>`}</article>`;
@@ -342,11 +342,11 @@ export function conduitLoadout(owner: string, name: string, element: ElementId, 
   const hasEquipment = filled > 0 || !!(isStarterId(owner) && account?.masterEquipment?.[owner]);
   return `<section class="ref-equipment conduit-loadout" aria-label="${name} equipment" data-character-equipment="${owner}" data-loadout-signature="${slots.map(entry => entry ?? '').join(',')}" data-loadout-first-empty="${slots.indexOf(null)}">
     <header class="loadout-header"><button type="button" class="loadout-back" ${captured ? `data-team-capture-detail="${owner}"` : `data-team-detail="${owner}"`}>← Back to ${shortName}</button>
-      <div class="loadout-title"><h3>${shortName} · Conduits</h3><p>${filled} equipped</p></div>${memberTabs(owner, account)}</header>
+      <div class="loadout-title"><h3>${shortName} · Conduits</h3><p>${filled} of ${conduitSlotCount} slots filled</p></div>${memberTabs(owner, account)}</header>
     <div class="loadout-layout">
-      <section class="ref-panel loadout-slots" aria-label="Loadout"><header class="ref-panel-heading"><span>Loadout · ${filled} equipped</span><button type="button" class="text-button loadout-clear" data-loadout-clear data-loadout-owner="${owner}" aria-label="Unequip all Conduits${captured ? '' : ', including Master'} from ${escapeDialogText(shortName)}" ${hasEquipment && account ? '' : 'disabled'}>Unequip All</button></header>
+      <section class="ref-panel loadout-slots" aria-label="Loadout"><header class="ref-panel-heading"><span>Loadout · ${filled} of ${conduitSlotCount}</span><button type="button" class="text-button loadout-clear" data-loadout-clear data-loadout-owner="${owner}" aria-label="Unequip all Conduits${captured ? '' : ', including Master'} from ${escapeDialogText(shortName)}" ${hasEquipment && account ? '' : 'disabled'}>Unequip All</button></header>
         ${masterRow(owner, account)}
-        <div class="ref-equipment-grid loadout-grid">${slots.map((_, index) => slotCard(owner, captured, element, slots, index, account)).join('')}</div>
+        <div class="ref-equipment-grid loadout-grid">${artifactSlots.map((_, index) => slotCard(owner, captured, element, slots, index, account)).join('')}</div>
         ${account ? totalBonuses(owner, account) : ''}
         <p class="ref-equipment-note">Up to four matching Omnic Conduits. Calamitic Conduits work on every element and use ordinary slots, with no extra limit. One name per character.</p>
       </section>
@@ -358,7 +358,7 @@ export function conduitLoadout(owner: string, name: string, element: ElementId, 
 export function conduitSummary(owner: string, account: Account | null): string {
   const slots = slotsFor(owner, account);
   const equipped = slots.flatMap((id) => id ? [getConduit(id)] : []);
-  return `<section class="character-category loadout-summary"><h3><span>Conduits · ${equipped.length} equipped</span><button type="button" class="ref-link" data-open-loadout>Full view</button></h3>
+  return `<section class="character-category loadout-summary"><h3><span>Conduits · ${equipped.length} of ${conduitSlotCount}</span><button type="button" class="ref-link" data-open-loadout>Full view</button></h3>
     ${equipped.length ? `<div class="loadout-summary-list">${equipped.map((conduit) => {
       const level = account?.conduitUpgrades?.[conduit.id] ?? 0;
       return `<div class="loadout-summary-row"><span class="loadout-summary-art">${conduitIcon(conduit.id, level)}</span><span>${conduit.name}</span><strong>${conduitBuffLine(conduit, level)}</strong></div>`;

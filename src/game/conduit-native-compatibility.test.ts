@@ -66,6 +66,23 @@ describe('native and equipment compatibility', () => {
     expect(events.find(event => event.kind === 'damage')?.amount).toBe(222);
   });
 
+  it('converts healing above maximum HP into a non-stacking Shield', () => {
+    const state = encounter(['sprout', 'ember']);
+    const [owner, target] = state.allies;
+    target.hp = target.stats.health - 50;
+    target.shield = 0;
+    const events: BattleEvent[] = [];
+
+    expect(nativeHeal(state, owner, target, 200, events, false)).toBe(50);
+    expect(target.hp).toBe(target.stats.health);
+    expect(target.shield).toBe(150);
+    expect(events.some(event => event.kind === 'shield' && event.amount === 150)).toBe(true);
+    nativeHeal(state, owner, target, 100, events, false);
+    expect(target.shield).toBe(150);
+    nativeHeal(state, owner, target, 400, events, false);
+    expect(target.shield).toBe(400);
+  });
+
   it('does not heal or shield a dead native recipient', () => {
     const state = encounter(['sprout', 'ember']);
     const [owner, target] = state.allies;

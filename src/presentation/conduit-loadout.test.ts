@@ -49,8 +49,8 @@ describe('Conduit loadout (D-229)', () => {
     const html = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
     expect(html).toContain('Infernis · Conduits');
     expect(html).toContain('class="loadout-back" data-team-detail="ember">← Back to Infernis</button>');
-    expect(html).toContain('1 equipped');
-    expect(html).toMatch(/Loadout.{1,4}1 equipped/);
+    expect(html).toContain('1 of 8 slots filled');
+    expect(html).toContain('Loadout · 1 of 8');
     expect(html.match(/data-page="conduit-store"/g)).toHaveLength(1);
     expect(html).not.toContain('loadout-heading-links');
     expect(html.match(/data-page="conduit-upgrade"/g)).toHaveLength(1);
@@ -60,8 +60,7 @@ describe('Conduit loadout (D-229)', () => {
     expect(html).toContain('conduit-icon-frame');
     expect(html).toContain('data-conduit-upgrade="2"');
     expect(html).toContain('data-loadout-rule="siegebound-drive" data-loadout-detail-level="2"');
-    expect(html).toMatch(/Common.{1,4}Lv 2/);
-    expect(html).toContain(`next level ${conduitEffect(getConduit('siegebound-drive'), 3)}`);
+    expect(html).toContain(`Level 2 of 5 · next level ${conduitEffect(getConduit('siegebound-drive'), 3)}`);
     expect(html).toContain('data-page="conduit-upgrade" data-upgrade-target="siegebound-drive"');
     expect(html).toContain('data-loadout-unequip="0" data-loadout-owner="ember"');
     expect(html).toContain('data-master-equipment="ember"');
@@ -78,10 +77,9 @@ describe('Conduit loadout (D-229)', () => {
     const full = account();
     full.conduitEquipment = { ember: conduits.filter((entry) => !entry.element && entry.id !== 'vigil-core').slice(0, 8).map((entry) => entry.id) };
     const fullHtml = conduitLoadout('ember', 'Infernis', 'infernic', full);
-    expect(fullHtml).toMatch(/Loadout.{1,4}8 equipped/);
-    expect(fullHtml).toMatch(/data-loadout-equip="vigil-core"[^>]*data-loadout-target="8"/);
-    expect(fullHtml).not.toContain('All slots full');
-    expect(fullHtml.match(/data-conduit-slot=/g)).toHaveLength(9);
+    expect(fullHtml).toContain('8 of 8 slots filled');
+    expect(fullHtml).toMatch(/data-loadout-equip="vigil-core"[^>]*data-loadout-target="-1" disabled/);
+    expect(fullHtml).toContain('All slots full');
   });
 
   it('totals actual stat changes with before and after values', () => {
@@ -209,7 +207,7 @@ describe('Conduit loadout (D-229)', () => {
 
   it('summarizes equipped Conduits on the overview with an open-full-view action', () => {
     const summary = conduitSummary('ember', account());
-    expect(summary).toMatch(/Conduits.{1,4}1 equipped/);
+    expect(summary).toContain('Conduits · 1 of 8');
     expect(summary).toContain('Siegebound Drive');
     expect(summary.match(/data-open-loadout/g)).toHaveLength(2);
     expect(conduitSummary('tide', account())).toContain('No Conduits equipped.');
@@ -365,9 +363,8 @@ describe('Conduit loadout (D-229)', () => {
     full.conduitEquipment = { ember: conduits.filter((entry) => !entry.element && entry.id !== 'vigil-core').slice(0, 8).map((entry) => entry.id) };
     host.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', full);
     applyConduitSearch(host, '');
-    expect(host.querySelector('[data-loadout-target-cue]')?.textContent).toBe('Equipping to Slot 9');
-    expect(vigil().dataset.loadoutTarget).toBe('8');
-    expect(vigil().disabled).toBe(false);
+    expect(host.querySelector('[data-loadout-target-cue]')?.textContent).toBe('All slots full · select a slot to replace');
+    expect(vigil().disabled).toBe(true);
     click(host, '[data-loadout-select-slot="3"]');
     expect(vigil().dataset.loadoutTarget).toBe('3');
     expect(vigil().disabled).toBe(false);
@@ -417,8 +414,9 @@ describe('Conduit loadout (D-229)', () => {
       button.click();
       const dialog = document.querySelector<HTMLDialogElement>('.game-dialog')!;
       expect(dialog.open).toBe(true);
-      expect(dialog.textContent).toContain('Level 5');
+      expect(dialog.textContent).toContain('Level 5 of 5');
       expect(dialog.textContent).toContain(conduitEffect(conduit, 5));
+      expect(dialog.textContent).toContain('Maximum 4 Omnic');
       dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
       await Promise.resolve();
       expect(document.querySelector('.game-dialog')).toBeNull();

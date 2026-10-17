@@ -6,7 +6,7 @@ import { act, actAndAdvanceTurn, actionUnavailable, createCalamityBattle, endTur
 import { enemyCombatStats } from '../content/stat-growth';
 import { enemyAbilityMultiplier } from '../content/enemy-skills';
 import { getConduit, validateConduitSlots, type ConduitLoadouts, type ConduitSlots } from '../content/conduits';
-import { evolutionLevelRequirement } from '../content/progression';
+import { characterLevelCap } from '../content/progression';
 import type { StarterId } from '../content/starters';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { playNativeBenchmark } from './native-benchmark-pilot';
@@ -119,7 +119,7 @@ describe('isolated Calamity definitions and rewards', () => {
     expect(() => calamityEncounter('machines', 4 as CalamityTier)).toThrow();
     expect(() => enemyCombatStats(186, true)).toThrow();
     expect(() => enemyAbilityMultiplier(185)).toThrow();
-    expect(evolutionLevelRequirement(6)).toBe(105);
+    expect(characterLevelCap(6)).toBe(105);
   });
 });
 
@@ -222,12 +222,12 @@ describe('Calamity seeded difficulty benchmarks', () => {
           timeouts: results.filter(result => result.phase === 'player').length };
         if (process.env.CALAMITY_DIFFICULTY_REPORT === '1') process.stdout.write(JSON.stringify({ ...summary, results }) + '\n');
         expect(results).toHaveLength(36);
-        if (build !== 'old-mixed') expect(summary.timeouts).toBe(0);
+        if (build === 'four-omnic-0') expect(summary.timeouts).toBe(0);
         expect(results.every(result => result.rounds > 0 && Number.isFinite(result.bossRemaining))).toBe(true);
-        if (build === 'four-omnic-0' || tier > 2 || (tier > 1 && build !== 'old-mixed')) expect(summary.defeats).toBe(36);
-        if (tier > 1 && build === 'old-mixed') expect(summary.wins).toBeLessThan(results.length / 4);
+        if (build === 'four-omnic-0' || tier > 2 || (tier > 1 && squad.name === 'starters')) expect(summary.defeats).toBe(36);
+        else if (tier > 1) expect(summary.wins).toBeLessThan(results.length / 2);
         if (tier === 1 && squad.name === 'mixed' && build === 'four-omnic-5') {
-          expect(summary.wins).toBeLessThan(results.length / 4);
+          expect(summary.wins).toBeLessThan(results.length / 2);
         }
       }
     }

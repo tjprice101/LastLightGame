@@ -1846,17 +1846,14 @@ var conduits = [
   mechanic: null,
   lore: isCalamiticConduitId(entry.id) ? entry.lore : `${conduitOrigin} ${entry.lore}`
 }));
+var conduitUpgradeCap = 5;
 var conduitUpgradeCosts = [25, 50, 100, 175, 250];
 var conduitUpgradeRarityMultipliers = { Common: 1, Rare: 2, Legendary: 4, Omnic: 200, Calamitic: 400 };
 function validateConduitUpgradeLevel(value2) {
-  if (typeof value2 !== "number" || !Number.isSafeInteger(value2) || value2 < 0) {
-    throw new Error("Conduit upgrade level must be a whole number of 0 or more.");
+  if (typeof value2 !== "number" || !Number.isInteger(value2) || value2 < 0 || value2 > conduitUpgradeCap) {
+    throw new Error("Conduit upgrade level must be an integer from 0 to 5.");
   }
   return value2;
-}
-function baseConduitUpgradeCost(level) {
-  validateConduitUpgradeLevel(level);
-  return conduitUpgradeCosts[level] ?? conduitUpgradeCosts[conduitUpgradeCosts.length - 1] + 100 * (level - conduitUpgradeCosts.length + 1);
 }
 function validateConduitUpgrades(value2) {
   if (typeof value2 !== "object" || value2 === null || Array.isArray(value2)) throw new Error("Invalid saved Conduit upgrades.");
@@ -1868,27 +1865,33 @@ function validateConduitUpgrades(value2) {
   return result;
 }
 function conduitUpgradeCost(conduit, level) {
-  return baseConduitUpgradeCost(level) * conduitUpgradeRarityMultipliers[conduit.rarity];
+  validateConduitUpgradeLevel(level);
+  const cost = conduitUpgradeCosts[level];
+  return cost === void 0 ? null : cost * conduitUpgradeRarityMultipliers[conduit.rarity];
 }
 var conduitSlotCount = 8;
-function conduitSlotsShown(slots) {
-  return Math.max(conduitSlotCount, slots.filter((id) => id !== null).length + 1, slots.length);
-}
 function validateConduitSlots(value2) {
-  if (!Array.isArray(value2) || value2.length < conduitSlotCount || !value2.every((id) => id === null || isConduitId(id))) throw new Error("Invalid Conduit slots.");
+  if (!Array.isArray(value2) || value2.length !== conduitSlotCount || !value2.every((id) => id === null || isConduitId(id))) throw new Error("Invalid Conduit slots.");
   const ids = value2.filter((id) => id !== null);
   if (new Set(ids).size !== ids.length) throw new Error("Each named Conduit can be equipped only once per character.");
+  if (ids.filter((id) => getConduit(id).rarity === "Omnic").length > 4) throw new Error("Equip at most four Omnic Conduits per character.");
   return [...value2];
 }
 function normalizeLegacyKitSlots(value2, element) {
-  if (!Array.isArray(value2) || value2.length < conduitSlotCount || !value2.every((id) => id === null || isConduitId(id))) {
+  if (!Array.isArray(value2) || value2.length !== conduitSlotCount || !value2.every((id) => id === null || isConduitId(id))) {
     throw new Error("Invalid Conduit slots.");
   }
   const ids = value2.filter((id) => id !== null);
   if (new Set(ids).size !== ids.length) throw new Error("Each named Conduit can be equipped only once per character.");
   const originalSlots = value2.map((id) => id !== null && convertedKitConduitIds.has(id) ? null : id);
   validateConduitElement(originalSlots, element);
-  const normalized = value2.map((id) => id !== null && convertedKitConduitIds.has(id) && getConduit(id).element !== element ? null : id);
+  let capacity = 4 - originalSlots.filter((id) => id !== null && getConduit(id).rarity === "Omnic").length;
+  const normalized = value2.map((id) => {
+    if (id === null || !convertedKitConduitIds.has(id)) return id;
+    if (getConduit(id).element !== element || capacity <= 0) return null;
+    capacity--;
+    return id;
+  });
   return validateConduitSlots(normalized);
 }
 function validateConduitElement(equipment, element) {
@@ -3530,9 +3533,9 @@ function roseEnemyStats(level, boss) {
 function creatureEnemyStats(level, boss, maximumLevel = 120) {
   return enemyCombatStats(Math.min(level, maximumLevel), boss);
 }
-function capturedEnemyStats(level) {
-  if (!Number.isSafeInteger(level) || level < 1) throw new Error("Invalid captured creature level.");
-  const factor = 1 + level * playableGrowth.perLevel;
+function capturedEnemyStats(level, maximumLevel = 120) {
+  if (!Number.isInteger(level) || level < 10 || level > maximumLevel || !Number.isInteger(maximumLevel) || maximumLevel < 120 || maximumLevel > 140) throw new Error("Invalid captured creature level.");
+  const factor = 1 + Math.min(level, 120) * playableGrowth.perLevel;
   return {
     health: capturedGrowth.health * factor,
     damage: capturedGrowth.damage * factor,
@@ -3629,11 +3632,11 @@ function infusionDrops(mode, stage, random, schedule = "caps") {
 
 // src/content/progression.ts
 var artifactSlots = Array.from({ length: 8 }, (_, index) => index + 1);
-var characterGrowth = { forms: 6, firstEvolutionLevel: 30, levelsPerEvolution: 15, ...playableGrowth };
+var characterGrowth = { forms: 6, firstLevelCap: 30, levelsPerEvolution: 15, ...playableGrowth };
 var fractureRules = {
   sourceTier: 1,
   destinationTier: 2,
-  evolutionLevel: characterGrowth.firstEvolutionLevel,
+  levelCap: characterGrowth.firstLevelCap,
   preservesLevel: true,
   lycalisReward: 10
 };
@@ -3654,8 +3657,8 @@ var levelingMaterialTiers = [
 ];
 function levelingMaterials(element, destination) {
   if (element !== "rosethorn") getElement(element);
-  if (!Number.isSafeInteger(destination) || destination < 1) {
-    throw new Error("Leveling destination must be a whole number of 1 or more.");
+  if (!Number.isInteger(destination) || destination < 1 || destination > 120) {
+    throw new Error("Leveling destination must be an integer from 1 to 120.");
   }
   return {
     [`${element}-common`]: Math.ceil(destination / 30),
@@ -3665,6 +3668,7 @@ function levelingMaterials(element, destination) {
 function levelCost(element, progress) {
   getElement(element);
   characterGrowthFactor(progress);
+  if (progress.level === characterLevelCap(progress.evolution)) throw new Error("Reach the next evolution to raise the level cap.");
   const destination = progress.level + 1;
   return { fractalis: 10 + 2 * destination, materials: {
     ...levelingMaterials(element, destination),
@@ -3685,14 +3689,11 @@ function evolutionCost(element, progress) {
     }
   };
 }
-function validateEvolution(evolution) {
+function characterLevelCap(evolution) {
   if (!Number.isInteger(evolution) || evolution < 1 || evolution > characterGrowth.forms) {
     throw new Error(`Character evolution must be an integer from 1 to ${characterGrowth.forms}.`);
   }
-}
-function evolutionLevelRequirement(evolution) {
-  validateEvolution(evolution);
-  return characterGrowth.firstEvolutionLevel + (evolution - 1) * characterGrowth.levelsPerEvolution;
+  return characterGrowth.firstLevelCap + (evolution - 1) * characterGrowth.levelsPerEvolution;
 }
 function characterLevelCost(id, progress) {
   const cost = levelCost(getStarter(id).elementId, progress);
@@ -3720,9 +3721,9 @@ function characterEvolutionRequirement(id, evolution) {
 }
 function characterGrowthFactor(progress) {
   if (!Number.isInteger(progress.weaponRank ?? 0) || (progress.weaponRank ?? 0) < 0 || (progress.weaponRank ?? 0) > weaponRules.maximumRank) throw new Error("Invalid weapon rank.");
-  validateEvolution(progress.evolution);
-  if (!Number.isSafeInteger(progress.level) || progress.level < 0) {
-    throw new Error("Character level must be a whole number of 0 or more.");
+  const cap = characterLevelCap(progress.evolution);
+  if (!Number.isInteger(progress.level) || progress.level < 0 || progress.level > cap) {
+    throw new Error(`Character level must be an integer from 0 to ${cap}.`);
   }
   return 1 + progress.level * characterGrowth.perLevel + (progress.evolution - 1) * characterGrowth.perEvolution;
 }
@@ -4641,7 +4642,7 @@ function getCreature(id) {
 }
 
 // src/game/character-instances.ts
-var legacyCapturedLevelFloor = 60;
+var capturedLevelCap = 60;
 function isCapturedInstanceId(value2) {
   return typeof value2 === "string" && /^capture:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value2);
 }
@@ -4661,14 +4662,14 @@ function validateCapturedCharacters(value2) {
       copy.acquisition = entry.acquisition;
     }
     if ("level" in entry) {
-      if (!Number.isInteger(entry.level) || typeof entry.level !== "number" || entry.level < 1 || !Number.isSafeInteger(entry.level) || !("capturedStage" in entry) || typeof entry.capturedStage !== "number" || !creature.stages.includes(entry.capturedStage) || !("skills" in entry) || !Array.isArray(entry.skills)) throw new Error("Invalid captured Elemental-Devourer progression.");
+      if (!Number.isInteger(entry.level) || typeof entry.level !== "number" || entry.level < 1 || entry.level > 120 || !("capturedStage" in entry) || typeof entry.capturedStage !== "number" || !creature.stages.includes(entry.capturedStage) || !("skills" in entry) || !Array.isArray(entry.skills)) throw new Error("Invalid captured Elemental-Devourer progression.");
       const expected = infusionEncounter(creature.mode, entry.capturedStage);
       if (creature.mode === "roses" && copy.acquisition !== "banner-duplicate" && expected.level > roseCaptureMaximumLevel) throw new Error("Roselius above level 120 cannot be captured.");
       const candidates = [expected.abilityMultiplier, expected.legacyAbilityMultiplier].map((multiplier) => enemySkills(expected.level, expected.boss, expected.ability, multiplier));
       const retained = entry.skills;
       const valid = candidates.find((skills) => retained.length === skills.length && retained.every((skill, index) => typeof skill === "object" && skill !== null && skill.name === skills[index].name && skill.multiplier === skills[index].multiplier && skill.every === skills[index].every && skill.action === skills[index].action));
-      if (!valid || entry.level < Math.min(legacyCapturedLevelFloor, copy.acquisition === "banner-duplicate" ? roseDuplicateMinimumLevel(creature.id) : expected.level)) throw new Error("Invalid retained enemy abilities or level.");
-      copy.level = entry.level;
+      if (!valid || entry.level < Math.min(capturedLevelCap, copy.acquisition === "banner-duplicate" ? roseDuplicateMinimumLevel(creature.id) : expected.level)) throw new Error("Invalid retained enemy abilities or level.");
+      copy.level = Math.min(capturedLevelCap, entry.level);
       copy.capturedStage = entry.capturedStage;
       copy.skills = valid;
     } else if ("skills" in entry || "capturedStage" in entry || "acquisition" in entry) throw new Error("Incomplete captured Elemental-Devourer progression.");
@@ -4683,7 +4684,7 @@ function capturedProgress(copy) {
   const encounter2 = infusionEncounter(creature.mode, stage);
   const legacyLevel = creature.mode === "heavens" || creature.mode === "abyss" ? Math.round(80 + (stage - 1) * 40 / 34) : encounter2.level;
   return {
-    level: copy.level ?? legacyLevel,
+    level: Math.min(capturedLevelCap, copy.level ?? legacyLevel),
     stage,
     tier: encounter2.tier,
     skills: copy.skills ?? enemySkills(encounter2.level, encounter2.boss, encounter2.ability, encounter2.legacyAbilityMultiplier)
@@ -4691,6 +4692,7 @@ function capturedProgress(copy) {
 }
 function capturedLevelCost(copy) {
   const { level } = capturedProgress(copy);
+  if (level >= capturedLevelCap) throw new Error(`Maximum captured Elemental-Devourer level ${capturedLevelCap} reached.`);
   const creature = getCreature(copy.creatureId);
   return {
     fractalis: 10 + 2 * (level + 1),
@@ -4701,7 +4703,7 @@ function resolveCapturedFighter(copy, equipment, upgrades) {
   const creature = getCreature(copy.creatureId);
   if (!creature.mode || creature.mode === "machines") throw new Error("Captured Elemental-Devourer mode is missing or non-capturable.");
   const { level, tier, skills } = capturedProgress(copy);
-  const reference = capturedEnemyStats(level);
+  const reference = capturedEnemyStats(level, creature.mode === "roses" ? 140 : 120);
   const factor = 0.65 + 0.35 * tier / 5;
   const stats = {
     ...reference,
@@ -4771,7 +4773,7 @@ var evolutionTitles = {
   crinso: ["Rosebound Page", "Duality Initiate", "Crimson-Gold Knight", "Storm of the Twin Rose", "Sovereign of Beautiful Ruin", "The Rose Beyond Duality"]
 };
 function characterArt(id, evolution = 1) {
-  validateEvolution(evolution);
+  characterLevelCap(evolution);
   const starter = getStarter(id);
   return {
     art: evolution === 1 ? starter.art : `${starter.art}-evo-${evolution}`,
@@ -5687,9 +5689,18 @@ function emit(events, kind, owner, target, amount, message, native = false) {
     ...kind === "shield" || kind === "damage" ? { shieldRemaining: target.shield } : {}
   });
 }
+function overhealShield(owner, target, excess, events) {
+  const amount = Math.round(excess) - target.shield;
+  if (amount <= 0 || target.hp <= 0) return 0;
+  target.shield += amount;
+  emit(events, "shield", owner, target, amount, `${target.name}'s excess healing becomes a ${target.shield} Shield.`);
+  return amount;
+}
 function generatedHeal(owner, target, offer, events) {
   if (!target || target.hp <= 0) return 0;
-  const amount = Math.min(target.stats.health - target.hp, Math.max(0, Math.round(offer)));
+  const healing = Math.max(0, Math.round(offer));
+  const amount = Math.min(target.stats.health - target.hp, healing);
+  overhealShield(owner, target, healing - Math.max(0, amount), events);
   if (amount <= 0) return 0;
   target.hp += amount;
   emit(events, "heal", owner, target, amount, `${owner.name}'s Conduit restores ${amount} HP to ${target.name}.`);
@@ -6078,6 +6089,7 @@ function nativeHeal(state, owner, target, offer, events, active, ctx, instructio
     const key = `seed:${owner.id}`;
     gear(target).numbers[key] = (gear(target).numbers[key] ?? 0) + seed2;
   }
+  overhealShield(owner, target, wasted, events);
   if (restored <= 0) return 0;
   target.hp += restored;
   emit(events, "heal", owner, target, restored, `${owner.name} restores ${restored} HP to ${target.name}.`, true);
@@ -6777,6 +6789,24 @@ function combatant(id, definitionId, name, side, stats, element) {
     defending: false
   };
 }
+function capCapturedBattleLevels(state) {
+  for (const unit of state.allies) {
+    if (!unit.captured) continue;
+    if (unit.captured.level !== void 0) unit.captured.level = Math.min(capturedLevelCap, unit.captured.level);
+    if (unit.level === null || unit.level <= capturedLevelCap) continue;
+    const before = capturedEnemyStats(unit.level, 140);
+    const after = capturedEnemyStats(capturedLevelCap);
+    for (const stat of ["health", "damage", "defense"]) {
+      const ratio = after[stat] / before[stat];
+      unit.stats[stat] *= ratio;
+      if (unit.kit) unit.kit.stats[stat] *= ratio;
+    }
+    const healthRatio = after.health / before.health;
+    unit.hp *= healthRatio;
+    unit.shield *= healthRatio;
+    unit.level = capturedLevelCap;
+  }
+}
 function spawnWave(wave) {
   const level = Math.min(wave, enemyGrowth.maximumLevel);
   return ["goblin", "imp", "golem"].map((id, index) => {
@@ -7120,7 +7150,7 @@ function awardDefeats(previous, state, events) {
       seed2 ^= seed2 >>> 17;
       seed2 ^= seed2 << 5;
       state.captureSeed = seed2 >>> 0;
-      if ((state.infusion.mode !== "roses" || roseCaptureAllowed(enemy.level)) && captureSucceeds(state.captureSeed / 4294967296)) capture = { creatureId: enemy.creatureId, level: enemy.level };
+      if ((state.infusion.mode !== "roses" || roseCaptureAllowed(enemy.level)) && captureSucceeds(state.captureSeed / 4294967296)) capture = { creatureId: enemy.creatureId, level: Math.min(capturedLevelCap, enemy.level) };
       if (state.infusion.mode !== "treasury" && state.infusion.mode !== "roses") lycalis = rollStagedLycalis(state.infusion.mode, enemy.level, () => {
         let premiumSeed = state.lycalisSeed ?? ((previous.seed ^ 2654435769) >>> 0 || 1);
         premiumSeed ^= premiumSeed << 13;
@@ -8107,13 +8137,10 @@ function equipConduit(storage, character, slot, conduit) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before equipping Conduits.");
   const account = loadAccount(storage);
   if (!ownedCharacterInstances(account).includes(character)) throw new Error("Choose an owned character.");
-  const current = account.conduitEquipment?.[character] ?? Array(conduitSlotCount).fill(null);
-  if (!Number.isInteger(slot) || slot < 0 || slot >= conduitSlotsShown(current)) throw new Error("Choose an ordinary Conduit slot. The Master slot is separate.");
+  if (!Number.isInteger(slot) || slot < 0 || slot >= conduitSlotCount) throw new Error("Choose an ordinary Conduit slot. The Master slot is reserved.");
   if (conduit !== null && (!isConduitId(conduit) || (account.conduits?.[conduit] ?? 0) < 1)) throw new Error("Choose an owned Conduit.");
-  const slots = [...current];
-  while (slots.length <= slot) slots.push(null);
+  const slots = [...account.conduitEquipment?.[character] ?? Array(conduitSlotCount).fill(null)];
   slots[slot] = conduit;
-  while (slots.length > conduitSlotCount && slots[slots.length - 1] === null) slots.pop();
   account.conduitEquipment = { ...account.conduitEquipment, [character]: validateConduitSlots(slots) };
   return saveAccount(storage, account);
 }
@@ -8198,7 +8225,6 @@ function equipMasterConduit(storage, character, id) {
   account.masterEquipment = { ...account.masterEquipment, [character]: id };
   return saveAccount(storage, account);
 }
-var maxLevelBatch = 1e4;
 function conduitMaxLevelPlan(account, id) {
   if (!isConduitId(id)) throw new Error("Unknown Conduit.");
   if ((account.conduits?.[id] ?? 0) < 1) throw new Error("Choose an owned Conduit to upgrade.");
@@ -8206,8 +8232,9 @@ function conduitMaxLevelPlan(account, id) {
   const currentLevel = account.conduitUpgrades?.[id] ?? 0;
   let targetLevel = currentLevel;
   let cost = 0;
-  while (targetLevel - currentLevel < maxLevelBatch) {
+  while (targetLevel < conduitUpgradeCap) {
     const nextCost = conduitUpgradeCost(conduit, targetLevel);
+    if (nextCost === null) throw new Error("Conduit upgrade cost is missing.");
     if (cost + nextCost > (account.mechanicalComponents ?? 0)) break;
     cost += nextCost;
     targetLevel++;
@@ -8221,7 +8248,7 @@ function upgradeConduitToMaximum(storage, expected) {
   if (plan.currentLevel !== expected.currentLevel || plan.targetLevel !== expected.targetLevel || plan.cost !== expected.cost) {
     throw new Error("This Conduit Max Level preview changed. Review the current level and cost before retrying.");
   }
-  if (plan.targetLevel === plan.currentLevel) throw new Error("No additional Conduit upgrades are affordable.");
+  if (plan.targetLevel === plan.currentLevel) throw new Error("No additional Conduit upgrades are affordable within the current cap.");
   account.mechanicalComponents = (account.mechanicalComponents ?? 0) - plan.cost;
   account.conduitUpgrades = { ...account.conduitUpgrades, [plan.id]: plan.targetLevel };
   return saveAccount(storage, account);
@@ -8234,6 +8261,7 @@ function upgradeConduit(storage, id, expectedLevel) {
   if ((account.conduits?.[id] ?? 0) < 1) throw new Error("Choose an owned Conduit to upgrade.");
   const level = account.conduitUpgrades?.[id] ?? 0;
   if (level !== expectedLevel) throw new Error("This Conduit upgrade level changed. Review the current level and cost before retrying.");
+  if (cost === null) throw new Error("This Conduit is already upgraded five times.");
   if ((account.mechanicalComponents ?? 0) < cost) throw new Error(`Not enough Broken Mechanical Components. This upgrade costs ${cost}.`);
   account.mechanicalComponents = (account.mechanicalComponents ?? 0) - cost;
   account.conduitUpgrades = { ...account.conduitUpgrades, [id]: level + 1 };
@@ -8257,7 +8285,7 @@ function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
   if (current.level !== expected.level || current.evolution !== expected.evolution || (current.weaponRank ?? 0) !== (expected.weaponRank ?? 0)) throw new Error("Character progress changed. Reopen this tab before upgrading.");
   const element = getStarter(id).elementId;
   const cost = kind === "level" ? characterLevelCost(id, current) : characterEvolutionCost(id, current);
-  if (kind === "evolve" && current.level < evolutionLevelRequirement(current.evolution)) throw new Error(`Reach level ${evolutionLevelRequirement(current.evolution)} before evolving.`);
+  if (kind === "evolve" && current.level !== characterLevelCap(current.evolution)) throw new Error("Reach this form level cap before evolving.");
   const creatureCount = kind === "evolve" ? characterEvolutionRequirement(id, current.evolution).creatureCount : 0;
   if (fodderIds.length !== creatureCount || new Set(fodderIds).size !== fodderIds.length) {
     throw new Error(`Select exactly ${creatureCount} distinct captured Elemental-Devourers for this upgrade.`);
@@ -8464,7 +8492,7 @@ function saveAccountRewards(storage, result, runId) {
     if (reward.capture) {
       const creature = getCreature(reward.capture.creatureId);
       const stage = result.state.infusion?.stage;
-      if (!creature.mode || creature.mode === "machines" || !stage || creature.mode !== result.state.infusion?.mode || enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== enemy.level || enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? "legacy").level || creature.mode === "roses" && enemy.level > roseCaptureMaximumLevel) {
+      if (!creature.mode || creature.mode === "machines" || !stage || creature.mode !== result.state.infusion?.mode || enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== Math.min(capturedLevelCap, enemy.level) || enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? "legacy").level || creature.mode === "roses" && enemy.level > roseCaptureMaximumLevel) {
         throw new Error("Invalid captured enemy reward.");
       }
       const copy = createCreatureCopy(creature.id, stage, enemy.level);
@@ -8570,9 +8598,10 @@ function maxLevelPlan(account, id) {
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
   const current = starter ? ownedProgress(account, starter.id) : copy ? capturedProgress(copy) : null;
   if (!current) throw new Error("Character progress is missing.");
+  const cap = starter ? characterLevelCap(ownedProgress(account, starter.id).evolution) : capturedLevelCap;
   const cost = { fractalis: 0, materials: {} };
   let targetLevel = current.level;
-  while (targetLevel - current.level < maxLevelBatch) {
+  while (targetLevel < cap) {
     const nextCost = starter ? characterLevelCost(starter.id, { ...ownedProgress(account, starter.id), level: targetLevel }) : copy ? capturedLevelCost({ ...copy, level: targetLevel }) : null;
     if (!nextCost) throw new Error("Character level cost is missing.");
     if (cost.fractalis + nextCost.fractalis > account.fractalis || Object.entries(nextCost.materials).some(([material, amount]) => (cost.materials[material] ?? 0) + amount > (account.materials[material] ?? 0))) break;
@@ -8586,6 +8615,7 @@ function maxLevelPlan(account, id) {
     id,
     currentLevel: current.level,
     targetLevel,
+    cap,
     cost,
     progressKey: JSON.stringify([starter ? ownedProgress(account, starter.id) : copy, account.conduitEquipment?.[id], account.conduitUpgrades])
   };
@@ -8595,7 +8625,7 @@ function levelCharacterToMaximum(storage, expected) {
   const account = loadAccount(storage);
   const plan = maxLevelPlan(account, expected.id);
   if (JSON.stringify(plan) !== JSON.stringify(expected)) throw new Error("Progress or available resources changed. Reopen Max Level.");
-  if (plan.targetLevel === plan.currentLevel) throw new Error("No additional levels are affordable.");
+  if (plan.targetLevel === plan.currentLevel) throw new Error("No additional levels are affordable within the current cap.");
   account.fractalis -= plan.cost.fractalis;
   for (const [material, amount] of Object.entries(plan.cost.materials)) account.materials[material] -= amount;
   if (isStarterId(plan.id)) {
@@ -8834,8 +8864,8 @@ function validateRequest(value2) {
   }
   if (op.kind === "levelMax") {
     if (!record2(op.expected) || op.expected.id !== op.id) throw new Error("Invalid Max Level preview.");
-    keys(op.expected, ["id", "currentLevel", "targetLevel", "cost", "progressKey"]);
-    for (const field of ["currentLevel", "targetLevel"]) integer(op.expected[field]);
+    keys(op.expected, ["id", "currentLevel", "targetLevel", "cap", "cost", "progressKey"]);
+    for (const field of ["currentLevel", "targetLevel", "cap"]) integer(op.expected[field]);
     text(op.expected.progressKey, 8192);
     if (!record2(op.expected.cost) || !record2(op.expected.cost.materials)) throw new Error("Invalid Max Level cost.");
     keys(op.expected.cost, ["fractalis", "materials"]);
@@ -8932,6 +8962,7 @@ function publicGame(game, revision) {
   const account = validateAccount(game.account);
   if (game.run) validateRunActivity(game.run);
   const session = game.run ? structuredClone(game.run.session) : null;
+  if (session) capCapturedBattleLevels(session.state);
   const profile = { ...game.profile, statistics: {
     storyCompleted: account.storyCompleted ?? 0,
     ownedBearers: ownedCharacters(account).length,
@@ -8987,6 +9018,7 @@ function resolveOperation(previous, operation, entropy) {
   if (game.run) {
     validateRunActivity(game.run);
     game.run.captures = validateCapturedCharacters(game.run.captures);
+    capCapturedBattleLevels(game.run.session.state);
   }
   if (game.run && game.run.session.state.conduitRulesVersion !== conduitRulesVersion) {
     const run = game.run;

@@ -1,11 +1,11 @@
 import { currencyModes, dungeonStageCount, elementalMaterials, eventModes, infusionModes, machineModes } from '../content/activities';
-import { conduits, conduitUpgradeReference } from '../content/conduits';
+import { conduits, conduitUpgradeCap } from '../content/conduits';
 import { creatures } from '../content/creatures';
 import { playableDungeons } from '../content/dungeons';
 import { elementalWars, warStageCount } from '../content/elemental-war';
 import { infusionEncounter, specialtyMaterials } from '../content/infusions';
 import { masterConduits } from '../content/master-conduits';
-import { characterGrowth, evolutionLevelRequirement } from '../content/progression';
+import { characterGrowth, characterLevelCap } from '../content/progression';
 import { roseMaterials } from '../content/roses';
 import { starters } from '../content/starters';
 import { storyRules } from '../content/story';
@@ -23,11 +23,11 @@ export function createDebugAccount(): Account {
   account.masterChests = 100;
   account.materials = Object.fromEntries([...elementalMaterials, ...specialtyMaterials, ...roseMaterials].map(material => [material.id, 1_000_000]));
   account.characters = Object.fromEntries(starters.map(starter => [starter.id, {
-    level: evolutionLevelRequirement(characterGrowth.forms), evolution: characterGrowth.forms,
+    level: characterLevelCap(characterGrowth.forms), evolution: characterGrowth.forms,
   }]));
   account.squad = ['ember', 'tide', 'sprout'];
   account.conduits = Object.fromEntries(conduits.map(conduit => [conduit.id, 1]));
-  account.conduitUpgrades = Object.fromEntries(conduits.map(conduit => [conduit.id, conduitUpgradeReference]));
+  account.conduitUpgrades = Object.fromEntries(conduits.map(conduit => [conduit.id, conduitUpgradeCap]));
   account.masterConduits = Object.fromEntries(masterConduits.map(master => [master.id, 1]));
   account.firstFracture = true;
   account.storyCompleted = storyRules.stages;

@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { creatureSaleOffer, emptyAccount } from '../game/account';
 import { getStarter, starters } from '../content/starters';
-import { characterEvolutionCost, characterLevelCost, evolutionLevelRequirement } from '../content/progression';
+import { characterEvolutionCost, characterLevelCost, characterLevelCap } from '../content/progression';
 import { materialName } from '../content/dungeon-art';
 import { bindCaptureTabs, referenceTeam } from './reference-team';
 import { createCreatureCopy, capturedProgress, capturedLevelCost, resolveCapturedFighter } from '../game/character-instances';
@@ -177,11 +177,11 @@ describe('reference Team upgrade presentation', () => {
     expect(overview.hidden).toBe(true);
     expect(level.hidden).toBe(false);
     expect(host.querySelector('.ref-growth-detail')).not.toBeNull();
-    {
+    if (capturedProgress(copy).level < 60) {
       expect(level.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(7);
       expect(level.textContent).toContain(`0 / ${capturedLevelCost(copy).fractalis}`);
       const beforeStats = resolveCapturedFighter(copy).stats;
-      const afterStats = resolveCapturedFighter({ ...copy, level: capturedProgress(copy).level + 1 }).stats;
+      const afterStats = resolveCapturedFighter({ ...copy, level: 60 }).stats;
       for (const [index, key] of (['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).entries()) {
         const expected = document.createElement('div');
         expected.innerHTML = statChange(beforeStats[key], afterStats[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '');
@@ -191,6 +191,9 @@ describe('reference Team upgrade presentation', () => {
         const row = Array.from(level.querySelectorAll('.upgrade-resources li')).find(row => row.querySelector('strong')?.textContent === materialName(id));
         expect(row?.querySelector('span')?.textContent).toBe(`0 / ${amount}`);
       }
+    } else {
+      expect(level.textContent).toContain('Maximum level 60');
+      expect(level.querySelector('[data-level-capture]')).toBeNull();
     }
     host.querySelector<HTMLButtonElement>('[data-capture-tab="sale"]')!.click();
     expect(host.querySelector<HTMLElement>('#capture-panel-sale')!.hidden).toBe(false);
@@ -247,7 +250,7 @@ describe('reference Team upgrade presentation', () => {
   it.each(starters)('$name shows exact level and evolution costs for every nonfinal form without changing the account', starter => {
     for (let evolution = 1; evolution <= 5; evolution++) {
       const account = emptyAccount();
-      const progress = { level: evolutionLevelRequirement(evolution) - 1, evolution };
+      const progress = { level: characterLevelCap(evolution) - 1, evolution };
       account.characters[starter.id] = progress;
       account.squad = [starter.id];
       account.fractalis = Number.MAX_SAFE_INTEGER;
@@ -291,7 +294,7 @@ describe('reference Team upgrade presentation', () => {
     const collection = document.createElement('div');
     collection.innerHTML = archives(account);
     for (let evolution = 1; evolution <= 5; evolution++) {
-      account.characters[starter.id] = { level: evolutionLevelRequirement(evolution), evolution };
+      account.characters[starter.id] = { level: characterLevelCap(evolution), evolution };
       const host = document.createElement('div');
       host.innerHTML = referenceTeam(account, { view: 'detail', selected: starter.id, element: '', sort: 'level', tab: 'upgrade-0' });
       const silhouette = host.querySelector('.evolution-silhouette.unreached-character-art img');

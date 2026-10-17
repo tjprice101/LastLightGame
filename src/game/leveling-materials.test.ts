@@ -35,8 +35,8 @@ describe('cumulative higher-rarity leveling materials', () => {
     }
   });
 
-  it.each([-1, 0, 1.5, NaN, Infinity])('rejects invalid destination %s', destination => {
-    expect(() => levelingMaterials('infernic', destination)).toThrow('whole number of 1 or more');
+  it.each([-1, 0, 121, 1.5, NaN, Infinity])('rejects invalid destination %s', destination => {
+    expect(() => levelingMaterials('infernic', destination)).toThrow('integer from 1 to 120');
   });
 
   it('uses destination level, not evolution, for all 16 Element-Bearers and preserves specialty surcharges', () => {
@@ -54,10 +54,10 @@ describe('cumulative higher-rarity leveling materials', () => {
         expect(characterLevelCost(character.id, progress)).toEqual({ fractalis: 10 + 2 * (level + 1), materials });
       }
     }
-    expect(levelCost('infernic', { level: 105, evolution: 6 }).fractalis).toBe(10 + 2 * 106);
+    expect(() => levelCost('infernic', { level: 105, evolution: 6 })).toThrow('cap');
   });
 
-  it('uses captured combat element or Rosethorn at every level, with no Element-Bearer specialty surcharge', () => {
+  it('uses captured combat element or Rosethorn, through level 120, with no Element-Bearer specialty surcharge', () => {
     const copies = [createCreatureCopy('infusion:heavens:0'), createCreatureCopy('infusion:abyss:0'),
       createCreatureCopy('infusion:treasury:0'), createCreatureCopy('infusion:sanctuary:0'),
       createCreatureCopy('infusion:roses:0')];
@@ -69,7 +69,7 @@ describe('cumulative higher-rarity leveling materials', () => {
           fractalis: 10 + 2 * destination, materials: expectedMaterials(family, destination, higherTiers),
         });
       }
-      for (const level of [60, 61, 90, 120, 300]) expect(capturedLevelCost({ ...copy, level }).fractalis).toBe(10 + 2 * (level + 1));
+      for (const level of [60, 61, 90, 120]) expect(() => capturedLevelCost({ ...copy, level })).toThrow('Maximum');
     }
   });
 

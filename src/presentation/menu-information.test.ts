@@ -12,7 +12,7 @@ describe('shared menu information', () => {
   it('keeps progression and equipment rules in one Character dialog', () => {
     const rules = characterInformation();
     expect(rules.match(/data-information=/g)).toHaveLength(1);
-    expect(rules).toContain('preserves the current level');
+    expect(rules).toContain('preserves that level');
     expect(rules).toContain('cannot evolve');
     expect(rules).toContain('Each name can be equipped once per character');
     for (const tab of characterTabs) {
@@ -39,7 +39,7 @@ describe('shared menu information', () => {
     expect(plain(html)).toContain('data-information="inventory-information"');
     expect(plain(html)).toContain('Common Conduits are purchased in the Store');
     expect(plain(html)).toContain('higher tiers drop in Awaken the Machines');
-    expect(plain(html)).toContain('Omnic Conduits must match the wearer’s combat element');
+    expect(plain(html)).toContain('at most four ordinary Omnic Conduits, all matching their combat element');
     expect(plain(html)).toContain('Panel counts show distinct owned item types');
     for (const term of ['Attack Action', 'Bonus Strike', 'Direct Damage', 'Shield', 'Enemy Turn', 'Round', 'Battle']) expect(html).toContain(`<dt>${term}</dt>`);
     expect(html).not.toMatch(/data-page="(?:stores|collections)"/);

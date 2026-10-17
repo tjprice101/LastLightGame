@@ -1,5 +1,5 @@
 import { getStarter, type StarterId } from './starters';
-import { validateEvolution } from './progression';
+import { characterLevelCap } from './progression';
 import { flagshipEvolutionTitles } from './flagships';
 import { warEvolutionTitles } from './war-characters';
 
@@ -15,7 +15,7 @@ export const evolutionTitles: Record<StarterId, readonly string[]> = {
 };
 
 export function characterArt(id: StarterId, evolution = 1): { art: string; title: string; available: boolean } {
-  validateEvolution(evolution);
+  characterLevelCap(evolution);
   const starter = getStarter(id);
   return {
     art: evolution === 1 ? starter.art : `${starter.art}-evo-${evolution}`,

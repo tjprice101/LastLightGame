@@ -9,7 +9,7 @@ import {
 import { SAVE_KEY, type ProfileStorage } from '../../../src/game/profile';
 import { createBattle, createCalamityBattle, createStoryBattle, createDungeonBattle, createInfusionBattle, createWarBattle,
   actAndAdvanceTurn, endTurn, advanceUnavailableTurns, nextStage, nextWave, actionUnavailable,
-  withMasterLoadouts, type BattleResult } from '../../../src/game/battle';
+  withMasterLoadouts, capCapturedBattleLevels, type BattleResult } from '../../../src/game/battle';
 import { validateCapturedCharacters } from '../../../src/game/character-instances';
 import type { MasterLoadouts } from '../../../src/content/master-conduits';
 import { isStarterId, type StarterId } from '../../../src/content/starters';
@@ -157,8 +157,8 @@ export function validateRequest(value: unknown): GameRequest {
   }
   if (op.kind === 'levelMax') {
     if (!record(op.expected) || op.expected.id !== op.id) throw new Error('Invalid Max Level preview.');
-    keys(op.expected, ['id', 'currentLevel', 'targetLevel', 'cost', 'progressKey']);
-    for (const field of ['currentLevel', 'targetLevel']) integer(op.expected[field]);
+    keys(op.expected, ['id', 'currentLevel', 'targetLevel', 'cap', 'cost', 'progressKey']);
+    for (const field of ['currentLevel', 'targetLevel', 'cap']) integer(op.expected[field]);
     text(op.expected.progressKey, 8192);
     if (!record(op.expected.cost) || !record(op.expected.cost.materials)) throw new Error('Invalid Max Level cost.');
     keys(op.expected.cost, ['fractalis', 'materials']);
@@ -253,6 +253,7 @@ export function publicGame(game: DurableGame, revision: number): GameResponse {
   const account = validateAccount(game.account);
   if (game.run) validateRunActivity(game.run);
   const session = game.run ? structuredClone(game.run.session) : null;
+  if (session) capCapturedBattleLevels(session.state);
   const profile = { ...game.profile, statistics: {
     storyCompleted: account.storyCompleted ?? 0, ownedBearers: ownedCharacters(account).length,
     capturedCreatures: account.capturedCharacters?.length ?? 0,
@@ -309,6 +310,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
   if (game.run) {
     validateRunActivity(game.run);
     game.run.captures = validateCapturedCharacters(game.run.captures);
+    capCapturedBattleLevels(game.run.session.state);
   }
   if (game.run && game.run.session.state.conduitRulesVersion !== conduitRulesVersion) {
     const run = game.run;

@@ -110,7 +110,7 @@ describe('enemy-death loot presentation', () => {
     expect(positions.every(position => Math.abs(position.x) + 52 <= width / 2)).toBe(true);
     if (width === 320) expect(new Set(positions.map(position => position.y)).size).toBe(2);
   });
-  it.each([0, 3, 5])('shows the snapshotted Conduit level %i as a +N badge', (level) => {
+  it.each([0, 3, 5])('shows the snapshotted Conduit level %i as five squares', (level) => {
     documentFixture();
     const burst = lootBurst({ ...reward, materials: undefined, conduits: { 'vigil-core': 1 },
       conduitUpgrades: { 'vigil-core': level } });
@@ -119,9 +119,9 @@ describe('enemy-death loot presentation', () => {
     const meter = drop.children[2];
     expect(meter.className).toBe('conduit-upgrade-meter loot-upgrade-marker');
     expect(meter.dataset.upgradeLevel).toBe(String(level));
-    expect(meter.children).toHaveLength(1);
-    expect(meter.children[0].className).toBe('conduit-upgrade-value');
-    expect(meter.getAttribute('aria-label')).toBe(`Conduit upgrade +${level}`);
+    expect(meter.children).toHaveLength(5);
+    expect(meter.children.filter((square) => square.className.includes('is-filled'))).toHaveLength(level);
+    expect(meter.getAttribute('aria-label')).toBe(`Conduit upgrade +${level} of 5`);
   });
   it('varies each stack size, scatter and pickup speed independently within bounds', () => {
     documentFixture();

@@ -1,6 +1,6 @@
 import { getStarter, isStarterId, type Starter } from '../content/starters';
 import { resolveFighter, formatStat, shatterGauge } from '../content/combat';
-import { characterGrowth, evolutionLevelRequirement, evolutionRarity, upgradePaths, characterLevelCost, characterEvolutionCost, characterEvolutionRequirement, levelingMaterialTiers, type CharacterProgress } from '../content/progression';
+import { artifactSlots, characterGrowth, characterLevelCap, evolutionRarity, upgradePaths, characterLevelCost, characterEvolutionCost, characterEvolutionRequirement, levelingMaterialTiers, type CharacterProgress } from '../content/progression';
 import { characterRating } from './character-rating';
 import { portrait, portraitAttributes, assetUrl, characterFacing, characterFacingAttributes } from './portrait';
 import { elementalReveal } from './reveal';
@@ -14,7 +14,7 @@ import { characterName } from '../content/character-art';
 import { characterRole } from './character-role';
 import { currencyIcon } from './currency-icon';
 import { inventoryView, type InventoryTab, type InventorySections, type InventoryFilters } from './inventory';
-import { conduits, conduitEquipReason, conduitSlotCount, conduitSlotsShown, conduitEffect, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
+import { conduits, conduitEquipReason, conduitSlotCount, conduitEffect, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
 import { conduitIcon } from './conduit-store';
 import { capturedProgress, resolveCapturedFighter, type CapturedCharacter } from '../game/character-instances';
 import { capturedRating } from './owned-companion';
@@ -141,7 +141,7 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
         ${firstArrival ? `<p class="bond-message">${starter.lore.awakening}</p>` : ''}</div>
         ${information('home-information', 'Character information',
           stats(capturedCopy ?? starter, progress, false, account?.conduitEquipment?.[capturedCopy?.instanceId ?? starter.id], account?.conduitUpgrades) +
-          (capturedLeader ? `<p>${capturedLeader.progress}</p><p>Cannot evolve.</p>` :
+          (capturedLeader ? `<p>${capturedLeader.progress} · Level cap 60</p><p>Cannot evolve.</p>` :
             `<p>${starter.description}</p><p>${starter.lore.story}</p><blockquote>"${starter.lore.vow}"</blockquote>`))}
       </section>
       <aside class="home-squad" aria-label="Current squad">
@@ -180,7 +180,7 @@ function equipment(starter: Starter, account: Account | null, compact = false): 
     <button class="text-button" data-page="conduit-store">Visit Conduit Store &rarr;</button>
     <button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button>
     <div class="character-equipment-grid"><section class="character-category">${masterEquipment(starter.id, account)}</section>
-    <section class="character-category"><h3>Conduit slots</h3><div class="artifact-grid">${Array.from({ length: conduitSlotsShown(slots) }, (_, index) => index + 1).map((slot, index) => {
+    <section class="character-category"><h3>Conduit slots</h3><div class="artifact-grid">${artifactSlots.map((slot, index) => {
       const selected = slots[index];
       const conduit = conduits.find((entry) => entry.id === selected);
       return `<div class="artifact-slot conduit-equipment-slot">${conduit ? conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id]) : ''}<label for="conduit-slot-${index}">Conduit ${slot}</label>
@@ -192,7 +192,7 @@ function equipment(starter: Starter, account: Account | null, compact = false): 
         <span>${conduit ? conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]) : 'No bonus'}</span></div>`;
     }).join('')}</div></section></div>
     ${!account ? '<p role="alert">Equipment unavailable. Resolve the save error.</p>' : ''}
-    <p>Omnic Conduits must match this character's element.</p>
+    <p>Omnic Conduits must match this character's element; at most four may be equipped.</p>
     <p id="conduit-equipment-result" role="status"></p>${stats(starter, account ? ownedProgress(account, starter.id) : undefined, true, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)}</section>`;
 }
 
@@ -208,9 +208,11 @@ export function inventoryHub(account: Account | null = emptyAccount(), selected:
 function upgradePanel(starter: Starter, evolve: boolean, account: Account | null, result = true, compact = false, organized = false): string {
   if (!account) return '<p>Progression unavailable. Resolve the save error before upgrading.</p><button class="primary-button" disabled>Upgrade unavailable</button>';
   const current = ownedProgress(account, starter.id);
-  const required = evolutionLevelRequirement(current.evolution);
-  if (evolve && current.evolution === characterGrowth.forms) return `<p class="upgrade-progress">Lv.${current.level} &middot; Evo.${current.evolution} / ${characterGrowth.forms}</p>
-    <p>Final evolution reached.</p>${result ? '<p id="upgrade-result" role="status"></p>' : ''}`;
+  const cap = characterLevelCap(current.evolution);
+  const finished = evolve ? current.evolution === characterGrowth.forms : current.level === cap;
+  if (finished) return `<p class="upgrade-progress">Lv.${current.level} / ${cap} &middot; Evo.${current.evolution} / ${characterGrowth.forms}</p>
+    <p>${evolve ? 'Final evolution reached.' : current.evolution === characterGrowth.forms ? 'Maximum level reached.' : 'Level cap reached. Evolution required.'}</p>
+    ${!evolve ? `<button class="text-button" type="button" data-max-level="${starter.id}">Max Level</button>` : ''}${result ? '<p id="upgrade-result" role="status"></p>' : ''}`;
   const element = getElement(starter.elementId);
   const cost = evolve ? characterEvolutionCost(starter.id, current) : characterLevelCost(starter.id, current);
   const next = evolve ? { ...current, evolution: current.evolution + 1 } : { ...current, level: current.level + 1 };
@@ -222,7 +224,7 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
       return { name: materialName(id), owned: account.materials[id] ?? 0, needed,
         icon: materialIcon(id) };
     })];
-  const reason = evolve && current.level < required ? `Reach Lv.${required} to evolve.` : resources.some((resource) => resource.owned < resource.needed) ? 'Insufficient resources.' : '';
+  const reason = evolve && current.level !== cap ? `Reach Lv.${cap} to evolve.` : resources.some((resource) => resource.owned < resource.needed) ? 'Insufficient resources.' : '';
   const requirement = evolve ? characterEvolutionRequirement(starter.id, current.evolution) : null;
   const options = requirement?.creatureCount ? evolutionFodderOptions(account, element.id, current.evolution, starter.id) : [];
   const count = requirement?.creatureCount ?? 0;
@@ -241,16 +243,16 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
       <span class="evolution-fodder-info"><strong>${creature.name} · Copy ${index}</strong><small>Lv.${capturedProgress(copy).level} · Form ${form}</small>${capturedRating(creature.id)}<small class="evolution-fodder-reason">${eligible ? 'Eligible for consumption' : reasons.join(', ')}</small>
       <span class="evolution-fodder-state">${eligible ? '<span class="fodder-unselected">Select copy</span><span class="fodder-selected">Selected</span>' : 'Unavailable'}</span></span></label>`).join('') : '<p>No captured Elemental-Devourers owned yet.</p>'}</div>
     </fieldset>` : '';
-  if (compact) return `<p class="ref-growth-summary">${evolve ? `Evo.${current.evolution} → ${next.evolution} · Requires Lv.${required}` : `Lv.${current.level} → ${next.level}`}</p>
+  if (compact) return `<p class="ref-growth-summary">${evolve ? `Evo.${current.evolution} → ${next.evolution} · Level cap ${characterLevelCap(next.evolution)}` : `Lv.${current.level} → ${next.level} · Cap ${cap}`}</p>
     <p class="ref-growth-cost">${currencyIcon('fractalis')}${cost.fractalis} Prismatica</p>
     <ul class="ref-growth-materials">${resources.slice(1).map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<span>${resource.needed} ${resource.name}<small>Owned ${resource.owned}</small></span></li>`).join('')}</ul>
     <section class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Stat preview</h3><div>${(['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).map(key => `<div><small>${({ health: 'Health', defense: 'Defense', damage: 'Attack', crit: 'Critical Rate', critMultiplier: 'Critical Damage', shatterCapacity: 'Shatter Capacity', elementalDamage: 'Elemental Damage' })[key]}</small>${statChange(before[key], after[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '')}</div>`).join('')}</div></section>
     ${selection}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-count="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
     ${!evolve ? `<button class="ref-link" data-max-level="${starter.id}">Max Level</button>` : ''}<p class="quiet">${reason}</p>`;
-  return `${organized ? '' : `<p class="upgrade-progress">Lv.${current.level} &middot; Evo.${current.evolution} / ${characterGrowth.forms}</p>`}
+  return `${organized ? '' : `<p class="upgrade-progress">Lv.${current.level} / ${cap} &middot; Evo.${current.evolution} / ${characterGrowth.forms}</p>`}
     <div class="character-upgrade-grid"><section class="character-category upgrade-benefits">${organized ? `<div class="ref-growth-preview"><h3 class="ref-growth-preview-heading">${evolve ? 'Stat &amp; form preview' : 'Level &amp; stat preview'}</h3>` : ''}${organized ? '' : `<h3>${evolve ? 'Evolution preview' : 'Level preview'}</h3>`}
     <div class="hub-comparison"><div><small>CURRENT</small><strong>${evolve ? `Evo.${current.evolution}` : `Lv.${current.level}`}</strong></div>
-    <div><small>NEXT</small>${nextPortrait ? `<div class="evolution-silhouette unreached-character-art"><span class="character-idle" data-character="${starter.id}"><img draggable="false" src="${nextPortrait.src}" alt="${characterName(starter.id, next.evolution)} next evolution silhouette" ${characterFacingAttributes(starter.id, next.evolution)} width="150" height="150"></span></div>` : ''}<strong>${evolve ? `Evo.${next.evolution}` : `Lv.${next.level}`}</strong></div></div>
+    <div><small>NEXT</small>${nextPortrait ? `<div class="evolution-silhouette unreached-character-art"><span class="character-idle" data-character="${starter.id}"><img draggable="false" src="${nextPortrait.src}" alt="${characterName(starter.id, next.evolution)} next evolution silhouette" ${characterFacingAttributes(starter.id, next.evolution)} width="150" height="150"></span></div>` : ''}<strong>${evolve ? `Evo.${next.evolution} · Cap ${characterLevelCap(next.evolution)}` : `Lv.${next.level}`}</strong></div></div>
     <div class="upgrade-stat-preview">${(['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).map((key) =>
       `<span><small>${({ health: 'Health', defense: 'Defense', damage: 'Attack', crit: 'Critical Rate', critMultiplier: 'Critical Damage', shatterCapacity: 'Shatter Capacity', elementalDamage: 'Elemental Damage' })[key]}</small><strong>${statChange(before[key], after[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '')}</strong></span>`).join('')}</div>
     ${organized ? '</div>' : ''}</section><section class="character-category upgrade-payment"><h3>Required resources${organized ? ' <small class="resource-key">Owned / Required</small>' : ''}</h3>${organized ? '' : '<p class="resource-key">Owned / Required</p>'}
@@ -278,8 +280,9 @@ export function updateEvolutionSelection(host: HTMLElement): void {
 
 export function characterInformation(): string {
   return information('character-information', 'Character information', `<h3>Levels and evolution</h3>
-    <p>Element-Bearer level levels have no limit. Evolving requires level ${Array.from({ length: characterGrowth.forms - 1 }, (_, index) => evolutionLevelRequirement(index + 1)).join(' / ')} in Evo.1–5 and preserves the current level. Max Level previews every affordable level, the total cost and stat changes before confirmation.
-    Captured Elemental-Devourers keep the level they were captured at, level independently without a limit and cannot evolve.</p>
+    <p>Element-Bearer level caps: ${Array.from({ length: characterGrowth.forms }, (_, index) => characterLevelCap(index + 1)).join(' / ')}.
+    Evolution requires the current form's maximum level and preserves that level. Max Level previews affordable levels within the current cap, total costs and stat changes before confirmation.
+    Captured Elemental-Devourers level independently to 60 and cannot evolve. Captures above level 60 are reduced to 60, retaining their form and skills.</p>
     <p>Leveling always uses Common materials. Each level also requires one of every higher rarity unlocked at its destination level:
     ${levelingMaterialTiers.map(tier => `${tier.rarity} at ${tier.destination}+`).join(', ')}.
     These costs accumulate and use the member's element, or Rosethorn materials for Rosetta, Thornia, Crinso and Roselius.
@@ -291,11 +294,11 @@ export function characterInformation(): string {
     Copies must match the element's infusion mode and be explicitly selected. Rosetta, Thornia and Crinso instead require Roselius from Passion of Crimson Roses. Consumption is permanent.</p>
     <h3>Rose event growth</h3><p>Rosetta, Thornia and Crinso use Rosethorn materials instead of ordinary elemental and specialty materials.
     Seed stacks pay for levels; Evo.5–6 levels also use Soul. Late evolutions also use Soul and selected Roselius.
-    Roselius are capturable only at enemy levels 120 or below, join at their captured level and can be sold for their fixed form's Rosethorn material.</p>
+    Roselius are capturable only at enemy levels 120 or below, join at level 60 at most and can be sold for their fixed form's Rosethorn material.</p>
     <h3>Protection and sales</h3><p>Locked, squad-assigned and Conduit-equipped copies cannot be sold or consumed.
     Currency-mode and Roselius sales are permanent; prices depend on fixed form, not level.</p>
     <h3>Conduits</h3><p>One owned copy unlocks a Conduit for every character. Each name can be equipped once per character without consumption.
-    Ordinary slots have no limit: a new empty slot appears whenever every slot is filled. Each character also has one Master slot. Omnic Conduits must match the character's combat element. Masters are Omnic, use only their named Element-Bearer, and have fixed kit effects without upgrades.
+    Eight ordinary slots and one character-specific Master slot are available. Up to four ordinary Omnic Conduits may be equipped, each matching the character's combat element. Masters are Omnic, use only their named Element-Bearer, and have fixed kit effects without upgrades.
     Rare and Legendary drops come from Awaken the Machines; Omnic drops unlock at stage ${machineRules.omnicStage}. Legendary banner bonuses are separate from the main draw.
     Equipment changes save immediately and apply to the next run, not an active run.</p>
     <h3>Captured abilities</h3><p>Captures retain their defeated form and skills. Skill 1 and Skill 2 have no cooldown; only retained Last Flare intervals become manual cooldowns.
@@ -361,7 +364,7 @@ export function updateCharacterTab(host: HTMLElement, starter: Starter, selected
   if (formLabel) formLabel.textContent = characterName(starter.id, account ? ownedProgress(account, starter.id).evolution : 1);
   if (account && host.querySelector('[data-reference-name]')) {
     const progress = ownedProgress(account, starter.id);
-    const required = evolutionLevelRequirement(progress.evolution);
+    const cap = characterLevelCap(progress.evolution);
     const prefix = host.querySelector('[data-reference-prefix]');
     const rarity = host.querySelector('[data-reference-rarity]');
     const level = host.querySelector('[data-reference-level]');
@@ -369,9 +372,9 @@ export function updateCharacterTab(host: HTMLElement, starter: Starter, selected
     const bar = host.querySelector<HTMLElement>('.ref-bar i');
     if (prefix) prefix.textContent = `${characterName(starter.id, progress.evolution).split(', ')[0]} · ${starter.weapon}`;
     if (rarity) rarity.textContent = evolutionRarity(progress.evolution);
-    if (level) level.textContent = `${progress.level}`;
+    if (level) level.textContent = `${progress.level} / ${cap}`;
     if (evolution) evolution.textContent = `Evolution ${progress.evolution} / 6`;
-    if (bar) bar.style.width = `${Math.min(1, progress.level / required) * 100}%`;
+    if (bar) bar.style.width = `${progress.level / cap * 100}%`;
     host.querySelectorAll('.ref-pips i').forEach((pip, index) => pip.classList.toggle('is-filled', index < progress.evolution));
     host.querySelectorAll<HTMLElement>(`[data-reference-member="${starter.id}"]`).forEach(member => {
       const label = member.querySelector('b');
@@ -388,7 +391,7 @@ export function updateCharacterTab(host: HTMLElement, starter: Starter, selected
     });
   }
   const conduitCount = host.querySelector('[data-conduit-count]');
-  if (conduitCount) conduitCount.textContent = `${filledConduitSlots(starter.id, account)}`;
+  if (conduitCount) conduitCount.textContent = `${filledConduitSlots(starter.id, account)}/${conduitSlotCount}`;
   host.querySelectorAll<HTMLElement>(`[data-character-name="${starter.id}"]`).forEach((label) => {
     label.textContent = characterName(starter.id, account ? ownedProgress(account, starter.id).evolution : 1);
   });

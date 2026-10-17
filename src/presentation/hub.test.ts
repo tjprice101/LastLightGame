@@ -101,8 +101,7 @@ describe('game-specific hub layouts', () => {
     expect(isCharacterTab('missing')).toBe(false);
     expect(() => characterHub(starters[0], 'missing')).toThrow('Unknown');
     expect(characterHub(starters[0], 'upgrade-0')).toContain('+10 Null-Prismatica');
-    expect(characterInformation()).toContain('levels have no limit');
-    expect(characterInformation()).toContain('preserves the current level');
+    expect(characterInformation()).toContain("Evolution requires the current form's maximum level and preserves that level");
     expect(characterInformation()).toContain('30 / 45 / 60 / 75 / 90');
     expect(characterHub(starters[0], 'upgrade-0')).toContain('disabled>Evolve');
     expect(characterHub(starters[0], 'upgrade-0')).not.toContain('Costs unset');
@@ -238,12 +237,12 @@ describe('game-specific hub layouts', () => {
     expect(evolve).toContain('500 / 300');
     expect(evolve).not.toContain('PREVIEW');
     expect(evolve).not.toContain('Materials coming later');
-    expect(characterDetail(starters[0], 'upgrade-1', account)).not.toContain('Level cap');
+    expect(characterDetail(starters[0], 'upgrade-1', account)).toContain('Level cap reached');
     expect(characterDetail(starters[0], 'overview', account)).toContain(nativeIdentities.ember.abilities.skill1.description);
     expect(homeHub(starters[0], false, account)).toContain('Lv.30 · Evo.1');
     account.characters.ember = { level: 105, evolution: 6 };
     expect(characterDetail(starters[0], 'upgrade-0', account)).toContain('Final evolution reached');
-    expect(characterDetail(starters[0], 'upgrade-1', account)).toContain('Lv.106');
+    expect(characterDetail(starters[0], 'upgrade-1', account)).toContain('Maximum level reached');
     for (const tab of ['upgrade-0', 'upgrade-1']) {
       expect(characterDetail(starters[0], tab, account)).toContain('id="upgrade-result" role="status"');
     }
