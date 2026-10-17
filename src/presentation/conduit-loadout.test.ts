@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { emptyAccount, type Account } from '../game/account';
 import { createCreatureCopy } from '../game/character-instances';
-import { applyConduitSearch, bindConduitLoadout, conduitBuffLine, conduitLoadout, conduitLoadoutPageSize, conduitLoadoutView, conduitMatchesSearch, conduitRuleText, conduitSummary, filledConduitSlots, resetConduitLoadoutView } from './conduit-loadout';
+import { applyConduitSearch, bindConduitLoadout, conduitBuffLine, conduitLoadout, conduitLoadoutPageSize, conduitLoadoutView, conduitMatchesSearch, conduitRuleText, conduitSummary, filledConduitSlots, refreshConduitLoadout, resetConduitLoadoutView } from './conduit-loadout';
 import { conduits, getConduit, conduitEffect } from '../content/conduits';
 import { referenceTeam } from './reference-team';
 import { updateCharacterTab } from './hub';
@@ -333,6 +333,44 @@ describe('Conduit loadout (D-229)', () => {
     const rarities = visibleIds(host).map(id => getConduit(id as never).rarity);
     expect(rarities[0]).toBe('Calamitic');
     expect(wallet).toEqual(before);
+  });
+
+  it('changes the rarity filter only from the filter buttons, never from clicks inside a Conduit row', () => {
+    const wallet = account();
+    const host = document.createElement('div');
+    document.body.append(host);
+    host.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
+    bindConduitLoadout(host);
+    host.querySelector<HTMLElement>('[data-loadout-conduit="vigil-core"] .loadout-owned-text')!.click();
+    host.querySelector<HTMLButtonElement>('[data-loadout-equip="vigil-core"]')!.click();
+    expect(conduitLoadoutView().rarity).toBe('');
+    expect(host.querySelector('button[data-loadout-rarity=""]')?.getAttribute('aria-pressed')).toBe('true');
+    host.remove();
+  });
+
+  it('refreshes equipment in place, keeping the screen, unchanged artwork and the chosen filters', () => {
+    const wallet = account();
+    const host = document.createElement('div');
+    host.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
+    bindConduitLoadout(host);
+    host.querySelector<HTMLButtonElement>('[data-loadout-equipment-filter="unequipped"]')!.click();
+    host.querySelector<HTMLInputElement>('[data-loadout-search]')!.value = 'vigil';
+    applyConduitSearch(host, 'vigil');
+    const screen = host.querySelector('.conduit-loadout');
+    const art = host.querySelector('[data-loadout-conduit="ward-stitch-spool"] img');
+    const slotArt = host.querySelector('[data-loadout-slot="0"] img');
+    wallet.conduitEquipment = { ember: ['siegebound-drive', 'vigil-core', null, null, null, null, null, null] };
+    expect(refreshConduitLoadout(host, 'ember', 'Infernis', 'infernic', wallet)).toBe(true);
+    expect(host.querySelector('.conduit-loadout')).toBe(screen);
+    expect(host.querySelector('[data-loadout-conduit="ward-stitch-spool"] img')).toBe(art);
+    expect(host.querySelector('[data-loadout-slot="0"] img')).toBe(slotArt);
+    expect(host.querySelector('[data-loadout-slot="1"]')?.getAttribute('data-loadout-slot-name')).toBe(getConduit('vigil-core').name);
+    expect(host.querySelector('[data-loadout-conduit="vigil-core"]')?.classList.contains('is-equipped')).toBe(true);
+    expect(host.querySelector<HTMLInputElement>('[data-loadout-search]')!.value).toBe('vigil');
+    expect(conduitLoadoutView().equipment).toBe('unequipped');
+    expect(host.querySelector('[data-loadout-equipment-filter="unequipped"]')?.getAttribute('aria-pressed')).toBe('true');
+    expect(host.querySelector<HTMLElement>('[data-loadout-conduit="vigil-core"]')!.hidden).toBe(true);
+    expect(refreshConduitLoadout(host, 'tide', 'Tizu', 'oceanic', wallet)).toBe(false);
   });
 
   it('selects a replacement target and propagates it to equip hooks with per-slot reasons', () => {

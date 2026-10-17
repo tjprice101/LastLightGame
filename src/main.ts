@@ -99,7 +99,7 @@ import './presentation/debug-profile.css';
 import './presentation/conduit-loadout.css';
 import './presentation/status-toast.css';
 import { saleLabel } from './presentation/creature-sale';
-import { applyConduitSearch, bindConduitLoadout, resetConduitLoadoutView } from './presentation/conduit-loadout';
+import { applyConduitSearch, bindConduitLoadout, refreshConduitLoadout, resetConduitLoadoutView } from './presentation/conduit-loadout';
 import { BackgroundMusic, battleMusic, defaultMusicPreferences, loadMusicPreferences, saveMusicPreferences } from './presentation/music';
 
 const gameStorage = new DebugProfileStorage(window.localStorage, import.meta.env.DEV);
@@ -1122,20 +1122,6 @@ function renderMenu(firstArrival = false): void {
       showError(`${saved ? 'Level is saved, but its presentation could not complete.' : 'Level was not changed.'} ${errorMessage(error)}`);
     }
   }));
-  app.querySelectorAll<HTMLSelectElement>('[data-capture-conduit]').forEach((select) => select.addEventListener('change', async () => {
-    try {
-      const id = select.dataset.captureConduit;
-      if (!id || (select.value && !isConduitId(select.value))) throw new Error('Invalid captured equipment selection.');
-      const conduit = isConduitId(select.value) ? select.value : null;
-      const slot = Number(select.dataset.captureSlot);
-      account = playMode === 'online' ? (await performOnline({ kind: 'equipConduit', character: id, slot, conduit })).account : equipConduit(gameStorage, id, slot, conduit);
-      renderMenu();
-    } catch (error) {
-      console.error('Captured equipment rejected', error);
-      renderMenu();
-      showError(`Conduits were not changed. ${errorMessage(error)}`);
-    }
-  }));
   app.querySelectorAll<HTMLButtonElement>('[data-character-lock]').forEach((button) => {
     button.addEventListener('click', async () => {
       try {
@@ -1568,10 +1554,10 @@ app.addEventListener('change', async event => {
     if (!isStarterId(character) || (select.value && !isMasterConduitId(select.value))) throw new Error('Invalid Master equipment selection.');
     const id = isMasterConduitId(select.value) ? select.value : null;
     account = playMode === 'online' ? (await performOnline({ kind: 'equipMasterConduit', character, conduit: id })).account : equipMasterConduit(gameStorage, character, id);
-    updateCharacterTab(app, getStarter(character), 'equipment', account);
+    refreshLoadout(character);
   } catch (error) {
     console.error('Master equipment rejected', error);
-    if (account && isStarterId(character)) updateCharacterTab(app, getStarter(character), 'equipment', account);
+    if (account && isStarterId(character)) refreshLoadout(character);
     showError(`Master equipment was not changed. ${errorMessage(error)}`);
   }
 });
@@ -1938,6 +1924,37 @@ app.addEventListener('click', async (event) => {
   }
 });
 
+/** Refreshes the open Conduit loadout in place; falls back to a full render only when no loadout is on screen. */
+function refreshLoadout(owner: string): void {
+  if (account) {
+    const starter = isStarterId(owner);
+    const copy = starter ? undefined : account.capturedCharacters?.find(entry => entry.instanceId === owner);
+    const creature = copy ? getCreature(copy.creatureId) : undefined;
+    const name = starter ? characterName(owner, ownedProgress(account, owner).evolution) : creature?.name ?? '';
+    const element = starter ? getStarter(owner).elementId : creature?.element;
+    if (element && refreshConduitLoadout(app, owner, name, element, account)) return;
+  }
+  if (isStarterId(owner)) updateCharacterTab(app, getStarter(owner), 'equipment', account);
+  else renderMenu();
+}
+
+app.addEventListener('change', async (event) => {
+  if (!(event.target instanceof HTMLSelectElement) || !event.target.matches('[data-capture-conduit]')) return;
+  const select = event.target;
+  const id = select.dataset.captureConduit;
+  try {
+    if (!id || (select.value && !isConduitId(select.value))) throw new Error('Invalid captured equipment selection.');
+    const conduit = isConduitId(select.value) ? select.value : null;
+    const slot = Number(select.dataset.captureSlot);
+    account = playMode === 'online' ? (await performOnline({ kind: 'equipConduit', character: id, slot, conduit })).account : equipConduit(gameStorage, id, slot, conduit);
+    refreshLoadout(id);
+  } catch (error) {
+    console.error('Captured equipment rejected', error);
+    if (id) refreshLoadout(id); else renderMenu();
+    showError(`Conduits were not changed. ${errorMessage(error)}`);
+  }
+});
+
 app.addEventListener('change', async (event) => {
   if (!(event.target instanceof HTMLSelectElement) || !event.target.matches('[data-conduit-slot]')) return;
   try {
@@ -1947,14 +1964,14 @@ app.addEventListener('change', async (event) => {
     if (id !== null && !isConduitId(id)) throw new Error('Unknown Conduit.');
     const slot = Number(control.dataset.conduitSlot);
     account = playMode === 'online' ? (await performOnline({ kind: 'equipConduit', character: selectedCharacter, slot, conduit: id })).account : equipConduit(gameStorage, selectedCharacter, slot, id);
-    updateCharacterTab(app, getStarter(selectedCharacter), 'equipment', account);
+    refreshLoadout(selectedCharacter);
     const status = app.querySelector('#conduit-equipment-result');
     if (!status) throw new Error('Conduit equipment status is missing.');
     status.textContent = `${id === null ? 'Conduit removed' : `${getConduit(id).name} equipped`}.`;
     app.querySelector<HTMLSelectElement>(`[data-conduit-slot="${control.dataset.conduitSlot}"]`)?.focus({ preventScroll: true });
   } catch (error) {
     console.error('Conduit equipment rejected', error);
-    if (account && selectedCharacter) updateCharacterTab(app, getStarter(selectedCharacter), 'equipment', account);
+    if (account && selectedCharacter) refreshLoadout(selectedCharacter);
     showError(`Equipment was not changed. ${errorMessage(error)}`);
   }
 });
@@ -2000,8 +2017,7 @@ app.addEventListener('click', async (event) => {
     if (button.hasAttribute('data-loadout-clear')) {
       account = playMode === 'online' ? (await performOnline({ kind: 'unequipAllConduits', character: owner })).account
         : unequipAllConduits(gameStorage, owner);
-      if (starter) updateCharacterTab(app, getStarter(owner), 'equipment', account);
-      else renderMenu();
+      refreshLoadout(owner);
       const status = app.querySelector('#conduit-equipment-result');
       if (status) status.textContent = `All Conduits${starter ? ', including the Master,' : ''} unequipped. Owned Conduits and upgrades are unchanged.`;
       app.querySelector<HTMLElement>('.loadout-back')?.focus({ preventScroll: true });
@@ -2013,15 +2029,13 @@ app.addEventListener('click', async (event) => {
     if (!Number.isInteger(slot) || slot < 0) throw new Error('No empty Conduit slot is available.');
     const conduit = equip ?? null;
     account = playMode === 'online' ? (await performOnline({ kind: 'equipConduit', character: owner, slot, conduit })).account : equipConduit(gameStorage, owner, slot, conduit);
-    if (starter) updateCharacterTab(app, getStarter(owner), 'equipment', account);
-    else renderMenu();
+    refreshLoadout(owner);
     const status = app.querySelector('#conduit-equipment-result');
     if (status) status.textContent = conduit ? `${getConduit(conduit).name} equipped in slot ${slot + 1}.` : `Slot ${slot + 1} cleared.`;
     app.querySelector<HTMLElement>(`[data-loadout-slot="${slot}"]`)?.querySelector<HTMLButtonElement>('button')?.focus({ preventScroll: true });
   } catch (error) {
     console.error('Conduit loadout change rejected', error);
-    if (account && starter && owner === selectedCharacter) updateCharacterTab(app, getStarter(owner), 'equipment', account);
-    else if (account) renderMenu();
+    if (account && (!starter || owner === selectedCharacter)) refreshLoadout(owner);
     showError(`Equipment was not changed. ${errorMessage(error)}`);
   }
 });

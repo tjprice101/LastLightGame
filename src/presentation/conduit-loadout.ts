@@ -1,3 +1,4 @@
+import { morphElement } from './dom-morph';
 import { conduits, conduitBuffs, conduitEffect, conduitColor, conduitEquipReason, conduitSlotCount, conduitUpgradeCap, getConduit, isConduitId, type Conduit, type ConduitBuff, type ConduitSlots } from '../content/conduits';
 import { resolveFighter, formatStat } from '../content/combat';
 import { getStarter, isStarterId } from '../content/starters';
@@ -169,7 +170,7 @@ export function bindConduitLoadout(host: HTMLElement): void {
   boundHosts.add(host);
   host.addEventListener('click', (event) => {
     if (!(event.target instanceof Element)) return;
-    const control = event.target.closest<HTMLButtonElement>('[data-loadout-rarity], [data-loadout-equipment-filter], [data-loadout-page], [data-loadout-select-slot], [data-loadout-rule], [data-loadout-master-rule]');
+    const control = event.target.closest<HTMLButtonElement>('button[data-loadout-rarity], [data-loadout-equipment-filter], [data-loadout-page], [data-loadout-select-slot], [data-loadout-rule], [data-loadout-master-rule]');
     if (!control || control.disabled || !host.contains(control)) return;
     const data = control.dataset;
     if (data.loadoutRule !== undefined || data.loadoutMasterRule !== undefined) {
@@ -353,6 +354,18 @@ export function conduitLoadout(owner: string, name: string, element: ElementId, 
       ${ownedList(owner, element, slots, account)}
     </div>
     ${!account ? '<p role="alert">Equipment unavailable. Resolve the save error.</p>' : ''}<p id="conduit-equipment-result" role="status"></p></section>`;
+}
+/**
+ * Updates a rendered loadout in place after an equipment change: unchanged artwork, filters, search,
+ * page and scroll position survive, so swapping Conduits never blanks or rebuilds the screen.
+ * Returns false when no loadout for `owner` is rendered (callers then fall back to a full render).
+ */
+export function refreshConduitLoadout(host: HTMLElement, owner: string, name: string, element: ElementId, account: Account | null): boolean {
+  const current = Array.from(host.querySelectorAll<HTMLElement>('.conduit-loadout')).find(entry => entry.dataset.characterEquipment === owner);
+  if (!current) return false;
+  morphElement(current, conduitLoadout(owner, name, element, account));
+  applyLoadoutView(host);
+  return true;
 }
 /** Compact Conduits card for the Stats & Skills overview. */
 export function conduitSummary(owner: string, account: Account | null): string {

@@ -1,5 +1,14 @@
 # Current state and handoff
 
+## Fluid Conduit loadout (D-335)
+
+- Rarity filters apply only from the filter buttons; clicking inside an owned row
+  (Equip, Details, text) no longer selects that row's rarity.
+- Equipment changes call `refreshConduitLoadout`, which morphs the existing loadout
+  to the fresh render. Unchanged icons, search/filter/sort/page and scroll survive;
+  it falls back to the previous full render only when no loadout is on screen.
+- Validation: `npx vitest run src/presentation/conduit-loadout.test.ts`, full suite, build.
+
 ## Clear Conduit wording, uncapped stacks and overheal Shields (D-334)
 
 - All Conduit descriptions use one glossary (`content/conduit-glossary.ts`):
