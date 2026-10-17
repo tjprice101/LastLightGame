@@ -127,14 +127,20 @@ export type ConduitId = Conduit['id'];
 export type ConduitSlots = (ConduitId | null)[];
 export type ConduitLoadouts = Partial<Record<string, ConduitSlots>>;
 export type ConduitUpgrades = Partial<Record<ConduitId, number>>;
-export const conduitUpgradeCap = 5;
+/** Reference level for authored effect ranges; upgrades continue past it without a limit. */
+export const conduitUpgradeReference = 5;
 export const conduitUpgradeCosts = [25, 50, 100, 175, 250] as const;
 export const conduitUpgradeRarityMultipliers = { Common: 1, Rare: 2, Legendary: 4, Omnic: 200, Calamitic: 400 } as const satisfies Record<Conduit['rarity'], number>;
 export function validateConduitUpgradeLevel(value: unknown): number {
-  if (typeof value !== 'number' || !Number.isInteger(value) || value < 0 || value > conduitUpgradeCap) {
-    throw new Error('Conduit upgrade level must be an integer from 0 to 5.');
+  if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < 0) {
+    throw new Error('Conduit upgrade level must be a whole number of 0 or more.');
   }
   return value;
+}
+/** Component cost of the next upgrade from `level`; past +5 each step costs 100 more than the last. */
+export function baseConduitUpgradeCost(level: number): number {
+  validateConduitUpgradeLevel(level);
+  return conduitUpgradeCosts[level] ?? conduitUpgradeCosts[conduitUpgradeCosts.length - 1] + 100 * (level - conduitUpgradeCosts.length + 1);
 }
 export function validateConduitUpgrades(value: unknown): ConduitUpgrades {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) throw new Error('Invalid saved Conduit upgrades.');
@@ -145,36 +151,31 @@ export function validateConduitUpgrades(value: unknown): ConduitUpgrades {
   }
   return result;
 }
-export function conduitUpgradeCost(conduit: Conduit, level: number): number | null {
-  validateConduitUpgradeLevel(level);
-  const cost = conduitUpgradeCosts[level];
-  return cost === undefined ? null : cost * conduitUpgradeRarityMultipliers[conduit.rarity];
+export function conduitUpgradeCost(conduit: Conduit, level: number): number {
+  return baseConduitUpgradeCost(level) * conduitUpgradeRarityMultipliers[conduit.rarity];
 }
+/** Minimum ordinary slots shown; the loadout always grows to keep one open slot. */
 export const conduitSlotCount = 8;
+export function conduitSlotsShown(slots: readonly (ConduitId | null)[]): number {
+  return Math.max(conduitSlotCount, slots.filter((id) => id !== null).length + 1, slots.length);
+}
 export function validateConduitSlots(value: unknown): ConduitSlots {
-  if (!Array.isArray(value) || value.length !== conduitSlotCount ||
+  if (!Array.isArray(value) || value.length < conduitSlotCount ||
       !value.every((id) => id === null || isConduitId(id))) throw new Error('Invalid Conduit slots.');
   const ids = value.filter((id) => id !== null);
   if (new Set(ids).size !== ids.length) throw new Error('Each named Conduit can be equipped only once per character.');
-  if (ids.filter((id) => getConduit(id).rarity === 'Omnic').length > 4) throw new Error('Equip at most four Omnic Conduits per character.');
   return [...value];
 }
 /** Compatibility only: protect every original slot and keep converted slots in their original order. */
 export function normalizeLegacyKitSlots(value: unknown, element: ElementId): ConduitSlots {
-  if (!Array.isArray(value) || value.length !== conduitSlotCount || !value.every((id) => id === null || isConduitId(id))) {
+  if (!Array.isArray(value) || value.length < conduitSlotCount || !value.every((id) => id === null || isConduitId(id))) {
     throw new Error('Invalid Conduit slots.');
   }
   const ids = value.filter((id) => id !== null);
   if (new Set(ids).size !== ids.length) throw new Error('Each named Conduit can be equipped only once per character.');
   const originalSlots = value.map((id) => id !== null && convertedKitConduitIds.has(id) ? null : id);
   validateConduitElement(originalSlots, element);
-  let capacity = 4 - originalSlots.filter((id) => id !== null && getConduit(id).rarity === 'Omnic').length;
-  const normalized = value.map((id) => {
-    if (id === null || !convertedKitConduitIds.has(id)) return id;
-    if (getConduit(id).element !== element || capacity <= 0) return null;
-    capacity--;
-    return id;
-  });
+  const normalized = value.map((id) => id !== null && convertedKitConduitIds.has(id) && getConduit(id).element !== element ? null : id);
   return validateConduitSlots(normalized);
 }
 export function validateConduitElement(equipment: ConduitSlots, element: ElementId): void {
@@ -199,7 +200,6 @@ export function conduitEquipReason(conduit: Conduit, element: ElementId, slots: 
   if (conduit.element && conduit.element !== element) return 'Element mismatch';
   const others = slots.filter((_, index) => index !== slot);
   if (others.includes(conduit.id)) return 'Already equipped';
-  if (conduit.rarity === 'Omnic' && others.filter((id) => id !== null && getConduit(id).rarity === 'Omnic').length >= 4) return 'Four Omnic limit';
   return null;
 }
 export function isConduitId(value: unknown): value is ConduitId {

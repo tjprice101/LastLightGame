@@ -115,7 +115,6 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     const copy = createCreatureCopy('infusion:sanctuary:0');
     account.capturedCharacters = [copy];
     saveAccount(saved, account);
-    expect(() => levelCapturedCharacter(saved, copy.instanceId, 60)).toThrow('Maximum');
     purchaseConduit(saved, 'vigil-core');
     equipConduit(saved, copy.instanceId, 0, 'vigil-core');
     setSquad(saved, [copy.instanceId, 'ember']);
@@ -138,7 +137,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
     for (const { create, kind } of factories) {
       const state = create();
       expect(state.allies.map((ally) => ally.id)).toEqual(ids);
-      expect(state.allies[0].captured?.level).toBe(60);
+      expect(state.allies[0].captured?.level).toBe(copy.level);
       expect(state.allies[0].conduits?.[0]).toBe('vigil-core');
       if (kind === 'adventure') {
         state.phase = 'cleared';
@@ -158,7 +157,7 @@ describe('Phase11 integrated economy and save lifecycle', () => {
         expect(next.state.allies[0].hp).toBe(next.state.allies[0].stats.health);
       }
     }
-    expect(capturedProgress(captures[0]).level).toBe(60);
+    expect(capturedProgress(captures[0]).level).toBe(copy.level);
     expect(() => sellCurrencyCreature(saved, copy.instanceId)).toThrow('cannot be sold');
     setSquad(saved, ['ember']);
     expect(() => sellCurrencyCreature(saved, copy.instanceId)).toThrow('Conduits equipped');

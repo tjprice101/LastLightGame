@@ -82,11 +82,11 @@ function gameplayInformation(): string {
     { id: 'infusion', title: 'Evolution infusion', summary: 'Evolution materials from Heaven and Abyss', content: `<p>Enemy levels 50-120. Form 3 begins at Lv.65, form 4 at Lv.75 and form 5 at Lv.85.</p>
       <p>Evolution and leveling materials unlock at Lv.75. Bonus Epic, Legendary and Omnic materials unlock at Lv.80, Lv.100 and Lv.115.</p>
       <p>Null-Prismatica starts dropping at Lv.80: an 8% chance of 1, 1.5% of 2, and 0.5% of 3. By Lv.120, these chances rise steadily to 10%, 10% and 5%. The stage 35 boss gives 5, 10 or 15 instead, at the same chances.</p>
-      <p>Each enemy has a separate 20% capture chance. Captured copies keep their form and skills, at up to Lv.60.</p>
+      <p>Each enemy has a separate 20% capture chance. Captured copies keep their form, skills and defeated level.</p>
       ${infusionModes.map((mode) => `<p><strong>${mode.name}</strong> - Enemy element: ${elementLabel(infusionEnemyElements[mode.id])}.
         Materials: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</p>`).join('')}` },
     { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages at levels 65-120, six fixed forms and a boss every fifth stage. Earlier bosses and ordinary enemies use the same payouts; final bosses award 5x currency quantities. No farm materials or separate clear bonus.</p>
-      <p>Each enemy has a separate 20% capture chance. Captured copies keep their form and skills, at up to Lv.60.</p>
+      <p>Each enemy has a separate 20% capture chance. Captured copies keep their form, skills and defeated level.</p>
       <h4>Crownfall Treasury</h4><p>${treasuryPrismaticaText} No Null-Prismatica.
       Common through Omnic Elemental-Devourer sales: ${treasurySalePrices.map((price) => price.toLocaleString('en-US')).join(' / ')} Prismatica.</p>
       <h4>Rosethorn Sanctuary</h4><p>Ordinary Prismatica 7-14 at Lv.65 to 15-30 at Lv.120.

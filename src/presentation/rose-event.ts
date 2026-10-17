@@ -11,7 +11,7 @@ import { devourerHabitats } from '../content/world-lore';
 import { activityDifficulty } from './calamity';
 
 export const roseEventRules = `<p>${devourerHabitats.roses}</p><p>35 stages at levels 80-140. Fight two enemies per stage, or one boss every fifth stage.</p>
-    <p>Enemies at Lv.120 or below have a 20% capture chance. Captured copies keep their form and skills, at up to Lv.60, and cannot evolve.</p>
+    <p>Enemies at Lv.120 or below have a 20% capture chance. Captured copies keep their form, skills and defeated level, and cannot evolve.</p>
     <p>Each enemy drops Prismatica and has a separate chance to drop each unlocked Rosethorn material. No Null-Prismatica.
     Bosses use the same drop chances. The stage 35 boss gives 5x Prismatica and materials on every clear. Check View Loot in Collections for exact drops.</p>
     <p>Sales exchange one copy for its form's material: ${roseMaterials.map((material, index) => `${roseSaleQuantities[index]} ${material.name}`).join(', ')}.

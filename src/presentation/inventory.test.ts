@@ -232,12 +232,12 @@ describe('reference Inventory layout', () => {
     expect(host.querySelector('[data-inventory-results]')?.hasAttribute('hidden')).toBe(true);
   });
 
-  it('organizes Inventory help into four optional topics with short paragraphs', () => {
+  it('organizes Inventory help into five optional topics with short paragraphs', () => {
     const host = document.createElement('main');
     host.innerHTML = inventoryView(emptyAccount());
     const dialog = host.querySelector('#inventory-information')!;
-    expect(dialog.querySelectorAll('[data-info-topic]')).toHaveLength(4);
-    expect(dialog.querySelectorAll('[data-info-panel][hidden]')).toHaveLength(4);
+    expect(dialog.querySelectorAll('[data-info-topic]')).toHaveLength(5);
+    expect(dialog.querySelectorAll('[data-info-panel][hidden]')).toHaveLength(5);
     for (const paragraph of Array.from(dialog.querySelectorAll('p'))) expect(paragraph.textContent!.length).toBeLessThan(300);
   });
 

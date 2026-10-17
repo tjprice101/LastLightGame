@@ -125,7 +125,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
   if (action === 'light') {
     hit(1);
     if (owner.definitionId === 'nerithe' && target?.hp) {
-      memory.survey = { target: target.id, points: Math.min(3, memory.survey?.target === target.id ? memory.survey.points + 1 : 1) };
+      memory.survey = { target: target.id, points: memory.survey?.target === target.id ? memory.survey.points + 1 : 1 };
     }
     return;
   }
@@ -253,7 +253,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
     case 'razor':
       if (action === 'skill2') memory.bastion = { throughPhase: state.round, loss: 0 };
       else {
-        const spent = Math.min(memory.wounds ?? 0, owner.stats.health * (action === 'skill1' ? .1 : .3));
+        const spent = memory.wounds ?? 0;
         memory.wounds = (memory.wounds ?? 0) - spent;
         hit(action === 'skill1' ? 1.6 : 2.2);
         if (target?.hp) fixed(state, owner, target, spent * (action === 'ultimate' ? 2 : 1), 'revenge', events);
@@ -271,7 +271,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
       } else {
         const marked = foes(state).find(enemy => enemy.id === quarry?.target);
         const contributors = quarry?.round === state.round ? quarry.contributors : [];
-        hit(action === 'ultimate' ? 3 : marked ? Math.min(2.5, 2 + .25 * contributors.filter(id => id !== owner.id).length) : 1.6, false, 0, 0, marked ?? target);
+        hit(action === 'ultimate' ? 3 : marked ? 2 + .25 * contributors.filter(id => id !== owner.id).length : 1.6, false, 0, 0, marked ?? target);
         if (action === 'ultimate' && contributors.length >= 2) for (const recipient of allies.filter(unit => contributors.includes(unit.id)))
           nativeHeal(state, owner, recipient, recipient.stats.health * .1, events, true, activation);
       }
@@ -305,17 +305,17 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
     case 'crinso':
       if (action === 'skill1') {
         hit(1.6, false, memory.edge === 'crimson' ? .2 : 0);
-        memory.combo = memory.edge === 'crimson' ? Math.min(3, (memory.combo ?? 0) + 1) : 0;
+        memory.combo = memory.edge === 'crimson' ? (memory.combo ?? 0) + 1 : 0;
         memory.edge = 'gold';
       } else if (action === 'skill2') {
         hit(memory.edge === 'gold' ? 2.4 : 2);
-        memory.combo = memory.edge === 'gold' ? Math.min(3, (memory.combo ?? 0) + 1) : 0;
+        memory.combo = memory.edge === 'gold' ? (memory.combo ?? 0) + 1 : 0;
         memory.edge = 'crimson';
       } else {
         const combo = memory.combo ?? 0;
         memory.combo = 0; delete memory.edge;
         activation.spent.duality = combo;
-        hit(2.6 + .45 * combo, false, combo === 3 ? .3 : 0);
+        hit(2.6 + .45 * combo, false, combo >= 3 ? .3 : 0);
       }
       break;
     case 'nerithe': {
@@ -325,7 +325,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
         if (memory.survey && target) memory.survey.target = target.id;
         hit(1.3, true);
       } else {
-        const spent = surveyed ? Math.min(memory.survey?.points ?? 0, action === 'skill1' ? 1 : 3) : 0;
+        const spent = surveyed ? Math.min(memory.survey?.points ?? 0, action === 'skill1' ? 1 : Infinity) : 0;
         if (memory.survey) memory.survey.points -= spent;
         hit(action === 'skill1' ? 1.8 : 2.8, false, spent * (action === 'skill1' ? .25 : .15), 0, surveyed ?? target);
       }
@@ -334,7 +334,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
     case 'orvella':
       if (action === 'skill1') {
         hit(memory.foundation ? 1.4 : 1.8);
-        if (memory.foundation) memory.foundation.durability = Math.min(memory.foundation.maximum, memory.foundation.durability + owner.stats.health * .08);
+        if (memory.foundation) { memory.foundation.durability += owner.stats.health * .08; memory.foundation.maximum = Math.max(memory.foundation.maximum, memory.foundation.durability); }
       } else if (action === 'skill2') {
         const plating = equipped(owner, 'master-orvella-1');
         const maximum = owner.stats.health * (plating ? .15 : .3);
@@ -342,7 +342,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
         if (plating) for (const recipient of allies)
           generatedShield(owner, recipient, Math.min(recipient.stats.health * .15, owner.stats.health * .05), events, true, recipient.stats.health * .15, true);
       } else {
-        const power = Math.min(memory.foundation?.durability ?? 0, owner.stats.health * .3);
+        const power = memory.foundation?.durability ?? 0;
         delete memory.foundation;
         hit(2, true);
         for (const enemy of foes(state)) fixed(state, owner, enemy, power, 'demolition', events);
@@ -367,8 +367,8 @@ export function nativeAfterAction(state: BattleState, owner: Combatant, action: 
     const field = caster.native?.cyclone;
     if (field && caster.id !== owner.id && field.contributors[owner.id] !== state.round) {
       field.contributors[owner.id] = state.round;
-      field.gusts = Math.min(4, field.gusts + 1);
-      status(events, caster, caster, `Cyclone holds ${field.gusts}/4 Gusts.`);
+      field.gusts += 1;
+      status(events, caster, caster, `Cyclone holds ${field.gusts} Gusts.`);
     }
   }
   nativeCleanup(state);
@@ -381,8 +381,7 @@ export function nativePrimaryHit(state: BattleState, attacker: Combatant, target
     if (!quarry || quarry.target !== target.id) continue;
     if (quarry.round !== state.round) { quarry.round = state.round; quarry.contributors = []; }
     if (!quarry.contributors.includes(attacker.id)) quarry.contributors.push(attacker.id);
-    if (quarry.contributors.length >= 2 && quarry.paidRound !== state.round) {
-      quarry.paidRound = state.round;
+    if (quarry.contributors.length >= 2) {
       const contributors = living(state).filter(unit => quarry.contributors.includes(unit.id));
       if (equipped(owner, 'master-rosetta-1')) {
         const recipient = [...living(state)].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
@@ -451,7 +450,7 @@ export function nativeAllocateFoundation(durability: number, hits: readonly numb
 export function nativeDirectHpLoss(state: BattleState, target: Combatant, loss: number, events: BattleEvent[]): void {
   if (hasNativeIdentity(target) && target.definitionId === 'razor' && loss > 0) {
     const memory = nativeMemory(target);
-    memory.wounds = Math.min(target.stats.health * .3, (memory.wounds ?? 0) + loss);
+    memory.wounds = (memory.wounds ?? 0) + loss;
     if (memory.bastion?.throughPhase === state.round) memory.bastion.loss += loss;
     status(events, target, target, `${target.name} banks ${memory.wounds} Wounds.`, memory.wounds);
   }
@@ -461,9 +460,7 @@ export function nativeAbsorbedHit(state: BattleState, target: Combatant, nativeO
   if (loss !== 0) return;
   for (const [id, absorbed] of nativeOwners) {
     const owner = living(state).find(unit => unit.id === id && hasNativeIdentity(unit) && unit.definitionId === 'tide');
-    const key = `stillwater:${id}`;
-    if (!owner || absorbed <= 0 || gear(target).numbers[key] === state.round) continue;
-    gear(target).numbers[key] = state.round;
+    if (!owner || absorbed <= 0) continue;
     nativeGauge(state, target, 8, events);
   }
 }
@@ -503,7 +500,7 @@ export function nativePhaseEnd(state: BattleState, events: BattleEvent[]): void 
     const memory = nativeMemory(owner);
     if (memory.cyclone && --memory.cyclone.phases <= 0) releaseCyclone(state, owner, events);
     if (memory.bastion && memory.bastion.throughPhase <= state.round) {
-      if (memory.bastion.loss > 0) nativeShield(state, owner, owner, Math.min(memory.bastion.loss, owner.stats.health * .12), events, { throughPhase: state.round + 1 });
+      if (memory.bastion.loss > 0) nativeShield(state, owner, owner, memory.bastion.loss, events, { throughPhase: state.round + 1 });
       delete memory.bastion;
     }
     if (memory.cover && memory.cover.throughPhase <= state.round) delete memory.cover;
@@ -593,14 +590,14 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
     for (const layer of shields) add('Shield', `${Math.round(layer.amount)}`,
       `${recipient.name}; expires after enemy phase ${layer.expiresAfterPhase}${layer.firstReduction ? '; first-hit reduction ready' : ''}.`, ['ward']);
   }
-  if (memory.cyclone) add('Cyclone', `${memory.cyclone.gusts}/4 Gusts`, `${memory.cyclone.phases} enemy phases until release.`, ['native-atmoso-cyclone']);
+  if (memory.cyclone) add('Cyclone', `${memory.cyclone.gusts} Gusts`, `${memory.cyclone.phases} enemy phases until release.`, ['native-atmoso-cyclone']);
   if (unit.definitionId === 'elise') {
     const blades = memory.blades ?? [null, null];
     add('Shuriken', blades.map(id => state.enemies.find(enemy => enemy.id === id)?.name ?? 'Held').join(' / '),
       'Lodge two blades; recall for fixed strikes and convergence.',
       blades.map(id => state.enemies.some(enemy => enemy.id === id) ? 'native-elise-lodged-blade' : 'native-elise-held-blade'), true);
   }
-  if (unit.definitionId === 'crinso') add('Combo', `${memory.combo ?? 0}/3 · ${memory.edge === 'gold' ? 'Last: Golden Edge' : memory.edge === 'crimson' ? 'Last: Crimson Rupture' : 'New chain'}`,
+  if (unit.definitionId === 'crinso') add('Combo', `${memory.combo ?? 0} · ${memory.edge === 'gold' ? 'Last: Golden Edge' : memory.edge === 'crimson' ? 'Last: Crimson Rupture' : 'New chain'}`,
     'Alternate Golden Edge and Crimson Rupture to build Combo; Last Flare spends it.',
     ['native-crinso-combo', ...(memory.edge ? [`native-crinso-${memory.edge}-edge` as const] : [])], true);
   if (unit.definitionId === 'vaelor') add('Beat', ['Tune', 'Rise', 'Crescendo'][memory.beat ?? 0],
@@ -608,12 +605,12 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
   if (memory.foundation) add('Foundation', `${Math.ceil(memory.foundation.durability)}/${Math.ceil(memory.foundation.maximum)}`,
     `Shared durability through enemy phase ${memory.foundation.throughPhase}.`, ['native-orvella-foundation']);
   if (unit.definitionId === 'razor') add('Wounds', `${Math.round(memory.wounds ?? 0)}`,
-    `Cap ${Math.round(unit.stats.health * .3)}; actual direct enemy HP loss only.`, ['native-razor-wounds']);
+    'Stored from direct enemy HP loss.', ['native-razor-wounds']);
   if (memory.bastion && memory.bastion.throughPhase >= state.round) add('Bastion', '30% direct-hit reduction',
     `Through enemy phase ${memory.bastion.throughPhase}; ${Math.round(memory.bastion.loss)} HP lost stored for the following shield.`, ['native-razor-bastion']);
   if (memory.ultimateWardThrough !== undefined && memory.ultimateWardThrough >= state.round) add('Ultimate Ward', '50% ultimate damage reduction',
     `Through enemy phase ${memory.ultimateWardThrough}.`, ['native-aurora-ultimate-ward']);
-  if (memory.survey) add('Survey', `${memory.survey.points}/3`, state.enemies.find(enemy => enemy.id === memory.survey?.target)?.name ?? '', ['native-nerithe-survey']);
+  if (memory.survey) add('Survey', `${memory.survey.points}`, state.enemies.find(enemy => enemy.id === memory.survey?.target)?.name ?? '', ['native-nerithe-survey']);
   if (memory.quarry) add('Quarry', state.enemies.find(enemy => enemy.id === memory.quarry?.target)?.name ?? '',
     `${memory.quarry.round === state.round ? memory.quarry.contributors.length : 0} distinct contributors this turn.`, ['native-rosetta-quarry']);
   if (memory.cover) add('Cover', memory.cover.targets.map(id => state.allies.find(ally => ally.id === id)?.name ?? id).join(', '),

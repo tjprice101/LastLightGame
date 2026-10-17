@@ -136,13 +136,13 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
       receipts: ['prior'], creatures: { 'infusion:treasury:0': { defeated: true } },
       bannerPity: { standard: { highestStar: 77, unownedHighestStar: 99 } } };
   }
-  it('only unequips converted mismatches/excess, reserves original final slots, preserves ownership/upgrades/locks/squad and writes nothing on load', () => {
+  it('only unequips converted mismatches, preserves matching slots and account data without writes on load', () => {
     const raw = legacy();
     const saved = storage(raw);
     const before = saved.getItem(ACCOUNT_KEY);
     const account = loadAccount(saved);
     expect(account.version).toBe(5);
-    expect(account.conduitEquipment?.ember).toEqual([...raw.conduitEquipment.ember.slice(0, 2), null, null, null, null, ...raw.conduitEquipment.ember.slice(6)]);
+    expect(account.conduitEquipment?.ember).toEqual(raw.conduitEquipment.ember);
     expect(account.conduitEquipment?.tide).toEqual(slots('vigil-core').map((id, index) => index === 1 ? 'vigil-core' : null));
     expect(account.conduitEquipment?.[raw.capturedCharacters[0].instanceId]).toEqual(raw.conduitEquipment[raw.capturedCharacters[0].instanceId]);
     for (const key of ['conduits', 'conduitUpgrades', 'capturedCharacters', 'characterLocks', 'squad', 'characters',
@@ -172,7 +172,7 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
     expect(loadAccount(storage({ ...emptyAccount(), version: 4, dungeonStages: { infernic: 13 } })).dungeonStages).toEqual({ infernic: 13 });
     expect(loadAccount(storage({ version: 1, fractalis: 123 })).fractalis).toBe(123);
   });
-  it('does not repair other malformed legacy data, including duplicate/unowned converted gear or original element/limit corruption', () => {
+  it('does not repair other malformed legacy data, including duplicate/unowned converted gear, element mismatches, or short slot arrays', () => {
     const raw = legacy();
     const original = raw.conduitEquipment.ember.slice(6).filter((id): id is ConduitId => id !== null);
     for (const changed of [
@@ -180,7 +180,6 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
       { ...raw, conduits: {}, conduitEquipment: { tide: slots('tempered-strike-link') } },
       { ...raw, conduitEquipment: { tide: slots(...original) } },
       { ...raw, conduitEquipment: { ember: [null] } },
-      { ...raw, conduitUpgrades: { 'tempered-strike-link': 6 } },
     ]) {
       const saved = storage(changed);
       const before = saved.getItem(ACCOUNT_KEY);
@@ -203,15 +202,16 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
     expect(saved.setItem).toHaveBeenCalledTimes(1);
     expect(loadAccount(saved).version).toBe(5);
   });
-  it('strictly rejects new/current wrong elements and fifth Omnics at account and fighter boundaries', () => {
+  it('allows more than four matching Omnics while rejecting element mismatches at account and fighter boundaries', () => {
     const all = kitConduitDesigns.filter((entry) => entry.element === 'infernic').map((entry) => entry.id);
-    expect(() => validateConduitSlots(slots(...all.slice(0, 5)))).toThrow('four');
+    expect(validateConduitSlots(slots(...all.slice(0, 5)))).toEqual(slots(...all.slice(0, 5)));
     expect(() => validateConduitElement(slots('tempered-strike-link'), 'oceanic')).toThrow('requires');
     expect(() => resolveFighter('tide', { level: 0, evolution: 1 }, slots('tempered-strike-link'))).toThrow('requires');
     const saved = storage({ ...emptyAccount(), characters: { ember: { level: 0, evolution: 1 } },
       conduits: Object.fromEntries(all.map((id) => [id, 1])), conduitEquipment: { ember: slots(...all.slice(0, 4)) } });
     const before = saved.getItem(ACCOUNT_KEY);
-    expect(() => equipConduit(saved, 'ember', 7, all[4])).toThrow('four');
-    expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
+    const updated = equipConduit(saved, 'ember', 7, all[4]);
+    expect(updated.conduitEquipment?.ember?.[7]).toBe(all[4]);
+    expect(saved.getItem(ACCOUNT_KEY)).not.toBe(before);
   });
 });

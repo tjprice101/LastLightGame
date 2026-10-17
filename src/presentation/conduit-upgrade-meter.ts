@@ -1,29 +1,22 @@
-import { conduitUpgradeCap, validateConduitUpgradeLevel } from '../content/conduits';
+import { validateConduitUpgradeLevel } from '../content/conduits';
 import './conduit-upgrade-meter.css';
 
-function squareClasses(level: number): string[] {
-  validateConduitUpgradeLevel(level);
-  return Array.from({ length: conduitUpgradeCap }, (_, index) =>
-    `conduit-upgrade-square${index < level ? ' is-filled' : ''}`);
-}
-
 export function conduitUpgradeMeter(level: number): string {
-  return `<span class="conduit-upgrade-meter" data-upgrade-level="${level}" aria-hidden="true">${squareClasses(level)
-    .map((className) => `<span class="${className}"></span>`).join('')}</span>`;
+  validateConduitUpgradeLevel(level);
+  return `<span class="conduit-upgrade-meter" data-upgrade-level="${level}" aria-hidden="true"><span class="conduit-upgrade-value">+${level}</span></span>`;
 }
 
 export function createConduitUpgradeMeter(level: number): HTMLElement {
-  const classes = squareClasses(level);
+  validateConduitUpgradeLevel(level);
   const meter = document.createElement('span');
   meter.className = 'conduit-upgrade-meter';
   meter.dataset.upgradeLevel = String(level);
   meter.setAttribute('role', 'img');
-  meter.setAttribute('aria-label', `Conduit upgrade +${level} of ${conduitUpgradeCap}`);
-  for (const className of classes) {
-    const square = document.createElement('span');
-    square.className = className;
-    square.setAttribute('aria-hidden', 'true');
-    meter.append(square);
-  }
+  meter.setAttribute('aria-label', `Conduit upgrade +${level}`);
+  const value = document.createElement('span');
+  value.className = 'conduit-upgrade-value';
+  value.setAttribute('aria-hidden', 'true');
+  value.textContent = `+${level}`;
+  meter.append(value);
   return meter;
 }

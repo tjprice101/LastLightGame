@@ -21,7 +21,6 @@ function nativeOwner(actor: Combatant): boolean {
   return actor.side === 'ally' && actor.hp > 0 && !actor.captured;
 }
 
-type RoundKey = 'emberRound' | 'wardRound' | 'bloomRound' | 'roseGraceRound' | 'thornAegisRound' | 'dualityRound';
 
 function resourceLabel(key: KitPilotResourceKey): string {
   return Object.values(kitPilotDescriptions).find((description) => description.resource?.key === key)?.resource?.label ?? key;
@@ -31,24 +30,18 @@ function resourceEffect(owner: Combatant): ElementalEffectTag | undefined {
   return owner.kit?.pilot ? kitPilotDescriptions[owner.kit.pilot].resource?.effect : undefined;
 }
 
-function gainResource(owner: Combatant, key: KitPilotResourceKey, events: BattleEvent[], roundKey?: RoundKey, round?: number): void {
+function gainResource(owner: Combatant, key: KitPilotResourceKey, events: BattleEvent[]): void {
   if (!nativeOwner(owner)) return;
   const current = charges(owner);
-  if (roundKey) {
-    if (current[roundKey] === round) return;
-    current[roundKey] = round;
-  }
-  const maximum = key === 'bloom' && owner.conduits?.includes('botanic-graft-covenant') ? 3 + ((owner.conduitRuntime?.numbers.graftBonus ?? 1)) : 3;
-  if ((current[key] ?? 0) >= maximum) return;
-  current[key] = (current[key] ?? 0) + 1;
+  const amount = key === 'bloom' && owner.conduits?.includes('botanic-graft-covenant') ? 1 + (owner.conduitRuntime?.numbers.graftBonus ?? 1) : 1;
+  current[key] = (current[key] ?? 0) + amount;
   const label = resourceLabel(key);
-  status(events, owner, owner, `${owner.name} gains ${label} (${current[key]}/${maximum}).`, resourceEffect(owner));
+  status(events, owner, owner, `${owner.name} gains ${label} (${current[key]}).`, resourceEffect(owner));
 }
 
 function spendResource(actor: Combatant, key: KitPilotResourceKey, events: BattleEvent[]): number {
   if (!nativeOwner(actor)) return 0;
-  const maximum = key === 'bloom' && actor.conduits?.includes('botanic-graft-covenant') ? 3 + (actor.conduitRuntime?.numbers.graftBonus ?? 1) : 3;
-  const available = Math.min(maximum, Math.max(0, actor.pilot?.[key] ?? 0));
+  const available = Math.max(0, actor.pilot?.[key] ?? 0);
   const selective = (key === 'ember' && actor.masterConduit === 'master-ember-3') || (key === 'tempest' && actor.masterConduit === 'master-vaelor-2');
   const count = selective && actor.conduitRuntime?.numbers.ordinaryResourceSpend ? Math.min(1, available) : available;
   if (count <= 0) return 0;
@@ -109,23 +102,23 @@ export function pilotPrepareStarter(actor: Combatant, action: ActionId, events: 
 export function pilotEffectiveHeal(state: BattleState, owner: Combatant, target: Combatant, amount: number, events: BattleEvent[]): void {
   if (amount <= 0 || !nativeOwner(owner)) return;
   if (owner.kit?.pilot === 'bloom' && (owner.definitionId !== 'bliss' || target.id !== owner.id)) {
-    gainResource(owner, 'bloom', events, 'bloomRound', state.round);
+    gainResource(owner, 'bloom', events);
   }
-  if (owner.kit?.pilot === 'rose-grace') gainResource(owner, 'roseGrace', events, 'roseGraceRound', state.round);
+  if (owner.kit?.pilot === 'rose-grace') gainResource(owner, 'roseGrace', events);
 }
 
 export function pilotAuthoredShieldAbsorbed(state: BattleState, sourceId: string | undefined, amount: number, events: BattleEvent[]): void {
   if (amount <= 0 || !sourceId) return;
   const owner = state.allies.find((ally) => ally.id === sourceId);
   if (!owner || !nativeOwner(owner)) return;
-  if (owner.kit?.pilot === 'ward') gainResource(owner, 'ward', events, 'wardRound', state.round);
-  if (owner.kit?.pilot === 'thorn-aegis') gainResource(owner, 'thornAegis', events, 'thornAegisRound', state.round);
+  if (owner.kit?.pilot === 'ward') gainResource(owner, 'ward', events);
+  if (owner.kit?.pilot === 'thorn-aegis') gainResource(owner, 'thornAegis', events);
 }
 
 export function pilotBurnDamage(state: BattleState, owner: Combatant, amount: number, events: BattleEvent[]): void {
   if (amount <= 0 || !nativeOwner(owner)) return;
-  if (owner.kit?.pilot === 'ember') gainResource(owner, 'ember', events, 'emberRound', state.round);
-  if (owner.kit?.pilot === 'rose-duality') gainResource(owner, 'duality', events, 'dualityRound', state.round);
+  if (owner.kit?.pilot === 'ember') gainResource(owner, 'ember', events);
+  if (owner.kit?.pilot === 'rose-duality') gainResource(owner, 'duality', events);
 }
 
 export function pilotAfterDirectActivation(actor: Combatant, action: ActionId, events: BattleEvent[], effectiveCritical = false): void {

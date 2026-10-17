@@ -12,7 +12,7 @@ import { enemyAbilityMultiplier, enemySkills, scheduledEnemySkill, type EnemySki
 import { getConduit, isConduitId, validateConduitUpgrades, type ConduitId, type ConduitSlots, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
 import { rollMachineComponents } from '../content/mechanical-components';
 import { machineConduitDrops } from '../content/machines';
-import { capturedProgress, capturedLevelCap, resolveCapturedFighter, type CapturedCharacter } from './character-instances';
+import { capturedProgress, resolveCapturedFighter, type CapturedCharacter } from './character-instances';
 import { roseCaptureAllowed } from '../content/roses';
 import { getCreature } from '../content/creatures';
 import { elementAccents } from '../content/dungeon-art';
@@ -201,25 +201,6 @@ function combatant(id: string, definitionId: Combatant['definitionId'], name: st
     shatter: shatterGauge.starting, spent: false, recoverThrough: 0,
     readyRound: { skill1: 1, skill2: 1 }, burn: { damage: 0, turns: 0 }, weakened: 0, weakenFraction: 0.25, kit: null, defending: false,
   };
-}
-
-export function capCapturedBattleLevels(state: BattleState): void {
-  for (const unit of state.allies) {
-    if (!unit.captured) continue;
-    if (unit.captured.level !== undefined) unit.captured.level = Math.min(capturedLevelCap, unit.captured.level);
-    if (unit.level === null || unit.level <= capturedLevelCap) continue;
-    const before = capturedEnemyStats(unit.level, 140);
-    const after = capturedEnemyStats(capturedLevelCap);
-    for (const stat of ['health', 'damage', 'defense'] as const) {
-      const ratio = after[stat] / before[stat];
-      unit.stats[stat] *= ratio;
-      if (unit.kit) unit.kit.stats[stat] *= ratio;
-    }
-    const healthRatio = after.health / before.health;
-    unit.hp *= healthRatio;
-    unit.shield *= healthRatio;
-    unit.level = capturedLevelCap;
-  }
 }
 
 function spawnWave(wave: number): Combatant[] {
@@ -544,7 +525,7 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
       seed ^= seed >>> 17;
       seed ^= seed << 5;
       state.captureSeed = seed >>> 0;
-      if ((state.infusion.mode !== 'roses' || roseCaptureAllowed(enemy.level)) && captureSucceeds(state.captureSeed / 0x100000000)) capture = { creatureId: enemy.creatureId, level: Math.min(capturedLevelCap, enemy.level) };
+      if ((state.infusion.mode !== 'roses' || roseCaptureAllowed(enemy.level)) && captureSucceeds(state.captureSeed / 0x100000000)) capture = { creatureId: enemy.creatureId, level: enemy.level };
       if (state.infusion.mode !== 'treasury' && state.infusion.mode !== 'roses') lycalis = rollStagedLycalis(state.infusion.mode, enemy.level, () => {
         let premiumSeed = state.lycalisSeed ?? (((previous.seed ^ 0x9e3779b9) >>> 0) || 1);
         premiumSeed ^= premiumSeed << 13;

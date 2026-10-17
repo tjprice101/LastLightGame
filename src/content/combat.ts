@@ -77,9 +77,9 @@ export const fighters: Record<StarterId, FighterDefinition> = {
     stats: { health: 190, defense: 8, damage: 32, crit: 0.2, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: 'Root of Hope', description: 'At each new player turn, heal living allies by 5% of their maximum health while Flora lives.', damageBonus: 0, defenseBonus: 0, healFraction: 0.05 },
     abilities: {
-      skill1: { name: 'Briar Shot', description: `150% damage to one enemy with +20 percentage points critical chance. Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge (maximum +30%).`, cooldown: 0, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
+      skill1: { name: 'Briar Shot', description: `150% damage to one enemy with +20 percentage points critical chance. Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge.`, cooldown: 0, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
       skill2: { name: 'Verdant Renewal', description: "Restore 30 health to every living ally; cannot revive. Increase living allies' outgoing attack damage by 10% this and next player turn (refresh; does not stack).", cooldown: 0, strength: { healing: 30, attackBoostFraction: .1 } },
-      ultimate: { name: 'Last Flare: Worldseed', description: `180% damage to all enemies and heal living allies by 55. Recover next turn. Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge (maximum +45%).`, cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } },
+      ultimate: { name: 'Last Flare: Worldseed', description: `180% damage to all enemies and heal living allies by 55. Recover next turn. Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge.`, cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } },
     },
   },
   rosetta: {
@@ -150,12 +150,12 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
   }
   kit.stats.defense = (base.stats.defense + base.passive.defenseBonus) * factor ** .7;
   kit.stats.damage *= 1 + (progress?.weaponRank ?? 0) * weaponRules.attackPerRank;
-  kit.stats.crit = Math.min(.75, base.stats.crit * potency);
-  kit.stats.critMultiplier = Math.min(3, base.stats.critMultiplier * potency);
+  kit.stats.crit = Math.min(1, base.stats.crit * potency);
+  kit.stats.critMultiplier = base.stats.critMultiplier * potency;
   kit.stats.shatterCapacity = base.stats.shatterCapacity * potency;
   kit.passive.defenseBonus *= factor ** .7;
-  kit.passive.damageBonus = Math.min(.75, base.passive.damageBonus * potency);
-  kit.passive.healFraction = Math.min(.1, base.passive.healFraction * potency);
+  kit.passive.damageBonus = base.passive.damageBonus * potency;
+  kit.passive.healFraction = base.passive.healFraction * potency;
   for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
     if (kit.nativeIdentity) continue;
     const strength = kit.abilities[action].strength;
@@ -163,9 +163,8 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
       const value = strength[key];
       if (value !== undefined) strength[key] = value * (key === 'shield' || key === 'healing' ? factor : potency);
     }
-    if (strength.weakenFraction !== undefined) strength.weakenFraction = Math.min(.5, strength.weakenFraction);
-    if (strength.critBonus !== undefined) strength.critBonus = Math.min(.5, strength.critBonus);
-    if (strength.attackBoostFraction !== undefined) strength.attackBoostFraction = Math.min(.5, strength.attackBoostFraction);
+    if (strength.weakenFraction !== undefined) strength.weakenFraction = Math.min(1, strength.weakenFraction);
+    if (strength.critBonus !== undefined) strength.critBonus = Math.min(1, strength.critBonus);
   }
   if (equipment) validateConduitElement(equipment, getStarter(id).elementId);
   applyConduitBuffs(kit.stats, equipment, upgrades);
@@ -235,24 +234,24 @@ export function describeFighter(id: StarterId, snapshot: FighterDefinition): Fig
   }
   const intrinsicActionCopy: Partial<Record<StarterId, Partial<Record<'skill1' | 'skill2' | 'ultimate', string>>>> = {
     sprout: {
-      skill1: `Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge (maximum +30%).`,
-      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge (maximum +45%); spent before healing, once for the whole activation.`,
+      skill1: `Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge.`,
+      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge; spent before healing, once for the whole activation.`,
     },
     bliss: {
-      skill1: `Spends all ${elementalEffectFamilies.bloom.label} charges for +8% outgoing damage per charge (maximum +24%).`,
-      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges to add a shield worth 5% of this caster's maximum Health per charge (maximum 15%); refreshes rather than stacks.`,
+      skill1: `Spends all ${elementalEffectFamilies.bloom.label} charges for +8% outgoing damage per charge.`,
+      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges to add a shield worth 5% of this caster's maximum Health per charge; refreshes rather than stacks.`,
     },
     atmoso: {
-      skill1: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge (maximum +24%).`,
-      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge (maximum +36%).`,
+      skill1: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge.`,
+      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge.`,
     },
     elise: {
-      skill1: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge (maximum +24%).`,
-      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge (maximum +36%).`,
+      skill1: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge.`,
+      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge.`,
     },
     vaelor: {
-      skill2: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge (maximum +24%).`,
-      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge (maximum +36%).`,
+      skill2: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge.`,
+      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge.`,
     },
   };
   for (const [action, text] of Object.entries(intrinsicActionCopy[id] ?? {})) {

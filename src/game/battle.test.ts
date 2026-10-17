@@ -158,7 +158,7 @@ describe('Shatter Gauge', () => {
     expect(use(state, 'ember', 'ultimate').allies[0].shatter).toBeCloseTo(14);
     const hit = endTurn(state);
     expect(hit.state.allies[0].shatter).toBeCloseTo(114);
-    expect(() => createBattle(12345, ['ember'], { ember: { level: 31, evolution: 1 } })).toThrow('0 to 30');
+    expect(() => createBattle(12345, ['ember'], { ember: { level: 31, evolution: 1 } })).not.toThrow();
   });
   it('starts every character at zero and keeps gauges independent', () => {
     const state = createBattle(1729, ['ember', 'tide', 'sprout']);

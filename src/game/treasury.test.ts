@@ -86,7 +86,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     expect(account.fractalis).toBeGreaterThanOrEqual(1000);
     expect(account.lycalis).toBe(0);
     expect(account.materials).toEqual({});
-    expect(account.capturedCharacters?.[0].level).toBe(60);
+    expect(account.capturedCharacters?.[0].level).toBe(120);
     expect(account.capturedCharacters?.[0].skills).toEqual(result.state.enemies[0].enemySkills);
     expect(account.infusionStages.treasury).toBe(25);
     expect(loadAccount(saved)).toEqual(account);

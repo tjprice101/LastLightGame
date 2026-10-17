@@ -37,7 +37,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: '[Tizu] places a short-lived shield on one chosen ally before the next enemy attack.',
     passive: {
       name: 'Stillwater Guard',
-      description: 'When a shield from [Tizu]’s abilities fully absorbs an enemy’s direct hit so that no HP is lost, the shielded ally gains 8 Gauge. Once per ally per enemy phase.',
+      description: 'When a shield from [Tizu]’s abilities fully absorbs an enemy’s direct hit so that no HP is lost, the shielded ally gains 8 Gauge.',
     },
     abilities: {
       skill1: { ...ability('Undertow Thrust', '150% direct damage to one enemy and apply 25% [Weaken] for the next enemy phase. [Weaken] reduces the direct damage that enemy deals.', 1.5), strength: { damageMultiplier: 1.5, weakenFraction: .25 } },
@@ -63,11 +63,11 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: '[Cyclone Weave] creates a [Cyclone] that grows as allies act and later releases on all enemies; [Razor Gale] can release it early.',
     passive: {
       name: 'Gale Cadence',
-      description: 'While a [Cyclone] is active, the first action each other living ally takes in a player turn ([Normal Attack], [Defense] or any skill) adds one [Gust], up to 4.',
+      description: 'While a [Cyclone] is active, the first action each other living ally takes in a player turn ([Normal Attack], [Defense] or any skill) adds one [Gust].',
     },
     abilities: {
       skill1: ability('Razor Gale', '180% direct damage to one enemy. If a [Cyclone] exists, it releases immediately on all living enemies and ends.', 1.8),
-      skill2: ability('Cyclone Weave', 'Release any existing [Cyclone], then create a new [Cyclone] with 0 [Gust] lasting two enemy phases. When the second enemy phase ends, it releases on all living enemies. A [Cyclone] release deals 70% of [Atmoso]’s Attack plus 30% per [Gust] (up to 190%) and cannot critically hit. [Gust] never carries over to a new [Cyclone]. [Atmoso] must be alive for a release.', undefined, 'all-enemies'),
+      skill2: ability('Cyclone Weave', 'Release any existing [Cyclone], then create a new [Cyclone] with 0 [Gust] lasting two enemy phases. When the second enemy phase ends, it releases on all living enemies. A [Cyclone] release deals 70% of [Atmoso]’s Attack plus 30% per [Gust] and cannot critically hit. [Gust] never carries over to a new [Cyclone]. [Atmoso] must be alive for a release.', undefined, 'all-enemies'),
       ultimate: ability('Last Flare: Sky Without End', 'Release any active [Cyclone] at its current [Gust] count, then deal 200% direct damage to all enemies.', 2, 'all-enemies'),
     },
   },
@@ -141,12 +141,12 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: '[Razor] stores HP lost to enemy attacks as [Wounds], then spends them for extra damage.',
     passive: {
       name: 'Unbroken Night',
-      description: 'HP [Razor] loses to direct enemy hits is stored as [Wounds], up to 30% of his maximum HP. Damage absorbed by shields, damage redirected to him, [Burn], HP he pays himself and Conduit effects add no [Wounds]. Healing does not remove [Wounds].',
+      description: 'HP [Razor] loses to direct enemy hits is stored as [Wounds]. Damage absorbed by shields, damage redirected to him, [Burn], HP he pays himself and Conduit effects add no [Wounds]. Healing does not remove [Wounds].',
     },
     abilities: {
-      skill1: ability('Nightcleave', '160% direct damage to one enemy, then spend up to 10% of [Razor]’s maximum HP in [Wounds] for an extra strike that uses the spent amount as its Attack, is reduced by Defense and cannot critically hit. With no [Wounds], only the first hit occurs.', 1.6),
-      skill2: ability('Eclipse Bastion', '[Razor] takes 30% less direct damage during the next enemy phase. If he lost HP to direct hits during that phase, he then gains a shield equal to that HP (up to 12% of his maximum HP) through the following enemy phase.'),
-      ultimate: ability('Last Flare: Unbroken Midnight', '220% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses twice the spent amount as its Attack (up to 60% of [Razor]’s maximum HP), is reduced by Defense and cannot critically hit.', 2.2),
+      skill1: ability('Nightcleave', '160% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses the spent amount as its Attack, is reduced by Defense and cannot critically hit. With no [Wounds], only the first hit occurs.', 1.6),
+      skill2: ability('Eclipse Bastion', '[Razor] takes 30% less direct damage during the next enemy phase. If he lost HP to direct hits during that phase, he then gains a shield equal to that HP through the following enemy phase.'),
+      ultimate: ability('Last Flare: Unbroken Midnight', '220% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses twice the spent amount as its Attack, is reduced by Defense and cannot critically hit.', 2.2),
     },
   },
   rosetta: {
@@ -154,11 +154,11 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: '[Rosetta] marks a [Quarry]; when different allies hit it in the same player turn, her abilities gain bonuses.',
     passive: {
       name: 'Virtuous Bloom',
-      description: '[Rosetta] can have one [Quarry]. Each player turn, the different living allies whose attacks hit it directly are counted. When two different allies have hit it, each of them gains a shield worth 8% of its maximum HP. Once per player turn.',
+      description: '[Rosetta] can have one [Quarry]. Each player turn, the different living allies whose attacks hit it directly are counted. Each direct hit on it after two different allies have hit it that player turn gives each of those allies a shield worth 8% of their maximum HP.',
     },
     abilities: {
       skill1: ability('Golden Thorn Volley', '160% direct damage to one enemy and mark it as [Quarry] until it is defeated or [Rosetta] marks another enemy. This hit counts as her contribution. Marking the same enemy again keeps this turn’s count; marking a different enemy resets it.', 1.6),
-      skill2: ability('Crimson Skyfall', '200% direct damage to a living [Quarry], plus 25% for each other ally who hit it this player turn (up to 250%). With no living [Quarry], deal 160% direct damage to the selected enemy. Does not mark a [Quarry].', 2),
+      skill2: ability('Crimson Skyfall', '200% direct damage to a living [Quarry], plus 25% for each other ally who hit it this player turn. With no living [Quarry], deal 160% direct damage to the selected enemy. Does not mark a [Quarry].', 2),
       ultimate: ability('Last Flare: Rose Beyond the Sun', '300% direct damage to the [Quarry], or to the selected enemy if there is none. If at least two different allies hit the [Quarry] this player turn, those allies heal 10% of their maximum HP; other allies are not healed.', 3),
     },
   },
@@ -180,12 +180,12 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: 'Alternating [Golden Edge] and [Crimson Rupture] builds [Combo]; [Last Flare: Blossoming Cataclysm] spends it.',
     passive: {
       name: 'Rose Duality',
-      description: 'Using [Golden Edge] after [Crimson Rupture], or [Crimson Rupture] after [Golden Edge], adds 1 [Combo] (up to 3). Using the same one of these two skills twice in a row resets [Combo] to 0. When there is no previous skill to compare (the first use, or after [Last Flare: Blossoming Cataclysm]), the skill starts a new chain at 0 [Combo]. [Normal Attack] and [Defense] do not affect the chain.',
+      description: 'Using [Golden Edge] after [Crimson Rupture], or [Crimson Rupture] after [Golden Edge], adds 1 [Combo]. Using the same one of these two skills twice in a row resets [Combo] to 0. When there is no previous skill to compare (the first use, or after [Last Flare: Blossoming Cataclysm]), the skill starts a new chain at 0 [Combo]. [Normal Attack] and [Defense] do not affect the chain.',
     },
     abilities: {
       skill1: ability('Golden Edge', '160% direct damage to one enemy. If [Crinso]’s previous skill was [Crimson Rupture], this attack ignores 20% of the target’s Defense. Then updates [Combo] as described in [Rose Duality].', 1.6),
       skill2: ability('Crimson Rupture', '200% direct damage to one enemy, increased by 40% (240% total) if [Crinso]’s previous skill was [Golden Edge]. Then updates [Combo] as described in [Rose Duality].', 2),
-      ultimate: ability('Last Flare: Blossoming Cataclysm', '260% direct damage to one enemy plus 45% per [Combo] (up to 395% at 3 [Combo]). At 3 [Combo], the attack also ignores 30% of the target’s Defense. Uses up all [Combo] and ends the chain, so the next [Golden Edge] or [Crimson Rupture] starts a new one.', 2.6),
+      ultimate: ability('Last Flare: Blossoming Cataclysm', '260% direct damage to one enemy plus 45% per [Combo]. At 3 or more [Combo], the attack also ignores 30% of the target’s Defense. Uses up all [Combo] and ends the chain, so the next [Golden Edge] or [Crimson Rupture] starts a new one.', 2.6),
     },
   },
   nerithe: {
@@ -193,12 +193,12 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: '[Nerithe]’s [Normal Attack] adds [Survey] points to an enemy; her skills spend them to ignore part of its Defense.',
     passive: {
       name: 'Uncharted Current',
-      description: '[Nerithe]’s [Normal Attack] gains 5 extra Gauge and adds 1 [Survey] point to its target (up to 3). Only one enemy can hold [Survey]; surveying another enemy removes the old points. [Survey] disappears when its enemy is defeated.',
+      description: '[Nerithe]’s [Normal Attack] gains 5 extra Gauge and adds 1 [Survey] point to its target. Only one enemy can hold [Survey]; surveying another enemy removes the old points. [Survey] disappears when its enemy is defeated.',
     },
     abilities: {
       skill1: ability('Meridian Break', '180% direct damage to the enemy holding [Survey], or the selected enemy if none does. Spends 1 [Survey] point, if any, to ignore 25% of the target’s Defense.', 1.8),
       skill2: ability('Fold the Sea', 'Move [Survey] and all its points to the selected living enemy, then deal 130% direct damage to all enemies.', 1.3, 'all-enemies'),
-      ultimate: ability('Ocean Beyond the Map', '280% direct damage to the enemy holding [Survey], or the selected enemy if none does. Uses up all [Survey] points; each ignores 15% of the target’s Defense (up to 45%).', 2.8),
+      ultimate: ability('Ocean Beyond the Map', '280% direct damage to the enemy holding [Survey], or the selected enemy if none does. Uses up all [Survey] points; each ignores 15% of the target’s Defense.', 2.8),
     },
   },
   orvella: {
@@ -209,9 +209,9 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
       description: 'Only one [Foundation] can exist. While it has durability, it absorbs up to 20% of each direct hit on a living ally (after Defense), before that ally’s shields, and loses durability equal to the amount absorbed. When one attack hits several allies at once, the absorbed amount is shared proportionally.',
     },
     abilities: {
-      skill1: ability('Keystone Reversal', '140% direct damage to one enemy, then repair the [Foundation] by 8% of [Orvella]’s maximum HP, up to its starting durability. With no [Foundation], deal 180% direct damage instead. Never creates a [Foundation].', 1.4),
+      skill1: ability('Keystone Reversal', '140% direct damage to one enemy, then repair the [Foundation] by 8% of [Orvella]’s maximum HP. With no [Foundation], deal 180% direct damage instead. Never creates a [Foundation].', 1.4),
       skill2: ability('Raise the Faultline', 'Create a [Foundation] with durability equal to 30% of [Orvella]’s maximum HP for three enemy phases. Recasting replaces it at full durability; it never stacks.', undefined, 'all-allies'),
-      ultimate: ability('Worldweight Citadel', '200% direct damage to all enemies. An existing [Foundation] is used up for an extra strike on each enemy that uses its remaining durability as Attack (up to 30% of [Orvella]’s maximum HP), is reduced by Defense and cannot critically hit.', 2, 'all-enemies'),
+      ultimate: ability('Worldweight Citadel', '200% direct damage to all enemies. An existing [Foundation] is used up for an extra strike on each enemy that uses its remaining durability as Attack, is reduced by Defense and cannot critically hit.', 2, 'all-enemies'),
     },
   },
   vaelor: {

@@ -151,7 +151,7 @@ describe('component progression and isolated rewards', () => {
   });
 });
 
-describe('account-wide five-step Conduit restoration', () => {
+describe('account-wide unbounded Conduit upgrades', () => {
   it('requires120000 components to max one Omnic name without changing previous upgrades', () => {
     const conduit = getConduit('infernic-phoenix-reactor');
     expect(conduitUpgradeCosts.reduce((sum, _cost, level) => sum + (conduitUpgradeCost(conduit, level) ?? 0), 0)).toBe(120000);
@@ -161,21 +161,20 @@ describe('account-wide five-step Conduit restoration', () => {
     expect(loadAccount(saved).mechanicalComponents).toBe(0);
     expect(loadAccount(saved).conduitUpgrades?.[conduit.id]).toBe(5);
   });
-  it('spends only components, never copies, preserving every other account field through all five upgrades', () => {
+  it('spends only components, never copies, preserving every other account field through upgrades beyond +5', () => {
     const saved = preparedStorage();
-    saveAccount(saved, { ...loadAccount(saved), mechanicalComponents: 2400 });
+    saveAccount(saved, { ...loadAccount(saved), mechanicalComponents: 3800 });
     const before = loadAccount(saved);
     const write = vi.spyOn(saved, 'setItem');
-    for (let level = 0; level < 5; level++) {
+    for (let level = 0; level < 6; level++) {
       const account = upgradeConduit(saved, 'worldbreaker-drive', level);
-      const spent = conduitUpgradeCosts.slice(0, level + 1).reduce((sum, cost) => sum + cost * 4, 0);
-      expect(account).toEqual({ ...before, mechanicalComponents: 2400 - spent, conduitUpgrades: { 'worldbreaker-drive': level + 1 } });
+      const spent = Array.from({ length: level + 1 }, (_, index) => conduitUpgradeCost(getConduit('worldbreaker-drive'), index)).reduce((sum, cost) => sum + cost, 0);
+      expect(account).toEqual({ ...before, mechanicalComponents: 3800 - spent, conduitUpgrades: { 'worldbreaker-drive': level + 1 } });
       expect(write).toHaveBeenCalledTimes(level + 1);
       expect(loadAccount(saved)).toEqual(account);
     }
-    expect(conduitUpgradeCost(getConduit('worldbreaker-drive'), 5)).toBeNull();
-    expect(() => upgradeConduit(saved, 'worldbreaker-drive', 5)).toThrow('five times');
-    expect(write).toHaveBeenCalledTimes(5);
+    expect(conduitUpgradeCost(getConduit('worldbreaker-drive'), 5)).toBe(1400);
+    expect(write).toHaveBeenCalledTimes(6);
   });
   it.each(conduits)('charges exact rarity costs for every upgrade of $name, rejecting one-component short balances', (conduit) => {
     const costs = {
@@ -205,9 +204,16 @@ describe('account-wide five-step Conduit restoration', () => {
       expect(upgradeWrite).toHaveBeenCalledTimes(1);
       upgradeWrite.mockRestore();
     }
-    expect(conduitUpgradeCost(conduit, 5)).toBeNull();
+    const sixthCost = conduitUpgradeCost(conduit, 5);
+    expect(sixthCost).toBeGreaterThan(0);
+    saveAccount(saved, { ...loadAccount(saved), mechanicalComponents: sixthCost - 1 });
+    expect(() => upgradeConduit(saved, conduit.id, 5)).toThrow(`costs ${sixthCost}`);
+    saveAccount(saved, { ...loadAccount(saved), mechanicalComponents: sixthCost });
+    const sixth = upgradeConduit(saved, conduit.id, 5);
+    expect(sixth.conduitUpgrades?.[conduit.id]).toBe(6);
+    expect(sixth.mechanicalComponents).toBe(0);
   });
-  it('rejects unowned, stale, malformed, capped, insufficient and failed upgrades without writes', () => {
+  it('rejects unowned, stale, malformed, insufficient and failed upgrades without writes', () => {
     const saved = preparedStorage();
     for (const level of [-1, 6, NaN, Infinity, 1.5]) expect(() => upgradeConduit(saved, 'vigil-core', level)).toThrow();
     expect(() => upgradeConduit(saved, 'duplex-heart', 0)).toThrow('owned');
@@ -239,10 +245,11 @@ describe('account-wide five-step Conduit restoration', () => {
     for (const value of [null, [], -1, 1.5, Infinity, NaN, Number.MAX_SAFE_INTEGER + 1, '10']) {
       expect(() => validateAccount({ ...account, mechanicalComponents: value })).toThrow('Components');
     }
-    for (const value of [null, [], { unknown: 1 }, { 'vigil-core': -1 }, { 'vigil-core': 6 }, { 'vigil-core': 1.5 }, { 'duplex-heart': 1 }]) {
+    for (const value of [null, [], { unknown: 1 }, { 'vigil-core': -1 }, { 'vigil-core': 1.5 }, { 'duplex-heart': 1 }]) {
       expect(() => validateAccount({ ...account, conduitUpgrades: value })).toThrow();
       expect(() => validateAccount({ ...emptyAccount(), conduitUpgrades: value })).toThrow();
     }
+    expect(validateAccount({ ...account, conduitUpgrades: { 'vigil-core': 6 } }).conduitUpgrades).toEqual({ 'vigil-core': 6 });
     expect(validateAccount({ ...emptyAccount(), conduitUpgrades: {} }).conduitUpgrades).toEqual({});
     expect(validateAccount({ ...emptyAccount(), mechanicalComponents: 0 }).mechanicalComponents).toBe(0);
     expect(() => validateAccount({ ...emptyAccount(), conduitUpgrades: { 'vigil-core': 1 } })).toThrow('owned Conduit');
@@ -283,7 +290,7 @@ describe('account-wide five-step Conduit restoration', () => {
     expect(captured.damage).toBeCloseTo(capturedBase.damage);
     expect(captured.health).toBeCloseTo(capturedBase.health * .79);
     expect(resolveFighter('ember', progress).stats).toEqual(base);
-    expect(conduitEffect(conduits.find((c) => c.id === 'worldbreaker-drive')!, 5)).toContain('+70% [Last Flare] direct damage; -21% maximum HP');
+    expect(conduitEffect(conduits.find((c) => c.id === 'worldbreaker-drive')!, 5)).toContain('+70% [Last Flare] Direct Damage; -21% to your maximum HP.');
   });
   const destinations = [undefined, ...playableDungeons.map((element) => ({ element, stage: 1 })),
     ...(['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines'] as const).map((mode) => ({ mode, stage: 1 }))];

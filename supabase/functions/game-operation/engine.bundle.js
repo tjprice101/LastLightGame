@@ -179,7 +179,7 @@ var treasuryPrismaticaText = `Each enemy drops ${range(treasuryFractalisDrop(65)
 // src/content/conduit-redesign.ts
 var conduitRedesign = {
   "vigil-core": {
-    "description": "+6% -> +21% maximum HP.",
+    "description": "+6% -> +21% to your maximum HP.",
     "ranges": [
       {
         "base": 6,
@@ -190,7 +190,7 @@ var conduitRedesign = {
     ]
   },
   "siegebound-drive": {
-    "description": "+8% -> +16% Normal Attack direct damage.",
+    "description": "+8% -> +16% [Normal Attack] Direct Damage.",
     "ranges": [
       {
         "base": 8,
@@ -212,7 +212,7 @@ var conduitRedesign = {
     ]
   },
   "parallax-relay": {
-    "description": "The first offensive activation each encounter has +15 -> +30 pp Critical Rate, capped at 100%. Consume once even if it hits several enemies.",
+    "description": "Every Attack Action gains +15 -> +30 percentage points of Critical Rate.",
     "ranges": [
       {
         "base": 15,
@@ -223,7 +223,7 @@ var conduitRedesign = {
     ]
   },
   "fracture-reservoir": {
-    "description": "+10 -> +35 Gauge capacity; enter a fresh encounter with 5 -> 10 Gauge, capped by that capacity. Not reapplied by Settings or round changes.",
+    "description": "+10 -> +35 Gauge capacity; begin each Battle with 5 -> 10 Gauge.",
     "ranges": [
       {
         "base": 10,
@@ -240,7 +240,7 @@ var conduitRedesign = {
     ]
   },
   "prism-splinter-socket": {
-    "description": "+10% -> +20% Skill 1 direct damage.",
+    "description": "+10% -> +20% [Skill 1] Direct Damage.",
     "ranges": [
       {
         "base": 10,
@@ -262,7 +262,7 @@ var conduitRedesign = {
     ]
   },
   "fieldbrace-coupler": {
-    "description": "Take 4% -> 8% less direct enemy damage while you have any shield immediately before impact. Applies to the whole hit even if it breaks the shield.",
+    "description": "Take 4% -> 8% less enemy Direct Damage while you have a Shield immediately before impact. This applies to the whole hit, even if it breaks the Shield.",
     "ranges": [
       {
         "base": 4,
@@ -273,7 +273,7 @@ var conduitRedesign = {
     ]
   },
   "reserve-torque-crank": {
-    "description": "Defense grants 3 -> 6 Gauge, once per Defense action.",
+    "description": "[Defense] grants 3 -> 6 Gauge each time you use it.",
     "ranges": [
       {
         "base": 3,
@@ -284,7 +284,7 @@ var conduitRedesign = {
     ]
   },
   "crosspin-governor": {
-    "description": "+10% -> +20% Skill 2 direct damage.",
+    "description": "+10% -> +20% [Skill 2] Direct Damage.",
     "ranges": [
       {
         "base": 10,
@@ -295,7 +295,7 @@ var conduitRedesign = {
     ]
   },
   "duplex-heart": {
-    "description": "After the first direct enemy hit each phase that actually removes your HP, heal the most injured other living ally for 5% -> 10% H. Cannot heal yourself or revive.",
+    "description": "Each enemy hit that removes your HP with Direct Damage heals the most injured other living ally for 5% -> 10% of your maximum HP.",
     "ranges": [
       {
         "base": 5,
@@ -306,7 +306,7 @@ var conduitRedesign = {
     ]
   },
   "spearwheel-engine": {
-    "description": "Skill 1 ignores 15% -> 30% enemy Defense. Does not bypass shields.",
+    "description": "[Skill 1] ignores 15% -> 30% enemy Defense. Does not bypass shields.",
     "ranges": [
       {
         "base": 15,
@@ -317,7 +317,7 @@ var conduitRedesign = {
     ]
   },
   "falcon-sight": {
-    "description": "Two consecutive noncritical offensive activations prime your next offensive activation to critically hit. That activation also gains +10% -> +20% Critical Damage multiplier. A native critical clears the count; AoE counts once and the primed activation uses one consumed charge for all its targets. No additional RNG roll.",
+    "description": "Two consecutive noncritical Attack Actions prime the next Attack Action to critically hit. That Attack Action also gains +10% -> +20% Critical Damage. A critical hit resets the count; an AoE Attack Action counts once. No additional RNG roll.",
     "ranges": [
       {
         "base": 10,
@@ -328,7 +328,7 @@ var conduitRedesign = {
     ]
   },
   "aegis-capacitor": {
-    "description": "When any shield on you absorbs positive direct enemy damage, gain 4 -> 8 Gauge once per enemy phase. Full-block and partial-block hits qualify; no HP loss is required.",
+    "description": "Whenever your Shield absorbs Direct Damage from an enemy, gain 4 -> 8 Gauge. Full and partial absorption qualify; HP loss is not required.",
     "ranges": [
       {
         "base": 4,
@@ -339,7 +339,7 @@ var conduitRedesign = {
     ]
   },
   "springwell-pump": {
-    "description": "+20% -> +40% native active-ability healing offered before missing-HP clipping. Does not improve passive or Conduit healing.",
+    "description": "+20% -> +40% healing from your active abilities before missing-HP clipping. Passive and Conduit healing are unaffected.",
     "ranges": [
       {
         "base": 20,
@@ -350,7 +350,7 @@ var conduitRedesign = {
     ]
   },
   "twinpulse-bellows": {
-    "description": "Your second consecutive Normal Attack gains +25% -> +50% direct damage. The sequence then resets; any other manual action resets it too. A target change does not reset it.",
+    "description": "Each [Normal Attack] gains +25% -> +50% Direct Damage.",
     "ranges": [
       {
         "base": 25,
@@ -361,7 +361,7 @@ var conduitRedesign = {
     ]
   },
   "glassroot-gimbal": {
-    "description": "Gain Critical Rate proportional to missing HP: up to +12 -> +24 pp at 75% missing HP, capped there. Snapshot before the offensive activation.",
+    "description": "Critical Rate increases with missing HP, adding +12 -> +24 percentage points at 75% missing HP. Snapshot before each Attack Action.",
     "ranges": [
       {
         "base": 12,
@@ -372,24 +372,13 @@ var conduitRedesign = {
     ]
   },
   "lifeline-flywheel": {
-    "description": "After a native offensive activation, heal yourself for 8% -> 16% of its actual direct HP damage, capped at 4% -> 8% H per activation. Does not count overkill, shields, Burn or generated strikes.",
+    "description": "After each Attack Action, heal yourself for 8% -> 16% of its Direct Damage to HP. Does not count overkill, Shields, [Burn] or Bonus Strikes.",
     "ranges": [
-      {
-        "base": 8,
-        "maximum": 16,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 4,
-        "maximum": 8,
-        "percent": true,
-        "step": false
-      }
+      { "base": 8, "maximum": 16, "percent": true, "step": false }
     ]
   },
   "sentinel-aperture": {
-    "description": "Reduce the final direct damage of enemy critical hits against you by 25% -> 50%. Ordinary noncritical hits are unchanged.",
+    "description": "Reduce the final Direct Damage of enemy critical hits against you by 25% -> 50%.",
     "ranges": [
       {
         "base": 25,
@@ -400,7 +389,7 @@ var conduitRedesign = {
     ]
   },
   "wardglass-transformer": {
-    "description": "+20% -> +40% native shield amount offered before refresh comparison. Generated shields are unchanged.",
+    "description": "+20% -> +40% Shield amount from your abilities before the Shield refresh comparison. Conduit Shields do not receive this increase.",
     "ranges": [
       {
         "base": 20,
@@ -428,24 +417,13 @@ var conduitRedesign = {
     ]
   },
   "breach-pendulum": {
-    "description": "After a native offensive activation, offer yourself a refresh-only shield equal to 8% -> 16% of its total actual direct HP damage, capped at 5% -> 10% H. No shield from Burn, overkill, absorbed damage or generated strikes.",
+    "description": "After each Attack Action, grant yourself a Shield equal to 8% -> 16% of its total Direct Damage to HP. [Burn], overkill, absorbed damage and Bonus Strikes do not count. Shields replace one another and do not stack.",
     "ranges": [
-      {
-        "base": 8,
-        "maximum": 16,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 5,
-        "maximum": 10,
-        "percent": true,
-        "step": false
-      }
+      { "base": 8, "maximum": 16, "percent": true, "step": false }
     ]
   },
   "coilfeed-ratchet": {
-    "description": "Skill 2 costs 3 -> 6 less Gauge, minimum 1 after all ordinary-skill discounts. Does not change Last Flare or grant Gauge.",
+    "description": "[Skill 2] costs 3 -> 6 less Gauge. This does not change [Last Flare] or grant Gauge.",
     "ranges": [
       {
         "base": 3,
@@ -456,7 +434,7 @@ var conduitRedesign = {
     ]
   },
   "opal-indexer": {
-    "description": "Your native Weaken applications last +1 -> +2 enemy phases, maximum 6 remaining phases. Reapplication refreshes rather than adds durations. Does not grant Weaken to a kit without it.",
+    "description": "Your [Weaken] applications last +1 -> +2 Enemy Turns. Reapplication refreshes the duration. This does not grant [Weaken] to a kit without it.",
     "ranges": [
       {
         "base": 1,
@@ -467,7 +445,7 @@ var conduitRedesign = {
     ]
   },
   "resonance-crucible": {
-    "description": "+20% -> +40% damage to Burn natively applied by you. Snapshot potency at application; no duration change or new Burn.",
+    "description": "+20% -> +40% damage to [Burn] applied by you. Snapshot potency at application; no duration change or new [Burn].",
     "ranges": [
       {
         "base": 20,
@@ -478,7 +456,7 @@ var conduitRedesign = {
     ]
   },
   "worldbreaker-drive": {
-    "description": "+35% -> +70% Last Flare direct damage; -6% -> -21% maximum HP. Recovery remains.",
+    "description": "+35% -> +70% [Last Flare] Direct Damage; -6% -> -21% to your maximum HP. Recovery applies as usual.",
     "ranges": [
       {
         "base": 35,
@@ -495,7 +473,7 @@ var conduitRedesign = {
     ]
   },
   "immortal-vessel": {
-    "description": "+25% -> +87.5% maximum HP; -6% -> -21% Attack. No resurrection or healing proc.",
+    "description": "+25% -> +87.5% to your maximum HP; -6% -> -21% Attack. It does not revive or trigger healing effects.",
     "ranges": [
       {
         "base": 25,
@@ -512,7 +490,7 @@ var conduitRedesign = {
     ]
   },
   "citadel-spine": {
-    "description": "+25% -> +87.5% Defense; -6% -> -21% Elemental Damage. Native shield offers additionally include 10% -> 20% D.",
+    "description": "+25% -> +87.5% Defense; -6% -> -21% Elemental Damage. Your Shield abilities also add 10% -> 20% of your Defense to the Shield amount.",
     "ranges": [
       {
         "base": 25,
@@ -535,7 +513,7 @@ var conduitRedesign = {
     ]
   },
   "astral-prism": {
-    "description": "+25% -> +87.5% Elemental Damage; -6% -> -21% Defense. A zero native Elemental Damage stat remains zero.",
+    "description": "+25% -> +87.5% Elemental Damage; -6% -> -21% Defense.",
     "ranges": [
       {
         "base": 25,
@@ -552,7 +530,7 @@ var conduitRedesign = {
     ]
   },
   "judgment-lens": {
-    "description": "Native skill/Last Flare critical damage is +40% -> +80%; your Normal Attacks cannot critically hit. Last Flare/native critical resources still follow their normal eligibility.",
+    "description": "Critical Direct Damage from [Skill 1], [Skill 2] and [Last Flare] is +40% -> +80%; [Normal Attack] cannot critically hit. [Last Flare] and critical resources follow their normal eligibility.",
     "ranges": [
       {
         "base": 40,
@@ -563,7 +541,7 @@ var conduitRedesign = {
     ]
   },
   "siege-cantilever": {
-    "description": "Your natively all-enemy abilities gain +60% -> +120% direct damage when exactly one enemy is alive at activation start. Does not improve originally single-target abilities or support outcomes.",
+    "description": "Your all-enemy Attack Actions gain +60% -> +120% Direct Damage when exactly one enemy is alive as the Attack Action begins. Single-target Attack Actions and support effects do not gain this bonus.",
     "ranges": [
       {
         "base": 60,
@@ -574,7 +552,7 @@ var conduitRedesign = {
     ]
   },
   "nullsong-transmission": {
-    "description": "+40% -> +80% Normal Attack direct damage; -12% -> -24% Skill 1/Skill 2 direct damage. Last Flare is unchanged.",
+    "description": "+40% -> +80% [Normal Attack] Direct Damage; -12% -> -24% [Skill 1] and [Skill 2] Direct Damage.",
     "ranges": [
       {
         "base": 40,
@@ -591,7 +569,7 @@ var conduitRedesign = {
     ]
   },
   "horizon-heartcase": {
-    "description": "+20% -> +70% maximum HP; -4% -> -14% Defense. At the start of your forced Last Flare recovery turn, restore 15% -> 30% of missing HP once.",
+    "description": "+20% -> +70% to your maximum HP; -4% -> -14% Defense. At the start of each forced [Last Flare] recovery turn, restore 15% -> 30% of missing HP.",
     "ranges": [
       {
         "base": 20,
@@ -614,7 +592,7 @@ var conduitRedesign = {
     ]
   },
   "stasis-reliquary": {
-    "description": "Once per encounter, a lethal direct hit leaves you at 1 HP and prevents further direct HP loss for that enemy phase. Next player turn you cannot manually act, even if otherwise ready. Duration and skip do not scale; at that turn's start gain a shield of 10% -> 20% H. Burn can still defeat you.",
+    "description": "When a Direct Damage hit would defeat you, stay at 1 HP and prevent further Direct Damage to HP for that Enemy Turn. At the next player-turn start, gain a Shield of 10% -> 20% of your maximum HP. [Burn] can defeat you.",
     "ranges": [
       {
         "base": 10,
@@ -625,24 +603,13 @@ var conduitRedesign = {
     ]
   },
   "granite-hourglass": {
-    "description": "At the next player-turn start, gain a refresh-only shield equal to 30% -> 60% of actual direct HP damage you lost in the preceding enemy phase, capped at 10% -> 20% H. Clear the ledger after settlement; no effect while fallen.",
+    "description": "At the next player-turn start, gain a Shield equal to 30% -> 60% of the Direct Damage to HP you lost during the preceding Enemy Turn. Shields replace one another and do not stack; no effect while fallen.",
     "ranges": [
-      {
-        "base": 30,
-        "maximum": 60,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 10,
-        "maximum": 20,
-        "percent": true,
-        "step": false
-      }
+      { "base": 30, "maximum": 60, "percent": true, "step": false }
     ]
   },
   "pale-bulwark-diadem": {
-    "description": "While you are above 75% HP, take 15% -> 30% less direct damage. Below or at 75% HP, native shields you cast on yourself are 25% -> 50% stronger instead. Snapshot each hit/offer separately.",
+    "description": "While you are above 75% HP, take 15% -> 30% less Direct Damage. Below or at 75% HP, Shields you cast on yourself are 25% -> 50% stronger instead. Snapshot each hit/amount separately.",
     "ranges": [
       {
         "base": 15,
@@ -659,7 +626,7 @@ var conduitRedesign = {
     ]
   },
   "starvein-conductor": {
-    "description": "Before an ability that natively applies Burn, pay 5% H, leaving at least 1 HP. If the full cost cannot be paid, the bonus does not apply. That activation's Burn deals +40% -> +80% damage. Self-payment is not damage taken, cannot trigger effects and does not affect direct damage.",
+    "description": "Before an ability that applies [Burn], pay 5% of your maximum HP while keeping at least 1 HP. If you cannot pay, the bonus does not apply. The resulting [Burn] deals +40% -> +80% damage. Self-payment is not damage taken and does not trigger effects or affect Direct Damage.",
     "ranges": [
       {
         "base": 40,
@@ -670,7 +637,7 @@ var conduitRedesign = {
     ]
   },
   "meridian-inverter": {
-    "description": "Your native shield abilities restore living allies' HP instead of offering their authored shields, at 75% -> 150% of the final native shield offer. They no longer create native shield growth/absorption resources. Existing unrelated shields remain.",
+    "description": "Your Shield abilities restore living allies' HP at 75% -> 150% of the final Shield amount and grant no Shield. Shields from other sources are unaffected.",
     "ranges": [
       {
         "base": 75,
@@ -681,7 +648,7 @@ var conduitRedesign = {
     ]
   },
   "execution-orrery": {
-    "description": "Native direct damage gains +50% -> +100% against a target at or below 25% HP immediately before that target's hit. No instant execution, extra action or kill reward.",
+    "description": "Attack Actions gain +50% -> +100% Direct Damage against a target at or below 25% HP immediately before each hit. No instant execution, extra action or kill reward.",
     "ranges": [
       {
         "base": 50,
@@ -692,7 +659,7 @@ var conduitRedesign = {
     ]
   },
   "verdict-caliper": {
-    "description": "Your offensive activations cannot crit, but gain +35% -> +70% direct damage. Burn is unchanged; no critical-trigger effects can fire from these activations.",
+    "description": "Your Attack Actions cannot critically hit, but gain +35% -> +70% Direct Damage. [Burn] is unaffected; critical-trigger effects do not activate from these Attack Actions.",
     "ranges": [
       {
         "base": 35,
@@ -703,7 +670,7 @@ var conduitRedesign = {
     ]
   },
   "infernic-phoenix-reactor": {
-    "description": "Once per encounter, after a hostile lethal hit/tick, revive yourself at 25% -> 50% H after that hit resolves. Gauge becomes 0; keep spent/recovery dates and cannot act until a later legal turn. The charge is consumed before restoration.",
+    "description": "After each hostile lethal hit or [Burn] tick resolves, revive yourself at 25% -> 50% of your maximum HP and set Gauge to 0. Any existing recovery applies.",
     "ranges": [
       {
         "base": 25,
@@ -714,24 +681,13 @@ var conduitRedesign = {
     ]
   },
   "aquatic-leviathan-pump": {
-    "description": "Total actual absorption during an enemy phase by your native shields becomes a healing pool equal to 30% -> 60% of the blocked damage, capped at 10% -> 20% H. At next player-turn start, divide the pool equally among living injured allies, clipping each share without redistribution. Requires you alive at settlement.",
+    "description": "Total absorption during an Enemy Turn by your Shields becomes a healing pool equal to 30% -> 60% of the blocked damage. At next player-turn start, divide the pool equally among living injured allies, clipping each share without redistribution. Requires you alive at settlement.",
     "ranges": [
-      {
-        "base": 30,
-        "maximum": 60,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 10,
-        "maximum": 20,
-        "percent": true,
-        "step": false
-      }
+      { "base": 30, "maximum": 60, "percent": true, "step": false }
     ]
   },
   "tectonic-atlas-bastion": {
-    "description": "Defense taunts all living enemies for that enemy phase and reduces direct damage to you by 10% -> 20%. Only one squad taunt can be active; latest legal taunt wins.",
+    "description": "[Defense] taunts all living enemies for that Enemy Turn and reduces Direct Damage to you by 10% -> 20%. squad taunt can be active; latest legal taunt wins.",
     "ranges": [
       {
         "base": 10,
@@ -742,41 +698,19 @@ var conduitRedesign = {
     ]
   },
   "efflorescent-worldtree-heart": {
-    "description": "Your native active-ability overhealing plants a seed on that recipient worth 50% -> 100% of the wasted heal, capped at 10% -> 20% H. At next player-turn start, the seed heals that living recipient once; stronger seed refreshes, never stacks.",
+    "description": "Overhealing from your active abilities adds a [Seed] on the recipient worth 50% -> 100% of wasted healing. At the next player-turn start, all stored [Seed] healing restores the recipient's HP.",
     "ranges": [
-      {
-        "base": 50,
-        "maximum": 100,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 10,
-        "maximum": 20,
-        "percent": true,
-        "step": false
-      }
+      { "base": 50, "maximum": 100, "percent": true, "step": false }
     ]
   },
   "voltaic-thunderbird-coil": {
-    "description": "Once per offensive activation with a native critical HP hit, arc to the healthiest other living enemy for 30% -> 60% of that first critical's actual HP damage, capped at 50% -> 100% A. No other enemy means no arc.",
+    "description": "Action with a critical Direct Damage, arc to the healthiest other living enemy for 30% -> 60% of that critical's HP damage. No other enemy means no arc.",
     "ranges": [
-      {
-        "base": 30,
-        "maximum": 60,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 50,
-        "maximum": 100,
-        "percent": true,
-        "step": false
-      }
+      { "base": 30, "maximum": 60, "percent": true, "step": false }
     ]
   },
   "atmospheric-griffin-turbine": {
-    "description": "After your Normal Attack deals direct HP damage, each other living ally gains 3 -> 6 Gauge, once per activation. No return to you and no gain on shield-only damage.",
+    "description": "After your [Normal Attack] deals direct HP damage, each other living ally gains 3 -> 6 Gauge. No return to you and no gain on shield-only damage.",
     "ranges": [
       {
         "base": 3,
@@ -787,24 +721,13 @@ var conduitRedesign = {
     ]
   },
   "luminous-seraph-mirror": {
-    "description": "A native critical activation heals each living ally for 8% -> 16% of its total direct HP damage, capped at 3% -> 6% H per ally per activation.",
+    "description": "A critical Attack Action heals each living ally for 8% -> 16% of its total direct HP damage.",
     "ranges": [
-      {
-        "base": 8,
-        "maximum": 16,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 3,
-        "maximum": 6,
-        "percent": true,
-        "step": false
-      }
+      { "base": 8, "maximum": 16, "percent": true, "step": false }
     ]
   },
   "ominous-eclipse-mantle": {
-    "description": "When a native damaging skill hits your already-Weakened target, consume one remaining phase of your Weaken after impact to ignore 40% -> 60% of that target's Defense for this hit. One consumption per target per activation; never consume another owner's Weaken.",
+    "description": "When a damaging Attack Action hits a target already affected by your [Weaken], consume one remaining Enemy Turn of that [Weaken] after impact to ignore 40% -> 60% of the target's Defense for the hit. Each hit can consume one Enemy Turn. Never consumes another owner's [Weaken].",
     "ranges": [
       {
         "base": 40,
@@ -815,58 +738,25 @@ var conduitRedesign = {
     ]
   },
   "tranquilitic-kirin-cradle": {
-    "description": "Defense heals the lowest-HP-ratio living ally for 50% -> 100% D, capped at 10% -> 20% H. Self is eligible; no shield or Gauge is granted.",
+    "description": "[Defense] heals the lowest-HP-ratio living ally for 50% -> 100% of your Defense. Self is eligible; no shield or Gauge is granted.",
     "ranges": [
-      {
-        "base": 50,
-        "maximum": 100,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 10,
-        "maximum": 20,
-        "percent": true,
-        "step": false
-      }
+      { "base": 50, "maximum": 100, "percent": true, "step": false }
     ]
   },
   "chaotic-ouroboros-core": {
-    "description": "On Last Flare, convert only Gauge above its actual paid cost into a refresh-only self shield: 0.3% -> 0.6% H per excess Gauge, capped at 15% -> 30% H. Consume that excess Gauge, even if a stronger shield makes the offer redundant; normal recovery remains.",
+    "description": "On [Last Flare], convert Gauge above its paid cost into a Shield: 0.3% -> 0.6% of your maximum HP per excess Gauge. Consume the excess Gauge even if a stronger Shield replaces the new Shield. [Last Flare] recovery applies as usual.",
     "ranges": [
-      {
-        "base": 0.3,
-        "maximum": 0.6,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 15,
-        "maximum": 30,
-        "percent": true,
-        "step": false
-      }
+      { "base": 0.3, "maximum": 0.6, "percent": true, "step": false }
     ]
   },
   "infernic-cinder-testament": {
-    "description": "Each consecutive damaging tick of your Burn on the same enemy adds +20% -> +40% Burn damage per preceding tick, capped at +60% -> +120%. Reapplying Burn resets this item's tick streak on that target.",
+    "description": "Each consecutive damaging tick of your [Burn] on the same enemy adds +20% -> +40% [Burn] damage per preceding tick. Reapplying [Burn] resets this item's tick streak on that target.",
     "ranges": [
-      {
-        "base": 20,
-        "maximum": 40,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 60,
-        "maximum": 120,
-        "percent": true,
-        "step": false
-      }
+      { "base": 20, "maximum": 40, "percent": true, "step": false }
     ]
   },
   "aquatic-undertide-chronometer": {
-    "description": "Your first native Weaken application to each enemy postpones its next scheduled skill by 1 -> 2 enemy phases; it uses Normal Attack when postponed. Later schedule intervals shift by the same amount. Once per enemy per encounter, including bosses.",
+    "description": "Each [Weaken] you apply to an enemy postpones its next scheduled skill by 1 -> 2 Enemy Turns; it uses [Normal Attack] when postponed. Later schedule intervals shift by the same amount.",
     "ranges": [
       {
         "base": 1,
@@ -877,24 +767,18 @@ var conduitRedesign = {
     ]
   },
   "tectonic-faultkeeper-loom": {
-    "description": "While defending, intercept 30% -> 60% of each other ally's incoming post-mitigation direct damage, up to 20% -> 40% H routed total per phase. Your shield then absorbs routed damage; it is not mitigated a second time.",
+    "description": "While defending, intercept 30% -> 60% of each other ally's incoming post-mitigation Direct Damage. Your Shield absorbs routed damage; it is not mitigated a second time.",
     "ranges": [
       {
         "base": 30,
         "maximum": 60,
         "percent": true,
         "step": false
-      },
-      {
-        "base": 20,
-        "maximum": 40,
-        "percent": true,
-        "step": false
       }
     ]
   },
   "efflorescent-verdant-covenant": {
-    "description": "Your effective native active heal of another ally primes +20% -> +40% direct damage for that recipient's next Skill 1 or Skill 2, consumed once for the entire activation. Stronger refresh wins; Last Flare/Normal do not consume it.",
+    "description": "An effective active heal of another ally primes +20% -> +40% Direct Damage for that recipient's next [Skill 1] or [Skill 2]. The bonus adds to other Verdant bonuses. [Last Flare] and [Normal Attack] do not consume it.",
     "ranges": [
       {
         "base": 20,
@@ -905,7 +789,7 @@ var conduitRedesign = {
     ]
   },
   "voltaic-stormstep-dynamo": {
-    "description": "Switching directly between Skill 1 and Skill 2 gives the new action +25% -> +50% direct damage. Repeating a slot, using Normal/Defense/Last Flare, or a non-damaging new action breaks the chain. First action receives no bonus.",
+    "description": "Switching directly between [Skill 1] and [Skill 2] gives the new action +25% -> +50% Direct Damage. Repeating a slot, using [Normal Attack]/[Defense]/[Last Flare], or a non-damaging new action breaks the chain. action receives no bonus.",
     "ranges": [
       {
         "base": 25,
@@ -916,7 +800,7 @@ var conduitRedesign = {
     ]
   },
   "atmospheric-skythread-rudder": {
-    "description": "Defense primes one Tailwind. Your next ordinary skill costs 10 -> 20 less Gauge, minimum 1 after discounts. Consume only on legal activation; refresh one charge, never stack.",
+    "description": "Each [Defense] grants a [Tailwind]. Each [Tailwind] reduces the cost of your next available [Skill 1] or [Skill 2] by 10 -> 20 Gauge. [Tailwind] charges stack and are spent when you use an ordinary skill.",
     "ranges": [
       {
         "base": 10,
@@ -927,7 +811,7 @@ var conduitRedesign = {
     ]
   },
   "luminous-dawn-witness-array": {
-    "description": "Each noncritical Normal Attack stores a Witness, maximum 3. Your next native critical activation consumes all Witnesses, adding 15% -> 30% A per Witness as one generated strike to its primary target, after native damage. No strike if that target has fallen.",
+    "description": "Each noncritical [Normal Attack] adds a [Witness]. The next critical Attack Action consumes all [Witnesses], adding 15% -> 30% of your Attack per [Witness] as a Bonus Strike against its primary target after the Attack Action. No strike if that target has fallen.",
     "ranges": [
       {
         "base": 15,
@@ -938,7 +822,7 @@ var conduitRedesign = {
     ]
   },
   "ominous-nightglass-archive": {
-    "description": "A native damaging skill places one personal Fracture on each surviving target, maximum 3 per owner/target. Your Normal Attack consumes them for +10% -> +20% direct damage each. Marks are placed after impact; the current skill never consumes them by default.",
+    "description": "Each damaging Attack Action adds a personal [Fracture] to every surviving target. Your [Normal Attack] consumes them for +10% -> +20% Direct Damage per mark. Marks are placed after impact; the current [Skill] does not consume them by default.",
     "ranges": [
       {
         "base": 10,
@@ -949,7 +833,7 @@ var conduitRedesign = {
     ]
   },
   "tranquilitic-stillhour-carillon": {
-    "description": "At the start of your forced Last Flare recovery turn, gain 15 -> 30 Gauge once and give the lowest-Gauge other living ally the same amount. No gain on an ordinary unspent turn, stasis skip or missing action slot.",
+    "description": "At the start of a forced [Last Flare] recovery turn, gain 15 -> 30 Gauge and give the lowest-Gauge other living ally the same amount. No gain on an ordinary unspent turn or when no action slot is available.",
     "ranges": [
       {
         "base": 15,
@@ -960,7 +844,7 @@ var conduitRedesign = {
     ]
   },
   "chaotic-paradox-spindle": {
-    "description": "During forced Last Flare recovery, permit one manual Normal Attack at 50% -> 75% normal direct damage. No skills/Defense; Normal costs/gains and native triggers remain. The recovery date is not shortened and no second action is allowed.",
+    "description": "During forced [Last Flare] recovery, your [Normal Attack] deals 50% -> 75% of its normal Direct Damage. Skills and [Defense] are unavailable. [Normal Attack] uses its normal Gauge costs, gains and Conduit effects; the recovery date is fixed.",
     "ranges": [
       {
         "base": 50,
@@ -971,24 +855,13 @@ var conduitRedesign = {
     ]
   },
   "tempered-strike-link": {
-    "description": "A Normal Attack against your existing Burn consumes one remaining Burn phase after native impact and adds one generated strike equal to 80% -> 160% of that Burn's current next-tick damage, capped at 80% -> 160% A. One detonation per activation; if native damage kills the target, do not consume or strike.",
+    "description": "Each [Normal Attack] against an enemy with your [Burn] consumes one remaining [Burn] Enemy Turn after impact and adds a Bonus Strike equal to 80% -> 160% of that [Burn]'s next-tick damage. If the Attack Action defeats the enemy, it does not consume [Burn] or strike.",
     "ranges": [
-      {
-        "base": 80,
-        "maximum": 160,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 80,
-        "maximum": 160,
-        "percent": true,
-        "step": false
-      }
+      { "base": 80, "maximum": 160, "percent": true, "step": false }
     ]
   },
   "mending-valve": {
-    "description": "A native direct kill heals the most injured living ally for 8% -> 16% H, once per activation regardless of kills. Self is eligible.",
+    "description": "Each enemy you defeat with Direct Damage heals the most injured living ally for 8% -> 16% of your maximum HP, including you.",
     "ranges": [
       {
         "base": 8,
@@ -999,24 +872,13 @@ var conduitRedesign = {
     ]
   },
   "ward-stitch-spool": {
-    "description": "Each native shield offer additionally stitches 25% -> 50% of that offer onto that recipient's surviving shield, after normal refresh, capped at 30% -> 60% R total shield. If already above the cap, do not reduce it. This added layer is Conduit-origin.",
+    "description": "Each Shield amount also adds 25% -> 50% of that amount to the recipient's Shield after the normal refresh. The added amount is a Shield and follows the same replacement rules.",
     "ranges": [
-      {
-        "base": 25,
-        "maximum": 50,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 30,
-        "maximum": 60,
-        "percent": true,
-        "step": false
-      }
+      { "base": 25, "maximum": 50, "percent": true, "step": false }
     ]
   },
   "cinder-metering-nozzle": {
-    "description": "When an enemy carrying your native Burn dies with phases remaining, copy that remaining Burn to the healthiest living enemy at 25% -> 50% tick potency. A stronger existing Burn is not overwritten. Copied Burn cannot spread again or trigger any Conduit/native resource.",
+    "description": "When an enemy carrying your [Burn] dies with phases remaining, copy that remaining [Burn] to the healthiest living enemy at 25% -> 50% tick potency. A stronger existing [Burn] is not overwritten. Copied [Burn] cannot spread again or trigger any Conduit or resource.",
     "ranges": [
       {
         "base": 25,
@@ -1027,7 +889,7 @@ var conduitRedesign = {
     ]
   },
   "pulse-trigger-pawl": {
-    "description": "A Skill 1/Skill 2 activation that deals native critical HP damage refunds 8 -> 16 Gauge once, capped at that action's actual paid cost. No refund on Normal, Last Flare or generated hits.",
+    "description": "A critical [Skill 1] or [Skill 2] hit that deals HP damage grants 8 -> 16 Gauge. [Normal Attack], [Last Flare] and Bonus Strikes grant no Gauge.",
     "ranges": [
       {
         "base": 8,
@@ -1038,7 +900,7 @@ var conduitRedesign = {
     ]
   },
   "firstlight-cam": {
-    "description": "After a native damaging Normal Attack, donate up to 8 -> 16 of your remaining Gauge to the lowest-Gauge other living ally, capped by their free capacity. Debit and credit the same amount; no recipient means no cost.",
+    "description": "After a damaging [Normal Attack], transfer 8 -> 16 Gauge to the lowest-Gauge other living ally.",
     "ranges": [
       {
         "base": 8,
@@ -1049,7 +911,7 @@ var conduitRedesign = {
     ]
   },
   "secondbeat-rack": {
-    "description": "If an enemy carrying your native Weaken dies, transfer its remaining duration and reduction to the highest-Attack living enemy. Transfer potency is 60% -> 100% of the old reduction, duration at most 3. Stronger existing Weaken wins; transferred Weaken cannot transfer again or generate resources.",
+    "description": "If an enemy carrying your [Weaken] dies, transfer its remaining duration and reduction to the highest-Attack living enemy. Transfer potency is 60% -> 100% of the old reduction, duration. Stronger existing [Weaken] wins; transferred [Weaken] cannot transfer again or generate resources.",
     "ranges": [
       {
         "base": 60,
@@ -1060,69 +922,29 @@ var conduitRedesign = {
     ]
   },
   "flare-focusing-iris": {
-    "description": "On an actual native Infernic Embers spend, add a generated strike to each enemy already carrying your Burn for 25% -> 50% of its next-tick damage per spent charge, capped at 60% -> 120% A per target per activation. No added Burn phase is consumed or granted.",
+    "description": "On an [Infernic Embers] spend, add a Bonus Strike to each enemy already carrying your [Burn] for 25% -> 50% of its next-tick damage per spent charge. No added [Burn] phase is consumed or granted.",
     "ranges": [
-      {
-        "base": 25,
-        "maximum": 50,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 60,
-        "maximum": 120,
-        "percent": true,
-        "step": false
-      }
+      { "base": 25, "maximum": 50, "percent": true, "step": false }
     ]
   },
   "clearwater-manifold": {
-    "description": "Native Gauge gain that would exceed your capacity instead gives the lowest-Gauge other living ally 50% -> 100% of that overflow, capped at 20 -> 40 Gauge per player round including its enemy phase. Never routes Conduit-origin Gauge or relays another overflow.",
+    "description": "Gauge gained from your abilities that exceeds your capacity gives the lowest-Gauge other living ally 50% -> 100% of the overflow. Conduit Gauge does not overflow to allies, and routed Gauge does not trigger another overflow.",
     "ranges": [
-      {
-        "base": 50,
-        "maximum": 100,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 20,
-        "maximum": 40,
-        "percent": false,
-        "step": false
-      }
+      { "base": 50, "maximum": 100, "percent": true, "step": false }
     ]
   },
   "aegis-return-spring": {
-    "description": "Native shield growth on another ally primes one Critical Seal on them. Their next enemy critical direct hit is resolved with multiplier 1 instead of the rolled critical multiplier, then the seal is consumed. Grant at most 1 -> 2 seals total across the team per round; each recipient holds one. Critical RNG/result identity is otherwise unchanged.",
-    "ranges": [
-      {
-        "base": 1,
-        "maximum": 2,
-        "percent": false,
-        "step": true
-      }
-    ]
+    "description": "Each Shield gain on another ally grants that ally a [Critical Seal]. Each [Critical Seal] makes an enemy critical hit against that ally use multiplier 1, then consumes one [Critical Seal]. Each hit uses its ordinary critical RNG result.",
+    "ranges": []
   },
   "emberlife-kiln": {
-    "description": "Actual HP damage from your native Burn heals you for 20% -> 40% of that damage, capped at 6% -> 12% H total per enemy phase. No healing from propagated Burn or generated echoes.",
+    "description": "Each point of HP damage from your [Burn] heals you for 20% -> 40% of that damage. Propagated [Burn] and Bonus Strikes do not heal you.",
     "ranges": [
-      {
-        "base": 20,
-        "maximum": 40,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 6,
-        "maximum": 12,
-        "percent": true,
-        "step": false
-      }
+      { "base": 20, "maximum": 40, "percent": true, "step": false }
     ]
   },
   "tension-governor": {
-    "description": "Native Weaken you apply is +5 -> +10 pp stronger, capped at 60% total reduction. Duration is unchanged; does not create Weaken.",
+    "description": "Your [Weaken] is +5 -> +10 percentage points stronger; it does not create [Weaken].",
     "ranges": [
       {
         "base": 5,
@@ -1133,24 +955,13 @@ var conduitRedesign = {
     ]
   },
   "covercharge-drum": {
-    "description": "After a native active team heal, redirect 40% -> 80% of the total overheal to the most injured other living ally, capped at 10% -> 20% H per activation. This is immediate generated healing, not another native heal or a saved seed.",
+    "description": "After a active team heal, redirect 40% -> 80% of the total overheal to the most injured other living ally. This is immediate Conduit healing, not another heal or a saved seed.",
     "ranges": [
-      {
-        "base": 40,
-        "maximum": 80,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 10,
-        "maximum": 20,
-        "percent": true,
-        "step": false
-      }
+      { "base": 40, "maximum": 80, "percent": true, "step": false }
     ]
   },
   "sootwake-crucible": {
-    "description": "Your damaging native Burn tick primes one Sootwake on that enemy. The next other ally's native direct hit against it gains +20% -> +40% damage and consumes the Sootwake. Expires at the end of the following player round; refresh one mark, never stack. Cannot be consumed by you or generated damage.",
+    "description": "When your [Burn] tick leaves an enemy alive, add a [Sootwake] to that enemy. Each [Sootwake] adds +20% -> +40% Direct Damage to the next other ally's hit against that enemy, then all stored [Sootwake] marks are consumed. Marks last through the following player Round and stack.",
     "ranges": [
       {
         "base": 20,
@@ -1161,52 +972,28 @@ var conduitRedesign = {
     ]
   },
   "tidebound-reflector": {
-    "description": "Once per enemy phase, the first direct hit absorbed by any shield on you reflects 20% -> 40% of actual blocked damage to its attacker, capped at 30% -> 60% A. No second Defense reduction on this echo; no reflection of reflected/routed damage.",
+    "description": "Each time your Shield absorbs an enemy hit, reflect 20% -> 40% of the absorbed damage to its attacker. Reflected or routed damage is not reflected again.",
     "ranges": [
-      {
-        "base": 20,
-        "maximum": 40,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 30,
-        "maximum": 60,
-        "percent": true,
-        "step": false
-      }
+      { "base": 20, "maximum": 40, "percent": true, "step": false }
     ]
   },
   "pressurecrest-governor": {
-    "description": "Every 3 -> 2 offensive activations with native critical HP damage earn one Windveil, maximum one held. Windveil completely avoids the next enemy Normal Attack against you, then is consumed; scheduled skills cannot be avoided. Avoided hits provide no incoming-hit Gauge or absorption trigger.",
-    "ranges": [
-      {
-        "base": 3,
-        "maximum": 2,
-        "percent": false,
-        "step": true
-      }
-    ]
+    "description": "Each critical Attack Action grants a [Windveil]. Each [Windveil] avoids an enemy [Normal Attack] against you and is consumed; scheduled skills cannot be avoided. Avoided hits provide no incoming-hit Gauge or absorption trigger.",
+    "ranges": []
   },
   "rootbound-triage-vault": {
-    "description": "When your native active heal leaves a living recipient below 20% -> 40% R, automatically spend 15 of your remaining Gauge, if available, to heal them toward that threshold, limited to 10% -> 20% H extra. Once per activation; choose the lowest-HP-ratio eligible recipient after the native team heal. No useful restoration means no payment.",
+    "description": "After your active healing restores HP, if a living ally is below 20% -> 40% of their maximum HP and you have 15 Gauge, spend 15 Gauge to heal the living ally with the lowest HP ratio to that threshold. Gauge is spent only when HP is restored.",
     "ranges": [
       {
         "base": 20,
         "maximum": 40,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 10,
-        "maximum": 20,
         "percent": true,
         "step": false
       }
     ]
   },
   "solace-anchor": {
-    "description": "Once per encounter, permit Defense as a free manual preparation before your normal action, costing 10 Gauge. Gain 10% -> 20% additional direct-damage reduction for the current enemy phase. Not allowed while spent/recovering; the charge is consumed before applying Defense and no second free Defense is possible.",
+    "description": "When ready to act, [Defense] costs 10 Gauge and does not spend your action. Each use adds 10% -> 20% Direct Damage reduction until the end of the current Enemy Turn.",
     "ranges": [
       {
         "base": 10,
@@ -1217,7 +1004,7 @@ var conduitRedesign = {
     ]
   },
   "ruinselect-prism": {
-    "description": "Skill 1 may consume your existing personal Fractures as well as Normal Attack, for +15% -> +30% Skill 1 direct damage per mark, maximum 3. Grants no marks, consumes before impact and never consumes another owner's marks.",
+    "description": "[Skill 1] may consume your existing personal [Fractures] as well as [Normal Attack], for +15% -> +30% [Skill 1] Direct Damage per mark. Grants no marks, consumes before impact and never consumes another owner's marks.",
     "ranges": [
       {
         "base": 15,
@@ -1228,7 +1015,7 @@ var conduitRedesign = {
     ]
   },
   "infernic-pyre-census": {
-    "description": "Every third damaging native Burn tick on a given enemy becomes a Census tick for +75% -> +150% damage. Track damaging ticks across native refreshes; reset when Burn expires or changes owner. Generated/propagated Burn does not count. No critical roll or cooldown effect.",
+    "description": "Each damaging [Burn] tick on an enemy becomes a [Census] tick for +75% -> +150% damage. Track ticks across refreshes; reset when [Burn] expires or changes owner. Conduit [Burn] does not count. No critical roll or cooldown effect.",
     "ranges": [
       {
         "base": 75,
@@ -1239,18 +1026,11 @@ var conduitRedesign = {
     ]
   },
   "oceanic-shared-tide-pump": {
-    "description": "When an ally protected by your native shield is hit, other living allies' shields from you may absorb up to 30% -> 60% of the post-mitigation hit before the target's own shield. Draw from other shields in squad order; never spend HP or apply mitigation twice.",
-    "ranges": [
-      {
-        "base": 30,
-        "maximum": 60,
-        "percent": true,
-        "step": false
-      }
-    ]
+    "description": "When an ally protected by your Shield is hit, other living allies' Shields from you absorb the hit before the target's own Shield. Drain the linked Shields in squad order; no HP routing.",
+    "ranges": []
   },
   "atmospheric-storm-clock": {
-    "description": "Three native critical offensive activations prime one Storm Clock. Your next Last Flare costs 15 -> 30 less Gauge, minimum 70 after all Last Flare discounts; consuming it resets the counter. No recharge from Last Flare itself. Captured ultimate intervals/recovery remain.",
+    "description": "Each critical Attack Action adds a [Storm Clock] charge. Each charge reduces the next [Last Flare] cost by 15 -> 30 Gauge. Using [Last Flare] consumes all stored charges; critical [Last Flare] hits do not add charges.",
     "ranges": [
       {
         "base": 15,
@@ -1261,7 +1041,7 @@ var conduitRedesign = {
     ]
   },
   "botanic-graft-covenant": {
-    "description": "Flora's newly planted native Seeds store +20% -> +40% healing. Apply once when planted, including empowered Seeds; refresh rather than stack. No new resource or Seed for another kit.",
+    "description": "[Flora]'s [Seeds] store +20% -> +40% healing. Newly planted and refreshed [Seeds] receive the bonus, which adds to stored healing. No new resource or [Seed] is created.",
     "ranges": [
       {
         "base": 20,
@@ -1272,7 +1052,7 @@ var conduitRedesign = {
     ]
   },
   "tranquilitic-accord-bastion": {
-    "description": "Your first effective native support of another ally per encounter grants that ally one Accord. Their next lethal direct hit instead leaves 1 HP, consumes Accord and gives a refresh-only shield of 10% -> 20% H after the hit. Only one Accord granted per bearer per encounter, no revival and no immunity to later hits.",
+    "description": "Effective support of another ally grants them [Accord]. Their next lethal Direct Damage hit leaves them at 1 HP, consumes [Accord] and grants a Shield of 10% -> 20% of your maximum HP after the hit. [Accord] does not revive or protect them from later hits.",
     "ranges": [
       {
         "base": 10,
@@ -1283,217 +1063,206 @@ var conduitRedesign = {
     ]
   },
   "chaotic-fault-verdict": {
-    "description": "After the first native critical HP hit of an offensive activation, if its target survives, consume up to 10% H of your current shield to add 50% -> 100% of the shield actually spent as generated damage to that target, capped at 50% -> 100% A. Once per activation; a fallen target means no payment and no search for a different critical target.",
+    "description": "After each critical hit from an Attack Action, if its target survives, consume your current Shield to add 50% -> 100% of the Shield spent as Bonus Strike damage to that target. No Shield means no Bonus Strike.",
     "ranges": [
-      {
-        "base": 50,
-        "maximum": 100,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 50,
-        "maximum": 100,
-        "percent": true,
-        "step": false
-      }
+      { "base": 50, "maximum": 100, "percent": true, "step": false }
     ]
   },
   "master-ember-1": {
-    "description": "When Infernis's native Burn would expire from ticking, pay 3% H to keep it for one further phase, only if Infernis is above 50% HP and can pay while remaining above 1 HP. At most two paid extensions per native application per target. Paid extensions are generated clock changes and cannot create more extension allowances.",
+    "description": "When [Infernis]'s [Burn] would expire from ticking, pay 3% of your maximum HP to extend it for one Enemy Turn if [Infernis] is above 50% HP and can pay while staying at 1 HP or more. This payment can extend [Burn] each time it expires.",
     "ranges": []
   },
   "master-ember-2": {
-    "description": "Flame Arc becomes a single-target siege strike with double its native direct-damage coefficient. Only the selected target's owned Burn can detonate. It retains its cost; Last Flare remains all-enemy.",
+    "description": "[Flame Arc] is a single-target siege strike with double its Direct Damage coefficient. Only the selected target's owned [Burn] can detonate. [Flame Arc] uses its normal cost; [Last Flare] targets all enemies.",
     "ranges": []
   },
   "master-ember-3": {
-    "description": "Flame Arc detonates at most one remaining owned Burn tick per target for twice that tick's damage, consuming only one tick. No owned Burn means no detonation. Last Flare still applies its ordinary Burn.",
+    "description": "[Flame Arc] detonates its owned [Burn], consuming one tick; without an owned [Burn], it deals no detonation damage. [Last Flare] applies its ordinary [Burn].",
     "ranges": []
   },
   "master-tide-1": {
-    "description": "The first direct enemy hit per ally per encounter that completely breaks Tizu's native shield cannot spill damage into that ally's HP. The shield must absorb positive damage and be exhausted by this hit. No protection on an unshielded target or later shield breaks.",
+    "description": "Whenever an enemy hit completely breaks [Tizu]'s Shield, that hit cannot spill damage into the protected ally's HP. The Shield must absorb positive damage and belongs to [Tizu].",
     "ranges": []
   },
   "master-tide-2": {
-    "description": "Tidal Shelter gives the explicitly selected living ally three times its native shield offer, with the same one-phase expiry. Other allies and Ocean Memory remain unchanged. Stillwater Gauge requires a full hit absorbed by Tizu's own native shield.",
+    "description": "[Tidal Shelter] gives the selected living ally three times its Shield amount for one Enemy Turn. Other allies receive no Shield from this effect, and [Last Flare: Ocean Memory] uses its own effect. Stillwater Gauge requires a full hit absorbed by [Tizu]'s Shield.",
     "ranges": []
   },
   "master-tide-3": {
-    "description": "An enemy carrying Tizu's native Weaken targets Tizu with single-target hostile actions while he lives. Attacks retain the enemy's ordinary critical roll, Weaken and damage calculation. Newest active forced-target effect wins; area attacks are unchanged.",
+    "description": "An enemy carrying [Tizu]'s [Weaken] targets [Tizu] with single-target hostile actions while he lives. Attacks use the enemy's ordinary critical roll, [Weaken] and damage calculation. The most recently applied forced-target effect sets the target; area attacks follow their normal targeting.",
     "ranges": []
   },
   "master-sprout-1": {
-    "description": "Add a 2% R team heal after each living ally's first native ordinary-skill activation that round, including Flora's. Maximum three pulses per round; no pulse from Last Flare, assists, Conduit effects or a fallen Flora. Seeds remain unchanged; no retired Bloom is earned.",
+    "description": "After each living ally's [Skill 1] or [Skill 2], including [Flora]'s, heal each living ally for 2% of that recipient's maximum HP. This healing does not trigger another Conduit effect.",
     "ranges": []
   },
   "master-sprout-2": {
-    "description": "A damaging Skill 1 adds Rootbind to its surviving target. Its next scheduled skill is replaced by Normal Attack, then Rootbind ends. Each enemy can be Rootbound once per encounter; normal attacks do not consume it. Skill 1's direct damage and Seed remain.",
+    "description": "A damaging [Skill 1] adds [Rootbind] to its surviving target. Its next scheduled skill is replaced by [Normal Attack], then [Rootbind] ends. Each enemy can be affected by [Rootbind]; [Normal Attack] does not consume it. [Skill 1] deals its listed Direct Damage and applies [Seed].",
     "ranges": []
   },
   "master-sprout-3": {
-    "description": "Once per encounter, Worldseed also revives fallen other allies at 30% R after its ordinary damage/healing resolves. They return with 0 Gauge, spent until next player turn, and unchanged recovery dates; no native healing/resource triggers from resurrection. Flora must live to cast it and still pays/recover normally.",
+    "description": "After [Last Flare: Worldseed] resolves its Direct Damage and healing, revive every fallen other ally at 30% of their maximum HP with 0 Gauge. Revived allies keep any existing recovery. Resurrection triggers no healing or resource effects. [Flora] must survive to cast and pays its normal cost and recovery.",
     "ranges": []
   },
   "master-atmoso-1": {
-    "description": "Normal Attack becomes all-enemy at 70% of its usual direct coefficient per target. Gauge gain, action cost and action-based triggers happen once per activation, not once per enemy. It does not charge Atmoso's own Cyclone.",
+    "description": "[Normal Attack] hits all enemies at 70% of its usual Direct Damage coefficient per target. Gauge gain, action cost and action-based triggers resolve for the Attack Action; Bonus Strikes do not trigger other on-hit effects.",
     "ranges": []
   },
   "master-atmoso-2": {
-    "description": "Cyclone Weave gives Atmoso a Counterwind until his next action. Each direct enemy hit he survives adds 15% outgoing damage to that action, up to 45%; shield absorption qualifies. Clear on the next manual action even if it has no direct damage. No extra counterattack or critical roll.",
+    "description": "[Cyclone Weave] gives [Atmoso] [Counterwind] until his next action. Each Direct Damage hit he survives adds 15% outgoing Direct Damage to that action. Shield absorption qualifies.",
     "ranges": []
   },
   "master-atmoso-3": {
-    "description": "Critical Rate above 100%, computed before the ordinary cap, becomes bonus native direct damage at 1% per excess pp, maximum +50%. Actual critical chance still caps at 100%; no benefit from noncritical-only Verdict Caliper.",
+    "description": "For each percentage point of Critical Rate above 100% before Critical Rate is applied, your Attack Actions gain 1% Direct Damage. [Verdict Caliper] disables this benefit.",
     "ranges": []
   },
   "master-aurora-1": {
-    "description": "Enemies carrying Aurora's unconsumed native Seal have 15% less effective Defense against allied native direct attacks. Exposure ends when the Seal is consumed or expires; no stacking stat mutation.",
+    "description": "Enemies carrying [Aurora]'s unconsumed [Seal] have 15% less effective Defense against allied Attack Actions. Exposure ends when the [Seal] is consumed or expires; it does not alter stored Defense.",
     "ranges": []
   },
   "master-aurora-2": {
-    "description": "Aurora's Last Flare adds a Judgment Seal to each surviving enemy for two enemy phases. Sealed enemies cannot critically hit, though the ordinary critical RNG draw is still consumed. Recasting refreshes the seal; does not cancel a scheduled skill.",
+    "description": "[Aurora]'s [Last Flare] adds a [Judgment Seal] to each surviving enemy for two Enemy Turns. Enemies with [Judgment Seal] cannot critically hit; attacks consume their ordinary critical RNG draw. Recasting refreshes the Seal without canceling a scheduled skill.",
     "ranges": []
   },
   "master-aurora-3": {
-    "description": "After an enemy carrying Aurora's unconsumed native Seal removes an ally's HP with a direct hit, heal the most injured other living ally for 50% of that HP loss, capped at 10% H per enemy phase. No revival or routed-damage trigger; a special that consumes the Seal no longer qualifies.",
+    "description": "After an enemy carrying [Aurora]'s unconsumed [Seal] removes an ally's HP with a Direct Damage hit, heal the most injured other living ally for 50% of that HP loss. No revival or routed-damage trigger; a special that consumes the [Seal] does not qualify.",
     "ranges": []
   },
   "master-bliss-1": {
-    "description": "Before Skill 2, automatically pay 10% H if Bliss can remain at 1 HP or more. Divide that paid HP equally as additional native healing for the other living allies, in any posture. Her ordinary posture effects remain. No other living ally means no payment; no retired Bloom is created.",
+    "description": "Before [Skill 2], automatically pay 10% of your maximum HP if [Bliss] can remain at 1 HP or more. Divide that paid HP equally as additional healing for the other living allies in any posture. Her posture effects apply normally. With no other living ally, no HP is paid.",
     "ranges": []
   },
   "master-bliss-2": {
-    "description": "Warfeather Cut becomes two impacts against the same selected target, each at 70% of the original final direct damage. Reuse one critical result; costs, native resource spending/earning and equipment triggers resolve once for the activation's combined actual HP damage. Stop if the first hit kills; never retarget the second.",
+    "description": "[Warfeather Cut] becomes two impacts against the same selected target, each at 70% of the original final Direct Damage. Both impacts use the same critical result. Costs, resource changes and Conduit effects use the Attack Action's combined HP damage. Stop if the hit kills; never retarget the second.",
     "ranges": []
   },
   "master-bliss-3": {
-    "description": "Once per encounter, Bliss's Last Flare gives the lowest-Gauge other living ally one Quiet Feather. Their next legal Skill 1 costs no Gauge; consume before activation. It grants no action, missing skill, cooldown bypass or recovery bypass. Other discounts cannot turn the zero cost into a refund.",
+    "description": "[Bliss]'s [Last Flare] gives the lowest-Gauge other living ally a [Quiet Feather]. Their next legal [Skill 1] costs no Gauge; the [Quiet Feather] is consumed before that skill. It grants no action and cannot unlock a missing skill or bypass cooldown or recovery. Other discounts do not create a refund.",
     "ranges": []
   },
   "master-bruno-1": {
-    "description": "The first direct enemy hit against Bruno each enemy phase cannot remove more than 20% H after shield absorption. It still spends his shield normally. Later hits, Burn and routed damage are uncapped by this Master.",
+    "description": "Enemy hits deal 20% less Direct Damage to [Bruno] after his Shield absorbs damage. [Burn] is unaffected.",
     "ranges": []
   },
   "master-bruno-2": {
-    "description": "Bruno's Last Flare direct damage uses D in place of A in both the native coefficient and the mitigation ratio, `D/(D + enemy Defense)`. Normal critical/outgoing multipliers still apply; other actions stay Attack-based.",
+    "description": "[Bruno]'s [Last Flare] Direct Damage uses [Bruno]'s Defense in place of his Attack, both for its damage percentage and for mitigation (his Defense divided by his Defense plus the enemy's Defense). Critical and outgoing-damage multipliers apply; other actions use Attack.",
     "ranges": []
   },
   "master-bruno-3": {
-    "description": "Each damaging Skill 1 permanently removes 15% of the target's encounter-entry Defense, capped at 30% total per enemy. In exchange, Skill 2 Cover redirects 35% rather than 50%. Reset excavation on a fresh encounter; no Weaken or stat recursion.",
+    "description": "Each damaging [Skill 1] permanently removes 15% of the target's Battle-start Defense. In exchange, [Skill 2] [Cover] redirects 35% rather than 50%. Reset excavation on a fresh Battle; it does not apply [Weaken] or trigger itself.",
     "ranges": []
   },
   "master-disciple-1": {
-    "description": "Disciple's native Instructions expire two player rounds later. They still enhance only the recipient's next native action and retain the single ordinary Instruction limit. No generated buff or extra action.",
+    "description": "[Disciple]'s [Instructions] expire two player Rounds later. They enhance the recipient's next Attack Action.",
     "ranges": []
   },
   "master-disciple-2": {
-    "description": "After Last Flare, link living allies through the end of the next two player rounds. Native positive Gauge gains to a linked ally are split equally among currently living linked allies; clip full recipients without redistribution. Total offered Gauge is conserved, costs/refunds/generated income are not shared, and the link ends if Disciple falls.",
+    "description": "After [Last Flare], link living allies through the next two player Rounds. Positive Gauge gains to a linked ally are split equally among living linked allies, limited only by each ally's Gauge capacity. Costs, refunds and Conduit Gauge are not shared. The link ends if [Disciple] falls.",
     "ranges": []
   },
   "master-disciple-3": {
-    "description": "After Strike Instruction, its explicitly selected living recipient makes one generated assist at 40% A against the first living enemy in formation order. No extra RNG, critical, Gauge, resources, action spend, Instruction consumption or recursive equipment triggers. Once per Disciple activation.",
+    "description": "After a [Strike] [Instruction], its selected living recipient makes a Conduit-triggered Bonus Strike at 40% of [Disciple]'s Attack against the first living enemy in formation order. This Bonus Strike does not roll criticals, grant Gauge or resources, spend an action, consume an [Instruction], or trigger other effects.",
     "ranges": []
   },
   "master-elise-1": {
-    "description": "Elise's native critical direct hits ignore 50% enemy Defense, but their final critical multiplier is fixed at 1.5, including elemental criticals, regardless of Critical Damage modifiers. Noncritical hits retain ordinary mitigation; shields remain shield-first.",
+    "description": "[Elise]'s critical Direct Damage hits ignore 50% enemy Defense, but their final critical multiplier is fixed at 1.5, including elemental criticals, regardless of Critical Damage modifiers. Noncritical hits use standard mitigation; Shields absorb damage first.",
     "ranges": []
   },
   "master-elise-2": {
-    "description": "Last Flare resolves four impacts per original target, each 30% of the original final damage. Reuse the native critical result per target; costs, recovery and Conduit/native resource triggers happen once per activation using combined HP damage. Never retarget impacts from fallen enemies.",
+    "description": "[Last Flare] resolves four impacts per original target, each 30% of the original final damage. Reuse the critical result per target; costs, recovery and Conduit or resource triggers happen using combined HP damage. Never retarget impacts from fallen enemies.",
     "ranges": []
   },
   "master-elise-3": {
-    "description": "Once per encounter, Elise's native direct kill clears her spent flag so she may choose one additional legal action that same player turn. Keep Gauge, readiness and recovery dates unchanged; a kill during Last Flare cannot bypass its recovery. Consume permission before clearing spent.",
+    "description": "Each Direct Damage kill by [Elise] clears her spent flag while she is ready, allowing another legal action that player turn. [Last Flare] recovery applies, and kills do not bypass it.",
     "ranges": []
   },
   "master-razor-1": {
-    "description": "While defending, Razor parries the first scheduled enemy skill targeting him each enemy phase: reduce that hit's direct damage by 50%, then reflect 50% of the prevented damage to the surviving attacker, capped at 100% A. Normal Attacks do not consume the parry. Reflection is generated and cannot reflect again.",
+    "description": "While defending, [Razor] parries the scheduled enemy skill targeting him each Enemy Turn: reduce that hit's Direct Damage by 50%, then reflect 50% of the prevented damage to the surviving attacker. [Normal Attack] do not consume the parry. Reflection is Conduit-triggered and cannot reflect again.",
     "ranges": []
   },
   "master-razor-2": {
-    "description": "Before Last Flare, consume Razor's entire existing shield to add +2% direct damage per 1% H actually spent, maximum +60%. Last Flare's new native shields are offered afterward and cannot fund that same cast. No preexisting shield means no bonus.",
+    "description": "Before [Last Flare], consume [Razor]'s entire existing Shield to add +2% Direct Damage per 1% of your maximum HP spent. [Last Flare]'s new Shield is applied afterward and cannot fund that cast. No existing Shield means no bonus.",
     "ranges": []
   },
   "master-razor-3": {
-    "description": "Razor's first Skill 1 hit on each surviving enemy Silences it once per encounter: its next scheduled skill becomes Normal Attack, then Silence ends. Normal Attacks do not consume Silence. No Weaken or additional Wounds are granted.",
+    "description": "Each [Skill 1] hit applies [Silence] to its surviving target; the target's next scheduled skill becomes [Normal Attack], then [Silence] ends. [Normal Attack] does not consume [Silence].",
     "ranges": []
   },
   "master-rosetta-1": {
-    "description": "Replace the two-contributor Quarry shield payout with one 48% R shield on the lowest-HP-ratio living ally, including a non-contributor. The same once-per-turn contribution gate remains; no passive heal or retired Grace.",
+    "description": "After two allies contribute to [Quarry], each hit against it grants a Shield equal to 48% of the lowest-HP-ratio living ally's maximum HP, whether or not that ally contributed.",
     "ranges": []
   },
   "master-rosetta-2": {
-    "description": "After Skill 2 hits the Quarry, send up to two generated ricochets, one per distinct other contributor this turn, to different other living enemies in descending HP order. Each deals 25% of the primary hit's actual direct HP damage. Unused ricochets vanish.",
+    "description": "After [Skill 2] hits the [Quarry], each other living enemy takes a Bonus Strike equal to 25% of the hit's Direct Damage.",
     "ranges": []
   },
   "master-rosetta-3": {
-    "description": "Last Flare primes one Golden Opening on the surviving Quarry. The next other ally's native direct hit consumes it for +40% damage. One Opening per enemy; no stacking, expiry extension, or benefit to Rosetta herself.",
+    "description": "Each [Last Flare] adds a [Golden Opening] to the surviving [Quarry]. Each Opening adds +40% Direct Damage to the next other ally's hit against that enemy, then one Opening is consumed. Openings accumulate; [Rosetta] cannot consume them.",
     "ranges": []
   },
   "master-thornia-1": {
-    "description": "Replace a trap's ordinary hostile-activation retaliation with one generated 40% A strike against every living enemy. Consume one trap charge as usual; no response to harmless activations or a fallen Thornia.",
+    "description": "When a hostile enemy action triggers [Thornia]'s trap, it deals a Bonus Strike equal to 40% of your Attack to every living enemy. Trap charges are spent as usual; harmless enemy actions and a defeated [Thornia] do not trigger it.",
     "ranges": []
   },
   "master-thornia-2": {
-    "description": "Skill 2 against a target with three native trap charges strikes all living enemies at its native direct coefficient, applying generated 15% Weaken for one phase to secondary survivors. Consume its ordinary selected-target trap charge once; aggregate equipment triggers once.",
+    "description": "When [Skill 2] hits a target with three trap charges, it hits all living enemies at its Direct Damage coefficient and applies Conduit [Weaken] of 15% for one Enemy Turn to secondary survivors. The selected target loses one trap charge; Bonus Strikes do not trigger other on-hit effects.",
     "ranges": []
   },
   "master-thornia-3": {
-    "description": "Gilded Thorn Guard links its living other recipients to Thornia until next player-turn start. On the first otherwise-lethal direct hit to a linked ally that phase, route up to 20% H of the would-be HP loss into Thornia's shield/HP; preserve the ally only if this removes the full lethal excess. Once total per enemy phase; Thornia can fall and does not self-resurrect.",
+    "description": "[Gilded Thorn Guard] links its living other recipients to [Thornia] until the next player-turn start. For each lethal Direct Damage hit to a linked ally, route the lethal excess into [Thornia]'s Shield and HP; preserve the ally if the full lethal excess is removed. [Thornia] can be defeated and does not revive herself.",
     "ranges": []
   },
   "master-crinso-1": {
-    "description": "A native critical Gold Skill 1 stores its actual critical multiplier minus one, capped at +50% outgoing damage for the next Crimson Skill 2. One refresh-only imprint, consumed once on activation; no Burn or extra critical roll.",
+    "description": "A critical [Golden Edge] stores its critical multiplier minus one as a bonus for [Crimson Rupture]. Stored bonuses add together and are consumed by [Crimson Rupture]. No [Burn] or extra critical roll.",
     "ranges": []
   },
   "master-crinso-2": {
-    "description": "Before Crimson Skill 2, consume up to 10% H of current shield. After its direct hit, deal one generated strike at 50% of shield actually spent, capped at 50% A. No paid shield means no strike; no Burn, new RNG or generated resource hooks.",
+    "description": "Before [Crimson Rupture], consume your current Shield. After its Direct Damage, deal a Bonus Strike equal to 50% of the Shield consumed. No consumed Shield means no Bonus Strike. No [Burn], new RNG or Conduit resource effects.",
     "ranges": []
   },
   "master-crinso-3": {
-    "description": "Native offensive activations alternate Gold and Crimson, starting Gold. Gold gives +30% direct damage; Crimson heals Crinso for 20% of actual direct HP damage, capped at 10% H. Last Flare gets both and resets the next activation to Gold. Defense does not advance polarity; no extra personal resource bank.",
+    "description": "[Golden Edge] and [Crimson Rupture] alternate bonuses, starting with [Golden Edge]. [Golden Edge]: +30% Direct Damage. [Crimson Rupture]: heals [Crinso] for 20% of Direct Damage to HP. [Last Flare: Blossoming Cataclysm] receives both bonuses and makes the next [Golden Edge] or [Crimson Rupture] receive the [Golden Edge] bonus. [Defense] does not advance the alternation.",
     "ranges": []
   },
   "master-nerithe-1": {
-    "description": "Nerithe's Normal Attack marks its surviving target as Charted. One other ally's next single-target native damaging skill copies a generated 40%-damage echo to each different Charted enemy, then clears all Charts. No echo to the original target; Charts neither generate Gauge nor replace her fixed Normal-only +5 passive.",
+    "description": "[Nerithe]'s [Normal Attack] applies [Charted] to its surviving target. Another ally's next single-target damaging Attack Action deals a Bonus Strike for 40% of its damage to each different enemy affected by [Charted], then clears all [Charted]. The Bonus Strike does not hit the original target or trigger Gauge or other on-hit effects.",
     "ranges": []
   },
   "master-nerithe-2": {
-    "description": "Fold the Sea becomes a pure team support skill: no direct damage or Weaken. It gives each living ally 15 native Gauge and 15% next-direct-hit protection. Retain its Skill 2 Gauge cost and one-action use; effects cannot exceed actual capacity or stack protection.",
+    "description": "[Fold the Sea] deals no Direct Damage and applies no [Weaken]. It grants each living ally 15 Gauge and reduces damage from their next enemy hit by 15%. Repeated uses stack protection multiplicatively. It keeps its [Skill 2] Gauge cost and action timing.",
     "ranges": []
   },
   "master-nerithe-3": {
-    "description": "Ocean Beyond the Map deals 50% less direct damage but no longer imposes next-turn recovery. Its 100 Gauge base cost, native Weaken and one-action limit remain; it does not grant another action on the cast turn.",
+    "description": "[Ocean Beyond the Map] deals 50% less Direct Damage and imposes no next-turn recovery. Its 100 Gauge cost and [Weaken] apply as usual.",
     "ranges": []
   },
   "master-orvella-1": {
-    "description": "Foundation starts with half its usual shared durability. On creation each living ally also receives a generated plate equal to 5% H, capped at 15% R. Plates refresh without stacking, absorb as Conduit shields and grant no native shield resource.",
+    "description": "[Foundation] starts with half its usual shared durability. On creation, each living ally also receives a Shield equal to 5% of your maximum HP. Plates refresh without stacking and absorb damage as Shields; they grant no Gauge.",
     "ranges": []
   },
   "master-orvella-2": {
-    "description": "After Foundation creation, spend its durability as equal healing shares for living injured allies. Total paid/healed is the minimum of 25% of remaining durability, 5% H and eligible ally count times their smallest missing-HP amount. Debit exactly actual restoration; no injured ally means no payment.",
+    "description": "After [Foundation] is created, spend its durability to heal living injured allies in equal shares. Deduct only the HP restored; no injured ally means no payment.",
     "ranges": []
   },
   "master-orvella-3": {
-    "description": "Orvella gains +20% of her encounter-entry D per living ally protected by any positive shield or her active positive shared Foundation, maximum +60%. Count each ally once. Recalculate before each hit/offer without mutating entry Defense or HP.",
+    "description": "[Orvella] gains +20% of her Battle-start Defense as effective Defense per living ally protected by a Shield or her active [Foundation]. Recalculate before each hit; her HP is unaffected.",
     "ranges": []
   },
   "master-vaelor-1": {
-    "description": "Last Chord of the Sky pays 20% of Vaelor's current HP immediately before impact, leaving at least 1 HP, for +75% direct damage. This payment is mandatory while equipped, is not hostile damage and grants no incoming-hit effects. Gauge cost and next-turn recovery remain.",
+    "description": "[Last Chord of the Sky] pays 20% of [Vaelor]'s current HP immediately before impact, leaving at least 1 HP, for +75% Direct Damage. This payment is mandatory while equipped, is not hostile damage and grants no incoming-hit effects. Pay its normal Gauge cost and take its next-turn recovery.",
     "ranges": []
   },
   "master-vaelor-2": {
-    "description": "Skill 2 cast during Rise also applies generated Weaken of 15% for one enemy phase to surviving direct-hit targets. No retired Tempest spending, native resource hooks, or overwrite of stronger Weaken. Tune/Crescendo and Last Flare are unchanged.",
+    "description": "[Skill 2] cast during [Rise] also applies Conduit [Weaken] of 15% for one Enemy Turn to surviving targets hit by [Skill 2]. A stronger existing [Weaken] is not overwritten.",
     "ranges": []
   },
   "master-vaelor-3": {
-    "description": "Once per encounter, Vaelor's Defense may clear the spent flag of the highest-Gauge other living spent ally who is not recovering. Vaelor spends his own action; the recipient still pays their next action's full costs and follows readiness/recovery. No eligible ally means the permission is retained.",
+    "description": "[Vaelor]'s [Defense] clears the spent flag of the highest-Gauge other living ally who is not recovering. [Vaelor] spends his action; the recipient pays full costs and follows readiness and recovery rules.",
     "ranges": []
   }
 };
 function redesignValue(level, base, maximum) {
-  if (!Number.isInteger(level) || level < 0 || level > 5) throw new Error("Invalid Conduit effect level.");
+  if (!Number.isSafeInteger(level) || level < 0) throw new Error("Invalid Conduit effect level.");
   return base + (maximum - base) * level / 5;
 }
 function redesignStep(level, base, maximum) {
@@ -1866,15 +1635,15 @@ function calamiticEffect(id, level = 0) {
   const amount = (base, maximum) => Number(calamiticPower(level, base, maximum).toFixed(6));
   switch (id) {
     case "calamitic-world-eater-orrery":
-      return `Store ${amount(40, 80)}% of actual direct enemy HP damage suffered by living squad members, up to ${amount(400, 800)}% of your Attack. Defense empties this reserve into one shield-first strike against the healthiest enemy, using normal Defense mitigation. Generated damage, shields and self-costs cannot fill it.`;
+      return `Store ${amount(40, 80)}% of enemy Direct Damage to HP suffered by living squad members. [Defense] releases the reserve as a Bonus Strike against the healthiest enemy, after shields and normal Defense mitigation. Bonus Strikes, Shields and HP payments do not fill the reserve.`;
     case "calamitic-causality-funeral-engine":
-      return `Defer ${amount(40, 60)}% of direct enemy damage that would reach your HP after shields, up to ${amount(30, 50)}% of your maximum HP per enemy phase. Pay the exact debt at the start of the next enemy phase, before attacks. Debt bypasses shields and protection, can defeat you and cannot be deferred again. Routed damage is not deferred.`;
+      return `Defer ${amount(40, 60)}% of each enemy hit's Direct Damage to HP after Shields. Pay the debt at the start of the next Enemy Turn, before attacks. Debt bypasses Shields and protection, can defeat you and cannot be deferred again. Routed damage is not deferred.`;
     case "calamitic-horizon-cleaving-godpress":
-      return `${amount(40, 60)}% of your native direct damage bypasses enemy shields. While the target has a shield, your native direct damage is also +${amount(30, 60)}%. The remaining damage spends shields normally; Burn and generated strikes are unchanged.`;
+      return `${amount(40, 60)}% of your Attack Actions' Direct Damage bypasses enemy Shields. While the target has a Shield, your Attack Actions also gain +${amount(30, 60)}% Direct Damage. Remaining damage spends Shields normally; [Burn] and Bonus Strikes are unaffected.`;
     case "calamitic-throne-borrowed-tomorrows":
-      return `Once every three player turns, Defense lets you choose one further non-Defense, non-Last-Flare action that turn. Taking it grants ${amount(10, 30)} Gauge after paying its normal cost, but you cannot act on the next player turn. No borrowed action means no lost turn. Recovery and unavailable skills remain enforced.`;
+      return `[Defense] lets you choose an additional action other than [Defense] or [Last Flare] that turn. Pay its normal cost, then gain ${amount(10, 30)} Gauge; you cannot act on the next player turn. If you do not take the additional action, you do not lose a turn. Follow recovery and unavailable-skill rules.`;
     case "calamitic-cathedral-final-equation":
-      return `Choose three different action types in succession to complete the Equation. Repeating a type restarts the sequence with that action. The third action releases ${amount(120, 240)}% of your Attack, split equally among living enemies as shield-first strikes using normal Defense mitigation, then clears the sequence. No extra critical rolls, Gauge or native effects.`;
+      return `Use three different action types in succession to complete the [Equation]. Repeating a type restarts the sequence with that action. The third action releases ${amount(120, 240)}% of your Attack, split equally among living enemies as Bonus Strikes after Shields and normal Defense mitigation, then clears the sequence. No extra critical rolls, Gauge or Attack Action effects.`;
   }
 }
 
@@ -2077,14 +1846,17 @@ var conduits = [
   mechanic: null,
   lore: isCalamiticConduitId(entry.id) ? entry.lore : `${conduitOrigin} ${entry.lore}`
 }));
-var conduitUpgradeCap = 5;
 var conduitUpgradeCosts = [25, 50, 100, 175, 250];
 var conduitUpgradeRarityMultipliers = { Common: 1, Rare: 2, Legendary: 4, Omnic: 200, Calamitic: 400 };
 function validateConduitUpgradeLevel(value2) {
-  if (typeof value2 !== "number" || !Number.isInteger(value2) || value2 < 0 || value2 > conduitUpgradeCap) {
-    throw new Error("Conduit upgrade level must be an integer from 0 to 5.");
+  if (typeof value2 !== "number" || !Number.isSafeInteger(value2) || value2 < 0) {
+    throw new Error("Conduit upgrade level must be a whole number of 0 or more.");
   }
   return value2;
+}
+function baseConduitUpgradeCost(level) {
+  validateConduitUpgradeLevel(level);
+  return conduitUpgradeCosts[level] ?? conduitUpgradeCosts[conduitUpgradeCosts.length - 1] + 100 * (level - conduitUpgradeCosts.length + 1);
 }
 function validateConduitUpgrades(value2) {
   if (typeof value2 !== "object" || value2 === null || Array.isArray(value2)) throw new Error("Invalid saved Conduit upgrades.");
@@ -2096,33 +1868,27 @@ function validateConduitUpgrades(value2) {
   return result;
 }
 function conduitUpgradeCost(conduit, level) {
-  validateConduitUpgradeLevel(level);
-  const cost = conduitUpgradeCosts[level];
-  return cost === void 0 ? null : cost * conduitUpgradeRarityMultipliers[conduit.rarity];
+  return baseConduitUpgradeCost(level) * conduitUpgradeRarityMultipliers[conduit.rarity];
 }
 var conduitSlotCount = 8;
+function conduitSlotsShown(slots) {
+  return Math.max(conduitSlotCount, slots.filter((id) => id !== null).length + 1, slots.length);
+}
 function validateConduitSlots(value2) {
-  if (!Array.isArray(value2) || value2.length !== conduitSlotCount || !value2.every((id) => id === null || isConduitId(id))) throw new Error("Invalid Conduit slots.");
+  if (!Array.isArray(value2) || value2.length < conduitSlotCount || !value2.every((id) => id === null || isConduitId(id))) throw new Error("Invalid Conduit slots.");
   const ids = value2.filter((id) => id !== null);
   if (new Set(ids).size !== ids.length) throw new Error("Each named Conduit can be equipped only once per character.");
-  if (ids.filter((id) => getConduit(id).rarity === "Omnic").length > 4) throw new Error("Equip at most four Omnic Conduits per character.");
   return [...value2];
 }
 function normalizeLegacyKitSlots(value2, element) {
-  if (!Array.isArray(value2) || value2.length !== conduitSlotCount || !value2.every((id) => id === null || isConduitId(id))) {
+  if (!Array.isArray(value2) || value2.length < conduitSlotCount || !value2.every((id) => id === null || isConduitId(id))) {
     throw new Error("Invalid Conduit slots.");
   }
   const ids = value2.filter((id) => id !== null);
   if (new Set(ids).size !== ids.length) throw new Error("Each named Conduit can be equipped only once per character.");
   const originalSlots = value2.map((id) => id !== null && convertedKitConduitIds.has(id) ? null : id);
   validateConduitElement(originalSlots, element);
-  let capacity = 4 - originalSlots.filter((id) => id !== null && getConduit(id).rarity === "Omnic").length;
-  const normalized = value2.map((id) => {
-    if (id === null || !convertedKitConduitIds.has(id)) return id;
-    if (getConduit(id).element !== element || capacity <= 0) return null;
-    capacity--;
-    return id;
-  });
+  const normalized = value2.map((id) => id !== null && convertedKitConduitIds.has(id) && getConduit(id).element !== element ? null : id);
   return validateConduitSlots(normalized);
 }
 function validateConduitElement(equipment, element) {
@@ -3036,42 +2802,42 @@ var sharedNativeEffects = {
 // src/content/kit-pilots.ts
 var kitPilotDescriptions = {
   ember: {
-    passive: `While you are alive, Burn from your own abilities grants one charge of ${elementalEffectFamilies.burn.label} when it deals damage, at most once per enemy phase (maximum 3). Save these charges to strengthen Flame Arc or Last Flare.`,
-    skill2: `Spends all ${elementalEffectFamilies.burn.label} charges for +8% outgoing damage per charge (maximum +24%); one spend for the whole activation.`,
-    ultimate: `Spends all ${elementalEffectFamilies.burn.label} charges for +12% outgoing damage per charge (maximum +36%); one spend for the whole activation.`,
-    resource: { label: elementalEffectFamilies.burn.label, key: "ember", summary: "Save up to 3 charges from your own Burn damage, once per enemy phase while alive. Flame Arc spends them for +8% damage each; Last Flare spends them for +12% each.", detail: `${elementalEffectFamilies.burn.label}: Skill 2 +8% outgoing damage per charge or Last Flare +12% per charge.`, effect: sharedNativeEffects.ember }
+    passive: `While you are alive, Burn from your own abilities grants one charge of ${elementalEffectFamilies.burn.label} when it deals damage. Charges have no limit. Save these charges to strengthen Flame Arc or Last Flare.`,
+    skill2: `Spends all ${elementalEffectFamilies.burn.label} charges for +8% outgoing damage per charge; one spend for the whole activation.`,
+    ultimate: `Spends all ${elementalEffectFamilies.burn.label} charges for +12% outgoing damage per charge; one spend for the whole activation.`,
+    resource: { label: elementalEffectFamilies.burn.label, key: "ember", summary: "Gain a charge each time your own Burn deals damage while you are alive. Flame Arc spends them for +8% damage each; Last Flare spends them for +12% each.", detail: `${elementalEffectFamilies.burn.label}: Skill 2 +8% outgoing damage per charge or Last Flare +12% per charge.`, effect: sharedNativeEffects.ember }
   },
   ward: {
-    passive: `While you are alive, shields from your own abilities grant one charge of ${elementalEffectFamilies.ward.label} when they absorb a direct enemy hit, at most once per enemy phase across the team (maximum 3). Save these charges to strengthen Undertow Thrust's Weaken or Last Flare's team shield.`,
-    skill1: `Spends all ${elementalEffectFamilies.ward.label} charges for +5 percentage points Weaken per charge (maximum +15; total reduction capped at 60%).`,
-    ultimate: `Spends all ${elementalEffectFamilies.ward.label} charges to increase this ability's team shield by 5% of your maximum Health per charge (maximum 15%). Each ally keeps the higher of their remaining shield and this new amount.`,
-    resource: { label: elementalEffectFamilies.ward.label, key: "ward", summary: "Save up to 3 charges when your ability shield absorbs a direct enemy hit, once per enemy phase while alive. Skill 1 spends them to strengthen Weaken; Last Flare spends them for a larger team shield.", detail: `${elementalEffectFamilies.ward.label}: Skill 1 +5 percentage points Weaken per charge or Last Flare adds a shield worth 5% of caster maximum Health per charge.`, effect: sharedNativeEffects.ward }
+    passive: `While you are alive, shields from your own abilities grant one charge of ${elementalEffectFamilies.ward.label} when they absorb a direct enemy hit. Charges have no limit. Save these charges to strengthen Undertow Thrust's Weaken or Last Flare's team shield.`,
+    skill1: `Spends all ${elementalEffectFamilies.ward.label} charges for +5 percentage points Weaken per charge.`,
+    ultimate: `Spends all ${elementalEffectFamilies.ward.label} charges to increase this ability's team shield by 5% of your maximum Health per charge. Each ally keeps the higher of their remaining shield and this new amount.`,
+    resource: { label: elementalEffectFamilies.ward.label, key: "ward", summary: "Gain a charge each time your ability shield absorbs a direct enemy hit while you are alive. Skill 1 spends them to strengthen Weaken; Last Flare spends them for a larger team shield.", detail: `${elementalEffectFamilies.ward.label}: Skill 1 +5 percentage points Weaken per charge or Last Flare adds a shield worth 5% of caster maximum Health per charge.`, effect: sharedNativeEffects.ward }
   },
   bloom: {
-    passive: `While you are alive, healing from your own abilities or passive grants one charge of ${elementalEffectFamilies.bloom.label} when it restores missing HP, at most once per turn (maximum 3). Full-health targets and Conduit healing do not count. Save these charges to strengthen Skill 1 or Last Flare.`,
-    resource: { label: elementalEffectFamilies.bloom.label, key: "bloom", summary: "Save up to 3 charges by restoring missing HP with your own kit, once per turn. Skill 1 spends them for extra damage. Last Flare spends them for extra healing (Flora) or team shield (Bliss). Conduit healing does not earn charges.", detail: `${elementalEffectFamilies.bloom.label}: Skill 1 spends charges for extra damage; Last Flare spends them for extra healing (Flora) or team shield (Bliss).`, effect: sharedNativeEffects.bloom }
+    passive: `While you are alive, healing from your own abilities or passive grants one charge of ${elementalEffectFamilies.bloom.label} when it restores missing HP. Charges have no limit. Full-health targets and Conduit healing do not count. Save these charges to strengthen Skill 1 or Last Flare.`,
+    resource: { label: elementalEffectFamilies.bloom.label, key: "bloom", summary: "Gain a charge each time your own kit restores missing HP. Skill 1 spends them for extra damage. Last Flare spends them for extra healing (Flora) or team shield (Bliss). Conduit healing does not earn charges.", detail: `${elementalEffectFamilies.bloom.label}: Skill 1 spends charges for extra damage; Last Flare spends them for extra healing (Flora) or team shield (Bliss).`, effect: sharedNativeEffects.bloom }
   },
   tempest: {
-    passive: `A critical Normal Attack, Skill 1 or Skill 2 that deals damage grants one charge of ${elementalEffectFamilies.tempest.label}, at most once per use even against multiple enemies (maximum 3). Last Flare grants none. Save these charges for the charge-spending skill or Last Flare's damage bonus.`,
-    resource: { label: elementalEffectFamilies.tempest.label, key: "tempest", summary: "Save up to 3 charges from damaging critical Normal Attacks or skills, once per use; Last Flare earns none. Skill 1 (Atmoso and Elise) or Skill 2 (Vaelor) spends them for +8% damage each; Last Flare spends them for +12% each.", detail: `${elementalEffectFamilies.tempest.label}: Skill 1 (Atmoso and Elise) or Skill 2 (Vaelor) spends charges for +8% damage each; Last Flare spends them for +12% each.`, effect: sharedNativeEffects.tempest }
+    passive: `A critical Normal Attack, Skill 1 or Skill 2 that deals damage grants one charge of ${elementalEffectFamilies.tempest.label}, once per use even against multiple enemies. Charges have no limit. Last Flare grants none. Save these charges for the charge-spending skill or Last Flare's damage bonus.`,
+    resource: { label: elementalEffectFamilies.tempest.label, key: "tempest", summary: "Gain a charge from each damaging critical Normal Attack or skill use; Last Flare earns none. Skill 1 (Atmoso and Elise) or Skill 2 (Vaelor) spends them for +8% damage each; Last Flare spends them for +12% each.", detail: `${elementalEffectFamilies.tempest.label}: Skill 1 (Atmoso and Elise) or Skill 2 (Vaelor) spends charges for +8% damage each; Last Flare spends them for +12% each.`, effect: sharedNativeEffects.tempest }
   },
   "rose-grace": {
-    passive: "While Rosetta is alive, her abilities or passive grant one Rose Grace charge when they restore missing HP, at most once per turn (maximum 3). Full-health targets and Conduit healing do not count.",
-    skill1: "Spends all Rose Grace for +5 percentage points Weaken each (maximum +15; combined reduction capped at 60%).",
-    ultimate: "Spends all Rose Grace for +10% outgoing damage each (maximum +30%); one spend for the whole activation.",
-    resource: { label: "Rose Grace", key: "roseGrace", summary: "Save up to 3 charges by restoring missing HP with Rosetta's own kit, once per turn while alive. Skill 1 spends them for stronger Weaken; Last Flare spends them for +10% damage each. Conduit healing does not earn charges.", detail: "Rose Grace: Skill 1 +5 percentage points Weaken each or Last Flare +10% outgoing damage each.", effect: { family: "bloom", kind: "healing", origin: "rose", source: "living-self-authored-healing" } }
+    passive: "While Rosetta is alive, her abilities or passive grant one Rose Grace charge when they restore missing HP. Charges have no limit. Full-health targets and Conduit healing do not count.",
+    skill1: "Spends all Rose Grace for +5 percentage points Weaken each.",
+    ultimate: "Spends all Rose Grace for +10% outgoing damage each; one spend for the whole activation.",
+    resource: { label: "Rose Grace", key: "roseGrace", summary: "Gain a charge each time Rosetta's own kit restores missing HP while she is alive. Skill 1 spends them for stronger Weaken; Last Flare spends them for +10% damage each. Conduit healing does not earn charges.", detail: "Rose Grace: Skill 1 +5 percentage points Weaken each or Last Flare +10% outgoing damage each.", effect: { family: "bloom", kind: "healing", origin: "rose", source: "living-self-authored-healing" } }
   },
   "thorn-aegis": {
-    passive: "While Thornia is alive, shields from her abilities grant one Thorn Aegis charge when they absorb a direct enemy hit, at most once per enemy phase across the team (maximum 3). Conduit shields do not count.",
-    skill2: "Spends all Thorn Aegis for +5 percentage points Weaken each (maximum +15; combined reduction capped at 60%).",
-    ultimate: "Spends all Thorn Aegis to add shield points equal to 5% of your maximum Health per charge (maximum 15%), before this ability's shield modifiers. Each ally keeps the higher of their remaining shield and this new amount.",
-    resource: { label: "Thorn Aegis", key: "thornAegis", summary: "Save up to 3 charges when Thornia's ability shield absorbs a direct enemy hit, once per enemy phase while alive. Skill 2 spends them for stronger Weaken; Last Flare spends them for a larger team shield. Conduit shields do not earn charges.", detail: "Thorn Aegis: Skill 2 +5 percentage points Weaken each or Last Flare adds 5% caster maximum Health shield each.", effect: { family: "ward", kind: "shield-absorption", origin: "rose", source: "living-self-authored-shield" } }
+    passive: "While Thornia is alive, shields from her abilities grant one Thorn Aegis charge when they absorb a direct enemy hit. Charges have no limit. Conduit shields do not count.",
+    skill2: "Spends all Thorn Aegis for +5 percentage points Weaken each.",
+    ultimate: "Spends all Thorn Aegis to add shield points equal to 5% of your maximum Health per charge, before this ability's shield modifiers. Each ally keeps the higher of their remaining shield and this new amount.",
+    resource: { label: "Thorn Aegis", key: "thornAegis", summary: "Gain a charge each time Thornia's ability shield absorbs a direct enemy hit while she is alive. Skill 2 spends them for stronger Weaken; Last Flare spends them for a larger team shield. Conduit shields do not earn charges.", detail: "Thorn Aegis: Skill 2 +5 percentage points Weaken each or Last Flare adds 5% caster maximum Health shield each.", effect: { family: "ward", kind: "shield-absorption", origin: "rose", source: "living-self-authored-shield" } }
   },
   "rose-duality": {
-    passive: "While Crinso is alive, Burn from his abilities grants one Rose Duality charge when it deals damage, at most once per enemy phase (maximum 3). The charges are not Burn and are separate from the Ember Seals granted by the Cinder Testament Conduit.",
-    skill1: "Spends all Rose Duality for +8% outgoing damage each (maximum +24%); one spend for the whole activation.",
-    ultimate: "Spends all Rose Duality for +12% outgoing damage each (maximum +36%); one spend for the whole activation.",
-    resource: { label: "Rose Duality", key: "duality", summary: "Save up to 3 charges from Crinso's own Burn damage, once per enemy phase while alive. Skill 1 spends them for +8% damage each; Last Flare spends them for +12% each. Separate from Conduit charges.", detail: "Rose Duality: Skill 1 +8% outgoing damage each or Last Flare +12% each.", effect: { family: "burn", kind: "burn", origin: "rose", source: "living-self-authored-burn" } }
+    passive: "While Crinso is alive, Burn from his abilities grants one Rose Duality charge when it deals damage. Charges have no limit. The charges are not Burn and are separate from the Ember Seals granted by the Cinder Testament Conduit.",
+    skill1: "Spends all Rose Duality for +8% outgoing damage each; one spend for the whole activation.",
+    ultimate: "Spends all Rose Duality for +12% outgoing damage each; one spend for the whole activation.",
+    resource: { label: "Rose Duality", key: "duality", summary: "Gain a charge each time Crinso's own Burn deals damage while he is alive. Skill 1 spends them for +8% damage each; Last Flare spends them for +12% each. Separate from Conduit charges.", detail: "Rose Duality: Skill 1 +8% outgoing damage each or Last Flare +12% each.", effect: { family: "burn", kind: "burn", origin: "rose", source: "living-self-authored-burn" } }
   }
 };
 
@@ -3096,210 +2862,210 @@ function ability(name, description, damageMultiplier, targets, excludeSelf) {
 var nativeIdentities = {
   ember: {
     role: "Persistent fire specialist",
-    playLoop: "Maintain personal Burn across enemy phases or trade its remaining ticks for immediate detonation.",
+    playLoop: "[Infernis] applies [Burn] that lasts across enemy phases; [Flame Arc] can deal its remaining damage at once.",
     passive: {
       name: "Unbroken Ember",
-      description: "Infernis Burn lasts three enemy phases. Reapplying refreshes to three phases and retains the stronger tick; it never stacks or ticks immediately. No low-health bonus or Ember bank."
+      description: "[Burn] applied by [Infernis] lasts three enemy phases and deals its damage once per enemy phase, starting with the next one. Reapplying it resets the duration to three phases and keeps the higher damage per phase; it never stacks."
     },
     abilities: {
-      skill1: ability("Cinder Cleave", "160% direct damage to one enemy; apply personal Burn at 25% of caster Attack per enemy phase for three enemy phases.", 1.6),
-      skill2: ability("Flame Arc", "110% direct damage to all enemies. On each survivor, consume up to two remaining phases of Infernis Burn and immediately deal their exact stored tick damage. Other owners\u2019 Burn is untouched; without personal Burn there is no detonation.", 1.1, "all-enemies"),
-      ultimate: ability("Last Flare: Dawnfire", "200% direct damage to all enemies; refresh personal Burn at 45% of caster Attack per phase for three enemy phases, retaining stronger ticks. No immediate detonation; Burn continues during recovery while Infernis lives.", 2, "all-enemies")
+      skill1: ability("Cinder Cleave", "160% direct damage to one enemy, then apply [Burn] dealing 25% of [Infernis]\u2019s Attack per enemy phase for three enemy phases.", 1.6),
+      skill2: ability("Flame Arc", "110% direct damage to all enemies. Each surviving enemy carrying [Infernis]\u2019s [Burn] immediately takes the damage of up to two of its remaining [Burn] phases, and those phases are removed. [Burn] applied by other characters is unaffected.", 1.1, "all-enemies"),
+      ultimate: ability("Last Flare: Dawnfire", "200% direct damage to all enemies, then apply [Burn] dealing 45% of [Infernis]\u2019s Attack per enemy phase for three enemy phases; an existing stronger [Burn] keeps its higher damage. [Burn] continues during the recovery turn while [Infernis] is alive.", 2, "all-enemies")
     }
   },
   tide: {
     role: "Precise barrier protector",
-    playLoop: "Inspect the next enemy threat and choose the ally who needs a short-lived barrier.",
+    playLoop: "[Tizu] places a short-lived shield on one chosen ally before the next enemy attack.",
     passive: {
       name: "Stillwater Guard",
-      description: "When Tizu\u2019s own ability shield fully absorbs an enemy direct hit with zero HP loss, its recipient gains 8 Gauge, once per recipient per enemy phase. No Ward bank or flat Defense bonus."
+      description: "When a shield from [Tizu]\u2019s abilities fully absorbs an enemy\u2019s direct hit so that no HP is lost, the shielded ally gains 8 Gauge."
     },
     abilities: {
-      skill1: { ...ability("Undertow Thrust", "150% direct damage to one enemy; apply 25% Weaken to its next one enemy-phase attack window. Weaken reduces outgoing direct damage, not Defense.", 1.5), strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
-      skill2: ability("Tidal Shelter", `Select one living ally; refresh a shield worth ${nativeBalance.tizu.shelter * 100}% of recipient maximum HP, expiring after the next enemy phase. Does not shield the whole team.`, void 0, "one-ally"),
-      ultimate: ability("Last Flare: Ocean Memory", `Shield all living allies for ${nativeBalance.tizu.oceanMemory * 100}% of recipient maximum HP through the next two enemy phases. Their first direct hit while this shield remains receives 30% damage reduction before shield absorption. No direct attack.`, void 0, "all-allies")
+      skill1: { ...ability("Undertow Thrust", "150% direct damage to one enemy and apply 25% [Weaken] for the next enemy phase. [Weaken] reduces the direct damage that enemy deals.", 1.5), strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
+      skill2: ability("Tidal Shelter", `Choose one living ally. It gains a shield worth ${nativeBalance.tizu.shelter * 100}% of its maximum HP until the next enemy phase ends. Recasting replaces the shield.`, void 0, "one-ally"),
+      ultimate: ability("Last Flare: Ocean Memory", `All living allies gain a shield worth ${nativeBalance.tizu.oceanMemory * 100}% of their maximum HP until the second enemy phase ends. The first direct hit each ally takes while this shield remains is reduced by 30% before the shield absorbs it.`, void 0, "all-allies")
     }
   },
   sprout: {
     role: "Delayed recovery gardener",
-    playLoop: "Plant recovery before damage, then choose whether to wait for delivery or harvest immediately.",
+    playLoop: "[Flora] plants [Seed] healing that restores HP at the start of the next player turn, or harvests it immediately with [Verdant Renewal].",
     passive: {
       name: "Root of Hope",
-      description: `Each living ally can hold one Flora Seed. At next player-turn start it restores ${nativeBalance.flora.seed * 100}% of recipient maximum HP and disappears, requiring Flora alive. Seeds never stack or revive; replacement resets delivery time. No automatic team healing or Bloom bank.`
+      description: `Each living ally can hold one [Seed]. At the start of the next player turn, a [Seed] restores ${nativeBalance.flora.seed * 100}% of its holder\u2019s maximum HP and disappears, as long as [Flora] is alive. A [Seed] never stacks or revives. Planting a new [Seed] replaces the old one and resets its timing.`
     },
     abilities: {
-      skill1: ability("Briar Shot", "140% direct damage to one enemy; plant a Seed on the living ally with the lowest HP fraction, breaking ties by squad order.", 1.4),
-      skill2: ability("Verdant Renewal", `Immediately harvest all existing Seeds for their stored healing (${nativeBalance.flora.seed * 100}% recipient maximum HP normally; ${nativeBalance.flora.empoweredSeed * 100}% for empowered Seeds), then plant a new Seed on every living ally. Empty harvest heals nothing. A normal Seed never overwrites an empowered pending Seed; no revive or Attack buff.`, void 0, "all-allies"),
-      ultimate: ability("Last Flare: Worldseed", `Immediately heal every living ally by ${nativeBalance.flora.immediateHeal * 100}% of recipient maximum HP, then plant an empowered Seed restoring ${nativeBalance.flora.empoweredSeed * 100}% at next player-turn start while Flora lives. No direct damage or revival.`, void 0, "all-allies")
+      skill1: ability("Briar Shot", "140% direct damage to one enemy, then plant a [Seed] on the living ally with the lowest HP percentage; ties go to the earlier squad position.", 1.4),
+      skill2: ability("Verdant Renewal", `Every existing [Seed] immediately heals its holder (${nativeBalance.flora.seed * 100}% of maximum HP, or ${nativeBalance.flora.empoweredSeed * 100}% for an [Empowered Seed]) and is removed. Then every living ally receives a new [Seed]. With no existing [Seed], the harvest heals nothing. A new [Seed] never replaces a pending [Empowered Seed].`, void 0, "all-allies"),
+      ultimate: ability("Last Flare: Worldseed", `Every living ally immediately heals ${nativeBalance.flora.immediateHeal * 100}% of its maximum HP, then receives an [Empowered Seed] that restores ${nativeBalance.flora.empoweredSeed * 100}% at the start of the next player turn while [Flora] is alive.`, void 0, "all-allies")
     }
   },
   atmoso: {
     role: "Delayed wind-field attacker",
-    playLoop: "Create Cyclone before allies act, then weigh a larger delayed release against immediate pressure.",
+    playLoop: "[Cyclone Weave] creates a [Cyclone] that grows as allies act and later releases on all enemies; [Razor Gale] can release it early.",
     passive: {
       name: "Gale Cadence",
-      description: "While Cyclone is active, each other living ally\u2019s completed native action adds one Gust, once per ally per player turn, cap 4. No critical-earned Tempest or low-health bonus."
+      description: "While a [Cyclone] is active, the first action each other living ally takes in a player turn ([Normal Attack], [Defense] or any skill) adds one [Gust]."
     },
     abilities: {
-      skill1: ability("Razor Gale", "180% direct damage to one enemy; release an existing Cyclone early against all living enemies and end the field.", 1.8),
-      skill2: ability("Cyclone Weave", "Release an existing Cyclone first, then create a fresh empty Cyclone lasting two enemy phases. At the second phase end, release 70% caster Attack plus 30% per Gust, cap 190%, against all living enemies as fixed noncritical native damage. Gusts never carry over; Atmoso must live to release.", void 0, "all-enemies"),
-      ultimate: ability("Last Flare: Sky Without End", "Release any active Cyclone at its actual Gust value, then deal 200% direct damage to all enemies. Does not create a field.", 2, "all-enemies")
+      skill1: ability("Razor Gale", "180% direct damage to one enemy. If a [Cyclone] exists, it releases immediately on all living enemies and ends.", 1.8),
+      skill2: ability("Cyclone Weave", "Release any existing [Cyclone], then create a new [Cyclone] with 0 [Gust] lasting two enemy phases. When the second enemy phase ends, it releases on all living enemies. A [Cyclone] release deals 70% of [Atmoso]\u2019s Attack plus 30% per [Gust] and cannot critically hit. [Gust] never carries over to a new [Cyclone]. [Atmoso] must be alive for a release.", void 0, "all-enemies"),
+      ultimate: ability("Last Flare: Sky Without End", "Release any active [Cyclone] at its current [Gust] count, then deal 200% direct damage to all enemies.", 2, "all-enemies")
     }
   },
   elise: {
     role: "Two-shuriken placement duelist",
-    playLoop: "Lodge blades across enemies for coverage or converge both on one target before recall.",
+    playLoop: "[Elise] lodges two [Shuriken] in enemies, then recalls them for extra strikes.",
     passive: {
       name: "Stormwheel Rhythm",
-      description: "Exactly two native shuriken begin held. Each is held or lodged in one living enemy; blades return harmlessly when their target dies. No Tempest counter."
+      description: "[Elise] has exactly two [Shuriken], both held at the start of battle. Each is either held or lodged in one living enemy. A lodged [Shuriken] returns to her when its enemy is defeated, without dealing damage."
     },
     abilities: {
-      skill1: ability("Voltstar Cut", "Throw one held blade for 110% direct damage to the selected enemy and lodge it. With none held, deal a 140% direct strike without moving blades. Both may lodge in one target.", 1.1),
-      skill2: ability("Crosscurrent Volley", "Recall all lodged blades: each deals a 90% caster Attack fixed noncritical strike to its target; two on the same target add one 60% convergence strike. With both held, instead deal one 140% direct strike to the selected enemy. Recall generates no Gauge or extra critical rolls.", 1.4),
-      ultimate: ability("Last Flare: Infinite Thunderwheel", "Recall lodged blades with the same 90% per blade and single 60% convergence rule, then deal one 260% direct strike to the selected enemy. Both blades end held regardless of survival; no baseline area damage.", 2.6)
+      skill1: ability("Voltstar Cut", "Throw one held [Shuriken] for 110% direct damage to the selected enemy; it lodges in that enemy. With no [Shuriken] held, deal 140% direct damage instead and neither [Shuriken] moves. Both [Shuriken] can lodge in the same enemy.", 1.1),
+      skill2: ability("Crosscurrent Volley", "Recall every lodged [Shuriken]: each strikes its enemy for 90% of [Elise]\u2019s Attack and cannot critically hit. If both were in the same enemy, it takes one extra 60% strike. If both [Shuriken] are already held, deal 140% direct damage to the selected enemy instead. Recalled strikes generate no Gauge.", 1.4),
+      ultimate: ability("Last Flare: Infinite Thunderwheel", "Recall every lodged [Shuriken] using the same 90% strikes and 60% same-enemy strike, then deal 260% direct damage to the selected enemy. Both [Shuriken] return to [Elise] afterward.", 2.6)
     }
   },
   bliss: {
     role: "Action-order dancer",
-    playLoop: "Act first for offense or last for modest recovery and shielding; solo always opens.",
+    playLoop: "[Bliss]\u2019s skills change with when she acts in the player turn: acting first adds offense, acting last adds healing and shields. When she is the only living ally, she always counts as acting first.",
     passive: {
       name: "Stillfeather Tempo",
-      description: "Each native action is Opening if no other living ally has acted this player turn, Closing if all have, or Passing otherwise. Solo is always Opening, never both. No healing-earned Bloom bank."
+      description: "Each action is [Opening] if no other living ally has acted this player turn, [Closing] if every other living ally has acted, and [Passing] otherwise. When [Bliss] is the only living ally, every action is [Opening]."
     },
     abilities: {
-      skill1: ability("Warfeather Cut", "170% direct damage to one enemy. Opening adds 25 percentage points Critical Rate to this attack; Closing heals the most injured other living ally for 6% of recipient maximum HP. Passing adds neither.", 1.7),
-      skill2: ability("Quietstorm Flourish", "120% direct damage to all enemies. Opening grants living allies 10% outgoing direct damage until this player turn ends; Closing refreshes a 6% recipient maximum HP team shield through the next enemy phase. Passing adds neither.", 1.2, "all-enemies"),
-      ultimate: ability("Last Flare: Thousandfeather Stillness", "250% direct damage to all enemies. Opening adds 30 percentage points Critical Rate to this attack; Closing heals other living allies for 10% of recipient maximum HP. Passing has no bonus.", 2.5, "all-enemies")
+      skill1: ability("Warfeather Cut", "170% direct damage to one enemy. [Opening]: +25 percentage points Critical Rate for this attack. [Closing]: heal the most injured other living ally for 6% of its maximum HP. [Passing]: no bonus.", 1.7),
+      skill2: ability("Quietstorm Flourish", "120% direct damage to all enemies. [Opening]: living allies deal 10% more direct damage until this player turn ends. [Closing]: all living allies gain a shield worth 6% of their maximum HP until the next enemy phase ends. [Passing]: no bonus.", 1.2, "all-enemies"),
+      ultimate: ability("Last Flare: Thousandfeather Stillness", "250% direct damage to all enemies. [Opening]: +30 percentage points Critical Rate for this attack. [Closing]: heal other living allies for 10% of their maximum HP. [Passing]: no bonus.", 2.5, "all-enemies")
     }
   },
   bruno: {
     role: "Deliberate damage interceptor",
-    playLoop: "Cover a vulnerable ally while managing the redirected damage Bruno can safely endure.",
+    playLoop: "[Bruno] places [Cover] on allies and takes part of the damage they receive.",
     passive: {
       name: "Faultbound Resolve",
-      description: "Reduce damage redirected to Bruno by 25%, only for his interception. No flat Defense bonus, retaliation or absorbed-damage resource."
+      description: "Damage redirected to [Bruno] by [Cover] is reduced by 25%."
     },
     abilities: {
-      skill1: ability("Seismic Hammerfall", "190% direct damage to one enemy. No Weaken.", 1.9),
-      skill2: ability("Citadel Mantle", "Choose another living ally to Cover through the next enemy phase: redirect 50% of its post-mitigation direct incoming damage to Bruno. Only one covered ally; recasting replaces it. Solo fallback gives Bruno 20% direct-damage reduction for that phase. Redirected damage cannot redirect again.", void 0, "one-ally", true),
-      ultimate: ability("Last Flare: Worldwall Ascendant", "Cover every other living ally for two enemy phases, redirecting 40% per hit; replace single-target Cover. Bruno receives a personal shield worth 20% of caster maximum HP for that duration. No direct damage.", void 0, "all-allies")
+      skill1: ability("Seismic Hammerfall", "190% direct damage to one enemy.", 1.9),
+      skill2: ability("Citadel Mantle", "Place [Cover] on another living ally until the next enemy phase ends: 50% of the direct damage it takes, after Defense, is redirected to [Bruno]. Only one ally can hold this [Cover]; recasting moves it. If [Bruno] is the only living ally, he instead takes 20% less direct damage for that phase. Redirected damage cannot be redirected again.", void 0, "one-ally", true),
+      ultimate: ability("Last Flare: Worldwall Ascendant", "Place [Cover] on every other living ally for two enemy phases, redirecting 40% of each direct hit to [Bruno]; this replaces single-ally [Cover]. [Bruno] gains a shield worth 20% of his maximum HP for the same duration.", void 0, "all-allies")
     }
   },
   disciple: {
     role: "Conditional ally instructor",
-    playLoop: "Act before a chosen ally and match its next action to Strike, Shelter or Resolve.",
+    playLoop: "[Disciple] gives one ally an [Instruction] ([Strike], [Shelter] or [Resolve]) that strengthens its next matching action.",
     passive: {
       name: "Shared Mindflame",
-      description: "Maintain one Instruction on one chosen living ally, including self. It expires after that ally\u2019s next native action or at the end of the next player turn. Replacement discards the old one. New Instructions activate after the granting action finishes, never amplifying or consuming themselves."
+      description: "[Disciple] maintains one [Instruction] on one living ally, which can be [Disciple]. The ally\u2019s next action of any kind ([Normal Attack], [Defense] or a skill) uses it up; otherwise it expires at the end of the next player turn. Giving a new [Instruction] replaces the old one. A new [Instruction] takes effect after the action that granted it."
     },
     abilities: {
-      skill1: ability("Thoughtspark Benediction", "Give one living ally Strike: its next native damaging action gains 30% outgoing direct damage. A support action consumes it without benefit.", void 0, "one-ally"),
-      skill2: ability("Concord of Chaos", "Give one living ally Shelter: its next native heal or shield action gains 35% native healing/shield amount. A purely damaging action consumes it without benefit. Does not amplify Conduit-generated outcomes.", void 0, "one-ally"),
-      ultimate: ability("Last Flare: Unbound Mindcrown", "Give Resolve to all living allies: their next native action receives Strike and/or Shelter according to its actual effects (30% outgoing direct damage and 35% native healing/shields). Replace current Instructions, expiring by the end of the next player turn. Hybrid actions use both parts once without recursion; no direct damage or permanent Attack buff.", void 0, "all-allies")
+      skill1: ability("Thoughtspark Benediction", "Give one living ally [Strike]: its next action that deals damage deals 30% more direct damage. If its next action deals no damage, [Strike] is used up with no effect.", void 0, "one-ally"),
+      skill2: ability("Concord of Chaos", "Give one living ally [Shelter]: if its next action heals or shields, that healing or shielding is 35% larger. If its next action only deals damage, [Shelter] is used up with no effect. Healing and shields created by Conduits are not increased.", void 0, "one-ally"),
+      ultimate: ability("Last Flare: Unbound Mindcrown", "Give [Resolve] to all living allies, replacing their current [Instruction]. Each ally\u2019s next action gains [Strike] (30% more direct damage), [Shelter] (35% more healing and shields) or both, matching what that action does. [Resolve] expires at the end of the next player turn.", void 0, "all-allies")
     }
   },
   aurora: {
     role: "Hostile skill forecaster",
-    playLoop: "Forecast the scheduled special that matters and time a Seal or ultimate-specific protection.",
+    playLoop: "[Aurora] reveals when each enemy\u2019s next special skill is due; [Seal] and [Last Flare: Final Dawn Verdict] reduce its damage.",
     passive: {
       name: "Lens of Diminishment",
-      description: "Battle reference always shows each living enemy\u2019s next scheduled special/ultimate and due enemy-phase number, or explicitly states none is scheduled. Does not change scheduling or RNG."
+      description: "The battle menu shows each living enemy\u2019s next scheduled special skill or ultimate and the enemy phase it is due, or states that none is scheduled."
     },
     abilities: {
-      skill1: ability("Gleamseal", "Seal one enemy: its next scheduled special/ultimate within three enemy phases deals 40% less direct damage. Only that activation consumes the Seal; Normal Attacks are unaffected and scheduling is unchanged. Refresh duration while retaining the stronger personal Seal; never stack."),
-      skill2: ability("Eclipse Mandate", "100% direct damage to all enemies; Seal each survivor for 25% less direct damage from its next scheduled special/ultimate within three enemy phases. Refresh duration and retain the stronger personal reduction; never stack.", 1, "all-enemies"),
-      ultimate: ability("Last Flare: Final Dawn Verdict", "For two enemy phases, all living allies take 50% less direct damage from hostile ultimates specifically. No attack, Weaken, or protection against Normal Attacks or ordinary skills.", void 0, "all-allies")
+      skill1: ability("Gleamseal", "Place a [Seal] on one enemy: its next scheduled special skill or ultimate within three enemy phases deals 40% less direct damage, then the [Seal] ends. Its [Normal Attack] does not use the [Seal]. Recasting resets the duration and keeps the stronger [Seal]; it never stacks."),
+      skill2: ability("Eclipse Mandate", "100% direct damage to all enemies, then place a 25% [Seal] on each survivor, following the same rules as [Gleamseal].", 1, "all-enemies"),
+      ultimate: ability("Last Flare: Final Dawn Verdict", "For two enemy phases, all living allies take 50% less direct damage from enemy ultimates. Enemy [Normal Attack] and other skills are unaffected.", void 0, "all-allies")
     }
   },
   razor: {
     role: "Wounds-powered revenge duelist",
-    playLoop: "Bank actual enemy-inflicted HP loss, then choose a small cashout or a larger finisher.",
+    playLoop: "[Razor] stores HP lost to enemy attacks as [Wounds], then spends them for extra damage.",
     passive: {
       name: "Unbroken Night",
-      description: "Bank actual direct enemy HP loss suffered by Razor as Wounds, cap 30% of caster maximum HP. Shields, redirected damage, Burn, self-costs and generated effects add nothing. Healing does not erase Wounds."
+      description: "HP [Razor] loses to direct enemy hits is stored as [Wounds]. Damage absorbed by shields, damage redirected to him, [Burn], HP he pays himself and Conduit effects add no [Wounds]. Healing does not remove [Wounds]."
     },
     abilities: {
-      skill1: ability("Nightcleave", "160% direct damage to one enemy; spend up to 10% caster maximum HP of Wounds for a fixed noncritical Defense-mitigated strike whose Attack power equals the amount spent. No Wounds still permits the ordinary attack.", 1.6),
-      skill2: ability("Eclipse Bastion", "Reduce Razor\u2019s direct incoming damage by 30% for the next enemy phase. At phase end, if he lost direct HP, refresh a personal shield equal to that loss, capped at 12% caster maximum HP, through the following enemy phase. No team shield or immediate revenge."),
-      ultimate: ability("Last Flare: Unbroken Midnight", "220% direct damage to one enemy; spend all Wounds before a fixed noncritical Defense-mitigated strike using twice the amount spent as Attack power, cap 60% caster maximum HP. No life steal or revival.", 2.2)
+      skill1: ability("Nightcleave", "160% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses the spent amount as its Attack, is reduced by Defense and cannot critically hit. With no [Wounds], only the first hit occurs.", 1.6),
+      skill2: ability("Eclipse Bastion", "[Razor] takes 30% less direct damage during the next enemy phase. If he lost HP to direct hits during that phase, he then gains a shield equal to that HP through the following enemy phase."),
+      ultimate: ability("Last Flare: Unbroken Midnight", "220% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses twice the spent amount as its Attack, is reduced by Defense and cannot critically hit.", 2.2)
     }
   },
   rosetta: {
     role: "Coordinated quarry hunter",
-    playLoop: "Mark a Quarry, coordinate distinct allies\u2019 hits, then cash out after contributors act.",
+    playLoop: "[Rosetta] marks a [Quarry]; when different allies hit it in the same player turn, her abilities gain bonuses.",
     passive: {
       name: "Virtuous Bloom",
-      description: "Maintain one personal Quarry. Track distinct living allies landing native direct hits on it this player turn. Once two different allies hit, refresh an 8% recipient maximum HP shield on those contributors, once per player turn total. No passive healing, Burn or Rose Grace bank."
+      description: "[Rosetta] can have one [Quarry]. Each player turn, the different living allies whose attacks hit it directly are counted. Each direct hit on it after two different allies have hit it that player turn gives each of those allies a shield worth 8% of their maximum HP."
     },
     abilities: {
-      skill1: ability("Golden Thorn Volley", "160% direct damage to one enemy and designate it Quarry until it dies or Rosetta marks another. This hit counts as her contribution. Re-marking preserves current-turn history; changing targets clears it.", 1.6),
-      skill2: ability("Crimson Skyfall", "200% direct damage to a living Quarry, plus 25% coefficient per distinct other ally who hit it this turn, cap 250%. Without a living Quarry, deal 160% to the selected enemy. Does not mark.", 2),
-      ultimate: ability("Last Flare: Rose Beyond the Sun", "300% direct damage to the Quarry or selected fallback. With at least two distinct Quarry contributors this turn, heal living contributors for 10% of recipient maximum HP; never heal nonparticipants.", 3)
+      skill1: ability("Golden Thorn Volley", "160% direct damage to one enemy and mark it as [Quarry] until it is defeated or [Rosetta] marks another enemy. This hit counts as her contribution. Marking the same enemy again keeps this turn\u2019s count; marking a different enemy resets it.", 1.6),
+      skill2: ability("Crimson Skyfall", "200% direct damage to a living [Quarry], plus 25% for each other ally who hit it this player turn. With no living [Quarry], deal 160% direct damage to the selected enemy. Does not mark a [Quarry].", 2),
+      ultimate: ability("Last Flare: Rose Beyond the Sun", "300% direct damage to the [Quarry], or to the selected enemy if there is none. If at least two different allies hit the [Quarry] this player turn, those allies heal 10% of their maximum HP; other allies are not healed.", 3)
     }
   },
   thornia: {
     role: "Enemy-action thorn trapper",
-    playLoop: "Trap a threatening attacker for retaliation or spend a charge for immediate pressure.",
+    playLoop: "[Thornia] places a [Thorn Trap] that strikes an enemy whenever it attacks; [Shadow Rose Cleave] can spend a charge for immediate damage.",
     passive: {
       name: "Forbidden Garden",
-      description: "One personal trap per enemy, up to three charges. When it completes a direct damaging action against any ally, spend one charge for a 60% caster Attack fixed noncritical strike. Once per activation, not hit or target; shielded damage counts, fully prevented/no-damage actions do not. No Thorn Aegis bank."
+      description: "Each enemy can hold one [Thorn Trap] from [Thornia], with up to three charges. When that enemy finishes an action that deals direct damage to any ally, one charge is spent for a strike of 60% of [Thornia]\u2019s Attack that cannot critically hit. This happens once per enemy action, however many allies it hits. Damage absorbed by shields still counts; actions that deal no damage do not."
     },
     abilities: {
-      skill1: ability("Gilded Thorn Guard", "Place three personal trap charges on the selected enemy for three enemy phases. Refresh to three, never add; no direct damage. Stronger traps cannot be downgraded."),
-      skill2: ability("Shadow Rose Cleave", "170% direct damage to one enemy. If it has a personal trap, consume one charge for an additional 80% caster Attack fixed noncritical strike, sacrificing a future retaliation.", 1.7),
-      ultimate: ability("Last Flare: Thousand-Rose Dominion", "140% direct damage to all enemies; place an empowered three-charge personal trap on each survivor for three enemy phases, with 90% caster Attack fixed noncritical retaliation.", 1.4, "all-enemies")
+      skill1: ability("Gilded Thorn Guard", "Place a [Thorn Trap] with three charges on the selected enemy for three enemy phases. Recasting resets it to three charges and never adds more. An [Empowered Thorn Trap] is not replaced."),
+      skill2: ability("Shadow Rose Cleave", "170% direct damage to one enemy. If it has a [Thorn Trap], spend one charge for an extra strike of 80% of [Thornia]\u2019s Attack that cannot critically hit.", 1.7),
+      ultimate: ability("Last Flare: Thousand-Rose Dominion", "140% direct damage to all enemies, then place an [Empowered Thorn Trap] with three charges on each survivor for three enemy phases. Its strikes deal 90% of [Thornia]\u2019s Attack and cannot critically hit.", 1.4, "all-enemies")
     }
   },
   crinso: {
     role: "Alternating-edge combo duelist",
-    playLoop: "Alternate Gold and Crimson ordinary skills to build Combo, then choose when to spend the combination.",
+    playLoop: "Alternating [Golden Edge] and [Crimson Rupture] builds [Combo]; [Last Flare: Blossoming Cataclysm] spends it.",
     passive: {
       name: "Rose Duality",
-      description: "Ordinary skills use Gold or Crimson edge. Switching advances Combo by 1, cap 3; repeating resets to 0. The first edge establishes stance at Combo 0. Normal Attack and Defense neither build nor break it. No Burn, low-health bonus or fire charges."
+      description: "Using [Golden Edge] after [Crimson Rupture], or [Crimson Rupture] after [Golden Edge], adds 1 [Combo]. Using the same one of these two skills twice in a row resets [Combo] to 0. When there is no previous skill to compare (the first use, or after [Last Flare: Blossoming Cataclysm]), the skill starts a new chain at 0 [Combo]. [Normal Attack] and [Defense] do not affect the chain."
     },
     abilities: {
-      skill1: ability("Golden Edge", "160% direct damage to one enemy; if the previous ordinary skill was Crimson, ignore 20% of effective Defense for this attack. Resolve the attack, then update edge/Combo to Gold.", 1.6),
-      skill2: ability("Crimson Rupture", "200% direct damage to one enemy; if the previous ordinary skill was Gold, add 40% coefficient (240% total). Resolve, then update edge/Combo to Crimson. No area damage or Burn.", 2),
-      ultimate: ability("Last Flare: Blossoming Cataclysm", "260% direct damage to one enemy plus 45% coefficient per stored Combo, cap 395%. At Combo 3 ignore 30% effective Defense. Consume Combo and clear previous edge before damage.", 2.6)
+      skill1: ability("Golden Edge", "160% direct damage to one enemy. If [Crinso]\u2019s previous skill was [Crimson Rupture], this attack ignores 20% of the target\u2019s Defense. Then updates [Combo] as described in [Rose Duality].", 1.6),
+      skill2: ability("Crimson Rupture", "200% direct damage to one enemy, increased by 40% (240% total) if [Crinso]\u2019s previous skill was [Golden Edge]. Then updates [Combo] as described in [Rose Duality].", 2),
+      ultimate: ability("Last Flare: Blossoming Cataclysm", "260% direct damage to one enemy plus 45% per [Combo]. At 3 or more [Combo], the attack also ignores 30% of the target\u2019s Defense. Uses up all [Combo] and ends the chain, so the next [Golden Edge] or [Crimson Rupture] starts a new one.", 2.6)
     }
   },
   nerithe: {
     role: "Survey and precision-pierce attacker",
-    playLoop: "Survey with Normal Attacks, then spend one point, move the map or save three for a finisher.",
+    playLoop: "[Nerithe]\u2019s [Normal Attack] adds [Survey] points to an enemy; her skills spend them to ignore part of its Defense.",
     passive: {
       name: "Uncharted Current",
-      description: "Normal Attack gains exactly 5 additional Gauge and adds one personal Survey point to its target, cap 3. Only one surveyed target; surveying another removes old points. Survey disappears when its target dies. No other action gains the additional Gauge."
+      description: "[Nerithe]\u2019s [Normal Attack] gains 5 extra Gauge and adds 1 [Survey] point to its target. Only one enemy can hold [Survey]; surveying another enemy removes the old points. [Survey] disappears when its enemy is defeated."
     },
     abilities: {
-      skill1: ability("Meridian Break", "180% direct damage to the surveyed target or selected fallback. Spend up to one Survey point to ignore 25% effective Defense; without a point there is no pierce. No Weaken.", 1.8),
-      skill2: ability("Fold the Sea", "Move the current Survey designation and points to the selected living enemy, then deal 130% direct damage to all enemies. With no Survey it remains an area attack and creates no points.", 1.3, "all-enemies"),
-      ultimate: ability("Ocean Beyond the Map", "280% direct damage to the surveyed target or selected fallback; consume all Survey points for 15% effective Defense ignore each, cap 45%. No extra area attack or debuff.", 2.8)
+      skill1: ability("Meridian Break", "180% direct damage to the enemy holding [Survey], or the selected enemy if none does. Spends 1 [Survey] point, if any, to ignore 25% of the target\u2019s Defense.", 1.8),
+      skill2: ability("Fold the Sea", "Move [Survey] and all its points to the selected living enemy, then deal 130% direct damage to all enemies.", 1.3, "all-enemies"),
+      ultimate: ability("Ocean Beyond the Map", "280% direct damage to the enemy holding [Survey], or the selected enemy if none does. Uses up all [Survey] points; each ignores 15% of the target\u2019s Defense.", 2.8)
     }
   },
   orvella: {
     role: "Finite-durability team architect",
-    playLoop: "Build a shared Foundation, repair it efficiently or sacrifice its remaining durability for pressure.",
+    playLoop: "[Orvella] raises a shared [Foundation] that absorbs damage for the squad until its durability runs out; it can be repaired or spent for damage.",
     passive: {
       name: "Load-Bearing Will",
-      description: "One Foundation may exist with finite durability. Before personal shields, it absorbs up to 20% of each direct hit\u2019s post-mitigation damage on living allies, limited by remaining durability. No independent turn, targetability or creature ID. Simultaneous area shares are allocated proportionally, not first-ally-first."
+      description: "Only one [Foundation] can exist. While it has durability, it absorbs up to 20% of each direct hit on a living ally (after Defense), before that ally\u2019s shields, and loses durability equal to the amount absorbed. When one attack hits several allies at once, the absorbed amount is shared proportionally."
     },
     abilities: {
-      skill1: ability("Keystone Reversal", "140% direct damage to one enemy; repair an existing Foundation by 8% caster maximum HP up to its original maximum. Without a Foundation deal 180% instead. Never creates one.", 1.4),
-      skill2: ability("Raise the Faultline", "Create a Foundation with 30% caster maximum HP durability for three enemy phases. Recasting replaces it at full durability; never stacks, detonates or grants personal shields.", void 0, "all-allies"),
-      ultimate: ability("Worldweight Citadel", "200% direct damage to all enemies. Consume an existing Foundation for an extra fixed noncritical Defense-mitigated strike against each enemy using remaining durability as Attack power, cap 30% caster maximum HP. Does not create a Foundation.", 2, "all-enemies")
+      skill1: ability("Keystone Reversal", "140% direct damage to one enemy, then repair the [Foundation] by 8% of [Orvella]\u2019s maximum HP. With no [Foundation], deal 180% direct damage instead. Never creates a [Foundation].", 1.4),
+      skill2: ability("Raise the Faultline", "Create a [Foundation] with durability equal to 30% of [Orvella]\u2019s maximum HP for three enemy phases. Recasting replaces it at full durability; it never stacks.", void 0, "all-allies"),
+      ultimate: ability("Worldweight Citadel", "200% direct damage to all enemies. An existing [Foundation] is used up for an extra strike on each enemy that uses its remaining durability as Attack, is reduced by Defense and cannot critically hit.", 2, "all-enemies")
     }
   },
   vaelor: {
     role: "Deterministic three-beat burst attacker",
-    playLoop: "Use Rise to prepare a Crescendo finisher, balancing the global beat against available Gauge.",
+    playLoop: "[Vaelor]\u2019s skills change with a repeating three-step [Beat]; [Crescendo] strengthens [Last Chord of the Sky].",
     passive: {
       name: "Standing Thunder",
-      description: "Beat follows each global player turn: Tune \u2192 Rise \u2192 Crescendo \u2192 Tune, starting Tune at encounter entry. Advance once even during recovery or inability to act. No critical-earned Tempest, low-health bonus or ally-action-order condition."
+      description: "The [Beat] cycles [Tune] \u2192 [Rise] \u2192 [Crescendo] \u2192 [Tune], moving one step every player turn, even when [Vaelor] is recovering or cannot act. Each battle starts on [Tune]."
     },
     abilities: {
-      skill1: ability("Forked Cadence", "170% direct damage to one enemy; on Tune add 30 percentage points Critical Rate to this attack. Other beats retain 170%.", 1.7),
-      skill2: ability("Resonance Cascade", "120% direct damage to all enemies; on Rise refresh 20% outgoing direct damage on Vaelor through the end of his next player turn. Refreshes, never stacks; does not buff the team.", 1.2, "all-enemies"),
-      ultimate: ability("Last Chord of the Sky", "260% direct damage to all enemies, or 340% on Crescendo. Usable on every beat; normal recovery spends the following Tune turn after a Crescendo cast.", 2.6, "all-enemies")
+      skill1: ability("Forked Cadence", "170% direct damage to one enemy. On [Tune], +30 percentage points Critical Rate for this attack.", 1.7),
+      skill2: ability("Resonance Cascade", "120% direct damage to all enemies. On [Rise], [Vaelor] deals 20% more direct damage until the end of his next player turn; recasting refreshes it and it never stacks.", 1.2, "all-enemies"),
+      ultimate: ability("Last Chord of the Sky", "260% direct damage to all enemies, or 340% on [Crescendo]. Usable on any [Beat]. After a cast on [Crescendo], the recovery turn falls on the following [Tune].", 2.6, "all-enemies")
     }
   }
 };
@@ -3372,9 +3138,9 @@ var fighters = {
     stats: { health: 190, defense: 8, damage: 32, crit: 0.2, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 },
     passive: { name: "Root of Hope", description: "At each new player turn, heal living allies by 5% of their maximum health while Flora lives.", damageBonus: 0, defenseBonus: 0, healFraction: 0.05 },
     abilities: {
-      skill1: { name: "Briar Shot", description: `150% damage to one enemy with +20 percentage points critical chance. Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge (maximum +30%).`, cooldown: 0, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
+      skill1: { name: "Briar Shot", description: `150% damage to one enemy with +20 percentage points critical chance. Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge.`, cooldown: 0, strength: { damageMultiplier: 1.5, critBonus: 0.2 } },
       skill2: { name: "Verdant Renewal", description: "Restore 30 health to every living ally; cannot revive. Increase living allies' outgoing attack damage by 10% this and next player turn (refresh; does not stack).", cooldown: 0, strength: { healing: 30, attackBoostFraction: 0.1 } },
-      ultimate: { name: "Last Flare: Worldseed", description: `180% damage to all enemies and heal living allies by 55. Recover next turn. Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge (maximum +45%).`, cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } }
+      ultimate: { name: "Last Flare: Worldseed", description: `180% damage to all enemies and heal living allies by 55. Recover next turn. Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge.`, cooldown: 0, strength: { damageMultiplier: 1.8, healing: 55 } }
     }
   },
   rosetta: {
@@ -3442,12 +3208,12 @@ function resolveFighter(id, progress, equipment, upgrades) {
   }
   kit.stats.defense = (base.stats.defense + base.passive.defenseBonus) * factor ** 0.7;
   kit.stats.damage *= 1 + (progress?.weaponRank ?? 0) * weaponRules.attackPerRank;
-  kit.stats.crit = Math.min(0.75, base.stats.crit * potency);
-  kit.stats.critMultiplier = Math.min(3, base.stats.critMultiplier * potency);
+  kit.stats.crit = Math.min(1, base.stats.crit * potency);
+  kit.stats.critMultiplier = base.stats.critMultiplier * potency;
   kit.stats.shatterCapacity = base.stats.shatterCapacity * potency;
   kit.passive.defenseBonus *= factor ** 0.7;
-  kit.passive.damageBonus = Math.min(0.75, base.passive.damageBonus * potency);
-  kit.passive.healFraction = Math.min(0.1, base.passive.healFraction * potency);
+  kit.passive.damageBonus = base.passive.damageBonus * potency;
+  kit.passive.healFraction = base.passive.healFraction * potency;
   for (const action of ["skill1", "skill2", "ultimate"]) {
     if (kit.nativeIdentity) continue;
     const strength = kit.abilities[action].strength;
@@ -3455,9 +3221,8 @@ function resolveFighter(id, progress, equipment, upgrades) {
       const value2 = strength[key];
       if (value2 !== void 0) strength[key] = value2 * (key === "shield" || key === "healing" ? factor : potency);
     }
-    if (strength.weakenFraction !== void 0) strength.weakenFraction = Math.min(0.5, strength.weakenFraction);
-    if (strength.critBonus !== void 0) strength.critBonus = Math.min(0.5, strength.critBonus);
-    if (strength.attackBoostFraction !== void 0) strength.attackBoostFraction = Math.min(0.5, strength.attackBoostFraction);
+    if (strength.weakenFraction !== void 0) strength.weakenFraction = Math.min(1, strength.weakenFraction);
+    if (strength.critBonus !== void 0) strength.critBonus = Math.min(1, strength.critBonus);
   }
   if (equipment) validateConduitElement(equipment, getStarter(id).elementId);
   applyConduitBuffs(kit.stats, equipment, upgrades);
@@ -3521,24 +3286,24 @@ function describeFighter(id, snapshot) {
   }
   const intrinsicActionCopy = {
     sprout: {
-      skill1: `Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge (maximum +30%).`,
-      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge (maximum +45%); spent before healing, once for the whole activation.`
+      skill1: `Spends all ${elementalEffectFamilies.bloom.label} charges for +10% outgoing damage per charge.`,
+      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges for +15% healing from this ability per charge; spent before healing, once for the whole activation.`
     },
     bliss: {
-      skill1: `Spends all ${elementalEffectFamilies.bloom.label} charges for +8% outgoing damage per charge (maximum +24%).`,
-      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges to add a shield worth 5% of this caster's maximum Health per charge (maximum 15%); refreshes rather than stacks.`
+      skill1: `Spends all ${elementalEffectFamilies.bloom.label} charges for +8% outgoing damage per charge.`,
+      ultimate: `Spends all ${elementalEffectFamilies.bloom.label} charges to add a shield worth 5% of this caster's maximum Health per charge; refreshes rather than stacks.`
     },
     atmoso: {
-      skill1: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge (maximum +24%).`,
-      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge (maximum +36%).`
+      skill1: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge.`,
+      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge.`
     },
     elise: {
-      skill1: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge (maximum +24%).`,
-      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge (maximum +36%).`
+      skill1: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge.`,
+      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge.`
     },
     vaelor: {
-      skill2: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge (maximum +24%).`,
-      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge (maximum +36%).`
+      skill2: `Spends all ${elementalEffectFamilies.tempest.label} charges for +8% outgoing damage per charge.`,
+      ultimate: `Spends all ${elementalEffectFamilies.tempest.label} charges for +12% outgoing damage per charge.`
     }
   };
   for (const [action, text2] of Object.entries(intrinsicActionCopy[id] ?? {})) {
@@ -3765,9 +3530,9 @@ function roseEnemyStats(level, boss) {
 function creatureEnemyStats(level, boss, maximumLevel = 120) {
   return enemyCombatStats(Math.min(level, maximumLevel), boss);
 }
-function capturedEnemyStats(level, maximumLevel = 120) {
-  if (!Number.isInteger(level) || level < 10 || level > maximumLevel || !Number.isInteger(maximumLevel) || maximumLevel < 120 || maximumLevel > 140) throw new Error("Invalid captured creature level.");
-  const factor = 1 + Math.min(level, 120) * playableGrowth.perLevel;
+function capturedEnemyStats(level) {
+  if (!Number.isSafeInteger(level) || level < 1) throw new Error("Invalid captured creature level.");
+  const factor = 1 + level * playableGrowth.perLevel;
   return {
     health: capturedGrowth.health * factor,
     damage: capturedGrowth.damage * factor,
@@ -3864,11 +3629,11 @@ function infusionDrops(mode, stage, random, schedule = "caps") {
 
 // src/content/progression.ts
 var artifactSlots = Array.from({ length: 8 }, (_, index) => index + 1);
-var characterGrowth = { forms: 6, firstLevelCap: 30, levelsPerEvolution: 15, ...playableGrowth };
+var characterGrowth = { forms: 6, firstEvolutionLevel: 30, levelsPerEvolution: 15, ...playableGrowth };
 var fractureRules = {
   sourceTier: 1,
   destinationTier: 2,
-  levelCap: characterGrowth.firstLevelCap,
+  evolutionLevel: characterGrowth.firstEvolutionLevel,
   preservesLevel: true,
   lycalisReward: 10
 };
@@ -3889,8 +3654,8 @@ var levelingMaterialTiers = [
 ];
 function levelingMaterials(element, destination) {
   if (element !== "rosethorn") getElement(element);
-  if (!Number.isInteger(destination) || destination < 1 || destination > 120) {
-    throw new Error("Leveling destination must be an integer from 1 to 120.");
+  if (!Number.isSafeInteger(destination) || destination < 1) {
+    throw new Error("Leveling destination must be a whole number of 1 or more.");
   }
   return {
     [`${element}-common`]: Math.ceil(destination / 30),
@@ -3900,7 +3665,6 @@ function levelingMaterials(element, destination) {
 function levelCost(element, progress) {
   getElement(element);
   characterGrowthFactor(progress);
-  if (progress.level === characterLevelCap(progress.evolution)) throw new Error("Reach the next evolution to raise the level cap.");
   const destination = progress.level + 1;
   return { fractalis: 10 + 2 * destination, materials: {
     ...levelingMaterials(element, destination),
@@ -3921,11 +3685,14 @@ function evolutionCost(element, progress) {
     }
   };
 }
-function characterLevelCap(evolution) {
+function validateEvolution(evolution) {
   if (!Number.isInteger(evolution) || evolution < 1 || evolution > characterGrowth.forms) {
     throw new Error(`Character evolution must be an integer from 1 to ${characterGrowth.forms}.`);
   }
-  return characterGrowth.firstLevelCap + (evolution - 1) * characterGrowth.levelsPerEvolution;
+}
+function evolutionLevelRequirement(evolution) {
+  validateEvolution(evolution);
+  return characterGrowth.firstEvolutionLevel + (evolution - 1) * characterGrowth.levelsPerEvolution;
 }
 function characterLevelCost(id, progress) {
   const cost = levelCost(getStarter(id).elementId, progress);
@@ -3953,9 +3720,9 @@ function characterEvolutionRequirement(id, evolution) {
 }
 function characterGrowthFactor(progress) {
   if (!Number.isInteger(progress.weaponRank ?? 0) || (progress.weaponRank ?? 0) < 0 || (progress.weaponRank ?? 0) > weaponRules.maximumRank) throw new Error("Invalid weapon rank.");
-  const cap = characterLevelCap(progress.evolution);
-  if (!Number.isInteger(progress.level) || progress.level < 0 || progress.level > cap) {
-    throw new Error(`Character level must be an integer from 0 to ${cap}.`);
+  validateEvolution(progress.evolution);
+  if (!Number.isSafeInteger(progress.level) || progress.level < 0) {
+    throw new Error("Character level must be a whole number of 0 or more.");
   }
   return 1 + progress.level * characterGrowth.perLevel + (progress.evolution - 1) * characterGrowth.perEvolution;
 }
@@ -4874,7 +4641,7 @@ function getCreature(id) {
 }
 
 // src/game/character-instances.ts
-var capturedLevelCap = 60;
+var legacyCapturedLevelFloor = 60;
 function isCapturedInstanceId(value2) {
   return typeof value2 === "string" && /^capture:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value2);
 }
@@ -4894,14 +4661,14 @@ function validateCapturedCharacters(value2) {
       copy.acquisition = entry.acquisition;
     }
     if ("level" in entry) {
-      if (!Number.isInteger(entry.level) || typeof entry.level !== "number" || entry.level < 1 || entry.level > 120 || !("capturedStage" in entry) || typeof entry.capturedStage !== "number" || !creature.stages.includes(entry.capturedStage) || !("skills" in entry) || !Array.isArray(entry.skills)) throw new Error("Invalid captured Elemental-Devourer progression.");
+      if (!Number.isInteger(entry.level) || typeof entry.level !== "number" || entry.level < 1 || !Number.isSafeInteger(entry.level) || !("capturedStage" in entry) || typeof entry.capturedStage !== "number" || !creature.stages.includes(entry.capturedStage) || !("skills" in entry) || !Array.isArray(entry.skills)) throw new Error("Invalid captured Elemental-Devourer progression.");
       const expected = infusionEncounter(creature.mode, entry.capturedStage);
       if (creature.mode === "roses" && copy.acquisition !== "banner-duplicate" && expected.level > roseCaptureMaximumLevel) throw new Error("Roselius above level 120 cannot be captured.");
       const candidates = [expected.abilityMultiplier, expected.legacyAbilityMultiplier].map((multiplier) => enemySkills(expected.level, expected.boss, expected.ability, multiplier));
       const retained = entry.skills;
       const valid = candidates.find((skills) => retained.length === skills.length && retained.every((skill, index) => typeof skill === "object" && skill !== null && skill.name === skills[index].name && skill.multiplier === skills[index].multiplier && skill.every === skills[index].every && skill.action === skills[index].action));
-      if (!valid || entry.level < Math.min(capturedLevelCap, copy.acquisition === "banner-duplicate" ? roseDuplicateMinimumLevel(creature.id) : expected.level)) throw new Error("Invalid retained enemy abilities or level.");
-      copy.level = Math.min(capturedLevelCap, entry.level);
+      if (!valid || entry.level < Math.min(legacyCapturedLevelFloor, copy.acquisition === "banner-duplicate" ? roseDuplicateMinimumLevel(creature.id) : expected.level)) throw new Error("Invalid retained enemy abilities or level.");
+      copy.level = entry.level;
       copy.capturedStage = entry.capturedStage;
       copy.skills = valid;
     } else if ("skills" in entry || "capturedStage" in entry || "acquisition" in entry) throw new Error("Incomplete captured Elemental-Devourer progression.");
@@ -4916,7 +4683,7 @@ function capturedProgress(copy) {
   const encounter2 = infusionEncounter(creature.mode, stage);
   const legacyLevel = creature.mode === "heavens" || creature.mode === "abyss" ? Math.round(80 + (stage - 1) * 40 / 34) : encounter2.level;
   return {
-    level: Math.min(capturedLevelCap, copy.level ?? legacyLevel),
+    level: copy.level ?? legacyLevel,
     stage,
     tier: encounter2.tier,
     skills: copy.skills ?? enemySkills(encounter2.level, encounter2.boss, encounter2.ability, encounter2.legacyAbilityMultiplier)
@@ -4924,7 +4691,6 @@ function capturedProgress(copy) {
 }
 function capturedLevelCost(copy) {
   const { level } = capturedProgress(copy);
-  if (level >= capturedLevelCap) throw new Error(`Maximum captured Elemental-Devourer level ${capturedLevelCap} reached.`);
   const creature = getCreature(copy.creatureId);
   return {
     fractalis: 10 + 2 * (level + 1),
@@ -4935,7 +4701,7 @@ function resolveCapturedFighter(copy, equipment, upgrades) {
   const creature = getCreature(copy.creatureId);
   if (!creature.mode || creature.mode === "machines") throw new Error("Captured Elemental-Devourer mode is missing or non-capturable.");
   const { level, tier, skills } = capturedProgress(copy);
-  const reference = capturedEnemyStats(level, creature.mode === "roses" ? 140 : 120);
+  const reference = capturedEnemyStats(level);
   const factor = 0.65 + 0.35 * tier / 5;
   const stats = {
     ...reference,
@@ -5005,7 +4771,7 @@ var evolutionTitles = {
   crinso: ["Rosebound Page", "Duality Initiate", "Crimson-Gold Knight", "Storm of the Twin Rose", "Sovereign of Beautiful Ruin", "The Rose Beyond Duality"]
 };
 function characterArt(id, evolution = 1) {
-  characterLevelCap(evolution);
+  validateEvolution(evolution);
   const starter = getStarter(id);
   return {
     art: evolution === 1 ? starter.art : `${starter.art}-evo-${evolution}`,
@@ -5150,23 +4916,17 @@ function resourceLabel(key) {
 function resourceEffect(owner) {
   return owner.kit?.pilot ? kitPilotDescriptions[owner.kit.pilot].resource?.effect : void 0;
 }
-function gainResource(owner, key, events, roundKey, round) {
+function gainResource(owner, key, events) {
   if (!nativeOwner(owner)) return;
   const current = charges(owner);
-  if (roundKey) {
-    if (current[roundKey] === round) return;
-    current[roundKey] = round;
-  }
-  const maximum = key === "bloom" && owner.conduits?.includes("botanic-graft-covenant") ? 3 + (owner.conduitRuntime?.numbers.graftBonus ?? 1) : 3;
-  if ((current[key] ?? 0) >= maximum) return;
-  current[key] = (current[key] ?? 0) + 1;
+  const amount = key === "bloom" && owner.conduits?.includes("botanic-graft-covenant") ? 1 + (owner.conduitRuntime?.numbers.graftBonus ?? 1) : 1;
+  current[key] = (current[key] ?? 0) + amount;
   const label = resourceLabel(key);
-  status(events, owner, owner, `${owner.name} gains ${label} (${current[key]}/${maximum}).`, resourceEffect(owner));
+  status(events, owner, owner, `${owner.name} gains ${label} (${current[key]}).`, resourceEffect(owner));
 }
 function spendResource(actor, key, events) {
   if (!nativeOwner(actor)) return 0;
-  const maximum = key === "bloom" && actor.conduits?.includes("botanic-graft-covenant") ? 3 + (actor.conduitRuntime?.numbers.graftBonus ?? 1) : 3;
-  const available = Math.min(maximum, Math.max(0, actor.pilot?.[key] ?? 0));
+  const available = Math.max(0, actor.pilot?.[key] ?? 0);
   const selective = key === "ember" && actor.masterConduit === "master-ember-3" || key === "tempest" && actor.masterConduit === "master-vaelor-2";
   const count2 = selective && actor.conduitRuntime?.numbers.ordinaryResourceSpend ? Math.min(1, available) : available;
   if (count2 <= 0) return 0;
@@ -5218,21 +4978,21 @@ function pilotPrepareStarter(actor, action, events) {
 function pilotEffectiveHeal(state, owner, target, amount, events) {
   if (amount <= 0 || !nativeOwner(owner)) return;
   if (owner.kit?.pilot === "bloom" && (owner.definitionId !== "bliss" || target.id !== owner.id)) {
-    gainResource(owner, "bloom", events, "bloomRound", state.round);
+    gainResource(owner, "bloom", events);
   }
-  if (owner.kit?.pilot === "rose-grace") gainResource(owner, "roseGrace", events, "roseGraceRound", state.round);
+  if (owner.kit?.pilot === "rose-grace") gainResource(owner, "roseGrace", events);
 }
 function pilotAuthoredShieldAbsorbed(state, sourceId, amount, events) {
   if (amount <= 0 || !sourceId) return;
   const owner = state.allies.find((ally) => ally.id === sourceId);
   if (!owner || !nativeOwner(owner)) return;
-  if (owner.kit?.pilot === "ward") gainResource(owner, "ward", events, "wardRound", state.round);
-  if (owner.kit?.pilot === "thorn-aegis") gainResource(owner, "thornAegis", events, "thornAegisRound", state.round);
+  if (owner.kit?.pilot === "ward") gainResource(owner, "ward", events);
+  if (owner.kit?.pilot === "thorn-aegis") gainResource(owner, "thornAegis", events);
 }
 function pilotBurnDamage(state, owner, amount, events) {
   if (amount <= 0 || !nativeOwner(owner)) return;
-  if (owner.kit?.pilot === "ember") gainResource(owner, "ember", events, "emberRound", state.round);
-  if (owner.kit?.pilot === "rose-duality") gainResource(owner, "duality", events, "dualityRound", state.round);
+  if (owner.kit?.pilot === "ember") gainResource(owner, "ember", events);
+  if (owner.kit?.pilot === "rose-duality") gainResource(owner, "duality", events);
 }
 function pilotAfterDirectActivation(actor, action, events, effectiveCritical = false) {
   if (actor.kit?.pilot === "tempest" && effectiveCritical && (action === "light" || action === "skill1" || action === "skill2")) {
@@ -5335,7 +5095,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
   if (action === "light") {
     hit(1);
     if (owner.definitionId === "nerithe" && target?.hp) {
-      memory.survey = { target: target.id, points: Math.min(3, memory.survey?.target === target.id ? memory.survey.points + 1 : 1) };
+      memory.survey = { target: target.id, points: memory.survey?.target === target.id ? memory.survey.points + 1 : 1 };
     }
     return;
   }
@@ -5484,7 +5244,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
     case "razor":
       if (action === "skill2") memory.bastion = { throughPhase: state.round, loss: 0 };
       else {
-        const spent = Math.min(memory.wounds ?? 0, owner.stats.health * (action === "skill1" ? 0.1 : 0.3));
+        const spent = memory.wounds ?? 0;
         memory.wounds = (memory.wounds ?? 0) - spent;
         hit(action === "skill1" ? 1.6 : 2.2);
         if (target?.hp) fixed(state, owner, target, spent * (action === "ultimate" ? 2 : 1), "revenge", events);
@@ -5502,7 +5262,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       } else {
         const marked = foes(state).find((enemy) => enemy.id === quarry?.target);
         const contributors = quarry?.round === state.round ? quarry.contributors : [];
-        hit(action === "ultimate" ? 3 : marked ? Math.min(2.5, 2 + 0.25 * contributors.filter((id) => id !== owner.id).length) : 1.6, false, 0, 0, marked ?? target);
+        hit(action === "ultimate" ? 3 : marked ? 2 + 0.25 * contributors.filter((id) => id !== owner.id).length : 1.6, false, 0, 0, marked ?? target);
         if (action === "ultimate" && contributors.length >= 2) for (const recipient of allies.filter((unit) => contributors.includes(unit.id)))
           nativeHeal(state, owner, recipient, recipient.stats.health * 0.1, events, true, activation);
       }
@@ -5537,18 +5297,18 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
     case "crinso":
       if (action === "skill1") {
         hit(1.6, false, memory.edge === "crimson" ? 0.2 : 0);
-        memory.combo = memory.edge === "crimson" ? Math.min(3, (memory.combo ?? 0) + 1) : 0;
+        memory.combo = memory.edge === "crimson" ? (memory.combo ?? 0) + 1 : 0;
         memory.edge = "gold";
       } else if (action === "skill2") {
         hit(memory.edge === "gold" ? 2.4 : 2);
-        memory.combo = memory.edge === "gold" ? Math.min(3, (memory.combo ?? 0) + 1) : 0;
+        memory.combo = memory.edge === "gold" ? (memory.combo ?? 0) + 1 : 0;
         memory.edge = "crimson";
       } else {
         const combo = memory.combo ?? 0;
         memory.combo = 0;
         delete memory.edge;
         activation.spent.duality = combo;
-        hit(2.6 + 0.45 * combo, false, combo === 3 ? 0.3 : 0);
+        hit(2.6 + 0.45 * combo, false, combo >= 3 ? 0.3 : 0);
       }
       break;
     case "nerithe": {
@@ -5558,7 +5318,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
         if (memory.survey && target) memory.survey.target = target.id;
         hit(1.3, true);
       } else {
-        const spent = surveyed ? Math.min(memory.survey?.points ?? 0, action === "skill1" ? 1 : 3) : 0;
+        const spent = surveyed ? Math.min(memory.survey?.points ?? 0, action === "skill1" ? 1 : Infinity) : 0;
         if (memory.survey) memory.survey.points -= spent;
         hit(action === "skill1" ? 1.8 : 2.8, false, spent * (action === "skill1" ? 0.25 : 0.15), 0, surveyed ?? target);
       }
@@ -5567,7 +5327,10 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
     case "orvella":
       if (action === "skill1") {
         hit(memory.foundation ? 1.4 : 1.8);
-        if (memory.foundation) memory.foundation.durability = Math.min(memory.foundation.maximum, memory.foundation.durability + owner.stats.health * 0.08);
+        if (memory.foundation) {
+          memory.foundation.durability += owner.stats.health * 0.08;
+          memory.foundation.maximum = Math.max(memory.foundation.maximum, memory.foundation.durability);
+        }
       } else if (action === "skill2") {
         const plating = equipped(owner, "master-orvella-1");
         const maximum = owner.stats.health * (plating ? 0.15 : 0.3);
@@ -5575,7 +5338,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
         if (plating) for (const recipient of allies)
           generatedShield(owner, recipient, Math.min(recipient.stats.health * 0.15, owner.stats.health * 0.05), events, true, recipient.stats.health * 0.15, true);
       } else {
-        const power2 = Math.min(memory.foundation?.durability ?? 0, owner.stats.health * 0.3);
+        const power2 = memory.foundation?.durability ?? 0;
         delete memory.foundation;
         hit(2, true);
         for (const enemy of foes(state)) fixed(state, owner, enemy, power2, "demolition", events);
@@ -5604,8 +5367,8 @@ function nativeAfterAction(state, owner, action, priorInstruction, events) {
     const field = caster.native?.cyclone;
     if (field && caster.id !== owner.id && field.contributors[owner.id] !== state.round) {
       field.contributors[owner.id] = state.round;
-      field.gusts = Math.min(4, field.gusts + 1);
-      status2(events, caster, caster, `Cyclone holds ${field.gusts}/4 Gusts.`);
+      field.gusts += 1;
+      status2(events, caster, caster, `Cyclone holds ${field.gusts} Gusts.`);
     }
   }
   nativeCleanup(state);
@@ -5620,8 +5383,7 @@ function nativePrimaryHit(state, attacker, target, effective, events) {
       quarry.contributors = [];
     }
     if (!quarry.contributors.includes(attacker.id)) quarry.contributors.push(attacker.id);
-    if (quarry.contributors.length >= 2 && quarry.paidRound !== state.round) {
-      quarry.paidRound = state.round;
+    if (quarry.contributors.length >= 2) {
       const contributors = living(state).filter((unit) => quarry.contributors.includes(unit.id));
       if (equipped(owner, "master-rosetta-1")) {
         const recipient = [...living(state)].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
@@ -5674,7 +5436,7 @@ function nativeRouteDamage(state, enemy, target, amount, events, redirect) {
 function nativeDirectHpLoss(state, target, loss, events) {
   if (hasNativeIdentity(target) && target.definitionId === "razor" && loss > 0) {
     const memory = nativeMemory(target);
-    memory.wounds = Math.min(target.stats.health * 0.3, (memory.wounds ?? 0) + loss);
+    memory.wounds = (memory.wounds ?? 0) + loss;
     if (memory.bastion?.throughPhase === state.round) memory.bastion.loss += loss;
     status2(events, target, target, `${target.name} banks ${memory.wounds} Wounds.`, memory.wounds);
   }
@@ -5683,9 +5445,7 @@ function nativeAbsorbedHit(state, target, nativeOwners, loss, events) {
   if (loss !== 0) return;
   for (const [id, absorbed] of nativeOwners) {
     const owner = living(state).find((unit) => unit.id === id && hasNativeIdentity(unit) && unit.definitionId === "tide");
-    const key = `stillwater:${id}`;
-    if (!owner || absorbed <= 0 || gear(target).numbers[key] === state.round) continue;
-    gear(target).numbers[key] = state.round;
+    if (!owner || absorbed <= 0) continue;
     nativeGauge(state, target, 8, events);
   }
 }
@@ -5722,7 +5482,7 @@ function nativePhaseEnd(state, events) {
     const memory = nativeMemory(owner);
     if (memory.cyclone && --memory.cyclone.phases <= 0) releaseCyclone(state, owner, events);
     if (memory.bastion && memory.bastion.throughPhase <= state.round) {
-      if (memory.bastion.loss > 0) nativeShield(state, owner, owner, Math.min(memory.bastion.loss, owner.stats.health * 0.12), events, { throughPhase: state.round + 1 });
+      if (memory.bastion.loss > 0) nativeShield(state, owner, owner, memory.bastion.loss, events, { throughPhase: state.round + 1 });
       delete memory.bastion;
     }
     if (memory.cover && memory.cover.throughPhase <= state.round) delete memory.cover;
@@ -5794,12 +5554,10 @@ function prepareCalamiticAction(state, owner, action) {
   if (n.calamiticThroneArmed === state.round && action !== "defend") {
     delete n.calamiticThroneArmed;
     n.calamiticThroneSkip = state.round + 1;
-    n.calamiticThroneReady = state.round + 3;
     n.calamiticThroneGrant = state.round;
     return false;
   }
-  if (action === "defend" && (n.calamiticThroneReady ?? 0) <= state.round && n.calamiticThroneDefended !== state.round) {
-    n.calamiticThroneDefended = state.round;
+  if (action === "defend") {
     n.calamiticThroneArmed = state.round;
     return true;
   }
@@ -5829,7 +5587,7 @@ function afterCalamiticAction(state, owner, action, events) {
     const mask = previous & bit ? bit : previous | bit;
     const count2 = mask.toString(2).replace(/0/g, "").length;
     n.calamiticEquation = count2 === 3 ? 0 : mask;
-    status3(owner, count2, `${owner.name}'s Final Equation: ${count2} / 3 different actions${count2 === 3 ? " \u2014 discharge" : ""}.`, events);
+    status3(owner, count2, `${owner.name}'s Final Equation: ${count2} / 3 different actions${count2 === 3 ? " \u2001Edischarge" : ""}.`, events);
     if (count2 === 3) {
       const targets = state.enemies.filter((enemy) => enemy.hp > 0);
       const offer = owner.stats.damage * power(state, owner, "calamitic-cathedral-final-equation", 1.2, 2.4);
@@ -5846,27 +5604,19 @@ function calamiticSiegeBonus(state, owner, target) {
 function deferCalamiticDamage(state, owner, offered, events) {
   if (offered <= 0 || !equipped(owner, "calamitic-causality-funeral-engine")) return offered;
   const n = gear(owner).numbers;
-  if (n.calamiticDeferredRound !== state.round) {
-    n.calamiticDeferredRound = state.round;
-    n.calamiticDeferredPhase = 0;
-  }
-  const budget = Math.max(0, owner.stats.health * power(state, owner, "calamitic-causality-funeral-engine", 0.3, 0.5) - n.calamiticDeferredPhase);
-  const deferred = Math.min(Math.floor(budget), Math.floor(offered * power(state, owner, "calamitic-causality-funeral-engine", 0.4, 0.6)));
+  const deferredOffer = offered * power(state, owner, "calamitic-causality-funeral-engine", 0.4, 0.6);
+  const deferred = Math.floor(deferredOffer + Number.EPSILON * Math.max(1, Math.abs(deferredOffer)));
   if (deferred <= 0) return offered;
   n.calamiticDebt = (n.calamiticDebt ?? 0) + deferred;
   n.calamiticDebtDue = state.round + 1;
-  n.calamiticDeferredPhase += deferred;
-  status3(owner, deferred, `${owner.name}'s Funeral Engine defers ${deferred} HP damage until enemy phase ${state.round + 1}.`, events);
-  return offered - deferred;
+  status3(owner, deferred, `${owner.name}'s Funeral Engine defers ${deferred} HP damage until Enemy Turn ${state.round + 1}.`, events);
+  return Math.max(0, offered - deferred);
 }
 function bankCalamiticDamage(state, loss) {
   if (loss <= 0) return;
   for (const owner of state.allies.filter((ally) => ally.hp > 0 && equipped(ally, "calamitic-world-eater-orrery"))) {
     const n = gear(owner).numbers;
-    n.calamiticOrrery = Math.min(
-      owner.stats.damage * power(state, owner, "calamitic-world-eater-orrery", 4, 8),
-      (n.calamiticOrrery ?? 0) + loss * power(state, owner, "calamitic-world-eater-orrery", 0.4, 0.8)
-    );
+    n.calamiticOrrery = (n.calamiticOrrery ?? 0) + loss * power(state, owner, "calamitic-world-eater-orrery", 0.4, 0.8);
   }
 }
 function settleCalamiticDebt(state, events) {
@@ -5888,7 +5638,7 @@ function settleCalamiticDebt(state, events) {
       origin: "conduit",
       periodic: true,
       shieldRemaining: owner.shield,
-      message: `${owner.name} pays ${loss} HP to the Funeral Engine${owner.hp === 0 ? " \u2014 defeated" : ""}.`
+      message: `${owner.name} pays ${loss} HP to the Funeral Engine${owner.hp === 0 ? " \u2001Edefeated" : ""}.`
     });
   }
 }
@@ -5972,10 +5722,10 @@ function layers(unit) {
   }
   return list;
 }
-function generatedShield(owner, target, offer, events, additive = false, cap = Infinity, plate = false) {
+function generatedShield(owner, target, offer, events, additive = false, _cap = Infinity, plate = false) {
   if (!target || target.hp <= 0) return 0;
   const list = layers(target);
-  const amount = Math.max(0, Math.round(additive ? Math.min(offer, cap - target.shield) : offer - target.shield));
+  const amount = Math.max(0, Math.round(additive ? offer : offer - target.shield));
   if (amount <= 0) return 0;
   list.push({ amount, owner: owner.id, native: false, ...plate ? { plate } : {} });
   target.shield += amount;
@@ -5997,7 +5747,7 @@ function expireNativeShields(state, events) {
     for (const [id, amount] of expiredByOwner) {
       if (amount <= 0) continue;
       const owner = state.allies.find((ally) => ally.id === id) ?? target;
-      emit(events, "status", owner, target, amount, `${target.name} loses ${Math.round(amount)} expired native shield.`, true);
+      emit(events, "status", owner, target, amount, `${target.name} loses ${Math.round(amount)} expired Shield.`, true);
     }
   }
 }
@@ -6063,24 +5813,23 @@ function nativeControl(state, owner, target) {
 }
 function conduitActionCost(actor, action, state, base) {
   const n = actor.conduitRuntime?.numbers ?? {};
-  if (action === "defend") return equipped(actor, "solace-anchor") && !n.solaceUsed && actor.shatter >= 10 ? 10 : 0;
+  if (action === "defend") return equipped(actor, "solace-anchor") && actor.shatter >= 10 ? 10 : 0;
   if (action === "skill1" && n.quietFeather) return 0;
   let discount = 0;
   if (action === "skill2" && equipped(actor, "coilfeed-ratchet")) discount += value(state, actor, "coilfeed-ratchet", 3, 6);
   if ((action === "skill1" || action === "skill2") && n.tailwind && equipped(actor, "atmospheric-skythread-rudder")) {
-    discount += value(state, actor, "atmospheric-skythread-rudder", 10, 20);
+    discount += value(state, actor, "atmospheric-skythread-rudder", 10, 20) * n.tailwind;
   }
-  if (action === "ultimate" && n.stormCount >= 3 && equipped(actor, "atmospheric-storm-clock")) {
-    discount += value(state, actor, "atmospheric-storm-clock", 15, 30);
+  if (action === "ultimate" && n.stormCount && equipped(actor, "atmospheric-storm-clock")) {
+    discount += value(state, actor, "atmospheric-storm-clock", 15, 30) * n.stormCount;
   }
-  return base === 0 ? 0 : Math.max(action === "ultimate" ? 70 : 1, base - discount);
+  return base === 0 ? 0 : Math.max(1, base - discount);
 }
 function recoveryNormal(actor) {
   return equipped(actor, "chaotic-paradox-spindle");
 }
-function conduitActionBlocked(actor, state) {
-  const n = actor.conduitRuntime?.numbers ?? {};
-  return n.stasisSkip === state.round || n.revivedRound === state.round || n.actionsRound === state.round && (n.actions >= 2 || actor.recoverThrough >= state.round && n.actions >= 1);
+function conduitActionBlocked(_actor, _state) {
+  return false;
 }
 function prepareConduitAction(state, actor, action, paid, nativeAll) {
   const n = gear(actor).numbers;
@@ -6107,51 +5856,36 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     eclipseTargets: []
   };
   n.ordinaryResourceSpend = action === "skill2" ? 1 : 0;
-  if (n.actionsRound !== state.round) {
-    n.actionsRound = state.round;
-    n.actions = 0;
-  }
-  if (action === "defend" && equipped(actor, "solace-anchor") && !n.solaceUsed && paid === 10) {
-    n.solaceUsed = 1;
+  if (action === "defend" && equipped(actor, "solace-anchor") && paid === 10) {
+    n.solaceUses = (n.solaceRound === state.round ? n.solaceUses ?? 0 : 0) + 1;
     n.solaceRound = state.round;
     ctx.freeDefense = true;
-  } else n.actions++;
+  }
   if (prepareCalamiticAction(state, actor, action)) ctx.freeDefense = true;
-  if (action === "skill1") delete n.quietFeather;
-  if (action === "skill1" || action === "skill2") delete n.tailwind;
+  if (action === "skill1" && n.quietFeather) n.quietFeather--;
+  if ((action === "skill1" || action === "skill2") && n.tailwind) n.tailwind--;
   if (action === "defend") {
     delete n.counterwind;
     delete n.counterwindActive;
-    n.normalSequence = 0;
     n.previousSkill = 0;
     return ctx;
   }
   const offensive = action === "light" || actor.kit?.abilities[action].strength.damageMultiplier !== void 0;
-  if (offensive && equipped(actor, "parallax-relay") && !n.opening) {
-    ctx.criticalBonus += value(state, actor, "parallax-relay", 0.15, 0.3);
-    n.opening = 1;
-  }
-  if (equipped(actor, "glassroot-gimbal")) ctx.criticalBonus += value(state, actor, "glassroot-gimbal", 0.12, 0.24) * Math.min(1, (1 - actor.hp / actor.stats.health) / 0.75);
+  if (offensive && equipped(actor, "parallax-relay")) ctx.criticalBonus += value(state, actor, "parallax-relay", 0.15, 0.3);
+  if (equipped(actor, "glassroot-gimbal")) ctx.criticalBonus += value(state, actor, "glassroot-gimbal", 0.12, 0.24) * ((1 - actor.hp / actor.stats.health) / 0.75);
   ctx.guaranteed = equipped(actor, "falcon-sight") && (n.noncritical ?? 0) >= 2;
   ctx.forbidden = equipped(actor, "verdict-caliper") || action === "light" && equipped(actor, "judgment-lens");
   if (equipped(actor, "verdict-caliper")) ctx.bonus += value(state, actor, "verdict-caliper", 0.35, 0.7);
   if (action === "light") {
     if (equipped(actor, "siegebound-drive")) ctx.bonus += value(state, actor, "siegebound-drive", 0.08, 0.16);
     if (equipped(actor, "nullsong-transmission")) ctx.bonus += value(state, actor, "nullsong-transmission", 0.4, 0.8);
-    if (equipped(actor, "twinpulse-bellows")) {
-      n.normalSequence = (n.normalSequence ?? 0) + 1;
-      if (n.normalSequence === 2) {
-        ctx.bonus += value(state, actor, "twinpulse-bellows", 0.25, 0.5);
-        n.normalSequence = 0;
-      }
-    }
+    if (equipped(actor, "twinpulse-bellows")) ctx.bonus += value(state, actor, "twinpulse-bellows", 0.25, 0.5);
     if (actor.recoverThrough >= state.round && recoveryNormal(actor)) ctx.scale *= value(state, actor, "chaotic-paradox-spindle", 0.5, 0.75);
     if (equipped(actor, "master-atmoso-1")) {
       ctx.all = true;
       ctx.scale *= 0.7;
     }
   } else {
-    n.normalSequence = 0;
     if (action === "skill1" && equipped(actor, "prism-splinter-socket")) ctx.bonus += value(state, actor, "prism-splinter-socket", 0.1, 0.2);
     if (action === "skill2" && equipped(actor, "crosspin-governor")) ctx.bonus += value(state, actor, "crosspin-governor", 0.1, 0.2);
     if (action !== "ultimate" && equipped(actor, "nullsong-transmission")) ctx.bonus += value(state, actor, "nullsong-transmission", -0.12, -0.24);
@@ -6166,14 +5900,14 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
   n.previousSkill = offensive ? action === "skill1" ? 1 : action === "skill2" ? 2 : 0 : 0;
   if (nativeAll && state.enemies.filter((enemy) => enemy.hp > 0).length === 1 && equipped(actor, "siege-cantilever")) ctx.bonus += value(state, actor, "siege-cantilever", 0.6, 1.2);
   if (action === "ultimate") {
-    if (equipped(actor, "atmospheric-storm-clock") && n.stormCount >= 3) n.stormCount = 0;
+    if (equipped(actor, "atmospheric-storm-clock")) n.stormCount = 0;
     if (equipped(actor, "worldbreaker-drive")) ctx.bonus += value(state, actor, "worldbreaker-drive", 0.35, 0.7);
     if (equipped(actor, "master-nerithe-3")) ctx.scale *= 0.5;
     if (equipped(actor, "master-elise-2")) {
       ctx.impacts = 4;
       ctx.scale *= 1.2;
     }
-    if (equipped(actor, "master-razor-2")) ctx.bonus += Math.min(0.6, payShield(actor, actor.shield) / actor.stats.health * 2);
+    if (equipped(actor, "master-razor-2")) ctx.bonus += payShield(actor, actor.shield) / actor.stats.health * 2;
     if (equipped(actor, "master-vaelor-1")) {
       actor.hp -= Math.min(actor.hp - 1, actor.hp * 0.2);
       ctx.bonus += 0.75;
@@ -6181,10 +5915,7 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     if (equipped(actor, "chaotic-ouroboros-core")) {
       const excess = actor.shatter;
       actor.shatter = 0;
-      n.excessShield = Math.min(
-        value(state, actor, "chaotic-ouroboros-core", 0.15, 0.3),
-        excess * value(state, actor, "chaotic-ouroboros-core", 3e-3, 6e-3)
-      ) * actor.stats.health;
+      n.excessShield = excess * value(state, actor, "chaotic-ouroboros-core", 3e-3, 6e-3) * actor.stats.health;
     }
   }
   if (action === "skill2" && equipped(actor, "master-ember-2")) {
@@ -6195,7 +5926,7 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     ctx.impacts = 2;
     ctx.scale *= 1.4;
   }
-  if (action === "skill2" && equipped(actor, "master-crinso-2")) ctx.shieldBurn = Math.min(payShield(actor, actor.stats.health * 0.1) * 0.5, actor.stats.damage * 0.5);
+  if (action === "skill2" && equipped(actor, "master-crinso-2")) ctx.shieldBurn = payShield(actor, actor.shield) * 0.5;
   if (action === "skill2" && equipped(actor, "master-bliss-1")) {
     const count2 = alive(state).filter((ally) => ally.id !== actor.id).length;
     if (count2 && actor.hp - actor.stats.health * 0.1 >= 1) {
@@ -6237,21 +5968,34 @@ function conduitHitModifiers(state, actor, target, ctx, critical) {
   const targetMemory = gear(target);
   for (const owner of state.allies) {
     if (owner.id === actor.id) continue;
-    if (targetMemory.numbers[`soot:${owner.id}`] >= state.round) {
-      bonus += value(state, owner, "sootwake-crucible", 0.2, 0.4);
-      delete targetMemory.numbers[`soot:${owner.id}`];
+    const sootPrefix = `soot:${owner.id}:`;
+    const sootKeys = Object.keys(targetMemory.numbers).filter((key) => key.startsWith(sootPrefix));
+    const activeSoot = sootKeys.filter((key) => {
+      if (targetMemory.numbers[key] >= state.round) return true;
+      delete targetMemory.numbers[key];
+      return false;
+    });
+    const legacySoot = `soot:${owner.id}`;
+    const hasLegacySoot = targetMemory.numbers[legacySoot] !== void 0 && targetMemory.numbers[legacySoot] >= state.round;
+    if (hasLegacySoot) delete targetMemory.numbers[legacySoot];
+    if (activeSoot.length || hasLegacySoot) {
+      bonus += value(state, owner, "sootwake-crucible", 0.2, 0.4) * (activeSoot.length + Number(hasLegacySoot));
+      for (const key of activeSoot) delete targetMemory.numbers[key];
     }
-    if (targetMemory.numbers[`opening:${owner.id}`] && (hasNativeIdentity(owner) || target.weakened > 0 && target.weakenSourceId === owner.id)) {
+    const openingKey = `opening:${owner.id}`;
+    const openings = targetMemory.numbers[openingKey] ?? 0;
+    if (openings > 0 && (hasNativeIdentity(owner) || target.weakened > 0 && target.weakenSourceId === owner.id)) {
       bonus += 0.4;
       if (!hasNativeIdentity(owner)) target.weakened--;
-      delete targetMemory.numbers[`opening:${owner.id}`];
+      if (openings > 1) targetMemory.numbers[openingKey] = openings - 1;
+      else delete targetMemory.numbers[openingKey];
     }
   }
-  if (equipped(actor, "master-atmoso-3") && !ctx.forbidden) bonus += Math.min(0.5, Math.max(0, actor.stats.crit + ctx.criticalBonus - 1));
+  if (equipped(actor, "master-atmoso-3") && !ctx.forbidden) bonus += Math.max(0, actor.stats.crit + ctx.criticalBonus - 1);
   if (critical && equipped(actor, "master-elise-1")) pierce += 0.5;
   return {
-    bonus: Math.min(3, bonus),
-    pierce: Math.min(0.75, pierce),
+    bonus,
+    pierce,
     attack: ctx.action === "ultimate" && equipped(actor, "master-bruno-2") ? effectiveDefense(state, actor) : actor.stats.damage,
     ...critical && equipped(actor, "master-elise-1") ? { critMultiplier: 1.5 } : {}
   };
@@ -6267,7 +6011,7 @@ function applyConduitBurn(state, owner, target, base, ctx) {
     }
     if (ctx.burnPaid) bonus += value(state, owner, "starvein-conductor", 0.4, 0.8);
   }
-  const damage = Math.round((base + ctx.shieldBurn) * (1 + Math.min(3, bonus)));
+  const damage = Math.round((base + ctx.shieldBurn) * (1 + bonus));
   if (target.burn.turns <= 0 || damage >= target.burn.damage) {
     const n = gear(target).numbers;
     n[`cinder:${owner.id}`] = 0;
@@ -6288,38 +6032,32 @@ function afterConduitImpact(owner, target, ctx) {
 }
 function applyConduitWeaken(state, owner, target, fraction, events, action = "skill1", baseDuration = 2) {
   if (equipped(owner, "master-bruno-3") && action === "skill1") {
-    gear(target).numbers.excavated = Math.min(
-      (gear(target).numbers.entryDefense ?? target.stats.defense) * 0.3,
-      (gear(target).numbers.excavated ?? 0) + (gear(target).numbers.entryDefense ?? target.stats.defense) * 0.15
-    );
-    emit(events, "status", owner, target, gear(target).numbers.excavated, `${target.name}'s encounter Defense is excavated.`);
+    gear(target).numbers.excavated = (gear(target).numbers.excavated ?? 0) + (gear(target).numbers.entryDefense ?? target.stats.defense) * 0.15;
+    emit(events, "status", owner, target, gear(target).numbers.excavated, `${target.name}'s Battle-start Defense is excavated.`);
     return;
   }
   const duration = baseDuration + (equipped(owner, "opal-indexer") ? step(state, "opal-indexer", 1, 2) : 0);
-  const strength = Math.min(0.6, fraction + (equipped(owner, "tension-governor") ? value(state, owner, "tension-governor", 0.05, 0.1) : 0));
+  const strength = fraction + (equipped(owner, "tension-governor") ? value(state, owner, "tension-governor", 0.05, 0.1) : 0);
   if (target.weakened > 0 && target.weakenFraction > strength) {
     emit(events, "status", owner, target, target.weakenFraction, `${target.name}'s stronger Weaken remains unchanged.`);
     return;
   }
-  target.weakened = Math.min(6, duration);
+  target.weakened = duration;
   target.weakenFraction = strength;
   target.weakenSourceId = owner.id;
   target.weakenOrigin = owner.kit?.pilot === "rose-grace" || owner.kit?.pilot === "thorn-aegis" || owner.kit?.pilot === "rose-duality" ? "rose" : "native";
   const n = gear(target).numbers;
-  if (equipped(owner, "aquatic-undertide-chronometer") && !n[`undertide:${owner.id}`]) {
-    n[`undertide:${owner.id}`] = 1;
+  if (equipped(owner, "aquatic-undertide-chronometer"))
     n.scheduleShift = (n.scheduleShift ?? 0) + step(state, "aquatic-undertide-chronometer", 1, 2);
-  }
-  if (equipped(owner, "master-razor-3") && !n[`silenced:${owner.id}`]) {
+  if (equipped(owner, "master-razor-3")) {
     n[`silenced:${owner.id}`] = 1;
     n.silence = 1;
   }
   if (equipped(owner, "master-tide-3")) applyTaunt(owner, target);
-  emit(events, "status", owner, target, strength, `${target.name} has ${Math.round(strength * 100)}% Weaken for ${target.weakened} enemy phases.`, true);
+  emit(events, "status", owner, target, strength, `${target.name} has ${Math.round(strength * 100)}% [Weaken] for ${target.weakened} Enemy Turns.`, true);
 }
 function supportEffect(state, owner, target, events) {
-  if (owner.id !== target.id && equipped(owner, "tranquilitic-accord-bastion") && !gear(owner).numbers.accordUsed && !gear(target).owners.accord) {
-    gear(owner).numbers.accordUsed = 1;
+  if (owner.id !== target.id && equipped(owner, "tranquilitic-accord-bastion") && !gear(target).owners.accord) {
     gear(target).owners.accord = owner.id;
     emit(events, "status", owner, target, 1, `${target.name} receives one Accord lethal-hit protection.`);
   }
@@ -6328,7 +6066,6 @@ function nativeHeal(state, owner, target, offer, events, active, ctx, instructio
   if (target.hp <= 0) return 0;
   if (instruction) offer *= nativeSupportMultiplier(state, owner);
   let bonus = active && equipped(owner, "springwell-pump") ? value(state, owner, "springwell-pump", 0.2, 0.4) : 0;
-  bonus = Math.min(2, bonus);
   offer = Math.max(0, offer * (1 + bonus) + (active && owner.id !== target.id ? ctx?.healExtra ?? 0 : 0));
   const restored = Math.min(target.stats.health - target.hp, offer);
   const wasted = offer - restored;
@@ -6337,12 +6074,9 @@ function nativeHeal(state, owner, target, offer, events, active, ctx, instructio
     ctx.healed += restored;
   }
   if (active && wasted > 0 && equipped(owner, "efflorescent-worldtree-heart")) {
-    const seed2 = Math.min(
-      owner.stats.health * value(state, owner, "efflorescent-worldtree-heart", 0.1, 0.2),
-      wasted * value(state, owner, "efflorescent-worldtree-heart", 0.5, 1)
-    );
+    const seed2 = wasted * value(state, owner, "efflorescent-worldtree-heart", 0.5, 1);
     const key = `seed:${owner.id}`;
-    gear(target).numbers[key] = Math.max(gear(target).numbers[key] ?? 0, seed2);
+    gear(target).numbers[key] = (gear(target).numbers[key] ?? 0) + seed2;
   }
   if (restored <= 0) return 0;
   target.hp += restored;
@@ -6354,18 +6088,12 @@ function nativeHeal(state, owner, target, offer, events, active, ctx, instructio
 }
 function finishNativeHealing(state, owner, ctx, events) {
   if (equipped(owner, "covercharge-drum") && ctx.overheal > 0)
-    generatedHeal(owner, injured(state, owner, true), Math.min(
-      ctx.overheal * value(state, owner, "covercharge-drum", 0.4, 0.8),
-      owner.stats.health * value(state, owner, "covercharge-drum", 0.1, 0.2)
-    ), events);
+    generatedHeal(owner, injured(state, owner, true), ctx.overheal * value(state, owner, "covercharge-drum", 0.4, 0.8), events);
   if (equipped(owner, "rootbound-triage-vault") && ctx.healed > 0 && owner.shatter >= 15) {
     const threshold = value(state, owner, "rootbound-triage-vault", 0.2, 0.4);
     const ally = alive(state).filter((ally2) => ally2.hp < ally2.stats.health * threshold).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
     if (ally) {
-      const restored = generatedHeal(owner, ally, Math.min(
-        ally.stats.health * threshold - ally.hp,
-        owner.stats.health * value(state, owner, "rootbound-triage-vault", 0.1, 0.2)
-      ), events);
+      const restored = generatedHeal(owner, ally, ally.stats.health * threshold - ally.hp, events);
       if (restored > 0) owner.shatter -= 15;
     }
   }
@@ -6375,7 +6103,7 @@ function nativeShield(state, owner, target, offer, events, options = {}) {
   offer *= nativeSupportMultiplier(state, owner);
   let bonus = equipped(owner, "wardglass-transformer") ? value(state, owner, "wardglass-transformer", 0.2, 0.4) : 0;
   if (owner.id === target.id && owner.hp <= owner.stats.health * 0.75 && equipped(owner, "pale-bulwark-diadem")) bonus += value(state, owner, "pale-bulwark-diadem", 0.25, 0.5);
-  offer *= 1 + Math.min(2, bonus);
+  offer *= 1 + bonus;
   if (equipped(owner, "citadel-spine")) offer += effectiveDefense(state, owner) * value(state, owner, "citadel-spine", 0.1, 0.2);
   if (equipped(owner, "meridian-inverter")) {
     generatedHeal(owner, target, offer * value(state, owner, "meridian-inverter", 0.75, 1.5), events);
@@ -6409,28 +6137,14 @@ function nativeShield(state, owner, target, offer, events, options = {}) {
     supportEffect(state, owner, target, events);
     if (target.id !== owner.id && equipped(owner, "aegis-return-spring")) {
       const n = gear(owner).numbers;
-      if (n.sealRound !== state.round) {
-        n.sealRound = state.round;
-        n.seals = 0;
-      }
-      if (n.seals < step(state, "aegis-return-spring", 1, 2) && !gear(target).numbers.criticalSeal) {
-        gear(target).numbers.criticalSeal = 1;
-        n.seals++;
-      }
+      gear(target).numbers.criticalSeal = (gear(target).numbers.criticalSeal ?? 0) + 1;
     }
   }
   emit(events, "shield", owner, target, gained, `${target.name} has ${target.shield} shield.`, true);
-  if (equipped(owner, "ward-stitch-spool")) generatedShield(
-    owner,
-    target,
-    offer * value(state, owner, "ward-stitch-spool", 0.25, 0.5),
-    events,
-    true,
-    target.stats.health * value(state, owner, "ward-stitch-spool", 0.3, 0.6)
-  );
+  if (equipped(owner, "ward-stitch-spool")) generatedShield(owner, target, offer * value(state, owner, "ward-stitch-spool", 0.25, 0.5), events, true);
   if (plate) {
     const prior = layers(target).filter((layer) => layer.plate && layer.owner === owner.id).reduce((sum, layer) => sum + layer.amount, 0);
-    const amount = Math.max(0, Math.min(target.stats.health * 0.15, Math.round(offer * 0.5)) - prior);
+    const amount = Math.max(0, Math.round(offer * 0.5) - prior);
     generatedShield(owner, target, amount, events, true, Infinity, true);
   }
 }
@@ -6443,13 +6157,7 @@ function nativeGauge(state, target, offer, events) {
     for (const ally of linked) generatedGauge(target, ally, offer / linked.length, events);
   } else generatedGauge(target, target, offer, events, true);
   if (overflow > 0 && equipped(target, "clearwater-manifold")) {
-    const n = gear(target).numbers;
-    if (n.overflowRound !== state.round) {
-      n.overflowRound = state.round;
-      n.overflow = 0;
-    }
-    const amount = Math.min(overflow * value(state, target, "clearwater-manifold", 0.5, 1), value(state, target, "clearwater-manifold", 20, 40) - n.overflow);
-    n.overflow += generatedGauge(target, lowestGauge(state, target), amount, events);
+    generatedGauge(target, lowestGauge(state, target), overflow * value(state, target, "clearwater-manifold", 0.5, 1), events);
   }
 }
 function recordConduitHit(ctx, target, amount, critical, criticalMultiplier) {
@@ -6461,7 +6169,7 @@ function finishConduitAction(state, owner, ctx, events) {
   if (equipped(owner, "master-nerithe-2") && ctx.action === "skill2") {
     for (const ally of alive(state)) {
       nativeGauge(state, ally, 15, events);
-      ally.omnicProtection = Math.max(ally.omnicProtection ?? 0, 0.15);
+      ally.omnicProtection = 1 - (1 - (ally.omnicProtection ?? 0)) * 0.85;
     }
   }
   const damage = ctx.hits.reduce((sum, hit) => sum + hit.damage, 0);
@@ -6470,15 +6178,15 @@ function finishConduitAction(state, owner, ctx, events) {
   const target = state.enemies.find((enemy) => enemy.id === primaryHit?.target);
   const killed = ctx.hits.some((hit) => hit.damage > 0 && state.enemies.some((enemy) => enemy.id === hit.target && enemy.hp <= 0));
   if (critical && ctx.action !== "ultimate" && equipped(owner, "atmospheric-storm-clock"))
-    n.stormCount = Math.min(3, (n.stormCount ?? 0) + 1);
+    n.stormCount = (n.stormCount ?? 0) + ctx.hits.filter((hit) => hit.critical && hit.damage > 0).length;
   if (!damage && ctx.action !== "defend") n.previousSkill = 0;
   if (ctx.action === "defend") {
     if (equipped(owner, "reserve-torque-crank")) generatedGauge(owner, owner, value(state, owner, "reserve-torque-crank", 3, 6), events);
-    if (equipped(owner, "atmospheric-skythread-rudder")) n.tailwind = 1;
+    if (equipped(owner, "atmospheric-skythread-rudder")) n.tailwind = (n.tailwind ?? 0) + 1;
     if (equipped(owner, "tranquilitic-kirin-cradle")) generatedHeal(
       owner,
       alive(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0],
-      Math.min(effectiveDefense(state, owner) * value(state, owner, "tranquilitic-kirin-cradle", 0.5, 1), owner.stats.health * value(state, owner, "tranquilitic-kirin-cradle", 0.1, 0.2)),
+      effectiveDefense(state, owner) * value(state, owner, "tranquilitic-kirin-cradle", 0.5, 1),
       events
     );
     if (equipped(owner, "tectonic-atlas-bastion")) {
@@ -6487,10 +6195,9 @@ function finishConduitAction(state, owner, ctx, events) {
         applyTaunt(owner, enemy);
       }
     }
-    if (equipped(owner, "master-vaelor-3") && !n.donationUsed) {
-      const ally = alive(state).filter((ally2) => ally2.id !== owner.id && ally2.spent && ally2.recoverThrough < state.round && !conduitActionBlocked(ally2, state)).sort((a, b) => b.shatter - a.shatter)[0];
+    if (equipped(owner, "master-vaelor-3")) {
+      const ally = alive(state).filter((ally2) => ally2.id !== owner.id && ally2.spent && ally2.recoverThrough < state.round).sort((a, b) => b.shatter - a.shatter)[0];
       if (ally) {
-        n.donationUsed = 1;
         ally.spent = false;
         emit(events, "status", owner, ally, 1, `${owner.name} donates an action to ${ally.name}.`);
       }
@@ -6502,22 +6209,22 @@ function finishConduitAction(state, owner, ctx, events) {
     if (!id) continue;
     switch (id) {
       case "falcon-sight":
-        if (ctx.hits.length) n.noncritical = ctx.guaranteed || ctx.hits.some((hit) => hit.critical) ? 0 : Math.min(2, (n.noncritical ?? 0) + 1);
+        if (ctx.hits.length) n.noncritical = ctx.guaranteed || ctx.hits.some((hit) => hit.critical) ? 0 : (n.noncritical ?? 0) + 1;
         break;
       case "lifeline-flywheel":
-        generatedHeal(owner, owner, Math.min(damage * value(state, owner, id, 0.08, 0.16), owner.stats.health * value(state, owner, id, 0.04, 0.08)), events);
+        generatedHeal(owner, owner, damage * value(state, owner, id, 0.08, 0.16), events);
         break;
       case "breach-pendulum":
-        generatedShield(owner, owner, Math.min(damage * value(state, owner, id, 0.08, 0.16), owner.stats.health * value(state, owner, id, 0.05, 0.1)), events);
+        generatedShield(owner, owner, damage * value(state, owner, id, 0.08, 0.16), events);
         break;
       case "voltaic-thunderbird-coil":
-        if (critical) generatedStrike(state, owner, healthiestEnemy(state, critical.target), Math.min(critical.damage * value(state, owner, id, 0.3, 0.6), owner.stats.damage * value(state, owner, id, 0.5, 1)), events);
+        for (const hit of ctx.hits.filter((hit2) => hit2.critical && hit2.damage > 0)) generatedStrike(state, owner, healthiestEnemy(state, hit.target), hit.damage * value(state, owner, id, 0.3, 0.6), events);
         break;
       case "atmospheric-griffin-turbine":
         if (ctx.action === "light" && damage > 0) for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) generatedGauge(owner, ally, value(state, owner, id, 3, 6), events);
         break;
       case "luminous-seraph-mirror":
-        if (critical) for (const ally of alive(state)) generatedHeal(owner, ally, Math.min(damage * value(state, owner, id, 0.08, 0.16), owner.stats.health * value(state, owner, id, 0.03, 0.06)), events);
+        for (const hit of ctx.hits.filter((hit2) => hit2.critical && hit2.damage > 0)) for (const ally of alive(state)) generatedHeal(owner, ally, hit.damage * value(state, owner, id, 0.08, 0.16), events);
         break;
       case "chaotic-ouroboros-core":
         if (ctx.action === "ultimate") {
@@ -6531,29 +6238,32 @@ function finishConduitAction(state, owner, ctx, events) {
             generatedStrike(state, owner, target, owner.stats.damage * n.witness * value(state, owner, id, 0.15, 0.3), events, false);
             n.witness = 0;
           }
-        } else if (ctx.action === "light") n.witness = Math.min(3, (n.witness ?? 0) + 1);
+        } else if (ctx.action === "light") n.witness = (n.witness ?? 0) + 1;
         break;
       case "ominous-nightglass-archive":
         if (ctx.action !== "light") for (const hit of ctx.hits) {
           const enemy = state.enemies.find((enemy2) => enemy2.id === hit.target && enemy2.hp > 0);
           if (enemy) {
             enemy.conduitMarks ??= {};
-            enemy.conduitMarks[owner.id] = Math.min(3, (enemy.conduitMarks[owner.id] ?? 0) + 1);
+            enemy.conduitMarks[owner.id] = (enemy.conduitMarks[owner.id] ?? 0) + 1;
           }
         }
         break;
       case "tempered-strike-link":
-        if (ctx.action === "light" && target && target.hp > 0 && target.burn.turns > 0 && target.burn.sourceId === owner.id && target.burn.origin !== "conduit") {
-          const tick = conduitBurnTick(state, owner, target);
-          target.burn.turns--;
-          generatedStrike(state, owner, target, Math.min(tick * value(state, owner, id, 0.8, 1.6), owner.stats.damage * value(state, owner, id, 0.8, 1.6)), events);
+        if (ctx.action === "light") for (const hit of ctx.hits) {
+          const enemy = state.enemies.find((enemy2) => enemy2.id === hit.target && enemy2.hp > 0 && enemy2.burn.turns > 0 && enemy2.burn.sourceId === owner.id && enemy2.burn.origin !== "conduit");
+          if (!enemy) continue;
+          const tick = conduitBurnTick(state, owner, enemy);
+          enemy.burn.turns--;
+          generatedStrike(state, owner, enemy, tick * value(state, owner, id, 0.8, 1.6), events);
         }
         break;
       case "mending-valve":
-        if (killed) generatedHeal(owner, injured(state, owner), owner.stats.health * value(state, owner, id, 0.08, 0.16), events);
+        for (const hit of ctx.hits.filter((hit2) => hit2.damage > 0 && state.enemies.some((enemy) => enemy.id === hit2.target && enemy.hp <= 0)))
+          generatedHeal(owner, injured(state, owner), owner.stats.health * value(state, owner, id, 0.08, 0.16), events);
         break;
       case "pulse-trigger-pawl":
-        if (critical && (ctx.action === "skill1" || ctx.action === "skill2")) generatedGauge(owner, owner, Math.min(ctx.paid, value(state, owner, id, 8, 16)), events);
+        if (critical && (ctx.action === "skill1" || ctx.action === "skill2")) generatedGauge(owner, owner, value(state, owner, id, 8, 16), events);
         break;
       case "firstlight-cam":
         if (ctx.action === "light" && damage > 0) {
@@ -6564,22 +6274,16 @@ function finishConduitAction(state, owner, ctx, events) {
         break;
       case "flare-focusing-iris":
         if ((ctx.spent.ember ?? 0) > 0) for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && ctx.openingBurns[enemy2.id] !== void 0)) {
-          generatedStrike(state, owner, enemy, Math.min(ctx.openingBurns[enemy.id] * ctx.spent.ember * value(state, owner, id, 0.25, 0.5), owner.stats.damage * value(state, owner, id, 0.6, 1.2)), events);
+          generatedStrike(state, owner, enemy, ctx.openingBurns[enemy.id] * ctx.spent.ember * value(state, owner, id, 0.25, 0.5), events);
         }
         break;
       case "pressurecrest-governor":
-        if (critical) {
-          n.windCriticals = (n.windCriticals ?? 0) + 1;
-          if (n.windCriticals >= step(state, id, 3, 2)) {
-            n.windCriticals = 0;
-            n.windveil = 1;
-          }
-        }
+        if (critical) n.windveil = (n.windveil ?? 0) + ctx.hits.filter((hit) => hit.critical && hit.damage > 0).length;
         break;
       case "chaotic-fault-verdict":
-        if (critical) {
-          const enemy = state.enemies.find((enemy2) => enemy2.id === critical.target && enemy2.hp > 0);
-          if (enemy) generatedStrike(state, owner, enemy, Math.min(payShield(owner, owner.stats.health * 0.1) * value(state, owner, id, 0.5, 1), owner.stats.damage * value(state, owner, id, 0.5, 1)), events);
+        for (const hit of ctx.hits.filter((hit2) => hit2.critical && hit2.damage > 0)) {
+          const enemy = state.enemies.find((enemy2) => enemy2.id === hit.target && enemy2.hp > 0);
+          if (enemy) generatedStrike(state, owner, enemy, payShield(owner, owner.shield) * value(state, owner, id, 0.5, 1), events);
         }
         break;
     }
@@ -6589,8 +6293,8 @@ function finishConduitAction(state, owner, ctx, events) {
       if (hasNativeIdentity(owner) && ctx.action === "skill1" && damage > 0 && target?.hp) {
         const memory = gear(target).numbers;
         const base = memory.entryDefense ?? target.stats.defense;
-        memory.excavated = Math.min(base * 0.3, (memory.excavated ?? 0) + base * 0.15);
-        emit(events, "status", owner, target, memory.excavated, `${target.name}'s encounter Defense is excavated.`);
+        memory.excavated = (memory.excavated ?? 0) + base * 0.15;
+        emit(events, "status", owner, target, memory.excavated, `${target.name}'s Battle-start Defense is excavated.`);
       }
       break;
     case "master-sprout-2":
@@ -6600,12 +6304,9 @@ function finishConduitAction(state, owner, ctx, events) {
       }
       break;
     case "master-sprout-3":
-      if (ctx.action === "ultimate" && !n.revivalUsed) {
+      if (ctx.action === "ultimate") {
         const fallen = state.allies.filter((ally) => ally.id !== owner.id && ally.hp <= 0);
-        if (fallen.length) {
-          n.revivalUsed = 1;
-          for (const ally of fallen) revive(state, owner, ally, 0.3, events);
-        }
+        for (const ally of fallen) revive(owner, ally, 0.3, events);
       }
       break;
     case "master-atmoso-2":
@@ -6618,12 +6319,9 @@ function finishConduitAction(state, owner, ctx, events) {
       if (ctx.action === "ultimate") for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0)) gear(enemy).numbers.judgmentThrough = state.round + 1;
       break;
     case "master-bliss-3":
-      if (ctx.action === "ultimate" && !n.featherUsed) {
+      if (ctx.action === "ultimate") {
         const ally = alive(state).filter((ally2) => ally2.id !== owner.id && !ally2.kit?.unavailableActions?.includes("skill1")).sort((a, b) => a.shatter - b.shatter)[0];
-        if (ally) {
-          n.featherUsed = 1;
-          gear(ally).numbers.quietFeather = 1;
-        }
+        if (ally) gear(ally).numbers.quietFeather = (gear(ally).numbers.quietFeather ?? 0) + 1;
       }
       break;
     case "master-disciple-2":
@@ -6646,19 +6344,21 @@ function finishConduitAction(state, owner, ctx, events) {
       }
       break;
     case "master-elise-3":
-      if (killed && !n.resetUsed && n.actions < 2 && owner.recoverThrough < state.round) {
-        n.resetUsed = 1;
+      if (killed && owner.recoverThrough < state.round) {
         owner.spent = false;
       }
       break;
     case "master-rosetta-2":
       if (ctx.action === "skill2" && hasNativeIdentity(owner) || ctx.action === "skill1" && (ctx.spent.roseGrace ?? 0) > 0) {
-        const count2 = hasNativeIdentity(owner) ? Math.min(2, owner.native?.quarry?.contributors.filter((id) => id !== owner.id).length ?? 0) : ctx.spent.roseGrace;
-        for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && enemy2.id !== target?.id).sort((a, b) => b.hp - a.hp).slice(0, count2)) generatedStrike(state, owner, enemy, (primaryHit?.damage ?? 0) * 0.25, events);
+        for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && enemy2.id !== target?.id))
+          generatedStrike(state, owner, enemy, (primaryHit?.damage ?? 0) * 0.25, events);
       }
       break;
     case "master-rosetta-3":
-      if (ctx.action === "ultimate") for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && (hasNativeIdentity(owner) ? enemy2.id === owner.native?.quarry?.target : enemy2.weakened > 0 && enemy2.weakenSourceId === owner.id))) gear(enemy).numbers[`opening:${owner.id}`] = 1;
+      if (ctx.action === "ultimate") for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && (hasNativeIdentity(owner) ? enemy2.id === owner.native?.quarry?.target : enemy2.weakened > 0 && enemy2.weakenSourceId === owner.id))) {
+        const memory = gear(enemy).numbers, key = `opening:${owner.id}`;
+        memory[key] = (memory[key] ?? 0) + 1;
+      }
       break;
     case "master-thornia-3":
       if (ctx.action === "skill1") for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) {
@@ -6668,7 +6368,7 @@ function finishConduitAction(state, owner, ctx, events) {
       break;
     case "master-crinso-1":
       if (ctx.action === "skill1" && primaryHit?.critical && target?.hp) {
-        if (hasNativeIdentity(owner)) n.goldImprint = Math.min(0.5, Math.max(0, primaryHit.criticalMultiplier - 1));
+        if (hasNativeIdentity(owner)) n.goldImprint = (n.goldImprint ?? 0) + Math.max(0, primaryHit.criticalMultiplier - 1);
         else gear(target).numbers[`imprint:${owner.id}`] = primaryHit.criticalMultiplier;
       }
       break;
@@ -6678,7 +6378,7 @@ function finishConduitAction(state, owner, ctx, events) {
       break;
     case "master-crinso-3":
       if (!ctx.hits.length) break;
-      if (ctx.action === "ultimate" || n.crimson) generatedHeal(owner, owner, Math.min(damage * 0.2, owner.stats.health * 0.1), events);
+      if (ctx.action === "ultimate" || n.crimson) generatedHeal(owner, owner, damage * 0.2, events);
       n.crimson = ctx.action === "ultimate" ? 0 : n.crimson ? 0 : 1;
       break;
     case "master-nerithe-1":
@@ -6689,7 +6389,7 @@ function finishConduitAction(state, owner, ctx, events) {
         const allies = alive(state).filter((ally) => ally.hp < ally.stats.health);
         if (allies.length) {
           const reserve = hasNativeIdentity(owner) ? owner.native?.foundation?.durability ?? 0 : owner.shield;
-          const amount = Math.min(reserve * 0.25, owner.stats.health * 0.05, allies.length * Math.min(...allies.map((ally) => ally.stats.health - ally.hp)));
+          const amount = Math.min(reserve, allies.length * Math.min(...allies.map((ally) => ally.stats.health - ally.hp)));
           let total = 0;
           for (const ally of allies) total += generatedHeal(owner, ally, Math.floor(amount / allies.length), events);
           if (hasNativeIdentity(owner) && owner.native?.foundation) owner.native.foundation.durability -= total;
@@ -6711,9 +6411,6 @@ function finishConduitAction(state, owner, ctx, events) {
   }
   for (const flora of alive(state).filter((ally) => equipped(ally, "master-sprout-1"))) {
     if (ctx.action !== "skill1" && ctx.action !== "skill2") continue;
-    const key = `pulse:${owner.id}`;
-    if (gear(flora).numbers[key] === state.round) continue;
-    gear(flora).numbers[key] = state.round;
     for (const ally of alive(state)) nativeHeal(state, flora, ally, ally.stats.health * 0.02, events, false);
   }
   if ((ctx.action === "skill1" || ctx.action === "skill2") && !ctx.all && damage > 0) {
@@ -6724,12 +6421,10 @@ function finishConduitAction(state, owner, ctx, events) {
   }
   afterCalamiticAction(state, owner, ctx.action, events);
 }
-function revive(state, owner, target, fraction, events) {
+function revive(owner, target, fraction, events) {
   target.hp = Math.max(1, Math.round(target.stats.health * fraction));
   target.shatter = 0;
-  target.spent = true;
-  gear(target).numbers.revivedRound = state.round;
-  emit(events, "heal", owner, target, target.hp, `${target.name} is revived by a Conduit at ${target.hp} HP; cannot act this turn.`);
+  emit(events, "heal", owner, target, target.hp, `${target.name} is revived by a Conduit at ${target.hp} HP.`);
 }
 function rescue(state, target, loss, events, direct) {
   if (loss < target.hp) return loss;
@@ -6740,10 +6435,9 @@ function rescue(state, target, loss, events, direct) {
     n.accordShield = accord.stats.health * value(state, accord, "tranquilitic-accord-bastion", 0.1, 0.2);
     return Math.max(0, target.hp - 1);
   }
-  if (direct && equipped(target, "stasis-reliquary") && !n.stasisUsed) {
-    n.stasisUsed = 1;
+  if (direct && equipped(target, "stasis-reliquary")) {
     n.stasisProtectedRound = state.round;
-    n.stasisSkip = state.round + 1;
+    n.stasisShieldRound = state.round + 1;
     return Math.max(0, target.hp - 1);
   }
   return loss;
@@ -6754,21 +6448,16 @@ function afterConduitHpLoss(state, target, events) {
     generatedShield(target, target, n.accordShield, events);
     delete n.accordShield;
   }
-  if (target.hp <= 0 && equipped(target, "infernic-phoenix-reactor") && !n.phoenixUsed) {
-    n.phoenixUsed = 1;
-    revive(state, target, target, value(state, target, "infernic-phoenix-reactor", 0.25, 0.5), events);
-  }
+  if (target.hp <= 0 && equipped(target, "infernic-phoenix-reactor"))
+    revive(target, target, value(state, target, "infernic-phoenix-reactor", 0.25, 0.5), events);
 }
 function conduitBurnTick(state, owner, target) {
   if (target.burn.origin === "conduit") return target.burn.damage;
   const n = gear(target).numbers;
   const cinderKey = `cinder:${owner.id}`, censusKey = `census:${owner.id}`, imprint = `imprint:${owner.id}`;
   let bonus = 0;
-  if (equipped(owner, "infernic-cinder-testament")) bonus += Math.min(
-    value(state, owner, "infernic-cinder-testament", 0.6, 1.2),
-    (n[cinderKey] ?? 0) * value(state, owner, "infernic-cinder-testament", 0.2, 0.4)
-  );
-  if (equipped(owner, "infernic-pyre-census") && ((n[censusKey] ?? 0) + 1) % 3 === 0) bonus += value(state, owner, "infernic-pyre-census", 0.75, 1.5);
+  if (equipped(owner, "infernic-cinder-testament")) bonus += (n[cinderKey] ?? 0) * value(state, owner, "infernic-cinder-testament", 0.2, 0.4);
+  if (equipped(owner, "infernic-pyre-census")) bonus += value(state, owner, "infernic-pyre-census", 0.75, 1.5);
   return Math.round(target.burn.damage * (1 + bonus) * (n[imprint] ?? 1));
 }
 function afterConduitBurn(state, owner, target, damage, events) {
@@ -6777,21 +6466,17 @@ function afterConduitBurn(state, owner, target, damage, events) {
   const tn = gear(target).numbers, n = gear(owner).numbers;
   tn[`cinder:${owner.id}`] = (tn[`cinder:${owner.id}`] ?? 0) + 1;
   tn[`census:${owner.id}`] = (tn[`census:${owner.id}`] ?? 0) + 1;
-  if (owner.hp > 0 && equipped(owner, "emberlife-kiln")) {
-    if (n.burnHealRound !== state.round) {
-      n.burnHealRound = state.round;
-      n.burnHeal = 0;
-    }
-    n.burnHeal += generatedHeal(owner, owner, Math.min(
-      damage * value(state, owner, "emberlife-kiln", 0.2, 0.4),
-      owner.stats.health * value(state, owner, "emberlife-kiln", 0.06, 0.12) - n.burnHeal
-    ), events);
+  if (owner.hp > 0 && equipped(owner, "emberlife-kiln"))
+    generatedHeal(owner, owner, damage * value(state, owner, "emberlife-kiln", 0.2, 0.4), events);
+  if (equipped(owner, "sootwake-crucible") && target.hp > 0) {
+    const serialKey = `sootSerial:${owner.id}`;
+    const serial = (tn[serialKey] ?? 0) + 1;
+    tn[serialKey] = serial;
+    tn[`soot:${owner.id}:${serial}`] = state.round + 1;
   }
-  if (equipped(owner, "sootwake-crucible") && target.hp > 0) tn[`soot:${owner.id}`] = state.round + 1;
-  if (target.burn.turns === 0 && target.hp > 0 && owner.hp > owner.stats.health * 0.5 && equipped(owner, "master-ember-1") && (tn[`extensions:${owner.id}`] ?? 0) < 2 && owner.hp - owner.stats.health * 0.03 > 1) {
+  if (target.burn.turns === 0 && target.hp > 0 && owner.hp > owner.stats.health * 0.5 && equipped(owner, "master-ember-1") && owner.hp - owner.stats.health * 0.03 >= 1) {
     owner.hp -= owner.stats.health * 0.03;
     target.burn.turns = 1;
-    tn[`extensions:${owner.id}`] = (tn[`extensions:${owner.id}`] ?? 0) + 1;
     emit(events, "status", owner, target, 1, `${owner.name} pays HP to sustain Burn for one phase.`);
   }
   if (target.burn.turns <= 0) {
@@ -6813,12 +6498,12 @@ function conduitDeaths(state, previous, events) {
     if (suppressor && enemy.weakened > 0 && enemy.weakenOrigin !== "conduit" && equipped(suppressor, "secondbeat-rack")) {
       const target = state.enemies.filter((unit) => unit.hp > 0).sort((a, b) => b.stats.damage - a.stats.damage)[0];
       const fraction = enemy.weakenFraction * value(state, suppressor, "secondbeat-rack", 0.6, 1);
-      if (target && (target.weakened <= 0 || target.weakenFraction < fraction)) {
-        target.weakened = Math.min(3, enemy.weakened);
+      if (target) {
+        target.weakened = enemy.weakened;
         target.weakenFraction = fraction;
         target.weakenSourceId = suppressor.id;
         target.weakenOrigin = "conduit";
-        emit(events, "status", suppressor, target, fraction, `${target.name} inherits generated Weaken.`);
+        emit(events, "status", suppressor, target, fraction, `${target.name} receives [Weaken].`);
       }
     }
   }
@@ -6863,7 +6548,8 @@ function nativeShieldActivationMultiplier(enemy, target) {
 function conduitIncoming(state, enemy, target, damage, critical, scheduled, events, action = scheduled ? "skill1" : "light") {
   const n = gear(target).numbers;
   if (!scheduled && n.windveil) {
-    delete n.windveil;
+    n.windveil--;
+    if (!n.windveil) delete n.windveil;
     emit(events, "status", target, target, 0, `${target.name}'s Windveil avoids the Normal Attack.`);
     return;
   }
@@ -6873,19 +6559,18 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   if (critical && equipped(target, "sentinel-aperture")) equipmentMultiplier *= 1 - value(state, target, "sentinel-aperture", 0.25, 0.5);
   if (target.hp > target.stats.health * 0.75 && equipped(target, "pale-bulwark-diadem")) equipmentMultiplier *= 1 - value(state, target, "pale-bulwark-diadem", 0.15, 0.3);
   if (target.defending && equipped(target, "tectonic-atlas-bastion")) equipmentMultiplier *= 1 - value(state, target, "tectonic-atlas-bastion", 0.1, 0.2);
-  if (n.solaceRound === state.round) equipmentMultiplier *= 1 - value(state, target, "solace-anchor", 0.1, 0.2);
+  if (n.solaceRound === state.round) equipmentMultiplier *= 1 - value(state, target, "solace-anchor", 0.1, 0.2) * (n.solaceUses ?? 1);
   const wardMultiplier = nativeShieldActivationMultiplier(enemy, target);
   const nativeMultiplier = nativeIncomingMultiplier(state, enemy, target, action, events) * wardMultiplier;
   const defendingMultiplier = target.defending ? 1 - defenseMode.damageReduction : 1;
-  const hasParry = scheduled && target.defending && equipped(target, "master-razor-1") && n.parryRound !== state.round;
+  const hasParry = scheduled && target.defending && equipped(target, "master-razor-1");
   const temporaryMultiplier = (parry) => defendingMultiplier * equipmentMultiplier * nativeMultiplier * (parry ? 0.5 : 1);
-  const totalMultiplier = (parry) => (state.conduitRulesVersion ?? 0) >= 3 ? Math.max(0.4, temporaryMultiplier(parry)) : temporaryMultiplier(parry);
+  const totalMultiplier = (parry) => temporaryMultiplier(parry);
   let reflection = 0;
   const beforeParry = damage * totalMultiplier(false);
   let offered = damage * totalMultiplier(hasParry);
   if (hasParry) {
-    n.parryRound = state.round;
-    reflection = Math.min(target.stats.damage, Math.max(0, beforeParry - offered) * 0.5);
+    reflection = Math.max(0, beforeParry - offered) * 0.5;
   }
   let remaining = Math.max(1, Math.round(offered));
   const postMitigation = remaining;
@@ -6899,7 +6584,7 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   );
   const networks = alive(state).filter((ally) => equipped(ally, "oceanic-shared-tide-pump") && layers(target).some((layer) => layer.native && layer.owner === ally.id && layer.amount > 0));
   for (const network of networks) {
-    let budget = Math.min(remaining, postMitigation * value(state, network, "oceanic-shared-tide-pump", 0.3, 0.6));
+    let budget = remaining;
     for (const ally of alive(state).filter((ally2) => ally2.id !== target.id)) {
       const list = layers(ally);
       const available = list.filter((layer) => layer.native && layer.owner === network.id).reduce((sum, layer) => sum + layer.amount, 0);
@@ -6920,14 +6605,8 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
     }
   }
   for (const protector of alive(state).filter((ally) => ally.id !== target.id && ally.defending && equipped(ally, "tectonic-faultkeeper-loom"))) {
-    const pn = gear(protector).numbers;
-    if (pn.interceptRound !== state.round) {
-      pn.interceptRound = state.round;
-      pn.intercepted = 0;
-    }
-    const amount = Math.min(remaining * value(state, protector, "tectonic-faultkeeper-loom", 0.3, 0.6), protector.stats.health * value(state, protector, "tectonic-faultkeeper-loom", 0.2, 0.4) - pn.intercepted);
+    const amount = remaining * value(state, protector, "tectonic-faultkeeper-loom", 0.3, 0.6);
     if (amount <= 0) continue;
-    pn.intercepted += amount;
     remaining -= amount;
     routedDamage(state, enemy, protector, amount, events);
   }
@@ -6937,31 +6616,19 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
     const owner = state.allies.find((ally) => ally.id === id);
     if (!owner) continue;
     const broke = absorbed.broken.has(id);
-    if (equipped(owner, "master-tide-1") && broke && !n[`tideBreak:${id}`]) {
-      n[`tideBreak:${id}`] = 1;
-      loss = 0;
-    }
+    if (equipped(owner, "master-tide-1") && broke) loss = 0;
     pilotAuthoredShieldAbsorbed(state, id, amount, events);
     absorbedNative(state, owner, target, enemy, amount, broke, events);
   }
   if (absorbed.absorbed > 0 && target.hp > 0) {
-    if (equipped(target, "aegis-capacitor") && n.batteryRound !== state.round) {
-      n.batteryRound = state.round;
-      generatedGauge(target, target, value(state, target, "aegis-capacitor", 4, 8), events);
-    }
-    if (equipped(target, "tidebound-reflector") && n.reflectRound !== state.round) {
-      n.reflectRound = state.round;
-      generatedStrike(state, target, enemy, Math.min(absorbed.absorbed * value(state, target, "tidebound-reflector", 0.2, 0.4), target.stats.damage * value(state, target, "tidebound-reflector", 0.3, 0.6)), events);
-    }
+    if (equipped(target, "aegis-capacitor")) generatedGauge(target, target, value(state, target, "aegis-capacitor", 4, 8), events);
+    if (equipped(target, "tidebound-reflector"))
+      generatedStrike(state, target, enemy, absorbed.absorbed * value(state, target, "tidebound-reflector", 0.2, 0.4), events);
   }
-  if (equipped(target, "master-bruno-1") && n.limiterRound !== state.round) {
-    n.limiterRound = state.round;
-    loss = Math.min(loss, target.stats.health * 0.2);
-  }
+  if (equipped(target, "master-bruno-1")) loss *= 0.8;
   const guardian = state.allies.find((ally) => ally.id === gear(target).owners.guardian && ally.hp > 0);
-  if (guardian && loss >= target.hp && n.guardianRound === state.round && gear(guardian).numbers.guardianUsedRound !== state.round) {
-    gear(guardian).numbers.guardianUsedRound = state.round;
-    const routed = Math.min(loss - target.hp + 1, guardian.stats.health * 0.2);
+  if (guardian && loss >= target.hp && n.guardianRound === state.round) {
+    const routed = loss - target.hp + 1;
     loss -= routed;
     routedDamage(state, enemy, guardian, routed, events);
   }
@@ -6981,23 +6648,16 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   if (reflection > 0) generatedStrike(state, target, enemy, reflection, events);
   if (loss > 0) {
     n.phaseLoss = (n.phaseLoss ?? 0) + loss;
-    if (target.hp > 0 && equipped(target, "duplex-heart") && n.duplexRound !== state.round) {
-      n.duplexRound = state.round;
-      generatedHeal(target, injured(state, target, true), target.stats.health * value(state, target, "duplex-heart", 0.05, 0.1), events);
-    }
+    if (target.hp > 0 && equipped(target, "duplex-heart")) generatedHeal(target, injured(state, target, true), target.stats.health * value(state, target, "duplex-heart", 0.05, 0.1), events);
     const aurora = state.allies.find((ally) => ally.hp > 0 && equipped(ally, "master-aurora-3") && nativeControl(state, ally, enemy));
     if (aurora) {
       const an = gear(aurora).numbers;
-      if (an.repairRound !== state.round) {
-        an.repairRound = state.round;
-        an.repaired = 0;
-      }
       const recipient = alive(state).filter((ally) => ally.id !== target.id && ally.hp < ally.stats.health).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
-      an.repaired += generatedHeal(aurora, recipient, Math.min(loss * 0.5, aurora.stats.health * 0.1 - an.repaired), events);
+      generatedHeal(aurora, recipient, loss * 0.5, events);
     }
   }
   if (target.hp > 0) {
-    if (n.counterwindActive) n.counterwind = Math.min(0.45, (n.counterwind ?? 0) + 0.15);
+    if (n.counterwindActive) n.counterwind = (n.counterwind ?? 0) + 0.15;
   }
 }
 function routedDamage(state, enemy, target, amount, events, nativeRedirect = false) {
@@ -7014,17 +6674,20 @@ function absorbedNative(state, owner, target, enemy, amount, broken, events) {
   if (owner.hp <= 0) return;
   const n = gear(owner).numbers;
   if (equipped(owner, "aquatic-leviathan-pump")) n.absorption = (n.absorption ?? 0) + amount;
-  if (broken && equipped(owner, "master-thornia-1") && n.thornsRound !== state.round) {
-    n.thornsRound = state.round;
-    for (const foe of state.enemies.filter((foe2) => foe2.hp > 0)) generatedStrike(state, owner, foe, Math.min(amount * 0.4, effectiveDefense(state, owner) * 0.5), events);
+  if (broken && equipped(owner, "master-thornia-1")) {
+    for (const foe of state.enemies.filter((foe2) => foe2.hp > 0)) generatedStrike(state, owner, foe, amount * 0.4, events);
   }
 }
 function conduitTurnStart(state, events) {
   for (const owner of alive(state)) {
     const n = gear(owner).numbers;
-    if (equipped(owner, "granite-hourglass") && (n.phaseLoss ?? 0) > 0) generatedShield(owner, owner, Math.min(n.phaseLoss * value(state, owner, "granite-hourglass", 0.3, 0.6), owner.stats.health * value(state, owner, "granite-hourglass", 0.1, 0.2)), events);
+    if (n.solaceRound !== state.round) {
+      delete n.solaceRound;
+      delete n.solaceUses;
+    }
+    if (equipped(owner, "granite-hourglass") && (n.phaseLoss ?? 0) > 0) generatedShield(owner, owner, n.phaseLoss * value(state, owner, "granite-hourglass", 0.3, 0.6), events);
     n.phaseLoss = 0;
-    if (n.stasisSkip === state.round) generatedShield(owner, owner, owner.stats.health * value(state, owner, "stasis-reliquary", 0.1, 0.2), events);
+    if (n.stasisShieldRound === state.round) generatedShield(owner, owner, owner.stats.health * value(state, owner, "stasis-reliquary", 0.1, 0.2), events);
     if (owner.recoverThrough >= state.round) {
       if (equipped(owner, "horizon-heartcase")) generatedHeal(owner, owner, (owner.stats.health - owner.hp) * value(state, owner, "horizon-heartcase", 0.15, 0.3), events);
       if (equipped(owner, "tranquilitic-stillhour-carillon")) {
@@ -7034,7 +6697,7 @@ function conduitTurnStart(state, events) {
       }
     }
     if (equipped(owner, "aquatic-leviathan-pump") && (n.absorption ?? 0) > 0) {
-      const pool = Math.min(n.absorption * value(state, owner, "aquatic-leviathan-pump", 0.3, 0.6), owner.stats.health * value(state, owner, "aquatic-leviathan-pump", 0.1, 0.2));
+      const pool = n.absorption * value(state, owner, "aquatic-leviathan-pump", 0.3, 0.6);
       const recipients = alive(state).filter((ally) => ally.hp < ally.stats.health);
       for (const ally of recipients) generatedHeal(owner, ally, pool / recipients.length, events);
     }
@@ -7113,24 +6776,6 @@ function combatant(id, definitionId, name, side, stats, element) {
     kit: null,
     defending: false
   };
-}
-function capCapturedBattleLevels(state) {
-  for (const unit of state.allies) {
-    if (!unit.captured) continue;
-    if (unit.captured.level !== void 0) unit.captured.level = Math.min(capturedLevelCap, unit.captured.level);
-    if (unit.level === null || unit.level <= capturedLevelCap) continue;
-    const before = capturedEnemyStats(unit.level, 140);
-    const after = capturedEnemyStats(capturedLevelCap);
-    for (const stat of ["health", "damage", "defense"]) {
-      const ratio = after[stat] / before[stat];
-      unit.stats[stat] *= ratio;
-      if (unit.kit) unit.kit.stats[stat] *= ratio;
-    }
-    const healthRatio = after.health / before.health;
-    unit.hp *= healthRatio;
-    unit.shield *= healthRatio;
-    unit.level = capturedLevelCap;
-  }
 }
 function spawnWave(wave) {
   const level = Math.min(wave, enemyGrowth.maximumLevel);
@@ -7475,7 +7120,7 @@ function awardDefeats(previous, state, events) {
       seed2 ^= seed2 >>> 17;
       seed2 ^= seed2 << 5;
       state.captureSeed = seed2 >>> 0;
-      if ((state.infusion.mode !== "roses" || roseCaptureAllowed(enemy.level)) && captureSucceeds(state.captureSeed / 4294967296)) capture = { creatureId: enemy.creatureId, level: Math.min(capturedLevelCap, enemy.level) };
+      if ((state.infusion.mode !== "roses" || roseCaptureAllowed(enemy.level)) && captureSucceeds(state.captureSeed / 4294967296)) capture = { creatureId: enemy.creatureId, level: enemy.level };
       if (state.infusion.mode !== "treasury" && state.infusion.mode !== "roses") lycalis = rollStagedLycalis(state.infusion.mode, enemy.level, () => {
         let premiumSeed = state.lycalisSeed ?? ((previous.seed ^ 2654435769) >>> 0 || 1);
         premiumSeed ^= premiumSeed << 13;
@@ -8462,10 +8107,13 @@ function equipConduit(storage, character, slot, conduit) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before equipping Conduits.");
   const account = loadAccount(storage);
   if (!ownedCharacterInstances(account).includes(character)) throw new Error("Choose an owned character.");
-  if (!Number.isInteger(slot) || slot < 0 || slot >= conduitSlotCount) throw new Error("Choose an ordinary Conduit slot. The Master slot is reserved.");
+  const current = account.conduitEquipment?.[character] ?? Array(conduitSlotCount).fill(null);
+  if (!Number.isInteger(slot) || slot < 0 || slot >= conduitSlotsShown(current)) throw new Error("Choose an ordinary Conduit slot. The Master slot is separate.");
   if (conduit !== null && (!isConduitId(conduit) || (account.conduits?.[conduit] ?? 0) < 1)) throw new Error("Choose an owned Conduit.");
-  const slots = [...account.conduitEquipment?.[character] ?? Array(conduitSlotCount).fill(null)];
+  const slots = [...current];
+  while (slots.length <= slot) slots.push(null);
   slots[slot] = conduit;
+  while (slots.length > conduitSlotCount && slots[slots.length - 1] === null) slots.pop();
   account.conduitEquipment = { ...account.conduitEquipment, [character]: validateConduitSlots(slots) };
   return saveAccount(storage, account);
 }
@@ -8550,6 +8198,7 @@ function equipMasterConduit(storage, character, id) {
   account.masterEquipment = { ...account.masterEquipment, [character]: id };
   return saveAccount(storage, account);
 }
+var maxLevelBatch = 1e4;
 function conduitMaxLevelPlan(account, id) {
   if (!isConduitId(id)) throw new Error("Unknown Conduit.");
   if ((account.conduits?.[id] ?? 0) < 1) throw new Error("Choose an owned Conduit to upgrade.");
@@ -8557,9 +8206,8 @@ function conduitMaxLevelPlan(account, id) {
   const currentLevel = account.conduitUpgrades?.[id] ?? 0;
   let targetLevel = currentLevel;
   let cost = 0;
-  while (targetLevel < conduitUpgradeCap) {
+  while (targetLevel - currentLevel < maxLevelBatch) {
     const nextCost = conduitUpgradeCost(conduit, targetLevel);
-    if (nextCost === null) throw new Error("Conduit upgrade cost is missing.");
     if (cost + nextCost > (account.mechanicalComponents ?? 0)) break;
     cost += nextCost;
     targetLevel++;
@@ -8573,7 +8221,7 @@ function upgradeConduitToMaximum(storage, expected) {
   if (plan.currentLevel !== expected.currentLevel || plan.targetLevel !== expected.targetLevel || plan.cost !== expected.cost) {
     throw new Error("This Conduit Max Level preview changed. Review the current level and cost before retrying.");
   }
-  if (plan.targetLevel === plan.currentLevel) throw new Error("No additional Conduit upgrades are affordable within the current cap.");
+  if (plan.targetLevel === plan.currentLevel) throw new Error("No additional Conduit upgrades are affordable.");
   account.mechanicalComponents = (account.mechanicalComponents ?? 0) - plan.cost;
   account.conduitUpgrades = { ...account.conduitUpgrades, [plan.id]: plan.targetLevel };
   return saveAccount(storage, account);
@@ -8586,7 +8234,6 @@ function upgradeConduit(storage, id, expectedLevel) {
   if ((account.conduits?.[id] ?? 0) < 1) throw new Error("Choose an owned Conduit to upgrade.");
   const level = account.conduitUpgrades?.[id] ?? 0;
   if (level !== expectedLevel) throw new Error("This Conduit upgrade level changed. Review the current level and cost before retrying.");
-  if (cost === null) throw new Error("This Conduit is already upgraded five times.");
   if ((account.mechanicalComponents ?? 0) < cost) throw new Error(`Not enough Broken Mechanical Components. This upgrade costs ${cost}.`);
   account.mechanicalComponents = (account.mechanicalComponents ?? 0) - cost;
   account.conduitUpgrades = { ...account.conduitUpgrades, [id]: level + 1 };
@@ -8610,7 +8257,7 @@ function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
   if (current.level !== expected.level || current.evolution !== expected.evolution || (current.weaponRank ?? 0) !== (expected.weaponRank ?? 0)) throw new Error("Character progress changed. Reopen this tab before upgrading.");
   const element = getStarter(id).elementId;
   const cost = kind === "level" ? characterLevelCost(id, current) : characterEvolutionCost(id, current);
-  if (kind === "evolve" && current.level !== characterLevelCap(current.evolution)) throw new Error("Reach this form level cap before evolving.");
+  if (kind === "evolve" && current.level < evolutionLevelRequirement(current.evolution)) throw new Error(`Reach level ${evolutionLevelRequirement(current.evolution)} before evolving.`);
   const creatureCount = kind === "evolve" ? characterEvolutionRequirement(id, current.evolution).creatureCount : 0;
   if (fodderIds.length !== creatureCount || new Set(fodderIds).size !== fodderIds.length) {
     throw new Error(`Select exactly ${creatureCount} distinct captured Elemental-Devourers for this upgrade.`);
@@ -8817,7 +8464,7 @@ function saveAccountRewards(storage, result, runId) {
     if (reward.capture) {
       const creature = getCreature(reward.capture.creatureId);
       const stage = result.state.infusion?.stage;
-      if (!creature.mode || creature.mode === "machines" || !stage || creature.mode !== result.state.infusion?.mode || enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== Math.min(capturedLevelCap, enemy.level) || enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? "legacy").level || creature.mode === "roses" && enemy.level > roseCaptureMaximumLevel) {
+      if (!creature.mode || creature.mode === "machines" || !stage || creature.mode !== result.state.infusion?.mode || enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== enemy.level || enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? "legacy").level || creature.mode === "roses" && enemy.level > roseCaptureMaximumLevel) {
         throw new Error("Invalid captured enemy reward.");
       }
       const copy = createCreatureCopy(creature.id, stage, enemy.level);
@@ -8923,10 +8570,9 @@ function maxLevelPlan(account, id) {
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
   const current = starter ? ownedProgress(account, starter.id) : copy ? capturedProgress(copy) : null;
   if (!current) throw new Error("Character progress is missing.");
-  const cap = starter ? characterLevelCap(ownedProgress(account, starter.id).evolution) : capturedLevelCap;
   const cost = { fractalis: 0, materials: {} };
   let targetLevel = current.level;
-  while (targetLevel < cap) {
+  while (targetLevel - current.level < maxLevelBatch) {
     const nextCost = starter ? characterLevelCost(starter.id, { ...ownedProgress(account, starter.id), level: targetLevel }) : copy ? capturedLevelCost({ ...copy, level: targetLevel }) : null;
     if (!nextCost) throw new Error("Character level cost is missing.");
     if (cost.fractalis + nextCost.fractalis > account.fractalis || Object.entries(nextCost.materials).some(([material, amount]) => (cost.materials[material] ?? 0) + amount > (account.materials[material] ?? 0))) break;
@@ -8940,7 +8586,6 @@ function maxLevelPlan(account, id) {
     id,
     currentLevel: current.level,
     targetLevel,
-    cap,
     cost,
     progressKey: JSON.stringify([starter ? ownedProgress(account, starter.id) : copy, account.conduitEquipment?.[id], account.conduitUpgrades])
   };
@@ -8950,7 +8595,7 @@ function levelCharacterToMaximum(storage, expected) {
   const account = loadAccount(storage);
   const plan = maxLevelPlan(account, expected.id);
   if (JSON.stringify(plan) !== JSON.stringify(expected)) throw new Error("Progress or available resources changed. Reopen Max Level.");
-  if (plan.targetLevel === plan.currentLevel) throw new Error("No additional levels are affordable within the current cap.");
+  if (plan.targetLevel === plan.currentLevel) throw new Error("No additional levels are affordable.");
   account.fractalis -= plan.cost.fractalis;
   for (const [material, amount] of Object.entries(plan.cost.materials)) account.materials[material] -= amount;
   if (isStarterId(plan.id)) {
@@ -9189,8 +8834,8 @@ function validateRequest(value2) {
   }
   if (op.kind === "levelMax") {
     if (!record2(op.expected) || op.expected.id !== op.id) throw new Error("Invalid Max Level preview.");
-    keys(op.expected, ["id", "currentLevel", "targetLevel", "cap", "cost", "progressKey"]);
-    for (const field of ["currentLevel", "targetLevel", "cap"]) integer(op.expected[field]);
+    keys(op.expected, ["id", "currentLevel", "targetLevel", "cost", "progressKey"]);
+    for (const field of ["currentLevel", "targetLevel"]) integer(op.expected[field]);
     text(op.expected.progressKey, 8192);
     if (!record2(op.expected.cost) || !record2(op.expected.cost.materials)) throw new Error("Invalid Max Level cost.");
     keys(op.expected.cost, ["fractalis", "materials"]);
@@ -9287,7 +8932,6 @@ function publicGame(game, revision) {
   const account = validateAccount(game.account);
   if (game.run) validateRunActivity(game.run);
   const session = game.run ? structuredClone(game.run.session) : null;
-  if (session) capCapturedBattleLevels(session.state);
   const profile = { ...game.profile, statistics: {
     storyCompleted: account.storyCompleted ?? 0,
     ownedBearers: ownedCharacters(account).length,
@@ -9343,7 +8987,6 @@ function resolveOperation(previous, operation, entropy) {
   if (game.run) {
     validateRunActivity(game.run);
     game.run.captures = validateCapturedCharacters(game.run.captures);
-    capCapturedBattleLevels(game.run.session.state);
   }
   if (game.run && game.run.session.state.conduitRulesVersion !== conduitRulesVersion) {
     const run = game.run;

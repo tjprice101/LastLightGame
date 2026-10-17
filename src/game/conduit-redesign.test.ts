@@ -5,6 +5,9 @@ import { conduits, type ConduitId, type ConduitSlots } from '../content/conduits
 import { masterConduits } from '../content/master-conduits';
 import { starters, type StarterId } from '../content/starters';
 import { nativeBalance } from '../content/native-balance';
+import { conduitRedesign } from '../content/conduit-redesign';
+import { conduitGlossary } from '../content/conduit-glossary';
+import { calamiticConduits, calamiticEffect } from '../content/calamitic-conduits';
 
 import { act, actionUnavailable, createBattle, endTurn, nextWave, withMasterLoadouts, type BattleEvent } from './battle';
 import { applyConduitBurn, applyConduitWeaken, conduitActionCost, conduitBurnTick, conduitHitModifiers,
@@ -17,6 +20,23 @@ it('documents each of the original 133 equipment IDs exactly once in the generat
   expect(ids).toHaveLength(133);
   expect(new Set(ids).size).toBe(133);
   expect(ids.sort()).toEqual([...conduits.filter(item => item.rarity !== 'Calamitic'), ...masterConduits].map(item => item.id).sort());
+});
+
+it('keeps description coefficients aligned and removes retired Conduit jargon', () => {
+  const forbidden = /capped|maximum \+|at most|once per|native|generated|refresh-only|encounter|enemy phase| offer/i;
+  for (const [id, design] of Object.entries(conduitRedesign)) {
+    const placeholders = design.description.match(/[-+]?\d+(?:\.\d+)?%?\s*->\s*[-+]?\d+(?:\.\d+)?%?/g) ?? [];
+    expect(placeholders, id).toHaveLength(design.ranges.length);
+    expect(design.description, id).not.toMatch(forbidden);
+  }
+  for (const conduit of calamiticConduits) {
+    const description = calamiticEffect(conduit.id);
+    expect(description).toBeDefined();
+    expect(description ?? '').not.toMatch(forbidden);
+  }
+  expect(conduitGlossary.map(entry => entry.term)).toEqual([
+    'Attack Action', 'Bonus Strike', 'Direct Damage', 'Shield', 'Enemy Turn', 'Round', 'Battle',
+  ]);
 });
 
 function fixture(id?: ConduitId, level = 0, bearer?: StarterId) {
@@ -43,17 +63,17 @@ function fixture(id?: ConduitId, level = 0, bearer?: StarterId) {
 }
 
 describe('redesigned ordinary Conduit executable effects', () => {
-  it('cannot donate an action to a same-round revived ally or consume the donation without a legal recipient', () => {
+  it('lets a revived ally take an available action in the same player turn', () => {
     const state = createBattle(1729, ['sprout', 'vaelor', 'ember']);
-    const [flora, vaelor, fallen] = state.allies;
+    const [flora, _vaelor, fallen] = state.allies;
     flora.masterConduit = 'master-sprout-3'; flora.shatter = 100;
-    vaelor.masterConduit = 'master-vaelor-3'; fallen.hp = 0;
+    fallen.hp = 0;
     const revived = act(state, flora.id, 'ultimate', state.enemies[0].id).state;
     expect(revived.allies[2].hp).toBeGreaterThan(0);
-    const donated = act(revived, vaelor.id, 'defend', revived.enemies[0].id).state;
-    expect(donated.allies[2].spent).toBe(true);
-    expect(actionUnavailable(donated, donated.allies[2], 'light')).toBeTruthy();
-    expect(gear(donated.allies[1]).numbers.donationUsed).toBeUndefined();
+    expect(revived.allies[2].spent).toBe(false);
+    expect(actionUnavailable(revived, revived.allies[2], 'light')).toBeFalsy();
+    const afterAttack = act(revived, revived.allies[2].id, 'light', revived.enemies[0].id).state;
+    expect(afterAttack.allies[2].spent).toBe(true);
   });
   it('can give Quiet Feather at full Gauge, but never to an unavailable Skill 1', () => {
     const { state, owner, events } = fixture(undefined, 0, 'bliss');
@@ -86,7 +106,7 @@ describe('redesigned ordinary Conduit executable effects', () => {
       expect(gear(target).numbers.scheduleShift).toBeUndefined();
     }
   });
-  it('refreshes Foundation ordinary shields and plates independently without stacking either', () => {
+  it('refreshes Foundation ordinary shields and plates independently without a plate ceiling', () => {
     const { state, owner, events } = fixture(undefined, 0, 'orvella');
     owner.masterConduit = 'master-orvella-1';
     for (const offer of [100, 200, 200]) nativeShield(state, owner, owner, offer, events);
@@ -94,8 +114,8 @@ describe('redesigned ordinary Conduit executable effects', () => {
     expect(gear(owner).layers?.filter(layer => layer.native).reduce((sum, layer) => sum + layer.amount, 0)).toBe(100);
     expect(gear(owner).layers?.filter(layer => layer.plate).reduce((sum, layer) => sum + layer.amount, 0)).toBe(100);
     nativeShield(state, owner, owner, 1000, events);
-    expect(owner.shield).toBe(650);
-    expect(gear(owner).layers?.filter(layer => layer.plate).reduce((sum, layer) => sum + layer.amount, 0)).toBe(150);
+    expect(owner.shield).toBe(1000);
+    expect(gear(owner).layers?.filter(layer => layer.plate).reduce((sum, layer) => sum + layer.amount, 0)).toBe(500);
   });
   it.each([false, true])('spends only its own native Shared Tide layers with earlier foreign native shield: %s', foreignShield => {
     const { state, owner, target, events } = fixture('oceanic-shared-tide-pump', 5);
@@ -174,16 +194,16 @@ describe('redesigned ordinary Conduit executable effects', () => {
       if (id === 'verdict-caliper') expect(ctx.forbidden).toBe(true);
     }
   });
-  it.each([0, 1, 2, 3, 4, 5])('resolves healing/shield conversion coefficients and actual-damage caps at +%i', level => {
+  it.each([0, 1, 2, 3, 4, 5])('scales healing and Shield conversion without design caps at +%i', level => {
     const f = level / 5;
-    for (const [id, kind, cap] of [['lifeline-flywheel', 'heal', .04 + .04 * f],
-      ['breach-pendulum', 'shield', .05 + .05 * f]] as const) {
+    for (const [id, kind, coefficient] of [['lifeline-flywheel', 'heal', .08 + .08 * f],
+      ['breach-pendulum', 'shield', .08 + .08 * f]] as const) {
       const { state, owner, target, events } = fixture(id, level);
       owner.hp = 100;
       const ctx = prepareConduitAction(state, owner, 'light', 0, false);
       recordConduitHit(ctx, target, 100000, false, 1.5);
       finishConduitAction(state, owner, ctx, events);
-      expect(kind === 'heal' ? owner.hp - 100 : owner.shield).toBe(Math.round(1000 * cap));
+      expect(kind === 'heal' ? owner.hp - 100 : owner.shield).toBe(kind === 'heal' ? 900 : Math.round(100000 * coefficient));
       expect(events.filter(event => event.kind === kind)).toHaveLength(1);
       expect(events.every(event => event.origin === 'conduit')).toBe(true);
     }
@@ -220,17 +240,24 @@ describe('redesigned ordinary Conduit executable effects', () => {
     expect(() => act(result.state, owner.id, 'light', target.id)).toThrow();
     expect(result.state).toEqual(before);
   });
-  it('gives only the second consecutive Normal a bonus and clears sequence on Defense', () => {
+  it('applies Twinpulse to every Normal Attack without a sequence gate', () => {
     const { state, owner } = fixture('twinpulse-bellows');
-    expect(prepareConduitAction(state, owner, 'light', 0, false).bonus).toBe(0);
+    expect(prepareConduitAction(state, owner, 'light', 0, false).bonus).toBe(.25);
     expect(prepareConduitAction(state, owner, 'light', 0, false).bonus).toBe(.25);
     prepareConduitAction(state, owner, 'defend', 0, false);
-    expect(prepareConduitAction(state, owner, 'light', 0, false).bonus).toBe(0);
+    expect(prepareConduitAction(state, owner, 'light', 0, false).bonus).toBe(.25);
   });
-  it('uses first-activation critical charges only once and guarantees Falcon after two noncriticals', () => {
+  it('grants Pulse Trigger Gauge beyond its action cost at high upgrade levels', () => {
+    const { state, owner, target, events } = fixture('pulse-trigger-pawl', 50);
+    const ctx = prepareConduitAction(state, owner, 'skill1', 10, false);
+    recordConduitHit(ctx, target, 100, true, 1.5);
+    finishConduitAction(state, owner, ctx, events);
+    expect(owner.shatter).toBe(188);
+  });
+  it('applies Parallax critical chance to every Attack Action and guarantees Falcon after two noncriticals', () => {
     const opening = fixture('parallax-relay', 5);
     expect(prepareConduitAction(opening.state, opening.owner, 'light', 0, false).criticalBonus).toBe(.3);
-    expect(prepareConduitAction(opening.state, opening.owner, 'light', 0, false).criticalBonus).toBe(0);
+    expect(prepareConduitAction(opening.state, opening.owner, 'light', 0, false).criticalBonus).toBe(.3);
     const f = fixture('falcon-sight');
     for (let i = 0; i < 2; i++) {
       const ctx = prepareConduitAction(f.state, f.owner, 'light', 0, false);
@@ -275,13 +302,13 @@ describe('redesigned ordinary Conduit executable effects', () => {
     expect(conduitHitModifiers(f.state, f.owner, f.target, ctx, false).bonus).toBeCloseTo(.9);
     expect(f.target.conduitMarks).toEqual({ other: 2 });
   });
-  it('supports Stasis, Phoenix and Accord precedence without repeated resurrection or free actions', () => {
+  it('supports repeated Phoenix revival, Stasis protection and Accord precedence', () => {
     const f = fixture('infernic-phoenix-reactor');
     f.owner.hp = 1;
     conduitIncoming(f.state, f.target, f.owner, 1000, false, false, f.events);
-    expect(f.owner.hp).toBe(250); expect(f.owner.shatter).toBe(0); expect(f.owner.spent).toBe(true);
+    expect(f.owner.hp).toBe(250); expect(f.owner.shatter).toBe(0); expect(f.owner.spent).toBe(false);
     conduitIncoming(f.state, f.target, f.owner, 1000, false, false, f.events);
-    expect(f.owner.hp).toBe(0);
+    expect(f.owner.hp).toBe(250); expect(f.owner.shatter).toBe(0); expect(f.owner.spent).toBe(false);
     const s = fixture('stasis-reliquary');
     s.owner.hp = 5;
     conduitIncoming(s.state, s.target, s.owner, 100, false, false, s.events);
@@ -290,10 +317,9 @@ describe('redesigned ordinary Conduit executable effects', () => {
     expect(s.owner.hp).toBe(1);
     s.state.round++;
     conduitTurnStart(s.state, s.events);
-    expect(s.owner.shield).toBe(100);
-    expect(actionUnavailable(s.state, s.owner, 'light')).toContain('cannot');
+    expect(s.owner.shield).toBe(100); expect(actionUnavailable(s.state, s.owner, 'light')).toBeNull();
   });
-  it('offers a single paid free Defense and then an ordinary action, not an infinite turn', () => {
+  it('allows paid free-Defense preparations while preserving the ordinary action spend', () => {
     const f = fixture('solace-anchor', 5);
     const first = act(f.state, f.owner.id, 'defend', f.target.id);
     expect(first.state.allies[0].spent).toBe(false);
@@ -302,6 +328,19 @@ describe('redesigned ordinary Conduit executable effects', () => {
     expect(second.state.allies[0].spent).toBe(true);
     expect(() => act(second.state, f.owner.id, 'light', f.target.id)).toThrow();
   });
+  it('stacks paid Solace preparations through the Enemy Turn', () => {
+    const f = fixture('solace-anchor', 5);
+    for (let i = 0; i < 2; i++) {
+      const cost = conduitActionCost(f.owner, 'defend', f.state, 0);
+      expect(cost).toBe(10);
+      f.owner.shatter -= cost;
+      const ctx = prepareConduitAction(f.state, f.owner, 'defend', cost, false);
+      expect(ctx.freeDefense).toBe(true);
+    }
+    conduitIncoming(f.state, f.target, f.owner, 1000, false, false, f.events);
+    expect(f.owner.hp).toBe(400);
+  });
+
   it('routes only native overflow once and conserves transferred Gauge', () => {
     const f = fixture('clearwater-manifold', 5);
     f.owner.shatter = 195;
@@ -369,15 +408,15 @@ describe('redesigned Master transformations', () => {
     sea.owner.masterConduit = 'master-nerithe-2';
     const support = act(sea.state, sea.owner.id, 'skill2', sea.target.id);
     expect(support.events.some(event => event.kind === 'damage')).toBe(false);
-    expect(support.state.allies.every(ally => ally.omnicProtection === .15)).toBe(true);
+    expect(support.state.allies.map(ally => Number((ally.omnicProtection ?? 0).toFixed(6)))).toEqual([.15, .15, .15]);
   });
-  it('does not chain a donated action past the manual two-action cap', () => {
+  it('donates a ready ally action without a donation-use counter', () => {
     const f = fixture(undefined, 0, 'vaelor');
     f.owner.masterConduit = 'master-vaelor-3';
     f.state.allies[1].spent = true;
     const result = act(f.state, f.owner.id, 'defend', f.target.id);
     expect(result.state.allies[1].spent).toBe(false);
-    expect(gear(result.state.allies[0]).numbers.donationUsed).toBe(1);
+    expect(gear(result.state.allies[0]).numbers.donationUsed).toBeUndefined();
   });
   it('derives fortress Defense without recursively changing the entry base', () => {
     const f = fixture(undefined, 0, 'orvella');

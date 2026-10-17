@@ -73,7 +73,8 @@ describe('Conduit panel updates', () => {
     expect(root.querySelector('[data-upgrade-conduit]')?.getAttribute('data-upgrade-conduit')).toBe('siegebound-drive');
     updateConduitUpgradeMenu(root, { ...account, conduitUpgrades: { 'siegebound-drive': 5 } }, 'siegebound-drive');
     expect(row?.querySelector('[data-conduit-upgrade]')?.getAttribute('data-conduit-upgrade')).toBe('5');
-    expect(root.querySelector<HTMLButtonElement>('[data-upgrade-conduit]')?.disabled).toBe(true);
+    expect(root.querySelector<HTMLButtonElement>('[data-upgrade-conduit]')?.disabled).toBe(false);
+    expect(root.querySelector<HTMLButtonElement>('[data-upgrade-conduit]')?.textContent).toContain('Upgrade to +6');
   });
 
   it('reports missing panels instead of silently claiming an update', () => {

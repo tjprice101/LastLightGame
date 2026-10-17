@@ -53,15 +53,14 @@ describe('sixteen native identities without equipment', () => {
     expect(ultimate.state.allies.map(unit => unit.shield)).toEqual([1000 * nativeBalance.tizu.oceanMemory, 1000 * nativeBalance.tizu.oceanMemory]);
   });
 
-  it('Tizu grants eight Gauge only once per recipient phase for an absorbed native hit', () => {
+  it('Tizu grants eight Gauge for every absorbed native hit', () => {
     const state = encounter('tide', 'ember');
     state.allies[1].shatter = 0;
     const events: Parameters<typeof nativeAbsorbedHit>[4] = [];
     nativeAbsorbedHit(state, state.allies[1], new Map([['tide', 20]]), 0, events);
     nativeAbsorbedHit(state, state.allies[1], new Map([['tide', 20]]), 0, events);
-    expect(state.allies[1].shatter).toBe(8);
-    nativeAbsorbedHit(state, state.allies[0], new Map([['tide', 20]]), 1, events);
-    expect(events.filter(event => event.amount === 8)).toHaveLength(1);
+    expect(state.allies[1].shatter).toBe(16);
+    expect(events.filter(event => event.amount === 8)).toHaveLength(2);
   });
 
   it('Flora empty harvest heals nothing; normal seeds deliver next turn and do not downgrade empowered ones', () => {
@@ -203,23 +202,23 @@ describe('sixteen native identities without equipment', () => {
     expect(nativeIncomingMultiplier(state, state.enemies[0], state.allies[0], 'ultimate', [])).toBe(.5);
   });
 
-  it('Razor banks actual direct HP loss up to cap and spends before fixed noncritical revenge', () => {
+  it('Razor banks all actual direct HP loss and spends every Wound as fixed noncritical revenge', () => {
     const state = encounter('razor');
     nativeDirectHpLoss(state, state.allies[0], 500, []);
-    expect(state.allies[0].native?.wounds).toBe(300);
+    expect(state.allies[0].native?.wounds).toBe(500);
     const small = use(state, 'razor', 'skill1');
-    expect(small.state.allies[0].native?.wounds).toBe(200);
-    expect(small.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(100);
+    expect(small.state.allies[0].native?.wounds).toBe(0);
+    expect(small.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(500);
     const large = use(state, 'razor', 'ultimate');
     expect(large.state.allies[0].native?.wounds).toBe(0);
-    expect(large.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(600);
+    expect(large.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(1000);
   });
 
   it('Razor defensive stance shields only actual phase HP loss, and has no automatic team protection', () => {
     let state = use(encounter('razor', 'ember'), 'razor', 'skill2').state;
     nativeDirectHpLoss(state, state.allies[0], 200, []);
     const phase = endTurn(state);
-    expect(phase.state.allies[0].shield).toBe(120);
+    expect(phase.state.allies[0].shield).toBeGreaterThanOrEqual(200);
     expect(phase.state.allies[1].shield).toBe(0);
   });
 
@@ -305,7 +304,7 @@ describe('sixteen native identities without equipment', () => {
     expect(state.allies[0].native?.survey?.points).toBe(1);
   });
 
-  it('Orvella has one finite shared Foundation, repairs without creation, and demolishes remaining budget', () => {
+  it('Orvella has one shared Foundation, repairs past its starting durability, and demolishes with all of it', () => {
     let state = encounter('orvella', 'ember');
     const bare = use(state, 'orvella', 'skill1');
     expect(bare.events.find(event => event.kind === 'damage')?.amount).toBe(damageAmount(100, 1.8 * nativeBalance.skillDamageScale, 0, false));
@@ -314,9 +313,9 @@ describe('sixteen native identities without equipment', () => {
     expect(remainder).toBe(80);
     expect(state.allies[0].native?.foundation?.durability).toBe(280);
     state = use(state, 'orvella', 'skill1').state;
-    expect(state.allies[0].native?.foundation?.durability).toBe(300);
+    expect(state.allies[0].native?.foundation?.durability).toBe(360);
     const demolition = use(state, 'orvella', 'ultimate');
-    expect(demolition.events.filter(event => event.nativeKind === 'demolition').map(event => event.amount)).toEqual([300, 300, 300]);
+    expect(demolition.events.filter(event => event.nativeKind === 'demolition').map(event => event.amount)).toEqual([360, 360, 360]);
     expect(demolition.state.allies[0].native?.foundation).toBeUndefined();
   });
 

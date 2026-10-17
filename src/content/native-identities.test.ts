@@ -49,15 +49,15 @@ describe('approved sixteen native identities', () => {
     expect(nativeIdentities.crinso.abilities.skill2.description).toContain(`${200 * scale}% direct damage`);
     expect(nativeIdentities.crinso.abilities.skill2.description).toContain(`increased by ${40 * scale}% (${240 * scale}% total)`);
     expect(nativeIdentities.crinso.abilities.ultimate.description).toContain(`${260 * scale}% direct damage`);
-    expect(nativeIdentities.crinso.abilities.ultimate.description).toContain(`${45 * scale}% per [Combo] (up to ${395 * scale}% at 3 [Combo])`);
+    expect(nativeIdentities.crinso.abilities.ultimate.description).toContain(`${45 * scale}% per [Combo]`);
     expect(nativeIdentities.crinso.abilities.ultimate.description).toContain('ignores 30% of the target’s Defense');
-    expect(nativeIdentities.rosetta.abilities.skill2.description).toContain(`${25 * scale}% for each other ally who hit it this player turn (up to ${250 * scale}%)`);
+    expect(nativeIdentities.rosetta.abilities.skill2.description).toContain(`${25 * scale}% for each other ally who hit it this player turn.`);
     expect(nativeIdentities.vaelor.abilities.ultimate.description).toContain(`${340 * scale}% on [Crescendo]`);
     expect(nativeIdentities.elise.abilities.skill2.description).toContain('90% of [Elise]’s Attack and cannot critically hit');
     expect(nativeIdentities.elise.abilities.skill2.description).toContain('one extra 60% strike');
     expect(nativeIdentities.elise.abilities.skill2.description).toContain(`${140 * scale}% direct damage`);
     expect(nativeIdentities.ember.abilities.skill1.description).toContain('[Burn] dealing 25% of [Infernis]’s Attack');
-    expect(nativeIdentities.atmoso.abilities.skill2.description).toContain('70% of [Atmoso]’s Attack plus 30% per [Gust] (up to 190%)');
+    expect(nativeIdentities.atmoso.abilities.skill2.description).toContain('70% of [Atmoso]’s Attack plus 30% per [Gust] and cannot critically hit');
     expect(nativeIdentities.thornia.abilities.ultimate.description).toContain('deal 90% of [Thornia]’s Attack and cannot critically hit');
   });
 

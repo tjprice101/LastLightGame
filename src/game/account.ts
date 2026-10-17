@@ -1,6 +1,6 @@
 import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, type ElementId } from '../content/activities';
 import { fractalisDrop, storyFractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from '../content/loot-random';
-import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, characterEvolutionRequirement, fractureRules, characterLevelCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
+import { characterGrowthFactor, evolutionLevelRequirement, characterEvolutionCost, characterEvolutionRequirement, fractureRules, characterLevelCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
 import { type InfusionModeId } from '../content/activities';
 import { getStarter, isStarterId, starters, type StarterId } from '../content/starters';
@@ -9,11 +9,11 @@ import { loadProfile, type ProfileStorage } from './profile';
 import { type BattleResult } from './battle';
 import { materialName } from '../content/dungeon-art';
 import { getCreature } from '../content/creatures';
-import { getConduit, isConduitId, validateConduitSlots, normalizeLegacyKitSlots, validateConduitElement, conduitSlotCount, validateConduitUpgrades, conduitUpgradeCost, conduitUpgradeCap, type ConduitId, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
+import { getConduit, isConduitId, validateConduitSlots, normalizeLegacyKitSlots, validateConduitElement, conduitSlotCount, conduitSlotsShown, validateConduitUpgrades, conduitUpgradeCost, type ConduitId, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
 import { machineComponentDrop } from '../content/mechanical-components';
 import { bannerConduitBonus, machineConduitLoot } from '../content/machines';
 import { isMasterConduitId, masterChest, validateMasterCharacter, type MasterConduitId, type MasterLoadouts } from '../content/master-conduits';
-import { validateCapturedCharacters, validateCharacterLocks, capturedProgress, capturedLevelCost, capturedLevelCap, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
+import { validateCapturedCharacters, validateCharacterLocks, capturedProgress, capturedLevelCost, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
 import { infusionEncounter, infusionLoot, infusionElements, creatureSaleOptions } from '../content/infusions';
 import { standardBanner, resolveBannerPull, validateBannerPity, type StandardBannerEntry, type BannerPity } from '../content/standard-banner';
 import { bannerDuplicateMaterials, type BannerMaterialReward } from '../content/banner-materials';
@@ -456,10 +456,13 @@ export function equipConduit(storage: ProfileStorage, character: string, slot: n
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before equipping Conduits.');
   const account = loadAccount(storage);
   if (!ownedCharacterInstances(account).includes(character)) throw new Error('Choose an owned character.');
-  if (!Number.isInteger(slot) || slot < 0 || slot >= conduitSlotCount) throw new Error('Choose an ordinary Conduit slot. The Master slot is reserved.');
+  const current = account.conduitEquipment?.[character] ?? Array<ConduitId | null>(conduitSlotCount).fill(null);
+  if (!Number.isInteger(slot) || slot < 0 || slot >= conduitSlotsShown(current)) throw new Error('Choose an ordinary Conduit slot. The Master slot is separate.');
   if (conduit !== null && (!isConduitId(conduit) || (account.conduits?.[conduit] ?? 0) < 1)) throw new Error('Choose an owned Conduit.');
-  const slots = [...(account.conduitEquipment?.[character] ?? Array<ConduitId | null>(conduitSlotCount).fill(null))];
+  const slots = [...current];
+  while (slots.length <= slot) slots.push(null);
   slots[slot] = conduit;
+  while (slots.length > conduitSlotCount && slots[slots.length - 1] === null) slots.pop();
   account.conduitEquipment = { ...account.conduitEquipment, [character]: validateConduitSlots(slots) };
   return saveAccount(storage, account);
 }
@@ -553,6 +556,8 @@ export function equipMasterConduit(storage: ProfileStorage, character: StarterId
   account.masterEquipment = { ...account.masterEquipment, [character]: id };
   return saveAccount(storage, account);
 }
+export const maxLevelBatch = 10000;
+
 export interface ConduitMaxLevelPlan {
   id: ConduitId;
   currentLevel: number;
@@ -567,9 +572,9 @@ export function conduitMaxLevelPlan(account: Account, id: ConduitId): ConduitMax
   const currentLevel = account.conduitUpgrades?.[id] ?? 0;
   let targetLevel = currentLevel;
   let cost = 0;
-  while (targetLevel < conduitUpgradeCap) {
+  // Plans at most this many upgrades per preview so huge balances stay responsive; it can be used again.
+  while (targetLevel - currentLevel < maxLevelBatch) {
     const nextCost = conduitUpgradeCost(conduit, targetLevel);
-    if (nextCost === null) throw new Error('Conduit upgrade cost is missing.');
     if (cost + nextCost > (account.mechanicalComponents ?? 0)) break;
     cost += nextCost;
     targetLevel++;
@@ -584,7 +589,7 @@ export function upgradeConduitToMaximum(storage: ProfileStorage, expected: Condu
   if (plan.currentLevel !== expected.currentLevel || plan.targetLevel !== expected.targetLevel || plan.cost !== expected.cost) {
     throw new Error('This Conduit Max Level preview changed. Review the current level and cost before retrying.');
   }
-  if (plan.targetLevel === plan.currentLevel) throw new Error('No additional Conduit upgrades are affordable within the current cap.');
+  if (plan.targetLevel === plan.currentLevel) throw new Error('No additional Conduit upgrades are affordable.');
   account.mechanicalComponents = (account.mechanicalComponents ?? 0) - plan.cost;
   account.conduitUpgrades = { ...account.conduitUpgrades, [plan.id]: plan.targetLevel };
   return saveAccount(storage, account);
@@ -598,7 +603,6 @@ export function upgradeConduit(storage: ProfileStorage, id: ConduitId, expectedL
   if ((account.conduits?.[id] ?? 0) < 1) throw new Error('Choose an owned Conduit to upgrade.');
   const level = account.conduitUpgrades?.[id] ?? 0;
   if (level !== expectedLevel) throw new Error('This Conduit upgrade level changed. Review the current level and cost before retrying.');
-  if (cost === null) throw new Error('This Conduit is already upgraded five times.');
   if ((account.mechanicalComponents ?? 0) < cost) throw new Error(`Not enough Broken Mechanical Components. This upgrade costs ${cost}.`);
   account.mechanicalComponents = (account.mechanicalComponents ?? 0) - cost;
   account.conduitUpgrades = { ...account.conduitUpgrades, [id]: level + 1 };
@@ -623,7 +627,7 @@ export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: '
   if (current.level !== expected.level || current.evolution !== expected.evolution || (current.weaponRank ?? 0) !== (expected.weaponRank ?? 0)) throw new Error('Character progress changed. Reopen this tab before upgrading.');
   const element = getStarter(id).elementId;
   const cost = kind === 'level' ? characterLevelCost(id, current) : characterEvolutionCost(id, current);
-  if (kind === 'evolve' && current.level !== characterLevelCap(current.evolution)) throw new Error('Reach this form level cap before evolving.');
+  if (kind === 'evolve' && current.level < evolutionLevelRequirement(current.evolution)) throw new Error(`Reach level ${evolutionLevelRequirement(current.evolution)} before evolving.`);
   const creatureCount = kind === 'evolve' ? characterEvolutionRequirement(id, current.evolution).creatureCount : 0;
   if (fodderIds.length !== creatureCount || new Set(fodderIds).size !== fodderIds.length) {
     throw new Error(`Select exactly ${creatureCount} distinct captured Elemental-Devourers for this upgrade.`);
@@ -872,7 +876,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
       const creature = getCreature(reward.capture.creatureId);
       const stage = result.state.infusion?.stage;
       if (!creature.mode || creature.mode === 'machines' || !stage || creature.mode !== result.state.infusion?.mode ||
-          enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== Math.min(capturedLevelCap, enemy.level) ||
+          enemy.hp > 0 || enemy.creatureId !== creature.id || !creature.stages.includes(stage) || reward.capture.level !== enemy.level ||
           enemy.level !== infusionEncounter(creature.mode, stage, result.state.infusion?.schedule ?? 'legacy').level ||
           (creature.mode === 'roses' && enemy.level > roseCaptureMaximumLevel)) {
         throw new Error('Invalid captured enemy reward.');
@@ -993,7 +997,6 @@ export interface MaxLevelPlan {
   id: string;
   currentLevel: number;
   targetLevel: number;
-  cap: number;
   cost: UpgradeCost;
   progressKey: string;
 }
@@ -1004,10 +1007,10 @@ export function maxLevelPlan(account: Account, id: string): MaxLevelPlan {
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
   const current = starter ? ownedProgress(account, starter.id) : copy ? capturedProgress(copy) : null;
   if (!current) throw new Error('Character progress is missing.');
-  const cap = starter ? characterLevelCap(ownedProgress(account, starter.id).evolution) : capturedLevelCap;
   const cost: UpgradeCost = { fractalis: 0, materials: {} };
   let targetLevel = current.level;
-  while (targetLevel < cap) {
+  // Plans at most this many levels per preview so huge balances stay responsive; it can be used again.
+  while (targetLevel - current.level < maxLevelBatch) {
     const nextCost = starter
       ? characterLevelCost(starter.id, { ...ownedProgress(account, starter.id), level: targetLevel })
       : copy ? capturedLevelCost({ ...copy, level: targetLevel }) : null;
@@ -1021,7 +1024,7 @@ export function maxLevelPlan(account: Account, id: string): MaxLevelPlan {
     }
     targetLevel++;
   }
-  return { id, currentLevel: current.level, targetLevel, cap, cost,
+  return { id, currentLevel: current.level, targetLevel, cost,
     progressKey: JSON.stringify([starter ? ownedProgress(account, starter.id) : copy, account.conduitEquipment?.[id], account.conduitUpgrades]) };
 }
 
@@ -1030,7 +1033,7 @@ export function levelCharacterToMaximum(storage: ProfileStorage, expected: MaxLe
   const account = loadAccount(storage);
   const plan = maxLevelPlan(account, expected.id);
   if (JSON.stringify(plan) !== JSON.stringify(expected)) throw new Error('Progress or available resources changed. Reopen Max Level.');
-  if (plan.targetLevel === plan.currentLevel) throw new Error('No additional levels are affordable within the current cap.');
+  if (plan.targetLevel === plan.currentLevel) throw new Error('No additional levels are affordable.');
   account.fractalis -= plan.cost.fractalis;
   for (const [material, amount] of Object.entries(plan.cost.materials)) account.materials[material] -= amount;
   if (isStarterId(plan.id)) {

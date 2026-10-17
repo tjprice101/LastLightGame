@@ -61,9 +61,9 @@ describe('native and equipment compatibility', () => {
 
     conduitIncoming(state, state.enemies[0], target, 1_000, true, false, events);
 
-    expect(target.hp).toBe(700);
+    expect(target.hp).toBe(778);
     expect(target.shield).toBe(0);
-    expect(events.find(event => event.kind === 'damage')?.amount).toBe(300);
+    expect(events.find(event => event.kind === 'damage')?.amount).toBe(222);
   });
 
   it('does not heal or shield a dead native recipient', () => {

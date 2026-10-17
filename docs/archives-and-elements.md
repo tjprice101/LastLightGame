@@ -39,7 +39,7 @@ at320px; only the intentional dialog contains scrolling.
 
 Every Conduit row has **View Details**. It opens that Conduit's shared reference
 inside a second native dialog: artwork/rarity, saved-upgrade current effect,
-maximum +5 effect, lore, power and acquisition/banner eligibility.
++5 reference effect (upgrades continue past +5 under D-334), lore, power and acquisition/banner eligibility.
 The Conduit Archive uses the same content, retaining unowned-art silhouettes.
 Details close/Escape returns focus to its loot button without closing the loot
 dialog, resetting the selected stage or losing the list's scroll. Closing loot

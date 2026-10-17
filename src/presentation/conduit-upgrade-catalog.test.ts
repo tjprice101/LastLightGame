@@ -65,11 +65,9 @@ describe('owned Conduit upgrade catalog', () => {
     f.change('[data-upgrade-search]', '', 'input');
     f.change('[data-upgrade-rarity]', '');
     expect(f.ids()).toEqual(['vigil-core']);
-    f.change('[data-upgrade-status]', 'maximum');
-    expect(f.ids()).toEqual(['siegebound-drive']);
-    f.change('[data-upgrade-status]', 'unfinished');
-    expect(new Set(f.ids())).toEqual(new Set(['vigil-core', 'worldbreaker-drive']));
+    expect(f.ids()).toEqual(['vigil-core']);
     f.change('[data-upgrade-status]', '');
+    expect(new Set(f.ids())).toEqual(new Set(['vigil-core', 'siegebound-drive', 'worldbreaker-drive']));
     f.change('[data-upgrade-sort]', 'level');
     expect(f.ids()).toEqual(['siegebound-drive', 'worldbreaker-drive', 'vigil-core']);
     f.change('[data-upgrade-sort]', 'rarity');
@@ -133,7 +131,7 @@ describe('owned Conduit upgrade catalog', () => {
     expect(f.host.querySelector('[role="alert"]')!.textContent).toContain('Resolve the save error');
   });
 
-  it('keeps resource navigation and restores upgrade-action focus, using status at the real cap', () => {
+  it('keeps resource navigation and restores upgrade-action focus beyond +5', () => {
     const f = fixture({ ...emptyAccount(), mechanicalComponents: 1000, conduits: { 'vigil-core': 1 } });
     const resources = f.host.querySelector('.ref-upgrade-resources');
     const earn = f.host.querySelector('[data-machine-activity]');
@@ -145,9 +143,10 @@ describe('owned Conduit upgrade catalog', () => {
     expect(f.host.querySelectorAll('.ref-effect-progression article')).toHaveLength(6);
     expect(f.host.querySelector('[aria-current="step"]')!.textContent).toContain('+4');
     updateConduitUpgradeMenu(f.host, { ...f.account, conduitUpgrades: { 'vigil-core': 5 } });
-    expect(document.activeElement).toBe(f.host.querySelector('#conduit-upgrade-result'));
-    expect(f.host.querySelector<HTMLButtonElement>('[data-upgrade-conduit]')!.disabled).toBe(true);
-    expect(f.host.querySelector('meter')).toBeNull();
+    expect(document.activeElement).toBe(f.host.querySelector<HTMLButtonElement>('[data-upgrade-conduit]'));
+    expect(f.host.querySelector<HTMLButtonElement>('[data-upgrade-conduit]')!.disabled).toBe(false);
+    expect(f.host.querySelector<HTMLButtonElement>('[data-upgrade-conduit]')!.textContent).toContain('Upgrade to +6');
+    expect(f.host.querySelector('meter')?.getAttribute('max')).toBe('350');
     expect(f.host.textContent).not.toContain('Prismatica required');
   });
 
@@ -190,7 +189,7 @@ describe('owned Conduit upgrade catalog', () => {
     const chip = f.host.querySelector<HTMLButtonElement>('[data-upgrade-rarity-chip="Common"]')!;
     const status = f.host.querySelector<HTMLButtonElement>('[data-upgrade-status-chip="available"]')!;
     expect(f.host.querySelectorAll('[data-upgrade-rarity-chip]')).toHaveLength(6);
-    expect(f.host.querySelectorAll('[data-upgrade-status-chip]')).toHaveLength(4);
+    expect(f.host.querySelectorAll('[data-upgrade-status-chip]')).toHaveLength(2);
     chip.focus();
     chip.click();
     status.click();

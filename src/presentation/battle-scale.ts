@@ -1,5 +1,5 @@
 import { type BattleState, type Combatant } from '../game/battle';
-import { characterLevelCap } from '../content/progression';
+import { validateEvolution } from '../content/progression';
 import { isStarterId } from '../content/starters';
 import { enemies } from '../content/combat';
 import { getCreature } from '../content/creatures';
@@ -80,7 +80,7 @@ export function battleArtScale(_state: BattleState, unit: Combatant): number {
   if (isStarterId(unit.definitionId) && !unit.captured &&
       (unit.side === 'ally' || unit.evolution !== undefined)) {
     const evolution = unit.evolution ?? 1;
-    characterLevelCap(evolution);
+    validateEvolution(evolution);
     return characterScales[evolution - 1];
   }
   const art = unit.definitionId.startsWith('calamity:') ? getCreature(unit.definitionId).art

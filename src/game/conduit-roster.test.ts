@@ -68,7 +68,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
     }
     case 'parallax-relay':
       expect(context().criticalBonus).toBeCloseTo(n(.15, .3));
-      expect(context().criticalBonus).toBe(0);
+      expect(context().criticalBonus).toBeCloseTo(n(.15, .3));
       break;
     case 'fracture-reservoir':
       expect(owner.shatter).toBeCloseTo(100 + n(5, 10));
@@ -88,7 +88,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       ally.hp = 500; hit();
       expect(ally.hp).toBe(500 + Math.round(1000 * n(.05, .1)));
       hit();
-      expect(ally.hp).toBe(500 + Math.round(1000 * n(.05, .1)));
+      expect(ally.hp).toBe(500 + 2 * Math.round(1000 * n(.05, .1)));
       break;
     case 'spearwheel-engine':
       expect(conduitHitModifiers(state, owner, target, context('skill1'), false).pierce).toBeCloseTo(n(.15, .3));
@@ -101,7 +101,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       owner.shatter = 0; shield(); hit(10);
       expect(owner.shatter).toBeCloseTo(10 + n(4, 8));
       hit(10);
-      expect(owner.shatter).toBeCloseTo(20 + n(4, 8));
+      expect(owner.shatter).toBeCloseTo(20 + 2 * n(4, 8));
       break;
     case 'springwell-pump':
       owner.hp = 100;
@@ -109,9 +109,9 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(owner.hp).toBeCloseTo(200 + 100 * n(.2, .4));
       break;
     case 'twinpulse-bellows':
-      expect(context().bonus).toBe(0);
       expect(context().bonus).toBeCloseTo(n(.25, .5));
-      expect(context().bonus).toBe(0);
+      expect(context().bonus).toBeCloseTo(n(.25, .5));
+      expect(context().bonus).toBeCloseTo(n(.25, .5));
       break;
     case 'glassroot-gimbal':
       owner.hp = 250;
@@ -174,7 +174,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       state.round++;
       conduitTurnStart(state, events);
       expect(owner.shield).toBe(Math.round(1000 * n(.1, .2)));
-      expect(gear(owner).numbers.stasisSkip === state.round).toBe(enabled);
+      expect(gear(owner).numbers.stasisShieldRound === state.round).toBe(enabled);
       break;
     case 'granite-hourglass':
       hit(); state.round++;
@@ -213,7 +213,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(owner.hp).toBe(Math.round(1000 * n(.25, .5)));
       if (enabled) expect(owner.shatter).toBe(0);
       hit(2000);
-      expect(owner.hp).toBe(0);
+      expect(owner.hp).toBe(Math.round(1000 * n(.25, .5)));
       break;
     case 'aquatic-leviathan-pump':
       state.allies.forEach(unit => { unit.hp = 500; });
@@ -230,8 +230,9 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       break;
     case 'efflorescent-worldtree-heart': {
       nativeHeal(state, owner, ally, 100, events, true, context('skill2'));
+      nativeHeal(state, owner, ally, 100, events, true, context('skill2'));
       ally.hp = 500; state.round++; conduitTurnStart(state, events);
-      expect(ally.hp).toBe(500 + Math.round(100 * n(.5, 1)));
+      expect(ally.hp).toBe(500 + Math.round(200 * n(.5, 1)));
       break;
     }
     case 'voltaic-thunderbird-coil':
@@ -273,7 +274,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       applyConduitWeaken(state, owner, target, .2, events, 'skill1');
       expect(gear(target).numbers.scheduleShift ?? 0).toBe(s(1, 2));
       applyConduitWeaken(state, owner, target, .2, events, 'skill1');
-      expect(gear(target).numbers.scheduleShift ?? 0).toBe(s(1, 2));
+      expect(gear(target).numbers.scheduleShift ?? 0).toBe(2 * s(1, 2));
       break;
     case 'tectonic-faultkeeper-loom':
       owner.defending = true;
@@ -386,8 +387,9 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
     }
     case 'sootwake-crucible':
       burn(); afterConduitBurn(state, owner, target, 100, events);
+      afterConduitBurn(state, owner, target, 100, events);
       expect(conduitHitModifiers(state, ally, target, prepareConduitAction(state, ally, 'light', 0, false), false).bonus)
-        .toBeCloseTo(n(.2, .4));
+        .toBeCloseTo(2 * n(.2, .4));
       expect(conduitHitModifiers(state, ally, target, prepareConduitAction(state, ally, 'light', 0, false), false).bonus).toBe(0);
       break;
     case 'tidebound-reflector':
@@ -404,13 +406,13 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       owner.hp = 100; const ctx = context('skill2', 0);
       nativeHeal(state, owner, owner, 10, events, true, ctx);
       finishConduitAction(state, owner, ctx, events);
-      expect(owner.hp).toBe(enabled ? Math.min(1000 * n(.2, .4), 110 + 1000 * n(.1, .2)) : 110);
+      expect(owner.hp).toBe(enabled ? Math.round(1000 * n(.2, .4)) : 110);
       expect(owner.shatter).toBe(enabled ? 85 : 100);
       break;
     }
     case 'solace-anchor':
       expect(context('defend', 0, false, 10).freeDefense).toBe(enabled);
-      expect(context('defend', 0, false, 10).freeDefense).toBe(false);
+      expect(context('defend', 0, false, 10).freeDefense).toBe(enabled);
       break;
     case 'ruinselect-prism':
       target.conduitMarks = { [owner.id]: 3, [ally.id]: 2 };
@@ -424,13 +426,13 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
     case 'oceanic-shared-tide-pump':
       for (const unit of state.allies) shield(unit);
       hit();
-      expect(owner.shield).toBeCloseTo(100 * n(.3, .6));
-      expect(ally.shield).toBeCloseTo(100 - 100 * n(.3, .6));
+      expect(owner.shield).toBe(enabled ? 100 : 0);
+      expect(ally.shield).toBe(enabled ? 0 : 100);
       break;
     case 'atmospheric-storm-clock':
       finish('skill1', true); finish('skill1', true); finish('skill1', true);
-      expect(conduitActionCost(owner, 'ultimate', state, 100)).toBeCloseTo(100 - n(15, 30));
-      prepareConduitAction(state, owner, 'ultimate', 100 - n(15, 30), false);
+      expect(conduitActionCost(owner, 'ultimate', state, 100)).toBeCloseTo(Math.max(1, 100 - 3 * n(15, 30)));
+      prepareConduitAction(state, owner, 'ultimate', Math.max(1, 100 - 3 * n(15, 30)), false);
       expect(conduitActionCost(owner, 'ultimate', state, 100)).toBe(100);
       break;
     case 'botanic-graft-covenant': {
@@ -500,7 +502,7 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       shield(); conduitIncoming(state, target, ally, 200, false, false, events);
       expect(ally.hp).toBe(enabled ? 1000 : 900);
       shield(); conduitIncoming(state, target, ally, 200, false, false, events);
-      expect(ally.hp).toBe(enabled ? 900 : 800);
+      expect(ally.hp).toBe(enabled ? 1000 : 800);
       break;
     case 'master-tide-2': {
       ally.hp = 1;
@@ -518,7 +520,7 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       finish('skill1');
       expect(ally.hp).toBe(enabled ? 520 : 500);
       finish('skill1');
-      expect(ally.hp).toBe(enabled ? 520 : 500);
+      expect(ally.hp).toBe(enabled ? 540 : 500);
       break;
     case 'master-sprout-2':
       finish('skill1');
@@ -532,7 +534,8 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       expect(ally.hp).toBe(enabled ? 300 : 0);
       if (enabled) {
         expect(ally.shatter).toBe(0);
-        expect(actionUnavailable(state, ally, 'light')).not.toBeNull();
+        expect(ally.spent).toBe(false);
+        expect(actionUnavailable(state, ally, 'light')).toBeNull();
       }
       break;
     case 'master-atmoso-1': {
@@ -585,9 +588,9 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       break;
     case 'master-bruno-1':
       conduitIncoming(state, target, owner, 500, false, false, events);
-      expect(owner.hp).toBe(enabled ? 800 : 500);
+      expect(owner.hp).toBe(enabled ? 600 : 500);
       conduitIncoming(state, target, owner, 500, false, false, events);
-      expect(owner.hp).toBe(enabled ? 300 : 0);
+      expect(owner.hp).toBe(enabled ? 200 : 0);
       break;
     case 'master-bruno-2':
       owner.stats.damage = 200;
@@ -599,7 +602,7 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       expect(effectiveDefense(state, target)).toBe(enabled ? 85 : 100);
       expect(target.weakened).toBe(enabled ? 0 : 2);
       weaken(); weaken();
-      expect(effectiveDefense(state, target)).toBe(enabled ? 70 : 100);
+      expect(effectiveDefense(state, target)).toBe(enabled ? 55 : 100);
       break;
     case 'master-disciple-1': {
       const result = attack('skill2');
@@ -633,7 +636,7 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       target.hp = 0; owner.spent = true; finish('skill1');
       expect(owner.spent).toBe(!enabled);
       owner.spent = true; finish('skill1');
-      expect(owner.spent).toBe(true);
+      expect(owner.spent).toBe(!enabled);
       break;
     case 'master-razor-1':
       owner.defending = true;
@@ -648,7 +651,7 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       break;
     case 'master-razor-3':
       weaken(); expect(conduitSuppressSkill(target)).toBe(enabled);
-      weaken(); expect(conduitSuppressSkill(target)).toBe(false);
+      weaken(); expect(conduitSuppressSkill(target)).toBe(enabled);
       break;
     case 'master-rosetta-1': {
       ally.hp = 300;
@@ -661,7 +664,7 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       break;
     }
     case 'master-rosetta-2': {
-      owner.native = { quarry: { target: target.id, round: state.round, contributors: [owner.id, ally.id, state.allies[2].id] } };
+      owner.native = { quarry: { target: target.id, round: state.round, contributors: [owner.id] } };
       const ctx = context('skill2');
       finishConduitAction(state, owner, ctx, events);
       expect(state.enemies.slice(1).map(enemy => enemy.hp)).toEqual(enabled ? [975, 975] : [1000, 1000]);
@@ -670,8 +673,14 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
     case 'master-rosetta-3':
       owner.native = { quarry: { target: target.id, round: state.round, contributors: [] } };
       finish('ultimate');
-      expect(conduitHitModifiers(state, ally, target, prepareConduitAction(state, ally, 'light', 0, false), false).bonus)
-        .toBe(enabled ? .4 : 0);
+      if (enabled) finish('ultimate');
+      const firstOpening = conduitHitModifiers(state, ally, target, prepareConduitAction(state, ally, 'light', 0, false), false);
+      expect(firstOpening.bonus).toBe(enabled ? .4 : 0);
+      if (enabled) {
+        const secondOpening = conduitHitModifiers(state, ally, target, prepareConduitAction(state, ally, 'light', 0, false), false);
+        expect(secondOpening.bonus).toBe(.4);
+        expect(conduitHitModifiers(state, ally, target, prepareConduitAction(state, ally, 'light', 0, false), false).bonus).toBe(0);
+      }
       expect(target.weakened).toBe(0);
       break;
     case 'master-thornia-1':
@@ -726,7 +735,7 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
     case 'master-nerithe-2': {
       const result = attack('skill2');
       expect(result.events.some(event => event.kind === 'damage')).toBe(!enabled);
-      expect(result.state.allies.every(unit => unit.omnicProtection === .15)).toBe(enabled);
+      expect(result.state.allies.every(unit => Math.abs((unit.omnicProtection ?? 0) - .15) < 1e-9)).toBe(enabled);
       break;
     }
     case 'master-nerithe-3': {
@@ -745,8 +754,8 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       owner.native = { foundation: { durability: 200, maximum: 300, throughPhase: 3 } };
       state.allies.forEach(unit => { unit.hp = 500; });
       finish('skill2');
-      expect(owner.native.foundation?.durability).toBe(enabled ? 152 : 200);
-      expect(state.allies.map(unit => unit.hp)).toEqual(enabled ? [516, 516, 516] : [500, 500, 500]);
+      expect(owner.native.foundation?.durability).toBe(enabled ? 2 : 200);
+      expect(state.allies.map(unit => unit.hp)).toEqual(enabled ? [566, 566, 566] : [500, 500, 500]);
       break;
     case 'master-orvella-3':
       state.allies.forEach(unit => { unit.shield = 1; });
@@ -772,7 +781,7 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       ally.spent = true; finish('defend');
       expect(ally.spent).toBe(!enabled);
       ally.spent = true; finish('defend');
-      expect(ally.spent).toBe(true);
+      expect(ally.spent).toBe(!enabled);
       break;
     default:
       throw new Error(`Missing executable Master scenario: ${id}`);
@@ -780,6 +789,6 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
 }
 
 describe('every fixed Master replacement', () => {
-  it.each(masterConduits)('$id executes its unique native transformation or bounded effect', entry => exerciseMaster(entry.id, true));
+  it.each(masterConduits)('$id executes its unique native transformation or effect', entry => exerciseMaster(entry.id, true));
   it.each(masterConduits)('$id cannot run without that matching Master', entry => exerciseMaster(entry.id, false));
 });

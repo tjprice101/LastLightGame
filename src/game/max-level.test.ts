@@ -24,6 +24,7 @@ function funded(): Account {
   account.lycalis = 100;
   account.materials = { 'heavens-level': 1000, ...Object.fromEntries(
     ['infernic', 'tranquilitic'].flatMap(element => materialRarities.map(rarity => [`${element}-${rarity.toLowerCase()}`, 1000]))) };
+  account.materials['infernic-common'] = 30;
   account.squad = ['ember'];
   account.receipts = ['keep-this-receipt'];
   return account;
@@ -36,10 +37,10 @@ describe('Max Level plans and transactions', () => {
     const before = structuredClone(account);
     const writes = store.writes();
     const plan = maxLevelPlan(account, 'ember');
-    expect(plan).toMatchObject({ currentLevel: 0, targetLevel: 30, cap: 30, cost: { fractalis: 1230, materials: { 'infernic-common': 30 } } });
+    expect(plan).toMatchObject({ currentLevel: 0, targetLevel: 30, cost: { fractalis: 1230, materials: { 'infernic-common': 30 } } });
     expect(account).toEqual(before);
     expect(store.writes()).toBe(writes);
-    expect(maxLevelPreview(account, 'ember').html).toContain('Level 0 &rarr; 30 · Cap 30');
+    expect(maxLevelPreview(account, 'ember').html).toContain('Level 0 &rarr; 30');
     expect(maxLevelPreview(account, 'ember').html.match(/<span><small>/g)).toHaveLength(7);
     expect(maxLevelPreview(account, 'ember').html).toContain('stat-change--increase');
   });
@@ -62,7 +63,7 @@ describe('Max Level plans and transactions', () => {
     const plan = maxLevelPlan(account, 'ember');
     expect(plan).toMatchObject({ targetLevel: 77, cost: { fractalis: 326, materials: { 'infernic-common': 6, 'heavens-level': 2 } } });
     account.characters.ember = { level: 104, evolution: 6 };
-    expect(maxLevelPlan(account, 'ember').targetLevel).toBe(105);
+    expect(maxLevelPlan(account, 'ember').targetLevel).toBe(106);
   });
   it('commits the entire starter upgrade in exactly one write and preserves unrelated data', () => {
     const store = storage();
@@ -74,10 +75,10 @@ describe('Max Level plans and transactions', () => {
     expect(loadAccount(store.saved)).toEqual(after);
     expect(after.characters.ember).toEqual({ level: 30, evolution: 1, weaponRank: 3 });
     expect(after.fractalis).toBe(before.fractalis - 1230);
-    expect(after.materials['infernic-common']).toBe(970);
+    expect(after.materials['infernic-common']).toBe(0);
     for (const key of ['lycalis', 'squad', 'receipts', 'firstFracture'] as const) expect(after[key]).toEqual(before[key]);
   });
-  it('levels exact captured IDs to 60 retaining form, locks, gear and kit', () => {
+  it('levels exact captured IDs as far as affordable retaining form, locks, gear and kit', () => {
     const store = storage();
     const account = funded();
     const id = 'capture:00000000-0000-4000-8000-000000000001';
@@ -91,18 +92,17 @@ describe('Max Level plans and transactions', () => {
     const plan = maxLevelPlan(before, id);
     let expectedCurrency = 0;
     const expectedMaterials: Record<string, number> = {};
-    for (let level = progress.level; level < 60; level++) {
+    expect(plan.targetLevel).toBeGreaterThan(60);
+    for (let level = progress.level; level < plan.targetLevel; level++) {
       const cost = capturedLevelCost({ ...original, level });
       expectedCurrency += cost.fractalis;
       for (const [id, amount] of Object.entries(cost.materials)) expectedMaterials[id] = (expectedMaterials[id] ?? 0) + amount;
     }
-    expect(plan.cap).toBe(60);
-    expect(plan.targetLevel).toBe(60);
     expect(plan.cost).toEqual({ fractalis: expectedCurrency, materials: expectedMaterials });
     const writes = store.writes();
     const after = levelCharacterToMaximum(store.saved, plan);
     expect(store.writes()).toBe(writes + 1);
-    expect(after.capturedCharacters?.[0]).toMatchObject({ ...original, level: 60, capturedStage: progress.stage, skills: progress.skills });
+    expect(after.capturedCharacters?.[0]).toMatchObject({ ...original, level: plan.targetLevel, capturedStage: progress.stage, skills: progress.skills });
     expect(after.capturedCharacters?.[1]).toEqual(before.capturedCharacters?.[1]);
     expect(after.conduitEquipment).toEqual(before.conduitEquipment);
     expect(after.squad).toEqual(before.squad);
@@ -125,10 +125,11 @@ describe('Max Level plans and transactions', () => {
     expect(store.writes()).toBe(writes);
     expect(store.saved.getItem(ACCOUNT_KEY)).toBe(raw);
   });
-  it('rejects capped, unaffordable and unowned requests', () => {
+  it('rejects unaffordable and unowned requests', () => {
     const store = storage();
     const account = funded();
     account.characters.ember!.level = 30;
+    account.materials['infernic-common'] = 0;
     saveAccount(store.saved, account);
     const plan = maxLevelPlan(account, 'ember');
     expect(plan.targetLevel).toBe(30);

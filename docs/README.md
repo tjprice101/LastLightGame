@@ -151,7 +151,11 @@ highest affordable level through+5 in one confirmed transaction. Existing
 rarity costs, ownership, effects and active run snapshots are preserved.
 [Rules and validation](conduit-upgrades.md#max-level-d-306).
 
-**Captured level cap (D-305):** captured Elemental-Devourers cannot exceed60.
+**Uncapped progression (D-334):** levels, Conduit upgrades, ordinary slots,
+Omnic counts, kit stacks and Conduit trigger frequency have no maximum;
+supersedes the D-305 captured ceiling below. [Handoff](handoff.md).
+
+**Captured level cap (D-305, superseded by D-334):** captured Elemental-Devourers cannot exceed60.
 Higher-level captures and historical saved copies reduce to60, retaining form,
 skills and ownership. Enemy levels/eligibility and Element-Bearer progression
 stay unchanged. [Compatibility and tests](character-instances.md#level-60-ceiling-d-305).

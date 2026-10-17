@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, ownedProgress, saveAccount, saveAccountRewards, unlockedStage, upgradeCharacter, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { act, createDungeonBattle, endTurn } from './battle';
-import { characterLevelCap, evolutionCost, levelCost } from '../content/progression';
+import { evolutionLevelRequirement, evolutionCost, levelCost } from '../content/progression';
 import { playableDungeons } from '../content/dungeons';
 
 function storage(): ProfileStorage {
@@ -24,15 +24,15 @@ function funded(saved: ProfileStorage) {
 }
 
 describe('persistent progression transactions', () => {
-  it.each([1, 2, 3, 4, 5])('requires the exact current level cap before evolution %i advances', (evolution) => {
+  it.each([1, 2, 3, 4, 5])('requires the evolution level before evolution %i advances', (evolution) => {
     const saved = storage();
     const account = funded(saved);
-    const cap = characterLevelCap(evolution);
+    const cap = evolutionLevelRequirement(evolution);
     account.characters.ember = { level: cap - 1, evolution };
     saveAccount(saved, account);
     const before = saved.getItem(ACCOUNT_KEY);
     const fodder = evolution >= 3 ? account.capturedCharacters!.slice(0, evolution - 2).map((copy) => copy.instanceId) : [];
-    expect(() => upgradeCharacter(saved, 'ember', 'evolve', account.characters.ember!, fodder)).toThrow('cap');
+    expect(() => upgradeCharacter(saved, 'ember', 'evolve', account.characters.ember!, fodder)).toThrow('Reach level');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     account.characters.ember.level = cap;
     saveAccount(saved, account);
@@ -135,7 +135,6 @@ describe('persistent progression transactions', () => {
       account = upgradeCharacter(saved, 'ember', 'level', current);
       if ([30, 45, 60, 75, 90].includes(level)) {
         const before = ownedProgress(account, 'ember');
-        expect(() => upgradeCharacter(saved, 'ember', 'level', before)).toThrow('cap');
         const recipe = evolutionCost('infernic', before);
         totalCost += recipe.fractalis;
         for (const [id, amount] of Object.entries(recipe.materials)) spent[id] = (spent[id] ?? 0) + amount;
@@ -152,7 +151,7 @@ describe('persistent progression transactions', () => {
     expect(account.capturedCharacters).toHaveLength(0);
     for (const [id, amount] of Object.entries(spent)) expect(account.materials[id]).toBe(1000 - amount);
     expect(() => upgradeCharacter(saved, 'ember', 'evolve', { level: 105, evolution: 6 })).toThrow('final');
-    expect(() => upgradeCharacter(saved, 'ember', 'level', { level: 105, evolution: 6 })).toThrow('cap');
+    expect(upgradeCharacter(saved, 'ember', 'level', { level: 105, evolution: 6 }).characters.ember).toEqual({ level: 106, evolution: 6 });
   });
   it('rejects missing resources and early evolution without touching the save', () => {
     const saved = storage();
@@ -160,7 +159,7 @@ describe('persistent progression transactions', () => {
     expect(() => upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 })).toThrow('Prismatica');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     const account = funded(saved);
-    expect(() => upgradeCharacter(saved, 'ember', 'evolve', { level: 0, evolution: 1 })).toThrow('cap');
+    expect(() => upgradeCharacter(saved, 'ember', 'evolve', { level: 0, evolution: 1 })).toThrow('Reach level');
     account.materials['infernic-common'] = 0;
     saveAccount(saved, account);
     const raw = saved.getItem(ACCOUNT_KEY);
@@ -186,7 +185,7 @@ describe('persistent progression transactions', () => {
     for (const account of [
       { ...emptyAccount(), materials: { 'unknown-common': 1 } },
       { ...emptyAccount(), materials: { 'infernic-common': -1 } },
-      { ...emptyAccount(), characters: { ember: { level: 31, evolution: 1 } } },
+      { ...emptyAccount(), characters: { ember: { level: -1, evolution: 1 } } },
       { ...emptyAccount(), dungeonStages: { infernic: 51 } },
       { ...emptyAccount(), fractalis: Number.MAX_SAFE_INTEGER + 1 },
     ]) expect(() => saveAccount(saved, account)).toThrow();

@@ -32,7 +32,7 @@ describe('delivered shared elemental status icons', () => {
       const readout = unitReadout(unit, true, state.allies, state.round, state);
       expect(readout).not.toContain(`data-status-art="${art}"`);
       expect(readout).not.toContain('unit-kit-resource');
-      if (id === 'crinso') expect(readout).toContain('Combo: 0 / 3');
+      if (id === 'crinso') expect(readout).toContain('Combo: 0');
       unit.hp = 0;
       expect(unitReadout(unit, true)).not.toContain('status-icon');
     }

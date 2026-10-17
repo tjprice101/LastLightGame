@@ -108,7 +108,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     expect(account.lycalis).toBe(25);
     expect(account.fractalis).toBeGreaterThanOrEqual(15);
     expect(account.materials).toEqual({});
-    expect(account.capturedCharacters?.[0].level).toBe(60);
+    expect(account.capturedCharacters?.[0].level).toBe(120);
     expect(account.capturedCharacters?.[0].skills).toEqual(result.state.enemies[0].enemySkills);
     expect(account.infusionStages.sanctuary).toBe(25);
     expect(loadAccount(saved)).toEqual(account);
@@ -144,15 +144,15 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     saveAccount(saved, account);
     expect(evolutionFodderOptions(account, 'tranquilitic', 3).every((entry) => !entry.eligible)).toBe(true);
     const raw = saved.getItem(ACCOUNT_KEY);
-    expect(() => levelCapturedCharacter(saved, copy.instanceId, 60)).toThrow('Maximum');
+    expect(() => levelCapturedCharacter(saved, copy.instanceId, capturedProgress(copy).level - 1)).toThrow('changed');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     const upgraded = loadAccount(saved);
-    expect(upgraded.capturedCharacters?.[0].level).toBe(60);
-    expect(upgraded.capturedCharacters?.[1].level).toBe(60);
+    expect(upgraded.capturedCharacters?.[0].level).toBe(capturedProgress(copy).level);
+    expect(upgraded.capturedCharacters?.[1].level).toBe(capturedProgress(other).level);
     expect(creatureSaleOffer(upgraded, copy.instanceId)).toMatchObject(sanctuarySalePrices[0]);
     expect(() => validateCapturedCharacters([{ ...copy, level: 59 }])).toThrow();
     expect(() => validateCapturedCharacters([{ ...copy, acquisition: 'banner-duplicate' }])).toThrow();
-    expect(resolveCapturedFighter(copy).stats.health).toBeCloseTo(capturedEnemyStats(60).health * .65);
+    expect(resolveCapturedFighter(copy).stats.health).toBeCloseTo(capturedEnemyStats(capturedProgress(copy).level).health * .65);
     for (const ids of [[copy.instanceId, other.instanceId], ['ember', copy.instanceId]]) {
       const state = createInfusionBattle('sanctuary', 24, 1, 'ember', { level: 0, evolution: 1 }, ids,
         { ember: { level: 0, evolution: 1 } }, {}, [copy, other]);

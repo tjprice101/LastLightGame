@@ -26,12 +26,10 @@ export function prepareCalamiticAction(state: BattleState, owner: Combatant, act
   if (n.calamiticThroneArmed === state.round && action !== 'defend') {
     delete n.calamiticThroneArmed;
     n.calamiticThroneSkip = state.round + 1;
-    n.calamiticThroneReady = state.round + 3;
     n.calamiticThroneGrant = state.round;
     return false;
   }
-  if (action === 'defend' && (n.calamiticThroneReady ?? 0) <= state.round && n.calamiticThroneDefended !== state.round) {
-    n.calamiticThroneDefended = state.round;
+  if (action === 'defend') {
     n.calamiticThroneArmed = state.round;
     return true;
   }
@@ -62,7 +60,7 @@ export function afterCalamiticAction(state: BattleState, owner: Combatant, actio
     const mask = previous & bit ? bit : previous | bit;
     const count = mask.toString(2).replace(/0/g, '').length;
     n.calamiticEquation = count === 3 ? 0 : mask;
-    status(owner, count, `${owner.name}'s Final Equation: ${count} / 3 different actions${count === 3 ? ' — discharge' : ''}.`, events);
+    status(owner, count, `${owner.name}'s Final Equation: ${count} / 3 different actions${count === 3 ? '  Edischarge' : ''}.`, events);
     if (count === 3) {
       const targets = state.enemies.filter(enemy => enemy.hp > 0);
       const offer = owner.stats.damage * power(state, owner, 'calamitic-cathedral-final-equation', 1.2, 2.4);
@@ -84,23 +82,20 @@ export function calamiticSiegeBonus(state: BattleState, owner: Combatant, target
 export function deferCalamiticDamage(state: BattleState, owner: Combatant, offered: number, events: BattleEvent[]): number {
   if (offered <= 0 || !equipped(owner, 'calamitic-causality-funeral-engine')) return offered;
   const n = gear(owner).numbers;
-  if (n.calamiticDeferredRound !== state.round) { n.calamiticDeferredRound = state.round; n.calamiticDeferredPhase = 0; }
-  const budget = Math.max(0, owner.stats.health * power(state, owner, 'calamitic-causality-funeral-engine', .3, .5) - n.calamiticDeferredPhase);
-  const deferred = Math.min(Math.floor(budget), Math.floor(offered * power(state, owner, 'calamitic-causality-funeral-engine', .4, .6)));
+  const deferredOffer = offered * power(state, owner, 'calamitic-causality-funeral-engine', .4, .6);
+  const deferred = Math.floor(deferredOffer + Number.EPSILON * Math.max(1, Math.abs(deferredOffer)));
   if (deferred <= 0) return offered;
   n.calamiticDebt = (n.calamiticDebt ?? 0) + deferred;
   n.calamiticDebtDue = state.round + 1;
-  n.calamiticDeferredPhase += deferred;
-  status(owner, deferred, `${owner.name}'s Funeral Engine defers ${deferred} HP damage until enemy phase ${state.round + 1}.`, events);
-  return offered - deferred;
+  status(owner, deferred, `${owner.name}'s Funeral Engine defers ${deferred} HP damage until Enemy Turn ${state.round + 1}.`, events);
+  return Math.max(0, offered - deferred);
 }
 
 export function bankCalamiticDamage(state: BattleState, loss: number): void {
   if (loss <= 0) return;
   for (const owner of state.allies.filter(ally => ally.hp > 0 && equipped(ally, 'calamitic-world-eater-orrery'))) {
     const n = gear(owner).numbers;
-    n.calamiticOrrery = Math.min(owner.stats.damage * power(state, owner, 'calamitic-world-eater-orrery', 4, 8),
-      (n.calamiticOrrery ?? 0) + loss * power(state, owner, 'calamitic-world-eater-orrery', .4, .8));
+    n.calamiticOrrery = (n.calamiticOrrery ?? 0) + loss * power(state, owner, 'calamitic-world-eater-orrery', .4, .8);
   }
 }
 
@@ -116,6 +111,6 @@ export function settleCalamiticDebt(state: BattleState, events: BattleEvent[]): 
     owner.hp -= loss;
     events.push({ kind: 'damage', source: owner.id, target: owner.id, amount: loss, critical: false,
       origin: 'conduit', periodic: true, shieldRemaining: owner.shield,
-      message: `${owner.name} pays ${loss} HP to the Funeral Engine${owner.hp === 0 ? ' — defeated' : ''}.` });
+      message: `${owner.name} pays ${loss} HP to the Funeral Engine${owner.hp === 0 ? '  Edefeated' : ''}.` });
   }
 }

@@ -4,7 +4,7 @@ import { conduitEffect, conduitEquipReason, conduitUpgradeCost, conduits, getCon
 import { elements } from '../content/activities';
 import { starters } from '../content/starters';
 import { act, actionUnavailable, createBattle, endTurn, nextWave, type BattleEvent } from './battle';
-import { afterCalamiticAction, calamiticShieldBypass, calamiticSiegeBonus, settleCalamiticDebt } from './calamitic-conduits';
+import { afterCalamiticAction, calamiticShieldBypass, calamiticSiegeBonus, deferCalamiticDamage, settleCalamiticDebt } from './calamitic-conduits';
 import { conduitIncoming, gear, generatedStrike } from './conduit-runtime';
 import { createCreatureCopy } from './character-instances';
 
@@ -20,7 +20,7 @@ function fixture(id: CalamiticConduitId, level = 0, enabled = true) {
 }
 
 describe('Calamitic universal equipment', () => {
-  it('adds exactly five unique universal identities, above Omnic, with more expensive upgrades', () => {
+  it('adds five unique universal identities above Omnic, with more expensive upgrades and no Omnic slot limit', () => {
     expect(calamiticConduits).toHaveLength(5);
     expect(new Set(calamiticConduits.map(entry => entry.id)).size).toBe(5);
     for (const design of calamiticConduits) {
@@ -30,7 +30,7 @@ describe('Calamitic universal equipment', () => {
       for (const element of elements) expect(conduitEquipReason(entry, element.id, Array(8).fill(null), 0)).toBeNull();
       expect([0, 1, 2, 3, 4].map(level => conduitUpgradeCost(entry, level))).toEqual([10000, 20000, 40000, 70000, 100000]);
       for (let level = 0; level <= 5; level++) expect(conduitEffect(entry, level)).toBe(calamiticEffect(design.id, level));
-      expect(conduitUpgradeCost(entry, 5)).toBeNull();
+      expect(conduitUpgradeCost(entry, 5)).toBe(140000);
     }
     const ids: (ConduitId | null)[] = [...calamiticConduits.map(entry => entry.id), null, null, null];
     expect(validateConduitSlots(ids)).toEqual(ids);
@@ -40,7 +40,7 @@ describe('Calamitic universal equipment', () => {
     const mixed = [...omnic, ...ids.slice(0, 4)];
     expect(validateConduitSlots(mixed)).toEqual(mixed);
     const fiveOmnic = conduits.filter(entry => entry.rarity === 'Omnic').slice(0, 5).map(entry => entry.id);
-    expect(() => validateConduitSlots([...fiveOmnic, ...ids.slice(0, 3)])).toThrow('four Omnic');
+    expect(validateConduitSlots([...fiveOmnic, ...ids.slice(0, 3)])).toEqual([...fiveOmnic, ...ids.slice(0, 3)]);
   });
 
   for (const level of [0, 1, 2, 3, 4, 5]) for (const enabled of [false, true]) {
@@ -113,7 +113,7 @@ describe('Calamitic universal equipment', () => {
       const later = endTurn(next).state;
       expect(actionUnavailable(later, later.allies[0], 'light')).toBeNull();
       const tooSoon = act(later, owner.id, 'defend', later.enemies[0].id);
-      expect(tooSoon.state.allies[0].spent).toBe(true);
+      expect(tooSoon.state.allies[0].spent).toBe(false);
     });
 
     it(`settles three distinct actions once at +${level}, equipped=${enabled}`, () => {
@@ -130,26 +130,37 @@ describe('Calamitic universal equipment', () => {
     });
   }
 
-  it('caps Orrery reserves independently for multiple wearers and ignores self-costs', () => {
+  it('stores uncapped Orrery reserves independently for multiple wearers and ignores self-costs', () => {
     const { state, owner, enemy, events } = fixture('calamitic-world-eater-orrery', 5);
     state.allies[2].conduits = [...owner.conduits!];
     conduitIncoming(state, enemy, state.allies[1], 9000, false, false, events);
-    expect(gear(owner).numbers.calamiticOrrery).toBe(800);
-    expect(gear(state.allies[2]).numbers.calamiticOrrery).toBe(800);
+    expect(gear(owner).numbers.calamiticOrrery).toBe(7200);
+    expect(gear(state.allies[2]).numbers.calamiticOrrery).toBe(7200);
     owner.hp -= 1;
-    expect(gear(owner).numbers.calamiticOrrery).toBe(800);
+    expect(gear(owner).numbers.calamiticOrrery).toBe(7200);
   });
 
-  it('caps deferred damage per phase, retains debt through reconstruction and permits lethal settlement', () => {
+  it('extrapolates deferred damage beyond the incoming hit without creating healing', () => {
+    const { state, owner, events } = fixture('calamitic-causality-funeral-engine', 20);
+    expect(deferCalamiticDamage(state, owner, 100, events)).toBe(0);
+    expect(gear(owner).numbers.calamiticDebt).toBe(120);
+    owner.hp = 100;
+    state.round = 2;
+    settleCalamiticDebt(state, events);
+    expect(owner.hp).toBe(0);
+  });
+
+  it('defers uncapped damage, retains debt through reconstruction and permits lethal settlement', () => {
     const { state, owner, enemy, events } = fixture('calamitic-causality-funeral-engine', 5);
     owner.stats.health = owner.hp = 1000;
     conduitIncoming(state, enemy, owner, 600, false, false, events);
     conduitIncoming(state, enemy, owner, 600, false, false, events);
-    expect(gear(owner).numbers.calamiticDebt).toBe(500);
+    expect(gear(owner).numbers.calamiticDebt).toBe(720);
     const restored = structuredClone(state);
     restored.round = 2;
     restored.allies[0].shield = 999999;
     gear(restored.allies[0]).numbers.stasisProtectedRound = 2;
+    restored.allies[0].hp = 500;
     settleCalamiticDebt(restored, events);
     expect(restored.allies[0].hp).toBe(0);
     expect(restored.allies[0].shield).toBe(999999);

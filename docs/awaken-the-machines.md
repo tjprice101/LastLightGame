@@ -190,8 +190,8 @@ no load migration/rescaling. Higher floors unlock normally up to100. Existing
 Conduits/upgrades/discovery IDs and other activities' stage limits are preserved.
 
 One owned copy unlocks its name for all owned characters, without consumption.
-Eight ordinary slots/no duplicate names; Master reserved. At most four Omnic
-Conduits, all matching that character's combat element (including captured
+At least eight ordinary slots/no duplicate names; Master reserved. D-334 removes
+the four-Omnic limit; Omnic Conduits must still match that character's combat element (including captured
 creatures, not their infusion material pool). UI disables invalid choices;
 save validation, transactions and fighter resolution independently enforce
 the restrictions. Drop-only entries cannot be purchased through hidden callers.

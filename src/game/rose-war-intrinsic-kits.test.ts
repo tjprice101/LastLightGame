@@ -121,16 +121,16 @@ describe('distinct Rose and Elemental War identities', () => {
     expect(state.allies[0].native?.survey).toEqual({ target: state.enemies[0].id, points: 1 });
   });
 
-  it('Orvella constructs finite shared durability, repairs up to maximum and demolishes without rebuilding', () => {
+  it('Orvella constructs shared durability, repairs past its starting value and demolishes without rebuilding', () => {
     let state = use(encounter('orvella'), 'orvella', 'skill2').state;
     expect(state.allies[0].native?.foundation?.durability).toBe(300);
     expect(state.allies[0].shield).toBe(0);
     state.allies[0].native!.foundation!.durability = 250;
     const repair = use(state, 'orvella', 'skill1');
     expect(repair.events.find(event => event.kind === 'damage')?.amount).toBe(140 * nativeBalance.skillDamageScale);
-    expect(repair.state.allies[0].native?.foundation?.durability).toBe(300);
+    expect(repair.state.allies[0].native?.foundation?.durability).toBe(330);
     const demolition = use(repair.state, 'orvella', 'ultimate');
-    expect(demolition.events.filter(event => event.nativeKind === 'demolition').map(event => event.amount)).toEqual([300, 300]);
+    expect(demolition.events.filter(event => event.nativeKind === 'demolition').map(event => event.amount)).toEqual([330, 330]);
     expect(demolition.state.allies[0].native?.foundation).toBeUndefined();
     const noStructure = use(encounter('orvella'), 'orvella', 'skill1');
     expect(noStructure.events.find(event => event.kind === 'damage')?.amount).toBe(180 * nativeBalance.skillDamageScale);
@@ -153,15 +153,15 @@ describe('distinct Rose and Elemental War identities', () => {
     expect(recovery.allies[0].pilot).toBeUndefined();
   });
 
-  it('Razor banks only supplied direct HP loss, spends a bounded small revenge, and caps a full cashout', () => {
+  it('Razor banks only supplied direct HP loss and spends all of it on each skill', () => {
     const state = encounter('razor');
     nativeDirectHpLoss(state, state.allies[0], 500, []);
-    expect(state.allies[0].native?.wounds).toBe(300);
+    expect(state.allies[0].native?.wounds).toBe(500);
     const small = use(state, 'razor', 'skill1');
-    expect(small.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(100);
-    expect(small.state.allies[0].native?.wounds).toBe(200);
+    expect(small.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(500);
+    expect(small.state.allies[0].native?.wounds).toBe(0);
     const flare = use(state, 'razor', 'ultimate');
-    expect(flare.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(600);
+    expect(flare.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(1000);
     expect(flare.state.allies[0].native?.wounds).toBe(0);
   });
 

@@ -59,7 +59,8 @@ describe('shared elemental effect descriptors and snapshots', () => {
     actor.conduitCharges = { emberSeals: 1 };
     const readout = unitReadout(actor);
     expect(readout.match(/unit-kit-resource/g)).toHaveLength(1);
-    expect(readout).toContain('Infernic Embers 2 / 3');
+    expect(readout).toContain('Infernic Embers 2');
+    expect(readout).not.toContain('2 / 3');
     expect(readout).not.toContain('Conduit Ember Seals');
     expect(readout).toContain('data-effect-family="burn"');
     expect(readout).toContain('living-self-authored-burn');
@@ -118,7 +119,7 @@ describe('shared elemental effect descriptors and snapshots', () => {
 describe('explicit legacy pilot helpers for historical snapshots', () => {
   it.each([
     ['ember', 'ember', 'ember'], ['crinso', 'rose-duality', 'duality'],
-  ] as const)('%s old Burn earnings are owner-bound, phase-guarded and capped', (id, pilot, resource) => {
+  ] as const)('%s old Burn earnings are owner-bound and uncapped', (id, pilot, resource) => {
     const { state, actor } = historical(id, pilot);
     const events: Parameters<typeof pilotBurnDamage>[3] = [];
     pilotBurnDamage(state, actor, 0, events);
@@ -128,7 +129,7 @@ describe('explicit legacy pilot helpers for historical snapshots', () => {
       pilotBurnDamage(state, actor, 10, events);
       pilotBurnDamage(state, actor, 10, events);
     }
-    expect(actor.pilot?.[resource]).toBe(3);
+    expect(actor.pilot?.[resource]).toBe(10);
     const before = structuredClone(actor.pilot);
     actor.hp = 0;
     pilotBurnDamage(state, actor, 10, events);
@@ -145,13 +146,13 @@ describe('explicit legacy pilot helpers for historical snapshots', () => {
     expect(actor.pilot).toBeUndefined();
     pilotAuthoredShieldAbsorbed(state, actor.id, 10, events);
     pilotAuthoredShieldAbsorbed(state, actor.id, 10, events);
-    expect(actor.pilot?.[resource]).toBe(1);
+    expect(actor.pilot?.[resource]).toBe(2);
     state.round++;
     pilotAuthoredShieldAbsorbed(state, actor.id, 10, events);
-    expect(actor.pilot?.[resource]).toBe(2);
+    expect(actor.pilot?.[resource]).toBe(3);
   });
 
-  it('old Flora/Rosetta healing counts only effective healing once per round and rejects captures', () => {
+  it('old Flora/Rosetta healing counts every effective heal and rejects captures', () => {
     for (const [id, pilot, resource] of [['sprout', 'bloom', 'bloom'], ['rosetta', 'rose-grace', 'roseGrace']] as const) {
       const { state, actor } = historical(id, pilot);
       const events: Parameters<typeof pilotEffectiveHeal>[4] = [];
@@ -159,11 +160,11 @@ describe('explicit legacy pilot helpers for historical snapshots', () => {
       expect(actor.pilot).toBeUndefined();
       pilotEffectiveHeal(state, actor, actor, 10, events);
       pilotEffectiveHeal(state, actor, actor, 10, events);
-      expect(actor.pilot?.[resource]).toBe(1);
+      expect(actor.pilot?.[resource]).toBe(2);
       state.round++;
       actor.captured = { instanceId: 'capture:legacy', creatureId: 'infusion:roses:0', locked: false };
       pilotEffectiveHeal(state, actor, actor, 10, events);
-      expect(actor.pilot?.[resource]).toBe(1);
+      expect(actor.pilot?.[resource]).toBe(2);
     }
   });
 

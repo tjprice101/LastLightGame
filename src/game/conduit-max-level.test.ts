@@ -60,7 +60,7 @@ describe('Conduit Max Level plans and transactions', () => {
     expect(resumed).toMatchObject({ currentLevel: 2, targetLevel: 5, cost: 525 });
     expect(upgradeConduitToMaximum(saved, resumed).conduitUpgrades?.['siegebound-drive']).toBe(5);
   });
-  it('rejects missing profile, unowned IDs, cap, insufficient funds, stale/forged previews and failed saves without spending', () => {
+  it('rejects missing profile, unowned IDs, insufficient funds, stale/forged previews and failed saves without spending', () => {
     const saved = fixture();
     const plan = conduitMaxLevelPlan(loadAccount(saved), 'vigil-core');
     const raw = saved.getItem(ACCOUNT_KEY);
@@ -79,7 +79,7 @@ describe('Conduit Max Level plans and transactions', () => {
     expect(() => upgradeConduitToMaximum(saved, plan)).toThrow('Choose your first');
     saved.setItem(SAVE_KEY, '{"version":1,"starterId":"ember"}');
     for (const account of [{ ...loadAccount(saved), mechanicalComponents: 24 },
-      { ...loadAccount(saved), conduitUpgrades: { 'vigil-core': 5 } }]) {
+      { ...loadAccount(saved), mechanicalComponents: 0, conduitUpgrades: { 'vigil-core': 5 } }]) {
       saveAccount(saved, account);
       const noOp = conduitMaxLevelPlan(loadAccount(saved), 'vigil-core');
       expect(noOp.targetLevel).toBe(noOp.currentLevel);

@@ -10,7 +10,7 @@ import { standardBannerPool, resolveBannerPull } from '../content/standard-banne
 import { roseCharacters, availableStarters, getStarter } from '../content/starters';
 import { characterArt, characterName } from '../content/character-art';
 import { resolveFighter, shatterGauge } from '../content/combat';
-import { characterLevelCap, characterLevelCost, characterEvolutionCost, characterGrowthFactor } from '../content/progression';
+import { evolutionLevelRequirement, characterLevelCost, characterEvolutionCost, characterGrowthFactor } from '../content/progression';
 import { materialArt, materialName } from '../content/dungeon-art';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { fractalisDrop } from '../content/loot-random';
@@ -237,7 +237,7 @@ describe('Passion of Crimson Roses integration', () => {
     const duplicate = createCreatureCopy('infusion:roses:5', undefined, 80, 'banner-duplicate');
     expect(() => validateCapturedCharacters([{ ...duplicate, acquisition: undefined }])).toThrow();
     expect(() => validateCapturedCharacters([{ ...duplicate, level: 59 }])).toThrow();
-    expect(validateCapturedCharacters([{ ...duplicate, level: 79 }])[0].level).toBe(60);
+    expect(validateCapturedCharacters([{ ...duplicate, level: 79 }])[0].level).toBe(79);
   });
 
   it.each(roseMaterials.map((_, tier) => tier))('exchanges form%i for its own materials in one protected-safe write', (tier) => {
@@ -388,7 +388,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
 
   it.each(roseCharacters)('uses six named forms, real combat kits, rose-only costs and max-level evolution gates for$name', (character) => {
     for (let evolution = 1; evolution <= 6; evolution++) {
-      const cap = characterLevelCap(evolution);
+      const cap = evolutionLevelRequirement(evolution);
       expect(characterName(character.id, evolution)).toMatch(new RegExp(`, ${character.name}$`));
       expect(characterArt(character.id, evolution).available).toBe(true);
       for (let level = 0; level <= cap; level++) {
@@ -408,7 +408,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
       account.capturedCharacters = copies;
       saveAccount(store.saved, account);
       const raw = store.saved.getItem(ACCOUNT_KEY);
-      expect(() => upgradeCharacter(store.saved, character.id, 'evolve', { level: cap - 1, evolution }, copies.map((copy) => copy.instanceId))).toThrow('level cap');
+      expect(() => upgradeCharacter(store.saved, character.id, 'evolve', { level: cap - 1, evolution }, copies.map((copy) => copy.instanceId))).toThrow('Reach level');
       expect(store.saved.getItem(ACCOUNT_KEY)).toBe(raw);
       account.characters[character.id] = { level: cap, evolution };
       saveAccount(store.saved, account);
@@ -425,6 +425,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     const store = storage();
     const account = funded();
     account.characters.thornia = { level: 0, evolution: 1 };
+    account.materials['rosethorn-common'] = 30;
     saveAccount(store.saved, account);
     const plan = maxLevelPlan(account, 'thornia');
     expect(plan.cost).toEqual({ fractalis: 1230, materials: { 'rosethorn-common': 30 } });

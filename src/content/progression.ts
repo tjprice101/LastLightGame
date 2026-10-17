@@ -12,15 +12,15 @@ export const currencies = [
 export const artifactSlots = Array.from({ length: 8 }, (_, index) => index + 1);
 // Opening Lv1 range; live per-enemy rewards use fractalisDrop(level).
 export const enemyFractalisDrop = { minimum: 5, maximum: 10 } as const;
-export const characterGrowth = { forms: 6, firstLevelCap: 30, levelsPerEvolution: 15, ...playableGrowth } as const;
+export const characterGrowth = { forms: 6, firstEvolutionLevel: 30, levelsPerEvolution: 15, ...playableGrowth } as const;
 export function evolutionRarity(evolution: number): MaterialRarity {
-  characterLevelCap(evolution);
+  validateEvolution(evolution);
   return materialRarities[evolution - 1];
 }
 export const fractureRules = {
   sourceTier: 1,
   destinationTier: 2,
-  levelCap: characterGrowth.firstLevelCap,
+  evolutionLevel: characterGrowth.firstEvolutionLevel,
   preservesLevel: true,
   lycalisReward: 10,
 } as const;
@@ -52,8 +52,8 @@ export const levelingMaterialTiers = [
 
 export function levelingMaterials(element: ElementId | 'rosethorn', destination: number): Record<string, number> {
   if (element !== 'rosethorn') getElement(element);
-  if (!Number.isInteger(destination) || destination < 1 || destination > 120) {
-    throw new Error('Leveling destination must be an integer from 1 to 120.');
+  if (!Number.isSafeInteger(destination) || destination < 1) {
+    throw new Error('Leveling destination must be a whole number of 1 or more.');
   }
   return {
     [`${element}-common`]: Math.ceil(destination / 30),
@@ -65,7 +65,6 @@ export function levelingMaterials(element: ElementId | 'rosethorn', destination:
 export function levelCost(element: ElementId, progress: CharacterProgress): UpgradeCost {
   getElement(element);
   characterGrowthFactor(progress);
-  if (progress.level === characterLevelCap(progress.evolution)) throw new Error('Reach the next evolution to raise the level cap.');
   const destination = progress.level + 1;
   return { fractalis: 10 + 2 * destination, materials: { ...levelingMaterials(element, destination),
     ...(progress.evolution >= 5 ? { [specialtyId(element, 'level')]: 1 } : {}) } };
@@ -86,12 +85,16 @@ export function evolutionCost(element: ElementId, progress: CharacterProgress): 
   };
 }
 
-export function characterLevelCap(evolution: number): number {
+export function validateEvolution(evolution: number): void {
   if (!Number.isInteger(evolution) || evolution < 1 || evolution > characterGrowth.forms) {
     throw new Error(`Character evolution must be an integer from 1 to ${characterGrowth.forms}.`);
   }
+}
 
-  return characterGrowth.firstLevelCap + (evolution - 1) * characterGrowth.levelsPerEvolution;
+/** Level an Element-Bearer must reach in this form before evolving; levels keep rising past it. */
+export function evolutionLevelRequirement(evolution: number): number {
+  validateEvolution(evolution);
+  return characterGrowth.firstEvolutionLevel + (evolution - 1) * characterGrowth.levelsPerEvolution;
 }
 
 export function characterLevelCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
@@ -122,9 +125,9 @@ export function characterEvolutionRequirement(id: StarterId, evolution: number) 
 
 export function characterGrowthFactor(progress: CharacterProgress): number {
   if (!Number.isInteger(progress.weaponRank ?? 0) || (progress.weaponRank ?? 0) < 0 || (progress.weaponRank ?? 0) > weaponRules.maximumRank) throw new Error('Invalid weapon rank.');
-  const cap = characterLevelCap(progress.evolution);
-  if (!Number.isInteger(progress.level) || progress.level < 0 || progress.level > cap) {
-    throw new Error(`Character level must be an integer from 0 to ${cap}.`);
+  validateEvolution(progress.evolution);
+  if (!Number.isSafeInteger(progress.level) || progress.level < 0) {
+    throw new Error('Character level must be a whole number of 0 or more.');
   }
   return 1 + progress.level * characterGrowth.perLevel +
     (progress.evolution - 1) * characterGrowth.perEvolution;
@@ -137,7 +140,7 @@ export function characterPotencyFactor(progress: CharacterProgress): number {
 
 export const upgradePaths = [
   { id: 'upgrade-0', name: 'Fracture & Evolution', detail: 'Preserve your level; add 150% of base core stats and increase skill and passive potency.' },
-  { id: 'upgrade-1', name: 'Character level', detail: 'Linear core-stat growth: add 15% of base per level. Later enemies accelerate; build Conduits and a reliable squad.' },
+  { id: 'upgrade-1', name: 'Character level', detail: 'Each level adds 15% of base core stats. Levels have no limit.' },
   { id: 'upgrade-3', name: 'Unique passive', detail: 'Upgrade the character\'s unique passive ability.' },
   { id: 'upgrade-4', name: 'Ability 1', detail: 'Upgrade the first active ability.' },
   { id: 'upgrade-5', name: 'Ability 2', detail: 'Upgrade the second active ability.' },

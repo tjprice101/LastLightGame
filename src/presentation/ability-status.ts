@@ -28,5 +28,5 @@ export function kitResource(kit: FighterDefinition, character?: StarterId): stri
   const resource = kit.pilot ? kitPilotDescriptions[kit.pilot].resource : undefined;
   const usage = character ? kitResourceUses[character] : resource?.detail;
   return resource ? `<span class="ability-status" data-effect-family="${resource.effect.family}" data-effect-origin="${resource.effect.origin}">
-    ${statusIcon(elementalStatusArt(resource.effect))}${resource.label} · Up to 3 charges</span><p class="kit-resource-summary"><strong>What the charges do:</strong> ${usage} Spending resets the saved charges to 0. At 0 charges, the skill still has its normal effect.</p>` : '';
+    ${statusIcon(elementalStatusArt(resource.effect))}${resource.label} · Charges</span><p class="kit-resource-summary"><strong>What the charges do:</strong> ${usage} Spending resets the saved charges to 0. At 0 charges, the skill still has its normal effect.</p>` : '';
 }

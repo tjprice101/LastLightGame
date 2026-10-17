@@ -392,7 +392,7 @@ describe('Conduit equipment and all ten Omnic mechanics', () => {
     expect(() => purchaseConduit(saved, 'duplex-heart')).toThrow('not sold');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     expect(equipConduit(saved, 'ember', 0, 'infernic-phoenix-reactor').conduitEquipment?.ember?.[0]).toBe('infernic-phoenix-reactor');
-    expect(() => validateConduitSlots([...conduits.filter((entry) => entry.rarity === 'Omnic').slice(0, 5).map((entry) => entry.id), null, null, null])).toThrow('four');
+    expect(() => validateConduitSlots([...conduits.filter((entry) => entry.rarity === 'Omnic').slice(0, 5).map((entry) => entry.id), null, null, null])).not.toThrow();
     const copy = createCreatureCopy('infusion:heavens:0');
     expect(() => resolveCapturedFighter(copy, slots('infernic-phoenix-reactor'))).toThrow('requires');
     expect(() => resolveCapturedFighter(copy, slots('tranquilitic-kirin-cradle'))).not.toThrow();

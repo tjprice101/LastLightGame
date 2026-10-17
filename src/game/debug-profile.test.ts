@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { starters } from '../content/starters';
-import { conduits, conduitUpgradeCap } from '../content/conduits';
+import { conduits, conduitUpgradeReference } from '../content/conduits';
 import { masterConduits } from '../content/master-conduits';
 import { creatures } from '../content/creatures';
 import { elementalMaterials, currencyModes, eventModes, infusionModes, machineModes, dungeonStageCount } from '../content/activities';
@@ -9,7 +9,7 @@ import { specialtyMaterials } from '../content/infusions';
 import { roseMaterials } from '../content/roses';
 import { elementalWars, warStageCount } from '../content/elemental-war';
 import { playableDungeons } from '../content/dungeons';
-import { characterGrowth, characterLevelCap } from '../content/progression';
+import { characterGrowth, evolutionLevelRequirement } from '../content/progression';
 import { storyRules } from '../content/story';
 import { ACCOUNT_KEY, emptyAccount, equipConduit, loadAccount, setSquad, summonCharacter } from './account';
 import { capturedProgress } from './character-instances';
@@ -37,11 +37,11 @@ describe('isolated development profile', () => {
     const account = createDebugAccount();
     expect(Object.keys(account.characters)).toHaveLength(starters.length);
     for (const starter of starters) expect(account.characters[starter.id]).toEqual({
-      level: characterLevelCap(characterGrowth.forms), evolution: characterGrowth.forms,
+      level: evolutionLevelRequirement(characterGrowth.forms), evolution: characterGrowth.forms,
     });
     for (const conduit of conduits) {
       expect(account.conduits?.[conduit.id]).toBe(1);
-      expect(account.conduitUpgrades?.[conduit.id]).toBe(conduitUpgradeCap);
+      expect(account.conduitUpgrades?.[conduit.id]).toBe(conduitUpgradeReference);
     }
     expect(Object.keys(account.masterConduits ?? {})).toHaveLength(masterConduits.length);
     expect(Object.values(account.masterConduits ?? {}).every(count => count === 1)).toBe(true);
@@ -55,7 +55,7 @@ describe('isolated development profile', () => {
     for (const creature of creatures.filter(creature => creature.mode && creature.mode !== 'machines')) {
       const copies = account.capturedCharacters?.filter(copy => copy.creatureId === creature.id) ?? [];
       expect(copies).toHaveLength(3);
-      expect(copies.every(copy => capturedProgress(copy).level === 60)).toBe(true);
+      expect(copies.every(copy => capturedProgress(copy).level === 120)).toBe(true);
     }
     expect(account.conduitEquipment).toBeUndefined();
     expect(account.masterEquipment).toBeUndefined();
