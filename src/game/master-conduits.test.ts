@@ -56,7 +56,7 @@ describe('character Masters and chest contracts', () => {
   });
   it('removes obsolete uniform bank metadata and states every fixed enhancement completely', () => {
     for (const entry of masterConduits) {
-      expect(entry.effect.length).toBeGreaterThan(100);
+      expect(entry.effect.length).toBeGreaterThan(40);
       expect(entry).not.toHaveProperty('rule');
       expect(entry.effect).not.toContain('Astral Reserve');
       expect(entry.effect).not.toContain('->');

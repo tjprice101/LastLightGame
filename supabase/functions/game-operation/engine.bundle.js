@@ -212,7 +212,7 @@ var conduitRedesign = {
     ]
   },
   "parallax-relay": {
-    "description": "Every Attack Action gains +15 -> +30 percentage points of Critical Rate.",
+    "description": "Attack Actions gain +15 -> +30 percentage points of Critical Rate.",
     "ranges": [
       {
         "base": 15,
@@ -251,7 +251,7 @@ var conduitRedesign = {
     ]
   },
   "precision-escapement": {
-    "description": "+10% -> +35% Critical Damage multiplier. No Critical Rate increase.",
+    "description": "+10% -> +35% Critical Damage multiplier.",
     "ranges": [
       {
         "base": 10,
@@ -262,7 +262,7 @@ var conduitRedesign = {
     ]
   },
   "fieldbrace-coupler": {
-    "description": "Take 4% -> 8% less enemy Direct Damage while you have a Shield immediately before impact. This applies to the whole hit, even if it breaks the Shield.",
+    "description": "Take 4% -> 8% less enemy Direct Damage while you have a Shield.",
     "ranges": [
       {
         "base": 4,
@@ -273,7 +273,7 @@ var conduitRedesign = {
     ]
   },
   "reserve-torque-crank": {
-    "description": "[Normal Attack] grants an additional 3 -> 6 Gauge each time you use it.",
+    "description": "[Normal Attack] grants an additional 3 -> 6 Gauge.",
     "ranges": [
       {
         "base": 3,
@@ -295,7 +295,7 @@ var conduitRedesign = {
     ]
   },
   "duplex-heart": {
-    "description": "Each enemy hit that removes your HP with Direct Damage heals the most injured other living ally for 5% -> 10% of your maximum HP.",
+    "description": "When an enemy hit damages your HP, heal the most injured other ally for 5% -> 10% of your maximum HP.",
     "ranges": [
       {
         "base": 5,
@@ -306,7 +306,7 @@ var conduitRedesign = {
     ]
   },
   "spearwheel-engine": {
-    "description": "[Skill 1] ignores 15% -> 30% enemy Defense. Does not bypass shields.",
+    "description": "[Skill 1] ignores 15% -> 30% enemy Defense.",
     "ranges": [
       {
         "base": 15,
@@ -317,7 +317,7 @@ var conduitRedesign = {
     ]
   },
   "falcon-sight": {
-    "description": "Two consecutive noncritical Attack Actions prime the next Attack Action to critically hit. That Attack Action also gains +10% -> +20% Critical Damage. A critical hit resets the count; an AoE Attack Action counts once. No additional RNG roll.",
+    "description": "After two noncritical Attack Actions in a row, your next Attack Action is a guaranteed critical hit with +10% -> +20% Critical Damage.",
     "ranges": [
       {
         "base": 10,
@@ -328,7 +328,7 @@ var conduitRedesign = {
     ]
   },
   "aegis-capacitor": {
-    "description": "Whenever your Shield absorbs Direct Damage from an enemy, gain 4 -> 8 Gauge. Full and partial absorption qualify; HP loss is not required.",
+    "description": "Gain 4 -> 8 Gauge whenever your Shield absorbs enemy damage.",
     "ranges": [
       {
         "base": 4,
@@ -339,7 +339,7 @@ var conduitRedesign = {
     ]
   },
   "springwell-pump": {
-    "description": "+20% -> +40% healing from your active abilities before missing-HP clipping. Passive and Conduit healing are unaffected.",
+    "description": "+20% -> +40% healing from your active abilities.",
     "ranges": [
       {
         "base": 20,
@@ -361,7 +361,7 @@ var conduitRedesign = {
     ]
   },
   "glassroot-gimbal": {
-    "description": "Critical Rate increases with missing HP, adding +12 -> +24 percentage points at 75% missing HP. Snapshot before each Attack Action.",
+    "description": "Gain up to +12 -> +24 percentage points of Critical Rate as your HP drops, reaching the full bonus at 75% missing HP.",
     "ranges": [
       {
         "base": 12,
@@ -372,7 +372,7 @@ var conduitRedesign = {
     ]
   },
   "lifeline-flywheel": {
-    "description": "After each Attack Action, heal yourself for 8% -> 16% of its Direct Damage to HP. Does not count overkill, Shields, [Burn] or Bonus Strikes.",
+    "description": "After each Attack Action, heal for 8% -> 16% of the Direct Damage it dealt to HP.",
     "ranges": [
       { "base": 8, "maximum": 16, "percent": true, "step": false }
     ]
@@ -389,7 +389,7 @@ var conduitRedesign = {
     ]
   },
   "wardglass-transformer": {
-    "description": "+20% -> +40% Shield amount from your abilities before the Shield refresh comparison. Conduit Shields do not receive this increase.",
+    "description": "+20% -> +40% Shield amount from your abilities.",
     "ranges": [
       {
         "base": 20,
@@ -417,13 +417,13 @@ var conduitRedesign = {
     ]
   },
   "breach-pendulum": {
-    "description": "After each Attack Action, grant yourself a Shield equal to 8% -> 16% of its total Direct Damage to HP. [Burn], overkill, absorbed damage and Bonus Strikes do not count. Shields replace one another and do not stack.",
+    "description": "After each Attack Action, gain a Shield equal to 8% -> 16% of the Direct Damage it dealt to HP.",
     "ranges": [
       { "base": 8, "maximum": 16, "percent": true, "step": false }
     ]
   },
   "coilfeed-ratchet": {
-    "description": "[Skill 2] costs 3 -> 6 less Gauge. This does not change [Last Flare] or grant Gauge.",
+    "description": "[Skill 2] costs 3 -> 6 less Gauge.",
     "ranges": [
       {
         "base": 3,
@@ -434,7 +434,7 @@ var conduitRedesign = {
     ]
   },
   "opal-indexer": {
-    "description": "Your [Weaken] applications last +1 -> +2 Enemy Turns. Reapplication refreshes the duration. This does not grant [Weaken] to a kit without it.",
+    "description": "Your [Weaken] lasts +1 -> +2 Enemy Turns longer.",
     "ranges": [
       {
         "base": 1,
@@ -445,7 +445,7 @@ var conduitRedesign = {
     ]
   },
   "resonance-crucible": {
-    "description": "+20% -> +40% damage to [Burn] applied by you. Snapshot potency at application; no duration change or new [Burn].",
+    "description": "Your [Burn] deals +20% -> +40% damage.",
     "ranges": [
       {
         "base": 20,
@@ -456,7 +456,7 @@ var conduitRedesign = {
     ]
   },
   "worldbreaker-drive": {
-    "description": "+35% -> +70% [Last Flare] Direct Damage; -6% -> -21% to your maximum HP. Recovery applies as usual.",
+    "description": "+35% -> +70% [Last Flare] Direct Damage; -6% -> -21% maximum HP.",
     "ranges": [
       {
         "base": 35,
@@ -473,7 +473,7 @@ var conduitRedesign = {
     ]
   },
   "immortal-vessel": {
-    "description": "+25% -> +87.5% to your maximum HP; -6% -> -21% Attack. It does not revive or trigger healing effects.",
+    "description": "+25% -> +87.5% maximum HP; -6% -> -21% Attack.",
     "ranges": [
       {
         "base": 25,
@@ -530,7 +530,7 @@ var conduitRedesign = {
     ]
   },
   "judgment-lens": {
-    "description": "Critical Direct Damage from [Skill 1], [Skill 2] and [Last Flare] is +40% -> +80%; [Normal Attack] cannot critically hit. [Last Flare] and critical resources follow their normal eligibility.",
+    "description": "[Skill 1], [Skill 2] and [Last Flare] deal +40% -> +80% critical Direct Damage; [Normal Attack] cannot critically hit.",
     "ranges": [
       {
         "base": 40,
@@ -541,7 +541,7 @@ var conduitRedesign = {
     ]
   },
   "siege-cantilever": {
-    "description": "Your all-enemy Attack Actions gain +60% -> +120% Direct Damage when exactly one enemy is alive as the Attack Action begins. Single-target Attack Actions and support effects do not gain this bonus.",
+    "description": "Your all-enemy Attack Actions deal +60% -> +120% Direct Damage when only one enemy is alive.",
     "ranges": [
       {
         "base": 60,
@@ -569,7 +569,7 @@ var conduitRedesign = {
     ]
   },
   "horizon-heartcase": {
-    "description": "+20% -> +70% to your maximum HP; -4% -> -14% Defense. At the start of each forced [Last Flare] recovery turn, restore 15% -> 30% of missing HP.",
+    "description": "+20% -> +70% maximum HP; -4% -> -14% Defense. At the start of each [Last Flare] recovery turn, restore 15% -> 30% of missing HP.",
     "ranges": [
       {
         "base": 20,
@@ -592,7 +592,7 @@ var conduitRedesign = {
     ]
   },
   "stasis-reliquary": {
-    "description": "When a Direct Damage hit would defeat you, stay at 1 HP and prevent further Direct Damage to HP for that Enemy Turn. At the next player-turn start, gain a Shield of 10% -> 20% of your maximum HP. [Burn] can defeat you.",
+    "description": "When Direct Damage would defeat you, survive at 1 HP and take no further Direct Damage that Enemy Turn. At the start of the next player turn, gain a Shield of 10% -> 20% of your maximum HP.",
     "ranges": [
       {
         "base": 10,
@@ -603,13 +603,13 @@ var conduitRedesign = {
     ]
   },
   "granite-hourglass": {
-    "description": "At the next player-turn start, gain a Shield equal to 30% -> 60% of the Direct Damage to HP you lost during the preceding Enemy Turn. Shields replace one another and do not stack; no effect while fallen.",
+    "description": "At the start of each player turn, gain a Shield equal to 30% -> 60% of the HP you lost to Direct Damage during the previous Enemy Turn.",
     "ranges": [
       { "base": 30, "maximum": 60, "percent": true, "step": false }
     ]
   },
   "pale-bulwark-diadem": {
-    "description": "While you are above 75% HP, take 15% -> 30% less Direct Damage. Below or at 75% HP, Shields you cast on yourself are 25% -> 50% stronger instead. Snapshot each hit/amount separately.",
+    "description": "Above 75% HP, take 15% -> 30% less Direct Damage. At or below 75% HP, Shields you cast on yourself are 25% -> 50% stronger.",
     "ranges": [
       {
         "base": 15,
@@ -626,7 +626,7 @@ var conduitRedesign = {
     ]
   },
   "starvein-conductor": {
-    "description": "Before an ability that applies [Burn], pay 5% of your maximum HP while keeping at least 1 HP. If you cannot pay, the bonus does not apply. The resulting [Burn] deals +40% -> +80% damage. Self-payment is not damage taken and does not trigger effects or affect Direct Damage.",
+    "description": "Abilities that apply [Burn] cost 5% of your maximum HP and give that [Burn] +40% -> +80% damage. The HP cost never drops you below 1 HP.",
     "ranges": [
       {
         "base": 40,
@@ -637,7 +637,7 @@ var conduitRedesign = {
     ]
   },
   "meridian-inverter": {
-    "description": "Your Shield abilities restore living allies' HP at 75% -> 150% of the final Shield amount and grant no Shield. Shields from other sources are unaffected.",
+    "description": "Your Shield abilities heal allies for 75% -> 150% of the Shield amount instead of granting a Shield.",
     "ranges": [
       {
         "base": 75,
@@ -648,7 +648,7 @@ var conduitRedesign = {
     ]
   },
   "execution-orrery": {
-    "description": "Attack Actions gain +50% -> +100% Direct Damage against a target at or below 25% HP immediately before each hit. No instant execution, extra action or kill reward.",
+    "description": "Attack Actions deal +50% -> +100% Direct Damage to targets at or below 25% HP.",
     "ranges": [
       {
         "base": 50,
@@ -659,7 +659,7 @@ var conduitRedesign = {
     ]
   },
   "verdict-caliper": {
-    "description": "Your Attack Actions cannot critically hit, but gain +35% -> +70% Direct Damage. [Burn] is unaffected; critical-trigger effects do not activate from these Attack Actions.",
+    "description": "Your Attack Actions cannot critically hit but deal +35% -> +70% Direct Damage.",
     "ranges": [
       {
         "base": 35,
@@ -670,7 +670,7 @@ var conduitRedesign = {
     ]
   },
   "infernic-phoenix-reactor": {
-    "description": "After each hostile lethal hit or [Burn] tick resolves, revive yourself at 25% -> 50% of your maximum HP and set Gauge to 0. Any existing recovery applies.",
+    "description": "Each time you are defeated, revive at 25% -> 50% of your maximum HP with 0 Gauge.",
     "ranges": [
       {
         "base": 25,
@@ -681,13 +681,13 @@ var conduitRedesign = {
     ]
   },
   "aquatic-leviathan-pump": {
-    "description": "Total absorption during an Enemy Turn by your Shields becomes a healing pool equal to 30% -> 60% of the blocked damage. At next player-turn start, divide the pool equally among living injured allies, clipping each share without redistribution. Requires you alive at settlement.",
+    "description": "Damage your Shields absorb during an Enemy Turn fills a healing pool of 30% -> 60% of that amount. At the start of the next player turn, the pool is split equally among injured allies.",
     "ranges": [
       { "base": 30, "maximum": 60, "percent": true, "step": false }
     ]
   },
   "tectonic-atlas-bastion": {
-    "description": "[Normal Attack] taunts all living enemies for that Enemy Turn and reduces Direct Damage to you by 10% -> 20%. squad taunt can be active; latest legal taunt wins.",
+    "description": "[Normal Attack] taunts all enemies for that Enemy Turn and reduces Direct Damage to you by 10% -> 20%.",
     "ranges": [
       {
         "base": 10,
@@ -698,19 +698,19 @@ var conduitRedesign = {
     ]
   },
   "efflorescent-worldtree-heart": {
-    "description": "Overhealing from your active abilities adds a [Seed] on the recipient worth 50% -> 100% of wasted healing. At the next player-turn start, all stored [Seed] healing restores the recipient's HP.",
+    "description": "Overhealing from your active abilities stores 50% -> 100% of the excess as a [Seed] on the recipient, which heals them at the start of the next player turn.",
     "ranges": [
       { "base": 50, "maximum": 100, "percent": true, "step": false }
     ]
   },
   "voltaic-thunderbird-coil": {
-    "description": "Action with a critical Direct Damage, arc to the healthiest other living enemy for 30% -> 60% of that critical's HP damage. No other enemy means no arc.",
+    "description": "When an Attack Action critically hits, it arcs to the healthiest other enemy for 30% -> 60% of that hit's HP damage.",
     "ranges": [
       { "base": 30, "maximum": 60, "percent": true, "step": false }
     ]
   },
   "atmospheric-griffin-turbine": {
-    "description": "After your [Normal Attack] deals direct HP damage, each other living ally gains 3 -> 6 Gauge. No return to you and no gain on shield-only damage.",
+    "description": "When your [Normal Attack] damages HP, each other ally gains 3 -> 6 Gauge.",
     "ranges": [
       {
         "base": 3,
@@ -721,13 +721,13 @@ var conduitRedesign = {
     ]
   },
   "luminous-seraph-mirror": {
-    "description": "A critical Attack Action heals each living ally for 8% -> 16% of its total direct HP damage.",
+    "description": "Critical Attack Actions heal each ally for 8% -> 16% of the HP damage dealt.",
     "ranges": [
       { "base": 8, "maximum": 16, "percent": true, "step": false }
     ]
   },
   "ominous-eclipse-mantle": {
-    "description": "When a damaging Attack Action hits a target already affected by your [Weaken], consume one remaining Enemy Turn of that [Weaken] after impact to ignore 40% -> 60% of the target's Defense for the hit. Each hit can consume one Enemy Turn. Never consumes another owner's [Weaken].",
+    "description": "Attack Actions against a target with your [Weaken] consume one Enemy Turn of it to ignore 40% -> 60% of the target's Defense.",
     "ranges": [
       {
         "base": 40,
@@ -738,25 +738,25 @@ var conduitRedesign = {
     ]
   },
   "tranquilitic-kirin-cradle": {
-    "description": "[Normal Attack] heals the lowest-HP-ratio living ally for 50% -> 100% of your Defense. Self is eligible; no shield or Gauge is granted.",
+    "description": "[Normal Attack] heals the ally with the lowest HP ratio, including you, for 50% -> 100% of your Defense.",
     "ranges": [
       { "base": 50, "maximum": 100, "percent": true, "step": false }
     ]
   },
   "chaotic-ouroboros-core": {
-    "description": "On [Last Flare], convert Gauge above its paid cost into a Shield: 0.3% -> 0.6% of your maximum HP per excess Gauge. Consume the excess Gauge even if a stronger Shield replaces the new Shield. [Last Flare] recovery applies as usual.",
+    "description": "[Last Flare] converts your Gauge above its cost into a Shield of 0.3% -> 0.6% of your maximum HP per Gauge.",
     "ranges": [
       { "base": 0.3, "maximum": 0.6, "percent": true, "step": false }
     ]
   },
   "infernic-cinder-testament": {
-    "description": "Each consecutive damaging tick of your [Burn] on the same enemy adds +20% -> +40% [Burn] damage per preceding tick. Reapplying [Burn] resets this item's tick streak on that target.",
+    "description": "Your [Burn] deals +20% -> +40% more damage for each consecutive tick on the same enemy. Reapplying [Burn] resets the streak.",
     "ranges": [
       { "base": 20, "maximum": 40, "percent": true, "step": false }
     ]
   },
   "aquatic-undertide-chronometer": {
-    "description": "Each [Weaken] you apply to an enemy postpones its next scheduled skill by 1 -> 2 Enemy Turns; it uses [Normal Attack] when postponed. Later schedule intervals shift by the same amount.",
+    "description": "Each [Weaken] you apply delays the enemy's next scheduled skill by 1 -> 2 Enemy Turns.",
     "ranges": [
       {
         "base": 1,
@@ -767,7 +767,7 @@ var conduitRedesign = {
     ]
   },
   "tectonic-faultkeeper-loom": {
-    "description": "After you use [Normal Attack], intercept 30% -> 60% of each other ally's incoming post-mitigation Direct Damage. Your Shield absorbs routed damage; it is not mitigated a second time.",
+    "description": "After you use [Normal Attack], take 30% -> 60% of the Direct Damage aimed at each other ally that Enemy Turn. Your Shield absorbs it first.",
     "ranges": [
       {
         "base": 30,
@@ -778,7 +778,7 @@ var conduitRedesign = {
     ]
   },
   "efflorescent-verdant-covenant": {
-    "description": "An effective active heal of another ally primes +20% -> +40% Direct Damage for that recipient's next [Skill 1] or [Skill 2]. The bonus adds to other Verdant bonuses. [Last Flare] and [Normal Attack] do not consume it.",
+    "description": "Healing another ally gives their next [Skill 1] or [Skill 2] +20% -> +40% Direct Damage.",
     "ranges": [
       {
         "base": 20,
@@ -789,7 +789,7 @@ var conduitRedesign = {
     ]
   },
   "voltaic-stormstep-dynamo": {
-    "description": "Switching directly between [Skill 1] and [Skill 2] gives the new action +25% -> +50% Direct Damage. Repeating a slot, using [Normal Attack]/[Last Flare], or a non-damaging new action breaks the chain. action receives no bonus.",
+    "description": "Alternating between [Skill 1] and [Skill 2] gives each switch +25% -> +50% Direct Damage. Any other action breaks the chain.",
     "ranges": [
       {
         "base": 25,
@@ -800,7 +800,7 @@ var conduitRedesign = {
     ]
   },
   "atmospheric-skythread-rudder": {
-    "description": "Each [Normal Attack] grants a [Tailwind]. Each [Tailwind] reduces the cost of your next available [Skill 1] or [Skill 2] by 10 -> 20 Gauge. [Tailwind] charges stack and are spent when you use an ordinary skill.",
+    "description": "Each [Normal Attack] grants a [Tailwind]. Each [Tailwind] reduces your next [Skill 1] or [Skill 2] cost by 10 -> 20 Gauge, and that skill spends all of them.",
     "ranges": [
       {
         "base": 10,
@@ -811,7 +811,7 @@ var conduitRedesign = {
     ]
   },
   "luminous-dawn-witness-array": {
-    "description": "Each noncritical [Normal Attack] adds a [Witness]. The next critical Attack Action consumes all [Witnesses], adding 15% -> 30% of your Attack per [Witness] as a Bonus Strike against its primary target after the Attack Action. No strike if that target has fallen.",
+    "description": "Each noncritical [Normal Attack] adds a [Witness]. Your next critical Attack Action consumes them for a Bonus Strike of 15% -> 30% of your Attack per [Witness].",
     "ranges": [
       {
         "base": 15,
@@ -822,7 +822,7 @@ var conduitRedesign = {
     ]
   },
   "ominous-nightglass-archive": {
-    "description": "Each damaging Attack Action adds a personal [Fracture] to every surviving target. Your [Normal Attack] consumes them for +10% -> +20% Direct Damage per mark. Marks are placed after impact; the current [Skill] does not consume them by default.",
+    "description": "Your damaging Attack Actions mark each surviving target with a [Fracture]. Your [Normal Attack] consumes them for +10% -> +20% Direct Damage per [Fracture].",
     "ranges": [
       {
         "base": 10,
@@ -833,7 +833,7 @@ var conduitRedesign = {
     ]
   },
   "tranquilitic-stillhour-carillon": {
-    "description": "At the start of a forced [Last Flare] recovery turn, gain 15 -> 30 Gauge and give the lowest-Gauge other living ally the same amount. No gain on an ordinary unspent turn or when no action slot is available.",
+    "description": "At the start of each [Last Flare] recovery turn, gain 15 -> 30 Gauge and give the same amount to the other ally with the lowest Gauge.",
     "ranges": [
       {
         "base": 15,
@@ -844,7 +844,7 @@ var conduitRedesign = {
     ]
   },
   "chaotic-paradox-spindle": {
-    "description": "During forced [Last Flare] recovery, your [Normal Attack] deals 50% -> 75% of its normal Direct Damage. Skills are unavailable. [Normal Attack] uses its normal Gauge costs, gains and Conduit effects; the recovery date is fixed.",
+    "description": "During [Last Flare] recovery, you can use [Normal Attack] at 50% -> 75% Direct Damage.",
     "ranges": [
       {
         "base": 50,
@@ -855,13 +855,13 @@ var conduitRedesign = {
     ]
   },
   "tempered-strike-link": {
-    "description": "Each [Normal Attack] against an enemy with your [Burn] consumes one remaining [Burn] Enemy Turn after impact and adds a Bonus Strike equal to 80% -> 160% of that [Burn]'s next-tick damage. If the Attack Action defeats the enemy, it does not consume [Burn] or strike.",
+    "description": "Each [Normal Attack] against an enemy with your [Burn] consumes one Enemy Turn of it for a Bonus Strike of 80% -> 160% of that [Burn]'s tick damage.",
     "ranges": [
       { "base": 80, "maximum": 160, "percent": true, "step": false }
     ]
   },
   "mending-valve": {
-    "description": "Each enemy you defeat with Direct Damage heals the most injured living ally for 8% -> 16% of your maximum HP, including you.",
+    "description": "Each enemy you defeat with Direct Damage heals the most injured ally, including you, for 8% -> 16% of your maximum HP.",
     "ranges": [
       {
         "base": 8,
@@ -872,13 +872,13 @@ var conduitRedesign = {
     ]
   },
   "ward-stitch-spool": {
-    "description": "Each Shield amount also adds 25% -> 50% of that amount to the recipient's Shield after the normal refresh. The added amount is a Shield and follows the same replacement rules.",
+    "description": "Shields you grant are 25% -> 50% larger.",
     "ranges": [
       { "base": 25, "maximum": 50, "percent": true, "step": false }
     ]
   },
   "cinder-metering-nozzle": {
-    "description": "When an enemy carrying your [Burn] dies with phases remaining, copy that remaining [Burn] to the healthiest living enemy at 25% -> 50% tick potency. A stronger existing [Burn] is not overwritten. Copied [Burn] cannot spread again or trigger any Conduit or resource.",
+    "description": "When an enemy with your [Burn] dies, its remaining [Burn] spreads to the healthiest enemy at 25% -> 50% potency. Spread [Burn] cannot spread again.",
     "ranges": [
       {
         "base": 25,
@@ -889,7 +889,7 @@ var conduitRedesign = {
     ]
   },
   "pulse-trigger-pawl": {
-    "description": "A critical [Skill 1] or [Skill 2] hit that deals HP damage grants 8 -> 16 Gauge. [Normal Attack], [Last Flare] and Bonus Strikes grant no Gauge.",
+    "description": "Critical [Skill 1] or [Skill 2] hits grant 8 -> 16 Gauge.",
     "ranges": [
       {
         "base": 8,
@@ -911,7 +911,7 @@ var conduitRedesign = {
     ]
   },
   "secondbeat-rack": {
-    "description": "If an enemy carrying your [Weaken] dies, transfer its remaining duration and reduction to the highest-Attack living enemy. Transfer potency is 60% -> 100% of the old reduction, duration. Stronger existing [Weaken] wins; transferred [Weaken] cannot transfer again or generate resources.",
+    "description": "When an enemy with your [Weaken] dies, its [Weaken] moves to the highest-Attack enemy at 60% -> 100% strength. Moved [Weaken] cannot move again.",
     "ranges": [
       {
         "base": 60,
@@ -922,29 +922,29 @@ var conduitRedesign = {
     ]
   },
   "flare-focusing-iris": {
-    "description": "On an [Infernic Embers] spend, add a Bonus Strike to each enemy already carrying your [Burn] for 25% -> 50% of its next-tick damage per spent charge. No added [Burn] phase is consumed or granted.",
+    "description": "When you spend [Infernic Embers], each enemy with your [Burn] takes a Bonus Strike of 25% -> 50% of its tick damage per charge spent.",
     "ranges": [
       { "base": 25, "maximum": 50, "percent": true, "step": false }
     ]
   },
   "clearwater-manifold": {
-    "description": "Gauge gained from your abilities that exceeds your capacity gives the lowest-Gauge other living ally 50% -> 100% of the overflow. Conduit Gauge does not overflow to allies, and routed Gauge does not trigger another overflow.",
+    "description": "Gauge you gain beyond your capacity passes 50% -> 100% of the excess to the other ally with the lowest Gauge.",
     "ranges": [
       { "base": 50, "maximum": 100, "percent": true, "step": false }
     ]
   },
   "aegis-return-spring": {
-    "description": "Each Shield gain on another ally grants that ally a [Critical Seal]. Each [Critical Seal] makes an enemy critical hit against that ally use multiplier 1, then consumes one [Critical Seal]. Each hit uses its ordinary critical RNG result.",
+    "description": "Each Shield you grant another ally also gives them a [Critical Seal], which turns the next enemy critical hit against them into a normal hit.",
     "ranges": []
   },
   "emberlife-kiln": {
-    "description": "Each point of HP damage from your [Burn] heals you for 20% -> 40% of that damage. Propagated [Burn] and Bonus Strikes do not heal you.",
+    "description": "Your [Burn] heals you for 20% -> 40% of the damage it deals.",
     "ranges": [
       { "base": 20, "maximum": 40, "percent": true, "step": false }
     ]
   },
   "tension-governor": {
-    "description": "Your [Weaken] is +5 -> +10 percentage points stronger; it does not create [Weaken].",
+    "description": "Your [Weaken] is +5 -> +10 percentage points stronger.",
     "ranges": [
       {
         "base": 5,
@@ -955,13 +955,13 @@ var conduitRedesign = {
     ]
   },
   "covercharge-drum": {
-    "description": "After a active team heal, redirect 40% -> 80% of the total overheal to the most injured other living ally. This is immediate Conduit healing, not another heal or a saved seed.",
+    "description": "After a team heal, 40% -> 80% of the overhealing goes to the most injured other ally.",
     "ranges": [
       { "base": 40, "maximum": 80, "percent": true, "step": false }
     ]
   },
   "sootwake-crucible": {
-    "description": "When your [Burn] tick leaves an enemy alive, add a [Sootwake] to that enemy. Each [Sootwake] adds +20% -> +40% Direct Damage to the next other ally's hit against that enemy, then all stored [Sootwake] marks are consumed. Marks last through the following player Round and stack.",
+    "description": "When your [Burn] ticks on a surviving enemy, it gains a [Sootwake]. The next hit from another ally on that enemy consumes all [Sootwake] for +20% -> +40% Direct Damage each.",
     "ranges": [
       {
         "base": 20,
@@ -972,17 +972,17 @@ var conduitRedesign = {
     ]
   },
   "tidebound-reflector": {
-    "description": "Each time your Shield absorbs an enemy hit, reflect 20% -> 40% of the absorbed damage to its attacker. Reflected or routed damage is not reflected again.",
+    "description": "When your Shield absorbs an enemy hit, reflect 20% -> 40% of the absorbed damage to the attacker.",
     "ranges": [
       { "base": 20, "maximum": 40, "percent": true, "step": false }
     ]
   },
   "pressurecrest-governor": {
-    "description": "Each critical Attack Action grants a [Windveil]. Each [Windveil] avoids an enemy [Normal Attack] against you and is consumed; scheduled skills cannot be avoided. Avoided hits provide no incoming-hit Gauge or absorption trigger.",
+    "description": "Each critical Attack Action grants a [Windveil], which dodges the next enemy normal attack against you.",
     "ranges": []
   },
   "rootbound-triage-vault": {
-    "description": "After your active healing restores HP, if a living ally is below 20% -> 40% of their maximum HP and you have 15 Gauge, spend 15 Gauge to heal the living ally with the lowest HP ratio to that threshold. Gauge is spent only when HP is restored.",
+    "description": "After your active healing, spend 15 Gauge to heal the ally with the lowest HP up to 20% -> 40% of their maximum HP if they are below it.",
     "ranges": [
       {
         "base": 20,
@@ -993,7 +993,7 @@ var conduitRedesign = {
     ]
   },
   "solace-anchor": {
-    "description": "Your first [Normal Attack] each player turn costs 10 Gauge and does not spend your action if you have at least 10 Gauge. It also reduces Direct Damage to you by 10% -> 20% until the end of the current Enemy Turn.",
+    "description": "Your first [Normal Attack] each player turn costs 10 Gauge, does not spend your action and reduces Direct Damage to you by 10% -> 20% until the Enemy Turn ends.",
     "ranges": [
       {
         "base": 10,
@@ -1004,7 +1004,7 @@ var conduitRedesign = {
     ]
   },
   "ruinselect-prism": {
-    "description": "[Skill 1] may consume your existing personal [Fractures] as well as [Normal Attack], for +15% -> +30% [Skill 1] Direct Damage per mark. Grants no marks, consumes before impact and never consumes another owner's marks.",
+    "description": "[Skill 1] can also consume your [Fractures] for +15% -> +30% Direct Damage each.",
     "ranges": [
       {
         "base": 15,
@@ -1015,7 +1015,7 @@ var conduitRedesign = {
     ]
   },
   "infernic-pyre-census": {
-    "description": "Each damaging [Burn] tick on an enemy becomes a [Census] tick for +75% -> +150% damage. Track ticks across refreshes; reset when [Burn] expires or changes owner. Conduit [Burn] does not count. No critical roll or cooldown effect.",
+    "description": "Your [Burn] ticks become [Census] ticks that deal +75% -> +150% damage.",
     "ranges": [
       {
         "base": 75,
@@ -1026,11 +1026,11 @@ var conduitRedesign = {
     ]
   },
   "oceanic-shared-tide-pump": {
-    "description": "When an ally protected by your Shield is hit, other living allies' Shields from you absorb the hit before the target's own Shield. Drain the linked Shields in squad order; no HP routing.",
+    "description": "When an ally with your Shield is hit, your Shields on other allies absorb the hit first.",
     "ranges": []
   },
   "atmospheric-storm-clock": {
-    "description": "Each critical Attack Action adds a [Storm Clock] charge. Each charge reduces the next [Last Flare] cost by 15 -> 30 Gauge. Using [Last Flare] consumes all stored charges; critical [Last Flare] hits do not add charges.",
+    "description": "Each critical Attack Action stores a [Storm Clock] charge that reduces your next [Last Flare] cost by 15 -> 30 Gauge. [Last Flare] spends all charges.",
     "ranges": [
       {
         "base": 15,
@@ -1052,7 +1052,7 @@ var conduitRedesign = {
     ]
   },
   "tranquilitic-accord-bastion": {
-    "description": "Effective support of another ally grants them [Accord]. Their next lethal Direct Damage hit leaves them at 1 HP, consumes [Accord] and grants a Shield of 10% -> 20% of your maximum HP after the hit. [Accord] does not revive or protect them from later hits.",
+    "description": "Supporting another ally grants them [Accord]: the next hit that would defeat them leaves them at 1 HP and grants a Shield of 10% -> 20% of your maximum HP.",
     "ranges": [
       {
         "base": 10,
@@ -1063,133 +1063,133 @@ var conduitRedesign = {
     ]
   },
   "chaotic-fault-verdict": {
-    "description": "After each critical hit from an Attack Action, if its target survives, consume your current Shield to add 50% -> 100% of the Shield spent as Bonus Strike damage to that target. No Shield means no Bonus Strike.",
+    "description": "When your Attack Action critically hits and the target survives, spend your Shield to deal 50% -> 100% of it as a Bonus Strike.",
     "ranges": [
       { "base": 50, "maximum": 100, "percent": true, "step": false }
     ]
   },
   "master-ember-1": {
-    "description": "When [Infernis]'s [Burn] would expire from ticking, pay 3% of your maximum HP to extend it for one Enemy Turn if [Infernis] is above 50% HP and can pay while staying at 1 HP or more. This payment can extend [Burn] each time it expires.",
+    "description": "When [Infernis]'s [Burn] would expire, pay 3% of maximum HP to extend it by one Enemy Turn while [Infernis] is above 50% HP.",
     "ranges": []
   },
   "master-ember-2": {
-    "description": "[Flame Arc] is a single-target siege strike with double its Direct Damage coefficient. Only the selected target's owned [Burn] can detonate. [Flame Arc] uses its normal cost; [Last Flare] targets all enemies.",
+    "description": "[Flame Arc] hits one target with double Direct Damage and detonates only that target's [Burn].",
     "ranges": []
   },
   "master-ember-3": {
-    "description": "[Flame Arc] detonates its owned [Burn], consuming one tick; without an owned [Burn], it deals no detonation damage. [Last Flare] applies its ordinary [Burn].",
+    "description": "[Flame Arc] detonates your [Burn] on its target, consuming one tick.",
     "ranges": []
   },
   "master-tide-1": {
-    "description": "Whenever an enemy hit completely breaks [Tizu]'s Shield, that hit cannot spill damage into the protected ally's HP. The Shield must absorb positive damage and belongs to [Tizu].",
+    "description": "Damage from a hit that breaks [Tizu]'s Shield does not carry over to the protected ally's HP.",
     "ranges": []
   },
   "master-tide-2": {
-    "description": "[Tidal Shelter] gives the selected living ally three times its Shield amount for one Enemy Turn. Other allies receive no Shield from this effect, and [Last Flare: Ocean Memory] uses its own effect. Stillwater Gauge requires a full hit absorbed by [Tizu]'s Shield.",
+    "description": "[Tidal Shelter] gives the selected ally three times its Shield amount for one Enemy Turn instead of shielding the team.",
     "ranges": []
   },
   "master-tide-3": {
-    "description": "An enemy carrying [Tizu]'s [Weaken] targets [Tizu] with single-target hostile actions while he lives. Attacks use the enemy's ordinary critical roll, [Weaken] and damage calculation. The most recently applied forced-target effect sets the target; area attacks follow their normal targeting.",
+    "description": "Enemies with [Tizu]'s [Weaken] target [Tizu] with single-target attacks while he lives.",
     "ranges": []
   },
   "master-sprout-1": {
-    "description": "After each living ally's [Skill 1] or [Skill 2], including [Flora]'s, heal each living ally for 2% of that recipient's maximum HP. This healing does not trigger another Conduit effect.",
+    "description": "After any ally's [Skill 1] or [Skill 2], heal each ally for 2% of their maximum HP.",
     "ranges": []
   },
   "master-sprout-2": {
-    "description": "A damaging [Skill 1] adds [Rootbind] to its surviving target. Its next scheduled skill is replaced by [Normal Attack], then [Rootbind] ends. Each enemy can be affected by [Rootbind]; [Normal Attack] does not consume it. [Skill 1] deals its listed Direct Damage and applies [Seed].",
+    "description": "A damaging [Skill 1] applies [Rootbind]: the target's next scheduled skill becomes a [Normal Attack].",
     "ranges": []
   },
   "master-sprout-3": {
-    "description": "After [Last Flare: Worldseed] resolves its Direct Damage and healing, revive every fallen other ally at 30% of their maximum HP with 0 Gauge. Revived allies keep any existing recovery. Resurrection triggers no healing or resource effects. [Flora] must survive to cast and pays its normal cost and recovery.",
+    "description": "After [Last Flare: Worldseed], revive each fallen ally at 30% of their maximum HP with 0 Gauge.",
     "ranges": []
   },
   "master-atmoso-1": {
-    "description": "[Normal Attack] hits all enemies at 70% of its usual Direct Damage coefficient per target. Gauge gain, action cost and action-based triggers resolve for the Attack Action; Bonus Strikes do not trigger other on-hit effects.",
+    "description": "[Normal Attack] hits all enemies at 70% Direct Damage.",
     "ranges": []
   },
   "master-atmoso-2": {
-    "description": "[Cyclone Weave] gives [Atmoso] [Counterwind] until his next action. Each Direct Damage hit he survives adds 15% outgoing Direct Damage to that action. Shield absorption qualifies.",
+    "description": "[Cyclone Weave] grants [Counterwind] until [Atmoso]'s next action: each Direct Damage hit he survives adds +15% Direct Damage to that action.",
     "ranges": []
   },
   "master-atmoso-3": {
-    "description": "For each percentage point of Critical Rate above 100% before Critical Rate is applied, your Attack Actions gain 1% Direct Damage. [Verdict Caliper] disables this benefit.",
+    "description": "Your Attack Actions gain 1% Direct Damage per percentage point of Critical Rate above 100%. Disabled by [Verdict Caliper].",
     "ranges": []
   },
   "master-aurora-1": {
-    "description": "Enemies carrying [Aurora]'s unconsumed [Seal] have 15% less effective Defense against allied Attack Actions. Exposure ends when the [Seal] is consumed or expires; it does not alter stored Defense.",
+    "description": "Enemies with [Aurora]'s [Seal] have 15% less Defense against allied Attack Actions until the [Seal] ends.",
     "ranges": []
   },
   "master-aurora-2": {
-    "description": "[Aurora]'s [Last Flare] adds a [Judgment Seal] to each surviving enemy for two Enemy Turns. Enemies with [Judgment Seal] cannot critically hit; attacks consume their ordinary critical RNG draw. Recasting refreshes the Seal without canceling a scheduled skill.",
+    "description": "[Aurora]'s [Last Flare] applies a [Judgment Seal] to each surviving enemy for two Enemy Turns. Enemies with [Judgment Seal] cannot critically hit.",
     "ranges": []
   },
   "master-aurora-3": {
-    "description": "After an enemy carrying [Aurora]'s unconsumed [Seal] removes an ally's HP with a Direct Damage hit, heal the most injured other living ally for 50% of that HP loss. No revival or routed-damage trigger; a special that consumes the [Seal] does not qualify.",
+    "description": "When an enemy with [Aurora]'s [Seal] damages an ally's HP, heal the most injured other ally for 50% of that damage.",
     "ranges": []
   },
   "master-bliss-1": {
-    "description": "Before [Skill 2], automatically pay 10% of your maximum HP if [Bliss] can remain at 1 HP or more. Divide that paid HP equally as additional healing for the other living allies in any posture. Her posture effects apply normally. With no other living ally, no HP is paid.",
+    "description": "Before [Skill 2], [Bliss] pays 10% of her maximum HP and splits it as extra healing among the other allies.",
     "ranges": []
   },
   "master-bliss-2": {
-    "description": "[Warfeather Cut] becomes two impacts against the same selected target, each at 70% of the original final Direct Damage. Both impacts use the same critical result. Costs, resource changes and Conduit effects use the Attack Action's combined HP damage. Stop if the hit kills; never retarget the second.",
+    "description": "[Warfeather Cut] strikes the same target twice, each at 70% Direct Damage.",
     "ranges": []
   },
   "master-bliss-3": {
-    "description": "[Bliss]'s [Last Flare] gives the lowest-Gauge other living ally a [Quiet Feather]. Their next legal [Skill 1] costs no Gauge; the [Quiet Feather] is consumed before that skill. It grants no action and cannot unlock a missing skill or bypass cooldown or recovery. Other discounts do not create a refund.",
+    "description": "[Bliss]'s [Last Flare] gives the other ally with the lowest Gauge a [Quiet Feather]: their next [Skill 1] costs no Gauge.",
     "ranges": []
   },
   "master-bruno-1": {
-    "description": "Enemy hits deal 20% less Direct Damage to [Bruno] after his Shield absorbs damage. [Burn] is unaffected.",
+    "description": "Enemy hits deal 20% less Direct Damage to [Bruno] after his Shield absorbs damage.",
     "ranges": []
   },
   "master-bruno-2": {
-    "description": "[Bruno]'s [Last Flare] Direct Damage uses [Bruno]'s Defense in place of his Attack, both for its damage percentage and for mitigation (his Defense divided by his Defense plus the enemy's Defense). Critical and outgoing-damage multipliers apply; other actions use Attack.",
+    "description": "[Bruno]'s [Last Flare] uses his Defense in place of his Attack.",
     "ranges": []
   },
   "master-bruno-3": {
-    "description": "Each damaging [Skill 1] permanently removes 15% of the target's Battle-start Defense. In exchange, [Skill 2] [Cover] redirects 35% rather than 50%. Reset excavation on a fresh Battle; it does not apply [Weaken] or trigger itself.",
+    "description": "Each damaging [Skill 1] removes 15% of the target's Defense for the rest of the Battle. [Skill 2] [Cover] redirects 35% instead of 50%.",
     "ranges": []
   },
   "master-disciple-1": {
-    "description": "[Disciple]'s [Instructions] expire two player Rounds later. They enhance the recipient's next Attack Action.",
+    "description": "[Disciple]'s [Instructions] last two player Rounds and enhance the recipient's next Attack Action.",
     "ranges": []
   },
   "master-disciple-2": {
-    "description": "After [Last Flare], link living allies through the next two player Rounds. Positive Gauge gains to a linked ally are split equally among living linked allies, limited only by each ally's Gauge capacity. Costs, refunds and Conduit Gauge are not shared. The link ends if [Disciple] falls.",
+    "description": "After [Last Flare], allies are linked for two player Rounds: Gauge gained by a linked ally is split equally among all linked allies.",
     "ranges": []
   },
   "master-disciple-3": {
-    "description": "After a [Strike] [Instruction], its selected living recipient makes a Conduit-triggered Bonus Strike at 40% of [Disciple]'s Attack against the first living enemy in formation order. This Bonus Strike does not roll criticals, grant Gauge or resources, spend an action, consume an [Instruction], or trigger other effects.",
+    "description": "After a [Strike] [Instruction], its recipient makes a Bonus Strike of 40% of [Disciple]'s Attack against the first enemy.",
     "ranges": []
   },
   "master-elise-1": {
-    "description": "[Elise]'s critical Direct Damage hits ignore 50% enemy Defense, but their final critical multiplier is fixed at 1.5, including elemental criticals, regardless of Critical Damage modifiers. Noncritical hits use standard mitigation; Shields absorb damage first.",
+    "description": "[Elise]'s critical hits ignore 50% enemy Defense, but their critical multiplier is fixed at 1.5.",
     "ranges": []
   },
   "master-elise-2": {
-    "description": "[Last Flare] resolves four impacts per original target, each 30% of the original final damage. Reuse the critical result per target; costs, recovery and Conduit or resource triggers happen using combined HP damage. Never retarget impacts from fallen enemies.",
+    "description": "[Last Flare] strikes each target four times at 30% Direct Damage each.",
     "ranges": []
   },
   "master-elise-3": {
-    "description": "Each Direct Damage kill by [Elise] clears her spent flag while she is ready, allowing another legal action that player turn. [Last Flare] recovery applies, and kills do not bypass it.",
+    "description": "Each enemy [Elise] defeats with Direct Damage lets her act again that player turn.",
     "ranges": []
   },
   "master-razor-1": {
-    "description": "After using [Normal Attack], [Razor] parries the first scheduled enemy skill targeting him that Enemy Turn: reduce that hit's Direct Damage by 50%, then reflect 50% of the prevented damage to the surviving attacker. Enemy normal attacks do not consume the parry. Reflection is Conduit-triggered and cannot reflect again.",
+    "description": "After using [Normal Attack], [Razor] parries the first enemy skill aimed at him that Enemy Turn: it deals 50% less Direct Damage and reflects 50% of the prevented damage to the attacker.",
     "ranges": []
   },
   "master-razor-2": {
-    "description": "Before [Last Flare], consume [Razor]'s entire existing Shield to add +2% Direct Damage per 1% of your maximum HP spent. [Last Flare]'s new Shield is applied afterward and cannot fund that cast. No existing Shield means no bonus.",
+    "description": "Before [Last Flare], [Razor] consumes his Shield for +2% Direct Damage per 1% of maximum HP it held.",
     "ranges": []
   },
   "master-razor-3": {
-    "description": "Each [Skill 1] hit applies [Silence] to its surviving target; the target's next scheduled skill becomes [Normal Attack], then [Silence] ends. [Normal Attack] does not consume [Silence].",
+    "description": "Each [Skill 1] hit applies [Silence]: the target's next scheduled skill becomes a [Normal Attack].",
     "ranges": []
   },
   "master-rosetta-1": {
-    "description": "After two allies contribute to [Quarry], each hit against it grants a Shield equal to 48% of the lowest-HP-ratio living ally's maximum HP, whether or not that ally contributed.",
+    "description": "After two allies hit the [Quarry], each further hit on it grants a Shield equal to 48% of the maximum HP of the ally with the lowest HP ratio.",
     "ranges": []
   },
   "master-rosetta-2": {
@@ -1197,67 +1197,67 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-rosetta-3": {
-    "description": "Each [Last Flare] adds a [Golden Opening] to the surviving [Quarry]. Each Opening adds +40% Direct Damage to the next other ally's hit against that enemy, then one Opening is consumed. Openings accumulate; [Rosetta] cannot consume them.",
+    "description": "Each [Last Flare] adds a [Golden Opening] to the [Quarry]. Each one gives another ally's next hit on it +40% Direct Damage, then is consumed. Openings stack.",
     "ranges": []
   },
   "master-thornia-1": {
-    "description": "When a hostile enemy action triggers [Thornia]'s trap, it deals a Bonus Strike equal to 40% of your Attack to every living enemy. Trap charges are spent as usual; harmless enemy actions and a defeated [Thornia] do not trigger it.",
+    "description": "When an enemy triggers [Thornia]'s trap, deal a Bonus Strike of 40% of her Attack to every enemy.",
     "ranges": []
   },
   "master-thornia-2": {
-    "description": "When [Skill 2] hits a target with three trap charges, it hits all living enemies at its Direct Damage coefficient and applies Conduit [Weaken] of 15% for one Enemy Turn to secondary survivors. The selected target loses one trap charge; Bonus Strikes do not trigger other on-hit effects.",
+    "description": "When [Skill 2] hits a target with three trap charges, it hits all enemies and applies 15% [Weaken] for one Enemy Turn to the others. The target loses one trap charge.",
     "ranges": []
   },
   "master-thornia-3": {
-    "description": "[Gilded Thorn Guard] links its living other recipients to [Thornia] until the next player-turn start. For each lethal Direct Damage hit to a linked ally, route the lethal excess into [Thornia]'s Shield and HP; preserve the ally if the full lethal excess is removed. [Thornia] can be defeated and does not revive herself.",
+    "description": "[Gilded Thorn Guard] links its recipients to [Thornia] until the next player turn. Lethal damage to a linked ally is moved to [Thornia]'s Shield and HP instead.",
     "ranges": []
   },
   "master-crinso-1": {
-    "description": "A critical [Golden Edge] stores its critical multiplier minus one as a bonus for [Crimson Rupture]. Stored bonuses add together and are consumed by [Crimson Rupture]. No [Burn] or extra critical roll.",
+    "description": "A critical [Golden Edge] stores its extra critical damage as a bonus for your next [Crimson Rupture]. Stored bonuses stack.",
     "ranges": []
   },
   "master-crinso-2": {
-    "description": "Before [Crimson Rupture], consume your current Shield. After its Direct Damage, deal a Bonus Strike equal to 50% of the Shield consumed. No consumed Shield means no Bonus Strike. No [Burn], new RNG or Conduit resource effects.",
+    "description": "Before [Crimson Rupture], consume your Shield. After it hits, deal a Bonus Strike equal to 50% of the Shield consumed.",
     "ranges": []
   },
   "master-crinso-3": {
-    "description": "[Golden Edge] and [Crimson Rupture] alternate bonuses, starting with [Golden Edge]. [Golden Edge]: +30% Direct Damage. [Crimson Rupture]: heals [Crinso] for 20% of Direct Damage to HP. [Last Flare: Blossoming Cataclysm] receives both bonuses and makes the next [Golden Edge] or [Crimson Rupture] receive the [Golden Edge] bonus.",
+    "description": "[Golden Edge] and [Crimson Rupture] alternate bonuses, starting with [Golden Edge]: [Golden Edge] deals +30% Direct Damage; [Crimson Rupture] heals [Crinso] for 20% of its HP damage. [Last Flare: Blossoming Cataclysm] gets both bonuses and restarts the order at [Golden Edge].",
     "ranges": []
   },
   "master-nerithe-1": {
-    "description": "[Nerithe]'s [Normal Attack] applies [Charted] to its surviving target. Another ally's next single-target damaging Attack Action deals a Bonus Strike for 40% of its damage to each different enemy affected by [Charted], then clears all [Charted]. The Bonus Strike does not hit the original target or trigger Gauge or other on-hit effects.",
+    "description": "[Nerithe]'s [Normal Attack] marks its target with [Charted]. Another ally's next single-target Attack Action deals a Bonus Strike of 40% of its damage to each other [Charted] enemy, then clears all [Charted].",
     "ranges": []
   },
   "master-nerithe-2": {
-    "description": "[Fold the Sea] deals no Direct Damage and applies no [Weaken]. It grants each living ally 15 Gauge and reduces damage from their next enemy hit by 15%. Repeated uses stack protection multiplicatively. It keeps its [Skill 2] Gauge cost and action timing.",
+    "description": "[Fold the Sea] deals no damage. Instead, it grants each ally 15 Gauge and 15% less damage from their next enemy hit.",
     "ranges": []
   },
   "master-nerithe-3": {
-    "description": "[Ocean Beyond the Map] deals 50% less Direct Damage and imposes no next-turn recovery. Its 100 Gauge cost and [Weaken] apply as usual.",
+    "description": "[Ocean Beyond the Map] deals 50% less Direct Damage but has no recovery turn.",
     "ranges": []
   },
   "master-orvella-1": {
-    "description": "[Foundation] starts with half its usual shared durability. On creation, each living ally also receives a Shield equal to 5% of your maximum HP. Plates refresh without stacking and absorb damage as Shields; they grant no Gauge.",
+    "description": "[Foundation] has half durability, and each ally also gains a Shield of 5% of your maximum HP when it is created.",
     "ranges": []
   },
   "master-orvella-2": {
-    "description": "After [Foundation] is created, spend its durability to heal living injured allies in equal shares. Deduct only the HP restored; no injured ally means no payment.",
+    "description": "After [Foundation] is created, its durability heals injured allies in equal shares.",
     "ranges": []
   },
   "master-orvella-3": {
-    "description": "[Orvella] gains +20% of her Battle-start Defense as effective Defense per living ally protected by a Shield or her active [Foundation]. Recalculate before each hit; her HP is unaffected.",
+    "description": "[Orvella] gains +20% Defense for each ally protected by a Shield or her [Foundation].",
     "ranges": []
   },
   "master-vaelor-1": {
-    "description": "[Last Chord of the Sky] pays 20% of [Vaelor]'s current HP immediately before impact, leaving at least 1 HP, for +75% Direct Damage. This payment is mandatory while equipped, is not hostile damage and grants no incoming-hit effects. Pay its normal Gauge cost and take its next-turn recovery.",
+    "description": "[Last Chord of the Sky] costs 20% of [Vaelor]'s current HP and deals +75% Direct Damage.",
     "ranges": []
   },
   "master-vaelor-2": {
-    "description": "[Skill 2] cast during [Rise] also applies Conduit [Weaken] of 15% for one Enemy Turn to surviving targets hit by [Skill 2]. A stronger existing [Weaken] is not overwritten.",
+    "description": "[Skill 2] used during [Rise] also applies 15% [Weaken] for one Enemy Turn.",
     "ranges": []
   },
   "master-vaelor-3": {
-    "description": "[Vaelor]'s [Normal Attack] clears the spent flag of the highest-Gauge other living ally who is not recovering. [Vaelor] spends his action; the recipient pays full costs and follows readiness and recovery rules.",
+    "description": "[Vaelor]'s [Normal Attack] lets the other ally with the most Gauge act again this player turn.",
     "ranges": []
   }
 };
@@ -1635,15 +1635,15 @@ function calamiticEffect(id, level = 0) {
   const amount = (base, maximum) => Number(calamiticPower(level, base, maximum).toFixed(6));
   switch (id) {
     case "calamitic-world-eater-orrery":
-      return `Store ${amount(40, 80)}% of enemy Direct Damage to HP suffered by living squad members. [Normal Attack] releases the reserve as a Bonus Strike against the healthiest enemy, after shields and normal Defense mitigation. Bonus Strikes, Shields and HP payments do not fill the reserve.`;
+      return `Store ${amount(40, 80)}% of enemy Direct Damage to HP suffered by living squad members. [Normal Attack] releases the reserve as a Bonus Strike against the healthiest enemy.`;
     case "calamitic-causality-funeral-engine":
-      return `Defer ${amount(40, 60)}% of each enemy hit's Direct Damage to HP after Shields. Pay the debt at the start of the next Enemy Turn, before attacks. Debt bypasses Shields and protection, can defeat you and cannot be deferred again. Routed damage is not deferred.`;
+      return `Defer ${amount(40, 60)}% of each enemy hit's Direct Damage to HP after Shields. The deferred damage is taken at the start of the next Enemy Turn, ignores Shields and can defeat you.`;
     case "calamitic-horizon-cleaving-godpress":
-      return `${amount(40, 60)}% of your Attack Actions' Direct Damage bypasses enemy Shields. While the target has a Shield, your Attack Actions also gain +${amount(30, 60)}% Direct Damage. Remaining damage spends Shields normally; [Burn] and Bonus Strikes are unaffected.`;
+      return `${amount(40, 60)}% of your Attack Actions' Direct Damage bypasses enemy Shields. While the target has a Shield, your Attack Actions also gain +${amount(30, 60)}% Direct Damage.`;
     case "calamitic-throne-borrowed-tomorrows":
-      return `Your first [Normal Attack] each player turn does not spend your action and lets you take one additional [Skill 1] or [Skill 2] that turn. Pay its normal cost, then gain ${amount(10, 30)} Gauge; you cannot act on the next player turn. If you do not take the additional action, you do not lose a turn. Follow recovery and unavailable-skill rules.`;
+      return `Your first [Normal Attack] each player turn does not spend your action and lets you take one additional [Skill 1] or [Skill 2] that turn. Taking it grants ${amount(10, 30)} Gauge, but you cannot act on the next player turn.`;
     case "calamitic-cathedral-final-equation":
-      return `Use three different action types in succession to complete the [Equation]. Repeating a type restarts the sequence with that action. The third action releases ${amount(120, 240)}% of your Attack, split equally among living enemies as Bonus Strikes after Shields and normal Defense mitigation, then clears the sequence. No extra critical rolls, Gauge or Attack Action effects.`;
+      return `Use three different action types in succession to complete the [Equation]. Repeating a type restarts the sequence with that action. The third action deals ${amount(120, 240)}% of your Attack as Bonus Strikes split equally among enemies, then restarts the sequence.`;
   }
 }
 
