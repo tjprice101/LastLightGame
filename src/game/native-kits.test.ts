@@ -16,7 +16,7 @@ function encounter(...roster: string[]): BattleState {
   }
   return state;
 }
-function use(state: BattleState, actor: string, action: 'light' | 'skill1' | 'skill2' | 'ultimate' | 'defend', target = state.enemies[0].id) {
+function use(state: BattleState, actor: string, action: 'light' | 'skill1' | 'skill2' | 'ultimate', target = state.enemies[0].id) {
   const unit = state.allies.find(ally => ally.id === actor)!;
   unit.spent = false; unit.shatter = 100; unit.recoverThrough = 0;
   if (unit.conduitRuntime) unit.conduitRuntime.numbers.actions = 0;
@@ -86,9 +86,9 @@ describe('sixteen native identities without equipment', () => {
 
   it('Atmoso charges from other allies once per turn and releases after exactly two phases', () => {
     let state = use(encounter('atmoso', 'ember', 'tide'), 'atmoso', 'skill2').state;
-    state = use(state, 'ember', 'defend').state;
     state = use(state, 'ember', 'light').state;
-    state = use(state, 'tide', 'defend').state;
+    state = use(state, 'ember', 'light').state;
+    state = use(state, 'tide', 'light').state;
     expect(state.allies[0].native?.cyclone?.gusts).toBe(2);
     const first = endTurn(state);
     expect(first.events.some(event => event.nativeKind === 'cyclone')).toBe(false);
@@ -138,7 +138,7 @@ describe('sixteen native identities without equipment', () => {
     expect(opening.state.allies.every(unit => unit.attackBoost?.fraction === .1)).toBe(true);
     let state = encounter('bliss', 'ember');
     state.allies[1].hp = 500;
-    state = use(state, 'ember', 'defend').state;
+    state = use(state, 'ember', 'light').state;
     const closing = use(state, 'bliss', 'skill1');
     expect(closing.state.allies[1].hp).toBe(560);
     const solo = use(encounter('bliss'), 'bliss', 'skill2');
@@ -172,7 +172,7 @@ describe('sixteen native identities without equipment', () => {
   it('Disciple self-instruction survives its granting action and wrong action type consumes it without benefit', () => {
     let state = use(encounter('disciple', 'ember'), 'disciple', 'skill1', 'disciple').state;
     expect(state.allies[0].native?.instruction?.kind).toBe('strike');
-    const defense = use(state, 'disciple', 'defend');
+    const defense = use(state, 'disciple', 'light');
     expect(defense.state.allies[0].native?.instruction).toBeUndefined();
     state = use(state, 'disciple', 'skill2', 'ember').state;
     const strike = use(state, 'ember', 'light');
@@ -274,7 +274,7 @@ describe('sixteen native identities without equipment', () => {
 
   it('Crinso Normal/Defense preserves combination and alternate Gold pierces effective Defense', () => {
     let state = use(encounter('crinso'), 'crinso', 'skill2').state;
-    state = use(state, 'crinso', 'defend').state;
+    state = use(state, 'crinso', 'light').state;
     state.enemies[0].stats.defense = 100;
     const gold = use(state, 'crinso', 'skill1');
     expect(gold.events.find(event => event.kind === 'damage')?.amount).toBe(damageAmount(100, 1.6 * nativeBalance.skillDamageScale, 80, false));

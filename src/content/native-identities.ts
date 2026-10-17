@@ -63,7 +63,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: '[Cyclone Weave] creates a [Cyclone] that grows as allies act and later releases on all enemies; [Razor Gale] can release it early.',
     passive: {
       name: 'Gale Cadence',
-      description: 'While a [Cyclone] is active, the first action each other living ally takes in a player turn ([Normal Attack], [Defense] or any skill) adds one [Gust].',
+      description: 'While a [Cyclone] is active, the first action each other living ally takes in a player turn ([Normal Attack] or any skill) adds one [Gust].',
     },
     abilities: {
       skill1: ability('Razor Gale', '180% direct damage to one enemy. If a [Cyclone] exists, it releases immediately on all living enemies and ends.', 1.8),
@@ -115,7 +115,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: '[Disciple] gives one ally an [Instruction] ([Strike], [Shelter] or [Resolve]) that strengthens its next matching action.',
     passive: {
       name: 'Shared Mindflame',
-      description: '[Disciple] maintains one [Instruction] on one living ally, which can be [Disciple]. The ally’s next action of any kind ([Normal Attack], [Defense] or a skill) uses it up; otherwise it expires at the end of the next player turn. Giving a new [Instruction] replaces the old one. A new [Instruction] takes effect after the action that granted it.',
+      description: '[Disciple] maintains one [Instruction] on one living ally, which can be [Disciple]. The ally’s next action of any kind ([Normal Attack] or a skill) uses it up; otherwise it expires at the end of the next player turn. Giving a new [Instruction] replaces the old one. A new [Instruction] takes effect after the action that granted it.',
     },
     abilities: {
       skill1: ability('Thoughtspark Benediction', 'Give one living ally [Strike]: its next action that deals damage deals 30% more direct damage. If its next action deals no damage, [Strike] is used up with no effect.', undefined, 'one-ally'),
@@ -180,7 +180,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: 'Alternating [Golden Edge] and [Crimson Rupture] builds [Combo]; [Last Flare: Blossoming Cataclysm] spends it.',
     passive: {
       name: 'Rose Duality',
-      description: 'Using [Golden Edge] after [Crimson Rupture], or [Crimson Rupture] after [Golden Edge], adds 1 [Combo]. Using the same one of these two skills twice in a row resets [Combo] to 0. When there is no previous skill to compare (the first use, or after [Last Flare: Blossoming Cataclysm]), the skill starts a new chain at 0 [Combo]. [Normal Attack] and [Defense] do not affect the chain.',
+      description: 'Using [Golden Edge] after [Crimson Rupture], or [Crimson Rupture] after [Golden Edge], adds 1 [Combo]. Using the same one of these two skills twice in a row resets [Combo] to 0. When there is no previous skill to compare (the first use, or after [Last Flare: Blossoming Cataclysm]), the skill starts a new chain at 0 [Combo]. [Normal Attack] does not affect the chain.',
     },
     abilities: {
       skill1: ability('Golden Edge', '160% direct damage to one enemy. If [Crinso]’s previous skill was [Crimson Rupture], this attack ignores 20% of the target’s Defense. Then updates [Combo] as described in [Rose Duality].', 1.6),

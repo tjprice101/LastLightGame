@@ -318,7 +318,6 @@ kbd { display: inline-block; min-width: 24px; padding: 3px 6px; font: 11px "Sego
 .ultimate-ready .battle-art::after { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; background: linear-gradient(110deg, transparent 25%, #fff9 50%, transparent 75%); background-size: 300% 100%; animation: ultimate-shimmer 2s ease-in-out infinite; border-radius: 50%; }
 html[data-motion="reduced"] .ultimate-ready .battle-art::after { display: none; }
 @keyframes ultimate-shimmer { from { background-position: 150% 0; opacity: .15; } 50% { opacity: .65; } to { background-position: -50% 0; opacity: .15; } }
-.defending-unit .unit-status { color: #b9defc; font-weight: 700; }
 .gesture-active { position: relative; z-index: 6; }
 .gesture-choice { position: absolute; bottom: 0; z-index: 7; width: min(280px, 100%); padding: 8px; color: #fff; background: #111b16; border: 1px solid #ffe2a3; border-radius: 8px; font-size: 14px; pointer-events: none; }
 .battle-screen .unit-name { background: #111b16ed; border-radius: 4px; padding: 2px 8px; font-size: 18px; }

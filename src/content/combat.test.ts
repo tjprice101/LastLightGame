@@ -80,7 +80,7 @@ describe('character stat and kit growth', () => {
       }
       if (level) expect(kit.stats.health).toBeGreaterThan(resolveFighter(starter.id, { level: level - 1, evolution }).stats.health);
     }
-    expect(shatterGauge.costs).toEqual({ light: 0, defend: 0, skill1: 25, skill2: 40, ultimate: 100 });
+    expect(shatterGauge.costs).toEqual({ light: 0, skill1: 25, skill2: 40, ultimate: 100 });
     expect(shatterGauge.gains.light).toBe(20);
   });
 

@@ -135,26 +135,23 @@ describe('redesigned ordinary Conduit executable effects', () => {
     const tank = state.allies.find(ally => ally.definitionId === 'sprout')!;
     tank.conduits = ['tectonic-atlas-bastion', null, null, null, null, null, null, null];
     applyConduitWeaken(state, owner, target, .5, events);
-    finishConduitAction(state, tank, prepareConduitAction(state, tank, 'defend', 0, false), events);
+    finishConduitAction(state, tank, prepareConduitAction(state, tank, 'light', 0, false), events);
     expect(forcedConduitTarget(state, target, state.allies[1])).toBe(tank);
     applyConduitWeaken(state, owner, target, .5, events);
     expect(forcedConduitTarget(state, target, tank)).toBe(owner);
-    finishConduitAction(state, tank, prepareConduitAction(state, tank, 'defend', 0, false), events);
+    finishConduitAction(state, tank, prepareConduitAction(state, tank, 'light', 0, false), events);
     state.round++;
     expect(forcedConduitTarget(state, target, tank)).toBe(owner);
     owner.hp = 0;
     expect(forcedConduitTarget(state, target, state.allies[1])).toBe(state.allies[1]);
   });
-  it('does not advance Crinso polarity when using Defense', () => {
+  it('alternates Crinso polarity across Normal Attacks', () => {
     const { state, owner, target, events } = fixture(undefined, 0, 'crinso');
     owner.masterConduit = 'master-crinso-3';
     owner.hp = 500;
     const gold = prepareConduitAction(state, owner, 'light', 0, false);
     recordConduitHit(gold, target, 100, false, 1.5);
     finishConduitAction(state, owner, gold, events);
-    expect(gear(owner).numbers.crimson).toBe(1);
-    state.round++;
-    finishConduitAction(state, owner, prepareConduitAction(state, owner, 'defend', 0, false), events);
     expect(gear(owner).numbers.crimson).toBe(1);
     state.round++;
     const crimson = prepareConduitAction(state, owner, 'light', 0, false);
@@ -244,7 +241,6 @@ describe('redesigned ordinary Conduit executable effects', () => {
     const { state, owner } = fixture('twinpulse-bellows');
     expect(prepareConduitAction(state, owner, 'light', 0, false).bonus).toBe(.25);
     expect(prepareConduitAction(state, owner, 'light', 0, false).bonus).toBe(.25);
-    prepareConduitAction(state, owner, 'defend', 0, false);
     expect(prepareConduitAction(state, owner, 'light', 0, false).bonus).toBe(.25);
   });
   it('grants Pulse Trigger Gauge beyond its action cost at high upgrade levels', () => {
@@ -271,8 +267,8 @@ describe('redesigned ordinary Conduit executable effects', () => {
     expect(conduitActionCost(f.owner, 'skill1', f.state, 30)).toBe(30);
     expect(conduitActionCost(f.owner, 'ultimate', f.state, 100)).toBe(100);
     const t = fixture('atmospheric-skythread-rudder', 5);
-    const defend = prepareConduitAction(t.state, t.owner, 'defend', 0, false);
-    finishConduitAction(t.state, t.owner, defend, t.events);
+    const normal = prepareConduitAction(t.state, t.owner, 'light', 0, false);
+    finishConduitAction(t.state, t.owner, normal, t.events);
     expect(conduitActionCost(t.owner, 'skill1', t.state, 20)).toBe(1);
     prepareConduitAction(t.state, t.owner, 'skill1', 1, false);
     expect(conduitActionCost(t.owner, 'skill1', t.state, 20)).toBe(20);
@@ -319,26 +315,26 @@ describe('redesigned ordinary Conduit executable effects', () => {
     conduitTurnStart(s.state, s.events);
     expect(s.owner.shield).toBe(100); expect(actionUnavailable(s.state, s.owner, 'light')).toBeNull();
   });
-  it('allows paid free-Defense preparations while preserving the ordinary action spend', () => {
+  it('makes one paid Normal Attack per player turn free while preserving the ordinary action spend', () => {
     const f = fixture('solace-anchor', 5);
-    const first = act(f.state, f.owner.id, 'defend', f.target.id);
+    f.owner.shatter = 50;
+    const first = act(f.state, f.owner.id, 'light', f.target.id);
     expect(first.state.allies[0].spent).toBe(false);
-    expect(first.state.allies[0].shatter).toBe(90);
+    expect(first.state.allies[0].shatter).toBe(60);
     const second = act(first.state, f.owner.id, 'light', f.target.id);
     expect(second.state.allies[0].spent).toBe(true);
+    expect(second.state.allies[0].shatter).toBe(80);
     expect(() => act(second.state, f.owner.id, 'light', f.target.id)).toThrow();
   });
-  it('stacks paid Solace preparations through the Enemy Turn', () => {
+  it('applies one Solace reduction through the Enemy Turn', () => {
     const f = fixture('solace-anchor', 5);
-    for (let i = 0; i < 2; i++) {
-      const cost = conduitActionCost(f.owner, 'defend', f.state, 0);
-      expect(cost).toBe(10);
-      f.owner.shatter -= cost;
-      const ctx = prepareConduitAction(f.state, f.owner, 'defend', cost, false);
-      expect(ctx.freeDefense).toBe(true);
-    }
+    const cost = conduitActionCost(f.owner, 'light', f.state, 0);
+    expect(cost).toBe(10);
+    f.owner.shatter -= cost;
+    expect(prepareConduitAction(f.state, f.owner, 'light', cost, false).freeAction).toBe(true);
+    expect(conduitActionCost(f.owner, 'light', f.state, 0)).toBe(0);
     conduitIncoming(f.state, f.target, f.owner, 1000, false, false, f.events);
-    expect(f.owner.hp).toBe(400);
+    expect(f.owner.hp).toBe(200);
   });
 
   it('routes only native overflow once and conserves transferred Gauge', () => {
@@ -414,7 +410,7 @@ describe('redesigned Master transformations', () => {
     const f = fixture(undefined, 0, 'vaelor');
     f.owner.masterConduit = 'master-vaelor-3';
     f.state.allies[1].spent = true;
-    const result = act(f.state, f.owner.id, 'defend', f.target.id);
+    const result = act(f.state, f.owner.id, 'light', f.target.id);
     expect(result.state.allies[1].spent).toBe(false);
     expect(gear(result.state.allies[0]).numbers.donationUsed).toBeUndefined();
   });

@@ -51,20 +51,20 @@ describe('playable flagship roster', () => {
       expect(existsSync(`public/assets/characters/${form.art}.png`)).toBe(true);
       expect(characterName(character.id, evolution)).toBe(`${form.title}, ${character.name}`);
     }
-    for (const action of ['passive', 'light', 'skill1', 'skill2', 'ultimate', 'defend'] as const) {
-      const art = action === 'light' ? 'universal-normal-attack' : action === 'defend' ? 'universal-defense' : `${character.id}-${action}`;
+    for (const action of ['passive', 'light', 'skill1', 'skill2', 'ultimate'] as const) {
+      const art = action === 'light' ? 'universal-normal-attack' : `${character.id}-${action}`;
       expect(abilityIcon(character.id, action)).toContain(`abilities/${art}.png`);
       expect(existsSync(`public/assets/abilities/${art}.png`)).toBe(true);
       expect(existsSync(`public/assets/abilities/${character.id}-${action}.png`)).toBe(true);
     }
     expect(characterRole(character.id)).toContain(`data-character-role="${character.role}"`);
-    for (const action of ['light', 'skill1', 'skill2', 'ultimate', 'defend'] as const) {
+    for (const action of ['light', 'skill1', 'skill2', 'ultimate'] as const) {
       const state = createBattle(12345, [character.id]);
       state.allies[0].shatter = 100;
       state.enemies.forEach((unit) => { unit.hp = 10000; unit.stats.health = 10000; });
       const result = act(state, character.id, action, benchmarkTarget(state, state.allies[0], action));
       expect(result.state.allies[0].spent).toBe(true);
-      if (action !== 'light' && action !== 'defend') {
+      if (action !== 'light') {
         expect(result.events.find((entry) => entry.kind === 'attack')?.abilityName).toBe(fighters[character.id].abilities[action].name);
       }
     }

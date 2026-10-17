@@ -657,7 +657,7 @@ export class BattleView {
     const { art, color } = definition(unit);
     const selected = unit.side === 'ally' ? unit.id === this.actorId : unit.id === this.targetId;
     const ultimateReady = unit.side === 'ally' && actionUnavailable(this.session.state, unit, 'ultimate') === null;
-    return `<button class="battle-unit ${selected ? 'selected-unit' : ''} ${unit.hp <= 0 ? 'fallen' : ''} ${ultimateReady ? 'ultimate-ready' : ''} ${unit.defending ? 'defending-unit' : ''}"
+    return `<button class="battle-unit ${selected ? 'selected-unit' : ''} ${unit.hp <= 0 ? 'fallen' : ''} ${ultimateReady ? 'ultimate-ready' : ''}"
       data-unit="${unit.id}" data-side="${unit.side}" aria-pressed="${selected}" style="--element:${color};--unit-scale:${battleArtScale(this.session.state, unit)}" ${unit.hp <= 0 ? 'disabled' : ''}>
       <span class="battle-art">
       <span class="battle-sprite"><span class="unit-idle">${art ? `<img ${unit.definitionId.startsWith('calamity:') ? 'class="calamity-boss-contrast"' : ''} src="${assetUrl(`${isStarterId(unit.definitionId) && !unit.captured ? 'characters' : 'enemies'}/${art}.png`)}" alt="${unit.name}" ${unitFacingAttributes(art, unit.side)} width="960" height="960" />`
@@ -711,7 +711,7 @@ export class BattleView {
       ${results}
       <p id="battle-error" role="alert" aria-atomic="true" class="status"></p>
       ${this.session.log.at(-1) === conduitRestartNotice ? `<p class="battle-compatibility-notice" role="status">${conduitRestartNotice}</p>` : ''}
-      <div class="battle-footer-summary"><p id="battle-announcement" role="status">${complete ? state.calamity ? 'Calamity tier cleared. Your chest is saved in Inventory. Enter the next unlocked tier from Play.' : `All ${stages} stages cleared. Return to Play to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Shatter Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your squad has fallen. Retry when ready; earned rewards are kept.' : 'Select a target. Drag an ally: ↑ Last Flare · ← Skill 1 · → Skill 2 · ↓ Normal. Right-click: Normal Attack. Defense: Battle menu.'}</p>
+      <div class="battle-footer-summary"><p id="battle-announcement" role="status">${complete ? state.calamity ? 'Calamity tier cleared. Your chest is saved in Inventory. Enter the next unlocked tier from Play.' : `All ${stages} stages cleared. Return to Play to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Shatter Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your squad has fallen. Retry when ready; earned rewards are kept.' : 'Select a target. Drag an ally: ↑ Last Flare · ← Skill 1 · → Skill 2 · ↓ Normal. Right-click: Normal Attack.'}</p>
       <span class="battle-footer-target"><strong>${actor.name}</strong><small>Target: ${state.enemies.find((enemy) => enemy.id === this.targetId)?.name ?? 'None'}</small></span></div>
       </footer>
       <dialog id="battle-menu" class="battle-menu" aria-labelledby="battle-menu-heading">
@@ -730,10 +730,10 @@ export class BattleView {
       <section class="enemy-skill-guide"><h3>Enemy skills and timing</h3>${state.enemies.map((enemy) => `<p><strong>${enemy.name} · Lv.${enemy.level}${enemy.boss ? ' · Boss' : ''}</strong></p><ul>${(enemy.enemySkills ?? []).map((skill) =>
         `<li>${skill.name}${skill.action === 'ultimate' ? ' (Ultimate)' : ''}: ${formatStat(skill.multiplier * 100)}% Attack, every ${skill.every} turns${state.round % skill.every === 0 ? ' · Due this turn' : ''}.</li>`).join('')}</ul>`).join('')}
         <p class="quiet">One attack per enemy turn. The second skill takes priority on overlapping schedules; boss ultimates take highest priority. Normal attacks on other turns.</p></section>
-      ${actionIds.map((action) => `<p><strong>${action === 'light' || action === 'defend' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name}:</strong> ${action === 'light' ? '100% damage; +20 Shatter Gauge.' : action === 'defend' ? 'Consumes your action; reduces incoming damage by 10% until the next player turn. Incoming hits still grant Shatter Gauge.' : `${abilityStatuses(kit.abilities[action].strength)}${readableEffect(kit.abilities[action].description)}`}</p>`).join('')}
+      ${actionIds.map((action) => `<p><strong>${action === 'light' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name}:</strong> ${action === 'light' ? '100% damage; +20 Shatter Gauge.' : `${abilityStatuses(kit.abilities[action].strength)}${readableEffect(kit.abilities[action].description)}`}</p>`).join('')}
       <p class="quiet">Drag at least 32 pixels and release to execute. Return near the starting point to cancel.
         White glow and shimmer mean Last Flare is usable now. Reduced motion keeps a steady white glow.
-        Battle menu provides Defense and accessible buttons on touch and keyboard.
+        Battle menu provides accessible action buttons on touch and keyboard.
         Attack hotkeys and the Space end-turn shortcut are disabled.</p>
       <p class="quiet">One action per living character per turn. Only Last Flare forces a full recovery turn.
         Shatter Gauge starts at ${shatterGauge.starting}; attacks build it and each incoming hit adds ${shatterGauge.incomingHit}, even through shields.
@@ -973,15 +973,15 @@ export class BattleView {
   private actionButton(state: BattleState, actor: Combatant, action: ActionId): string {
     if (!actor.kit) throw new Error('Ally combat kit is missing.');
     const kit = !actor.captured && isStarterId(actor.definitionId) ? describeFighter(actor.definitionId, actor.kit) : actor.kit;
-    const ability = action === 'light' || action === 'defend' ? null : kit.abilities[action];
-    const name = action === 'light' || action === 'defend' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name;
+    const ability = action === 'light' ? null : kit.abilities[action];
+    const name = action === 'light' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name;
     const reason = actionUnavailable(state, actor, action);
     return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
       <span class="battle-action-heading">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, action) : ''}<strong>${name}</strong></span>
       ${ability ? abilityStatuses(ability.strength) : ''}
       ${nativeActionHint(state, actor, action, this.targetId) ? `<span class="battle-ally-target">${nativeActionHint(state, actor, action, this.targetId)}</span>` : ''}
       ${ability && actor.kit.nativeIdentity ? `<span>${readableEffect(ability.description)}</span>` : ''}
-      ${action === 'light' ? `<span>Down or right-click · +${shatterGauge.gains[action]} Shatter Gauge</span>` : action === 'defend' ? '<span>Battle menu · -10% incoming damage</span>' : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'}</span>`}
+      ${action === 'light' ? `<span>Down or right-click · +${shatterGauge.gains[action]} Shatter Gauge</span>` : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'}</span>`}
       ${ability ? `<span>Costs ${shatterGauge.costs[action]} Shatter Gauge${action === 'ultimate' && ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
       <small>${reason ?? 'Ready'}</small></button>`;
   }

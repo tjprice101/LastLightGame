@@ -24,7 +24,7 @@ describe('starter ability icons', () => {
     }
   });
   it.each(starters)('uses shared steel action art for $name', (starter) => {
-    for (const [action, id] of [['light', 'universal-normal-attack'], ['defend', 'universal-defense']] as const) {
+    for (const [action, id] of [['light', 'universal-normal-attack']] as const) {
       const path = `abilities/${id}.png`;
       const png = readFileSync(new URL(`../../public/assets/${path}`, import.meta.url));
       const revision = createHash('sha256').update(png).digest('hex').slice(0, 16);

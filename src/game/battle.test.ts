@@ -60,7 +60,7 @@ describe('Adventure damage and turns', () => {
     expect(state.allies[0].recoverThrough).toBe(2);
     state = endTurn(state).state;
     expect(state.round).toBe(2);
-    for (const actionId of ['light', 'defend', 'skill1', 'skill2', 'ultimate'] as const) {
+    for (const actionId of ['light', 'skill1', 'skill2', 'ultimate'] as const) {
       expect(actionUnavailable(state, state.allies[0], actionId)).toContain('Recovering');
       expect(() => use(state, 'ember', actionId)).toThrow('Recovering');
     }
@@ -81,7 +81,7 @@ describe('Adventure damage and turns', () => {
     state.allies[0].shatter = 0;
     expect(actionUnavailable(state, state.allies[0], action)).toContain('Shatter Gauge');
   });
-  it.each(['light', 'defend', 'skill1', 'skill2'] as const)('%s allows attacking on the very next turn', (action) => {
+  it.each(['light', 'skill1', 'skill2'] as const)('%s allows attacking on the very next turn', (action) => {
     const acted = use(controlled(), 'ember', action);
     expect(acted.allies[0].recoverThrough).toBe(0);
     const next = endTurn(acted).state;

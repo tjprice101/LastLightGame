@@ -62,7 +62,7 @@ function expandedBattle(id: ConduitId): BattleState {
   }
   return state;
 }
-function attack(state: BattleState, action: 'light' | 'skill1' | 'skill2' | 'ultimate' | 'defend') {
+function attack(state: BattleState, action: 'light' | 'skill1' | 'skill2' | 'ultimate') {
   return act(state, state.allies[0].id, action, state.enemies[0].id);
 }
 

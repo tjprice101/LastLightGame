@@ -1,5 +1,12 @@
 # Current state and handoff
 
+## Defend action removed (D-336)
+
+- Actions: Normal Attack, Skill 1, Skill 2, Last Flare. Defense stat still mitigates.
+- Defend-triggered Conduits now trigger on Normal Attack (per-round `normalRound`/
+  `tauntRound` flags); Solace Anchor/Calamitic Throne free only the first Normal Attack each turn.
+- Validation: `npx vitest run src/game/conduit-roster.test.ts src/game/conduit-redesign.test.ts src/game/defense.test.ts`, full suite, build.
+
 ## Fluid Conduit loadout (D-335)
 
 - Rarity filters apply only from the filter buttons; clicking inside an owned row

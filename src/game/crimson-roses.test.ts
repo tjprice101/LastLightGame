@@ -443,7 +443,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
   });
 
   it.each(roseCharacters)('runs every$name action with exact Gauge costs, targeting and bounded effects', (character) => {
-    for (const action of ['light', 'skill1', 'skill2', 'ultimate', 'defend'] as const) {
+    for (const action of ['light', 'skill1', 'skill2', 'ultimate'] as const) {
       const state = createBattle(12, [character.id, 'ember'], { [character.id]: { level: 0, evolution: 1 } });
       const actor = state.allies[0];
       actor.shatter = 100;
@@ -453,7 +453,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
       const result = act(state, character.id, action, state.enemies[0].id);
       expect(state).toEqual(snapshot);
       expect(result.state.allies[0].shatter).toBe(action === 'light' ? 100 : 100 - shatterGauge.costs[action]);
-      if (action !== 'light' && action !== 'defend') {
+      if (action !== 'light') {
         expect(result.events.find((event) => event.kind === 'attack')?.abilityName).toBe(actor.kit?.abilities[action].name);
         const ability = actor.kit!.abilities[action];
         if (ability.targets === 'all-allies') expect(result.state.enemies.map((enemy) => enemy.hp)).toEqual(snapshot.enemies.map((enemy) => enemy.hp));
@@ -492,7 +492,7 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     for (const character of roseCharacters) {
       expect(portrait(character, 6)).toContain(`assets/characters/${character.art}-evo-6.png`);
       expect(abilityIcon(character.id, 'skill1')).toContain(`assets/abilities/${character.id}-skill1.png`);
-      expect(abilityIcon(character.id, 'defend')).toContain('assets/abilities/universal-defense.png');
+      expect(abilityIcon(character.id, 'light')).toContain('assets/abilities/universal-normal-attack.png');
     }
     for (const material of roseMaterials) {
       expect(materialName(material.id)).toBe(material.name);

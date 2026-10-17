@@ -23,11 +23,10 @@ describe('supplied Roses artwork', () => {
       shipped('characters', form.art);
       expect(() => unitFacing(form.art, 'ally')).not.toThrow();
     }
-    for (const action of ['passive', 'light', 'defend', 'skill1', 'skill2', 'ultimate'] as const) {
+    for (const action of ['passive', 'light', 'skill1', 'skill2', 'ultimate'] as const) {
       const art = abilityIcons[character.id][action];
       shipped('abilities', art);
-      const shared = action === 'light' ? 'universal-normal-attack'
-        : action === 'defend' ? 'universal-defense' : art;
+      const shared = action === 'light' ? 'universal-normal-attack' : art;
       expect(abilityIcon(character.id, action)).toContain(`abilities/${shared}.png`);
     }
   });

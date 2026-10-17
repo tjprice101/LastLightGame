@@ -121,7 +121,6 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
     recipient.burn = { ...burns[recipient.id], sourceId: owner.id, origin: 'native' };
     status(events, owner, recipient, `${recipient.name}: Infernis Burn, ${burns[recipient.id].damage} per phase for 3 phases.`);
   };
-  if (action === 'defend') return;
   if (action === 'light') {
     hit(1);
     if (owner.definitionId === 'nerithe' && target?.hp) {

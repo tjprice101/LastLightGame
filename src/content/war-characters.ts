@@ -42,10 +42,10 @@ export const warEvolutionTitles: Record<WarCharacterId, readonly string[]> = {
     'Conductor of the Broken Sky', 'Sovereign of the Final Frequency', 'The Sky\'s Final Chord'],
 };
 
-export const warActionNames: Record<WarCharacterId, { light: string; defend: string }> = {
-  nerithe: { light: 'Surveyor\'s Thrust', defend: 'Charted Shelter' },
-  orvella: { light: 'Plumbline Strike', defend: 'Foundation Brace' },
-  vaelor: { light: 'Tuning Strike', defend: 'Insulated Stance' },
+export const warActionNames: Record<WarCharacterId, { light: string }> = {
+  nerithe: { light: 'Surveyor\'s Thrust' },
+  orvella: { light: 'Plumbline Strike' },
+  vaelor: { light: 'Tuning Strike' },
 };
 
 export const warFighters: Record<WarCharacterId, FighterDefinition> = {

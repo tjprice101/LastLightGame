@@ -8,18 +8,17 @@ import { kitPilotDescriptions, type KitPilot } from './kit-pilots';
 import { elementalEffectFamilies } from './elemental-effects';
 import { nativeIdentities } from './native-identities';
 
-export const actionIds = ['light', 'skill1', 'skill2', 'ultimate', 'defend'] as const;
+export const actionIds = ['light', 'skill1', 'skill2', 'ultimate'] as const;
 export type ActionId = (typeof actionIds)[number];
-export function basicActionName(id: string, action: 'light' | 'defend'): string {
-  return isWarCharacter(id) ? warActionNames[id][action] : action === 'light' ? 'Normal Attack' : 'Defense';
+export function basicActionName(id: string, action: 'light'): string {
+  return isWarCharacter(id) ? warActionNames[id][action] : 'Normal Attack';
 }
-export const defenseMode = { damageReduction: 0.1 } as const;
 export const shatterGauge = {
   maximum: 100,
   starting: 0,
   incomingHit: 10,
-  gains: { light: 20, defend: 0, skill1: 0, skill2: 0, ultimate: 0 },
-  costs: { light: 0, defend: 0, skill1: 25, skill2: 40, ultimate: 100 },
+  gains: { light: 20, skill1: 0, skill2: 0, ultimate: 0 },
+  costs: { light: 0, skill1: 25, skill2: 40, ultimate: 100 },
 } as const;
 export interface Stats {
   health: number;

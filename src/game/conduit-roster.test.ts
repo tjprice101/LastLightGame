@@ -81,7 +81,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(owner.hp).toBe(1000);
       break;
     case 'reserve-torque-crank':
-      finish('defend');
+      finish('light');
       expect(owner.shatter).toBeCloseTo(100 + n(3, 6));
       break;
     case 'duplex-heart':
@@ -223,10 +223,10 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(owner.hp).toBeCloseTo(500 + Math.round(100 * n(.3, .6) / 3));
       break;
     case 'tectonic-atlas-bastion':
-      finish('defend'); owner.defending = true;
+      finish('light');
       expect(forcedConduitTarget(state, target, ally).id).toBe(enabled ? owner.id : ally.id);
       hit();
-      expect(owner.hp).toBe(1000 - Math.round(90 * (1 - n(.1, .2))));
+      expect(owner.hp).toBe(1000 - Math.round(100 * (1 - n(.1, .2))));
       break;
     case 'efflorescent-worldtree-heart': {
       nativeHeal(state, owner, ally, 100, events, true, context('skill2'));
@@ -258,7 +258,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       break;
     }
     case 'tranquilitic-kirin-cradle':
-      owner.hp = 500; finish('defend');
+      owner.hp = 500; finish('light');
       expect(owner.hp).toBe(500 + Math.round(100 * n(.5, 1)));
       break;
     case 'chaotic-ouroboros-core':
@@ -277,7 +277,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(gear(target).numbers.scheduleShift ?? 0).toBe(2 * s(1, 2));
       break;
     case 'tectonic-faultkeeper-loom':
-      owner.defending = true;
+      finish('light');
       conduitIncoming(state, target, ally, 100, false, false, events);
       expect(ally.hp).toBeCloseTo(900 + 100 * n(.3, .6));
       expect(owner.hp).toBeCloseTo(1000 - 100 * n(.3, .6));
@@ -292,7 +292,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(context('skill2').bonus).toBe(0);
       break;
     case 'atmospheric-skythread-rudder':
-      finish('defend');
+      finish('light');
       expect(conduitActionCost(owner, 'skill1', state, 30)).toBeCloseTo(30 - n(10, 20));
       expect(conduitActionCost(owner, 'skill1', state, 30)).toBeCloseTo(30 - n(10, 20));
       break;
@@ -411,8 +411,8 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       break;
     }
     case 'solace-anchor':
-      expect(context('defend', 0, false, 10).freeDefense).toBe(enabled);
-      expect(context('defend', 0, false, 10).freeDefense).toBe(enabled);
+      expect(context('light', 0, false, 10).freeAction).toBe(enabled);
+      expect(conduitActionCost(owner, 'light', state, 0)).toBe(0);
       break;
     case 'ruinselect-prism':
       target.conduitMarks = { [owner.id]: 3, [ally.id]: 2 };
@@ -480,7 +480,7 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
   const shield = () => nativeShield(state, owner, ally, 100, events);
   const weaken = () => applyConduitWeaken(state, owner, target, .2, events, 'skill1');
   const attack = (action: ActionId) => act(state, owner.id, action,
-    action !== 'light' && action !== 'defend' && owner.kit?.abilities[action].targets === 'one-ally' ? ally.id : target.id);
+    action !== 'light' && owner.kit?.abilities[action].targets === 'one-ally' ? ally.id : target.id);
   switch (id) {
     case 'master-ember-1':
       target.burn = { damage: 10, turns: 0, sourceId: owner.id, origin: 'native' };
@@ -639,10 +639,10 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       expect(owner.spent).toBe(!enabled);
       break;
     case 'master-razor-1':
-      owner.defending = true;
+      finish('light');
       conduitIncoming(state, target, owner, 100, false, true, events);
-      expect(owner.hp).toBe(enabled ? 955 : 910);
-      expect(target.hp).toBe(enabled ? 977 : 1000);
+      expect(owner.hp).toBe(enabled ? 950 : 900);
+      expect(target.hp).toBe(enabled ? 975 : 1000);
       break;
     case 'master-razor-2':
       owner.shield = 200;
@@ -778,9 +778,9 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       break;
     }
     case 'master-vaelor-3':
-      ally.spent = true; finish('defend');
+      ally.spent = true; finish('light');
       expect(ally.spent).toBe(!enabled);
-      ally.spent = true; finish('defend');
+      ally.spent = true; finish('light');
       expect(ally.spent).toBe(!enabled);
       break;
     default:

@@ -81,11 +81,9 @@ describe('Elemental War', () => {
       expect(characterLevelCap(6)).toBe(105);
       expect(characterLevelCost(id, { level: 0, evolution: 1 }).fractalis).toBeGreaterThan(0);
       expect(characterEvolutionCost(id, { level: 30, evolution: 1 }).materials).toBeDefined();
-      for (const action of ['passive', 'light', 'skill1', 'skill2', 'ultimate', 'defend'] as const) {
+      for (const action of ['passive', 'light', 'skill1', 'skill2', 'ultimate'] as const) {
         if (action === 'light') {
           expect(abilityIcon(id, action)).toContain('abilities/universal-normal-attack.png');
-        } else if (action === 'defend') {
-          expect(abilityIcon(id, action)).toContain('abilities/universal-defense.png');
         } else {
           expect(abilityIcon(id, action)).toContain(`abilities/${id}-${action}.png`);
         }

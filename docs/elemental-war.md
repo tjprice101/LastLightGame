@@ -115,8 +115,7 @@ ordinary Gauge capacity. **Meridian Break** deals170% single-target damage and
 damage and15% Weaken for two enemy phases (cooldown3); **Ocean Beyond the Map**
 deals300% area damage and30% Weaken for two enemy phases, with ordinary Last
 Flare recovery. Damage/Weaken follow existing growth/potency bounds.
-Normal: **Surveyor's Thrust**. Defense: **Charted Shelter**. Both actions
-remain fully playable but text-only until their icons arrive. Her passive is
+Normal: **Surveyor's Thrust**, which uses the shared Normal Attack icon. Her passive is
 part of the run kit snapshot; no ally/enemy Gauge bonus or free turn advance.
 
 ### Orvella: earth as architecture, compression and precision
@@ -140,7 +139,7 @@ Palette: slate, ivory, copper, jasper red and violet geode facets.
 Proposed kit: **Load-Bearing Will** passive rewards sustained defense;
 **Keystone Reversal** is a guarded retaliation; **Raise the Faultline** protects
 the squad while striking a target; **Worldweight Citadel** is a protective area
-Last Flare. Normal: **Plumbline Strike**. Defense: **Foundation Brace**.
+Last Flare. Normal: **Plumbline Strike**.
 Implemented first-pass tuning uses existing damage, Weaken and squad-shield
 effects: +10 base Defense passive; Skill1 160% damage/25% Weaken for two
 enemy phases (cooldown2); Skill2 40 squad shield (cooldown3); Last Flare
@@ -168,7 +167,7 @@ and sharply bounded electric-cyan zigzags.
 Proposed kit: **Standing Thunder** passive represents stored resonance;
 **Forked Cadence** is a focused double impact; **Resonance Cascade** is an area
 electrical sequence; **Last Chord of the Sky** is the burst Last Flare.
-Normal: **Tuning Strike**. Defense: **Insulated Stance**.
+Normal: **Tuning Strike**.
 Implemented first-pass tuning: +25% low-health damage passive; Skill1 180%
 damage/+20 percentage-point critical chance (cooldown2); Skill2 140% area
 damage (cooldown3); Last Flare 330% area damage plus ordinary recovery.

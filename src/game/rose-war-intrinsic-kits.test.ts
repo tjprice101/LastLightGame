@@ -16,7 +16,7 @@ function encounter(...roster: string[]): BattleState {
   });
   return state;
 }
-function use(state: BattleState, id: string, action: 'light' | 'skill1' | 'skill2' | 'ultimate' | 'defend', target = state.enemies[0].id) {
+function use(state: BattleState, id: string, action: 'light' | 'skill1' | 'skill2' | 'ultimate', target = state.enemies[0].id) {
   const actor = state.allies.find(unit => unit.id === id)!;
   actor.spent = false; actor.shatter = 100; actor.recoverThrough = 0;
   if (actor.conduitRuntime) actor.conduitRuntime.numbers.actions = 0;
@@ -86,7 +86,7 @@ describe('distinct Rose and Elemental War identities', () => {
   it('Crinso repeats reset Combo, Normal/Defense preserve it, and alternate Gold pierces Defense', () => {
     let state = use(encounter('crinso'), 'crinso', 'skill2').state;
     state = use(state, 'crinso', 'light').state;
-    state = use(state, 'crinso', 'defend').state;
+    state = use(state, 'crinso', 'light').state;
     expect(state.allies[0].native?.edge).toBe('crimson');
     state.enemies[0].stats.defense = 100;
     const gold = use(state, 'crinso', 'skill1');

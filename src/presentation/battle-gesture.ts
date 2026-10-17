@@ -2,7 +2,7 @@ import { type ActionId } from '../content/combat';
 
 export const gestureThreshold = 32;
 
-export function dragAction(dx: number, dy: number): Exclude<ActionId, 'defend'> | null {
+export function dragAction(dx: number, dy: number): ActionId | null {
   if (!Number.isFinite(dx) || !Number.isFinite(dy)) throw new Error('Invalid battle gesture coordinates.');
   if (Math.hypot(dx, dy) < gestureThreshold) return null;
   if (Math.abs(dx) === Math.abs(dy)) return null;

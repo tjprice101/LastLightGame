@@ -97,7 +97,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "reserve-torque-crank": {
-    "description": "[Defense] grants 3 -> 6 Gauge each time you use it.",
+    "description": "[Normal Attack] grants an additional 3 -> 6 Gauge each time you use it.",
     "ranges": [
       {
         "base": 3,
@@ -515,7 +515,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tectonic-atlas-bastion": {
-    "description": "[Defense] taunts all living enemies for that Enemy Turn and reduces Direct Damage to you by 10% -> 20%. squad taunt can be active; latest legal taunt wins.",
+    "description": "[Normal Attack] taunts all living enemies for that Enemy Turn and reduces Direct Damage to you by 10% -> 20%. squad taunt can be active; latest legal taunt wins.",
     "ranges": [
       {
         "base": 10,
@@ -569,7 +569,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tranquilitic-kirin-cradle": {
-    "description": "[Defense] heals the lowest-HP-ratio living ally for 50% -> 100% of your Defense. Self is eligible; no shield or Gauge is granted.",
+    "description": "[Normal Attack] heals the lowest-HP-ratio living ally for 50% -> 100% of your Defense. Self is eligible; no shield or Gauge is granted.",
     "ranges": [
       {"base":50,"maximum":100,"percent":true,"step":false}
 
@@ -601,7 +601,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tectonic-faultkeeper-loom": {
-    "description": "While defending, intercept 30% -> 60% of each other ally's incoming post-mitigation Direct Damage. Your Shield absorbs routed damage; it is not mitigated a second time.",
+    "description": "After you use [Normal Attack], intercept 30% -> 60% of each other ally's incoming post-mitigation Direct Damage. Your Shield absorbs routed damage; it is not mitigated a second time.",
     "ranges": [
       {
         "base": 30,
@@ -623,7 +623,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "voltaic-stormstep-dynamo": {
-    "description": "Switching directly between [Skill 1] and [Skill 2] gives the new action +25% -> +50% Direct Damage. Repeating a slot, using [Normal Attack]/[Defense]/[Last Flare], or a non-damaging new action breaks the chain. action receives no bonus.",
+    "description": "Switching directly between [Skill 1] and [Skill 2] gives the new action +25% -> +50% Direct Damage. Repeating a slot, using [Normal Attack]/[Last Flare], or a non-damaging new action breaks the chain. action receives no bonus.",
     "ranges": [
       {
         "base": 25,
@@ -634,7 +634,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "atmospheric-skythread-rudder": {
-    "description": "Each [Defense] grants a [Tailwind]. Each [Tailwind] reduces the cost of your next available [Skill 1] or [Skill 2] by 10 -> 20 Gauge. [Tailwind] charges stack and are spent when you use an ordinary skill.",
+    "description": "Each [Normal Attack] grants a [Tailwind]. Each [Tailwind] reduces the cost of your next available [Skill 1] or [Skill 2] by 10 -> 20 Gauge. [Tailwind] charges stack and are spent when you use an ordinary skill.",
     "ranges": [
       {
         "base": 10,
@@ -678,7 +678,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "chaotic-paradox-spindle": {
-    "description": "During forced [Last Flare] recovery, your [Normal Attack] deals 50% -> 75% of its normal Direct Damage. Skills and [Defense] are unavailable. [Normal Attack] uses its normal Gauge costs, gains and Conduit effects; the recovery date is fixed.",
+    "description": "During forced [Last Flare] recovery, your [Normal Attack] deals 50% -> 75% of its normal Direct Damage. Skills are unavailable. [Normal Attack] uses its normal Gauge costs, gains and Conduit effects; the recovery date is fixed.",
     "ranges": [
       {
         "base": 50,
@@ -834,7 +834,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "solace-anchor": {
-    "description": "When ready to act, [Defense] costs 10 Gauge and does not spend your action. Each use adds 10% -> 20% Direct Damage reduction until the end of the current Enemy Turn.",
+    "description": "Your first [Normal Attack] each player turn costs 10 Gauge and does not spend your action if you have at least 10 Gauge. It also reduces Direct Damage to you by 10% -> 20% until the end of the current Enemy Turn.",
     "ranges": [
       {
         "base": 10,
@@ -1019,7 +1019,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-razor-1": {
-    "description": "While defending, [Razor] parries the scheduled enemy skill targeting him each Enemy Turn: reduce that hit's Direct Damage by 50%, then reflect 50% of the prevented damage to the surviving attacker. [Normal Attack] do not consume the parry. Reflection is Conduit-triggered and cannot reflect again.",
+    "description": "After using [Normal Attack], [Razor] parries the first scheduled enemy skill targeting him that Enemy Turn: reduce that hit's Direct Damage by 50%, then reflect 50% of the prevented damage to the surviving attacker. Enemy normal attacks do not consume the parry. Reflection is Conduit-triggered and cannot reflect again.",
     "ranges": []
   },
   "master-razor-2": {
@@ -1063,7 +1063,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-crinso-3": {
-    "description": "[Golden Edge] and [Crimson Rupture] alternate bonuses, starting with [Golden Edge]. [Golden Edge]: +30% Direct Damage. [Crimson Rupture]: heals [Crinso] for 20% of Direct Damage to HP. [Last Flare: Blossoming Cataclysm] receives both bonuses and makes the next [Golden Edge] or [Crimson Rupture] receive the [Golden Edge] bonus. [Defense] does not advance the alternation.",
+    "description": "[Golden Edge] and [Crimson Rupture] alternate bonuses, starting with [Golden Edge]. [Golden Edge]: +30% Direct Damage. [Crimson Rupture]: heals [Crinso] for 20% of Direct Damage to HP. [Last Flare: Blossoming Cataclysm] receives both bonuses and makes the next [Golden Edge] or [Crimson Rupture] receive the [Golden Edge] bonus.",
     "ranges": []
   },
   "master-nerithe-1": {
@@ -1099,7 +1099,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-vaelor-3": {
-    "description": "[Vaelor]'s [Defense] clears the spent flag of the highest-Gauge other living ally who is not recovering. [Vaelor] spends his action; the recipient pays full costs and follows readiness and recovery rules.",
+    "description": "[Vaelor]'s [Normal Attack] clears the spent flag of the highest-Gauge other living ally who is not recovering. [Vaelor] spends his action; the recipient pays full costs and follows readiness and recovery rules.",
     "ranges": []
   }
 };

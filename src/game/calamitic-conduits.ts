@@ -14,8 +14,8 @@ function status(owner: Combatant, amount: number, message: string, events: Battl
 export function calamiticActionReason(state: BattleState, owner: Combatant, action: ActionId): string | null {
   const n = owner.conduitRuntime?.numbers;
   if (n?.calamiticThroneSkip === state.round) return 'Tomorrow is owed to the Throne; cannot act this turn.';
-  if (n?.calamiticThroneArmed === state.round && (action === 'ultimate' || action === 'defend')) {
-    return 'The borrowed action must be a Normal Attack or an available ordinary skill.';
+  if (n?.calamiticThroneArmed === state.round && (action === 'ultimate' || action === 'light')) {
+    return 'The borrowed action must be an available ordinary skill.';
   }
   return null;
 }
@@ -23,14 +23,15 @@ export function calamiticActionReason(state: BattleState, owner: Combatant, acti
 export function prepareCalamiticAction(state: BattleState, owner: Combatant, action: ActionId): boolean {
   if (!equipped(owner, 'calamitic-throne-borrowed-tomorrows')) return false;
   const n = gear(owner).numbers;
-  if (n.calamiticThroneArmed === state.round && action !== 'defend') {
+  if (n.calamiticThroneArmed === state.round && action !== 'light') {
     delete n.calamiticThroneArmed;
     n.calamiticThroneSkip = state.round + 1;
     n.calamiticThroneGrant = state.round;
     return false;
   }
-  if (action === 'defend') {
+  if (action === 'light' && n.calamiticThroneUsed !== state.round && n.calamiticThroneSkip !== state.round + 1) {
     n.calamiticThroneArmed = state.round;
+    n.calamiticThroneUsed = state.round;
     return true;
   }
   return false;
@@ -39,15 +40,15 @@ export function prepareCalamiticAction(state: BattleState, owner: Combatant, act
 export function afterCalamiticAction(state: BattleState, owner: Combatant, action: ActionId, events: BattleEvent[]): void {
   if (owner.hp <= 0) return;
   const n = gear(owner).numbers;
-  if (n.calamiticThroneArmed === state.round && action === 'defend') {
-    status(owner, 1, `${owner.name} may borrow one Normal Attack or ordinary skill; using it costs the next player turn.`, events);
+  if (n.calamiticThroneArmed === state.round && action === 'light') {
+    status(owner, 1, `${owner.name} may borrow one ordinary skill; using it costs the next player turn.`, events);
   }
   if (n.calamiticThroneGrant === state.round) {
     delete n.calamiticThroneGrant;
     generatedGauge(owner, owner, power(state, owner, 'calamitic-throne-borrowed-tomorrows', 10, 30), events);
     status(owner, state.round + 1, `${owner.name} borrowed tomorrow and cannot act on turn ${state.round + 1}.`, events);
   }
-  if (action === 'defend' && equipped(owner, 'calamitic-world-eater-orrery') && (n.calamiticOrrery ?? 0) > 0) {
+  if (action === 'light' && equipped(owner, 'calamitic-world-eater-orrery') && (n.calamiticOrrery ?? 0) > 0) {
     const reserve = n.calamiticOrrery;
     n.calamiticOrrery = 0;
     const target = state.enemies.filter(enemy => enemy.hp > 0).sort((a, b) => b.hp - a.hp)[0];
@@ -55,7 +56,7 @@ export function afterCalamiticAction(state: BattleState, owner: Combatant, actio
     generatedStrike(state, owner, target, reserve, events, false);
   }
   if (equipped(owner, 'calamitic-cathedral-final-equation')) {
-    const bit = 1 << (['light', 'defend', 'skill1', 'skill2', 'ultimate'] as const).indexOf(action);
+    const bit = 1 << (['light', 'skill1', 'skill2', 'ultimate'] as const).indexOf(action);
     const previous = n.calamiticEquation ?? 0;
     const mask = previous & bit ? bit : previous | bit;
     const count = mask.toString(2).replace(/0/g, '').length;

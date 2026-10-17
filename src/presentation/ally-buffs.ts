@@ -1,4 +1,4 @@
-import { defenseMode, formatStat } from '../content/combat';
+import { formatStat } from '../content/combat';
 import { type BattleBuffSnapshot } from '../game/battle-buffs';
 import { statusIcon } from './status-icon';
 import type { StatusArtId } from '../content/status-art';
@@ -12,8 +12,6 @@ export function allyBuffs(buffs: BattleBuffSnapshot, round: number): string {
     buffs.attackBoost && buffs.attackBoost.throughRound >= round && badge('attack',
       `Damage +${formatStat(buffs.attackBoost.fraction * 100)}% · through turn ${buffs.attackBoost.throughRound}`,
       'Active bonus to outgoing attack damage. Refreshes without stacking.', 'focus'),
-    buffs.defending && badge('defending', `Defense · -${formatStat(defenseMode.damageReduction * 100)}% damage`,
-      'Defense is active until the next player turn.', 'ward'),
     buffs.protection > 0 && badge('protection', `Next hit -${formatStat(buffs.protection * 100)}%`,
       'One charge: reduces the next direct enemy hit.', 'ward'),
     buffs.recoverThrough >= round && buffs.recoverThrough > 0 && badge('recovery',

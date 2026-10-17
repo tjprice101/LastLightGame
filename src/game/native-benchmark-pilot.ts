@@ -2,7 +2,7 @@ import type { ActionId } from '../content/combat';
 import { actionUnavailable, actAndAdvanceTurn, endTurn, type BattleState, type Combatant } from './battle';
 
 export function benchmarkTarget(state: BattleState, actor: Combatant, action: ActionId): string {
-  if (action !== 'light' && action !== 'defend' && actor.kit?.abilities[action].targets === 'one-ally') {
+  if (action !== 'light' && actor.kit?.abilities[action].targets === 'one-ally') {
     const exclude = actor.kit.abilities[action].excludeSelf && state.allies.filter(unit => unit.hp > 0).length > 1;
     const candidates = state.allies.filter(unit => unit.hp > 0 && (!exclude || unit.id !== actor.id));
     if (actor.definitionId === 'disciple' && action === 'skill1')

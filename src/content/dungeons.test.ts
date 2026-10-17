@@ -102,16 +102,12 @@ describe('elemental material dungeons', () => {
       'infernic-epic': 15, 'infernic-legendary': 15, 'infernic-omnic': 15,
     });
   });
-  it('uses stronger periodic enemy abilities, including weakening and Defense mitigation', () => {
+  it('uses stronger periodic enemy abilities', () => {
     const state = createDungeonBattle('infernic', 35, 1729, 'ember', { level: 0, evolution: 1 });
     state.allies[0].hp = state.allies[0].stats.health = 1_000_000;
     state.round = 2;
     const result = endTurn(state);
     expect(result.events.some((event) => event.message.includes('Furnace Strike'))).toBe(true);
-    const guarding = structuredClone(state);
-    guarding.allies[0].defending = true;
-    const damage = result.events.find((event) => event.kind === 'damage')!.amount;
-    const guarded = endTurn(guarding).events.find((event) => event.kind === 'damage')!.amount;
-    expect(guarded).toBe(Math.max(1, Math.round(damage * 0.9)));
+    expect(result.events.find((event) => event.kind === 'damage')!.amount).toBeGreaterThan(0);
   });
 });

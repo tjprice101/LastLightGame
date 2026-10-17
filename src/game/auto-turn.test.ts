@@ -18,23 +18,22 @@ describe('automatic enemy turn after the final available action', () => {
     expect(result.events.filter((event) => event.kind === 'attack' && event.source !== 'ember')).toHaveLength(3);
     expect(result.events.filter((event) => event.kind === 'turn')).toHaveLength(1);
   });
-  it('waits for all available characters, including support and Defense actions', () => {
+  it('waits for all available characters, including support actions', () => {
     const state = battle(['ember', 'tide', 'sprout']);
     state.allies[1].shatter = 40;
     const first = actAndAdvanceTurn(state, 'ember', 'light', state.enemies[0].id);
     expect(first.state.round).toBe(1);
     const second = actAndAdvanceTurn(first.state, 'tide', 'skill2', 'ember');
     expect(second.state.round).toBe(1);
-    const final = actAndAdvanceTurn(second.state, 'sprout', 'defend', '');
+    const final = actAndAdvanceTurn(second.state, 'sprout', 'light', second.state.enemies.find((enemy) => enemy.hp > 0)!.id);
     expect(final.state.round).toBe(2);
-    expect(final.state.allies[2].defending).toBe(false);
-    expect(final.events.filter((event) => event.kind === 'damage')).toHaveLength(3);
+    expect(final.events.filter((event) => event.kind === 'damage' && event.source.startsWith('enemy'))).toHaveLength(3);
   });
   it('does not wait on defeated or recovering allies', () => {
     const state = battle(['ember', 'tide', 'sprout']);
     state.allies[1].hp = 0;
     state.allies[2].recoverThrough = 1;
-    expect(actAndAdvanceTurn(state, 'ember', 'defend', '').state.round).toBe(2);
+    expect(actAndAdvanceTurn(state, 'ember', 'light', state.enemies[0].id).state.round).toBe(2);
   });
   it('resolves the forced recovery enemy phase before returning control', () => {
     const state = battle();
@@ -50,7 +49,7 @@ describe('automatic enemy turn after the final available action', () => {
     state.allies[0].shatter = 100;
     const first = actAndAdvanceTurn(state, 'ember', 'ultimate', state.enemies[0].id);
     expect(first.state.round).toBe(1);
-    const second = actAndAdvanceTurn(first.state, 'tide', 'defend', '');
+    const second = actAndAdvanceTurn(first.state, 'tide', 'light', first.state.enemies.find((enemy) => enemy.hp > 0)!.id);
     expect(second.state.round).toBe(2);
     expect(teamCanAct(second.state)).toBe(true);
   });
@@ -96,7 +95,8 @@ describe('automatic enemy turn after the final available action', () => {
     const state = createDungeonBattle('botanic', 5, 1729, 'ember', { level: 0, evolution: 1 });
     state.enemies[0].hp = 1;
     state.enemies[0].burn = { damage: 8, turns: 2 };
-    const result = actAndAdvanceTurn(state, 'ember', 'defend', '');
+    state.allies[0].spent = true;
+    const result = advanceUnavailableTurns(state);
     expect(result.state.phase).toBe('cleared');
     expect(result.state.dungeon?.stage).toBe(5);
     expect(result.events.find((event) => event.kind === 'reward')?.materials).toEqual({ 'botanic-common': 1, 'botanic-uncommon': 1, 'botanic-rare': 2 });

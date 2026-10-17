@@ -19,7 +19,7 @@ function encounter(...roster: string[]): BattleState {
   });
   return state;
 }
-function use(state: BattleState, id: string, action: 'light' | 'skill1' | 'skill2' | 'ultimate' | 'defend', target = state.enemies[0].id) {
+function use(state: BattleState, id: string, action: 'light' | 'skill1' | 'skill2' | 'ultimate', target = state.enemies[0].id) {
   const actor = state.allies.find(unit => unit.id === id)!;
   actor.spent = false; actor.shatter = 100; actor.recoverThrough = 0;
   if (actor.conduitRuntime) actor.conduitRuntime.numbers.actions = 0;
@@ -37,9 +37,9 @@ describe('distinct flagship native identities', () => {
 
   it('Atmoso earns Gusts from other allies once per turn, not from his criticals', () => {
     let state = use(encounter('atmoso', 'ember', 'tide'), 'atmoso', 'skill2').state;
-    state = use(state, 'ember', 'defend').state;
     state = use(state, 'ember', 'light').state;
-    state = use(state, 'tide', 'defend').state;
+    state = use(state, 'ember', 'light').state;
+    state = use(state, 'tide', 'light').state;
     expect(state.allies[0].native?.cyclone?.gusts).toBe(2);
     state.allies[0].stats.crit = 1;
     const release = use(state, 'atmoso', 'skill1');
@@ -87,11 +87,11 @@ describe('distinct flagship native identities', () => {
     expect(opening.state.allies.every(unit => unit.attackBoost?.fraction === .1)).toBe(true);
     let state = encounter('bliss', 'ember', 'tide');
     state.allies[1].hp = 500;
-    state = use(state, 'ember', 'defend').state;
+    state = use(state, 'ember', 'light').state;
     const passing = use(state, 'bliss', 'skill1');
     expect(passing.state.allies[1].hp).toBe(500);
     expect(passing.events.find(event => event.kind === 'damage')?.amount).toBe(170 * nativeBalance.skillDamageScale);
-    state = use(state, 'tide', 'defend').state;
+    state = use(state, 'tide', 'light').state;
     const closing = use(state, 'bliss', 'skill1');
     expect(closing.state.allies[1].hp).toBe(560);
     const solo = use(encounter('bliss'), 'bliss', 'skill2');
@@ -127,7 +127,7 @@ describe('distinct flagship native identities', () => {
   it('Disciple self-instruction activates after granting and a wrong-type action consumes without benefit', () => {
     let state = use(encounter('disciple', 'ember'), 'disciple', 'skill1', 'disciple').state;
     expect(state.allies[0].native?.instruction?.kind).toBe('strike');
-    expect(use(state, 'disciple', 'defend').state.allies[0].native?.instruction).toBeUndefined();
+    expect(use(state, 'disciple', 'light').state.allies[0].native?.instruction).toBeUndefined();
     state = use(state, 'disciple', 'skill2', 'ember').state;
     const wrong = use(state, 'ember', 'light');
     expect(wrong.events.find(event => event.kind === 'damage')?.amount).toBe(100);

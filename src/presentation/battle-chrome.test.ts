@@ -88,7 +88,7 @@ describe('shared battle chrome', () => {
     expect(field).toContain('id="battle-announcement" role="status"');
     expect(field).not.toContain('battle-command-bar');
     expect(field).not.toContain('battle-field-actions');
-    expect(html.match(/data-action=/g)).toHaveLength(5);
+    expect(html.match(/data-action=/g)).toHaveLength(4);
     expect(html).toContain('class="unit-nameplate"');
     expect(html).toContain('aria-labelledby="battle-menu-heading"');
     expect(html).toContain('Pass remaining actions');

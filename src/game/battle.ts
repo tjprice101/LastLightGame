@@ -1,4 +1,4 @@
-import { actionIds, defenseMode, enemies, formatStat, resolveFighter, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats, type FighterDefinition } from '../content/combat';
+import { actionIds, enemies, formatStat, resolveFighter, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats, type FighterDefinition } from '../content/combat';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { type CharacterProgress } from '../content/progression';
 import { fractalisDrop, storyFractalisDrop, treasuryFractalisDrop, rollDrop, rollStagedLycalis } from '../content/loot-random';
@@ -83,7 +83,6 @@ export interface Combatant {
   pilot?: KitPilotState;
   native?: NativeKitState;
   kit: FighterDefinition | null;
-  defending: boolean;
   art?: string;
   color?: string;
   enemySkills?: EnemySkill[];
@@ -199,7 +198,7 @@ function combatant(id: string, definitionId: Combatant['definitionId'], name: st
   return {
     id, definitionId, name, element, side, level: null, stats: { ...stats }, hp: stats.health, shield: 0,
     shatter: shatterGauge.starting, spent: false, recoverThrough: 0,
-    readyRound: { skill1: 1, skill2: 1 }, burn: { damage: 0, turns: 0 }, weakened: 0, weakenFraction: 0.25, kit: null, defending: false,
+    readyRound: { skill1: 1, skill2: 1 }, burn: { damage: 0, turns: 0 }, weakened: 0, weakenFraction: 0.25, kit: null,
   };
 }
 
@@ -398,7 +397,7 @@ export function damageAmount(base: number, multiplier: number, defense: number, 
 export function actionUnavailable(state: BattleState, actor: Combatant, action: ActionId): string | null {
   if (state.phase !== 'player') return 'This wave is not accepting actions.';
   if (actor.side !== 'ally' || !state.allies.some((ally) => ally.id === actor.id)) return 'Choose a team member.';
-  if (action !== 'light' && action !== 'defend' && actor.kit?.unavailableActions?.includes(action)) return 'This captured form does not have this ability.';
+  if (action !== 'light' && actor.kit?.unavailableActions?.includes(action)) return 'This captured form does not have this ability.';
   if (actor.hp <= 0) return 'This character is defeated.';
   if (actor.spent) return 'This character has already acted this turn.';
   const calamiticReason = calamiticActionReason(state, actor, action);
@@ -424,8 +423,6 @@ function event(events: BattleEvent[], kind: BattleEvent['kind'], source: Combata
 
 function hurt(target: Combatant, amount: number, source: Combatant, events: BattleEvent[], critical = false, periodic = false, conduitReduction = 0, elementalCritical = false, shieldBypass = 0): void {
   if (conduitReduction > 0) amount = Math.max(1, Math.round(amount * (1 - conduitReduction)));
-  if (target.defending) amount = Math.max(1, Math.round(amount * (1 - Math.min(.5,
-    defenseMode.damageReduction))));
   const bypassed = Math.floor(amount * shieldBypass);
   const absorbed = Math.min(target.shield, amount - bypassed);
   target.shield -= absorbed;
@@ -579,16 +576,16 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   const reason = actionUnavailable(previous, original, action);
   if (reason) throw new Error(reason);
   const native = hasNativeIdentity(original);
-  const nativeAbility = action === 'light' || action === 'defend' ? undefined : original.kit?.abilities[action];
+  const nativeAbility = action === 'light' ? undefined : original.kit?.abilities[action];
   const allyTargeted = native && nativeAbility?.targets === 'one-ally';
   if (allyTargeted && !previous.allies.some(ally => ally.id === targetId && ally.hp > 0 &&
     (!nativeAbility.excludeSelf || ally.id !== actorId || previous.allies.filter(unit => unit.hp > 0).length === 1))) {
     throw new Error(nativeAbility.excludeSelf ? 'Choose another living ally to protect.' : 'Choose a living ally target.');
   }
-  const support = native ? action === 'defend' || allyTargeted || (action !== 'light' && nativeAbility?.strength.damageMultiplier === undefined &&
+  const support = native ? allyTargeted || (action !== 'light' && nativeAbility?.strength.damageMultiplier === undefined &&
     nativeAbility?.targets !== 'all-enemies' && !(original.definitionId === 'thornia' && action === 'skill1') &&
     !(original.definitionId === 'aurora' && action === 'skill1')) :
-    action === 'defend' || (action === 'skill2' && equipped(original, 'master-nerithe-2')) || (action !== 'light' && original.kit?.abilities[action].targets === 'all-allies') ||
+    (action === 'skill2' && equipped(original, 'master-nerithe-2')) || (action !== 'light' && original.kit?.abilities[action].targets === 'all-allies') ||
     (action === 'skill2' && (original.definitionId === 'tide' || original.definitionId === 'sprout') && !original.captured);
   if (!support && !previous.enemies.some((enemy) => enemy.id === targetId && enemy.hp > 0)) {
     throw new Error('Choose a living enemy target.');
@@ -598,30 +595,17 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   if (!actor) throw new Error('Team state is inconsistent.');
   const definition = actor.kit;
   if (!definition) throw new Error('Ally combat kit is missing.');
-  const strength = action === 'light' || action === 'defend' ? null : definition.abilities[action].strength;
+  const strength = action === 'light' ? null : definition.abilities[action].strength;
   const events: BattleEvent[] = [];
-  const name = action === 'light' || action === 'defend' ? basicActionName(actor.definitionId, action) : definition.abilities[action].name;
+  const name = action === 'light' ? basicActionName(actor.definitionId, action) : definition.abilities[action].name;
   const paid = actionGaugeCost(actor, action, state);
   const nativeAll = native ? nativeAbility?.targets === 'all-enemies' : !actor.captured && (action === 'ultimate' || (action === 'skill2' && actor.definitionId === 'ember') ||
-    (action !== 'light' && action !== 'defend' && definition.abilities[action].targets === 'all-enemies'));
+    (action !== 'light' && definition.abilities[action].targets === 'all-enemies'));
   actor.shatter -= paid;
   const activation = prepareConduitAction(state, actor, action, paid, nativeAll);
   const priorInstruction = actor.native?.instruction;
-  if (action === 'defend') {
-    actor.spent = !activation.freeDefense;
-    actor.defending = true;
-    const defenseReduction = defenseMode.damageReduction;
-    event(events, 'status', actor, actor, defenseReduction * 100, `${actor.name} enters ${name}: incoming ${defenseReduction > defenseMode.damageReduction ? 'direct ' : ''}damage reduced by ${formatStat(defenseReduction * 100)}% until the next player turn.`);
-    finishConduitAction(state, actor, activation, events);
-    nativeAfterAction(state, actor, action, priorInstruction, events);
-    conduitDeaths(state, previous, events);
-    nativeCleanup(state);
-    checkOutcome(state);
-    awardDefeats(previous, state, events);
-    return { state, events };
-  }
   events.push({ kind: 'attack', source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action, abilityName: name });
-  actor.spent = true;
+  actor.spent = !activation.freeAction;
   if (action === 'ultimate' && !equipped(actor, 'master-nerithe-3')) actor.recoverThrough = state.round + 1;
   nativeGauge(state, actor, shatterGauge.gains[action] + (action === 'light' ? (definition.passive.lightGaugeBonus ?? 0) : 0), events);
   if (action === 'skill1' || action === 'skill2') actor.readyRound[action] = state.round;
@@ -757,7 +741,6 @@ function newTurn(state: BattleState, events: BattleEvent[]): void {
   state.round++;
   for (const ally of state.allies) {
     ally.spent = false;
-    ally.defending = false;
     if (ally.attackBoost && ally.attackBoost.throughRound < state.round) delete ally.attackBoost;
   }
   conduitTurnStart(state, events);

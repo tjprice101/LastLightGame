@@ -26,7 +26,7 @@ export function gestureGuide(state: BattleState, actor: Combatant, enemyTargetId
     <span class="gesture-status" role="status">Choose a direction · Release near center to cancel</span>`;
 }
 
-export function updateGestureGuide(guide: HTMLElement, state: BattleState, actor: Combatant, action: Exclude<ActionId, 'defend'> | null, enemyTargetId?: string): void {
+export function updateGestureGuide(guide: HTMLElement, state: BattleState, actor: Combatant, action: ActionId | null, enemyTargetId?: string): void {
   if (!actor.kit) throw new Error('Gesture combat kit is missing.');
   guide.querySelectorAll<HTMLElement>('[data-gesture-action]').forEach((direction) => {
     direction.dataset.selected = String(direction.dataset.gestureAction === action);

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 import { act, actAndAdvanceTurn, createBattle } from '../game/battle';
-import { defenseMode, formatStat } from '../content/combat';
+import { formatStat } from '../content/combat';
 import { buffSnapshot } from '../game/battle-buffs';
 import { allyBuffs } from './ally-buffs';
 import { unitReadout } from './unit-readout';
@@ -15,18 +15,16 @@ describe('actual allied effects beside HP', () => {
     unit.shield = 25.5;
     unit.pilot = { ward: 2 };
     unit.attackBoost = { fraction: .3, throughRound: 3 };
-    unit.defending = true;
     unit.omnicProtection = .15;
     const before = structuredClone(unit);
     const html = unitReadout(unit, true, [unit], 2);
-    for (const text of ['Shield 25.5', 'Damage +30% · through turn 3', `Defense · -${defenseMode.damageReduction * 100}% damage`,
+    for (const text of ['Shield 25.5', 'Damage +30% · through turn 3',
       'Next hit -15%']) expect(html).toContain(text);
     expect(html).not.toContain('Oceanic Protection 2 / 3 charges');
     expect(html).not.toContain('Skill 1 spends them to strengthen Weaken');
     expect(unit).toEqual(before);
     unit.attackBoost.throughRound = 1;
     unit.shield = 0;
-    unit.defending = false;
     unit.omnicProtection = 0;
     expect(allyBuffs(buffSnapshot(unit), 2)).toBe('');
     unit.recoverThrough = 3;

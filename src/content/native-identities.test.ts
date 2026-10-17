@@ -103,7 +103,7 @@ describe('approved sixteen native identities', () => {
         }
       }
     }
-    expect(shatterGauge.costs).toEqual({ light: 0, defend: 0, skill1: 25, skill2: 40, ultimate: 100 });
+    expect(shatterGauge.costs).toEqual({ light: 0, skill1: 25, skill2: 40, ultimate: 100 });
     expect(shatterGauge.gains.light).toBe(20);
   });
 

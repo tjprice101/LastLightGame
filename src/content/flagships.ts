@@ -136,7 +136,7 @@ export const flagshipFighters: Record<FlagshipId, FighterDefinition> = {
 };
 
 function icons(id: FlagshipId) {
-  return { passive: `${id}-passive`, light: `${id}-light`, skill1: `${id}-skill1`, skill2: `${id}-skill2`, ultimate: `${id}-ultimate`, defend: `${id}-defend` };
+  return { passive: `${id}-passive`, light: `${id}-light`, skill1: `${id}-skill1`, skill2: `${id}-skill2`, ultimate: `${id}-ultimate` };
 }
 
 export const flagshipAbilityIcons = {

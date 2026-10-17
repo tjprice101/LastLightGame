@@ -29,7 +29,7 @@ export function attackEffectTargets(attack: BattleEvent, impacts: readonly Battl
   const source = units.find(unit => unit.id === attack.source);
   if (!source) throw new Error('Effect source is missing.');
   const targets = new Set(impacts.map(event => event.target));
-  const ability = attack.action && attack.action !== 'light' && attack.action !== 'defend'
+  const ability = attack.action && attack.action !== 'light'
     ? source.kit?.abilities[attack.action] : undefined;
   if (ability && ability.targets !== 'one-ally' && (ability.targets === 'all-allies' || ability.strength.shield !== undefined ||
       ability.strength.healing !== undefined || ability.strength.attackBoostFraction !== undefined)) {

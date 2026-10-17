@@ -78,8 +78,8 @@ describe('impact-synchronized health presentation', () => {
   it('does not reduce HP for absorbed damage or shields, and clamps heal/lethal HP', () => {
     const state = createBattle(1729, ['ember']);
     state.allies[0].shield = 1000;
-    const result = actAndAdvanceTurn(state, 'ember', 'defend', '');
-    for (const event of result.events.filter((event) => event.kind === 'damage')) {
+    const result = actAndAdvanceTurn(state, 'ember', 'light', state.enemies[0].id);
+    for (const event of result.events.filter((event) => event.kind === 'damage' && event.target === 'ember')) {
       expect(healthAfterEvent(220, 220, event)).toBe(220);
     }
     const event = result.events.find((event) => event.kind === 'damage')!;

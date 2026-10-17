@@ -273,7 +273,7 @@ var conduitRedesign = {
     ]
   },
   "reserve-torque-crank": {
-    "description": "[Defense] grants 3 -> 6 Gauge each time you use it.",
+    "description": "[Normal Attack] grants an additional 3 -> 6 Gauge each time you use it.",
     "ranges": [
       {
         "base": 3,
@@ -687,7 +687,7 @@ var conduitRedesign = {
     ]
   },
   "tectonic-atlas-bastion": {
-    "description": "[Defense] taunts all living enemies for that Enemy Turn and reduces Direct Damage to you by 10% -> 20%. squad taunt can be active; latest legal taunt wins.",
+    "description": "[Normal Attack] taunts all living enemies for that Enemy Turn and reduces Direct Damage to you by 10% -> 20%. squad taunt can be active; latest legal taunt wins.",
     "ranges": [
       {
         "base": 10,
@@ -738,7 +738,7 @@ var conduitRedesign = {
     ]
   },
   "tranquilitic-kirin-cradle": {
-    "description": "[Defense] heals the lowest-HP-ratio living ally for 50% -> 100% of your Defense. Self is eligible; no shield or Gauge is granted.",
+    "description": "[Normal Attack] heals the lowest-HP-ratio living ally for 50% -> 100% of your Defense. Self is eligible; no shield or Gauge is granted.",
     "ranges": [
       { "base": 50, "maximum": 100, "percent": true, "step": false }
     ]
@@ -767,7 +767,7 @@ var conduitRedesign = {
     ]
   },
   "tectonic-faultkeeper-loom": {
-    "description": "While defending, intercept 30% -> 60% of each other ally's incoming post-mitigation Direct Damage. Your Shield absorbs routed damage; it is not mitigated a second time.",
+    "description": "After you use [Normal Attack], intercept 30% -> 60% of each other ally's incoming post-mitigation Direct Damage. Your Shield absorbs routed damage; it is not mitigated a second time.",
     "ranges": [
       {
         "base": 30,
@@ -789,7 +789,7 @@ var conduitRedesign = {
     ]
   },
   "voltaic-stormstep-dynamo": {
-    "description": "Switching directly between [Skill 1] and [Skill 2] gives the new action +25% -> +50% Direct Damage. Repeating a slot, using [Normal Attack]/[Defense]/[Last Flare], or a non-damaging new action breaks the chain. action receives no bonus.",
+    "description": "Switching directly between [Skill 1] and [Skill 2] gives the new action +25% -> +50% Direct Damage. Repeating a slot, using [Normal Attack]/[Last Flare], or a non-damaging new action breaks the chain. action receives no bonus.",
     "ranges": [
       {
         "base": 25,
@@ -800,7 +800,7 @@ var conduitRedesign = {
     ]
   },
   "atmospheric-skythread-rudder": {
-    "description": "Each [Defense] grants a [Tailwind]. Each [Tailwind] reduces the cost of your next available [Skill 1] or [Skill 2] by 10 -> 20 Gauge. [Tailwind] charges stack and are spent when you use an ordinary skill.",
+    "description": "Each [Normal Attack] grants a [Tailwind]. Each [Tailwind] reduces the cost of your next available [Skill 1] or [Skill 2] by 10 -> 20 Gauge. [Tailwind] charges stack and are spent when you use an ordinary skill.",
     "ranges": [
       {
         "base": 10,
@@ -844,7 +844,7 @@ var conduitRedesign = {
     ]
   },
   "chaotic-paradox-spindle": {
-    "description": "During forced [Last Flare] recovery, your [Normal Attack] deals 50% -> 75% of its normal Direct Damage. Skills and [Defense] are unavailable. [Normal Attack] uses its normal Gauge costs, gains and Conduit effects; the recovery date is fixed.",
+    "description": "During forced [Last Flare] recovery, your [Normal Attack] deals 50% -> 75% of its normal Direct Damage. Skills are unavailable. [Normal Attack] uses its normal Gauge costs, gains and Conduit effects; the recovery date is fixed.",
     "ranges": [
       {
         "base": 50,
@@ -993,7 +993,7 @@ var conduitRedesign = {
     ]
   },
   "solace-anchor": {
-    "description": "When ready to act, [Defense] costs 10 Gauge and does not spend your action. Each use adds 10% -> 20% Direct Damage reduction until the end of the current Enemy Turn.",
+    "description": "Your first [Normal Attack] each player turn costs 10 Gauge and does not spend your action if you have at least 10 Gauge. It also reduces Direct Damage to you by 10% -> 20% until the end of the current Enemy Turn.",
     "ranges": [
       {
         "base": 10,
@@ -1177,7 +1177,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-razor-1": {
-    "description": "While defending, [Razor] parries the scheduled enemy skill targeting him each Enemy Turn: reduce that hit's Direct Damage by 50%, then reflect 50% of the prevented damage to the surviving attacker. [Normal Attack] do not consume the parry. Reflection is Conduit-triggered and cannot reflect again.",
+    "description": "After using [Normal Attack], [Razor] parries the first scheduled enemy skill targeting him that Enemy Turn: reduce that hit's Direct Damage by 50%, then reflect 50% of the prevented damage to the surviving attacker. Enemy normal attacks do not consume the parry. Reflection is Conduit-triggered and cannot reflect again.",
     "ranges": []
   },
   "master-razor-2": {
@@ -1221,7 +1221,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-crinso-3": {
-    "description": "[Golden Edge] and [Crimson Rupture] alternate bonuses, starting with [Golden Edge]. [Golden Edge]: +30% Direct Damage. [Crimson Rupture]: heals [Crinso] for 20% of Direct Damage to HP. [Last Flare: Blossoming Cataclysm] receives both bonuses and makes the next [Golden Edge] or [Crimson Rupture] receive the [Golden Edge] bonus. [Defense] does not advance the alternation.",
+    "description": "[Golden Edge] and [Crimson Rupture] alternate bonuses, starting with [Golden Edge]. [Golden Edge]: +30% Direct Damage. [Crimson Rupture]: heals [Crinso] for 20% of Direct Damage to HP. [Last Flare: Blossoming Cataclysm] receives both bonuses and makes the next [Golden Edge] or [Crimson Rupture] receive the [Golden Edge] bonus.",
     "ranges": []
   },
   "master-nerithe-1": {
@@ -1257,7 +1257,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-vaelor-3": {
-    "description": "[Vaelor]'s [Defense] clears the spent flag of the highest-Gauge other living ally who is not recovering. [Vaelor] spends his action; the recipient pays full costs and follows readiness and recovery rules.",
+    "description": "[Vaelor]'s [Normal Attack] clears the spent flag of the highest-Gauge other living ally who is not recovering. [Vaelor] spends his action; the recipient pays full costs and follows readiness and recovery rules.",
     "ranges": []
   }
 };
@@ -1635,13 +1635,13 @@ function calamiticEffect(id, level = 0) {
   const amount = (base, maximum) => Number(calamiticPower(level, base, maximum).toFixed(6));
   switch (id) {
     case "calamitic-world-eater-orrery":
-      return `Store ${amount(40, 80)}% of enemy Direct Damage to HP suffered by living squad members. [Defense] releases the reserve as a Bonus Strike against the healthiest enemy, after shields and normal Defense mitigation. Bonus Strikes, Shields and HP payments do not fill the reserve.`;
+      return `Store ${amount(40, 80)}% of enemy Direct Damage to HP suffered by living squad members. [Normal Attack] releases the reserve as a Bonus Strike against the healthiest enemy, after shields and normal Defense mitigation. Bonus Strikes, Shields and HP payments do not fill the reserve.`;
     case "calamitic-causality-funeral-engine":
       return `Defer ${amount(40, 60)}% of each enemy hit's Direct Damage to HP after Shields. Pay the debt at the start of the next Enemy Turn, before attacks. Debt bypasses Shields and protection, can defeat you and cannot be deferred again. Routed damage is not deferred.`;
     case "calamitic-horizon-cleaving-godpress":
       return `${amount(40, 60)}% of your Attack Actions' Direct Damage bypasses enemy Shields. While the target has a Shield, your Attack Actions also gain +${amount(30, 60)}% Direct Damage. Remaining damage spends Shields normally; [Burn] and Bonus Strikes are unaffected.`;
     case "calamitic-throne-borrowed-tomorrows":
-      return `[Defense] lets you choose an additional action other than [Defense] or [Last Flare] that turn. Pay its normal cost, then gain ${amount(10, 30)} Gauge; you cannot act on the next player turn. If you do not take the additional action, you do not lose a turn. Follow recovery and unavailable-skill rules.`;
+      return `Your first [Normal Attack] each player turn does not spend your action and lets you take one additional [Skill 1] or [Skill 2] that turn. Pay its normal cost, then gain ${amount(10, 30)} Gauge; you cannot act on the next player turn. If you do not take the additional action, you do not lose a turn. Follow recovery and unavailable-skill rules.`;
     case "calamitic-cathedral-final-equation":
       return `Use three different action types in succession to complete the [Equation]. Repeating a type restarts the sequence with that action. The third action releases ${amount(120, 240)}% of your Attack, split equally among living enemies as Bonus Strikes after Shields and normal Defense mitigation, then clears the sequence. No extra critical rolls, Gauge or Attack Action effects.`;
   }
@@ -2513,7 +2513,7 @@ var flagshipFighters = {
   }
 };
 function icons(id) {
-  return { passive: `${id}-passive`, light: `${id}-light`, skill1: `${id}-skill1`, skill2: `${id}-skill2`, ultimate: `${id}-ultimate`, defend: `${id}-defend` };
+  return { passive: `${id}-passive`, light: `${id}-light`, skill1: `${id}-skill1`, skill2: `${id}-skill2`, ultimate: `${id}-ultimate` };
 }
 var flagshipAbilityIcons = {
   atmoso: icons("atmoso"),
@@ -2610,9 +2610,9 @@ var warEvolutionTitles = {
   ]
 };
 var warActionNames = {
-  nerithe: { light: "Surveyor's Thrust", defend: "Charted Shelter" },
-  orvella: { light: "Plumbline Strike", defend: "Foundation Brace" },
-  vaelor: { light: "Tuning Strike", defend: "Insulated Stance" }
+  nerithe: { light: "Surveyor's Thrust" },
+  orvella: { light: "Plumbline Strike" },
+  vaelor: { light: "Tuning Strike" }
 };
 var warFighters = {
   nerithe: {
@@ -2907,7 +2907,7 @@ var nativeIdentities = {
     playLoop: "[Cyclone Weave] creates a [Cyclone] that grows as allies act and later releases on all enemies; [Razor Gale] can release it early.",
     passive: {
       name: "Gale Cadence",
-      description: "While a [Cyclone] is active, the first action each other living ally takes in a player turn ([Normal Attack], [Defense] or any skill) adds one [Gust]."
+      description: "While a [Cyclone] is active, the first action each other living ally takes in a player turn ([Normal Attack] or any skill) adds one [Gust]."
     },
     abilities: {
       skill1: ability("Razor Gale", "180% direct damage to one enemy. If a [Cyclone] exists, it releases immediately on all living enemies and ends.", 1.8),
@@ -2959,7 +2959,7 @@ var nativeIdentities = {
     playLoop: "[Disciple] gives one ally an [Instruction] ([Strike], [Shelter] or [Resolve]) that strengthens its next matching action.",
     passive: {
       name: "Shared Mindflame",
-      description: "[Disciple] maintains one [Instruction] on one living ally, which can be [Disciple]. The ally\u2019s next action of any kind ([Normal Attack], [Defense] or a skill) uses it up; otherwise it expires at the end of the next player turn. Giving a new [Instruction] replaces the old one. A new [Instruction] takes effect after the action that granted it."
+      description: "[Disciple] maintains one [Instruction] on one living ally, which can be [Disciple]. The ally\u2019s next action of any kind ([Normal Attack] or a skill) uses it up; otherwise it expires at the end of the next player turn. Giving a new [Instruction] replaces the old one. A new [Instruction] takes effect after the action that granted it."
     },
     abilities: {
       skill1: ability("Thoughtspark Benediction", "Give one living ally [Strike]: its next action that deals damage deals 30% more direct damage. If its next action deals no damage, [Strike] is used up with no effect.", void 0, "one-ally"),
@@ -3024,7 +3024,7 @@ var nativeIdentities = {
     playLoop: "Alternating [Golden Edge] and [Crimson Rupture] builds [Combo]; [Last Flare: Blossoming Cataclysm] spends it.",
     passive: {
       name: "Rose Duality",
-      description: "Using [Golden Edge] after [Crimson Rupture], or [Crimson Rupture] after [Golden Edge], adds 1 [Combo]. Using the same one of these two skills twice in a row resets [Combo] to 0. When there is no previous skill to compare (the first use, or after [Last Flare: Blossoming Cataclysm]), the skill starts a new chain at 0 [Combo]. [Normal Attack] and [Defense] do not affect the chain."
+      description: "Using [Golden Edge] after [Crimson Rupture], or [Crimson Rupture] after [Golden Edge], adds 1 [Combo]. Using the same one of these two skills twice in a row resets [Combo] to 0. When there is no previous skill to compare (the first use, or after [Last Flare: Blossoming Cataclysm]), the skill starts a new chain at 0 [Combo]. [Normal Attack] does not affect the chain."
     },
     abilities: {
       skill1: ability("Golden Edge", "160% direct damage to one enemy. If [Crinso]\u2019s previous skill was [Crimson Rupture], this attack ignores 20% of the target\u2019s Defense. Then updates [Combo] as described in [Rose Duality].", 1.6),
@@ -3101,17 +3101,16 @@ for (const id of Object.keys(nativeIdentities)) {
 var nativeIdentityIds = Object.keys(nativeIdentities);
 
 // src/content/combat.ts
-var actionIds = ["light", "skill1", "skill2", "ultimate", "defend"];
+var actionIds = ["light", "skill1", "skill2", "ultimate"];
 function basicActionName(id, action) {
-  return isWarCharacter(id) ? warActionNames[id][action] : action === "light" ? "Normal Attack" : "Defense";
+  return isWarCharacter(id) ? warActionNames[id][action] : "Normal Attack";
 }
-var defenseMode = { damageReduction: 0.1 };
 var shatterGauge = {
   maximum: 100,
   starting: 0,
   incomingHit: 10,
-  gains: { light: 20, defend: 0, skill1: 0, skill2: 0, ultimate: 0 },
-  costs: { light: 0, defend: 0, skill1: 25, skill2: 40, ultimate: 100 }
+  gains: { light: 20, skill1: 0, skill2: 0, ultimate: 0 },
+  costs: { light: 0, skill1: 25, skill2: 40, ultimate: 100 }
 };
 var fighters = {
   ...flagshipFighters,
@@ -4882,10 +4881,9 @@ function debuffSnapshot(target) {
 
 // src/game/battle-buffs.ts
 function buffSnapshot(unit) {
-  if (unit.hp <= 0) return { shield: 0, defending: false, recoverThrough: 0, protection: 0 };
+  if (unit.hp <= 0) return { shield: 0, recoverThrough: 0, protection: 0 };
   return {
     shield: unit.shield,
-    defending: unit.defending,
     recoverThrough: unit.recoverThrough,
     ...unit.attackBoost ? { attackBoost: { fraction: unit.attackBoost.fraction, throughRound: unit.attackBoost.throughRound } } : {},
     protection: unit.omnicProtection ?? 0
@@ -5093,7 +5091,6 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
     recipient.burn = { ...burns[recipient.id], sourceId: owner.id, origin: "native" };
     status2(events, owner, recipient, `${recipient.name}: Infernis Burn, ${burns[recipient.id].damage} per phase for 3 phases.`);
   };
-  if (action === "defend") return;
   if (action === "light") {
     hit(1);
     if (owner.definitionId === "nerithe" && target?.hp) {
@@ -5545,22 +5542,23 @@ function status3(owner, amount, message, events) {
 function calamiticActionReason(state, owner, action) {
   const n = owner.conduitRuntime?.numbers;
   if (n?.calamiticThroneSkip === state.round) return "Tomorrow is owed to the Throne; cannot act this turn.";
-  if (n?.calamiticThroneArmed === state.round && (action === "ultimate" || action === "defend")) {
-    return "The borrowed action must be a Normal Attack or an available ordinary skill.";
+  if (n?.calamiticThroneArmed === state.round && (action === "ultimate" || action === "light")) {
+    return "The borrowed action must be an available ordinary skill.";
   }
   return null;
 }
 function prepareCalamiticAction(state, owner, action) {
   if (!equipped(owner, "calamitic-throne-borrowed-tomorrows")) return false;
   const n = gear(owner).numbers;
-  if (n.calamiticThroneArmed === state.round && action !== "defend") {
+  if (n.calamiticThroneArmed === state.round && action !== "light") {
     delete n.calamiticThroneArmed;
     n.calamiticThroneSkip = state.round + 1;
     n.calamiticThroneGrant = state.round;
     return false;
   }
-  if (action === "defend") {
+  if (action === "light" && n.calamiticThroneUsed !== state.round && n.calamiticThroneSkip !== state.round + 1) {
     n.calamiticThroneArmed = state.round;
+    n.calamiticThroneUsed = state.round;
     return true;
   }
   return false;
@@ -5568,15 +5566,15 @@ function prepareCalamiticAction(state, owner, action) {
 function afterCalamiticAction(state, owner, action, events) {
   if (owner.hp <= 0) return;
   const n = gear(owner).numbers;
-  if (n.calamiticThroneArmed === state.round && action === "defend") {
-    status3(owner, 1, `${owner.name} may borrow one Normal Attack or ordinary skill; using it costs the next player turn.`, events);
+  if (n.calamiticThroneArmed === state.round && action === "light") {
+    status3(owner, 1, `${owner.name} may borrow one ordinary skill; using it costs the next player turn.`, events);
   }
   if (n.calamiticThroneGrant === state.round) {
     delete n.calamiticThroneGrant;
     generatedGauge(owner, owner, power(state, owner, "calamitic-throne-borrowed-tomorrows", 10, 30), events);
     status3(owner, state.round + 1, `${owner.name} borrowed tomorrow and cannot act on turn ${state.round + 1}.`, events);
   }
-  if (action === "defend" && equipped(owner, "calamitic-world-eater-orrery") && (n.calamiticOrrery ?? 0) > 0) {
+  if (action === "light" && equipped(owner, "calamitic-world-eater-orrery") && (n.calamiticOrrery ?? 0) > 0) {
     const reserve = n.calamiticOrrery;
     n.calamiticOrrery = 0;
     const target = state.enemies.filter((enemy) => enemy.hp > 0).sort((a, b) => b.hp - a.hp)[0];
@@ -5584,7 +5582,7 @@ function afterCalamiticAction(state, owner, action, events) {
     generatedStrike(state, owner, target, reserve, events, false);
   }
   if (equipped(owner, "calamitic-cathedral-final-equation")) {
-    const bit = 1 << ["light", "defend", "skill1", "skill2", "ultimate"].indexOf(action);
+    const bit = 1 << ["light", "skill1", "skill2", "ultimate"].indexOf(action);
     const previous = n.calamiticEquation ?? 0;
     const mask = previous & bit ? bit : previous | bit;
     const count2 = mask.toString(2).replace(/0/g, "").length;
@@ -5824,7 +5822,7 @@ function nativeControl(state, owner, target) {
 }
 function conduitActionCost(actor, action, state, base) {
   const n = actor.conduitRuntime?.numbers ?? {};
-  if (action === "defend") return equipped(actor, "solace-anchor") && actor.shatter >= 10 ? 10 : 0;
+  if (action === "light") return equipped(actor, "solace-anchor") && actor.shatter >= 10 && actor.conduitRuntime?.numbers.solaceRound !== state.round ? 10 : 0;
   if (action === "skill1" && n.quietFeather) return 0;
   let discount = 0;
   if (action === "skill2" && equipped(actor, "coilfeed-ratchet")) discount += value(state, actor, "coilfeed-ratchet", 3, 6);
@@ -5862,25 +5860,19 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     healExtra: 0,
     shieldBurn: 0,
     burnPaid: false,
-    freeDefense: false,
+    freeAction: false,
     openingBurns: Object.fromEntries(state.enemies.filter((enemy) => enemy.hp > 0 && enemy.burn.turns > 0 && enemy.burn.sourceId === actor.id && enemy.burn.origin !== "conduit").map((enemy) => [enemy.id, conduitBurnTick(state, actor, enemy)])),
     eclipseTargets: []
   };
   n.ordinaryResourceSpend = action === "skill2" ? 1 : 0;
-  if (action === "defend" && equipped(actor, "solace-anchor") && paid === 10) {
-    n.solaceUses = (n.solaceRound === state.round ? n.solaceUses ?? 0 : 0) + 1;
+  if (action === "light" && equipped(actor, "solace-anchor") && paid === 10) {
+    n.solaceUses = 1;
     n.solaceRound = state.round;
-    ctx.freeDefense = true;
+    ctx.freeAction = true;
   }
-  if (prepareCalamiticAction(state, actor, action)) ctx.freeDefense = true;
+  if (prepareCalamiticAction(state, actor, action)) ctx.freeAction = true;
   if (action === "skill1" && n.quietFeather) n.quietFeather--;
   if ((action === "skill1" || action === "skill2") && n.tailwind) n.tailwind--;
-  if (action === "defend") {
-    delete n.counterwind;
-    delete n.counterwindActive;
-    n.previousSkill = 0;
-    return ctx;
-  }
   const offensive = action === "light" || actor.kit?.abilities[action].strength.damageMultiplier !== void 0;
   if (offensive && equipped(actor, "parallax-relay")) ctx.criticalBonus += value(state, actor, "parallax-relay", 0.15, 0.3);
   if (equipped(actor, "glassroot-gimbal")) ctx.criticalBonus += value(state, actor, "glassroot-gimbal", 0.12, 0.24) * ((1 - actor.hp / actor.stats.health) / 0.75);
@@ -6191,8 +6183,9 @@ function finishConduitAction(state, owner, ctx, events) {
   const killed = ctx.hits.some((hit) => hit.damage > 0 && state.enemies.some((enemy) => enemy.id === hit.target && enemy.hp <= 0));
   if (critical && ctx.action !== "ultimate" && equipped(owner, "atmospheric-storm-clock"))
     n.stormCount = (n.stormCount ?? 0) + ctx.hits.filter((hit) => hit.critical && hit.damage > 0).length;
-  if (!damage && ctx.action !== "defend") n.previousSkill = 0;
-  if (ctx.action === "defend") {
+  if (!damage) n.previousSkill = 0;
+  if (ctx.action === "light") {
+    n.normalRound = state.round;
     if (equipped(owner, "reserve-torque-crank")) generatedGauge(owner, owner, value(state, owner, "reserve-torque-crank", 3, 6), events);
     if (equipped(owner, "atmospheric-skythread-rudder")) n.tailwind = (n.tailwind ?? 0) + 1;
     if (equipped(owner, "tranquilitic-kirin-cradle")) generatedHeal(
@@ -6214,8 +6207,6 @@ function finishConduitAction(state, owner, ctx, events) {
         emit(events, "status", owner, ally, 1, `${owner.name} donates an action to ${ally.name}.`);
       }
     }
-    afterCalamiticAction(state, owner, ctx.action, events);
-    return;
   }
   for (const id of owner.conduits ?? []) {
     if (!id) continue;
@@ -6570,13 +6561,12 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   if (shieldBefore > 0 && equipped(target, "fieldbrace-coupler")) equipmentMultiplier *= 1 - value(state, target, "fieldbrace-coupler", 0.04, 0.08);
   if (critical && equipped(target, "sentinel-aperture")) equipmentMultiplier *= 1 - value(state, target, "sentinel-aperture", 0.25, 0.5);
   if (target.hp > target.stats.health * 0.75 && equipped(target, "pale-bulwark-diadem")) equipmentMultiplier *= 1 - value(state, target, "pale-bulwark-diadem", 0.15, 0.3);
-  if (target.defending && equipped(target, "tectonic-atlas-bastion")) equipmentMultiplier *= 1 - value(state, target, "tectonic-atlas-bastion", 0.1, 0.2);
+  if (n.tauntRound === state.round && equipped(target, "tectonic-atlas-bastion")) equipmentMultiplier *= 1 - value(state, target, "tectonic-atlas-bastion", 0.1, 0.2);
   if (n.solaceRound === state.round) equipmentMultiplier *= 1 - value(state, target, "solace-anchor", 0.1, 0.2) * (n.solaceUses ?? 1);
   const wardMultiplier = nativeShieldActivationMultiplier(enemy, target);
   const nativeMultiplier = nativeIncomingMultiplier(state, enemy, target, action, events) * wardMultiplier;
-  const defendingMultiplier = target.defending ? 1 - defenseMode.damageReduction : 1;
-  const hasParry = scheduled && target.defending && equipped(target, "master-razor-1");
-  const temporaryMultiplier = (parry) => defendingMultiplier * equipmentMultiplier * nativeMultiplier * (parry ? 0.5 : 1);
+  const hasParry = scheduled && n.normalRound === state.round && equipped(target, "master-razor-1");
+  const temporaryMultiplier = (parry) => equipmentMultiplier * nativeMultiplier * (parry ? 0.5 : 1);
   const totalMultiplier = (parry) => temporaryMultiplier(parry);
   let reflection = 0;
   const beforeParry = damage * totalMultiplier(false);
@@ -6616,7 +6606,7 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
       emit(events, "shield", network, ally, -amount, `${ally.name}'s linked shield absorbs ${amount} for ${target.name}.`);
     }
   }
-  for (const protector of alive(state).filter((ally) => ally.id !== target.id && ally.defending && equipped(ally, "tectonic-faultkeeper-loom"))) {
+  for (const protector of alive(state).filter((ally) => ally.id !== target.id && gear(ally).numbers.normalRound === state.round && equipped(ally, "tectonic-faultkeeper-loom"))) {
     const amount = remaining * value(state, protector, "tectonic-faultkeeper-loom", 0.3, 0.6);
     if (amount <= 0) continue;
     remaining -= amount;
@@ -6785,8 +6775,7 @@ function combatant(id, definitionId, name, side, stats, element) {
     burn: { damage: 0, turns: 0 },
     weakened: 0,
     weakenFraction: 0.25,
-    kit: null,
-    defending: false
+    kit: null
   };
 }
 function capCapturedBattleLevels(state) {
@@ -6975,7 +6964,7 @@ function damageAmount(base, multiplier, defense, critical, critMultiplier = 1.5)
 function actionUnavailable(state, actor, action) {
   if (state.phase !== "player") return "This wave is not accepting actions.";
   if (actor.side !== "ally" || !state.allies.some((ally) => ally.id === actor.id)) return "Choose a team member.";
-  if (action !== "light" && action !== "defend" && actor.kit?.unavailableActions?.includes(action)) return "This captured form does not have this ability.";
+  if (action !== "light" && actor.kit?.unavailableActions?.includes(action)) return "This captured form does not have this ability.";
   if (actor.hp <= 0) return "This character is defeated.";
   if (actor.spent) return "This character has already acted this turn.";
   const calamiticReason = calamiticActionReason(state, actor, action);
@@ -7005,10 +6994,6 @@ function event(events, kind, source, target, amount, message, critical = false) 
 }
 function hurt(target, amount, source, events, critical = false, periodic = false, conduitReduction = 0, elementalCritical = false, shieldBypass = 0) {
   if (conduitReduction > 0) amount = Math.max(1, Math.round(amount * (1 - conduitReduction)));
-  if (target.defending) amount = Math.max(1, Math.round(amount * (1 - Math.min(
-    0.5,
-    defenseMode.damageReduction
-  ))));
   const bypassed = Math.floor(amount * shieldBypass);
   const absorbed = Math.min(target.shield, amount - bypassed);
   target.shield -= absorbed;
@@ -7188,12 +7173,12 @@ function act(previous, actorId, action, targetId) {
   const reason = actionUnavailable(previous, original, action);
   if (reason) throw new Error(reason);
   const native = hasNativeIdentity(original);
-  const nativeAbility = action === "light" || action === "defend" ? void 0 : original.kit?.abilities[action];
+  const nativeAbility = action === "light" ? void 0 : original.kit?.abilities[action];
   const allyTargeted = native && nativeAbility?.targets === "one-ally";
   if (allyTargeted && !previous.allies.some((ally) => ally.id === targetId && ally.hp > 0 && (!nativeAbility.excludeSelf || ally.id !== actorId || previous.allies.filter((unit) => unit.hp > 0).length === 1))) {
     throw new Error(nativeAbility.excludeSelf ? "Choose another living ally to protect." : "Choose a living ally target.");
   }
-  const support = native ? action === "defend" || allyTargeted || action !== "light" && nativeAbility?.strength.damageMultiplier === void 0 && nativeAbility?.targets !== "all-enemies" && !(original.definitionId === "thornia" && action === "skill1") && !(original.definitionId === "aurora" && action === "skill1") : action === "defend" || action === "skill2" && equipped(original, "master-nerithe-2") || action !== "light" && original.kit?.abilities[action].targets === "all-allies" || action === "skill2" && (original.definitionId === "tide" || original.definitionId === "sprout") && !original.captured;
+  const support = native ? allyTargeted || action !== "light" && nativeAbility?.strength.damageMultiplier === void 0 && nativeAbility?.targets !== "all-enemies" && !(original.definitionId === "thornia" && action === "skill1") && !(original.definitionId === "aurora" && action === "skill1") : action === "skill2" && equipped(original, "master-nerithe-2") || action !== "light" && original.kit?.abilities[action].targets === "all-allies" || action === "skill2" && (original.definitionId === "tide" || original.definitionId === "sprout") && !original.captured;
   if (!support && !previous.enemies.some((enemy) => enemy.id === targetId && enemy.hp > 0)) {
     throw new Error("Choose a living enemy target.");
   }
@@ -7202,29 +7187,16 @@ function act(previous, actorId, action, targetId) {
   if (!actor) throw new Error("Team state is inconsistent.");
   const definition = actor.kit;
   if (!definition) throw new Error("Ally combat kit is missing.");
-  const strength = action === "light" || action === "defend" ? null : definition.abilities[action].strength;
+  const strength = action === "light" ? null : definition.abilities[action].strength;
   const events = [];
-  const name = action === "light" || action === "defend" ? basicActionName(actor.definitionId, action) : definition.abilities[action].name;
+  const name = action === "light" ? basicActionName(actor.definitionId, action) : definition.abilities[action].name;
   const paid = actionGaugeCost(actor, action, state);
-  const nativeAll = native ? nativeAbility?.targets === "all-enemies" : !actor.captured && (action === "ultimate" || action === "skill2" && actor.definitionId === "ember" || action !== "light" && action !== "defend" && definition.abilities[action].targets === "all-enemies");
+  const nativeAll = native ? nativeAbility?.targets === "all-enemies" : !actor.captured && (action === "ultimate" || action === "skill2" && actor.definitionId === "ember" || action !== "light" && definition.abilities[action].targets === "all-enemies");
   actor.shatter -= paid;
   const activation = prepareConduitAction(state, actor, action, paid, nativeAll);
   const priorInstruction = actor.native?.instruction;
-  if (action === "defend") {
-    actor.spent = !activation.freeDefense;
-    actor.defending = true;
-    const defenseReduction = defenseMode.damageReduction;
-    event(events, "status", actor, actor, defenseReduction * 100, `${actor.name} enters ${name}: incoming ${defenseReduction > defenseMode.damageReduction ? "direct " : ""}damage reduced by ${formatStat(defenseReduction * 100)}% until the next player turn.`);
-    finishConduitAction(state, actor, activation, events);
-    nativeAfterAction(state, actor, action, priorInstruction, events);
-    conduitDeaths(state, previous, events);
-    nativeCleanup(state);
-    checkOutcome(state);
-    awardDefeats(previous, state, events);
-    return { state, events };
-  }
   events.push({ kind: "attack", source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action, abilityName: name });
-  actor.spent = true;
+  actor.spent = !activation.freeAction;
   if (action === "ultimate" && !equipped(actor, "master-nerithe-3")) actor.recoverThrough = state.round + 1;
   nativeGauge(state, actor, shatterGauge.gains[action] + (action === "light" ? definition.passive.lightGaugeBonus ?? 0 : 0), events);
   if (action === "skill1" || action === "skill2") actor.readyRound[action] = state.round;
@@ -7366,7 +7338,6 @@ function newTurn(state, events) {
   state.round++;
   for (const ally of state.allies) {
     ally.spent = false;
-    ally.defending = false;
     if (ally.attackBoost && ally.attackBoost.throughRound < state.round) delete ally.attackBoost;
   }
   conduitTurnStart(state, events);

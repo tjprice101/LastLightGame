@@ -50,7 +50,7 @@ describe('Calamitic universal equipment', () => {
       conduitIncoming(state, enemy, state.allies[1], 100, false, false, events);
       const reserve = enabled ? 100 * calamiticPower(level, .4, .8) : 0;
       expect(gear(owner).numbers.calamiticOrrery ?? 0).toBeCloseTo(reserve);
-      afterCalamiticAction(state, owner, 'defend', events);
+      afterCalamiticAction(state, owner, 'light', events);
       expect(gear(owner).numbers.calamiticOrrery ?? 0).toBe(0);
       expect(enemy.hp).toBe(10000 - (enabled ? Math.max(1, Math.round(reserve / 2)) : 0));
       generatedStrike(state, owner, enemy, 20, events);
@@ -96,23 +96,23 @@ describe('Calamitic universal equipment', () => {
 
     it(`repays a borrowed turn with scaled Gauge at +${level}, equipped=${enabled}`, () => {
       const { state, owner, enemy } = fixture('calamitic-throne-borrowed-tomorrows', level, enabled);
-      const defense = act(state, owner.id, 'defend', enemy.id);
-      expect(defense.state.allies[0].spent).toBe(!enabled);
+      const opener = act(state, owner.id, 'light', enemy.id);
+      expect(opener.state.allies[0].spent).toBe(!enabled);
       if (!enabled) return;
-      expect(actionUnavailable(defense.state, defense.state.allies[0], 'ultimate')).toContain('borrowed');
-      expect(actionUnavailable(defense.state, defense.state.allies[0], 'defend')).toContain('borrowed');
-      const borrowed = act(defense.state, owner.id, 'light', enemy.id);
-      const plain = structuredClone(defense.state);
+      expect(actionUnavailable(opener.state, opener.state.allies[0], 'ultimate')).toContain('borrowed');
+      expect(actionUnavailable(opener.state, opener.state.allies[0], 'light')).toContain('borrowed');
+      const borrowed = act(opener.state, owner.id, 'skill1', enemy.id);
+      const plain = structuredClone(opener.state);
       plain.allies[0].conduits = Array(8).fill(null);
       delete gear(plain.allies[0]).numbers.calamiticThroneArmed;
-      const baseline = act(plain, owner.id, 'light', enemy.id);
+      const baseline = act(plain, owner.id, 'skill1', enemy.id);
       expect(borrowed.state.allies[0].shatter - baseline.state.allies[0].shatter).toBeCloseTo(calamiticPower(level, 10, 30));
       expect(borrowed.state.allies[0].spent).toBe(true);
       const next = endTurn(borrowed.state).state;
       expect(actionUnavailable(next, next.allies[0], 'light')).toContain('owed');
       const later = endTurn(next).state;
       expect(actionUnavailable(later, later.allies[0], 'light')).toBeNull();
-      const tooSoon = act(later, owner.id, 'defend', later.enemies[0].id);
+      const tooSoon = act(later, owner.id, 'light', later.enemies[0].id);
       expect(tooSoon.state.allies[0].spent).toBe(false);
     });
 
@@ -122,7 +122,7 @@ describe('Calamitic universal equipment', () => {
       afterCalamiticAction(state, owner, 'light', events);
       afterCalamiticAction(state, owner, 'skill1', events);
       expect(state.enemies.map(enemy => enemy.hp)).toEqual([10000, 10000, 10000]);
-      afterCalamiticAction(state, owner, 'defend', events);
+      afterCalamiticAction(state, owner, 'skill2', events);
       const loss = enabled ? Math.max(1, Math.round(100 * calamiticPower(level, 1.2, 2.4) / 3 / 2)) : 0;
       expect(state.enemies.map(enemy => enemy.hp)).toEqual([10000 - loss, 10000 - loss, 10000 - loss]);
       expect(gear(owner).numbers.calamiticEquation ?? 0).toBe(0);
@@ -159,18 +159,18 @@ describe('Calamitic universal equipment', () => {
 
   it('does not take tomorrow when no borrowed action is chosen, or bypass recovery', () => {
     const { state, owner, enemy } = fixture('calamitic-throne-borrowed-tomorrows');
-    const defended = act(state, owner.id, 'defend', enemy.id).state;
-    const next = endTurn(defended).state;
+    const opened = act(state, owner.id, 'light', enemy.id).state;
+    const next = endTurn(opened).state;
     expect(actionUnavailable(next, next.allies[0], 'light')).toBeNull();
     next.allies[0].recoverThrough = next.round;
-    expect(actionUnavailable(next, next.allies[0], 'defend')).toContain('Recovering');
+    expect(actionUnavailable(next, next.allies[0], 'light')).toContain('Recovering');
   });
 
-  it('awards real kills from a defensive discharge, once, and resets new encounters', () => {
+  it('awards real kills from a Normal Attack discharge, once, and resets new encounters', () => {
     const { state, owner } = fixture('calamitic-cathedral-final-equation', 5);
-    gear(owner).numbers.calamiticEquation = 1 | 4;
+    gear(owner).numbers.calamiticEquation = 2 | 4;
     state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
-    const result = act(state, owner.id, 'defend', state.enemies[0].id);
+    const result = act(state, owner.id, 'light', state.enemies[0].id);
     expect(result.state.phase).toBe('cleared');
     expect(result.events.filter(event => event.kind === 'reward')).toHaveLength(3);
     expect(gear(result.state.allies[0]).numbers.calamiticEquation).toBe(0);

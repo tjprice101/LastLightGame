@@ -53,20 +53,16 @@ describe('Normal Attack secondary-click shortcut', () => {
         expect(f.commit).toHaveBeenCalledOnce();
         expect(f.commit.mock.calls[0][0].events[0]).toMatchObject({ kind: 'attack', source: 'tide', target: 'enemy-1-1', action: 'light' });
       }
-      expect(f.session.state.allies.find(unit => unit.id === 'tide')!.defending).toBe(false);
     } finally { f.view.destroy(); }
   });
 
-  it('keeps Defense available from the modal and describes the new shortcut', async () => {
+  it('describes the Normal Attack shortcut and offers no Defense action', () => {
     const f = fixture();
     try {
       expect(f.host.querySelector('#battle-announcement')!.textContent).toContain('Right-click: Normal Attack');
+      expect(f.host.querySelector('#battle-announcement')!.textContent).not.toContain('Defense');
       expect(f.host.querySelector('[data-action="light"]')!.textContent).toContain('Down or right-click');
-      expect(f.host.querySelector('[data-action="defend"]')!.textContent).toContain('Battle menu');
-      expect(f.host.querySelector('[data-action="defend"]')!.textContent).not.toContain('Right-click');
-      f.host.querySelector<HTMLButtonElement>('[data-action="defend"]')!.click();
-      await vi.waitFor(() => expect(f.commit).toHaveBeenCalledOnce());
-      expect(f.commit.mock.calls[0][0].state.allies[0].defending).toBe(true);
+      expect(f.host.querySelector('[data-action="defend"]')).toBeNull();
     } finally { f.view.destroy(); }
   });
 

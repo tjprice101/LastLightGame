@@ -153,12 +153,12 @@ describe('full-team battle snapshots', () => {
   it('waits for all three actions before enemies act, then resets team actions', () => {
     let state = createBattle(42, ids, progress);
     for (const enemy of state.enemies) enemy.hp = 1000000;
-    state = actAndAdvanceTurn(state, 'sprout', 'defend', state.enemies[0].id).state;
+    state = actAndAdvanceTurn(state, 'sprout', 'light', state.enemies[0].id).state;
     expect(state.round).toBe(1);
     expect(state.allies.find((ally) => ally.id === 'sprout')?.spent).toBe(true);
-    state = actAndAdvanceTurn(state, 'tide', 'defend', state.enemies[0].id).state;
+    state = actAndAdvanceTurn(state, 'tide', 'light', state.enemies[0].id).state;
     expect(state.round).toBe(1);
-    state = actAndAdvanceTurn(state, 'ember', 'defend', state.enemies[0].id).state;
+    state = actAndAdvanceTurn(state, 'ember', 'light', state.enemies[0].id).state;
     expect(state.round).toBe(2);
     expect(state.allies.every((ally) => !ally.spent)).toBe(true);
   });

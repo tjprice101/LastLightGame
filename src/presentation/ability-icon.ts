@@ -16,9 +16,9 @@ export const abilityIcons = {
   nerithe: { passive: 'nerithe-passive', skill1: 'nerithe-skill1',
     skill2: 'nerithe-skill2', ultimate: 'nerithe-ultimate' },
   orvella: { passive: 'orvella-passive', light: 'orvella-light', skill1: 'orvella-skill1',
-    skill2: 'orvella-skill2', ultimate: 'orvella-ultimate', defend: 'orvella-defend' },
+    skill2: 'orvella-skill2', ultimate: 'orvella-ultimate' },
   vaelor: { passive: 'vaelor-passive', light: 'vaelor-light', skill1: 'vaelor-skill1',
-    skill2: 'vaelor-skill2', ultimate: 'vaelor-ultimate', defend: 'vaelor-defend' },
+    skill2: 'vaelor-skill2', ultimate: 'vaelor-ultimate' },
   ember: infernisIcons,
   tide: {
     passive: 'tizu-stillwater-guard',
@@ -36,23 +36,21 @@ export const abilityIcons = {
   },
   rosetta: {
     passive: 'rosetta-passive', light: 'rosetta-light', skill1: 'rosetta-skill1',
-    skill2: 'rosetta-skill2', ultimate: 'rosetta-ultimate', defend: 'rosetta-defend',
+    skill2: 'rosetta-skill2', ultimate: 'rosetta-ultimate',
   },
   thornia: {
     passive: 'thornia-passive', light: 'thornia-light', skill1: 'thornia-skill1',
-    skill2: 'thornia-skill2', ultimate: 'thornia-ultimate', defend: 'thornia-defend',
+    skill2: 'thornia-skill2', ultimate: 'thornia-ultimate',
   },
   crinso: {
     passive: 'crinso-passive', light: 'crinso-light', skill1: 'crinso-skill1',
-    skill2: 'crinso-skill2', ultimate: 'crinso-ultimate', defend: 'crinso-defend',
+    skill2: 'crinso-skill2', ultimate: 'crinso-ultimate',
   },
-} as const satisfies Record<StarterId, Record<'skill1' | 'skill2' | 'ultimate' | 'passive', string> & { light?: string; defend?: string }>;
+} as const satisfies Record<StarterId, Record<'skill1' | 'skill2' | 'ultimate' | 'passive', string> & { light?: string }>;
 
 export function abilityIcon(starterId: StarterId, action: ActionId | 'passive'): string {
   const icons: Partial<Record<ActionId | 'passive', string>> = abilityIcons[starterId];
-  const icon = action === 'light'
-    ? 'universal-normal-attack'
-    : action === 'defend' ? 'universal-defense' : icons[action];
+  const icon = action === 'light' ? 'universal-normal-attack' : icons[action];
   if (!icon) return '';
   return `<img class="ability-icon" src="${assetUrl(`abilities/${icon}.png`)}" alt="" aria-hidden="true" width="256" height="256" />`;
 }

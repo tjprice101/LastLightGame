@@ -26,19 +26,19 @@ export function nativeStateReadout(state: BattleState, unit: Combatant, compact 
 }
 
 export function needsAllyTarget(actor: Combatant, action: ActionId): boolean {
-  return !actor.captured && !!actor.kit?.nativeIdentity && action !== 'light' && action !== 'defend'
+  return !actor.captured && !!actor.kit?.nativeIdentity && action !== 'light'
     && actor.kit.abilities[action].targets === 'one-ally';
 }
 
 export function allyTargetCandidates(state: BattleState, actor: Combatant, action: ActionId): Combatant[] {
-  if (!needsAllyTarget(actor, action) || action === 'light' || action === 'defend') return [];
+  if (!needsAllyTarget(actor, action) || action === 'light') return [];
   const living = state.allies.filter(ally => ally.hp > 0);
   return actor.kit!.abilities[action].excludeSelf && living.some(ally => ally.id !== actor.id)
     ? living.filter(ally => ally.id !== actor.id) : living;
 }
 
 export function allyTargetHint(actor: Combatant, action: ActionId): string {
-  if (!needsAllyTarget(actor, action) || action === 'light' || action === 'defend') return '';
+  if (!needsAllyTarget(actor, action) || action === 'light') return '';
   return actor.kit!.abilities[action].excludeSelf
     ? 'Choose another living ally · next enemy phase · solo: self protection'
     : actor.definitionId === 'tide' ? 'Choose a living ally · through next enemy phase'
@@ -48,7 +48,6 @@ export function allyTargetHint(actor: Combatant, action: ActionId): string {
 export function nativeActionHint(state: BattleState, actor: Combatant, action: ActionId, enemyTargetId?: string): string {
   if (actor.captured || !actor.kit?.nativeIdentity) return '';
   if (needsAllyTarget(actor, action)) return allyTargetHint(actor, action);
-  if (action === 'defend') return 'Self · until next player turn';
   const selected = state.enemies.find(enemy => enemy.id === enemyTargetId && enemy.hp > 0)
     ?? state.enemies.find(enemy => enemy.hp > 0);
   if (action === 'light') return `Enemy: ${selected?.name ?? 'None'} · immediate`;
@@ -76,7 +75,7 @@ export function nativeActionHint(state: BattleState, actor: Combatant, action: A
 
 export function createAllyTargetPicker(state: BattleState, actor: Combatant, action: ActionId):
   { result: Promise<string | null>; cancel: () => void } {
-  if (action === 'light' || action === 'defend' || !actor.kit) throw new Error('Ally targeting requires an ability.');
+  if (action === 'light' || !actor.kit) throw new Error('Ally targeting requires an ability.');
   const ability = isStarterId(actor.definitionId) ? describeFighter(actor.definitionId, actor.kit).abilities[action] : actor.kit.abilities[action];
   const candidates = allyTargetCandidates(state, actor, action);
   const { dialog, dispose } = createGameDialog(`Choose ally · ${ability.name}`);

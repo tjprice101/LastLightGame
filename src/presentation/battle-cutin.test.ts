@@ -83,7 +83,7 @@ describe('Last Flare portrait cut-ins', () => {
 
   it.each(starters.map(unit => unit.id))('skips ordinary skill banners for %s while keeping Last Flare', id => {
     const unit = createBattle(1, [id]).allies[0];
-    for (const action of ['light', 'defend', 'skill1', 'skill2', 'ultimate'] as const) {
+    for (const action of ['light', 'skill1', 'skill2', 'ultimate'] as const) {
       const cue = portraitCue(unit, { kind: 'attack', source: id, target: id, action,
         abilityName: 'Ability check', message: 'Ability check', amount: 0, critical: false });
       if (action === 'ultimate') expect(cue).toMatchObject({ ultimate: true, duration: 3500 });
