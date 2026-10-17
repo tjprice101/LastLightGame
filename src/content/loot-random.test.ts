@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { plentifulDrops, fractalisDrop, scaledDrop, storyFractalisDrop, treasuryFractalisDrop } from './loot-random';
 import { storyEncounter, storyLoot, storyRules } from './story';
-import { materialDrops, materialLoot, materialDropTable } from './dungeons';
+import { materialBracket, materialDrops, materialLoot, materialRarities } from './dungeons';
 import { infusionDrops, infusionLoot, infusionEncounter } from './infusions';
 import { elementalEnemyLevel, elements } from './activities';
 import { bossLootRange, bossLootMultiplier } from './final-boss-loot';
@@ -38,9 +38,9 @@ describe('plentiful loot quantities', () => {
   it('bounds every dungeon and infusion stack to triple normal quantities across all floors', () => {
     for (const element of elements) for (let stage = 1; stage <= 35; stage++) {
       for (const drop of materialLoot(element.id, stage)) {
-        expect(drop.minimum).toBeGreaterThanOrEqual(1);
-        expect(drop.minimum).toBeLessThanOrEqual(stage === 35 ? 15 : 3);
-        expect(drop.maximum).toBeLessThanOrEqual(stage === 35 ? 30 : 6);
+        expect(drop.chance).toBe(1);
+        expect(drop.minimum).toBeGreaterThanOrEqual(stage === 35 ? 10 : 2);
+        expect(drop.maximum).toBeLessThanOrEqual(stage === 35 ? 150 : 30);
       }
     }
     for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= 35; stage++) {
@@ -51,8 +51,8 @@ describe('plentiful loot quantities', () => {
         expect(drop.maximum).toBeLessThanOrEqual(stage === 35 ? 30 : 6);
       }
     }
-    expect(materialLoot('infernic', 1)[0]).toMatchObject({ minimum: 1, maximum: 2 });
-    expect(materialLoot('infernic', 25)[0]).toMatchObject({ minimum: 2, maximum: 4 });
+    expect(materialLoot('infernic', 1)[0]).toMatchObject({ minimum: 4, maximum: 5 });
+    expect(materialLoot('infernic', 25)[0]).toMatchObject({ minimum: 20, maximum: 25 });
     for (let level = 1; level <= 120; level++) expect(fractalisDrop(level).maximum).toBeLessThanOrEqual(30);
   });
   it('uses independent integer draws from base to double base without adding locked items', () => {
@@ -62,30 +62,26 @@ describe('plentiful loot quantities', () => {
     for (const value of [-1, 1, NaN, Infinity]) expect(() => plentifulDrops({ seed: 1 }, () => value)).toThrow('[0, 1)');
   });
 
-  it('preserves enemy-level gates and scales every eligible stack and chance monotonically', () => {
-    const previous = new Map<string, { minimum: number; chance: number }>();
-    for (let stage = 1; stage <= 35; stage++) {
+  it('guarantees every bracket rarity and never shrinks a stack as floors rise', () => {
+    const previous = new Map<string, { minimum: number; maximum: number }>();
+    for (let stage = 1; stage <= 34; stage++) {
       const pool = materialLoot('infernic', stage);
-      const drops = materialDrops('infernic', stage, () => 0);
+      const low = materialDrops('infernic', stage, () => 0);
+      const high = materialDrops('infernic', stage, () => .999999);
+      expect(pool.map(drop => drop.id)).toEqual(Object.keys(materialBracket(stage).ranges).map(rarity => `infernic-${rarity}`));
       for (const drop of pool) {
-        expect(drops[drop.id]).toBe(drop.minimum);
-        expect(drop.maximum).toBe(drop.minimum * 2);
-        expect(drop.minimum).toBeGreaterThanOrEqual(previous.get(drop.id)?.minimum ?? 1);
-        expect(drop.chance).toBeGreaterThanOrEqual(previous.get(drop.id)?.chance ?? 0);
+        expect(drop.chance).toBe(1);
+        expect(low[drop.id]).toBe(drop.minimum);
+        expect(high[drop.id]).toBe(drop.maximum);
+        expect(drop.minimum).toBeGreaterThanOrEqual(previous.get(drop.id)?.minimum ?? 2);
+        expect(drop.maximum).toBeGreaterThanOrEqual(previous.get(drop.id)?.maximum ?? 3);
         previous.set(drop.id, drop);
       }
-      for (const entry of materialDropTable) expect(drops[`infernic-${entry.rarity}`] !== undefined)
-        .toBe(elementalEnemyLevel(stage) >= entry.level);
+      const rarities = pool.map(drop => drop.id.slice('infernic-'.length));
+      expect(rarities).toEqual(materialRarities.slice(0, rarities.length));
     }
     const final = materialLoot('infernic', 35);
-    expect(final.map(({ minimum, maximum }) => [minimum, maximum])).toEqual(Array.from({ length: 6 }, () => [15, 30]));
-    final.forEach((drop, index) => expect(drop.chance).toBeCloseTo([1, .98, .90, .80, .60, .35][index]));
-    expect(materialDrops('infernic', 35, () => .99999)).toEqual({ 'infernic-common': 30 });
-    for (let index = 1; index < final.length; index++) {
-      const sequence = [0, ...Array<number>((index - 1) * 2).fill(0), final[index].chance];
-      const drops = materialDrops('infernic', 35, () => sequence.shift() ?? .999999);
-      expect(drops[final[index].id]).toBeUndefined();
-    }
+    expect(final.map(({ minimum, maximum }) => [minimum, maximum])).toEqual([[125, 150], [80, 100], [60, 75], [40, 50], [25, 30], [10, 15]]);
   });
 
   it('keeps specialty and any-element rarity gates at all Heaven and Abyss stages', () => {

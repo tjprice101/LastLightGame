@@ -4071,24 +4071,27 @@ function dungeonEncounter(element, stage, family = 0) {
     abilityMultiplier: enemyAbilityMultiplier(level)
   };
 }
-var materialDropTable = [
-  { rarity: "uncommon", level: 23, chance: 0.25, finalChance: 0.98, quantity: 3 },
-  { rarity: "rare", level: 48, chance: 0.12, finalChance: 0.9, quantity: 3 },
-  { rarity: "epic", level: 73, chance: 0.06, finalChance: 0.8, quantity: 3 },
-  { rarity: "legendary", level: 98, chance: 0.025, finalChance: 0.6, quantity: 3 },
-  { rarity: "omnic", level: 120, chance: 0.01, finalChance: 0.35, quantity: 3 }
+var materialRarities2 = ["common", "uncommon", "rare", "epic", "legendary", "omnic"];
+var materialBrackets = [
+  { firstStage: 1, ranges: { common: [4, 5] } },
+  { firstStage: 6, ranges: { common: [8, 10], uncommon: [2, 3] } },
+  { firstStage: 12, ranges: { common: [12, 15], uncommon: [5, 6], rare: [2, 3] } },
+  { firstStage: 18, ranges: { common: [16, 20], uncommon: [8, 10], rare: [5, 6], epic: [2, 3] } },
+  { firstStage: 24, ranges: { common: [20, 25], uncommon: [12, 15], rare: [8, 10], epic: [5, 6], legendary: [2, 3] } },
+  { firstStage: 30, ranges: { common: [25, 30], uncommon: [16, 20], rare: [12, 15], epic: [8, 10], legendary: [5, 6], omnic: [2, 3] } }
 ];
+function materialBracket(stage) {
+  elementalEnemyLevel(stage);
+  return [...materialBrackets].reverse().find((bracket) => stage >= bracket.firstStage);
+}
 function materialLoot(element, stage) {
   getElement(element);
-  const level = elementalEnemyLevel(stage);
-  const common = scaledDrop(level, 10, 10, 1, 1, 3);
-  if (!common) throw new Error("Common material loot is missing.");
-  const loot = [{ id: `${element}-common`, ...common }];
-  for (const entry of materialDropTable) {
-    const drop = scaledDrop(level, 10, entry.level, entry.chance, entry.finalChance, entry.quantity);
-    if (drop) loot.push({ id: `${element}-${entry.rarity}`, ...drop });
-  }
-  return loot.map((drop) => bossLootRange(drop, bossLootMultiplier({ dungeon: { stage } })));
+  const { ranges } = materialBracket(stage);
+  const multiplier = bossLootMultiplier({ dungeon: { stage } });
+  return materialRarities2.flatMap((rarity) => {
+    const range2 = ranges[rarity];
+    return range2 ? [bossLootRange({ id: `${element}-${rarity}`, minimum: range2[0], maximum: range2[1], chance: 1 }, multiplier)] : [];
+  });
 }
 function materialDrops(element, stage, random) {
   const drops = {};

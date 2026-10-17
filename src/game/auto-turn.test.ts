@@ -99,6 +99,9 @@ describe('automatic enemy turn after the final available action', () => {
     const result = advanceUnavailableTurns(state);
     expect(result.state.phase).toBe('cleared');
     expect(result.state.dungeon?.stage).toBe(5);
-    expect(result.events.find((event) => event.kind === 'reward')?.materials).toEqual({ 'botanic-common': 1, 'botanic-uncommon': 1, 'botanic-rare': 2 });
+    const materials = result.events.find((event) => event.kind === 'reward')?.materials ?? {};
+    expect(Object.keys(materials)).toEqual(['botanic-common']);
+    expect(materials['botanic-common']).toBeGreaterThanOrEqual(4);
+    expect(materials['botanic-common']).toBeLessThanOrEqual(5);
   });
 });

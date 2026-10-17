@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { dungeonEncounter, isPlayableDungeon, materialDrops, materialDropTable, playableDungeons } from './dungeons';
+import { dungeonEncounter, isPlayableDungeon, materialBrackets, materialDrops, materialRarities, playableDungeons } from './dungeons';
 import { act, actAndAdvanceTurn, actionUnavailable, createDungeonBattle, endTurn, nextWave } from '../game/battle';
 import { starters } from './starters';
 import { elements, elementalEnemyLevel } from './activities';
@@ -46,8 +46,8 @@ describe('elemental material dungeons', () => {
   });
   it.each(playableDungeons)('%s grants only its own materials; final bosses reject unbuilt solo clears', (element) => {
     expect(materialDrops(element, 35, () => 0)).toEqual({
-      [`${element}-common`]: 15, [`${element}-uncommon`]: 15, [`${element}-rare`]: 15,
-      [`${element}-epic`]: 15, [`${element}-legendary`]: 15, [`${element}-omnic`]: 15,
+      [`${element}-common`]: 125, [`${element}-uncommon`]: 80, [`${element}-rare`]: 60,
+      [`${element}-epic`]: 40, [`${element}-legendary`]: 25, [`${element}-omnic`]: 10,
     });
     for (const stage of [1, 35]) {
       let state = createDungeonBattle(element, stage, 1729, 'ember', stage === 1 ? { level: 38, evolution: 2 } : { level: 105, evolution: 6 });
@@ -55,14 +55,17 @@ describe('elemental material dungeons', () => {
       expect(state.phase, `${element} stage ${stage}`).toBe('defeat');
     }
   });
-  it('guarantees Seeds, gates each higher rarity exactly and checks probability boundaries', () => {
-    expect(materialDrops('infernic', 1, () => 0)).toEqual({ 'infernic-common': 1, 'infernic-uncommon': 1 });
-    expect(materialDrops('infernic', 35, () => 0.99)).toEqual({ 'infernic-common': 30 });
-    for (const entry of materialDropTable) {
-      const stage = Array.from({ length: 35 }, (_, i) => i + 1).find((value) => elementalEnemyLevel(value) >= entry.level)!;
-      if (stage > 1) expect(materialDrops('oceanic', stage - 1, () => 0)[`oceanic-${entry.rarity}`]).toBeUndefined();
-      expect(materialDrops('oceanic', stage, () => 0)[`oceanic-${entry.rarity}`]).toBeGreaterThanOrEqual(1);
-    }
+  it('guarantees every unlocked rarity and adds the next rarity each bracket', () => {
+    expect(materialDrops('infernic', 1, () => 0)).toEqual({ 'infernic-common': 4 });
+    expect(materialDrops('infernic', 5, () => .99)).toEqual({ 'infernic-common': 5 });
+    expect(materialDrops('infernic', 6, () => 0)).toEqual({ 'infernic-common': 8, 'infernic-uncommon': 2 });
+    expect(materialDrops('infernic', 34, () => .99)).toEqual({ 'infernic-common': 30, 'infernic-uncommon': 20,
+      'infernic-rare': 15, 'infernic-epic': 10, 'infernic-legendary': 6, 'infernic-omnic': 3 });
+    materialBrackets.forEach((bracket, index) => {
+      expect(Object.keys(bracket.ranges)).toEqual(materialRarities.slice(0, index + 1));
+      if (index > 0) expect(materialDrops('oceanic', bracket.firstStage - 1, () => 0)[`oceanic-${materialRarities[index]}`]).toBeUndefined();
+      expect(materialDrops('oceanic', bracket.firstStage, () => 0)[`oceanic-${materialRarities[index]}`]).toBeGreaterThanOrEqual(2);
+    });
     expect(() => materialDrops('infernic', 6, () => 1)).toThrow();
   });
   it.each(starters)('$name can clear early material stages with Common gear and complementary allies', (starter) => {
@@ -96,10 +99,10 @@ describe('elemental material dungeons', () => {
     expect(encounter.abilityMultiplier).toBe(enemyAbilityMultiplier(120));
     expect(encounter.level).toBe(120);
     expect(encounter.stats).toEqual(enemyCombatStats(120, true));
-    expect(materialDropTable.map((drop) => drop.level)).toEqual([23, 48, 73, 98, 120]);
+    expect(materialBrackets.map((bracket) => bracket.firstStage)).toEqual([1, 6, 12, 18, 24, 30]);
     expect(materialDrops('infernic', 35, () => 0)).toEqual({
-      'infernic-common': 15, 'infernic-uncommon': 15, 'infernic-rare': 15,
-      'infernic-epic': 15, 'infernic-legendary': 15, 'infernic-omnic': 15,
+      'infernic-common': 125, 'infernic-uncommon': 80, 'infernic-rare': 60,
+      'infernic-epic': 40, 'infernic-legendary': 25, 'infernic-omnic': 10,
     });
   });
   it('uses stronger periodic enemy abilities', () => {

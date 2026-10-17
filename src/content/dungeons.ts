@@ -3,7 +3,7 @@ import { dungeonArt, legacyDungeonArt, elementAccents } from './dungeon-art';
 import { type Stats } from './combat';
 import { legacyDungeonEnemies, legacyDungeonStrikes, type DungeonEnemy } from './dungeon-enemies';
 import { elementSources, type LegacyElementId } from './element-migration';
-import { scaledDrop, rollDrop } from './loot-random';
+import { rollDrop } from './loot-random';
 import { enemyCombatStats } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
@@ -44,25 +44,32 @@ export function dungeonEncounter(element: PlayableDungeon, stage: number, family
   };
 }
 
-export const materialDropTable = [
-  { rarity: 'uncommon', level: 23, chance: .25, finalChance: .98, quantity: 3 },
-  { rarity: 'rare', level: 48, chance: .12, finalChance: .90, quantity: 3 },
-  { rarity: 'epic', level: 73, chance: .06, finalChance: .80, quantity: 3 },
-  { rarity: 'legendary', level: 98, chance: .025, finalChance: .60, quantity: 3 },
-  { rarity: 'omnic', level: 120, chance: .01, finalChance: .35, quantity: 3 },
-] as const;
+export const materialRarities = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic'] as const;
+export type MaterialRarity = (typeof materialRarities)[number];
+
+/** Guaranteed per-kill material ranges. Each bracket adds the next rarity and raises every lower one. */
+export const materialBrackets: readonly { firstStage: number; ranges: Partial<Record<MaterialRarity, readonly [number, number]>> }[] = [
+  { firstStage: 1, ranges: { common: [4, 5] } },
+  { firstStage: 6, ranges: { common: [8, 10], uncommon: [2, 3] } },
+  { firstStage: 12, ranges: { common: [12, 15], uncommon: [5, 6], rare: [2, 3] } },
+  { firstStage: 18, ranges: { common: [16, 20], uncommon: [8, 10], rare: [5, 6], epic: [2, 3] } },
+  { firstStage: 24, ranges: { common: [20, 25], uncommon: [12, 15], rare: [8, 10], epic: [5, 6], legendary: [2, 3] } },
+  { firstStage: 30, ranges: { common: [25, 30], uncommon: [16, 20], rare: [12, 15], epic: [8, 10], legendary: [5, 6], omnic: [2, 3] } },
+];
+
+export function materialBracket(stage: number) {
+  elementalEnemyLevel(stage);
+  return [...materialBrackets].reverse().find(bracket => stage >= bracket.firstStage)!;
+}
 
 export function materialLoot(element: ElementId, stage: number) {
   getElement(element);
-  const level = elementalEnemyLevel(stage);
-  const common = scaledDrop(level, 10, 10, 1, 1, 3);
-  if (!common) throw new Error('Common material loot is missing.');
-  const loot = [{ id: `${element}-common`, ...common }];
-  for (const entry of materialDropTable) {
-    const drop = scaledDrop(level, 10, entry.level, entry.chance, entry.finalChance, entry.quantity);
-    if (drop) loot.push({ id: `${element}-${entry.rarity}`, ...drop });
-  }
-  return loot.map(drop => bossLootRange(drop, bossLootMultiplier({ dungeon: { stage } })));
+  const { ranges } = materialBracket(stage);
+  const multiplier = bossLootMultiplier({ dungeon: { stage } });
+  return materialRarities.flatMap(rarity => {
+    const range = ranges[rarity];
+    return range ? [bossLootRange({ id: `${element}-${rarity}`, minimum: range[0], maximum: range[1], chance: 1 }, multiplier)] : [];
+  });
 }
 
 export function materialDrops(element: ElementId, stage: number, random: () => number): Record<string, number> {

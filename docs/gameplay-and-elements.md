@@ -175,34 +175,27 @@ chunky chibi readability. Runtime inventory/cost/reward names now use
 Seed/Bloom/Shard/Crest/Heart/Soul of the element. Legacy elemental material IDs
 are remapped and merged on read without saving; other stable IDs remain unchanged.
 
-Confirmed: later/tougher encounters can drop higher rarities; higher rarities are
-less likely than ordinary materials even against high-level enemies. Farming is
-intended to take effort without making rare rewards impossible.
+Drops are guaranteed and grow by floor bracket; higher rarities appear on later
+floors in smaller stacks than ordinary materials.
 
-First-pass drops per defeated dungeon enemy (including burn kills):
+Drops per defeated dungeon enemy (including burn kills), D-338. Every material
+listed for a floor is guaranteed; each bracket adds the next rarity and raises
+every lower stack. Quantities are inclusive per-kill ranges:
 
-| Material | Unlock enemy level / first floor | Chance at unlock -> Lv120 | Final boss35 quantity (D-294) |
-| --- | --- | --- | --- |
-| Seed / Common | 10 / 1 | Guaranteed | 15-30 |
-| Bloom / Uncommon | 23 / 1 (entryLv38) | 25% -> 98% | 15-30 |
-| Shard / Rare | 48 / 5 | 12% -> 90% | 15-30 |
-| Crest / Epic | 73 / 16 | 6% -> 80% | 15-30 |
-| Heart / Legendary | 98 / 26 | 2.5% -> 60% | 15-30 |
-| Soul / Omnic | 120 / 35 | 35% at Lv120 | 15-30 |
+| Floors (enemy level) | Seed | Bloom | Shard | Crest | Heart | Soul |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1-5 (Lv38-48) | 4-5 | - | - | - | - | - |
+| 6-11 (Lv50-62) | 8-10 | 2-3 | - | - | - | - |
+| 12-17 (Lv65-77) | 12-15 | 5-6 | 2-3 | - | - | - |
+| 18-23 (Lv79-91) | 16-20 | 8-10 | 5-6 | 2-3 | - | - |
+| 24-29 (Lv93-106) | 20-25 | 12-15 | 8-10 | 5-6 | 2-3 | - |
+| 30-35 (Lv108-120) | 25-30 | 16-20 | 12-15 | 8-10 | 5-6 | 2-3 |
 
-All prior enemy-level gates remain intact. Soul only unlocks at the endpoint,
-so its old 1% starting chance is replaced by the final 35% chance there.
-For enemy level L, preserved loot-curve baseline S=10, unlock level U and final minimum Q:
-`minimum = 1 + floor((Q-1)*((L-S)/(120-S))^2)`.
-Each successful drop independently rolls an inclusive integer from minimum to
-twice minimum. Chances interpolate from the unlock chance to the final chance
-using `((L-U)/(120-U))^1.4`; the Lv120-only unlock uses its final chance directly.
-These curves live in [loot-random.ts](../src/content/loot-random.ts).
-Q is3 for every material: base stacks progress from1-2 to2-4 to3-6.
-D-294 samples that base quantity, then multiplies by5 at the terminal boss:
-15/20/25/30. Earlier bosses and ordinary enemies keep the original curve.
+The floor35 final boss multiplies these by5 (D-294): 125-150/80-100/60-75/
+40-50/25-30/10-15. The table lives in `materialBrackets` in
+[dungeons.ts](../src/content/dungeons.ts); it replaces the earlier chance-based
+level-gated curve.
 
-These rolls are independent, so multiple rarities may drop together.
 Earlier bosses use the ordinary per-enemy table. Final boss35 gets the explicit
 5x quantity multiplier on every clear/replay, with no extra roll or pity.
 Prismatica per enemy scales from 5-10 at Lv1 to 15-30 at Lv120 in every mode:
