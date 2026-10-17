@@ -2342,10 +2342,10 @@ var flagshipCharacters = [
     elementId: "atmospheric",
     weapon: "Wind staff",
     color: "#79d6cc",
-    description: "A human Atmospheric Element-Bearer shaped in Let\u2019s image, Atmoso uses a crystal-tipped wind staff to turn Calm into open roads.",
+    description: "An Atmospheric Element-Bearer shaped in Let\u2019s image, Atmoso uses a crystal-tipped wind staff to turn Calm into open roads.",
     lore: {
       origin: "The high roads and mountain settlements of Sky-bound Rift",
-      story: "Atmoso once carried messages between Sky-bound Rift\u2019s mountain settlements with a weathered staff and an unusually patient ear. Atmospheric reflects Calm: he waits for each voice in the wind rather than forcing the gale to answer. Let created human Element-Bearers in his image, while Rise created Elemental-Devourers in hers and broke convention to steal the same elements. Both factions seek their creators\u2019 souls; neither has been reunited or crowned, and the race remains unresolved. Atmoso follows reports of Let\u2019s scattered soul as carefully as he charts a route home for each lost message.",
+      story: "Atmoso once carried messages between Sky-bound Rift\u2019s mountain settlements with a weathered staff and an unusually patient ear. Atmospheric reflects Calm: he waits for each voice in the wind rather than forcing the gale to answer. Let created Element-Bearers in his image, while Rise created Elemental-Devourers in hers and broke convention to steal the same elements. Both factions seek their creators\u2019 souls; neither has been reunited or crowned, and the race remains unresolved. Atmoso follows reports of Let\u2019s scattered soul as carefully as he charts a route home for each lost message.",
       vow: "No road ends while the wind remembers.",
       awakening: "A familiar breeze finds a new direction, not its maker."
     }
@@ -2361,8 +2361,8 @@ var flagshipCharacters = [
     elementId: "tranquilitic",
     weapon: "Empty-hand light casting",
     color: "#eee2af",
-    description: "A human Tranquilitic Element-Bearer shaped in Let\u2019s image, Aurora casts light through prismatic lenses to defend Peace without wielding a weapon.",
-    lore: { origin: "The lens courts of Lustrous River", story: "Aurora inherited a lens in the Lustrous River courts that revealed the lives left outside every verdict. She set aside the courts\u2019 certainty and uses empty-handed light casting to temper violence, not to command obedience. Tranquilitic reflects Peace, the choice to make room for another answer. Let created human Element-Bearers in his image; Rise\u2019s Elemental-Devourers later stole the same elements. Both seek their creators\u2019 souls, but both remain unfound and no faction has won. Aurora studies the lens for signs of Let\u2019s soul, refusing to mistake a glimmer for its return.", vow: "Let the dawn reveal a better choice.", awakening: "A prism turns toward an unwritten verdict; the search continues." }
+    description: "A Tranquilitic Element-Bearer shaped in Let\u2019s image, Aurora casts light through prismatic lenses to defend Peace without wielding a weapon.",
+    lore: { origin: "The lens courts of Lustrous River", story: "Aurora inherited a lens in the Lustrous River courts that revealed the lives left outside every verdict. She set aside the courts\u2019 certainty and uses empty-handed light casting to temper violence, not to command obedience. Tranquilitic reflects Peace, the choice to make room for another answer. Let created Element-Bearers in his image; Rise\u2019s Elemental-Devourers later stole the same elements. Both seek their creators\u2019 souls, but both remain unfound and no faction has won. Aurora studies the lens for signs of Let\u2019s soul, refusing to mistake a glimmer for its return.", vow: "Let the dawn reveal a better choice.", awakening: "A prism turns toward an unwritten verdict; the search continues." }
   },
   {
     id: "bliss",
@@ -2375,8 +2375,8 @@ var flagshipCharacters = [
     elementId: "tranquilitic",
     weapon: "Paired feather fans",
     color: "#a8ded5",
-    description: "A human Tranquilitic Element-Bearer shaped in Let\u2019s image, Bliss turns Peace into motion with her paired feather fans.",
-    lore: { origin: "The feather courts of City of Heaven", story: "Bliss learned in City of Heaven\u2019s feather courts that Peace is not stillness imposed on others, but attention to how each step affects them. Her paired fans preserve the court\u2019s rhythm as she draws danger away from those unable to flee. Let made human Element-Bearers in his image; Rise made Elemental-Devourers in hers and broke convention to steal their elements. Both factions seek their creators\u2019 souls, which remain unfound; no victor has emerged. Bliss follows the scattered traces of Let\u2019s soul, dancing between the pursuit and the people it threatens.", vow: "My stillness will never mean surrender.", awakening: "A quiet feather settles into your hand; the dance remains unfinished." }
+    description: "A Tranquilitic Element-Bearer shaped in Let\u2019s image, Bliss turns Peace into motion with her paired feather fans.",
+    lore: { origin: "The feather courts of City of Heaven", story: "Bliss learned in City of Heaven\u2019s feather courts that Peace is not stillness imposed on others, but attention to how each step affects them. Her paired fans preserve the court\u2019s rhythm as she draws danger away from those unable to flee. Let made Element-Bearers in his image; Rise made Elemental-Devourers in hers and broke convention to steal their elements. Both factions seek their creators\u2019 souls, which remain unfound; no victor has emerged. Bliss follows the scattered traces of Let\u2019s soul, dancing between the pursuit and the people it threatens.", vow: "My stillness will never mean surrender.", awakening: "A quiet feather settles into your hand; the dance remains unfinished." }
   },
   {
     id: "bruno",
@@ -2389,8 +2389,8 @@ var flagshipCharacters = [
     elementId: "botanic",
     weapon: "Stone hammer",
     color: "#c7a782",
-    description: "A human Botanic Element-Bearer shaped in Let\u2019s image, Bruno bears Joy and Life through a stone hammer and shelters of living bedrock.",
-    lore: { origin: "The quarries of Precipice of the Earth", story: "Bruno stayed when the quarries of Precipice began to collapse. With his stone hammer he made broken slabs into shelter, then shared the workers\u2019 relief as a kind of joy worth protecting. Botanic joins Joy with Life: even buried foundations can hold a future. Let created human Element-Bearers in his image, and Rise created Elemental-Devourers in hers, stealing the same elements; both factions now seek their creators\u2019 souls. Neither has found or reunited one, so Bruno guards the workers while tracing rumors of Let\u2019s soul, unwilling to call any faction\u2019s claim a victory.", vow: "Stand behind me. We will hold.", awakening: "Bedrock answers a steady hand; the foundation is not a throne." }
+    description: "A Botanic Element-Bearer shaped in Let\u2019s image, Bruno bears Joy and Life through a stone hammer and shelters of living bedrock.",
+    lore: { origin: "The quarries of Precipice of the Earth", story: "Bruno stayed when the quarries of Precipice began to collapse. With his stone hammer he made broken slabs into shelter, then shared the workers\u2019 relief as a kind of joy worth protecting. Botanic joins Joy with Life: even buried foundations can hold a future. Let created Element-Bearers in his image, and Rise created Elemental-Devourers in hers, stealing the same elements; both factions now seek their creators\u2019 souls. Neither has found or reunited one, so Bruno guards the workers while tracing rumors of Let\u2019s soul, unwilling to call any faction\u2019s claim a victory.", vow: "Stand behind me. We will hold.", awakening: "Bedrock answers a steady hand; the foundation is not a throne." }
   },
   {
     id: "disciple",
@@ -2403,8 +2403,8 @@ var flagshipCharacters = [
     elementId: "chaotic",
     weapon: "Empty-hand psychic casting",
     color: "#c68aea",
-    description: "A human Chaotic Element-Bearer shaped in Let\u2019s image, Disciple uses open-handed psychic casting to share strength without binding another mind.",
-    lore: { origin: "The thought forges of Ruins of Chaos", story: "Disciple refused the thought forges of Ruins of Chaos when they demanded one will from every mind. His open hands now weave scarlet mindflame into a freely shared resolve. Chaotic bears Death and Destruction, facts of existence rather than a license to erase another person\u2019s choices. Let created human Element-Bearers in his image; Rise created Elemental-Devourers in hers and broke convention to steal the same elements. Both factions hunt their creators\u2019 souls, still unreunited, and neither has prevailed. Disciple searches for Let\u2019s scattered soul while resisting every promise that reunion must mean unquestioned rule.", vow: "Strength shared is freedom preserved.", awakening: "An unbound thought reaches for your own; no mind has claimed its maker." }
+    description: "A Chaotic Element-Bearer shaped in Let\u2019s image, Disciple uses open-handed psychic casting to share strength without binding another mind.",
+    lore: { origin: "The thought forges of Ruins of Chaos", story: "Disciple refused the thought forges of Ruins of Chaos when they demanded one will from every mind. His open hands now weave scarlet mindflame into a freely shared resolve. Chaotic bears Death and Destruction, facts of existence rather than a license to erase another person\u2019s choices. Let created Element-Bearers in his image; Rise created Elemental-Devourers in hers and broke convention to steal the same elements. Both factions hunt their creators\u2019 souls, still unreunited, and neither has prevailed. Disciple searches for Let\u2019s scattered soul while resisting every promise that reunion must mean unquestioned rule.", vow: "Strength shared is freedom preserved.", awakening: "An unbound thought reaches for your own; no mind has claimed its maker." }
   },
   {
     id: "elise",
@@ -2417,8 +2417,8 @@ var flagshipCharacters = [
     elementId: "atmospheric",
     weapon: "Two four-point shuriken",
     color: "#b6e49a",
-    description: "A human Atmospheric Element-Bearer shaped in Let\u2019s image, Elise reads a storm with exactly two four-point shuriken and a calm, measured step.",
-    lore: { origin: "The circuit paths of Galvanic Field", story: "Elise mapped the forgotten circuits of Galvanic Field with exactly two four-point shuriken and a steady eye. When the field fractured, she learned that Atmospheric Calm is not passivity: it is the pause in which a safe opening can be seen. Let made human Element-Bearers in his image; Rise\u2019s Elemental-Devourers stole the same elements, and both factions seek their creators\u2019 souls. Neither creator\u2019s soul has been found or reunited, and no one has won. Elise follows the field\u2019s branching currents for clues to Let\u2019s soul, but never at the cost of leaving a neighbor behind.", vow: "There is always another opening.", awakening: "Two sparks trace a path through the storm; the source remains distant." }
+    description: "An Atmospheric Element-Bearer shaped in Let\u2019s image, Elise reads a storm with exactly two four-point shuriken and a calm, measured step.",
+    lore: { origin: "The circuit paths of Galvanic Field", story: "Elise mapped the forgotten circuits of Galvanic Field with exactly two four-point shuriken and a steady eye. When the field fractured, she learned that Atmospheric Calm is not passivity: it is the pause in which a safe opening can be seen. Let made Element-Bearers in his image; Rise\u2019s Elemental-Devourers stole the same elements, and both factions seek their creators\u2019 souls. Neither creator\u2019s soul has been found or reunited, and no one has won. Elise follows the field\u2019s branching currents for clues to Let\u2019s soul, but never at the cost of leaving a neighbor behind.", vow: "There is always another opening.", awakening: "Two sparks trace a path through the storm; the source remains distant." }
   },
   {
     id: "razor",
@@ -2431,8 +2431,8 @@ var flagshipCharacters = [
     elementId: "chaotic",
     weapon: "Night sword",
     color: "#bc9bef",
-    description: "A human Chaotic Element-Bearer shaped in Let\u2019s image, Razor guards the Valley with one night sword and an eclipse bastion.",
-    lore: { origin: "The nightwatch and abandoned gates of Valley of Solitude", story: "Razor kept watch after the Valley of Solitude gates were abandoned. He shaped the darkness around them into a bastion with one night sword, so frightened travelers could pass safely. Chaotic reflects Death and Destruction; Razor knows a guard must face both without turning protection into domination. Let created human Element-Bearers in his image, and Rise created Elemental-Devourers in hers, breaking convention to steal the same elements. Both factions seek their creators\u2019 souls, but neither has reunited one and no side has won. Razor tracks signs of Let\u2019s scattered soul between watches, never leaving the gate unguarded for a promised ending.", vow: "The night will find me standing.", awakening: "A silent sentinel answers your call, not the call of a found soul." }
+    description: "A Chaotic Element-Bearer shaped in Let\u2019s image, Razor guards the Valley with one night sword and an eclipse bastion.",
+    lore: { origin: "The nightwatch and abandoned gates of Valley of Solitude", story: "Razor kept watch after the Valley of Solitude gates were abandoned. He shaped the darkness around them into a bastion with one night sword, so frightened travelers could pass safely. Chaotic reflects Death and Destruction; Razor knows a guard must face both without turning protection into domination. Let created Element-Bearers in his image, and Rise created Elemental-Devourers in hers, breaking convention to steal the same elements. Both factions seek their creators\u2019 souls, but neither has reunited one and no side has won. Razor tracks signs of Let\u2019s scattered soul between watches, never leaving the gate unguarded for a promised ending.", vow: "The night will find me standing.", awakening: "A silent sentinel answers your call, not the call of a found soul." }
   }
 ];
 var flagshipEvolutionTitles = {
@@ -2538,10 +2538,10 @@ var warCharacters = [
     elementId: "oceanic",
     weapon: "Surveyor trident",
     color: "#54c9d4",
-    description: "A human Oceanic Element-Bearer shaped in Let\u2019s image, Nerithe maps Sadness with a surveyor trident and folded currents.",
+    description: "An Oceanic Element-Bearer shaped in Let\u2019s image, Nerithe maps Sadness with a surveyor trident and folded currents.",
     lore: {
       origin: "The observatories above the spiral sea",
-      story: "From the spiral-sea observatories, Nerithe charted a current that never returned to shore. She learned Oceanic carries Sadness: a record of what is missing that can guide the living, not drown them. With her surveyor trident she folds distant tides around people lost between worlds. Let created human Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole those same elements. Both factions search for their creators\u2019 souls, but neither has been reunited and no victor has emerged. Nerithe plots a route toward Let\u2019s scattered soul while marking every voyager still unaccounted for.",
+      story: "From the spiral-sea observatories, Nerithe charted a current that never returned to shore. She learned Oceanic carries Sadness: a record of what is missing that can guide the living, not drown them. With her surveyor trident she folds distant tides around people lost between worlds. Let created Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole those same elements. Both factions search for their creators\u2019 souls, but neither has been reunited and no victor has emerged. Nerithe plots a route toward Let\u2019s scattered soul while marking every voyager still unaccounted for.",
       vow: "No one is lost beyond my map.",
       awakening: "An uncharted current answers; its source is not yet found."
     }
@@ -2557,10 +2557,10 @@ var warCharacters = [
     elementId: "botanic",
     weapon: "Crystal mace",
     color: "#d2b59a",
-    description: "A human Botanic Element-Bearer shaped in Let\u2019s image, Orvella\u2019s crystal mace raises living foundations where Joy and Life can endure.",
+    description: "A Botanic Element-Bearer shaped in Let\u2019s image, Orvella\u2019s crystal mace raises living foundations where Joy and Life can endure.",
     lore: {
       origin: "The vaults beneath the faultline",
-      story: "Orvella first braced a broken village gate with a mason\u2019s stone. In the vaults beneath the faultline she found buried foundations, and with her crystal mace raised them into shelter for people the world had forgotten. Botanic holds Joy and Life together: she celebrates each home restored without pretending the losses never happened. Let made human Element-Bearers in his image; Rise made Elemental-Devourers in hers and broke convention to steal the same elements. Both sides seek their creators\u2019 souls; neither has found or reunited one, and no one has won. Orvella follows Let\u2019s trail between repairs, unwilling to leave a community for a promise of rule.",
+      story: "Orvella first braced a broken village gate with a mason\u2019s stone. In the vaults beneath the faultline she found buried foundations, and with her crystal mace raised them into shelter for people the world had forgotten. Botanic holds Joy and Life together: she celebrates each home restored without pretending the losses never happened. Let made Element-Bearers in his image; Rise made Elemental-Devourers in hers and broke convention to steal the same elements. Both sides seek their creators\u2019 souls; neither has found or reunited one, and no one has won. Orvella follows Let\u2019s trail between repairs, unwilling to leave a community for a promise of rule.",
       vow: "No shelter falls while I still stand.",
       awakening: "The first foundation answers, though its maker\u2019s soul remains lost."
     }
@@ -2576,8 +2576,8 @@ var warCharacters = [
     elementId: "atmospheric",
     weapon: "Resonance blade",
     color: "#e6d177",
-    description: "A human Atmospheric Element-Bearer shaped in Let\u2019s image, Vaelor finds Calm in the thunder choir with a resonance blade.",
-    lore: { origin: "The towers of the thunder choir", story: "Vaelor listened in the thunder-choir towers for the missing rhythm between storms. With a small resonance blade he followed the silence, learning that Atmospheric means Calm: the clear interval in which a broken sky can be heard without being forced to sing. Let created human Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole the same elements. Both factions seek their creators\u2019 souls, still separate and unfound; the contest has no winner. Vaelor follows the quiet frequencies around rumors of Let\u2019s soul, certain that the missing note must be heard before anyone can claim the final chord.", vow: "Even a broken sky can sing again.", awakening: "Quiet voltage finds its first rhythm, not its final chord." }
+    description: "An Atmospheric Element-Bearer shaped in Let\u2019s image, Vaelor finds Calm in the thunder choir with a resonance blade.",
+    lore: { origin: "The towers of the thunder choir", story: "Vaelor listened in the thunder-choir towers for the missing rhythm between storms. With a small resonance blade he followed the silence, learning that Atmospheric means Calm: the clear interval in which a broken sky can be heard without being forced to sing. Let created Element-Bearers in his image; Rise created Elemental-Devourers in hers and stole the same elements. Both factions seek their creators\u2019 souls, still separate and unfound; the contest has no winner. Vaelor follows the quiet frequencies around rumors of Let\u2019s soul, certain that the missing note must be heard before anyone can claim the final chord.", vow: "Even a broken sky can sing again.", awakening: "Quiet voltage finds its first rhythm, not its final chord." }
   }
 ];
 function isWarCharacter(value2) {
@@ -2658,10 +2658,10 @@ var openingStarters = [
     elementId: "infernic",
     weapon: "Greatsword",
     color: "#f39b6d",
-    description: "A human Infernic Element-Bearer shaped in Let\u2019s image, Infernis carries Wrath in a wooden greatsword and red scarf, turning fierce feeling toward protection.",
+    description: "An Infernic Element-Bearer shaped in Let\u2019s image, Infernis carries Wrath in a wooden greatsword and red scarf, turning fierce feeling toward protection.",
     lore: {
       origin: "The watchfires and village keepers of Ashen Vale",
-      story: "When Ashen Vale\u2019s watchfires failed, Infernis carried their last coal in a clay lantern, her wooden training greatsword in hand and the keepers\u2019 red scarf at her neck. As a human Element-Bearer made in Let\u2019s image, she knows Infernic answers Wrath: anger can burn a refuge down, or give someone the courage to defend it. Rise\u2019s Elemental-Devourers have stolen the same element, and both factions hunt their creators\u2019 scattered souls; Let\u2019s remains unreunited, and no side has won. Infernis follows the rumor of his soul not for a throne, but so no traveler must face the dark alone.",
+      story: "When Ashen Vale\u2019s watchfires failed, Infernis carried their last coal in a clay lantern, her wooden training greatsword in hand and the keepers\u2019 red scarf at her neck. As an Element-Bearer made in Let\u2019s image, she knows Infernic answers Wrath: anger can burn a refuge down, or give someone the courage to defend it. Rise\u2019s Elemental-Devourers have stolen the same element, and both factions hunt their creators\u2019 scattered souls; Let\u2019s remains unreunited, and no side has won. Infernis follows the rumor of his soul not for a throne, but so no traveler must face the dark alone.",
       vow: "Let my Wrath shelter the next beginning.",
       awakening: "The last coal stirs; the missing soul is still ahead."
     }
@@ -2677,10 +2677,10 @@ var openingStarters = [
     elementId: "oceanic",
     weapon: "Spear",
     color: "#79c9eb",
-    description: "A human Oceanic Element-Bearer shaped in Let\u2019s image, Tizu\u2019s blue hair, simple spear, and blue ferrykeeper sash follow remembered Sadness.",
+    description: "An Oceanic Element-Bearer shaped in Let\u2019s image, Tizu\u2019s blue hair, simple spear, and blue ferrykeeper sash follow remembered Sadness.",
     lore: {
       origin: "The ferry bells and silent shores of Glasswater",
-      story: "Tizu learned every Glasswater bell that guided boats through the mist. After the bells fell silent, he tied on his blue ferrykeeper sash and took a practice spear to the shore. His Oceanic element holds Sadness without letting grief become an anchor: he records the names of the missing keepers and follows currents that might bring them home. Let\u2019s first made human Element-Bearers in his image, while Rise made Elemental-Devourers who broke the old boundary and stole the same elements. Both search for their creators\u2019 souls, but neither has been reunited; Tizu seeks Let\u2019s without mistaking a hopeful current for proof.",
+      story: "Tizu learned every Glasswater bell that guided boats through the mist. After the bells fell silent, he tied on his blue ferrykeeper sash and took a practice spear to the shore. His Oceanic element holds Sadness without letting grief become an anchor: he records the names of the missing keepers and follows currents that might bring them home. Let\u2019s first made Element-Bearers in his image, while Rise made Elemental-Devourers who broke the old boundary and stole the same elements. Both search for their creators\u2019 souls, but neither has been reunited; Tizu seeks Let\u2019s without mistaking a hopeful current for proof.",
       vow: "No one is lost while the water remembers.",
       awakening: "A grieving current rises, but its source remains unknown."
     }
@@ -2696,10 +2696,10 @@ var openingStarters = [
     elementId: "botanic",
     weapon: "Bow",
     color: "#a9d58a",
-    description: "A human Botanic Element-Bearer shaped in Let\u2019s image, Flora\u2019s wooden bow and green neckerchief accompany Joy and Life wherever hope can take root.",
+    description: "A Botanic Element-Bearer shaped in Let\u2019s image, Flora\u2019s wooden bow and green neckerchief accompany Joy and Life wherever hope can take root.",
     lore: {
       origin: "The waking roots and gardeners of Hollowgreen",
-      story: "Flora tended a small garden in Hollowgreen after the old trees stopped bearing leaves. When one seed opened beneath the gray branches, she took her wooden bow and the gardeners\u2019 green neckerchief to find more ground worth tending. Botanic carries both Joy and Life: delight is not denial of loss, but the choice to make room for what can grow. Let created human Element-Bearers in his image; Rise\u2019s Elemental-Devourers later stole those same elements, and both factions now seek their creators\u2019 souls. Flora follows the still-unfound soul of Let, hoping its return might keep the worlds open to renewal; no faction has yet prevailed.",
+      story: "Flora tended a small garden in Hollowgreen after the old trees stopped bearing leaves. When one seed opened beneath the gray branches, she took her wooden bow and the gardeners\u2019 green neckerchief to find more ground worth tending. Botanic carries both Joy and Life: delight is not denial of loss, but the choice to make room for what can grow. Let created Element-Bearers in his image; Rise\u2019s Elemental-Devourers later stole those same elements, and both factions now seek their creators\u2019 souls. Flora follows the still-unfound soul of Let, hoping its return might keep the worlds open to renewal; no faction has yet prevailed.",
       vow: "Give joy and life a place to take root.",
       awakening: "A sleeping seed opens; the search is not over."
     }
@@ -2717,8 +2717,8 @@ var roseCharacters = [
     elementId: "tranquilitic",
     weapon: "Bow",
     color: "#eee2af",
-    description: "A human Tranquilitic Element-Bearer shaped in Let\u2019s image, Rosetta\u2019s bow, golden thorns, and crimson wings defend peace without demanding possession.",
-    lore: { origin: "The gardens beneath sunny skies", story: "Rosetta learned among the sunny rose gardens that peace is a practice, not a command to be silent. Her bow draws golden thorns through the crimson canopy to open an escape for those caught in others\u2019 quarrels. Tranquilitic reflects Peace, and she carries that meaning as one of the human Element-Bearers Let created in his image. Rise\u2019s Elemental-Devourers stole the same element; both factions seek their creators\u2019 souls, still unfound, and no victor can yet claim the world. Rosetta follows the rumors with care, wary of any peace bought by making one creator absolute.", vow: "Let every rose shelter a beginning.", awakening: "A crimson petal turns toward the sun; the soul is still sought." }
+    description: "A Tranquilitic Element-Bearer shaped in Let\u2019s image, Rosetta\u2019s bow, golden thorns, and crimson wings defend peace without demanding possession.",
+    lore: { origin: "The gardens beneath sunny skies", story: "Rosetta learned among the sunny rose gardens that peace is a practice, not a command to be silent. Her bow draws golden thorns through the crimson canopy to open an escape for those caught in others\u2019 quarrels. Tranquilitic reflects Peace, and she carries that meaning as one of the Element-Bearers Let created in his image. Rise\u2019s Elemental-Devourers stole the same element; both factions seek their creators\u2019 souls, still unfound, and no victor can yet claim the world. Rosetta follows the rumors with care, wary of any peace bought by making one creator absolute.", vow: "Let every rose shelter a beginning.", awakening: "A crimson petal turns toward the sun; the soul is still sought." }
   },
   {
     id: "thornia",
@@ -2731,8 +2731,8 @@ var roseCharacters = [
     elementId: "chaotic",
     weapon: "Greatsword",
     color: "#bc9bef",
-    description: "A human Chaotic Element-Bearer shaped in Let\u2019s image, Thornia wears a golden rose in her hair and bears a crimson-thorn-wrapped greatsword.",
-    lore: { origin: "The forbidden garden", story: "Thornia guarded a single golden rose at the edge of the forbidden garden. When its gates broke, she wrapped crimson thorns around her greatsword and held the breach so its people could escape. Chaotic reflects Death and Destruction, truths she refuses to disguise as virtue or wield carelessly. Let created human Element-Bearers in his image; Rise created Elemental-Devourers in hers and broke convention to steal the same elements. Both factions seek their creators\u2019 souls, but neither soul has been reunited and no one has won. Thornia searches for Let\u2019s, intent on keeping destructive power from deciding who deserves to live.", vow: "No one crosses these thorns alone.", awakening: "The golden rose remembers its guardian, not a victor." }
+    description: "A Chaotic Element-Bearer shaped in Let\u2019s image, Thornia wears a golden rose in her hair and bears a crimson-thorn-wrapped greatsword.",
+    lore: { origin: "The forbidden garden", story: "Thornia guarded a single golden rose at the edge of the forbidden garden. When its gates broke, she wrapped crimson thorns around her greatsword and held the breach so its people could escape. Chaotic reflects Death and Destruction, truths she refuses to disguise as virtue or wield carelessly. Let created Element-Bearers in his image; Rise created Elemental-Devourers in hers and broke convention to steal the same elements. Both factions seek their creators\u2019 souls, but neither soul has been reunited and no one has won. Thornia searches for Let\u2019s, intent on keeping destructive power from deciding who deserves to live.", vow: "No one crosses these thorns alone.", awakening: "The golden rose remembers its guardian, not a victor." }
   },
   {
     id: "crinso",
@@ -2745,8 +2745,8 @@ var roseCharacters = [
     elementId: "chaotic",
     weapon: "Dual-edged sword",
     color: "#ed8bbe",
-    description: "A human Chaotic Element-Bearer shaped in Let\u2019s image, Crinso wields one dual-edged sword: golden fire on one edge, crimson lightning on the other.",
-    lore: { origin: "The paths between twin roses", story: "On the paths between twin roses, Crinso learned that tending a garden sometimes means protecting what lives and sometimes accepting what must end. His small double-edged dagger became one rose-centered sword, golden fire and crimson lightning held in a single grip. Chaotic bears Death and Destruction, not a promise of cruelty. Let made human Element-Bearers in his image; Rise\u2019s Elemental-Devourers broke convention to steal their elements. Both sides hunt their creators\u2019 souls, still separate and unfound, and Crinso will not call the contest settled before either is found. He follows the trail of Let\u2019s soul while guarding the people caught between factions.", vow: "I choose what grows beyond the storm.", awakening: "Two petals unfold around one resolve; neither soul has returned." }
+    description: "A Chaotic Element-Bearer shaped in Let\u2019s image, Crinso wields one dual-edged sword: golden fire on one edge, crimson lightning on the other.",
+    lore: { origin: "The paths between twin roses", story: "On the paths between twin roses, Crinso learned that tending a garden sometimes means protecting what lives and sometimes accepting what must end. His small double-edged dagger became one rose-centered sword, golden fire and crimson lightning held in a single grip. Chaotic bears Death and Destruction, not a promise of cruelty. Let made Element-Bearers in his image; Rise\u2019s Elemental-Devourers broke convention to steal their elements. Both sides hunt their creators\u2019 souls, still separate and unfound, and Crinso will not call the contest settled before either is found. He follows the trail of Let\u2019s soul while guarding the people caught between factions.", vow: "I choose what grows beyond the storm.", awakening: "Two petals unfold around one resolve; neither soul has returned." }
   }
 ];
 var starters = [...openingStarters, ...roseCharacters, ...flagshipCharacters, ...warCharacters];

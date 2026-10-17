@@ -12,7 +12,7 @@ describe('Let and Rise founding canon', () => {
     const history = worldHistory.map(entry => entry.text).join(' ');
     for (const phrase of ['first being', 'Infinity', 'transform and manipulate space', 'Rise', 'Nothingness',
       'destroy and bind', 'coexist', 'civilizations into wars', 'split themselves', 'creator\'s soul',
-      'human Element-Bearers', 'in his image', 'in her image', 'stole the same six elements',
+      'created the Element-Bearers', 'in his image', 'in her image', 'stole the same six elements',
       'no creator has yet been declared the victor']) expect(history).toContain(phrase);
   });
 

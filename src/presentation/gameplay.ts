@@ -43,7 +43,7 @@ const activityCategories = [
   ['infusion', 'Evolution infusion', 'Unlock Lv.50 · Heaven & Abyss', 'evolution'],
   ['currency', 'Currency farms', 'Unlock Lv.60 · Currencies', 'inventory'],
   ['machines', 'Awaken the Machines', 'Unlock Lv.10 + first region · Conduits', 'inventory'],
-  ['war', 'Elemental War', 'Unlock Lv.85 · Human challengers', 'gameplay'],
+  ['war', 'Elemental War', 'Unlock Lv.85 · Rival challengers', 'gameplay'],
   ['events', 'Events', 'Unlock Lv.75 · Crimson Roses', 'events'],
 ] as const;
 

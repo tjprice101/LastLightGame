@@ -48,7 +48,7 @@ describe('character lore revision', () => {
 
   it.each(starters)('$name remains an Element-Bearer in an unresolved soul-seeking world', (character) => {
     const { description, title, lore } = character;
-    expect(description).toMatch(/human .*Element-Bearer shaped in Let’s image/i);
+    expect(description).toMatch(/^An? \w+ Element-Bearer shaped in Let’s image/i);
     expect(title.trim()).not.toBe('');
     for (const value of Object.values(lore)) expect(value.trim()).not.toBe('');
     expect(lore.story).toMatch(/Let/);
@@ -60,7 +60,7 @@ describe('character lore revision', () => {
 
   it('establishes the creator origins without assigning a found soul or a victor', () => {
     const stories = starters.map(({ lore }) => lore.story).join(' ');
-    expect(stories).toMatch(/Let (?:created|made) human Element-Bearers in his image/i);
+    expect(stories).toMatch(/Let (?:created|made) Element-Bearers in his image/i);
     expect(stories).toMatch(/Rise (?:created|made) Elemental-Devourers in hers/i);
     expect(stories).toMatch(/broke convention to steal the same elements/i);
     expect(stories).toMatch(/no (?:side|faction|one|victor)|neither .* (?:found|reunited)|no victor/i);
