@@ -1,3 +1,4 @@
+import { infusionStageCount } from '../content/activities';
 import { describe, expect, it } from 'vitest';
 import { playableDungeons } from '../content/dungeons';
 import { createBattle, createDungeonBattle, createInfusionBattle, endTurn, nextStage, nextWave } from './battle';
@@ -45,7 +46,7 @@ describe('Shatter Gauge carry within a run', () => {
     expect(() => nextStage(staged[0], progress)).toThrow('Clear this stage');
     expect(() => nextStage(createBattle(), progress)).toThrow('Only staged');
     for (const final of [createDungeonBattle('atmospheric', 35, 1, 'ember', progress),
-      createInfusionBattle('abyss', 35, 1, 'ember', progress)]) {
+      createInfusionBattle('abyss', infusionStageCount('abyss'), 1, 'ember', progress)]) {
       final.phase = 'cleared';
       expect(() => nextStage(final, progress)).toThrow('Dungeon complete');
     }

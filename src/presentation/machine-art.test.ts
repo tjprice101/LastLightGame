@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { conduits } from '../content/conduits';
 import { conduitArtRevisions } from '../content/conduit-art-revisions';
 import { getCreature } from '../content/creatures';
-import { machineEnemies } from '../content/machines';
+import { machineEnemies, machineRules } from '../content/machines';
 import { infusionEncounter } from '../content/infusions';
 import { emptyAccount } from '../game/account';
 import { assetUrl } from './portrait';
@@ -37,7 +37,7 @@ describe('supplied machine artwork integration', () => {
     const arts = ['fractured-watcher', 'ashwing-harrier', 'ivory-kirin', 'celestial-leviathan', 'crowned-phoenix', 'ouroboros-first-dawn'];
     const facing = ['left', 'right', 'left', 'right', 'front', 'left'];
     expect(machineEnemies.map((enemy) => enemy.art)).toEqual(arts);
-    for (let stage = 1; stage <= 100; stage++) {
+    for (let stage = 1; stage <= machineRules.stages; stage++) {
       const encounter = infusionEncounter('machines', stage);
       expect(encounter.enemy.art).toBe(arts[encounter.tier]);
       expect(encounter.background).toBe('machines-arena.png');

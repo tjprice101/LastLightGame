@@ -1,3 +1,4 @@
+import { infusionStageCount } from '../content/activities';
 import { describe, expect, it } from 'vitest';
 import { standardBanner, standardBannerPool, bannerPercent } from '../content/standard-banner';
 import { infusionLycalisOdds, rollInfusionLycalis } from '../content/loot-random';
@@ -17,7 +18,7 @@ function storage(): ProfileStorage {
     removeItem: (key) => { map.delete(key); } };
 }
 function kills(mode: 'heavens' | 'abyss', boss = false, burn = true) {
-  const state = createInfusionBattle(mode, boss ? 35 : 22, 1, 'ember', { level: 105, evolution: 6 });
+  const state = createInfusionBattle(mode, boss ? infusionStageCount(mode) : infusionStageCount(mode) - 1, 1, 'ember', { level: 105, evolution: 6 });
   // First xorshift(15872) is above .99, guaranteeing the three-Null-Prismatica outcome.
   state.lycalisSeed = 15872;
   state.enemies.forEach((enemy) => {
@@ -137,7 +138,7 @@ describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
       const creature = getCreature(`infusion:${mode}:${tier}`);
       for (const stage of creature.stages) {
         const loot = creatureLoot(creature, stage).filter((entry) => entry.id === 'lycalis');
-        expect(loot.map((entry) => [entry.minimum, entry.maximum])).toEqual(infusionEncounter(mode, stage).level < 80 ? [] : stage === 35 ? [[5, 5], [10, 10], [15, 15]] : [[1, 1], [2, 2], [3, 3]]);
+        expect(loot.map((entry) => [entry.minimum, entry.maximum])).toEqual(infusionEncounter(mode, stage).level < 80 ? [] : stage === infusionStageCount(mode) ? [[5, 5], [10, 10], [15, 15]] : [[1, 1], [2, 2], [3, 3]]);
         expect(loot.every((entry) => entry.note?.includes('mutually exclusive'))).toBe(true);
       }
     }

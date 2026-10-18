@@ -3,6 +3,7 @@ import { emptyAccount } from '../game/account';
 import { createBattle } from '../game/battle';
 import { openingStarters, starters } from '../content/starters';
 import { elements } from '../content/activities';
+import { machineRules } from '../content/machines';
 import { conduits, conduitEffect, getConduit } from '../content/conduits';
 import { readableEffect } from './effect-copy';
 import { defaultBindings } from '../game/hotkeys';
@@ -118,7 +119,7 @@ describe('visible UI copy', () => {
     const gameplay = gameplayHub(account);
     expect(primary(gameplay)).not.toContain(machineComponentRulesText);
     expect(plain(gameplay)).toContain(plain(machineComponentRulesText));
-    expect(primary(gameplay)).toContain('Rare 8% · Legendary 3.5% · Omnic 1% from stage 75');
+    expect(primary(gameplay)).toContain(`Rare 8% \u00b7 Legendary 3.5% \u00b7 Omnic 1% from stage ${machineRules.omnicStage}`);
     expect(primary(gameplay)).not.toContain('no battles or rewards yet');
     expect(primary(squadHub(account))).not.toContain('Save to apply changes.');
     expect(primary(squadHub(account))).toContain('Save squad');

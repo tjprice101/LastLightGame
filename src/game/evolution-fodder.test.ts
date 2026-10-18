@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { elements, evolutionRequirement } from '../content/activities';
 import { characterLevelCap, evolutionCost } from '../content/progression';
 import { getStarter } from '../content/starters';
-import { ACCOUNT_KEY, emptyAccount, evolutionFodderOptions, loadAccount, saveAccount, setCharacterLock, upgradeCharacter } from './account';
+import { ACCOUNT_KEY, emptyAccount, evolutionFodderOptions, fodderSelectionStatus, loadAccount, saveAccount, setCharacterLock, upgradeCharacter } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { type CapturedCharacter } from './character-instances';
 import { characterDetail } from '../presentation/hub';
@@ -50,23 +50,24 @@ describe('protected-safe evolution Elemental-Devourer infusion', () => {
     expect(() => upgradeCharacter(storage, 'ember', 'evolve', current, ids)).toThrow('changed');
     expect(storage.getItem(ACCOUNT_KEY)).toBe(before);
   });
-  it('uses mode affinity rather than enemy combat element and exact form boundaries for all ten elements', () => {
+  it('uses mode affinity rather than enemy combat element and additive form values for all six elements', () => {
     const { account } = setup();
     account.capturedCharacters = [0, 1, 2, 3, 4, 5].flatMap((tier) => ['heavens', 'abyss'].map((mode, index) => copy(tier * 2 + index + 1, mode, tier)));
     for (const element of elements) for (const from of [3, 4, 5]) {
       const options = evolutionFodderOptions(account, element.id, from);
       expect(options.filter((entry) => entry.eligible).map((entry) => [entry.creature.mode, entry.form]))
-        .toEqual(Array.from({ length: 7 - from }, (_, index) => [element.infusion, from + index]));
-      expect(evolutionRequirement(element.id, from).creatureCount).toBe(from - 2);
+        .toEqual(Array.from({ length: 6 }, (_, index) => [element.infusion, index + 1]));
+      expect(options.filter(entry => entry.eligible).map(entry => entry.value)).toEqual([1, 2, 3, 4, 5, 6]);
+      expect(evolutionRequirement(element.id, from).fodderValue).toBe((from - 2) * from);
     }
   });
-  it('rejects wrong counts, repeated IDs, unknown IDs, starters, wrong modes and lower forms without writes', () => {
+  it('rejects insufficient value, surplus copies, repeated IDs, unknown IDs, starters and wrong modes without writes', () => {
     const { storage, account } = setup(4);
     account.capturedCharacters!.push(copy(5, 'abyss'), copy(6, 'heavens', 2));
     saveAccount(storage, account);
     const good = copy(1).instanceId;
     for (const ids of [[], [good], [good, copy(2).instanceId, copy(3).instanceId], [good, good],
-      [good, copy(99).instanceId], [good, 'ember'], [good, copy(5).instanceId], [good, copy(6).instanceId]]) {
+      [good, copy(99).instanceId], [good, 'ember'], [good, copy(5).instanceId], [copy(6).instanceId]]) {
       const before = storage.getItem(ACCOUNT_KEY);
       expect(() => upgradeCharacter(storage, 'ember', 'evolve', account.characters.ember!, ids)).toThrow();
       expect(storage.getItem(ACCOUNT_KEY)).toBe(before);
@@ -109,7 +110,7 @@ describe('protected-safe evolution Elemental-Devourer infusion', () => {
       const { storage, account } = setup(evolution);
       account.materials['infernic-common'] = 100;
       saveAccount(storage, account);
-      expect(() => upgradeCharacter(storage, 'ember', 'evolve', account.characters.ember!, [copy(1).instanceId])).toThrow('exactly 0');
+      expect(() => upgradeCharacter(storage, 'ember', 'evolve', account.characters.ember!, [copy(1).instanceId])).toThrow('This upgrade does not consume Elemental-Devourers.');
       expect(upgradeCharacter(storage, 'ember', 'evolve', account.characters.ember!).capturedCharacters).toHaveLength(4);
     }
     const { storage, account } = setup(6);
@@ -118,7 +119,40 @@ describe('protected-safe evolution Elemental-Devourer infusion', () => {
     expect(storage.getItem(ACCOUNT_KEY)).toBe(before);
     account.characters.ember!.level = 100;
     saveAccount(storage, account);
-    expect(() => upgradeCharacter(storage, 'ember', 'level', account.characters.ember!, [copy(1).instanceId])).toThrow('exactly 0');
+    expect(() => upgradeCharacter(storage, 'ember', 'level', account.characters.ember!, [copy(1).instanceId])).toThrow('This upgrade does not consume Elemental-Devourers.');
+  });
+  it.each([
+    { forms: [2, 1], evolution: 3 },
+    { forms: [1, 1, 1], evolution: 3 },
+    { forms: [4, 4], evolution: 4 },
+  ])('accepts Form $forms Evolution Value for Evo$evolution', ({ forms, evolution }) => {
+    const { storage, account } = setup(evolution);
+    account.capturedCharacters = forms.map((form, index) => copy(index + 1, 'heavens', form - 1));
+    saveAccount(storage, account);
+    const ids = account.capturedCharacters.map(entry => entry.instanceId);
+    const required = evolutionRequirement('infernic', evolution).fodderValue;
+    expect(fodderSelectionStatus(forms, required)).toMatchObject({ total: required, surplus: false, ready: true });
+    let writes = 0;
+    const write = storage.setItem;
+    storage.setItem = (key, value) => { writes++; write(key, value); };
+    const result = upgradeCharacter(storage, 'ember', 'evolve', account.characters.ember!, ids);
+    expect(writes).toBe(1);
+    expect(result.characters.ember!.evolution).toBe(evolution + 1);
+    expect(result.capturedCharacters).toEqual([]);
+    expect(loadAccount(storage)).toEqual(result);
+  });
+  it.each([
+    { forms: [3, 1], total: 4, surplus: true, error: 'Remove extra Elemental-Devourers; the evolution is already covered without one of them.' },
+    { forms: [1, 1], total: 2, surplus: false, error: 'Choose Elemental-Devourers worth 3 Evolution Value (currently 2).' },
+  ])('rejects Form $forms Evolution Value without writes', ({ forms, total, surplus, error }) => {
+    const { storage, account } = setup();
+    account.capturedCharacters = forms.map((form, index) => copy(index + 1, 'heavens', form - 1));
+    saveAccount(storage, account);
+    const before = storage.getItem(ACCOUNT_KEY);
+    expect(fodderSelectionStatus(forms, 3)).toEqual({ total, required: 3, surplus, ready: false });
+    expect(() => upgradeCharacter(storage, 'ember', 'evolve', account.characters.ember!,
+      account.capturedCharacters!.map(entry => entry.instanceId))).toThrow(error);
+    expect(storage.getItem(ACCOUNT_KEY)).toBe(before);
   });
   it('renders explicit per-copy selection, protections, stars and no automatic selection', () => {
     const { account } = setup();
@@ -131,8 +165,9 @@ describe('protected-safe evolution Elemental-Devourer infusion', () => {
     expect(html).toContain('Locked');
     expect(html).toContain('In squad');
     expect(html).toContain('Conduits equipped');
-    expect(html).toContain('0 / 1 chosen · 1 available');
-    expect(html).toContain('data-fodder-count="1"');
+    expect(html).toContain('0 / 3 value chosen · 1 available');
+    expect(html).toContain('data-fodder-value-required="3"');
+    expect(html).toContain('data-fodder-value="6"');
     expect(html).toContain('disabled>Evolve');
     expect(html).not.toContain(' checked');
     expect(html).toContain('6-star Elemental-Devourer');

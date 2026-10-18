@@ -1,4 +1,4 @@
-import { elements, infusionModes, currencyModes, eventModes, machineModes, isCurrencyMode, infusionStageCount, getElement, type ElementId, type InfusionModeId } from './activities';
+import { elements, infusionModes, currencyModes, eventModes, machineModes, isCurrencyMode, infusionStageCount, infusionModeStageCount, getElement, type ElementId, type InfusionModeId } from './activities';
 import { machineEnemies } from './machines';
 import { type Stats } from './combat';
 import { lootRoll, rollDrop, scaledDrop } from './loot-random';
@@ -131,14 +131,25 @@ export function capturedEnemyStats(level: number, maximumLevel = 120): Stats {
 }
 
 const infusionLevelAnchors = [[1, 50], [13, 65], [19, 75], [25, 85], [35, 120]] as const;
+const infusionAnchorStages = 35;
 export type InfusionSchedule = 'legacy' | 'caps';
+/** Samples the original 35-stage anchor curve proportionally across the current stage count (D-346). */
 export function infusionEnemyLevel(stage: number): number {
-  if (!Number.isInteger(stage) || stage < 1 || stage > 35) throw new Error('Invalid infusion stage.');
-  const nextIndex = infusionLevelAnchors.findIndex(([floor]) => floor >= stage);
+  const stages = infusionModeStageCount;
+  if (!Number.isInteger(stage) || stage < 1 || stage > stages) throw new Error('Invalid infusion stage.');
+  return anchorLevel(1 + (stage - 1) * (infusionAnchorStages - 1) / (stages - 1));
+}
+/** Level of a Heaven/Abyss stage on the pre-v7 35-stage layout; used only to migrate saved captures. */
+export function legacyInfusionEnemyLevel(stage: number): number {
+  if (!Number.isInteger(stage) || stage < 1 || stage > infusionAnchorStages) throw new Error('Invalid infusion stage.');
+  return anchorLevel(stage);
+}
+function anchorLevel(position: number): number {
+  const nextIndex = infusionLevelAnchors.findIndex(([floor]) => floor >= position);
   if (nextIndex === 0) return 50;
   const [start, level] = infusionLevelAnchors[nextIndex - 1];
   const [end, endLevel] = infusionLevelAnchors[nextIndex];
-  return Math.round(level + (stage - start) / (end - start) * (endLevel - level));
+  return Math.round(level + (position - start) / (end - start) * (endLevel - level));
 }
 export function infusionEncounter(mode: InfusionModeId, stage: number, schedule: InfusionSchedule = 'caps') {
   const stages = infusionStageCount(mode);
@@ -147,7 +158,7 @@ export function infusionEncounter(mode: InfusionModeId, stage: number, schedule:
   const definition = [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].find((entry) => entry.id === mode);
   if (!definition) throw new Error('Unknown staged Elemental-Devourer mode.');
   const startingLevel = definition.startingLevel;
-  const level = mode === 'heavens' || mode === 'abyss' ? schedule === 'legacy' ? Math.round(80 + (stage - 1) * 40 / 34) : infusionEnemyLevel(stage)
+  const level = mode === 'heavens' || mode === 'abyss' ? schedule === 'legacy' ? Math.round(80 + (stage - 1) * 40 / (stages - 1)) : infusionEnemyLevel(stage)
     : Math.round(startingLevel + (stage - 1) * ((mode === 'roses' ? 140 : 120) - startingLevel) / (stages - 1));
   const boss = stage % 5 === 0;
   const stats = mode === 'treasury' ? treasuryEnemyStats(level, boss)

@@ -17,13 +17,29 @@ export const elementalMaterials = elements.flatMap((element) => materialRarities
   name: `${element.name} ${rarity} Material`,
 })));
 export const dungeonStageCount = 35;
+/** Soar to Heaven / Delve into the Abyss use 25 stages (D-346); wallets before v7 recorded 35. */
+export const infusionModeStageCount = 25;
+/** Awaken the Machines uses 75 stages (D-346); wallets before v7 recorded 100. */
+export const machineStageCount = 75;
+export const legacyActivityStageCounts = { heavens: 35, abyss: 35, machines: 100 } as const;
+export type ResizedActivityId = keyof typeof legacyActivityStageCounts;
+export function isResizedActivity(mode: string): mode is ResizedActivityId {
+  return Object.hasOwn(legacyActivityStageCounts, mode);
+}
+/** Maps a pre-v7 saved unlocked stage onto the shorter layout; partial progress rounds up so no clear is lost, final stays final. */
+export function migrateLegacyActivityStage(mode: ResizedActivityId, stage: number): number {
+  const legacy = legacyActivityStageCounts[mode];
+  const current = mode === 'machines' ? machineStageCount : infusionModeStageCount;
+  if (!Number.isSafeInteger(stage) || stage < 1 || stage > legacy) throw new Error('Invalid saved infusion stage.');
+  return 1 + Math.ceil((stage - 1) * (current - 1) / (legacy - 1));
+}
 export const warStageCount = 10;
 /** Story layout: six regions of 18 stages (D-340). Older saves recorded clears on the 25-stage layout. */
 export const storyStageLayout = { regionStages: 18, stages: 108, legacyRegionStages: 25, legacyStages: 150 } as const;
 export const elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 38, maximumLevel: 120, maximumLevelStage: dungeonStageCount } as const;
 export const infusionModes = [
-  { id: 'heavens', name: 'Soar to Heaven', energy: 'Light', enemyTheme: 'Dawnthorn Slime evolution line', stages: dungeonStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
-  { id: 'abyss', name: 'Delve into the Abyss', energy: 'Chaotic', enemyTheme: 'Wraththorn Slime evolution line', stages: dungeonStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
+  { id: 'heavens', name: 'Soar to Heaven', energy: 'Light', enemyTheme: 'Dawnthorn Slime evolution line', stages: infusionModeStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
+  { id: 'abyss', name: 'Delve into the Abyss', energy: 'Chaotic', enemyTheme: 'Wraththorn Slime evolution line', stages: infusionModeStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
 ] as const;
 export const currencyModes = [
   { id: 'treasury', name: 'Crownfall Treasury', stages: 25, startingLevel: 65, maximumLevel: 120, enemyTiers: 6 },
@@ -33,7 +49,7 @@ export const eventModes = [
   { id: 'roses', name: 'Passion of Crimson Roses', stages: 35, startingLevel: 80, maximumLevel: 140, enemyTiers: 6 },
 ] as const;
 export const machineModes = [
-  { id: 'machines', name: 'Awaken the Machines', stages: 100, startingLevel: 10, maximumLevel: 120, enemyTiers: 6 },
+  { id: 'machines', name: 'Awaken the Machines', stages: machineStageCount, startingLevel: 10, maximumLevel: 120, enemyTiers: 6 },
 ] as const;
 export type InfusionModeId = (typeof infusionModes)[number]['id'] | (typeof currencyModes)[number]['id'] | (typeof eventModes)[number]['id'] | (typeof machineModes)[number]['id'];
 export function isCurrencyMode(mode: InfusionModeId): boolean {
@@ -84,6 +100,8 @@ export function evolutionRequirement(elementId: ElementId, from: number) {
     requiresFractalis: true, requiresInfusableEnemies: from >= 3,
     creatureCount: from >= 3 ? from - 2 : 0,
     minimumCreatureForm: from >= 3 ? from : null,
+    /** D-346 addition rule: each captured copy is worth its form (1-6); the chosen copies must total this value. */
+    fodderValue: from >= 3 ? (from - 2) * from : 0,
     quantitiesDefined: true,
   } as const;
 }

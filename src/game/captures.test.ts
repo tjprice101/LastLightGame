@@ -1,3 +1,4 @@
+import { infusionStageCount } from '../content/activities';
 import { describe, expect, it } from 'vitest';
 import { createBattle, createDungeonBattle, createInfusionBattle, act, endTurn, nextStage, nextWave, captureSucceeds, actionUnavailable, damageAmount } from './battle';
 import { emptyAccount, saveAccount, loadAccount, saveAccountRewards, setSquad, equipConduit, levelCapturedCharacter, characterProtection, validateAccount, ACCOUNT_KEY } from './account';
@@ -15,7 +16,7 @@ import { getStarter } from '../content/starters';
 import { formatStat } from '../content/combat';
 
 function copy(tier = 0, boss = false, index = 1): CapturedCharacter {
-  const stage = boss ? tier === 5 ? 35 : 5 : tier === 0 ? 1 : tier === 5 ? 31 : 7;
+  const stage = boss ? tier === 5 ? infusionStageCount('abyss') : 5 : tier === 0 ? 1 : tier === 5 ? infusionStageCount('abyss') - 1 : 7;
   const encounter = infusionEncounter('abyss', stage);
   return { instanceId: `capture:00000000-0000-4000-8000-${String(index).padStart(12, '0')}`,
     creatureId: `infusion:abyss:${encounter.tier}`, level: Math.min(60, encounter.level), capturedStage: stage, locked: false,
@@ -140,7 +141,7 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
     expect(strong.stats.health).toBe(2200);
     expect(bossKit.stats.health).toBe(2200);
     expect(weak.stats.damage).toBeLessThan(strong.stats.damage);
-    expect(strong.stats.health).toBeLessThan(infusionEncounter('abyss', 35).stats.health);
+    expect(strong.stats.health).toBeLessThan(infusionEncounter('abyss', infusionStageCount('abyss')).stats.health);
     expect(bossKit.abilities.ultimate.name).toBe('Last Ruin: Cosmic Wrath');
     expect(bossKit.abilities.ultimate.cooldown).toBe(6);
   });
@@ -214,7 +215,7 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
   });
   it('retains boss ultimates with their exact damage, cooldown and recovery', () => {
     const captured = copy(5, true);
-    const state = createInfusionBattle('heavens', 35, 1, 'ember', { level: 105, evolution: 6 }, [captured.instanceId], {}, {}, [captured]);
+    const state = createInfusionBattle('heavens', infusionStageCount('heavens'), 1, 'ember', { level: 105, evolution: 6 }, [captured.instanceId], {}, {}, [captured]);
     const actor = state.allies[0];
     actor.shatter = 100;
     actor.stats.crit = 0;

@@ -1,5 +1,17 @@
 # Evolution creature infusion (Phase7)
 
+**D-346 additive Evolution Value (current):** late evolutions no longer need a
+minimum form. Every eligible copy from the bearer's infusion mode (or Roselius
+for Rose bearers) is worth its form, 1-6. Evo.3->4 needs **3**, Evo.4->5 **8**
+and Evo.5->6 **15** Evolution Value (`evolutionRequirement().fodderValue` =
+old count x old minimum form, so every previously valid choice still works).
+Any mix is allowed, such as a form2 + form1 or three form1 copies for Evo.3->4.
+`fodderSelectionStatus` rejects a choice below the value or with a surplus copy
+(the total would still suffice without the smallest). UI and transaction share
+it; the picker shows `Value N` per card and a value meter/status. Character
+leveling never consumes Elemental-Devourers. This supersedes the count/minimum
+form tables and "exactly N" wording below; protections and atomicity unchanged.
+
 **D-192 progression correction:** highest-owned Element-Bearer Lv.50 opens
 Heaven/Abyss. Form3 starts at stage13/Lv.65, form4 at19/Lv.75 and form5 at25/Lv.85.
 Evolution/level specialties start at75, so the existing Lv.60/75/90 evolution

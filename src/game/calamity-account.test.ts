@@ -117,7 +117,7 @@ describe('Calamity account transactions', () => {
 
   it('loads legacy and optional zero/false fields without writing or inventing evidence', () => {
     const { saved, writes } = storage();
-    const raw = JSON.stringify({ ...emptyAccount(), dungeonStages: { infernic: 35 }, infusionStages: { machines: 100 },
+    const raw = JSON.stringify({ ...emptyAccount(), dungeonStages: { infernic: 35 }, infusionStages: { machines: infusionStageCount('machines') },
       receipts: ['ambiguous:infusion-machines-100-0', 'ambiguous:dungeon-infernic-35-0'] });
     saved.setItem(ACCOUNT_KEY, raw);
     const before = writes();
@@ -160,7 +160,7 @@ describe('Calamity account transactions', () => {
   it('requires exact current-final receipt identity, UUIDv4 provenance, and matching final access', () => {
     const uuid = '12345678-1234-4abc-8def-123456789abc';
     const account = emptyAccount();
-    account.infusionStages.machines = 100;
+    account.infusionStages.machines = infusionStageCount('machines');
     for (const receipt of [
       `${uuid}:infusion-machines-35-0`,
       `${uuid}:infusion-machines-100-1`,
@@ -178,7 +178,7 @@ describe('Calamity account transactions', () => {
       expect(calamityUnlockedTier(account, 'machines'), receipt).toBe(0);
     }
     account.receipts = [`${uuid}:infusion-machines-100-0`];
-    account.infusionStages.machines = 99;
+    account.infusionStages.machines = infusionStageCount('machines') - 1;
     expect(calamityUnlockedTier(account, 'machines')).toBe(0);
     delete account.infusionStages.machines;
     expect(calamityUnlockedTier(account, 'machines')).toBe(0);

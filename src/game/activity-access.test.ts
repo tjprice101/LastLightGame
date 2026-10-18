@@ -1,3 +1,4 @@
+import { infusionStageCount } from '../content/activities';
 import { describe, expect, it } from 'vitest';
 import { emptyAccount } from './account';
 import { activityAccess, assertActivityAccess, highestBearerLevel } from './activity-access';
@@ -47,7 +48,7 @@ describe('highest-owned Element-Bearer activity access', () => {
     account.squad = ['ember'];
     expect(highestBearerLevel(account)).toBe(50);
     delete account.characters.tide;
-    account.capturedCharacters = [createCreatureCopy('infusion:abyss:5', 31, 120)];
+    account.capturedCharacters = [createCreatureCopy('infusion:abyss:5', infusionStageCount('abyss') - 1, 120)];
     account.squad = [account.capturedCharacters[0].instanceId];
     expect(highestBearerLevel(account)).toBe(0);
     expect(activityAccess(account, { kind: 'infusion', mode: 'abyss', stage: 1 }).unlocked).toBe(false);
@@ -65,12 +66,12 @@ describe('highest-owned Element-Bearer activity access', () => {
 
   it('makes evolution fodder and specialties available before each progression cap', () => {
     for (const mode of ['heavens', 'abyss'] as const) {
-      for (const [stage, tier, level] of [[13, 2, 65], [19, 3, 75], [25, 4, 85]]) {
+      for (const [stage, tier, level] of [[9, 1, 64], [13, 2, 73], [17, 3, 83]]) {
         expect(infusionEncounter(mode, stage)).toMatchObject({ tier, level, boss: stage % 5 === 0 });
       }
       expect(infusionEncounter(mode, 1).level).toBe(50);
-      expect(infusionEncounter(mode, 35).level).toBe(120);
-      expect(infusionLoot(mode, 19).specialties.map(drop => drop.id))
+      expect(infusionEncounter(mode, infusionStageCount(mode)).level).toBe(120);
+      expect(infusionLoot(mode, 14).specialties.map(drop => drop.id))
         .toEqual([`${mode}-weapon`, `${mode}-evolution`, `${mode}-level`]);
     }
   });
@@ -95,11 +96,11 @@ describe('highest-owned Element-Bearer activity access', () => {
     game.account.characters.ember = { level: 0, evolution: 1 };
     game = resolveOperation(game, { kind: 'continue', runId }, entropy).game;
     expect(game.run!.session.state.infusion?.schedule).toBe('legacy');
-    expect(game.run!.session.state.enemies[0].level).toBe(81);
+    expect(game.run!.session.state.enemies[0].level).toBe(82);
     expect(game.run!.session.state.allies[0].level).toBe(50);
     game.run!.session.state.phase = 'defeat';
     game = resolveOperation(game, { kind: 'retry', runId }, entropy).game;
-    expect(game.run!.session.state.enemies[0].level).toBe(81);
+    expect(game.run!.session.state.enemies[0].level).toBe(82);
     expect(game.run!.session.state.allies[0].level).toBe(50);
   });
 });

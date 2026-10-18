@@ -1,3 +1,4 @@
+import { machineRules } from '../content/machines';
 import { describe, expect, it, vi } from 'vitest';
 import { kitConduitDesigns, convertedKitConduitIds } from '../content/kit-conduits';
 import { conduits, getConduit, conduitBuffs, conduitEffect, validateConduitElement, validateConduitSlots, type ConduitId, type ConduitSlots } from '../content/conduits';
@@ -65,21 +66,21 @@ describe('replacement Omnic catalog, acquisition and stable identity', () => {
     }
   });
 
-  it('rolls each of45 Omnics at1%/45 from stage75 without changing lower totals or roll counts', () => {
+  it('rolls each of45 Omnics at1%/45 from stage56 without changing lower totals or roll counts', () => {
     const pool = conduits.filter((entry) => entry.rarity === 'Omnic');
     for (const [index, entry] of pool.entries()) {
       const values = [.08, .035, 0, (index + .5) / pool.length];
       const random = vi.fn(() => values.shift()!);
-      expect(machineConduitDrops(75, random)).toEqual({ [entry.id]: 1 });
+      expect(machineConduitDrops(machineRules.omnicStage, random)).toEqual({ [entry.id]: 1 });
       expect(random).toHaveBeenCalledTimes(4);
-      expect(machineConduitLoot(75).find((drop) => drop.id === entry.id)?.chance).toBeCloseTo(.01 / 45, 12);
-      expect(machineConduitLoot(74).some((drop) => drop.id === entry.id)).toBe(false);
+      expect(machineConduitLoot(machineRules.omnicStage).find((drop) => drop.id === entry.id)?.chance).toBeCloseTo(.01 / 45, 12);
+      expect(machineConduitLoot(machineRules.omnicStage - 1).some((drop) => drop.id === entry.id)).toBe(false);
     }
     for (const [rarity, chance] of [['Rare', .08], ['Legendary', .035], ['Omnic', .01]] as const) {
-      expect(machineConduitLoot(75).filter((drop) => getConduit(drop.id).rarity === rarity).reduce((sum, drop) => sum + drop.chance, 0)).toBeCloseTo(chance);
+      expect(machineConduitLoot(machineRules.omnicStage).filter((drop) => getConduit(drop.id).rarity === rarity).reduce((sum, drop) => sum + drop.chance, 0)).toBeCloseTo(chance);
     }
     const below = vi.fn(() => .99);
-    expect(machineConduitDrops(74, below)).toEqual({});
+    expect(machineConduitDrops(machineRules.omnicStage - 1, below)).toEqual({});
     expect(below).toHaveBeenCalledTimes(2);
     expect(conduits.filter((entry) => isBannerConduitEligible(entry.id))).toHaveLength(5);
   });
@@ -142,7 +143,7 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
     const saved = storage(raw);
     const before = saved.getItem(ACCOUNT_KEY);
     const account = loadAccount(saved);
-    expect(account.version).toBe(6);
+    expect(account.version).toBe(7);
     expect(account.conduitEquipment?.ember).toEqual([...raw.conduitEquipment.ember.slice(0, 2), null, null, null, null, ...raw.conduitEquipment.ember.slice(6)]);
     expect(account.conduitEquipment?.tide).toEqual(slots('vigil-core').map((id, index) => index === 1 ? 'vigil-core' : null));
     expect(account.conduitEquipment?.[raw.capturedCharacters[0].instanceId]).toEqual(raw.conduitEquipment[raw.capturedCharacters[0].instanceId]);
@@ -156,7 +157,7 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     expect(saved.setItem).not.toHaveBeenCalled();
     const purchased = purchaseConduit(saved, 'vigil-core');
-    expect(purchased.version).toBe(6);
+    expect(purchased.version).toBe(7);
     expect(saved.setItem).toHaveBeenCalledTimes(1);
     expect(loadAccount(saved)).toEqual(purchased);
     const corrupted = { ...purchased, conduitEquipment: { ...purchased.conduitEquipment, tide: slots('tempered-strike-link') } };
@@ -170,7 +171,7 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
       const raw = { ...legacy(), version, dungeonStages: { infernic: 1 } };
       const saved = storage(raw);
       expect(loadAccount(saved).conduitEquipment?.tide?.[0]).toBeNull();
-      expect(loadAccount(saved).version).toBe(6);
+      expect(loadAccount(saved).version).toBe(7);
       expect(saved.setItem).not.toHaveBeenCalled();
     }
     expect(loadAccount(storage({ ...emptyAccount(), version: 4, dungeonStages: { infernic: 13 } })).dungeonStages).toEqual({ infernic: 13 });
@@ -205,7 +206,7 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
     saved.setItem = write;
     purchaseConduit(saved, 'vigil-core');
     expect(saved.setItem).toHaveBeenCalledTimes(1);
-    expect(loadAccount(saved).version).toBe(6);
+    expect(loadAccount(saved).version).toBe(7);
   });
   it('strictly rejects new/current wrong elements and fifth Omnics at account and fighter boundaries', () => {
     const all = kitConduitDesigns.filter((entry) => entry.element === 'infernic').map((entry) => entry.id);

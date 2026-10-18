@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
-import { elements } from './activities';
+import { elements, infusionModeStageCount } from './activities';
 import { infusionDrops, infusionEncounter, infusionEnemies, infusionLoot, infusionEnemyLevel, specialtyId, specialtyMaterials } from './infusions';
 import { evolutionCost, levelCost, weaponCost } from './progression';
 import { resolveFighter } from './combat';
@@ -24,6 +24,8 @@ function storage(): ProfileStorage {
   const data = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
   return { getItem: (key) => data.get(key) ?? null, setItem: (key, value) => { data.set(key, value); }, removeItem: (key) => { data.delete(key); } };
 }
+const stageCount = infusionModeStageCount;
+
 function draws(values: number[]): () => number {
   return () => {
     const value = values.shift();
@@ -33,13 +35,12 @@ function draws(values: number[]): () => number {
 }
 
 describe('playable Heaven and Abyss', () => {
-  it.each(['heavens', 'abyss'] as const)('%s wires all 35 stages, six forms, full artwork and bosses', (mode) => {
-    const formStages = [1, 7, 13, 19, 25, 31];
-    for (let stage = 1; stage <= 35; stage++) {
+  it.each(['heavens', 'abyss'] as const)('%s wires all stages, six forms, full artwork and bosses', (mode) => {
+    for (let stage = 1; stage <= stageCount; stage++) {
       const encounter = infusionEncounter(mode, stage);
       expect(encounter.level).toBe(infusionEnemyLevel(stage));
       expect(encounter.boss).toBe(stage % 5 === 0);
-      const tier = formStages.filter((start) => stage >= start).length - 1;
+      const tier = Math.floor((stage - 1) * 6 / stageCount);
       expect(encounter.enemy.name).toBe(infusionEnemies[mode][tier][0]);
       const session = createSession('ember', { level: 105, evolution: 6 }, { mode, stage });
       expect(session.entrancePending).toBe(true);
@@ -57,13 +58,13 @@ describe('playable Heaven and Abyss', () => {
         host: { innerHTML: '', querySelectorAll: () => [], querySelector: (selector: string) => selector === '#battle-menu' ? menu : null }, bind: vi.fn() });
       Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
       expect(view.host.innerHTML).toContain(`${mode}-arena.png`);
-      expect(view.host.innerHTML).toContain(`Stage ${stage} / 35`);
+      expect(view.host.innerHTML).toContain(`Stage ${stage} / ${stageCount}`);
       session.state.phase = 'cleared';
       Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
-      expect(view.host.innerHTML).toContain(stage === 35 ? 'All 35 stages cleared' : 'Continue with full health');
+      expect(view.host.innerHTML).toContain(stage === stageCount ? `All ${stageCount} stages cleared` : 'Continue with full health');
       expect(() => nextWave(session.state)).toThrow('separate encounters');
     }
-    for (const stage of [0, 36, 1.5, NaN, Infinity]) expect(() => infusionEncounter(mode, stage)).toThrow();
+    for (const stage of [0, stageCount + 1, 1.5, NaN, Infinity]) expect(() => infusionEncounter(mode, stage)).toThrow();
     expect(existsSync(resolve('public', 'assets', 'banners', `${mode}-banner.png`))).toBe(true);
     expect(existsSync(resolve('public', 'assets', 'backgrounds', `${mode}-arena.png`))).toBe(true);
   });
@@ -82,19 +83,21 @@ describe('playable Heaven and Abyss', () => {
   });
 
   it('uses exact specialty bands, quantities, rarity chances and mode-associated rolls', () => {
-    for (let stage = 1; stage <= 35; stage++) {
+    for (let stage = 1; stage <= stageCount; stage++) {
       const pool = infusionLoot('heavens', stage);
       expect(infusionDrops('heavens', stage, () => .999999)).toEqual(
         Object.fromEntries(pool.specialties.map((drop) => [drop.id, drop.maximum])));
     }
     for (const mode of ['heavens', 'abyss'] as const) for (const [index, element] of elements.filter((entry) => entry.infusion === mode).entries()) {
       const selection = (index + .5) / elements.filter((entry) => entry.infusion === mode).length;
-      expect(infusionDrops(mode, 35, draws([0, 0, 0, 0, 0, selection, 0, 0, selection, 0, 0, selection]))).toEqual({
+      expect(infusionDrops(mode, stageCount, draws([0, 0, 0, 0, 0, selection, 0, 0, selection, 0, 0, selection]))).toEqual({
         [`${mode}-weapon`]: 15, [`${mode}-evolution`]: 15, [`${mode}-level`]: 15,
         [`${element.id}-epic`]: 15, [`${element.id}-legendary`]: 15, [`${element.id}-omnic`]: 15,
       });
     }
-    for (const [rarity, stage] of [['epic', 22], ['legendary', 30], ['omnic', 34]] as const) {
+    for (const rarity of ['epic', 'legendary', 'omnic'] as const) {
+      const stage = Array.from({ length: stageCount }, (_, index) => index + 1)
+        .find((candidate) => infusionLoot('abyss', candidate).bonuses.some((drop) => drop.rarity === rarity))!;
       const pool = infusionLoot('abyss', stage);
       const earlierRolls = pool.bonuses.findIndex((drop) => drop.rarity === rarity);
       const drop = pool.bonuses[earlierRolls];
@@ -107,12 +110,12 @@ describe('playable Heaven and Abyss', () => {
         expect(result['tranquilitic-' + rarity]).toBe(success ? drop.minimum : undefined);
       }
     }
-    for (const bad of [-1, 1, NaN, Infinity]) expect(() => infusionDrops('abyss', 35, () => bad)).toThrow('[0, 1)');
+    for (const bad of [-1, 1, NaN, Infinity]) expect(() => infusionDrops('abyss', stageCount, () => bad)).toThrow('[0, 1)');
   });
 
   it.each(['heavens', 'abyss'] as const)('%s never awards opposite-mode elements at any floor or selection boundary', (mode) => {
     const eligible = elements.filter((element) => element.infusion === mode).map((element) => element.id);
-    for (let stage = 1; stage <= 35; stage++) for (const selection of [0, .199999, .2, .399999, .4, .599999, .6, .799999, .8, .999999]) {
+    for (let stage = 1; stage <= stageCount; stage++) for (const selection of [0, .199999, .2, .399999, .4, .599999, .6, .799999, .8, .999999]) {
       const pool = infusionLoot(mode, stage);
       const sequence = [...pool.specialties.map(() => 0), ...pool.bonuses.flatMap(() => [0, 0, selection])];
       const drops = infusionDrops(mode, stage, draws(sequence));
@@ -138,12 +141,12 @@ describe('playable Heaven and Abyss', () => {
     expect(unlockedInfusionStage(loadAccount(saved), mode)).toBe(2);
     expect(unlockedInfusionStage(first, mode === 'heavens' ? 'abyss' : 'heavens')).toBe(1);
     expect(saveAccountRewards(saved, result, mode)).toEqual(first);
-    const final = createInfusionBattle(mode, 35, 1729, 'ember', { level: 105, evolution: 6 });
-    expect(infusionEncounter(mode, 35).abilityMultiplier).toBeCloseTo(1.676);
+    const final = createInfusionBattle(mode, stageCount, 1729, 'ember', { level: 105, evolution: 6 });
+    expect(infusionEncounter(mode, stageCount).abilityMultiplier).toBeCloseTo(1.676);
     final.phase = 'cleared';
     final.enemies[0].hp = 0;
     saveAccountRewards(saved, { state: final, events: [] }, 'final');
-    expect(unlockedInfusionStage(loadAccount(saved), mode)).toBe(35);
+    expect(unlockedInfusionStage(loadAccount(saved), mode)).toBe(stageCount);
     const before = saved.getItem(ACCOUNT_KEY);
     saved.setItem = () => { throw new Error('Write denied'); };
     expect(() => saveAccountRewards(saved, result, 'fresh-run')).toThrow('Write denied');
@@ -165,8 +168,8 @@ describe('playable Heaven and Abyss', () => {
     ]) expect(() => saveAccount(saved, invalid)).toThrow();
   });
 
-  it.each(['heavens', 'abyss'] as const)('%s advances manually retaining Gauge and replays without stage 36 or reused reward receipts', async (mode) => {
-    const session = createSession('ember', { level: 105, evolution: 6, weaponRank: 4 }, { mode, stage: 34 });
+  it.each(['heavens', 'abyss'] as const)('%s advances manually retaining Gauge and replays without passing the final stage or reusing reward receipts', async (mode) => {
+    const session = createSession('ember', { level: 105, evolution: 6, weaponRank: 4 }, { mode, stage: stageCount - 1 });
     session.state.phase = 'cleared';
     session.state.allies[0].hp = 1;
     session.state.allies[0].shatter = 80;
@@ -177,7 +180,7 @@ describe('playable Heaven and Abyss', () => {
       present: vi.fn((result) => { session.state = result.state; }),
     });
     Reflect.apply(Reflect.get(BattleView.prototype, 'command'), view, ['endTurn']);
-    expect(session.state.infusion).toEqual({ mode, stage: 35, schedule: 'caps' });
+    expect(session.state.infusion).toEqual({ mode, stage: stageCount, schedule: 'caps' });
     expect(session.state.allies[0].hp).toBe(session.state.allies[0].stats.health);
     expect(session.state.allies[0].shatter).toBe(80);
     expect(session.state.allies[0].kit?.stats.damage).toBe(resolveFighter('ember', session.progress).stats.damage);
@@ -186,7 +189,7 @@ describe('playable Heaven and Abyss', () => {
     const log = vi.spyOn(console, 'error').mockImplementation(() => {});
     Reflect.apply(Reflect.get(BattleView.prototype, 'command'), view, ['endTurn']);
     expect(view.error).toHaveBeenCalledWith(expect.stringContaining('complete'));
-    expect(session.state.wave).toBe(35);
+    expect(session.state.wave).toBe(stageCount);
     log.mockRestore();
     const listeners = new Map<string, () => Promise<void>>();
     Object.assign(view, { bindings: defaultBindings, host: { innerHTML: '',
@@ -201,7 +204,7 @@ describe('playable Heaven and Abyss', () => {
     try {
       await replay();
       expect(session.runId).not.toBe(oldRun);
-      expect(session.state.infusion).toEqual({ mode, stage: 35, schedule: 'caps' });
+      expect(session.state.infusion).toEqual({ mode, stage: stageCount, schedule: 'caps' });
       expect(session.state.phase).toBe('player');
       expect(session.stageEvents).toEqual([]);
       expect(session.entrancePending).toBe(true);
@@ -260,12 +263,12 @@ describe('playable Heaven and Abyss', () => {
 
   it('renders mode stages, material icons, inventory and purchasable/capped weapons', () => {
     const account = emptyAccount();
-    account.infusionStages = { heavens: 35, abyss: 13 };
+    account.infusionStages = { heavens: stageCount, abyss: 13 };
     account.fractalis = 1000;
     account.materials = Object.fromEntries(specialtyMaterials.map((material) => [material.id, 100]));
     const menu = gameplayHub(account);
     expect(menu).toContain('data-infusion-stage="heavens"');
-    expect(menu).toContain('value="35" selected');
+    expect(menu).toContain(`value="${stageCount}" selected`);
     expect(menu).toContain('value="13" selected');
     expect(menu).not.toContain('value="36"');
     expect(gameplayHub(null)).not.toContain('data-infusion="');

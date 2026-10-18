@@ -1,3 +1,4 @@
+import { machineRules } from '../content/machines';
 import { describe, expect, it, vi } from 'vitest';
 import { freshGame, profileActivityFor, profileIconUnlocked as engineProfileIconUnlocked, publicGame, resolveOperation, storyCompletedOf, validateChatRequest, validateRequest, type DurableGame } from '../../supabase/functions/game-operation/engine';
 import { isProfileIcon, profileIconUnlocked, validateChatResponse, validateGameResponse, type GameOperation } from './server-game';
@@ -29,10 +30,10 @@ describe('server authoritative game engine', () => {
     let game = rich();
     game.account.storyCompleted = 25;
     game.account.characters.ember = { level: 105, evolution: 6 };
-    game.account.infusionStages = { machines: 100 };
+    game.account.infusionStages = { machines: machineRules.stages };
     game.account.conduits = Object.fromEntries(conduits.map(c => [c.id, 2]));
     const inventory = structuredClone(game.account.conduits);
-    game = op(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: 75 } }).game;
+    game = op(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: machineRules.omnicStage } }).game;
     expect(game.run!.session.state.machineConduits).toEqual(inventory);
     for (const transition of ['continue', 'retry'] as const) {
       // Historical run snapshots lack ownership; account holdings are authoritative.
@@ -193,18 +194,18 @@ describe('server authoritative game engine', () => {
     expect(validateGameResponse(exited.response)).toEqual(exited.response);
     expect(entered.run!.session.runId).toBe(runId);
   });
-  it.each([1, 25, 50, 75, 100])('atomically guarantees current component quantities on authoritative Machine stage %s kills', stage => {
+  it.each([1, 25, 50, machineRules.omnicStage, machineRules.stages])('atomically guarantees current component quantities on authoritative Machine stage %s kills', stage => {
     const game = started();
     game.account.storyCompleted = 25;
     game.account.characters.ember = { level: 105, evolution: 6 };
-    game.account.infusionStages = { machines: 100 };
+    game.account.infusionStages = { machines: machineRules.stages };
     const entered = op(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage } }).game;
     const state = entered.run!.session.state;
     state.allies[0].shatter = 100;
     state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
     const result = op(entered, { kind: 'act', runId: entered.run!.session.runId,
       actorId: 'ember', action: 'skill2', targetId: state.enemies[0].id });
-    const quantity = Math.round(3 + 122 * (stage - 1) / 99) * (stage === 100 ? 5 : 1);
+    const quantity = Math.round(3 + 122 * (stage - 1) / (machineRules.stages - 1)) * (stage === machineRules.stages ? 5 : 1);
     const rewards = result.response.result!.events.filter(event => event.kind === 'reward');
     expect(rewards).toHaveLength(state.enemies.length);
     for (const reward of rewards) expect(reward.mechanicalComponents).toBe(quantity);
@@ -217,7 +218,7 @@ describe('server authoritative game engine', () => {
     game.account.characters.ember = { level: 105, evolution: 6 };
     game.account.storyCompleted = storyRules.stages;
     game.account.dungeonStages = { infernic: 35 };
-    game.account.infusionStages = { heavens: 35 };
+    game.account.infusionStages = { heavens: infusionStageCount('heavens') };
     for (const activity of [
       { kind: 'training' },
       { kind: 'story', stage: storyRules.stages - 1 },
@@ -406,6 +407,27 @@ describe('server authoritative game engine', () => {
     const replay = profileActivityFor({ kind: 'endTurn', runId: entropy.uuid() }, region, makeResolved(region, 1), uuid);
     expect(replay?.detail).toBe('Story · Stage 1');
   });
+  it.each([
+    { kind: 'training' },
+    { kind: 'story', stage: 1 },
+    { kind: 'infusion', mode: 'heavens', stage: 1 },
+    { kind: 'infusion', mode: 'machines', stage: 1 },
+  ] as const)('discards any pre-v7 saved run for $kind on read without mutating input', activity => {
+    let game = op(freshGame('legacy-run'), { kind: 'bootstrap', starterId: 'ember' }).game;
+    game.account.characters.ember = { level: 105, evolution: 6 };
+    game.account.storyCompleted = storyRules.regionStages;
+    game = op(game, { kind: 'enter', activity }).game;
+    expect(game.run).not.toBeNull();
+    const legacy = structuredClone(game);
+    legacy.account = { ...legacy.account, version: 6 } as unknown as typeof legacy.account;
+    const before = structuredClone(legacy);
+    const read = op(legacy, { kind: 'read' });
+    expect(legacy).toEqual(before);
+    expect(read.game.run).toBeNull();
+    expect(read.response.session).toBeNull();
+    expect(read.response.account.version).toBe(7);
+    expect(publicGame(legacy, 3).session).toBeNull();
+  });
   it('discards a saved Story run from a pre-v6 account and converts its Story count', () => {
     const base = started();
     base.run = op(base, { kind: 'enter', activity: { kind: 'story', stage: 1 } }).game.run;
@@ -417,7 +439,7 @@ describe('server authoritative game engine', () => {
     expect(legacy).toEqual(before);
     expect(response.game.run).toBeNull();
     expect(response.response.session).toBeNull();
-    expect(response.response.account.version).toBe(6);
+    expect(response.response.account.version).toBe(7);
     expect(response.response.account.storyCompleted).toBe(21);
     expect(storyCompletedOf(legacy)).toBe(21);
     expect(publicGame(legacy, 3).session).toBeNull();

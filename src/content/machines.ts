@@ -5,7 +5,8 @@ import { machineComponentRulesText } from './mechanical-components';
 import { masterRulesText } from './master-conduits';
 import { machineOrigin } from './world-lore';
 
-export const machineRules = { stages: infusionStageCount('machines'), omnicStage: 75, rareChance: .08, legendaryChance: .035, omnicChance: .01, bannerBonusChance: .005 } as const;
+/** The Omnic tier opens at the same enemy level as stage 75 of the former 100-stage layout (D-346). */
+export const machineRules = { stages: infusionStageCount('machines'), omnicStage: 1 + Math.round(74 * (infusionStageCount('machines') - 1) / 99), rareChance: .08, legendaryChance: .035, omnicChance: .01, bannerBonusChance: .005 } as const;
 const machinePools = {
   Rare: conduits.filter((conduit) => conduit.rarity === 'Rare'),
   Legendary: conduits.filter((conduit) => conduit.rarity === 'Legendary'),

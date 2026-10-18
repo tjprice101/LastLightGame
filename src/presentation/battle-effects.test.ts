@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createBattle, createDungeonBattle, createInfusionBattle, endTurn } from '../game/battle';
 import { attackFlair, attackEffectMarkup, attackPose, characterChoreography } from './battle-effects';
 import { starters } from '../content/starters';
+import { infusionModeStageCount } from '../content/activities';
 
 describe('progressive cinematic attack flair', () => {
   it('gives all 16 characters authored signatures and distinct weapon/casting choreography', () => {
@@ -76,7 +77,7 @@ describe('progressive cinematic attack flair', () => {
     expect(attackFlair(final, 'light').power).toBe(1);
     expect(attackFlair(final, 'light').sparks).toBeGreaterThan(attackFlair(early, 'light').sparks);
     for (const [mode, family] of [['heavens', 'radiant'], ['abyss', 'void']] as const) {
-      const state = createInfusionBattle(mode, 35, 1729, 'ember', { level: 105, evolution: 6 });
+      const state = createInfusionBattle(mode, infusionModeStageCount, 1729, 'ember', { level: 105, evolution: 6 });
       state.round = 2;
       const event = endTurn(state).events.find((event) => event.kind === 'attack');
       expect(event?.enhancedAttack).toBe(true);

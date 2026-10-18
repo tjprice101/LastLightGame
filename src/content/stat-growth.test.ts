@@ -4,6 +4,7 @@ import { calamityActivities, calamityEncounter } from './calamity';
 import { resolveFighter } from './combat';
 import { dungeonEncounter, playableDungeons } from './dungeons';
 import { infusionEncounter } from './infusions';
+import { infusionModeStageCount } from './activities';
 import { act, actionUnavailable, createBattle, createDungeonBattle, createInfusionBattle, endTurn, nextWave } from '../game/battle';
 import { starters } from './starters';
 import { benchmarkTarget } from '../game/native-benchmark-pilot';
@@ -71,7 +72,7 @@ describe('accelerating enemy stat curves', () => {
       expect(dungeonEncounter(element, 34).stats.health).toBeLessThan(enemyGrowth.health);
       expect(dungeonEncounter(element, 35).stats).toMatchObject(enemyCombatStats(120, true));
     }
-    for (const mode of ['heavens', 'abyss'] as const) expect(infusionEncounter(mode, 35).stats.health).toBe(enemyGrowth.bossHealth);
+    for (const mode of ['heavens', 'abyss'] as const) expect(infusionEncounter(mode, infusionModeStageCount).stats.health).toBe(enemyGrowth.bossHealth);
     let state = createBattle();
     for (let wave = 1; wave < 120; wave++) {
       state.phase = 'cleared';
@@ -95,7 +96,7 @@ describe('accelerating enemy stat curves', () => {
     const progress = { level: 105, evolution: 6 };
     for (const seed of [1, 1729, 12345]) {
       for (const initial of [createDungeonBattle(starter.elementId, 35, seed, starter.id, progress),
-        createInfusionBattle('heavens', 35, seed, starter.id, progress), createInfusionBattle('abyss', 35, seed, starter.id, progress)]) {
+        createInfusionBattle('heavens', infusionModeStageCount, seed, starter.id, progress), createInfusionBattle('abyss', infusionModeStageCount, seed, starter.id, progress)]) {
         let state = initial;
         for (let turn = 0; state.phase === 'player' && turn < 100; turn++) {
           const actor = state.allies[0];

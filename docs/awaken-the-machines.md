@@ -81,7 +81,12 @@ for each of ten elements. Follow-up confirms "uncommon" means the **Rare/silver*
 tier, not a new rarity. "Omni" uses the existing canonical **Omnic** name.
 Leave Rosetta's Omnic prompt unchanged: owner withdrew the revert request.
 
-Originally35 stages (D-124), now **100 stages** (D-139) after the owner's
+**D-346:** now **75 stages**. Lv.10-120 spreads across all75 and the Omnic gate
+moves to stage56 (`1+round(74*74/99)`), the same enemy level as old stage75.
+Saved v3-v6 unlocks map proportionally (100->75, rounding up) read-only; v7
+persists on the first transaction. Component growth follows stage progress.
+
+Originally35 stages (D-124), then **100 stages** (D-139) after the owner's
 expansion. Owner confirms spreading Lv.10-120 across all100 and moving
 upper-tier Omnic drops to stage75; bosses remain every fifth stage and tier
 rolls stay independent. Machines are **non-capturable**;

@@ -1,3 +1,4 @@
+import { machineRules } from '../content/machines';
 import { describe, expect, it, vi } from 'vitest';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, upgradeConduit, purchaseConduit, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
@@ -33,12 +34,12 @@ function kill(stage = 1, componentSeed = 1) {
 describe('component progression and isolated rewards', () => {
   it('guarantees exact linearly scaled quantities at every stage and preserves one isolated roll per kill', () => {
     expect(machineComponentDrop(1)).toMatchObject({ minimum: 3, maximum: 3, chance: 1 });
-    expect(machineComponentDrop(100)).toMatchObject({ minimum: 625, maximum: 625, chance: 1 });
+    expect(machineComponentDrop(machineRules.stages)).toMatchObject({ minimum: 625, maximum: 625, chance: 1 });
     let lastQuantity = 0;
-    for (let stage = 1; stage <= 100; stage++) {
+    for (let stage = 1; stage <= machineRules.stages; stage++) {
       const drop = machineComponentDrop(stage);
       expect(drop.chance).toBe(1);
-      expect(drop.minimum).toBe(Math.round(3 + 122 * (stage - 1) / 99) * (stage === 100 ? 5 : 1));
+      expect(drop.minimum).toBe(Math.round(3 + 122 * (stage - 1) / (machineRules.stages - 1)) * (stage === machineRules.stages ? 5 : 1));
       expect(drop.minimum).toBeGreaterThan(lastQuantity);
       const hit = vi.fn(() => drop.chance - 1e-10);
       expect(rollMachineComponents(stage, hit)).toBe(drop.minimum);
@@ -48,7 +49,7 @@ describe('component progression and isolated rewards', () => {
       const encounter = infusionEncounter('machines', stage);
       expect(creatureLoot(getCreature(`infusion:machines:${encounter.tier}`), stage)).toContainEqual(drop);
     }
-    for (const stage of [0, 101, NaN, Infinity, 1.5]) expect(() => machineComponentDrop(stage)).toThrow();
+    for (const stage of [0, machineRules.stages + 1, NaN, Infinity, 1.5]) expect(() => machineComponentDrop(stage)).toThrow();
     for (const value of [-1, 1, NaN, Infinity]) expect(() => rollMachineComponents(1, () => value)).toThrow('Loot roll');
   });
   it('does not perturb combat, Conduit, currency, capture or premium RNG and drops only per actual kill', () => {
@@ -66,7 +67,7 @@ describe('component progression and isolated rewards', () => {
     const battle = createBattle();
     battle.enemies[0].hp = 1; battle.enemies[0].stats.defense = 0;
     expect(act(battle, 'ember', 'light', battle.enemies[0].id).events.find((event) => event.kind === 'reward')?.mechanicalComponents).toBeUndefined();
-    for (const stage of [1, 5, 35, 75, 99, 100]) {
+    for (const stage of [1, 5, 35, machineRules.omnicStage, machineRules.stages - 1, machineRules.stages]) {
       const result = kill(stage);
       expect(result.events.filter((event) => event.kind === 'reward')).toHaveLength(1);
       expect(result.events.find((event) => event.kind === 'reward')?.mechanicalComponents).toBe(machineComponentDrop(stage).minimum);
@@ -74,7 +75,7 @@ describe('component progression and isolated rewards', () => {
   });
   it('commits components with all ordinary rewards and receipt once, with no partial writes on failure', () => {
     const saved = storage();
-    const result = kill(100);
+    const result = kill(machineRules.stages);
     const write = vi.spyOn(saved, 'setItem');
     const account = saveAccountRewards(saved, result, 'components');
     expect(account.mechanicalComponents).toBe(625);
@@ -90,7 +91,7 @@ describe('component progression and isolated rewards', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
   });
   it('guarantees a separate exact component award for every enemy killed by an area attack at every stage', () => {
-    for (let stage = 1; stage <= 100; stage++) {
+    for (let stage = 1; stage <= machineRules.stages; stage++) {
       const state = createInfusionBattle('machines', stage, 1729, 'ember', { level: 0, evolution: 1 });
       state.allies[0].shatter = 100;
       state.componentSeed = 0x80000000;
@@ -105,34 +106,34 @@ describe('component progression and isolated rewards', () => {
       expect(saveAccountRewards(saved, result, `area-${stage}`)).toEqual(account);
     }
   });
-  it('validates and saves exact BMC quantities across all100 real encounters without duplicate awards', () => {
+  it('validates and saves exact BMC quantities across all75 real encounters without duplicate awards', () => {
     const saved = storage();
     let components = 0;
-    for (let stage = 1; stage <= 100; stage++) {
+    for (let stage = 1; stage <= machineRules.stages; stage++) {
       const result = kill(stage);
       components += machineComponentDrop(stage).minimum;
       const account = saveAccountRewards(saved, result, `stage-${stage}`);
       expect(account.mechanicalComponents).toBe(components);
       expect(saveAccountRewards(saved, result, `stage-${stage}`).mechanicalComponents).toBe(components);
     }
-    expect(loadAccount(saved).receipts).toHaveLength(100);
-    expect(loadAccount(saved).infusionStages.machines).toBe(100);
+    expect(loadAccount(saved).receipts).toHaveLength(machineRules.stages);
+    expect(loadAccount(saved).infusionStages.machines).toBe(machineRules.stages);
   });
   it('rejects invalid quantities, activities, sources, alive enemies and overflow without changing any save data', () => {
     const saved = storage();
     saveAccount(saved, { ...loadAccount(saved), mechanicalComponents: Number.MAX_SAFE_INTEGER });
     const raw = saved.getItem(ACCOUNT_KEY);
     const write = vi.spyOn(saved, 'setItem');
-    const missing = kill(100);
+    const missing = kill(machineRules.stages);
     delete missing.events.find(event => event.kind === 'reward')!.mechanicalComponents;
     expect(() => saveAccountRewards(saved, missing, 'missing')).toThrow('require Broken Mechanical Components');
     for (const quantity of [0, -1, 1.5, 4, 6, Infinity, NaN, Number.MAX_SAFE_INTEGER]) {
-      const result = kill(100);
+      const result = kill(machineRules.stages);
       const reward = result.events.find((event) => event.kind === 'reward')!;
       reward.mechanicalComponents = quantity;
       expect(() => saveAccountRewards(saved, result, 'bad')).toThrow();
     }
-    expect(() => saveAccountRewards(saved, kill(100), 'overflow')).toThrow('capacity');
+    expect(() => saveAccountRewards(saved, kill(machineRules.stages), 'overflow')).toThrow('capacity');
     for (const mode of ['heavens', 'abyss', 'treasury', 'sanctuary', 'roses'] as const) {
       const state = createInfusionBattle(mode, 1, 1729, 'ember', { level: 0, evolution: 1 });
       state.enemies[0].hp = 1; state.enemies[0].stats.defense = 0;
@@ -140,10 +141,10 @@ describe('component progression and isolated rewards', () => {
       result.events.find((event) => event.kind === 'reward')!.mechanicalComponents = 1;
       expect(() => saveAccountRewards(saved, result, 'bad-mode')).toThrow('only drop');
     }
-    const alive = kill(100);
+    const alive = kill(machineRules.stages);
     alive.state.enemies[0].hp = 1;
     expect(() => saveAccountRewards(saved, alive, 'alive')).toThrow('source');
-    const wrongSource = kill(100);
+    const wrongSource = kill(machineRules.stages);
     wrongSource.events.find((event) => event.kind === 'reward')!.source = 'missing';
     expect(() => saveAccountRewards(saved, wrongSource, 'source')).toThrow('source');
     expect(write).not.toHaveBeenCalled();

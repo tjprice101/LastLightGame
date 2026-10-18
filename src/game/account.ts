@@ -1,4 +1,4 @@
-import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, type ElementId } from '../content/activities';
+import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, isResizedActivity, migrateLegacyActivityStage, type ElementId, type ResizedActivityId } from '../content/activities';
 import { fractalisDrop, storyEnemyFractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from '../content/loot-random';
 import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, characterEvolutionRequirement, fractureRules, characterLevelCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
@@ -13,7 +13,7 @@ import { getConduit, isConduitId, validateConduitSlots, normalizeLegacyKitSlots,
 import { machineComponentDrop } from '../content/mechanical-components';
 import { bannerConduitBonus, machineConduitLoot } from '../content/machines';
 import { isMasterConduitId, masterChest, validateMasterCharacter, type MasterConduitId, type MasterLoadouts } from '../content/master-conduits';
-import { validateCapturedCharacters, validateCharacterLocks, capturedProgress, capturedLevelCost, capturedLevelCap, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
+import { validateCapturedCharacters, migrateLegacyCapturedCopies, validateCharacterLocks, capturedProgress, capturedLevelCost, capturedLevelCap, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
 import { infusionEncounter, infusionLoot, infusionElements, creatureSaleOptions } from '../content/infusions';
 import { standardBanner, resolveBannerPull, validateBannerPity, type StandardBannerEntry, type BannerPity } from '../content/standard-banner';
 import { bannerDuplicateMaterials, type BannerMaterialReward } from '../content/banner-materials';
@@ -29,7 +29,7 @@ import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCa
 
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
-  version: 6;
+  version: 7;
   fractalis: number;
   lycalis: number;
   bannerPity?: Partial<Record<SummonBannerId, BannerPity>>;
@@ -59,7 +59,7 @@ export interface Account {
   creatures: Record<string, { defeated: boolean }>;
 }
 export function emptyAccount(): Account {
-  return { version: 6, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 7, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value: unknown): value is number {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
@@ -81,7 +81,7 @@ export function migrateLegacyDungeonStage(stage: number, version: 2 | 3): number
   return unlocked;
 }
 export function validateAccount(value: unknown): Account {
-  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4 && value.version !== 5 && value.version !== 6) || !count(value.fractalis) || !count(value.lycalis) ||
+  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4 && value.version !== 5 && value.version !== 6 && value.version !== 7) || !count(value.fractalis) || !count(value.lycalis) ||
       !record(value.materials) || !record(value.characters) || !record(value.dungeonStages) ||
       typeof value.firstFracture !== 'boolean' || !Array.isArray(value.receipts) ||
       !value.receipts.every((receipt) => typeof receipt === 'string') || new Set(value.receipts).size !== value.receipts.length) {
@@ -207,7 +207,7 @@ export function validateAccount(value: unknown): Account {
     characterGrowthFactor(entry);
     account.characters[id] = entry;
   }
-  if (value.capturedCharacters !== undefined) account.capturedCharacters = validateCapturedCharacters(value.capturedCharacters);
+  if (value.capturedCharacters !== undefined) account.capturedCharacters = validateCapturedCharacters(value.version < 7 ? migrateLegacyCapturedCopies(value.capturedCharacters) : value.capturedCharacters);
   if (value.characterLocks !== undefined) account.characterLocks = validateCharacterLocks(value.characterLocks, account.characters);
   if (value.squad !== undefined) {
     if (!Array.isArray(value.squad) || value.squad.length < 1 || value.squad.length > 3 ||
@@ -254,9 +254,11 @@ export function validateAccount(value: unknown): Account {
   if (value.infusionStages !== undefined) {
     if (!record(value.infusionStages)) throw new Error('Invalid saved infusion stages.');
     for (const [id, stage] of Object.entries(value.infusionStages)) {
-      if (!isInfusionMode(id) || !count(stage) || stage < 1 || stage > (value.version === 2 && (id === 'heavens' || id === 'abyss') ? 25 : infusionStageCount(id))) throw new Error('Invalid saved infusion stage.');
-      account.infusionStages[id] = value.version === 2 && (id === 'heavens' || id === 'abyss')
-        ? 1 + Math.round((stage - 1) * (dungeonStageCount - 1) / 24) : stage;
+      if (!isInfusionMode(id) || !count(stage) || stage < 1) throw new Error('Invalid saved infusion stage.');
+      // D-346: v2 Heaven/Abyss already used 25 stages; v3-v6 used 35 Heaven/Abyss and 100 Machines stages.
+      const resized = value.version < 7 && isResizedActivity(id) && !(value.version === 2 && id !== 'machines');
+      if (!resized && stage > infusionStageCount(id)) throw new Error('Invalid saved infusion stage.');
+      account.infusionStages[id] = resized ? migrateLegacyActivityStage(id as ResizedActivityId, stage) : stage;
     }
     if (value.creatures !== undefined) {
       if (!record(value.creatures)) throw new Error('Invalid saved Elemental-Devourer discoveries.');
@@ -305,12 +307,20 @@ export function evolutionFodderOptions(account: Account, element: ElementId, evo
     const reasons: string[] = [];
     if (!requirement.requiresInfusableEnemies) reasons.push('No Elemental-Devourers required for this evolution');
     if (creature.mode !== requirement.infusion) reasons.push('From a different activity');
-    if (form < (requirement.minimumCreatureForm ?? 1)) reasons.push('Needs a later form');
     if (protection.locked) reasons.push('Locked');
     if (protection.inSquad) reasons.push('In squad');
     if (account.conduitEquipment?.[copy.instanceId]?.some((id) => id !== null)) reasons.push('Conduits equipped');
-    return { copy, index: index + 1, creature, form, reasons, eligible: reasons.length === 0 };
+    return { copy, index: index + 1, creature, form, value: form, reasons, eligible: reasons.length === 0 };
   });
+}
+/**
+ * D-346 addition rule: each consumed Elemental-Devourer adds its form (1-6) to the Evolution Value. A choice is
+ * ready once it reaches the required value without any surplus copy (dropping the smallest would still suffice).
+ */
+export function fodderSelectionStatus(values: readonly number[], required: number) {
+  const total = values.reduce((sum, value) => sum + value, 0);
+  const surplus = values.length > 0 && total - Math.min(...values) >= required;
+  return { total, required, surplus, ready: required > 0 && total >= required && !surplus };
 }
 export function setCharacterLock(storage: ProfileStorage, id: string, locked: boolean): Account {
   if (!loadProfile(storage)) throw new Error('Choose your first Element-Bearer before managing characters.');
@@ -635,17 +645,21 @@ export function upgradeCharacter(storage: ProfileStorage, id: StarterId, kind: '
   const element = getStarter(id).elementId;
   const cost = kind === 'level' ? characterLevelCost(id, current) : characterEvolutionCost(id, current);
   if (kind === 'evolve' && current.level !== characterLevelCap(current.evolution)) throw new Error('Reach this form level cap before evolving.');
-  const creatureCount = kind === 'evolve' ? characterEvolutionRequirement(id, current.evolution).creatureCount : 0;
-  if (fodderIds.length !== creatureCount || new Set(fodderIds).size !== fodderIds.length) {
-    throw new Error(`Select exactly ${creatureCount} distinct captured Elemental-Devourers for this upgrade.`);
-  }
-  if (fodderIds.length) {
+  const requiredValue = kind === 'evolve' ? characterEvolutionRequirement(id, current.evolution).fodderValue : 0;
+  if (new Set(fodderIds).size !== fodderIds.length) throw new Error('Choose each captured Elemental-Devourer only once.');
+  if (!requiredValue && fodderIds.length) throw new Error('This upgrade does not consume Elemental-Devourers.');
+  if (requiredValue) {
     const options = evolutionFodderOptions(account, element, current.evolution, id);
+    const values: number[] = [];
     for (const id of fodderIds) {
       const option = options.find((entry) => entry.copy.instanceId === id);
       if (!option) throw new Error('Selected captured Elemental-Devourer is no longer owned.');
-      if (!option.eligible) throw new Error(`Cannot consume ${option.creature.name}: ${option.reasons.join(', ')}.`);
+      if (!option.eligible) throw new Error(`Cannot consume [${option.creature.name}]: ${option.reasons.join(', ')}.`);
+      values.push(option.value);
     }
+    const status = fodderSelectionStatus(values, requiredValue);
+    if (status.total < requiredValue) throw new Error(`Choose Elemental-Devourers worth ${requiredValue} Evolution Value (currently ${status.total}).`);
+    if (status.surplus) throw new Error('Remove extra Elemental-Devourers; the evolution is already covered without one of them.');
   }
   if (account.fractalis < cost.fractalis) throw new Error('Not enough Prismatica.');
   for (const [material, amount] of Object.entries(cost.materials)) {

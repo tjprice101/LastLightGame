@@ -81,24 +81,31 @@ describe('reference Team upgrade presentation', () => {
     ]);
     expect(checkboxes.map(input => input.disabled)).toEqual([false, false, true]);
     expect(picker.textContent).not.toMatch(/Copy \d|Form \d/);
-    expect(picker.querySelector('p')?.textContent).toMatch(/^Choose 1 captured Elemental-Devourer from \[Passion of Crimson Roses\]: (\[[^\]]+\](, | or )?)+\.$/);
+    expect(picker.querySelector('legend')?.textContent).toBe('Elemental-Devourers to consume \u00b7 3 Evolution Value');
+    expect(picker.querySelector('p')?.textContent).toContain('adding up to 3 Evolution Value');
     expect(picker.textContent).toContain('Locked');
     expect(picker.textContent).toContain('permanently consumed');
     const button = host.querySelector<HTMLButtonElement>('[data-upgrade="evolve"]')!;
     const meter = host.querySelector<HTMLMeterElement>('[data-fodder-progress]')!;
     expect(button.disabled).toBe(true);
+    expect(button.dataset.fodderValueRequired).toBe('3');
+    expect(button.dataset.fodderCount).toBeUndefined();
+    expect(checkboxes.map(input => input.dataset.fodderValue)).toEqual([
+      String(capturedProgress(first).tier + 1), String(capturedProgress(second).tier + 1), String(capturedProgress(locked).tier + 1),
+    ]);
+    expect(meter.max).toBe(3);
     expect(meter.value).toBe(0);
     checkboxes[0].checked = true;
     updateEvolutionSelection(host);
     expect(button.disabled).toBe(false);
-    expect(meter.value).toBe(1);
+    expect(meter.value).toBe(capturedProgress(first).tier + 1);
     expect(picker.dataset.selectionState).toBe('complete');
-    expect(host.querySelector('[data-fodder-status]')?.textContent).toBe('1 / 1 chosen · 2 available · Ready to evolve');
+    expect(host.querySelector('[data-fodder-status]')?.textContent).toBe(`${capturedProgress(first).tier + 1} / 3 value chosen \u00b7 2 available \u00b7 Ready to evolve`);
     checkboxes[1].checked = true;
     updateEvolutionSelection(host);
     expect(button.disabled).toBe(true);
     expect(picker.dataset.selectionState).toBe('excess');
-    expect(host.querySelector('[data-fodder-status]')?.textContent).toContain('Choose fewer');
+    expect(host.querySelector('[data-fodder-status]')?.textContent).toContain('Remove extra Elemental-Devourers');
     checkboxes[1].checked = false;
     button.dataset.upgradeBlocked = 'true';
     updateEvolutionSelection(host);
@@ -117,10 +124,10 @@ describe('reference Team upgrade presentation', () => {
     account.capturedCharacters = [{ ...createCreatureCopy('infusion:roses:3'), locked: true }];
     const host = document.createElement('main');
     host.innerHTML = referenceTeam(account, { view: 'detail', selected: 'rosetta', tab: 'upgrade-0', element: '', sort: 'level' });
-    expect(host.querySelector('.evolution-fodder-empty')?.textContent).toContain('You need 2 more. Capture them in [Passion of Crimson Roses].');
+    expect(host.querySelector('.evolution-fodder-empty')?.textContent).toContain('You need 8 more Evolution Value. Capture more in [Passion of Crimson Roses].');
     expect(host.querySelectorAll('[data-evolution-fodder]:disabled')).toHaveLength(1);
     expect(host.querySelector('.evolution-fodder-list')?.textContent).toContain('Locked');
-    expect(host.querySelector('[data-fodder-status]')?.textContent).toBe('0 / 2 chosen · 0 available');
+    expect(host.querySelector('[data-fodder-status]')?.textContent).toBe('0 / 8 value chosen \u00b7 0 available');
   });
   it.each(['infusion:heavens:0', 'infusion:abyss:3', 'infusion:treasury:2', 'infusion:sanctuary:0', 'infusion:roses:2'])('opens exact per-copy Quick Sell choices for %s without changing ownership', creatureId => {
     const account = emptyAccount();

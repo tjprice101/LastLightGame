@@ -1,3 +1,4 @@
+import { machineRules } from '../content/machines';
 import { describe, expect, it, vi } from 'vitest';
 import { existsSync } from 'node:fs';
 import { masterConduits, masterChestDrops, getMasterConduit, type MasterConduitId } from '../content/master-conduits';
@@ -63,19 +64,19 @@ describe('character Masters and chest contracts', () => {
     }
   });
   it('rolls exactly below 1%, only final boss, without consuming entropy elsewhere', () => {
-    for (const stage of [1, 5, 75, 95, 99]) {
+    for (const stage of [1, 5, machineRules.omnicStage, machineRules.stages - 5, machineRules.stages - 1]) {
       const random = vi.fn(() => 0);
       expect(masterChestDrops(stage, true, random)).toBe(0);
       expect(random).not.toHaveBeenCalled();
     }
-    expect(masterChestDrops(100, false, () => { throw new Error('Unexpected RNG'); })).toBe(0);
-    expect(masterChestDrops(100, true, () => .009999999)).toBe(1);
-    expect(masterChestDrops(100, true, () => .01)).toBe(0);
-    for (const invalid of [-1, 1, NaN, Infinity]) expect(() => masterChestDrops(100, true, () => invalid)).toThrow();
+    expect(masterChestDrops(machineRules.stages, false, () => { throw new Error('Unexpected RNG'); })).toBe(0);
+    expect(masterChestDrops(machineRules.stages, true, () => .009999999)).toBe(1);
+    expect(masterChestDrops(machineRules.stages, true, () => .01)).toBe(0);
+    for (const invalid of [-1, 1, NaN, Infinity]) expect(() => masterChestDrops(machineRules.stages, true, () => invalid)).toThrow();
   });
   it('exposes chest loot only at the actual final Machines boss stage', () => {
-    expect(creatureLoot(getCreature('infusion:machines:5'), 99).some(drop => drop.id === 'grand-master-chest')).toBe(false);
-    expect(creatureLoot(getCreature('infusion:machines:5'), 100).find(drop => drop.id === 'grand-master-chest'))
+    expect(creatureLoot(getCreature('infusion:machines:5'), machineRules.stages - 1).some(drop => drop.id === 'grand-master-chest')).toBe(false);
+    expect(creatureLoot(getCreature('infusion:machines:5'), machineRules.stages).find(drop => drop.id === 'grand-master-chest'))
       .toMatchObject({ chance: .01, minimum: 1, maximum: 1 });
   });
   it('loads legacy accounts without writes or granting anything', () => {
@@ -135,8 +136,8 @@ describe('character Masters and chest contracts', () => {
     expect(account.masterConduits).toEqual({ 'master-ember-1': 1, 'master-ember-2': 1 });
   });
   it('saves and deduplicates a final-boss chest together with ordinary kill rewards', () => {
-    const saved = storage({ infusionStages: { machines: 100 } });
-    const state = createInfusionBattle('machines', 100, 1, 'ember', { level: 0, evolution: 1 });
+    const saved = storage({ infusionStages: { machines: machineRules.stages } });
+    const state = createInfusionBattle('machines', machineRules.stages, 1, 'ember', { level: 0, evolution: 1 });
     state.enemies[0].hp = 0; state.phase = 'cleared';
     const reward: BattleEvent = { kind: 'reward', source: state.enemies[0].id, target: '', amount: 75, critical: false, message: 'Saved kill', masterChests: 1, mechanicalComponents: 625 };
     const write = vi.spyOn(saved, 'setItem');
@@ -149,17 +150,17 @@ describe('character Masters and chest contracts', () => {
     saveAccountRewards(saved, { state, events: [reward] }, 'master-run');
     expect(write).toHaveBeenCalledOnce();
     const raw = saved.getItem(ACCOUNT_KEY);
-    const wrong = createInfusionBattle('machines', 95, 1, 'ember', { level: 0, evolution: 1 });
+    const wrong = createInfusionBattle('machines', machineRules.stages - 5, 1, 'ember', { level: 0, evolution: 1 });
     wrong.enemies[0].hp = 0; wrong.phase = 'cleared';
     expect(() => saveAccountRewards(saved, { state: wrong, events: [{ ...reward, source: wrong.enemies[0].id }] }, 'wrong')).toThrow('final');
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
-    const overflow = storage({ masterChests: Number.MAX_SAFE_INTEGER, infusionStages: { machines: 100 } });
+    const overflow = storage({ masterChests: Number.MAX_SAFE_INTEGER, infusionStages: { machines: machineRules.stages } });
     const before = overflow.getItem(ACCOUNT_KEY);
     expect(() => saveAccountRewards(overflow, { state, events: [reward] }, 'overflow')).toThrow('capacity');
     expect(overflow.getItem(ACCOUNT_KEY)).toBe(before);
   });
   it('uses a dedicated chest stream without changing existing reward or combat RNG', () => {
-    const first = createInfusionBattle('machines', 100, 1729, 'ember', { level: 0, evolution: 1 });
+    const first = createInfusionBattle('machines', machineRules.stages, 1729, 'ember', { level: 0, evolution: 1 });
     first.allies[0].stats.damage = 1e12; first.enemies[0].hp = 1;
     const second = structuredClone(first);
     first.masterChestSeed = 1;

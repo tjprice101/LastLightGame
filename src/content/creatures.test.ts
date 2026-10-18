@@ -7,7 +7,7 @@ import { playableDungeons, materialLoot } from './dungeons';
 import { creatureGlossary } from '../presentation/creature-glossary';
 import { sanctuaryHeader, isMenuPage } from '../presentation/sanctuary';
 import { starters } from './starters';
-import { elements } from './activities';
+import { elements, infusionModeStageCount } from './activities';
 import { nextWave, nextStage } from '../game/battle';
 
 function storage(): ProfileStorage {
@@ -29,14 +29,14 @@ describe('saved Elemental-Devourer discoveries and glossary', () => {
         expect(getCreature(enemy.creatureId!).element).toBe(enemy.element);
       }
     }
-    for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= 35; stage++) {
+    for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= infusionModeStageCount; stage++) {
       const state = createInfusionBattle(mode, stage, 1729, 'ember', { level: 0, evolution: 1 });
       for (const enemy of state.enemies) {
         expect(enemy.element).toBe(mode === 'heavens' ? 'tranquilitic' : 'chaotic');
         expect(getCreature(enemy.creatureId!).element).toBe(enemy.element);
         expect(getCreature(enemy.creatureId!).dungeonElement).toBeUndefined();
       }
-      if (stage < 35) {
+      if (stage < infusionModeStageCount) {
         state.phase = 'cleared';
         expect(nextStage(state, { level: 0, evolution: 1 }).state.enemies[0].element).toBe(state.enemies[0].element);
       }
@@ -53,7 +53,7 @@ describe('saved Elemental-Devourer discoveries and glossary', () => {
       expect(getCreature(state.enemies[0].creatureId!).stages).toContain(stage);
       expect(getCreature(state.enemies[0].creatureId!).name).toBe(state.enemies[0].name);
     }
-    for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= 35; stage++) {
+    for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= infusionModeStageCount; stage++) {
       const state = createInfusionBattle(mode, stage, 1729, 'ember', { level: 0, evolution: 1 });
       expect(getCreature(state.enemies[0].creatureId!).stages).toContain(stage);
     }
@@ -135,7 +135,7 @@ describe('saved Elemental-Devourer discoveries and glossary', () => {
       const pool = creatureLoot(creature, stage);
       expect(pool.slice(1)).toEqual(materialLoot(creature.dungeonElement!, stage));
     }
-    const final = creatureLoot(getCreature('infusion:heavens:5'), 35);
+    const final = creatureLoot(getCreature('infusion:heavens:5'), infusionModeStageCount);
     expect(final.find((entry) => entry.id === 'heavens-level')).toMatchObject({ minimum: 15, maximum: 30, chance: 1 });
     expect(final.find((entry) => entry.id === 'infernic-epic')?.chance).toBeCloseTo(.85 / 4);
     expect(final.find((entry) => entry.id === 'oceanic-legendary')?.chance).toBeCloseTo(.65 / 4);

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { enemySkills, scheduledEnemySkill } from './enemy-skills';
 import { createBattle, createDungeonBattle, createInfusionBattle, endTurn, nextWave } from '../game/battle';
 import { playableDungeons } from './dungeons';
+import { infusionModeStageCount } from './activities';
 
 describe('level-dependent enemy skill kits', () => {
   it('has exactly one below 50 and two from 50, with one boss ultimate only in two-skill kits', () => {
@@ -34,7 +35,7 @@ describe('level-dependent enemy skill kits', () => {
       const state = createDungeonBattle(element, stage, 1, 'ember', progress);
       for (const enemy of state.enemies) expect(enemy.enemySkills).toHaveLength(enemy.level! < 50 ? 1 : 2);
     }
-    for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= 35; stage++) {
+    for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= infusionModeStageCount; stage++) {
       const state = createInfusionBattle(mode, stage, 1, 'ember', progress);
       expect(state.enemies[0].enemySkills).toHaveLength(2);
       expect(state.enemies[0].enemySkills?.[1].action).toBe(stage % 5 === 0 ? 'ultimate' : 'skill2');
@@ -49,7 +50,7 @@ describe('level-dependent enemy skill kits', () => {
   });
 
   it('emits named real skills and heavy boss ultimates, while retaining one damage resolution and seed determinism', () => {
-    const initial = createInfusionBattle('abyss', 35, 1729, 'tide', { level: 105, evolution: 6 });
+    const initial = createInfusionBattle('abyss', infusionModeStageCount, 1729, 'tide', { level: 105, evolution: 6 });
     initial.allies[0].hp = initial.allies[0].stats.health = 1_000_000;
     const health = initial.enemies[0].hp;
     const damage: number[] = [];

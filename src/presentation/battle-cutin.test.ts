@@ -6,6 +6,7 @@ import { unitFacingAttributes } from './unit-facing';
 import { readdirSync } from 'node:fs';
 import { assetUrl } from './portrait';
 import { starters } from '../content/starters';
+import { infusionModeStageCount } from '../content/activities';
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -98,7 +99,7 @@ describe('Last Flare portrait cut-ins', () => {
     expect(event.action).toBe('skill1');
     expect(portraitCue(early.enemies[0], event)).toBeNull();
     for (const mode of ['heavens', 'abyss'] as const) {
-      const state = createInfusionBattle(mode, 35, 1, 'ember', { level: 105, evolution: 6 });
+      const state = createInfusionBattle(mode, infusionModeStageCount, 1, 'ember', { level: 105, evolution: 6 });
       state.round = 6;
       const attack = endTurn(state).events.find((event) => event.kind === 'attack')!;
       expect(portraitCue(state.enemies[0], attack)).toMatchObject({ ultimate: true, power: 1, duration: 3500 });
@@ -123,7 +124,7 @@ describe('Last Flare portrait cut-ins', () => {
     const panel = { className: '', setAttribute: vi.fn(), style: { setProperty: vi.fn() }, innerHTML: '',
       querySelector: (selector: string) => selector === '.cutin-copy strong' ? name : ability };
     vi.stubGlobal('document', { createElement: () => panel });
-    const enemy = createInfusionBattle('abyss', 35, 1, 'ember', { level: 105, evolution: 6 }).enemies[0];
+    const enemy = createInfusionBattle('abyss', infusionModeStageCount, 1, 'ember', { level: 105, evolution: 6 }).enemies[0];
     const cue = portraitCue(enemy, { kind: 'attack', source: enemy.id, target: 'ember',
       action: 'ultimate', abilityName: '<Void & Ruin>', message: 'test', amount: 0, critical: false })!;
     portraitCutin(enemy, cue, enemy.art ?? null, '#e45cad');

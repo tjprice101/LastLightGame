@@ -16,7 +16,7 @@ export const roseEventRules = `<p>${devourerHabitats.roses}</p><p>35 stages at l
     Bosses use the same drop chances. The stage 35 boss gives 5x Prismatica and materials on every clear. Check View Loot in Collections for exact drops.</p>
     <p>Sales exchange one copy for its form's material: ${roseMaterials.map((material, index) => `${roseSaleQuantities[index]} ${material.name}`).join(', ')}.
     Locked, squad and Conduit-equipped copies cannot be sold or consumed.</p>
-    <p>Rosetta, Thornia and Crinso use these materials for leveling and evolution. Late evolutions also use 1 form 3+ Roselius, then 2 form 4+ copies, then 3 form 5+ copies. You choose which copies to use.
+    <p>Rosetta, Thornia and Crinso use these materials for leveling and evolution. Late evolutions also consume Roselius worth 3, then 8, then 15 Evolution Value; each copy is worth its form (1-6), so weaker copies can be combined. You choose which copies to use.
     Every evolution requires the current form's max level.</p>
     <p>This event and its banner remain available without an expiry until an end date is announced.</p>`;
 

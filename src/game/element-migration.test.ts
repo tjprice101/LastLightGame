@@ -30,7 +30,7 @@ describe('six-element save and encounter migration', () => {
     const migrated = loadAccount(storage);
     expect(storage.setItem).not.toHaveBeenCalled();
     expect(storage.getItem(ACCOUNT_KEY)).toBe(before);
-    expect(migrated.version).toBe(6);
+    expect(migrated.version).toBe(7);
     for (const element of elements) {
       const sum = elementSources[element.id].reduce((total, source) => total + legacyElementIds.indexOf(source) + 1, 0);
       for (const rarity of materialRarities) expect(migrated.materials[`${element.id}-${rarity.toLowerCase()}`]).toBe(sum);

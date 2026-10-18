@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { elements, elementalMaterials, elementalEnemyLevel, evolutionRequirement, evolutionRecipes, infusionModes, materialRarities } from './activities';
+import { elements, elementalMaterials, elementalEnemyLevel, evolutionRequirement, evolutionRecipes, infusionModes, infusionModeStageCount, machineStageCount, materialRarities } from './activities';
 import { openingStarters as starters } from './starters';
 import { gameplayHub } from '../presentation/gameplay';
 import { characterDetail } from '../presentation/hub';
@@ -41,7 +41,7 @@ describe('activity and progression framework', () => {
     expect(elements.filter((element) => element.infusion === 'abyss').map((element) => element.id)).toEqual([
       'tranquilitic', 'chaotic',
     ]);
-    expect(infusionModes.map((mode) => [mode.stages, mode.startingLevel, mode.enemyTiers])).toEqual([[35, 50, 6], [35, 50, 6]]);
+    expect(infusionModes.map((mode) => [mode.stages, mode.startingLevel, mode.enemyTiers])).toEqual([[infusionModeStageCount, 50, 6], [infusionModeStageCount, 50, 6]]);
   });
   it('uses approved adjacent-rarity recipes and captured-creature requirements', () => {
     expect(evolutionRecipes.map((recipe) => recipe.rarities)).toEqual([
@@ -55,6 +55,7 @@ describe('activity and progression framework', () => {
       expect(result.requiresInfusableEnemies).toBe(from >= 3);
       expect(result.creatureCount).toBe(from >= 3 ? from - 2 : 0);
       expect(result.minimumCreatureForm).toBe(from >= 3 ? from : null);
+      expect(result.fodderValue).toBe(from >= 3 ? (from - 2) * from : 0);
       expect(result.quantitiesDefined).toBe(true);
       expect(result.to).toBe(from + 1);
     }
@@ -67,7 +68,7 @@ describe('activity and progression framework', () => {
     expect(markup).not.toContain('Dungeon not playable yet');
     expect(markup.match(/data-dungeon="/g)).toHaveLength(6);
     expect(markup.match(/<dd>35 stages<\/dd>.*?<dd>38-120<\/dd>/g)).toHaveLength(6);
-    expect(markup).toContain('<dd>100 stages</dd>');
+    expect(markup).toContain(`<dd>${machineStageCount} stages</dd>`);
     expect(markup.match(/data-infusion="/g)).toHaveLength(6);
     expect(markup).toContain('data-infusion="machines"');
     expect(markup).toContain('data-page="battle"');

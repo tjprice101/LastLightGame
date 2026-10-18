@@ -3,7 +3,7 @@ import { plentifulDrops, fractalisDrop, scaledDrop, storyEnemyFractalisDrop, sto
 import { storyEncounter, storyLoot, storyRules } from './story';
 import { materialBracket, materialDrops, materialLoot, materialRarities } from './dungeons';
 import { infusionDrops, infusionLoot, infusionEncounter } from './infusions';
-import { elementalEnemyLevel, elements } from './activities';
+import { elementalEnemyLevel, elements, infusionModeStageCount } from './activities';
 import { bossLootRange, bossLootMultiplier } from './final-boss-loot';
 
 describe('Story and Treasury Prismatica (D-225)', () => {
@@ -44,12 +44,12 @@ describe('plentiful loot quantities', () => {
         expect(drop.maximum).toBeLessThanOrEqual(stage === 35 ? 150 : 30);
       }
     }
-    for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= 35; stage++) {
+    for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= infusionModeStageCount; stage++) {
       const pool = infusionLoot(mode, stage);
       for (const drop of [...pool.specialties, ...pool.bonuses]) {
         expect(drop.minimum).toBeGreaterThanOrEqual(1);
-        expect(drop.minimum).toBeLessThanOrEqual(stage === 35 ? 15 : 3);
-        expect(drop.maximum).toBeLessThanOrEqual(stage === 35 ? 30 : 6);
+        expect(drop.minimum).toBeLessThanOrEqual(stage === infusionModeStageCount ? 15 : 3);
+        expect(drop.maximum).toBeLessThanOrEqual(stage === infusionModeStageCount ? 30 : 6);
       }
     }
     expect(materialLoot('infernic', 1)[0]).toMatchObject({ minimum: 4, maximum: 5 });
@@ -86,7 +86,7 @@ describe('plentiful loot quantities', () => {
   });
 
   it('keeps specialty and any-element rarity gates at all Heaven and Abyss stages', () => {
-    for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= 35; stage++) {
+    for (const mode of ['heavens', 'abyss'] as const) for (let stage = 1; stage <= infusionModeStageCount; stage++) {
       const pool = infusionLoot(mode, stage);
       const drops = infusionDrops(mode, stage, () => 0);
       for (const drop of pool.specialties) expect(drops[drop.id]).toBe(drop.minimum);
@@ -101,7 +101,7 @@ describe('plentiful loot quantities', () => {
     expect(fractalisDrop(1)).toEqual({ minimum: 5, maximum: 10, chance: 1 });
     expect(fractalisDrop(120)).toEqual({ minimum: 15, maximum: 30, chance: 1 });
     for (const mode of ['heavens', 'abyss'] as const) {
-      const pool = infusionLoot(mode, 35);
+      const pool = infusionLoot(mode, infusionModeStageCount);
       for (const drop of [...pool.specialties, ...pool.bonuses]) {
         expect([drop.minimum, drop.maximum]).toEqual([15, 30]);
       }

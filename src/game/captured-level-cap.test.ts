@@ -1,3 +1,4 @@
+import { infusionStageCount } from '../content/activities';
 import { describe, expect, it, vi } from 'vitest';
 import { capturedEnemyStats, infusionEncounter } from '../content/infusions';
 import { enemySkills } from '../content/enemy-skills';
@@ -39,7 +40,7 @@ describe('captured Elemental-Devourer level 60 ceiling', () => {
 
   it.each(['heavens', 'abyss', 'treasury', 'sanctuary', 'roses'] as const)(
     'caps actual %s captures in the reward event and atomic persisted receipt, retaining hostile skills', mode => {
-      const stage = mode === 'roses' ? 23 : mode === 'heavens' || mode === 'abyss' ? 35 : 25;
+      const stage = mode === 'roses' ? 23 : infusionStageCount(mode);
       const state = createInfusionBattle(mode, stage, 1, 'ember', { level: 105, evolution: 6 });
       expect(state.enemies[0].level).toBeGreaterThan(60);
       state.enemies.forEach(enemy => { enemy.hp = 1; enemy.burn = { damage: 1, turns: 1 }; });
@@ -66,7 +67,7 @@ describe('captured Elemental-Devourer level 60 ceiling', () => {
 
   it('normalizes old explicit and metadata-free saves without load writes, refunds or unrelated data loss', () => {
     const saved = storage();
-    const copy = createCreatureCopy('infusion:abyss:5', 35);
+    const copy = createCreatureCopy('infusion:abyss:5', infusionStageCount('abyss'));
     const legacy = { ...copy, instanceId: `capture:${crypto.randomUUID()}` };
     const { level: _level, capturedStage: _stage, skills: _skills, ...metadataFree } = legacy;
     const account = emptyAccount();
@@ -102,7 +103,7 @@ describe('captured Elemental-Devourer level 60 ceiling', () => {
 
   it('caps authoritative reads and resumed run snapshots without healing, resetting turns or mutating input', () => {
     let game = resolveOperation(freshGame('tester'), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
-    const copy = createCreatureCopy('infusion:abyss:5', 35);
+    const copy = createCreatureCopy('infusion:abyss:5', infusionStageCount('abyss'));
     game.account.capturedCharacters = [copy];
     game.account.squad = [copy.instanceId];
     game = resolveOperation(game, { kind: 'enter', activity: { kind: 'training' } }, entropy).game;

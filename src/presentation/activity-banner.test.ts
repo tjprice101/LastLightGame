@@ -3,6 +3,7 @@ import { activityBanner } from './activity-banner';
 import { gameplayHub } from './gameplay';
 import { emptyAccount } from '../game/account';
 import { storyRules } from '../content/story';
+import { machineStageCount } from '../content/activities';
 import { elementalWars, warEncounter } from '../content/elemental-war';
 
 describe('reference activity banners', () => {
@@ -41,12 +42,12 @@ describe('reference activity banners', () => {
   });
   it('retains all staged entry selectors inside real entry footers and all named reward panels', () => {
     const account = emptyAccount();
-    account.infusionStages.machines = 100;
+    account.infusionStages.machines = machineStageCount;
     const html = gameplayHub(account);
     expect(html.match(/class="activity-entry"/g)).toHaveLength(15);
     expect(html.match(/data-dungeon-stage=/g)).toHaveLength(6);
     expect(html.match(/data-infusion-stage=/g)).toHaveLength(6);
-    expect(html).toContain('value="100" selected');
+    expect(html).toContain(`value="${machineStageCount}" selected`);
     expect(html).toContain('data-infusion="machines"');
     expect(html).toContain('class="activity-facts"');
     expect(html).toContain('Conduit upgrade currency');

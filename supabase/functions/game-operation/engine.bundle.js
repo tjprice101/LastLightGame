@@ -15,12 +15,24 @@ var elementalMaterials = elements.flatMap((element) => materialRarities.map((rar
   name: `${element.name} ${rarity} Material`
 })));
 var dungeonStageCount = 35;
+var infusionModeStageCount = 25;
+var machineStageCount = 75;
+var legacyActivityStageCounts = { heavens: 35, abyss: 35, machines: 100 };
+function isResizedActivity(mode) {
+  return Object.hasOwn(legacyActivityStageCounts, mode);
+}
+function migrateLegacyActivityStage(mode, stage) {
+  const legacy = legacyActivityStageCounts[mode];
+  const current = mode === "machines" ? machineStageCount : infusionModeStageCount;
+  if (!Number.isSafeInteger(stage) || stage < 1 || stage > legacy) throw new Error("Invalid saved infusion stage.");
+  return 1 + Math.ceil((stage - 1) * (current - 1) / (legacy - 1));
+}
 var warStageCount = 10;
 var storyStageLayout = { regionStages: 18, stages: 108, legacyRegionStages: 25, legacyStages: 150 };
 var elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 38, maximumLevel: 120, maximumLevelStage: dungeonStageCount };
 var infusionModes = [
-  { id: "heavens", name: "Soar to Heaven", energy: "Light", enemyTheme: "Dawnthorn Slime evolution line", stages: dungeonStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
-  { id: "abyss", name: "Delve into the Abyss", energy: "Chaotic", enemyTheme: "Wraththorn Slime evolution line", stages: dungeonStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } }
+  { id: "heavens", name: "Soar to Heaven", energy: "Light", enemyTheme: "Dawnthorn Slime evolution line", stages: infusionModeStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
+  { id: "abyss", name: "Delve into the Abyss", energy: "Chaotic", enemyTheme: "Wraththorn Slime evolution line", stages: infusionModeStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } }
 ];
 var currencyModes = [
   { id: "treasury", name: "Crownfall Treasury", stages: 25, startingLevel: 65, maximumLevel: 120, enemyTiers: 6 },
@@ -30,7 +42,7 @@ var eventModes = [
   { id: "roses", name: "Passion of Crimson Roses", stages: 35, startingLevel: 80, maximumLevel: 140, enemyTiers: 6 }
 ];
 var machineModes = [
-  { id: "machines", name: "Awaken the Machines", stages: 100, startingLevel: 10, maximumLevel: 120, enemyTiers: 6 }
+  { id: "machines", name: "Awaken the Machines", stages: machineStageCount, startingLevel: 10, maximumLevel: 120, enemyTiers: 6 }
 ];
 function isCurrencyMode(mode) {
   return currencyModes.some((entry) => entry.id === mode);
@@ -78,6 +90,8 @@ function evolutionRequirement(elementId, from) {
     requiresInfusableEnemies: from >= 3,
     creatureCount: from >= 3 ? from - 2 : 0,
     minimumCreatureForm: from >= 3 ? from : null,
+    /** D-346 addition rule: each captured copy is worth its form (1-6); the chosen copies must total this value. */
+    fodderValue: from >= 3 ? (from - 2) * from : 0,
     quantitiesDefined: true
   };
 }
@@ -1954,11 +1968,11 @@ var masterChest = {
   id: "grand-master-chest",
   name: "Cosmic Grand Master Chest",
   chance: 0.01,
-  stage: 100,
+  stage: machineStageCount,
   art: "master-conduits/grand-master-chest.png",
   description: "Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward."
 };
-var masterRulesText = "The final Awaken the Machines boss (stage 100) has a separate 1% chance to drop a Cosmic Grand Master Chest. Every Calamity EX+Omnipotent chest contains two. Open a Master chest in Inventory to choose one unowned Omnic Master, even for an Element-Bearer you do not own yet. A Master equips only to its named bearer, in a separate slot, without using up the copy. It cannot be upgraded. Check Details for its effect and limits. Extra chests stay unopened once you own all 48 Masters.";
+var masterRulesText = `The final Awaken the Machines boss (stage ${machineStageCount}) has a separate 1% chance to drop a Cosmic Grand Master Chest. Every Calamity EX+Omnipotent chest contains two. Open a Master chest in Inventory to choose one unowned Omnic Master, even for an Element-Bearer you do not own yet. A Master equips only to its named bearer, in a separate slot, without using up the copy. It cannot be upgraded. Check Details for its effect and limits. Extra chests stay unopened once you own all 48 Masters.`;
 function master(character, slot, name, design) {
   return {
     id: `master-${character}-${slot}`,
@@ -2277,7 +2291,7 @@ function masterChestDrops(stage, boss, random) {
 }
 
 // src/content/machines.ts
-var machineRules = { stages: infusionStageCount("machines"), omnicStage: 75, rareChance: 0.08, legendaryChance: 0.035, omnicChance: 0.01, bannerBonusChance: 5e-3 };
+var machineRules = { stages: infusionStageCount("machines"), omnicStage: 1 + Math.round(74 * (infusionStageCount("machines") - 1) / 99), rareChance: 0.08, legendaryChance: 0.035, omnicChance: 0.01, bannerBonusChance: 5e-3 };
 var machinePools = {
   Rare: conduits.filter((conduit) => conduit.rarity === "Rare"),
   Legendary: conduits.filter((conduit) => conduit.rarity === "Legendary"),
@@ -3554,13 +3568,22 @@ function capturedEnemyStats(level, maximumLevel = 120) {
   };
 }
 var infusionLevelAnchors = [[1, 50], [13, 65], [19, 75], [25, 85], [35, 120]];
+var infusionAnchorStages = 35;
 function infusionEnemyLevel(stage) {
-  if (!Number.isInteger(stage) || stage < 1 || stage > 35) throw new Error("Invalid infusion stage.");
-  const nextIndex = infusionLevelAnchors.findIndex(([floor]) => floor >= stage);
+  const stages = infusionModeStageCount;
+  if (!Number.isInteger(stage) || stage < 1 || stage > stages) throw new Error("Invalid infusion stage.");
+  return anchorLevel(1 + (stage - 1) * (infusionAnchorStages - 1) / (stages - 1));
+}
+function legacyInfusionEnemyLevel(stage) {
+  if (!Number.isInteger(stage) || stage < 1 || stage > infusionAnchorStages) throw new Error("Invalid infusion stage.");
+  return anchorLevel(stage);
+}
+function anchorLevel(position) {
+  const nextIndex = infusionLevelAnchors.findIndex(([floor]) => floor >= position);
   if (nextIndex === 0) return 50;
   const [start, level] = infusionLevelAnchors[nextIndex - 1];
   const [end, endLevel] = infusionLevelAnchors[nextIndex];
-  return Math.round(level + (stage - start) / (end - start) * (endLevel - level));
+  return Math.round(level + (position - start) / (end - start) * (endLevel - level));
 }
 function infusionEncounter(mode, stage, schedule = "caps") {
   const stages = infusionStageCount(mode);
@@ -3569,7 +3592,7 @@ function infusionEncounter(mode, stage, schedule = "caps") {
   const definition = [...infusionModes, ...currencyModes, ...eventModes, ...machineModes].find((entry) => entry.id === mode);
   if (!definition) throw new Error("Unknown staged Elemental-Devourer mode.");
   const startingLevel = definition.startingLevel;
-  const level = mode === "heavens" || mode === "abyss" ? schedule === "legacy" ? Math.round(80 + (stage - 1) * 40 / 34) : infusionEnemyLevel(stage) : Math.round(startingLevel + (stage - 1) * ((mode === "roses" ? 140 : 120) - startingLevel) / (stages - 1));
+  const level = mode === "heavens" || mode === "abyss" ? schedule === "legacy" ? Math.round(80 + (stage - 1) * 40 / (stages - 1)) : infusionEnemyLevel(stage) : Math.round(startingLevel + (stage - 1) * ((mode === "roses" ? 140 : 120) - startingLevel) / (stages - 1));
   const boss = stage % 5 === 0;
   const stats = mode === "treasury" ? treasuryEnemyStats(level, boss) : mode === "sanctuary" ? sanctuaryEnemyStats(level, boss) : mode === "roses" ? roseEnemyStats(level, boss) : mode === "machines" ? creatureEnemyStats(level, boss) : infusionEnemyStats(level, boss);
   const [name, art] = infusionEnemies[mode][tier];
@@ -4667,6 +4690,31 @@ var capturedLevelCap = 60;
 function isCapturedInstanceId(value2) {
   return typeof value2 === "string" && /^capture:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value2);
 }
+function migrateLegacyCapturedCopies(value2) {
+  if (!Array.isArray(value2)) return value2;
+  return value2.map((entry) => {
+    if (typeof entry !== "object" || entry === null || !("creatureId" in entry) || !("capturedStage" in entry) || typeof entry.creatureId !== "string" || typeof entry.capturedStage !== "number" || typeof entry.level !== "number") return entry;
+    const creature = getCreature(entry.creatureId);
+    const mode = creature.mode;
+    if (mode !== "heavens" && mode !== "abyss") return entry;
+    const legacyStages = legacyActivityStageCounts[mode];
+    const oldStage = entry.capturedStage;
+    if (!Number.isInteger(oldStage) || oldStage < 1 || oldStage > legacyStages || Math.min(5, Math.floor((oldStage - 1) * 6 / legacyStages)) !== infusionEncounter(mode, creature.stages[0]).tier) {
+      throw new Error("Invalid captured Elemental-Devourer progression.");
+    }
+    const savedLevel = entry.level;
+    const oldLevel = legacyInfusionEnemyLevel(oldStage);
+    const oldBoss = oldStage % 5 === 0;
+    const ranked = creature.stages.map((stage) => infusionEncounter(mode, stage)).sort((a, b) => Number(b.boss === oldBoss) - Number(a.boss === oldBoss) || Math.abs(a.level - oldLevel) - Math.abs(b.level - oldLevel));
+    const encounter2 = ranked.find((option) => Math.min(capturedLevelCap, option.level) <= savedLevel) ?? ranked[0];
+    return {
+      ...entry,
+      capturedStage: encounter2.stage,
+      level: Math.max(savedLevel, Math.min(capturedLevelCap, encounter2.level)),
+      skills: enemySkills(encounter2.level, encounter2.boss, encounter2.ability, encounter2.abilityMultiplier)
+    };
+  });
+}
 function validateCapturedCharacters(value2) {
   if (!Array.isArray(value2)) throw new Error("Invalid saved captured Elemental-Devourers.");
   const seen = /* @__PURE__ */ new Set();
@@ -4703,7 +4751,7 @@ function capturedProgress(copy) {
   if (!creature.mode || creature.mode === "machines") throw new Error("Captured Elemental-Devourer mode is missing or non-capturable.");
   const stage = copy.capturedStage ?? creature.stages[0];
   const encounter2 = infusionEncounter(creature.mode, stage);
-  const legacyLevel = creature.mode === "heavens" || creature.mode === "abyss" ? Math.round(80 + (stage - 1) * 40 / 34) : encounter2.level;
+  const legacyLevel = creature.mode === "heavens" || creature.mode === "abyss" ? Math.round(80 + Math.ceil(encounter2.tier * 35 / 6) * 40 / 34) : encounter2.level;
   return {
     level: Math.min(capturedLevelCap, copy.level ?? legacyLevel),
     stage,
@@ -7772,7 +7820,7 @@ function isExchangeQuantity(value2) {
 // src/game/account.ts
 var ACCOUNT_KEY = "last-light.wallet";
 function emptyAccount() {
-  return { version: 6, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 7, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value2) {
   return typeof value2 === "number" && Number.isSafeInteger(value2) && value2 >= 0;
@@ -7793,7 +7841,7 @@ function migrateLegacyDungeonStage(stage, version) {
   return unlocked;
 }
 function validateAccount(value2) {
-  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
+  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
     throw new Error("The local progression save is invalid or unsupported. It has not been overwritten.");
   }
   const account = emptyAccount();
@@ -7917,7 +7965,7 @@ function validateAccount(value2) {
     characterGrowthFactor(entry);
     account.characters[id] = entry;
   }
-  if (value2.capturedCharacters !== void 0) account.capturedCharacters = validateCapturedCharacters(value2.capturedCharacters);
+  if (value2.capturedCharacters !== void 0) account.capturedCharacters = validateCapturedCharacters(value2.version < 7 ? migrateLegacyCapturedCopies(value2.capturedCharacters) : value2.capturedCharacters);
   if (value2.characterLocks !== void 0) account.characterLocks = validateCharacterLocks(value2.characterLocks, account.characters);
   if (value2.squad !== void 0) {
     if (!Array.isArray(value2.squad) || value2.squad.length < 1 || value2.squad.length > 3 || new Set(value2.squad).size !== value2.squad.length || !value2.squad.every((id) => typeof id === "string" && ownedCharacterInstances(account).includes(id))) {
@@ -7962,8 +8010,10 @@ function validateAccount(value2) {
   if (value2.infusionStages !== void 0) {
     if (!record(value2.infusionStages)) throw new Error("Invalid saved infusion stages.");
     for (const [id, stage] of Object.entries(value2.infusionStages)) {
-      if (!isInfusionMode(id) || !count(stage) || stage < 1 || stage > (value2.version === 2 && (id === "heavens" || id === "abyss") ? 25 : infusionStageCount(id))) throw new Error("Invalid saved infusion stage.");
-      account.infusionStages[id] = value2.version === 2 && (id === "heavens" || id === "abyss") ? 1 + Math.round((stage - 1) * (dungeonStageCount - 1) / 24) : stage;
+      if (!isInfusionMode(id) || !count(stage) || stage < 1) throw new Error("Invalid saved infusion stage.");
+      const resized = value2.version < 7 && isResizedActivity(id) && !(value2.version === 2 && id !== "machines");
+      if (!resized && stage > infusionStageCount(id)) throw new Error("Invalid saved infusion stage.");
+      account.infusionStages[id] = resized ? migrateLegacyActivityStage(id, stage) : stage;
     }
     if (value2.creatures !== void 0) {
       if (!record(value2.creatures)) throw new Error("Invalid saved Elemental-Devourer discoveries.");
@@ -8009,12 +8059,16 @@ function evolutionFodderOptions(account, element, evolution, character) {
     const reasons = [];
     if (!requirement.requiresInfusableEnemies) reasons.push("No Elemental-Devourers required for this evolution");
     if (creature.mode !== requirement.infusion) reasons.push("From a different activity");
-    if (form < (requirement.minimumCreatureForm ?? 1)) reasons.push("Needs a later form");
     if (protection.locked) reasons.push("Locked");
     if (protection.inSquad) reasons.push("In squad");
     if (account.conduitEquipment?.[copy.instanceId]?.some((id) => id !== null)) reasons.push("Conduits equipped");
-    return { copy, index: index + 1, creature, form, reasons, eligible: reasons.length === 0 };
+    return { copy, index: index + 1, creature, form, value: form, reasons, eligible: reasons.length === 0 };
   });
+}
+function fodderSelectionStatus(values, required) {
+  const total = values.reduce((sum, value2) => sum + value2, 0);
+  const surplus = values.length > 0 && total - Math.min(...values) >= required;
+  return { total, required, surplus, ready: required > 0 && total >= required && !surplus };
 }
 function setCharacterLock(storage, id, locked) {
   if (!loadProfile(storage)) throw new Error("Choose your first Element-Bearer before managing characters.");
@@ -8307,17 +8361,21 @@ function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
   const element = getStarter(id).elementId;
   const cost = kind === "level" ? characterLevelCost(id, current) : characterEvolutionCost(id, current);
   if (kind === "evolve" && current.level !== characterLevelCap(current.evolution)) throw new Error("Reach this form level cap before evolving.");
-  const creatureCount = kind === "evolve" ? characterEvolutionRequirement(id, current.evolution).creatureCount : 0;
-  if (fodderIds.length !== creatureCount || new Set(fodderIds).size !== fodderIds.length) {
-    throw new Error(`Select exactly ${creatureCount} distinct captured Elemental-Devourers for this upgrade.`);
-  }
-  if (fodderIds.length) {
+  const requiredValue = kind === "evolve" ? characterEvolutionRequirement(id, current.evolution).fodderValue : 0;
+  if (new Set(fodderIds).size !== fodderIds.length) throw new Error("Choose each captured Elemental-Devourer only once.");
+  if (!requiredValue && fodderIds.length) throw new Error("This upgrade does not consume Elemental-Devourers.");
+  if (requiredValue) {
     const options = evolutionFodderOptions(account, element, current.evolution, id);
+    const values = [];
     for (const id2 of fodderIds) {
       const option = options.find((entry) => entry.copy.instanceId === id2);
       if (!option) throw new Error("Selected captured Elemental-Devourer is no longer owned.");
-      if (!option.eligible) throw new Error(`Cannot consume ${option.creature.name}: ${option.reasons.join(", ")}.`);
+      if (!option.eligible) throw new Error(`Cannot consume [${option.creature.name}]: ${option.reasons.join(", ")}.`);
+      values.push(option.value);
     }
+    const status4 = fodderSelectionStatus(values, requiredValue);
+    if (status4.total < requiredValue) throw new Error(`Choose Elemental-Devourers worth ${requiredValue} Evolution Value (currently ${status4.total}).`);
+    if (status4.surplus) throw new Error("Remove extra Elemental-Devourers; the evolution is already covered without one of them.");
   }
   if (account.fractalis < cost.fractalis) throw new Error("Not enough Prismatica.");
   for (const [material, amount] of Object.entries(cost.materials)) {
@@ -9050,7 +9108,7 @@ var VirtualStorage = class {
 };
 function isLegacyStoryRun(game) {
   const version = game.account.version;
-  return typeof version === "number" && version < 6 && game.run?.activity.kind === "story";
+  return typeof version === "number" && version < 7 && !!game.run;
 }
 function storyCompletedOf(game) {
   return validateAccount(game.account).storyCompleted ?? 0;

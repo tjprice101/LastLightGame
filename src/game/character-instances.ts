@@ -1,6 +1,7 @@
 import { getCreature } from '../content/creatures';
 import { isStarterId, type StarterId } from '../content/starters';
-import { infusionEncounter, capturedEnemyStats } from '../content/infusions';
+import { infusionEncounter, capturedEnemyStats, legacyInfusionEnemyLevel } from '../content/infusions';
+import { legacyActivityStageCounts } from '../content/activities';
 import { enemySkills, type EnemySkill } from '../content/enemy-skills';
 import { applyConduitBuffs, formatStat, type FighterDefinition } from '../content/combat';
 import { validateConduitElement, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
@@ -21,6 +22,36 @@ export const capturedLevelCap = 60;
 
 export function isCapturedInstanceId(value: unknown): value is string {
   return typeof value === 'string' && /^capture:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value);
+}
+
+/**
+ * D-346 read-only migration for pre-v7 wallets: Heaven/Abyss captures retained a stage on the former
+ * 35-stage layout. Re-home each onto the same creature's current stage nearest the original encounter
+ * (preferring the same boss role) and rebuild its retained skills from that encounter. Levels never drop.
+ */
+export function migrateLegacyCapturedCopies(value: unknown): unknown {
+  if (!Array.isArray(value)) return value;
+  return value.map((entry: unknown) => {
+    if (typeof entry !== 'object' || entry === null || !('creatureId' in entry) || !('capturedStage' in entry) ||
+        typeof entry.creatureId !== 'string' || typeof entry.capturedStage !== 'number' || typeof (entry as { level?: unknown }).level !== 'number') return entry;
+    const creature = getCreature(entry.creatureId);
+    const mode = creature.mode;
+    if (mode !== 'heavens' && mode !== 'abyss') return entry;
+    const legacyStages = legacyActivityStageCounts[mode];
+    const oldStage = entry.capturedStage;
+    if (!Number.isInteger(oldStage) || oldStage < 1 || oldStage > legacyStages ||
+        Math.min(5, Math.floor((oldStage - 1) * 6 / legacyStages)) !== infusionEncounter(mode, creature.stages[0]).tier) {
+      throw new Error('Invalid captured Elemental-Devourer progression.');
+    }
+    const savedLevel = (entry as unknown as { level: number }).level;
+    const oldLevel = legacyInfusionEnemyLevel(oldStage);
+    const oldBoss = oldStage % 5 === 0;
+    const ranked = creature.stages.map((stage) => infusionEncounter(mode, stage))
+      .sort((a, b) => Number(b.boss === oldBoss) - Number(a.boss === oldBoss) || Math.abs(a.level - oldLevel) - Math.abs(b.level - oldLevel));
+    const encounter = ranked.find((option) => Math.min(capturedLevelCap, option.level) <= savedLevel) ?? ranked[0];
+    return { ...entry, capturedStage: encounter.stage, level: Math.max(savedLevel, Math.min(capturedLevelCap, encounter.level)),
+      skills: enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier) };
+  });
 }
 
 export function validateCapturedCharacters(value: unknown): CapturedCharacter[] {
@@ -68,7 +99,8 @@ export function capturedProgress(copy: CapturedCharacter) {
   if (!creature.mode || creature.mode === 'machines') throw new Error('Captured Elemental-Devourer mode is missing or non-capturable.');
   const stage = copy.capturedStage ?? creature.stages[0];
   const encounter = infusionEncounter(creature.mode, stage);
-  const legacyLevel = creature.mode === 'heavens' || creature.mode === 'abyss' ? Math.round(80 + (stage - 1) * 40 / 34) : encounter.level;
+  // Metadata-free copies predate retained levels; keep their original 35-stage first-form level (D-346).
+  const legacyLevel = creature.mode === 'heavens' || creature.mode === 'abyss' ? Math.round(80 + Math.ceil(encounter.tier * 35 / 6) * 40 / 34) : encounter.level;
   return { level: Math.min(capturedLevelCap, copy.level ?? legacyLevel), stage, tier: encounter.tier,
     skills: copy.skills ?? enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.legacyAbilityMultiplier) };
 }

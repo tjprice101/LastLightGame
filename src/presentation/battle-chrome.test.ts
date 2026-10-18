@@ -4,6 +4,7 @@ import { BattleView, createSession } from './battle-view';
 import { elementLabel } from './element-label';
 import { nativeIdentities } from '../content/native-identities';
 import { storyRules } from '../content/story';
+import { infusionModeStageCount } from '../content/activities';
 
 function markup(session: ReturnType<typeof createSession>): string {
   const menu = { addEventListener: () => {}, close: () => {}, showModal: () => {} };
@@ -56,7 +57,7 @@ describe('shared battle chrome', () => {
     const sessions = [
       createSession('ember', progress),
       ...playableDungeons.flatMap((element) => [1, 35].map((stage) => createSession('ember', progress, { element, stage }))),
-      ...(['heavens', 'abyss'] as const).map((mode) => createSession('ember', progress, { mode, stage: 35 })),
+      ...(['heavens', 'abyss'] as const).map((mode) => createSession('ember', progress, { mode, stage: infusionModeStageCount })),
     ];
     for (const session of sessions) {
       const html = markup(session);
@@ -146,10 +147,10 @@ describe('shared battle chrome', () => {
     expect(html).toContain('class="unit-readout"');
   });
   it.each(['heavens', 'abyss'] as const)('uses shared chrome for %s, victory and defeat', (mode) => {
-    const session = createSession('ember', progress, { mode, stage: 35 });
+    const session = createSession('ember', progress, { mode, stage: infusionModeStageCount });
     const html = markup(session);
     expect(html).toContain('INFUSION TRIAL');
-    expect(html).toContain('Stage 35 / 35');
+    expect(html).toContain(`Stage ${infusionModeStageCount} / ${infusionModeStageCount}`);
     expect(html).toContain('class="battle-heading"');
     for (const phase of ['cleared', 'defeat'] as const) {
       session.state.phase = phase;

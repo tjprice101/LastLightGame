@@ -1,6 +1,7 @@
+import { machineRules } from '../content/machines';
 import { describe, expect, it, vi } from 'vitest';
 import { conduits, conduitBuffs, conduitEffect, validateConduitSlots, type ConduitId, type ConduitSlots } from '../content/conduits';
-import { elements } from '../content/activities';
+import { elements, infusionStageCount } from '../content/activities';
 import { enemyGrowth } from '../content/stat-growth';
 import { infusionEncounter } from '../content/infusions';
 import { machineConduitDrops, machineConduitLoot, bannerConduitBonus, machineEnemies, isBannerConduitEligible } from '../content/machines';
@@ -72,26 +73,26 @@ describe('machine content and exact probabilities', () => {
     const remaining = rare.slice(-2);
     const owned = Object.fromEntries(rare.slice(0, -2).map(c => [c.id, 2]));
     const before = structuredClone(owned);
-    expect(machineConduitDrops(75, sequence(.08, .035, .01), owned)).toEqual({});
+    expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .035, .01), owned)).toEqual({});
     for (const [index, conduit] of remaining.entries()) {
-      expect(machineConduitDrops(75, sequence(.079999, (index + .5) / 2, .035, .01), owned)).toEqual({ [conduit.id]: 1 });
+      expect(machineConduitDrops(machineRules.omnicStage, sequence(.079999, (index + .5) / 2, .035, .01), owned)).toEqual({ [conduit.id]: 1 });
     }
-    const loot = machineConduitLoot(75, owned);
+    const loot = machineConduitLoot(machineRules.omnicStage, owned);
     for (const conduit of rare) expect(loot.find(drop => drop.id === conduit.id)?.chance).toBe(
       remaining.includes(conduit) ? .08 / 2 : 0);
-    expect(creatureLoot(getCreature('infusion:machines:4'), 75, owned).filter(drop => rare.some(c => c.id === drop.id)))
+    expect(creatureLoot(getCreature('infusion:machines:4'), machineRules.omnicStage, owned).filter(drop => rare.some(c => c.id === drop.id)))
       .toEqual(loot.filter(drop => rare.some(c => c.id === drop.id)));
     expect(owned).toEqual(before);
   });
   it('awards nothing for completed tiers without rerolls, compensation or RNG drift', () => {
     const owned = Object.fromEntries(conduits.filter(c => c.rarity !== 'Common').map(c => [c.id, 1]));
     const random = vi.fn(sequence(0, .5, 0, .5, 0, .5));
-    expect(machineConduitDrops(75, random, owned)).toEqual({});
+    expect(machineConduitDrops(machineRules.omnicStage, random, owned)).toEqual({});
     expect(random).toHaveBeenCalledTimes(6);
-    expect(machineConduitLoot(75, owned).every(drop => drop.chance === 0)).toBe(true);
+    expect(machineConduitLoot(machineRules.omnicStage, owned).every(drop => drop.chance === 0)).toBe(true);
     delete owned['worldbreaker-drive'];
-    expect(machineConduitDrops(75, sequence(0, .5, 0, .5, 0, .5), owned)).toEqual({ 'worldbreaker-drive': 1 });
-    expect(machineConduitLoot(75, owned).find(drop => drop.id === 'worldbreaker-drive')?.chance).toBe(.035);
+    expect(machineConduitDrops(machineRules.omnicStage, sequence(0, .5, 0, .5, 0, .5), owned)).toEqual({ 'worldbreaker-drive': 1 });
+    expect(machineConduitLoot(machineRules.omnicStage, owned).find(drop => drop.id === 'worldbreaker-drive')?.chance).toBe(.035);
     expect(bannerConduitBonus(sequence(0, 0))).toBe('worldbreaker-drive');
   });
   it('authors the exact catalog and distinct stats/penalties/elements without selling drops', () => {
@@ -116,41 +117,41 @@ describe('machine content and exact probabilities', () => {
     expect(conduits.filter((entry) => entry.art === null)).toHaveLength(0);
     expect(conduits.filter((entry) => entry.art === entry.id)).toHaveLength(90);
   });
-  it('has100 stages 10-120, six distinct machines, every fifth-stage boss and no missing art URLs', () => {
-    for (let stage = 1; stage <= 100; stage++) {
+  it('has75 stages 10-120, six distinct machines, every fifth-stage boss and no missing art URLs', () => {
+    for (let stage = 1; stage <= machineRules.stages; stage++) {
       const encounter = infusionEncounter('machines', stage);
       expect(encounter.boss).toBe(stage % 5 === 0);
       expect(encounter.enemy.art).toBe(machineEnemies[encounter.tier].art);
       expect(encounter.background).toBe('machines-arena.png');
-      expect(encounter.level).toBe(Math.round(10 + (stage - 1) * 110 / 99));
+      expect(encounter.level).toBe(Math.round(10 + (stage - 1) * 110 / (machineRules.stages - 1)));
     }
-    expect(new Set(Array.from({ length: 100 }, (_, index) => infusionEncounter('machines', index + 1).enemy.name)).size).toBe(6);
-    expect(infusionEncounter('machines', 100).stats.health).toBe(enemyGrowth.bossHealth);
-    expect(infusionEncounter('machines', 99).stats.health).toBeLessThan(enemyGrowth.health);
-    for (const [tier, [first, last]] of [[1, 17], [18, 34], [35, 50], [51, 67], [68, 84], [85, 100]].entries()) {
+    expect(new Set(Array.from({ length: machineRules.stages }, (_, index) => infusionEncounter('machines', index + 1).enemy.name)).size).toBe(6);
+    expect(infusionEncounter('machines', machineRules.stages).stats.health).toBe(enemyGrowth.bossHealth);
+    expect(infusionEncounter('machines', machineRules.stages - 1).stats.health).toBeLessThan(enemyGrowth.health);
+    for (const [tier, [first, last]] of [[1, 13], [14, 25], [26, 38], [39, 50], [51, 63], [64, 75]].entries()) {
       expect(getCreature(`infusion:machines:${tier}`).stages).toEqual(Array.from({ length: last - first + 1 }, (_, index) => first + index));
     }
-    for (const stage of [0, 101, NaN, 1.5]) expect(() => machineConduitDrops(stage, () => 0)).toThrow();
+    for (const stage of [0, machineRules.stages + 1, NaN, 1.5]) expect(() => machineConduitDrops(stage, () => 0)).toThrow();
   });
-  it('checks exact independent tier boundaries, excludes Omnic below 75 and chooses equal entries', () => {
-    expect(machineConduitDrops(74, sequence(.08, .035))).toEqual({});
-    expect(machineConduitDrops(75, sequence(.08, .035, .01))).toEqual({});
+  it('checks exact independent tier boundaries, excludes Omnic below 56 and chooses equal entries', () => {
+    expect(machineConduitDrops(machineRules.omnicStage - 1, sequence(.08, .035))).toEqual({});
+    expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .035, .01))).toEqual({});
     const rarePool = conduits.filter((c) => c.rarity === 'Rare');
     const legendaryPool = conduits.filter((c) => c.rarity === 'Legendary');
     const omnicPool = conduits.filter((c) => c.rarity === 'Omnic');
     for (let index = 0; index < rarePool.length; index++) {
-      const drops = machineConduitDrops(75, sequence(.079999, (index + .5) / rarePool.length,
+      const drops = machineConduitDrops(machineRules.omnicStage, sequence(.079999, (index + .5) / rarePool.length,
         .035, .01));
       expect(Object.keys(drops)).toEqual([rarePool[index].id]);
     }
     for (let index = 0; index < legendaryPool.length; index++) {
-      expect(machineConduitDrops(75, sequence(.08, .034999, (index + .5) / legendaryPool.length, .01)))
+      expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .034999, (index + .5) / legendaryPool.length, .01)))
         .toEqual({ [legendaryPool[index].id]: 1 });
     }
     for (let index = 0; index < omnicPool.length; index++) {
-      expect(machineConduitDrops(75, sequence(.08, .035, .009999, (index + .5) / omnicPool.length))).toEqual({ [omnicPool[index].id]: 1 });
+      expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .035, .009999, (index + .5) / omnicPool.length))).toEqual({ [omnicPool[index].id]: 1 });
     }
-    expect(Object.keys(machineConduitDrops(100, () => 0))).toHaveLength(3);
+    expect(Object.keys(machineConduitDrops(machineRules.stages, () => 0))).toHaveLength(3);
     expect(bannerConduitBonus(() => .005)).toBeUndefined();
     const bannerPool = ['worldbreaker-drive', 'immortal-vessel', 'citadel-spine', 'astral-prism', 'judgment-lens'];
     for (let index = 0; index < bannerPool.length; index++) {
@@ -161,17 +162,17 @@ describe('machine content and exact probabilities', () => {
     for (const invalid of [-1, 1, NaN, Infinity]) expect(() => machineConduitDrops(1, () => invalid)).toThrow('Loot roll');
   });
   it('publishes exactly the acquisition API odds in the discovery-gated glossary', () => {
-    for (const stage of [1, 74, 75, 100]) {
+    for (const stage of [1, machineRules.omnicStage - 1, machineRules.omnicStage, machineRules.stages]) {
       const encounter = infusionEncounter('machines', stage);
       const pool = machineConduitLoot(stage);
-      expect(pool).toHaveLength(stage < 75 ? 30 : 75);
+      expect(pool).toHaveLength(stage < machineRules.omnicStage ? 30 : 75);
       expect(pool.some((drop) => conduits.find((conduit) => conduit.id === drop.id)?.rarity === 'Common')).toBe(false);
-      for (const [rarity, chance] of [['Rare', .08], ['Legendary', .035], ['Omnic', stage < 75 ? 0 : .01]] as const) {
+      for (const [rarity, chance] of [['Rare', .08], ['Legendary', .035], ['Omnic', stage < machineRules.omnicStage ? 0 : .01]] as const) {
         expect(pool.filter((drop) => conduits.find((c) => c.id === drop.id)?.rarity === rarity).reduce((sum, entry) => sum + entry.chance, 0)).toBeCloseTo(chance, 12);
       }
       const published = creatureLoot(getCreature(`infusion:machines:${encounter.tier}`), stage).slice(1);
       expect(published.filter(drop => drop.id !== 'grand-master-chest')).toEqual([machineComponentDrop(stage), ...pool]);
-      expect(published.filter(drop => drop.id === 'grand-master-chest')).toHaveLength(stage === 100 ? 1 : 0);
+      expect(published.filter(drop => drop.id === 'grand-master-chest')).toHaveLength(stage === machineRules.stages ? 1 : 0);
     }
   });
 });
@@ -184,7 +185,7 @@ describe('machine rewards and atomic saves', () => {
     return attack(state, 'light');
   }
   it('cannot award the same remaining name twice when an AoE defeats multiple enemies', () => {
-    const state = createInfusionBattle('machines', 76, 1729, 'ember', { level: 105, evolution: 6 });
+    const state = createInfusionBattle('machines', machineRules.omnicStage + 1, 1729, 'ember', { level: 105, evolution: 6 });
     expect(state.enemies.length).toBeGreaterThan(1);
     state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
     state.allies[0].shatter = 100;
@@ -201,7 +202,7 @@ describe('machine rewards and atomic saves', () => {
     expect(saveAccountRewards(saved, result, 'aoe').conduits?.['duplex-heart']).toBe(1);
   });
   it('remembers acquisitions across kills/Continue, isolates all other RNG and leaves input state intact', () => {
-    const state = createInfusionBattle('machines', 75, 1729, 'ember', { level: 105, evolution: 6 });
+    const state = createInfusionBattle('machines', machineRules.omnicStage + 4, 1729, 'ember', { level: 105, evolution: 6 });
     state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
     state.conduitSeed = 1;
     const first = attack(state, 'light');
@@ -267,7 +268,7 @@ describe('machine rewards and atomic saves', () => {
     expect(write).toHaveBeenCalledTimes(1);
     expect(account.conduits).toEqual(reward?.conduits);
     expect(account.receipts).toEqual(['machine-test:infusion-machines-26-0']);
-    expect(account.creatures['infusion:machines:1'].defeated).toBe(true);
+    expect(account.creatures[state.enemies[0].creatureId!].defeated).toBe(true);
     saveAccountRewards(saved, first, 'machine-test');
     expect(write).toHaveBeenCalledTimes(1);
     expect(encounterRewards(first.events).map((entry) => entry.id)).toEqual(lootItems(reward!).map((entry) => entry.id));
@@ -318,40 +319,40 @@ describe('machine rewards and atomic saves', () => {
   });
   it('preserves saved stage numbers and discovers/unlocks the expanded late stages without ending at35', () => {
     const saved = storage();
-    saveAccount(saved, { ...loadAccount(saved), infusionStages: { machines: 35, heavens: 35 },
+    saveAccount(saved, { ...loadAccount(saved), infusionStages: { machines: 35, heavens: infusionStageCount('heavens') },
       conduits: { 'infernic-phoenix-reactor': 1 }, conduitUpgrades: { 'infernic-phoenix-reactor': 5 } });
     const raw = saved.getItem(ACCOUNT_KEY);
     const write = vi.spyOn(saved, 'setItem');
-    expect(loadAccount(saved).infusionStages).toEqual({ machines: 35, heavens: 35 });
+    expect(loadAccount(saved).infusionStages).toEqual({ machines: 35, heavens: infusionStageCount('heavens') });
     expect(loadAccount(saved).conduitUpgrades).toEqual({ 'infernic-phoenix-reactor': 5 });
     expect(write).not.toHaveBeenCalled();
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     const progress = { level: 105, evolution: 6 };
-    for (const stage of [35, 74, 75, 99]) {
+    for (const stage of [35, machineRules.omnicStage - 1, machineRules.omnicStage, machineRules.stages - 1]) {
       const state = createInfusionBattle('machines', stage, 1, 'ember', progress);
       state.phase = 'cleared';
       expect(nextStage(state, progress).state.infusion?.stage).toBe(stage + 1);
       expect(battleResults(state, [])).toContain('data-result-continue');
       expect(saveAccountRewards(saved, { state, events: [] }, `clear-${stage}`).infusionStages.machines).toBe(stage + 1);
     }
-    const final = createInfusionBattle('machines', 100, 1, 'ember', progress);
+    const final = createInfusionBattle('machines', machineRules.stages, 1, 'ember', progress);
     final.phase = 'cleared';
     expect(() => nextStage(final, progress)).toThrow('Dungeon complete');
     expect(battleResults(final, [])).toContain('Activity complete');
     expect(battleResults(final, [])).not.toContain('data-result-continue');
-    expect(saveAccountRewards(saved, { state: final, events: [] }, 'final').infusionStages.machines).toBe(100);
+    expect(saveAccountRewards(saved, { state: final, events: [] }, 'final').infusionStages.machines).toBe(machineRules.stages);
     const markup = gameplayHub(loadAccount(saved));
-    expect(markup).toContain('<dd>100 stages</dd>');
+    expect(markup).toContain(`<dd>${machineRules.stages} stages</dd>`);
     expect(markup).toContain('<dd>10-120</dd>');
-    expect(markup).toContain('Omnic 1% from stage 75');
+    expect(markup).toContain(`Omnic 1% from stage ${machineRules.omnicStage}`);
     expect(plain(markup)).toContain('Every Machine drops Broken Mechanical Components for Conduit upgrades: 3 at stage 1');
-    expect(markup).toContain('increasing steadily to 125 at stage 100');
+    expect(markup).toContain(`increasing steadily to 125 at stage ${machineRules.stages}`);
     expect(markup).toContain('The final boss drops 625.');
-    expect(markup).toContain('value="100" selected');
-    expect(validateAccount({ ...loadAccount(saved), infusionStages: { machines: 100 } }).infusionStages.machines).toBe(100);
-    expect(() => validateAccount({ ...loadAccount(saved), infusionStages: { machines: 101 } })).toThrow('stage');
-    expect(infusionEncounter('heavens', 35).level).toBe(120);
-    expect(() => infusionEncounter('heavens', 36)).toThrow();
+    expect(markup).toContain(`value="${machineRules.stages}" selected`);
+    expect(validateAccount({ ...loadAccount(saved), infusionStages: { machines: machineRules.stages } }).infusionStages.machines).toBe(machineRules.stages);
+    expect(() => validateAccount({ ...loadAccount(saved), infusionStages: { machines: machineRules.stages + 1 } })).toThrow('stage');
+    expect(infusionEncounter('heavens', infusionStageCount('heavens')).level).toBe(120);
+    expect(() => infusionEncounter('heavens', infusionStageCount('heavens') + 1)).toThrow();
   });
   it.each(['standard', 'roses'])('saves %s main outcome, bonus, cost and pity together; fails atomically', (banner) => {
     const saved = storage();

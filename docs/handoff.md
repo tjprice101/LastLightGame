@@ -1,5 +1,15 @@
 # Current state and handoff
 
+## Shorter Machines/Heaven/Abyss and additive fodder (D-346)
+
+- `content/activities.ts`: `machineStageCount` 75, `infusionModeStageCount` 25,
+  `migrateLegacyActivityStage`; `evolutionRequirement().fodderValue` 3/8/15.
+  `content/infusions.ts` samples the 35-stage level anchors proportionally;
+  `machineRules.omnicStage` 56. Wallet v7 in `game/account.ts` migrates saved
+  unlocks and (`character-instances.ts` `migrateLegacyCapturedCopies`) captured
+  copies read-only. `fodderSelectionStatus` drives the value-based picker
+  (`hub.ts`) and `upgradeCharacter`. Server discards pre-v7 runs; bundle redeployed.
+
 ## Large focal battle sprites (D-345)
 
 - `presentation/battle-mono.css` sizes `.battle-art` from a larger arena-relative

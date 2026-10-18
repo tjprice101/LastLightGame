@@ -1,10 +1,15 @@
-import { elements, elementalDungeonRules, elementalEnemyLevel, infusionModes, currencyModes, materialRarities } from '../content/activities';
+import { elements, elementalDungeonRules, elementalEnemyLevel, infusionModes, currencyModes, materialRarities, infusionModeStageCount } from '../content/activities';
+/** Enemy level at the first Heaven/Abyss stage showing the given form tier. */
+function infusionFormLevel(tier: number): number {
+  for (let stage = 1; stage <= infusionModeStageCount; stage++) { const encounter = infusionEncounter('heavens', stage); if (encounter.tier === tier) return encounter.level; }
+  throw new Error('Missing Heaven form tier.');
+}
 import { assetUrl } from './portrait';
 import { dungeonArt, elementAccents } from '../content/dungeon-art';
 import { dungeonEncounter, isPlayableDungeon } from '../content/dungeons';
 import { emptyAccount, unlockedStage, unlockedWarStage, ownedCharacters, type Account } from '../game/account';
 import { treasuryPrismaticaText } from '../content/loot-random';
-import { infusionEnemyElements, treasurySalePrices, sanctuarySalePrices, specialtyMaterials } from '../content/infusions';
+import { infusionEnemyElements, treasurySalePrices, sanctuarySalePrices, specialtyMaterials, infusionEncounter } from '../content/infusions';
 import { elementLabel } from './element-label';
 import { information, informationTopics } from './information';
 import { itemShowcase } from './item-showcase';
@@ -79,9 +84,9 @@ function gameplayInformation(): string {
     { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, enemy levels ${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}.</p>
       <p>Materials match the dungeon's element. Quantities and rare chances increase with level. No captures or Null-Prismatica.</p>
       <p>Defeated Elemental-Devourer entries in Collections show exact stage drop tables.</p>` },
-    { id: 'infusion', title: 'Evolution infusion', summary: 'Evolution materials from Heaven and Abyss', content: `<p>Enemy levels 50-120. Form 3 begins at Lv.65, form 4 at Lv.75 and form 5 at Lv.85.</p>
+    { id: 'infusion', title: 'Evolution infusion', summary: 'Evolution materials from Heaven and Abyss', content: `<p>Enemy levels 50-120 across ${infusionModeStageCount} stages. Form 3 begins at Lv.${infusionFormLevel(2)}, form 4 at Lv.${infusionFormLevel(3)} and form 5 at Lv.${infusionFormLevel(4)}.</p>
       <p>Evolution and leveling materials unlock at Lv.75. Bonus Epic, Legendary and Omnic materials unlock at Lv.80, Lv.100 and Lv.115.</p>
-      <p>Null-Prismatica starts dropping at Lv.80: an 8% chance of 1, 1.5% of 2, and 0.5% of 3. By Lv.120, these chances rise steadily to 10%, 10% and 5%. The stage 35 boss gives 5, 10 or 15 instead, at the same chances.</p>
+      <p>Null-Prismatica starts dropping at Lv.80: an 8% chance of 1, 1.5% of 2, and 0.5% of 3. By Lv.120, these chances rise steadily to 10%, 10% and 5%. The stage ${infusionModeStageCount} boss gives 5, 10 or 15 instead, at the same chances.</p>
       <p>Each enemy has a separate 20% capture chance. Captured copies keep their form and skills, at up to Lv.60.</p>
       ${infusionModes.map((mode) => `<p><strong>${mode.name}</strong> - Enemy element: ${elementLabel(infusionEnemyElements[mode.id])}.
         Materials: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</p>`).join('')}` },

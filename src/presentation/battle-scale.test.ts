@@ -5,6 +5,7 @@ import { playableDungeons } from '../content/dungeons';
 import { battleArtScale, enemyArtworkScales } from './battle-scale';
 import { creatures } from '../content/creatures';
 import { starters } from '../content/starters';
+import { infusionModeStageCount } from '../content/activities';
 
 describe('battlefield visual rank', () => {
   it('uses the same compact body baseline and bounded ensemble growth for every character', () => {
@@ -36,16 +37,16 @@ describe('battlefield visual rank', () => {
   });
   it.each(['heavens', 'abyss'] as const)('%s follows artwork rather than inflating the same design on boss stages', (mode) => {
     let previous = 0;
-    for (const stage of [1, 7, 13, 19, 26, 31]) {
+    for (const stage of Array.from({ length: 6 }, (_, tier) => Math.ceil(tier * infusionModeStageCount / 6) + 1)) {
       const state = createInfusionBattle(mode, stage, 1729, 'ember', { level: 0, evolution: 1 });
       const scale = battleArtScale(state, state.enemies[0]);
       expect(scale).toBeGreaterThanOrEqual(previous);
       expect(scale).toBe(enemyArtworkScales.get(state.enemies[0].art!));
       previous = scale;
     }
-    const boss = createInfusionBattle(mode, 35, 1729, 'ember', { level: 0, evolution: 1 });
+    const boss = createInfusionBattle(mode, infusionModeStageCount, 1729, 'ember', { level: 0, evolution: 1 });
     expect(battleArtScale(boss, boss.enemies[0])).toBe(1.75);
-    const ordinary = createInfusionBattle(mode, 34, 1729, 'ember', { level: 0, evolution: 1 });
+    const ordinary = createInfusionBattle(mode, infusionModeStageCount - 1, 1729, 'ember', { level: 0, evolution: 1 });
     expect(ordinary.enemies[0].art).toBe(boss.enemies[0].art);
     expect(battleArtScale(ordinary, ordinary.enemies[0])).toBe(battleArtScale(boss, boss.enemies[0]));
   });

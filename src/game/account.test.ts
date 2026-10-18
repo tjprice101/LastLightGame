@@ -1,3 +1,7 @@
+import { infusionStageCount } from '../content/activities';
+import { getCreature } from '../content/creatures';
+import { infusionEncounter, legacyInfusionEnemyLevel } from '../content/infusions';
+import { enemyAbilityMultiplier, enemySkills } from '../content/enemy-skills';
 import { describe, expect, it } from 'vitest';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, ownedProgress, saveAccount, saveAccountRewards, unlockedStage, upgradeCharacter, validateAccount } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
@@ -52,17 +56,66 @@ describe('persistent progression transactions', () => {
     const raw = JSON.stringify(legacy);
     saved.setItem(ACCOUNT_KEY, raw);
     const migrated = loadAccount(saved);
-    expect(migrated.version).toBe(6);
+    expect(migrated.version).toBe(7);
     expect(migrated.dungeonStages).toEqual({ infernic: 1, oceanic: 12, atmospheric: 35, tranquilitic: 35 });
-    expect(migrated.infusionStages).toEqual({ heavens: 18, abyss: 35 });
+    expect(migrated.infusionStages).toEqual({ heavens: 13, abyss: 25 });
     for (const field of ['fractalis', 'lycalis', 'firstFracture', 'materials', 'characters', 'creatures', 'receipts'] as const) {
       expect(migrated[field]).toEqual(legacy[field]);
     }
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     saveAccount(saved, migrated);
     expect(loadAccount(saved)).toEqual(migrated);
-    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(6);
+    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(7);
     expect(validateAccount({ ...legacy, infusionStages: { heavens: 1 } }).infusionStages).toEqual({ heavens: 1 });
+  });
+  it('migrates v6 resized activity unlocks read-only and persists v7 in the first transaction', () => {
+    const saved = storage();
+    const legacy = { ...emptyAccount(), version: 6, fractalis: 100,
+      materials: { 'infernic-common': 1 }, infusionStages: { heavens: 35, abyss: 18, machines: 100 } };
+    const raw = JSON.stringify(legacy);
+    saved.setItem(ACCOUNT_KEY, raw);
+    let writes = 0;
+    const write = saved.setItem;
+    saved.setItem = (key, value) => { writes++; write(key, value); };
+    const loaded = loadAccount(saved);
+    expect(loaded.version).toBe(7);
+    expect(loaded.infusionStages).toEqual({ heavens: 25, abyss: 13, machines: 75 });
+    expect(writes).toBe(0);
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
+    const upgraded = upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 });
+    expect(writes).toBe(1);
+    expect(upgraded.characters.ember).toMatchObject({ level: 1, evolution: 1 });
+    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!)).toMatchObject({ version: 7, infusionStages: loaded.infusionStages });
+    expect(loadAccount(saved)).toEqual(upgraded);
+    expect(writes).toBe(1);
+  });
+  it('keeps a v2 Heaven unlock on its original 25-stage layout without a load write', () => {
+    const saved = storage();
+    const raw = JSON.stringify({ ...emptyAccount(), version: 2, infusionStages: { heavens: 18 } });
+    saved.setItem(ACCOUNT_KEY, raw);
+    expect(loadAccount(saved).infusionStages).toEqual({ heavens: 18 });
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
+  });
+  it('re-homes a v6 Heaven stage-30 capture onto the same current form without lowering its level', () => {
+    const saved = storage();
+    const creature = getCreature('infusion:heavens:4');
+    const oldLevel = legacyInfusionEnemyLevel(30);
+    const copy = { instanceId: 'capture:00000000-0000-4000-8000-000000000030',
+      creatureId: creature.id, locked: true, capturedStage: 30, level: 60,
+      skills: enemySkills(oldLevel, true, 'Scarlet Judgment', enemyAbilityMultiplier(oldLevel)) };
+    const raw = JSON.stringify({ ...emptyAccount(), version: 6, capturedCharacters: [copy] });
+    saved.setItem(ACCOUNT_KEY, raw);
+    const loaded = loadAccount(saved);
+    const migrated = loaded.capturedCharacters![0];
+    expect(migrated).toMatchObject({ instanceId: copy.instanceId, creatureId: copy.creatureId, locked: true });
+    expect(migrated.level).toBeGreaterThanOrEqual(copy.level);
+    expect(creature.stages).toContain(migrated.capturedStage);
+    expect(migrated.capturedStage).toBeLessThanOrEqual(infusionStageCount('heavens'));
+    const encounter = infusionEncounter('heavens', migrated.capturedStage!);
+    expect(encounter.boss).toBe(true);
+    expect(migrated.skills).toEqual(enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier));
+    expect(validateAccount(loaded)).toEqual(loaded);
+    expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
   });
   it('rejects invalid legacy and current floors without overwriting the save', () => {
     const saved = storage();

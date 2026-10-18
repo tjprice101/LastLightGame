@@ -9,7 +9,7 @@ import { abilityIcon } from './ability-icon';
 import { getElement, type ElementId } from '../content/activities';
 import { uiIcon } from './ui-icon';
 import { materialArt, materialName } from '../content/dungeon-art';
-import { emptyAccount, ownedProgress, equippedSquad, ownedCharacters, evolutionFodderOptions, type Account } from '../game/account';
+import { emptyAccount, ownedProgress, equippedSquad, ownedCharacters, evolutionFodderOptions, fodderSelectionStatus, type Account } from '../game/account';
 import { characterName } from '../content/character-art';
 import { characterRole } from './character-role';
 import { currencyIcon } from './currency-icon';
@@ -227,31 +227,31 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
     })];
   const reason = evolve && current.level !== cap ? `Reach Lv.${cap} to evolve.` : resources.some((resource) => resource.owned < resource.needed) ? 'Insufficient resources.' : '';
   const requirement = evolve ? characterEvolutionRequirement(starter.id, current.evolution) : null;
-  const options = requirement?.creatureCount ? evolutionFodderOptions(account, element.id, current.evolution, starter.id) : [];
-  const count = requirement?.creatureCount ?? 0;
+  const options = requirement?.fodderValue ? evolutionFodderOptions(account, element.id, current.evolution, starter.id) : [];
+  const count = requirement?.fodderValue ?? 0;
   const modeName = requirement?.infusion === 'roses' ? 'Passion of Crimson Roses' : element.infusion === 'heavens' ? 'Soar to Heaven' : 'Delve into the Abyss';
   const eligibleCount = options.filter((entry) => entry.eligible).length;
-  const missing = count - eligibleCount;
-  const accepted = requirement?.infusion ? acceptedFodderNames(requirement.infusion, requirement.minimumCreatureForm ?? 1) : '';
+  const missing = count - options.reduce((sum, entry) => sum + (entry.eligible ? entry.value : 0), 0);
+  const accepted = requirement?.infusion ? acceptedFodderValues(requirement.infusion) : '';
   const shown = options.filter((entry) => entry.creature.mode === requirement?.infusion);
   const expandedSelection = organized && count > 0;
-  const selection = count ? `<fieldset class="evolution-fodder" data-selection-state="incomplete" style="--element:${starter.color}"><legend>Elemental-Devourers to consume · Choose ${count}</legend>
-    <p>Choose ${count} captured ${count === 1 ? 'Elemental-Devourer' : 'Elemental-Devourers'} from [${modeName}]: ${accepted}.</p>
-    <div class="evolution-fodder-progress"><meter data-fodder-progress min="0" max="${count}" value="0" aria-label="Chosen Elemental-Devourers"></meter>
-    <p data-fodder-status data-eligible-count="${eligibleCount}" role="status">0 / ${count} chosen · ${eligibleCount} available</p></div>
+  const selection = count ? `<fieldset class="evolution-fodder" data-selection-state="incomplete" style="--element:${starter.color}"><legend>Elemental-Devourers to consume · ${count} Evolution Value</legend>
+    <p>Choose captured Elemental-Devourers from [${modeName}] adding up to ${count} Evolution Value. Each is worth its form: ${accepted}. Any mix works, such as one stronger Elemental-Devourer or several weaker ones.</p>
+    <div class="evolution-fodder-progress"><meter data-fodder-progress min="0" max="${count}" value="0" aria-label="Chosen Evolution Value"></meter>
+    <p data-fodder-status data-eligible-count="${eligibleCount}" role="status">0 / ${count} value chosen · ${eligibleCount} available</p></div>
     <p class="evolution-fodder-warning">Chosen Elemental-Devourers are permanently consumed when you confirm the evolution.</p>
-    ${missing > 0 ? `<p class="evolution-fodder-empty">You need ${missing} more. Capture ${missing === 1 ? 'one' : 'them'} in [${modeName}]. Locked, squad and Conduit-equipped Elemental-Devourers can't be used until they are unlocked, removed from your squad and have their Conduits unequipped.</p>` : ''}
-    <div class="evolution-fodder-list">${shown.length ? [...shown].sort((a, b) => Number(b.eligible) - Number(a.eligible)).map(({ copy, creature, reasons, eligible }) =>
-      `<label class="evolution-fodder-copy"><input type="checkbox" data-evolution-fodder="${copy.instanceId}" ${!eligible ? 'disabled' : ''}>
+    ${missing > 0 ? `<p class="evolution-fodder-empty">You need ${missing} more Evolution Value. Capture more in [${modeName}]. Locked, squad and Conduit-equipped Elemental-Devourers can't be used until they are unlocked, removed from your squad and have their Conduits unequipped.</p>` : ''}
+    <div class="evolution-fodder-list">${shown.length ? [...shown].sort((a, b) => Number(b.eligible) - Number(a.eligible)).map(({ copy, creature, reasons, eligible, value }) =>
+      `<label class="evolution-fodder-copy"><input type="checkbox" data-evolution-fodder="${copy.instanceId}" data-fodder-value="${value}" ${!eligible ? 'disabled' : ''}>
       ${creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="96" height="96">` : ''}
-      <span class="evolution-fodder-info"><strong>${creature.name}</strong><small>Lv.${capturedProgress(copy).level}</small>${capturedRating(creature.id)}<small class="evolution-fodder-reason">${eligible ? 'Available' : reasons.join(' · ')}</small>
+      <span class="evolution-fodder-info"><strong>${creature.name}</strong><small>Lv.${capturedProgress(copy).level} · Value ${value}</small>${capturedRating(creature.id)}<small class="evolution-fodder-reason">${eligible ? 'Available' : reasons.join(' · ')}</small>
       <span class="evolution-fodder-state">${eligible ? '<span class="fodder-unselected">Choose</span><span class="fodder-selected">Chosen</span>' : 'Unavailable'}</span></span></label>`).join('') : `<p>No Elemental-Devourers from [${modeName}] captured yet.</p>`}</div>
     </fieldset>` : '';
   if (compact) return `<p class="ref-growth-summary">${evolve ? `Evo.${current.evolution} → ${next.evolution} · Level cap ${characterLevelCap(next.evolution)}` : `Lv.${current.level} → ${next.level} · Cap ${cap}`}</p>
     <p class="ref-growth-cost">${currencyIcon('fractalis')}${cost.fractalis} Prismatica</p>
     <ul class="ref-growth-materials">${resources.slice(1).map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<span>${resource.needed} ${resource.name}<small>Owned ${resource.owned}</small></span></li>`).join('')}</ul>
     <section class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Stat preview</h3><div>${(['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).map(key => `<div><small>${({ health: 'Health', defense: 'Defense', damage: 'Attack', crit: 'Critical Rate', critMultiplier: 'Critical Damage', shatterCapacity: 'Shatter Capacity', elementalDamage: 'Elemental Damage' })[key]}</small>${statChange(before[key], after[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '')}</div>`).join('')}</div></section>
-    ${selection}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-count="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
+    ${selection}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-value-required="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
     ${!evolve ? `<button class="ref-link" data-max-level="${starter.id}">Max Level</button>` : ''}<p class="quiet">${reason}</p>`;
   return `${organized ? '' : `<p class="upgrade-progress">Lv.${current.level} / ${cap} &middot; Evo.${current.evolution} / ${characterGrowth.forms}</p>`}
     <div class="character-upgrade-grid"><section class="character-category upgrade-benefits">${organized ? `<div class="ref-growth-preview"><h3 class="ref-growth-preview-heading">${evolve ? 'Stat &amp; form preview' : 'Level &amp; stat preview'}</h3>` : ''}${organized ? '' : `<h3>${evolve ? 'Evolution preview' : 'Level preview'}</h3>`}
@@ -262,7 +262,7 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
     ${organized ? '</div>' : ''}</section><section class="character-category upgrade-payment"><h3>Required resources${organized ? ' <small class="resource-key">Owned / Required</small>' : ''}</h3>${organized ? '' : '<p class="resource-key">Owned / Required</p>'}
     <ul class="upgrade-resources">${resources.map((resource) => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${resource.name}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>
     ${evolve && !account.firstFracture ? `<p class="currency-reward">${currencyIcon('lycalis')}<span>First Fracture reward: +10 Null-Prismatica.</span></p>` : ''}
-    ${expandedSelection ? '</section></div>' : ''}${selection}${organized ? `<div class="ref-growth-action${evolve ? ' ref-evolution-action' : ''}">` : ''}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-count="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
+    ${expandedSelection ? '</section></div>' : ''}${selection}${organized ? `<div class="ref-growth-action${evolve ? ' ref-evolution-action' : ''}">` : ''}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-value-required="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
     ${!evolve ? `<button class="text-button" type="button" data-max-level="${starter.id}">Max Level</button>` : ''}
     <p class="quiet">${reason}</p>${organized ? '</div>' : ''}
     ${result ? '<p id="upgrade-result" role="status"></p>' : ''}${expandedSelection ? '' : '</section></div>'}`;
@@ -274,19 +274,19 @@ export function updateEvolutionSelection(host: HTMLElement): void {
   const progress = host.querySelector<HTMLMeterElement>('[data-fodder-progress]');
   const fieldset = host.querySelector<HTMLElement>('.evolution-fodder');
   if (!button || !status || !progress || !fieldset) throw new Error('Evolution selection controls are missing.');
-  const selected = fieldset.querySelectorAll('[data-evolution-fodder]:checked').length;
-  const required = Number(button.dataset.fodderCount);
-  button.disabled = button.dataset.upgradeBlocked === 'true' || selected !== required;
-  progress.value = Math.min(selected, required);
-  fieldset.dataset.selectionState = selected > required ? 'excess' : selected === required ? 'complete' : 'incomplete';
-  status.textContent = `${selected} / ${required} chosen · ${status.dataset.eligibleCount} available${selected > required ? ' · Choose fewer Elemental-Devourers' : selected === required ? ' · Ready to evolve' : ''}`;
+  const values = Array.from(fieldset.querySelectorAll<HTMLInputElement>('[data-evolution-fodder]:checked'), (input) => Number(input.dataset.fodderValue));
+  const { total, required, surplus, ready } = fodderSelectionStatus(values, Number(button.dataset.fodderValueRequired));
+  button.disabled = button.dataset.upgradeBlocked === 'true' || !ready;
+  progress.value = Math.min(total, required);
+  fieldset.dataset.selectionState = surplus ? 'excess' : ready ? 'complete' : 'incomplete';
+  status.textContent = `${total} / ${required} value chosen · ${status.dataset.eligibleCount} available${surplus ? ' · Remove extra Elemental-Devourers' : ready ? ' · Ready to evolve' : ''}`;
 }
 
-function acceptedFodderNames(mode: string, minimumForm: number): string {
-  const names = [1, 2, 3, 4, 5, 6].filter((form) => form >= minimumForm)
-    .map((form) => creatures.find((creature) => creature.id === `infusion:${mode}:${form - 1}`)?.name)
-    .filter((name): name is string => !!name).map((name) => `[${name}]`);
-  return names.length > 1 ? `${names.slice(0, -1).join(', ')} or ${names.at(-1)}` : names[0] ?? '';
+function acceptedFodderValues(mode: string): string {
+  return [1, 2, 3, 4, 5, 6].map((form) => {
+    const name = creatures.find((creature) => creature.id === `infusion:${mode}:${form - 1}`)?.name;
+    return name ? `[${name}] ${form}` : '';
+  }).filter(Boolean).join(', ');
 }
 
 export function characterInformation(): string {
@@ -301,7 +301,8 @@ export function characterInformation(): string {
     <p>Core growth: 1 + 0.15 &times; level + 1.5 &times; (evolution - 1). Defense uses core growth^0.7; percentage potency grows separately.
     Base Gauge gains, skill costs, cooldowns and durations do not scale with levels. Equipped Conduits may modify them as stated in their rules.
     Ability potency increases with levels and evolution; there are no separate ability upgrades.</p>
-    <h3>Evolution fodder</h3><p>Evo.3→4 consumes 1 form 3+ Elemental-Devourer; Evo.4→5 consumes 2 form 4+; Evo.5→6 consumes 3 form 5+.
+    <h3>Evolution fodder</h3><p>Late evolutions consume Elemental-Devourers by Evolution Value: Evo.3→4 needs 3, Evo.4→5 needs 8 and Evo.5→6 needs 15.
+    Each Elemental-Devourer is worth its form (first form 1 through sixth form 6), so one stronger copy or several weaker ones can be combined. Extra copies beyond the requirement can't be added.
     Copies must match the element's infusion mode and be explicitly selected. Rosetta, Thornia and Crinso instead require Roselius from Passion of Crimson Roses. Consumption is permanent.</p>
     <h3>Rose event growth</h3><p>Rosetta, Thornia and Crinso use Rosethorn materials instead of ordinary elemental and specialty materials.
     Seed stacks pay for levels; Evo.5–6 levels also use Soul. Late evolutions also use Soul and selected Roselius.

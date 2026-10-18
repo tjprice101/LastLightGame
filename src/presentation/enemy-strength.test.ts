@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from 'vitest';
 import { emptyAccount } from '../game/account';
-import { elements } from '../content/activities';
+import { elements, infusionModeStageCount, machineStageCount } from '../content/activities';
 import { dungeonEncounter, isPlayableDungeon } from '../content/dungeons';
 import { infusionEncounter, isInfusionMode } from '../content/infusions';
 import { isWarCharacter, warEncounter } from '../content/elemental-war';
@@ -95,7 +95,7 @@ describe('visible enemy strength', () => {
     const account = emptyAccount();
     account.characters.ember = { level: 105, evolution: 6 };
     account.dungeonStages = Object.fromEntries(elements.map(element => [element.id, 35]));
-    account.infusionStages = { heavens: 35, abyss: 35, treasury: 25, sanctuary: 25, machines: 100, roses: 35 };
+    account.infusionStages = { heavens: infusionModeStageCount, abyss: infusionModeStageCount, treasury: 25, sanctuary: 25, machines: machineStageCount, roses: 35 };
     account.warStages = { nerithe: 10, orvella: 10, vaelor: 10 };
     const before = structuredClone(account);
     document.body.innerHTML = gameplayHub(account);
@@ -120,7 +120,7 @@ describe('visible enemy strength', () => {
     }
     document.querySelector<HTMLButtonElement>('#difficulty-heavens-calamity-tab')!.click();
     document.querySelector<HTMLButtonElement>('#difficulty-heavens-normal-tab')!.click();
-    expectStats(document.querySelector('#difficulty-heavens-normal [data-enemy-strength]')!, infusionEncounter('heavens', 35));
+    expectStats(document.querySelector('#difficulty-heavens-normal [data-enemy-strength]')!, infusionEncounter('heavens', infusionModeStageCount));
     for (const activity of calamityActivities) {
       const panel = document.querySelector(`[data-activity-difficulty="${activity.id}"] [data-difficulty-panel="calamity"]`)!;
       for (const tier of [1, 2, 3] as const) {

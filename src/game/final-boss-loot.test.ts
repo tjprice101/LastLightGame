@@ -36,7 +36,7 @@ function storage(storyCompleted: number = storyRules.stages, fractalis = 0) {
   const saved: ProfileStorage = { getItem: key => values.get(key) ?? null,
     setItem: (key, value) => { values.set(key, value); }, removeItem: key => { values.delete(key); } };
   saveAccount(saved, { ...emptyAccount(), storyCompleted, fractalis,
-    infusionStages: { machines: 100 }, warStages: { nerithe: 10, orvella: 10, vaelor: 10 } });
+    infusionStages: { machines: infusionStageCount('machines') }, warStages: { nerithe: 10, orvella: 10, vaelor: 10 } });
   return saved;
 }
 
@@ -169,7 +169,7 @@ describe('repeatable final-boss 5x quantity contract', () => {
   });
 
   it('preserves the complete wallet on boosted reward overflow or denied persistence', () => {
-    const result = clear(createInfusionBattle('machines', 100, 1729, 'ember', progress));
+    const result = clear(createInfusionBattle('machines', infusionStageCount('machines'), 1729, 'ember', progress));
     const overflow = storage(storyRules.stages, Number.MAX_SAFE_INTEGER);
     const raw = overflow.getItem(ACCOUNT_KEY);
     expect(() => saveAccountRewards(overflow, result, 'overflow')).toThrow();
