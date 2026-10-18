@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig, type Plugin } from 'vite';
 
 const buildId = process.env.GITHUB_SHA ?? `local-${Date.now()}`;
@@ -17,6 +18,8 @@ export default defineConfig({
   base: '/LastLightGame/',
   define: { __BUILD_ID__: JSON.stringify(buildId) },
   plugins: [buildVersion()],
+  // Unit tests assert canonical PNG art URLs; image-format.test.ts covers the AVIF runtime swap.
+  test: { setupFiles: ['src/test-setup.ts'] },
   build: {
     target: 'es2022',
     rollupOptions: {

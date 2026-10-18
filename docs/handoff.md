@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Compressed art and quieter image loading (D-341)
+
+- All 705 runtime PNGs have committed AVIF siblings (q90 4:4:4) plus 384px
+  thumbnails for character/enemy/profile art: 322.6 MB -> 94.3 MB (+19 MB
+  thumbs). `assetUrl` serves AVIF; PNGs remain canonical and the fallback.
+- `artwork-loading.ts`: silent AVIF->PNG fallback, one automatic retry, then
+  the Retry button; lazy portraits get a thumbnail `srcset`. The image-error
+  toast in `main.ts` is removed.
+- Art intakes must run `npm run art:avif` and commit outputs; the freshness
+  test in `image-format.test.ts` enforces it. See
+  [art workflow](art-workflow.md#compressed-avif-runtime-art-d-341).
+- Verified: headless Chrome home screen loads 0 broken images with AVIF and
+  with AVIF blocked (PNG fallback); 1.09 MB vs 3.6 MB transferred.
+
 ## Friend profiles, 18-stage Story and faster battles (D-340)
 
 - Friends: `public.friend_profile` (migration 20261013000000) returns a friend's

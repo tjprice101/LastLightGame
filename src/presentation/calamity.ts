@@ -9,6 +9,7 @@ import { getConduit, isConduitId } from '../content/conduits';
 import { type RewardPresentation } from './reward-screen';
 import { calamityBossArt, calamityChestArt, calamityArenaArt } from '../content/calamity-art';
 import { assetUrl } from './portrait';
+import { pngFallback } from './image-format';
 import './calamity.css';
 import { enemyStrength } from './enemy-strength';
 import { currencyIcon } from './currency-icon';
@@ -59,7 +60,11 @@ export function bindActivityDifficulties(host: HTMLElement): void {
   host.querySelectorAll<HTMLImageElement>('.calamity-tier-boss').forEach(image => {
     const scene = image.closest<HTMLElement>('.calamity-tier-scene')!;
     const error = scene.querySelector<HTMLElement>('[data-calamity-art-error]')!;
-    const showError = (): void => { error.hidden = false; image.hidden = true; };
+    const showError = (): void => {
+      const fallback = pngFallback(image.getAttribute('src') ?? '');
+      if (fallback) { image.src = fallback; return; }
+      error.hidden = false; image.hidden = true;
+    };
     image.addEventListener('error', showError);
     image.addEventListener('load', () => { error.hidden = true; image.hidden = false; });
     if (image.complete && !image.naturalWidth) showError();

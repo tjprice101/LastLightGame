@@ -1,0 +1,3827 @@
+{
+ "version": 1,
+ "settings": {
+  "quality": 90,
+  "chromaSubsampling": "4:4:4",
+  "effort": 6
+ },
+ "thumbWidth": 384,
+ "files": {
+  "abilities/atmoso-defend.png": {
+   "source": "3bddbe0004cf1b075ba4619e518d06f5f9dfd75a883caec73146ada46d45e0f3",
+   "bytes": 61118,
+   "avif": 29307
+  },
+  "abilities/atmoso-light.png": {
+   "source": "e331772432916bec52f6bf19bcdf35d20229d4f701c4d95b839722f8feaa5738",
+   "bytes": 44359,
+   "avif": 26194
+  },
+  "abilities/atmoso-passive.png": {
+   "source": "384e6b0c97ff6e064f05bc1e99fa3460bc24d62acf45cf96f01465d7ceb514ee",
+   "bytes": 85395,
+   "avif": 23723
+  },
+  "abilities/atmoso-skill1.png": {
+   "source": "aac470cb81b305c1bb9f8d9485879c0c8f56f7613eb5348ac4f95ef3a3203bd4",
+   "bytes": 66773,
+   "avif": 44245
+  },
+  "abilities/atmoso-skill2.png": {
+   "source": "5af101ca08ae62423de668d4b896286d5af65f7024a422804607476bb46f0034",
+   "bytes": 55291,
+   "avif": 27933
+  },
+  "abilities/atmoso-ultimate.png": {
+   "source": "421d1d9dd33e8d2e5e04da5d5b9741fc0354adb5eff71f2040387ab401204d4c",
+   "bytes": 69369,
+   "avif": 28763
+  },
+  "abilities/aurora-defend.png": {
+   "source": "ad3c894d72ae5b162aacd7ccec66b677968fb4eac455362a6cbd17de66ee7047",
+   "bytes": 81547,
+   "avif": 28366
+  },
+  "abilities/aurora-light.png": {
+   "source": "0d92d6dc56d400a5fe92f06888f4f7ffd614c78868e4651564c6dc016f5e928c",
+   "bytes": 69592,
+   "avif": 31612
+  },
+  "abilities/aurora-passive.png": {
+   "source": "e92b4fa1cf5c5f5696f90140ad36286cf3975ab673d6f0a4f4e0522e66341583",
+   "bytes": 88386,
+   "avif": 47559
+  },
+  "abilities/aurora-skill1.png": {
+   "source": "e7c1e0901ce5690fc2a81f272f72aefb2670115876429cbcc9962747dfcace96",
+   "bytes": 64278,
+   "avif": 27278
+  },
+  "abilities/aurora-skill2.png": {
+   "source": "401402f8af559d0851f59c98f146523cd1f82fcb87832bd9a0f4ca5ddf8b1dda",
+   "bytes": 72257,
+   "avif": 37646
+  },
+  "abilities/aurora-ultimate.png": {
+   "source": "480e669f8f714d09865294a3de989c580a0d90b77d07fd1d3aa29ae158a1b2d8",
+   "bytes": 85840,
+   "avif": 43017
+  },
+  "abilities/bliss-defend.png": {
+   "source": "83f8a0bd60a1f63b6f77c77a17e8a5c837ae6ebab17d0db6be0190b4b33721c4",
+   "bytes": 67462,
+   "avif": 33956
+  },
+  "abilities/bliss-light.png": {
+   "source": "b5c594f888a3b87e6005c0e606fc2f493bfa2d2948be170bec813f16ed705fde",
+   "bytes": 73038,
+   "avif": 29920
+  },
+  "abilities/bliss-passive.png": {
+   "source": "034fb691d6ca2fd2c8075e242868ab32527a50d59ac3d857205aa90478dd436f",
+   "bytes": 66541,
+   "avif": 29820
+  },
+  "abilities/bliss-skill1.png": {
+   "source": "3d8d10f3f3acef38115292319014076045ed30e4838087c0b9dc0d83f07604ae",
+   "bytes": 64456,
+   "avif": 35944
+  },
+  "abilities/bliss-skill2.png": {
+   "source": "022e3bc83ec088b24098d9c7f2f8ab977d942e7a0f775e80be76bc70bc3a112b",
+   "bytes": 91245,
+   "avif": 30111
+  },
+  "abilities/bliss-ultimate.png": {
+   "source": "d611ac5cd144ff12b18d0216ee1c65ca700c68572fd80ffb5169f0c18a3a3cdb",
+   "bytes": 79006,
+   "avif": 50143
+  },
+  "abilities/bruno-defend.png": {
+   "source": "d8658e0fe7c1f99fc6cf6ff4280ebab36b98a025026516a8532c8372af74ac42",
+   "bytes": 73883,
+   "avif": 25919
+  },
+  "abilities/bruno-light.png": {
+   "source": "5a36416c9c51b806c17af9f07cea797d32169977a0b046aac37ba832c0a9884d",
+   "bytes": 68733,
+   "avif": 37190
+  },
+  "abilities/bruno-passive.png": {
+   "source": "73e55bf5bac1be86dc461db130a1bdae5f79549f31d423ae9a698c0fc507c9a9",
+   "bytes": 81836,
+   "avif": 26126
+  },
+  "abilities/bruno-skill1.png": {
+   "source": "67be1c384b48b18927f98e77ca0d4553799b90e9223d116d1744b8daed2c3dd7",
+   "bytes": 53057,
+   "avif": 23692
+  },
+  "abilities/bruno-skill2.png": {
+   "source": "13d8db2efa83a61690d4b4af08b856b14560baf87b2c77b488b24696c0f9c917",
+   "bytes": 87327,
+   "avif": 30920
+  },
+  "abilities/bruno-ultimate.png": {
+   "source": "399d280b0665ea261173b9006c047c93bac66c3d20b834bc6bd459ae955783df",
+   "bytes": 65747,
+   "avif": 33056
+  },
+  "abilities/crinso-defend.png": {
+   "source": "e99c2f4f6912c679d1a8e8c335bd47226e4578687d777c02452bf7d0bc8fe907",
+   "bytes": 93782,
+   "avif": 41000
+  },
+  "abilities/crinso-light.png": {
+   "source": "264a45b18c6bd0645fea6febe88612cf4cebebaefb80c264d16c7bceef8fdd1f",
+   "bytes": 50073,
+   "avif": 30909
+  },
+  "abilities/crinso-passive.png": {
+   "source": "301bf150145c5c0435774657b90e68a9be77ef7462b377a407b4a6c631f04032",
+   "bytes": 85628,
+   "avif": 30962
+  },
+  "abilities/crinso-skill1.png": {
+   "source": "06b37ffd98f1d2fd45dbb4792bb60684bb691a21ddb662cc4d8bd7a5877c275f",
+   "bytes": 66188,
+   "avif": 37822
+  },
+  "abilities/crinso-skill2.png": {
+   "source": "3f0a1401bde7d541d029507b6a73f5bdb7029ee3b98981b7a301a57b6cbb4548",
+   "bytes": 91337,
+   "avif": 41609
+  },
+  "abilities/crinso-ultimate.png": {
+   "source": "ea81ced292931c474f15a746dcfa64981f83639e0cbe689a4cd4e5047d00e97d",
+   "bytes": 106488,
+   "avif": 57161
+  },
+  "abilities/disciple-defend.png": {
+   "source": "b188a3a0d10ec84a4f325ec2e6e9d5d6ceae688399a1c91ee0434fe39ad547b8",
+   "bytes": 89259,
+   "avif": 34718
+  },
+  "abilities/disciple-light.png": {
+   "source": "f9e0113a4ac05e8312ab84c2864d1eafac96053f4f09f4e5ce89b504cbc2a33c",
+   "bytes": 55423,
+   "avif": 30251
+  },
+  "abilities/disciple-passive.png": {
+   "source": "a25365906dff65a12c9e40da83d94b8c7a5fbc5862fa45b27238187ddae91169",
+   "bytes": 60497,
+   "avif": 30619
+  },
+  "abilities/disciple-skill1.png": {
+   "source": "83a1361a623070316db2365bb66fe7dc890a6ee1dcea0fdf91ab5597618f9a3a",
+   "bytes": 64754,
+   "avif": 28331
+  },
+  "abilities/disciple-skill2.png": {
+   "source": "a13ed1fc9f16a4a41376535a3f0f155295943736fcac7d91d023607fafb5a6e3",
+   "bytes": 70017,
+   "avif": 28333
+  },
+  "abilities/disciple-ultimate.png": {
+   "source": "98a875f5c937dbc42bae95d39ac4e7a3cf7ab58fa12850107356cefed09d59d9",
+   "bytes": 74351,
+   "avif": 35774
+  },
+  "abilities/elise-defend.png": {
+   "source": "4c423dd2ca0133e0e5fecda8ebba66ff9c2f7c536ea0497d858bac1b5666219d",
+   "bytes": 85066,
+   "avif": 47199
+  },
+  "abilities/elise-light.png": {
+   "source": "68b9b803cfa9687e4db0677e34deb7108fe99f1eff20bb26fbfc0afcfc0263b8",
+   "bytes": 90599,
+   "avif": 47787
+  },
+  "abilities/elise-passive.png": {
+   "source": "f193f3b8fb37e0d7c0469fa9951ac42f6f1e6947ab6e2d0a322f3e434e8bd1db",
+   "bytes": 81890,
+   "avif": 44415
+  },
+  "abilities/elise-skill1.png": {
+   "source": "339bc9fe4001ef0b537481a0992a9dde43ff7e29607a5c561b4377c519d13f48",
+   "bytes": 89299,
+   "avif": 49123
+  },
+  "abilities/elise-skill2.png": {
+   "source": "18a6b8d395dbe7e8f88155d051210a7120cff89da0ed7e745d85a60cd6dacfbf",
+   "bytes": 78078,
+   "avif": 47463
+  },
+  "abilities/elise-ultimate.png": {
+   "source": "19a7156a0019b443311a5389b33f4137a0d46261c09d9872d52e3abf30992216",
+   "bytes": 84057,
+   "avif": 42281
+  },
+  "abilities/flora-briar-shot.png": {
+   "source": "a68806e46362dc80bcdd57bbdb88dd4fc11e851e1f30cf1280812ac67ffb1140",
+   "bytes": 61966,
+   "avif": 35817
+  },
+  "abilities/flora-last-flare-worldseed.png": {
+   "source": "f93bf1f75616ca269d08c631da8d2f16d83a70c77879950e033f924575b60e74",
+   "bytes": 96035,
+   "avif": 55920
+  },
+  "abilities/flora-normal-attack.png": {
+   "source": "33c4a10b350cd61efb7bdea2a115705a3f7036c05c45ac31ca480c3375d277d7",
+   "bytes": 48282,
+   "avif": 27972
+  },
+  "abilities/flora-root-of-hope.png": {
+   "source": "8dbc0f79a43a98956a18a45b8822c0a667a9341660adb32a9967e803d607d58f",
+   "bytes": 76406,
+   "avif": 39843
+  },
+  "abilities/flora-verdant-renewal.png": {
+   "source": "36df1a25688f9db20877abd5f4544c5608e2a28ea35a837066bd465f137e2f94",
+   "bytes": 64160,
+   "avif": 31772
+  },
+  "abilities/infernis-cinder-cleave.png": {
+   "source": "b2d863ad528dffcff2fde27739d0f45861ffb5b0d3d16d1cccc3429d80026f58",
+   "bytes": 73733,
+   "avif": 22122
+  },
+  "abilities/infernis-flame-arc.png": {
+   "source": "701c4d28aafa7b2e7357283e92dd7a5143f0d6cd0a3565651a78f2432356586b",
+   "bytes": 71164,
+   "avif": 27369
+  },
+  "abilities/infernis-heavy-attack.png": {
+   "source": "433535789af681123f51a2733e15ad9fa4865bcf8af4acebed9e29c0ad03e357",
+   "bytes": 84854,
+   "avif": 47550
+  },
+  "abilities/infernis-last-flare-dawnfire.png": {
+   "source": "d69744365191eae71fb4cc87dd6a952d0b668082bebe329f026d3dfef6c1010f",
+   "bytes": 79780,
+   "avif": 32286
+  },
+  "abilities/infernis-light-attack.png": {
+   "source": "fd73ee6fa1c04312e9754b6db53f7b176907b6534857f1040a3a642472467944",
+   "bytes": 66171,
+   "avif": 27219
+  },
+  "abilities/infernis-unbroken-ember.png": {
+   "source": "021cd90accf40ea4e5ce91667315d96bd619d7cd2ee4a09851f757fbecf7400f",
+   "bytes": 91034,
+   "avif": 48128
+  },
+  "abilities/nerithe-passive.png": {
+   "source": "9ad5329ed384a99e8b30f8e429e58e4bb1b01052b048bf7762f3c17fa1988835",
+   "bytes": 115609,
+   "avif": 51749
+  },
+  "abilities/nerithe-skill1.png": {
+   "source": "ee286edbe68da4d106db1795999fcf2877177f66f6ca0eee10ba4026ba58fae7",
+   "bytes": 89644,
+   "avif": 32972
+  },
+  "abilities/nerithe-skill2.png": {
+   "source": "726834c767680d6c04eb5323a8e52d6f56b7edf180622da538ac721e5404b3ee",
+   "bytes": 109023,
+   "avif": 45867
+  },
+  "abilities/nerithe-ultimate.png": {
+   "source": "e5ae9b9c628ad9468cff3ab968b6a637dbffffab360921f234f029ca3f1fe6a4",
+   "bytes": 101641,
+   "avif": 42233
+  },
+  "abilities/orvella-defend.png": {
+   "source": "e8640c703d16fadf68afe47ef67d2ba3bddc438fbb241899f251e3ea023dfbc5",
+   "bytes": 89194,
+   "avif": 35775
+  },
+  "abilities/orvella-light.png": {
+   "source": "b0d8110c28b99fa2377055b0ddc11907cbcab23a53dcd8df35110db8a9eb2728",
+   "bytes": 58385,
+   "avif": 35400
+  },
+  "abilities/orvella-passive.png": {
+   "source": "bc1068cf33d947b5ef0d9c5a2d72396e6a9e4141534459b2a97a7f949e918c61",
+   "bytes": 77540,
+   "avif": 35971
+  },
+  "abilities/orvella-skill1.png": {
+   "source": "885714f8a0ee2444b361f6597d8de52d279ad511bf5129ba8ee5e8fda4546b0b",
+   "bytes": 81816,
+   "avif": 31040
+  },
+  "abilities/orvella-skill2.png": {
+   "source": "eb3179fcc4dcb5cb0ad8281a4f6977aee6ad1fc31afe53d198a1d617ac4259fd",
+   "bytes": 80224,
+   "avif": 31019
+  },
+  "abilities/orvella-ultimate.png": {
+   "source": "0517e9322e35074537b61b5a200b73a95581715244cc8e91a53040ecaa2576ce",
+   "bytes": 61851,
+   "avif": 25586
+  },
+  "abilities/razor-defend.png": {
+   "source": "685382807bdf73d1b05214cdef74af3f665c625c2aff0cfce541768ddf774420",
+   "bytes": 76910,
+   "avif": 27238
+  },
+  "abilities/razor-light.png": {
+   "source": "2404490ba5ed87e2a8309683ff6749d4d45459a38ca28b576dee5ca2610dc824",
+   "bytes": 82727,
+   "avif": 33471
+  },
+  "abilities/razor-passive.png": {
+   "source": "89ef9678dc211b87c1685a244d8a3fdca42dda78029ce8b106b961cf88cfc2de",
+   "bytes": 95560,
+   "avif": 36508
+  },
+  "abilities/razor-skill1.png": {
+   "source": "9c50a8793fe26410733435d0468ebd3ace2a04295cf100b5647c5808b2ab6370",
+   "bytes": 52280,
+   "avif": 24068
+  },
+  "abilities/razor-skill2.png": {
+   "source": "bae24d99adaaf2837a79261ee0711c7554eef13331bcc1977f2d11c1c3b64112",
+   "bytes": 79765,
+   "avif": 28842
+  },
+  "abilities/razor-ultimate.png": {
+   "source": "388bc560ef4eae902be5dad0eb2f447d11c370d549a59d54e55be3d547d155c9",
+   "bytes": 77560,
+   "avif": 37583
+  },
+  "abilities/rosetta-defend.png": {
+   "source": "09cc04d2c7fd842804bb4ae0eee82d75197a4f1f437646890bd89b36ac38f1b0",
+   "bytes": 106244,
+   "avif": 50788
+  },
+  "abilities/rosetta-light.png": {
+   "source": "ddd2a22d7e22de6bc9957d0416877a03b5603d7c09cd2e96fd91a7328ce4ad65",
+   "bytes": 68607,
+   "avif": 33028
+  },
+  "abilities/rosetta-passive.png": {
+   "source": "f0e2521574c0d0616cd3a79916e7e3612ec762e22a070e2fe82df095d803a6e2",
+   "bytes": 87260,
+   "avif": 35666
+  },
+  "abilities/rosetta-skill1.png": {
+   "source": "af395a967eac1a4adcff5b5d367bfa12dee3f139da0a8d7edb82c805c51d8b5e",
+   "bytes": 59037,
+   "avif": 35407
+  },
+  "abilities/rosetta-skill2.png": {
+   "source": "8b0510565f903dbef55e6dac678797ba2552bff3ebe10fad2b4926fbd1233f63",
+   "bytes": 91240,
+   "avif": 39768
+  },
+  "abilities/rosetta-ultimate.png": {
+   "source": "a508ae3c373f0ed32ab3911e4ab54f1d6fdd9039763fc0705abc22b15e4d1696",
+   "bytes": 107670,
+   "avif": 58459
+  },
+  "abilities/statuses/status-bloom.png": {
+   "source": "5460f876814de10477caef414dec35a7c3cb686ded9af6860f495d9ff7802021",
+   "bytes": 70530,
+   "avif": 36108
+  },
+  "abilities/statuses/status-burn.png": {
+   "source": "424f90eb0a7ae9e2b7080809b089837312b171a2ccf590b5f80cdb71bf87b471",
+   "bytes": 75021,
+   "avif": 38302
+  },
+  "abilities/statuses/status-focus.png": {
+   "source": "66c7374d14a84cc5380a286e939aa184fce8f0fe03ead0b107f92348aa197fe6",
+   "bytes": 78749,
+   "avif": 37507
+  },
+  "abilities/statuses/status-native-atmoso-cyclone.png": {
+   "source": "9d23439e4133cb1b8b0ef14872e567d03b113760fb67ac2f97a149721a67f190",
+   "bytes": 78762,
+   "avif": 29181
+  },
+  "abilities/statuses/status-native-aurora-seal.png": {
+   "source": "5ccca2b86de4e708355798cd05d19e37431c2bf4ee9b7aa74a6305c2af5945e6",
+   "bytes": 96546,
+   "avif": 37011
+  },
+  "abilities/statuses/status-native-aurora-ultimate-ward.png": {
+   "source": "46ef4e86dc4655acb4dec6d2b25a565d8accfbeebca51651f8fd04d948ab4023",
+   "bytes": 85089,
+   "avif": 40364
+  },
+  "abilities/statuses/status-native-bliss-closing.png": {
+   "source": "32ddcfb8c1a02d52fd795498b2a8cc6818ef982d77a4bed9857926147ebed399",
+   "bytes": 116077,
+   "avif": 46539
+  },
+  "abilities/statuses/status-native-bliss-opening.png": {
+   "source": "ebda287113bc764fd1ab9dad749939bd70e24cbe3f1b350c0ddf945776eb1b97",
+   "bytes": 95804,
+   "avif": 34539
+  },
+  "abilities/statuses/status-native-bliss-passing.png": {
+   "source": "8c66cfe351da20a0b3092b276ef5f2eae78206334c1ff6cdf4307ec315184d12",
+   "bytes": 73150,
+   "avif": 34819
+  },
+  "abilities/statuses/status-native-bruno-cover.png": {
+   "source": "2092bb8b94004d8ce2d6d8ba4d7d8d0e2c10491c9e79fce37797ea375ae5d74b",
+   "bytes": 80034,
+   "avif": 38994
+  },
+  "abilities/statuses/status-native-crinso-combo.png": {
+   "source": "1cf7b9920db3ae1ef9d2bbeed1fdb9937bc1e6120b13a179967f6b3216f2cd0d",
+   "bytes": 93675,
+   "avif": 39835
+  },
+  "abilities/statuses/status-native-crinso-crimson-edge.png": {
+   "source": "54fff4e080dc6a838af700bfc1551883c59acddb5bf2bbb534376bea9d62759b",
+   "bytes": 96693,
+   "avif": 44314
+  },
+  "abilities/statuses/status-native-crinso-gold-edge.png": {
+   "source": "c2454038fd4bff911b84dc815895df1f8a80b2b10cbc5e7d750a86b81de73126",
+   "bytes": 96806,
+   "avif": 39499
+  },
+  "abilities/statuses/status-native-disciple-resolve.png": {
+   "source": "d3c7e37ed4e8b7b8dc82e819a4afcc1da5d78d084b6cb0d791ac0a1e1c87898f",
+   "bytes": 88615,
+   "avif": 35869
+  },
+  "abilities/statuses/status-native-disciple-shelter.png": {
+   "source": "0ae94ca274903cf19dad120791ed3bda99c1b435b6dd8d87a8618ce2e1c00d44",
+   "bytes": 77021,
+   "avif": 30228
+  },
+  "abilities/statuses/status-native-disciple-strike.png": {
+   "source": "a514ef7171a2496bc0c11f49e3ebf8dcd2ecc10dc6ad298eca9e5237efdaf2a5",
+   "bytes": 85186,
+   "avif": 38529
+  },
+  "abilities/statuses/status-native-elise-held-blade.png": {
+   "source": "c0df93fbbe28f81eaa48b5a8bdbeb1c8152ee3b4504d22efd699e37b12bfda6e",
+   "bytes": 107497,
+   "avif": 40498
+  },
+  "abilities/statuses/status-native-elise-lodged-blade.png": {
+   "source": "923a8dd57286c7f120c638cb492964ea2848263b9024a7b68053350f3e1a930d",
+   "bytes": 83827,
+   "avif": 35551
+  },
+  "abilities/statuses/status-native-flora-empowered-seed.png": {
+   "source": "82ae8fb4189fa24d3ce25deabd80f0b8089edf5885e477ecebfe2319155cde32",
+   "bytes": 92166,
+   "avif": 37435
+  },
+  "abilities/statuses/status-native-flora-seed.png": {
+   "source": "9f0bf13dcbab3da1575a5d35d46ea4d2d482b4c681a21f38764d56cc3c55a7aa",
+   "bytes": 98206,
+   "avif": 42584
+  },
+  "abilities/statuses/status-native-nerithe-survey.png": {
+   "source": "d8fa9a7787374c5f6ae649736dc2a3ac523ad712233980d5e768c790b69b42b6",
+   "bytes": 103338,
+   "avif": 43559
+  },
+  "abilities/statuses/status-native-orvella-foundation.png": {
+   "source": "4a752231c47b18dfc1801b579f098fbf63ab73c864a99b8e61e0d0b13b11c267",
+   "bytes": 91343,
+   "avif": 32539
+  },
+  "abilities/statuses/status-native-razor-bastion.png": {
+   "source": "957a8d9722d6113e9984bd5f0a495ab3d6c5dab35ead75815a6ab4a06d1abfec",
+   "bytes": 77894,
+   "avif": 34807
+  },
+  "abilities/statuses/status-native-razor-wounds.png": {
+   "source": "6051357bfa4ee43134c33e1675ffba6d33779fd6f7ce1680358dbafa2a1b66fe",
+   "bytes": 95172,
+   "avif": 27639
+  },
+  "abilities/statuses/status-native-rosetta-quarry.png": {
+   "source": "9cdcbde8592c29aebcd91a97509247bd6b2271e8ee8c5374bf3ff25613b28910",
+   "bytes": 100936,
+   "avif": 44575
+  },
+  "abilities/statuses/status-native-thornia-empowered-trap.png": {
+   "source": "868e4751cc614edb69e6b668d0290de0be772c9b70249e56e277d0a35209c356",
+   "bytes": 89776,
+   "avif": 42562
+  },
+  "abilities/statuses/status-native-thornia-trap.png": {
+   "source": "6e78b344dd2bec67384082439d7ab8a450830db1048bd6e86f12aa5af4d5ad7c",
+   "bytes": 78957,
+   "avif": 33108
+  },
+  "abilities/statuses/status-native-vaelor-crescendo.png": {
+   "source": "09de22e2b5ae996fd066c1774ab0a274176ac94bc7ea9bbeb57532727500d1a9",
+   "bytes": 88478,
+   "avif": 45322
+  },
+  "abilities/statuses/status-native-vaelor-rise.png": {
+   "source": "514a0331aa29c211f1191f0ceccd25c60f23b143c6a452d2e412a1c183064812",
+   "bytes": 84060,
+   "avif": 39141
+  },
+  "abilities/statuses/status-native-vaelor-tune.png": {
+   "source": "b8e504f2974e28a47979907fe781952491c49a6d489539ea79cf6a382bdb1c3a",
+   "bytes": 66951,
+   "avif": 31450
+  },
+  "abilities/statuses/status-rose-duality.png": {
+   "source": "a067056782118aef1c43212ae0a7288fab4c4eeb095cfe4be25480ba2e81b348",
+   "bytes": 82655,
+   "avif": 47912
+  },
+  "abilities/statuses/status-rose-grace.png": {
+   "source": "3760b4080f37223ddd956e963cf129863b2cf6c2771c3329fec7d1e1999b930a",
+   "bytes": 60079,
+   "avif": 33829
+  },
+  "abilities/statuses/status-suppression.png": {
+   "source": "816384b299d85132cc6de2078abd6b6832730867d9a310d42ce9f710c57bfd91",
+   "bytes": 57459,
+   "avif": 25885
+  },
+  "abilities/statuses/status-tempest.png": {
+   "source": "8b83fa5526014f297b6bd0cbae723a675c62c05a65d116cbe08a9cb04c2c3e80",
+   "bytes": 57908,
+   "avif": 40163
+  },
+  "abilities/statuses/status-thorn-aegis.png": {
+   "source": "f6780d014cb71c57a6f4b281b6d9cfd96ec307aa53727c6ccc58c8c106af6768",
+   "bytes": 90199,
+   "avif": 36035
+  },
+  "abilities/statuses/status-ward.png": {
+   "source": "bc9b4df28bcfe4292d2c62af13ad07d4c716f96cfaefb8bcf0b017587dc88b2e",
+   "bytes": 84024,
+   "avif": 34885
+  },
+  "abilities/thornia-defend.png": {
+   "source": "eca72b58c52f6c84abf0b00b0eb2de019b488b60e5a47ddb69a5165d71872ef1",
+   "bytes": 85779,
+   "avif": 37947
+  },
+  "abilities/thornia-light.png": {
+   "source": "875de013e648e3faa24718724446e2013fca3739c50d83cf46e38789a353c967",
+   "bytes": 44438,
+   "avif": 22963
+  },
+  "abilities/thornia-passive.png": {
+   "source": "2488f1091895665ed8cea54461f2a96f0e6ab5e2baf8fc77556a5c2efc8f1da6",
+   "bytes": 68992,
+   "avif": 27212
+  },
+  "abilities/thornia-skill1.png": {
+   "source": "82b17395267146f3f8434180410fe85c9d13e74763b029120f3693b2fd6da4b5",
+   "bytes": 80076,
+   "avif": 32393
+  },
+  "abilities/thornia-skill2.png": {
+   "source": "edcf166fb7e68be000db637f27a80f7b31ae782a1c8f38a84abd84d424643a5f",
+   "bytes": 62661,
+   "avif": 29806
+  },
+  "abilities/thornia-ultimate.png": {
+   "source": "193118be2aad4d0f4070da3e63d04d827817e8e365a040001ebd5e7fb41ad487",
+   "bytes": 83453,
+   "avif": 41619
+  },
+  "abilities/tizu-last-flare-ocean-memory.png": {
+   "source": "ff81c21bf1c5ab54a941ccda24b6fc184941ec8799e658eb3f3908b8d22c0d60",
+   "bytes": 97641,
+   "avif": 38370
+  },
+  "abilities/tizu-normal-attack.png": {
+   "source": "62b03f81b1a03c2e702221da94e3ecb0e5a66c7a9c208da5dbeec16850682d68",
+   "bytes": 39332,
+   "avif": 27461
+  },
+  "abilities/tizu-stillwater-guard.png": {
+   "source": "3696d1934e7ebbb0c40a1dd20f7d96b4a591a8a96dc199c430cd26f05393254d",
+   "bytes": 85676,
+   "avif": 39759
+  },
+  "abilities/tizu-tidal-shelter.png": {
+   "source": "a0337dbfe6e5692bf8835c0436ee976cc5a06b9422c35b6cdffa3eca61dca6d0",
+   "bytes": 71121,
+   "avif": 27900
+  },
+  "abilities/tizu-undertow-thrust.png": {
+   "source": "4e693acf40b8c3374afb9d1ff074344d78a17f64c1966d5e9fb06a19902a0baa",
+   "bytes": 56234,
+   "avif": 31844
+  },
+  "abilities/universal-defense.png": {
+   "source": "b68caa3cf0d17b72889d2916673505e4eba34d87df4826cef79eea33ab9d3913",
+   "bytes": 75504,
+   "avif": 21562
+  },
+  "abilities/universal-normal-attack.png": {
+   "source": "ee16ec5ccb716e69cb664ee4301aaf7f9faac81ece4d1823f1d211f25e688f3e",
+   "bytes": 29829,
+   "avif": 19094
+  },
+  "abilities/vaelor-defend.png": {
+   "source": "cdfa5ce086a1646c08ec9ec632b30f89e8797f32111d1745c95b4438b7343fb7",
+   "bytes": 78283,
+   "avif": 40289
+  },
+  "abilities/vaelor-light.png": {
+   "source": "566af6f9560dd02109e805b313c86ada8d3cc7dd0efade7ab05996e0c18eb572",
+   "bytes": 57201,
+   "avif": 35207
+  },
+  "abilities/vaelor-passive.png": {
+   "source": "cdd82ec4744d57926b37a9b42dca10938850044a5c2d2fb2c06573ddd0c9d434",
+   "bytes": 86562,
+   "avif": 46324
+  },
+  "abilities/vaelor-skill1.png": {
+   "source": "236ea8fb0048491abf73a090356c255170d15cde3dd0af31524921b7e09e4103",
+   "bytes": 77833,
+   "avif": 38275
+  },
+  "abilities/vaelor-skill2.png": {
+   "source": "9315bf3ad0d02c6dda1cf52bab2faa794526214d7c0bd3459528b7e45069f457",
+   "bytes": 92717,
+   "avif": 49411
+  },
+  "abilities/vaelor-ultimate.png": {
+   "source": "ca0b50405bf37de2b7125bbfaaea1651c55a19dbd1e76d0228ce5ca030f57459",
+   "bytes": 74990,
+   "avif": 45785
+  },
+  "backgrounds/abyss-arena.png": {
+   "source": "b8e2ee0dae3989583d18a2d78d52f55d0dd8209c3cbbd5207566ba277ae06ac3",
+   "bytes": 1543203,
+   "avif": 300897
+  },
+  "backgrounds/calamity-arena-ex-1.png": {
+   "source": "4da8d229483a1367b89fd55997e4f5df3744bfbd033cbfb4cefa32f0bffa49b7",
+   "bytes": 1769777,
+   "avif": 356449
+  },
+  "backgrounds/calamity-arena-ex-2.png": {
+   "source": "6c50d49b662ef3946b30ae95496d0a06c02fe4cbcffde68f04547e7fcc60a2fc",
+   "bytes": 1951752,
+   "avif": 435120
+  },
+  "backgrounds/calamity-arena-ex-3.png": {
+   "source": "f988bb1abcc90d24d19d2925cdebe5c275ca562d63ad6f9437b76ba29131eef1",
+   "bytes": 1817999,
+   "avif": 429145
+  },
+  "backgrounds/city-of-heaven.png": {
+   "source": "9951dc77c8b39b495c2fe38f11d98a3c2b801adee1b71a56c6f43d9fee227b50",
+   "bytes": 1552979,
+   "avif": 342366
+  },
+  "backgrounds/elemental-war-nerithe-arena.png": {
+   "source": "fb719315c84d2f09ccf2553d16c50483bedc612259d7b8d9f0a7ae7ce6d8be75",
+   "bytes": 1988949,
+   "avif": 502638
+  },
+  "backgrounds/elemental-war-orvella-arena.png": {
+   "source": "79ea80a84aee530f3a448e5f3150841f0bce47c1e67717cc753649c8fec6d739",
+   "bytes": 1635958,
+   "avif": 356229
+  },
+  "backgrounds/elemental-war-vaelor-arena.png": {
+   "source": "af77f5ca40da0a0ce2121532f0bb95197e2e50f9ac612675c04bfec0aa3e43cb",
+   "bytes": 1487569,
+   "avif": 301280
+  },
+  "backgrounds/flaming-depths.png": {
+   "source": "5ea6bfd25313957c5da5a80ac65f062ce35592d24be60a2685f49137bb0a52fe",
+   "bytes": 1316724,
+   "avif": 219242
+  },
+  "backgrounds/galvanic-field.png": {
+   "source": "81b33e60caf2ca9e9ef8cfa21d96d443b2bc13cbbc3ca720cd310b97d922bdb3",
+   "bytes": 1403367,
+   "avif": 299372
+  },
+  "backgrounds/garden-of-beauty.png": {
+   "source": "1492119b42fbbcf6d6bd2867af35886dc4dea08495b5728488aa3cde80abda73",
+   "bytes": 1656523,
+   "avif": 396906
+  },
+  "backgrounds/grassy-field.png": {
+   "source": "dfbf9e0e7d42a98d5663903dd0427dea4fdaccf95d2ea4b85c4d648afb414367",
+   "bytes": 1262834,
+   "avif": 220366
+  },
+  "backgrounds/heavens-arena.png": {
+   "source": "ebabc6dc058c37de2d24850298094bd581d524511f967a42fba091fb9800dcda",
+   "bytes": 1449313,
+   "avif": 322841
+  },
+  "backgrounds/lustrous-river.png": {
+   "source": "84f53e8c12e89406eaf7f4d478b53f64f91089dfcedeff164800c0973bf9d86e",
+   "bytes": 1410677,
+   "avif": 292785
+  },
+  "backgrounds/machines-arena.png": {
+   "source": "414546a5a2c59e6e6b34e137932b292298bd606a5f936ed8b42ed0ae240d9acb",
+   "bytes": 1764397,
+   "avif": 341018
+  },
+  "backgrounds/oceanic-valley.png": {
+   "source": "5b8b3ebda1c76ecea2d58240aa289621dbf2b095d34c1140597fa3b50b206be3",
+   "bytes": 1632522,
+   "avif": 358854
+  },
+  "backgrounds/precipice-of-the-earth.png": {
+   "source": "2d10c88966a405ba69f895a5373c328ad65f66bcfe1dea38a390cfb8d2b5384f",
+   "bytes": 1481004,
+   "avif": 305775
+  },
+  "backgrounds/roses-arena.png": {
+   "source": "5e7178b02b1f4e89d4d5b292b03299fe6872a0d12eccb5f3265b5839ece9b514",
+   "bytes": 1571420,
+   "avif": 372641
+  },
+  "backgrounds/ruins-of-chaos.png": {
+   "source": "f0e7fb0e70be0dd977950273bff31f4e132604aaf68202079833fe66e1818085",
+   "bytes": 1439292,
+   "avif": 285807
+  },
+  "backgrounds/sanctuary-arena.png": {
+   "source": "7218ef860ea38f6cf00827a708f81fd145e7452d6b1334bccd3b117402d88690",
+   "bytes": 1943706,
+   "avif": 453676
+  },
+  "backgrounds/sky-bound-rift.png": {
+   "source": "ecc80971931bf359cc45c90fe6ac9a1489d02f10fee92134ac2c61d8db3bbc9f",
+   "bytes": 1499255,
+   "avif": 341254
+  },
+  "backgrounds/story-emberwake-march-arena.png": {
+   "source": "a1f78f4936494adcfc8a4c0dc5307c87a398ca6deccb3064537dc309c11b41ef",
+   "bytes": 1540136,
+   "avif": 316474
+  },
+  "backgrounds/story-glasswater-reach-arena.png": {
+   "source": "0c271411216d9ad561c18328d2502d13051ab600e2733617e04050504bab08ec",
+   "bytes": 1481968,
+   "avif": 338730
+  },
+  "backgrounds/story-riftbound-frontier-arena.png": {
+   "source": "8c2f4e47d78550bf645eb57128ac3e15e07534adca03c787936422c2aff43204",
+   "bytes": 1456759,
+   "avif": 279435
+  },
+  "backgrounds/story-rootstone-wilds-arena.png": {
+   "source": "d8ae601b6ba284d2371f30a75f9a8e40796c54ebbb05bebae98ace36c77fa1fb",
+   "bytes": 1582926,
+   "avif": 365930
+  },
+  "backgrounds/story-stillhalo-vale-arena.png": {
+   "source": "1882980b4ec93e573c1c88b8785c1030d901d8cf3a25c137c234e1bea60cc8d3",
+   "bytes": 1630035,
+   "avif": 354997
+  },
+  "backgrounds/story-stormspan-heights-arena.png": {
+   "source": "80ab730942450dcc27fbf5375d94c173e347862ad34460ab526f6dae28c032fc",
+   "bytes": 1539677,
+   "avif": 343673
+  },
+  "backgrounds/story-world-map.png": {
+   "source": "708924e69f0311b113792b15d7624dc4dc2f16d8dc2f6cc6dcd1b2b71344a6ec",
+   "bytes": 1815494,
+   "avif": 437623
+  },
+  "backgrounds/treasury-arena.png": {
+   "source": "64386742fb50a5c2247748658fa15d6702f069687bf6cac9c71102b6ccf14153",
+   "bytes": 1776713,
+   "avif": 430134
+  },
+  "backgrounds/valley-of-solitude.png": {
+   "source": "704cbebef38e51aedc2e11dc04bb547cdad689de5a8d3d6aa734eedb40edce79",
+   "bytes": 1290464,
+   "avif": 227535
+  },
+  "banners/abyss-banner.png": {
+   "source": "82cba32d6988a639cae6724d72de7aa6b5727fd259dadb2abe42792a4942b26b",
+   "bytes": 1804426,
+   "avif": 360480
+  },
+  "banners/archive-characters.png": {
+   "source": "6a7fba83fad5520a3f51e9fa74c9b8f5734e1025e984e4203495b275e093787e",
+   "bytes": 1669710,
+   "avif": 331830
+  },
+  "banners/archive-conduits.png": {
+   "source": "195008363da2e469e47da41c914a99bf67305d16eed064bbf3c89e5316ec2054",
+   "bytes": 2173556,
+   "avif": 508938
+  },
+  "banners/archive-creatures.png": {
+   "source": "d67130aefea13535d0f454e96152180ab8fd83f9a952d34e0141617283ac8adc",
+   "bytes": 1631566,
+   "avif": 359171
+  },
+  "banners/city-of-heaven.png": {
+   "source": "96fe024166f45db71b238c1dde68ff64cc5fa6f5eb8fc3c97b50dfd447ccf058",
+   "bytes": 1781194,
+   "avif": 423937
+  },
+  "banners/conduit-store.png": {
+   "source": "9e8ea4faf75f6da9184a9e12749ea2edd36b8d11ff2247f4f0d02b90eb601436",
+   "bytes": 1515843,
+   "avif": 270399
+  },
+  "banners/elemental-war-nerithe-banner.png": {
+   "source": "bd364ab6a038077d204f07f504c99c25027fdabc7afc893a695e69b4a61a9b78",
+   "bytes": 1853572,
+   "avif": 505407
+  },
+  "banners/elemental-war-orvella-banner.png": {
+   "source": "e1346cbf9a9bfa84250ec5ebd4243cd7fb8b50e1eee21e4cf4c55138fc3964e8",
+   "bytes": 1995631,
+   "avif": 486665
+  },
+  "banners/elemental-war-vaelor-banner.png": {
+   "source": "ea4ed46eedce9279f78f01c2fa29242daeff9b84a5c5be3a453d7b7b5340ea38",
+   "bytes": 1906602,
+   "avif": 475372
+  },
+  "banners/flaming-depths.png": {
+   "source": "7a0a70641f38b437453fc89e785ab7c9311f399b6cc512f705d35dd1b722f03f",
+   "bytes": 1474552,
+   "avif": 316367
+  },
+  "banners/galvanic-field.png": {
+   "source": "1c886935a6032a946bc49e3db262100b7c43cdeb8ab3ed0b3b99657fa74a68cf",
+   "bytes": 1514399,
+   "avif": 338279
+  },
+  "banners/garden-of-beauty.png": {
+   "source": "8917350d6451e9ee68e85664f545d74c517822bd05cf8b74e0c3919a923b3aa2",
+   "bytes": 1828588,
+   "avif": 448746
+  },
+  "banners/heavens-banner.png": {
+   "source": "241343ccc0cba0b111c7fb7e81581db3159b100e39bae8a680bf30982198ae66",
+   "bytes": 1981270,
+   "avif": 426131
+  },
+  "banners/lustrous-river.png": {
+   "source": "dbb9038e65a673e00d98e5a6582c692a42394410973b887d5608228f2a2c9193",
+   "bytes": 1559073,
+   "avif": 350797
+  },
+  "banners/machines-banner.png": {
+   "source": "22fa501b3cf3e970a595d17334ae2e694c6ab10e16213dfe34148ed0a788e799",
+   "bytes": 1468050,
+   "avif": 279413
+  },
+  "banners/oceanic-valley.png": {
+   "source": "d19c24965f73d85d7bcc1b983a9897aa3db7923fcecfdf89283f246b4f760e83",
+   "bytes": 1679779,
+   "avif": 410426
+  },
+  "banners/precipice-of-the-earth.png": {
+   "source": "83ed48ad58e5ae837e3daf76781125452bccdb9baa2ea1d85c4b5d9bd6db6898",
+   "bytes": 1735534,
+   "avif": 427172
+  },
+  "banners/roses-banner.png": {
+   "source": "5d709e7de159985bff94ad76dddc46e6fe42b2a8aa32bc2ac08297796497b80f",
+   "bytes": 2026518,
+   "avif": 516112
+  },
+  "banners/ruins-of-chaos.png": {
+   "source": "b2258d29999a560e54cc8c604c5d99a0e1c4619806df261e2d59fa99a1240c61",
+   "bytes": 1563629,
+   "avif": 327482
+  },
+  "banners/sanctuary-banner.png": {
+   "source": "d4dafff07ac049d34cd97f74238d9a7b3b1a913d964f2b5e8754c2ac4b46552a",
+   "bytes": 1951127,
+   "avif": 448147
+  },
+  "banners/sky-bound-rift.png": {
+   "source": "be9956a66904ba6825bb79d9176f1992a95ef9a6a08e29992ee0e3dc57c1e9f0",
+   "bytes": 1610821,
+   "avif": 380665
+  },
+  "banners/summon-roses.png": {
+   "source": "2c491ca5a9d586ca5e3d375d479da125c21daa146d89ffbb8717bbf56279a289",
+   "bytes": 1994720,
+   "avif": 512460
+  },
+  "banners/summon-standard.png": {
+   "source": "c34e6deb4fb5580c0697bea8027eb94105415e7e3bbf21fb57c39ba336f635e2",
+   "bytes": 1692383,
+   "avif": 376496
+  },
+  "banners/treasury-banner.png": {
+   "source": "eb84f0ef240683c509d69dc818e53bf3484f131a124c38291757d34037fab075",
+   "bytes": 1726756,
+   "avif": 364024
+  },
+  "banners/valley-of-solitude.png": {
+   "source": "f5d07ac666edc9cd6508f65199410d5e60912a5ec90e39e475ed9fdebe86a2dd",
+   "bytes": 1127763,
+   "avif": 156379
+  },
+  "characters/atmoso-evo-2.png": {
+   "source": "2ce28d8ae33b7e610fe204dd4a2f6ef19494117d04f0f600f0d05abb730f20ea",
+   "bytes": 619926,
+   "avif": 191549,
+   "thumb": 59421
+  },
+  "characters/atmoso-evo-3.png": {
+   "source": "549cfafa329d259f4b62100e4aa4aea58c8fc0c9be3c792d1c1ddef85aa8d295",
+   "bytes": 580310,
+   "avif": 184379,
+   "thumb": 59170
+  },
+  "characters/atmoso-evo-4.png": {
+   "source": "5a0e7c22e72714de46e2e3cfc5be7f25887f42801d311514aeb0b234c7b9de17",
+   "bytes": 634408,
+   "avif": 243955,
+   "thumb": 72577
+  },
+  "characters/atmoso-evo-5.png": {
+   "source": "45f429409d04a250616f233fd4b78b713a06d65c434da172d43242514f7e4fd8",
+   "bytes": 901412,
+   "avif": 282760,
+   "thumb": 79324
+  },
+  "characters/atmoso-evo-6.png": {
+   "source": "db6a7123993286794a0cdc3df2ef4ac8381a4a1eed588ca0a88badcdfb6d049b",
+   "bytes": 918591,
+   "avif": 325934,
+   "thumb": 97479
+  },
+  "characters/atmoso.png": {
+   "source": "cfde8f588b10180a1a9b55976b4851c1e671f587e75645be379f5d33aff57a94",
+   "bytes": 654148,
+   "avif": 176677,
+   "thumb": 53232
+  },
+  "characters/aurora-evo-2.png": {
+   "source": "a6b2aeafc4e266bdefe53ded033ed731d85dda07bbc1522dbb03de19511b6e72",
+   "bytes": 606322,
+   "avif": 140749,
+   "thumb": 45598
+  },
+  "characters/aurora-evo-3.png": {
+   "source": "433a550a84def8cf57710cbd0834b2660a35c493fb038866a52eff9844226e5d",
+   "bytes": 722165,
+   "avif": 217013,
+   "thumb": 64913
+  },
+  "characters/aurora-evo-4.png": {
+   "source": "ef22341a2d224ff35f630e0dd337d26c23dac0a4ecabd4253cb73668a7c4d72d",
+   "bytes": 737855,
+   "avif": 258290,
+   "thumb": 80814
+  },
+  "characters/aurora-evo-5.png": {
+   "source": "5ec590317bf60c2df003aca4a0152bd51eb110ce96d4ce296fd8d78b5487986c",
+   "bytes": 905261,
+   "avif": 275966,
+   "thumb": 80028
+  },
+  "characters/aurora-evo-6.png": {
+   "source": "869244833556d346c34623bc86c86feb0008c6537200ba21853c97cc4cd399c4",
+   "bytes": 949542,
+   "avif": 319323,
+   "thumb": 93763
+  },
+  "characters/aurora.png": {
+   "source": "66b88060766d97270c1bbcd91c17912cdfa71c49eda5bbba61448f96a5218d44",
+   "bytes": 464694,
+   "avif": 91787,
+   "thumb": 33685
+  },
+  "characters/bliss-evo-2.png": {
+   "source": "7e5910319dc7a478f7b2e5a1fce60f37ac305f085b5728abba0fd2c9bfb193af",
+   "bytes": 574509,
+   "avif": 168616,
+   "thumb": 48304
+  },
+  "characters/bliss-evo-3.png": {
+   "source": "7ce51292bfff2027987a3136f2f897d76e80b16c64074f62d4d479b46c38c4c1",
+   "bytes": 724064,
+   "avif": 195752,
+   "thumb": 68127
+  },
+  "characters/bliss-evo-4.png": {
+   "source": "d42ced7ce943dd21c9c29cb311eaa9173884b30b74c9b47d426de67d9ac28ed8",
+   "bytes": 865010,
+   "avif": 235223,
+   "thumb": 74080
+  },
+  "characters/bliss-evo-5.png": {
+   "source": "07b0a2a7ff144ece0768fc2e205c2503ecc953ab3d8e81b68e69559c76bf064a",
+   "bytes": 971753,
+   "avif": 275776,
+   "thumb": 88604
+  },
+  "characters/bliss-evo-6.png": {
+   "source": "79f182d07a32e76aeb40d93480ba5864ccc37e78aee6f625fa9661e06003724d",
+   "bytes": 1029705,
+   "avif": 344115,
+   "thumb": 100119
+  },
+  "characters/bliss.png": {
+   "source": "55bf8ea7c8f7ccd1d67a560b64edca938c0aa2c9614c1693834609cf3bf336cb",
+   "bytes": 640213,
+   "avif": 145014,
+   "thumb": 49036
+  },
+  "characters/bruno-evo-2.png": {
+   "source": "482cd40169c692bc67720307c1daaae1fb73c63b6f0b77d91c104920e208ddb2",
+   "bytes": 648371,
+   "avif": 171394,
+   "thumb": 58219
+  },
+  "characters/bruno-evo-3.png": {
+   "source": "31ea6bd55f44880605d3e830fcb97f3bd05a4402d7848d7e86c62bbcea428bf4",
+   "bytes": 797172,
+   "avif": 257027,
+   "thumb": 69402
+  },
+  "characters/bruno-evo-4.png": {
+   "source": "c60a4be9569c5c81c24167da2e2609542ba43f2f9f1f6a253f7ddef1ca196c7a",
+   "bytes": 762597,
+   "avif": 256966,
+   "thumb": 76169
+  },
+  "characters/bruno-evo-5.png": {
+   "source": "aa9ee38ad228b3c37dba740d21c3e8a8d42bca7b0ec47888065fbe3264c2261f",
+   "bytes": 1059503,
+   "avif": 311756,
+   "thumb": 95060
+  },
+  "characters/bruno-evo-6.png": {
+   "source": "b15b77686f0220cffd318d48f8feb4ba61b7c9e931e41a9a721e8b90f8ea7ec3",
+   "bytes": 1056346,
+   "avif": 313907,
+   "thumb": 86428
+  },
+  "characters/bruno.png": {
+   "source": "a69c7a0abb1660e975d737425b2bdda12596c6ad942f531209ee1cee22b246c5",
+   "bytes": 609369,
+   "avif": 118767,
+   "thumb": 39893
+  },
+  "characters/crinso-evo-2.png": {
+   "source": "63034dd8c3006c4b707c30e869a5e89473c84b141b858ce19e6ab7e9bf15c13d",
+   "bytes": 632198,
+   "avif": 207483,
+   "thumb": 59148
+  },
+  "characters/crinso-evo-3.png": {
+   "source": "6d954c2574b36e5f98098b1dce2f5fa8333a2ba328bd1aba4f4343648f08c422",
+   "bytes": 679304,
+   "avif": 202301,
+   "thumb": 57161
+  },
+  "characters/crinso-evo-4.png": {
+   "source": "67e41c27f4f90cd7c531ee28ff9f15e831141b14a50b6dce62068b2996e6e240",
+   "bytes": 714954,
+   "avif": 213485,
+   "thumb": 70974
+  },
+  "characters/crinso-evo-5.png": {
+   "source": "156d8b1de23be864cbefe248acdff48763c2b62dc6eed66a7ecc62ece9e7a7aa",
+   "bytes": 1037452,
+   "avif": 354619,
+   "thumb": 97470
+  },
+  "characters/crinso-evo-6.png": {
+   "source": "72a4da87e9a9339eda4442496aa1d0da7993ffb4f642ea7045b58a37e8d58d81",
+   "bytes": 1061897,
+   "avif": 402066,
+   "thumb": 114898
+  },
+  "characters/crinso.png": {
+   "source": "9b759987d8f4f59ff0179b698a3280749e216aa98de0843d268287450aad70b8",
+   "bytes": 646866,
+   "avif": 179686,
+   "thumb": 53709
+  },
+  "characters/disciple-evo-2.png": {
+   "source": "fa136526df4044a507b9d22fdca71e7eeaa653dd9d1ca11d1b6fd5227432766c",
+   "bytes": 651461,
+   "avif": 183902,
+   "thumb": 55755
+  },
+  "characters/disciple-evo-3.png": {
+   "source": "261fa2b6753cb04b78d09f73d96c16f73db75a0639997aa4696b7582caeb1d86",
+   "bytes": 658997,
+   "avif": 198554,
+   "thumb": 61307
+  },
+  "characters/disciple-evo-4.png": {
+   "source": "bed3ce50fc70493bd18a86ce74d827e33e201ffd0249c2cd6273ac560709bcd1",
+   "bytes": 637878,
+   "avif": 237953,
+   "thumb": 73781
+  },
+  "characters/disciple-evo-5.png": {
+   "source": "e87f847bdbe78d37da1bc074de967f508ca1a667ef60e05d2238902057dbca57",
+   "bytes": 827446,
+   "avif": 280228,
+   "thumb": 81500
+  },
+  "characters/disciple-evo-6.png": {
+   "source": "505a5a96b2c38231741e6a976939d2b7bf6179fe07ff13cc5f78478368989769",
+   "bytes": 1030314,
+   "avif": 323848,
+   "thumb": 94783
+  },
+  "characters/disciple.png": {
+   "source": "a248147a68c9b7f8b7f2067c78397c8968a77e7ba9d8c01d0474f77c7447d8e0",
+   "bytes": 546824,
+   "avif": 140167,
+   "thumb": 42078
+  },
+  "characters/elise-evo-2.png": {
+   "source": "eeb7fc2461ca67a0a74cb76e926dcd458e26486de38d8dcaf723d0efa587a585",
+   "bytes": 561718,
+   "avif": 172820,
+   "thumb": 53341
+  },
+  "characters/elise-evo-3.png": {
+   "source": "fb64faf69c69f0ac5b4dee972d93b6b417dd8c4a075ec6dfcacc527ac4107e50",
+   "bytes": 569759,
+   "avif": 179224,
+   "thumb": 52646
+  },
+  "characters/elise-evo-4.png": {
+   "source": "0ba0f56289a3b3af18b220b3b2f15c8716c108ae7a92377e89a1204c38d63bfe",
+   "bytes": 601598,
+   "avif": 214068,
+   "thumb": 63503
+  },
+  "characters/elise-evo-5.png": {
+   "source": "b24f59839d20170b4eae26f7b5953827c71023bb8efaccf66107ce54f04d1387",
+   "bytes": 962538,
+   "avif": 319894,
+   "thumb": 93691
+  },
+  "characters/elise-evo-6.png": {
+   "source": "b1c35595ea23eeed9aed52dedb515596a0d5f68464da9fc9e6baaa99ed14554b",
+   "bytes": 884458,
+   "avif": 283037,
+   "thumb": 79676
+  },
+  "characters/elise.png": {
+   "source": "5c46be99251dd18cab84a208095665ab9d006e80e6d0b4243cb1fbf1d0c92553",
+   "bytes": 408728,
+   "avif": 114819,
+   "thumb": 36966
+  },
+  "characters/flora-evo-2.png": {
+   "source": "216d8fddf45f9bbcaeae63f2bf8c0e54cc37a9ef214781c8e2dba2d8ee1e96d8",
+   "bytes": 628199,
+   "avif": 190679,
+   "thumb": 57383
+  },
+  "characters/flora-evo-3.png": {
+   "source": "f912f564390a3a618e8e2d45a5c7f8cbcf412115754d5a24bf8544a7c5febe00",
+   "bytes": 680199,
+   "avif": 184584,
+   "thumb": 58470
+  },
+  "characters/flora-evo-4.png": {
+   "source": "9af2e488594034fc396163e2fed2347814b2c5e572bf0e64e3fd1aca4deae7ee",
+   "bytes": 696403,
+   "avif": 256878,
+   "thumb": 76559
+  },
+  "characters/flora-evo-5.png": {
+   "source": "3a629be7a3171412743bf63763cd71c4566d0422b659c07ebc2164c949ec9240",
+   "bytes": 906441,
+   "avif": 310204,
+   "thumb": 93291
+  },
+  "characters/flora-evo-6.png": {
+   "source": "a9f83022492fb0c7f28ada8db7a08bc4c65d6a5c92b23fec5a428a4a2640e6eb",
+   "bytes": 1057457,
+   "avif": 305419,
+   "thumb": 88266
+  },
+  "characters/flora.png": {
+   "source": "ed45fa0ff56d60cf57df8cdf15506309efdfea82dc6f67820fe82b6c1951f884",
+   "bytes": 568248,
+   "avif": 151204,
+   "thumb": 46368
+  },
+  "characters/infernis-evo-2.png": {
+   "source": "a07e754b46ec0c044ac0184d0c6689b01ccc283290a85bb4906eb084393a52c1",
+   "bytes": 608650,
+   "avif": 175536,
+   "thumb": 58511
+  },
+  "characters/infernis-evo-3.png": {
+   "source": "b7572f94e1cd788f47d90f53105e1700952b7a87a268695add8fc32bc9836c39",
+   "bytes": 626725,
+   "avif": 181797,
+   "thumb": 59832
+  },
+  "characters/infernis-evo-4.png": {
+   "source": "90dc0720aa52226dd61fd8dacd7b0568ec7dcd32f9747952994fa1d92f1ce874",
+   "bytes": 651711,
+   "avif": 232452,
+   "thumb": 71219
+  },
+  "characters/infernis-evo-5.png": {
+   "source": "2e54fc133f7ec7ba4008eecfd7d75d0a124905e601cb18e1d162086e870f8a83",
+   "bytes": 977224,
+   "avif": 295902,
+   "thumb": 84849
+  },
+  "characters/infernis-evo-6.png": {
+   "source": "6069adb5b9240734839dbcfbb768779654238f80a36dfab2a3ea53371e15c6ef",
+   "bytes": 944527,
+   "avif": 345670,
+   "thumb": 99851
+  },
+  "characters/infernis.png": {
+   "source": "f1dfca73694210efa5b5bb44016d98880e5836594efe55ba85f8c43e03f9c49f",
+   "bytes": 569490,
+   "avif": 146689,
+   "thumb": 44092
+  },
+  "characters/nerithe-evo-2.png": {
+   "source": "42b693d24a1aa78706d9d01c2da969caf7f08c681aa564e2c75dc75b482e5b50",
+   "bytes": 793252,
+   "avif": 240669,
+   "thumb": 73875
+  },
+  "characters/nerithe-evo-3.png": {
+   "source": "22ff8fd31c8c3dcfd72918d8f05223ee81decc34d5b510d6372f036a06b69454",
+   "bytes": 657593,
+   "avif": 214458,
+   "thumb": 67277
+  },
+  "characters/nerithe-evo-4.png": {
+   "source": "aeb989705886eee5a51a7029ad90c31546122d4664bdea130e81a26c53a54143",
+   "bytes": 758028,
+   "avif": 254588,
+   "thumb": 79594
+  },
+  "characters/nerithe-evo-5.png": {
+   "source": "831535e0e83ff89638f3f9e8914e5b8957c57935258c580058df839e162b6332",
+   "bytes": 919868,
+   "avif": 274208,
+   "thumb": 83733
+  },
+  "characters/nerithe-evo-6.png": {
+   "source": "606070da88ffa2b1fcd8f53c917264b6f99cb3c98aa88d4554801650a37e16b9",
+   "bytes": 1042664,
+   "avif": 328769,
+   "thumb": 94709
+  },
+  "characters/nerithe.png": {
+   "source": "627959c92fc4b377c202289e478b05d5a09dad65a121a2a733b3d3ff3b923d80",
+   "bytes": 675991,
+   "avif": 207482,
+   "thumb": 70570
+  },
+  "characters/orvella-evo-2.png": {
+   "source": "589ef0daa278f16fe03c851569372fead81058206f313ab2efcf940f92f1be38",
+   "bytes": 701674,
+   "avif": 207912,
+   "thumb": 60519
+  },
+  "characters/orvella-evo-3.png": {
+   "source": "7089d0e31d0a293d0625651fce0e6b00f8df5708eec89a815a3a8043dc48a8e2",
+   "bytes": 771503,
+   "avif": 228698,
+   "thumb": 70641
+  },
+  "characters/orvella-evo-4.png": {
+   "source": "30c6905eb5f430b2614b53031f69ae761a645f410d2da2e3778af865568b3549",
+   "bytes": 871733,
+   "avif": 248104,
+   "thumb": 72693
+  },
+  "characters/orvella-evo-5.png": {
+   "source": "50f2aba47556b8ce909f74c6caab64548fff607a9e71164028ea06ee28cc4c9e",
+   "bytes": 1037469,
+   "avif": 313088,
+   "thumb": 83177
+  },
+  "characters/orvella-evo-6.png": {
+   "source": "f8559943b59dc31e68fe8a06ff019f91df6e1e6caa8ae5f6bf1fd09fd1ef446e",
+   "bytes": 945817,
+   "avif": 258987,
+   "thumb": 76555
+  },
+  "characters/orvella.png": {
+   "source": "1c5b09a5d9665af31a08341cf3c4400b862cd40a564eae9480d133afcc46b308",
+   "bytes": 607903,
+   "avif": 169573,
+   "thumb": 51842
+  },
+  "characters/razor-evo-2.png": {
+   "source": "41555b93d77ac38de1e23ecdf290fe1a4f795df72c59b94a15c546827d185577",
+   "bytes": 672578,
+   "avif": 166292,
+   "thumb": 46665
+  },
+  "characters/razor-evo-3.png": {
+   "source": "845663f0e59a231dd65c6c2c9686aa3416807cd8397f1abe5956f0dd9f8ce2b1",
+   "bytes": 703018,
+   "avif": 189251,
+   "thumb": 55999
+  },
+  "characters/razor-evo-4.png": {
+   "source": "f99513463db60d657bc1fd8e9bb8729c0ac30c60db62310d5a6104a1bb097b2a",
+   "bytes": 705848,
+   "avif": 212292,
+   "thumb": 61211
+  },
+  "characters/razor-evo-5.png": {
+   "source": "a4bb6e20e763c0c84cda1f6510c5733a79d44d6f899e8a42496b161014ba2db4",
+   "bytes": 932139,
+   "avif": 290099,
+   "thumb": 86103
+  },
+  "characters/razor-evo-6.png": {
+   "source": "37d017080c2c0f2819707c513c05b84d759159e3f58845ae2d5eedec6f1ea2ce",
+   "bytes": 1043559,
+   "avif": 293487,
+   "thumb": 84251
+  },
+  "characters/razor.png": {
+   "source": "fc35234b9a6dee09393695d5e9fdfdfbfdb7aa0c2af7d9fedd71c54ec5409443",
+   "bytes": 537168,
+   "avif": 128019,
+   "thumb": 33995
+  },
+  "characters/rosetta-evo-2.png": {
+   "source": "3d81a22802dc46fcb26037df4ea9af1bdd2662dc0a069cf404ef45ddc55371a3",
+   "bytes": 615976,
+   "avif": 184701,
+   "thumb": 60830
+  },
+  "characters/rosetta-evo-3.png": {
+   "source": "32faced143e30ea7796ce709c3fde1c48dd9b3685e261c201f4174f8ba12fd24",
+   "bytes": 600697,
+   "avif": 190664,
+   "thumb": 61489
+  },
+  "characters/rosetta-evo-4.png": {
+   "source": "4cfce11a15a9e80fce9386cdca8c5065540df955f0cbe02f1861c68f8c8b871c",
+   "bytes": 742607,
+   "avif": 256758,
+   "thumb": 76311
+  },
+  "characters/rosetta-evo-5.png": {
+   "source": "7a55634293c3333e9b972b16ee0e20046a42e3970f831dc955aa783f7a81c0dc",
+   "bytes": 996144,
+   "avif": 269302,
+   "thumb": 85850
+  },
+  "characters/rosetta-evo-6.png": {
+   "source": "4ece321929b4d36917fdaf2cde998dccbac2cc552bf6ba754767fddd66984ca4",
+   "bytes": 1047426,
+   "avif": 371912,
+   "thumb": 103530
+  },
+  "characters/rosetta.png": {
+   "source": "d8ff7d16d061bbb01ac65a560bdfb2736252bf8772d3f2c348717586da54c7dc",
+   "bytes": 622701,
+   "avif": 176204,
+   "thumb": 46890
+  },
+  "characters/thornia-evo-2.png": {
+   "source": "ab02f91914b2dcdc1b7378d9b165f21023d39bf2b44ddf20a28f071944c4346c",
+   "bytes": 628870,
+   "avif": 185800,
+   "thumb": 55277
+  },
+  "characters/thornia-evo-3.png": {
+   "source": "28412484ed5bfcd3cd30cfeae750391956e876d9a3c55c7c7f823f14e322a78a",
+   "bytes": 657225,
+   "avif": 171500,
+   "thumb": 44199
+  },
+  "characters/thornia-evo-4.png": {
+   "source": "8473d4b7f7a8f7826fbe5c99cbd001c89fb8b4d4fef3e0304b26dc7430a73f6b",
+   "bytes": 763182,
+   "avif": 261118,
+   "thumb": 77969
+  },
+  "characters/thornia-evo-5.png": {
+   "source": "65cfc6a35e7e2e8141dd2dcadd71b18addc052504da8e6c256bdd89ea96bd3ee",
+   "bytes": 980960,
+   "avif": 346167,
+   "thumb": 96096
+  },
+  "characters/thornia-evo-6.png": {
+   "source": "f8357e7ec49ef08067ea7fe18bd944cb5d772403a5305e5453e19582d9417694",
+   "bytes": 1060465,
+   "avif": 345726,
+   "thumb": 100547
+  },
+  "characters/thornia.png": {
+   "source": "303a03220438219ed980f006583cc759f7c02dce42420577657d29c00d3f9a36",
+   "bytes": 664745,
+   "avif": 177271,
+   "thumb": 47758
+  },
+  "characters/tizu-evo-2.png": {
+   "source": "3d095999915d018d06d3aaa4916403c32d2527e757df72d1553682f94e2e30e3",
+   "bytes": 661660,
+   "avif": 199720,
+   "thumb": 60901
+  },
+  "characters/tizu-evo-3.png": {
+   "source": "e3417167da89686fd13f4d13d834c2741e3ed5042cd1d17751accb184df7f5fd",
+   "bytes": 607670,
+   "avif": 173060,
+   "thumb": 58437
+  },
+  "characters/tizu-evo-4.png": {
+   "source": "64d589e2815c9e500ceb627394a8d1d64ce3dea835d2381f65a144f91045ef47",
+   "bytes": 670304,
+   "avif": 243700,
+   "thumb": 77580
+  },
+  "characters/tizu-evo-5.png": {
+   "source": "c94506b60dfd217ef4ae85443bc7ef70a3dd8cc2808753b32d25247507ce589f",
+   "bytes": 913358,
+   "avif": 312396,
+   "thumb": 97717
+  },
+  "characters/tizu-evo-6.png": {
+   "source": "923f36b217b6b8a8564300eb70768ebfa5b95a300ac2be3b1ea2ca25c2fcb2da",
+   "bytes": 1085523,
+   "avif": 369998,
+   "thumb": 106373
+  },
+  "characters/tizu.png": {
+   "source": "9477f1092ff7d6e78ced159fed8def7b3d875a0a90e3a7d09895e1e050351c4e",
+   "bytes": 630123,
+   "avif": 177002,
+   "thumb": 54320
+  },
+  "characters/vaelor-evo-2.png": {
+   "source": "ff7c89d01a2f7e80de70410077dd0207a47045b6948fc70a2c60bb9c372c5c72",
+   "bytes": 651865,
+   "avif": 179916,
+   "thumb": 56227
+  },
+  "characters/vaelor-evo-3.png": {
+   "source": "d443cb8b715d20aec7ae8dc4d42bd65901cd491b4c75f268ecbbf5e8ca49624a",
+   "bytes": 606029,
+   "avif": 195711,
+   "thumb": 63820
+  },
+  "characters/vaelor-evo-4.png": {
+   "source": "3f2512287aa428a83fb7a5f61002f83501fa545f286f207423adb9bd0c385d74",
+   "bytes": 865777,
+   "avif": 291061,
+   "thumb": 86327
+  },
+  "characters/vaelor-evo-5.png": {
+   "source": "6a7acb768e20219012c405dbd31f249929fdc41edbf569994bd1eb151129b307",
+   "bytes": 969134,
+   "avif": 287111,
+   "thumb": 86345
+  },
+  "characters/vaelor-evo-6.png": {
+   "source": "59a769e9b1c7d2ef5c5b0db32e6cd240bb635367deaced57654c5eabc364f8c5",
+   "bytes": 1009905,
+   "avif": 329805,
+   "thumb": 90909
+  },
+  "characters/vaelor.png": {
+   "source": "d8ddb1074e7c896bb0e288d9d8a1fb55663b789811c84b1f82f4c86f1c2f1b66",
+   "bytes": 643129,
+   "avif": 196240,
+   "thumb": 65403
+  },
+  "conduits/aegis-capacitor.png": {
+   "source": "a0a88a2f4c5b0363c7df52399f46149911a78c7674023814646e768368513db3",
+   "bytes": 73252,
+   "avif": 28801
+  },
+  "conduits/aegis-return-spring.png": {
+   "source": "0d98cbc110cf5bb5b81530f0193a115fb4eb1f7b7d5b7df193ed6817556dc284",
+   "bytes": 75195,
+   "avif": 37705
+  },
+  "conduits/aquatic-leviathan-pump.png": {
+   "source": "20ca7bcf98f965824d9bdf8b1a801498eb7870a485ec36fea67b891712b1035c",
+   "bytes": 113012,
+   "avif": 55165
+  },
+  "conduits/aquatic-undertide-chronometer.png": {
+   "source": "12ebe907c893ef6042aadbf542b4af37da3f9d9de3e19f8e97b12c29658ab62b",
+   "bytes": 59599,
+   "avif": 31966
+  },
+  "conduits/astral-prism.png": {
+   "source": "f08dd4ab07ff354786979243bb91e736926ee21ae44ab7e4b54de1ddcaf3714f",
+   "bytes": 82456,
+   "avif": 51514
+  },
+  "conduits/atmospheric-griffin-turbine.png": {
+   "source": "10bb480947c39c808be5ee3be534389e8eab43c7b32c3bb641c021e5b0873e2c",
+   "bytes": 98095,
+   "avif": 57166
+  },
+  "conduits/atmospheric-skythread-rudder.png": {
+   "source": "42907dab9e4c47cba9854e96bb226c4ad8e1f351f87bbe18c40f5f8afaf7968b",
+   "bytes": 47883,
+   "avif": 24201
+  },
+  "conduits/atmospheric-storm-clock.png": {
+   "source": "d6163b1e2238054a0ac903a6266ab54e5ffbb3b10f9f83cefa4277c2a9914bc8",
+   "bytes": 82709,
+   "avif": 46839
+  },
+  "conduits/bastion-lock.png": {
+   "source": "ee2afa3279702490b4e7e88e887bdad66f88371e27848a0471001509fbe333e5",
+   "bytes": 75107,
+   "avif": 18049
+  },
+  "conduits/botanic-graft-covenant.png": {
+   "source": "de4228aef5b0e5ad42a3cecb5de0a31a358d566dd9b187ae03aee5d8cdcaa666",
+   "bytes": 76590,
+   "avif": 36720
+  },
+  "conduits/breach-pendulum.png": {
+   "source": "d15ac29a0e6c87d3879a0a0f7c5c43244c672e62cc03405177d8306eb50b1b80",
+   "bytes": 57648,
+   "avif": 25494
+  },
+  "conduits/calamitic-cathedral-final-equation.png": {
+   "source": "27a5991a96016148db8bfadc6a1f7617f69e2253ce1d0445af667b4b261ed111",
+   "bytes": 80576,
+   "avif": 33027
+  },
+  "conduits/calamitic-causality-funeral-engine.png": {
+   "source": "b349929b2d39ea77d9f2800d26e6d47cb6c727bdb662f55745593e6570e11b8b",
+   "bytes": 74621,
+   "avif": 31267
+  },
+  "conduits/calamitic-horizon-cleaving-godpress.png": {
+   "source": "ebc759c07443f56ba43f99e505f1e3d0cc9bb2fdcbaf1d1c3f2427201bf3f8c7",
+   "bytes": 90667,
+   "avif": 40345
+  },
+  "conduits/calamitic-throne-borrowed-tomorrows.png": {
+   "source": "e464850e5dd5161685c18a2aaf4b05652570c2295b196af76cc970d845833480",
+   "bytes": 79088,
+   "avif": 32340
+  },
+  "conduits/calamitic-world-eater-orrery.png": {
+   "source": "2e9ee72fb64d83e3c207790bbf3a921fc23f140ecbe3f81274db472ca7d18d60",
+   "bytes": 86578,
+   "avif": 40931
+  },
+  "conduits/chaotic-fault-verdict.png": {
+   "source": "872bbba3de17a12c35e3a7dd7b7f36d5d54c18b50f4f813768611c9830a9c34e",
+   "bytes": 68225,
+   "avif": 37684
+  },
+  "conduits/chaotic-ouroboros-core.png": {
+   "source": "3cf3faf22378b8fb3d90a7fc821e89e34f4c63133ee9cb754f15cfb8b0b353cc",
+   "bytes": 94619,
+   "avif": 48995
+  },
+  "conduits/chaotic-paradox-spindle.png": {
+   "source": "e6efd9a57b515e76534ff8388e5ba8c2decda178ed27fa854ed23f84562cc9c5",
+   "bytes": 66063,
+   "avif": 31008
+  },
+  "conduits/cinder-metering-nozzle.png": {
+   "source": "372cabd79f64df2030f8831b02e14b7cd88a97f9e44783207ab6f5f52523afeb",
+   "bytes": 68163,
+   "avif": 29103
+  },
+  "conduits/citadel-spine.png": {
+   "source": "0d20ebf2a28c01eb78a08d402ac09906ff1a0bdefd26eb7e77da3941d07aff81",
+   "bytes": 84338,
+   "avif": 31307
+  },
+  "conduits/clearwater-manifold.png": {
+   "source": "a57fa11be18359d05e23d254b36fc1e9e60ff44f3444b35600ca6930af2687c8",
+   "bytes": 85003,
+   "avif": 41248
+  },
+  "conduits/coilfeed-ratchet.png": {
+   "source": "4793a2ec2ff497b51b73efa3a5c46f4031c10a5b0d78745ffbb8e69f1c98e6c1",
+   "bytes": 78881,
+   "avif": 32570
+  },
+  "conduits/covercharge-drum.png": {
+   "source": "8166b9b6227a4dec7a1ea850caeb011d6eb600590e028700b63eca0f3820ee32",
+   "bytes": 89575,
+   "avif": 39402
+  },
+  "conduits/crosspin-governor.png": {
+   "source": "2640be5f9798d8e43d665af70c3e3df667515662b62873ae84ef1331e240a9da",
+   "bytes": 71401,
+   "avif": 29235
+  },
+  "conduits/duplex-heart.png": {
+   "source": "c7a6374333494b3106bd8deae69de116dbdee1cee795fda0ee2dbea2b068eea5",
+   "bytes": 102352,
+   "avif": 34964
+  },
+  "conduits/efflorescent-verdant-covenant.png": {
+   "source": "4024aa119d57c4f9221d8b45c8b3131974dab1edf8f917f11c47c48981ef0d6e",
+   "bytes": 62967,
+   "avif": 33445
+  },
+  "conduits/efflorescent-worldtree-heart.png": {
+   "source": "cba684b33bada5889bbe7a39c766a9fcb1e82656778e297bfe559a41324435a4",
+   "bytes": 113604,
+   "avif": 67085
+  },
+  "conduits/emberlife-kiln.png": {
+   "source": "bbca47f0986a1a218501c17bcd9ef9cf21f4eff7f4a5577b0a91230a420c07a3",
+   "bytes": 82682,
+   "avif": 45724
+  },
+  "conduits/execution-orrery.png": {
+   "source": "8cb2101f0b469c54fe6cb2ee348b78966b5ef58fbdd483ce895fe53f38c21852",
+   "bytes": 76831,
+   "avif": 38707
+  },
+  "conduits/falcon-sight.png": {
+   "source": "2afe67d6a7d177596da4fa7ef7778c67c1d700b7be5788a1b7ad1d9deca6a3b2",
+   "bytes": 59375,
+   "avif": 22458
+  },
+  "conduits/fieldbrace-coupler.png": {
+   "source": "6fe9c05cac8827f5676ed8d70207c5c27e3d61fe322b71147f4356ca24de5d3b",
+   "bytes": 61317,
+   "avif": 31123
+  },
+  "conduits/firstlight-cam.png": {
+   "source": "8caaea58e155cd865e78cc421c27a0111634b85100c78c21a388696673418efb",
+   "bytes": 66533,
+   "avif": 33564
+  },
+  "conduits/flare-focusing-iris.png": {
+   "source": "cf9d2b4b88a311f67ef1246b67cb92305c7caf76e9cd3e59aacded74f4ca1585",
+   "bytes": 72671,
+   "avif": 38610
+  },
+  "conduits/fracture-reservoir.png": {
+   "source": "dd24c52094ad3927b9be302f604ef5ba4d6c25f2ebd095899b1d3ae1f353bd87",
+   "bytes": 96322,
+   "avif": 32628
+  },
+  "conduits/glassroot-gimbal.png": {
+   "source": "194429ddddd98c20d022798e9084138391f380170f7bbfdd2b5af27fcd9e68ae",
+   "bytes": 60258,
+   "avif": 27016
+  },
+  "conduits/granite-hourglass.png": {
+   "source": "a81eb4795843d3ebcf573bbc9e848b35d2bb05025a230fa9cd354bdd3f65f5a9",
+   "bytes": 72786,
+   "avif": 32426
+  },
+  "conduits/hammerbalance-link.png": {
+   "source": "733c7f15cbd03f63c3ec0cead6257b91c26b293d1137df4776760e855d4698f1",
+   "bytes": 54487,
+   "avif": 30105
+  },
+  "conduits/horizon-heartcase.png": {
+   "source": "783b0c11164489c898e7566bcd121b922ddc64795c3f9e51a06f08cfd9ac8973",
+   "bytes": 87117,
+   "avif": 42394
+  },
+  "conduits/immortal-vessel.png": {
+   "source": "d3ef7849ea21b7f3deedd91bf25eae80c312fdd875b8d61b7c73d7015be793a0",
+   "bytes": 83849,
+   "avif": 29937
+  },
+  "conduits/infernic-cinder-testament.png": {
+   "source": "d4684869dedb41420547b4363ac90e217a170771ca7adf99ed8f161d88fb45ef",
+   "bytes": 69339,
+   "avif": 34163
+  },
+  "conduits/infernic-phoenix-reactor.png": {
+   "source": "9c075a1a7b1c61917e2fc29f6c380a17eb60e8d980289d8fa77ee34fd77d3cb4",
+   "bytes": 112410,
+   "avif": 62720
+  },
+  "conduits/infernic-pyre-census.png": {
+   "source": "92ec31d6773812a77dbba3ececf4d3cac2513737af035230d31465a694277bd3",
+   "bytes": 97800,
+   "avif": 45268
+  },
+  "conduits/judgment-lens.png": {
+   "source": "c2a2d671a6247968de2254f69828fcf70b808866fbcfeb10497b289d9dc4c888",
+   "bytes": 91240,
+   "avif": 42174
+  },
+  "conduits/lifeline-flywheel.png": {
+   "source": "e5af428eaf6193a523b18c005d23872d49f65c4a6c3809098dae7067e2dfd030",
+   "bytes": 84814,
+   "avif": 33969
+  },
+  "conduits/luminous-dawn-witness-array.png": {
+   "source": "bc3b7feb547f3a9eabaf5bece0daebec52d748a7ab09886f61a31b13ecb32acd",
+   "bytes": 67478,
+   "avif": 34260
+  },
+  "conduits/luminous-seraph-mirror.png": {
+   "source": "7e53b453c0878d11e3ae45e3bc1a7edbf16889a6f869d2911d7c8e9594107260",
+   "bytes": 101253,
+   "avif": 65610
+  },
+  "conduits/mending-valve.png": {
+   "source": "5e37af315c95fa0795ec14a7a10bf32f905167a66dc1c59fcfba49656253d4a1",
+   "bytes": 83453,
+   "avif": 38336
+  },
+  "conduits/meridian-inverter.png": {
+   "source": "87020269e133aec87a1a826b6cf6bc9e483293a3b8cad0ed81a463acf88272cb",
+   "bytes": 62357,
+   "avif": 27735
+  },
+  "conduits/nullsong-transmission.png": {
+   "source": "a4e65e085df15981751f4afafa59fe1b2216dd08afd735e8f772016abdf2b739",
+   "bytes": 87511,
+   "avif": 41441
+  },
+  "conduits/oceanic-shared-tide-pump.png": {
+   "source": "5f2c74d674c9519bfb6cac65faecb56f50108debfe68879408a034e22cc45bc4",
+   "bytes": 78029,
+   "avif": 37692
+  },
+  "conduits/ominous-eclipse-mantle.png": {
+   "source": "7c92463ff5018f62326b53b96e3db77d2372f5f05dc80ac4e2d8916ac9b8ec45",
+   "bytes": 83011,
+   "avif": 41327
+  },
+  "conduits/ominous-nightglass-archive.png": {
+   "source": "3212321fb397a712c30a27821999285d75ff7dd0ddf2511644c7afbff9b32131",
+   "bytes": 66968,
+   "avif": 25488
+  },
+  "conduits/opal-indexer.png": {
+   "source": "81772f5153eab2697d984a3bbc82f2b2b65c273bd25ff1d09c2fdf81d698f912",
+   "bytes": 70957,
+   "avif": 35148
+  },
+  "conduits/pale-bulwark-diadem.png": {
+   "source": "7fe6f701ed582a9f85c6498cfaa9b40bada0239d3c365d33c33a6375c4938ae5",
+   "bytes": 62281,
+   "avif": 29731
+  },
+  "conduits/parallax-relay.png": {
+   "source": "7ab1c9d03affa70f5f310eb374edbd581fda65c2eb8dec6361086289b3b1191a",
+   "bytes": 82339,
+   "avif": 24108
+  },
+  "conduits/precision-escapement.png": {
+   "source": "144babc7603ed0be8f474df77225c9f2c258b30c02f1283b5906e166431ad2b3",
+   "bytes": 75776,
+   "avif": 35265
+  },
+  "conduits/pressurecrest-governor.png": {
+   "source": "9d9b1ceae89bbad8e5b1307aed0a1444f6dff2851fa814bd906d473a62d5e498",
+   "bytes": 85992,
+   "avif": 40251
+  },
+  "conduits/prism-splinter-socket.png": {
+   "source": "e1ede40e00c756a3b20643a9708641d0f4a0702dedf03738578b39e919538b0b",
+   "bytes": 61058,
+   "avif": 26955
+  },
+  "conduits/pulse-trigger-pawl.png": {
+   "source": "da0efac3127de4657c8bc5bf2bf95de636eeeb0f78bfa0299792a77ec0c8cee1",
+   "bytes": 79444,
+   "avif": 37654
+  },
+  "conduits/reserve-torque-crank.png": {
+   "source": "e6b6062657ba76188c7d7663704dce6673784019f675a746797e1036e054c088",
+   "bytes": 80571,
+   "avif": 38329
+  },
+  "conduits/resonance-crucible.png": {
+   "source": "71bc330d57c0b117c21f5c85b00db5077a5b9327f0f00941479cbc9b40cea1fa",
+   "bytes": 63549,
+   "avif": 31314
+  },
+  "conduits/rootbound-triage-vault.png": {
+   "source": "a7f040b3c94ee7238b24bd6fb25f816a4750aeb2e63620e8c6feb27dfb00f516",
+   "bytes": 83728,
+   "avif": 38186
+  },
+  "conduits/ruinselect-prism.png": {
+   "source": "cb51b6c13af0679645a37e55389a365536957a4a3cf53787f8c98abc02b252dc",
+   "bytes": 70793,
+   "avif": 34936
+  },
+  "conduits/secondbeat-rack.png": {
+   "source": "f7efbcb32c1f4e7cab4f9bd4a2017944711daa59a7e3af27497b55501be4c935",
+   "bytes": 75803,
+   "avif": 34893
+  },
+  "conduits/sentinel-aperture.png": {
+   "source": "2fd8650cc9a85e03cce6309be7c494557752250c5b60f28446f4c3f5ef9db03d",
+   "bytes": 84986,
+   "avif": 27730
+  },
+  "conduits/siege-cantilever.png": {
+   "source": "9e90700283074edf46ceae585b0b1a901f60f4fa8be7e2dae7ed7792fe62f241",
+   "bytes": 40406,
+   "avif": 19251
+  },
+  "conduits/siegebound-drive.png": {
+   "source": "7ba91e9f9bf6b7ccddcd09acd3521239378315733da5ab4f1bf41b7fdd0667b5",
+   "bytes": 84668,
+   "avif": 26581
+  },
+  "conduits/solace-anchor.png": {
+   "source": "66abbf0aaf9905f2ed356e3f5ad382fdb4eb0481d3ffcfd01005b44fff9e2e36",
+   "bytes": 68553,
+   "avif": 36083
+  },
+  "conduits/sootwake-crucible.png": {
+   "source": "20a0f6ae69845271d755a5e524af4affa48bdb14f2c3cfab94121fbb5c72b5bd",
+   "bytes": 74826,
+   "avif": 39325
+  },
+  "conduits/spearwheel-engine.png": {
+   "source": "c5753db4463d78c5ba4da35d67c95741c31d00c36a61bd4342108eb2e632b091",
+   "bytes": 79432,
+   "avif": 34088
+  },
+  "conduits/springwell-pump.png": {
+   "source": "902780fbbb7c9e6950ac33865af961514c3d2e736dfab40639995e59973542cf",
+   "bytes": 85199,
+   "avif": 35505
+  },
+  "conduits/starvein-conductor.png": {
+   "source": "b84b631045bd4c35ba789dc5601d9e10abdcd5f9e258fdee7906db60e666f7f3",
+   "bytes": 76540,
+   "avif": 38599
+  },
+  "conduits/stasis-reliquary.png": {
+   "source": "e4149ac136509afbf005c5574f68929e3adff92c834325b5da6cd578b43ed05d",
+   "bytes": 79373,
+   "avif": 32990
+  },
+  "conduits/tectonic-atlas-bastion.png": {
+   "source": "8f483e5416b042528d40dbffce4a36b16c883c7f7bb01553981d858145532623",
+   "bytes": 94361,
+   "avif": 53835
+  },
+  "conduits/tectonic-faultkeeper-loom.png": {
+   "source": "14e4545894434e1b2816dc42218e21d535459b04ff95d7928c0676a8315b2620",
+   "bytes": 61472,
+   "avif": 29293
+  },
+  "conduits/tempered-strike-link.png": {
+   "source": "a6f0cf4d25d34c03346f0a8beea767756fb322227da8c46533e5d0e75687459f",
+   "bytes": 81913,
+   "avif": 47383
+  },
+  "conduits/tension-governor.png": {
+   "source": "735112afb696aaaf64777e85b9a56f51e56307ed2a15d2b4f3eca33e5ce4cc6c",
+   "bytes": 80742,
+   "avif": 44686
+  },
+  "conduits/tidebound-reflector.png": {
+   "source": "5439e8999af07e51e062fe04aae18c86a52a2aefe26377cc5557f1e9245a7e13",
+   "bytes": 58379,
+   "avif": 29852
+  },
+  "conduits/tranquilitic-accord-bastion.png": {
+   "source": "9b04d23ac004996c891975d3f35c4f158aa81fecf3960f1b5372b711930e79e8",
+   "bytes": 74291,
+   "avif": 35736
+  },
+  "conduits/tranquilitic-kirin-cradle.png": {
+   "source": "423384b0e42ff606f6ffdf8286af6900fd04cbdc61bde82a016416ff57b24190",
+   "bytes": 87004,
+   "avif": 55960
+  },
+  "conduits/tranquilitic-stillhour-carillon.png": {
+   "source": "8fb7982bc95cefe077855aea391e701d3764d1978c39612812c61da75055ec14",
+   "bytes": 69884,
+   "avif": 35159
+  },
+  "conduits/twinpulse-bellows.png": {
+   "source": "44c6e1f3fe1b98f0800a4c93ef7de2a8d80225f14e5de87693bd324c621dfe6d",
+   "bytes": 89818,
+   "avif": 42528
+  },
+  "conduits/verdict-caliper.png": {
+   "source": "dedc90abe97b24b0d60be53dc3b341123288102aaa5e4f7f10b671f20f06417d",
+   "bytes": 68757,
+   "avif": 31951
+  },
+  "conduits/vigil-core.png": {
+   "source": "7f03b76a6316a371bee0df9e8538bfe2fd68bb109d6d992f02bb47cd9d55c19d",
+   "bytes": 82031,
+   "avif": 24701
+  },
+  "conduits/voltaic-stormstep-dynamo.png": {
+   "source": "cc73980037a2965d27619d96c4132be1b2a4c140395c3c7fbf5b44b23baf97f3",
+   "bytes": 77849,
+   "avif": 43224
+  },
+  "conduits/voltaic-thunderbird-coil.png": {
+   "source": "086d7790eb2ab0983dddb5c113bb242201360df17f7445cd8349b65ca14092b8",
+   "bytes": 103891,
+   "avif": 56195
+  },
+  "conduits/ward-stitch-spool.png": {
+   "source": "16607bddce83d8a2c5fc2813ae69470066295b5288cd70d29e835aa1a96ade4c",
+   "bytes": 89091,
+   "avif": 45515
+  },
+  "conduits/wardglass-transformer.png": {
+   "source": "983cb2b4e9bedee68a53896a9974ffb2f7944ff20d69baf7f70a067648dadbf3",
+   "bytes": 89857,
+   "avif": 37229
+  },
+  "conduits/worldbreaker-drive.png": {
+   "source": "2eb47dd43b184134e93171c19b72afa44d3d6c115cecf9a54fc23346366b67cf",
+   "bytes": 84324,
+   "avif": 42158
+  },
+  "currencies/calamitic-tokens.png": {
+   "source": "1902911f782abda46b94d7d104400d6b1b649cffac4ff95a4a2ef6378b33e4ab",
+   "bytes": 85614,
+   "avif": 26584
+  },
+  "currencies/fractalis.png": {
+   "source": "286ac742e7045b0bb698f3eda29f6abddb2b5c44ce63315e22579db7dd839d89",
+   "bytes": 67486,
+   "avif": 23037
+  },
+  "currencies/lycalis.png": {
+   "source": "aa20d2a455a9099c6c953aadeb57fc4ccc985829ca4c09ba4da73b2622874eae",
+   "bytes": 81430,
+   "avif": 35958
+  },
+  "currencies/mechanical-components.png": {
+   "source": "fa4b2804710aacb133f33901d47641450af3411cd9c14541d121d46bb826f00e",
+   "bytes": 93886,
+   "avif": 52712
+  },
+  "elements/aquatic.png": {
+   "source": "3e1a2ab2d2528304f7a7f6c610769d39bd67a3d35ae71db00ebe46af1e069cf8",
+   "bytes": 89491,
+   "avif": 30471
+  },
+  "elements/atmospheric.png": {
+   "source": "32a76efd91448f1d4c83f622325ae6bb27db5860f860f644069a2dcea1f5a8bf",
+   "bytes": 92648,
+   "avif": 29961
+  },
+  "elements/chaotic.png": {
+   "source": "5efa3386c9d37aa8dbcea69265ed0e57d0e326f2417f0dfe7ebcba15ea290110",
+   "bytes": 94891,
+   "avif": 31939
+  },
+  "elements/efflorescent.png": {
+   "source": "77ed446d117b777ccef75d576471df5cf7ac0ccc70f14ca9005fff7f5763af38",
+   "bytes": 90076,
+   "avif": 29513
+  },
+  "elements/infernic.png": {
+   "source": "9342783a54ff24d86db0526b567d73f5fff33d02d399c794851290fdbf214a8d",
+   "bytes": 70028,
+   "avif": 26925
+  },
+  "elements/luminous.png": {
+   "source": "516f16024b55c51c4fb0be15809634f8eadfaafc27cf0c590239237dee80b18a",
+   "bytes": 85077,
+   "avif": 33530
+  },
+  "elements/ominous.png": {
+   "source": "96be736929f65484d65bcc6b7c9914372630d03bae08f941aa84a5cc2969f6f7",
+   "bytes": 84885,
+   "avif": 39041
+  },
+  "elements/tectonic.png": {
+   "source": "c8f382129d139546ac5ef53554707b5024e31370393126c325d780db42021b0d",
+   "bytes": 95183,
+   "avif": 29590
+  },
+  "elements/tranquilitic.png": {
+   "source": "c0bd53ae00076b952d8aec6dfba135cf16d867130f3f085a44423e378ce6d5f4",
+   "bytes": 65703,
+   "avif": 27592
+  },
+  "elements/voltaic.png": {
+   "source": "58123996855aee9e6f1aca7266cc8af016dd665ed4d74aa79acaf07078b41335",
+   "bytes": 72605,
+   "avif": 31027
+  },
+  "enemies/abyss-hunger-beyond-veil.png": {
+   "source": "8e5bbbd0f33919bfbd954160f546b5b487e65baf20e58766a8e85896e5a3caee",
+   "bytes": 695773,
+   "avif": 225699,
+   "thumb": 71001
+  },
+  "enemies/abyss-night-without-end.png": {
+   "source": "30a16f369cdeb3804832a83dc378e1d11ff1d6ff4ed191f09841fc47d97a2534",
+   "bytes": 641793,
+   "avif": 182904,
+   "thumb": 63240
+  },
+  "enemies/abyss-ruins-awakening.png": {
+   "source": "f41ac3554299bded8e680f45e808b63164ded9280ec493af3371571c54c78dfa",
+   "bytes": 618415,
+   "avif": 187808,
+   "thumb": 63895
+  },
+  "enemies/abyss-starless-murmur.png": {
+   "source": "dfb0e81dccd8112fb82c3e93b069bb5d1e97a4d80dd10406138f1bf1dedc667f",
+   "bytes": 660455,
+   "avif": 149073,
+   "thumb": 43447
+  },
+  "enemies/abyss-worldfall-reverie.png": {
+   "source": "2b4394aa5527a8cdc4c541f2a6f00da342ae9315347b42e6f539addef2ab25b4",
+   "bytes": 623766,
+   "avif": 189870,
+   "thumb": 61925
+  },
+  "enemies/abyss-wraththorn-slime.png": {
+   "source": "3025a6e7dc0009cb803d772e28059bbafd1a8f11578554f493cbfee90bb1c472",
+   "bytes": 487661,
+   "avif": 95256,
+   "thumb": 35345
+  },
+  "enemies/abyssbell-oracle.png": {
+   "source": "148e1112dfb73f1b5d50213a15ffcaafdbb4034a7fc949ec30c675a105b10088",
+   "bytes": 754040,
+   "avif": 270526,
+   "thumb": 88456
+  },
+  "enemies/ashling.png": {
+   "source": "9123809b70bd2d04bd00037f8d476b93386bfa4d381779e10b51e7b713cff9a0",
+   "bytes": 501426,
+   "avif": 102360,
+   "thumb": 23097
+  },
+  "enemies/ashwing-harrier.png": {
+   "source": "e3bc0c409f1e0f841c01815399eed4609cb896720afa732437a77d3d47645be7",
+   "bytes": 759201,
+   "avif": 220467,
+   "thumb": 60384
+  },
+  "enemies/atlas-of-the-crystal-summit.png": {
+   "source": "707dbaf42cc2fec793fe549845426bb58406d3f24ec06ebd2d50f787ebb255ad",
+   "bytes": 765703,
+   "avif": 217566,
+   "thumb": 68714
+  },
+  "enemies/bellcap-keeper.png": {
+   "source": "3ef243d3b0cc50edde437bab1dda82b28e15c9a0b3e1e03c89237f249ab16811",
+   "bytes": 581096,
+   "avif": 170695,
+   "thumb": 60067
+  },
+  "enemies/brasshorn-minotaur.png": {
+   "source": "783481880e8a5c455761d97c9dfb35a529707a2c911d14a264f5cff2763bd603",
+   "bytes": 674254,
+   "avif": 198416,
+   "thumb": 66623
+  },
+  "enemies/brineclaw-sentinel.png": {
+   "source": "51bb9a00de5997bcc53bbc7f9b844762c05e87af251d7c50fc941262fb902cb3",
+   "bytes": 682762,
+   "avif": 241619,
+   "thumb": 84946
+  },
+  "enemies/budling.png": {
+   "source": "874f786e95b84c5920a18189c296a05bc0c2b2dced33da4ed400e60b9fb4f715",
+   "bytes": 548094,
+   "avif": 145563,
+   "thumb": 53377
+  },
+  "enemies/calamity-boss-abyss.png": {
+   "source": "02415ed75c92a87f0a5e2657c5366c4b50096807683dff2357f2a88c57ef59e9",
+   "bytes": 669467,
+   "avif": 193178,
+   "thumb": 61618
+  },
+  "enemies/calamity-boss-atmospheric.png": {
+   "source": "5076094c0df139ba644de20ba868d15178f585a3301b0831aa22787de320d39f",
+   "bytes": 956706,
+   "avif": 331882,
+   "thumb": 84156
+  },
+  "enemies/calamity-boss-botanic.png": {
+   "source": "1f495e01000acd473d54978ab3d271823b53fed2b1c02106143533934b21fa70",
+   "bytes": 770592,
+   "avif": 224214,
+   "thumb": 63153
+  },
+  "enemies/calamity-boss-chaotic.png": {
+   "source": "a3b7afb7cd2945ec774bbdec580fc930f0a6c47c43809cbbd9926bbe13a51b06",
+   "bytes": 615531,
+   "avif": 219898,
+   "thumb": 70720
+  },
+  "enemies/calamity-boss-heavens.png": {
+   "source": "fd31e3fdfc94502dc24aa639497328ee93f6917d8a936de2f612f467163866c1",
+   "bytes": 676062,
+   "avif": 277180,
+   "thumb": 85788
+  },
+  "enemies/calamity-boss-infernic.png": {
+   "source": "08fb21e2881174886fac562d1186c263ceb871b70b7242f3010ee2a5f6619849",
+   "bytes": 758723,
+   "avif": 241146,
+   "thumb": 80598
+  },
+  "enemies/calamity-boss-machines.png": {
+   "source": "f6c59bb10cef213fc196fd8d46c43f98b330cbda3762aa1438ab9ff119ec2d85",
+   "bytes": 648499,
+   "avif": 196427,
+   "thumb": 57892
+  },
+  "enemies/calamity-boss-oceanic.png": {
+   "source": "1e91f6c62bef3fe7e87484cf641601b91ed08cb985307220c9b7d5ed9cc4a0b4",
+   "bytes": 808500,
+   "avif": 271722,
+   "thumb": 79941
+  },
+  "enemies/calamity-boss-roses.png": {
+   "source": "43ffde48c345602fe9a5983d07352c7d7261cb243002fddb71ebfd3898da8363",
+   "bytes": 669421,
+   "avif": 221297,
+   "thumb": 63278
+  },
+  "enemies/calamity-boss-sanctuary.png": {
+   "source": "44ecad9bc66e17466b035470c7647ddbb155da61683218893d2895d67aba21b1",
+   "bytes": 677393,
+   "avif": 258271,
+   "thumb": 77520
+  },
+  "enemies/calamity-boss-tranquilitic.png": {
+   "source": "dec0d7f0ca863d320b7f907d712867e98f0da7e64ca24ba6591a34c7520758e0",
+   "bytes": 724372,
+   "avif": 241947,
+   "thumb": 67357
+  },
+  "enemies/calamity-boss-treasury.png": {
+   "source": "4c5364d07fb861a561973fe6b619589e7acb96f603a2cbba98d79f62b75d7d89",
+   "bytes": 745072,
+   "avif": 222397,
+   "thumb": 69086
+  },
+  "enemies/celestial-leviathan.png": {
+   "source": "3685e8eae07442afa2f0538ae494b07414ab6e5b47a9f1cdde65b1296fd3a596",
+   "bytes": 695029,
+   "avif": 262464,
+   "thumb": 72663
+  },
+  "enemies/cinderhide-cyclops.png": {
+   "source": "83d784328bc679680c98f39b787669328f8a4b0eeb34f1f85e361ca2b90d475b",
+   "bytes": 763711,
+   "avif": 203075,
+   "thumb": 63525
+  },
+  "enemies/claycap-kobold.png": {
+   "source": "4b7635bb54080b628f98d06d10aef154d5e5f76a78feb7da3c42631cc9adcd0b",
+   "bytes": 604919,
+   "avif": 118861,
+   "thumb": 36691
+  },
+  "enemies/cloudhorn-ibex.png": {
+   "source": "24334fa6b603cc44d8954e15bbc176d90021f8cdddd5f42fe471c175455f3173",
+   "bytes": 575018,
+   "avif": 161051,
+   "thumb": 60858
+  },
+  "enemies/coalcap-kobold.png": {
+   "source": "df3f4993c24727e1a59089eba9990e3695b5c24f9628cf1666fe6033b560cadc",
+   "bytes": 553469,
+   "avif": 129624,
+   "thumb": 39388
+  },
+  "enemies/coilback-scarab.png": {
+   "source": "b7c84d74757a92aeafc45fe15e2bdc81129dae1d04322b55e2918548215e06c1",
+   "bytes": 696996,
+   "avif": 233634,
+   "thumb": 77088
+  },
+  "enemies/concord-lion.png": {
+   "source": "0869d850389b60669529a42acd1369574dc9452f7a4c2fc2e51d7399e5565f2f",
+   "bytes": 642266,
+   "avif": 265924,
+   "thumb": 91908
+  },
+  "enemies/coppercap-gremlin.png": {
+   "source": "b8cea5f8a52e979ec1d91e6106a8ab7f2319b59b5a1419e9a013a0496cc572cf",
+   "bytes": 551540,
+   "avif": 176047,
+   "thumb": 57404
+  },
+  "enemies/coralcrest-nereid.png": {
+   "source": "2f0b1b6898a0d825a12c938430cc93de0f5acb8b4d42b457cf381096c2b4a9fc",
+   "bytes": 822624,
+   "avif": 308365,
+   "thumb": 102860
+  },
+  "enemies/crowncoil-kirin.png": {
+   "source": "cffcc68baab1abf99a02993fe2cb2fe76a2b60f87e9204ab3e1723a2f523c8dc",
+   "bytes": 801915,
+   "avif": 299489,
+   "thumb": 99217
+  },
+  "enemies/crowned-phoenix.png": {
+   "source": "c3adf5ae1b39bb5b6361704789a358cdccceeebf3486c1046de0185adb35a871",
+   "bytes": 859823,
+   "avif": 342712,
+   "thumb": 97182
+  },
+  "enemies/crownfault-behemoth.png": {
+   "source": "d35140748cc8c5d49e5249836fe33ae33fc0a4a9ba3e8dae5e4b60c7beba16b3",
+   "bytes": 812971,
+   "avif": 265421,
+   "thumb": 75281
+  },
+  "enemies/crownray-kirin.png": {
+   "source": "84a2100690000265757b98a87fa5a31939e2d54e97d64e20b06910f514ffebc4",
+   "bytes": 623779,
+   "avif": 231142,
+   "thumb": 78657
+  },
+  "enemies/crownvoid-behemoth.png": {
+   "source": "ae349c95635b5d17e3b6943ab1f8898cd2bcb1104b4e01c8b0a1285e95e8ad24",
+   "bytes": 695043,
+   "avif": 181920,
+   "thumb": 60665
+  },
+  "enemies/crownwind-roc.png": {
+   "source": "95ced94b0810b7f3b4c42fead9543c8a837e7155c3ae7562e45d7e6d793a3554",
+   "bytes": 787880,
+   "avif": 244796,
+   "thumb": 82921
+  },
+  "enemies/cyclonewing-griffin.png": {
+   "source": "952a7d588417117559720b2be6a5d6b0c584cd357c7767738e4b562f3220a090",
+   "bytes": 730550,
+   "avif": 190589,
+   "thumb": 63256
+  },
+  "enemies/dawncrest-guardian.png": {
+   "source": "f801a1ddf301f62842872aff5ec39cebb931258d4eafd4b6fc6a7582d3bac1d9",
+   "bytes": 631161,
+   "avif": 197664,
+   "thumb": 67280
+  },
+  "enemies/diadem-of-daybreak-gleamstone-slime.png": {
+   "source": "771d7a0ce834bebc2c9e582c7879542ab20ffe7bd06a42ef162ece897985f127",
+   "bytes": 494304,
+   "avif": 107058,
+   "thumb": 35208
+  },
+  "enemies/duskmote.png": {
+   "source": "b711c779ac4ccf0b7927fb67b8bbbfc33ef2106338eac5108348afc897aa0327",
+   "bytes": 458793,
+   "avif": 114631,
+   "thumb": 37849
+  },
+  "enemies/eclipse-antler-regent.png": {
+   "source": "f4bb95bb0d86e64b9c470a7640d4f2e6775bf34edc050197995814c4671d5943",
+   "bytes": 691182,
+   "avif": 199102,
+   "thumb": 60786
+  },
+  "enemies/emberhorn-faun.png": {
+   "source": "76e2db0dc1beb01c18efd6b70c0c1b5c50c7086eece74b7905837b1efb83f1c6",
+   "bytes": 491867,
+   "avif": 126068,
+   "thumb": 44179
+  },
+  "enemies/empress-of-the-thousand-blooms.png": {
+   "source": "f2759cd20a7f69707284b1fa6ef401ca655b8d116136f7576b4e2b06fbf2bdbf",
+   "bytes": 809619,
+   "avif": 261524,
+   "thumb": 86963
+  },
+  "enemies/flintback-armadillo.png": {
+   "source": "3e763fa12f680a581299a32823fb37a572e7a350fdad4aea656e1bce55e0ac00",
+   "bytes": 739828,
+   "avif": 155050,
+   "thumb": 48052
+  },
+  "enemies/fracturecoil-drake.png": {
+   "source": "96308c84ce67ef174cf0fda751a68c83448ce149ec2b281e3bf7ab23e2a46159",
+   "bytes": 663655,
+   "avif": 220367,
+   "thumb": 82888
+  },
+  "enemies/fractured-watcher.png": {
+   "source": "f552e0bba4ae396addc0866b027562fa4b04cfc249fe2822a64db129c6bd64bd",
+   "bytes": 498445,
+   "avif": 146085,
+   "thumb": 45314
+  },
+  "enemies/furnace-salamander.png": {
+   "source": "64326d40bb8d47ea0760af5982b0958804477f5f62ab1fbb270bc59973766765",
+   "bytes": 519530,
+   "avif": 157472,
+   "thumb": 52951
+  },
+  "enemies/geode-cyclops.png": {
+   "source": "6fc4989443d722d429f1dc11718bcd0b7e6cf95c27386eaecce47f9cc7c8a2b6",
+   "bytes": 794293,
+   "avif": 214821,
+   "thumb": 62645
+  },
+  "enemies/glasswake-kelpie.png": {
+   "source": "a678e7f8d8be5da97b303836ea0810215e295c502a0419368e36b45781cdcfaa",
+   "bytes": 749632,
+   "avif": 242657,
+   "thumb": 84112
+  },
+  "enemies/gleamstone-slime.png": {
+   "source": "9897297ab3866e87bad4278a454bbd6a8d8398f9041720bb86219cef769de2ad",
+   "bytes": 423264,
+   "avif": 94718,
+   "thumb": 34047
+  },
+  "enemies/glimmerkin.png": {
+   "source": "672d754d9b971ecb1b42da73fb29481e066cc7341cca6102b6a6f1bd55164959",
+   "bytes": 666341,
+   "avif": 135574,
+   "thumb": 47867
+  },
+  "enemies/gloomtail-cat.png": {
+   "source": "c35dbd85d0cf41acc8c95dd3e35f57a2bbd5a19f76166f7a30345b5dee4edebf",
+   "bytes": 486039,
+   "avif": 147920,
+   "thumb": 55756
+  },
+  "enemies/goblin.png": {
+   "source": "ff84aa6d3d08c19849c31cb02f342fe89dadf402504c4a0970f061b41159e81e",
+   "bytes": 427963,
+   "avif": 103689,
+   "thumb": 35889
+  },
+  "enemies/gustfeather-harpy.png": {
+   "source": "f86b1e6e7e72818207d3d507540d54c66f5f1f18931035821d08ddbc0a77fefa",
+   "bytes": 492369,
+   "avif": 164354,
+   "thumb": 57526
+  },
+  "enemies/harmonywing-kirin.png": {
+   "source": "6dfe8ba33ac344e161546de82c1425479f27c4f780e75a93f35d036dd41a3b9f",
+   "bytes": 776129,
+   "avif": 289370,
+   "thumb": 90041
+  },
+  "enemies/heavens-crimson-reckoning.png": {
+   "source": "98f390d1089bc66060cb5407fd9c9305d7a97ca46f74997ae579bc5920d24749",
+   "bytes": 628602,
+   "avif": 177056,
+   "thumb": 56472
+  },
+  "enemies/heavens-dawn-without-mercy.png": {
+   "source": "bab42c0aaaefc00059a99a7e7d6e1928de0518ae5e56d6dcf62d4c287ba2245a",
+   "bytes": 778637,
+   "avif": 278594,
+   "thumb": 90869
+  },
+  "enemies/heavens-dawnthorn-slime.png": {
+   "source": "47ab71c516ef4aa1992dd5e63bc3eab19dd931fb9ca271c47b244d8571d357b7",
+   "bytes": 691379,
+   "avif": 130919,
+   "thumb": 45999
+  },
+  "enemies/heavens-gilded-reproach.png": {
+   "source": "b499e6e7c41406736852bc589e54e7a864cbb4265d8109ccf08ba038e702a931",
+   "bytes": 607027,
+   "avif": 201493,
+   "thumb": 67331
+  },
+  "enemies/heavens-scarlet-benediction.png": {
+   "source": "1ea1527643340dd4f1122215cbf7e9a2ed403b2ef2bfa3e2515790b65cd83911",
+   "bytes": 530415,
+   "avif": 123305,
+   "thumb": 41969
+  },
+  "enemies/heavens-thorns-first-light.png": {
+   "source": "e18cdb96e5778ad1589114441f51950ef458d5d4f148e70d16404c3a9ac13591",
+   "bytes": 604860,
+   "avif": 201653,
+   "thumb": 60861
+  },
+  "enemies/hollowmantle-sentinel.png": {
+   "source": "b0cf830685a58b366a6907dc768a3ae5df4c98294219f70a7b782bac4e8b1494",
+   "bytes": 559817,
+   "avif": 138992,
+   "thumb": 48470
+  },
+  "enemies/hushbud.png": {
+   "source": "0ce3c740a996e9090441ad8b6d3594d2d627ad7adc4ab9c2e49bbf463eed1fdd",
+   "bytes": 374359,
+   "avif": 144864,
+   "thumb": 51168
+  },
+  "enemies/imp.png": {
+   "source": "115773839ad8a0d9240e2c1ecb1ec6957b8217a921d3372d79d55ad32cfaa851",
+   "bytes": 691564,
+   "avif": 98612,
+   "thumb": 34179
+  },
+  "enemies/ivory-kirin.png": {
+   "source": "85483f791d226f2a4f8e2d2c6d301e852ea721c8ee83896237eefb86b12f596f",
+   "bytes": 744677,
+   "avif": 256777,
+   "thumb": 78056
+  },
+  "enemies/lanterncap-brownie.png": {
+   "source": "1a8aa4cd544d74c59f30a251b81e7a36ae6b9162d3db671953339a1fd0938edb",
+   "bytes": 653775,
+   "avif": 196768,
+   "thumb": 57695
+  },
+  "enemies/last-furnace-ifrit.png": {
+   "source": "cdd438ab16bda1c9035a1fcf3497dbe291e64bd375baa1aed6e2efa64f845ab7",
+   "bytes": 786779,
+   "avif": 272392,
+   "thumb": 89154
+  },
+  "enemies/laurel-of-the-sacred-flame-rosethorn-wisp.png": {
+   "source": "e3c67b450d1a52e7cf8f9730576ce8a8a86d6ac76f13fae40ada351ef74785a0",
+   "bytes": 563514,
+   "avif": 252020,
+   "thumb": 84217
+  },
+  "enemies/lotusback-tortoise.png": {
+   "source": "751deb8b5638dcc78f354cecc0c2e0325d66c984d284fd8831da2408a3a49ce0",
+   "bytes": 707225,
+   "avif": 284868,
+   "thumb": 88613
+  },
+  "enemies/magma-wyrm-knight.png": {
+   "source": "d8ef36d70cd640012706efff95c2e1bd4962ca750aa2c5fd903859cd92dd000f",
+   "bytes": 728953,
+   "avif": 261530,
+   "thumb": 82520
+  },
+  "enemies/monarch-of-the-silent-eclipse.png": {
+   "source": "db1af5039092ddfc781752e48703f39584499ddcf4c9a8907d3ca1c4122d73b5",
+   "bytes": 561075,
+   "avif": 164389,
+   "thumb": 50719
+  },
+  "enemies/moonbloom-dryad.png": {
+   "source": "bea085705a0b0b2e78a14c14dcd032a8fba295bd21ce60ace1661b33a52d9fe6",
+   "bytes": 681090,
+   "avif": 194179,
+   "thumb": 70317
+  },
+  "enemies/moonless-gargoyle.png": {
+   "source": "da8ba493af57bc118ac1179fd4c1e6ba603ecd491cfe22fdb6bd5c5dd756bc72",
+   "bytes": 717096,
+   "avif": 219892,
+   "thumb": 66781
+  },
+  "enemies/mosscap-brownie.png": {
+   "source": "857bec56b78098f5fdca168ad9a43b0f39cfe946911c0cd9f1e2e07586710ed8",
+   "bytes": 815629,
+   "avif": 186059,
+   "thumb": 53158
+  },
+  "enemies/nullshell-scarab.png": {
+   "source": "b4accc5aba187cca0425531a0b4878b3ffbf8232ea59b48b13b933f03ce30340",
+   "bytes": 594775,
+   "avif": 197227,
+   "thumb": 70547
+  },
+  "enemies/obsidian-gargoyle.png": {
+   "source": "d7a10e5e76b32ac44211210b0b1d6faac083e28b041bd18ef08a217819e1a1f0",
+   "bytes": 655407,
+   "avif": 219719,
+   "thumb": 76300
+  },
+  "enemies/opalwing-griffin.png": {
+   "source": "09064472de28cea7cf2972db1fb9a0be3653de3596bf512cf64e59491d450f0e",
+   "bytes": 773971,
+   "avif": 296664,
+   "thumb": 93524
+  },
+  "enemies/orchid-mantis.png": {
+   "source": "431e125511886b1a31299d98b612647c4640725c6776f84544e350241f291ab5",
+   "bytes": 682568,
+   "avif": 204412,
+   "thumb": 69363
+  },
+  "enemies/ouroboros-first-dawn.png": {
+   "source": "893f8a4744e513709ed632b4aa3eeed1ff94a02f296d56a7f68941238ab2e6de",
+   "bytes": 833775,
+   "avif": 306499,
+   "thumb": 88361
+  },
+  "enemies/paradox-sentinel.png": {
+   "source": "3ade64db551f2666d449a1ff0239de8da695b1ac63db6f17a94b01f6b87fbabf",
+   "bytes": 606040,
+   "avif": 194659,
+   "thumb": 61276
+  },
+  "enemies/pearlscale-leviathan.png": {
+   "source": "94a08d371ef0a5cf7ee7ecf961ce4e127c1da0eaed3d8ab366c388a1712d2552",
+   "bytes": 785262,
+   "avif": 291459,
+   "thumb": 100086
+  },
+  "enemies/pebblefin-sprig.png": {
+   "source": "63efb143fa655e07f478b83241605990df94affbc56d3df82b8b5cec4db00ec8",
+   "bytes": 634964,
+   "avif": 179140,
+   "thumb": 67175
+  },
+  "enemies/pebblekin.png": {
+   "source": "5fed4cde31119351747603face5af871b07ccc5c0353979116b53ce4078670bf",
+   "bytes": 639669,
+   "avif": 159766,
+   "thumb": 46597
+  },
+  "enemies/petalhorn-satyr.png": {
+   "source": "e784868d486ef6f78e2f7e327dc1477b51d6e86f5bcdc7931b30b66602565a84",
+   "bytes": 662985,
+   "avif": 213761,
+   "thumb": 73638
+  },
+  "enemies/pillarwing-gargoyle.png": {
+   "source": "dceea7832eb31e366221c4a6c6b3e233f55fff0fbc613d96cc65f38e0e6b6c3b",
+   "bytes": 750068,
+   "avif": 211579,
+   "thumb": 60327
+  },
+  "enemies/porcelain-crane.png": {
+   "source": "dac00ed92f63a02f95865e55ecc2b31af4549ab20c53f61d9db2e15fcff7a0d8",
+   "bytes": 653249,
+   "avif": 286172,
+   "thumb": 92680
+  },
+  "enemies/prismback-tortoise.png": {
+   "source": "4e93581ddfc273a4c185014de02750f20f4d4c30068186360ca3e7bb9af3d272",
+   "bytes": 739329,
+   "avif": 214989,
+   "thumb": 77073
+  },
+  "enemies/puffling.png": {
+   "source": "55bdb7cccbcfa4f2178a4a819d4c6dab78e8c67275be7aa6d4d7a40d81ef7530",
+   "bytes": 516482,
+   "avif": 134782,
+   "thumb": 47595
+  },
+  "enemies/pyrewing-harpy.png": {
+   "source": "874a169486247681bdca44f9845c49e3aaa09c3f9f9a1dca5db7c5a9470a633d",
+   "bytes": 598689,
+   "avif": 238820,
+   "thumb": 73288
+  },
+  "enemies/quartzhorn-ram.png": {
+   "source": "dd62cb448b5239fa80f545a67eea1a8476727d8d6c6d29604f28221cb1013340",
+   "bytes": 845526,
+   "avif": 247208,
+   "thumb": 73163
+  },
+  "enemies/reedcap-sylph.png": {
+   "source": "1ff2ce2a63dbbce9eaae80453e6d25adf340a8def2cc6a7e149365dedef64f55",
+   "bytes": 614633,
+   "avif": 218544,
+   "thumb": 69748
+  },
+  "enemies/regalia-of-the-sun-gleamstone-slime.png": {
+   "source": "35b40bf1fe7f52cb16179d542451a683a037b4d7375c5a79f74db7228be016ac",
+   "bytes": 728028,
+   "avif": 204812,
+   "thumb": 64378
+  },
+  "enemies/regent-of-the-unbroken-sky.png": {
+   "source": "e2465ecfec4cb3faa2725e863c04cb87c828d458eb23592c9a7ac5e201f0e12f",
+   "bytes": 737792,
+   "avif": 238865,
+   "thumb": 75003
+  },
+  "enemies/riftpip.png": {
+   "source": "055e5a9aa4b9e59e6d02448955a05fd745b66e759899f85e2ca69f7561076941",
+   "bytes": 525408,
+   "avif": 118880,
+   "thumb": 44445
+  },
+  "enemies/riftwing-chimera.png": {
+   "source": "2579e67c9be7b3289279e5cd1d987bc2a0fa35a2cb0f196be7d3545f80db33f4",
+   "bytes": 739397,
+   "avif": 215835,
+   "thumb": 66846
+  },
+  "enemies/rock-golem.png": {
+   "source": "d847916092fadae5d209e98534c7e2a049d8a5104eb918666aee2cc7002e1ac0",
+   "bytes": 610329,
+   "avif": 106793,
+   "thumb": 37095
+  },
+  "enemies/roselius-crimson-bloom.png": {
+   "source": "671918b0e0884b0d5a0ccdc30e72856705f77c41b24ff6701fae2d8636ca9dbc",
+   "bytes": 689010,
+   "avif": 233946,
+   "thumb": 76376
+  },
+  "enemies/roselius-garden-eternity.png": {
+   "source": "577ea19fb06171e927e14eefaf90e36068e888a1475f709c090d5b8162b2fbac",
+   "bytes": 874948,
+   "avif": 320238,
+   "thumb": 100762
+  },
+  "enemies/roselius-golden-thorns.png": {
+   "source": "da6a8bc4ecad0cf19bf0ace3b91340a9f233ef91e23068c89e0c84f5c784d4df",
+   "bytes": 757728,
+   "avif": 250748,
+   "thumb": 80312
+  },
+  "enemies/roselius-living-rose.png": {
+   "source": "c9f4e6fea016998f5e8cacaf4c11ee3de4a2184cf37bdbe41796ed40f2164488",
+   "bytes": 762543,
+   "avif": 242412,
+   "thumb": 80165
+  },
+  "enemies/roselius-seraph-passion.png": {
+   "source": "44a66c2cbb2b595835a199dcc9e0701a34f136580a6731ef576fa18df912cec9",
+   "bytes": 739237,
+   "avif": 251157,
+   "thumb": 83444
+  },
+  "enemies/roselius.png": {
+   "source": "f9e9dc75ebc853ba0f379c1c16a8c62f30b26c729505d5ab6126a9661cef0d5e",
+   "bytes": 559930,
+   "avif": 163621,
+   "thumb": 53848
+  },
+  "enemies/rosethorn-wisp.png": {
+   "source": "255294355420676679b7ff76b43ca502f102f11b923f304b8e42607f0efa1e92",
+   "bytes": 487251,
+   "avif": 146603,
+   "thumb": 53118
+  },
+  "enemies/scepter-of-radiance-gleamstone-slime.png": {
+   "source": "0e101344a6e8f5073837d50509b59bb5406402914549b9201c96402192d4f434",
+   "bytes": 629497,
+   "avif": 171363,
+   "thumb": 59140
+  },
+  "enemies/seraph-of-the-rose-pyre-rosethorn-wisp.png": {
+   "source": "b0e27995801468da2d1707bb166eacbbba110967a8db54450b7f569b67412702",
+   "bytes": 635240,
+   "avif": 234246,
+   "thumb": 74600
+  },
+  "enemies/shardcap-gremlin.png": {
+   "source": "a102bc501c87ac009fcc205d1ac11fab701902f35585b1d408c56b5e0474315e",
+   "bytes": 612627,
+   "avif": 166566,
+   "thumb": 60080
+  },
+  "enemies/shellcap-kappa.png": {
+   "source": "cf3f6e8c1adb929246871d42b276b60a4652fb37640a8f415bb82e1ce7383cf8",
+   "bytes": 659797,
+   "avif": 152660,
+   "thumb": 46616
+  },
+  "enemies/sovereign-of-the-endless-tide.png": {
+   "source": "606322c7f1bc3ce69fa3e5954a25f9b8d9893796fd9ff12c52fccce80dc1c387",
+   "bytes": 820895,
+   "avif": 265467,
+   "thumb": 92384
+  },
+  "enemies/sovereign-of-the-gilded-vault-gleamstone-slime.png": {
+   "source": "e226792c6d683f6e197b7844c5e0cb864d2ac693dfce7a7118b11a73e83ea9dd",
+   "bytes": 704055,
+   "avif": 217128,
+   "thumb": 72203
+  },
+  "enemies/sovereign-of-the-hallowed-garden-rosethorn-wisp.png": {
+   "source": "a669fdecdb9c14b4fb3c90efacfa8e7e35b183fd5e47252953eb9d1542bdd6de",
+   "bytes": 538236,
+   "avif": 213567,
+   "thumb": 70741
+  },
+  "enemies/sovereign-of-the-impossible-ruin.png": {
+   "source": "d7916c4d5017f430948d219f4520de16563bb971d4abc3e05cf412f0748447aa",
+   "bytes": 645071,
+   "avif": 190266,
+   "thumb": 66431
+  },
+  "enemies/sovereign-of-the-living-storm.png": {
+   "source": "3f413dcd2e35ba652efcabc79552d2967b005084ab4080424460d53d1ee07abd",
+   "bytes": 866550,
+   "avif": 278258,
+   "thumb": 84399
+  },
+  "enemies/sovereign-of-the-sevenfold-dawn.png": {
+   "source": "b965082f277cce3254144ea576c4ce9f4d9f111e25ff62e76d416dad9998e9ae",
+   "bytes": 771809,
+   "avif": 270776,
+   "thumb": 82506
+  },
+  "enemies/sovereign-of-the-unbroken-accord.png": {
+   "source": "9e70eed3323ef9c2b98b9c11137502e76ca8dca62a90581e74a63bb81e259c42",
+   "bytes": 662786,
+   "avif": 237316,
+   "thumb": 77485
+  },
+  "enemies/sparkpip.png": {
+   "source": "802f15af95bef9fdb2f2d7e0ff5bf95ebcec241bbb8eb0f1e3a20113dc39208c",
+   "bytes": 501606,
+   "avif": 198277,
+   "thumb": 65527
+  },
+  "enemies/stillbell-oracle.png": {
+   "source": "db55e9fa658909a9ebb5df7e98bd65b87a3d64a1a5e4bf4147de4173b3886051",
+   "bytes": 694447,
+   "avif": 299439,
+   "thumb": 92028
+  },
+  "enemies/stormhorn-faun.png": {
+   "source": "66e4283686f46e749cbdfd30d73ca29311c9bba76c7e1dfb18aff70a32142782",
+   "bytes": 702737,
+   "avif": 245298,
+   "thumb": 82470
+  },
+  "enemies/story-atmospheric-0.png": {
+   "source": "e33f687cb84666e594de8e419bbb5f47858b3f764e2a978ee7f32e4bf506d0b0",
+   "bytes": 585259,
+   "avif": 153385,
+   "thumb": 54709
+  },
+  "enemies/story-atmospheric-1.png": {
+   "source": "da8408e6cee546677b4bbe977f9ba42438734b904b5d50884616730fb31ae8c1",
+   "bytes": 661340,
+   "avif": 192204,
+   "thumb": 66074
+  },
+  "enemies/story-atmospheric-2.png": {
+   "source": "d02e1889fd448a63565ee0eddabe1e68aa818cdcbe5158a6684a787b6b9a4928",
+   "bytes": 461330,
+   "avif": 135691,
+   "thumb": 46487
+  },
+  "enemies/story-atmospheric-3.png": {
+   "source": "9c4795731e28067cee0f96387b3327e79aea392fba8e74aacbc14a28bef15c2c",
+   "bytes": 546915,
+   "avif": 141157,
+   "thumb": 49149
+  },
+  "enemies/story-atmospheric-boss.png": {
+   "source": "30bd45c10ad341f602c7c08b869bd97ab142eac08edadcab5c6ddc48c3f23059",
+   "bytes": 749792,
+   "avif": 265545,
+   "thumb": 82420
+  },
+  "enemies/story-botanic-0.png": {
+   "source": "098794dd6e80108353c769dc7b78270ec6b6451a26046233e1b772142f150fc7",
+   "bytes": 584963,
+   "avif": 178934,
+   "thumb": 54926
+  },
+  "enemies/story-botanic-1.png": {
+   "source": "e2059a8af8c5f8927285372a7a5eef109ad66f556039050c779857a09b1e82f8",
+   "bytes": 544050,
+   "avif": 210446,
+   "thumb": 61288
+  },
+  "enemies/story-botanic-2.png": {
+   "source": "10211d3bd57bc2d43e44c7c61f092326dd1d5c1e47c29446dcbb36125d0f732d",
+   "bytes": 595914,
+   "avif": 140709,
+   "thumb": 38932
+  },
+  "enemies/story-botanic-3.png": {
+   "source": "b52b5cc41c2b172ab7c5d9795fa726aed7bb4b1d09309aea7b936a0deca448d0",
+   "bytes": 779162,
+   "avif": 220049,
+   "thumb": 69909
+  },
+  "enemies/story-botanic-boss.png": {
+   "source": "1208727eca691f77a0053c67b842471e4bfce0f27c23de311cae253b1e1866ba",
+   "bytes": 814924,
+   "avif": 244647,
+   "thumb": 76400
+  },
+  "enemies/story-chaotic-0.png": {
+   "source": "b7ef3a1680a9ff8e28a31e9fed3f938ca97580cae97bf6bc9e444069454a333a",
+   "bytes": 519133,
+   "avif": 157712,
+   "thumb": 51621
+  },
+  "enemies/story-chaotic-1.png": {
+   "source": "6ca2376d8cc9faa71d16847de151a51650954071888cc50a80e9d7424e378c21",
+   "bytes": 552786,
+   "avif": 134821,
+   "thumb": 38551
+  },
+  "enemies/story-chaotic-2.png": {
+   "source": "eb67bd4d0911c0d2f10099a648ed1a2070996fa23efec4c5c803523727eb0aef",
+   "bytes": 569551,
+   "avif": 198654,
+   "thumb": 60324
+  },
+  "enemies/story-chaotic-3.png": {
+   "source": "9858e4cb4aba87363994b6e274cdd102292184a03ba75a1c1cf7555427f95ae2",
+   "bytes": 649457,
+   "avif": 147845,
+   "thumb": 41509
+  },
+  "enemies/story-chaotic-boss.png": {
+   "source": "dd833cf2c838d567a26d492e8dc8337390ef4a839a922cb26dc2007004115a23",
+   "bytes": 693649,
+   "avif": 222899,
+   "thumb": 72685
+  },
+  "enemies/story-infernic-0.png": {
+   "source": "6fdbd3ab8beba47cd0323d8cfaa4b3f04eb24660dd0fbe1e26de9e4b9c73c1e1",
+   "bytes": 462647,
+   "avif": 123173,
+   "thumb": 47175
+  },
+  "enemies/story-infernic-1.png": {
+   "source": "d88906971df71ed0e765bea2b7af85cb5f31fc0195e66aa1aea892e330f10b81",
+   "bytes": 682585,
+   "avif": 200576,
+   "thumb": 61685
+  },
+  "enemies/story-infernic-2.png": {
+   "source": "83277a7cf664bd040aca8adde36d8563e375ef2d9c75e28940b41a3c3718241a",
+   "bytes": 632488,
+   "avif": 148570,
+   "thumb": 48204
+  },
+  "enemies/story-infernic-3.png": {
+   "source": "a87ab963f5eea501e9952f53e87975f85bd7a22b5cd7c62dc3b2039e5f774aa9",
+   "bytes": 560945,
+   "avif": 199776,
+   "thumb": 66155
+  },
+  "enemies/story-infernic-boss.png": {
+   "source": "7900608d7c34463f864e5f34c999a0a982ea3e0e21f81d189d633429f1379b40",
+   "bytes": 767653,
+   "avif": 250642,
+   "thumb": 77176
+  },
+  "enemies/story-oceanic-0.png": {
+   "source": "1c585bf844baa0b605747c4e5218e004ca4ef30db5cbc03a9a8a529a388d9f28",
+   "bytes": 572591,
+   "avif": 167354,
+   "thumb": 57163
+  },
+  "enemies/story-oceanic-1.png": {
+   "source": "34498333e1e1b26daf4ff9da64cc034d4def097b00a54c5d6b62c302dc2b4c3a",
+   "bytes": 736710,
+   "avif": 170534,
+   "thumb": 55045
+  },
+  "enemies/story-oceanic-2.png": {
+   "source": "19af5e0d29eb2879f5a4364424bbfe3d459c36979d15bf2264764aca76ef193e",
+   "bytes": 543680,
+   "avif": 144108,
+   "thumb": 50512
+  },
+  "enemies/story-oceanic-3.png": {
+   "source": "9923d146053eb4224d6853e54f0bbcc23d77e394a96b84f633459916e3ec18b8",
+   "bytes": 477163,
+   "avif": 188851,
+   "thumb": 60741
+  },
+  "enemies/story-oceanic-boss.png": {
+   "source": "cfe7c8d874737db79dc72c4710ab910505452c9d293e52721bd3975e5851ba8f",
+   "bytes": 603319,
+   "avif": 204539,
+   "thumb": 65624
+  },
+  "enemies/story-tranquilitic-0.png": {
+   "source": "5874d019f9055e667896ff89f7c2f117ebce837e79411734f1072705f8d2ae45",
+   "bytes": 462033,
+   "avif": 108648,
+   "thumb": 33413
+  },
+  "enemies/story-tranquilitic-1.png": {
+   "source": "538548c94dd275689c1afcdddfaa71b38f528a68c1a2207fe0b7fbc9a7b35703",
+   "bytes": 543707,
+   "avif": 199198,
+   "thumb": 59667
+  },
+  "enemies/story-tranquilitic-2.png": {
+   "source": "82b7e02102f12e8d79daa8cc2afc3a6423246cf4a9325988406a071c59880f3e",
+   "bytes": 482962,
+   "avif": 138466,
+   "thumb": 46330
+  },
+  "enemies/story-tranquilitic-3.png": {
+   "source": "8ddc4dde5d5d159ed8fb584111db0d641ef42673a4085f4f061de6cf86911390",
+   "bytes": 585098,
+   "avif": 164237,
+   "thumb": 52990
+  },
+  "enemies/story-tranquilitic-boss.png": {
+   "source": "820489d0dc1f904c44adbcde4dc6d543af919595c22399eda1144ea687721deb",
+   "bytes": 789616,
+   "avif": 214160,
+   "thumb": 67412
+  },
+  "enemies/sunmirror-oracle.png": {
+   "source": "7a42795ee15fc97412e3abc74498e53b2094c2efbb7ca57aec775e26e3942401",
+   "bytes": 725735,
+   "avif": 258535,
+   "thumb": 83758
+  },
+  "enemies/tempestwing-roc.png": {
+   "source": "765708b4fed4871b8888dc134c40caa26334ab69e7a3a59c243e3c218f58b0d9",
+   "bytes": 710408,
+   "avif": 234025,
+   "thumb": 82275
+  },
+  "enemies/the-crown-beyond-dawn-gleamstone-slime.png": {
+   "source": "4709b0b197dc181d2742eff847a99a977ac6ef08cc007b6e282f7904a5c62bca",
+   "bytes": 809627,
+   "avif": 313357,
+   "thumb": 95306
+  },
+  "enemies/the-flame-beyond-eternity-rosethorn-wisp.png": {
+   "source": "a732fd613622512ed8abd9e11e27c5151156b4c60e423799767ad56b0ab834a0",
+   "bytes": 702367,
+   "avif": 279145,
+   "thumb": 87954
+  },
+  "enemies/thornshell-beetle.png": {
+   "source": "eb07887c80196f0967981eb72593083628fc30c533fe5dfaca9b3a2b636df18a",
+   "bytes": 708259,
+   "avif": 185935,
+   "thumb": 67070
+  },
+  "enemies/thunderclaw-raiju.png": {
+   "source": "e023035b27b4ee34bcf2ff7c246df6b81bc6a18f59e77c891c8b3893b6079a0d",
+   "bytes": 602163,
+   "avif": 209711,
+   "thumb": 70980
+  },
+  "enemies/umbrasilk-weaver.png": {
+   "source": "3f8e645456b29126ee99b78488b9da440eef3f59f3ad8ca171058cbe3d66391f",
+   "bytes": 727315,
+   "avif": 209101,
+   "thumb": 61405
+  },
+  "enemies/veilcap-imp.png": {
+   "source": "2aa3663316411696baec400677d24ab8b59a3c068085bbee35908d42f4eb23b5",
+   "bytes": 545663,
+   "avif": 160566,
+   "thumb": 53081
+  },
+  "enemies/verdant-antler-regent.png": {
+   "source": "36581ae96915392735a9ee6253537b5d8e95fbaa0939526d1189c9cd2307fae8",
+   "bytes": 670035,
+   "avif": 205869,
+   "thumb": 73609
+  },
+  "enemies/votive-of-first-bloom-rosethorn-wisp.png": {
+   "source": "7d16249aa0b48e8df222139e44454c3421f4b718a54fe901a8fc82065d3ec852",
+   "bytes": 579235,
+   "avif": 195425,
+   "thumb": 66463
+  },
+  "enemies/zephyrcoil-drake.png": {
+   "source": "d93f538027da186efe39c7fd5c80bfc4428de5102f4e6d4db9e876748cdaf1d5",
+   "bytes": 740822,
+   "avif": 276467,
+   "thumb": 87427
+  },
+  "items/calamity-chest-master.png": {
+   "source": "58493f2b1c167bb8b118c4115d92a05d027e11479d2dbda0f9c4a30e4c1b663b",
+   "bytes": 88951,
+   "avif": 41301
+  },
+  "items/calamity-chest-omnipotent.png": {
+   "source": "172c9a47e949b259f9f4d78793e6f3b8f5b103c9ca17a21abec65d908c915424",
+   "bytes": 83915,
+   "avif": 36131
+  },
+  "items/calamity-chest-slayer.png": {
+   "source": "a30c0f3c7fc65ca2b0f199f0dfad5b1fbd3c21d5e66767efc0fc4b6164cc4614",
+   "bytes": 78779,
+   "avif": 34932
+  },
+  "master-conduits/astral-reserve.png": {
+   "source": "083d5886404947a1fc7edb4cfedec5299f7ae9818a831d308709b4452f49e47a",
+   "bytes": 74233,
+   "avif": 29142
+  },
+  "master-conduits/grand-master-chest.png": {
+   "source": "01822f0ce6dbdaa82ad5762b5bd0cfe7d809945d7ddcd99da822ec4d9973be59",
+   "bytes": 83976,
+   "avif": 40750
+  },
+  "master-conduits/master-atmoso-1.png": {
+   "source": "8d40ff8839e063bc948590da0f0e396cd28b62525a76a2c89bb893f355f1a0df",
+   "bytes": 64174,
+   "avif": 34396
+  },
+  "master-conduits/master-atmoso-2.png": {
+   "source": "4f55411cbc4ade63a298dde2c2c08d41b82382718f21a33b281d732d3631e65f",
+   "bytes": 70674,
+   "avif": 38468
+  },
+  "master-conduits/master-atmoso-3.png": {
+   "source": "685b077a0698fbe5392902675d230159eee684c62c416067dfcd364808dd4384",
+   "bytes": 54921,
+   "avif": 27700
+  },
+  "master-conduits/master-aurora-1.png": {
+   "source": "4019b0d04e19b8917ade6a9994c94e09ecda05732541c4a00e4718ba0761bed5",
+   "bytes": 92220,
+   "avif": 42550
+  },
+  "master-conduits/master-aurora-2.png": {
+   "source": "e69b31c9c69cd460fecc66e1694a63280dc1606bb456c9e89bcc5e9366db4ee4",
+   "bytes": 104635,
+   "avif": 44265
+  },
+  "master-conduits/master-aurora-3.png": {
+   "source": "89bfdd0e28beb8a5d32b01b6bf9bae231803da54ca5192e73fdf45dbfed5c6f9",
+   "bytes": 84638,
+   "avif": 49475
+  },
+  "master-conduits/master-bliss-1.png": {
+   "source": "6972ce1c111483a9733e64d7883701065966ab4592811c8aac48e3be4e55cc3e",
+   "bytes": 88061,
+   "avif": 39916
+  },
+  "master-conduits/master-bliss-2.png": {
+   "source": "3cd2bb77e0c53fa1fc929863dbdd551c1af1904386c81ad39c8c2a29949511bf",
+   "bytes": 82240,
+   "avif": 40392
+  },
+  "master-conduits/master-bliss-3.png": {
+   "source": "bbdf7fd86faba88362f7c3ea0351925f737fc804e52bfb00dd6c66efd4cf64a2",
+   "bytes": 88451,
+   "avif": 40124
+  },
+  "master-conduits/master-bruno-1.png": {
+   "source": "94550b11eba9ddc86e210775768bde27391507fb3314f36e32cbef27640c3daa",
+   "bytes": 81684,
+   "avif": 41746
+  },
+  "master-conduits/master-bruno-2.png": {
+   "source": "f1de203c6cca9f82e52ddab2cd176ad225175152e1038c99300569d6276754d5",
+   "bytes": 81101,
+   "avif": 27039
+  },
+  "master-conduits/master-bruno-3.png": {
+   "source": "8391fbb8776f9493e277f4ecb9e8f51cbcda938ba151bf9f1fa63c406814a18a",
+   "bytes": 88714,
+   "avif": 33759
+  },
+  "master-conduits/master-crinso-1.png": {
+   "source": "6a15558e16f357a7084c5cef11ed1b31a4addab50b6c746e25dc5e9405144058",
+   "bytes": 79028,
+   "avif": 49565
+  },
+  "master-conduits/master-crinso-2.png": {
+   "source": "5156a12c09807ab718d1d09400bb30b887fe0111952807c67cfa3c8899500ca6",
+   "bytes": 84953,
+   "avif": 44241
+  },
+  "master-conduits/master-crinso-3.png": {
+   "source": "dd9033b271e02ac6d2e6c3e88aab6caf1b39dca649f58a146dcc63a4d8fb804d",
+   "bytes": 72579,
+   "avif": 39262
+  },
+  "master-conduits/master-disciple-1.png": {
+   "source": "18a506934169ecf7d9832343c5493cff12bf8a0c5f70e72b4d15879544d30af1",
+   "bytes": 71442,
+   "avif": 34987
+  },
+  "master-conduits/master-disciple-2.png": {
+   "source": "4d4844b94eaa635d1d947f514958ef5102eb9495f00a521523d2760bfe22c1ea",
+   "bytes": 79467,
+   "avif": 38757
+  },
+  "master-conduits/master-disciple-3.png": {
+   "source": "b3bcf6609b2caf67f0fb1977896f231a7db4f1ef00f13739ecf10921ea5ec96d",
+   "bytes": 77753,
+   "avif": 36521
+  },
+  "master-conduits/master-elise-1.png": {
+   "source": "1d8b37c7e63b82eeeae1ff21fb20dc91893193eefc1872a16d5a05b5a9a1709a",
+   "bytes": 91844,
+   "avif": 52322
+  },
+  "master-conduits/master-elise-2.png": {
+   "source": "65d0d7ac59b26f8475aa31a02c1a9536ada6a96c35b099fb940bcf03e195eb99",
+   "bytes": 74446,
+   "avif": 40641
+  },
+  "master-conduits/master-elise-3.png": {
+   "source": "047d9bd7ab8966214f4968e201b2f431a471150d955710df741f2ce3c6d54648",
+   "bytes": 77870,
+   "avif": 42027
+  },
+  "master-conduits/master-ember-1.png": {
+   "source": "a1b332dd0d3efa6139fbe126ba902a85d7485422ec079256d7546bfc6beda4d6",
+   "bytes": 91548,
+   "avif": 45148
+  },
+  "master-conduits/master-ember-2.png": {
+   "source": "bee5f72d6b50ce76881a75c105ca4b1a3161d3a24e96bc0f68dc4fe390ca02c5",
+   "bytes": 90946,
+   "avif": 46632
+  },
+  "master-conduits/master-ember-3.png": {
+   "source": "fd198f3de63cd809248dbc2dbfe8f1fba87d25707e464433c9e5f7c6203674c1",
+   "bytes": 72511,
+   "avif": 36495
+  },
+  "master-conduits/master-nerithe-1.png": {
+   "source": "f11d5b05f3769e1e08793c519530b9f0a398f8bf609b64b4deeaf5f11446c14d",
+   "bytes": 66470,
+   "avif": 34610
+  },
+  "master-conduits/master-nerithe-2.png": {
+   "source": "0dd3a7980424e8c79139eba68afd0592aa3f1e8aac2ddd48aa89fb0bd490410e",
+   "bytes": 76228,
+   "avif": 40845
+  },
+  "master-conduits/master-nerithe-3.png": {
+   "source": "53f8f675c7fbbd802584a37647b9aa89e248f0aab1b2a75c582c04a840febf84",
+   "bytes": 75792,
+   "avif": 42361
+  },
+  "master-conduits/master-orvella-1.png": {
+   "source": "99459b7e564eb641ef85ec6dc836eafad6e3d4f06bd04dcbd6ea1e55b60f6634",
+   "bytes": 92339,
+   "avif": 37148
+  },
+  "master-conduits/master-orvella-2.png": {
+   "source": "bdb173d6254e5317f0653552c039c07c8555097ef671e024363b9f0b0a39d24a",
+   "bytes": 84315,
+   "avif": 36432
+  },
+  "master-conduits/master-orvella-3.png": {
+   "source": "7cc4bdbfb01c23d2e8c250cc991df9fcc164a40d8ea8967d6e1a81662ea5b48b",
+   "bytes": 91239,
+   "avif": 41996
+  },
+  "master-conduits/master-razor-1.png": {
+   "source": "f151961e0809ecc5246f592b503e638dafa73e3bef3be0dfee5400055d7bce4a",
+   "bytes": 76248,
+   "avif": 31878
+  },
+  "master-conduits/master-razor-2.png": {
+   "source": "8d03e028fd2bd51c25674c2364922413ed1a24870ef16f3a265cee5331344877",
+   "bytes": 69089,
+   "avif": 34859
+  },
+  "master-conduits/master-razor-3.png": {
+   "source": "fa76b28c439d66fd851a07c184bdd4040276781ca49199a93f664466ee358200",
+   "bytes": 72781,
+   "avif": 29851
+  },
+  "master-conduits/master-rosetta-1.png": {
+   "source": "14b4d361b0074cfcf3be1eb08529831706b98591a54634283c16851aa6c4a19b",
+   "bytes": 75189,
+   "avif": 39133
+  },
+  "master-conduits/master-rosetta-2.png": {
+   "source": "2e556119ee172edca157c88f83d823723c95a4bb9030467ca414a30ac74f28c4",
+   "bytes": 83875,
+   "avif": 42232
+  },
+  "master-conduits/master-rosetta-3.png": {
+   "source": "c479418959a67d3336252ab912fc4f72b517a681a7cd92e5b5fc1694b0bd3715",
+   "bytes": 90120,
+   "avif": 42363
+  },
+  "master-conduits/master-sprout-1.png": {
+   "source": "da73c1f80b9ffab9f3922b86abb74560b2a3415e9aadc5a0138de30c7a9e3b65",
+   "bytes": 104566,
+   "avif": 46940
+  },
+  "master-conduits/master-sprout-2.png": {
+   "source": "5604c5f1e1403b002955c484f21e88305f58d666a21db746607e48918fa17dc0",
+   "bytes": 67953,
+   "avif": 27815
+  },
+  "master-conduits/master-sprout-3.png": {
+   "source": "7a0a2f9f79c4a43a5ef897997150990c8c018367ea69a80df6d7c911f684d61f",
+   "bytes": 88333,
+   "avif": 45084
+  },
+  "master-conduits/master-thornia-1.png": {
+   "source": "5b7b579d7d3a515c76957a3d29178cfdc606256fc5690d5d13d8a7db381d308e",
+   "bytes": 99471,
+   "avif": 51557
+  },
+  "master-conduits/master-thornia-2.png": {
+   "source": "2b52cae194c7ee3bde58f5d1418180d11d429ae9011eaf0ec689c60be593112f",
+   "bytes": 70658,
+   "avif": 39113
+  },
+  "master-conduits/master-thornia-3.png": {
+   "source": "000ce4e7a156f17dbd37dc20aecc319983e2e7e211f7de92608266a8aa1083cc",
+   "bytes": 79905,
+   "avif": 33449
+  },
+  "master-conduits/master-tide-1.png": {
+   "source": "1f39144660c23e5fc8bf2955a09f39a43c18400588aa2a4494a3322a06abc235",
+   "bytes": 68040,
+   "avif": 34533
+  },
+  "master-conduits/master-tide-2.png": {
+   "source": "e7c007d014cbe9d7dc03af67f4ce050a96fc563c5e7cfef0b04eada871bae73b",
+   "bytes": 83389,
+   "avif": 39335
+  },
+  "master-conduits/master-tide-3.png": {
+   "source": "a1012fef1dc20c3bffe40fc7bd86cff274128f62426eabdc602e0e40036e51df",
+   "bytes": 79907,
+   "avif": 44543
+  },
+  "master-conduits/master-vaelor-1.png": {
+   "source": "db47cb297e06a8005555de8020bb9f9ba5ba3bc94e665c2555edfc89aa05d12b",
+   "bytes": 69625,
+   "avif": 36079
+  },
+  "master-conduits/master-vaelor-2.png": {
+   "source": "4570f0196238c5e38b32703a9cdaff1de645ad0fd75d7ad23882f320396dd583",
+   "bytes": 76210,
+   "avif": 32194
+  },
+  "master-conduits/master-vaelor-3.png": {
+   "source": "9fb44dd852b6d06ebc51295d863f680bee3f512d5727c2afa6f0015c8dbd0a33",
+   "bytes": 69150,
+   "avif": 31463
+  },
+  "materials/abyss-heart-shattered-void.png": {
+   "source": "e5ebe90cc608bc4dec6941eac5bfe65b2d8535bb134bede86335a4b1a322c355",
+   "bytes": 71367,
+   "avif": 34554
+  },
+  "materials/abyss-hourglass-endless-wrath.png": {
+   "source": "2fc8dbbfbd91290df08e54e81df5bf979afa64df4dee018c05a9fd838fc083d3",
+   "bytes": 88851,
+   "avif": 39157
+  },
+  "materials/abyss-voidfang-of-ruin.png": {
+   "source": "e298db61066ec23f342685101bfc53e752cb6e2ad4fa82718eb053b1419c8971",
+   "bytes": 70902,
+   "avif": 40097
+  },
+  "materials/aquatic-bloom.png": {
+   "source": "bb3dcd1d3ebcb5e0d860004b160d69f08e48d40033fe711e161775dfebf7bb4b",
+   "bytes": 68958,
+   "avif": 31846
+  },
+  "materials/aquatic-crest.png": {
+   "source": "065c95a29391c21960f6ea65399a9618764118de390ce09fdee9677cc5520fa3",
+   "bytes": 88761,
+   "avif": 48252
+  },
+  "materials/aquatic-heart.png": {
+   "source": "e7b4a622fc899c7438b878c2cc702d00b262c73cda35843ee7353cc0089885e4",
+   "bytes": 102635,
+   "avif": 43809
+  },
+  "materials/aquatic-seed.png": {
+   "source": "43226715439c397b859b2253eb11aa811b2a5cca0357da19fda2429d9fd71e6a",
+   "bytes": 81175,
+   "avif": 34974
+  },
+  "materials/aquatic-shard.png": {
+   "source": "596808c8fcc3eb224828537dcce8d0db92cf9bc5182dc38ae0fc47fdf15f3ca2",
+   "bytes": 90579,
+   "avif": 46267
+  },
+  "materials/aquatic-soul.png": {
+   "source": "5d9d2080d1dd03aaac7eba2d1f58d03579a8c0a19c39c9b8ae3ee7c7f47fd3e6",
+   "bytes": 79943,
+   "avif": 48718
+  },
+  "materials/atmospheric-bloom.png": {
+   "source": "1a9c559c93e0c0d656f3d78d40e50089a3abeaea6d06e4193b5df0441787b49a",
+   "bytes": 60394,
+   "avif": 34914
+  },
+  "materials/atmospheric-crest.png": {
+   "source": "f25ef846929756c07da050c48a8620b37ede1405989c892c779dfc069605220d",
+   "bytes": 82070,
+   "avif": 42703
+  },
+  "materials/atmospheric-heart.png": {
+   "source": "6bbf902a955857d71f7e362a4c43b5928fff485d0ae8f60191023514f3a544ee",
+   "bytes": 87237,
+   "avif": 41574
+  },
+  "materials/atmospheric-seed.png": {
+   "source": "7ed60663d6d92ee4d5e23647fdad7b43905df9a4c8cec2f24100e7860c601b5d",
+   "bytes": 63461,
+   "avif": 37643
+  },
+  "materials/atmospheric-shard.png": {
+   "source": "3e663ae8d2fbef167b5b45d01fafa4fab1398027815f849e1d6e2096829a4da2",
+   "bytes": 64686,
+   "avif": 31831
+  },
+  "materials/atmospheric-soul.png": {
+   "source": "88ff6410257318c4440390ec69503637537b2b1688c474ee6301129acee759e1",
+   "bytes": 76223,
+   "avif": 42211
+  },
+  "materials/chaotic-bloom.png": {
+   "source": "24c6d3dcf70b3e525d61828cbd08c8426167990f0b64bf68ea43dd1d7747b61a",
+   "bytes": 78168,
+   "avif": 45413
+  },
+  "materials/chaotic-crest.png": {
+   "source": "653eebdbb2b6719ff1592d3038084eaef4b8e3211623bbee714f9396cfa606fe",
+   "bytes": 94335,
+   "avif": 48208
+  },
+  "materials/chaotic-heart.png": {
+   "source": "adaa1536f5ccd5c76e48b516f7e3f8f9abe0e683d88e75dcca629095c6747479",
+   "bytes": 80479,
+   "avif": 36510
+  },
+  "materials/chaotic-seed.png": {
+   "source": "377351c950f03d7b4514bf51644f2ba63799da940e7bd834274c0728815638f7",
+   "bytes": 54952,
+   "avif": 24761
+  },
+  "materials/chaotic-shard.png": {
+   "source": "05820e42eedc266593540e5645aee71a50b9d199097f0b0dd9ab8f8c854cb817",
+   "bytes": 64937,
+   "avif": 29743
+  },
+  "materials/chaotic-soul.png": {
+   "source": "51d228e7750fbd7f3f437834926b0a88bc6526334a50cf5dc3ba551d0252a229",
+   "bytes": 88399,
+   "avif": 43606
+  },
+  "materials/efflorescent-bloom.png": {
+   "source": "714dbec18b8082be1638221f79a9306b7399c01ec1bbba593b66bfa8b1c63c29",
+   "bytes": 70747,
+   "avif": 29657
+  },
+  "materials/efflorescent-crest.png": {
+   "source": "e452acd8630df849b0a36b59985a73adbf29b1d8fa376477a8e1751bcf9f513b",
+   "bytes": 91740,
+   "avif": 49657
+  },
+  "materials/efflorescent-heart.png": {
+   "source": "115629ca93b947a0bcf763e114bad7c692718c42d4cde5e97cc01952df72ea52",
+   "bytes": 78998,
+   "avif": 37613
+  },
+  "materials/efflorescent-seed.png": {
+   "source": "69cbc08c688f12e8a5c6a034a1ee171e0004a1a0a9c9de0d7c528238f022ca88",
+   "bytes": 64683,
+   "avif": 25599
+  },
+  "materials/efflorescent-shard.png": {
+   "source": "3cf2502419acddc0182cf25aa2c8b13a205658820a45e004d13eba4449082d58",
+   "bytes": 79841,
+   "avif": 35672
+  },
+  "materials/efflorescent-soul.png": {
+   "source": "d0397ccfeedd930f3d4fcbcaae8e87d3eb158176bc03624e87961a48d30a6def",
+   "bytes": 79777,
+   "avif": 42107
+  },
+  "materials/heavens-chalice-undying-dawn.png": {
+   "source": "89c47e5968b5452fd17c565d7383fcd848b0037be7b76075d1709b46601b52dd",
+   "bytes": 72478,
+   "avif": 34765
+  },
+  "materials/heavens-crown-scarlet-oath.png": {
+   "source": "438a628875bce43f5df9a43222b86a000e7a7288d943ed4a287b18130f4a4656",
+   "bytes": 67034,
+   "avif": 41386
+  },
+  "materials/heavens-dawnsteel-of-judgment.png": {
+   "source": "3d286af193a2a82625f09fa7466e061b979822c6f539fda48cffb33050de1d93",
+   "bytes": 72945,
+   "avif": 33968
+  },
+  "materials/infernic-bloom.png": {
+   "source": "ddc150b5a15bb27d4d9c1ae277eb7c2ecb3f4f37a8a8c984b2fb93618580b89a",
+   "bytes": 70645,
+   "avif": 32749
+  },
+  "materials/infernic-crest.png": {
+   "source": "2821f71b2824dab80ca24eeeb129aadb950eb3c9986266e4fb01323982332164",
+   "bytes": 72364,
+   "avif": 39698
+  },
+  "materials/infernic-heart.png": {
+   "source": "0e2984dce88df7cbc70ec1253d5dc38a592bf1bc7cccb78f62a43b2f61ea8d98",
+   "bytes": 96078,
+   "avif": 49047
+  },
+  "materials/infernic-seed.png": {
+   "source": "942ef04a6407d14e249c5c3b2ff5fa2caf4978bb6cb3b205efcad2ed594fdd0c",
+   "bytes": 78210,
+   "avif": 32593
+  },
+  "materials/infernic-shard.png": {
+   "source": "4a1fc06d9d73fcd148eba4b43f1b74c8df14d2b41c9e448defea155cb6451442",
+   "bytes": 83806,
+   "avif": 44286
+  },
+  "materials/infernic-soul.png": {
+   "source": "2670d533f5313d6d5add5b38218369e44c31c990de4c79d9dc71748bc42cb558",
+   "bytes": 80376,
+   "avif": 60894
+  },
+  "materials/luminous-bloom.png": {
+   "source": "a51dc4deabaccf662611940a94b6055ed3706049f29de15498e463f7d81d1065",
+   "bytes": 63631,
+   "avif": 32760
+  },
+  "materials/luminous-crest.png": {
+   "source": "e85533263c1fbdbd55657db35d38fe67c467d17fbbaabd8771a5ad04e8952015",
+   "bytes": 80706,
+   "avif": 41989
+  },
+  "materials/luminous-heart.png": {
+   "source": "45a8c7245f327bc4b7d338dc966a36fde5cf7d584d76833ddf4e7c5c50301c5f",
+   "bytes": 94467,
+   "avif": 48808
+  },
+  "materials/luminous-seed.png": {
+   "source": "4979b030f99674ce8c81d5d32fa2044087de81aabcbb6a0049eef2b60e3f510e",
+   "bytes": 70928,
+   "avif": 34859
+  },
+  "materials/luminous-shard.png": {
+   "source": "7a2764b0f81518c26e93f0e6dbc12f9a24de269156241dc5cba41c8f4242bc14",
+   "bytes": 86999,
+   "avif": 49570
+  },
+  "materials/luminous-soul.png": {
+   "source": "4bf09bf4318edf65570d3c913990875499a670db815efc7335ad6538f024f793",
+   "bytes": 87336,
+   "avif": 49516
+  },
+  "materials/ominous-bloom.png": {
+   "source": "a1b4977fd38eddc41100b9e11e3ca847d7158bc14e0311a830525984753b270c",
+   "bytes": 58340,
+   "avif": 23357
+  },
+  "materials/ominous-crest.png": {
+   "source": "84a52684c30423db853c85be5f479e0b428ac8ad9d5b2e821236c1453a026ac1",
+   "bytes": 77915,
+   "avif": 37547
+  },
+  "materials/ominous-heart.png": {
+   "source": "6a8620f2e5c9a2b9376b452ba8c52a933b679a0e4f34d7779145a376ddb97f5d",
+   "bytes": 80664,
+   "avif": 36150
+  },
+  "materials/ominous-seed.png": {
+   "source": "ad472af7a80bf4083b5ee735f72e257c3e59ff26bc9423457560a93374980307",
+   "bytes": 78616,
+   "avif": 32183
+  },
+  "materials/ominous-shard.png": {
+   "source": "371c3f370df7a93e6e1c21bd72bc27399aaa2c5e974f46a42bbde1fa35ef15f2",
+   "bytes": 48702,
+   "avif": 20561
+  },
+  "materials/ominous-soul.png": {
+   "source": "e78dc769f7bfcdd1a46992936ecc07106a2a87ae83ce8200b7242fa7cd9db7cd",
+   "bytes": 79637,
+   "avif": 37067
+  },
+  "materials/rosethorn-common.png": {
+   "source": "40a0ad58eaa5e24027c4af6da9d03ddb3ccdae6a9a7f24e18f5211d9370239b1",
+   "bytes": 85018,
+   "avif": 38515
+  },
+  "materials/rosethorn-epic.png": {
+   "source": "858f4d9c45e19ab5563ac8a947d7dcfea834d0016b79e050496266ffa068d218",
+   "bytes": 92946,
+   "avif": 43250
+  },
+  "materials/rosethorn-legendary.png": {
+   "source": "4ee6b249a1617dde93d20e4f47f44e87ce35146786afc5673f9eed0bd9b589ef",
+   "bytes": 76990,
+   "avif": 37882
+  },
+  "materials/rosethorn-omnic.png": {
+   "source": "392a177b7548b50cb0eda518ac580bbdadaba614b527468492d5bd6d5e7a9d0f",
+   "bytes": 96246,
+   "avif": 55010
+  },
+  "materials/rosethorn-rare.png": {
+   "source": "8df1102e6b96b0f116d44fd9fd5f61266bd4d06d27255b1caafe8f664aba989e",
+   "bytes": 90920,
+   "avif": 47671
+  },
+  "materials/rosethorn-uncommon.png": {
+   "source": "ebeb79bfc86868273c769cfa70f0405b5eff7f257a38722ed61cf719560cdcb2",
+   "bytes": 89561,
+   "avif": 37287
+  },
+  "materials/tectonic-bloom.png": {
+   "source": "dbd0c557b3e502274c67e570dacd2047433defd0ac07891299b0e7aea9849ef1",
+   "bytes": 60079,
+   "avif": 24894
+  },
+  "materials/tectonic-crest.png": {
+   "source": "cb339fc1aebb3c5661662127ec4a5a35722986fe4c1bd2745440ed762642e0d0",
+   "bytes": 75867,
+   "avif": 33078
+  },
+  "materials/tectonic-heart.png": {
+   "source": "605b20edeab7c47a564dab132e245e7463e3fe580cd7600bc5c66f08830eba39",
+   "bytes": 76184,
+   "avif": 26321
+  },
+  "materials/tectonic-seed.png": {
+   "source": "91a06ed7e88295d6f98557f783421defebd8f80f4a0f75578ec47e97bb278c47",
+   "bytes": 65235,
+   "avif": 21116
+  },
+  "materials/tectonic-shard.png": {
+   "source": "28f576c32c16ed5667256039e304c87950b6e2a8e41e9b9f99ccb71ab5d3ab45",
+   "bytes": 73674,
+   "avif": 32508
+  },
+  "materials/tectonic-soul.png": {
+   "source": "9b5219a40eeea3f706f3428bbad48902538972a2af2658d624c26120ce6082f1",
+   "bytes": 82167,
+   "avif": 44856
+  },
+  "materials/tranquilitic-bloom.png": {
+   "source": "0835370a33448232ba74199efcacd8c38a791e97d4d872f882f3ab35ee7d2ab0",
+   "bytes": 66802,
+   "avif": 25260
+  },
+  "materials/tranquilitic-crest.png": {
+   "source": "7ecabf5fc31b18e723f71132cefe32030a2a62efd52c3fcc156269ba49fa5194",
+   "bytes": 72997,
+   "avif": 37704
+  },
+  "materials/tranquilitic-heart.png": {
+   "source": "fd844019ee955b805df787bfac97ffeaf968749f207e02995154983b20cfda09",
+   "bytes": 72114,
+   "avif": 32338
+  },
+  "materials/tranquilitic-seed.png": {
+   "source": "a1ea1101b421d1375383d1d344654d6d6f62fcd724f5e845e40d10fceb1461ac",
+   "bytes": 47566,
+   "avif": 23648
+  },
+  "materials/tranquilitic-shard.png": {
+   "source": "753fdfd07669284c78c7b01c8283a519443bb589a239c76aadb61a2007ce97c4",
+   "bytes": 68231,
+   "avif": 43047
+  },
+  "materials/tranquilitic-soul.png": {
+   "source": "7b7fd7d969105d84f1452dd1e95c79c4bec3b268f6f5a9bb001603ad33f2710c",
+   "bytes": 58783,
+   "avif": 36530
+  },
+  "materials/voltaic-bloom.png": {
+   "source": "c5fe414954d0da199321838bbf6e61f11700d72ec52fa940aa34377fa8462d99",
+   "bytes": 74327,
+   "avif": 42575
+  },
+  "materials/voltaic-crest.png": {
+   "source": "ec2c873695f16a46eff0264d644af497bd09131ad1b18c83178316159a22316d",
+   "bytes": 86568,
+   "avif": 44489
+  },
+  "materials/voltaic-heart.png": {
+   "source": "4730be90804984a05f2f2f18cf41c3f958cbf11d31d3b5370fd4108e413a2ba0",
+   "bytes": 91510,
+   "avif": 47051
+  },
+  "materials/voltaic-seed.png": {
+   "source": "093e145606abed6a0c8c239a0d83f74423a14653660ecd7290f14a4374d1538e",
+   "bytes": 69266,
+   "avif": 34520
+  },
+  "materials/voltaic-shard.png": {
+   "source": "9aa7d1da8e953f9bb1d30c438e0d25795d6f3c3549f4a6666d41d8237ab2e5a0",
+   "bytes": 79819,
+   "avif": 45329
+  },
+  "materials/voltaic-soul.png": {
+   "source": "5d8e38d286ee837b337a500b1a39e616a54d7228987c0e79a56c3ddae4b8c86f",
+   "bytes": 75817,
+   "avif": 46833
+  },
+  "profile-pictures/atmoso-base.png": {
+   "source": "aa9e8dda1d08048052808390e7ea392cdf53618d1a4d5e4d2c5363f512831337",
+   "bytes": 1166571,
+   "avif": 276697,
+   "thumb": 61390
+  },
+  "profile-pictures/atmoso-omnic.png": {
+   "source": "6c3a5a30e509f8903724fc806ccbfcbce290ce970236728e5c6a2f0e626aeb7e",
+   "bytes": 1393583,
+   "avif": 373937,
+   "thumb": 90899
+  },
+  "profile-pictures/aurora-base.png": {
+   "source": "310f80af7ab8cbf6709611988897df283194e96798caed7c4cc4929b54ffad11",
+   "bytes": 839387,
+   "avif": 157351,
+   "thumb": 49662
+  },
+  "profile-pictures/aurora-omnic.png": {
+   "source": "4e2902068e6681280940bc4a7acab0e63569cc27645af81ad1d3a33f2f7d3c40",
+   "bytes": 1429953,
+   "avif": 379028,
+   "thumb": 101761
+  },
+  "profile-pictures/bliss-base.png": {
+   "source": "20b951c2184836c98f66ce6a418c1a97f364415d980813c5b893fed6a41ec0c7",
+   "bytes": 936296,
+   "avif": 188018,
+   "thumb": 56268
+  },
+  "profile-pictures/bliss-omnic.png": {
+   "source": "3477a51e88dcd0fe326390bb42025ed1cdf871f5cbe2558b6f7f6d817e6ebfd1",
+   "bytes": 1433391,
+   "avif": 377570,
+   "thumb": 95831
+  },
+  "profile-pictures/bruno-base.png": {
+   "source": "04b072c27af4f37d2ff3b8d19ce53fc1e3112ed1da41fb1a45de0737723d0b0b",
+   "bytes": 1129418,
+   "avif": 247504,
+   "thumb": 54187
+  },
+  "profile-pictures/bruno-omnic.png": {
+   "source": "0bec48e6cdf21798f8037ea3cf9390ed496d551256133f5f36a9b92b0dca90f7",
+   "bytes": 1455015,
+   "avif": 395400,
+   "thumb": 93759
+  },
+  "profile-pictures/crinso-base.png": {
+   "source": "3dad091f037fad38048b074ac167f1fdc14e010ec670c7102fa95b9ab2cc9828",
+   "bytes": 982451,
+   "avif": 201983,
+   "thumb": 69955
+  },
+  "profile-pictures/crinso-omnic.png": {
+   "source": "76b0890cb2da0cb1291ad6c3660fd32c1197f39e23d62e64463f5aca0f49f1a1",
+   "bytes": 1286168,
+   "avif": 384094,
+   "thumb": 95053
+  },
+  "profile-pictures/disciple-base.png": {
+   "source": "4540fac693963c236c980784f608eacbd7ba540f6a4b1a30c1da2227631ddd6d",
+   "bytes": 815280,
+   "avif": 159629,
+   "thumb": 49093
+  },
+  "profile-pictures/disciple-omnic.png": {
+   "source": "fcc073360b2234f0ad5e1e33da4b8ba4143e722f81cc6eea1cf26d90b7559363",
+   "bytes": 1398560,
+   "avif": 376421,
+   "thumb": 88289
+  },
+  "profile-pictures/elise-base.png": {
+   "source": "35063fd3fdfd12864ad716c1f15a86dbf9806282d5cbd8c58072d9d8267753e6",
+   "bytes": 1193790,
+   "avif": 268676,
+   "thumb": 54965
+  },
+  "profile-pictures/elise-omnic.png": {
+   "source": "6bb4919dec4faa976c9a990ab4f5f0957a7544973882e865870ba14e9869a63d",
+   "bytes": 1311454,
+   "avif": 350496,
+   "thumb": 89067
+  },
+  "profile-pictures/ember-base.png": {
+   "source": "33741aad71991e7503eca35aa00327fe4f07820ea6aa7ba114064c17e1c22566",
+   "bytes": 1037219,
+   "avif": 208990,
+   "thumb": 64436
+  },
+  "profile-pictures/ember-omnic.png": {
+   "source": "7bb4d237522cd17684bc0af69a990c97384cad34e5285c293e7c665bcd5e90ed",
+   "bytes": 1622446,
+   "avif": 460825,
+   "thumb": 112934
+  },
+  "profile-pictures/nerithe-base.png": {
+   "source": "3b5f0ac70fe3f031220cd459057716c76c7b1a7add0e355e2cfc8f4cd2ecd474",
+   "bytes": 874905,
+   "avif": 219061,
+   "thumb": 63569
+  },
+  "profile-pictures/nerithe-omnic.png": {
+   "source": "df647bfa6882b4707848cabd67dea9ca5160afa8c0bc0010be7cbc3b8e09744e",
+   "bytes": 1360170,
+   "avif": 355031,
+   "thumb": 94598
+  },
+  "profile-pictures/orvella-base.png": {
+   "source": "461c7eba3609c3c45f79d2b90175ae8495f889da1761abe55ab6a7c3bdf604b4",
+   "bytes": 904909,
+   "avif": 209054,
+   "thumb": 61665
+  },
+  "profile-pictures/orvella-omnic.png": {
+   "source": "38addefdf8b5b5fbf4df3930ecd38208a235415bb81eb39f519923880ac0bd38",
+   "bytes": 1465850,
+   "avif": 398386,
+   "thumb": 89500
+  },
+  "profile-pictures/razor-base.png": {
+   "source": "53964920907448376858b4af5dc76b1214b67b8a7ff0370fe09aad17245afca6",
+   "bytes": 929102,
+   "avif": 178164,
+   "thumb": 46541
+  },
+  "profile-pictures/razor-omnic.png": {
+   "source": "e2bd69f76214b46c93c3146469c5c071b1cdba4465404901036c44fc07fbd61a",
+   "bytes": 1247380,
+   "avif": 314658,
+   "thumb": 76697
+  },
+  "profile-pictures/rosetta-base.png": {
+   "source": "5c168b1288ddcc788765d72dc635c8159dc437d7812ebccb89f42d2297a1b3a9",
+   "bytes": 993125,
+   "avif": 238795,
+   "thumb": 68966
+  },
+  "profile-pictures/rosetta-omnic.png": {
+   "source": "4c1265f332c2e32e2ec3926e1dc5bca185dbe236774a49c88510571a868fcd95",
+   "bytes": 1294612,
+   "avif": 344437,
+   "thumb": 94472
+  },
+  "profile-pictures/sprout-base.png": {
+   "source": "e88a6568082c7ac020110e7b092f5baff85d464120d90aedc75b7723cd84137e",
+   "bytes": 1050595,
+   "avif": 228705,
+   "thumb": 55392
+  },
+  "profile-pictures/sprout-omnic.png": {
+   "source": "d81fae26fdc67083cdc774db9cf0b51509515a1b915adc11225c757848f47b95",
+   "bytes": 1727404,
+   "avif": 404792,
+   "thumb": 103446
+  },
+  "profile-pictures/thornia-base.png": {
+   "source": "fa6498b3d978f67d69d69dc5415ce2998e3436aae1e8690cf6e848bdee8e687f",
+   "bytes": 1070434,
+   "avif": 244580,
+   "thumb": 58853
+  },
+  "profile-pictures/thornia-omnic.png": {
+   "source": "8ff11d2fc4e40566d8456e771c3833ae93fc1217228187b7ec33c633076abd8e",
+   "bytes": 1389264,
+   "avif": 400731,
+   "thumb": 92072
+  },
+  "profile-pictures/tide-base.png": {
+   "source": "b49a8304f796afa9d8e2f33ba3d9d2231092607048a0f700e72026c211b3187f",
+   "bytes": 974870,
+   "avif": 185590,
+   "thumb": 47227
+  },
+  "profile-pictures/tide-omnic.png": {
+   "source": "082eee58b3b5cb4424cb84d4b8394979ade3f3a4a558026383d0369ff08e4207",
+   "bytes": 1328074,
+   "avif": 335621,
+   "thumb": 89382
+  },
+  "profile-pictures/vaelor-base.png": {
+   "source": "a631ad16ce031ee1b89d5d8ea6d015dd6a8432885c019c38d7d371d1138f0287",
+   "bytes": 966513,
+   "avif": 221117,
+   "thumb": 66199
+  },
+  "profile-pictures/vaelor-omnic.png": {
+   "source": "938ca809368adb77a9928a57772fe2af58ac80ed582f091f417a5abbd7501522",
+   "bytes": 1402398,
+   "avif": 421088,
+   "thumb": 105852
+  }
+ }
+}

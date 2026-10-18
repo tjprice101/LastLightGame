@@ -8,9 +8,10 @@ import { abilityArtRevisions } from '../content/ability-art-revisions';
 import { storyArtRevisions } from '../content/story-art-revisions';
 import { statusArtRevisions } from '../content/status-art-revisions';
 import { calamityArtRevisions } from '../content/calamity-art-revisions';
+import { runtimeArtPath } from './image-format';
 
 export function assetUrl(path: string): string {
-  const url = `${import.meta.env.BASE_URL}assets/${path}`;
+  const url = `${import.meta.env.BASE_URL}assets/${runtimeArtPath(path)}`;
   const character = /^characters\/([^/]+)\.png$/.exec(path);
   const conduit = /^conduits\/([^/]+)\.png$/.exec(path);
   const ability = /^abilities\/([^/]+)\.png$/.exec(path);

@@ -1,5 +1,25 @@
 # Art and asset workflow
 
+## Compressed AVIF runtime art (D-341)
+
+Every `public/assets/**/*.png` has an AVIF sibling (`name.avif`, sharp q90,
+4:4:4 chroma, effort6; ~46-50 dB PSNR, alpha error <=8/255), and character,
+enemy and profile-picture art also has a 384px `name.thumb.avif`. Runtime
+`assetUrl` (via `presentation/image-format.ts`) serves the AVIF; lazy menu
+portraits get a `srcset` so small tiles fetch the thumbnail (`sizes="auto"`,
+Chromium). PNGs stay the canonical originals, revision keys and fallbacks:
+a failed AVIF silently swaps to its PNG, any other failure gets one quiet
+automatic retry before the Retry button. Image failures no longer raise the
+"Action not completed" toast. 322.6 MB of PNG ships as 94.3 MB AVIF (+19 MB
+thumbnails).
+
+**After any art intake or PNG change run `npm run art:avif`** (incremental,
+`tools/build_avif.mjs`) and commit the outputs plus
+`Art/provenance/runtime-avif.json`; `src/presentation/image-format.test.ts`
+fails when any PNG hash is stale. `prebuild` reruns the encoder, which is a
+~1 s hash check when outputs are current. Tests run with AVIF disabled
+(`src/test-setup.ts`) so existing assertions keep canonical PNG URLs.
+
 ## Runtime artwork loading and recovery (D-328)
 
 `presentation/artwork-loading.ts` owns a single body-level capture listener

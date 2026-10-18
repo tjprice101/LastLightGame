@@ -17,13 +17,20 @@ describe('shared artwork loading', () => {
     dispose();
   });
 
-  it('reports real failures, offers one retry outside navigation controls and clears it on success', () => {
+  it('reports real failures after one quiet automatic retry, offers one retry outside navigation controls and clears it on success', () => {
+    vi.useFakeTimers();
     document.body.innerHTML = '<button id="open"><img src="/assets/enemy.png?v=abc" alt="Boss"></button>';
     const dispose = bindArtworkLoading(document.body);
     const report = vi.spyOn(console, 'error').mockImplementation(() => {});
     const navigate = vi.fn();
     document.querySelector('#open')!.addEventListener('click', navigate);
     const image = document.querySelector('img')!;
+    image.dispatchEvent(new Event('error'));
+    expect(report).not.toHaveBeenCalled();
+    expect(document.querySelector('.artwork-retry')).toBeNull();
+    vi.advanceTimersByTime(1000);
+    expect(new URL(image.src).searchParams.has('retry')).toBe(true);
+    vi.useRealTimers();
     image.dispatchEvent(new Event('error'));
     image.dispatchEvent(new Event('error'));
     expect(report).toHaveBeenCalled();
@@ -53,5 +60,39 @@ describe('shared artwork loading', () => {
     dispose();
     document.images[1].dispatchEvent(new Event('error'));
     expect(document.querySelector('.artwork-retry')).toBeNull();
+  });
+
+  it('falls back from AVIF to the canonical PNG silently, without reaching screen error listeners', () => {
+    document.body.innerHTML = '<dialog open><img src="/assets/characters/ember-1.avif?v=r1" srcset="x 384w" sizes="auto" alt="Ember"></dialog>';
+    const dispose = bindArtworkLoading(document.body);
+    const report = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const screen = vi.fn();
+    document.querySelector('dialog')!.addEventListener('error', screen, true);
+    const image = document.images[0];
+    image.dispatchEvent(new Event('error'));
+    expect(image.getAttribute('src')).toBe('/assets/characters/ember-1.png?v=r1');
+    expect(image.hasAttribute('srcset')).toBe(false);
+    expect(screen).not.toHaveBeenCalled();
+    expect(report).not.toHaveBeenCalled();
+    expect(document.querySelector('.artwork-retry')).toBeNull();
+    dispose();
+  });
+
+  it('offers thumbnails to lazy portrait tiles and keeps them in step with in-place source swaps', async () => {
+    const dispose = bindArtworkLoading(document.body);
+    document.body.innerHTML = '<img src="/assets/characters/ember-1.avif?v=a"><div class="battle-screen"><img src="/assets/enemies/goblin.avif"></div><img src="/assets/abilities/x.avif">';
+    await Promise.resolve();
+    const [tile, battle, icon] = Array.from(document.images);
+    expect(tile.getAttribute('srcset')).toBe('/assets/characters/ember-1.thumb.avif?v=a 384w, /assets/characters/ember-1.avif?v=a 960w');
+    expect(tile.getAttribute('sizes')).toBe('auto');
+    expect(battle.hasAttribute('srcset')).toBe(false);
+    expect(icon.hasAttribute('srcset')).toBe(false);
+    tile.src = '/assets/characters/ember-2.avif?v=b';
+    await Promise.resolve();
+    expect(tile.getAttribute('srcset')).toContain('ember-2.thumb.avif?v=b 384w');
+    tile.setAttribute('src', 'data:image/svg+xml,pending');
+    await Promise.resolve();
+    expect(tile.hasAttribute('srcset')).toBe(false);
+    dispose();
   });
 });
