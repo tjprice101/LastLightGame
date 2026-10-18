@@ -114,16 +114,6 @@
         height: 100% !important;
         overflow: visible !important;
       }
-      /* Scale fighter art relative to arena container rather than 100dvh */
-      html body .preview-stage.battle-screen #battle-root .allies.solo .battle-art,
-      html body .preview-stage.battle-screen #battle-root .enemies .battle-unit:only-child .battle-art {
-        width: min(100%, calc(220px * var(--unit-scale, 1)), 34cqh, 30cqw) !important;
-        max-height: 34cqh !important;
-      }
-      html body .preview-stage.battle-screen #battle-root .battle-art {
-        width: min(100%, calc(150px * var(--unit-scale, 1)), 25cqh, 22cqw) !important;
-        max-height: 25cqh !important;
-      }
       @media (max-width: 540px) {
         .preview-controls {
           display: grid;

@@ -24,8 +24,11 @@ html body .battle-screen #battle-root .battle-unit:nth-child(2) { translate: 1re
 html body .battle-screen #battle-root .enemies .battle-unit:nth-child(2) { translate: -1rem 0; }
 html body .battle-screen #battle-root .battle-art { order: initial; margin: 0; flex: 0 1 auto; }
 .unit-nameplate { display: flex; flex-direction: column; width: min(16rem, 50%); flex: 0 1 16rem; min-width: 0; }
-html body .battle-screen #battle-root .battle-arena { container-type: size; grid-template-columns: repeat(2, minmax(0, 1fr)); --battle-art-base: min(180px, calc(48cqh / var(--battle-rows, 3)), 11cqw); }
-html body .battle-screen #battle-root .battle-art { width: calc(var(--battle-art-base) * var(--unit-scale, 1)); max-width: 44%; flex-shrink: 0; }
+html body .battle-screen #battle-root .battle-arena { container-type: size; grid-template-columns: repeat(2, minmax(0, 1fr)); --battle-art-base: min(330px, calc(125cqh / var(--battle-rows, 3)), 19cqw); }
+/* Units are the focal point: compress per-artwork scale (.65-1.75 -> ~.94-1.14) so small sprites stay large,
+   and let stacked sprites overlap vertically (transparent PNG padding) instead of shrinking to the row height. */
+html body .battle-screen #battle-root .battle-art { --battle-art-size: calc(var(--battle-art-base) * (.82 + .18 * var(--unit-scale, 1))); width: var(--battle-art-size); max-width: none; flex-shrink: 0; margin-block: calc(var(--battle-art-size) * -.16); }
+html body .battle-screen #battle-root .battle-unit.selected-unit, html body .battle-screen #battle-root .battle-unit:hover { z-index: 2; }
 html body .battle-screen #battle-root .battle-sprite img { filter: drop-shadow(0 1px 1px #080b10) drop-shadow(0 0 2px #ffffffd9) drop-shadow(0 2px 6px #080b10b3); }
 @media (min-width: 761px) {
   html body .battle-screen #battle-root .allies.squad { gap: 0; }
@@ -112,7 +115,7 @@ html body .battle-screen #battle-root .ultimate-ready .battle-art { filter: drop
   html body .battle-screen .battle-menu .battle-log ol { max-height: 12rem; }
 }
 @media (max-width: 540px) {
-  html body .battle-screen #battle-root .battle-arena { display: flex; flex-direction: column; gap: .6rem; padding: .6rem; --battle-art-base: min(100px, calc(88cqw / var(--battle-rows, 3) / 1.75), 18cqh); }
+  html body .battle-screen #battle-root .battle-arena { display: flex; flex-direction: column; gap: .6rem; padding: .6rem; --battle-art-base: min(140px, calc(88cqw / var(--battle-rows, 3) / 1.2), 22cqh); }
   html body .battle-screen #battle-root .battle-side { flex: 1; flex-direction: row; width: 100%; gap: .35rem; }
   html body .battle-screen #battle-root .battle-side .battle-unit { flex: 1; flex-direction: column; gap: .4rem; height: 100%; justify-content: center; }
   html body .battle-screen #battle-root .enemies .battle-art { order: 1; }

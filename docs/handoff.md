@@ -1,5 +1,12 @@
 # Current state and handoff
 
+## Large focal battle sprites (D-345)
+
+- `presentation/battle-mono.css` sizes `.battle-art` from a larger arena-relative
+  base with compressed per-artwork scale, no percentage width cap and vertical
+  overlap; `battle-squad-art.test.ts` asserts it. `animation-preview.html` no
+  longer overrides desktop art width. CSS only, no server redeploy.
+
 ## Evolution fodder picker wording (D-344)
 
 - `presentation/hub.ts` evolution panel lists only captures from the required
