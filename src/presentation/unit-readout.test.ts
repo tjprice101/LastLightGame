@@ -14,7 +14,7 @@ describe('field readouts', () => {
     state.allies[2].native = { seeds: { tide: { fraction: nativeBalance.flora.seed, dueRound: 2 } } };
     const fire = unitReadout(state.allies[0], true, state.allies, state.round, state);
     expect(fire).toContain('15 × 2');
-    expect(fire).toContain(state.enemies[0].name);
+    expect(fire).not.toContain(state.enemies[0].name);
     expect(unitReadout(state.allies[2], true, state.allies, state.round, state)).toContain('Seed');
     expect(fire).not.toContain('Infernic Embers 3 / 3');
     expect(unitReadout(state.allies[1], true, state.allies, state.round, state)).not.toContain('Oceanic Protection 2 / 3');
