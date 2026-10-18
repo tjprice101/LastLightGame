@@ -37,7 +37,7 @@ function dungeonEntry(element: (typeof elements)[number]['id'], account: Account
 }
 
 const activityCategories = [
-  ['story', 'Story', 'Six regions · 150 stages · Lv.1-55', 'story'],
+  ['story', 'Story', 'Six regions · 108 stages · Lv.1-55', 'story'],
   ['adventure', 'Training', 'Endless waves · Prismatica', 'gameplay'],
   ['dungeons', 'Elemental dungeons', 'Unlock Lv.30 · Upgrade materials', 'inventory'],
   ['infusion', 'Evolution infusion', 'Unlock Lv.50 · Heaven & Abyss', 'evolution'],
@@ -68,12 +68,12 @@ function activityFacts(stages: string, levels: string, drops: string): string {
 
 function gameplayInformation(): string {
   return informationTopics('gameplay-information', [
-    { id: 'final-loot', title: 'Final-boss loot', summary: '5x quantities on every final clear', content: `<p>${finalBossLootText}</p><p>Story applies this at all six regional bosses (25, 50, 75, 100, 125 and 150). Other staged activities apply it only at their last stage; earlier bosses are unchanged.</p>` },
+    { id: 'final-loot', title: 'Final-boss loot', summary: '5x quantities on every final clear', content: `<p>${finalBossLootText}</p><p>Story applies this at all six regional bosses (stages 18, 36, 54, 72, 90 and 108). Other staged activities apply it only at their last stage; earlier bosses are unchanged.</p>` },
     { id: 'origins', title: 'Let and Rise', summary: 'Infinity, Nothingness and the search for the creators', content: worldLore() },
     { id: 'start', title: 'Unlocks', summary: 'Activity level requirements', content: `<p>Story is open from the start. Other activities open at your highest-level owned Element-Bearer's level, even when that Element-Bearer is not in your squad. Captured Elemental-Devourers do not count.</p>
       <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li></ul>` },
     { id: 'enemy-strength', title: 'Enemy strength', summary: 'Levels, boss stats and special attacks', content: '<p>Enemy level sets the same base stats in every activity. Bosses have more HP, Attack and Defense. Stat changes appear beside the selected stage and below enemy HP in battle: red means higher, blue means lower, compared with a standard enemy at that level.</p><p>Shields, healing, repeated hits and special attacks can make a fight harder without changing its level. Calamity lists these mechanics beside each boss. Attack is the base stat, not the damage of every hit.</p>' },
-    { id: 'story', title: 'Story', summary: 'Six regions, 150 stages', content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
+    { id: 'story', title: 'Story', summary: 'Six regions, 108 stages', content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
     { id: 'training', title: 'Training', summary: 'Endless battles for Prismatica', content: `<p>Start at wave 1 with your saved squad. Enemy levels stop rising at Lv.120.</p>
       <p>Per-kill Prismatica grows from 5-10 at Lv.1 to 15-30 at Lv.120. No materials, captures or Null-Prismatica.</p>` },
     { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, enemy levels ${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}.</p>

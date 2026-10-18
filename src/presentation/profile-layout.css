@@ -278,3 +278,11 @@
   #app .profile-layout .profile-recent li b { font-size: 13px; }
   #app .profile-layout .profile-recent :is(small, time) { font-size: 11px; }
 }
+
+/* D-340 read-only friend profile: same grid as Player info, static header instead of the edit form. */
+#app .profile-layout .friend-profile-name { margin: 2px 0 6px; text-align: center; font-size: 20px; overflow-wrap: anywhere; }
+#app .profile-layout .friend-profile-bio { display: grid; gap: 4px; padding: 8px 10px; border: 1px solid #303034; border-radius: 10px; background: #1a1a1c; }
+#app .profile-layout .friend-profile-bio p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+#app .profile-layout .friend-profile-view .ref-market-tabs button[disabled] { opacity: 1; cursor: default; }
+#app .profile-layout .friend-profile-view .profile-frame-row button { min-height: 44px; }
+#app .profile-layout .friend-profile-view .ref-member-row { cursor: default; }

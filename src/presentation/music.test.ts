@@ -2,6 +2,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { elements } from '../content/activities';
 import { createStoryBattle } from '../game/battle';
+import { storyRules } from '../content/story';
 import { defaultBindings } from '../game/hotkeys';
 import { BattleView, type BattleSession } from './battle-view';
 import { BackgroundMusic, battleMusic, defaultMusicPreferences, loadMusicPreferences, MUSIC_KEY,
@@ -44,14 +45,14 @@ describe('delivered soundtrack routing', () => {
     vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
     const f = fixture();
     const progress = { level: 0, evolution: 1 };
-    const session: BattleSession = { state: createStoryBattle(25, 17, 'ember', progress),
+    const session: BattleSession = { state: createStoryBattle(storyRules.regionStages, 17, 'ember', progress),
       progress, log: [], stageEvents: [], runId: 'music-fixture' };
     const host = document.createElement('div');
     document.body.append(host);
     const changed = (state: BattleSession['state']) => f.controller.setTrack(battleMusic(state));
     const view = new BattleView(host, session, defaultBindings, () => {}, undefined, undefined, changed);
     expect(f.audio.src).toContain('music/infernic.mp3');
-    session.state = createStoryBattle(26, 17, 'ember', progress);
+    session.state = createStoryBattle(storyRules.regionStages + 1, 17, 'ember', progress);
     Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
     expect(f.audio.src).toContain('music/oceanic.mp3');
     expect(f.load).toHaveBeenCalledTimes(3);
@@ -69,7 +70,7 @@ describe('delivered soundtrack routing', () => {
 
   it('maps every Story stage and all six material dungeons to the delivered shared tracks', () => {
     for (const [index, element] of elements.entries()) {
-      for (let stage = index * 25 + 1; stage <= (index + 1) * 25; stage++) {
+      for (let stage = index * storyRules.regionStages + 1; stage <= (index + 1) * storyRules.regionStages; stage++) {
         expect(battleMusic({ story: { storyStage: stage } })).toBe(element.id);
       }
       expect(battleMusic({ dungeon: { element: element.id, stage: 1 } })).toBe(element.id);
@@ -86,7 +87,7 @@ describe('delivered soundtrack routing', () => {
     for (const character of ['nerithe', 'orvella', 'vaelor'] as const) {
       expect(battleMusic({ war: { character, stage: 1 } })).toBeNull();
     }
-    expect(() => battleMusic({ story: { storyStage: 151 } })).toThrow();
+    expect(() => battleMusic({ story: { storyStage: storyRules.stages + 1 } })).toThrow();
   });
 });
 

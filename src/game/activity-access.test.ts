@@ -6,6 +6,7 @@ import { freshGame, resolveOperation } from '../../supabase/functions/game-opera
 import type { Activity } from '../online/server-game';
 import { infusionEncounter, infusionLoot } from '../content/infusions';
 import { createInfusionBattle } from './battle';
+import { storyRules } from '../content/story';
 
 const gates: readonly [Activity, number, number][] = [
   [{ kind: 'training' }, 0, 1], [{ kind: 'story', stage: 1 }, 0, 1],
@@ -56,9 +57,9 @@ describe('highest-owned Element-Bearer activity access', () => {
     const account = emptyAccount();
     account.characters.ember = { level: 30, evolution: 1 };
     const activity = { kind: 'infusion', mode: 'machines', stage: 1 } as const;
-    account.storyCompleted = 24;
+    account.storyCompleted = storyRules.regionStages - 1;
     expect(activityAccess(account, activity).unlocked).toBe(false);
-    account.storyCompleted = 25;
+    account.storyCompleted = storyRules.regionStages;
     expect(activityAccess(account, activity).unlocked).toBe(true);
   });
 

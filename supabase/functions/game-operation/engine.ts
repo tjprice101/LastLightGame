@@ -17,10 +17,12 @@ import { isActionId } from '../../../src/content/combat';
 import { elements } from '../../../src/content/activities';
 import { isPlayableDungeon } from '../../../src/content/dungeons';
 import { isInfusionMode } from '../../../src/content/infusions';
+import { storyRules } from '../../../src/content/story';
 import { isWarCharacter } from '../../../src/content/elemental-war';
 import { isCalamityActivityId, isCalamityTier, parseCalamityChestId } from '../../../src/content/calamity';
 import type { Activity, GameOperation, GameRequest, GameResponse, OnlineProfile, ProfileFrame,
-  ProfileActivity, ServerBattleSession, ChatOperation, ChatRequest } from '../../../src/online/server-game';
+  ProfileActivity, ServerBattleSession, ChatOperation, ChatRequest, FriendProfileResponse } from '../../../src/online/server-game';
+import { redactFriendAccount } from '../../../src/game/friend-profile';
 import { isProfilePictureId, profilePictureUnlocked } from '../../../src/content/profile-pictures';
 // Runtime values stay local: importing server-game would bundle the browser Supabase client.
 const chatMessageLength = 500, chatGroupNameLength = 48, chatGroupMembers = 10;
@@ -73,7 +75,7 @@ export function profileActivityFor(operation: GameOperation, previousStoryComple
   if (resolved.response.result?.state.phase === 'cleared' && resolved.game.run?.activity.kind === 'story') {
     const stage = resolved.game.run.activity.stage;
     const completed = resolved.game.account.storyCompleted ?? 0;
-    const restoredBeacon = Math.floor(completed / 25) > Math.floor(previousStoryCompleted / 25);
+    const restoredBeacon = Math.floor(completed / storyRules.regionStages) > Math.floor(previousStoryCompleted / storyRules.regionStages);
     return {
       id: uuid(), message: 'Story stage cleared',
       detail: `${restoredBeacon ? 'Beacon restored · ' : ''}Story · Stage ${stage}`,
@@ -239,6 +241,44 @@ export function validateChatRequest(value: unknown): ChatRequest {
   }
   return value as unknown as ChatRequest;
 }
+export interface FriendProfileRequest { requestId: string; friendProfile: { userId: string } }
+export function validateFriendProfileRequest(value: unknown): FriendProfileRequest {
+  if (!record(value)) throw new Error('Request must be an object.');
+  keys(value, ['requestId', 'friendProfile']);
+  if (typeof value.requestId !== 'string' || !uuid.test(value.requestId)) throw new Error('A UUID request ID is required.');
+  if (!record(value.friendProfile)) throw new Error('Choose a friend.');
+  keys(value.friendProfile, ['userId']);
+  if (typeof value.friendProfile.userId !== 'string' || !uuid.test(value.friendProfile.userId)) throw new Error('Invalid friend user ID.');
+  return value as unknown as FriendProfileRequest;
+}
+/** Friend view (D-340): the friend's own profile screen, redacted to collection/progress data only. */
+export function friendProfileView(row: unknown): FriendProfileResponse {
+  if (!record(row) || typeof row.userId !== 'string' || typeof row.username !== 'string' || typeof row.createdAt !== 'string') {
+    throw new Error('Friend profile unavailable.');
+  }
+  const stored = record(row.state) ? row.state as unknown as DurableGame : freshGame(row.username, row.createdAt);
+  const account = redactFriendAccount(stored.account);
+  const source = record(stored.profile) ? stored.profile : freshGame(row.username, row.createdAt).profile;
+  const reference = record(row.reference) ? row.reference : {};
+  const icon = isProfileIcon(source.icon) && profileIconUnlocked(account, source.icon) ? source.icon : 'neutral';
+  const recent = Array.isArray(reference.recentActivity) ? reference.recentActivity.filter(entry => record(entry) &&
+    typeof entry.id === 'string' && typeof entry.message === 'string' && typeof entry.detail === 'string' && typeof entry.at === 'string') : [];
+  return {
+    userId: row.userId, account,
+    profile: {
+      username: row.username, createdAt: row.createdAt,
+      displayName: typeof source.displayName === 'string' && source.displayName ? source.displayName : row.username,
+      bio: typeof source.bio === 'string' ? source.bio : '',
+      icon, frame: typeof source.frame === 'string' && frames.includes(source.frame as ProfileFrame) ? source.frame as ProfileFrame : 'default',
+      totalDraws: Number.isSafeInteger(source.totalDraws) ? source.totalDraws as number : 0,
+      ...(typeof reference.friendCode === 'string' ? { friendCode: reference.friendCode } : {}),
+      ...(typeof reference.playerId === 'string' ? { playerId: reference.playerId } : {}),
+      ...(Number.isSafeInteger(reference.daysPlayed) ? { daysPlayed: reference.daysPlayed as number } : {}),
+      ...(Number.isSafeInteger(reference.playTimeSeconds) ? { playTimeSeconds: reference.playTimeSeconds as number } : {}),
+      recentActivity: recent as ProfileActivity[],
+    },
+  };
+}
 class VirtualStorage implements ProfileStorage {
   private items = new Map<string, string>();
   constructor(game: DurableGame) {
@@ -249,7 +289,17 @@ class VirtualStorage implements ProfileStorage {
   setItem(key: string, value: string): void { this.items.set(key, value); }
   removeItem(key: string): void { this.items.delete(key); }
 }
-export function publicGame(game: DurableGame, revision: number): GameResponse {
+/** Pre-v6 Story runs used the 25-stage layout; their stage numbers and levels no longer exist, so they are discarded (D-340). */
+function isLegacyStoryRun(game: DurableGame): boolean {
+  const version = (game.account as { version?: unknown }).version;
+  return typeof version === 'number' && version < 6 && game.run?.activity.kind === 'story';
+}
+/** Story clears on the current layout, converting a stored pre-v6 count without writing. */
+export function storyCompletedOf(game: DurableGame): number {
+  return validateAccount(game.account).storyCompleted ?? 0;
+}
+export function publicGame(stored: DurableGame, revision: number): GameResponse {
+  const game = isLegacyStoryRun(stored) ? { ...stored, run: null } : stored;
   const account = validateAccount(game.account);
   if (game.run) validateRunActivity(game.run);
   const session = game.run ? structuredClone(game.run.session) : null;
@@ -306,6 +356,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
   entropy: { seed(): number; uuid(): string; random(): number }): { game: DurableGame; response: GameResponse } {
   validateRequest({ requestId: '00000000-0000-4000-8000-000000000001', expectedRevision: 0, operation });
   const game = structuredClone(previous);
+  if (isLegacyStoryRun(game)) game.run = null;
   game.account = validateAccount(game.account);
   if (game.run) {
     validateRunActivity(game.run);

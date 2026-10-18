@@ -144,7 +144,7 @@ try {
   assert.equal(continued.session.state.story.storyStage, 2);
   const quit = await call({ kind: 'quit', runId: continued.session.runId }, continued.revision);
   assert.equal(quit.session, null);
-  assert.equal(quit.account.lycalis, 0);
+  assert.equal(quit.account.lycalis, 2);
   const username2 = `smoke_${randomUUID().slice(0, 8)}`;
   const password2 = randomUUID() + randomUUID();
   const email2 = `${username2}@example.invalid`;
@@ -200,6 +200,17 @@ try {
     requestId: randomUUID(), expectedRevision: 1, operation: { kind: 'acceptFriendRequest', userId: ids[0] },
   } });
   assert.equal(accepted.data.social.friends.length, 1);
+  const viewed = await client2.functions.invoke('game-operation', { body: { requestId: randomUUID(), friendProfile: { userId: ids[0] } } });
+  assert.equal(viewed.error, null);
+  assert.equal(viewed.data.userId, ids[0]);
+  assert.equal(viewed.data.profile.username, activeRead.profile.username);
+  assert.equal(viewed.data.account.fractalis, 0);
+  assert.equal(viewed.data.account.lycalis, 0);
+  assert.deepEqual(viewed.data.account.receipts, []);
+  assert.equal(viewed.data.account.storyCompleted, friend.account.storyCompleted);
+  assert.ok(!('email' in viewed.data.profile));
+  const stranger = await client2.functions.invoke('game-operation', { body: { requestId: randomUUID(), friendProfile: { userId: randomUUID() } } });
+  assert.equal(stranger.error?.context?.status, 404);
   assert.equal(accepted.data.social.friends[0].online, true);
   assert.ok(Number.isFinite(Date.parse(accepted.data.social.friends[0].lastSeenAt)));
   const peerCheckpoint = await callAs(client2, { kind: 'checkpoint' }, accepted.data.revision);
@@ -544,7 +555,7 @@ async function smokeGuaranteedComponents(client, userId, username) {
   let game = freshGame(username);
   game.starterId = 'ember';
   game.account.characters = { ember: { level: 105, evolution: 6 } };
-  game.account.storyCompleted = 25;
+  game.account.storyCompleted = 18;
   game.account.squad = ['ember'];
   game.account.infusionStages = { machines: 100 };
   game = resolveOperation(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: 100 } }, entropy).game;
@@ -595,13 +606,13 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
   const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
   const activities = [
     ...(includeEarly ? [
-      ...[1, 24].map(stage => ({ kind: 'story', stage })),
+      ...[1, 17].map(stage => ({ kind: 'story', stage })),
       ...['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic']
         .map(element => ({ kind: 'dungeon', element, stage: 1 })),
       ...['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines'].map(mode => ({ kind: 'infusion', mode, stage: 1 })),
       { kind: 'infusion', mode: 'machines', stage: 75 },
     ] : []),
-    ...[25, 50, 75, 100, 125, 150].map(stage => ({ kind: 'story', stage })),
+    ...[18, 36, 54, 72, 90, 108].map(stage => ({ kind: 'story', stage })),
     ...['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic']
       .map(element => ({ kind: 'dungeon', element, stage: 35 })),
     ...['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines']
@@ -627,7 +638,7 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
     game.starterId = 'ember';
     game.account.characters = { ember: { level: 105, evolution: 6 } };
     game.account.squad = ['ember'];
-    game.account.storyCompleted = activity.kind === 'story' ? activity.stage - 1 : 150;
+    game.account.storyCompleted = activity.kind === 'story' ? activity.stage - 1 : 108;
     game.account.dungeonStages = Object.fromEntries(['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic'].map(element => [element, 35]));
     game.account.infusionStages = { heavens: 35, abyss: 35, treasury: 25, sanctuary: 25, roses: 35, machines: 100 };
     game.account.warStages = { nerithe: 10, orvella: 10, vaelor: 10 };
@@ -655,7 +666,7 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
     const rewards = actual.result.events.filter(event => event.kind === 'reward');
     assert.equal(rewards.length, state.enemies.length);
     assert.deepEqual(rewards, expected.result.events.filter(event => event.kind === 'reward'));
-    const final = activity.kind === 'story' ? activity.stage % 25 === 0 : activity.kind === 'war' ? activity.stage === 10
+    const final = activity.kind === 'story' ? activity.stage % 18 === 0 : activity.kind === 'war' ? activity.stage === 10
       : activity.kind === 'dungeon' ? activity.stage === 35 : activity.stage === (activity.mode === 'machines' ? 100 : ['treasury', 'sanctuary'].includes(activity.mode) ? 25 : 35);
     if (final) {
       assert.equal((rewards[0].amount - (rewards[0].storyBonus?.fractalis ?? 0)) % 5, 0);

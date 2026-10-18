@@ -13,7 +13,8 @@ export function StarterSelection({ initialSelected, onSelect, onBegin, onPlayerI
   initialSelected?: StarterId;
   onSelect: (id: OpeningStarterId) => void;
   onBegin: () => Promise<void>;
-  onPlayerInfo: () => void;
+  /** Omitted for signed-in online accounts, whose save data is managed by the server. */
+  onPlayerInfo?: () => void;
 }) {
   const [selected, setSelected] = useState(() => availableStarters.find(starter => starter.id === initialSelected));
   const [busy, setBusy] = useState(false);
@@ -24,7 +25,7 @@ export function StarterSelection({ initialSelected, onSelect, onBegin, onPlayerI
       <div><p className="ll-kicker">CHAPTER ZERO · A FIRST LIGHT</p>
         <h1 tabIndex={-1}>Choose your Element-Bearer</h1>
         <p>Pick a starter. Compare their roles, then begin.</p></div>
-      <Button onClick={onPlayerInfo} disabled={busy}>Player info</Button>
+      {onPlayerInfo && <Button onClick={onPlayerInfo} disabled={busy}>Player info</Button>}
     </header>
     <div className="ll-starter-layout">
       <div className="ll-starter-choices">

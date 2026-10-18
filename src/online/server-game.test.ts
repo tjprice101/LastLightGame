@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { freshGame, profileActivityFor, profileIconUnlocked as engineProfileIconUnlocked, resolveOperation, validateChatRequest, validateRequest, type DurableGame } from '../../supabase/functions/game-operation/engine';
+import { freshGame, profileActivityFor, profileIconUnlocked as engineProfileIconUnlocked, publicGame, resolveOperation, storyCompletedOf, validateChatRequest, validateRequest, type DurableGame } from '../../supabase/functions/game-operation/engine';
 import { isProfileIcon, profileIconUnlocked, validateChatResponse, validateGameResponse, type GameOperation } from './server-game';
 import { profilePictures } from '../content/profile-pictures';
 import { createCreatureCopy } from '../game/character-instances';
@@ -15,6 +15,7 @@ import { elementalWars } from '../content/elemental-war';
 import { characterLevelCost } from '../content/progression';
 import { capturedLevelCost } from '../game/character-instances';
 import { conduits } from '../content/conduits';
+import { storyCompletionReward, storyRules } from '../content/story';
 
 let sequence = 0;
 const entropy = { seed: () => 7321, random: () => .9,
@@ -112,7 +113,7 @@ describe('server authoritative game engine', () => {
 
   const replayModes: InfusionModeId[] = ['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines'];
   const replayActivities = [
-    ...[1, 25, 150].map(stage => ({ kind: 'story' as const, stage })),
+    ...[1, storyRules.regionStages, storyRules.stages].map(stage => ({ kind: 'story' as const, stage })),
     ...playableDungeons.map(element => ({ kind: 'dungeon' as const, element, stage: 35 })),
     ...replayModes.map(mode => ({ kind: 'infusion' as const, mode, stage: infusionStageCount(mode) })),
     ...elementalWars.map(war => ({ kind: 'war' as const, character: war.character, stage: 10 })),
@@ -120,7 +121,7 @@ describe('server authoritative game engine', () => {
   it.each(replayActivities)('replays a cleared $kind stage $stage with fresh receipts and no extra claim', activity => {
     const game = started();
     game.account.characters.ember = { level: 105, evolution: 6 };
-    game.account.storyCompleted = 150;
+    game.account.storyCompleted = storyRules.stages;
     game.account.dungeonStages = Object.fromEntries(playableDungeons.map(element => [element, 35]));
     game.account.infusionStages = Object.fromEntries(replayModes.map(mode => [mode, infusionStageCount(mode)]));
     game.account.warStages = { nerithe: 10, orvella: 10, vaelor: 10 };
@@ -214,13 +215,13 @@ describe('server authoritative game engine', () => {
   it('uses shared hostile stats and skill power through authoritative activity entries', () => {
     const game = started();
     game.account.characters.ember = { level: 105, evolution: 6 };
-    game.account.storyCompleted = 150;
+    game.account.storyCompleted = storyRules.stages;
     game.account.dungeonStages = { infernic: 35 };
     game.account.infusionStages = { heavens: 35 };
     for (const activity of [
       { kind: 'training' },
-      { kind: 'story', stage: 149 },
-      { kind: 'story', stage: 150 },
+      { kind: 'story', stage: storyRules.stages - 1 },
+      { kind: 'story', stage: storyRules.stages },
       { kind: 'dungeon', element: 'infernic', stage: 8 },
       { kind: 'infusion', mode: 'heavens', stage: 5 },
     ] as const) {
@@ -385,7 +386,7 @@ describe('server authoritative game engine', () => {
         operation: { kind, online: true } })).toThrow();
     }
   });
-  it('marks only a newly crossed 25-stage Story region as a restored Beacon', () => {
+  it('marks only a newly crossed Story region as a restored Beacon', () => {
     const makeResolved = (completed: number, stage: number) => {
       const game = started();
       game.account.storyCompleted = completed;
@@ -397,12 +398,33 @@ describe('server authoritative game engine', () => {
       return { game, response } as ReturnType<typeof resolveOperation>;
     };
     const uuid = () => entropy.uuid();
-    const clear25 = profileActivityFor({ kind: 'endTurn', runId: entropy.uuid() }, 24, makeResolved(25, 25), uuid);
-    expect(clear25?.detail).toBe('Beacon restored · Story · Stage 25');
-    const laterStage = profileActivityFor({ kind: 'endTurn', runId: entropy.uuid() }, 25, makeResolved(26, 26), uuid);
-    expect(laterStage?.detail).toBe('Story · Stage 26');
-    const replay = profileActivityFor({ kind: 'endTurn', runId: entropy.uuid() }, 25, makeResolved(25, 1), uuid);
+    const region = storyRules.regionStages;
+    const clear25 = profileActivityFor({ kind: 'endTurn', runId: entropy.uuid() }, region - 1, makeResolved(region, region), uuid);
+    expect(clear25?.detail).toBe(`Beacon restored · Story · Stage ${region}`);
+    const laterStage = profileActivityFor({ kind: 'endTurn', runId: entropy.uuid() }, region, makeResolved(region + 1, region + 1), uuid);
+    expect(laterStage?.detail).toBe(`Story · Stage ${region + 1}`);
+    const replay = profileActivityFor({ kind: 'endTurn', runId: entropy.uuid() }, region, makeResolved(region, 1), uuid);
     expect(replay?.detail).toBe('Story · Stage 1');
+  });
+  it('discards a saved Story run from a pre-v6 account and converts its Story count', () => {
+    const base = started();
+    base.run = op(base, { kind: 'enter', activity: { kind: 'story', stage: 1 } }).game.run;
+    expect(base.run).not.toBeNull();
+    const legacy = structuredClone(base);
+    legacy.account = { ...legacy.account, version: 5, storyCompleted: 30 } as unknown as typeof legacy.account;
+    const before = structuredClone(legacy);
+    const response = op(legacy, { kind: 'read' });
+    expect(legacy).toEqual(before);
+    expect(response.game.run).toBeNull();
+    expect(response.response.session).toBeNull();
+    expect(response.response.account.version).toBe(6);
+    expect(response.response.account.storyCompleted).toBe(21);
+    expect(storyCompletedOf(legacy)).toBe(21);
+    expect(publicGame(legacy, 3).session).toBeNull();
+    const training = op(legacy, { kind: 'enter', activity: { kind: 'training' } });
+    expect(training.game.account.storyCompleted).toBe(21);
+    const current = op(base, { kind: 'read' });
+    expect(current.response.session).not.toBeNull();
   });
   it('starts fresh with exactly one approved starter once, no imported currency', () => {
     const first = started();
@@ -462,8 +484,15 @@ describe('server authoritative game engine', () => {
       const expected = actAndAdvanceTurn(state, 'ember', 'light', target.id);
       const resolved = op(game, { kind: 'act', runId: game.run!.session.runId,
         actorId: 'ember', action: 'light', targetId: target.id });
-      expect(resolved.response.result).toEqual(expected);
       amount += expected.events.filter(e => e.kind === 'reward').reduce((sum, e) => sum + e.amount, 0);
+      if (expected.state.phase === 'cleared') {
+        const last = [...expected.events].reverse().find(e => e.kind === 'reward')!;
+        last.amount += storyCompletionReward.fractalis;
+        last.lycalis = (last.lycalis ?? 0) + storyCompletionReward.lycalis;
+        last.message += ' Stage clear: +150 Prismatica and +2 Null-Prismatica.';
+        amount += storyCompletionReward.fractalis;
+      }
+      expect(resolved.response.result).toEqual(expected);
       game = resolved.game;
     }
     expect(game.run!.session.state.phase).toBe('cleared');

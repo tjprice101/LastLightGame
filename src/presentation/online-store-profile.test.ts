@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { emptyAccount } from '../game/account';
+import { storyRules } from '../content/story';
 import { bindProfileEditor, friendPresence, onlineProfile, onlineStores, profileFrames, refreshFriendPresence, refreshProfileTracking, type OnlineProfileDisplay } from './online-store-profile';
 import { starters } from '../content/starters';
 
@@ -134,7 +135,7 @@ describe('online profile presentation', () => {
       daysPlayed: 3, playTimeSeconds: 51720, recentActivity: [{ id: '1', message: '<Saved>', detail: 'Story & beacon', at: '2026-10-11T00:00:00Z' }] },
     { friends: [], incoming: [{ userId: '1', username: 'peer', displayName: 'Peer', icon: 'neutral', frame: 'default' }], outgoing: [] });
     for (const region of ['Emberwake March', 'Glasswater Reach', 'Stormspan Heights', 'Rootstone Wilds', 'Stillhalo Vale', 'Riftbound Frontier']) expect(html).toContain(region);
-    expect(html).toContain('1/25');
+    expect(html).toContain(`${26 - storyRules.regionStages}/${storyRules.regionStages}`);
     expect(html).toContain('max="90"');
     expect(html).toContain('max="126"');
     expect(html).toContain('3/126');
@@ -161,7 +162,7 @@ describe('online profile presentation', () => {
     account.storyCompleted = 50;
     account.conduits = { 'vigil-core': 3, 'bastion-lock': 0 };
     const html = onlineProfile(account, { ...profile, totalDraws: 17, icon: 'ember' });
-    expect(html).toContain('50 / 150');
+    expect(html).toContain(`50 / ${storyRules.stages}`);
     expect(html).toContain('2 / 6');
     expect(html).toContain('<h2>Element-Bearers</h2><p><strong>1</strong><span> / 16</span>');
     expect(html).toContain('<span>Conduit types</span><progress value="1" max="90"');
@@ -185,14 +186,16 @@ describe('online profile presentation', () => {
     const peer = { userId: 'user-2', username: 'Friend', displayName: '<Friend>', icon: 'neutral', frame: 'default' };
     const html = onlineProfile(emptyAccount(), profile, { friends: [peer], incoming: [peer], outgoing: [peer] });
     expect(html).toContain('Friends · 1');
-    for (const kind of ['acceptFriendRequest', 'declineFriendRequest', 'cancelFriendRequest', 'removeFriend']) {
+    for (const kind of ['acceptFriendRequest', 'declineFriendRequest', 'cancelFriendRequest']) {
       expect(html).toContain(`data-friend-action="${kind}"`);
     }
+    expect(html).toContain('data-view-friend-profile="user-2"');
+    expect(html).toContain('data-message-friend="user-2"');
     expect(html).toContain('data-user-id="user-2"');
     expect(html).toContain('&lt;Friend&gt;');
     expect(html).toContain('data-social-panel="incoming" >');
     expect(html).toContain('data-social-panel="outgoing" hidden');
-    expect(html).toContain('never your email or balances');
+    expect(html).toContain('never your email, balances');
     expect(html).toContain('id="online-friend-form"');
   });
 

@@ -16,6 +16,7 @@ var elementalMaterials = elements.flatMap((element) => materialRarities.map((rar
 })));
 var dungeonStageCount = 35;
 var warStageCount = 10;
+var storyStageLayout = { regionStages: 18, stages: 108, legacyRegionStages: 25, legacyStages: 150 };
 var elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 38, maximumLevel: 120, maximumLevelStage: dungeonStageCount };
 var infusionModes = [
   { id: "heavens", name: "Soar to Heaven", energy: "Light", enemyTheme: "Dawnthorn Slime evolution line", stages: dungeonStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
@@ -85,7 +86,7 @@ function evolutionRequirement(elementId, from) {
 var finalBossLootMultiplier = 5;
 function bossLootMultiplier(activity, boss = true) {
   if (!boss) return 1;
-  const final = activity.story ? activity.story.storyStage >= 25 && activity.story.storyStage <= 150 && activity.story.storyStage % 25 === 0 : activity.dungeon ? activity.dungeon.stage === dungeonStageCount : activity.infusion ? activity.infusion.stage === infusionStageCount(activity.infusion.mode) : activity.war ? activity.war.stage === warStageCount : false;
+  const final = activity.story ? activity.story.storyStage >= storyStageLayout.regionStages && activity.story.storyStage <= storyStageLayout.stages && activity.story.storyStage % storyStageLayout.regionStages === 0 : activity.dungeon ? activity.dungeon.stage === dungeonStageCount : activity.infusion ? activity.infusion.stage === infusionStageCount(activity.infusion.mode) : activity.war ? activity.war.stage === warStageCount : false;
   return final ? finalBossLootMultiplier : 1;
 }
 function bossLootRange(drop, multiplier) {
@@ -161,6 +162,13 @@ var treasuryPrismaticaBoost = { startingLevel: 65, maximumLevel: 120, finalMulti
 function storyFractalisDrop(level) {
   if (!Number.isInteger(level) || level < 1 || level > 120) throw new Error("Story Prismatica requires an enemy level from 1 to 120.");
   const minimum = storyPrismaticaLine.base + storyPrismaticaLine.perLevel * (level - 1);
+  return { minimum, maximum: minimum * 2, chance: 1 };
+}
+var storyEnemyPrismaticaBoost = 1.5;
+function storyEnemyFractalisDrop(level, boss) {
+  const drop = storyFractalisDrop(level);
+  if (boss) return drop;
+  const minimum = Math.round(drop.minimum * storyEnemyPrismaticaBoost);
   return { minimum, maximum: minimum * 2, chance: 1 };
 }
 function treasuryPrismaticaMultiplier(level) {
@@ -4149,7 +4157,14 @@ var storyRegionArt = {
 };
 
 // src/content/story.ts
-var storyRules = { regionStages: 25, stages: 150, startingLevel: 1, maximumLevel: 55 };
+var storyRules = { regionStages: storyStageLayout.regionStages, stages: storyStageLayout.stages, startingLevel: 1, maximumLevel: 55 };
+var storyCompletionReward = { fractalis: 150, lycalis: 2 };
+function migrateLegacyStoryCompleted(completed) {
+  if (!Number.isSafeInteger(completed) || completed < 0 || completed > storyStageLayout.legacyStages) throw new Error("Invalid saved Story progress.");
+  const region = Math.floor(completed / storyStageLayout.legacyRegionStages);
+  const within = completed % storyStageLayout.legacyRegionStages;
+  return region * storyRules.regionStages + Math.floor(within * storyRules.regionStages / storyStageLayout.legacyRegionStages);
+}
 var storyRegions = [
   {
     element: "infernic",
@@ -4201,7 +4216,7 @@ var storyRegions = [
   }
 ];
 function storyEncounter(stage) {
-  if (!Number.isInteger(stage) || stage < 1 || stage > storyRules.stages) throw new Error("Story stage must be from 1 to 150.");
+  if (!Number.isInteger(stage) || stage < 1 || stage > storyRules.stages) throw new Error(`Story stage must be from 1 to ${storyRules.stages}.`);
   const regionIndex = Math.floor((stage - 1) / storyRules.regionStages);
   const region = storyRegions[regionIndex];
   const regionStage = (stage - 1) % storyRules.regionStages + 1;
@@ -7114,7 +7129,7 @@ function awardDefeats(previous, state, events) {
       continue;
     }
     const amount = rollDrop(bossLootRange(
-      state.story ? storyFractalisDrop(enemy.level) : state.infusion?.mode === "treasury" ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === "roses" ? 140 : 120),
+      state.story ? storyEnemyFractalisDrop(enemy.level, enemy.boss === true) : state.infusion?.mode === "treasury" ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === "roses" ? 140 : 120),
       bossLootMultiplier(state, enemy.boss === true)
     ), rewardRoll);
     if (amount === void 0) throw new Error("Guaranteed Prismatica reward did not drop.");
@@ -7753,7 +7768,7 @@ function isExchangeQuantity(value2) {
 // src/game/account.ts
 var ACCOUNT_KEY = "last-light.wallet";
 function emptyAccount() {
-  return { version: 5, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 6, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value2) {
   return typeof value2 === "number" && Number.isSafeInteger(value2) && value2 >= 0;
@@ -7774,7 +7789,7 @@ function migrateLegacyDungeonStage(stage, version) {
   return unlocked;
 }
 function validateAccount(value2) {
-  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
+  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
     throw new Error("The local progression save is invalid or unsupported. It has not been overwritten.");
   }
   const account = emptyAccount();
@@ -7840,8 +7855,17 @@ function validateAccount(value2) {
   account.firstFracture = value2.firstFracture;
   account.receipts = [...value2.receipts];
   if (value2.storyCompleted !== void 0) {
-    if (!count(value2.storyCompleted) || value2.storyCompleted > storyRules.stages) throw new Error("Invalid saved Story progress.");
-    account.storyCompleted = value2.storyCompleted;
+    if (!count(value2.storyCompleted)) throw new Error("Invalid saved Story progress.");
+    if (value2.version >= 6) {
+      if (value2.storyCompleted > storyRules.stages) throw new Error("Invalid saved Story progress.");
+      account.storyCompleted = value2.storyCompleted;
+    } else {
+      const legacy = value2.storyCompleted;
+      account.storyCompleted = migrateLegacyStoryCompleted(legacy);
+      account.fractalis += legacy * storyCompletionReward.fractalis;
+      account.lycalis += legacy * storyCompletionReward.lycalis;
+      if (!count(account.fractalis) || !count(account.lycalis)) throw new Error("Story completion grant exceeds the supported balance. The save has not been overwritten.");
+    }
   }
   if (value2.warStages !== void 0) {
     if (!record(value2.warStages)) throw new Error("Invalid saved Elemental War progress.");
@@ -8351,6 +8375,7 @@ function saveAccountRewards(storage, result, runId) {
   const rewardedEnemies = /* @__PURE__ */ new Set();
   const recruitments = [];
   const storyBonuses = [];
+  let storyCompletion = null;
   const story = result.state.story;
   if (story) {
     const encounter2 = storyEncounter(story.storyStage);
@@ -8386,7 +8411,7 @@ function saveAccountRewards(storage, result, runId) {
     if (story) {
       const stage = story.storyStage;
       const encounter2 = storyEncounter(stage);
-      const range3 = bossLootRange(storyFractalisDrop(encounter2.level), multiplier);
+      const range3 = bossLootRange(storyEnemyFractalisDrop(encounter2.level, enemy.boss === true), multiplier);
       const materialPool = storyMaterialLoot(stage);
       if (enemy.hp > 0 || reward.capture !== void 0 || reward.conduits !== void 0 || reward.mechanicalComponents !== void 0 || reward.lycalis !== void 0 || reward.storyBonus !== void 0 || reward.recruitment !== void 0 || reward.recruitmentOutcome !== void 0 || !count(reward.amount) || reward.amount < range3.minimum || reward.amount > range3.maximum || reward.amount % multiplier !== 0 || !record(reward.materials) || !count(reward.materials[`${encounter2.element}-common`])) {
         throw new Error("Invalid Story reward.");
@@ -8527,6 +8552,14 @@ function saveAccountRewards(storage, result, runId) {
       account.storyCompleted = story.storyStage;
       changed = true;
     }
+    const clearReceipt = `${runId}:story-clear-${story.storyStage}`;
+    if (!account.receipts.includes(clearReceipt)) {
+      account.fractalis += storyCompletionReward.fractalis;
+      account.lycalis += storyCompletionReward.lycalis;
+      account.receipts.push(clearReceipt);
+      storyCompletion = result.events.filter((event2) => event2.kind === "reward").at(-1) ?? null;
+      changed = true;
+    }
   }
   if (!story && !war && result.state.phase === "cleared" && result.state.enemies.length === 1) {
     const boss = result.state.enemies[0];
@@ -8550,6 +8583,11 @@ function saveAccountRewards(storage, result, runId) {
     reward.lycalis = bonus.lycalis;
     reward.storyBonus = bonus;
     reward.message += ` First regional clear: +${bonus.fractalis} Prismatica and +${bonus.lycalis} Null-Prismatica.`;
+  }
+  if (storyCompletion) {
+    storyCompletion.amount = (storyCompletion.amount ?? 0) + storyCompletionReward.fractalis;
+    storyCompletion.lycalis = (storyCompletion.lycalis ?? 0) + storyCompletionReward.lycalis;
+    storyCompletion.message += ` Stage clear: +${storyCompletionReward.fractalis} Prismatica and +${storyCompletionReward.lycalis} Null-Prismatica.`;
   }
   for (const { reward, character, outcome } of recruitments) {
     reward.recruitmentOutcome = outcome;
@@ -8638,6 +8676,20 @@ function unlockedInfusionStage(account, mode) {
   return account.infusionStages[mode] ?? 1;
 }
 
+// src/game/friend-profile.ts
+function redactFriendAccount(value2) {
+  const source = validateAccount(value2);
+  const account = emptyAccount();
+  account.characters = source.characters;
+  if (source.capturedCharacters) account.capturedCharacters = source.capturedCharacters;
+  if (source.squad) account.squad = source.squad;
+  if (source.conduits) account.conduits = source.conduits;
+  if (source.bannerPity) account.bannerPity = source.bannerPity;
+  if (source.storyCompleted !== void 0) account.storyCompleted = source.storyCompleted;
+  account.creatures = source.creatures;
+  return validateAccount(account);
+}
+
 // src/content/profile-pictures.ts
 var profilePictures = starters.flatMap((character) => ["base", "omnic"].map((form) => ({
   id: `profile:${character.id}:${form}`,
@@ -8678,7 +8730,7 @@ function activityAccess(account, activity) {
   const minimumLevel = activity.kind === "dungeon" ? 30 : activity.kind === "war" ? 85 : activity.kind !== "infusion" ? 0 : activity.mode === "machines" ? 10 : activity.mode === "treasury" || activity.mode === "sanctuary" ? 60 : activity.mode === "roses" ? 75 : 50;
   const firstRegion = activity.kind === "infusion" && activity.mode === "machines";
   const level = highestBearerLevel(account);
-  const regionCleared = !firstRegion || (account.storyCompleted ?? 0) >= 25;
+  const regionCleared = !firstRegion || (account.storyCompleted ?? 0) >= storyRules.regionStages;
   const requirement = `Element-Bearer Lv.${minimumLevel}${firstRegion ? " \xB7 Clear Emberwake March" : ""}`;
   return { unlocked: level >= minimumLevel && regionCleared, minimumLevel, level, requirement };
 }
@@ -8747,7 +8799,7 @@ function profileActivityFor(operation, previousStoryCompleted, resolved, uuid2) 
   if (resolved.response.result?.state.phase === "cleared" && resolved.game.run?.activity.kind === "story") {
     const stage = resolved.game.run.activity.stage;
     const completed = resolved.game.account.storyCompleted ?? 0;
-    const restoredBeacon = Math.floor(completed / 25) > Math.floor(previousStoryCompleted / 25);
+    const restoredBeacon = Math.floor(completed / storyRules.regionStages) > Math.floor(previousStoryCompleted / storyRules.regionStages);
     return {
       id: uuid2(),
       message: "Story stage cleared",
@@ -8935,6 +8987,44 @@ function validateChatRequest(value2) {
   }
   return value2;
 }
+function validateFriendProfileRequest(value2) {
+  if (!record2(value2)) throw new Error("Request must be an object.");
+  keys(value2, ["requestId", "friendProfile"]);
+  if (typeof value2.requestId !== "string" || !uuid.test(value2.requestId)) throw new Error("A UUID request ID is required.");
+  if (!record2(value2.friendProfile)) throw new Error("Choose a friend.");
+  keys(value2.friendProfile, ["userId"]);
+  if (typeof value2.friendProfile.userId !== "string" || !uuid.test(value2.friendProfile.userId)) throw new Error("Invalid friend user ID.");
+  return value2;
+}
+function friendProfileView(row) {
+  if (!record2(row) || typeof row.userId !== "string" || typeof row.username !== "string" || typeof row.createdAt !== "string") {
+    throw new Error("Friend profile unavailable.");
+  }
+  const stored = record2(row.state) ? row.state : freshGame(row.username, row.createdAt);
+  const account = redactFriendAccount(stored.account);
+  const source = record2(stored.profile) ? stored.profile : freshGame(row.username, row.createdAt).profile;
+  const reference = record2(row.reference) ? row.reference : {};
+  const icon = isProfileIcon(source.icon) && profileIconUnlocked(account, source.icon) ? source.icon : "neutral";
+  const recent = Array.isArray(reference.recentActivity) ? reference.recentActivity.filter((entry) => record2(entry) && typeof entry.id === "string" && typeof entry.message === "string" && typeof entry.detail === "string" && typeof entry.at === "string") : [];
+  return {
+    userId: row.userId,
+    account,
+    profile: {
+      username: row.username,
+      createdAt: row.createdAt,
+      displayName: typeof source.displayName === "string" && source.displayName ? source.displayName : row.username,
+      bio: typeof source.bio === "string" ? source.bio : "",
+      icon,
+      frame: typeof source.frame === "string" && frames.includes(source.frame) ? source.frame : "default",
+      totalDraws: Number.isSafeInteger(source.totalDraws) ? source.totalDraws : 0,
+      ...typeof reference.friendCode === "string" ? { friendCode: reference.friendCode } : {},
+      ...typeof reference.playerId === "string" ? { playerId: reference.playerId } : {},
+      ...Number.isSafeInteger(reference.daysPlayed) ? { daysPlayed: reference.daysPlayed } : {},
+      ...Number.isSafeInteger(reference.playTimeSeconds) ? { playTimeSeconds: reference.playTimeSeconds } : {},
+      recentActivity: recent
+    }
+  };
+}
 var VirtualStorage = class {
   items = /* @__PURE__ */ new Map();
   constructor(game) {
@@ -8951,7 +9041,15 @@ var VirtualStorage = class {
     this.items.delete(key);
   }
 };
-function publicGame(game, revision) {
+function isLegacyStoryRun(game) {
+  const version = game.account.version;
+  return typeof version === "number" && version < 6 && game.run?.activity.kind === "story";
+}
+function storyCompletedOf(game) {
+  return validateAccount(game.account).storyCompleted ?? 0;
+}
+function publicGame(stored, revision) {
+  const game = isLegacyStoryRun(stored) ? { ...stored, run: null } : stored;
   const account = validateAccount(game.account);
   if (game.run) validateRunActivity(game.run);
   const session = game.run ? structuredClone(game.run.session) : null;
@@ -9007,6 +9105,7 @@ function encounter(game, run, seed2, trainingWave = 1) {
 function resolveOperation(previous, operation, entropy) {
   validateRequest({ requestId: "00000000-0000-4000-8000-000000000001", expectedRevision: 0, operation });
   const game = structuredClone(previous);
+  if (isLegacyStoryRun(game)) game.run = null;
   game.account = validateAccount(game.account);
   if (game.run) {
     validateRunActivity(game.run);
@@ -9222,10 +9321,13 @@ export {
   conduitRulesVersion,
   frames,
   freshGame,
+  friendProfileView,
   profileActivityFor,
   profileIconUnlocked,
   publicGame,
   resolveOperation,
+  storyCompletedOf,
   validateChatRequest,
+  validateFriendProfileRequest,
   validateRequest
 };

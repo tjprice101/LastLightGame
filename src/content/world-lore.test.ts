@@ -23,7 +23,7 @@ describe('Let and Rise founding canon', () => {
     });
     expect(Object.keys(elementEmotions)).toEqual(elements.map(element => element.id));
     expect(storyRegions.map(region => region.element)).toEqual(elements.map(element => element.id));
-    expect(storyRules).toEqual({ regionStages: 25, stages: 150, startingLevel: 1, maximumLevel: 55 });
+    expect(storyRules).toEqual({ regionStages: 18, stages: 108, startingLevel: 1, maximumLevel: 55 });
   });
 
   it('gives every catalogued enemy the correct origin, with Machines kept separate', () => {

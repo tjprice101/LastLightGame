@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { storyRegionArt, storyWorldMap } from './story-art';
 import { storyArtRevisions } from './story-art-revisions';
-import { storyCreature, storyEncounter, storyRegions } from './story';
+import { storyCreature, storyEncounter, storyRegions, storyRules } from './story';
 import { getCreature } from './creatures';
 import { createStoryBattle, nextStage } from '../game/battle';
 import { unitFacing } from '../presentation/unit-facing';
@@ -36,8 +36,8 @@ describe('delivered Story art integration', () => {
     }
   });
 
-  it('shares exact art with all150 stage spawns and stable glossary identities without changing RNG', () => {
-    for (let stage = 1; stage <= 150; stage++) {
+  it('shares exact art with all108 stage spawns and stable glossary identities without changing RNG', () => {
+    for (let stage = 1; stage <= storyRules.stages; stage++) {
       const encounter = storyEncounter(stage);
       expect(Boolean(encounter.background)).toBe(true);
       for (let index = 0; index < (encounter.boss ? 1 : 4); index++) {
@@ -53,7 +53,7 @@ describe('delivered Story art integration', () => {
         expect(enemy.name).toBe(getCreature(enemy.creatureId!).name);
       }
     }
-    const state = createStoryBattle(49, 7, 'ember', progress);
+    const state = createStoryBattle(2 * storyRules.regionStages - 1, 7, 'ember', progress);
     state.phase = 'cleared';
     const next = nextStage(state, progress).state;
     expect(next.enemies[0].art).toBe('story-oceanic-boss');
@@ -62,7 +62,7 @@ describe('delivered Story art integration', () => {
 
   it('uses the delivered art in discovery-gated galleries without granting discoveries', () => {
     const account = emptyAccount();
-    const creature = storyCreature(150, 0);
+    const creature = storyCreature(storyRules.stages, 0);
     const unseen = creatureGlossary(account);
     expect(unseen).toContain(`enemies/${creature.art}.png?v=`);
     expect(unseen).toContain('undiscovered');
@@ -81,10 +81,10 @@ describe('delivered Story art integration', () => {
     const html = storyCampaign(account, 'ember');
     expect(html).toContain(`backgrounds/${storyWorldMap}?v=`);
     expect(html.match(/data-story-region=/g)).toHaveLength(6);
-    expect(html.match(/data-story-stage=/g)).toHaveLength(150);
+    expect(html.match(/data-story-stage=/g)).    toHaveLength(storyRules.stages);
     expect(html).not.toContain('Enemies and regional scenery: artwork pending');
     expect(html).toContain('aria-controls="story-region-1"');
-    expect(html).toContain('data-story-stage="26" disabled');
+        expect(html).toContain('data-story-stage="2" disabled');
     expect(html).toContain('alt="Six-beacon Story world map');
     const css = readFileSync('src/presentation/story.css', 'utf8');
     expect(css).toContain('.story-map-art img { display: block; width: 100%; height: auto; }');

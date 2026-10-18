@@ -1,5 +1,17 @@
 # Story campaign and endless Training (D-160/D-164)
 
+**D-340 layout and rewards (supersedes 25/150 numbers below):** each region has
+**18 stages (108 total)**, with the same Lv.1-55 curve compressed across them;
+regional bosses are stages 18/36/54/72/90/108. Ordinary Story enemies drop 50%
+more Prismatica (`storyEnemyFractalisDrop`); bosses keep the base line (with the
+D-294 5x). Every clear, including replays, pays 150 Prismatica + 2
+Null-Prismatica (`storyCompletionReward`), once per run receipt. Wallet v6
+converts older completion counts with `region*18 + floor(within*18/25)` (150 ->
+108) and credits 150/2 for every legacy stage already cleared, read-only until
+the first successful save. Pre-v6 Story runs are discarded on the server.
+Elsewhere in this document, read 25 as 18, 150 as 108 and stage ranges per region
+as 1-18, 19-36, 37-54, 55-72, 73-90 and 91-108.
+
 **D-301 replay/online parity:** staged victories offer Replay stage, including
 regional bosses and stage150. Fresh HP/Gauge and receipt namespace; frozen
 squad and saved rewards retained, no repeated first-clear bonuses.
@@ -78,7 +90,7 @@ See [combat balance](combat.md#enemy-progression-rebalance-d-192) and
 
 The owner approves the six-region linear campaign and later directs work to
 this next major phase, deferring the remaining intrinsic character redesign.
-Story is playable: **six elemental regions,25 stages each,150 total,
+Story is playable: **six elemental regions,18 stages each,108 total (D-340),
 enemy levels1-55**. The previous endless Adventure remains playable as
 **Training**, without resetting character/account progress.
 
@@ -92,12 +104,12 @@ is retained as a disclosure inside Story, not removed.
 
 | Order | Element / region | Global stages | Enemy levels | Four ordinary identities | Regional boss | First-clear Prismatica / Null-Prismatica |
 | --- | --- | --- | --- | --- | --- | --- |
-|1 | Infernic / Emberwake March |1-25 |1-10 | Cinderling, Ashback Boar, Coalcrest Moth, Furnace Jackal | Kilnheart Warden |1,000 /50 |
-|2 | Oceanic / Glasswater Reach |26-50 |10-19 | Tideglass Crab, Foamfin Drake, Pearlshell Turtle, Current Ray | Deepbell Leviathan |1,150 /58 |
-|3 | Atmospheric / Stormspan Heights |51-75 |19-28 | Cloudhorn Ram, Staticwing Kite, Gusttail Lynx, Thundercoil Serpent | Tempest Crown Roc |1,323 /66 |
-|4 | Botanic / Rootstone Wilds |76-100 |28-37 | Mossplate Beetle, Briarback Stag, Loamjaw Mole, Fernmantle Basilisk | Heartwood Colossus |1,521 /76 |
-|5 | Tranquilitic / Stillhalo Vale |101-125 |37-46 | Ivoryveil Moth, Dewhalo Hart, Vowcrest Crane, Opalward Lion | Serene Oathkeeper |1,749 /87 |
-|6 | Chaotic / Riftbound Frontier |126-150 |46-55 | Riftfang Hound, Splinterhide Lizard, Voidcrest Raven, Faultcoil Wyrm | Fracture Sovereign |2,011 /101 |
+|1 | Infernic / Emberwake March |1-18 |1-10 | Cinderling, Ashback Boar, Coalcrest Moth, Furnace Jackal | Kilnheart Warden |1,000 /50 |
+|2 | Oceanic / Glasswater Reach |19-36 |10-19 | Tideglass Crab, Foamfin Drake, Pearlshell Turtle, Current Ray | Deepbell Leviathan |1,150 /58 |
+|3 | Atmospheric / Stormspan Heights |37-54 |19-28 | Cloudhorn Ram, Staticwing Kite, Gusttail Lynx, Thundercoil Serpent | Tempest Crown Roc |1,323 /66 |
+|4 | Botanic / Rootstone Wilds |55-72 |28-37 | Mossplate Beetle, Briarback Stag, Loamjaw Mole, Fernmantle Basilisk | Heartwood Colossus |1,521 /76 |
+|5 | Tranquilitic / Stillhalo Vale |73-90 |37-46 | Ivoryveil Moth, Dewhalo Hart, Vowcrest Crane, Opalward Lion | Serene Oathkeeper |1,749 /87 |
+|6 | Chaotic / Riftbound Frontier |91-108 |46-55 | Riftfang Hound, Splinterhide Lizard, Voidcrest Raven, Faultcoil Wyrm | Fracture Sovereign |2,011 /101 |
 
 These names, short regional introductions/conclusions and first-pass combat
 tuning are original developer content within the approved scope, not

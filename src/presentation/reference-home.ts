@@ -2,7 +2,7 @@ import { type Starter, isStarterId } from '../content/starters';
 import { characterName } from '../content/character-art';
 import { evolutionRarity } from '../content/progression';
 import { resolveFighter, formatStat } from '../content/combat';
-import { storyEncounter, storyRegions } from '../content/story';
+import { storyEncounter, storyRegions, storyRules } from '../content/story';
 import { equippedSquad, ownedProgress, unlockedStoryStage, type Account } from '../game/account';
 import { capturedProgress, resolveCapturedFighter } from '../game/character-instances';
 import { ownedCompanion } from './owned-companion';
@@ -30,7 +30,7 @@ export function referenceHome(starter: Starter, account: Account | null): string
         <div class="ref-tags"><span class="ref-stars" aria-label="${stars}-star ${copy ? 'Elemental-Devourer' : 'Element-Bearer'}">${'★'.repeat(stars)}</span>${isStarterId(id) ? `<span class="ref-chip">${starter.role}</span>` : ''}<span class="ref-chip">${rarity}</span><span class="ref-chip">Lv.${member.level}${progress ? ` · Evo.${progress.evolution}` : ''}</span></div>
         <div class="ref-stat-strip">${([['Health', stats.health], ['Attack', stats.damage], ['Defense', stats.defense]] as const).map(([name, value]) => `<div><small>${name}</small><b>${formatStat(value)}</b></div>`).join('')}</div>
       </div></section>
-    <button class="ref-panel ref-home-story" data-page="story">${encounter.background ? `<img class="ref-home-story-arena" src="${assetUrl(`backgrounds/${encounter.background}`)}" alt="" draggable="false" />` : ''}<span class="ref-panel-heading">${completed === 0 ? 'Story' : 'Continue story'}</span><span><strong>${completed === 150 ? 'Story complete' : region?.name ?? encounter.name}</strong><small>${completed < 150 ? `Stage ${encounter.regionStage} · Enemies Lv.${encounter.level} · ` : ''}${completed} / 150 stages cleared</small><small>Drops Prismatica and Common/Uncommon materials.</small></span><span class="ref-go" aria-hidden="true">→</span></button>
+    <button class="ref-panel ref-home-story" data-page="story">${encounter.background ? `<img class="ref-home-story-arena" src="${assetUrl(`backgrounds/${encounter.background}`)}" alt="" draggable="false" />` : ''}<span class="ref-panel-heading">${completed === 0 ? 'Story' : 'Continue story'}</span><span><strong>${completed === storyRules.stages ? 'Story complete' : region?.name ?? encounter.name}</strong><small>${completed < storyRules.stages ? `Stage ${encounter.regionStage} · Enemies Lv.${encounter.level} · ` : ''}${completed} / ${storyRules.stages} stages cleared</small><small>Drops Prismatica and Common/Uncommon materials.</small></span><span class="ref-go" aria-hidden="true">→</span></button>
     <div class="ref-home-shops"><button class="ref-panel ref-home-shop" data-page="stores"><span class="ref-panel-heading">Market</span><span><b>Exchange · Cosmetics · Conduits</b><small>Spend your currencies</small></span><span class="ref-shop-arrow">→</span></button>
       <button class="ref-panel ref-home-shop" data-page="inventory"><span class="ref-panel-heading">Inventory</span><span><b>${account.fractalis.toLocaleString('en-US')} Prismatica</b><small>${Object.values(account.materials).filter(amount => amount > 0).length} materials · ${Object.values(account.conduits ?? {}).filter(amount => amount > 0).length} Conduits</small></span><span class="ref-shop-arrow">→</span></button></div>
   </div>`;

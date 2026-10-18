@@ -45,6 +45,13 @@ export interface OnlineProfile {
   recentActivity?: ProfileActivity[];
 }
 export interface ProfileActivity { id: string; message: string; detail: string; at: string }
+/** D-340 friend view: the friend's profile screen data, redacted server-side (no balances/materials/receipts/gear). */
+export interface FriendProfile {
+  username: string; displayName: string; bio: string; icon: ProfileIcon; frame: ProfileFrame;
+  createdAt: string; totalDraws: number; friendCode?: string; playerId?: string;
+  daysPlayed?: number; playTimeSeconds?: number; recentActivity: ProfileActivity[];
+}
+export interface FriendProfileResponse { userId: string; account: Account; profile: FriendProfile }
 export type Activity = { kind: 'training' } | { kind: 'story'; stage: number } |
   { kind: 'calamity'; activity: CalamityActivityId; tier: CalamityTier } |
   { kind: 'dungeon'; element: ElementId; stage: number } |
@@ -372,4 +379,32 @@ export async function chatOperation(operation: ChatOperation,
     throw new GameOperationError('Connection failed. Retry the same chat request ID.');
   }
   return validateChatResponse(data);
+}
+
+export function validateFriendProfileResponse(value: unknown): FriendProfileResponse {
+  const invalid = () => { throw new GameOperationError('Friend profile response was invalid.'); };
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return invalid();
+  const data = value as Record<string, unknown>;
+  const profile = data.profile as Record<string, unknown> | undefined;
+  if (typeof data.userId !== 'string' || !profile || typeof profile !== 'object' ||
+    typeof profile.username !== 'string' || typeof profile.displayName !== 'string' || typeof profile.bio !== 'string' ||
+    !isProfileIcon(profile.icon) || typeof profile.frame !== 'string' || typeof profile.createdAt !== 'string' ||
+    !Number.isSafeInteger(profile.totalDraws) || !Array.isArray(profile.recentActivity)) return invalid();
+  const account = validateAccount(data.account);
+  return { userId: data.userId, account, profile: profile as unknown as FriendProfile };
+}
+
+/** Read-only: accepted friends only; the server never returns balances, materials or gear. */
+export async function friendProfile(userId: string): Promise<FriendProfileResponse> {
+  const { data, error } = await onlineClient().functions.invoke('game-operation', {
+    body: { requestId: crypto.randomUUID(), friendProfile: { userId } },
+  });
+  if (error) {
+    if ('context' in error && error.context instanceof Response) {
+      const body = await error.context.json().catch(() => null) as { error?: string } | null;
+      throw new GameOperationError(body?.error ?? 'Friend profile request failed.', error.context.status);
+    }
+    throw new GameOperationError('Connection failed. Try opening the profile again.');
+  }
+  return validateFriendProfileResponse(data);
 }

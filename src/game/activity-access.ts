@@ -2,6 +2,7 @@ import { calamityUnlockedTier, type Account } from './account';
 import { isCalamityActivityId, isCalamityTier } from '../content/calamity';
 import type { Activity } from '../online/server-game';
 import { starters } from '../content/starters';
+import { storyRules } from '../content/story';
 import { characterGrowthFactor } from '../content/progression';
 
 export function highestBearerLevel(account: Account): number {
@@ -30,7 +31,7 @@ export function activityAccess(account: Account, activity: Activity) {
     : activity.mode === 'roses' ? 75 : 50;
   const firstRegion = activity.kind === 'infusion' && activity.mode === 'machines';
   const level = highestBearerLevel(account);
-  const regionCleared = !firstRegion || (account.storyCompleted ?? 0) >= 25;
+  const regionCleared = !firstRegion || (account.storyCompleted ?? 0) >= storyRules.regionStages;
   const requirement = `Element-Bearer Lv.${minimumLevel}${firstRegion ? ' · Clear Emberwake March' : ''}`;
   return { unlocked: level >= minimumLevel && regionCleared, minimumLevel, level, requirement };
 }

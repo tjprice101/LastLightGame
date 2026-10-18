@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { battleResults, encounterRewards } from './battle-results';
 import { BattleView } from './battle-view';
 import { act, createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, endTurn, nextWave, type BattleEvent } from '../game/battle';
+import { storyRules } from '../content/story';
 
 afterEach(() => vi.unstubAllGlobals());
 const reward = (source: string, amount: number, materials: Record<string, number> = {}): BattleEvent => ({
@@ -53,7 +54,7 @@ describe('encounter result overlays', () => {
     const finalStates = [createDungeonBattle('infernic', 35, 1, 'ember', { level: 105, evolution: 6 }),
       createInfusionBattle('abyss', 35, 1, 'ember', { level: 105, evolution: 6 }),
       createInfusionBattle('machines', 100, 1, 'ember', { level: 105, evolution: 6 }),
-      createStoryBattle(150, 1, 'ember', { level: 105, evolution: 6 }),
+      createStoryBattle(storyRules.stages, 1, 'ember', { level: 105, evolution: 6 }),
       createWarBattle('nerithe', 10, 1, 'ember', { level: 105, evolution: 6 })];
     for (const state of finalStates) {
       state.phase = 'cleared';

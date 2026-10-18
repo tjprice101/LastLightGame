@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { kitConduitDesigns, convertedKitConduitIds } from '../content/kit-conduits';
 import { conduits, getConduit, conduitBuffs, conduitEffect, validateConduitElement, validateConduitSlots, type ConduitId, type ConduitSlots } from '../content/conduits';
 import { machineConduitDrops, machineConduitLoot, isBannerConduitEligible } from '../content/machines';
+import { migrateLegacyStoryCompleted, storyCompletionReward } from '../content/story';
 import { resolveFighter } from '../content/combat';
 import { starters } from '../content/starters';
 import { act, createBattle, createInfusionBattle, endTurn, nextStage, nextWave, actionUnavailable, type BattleState, type BattleEvent } from './battle';
@@ -141,18 +142,21 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
     const saved = storage(raw);
     const before = saved.getItem(ACCOUNT_KEY);
     const account = loadAccount(saved);
-    expect(account.version).toBe(5);
+    expect(account.version).toBe(6);
     expect(account.conduitEquipment?.ember).toEqual([...raw.conduitEquipment.ember.slice(0, 2), null, null, null, null, ...raw.conduitEquipment.ember.slice(6)]);
     expect(account.conduitEquipment?.tide).toEqual(slots('vigil-core').map((id, index) => index === 1 ? 'vigil-core' : null));
     expect(account.conduitEquipment?.[raw.capturedCharacters[0].instanceId]).toEqual(raw.conduitEquipment[raw.capturedCharacters[0].instanceId]);
     for (const key of ['conduits', 'conduitUpgrades', 'capturedCharacters', 'characterLocks', 'squad', 'characters',
-      'materials', 'dungeonStages', 'storyCompleted', 'receipts', 'creatures', 'bannerPity', 'lycalis', 'mechanicalComponents'] as const) {
+      'materials', 'dungeonStages', 'receipts', 'creatures', 'bannerPity', 'mechanicalComponents'] as const) {
       expect(account[key]).toEqual(raw[key]);
     }
+    expect(account.storyCompleted).toBe(migrateLegacyStoryCompleted(raw.storyCompleted));
+    expect(account.fractalis).toBe(raw.fractalis + raw.storyCompleted * storyCompletionReward.fractalis);
+    expect(account.lycalis).toBe(raw.lycalis + raw.storyCompleted * storyCompletionReward.lycalis);
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     expect(saved.setItem).not.toHaveBeenCalled();
     const purchased = purchaseConduit(saved, 'vigil-core');
-    expect(purchased.version).toBe(5);
+    expect(purchased.version).toBe(6);
     expect(saved.setItem).toHaveBeenCalledTimes(1);
     expect(loadAccount(saved)).toEqual(purchased);
     const corrupted = { ...purchased, conduitEquipment: { ...purchased.conduitEquipment, tide: slots('tempered-strike-link') } };
@@ -166,7 +170,7 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
       const raw = { ...legacy(), version, dungeonStages: { infernic: 1 } };
       const saved = storage(raw);
       expect(loadAccount(saved).conduitEquipment?.tide?.[0]).toBeNull();
-      expect(loadAccount(saved).version).toBe(5);
+      expect(loadAccount(saved).version).toBe(6);
       expect(saved.setItem).not.toHaveBeenCalled();
     }
     expect(loadAccount(storage({ ...emptyAccount(), version: 4, dungeonStages: { infernic: 13 } })).dungeonStages).toEqual({ infernic: 13 });
@@ -201,7 +205,7 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
     saved.setItem = write;
     purchaseConduit(saved, 'vigil-core');
     expect(saved.setItem).toHaveBeenCalledTimes(1);
-    expect(loadAccount(saved).version).toBe(5);
+    expect(loadAccount(saved).version).toBe(6);
   });
   it('strictly rejects new/current wrong elements and fifth Omnics at account and fighter boundaries', () => {
     const all = kitConduitDesigns.filter((entry) => entry.element === 'infernic').map((entry) => entry.id);

@@ -69,6 +69,12 @@ describe('Organized opening starter selection', () => {
     expect(callbacks.onSelect).not.toHaveBeenCalled();
   });
 
+  it('omits Player info for signed-in accounts', async () => {
+    const { onPlayerInfo: _omitted, ...callbacks } = props();
+    await act(async () => root.render(<StarterSelection {...callbacks} />));
+    expect(Array.from(host.querySelectorAll('button')).some(b => b.textContent === 'Player info')).toBe(false);
+  });
+
   it('locks selection and confirmation while beginning, then permits retry', async () => {
     let finish!: () => void;
     const callbacks = props();

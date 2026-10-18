@@ -8,7 +8,7 @@ import { capturedEnemyStats, infusionEncounter } from '../content/infusions';
 import type { ConduitLoadouts } from '../content/conduits';
 import { starters } from '../content/starters';
 import { playableDungeons } from '../content/dungeons';
-import { storyEncounter } from '../content/story';
+import { storyEncounter, storyRules } from '../content/story';
 import { enemyAbilityMultiplier, enemySkills } from '../content/enemy-skills';
 import { characterLevelCap } from '../content/progression';
 import { validateCapturedCharacters } from './character-instances';
@@ -56,7 +56,7 @@ describe('hostile progression balance', () => {
 
   it.each(starters)('$name cannot trivialize Lv.19 standard or Story enemies with a critical Normal Attack', ({ id }) => {
     const fighter = resolveFighter(id, { level: 19, evolution: 1 });
-    const story = Array.from({ length: 150 }, (_, index) => storyEncounter(index + 1))
+    const story = Array.from({ length: storyRules.stages }, (_, index) => storyEncounter(index + 1))
       .find(encounter => encounter.level === 19 && !encounter.boss)!;
     for (const enemy of [enemyCombatStats(19, false), story.stats]) {
       expect(fighter.stats.health / enemy.health).toBeLessThan(3);
@@ -139,11 +139,11 @@ describe('hostile progression balance', () => {
   it.each(['ember', 'tide', 'sprout'] as const)('%s can reach the first regional bonus without recruiting a squad', id => {
     const progress = { level: 15, evolution: 1 };
     for (const seed of [1, 1729, 12345]) {
-      expect(playSquad(createStoryBattle(25, seed, id, progress, [id], { [id]: progress }, { [id]: [...commonSlots] })).phase).toBe('cleared');
+      expect(playSquad(createStoryBattle(storyRules.regionStages, seed, id, progress, [id], { [id]: progress }, { [id]: [...commonSlots] })).phase).toBe('cleared');
     }
   });
 
-  it.each([25, 50, 75, 100, 125, 150])('keeps Story regional boss %s viable for a same-level Common-equipped squad', stage => {
+  it.each([1, 2, 3, 4, 5, 6].map(region => region * storyRules.regionStages))('keeps Story regional boss %s viable for a same-level Common-equipped squad', stage => {
     const level = storyEncounter(stage).level;
     const evolution = Array.from({ length: 6 }, (_, index) => index + 1).find(form => characterLevelCap(form) >= level)!;
     const progress = { level, evolution };
@@ -190,7 +190,7 @@ describe('hostile progression balance', () => {
         expect(shape(enemy.enemySkills!)).toEqual(shape(expected));
       }
     };
-    for (let stage = 1; stage <= 150; stage++) check(createStoryBattle(stage, 1729, 'ember', lateProgress.ember));
+    for (let stage = 1; stage <= storyRules.stages; stage++) check(createStoryBattle(stage, 1729, 'ember', lateProgress.ember));
     for (const element of playableDungeons) for (let stage = 1; stage <= 35; stage++) {
       check(createDungeonBattle(element, stage, 1729, 'ember', lateProgress.ember));
     }

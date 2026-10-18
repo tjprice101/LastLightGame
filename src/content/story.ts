@@ -1,13 +1,24 @@
 import { type ElementId } from './activities';
 import { type Stats } from './combat';
 import { elementAccents } from './dungeon-art';
+import { storyStageLayout } from './activities';
 import { enemyCombatStats } from './stat-growth';
-import { rollDrop, storyFractalisDrop } from './loot-random';
+import { rollDrop, storyEnemyFractalisDrop } from './loot-random';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 import { storyRegionArt } from './story-art';
 import { enemyAbilityMultiplier } from './enemy-skills';
 
-export const storyRules = { regionStages: 25, stages: 150, startingLevel: 1, maximumLevel: 55 } as const;
+export const storyRules = { regionStages: storyStageLayout.regionStages, stages: storyStageLayout.stages, startingLevel: 1, maximumLevel: 55 } as const;
+/** Paid on every Story stage clear, including replays (D-340). */
+export const storyCompletionReward = { fractalis: 150, lycalis: 2 } as const;
+
+/** Maps a clear count saved on the old six-region 25-stage layout to the 18-stage layout. Partial regions round down. */
+export function migrateLegacyStoryCompleted(completed: number): number {
+  if (!Number.isSafeInteger(completed) || completed < 0 || completed > storyStageLayout.legacyStages) throw new Error('Invalid saved Story progress.');
+  const region = Math.floor(completed / storyStageLayout.legacyRegionStages);
+  const within = completed % storyStageLayout.legacyRegionStages;
+  return region * storyRules.regionStages + Math.floor(within * storyRules.regionStages / storyStageLayout.legacyRegionStages);
+}
 export const storyRegions: readonly {
   element: ElementId; name: string; introduction: string; enemies: readonly string[]; boss: string; conclusion: string;
 }[] = [
@@ -32,7 +43,7 @@ export const storyRegions: readonly {
 ];
 
 export function storyEncounter(stage: number) {
-  if (!Number.isInteger(stage) || stage < 1 || stage > storyRules.stages) throw new Error('Story stage must be from 1 to 150.');
+  if (!Number.isInteger(stage) || stage < 1 || stage > storyRules.stages) throw new Error(`Story stage must be from 1 to ${storyRules.stages}.`);
   const regionIndex = Math.floor((stage - 1) / storyRules.regionStages);
   const region = storyRegions[regionIndex];
   const regionStage = (stage - 1) % storyRules.regionStages + 1;
@@ -80,9 +91,10 @@ export function storyDrops(stage: number, random: () => number): Record<string, 
   }));
 }
 
-export const storyRulesText = `Six regions with 25 stages each, at enemy levels 1-55. Enemies drop Common and Uncommon materials that match their region. No captures. Each regional boss gives a first-clear bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and increasing 15% per region. Ordinary Prismatica drops rise from 5-10 at Lv.1 to 113-226 at Lv.55. Regional bosses give 5x Prismatica and materials on every clear; first-clear bonuses do not multiply or repeat. Continue restores HP and keeps your Gauge.`;
+export const storyRulesText = `Six regions with 18 stages each, at enemy levels 1-55. Every stage clear, including replays, pays 150 Prismatica and 2 Null-Prismatica. Enemies drop Common and Uncommon materials that match their region. No captures. Each regional boss gives a first-clear bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and increasing 15% per region. Ordinary enemy Prismatica drops rise from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x the base Prismatica line (base 5-10 at Lv.1 to 113-226 at Lv.55) and 5x materials on every clear; first-clear bonuses do not multiply or repeat. Continue restores HP and keeps your Gauge.`;
 
 export function storyLoot(stage: number) {
-  return [bossLootRange({ id: 'fractalis', ...storyFractalisDrop(storyEncounter(stage).level) },
+  const encounter = storyEncounter(stage);
+  return [bossLootRange({ id: 'fractalis', ...storyEnemyFractalisDrop(encounter.level, encounter.boss) },
     bossLootMultiplier({ story: { storyStage: stage } })), ...storyMaterialLoot(stage)];
 }

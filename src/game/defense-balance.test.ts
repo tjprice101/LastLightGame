@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { enemyCombatStats, enemyGrowth, stagedEnemyAttack } from '../content/stat-growth';
 import { infusionStageCount } from '../content/activities';
 import { infusionEncounter } from '../content/infusions';
-import { storyEncounter } from '../content/story';
+import { storyEncounter, storyRules } from '../content/story';
 import { dungeonEncounter, playableDungeons } from '../content/dungeons';
 import { createBattle, createInfusionBattle, createStoryBattle, damageAmount, endTurn } from './battle';
 
@@ -40,13 +40,15 @@ describe('attack-relative Defense balance', () => {
   });
 
   it('makes Lv13 Story and Machines direct hits cost at least 9% of every unequipped Lv0 starter HP', () => {
-    expect(storyEncounter(35).level).toBe(13);
+    const stage = Array.from({ length: storyRules.stages }, (_, index) => index + 1)
+      .find((candidate) => storyEncounter(candidate).level === 13 && !storyEncounter(candidate).boss)!;
+    expect(storyEncounter(stage).level).toBe(13);
     expect(infusionEncounter('machines', 4).level).toBe(13);
-    expect(storyEncounter(35).stats).toEqual(enemyCombatStats(13, false));
+    expect(storyEncounter(stage).stats).toEqual(enemyCombatStats(13, false));
     expect(infusionEncounter('machines', 4).stats.damage).toBe(enemyCombatStats(13, false).damage);
     for (const id of ['ember', 'tide', 'sprout'] as const) {
       for (const state of [
-        createStoryBattle(35, 1729, id, { level: 0, evolution: 1 }),
+        createStoryBattle(stage, 1729, id, { level: 0, evolution: 1 }),
         createInfusionBattle('machines', 4, 1729, id, { level: 0, evolution: 1 }),
       ]) {
         state.enemies.forEach((enemy) => { enemy.stats.crit = 0; });

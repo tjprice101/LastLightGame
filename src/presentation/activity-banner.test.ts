@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { activityBanner } from './activity-banner';
 import { gameplayHub } from './gameplay';
 import { emptyAccount } from '../game/account';
+import { storyRules } from '../content/story';
 import { elementalWars, warEncounter } from '../content/elemental-war';
 
 describe('reference activity banners', () => {
@@ -54,8 +55,8 @@ describe('reference activity banners', () => {
   });
   it.each([
     [0, 0, 15],
-    [10, 24, 15],
-    [10, 25, 14],
+    [10, storyRules.regionStages - 1, 15],
+    [10, storyRules.regionStages, 14],
     [29, 25, 14],
     [30, 25, 8],
     [50, 25, 6],

@@ -3,11 +3,12 @@ import { act, type BattleEvent } from '../game/battle';
 import { BattleView, createSession } from './battle-view';
 import { attackFlair } from './battle-effects';
 import { infusionStageCount } from '../content/activities';
+import { storyRules } from '../content/story';
 
 vi.mock('./settings', () => ({ reducedMotion: () => false }));
 
 const destinations = [
-  undefined, { storyStage: 150 },
+  undefined, { storyStage: storyRules.stages },
   ...(['infernic', 'oceanic', 'botanic', 'atmospheric', 'tranquilitic', 'chaotic'] as const).map(element => ({ element, stage: 35 })),
   ...(['heavens', 'abyss', 'machines', 'treasury', 'sanctuary', 'roses'] as const).map(mode => ({ mode, stage: infusionStageCount(mode) })),
   ...(['nerithe', 'orvella', 'vaelor'] as const).map(character => ({ character, stage: 10 })),

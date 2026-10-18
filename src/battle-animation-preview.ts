@@ -5,6 +5,7 @@ import { starters, isStarterId } from './content/starters';
 import { isActionId } from './content/combat';
 import { infusionStageCount } from './content/activities';
 import { isInfusionMode } from './content/infusions';
+import { storyRules } from './content/story';
 import { defaultBindings } from './game/hotkeys';
 import { act, endTurn } from './game/battle';
 import { BattleView, createSession, type BattleSession, type BattleAuthority } from './presentation/battle-view';
@@ -51,7 +52,7 @@ function rebuild(entrance: boolean): void {
   if (!Number.isInteger(stage) || stage < 1 || stage > 6) throw new Error('Invalid preview evolution.');
   const progress = { level: [0, 30, 45, 60, 90, 105][stage - 1], evolution: stage };
   const destination = mode.value === 'training' ? undefined
-    : mode.value === 'story' ? { storyStage: 150 }
+    : mode.value === 'story' ? { storyStage: storyRules.stages }
     : mode.value === 'dungeons' ? { element: 'infernic' as const, stage: 35 }
     : mode.value === 'war' ? { character: 'vaelor' as const, stage: 10 }
     : isInfusionMode(mode.value)

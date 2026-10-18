@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { plentifulDrops, fractalisDrop, scaledDrop, storyFractalisDrop, treasuryFractalisDrop } from './loot-random';
+import { plentifulDrops, fractalisDrop, scaledDrop, storyEnemyFractalisDrop, storyFractalisDrop, treasuryFractalisDrop } from './loot-random';
 import { storyEncounter, storyLoot, storyRules } from './story';
 import { materialBracket, materialDrops, materialLoot, materialRarities } from './dungeons';
 import { infusionDrops, infusionLoot, infusionEncounter } from './infusions';
@@ -16,7 +16,8 @@ describe('Story and Treasury Prismatica (D-225)', () => {
     expect(storyFractalisDrop(55)).toEqual({ minimum: 113, maximum: 226, chance: 1 });
     for (const level of [0, 121, 1.5, NaN]) expect(() => storyFractalisDrop(level)).toThrow();
     for (let stage = 1; stage <= storyRules.stages; stage += 1) {
-      const range = bossLootRange(storyFractalisDrop(storyEncounter(stage).level), bossLootMultiplier({ story: { storyStage: stage } }));
+      const encounter = storyEncounter(stage);
+      const range = bossLootRange(storyEnemyFractalisDrop(encounter.level, encounter.boss), bossLootMultiplier({ story: { storyStage: stage } }));
       expect(storyLoot(stage).find((drop) => drop.id === 'fractalis')).toMatchObject(range);
     }
   });

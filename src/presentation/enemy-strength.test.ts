@@ -5,7 +5,7 @@ import { elements } from '../content/activities';
 import { dungeonEncounter, isPlayableDungeon } from '../content/dungeons';
 import { infusionEncounter, isInfusionMode } from '../content/infusions';
 import { isWarCharacter, warEncounter } from '../content/elemental-war';
-import { storyEncounter } from '../content/story';
+import { storyEncounter, storyRules } from '../content/story';
 import { calamityActivities, calamityEncounter } from '../content/calamity';
 import { enemyCombatStats } from '../content/stat-growth';
 import { formatStat } from '../content/combat';
@@ -133,10 +133,10 @@ describe('visible enemy strength', () => {
 
   it('refreshes Story strength when selecting an ordinary stage or regional boss', () => {
     const account = emptyAccount();
-    account.storyCompleted = 25;
+    account.storyCompleted = storyRules.regionStages;
     document.body.innerHTML = storyCampaign(account, 'ember');
     bindStoryNavigation(document.body, account);
-    for (const stage of [25, 1, 25]) {
+    for (const stage of [storyRules.regionStages, 1, storyRules.regionStages]) {
       document.querySelector<HTMLButtonElement>(`[data-story-select="${stage}"]`)!.click();
       const detail = document.querySelector('[data-story-detail]')!;
       expectStats(detail.querySelector('[data-enemy-strength]')!, storyEncounter(stage));

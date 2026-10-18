@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { openingStarters as starters } from '../content/starters';
 import { characterDetail, characterHub, characterInformation, characterTabs, homeHub, inventoryHub, isCharacterTab } from './hub';
 import { emptyAccount } from '../game/account';
+import { storyRules } from '../content/story';
 import { abilityIcons } from './ability-icon';
 import { characterName } from '../content/character-art';
 import { nativeIdentities } from '../content/native-identities';
@@ -82,7 +83,7 @@ describe('game-specific hub layouts', () => {
     expect(home).toContain(starter.name);
     expect(home).toContain('data-page="story"');
     expect(home).toContain('<strong>Continue story</strong>');
-    expect(home).toContain('Story · 0 / 150');
+    expect(home).toContain(`Story · 0 / ${storyRules.stages}`);
     expect(home).not.toContain('Free Battle');
     expect(home).toContain('data-page="squad"');
     expect(home).toContain('data-page="summon"');

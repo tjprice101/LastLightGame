@@ -105,6 +105,15 @@ export function storyFractalisDrop(level: number): ScaledDrop {
   return { minimum, maximum: minimum * 2, chance: 1 };
 }
 
+/** Ordinary Story enemies pay 1.5x the Story line (D-340); regional bosses keep the base line before their 5x final-boss multiplier. */
+export const storyEnemyPrismaticaBoost = 1.5;
+export function storyEnemyFractalisDrop(level: number, boss: boolean): ScaledDrop {
+  const drop = storyFractalisDrop(level);
+  if (boss) return drop;
+  const minimum = Math.round(drop.minimum * storyEnemyPrismaticaBoost);
+  return { minimum, maximum: minimum * 2, chance: 1 };
+}
+
 export function treasuryPrismaticaMultiplier(level: number): number {
   const { startingLevel, maximumLevel, finalMultiplier } = treasuryPrismaticaBoost;
   if (!Number.isInteger(level) || level < startingLevel || level > maximumLevel) throw new Error('Treasury drops require an enemy level from 65 to 120.');

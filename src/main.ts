@@ -64,7 +64,7 @@ import { capturedProgress } from './game/character-instances';
 import { gameplayHub, bindGameplayNavigation } from './presentation/gameplay';
 import { bindEnemyStrength } from './presentation/enemy-strength';
 import { storyCampaign, bindStoryNavigation } from './presentation/story';
-import { storyEncounter } from './content/story';
+import { storyEncounter, storyRules } from './content/story';
 import { unlockedStoryStage } from './game/account';
 import { roseEvent } from './presentation/rose-event';
 import { isMenuPage, sanctuaryHeader, sanctuaryContext, sanctuaryDock, sanctuaryDestination, type MenuPage, type TeamArea } from './presentation/sanctuary';
@@ -76,8 +76,8 @@ import { summonReward, summonTenReward } from './presentation/summon-presentatio
 import { conduitReward } from './presentation/conduit-presentation';
 import './sanctuary-reference.css';
 import { openOnlineAccount as showOnlineAccount } from './presentation/online-account';
-import { onlineStores, onlineProfile, bindProfileEditor, refreshProfileTracking, refreshFriendPresence, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
-import { gameOperation, GameOperationError, type GameOperation, type GameResponse, type Activity } from './online/server-game';
+import { onlineStores, onlineProfile, friendProfileScreen, bindProfileEditor, refreshProfileTracking, refreshFriendPresence, type OnlineProfileDisplay, type SocialDisplay } from './presentation/online-store-profile';
+import { gameOperation, friendProfile, GameOperationError, type GameOperation, type GameResponse, type Activity, type FriendProfileResponse } from './online/server-game';
 import { onlineClient, onlineUsername } from './online/account-client';
 import { saveOfflineProgress } from './game/save-file';
 import { startAutosave, showAutosaveNotice } from './presentation/autosave';
@@ -166,6 +166,8 @@ let storeRarity = '';
 let marketMaterial = 'infernic';
 let marketFrame = 'default';
 let profileTab: 'info' | 'friends' | 'chats' = 'info';
+/** Transient D-340 friend view; cleared by any navigation, never saved. */
+let viewedFriend: FriendProfileResponse | null = null;
 let friendRequestTab: 'incoming' | 'outgoing' = 'incoming';
 let playerInfoOpen = false;
 let onlineRevision = 0;
@@ -241,7 +243,7 @@ async function enterOnline(progressReady = false): Promise<void> {
   applyOnline(response);
   menuHistory.clear();
   resetConduitLoadoutView();
-  menuPage = response.session ? 'battle' : (response.account.storyCompleted ?? 0) < 25 ? 'story' : 'home';
+  menuPage = response.session ? 'battle' : (response.account.storyCompleted ?? 0) < storyRules.regionStages ? 'story' : 'home';
   selectedCharacter = null;
   journey.selected = null;
   journey.profile = response.starterId ? { version: 1, starterId: response.starterId } : null;
@@ -375,6 +377,7 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 function visitMenu(page: MenuPage): void {
   checkUpdates();
   const destination = sanctuaryDestination(page);
+  viewedFriend = null;
   menuHistory.visit(menuSnapshot(), destination);
   if (destination === 'team') characterCategory = 'bearers';
   if (page === 'team' || page === 'character') teamView = 'detail';
@@ -393,6 +396,7 @@ async function backMenu(): Promise<void> {
     if (menuPage === 'battle' && playMode === 'online' && battleSession) await performOnline({ kind: 'quit', runId: battleSession.runId });
     const previous = menuHistory.back(fallback);
     battleSession = null;
+    viewedFriend = null;
     menuPage = previous.page;
     characterTab = previous.characterTab;
     characterCategory = previous.characterCategory;
@@ -485,7 +489,12 @@ function showError(message: string): void {
   const status = app.querySelector<HTMLElement>('dialog[open] #settings-error') ??
     app.querySelector<HTMLElement>('#status');
   if (!status) throw new Error('Status region is missing.');
-  const pending = Boolean(playMode === 'online' && onlinePending && !onlineBusy);
+  if (!message.trim()) {
+    status.textContent = '';
+    delete status.dataset.toastTone;
+    return;
+  }
+  const pending =  Boolean(playMode === 'online' && onlinePending && !onlineBusy);
   const target = status.id === 'status' ? showStatusToast(status, message, { persistent: pending }) : status;
   if (target === status) status.textContent = message;
   if (pending) {
@@ -650,7 +659,7 @@ function renderSelection(): void {
   mountStarterSelection(app.querySelector<HTMLElement>('#react-starter-selection')!, {
     initialSelected: journey.selected ?? undefined,
     onSelect: id => journey.select(id),
-    onPlayerInfo: () => { playerInfoOpen = true; renderPlayerInfo(); focusHeading(); },
+    onPlayerInfo: playMode === 'online' ? undefined : () => { playerInfoOpen = true; renderPlayerInfo(); focusHeading(); },
     onBegin: async () => {
       try {
         if (playMode === 'online') {
@@ -1336,6 +1345,7 @@ function menuContent(page: Exclude<MenuPage, 'home'> | 'settings'): string {
   if (page === 'stores') return onlineStores(account, playerProfile, storeTab, marketMaterial, marketFrame);
   if (page === 'profile') return gameStorage.active
     ? '<section class="ref-panel"><h1 tabindex="-1">Debug Player info</h1><p>This test profile lives only in memory. Real save-data management and online accounts are disabled here.</p><p>Exit debug or reload to return to your real progress.</p><button class="text-button" data-exit-debug>Exit debug</button></section>'
+    : viewedFriend ? friendProfileScreen(viewedFriend.account, { ...viewedFriend.profile, userId: viewedFriend.userId })
     : onlineProfile(account, playerProfile, socialDisplay, profileTab, friendRequestTab);
   if (page === 'collections') return archives(account);
   if (page === 'conduit-store') return conduitStore(account, storeConduit, storeRarity);
@@ -1411,6 +1421,7 @@ app.addEventListener('click', async event => {
       await navigator.clipboard.writeText(button.dataset.copyUsername ?? button.dataset.copyProfile!);
       button.textContent = 'Copied';
     } else {
+      viewedFriend = null;
       const tab = button.dataset.messageFriend ? 'chats' : button.dataset.profileTab;
       if (button.dataset.messageFriend) {
         if (chatUiState.retry) throw new Error('Retry your pending chat action before starting another message.');
@@ -1423,6 +1434,37 @@ app.addEventListener('click', async event => {
   } catch (error) {
     console.error('Profile control failed', error);
     showError(errorMessage(error));
+  }
+});
+
+let friendProfileLoading = false;
+app.addEventListener('click', async event => {
+  if (!(event.target instanceof Element)) return;
+  const open = event.target.closest<HTMLButtonElement>('[data-view-friend-profile]');
+  const close = event.target.closest<HTMLButtonElement>('[data-close-friend-profile]');
+  if (close) {
+    viewedFriend = null;
+    profileTab = 'friends';
+    renderMenu();
+    return;
+  }
+  if (!open || open.disabled || friendProfileLoading) return;
+  const label = open.textContent;
+  friendProfileLoading = true;
+  open.disabled = true;
+  open.textContent = 'Loading…';
+  try {
+    if (playMode !== 'online') throw new Error('Sign in to view friend profiles.');
+    viewedFriend = await friendProfile(open.dataset.viewFriendProfile ?? '');
+    renderMenu();
+    app.querySelector<HTMLElement>('.friend-profile-name')?.focus({ preventScroll: true });
+  } catch (error) {
+    console.error('Friend profile failed', error);
+    open.disabled = false;
+    open.textContent = label;
+    showError(errorMessage(error));
+  } finally {
+    friendProfileLoading = false;
   }
 });
 
@@ -1731,6 +1773,7 @@ app.addEventListener('click', async event => {
     if (!userId || (kind !== 'acceptFriendRequest' && kind !== 'declineFriendRequest' && kind !== 'cancelFriendRequest' && kind !== 'removeFriend')) throw new Error('Invalid friend action.');
     if (kind === 'removeFriend' && !await gameConfirm('Remove this friend? They can send a new request later.', { title: 'Remove friend', confirmLabel: 'Remove', danger: true })) return;
     await performOnline({ kind, userId });
+    if (kind === 'removeFriend' && viewedFriend) { viewedFriend = null; profileTab = 'friends'; }
     renderMenu();
     app.querySelector('#online-friend-result')!.textContent = kind === 'acceptFriendRequest' ? 'Friend request accepted.' : kind === 'declineFriendRequest' ? 'Friend request declined.' : kind === 'cancelFriendRequest' ? 'Friend request cancelled.' : 'Friend removed.';
   } catch (error) {

@@ -1,7 +1,7 @@
 import { actionIds, enemies, formatStat, resolveFighter, isActionId, shatterGauge, type ActionId, type EnemyId, type Stats, type FighterDefinition } from '../content/combat';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { type CharacterProgress } from '../content/progression';
-import { fractalisDrop, storyFractalisDrop, treasuryFractalisDrop, rollDrop, rollStagedLycalis } from '../content/loot-random';
+import { fractalisDrop, storyEnemyFractalisDrop, treasuryFractalisDrop, rollDrop, rollStagedLycalis } from '../content/loot-random';
 import { dungeonEncounter, materialDrops, type PlayableDungeon } from '../content/dungeons';
 import { elementSources } from '../content/element-migration';
 import { materialName } from '../content/dungeon-art';
@@ -502,7 +502,7 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
         message: `${enemy.name} dropped ${reward.amount} Prismatica${reward.lycalis ? ` and ${reward.lycalis} Null-Prismatica` : ''}.` });
       continue;
     }
-    const amount = rollDrop(bossLootRange(state.story ? storyFractalisDrop(enemy.level) : state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === 'roses' ? 140 : 120),
+    const amount = rollDrop(bossLootRange(state.story ? storyEnemyFractalisDrop(enemy.level, enemy.boss === true) : state.infusion?.mode === 'treasury' ? treasuryFractalisDrop(enemy.level) : fractalisDrop(enemy.level, state.infusion?.mode === 'roses' ? 140 : 120),
       bossLootMultiplier(state, enemy.boss === true)), rewardRoll);
     if (amount === undefined) throw new Error('Guaranteed Prismatica reward did not drop.');
     const materials = state.story ? storyDrops(state.story.storyStage, rewardRoll)

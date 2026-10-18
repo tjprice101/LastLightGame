@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { elements } from '../content/activities';
-import { storyBossBonus, storyCreature, storyDrops, storyEncounter, storyLoot, storyMaterialLoot, storyRegions } from '../content/story';
+import { elements, storyStageLayout } from '../content/activities';
+import { storyEnemyFractalisDrop, storyFractalisDrop } from '../content/loot-random';
+import { migrateLegacyStoryCompleted, storyBossBonus, storyCompletionReward, storyRules, storyCreature, storyDrops, storyEncounter, storyLoot, storyMaterialLoot, storyRegions } from '../content/story';
 import { creatures, creatureLoot, getCreature } from '../content/creatures';
 import { dungeonEncounter } from '../content/dungeons';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, unlockedStoryStage, validateAccount } from './account';
@@ -43,15 +44,17 @@ function clear(stage: number): BattleResult {
 }
 
 describe('six-region linear Story contract', () => {
-  it('has six ordered regions, exactly 150 stages at levels 1-55, four ordinary identities and one distinct boss each', () => {
+  it('has six ordered regions,   exactly 108 stages at levels 1-55, four ordinary identities and one distinct boss each', () => {
     expect(storyRegions.map((region) => region.element)).toEqual(elements.map((element) => element.id));
-    const ids = new Set<string>();
-    for (let stage = 1; stage <= 150; stage++) {
-      const encounter = storyEncounter(stage);
-      expect(encounter.regionIndex).toBe(Math.floor((stage - 1) / 25));
-      expect(encounter.regionStage).toBe((stage - 1) % 25 + 1);
-      expect(encounter.boss).toBe(stage % 25 === 0);
-      expect(encounter.level).toBe(Math.round(1 + (stage - 1) * 54 / 149));
+      expect(storyStageLayout).toMatchObject({ regionStages: 18, stages: 108, legacyRegionStages: 25, legacyStages: 150 });
+      const { regionStages, stages } = storyRules;
+      const ids = new Set<string>();
+      for (let stage = 1; stage <= stages; stage++) {
+        const encounter = storyEncounter(stage);
+        expect(encounter.regionIndex).toBe(Math.floor((stage - 1) / regionStages));
+        expect(encounter.regionStage).toBe((stage - 1) % regionStages + 1);
+        expect(encounter.boss).toBe(stage % regionStages === 0);
+        expect(encounter.level).toBe(Math.round(1 + (stage - 1) * 54 / (stages - 1)));
       if (stage > 1) expect(encounter.level).toBeGreaterThanOrEqual(storyEncounter(stage - 1).level);
       for (let identity = 0; identity < (encounter.boss ? 1 : 4); identity++) {
         const creature = storyCreature(stage, identity);
@@ -63,18 +66,18 @@ describe('six-region linear Story contract', () => {
     expect(ids.size).toBe(30);
     expect(creatures.filter((creature) => creature.story)).toHaveLength(30);
     expect(storyEncounter(1).level).toBe(1);
-    expect(storyEncounter(150).level).toBe(55);
+    expect(storyEncounter(storyRules.stages).level).toBe(55);
   });
 
   it('rejects invalid stages, identities and nonboss bonuses explicitly', () => {
-    for (const stage of [0, 151, -1, 1.5, NaN, Infinity]) expect(() => storyEncounter(stage)).toThrow();
+    for (const stage of     [0, storyRules.stages + 1, -1, 1.5, NaN, Infinity]) expect(() => storyEncounter(stage)).toThrow();
     for (const identity of [-1, 4, 1.5, NaN]) expect(() => storyCreature(1, identity)).toThrow();
-    expect(() => storyCreature(25, 1)).toThrow();
-    expect(() => storyBossBonus(24)).toThrow();
+        expect(() => storyCreature(storyRules.regionStages, 1)).toThrow();
+        expect(() => storyBossBonus(storyRules.regionStages - 1)).toThrow();
   });
 
   it('uses the same level/rank combat strength as other modes, with only two low material tiers', () => {
-    for (let stage = 1; stage <= 150; stage++) {
+    for (let stage = 1; stage <= storyRules.stages; stage++) {
       const encounter = storyEncounter(stage);
       expect(encounter.stats).toEqual(enemyCombatStats(encounter.level, encounter.boss));
       const materials = storyMaterialLoot(stage);
@@ -96,11 +99,11 @@ describe('six-region linear Story contract', () => {
         if (encounter.level === dungeon.level) expect(encounter.stats).toEqual(dungeon.stats);
       }
     }
-    expect(storyLoot(150).map((drop) => drop.id)).toEqual(['fractalis', 'chaotic-common', 'chaotic-uncommon']);
+    expect(storyLoot(storyRules.stages).map((drop) => drop.id)).toEqual(['fractalis', 'chaotic-common', 'chaotic-uncommon']);
     expect(storyMaterialLoot(1)[1].chance).toBeCloseTo(.25);
-    expect(storyMaterialLoot(150)[1].chance).toBeCloseTo(.8);
-    expect(storyMaterialLoot(150)[0]).toMatchObject({ minimum: 15, maximum: 30 });
-    expect(() => storyDrops(150, () => 1)).toThrow();
+    expect(storyMaterialLoot(storyRules.stages)[1].chance).toBeCloseTo(.8);
+    expect(storyMaterialLoot(storyRules.stages)[0]).toMatchObject({ minimum: 15, maximum: 30 });
+    expect(() => storyDrops(storyRules.stages, () => 1)).toThrow();
   });
 
   it('samples four ordinary identities on a separate stream and preserves the stream across Continue', () => {
@@ -112,7 +115,7 @@ describe('six-region linear Story contract', () => {
       expect(state.rewardSeed).toBe(seed);
     }
     expect(identities.size).toBe(4);
-    const state = createStoryBattle(24, 1729, 'ember', { level: 0, evolution: 1 });
+    const state = createStoryBattle(storyRules.regionStages - 1, 1729, 'ember', { level: 0, evolution: 1 });
     state.phase = 'cleared';
     const expected = nextStage(state, { level: 0, evolution: 1 }).state;
     const altered = structuredClone(state);
@@ -123,7 +126,7 @@ describe('six-region linear Story contract', () => {
     expect(actual.enemies).toHaveLength(1);
     actual.phase = 'cleared';
     const ocean = nextStage(actual, { level: 0, evolution: 1 }).state;
-    expect(ocean.story?.storyStage).toBe(26);
+    expect(ocean.story?.storyStage).toBe(storyRules.regionStages + 1);
     expect(ocean.enemies.every((enemy) => enemy.element === 'oceanic')).toBe(true);
   });
 
@@ -146,10 +149,11 @@ describe('six-region linear Story contract', () => {
 });
 
 describe('atomic Story progression and first-clear rewards', () => {
-  it('clears the complete linear campaign with exactly 150 atomic writes, 294 kill receipts and six premium bonuses', () => {
+  it('clears the complete linear campaign with one atomic write per stage, kill receipts, completion rewards and six premium bonuses', () => {
     const { saved, writes } = storage();
+    const { stages, regionStages } = storyRules;
     let ordinaryCurrency = 0;
-    for (let stage = 1; stage <= 150; stage++) {
+    for (let stage = 1; stage <= stages; stage++) {
       expect(unlockedStoryStage(loadAccount(saved))).toBe(stage);
       const result = clear(stage);
       ordinaryCurrency += result.events.filter((event) => event.kind === 'reward').reduce((sum, event) => sum + event.amount, 0);
@@ -158,16 +162,17 @@ describe('atomic Story progression and first-clear rewards', () => {
       expect(writes()).toBe(stage);
     }
     const completed = loadAccount(saved);
-    expect(completed.receipts).toHaveLength(294);
-    expect(completed.lycalis).toBe(438);
-    expect(completed.fractalis).toBe(ordinaryCurrency + 8754);
+    const bosses = stages / regionStages;
+    expect(completed.receipts).toHaveLength((stages - bosses) * 2 + bosses + stages);
+    expect(completed.lycalis).toBe(438 + stages * storyCompletionReward.lycalis);
+    expect(completed.fractalis).toBe(ordinaryCurrency + 8754 + stages * storyCompletionReward.fractalis);
     expect(completed.materials['infernic-rare']).toBeUndefined();
     expect(Object.keys(completed.creatures).filter((id) => id.endsWith(':boss'))).toHaveLength(6);
-    expect(unlockedStoryStage(completed)).toBe(150);
-    const replayed = saveAccountRewards(saved, clear(150), 'replay-final');
-    expect(replayed.lycalis).toBe(438);
-    expect(replayed.storyCompleted).toBe(150);
-    expect(writes()).toBe(151);
+    expect(unlockedStoryStage(completed)).toBe(stages);
+    const replayed = saveAccountRewards(saved, clear(stages), 'replay-final');
+    expect(replayed.lycalis).toBe(completed.lycalis + storyCompletionReward.lycalis);
+    expect(replayed.storyCompleted).toBe(stages);
+    expect(writes()).toBe(stages + 1);
   });
   it('reads optional legacy progress without writes, preserves account fields and rejects malformed progress', () => {
     const fixture = storage();
@@ -180,8 +185,66 @@ describe('atomic Story progression and first-clear rewards', () => {
     expect(loadAccount(fixture.saved).storyCompleted).toBeUndefined();
     expect(fixture.writes()).toBe(writes);
     expect(fixture.saved.getItem(ACCOUNT_KEY)).toBe(raw);
-    for (const value of [-1, 151, 1.5, '1', null, NaN]) expect(() => validateAccount({ ...account, storyCompleted: value })).toThrow('Story');
-    expect(unlockedStoryStage(validateAccount({ ...account, storyCompleted: 150 }))).toBe(150);
+    for (const value of [-1, storyRules.stages + 1, 1.5, '1', null, NaN]) expect(() => validateAccount({ ...account, storyCompleted: value })).toThrow('Story');
+    expect(unlockedStoryStage(validateAccount({ ...account, storyCompleted: storyRules.stages }))).toBe(storyRules.stages);
+  });
+
+  it.each([[0, 0], [24, 17], [25, 18], [30, 21], [50, 36], [149, 107], [150, 108]])(
+    'converts a legacy v5 count of %i to %i with the exact retroactive grant, read-only, and persists v6 once', (legacy, converted) => {
+      expect(migrateLegacyStoryCompleted(legacy)).toBe(converted);
+      const fixture = storage();
+      const legacyAccount = { ...emptyAccount(), version: 5, fractalis: 1000, lycalis: 7, storyCompleted: legacy };
+      fixture.saved.setItem(ACCOUNT_KEY, JSON.stringify(legacyAccount));
+      const raw = fixture.saved.getItem(ACCOUNT_KEY);
+      const writes = fixture.writes();
+      const loaded = loadAccount(fixture.saved);
+      expect(loaded).toMatchObject({ version: 6, storyCompleted: converted,
+        fractalis: 1000 + legacy * storyCompletionReward.fractalis, lycalis: 7 + legacy * storyCompletionReward.lycalis });
+      expect(loadAccount(fixture.saved)).toEqual(loaded);
+      expect(fixture.writes()).toBe(writes);
+      expect(fixture.saved.getItem(ACCOUNT_KEY)).toBe(raw);
+      const saved = saveAccount(fixture.saved, loaded);
+      expect(JSON.parse(fixture.saved.getItem(ACCOUNT_KEY)!)).toMatchObject({ version: 6, storyCompleted: converted });
+      expect(saved.fractalis).toBe(loaded.fractalis);
+      expect(loadAccount(fixture.saved)).toMatchObject({ fractalis: loaded.fractalis, lycalis: loaded.lycalis, storyCompleted: converted });
+    });
+
+  it('rejects a legacy Story count above the legacy layout', () => {
+    expect(() => migrateLegacyStoryCompleted(151)).toThrow('Story');
+    expect(() => validateAccount({ ...emptyAccount(), version: 5, storyCompleted: 151 })).toThrow('Story');
+  });
+
+  it('pays the stage-clear reward on a first clear and on a replay with a new run, but never twice for one run', () => {
+    const { saved } = storage();
+    const first = clear(1);
+    const ordinary = first.events.filter((event) => event.kind === 'reward');
+    const base = ordinary.reduce((sum, event) => sum + event.amount, 0);
+    const account = saveAccountRewards(saved, first, 'run-a');
+    expect(account.fractalis).toBe(base + storyCompletionReward.fractalis);
+    expect(account.lycalis).toBe(storyCompletionReward.lycalis);
+    expect(account.receipts).toContain('run-a:story-clear-1');
+    const last = first.events.filter((event) => event.kind === 'reward').at(-1)!;
+    expect(last.lycalis).toBe(storyCompletionReward.lycalis);
+    expect(last.message).toContain('Stage clear: +150 Prismatica and +2 Null-Prismatica.');
+    expect(saveAccountRewards(saved, first, 'run-a')).toEqual(account);
+    const replay = clear(1);
+    const replayBase = replay.events.filter((event) => event.kind === 'reward').reduce((sum, event) => sum + event.amount, 0);
+    const replayed = saveAccountRewards(saved, replay, 'run-b');
+    expect(replayed.fractalis).toBe(account.fractalis + replayBase + storyCompletionReward.fractalis);
+    expect(replayed.lycalis).toBe(account.lycalis + storyCompletionReward.lycalis);
+    expect(replayed.storyCompleted).toBe(1);
+  });
+
+  it('pays ordinary Story enemies 1.5x Prismatica while bosses keep the base line', () => {
+    for (const level of [1, 10, 33, 55]) {
+      const base = storyFractalisDrop(level);
+      const ordinary = storyEnemyFractalisDrop(level, false);
+      expect(ordinary.minimum).toBe(Math.round(base.minimum * 1.5));
+      expect(ordinary.maximum).toBe(ordinary.minimum * 2);
+      expect(storyEnemyFractalisDrop(level, true)).toEqual(base);
+    }
+    expect(storyEnemyFractalisDrop(1, false)).toMatchObject({ minimum: 8, maximum: 16 });
+    expect(storyLoot(1)[0]).toMatchObject({ minimum: 8, maximum: 16 });
   });
 
   it('commits partial per-kill rewards immediately but unlocks only after every enemy reward is saved', () => {
@@ -198,40 +261,42 @@ describe('atomic Story progression and first-clear rewards', () => {
     const final = act(first.state, 'ember', 'light', first.state.enemies[1].id);
     expect(saveAccountRewards(saved, final, 'partial').storyCompleted).toBe(1);
     expect(unlockedStoryStage(loadAccount(saved))).toBe(2);
-    expect(loadAccount(saved).lycalis).toBe(0);
+    expect(loadAccount(saved).lycalis).toBe(storyCompletionReward.lycalis);
   });
 
-  it.each([25, 50, 75, 100, 125, 150])('stage %i pays the exact 15%%-grown first bonus once with materials, progress, discovery and receipt in one write', (stage) => {
+  it.each([1, 2, 3, 4, 5, 6].map((region) => region * storyRules.regionStages))('stage %i pays the exact 15%%-grown first bonus once with materials, progress, discovery and receipt in one write', (stage) => {
     const { saved, writes } = unlocked(stage);
     const before = writes();
     const result = clear(stage);
     const ordinary = result.events.find((event) => event.kind === 'reward')!.amount;
     const bonus = storyBossBonus(stage);
     const expectedBonuses = [[1000, 50], [1150, 58], [1323, 66], [1521, 76], [1749, 87], [2011, 101]];
-    expect(bonus).toEqual({ fractalis: expectedBonuses[stage / 25 - 1][0], lycalis: expectedBonuses[stage / 25 - 1][1] });
+    const index = stage / storyRules.regionStages - 1;
+    expect(bonus).toEqual({ fractalis: expectedBonuses[index][0], lycalis: expectedBonuses[index][1] });
     const account = saveAccountRewards(saved, result, 'first');
     expect(writes()).toBe(before + 1);
-    expect(account.fractalis).toBe(ordinary + bonus.fractalis);
-    expect(account.lycalis).toBe(bonus.lycalis);
+    expect(account.fractalis).toBe(ordinary + bonus.fractalis + storyCompletionReward.fractalis);
+    expect(account.lycalis).toBe(bonus.lycalis + storyCompletionReward.lycalis);
     expect(account.storyCompleted).toBe(stage);
     expect(account.creatures[result.state.enemies[0].creatureId!].defeated).toBe(true);
     expect(account.receipts).toContain(`first:story-${stage}-0`);
     expect(result.events.find((event) => event.kind === 'reward')?.storyBonus).toEqual(bonus);
-    expect(encounterRewards(result.events).find((item) => item.id === 'lycalis')?.amount).toBe(bonus.lycalis);
+    expect(encounterRewards(result.events).find((item) => item.id === 'lycalis')?.amount).toBe(bonus.lycalis + storyCompletionReward.lycalis);
     expect(saveAccountRewards(saved, result, 'first')).toEqual(account);
     expect(writes()).toBe(before + 1);
     const replay = clear(stage);
     const replayOrdinary = replay.events.find((event) => event.kind === 'reward')!.amount;
     const replayAccount = saveAccountRewards(saved, replay, 'replay');
-    expect(replayAccount.fractalis).toBe(account.fractalis + replayOrdinary);
-    expect(replayAccount.lycalis).toBe(account.lycalis);
-    expect(replay.events.some((event) => event.storyBonus || event.lycalis)).toBe(false);
+    expect(replayAccount.fractalis).toBe(account.fractalis + replayOrdinary + storyCompletionReward.fractalis);
+    expect(replayAccount.lycalis).toBe(account.lycalis + storyCompletionReward.lycalis);
+    expect(replay.events.some((event) => event.storyBonus)).toBe(false);
     expect(replayAccount.storyCompleted).toBe(stage);
   });
 
   it('fails atomically on storage denial or balance/material overflow; retry preserves undecorated events and pays once', () => {
-    const { saved } = unlocked(25);
-    const result = clear(25);
+    const boss = storyRules.regionStages;
+    const { saved } = unlocked(boss);
+    const result = clear(boss);
     const events = structuredClone(result.events);
     const raw = saved.getItem(ACCOUNT_KEY);
     const write = saved.setItem;
@@ -257,8 +322,8 @@ describe('atomic Story progression and first-clear rewards', () => {
     expect(() => saveAccountRewards(saved, result, 'fail')).toThrow();
     account.fractalis = 0;
     saveAccount(saved, account);
-    expect(saveAccountRewards(saved, result, 'fail').lycalis).toBe(50);
-    expect(saveAccountRewards(saved, result, 'fail').lycalis).toBe(50);
+    expect(saveAccountRewards(saved, result, 'fail').lycalis).toBe(50 + storyCompletionReward.lycalis);
+    expect(saveAccountRewards(saved, result, 'fail').lycalis).toBe(50 + storyCompletionReward.lycalis);
   });
 
   it('rejects locked stages, forged sources, high-tier/off-element materials, premium/capture claims and rewardless clear', () => {
@@ -290,25 +355,25 @@ describe('atomic Story progression and first-clear rewards', () => {
     state.enemies.forEach((enemy) => { enemy.hp = 1; enemy.burn = { damage: 8, turns: 1, sourceId: 'ember' }; });
     const result = endTurn(state);
     expect(result.state.phase).toBe('cleared');
-    expect(saveAccountRewards(saved, result, 'burn')).toMatchObject({ storyCompleted: 1, lycalis: 0 });
+    expect(saveAccountRewards(saved, result, 'burn')).toMatchObject({ storyCompleted: 1, lycalis: storyCompletionReward.lycalis });
     const before = loadAccount(saved);
     expect(saveAccountRewards(saved, result, 'burn')).toEqual(before);
   });
 });
 
 describe('Story and Training presentation', () => {
-  it('renders a linear map with 150 exact stage controls, only valid entries enabled and no missing art requests', () => {
+  it('  renders a linear map with 108 exact stage controls, only valid entries enabled and no missing art requests', () => {
     const html = storyCampaign(emptyAccount(), 'ember');
     expect(html.match(/data-story-region=/g)).toHaveLength(6);
-    expect(html.match(/data-story-stage=/g)).toHaveLength(150);
-    expect(html.match(/data-story-stage="\d+" disabled/g)).toHaveLength(149);
+      expect(html.match(/data-story-stage=/g)).toHaveLength(storyRules.stages);
+      expect(html.match(/data-story-stage="\d+" disabled/g)).toHaveLength(storyRules.stages - 1);
     expect(html).toContain('data-story-stage="1"');
     expect(html).toContain('First-clear bonus');
     expect(html).not.toContain('artwork pending');
     expect(html).not.toContain('assets/enemies');
     expect(html).toContain('Read opening prologue');
     expect(storyCampaign(null, 'ember')).toContain('role="alert"');
-    const complete = storyCampaign({ ...emptyAccount(), storyCompleted: 150 }, 'ember');
+    const complete = storyCampaign({ ...emptyAccount(), storyCompleted: storyRules.stages }, 'ember');
     expect(complete).not.toMatch(/data-story-stage="\d+" disabled/);
     expect(complete).toContain('already earned');
     expect(complete).toContain('All beacons restored');
@@ -327,11 +392,11 @@ describe('Story and Training presentation', () => {
     expect(training.enemies.map((enemy) => enemy.creatureId)).toEqual(['adventure:goblin', 'adventure:imp', 'adventure:golem']);
   });
 
-  it('regional Continue crosses into the next region, final stage 150 has no Continue and defeat retries the same stage', () => {
-    const boss = clear(25);
+  it('regional Continue crosses into the next region,   final stage 108 has no Continue and defeat retries the same stage', () => {
+      const boss = clear(storyRules.regionStages);
     expect(battleResults(boss.state, boss.events)).toContain('data-result-continue');
     expect(battleResults(boss.state, boss.events)).toContain(storyRegions[0].conclusion);
-    const final = clear(150);
+      const final = clear(storyRules.stages);
     expect(battleResults(final.state, final.events)).toContain('Activity complete');
     expect(battleResults(final.state, final.events)).not.toContain('data-result-continue');
     expect(() => nextStage(final.state, { level: 105, evolution: 6 })).toThrow('complete');

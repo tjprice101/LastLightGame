@@ -4,7 +4,7 @@ import { infusionStageCount, type InfusionModeId } from '../content/activities';
 import { playableDungeons } from '../content/dungeons';
 import { elementalWars, warLoot, warStageCount } from '../content/elemental-war';
 import { fractalisDrop, storyFractalisDrop, treasuryFractalisDrop, rollDrop, rollStagedLycalis, stagedLycalisOdds } from '../content/loot-random';
-import { storyBossBonus, storyRegions } from '../content/story';
+import { storyBossBonus, storyCompletionReward, storyRegions, storyRules } from '../content/story';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { act, createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, type BattleState } from './battle';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards } from './account';
@@ -13,7 +13,7 @@ import { SAVE_KEY, type ProfileStorage } from './profile';
 const progress = { level: 105, evolution: 6 };
 const modes: InfusionModeId[] = ['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines'];
 const cases = [
-  ...storyRegions.map((_, i) => ({ name: `Story region ${i + 1}`, create: () => createStoryBattle((i + 1) * 25, 1729, 'ember', progress) })),
+  ...storyRegions.map((_, i) => ({ name: `Story region ${i + 1}`, create: () => createStoryBattle((i + 1) * storyRules.regionStages, 1729, 'ember', progress) })),
   ...playableDungeons.map(element => ({ name: `${element} dungeon`, create: () => createDungeonBattle(element, 35, 1729, 'ember', progress) })),
   ...modes.map(mode => ({ name: mode, create: () => createInfusionBattle(mode, infusionStageCount(mode), 1729, 'ember', progress) })),
   ...elementalWars.map(war => ({ name: war.character, create: () => createWarBattle(war.character, warStageCount, 1729, 'ember', progress) })),
@@ -31,7 +31,7 @@ function clear(state: BattleState) {
   return act(state, 'ember', 'light', state.enemies[0].id);
 }
 
-function storage(storyCompleted = 150, fractalis = 0) {
+function storage(storyCompleted: number = storyRules.stages, fractalis = 0) {
   const values = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
   const saved: ProfileStorage = { getItem: key => values.get(key) ?? null,
     setItem: (key, value) => { values.set(key, value); }, removeItem: key => { values.delete(key); } };
@@ -81,22 +81,24 @@ describe('repeatable final-boss 5x quantity contract', () => {
         expect(loot.find(drop => drop.id === id)?.minimum).toBe(amount);
       }
     }
+    const bonusStory = state.story ? storyCompletionReward.fractalis : 0;
     const saved = storage();
     const write = vi.spyOn(saved, 'setItem');
     const account = saveAccountRewards(saved, result, 'final');
     expect(write).toHaveBeenCalledOnce();
-    expect(account.fractalis).toBe(expectedCurrency);
+    expect(account.fractalis).toBe(expectedCurrency + bonusStory);
     expect(saveAccountRewards(saved, result, 'final')).toEqual(account);
     expect(write).toHaveBeenCalledOnce();
     const replay = create();
     if (replay.infusion?.mode === 'machines') replay.machineConduits = { ...account.conduits };
-    expect(saveAccountRewards(saved, clear(replay), 'replay').fractalis).toBe(expectedCurrency * 2);
+    expect(saveAccountRewards(saved, clear(replay), 'replay').fractalis).toBe((expectedCurrency + bonusStory) * 2);
     expect(write).toHaveBeenCalledTimes(2);
   });
 
   it('excludes Training, earlier bosses and nonboss encounters at endpoints', () => {
     expect(bossLootMultiplier(createBattle())).toBe(1);
-    for (const stage of [1, 24, 26, 49, 149]) expect(bossLootMultiplier({ story: { storyStage: stage } })).toBe(1);
+    const { regionStages, stages } = storyRules;
+    for (const stage of [1, regionStages - 1, regionStages + 1, 2 * regionStages - 1, stages - 1]) expect(bossLootMultiplier({ story: { storyStage: stage } })).toBe(1);
     expect(bossLootMultiplier({ dungeon: { stage: 30 } })).toBe(1);
     for (const mode of modes) expect(bossLootMultiplier({ infusion: { mode, stage: infusionStageCount(mode) - 5 } })).toBe(1);
     expect(bossLootMultiplier({ war: { stage: warStageCount - 1 } })).toBe(1);
@@ -133,17 +135,18 @@ describe('repeatable final-boss 5x quantity contract', () => {
     }
   });
 
-  it.each([25, 50, 75, 100, 125, 150])('keeps regional first-clear bonuses separate from boosted replay loot at stage %s', stage => {
+  it.each([1, 2, 3, 4, 5, 6].map(region => region * storyRules.regionStages))('keeps regional first-clear bonuses separate from boosted replay loot at stage %s', stage => {
     const saved = storage(stage - 1);
     const result = clear(createStoryBattle(stage, 1729, 'ember', progress));
     const ordinary = result.events.find(event => event.kind === 'reward')!.amount;
     const bonus = storyBossBonus(stage);
+    const clearPay = storyCompletionReward;
     const first = saveAccountRewards(saved, result, 'first');
-    expect(first.fractalis).toBe(ordinary + bonus.fractalis);
-    expect(first.lycalis).toBe(bonus.lycalis);
+    expect(first.fractalis).toBe(ordinary + bonus.fractalis + clearPay.fractalis);
+    expect(first.lycalis).toBe(bonus.lycalis + clearPay.lycalis);
     const second = saveAccountRewards(saved, clear(createStoryBattle(stage, 1729, 'ember', progress)), 'again');
-    expect(second.fractalis).toBe(ordinary * 2 + bonus.fractalis);
-    expect(second.lycalis).toBe(bonus.lycalis);
+    expect(second.fractalis).toBe(ordinary * 2 + bonus.fractalis + clearPay.fractalis * 2);
+    expect(second.lycalis).toBe(bonus.lycalis + clearPay.lycalis * 2);
   });
 
   it('rejects forged currency, material and premium quantities atomically', () => {
@@ -167,7 +170,7 @@ describe('repeatable final-boss 5x quantity contract', () => {
 
   it('preserves the complete wallet on boosted reward overflow or denied persistence', () => {
     const result = clear(createInfusionBattle('machines', 100, 1729, 'ember', progress));
-    const overflow = storage(150, Number.MAX_SAFE_INTEGER);
+    const overflow = storage(storyRules.stages, Number.MAX_SAFE_INTEGER);
     const raw = overflow.getItem(ACCOUNT_KEY);
     expect(() => saveAccountRewards(overflow, result, 'overflow')).toThrow();
     expect(overflow.getItem(ACCOUNT_KEY)).toBe(raw);

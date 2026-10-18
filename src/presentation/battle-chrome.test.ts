@@ -3,6 +3,7 @@ import { playableDungeons } from '../content/dungeons';
 import { BattleView, createSession } from './battle-view';
 import { elementLabel } from './element-label';
 import { nativeIdentities } from '../content/native-identities';
+import { storyRules } from '../content/story';
 
 function markup(session: ReturnType<typeof createSession>): string {
   const menu = { addEventListener: () => {}, close: () => {}, showModal: () => {} };
@@ -97,7 +98,7 @@ describe('shared battle chrome', () => {
     expect(html).not.toContain('saved locally');
   });
   it('keeps the Battle menu grid to its four section panels', () => {
-    for (const session of [createSession('ember', progress), createSession('ember', progress, { storyStage: 150 })]) {
+    for (const session of [createSession('ember', progress), createSession('ember', progress, { storyStage: storyRules.stages })]) {
       const html = markup(session);
       const menu = html.slice(html.indexOf('class="battle-utilities"'), html.indexOf('</dialog>'));
       // Only <section> panels may sit directly in the grid; stray elements push the log into an extra row.
@@ -111,25 +112,25 @@ describe('shared battle chrome', () => {
       expect(direct).toEqual(['section.battle-combat-menu', 'section.battle-unit-intel', 'section.battle-help', 'section.battle-log']);
     }
   });
-  it('shows Story stage 150 with delivered regional art, narrative and final-stage controls', () => {
-    const session = createSession('ember', progress, { storyStage: 150 });
+  it('shows the final Story stage with delivered regional art, narrative and final-stage controls', () => {
+    const session = createSession('ember', progress, { storyStage: storyRules.stages });
     let html = markup(session);
     expect(html).toContain('STORY CAMPAIGN');
-    expect(html).toContain('Stage 150 / 150');
+    expect(html).toContain(`Stage ${storyRules.stages} / ${storyRules.stages}`);
     expect(html).toContain('Riftbound Frontier');
     expect(html).toContain('backgrounds/story-riftbound-frontier-arena.png');
     expect(html).toContain('enemies/story-chaotic-boss.png');
     expect(html).not.toContain('pending-dungeon-scenery');
     expect(html).not.toContain('pending-enemy-art');
     expect(html).not.toContain('backgrounds/grassy-field');
-    expect(html).toContain('Six regions with 25 stages each');
+    expect(html).toContain(`Six regions with ${storyRules.regionStages} stages each`);
     session.state.phase = 'cleared';
     html = markup(session);
     expect(html).not.toContain('data-result-continue');
-    expect(html).toContain('All 150 stages cleared');
+    expect(html).toContain(`All ${storyRules.stages} stages cleared`);
   });
   it('uses delivered Emberwake scenery and boss art in Story battle chrome', () => {
-    const html = markup(createSession('ember', progress, { storyStage: 25 }));
+    const html = markup(createSession('ember', progress,     { storyStage: storyRules.regionStages }));
     expect(html).toContain('Emberwake March');
     expect(html).not.toContain('pending-dungeon-scenery');
     expect(html).not.toContain('pending-enemy-art');

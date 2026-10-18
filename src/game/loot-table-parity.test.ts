@@ -3,6 +3,7 @@ import { creatureLoot, getCreature } from '../content/creatures';
 import { infusionStageCount, type InfusionModeId } from '../content/activities';
 import { playableDungeons } from '../content/dungeons';
 import { elementalWars, warLoot } from '../content/elemental-war';
+import { storyRules } from '../content/story';
 import { act, createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, createWarBattle, type BattleState } from './battle';
 
 const progress = { level: 105, evolution: 6 };
@@ -14,7 +15,7 @@ const sequences = [
     state.enemies.forEach(enemy => { enemy.level = level; });
     return state;
   } },
-  { name: 'Story', stages: 150, create: (stage: number) => createStoryBattle(stage, 1729, 'ember', progress) },
+  { name: 'Story', stages: storyRules.stages, create: (stage: number) => createStoryBattle(stage, 1729, 'ember', progress) },
   ...playableDungeons.map(element => ({ name: element, stages: 35,
     create: (stage: number) => createDungeonBattle(element, stage, 1729, 'ember', progress) })),
   ...modes.map(mode => ({ name: mode, stages: infusionStageCount(mode),

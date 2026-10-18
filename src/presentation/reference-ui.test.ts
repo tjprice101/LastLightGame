@@ -11,7 +11,7 @@ import { conduitUpgradeMenu } from './conduit-upgrade';
 import { onlineProfile, onlineStores } from './online-store-profile';
 import { storyCampaign } from './story';
 import { gameplayHub } from './gameplay';
-import { storyEncounter } from '../content/story';
+import { storyEncounter, storyRules } from '../content/story';
 import { assetUrl } from './portrait';
 import { getCreature } from '../content/creatures';
 import { capturedProgress } from '../game/character-instances';
@@ -56,12 +56,12 @@ describe('replacement reference screen structures', () => {
     expect(html).toContain('class="ref-story-main"');
     expect(html).toContain('data-story-region-heading');
     expect(html).toContain('<h2 tabindex="-1">Glasswater Reach</h2>');
-    expect(html).toContain('Next: Glasswater Reach, stage 2.');
-    expect(html).toContain('Stages · 1 / 25 cleared');
+    expect(html).toContain('Next: Glasswater Reach, stage 9.');
+    expect(html).toContain(`Stages · 8 / ${storyRules.regionStages} cleared`);
     expect(html.match(/class="ref-story-stages"/g)).toHaveLength(6);
     expect(html.match(/class="story-boss-preview"/g)).toHaveLength(6);
     expect(html.match(/class="ref-story-entry" data-story-detail=/g)).toHaveLength(6);
-    expect(html).toContain('data-story-enter="27" >Enter stage 2');
+    expect(html).toContain('data-story-enter="27" >Enter stage 9');
     expect(html).toContain('Deepbell Leviathan');
     expect(html).toContain('1,150');
     expect(html).toContain('Per-kill rewards:');
@@ -109,7 +109,7 @@ describe('replacement reference screen structures', () => {
     expect(html).toContain('ref-home-leader');
     expect(html).toContain('<h2>Tizu</h2>');
     expect(html).toContain('Glasswater Reach');
-    expect(html).toContain('25 / 150 stages cleared');
+    expect(html).toContain(`25 / ${storyRules.stages} stages cleared`);
     expect(html).not.toContain('data-make-leader');
     expect(html).not.toContain('ref-home-squad');
     expect(html).not.toContain('ref-home-slot');
@@ -131,18 +131,18 @@ describe('replacement reference screen structures', () => {
     expect(wallet).toEqual(before);
   });
 
-  it.each([0, 24, 25, 29, 49, 50, 74, 75, 99, 100, 124, 125, 149, 150])('shows the current Story arena after %i completed stages without changing progress', (completed) => {
+  it.each([0, 17, 18, 22, 35, 36, 53, 54, 71, 72, 89, 90, 107, 108])('shows the current Story arena after %i completed stages without changing progress', (completed) => {
     const wallet = account();
     wallet.storyCompleted = completed;
     const before = structuredClone(wallet);
-    const encounter = storyEncounter(Math.min(150, completed + 1));
+    const encounter = storyEncounter(Math.min(storyRules.stages, completed + 1));
     const html = referenceHome(getStarter('tide'), wallet);
     const card = html.slice(html.indexOf('<button class="ref-panel ref-home-story"'), html.indexOf('<div class="ref-home-shops"'));
     expect(card).toContain(`src="${assetUrl(`backgrounds/${encounter.background}`)}"`);
     expect(card).toContain('class="ref-home-story-arena"');
     expect(card).toContain('alt="" draggable="false"');
     expect(card).toContain('data-page="story"');
-    expect(card).toContain(`${completed} / 150 stages cleared`);
+    expect(card).toContain(`${completed} / ${storyRules.stages} stages cleared`);
     expect(card).not.toContain('story-world-map.png');
     expect(wallet).toEqual(before);
   });

@@ -1,5 +1,25 @@
 # Current state and handoff
 
+## Friend profiles, 18-stage Story and faster battles (D-340)
+
+- Friends: `public.friend_profile` (migration 20261013000000) returns a friend's
+  row only for accepted friends; the edge function's `friendProfile` route calls
+  `friendProfileView`, which redacts via `game/friend-profile.ts`. Client
+  `friendProfile()` + `friendProfileScreen()` reuse the Player info panels
+  read-only (Back to friends, Message, Remove friend). Transient `viewedFriend`.
+- Story: `storyStageLayout` 18/108; bosses every 18th stage. Ordinary enemies use
+  `storyEnemyFractalisDrop` (+50%); each clear pays `storyCompletionReward`
+  150/2 once per run receipt `:story-clear-N`, shown on the last reward event.
+- Wallet v6: pre-v6 `storyCompleted` converts via `migrateLegacyStoryCompleted`
+  and credits 150/2 per legacy stage, read-only until the first save. Engine
+  drops pre-v6 Story runs.
+- Player Info button hidden for online selection; empty `showError('')` clears
+  the status toast (no "Notice" on speed changes).
+- Edge function: `getClaims` auth, parallel `consume_game_attempt`/
+  `find_game_request`/load, cached identity, parallel tracking/social on reads.
+- Validation: `npx vitest run src/online/friend-profile.test.ts src/content/story.test.ts`,
+  full suite, build, `node tools/smoke_server_game.mjs` (hosted).
+
 ## Native status display, kit wording and update prompt (D-339)
 
 - `nativeMarkers`/`nativeMarkerReadout` put native statuses on the unit they

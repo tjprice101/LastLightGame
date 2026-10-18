@@ -18,6 +18,8 @@ export const elementalMaterials = elements.flatMap((element) => materialRarities
 })));
 export const dungeonStageCount = 35;
 export const warStageCount = 10;
+/** Story layout: six regions of 18 stages (D-340). Older saves recorded clears on the 25-stage layout. */
+export const storyStageLayout = { regionStages: 18, stages: 108, legacyRegionStages: 25, legacyStages: 150 } as const;
 export const elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 38, maximumLevel: 120, maximumLevelStage: dungeonStageCount } as const;
 export const infusionModes = [
   { id: 'heavens', name: 'Soar to Heaven', energy: 'Light', enemyTheme: 'Dawnthorn Slime evolution line', stages: dungeonStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
