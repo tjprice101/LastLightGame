@@ -1,5 +1,21 @@
 # Current state and handoff
 
+## Native status display, kit wording and update prompt (D-339)
+
+- `nativeMarkers`/`nativeMarkerReadout` put native statuses on the unit they
+  affect (ally Seed/Cover/Foundation/Instruction; enemy Trap/Seal/Shuriken/
+  Survey/Quarry). Owners still show their own resources in `.native-kit-slot`.
+- `attachNativeView` snapshots every ally's native state onto the last event of
+  each action/enemy phase/turn; `BattleView.updateNative` patches cards during
+  playback. Enemy `status` events carry debuff snapshots so Burn updates live.
+- `nativeAbilityStatuses` (ability-status.ts) lists each kit's statuses per
+  ability; menus show them after generic families, deduplicated.
+- Wording: Thornia recast keeps Empowered Trap; Nerithe Fold the Sea moves
+  Survey only if one exists.
+- `presentation/update-check.ts` + vite `version.json`/`__BUILD_ID__`
+  (GITHUB_SHA in CI). Refresh-only dialog; deferred during battle.
+- Validation: `npx vitest run src/presentation/native-markers.test.ts src/presentation/ability-status.test.ts src/presentation/update-check.test.ts`, full suite, build.
+
 ## Defend action removed (D-336)
 
 - Actions: Normal Attack, Skill 1, Skill 2, Last Flare. Defense stat still mitigates.

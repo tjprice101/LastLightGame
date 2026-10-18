@@ -2,7 +2,7 @@ import { describeFighter, formatStat, type ActionId } from '../content/combat';
 import { nativeIdentities } from '../content/native-identities';
 import { isStarterId } from '../content/starters';
 import type { BattleState, Combatant } from '../game/battle';
-import { nativeForecast, nativeReadout } from '../game/native-kits';
+import { nativeForecast, nativeMarkers, nativeReadout } from '../game/native-kits';
 import { createGameDialog, escapeDialogText } from './game-dialog';
 import './native-kit.css';
 import { readableEffect } from './effect-copy';
@@ -23,6 +23,12 @@ export function nativeStateReadout(state: BattleState, unit: Combatant, compact 
   return `<span class="native-kit-state" aria-label="Native battle state">${rows.map(row =>
     `<span class="native-state-row" data-native-label="${escapeDialogText(row.label)}" data-native-value="${escapeDialogText(row.value)}"><strong>${(row.icons ?? []).map(statusIcon).join('')}${escapeDialogText(row.label)}: ${escapeDialogText(row.value.replace(/(\d)\/(?=\d)/g, '$1 / '))}</strong>${(compact && row.rule) || !row.description ? '' : `<small>${escapeDialogText(readableEffect(row.description))}</small>`}</span>`).join('')}${forecast.map(line =>
     `<span class="native-forecast">${escapeDialogText(line)}</span>`).join('')}</span>`;
+}
+
+/** Badges for native effects other squad members placed on this unit; the container is always present so playback can patch it. */
+export function nativeMarkerReadout(state: BattleState, unit: Combatant): string {
+  return `<span class="native-markers">${nativeMarkers(state, unit).map(marker =>
+    `<span class="battle-status-badge" data-native-marker="${marker.id}" data-native-owner="${escapeDialogText(marker.owner)}">${statusIcon(marker.icon)}${escapeDialogText(`${marker.label} · ${marker.value}`)}</span>`).join('')}</span>`;
 }
 
 export function needsAllyTarget(actor: Combatant, action: ActionId): boolean {

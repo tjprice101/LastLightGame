@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { describeFighter, resolveFighter } from '../content/combat';
-import { abilityStatuses, kitResource } from './ability-status';
+import { abilityStatuses, kitResource, nativeAbilityStatuses } from './ability-status';
+import { statusArt } from '../content/status-art';
 import { starters } from '../content/starters';
 import { nativeIdentities } from '../content/native-identities';
 
@@ -65,16 +66,30 @@ describe('typed ability status labels', () => {
       expect(kit.passive.description).toBe(nativeIdentities[starter.id].passive.description);
     }
   });
-  it('does not invent status art or fake charges when explaining new native identities', () => {
+  it('shows only the native passive statuses, without fake charges, when explaining native identities', () => {
     for (const starter of starters) {
       const summary = kitResource(resolveFighter(starter.id), starter.id);
-      expect(summary).not.toContain('data-status-art=');
       expect(summary).not.toContain('charges');
-      expect(summary).not.toContain('<img');
+      const expected = nativeAbilityStatuses[starter.id].passive ?? [];
+      expect(summary.match(/data-native-status=/g)?.length ?? 0).toBe(new Set(expected.map(([icon]) => icon)).size);
+      expect(summary).not.toContain('data-effect-family=');
     }
     const historical = resolveFighter('ember');
     delete historical.nativeIdentity;
     historical.pilot = 'ember';
     expect(kitResource(historical, 'ember')).toContain('data-status-art="burn"');
+  });
+  it('shows each native kit status beside the ability that uses it (D-339)', () => {
+    const flora = abilityStatuses(resolveFighter('sprout').abilities.skill1.strength, 'sprout', 'skill1');
+    expect(flora).toContain('data-native-status="native-flora-seed"');
+    expect(flora).toContain('data-status-art="native-flora-seed"');
+    const used = new Set(Object.values(nativeAbilityStatuses).flatMap((slots) => Object.values(slots).flatMap((list) => list!.map(([icon]) => icon))));
+    for (const id of Object.keys(statusArt).filter((id) => id.startsWith('native-'))) expect(used.has(id as never), id).toBe(true);
+    for (const starter of starters) for (const action of ['skill1', 'skill2', 'ultimate'] as const) {
+      const html = abilityStatuses(resolveFighter(starter.id).abilities[action].strength, starter.id, action);
+      const icons = [...html.matchAll(/data-status-art="([^"]+)"/g)].map((match) => match[1]);
+      expect(new Set(icons).size, `${starter.id} ${action}`).toBe(icons.length);
+    }
+    expect(abilityStatuses({ damageMultiplier: 2 }, 'sprout')).toBe('');
   });
 });

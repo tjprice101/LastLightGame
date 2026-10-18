@@ -19,3 +19,10 @@ html body .battle-screen #battle-root .native-state-row .status-icon { width: 28
 .native-ally-picker { max-width: min(38rem, calc(100vw - 2rem)); }
 .native-ally-choices { display: grid; gap: .6rem; margin-block: 1rem; }
 .native-ally-choices button { display: grid; gap: .25rem; min-height: 44px; text-align: left; }
+
+/* Live native statuses placed on this unit by another squad member (D-339). */
+.native-kit-slot { display: contents; }
+.native-markers { display: flex; flex-wrap: wrap; gap: 4px; min-width: 0; grid-column: 1 / -1; }
+.native-markers:empty { display: none; }
+html body .battle-screen #battle-root .native-markers .battle-status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 6px; white-space: normal; overflow-wrap: anywhere; text-align: left; color: #f4f4f5; }
+html body .battle-screen #battle-root .native-markers .status-icon { width: 22px; height: 22px; flex: none; }

@@ -62,7 +62,7 @@ function characterArchive(account: Account | null): string {
         <dl class="archive-stats"><div><dt>Health</dt><dd>${formatStat(kit.stats.health)}</dd></div>
           <div><dt>Attack</dt><dd>${formatStat(kit.stats.damage)}</dd></div><div><dt>Defense</dt><dd>${formatStat(kit.stats.defense)}</dd></div></dl>
         <h3>${current ? 'Current combat kit' : 'Form combat-kit preview'}</h3><p><strong>${kit.passive.name} · Passive</strong><br>${readableEffect(kit.passive.description)}</p>${kitResource(kit, starter.id)}
-          ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => `<p><strong>${kit.abilities[action].name}</strong>${abilityStatuses(kit.abilities[action].strength)}<br>${readableEffect(kit.abilities[action].description)}</p>`).join('')}`, 'Combat kit')}
+          ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => `<p><strong>${kit.abilities[action].name}</strong>${abilityStatuses(kit.abilities[action].strength, starter.id, action)}<br>${readableEffect(kit.abilities[action].description)}</p>`).join('')}`, 'Combat kit')}
       </article>`;
       });
     }).join('')}${capturedForms.map((creature) => {

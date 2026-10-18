@@ -41,6 +41,7 @@ import { applyBattleSpeed, battleSpeeds, loadBattleSpeed, parseBattleSpeed, save
 import { celebrateUpgrade } from './presentation/upgrade-celebration';
 import { presentUpgrade } from './presentation/upgrade-result';
 import { activityTransitionPending, transitionActivity } from './presentation/activity-transition';
+import { checkForUpdate } from './presentation/update-check';
 import { bindArtworkLoading } from './presentation/artwork-loading';
 import { createBackdrop } from './presentation/backdrop';
 import { applyMotion, loadMotion, saveMotion, reducedMotion, type MotionPreference } from './presentation/settings';
@@ -364,7 +365,15 @@ function menuSnapshot(): MenuSnapshot {
   };
 }
 
+const updateBlocked = (): boolean => (journey.screen === 'menu' && menuPage === 'battle') || Boolean(app.querySelector('#battle-root'));
+function checkUpdates(force = false): void {
+  void checkForUpdate({ blocked: updateBlocked, force });
+}
+window.setInterval(() => checkUpdates(), 5 * 60_000);
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkUpdates(); });
+
 function visitMenu(page: MenuPage): void {
+  checkUpdates();
   const destination = sanctuaryDestination(page);
   menuHistory.visit(menuSnapshot(), destination);
   if (destination === 'team') characterCategory = 'bearers';
@@ -406,6 +415,7 @@ async function backMenu(): Promise<void> {
     inventoryFilterState = { ...previous.inventoryFilters };
     history.replaceState(null, '', `${location.pathname}${location.search}${previous.hash}`);
     renderMenu();
+    checkUpdates(true);
     if (previous.summonRateStars !== undefined) {
       const filter = app.querySelector<HTMLButtonElement>(`[data-rate-stars="${previous.summonRateStars}"]`);
       if (!filter) throw new Error('Saved banner rate filter is unavailable.');
@@ -546,6 +556,7 @@ async function enter(): Promise<void> {
 }
 
 function renderTitle(): void {
+  checkUpdates();
   frame('<div id="react-title"></div>');
   mountTitle(app.querySelector<HTMLElement>('#react-title')!, {
     onOffline: enter,
@@ -634,6 +645,7 @@ function renderPlayerInfo(): void {
 }
 
 function renderSelection(): void {
+  checkUpdates();
   frame('<div id="react-starter-selection"></div>');
   mountStarterSelection(app.querySelector<HTMLElement>('#react-starter-selection')!, {
     initialSelected: journey.selected ?? undefined,

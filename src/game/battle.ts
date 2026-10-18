@@ -35,7 +35,7 @@ import { initializeConduits, equipped, gear, value, effectiveDefense, nativeTarg
   conduitDeaths, forcedConduitTarget, conduitSuppressSkill, expireNativeShields, type ConduitRuntimeState, type ConduitActivation } from './conduit-runtime';
 import { calamiticActionReason, calamiticShieldBypass, settleCalamiticDebt } from './calamitic-conduits';
 import { hasNativeIdentity, nativeAction, nativeAfterAction, nativePrimaryHit, nativeInstructionDamage, nativeCleanup,
-  nativeBurnPhase, nativeEnemyCompleted, nativePhaseEnd, nativeTurnStart, type NativeKitState, type NativeDamageKind } from './native-kits';
+  nativeBurnPhase, nativeEnemyCompleted, nativePhaseEnd, nativeTurnStart, attachNativeView, type NativeView, type NativeKitState, type NativeDamageKind } from './native-kits';
 
 export interface Combatant {
   id: string;
@@ -144,6 +144,7 @@ export interface BattleEvent {
   storyBonus?: { fractalis: number; lycalis: number };
   conduitUpgrades?: ConduitUpgrades;
   elementalEffect?: ElementalEffectTag;
+  nativeView?: NativeView;
 }
 export interface BattleDebuffSnapshot {
   burn?: { damage: number; turns: number };
@@ -733,6 +734,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   finishConduitAction(state, actor, activation, events);
   conduitDeaths(state, previous, events);
   checkOutcome(state);
+  attachNativeView(state, events[events.length - 1]);
   awardDefeats(previous, state, events);
   return { state, events };
 }
@@ -754,6 +756,7 @@ function newTurn(state: BattleState, events: BattleEvent[]): void {
     } else healTeam(state, ally, ally.kit.passive.healFraction, events, true);
   }
   events.push({ kind: 'turn', source: '', target: '', amount: state.round, critical: false, message: `Turn ${state.round}. Only Last Flare forces next-turn recovery.` });
+  attachNativeView(state, events[events.length - 1]);
 }
 
 export function endTurn(previous: BattleState): BattleResult {
@@ -830,11 +833,13 @@ export function endTurn(previous: BattleState): BattleResult {
         enemy.weakened > 0 ? `${enemy.name}'s Weaken has ${enemy.weakened} enemy phase remaining.` : `${enemy.name}'s Weaken expires.`);
     }
     conduitDeaths(state, previous, events);
+    attachNativeView(state, events[events.length - 1]);
   }
   nativePhaseEnd(state, events);
   expireNativeShields(state, events);
   conduitDeaths(state, previous, events);
   checkOutcome(state);
+  attachNativeView(state, events[events.length - 1]);
   if (state.phase === 'player') newTurn(state, events);
   awardDefeats(previous, state, events);
   return { state, events };

@@ -170,7 +170,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
       description: 'Each enemy can hold one [Thorn Trap] from [Thornia], with up to three charges. When that enemy finishes an action that deals direct damage to any ally, one charge is spent for a strike of 60% of [Thornia]’s Attack that cannot critically hit. This happens once per enemy action, however many allies it hits. Damage absorbed by shields still counts; actions that deal no damage do not.',
     },
     abilities: {
-      skill1: ability('Gilded Thorn Guard', 'Place a [Thorn Trap] with three charges on the selected enemy for three enemy phases. Recasting resets it to three charges and never adds more. An [Empowered Thorn Trap] is not replaced.'),
+      skill1: ability('Gilded Thorn Guard', 'Place a [Thorn Trap] with three charges on the selected enemy for three enemy phases. Recasting resets it to three charges and three enemy phases and never adds more. Recasting on an [Empowered Thorn Trap] keeps it empowered.'),
       skill2: ability('Shadow Rose Cleave', '170% direct damage to one enemy. If it has a [Thorn Trap], spend one charge for an extra strike of 80% of [Thornia]’s Attack that cannot critically hit.', 1.7),
       ultimate: ability('Last Flare: Thousand-Rose Dominion', '140% direct damage to all enemies, then place an [Empowered Thorn Trap] with three charges on each survivor for three enemy phases. Its strikes deal 90% of [Thornia]’s Attack and cannot critically hit.', 1.4, 'all-enemies'),
     },
@@ -197,7 +197,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     },
     abilities: {
       skill1: ability('Meridian Break', '180% direct damage to the enemy holding [Survey], or the selected enemy if none does. Spends 1 [Survey] point, if any, to ignore 25% of the target’s Defense.', 1.8),
-      skill2: ability('Fold the Sea', 'Move [Survey] and all its points to the selected living enemy, then deal 130% direct damage to all enemies.', 1.3, 'all-enemies'),
+      skill2: ability('Fold the Sea', 'If an enemy holds [Survey], move it and all its points to the selected living enemy. Then deal 130% direct damage to all enemies.', 1.3, 'all-enemies'),
       ultimate: ability('Ocean Beyond the Map', '280% direct damage to the enemy holding [Survey], or the selected enemy if none does. Uses up all [Survey] points; each ignores 15% of the target’s Defense.', 2.8),
     },
   },

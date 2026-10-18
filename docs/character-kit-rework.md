@@ -383,3 +383,13 @@ editor diagnostics clear and whitespace check passes. Icon regeneration suite:
 Browser runtime-module/readout probes confirm six personal0/3 counters, exact
 Atmoso0/1/2/0 and Elise0/0/1/1 sequences and accurate resolved Skill1 descriptions,
 with stored data unchanged. This is not a claim of mobile visual acceptance.
+
+## Native status display (D-339)
+
+Native statuses appear on the unit they affect, not only on the owner: Seed,
+Empowered Seed, Cover, Foundation and Instruction on allies; Thorn Trap, Seal,
+lodged Shuriken, Survey and Quarry on enemies. Each badge names the owner and
+current value/expiry and refreshes after every action, so a status applied by
+the last actor of a turn is visible immediately. Ability menus show each kit's
+native statuses beside the passive/skill that applies or spends them
+(`nativeAbilityStatuses` in `presentation/ability-status.ts`).

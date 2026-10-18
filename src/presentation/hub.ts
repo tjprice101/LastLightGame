@@ -163,7 +163,7 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
 
 function ability(starter: Starter, action: 'skill1' | 'skill2' | 'ultimate', progress?: CharacterProgress, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): string {
   const content = resolveFighter(starter.id, progress, equipment, upgrades).abilities[action];
-  return `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, action)}<span>${content.name}</span></h3>${abilityStatuses(content.strength)}<p>${readableEffect(content.description)}</p>
+  return `<article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, action)}<span>${content.name}</span></h3>${abilityStatuses(content.strength, starter.id, action)}<p>${readableEffect(content.description)}</p>
     <p class="hub-cost">Costs ${shatterGauge.costs[action]} Shatter Gauge${content.cooldown ? ` · ${content.cooldown}-turn cooldown` : ''}.</p></article>`;
 }
 

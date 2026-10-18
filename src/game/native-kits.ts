@@ -40,7 +40,18 @@ export const hasNativeIdentity = (unit: Combatant): boolean => !unit.captured &&
 export const nativeMemory = (unit: Combatant): NativeKitState => unit.native ??= {};
 
 function status(events: BattleEvent[], owner: Combatant, target: Combatant, message: string, amount = 0): void {
-  events.push({ kind: 'status', source: owner.id, target: target.id, amount, critical: false, origin: 'native', message });
+  events.push({ kind: 'status', source: owner.id, target: target.id, amount, critical: false, origin: 'native', message,
+    ...(target.side === 'enemy' ? { debuffs: debuffSnapshot(target) } : {}) });
+}
+
+/** Snapshot of every ally's native kit memory, attached to an event so battle playback can show statuses as they change. */
+export interface NativeView { round: number; units: Record<string, NativeKitState> }
+
+export function attachNativeView(state: BattleState, event: BattleEvent | undefined): void {
+  if (!event || !state.allies.some(hasNativeIdentity)) return;
+  const units: Record<string, NativeKitState> = {};
+  for (const ally of state.allies) if (ally.native) units[ally.id] = structuredClone(ally.native);
+  event.nativeView = { round: state.round, units };
 }
 
 function fixed(state: BattleState, owner: Combatant, target: Combatant, power: number, kind: NativeDamageKind, events: BattleEvent[], bypass = false): void {
@@ -568,6 +579,56 @@ export interface NativeReadoutRow {
   icons?: readonly StatusArtId[];
   /** Description is static rule text (kept in the Battle menu reference, omitted from field cards). */
   rule?: boolean;
+}
+
+export interface NativeMarker { id: string; owner: string; label: string; value: string; icon: StatusArtId }
+
+/** Native effects that another squad member's kit has placed on this unit (Seeds, Cover, Traps, Seals, lodged blades, ...). */
+export function nativeMarkers(state: BattleState, unit: Combatant): NativeMarker[] {
+  if (unit.hp <= 0) return [];
+  const markers: NativeMarker[] = [];
+  const name = (id: string) => state.enemies.find(enemy => enemy.id === id)?.name ?? state.allies.find(ally => ally.id === id)?.name ?? id;
+  if (unit.side === 'ally' && unit.native?.instruction && !hasNativeIdentity(unit)) {
+    const kind = unit.native.instruction.kind;
+    markers.push({ id: 'instruction', owner: unit.native.instruction.owner, label: `${kind[0].toUpperCase()}${kind.slice(1)} Instruction`,
+      value: `next action · ${name(unit.native.instruction.owner)}`, icon: `native-disciple-${kind}` });
+  }
+  for (const owner of living(state).filter(hasNativeIdentity)) {
+    if (owner.id === unit.id) continue;
+    const memory = owner.native ?? {};
+    if (unit.side === 'ally') {
+      const seed = memory.seeds?.[unit.id];
+      if (seed) {
+        const empowered = seed.fraction >= nativeBalance.flora.empoweredSeed;
+        markers.push({ id: 'seed', owner: owner.id, label: empowered ? 'Empowered Seed' : 'Seed',
+          value: `heals ${Math.round(seed.fraction * 100)}% max HP on player turn ${seed.dueRound}`,
+          icon: empowered ? 'native-flora-empowered-seed' : 'native-flora-seed' });
+      }
+      if (memory.cover && memory.cover.throughPhase >= state.round && memory.cover.targets.includes(unit.id))
+        markers.push({ id: 'cover', owner: owner.id, label: 'Cover', value: `${owner.name} takes ${Math.round(memory.cover.fraction * 100)}% of direct hits · through enemy phase ${memory.cover.throughPhase}`, icon: 'native-bruno-cover' });
+      if (memory.foundation && memory.foundation.throughPhase >= state.round)
+        markers.push({ id: 'foundation', owner: owner.id, label: 'Foundation', value: `${Math.ceil(memory.foundation.durability)} durability · ${owner.name}`, icon: 'native-orvella-foundation' });
+    } else {
+      const trap = memory.traps?.[unit.id];
+      if (trap && trap.charges > 0) {
+        const empowered = trap.coefficient >= .9;
+        markers.push({ id: 'trap', owner: owner.id, label: empowered ? 'Empowered Thorn Trap' : 'Thorn Trap',
+          value: `${trap.charges} charge${trap.charges === 1 ? '' : 's'} · through enemy phase ${trap.throughPhase}`,
+          icon: empowered ? 'native-thornia-empowered-trap' : 'native-thornia-trap' });
+      }
+      const seal = memory.seals?.[unit.id];
+      if (seal) markers.push({ id: 'seal', owner: owner.id, label: 'Seal',
+        value: `next special -${Math.round(seal.fraction * 100)}% · through enemy phase ${seal.throughPhase}`, icon: 'native-aurora-seal' });
+      const lodged = (memory.blades ?? []).filter(id => id === unit.id).length;
+      if (lodged) markers.push({ id: 'blade', owner: owner.id, label: lodged === 2 ? 'Lodged Blades' : 'Lodged Blade',
+        value: `${lodged} · ${owner.name}`, icon: 'native-elise-lodged-blade' });
+      if (memory.survey?.target === unit.id) markers.push({ id: 'survey', owner: owner.id, label: 'Survey',
+        value: `${memory.survey.points} point${memory.survey.points === 1 ? '' : 's'} · ${owner.name}`, icon: 'native-nerithe-survey' });
+      if (memory.quarry?.target === unit.id) markers.push({ id: 'quarry', owner: owner.id, label: 'Quarry',
+        value: `${memory.quarry.round === state.round ? memory.quarry.contributors.length : 0} contributors this turn · ${owner.name}`, icon: 'native-rosetta-quarry' });
+    }
+  }
+  return markers;
 }
 
 export function nativeReadout(state: BattleState, unit: Combatant): NativeReadoutRow[] {

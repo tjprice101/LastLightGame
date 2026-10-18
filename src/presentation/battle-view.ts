@@ -53,7 +53,8 @@ import { buffSnapshot, type BattleBuffSnapshot } from '../game/battle-buffs';
 import { allyBuffs } from './ally-buffs';
 import { BattleVFXRunner } from '../vfx/battle-vfx-runner';
 import { conduitRestartNotice, restartHistoricalConduitSession } from './conduit-compatibility';
-import { createAllyTargetPicker, nativeActionHint, nativeIdentityReference, needsAllyTarget } from './native-kit-presentation';
+import { createAllyTargetPicker, nativeActionHint, nativeIdentityReference, nativeMarkerReadout, nativeStateReadout, needsAllyTarget } from './native-kit-presentation';
+import type { NativeView } from '../game/native-kits';
 import { bracketReferences } from './reference-text';
 import { readableEffect } from './effect-copy';
 
@@ -630,6 +631,24 @@ export class BattleView {
     } else if (entry.kind === 'status' && target && entry.buffs) {
       this.updateBuffs(target, entry);
     }
+    if (entry.nativeView) this.updateNative(entry.nativeView);
+  }
+
+  /** Patches native kit rows and placed-status badges from the event's snapshot so Seeds, Traps, Seals, etc. appear when applied. */
+  private updateNative(view: NativeView): void {
+    const base = this.session.state;
+    const hp = (unit: Combatant) => this.displayedHealth.get(unit.id) ?? unit.hp;
+    const state: BattleState = { ...base, round: view.round,
+      allies: base.allies.map(unit => ({ ...unit, hp: hp(unit), native: view.units[unit.id] })),
+      enemies: base.enemies.map(unit => ({ ...unit, hp: hp(unit) })) };
+    for (const unit of [...state.allies, ...state.enemies]) {
+      const card = this.host.querySelector(`[data-unit="${unit.id}"]`);
+      if (!card) continue;
+      const slot = card.querySelector('.native-kit-slot');
+      if (slot) slot.innerHTML = nativeStateReadout(state, unit, true);
+      const markers = card.querySelector('.native-markers');
+      if (markers) markers.outerHTML = nativeMarkerReadout(state, unit);
+    }
   }
 
   private updateBuffs(target: Element, entry: BattleEvent, alive = true): void {
@@ -730,7 +749,7 @@ export class BattleView {
       <section class="enemy-skill-guide"><h3>Enemy skills and timing</h3>${state.enemies.map((enemy) => `<p><strong>${enemy.name} · Lv.${enemy.level}${enemy.boss ? ' · Boss' : ''}</strong></p><ul>${(enemy.enemySkills ?? []).map((skill) =>
         `<li>${skill.name}${skill.action === 'ultimate' ? ' (Ultimate)' : ''}: ${formatStat(skill.multiplier * 100)}% Attack, every ${skill.every} turns${state.round % skill.every === 0 ? ' · Due this turn' : ''}.</li>`).join('')}</ul>`).join('')}
         <p class="quiet">One attack per enemy turn. The second skill takes priority on overlapping schedules; boss ultimates take highest priority. Normal attacks on other turns.</p></section>
-      ${actionIds.map((action) => `<p><strong>${action === 'light' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name}:</strong> ${action === 'light' ? '100% damage; +20 Shatter Gauge.' : `${abilityStatuses(kit.abilities[action].strength)}${readableEffect(kit.abilities[action].description)}`}</p>`).join('')}
+      ${actionIds.map((action) => `<p><strong>${action === 'light' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name}:</strong> ${action === 'light' ? '100% damage; +20 Shatter Gauge.' : `${abilityStatuses(kit.abilities[action].strength, actor.kit?.nativeIdentity && !actor.captured ? actor.definitionId : undefined, action)}${readableEffect(kit.abilities[action].description)}`}</p>`).join('')}
       <p class="quiet">Drag at least 32 pixels and release to execute. Return near the starting point to cancel.
         White glow and shimmer mean Last Flare is usable now. Reduced motion keeps a steady white glow.
         Battle menu provides accessible action buttons on touch and keyboard.
@@ -978,7 +997,7 @@ export class BattleView {
     const reason = actionUnavailable(state, actor, action);
     return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
       <span class="battle-action-heading">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, action) : ''}<strong>${name}</strong></span>
-      ${ability ? abilityStatuses(ability.strength) : ''}
+      ${ability ? abilityStatuses(ability.strength, actor.kit.nativeIdentity && !actor.captured ? actor.definitionId : undefined, action === 'light' ? undefined : action) : ''}
       ${nativeActionHint(state, actor, action, this.targetId) ? `<span class="battle-ally-target">${nativeActionHint(state, actor, action, this.targetId)}</span>` : ''}
       ${ability && actor.kit.nativeIdentity ? `<span>${readableEffect(ability.description)}</span>` : ''}
       ${action === 'light' ? `<span>Down or right-click · +${shatterGauge.gains[action]} Shatter Gauge</span>` : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'}</span>`}
