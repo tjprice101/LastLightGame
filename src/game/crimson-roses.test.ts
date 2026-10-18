@@ -438,8 +438,8 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     const raw = store.saved.getItem(ACCOUNT_KEY);
     expect(() => upgradeCharacter(store.saved, 'thornia', 'evolve', { level: 60, evolution: 3 }, [copy.instanceId])).toThrow('Locked');
     expect(store.saved.getItem(ACCOUNT_KEY)).toBe(raw);
-    expect(characterHub(getStarter('thornia'), 'upgrade-0', account)).toContain('from Passion of Crimson Roses');
-    expect(characterHub(getStarter('thornia'), 'upgrade-0', account)).not.toContain('from Delve into the Abyss');
+    expect(characterHub(getStarter('thornia'), 'upgrade-0', account)).toContain('from [Passion of Crimson Roses]');
+    expect(characterHub(getStarter('thornia'), 'upgrade-0', account)).not.toContain('from [Delve into the Abyss]');
   });
 
   it.each(roseCharacters)('runs every$name action with exact Gauge costs, targeting and bounded effects', (character) => {

@@ -1810,15 +1810,15 @@ app.addEventListener('click', async (event) => {
     const starter = getStarter(selectedCharacter ?? journey.profile.starterId);
     const expected = ownedProgress(account, starter.id);
     const cost = kind === 'level' ? characterLevelCost(starter.id, expected) : characterEvolutionCost(starter.id, expected);
-    const materials = Object.entries(cost.materials).map(([id, amount]) => `${amount} ${materialName(id)}`).join(', ');
+    const materials = Object.entries(cost.materials).map(([id, amount]) => `${amount} [${materialName(id)}]`).join(', ');
     const fodderIds = Array.from(app.querySelectorAll<HTMLInputElement>('[data-evolution-fodder]:checked')).map((input) => input.dataset.evolutionFodder ?? '');
     const options = fodderIds.length ? evolutionFodderOptions(account, starter.elementId, expected.evolution, starter.id) : [];
     const consumed = fodderIds.map((id) => {
       const option = options.find((entry) => entry.copy.instanceId === id);
       if (!option) throw new Error('Selected captured Elemental-Devourer is missing.');
-      return `${option.creature.name} · Copy ${option.index} · Lv.${option.copy.level ?? capturedProgress(option.copy).level} · Form ${option.form}`;
+      return `[${option.creature.name}] · Lv.${option.copy.level ?? capturedProgress(option.copy).level}`;
     });
-    if (!await gameConfirm(`${kind === 'level' ? 'Level up' : 'Evolve'} ${characterName(starter.id, expected.evolution)} for ${cost.fractalis} Prismatica and ${materials}?${consumed.length ? `\n\nPermanently consume these captured Elemental-Devourers:\n${consumed.join('\n')}\n\nThis cannot be undone.` : ''}`, { title: kind === 'level' ? 'Level up' : 'Evolution', confirmLabel: kind === 'level' ? 'Level up' : 'Evolve', danger: consumed.length > 0 })) return;
+    if (!await gameConfirm(`${kind === 'level' ? 'Level up' : 'Evolve'} [${characterName(starter.id, expected.evolution)}] for ${cost.fractalis} [Prismatica] and ${materials}?${consumed.length ? `\n\nThese Elemental-Devourers will be permanently consumed:\n${consumed.join('\n')}\n\nThis cannot be undone.` : ''}`, { title: kind === 'level' ? 'Level up' : 'Evolution', confirmLabel: kind === 'level' ? 'Level up' : 'Evolve', danger: consumed.length > 0 })) return;
     const currency = app.querySelector('#fractalis-balance');
     const premium = app.querySelector('#lycalis-balance');
     if (!currency || !premium) throw new Error('Currency display is missing.');

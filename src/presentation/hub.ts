@@ -17,6 +17,7 @@ import { inventoryView, type InventoryTab, type InventorySections, type Inventor
 import { conduits, conduitEquipReason, conduitSlotCount, conduitEffect, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
 import { conduitIcon } from './conduit-store';
 import { capturedProgress, resolveCapturedFighter, type CapturedCharacter } from '../game/character-instances';
+import { creatures } from '../content/creatures';
 import { capturedRating } from './owned-companion';
 import { information } from './information';
 import { getSummonBanner } from '../content/summon-banners';
@@ -230,18 +231,21 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
   const count = requirement?.creatureCount ?? 0;
   const modeName = requirement?.infusion === 'roses' ? 'Passion of Crimson Roses' : element.infusion === 'heavens' ? 'Soar to Heaven' : 'Delve into the Abyss';
   const eligibleCount = options.filter((entry) => entry.eligible).length;
+  const missing = count - eligibleCount;
+  const accepted = requirement?.infusion ? acceptedFodderNames(requirement.infusion, requirement.minimumCreatureForm ?? 1) : '';
+  const shown = options.filter((entry) => entry.creature.mode === requirement?.infusion);
   const expandedSelection = organized && count > 0;
-  const selection = count ? `<fieldset class="evolution-fodder" data-selection-state="incomplete" style="--element:${starter.color}"><legend>Captured Elemental-Devourers · Select ${count}</legend>
-    <p>Select ${count} distinct form ${requirement?.minimumCreatureForm}+ Elemental-Devourers from ${modeName}.</p>
-    <div class="evolution-fodder-progress"><meter data-fodder-progress min="0" max="${count}" value="0" aria-label="Selected evolution materials"></meter>
-    <p data-fodder-status data-eligible-count="${eligibleCount}" role="status">0 / ${count} selected · ${eligibleCount} eligible</p></div>
-    <p class="evolution-fodder-warning">Selected copies are permanently consumed only after you confirm evolution.</p>
-    ${eligibleCount < count ? `<p class="evolution-fodder-empty">You need ${count - eligibleCount} more eligible ${count - eligibleCount === 1 ? 'copy' : 'copies'}. Capture form ${requirement?.minimumCreatureForm}+ from ${modeName}; protected copies must be unlocked, removed from your squad and unequipped first.</p>` : ''}
-    <div class="evolution-fodder-list">${options.length ? [...options].sort((a, b) => Number(b.eligible) - Number(a.eligible)).map(({ copy, index, creature, form, reasons, eligible }) =>
+  const selection = count ? `<fieldset class="evolution-fodder" data-selection-state="incomplete" style="--element:${starter.color}"><legend>Elemental-Devourers to consume · Choose ${count}</legend>
+    <p>Choose ${count} captured ${count === 1 ? 'Elemental-Devourer' : 'Elemental-Devourers'} from [${modeName}]: ${accepted}.</p>
+    <div class="evolution-fodder-progress"><meter data-fodder-progress min="0" max="${count}" value="0" aria-label="Chosen Elemental-Devourers"></meter>
+    <p data-fodder-status data-eligible-count="${eligibleCount}" role="status">0 / ${count} chosen · ${eligibleCount} available</p></div>
+    <p class="evolution-fodder-warning">Chosen Elemental-Devourers are permanently consumed when you confirm the evolution.</p>
+    ${missing > 0 ? `<p class="evolution-fodder-empty">You need ${missing} more. Capture ${missing === 1 ? 'one' : 'them'} in [${modeName}]. Locked, squad and Conduit-equipped Elemental-Devourers can't be used until they are unlocked, removed from your squad and have their Conduits unequipped.</p>` : ''}
+    <div class="evolution-fodder-list">${shown.length ? [...shown].sort((a, b) => Number(b.eligible) - Number(a.eligible)).map(({ copy, creature, reasons, eligible }) =>
       `<label class="evolution-fodder-copy"><input type="checkbox" data-evolution-fodder="${copy.instanceId}" ${!eligible ? 'disabled' : ''}>
       ${creature.art ? `<img draggable="false" src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="96" height="96">` : ''}
-      <span class="evolution-fodder-info"><strong>${creature.name} · Copy ${index}</strong><small>Lv.${capturedProgress(copy).level} · Form ${form}</small>${capturedRating(creature.id)}<small class="evolution-fodder-reason">${eligible ? 'Eligible for consumption' : reasons.join(', ')}</small>
-      <span class="evolution-fodder-state">${eligible ? '<span class="fodder-unselected">Select copy</span><span class="fodder-selected">Selected</span>' : 'Unavailable'}</span></span></label>`).join('') : '<p>No captured Elemental-Devourers owned yet.</p>'}</div>
+      <span class="evolution-fodder-info"><strong>${creature.name}</strong><small>Lv.${capturedProgress(copy).level}</small>${capturedRating(creature.id)}<small class="evolution-fodder-reason">${eligible ? 'Available' : reasons.join(' · ')}</small>
+      <span class="evolution-fodder-state">${eligible ? '<span class="fodder-unselected">Choose</span><span class="fodder-selected">Chosen</span>' : 'Unavailable'}</span></span></label>`).join('') : `<p>No Elemental-Devourers from [${modeName}] captured yet.</p>`}</div>
     </fieldset>` : '';
   if (compact) return `<p class="ref-growth-summary">${evolve ? `Evo.${current.evolution} → ${next.evolution} · Level cap ${characterLevelCap(next.evolution)}` : `Lv.${current.level} → ${next.level} · Cap ${cap}`}</p>
     <p class="ref-growth-cost">${currencyIcon('fractalis')}${cost.fractalis} Prismatica</p>
@@ -275,7 +279,14 @@ export function updateEvolutionSelection(host: HTMLElement): void {
   button.disabled = button.dataset.upgradeBlocked === 'true' || selected !== required;
   progress.value = Math.min(selected, required);
   fieldset.dataset.selectionState = selected > required ? 'excess' : selected === required ? 'complete' : 'incomplete';
-  status.textContent = `${selected} / ${required} selected · ${status.dataset.eligibleCount} eligible${selected > required ? ' · Select fewer Elemental-Devourers' : selected === required ? ' · Selection ready' : ''}`;
+  status.textContent = `${selected} / ${required} chosen · ${status.dataset.eligibleCount} available${selected > required ? ' · Choose fewer Elemental-Devourers' : selected === required ? ' · Ready to evolve' : ''}`;
+}
+
+function acceptedFodderNames(mode: string, minimumForm: number): string {
+  const names = [1, 2, 3, 4, 5, 6].filter((form) => form >= minimumForm)
+    .map((form) => creatures.find((creature) => creature.id === `infusion:${mode}:${form - 1}`)?.name)
+    .filter((name): name is string => !!name).map((name) => `[${name}]`);
+  return names.length > 1 ? `${names.slice(0, -1).join(', ')} or ${names.at(-1)}` : names[0] ?? '';
 }
 
 export function characterInformation(): string {

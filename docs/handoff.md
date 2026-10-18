@@ -1,5 +1,12 @@
 # Current state and handoff
 
+## Evolution fodder picker wording (D-344)
+
+- `presentation/hub.ts` evolution panel lists only captures from the required
+  activity by name (no Copy/Form ids) and names accepted forms as [Name];
+  reasons/errors in `game/account.ts` and the `main.ts` confirm use [Name]. Server
+  bundle regenerated and redeployed.
+
 ## Story replay clear pays Prismatica only (D-343)
 
 - `storyClearReward(firstClear)` in `content/story.ts`: first clear 150 Prismatica

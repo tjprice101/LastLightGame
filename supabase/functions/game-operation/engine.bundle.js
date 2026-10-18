@@ -8008,8 +8008,8 @@ function evolutionFodderOptions(account, element, evolution, character) {
     const protection = characterProtection(account, copy.instanceId);
     const reasons = [];
     if (!requirement.requiresInfusableEnemies) reasons.push("No Elemental-Devourers required for this evolution");
-    if (creature.mode !== requirement.infusion) reasons.push("Wrong infusion mode");
-    if (form < (requirement.minimumCreatureForm ?? 1)) reasons.push(`Requires form ${requirement.minimumCreatureForm} or higher`);
+    if (creature.mode !== requirement.infusion) reasons.push("From a different activity");
+    if (form < (requirement.minimumCreatureForm ?? 1)) reasons.push("Needs a later form");
     if (protection.locked) reasons.push("Locked");
     if (protection.inSquad) reasons.push("In squad");
     if (account.conduitEquipment?.[copy.instanceId]?.some((id) => id !== null)) reasons.push("Conduits equipped");
@@ -8316,7 +8316,7 @@ function upgradeCharacter(storage, id, kind, expected, fodderIds = []) {
     for (const id2 of fodderIds) {
       const option = options.find((entry) => entry.copy.instanceId === id2);
       if (!option) throw new Error("Selected captured Elemental-Devourer is no longer owned.");
-      if (!option.eligible) throw new Error(`Cannot consume ${option.creature.name} \xB7 Copy ${option.index}: ${option.reasons.join(", ")}.`);
+      if (!option.eligible) throw new Error(`Cannot consume ${option.creature.name}: ${option.reasons.join(", ")}.`);
     }
   }
   if (account.fractalis < cost.fractalis) throw new Error("Not enough Prismatica.");

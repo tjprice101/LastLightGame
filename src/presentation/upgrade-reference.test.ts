@@ -74,13 +74,14 @@ describe('reference Team upgrade presentation', () => {
     const picker = host.querySelector<HTMLElement>('.evolution-fodder')!;
     expect(picker.parentElement?.classList.contains('ref-evolution-detail')).toBe(true);
     expect(picker.closest('.upgrade-payment')).toBeNull();
-    expect(host.querySelectorAll('[data-evolution-fodder]')).toHaveLength(4);
+    expect(host.querySelectorAll('[data-evolution-fodder]')).toHaveLength(3);
     const checkboxes = Array.from(host.querySelectorAll<HTMLInputElement>('[data-evolution-fodder]'));
     expect(checkboxes.map(input => input.dataset.evolutionFodder)).toEqual([
-      first.instanceId, second.instanceId, wrong.instanceId, locked.instanceId,
+      first.instanceId, second.instanceId, locked.instanceId,
     ]);
-    expect(checkboxes.map(input => input.disabled)).toEqual([false, false, true, true]);
-    expect(picker.textContent).toContain('Wrong infusion mode');
+    expect(checkboxes.map(input => input.disabled)).toEqual([false, false, true]);
+    expect(picker.textContent).not.toMatch(/Copy \d|Form \d/);
+    expect(picker.querySelector('p')?.textContent).toMatch(/^Choose 1 captured Elemental-Devourer from \[Passion of Crimson Roses\]: (\[[^\]]+\](, | or )?)+\.$/);
     expect(picker.textContent).toContain('Locked');
     expect(picker.textContent).toContain('permanently consumed');
     const button = host.querySelector<HTMLButtonElement>('[data-upgrade="evolve"]')!;
@@ -92,12 +93,12 @@ describe('reference Team upgrade presentation', () => {
     expect(button.disabled).toBe(false);
     expect(meter.value).toBe(1);
     expect(picker.dataset.selectionState).toBe('complete');
-    expect(host.querySelector('[data-fodder-status]')?.textContent).toBe('1 / 1 selected · 2 eligible · Selection ready');
+    expect(host.querySelector('[data-fodder-status]')?.textContent).toBe('1 / 1 chosen · 2 available · Ready to evolve');
     checkboxes[1].checked = true;
     updateEvolutionSelection(host);
     expect(button.disabled).toBe(true);
     expect(picker.dataset.selectionState).toBe('excess');
-    expect(host.querySelector('[data-fodder-status]')?.textContent).toContain('Select fewer');
+    expect(host.querySelector('[data-fodder-status]')?.textContent).toContain('Choose fewer');
     checkboxes[1].checked = false;
     button.dataset.upgradeBlocked = 'true';
     updateEvolutionSelection(host);
@@ -116,10 +117,10 @@ describe('reference Team upgrade presentation', () => {
     account.capturedCharacters = [{ ...createCreatureCopy('infusion:roses:3'), locked: true }];
     const host = document.createElement('main');
     host.innerHTML = referenceTeam(account, { view: 'detail', selected: 'rosetta', tab: 'upgrade-0', element: '', sort: 'level' });
-    expect(host.querySelector('.evolution-fodder-empty')?.textContent).toContain('2 more eligible copies');
+    expect(host.querySelector('.evolution-fodder-empty')?.textContent).toContain('You need 2 more. Capture them in [Passion of Crimson Roses].');
     expect(host.querySelectorAll('[data-evolution-fodder]:disabled')).toHaveLength(1);
     expect(host.querySelector('.evolution-fodder-list')?.textContent).toContain('Locked');
-    expect(host.querySelector('[data-fodder-status]')?.textContent).toBe('0 / 2 selected · 0 eligible');
+    expect(host.querySelector('[data-fodder-status]')?.textContent).toBe('0 / 2 chosen · 0 available');
   });
   it.each(['infusion:heavens:0', 'infusion:abyss:3', 'infusion:treasury:2', 'infusion:sanctuary:0', 'infusion:roses:2'])('opens exact per-copy Quick Sell choices for %s without changing ownership', creatureId => {
     const account = emptyAccount();
