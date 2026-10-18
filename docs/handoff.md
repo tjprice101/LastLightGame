@@ -1,5 +1,16 @@
 # Current state and handoff
 
+## Detailed Loot stage previews (D-342)
+
+- `presentation/stage-loot.ts` builds per-stage loot from the live drop tables:
+  per-enemy drops, captures (20%, not Machines; Roses ≤Lv.120), War final
+  recruitment, Story stage-clear and first-clear bonus ("Already earned" when
+  cleared). `stageLootButton` sits beside every stage selector; `bindStageLoot`
+  (bound once in `main.ts`) opens one shared dialog for the selected stage.
+- The shared selection panel adds a drop-art strip to each stage option of
+  `[data-dungeon-stage]`, `[data-infusion-stage]` and `[data-war-stage]` selects.
+- Validate `npx vitest run src/presentation/stage-loot.test.ts`.
+
 ## Compressed art and quieter image loading (D-341)
 
 - All 705 runtime PNGs have committed AVIF siblings (q90 4:4:4) plus 384px

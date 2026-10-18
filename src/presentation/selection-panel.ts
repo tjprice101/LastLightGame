@@ -98,6 +98,12 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
             choice.append(art);
           }
           choice.append(text);
+          const lootSource = stageLootSourceOf(select);
+          if (lootSource) {
+            const stage = Number(option.value);
+            choice.classList.add('selection-option-with-loot');
+            choice.insertAdjacentHTML('beforeend', stageLootStrip(parseStageLootSource(lootSource), stage, currentStageLootAccount()));
+          }
           choice.disabled = option.disabled || (option.parentElement instanceof HTMLOptGroupElement && option.parentElement.disabled);
           choice.setAttribute('aria-pressed', String(option.selected));
           choice.addEventListener('click', () => {
@@ -158,3 +164,4 @@ import { isMasterConduitId } from '../content/master-conduits';
 import { masterConduitIcon } from './master-conduits';
 import { getStarter, isStarterId } from '../content/starters';
 import { portrait } from './portrait';
+import { currentStageLootAccount, parseStageLootSource, stageLootSourceOf, stageLootStrip } from './stage-loot';

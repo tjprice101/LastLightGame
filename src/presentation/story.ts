@@ -14,6 +14,7 @@ import { highestBearerLevel } from '../game/activity-access';
 import { storyPurpose } from '../content/world-lore';
 import { worldLore } from './world-lore';
 import { enemyStrength } from './enemy-strength';
+import { stageLootButton } from './stage-loot';
 
 const R = storyRules.regionStages;
 let selectedRegion: number | undefined;
@@ -27,7 +28,7 @@ function stageDetail(stage: number, completed: number, unlocked: number, highest
     ${enemyStrength(encounter)}
     <p>Highest owned Element-Bearer: Lv. ${highestLevel}</p>
     <p class="ref-story-kill-loot"><strong>Stage-clear reward (every clear):</strong> ${storyCompletionReward.fractalis} Prismatica · ${storyCompletionReward.lycalis} Null-Prismatica</p>
-    <p class="ref-story-kill-loot"><strong>Per-kill rewards:</strong> ${storyLoot(stage).map((drop) => `${drop.id === 'fractalis' ? 'Prismatica' : materialName(drop.id)} ${drop.minimum}–${drop.maximum} (${Math.round(drop.chance * 100)}%)`).join(' · ')}</p></div>
+    <p class="ref-story-kill-loot"><strong>Per-kill rewards:</strong> ${storyLoot(stage).map((drop) => `${drop.id === 'fractalis' ? 'Prismatica' : materialName(drop.id)} ${drop.minimum}–${drop.maximum} (${Math.round(drop.chance * 100)}%)`).join(' · ')}</p>${stageLootButton('story', stage)}</div>
     <button type="button" class="primary-button" data-story-enter="${stage}" ${stage > unlocked ? 'disabled' : ''}>${stage > unlocked ? 'Locked stage' : stage <= completed ? 'Replay stage' : 'Enter stage'} ${encounter.regionStage} &rarr;</button>`;
 }
 
