@@ -14,11 +14,6 @@
 .activity-difficulty-tabs [aria-selected="true"] { border-bottom: 3px solid currentColor; font-weight: 700; }
 .activity-difficulty [hidden] { display: none !important; }
 .activity-difficulty .calamity-section { margin-block: 0; }
-#app .ref-play .activity-group:has(.activity-card:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) { grid-template-columns: minmax(0, 1fr); gap: .5rem; }
-#app .ref-play .activity-group:has(.activity-card:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .activity-picker { grid-column: 1; grid-row: auto; flex-direction: row; flex-wrap: wrap; gap: .35rem; padding: 0; }
-#app .ref-play .activity-group:has(.activity-card:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .activity-picker::before { content: none; }
-#app .ref-play .activity-group:has(.activity-card:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .activity-picker button { flex: 1 1 100px; padding: .4rem .6rem; }
-#app .ref-play .activity-group:has(.activity-card:not([hidden]) [data-difficulty="calamity"][aria-selected="true"]) .activity-card { grid-column: 1; grid-row: auto; padding: .5rem; }
 .activity-difficulty:has([data-difficulty="calamity"][aria-selected="true"]) > .activity-difficulty-tabs { margin-bottom: .5rem; }
 .calamity-section { margin-block: 1.5rem; padding: .75rem; border: 1px solid #a94646; border-radius: 12px; background: #211b1b; color: #fff; min-width: 0; }
 #app .calamity-section .calamity-heading { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .5rem; }
