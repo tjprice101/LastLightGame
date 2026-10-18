@@ -1,6 +1,6 @@
 html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade {
-  height: 100%; min-height: 0; grid-template-columns: minmax(22rem, 1fr) minmax(0, 1.5fr);
-  grid-template-rows: auto minmax(0, 1fr); gap: .65rem;
+  height: auto; min-height: 0; grid-template-columns: minmax(22rem, 1fr) minmax(0, 1.5fr);
+  grid-template-rows: auto auto; align-items: start; gap: .65rem;
 }
 html body .sanctuary-shell .ref-conduit-upgrade :is(p, small) { line-height: 1.4; overflow-wrap: anywhere; }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-panel { padding: .8rem; gap: .65rem; overflow: visible; }
@@ -93,12 +93,14 @@ html body .sanctuary-shell .ref-conduit-upgrade .component-balance {
 .component-balance strong { display: block; font-size: 1.4rem; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 html body .sanctuary-shell .ref-conduit-upgrade .component-balance span { font-size: .8rem; }
 html body .sanctuary-shell .ref-conduit-upgrade .mechanical-component-icon { width: 44px; height: 44px; flex: 0 0 44px; object-fit: contain; }
-html body .sanctuary-shell .ref-conduit-upgrade .component-balance > .mechanical-component-icon { transform: scale(1.4); }
+html body .sanctuary-shell .ref-conduit-upgrade .component-balance > .mechanical-component-icon { width: 56px; height: 56px; flex: 0 0 56px; }
 html body .sanctuary-shell .ref-conduit-upgrade .conduit-upgrade-cost { grid-column: 1; font-size: .8rem; font-variant-numeric: tabular-nums; }
 .ref-upgrade-resources meter { grid-column: 1; width: 100%; height: .65rem; }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-resources footer {
-  grid-column: 2; grid-row: 1 / span 5; display: flex; flex-direction: column; justify-content: center; gap: .4rem; margin: 0;
+  grid-column: 2; grid-row: 1 / span 5; display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: .4rem; margin: 0;
 }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-resources footer .primary-button { width: 100%; margin: 0; }
+html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-resources footer :is(p, .ref-link) { text-align: center; align-self: center; }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-resources footer p { font-size: .8rem; }
 html body .sanctuary-shell .conduit-upgrade-menu.ref-conduit-upgrade .ref-market-tabs { grid-column: 1; grid-row: 1; }
 html body .sanctuary-shell .ref-conduit-upgrade .ref-upgrade-information { grid-column: 2; grid-row: 1; min-height: 44px; gap: 1rem; justify-content: flex-end; }
