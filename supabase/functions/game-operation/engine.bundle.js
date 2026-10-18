@@ -28,7 +28,7 @@ function migrateLegacyActivityStage(mode, stage) {
   return 1 + Math.ceil((stage - 1) * (current - 1) / (legacy - 1));
 }
 var warStageCount = 10;
-var storyStageLayout = { regionStages: 18, stages: 108, legacyRegionStages: 25, legacyStages: 150 };
+var storyStageLayout = { regionStages: 20, stages: 120, previousRegionStages: 18, previousStages: 108, legacyRegionStages: 25, legacyStages: 150 };
 var elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 38, maximumLevel: 120, maximumLevelStage: dungeonStageCount };
 var infusionModes = [
   { id: "heavens", name: "Soar to Heaven", energy: "Light", enemyTheme: "Dawnthorn Slime evolution line", stages: infusionModeStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },
@@ -4186,11 +4186,18 @@ var storyReplayReward = { fractalis: storyCompletionReward.fractalis, lycalis: 0
 function storyClearReward(firstClear) {
   return firstClear ? storyCompletionReward : storyReplayReward;
 }
+var storyRegionCount = storyStageLayout.stages / storyStageLayout.regionStages;
+function remapStoryCompleted(completed, regionStages) {
+  if (!Number.isSafeInteger(completed) || completed < 0 || completed > regionStages * storyRegionCount) throw new Error("Invalid saved Story progress.");
+  const region = Math.floor(completed / regionStages);
+  const within = completed % regionStages;
+  return region * storyRules.regionStages + Math.floor(within * storyRules.regionStages / regionStages);
+}
 function migrateLegacyStoryCompleted(completed) {
-  if (!Number.isSafeInteger(completed) || completed < 0 || completed > storyStageLayout.legacyStages) throw new Error("Invalid saved Story progress.");
-  const region = Math.floor(completed / storyStageLayout.legacyRegionStages);
-  const within = completed % storyStageLayout.legacyRegionStages;
-  return region * storyRules.regionStages + Math.floor(within * storyRules.regionStages / storyStageLayout.legacyRegionStages);
+  return remapStoryCompleted(completed, storyStageLayout.legacyRegionStages);
+}
+function migratePreviousStoryCompleted(completed) {
+  return remapStoryCompleted(completed, storyStageLayout.previousRegionStages);
 }
 var storyRegions = [
   {
@@ -4297,6 +4304,7 @@ function storyDrops(stage, random) {
     return amount === void 0 ? [] : [[drop.id, amount]];
   }));
 }
+var storyRulesText = `Six regions with ${storyRules.regionStages} stages each, at enemy levels 1-55. First clear of each stage pays 150 Prismatica and 2 Null-Prismatica; replays pay 150 Prismatica. Enemies drop Common and Uncommon materials that match their region. No captures. Each regional boss gives a first-clear bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and increasing 15% per region. Ordinary enemy Prismatica drops rise from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x the base Prismatica line (base 5-10 at Lv.1 to 113-226 at Lv.55) and 5x materials on every clear; first-clear bonuses do not multiply or repeat. Continue restores HP and keeps your Gauge.`;
 
 // src/content/calamity.ts
 var calamityActivities = [
@@ -7820,7 +7828,7 @@ function isExchangeQuantity(value2) {
 // src/game/account.ts
 var ACCOUNT_KEY = "last-light.wallet";
 function emptyAccount() {
-  return { version: 7, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 8, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value2) {
   return typeof value2 === "number" && Number.isSafeInteger(value2) && value2 >= 0;
@@ -7841,7 +7849,7 @@ function migrateLegacyDungeonStage(stage, version) {
   return unlocked;
 }
 function validateAccount(value2) {
-  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
+  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 && value2.version !== 8 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
     throw new Error("The local progression save is invalid or unsupported. It has not been overwritten.");
   }
   const account = emptyAccount();
@@ -7908,9 +7916,16 @@ function validateAccount(value2) {
   account.receipts = [...value2.receipts];
   if (value2.storyCompleted !== void 0) {
     if (!count(value2.storyCompleted)) throw new Error("Invalid saved Story progress.");
-    if (value2.version >= 6) {
+    if (value2.version >= 8) {
       if (value2.storyCompleted > storyRules.stages) throw new Error("Invalid saved Story progress.");
       account.storyCompleted = value2.storyCompleted;
+    } else if (value2.version >= 6) {
+      const previous = value2.storyCompleted;
+      account.storyCompleted = migratePreviousStoryCompleted(previous);
+      const credited = account.storyCompleted - previous;
+      account.fractalis += credited * storyCompletionReward.fractalis;
+      account.lycalis += credited * storyCompletionReward.lycalis;
+      if (!count(account.fractalis) || !count(account.lycalis)) throw new Error("Story completion grant exceeds the supported balance. The save has not been overwritten.");
     } else {
       const legacy = value2.storyCompleted;
       account.storyCompleted = migrateLegacyStoryCompleted(legacy);
@@ -9108,7 +9123,7 @@ var VirtualStorage = class {
 };
 function isLegacyStoryRun(game) {
   const version = game.account.version;
-  return typeof version === "number" && version < 7 && !!game.run;
+  return typeof version === "number" && version < 8 && !!game.run;
 }
 function storyCompletedOf(game) {
   return validateAccount(game.account).storyCompleted ?? 0;
