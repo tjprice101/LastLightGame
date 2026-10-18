@@ -680,8 +680,6 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
   for (const [id, pending] of Object.entries(memory.seeds ?? {})) add(pending.fraction >= nativeBalance.flora.empoweredSeed ? 'Empowered Seed' : 'Seed', `${pending.fraction * 100}%`,
     `${state.allies.find(ally => ally.id === id)?.name}: player turn ${pending.dueRound}.`,
     [pending.fraction >= nativeBalance.flora.empoweredSeed ? 'native-flora-empowered-seed' : 'native-flora-seed']);
-  for (const [id, burn] of Object.entries(memory.burns ?? {})) if (burn.turns > 0) add('Burn', `${Math.round(burn.damage)} × ${burn.turns}`,
-    '', ['burn']);
   for (const [id, trap] of Object.entries(memory.traps ?? {})) add(trap.coefficient >= .9 ? 'Empowered Thorn Trap' : 'Thorn Trap', `${trap.charges} charges`,
     `${state.enemies.find(enemy => enemy.id === id)?.name}; through phase ${trap.throughPhase}.`,
     [trap.coefficient >= .9 ? 'native-thornia-empowered-trap' : 'native-thornia-trap']);

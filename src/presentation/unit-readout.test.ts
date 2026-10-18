@@ -13,13 +13,13 @@ describe('field readouts', () => {
     state.allies[0].native = { burns: { [state.enemies[0].id]: { damage: 15, turns: 2 } } };
     state.allies[2].native = { seeds: { tide: { fraction: nativeBalance.flora.seed, dueRound: 2 } } };
     const fire = unitReadout(state.allies[0], true, state.allies, state.round, state);
-    expect(fire).toContain('15 × 2');
-    expect(fire).not.toContain(state.enemies[0].name);
+    expect(fire).not.toContain('15 × 2');
+    expect(fire).not.toContain('Burn');
     expect(unitReadout(state.allies[2], true, state.allies, state.round, state)).toContain('Seed');
     expect(fire).not.toContain('Infernic Embers 3 / 3');
     expect(unitReadout(state.allies[1], true, state.allies, state.round, state)).not.toContain('Oceanic Protection 2 / 3');
     expect(unitReadout(state.allies[0])).not.toContain('Conduit Ember Seals 1/3');
-    expect(fire.match(/native-kit-state/g)).toHaveLength(1);
+    expect(fire).not.toContain('native-kit-state');
     state.allies[2].hp = 0;
     expect(unitReadout(state.allies[2], true)).not.toContain('class="unit-kit-resource"');
     for (const unit of state.allies) {
