@@ -16,12 +16,20 @@ export function storyClearReward(firstClear: boolean): { fractalis: number; lyca
   return firstClear ? storyCompletionReward : storyReplayReward;
 }
 
-/** Maps a clear count saved on the old six-region 25-stage layout to the 18-stage layout. Partial regions round down. */
+const storyRegionCount = storyStageLayout.stages / storyStageLayout.regionStages;
+function remapStoryCompleted(completed: number, regionStages: number): number {
+  if (!Number.isSafeInteger(completed) || completed < 0 || completed > regionStages * storyRegionCount) throw new Error('Invalid saved Story progress.');
+  const region = Math.floor(completed / regionStages);
+  const within = completed % regionStages;
+  return region * storyRules.regionStages + Math.floor(within * storyRules.regionStages / regionStages);
+}
+/** Maps a clear count saved on the original six-region 25-stage layout (pre-v6) to the current layout. Partial regions round down. */
 export function migrateLegacyStoryCompleted(completed: number): number {
-  if (!Number.isSafeInteger(completed) || completed < 0 || completed > storyStageLayout.legacyStages) throw new Error('Invalid saved Story progress.');
-  const region = Math.floor(completed / storyStageLayout.legacyRegionStages);
-  const within = completed % storyStageLayout.legacyRegionStages;
-  return region * storyRules.regionStages + Math.floor(within * storyRules.regionStages / storyStageLayout.legacyRegionStages);
+  return remapStoryCompleted(completed, storyStageLayout.legacyRegionStages);
+}
+/** Maps a clear count saved on the 18-stage-region layout (v6-v7) to the current 20-stage layout; never loses a clear. */
+export function migratePreviousStoryCompleted(completed: number): number {
+  return remapStoryCompleted(completed, storyStageLayout.previousRegionStages);
 }
 export const storyRegions: readonly {
   element: ElementId; name: string; introduction: string; enemies: readonly string[]; boss: string; conclusion: string;
@@ -95,7 +103,7 @@ export function storyDrops(stage: number, random: () => number): Record<string, 
   }));
 }
 
-export const storyRulesText = `Six regions with 18 stages each, at enemy levels 1-55. First clear of each stage pays 150 Prismatica and 2 Null-Prismatica; replays pay 150 Prismatica. Enemies drop Common and Uncommon materials that match their region. No captures. Each regional boss gives a first-clear bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and increasing 15% per region. Ordinary enemy Prismatica drops rise from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x the base Prismatica line (base 5-10 at Lv.1 to 113-226 at Lv.55) and 5x materials on every clear; first-clear bonuses do not multiply or repeat. Continue restores HP and keeps your Gauge.`;
+export const storyRulesText = `Six regions with ${storyRules.regionStages} stages each, at enemy levels 1-55. First clear of each stage pays 150 Prismatica and 2 Null-Prismatica; replays pay 150 Prismatica. Enemies drop Common and Uncommon materials that match their region. No captures. Each regional boss gives a first-clear bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and increasing 15% per region. Ordinary enemy Prismatica drops rise from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x the base Prismatica line (base 5-10 at Lv.1 to 113-226 at Lv.55) and 5x materials on every clear; first-clear bonuses do not multiply or repeat. Continue restores HP and keeps your Gauge.`;
 
 export function storyLoot(stage: number) {
   const encounter = storyEncounter(stage);

@@ -412,20 +412,20 @@ describe('server authoritative game engine', () => {
     { kind: 'story', stage: 1 },
     { kind: 'infusion', mode: 'heavens', stage: 1 },
     { kind: 'infusion', mode: 'machines', stage: 1 },
-  ] as const)('discards any pre-v7 saved run for $kind on read without mutating input', activity => {
+  ] as const)('discards any pre-v8 saved run for $kind on read without mutating input', activity => {
     let game = op(freshGame('legacy-run'), { kind: 'bootstrap', starterId: 'ember' }).game;
     game.account.characters.ember = { level: 105, evolution: 6 };
     game.account.storyCompleted = storyRules.regionStages;
     game = op(game, { kind: 'enter', activity }).game;
     expect(game.run).not.toBeNull();
     const legacy = structuredClone(game);
-    legacy.account = { ...legacy.account, version: 6 } as unknown as typeof legacy.account;
+    legacy.account = { ...legacy.account, version: 7 } as unknown as typeof legacy.account;
     const before = structuredClone(legacy);
     const read = op(legacy, { kind: 'read' });
     expect(legacy).toEqual(before);
     expect(read.game.run).toBeNull();
     expect(read.response.session).toBeNull();
-    expect(read.response.account.version).toBe(7);
+    expect(read.response.account.version).toBe(8);
     expect(publicGame(legacy, 3).session).toBeNull();
   });
   it('discards a saved Story run from a pre-v6 account and converts its Story count', () => {
@@ -439,12 +439,12 @@ describe('server authoritative game engine', () => {
     expect(legacy).toEqual(before);
     expect(response.game.run).toBeNull();
     expect(response.response.session).toBeNull();
-    expect(response.response.account.version).toBe(7);
-    expect(response.response.account.storyCompleted).toBe(21);
-    expect(storyCompletedOf(legacy)).toBe(21);
+    expect(response.response.account.version).toBe(8);
+    expect(response.response.account.storyCompleted).toBe(24);
+    expect(storyCompletedOf(legacy)).toBe(24);
     expect(publicGame(legacy, 3).session).toBeNull();
     const training = op(legacy, { kind: 'enter', activity: { kind: 'training' } });
-    expect(training.game.account.storyCompleted).toBe(21);
+    expect(training.game.account.storyCompleted).toBe(24);
     const current = op(base, { kind: 'read' });
     expect(current.response.session).not.toBeNull();
   });

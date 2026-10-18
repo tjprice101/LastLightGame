@@ -43,7 +43,7 @@ describe('replacement reference screen structures', () => {
   });
   it('organizes Play into activity groups and Story into regions, stages, boss rewards and a shared entry footer', () => {
     const wallet = account();
-    wallet.storyCompleted = 26;
+    wallet.storyCompleted = storyRules.regionStages + 8;
     const before = structuredClone(wallet);
     const html = gameplayHub(wallet);
     for (const label of ['Story', 'Practice', 'Progression', 'Earn currency', 'Events']) {
@@ -61,7 +61,7 @@ describe('replacement reference screen structures', () => {
     expect(html.match(/class="ref-story-stages"/g)).toHaveLength(6);
     expect(html.match(/class="story-boss-preview"/g)).toHaveLength(6);
     expect(html.match(/class="ref-story-entry" data-story-detail=/g)).toHaveLength(6);
-    expect(html).toContain('data-story-enter="27" >Enter stage 9');
+    expect(html).toContain(`data-story-enter="${storyRules.regionStages + 9}" >Enter stage 9`);
     expect(html).toContain('Deepbell Leviathan');
     expect(html).toContain('1,150');
     expect(html).toContain('Per-kill rewards:');
@@ -131,7 +131,7 @@ describe('replacement reference screen structures', () => {
     expect(wallet).toEqual(before);
   });
 
-  it.each([0, 17, 18, 22, 35, 36, 53, 54, 71, 72, 89, 90, 107, 108])('shows the current Story arena after %i completed stages without changing progress', (completed) => {
+  it.each([0, 19, 20, 22, 39, 40, 59, 60, 79, 80, 99, 100, 119, 120])('shows the current Story arena after %i completed stages without changing progress', (completed) => {
     const wallet = account();
     wallet.storyCompleted = completed;
     const before = structuredClone(wallet);

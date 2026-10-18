@@ -3,6 +3,7 @@ import { uiIcon } from './ui-icon';
 import { currencyIcon } from './currency-icon';
 import { informationTopics } from './information';
 import { worldLore } from './world-lore';
+import { storyRules } from '../content/story';
 
 export const sanctuaryPages = ['home', 'team', 'character', 'gameplay', 'events', 'inventory', 'stores', 'collections', 'squad', 'summon', 'story', 'battle', 'glossary', 'archives', 'conduit-store', 'conduit-upgrade', 'profile'] as const;
 export type MenuPage = (typeof sanctuaryPages)[number];
@@ -74,6 +75,6 @@ function sanctuaryHelp(page: MenuPage): string {
   if (destination === 'summon') return '<p>Choose a real banner, review outcomes and rules in Rates & Information, then confirm a single draw.</p><p>Only successfully saved draws spend currency or advance pity. Each banner keeps its own counters.</p>';
   if (destination === 'gameplay' || destination === 'events') return '<p>Activities unlock by the level of your highest-level owned Element-Bearer; captured Elemental-Devourers do not count. Each activity lists its enemy levels and drops.</p><p>Rewards save per kill; quitting keeps them.</p>';
   if (destination === 'home') return '<p>Home, Team, Summon and Play switch screens. Currency buttons open Inventory; Collections, Settings and Profile have direct top-bar controls. Market opens Stores.</p>';
-  if (destination === 'story') return '<p>Six regions, each with a beacon and 18 stages. Clearing a stage opens the next and pays 150 Prismatica and 2 Null-Prismatica, including replays. Regional bosses give extra currencies on the first clear.</p>';
+  if (destination === 'story') return `<p>Six regions, each with a beacon and ${storyRules.regionStages} stages. Clearing a stage opens the next. The first clear pays 150 Prismatica and 2 Null-Prismatica; replays pay 150 Prismatica. Regional bosses give extra currencies on the first clear.</p>`;
   return '<p>Use the visible categories to inspect your holdings and discoveries. Costs and requirements appear beside each action.</p><p>Use the main navigation and direct top-bar controls to change screens. Viewing information never spends resources.</p>';
 }

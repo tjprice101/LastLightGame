@@ -34,8 +34,8 @@ export function migrateLegacyActivityStage(mode: ResizedActivityId, stage: numbe
   return 1 + Math.ceil((stage - 1) * (current - 1) / (legacy - 1));
 }
 export const warStageCount = 10;
-/** Story layout: six regions of 18 stages (D-340). Older saves recorded clears on the 25-stage layout. */
-export const storyStageLayout = { regionStages: 18, stages: 108, legacyRegionStages: 25, legacyStages: 150 } as const;
+/** Story layout: six regions of 20 stages (D-347). v6-v7 saves recorded clears on 18-stage regions (D-340), older saves on 25. */
+export const storyStageLayout = { regionStages: 20, stages: 120, previousRegionStages: 18, previousStages: 108, legacyRegionStages: 25, legacyStages: 150 } as const;
 export const elementalDungeonRules = { stages: dungeonStageCount, startingLevel: 38, maximumLevel: 120, maximumLevelStage: dungeonStageCount } as const;
 export const infusionModes = [
   { id: 'heavens', name: 'Soar to Heaven', energy: 'Light', enemyTheme: 'Dawnthorn Slime evolution line', stages: infusionModeStageCount, startingLevel: 50, enemyTiers: 6, uniqueEnemies: { minimum: 6, maximum: 6 } },

@@ -555,10 +555,10 @@ async function smokeGuaranteedComponents(client, userId, username) {
   let game = freshGame(username);
   game.starterId = 'ember';
   game.account.characters = { ember: { level: 105, evolution: 6 } };
-  game.account.storyCompleted = 18;
+  game.account.storyCompleted = 20;
   game.account.squad = ['ember'];
-  game.account.infusionStages = { machines: 100 };
-  game = resolveOperation(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: 100 } }, entropy).game;
+  game.account.infusionStages = { machines: 75 };
+  game = resolveOperation(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: 75 } }, entropy).game;
   game.run.session.state.enemies.forEach(enemy => { enemy.hp = 1; });
   // Only the disposable identity receives a near-defeated final-boss fixture.
   assert.ok(ids.includes(userId));
@@ -612,11 +612,11 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
       ...['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines'].map(mode => ({ kind: 'infusion', mode, stage: 1 })),
       { kind: 'infusion', mode: 'machines', stage: 75 },
     ] : []),
-    ...[18, 36, 54, 72, 90, 108].map(stage => ({ kind: 'story', stage })),
+    ...[20, 40, 60, 80, 100, 120].map(stage => ({ kind: 'story', stage })),
     ...['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic']
       .map(element => ({ kind: 'dungeon', element, stage: 35 })),
     ...['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines']
-      .map(mode => ({ kind: 'infusion', mode, stage: mode === 'machines' ? 100 : ['treasury', 'sanctuary'].includes(mode) ? 25 : 35 })),
+      .map(mode => ({ kind: 'infusion', mode, stage: mode === 'machines' ? 75 : ['heavens', 'abyss', 'treasury', 'sanctuary'].includes(mode) ? 25 : 35 })),
     ...['nerithe', 'orvella', 'vaelor'].map(character => ({ kind: 'war', character, stage: 10 })),
   ];
   for (const [index, activity] of activities.entries()) {
@@ -638,9 +638,9 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
     game.starterId = 'ember';
     game.account.characters = { ember: { level: 105, evolution: 6 } };
     game.account.squad = ['ember'];
-    game.account.storyCompleted = activity.kind === 'story' ? activity.stage - 1 : 108;
+    game.account.storyCompleted = activity.kind === 'story' ? activity.stage - 1 : 120;
     game.account.dungeonStages = Object.fromEntries(['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic'].map(element => [element, 35]));
-    game.account.infusionStages = { heavens: 35, abyss: 35, treasury: 25, sanctuary: 25, roses: 35, machines: 100 };
+    game.account.infusionStages = { heavens: 25, abyss: 25, treasury: 25, sanctuary: 25, roses: 35, machines: 75 };
     game.account.warStages = { nerithe: 10, orvella: 10, vaelor: 10 };
     game = resolveOperation(game, { kind: 'enter', activity }, entropy).game;
     const state = game.run.session.state;
@@ -721,7 +721,7 @@ async function smokeEnemyBalance(client, userId, username) {
   game.account.characters = { ember: { level: 60, evolution: 3 } };
   game.account.squad = ['ember'];
   game.account.dungeonStages = { infernic: 35 };
-  game.account.infusionStages = { heavens: 35 };
+  game.account.infusionStages = { heavens: 25 };
   game = resolveOperation(game, { kind: 'enter', activity: { kind: 'training' } }, entropy).game;
   for (let wave = 1; wave < 59; wave++) {
     game.run.session.state.phase = 'cleared';

@@ -1,17 +1,22 @@
 # Story campaign and endless Training (D-160/D-164)
 
-**D-340 layout and rewards (supersedes 25/150 numbers below):** each region has
-**18 stages (108 total)**, with the same Lv.1-55 curve compressed across them;
-regional bosses are stages 18/36/54/72/90/108. Ordinary Story enemies drop 50%
+**D-347 layout (supersedes D-340's 18/108 and the 25/150 numbers below):** each
+region has **20 stages (120 total)**, with the same Lv.1-55 curve spread across
+them (`storyStageLayout`); regional bosses are stages 20/40/60/80/100/120 and
+per-region level ranges are unchanged. Ordinary Story enemies drop 50%
 more Prismatica (`storyEnemyFractalisDrop`); bosses keep the base line (with the
 D-294 5x). **D-343:** a stage's first clear pays 150 Prismatica + 2
 Null-Prismatica (`storyCompletionReward`); replays pay 150 Prismatica only
-(`storyReplayReward`, chosen by `storyClearReward`), once per run receipt. Wallet v6
-converts older completion counts with `region*18 + floor(within*18/25)` (150 ->
-108) and credits 150/2 for every legacy stage already cleared, read-only until
-the first successful save. Pre-v6 Story runs are discarded on the server.
-Elsewhere in this document, read 25 as 18, 150 as 108 and stage ranges per region
-as 1-18, 19-36, 37-54, 55-72, 73-90 and 91-108.
+(`storyReplayReward`, chosen by `storyClearReward`), once per run receipt.
+Wallet v8 converts v6-v7 counts (18-stage regions) with
+`region*20 + floor(within*20/18)` (`migratePreviousStoryCompleted`, 108 -> 120,
+never fewer clears) and pays the first-clear 150/2 only for stages newly credited
+by the remap. Pre-v6 counts (25-stage regions) map directly with
+`region*20 + floor(within*20/25)` (`migrateLegacyStoryCompleted`, 150 -> 120)
+and keep the D-340 credit of 150/2 per legacy stage cleared. Both are read-only
+until the first successful save; the server discards pre-v8 unfinished runs.
+Elsewhere in this document, read 25 as 20, 150 as 120 and stage ranges per region
+as 1-20, 21-40, 41-60, 61-80, 81-100 and 101-120.
 
 **D-301 replay/online parity:** staged victories offer Replay stage, including
 regional bosses and stage150. Fresh HP/Gauge and receipt namespace; frozen
@@ -91,7 +96,7 @@ See [combat balance](combat.md#enemy-progression-rebalance-d-192) and
 
 The owner approves the six-region linear campaign and later directs work to
 this next major phase, deferring the remaining intrinsic character redesign.
-Story is playable: **six elemental regions,18 stages each,108 total (D-340),
+Story is playable: **six elemental regions,20 stages each,120 total (D-347),
 enemy levels1-55**. The previous endless Adventure remains playable as
 **Training**, without resetting character/account progress.
 
@@ -105,12 +110,12 @@ is retained as a disclosure inside Story, not removed.
 
 | Order | Element / region | Global stages | Enemy levels | Four ordinary identities | Regional boss | First-clear Prismatica / Null-Prismatica |
 | --- | --- | --- | --- | --- | --- | --- |
-|1 | Infernic / Emberwake March |1-18 |1-10 | Cinderling, Ashback Boar, Coalcrest Moth, Furnace Jackal | Kilnheart Warden |1,000 /50 |
-|2 | Oceanic / Glasswater Reach |19-36 |10-19 | Tideglass Crab, Foamfin Drake, Pearlshell Turtle, Current Ray | Deepbell Leviathan |1,150 /58 |
-|3 | Atmospheric / Stormspan Heights |37-54 |19-28 | Cloudhorn Ram, Staticwing Kite, Gusttail Lynx, Thundercoil Serpent | Tempest Crown Roc |1,323 /66 |
-|4 | Botanic / Rootstone Wilds |55-72 |28-37 | Mossplate Beetle, Briarback Stag, Loamjaw Mole, Fernmantle Basilisk | Heartwood Colossus |1,521 /76 |
-|5 | Tranquilitic / Stillhalo Vale |73-90 |37-46 | Ivoryveil Moth, Dewhalo Hart, Vowcrest Crane, Opalward Lion | Serene Oathkeeper |1,749 /87 |
-|6 | Chaotic / Riftbound Frontier |91-108 |46-55 | Riftfang Hound, Splinterhide Lizard, Voidcrest Raven, Faultcoil Wyrm | Fracture Sovereign |2,011 /101 |
+|1 | Infernic / Emberwake March |1-20 |1-10 | Cinderling, Ashback Boar, Coalcrest Moth, Furnace Jackal | Kilnheart Warden |1,000 /50 |
+|2 | Oceanic / Glasswater Reach |21-40 |10-19 | Tideglass Crab, Foamfin Drake, Pearlshell Turtle, Current Ray | Deepbell Leviathan |1,150 /58 |
+|3 | Atmospheric / Stormspan Heights |41-60 |19-28 | Cloudhorn Ram, Staticwing Kite, Gusttail Lynx, Thundercoil Serpent | Tempest Crown Roc |1,323 /66 |
+|4 | Botanic / Rootstone Wilds |61-80 |28-37 | Mossplate Beetle, Briarback Stag, Loamjaw Mole, Fernmantle Basilisk | Heartwood Colossus |1,521 /76 |
+|5 | Tranquilitic / Stillhalo Vale |81-100 |37-46 | Ivoryveil Moth, Dewhalo Hart, Vowcrest Crane, Opalward Lion | Serene Oathkeeper |1,749 /87 |
+|6 | Chaotic / Riftbound Frontier |101-120 |46-55 | Riftfang Hound, Splinterhide Lizard, Voidcrest Raven, Faultcoil Wyrm | Fracture Sovereign |2,011 /101 |
 
 These names, short regional introductions/conclusions and first-pass combat
 tuning are original developer content within the approved scope, not

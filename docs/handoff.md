@@ -1,5 +1,17 @@
 # Current state and handoff
 
+## 20-stage Story regions (D-347)
+
+- `storyStageLayout` is 20/120 (previous 18/108, legacy 25/150); levels still Lv.1-55
+  with unchanged per-region ranges, bosses every 20th stage. UI text derives from
+  `storyRules`. Wallet v8: v6-v7 `storyCompleted` remaps via `migratePreviousStoryCompleted`
+  (no clear lost; newly credited stages pay the first-clear 150/2 once); pre-v6 maps
+  25 -> 20 directly with the D-340 credit. Read-only until the first save. Server
+  discards pre-v8 runs; bundle redeployed. Smoke script stage values refreshed
+  (also the D-346 Machines 75 / Heaven-Abyss 25 finals).
+- Validation: `npx tsc --noEmit -p .`, `npx vitest run --maxWorkers=4` (4086 pass),
+  `npm run build`.
+
 ## Shorter Machines/Heaven/Abyss and additive fodder (D-346)
 
 - `content/activities.ts`: `machineStageCount` 75, `infusionModeStageCount` 25,

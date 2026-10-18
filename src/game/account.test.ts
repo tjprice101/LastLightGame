@@ -56,7 +56,7 @@ describe('persistent progression transactions', () => {
     const raw = JSON.stringify(legacy);
     saved.setItem(ACCOUNT_KEY, raw);
     const migrated = loadAccount(saved);
-    expect(migrated.version).toBe(7);
+    expect(migrated.version).toBe(8);
     expect(migrated.dungeonStages).toEqual({ infernic: 1, oceanic: 12, atmospheric: 35, tranquilitic: 35 });
     expect(migrated.infusionStages).toEqual({ heavens: 13, abyss: 25 });
     for (const field of ['fractalis', 'lycalis', 'firstFracture', 'materials', 'characters', 'creatures', 'receipts'] as const) {
@@ -65,7 +65,7 @@ describe('persistent progression transactions', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     saveAccount(saved, migrated);
     expect(loadAccount(saved)).toEqual(migrated);
-    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(7);
+    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(8);
     expect(validateAccount({ ...legacy, infusionStages: { heavens: 1 } }).infusionStages).toEqual({ heavens: 1 });
   });
   it('migrates v6 resized activity unlocks read-only and persists v7 in the first transaction', () => {
@@ -78,14 +78,14 @@ describe('persistent progression transactions', () => {
     const write = saved.setItem;
     saved.setItem = (key, value) => { writes++; write(key, value); };
     const loaded = loadAccount(saved);
-    expect(loaded.version).toBe(7);
+    expect(loaded.version).toBe(8);
     expect(loaded.infusionStages).toEqual({ heavens: 25, abyss: 13, machines: 75 });
     expect(writes).toBe(0);
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     const upgraded = upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 });
     expect(writes).toBe(1);
     expect(upgraded.characters.ember).toMatchObject({ level: 1, evolution: 1 });
-    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!)).toMatchObject({ version: 7, infusionStages: loaded.infusionStages });
+    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!)).toMatchObject({ version: 8, infusionStages: loaded.infusionStages });
     expect(loadAccount(saved)).toEqual(upgraded);
     expect(writes).toBe(1);
   });
