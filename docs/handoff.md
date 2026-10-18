@@ -18,7 +18,9 @@
 - Each option of `[data-dungeon-stage]`, `[data-infusion-stage]` and
   `[data-war-stage]` pickers gets its own sibling Detailed Loot button
   (`.selection-option-row`); `bindStageLoot` listens on `document` because the
-  selection dialog lives on `body`. Drop-art strips were removed.
+  selection dialog lives on `body`. Drop-art strips and the standalone button
+  beside each stage selector were removed (Story's stage detail keeps its own).
+  The loot modal fills the whole viewport.
 - Validate `npx vitest run src/presentation/stage-loot.test.ts`.
 
 ## Compressed art and quieter image loading (D-341)

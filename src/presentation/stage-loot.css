@@ -1,10 +1,18 @@
 .stage-loot-button { white-space: nowrap; }
 html body .stage-loot-modal[open] {
   box-sizing: border-box;
-  width: min(820px, calc(100vw - 32px));
-  max-height: calc(100dvh - 32px);
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  border-radius: 0;
+  transform: none;
   overflow-y: auto;
 }
+html body .stage-loot-modal[open] .stage-loot-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 .stage-loot-meta { margin: 0 0 12px; color: #cfcdc6; }
 .stage-loot-group { margin: 0 0 16px; }
 .stage-loot-group h3 { margin: 0 0 8px; font-size: 1rem; }

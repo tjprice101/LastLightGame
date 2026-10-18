@@ -24,7 +24,6 @@ import { worldLore } from './world-lore';
 import { activityDifficulty } from './calamity';
 import { enemyStrength } from './enemy-strength';
 import { enemyCombatStats } from '../content/stat-growth';
-import { stageLootButton } from './stage-loot';
 
 function dungeonEntry(element: (typeof elements)[number]['id'], account: Account | null): string {
   if (!isPlayableDungeon(element)) throw new Error('Unknown elemental dungeon.');
@@ -32,7 +31,7 @@ function dungeonEntry(element: (typeof elements)[number]['id'], account: Account
   const unlocked = unlockedStage(account, element);
   const access = activityAccess(account, { kind: 'dungeon', element, stage: unlocked });
   return `${enemyStrength(dungeonEncounter(element, unlocked))}<footer class="activity-entry"><label class="dungeon-stage-label">Stage
-    <select data-dungeon-stage="${element}" aria-label="${elements.find((entry) => entry.id === element)?.dungeon} stage">${Array.from({ length: unlocked }, (_, stage) => `<option value="${stage + 1}" ${stage + 1 === unlocked ? 'selected' : ''}>${stage + 1}</option>`).join('')}</select></label>${stageLootButton(`dungeon:${element}`)}
+    <select data-dungeon-stage="${element}" aria-label="${elements.find((entry) => entry.id === element)?.dungeon} stage">${Array.from({ length: unlocked }, (_, stage) => `<option value="${stage + 1}" ${stage + 1 === unlocked ? 'selected' : ''}>${stage + 1}</option>`).join('')}</select></label>
     <button class="primary-button" data-dungeon="${element}" ${access.unlocked ? '' : 'disabled'}>${access.unlocked ? 'Enter dungeon' : 'Locked'}</button>
     ${access.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks at ${access.requirement}. Your highest: Lv.${access.level}.</p>`}</footer>`;
 }
@@ -176,7 +175,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
           <p>Final boss:1% base-form recruitment · Already owned:100 Null-Prismatica</p>
           ${account ? `${enemyStrength(warEncounter(mode.character, unlocked))}<footer class="activity-entry"><label class="dungeon-stage-label">Stage
             <select data-war-stage="${mode.character}" aria-label="${mode.name} stage" ${account ? '' : 'disabled'}>${Array.from({ length: unlocked }, (_, index) =>
-              `<option value="${index + 1}" ${index + 1 === unlocked ? 'selected' : ''}>${index + 1} · Lv.${warEncounter(mode.character, index + 1).level}</option>`).join('')}</select></label>${stageLootButton(`war:${mode.character}`)}
+              `<option value="${index + 1}" ${index + 1 === unlocked ? 'selected' : ''}>${index + 1} · Lv.${warEncounter(mode.character, index + 1).level}</option>`).join('')}</select></label>
             <button class="primary-button" data-war="${mode.character}" ${access?.unlocked ? '' : 'disabled'}>${access?.unlocked ? 'Enter trial · Free' : 'Locked'}</button>
             ${access?.unlocked ? '' : `<p class="activity-unlock-hint">Unlocks at ${access?.requirement}. Your highest: Lv.${access?.level}.</p>`}</footer>`
               : '<button disabled>Elemental War unavailable: resolve the save error</button>'}`)}

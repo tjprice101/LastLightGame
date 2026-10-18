@@ -53,22 +53,23 @@ describe('stage loot previews', () => {
     expect(() => parseStageLootSource('infusion:nowhere')).toThrow('Unknown stage loot source');
   });
 
-  it('opens Detailed Loot for the selected stage and from each stage in the picker', () => {
+  it('opens Detailed Loot from each stage in the picker', () => {
     const host = document.createElement('div');
-    host.innerHTML = `<footer class="activity-entry"><label>Stage<select data-dungeon-stage="infernic" aria-label="Flaming Depths stage"><option value="1">1</option><option value="12" selected>12</option></select></label>${stageLootButton('dungeon:infernic')}</footer>`;
+    host.innerHTML = `<footer class="activity-entry"><label>Stage<select data-dungeon-stage="infernic" aria-label="Flaming Depths stage"><option value="1">1</option><option value="12" selected>12</option></select></label></footer>`;
     document.body.append(host);
     const unbindPanels = bindSelectionPanels(host);
     const unbind = bindStageLoot(host, () => null);
-    host.querySelector<HTMLButtonElement>('[data-stage-loot]')!.click();
+    expect(host.querySelector('[data-stage-loot]')).toBeNull();
+    host.querySelector<HTMLButtonElement>('.selection-trigger')!.click();
+    const rows = document.querySelectorAll('.selection-modal .selection-option-row');
+    expect(rows).toHaveLength(2);
+    expect(document.querySelector('.stage-loot-strip')).toBeNull();
+    rows[1].querySelector<HTMLButtonElement>('[data-stage-loot]')!.click();
     const dialog = document.querySelector<HTMLDialogElement>('.stage-loot-modal')!;
     expect(dialog.open).toBe(true);
     expect(dialog.querySelector('h2')!.textContent).toContain('Stage 12');
     expect(dialog.querySelectorAll('.stage-loot-item img').length).toBeGreaterThan(0);
     dialog.close();
-    host.querySelector<HTMLButtonElement>('.selection-trigger')!.click();
-    const rows = document.querySelectorAll('.selection-modal .selection-option-row');
-    expect(rows).toHaveLength(2);
-    expect(document.querySelector('.stage-loot-strip')).toBeNull();
     rows[0].querySelector<HTMLButtonElement>('[data-stage-loot]')!.click();
     expect(dialog.open).toBe(true);
     expect(dialog.querySelector('h2')!.textContent).toContain('Stage 1 ');
