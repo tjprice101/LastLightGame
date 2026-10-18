@@ -4159,6 +4159,10 @@ var storyRegionArt = {
 // src/content/story.ts
 var storyRules = { regionStages: storyStageLayout.regionStages, stages: storyStageLayout.stages, startingLevel: 1, maximumLevel: 55 };
 var storyCompletionReward = { fractalis: 150, lycalis: 2 };
+var storyReplayReward = { fractalis: storyCompletionReward.fractalis, lycalis: 0 };
+function storyClearReward(firstClear) {
+  return firstClear ? storyCompletionReward : storyReplayReward;
+}
 function migrateLegacyStoryCompleted(completed) {
   if (!Number.isSafeInteger(completed) || completed < 0 || completed > storyStageLayout.legacyStages) throw new Error("Invalid saved Story progress.");
   const region = Math.floor(completed / storyStageLayout.legacyRegionStages);
@@ -8376,6 +8380,7 @@ function saveAccountRewards(storage, result, runId) {
   const recruitments = [];
   const storyBonuses = [];
   let storyCompletion = null;
+  let storyClearPay = storyClearReward(false);
   const story = result.state.story;
   if (story) {
     const encounter2 = storyEncounter(story.storyStage);
@@ -8548,14 +8553,16 @@ function saveAccountRewards(storage, result, runId) {
     if (result.state.enemies.some((enemy) => enemy.hp > 0 || !account.receipts.includes(`${runId}:${enemy.id}`))) {
       throw new Error("Story clear requires saved rewards for every defeated enemy.");
     }
-    if ((account.storyCompleted ?? 0) < story.storyStage) {
+    const firstClear = (account.storyCompleted ?? 0) < story.storyStage;
+    if (firstClear) {
       account.storyCompleted = story.storyStage;
       changed = true;
     }
     const clearReceipt = `${runId}:story-clear-${story.storyStage}`;
     if (!account.receipts.includes(clearReceipt)) {
-      account.fractalis += storyCompletionReward.fractalis;
-      account.lycalis += storyCompletionReward.lycalis;
+      storyClearPay = storyClearReward(firstClear);
+      account.fractalis += storyClearPay.fractalis;
+      account.lycalis += storyClearPay.lycalis;
       account.receipts.push(clearReceipt);
       storyCompletion = result.events.filter((event2) => event2.kind === "reward").at(-1) ?? null;
       changed = true;
@@ -8585,9 +8592,9 @@ function saveAccountRewards(storage, result, runId) {
     reward.message += ` First regional clear: +${bonus.fractalis} Prismatica and +${bonus.lycalis} Null-Prismatica.`;
   }
   if (storyCompletion) {
-    storyCompletion.amount = (storyCompletion.amount ?? 0) + storyCompletionReward.fractalis;
-    storyCompletion.lycalis = (storyCompletion.lycalis ?? 0) + storyCompletionReward.lycalis;
-    storyCompletion.message += ` Stage clear: +${storyCompletionReward.fractalis} Prismatica and +${storyCompletionReward.lycalis} Null-Prismatica.`;
+    storyCompletion.amount = (storyCompletion.amount ?? 0) + storyClearPay.fractalis;
+    if (storyClearPay.lycalis > 0) storyCompletion.lycalis = (storyCompletion.lycalis ?? 0) + storyClearPay.lycalis;
+    storyCompletion.message += storyClearPay.lycalis > 0 ? ` First stage clear: +${storyClearPay.fractalis} Prismatica and +${storyClearPay.lycalis} Null-Prismatica.` : ` Stage clear: +${storyClearPay.fractalis} Prismatica.`;
   }
   for (const { reward, character, outcome } of recruitments) {
     reward.recruitmentOutcome = outcome;

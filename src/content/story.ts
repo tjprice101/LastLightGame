@@ -9,8 +9,12 @@ import { storyRegionArt } from './story-art';
 import { enemyAbilityMultiplier } from './enemy-skills';
 
 export const storyRules = { regionStages: storyStageLayout.regionStages, stages: storyStageLayout.stages, startingLevel: 1, maximumLevel: 55 } as const;
-/** Paid on every Story stage clear, including replays (D-340). */
+/** First clear of a Story stage pays both currencies; replays pay only the Prismatica (D-343). */
 export const storyCompletionReward = { fractalis: 150, lycalis: 2 } as const;
+export const storyReplayReward = { fractalis: storyCompletionReward.fractalis, lycalis: 0 } as const;
+export function storyClearReward(firstClear: boolean): { fractalis: number; lycalis: number } {
+  return firstClear ? storyCompletionReward : storyReplayReward;
+}
 
 /** Maps a clear count saved on the old six-region 25-stage layout to the 18-stage layout. Partial regions round down. */
 export function migrateLegacyStoryCompleted(completed: number): number {
@@ -91,7 +95,7 @@ export function storyDrops(stage: number, random: () => number): Record<string, 
   }));
 }
 
-export const storyRulesText = `Six regions with 18 stages each, at enemy levels 1-55. Every stage clear, including replays, pays 150 Prismatica and 2 Null-Prismatica. Enemies drop Common and Uncommon materials that match their region. No captures. Each regional boss gives a first-clear bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and increasing 15% per region. Ordinary enemy Prismatica drops rise from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x the base Prismatica line (base 5-10 at Lv.1 to 113-226 at Lv.55) and 5x materials on every clear; first-clear bonuses do not multiply or repeat. Continue restores HP and keeps your Gauge.`;
+export const storyRulesText = `Six regions with 18 stages each, at enemy levels 1-55. First clear of each stage pays 150 Prismatica and 2 Null-Prismatica; replays pay 150 Prismatica. Enemies drop Common and Uncommon materials that match their region. No captures. Each regional boss gives a first-clear bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and increasing 15% per region. Ordinary enemy Prismatica drops rise from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x the base Prismatica line (base 5-10 at Lv.1 to 113-226 at Lv.55) and 5x materials on every clear; first-clear bonuses do not multiply or repeat. Continue restores HP and keeps your Gauge.`;
 
 export function storyLoot(stage: number) {
   const encounter = storyEncounter(stage);

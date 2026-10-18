@@ -146,7 +146,7 @@ describe('repeatable final-boss 5x quantity contract', () => {
     expect(first.lycalis).toBe(bonus.lycalis + clearPay.lycalis);
     const second = saveAccountRewards(saved, clear(createStoryBattle(stage, 1729, 'ember', progress)), 'again');
     expect(second.fractalis).toBe(ordinary * 2 + bonus.fractalis + clearPay.fractalis * 2);
-    expect(second.lycalis).toBe(bonus.lycalis + clearPay.lycalis * 2);
+    expect(second.lycalis).toBe(bonus.lycalis + clearPay.lycalis);
   });
 
   it('rejects forged currency, material and premium quantities atomically', () => {

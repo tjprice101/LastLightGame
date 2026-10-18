@@ -1,5 +1,12 @@
 # Current state and handoff
 
+## Story replay clear pays Prismatica only (D-343)
+
+- `storyClearReward(firstClear)` in `content/story.ts`: first clear 150 Prismatica
+  + 2 Null-Prismatica, replays 150 Prismatica. Used by `saveAccountRewards`,
+  the Story stage detail and Detailed Loot. Server bundle regenerated and
+  `game-operation` redeployed.
+
 ## Detailed Loot stage previews (D-342)
 
 - `presentation/stage-loot.ts` builds per-stage loot from the live drop tables:

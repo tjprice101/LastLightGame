@@ -46,9 +46,12 @@ describe('stage loot previews', () => {
     expect(war.entries.find((entry) => entry.group === 'recruit')?.chance).toBe(.01);
     expect(stageLoot({ kind: 'war', character: 'nerithe' }, 1, null).entries.some((entry) => entry.group === 'recruit')).toBe(false);
     const story = stageLoot({ kind: 'story' }, storyRules.regionStages, { ...emptyAccount(), storyCompleted: storyRules.regionStages });
-    expect(story.entries.filter((entry) => entry.group === 'clear')).toHaveLength(2);
+    expect(story.entries.filter((entry) => entry.group === 'clear').map((entry) => entry.id)).toEqual(['fractalis']);
+    expect(story.entries.filter((entry) => entry.group === 'first').map((entry) => entry.id)).toEqual(['lycalis', 'fractalis', 'lycalis']);
     expect(story.entries.find((entry) => entry.group === 'first')?.note).toBe('Already earned on this account.');
-    expect(stageLoot({ kind: 'story' }, 1, null).entries.some((entry) => entry.group === 'first')).toBe(false);
+    const fresh = stageLoot({ kind: 'story' }, 1, null).entries.filter((entry) => entry.group === 'first');
+    expect(fresh).toHaveLength(1);
+    expect(fresh[0]).toMatchObject({ id: 'lycalis', note: 'First clear of this stage only.' });
     expect(() => parseStageLootSource('infusion:nowhere')).toThrow('Unknown stage loot source');
   });
 

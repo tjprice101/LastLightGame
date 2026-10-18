@@ -22,7 +22,7 @@ import { roseMaterials, roseCaptureMaximumLevel } from '../content/roses';
 import { exchangeProduct, isExchangeQuantity } from '../content/material-exchange';
 import { isWarCharacter, warEncounter, warLoot, warStageCount, type WarCharacterId } from '../content/elemental-war';
 import { canonicalElement, isLegacyElement } from '../content/element-migration';
-import { storyEncounter, storyCreature, storyRules, storyBossBonus, storyMaterialLoot, storyCompletionReward, migrateLegacyStoryCompleted } from '../content/story';
+import { storyEncounter, storyCreature, storyRules, storyBossBonus, storyMaterialLoot, storyCompletionReward, storyClearReward, migrateLegacyStoryCompleted } from '../content/story';
 import { bossLootMultiplier, bossLootRange } from '../content/final-boss-loot';
 import { calamityChest, calamityChestId, calamityEncounter, isCalamityActivityId, isCalamityTier, parseCalamityChestId, rollCalamityChest, type CalamityActivityId } from '../content/calamity';
 import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCalamiticConduitId } from '../content/calamitic-conduits';
@@ -717,6 +717,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
   const recruitments: { reward: BattleResult['events'][number]; character: WarCharacterId; outcome: 'new' | 'duplicate' }[] = [];
   const storyBonuses: { reward: BattleResult['events'][number]; bonus: ReturnType<typeof storyBossBonus> }[] = [];
   let storyCompletion: BattleResult['events'][number] | null = null;
+  let storyClearPay: { fractalis: number; lycalis: number } = storyClearReward(false);
   const story = result.state.story;
   if (story) {
     const encounter = storyEncounter(story.storyStage);
@@ -926,14 +927,16 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     if (result.state.enemies.some((enemy) => enemy.hp > 0 || !account.receipts.includes(`${runId}:${enemy.id}`))) {
       throw new Error('Story clear requires saved rewards for every defeated enemy.');
     }
-    if ((account.storyCompleted ?? 0) < story.storyStage) {
+    const firstClear = (account.storyCompleted ?? 0) < story.storyStage;
+    if (firstClear) {
       account.storyCompleted = story.storyStage;
       changed = true;
     }
     const clearReceipt = `${runId}:story-clear-${story.storyStage}`;
     if (!account.receipts.includes(clearReceipt)) {
-      account.fractalis += storyCompletionReward.fractalis;
-      account.lycalis += storyCompletionReward.lycalis;
+      storyClearPay = storyClearReward(firstClear);
+      account.fractalis += storyClearPay.fractalis;
+      account.lycalis += storyClearPay.lycalis;
       account.receipts.push(clearReceipt);
       storyCompletion = result.events.filter((event) => event.kind === 'reward').at(-1) ?? null;
       changed = true;
@@ -970,9 +973,11 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     reward.message += ` First regional clear: +${bonus.fractalis} Prismatica and +${bonus.lycalis} Null-Prismatica.`;
   }
   if (storyCompletion) {
-    storyCompletion.amount = (storyCompletion.amount ?? 0) + storyCompletionReward.fractalis;
-    storyCompletion.lycalis = (storyCompletion.lycalis ?? 0) + storyCompletionReward.lycalis;
-    storyCompletion.message += ` Stage clear: +${storyCompletionReward.fractalis} Prismatica and +${storyCompletionReward.lycalis} Null-Prismatica.`;
+    storyCompletion.amount = (storyCompletion.amount ?? 0) + storyClearPay.fractalis;
+    if (storyClearPay.lycalis > 0) storyCompletion.lycalis = (storyCompletion.lycalis ?? 0) + storyClearPay.lycalis;
+    storyCompletion.message += storyClearPay.lycalis > 0
+      ? ` First stage clear: +${storyClearPay.fractalis} Prismatica and +${storyClearPay.lycalis} Null-Prismatica.`
+      : ` Stage clear: +${storyClearPay.fractalis} Prismatica.`;
   }
   for (const { reward, character, outcome } of recruitments) {
     reward.recruitmentOutcome = outcome;

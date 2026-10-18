@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { elements, storyStageLayout } from '../content/activities';
 import { storyEnemyFractalisDrop, storyFractalisDrop } from '../content/loot-random';
-import { migrateLegacyStoryCompleted, storyBossBonus, storyCompletionReward, storyRules, storyCreature, storyDrops, storyEncounter, storyLoot, storyMaterialLoot, storyRegions } from '../content/story';
+import { migrateLegacyStoryCompleted, storyBossBonus, storyCompletionReward, storyReplayReward, storyRules, storyCreature, storyDrops, storyEncounter, storyLoot, storyMaterialLoot, storyRegions } from '../content/story';
 import { creatures, creatureLoot, getCreature } from '../content/creatures';
 import { dungeonEncounter } from '../content/dungeons';
 import { ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, saveAccountRewards, unlockedStoryStage, validateAccount } from './account';
@@ -170,7 +170,8 @@ describe('atomic Story progression and first-clear rewards', () => {
     expect(Object.keys(completed.creatures).filter((id) => id.endsWith(':boss'))).toHaveLength(6);
     expect(unlockedStoryStage(completed)).toBe(stages);
     const replayed = saveAccountRewards(saved, clear(stages), 'replay-final');
-    expect(replayed.lycalis).toBe(completed.lycalis + storyCompletionReward.lycalis);
+    expect(replayed.lycalis).toBe(completed.lycalis);
+    expect(replayed.fractalis).toBeGreaterThan(completed.fractalis + storyReplayReward.fractalis - 1);
     expect(replayed.storyCompleted).toBe(stages);
     expect(writes()).toBe(stages + 1);
   });
@@ -214,7 +215,7 @@ describe('atomic Story progression and first-clear rewards', () => {
     expect(() => validateAccount({ ...emptyAccount(), version: 5, storyCompleted: 151 })).toThrow('Story');
   });
 
-  it('pays the stage-clear reward on a first clear and on a replay with a new run, but never twice for one run', () => {
+  it('pays both currencies on a first clear, only the Prismatica on a replay with a new run, and never twice for one run', () => {
     const { saved } = storage();
     const first = clear(1);
     const ordinary = first.events.filter((event) => event.kind === 'reward');
@@ -225,13 +226,16 @@ describe('atomic Story progression and first-clear rewards', () => {
     expect(account.receipts).toContain('run-a:story-clear-1');
     const last = first.events.filter((event) => event.kind === 'reward').at(-1)!;
     expect(last.lycalis).toBe(storyCompletionReward.lycalis);
-    expect(last.message).toContain('Stage clear: +150 Prismatica and +2 Null-Prismatica.');
+    expect(last.message).toContain('First stage clear: +150 Prismatica and +2 Null-Prismatica.');
     expect(saveAccountRewards(saved, first, 'run-a')).toEqual(account);
     const replay = clear(1);
     const replayBase = replay.events.filter((event) => event.kind === 'reward').reduce((sum, event) => sum + event.amount, 0);
     const replayed = saveAccountRewards(saved, replay, 'run-b');
-    expect(replayed.fractalis).toBe(account.fractalis + replayBase + storyCompletionReward.fractalis);
-    expect(replayed.lycalis).toBe(account.lycalis + storyCompletionReward.lycalis);
+    expect(replayed.fractalis).toBe(account.fractalis + replayBase + storyReplayReward.fractalis);
+    expect(replayed.lycalis).toBe(account.lycalis);
+    const replayLast = replay.events.filter((event) => event.kind === 'reward').at(-1)!;
+    expect(replayLast.message).toContain('Stage clear: +150 Prismatica.');
+    expect(replayLast.message).not.toContain('Null-Prismatica');
     expect(replayed.storyCompleted).toBe(1);
   });
 
@@ -287,8 +291,8 @@ describe('atomic Story progression and first-clear rewards', () => {
     const replay = clear(stage);
     const replayOrdinary = replay.events.find((event) => event.kind === 'reward')!.amount;
     const replayAccount = saveAccountRewards(saved, replay, 'replay');
-    expect(replayAccount.fractalis).toBe(account.fractalis + replayOrdinary + storyCompletionReward.fractalis);
-    expect(replayAccount.lycalis).toBe(account.lycalis + storyCompletionReward.lycalis);
+    expect(replayAccount.fractalis).toBe(account.fractalis + replayOrdinary + storyReplayReward.fractalis);
+    expect(replayAccount.lycalis).toBe(account.lycalis);
     expect(replay.events.some((event) => event.storyBonus)).toBe(false);
     expect(replayAccount.storyCompleted).toBe(stage);
   });

@@ -489,7 +489,7 @@ describe('server authoritative game engine', () => {
         const last = [...expected.events].reverse().find(e => e.kind === 'reward')!;
         last.amount += storyCompletionReward.fractalis;
         last.lycalis = (last.lycalis ?? 0) + storyCompletionReward.lycalis;
-        last.message += ' Stage clear: +150 Prismatica and +2 Null-Prismatica.';
+        last.message += ' First stage clear: +150 Prismatica and +2 Null-Prismatica.';
         amount += storyCompletionReward.fractalis;
       }
       expect(resolved.response.result).toEqual(expected);

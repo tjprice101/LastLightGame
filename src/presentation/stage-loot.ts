@@ -3,7 +3,7 @@ import { elements, type ElementId, type InfusionModeId } from '../content/activi
 import { isPlayableDungeon, dungeonEncounter } from '../content/dungeons';
 import { infusionEncounter, isInfusionMode } from '../content/infusions';
 import { elementalWars, isWarCharacter, warEncounter, warLoot, type WarCharacterId } from '../content/elemental-war';
-import { storyBossBonus, storyCompletionReward, storyEncounter, storyLoot, storyRules } from '../content/story';
+import { storyBossBonus, storyCompletionReward, storyReplayReward, storyEncounter, storyLoot, storyRules } from '../content/story';
 import { roseCaptureAllowed } from '../content/roses';
 import { materialArt, materialName } from '../content/dungeon-art';
 import { formatStat } from '../content/combat';
@@ -104,13 +104,17 @@ export function stageLoot(source: StageLootSource, stage: number, account: Accou
   if (source.kind === 'story') {
     const encounter = storyEncounter(stage);
     const entries = dropEntries(storyLoot(stage), account);
+    const cleared = (account?.storyCompleted ?? 0) >= stage;
+    const firstNote = cleared ? 'Already earned on this account.' : 'First clear of this stage only.';
     entries.push(...dropEntries([
-      { id: 'fractalis', minimum: storyCompletionReward.fractalis, maximum: storyCompletionReward.fractalis, chance: 1 },
-      { id: 'lycalis', minimum: storyCompletionReward.lycalis, maximum: storyCompletionReward.lycalis, chance: 1 },
-    ], account, 'clear'));
+      { id: 'fractalis', minimum: storyReplayReward.fractalis, maximum: storyReplayReward.fractalis, chance: 1, note: 'Every clear.' },
+    ], account, 'clear', true));
+    entries.push(...dropEntries([
+      { id: 'lycalis', minimum: storyCompletionReward.lycalis, maximum: storyCompletionReward.lycalis, chance: 1, note: firstNote },
+    ], account, 'first', true));
     if (encounter.boss) {
       const bonus = storyBossBonus(stage);
-      const note = (account?.storyCompleted ?? 0) >= stage ? 'Already earned on this account.' : 'Account first clear only.';
+      const note = cleared ? 'Already earned on this account.' : 'Regional boss first clear only.';
       entries.push(...dropEntries([
         { id: 'fractalis', minimum: bonus.fractalis, maximum: bonus.fractalis, chance: 1, note },
         { id: 'lycalis', minimum: bonus.lycalis, maximum: bonus.lycalis, chance: 1, note },

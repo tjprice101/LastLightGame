@@ -4,8 +4,9 @@
 **18 stages (108 total)**, with the same Lv.1-55 curve compressed across them;
 regional bosses are stages 18/36/54/72/90/108. Ordinary Story enemies drop 50%
 more Prismatica (`storyEnemyFractalisDrop`); bosses keep the base line (with the
-D-294 5x). Every clear, including replays, pays 150 Prismatica + 2
-Null-Prismatica (`storyCompletionReward`), once per run receipt. Wallet v6
+D-294 5x). **D-343:** a stage's first clear pays 150 Prismatica + 2
+Null-Prismatica (`storyCompletionReward`); replays pay 150 Prismatica only
+(`storyReplayReward`, chosen by `storyClearReward`), once per run receipt. Wallet v6
 converts older completion counts with `region*18 + floor(within*18/25)` (150 ->
 108) and credits 150/2 for every legacy stage already cleared, read-only until
 the first successful save. Pre-v6 Story runs are discarded on the server.
