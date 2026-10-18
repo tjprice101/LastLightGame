@@ -99,10 +99,12 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
           }
           choice.append(text);
           const lootSource = stageLootSourceOf(select);
+          let row: HTMLElement = choice;
           if (lootSource) {
-            const stage = Number(option.value);
-            choice.classList.add('selection-option-with-loot');
-            choice.insertAdjacentHTML('beforeend', stageLootStrip(parseStageLootSource(lootSource), stage, currentStageLootAccount()));
+            row = document.createElement('div');
+            row.className = 'selection-option-row';
+            row.append(choice);
+            row.insertAdjacentHTML('beforeend', stageLootButton(lootSource, Number(option.value), `Detailed Loot for stage ${option.textContent ?? option.value}`));
           }
           choice.disabled = option.disabled || (option.parentElement instanceof HTMLOptGroupElement && option.parentElement.disabled);
           choice.setAttribute('aria-pressed', String(option.selected));
@@ -125,7 +127,7 @@ export function bindSelectionPanels(host: HTMLElement): () => void {
             select.dispatchEvent(new Event('change', { bubbles: true }));
             refresh();
           });
-          choices.append(choice);
+          choices.append(row);
         });
         dialog.append(header, choices);
         button.focus({ preventScroll: true });
@@ -164,4 +166,4 @@ import { isMasterConduitId } from '../content/master-conduits';
 import { masterConduitIcon } from './master-conduits';
 import { getStarter, isStarterId } from '../content/starters';
 import { portrait } from './portrait';
-import { currentStageLootAccount, parseStageLootSource, stageLootSourceOf, stageLootStrip } from './stage-loot';
+import { stageLootButton, stageLootSourceOf } from './stage-loot';

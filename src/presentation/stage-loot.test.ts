@@ -5,7 +5,6 @@ import { isPlayableDungeon } from '../content/dungeons';
 import { elementalWars, warStageCount } from '../content/elemental-war';
 import { storyRules } from '../content/story';
 import { creatures, creatureLoot } from '../content/creatures';
-import { emptyAccount } from '../game/account';
 import { bindStageLoot, parseStageLootSource, stageLoot, stageLootButton, stageLootContent } from './stage-loot';
 import { bindSelectionPanels } from './selection-panel';
 
@@ -24,38 +23,37 @@ describe('stage loot previews', () => {
       for (let stage = 1; stage <= dungeonStageCount; stage++) {
         const loot = stageLoot({ kind: 'dungeon', element }, stage, null);
         const creature = creatures.find((entry) => entry.dungeonElement === element && entry.stages.includes(stage))!;
-        expect(loot.entries.map((entry) => entry.id)).toEqual(creatureLoot(creature, stage).map((drop) => drop.id));
+        expect(loot.entries.map((entry) => entry.id)).toEqual(creatureLoot(creature, stage).filter((drop) => drop.chance > 0).map((drop) => drop.id));
       }
     }
     for (const { id: mode, stages } of modes) {
       for (let stage = 1; stage <= stages; stage++) {
         const loot = stageLoot({ kind: 'infusion', mode }, stage, null);
-        expect(loot.entries.filter((entry) => entry.group === 'kill').length).toBeGreaterThan(0);
-        expect(stageLootContent({ kind: 'infusion', mode }, stage, null)).toContain('stage-loot-item');
+        expect(loot.entries.filter((entry) => entry.group !== 'capture').length).toBeGreaterThan(0);
+        const html = stageLootContent({ kind: 'infusion', mode }, stage, null);
+        expect(html).toContain('stage-loot-item');
+        expect(html).not.toMatch(/\d%|Guaranteed|×|Independent|roll/);
       }
     }
     for (const { character } of elementalWars) for (let stage = 1; stage <= warStageCount; stage++) stageLoot({ kind: 'war', character }, stage, null);
     for (let stage = 1; stage <= storyRules.stages; stage++) stageLoot({ kind: 'story' }, stage, null);
   });
 
-  it('shows captures, recruitment, stage-clear and first-clear rewards where they apply', () => {
-    expect(stageLoot({ kind: 'infusion', mode: 'heavens' }, 1, null).entries.some((entry) => entry.group === 'capture' && entry.chance === .2)).toBe(true);
+  it('lists captures, recruitment, stage-clear and first-clear rewards where they apply, without rates', () => {
+    expect(stageLoot({ kind: 'infusion', mode: 'heavens' }, 1, null).entries.some((entry) => entry.group === 'capture')).toBe(true);
     expect(stageLoot({ kind: 'infusion', mode: 'machines' }, 1, null).entries.some((entry) => entry.group === 'capture')).toBe(false);
     expect(stageLoot({ kind: 'infusion', mode: 'roses' }, 35, null).entries.some((entry) => entry.group === 'capture')).toBe(false);
     const war = stageLoot({ kind: 'war', character: 'nerithe' }, warStageCount, null);
-    expect(war.entries.find((entry) => entry.group === 'recruit')?.chance).toBe(.01);
+    expect(war.entries.find((entry) => entry.group === 'recruit')?.id).toBe('nerithe');
     expect(stageLoot({ kind: 'war', character: 'nerithe' }, 1, null).entries.some((entry) => entry.group === 'recruit')).toBe(false);
-    const story = stageLoot({ kind: 'story' }, storyRules.regionStages, { ...emptyAccount(), storyCompleted: storyRules.regionStages });
+    const story = stageLoot({ kind: 'story' }, storyRules.regionStages, null);
     expect(story.entries.filter((entry) => entry.group === 'clear').map((entry) => entry.id)).toEqual(['fractalis']);
-    expect(story.entries.filter((entry) => entry.group === 'first').map((entry) => entry.id)).toEqual(['lycalis', 'fractalis', 'lycalis']);
-    expect(story.entries.find((entry) => entry.group === 'first')?.note).toBe('Already earned on this account.');
-    const fresh = stageLoot({ kind: 'story' }, 1, null).entries.filter((entry) => entry.group === 'first');
-    expect(fresh).toHaveLength(1);
-    expect(fresh[0]).toMatchObject({ id: 'lycalis', note: 'First clear of this stage only.' });
+    expect(story.entries.filter((entry) => entry.group === 'first').map((entry) => entry.id)).toEqual(['fractalis', 'lycalis']);
+    expect(stageLoot({ kind: 'story' }, 1, null).entries.filter((entry) => entry.group === 'first').map((entry) => entry.id)).toEqual(['lycalis']);
     expect(() => parseStageLootSource('infusion:nowhere')).toThrow('Unknown stage loot source');
   });
 
-  it('opens Detailed Loot for the currently selected stage and adds loot art to stage choices', () => {
+  it('opens Detailed Loot for the selected stage and from each stage in the picker', () => {
     const host = document.createElement('div');
     host.innerHTML = `<footer class="activity-entry"><label>Stage<select data-dungeon-stage="infernic" aria-label="Flaming Depths stage"><option value="1">1</option><option value="12" selected>12</option></select></label>${stageLootButton('dungeon:infernic')}</footer>`;
     document.body.append(host);
@@ -68,9 +66,12 @@ describe('stage loot previews', () => {
     expect(dialog.querySelectorAll('.stage-loot-item img').length).toBeGreaterThan(0);
     dialog.close();
     host.querySelector<HTMLButtonElement>('.selection-trigger')!.click();
-    const choices = document.querySelectorAll('.selection-modal .selection-option');
-    expect(choices).toHaveLength(2);
-    choices.forEach((choice) => expect(choice.querySelector('.stage-loot-strip img')).not.toBeNull());
+    const rows = document.querySelectorAll('.selection-modal .selection-option-row');
+    expect(rows).toHaveLength(2);
+    expect(document.querySelector('.stage-loot-strip')).toBeNull();
+    rows[0].querySelector<HTMLButtonElement>('[data-stage-loot]')!.click();
+    expect(dialog.open).toBe(true);
+    expect(dialog.querySelector('h2')!.textContent).toContain('Stage 1 ');
     unbind();
     unbindPanels();
   });

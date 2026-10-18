@@ -10,12 +10,15 @@
 ## Detailed Loot stage previews (D-342)
 
 - `presentation/stage-loot.ts` builds per-stage loot from the live drop tables:
-  per-enemy drops, captures (20%, not Machines; Roses ≤Lv.120), War final
-  recruitment, Story stage-clear and first-clear bonus ("Already earned" when
-  cleared). `stageLootButton` sits beside every stage selector; `bindStageLoot`
-  (bound once in `main.ts`) opens one shared dialog for the selected stage.
-- The shared selection panel adds a drop-art strip to each stage option of
-  `[data-dungeon-stage]`, `[data-infusion-stage]` and `[data-war-stage]` selects.
+  per-enemy drops, captures (not Machines; Roses ≤Lv.120), War final
+  recruitment, Story stage-clear and first-clear rewards. The modal is an
+  unbiased overview: art and names only, grouped (Currencies, Materials,
+  Conduits by rarity, Items, Elemental-Devourers, Element-Bearers, Stage clear,
+  First clear). No rates, amounts or roll rules; the enemy codex covers those.
+- Each option of `[data-dungeon-stage]`, `[data-infusion-stage]` and
+  `[data-war-stage]` pickers gets its own sibling Detailed Loot button
+  (`.selection-option-row`); `bindStageLoot` listens on `document` because the
+  selection dialog lives on `body`. Drop-art strips were removed.
 - Validate `npx vitest run src/presentation/stage-loot.test.ts`.
 
 ## Compressed art and quieter image loading (D-341)

@@ -6,16 +6,13 @@ import { elementalWars, isWarCharacter, warEncounter, warLoot, type WarCharacter
 import { storyBossBonus, storyCompletionReward, storyReplayReward, storyEncounter, storyLoot, storyRules } from '../content/story';
 import { roseCaptureAllowed } from '../content/roses';
 import { materialArt, materialName } from '../content/dungeon-art';
-import { formatStat } from '../content/combat';
 import { getConduit, isConduitId } from '../content/conduits';
 import { mechanicalComponents } from '../content/mechanical-components';
 import { masterChest } from '../content/master-conduits';
 import { characterArt, characterName } from '../content/character-art';
-import { capturedLevelCap } from '../game/character-instances';
 import type { Account } from '../game/account';
 import { assetUrl } from './portrait';
 import { currencyIcon } from './currency-icon';
-import { conduitIcon } from './conduit-store';
 import { mechanicalComponentIcon } from './mechanical-component-icon';
 import { masterChestIcon } from './master-conduits';
 import { escapeDialogText } from './game-dialog';
@@ -27,16 +24,13 @@ export type StageLootSource =
   | { kind: 'infusion'; mode: InfusionModeId }
   | { kind: 'war'; character: WarCharacterId };
 
-type LootGroup = 'kill' | 'capture' | 'recruit' | 'clear' | 'first';
+type LootGroup = 'currency' | 'material' | 'conduit-common' | 'conduit-rare' | 'conduit-legendary' | 'conduit-omnic' | 'item' | 'capture' | 'recruit' | 'clear' | 'first';
 
 interface LootEntry {
   id: string;
   group: LootGroup;
   icon: string;
   name: string;
-  amount: string;
-  chance: number;
-  note?: string;
 }
 
 interface StageLoot {
@@ -44,17 +38,21 @@ interface StageLoot {
   level: number;
   boss: boolean;
   entries: LootEntry[];
-  notes: string[];
 }
 
 const groupTitles: Record<LootGroup, string> = {
-  kill: 'Per-enemy drops',
-  capture: 'Captures',
-  recruit: 'Recruitment',
-  clear: 'Stage-clear reward',
-  first: 'First-clear bonus',
+  currency: 'Currencies',
+  material: 'Materials',
+  'conduit-common': 'Common Conduits',
+  'conduit-rare': 'Rare Conduits',
+  'conduit-legendary': 'Legendary Conduits',
+  'conduit-omnic': 'Omnic Conduits',
+  item: 'Items',
+  capture: 'Elemental-Devourers',
+  recruit: 'Element-Bearers',
+  clear: 'Stage clear',
+  first: 'First clear',
 };
-
 export function parseStageLootSource(value: string | undefined): StageLootSource {
   const [kind, id] = (value ?? '').split(':');
   if (kind === 'story') return { kind };
@@ -68,7 +66,10 @@ function itemIcon(id: string, account: Account | null): string {
   if (id === 'fractalis' || id === 'lycalis') return currencyIcon(id);
   if (id === mechanicalComponents.id) return mechanicalComponentIcon();
   if (id === masterChest.id) return masterChestIcon();
-  if (isConduitId(id)) return conduitIcon(id, account?.conduitUpgrades?.[id]);
+  if (isConduitId(id)) {
+    const art = getConduit(id).art;
+    return art ? `<img draggable="false" src="${assetUrl(`conduits/${art}.png`)}" alt="" width="80" height="80" loading="lazy">` : '<span class="item-showcase-pending">Artwork pending</span>';
+  }
   const art = materialArt(id);
   return art ? `<img draggable="false" src="${assetUrl(`materials/${art}.png`)}" alt="" width="80" height="80">` : '<span class="item-showcase-pending">Artwork pending</span>';
 }
@@ -78,20 +79,21 @@ function itemName(id: string): string {
   if (id === 'lycalis') return 'Null-Prismatica';
   if (id === mechanicalComponents.id) return mechanicalComponents.name;
   if (id === masterChest.id) return masterChest.name;
-  if (isConduitId(id)) {
-    const conduit = getConduit(id);
-    return `${conduit.name} · ${conduit.rarity}`;
-  }
+  if (isConduitId(id)) return getConduit(id).name;
   return materialName(id);
 }
 
-function range(minimum: number, maximum: number): string {
-  return minimum === maximum ? minimum.toLocaleString('en-US') : `${minimum.toLocaleString('en-US')}-${maximum.toLocaleString('en-US')}`;
+function dropGroup(id: string): LootGroup {
+  if (id === 'fractalis' || id === 'lycalis') return 'currency';
+  if (isConduitId(id)) return `conduit-${getConduit(id).rarity.toLowerCase()}` as LootGroup;
+  if (id === mechanicalComponents.id || id === masterChest.id) return 'item';
+  return 'material';
 }
 
-function dropEntries(drops: readonly CreatureLoot[], account: Account | null, group: LootGroup = 'kill', keepNotes = false): LootEntry[] {
-  return drops.map((drop) => ({ id: drop.id, group, icon: itemIcon(drop.id, account), name: itemName(drop.id),
-    amount: `×${range(drop.minimum, drop.maximum)}`, chance: drop.chance, ...(keepNotes && drop.note ? { note: drop.note } : {}) }));
+/** Only items that can actually drop here (zero-chance entries, such as owned Conduits, are left out). */
+function dropEntries(drops: readonly CreatureLoot[], account: Account | null, group?: LootGroup): LootEntry[] {
+  return drops.filter((drop) => drop.chance > 0 && drop.maximum > 0)
+    .map((drop) => ({ id: drop.id, group: group ?? dropGroup(drop.id), icon: itemIcon(drop.id, account), name: itemName(drop.id) }));
 }
 
 function creatureAt(stage: number, match: (creature: (typeof creatures)[number]) => boolean) {
@@ -100,27 +102,28 @@ function creatureAt(stage: number, match: (creature: (typeof creatures)[number])
   return creature;
 }
 
+function unique(entries: LootEntry[]): LootEntry[] {
+  const seen = new Set<string>();
+  return entries.filter((entry) => {
+    const key = `${entry.group}:${entry.id}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 export function stageLoot(source: StageLootSource, stage: number, account: Account | null): StageLoot {
   if (source.kind === 'story') {
     const encounter = storyEncounter(stage);
     const entries = dropEntries(storyLoot(stage), account);
-    const cleared = (account?.storyCompleted ?? 0) >= stage;
-    const firstNote = cleared ? 'Already earned on this account.' : 'First clear of this stage only.';
-    entries.push(...dropEntries([
-      { id: 'fractalis', minimum: storyReplayReward.fractalis, maximum: storyReplayReward.fractalis, chance: 1, note: 'Every clear.' },
-    ], account, 'clear', true));
-    entries.push(...dropEntries([
-      { id: 'lycalis', minimum: storyCompletionReward.lycalis, maximum: storyCompletionReward.lycalis, chance: 1, note: firstNote },
-    ], account, 'first', true));
+    entries.push(...dropEntries([{ id: 'fractalis', minimum: storyReplayReward.fractalis, maximum: storyReplayReward.fractalis, chance: 1 }], account, 'clear'));
+    const first: CreatureLoot[] = [{ id: 'lycalis', minimum: storyCompletionReward.lycalis, maximum: storyCompletionReward.lycalis, chance: 1 }];
     if (encounter.boss) {
       const bonus = storyBossBonus(stage);
-      const note = cleared ? 'Already earned on this account.' : 'Regional boss first clear only.';
-      entries.push(...dropEntries([
-        { id: 'fractalis', minimum: bonus.fractalis, maximum: bonus.fractalis, chance: 1, note },
-        { id: 'lycalis', minimum: bonus.lycalis, maximum: bonus.lycalis, chance: 1, note },
-      ], account, 'first', true));
+      first.unshift({ id: 'fractalis', minimum: bonus.fractalis, maximum: bonus.fractalis, chance: 1 });
     }
-    return { title: `${encounter.name} · Stage ${encounter.regionStage}`, level: encounter.level, boss: encounter.boss, entries, notes: [] };
+    entries.push(...dropEntries(first, account, 'first'));
+    return { title: `${encounter.name} · Stage ${encounter.regionStage}`, level: encounter.level, boss: encounter.boss, entries: unique(entries) };
   }
   if (source.kind === 'war') {
     const encounter = warEncounter(source.character, stage);
@@ -132,58 +135,41 @@ export function stageLoot(source: StageLootSource, stage: number, account: Accou
     ], account);
     if (loot.recruitmentChance) {
       const art = characterArt(source.character, 1).art;
-      entries.push({ id: source.character, group: 'recruit', name: characterName(source.character, 1), amount: 'Lv.0 · Evo.1', chance: loot.recruitmentChance,
-        icon: `<img draggable="false" src="${assetUrl(`characters/${art}.png`)}" alt="" width="80" height="80">`,
-        note: 'Already owned converts to 100 Null-Prismatica.' });
+      entries.push({ id: source.character, group: 'recruit', name: characterName(source.character, 1),
+        icon: `<img draggable="false" src="${assetUrl(`characters/${art}.png`)}" alt="" width="80" height="80">` });
     }
-    return { title: `${name} · Stage ${stage}`, level: encounter.level, boss: true, entries, notes: [] };
+    return { title: `${name} · Stage ${stage}`, level: encounter.level, boss: true, entries: unique(entries) };
   }
   if (source.kind === 'dungeon') {
     const encounter = dungeonEncounter(source.element, stage);
     const creature = creatureAt(stage, (entry) => entry.dungeonElement === source.element);
     const name = elements.find((entry) => entry.id === source.element)?.dungeon ?? 'Dungeon';
-    return { title: `${name} · Stage ${stage}`, level: encounter.level, boss: encounter.boss, entries: dropEntries(creatureLoot(creature, stage), account),
-      notes: [] };
+    return { title: `${name} · Stage ${stage}`, level: encounter.level, boss: encounter.boss, entries: unique(dropEntries(creatureLoot(creature, stage), account)) };
   }
   const encounter = infusionEncounter(source.mode, stage);
   const creature = creatureAt(stage, (entry) => entry.mode === source.mode);
-  const drops = creatureLoot(creature, stage, account?.conduits);
-  const entries = dropEntries(drops, account);
+  const entries = dropEntries(creatureLoot(creature, stage, account?.conduits), account);
   if (source.mode !== 'machines' && (source.mode !== 'roses' || roseCaptureAllowed(encounter.level))) {
-    entries.push({ id: creature.id, group: 'capture', name: encounter.enemy.name, amount: `Joins at Lv.${Math.min(capturedLevelCap, encounter.level)}`, chance: .2,
-      icon: `<img draggable="false" src="${assetUrl(`enemies/${encounter.enemy.art}.png`)}" alt="" width="80" height="80">`,
-      note: 'Keeps this form and its skills.' });
+    entries.push({ id: creature.id, group: 'capture', name: encounter.enemy.name,
+      icon: `<img draggable="false" src="${assetUrl(`enemies/${encounter.enemy.art}.png`)}" alt="" width="80" height="80">` });
   }
-  return { title: `${encounter.name} · Stage ${stage}`, level: encounter.level, boss: encounter.boss, entries,
-    notes: [...new Set(drops.flatMap((drop) => drop.note ? [drop.note] : []))] };
+  return { title: `${encounter.name} · Stage ${stage}`, level: encounter.level, boss: encounter.boss, entries: unique(entries) };
 }
 
 function entryCard(entry: LootEntry): string {
-  return `<li class="stage-loot-item ${entry.chance >= 1 ? 'is-guaranteed' : ''}" data-stage-loot-item="${escapeDialogText(entry.id)}">
-    <span class="stage-loot-art">${entry.icon}</span><strong>${escapeDialogText(entry.name)}</strong>
-    <span class="stage-loot-amount">${entry.amount}</span>
-    <span class="stage-loot-chance">${entry.chance >= 1 ? 'Guaranteed' : `${formatStat(entry.chance * 100)}%`}</span>
-    ${entry.note ? `<small>${escapeDialogText(entry.note)}</small>` : ''}</li>`;
+  return `<li class="stage-loot-item" data-stage-loot-item="${escapeDialogText(entry.id)}">
+    <span class="stage-loot-art">${entry.icon}</span><strong>${escapeDialogText(entry.name)}</strong></li>`;
 }
 
 export function stageLootContent(source: StageLootSource, stage: number, account: Account | null): string {
   const loot = stageLoot(source, stage, account);
   const groups = (Object.keys(groupTitles) as LootGroup[]).filter((group) => loot.entries.some((entry) => entry.group === group));
-  return `<p class="stage-loot-meta">Enemy Lv.${loot.level} · ${loot.boss ? 'Boss stage' : 'Standard enemies'}${source.kind === 'war' ? '' : ' · Chances are per enemy defeated'}</p>
+  return `<p class="stage-loot-meta">Enemy Lv.${loot.level}${loot.boss ? ' · Boss stage' : ''}</p>
     ${groups.map((group) => `<section class="stage-loot-group" aria-label="${groupTitles[group]}"><h3>${groupTitles[group]}</h3>
-      <ul class="stage-loot-grid">${loot.entries.filter((entry) => entry.group === group).map(entryCard).join('')}</ul></section>`).join('')}
-    ${loot.notes.length ? `<section class="loot-roll-notes" aria-label="Drop roll rules">${loot.notes.map((note) => `<p>${escapeDialogText(note)}</p>`).join('')}</section>` : ''}`;
+      <ul class="stage-loot-grid">${loot.entries.filter((entry) => entry.group === group).map(entryCard).join('')}</ul></section>`).join('')}`;
 }
-
-/** Compact artwork strip for a stage option in the shared stage picker. */
-export function stageLootStrip(source: StageLootSource, stage: number, account: Account | null, limit = 5): string {
-  const entries = stageLoot(source, stage, account).entries.filter((entry) => entry.group === 'kill' || entry.group === 'capture' || entry.group === 'recruit');
-  const shown = entries.slice(0, limit);
-  return `<span class="stage-loot-strip" aria-hidden="true">${shown.map((entry) => `<span class="stage-loot-strip-art">${entry.icon}</span>`).join('')}${entries.length > limit ? `<span class="stage-loot-more">+${entries.length - limit}</span>` : ''}</span>`;
-}
-
-export function stageLootButton(source: string, stage?: number): string {
-  return `<button type="button" class="text-button stage-loot-button" data-stage-loot="${source}" ${stage === undefined ? '' : `data-stage-loot-stage="${stage}"`} aria-haspopup="dialog">Detailed Loot</button>`;
+export function stageLootButton(source: string, stage?: number, label?: string): string {
+  return `<button type="button" class="text-button stage-loot-button" data-stage-loot="${source}" ${stage === undefined ? '' : `data-stage-loot-stage="${stage}"`} aria-haspopup="dialog"${label ? ` aria-label="${escapeDialogText(label)}"` : ''}>Detailed Loot</button>`;
 }
 
 export function stageLootSourceOf(select: HTMLSelectElement): string | null {
@@ -193,14 +179,8 @@ export function stageLootSourceOf(select: HTMLSelectElement): string | null {
   return null;
 }
 
-let accountSource: () => Account | null = () => null;
-
-export function currentStageLootAccount(): Account | null {
-  return accountSource();
-}
-
+/** Opens for Detailed Loot buttons inside `host` and inside the shared stage picker dialog. */
 export function bindStageLoot(host: HTMLElement, getAccount: () => Account | null): () => void {
-  accountSource = getAccount;
   const dialog = document.createElement('dialog');
   dialog.className = 'information-modal stage-loot-modal';
   dialog.setAttribute('aria-labelledby', 'stage-loot-heading');
@@ -234,7 +214,7 @@ export function bindStageLoot(host: HTMLElement, getAccount: () => Account | nul
   };
   const click = (event: Event): void => {
     const button = (event.target as Element | null)?.closest<HTMLElement>('[data-stage-loot]');
-    if (!button || !host.contains(button)) return;
+    if (!button || !(host.contains(button) || button.closest('.selection-modal'))) return;
     event.preventDefault();
     open(button);
   };
@@ -243,11 +223,11 @@ export function bindStageLoot(host: HTMLElement, getAccount: () => Account | nul
     if (opener?.isConnected) opener.focus({ preventScroll: true });
     opener = null;
   };
-  host.addEventListener('click', click);
+  document.addEventListener('click', click);
   dialog.addEventListener('click', backdrop);
   dialog.addEventListener('close', restore);
   return () => {
-    host.removeEventListener('click', click);
+    document.removeEventListener('click', click);
     if (dialog.open) dialog.close();
     dialog.remove();
   };

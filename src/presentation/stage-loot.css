@@ -10,7 +10,7 @@ html body .stage-loot-modal[open] {
 .stage-loot-group h3 { margin: 0 0 8px; font-size: 1rem; }
 .stage-loot-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 10px;
   margin: 0;
   padding: 0;
@@ -20,7 +20,7 @@ html body .stage-loot-modal[open] {
   display: grid;
   justify-items: center;
   align-content: start;
-  gap: 4px;
+  gap: 6px;
   padding: 10px 8px;
   border: 1px solid #ffffff2b;
   border-radius: 10px;
@@ -28,17 +28,10 @@ html body .stage-loot-modal[open] {
   text-align: center;
   min-width: 0;
 }
-.stage-loot-item.is-guaranteed { border-color: #ffffff66; background: #ffffff12; }
-.stage-loot-art { display: grid; place-items: center; width: 80px; height: 80px; }
-.stage-loot-art img, .stage-loot-art svg { width: 100%; height: 100%; object-fit: contain; }
-.stage-loot-item strong { font-size: .85rem; overflow-wrap: anywhere; }
-.stage-loot-amount { font-size: 1rem; font-weight: 700; }
-.stage-loot-chance { font-size: .8rem; color: #d9d7cf; }
-.stage-loot-item small { font-size: .72rem; color: #b9b7b0; }
-.stage-loot-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 6px; }
-.stage-loot-strip-art { display: grid; place-items: center; width: 30px; height: 30px; }
-.stage-loot-strip-art img, .stage-loot-strip-art svg { width: 100%; height: 100%; object-fit: contain; }
-.stage-loot-strip-art .item-showcase-pending { font-size: 0; width: 24px; height: 24px; border-radius: 50%; background: #ffffff22; }
-.stage-loot-more { font-size: .75rem; opacity: .8; }
-.selection-option[aria-pressed="true"] .stage-loot-more { opacity: 1; }
-.selection-option.selection-option-with-loot { display: grid; align-content: start; }
+.stage-loot-art { display: grid; place-items: center; width: 80px; height: 80px; overflow: hidden; }
+.stage-loot-art img, .stage-loot-art svg { max-width: 100%; max-height: 100%; width: 100%; height: 100%; object-fit: contain; }
+.stage-loot-art > * { max-width: 100%; max-height: 100%; }
+.stage-loot-item strong { font-size: .85rem; overflow-wrap: break-word; hyphens: auto; }
+.selection-option-row { display: flex; gap: 6px; align-items: stretch; min-width: 0; }
+.selection-option-row > .selection-option { flex: 1 1 auto; min-width: 0; }
+html body .selection-modal .selection-option-row > .stage-loot-button { flex: 0 0 auto; min-height: 44px; padding: 6px 10px; font-size: .8rem; }
