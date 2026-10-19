@@ -145,7 +145,7 @@ describe('independent per-banner pity', () => {
     expect(storage.getItem(ACCOUNT_KEY)).toBe(before);
     expect(summonHub(loaded)).toContain('199 / 80');
     expect(summonHub(loaded)).toContain('499 / 150');
-    expect(summonHub(loaded)).toContain('150 guarantee takes priority');
+    expect(summonHub(loaded)).toContain('the 150 guarantee wins');
     for (const bannerPity of [null, [], { unknown: zero }, { standard: { highestStar: 200, unownedHighestStar: 0 } }]) {
       expect(() => validateAccount({ ...account, bannerPity })).toThrow();
     }

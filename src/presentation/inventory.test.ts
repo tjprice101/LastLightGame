@@ -38,7 +38,7 @@ describe('reference Inventory layout', () => {
     account.masterConduits = Object.fromEntries(masterConduits.map(entry => [entry.id, 1]));
     const html = inventoryView(account);
     expect(html).toContain('aria-label="Open Cosmic Grand Master Chest · Choose a Master" disabled');
-    expect(html).toContain('When all Masters are owned, extra chests stay unopened.');
+    expect(html).toContain('Extra chests stay unopened once you own every Master.');
     expect(html).toContain(`Owned ${Number.MAX_SAFE_INTEGER}`);
   });
   it('renders both holdings panels simultaneously with currency art and decorative empty slots', () => {
@@ -157,7 +157,7 @@ describe('reference Inventory layout', () => {
     dialog.close = vi.fn(() => dialog.removeAttribute('open'));
     host.querySelector<HTMLButtonElement>('[data-information="inventory-heavens-weapon-details"]')!.click();
     expect(dialog.showModal).toHaveBeenCalledOnce();
-    expect(dialog.textContent).toContain('Weapon upgrading is currently unavailable');
+    expect(dialog.textContent).toContain('Weapon upgrading is unavailable');
     expect(dialog.textContent).toContain('Owned 2');
     host.querySelector<HTMLButtonElement>('#inventory-heavens-weapon-details [data-close-information]')!.click();
     expect(dialog.close).toHaveBeenCalledOnce();
@@ -253,7 +253,7 @@ describe('reference Inventory layout', () => {
     expect(card.closest('.inventory-item-grid')).not.toBeNull();
     expect(card.querySelector('.inventory-item-art > img')?.getAttribute('src')).toContain('currencies/mechanical-components.png');
     expect(card.querySelector('.inventory-quantity')!.textContent).toBe(`Owned ${Number.MAX_SAFE_INTEGER}`);
-    expect(card.querySelector('dialog')!.textContent).toContain('Masters cannot be upgraded');
+    expect(card.querySelector('dialog')!.textContent).toContain('Masters can\'t be upgraded');
     expect(host.querySelector('#inventory-panel-conduits')!.textContent).not.toContain('Broken Mechanical Components');
     expect(host.querySelector('.ref-component-count')).toBeNull();
     expect(resources.querySelector('.inventory-empty-slots')).toBeNull();

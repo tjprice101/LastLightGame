@@ -124,7 +124,7 @@ describe('shared battle chrome', () => {
     expect(html).not.toContain('pending-dungeon-scenery');
     expect(html).not.toContain('pending-enemy-art');
     expect(html).not.toContain('backgrounds/grassy-field');
-    expect(html).toContain(`Six regions with ${storyRules.regionStages} stages each`);
+    expect(html).toContain(`Six regions of ${storyRules.regionStages} stages`);
     session.state.phase = 'cleared';
     html = markup(session);
     expect(html).not.toContain('data-result-continue');

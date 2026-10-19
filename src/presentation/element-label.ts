@@ -3,7 +3,7 @@ import { assetUrl } from './portrait';
 import './element-label.css';
 import { elementAssetIds } from '../content/element-migration';
 
-export function elementLabel(id: ElementId): string {
+export function elementLabel(id: ElementId, bracketed = false): string {
   const element = getElement(id);
-  return `<span class="element-label" data-element="${id}"><img class="element-emblem" src="${assetUrl(`elements/${elementAssetIds[id]}.png`)}" alt="" aria-hidden="true" width="256" height="256">${element.name}</span>`;
+  return `<span class="element-label" data-element="${id}"><img class="element-emblem" src="${assetUrl(`elements/${elementAssetIds[id]}.png`)}" alt="" aria-hidden="true" width="256" height="256">${bracketed ? `[${element.name}]` : element.name}</span>`;
 }

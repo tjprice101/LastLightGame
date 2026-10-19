@@ -74,36 +74,33 @@ function activityFacts(stages: string, levels: string, drops: string): string {
 
 function gameplayInformation(): string {
   return informationTopics('gameplay-information', [
-    { id: 'final-loot', title: 'Final-boss loot', summary: '5x quantities on every final clear', content: `<p>${finalBossLootText}</p><p>Story applies this at all six regional bosses (stages ${storyBossStages.slice(0, -1).join(', ')} and ${storyBossStages[storyBossStages.length - 1]}). Other staged activities apply it only at their last stage; earlier bosses are unchanged.</p>` },
+    { id: 'final-loot', title: 'Final-boss loot', summary: '5x quantities on every final clear', content: `<p>${finalBossLootText}</p><p>Applies at Story's six regional bosses (stages ${storyBossStages.slice(0, -1).join(', ')} and ${storyBossStages[storyBossStages.length - 1]}) and at the last stage of every other staged activity.</p>` },
     { id: 'origins', title: 'Let and Rise', summary: 'Infinity, Nothingness and the search for the creators', content: worldLore() },
-    { id: 'start', title: 'Unlocks', summary: 'Activity level requirements', content: `<p>Story is open from the start. Other activities open at your highest-level owned Element-Bearer's level, even when that Element-Bearer is not in your squad. Captured Elemental-Devourers do not count.</p>
+    { id: 'start', title: 'Unlocks', summary: 'Activity level requirements', content: `<p>Story is open from the start. Other activities unlock by your highest-level Element-Bearer, in the squad or not. Captures don't count.</p>
       <ul><li>Awaken the Machines: Lv.10 and Emberwake March cleared</li><li>Elemental dungeons: Lv.30</li><li>Evolution infusion: Lv.50</li><li>Currency farms: Lv.60</li><li>Crimson Roses: Lv.75</li><li>Elemental War: Lv.85</li></ul>` },
-    { id: 'enemy-strength', title: 'Enemy strength', summary: 'Levels, boss stats and special attacks', content: '<p>Enemy level sets the same base stats in every activity. Bosses have more HP, Attack and Defense. Stat changes appear beside the selected stage and below enemy HP in battle: red means higher, blue means lower, compared with a standard enemy at that level.</p><p>Shields, healing, repeated hits and special attacks can make a fight harder without changing its level. Calamity lists these mechanics beside each boss. Attack is the base stat, not the damage of every hit.</p>' },
+    { id: 'enemy-strength', title: 'Enemy strength', summary: 'Levels, boss stats and special attacks', content: '<p>Enemy level sets base stats in every activity; bosses have more HP, Attack and Defense. Red marks a stat above a standard enemy of that level, blue marks one below.</p><p>Shields, healing, multi-hits and special attacks add difficulty without changing level. Calamity lists them per boss.</p>' },
     { id: 'story', title: 'Story', summary: `Six regions, ${storyRules.stages} stages`, content: `<p>${storyPurpose}</p><p>${storyRulesText}</p>` },
-    { id: 'training', title: 'Training', summary: 'Endless battles for Prismatica', content: `<p>Start at wave 1 with your saved squad. Enemy levels stop rising at Lv.120.</p>
-      <p>Per-kill Prismatica grows from 5-10 at Lv.1 to 15-30 at Lv.120. No materials, captures or Null-Prismatica.</p>` },
-    { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, enemy levels ${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}.</p>
-      <p>Materials match the dungeon's element. Quantities and rare chances increase with level. No captures or Null-Prismatica.</p>
-      <p>Defeated Elemental-Devourer entries in Collections show exact stage drop tables.</p>` },
-    { id: 'infusion', title: 'Evolution infusion', summary: 'Evolution materials from Heaven and Abyss', content: `<p>Enemy levels 50-120 across ${infusionModeStageCount} stages. Form 3 begins at Lv.${infusionFormLevel(2)}, form 4 at Lv.${infusionFormLevel(3)} and form 5 at Lv.${infusionFormLevel(4)}.</p>
-      <p>Evolution and leveling materials unlock at Lv.75. Bonus Epic, Legendary and Omnic materials unlock at Lv.80, Lv.100 and Lv.115.</p>
-      <p>Null-Prismatica starts dropping at Lv.80: an 8% chance of 1, 1.5% of 2, and 0.5% of 3. By Lv.120, these chances rise steadily to 10%, 10% and 5%. The stage ${infusionModeStageCount} boss gives 5, 10 or 15 instead, at the same chances.</p>
-      <p>Each enemy has a separate 20% capture chance. Captured copies keep their form and skills, at up to Lv.60.</p>
-      ${infusionModes.map((mode) => `<p><strong>${mode.name}</strong> - Enemy element: ${elementLabel(infusionEnemyElements[mode.id])}.
-        Materials: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</p>`).join('')}` },
-    { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages at levels 65-120, six fixed forms and a boss every fifth stage. Earlier bosses and ordinary enemies use the same payouts; final bosses award 5x currency quantities. No farm materials or separate clear bonus.</p>
-      <p>Each enemy has a separate 20% capture chance. Captured copies keep their form and skills, at up to Lv.60.</p>
+    { id: 'training', title: 'Training', summary: 'Endless battles for Prismatica', content: `<p>Endless waves with your saved squad, starting at wave 1. Enemies cap at Lv.120.</p>
+      <p>Prismatica per kill: 5-10 at Lv.1 to 15-30 at Lv.120. No materials, captures or Null-Prismatica.</p>` },
+    { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, Lv.${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}. Materials match the dungeon's element and grow with level. No captures or Null-Prismatica.</p>
+      <p>Collections lists exact drop tables for defeated Elemental-Devourers.</p>` },
+    { id: 'infusion', title: 'Evolution infusion', summary: 'Evolution materials from Heaven and Abyss', content: `<p>${infusionModeStageCount} stages, Lv.50-120. Form 3 from Lv.${infusionFormLevel(2)}, Form 4 from Lv.${infusionFormLevel(3)}, Form 5 from Lv.${infusionFormLevel(4)}.</p>
+      <p>Evolution and leveling materials from Lv.75. Bonus Epic, Legendary and Omnic materials from Lv.80, Lv.100 and Lv.115.</p>
+      <p>Null-Prismatica from Lv.80: 8% for 1, 1.5% for 2, 0.5% for 3, rising to 10%, 10% and 5% at Lv.120. The stage ${infusionModeStageCount} boss gives 5, 10 or 15 at the same chances.</p>
+      <p>20% capture chance per enemy. Captures keep their form and skills, up to Lv.60.</p>
+      <ul>${infusionModes.map((mode) => `<li><strong>${mode.name}</strong>: ${elementLabel(infusionEnemyElements[mode.id])} enemies. Materials: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</li>`).join('')}</ul>` },
+    { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages, Lv.65-120, six fixed forms and a boss every fifth stage. Final bosses give 5x currency. No materials or clear bonus.</p>
+      <p>20% capture chance per enemy. Captures keep their form and skills, up to Lv.60. Sell copies in Team; locked, squad and Conduit-equipped copies are protected.</p>
       <h4>Crownfall Treasury</h4><p>${treasuryPrismaticaText} No Null-Prismatica.
-      Common through Omnic Elemental-Devourer sales: ${treasurySalePrices.map((price) => price.toLocaleString('en-US')).join(' / ')} Prismatica.</p>
-      <h4>Rosethorn Sanctuary</h4><p>Ordinary Prismatica 7-14 at Lv.65 to 15-30 at Lv.120.
-      Null-Prismatica: a 50% chance of 1 at Lv.65, rising steadily to an 80% chance of 5 at Lv.120. The final boss gives 25 instead, at the same 80% chance.
-      Common through Omnic sales: ${sanctuarySalePrices.map((price) => `${price.fractalis.toLocaleString('en-US')} Prismatica + ${price.lycalis} Null-Prismatica`).join(' / ')}.</p>
-      <p>Sell copies in Team. Locked, squad-assigned and Conduit-equipped copies are protected.</p>` },
+      Sales, Common to Omnic: ${treasurySalePrices.map((price) => price.toLocaleString('en-US')).join(' / ')} Prismatica.</p>
+      <h4>Rosethorn Sanctuary</h4><p>Prismatica per enemy: 7-14 at Lv.65 to 15-30 at Lv.120.
+      Null-Prismatica: 50% chance of 1 at Lv.65, rising to 80% of 5 at Lv.120; the final boss gives 25 at 80%.
+      Sales, Common to Omnic: ${sanctuarySalePrices.map((price) => `${price.fractalis.toLocaleString('en-US')} Prismatica + ${price.lycalis} Null-Prismatica`).join(' / ')}.</p>` },
     { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Rosethorn materials', content: roseEventRules },
     { id: 'machines', title: 'Awaken the Machines', summary: 'Conduits, components and Masters', content: machineRulesText },
     { id: 'war', title: 'Elemental War', summary: 'Defeat challengers for a chance to recruit them', content: `<p>${warLore}</p><p>${warRulesText}</p>` },
-    { id: 'continuing', title: 'Between battles', summary: 'Health, Gauge and leaving a run', content: `<p>Choose Continue when ready. Staged activities restore HP between stages and keep your Gauge.</p>
-      <p>Training carries HP, Gauge and recovery into the next wave. Opening Settings pauses the run; quitting ends it.</p>` },
+    { id: 'continuing', title: 'Between battles', summary: 'Health, Gauge and leaving a run', content: `<p>Choose Continue when ready. Staged activities restore HP and keep Gauge; Training carries HP, Gauge and recovery between waves.</p>
+      <p>Settings pauses the run; quitting ends it.</p>` },
   ]);
 }
 

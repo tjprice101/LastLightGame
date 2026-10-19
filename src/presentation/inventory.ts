@@ -40,11 +40,11 @@ function materialMetadata(id: string): string {
 
 function inventoryInformation(): string {
   return information('inventory-information', 'Inventory', informationTopics('inventory-help', [
-    { id: 'holdings', title: 'Finding items', summary: 'Search, filters and quantities', content: '<p>Search by name or filter by item type, rarity and element. Clear resets the filters.</p><p>Panel counts show distinct owned item types, not total quantities. Details explains each item.</p><p>No element shows items without an element, including materials used by several elements.</p>' },
-    { id: 'materials', title: 'Materials', summary: 'Sources and banner bundles', content: '<p>Earn materials in Story, elemental dungeons, Heaven, Abyss and Passion of Crimson Roses.</p><p>Summons award Common, Uncommon or Rare material bundles instead of Devourers. Standard uses all six elements; Roses uses Rosethorn materials. Duplicate Element-Bearers convert into larger Rare bundles.</p><p>Check Level and Evolution for exact costs. Equipment and captured copies are managed in Team; galleries are in Collections.</p>' },
-    { id: 'conduits', title: 'Conduits', summary: 'Acquisition and equipment', content: '<p>Common Conduits are purchased in the Store; higher tiers drop in Awaken the Machines. Banners can also award a Legendary bonus.</p><p>One owned copy unlocks an ordinary Conduit for all characters. Equipping never consumes it.</p><p>Each character can equip at most four ordinary Omnic Conduits, all matching their combat element. Broken Mechanical Components fund ordinary Conduit upgrades.</p>' },
+    { id: 'holdings', title: 'Finding items', summary: 'Search, filters and quantities', content: '<p>Search by name or filter by type, rarity and element; Clear resets. Counts show distinct item types, not quantities. No element lists items shared by several elements.</p>' },
+    { id: 'materials', title: 'Materials', summary: 'Sources and banner bundles', content: '<p>Earned in Story, elemental dungeons, Heaven, Abyss and Passion of Crimson Roses.</p><p>Summons give Common, Uncommon or Rare material bundles instead of Devourers: all six elements on Standard, Rosethorn materials on Roses. Duplicate Element-Bearers become larger Rare bundles. Level and Evolution show exact costs.</p>' },
+    { id: 'conduits', title: 'Conduits', summary: 'Acquisition and equipment', content: '<p>Common Conduits are sold in the Store; higher tiers drop in Awaken the Machines, and banners can add a Legendary bonus.</p><p>One copy unlocks a Conduit for every Element-Bearer; equipping never consumes it. Up to four ordinary Omnic Conduits, matching the wearer\'s element. Broken Mechanical Components fund upgrades.</p>' },
     { id: 'conduit-terms', title: 'Conduit terms', summary: 'Words used in Conduit effects', content: `<dl class="conduit-glossary">${conduitGlossary.map(entry => `<dt>${entry.term}</dt><dd>${entry.definition}</dd>`).join('')}</dl>` },
-    { id: 'masters', title: 'Masters & chests', summary: 'Opening chests and choosing a Master', content: '<p>The final Machines boss (stage ' + machineStageCount + ') has a separate 1% Cosmic Grand Master Chest drop chance. Every Calamity EX+3 chest contains two guaranteed Cosmic Grand Master Chests.</p><p>Open a Calamity chest to receive its rewards. View Loot shows the guaranteed contents and chances for random rewards.</p><p>Open a Master chest to choose one unowned Omnic Master, even for an Element-Bearer you do not own yet. Opening uses one chest but does not equip the Master. Extra chests stay unopened once you own all 48 Masters.</p><p>A Master equips only to its named bearer, in a separate slot. It uses no ordinary slots or copies and cannot be upgraded. Check Details for its effect and limits.</p>' },
+    { id: 'masters', title: 'Masters & chests', summary: 'Opening chests and choosing a Master', content: '<p>The stage ' + machineStageCount + ' Machines boss has a 1% Cosmic Grand Master Chest chance; each Calamity EX+3 chest holds two. View Loot shows a Calamity chest\'s contents.</p><p>Opening a Master chest lets you choose one unowned Omnic Master, even for an Element-Bearer you don\'t own yet. Masters equip only to their named Element-Bearer, in their own slot, and cannot be upgraded. Extra chests stay unopened once you own all 48.</p>' },
   ]));
 }
 export function isInventoryTab(value: unknown): value is InventoryTab {
@@ -54,18 +54,18 @@ export function isInventoryTab(value: unknown): value is InventoryTab {
 function materialDescription(id: string): string {
   materialName(id);
   if (id.endsWith('-weapon') && specialtyMaterials.some(material => material.id === id)) {
-    return 'A specialty weapon material retained in your inventory. Weapon upgrading is currently unavailable; this material is not spent by Level or Evolution.';
+    return 'A specialty weapon material. Weapon upgrading is unavailable, so it is not spent.';
   }
   if (id.endsWith('-level') && specialtyMaterials.some(material => material.id === id)) {
-    return 'A specialty leveling material used by matching Element-Bearers in their Legendary and Omnic forms. Check Level for the exact amount required.';
+    return 'Levels matching Element-Bearers in Legendary and Omnic forms. Level shows the amount.';
   }
   if (id.endsWith('-evolution') && specialtyMaterials.some(material => material.id === id)) {
-    return 'A specialty evolution material used by matching Element-Bearers for their late-form evolutions. Check Evolution for the exact amount required.';
+    return 'Evolves matching Element-Bearers into late forms. Evolution shows the amount.';
   }
   if (roseMaterials.some(material => material.id === id)) {
-    return 'A Rosethorn progression material for Rosetta, Thornia and Crinso. Their Level and Evolution previews show which tiers and quantities each upgrade uses.';
+    return 'Levels and evolves Rosetta, Thornia and Crinso. Their Level and Evolution previews show amounts.';
   }
-  return 'An elemental progression material. Matching Level and Evolution recipes show the required tier and quantity before you spend it.';
+  return 'Levels and evolves matching Element-Bearers. Level and Evolution show the tier and amount.';
 }
 
 export function inventoryView(account: Account | null, selected: InventoryTab = 'materials', sections: Readonly<InventorySections> = defaultInventorySections, filters: Readonly<InventoryFilters> = defaultInventoryFilters): string {
@@ -109,7 +109,7 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
         <button type="button" class="inventory-item-art inventory-chest-control" data-open-master-chest aria-label="Open ${masterChest.name} · Choose a Master" ${masterConduits.every(entry => account?.masterConduits?.[entry.id] === 1) ? 'disabled' : ''}>${masterChestIcon()}</button>
         <strong>${masterChest.name}</strong><small>Consumable chest</small>
         <span class="inventory-quantity">Owned ${account?.masterChests}</span>
-        ${information('inventory-chest-details', masterChest.name, `<div class="inventory-detail-art">${masterChestIcon()}</div><p>A choice chest for one unowned Omnic Master.</p><p>Each opening consumes one chest and unlocks your chosen unowned Master; it does not equip the reward.</p><p>Final Awaken the Machines boss: 1% chance per defeat. Every Calamity EX+3 chest: two guaranteed Master chests. When all Masters are owned, extra chests stay unopened.</p>`, 'Details')}</li>` : ''}${masterConduits.filter(entry => account?.masterConduits?.[entry.id] === 1).map(entry => `<li class="inventory-item" data-inventory-master="${entry.id}" ${itemMetadata(`${entry.name} ${getStarter(entry.character).name}`, 'masters', entry.rarity, getStarter(entry.character).elementId)}><div class="inventory-item-art">${masterConduitIcon(entry.id)}</div><strong>${entry.name}</strong>
+        ${information('inventory-chest-details', masterChest.name, `<div class="inventory-detail-art">${masterChestIcon()}</div><p>Open to choose one unowned Omnic Master; it isn't equipped automatically.</p><p>Final Awaken the Machines boss: 1% per defeat. Each Calamity EX+3 chest: two. Extra chests stay unopened once you own every Master.</p>`, 'Details')}</li>` : ''}${masterConduits.filter(entry => account?.masterConduits?.[entry.id] === 1).map(entry => `<li class="inventory-item" data-inventory-master="${entry.id}" ${itemMetadata(`${entry.name} ${getStarter(entry.character).name}`, 'masters', entry.rarity, getStarter(entry.character).elementId)}><div class="inventory-item-art">${masterConduitIcon(entry.id)}</div><strong>${entry.name}</strong>
         <small>Omnic Master · ${getStarter(entry.character).name}</small><span class="inventory-quantity">Owned 1</span>
         ${information(`inventory-${entry.id}-details`, entry.name, `<div class="inventory-detail-art">${masterConduitIcon(entry.id)}</div><p>Omnic Master for ${getStarter(entry.character).name}.</p><h3>Effect</h3><p>${entry.effect}</p><p>Always active while equipped to its named Element-Bearer. No upgrades; generated Conduit effects cannot trigger it. Existing caps, skill costs and recovery still apply.</p><h3>Origin</h3><p>${entry.lore}</p>`, 'Details')}</li>`).join('')}</ul>
       ${account && !calamityChests.length && !(account.masterChests ?? 0) && !masterConduits.some(entry => account.masterConduits?.[entry.id] === 1) ? '<p class="inventory-empty">No Master Conduits or chests owned yet.</p>' : ''}
@@ -119,7 +119,7 @@ export function inventoryView(account: Account | null, selected: InventoryTab = 
     ${!account ? '<p role="alert">Resource inventory unavailable. Check the save error.</p>' : resourceCount
       ? `<ul class="inventory-item-grid">${components > 0 ? `<li class="inventory-item" data-inventory-resource="${mechanicalComponents.id}" ${itemMetadata(mechanicalComponents.name, 'components')}>
         <div class="inventory-item-art">${mechanicalComponentIcon()}</div><strong>${mechanicalComponents.name}</strong><span class="inventory-quantity">Owned ${components}</span>
-        ${information('inventory-components-details', mechanicalComponents.name, `<div class="inventory-detail-art">${mechanicalComponentIcon()}</div><p>Owned ${components}</p><h3>Use</h3><p>Spend these resources to upgrade ordinary Conduits, up to +5. Masters cannot be upgraded. Check Conduit Upgrade for each exact cost.</p><h3>Source</h3><p>${machineComponentRulesText}</p>`, 'Details')}</li>` : ''}${materials.map(([id, amount]) => {
+        ${information('inventory-components-details', mechanicalComponents.name, `<div class="inventory-detail-art">${mechanicalComponentIcon()}</div><p>Owned ${components}</p><h3>Use</h3><p>Upgrades ordinary Conduits up to +5; Conduit Upgrade shows costs. Masters can't be upgraded.</p><h3>Source</h3><p>${machineComponentRulesText}</p>`, 'Details')}</li>` : ''}${materials.map(([id, amount]) => {
         const art = materialArt(id);
         return `<li class="inventory-item" data-inventory-material="${id}" ${materialMetadata(id)}><div class="inventory-item-art">${art ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" aria-hidden="true" width="256" height="256" loading="lazy">` : '<span>Artwork pending</span>'}</div>
           <strong>${materialName(id)}</strong><span class="inventory-quantity">Owned ${amount}</span>

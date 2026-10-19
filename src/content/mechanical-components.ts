@@ -23,7 +23,7 @@ export function machineComponentDrop(stage: number) {
     note: 'Guaranteed per defeated machine; the final boss multiplies the base stage quantity by 5. Used only for Conduit upgrades.' };
 }
 
-export const machineComponentRulesText = `Every Machine drops Broken Mechanical Components for Conduit upgrades: ${mechanicalComponents.firstQuantity} at stage 1, increasing steadily to ${mechanicalComponents.finalQuantity} at stage ${infusionStageCount('machines')}. The final boss drops ${mechanicalComponents.finalQuantity * 5}.`;
+export const machineComponentRulesText = `Every Machine drops Broken Mechanical Components: ${mechanicalComponents.firstQuantity} at stage 1, rising to ${mechanicalComponents.finalQuantity} at stage ${infusionStageCount('machines')}; the final boss drops ${mechanicalComponents.finalQuantity * 5}.`;
 
 export function rollMachineComponents(stage: number, random: () => number): number {
   const drop = machineComponentDrop(stage);

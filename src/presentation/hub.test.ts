@@ -102,7 +102,7 @@ describe('game-specific hub layouts', () => {
     expect(isCharacterTab('missing')).toBe(false);
     expect(() => characterHub(starters[0], 'missing')).toThrow('Unknown');
     expect(characterHub(starters[0], 'upgrade-0')).toContain('+10 Null-Prismatica');
-    expect(characterInformation()).toContain("Evolution requires the current form's maximum level and preserves that level");
+    expect(characterInformation()).toContain('Evolving requires max level and keeps it');
     expect(characterInformation()).toContain('30 / 45 / 60 / 75 / 90');
     expect(characterHub(starters[0], 'upgrade-0')).toContain('disabled>Evolve');
     expect(characterHub(starters[0], 'upgrade-0')).not.toContain('Costs unset');
@@ -257,7 +257,7 @@ describe('game-specific hub layouts', () => {
     expect(equipment).toContain('Master Conduit');
     expect(equipment.match(/data-conduit-slot=/g)).toHaveLength(8);
     expect(equipment).not.toContain('<h2>Materials</h2>');
-    expect(characterInformation()).toContain('Each name can be equipped once per character');
+    expect(characterInformation()).toContain('each name equips once per member');
     expect(equipment).not.toContain('data-information="equipment-information"');
     expect(homeHub(starter, false)).not.toContain('data-character-tab="equipment"');
   });

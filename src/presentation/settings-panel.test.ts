@@ -38,7 +38,7 @@ describe('shared settings drawer', () => {
     expect(html).toContain('value="reduced" selected');
     expect(html).toContain('value="3" selected');
     expect(html).toContain('data-battle-speed');
-    expect(html).toContain('Turns advance automatically');
+    expect(html).toContain('Turns advance on their own');
     expect(html).not.toContain('name="endTurn"');
     expect(html).not.toContain('name="light"');
   });

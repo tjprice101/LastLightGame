@@ -64,8 +64,8 @@ export function bannerConduitBonus(random: () => number): ConduitId | undefined 
 }
 
 export const machineRulesText = `<p>${machineOrigin}</p>
-  <p>${machineRules.stages} stages, Lv.10-120, with a boss every fifth stage. Each enemy drops Prismatica and can drop an unowned Conduit: Rare 8%, Legendary 3.5%, and Omnic 1% from stage ${machineRules.omnicStage}.</p>
-  <p>Each rarity has a separate drop chance, so several can drop together. Unowned names within a rarity are equally likely: ${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary and ${machinePools.Omnic.length} Omnic in total. If you own every name in a rarity, that rarity gives no reward. Bosses use the same chances. Common Conduits are sold in the Store, not dropped here.</p>
+  <p>${machineRules.stages} stages, Lv.10-120, a boss every fifth stage. Each enemy drops Prismatica and can drop an unowned Conduit: Rare 8%, Legendary 3.5%, Omnic 1% from stage ${machineRules.omnicStage}.</p>
+  <p>Each rarity rolls separately; names within it are equally likely (${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary, ${machinePools.Omnic.length} Omnic). A fully owned rarity drops nothing. Common Conduits are sold in the Store.</p>
   <p>${machineComponentRulesText} No captures, evolution materials or Null-Prismatica.</p>
-  <p>One copy unlocks an ordinary Conduit for all characters. Use components to upgrade it up to +5 for your whole account; Details shows the effect at each level. Each character has eight ordinary slots and can equip up to four matching-element Omnic Conduits.</p>
+  <p>One copy unlocks a Conduit for every Element-Bearer; components upgrade it to +5. Each Element-Bearer has eight slots, up to four matching-element Omnic.</p>
   <p>${masterRulesText}</p>`;

@@ -6,15 +6,15 @@ import { gameplayHub } from './gameplay';
 import { characterHub, characterInformation, characterTabs, inventoryHub } from './hub';
 import { summonHub } from './roster';
 
-const plain = (text?: string | null): string => (text ?? '').replace(/\[([^[\]]+)\]/g, '$1');
+const plain = (text?: string | null): string => (text ?? '').replace(/<span class="element-label"[^>]*><img[^>]*>(\[[^\]]+\])<\/span>/g, '$1').replace(/\[([^[\]]+)\]/g, '$1');
 
 describe('shared menu information', () => {
   it('keeps progression and equipment rules in one Character dialog', () => {
     const rules = characterInformation();
     expect(rules.match(/data-information=/g)).toHaveLength(1);
-    expect(rules).toContain('preserves that level');
-    expect(rules).toContain('cannot evolve');
-    expect(rules).toContain('Each name can be equipped once per character');
+    expect(rules).toContain('Evolving requires max level and keeps it');
+    expect(rules).toContain('never evolve');
+    expect(rules).toContain('each name equips once per member');
     for (const tab of characterTabs) {
       const html = characterHub(starters[0], tab.id);
       expect(html).not.toContain('data-information=');
@@ -26,9 +26,9 @@ describe('shared menu information', () => {
     expect(html.match(/data-information="gameplay-information"/g)).toHaveLength(1);
     expect(plain(html)).toContain('data-information="story-prologue-information"');
     expect(plain(html)).toContain('data-information="gameplay-information"');
-    expect(plain(html)).toContain('a 50% chance of 1 at Lv.65');
-    expect(plain(html)).toContain('The final boss gives 25 instead, at the same 80% chance.');
-    expect(plain(html)).toContain('stage 25 final boss awards 24,300-48,600');
+    expect(plain(html)).toContain('50% chance of 1 at Lv.65');
+    expect(plain(html)).toContain('the final boss gives 25 at 80%.');
+    expect(plain(html)).toContain('stage 25 final boss gives 24,300-48,600');
     expect(plain(html)).toContain('Choose Continue when ready.');
     expect(html.match(/<details/g)).toHaveLength(1);
     expect(plain(html)).toContain('<details class="story-prologue">');
@@ -37,10 +37,10 @@ describe('shared menu information', () => {
     const html = inventoryHub(emptyAccount());
     expect(html.match(/data-information=/g)).toHaveLength(1);
     expect(plain(html)).toContain('data-information="inventory-information"');
-    expect(plain(html)).toContain('Common Conduits are purchased in the Store');
+    expect(plain(html)).toContain('Common Conduits are sold in the Store');
     expect(plain(html)).toContain('higher tiers drop in Awaken the Machines');
-    expect(plain(html)).toContain('at most four ordinary Omnic Conduits, all matching their combat element');
-    expect(plain(html)).toContain('Panel counts show distinct owned item types');
+    expect(plain(html)).toContain('Up to four ordinary Omnic Conduits, matching the wearer\'s element');
+    expect(plain(html)).toContain('Counts show distinct item types');
     for (const term of ['Attack Action', 'Bonus Strike', 'Direct Damage', 'Shield', 'Enemy Turn', 'Round', 'Battle']) expect(html).toContain(`<dt>${term}</dt>`);
     expect(html).not.toMatch(/data-page="(?:stores|collections)"/);
     expect(html).not.toContain('Visit Conduit Store');

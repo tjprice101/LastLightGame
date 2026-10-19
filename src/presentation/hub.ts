@@ -291,30 +291,14 @@ function acceptedFodderValues(mode: string): string {
 
 export function characterInformation(): string {
   return information('character-information', 'Character information', `<h3>Levels and evolution</h3>
-    <p>Element-Bearer level caps: ${Array.from({ length: characterGrowth.forms }, (_, index) => characterLevelCap(index + 1)).join(' / ')}.
-    Evolution requires the current form's maximum level and preserves that level. Max Level previews affordable levels within the current cap, total costs and stat changes before confirmation.
-    Captured Elemental-Devourers level independently to 60 and cannot evolve. Captures above level 60 are reduced to 60, retaining their form and skills.</p>
-    <p>Leveling always uses Common materials. Each level also requires one of every higher rarity unlocked at its destination level:
-    ${levelingMaterialTiers.map(tier => `${tier.rarity} at ${tier.destination}+`).join(', ')}.
-    These costs accumulate and use the member's element, or Rosethorn materials for Rosetta, Thornia, Crinso and Roselius.
-    Existing late-form specialty leveling costs are additional.</p>
-    <p>Core growth: 1 + 0.15 &times; level + 1.5 &times; (evolution - 1). Defense uses core growth^0.7; percentage potency grows separately.
-    Base Gauge gains, skill costs, cooldowns and durations do not scale with levels. Equipped Conduits may modify them as stated in their rules.
-    Ability potency increases with levels and evolution; there are no separate ability upgrades.</p>
-    <h3>Evolution fodder</h3><p>Late evolutions consume Elemental-Devourers by Evolution Value: Evo.3→4 needs 3, Evo.4→5 needs 8 and Evo.5→6 needs 15.
-    Each Elemental-Devourer is worth its form (first form 1 through sixth form 6), so one stronger copy or several weaker ones can be combined. Extra copies beyond the requirement can't be added.
-    Copies must match the element's infusion mode and be explicitly selected. Rosetta, Thornia and Crinso instead require Roselius from Passion of Crimson Roses. Consumption is permanent.</p>
-    <h3>Rose event growth</h3><p>Rosetta, Thornia and Crinso use Rosethorn materials instead of ordinary elemental and specialty materials.
-    Seed stacks pay for levels; Evo.5–6 levels also use Soul. Late evolutions also use Soul and selected Roselius.
-    Roselius are capturable only at enemy levels 120 or below, join at level 60 at most and can be sold for their fixed form's Rosethorn material.</p>
-    <h3>Protection and sales</h3><p>Locked, squad-assigned and Conduit-equipped copies cannot be sold or consumed.
-    Currency-mode and Roselius sales are permanent; prices depend on fixed form, not level.</p>
-    <h3>Conduits</h3><p>One owned copy unlocks a Conduit for every character. Each name can be equipped once per character without consumption.
-    Eight ordinary slots and one character-specific Master slot are available. Up to four ordinary Omnic Conduits may be equipped, each matching the character's combat element. Masters are Omnic, use only their named Element-Bearer, and have fixed kit effects without upgrades.
-    Rare and Legendary drops come from Awaken the Machines; Omnic drops unlock at stage ${machineRules.omnicStage}. Legendary banner bonuses are separate from the main draw.
-    Equipment changes save immediately and apply to the next run, not an active run.</p>
-    <h3>Captured abilities</h3><p>Captures retain their defeated form and skills. Skill 1 and Skill 2 have no cooldown; only retained Last Flare intervals become manual cooldowns.
-    Missing ability slots remain unavailable. Stats use ordinary growth without boss bonuses.</p>`);
+    <p>Element-Bearer level caps: ${Array.from({ length: characterGrowth.forms }, (_, index) => characterLevelCap(index + 1)).join(' / ')}. Evolving requires max level and keeps it. Max Level previews affordable levels, total cost and stat changes before you confirm.</p>
+    <p>Each level costs Common materials plus one of each higher rarity unlocked at the destination level: ${levelingMaterialTiers.map(tier => `${tier.rarity} at ${tier.destination}+`).join(', ')}. Materials match the member's element (Rosethorn for Rosetta, Thornia, Crinso and Roselius); late-form specialty costs are extra.</p>
+    <p>Core growth: 1 + 0.15 &times; level + 1.5 &times; (evolution - 1); Defense uses core growth^0.7. Ability potency grows with level and evolution. Gauge gains, costs, cooldowns and durations don't scale, except through Conduits.</p>
+    <h3>Evolution fodder</h3><p>Late evolutions consume Elemental-Devourers worth 3 (Evo.3→4), 8 (Evo.4→5) and 15 (Evo.5→6) Evolution Value. Each copy is worth its form, 1-6, so weaker copies can be combined; you can't exceed the requirement. Copies come from the element's infusion mode; Rosetta, Thornia and Crinso use Roselius. Consumption is permanent.</p>
+    <h3>Rose event growth</h3><p>Rosetta, Thornia and Crinso use Rosethorn materials instead of elemental and specialty materials: Seed for levels, plus Soul at Evo.5–6 and for late evolutions with Roselius. Roselius are capturable at Lv.120 or below, join at up to Lv.60 and sell for their form's material.</p>
+    <h3>Captured Elemental-Devourers</h3><p>Level independently to 60 and never evolve; captures above 60 join at 60. They keep their form and skills: Skill 1 and Skill 2 have no cooldown, a retained Last Flare uses its interval as a cooldown, and missing slots stay empty. Stats use ordinary growth, no boss bonuses.</p>
+    <h3>Protection and sales</h3><p>Locked, squad and Conduit-equipped copies can't be sold or consumed. Sales are permanent; prices depend on form, not level.</p>
+    <h3>Conduits</h3><p>One copy unlocks a Conduit for every Element-Bearer; each name equips once per member and is never consumed. Eight ordinary slots, up to four matching-element Omnic, plus one Master slot for that Element-Bearer's own fixed, non-upgradable Masters. Rare and Legendary drop in Awaken the Machines, Omnic from stage ${machineRules.omnicStage}; banners add a separate Legendary bonus. Changes apply to the next run.</p>`);
 }
 
 export function characterDetail(starter: Starter, selectedTab: string, account: Account | null = emptyAccount(), organized = false): string {

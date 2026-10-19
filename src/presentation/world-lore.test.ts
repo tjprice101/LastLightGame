@@ -15,7 +15,7 @@ import { creatureGlossary } from './creature-glossary';
 import { summonHub } from './roster';
 import { bindInformation } from './information';
 
-const plain = (text?: string | null): string => (text ?? '').replace(/\[([^[\]]+)\]/g, '$1');
+const plain = (text?: string | null): string => (text ?? '').replace(/<span class="element-label"[^>]*><img[^>]*>(\[[^\]]+\])<\/span>/g, '$1').replace(/\[([^[\]]+)\]/g, '$1');
 
 describe('canon across information and lore surfaces', () => {
   it('shares complete founding history through Help, Gameplay and both Story prologue surfaces', () => {

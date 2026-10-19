@@ -47,7 +47,7 @@ describe('Conduit Upgrade and account-aware icons', () => {
     for (const row of ['Common: 25 / 50 / 100 / 175 / 250',
       'Rare: 50 / 100 / 200 / 350 / 500', 'Legendary: 100 / 200 / 400 / 700 / 1000',
       'Omnic: 5000 / 10000 / 20000 / 35000 / 50000']) expect(html).toContain(row);
-    expect(html).toContain('3.5 times their original values');
+    expect(html).toContain('3.5x at +5');
     expect(html).toContain('Legendary penalties grow too');
     expect(html).toContain('id="mechanical-components-balance">250');
     expect(html).toContain('data-machine-activity');

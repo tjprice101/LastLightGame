@@ -345,9 +345,9 @@ describe('machine rewards and atomic saves', () => {
     expect(markup).toContain(`<dd>${machineRules.stages} stages</dd>`);
     expect(markup).toContain('<dd>10-120</dd>');
     expect(markup).toContain(`Omnic 1% from stage ${machineRules.omnicStage}`);
-    expect(plain(markup)).toContain('Every Machine drops Broken Mechanical Components for Conduit upgrades: 3 at stage 1');
-    expect(markup).toContain(`increasing steadily to 125 at stage ${machineRules.stages}`);
-    expect(markup).toContain('The final boss drops 625.');
+    expect(plain(markup)).toContain('Every Machine drops Broken Mechanical Components: 3 at stage 1');
+    expect(markup).toContain(`rising to 125 at stage ${machineRules.stages}`);
+    expect(markup).toContain('the final boss drops 625.');
     expect(markup).toContain(`value="${machineRules.stages}" selected`);
     expect(validateAccount({ ...loadAccount(saved), infusionStages: { machines: machineRules.stages } }).infusionStages.machines).toBe(machineRules.stages);
     expect(() => validateAccount({ ...loadAccount(saved), infusionStages: { machines: machineRules.stages + 1 } })).toThrow('stage');

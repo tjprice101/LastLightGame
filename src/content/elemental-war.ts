@@ -9,7 +9,7 @@ import { warStageCount } from './activities';
 
 export { isWarCharacter, type WarCharacterId } from './war-characters';
 export { warStageCount } from './activities';
-export const warRulesText = 'Ten free, sequential stages at enemy levels 90-140; one boss per stage. Guaranteed Prismatica grows from 1,500-2,500 to a boosted final-boss 25,000-40,000. Independent Null-Prismatica chance grows from 30% of 1 to a final 60% of 25. The final boss multiplies base currency quantities by 5 on every replay. Only the final boss has a 1% recruitment chance: a new Element-Bearer starts at Lv.0 · Evo.1, unequipped; an already-owned result converts to 100 Null-Prismatica. No pity, materials, Elemental-Devourer captures or clear bonus. Continue is manual; HP resets and Gauge carries over. Final-stage replay is available from Gameplay. Settings retains the encounter. Playable evolution caps are unchanged.';
+export const warRulesText = 'Ten free stages, Lv.90-140, one boss each. Prismatica: 1,500-2,500, rising to 25,000-40,000 at the final boss. Null-Prismatica: 30% chance of 1, rising to 60% of 25. The final boss gives 5x currency on every clear and a 1% chance to recruit its Element-Bearer at Lv.0, Evo.1; an owned result becomes 100 Null-Prismatica. No pity, materials or captures. HP resets between stages; Gauge carries over.';
 export const elementalWars = [
   { character: 'nerithe', name: 'The Sea Without a Shore', element: 'oceanic' },
   { character: 'orvella', name: 'The Throne Beneath the World', element: 'botanic' },

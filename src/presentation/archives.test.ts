@@ -18,7 +18,7 @@ describe('unified Archives', () => {
     const html = archives(emptyAccount());
     const dialog = html.match(/<dialog\b[^>]*id="collections-information"[\s\S]*?<\/dialog>/)?.[0];
     expect(dialog).toBeDefined();
-    expect(dialog).toContain('Catalog previews do not grant ownership.');
+    expect(dialog).toContain('Previews don\'t grant ownership.');
     expect(dialog).not.toContain('Element-Bearer identities');
     for (const starter of starters) expect(dialog).not.toContain(starter.description);
   });
@@ -110,7 +110,7 @@ describe('unified Archives', () => {
       const html = archives(account, 'conduits');
       expect(html.match(/class="archive-card archive-conduit-locked"/g)).toHaveLength(conduits.filter(entry => entry.rarity !== 'Calamitic').length);
       expect(html).not.toContain('archive-conduit-revealed');
-      expect(html).toContain('unowned Conduits remain silhouettes');
+      expect(html).toContain('unowned ones are silhouettes');
       if (!account) expect(html).toContain('Ownership unavailable');
       expect(account).toEqual(before);
     }

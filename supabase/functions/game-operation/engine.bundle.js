@@ -196,7 +196,7 @@ function treasuryFractalisDrop(level) {
   return { minimum, maximum: minimum * 2, chance: 1 };
 }
 var range = (drop) => `${drop.minimum.toLocaleString("en-US")}-${drop.maximum.toLocaleString("en-US")}`;
-var treasuryPrismaticaText = `Each enemy drops ${range(treasuryFractalisDrop(65))} Prismatica at Lv.65, rising to ${range(treasuryFractalisDrop(120))} at Lv.120. The stage 25 final boss awards ${range(bossLootRange(treasuryFractalisDrop(120), 5))} on every clear.`;
+var treasuryPrismaticaText = `Prismatica per enemy: ${range(treasuryFractalisDrop(65))} at Lv.65 to ${range(treasuryFractalisDrop(120))} at Lv.120; the stage 25 final boss gives ${range(bossLootRange(treasuryFractalisDrop(120), 5))}.`;
 
 // src/content/conduit-redesign.ts
 var conduitRedesign = {
@@ -1957,7 +1957,7 @@ function machineComponentDrop(stage) {
     note: "Guaranteed per defeated machine; the final boss multiplies the base stage quantity by 5. Used only for Conduit upgrades."
   };
 }
-var machineComponentRulesText = `Every Machine drops Broken Mechanical Components for Conduit upgrades: ${mechanicalComponents.firstQuantity} at stage 1, increasing steadily to ${mechanicalComponents.finalQuantity} at stage ${infusionStageCount("machines")}. The final boss drops ${mechanicalComponents.finalQuantity * 5}.`;
+var machineComponentRulesText = `Every Machine drops Broken Mechanical Components: ${mechanicalComponents.firstQuantity} at stage 1, rising to ${mechanicalComponents.finalQuantity} at stage ${infusionStageCount("machines")}; the final boss drops ${mechanicalComponents.finalQuantity * 5}.`;
 function rollMachineComponents(stage, random) {
   const drop = machineComponentDrop(stage);
   return lootRoll(random) < drop.chance ? drop.minimum : 0;
@@ -1972,7 +1972,7 @@ var masterChest = {
   art: "master-conduits/grand-master-chest.png",
   description: "Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward."
 };
-var masterRulesText = `The final Awaken the Machines boss (stage ${machineStageCount}) has a separate 1% chance to drop a Cosmic Grand Master Chest. Every Calamity EX+Omnipotent chest contains two. Open a Master chest in Inventory to choose one unowned Omnic Master, even for an Element-Bearer you do not own yet. A Master equips only to its named bearer, in a separate slot, without using up the copy. It cannot be upgraded. Check Details for its effect and limits. Extra chests stay unopened once you own all 48 Masters.`;
+var masterRulesText = `The stage ${machineStageCount} final boss has a 1% chance to drop a Cosmic Grand Master Chest; each Calamity EX+Omnipotent chest holds two. Open one in Inventory to choose an unowned Omnic Master, even for an Element-Bearer you don't own yet. A Master equips only to its named Element-Bearer, in its own slot, and cannot be upgraded. Chests stay unopened once you own all 48.`;
 function master(character, slot, name, design) {
   return {
     id: `master-${character}-${slot}`,
@@ -2345,10 +2345,10 @@ function bannerConduitBonus(random) {
   return rollTier(bannerPool, machineRules.bannerBonusChance, random);
 }
 var machineRulesText = `<p>${machineOrigin}</p>
-  <p>${machineRules.stages} stages, Lv.10-120, with a boss every fifth stage. Each enemy drops Prismatica and can drop an unowned Conduit: Rare 8%, Legendary 3.5%, and Omnic 1% from stage ${machineRules.omnicStage}.</p>
-  <p>Each rarity has a separate drop chance, so several can drop together. Unowned names within a rarity are equally likely: ${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary and ${machinePools.Omnic.length} Omnic in total. If you own every name in a rarity, that rarity gives no reward. Bosses use the same chances. Common Conduits are sold in the Store, not dropped here.</p>
+  <p>${machineRules.stages} stages, Lv.10-120, a boss every fifth stage. Each enemy drops Prismatica and can drop an unowned Conduit: Rare 8%, Legendary 3.5%, Omnic 1% from stage ${machineRules.omnicStage}.</p>
+  <p>Each rarity rolls separately; names within it are equally likely (${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary, ${machinePools.Omnic.length} Omnic). A fully owned rarity drops nothing. Common Conduits are sold in the Store.</p>
   <p>${machineComponentRulesText} No captures, evolution materials or Null-Prismatica.</p>
-  <p>One copy unlocks an ordinary Conduit for all characters. Use components to upgrade it up to +5 for your whole account; Details shows the effect at each level. Each character has eight ordinary slots and can equip up to four matching-element Omnic Conduits.</p>
+  <p>One copy unlocks a Conduit for every Element-Bearer; components upgrade it to +5. Each Element-Bearer has eight slots, up to four matching-element Omnic.</p>
   <p>${masterRulesText}</p>`;
 
 // src/content/flagships.ts
@@ -4304,7 +4304,7 @@ function storyDrops(stage, random) {
     return amount === void 0 ? [] : [[drop.id, amount]];
   }));
 }
-var storyRulesText = `Six regions with ${storyRules.regionStages} stages each, at enemy levels 1-55. First clear of each stage pays 150 Prismatica and 2 Null-Prismatica; replays pay 150 Prismatica. Enemies drop Common and Uncommon materials that match their region. No captures. Each regional boss gives a first-clear bonus, starting at 1,000 Prismatica and 50 Null-Prismatica and increasing 15% per region. Ordinary enemy Prismatica drops rise from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x the base Prismatica line (base 5-10 at Lv.1 to 113-226 at Lv.55) and 5x materials on every clear; first-clear bonuses do not multiply or repeat. Continue restores HP and keeps your Gauge.`;
+var storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common and Uncommon materials of their region; no captures. Prismatica per kill rises from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x Prismatica (base 5-10 to 113-226) and materials on every clear, plus a one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
 
 // src/content/calamity.ts
 var calamityActivities = [

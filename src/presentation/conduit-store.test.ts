@@ -20,7 +20,7 @@ describe('Conduit Store and discovery routes', () => {
     }
     expect(html).not.toContain('Elemental Light core');
     expect(html).not.toContain('Mechanical drive');
-    expect(html).toContain('One owned copy unlocks a Conduit for all owned characters');
+    expect(html).toContain('One copy unlocks a Conduit for every Element-Bearer');
     expect(html).toContain('data-information="store-information"');
     expect(html).not.toContain('Recovered mechanism');
     for (const conduit of conduits) expect(html).toContain(`assets/conduits/${conduit.id}.png`);

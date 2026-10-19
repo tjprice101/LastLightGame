@@ -129,7 +129,7 @@ describe('Phase9 Crownfall Treasury and Standard activation', () => {
     expect(view.host.innerHTML).not.toContain('enemies/undefined');
     const account = emptyAccount();
     expect(gameplayHub(account)).toContain('data-infusion="treasury"');
-    expect(gameplayHub(account)).toContain('stage 25 final boss awards 24,300-48,600');
+    expect(gameplayHub(account)).toContain('stage 25 final boss gives 24,300-48,600');
     expect(gameplayHub(account)).toContain('assets/banners/treasury-banner.png');
     expect(archives(account).match(/data-archive-character=/g)).toHaveLength(126);
   });

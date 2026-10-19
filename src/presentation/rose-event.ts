@@ -10,15 +10,11 @@ import { infusionEntry } from './activity-entry';
 import { devourerHabitats } from '../content/world-lore';
 import { activityDifficulty } from './calamity';
 
-export const roseEventRules = `<p>${devourerHabitats.roses}</p><p>35 stages at levels 80-140. Fight two enemies per stage, or one boss every fifth stage.</p>
-    <p>Enemies at Lv.120 or below have a 20% capture chance. Captured copies keep their form and skills, at up to Lv.60, and cannot evolve.</p>
-    <p>Each enemy drops Prismatica and has a separate chance to drop each unlocked Rosethorn material. No Null-Prismatica.
-    Bosses use the same drop chances. The stage 35 boss gives 5x Prismatica and materials on every clear. Check View Loot in Collections for exact drops.</p>
-    <p>Sales exchange one copy for its form's material: ${roseMaterials.map((material, index) => `${roseSaleQuantities[index]} ${material.name}`).join(', ')}.
-    Locked, squad and Conduit-equipped copies cannot be sold or consumed.</p>
-    <p>Rosetta, Thornia and Crinso use these materials for leveling and evolution. Late evolutions also consume Roselius worth 3, then 8, then 15 Evolution Value; each copy is worth its form (1-6), so weaker copies can be combined. You choose which copies to use.
-    Every evolution requires the current form's max level.</p>
-    <p>This event and its banner remain available without an expiry until an end date is announced.</p>`;
+export const roseEventRules = `<p>${devourerHabitats.roses}</p><p>35 stages, Lv.80-140: two enemies per stage, a boss every fifth stage. No expiry until an end date is announced.</p>
+    <p>Enemies at Lv.120 or below have a 20% capture chance. Captures keep their form and skills, up to Lv.60, and cannot evolve.</p>
+    <p>Each enemy drops Prismatica and can drop each unlocked Rosethorn material; no Null-Prismatica. The stage 35 boss gives 5x Prismatica and materials on every clear.</p>
+    <p>Sell a copy for its form's material: ${roseMaterials.map((material, index) => `${roseSaleQuantities[index]} ${material.name}`).join(', ')}. Locked, squad and Conduit-equipped copies are protected.</p>
+    <p>Rosetta, Thornia and Crinso level and evolve with these materials. Late evolutions also consume Roselius worth 3, 8, then 15 Evolution Value (each copy is worth its form, 1-6); you choose the copies. Evolving requires max level.</p>`;
 
 export function roseEvent(account: Account | null, showInformation = true): string {
   const stage = account ? unlockedInfusionStage(account, 'roses') : 1;

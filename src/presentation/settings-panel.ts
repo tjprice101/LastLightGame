@@ -7,7 +7,7 @@ import { defaultMusicPreferences, type MusicPreferences } from './music';
 export function settingsPanel(motion: MotionPreference, bindings: Bindings, speed: BattleSpeed, music: MusicPreferences = defaultMusicPreferences): string {
   return `<header class="drawer-heading"><div><h2 id="settings-heading">Settings</h2></div>
     <button id="close-settings" class="drawer-close" aria-label="Close settings">&times;</button></header>
-    ${information('settings-information', 'Settings information', '<p>Settings save on this device. Animation speed changes presentation only, not combat or rewards. Animations play unless you select Reduce motion here; device preferences do not disable them. Selection keys switch allies or targets; they cannot attack or end a turn. Use distinct physical keys. Typing and browser shortcuts are not intercepted.</p><p>Drag characters to act or use Battle menu controls. Turns advance automatically while no living ally can act. Stages require Continue.</p>')}
+    ${information('settings-information', 'Settings information', '<p>Settings save on this device. Animation speed affects visuals only. Animations play unless Reduce motion is selected here. Selection keys switch allies or targets and must be distinct; they never attack or end turns.</p><p>Drag characters or use the Battle menu to act. Turns advance on their own when no ally can act; stages wait for Continue.</p>')}
     <section class="settings-panel"><h3>Music</h3>
       <label for="music-volume">Music volume <output id="music-volume-value" for="music-volume">${music.volume}%</output></label>
       <input id="music-volume" type="range" min="0" max="100" step="1" value="${music.volume}" aria-describedby="music-description">

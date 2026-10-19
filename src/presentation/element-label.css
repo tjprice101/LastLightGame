@@ -15,3 +15,19 @@
   justify-content: center;
   font-size: .65rem;
 }
+
+/* Element medals inside information/tutorial prose sit inline at text size. */
+html body :is(.information-content, .information-topic, .battle-help) .element-label {
+  display: inline;
+  font: inherit;
+  color: inherit;
+  line-height: inherit;
+  white-space: nowrap;
+}
+html body :is(.information-content, .information-topic, .battle-help) .element-emblem {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  margin: 0 .2em 0 0;
+  vertical-align: -.25em;
+}

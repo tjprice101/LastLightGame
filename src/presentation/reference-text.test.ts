@@ -14,6 +14,13 @@ describe('bracketed reference formatting', () => {
     expect(bracketReferences(once)).toBe(once);
   });
 
+  it('gives element names a medal and brackets, keeping longer names intact', () => {
+    const html = bracketReferences('<p>Infernic foes and Infernic Embers.</p>');
+    expect(html).toMatch(/^<p><span class="element-label" data-element="infernic"><img class="element-emblem"[^>]*>\[Infernic\]<\/span> foes and \[Infernic Embers\]\.<\/p>$/);
+    expect(bracketReferences(html)).toBe(html);
+    expect(bracketReferences('<h3>Infernic</h3>')).toBe('<h3>Infernic</h3>');
+  });
+
   it('applies to Information dialog content but not to its title', () => {
     const markup = information('test-info', 'Story', '<p>Story is open from the start.</p>');
     expect(markup).toContain('<h2 id="test-info-heading">Story</h2>');

@@ -11,7 +11,7 @@ export const masterChest = {
   description: 'Choose one unowned Master Conduit for any Element-Bearer. Opens once; does not equip the reward.',
 } as const;
 export const astralReserveArt = 'master-conduits/astral-reserve.png';
-export const masterRulesText = `The final Awaken the Machines boss (stage ${machineStageCount}) has a separate 1% chance to drop a Cosmic Grand Master Chest. Every Calamity EX+Omnipotent chest contains two. Open a Master chest in Inventory to choose one unowned Omnic Master, even for an Element-Bearer you do not own yet. A Master equips only to its named bearer, in a separate slot, without using up the copy. It cannot be upgraded. Check Details for its effect and limits. Extra chests stay unopened once you own all 48 Masters.`;
+export const masterRulesText = `The stage ${machineStageCount} final boss has a 1% chance to drop a Cosmic Grand Master Chest; each Calamity EX+Omnipotent chest holds two. Open one in Inventory to choose an unowned Omnic Master, even for an Element-Bearer you don't own yet. A Master equips only to its named Element-Bearer, in its own slot, and cannot be upgraded. Chests stay unopened once you own all 48.`;
 
 function redesignedMasterRule(): OmnicRule { return { trigger: 'activation', outcomes: [] }; }
 function master(character: StarterId, slot: 1 | 2 | 3, name: string, design: string) {

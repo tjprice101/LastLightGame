@@ -253,8 +253,8 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     account.capturedCharacters = [createCreatureCopy('infusion:sanctuary:5')];
     account.creatures['infusion:sanctuary:5'] = { defeated: true };
     expect(gameplayHub(account)).toContain('data-infusion="sanctuary"');
-    expect(gameplayHub(account)).toContain('a 50% chance of 1 at Lv.65');
-    expect(gameplayHub(account)).toContain('The final boss gives 25 instead, at the same 80% chance.');
+    expect(gameplayHub(account)).toContain('50% chance of 1 at Lv.65');
+    expect(gameplayHub(account)).toContain('the final boss gives 25 at 80%.');
     expect(characterCopyManagement(account)).toContain('30,000 Prismatica + 10 Null-Prismatica');
     const glossary = creatureGlossary(account);
     expect(glossary).toContain('aria-label="Sale value"');
@@ -276,7 +276,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
     expect(view.host.innerHTML).toContain('Stage 25 / 25');
     expect(view.host.innerHTML).toContain('CURRENCY FARM');
-    expect(view.host.innerHTML).toContain('80% chance of 5');
+    expect(view.host.innerHTML).toContain('80% of 5 at Lv.120');
     expect(view.host.innerHTML).toContain('assets/backgrounds/sanctuary-arena.png');
     expect(view.host.innerHTML).toContain('assets/enemies/the-flame-beyond-eternity-rosethorn-wisp.png');
     expect(view.host.innerHTML).not.toContain('enemies/undefined');

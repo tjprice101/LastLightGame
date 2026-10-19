@@ -1,5 +1,18 @@
 # Current state and handoff
 
+## Concise information panels with element medals (D-348)
+
+- `bracketReferences` (reference-text.ts) adds the element medal + [Element] to element names
+  in information prose and brackets medal labels already there; thematic status names (Infernic
+  Embers etc.) stay whole. Inline medal sizing lives in element-label.css for
+  `.information-content`, `.information-topic` and `.battle-help`.
+- Rules/tutorial copy shortened across Gameplay topics, Help drawer, Inventory, Character,
+  Collections, Squad, Summon rates, Conduit Store/Upgrade, Settings, Story, Roses, battle help
+  and content rule constants (story, machines, masters, war, components, final-boss, Treasury).
+  All numbers and restrictions retained; lore text unchanged. Server bundle regenerated/redeployed
+  (text constants only).
+- Validation: `npx tsc --noEmit -p .`, `npx vitest run --maxWorkers=4` (4087 pass), `npm run build`.
+
 ## 20-stage Story regions (D-347)
 
 - `storyStageLayout` is 20/120 (previous 18/108, legacy 25/150); levels still Lv.1-55
