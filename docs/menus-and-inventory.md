@@ -139,6 +139,19 @@ history exists; a resumed online battle with empty history returns to Gameplay
 with clean controls/scroll. Nonbattle Back does not acquire a default destination.
 See [exit contract](free-battle.md#reliable-battle-exit-d-292).
 
+## Conduit Archive search (D-354)
+
+The Conduit Archive has the same top filter bar as the Character Archive:
+a Search box, a **Search in** sub-option (Everything, Name, Effect, Ability
+term, Lore), Rarity (including Calamitic once unlocked, and Master) and
+Ownership, plus Reset and a live "N / total Conduits shown" count.
+Words must all match (case-insensitive); brackets are optional, so `burn`
+and `[Burn]` match alike. Ability term matches only bracketed terms in the
+current and +5 effects (for example [Skill 1], [Burn], [Last Flare]); Lore
+matches the lore/power lines in Details, never prices. Master Conduits are
+searchable too. Filtering is presentation-only: no account writes or history
+entries, and card DOM is kept (cards are hidden, not rebuilt).
+
 ## Collections reorganization and control repairs (D-291)
 
 Collections uses a title/Information toolbar, wrapping gallery buttons,

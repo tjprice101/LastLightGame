@@ -759,7 +759,7 @@ html body .sanctuary-shell :is(.ref-member-row small, .ref-card-caption small, .
   font-size: .78rem;
   line-height: 1.55;
 }
-html body .sanctuary-shell .sanctuary-content :is(small, .eyebrow, .ref-component-count, [data-character-filter-result], .ref-equipment-note) { font-size: max(.875rem, 14px); line-height: 1.5; }
+html body .sanctuary-shell .sanctuary-content :is(small, .eyebrow, .ref-component-count, [data-character-filter-result], [data-conduit-filter-result], .ref-equipment-note) { font-size: max(.875rem, 14px); line-height: 1.5; }
 html body .sanctuary-shell .ref-story-region-sidebar [data-story-region] small { font-size: max(.78rem, 12px); line-height: 1.5; }
 html body .sanctuary-shell .ref-panel-heading > span { font-size: max(.78rem, 12px); letter-spacing: normal; text-transform: none; }
 html body .sanctuary-shell :is(.ref-member-row b, .ref-card-caption b, .ref-product b, .inventory-item strong, .archive-panel .archive-card h3) { font-size: .9rem; line-height: 1.35; }

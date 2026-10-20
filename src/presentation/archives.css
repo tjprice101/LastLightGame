@@ -42,6 +42,11 @@
 .archive-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-top: 20px; }
 .archive-filters label { display: grid; gap: 6px; min-width: 0; flex: 1 1 160px; }
 .archive-filters select { width: 100%; min-width: 0; min-height: 44px; }
+html body .sanctuary-shell .archive-filters .archive-search { grid-column: 1 / -1; flex-basis: 100%; }
+html body .sanctuary-shell .archive-filters .archive-search input { box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; border: 1px solid #3a3a3f; border-radius: .5rem; padding: .35rem .6rem; background: #1a1a1c; color: #f4f4f5; font: inherit; }
+html body .sanctuary-shell .archive-filters .archive-search input::placeholder { color: #a9a9ae; }
+html body .sanctuary-shell .archive-filters .archive-search input:focus-visible { outline: 2px solid #f4f4f5; outline-offset: 2px; }
+.archive-results-toolbar > [data-conduit-filter-result] { font-size: .85rem; color: #a9a9ae; margin: 0; }
 .archive-card h3 { margin-bottom: 8px; }
 .archive-card > .element-label { display: flex; margin-block: 8px; }
 .archive-card > .character-rating { margin-block: 10px; }

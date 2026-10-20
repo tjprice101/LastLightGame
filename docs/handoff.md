@@ -1,5 +1,15 @@
 # Current state and handoff
 
+## Conduit Archive search (D-354)
+
+- `presentation/archives.ts`: `conduitArchive` adds a filter bar (Search, Search in
+  scope, Rarity, Ownership, Reset, result count); `bindConduitFilters` indexes each card
+  once from its name, current/+5 effects, bracketed ability terms and `.conduit-lore`.
+- `conduit-store.ts` tags lore/power paragraphs `conduit-lore` (also used by Store/Upgrade
+  details; no visual change). Styling in `archives.css`.
+- Tests: `archives-controls.test.ts` covers every scope, rarity/ownership, Master and Reset.
+  Headless screenshots at 1440px and 390px showed no overflow and 44px controls.
+
 ## Endgame Conduit trims (D-353)
 
 - Method: the late benchmark squad (`enemy-progression.test.ts` loadout, +5, Lv105 Evo6)

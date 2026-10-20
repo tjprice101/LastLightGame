@@ -14,7 +14,7 @@ export function conduitDetails(id: ConduitId, level = 0, revealArt = true): stri
   return `<div class="conduit-details-art${revealArt ? '' : ' unreached-character-art'}">${conduitIcon(id, level)}</div>${conduitRarity(id)}
     <dl><dt>Current effect (+${level})</dt><dd>${readableEffect(conduitEffect(conduit, level))}</dd>
     <dt>At +5</dt><dd>${readableEffect(conduitEffect(conduit, 5))}</dd></dl>
-    <p>${conduit.lore}</p><p>${conduit.power}</p>
+    <p class="conduit-lore">${conduit.lore}</p><p class="conduit-lore">${conduit.power}</p>
     <p>${isCalamiticConduitId(id) ? `${calamiticTokenPrice} Calamitic Tokens in Rise's Conduit Store · Universal` : conduit.price !== null ? `${conduit.price.toLocaleString('en-US')} Prismatica in the Conduit Store` : 'Awaken the Machines drop'}${isBannerConduitEligible(id) ? ' · Eligible for the 0.5% Legendary bonus tier on successful banner draws' : ''}</p>`;
 }
 

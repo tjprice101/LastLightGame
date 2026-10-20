@@ -103,6 +103,10 @@ victory requirements. Publication remains separate.
 [133-item compatibility matrix](character-conduit-compatibility.md),
 [validation/release status](handoff.md).
 
+**Conduit Archive search (D-354):** search with a Search in sub-option
+(name/effect/ability term/lore), rarity and ownership filters.
+[Contract](menus-and-inventory.md#conduit-archive-search-d-354).
+
 **Endgame Conduit trims (D-353):** measured wall-win rates; Starvein, Granite
 and Coilfeed slightly weakened. [Audit](machines-conduit-audit.md#endgame-trims-d-353).
 

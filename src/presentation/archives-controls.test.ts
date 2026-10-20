@@ -6,6 +6,8 @@ import { bindInformation } from './information';
 import { bindCreatureGlossary } from './creature-glossary';
 import { emptyAccount } from '../game/account';
 import { machineComponentDrop } from '../content/mechanical-components';
+import { conduits, getConduit } from '../content/conduits';
+import { masterConduits } from '../content/master-conduits';
 
 let disposeSelection: (() => void) | undefined;
 afterEach(() => {
@@ -15,10 +17,11 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-function fixture() {
+function fixture(prepare?: (account: ReturnType<typeof emptyAccount>) => void) {
   const account = emptyAccount();
   account.characters.ember = { level: 30, evolution: 1 };
   account.creatures['infusion:machines:0'] = { defeated: true };
+  prepare?.(account);
   const before = structuredClone(account);
   const host = document.createElement('main');
   host.className = 'sanctuary-content';
@@ -62,7 +65,7 @@ describe('Collections controls', () => {
     expect(f.host.querySelector('[data-character-filter-result]')?.textContent).toBe('No forms match these filters.');
     f.host.querySelector<HTMLButtonElement>('[data-reset-character-filters]')!.click();
     expect(f.visible()).toHaveLength(126);
-    expect(Array.from(f.host.querySelectorAll('.archive-filters .selection-trigger')).map(button => button.textContent))
+    expect(Array.from(f.host.querySelectorAll('#archive-characters .archive-filters .selection-trigger')).map(button => button.textContent))
       .toEqual(['All elements', 'All rarities', 'All characters', 'All forms', 'All stars']);
     expect(f.account).toEqual(f.before);
   });
@@ -124,6 +127,58 @@ describe('Collections controls', () => {
     expect(cards.every(card => !card.hidden)).toBe(true);
     expect(f.account).toEqual(f.before);
   });
+
+  it('searches Conduits by name, effect, ability term and lore, combined with rarity and ownership', () => {
+    const f = fixture(account => { account.conduits = { 'bastion-lock': 1 }; });
+    const search = f.host.querySelector<HTMLInputElement>('[data-conduit-search]')!;
+    const scope = f.host.querySelector<HTMLSelectElement>('[data-conduit-search-scope]')!;
+    const all = () => Array.from(f.host.querySelectorAll<HTMLElement>('[data-archive-conduit], [data-archive-master]'));
+    const shown = () => all().filter(card => !card.hidden);
+    const result = () => f.host.querySelector('[data-conduit-filter-result]')?.textContent;
+    const type = (value: string) => { search.value = value; search.dispatchEvent(new Event('input')); };
+    const choose = (control: HTMLSelectElement, value: string) => { control.value = value; control.dispatchEvent(new Event('change', { bubbles: true })); };
+    const total = conduits.filter(entry => entry.rarity !== 'Calamitic').length + masterConduits.length;
+    expect(all()).toHaveLength(total);
+    expect(result()).toBe(`${total} / ${total} Conduits shown`);
+
+    const vigil = getConduit('vigil-core');
+    type(vigil.name.toUpperCase());
+    choose(scope, 'name');
+    expect(shown().map(card => card.dataset.archiveConduit)).toEqual(['vigil-core']);
+
+    type('[Burn]');
+    choose(scope, 'ability');
+    const burn = shown();
+    expect(burn.length).toBeGreaterThan(0);
+    expect(burn.every(card => /\[[^\]]*burn[^\]]*\]/i.test(card.textContent ?? ''))).toBe(true);
+    choose(scope, 'effect');
+    expect(shown().length).toBeGreaterThanOrEqual(burn.length);
+
+    const lore = vigil.lore.split(/\s+/).slice(0, 3).join(' ');
+    type(lore);
+    choose(scope, 'lore');
+    expect(shown().map(card => card.dataset.archiveConduit)).toContain('vigil-core');
+    choose(scope, 'name');
+    expect(shown().map(card => card.dataset.archiveConduit)).not.toContain('vigil-core');
+
+    type('');
+    choose(scope, 'all');
+    choose(f.host.querySelector<HTMLSelectElement>('[data-conduit-filter="ownership"]')!, 'owned');
+    expect(shown().map(card => card.dataset.archiveConduit)).toEqual(['bastion-lock']);
+    choose(f.host.querySelector<HTMLSelectElement>('[data-conduit-filter="rarity"]')!, 'Master');
+    expect(shown()).toHaveLength(0);
+    expect(result()).toBe('No Conduits match these filters.');
+    choose(f.host.querySelector<HTMLSelectElement>('[data-conduit-filter="ownership"]')!, '');
+    expect(shown()).toHaveLength(masterConduits.length);
+    expect(shown().every(card => card.dataset.archiveMaster)).toBe(true);
+
+    type('zzzz-no-match');
+    f.host.querySelector<HTMLButtonElement>('[data-reset-conduit-filters]')!.click();
+    expect(search.value).toBe('');
+    expect(scope.value).toBe('all');
+    expect(shown()).toHaveLength(total);
+    expect(f.account).toEqual(f.before);
+  }, 30_000);
 
   it('keeps unowned captured portraits locked independently of enemy discovery', () => {
     const f = fixture();

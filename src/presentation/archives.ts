@@ -78,19 +78,38 @@ function characterArchive(account: Account | null): string {
     }).join('')}</div>`;
 }
 
+export const conduitSearchScopes = [
+  { id: 'all', name: 'Everything' },
+  { id: 'name', name: 'Name' },
+  { id: 'effect', name: 'Effect' },
+  { id: 'ability', name: 'Ability term' },
+  { id: 'lore', name: 'Lore' },
+] as const;
+
 function conduitArchive(account: Account | null): string {
-  return `<div class="ref-archive-manage"><button class="text-button" data-page="conduit-store">Conduit Store &rarr;</button><button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button></div>
-    <div class="archive-grid">${conduits.filter(conduit => conduit.rarity !== 'Calamitic' || calamiticStoreUnlocked(account)).map((conduit) => `<article class="archive-card ${(account?.conduits?.[conduit.id] ?? 0) > 0 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-conduit="${conduit.id}">
+  const shown = conduits.filter(conduit => conduit.rarity !== 'Calamitic' || calamiticStoreUnlocked(account));
+  const rarities = [...new Set(shown.map(conduit => conduit.rarity as string)), 'Master'];
+  const total = shown.length + masterConduits.length;
+  const ownership = (owned: boolean) => !account ? 'unavailable' : owned ? 'owned' : 'unowned';
+  return `<div class="archive-filters archive-conduit-filters" role="group" aria-label="Conduit archive filters">
+      <label class="archive-search">Search<input type="search" data-conduit-search placeholder="Name, effect, [Burn], [Skill 1]…" autocomplete="off"></label>
+      <label>Search in<select data-conduit-search-scope>${conduitSearchScopes.map(scope => `<option value="${scope.id}">${scope.name}</option>`).join('')}</select></label>
+      <label>Rarity<select data-conduit-filter="rarity"><option value="">All rarities</option>${rarities.map(rarity => `<option>${rarity}</option>`).join('')}</select></label>
+      <label>Ownership<select data-conduit-filter="ownership"><option value="">All Conduits</option><option value="owned">Owned</option><option value="unowned">Not owned</option></select></label>
+      <button class="text-button" data-reset-conduit-filters>Reset filters</button>
+    </div><div class="archive-results-toolbar"><p data-conduit-filter-result role="status">${total} / ${total} Conduits shown</p>
+    <div class="ref-archive-manage"><button class="text-button" data-page="conduit-store">Conduit Store &rarr;</button><button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button></div></div>
+    <div class="archive-grid">${shown.map((conduit) => `<article class="archive-card ${(account?.conduits?.[conduit.id] ?? 0) > 0 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-conduit="${conduit.id}" data-filter-rarity="${conduit.rarity}" data-filter-ownership="${ownership((account?.conduits?.[conduit.id] ?? 0) > 0)}">
       <div class="archive-mechanism">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div>
       <h3>${conduit.name}</h3>${conduitRarity(conduit.id)}
       <p class="archive-ownership">${account ? `Owned ${account.conduits?.[conduit.id] ?? 0}` : 'Ownership unavailable'}</p>
       <p class="archive-effect">${readableEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))}</p>
       ${information(`archive-conduit-${conduit.id}`, conduit.name, conduitDetails(conduit.id, account?.conduitUpgrades?.[conduit.id], (account?.conduits?.[conduit.id] ?? 0) > 0), 'Details')}
-    </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card ${account?.masterConduits?.[entry.id] === 1 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-master="${entry.id}">
+    </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card ${account?.masterConduits?.[entry.id] === 1 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-master="${entry.id}" data-filter-rarity="Master" data-filter-ownership="${ownership(account?.masterConduits?.[entry.id] === 1)}">
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
       <p>Omnic Master · ${getStarter(entry.character).name}</p><p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
       <p class="archive-effect">${readableEffect(entry.effect)}</p><p>Choose from a Cosmic Grand Master Chest. Final Machines boss: 1% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Named bearer enhancement; no upgrades.</p>
-      ${information(`archive-master-${entry.id}`, entry.name, `<p>${entry.lore}</p><p>${readableEffect(entry.effect)}</p>`, 'Details')}
+      ${information(`archive-master-${entry.id}`, entry.name, `<p class="conduit-lore">${entry.lore}</p><p>${readableEffect(entry.effect)}</p>`, 'Details')}
     </article>`).join('')}</div>`;
 }
 
@@ -149,4 +168,50 @@ export function bindArchives(host: HTMLElement): void {
     });
   });
   if (filters.length) filterCards();
+  bindConduitFilters(host);
+}
+
+type ConduitSearchScope = (typeof conduitSearchScopes)[number]['id'];
+
+function bindConduitFilters(host: HTMLElement): void {
+  const search = host.querySelector<HTMLInputElement>('[data-conduit-search]');
+  const scope = host.querySelector<HTMLSelectElement>('[data-conduit-search-scope]');
+  const result = host.querySelector<HTMLElement>('[data-conduit-filter-result]');
+  if (!search || !scope || !result) return;
+  const filters = Array.from(host.querySelectorAll<HTMLSelectElement>('[data-conduit-filter]'));
+  const text = (nodes: ArrayLike<Element>) => Array.from(nodes, node => node.textContent ?? '').join(' ').toLowerCase();
+  const cards = Array.from(host.querySelectorAll<HTMLElement>('[data-archive-conduit], [data-archive-master]')).map(card => {
+    const effect = text(card.querySelectorAll('.archive-effect, .information-content dd'));
+    const index: Record<ConduitSearchScope, string> = {
+      name: text(card.querySelectorAll(':scope > h3')),
+      effect,
+      ability: (effect.match(/\[[^\]]+\]/g) ?? []).join(' '),
+      lore: text(card.querySelectorAll('.conduit-lore')),
+      all: '',
+    };
+    index.all = `${index.name} ${effect} ${index.lore} ${text(card.querySelectorAll(':scope > p'))} ${card.dataset.filterRarity ?? ''}`.toLowerCase();
+    return { card, index };
+  });
+  const apply = (): void => {
+    const terms = search.value.toLowerCase().replace(/[[\]]/g, ' ').split(/\s+/).filter(Boolean);
+    const field = (conduitSearchScopes.some(entry => entry.id === scope.value) ? scope.value : 'all') as ConduitSearchScope;
+    let shown = 0;
+    for (const { card, index } of cards) {
+      card.hidden = !filters.every(filter => !filter.value || card.getAttribute(`data-filter-${filter.dataset.conduitFilter}`) === filter.value)
+        || !terms.every(term => index[field].includes(term));
+      if (!card.hidden) shown++;
+    }
+    result.textContent = shown ? `${shown} / ${cards.length} Conduits shown` : 'No Conduits match these filters.';
+  };
+  search.addEventListener('input', apply);
+  scope.addEventListener('change', apply);
+  filters.forEach(filter => filter.addEventListener('change', apply));
+  host.querySelector('[data-reset-conduit-filters]')?.addEventListener('click', () => {
+    search.value = '';
+    for (const control of [scope, ...filters]) {
+      control.value = control === scope ? 'all' : '';
+      control.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  });
+  apply();
 }
