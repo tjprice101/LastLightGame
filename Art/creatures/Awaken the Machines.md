@@ -79,7 +79,7 @@ square gacha JRPG collectible item illustration, one ancient-war targeting relay
 
 ### Aegis Capacitor
 
-Art ID: `aegis-capacitor`. +15% Defense / +15 Shatter Capacity.
+Art ID: `aegis-capacitor`. +15% Defense / +15 Elemental Gauge Capacity.
 
 ```text
 square gacha JRPG collectible item illustration, one ancient-war ward capacitor, nested silver shield plates folded around a suspended lavender crystal ring accumulator, ivory locks charcoal coils four small shield fins and clear geometric openings, restored chunky machine silhouette elegant curved engineering, face-free compact chibi-inspired object two thirds of canvas with generous margins, clean precise anime contours crisp cel shading smooth painted highlights jewel-like silver ivory charcoal and lavender colors, plain solid green background (#00FF00), flat unlit color edge to edge through all openings, no glows or glowing visual effects, opaque hard-edged powers and non-emissive painted highlights --ar 1:1 --niji 6 --s 100 --q 1 --no face, eyes, hands, characters, multiple items, text, letters, numbers, runes, logo, watermark, interface, scenery, photorealism, 3d render, cropping, background gradient, textured background, glow, light bloom, haze, light spill

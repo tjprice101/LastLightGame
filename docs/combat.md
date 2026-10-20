@@ -502,7 +502,7 @@ is no forced level-gap multiplier or Conduit requirement.
 ## Open rules
 
 The battle starts with only the saved starter and player/enemy turns. Each ally acts at
-most once, building an individual Shatter Gauge from normal attacks and
+most once, building an individual Elemental Gauge from normal attacks and
 incoming hits to pay for abilities. Only Last Flare forces full next-turn recovery.
 Directional drags execute on release; right-click an ally performs Normal Attack
 against the selected enemy, equivalent to dragging down (D-287). Defense remains

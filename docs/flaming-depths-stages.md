@@ -25,7 +25,7 @@ See [Dungeons and captures](dungeons-and-captures.md) for the confirmed contract
   wave. This comparison is explicit: not higher than an arbitrarily deep Adventure run.
 - Stage 50 ends the dungeon, never generates Stage 51. A wave-end action report
   appears after every clear, including Stage 50, before continuing or completing.
-- Proposed carryover: current HP, shields, cooldowns, Shatter Gauge and recovery
+- Proposed carryover: current HP, shields, cooldowns, Elemental Gauge and recovery
   between stages; no free healing or revival at a boundary. Leave/defeat ends the
   run. Upgrade/squad balance must be implemented and playtested before difficulty
   can be called achievable. Current unupgraded solo starters are not expected to

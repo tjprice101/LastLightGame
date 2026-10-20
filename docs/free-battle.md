@@ -92,7 +92,7 @@ Multi-member mobile formations cap portrait height relative to the viewport,
 retaining full names/HP/Gauge and usable touch targets instead of forcing three
 endgame portraits to consume the whole screen. Solo art keeps its existing scale.
 The legacy document filename is retained for existing links. The owner approved an initial
-editable balance set. Shatter Gauge costs/gains are owner-approved; only ultimates
+editable balance set. Elemental Gauge costs/gains are owner-approved; only ultimates
 force next-turn recovery, superseding the earlier heavy-attack recovery rule.
 This is not production balance or a rewarded story mode.
 
@@ -292,7 +292,7 @@ Growth uses wave-1 base stats, NOT the previous wave's stats, so it is not compo
 Integer rounding may make adjacent HP/attack increments differ by one.
 Edit [Adventure scaling](../src/content/combat.ts) to tune the fixed increments.
 Clear a wave, then explicitly choose Next wave.
-Continue until defeat, exit, or a confirmed restart. Health, shields, Shatter Gauge,
+Continue until defeat, exit, or a confirmed restart. Health, shields, Elemental Gauge,
 retained Last Flare cooldowns, and recovery carry between waves; defeated allies stay defeated.
 Flora' living passive still applies at the new-turn boundary.
 
@@ -340,7 +340,7 @@ presentation; results remain available in HP changes and the battle log.
 
 ### Impact and health-bar timing
 
-Allied field readouts show **current/maximum HP, Defense and Shatter Gauge only**
+Allied field readouts show **current/maximum HP, Defense and Elemental Gauge only**
 throughout battle. Attack, critical stats, elemental damage, shield amounts and
 status text are omitted from the character readout. Identity/name/role stays
 above the artwork. Full stats remain in Home/Character; action availability,
@@ -403,10 +403,10 @@ Each living character may perform **one** action per player turn:
 
 | Action | Rule |
 | --- | --- |
-| Normal Attack | Drag down, right-click an ally or Battle menu Normal Attack button; 100% damage to one target; gain 20 Shatter Gauge |
-| Ability 1 | Character-specific effect; costs 25 Shatter Gauge; no cooldown |
-| Ability 2 | Character-specific effect; costs 40 Shatter Gauge; no cooldown |
-| Last Flare | Character-specific ultimate; costs 100 Shatter Gauge; no action next turn |
+| Normal Attack | Drag down, right-click an ally or Battle menu Normal Attack button; 100% damage to one target; gain 20 Elemental Gauge |
+| Ability 1 | Character-specific effect; costs 25 Elemental Gauge; no cooldown |
+| Ability 2 | Character-specific effect; costs 40 Elemental Gauge; no cooldown |
+| Last Flare | Character-specific ultimate; costs 100 Elemental Gauge; no action next turn |
 | Defense | Battle menu Defense button; consumes action, reduces incoming damage by 10% until next player turn |
 
 **Heavy Attack is removed**, not hidden behind another input. The internal `light`
@@ -418,7 +418,7 @@ remains; incoming hits still grant +10 gauge. It applies to damage events, not
 healing or shield gains, and clears at the next player-turn boundary, including
 a wave transition. Recovery also blocks Defense; it is not a second free action.
 
-Every character has an independent **Shatter Gauge**, starting at **0**, capped at
+Every character has an independent **Elemental Gauge**, starting at **0**, capped at
 **100 at base**. Capacity is a per-character stat and grows with level/evolution;
 gains and costs do not. Runtime entries use saved owned progression.
 Normal gains apply once per action, not once per target. Each incoming
@@ -428,7 +428,7 @@ generate gauge. Skills and Last Flare require and spend their exact costs; spend
 does not generate gauge. Gauges persist between turns/waves and consecutive
 dungeon/infusion stages in the same run, but reset on quit, mode switch,
 retry/replay, restart or reload. Next-stage continuation still refreshes HP
-and cooldowns; it no longer resets Shatter Gauge.
+and cooldowns; it no longer resets Elemental Gauge.
 
 Skills do not force recovery or cooldowns for any squad member (D-300).
 Skill1/Skill2 may repeat on successive turns, including for captured allies.
@@ -477,7 +477,7 @@ Skills, Weaken and crits modify outgoing damage, not the mitigation ratio.
 Defense pierce reduces the Defense input before mitigation. Shields absorb calculated damage before health; HP floors at
 zero. Healing caps at maximum HP and never revives. Burn bypasses defense but
 still consumes shield before HP. There is no elemental advantage multiplier yet.
-All characters also have Shatter capacity (100 at base) and Elemental Damage
+All characters also have Elemental Gauge capacity (100 at base) and Elemental Damage
 (Infernis 8, Tizu/Flora 0 because their current kits have no damaging elemental
 status). Burn uses Elemental Damage times its skill coefficient. Both the
 Attack Damage stat and skill damage coefficient grow with progression; this
@@ -520,13 +520,13 @@ random living ally. This is not an authoritative or monetized online battle syst
 ## Resolution order
 
 Validate phase, living actor, action allowance, recovery, resources, cooldown, and
-target -> clone state -> spend action/Shatter Gauge, apply attack gauge gain, and
+target -> clone state -> spend action/Elemental Gauge, apply attack gauge gain, and
 set ultimate recovery/retained Last Flare cooldown -> damage and
 statuses -> support effects -> outcome check.
 Invalid operations throw explicit errors without modifying the previous state.
 
 On ending a turn, each living enemy takes its burn tick, then (if still alive)
-attacks a living ally, who gains Shatter Gauge after damage. Its weaken duration
+attacks a living ally, who gains Elemental Gauge after damage. Its weaken duration
 decrements after its attack.
 Check defeat/clear, then advance the round and apply Flora' passive if the battle
 continues. An enemy killed by burn does not attack. No dead-target retargeting is

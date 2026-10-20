@@ -138,11 +138,14 @@ Materials roll independently by rarity.
 | Material | Stable ID | Unlock level | Chance at unlock ->140 |
 | --- | --- | --- | --- |
 |Seed |`rosethorn-common` |80 |100% ->100% |
-|Bud |`rosethorn-uncommon` |90 |49% ->98% |
-|Bloom |`rosethorn-rare` |100 |45% ->90% |
-|Crest |`rosethorn-epic` |110 |40% ->80% |
-|Heart |`rosethorn-legendary` |120 |30% ->60% |
-|Soul |`rosethorn-omnic` |130 |17.5% ->35% |
+|Bud |`rosethorn-uncommon` |80 |49% ->98% |
+|Bloom |`rosethorn-rare` |80 |45% ->90% |
+|Crest |`rosethorn-epic` |80 |40% ->80% |
+|Heart |`rosethorn-legendary` |80 |30% ->60% |
+|Soul |`rosethorn-omnic` |95 |17.5% ->35% |
+
+D-357: unlocks follow the X-5 rule (`max(80, materialDropLevel)`), so every
+tier through Heart is available from the first Lv80 stage.
 
 Quantity minimum is `1+floor(2*((level-80)/60)^2)`, maximum twice that.
 Every successful final drop is15-30 after the D-2945x terminal-boss quantity boost. Chance progress uses the shared power1.4

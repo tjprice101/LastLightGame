@@ -85,7 +85,7 @@ def document():
         "Rose Grace specializes Botanic Renewal, Thorn Aegis specializes Oceanic Protection and Rose Duality specializes Infernic Embers; "
         "their unique symbols and native rules remain.",
         "## Removed from generation, not from essential gameplay\n\n"
-        "Do not generate separate icons for Attack Boost, Defense, Last Flare Recovery, Shatter Gauge, "
+        "Do not generate separate icons for Attack Boost, Defense, Last Flare Recovery, Elemental Gauge, "
         "Skill Cooldown, Normal Momentum, Rift Echo, Undertide Reprise or Storm Clock. "
         "Keep exact live text, meters, timers and equipment feedback; instant cooldown feedback "
         "is not a lingering elemental status. All existing owned Conduit effects remain functional. "

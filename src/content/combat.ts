@@ -204,7 +204,7 @@ export function describeFighter(id: StarterId, snapshot: FighterDefinition): Fig
     kit.abilities.ultimate.description = `${pct(value('ultimate', 'damageMultiplier'))}% damage to all enemies and restore ${formatStat(value('ultimate', 'healing'))} HP to every living ally; cannot revive.`;
   } else {
     kit.passive.description = kit.passive.lightGaugeBonus !== undefined
-      ? `Normal Attack gains ${formatStat(kit.passive.lightGaugeBonus)} additional Shatter Gauge, capped by Shatter Gauge capacity.`
+      ? `Normal Attack gains ${formatStat(kit.passive.lightGaugeBonus)} additional Elemental Gauge, capped by Elemental Gauge capacity.`
       : kit.passive.healFraction > 0
       ? `At each new player turn, heal living allies by ${pct(kit.passive.healFraction)}% of maximum health while this Element-Bearer lives.`
       : kit.passive.defenseBonus > 0 ? `+${formatStat(kit.passive.defenseBonus)} defense, included in effective defense.`

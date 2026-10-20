@@ -43,7 +43,7 @@ Rarity is independent of character stars. No new Uncommon/Epic Conduit tier.
 Status: **35 designs implemented and validated**. Values are acquisition-level +0.
 HP means Health; ATK means Attack; DEF means Defense; ED means Elemental Damage;
 CD means the Critical Damage multiplier; CR is Critical Rate in percentage
-points; SC is flat Shatter Capacity. Percentages are stat modifiers, not
+points; SC is flat Elemental Gauge Capacity. Percentages are stat modifiers, not
 percentages of final damage. Preserve zero-base stats and existing CR caps.
 
 Each row has a different stat combination/tradeoff or trigger-and-payoff,

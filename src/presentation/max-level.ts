@@ -17,7 +17,7 @@ export function maxLevelPreview(account: Account, id: string): { html: string; p
     : copy ? resolveCapturedFighter({ ...copy, level: plan.targetLevel }, equipment, account.conduitUpgrades).stats : null;
   if (!before || !after) throw new Error('Character stats are unavailable.');
   const labels = { health: 'Health', defense: 'Defense', damage: 'Attack', crit: 'Critical rate',
-    critMultiplier: 'Critical multiplier', shatterCapacity: 'Shatter Gauge capacity', elementalDamage: 'Elemental damage' } as const;
+    critMultiplier: 'Critical multiplier', shatterCapacity: 'Elemental Gauge capacity', elementalDamage: 'Elemental damage' } as const;
   return { plan, html: `<h2 id="max-level-heading">Max Level</h2>
     <p>Level ${plan.currentLevel} &rarr; ${plan.targetLevel} · Cap ${plan.cap}</p>
     ${itemShowcase([{ id: 'fractalis', amount: plan.cost.fractalis }, ...Object.entries(plan.cost.materials).map(([id, amount]) => ({ id, amount }))], 'Total cost')}

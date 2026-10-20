@@ -21,7 +21,7 @@ function stats(account: Account, id: string) {
 }
 
 const labels = { health: 'Health', damage: 'Attack', defense: 'Defense', crit: 'Critical rate',
-  critMultiplier: 'Critical multiplier', shatterCapacity: 'Shatter Gauge capacity', elementalDamage: 'Elemental damage' } as const;
+  critMultiplier: 'Critical multiplier', shatterCapacity: 'Elemental Gauge capacity', elementalDamage: 'Elemental damage' } as const;
 type StatKey = keyof typeof labels;
 type Stats = Record<StatKey, number>;
 

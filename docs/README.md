@@ -103,7 +103,9 @@ victory requirements. Publication remains separate.
 [133-item compatibility matrix](character-conduit-compatibility.md),
 [validation/release status](handoff.md).
 
-**Shatter Gauge terminology (D-356):** [Shatter Gauge]/key terms bracketed; Conduit details show one Conduit Ability heading.
+**Elemental Gauge rename and X-5 drop rule (D-357):** enemies of level X drop materials a level X-5 Element-Bearer needs; see [handoff](handoff.md).
+
+**Elemental Gauge terminology (D-356):** [Elemental Gauge]/key terms bracketed; Conduit details show one Conduit Ability heading.
 [Handoff](handoff.md).
 
 **Griffin Turbine (D-355):** ally Gauge now scales with [Normal Attack] damage.

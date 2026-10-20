@@ -194,7 +194,9 @@ describe('Passion of Crimson Roses integration', () => {
 
   it('uses shared authoritative loot with guaranteed Seeds and growing independent material rolls', () => {
     const first = infusionLoot('roses', 1).specialties;
-    expect(first).toEqual([{ id: 'rosethorn-common', minimum: 1, maximum: 2, chance: 1 }]);
+    expect(first.map(drop => drop.id)).toEqual(roseMaterials.slice(0, 5).map(material => material.id));
+    expect(first[0]).toEqual({ id: 'rosethorn-common', minimum: 1, maximum: 2, chance: 1 });
+    first.slice(1).forEach((drop, index) => expect(drop.chance).toBeCloseTo([.98, .9, .8, .6][index] / 2, 12));
     const final = infusionLoot('roses', 35).specialties;
     expect(final.map((drop) => [drop.minimum, drop.maximum])).toEqual(Array.from({ length: 6 }, () => [15, 30]));
     expect(final.map((drop) => drop.chance)).toEqual([1, .98, .9, .8, .6, .35]);

@@ -730,7 +730,7 @@ export class BattleView {
       ${results}
       <p id="battle-error" role="alert" aria-atomic="true" class="status"></p>
       ${this.session.log.at(-1) === conduitRestartNotice ? `<p class="battle-compatibility-notice" role="status">${conduitRestartNotice}</p>` : ''}
-      <div class="battle-footer-summary"><p id="battle-announcement" role="status">${complete ? state.calamity ? 'Calamity tier cleared. Your chest is saved in Inventory. Enter the next unlocked tier from Play.' : `All ${stages} stages cleared. Return to Play to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Shatter Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your squad has fallen. Retry when ready; earned rewards are kept.' : 'Select a target. Drag an ally: ↑ Last Flare · ← Skill 1 · → Skill 2 · ↓ Normal. Right-click: Normal Attack.'}</p>
+      <div class="battle-footer-summary"><p id="battle-announcement" role="status">${complete ? state.calamity ? 'Calamity tier cleared. Your chest is saved in Inventory. Enter the next unlocked tier from Play.' : `All ${stages} stages cleared. Return to Play to replay unlocked stages.` : state.phase === 'cleared' ? (dungeon ? 'Stage cleared. Continue with full health; Elemental Gauge carries over.' : 'Wave cleared. Continue when ready; recovery and health carry over.') : state.phase === 'defeat' ? 'Your squad has fallen. Retry when ready; earned rewards are kept.' : 'Select a target. Drag an ally: ↑ Last Flare · ← Skill 1 · → Skill 2 · ↓ Normal. Right-click: Normal Attack.'}</p>
       <span class="battle-footer-target"><strong>${actor.name}</strong><small>Target: ${state.enemies.find((enemy) => enemy.id === this.targetId)?.name ?? 'None'}</small></span></div>
       </footer>
       <dialog id="battle-menu" class="battle-menu" aria-labelledby="battle-menu-heading">
@@ -749,10 +749,10 @@ export class BattleView {
       <section class="enemy-skill-guide"><h3>Enemy skills and timing</h3>${state.enemies.map((enemy) => `<p><strong>${enemy.name} · Lv.${enemy.level}${enemy.boss ? ' · Boss' : ''}</strong></p><ul>${(enemy.enemySkills ?? []).map((skill) =>
         `<li>${skill.name}${skill.action === 'ultimate' ? ' (Ultimate)' : ''}: ${formatStat(skill.multiplier * 100)}% Attack, every ${skill.every} turns${state.round % skill.every === 0 ? ' · Due this turn' : ''}.</li>`).join('')}</ul>`).join('')}
         <p class="quiet">One attack per enemy turn. The second skill takes priority on overlapping schedules; boss ultimates take highest priority. Normal attacks on other turns.</p></section>
-      ${actionIds.map((action) => `<p><strong>${action === 'light' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name}:</strong> ${action === 'light' ? '100% damage; +20 Shatter Gauge.' : `${abilityStatuses(kit.abilities[action].strength, actor.kit?.nativeIdentity && !actor.captured ? actor.definitionId : undefined, action)}${readableEffect(kit.abilities[action].description)}`}</p>`).join('')}
+      ${actionIds.map((action) => `<p><strong>${action === 'light' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name}:</strong> ${action === 'light' ? '100% damage; +20 Elemental Gauge.' : `${abilityStatuses(kit.abilities[action].strength, actor.kit?.nativeIdentity && !actor.captured ? actor.definitionId : undefined, action)}${readableEffect(kit.abilities[action].description)}`}</p>`).join('')}
       <p class="quiet">Drag at least 32 pixels and release to act; return to the start to cancel. A white shimmer means Last Flare is ready (steady glow with reduced motion). The Battle menu has accessible action buttons.</p>
       <p class="quiet">Each living character acts once per turn; only Last Flare forces a recovery turn.
-        Shatter Gauge starts at ${shatterGauge.starting}; attacks build it and each incoming hit adds ${shatterGauge.incomingHit}, even through shields.
+        Elemental Gauge starts at ${shatterGauge.starting}; attacks build it and each incoming hit adds ${shatterGauge.incomingHit}, even through shields.
         Enemy turns run automatically when no ally can act. Passing forfeits unused actions.</p>
       ${state.story ? `<p class="quiet">${storyRulesText}</p><p>${storyEncounter(state.story.storyStage).introduction}</p>` : state.war ? `<p class="quiet">${warRulesText}</p>` : ''}
       <div ${state.calamity || state.story || state.war ? 'hidden' : ''}>
@@ -995,8 +995,8 @@ export class BattleView {
       ${ability ? abilityStatuses(ability.strength, actor.kit.nativeIdentity && !actor.captured ? actor.definitionId : undefined, action === 'light' ? undefined : action) : ''}
       ${nativeActionHint(state, actor, action, this.targetId) ? `<span class="battle-ally-target">${nativeActionHint(state, actor, action, this.targetId)}</span>` : ''}
       ${ability && actor.kit.nativeIdentity ? `<span>${readableEffect(ability.description)}</span>` : ''}
-      ${action === 'light' ? `<span>Down or right-click · +${shatterGauge.gains[action]} Shatter Gauge</span>` : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'}</span>`}
-      ${ability ? `<span>Costs ${shatterGauge.costs[action]} Shatter Gauge${action === 'ultimate' && ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
+      ${action === 'light' ? `<span>Down or right-click · +${shatterGauge.gains[action]} Elemental Gauge</span>` : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'}</span>`}
+      ${ability ? `<span>Costs ${shatterGauge.costs[action]} Elemental Gauge${action === 'ultimate' && ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
       <small>${reason ?? 'Ready'}</small></button>`;
   }
 

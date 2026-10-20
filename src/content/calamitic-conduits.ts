@@ -37,7 +37,7 @@ export function calamiticEffect(id: CalamiticConduitId, level = 0): string {
     case 'calamitic-horizon-cleaving-godpress':
       return `${amount(40, 60)}% of your Attack Actions' Direct Damage bypasses enemy [Shields]. While the target has a [Shield], your Attack Actions also gain +${amount(30, 60)}% Direct Damage.`;
     case 'calamitic-throne-borrowed-tomorrows':
-      return `Your first [Normal Attack] each player turn does not spend your action and lets you take one additional [Skill 1] or [Skill 2] that turn. Taking it grants ${amount(10, 30)} [Shatter Gauge], but you cannot act on the next player turn.`;
+      return `Your first [Normal Attack] each player turn does not spend your action and lets you take one additional [Skill 1] or [Skill 2] that turn. Taking it grants ${amount(10, 30)} [Elemental Gauge], but you cannot act on the next player turn.`;
     case 'calamitic-cathedral-final-equation':
       return `Use three different action types in succession to complete the [Equation]. Repeating a type restarts the sequence with that action. The third action deals ${amount(120, 240)}% of your Attack as [Bonus Strikes] split equally among enemies, then restarts the sequence.`;
   }

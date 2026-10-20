@@ -1239,7 +1239,7 @@ lock and squad/leader actions. Collection cards share artwork/caption styling
 and show actual stars, element, level and squad membership.
 
 Stats reuse the seven-stat renderer and Before Conduits comparisons. Skills
-show only retained abilities with their real Shatter Gauge costs/cooldowns;
+show only retained abilities with their real Elemental Gauge costs/cooldowns;
 missing slots remain unavailable. Growth includes exact per-copy level costs,
 Max Level and real sale value/protection reasons where selling is supported.
 No evolution, passive or ultimate is invented. Conduits reuse the same eight-slot
@@ -2340,7 +2340,7 @@ movement from facing and upgrade celebrations, without moving nearby text.
 Battle retains its existing equivalent inner pulse; fallen units remain still.
 Both device and game reduced-motion preferences disable all idle pulses.
 Full character stats remain available in these menus; the battle field displays
-only HP, Defense and Shatter Gauge for allies, and HP/Defense for enemies.
+only HP, Defense and Elemental Gauge for allies, and HP/Defense for enemies.
 
 Changing sanctuary destinations, entering a dungeon/Adventure, or opening a
 character shortcut from Home uses a black loading curtain with a small
@@ -2514,10 +2514,10 @@ The next evolution is previewed as a solid black silhouette on a neutral light
 backing, without its form title or colors. The owned portrait remains in color;
 successful evolution reveals that form in the existing portrait. Final Evo.6
 shows no next-form preview. This is a visual reveal, not asset-access protection.
-Overview shows the real passive, abilities, Shatter Gauge costs, and cooldowns;
+Overview shows the real passive, abilities, Elemental Gauge costs, and cooldowns;
 no mock-up health slider, estimated damage, fake levels, or additional owned roster
 has been implemented. The saved starter remains the only Owned Element-Bearer.
-Home and Character Overview display all seven stats: Shatter capacity, Health,
+Home and Character Overview display all seven stats: Elemental Gauge capacity, Health,
 Defense, Attack Damage, Critical Rate, Critical Damage Multiplier and Elemental
 Damage. Battle displays the same stats with current HP/gauge and resolved skills.
 The level/Fracture panels enforce caps 30/45/60/75/90/105 across six forms,

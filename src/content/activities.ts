@@ -10,6 +10,13 @@ export const elements = [
 export type ElementId = (typeof elements)[number]['id'];
 export const materialRarities = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Omnic'] as const;
 export type MaterialRarity = (typeof materialRarities)[number];
+/** Highest character level whose next level-up first needs each rarity (leveling destinations 31/46/61/76/91). */
+export const materialFirstNeededLevel = { Common: 0, Uncommon: 30, Rare: 45, Epic: 60, Legendary: 75, Omnic: 90 } as const satisfies Record<MaterialRarity, number>;
+/** D-357: an enemy of level X drops the materials a character of level X-5 needs next. */
+export const materialDropLevelOffset = 5;
+export function materialDropLevel(rarity: MaterialRarity): number {
+  return rarity === 'Common' ? 1 : materialFirstNeededLevel[rarity] + materialDropLevelOffset;
+}
 export const elementalMaterials = elements.flatMap((element) => materialRarities.map((rarity) => ({
   id: `${element.id}-${rarity.toLowerCase()}`,
   elementId: element.id,

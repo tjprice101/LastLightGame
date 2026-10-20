@@ -8,6 +8,11 @@ var elements = [
   { id: "chaotic", name: "Chaotic", affinity: "Dark Matter & Energy", dungeon: "Ruins of Chaos", infusion: "abyss" }
 ];
 var materialRarities = ["Common", "Uncommon", "Rare", "Epic", "Legendary", "Omnic"];
+var materialFirstNeededLevel = { Common: 0, Uncommon: 30, Rare: 45, Epic: 60, Legendary: 75, Omnic: 90 };
+var materialDropLevelOffset = 5;
+function materialDropLevel(rarity) {
+  return rarity === "Common" ? 1 : materialFirstNeededLevel[rarity] + materialDropLevelOffset;
+}
 var elementalMaterials = elements.flatMap((element) => materialRarities.map((rarity) => ({
   id: `${element.id}-${rarity.toLowerCase()}`,
   elementId: element.id,
@@ -245,7 +250,7 @@ var conduitRedesign = {
     ]
   },
   "fracture-reservoir": {
-    "description": "+10 -> +35 [Shatter Gauge] capacity; begin each Battle with 5 -> 10 [Shatter Gauge].",
+    "description": "+10 -> +35 [Elemental Gauge] capacity; begin each Battle with 5 -> 10 [Elemental Gauge].",
     "ranges": [
       {
         "base": 10,
@@ -295,7 +300,7 @@ var conduitRedesign = {
     ]
   },
   "reserve-torque-crank": {
-    "description": "[Shatter Gauge] you gain from abilities and hits is increased by 10% -> 25% (at least +1).",
+    "description": "[Elemental Gauge] you gain from abilities and hits is increased by 10% -> 25% (at least +1).",
     "ranges": [
       {
         "base": 10,
@@ -350,7 +355,7 @@ var conduitRedesign = {
     ]
   },
   "aegis-capacitor": {
-    "description": "Gain 4 -> 8 [Shatter Gauge] whenever your [Shield] absorbs enemy damage.",
+    "description": "Gain 4 -> 8 [Elemental Gauge] whenever your [Shield] absorbs enemy damage.",
     "ranges": [
       {
         "base": 4,
@@ -372,7 +377,7 @@ var conduitRedesign = {
     ]
   },
   "twinpulse-bellows": {
-    "description": "Start each Battle with 15% -> 35% of your [Shatter Gauge] capacity added to your [Shatter Gauge].",
+    "description": "Start each Battle with 15% -> 35% of your [Elemental Gauge] capacity added to your [Elemental Gauge].",
     "ranges": [
       {
         "base": 15,
@@ -383,7 +388,7 @@ var conduitRedesign = {
     ]
   },
   "glassroot-gimbal": {
-    "description": "Attack Actions deal +1% -> +2% Direct Damage for every 10 [Shatter Gauge] you hold before paying the cost.",
+    "description": "Attack Actions deal +1% -> +2% Direct Damage for every 10 [Elemental Gauge] you hold before paying the cost.",
     "ranges": [
       {
         "base": 1,
@@ -445,7 +450,7 @@ var conduitRedesign = {
     ]
   },
   "coilfeed-ratchet": {
-    "description": "Your abilities cost 7% -> 14% less [Shatter Gauge] (rounded down). [Last Flare] cannot drop below 70 [Shatter Gauge].",
+    "description": "Your abilities cost 7% -> 14% less [Elemental Gauge] (rounded down). [Last Flare] cannot drop below 70 [Elemental Gauge].",
     "ranges": [
       {
         "base": 7,
@@ -566,7 +571,7 @@ var conduitRedesign = {
     ]
   },
   "horizon-heartcase": {
-    "description": "When enemy Direct Damage would defeat you, drain [Shatter Gauge] instead and stay at 1 HP: 1 [Shatter Gauge] per 1% maximum HP of the excess, reduced by 20% -> 50%, plus 10 for each earlier save this Battle. Without enough [Shatter Gauge] you fall.",
+    "description": "When enemy Direct Damage would defeat you, drain [Elemental Gauge] instead and stay at 1 HP: 1 [Elemental Gauge] per 1% maximum HP of the excess, reduced by 20% -> 50%, plus 10 for each earlier save this Battle. Without enough [Elemental Gauge] you fall.",
     "ranges": [
       {
         "base": 20,
@@ -650,7 +655,7 @@ var conduitRedesign = {
     ]
   },
   "infernic-phoenix-reactor": {
-    "description": "The first time you are defeated each Battle, revive at 25% -> 50% of your maximum HP with 0 [Shatter Gauge].",
+    "description": "The first time you are defeated each Battle, revive at 25% -> 50% of your maximum HP with 0 [Elemental Gauge].",
     "ranges": [
       {
         "base": 25,
@@ -690,7 +695,7 @@ var conduitRedesign = {
     ]
   },
   "atmospheric-griffin-turbine": {
-    "description": "When your [Normal Attack] damages HP, each other ally gains [Shatter Gauge] equal to 15% -> 30% of that damage as a share of your Attack, up to 25 [Shatter Gauge] each. A hit for your full Attack gives 15 [Shatter Gauge] at +0.",
+    "description": "When your [Normal Attack] damages HP, each other ally gains [Elemental Gauge] equal to 15% -> 30% of that damage as a share of your Attack, up to 25 [Elemental Gauge] each. A hit for your full Attack gives 15 [Elemental Gauge] at +0.",
     "ranges": [
       {
         "base": 15,
@@ -724,7 +729,7 @@ var conduitRedesign = {
     ]
   },
   "chaotic-ouroboros-core": {
-    "description": "[Last Flare] converts your [Shatter Gauge] above its cost into a [Shield] of 0.3% -> 0.6% of your maximum HP per [Shatter Gauge].",
+    "description": "[Last Flare] converts your [Elemental Gauge] above its cost into a [Shield] of 0.3% -> 0.6% of your maximum HP per [Elemental Gauge].",
     "ranges": [
       { "base": 0.3, "maximum": 0.6, "percent": true, "step": false }
     ]
@@ -775,7 +780,7 @@ var conduitRedesign = {
     ]
   },
   "atmospheric-skythread-rudder": {
-    "description": "Each [Normal Attack] grants a [Tailwind]. Each [Tailwind] reduces your next [Skill 1] or [Skill 2] cost by 10 -> 20 [Shatter Gauge], and that skill spends all of them.",
+    "description": "Each [Normal Attack] grants a [Tailwind]. Each [Tailwind] reduces your next [Skill 1] or [Skill 2] cost by 10 -> 20 [Elemental Gauge], and that skill spends all of them.",
     "ranges": [
       {
         "base": 10,
@@ -808,7 +813,7 @@ var conduitRedesign = {
     ]
   },
   "tranquilitic-stillhour-carillon": {
-    "description": "At the start of each [Last Flare] recovery turn, gain 15 -> 30 [Shatter Gauge] and give the same amount to the other ally with the lowest [Shatter Gauge].",
+    "description": "At the start of each [Last Flare] recovery turn, gain 15 -> 30 [Elemental Gauge] and give the same amount to the other ally with the lowest [Elemental Gauge].",
     "ranges": [
       {
         "base": 15,
@@ -869,7 +874,7 @@ var conduitRedesign = {
     ]
   },
   "pulse-trigger-pawl": {
-    "description": "Critical [Skill 1] or [Skill 2] hits grant 8 -> 16 [Shatter Gauge].",
+    "description": "Critical [Skill 1] or [Skill 2] hits grant 8 -> 16 [Elemental Gauge].",
     "ranges": [
       {
         "base": 8,
@@ -908,7 +913,7 @@ var conduitRedesign = {
     ]
   },
   "clearwater-manifold": {
-    "description": "[Shatter Gauge] you gain beyond your capacity passes 50% -> 100% of the excess to the other ally with the lowest [Shatter Gauge].",
+    "description": "[Elemental Gauge] you gain beyond your capacity passes 50% -> 100% of the excess to the other ally with the lowest [Elemental Gauge].",
     "ranges": [
       { "base": 50, "maximum": 100, "percent": true, "step": false }
     ]
@@ -935,7 +940,7 @@ var conduitRedesign = {
     ]
   },
   "covercharge-drum": {
-    "description": "When another ally falls, every living ally restores 10% -> 20% of their maximum HP and gains 20 -> 40 [Shatter Gauge].",
+    "description": "When another ally falls, every living ally restores 10% -> 20% of their maximum HP and gains 20 -> 40 [Elemental Gauge].",
     "ranges": [
       {
         "base": 10,
@@ -973,7 +978,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "rootbound-triage-vault": {
-    "description": "After your active healing, spend 15 [Shatter Gauge] to heal the ally with the lowest HP up to 20% -> 40% of their maximum HP if they are below it.",
+    "description": "After your active healing, spend 15 [Elemental Gauge] to heal the ally with the lowest HP up to 20% -> 40% of their maximum HP if they are below it.",
     "ranges": [
       {
         "base": 20,
@@ -984,7 +989,7 @@ var conduitRedesign = {
     ]
   },
   "solace-anchor": {
-    "description": "Your first [Normal Attack] each player turn costs 10 -> 5 [Shatter Gauge] and does not spend your action.",
+    "description": "Your first [Normal Attack] each player turn costs 10 -> 5 [Elemental Gauge] and does not spend your action.",
     "ranges": [
       { "base": 10, "maximum": 5, "percent": false, "step": false }
     ]
@@ -1006,7 +1011,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "atmospheric-storm-clock": {
-    "description": "Each critical Attack Action stores a [Storm Clock] charge that reduces your next [Last Flare] cost by 15 -> 30 [Shatter Gauge]. [Last Flare] spends all charges.",
+    "description": "Each critical Attack Action stores a [Storm Clock] charge that reduces your next [Last Flare] cost by 15 -> 30 [Elemental Gauge]. [Last Flare] spends all charges.",
     "ranges": [
       {
         "base": 15,
@@ -1072,7 +1077,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-sprout-3": {
-    "description": "The first [Last Flare: Worldseed] each Battle that finds a fallen ally revives each fallen ally at 30% of their maximum HP with 0 [Shatter Gauge].",
+    "description": "The first [Last Flare: Worldseed] each Battle that finds a fallen ally revives each fallen ally at 30% of their maximum HP with 0 [Elemental Gauge].",
     "ranges": []
   },
   "master-atmoso-1": {
@@ -1108,7 +1113,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-bliss-3": {
-    "description": "[Bliss]'s [Last Flare] gives the other ally with the lowest [Shatter Gauge] a [Quiet Feather]: their next [Skill 1] costs no [Shatter Gauge].",
+    "description": "[Bliss]'s [Last Flare] gives the other ally with the lowest [Elemental Gauge] a [Quiet Feather]: their next [Skill 1] costs no [Elemental Gauge].",
     "ranges": []
   },
   "master-bruno-1": {
@@ -1128,7 +1133,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-disciple-2": {
-    "description": "After [Last Flare], allies are linked for two player Rounds: [Shatter Gauge] gained by a linked ally is split equally among all linked allies.",
+    "description": "After [Last Flare], allies are linked for two player Rounds: [Elemental Gauge] gained by a linked ally is split equally among all linked allies.",
     "ranges": []
   },
   "master-disciple-3": {
@@ -1200,7 +1205,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-nerithe-2": {
-    "description": "[Fold the Sea] deals no damage. Instead, it grants each ally 15 [Shatter Gauge] and 15% less damage from their next enemy hit.",
+    "description": "[Fold the Sea] deals no damage. Instead, it grants each ally 15 [Elemental Gauge] and 15% less damage from their next enemy hit.",
     "ranges": []
   },
   "master-nerithe-3": {
@@ -1228,7 +1233,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-vaelor-3": {
-    "description": "[Vaelor]'s [Normal Attack] lets the other ally with the most [Shatter Gauge] act again this player turn.",
+    "description": "[Vaelor]'s [Normal Attack] lets the other ally with the most [Elemental Gauge] act again this player turn.",
     "ranges": []
   }
 };
@@ -1612,7 +1617,7 @@ function calamiticEffect(id, level = 0) {
     case "calamitic-horizon-cleaving-godpress":
       return `${amount(40, 60)}% of your Attack Actions' Direct Damage bypasses enemy [Shields]. While the target has a [Shield], your Attack Actions also gain +${amount(30, 60)}% Direct Damage.`;
     case "calamitic-throne-borrowed-tomorrows":
-      return `Your first [Normal Attack] each player turn does not spend your action and lets you take one additional [Skill 1] or [Skill 2] that turn. Taking it grants ${amount(10, 30)} [Shatter Gauge], but you cannot act on the next player turn.`;
+      return `Your first [Normal Attack] each player turn does not spend your action and lets you take one additional [Skill 1] or [Skill 2] that turn. Taking it grants ${amount(10, 30)} [Elemental Gauge], but you cannot act on the next player turn.`;
     case "calamitic-cathedral-final-equation":
       return `Use three different action types in succession to complete the [Equation]. Repeating a type restarts the sequence with that action. The third action deals ${amount(120, 240)}% of your Attack as [Bonus Strikes] split equally among enemies, then restarts the sequence.`;
   }
@@ -2588,7 +2593,7 @@ var warActionNames = {
 var warFighters = {
   nerithe: {
     stats: { health: 235, defense: 13, damage: 40, crit: 0.18, shatterCapacity: 100, critMultiplier: 1.6, elementalDamage: 0 },
-    passive: { name: "Uncharted Current", description: "Normal Attack gains 5 additional Shatter Gauge, capped by Shatter Gauge capacity.", damageBonus: 0, defenseBonus: 0, healFraction: 0, lightGaugeBonus: 5 },
+    passive: { name: "Uncharted Current", description: "Normal Attack gains 5 additional Elemental Gauge, capped by Elemental Gauge capacity.", damageBonus: 0, defenseBonus: 0, healFraction: 0, lightGaugeBonus: 5 },
     abilities: {
       skill1: { name: "Meridian Break", description: "170% damage to one enemy; weaken its next two enemy-phase attacks by 20%.", cooldown: 0, strength: { damageMultiplier: 1.7, weakenFraction: 0.2 } },
       skill2: { name: "Fold the Sea", description: "130% damage to all enemies; weaken surviving targets by 15% for two enemy phases.", cooldown: 0, targets: "all-enemies", strength: { damageMultiplier: 1.3, weakenFraction: 0.15 } },
@@ -2852,7 +2857,7 @@ var nativeIdentities = {
     playLoop: "[Tizu] places a short-lived shield on one chosen ally before the next enemy attack.",
     passive: {
       name: "Stillwater Guard",
-      description: "When a shield from [Tizu]\u2019s abilities fully absorbs an enemy\u2019s direct hit so that no HP is lost, the shielded ally gains 8 [Shatter Gauge]."
+      description: "When a shield from [Tizu]\u2019s abilities fully absorbs an enemy\u2019s direct hit so that no HP is lost, the shielded ally gains 8 [Elemental Gauge]."
     },
     abilities: {
       skill1: { ...ability("Undertow Thrust", "150% direct damage to one enemy and apply 25% [Weaken] for the next enemy phase. [Weaken] reduces the direct damage that enemy deals.", 1.5), strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
@@ -3008,7 +3013,7 @@ var nativeIdentities = {
     playLoop: "[Nerithe]\u2019s [Normal Attack] adds [Survey] points to an enemy; her skills spend them to ignore part of its Defense.",
     passive: {
       name: "Uncharted Current",
-      description: "[Nerithe]\u2019s [Normal Attack] gains 5 extra [Shatter Gauge] and adds 1 [Survey] point to its target. Only one enemy can hold [Survey]; surveying another enemy removes the old points. [Survey] disappears when its enemy is defeated."
+      description: "[Nerithe]\u2019s [Normal Attack] gains 5 extra [Elemental Gauge] and adds 1 [Survey] point to its target. Only one enemy can hold [Survey]; surveying another enemy removes the old points. [Survey] disappears when its enemy is defeated."
     },
     abilities: {
       skill1: ability("Meridian Break", "180% direct damage to the enemy holding [Survey], or the selected enemy if none does. Spends 1 [Survey] point, if any, to ignore 25% of the target\u2019s Defense.", 1.8),
@@ -3234,7 +3239,7 @@ function describeFighter(id, snapshot) {
     kit.abilities.skill2.description = `Restore ${formatStat(value2("skill2", "healing"))} health to every living ally; cannot revive. Increase living allies' outgoing attack damage by ${pct(value2("skill2", "attackBoostFraction"))}% this and next player turn (refresh; does not stack).`;
     kit.abilities.ultimate.description = `${pct(value2("ultimate", "damageMultiplier"))}% damage to all enemies and restore ${formatStat(value2("ultimate", "healing"))} HP to every living ally; cannot revive.`;
   } else {
-    kit.passive.description = kit.passive.lightGaugeBonus !== void 0 ? `Normal Attack gains ${formatStat(kit.passive.lightGaugeBonus)} additional Shatter Gauge, capped by Shatter Gauge capacity.` : kit.passive.healFraction > 0 ? `At each new player turn, heal living allies by ${pct(kit.passive.healFraction)}% of maximum health while this Element-Bearer lives.` : kit.passive.defenseBonus > 0 ? `+${formatStat(kit.passive.defenseBonus)} defense, included in effective defense.` : `+${pct(kit.passive.damageBonus)}% outgoing damage at or below 50% health.`;
+    kit.passive.description = kit.passive.lightGaugeBonus !== void 0 ? `Normal Attack gains ${formatStat(kit.passive.lightGaugeBonus)} additional Elemental Gauge, capped by Elemental Gauge capacity.` : kit.passive.healFraction > 0 ? `At each new player turn, heal living allies by ${pct(kit.passive.healFraction)}% of maximum health while this Element-Bearer lives.` : kit.passive.defenseBonus > 0 ? `+${formatStat(kit.passive.defenseBonus)} defense, included in effective defense.` : `+${pct(kit.passive.damageBonus)}% outgoing damage at or below 50% health.`;
     for (const action of ["skill1", "skill2", "ultimate"]) {
       const ability2 = kit.abilities[action];
       const strength = ability2.strength;
@@ -3380,7 +3385,7 @@ var roseMaterials = materialRarities.map((rarity, tier) => ({
   rarity
 }));
 var roseSaleQuantities = [1, 2, 3, 4, 5, 6];
-var roseMaterialUnlocks = [80, 90, 100, 110, 120, 130];
+var roseMaterialUnlocks = materialRarities.map((rarity) => Math.max(80, materialDropLevel(rarity)));
 var roseFinalChances = [1, 0.98, 0.9, 0.8, 0.6, 0.35];
 var roseCaptureMaximumLevel = 120;
 var roseFormStages = [1, 6, 11, 16, 22, 29];
@@ -3562,9 +3567,9 @@ function infusionEncounter(mode, stage, schedule = "caps") {
   };
 }
 var infusionDropTable = [
-  { rarity: "epic", level: 80, chance: 0.15, finalChance: 0.85, quantity: 3 },
-  { rarity: "legendary", level: 100, chance: 0.06, finalChance: 0.65, quantity: 3 },
-  { rarity: "omnic", level: 115, chance: 0.02, finalChance: 0.4, quantity: 3 }
+  { rarity: "epic", level: materialDropLevel("Epic"), chance: 0.15, finalChance: 0.85, quantity: 3 },
+  { rarity: "legendary", level: materialDropLevel("Legendary"), chance: 0.06, finalChance: 0.65, quantity: 3 },
+  { rarity: "omnic", level: materialDropLevel("Omnic"), chance: 0.02, finalChance: 0.4, quantity: 3 }
 ];
 var specialtyDropTable = [
   { purpose: "weapon", level: 50, quantity: 3 },
@@ -3588,7 +3593,7 @@ function infusionLoot(mode, stage, schedule = "caps") {
     return drop ? [bossLootRange({ id: `${mode}-${entry.purpose}`, ...drop }, multiplier)] : [];
   });
   const bonuses = infusionDropTable.flatMap((entry) => {
-    const drop = scaledDrop(level, schedule === "legacy" ? 80 : 50, entry.level, entry.chance, entry.finalChance, entry.quantity);
+    const drop = scaledDrop(level, schedule === "legacy" ? 80 : 50, schedule === "legacy" ? Math.max(80, entry.level) : entry.level, entry.chance, entry.finalChance, entry.quantity);
     return drop ? [bossLootRange({ rarity: entry.rarity, ...drop }, multiplier)] : [];
   });
   return { specialties, bonuses };
@@ -3628,11 +3633,11 @@ var evolutionBalance = [
   { fractalis: 4800, amounts: [25, 10] }
 ];
 var levelingMaterialTiers = [
-  { rarity: "Uncommon", destination: 31 },
-  { rarity: "Rare", destination: 46 },
-  { rarity: "Epic", destination: 61 },
-  { rarity: "Legendary", destination: 76 },
-  { rarity: "Omnic", destination: 91 }
+  { rarity: "Uncommon", destination: materialFirstNeededLevel.Uncommon + 1 },
+  { rarity: "Rare", destination: materialFirstNeededLevel.Rare + 1 },
+  { rarity: "Epic", destination: materialFirstNeededLevel.Epic + 1 },
+  { rarity: "Legendary", destination: materialFirstNeededLevel.Legendary + 1 },
+  { rarity: "Omnic", destination: materialFirstNeededLevel.Omnic + 1 }
 ];
 function levelingMaterials(element, destination) {
   if (element !== "rosethorn") getElement(element);
@@ -4052,14 +4057,19 @@ function dungeonEncounter(element, stage, family = 0) {
   };
 }
 var materialRarities2 = ["common", "uncommon", "rare", "epic", "legendary", "omnic"];
-var materialBrackets = [
-  { firstStage: 1, ranges: { common: [4, 5] } },
-  { firstStage: 6, ranges: { common: [8, 10], uncommon: [2, 3] } },
-  { firstStage: 12, ranges: { common: [12, 15], uncommon: [5, 6], rare: [2, 3] } },
-  { firstStage: 18, ranges: { common: [16, 20], uncommon: [8, 10], rare: [5, 6], epic: [2, 3] } },
-  { firstStage: 24, ranges: { common: [20, 25], uncommon: [12, 15], rare: [8, 10], epic: [5, 6], legendary: [2, 3] } },
-  { firstStage: 30, ranges: { common: [25, 30], uncommon: [16, 20], rare: [12, 15], epic: [8, 10], legendary: [5, 6], omnic: [2, 3] } }
+var bracketRanges = [
+  { common: [4, 5] },
+  { common: [8, 10], uncommon: [2, 3] },
+  { common: [12, 15], uncommon: [5, 6], rare: [2, 3] },
+  { common: [16, 20], uncommon: [8, 10], rare: [5, 6], epic: [2, 3] },
+  { common: [20, 25], uncommon: [12, 15], rare: [8, 10], epic: [5, 6], legendary: [2, 3] },
+  { common: [25, 30], uncommon: [16, 20], rare: [12, 15], epic: [8, 10], legendary: [5, 6], omnic: [2, 3] }
 ];
+var materialBrackets = bracketRanges.map((ranges, index) => {
+  const level = materialDropLevel(materialRarities[index]);
+  const firstStage = Array.from({ length: elementalDungeonRules.stages }, (_, stage) => stage + 1).find((stage) => elementalEnemyLevel(stage) >= level) ?? 1;
+  return { level, firstStage, ranges };
+});
 function materialBracket(stage) {
   elementalEnemyLevel(stage);
   return [...materialBrackets].reverse().find((bracket) => stage >= bracket.firstStage);
@@ -4243,7 +4253,18 @@ function storyMaterialLoot(stage) {
   const minimum = 1 + Math.floor(2 * growth);
   const drops = [
     { id: `${element}-common`, minimum, maximum: minimum * 2, chance: 1 },
-    { id: `${element}-uncommon`, minimum, maximum: minimum * 2, chance: 0.25 + 0.55 * (level - 1) / 54 }
+    ...level >= materialDropLevel("Uncommon") ? [{
+      id: `${element}-uncommon`,
+      minimum,
+      maximum: minimum * 2,
+      chance: 0.25 + 0.55 * (level - materialDropLevel("Uncommon")) / (storyRules.maximumLevel - materialDropLevel("Uncommon"))
+    }] : [],
+    ...level >= materialDropLevel("Rare") ? [{
+      id: `${element}-rare`,
+      minimum: 1,
+      maximum: minimum,
+      chance: 0.15 + 0.2 * (level - materialDropLevel("Rare")) / (storyRules.maximumLevel - materialDropLevel("Rare"))
+    }] : []
   ];
   return drops.map((drop) => bossLootRange(drop, bossLootMultiplier({ story: { storyStage: stage } })));
 }
@@ -4253,7 +4274,7 @@ function storyDrops(stage, random) {
     return amount === void 0 ? [] : [[drop.id, amount]];
   }));
 }
-var storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common and Uncommon materials of their region; no captures. Prismatica per kill rises from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x Prismatica (base 5-10 to 113-226) and materials on every clear, plus a one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
+var storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common materials of their region, plus Uncommon from Lv.35 and Rare from Lv.50; no captures. Prismatica per kill rises from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x Prismatica (base 5-10 to 113-226) and materials on every clear, plus a one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
 
 // src/content/calamity.ts
 var calamityActivities = [
@@ -5755,7 +5776,7 @@ function generatedGauge(owner, target, offer, events, native = false) {
   const amount = Math.min(target.stats.shatterCapacity - target.shatter, Math.max(0, offer));
   if (amount <= 0) return 0;
   target.shatter += amount;
-  emit(events, "status", owner, target, amount, native ? `${target.name} gains ${amount} Shatter Gauge.` : `${owner.name}'s Conduit gives ${target.name} ${amount} Shatter Gauge.`, native);
+  emit(events, "status", owner, target, amount, native ? `${target.name} gains ${amount} Elemental Gauge.` : `${owner.name}'s Conduit gives ${target.name} ${amount} Elemental Gauge.`, native);
   return amount;
 }
 function layers(unit) {
@@ -6511,7 +6532,7 @@ function rescue(state, target, loss, events, direct) {
     if (target.shatter >= cost) {
       target.shatter -= cost;
       n.heartcaseSaves = saves + 1;
-      emit(events, "status", target, target, cost, `${target.name}'s Horizon Heartcase drains ${cost} Shatter Gauge to stay standing.`);
+      emit(events, "status", target, target, cost, `${target.name}'s Horizon Heartcase drains ${cost} Elemental Gauge to stay standing.`);
       return Math.max(0, target.hp - 1);
     }
   }
@@ -7057,7 +7078,7 @@ function actionUnavailable(state, actor, action) {
   if (actor.recoverThrough >= state.round && !(action === "light" && recoveryNormal(actor))) return "Recovering this turn after Last Flare.";
   if (action === "ultimate" && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
   const gaugeCost = actionGaugeCost(actor, action, state);
-  if (actor.shatter < gaugeCost) return `Requires ${gaugeCost} Shatter Gauge.`;
+  if (actor.shatter < gaugeCost) return `Requires ${gaugeCost} Elemental Gauge.`;
   return null;
 }
 function actionGaugeCost(actor, action, state) {
@@ -7611,7 +7632,7 @@ function nextStage(previous, progress) {
     target: "",
     amount: state.wave,
     critical: false,
-    message: "Next stage. Health and cooldowns reset; Shatter Gauge carries over."
+    message: "Next stage. Health and cooldowns reset; Elemental Gauge carries over."
   }] };
 }
 function nextWave(previous) {
@@ -7637,7 +7658,7 @@ function nextWave(previous) {
   }
   initializeConduits(state);
   newTurn(state, events);
-  events.push({ kind: "turn", source: "", target: "", amount: state.wave, critical: false, message: `Wave ${state.wave}: enemies grow stronger. Health, shields, Shatter Gauge and recovery carry over.` });
+  events.push({ kind: "turn", source: "", target: "", amount: state.wave, critical: false, message: `Wave ${state.wave}: enemies grow stronger. Health, shields, Elemental Gauge and recovery carry over.` });
   const advanced = advanceUnavailableTurns(state);
   return { state: advanced.state, events: [...events, ...advanced.events] };
 }

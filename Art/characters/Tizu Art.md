@@ -114,7 +114,7 @@ square gacha JRPG ultimate water ability icon on a plain canvas, one vivid pearl
 
 ### 5. Normal Attack - Basic Action
 
-**Mechanic:** 100% single-target damage; +20 Shatter Gauge.
+**Mechanic:** 100% single-target damage; +20 Elemental Gauge.
 **Symbol:** a plain spear and one short motion stroke, without magical water.
 Suggested asset ID: `tizu-normal-attack`.
 

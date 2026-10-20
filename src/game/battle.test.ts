@@ -79,7 +79,7 @@ describe('Adventure damage and turns', () => {
     expect(actionUnavailable(state, state.allies[0], action)).toBeNull();
     expect(() => use(state, 'ember', action)).not.toThrow();
     state.allies[0].shatter = 0;
-    expect(actionUnavailable(state, state.allies[0], action)).toContain('Shatter Gauge');
+    expect(actionUnavailable(state, state.allies[0], action)).toContain('Elemental Gauge');
   });
   it.each(['light', 'skill1', 'skill2'] as const)('%s allows attacking on the very next turn', (action) => {
     const acted = use(controlled(), 'ember', action);
@@ -147,7 +147,7 @@ describe('Adventure damage and turns', () => {
   });
 });
 
-describe('Shatter Gauge', () => {
+describe('Elemental Gauge', () => {
   it('uses grown character capacity with fixed gains and costs', () => {
     const state = createBattle(12345, ['ember'], { ember: { level: 30, evolution: 2 } });
     expect(state.allies[0].stats.shatterCapacity).toBeCloseTo(114);
@@ -279,8 +279,8 @@ describe('Shatter Gauge', () => {
       if (!actor) throw new Error('Test actor is missing.');
       actor.shatter = cost - 1;
       const snapshot = structuredClone(state);
-      expect(actionUnavailable(state, actor, action)).toBe(`Requires ${cost} Shatter Gauge.`);
-      expect(() => use(state, starter.id, action)).toThrow(`Requires ${cost} Shatter Gauge.`);
+      expect(actionUnavailable(state, actor, action)).toBe(`Requires ${cost} Elemental Gauge.`);
+      expect(() => use(state, starter.id, action)).toThrow(`Requires ${cost} Elemental Gauge.`);
       expect(state).toEqual(snapshot);
       actor.shatter = cost;
       expect(use(state, starter.id, action).allies.find((unit) => unit.id === starter.id)?.shatter).toBe(0);

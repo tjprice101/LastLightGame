@@ -1,4 +1,5 @@
 import { existsSync } from 'node:fs';
+import { materialDropLevel, materialRarities as elementRarities } from './activities';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { dungeonEncounter, isPlayableDungeon, materialBrackets, materialDrops, materialRarities, playableDungeons } from './dungeons';
@@ -56,14 +57,17 @@ describe('elemental material dungeons', () => {
     }
   });
   it('guarantees every unlocked rarity and adds the next rarity each bracket', () => {
-    expect(materialDrops('infernic', 1, () => 0)).toEqual({ 'infernic-common': 4 });
-    expect(materialDrops('infernic', 5, () => .99)).toEqual({ 'infernic-common': 5 });
-    expect(materialDrops('infernic', 6, () => 0)).toEqual({ 'infernic-common': 8, 'infernic-uncommon': 2 });
+    expect(materialDrops('infernic', 1, () => 0)).toEqual({ 'infernic-common': 8, 'infernic-uncommon': 2 });
+    expect(materialDrops('infernic', 5, () => .99)).toEqual({ 'infernic-common': 10, 'infernic-uncommon': 3 });
+    expect(materialDrops('infernic', 6, () => 0)).toEqual({ 'infernic-common': 12, 'infernic-uncommon': 5, 'infernic-rare': 2 });
     expect(materialDrops('infernic', 34, () => .99)).toEqual({ 'infernic-common': 30, 'infernic-uncommon': 20,
       'infernic-rare': 15, 'infernic-epic': 10, 'infernic-legendary': 6, 'infernic-omnic': 3 });
     materialBrackets.forEach((bracket, index) => {
       expect(Object.keys(bracket.ranges)).toEqual(materialRarities.slice(0, index + 1));
-      if (index > 0) expect(materialDrops('oceanic', bracket.firstStage - 1, () => 0)[`oceanic-${materialRarities[index]}`]).toBeUndefined();
+      expect(bracket.level).toBe(materialDropLevel(elementRarities[index]));
+      expect(dungeonEncounter('oceanic', bracket.firstStage).level).toBeGreaterThanOrEqual(bracket.level);
+      if (bracket.firstStage > 1) expect(dungeonEncounter('oceanic', bracket.firstStage - 1).level).toBeLessThan(bracket.level);
+      if (bracket.firstStage > 1) expect(materialDrops('oceanic', bracket.firstStage - 1, () => 0)[`oceanic-${materialRarities[index]}`]).toBeUndefined();
       expect(materialDrops('oceanic', bracket.firstStage, () => 0)[`oceanic-${materialRarities[index]}`]).toBeGreaterThanOrEqual(2);
     });
     expect(() => materialDrops('infernic', 6, () => 1)).toThrow();
@@ -99,7 +103,7 @@ describe('elemental material dungeons', () => {
     expect(encounter.abilityMultiplier).toBe(enemyAbilityMultiplier(120));
     expect(encounter.level).toBe(120);
     expect(encounter.stats).toEqual(enemyCombatStats(120, true));
-    expect(materialBrackets.map((bracket) => bracket.firstStage)).toEqual([1, 6, 12, 18, 24, 30]);
+    expect(materialBrackets.map((bracket) => bracket.firstStage)).toEqual([1, 1, 6, 12, 19, 25]);
     expect(materialDrops('infernic', 35, () => 0)).toEqual({
       'infernic-common': 125, 'infernic-uncommon': 80, 'infernic-rare': 60,
       'infernic-epic': 40, 'infernic-legendary': 25, 'infernic-omnic': 10,

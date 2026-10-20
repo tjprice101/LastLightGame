@@ -407,7 +407,7 @@ export function actionUnavailable(state: BattleState, actor: Combatant, action: 
   if (actor.recoverThrough >= state.round && !(action === 'light' && recoveryNormal(actor))) return 'Recovering this turn after Last Flare.';
   if (action === 'ultimate' && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
   const gaugeCost = actionGaugeCost(actor, action, state);
-  if (actor.shatter < gaugeCost) return `Requires ${gaugeCost} Shatter Gauge.`;
+  if (actor.shatter < gaugeCost) return `Requires ${gaugeCost} Elemental Gauge.`;
   return null;
 }
 
@@ -915,7 +915,7 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
     state.recruitmentSeed = previous.recruitmentSeed;
   }
   return { state, events: [{ kind: 'turn', source: '', target: '', amount: state.wave, critical: false,
-    message: 'Next stage. Health and cooldowns reset; Shatter Gauge carries over.' }] };
+    message: 'Next stage. Health and cooldowns reset; Elemental Gauge carries over.' }] };
 }
 
 export function nextWave(previous: BattleState): BattleResult {
@@ -938,7 +938,7 @@ export function nextWave(previous: BattleState): BattleResult {
   }
   initializeConduits(state);
   newTurn(state, events);
-  events.push({ kind: 'turn', source: '', target: '', amount: state.wave, critical: false, message: `Wave ${state.wave}: enemies grow stronger. Health, shields, Shatter Gauge and recovery carry over.` });
+  events.push({ kind: 'turn', source: '', target: '', amount: state.wave, critical: false, message: `Wave ${state.wave}: enemies grow stronger. Health, shields, Elemental Gauge and recovery carry over.` });
   const advanced = advanceUnavailableTurns(state);
   return { state: advanced.state, events: [...events, ...advanced.events] };
 }

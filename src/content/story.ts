@@ -1,7 +1,7 @@
 import { type ElementId } from './activities';
 import { type Stats } from './combat';
 import { elementAccents } from './dungeon-art';
-import { storyStageLayout } from './activities';
+import { materialDropLevel, storyStageLayout } from './activities';
 import { enemyCombatStats } from './stat-growth';
 import { rollDrop, storyEnemyFractalisDrop } from './loot-random';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
@@ -91,7 +91,10 @@ export function storyMaterialLoot(stage: number) {
   const minimum = 1 + Math.floor(2 * growth);
   const drops = [
     { id: `${element}-common`, minimum, maximum: minimum * 2, chance: 1 },
-    { id: `${element}-uncommon`, minimum, maximum: minimum * 2, chance: .25 + .55 * (level - 1) / 54 },
+    ...(level >= materialDropLevel('Uncommon') ? [{ id: `${element}-uncommon`, minimum, maximum: minimum * 2,
+      chance: .25 + .55 * (level - materialDropLevel('Uncommon')) / (storyRules.maximumLevel - materialDropLevel('Uncommon')) }] : []),
+    ...(level >= materialDropLevel('Rare') ? [{ id: `${element}-rare`, minimum: 1, maximum: minimum,
+      chance: .15 + .2 * (level - materialDropLevel('Rare')) / (storyRules.maximumLevel - materialDropLevel('Rare')) }] : []),
   ];
   return drops.map(drop => bossLootRange(drop, bossLootMultiplier({ story: { storyStage: stage } })));
 }
@@ -103,7 +106,7 @@ export function storyDrops(stage: number, random: () => number): Record<string, 
   }));
 }
 
-export const storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common and Uncommon materials of their region; no captures. Prismatica per kill rises from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x Prismatica (base 5-10 to 113-226) and materials on every clear, plus a one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
+export const storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common materials of their region, plus Uncommon from Lv.35 and Rare from Lv.50; no captures. Prismatica per kill rises from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x Prismatica (base 5-10 to 113-226) and materials on every clear, plus a one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
 
 export function storyLoot(stage: number) {
   const encounter = storyEncounter(stage);

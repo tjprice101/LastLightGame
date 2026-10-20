@@ -207,8 +207,8 @@ describe('enemy-death loot presentation', () => {
     expect(result.state.phase).toBe('player');
     const rewards = result.events.filter((event) => event.kind === 'reward');
     expect(rewards).toHaveLength(1);
-    expect(rewards[0].materials?.['infernic-common']).toBeGreaterThanOrEqual(4);
-    expect(rewards[0].materials?.['infernic-common']).toBeLessThanOrEqual(5);
+    expect(rewards[0].materials?.['infernic-common']).toBeGreaterThanOrEqual(8);
+    expect(rewards[0].materials?.['infernic-common']).toBeLessThanOrEqual(10);
     const view = Object.create(BattleView.prototype);
     Object.assign(view, { session: { state, stageEvents: [], log: [] }, disposed: false,
       host: { setAttribute: vi.fn(), querySelectorAll: () => [], querySelector: () => null },

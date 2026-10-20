@@ -1,4 +1,4 @@
-import { elements, infusionModes, currencyModes, eventModes, machineModes, isCurrencyMode, infusionStageCount, infusionModeStageCount, getElement, type ElementId, type InfusionModeId } from './activities';
+import { elements, infusionModes, currencyModes, eventModes, machineModes, isCurrencyMode, infusionStageCount, infusionModeStageCount, getElement, materialDropLevel, type ElementId, type InfusionModeId } from './activities';
 import { machineEnemies } from './machines';
 import { type Stats } from './combat';
 import { lootRoll, rollDrop, scaledDrop } from './loot-random';
@@ -171,9 +171,9 @@ export function infusionEncounter(mode: InfusionModeId, stage: number, schedule:
     legacyAbilityMultiplier: 1.2 + (stage - 1) / (stages - 1) * (mode === 'roses' ? .65 : 24 * .016) };
 }
 export const infusionDropTable = [
-  { rarity: 'epic', level: 80, chance: .15, finalChance: .85, quantity: 3 },
-  { rarity: 'legendary', level: 100, chance: .06, finalChance: .65, quantity: 3 },
-  { rarity: 'omnic', level: 115, chance: .02, finalChance: .40, quantity: 3 },
+  { rarity: 'epic', level: materialDropLevel('Epic'), chance: .15, finalChance: .85, quantity: 3 },
+  { rarity: 'legendary', level: materialDropLevel('Legendary'), chance: .06, finalChance: .65, quantity: 3 },
+  { rarity: 'omnic', level: materialDropLevel('Omnic'), chance: .02, finalChance: .40, quantity: 3 },
 ] as const;
 export const specialtyDropTable = [
   { purpose: 'weapon', level: 50, quantity: 3 },
@@ -196,7 +196,7 @@ export function infusionLoot(mode: InfusionModeId, stage: number, schedule: Infu
     return drop ? [bossLootRange({ id: `${mode}-${entry.purpose}`, ...drop }, multiplier)] : [];
   });
   const bonuses = infusionDropTable.flatMap((entry) => {
-    const drop = scaledDrop(level, schedule === 'legacy' ? 80 : 50, entry.level, entry.chance, entry.finalChance, entry.quantity);
+    const drop = scaledDrop(level, schedule === 'legacy' ? 80 : 50, schedule === 'legacy' ? Math.max(80, entry.level) : entry.level, entry.chance, entry.finalChance, entry.quantity);
     return drop ? [bossLootRange({ rarity: entry.rarity, ...drop }, multiplier)] : [];
   });
   return { specialties, bonuses };

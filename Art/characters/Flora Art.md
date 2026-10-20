@@ -117,7 +117,7 @@ square gacha JRPG ultimate nature ability icon on a plain canvas, one vivid face
 
 ### 5. Normal Attack - Basic Action
 
-**Mechanic:** 100% single-target damage; +20 Shatter Gauge.
+**Mechanic:** 100% single-target damage; +20 Elemental Gauge.
 **Symbol:** one plain wooden bow with a single nocked arrow, no nature aura.
 Suggested asset ID: `flora-normal-attack`.
 

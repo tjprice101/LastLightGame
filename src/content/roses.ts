@@ -1,11 +1,12 @@
-import { materialRarities } from './activities';
+import { materialDropLevel, materialRarities } from './activities';
 
 export const roseMaterialNames = ['Seed', 'Bud', 'Bloom', 'Crest', 'Heart', 'Soul'] as const;
 export const roseMaterials = materialRarities.map((rarity, tier) => ({
   id: `rosethorn-${rarity.toLowerCase()}`, name: `${roseMaterialNames[tier]} of Rosethorn`, rarity,
 }));
 export const roseSaleQuantities = [1, 2, 3, 4, 5, 6] as const;
-export const roseMaterialUnlocks = [80, 90, 100, 110, 120, 130] as const;
+/** Event enemies start at Lv.80, so every tier the D-357 rule has unlocked by then drops from the first stage. */
+export const roseMaterialUnlocks = materialRarities.map(rarity => Math.max(80, materialDropLevel(rarity)));
 export const roseFinalChances = [1, .98, .9, .8, .6, .35] as const;
 export const roseCaptureMaximumLevel = 120;
 export const roseFormStages = [1, 6, 11, 16, 22, 29] as const;

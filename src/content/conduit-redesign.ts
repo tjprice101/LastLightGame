@@ -47,7 +47,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "fracture-reservoir": {
-    "description": "+10 -> +35 [Shatter Gauge] capacity; begin each Battle with 5 -> 10 [Shatter Gauge].",
+    "description": "+10 -> +35 [Elemental Gauge] capacity; begin each Battle with 5 -> 10 [Elemental Gauge].",
     "ranges": [
       {
         "base": 10,
@@ -97,7 +97,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "reserve-torque-crank": {
-    "description": "[Shatter Gauge] you gain from abilities and hits is increased by 10% -> 25% (at least +1).",
+    "description": "[Elemental Gauge] you gain from abilities and hits is increased by 10% -> 25% (at least +1).",
     "ranges": [
       {
         "base": 10,
@@ -152,7 +152,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "aegis-capacitor": {
-    "description": "Gain 4 -> 8 [Shatter Gauge] whenever your [Shield] absorbs enemy damage.",
+    "description": "Gain 4 -> 8 [Elemental Gauge] whenever your [Shield] absorbs enemy damage.",
     "ranges": [
       {
         "base": 4,
@@ -174,7 +174,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "twinpulse-bellows": {
-    "description": "Start each Battle with 15% -> 35% of your [Shatter Gauge] capacity added to your [Shatter Gauge].",
+    "description": "Start each Battle with 15% -> 35% of your [Elemental Gauge] capacity added to your [Elemental Gauge].",
     "ranges": [
       {
         "base": 15,
@@ -185,7 +185,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "glassroot-gimbal": {
-    "description": "Attack Actions deal +1% -> +2% Direct Damage for every 10 [Shatter Gauge] you hold before paying the cost.",
+    "description": "Attack Actions deal +1% -> +2% Direct Damage for every 10 [Elemental Gauge] you hold before paying the cost.",
     "ranges": [
       {
         "base": 1,
@@ -248,7 +248,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "coilfeed-ratchet": {
-    "description": "Your abilities cost 7% -> 14% less [Shatter Gauge] (rounded down). [Last Flare] cannot drop below 70 [Shatter Gauge].",
+    "description": "Your abilities cost 7% -> 14% less [Elemental Gauge] (rounded down). [Last Flare] cannot drop below 70 [Elemental Gauge].",
     "ranges": [
       {
         "base": 7,
@@ -369,7 +369,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "horizon-heartcase": {
-    "description": "When enemy Direct Damage would defeat you, drain [Shatter Gauge] instead and stay at 1 HP: 1 [Shatter Gauge] per 1% maximum HP of the excess, reduced by 20% -> 50%, plus 10 for each earlier save this Battle. Without enough [Shatter Gauge] you fall.",
+    "description": "When enemy Direct Damage would defeat you, drain [Elemental Gauge] instead and stay at 1 HP: 1 [Elemental Gauge] per 1% maximum HP of the excess, reduced by 20% -> 50%, plus 10 for each earlier save this Battle. Without enough [Elemental Gauge] you fall.",
     "ranges": [
       {
         "base": 20,
@@ -454,7 +454,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "infernic-phoenix-reactor": {
-    "description": "The first time you are defeated each Battle, revive at 25% -> 50% of your maximum HP with 0 [Shatter Gauge].",
+    "description": "The first time you are defeated each Battle, revive at 25% -> 50% of your maximum HP with 0 [Elemental Gauge].",
     "ranges": [
       {
         "base": 25,
@@ -497,7 +497,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "atmospheric-griffin-turbine": {
-    "description": "When your [Normal Attack] damages HP, each other ally gains [Shatter Gauge] equal to 15% -> 30% of that damage as a share of your Attack, up to 25 [Shatter Gauge] each. A hit for your full Attack gives 15 [Shatter Gauge] at +0.",
+    "description": "When your [Normal Attack] damages HP, each other ally gains [Elemental Gauge] equal to 15% -> 30% of that damage as a share of your Attack, up to 25 [Elemental Gauge] each. A hit for your full Attack gives 15 [Elemental Gauge] at +0.",
     "ranges": [
       {
         "base": 15,
@@ -533,7 +533,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "chaotic-ouroboros-core": {
-    "description": "[Last Flare] converts your [Shatter Gauge] above its cost into a [Shield] of 0.3% -> 0.6% of your maximum HP per [Shatter Gauge].",
+    "description": "[Last Flare] converts your [Elemental Gauge] above its cost into a [Shield] of 0.3% -> 0.6% of your maximum HP per [Elemental Gauge].",
     "ranges": [
       {"base":0.3,"maximum":0.6,"percent":true,"step":false}
 
@@ -586,7 +586,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "atmospheric-skythread-rudder": {
-    "description": "Each [Normal Attack] grants a [Tailwind]. Each [Tailwind] reduces your next [Skill 1] or [Skill 2] cost by 10 -> 20 [Shatter Gauge], and that skill spends all of them.",
+    "description": "Each [Normal Attack] grants a [Tailwind]. Each [Tailwind] reduces your next [Skill 1] or [Skill 2] cost by 10 -> 20 [Elemental Gauge], and that skill spends all of them.",
     "ranges": [
       {
         "base": 10,
@@ -619,7 +619,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tranquilitic-stillhour-carillon": {
-    "description": "At the start of each [Last Flare] recovery turn, gain 15 -> 30 [Shatter Gauge] and give the same amount to the other ally with the lowest [Shatter Gauge].",
+    "description": "At the start of each [Last Flare] recovery turn, gain 15 -> 30 [Elemental Gauge] and give the same amount to the other ally with the lowest [Elemental Gauge].",
     "ranges": [
       {
         "base": 15,
@@ -681,7 +681,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "pulse-trigger-pawl": {
-    "description": "Critical [Skill 1] or [Skill 2] hits grant 8 -> 16 [Shatter Gauge].",
+    "description": "Critical [Skill 1] or [Skill 2] hits grant 8 -> 16 [Elemental Gauge].",
     "ranges": [
       {
         "base": 8,
@@ -720,7 +720,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "clearwater-manifold": {
-    "description": "[Shatter Gauge] you gain beyond your capacity passes 50% -> 100% of the excess to the other ally with the lowest [Shatter Gauge].",
+    "description": "[Elemental Gauge] you gain beyond your capacity passes 50% -> 100% of the excess to the other ally with the lowest [Elemental Gauge].",
     "ranges": [
       {"base":50,"maximum":100,"percent":true,"step":false}
 
@@ -749,7 +749,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "covercharge-drum": {
-    "description": "When another ally falls, every living ally restores 10% -> 20% of their maximum HP and gains 20 -> 40 [Shatter Gauge].",
+    "description": "When another ally falls, every living ally restores 10% -> 20% of their maximum HP and gains 20 -> 40 [Elemental Gauge].",
     "ranges": [
       {
         "base": 10,
@@ -788,7 +788,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "rootbound-triage-vault": {
-    "description": "After your active healing, spend 15 [Shatter Gauge] to heal the ally with the lowest HP up to 20% -> 40% of their maximum HP if they are below it.",
+    "description": "After your active healing, spend 15 [Elemental Gauge] to heal the ally with the lowest HP up to 20% -> 40% of their maximum HP if they are below it.",
     "ranges": [
       {
         "base": 20,
@@ -799,7 +799,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "solace-anchor": {
-    "description": "Your first [Normal Attack] each player turn costs 10 -> 5 [Shatter Gauge] and does not spend your action.",
+    "description": "Your first [Normal Attack] each player turn costs 10 -> 5 [Elemental Gauge] and does not spend your action.",
     "ranges": [
       {"base":10,"maximum":5,"percent":false,"step":false}
     ]
@@ -821,7 +821,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "atmospheric-storm-clock": {
-    "description": "Each critical Attack Action stores a [Storm Clock] charge that reduces your next [Last Flare] cost by 15 -> 30 [Shatter Gauge]. [Last Flare] spends all charges.",
+    "description": "Each critical Attack Action stores a [Storm Clock] charge that reduces your next [Last Flare] cost by 15 -> 30 [Elemental Gauge]. [Last Flare] spends all charges.",
     "ranges": [
       {
         "base": 15,
@@ -888,7 +888,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-sprout-3": {
-    "description": "The first [Last Flare: Worldseed] each Battle that finds a fallen ally revives each fallen ally at 30% of their maximum HP with 0 [Shatter Gauge].",
+    "description": "The first [Last Flare: Worldseed] each Battle that finds a fallen ally revives each fallen ally at 30% of their maximum HP with 0 [Elemental Gauge].",
     "ranges": []
   },
   "master-atmoso-1": {
@@ -924,7 +924,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-bliss-3": {
-    "description": "[Bliss]'s [Last Flare] gives the other ally with the lowest [Shatter Gauge] a [Quiet Feather]: their next [Skill 1] costs no [Shatter Gauge].",
+    "description": "[Bliss]'s [Last Flare] gives the other ally with the lowest [Elemental Gauge] a [Quiet Feather]: their next [Skill 1] costs no [Elemental Gauge].",
     "ranges": []
   },
   "master-bruno-1": {
@@ -944,7 +944,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-disciple-2": {
-    "description": "After [Last Flare], allies are linked for two player Rounds: [Shatter Gauge] gained by a linked ally is split equally among all linked allies.",
+    "description": "After [Last Flare], allies are linked for two player Rounds: [Elemental Gauge] gained by a linked ally is split equally among all linked allies.",
     "ranges": []
   },
   "master-disciple-3": {
@@ -1016,7 +1016,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-nerithe-2": {
-    "description": "[Fold the Sea] deals no damage. Instead, it grants each ally 15 [Shatter Gauge] and 15% less damage from their next enemy hit.",
+    "description": "[Fold the Sea] deals no damage. Instead, it grants each ally 15 [Elemental Gauge] and 15% less damage from their next enemy hit.",
     "ranges": []
   },
   "master-nerithe-3": {
@@ -1044,7 +1044,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-vaelor-3": {
-    "description": "[Vaelor]'s [Normal Attack] lets the other ally with the most [Shatter Gauge] act again this player turn.",
+    "description": "[Vaelor]'s [Normal Attack] lets the other ally with the most [Elemental Gauge] act again this player turn.",
     "ranges": []
   }
 };

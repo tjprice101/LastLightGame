@@ -6,7 +6,7 @@ The [D-160 migration](six-element-rework.md#implemented-elemental-migration-cont
 replaces ten types with six, preserves all original enemy families/discoveries,
 merges materials/unlocks safely in walletv4 and starts dungeons atLv38.
 The [Story/Training split](story-and-training.md) is implemented (D-164).
-Story has six25-stage regions Lv1-55, Common/Uncommon materials and atomic
+Story has six20-stage regions Lv1-55, Common/Uncommon (Lv35+)/Rare (Lv50+) materials and atomic
 first-clear regional bonuses. Training retains the old endless Adventure.
 Material inventory, starter leveling/evolution and first-Fracture reward are
 persistent. Soar to Heaven and Delve into the Abyss are playable with specialty
@@ -90,7 +90,7 @@ elemental damage bonuses, resistances, or revised battle balance.
 - Stage1 begins unlocked. Clearing unlocks the next stage permanently;
   all unlocked stages may be replayed. Stage35 ends the dungeon, never Stage36.
   Entry/replay starts full health, zero Gauge and fresh cooldowns. Continuing
-  to the next stage keeps the character's Shatter Gauge (up to its capacity)
+  to the next stage keeps the character's Elemental Gauge (up to its capacity)
   while refreshing health and cooldowns. This applies to elemental and infusion
   stages. Quitting, switching modes, retry/replay and reload start a new run;
   Gauge is not saved to the account.
@@ -178,18 +178,19 @@ are remapped and merged on read without saving; other stable IDs remain unchange
 Drops are guaranteed and grow by floor bracket; higher rarities appear on later
 floors in smaller stacks than ordinary materials.
 
-Drops per defeated dungeon enemy (including burn kills), D-338. Every material
+Drops per defeated dungeon enemy (including burn kills), D-338/D-357. Every material
 listed for a floor is guaranteed; each bracket adds the next rarity and raises
-every lower stack. Quantities are inclusive per-kill ranges:
+every lower stack. D-357 rule: an enemy of level X drops what a level X-5
+Element-Bearer needs, so Uncommon/Rare/Epic/Legendary/Omnic open at enemy
+Lv35/50/65/80/95 (`materialDropLevel` in activities.ts). Quantities are inclusive per-kill ranges:
 
 | Floors (enemy level) | Seed | Bloom | Shard | Crest | Heart | Soul |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1-5 (Lv38-48) | 4-5 | - | - | - | - | - |
-| 6-11 (Lv50-62) | 8-10 | 2-3 | - | - | - | - |
-| 12-17 (Lv65-77) | 12-15 | 5-6 | 2-3 | - | - | - |
-| 18-23 (Lv79-91) | 16-20 | 8-10 | 5-6 | 2-3 | - | - |
-| 24-29 (Lv93-106) | 20-25 | 12-15 | 8-10 | 5-6 | 2-3 | - |
-| 30-35 (Lv108-120) | 25-30 | 16-20 | 12-15 | 8-10 | 5-6 | 2-3 |
+| 1-5 (Lv38-48) | 8-10 | 2-3 | - | - | - | - |
+| 6-11 (Lv50-62) | 12-15 | 5-6 | 2-3 | - | - | - |
+| 12-18 (Lv65-79) | 16-20 | 8-10 | 5-6 | 2-3 | - | - |
+| 19-24 (Lv81-93) | 20-25 | 12-15 | 8-10 | 5-6 | 2-3 | - |
+| 25-35 (Lv96-120) | 25-30 | 16-20 | 12-15 | 8-10 | 5-6 | 2-3 |
 
 The floor35 final boss multiplies these by5 (D-294): 125-150/80-100/60-75/
 40-50/25-30/10-15. The table lives in `materialBrackets` in
@@ -315,8 +316,8 @@ This is a drop reference, not capture/pity or a second source of rewards.
 - Per defeat: guaranteed weapon material from Lv50/Stage1; evolution and
   leveling materials from Lv75/Stage19. The quantity curve starts at50;
   final specialty stacks are15-30 after D-294's5x quantity boost.
-  Preserved supplemental level unlocks: EpicLv80/Stage22,
-  LegendaryLv100/Stage30, OmnicLv115/Stage34. Chances grow from15%/6%/2%
+  Supplemental level unlocks (D-357 X-5 rule): Epic Lv65,
+  Legendary Lv80, Omnic Lv95. Chances grow from15%/6%/2%
   to85%/65%/40%; successful final stacks are15-30 for each rarity.
   Each successful rarity roll chooses **one** of the mode's eligible elements uniformly,
   not every element. Final Prismatica is75-150. Phase6 adds20% captures per kill,

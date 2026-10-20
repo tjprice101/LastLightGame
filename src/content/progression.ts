@@ -1,4 +1,4 @@
-import { evolutionRecipes, evolutionRequirement, getElement, materialRarities, type ElementId, type MaterialRarity } from './activities';
+import { evolutionRecipes, evolutionRequirement, getElement, materialFirstNeededLevel, materialRarities, type ElementId, type MaterialRarity } from './activities';
 import { specialtyId } from './infusions';
 import { getStarter, isRoseCharacter, type StarterId } from './starters';
 import { roseMaterials } from './roses';
@@ -43,11 +43,11 @@ export const evolutionBalance = [
 ] as const;
 
 export const levelingMaterialTiers = [
-  { rarity: 'Uncommon', destination: 31 },
-  { rarity: 'Rare', destination: 46 },
-  { rarity: 'Epic', destination: 61 },
-  { rarity: 'Legendary', destination: 76 },
-  { rarity: 'Omnic', destination: 91 },
+  { rarity: 'Uncommon', destination: materialFirstNeededLevel.Uncommon + 1 },
+  { rarity: 'Rare', destination: materialFirstNeededLevel.Rare + 1 },
+  { rarity: 'Epic', destination: materialFirstNeededLevel.Epic + 1 },
+  { rarity: 'Legendary', destination: materialFirstNeededLevel.Legendary + 1 },
+  { rarity: 'Omnic', destination: materialFirstNeededLevel.Omnic + 1 },
 ] as const satisfies readonly { rarity: MaterialRarity; destination: number }[];
 
 export function levelingMaterials(element: ElementId | 'rosethorn', destination: number): Record<string, number> {

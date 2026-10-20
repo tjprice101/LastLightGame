@@ -15,7 +15,7 @@ import { escapeDialogText, gameChoose } from './game-dialog';
 
 const statLabels: Record<ConduitBuff['stat'], string> = {
   health: 'Health', damage: 'Attack', defense: 'Defense', crit: 'Critical rate',
-  critMultiplier: 'Critical multiplier', elementalDamage: 'Elemental damage', shatterCapacity: 'Shatter Gauge capacity',
+  critMultiplier: 'Critical multiplier', elementalDamage: 'Elemental damage', shatterCapacity: 'Elemental Gauge capacity',
 };
 
 export const conduitLoadoutPageSize = 4;

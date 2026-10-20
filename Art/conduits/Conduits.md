@@ -95,7 +95,7 @@ square gacha JRPG collectible item icon on plain canvas, one Parallax Relay reco
 
 ## Fracture Reservoir
 
-Art ID: `fracture-reservoir`. Common; 1,200 Prismatica; +5 Shatter Capacity.
+Art ID: `fracture-reservoir`. Common; 1,200 Prismatica; +5 Elemental Gauge Capacity.
 Power: Elemental Light. Sealed accumulator hidden from the ancient armies.
 
 ```text

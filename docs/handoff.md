@@ -1,10 +1,19 @@
 # Current state and handoff
 
-## Shatter Gauge terminology and Conduit details (D-356)
+## Elemental Gauge rename and X-5 material drop rule (D-357)
 
-- Conduit descriptions (redesign + Calamitic) bracket [Shatter Gauge], [Shield(s)], [Bonus Strike(s)]
-  and [Elemental Crit]. Visible stat label is "Shatter Gauge capacity"; battle cards, gesture labels,
-  tips and Conduit battle messages say Shatter Gauge. Information prose maps bare Gauge to [Shatter Gauge].
+- All visible text/docs say [Elemental Gauge]; internal `shatter*` fields/IDs unchanged.
+- `materialDropLevel` (activities.ts): rarity first needed at Lv0/30/45/60/75/90, dropped from enemy Lv+5.
+  Dungeon `materialBrackets` derive first floors from it (1/1/6/12/19/25); Story Uncommon Lv35+/Rare Lv50+;
+  Heaven/Abyss Epic/Legendary/Omnic 65/80/95; Roses unlocks max(80, drop level). Leveling tiers in
+  progression.ts derive from the same table. Calamity/Training/Machines unchanged.
+- Validate: dungeons/loot-random/story/crimson-roses/auto-turn/battle-loot tests plus full suite.
+
+## Elemental Gauge terminology and Conduit details (D-356)
+
+- Conduit descriptions (redesign + Calamitic) bracket [Elemental Gauge], [Shield(s)], [Bonus Strike(s)]
+  and [Elemental Crit]. Visible stat label is "Elemental Gauge capacity"; battle cards, gesture labels,
+  tips and Conduit battle messages say Elemental Gauge. Information prose maps bare Gauge to [Elemental Gauge].
 - Conduit loadout detail dialog drops Stat bonuses/Complete effect/Equipment rules/Origin headers:
   only "Conduit Ability" with the live rule, an Omnic restriction line and plain lore. Master dialog
   drops "Triggers and limits as stated above". Internal IDs/saves/mechanics unchanged.
@@ -10334,7 +10343,7 @@ saved rewards (100 Prismatica plus80/40/20/12/6/3 material minima with forced
 successful rolls), final completion, glossary odds/ranges, v2 read-only migration,
 v3 persistence and reload. No page errors; owner's save untouched.
 
-### Shatter Gauge within-run carry
+### Elemental Gauge within-run carry
 
 Owner chose carry through turns/waves/next stages in the current run only.
 Turns and Adventure waves already preserved Gauge. New game/battle.ts nextStage
@@ -10826,7 +10835,7 @@ IDs now match these titles and the supplied runtime assets.
 
 ## Minimal allied battle readouts (D-049)
 
-- unitReadout now shows allies only HP/Defense/Shatter Gauge throughout combat;
+- unitReadout now shows allies only HP/Defense/Elemental Gauge throughout combat;
   enemies stay HP/Defense only. Names/roles remain separate from stat readouts.
 - Removed attack/crit/elemental/shield/status labels; full menu stats, action
   availability, Defense/ultimate visual cues, floating effects and log retained.
@@ -11356,7 +11365,7 @@ Her stable save/combat ID remains `sprout`, so existing saves still load.
   That older design is not the current encounter table. Three starter dungeons
   now have combat, reports/rewards and progression transactions; captures/team
   edits remain deferred.
-- Each ally has Shatter Gauge: starts 0, caps 100 at base, Normal +20,
+- Each ally has Elemental Gauge: starts 0, caps 100 at base, Normal +20,
   incoming enemy hit +10 (including shields). Skills cost 25/40 and Last Flare
   costs 100; skills no longer generate resource. Battle meters/buttons and the
   character kit show gauge/costs. No persistent-save schema change is needed.
@@ -11394,7 +11403,7 @@ Her stable save/combat ID remains `sprout`, so existing saves still load.
 - Character growth now uses +1% original base per level and +10% per completed
   evolution, added rather than compounded. Six forms cap at 30/45/60/75/90/105;
   evolution preserves level, superseding the old reset-to-0 rule. First Fracture
-  still grants +10 Null-Prismatica. Seven stats include Shatter capacity, HP, DEF, Attack
+  still grants +10 Null-Prismatica. Seven stats include Elemental Gauge capacity, HP, DEF, Attack
   Damage, critical rate, critical multiplier and elemental damage. Numeric
   skill/passive potency scales too; timing/thresholds/costs/gauge gains stay fixed.
   Resolved kits drive battle effects and descriptions, including grown critical
@@ -11544,7 +11553,7 @@ historical backlog item as approval.
   Home Squad/Summon buttons, seven upgrade areas and integrated inventory, drawer
   motion persistence/focus return on every screen, battle input suspension/resumption,
   and no horizontal overflow at 320px. Storage and viewport were restored.
-- Earlier Free Battle browser checks (before Shatter Gauge): all nine starter
+- Earlier Free Battle browser checks (before Elemental Gauge): all nine starter
   skills/ultimates, original heavy recovery, all six decoded assets, enemy-left/team-right mobile layout, hotkey
   remap/display/persistence/guards, duplicate rejection, listener cleanup on repeated
   navigation, and first-action-only resolution. Animation tests created all three

@@ -88,9 +88,9 @@ describe('game-specific hub layouts', () => {
     expect(home).toContain('data-page="squad"');
     expect(home).toContain('data-page="summon"');
     const overview = characterHub(starter, 'overview');
-    expect(overview).toContain('Costs 25 Shatter Gauge');
-    expect(overview).toContain('Costs 40 Shatter Gauge');
-    expect(overview).toContain('Costs 100 Shatter Gauge');
+    expect(overview).toContain('Costs 25 Elemental Gauge');
+    expect(overview).toContain('Costs 40 Elemental Gauge');
+    expect(overview).toContain('Costs 100 Elemental Gauge');
     if (starter.id === 'tide') expect(home).toContain(`<strong>${formatStat(resolveFighter('tide').stats.defense)}</strong>`);
   });
   it('offers overview, seven upgrade areas, and inventory with real progression costs', () => {
@@ -132,14 +132,14 @@ describe('game-specific hub layouts', () => {
     }
     expect(home).not.toContain('hub-dock');
     expect(home).not.toContain('data-character-tab=');
-    expect(home).not.toContain('Costs 25 Shatter Gauge');
+    expect(home).not.toContain('Costs 25 Elemental Gauge');
   });
   it.each(starters)('$name keeps Home stats inside Information and displays all stats on Overview', (starter) => {
     const home = homeHub(starter, false);
     expect(home.slice(0, home.indexOf('<dialog'))).not.toContain('Attack Damage');
     expect(home).toContain('data-information="home-information"');
     for (const html of [homeHub(starter, false), characterDetail(starter, 'overview')]) {
-      for (const label of ['Shatter Gauge capacity', 'Health', 'Defense', 'Attack Damage', 'Critical Rate', 'Critical Damage', 'Elemental Damage']) {
+      for (const label of ['Elemental Gauge capacity', 'Health', 'Defense', 'Attack Damage', 'Critical Rate', 'Critical Damage', 'Elemental Damage']) {
         expect(html).toContain(label);
       }
       expect(html).toContain('1.5x');

@@ -227,10 +227,10 @@ describe('reference Team upgrade presentation', () => {
     const dialog = host.querySelector<HTMLDialogElement>('#character-tide-skill1')!;
     dialog.showModal = vi.fn(() => dialog.setAttribute('open', ''));
     dialog.close = vi.fn(() => dialog.removeAttribute('open'));
-    expect(button.textContent).not.toContain('Shatter Gauge');
+    expect(button.textContent).not.toContain('Elemental Gauge');
     button.click();
     expect(dialog.showModal).toHaveBeenCalledOnce();
-    expect(dialog.textContent).toContain('Costs 25 [Shatter Gauge]');
+    expect(dialog.textContent).toContain('Costs 25 [Elemental Gauge]');
     expect(dialog.querySelector('[data-close-information]')?.getAttribute('aria-label')).toBe('Close Skill 1 details');
     expect(dialog.querySelector('[data-close-information]')?.textContent).toBe('×');
     dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));

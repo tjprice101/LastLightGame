@@ -38,7 +38,7 @@ export function battleResults(state: BattleState, events: readonly BattleEvent[]
       <h2 id="battle-result-heading" tabindex="-1">${victory ? 'Victory!' : 'Defeat'}</h2></div>
       <button class="text-button" data-result-dismiss>View battlefield</button></div>
     <p id="battle-result-note">${victory ? 'Rewards saved.' : 'Your squad has fallen. You keep rewards from defeated enemies.'}
-      ${victory ? state.calamity ? 'This Calamity tier is complete. Open your saved chest in Inventory. Replay this tier or return to Play to enter an unlocked tier.' : complete ? 'All stages completed. Replay this stage or return to Gameplay.' : staged ? 'Continue with full HP; Shatter Gauge carries into the next stage. Replay starts this stage with fresh HP and Gauge; earned rewards are kept.' : 'Health, Gauge and recovery carry into the next wave.' : ''}</p>
+      ${victory ? state.calamity ? 'This Calamity tier is complete. Open your saved chest in Inventory. Replay this tier or return to Play to enter an unlocked tier.' : complete ? 'All stages completed. Replay this stage or return to Gameplay.' : staged ? 'Continue with full HP; Elemental Gauge carries into the next stage. Replay starts this stage with fresh HP and Gauge; earned rewards are kept.' : 'Health, Gauge and recovery carry into the next wave.' : ''}</p>
     ${victory && state.story && storyEncounter(state.story.storyStage).boss ? `<p class="story-conclusion">${storyEncounter(state.story.storyStage).conclusion}</p>` : ''}
     <div class="battle-result-rewards"><h3>Rewards earned this ${staged ? 'stage' : 'wave'}</h3>
       ${rewards.length ? `<ul>${rewards.map((item) => {

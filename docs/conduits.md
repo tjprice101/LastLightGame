@@ -102,7 +102,7 @@ stat modifiers without changing rarity, identity or artwork.
 | Siegebound Drive |1,200 | +5% Attack | Mechanical |
 | Bastion Lock |1,000 | +5% Defense | Mechanical |
 | Parallax Relay |1,500 | +2 percentage points Critical Rate | Elemental Light |
-| Fracture Reservoir |1,200 | +5 Shatter Capacity | Elemental Light |
+| Fracture Reservoir |1,200 | +5 Elemental Gauge Capacity | Elemental Light |
 | Prism Splinter Socket |1,600 | +5% Elemental Damage | Elemental Light |
 | Precision Escapement |1,800 | +8% Critical Damage multiplier | Mechanical |
 | Fieldbrace Coupler |1,400 | +3% Health / +3% Defense | Mechanical |

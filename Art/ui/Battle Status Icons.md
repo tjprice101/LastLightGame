@@ -23,7 +23,7 @@ A family is an interaction/art category, not a universal identical status. Alway
 
 ## Removed from generation, not from essential gameplay
 
-Do not generate separate icons for Attack Boost, Defense, Last Flare Recovery, Shatter Gauge, Skill Cooldown, Normal Momentum, Rift Echo, Undertide Reprise or Storm Clock. Keep exact live text, meters, timers and equipment feedback; instant cooldown feedback is not a lingering elemental status. All existing owned Conduit effects remain functional. Bedrock, Concord, Night Resolve, Charted Current, Foundation, Verdict Mark and Shelter Charge are retired native special mechanics. Restorative Charges/Blooms share Botanic Renewal; Gale Cadence/Storm Rhythm/Resonance share Atmospheric Charge, with one common critical-hit trigger.
+Do not generate separate icons for Attack Boost, Defense, Last Flare Recovery, Elemental Gauge, Skill Cooldown, Normal Momentum, Rift Echo, Undertide Reprise or Storm Clock. Keep exact live text, meters, timers and equipment feedback; instant cooldown feedback is not a lingering elemental status. All existing owned Conduit effects remain functional. Bedrock, Concord, Night Resolve, Charted Current, Foundation, Verdict Mark and Shelter Charge are retired native special mechanics. Restorative Charges/Blooms share Botanic Renewal; Gale Cadence/Storm Rhythm/Resonance share Atmospheric Charge, with one common critical-hit trigger.
 
 ## Generation checklist
 

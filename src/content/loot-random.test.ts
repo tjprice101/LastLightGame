@@ -52,8 +52,8 @@ describe('plentiful loot quantities', () => {
         expect(drop.maximum).toBeLessThanOrEqual(stage === infusionModeStageCount ? 30 : 6);
       }
     }
-    expect(materialLoot('infernic', 1)[0]).toMatchObject({ minimum: 4, maximum: 5 });
-    expect(materialLoot('infernic', 25)[0]).toMatchObject({ minimum: 20, maximum: 25 });
+    expect(materialLoot('infernic', 1)[0]).toMatchObject({ minimum: 8, maximum: 10 });
+    expect(materialLoot('infernic', 25)[0]).toMatchObject({ minimum: 25, maximum: 30 });
     for (let level = 1; level <= 120; level++) expect(fractalisDrop(level).maximum).toBeLessThanOrEqual(30);
   });
   it('uses independent integer draws from base to double base without adding locked items', () => {

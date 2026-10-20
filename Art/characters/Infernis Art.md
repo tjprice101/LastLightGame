@@ -172,7 +172,7 @@ square gacha JRPG ultimate fire ability icon on a plain canvas, one vivid amber 
 
 ## 5. Normal Attack - Basic Action (original Light icon)
 
-**Mechanic:** 100% damage to one enemy; +20 Shatter Gauge.
+**Mechanic:** 100% damage to one enemy; +20 Elemental Gauge.
 **Symbol:** a plain greatsword with one short pale-gold motion stroke, no fire.
 Suggested future asset ID: `infernis-light-attack`.
 
@@ -185,7 +185,7 @@ square gacha JRPG basic attack icon on a plain canvas, one simple broad training
 Heavy Attack has been removed from the game. Preserve this supplied source/prompt
 as historical art only; do not wire it to gameplay or substitute it for Defense.
 
-**Mechanic:** 180% damage to one enemy; +30 Shatter Gauge; no recovery turn.
+**Mechanic:** 180% damage to one enemy; +30 Elemental Gauge; no recovery turn.
 **Symbol:** a vertical downward greatsword with a chunky impact burst, no fire.
 Suggested future asset ID: `infernis-heavy-attack`.
 

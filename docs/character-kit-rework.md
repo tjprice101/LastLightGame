@@ -303,7 +303,7 @@ No new RNG streams, rewards, wallet fields, load-time writes or art substitution
 
 [Battle Status Icons.md](../Art/ui/Battle%20Status%20Icons.md) is the one copy-ready
 Midjourney file for all40 current symbols: old/new native resources, enemy debuffs,
-team buffs, equipment charges, Shield/Defense, Last Flare Recovery, Shatter Gauge
+team buffs, equipment charges, Shield/Defense, Last Flare Recovery, Elemental Gauge
 and skill cooldown. One symbol per effect, no generated count/percentage variants.
 Distinct descriptions and individual allowed palettes/unwanted-color exclusions;
 reference-free1:1 compact cel-rendered cutouts, complete outer margins and solid

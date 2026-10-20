@@ -99,7 +99,7 @@ function gameplayInformation(): string {
     { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Rosethorn materials', content: roseEventRules },
     { id: 'machines', title: 'Awaken the Machines', summary: 'Conduits, components and Masters', content: machineRulesText },
     { id: 'war', title: 'Elemental War', summary: 'Defeat challengers for a chance to recruit them', content: `<p>${warLore}</p><p>${warRulesText}</p>` },
-    { id: 'continuing', title: 'Between battles', summary: 'Health, Shatter Gauge and leaving a run', content: `<p>Choose Continue when ready. Staged activities restore HP and keep Shatter Gauge; Training carries HP, Shatter Gauge and recovery between waves.</p>
+    { id: 'continuing', title: 'Between battles', summary: 'Health, Elemental Gauge and leaving a run', content: `<p>Choose Continue when ready. Staged activities restore HP and keep Elemental Gauge; Training carries HP, Elemental Gauge and recovery between waves.</p>
       <p>Settings pauses the run; quitting ends it.</p>` },
   ]);
 }
@@ -119,7 +119,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       <article class="activity-card training-card">
         <header class="training-hero"><img src="${assetUrl('backgrounds/grassy-field.png')}" alt="" width="1456" height="816"><div><p class="eyebrow">Practice · Endless battles</p><h3>Training · Grassy Field</h3></div></header>
         <div class="training-details">${activityFacts('Endless waves', '1-120', 'Prismatica')}
-          <div class="training-summary"><p>${trainingLore}</p><p>Start at wave 1 with your saved squad. Continue at your own pace; HP and Shatter Gauge carry into the next wave.</p>${itemShowcase([{ id: 'fractalis' }], 'Rewards')}</div>
+          <div class="training-summary"><p>${trainingLore}</p><p>Start at wave 1 with your saved squad. Continue at your own pace; HP and Elemental Gauge carry into the next wave.</p>${itemShowcase([{ id: 'fractalis' }], 'Rewards')}</div>
           <div><h4>First wave</h4>${enemyStrength({ level: 1, boss: false, stats: enemyCombatStats(1, false) })}</div>
           <footer class="training-entry"><p class="quiet">Rewards save after each defeat. Leaving ends the run.</p><button class="primary-button" data-page="battle">Enter Training</button></footer>
         </div></article></section>

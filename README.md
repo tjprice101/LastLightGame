@@ -41,7 +41,7 @@ Crests and Legendary Hearts. [Tizu](Art/characters/Tizu%20Art.md) and
 Those icons are prompts only until generated art is supplied.
 Inventory is available independently and within Character Upgrades.
 Adventure (formerly Free Battle) uses only your saved starter against
-endless Goblin/Imp/Rock Golem waves, with skills, passives, Shatter Gauge,
+endless Goblin/Imp/Rock Golem waves, with skills, passives, Elemental Gauge,
 Last Flares, directional drag controls, right-click Normal Attack, Battle menu Defense, ultimate-only recovery
 turns, and configurable hotkeys. Supplied artwork has transparent runtime exports.
 Character leveling and evolution now spend Prismatica and own-element materials,

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { playableDungeons } from '../content/dungeons';
 import { createBattle, createDungeonBattle, createInfusionBattle, endTurn, nextStage, nextWave } from './battle';
 
-describe('Shatter Gauge carry within a run', () => {
+describe('Elemental Gauge carry within a run', () => {
   const progress = { level: 105, evolution: 6 };
   const staged = [
     ...playableDungeons.map((element) => createDungeonBattle(element, 1, 1729, 'ember', progress)),

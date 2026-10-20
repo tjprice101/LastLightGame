@@ -58,7 +58,7 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
     expect(actionUnavailable(state, state.allies[0], action)).toBeNull();
     expect(() => act(state, actor.id, action, state.enemies[0].id)).not.toThrow();
     state.allies[0].shatter = 0;
-    expect(actionUnavailable(state, state.allies[0], action)).toContain('Shatter Gauge');
+    expect(actionUnavailable(state, state.allies[0], action)).toContain('Elemental Gauge');
     expect(captured).toEqual(before);
   });
   it.each(['skill1', 'skill2'] as const)('keeps Votive Roselius %s usable at its actual Gauge cost', (action) => {
@@ -67,7 +67,7 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
     const actor = state.allies[0];
     const cost = action === 'skill1' ? 25 : 40;
     expect(actor.kit!.abilities[action].name).toContain('Golden Thorn Benediction');
-    expect(actionUnavailable(state, actor, action)).toBe(`Requires ${cost} Shatter Gauge.`);
+    expect(actionUnavailable(state, actor, action)).toBe(`Requires ${cost} Elemental Gauge.`);
     actor.shatter = cost;
     expect(actionUnavailable(state, actor, action)).toBeNull();
     const result = act(state, actor.id, action, state.enemies[0].id);

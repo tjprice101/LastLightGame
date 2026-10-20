@@ -96,7 +96,7 @@ No Heavy action, invented skill, permanent death or automatic deletion.
 - Fixed form1-6 sets acquisition stars1-6 and rarity Common through Omnic.
   Leveling changes neither rating. This approved later-form capture exception
   supersedes reserving every4-6-star unit exclusively for special banners.
-- Skills cost the shared25/40/100 Shatter Gauge; Normal/Defense and hit gains
+- Skills cost the shared25/40/100 Elemental Gauge; Normal/Defense and hit gains
   remain shared. Retained attacks target one enemy. Missing slots explicitly
   say Unavailable. Boss ultimate cooldowns coexist with normal next-turn recovery.
 

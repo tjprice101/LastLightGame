@@ -88,7 +88,7 @@ The shared reward-screen foundation supplies the elemental reveal, portrait,
 Skip animation, explicit Continue, Escape, focus restoration and disposal.
 Upgrade results say "Upgrade saved", not "Reward saved". Staggered cards for the changed stats among
 show effective Health, Attack, Defense, Critical rate, Critical multiplier,
-Shatter capacity and Elemental damage before/after and their signed differences.
+Elemental Gauge capacity and Elemental damage before/after and their signed differences.
 Values resolve from pre-transaction and confirmed post-transaction account
 snapshots with actual equipment/upgrades, not a predicted target. Max Level
 shows its entire saved gain; evolution keeps the real retained level.
@@ -399,7 +399,7 @@ confirmation, and keeps the portrait/rail mounted after tab changes and upgrades
 
 | Stat | Runtime field | Base prototype behavior |
 | --- | --- | --- |
-| Shatter Gauge Amount | `shatterCapacity` | Maximum100 timesP; current gauge starts0 |
+| Elemental Gauge Amount | `shatterCapacity` | Maximum100 timesP; current gauge starts0 |
 | Health | `health` | Maximum HP |
 | Defense | `defense` | Attack-relative diminishing damage reduction; displayed effective defense includes passive |
 | Attack Damage | `damage` | Base hit damage before action coefficients |
@@ -417,10 +417,10 @@ All displays use the shared formatter with up to two decimals; formatting never
 changes the numbers used by combat. Saved levels/forms resolve automatically,
 so existing accounts need no migration or repurchase.
 Percent bonuses are relative. Lv105/Evo6 usesP=1.565: Infernis critical rate is
-23.475%, critical multiplier2.3475x and Shatter capacity156.5, not enormous
+23.475%, critical multiplier2.3475x and Elemental Gauge capacity156.5, not enormous
 HP-scale percentages.
 
-Only maximum Shatter capacity grows. Normal +20, incoming-hit +10 and
+Only maximum Elemental Gauge capacity grows. Normal +20, incoming-hit +10 and
 skill costs 25/40/100 remain fixed.
 
 Skill coefficients, burn coefficient, flat shields/heals, extra critical chance,
