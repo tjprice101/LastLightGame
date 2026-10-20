@@ -590,7 +590,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "aquatic-undertide-chronometer": {
-    "description": "Each [Weaken] you apply delays the enemy's next scheduled skill by 1 -> 2 Enemy Turns.",
+    "description": "Your first [Weaken] on each enemy each Battle delays its next scheduled skill by 1 -> 2 Enemy Turns.",
     "ranges": [
       {
         "base": 1,
@@ -819,7 +819,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "pressurecrest-governor": {
-    "description": "Each critical Attack Action grants a [Windveil], which dodges the next enemy normal attack against you.",
+    "description": "Each critical Attack Action grants a [Windveil] (hold one), which dodges the next enemy normal attack against you. [Windveil] cannot dodge on two Enemy Turns in a row.",
     "ranges": []
   },
   "rootbound-triage-vault": {
@@ -923,7 +923,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-tide-1": {
-    "description": "Damage from a hit that breaks [Tizu]'s Shield does not carry over to the protected ally's HP.",
+    "description": "The first time each Battle a hit breaks [Tizu]'s Shield on an ally, its damage does not carry over to that ally's HP.",
     "ranges": []
   },
   "master-tide-2": {
@@ -1027,7 +1027,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-razor-3": {
-    "description": "Each [Skill 1] hit applies [Silence]: the target's next scheduled skill becomes a [Normal Attack].",
+    "description": "The first [Skill 1] hit on each enemy each Battle applies [Silence]: the target's next scheduled skill becomes a [Normal Attack].",
     "ranges": []
   },
   "master-rosetta-1": {

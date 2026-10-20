@@ -387,9 +387,11 @@ export function applyConduitWeaken(state: BattleState, owner: Combatant, target:
   target.weakened = duration; target.weakenFraction = strength; target.weakenSourceId = owner.id;
   target.weakenOrigin = owner.kit?.pilot === 'rose-grace' || owner.kit?.pilot === 'thorn-aegis' || owner.kit?.pilot === 'rose-duality' ? 'rose' : 'native';
   const n = gear(target).numbers;
-  if (equipped(owner, 'aquatic-undertide-chronometer'))
+  if (equipped(owner, 'aquatic-undertide-chronometer') && !n[`undertide:${owner.id}`]) {
+    n[`undertide:${owner.id}`] = 1;
     n.scheduleShift = (n.scheduleShift ?? 0) + step(state, 'aquatic-undertide-chronometer', 1, 2);
-  if (equipped(owner, 'master-razor-3')) { n[`silenced:${owner.id}`] = 1; n.silence = 1; }
+  }
+  if (equipped(owner, 'master-razor-3') && !n[`silenced:${owner.id}`]) { n[`silenced:${owner.id}`] = 1; n.silence = 1; }
   if (equipped(owner, 'master-tide-3')) applyTaunt(owner, target);
   emit(events, 'status', owner, target, strength, `${target.name} has ${Math.round(strength * 100)}% [Weaken] for ${target.weakened} Enemy Turns.`, true);
 }
@@ -592,7 +594,7 @@ export function finishConduitAction(state: BattleState, owner: Combatant, ctx: C
         }
         break;
       case 'pressurecrest-governor':
-        if (critical) n.windveil = (n.windveil ?? 0) + ctx.hits.filter(hit => hit.critical && hit.damage > 0).length; break;
+        if (critical) n.windveil = 1; break;
       case 'chaotic-fault-verdict':
         for (const hit of ctx.hits.filter(hit => hit.critical && hit.damage > 0)) {
           const enemy = state.enemies.find(enemy => enemy.id === hit.target && enemy.hp > 0);
@@ -840,8 +842,8 @@ function nativeShieldActivationMultiplier(enemy: Combatant, target: Combatant): 
 export function conduitIncoming(state: BattleState, enemy: Combatant, target: Combatant, damage: number, critical: boolean,
   scheduled: boolean, events: BattleEvent[], action: ActionId = scheduled ? 'skill1' : 'light'): void {
   const n = gear(target).numbers;
-  if (!scheduled && n.windveil) {
-    n.windveil--; if (!n.windveil) delete n.windveil;
+  if (!scheduled && n.windveil && n.windveilRound !== state.round - 1) {
+    delete n.windveil; n.windveilRound = state.round;
     emit(events, 'status', target, target, 0, `${target.name}'s Windveil avoids the Normal Attack.`);
     return;
   }
@@ -895,7 +897,7 @@ export function conduitIncoming(state: BattleState, enemy: Combatant, target: Co
     const owner = state.allies.find(ally => ally.id === id);
     if (!owner) continue;
     const broke = absorbed.broken.has(id);
-    if (equipped(owner, 'master-tide-1') && broke) loss = 0;
+    if (equipped(owner, 'master-tide-1') && broke && !n[`tideGuard:${id}`]) { n[`tideGuard:${id}`] = 1; loss = 0; }
     pilotAuthoredShieldAbsorbed(state, id, amount, events);
     absorbedNative(state, owner, target, enemy, amount, broke, events);
   }

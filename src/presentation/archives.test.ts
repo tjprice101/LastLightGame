@@ -108,12 +108,18 @@ describe('unified Archives', () => {
     for (const account of [emptyAccount(), { ...emptyAccount(), conduits: { 'vigil-core': 0 } }, null]) {
       const before = structuredClone(account);
       const html = archives(account, 'conduits');
-      expect(html.match(/class="archive-card archive-conduit-locked"/g)).toHaveLength(conduits.filter(entry => entry.rarity !== 'Calamitic').length);
+      expect(html.match(/class="archive-card archive-conduit-locked"/g)).toHaveLength(conduits.filter(entry => entry.rarity !== 'Calamitic').length + 48);
       expect(html).not.toContain('archive-conduit-revealed');
       expect(html).toContain('unowned ones are silhouettes');
       if (!account) expect(html).toContain('Ownership unavailable');
       expect(account).toEqual(before);
     }
+  });
+
+  it('reveals Master Conduit art only when that Master is owned', () => {
+    const html = archives({ ...emptyAccount(), masterConduits: { 'master-ember-1': 1 } }, 'conduits');
+    expect(html.match(/archive-conduit-revealed/g)).toHaveLength(1);
+    expect(html.match(/class="archive-card archive-conduit-locked"/g)).toHaveLength(conduits.filter(entry => entry.rarity !== 'Calamitic').length + 47);
   });
 
   it('retains discovery locks and explicitly reports unavailable saves', () => {

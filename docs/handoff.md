@@ -1,5 +1,17 @@
 # Current state and handoff
 
+## No-immortality Conduit audit and Master silhouettes (D-350)
+
+- `conduit-runtime.ts`: `master-tide-1` zero-spill guarded per ally (`tideGuard:<id>`); Windveil
+  (`pressurecrest-governor`) holds one (`windveil = 1`) and skips the Enemy Turn right after a
+  dodge (`windveilRound`); Undertide (`undertide:<owner>`) and non-native Master Razor-3
+  (`silenced:<owner>`) apply once per enemy. Descriptions updated in `conduit-redesign.ts`.
+- Kept: Funeral Engine (debt still lands), Thornia-3 guardian (Thornia can fall), finite shields,
+  native Rootbind/Razor guards, and the D-349 first-time-each-Battle death-cheat limits.
+- `archives.ts`/`archives.css`: Master cards get `archive-conduit-locked` unless owned; the
+  silhouette filter now also targets `.master-art`. Server bundle redeployed.
+- Validation: `npx tsc --noEmit -p .`, `npx vitest run --maxWorkers=4`, `npm run build`.
+
 ## Death-cheat caps and Conduit replacement proposal (D-349)
 
 - `conduit-runtime.ts` guards Stasis (`stasisUsed`), Phoenix (`phoenixUsed`), Accord

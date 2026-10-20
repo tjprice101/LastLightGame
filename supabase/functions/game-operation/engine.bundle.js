@@ -778,7 +778,7 @@ var conduitRedesign = {
     ]
   },
   "aquatic-undertide-chronometer": {
-    "description": "Each [Weaken] you apply delays the enemy's next scheduled skill by 1 -> 2 Enemy Turns.",
+    "description": "Your first [Weaken] on each enemy each Battle delays its next scheduled skill by 1 -> 2 Enemy Turns.",
     "ranges": [
       {
         "base": 1,
@@ -1000,7 +1000,7 @@ var conduitRedesign = {
     ]
   },
   "pressurecrest-governor": {
-    "description": "Each critical Attack Action grants a [Windveil], which dodges the next enemy normal attack against you.",
+    "description": "Each critical Attack Action grants a [Windveil] (hold one), which dodges the next enemy normal attack against you. [Windveil] cannot dodge on two Enemy Turns in a row.",
     "ranges": []
   },
   "rootbound-triage-vault": {
@@ -1103,7 +1103,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-tide-1": {
-    "description": "Damage from a hit that breaks [Tizu]'s Shield does not carry over to the protected ally's HP.",
+    "description": "The first time each Battle a hit breaks [Tizu]'s Shield on an ally, its damage does not carry over to that ally's HP.",
     "ranges": []
   },
   "master-tide-2": {
@@ -1207,7 +1207,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-razor-3": {
-    "description": "Each [Skill 1] hit applies [Silence]: the target's next scheduled skill becomes a [Normal Attack].",
+    "description": "The first [Skill 1] hit on each enemy each Battle applies [Silence]: the target's next scheduled skill becomes a [Normal Attack].",
     "ranges": []
   },
   "master-rosetta-1": {
@@ -6143,9 +6143,11 @@ function applyConduitWeaken(state, owner, target, fraction, events, action = "sk
   target.weakenSourceId = owner.id;
   target.weakenOrigin = owner.kit?.pilot === "rose-grace" || owner.kit?.pilot === "thorn-aegis" || owner.kit?.pilot === "rose-duality" ? "rose" : "native";
   const n = gear(target).numbers;
-  if (equipped(owner, "aquatic-undertide-chronometer"))
+  if (equipped(owner, "aquatic-undertide-chronometer") && !n[`undertide:${owner.id}`]) {
+    n[`undertide:${owner.id}`] = 1;
     n.scheduleShift = (n.scheduleShift ?? 0) + step(state, "aquatic-undertide-chronometer", 1, 2);
-  if (equipped(owner, "master-razor-3")) {
+  }
+  if (equipped(owner, "master-razor-3") && !n[`silenced:${owner.id}`]) {
     n[`silenced:${owner.id}`] = 1;
     n.silence = 1;
   }
@@ -6375,7 +6377,7 @@ function finishConduitAction(state, owner, ctx, events) {
         }
         break;
       case "pressurecrest-governor":
-        if (critical) n.windveil = (n.windveil ?? 0) + ctx.hits.filter((hit) => hit.critical && hit.damage > 0).length;
+        if (critical) n.windveil = 1;
         break;
       case "chaotic-fault-verdict":
         for (const hit of ctx.hits.filter((hit2) => hit2.critical && hit2.damage > 0)) {
@@ -6648,9 +6650,9 @@ function nativeShieldActivationMultiplier(enemy, target) {
 }
 function conduitIncoming(state, enemy, target, damage, critical, scheduled, events, action = scheduled ? "skill1" : "light") {
   const n = gear(target).numbers;
-  if (!scheduled && n.windveil) {
-    n.windveil--;
-    if (!n.windveil) delete n.windveil;
+  if (!scheduled && n.windveil && n.windveilRound !== state.round - 1) {
+    delete n.windveil;
+    n.windveilRound = state.round;
     emit(events, "status", target, target, 0, `${target.name}'s Windveil avoids the Normal Attack.`);
     return;
   }
@@ -6716,7 +6718,10 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
     const owner = state.allies.find((ally) => ally.id === id);
     if (!owner) continue;
     const broke = absorbed.broken.has(id);
-    if (equipped(owner, "master-tide-1") && broke) loss = 0;
+    if (equipped(owner, "master-tide-1") && broke && !n[`tideGuard:${id}`]) {
+      n[`tideGuard:${id}`] = 1;
+      loss = 0;
+    }
     pilotAuthoredShieldAbsorbed(state, id, amount, events);
     absorbedNative(state, owner, target, enemy, amount, broke, events);
   }

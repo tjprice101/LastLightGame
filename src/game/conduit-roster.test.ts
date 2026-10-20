@@ -274,7 +274,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       applyConduitWeaken(state, owner, target, .2, events, 'skill1');
       expect(gear(target).numbers.scheduleShift ?? 0).toBe(s(1, 2));
       applyConduitWeaken(state, owner, target, .2, events, 'skill1');
-      expect(gear(target).numbers.scheduleShift ?? 0).toBe(2 * s(1, 2));
+      expect(gear(target).numbers.scheduleShift ?? 0).toBe(s(1, 2));
       break;
     case 'tectonic-faultkeeper-loom':
       finish('light');
@@ -401,6 +401,9 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       for (let i = 0; i < (level < 3 ? 3 : 2); i++) finish('skill1', true);
       hit();
       expect(owner.hp).toBe(enabled ? 1000 : 900);
+      for (let i = 0; i < 3; i++) finish('skill1', true);
+      state.round += 1; hit();
+      expect(owner.hp).toBe(enabled ? 900 : 800);
       break;
     case 'rootbound-triage-vault': {
       owner.hp = 100; const ctx = context('skill2', 0);
@@ -507,7 +510,7 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       shield(); conduitIncoming(state, target, ally, 200, false, false, events);
       expect(ally.hp).toBe(enabled ? 1000 : 900);
       shield(); conduitIncoming(state, target, ally, 200, false, false, events);
-      expect(ally.hp).toBe(enabled ? 1000 : 800);
+      expect(ally.hp).toBe(enabled ? 900 : 800);
       break;
     case 'master-tide-2': {
       ally.hp = 1;
@@ -658,7 +661,7 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       break;
     case 'master-razor-3':
       weaken(); expect(conduitSuppressSkill(target)).toBe(enabled);
-      weaken(); expect(conduitSuppressSkill(target)).toBe(enabled);
+      weaken(); expect(conduitSuppressSkill(target)).toBe(false);
       break;
     case 'master-rosetta-1': {
       ally.hp = 300;
