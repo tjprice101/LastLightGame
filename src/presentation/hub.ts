@@ -47,13 +47,13 @@ export function stats(unit: Starter | CapturedCharacter, progress?: CharacterPro
   const base = 'instanceId' in unit ? resolveCapturedFighter(unit).stats : resolveFighter(unit.id, progress).stats;
   const changed = equipment?.some((id) => id !== null);
   const statKeys = { Health: 'health', Defense: 'defense', 'Attack Damage': 'damage', 'Critical Rate': 'crit',
-    'Critical Damage Multiplier': 'critMultiplier', 'Shatter capacity': 'shatterCapacity', 'Elemental Damage': 'elementalDamage' } as const;
+    'Critical Damage Multiplier': 'critMultiplier', 'Shatter Gauge capacity': 'shatterCapacity', 'Elemental Damage': 'elementalDamage' } as const;
   type StatEntry = [keyof typeof statKeys, string | number];
   const groups: { label: string; entries: StatEntry[] }[] = [
     { label: 'Survival', entries: [['Health', values.health], ['Defense', values.defense]] },
     { label: 'Offense', entries: [['Attack Damage', values.damage], ['Critical Rate', `${formatStat(values.crit * 100)}%`],
       ['Critical Damage Multiplier', `${formatStat(values.critMultiplier)}x`], ['Elemental Damage', values.elementalDamage]] },
-    { label: 'Resource', entries: [['Shatter capacity', values.shatterCapacity]] },
+    { label: 'Resource', entries: [['Shatter Gauge capacity', values.shatterCapacity]] },
   ];
   const render = (entries: readonly StatEntry[]): string => entries.map(([label, value]) => {
     const key = statKeys[label];
@@ -65,7 +65,7 @@ export function stats(unit: Starter | CapturedCharacter, progress?: CharacterPro
   return grouped ? `<div class="character-stat-groups" aria-label="Current combat stats">${groups.map((group) =>
     `<section class="character-category"><h3>${group.label}</h3><div class="hub-stats">${render(group.entries)}</div></section>`).join('')}</div>`
     : `<div class="hub-stats" aria-label="Current combat stats">${render([
-      ['Shatter capacity', values.shatterCapacity], ...groups[0].entries, ...groups[1].entries,
+      ['Shatter Gauge capacity', values.shatterCapacity], ...groups[0].entries, ...groups[1].entries,
     ])}</div>`;
 }
 

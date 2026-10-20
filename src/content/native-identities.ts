@@ -37,7 +37,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: '[Tizu] places a short-lived shield on one chosen ally before the next enemy attack.',
     passive: {
       name: 'Stillwater Guard',
-      description: 'When a shield from [Tizu]’s abilities fully absorbs an enemy’s direct hit so that no HP is lost, the shielded ally gains 8 Gauge.',
+      description: 'When a shield from [Tizu]’s abilities fully absorbs an enemy’s direct hit so that no HP is lost, the shielded ally gains 8 [Shatter Gauge].',
     },
     abilities: {
       skill1: { ...ability('Undertow Thrust', '150% direct damage to one enemy and apply 25% [Weaken] for the next enemy phase. [Weaken] reduces the direct damage that enemy deals.', 1.5), strength: { damageMultiplier: 1.5, weakenFraction: .25 } },
@@ -193,7 +193,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: '[Nerithe]’s [Normal Attack] adds [Survey] points to an enemy; her skills spend them to ignore part of its Defense.',
     passive: {
       name: 'Uncharted Current',
-      description: '[Nerithe]’s [Normal Attack] gains 5 extra Gauge and adds 1 [Survey] point to its target. Only one enemy can hold [Survey]; surveying another enemy removes the old points. [Survey] disappears when its enemy is defeated.',
+      description: '[Nerithe]’s [Normal Attack] gains 5 extra [Shatter Gauge] and adds 1 [Survey] point to its target. Only one enemy can hold [Survey]; surveying another enemy removes the old points. [Survey] disappears when its enemy is defeated.',
     },
     abilities: {
       skill1: ability('Meridian Break', '180% direct damage to the enemy holding [Survey], or the selected enemy if none does. Spends 1 [Survey] point, if any, to ignore 25% of the target’s Defense.', 1.8),

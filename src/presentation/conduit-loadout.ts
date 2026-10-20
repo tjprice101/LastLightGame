@@ -15,7 +15,7 @@ import { escapeDialogText, gameChoose } from './game-dialog';
 
 const statLabels: Record<ConduitBuff['stat'], string> = {
   health: 'Health', damage: 'Attack', defense: 'Defense', crit: 'Critical rate',
-  critMultiplier: 'Critical multiplier', elementalDamage: 'Elemental damage', shatterCapacity: 'Shatter capacity',
+  critMultiplier: 'Critical multiplier', elementalDamage: 'Elemental damage', shatterCapacity: 'Shatter Gauge capacity',
 };
 
 export const conduitLoadoutPageSize = 4;
@@ -54,7 +54,7 @@ export function conduitBuffLine(conduit: Conduit, level = 0): string {
   }).join(' · ');
 }
 
-/** Complete effect at the displayed upgrade level, including conditional mechanics. */
+/** Full Conduit Ability text at the displayed upgrade level, including conditional mechanics. */
 export function conduitRuleText(conduit: Conduit, level = 0): string {
   return conduitEffect(conduit, level);
 }
@@ -181,15 +181,14 @@ export function bindConduitLoadout(host: HTMLElement): void {
         const rule = conduitRuleText(conduit, level);
         const element = conduit.element ? getElement(conduit.element).name : 'Any element';
         const detail = `${conduit.rarity} · Level ${level} of ${conduitUpgradeCap} · ${element}.`;
-        const stats = conduitBuffLine(conduit, level);
         const restrictions = conduit.rarity === 'Omnic' ? 'Matching combat element required. Maximum 4 Omnic Conduits in ordinary slots.' : '';
-        void gameChoose(`${detail} ${stats} ${rule ?? ''} ${restrictions}`, [{ value: 'close', label: 'Close', primary: true }], 'close', {
+        void gameChoose(`${detail} ${rule ?? ''} ${restrictions}`, [{ value: 'close', label: 'Close', primary: true }], 'close', {
           title: conduit.name,
-          messageHtml: `<div class="loadout-detail"><div class="loadout-detail-art">${conduitIcon(conduit.id, level)}</div><p>${escapeDialogText(detail)}</p>${stats ? `<h3>Stat bonuses</h3><ul>${stats.split(' · ').map(stat => `<li>${escapeDialogText(stat)}</li>`).join('')}</ul>` : ''}<h3>Complete effect</h3><p>${escapeDialogText(rule)}</p>${restrictions ? `<h3>Equipment rules</h3><p>${escapeDialogText(restrictions)}</p>` : ''}<h3>Origin</h3><p>${escapeDialogText(conduit.lore)}</p></div>`,
+          messageHtml: `<div class="loadout-detail"><div class="loadout-detail-art">${conduitIcon(conduit.id, level)}</div><p>${escapeDialogText(detail)}</p><h3>Conduit Ability</h3><p>${escapeDialogText(rule)}</p>${restrictions ? `<p>${escapeDialogText(restrictions)}</p>` : ''}<p class="conduit-lore">${escapeDialogText(conduit.lore)}</p></div>`,
         });
       } else if (isMasterConduitId(id)) {
         const master = getMasterConduit(id);
-        void showRule(`${master.name} · Master`, `${master.effect} Triggers and limits as stated above. Does not scale with Conduit upgrades. ${master.lore}`);
+        void showRule(`${master.name} · Master`, `${master.effect} ${master.lore}`);
       }
       return;
     }

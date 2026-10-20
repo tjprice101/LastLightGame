@@ -139,7 +139,7 @@ describe('game-specific hub layouts', () => {
     expect(home.slice(0, home.indexOf('<dialog'))).not.toContain('Attack Damage');
     expect(home).toContain('data-information="home-information"');
     for (const html of [homeHub(starter, false), characterDetail(starter, 'overview')]) {
-      for (const label of ['Shatter capacity', 'Health', 'Defense', 'Attack Damage', 'Critical Rate', 'Critical Damage', 'Elemental Damage']) {
+      for (const label of ['Shatter Gauge capacity', 'Health', 'Defense', 'Attack Damage', 'Critical Rate', 'Critical Damage', 'Elemental Damage']) {
         expect(html).toContain(label);
       }
       expect(html).toContain('1.5x');

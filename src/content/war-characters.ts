@@ -51,7 +51,7 @@ export const warActionNames: Record<WarCharacterId, { light: string }> = {
 export const warFighters: Record<WarCharacterId, FighterDefinition> = {
   nerithe: {
     stats: { health: 235, defense: 13, damage: 40, crit: .18, shatterCapacity: 100, critMultiplier: 1.6, elementalDamage: 0 },
-    passive: { name: 'Uncharted Current', description: 'Normal Attack gains 5 additional Gauge, capped by Gauge capacity.', damageBonus: 0, defenseBonus: 0, healFraction: 0, lightGaugeBonus: 5 },
+    passive: { name: 'Uncharted Current', description: 'Normal Attack gains 5 additional Shatter Gauge, capped by Shatter Gauge capacity.', damageBonus: 0, defenseBonus: 0, healFraction: 0, lightGaugeBonus: 5 },
     abilities: {
       skill1: { name: 'Meridian Break', description: '170% damage to one enemy; weaken its next two enemy-phase attacks by 20%.', cooldown: 0, strength: { damageMultiplier: 1.7, weakenFraction: .2 } },
       skill2: { name: 'Fold the Sea', description: '130% damage to all enemies; weaken surviving targets by 15% for two enemy phases.', cooldown: 0, targets: 'all-enemies', strength: { damageMultiplier: 1.3, weakenFraction: .15 } },

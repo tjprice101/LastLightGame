@@ -115,7 +115,7 @@ export function generatedGauge(owner: Combatant, target: Combatant | undefined, 
   if (amount <= 0) return 0;
   target.shatter += amount;
   emit(events, 'status', owner, target, amount, native ? `${target.name} gains ${amount} Shatter Gauge.`
-    : `${owner.name}'s Conduit gives ${target.name} ${amount} Gauge.`, native);
+    : `${owner.name}'s Conduit gives ${target.name} ${amount} Shatter Gauge.`, native);
   return amount;
 }
 function layers(unit: Combatant): ConduitShieldLayer[] {
@@ -764,7 +764,7 @@ function rescue(state: BattleState, target: Combatant, loss: number, events: Bat
     const cost = Math.max(1, Math.ceil(excess / (target.stats.health * .01) * (1 - value(state, target, 'horizon-heartcase', .2, .5)))) + 10 * saves;
     if (target.shatter >= cost) {
       target.shatter -= cost; n.heartcaseSaves = saves + 1;
-      emit(events, 'status', target, target, cost, `${target.name}'s Horizon Heartcase drains ${cost} Gauge to stay standing.`);
+      emit(events, 'status', target, target, cost, `${target.name}'s Horizon Heartcase drains ${cost} Shatter Gauge to stay standing.`);
       return Math.max(0, target.hp - 1);
     }
   }

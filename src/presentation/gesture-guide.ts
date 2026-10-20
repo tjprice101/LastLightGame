@@ -21,7 +21,7 @@ export function gestureGuide(state: BattleState, actor: Combatant, enemyTargetId
       const reason = actionUnavailable(state, actor, action);
       return `<span class="gesture-direction gesture-${direction}" data-gesture-action="${action}" data-available="${!reason}" title="${nativeActionHint(state, actor, action, enemyTargetId)}">
         <span class="gesture-arrow">${arrow}</span>${isStarterId(starterId) ? abilityIcon(starterId, action) : ''}
-        <strong>${label}</strong><small>${reason ? 'Unavailable' : action === 'light' ? `+${shatterGauge.gains.light} Gauge` : `${shatterGauge.costs[action]} Gauge`}${allyTargetHint(actor, action) ? ' · Choose ally' : ''}</small></span>`;
+        <strong>${label}</strong><small>${reason ? 'Unavailable' : action === 'light' ? `+${shatterGauge.gains.light} Shatter Gauge` : `${shatterGauge.costs[action]} Shatter Gauge`}${allyTargetHint(actor, action) ? ' · Choose ally' : ''}</small></span>`;
     }).join('')}<span class="gesture-center" aria-hidden="true">DRAG</span>
     <span class="gesture-status" role="status">Choose a direction · Release near center to cancel</span>`;
 }

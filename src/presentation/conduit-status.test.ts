@@ -33,7 +33,7 @@ describe('accessible Conduit control and protection readouts', () => {
     expect(html).toContain('cannot act on turn 2');
     expect(html).toContain('Accord');
     expect(html).toContain('Shield plates: 1');
-    expect(html).toContain('Skill 1 costs no Gauge');
+    expect(html).toContain('Skill 1 costs no Shatter Gauge');
     expect(conduitStatuses(conduitStatusSnapshot(ally), 1, [ally])).not.toContain('<img');
     const hostile = unitReadout(enemy, true, [ally], 1);
     expect(hostile).toContain('Rootbind');

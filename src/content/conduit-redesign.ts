@@ -47,7 +47,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "fracture-reservoir": {
-    "description": "+10 -> +35 Gauge capacity; begin each Battle with 5 -> 10 Gauge.",
+    "description": "+10 -> +35 [Shatter Gauge] capacity; begin each Battle with 5 -> 10 [Shatter Gauge].",
     "ranges": [
       {
         "base": 10,
@@ -86,7 +86,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "fieldbrace-coupler": {
-    "description": "When a Shield on you breaks, restore 6% -> 12% of your maximum HP at the start of your next player turn.",
+    "description": "When a [Shield] on you breaks, restore 6% -> 12% of your maximum HP at the start of your next player turn.",
     "ranges": [
       {
         "base": 6,
@@ -97,7 +97,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "reserve-torque-crank": {
-    "description": "Gauge you gain from abilities and hits is increased by 10% -> 25% (at least +1).",
+    "description": "[Shatter Gauge] you gain from abilities and hits is increased by 10% -> 25% (at least +1).",
     "ranges": [
       {
         "base": 10,
@@ -152,7 +152,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "aegis-capacitor": {
-    "description": "Gain 4 -> 8 Gauge whenever your Shield absorbs enemy damage.",
+    "description": "Gain 4 -> 8 [Shatter Gauge] whenever your [Shield] absorbs enemy damage.",
     "ranges": [
       {
         "base": 4,
@@ -174,7 +174,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "twinpulse-bellows": {
-    "description": "Start each Battle with 15% -> 35% of your Gauge capacity added to your Gauge.",
+    "description": "Start each Battle with 15% -> 35% of your [Shatter Gauge] capacity added to your [Shatter Gauge].",
     "ranges": [
       {
         "base": 15,
@@ -185,7 +185,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "glassroot-gimbal": {
-    "description": "Attack Actions deal +1% -> +2% Direct Damage for every 10 Gauge you hold before paying the cost.",
+    "description": "Attack Actions deal +1% -> +2% Direct Damage for every 10 [Shatter Gauge] you hold before paying the cost.",
     "ranges": [
       {
         "base": 1,
@@ -214,7 +214,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "wardglass-transformer": {
-    "description": "+20% -> +40% Shield amount from your abilities.",
+    "description": "+20% -> +40% [Shield] amount from your abilities.",
     "ranges": [
       {
         "base": 20,
@@ -248,7 +248,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "coilfeed-ratchet": {
-    "description": "Your abilities cost 7% -> 14% less Gauge (rounded down). [Last Flare] cannot drop below 70 Gauge.",
+    "description": "Your abilities cost 7% -> 14% less [Shatter Gauge] (rounded down). [Last Flare] cannot drop below 70 [Shatter Gauge].",
     "ranges": [
       {
         "base": 7,
@@ -270,7 +270,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "resonance-crucible": {
-    "description": "Damage beyond what defeats an enemy carries over as a Bonus Strike on the healthiest other enemy at 30% -> 60%.",
+    "description": "Damage beyond what defeats an enemy carries over as a [Bonus Strike] on the healthiest other enemy at 30% -> 60%.",
     "ranges": [
       {
         "base": 30,
@@ -315,7 +315,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "citadel-spine": {
-    "description": "+25% -> +87.5% Defense; -6 -> -21 percentage points of Critical Rate. Your Shield abilities also add 10% -> 20% of your Defense to the Shield amount.",
+    "description": "+25% -> +87.5% Defense; -6 -> -21 percentage points of Critical Rate. Your [Shield] abilities also add 10% -> 20% of your Defense to the [Shield] amount.",
     "ranges": [
       {"base":25,"maximum":87.5,"percent":true,"step":false},
       {"base":-6,"maximum":-21,"percent":false,"step":false},
@@ -323,7 +323,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "astral-prism": {
-    "description": "+20 -> +70 percentage points of Critical Rate; -6% -> -21% Defense. Critical Rate above 100% becomes Elemental Crit chance.",
+    "description": "+20 -> +70 percentage points of Critical Rate; -6% -> -21% Defense. Critical Rate above 100% becomes [Elemental Crit] chance.",
     "ranges": [
       {"base":20,"maximum":70,"percent":false,"step":false},
       {"base":-6,"maximum":-21,"percent":true,"step":false}
@@ -369,7 +369,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "horizon-heartcase": {
-    "description": "When enemy Direct Damage would defeat you, drain Gauge instead and stay at 1 HP: 1 Gauge per 1% maximum HP of the excess, reduced by 20% -> 50%, plus 10 for each earlier save this Battle. Without enough Gauge you fall.",
+    "description": "When enemy Direct Damage would defeat you, drain [Shatter Gauge] instead and stay at 1 HP: 1 [Shatter Gauge] per 1% maximum HP of the excess, reduced by 20% -> 50%, plus 10 for each earlier save this Battle. Without enough [Shatter Gauge] you fall.",
     "ranges": [
       {
         "base": 20,
@@ -386,14 +386,14 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "granite-hourglass": {
-    "description": "At the start of each player turn, gain a Shield equal to 20% -> 40% of the HP you lost to Direct Damage during the previous Enemy Turn.",
+    "description": "At the start of each player turn, gain a [Shield] equal to 20% -> 40% of the HP you lost to Direct Damage during the previous Enemy Turn.",
     "ranges": [
       {"base":20,"maximum":40,"percent":true,"step":false}
 
     ]
   },
   "pale-bulwark-diadem": {
-    "description": "Above 75% HP, take 15% -> 30% less Direct Damage. At or below 75% HP, Shields you cast on yourself are 25% -> 50% stronger.",
+    "description": "Above 75% HP, take 15% -> 30% less Direct Damage. At or below 75% HP, [Shields] you cast on yourself are 25% -> 50% stronger.",
     "ranges": [
       {
         "base": 15,
@@ -421,7 +421,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "meridian-inverter": {
-    "description": "Your Shield abilities heal allies for 75% -> 150% of the Shield amount instead of granting a Shield.",
+    "description": "Your [Shield] abilities heal allies for 75% -> 150% of the [Shield] amount instead of granting a [Shield].",
     "ranges": [
       {
         "base": 75,
@@ -454,7 +454,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "infernic-phoenix-reactor": {
-    "description": "The first time you are defeated each Battle, revive at 25% -> 50% of your maximum HP with 0 Gauge.",
+    "description": "The first time you are defeated each Battle, revive at 25% -> 50% of your maximum HP with 0 [Shatter Gauge].",
     "ranges": [
       {
         "base": 25,
@@ -465,7 +465,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "aquatic-leviathan-pump": {
-    "description": "Damage your Shields absorb during an Enemy Turn fills a healing pool of 30% -> 60% of that amount. At the start of the next player turn, the pool is split equally among injured allies.",
+    "description": "Damage your [Shields] absorb during an Enemy Turn fills a healing pool of 30% -> 60% of that amount. At the start of the next player turn, the pool is split equally among injured allies.",
     "ranges": [
       {"base":30,"maximum":60,"percent":true,"step":false}
 
@@ -497,7 +497,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "atmospheric-griffin-turbine": {
-    "description": "When your [Normal Attack] damages HP, each other ally gains Gauge equal to 15% -> 30% of that damage as a share of your Attack, up to 25 Gauge each. A hit for your full Attack gives 15 Gauge at +0.",
+    "description": "When your [Normal Attack] damages HP, each other ally gains [Shatter Gauge] equal to 15% -> 30% of that damage as a share of your Attack, up to 25 [Shatter Gauge] each. A hit for your full Attack gives 15 [Shatter Gauge] at +0.",
     "ranges": [
       {
         "base": 15,
@@ -533,7 +533,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "chaotic-ouroboros-core": {
-    "description": "[Last Flare] converts your Gauge above its cost into a Shield of 0.3% -> 0.6% of your maximum HP per Gauge.",
+    "description": "[Last Flare] converts your [Shatter Gauge] above its cost into a [Shield] of 0.3% -> 0.6% of your maximum HP per [Shatter Gauge].",
     "ranges": [
       {"base":0.3,"maximum":0.6,"percent":true,"step":false}
 
@@ -586,7 +586,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "atmospheric-skythread-rudder": {
-    "description": "Each [Normal Attack] grants a [Tailwind]. Each [Tailwind] reduces your next [Skill 1] or [Skill 2] cost by 10 -> 20 Gauge, and that skill spends all of them.",
+    "description": "Each [Normal Attack] grants a [Tailwind]. Each [Tailwind] reduces your next [Skill 1] or [Skill 2] cost by 10 -> 20 [Shatter Gauge], and that skill spends all of them.",
     "ranges": [
       {
         "base": 10,
@@ -597,7 +597,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "luminous-dawn-witness-array": {
-    "description": "Each noncritical [Normal Attack] adds a [Witness]. Your next critical Attack Action consumes them for a Bonus Strike of 15% -> 30% of your Attack per [Witness].",
+    "description": "Each noncritical [Normal Attack] adds a [Witness]. Your next critical Attack Action consumes them for a [Bonus Strike] of 15% -> 30% of your Attack per [Witness].",
     "ranges": [
       {
         "base": 15,
@@ -619,7 +619,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tranquilitic-stillhour-carillon": {
-    "description": "At the start of each [Last Flare] recovery turn, gain 15 -> 30 Gauge and give the same amount to the other ally with the lowest Gauge.",
+    "description": "At the start of each [Last Flare] recovery turn, gain 15 -> 30 [Shatter Gauge] and give the same amount to the other ally with the lowest [Shatter Gauge].",
     "ranges": [
       {
         "base": 15,
@@ -641,7 +641,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tempered-strike-link": {
-    "description": "Each [Normal Attack] against an enemy with your [Burn] consumes one Enemy Turn of it for a Bonus Strike of 80% -> 160% of that [Burn]'s tick damage.",
+    "description": "Each [Normal Attack] against an enemy with your [Burn] consumes one Enemy Turn of it for a [Bonus Strike] of 80% -> 160% of that [Burn]'s tick damage.",
     "ranges": [
       {"base":80,"maximum":160,"percent":true,"step":false}
 
@@ -659,7 +659,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "ward-stitch-spool": {
-    "description": "Allies holding a Shield from your abilities receive +20% -> +40% healing from every source.",
+    "description": "Allies holding a [Shield] from your abilities receive +20% -> +40% healing from every source.",
     "ranges": [
       {
         "base": 20,
@@ -681,7 +681,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "pulse-trigger-pawl": {
-    "description": "Critical [Skill 1] or [Skill 2] hits grant 8 -> 16 Gauge.",
+    "description": "Critical [Skill 1] or [Skill 2] hits grant 8 -> 16 [Shatter Gauge].",
     "ranges": [
       {
         "base": 8,
@@ -720,14 +720,14 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "clearwater-manifold": {
-    "description": "Gauge you gain beyond your capacity passes 50% -> 100% of the excess to the other ally with the lowest Gauge.",
+    "description": "[Shatter Gauge] you gain beyond your capacity passes 50% -> 100% of the excess to the other ally with the lowest [Shatter Gauge].",
     "ranges": [
       {"base":50,"maximum":100,"percent":true,"step":false}
 
     ]
   },
   "aegis-return-spring": {
-    "description": "Each Shield you grant another ally also gives them a [Critical Seal], which turns the next enemy critical hit against them into a normal hit.",
+    "description": "Each [Shield] you grant another ally also gives them a [Critical Seal], which turns the next enemy critical hit against them into a normal hit.",
     "ranges": []
   },
   "emberlife-kiln": {
@@ -749,7 +749,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "covercharge-drum": {
-    "description": "When another ally falls, every living ally restores 10% -> 20% of their maximum HP and gains 20 -> 40 Gauge.",
+    "description": "When another ally falls, every living ally restores 10% -> 20% of their maximum HP and gains 20 -> 40 [Shatter Gauge].",
     "ranges": [
       {
         "base": 10,
@@ -777,7 +777,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tidebound-reflector": {
-    "description": "When your Shield absorbs an enemy hit, reflect 20% -> 40% of the absorbed damage to the attacker.",
+    "description": "When your [Shield] absorbs an enemy hit, reflect 20% -> 40% of the absorbed damage to the attacker.",
     "ranges": [
       {"base":20,"maximum":40,"percent":true,"step":false}
 
@@ -788,7 +788,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "rootbound-triage-vault": {
-    "description": "After your active healing, spend 15 Gauge to heal the ally with the lowest HP up to 20% -> 40% of their maximum HP if they are below it.",
+    "description": "After your active healing, spend 15 [Shatter Gauge] to heal the ally with the lowest HP up to 20% -> 40% of their maximum HP if they are below it.",
     "ranges": [
       {
         "base": 20,
@@ -799,7 +799,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "solace-anchor": {
-    "description": "Your first [Normal Attack] each player turn costs 10 -> 5 Gauge and does not spend your action.",
+    "description": "Your first [Normal Attack] each player turn costs 10 -> 5 [Shatter Gauge] and does not spend your action.",
     "ranges": [
       {"base":10,"maximum":5,"percent":false,"step":false}
     ]
@@ -817,11 +817,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "oceanic-shared-tide-pump": {
-    "description": "When an ally with your Shield is hit, your Shields on other allies absorb the hit first.",
+    "description": "When an ally with your [Shield] is hit, your [Shields] on other allies absorb the hit first.",
     "ranges": []
   },
   "atmospheric-storm-clock": {
-    "description": "Each critical Attack Action stores a [Storm Clock] charge that reduces your next [Last Flare] cost by 15 -> 30 Gauge. [Last Flare] spends all charges.",
+    "description": "Each critical Attack Action stores a [Storm Clock] charge that reduces your next [Last Flare] cost by 15 -> 30 [Shatter Gauge]. [Last Flare] spends all charges.",
     "ranges": [
       {
         "base": 15,
@@ -838,7 +838,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tranquilitic-accord-bastion": {
-    "description": "Supporting another ally grants them [Accord] (first time each Battle per ally): the next hit that would defeat them leaves them at 1 HP and grants a Shield of 10% -> 20% of your maximum HP.",
+    "description": "Supporting another ally grants them [Accord] (first time each Battle per ally): the next hit that would defeat them leaves them at 1 HP and grants a [Shield] of 10% -> 20% of your maximum HP.",
     "ranges": [
       {
         "base": 10,
@@ -849,7 +849,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "chaotic-fault-verdict": {
-    "description": "When your Attack Action critically hits and the target survives, spend your Shield to deal 50% -> 100% of it as a Bonus Strike.",
+    "description": "When your Attack Action critically hits and the target survives, spend your [Shield] to deal 50% -> 100% of it as a [Bonus Strike].",
     "ranges": [
       {"base":50,"maximum":100,"percent":true,"step":false}
 
@@ -868,11 +868,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-tide-1": {
-    "description": "The first time each Battle a hit breaks [Tizu]'s Shield on an ally, its damage does not carry over to that ally's HP.",
+    "description": "The first time each Battle a hit breaks [Tizu]'s [Shield] on an ally, its damage does not carry over to that ally's HP.",
     "ranges": []
   },
   "master-tide-2": {
-    "description": "[Tidal Shelter] gives the selected ally three times its Shield amount for one Enemy Turn instead of shielding the team.",
+    "description": "[Tidal Shelter] gives the selected ally three times its [Shield] amount for one Enemy Turn instead of shielding the team.",
     "ranges": []
   },
   "master-tide-3": {
@@ -888,7 +888,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-sprout-3": {
-    "description": "The first [Last Flare: Worldseed] each Battle that finds a fallen ally revives each fallen ally at 30% of their maximum HP with 0 Gauge.",
+    "description": "The first [Last Flare: Worldseed] each Battle that finds a fallen ally revives each fallen ally at 30% of their maximum HP with 0 [Shatter Gauge].",
     "ranges": []
   },
   "master-atmoso-1": {
@@ -924,11 +924,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-bliss-3": {
-    "description": "[Bliss]'s [Last Flare] gives the other ally with the lowest Gauge a [Quiet Feather]: their next [Skill 1] costs no Gauge.",
+    "description": "[Bliss]'s [Last Flare] gives the other ally with the lowest [Shatter Gauge] a [Quiet Feather]: their next [Skill 1] costs no [Shatter Gauge].",
     "ranges": []
   },
   "master-bruno-1": {
-    "description": "Enemy hits deal 20% less Direct Damage to [Bruno] after his Shield absorbs damage.",
+    "description": "Enemy hits deal 20% less Direct Damage to [Bruno] after his [Shield] absorbs damage.",
     "ranges": []
   },
   "master-bruno-2": {
@@ -944,11 +944,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-disciple-2": {
-    "description": "After [Last Flare], allies are linked for two player Rounds: Gauge gained by a linked ally is split equally among all linked allies.",
+    "description": "After [Last Flare], allies are linked for two player Rounds: [Shatter Gauge] gained by a linked ally is split equally among all linked allies.",
     "ranges": []
   },
   "master-disciple-3": {
-    "description": "After a [Strike] [Instruction], its recipient makes a Bonus Strike of 40% of [Disciple]'s Attack against the first enemy.",
+    "description": "After a [Strike] [Instruction], its recipient makes a [Bonus Strike] of 40% of [Disciple]'s Attack against the first enemy.",
     "ranges": []
   },
   "master-elise-1": {
@@ -968,7 +968,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-razor-2": {
-    "description": "Before [Last Flare], [Razor] consumes his Shield for +2% Direct Damage per 1% of maximum HP it held.",
+    "description": "Before [Last Flare], [Razor] consumes his [Shield] for +2% Direct Damage per 1% of maximum HP it held.",
     "ranges": []
   },
   "master-razor-3": {
@@ -976,11 +976,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-rosetta-1": {
-    "description": "After two allies hit the [Quarry], each further hit on it grants a Shield equal to 48% of the maximum HP of the ally with the lowest HP ratio.",
+    "description": "After two allies hit the [Quarry], each further hit on it grants a [Shield] equal to 48% of the maximum HP of the ally with the lowest HP ratio.",
     "ranges": []
   },
   "master-rosetta-2": {
-    "description": "After [Skill 2] hits the [Quarry], each other living enemy takes a Bonus Strike equal to 25% of the hit's Direct Damage.",
+    "description": "After [Skill 2] hits the [Quarry], each other living enemy takes a [Bonus Strike] equal to 25% of the hit's Direct Damage.",
     "ranges": []
   },
   "master-rosetta-3": {
@@ -988,7 +988,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-thornia-1": {
-    "description": "When an enemy triggers [Thornia]'s trap, deal a Bonus Strike of 40% of her Attack to every enemy.",
+    "description": "When an enemy triggers [Thornia]'s trap, deal a [Bonus Strike] of 40% of her Attack to every enemy.",
     "ranges": []
   },
   "master-thornia-2": {
@@ -996,7 +996,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-thornia-3": {
-    "description": "[Gilded Thorn Guard] links its recipients to [Thornia] until the next player turn. Lethal damage to a linked ally is moved to [Thornia]'s Shield and HP instead.",
+    "description": "[Gilded Thorn Guard] links its recipients to [Thornia] until the next player turn. Lethal damage to a linked ally is moved to [Thornia]'s [Shield] and HP instead.",
     "ranges": []
   },
   "master-crinso-1": {
@@ -1004,7 +1004,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-crinso-2": {
-    "description": "Before [Crimson Rupture], consume your Shield. After it hits, deal a Bonus Strike equal to 50% of the Shield consumed.",
+    "description": "Before [Crimson Rupture], consume your [Shield]. After it hits, deal a [Bonus Strike] equal to 50% of the [Shield] consumed.",
     "ranges": []
   },
   "master-crinso-3": {
@@ -1012,11 +1012,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-nerithe-1": {
-    "description": "[Nerithe]'s [Normal Attack] marks its target with [Charted]. Another ally's next single-target Attack Action deals a Bonus Strike of 40% of its damage to each other [Charted] enemy, then clears all [Charted].",
+    "description": "[Nerithe]'s [Normal Attack] marks its target with [Charted]. Another ally's next single-target Attack Action deals a [Bonus Strike] of 40% of its damage to each other [Charted] enemy, then clears all [Charted].",
     "ranges": []
   },
   "master-nerithe-2": {
-    "description": "[Fold the Sea] deals no damage. Instead, it grants each ally 15 Gauge and 15% less damage from their next enemy hit.",
+    "description": "[Fold the Sea] deals no damage. Instead, it grants each ally 15 [Shatter Gauge] and 15% less damage from their next enemy hit.",
     "ranges": []
   },
   "master-nerithe-3": {
@@ -1024,7 +1024,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-orvella-1": {
-    "description": "[Foundation] has half durability, and each ally also gains a Shield of 5% of your maximum HP when it is created.",
+    "description": "[Foundation] has half durability, and each ally also gains a [Shield] of 5% of your maximum HP when it is created.",
     "ranges": []
   },
   "master-orvella-2": {
@@ -1032,7 +1032,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-orvella-3": {
-    "description": "[Orvella] gains +20% Defense for each ally protected by a Shield or her [Foundation].",
+    "description": "[Orvella] gains +20% Defense for each ally protected by a [Shield] or her [Foundation].",
     "ranges": []
   },
   "master-vaelor-1": {
@@ -1044,7 +1044,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-vaelor-3": {
-    "description": "[Vaelor]'s [Normal Attack] lets the other ally with the most Gauge act again this player turn.",
+    "description": "[Vaelor]'s [Normal Attack] lets the other ally with the most [Shatter Gauge] act again this player turn.",
     "ranges": []
   }
 };

@@ -230,7 +230,7 @@ describe('reference Team upgrade presentation', () => {
     expect(button.textContent).not.toContain('Shatter Gauge');
     button.click();
     expect(dialog.showModal).toHaveBeenCalledOnce();
-    expect(dialog.textContent).toContain('Costs 25 Shatter Gauge');
+    expect(dialog.textContent).toContain('Costs 25 [Shatter Gauge]');
     expect(dialog.querySelector('[data-close-information]')?.getAttribute('aria-label')).toBe('Close Skill 1 details');
     expect(dialog.querySelector('[data-close-information]')?.textContent).toBe('×');
     dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));

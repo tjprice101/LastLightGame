@@ -31,14 +31,14 @@ export function calamiticEffect(id: CalamiticConduitId, level = 0): string {
   const amount = (base: number, maximum: number) => Number(calamiticPower(level, base, maximum).toFixed(6));
   switch (id) {
     case 'calamitic-world-eater-orrery':
-      return `Store ${amount(40, 80)}% of enemy Direct Damage to HP suffered by living squad members. [Normal Attack] releases the reserve as a Bonus Strike against the healthiest enemy.`;
+      return `Store ${amount(40, 80)}% of enemy Direct Damage to HP suffered by living squad members. [Normal Attack] releases the reserve as a [Bonus Strike] against the healthiest enemy.`;
     case 'calamitic-causality-funeral-engine':
-      return `Defer ${amount(40, 60)}% of each enemy hit's Direct Damage to HP after Shields. The deferred damage is taken at the start of the next Enemy Turn, ignores Shields and can defeat you.`;
+      return `Defer ${amount(40, 60)}% of each enemy hit's Direct Damage to HP after [Shields]. The deferred damage is taken at the start of the next Enemy Turn, ignores [Shields] and can defeat you.`;
     case 'calamitic-horizon-cleaving-godpress':
-      return `${amount(40, 60)}% of your Attack Actions' Direct Damage bypasses enemy Shields. While the target has a Shield, your Attack Actions also gain +${amount(30, 60)}% Direct Damage.`;
+      return `${amount(40, 60)}% of your Attack Actions' Direct Damage bypasses enemy [Shields]. While the target has a [Shield], your Attack Actions also gain +${amount(30, 60)}% Direct Damage.`;
     case 'calamitic-throne-borrowed-tomorrows':
-      return `Your first [Normal Attack] each player turn does not spend your action and lets you take one additional [Skill 1] or [Skill 2] that turn. Taking it grants ${amount(10, 30)} Gauge, but you cannot act on the next player turn.`;
+      return `Your first [Normal Attack] each player turn does not spend your action and lets you take one additional [Skill 1] or [Skill 2] that turn. Taking it grants ${amount(10, 30)} [Shatter Gauge], but you cannot act on the next player turn.`;
     case 'calamitic-cathedral-final-equation':
-      return `Use three different action types in succession to complete the [Equation]. Repeating a type restarts the sequence with that action. The third action deals ${amount(120, 240)}% of your Attack as Bonus Strikes split equally among enemies, then restarts the sequence.`;
+      return `Use three different action types in succession to complete the [Equation]. Repeating a type restarts the sequence with that action. The third action deals ${amount(120, 240)}% of your Attack as [Bonus Strikes] split equally among enemies, then restarts the sequence.`;
   }
 }

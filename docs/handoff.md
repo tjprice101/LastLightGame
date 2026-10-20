@@ -1,5 +1,14 @@
 # Current state and handoff
 
+## Shatter Gauge terminology and Conduit details (D-356)
+
+- Conduit descriptions (redesign + Calamitic) bracket [Shatter Gauge], [Shield(s)], [Bonus Strike(s)]
+  and [Elemental Crit]. Visible stat label is "Shatter Gauge capacity"; battle cards, gesture labels,
+  tips and Conduit battle messages say Shatter Gauge. Information prose maps bare Gauge to [Shatter Gauge].
+- Conduit loadout detail dialog drops Stat bonuses/Complete effect/Equipment rules/Origin headers:
+  only "Conduit Ability" with the live rule, an Omnic restriction line and plain lore. Master dialog
+  drops "Triggers and limits as stated above". Internal IDs/saves/mechanics unchanged.
+
 ## Griffin Turbine damage-scaled Gauge (D-355)
 
 - Owner found flat 3 -> 6 ally Gauge too weak. Now: when your [Normal Attack] damages HP,

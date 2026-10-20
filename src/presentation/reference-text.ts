@@ -12,12 +12,12 @@ import { elementLabel } from './element-label';
 const aliases: Record<string, string> = {
   Heaven: 'Soar to Heaven', Abyss: 'Delve into the Abyss',
   Treasury: 'Crownfall Treasury', 'Crimson Roses': 'Passion of Crimson Roses',
-  'Normal Attacks': 'Normal Attack', 'Cosmic Grand Master Chests': 'Cosmic Grand Master Chest',
+  'Normal Attacks': 'Normal Attack', Gauge: 'Shatter Gauge', 'Cosmic Grand Master Chests': 'Cosmic Grand Master Chest',
 };
 
 const fixedNames = ['Roselius', 'Prismatica', 'Null-Prismatica', 'Broken Mechanical Components', 'Cosmic Grand Master Chest',
   'Calamitic Tokens', 'Story', 'Training', 'Calamity', 'Elemental War', 'Awaken the Machines', 'Passion of Crimson Roses',
-  'Normal Attack', 'Skill 1', 'Skill 2', 'Last Flare', 'Burn', 'Weaken'];
+  'Shatter Gauge', 'Normal Attack', 'Skill 1', 'Skill 2', 'Last Flare', 'Burn', 'Weaken'];
 
 let matcher: { pattern: RegExp; names: Map<string, string>; elementIds: Map<string, (typeof elements)[number]['id']> } | null = null;
 

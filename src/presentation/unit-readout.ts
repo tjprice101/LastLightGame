@@ -30,11 +30,11 @@ export function unitReadout(unit: Combatant, compact = false, owners: readonly C
     unit.conduitCharges?.emberSeals && charge(`Conduit Ember Seals ${unit.conduitCharges.emberSeals}: next damaging skill +${unit.conduitCharges.emberSeals * 5}% damage.`, 'burn'),
     unit.conduitCharges?.stormstepSkill1 && charge('Alternating Storm: next Skill1 +10% damage.', 'tempest'),
     unit.conduitCharges?.stormstepSkill2 && charge('Alternating Storm: next Skill2 +10% damage.', 'tempest'),
-    unit.conduitCharges?.skythread && charge('Tailwind: next ordinary skill costs 5 less Gauge (minimum 1).', 'tempest'),
+    unit.conduitCharges?.skythread && charge('Tailwind: next ordinary skill costs 5 less Shatter Gauge (minimum 1).', 'tempest'),
     unit.conduitCharges?.faultkeeperWard && charge('Fault Ward: next direct enemy hit -15% damage.', 'ward'),
     unit.conduitCharges?.verdantNormal && charge('Verdant Strike: next Normal Attack +10% damage.', 'bloom'),
     unit.conduitCharges?.dawnWitness && charge(`Dawn Focus ${unit.conduitCharges.dawnWitness}: next offensive activation +${unit.conduitCharges.dawnWitness * 3} percentage points Crit.`, 'focus'),
-    unit.conduitCharges?.stillhour && charge('Stillhour: first direct enemy hit survived grants 8 Gauge.', 'ward'),
+    unit.conduitCharges?.stillhour && charge('Stillhour: first direct enemy hit survived grants 8 Shatter Gauge.', 'ward'),
     unit.conduitCharges?.paradox && charge('Rift Echo: first offensive activation after recovery +15% damage.'),
     unit.omnicProtection && charge(`Direct-hit protection: next direct enemy hit -${formatStat(unit.omnicProtection * 100)}% damage (one charge).`, 'ward'),
     ...Object.entries(unit.omnicMemory ?? {}).flatMap(([id, memory]) => memory.bank && isConduitId(id)
@@ -44,5 +44,5 @@ export function unitReadout(unit: Combatant, compact = false, owners: readonly C
     : `<span data-effect-family="${resourceDescriptor.effect.family}" data-effect-kind="${resourceDescriptor.effect.kind}" data-effect-origin="${resourceDescriptor.effect.origin}" data-effect-source="${resourceDescriptor.effect.source}" title="${resourceSummary} ${resourceDescriptor.detail}">${statusIcon(elementalStatusArt(resourceDescriptor.effect))}${resourceDescriptor.label} ${resourceCount} charges</span>`;
   return `${core}<span class="unit-active-buffs">${allyBuffs(buffSnapshot(unit), round)}</span>${state ? nativeMarkerReadout(state, unit) : ''}${conduitStatusReadout(unit, round, owners)}
     <span class="shatter-track" role="meter" aria-label="${unit.name} Shatter Gauge" aria-valuemin="0" aria-valuemax="${unit.stats.shatterCapacity}" aria-valuenow="${unit.shatter}"><span style="width:${unit.shatter / unit.stats.shatterCapacity * 100}%"></span></span>
-    <span class="unit-gauge">${compact ? 'Gauge' : 'Shatter Gauge'} ${formatStat(unit.shatter)} / ${formatStat(unit.stats.shatterCapacity)}</span>${state ? `<span class="native-kit-slot">${nativeStateReadout(state, unit, compact)}</span>` : ''}${resource ? `<span class="unit-gauge unit-kit-resource">${resource}</span>` : ''}${charges}`;
+    <span class="unit-gauge">Shatter Gauge ${formatStat(unit.shatter)} / ${formatStat(unit.stats.shatterCapacity)}</span>${state ? `<span class="native-kit-slot">${nativeStateReadout(state, unit, compact)}</span>` : ''}${resource ? `<span class="unit-gauge unit-kit-resource">${resource}</span>` : ''}${charges}`;
 }
