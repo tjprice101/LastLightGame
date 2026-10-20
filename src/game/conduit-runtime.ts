@@ -239,7 +239,7 @@ export function conduitActionCost(actor: Combatant, action: ActionId, state: Bat
     discount += value(state, actor, 'atmospheric-storm-clock', 15, 30) * n.stormCount;
   }
   if (base > 0 && equipped(actor, 'coilfeed-ratchet')) {
-    const cut = Math.floor(base * value(state, actor, 'coilfeed-ratchet', .08, .16));
+    const cut = Math.floor(base * value(state, actor, 'coilfeed-ratchet', .07, .14));
     discount += action === 'ultimate' ? Math.min(cut, Math.max(0, base - discount - 70)) : cut;
   }
   return base === 0 ? 0 : Math.max(1, base - discount);
@@ -378,7 +378,7 @@ export function applyConduitBurn(state: BattleState, owner: Combatant, target: C
   if (equipped(owner, 'starvein-conductor')) {
     const payment = owner.stats.health * .05;
     if (!ctx.burnPaid && owner.hp - payment >= 1) { owner.hp -= payment; ctx.burnPaid = true; }
-    if (ctx.burnPaid) bonus += value(state, owner, 'starvein-conductor', .4, .8);
+    if (ctx.burnPaid) bonus += value(state, owner, 'starvein-conductor', .3, .6);
   }
   const damage = Math.round((base + ctx.shieldBurn) * (1 + bonus));
   if (target.burn.turns <= 0 || damage >= target.burn.damage) {
@@ -1001,7 +1001,7 @@ export function conduitTurnStart(state: BattleState, events: BattleEvent[]): voi
   for (const owner of alive(state)) {
     const n = gear(owner).numbers;
     if (n.solaceRound !== state.round) delete n.solaceRound;
-    if (equipped(owner, 'granite-hourglass') && (n.phaseLoss ?? 0) > 0) generatedShield(owner, owner, n.phaseLoss * value(state, owner, 'granite-hourglass', .3, .6), events);
+    if (equipped(owner, 'granite-hourglass') && (n.phaseLoss ?? 0) > 0) generatedShield(owner, owner, n.phaseLoss * value(state, owner, 'granite-hourglass', .2, .4), events);
     n.phaseLoss = 0;
     if (n.fieldbraceRound === state.round) {
       delete n.fieldbraceRound;

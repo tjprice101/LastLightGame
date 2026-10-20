@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Endgame Conduit trims (D-353)
+
+- Method: the late benchmark squad (`enemy-progression.test.ts` loadout, +5, Lv105 Evo6)
+  played 120 independent seeds against the Roses final stage and the War stage-10 bosses,
+  with one Conduit swapped into a member's slot 6. The baseline loadout wins 11/120.
+- Trimmed in `conduit-runtime.ts` and `conduit-redesign.ts`: Starvein Conductor [Burn]
+  bonus 40->80% to 30->60% (24 -> 17 wins); Granite Hourglass shield 30->60% to 20->40%
+  (44 -> 18); Coilfeed Ratchet discount 8->16% to 7->14% (10 -> 8, owner-requested slight trim).
+- Unchanged: Reserve Torque (within noise). Worldbreaker Drive wins 26/120 regardless of its
+  [Last Flare] bonus (also at zero), so its numbers are not the cause; flagged, not changed.
+  Causality Funeral Engine (Calamitic, apex tier) was left alone.
+- The benchmark's sprout slot uses Coilfeed again; walls stay unbeaten.
+- Validation: targeted Conduit/progression suites, the full suite and the build.
+
 ## Machines Conduit overlap audit (D-352)
 
 - Analysis and kept-pair reasons: [machines-conduit-audit.md](machines-conduit-audit.md).

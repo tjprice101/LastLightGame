@@ -445,11 +445,11 @@ var conduitRedesign = {
     ]
   },
   "coilfeed-ratchet": {
-    "description": "Your abilities cost 8% -> 16% less Gauge (rounded down). [Last Flare] cannot drop below 70 Gauge.",
+    "description": "Your abilities cost 7% -> 14% less Gauge (rounded down). [Last Flare] cannot drop below 70 Gauge.",
     "ranges": [
       {
-        "base": 8,
-        "maximum": 16,
+        "base": 7,
+        "maximum": 14,
         "percent": true,
         "step": false
       }
@@ -583,9 +583,9 @@ var conduitRedesign = {
     ]
   },
   "granite-hourglass": {
-    "description": "At the start of each player turn, gain a Shield equal to 30% -> 60% of the HP you lost to Direct Damage during the previous Enemy Turn.",
+    "description": "At the start of each player turn, gain a Shield equal to 20% -> 40% of the HP you lost to Direct Damage during the previous Enemy Turn.",
     "ranges": [
-      { "base": 30, "maximum": 60, "percent": true, "step": false }
+      { "base": 20, "maximum": 40, "percent": true, "step": false }
     ]
   },
   "pale-bulwark-diadem": {
@@ -606,11 +606,11 @@ var conduitRedesign = {
     ]
   },
   "starvein-conductor": {
-    "description": "Abilities that apply [Burn] cost 5% of your maximum HP and give that [Burn] +40% -> +80% damage. The HP cost never drops you below 1 HP.",
+    "description": "Abilities that apply [Burn] cost 5% of your maximum HP and give that [Burn] +30% -> +60% damage. The HP cost never drops you below 1 HP.",
     "ranges": [
       {
-        "base": 40,
-        "maximum": 80,
+        "base": 30,
+        "maximum": 60,
         "percent": true,
         "step": false
       }
@@ -5887,7 +5887,7 @@ function conduitActionCost(actor, action, state, base) {
     discount += value(state, actor, "atmospheric-storm-clock", 15, 30) * n.stormCount;
   }
   if (base > 0 && equipped(actor, "coilfeed-ratchet")) {
-    const cut = Math.floor(base * value(state, actor, "coilfeed-ratchet", 0.08, 0.16));
+    const cut = Math.floor(base * value(state, actor, "coilfeed-ratchet", 0.07, 0.14));
     discount += action === "ultimate" ? Math.min(cut, Math.max(0, base - discount - 70)) : cut;
   }
   return base === 0 ? 0 : Math.max(1, base - discount);
@@ -6075,7 +6075,7 @@ function applyConduitBurn(state, owner, target, base, ctx) {
       owner.hp -= payment;
       ctx.burnPaid = true;
     }
-    if (ctx.burnPaid) bonus += value(state, owner, "starvein-conductor", 0.4, 0.8);
+    if (ctx.burnPaid) bonus += value(state, owner, "starvein-conductor", 0.3, 0.6);
   }
   const damage = Math.round((base + ctx.shieldBurn) * (1 + bonus));
   if (target.burn.turns <= 0 || damage >= target.burn.damage) {
@@ -6766,7 +6766,7 @@ function conduitTurnStart(state, events) {
   for (const owner of alive(state)) {
     const n = gear(owner).numbers;
     if (n.solaceRound !== state.round) delete n.solaceRound;
-    if (equipped(owner, "granite-hourglass") && (n.phaseLoss ?? 0) > 0) generatedShield(owner, owner, n.phaseLoss * value(state, owner, "granite-hourglass", 0.3, 0.6), events);
+    if (equipped(owner, "granite-hourglass") && (n.phaseLoss ?? 0) > 0) generatedShield(owner, owner, n.phaseLoss * value(state, owner, "granite-hourglass", 0.2, 0.4), events);
     n.phaseLoss = 0;
     if (n.fieldbraceRound === state.round) {
       delete n.fieldbraceRound;

@@ -145,10 +145,10 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(owner.shield).toBe(0);
       break;
     case 'coilfeed-ratchet':
-      expect(conduitActionCost(owner, 'skill1', state, 25)).toBe(25 - Math.floor(25 * n(.08, .16)));
-      expect(conduitActionCost(owner, 'skill2', state, 40)).toBe(40 - Math.floor(40 * n(.08, .16)));
-      expect(conduitActionCost(owner, 'ultimate', state, 100)).toBe(100 - Math.floor(100 * n(.08, .16)));
-      expect(conduitActionCost(owner, 'ultimate', state, 75)).toBe(enabled ? 70 : 75);
+      expect(conduitActionCost(owner, 'skill1', state, 25)).toBe(25 - Math.floor(25 * n(.07, .14)));
+      expect(conduitActionCost(owner, 'skill2', state, 40)).toBe(40 - Math.floor(40 * n(.07, .14)));
+      expect(conduitActionCost(owner, 'ultimate', state, 100)).toBe(100 - Math.floor(100 * n(.07, .14)));
+      expect(conduitActionCost(owner, 'ultimate', state, 75)).toBe(enabled ? 75 - Math.min(5, Math.floor(75 * n(.07, .14))) : 75);
       break;
     case 'opal-indexer':
       applyConduitWeaken(state, owner, target, .2, events, 'skill1');
@@ -214,7 +214,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
     case 'granite-hourglass':
       hit(); state.round++;
       conduitTurnStart(state, events);
-      expect(owner.shield).toBe(Math.round(100 * n(.3, .6)));
+      expect(owner.shield).toBe(Math.round(100 * n(.2, .4)));
       break;
     case 'pale-bulwark-diadem':
       hit();
@@ -224,7 +224,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       break;
     case 'starvein-conductor': {
       const ctx = context('skill1');
-      expect(applyConduitBurn(state, owner, target, 100, ctx)).toBe(Math.round(100 * (1 + n(.4, .8))));
+      expect(applyConduitBurn(state, owner, target, 100, ctx)).toBe(Math.round(100 * (1 + n(.3, .6))));
       expect(owner.hp).toBe(enabled ? 950 : 1000);
       break;
     }

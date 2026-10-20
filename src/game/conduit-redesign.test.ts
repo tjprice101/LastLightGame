@@ -272,8 +272,9 @@ describe('redesigned ordinary Conduit executable effects', () => {
     const f = fixture('coilfeed-ratchet', 5);
     expect(conduitActionCost(f.owner, 'skill2', f.state, 30)).toBe(26);
     expect(conduitActionCost(f.owner, 'skill1', f.state, 30)).toBe(26);
-    expect(conduitActionCost(f.owner, 'ultimate', f.state, 100)).toBe(84);
+    expect(conduitActionCost(f.owner, 'ultimate', f.state, 100)).toBe(86);
     expect(conduitActionCost(f.owner, 'ultimate', f.state, 80)).toBe(70);
+    expect(conduitActionCost(f.owner, 'ultimate', f.state, 75)).toBe(70);
     expect(conduitActionCost(f.owner, 'light', f.state, 0)).toBe(0);
     const t = fixture('atmospheric-skythread-rudder', 5);
     const normal = prepareConduitAction(t.state, t.owner, 'light', 0, false);
@@ -392,7 +393,7 @@ describe('redesigned ordinary Conduit executable effects', () => {
     conduitIncoming(f.state, f.target, f.owner, 100, false, false, f.events);
     f.state.round++;
     conduitTurnStart(f.state, f.events);
-    expect(f.owner.shield).toBe(60);
+    expect(f.owner.shield).toBe(40);
     f.owner.shield = 0;
     conduitTurnStart(f.state, f.events);
     expect(f.owner.shield).toBe(0);

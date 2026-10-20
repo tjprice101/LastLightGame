@@ -21,8 +21,7 @@ const lateProgress = Object.fromEntries(team.map(id => [id, { level: 105, evolut
 const lateEquipment: ConduitLoadouts = {
   ember: [...lateSlots.slice(0, 5), 'siege-cantilever', 'resonance-crucible', 'infernic-cinder-testament'],
   tide: [...lateSlots.slice(0, 5), 'opal-indexer', 'wardglass-transformer', 'ward-stitch-spool'],
-  // D-351 Coilfeed now discounts every ability; the old benchmark keeps a [Skill 2] slot instead.
-  sprout: [...lateSlots.slice(0, 5), 'springwell-pump', 'crosspin-governor', 'botanic-graft-covenant'],
+  sprout: [...lateSlots.slice(0, 5), 'springwell-pump', 'coilfeed-ratchet', 'botanic-graft-covenant'],
 };
 const lateUpgrades = Object.fromEntries([...lateSlots, ...Object.values(lateEquipment).flat()].map(id => [id, 5]));
 const commonSlots = ['vigil-core', 'siegebound-drive', 'bastion-lock', 'parallax-relay',

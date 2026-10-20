@@ -45,3 +45,15 @@ and each bonus is larger than any plain single-stat Conduit of its rarity.
 The late benchmark squad previously relied on Heartcase's hidden +70% HP at +5.
 It now uses Stasis Reliquary in that slot; built squads still clear every final
 ordinary boss and still lose to Roses and Elemental War.
+
+## Endgame trims (D-353)
+
+120 seeded runs of the late benchmark squad against the Roses final stage and the War stage-10 bosses, one Conduit swapped into slot 6. Baseline loadout: 11/120 wins.
+
+| Conduit | Before | After | Wins before -> after |
+|---|---|---|---|
+| Starvein Conductor | [Burn] +40% -> +80% | +30% -> +60% | 24 -> 17 |
+| Granite Hourglass | Shield 30% -> 60% | 20% -> 40% | 44 -> 18 |
+| Coilfeed Ratchet | Cost -8% -> -16% | -7% -> -14% | 10 -> 8 |
+
+Unchanged: Reserve Torque Crank (within noise), Worldbreaker Drive (26/120 even with no [Last Flare] bonus, so the bonus is not the cause) and Calamitic Causality Funeral Engine.

@@ -248,11 +248,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "coilfeed-ratchet": {
-    "description": "Your abilities cost 8% -> 16% less Gauge (rounded down). [Last Flare] cannot drop below 70 Gauge.",
+    "description": "Your abilities cost 7% -> 14% less Gauge (rounded down). [Last Flare] cannot drop below 70 Gauge.",
     "ranges": [
       {
-        "base": 8,
-        "maximum": 16,
+        "base": 7,
+        "maximum": 14,
         "percent": true,
         "step": false
       }
@@ -386,9 +386,9 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "granite-hourglass": {
-    "description": "At the start of each player turn, gain a Shield equal to 30% -> 60% of the HP you lost to Direct Damage during the previous Enemy Turn.",
+    "description": "At the start of each player turn, gain a Shield equal to 20% -> 40% of the HP you lost to Direct Damage during the previous Enemy Turn.",
     "ranges": [
-      {"base":30,"maximum":60,"percent":true,"step":false}
+      {"base":20,"maximum":40,"percent":true,"step":false}
 
     ]
   },
@@ -410,11 +410,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "starvein-conductor": {
-    "description": "Abilities that apply [Burn] cost 5% of your maximum HP and give that [Burn] +40% -> +80% damage. The HP cost never drops you below 1 HP.",
+    "description": "Abilities that apply [Burn] cost 5% of your maximum HP and give that [Burn] +30% -> +60% damage. The HP cost never drops you below 1 HP.",
     "ranges": [
       {
-        "base": 40,
-        "maximum": 80,
+        "base": 30,
+        "maximum": 60,
         "percent": true,
         "step": false
       }

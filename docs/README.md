@@ -103,6 +103,9 @@ victory requirements. Publication remains separate.
 [133-item compatibility matrix](character-conduit-compatibility.md),
 [validation/release status](handoff.md).
 
+**Endgame Conduit trims (D-353):** measured wall-win rates; Starvein, Granite
+and Coilfeed slightly weakened. [Audit](machines-conduit-audit.md#endgame-trims-d-353).
+
 **Machines Conduit audit (D-352):** overlap analysis of every Rare+ Machines
 Conduit; nine reworked, one buffed, one hidden stat bundle removed.
 [Audit](machines-conduit-audit.md).
