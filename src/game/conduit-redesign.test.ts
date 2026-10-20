@@ -298,13 +298,13 @@ describe('redesigned ordinary Conduit executable effects', () => {
     expect(conduitHitModifiers(f.state, f.owner, f.target, ctx, false).bonus).toBeCloseTo(.9);
     expect(f.target.conduitMarks).toEqual({ other: 2 });
   });
-  it('supports repeated Phoenix revival, Stasis protection and Accord precedence', () => {
+  it('limits Phoenix revival and Stasis protection to the first lethal hit each Battle', () => {
     const f = fixture('infernic-phoenix-reactor');
     f.owner.hp = 1;
     conduitIncoming(f.state, f.target, f.owner, 1000, false, false, f.events);
     expect(f.owner.hp).toBe(250); expect(f.owner.shatter).toBe(0); expect(f.owner.spent).toBe(false);
     conduitIncoming(f.state, f.target, f.owner, 1000, false, false, f.events);
-    expect(f.owner.hp).toBe(250); expect(f.owner.shatter).toBe(0); expect(f.owner.spent).toBe(false);
+    expect(f.owner.hp).toBe(0);
     const s = fixture('stasis-reliquary');
     s.owner.hp = 5;
     conduitIncoming(s.state, s.target, s.owner, 100, false, false, s.events);
@@ -314,6 +314,9 @@ describe('redesigned ordinary Conduit executable effects', () => {
     s.state.round++;
     conduitTurnStart(s.state, s.events);
     expect(s.owner.shield).toBe(100); expect(actionUnavailable(s.state, s.owner, 'light')).toBeNull();
+    s.owner.shield = 0; s.owner.hp = 5;
+    conduitIncoming(s.state, s.target, s.owner, 100, false, false, s.events);
+    expect(s.owner.hp).toBe(0);
   });
   it('makes one paid Normal Attack per player turn free while preserving the ordinary action spend', () => {
     const f = fixture('solace-anchor', 5);

@@ -614,7 +614,7 @@ var conduitRedesign = {
     ]
   },
   "stasis-reliquary": {
-    "description": "When Direct Damage would defeat you, survive at 1 HP and take no further Direct Damage that Enemy Turn. At the start of the next player turn, gain a Shield of 10% -> 20% of your maximum HP.",
+    "description": "The first time each Battle that Direct Damage would defeat you, survive at 1 HP and take no further Direct Damage that Enemy Turn. At the start of the next player turn, gain a Shield of 10% -> 20% of your maximum HP.",
     "ranges": [
       {
         "base": 10,
@@ -692,7 +692,7 @@ var conduitRedesign = {
     ]
   },
   "infernic-phoenix-reactor": {
-    "description": "Each time you are defeated, revive at 25% -> 50% of your maximum HP with 0 Gauge.",
+    "description": "The first time you are defeated each Battle, revive at 25% -> 50% of your maximum HP with 0 Gauge.",
     "ranges": [
       {
         "base": 25,
@@ -1074,7 +1074,7 @@ var conduitRedesign = {
     ]
   },
   "tranquilitic-accord-bastion": {
-    "description": "Supporting another ally grants them [Accord]: the next hit that would defeat them leaves them at 1 HP and grants a Shield of 10% -> 20% of your maximum HP.",
+    "description": "Supporting another ally grants them [Accord] (first time each Battle per ally): the next hit that would defeat them leaves them at 1 HP and grants a Shield of 10% -> 20% of your maximum HP.",
     "ranges": [
       {
         "base": 10,
@@ -1123,7 +1123,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-sprout-3": {
-    "description": "After [Last Flare: Worldseed], revive each fallen ally at 30% of their maximum HP with 0 Gauge.",
+    "description": "The first [Last Flare: Worldseed] each Battle that finds a fallen ally revives each fallen ally at 30% of their maximum HP with 0 Gauge.",
     "ranges": []
   },
   "master-atmoso-1": {
@@ -6153,8 +6153,9 @@ function applyConduitWeaken(state, owner, target, fraction, events, action = "sk
   emit(events, "status", owner, target, strength, `${target.name} has ${Math.round(strength * 100)}% [Weaken] for ${target.weakened} Enemy Turns.`, true);
 }
 function supportEffect(state, owner, target, events) {
-  if (owner.id !== target.id && equipped(owner, "tranquilitic-accord-bastion") && !gear(target).owners.accord) {
+  if (owner.id !== target.id && equipped(owner, "tranquilitic-accord-bastion") && !gear(target).owners.accord && !gear(target).numbers.accordGranted) {
     gear(target).owners.accord = owner.id;
+    gear(target).numbers.accordGranted = 1;
     emit(events, "status", owner, target, 1, `${target.name} receives one Accord lethal-hit protection.`);
   }
 }
@@ -6400,8 +6401,9 @@ function finishConduitAction(state, owner, ctx, events) {
       }
       break;
     case "master-sprout-3":
-      if (ctx.action === "ultimate") {
+      if (ctx.action === "ultimate" && !n.worldseedRevived) {
         const fallen = state.allies.filter((ally) => ally.id !== owner.id && ally.hp <= 0);
+        if (fallen.length) n.worldseedRevived = 1;
         for (const ally of fallen) revive(owner, ally, 0.3, events);
       }
       break;
@@ -6531,7 +6533,8 @@ function rescue(state, target, loss, events, direct) {
     n.accordShield = accord.stats.health * value(state, accord, "tranquilitic-accord-bastion", 0.1, 0.2);
     return Math.max(0, target.hp - 1);
   }
-  if (direct && equipped(target, "stasis-reliquary")) {
+  if (direct && equipped(target, "stasis-reliquary") && !n.stasisUsed) {
+    n.stasisUsed = 1;
     n.stasisProtectedRound = state.round;
     n.stasisShieldRound = state.round + 1;
     return Math.max(0, target.hp - 1);
@@ -6544,8 +6547,10 @@ function afterConduitHpLoss(state, target, events) {
     generatedShield(target, target, n.accordShield, events);
     delete n.accordShield;
   }
-  if (target.hp <= 0 && equipped(target, "infernic-phoenix-reactor"))
+  if (target.hp <= 0 && equipped(target, "infernic-phoenix-reactor") && !n.phoenixUsed) {
+    n.phoenixUsed = 1;
     revive(target, target, value(state, target, "infernic-phoenix-reactor", 0.25, 0.5), events);
+  }
 }
 function conduitBurnTick(state, owner, target) {
   if (target.burn.origin === "conduit") return target.burn.damage;

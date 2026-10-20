@@ -1,5 +1,16 @@
 # Current state and handoff
 
+## Death-cheat caps and Conduit replacement proposal (D-349)
+
+- `conduit-runtime.ts` guards Stasis (`stasisUsed`), Phoenix (`phoenixUsed`), Accord
+  (`accordGranted` on the recipient) and `master-sprout-3` (`worldseedRevived`, set only when
+  someone was revived). Flags live in per-Battle `conduitRuntime`, so each stage/wave resets them.
+  Descriptions say "The first time each Battle". Server bundle redeployed.
+- `docs/conduit-replacements.md`: ten proposed replacements for redundant effects (Gauge gain %,
+  starting Gauge, ability cost %, Gauge-as-HP, Shield-break heal, overkill, healing received, ally
+  death, opening Enemy Turn). Not implemented; awaiting owner approval/naming.
+- Validation: `npx tsc --noEmit -p .`, `npx vitest run --maxWorkers=4`, `npm run build`.
+
 ## Concise information panels with element medals (D-348)
 
 - `bracketReferences` (reference-text.ts) adds the element medal + [Element] to element names

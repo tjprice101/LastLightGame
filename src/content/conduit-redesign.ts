@@ -418,7 +418,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "stasis-reliquary": {
-    "description": "When Direct Damage would defeat you, survive at 1 HP and take no further Direct Damage that Enemy Turn. At the start of the next player turn, gain a Shield of 10% -> 20% of your maximum HP.",
+    "description": "The first time each Battle that Direct Damage would defeat you, survive at 1 HP and take no further Direct Damage that Enemy Turn. At the start of the next player turn, gain a Shield of 10% -> 20% of your maximum HP.",
     "ranges": [
       {
         "base": 10,
@@ -497,7 +497,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "infernic-phoenix-reactor": {
-    "description": "Each time you are defeated, revive at 25% -> 50% of your maximum HP with 0 Gauge.",
+    "description": "The first time you are defeated each Battle, revive at 25% -> 50% of your maximum HP with 0 Gauge.",
     "ranges": [
       {
         "base": 25,
@@ -893,7 +893,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tranquilitic-accord-bastion": {
-    "description": "Supporting another ally grants them [Accord]: the next hit that would defeat them leaves them at 1 HP and grants a Shield of 10% -> 20% of your maximum HP.",
+    "description": "Supporting another ally grants them [Accord] (first time each Battle per ally): the next hit that would defeat them leaves them at 1 HP and grants a Shield of 10% -> 20% of your maximum HP.",
     "ranges": [
       {
         "base": 10,
@@ -943,7 +943,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-sprout-3": {
-    "description": "After [Last Flare: Worldseed], revive each fallen ally at 30% of their maximum HP with 0 Gauge.",
+    "description": "The first [Last Flare: Worldseed] each Battle that finds a fallen ally revives each fallen ally at 30% of their maximum HP with 0 Gauge.",
     "ranges": []
   },
   "master-atmoso-1": {

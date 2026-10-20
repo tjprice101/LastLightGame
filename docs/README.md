@@ -103,6 +103,11 @@ victory requirements. Publication remains separate.
 [133-item compatibility matrix](character-conduit-compatibility.md),
 [validation/release status](handoff.md).
 
+**Death-cheat caps and replacement proposal (D-349):** Stasis Reliquary, Phoenix
+Reactor, Accord and the Worldseed revive work the first time each Battle. Ten
+redundant Conduit effects have proposed replacements awaiting owner approval.
+[Proposal](conduit-replacements.md).
+
 **Complete Conduit redesign (D-313):** all85 ordinary and48 Master effects
 are implemented locally from the approved133-row roster. Old stat bundles and
 reserve rules are replaced; ordinary abilities scale through+5, Masters stay

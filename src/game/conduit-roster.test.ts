@@ -213,7 +213,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(owner.hp).toBe(Math.round(1000 * n(.25, .5)));
       if (enabled) expect(owner.shatter).toBe(0);
       hit(2000);
-      expect(owner.hp).toBe(Math.round(1000 * n(.25, .5)));
+      expect(owner.hp).toBe(0);
       break;
     case 'aquatic-leviathan-pump':
       state.allies.forEach(unit => { unit.hp = 500; });
@@ -446,6 +446,11 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       conduitIncoming(state, target, ally, 2000, false, false, events);
       expect(ally.hp).toBe(enabled ? 1 : 0);
       expect(ally.shield).toBe(Math.round(1000 * n(.1, .2)));
+      if (enabled) {
+        ally.shield = 0; ally.hp = 100; nativeHeal(state, owner, ally, 10, events, true);
+        conduitIncoming(state, target, ally, 2000, false, false, events);
+        expect(ally.hp).toBe(0);
+      }
       break;
     case 'chaotic-fault-verdict':
       shield(); finish('skill1', true);
@@ -536,6 +541,8 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
         expect(ally.shatter).toBe(0);
         expect(ally.spent).toBe(false);
         expect(actionUnavailable(state, ally, 'light')).toBeNull();
+        ally.hp = 0; finish('ultimate');
+        expect(ally.hp).toBe(0);
       }
       break;
     case 'master-atmoso-1': {
