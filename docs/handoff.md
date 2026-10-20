@@ -1,5 +1,20 @@
 # Current state and handoff
 
+## Ten replacement Conduit effects live (D-351)
+
+- `conduit-runtime.ts`: Fieldbrace sets `fieldbraceRound` on Shield break and heals in
+  `conduitTurnStart`; `nativeGauge` adds Reserve Torque (Conduit-sourced Gauge passes
+  `conduit = true`); Twinpulse fills Gauge in `initializeConduits` and `battle.ts` `nextStage`;
+  Coilfeed cuts every ability cost in `conduitActionCost`; Glassroot adds damage per 10 Gauge
+  held in `prepareConduitAction`; Heartcase saves in `rescue()` with `heartcaseSaves` escalation;
+  Ward Loom tags its Shield layers with `healBonus` read by `healingReceived`; Worldgrove's
+  `allyFell` runs on ally death (direct and routed); Firstlight reduces damage while
+  `firstlightRound` matches the first Enemy Turn.
+- Resonance: `battle.ts` passes overkill to `recordConduitHit`; `finishConduitAction` strikes the
+  healthiest other enemy. Descriptions/ranges edited directly in `conduit-redesign.ts` (do not
+  rerun `build_conduit_redesign.mjs`; its markdown source is stale). Server bundle redeployed.
+- Validation: `npx tsc --noEmit -p .`, `npx vitest run --maxWorkers=4`, `npm run build`.
+
 ## No-immortality Conduit audit and Master silhouettes (D-350)
 
 - `conduit-runtime.ts`: `master-tide-1` zero-spill guarded per ally (`tideGuard:<id>`); Windveil
@@ -18,9 +33,9 @@
   (`accordGranted` on the recipient) and `master-sprout-3` (`worldseedRevived`, set only when
   someone was revived). Flags live in per-Battle `conduitRuntime`, so each stage/wave resets them.
   Descriptions say "The first time each Battle". Server bundle redeployed.
-- `docs/conduit-replacements.md`: ten proposed replacements for redundant effects (Gauge gain %,
+- `docs/conduit-replacements.md`: ten replacements for redundant effects (Gauge gain %,
   starting Gauge, ability cost %, Gauge-as-HP, Shield-break heal, overkill, healing received, ally
-  death, opening Enemy Turn). Not implemented; awaiting owner approval/naming.
+  death, opening Enemy Turn). Implemented in D-351.
 - Validation: `npx tsc --noEmit -p .`, `npx vitest run --maxWorkers=4`, `npm run build`.
 
 ## Concise information panels with element medals (D-348)

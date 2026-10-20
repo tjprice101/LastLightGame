@@ -103,6 +103,11 @@ victory requirements. Publication remains separate.
 [133-item compatibility matrix](character-conduit-compatibility.md),
 [validation/release status](handoff.md).
 
+**Replacement Conduit effects (D-351):** all ten D-349 replacements are live
+under their current names: Gauge gain, starting Gauge, ability cost, Gauge hoard,
+Gauge-as-HP (escalating, never immortal), Shield-break heal, overkill, healing
+received, ally-death rally and opening Enemy Turn. [Details](conduit-replacements.md).
+
 **Death-cheat caps and replacement proposal (D-349):** Stasis Reliquary, Phoenix
 Reactor, Accord and the Worldseed revive work the first time each Battle. Ten
 redundant Conduit effects have proposed replacements awaiting owner approval.

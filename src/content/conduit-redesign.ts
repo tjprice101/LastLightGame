@@ -86,23 +86,23 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "fieldbrace-coupler": {
-    "description": "Take 4% -> 8% less enemy Direct Damage while you have a Shield.",
+    "description": "When a Shield on you breaks, restore 6% -> 12% of your maximum HP at the start of your next player turn.",
     "ranges": [
       {
-        "base": 4,
-        "maximum": 8,
+        "base": 6,
+        "maximum": 12,
         "percent": true,
         "step": false
       }
     ]
   },
   "reserve-torque-crank": {
-    "description": "[Normal Attack] grants an additional 3 -> 6 Gauge.",
+    "description": "Gauge you gain from abilities and hits is increased by 10% -> 25% (at least +1).",
     "ranges": [
       {
-        "base": 3,
-        "maximum": 6,
-        "percent": false,
+        "base": 10,
+        "maximum": 25,
+        "percent": true,
         "step": false
       }
     ]
@@ -174,23 +174,23 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "twinpulse-bellows": {
-    "description": "Each [Normal Attack] gains +25% -> +50% Direct Damage.",
+    "description": "Start each Battle with 15% -> 35% of your Gauge capacity added to your Gauge.",
     "ranges": [
       {
-        "base": 25,
-        "maximum": 50,
+        "base": 15,
+        "maximum": 35,
         "percent": true,
         "step": false
       }
     ]
   },
   "glassroot-gimbal": {
-    "description": "Gain up to +12 -> +24 percentage points of Critical Rate as your HP drops, reaching the full bonus at 75% missing HP.",
+    "description": "Attack Actions deal +1% -> +2% Direct Damage for every 10 Gauge you hold before paying the cost.",
     "ranges": [
       {
-        "base": 12,
-        "maximum": 24,
-        "percent": false,
+        "base": 1,
+        "maximum": 2,
+        "percent": true,
         "step": false
       }
     ]
@@ -249,12 +249,12 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "coilfeed-ratchet": {
-    "description": "[Skill 2] costs 3 -> 6 less Gauge.",
+    "description": "Your abilities cost 8% -> 16% less Gauge (rounded down). [Last Flare] cannot drop below 70 Gauge.",
     "ranges": [
       {
-        "base": 3,
-        "maximum": 6,
-        "percent": false,
+        "base": 8,
+        "maximum": 16,
+        "percent": true,
         "step": false
       }
     ]
@@ -271,11 +271,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "resonance-crucible": {
-    "description": "Your [Burn] deals +20% -> +40% damage.",
+    "description": "Damage beyond what defeats an enemy carries over as a Bonus Strike on the healthiest other enemy at 30% -> 60%.",
     "ranges": [
       {
-        "base": 20,
-        "maximum": 40,
+        "base": 30,
+        "maximum": 60,
         "percent": true,
         "step": false
       }
@@ -395,23 +395,11 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "horizon-heartcase": {
-    "description": "+20% -> +70% maximum HP; -4% -> -14% Defense. At the start of each [Last Flare] recovery turn, restore 15% -> 30% of missing HP.",
+    "description": "When enemy Direct Damage would defeat you, drain Gauge instead and stay at 1 HP: 1 Gauge per 1% maximum HP of the excess, reduced by 20% -> 50%, plus 10 for each earlier save this Battle. Without enough Gauge you fall.",
     "ranges": [
       {
         "base": 20,
-        "maximum": 70,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": -4,
-        "maximum": -14,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 15,
-        "maximum": 30,
+        "maximum": 50,
         "percent": true,
         "step": false
       }
@@ -707,10 +695,14 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "ward-stitch-spool": {
-    "description": "Shields you grant are 25% -> 50% larger.",
+    "description": "Allies holding a Shield from your abilities receive +20% -> +40% healing from every source.",
     "ranges": [
-      {"base":25,"maximum":50,"percent":true,"step":false}
-
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      }
     ]
   },
   "cinder-metering-nozzle": {
@@ -736,12 +728,12 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "firstlight-cam": {
-    "description": "After a damaging [Normal Attack], transfer 8 -> 16 Gauge to the lowest-Gauge other living ally.",
+    "description": "During the first Enemy Turn of each Battle, all allies take 25% -> 50% less Direct Damage.",
     "ranges": [
       {
-        "base": 8,
-        "maximum": 16,
-        "percent": false,
+        "base": 25,
+        "maximum": 50,
+        "percent": true,
         "step": false
       }
     ]
@@ -794,10 +786,20 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "covercharge-drum": {
-    "description": "After a team heal, 40% -> 80% of the overhealing goes to the most injured other ally.",
+    "description": "When another ally falls, every living ally restores 10% -> 20% of their maximum HP and gains 20 -> 40 Gauge.",
     "ranges": [
-      {"base":40,"maximum":80,"percent":true,"step":false}
-
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": false,
+        "step": false
+      }
     ]
   },
   "sootwake-crucible": {

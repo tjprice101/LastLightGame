@@ -1,6 +1,7 @@
-# Redundant Conduit replacements (D-349 proposal)
+# Redundant Conduit replacements (D-349 proposal, implemented D-351)
 
-Status: **proposal, awaiting owner approval.** Nothing here is live.
+Status: **implemented (D-351).** The owner approved all ten with current names and these numbers.
+Horizon Heartcase adds +10 Gauge to each later save in a Battle so the drain always runs out.
 
 The owner wants new build-crafting axes instead of more Conduits that buff the same
 thing (Skill 1/Skill 2 damage, flat Normal Attack damage, Burn %, Shield %). Each
@@ -27,7 +28,7 @@ arrives every Enemy Turn.
 | 4 | Coilfeed Ratchet (Rare) | [Skill 2]-only discount; Skythread Rudder and Storm Clock already cut costs. | All your abilities cost 8% -> 16% less Gauge (rounded down). [Last Flare] cannot fall below 70. |
 | 5 | Resonance Crucible (Rare) | Plain [Burn] %, beaten by Pyre Census, Cinder Testament and Starvein Conductor. | Damage beyond what defeats an enemy carries to the healthiest other enemy as a Bonus Strike at 30% -> 60%. |
 | 6 | Glassroot Gimbal (Rare) | Third Critical Rate source after Parallax Relay and Falcon Sight. | Attack Actions deal +1% -> +2% Direct Damage per 10 Gauge you hold before paying costs. |
-| 7 | Horizon Heartcase (Legendary) | +HP/-Defense trade overlaps Immortal Vessel's +HP/-Attack. | When Direct Damage would defeat you, the excess drains your Gauge instead: 1 Gauge per 1% maximum HP, reduced by 20% -> 50%. If your Gauge covers it all you stay at 1 HP; otherwise you fall. |
+| 7 | Horizon Heartcase (Legendary) | +HP/-Defense trade overlaps Immortal Vessel's +HP/-Attack. | When Direct Damage would defeat you, the excess drains your Gauge instead: 1 Gauge per 1% maximum HP, reduced by 20% -> 50%, plus 10 for each earlier save this Battle. If your Gauge covers it all you stay at 1 HP; otherwise you fall. |
 | 8 | Leviathan Ward Loom `ward-stitch-spool` ([Oceanic] Omnic) | Now "+25-50% Shield size", the same as Wardglass Transformer. | Allies holding your Shield receive +20% -> +40% more healing from every source. |
 | 9 | Worldgrove Covercharge Heart `covercharge-drum` ([Botanic] Omnic) | Overheal redirection; all overhealing already becomes a Shield, and Worldtree Heart stores it. | When another ally falls, each living ally restores 10% -> 20% of their maximum HP and gains 20 -> 40 Gauge. |
 | 10 | Firstlight Concordance `firstlight-cam` ([Tranquilitic] Omnic) | Normal Attack Gauge transfer, beaten by Griffin Turbine (gives Gauge without the cost). | During the first Enemy Turn of each Battle, all allies take 25% -> 50% less Direct Damage. |
@@ -39,8 +40,6 @@ defence, Shield-break recovery, overkill, incoming healing, ally death and
 the opening Enemy Turn. None duplicates an existing Skill 1/Skill 2/Normal
 Attack/Burn/Shield % bonus.
 
-## Open questions
+## Owner answers (D-351)
 
-- Keep current display names, or rename the Common/Rare/Legendary entries to fit the
-  new effects (Omnic names already fit their elements)?
-- Approve all ten, or a subset?
+- All ten approved and live; current display names kept; numbers unchanged.

@@ -237,11 +237,12 @@ describe('redesigned ordinary Conduit executable effects', () => {
     expect(() => act(result.state, owner.id, 'light', target.id)).toThrow();
     expect(result.state).toEqual(before);
   });
-  it('applies Twinpulse to every Normal Attack without a sequence gate', () => {
+  it('starts Twinpulse bearers with a share of Gauge capacity instead of a Normal Attack bonus', () => {
     const { state, owner } = fixture('twinpulse-bellows');
-    expect(prepareConduitAction(state, owner, 'light', 0, false).bonus).toBe(.25);
-    expect(prepareConduitAction(state, owner, 'light', 0, false).bonus).toBe(.25);
-    expect(prepareConduitAction(state, owner, 'light', 0, false).bonus).toBe(.25);
+    expect(owner.shatter).toBe(130);
+    expect(state.allies[1].shatter).toBe(100);
+    expect(prepareConduitAction(state, owner, 'light', 0, false).bonus).toBe(0);
+    expect(fixture('twinpulse-bellows', 5).owner.shatter).toBe(170);
   });
   it('grants Pulse Trigger Gauge beyond its action cost at high upgrade levels', () => {
     const { state, owner, target, events } = fixture('pulse-trigger-pawl', 50);
@@ -261,11 +262,13 @@ describe('redesigned ordinary Conduit executable effects', () => {
     }
     expect(prepareConduitAction(f.state, f.owner, 'light', 0, false).guaranteed).toBe(true);
   });
-  it('discounts only the specified slot and consumes Tailwind on legal use', () => {
+  it('discounts every ability by a share of its cost and consumes Tailwind on legal use', () => {
     const f = fixture('coilfeed-ratchet', 5);
-    expect(conduitActionCost(f.owner, 'skill2', f.state, 30)).toBe(24);
-    expect(conduitActionCost(f.owner, 'skill1', f.state, 30)).toBe(30);
-    expect(conduitActionCost(f.owner, 'ultimate', f.state, 100)).toBe(100);
+    expect(conduitActionCost(f.owner, 'skill2', f.state, 30)).toBe(26);
+    expect(conduitActionCost(f.owner, 'skill1', f.state, 30)).toBe(26);
+    expect(conduitActionCost(f.owner, 'ultimate', f.state, 100)).toBe(84);
+    expect(conduitActionCost(f.owner, 'ultimate', f.state, 80)).toBe(70);
+    expect(conduitActionCost(f.owner, 'light', f.state, 0)).toBe(0);
     const t = fixture('atmospheric-skythread-rudder', 5);
     const normal = prepareConduitAction(t.state, t.owner, 'light', 0, false);
     finishConduitAction(t.state, t.owner, normal, t.events);
@@ -282,14 +285,29 @@ describe('redesigned ordinary Conduit executable effects', () => {
       expect(f.target.weakened).toBe(level < 3 ? 3 : 4);
     }
   });
-  it('increases native Burn potency without making generated Burn eligible for tick income', () => {
+  it('carries Resonance overkill onto the healthiest other enemy without touching Burn', () => {
     const f = fixture('resonance-crucible', 5);
     const ctx = prepareConduitAction(f.state, f.owner, 'skill1', 0, false);
-    expect(applyConduitBurn(f.state, f.owner, f.target, 100, ctx)).toBe(140);
+    expect(applyConduitBurn(f.state, f.owner, f.target, 100, ctx)).toBe(100);
     f.target.burn = { damage: 100, turns: 1, sourceId: f.owner.id, origin: 'conduit' };
     expect(conduitBurnTick(f.state, f.owner, f.target)).toBe(100);
     afterConduitBurn(f.state, f.owner, f.target, 100, f.events);
     expect(f.events).toEqual([]);
+    const other = f.state.enemies[1];
+    other.hp = 90000;
+    f.target.hp = 0; recordConduitHit(ctx, f.target, 500, false, 1.5, 100);
+    finishConduitAction(f.state, f.owner, ctx, f.events);
+    expect(f.state.enemies.reduce((sum, unit) => sum + unit.hp, 0)).toBe(100000 * (f.state.enemies.length - 2) + 90000 - 60);
+  });
+  it('restores Fieldbrace HP at the start of the next player turn after a Shield breaks', () => {
+    const f = fixture('fieldbrace-coupler', 5);
+    generatedShield(f.owner, f.owner, 50, f.events);
+    conduitIncoming(f.state, f.target, f.owner, 300, false, false, f.events);
+    expect(f.owner.hp).toBe(750);
+    conduitTurnStart(f.state, f.events);
+    expect(f.owner.hp).toBe(750);
+    f.state.round += 1; conduitTurnStart(f.state, f.events);
+    expect(f.owner.hp).toBe(870);
   });
   it('spends personal Fractures once and never consumes a different owner’s marks', () => {
     const f = fixture('ruinselect-prism', 5);
@@ -360,7 +378,7 @@ describe('redesigned ordinary Conduit executable effects', () => {
     expect(f.owner.shield).toBe(0);
   });
   it('distinguishes shield-only absorption, critical resistance and high-health prevention', () => {
-    for (const [id, critical, expected] of [['fieldbrace-coupler', false, 92], ['sentinel-aperture', true, 50], ['pale-bulwark-diadem', false, 70]] as const) {
+    for (const [id, critical, expected] of [['sentinel-aperture', true, 50], ['pale-bulwark-diadem', false, 70]] as const) {
       const f = fixture(id, 5);
       generatedShield(f.owner, f.owner, 200, f.events);
       conduitIncoming(f.state, f.target, f.owner, 100, critical, false, f.events);

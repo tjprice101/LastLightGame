@@ -636,7 +636,8 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
           events[events.length - 1].origin = 'native';
           hpDamage += events[events.length - 1].amount;
         }
-        recordConduitHit(activation, target, hpDamage, critical, criticalMultiplier);
+        recordConduitHit(activation, target, hpDamage, critical, criticalMultiplier,
+          target.hp <= 0 ? offered - hpDamage - (shieldBefore - target.shield) : 0);
         afterConduitImpact(actor, target, activation);
         nativePrimaryHit(state, actor, target, hpDamage > 0 || shieldBefore > target.shield, events);
       }
@@ -686,7 +687,8 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
         events[events.length - 1].origin = 'native';
         hpDamage += events[events.length - 1].amount;
       }
-      recordConduitHit(activation, target, hpDamage, critical, criticalMultiplier);
+      recordConduitHit(activation, target, hpDamage, critical, criticalMultiplier,
+        target.hp <= 0 ? offered - hpDamage - (priorShield - target.shield) : 0);
       afterConduitImpact(actor, target, activation);
       const effectiveHit = hpDamage > 0 || priorShield > target.shield;
       nativePrimaryHit(state, actor, target, effectiveHit, events);
@@ -898,7 +900,8 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
   for (const ally of state.allies) {
     const prior = previous.allies.find((unit) => unit.id === ally.id);
     if (!prior) throw new Error('Continuing character is missing from the previous encounter.');
-    ally.shatter = Math.min(prior.shatter + (equipped(ally, 'fracture-reservoir') ? value(state, ally, 'fracture-reservoir', 5, 10) : 0),
+    ally.shatter = Math.min(prior.shatter + (equipped(ally, 'fracture-reservoir') ? value(state, ally, 'fracture-reservoir', 5, 10) : 0) +
+      (equipped(ally, 'twinpulse-bellows') ? ally.stats.shatterCapacity * value(state, ally, 'twinpulse-bellows', .15, .35) : 0),
       ally.stats.shatterCapacity);
     if (prior.masterConduit) ally.masterConduit = prior.masterConduit;
   }

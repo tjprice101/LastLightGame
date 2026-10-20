@@ -76,13 +76,18 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(owner.shatter).toBeCloseTo(100 + n(5, 10));
       break;
     case 'fieldbrace-coupler':
-      owner.shield = 200; hit();
-      expect(owner.shield).toBe(200 - Math.round(100 * (1 - n(.04, .08))));
-      expect(owner.hp).toBe(1000);
+      owner.shield = 50; hit(500);
+      expect(owner.hp).toBe(550);
+      conduitTurnStart(state, events);
+      expect(owner.hp).toBe(550);
+      state.round += 1; conduitTurnStart(state, events);
+      expect(owner.hp).toBe(550 + Math.round(1000 * n(.06, .12)));
+      state.round += 1; conduitTurnStart(state, events);
+      expect(owner.hp).toBe(550 + Math.round(1000 * n(.06, .12)));
       break;
     case 'reserve-torque-crank':
-      finish('light');
-      expect(owner.shatter).toBeCloseTo(100 + n(3, 6));
+      nativeGauge(state, owner, 20, events);
+      expect(owner.shatter).toBe(120 + (enabled ? Math.max(1, Math.round(20 * n(.1, .25))) : 0));
       break;
     case 'duplex-heart':
       ally.hp = 500; hit();
@@ -109,13 +114,14 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(owner.hp).toBeCloseTo(200 + 100 * n(.2, .4));
       break;
     case 'twinpulse-bellows':
-      expect(context().bonus).toBeCloseTo(n(.25, .5));
-      expect(context().bonus).toBeCloseTo(n(.25, .5));
-      expect(context().bonus).toBeCloseTo(n(.25, .5));
+      expect(owner.shatter).toBeCloseTo(100 + 200 * n(.15, .35));
+      expect(context().bonus).toBe(0);
       break;
     case 'glassroot-gimbal':
-      owner.hp = 250;
-      expect(context().criticalBonus).toBeCloseTo(n(.12, .24));
+      expect(context('light', 100, false, 30).bonus).toBeCloseTo(13 * n(.01, .02));
+      owner.shatter = 9;
+      expect(context('light', 100, false, 0).bonus).toBe(0);
+      expect(context('light', 100, false, 0).criticalBonus).toBe(0);
       break;
     case 'lifeline-flywheel':
       owner.hp = 500; finish();
@@ -134,15 +140,22 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(owner.shield).toBe(Math.round(100 * n(.08, .16)));
       break;
     case 'coilfeed-ratchet':
-      expect(conduitActionCost(owner, 'skill2', state, 30)).toBeCloseTo(30 - n(3, 6));
+      expect(conduitActionCost(owner, 'skill1', state, 25)).toBe(25 - Math.floor(25 * n(.08, .16)));
+      expect(conduitActionCost(owner, 'skill2', state, 40)).toBe(40 - Math.floor(40 * n(.08, .16)));
+      expect(conduitActionCost(owner, 'ultimate', state, 100)).toBe(100 - Math.floor(100 * n(.08, .16)));
+      expect(conduitActionCost(owner, 'ultimate', state, 75)).toBe(enabled ? 70 : 75);
       break;
     case 'opal-indexer':
       applyConduitWeaken(state, owner, target, .2, events, 'skill1');
       expect(target.weakened).toBe(2 + s(1, 2));
       break;
     case 'resonance-crucible': {
-      const result = applyConduitBurn(state, owner, target, 100, context('skill1'));
-      expect(result).toBe(Math.round(100 * (1 + n(.2, .4))));
+      expect(applyConduitBurn(state, owner, target, 100, context('skill1'))).toBe(100);
+      const ctx = prepareConduitAction(state, owner, 'skill1', 25, false);
+      target.hp = 0; recordConduitHit(ctx, target, 1000, false, 1.5, 200);
+      finishConduitAction(state, owner, ctx, events);
+      const others = state.enemies.filter(unit => unit.id !== target.id);
+      expect(others.reduce((sum, unit) => sum + unit.hp, 0)).toBe(others.length * 1000 - (enabled ? Math.round(200 * n(.3, .6)) : 0));
       break;
     }
     case 'citadel-spine':
@@ -166,7 +179,16 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
     case 'horizon-heartcase':
       state.round = owner.recoverThrough = 2; owner.hp = 500;
       conduitTurnStart(state, events);
-      expect(owner.hp).toBe(500 + Math.round(500 * n(.15, .3)));
+      expect(owner.hp).toBe(500);
+      owner.hp = 1000; owner.shatter = 100; hit(1500);
+      expect(owner.hp).toBe(enabled ? 1 : 0);
+      if (enabled) {
+        expect(owner.shatter).toBe(100 - Math.ceil(501 / 10 * (1 - n(.2, .5))) + 10);
+        let saves = 1;
+        while (owner.hp > 0 && saves < 50) { owner.shatter = 200; hit(1000); if (owner.hp > 0) saves += 1; }
+        expect(owner.hp).toBe(0);
+        expect(saves).toBeLessThan(20);
+      }
       break;
     case 'stasis-reliquary':
       hit(2000);
@@ -326,8 +348,12 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(owner.hp).toBe(500 + Math.round(1000 * n(.08, .16)));
       break;
     case 'ward-stitch-spool':
-      shield();
-      expect(owner.shield).toBe(100 + Math.round(100 * n(.25, .5)));
+      shield(); owner.hp = 500; ally.hp = 500;
+      expect(owner.shield).toBe(100);
+      nativeHeal(state, owner, owner, 100, events, true);
+      expect(owner.hp).toBeCloseTo(600 + 100 * n(.2, .4));
+      nativeHeal(state, owner, ally, 100, events, true);
+      expect(ally.hp).toBeCloseTo(600);
       break;
     case 'cinder-metering-nozzle': {
       burn(); const prior = structuredClone(state); target.hp = 0;
@@ -342,8 +368,12 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       break;
     case 'firstlight-cam':
       ally.shatter = 0; finish();
-      expect(owner.shatter).toBeCloseTo(100 - n(8, 16));
-      expect(ally.shatter).toBeCloseTo(n(8, 16));
+      expect(ally.shatter).toBe(0);
+      conduitIncoming(state, target, ally, 100, false, false, events);
+      expect(ally.hp).toBe(1000 - Math.round(100 * (1 - n(.25, .5))));
+      state.round += 1; ally.hp = 1000;
+      conduitIncoming(state, target, ally, 100, false, false, events);
+      expect(ally.hp).toBe(900);
       break;
     case 'secondbeat-rack': {
       weaken(); const prior = structuredClone(state); target.hp = 0;
@@ -380,9 +410,13 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       expect(target.weakenFraction).toBeCloseTo(.2 + n(.05, .1));
       break;
     case 'covercharge-drum': {
-      ally.hp = 500; const ctx = context('skill2', 0); ctx.overheal = 100;
-      finishConduitAction(state, owner, ctx, events);
-      expect(ally.hp).toBe(500 + Math.round(100 * n(.4, .8)));
+      const third = state.allies[2];
+      owner.hp = 500; third.hp = 500; third.shatter = 100;
+      conduitIncoming(state, target, ally, 5000, false, false, events);
+      expect(ally.hp).toBe(0);
+      expect(owner.hp).toBe(500 + Math.round(1000 * n(.1, .2)));
+      expect(third.hp).toBe(500 + Math.round(1000 * n(.1, .2)));
+      expect(third.shatter).toBeCloseTo(100 + n(20, 40));
       break;
     }
     case 'sootwake-crucible':

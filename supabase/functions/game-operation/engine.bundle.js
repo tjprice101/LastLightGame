@@ -284,23 +284,23 @@ var conduitRedesign = {
     ]
   },
   "fieldbrace-coupler": {
-    "description": "Take 4% -> 8% less enemy Direct Damage while you have a Shield.",
+    "description": "When a Shield on you breaks, restore 6% -> 12% of your maximum HP at the start of your next player turn.",
     "ranges": [
       {
-        "base": 4,
-        "maximum": 8,
+        "base": 6,
+        "maximum": 12,
         "percent": true,
         "step": false
       }
     ]
   },
   "reserve-torque-crank": {
-    "description": "[Normal Attack] grants an additional 3 -> 6 Gauge.",
+    "description": "Gauge you gain from abilities and hits is increased by 10% -> 25% (at least +1).",
     "ranges": [
       {
-        "base": 3,
-        "maximum": 6,
-        "percent": false,
+        "base": 10,
+        "maximum": 25,
+        "percent": true,
         "step": false
       }
     ]
@@ -372,23 +372,23 @@ var conduitRedesign = {
     ]
   },
   "twinpulse-bellows": {
-    "description": "Each [Normal Attack] gains +25% -> +50% Direct Damage.",
+    "description": "Start each Battle with 15% -> 35% of your Gauge capacity added to your Gauge.",
     "ranges": [
       {
-        "base": 25,
-        "maximum": 50,
+        "base": 15,
+        "maximum": 35,
         "percent": true,
         "step": false
       }
     ]
   },
   "glassroot-gimbal": {
-    "description": "Gain up to +12 -> +24 percentage points of Critical Rate as your HP drops, reaching the full bonus at 75% missing HP.",
+    "description": "Attack Actions deal +1% -> +2% Direct Damage for every 10 Gauge you hold before paying the cost.",
     "ranges": [
       {
-        "base": 12,
-        "maximum": 24,
-        "percent": false,
+        "base": 1,
+        "maximum": 2,
+        "percent": true,
         "step": false
       }
     ]
@@ -445,12 +445,12 @@ var conduitRedesign = {
     ]
   },
   "coilfeed-ratchet": {
-    "description": "[Skill 2] costs 3 -> 6 less Gauge.",
+    "description": "Your abilities cost 8% -> 16% less Gauge (rounded down). [Last Flare] cannot drop below 70 Gauge.",
     "ranges": [
       {
-        "base": 3,
-        "maximum": 6,
-        "percent": false,
+        "base": 8,
+        "maximum": 16,
+        "percent": true,
         "step": false
       }
     ]
@@ -467,11 +467,11 @@ var conduitRedesign = {
     ]
   },
   "resonance-crucible": {
-    "description": "Your [Burn] deals +20% -> +40% damage.",
+    "description": "Damage beyond what defeats an enemy carries over as a Bonus Strike on the healthiest other enemy at 30% -> 60%.",
     "ranges": [
       {
-        "base": 20,
-        "maximum": 40,
+        "base": 30,
+        "maximum": 60,
         "percent": true,
         "step": false
       }
@@ -591,23 +591,11 @@ var conduitRedesign = {
     ]
   },
   "horizon-heartcase": {
-    "description": "+20% -> +70% maximum HP; -4% -> -14% Defense. At the start of each [Last Flare] recovery turn, restore 15% -> 30% of missing HP.",
+    "description": "When enemy Direct Damage would defeat you, drain Gauge instead and stay at 1 HP: 1 Gauge per 1% maximum HP of the excess, reduced by 20% -> 50%, plus 10 for each earlier save this Battle. Without enough Gauge you fall.",
     "ranges": [
       {
         "base": 20,
-        "maximum": 70,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": -4,
-        "maximum": -14,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 15,
-        "maximum": 30,
+        "maximum": 50,
         "percent": true,
         "step": false
       }
@@ -894,9 +882,14 @@ var conduitRedesign = {
     ]
   },
   "ward-stitch-spool": {
-    "description": "Shields you grant are 25% -> 50% larger.",
+    "description": "Allies holding a Shield from your abilities receive +20% -> +40% healing from every source.",
     "ranges": [
-      { "base": 25, "maximum": 50, "percent": true, "step": false }
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": true,
+        "step": false
+      }
     ]
   },
   "cinder-metering-nozzle": {
@@ -922,12 +915,12 @@ var conduitRedesign = {
     ]
   },
   "firstlight-cam": {
-    "description": "After a damaging [Normal Attack], transfer 8 -> 16 Gauge to the lowest-Gauge other living ally.",
+    "description": "During the first Enemy Turn of each Battle, all allies take 25% -> 50% less Direct Damage.",
     "ranges": [
       {
-        "base": 8,
-        "maximum": 16,
-        "percent": false,
+        "base": 25,
+        "maximum": 50,
+        "percent": true,
         "step": false
       }
     ]
@@ -977,9 +970,20 @@ var conduitRedesign = {
     ]
   },
   "covercharge-drum": {
-    "description": "After a team heal, 40% -> 80% of the overhealing goes to the most injured other ally.",
+    "description": "When another ally falls, every living ally restores 10% -> 20% of their maximum HP and gains 20 -> 40 Gauge.",
     "ranges": [
-      { "base": 40, "maximum": 80, "percent": true, "step": false }
+      {
+        "base": 10,
+        "maximum": 20,
+        "percent": true,
+        "step": false
+      },
+      {
+        "base": 20,
+        "maximum": 40,
+        "percent": false,
+        "step": false
+      }
     ]
   },
   "sootwake-crucible": {
@@ -5787,9 +5791,13 @@ function overhealShield(owner, target, excess, events) {
   emit(events, "shield", owner, target, amount, `${target.name}'s excess healing becomes a ${target.shield} Shield.`);
   return amount;
 }
+function healingReceived(target) {
+  if (!target.conduitRuntime?.layers?.length) return 1;
+  return 1 + Math.max(0, ...layers(target).filter((layer) => layer.amount > 0).map((layer) => layer.healBonus ?? 0));
+}
 function generatedHeal(owner, target, offer, events) {
   if (!target || target.hp <= 0) return 0;
-  const healing = Math.max(0, Math.round(offer));
+  const healing = Math.max(0, Math.round(offer * healingReceived(target)));
   const amount = Math.min(target.stats.health - target.hp, healing);
   overhealShield(owner, target, healing - Math.max(0, amount), events);
   if (amount <= 0) return 0;
@@ -5891,6 +5899,9 @@ function initializeConduits(state) {
     if (unit.side === "ally" && equipped(unit, "fracture-reservoir")) {
       unit.shatter = Math.min(unit.stats.shatterCapacity, unit.shatter + value(state, unit, "fracture-reservoir", 5, 10));
     }
+    if (unit.side === "ally" && equipped(unit, "twinpulse-bellows")) {
+      unit.shatter = Math.min(unit.stats.shatterCapacity, unit.shatter + unit.stats.shatterCapacity * value(state, unit, "twinpulse-bellows", 0.15, 0.35));
+    }
   }
 }
 function effectiveDefense(state, unit) {
@@ -5918,12 +5929,15 @@ function conduitActionCost(actor, action, state, base) {
   if (action === "light") return equipped(actor, "solace-anchor") && actor.shatter >= 10 && actor.conduitRuntime?.numbers.solaceRound !== state.round ? 10 : 0;
   if (action === "skill1" && n.quietFeather) return 0;
   let discount = 0;
-  if (action === "skill2" && equipped(actor, "coilfeed-ratchet")) discount += value(state, actor, "coilfeed-ratchet", 3, 6);
   if ((action === "skill1" || action === "skill2") && n.tailwind && equipped(actor, "atmospheric-skythread-rudder")) {
     discount += value(state, actor, "atmospheric-skythread-rudder", 10, 20) * n.tailwind;
   }
   if (action === "ultimate" && n.stormCount && equipped(actor, "atmospheric-storm-clock")) {
     discount += value(state, actor, "atmospheric-storm-clock", 15, 30) * n.stormCount;
+  }
+  if (base > 0 && equipped(actor, "coilfeed-ratchet")) {
+    const cut = Math.floor(base * value(state, actor, "coilfeed-ratchet", 0.08, 0.16));
+    discount += action === "ultimate" ? Math.min(cut, Math.max(0, base - discount - 70)) : cut;
   }
   return base === 0 ? 0 : Math.max(1, base - discount);
 }
@@ -5968,14 +5982,13 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
   if ((action === "skill1" || action === "skill2") && n.tailwind) n.tailwind--;
   const offensive = action === "light" || actor.kit?.abilities[action].strength.damageMultiplier !== void 0;
   if (offensive && equipped(actor, "parallax-relay")) ctx.criticalBonus += value(state, actor, "parallax-relay", 0.15, 0.3);
-  if (equipped(actor, "glassroot-gimbal")) ctx.criticalBonus += value(state, actor, "glassroot-gimbal", 0.12, 0.24) * ((1 - actor.hp / actor.stats.health) / 0.75);
+  if (offensive && equipped(actor, "glassroot-gimbal")) ctx.bonus += Math.floor((actor.shatter + paid) / 10) * value(state, actor, "glassroot-gimbal", 0.01, 0.02);
   ctx.guaranteed = equipped(actor, "falcon-sight") && (n.noncritical ?? 0) >= 2;
   ctx.forbidden = equipped(actor, "verdict-caliper") || action === "light" && equipped(actor, "judgment-lens");
   if (equipped(actor, "verdict-caliper")) ctx.bonus += value(state, actor, "verdict-caliper", 0.35, 0.7);
   if (action === "light") {
     if (equipped(actor, "siegebound-drive")) ctx.bonus += value(state, actor, "siegebound-drive", 0.08, 0.16);
     if (equipped(actor, "nullsong-transmission")) ctx.bonus += value(state, actor, "nullsong-transmission", 0.4, 0.8);
-    if (equipped(actor, "twinpulse-bellows")) ctx.bonus += value(state, actor, "twinpulse-bellows", 0.25, 0.5);
     if (actor.recoverThrough >= state.round && recoveryNormal(actor)) ctx.scale *= value(state, actor, "chaotic-paradox-spindle", 0.5, 0.75);
     if (equipped(actor, "master-atmoso-1")) {
       ctx.all = true;
@@ -6098,7 +6111,6 @@ function conduitHitModifiers(state, actor, target, ctx, critical) {
 }
 function applyConduitBurn(state, owner, target, base, ctx) {
   let bonus = 0;
-  if (equipped(owner, "resonance-crucible")) bonus += value(state, owner, "resonance-crucible", 0.2, 0.4);
   if (equipped(owner, "starvein-conductor")) {
     const payment = owner.stats.health * 0.05;
     if (!ctx.burnPaid && owner.hp - payment >= 1) {
@@ -6165,7 +6177,7 @@ function nativeHeal(state, owner, target, offer, events, active, ctx, instructio
   if (target.hp <= 0) return 0;
   if (instruction) offer *= nativeSupportMultiplier(state, owner);
   let bonus = active && equipped(owner, "springwell-pump") ? value(state, owner, "springwell-pump", 0.2, 0.4) : 0;
-  offer = Math.max(0, offer * (1 + bonus) + (active && owner.id !== target.id ? ctx?.healExtra ?? 0 : 0));
+  offer = Math.max(0, offer * (1 + bonus) + (active && owner.id !== target.id ? ctx?.healExtra ?? 0 : 0)) * healingReceived(target);
   const restored = Math.min(target.stats.health - target.hp, offer);
   const wasted = offer - restored;
   if (ctx) {
@@ -6187,8 +6199,6 @@ function nativeHeal(state, owner, target, offer, events, active, ctx, instructio
   return restored;
 }
 function finishNativeHealing(state, owner, ctx, events) {
-  if (equipped(owner, "covercharge-drum") && ctx.overheal > 0)
-    generatedHeal(owner, injured(state, owner, true), ctx.overheal * value(state, owner, "covercharge-drum", 0.4, 0.8), events);
   if (equipped(owner, "rootbound-triage-vault") && ctx.healed > 0 && owner.shatter >= 15) {
     const threshold = value(state, owner, "rootbound-triage-vault", 0.2, 0.4);
     const ally = alive(state).filter((ally2) => ally2.hp < ally2.stats.health * threshold).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
@@ -6241,15 +6251,19 @@ function nativeShield(state, owner, target, offer, events, options = {}) {
     }
   }
   emit(events, "shield", owner, target, gained, `${target.name} has ${target.shield} shield.`, true);
-  if (equipped(owner, "ward-stitch-spool")) generatedShield(owner, target, offer * value(state, owner, "ward-stitch-spool", 0.25, 0.5), events, true);
+  if (equipped(owner, "ward-stitch-spool")) {
+    const healBonus = value(state, owner, "ward-stitch-spool", 0.2, 0.4);
+    for (const layer of layers(target)) if (layer.native && layer.owner === owner.id) layer.healBonus = healBonus;
+  }
   if (plate) {
     const prior = layers(target).filter((layer) => layer.plate && layer.owner === owner.id).reduce((sum, layer) => sum + layer.amount, 0);
     const amount = Math.max(0, Math.round(offer * 0.5) - prior);
     generatedShield(owner, target, amount, events, true, Infinity, true);
   }
 }
-function nativeGauge(state, target, offer, events) {
+function nativeGauge(state, target, offer, events, conduit = false) {
   if (offer <= 0 || target.hp <= 0) return;
+  if (!conduit && equipped(target, "reserve-torque-crank")) offer += Math.max(1, Math.round(offer * value(state, target, "reserve-torque-crank", 0.1, 0.25)));
   const link = state.allies.find((owner) => owner.hp > 0 && equipped(owner, "master-disciple-2") && (gear(owner).numbers.linkThrough ?? 0) >= state.round && gear(target).owners.link === owner.id);
   const overflow = Math.max(0, target.shatter + offer - target.stats.shatterCapacity);
   if (link) {
@@ -6260,15 +6274,15 @@ function nativeGauge(state, target, offer, events) {
     generatedGauge(target, lowestGauge(state, target), overflow * value(state, target, "clearwater-manifold", 0.5, 1), events);
   }
 }
-function recordConduitHit(ctx, target, amount, critical, criticalMultiplier) {
-  ctx.hits.push({ target: target.id, damage: amount, critical, criticalMultiplier });
+function recordConduitHit(ctx, target, amount, critical, criticalMultiplier, overkill = 0) {
+  ctx.hits.push({ target: target.id, damage: amount, critical, criticalMultiplier, ...overkill > 0 ? { overkill } : {} });
 }
 function finishConduitAction(state, owner, ctx, events) {
   const n = gear(owner).numbers;
   finishNativeHealing(state, owner, ctx, events);
   if (equipped(owner, "master-nerithe-2") && ctx.action === "skill2") {
     for (const ally of alive(state)) {
-      nativeGauge(state, ally, 15, events);
+      nativeGauge(state, ally, 15, events, true);
       ally.omnicProtection = 1 - (1 - (ally.omnicProtection ?? 0)) * 0.85;
     }
   }
@@ -6282,7 +6296,6 @@ function finishConduitAction(state, owner, ctx, events) {
   if (!damage) n.previousSkill = 0;
   if (ctx.action === "light") {
     n.normalRound = state.round;
-    if (equipped(owner, "reserve-torque-crank")) generatedGauge(owner, owner, value(state, owner, "reserve-torque-crank", 3, 6), events);
     if (equipped(owner, "atmospheric-skythread-rudder")) n.tailwind = (n.tailwind ?? 0) + 1;
     if (equipped(owner, "tranquilitic-kirin-cradle")) generatedHeal(
       owner,
@@ -6364,12 +6377,9 @@ function finishConduitAction(state, owner, ctx, events) {
       case "pulse-trigger-pawl":
         if (critical && (ctx.action === "skill1" || ctx.action === "skill2")) generatedGauge(owner, owner, value(state, owner, id, 8, 16), events);
         break;
-      case "firstlight-cam":
-        if (ctx.action === "light" && damage > 0) {
-          const ally = lowestGauge(state, owner);
-          const amount = generatedGauge(owner, ally, Math.min(owner.shatter, value(state, owner, id, 8, 16)), events);
-          owner.shatter -= amount;
-        }
+      case "resonance-crucible":
+        for (const hit of ctx.hits.filter((hit2) => (hit2.overkill ?? 0) > 0))
+          generatedStrike(state, owner, healthiestEnemy(state, hit.target), (hit.overkill ?? 0) * value(state, owner, id, 0.3, 0.6), events);
         break;
       case "flare-focusing-iris":
         if ((ctx.spent.ember ?? 0) > 0) for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && ctx.openingBurns[enemy2.id] !== void 0)) {
@@ -6541,6 +6551,17 @@ function rescue(state, target, loss, events, direct) {
     n.stasisShieldRound = state.round + 1;
     return Math.max(0, target.hp - 1);
   }
+  if (direct && equipped(target, "horizon-heartcase")) {
+    const saves = n.heartcaseSaves ?? 0;
+    const excess = loss - target.hp + 1;
+    const cost = Math.max(1, Math.ceil(excess / (target.stats.health * 0.01) * (1 - value(state, target, "horizon-heartcase", 0.2, 0.5)))) + 10 * saves;
+    if (target.shatter >= cost) {
+      target.shatter -= cost;
+      n.heartcaseSaves = saves + 1;
+      emit(events, "status", target, target, cost, `${target.name}'s Horizon Heartcase drains ${cost} Gauge to stay standing.`);
+      return Math.max(0, target.hp - 1);
+    }
+  }
   return loss;
 }
 function afterConduitHpLoss(state, target, events) {
@@ -6658,7 +6679,11 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   }
   const shieldBefore = target.shield;
   let equipmentMultiplier = 1;
-  if (shieldBefore > 0 && equipped(target, "fieldbrace-coupler")) equipmentMultiplier *= 1 - value(state, target, "fieldbrace-coupler", 0.04, 0.08);
+  for (const keeper of alive(state).filter((ally) => equipped(ally, "firstlight-cam"))) {
+    const memory = gear(keeper).numbers;
+    memory.firstlightRound ??= state.round;
+    if (memory.firstlightRound === state.round) equipmentMultiplier *= 1 - value(state, keeper, "firstlight-cam", 0.25, 0.5);
+  }
   if (critical && equipped(target, "sentinel-aperture")) equipmentMultiplier *= 1 - value(state, target, "sentinel-aperture", 0.25, 0.5);
   if (target.hp > target.stats.health * 0.75 && equipped(target, "pale-bulwark-diadem")) equipmentMultiplier *= 1 - value(state, target, "pale-bulwark-diadem", 0.15, 0.3);
   if (n.tauntRound === state.round && equipped(target, "tectonic-atlas-bastion")) equipmentMultiplier *= 1 - value(state, target, "tectonic-atlas-bastion", 0.1, 0.2);
@@ -6714,6 +6739,7 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   }
   const absorbed = consumeShield(target, remaining);
   let loss = remaining - absorbed.absorbed;
+  if (shieldBefore > 0 && target.shield <= 0 && absorbed.absorbed > 0 && equipped(target, "fieldbrace-coupler")) n.fieldbraceRound = state.round + 1;
   for (const [id, amount] of absorbed.native) {
     const owner = state.allies.find((ally) => ally.id === id);
     if (!owner) continue;
@@ -6750,6 +6776,7 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   events[events.length - 1].critical = critical;
   nativeDirectHpLoss(state, target, loss, events);
   afterConduitHpLoss(state, target, events);
+  if (target.hp <= 0) allyFell(state, target, events);
   if (reflection > 0) generatedStrike(state, target, enemy, reflection, events);
   if (loss > 0) {
     n.phaseLoss = (n.phaseLoss ?? 0) + loss;
@@ -6765,15 +6792,26 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
     if (n.counterwindActive) n.counterwind = (n.counterwind ?? 0) + 0.15;
   }
 }
+function allyFell(state, fallen, events) {
+  for (const owner of alive(state).filter((ally) => ally.id !== fallen.id && equipped(ally, "covercharge-drum"))) {
+    const heal = value(state, owner, "covercharge-drum", 0.1, 0.2), gauge = value(state, owner, "covercharge-drum", 20, 40);
+    for (const ally of alive(state)) {
+      generatedHeal(owner, ally, ally.stats.health * heal, events);
+      generatedGauge(owner, ally, gauge, events);
+    }
+  }
+}
 function routedDamage(state, enemy, target, amount, events, nativeRedirect = false) {
   const absorbed = consumeShield(target, amount).absorbed;
   const loss = Math.min(target.hp, amount - absorbed);
+  const wasStanding = target.hp > 0;
   target.hp -= loss;
   emit(events, "damage", enemy, target, loss, `${target.name} intercepts ${Math.round(amount)} damage (Conduit routing).`);
   if (nativeRedirect) {
     events[events.length - 1].origin = "native";
     events[events.length - 1].nativeKind = "redirect";
   }
+  if (wasStanding && target.hp <= 0 && target.side === "ally") allyFell(state, target, events);
 }
 function absorbedNative(state, owner, target, enemy, amount, broken, events) {
   if (owner.hp <= 0) return;
@@ -6792,9 +6830,12 @@ function conduitTurnStart(state, events) {
     }
     if (equipped(owner, "granite-hourglass") && (n.phaseLoss ?? 0) > 0) generatedShield(owner, owner, n.phaseLoss * value(state, owner, "granite-hourglass", 0.3, 0.6), events);
     n.phaseLoss = 0;
+    if (n.fieldbraceRound === state.round) {
+      delete n.fieldbraceRound;
+      generatedHeal(owner, owner, owner.stats.health * value(state, owner, "fieldbrace-coupler", 0.06, 0.12), events);
+    }
     if (n.stasisShieldRound === state.round) generatedShield(owner, owner, owner.stats.health * value(state, owner, "stasis-reliquary", 0.1, 0.2), events);
     if (owner.recoverThrough >= state.round) {
-      if (equipped(owner, "horizon-heartcase")) generatedHeal(owner, owner, (owner.stats.health - owner.hp) * value(state, owner, "horizon-heartcase", 0.15, 0.3), events);
       if (equipped(owner, "tranquilitic-stillhour-carillon")) {
         const amount = value(state, owner, "tranquilitic-stillhour-carillon", 15, 30);
         generatedGauge(owner, owner, amount, events);
@@ -7330,7 +7371,14 @@ function act(previous, actorId, action, targetId) {
           events[events.length - 1].origin = "native";
           hpDamage += events[events.length - 1].amount;
         }
-        recordConduitHit(activation, target, hpDamage, critical, criticalMultiplier);
+        recordConduitHit(
+          activation,
+          target,
+          hpDamage,
+          critical,
+          criticalMultiplier,
+          target.hp <= 0 ? offered - hpDamage - (shieldBefore - target.shield) : 0
+        );
         afterConduitImpact(actor, target, activation);
         nativePrimaryHit(state, actor, target, hpDamage > 0 || shieldBefore > target.shield, events);
       }
@@ -7381,7 +7429,14 @@ function act(previous, actorId, action, targetId) {
         events[events.length - 1].origin = "native";
         hpDamage += events[events.length - 1].amount;
       }
-      recordConduitHit(activation, target, hpDamage, critical, criticalMultiplier);
+      recordConduitHit(
+        activation,
+        target,
+        hpDamage,
+        critical,
+        criticalMultiplier,
+        target.hp <= 0 ? offered - hpDamage - (priorShield - target.shield) : 0
+      );
       afterConduitImpact(actor, target, activation);
       const effectiveHit = hpDamage > 0 || priorShield > target.shield;
       nativePrimaryHit(state, actor, target, effectiveHit, events);
@@ -7596,7 +7651,7 @@ function nextStage(previous, progress) {
     const prior = previous.allies.find((unit) => unit.id === ally.id);
     if (!prior) throw new Error("Continuing character is missing from the previous encounter.");
     ally.shatter = Math.min(
-      prior.shatter + (equipped(ally, "fracture-reservoir") ? value(state, ally, "fracture-reservoir", 5, 10) : 0),
+      prior.shatter + (equipped(ally, "fracture-reservoir") ? value(state, ally, "fracture-reservoir", 5, 10) : 0) + (equipped(ally, "twinpulse-bellows") ? ally.stats.shatterCapacity * value(state, ally, "twinpulse-bellows", 0.15, 0.35) : 0),
       ally.stats.shatterCapacity
     );
     if (prior.masterConduit) ally.masterConduit = prior.masterConduit;

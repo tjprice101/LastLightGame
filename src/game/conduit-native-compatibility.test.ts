@@ -49,21 +49,20 @@ describe('native and equipment compatibility', () => {
     };
     const state = encounter([copy.instanceId], [copy]);
     state.conduitUpgrades = {
-      'fieldbrace-coupler': 5,
       'sentinel-aperture': 5,
       'pale-bulwark-diadem': 5,
     };
     const target = state.allies[0];
     expect(target.captured?.instanceId).toBe(copy.instanceId);
     target.shield = 100;
-    target.conduits = ['fieldbrace-coupler', 'sentinel-aperture', 'pale-bulwark-diadem'];
+    target.conduits = ['sentinel-aperture', 'pale-bulwark-diadem'];
     const events: BattleEvent[] = [];
 
     conduitIncoming(state, state.enemies[0], target, 1_000, true, false, events);
 
-    expect(target.hp).toBe(778);
+    expect(target.hp).toBe(750);
     expect(target.shield).toBe(0);
-    expect(events.find(event => event.kind === 'damage')?.amount).toBe(222);
+    expect(events.find(event => event.kind === 'damage')?.amount).toBe(250);
   });
 
   it('converts healing above maximum HP into a non-stacking Shield', () => {
@@ -158,8 +157,8 @@ describe('native and equipment compatibility', () => {
     state.round = 2;
     const events: BattleEvent[] = [];
     nativeTurnStart(state, events);
-    expect(state.allies.map(ally => ally.hp)).toEqual([1000, 1000, 800]);
-    expect(events.filter(event => event.kind === 'heal' && event.origin === 'conduit')).toHaveLength(1);
+    expect(state.allies.map(ally => ally.hp)).toEqual([1000, 800, 800]);
+    expect(events.filter(event => event.kind === 'heal' && event.origin === 'conduit')).toHaveLength(0);
     expect(events.filter(event => event.kind === 'heal' && event.origin === 'native')).toHaveLength(2);
   });
 
