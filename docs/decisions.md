@@ -15,6 +15,7 @@ unchanged. [Current prompts](../Art/ui/Native%20Identity%20Status%20Icons.md).
 
 | ID | Decision | Basis |
 | --- | --- | --- |
+| D-355 | Owner finds Griffin Turbine's flat 3 -> 6 ally Gauge too weak and requests damage scaling. Each other ally now gains Gauge equal to 15% -> 30% of [Normal Attack] HP damage as a share of the user's Attack, up to 25 each. | Accepted |
 | D-354 | Owner requests Conduit Archive search by ability, name, effect etc. Added Search with a Search in sub-option (Everything/Name/Effect/Ability term/Lore) plus Rarity and Ownership filters, Reset and live count; presentation-only. | Accepted |
 | D-353 | Owner prefers slightly weakening any endgame-breaking Conduit. Measured 120-seed wall wins (baseline 11): Starvein [Burn] bonus 40->80% to 30->60%, Granite shield 30->60% to 20->40%, Coilfeed discount 8->16% to 7->14%. Worldbreaker (number-independent) and Calamitic Causality Funeral Engine flagged, unchanged. | Accepted |
 | D-352 | Owner orders a Machines (Rare/Legendary/Omnic) overlap audit: rework any Conduit duplicating another, except a higher rarity doing the same thing better; stat trade-offs must not contradict and must beat plain +Stat. Reworked Breach Pendulum, Stasis Reliquary, Faultkeeper Loom, Pyre Census, Flare Focusing Iris, Ruinselect Prism, Astral Prism, Citadel Spine penalty, Solace Anchor; Graft Covenant buffed; Heartcase hidden stat bundle removed. See [audit](machines-conduit-audit.md). | Accepted |

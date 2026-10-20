@@ -690,12 +690,12 @@ var conduitRedesign = {
     ]
   },
   "atmospheric-griffin-turbine": {
-    "description": "When your [Normal Attack] damages HP, each other ally gains 3 -> 6 Gauge.",
+    "description": "When your [Normal Attack] damages HP, each other ally gains Gauge equal to 15% -> 30% of that damage as a share of your Attack, up to 25 Gauge each. A hit for your full Attack gives 15 Gauge at +0.",
     "ranges": [
       {
-        "base": 3,
-        "maximum": 6,
-        "percent": false,
+        "base": 15,
+        "maximum": 30,
+        "percent": true,
         "step": false
       }
     ]
@@ -6287,7 +6287,10 @@ function finishConduitAction(state, owner, ctx, events) {
         for (const hit of ctx.hits.filter((hit2) => hit2.critical && hit2.damage > 0)) generatedStrike(state, owner, healthiestEnemy(state, hit.target), hit.damage * value(state, owner, id, 0.3, 0.6), events);
         break;
       case "atmospheric-griffin-turbine":
-        if (ctx.action === "light" && damage > 0) for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) generatedGauge(owner, ally, value(state, owner, id, 3, 6), events);
+        if (ctx.action === "light" && damage > 0) {
+          const gauge = Math.min(25, Math.round(100 * damage / Math.max(1, owner.stats.damage) * value(state, owner, id, 0.15, 0.3)));
+          for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) generatedGauge(owner, ally, gauge, events);
+        }
         break;
       case "luminous-seraph-mirror":
         for (const hit of ctx.hits.filter((hit2) => hit2.critical && hit2.damage > 0)) for (const ally of alive(state)) generatedHeal(owner, ally, hit.damage * value(state, owner, id, 0.08, 0.16), events);

@@ -276,7 +276,7 @@ function exercise(id: ConduitId, level: number, enabled: boolean): void {
       break;
     case 'atmospheric-griffin-turbine':
       finish();
-      expect(ally.shatter).toBeCloseTo(100 + n(3, 6));
+      expect(ally.shatter).toBe(100 + (enabled ? Math.min(ally.stats.shatterCapacity - 100, Math.min(25, Math.round(100 * 100 / owner.stats.damage * n(.15, .3)))) : 0));
       expect(owner.shatter).toBe(100);
       break;
     case 'luminous-seraph-mirror':

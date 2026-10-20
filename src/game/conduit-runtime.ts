@@ -568,7 +568,10 @@ export function finishConduitAction(state: BattleState, owner: Combatant, ctx: C
         for (const hit of ctx.hits.filter(hit => hit.critical && hit.damage > 0)) generatedStrike(state, owner, healthiestEnemy(state, hit.target), hit.damage * value(state, owner, id, .3, .6), events);
         break;
       case 'atmospheric-griffin-turbine':
-        if (ctx.action === 'light' && damage > 0) for (const ally of alive(state).filter(ally => ally.id !== owner.id)) generatedGauge(owner, ally, value(state, owner, id, 3, 6), events);
+        if (ctx.action === 'light' && damage > 0) {
+          const gauge = Math.min(25, Math.round(100 * damage / Math.max(1, owner.stats.damage) * value(state, owner, id, .15, .3)));
+          for (const ally of alive(state).filter(ally => ally.id !== owner.id)) generatedGauge(owner, ally, gauge, events);
+        }
         break;
       case 'luminous-seraph-mirror':
         for (const hit of ctx.hits.filter(hit => hit.critical && hit.damage > 0)) for (const ally of alive(state)) generatedHeal(owner, ally, hit.damage * value(state, owner, id, .08, .16), events);

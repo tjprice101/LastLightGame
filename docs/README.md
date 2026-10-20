@@ -103,6 +103,9 @@ victory requirements. Publication remains separate.
 [133-item compatibility matrix](character-conduit-compatibility.md),
 [validation/release status](handoff.md).
 
+**Griffin Turbine (D-355):** ally Gauge now scales with [Normal Attack] damage.
+[Handoff](handoff.md).
+
 **Conduit Archive search (D-354):** search with a Search in sub-option
 (name/effect/ability term/lore), rarity and ownership filters.
 [Contract](menus-and-inventory.md#conduit-archive-search-d-354).

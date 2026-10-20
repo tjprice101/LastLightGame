@@ -497,12 +497,12 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "atmospheric-griffin-turbine": {
-    "description": "When your [Normal Attack] damages HP, each other ally gains 3 -> 6 Gauge.",
+    "description": "When your [Normal Attack] damages HP, each other ally gains Gauge equal to 15% -> 30% of that damage as a share of your Attack, up to 25 Gauge each. A hit for your full Attack gives 15 Gauge at +0.",
     "ranges": [
       {
-        "base": 3,
-        "maximum": 6,
-        "percent": false,
+        "base": 15,
+        "maximum": 30,
+        "percent": true,
         "step": false
       }
     ]

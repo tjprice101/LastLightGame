@@ -1,5 +1,15 @@
 # Current state and handoff
 
+## Griffin Turbine damage-scaled Gauge (D-355)
+
+- Owner found flat 3 -> 6 ally Gauge too weak. Now: when your [Normal Attack] damages HP,
+  each other ally gains round(15% -> 30% x HP damage / your Attack x 100) Gauge, up to 25 each.
+  Measured late-benchmark Normal Attacks average ~0.43x Attack (crits ~0.85x), so typical
+  gains are ~6 -> 13 Gauge (crits ~13 -> 25). The 25 limit stops stacked damage bonuses
+  filling a team's Gauge from one hit.
+- `conduit-runtime.ts` (`finishConduitAction`), `conduit-redesign.ts` description/range,
+  roster test and Conduit docs updated.
+
 ## Conduit Archive search (D-354)
 
 - `presentation/archives.ts`: `conduitArchive` adds a filter bar (Search, Search in
