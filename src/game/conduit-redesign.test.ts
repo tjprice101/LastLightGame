@@ -191,19 +191,25 @@ describe('redesigned ordinary Conduit executable effects', () => {
       if (id === 'verdict-caliper') expect(ctx.forbidden).toBe(true);
     }
   });
-  it.each([0, 1, 2, 3, 4, 5])('scales healing and Shield conversion without design caps at +%i', level => {
-    const f = level / 5;
-    for (const [id, kind, coefficient] of [['lifeline-flywheel', 'heal', .08 + .08 * f],
-      ['breach-pendulum', 'shield', .08 + .08 * f]] as const) {
-      const { state, owner, target, events } = fixture(id, level);
-      owner.hp = 100;
-      const ctx = prepareConduitAction(state, owner, 'light', 0, false);
-      recordConduitHit(ctx, target, 100000, false, 1.5);
-      finishConduitAction(state, owner, ctx, events);
-      expect(kind === 'heal' ? owner.hp - 100 : owner.shield).toBe(kind === 'heal' ? 900 : Math.round(100000 * coefficient));
-      expect(events.filter(event => event.kind === kind)).toHaveLength(1);
-      expect(events.every(event => event.origin === 'conduit')).toBe(true);
-    }
+  it.each([0, 1, 2, 3, 4, 5])('scales lifesteal healing without design caps at +%i', level => {
+    const { state, owner, target, events } = fixture('lifeline-flywheel', level);
+    owner.hp = 100;
+    const ctx = prepareConduitAction(state, owner, 'light', 0, false);
+    recordConduitHit(ctx, target, 100000, false, 1.5);
+    finishConduitAction(state, owner, ctx, events);
+    expect(owner.hp - 100).toBe(900);
+    expect(events.filter(event => event.kind === 'heal')).toHaveLength(1);
+    expect(events.every(event => event.origin === 'conduit')).toBe(true);
+  });
+  it.each([0, 1, 2, 3, 4, 5])('opens on full-HP enemies only with Breach Pendulum at +%i', level => {
+    const { state, owner, target, events } = fixture('breach-pendulum', level);
+    const ctx = prepareConduitAction(state, owner, 'light', 0, false);
+    expect(conduitHitModifiers(state, owner, target, ctx, false).bonus).toBeCloseTo(.2 + .2 * level / 5);
+    target.hp -= 1;
+    expect(conduitHitModifiers(state, owner, target, ctx, false).bonus).toBe(0);
+    recordConduitHit(ctx, target, 100000, false, 1.5);
+    finishConduitAction(state, owner, ctx, events);
+    expect(owner.shield).toBe(0);
   });
   it.each([0, 1, 2, 3, 4, 5])('resolves native offer-only effects and preserves provenance at +%i', level => {
     const heal = fixture('springwell-pump', level);
@@ -309,12 +315,15 @@ describe('redesigned ordinary Conduit executable effects', () => {
     f.state.round += 1; conduitTurnStart(f.state, f.events);
     expect(f.owner.hp).toBe(870);
   });
-  it('spends personal Fractures once and never consumes a different owner’s marks', () => {
+  it('scales Ruinselect with missing HP and leaves Nightglass Fractures alone', () => {
     const f = fixture('ruinselect-prism', 5);
     f.target.conduitMarks = { [f.owner.id]: 3, other: 2 };
+    expect(prepareConduitAction(f.state, f.owner, 'light', 0, false).bonus).toBe(0);
+    f.owner.hp = f.owner.stats.health * .45;
     const ctx = prepareConduitAction(f.state, f.owner, 'skill1', 0, false);
-    expect(conduitHitModifiers(f.state, f.owner, f.target, ctx, false).bonus).toBeCloseTo(.9);
-    expect(f.target.conduitMarks).toEqual({ other: 2 });
+    expect(conduitHitModifiers(f.state, f.owner, f.target, ctx, false).bonus).toBeCloseTo(ctx.bonus);
+    expect(prepareConduitAction(f.state, f.owner, 'light', 0, false).bonus).toBeCloseTo(5 * .06);
+    expect(f.target.conduitMarks).toEqual({ [f.owner.id]: 3, other: 2 });
   });
   it('limits Phoenix revival and Stasis protection to the first lethal hit each Battle', () => {
     const f = fixture('infernic-phoenix-reactor');
@@ -326,14 +335,20 @@ describe('redesigned ordinary Conduit executable effects', () => {
     const s = fixture('stasis-reliquary');
     s.owner.hp = 5;
     conduitIncoming(s.state, s.target, s.owner, 100, false, false, s.events);
-    expect(s.owner.hp).toBe(1);
-    conduitIncoming(s.state, s.target, s.owner, 100, false, false, s.events);
-    expect(s.owner.hp).toBe(1);
+    expect(s.owner.hp).toBe(0);
     s.state.round++;
     conduitTurnStart(s.state, s.events);
-    expect(s.owner.shield).toBe(100); expect(actionUnavailable(s.state, s.owner, 'light')).toBeNull();
-    s.owner.shield = 0; s.owner.hp = 5;
-    conduitIncoming(s.state, s.target, s.owner, 100, false, false, s.events);
+    expect(s.owner.shield).toBe(0);
+  });
+  it('compresses only the part of one enemy hit above 20% maximum HP with Stasis Reliquary', () => {
+    const s = fixture('stasis-reliquary', 5);
+    conduitIncoming(s.state, s.target, s.owner, 200, false, false, s.events);
+    expect(s.owner.hp).toBe(800);
+    s.owner.hp = 1000;
+    conduitIncoming(s.state, s.target, s.owner, 1200, false, false, s.events);
+    expect(s.owner.hp).toBe(400);
+    s.owner.hp = 1000;
+    conduitIncoming(s.state, s.target, s.owner, 100000, false, false, s.events);
     expect(s.owner.hp).toBe(0);
   });
   it('makes one paid Normal Attack per player turn free while preserving the ordinary action spend', () => {
@@ -341,21 +356,26 @@ describe('redesigned ordinary Conduit executable effects', () => {
     f.owner.shatter = 50;
     const first = act(f.state, f.owner.id, 'light', f.target.id);
     expect(first.state.allies[0].spent).toBe(false);
-    expect(first.state.allies[0].shatter).toBe(60);
+    expect(first.state.allies[0].shatter).toBe(65);
     const second = act(first.state, f.owner.id, 'light', f.target.id);
     expect(second.state.allies[0].spent).toBe(true);
-    expect(second.state.allies[0].shatter).toBe(80);
+    expect(second.state.allies[0].shatter).toBe(85);
     expect(() => act(second.state, f.owner.id, 'light', f.target.id)).toThrow();
   });
-  it('applies one Solace reduction through the Enemy Turn', () => {
+  it('lowers the Solace Normal Attack cost with upgrades and grants no damage reduction', () => {
+    expect(conduitActionCost(fixture('solace-anchor', 0).owner, 'light', fixture('solace-anchor', 0).state, 0)).toBe(10);
     const f = fixture('solace-anchor', 5);
     const cost = conduitActionCost(f.owner, 'light', f.state, 0);
-    expect(cost).toBe(10);
+    expect(cost).toBe(5);
     f.owner.shatter -= cost;
     expect(prepareConduitAction(f.state, f.owner, 'light', cost, false).freeAction).toBe(true);
     expect(conduitActionCost(f.owner, 'light', f.state, 0)).toBe(0);
-    conduitIncoming(f.state, f.target, f.owner, 1000, false, false, f.events);
-    expect(f.owner.hp).toBe(200);
+    conduitIncoming(f.state, f.target, f.owner, 100, false, false, f.events);
+    expect(f.owner.hp).toBe(900);
+    const free = fixture('solace-anchor', 10);
+    expect(conduitActionCost(free.owner, 'light', free.state, 0)).toBe(0);
+    expect(prepareConduitAction(free.state, free.owner, 'light', 0, false).freeAction).toBe(true);
+    expect(prepareConduitAction(free.state, free.owner, 'light', 0, false).freeAction).toBe(false);
   });
 
   it('routes only native overflow once and conserves transferred Gauge', () => {
@@ -412,7 +432,7 @@ describe('redesigned Master transformations', () => {
   it('strengthens Flora Seeds without granting retired Bloom or another counter', () => {
     const f = fixture('botanic-graft-covenant', 5, 'sprout');
     const result = act(f.state, f.owner.id, 'skill2', f.target.id);
-    expect(result.state.allies[0].native?.seeds?.[f.owner.id]?.fraction).toBeCloseTo(nativeBalance.flora.seed * 1.4);
+    expect(result.state.allies[0].native?.seeds?.[f.owner.id]?.fraction).toBeCloseTo(nativeBalance.flora.seed * 2);
     expect(result.state.allies[0].pilot?.bloom).toBeUndefined();
   });
   it('replaces native team support with concentrated shield or pure Gauge support', () => {

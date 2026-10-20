@@ -103,6 +103,10 @@ victory requirements. Publication remains separate.
 [133-item compatibility matrix](character-conduit-compatibility.md),
 [validation/release status](handoff.md).
 
+**Machines Conduit audit (D-352):** overlap analysis of every Rare+ Machines
+Conduit; nine reworked, one buffed, one hidden stat bundle removed.
+[Audit](machines-conduit-audit.md).
+
 **Replacement Conduit effects (D-351):** all ten D-349 replacements are live
 under their current names: Gauge gain, starting Gauge, ability cost, Gauge hoard,
 Gauge-as-HP (escalating, never immortal), Shield-break heal, overkill, healing

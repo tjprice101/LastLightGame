@@ -242,10 +242,9 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "breach-pendulum": {
-    "description": "After each Attack Action, gain a Shield equal to 8% -> 16% of the Direct Damage it dealt to HP.",
+    "description": "Attack Actions deal +20% -> +40% Direct Damage to enemies at full HP.",
     "ranges": [
-      {"base":8,"maximum":16,"percent":true,"step":false}
-
+      {"base":20,"maximum":40,"percent":true,"step":false}
     ]
   },
   "coilfeed-ratchet": {
@@ -316,43 +315,18 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "citadel-spine": {
-    "description": "+25% -> +87.5% Defense; -6% -> -21% Elemental Damage. Your Shield abilities also add 10% -> 20% of your Defense to the Shield amount.",
+    "description": "+25% -> +87.5% Defense; -6 -> -21 percentage points of Critical Rate. Your Shield abilities also add 10% -> 20% of your Defense to the Shield amount.",
     "ranges": [
-      {
-        "base": 25,
-        "maximum": 87.5,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": -6,
-        "maximum": -21,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 10,
-        "maximum": 20,
-        "percent": true,
-        "step": false
-      }
+      {"base":25,"maximum":87.5,"percent":true,"step":false},
+      {"base":-6,"maximum":-21,"percent":false,"step":false},
+      {"base":10,"maximum":20,"percent":true,"step":false}
     ]
   },
   "astral-prism": {
-    "description": "+25% -> +87.5% Elemental Damage; -6% -> -21% Defense.",
+    "description": "+20 -> +70 percentage points of Critical Rate; -6% -> -21% Defense. Critical Rate above 100% becomes Elemental Crit chance.",
     "ranges": [
-      {
-        "base": 25,
-        "maximum": 87.5,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": -6,
-        "maximum": -21,
-        "percent": true,
-        "step": false
-      }
+      {"base":20,"maximum":70,"percent":false,"step":false},
+      {"base":-6,"maximum":-21,"percent":true,"step":false}
     ]
   },
   "judgment-lens": {
@@ -406,14 +380,9 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "stasis-reliquary": {
-    "description": "The first time each Battle that Direct Damage would defeat you, survive at 1 HP and take no further Direct Damage that Enemy Turn. At the start of the next player turn, gain a Shield of 10% -> 20% of your maximum HP.",
+    "description": "Direct Damage from a single enemy hit above 20% of your maximum HP is reduced by 30% -> 60%.",
     "ranges": [
-      {
-        "base": 10,
-        "maximum": 20,
-        "percent": true,
-        "step": false
-      }
+      {"base":30,"maximum":60,"percent":true,"step":false}
     ]
   },
   "granite-hourglass": {
@@ -589,14 +558,9 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "tectonic-faultkeeper-loom": {
-    "description": "After you use [Normal Attack], take 30% -> 60% of the Direct Damage aimed at each other ally that Enemy Turn. Your Shield absorbs it first.",
+    "description": "Other allies gain Defense equal to 15% -> 30% of your Defense while you stand.",
     "ranges": [
-      {
-        "base": 30,
-        "maximum": 60,
-        "percent": true,
-        "step": false
-      }
+      {"base":15,"maximum":30,"percent":true,"step":false}
     ]
   },
   "efflorescent-verdant-covenant": {
@@ -750,10 +714,9 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "flare-focusing-iris": {
-    "description": "When you spend [Infernic Embers], each enemy with your [Burn] takes a Bonus Strike of 25% -> 50% of its tick damage per charge spent.",
+    "description": "When you spend [Infernic Embers], your [Burn] on each enemy lasts +1 -> +2 Enemy Turns longer per charge spent.",
     "ranges": [
-      {"base":25,"maximum":50,"percent":true,"step":false}
-
+      {"base":1,"maximum":2,"percent":false,"step":true}
     ]
   },
   "clearwater-manifold": {
@@ -836,36 +799,21 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "solace-anchor": {
-    "description": "Your first [Normal Attack] each player turn costs 10 Gauge, does not spend your action and reduces Direct Damage to you by 10% -> 20% until the Enemy Turn ends.",
+    "description": "Your first [Normal Attack] each player turn costs 10 -> 5 Gauge and does not spend your action.",
     "ranges": [
-      {
-        "base": 10,
-        "maximum": 20,
-        "percent": true,
-        "step": false
-      }
+      {"base":10,"maximum":5,"percent":false,"step":false}
     ]
   },
   "ruinselect-prism": {
-    "description": "[Skill 1] can also consume your [Fractures] for +15% -> +30% Direct Damage each.",
+    "description": "Your Attack Actions deal +3% -> +6% Direct Damage for every 10% of your maximum HP you are missing.",
     "ranges": [
-      {
-        "base": 15,
-        "maximum": 30,
-        "percent": true,
-        "step": false
-      }
+      {"base":3,"maximum":6,"percent":true,"step":false}
     ]
   },
   "infernic-pyre-census": {
-    "description": "Your [Burn] ticks become [Census] ticks that deal +75% -> +150% damage.",
+    "description": "Your Attack Actions deal +10% -> +20% Direct Damage for each enemy with your [Burn].",
     "ranges": [
-      {
-        "base": 75,
-        "maximum": 150,
-        "percent": true,
-        "step": false
-      }
+      {"base":10,"maximum":20,"percent":true,"step":false}
     ]
   },
   "oceanic-shared-tide-pump": {
@@ -884,14 +832,9 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "botanic-graft-covenant": {
-    "description": "[Flora]'s [Seeds] store +20% -> +40% healing. Newly planted and refreshed [Seeds] receive the bonus, which adds to stored healing. No new resource or [Seed] is created.",
+    "description": "[Flora]'s [Seeds] store +50% -> +100% healing. Newly planted and refreshed [Seeds] receive the bonus, which adds to stored healing. No new resource or [Seed] is created.",
     "ranges": [
-      {
-        "base": 20,
-        "maximum": 40,
-        "percent": true,
-        "step": false
-      }
+      {"base":50,"maximum":100,"percent":true,"step":false}
     ]
   },
   "tranquilitic-accord-bastion": {

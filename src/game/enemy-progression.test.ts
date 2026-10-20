@@ -14,7 +14,7 @@ import { characterLevelCap } from '../content/progression';
 import { validateCapturedCharacters } from './character-instances';
 import { benchmarkTarget, playNativeBenchmark } from './native-benchmark-pilot';
 
-const lateSlots = ['vigil-core', 'immortal-vessel', 'citadel-spine', 'horizon-heartcase',
+const lateSlots = ['vigil-core', 'immortal-vessel', 'citadel-spine', 'stasis-reliquary',
   'bastion-lock', 'springwell-pump', 'wardglass-transformer', 'siegebound-drive'] as const;
 const team = ['ember', 'tide', 'sprout'] as const;
 const lateProgress = Object.fromEntries(team.map(id => [id, { level: 105, evolution: 6 }]));

@@ -70,7 +70,7 @@ function fixed(state: BattleState, owner: Combatant, target: Combatant, power: n
 
 function seed(state: BattleState, owner: Combatant, target: Combatant, fraction: number, events: BattleEvent[]): void {
   fraction *= nativeSupportMultiplier(state, owner);
-  if (equipped(owner, 'botanic-graft-covenant')) fraction *= 1 + value(state, owner, 'botanic-graft-covenant', .2, .4);
+  if (equipped(owner, 'botanic-graft-covenant')) fraction *= 1 + value(state, owner, 'botanic-graft-covenant', .5, 1);
   const seeds = nativeMemory(owner).seeds ??= {};
   if ((seeds[target.id]?.fraction ?? 0) > fraction) return;
   seeds[target.id] = { fraction, dueRound: state.round + 1 };

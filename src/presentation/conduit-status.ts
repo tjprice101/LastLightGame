@@ -22,7 +22,6 @@ export function conduitStatuses(snapshot: ReturnType<typeof conduitStatusSnapsho
   if (n.criticalSeal) add('critical-seal', 'Critical Seal: the next enemy critical hit loses its critical multiplier.');
   if (n.rootbind) add('rootbind', 'Rootbind: next scheduled enemy skill becomes a Normal Attack.');
   if (n.silence) add('silence', 'Silence: next scheduled enemy skill becomes a Normal Attack.');
-  if (n.stasisProtectedRound === round) add('stasis-protection', 'Stasis protection: direct HP loss prevented for this enemy phase; Burn still applies.');
   if (n.stasisSkip && n.stasisSkip >= round) add('stasis-skip',
     n.stasisSkip === round ? 'Stasis: cannot act this turn.' : `Stasis: cannot act on turn ${n.stasisSkip}.`);
   if (snapshot.owners.accord) add('accord', `Accord: one lethal direct hit prevented; shield follows · ${owner(snapshot.owners.accord)?.name ?? snapshot.owners.accord}.`);

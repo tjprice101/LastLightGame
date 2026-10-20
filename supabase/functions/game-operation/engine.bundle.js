@@ -439,9 +439,9 @@ var conduitRedesign = {
     ]
   },
   "breach-pendulum": {
-    "description": "After each Attack Action, gain a Shield equal to 8% -> 16% of the Direct Damage it dealt to HP.",
+    "description": "Attack Actions deal +20% -> +40% Direct Damage to enemies at full HP.",
     "ranges": [
-      { "base": 8, "maximum": 16, "percent": true, "step": false }
+      { "base": 20, "maximum": 40, "percent": true, "step": false }
     ]
   },
   "coilfeed-ratchet": {
@@ -512,43 +512,18 @@ var conduitRedesign = {
     ]
   },
   "citadel-spine": {
-    "description": "+25% -> +87.5% Defense; -6% -> -21% Elemental Damage. Your Shield abilities also add 10% -> 20% of your Defense to the Shield amount.",
+    "description": "+25% -> +87.5% Defense; -6 -> -21 percentage points of Critical Rate. Your Shield abilities also add 10% -> 20% of your Defense to the Shield amount.",
     "ranges": [
-      {
-        "base": 25,
-        "maximum": 87.5,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": -6,
-        "maximum": -21,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": 10,
-        "maximum": 20,
-        "percent": true,
-        "step": false
-      }
+      { "base": 25, "maximum": 87.5, "percent": true, "step": false },
+      { "base": -6, "maximum": -21, "percent": false, "step": false },
+      { "base": 10, "maximum": 20, "percent": true, "step": false }
     ]
   },
   "astral-prism": {
-    "description": "+25% -> +87.5% Elemental Damage; -6% -> -21% Defense.",
+    "description": "+20 -> +70 percentage points of Critical Rate; -6% -> -21% Defense. Critical Rate above 100% becomes Elemental Crit chance.",
     "ranges": [
-      {
-        "base": 25,
-        "maximum": 87.5,
-        "percent": true,
-        "step": false
-      },
-      {
-        "base": -6,
-        "maximum": -21,
-        "percent": true,
-        "step": false
-      }
+      { "base": 20, "maximum": 70, "percent": false, "step": false },
+      { "base": -6, "maximum": -21, "percent": true, "step": false }
     ]
   },
   "judgment-lens": {
@@ -602,14 +577,9 @@ var conduitRedesign = {
     ]
   },
   "stasis-reliquary": {
-    "description": "The first time each Battle that Direct Damage would defeat you, survive at 1 HP and take no further Direct Damage that Enemy Turn. At the start of the next player turn, gain a Shield of 10% -> 20% of your maximum HP.",
+    "description": "Direct Damage from a single enemy hit above 20% of your maximum HP is reduced by 30% -> 60%.",
     "ranges": [
-      {
-        "base": 10,
-        "maximum": 20,
-        "percent": true,
-        "step": false
-      }
+      { "base": 30, "maximum": 60, "percent": true, "step": false }
     ]
   },
   "granite-hourglass": {
@@ -777,14 +747,9 @@ var conduitRedesign = {
     ]
   },
   "tectonic-faultkeeper-loom": {
-    "description": "After you use [Normal Attack], take 30% -> 60% of the Direct Damage aimed at each other ally that Enemy Turn. Your Shield absorbs it first.",
+    "description": "Other allies gain Defense equal to 15% -> 30% of your Defense while you stand.",
     "ranges": [
-      {
-        "base": 30,
-        "maximum": 60,
-        "percent": true,
-        "step": false
-      }
+      { "base": 15, "maximum": 30, "percent": true, "step": false }
     ]
   },
   "efflorescent-verdant-covenant": {
@@ -937,9 +902,9 @@ var conduitRedesign = {
     ]
   },
   "flare-focusing-iris": {
-    "description": "When you spend [Infernic Embers], each enemy with your [Burn] takes a Bonus Strike of 25% -> 50% of its tick damage per charge spent.",
+    "description": "When you spend [Infernic Embers], your [Burn] on each enemy lasts +1 -> +2 Enemy Turns longer per charge spent.",
     "ranges": [
-      { "base": 25, "maximum": 50, "percent": true, "step": false }
+      { "base": 1, "maximum": 2, "percent": false, "step": true }
     ]
   },
   "clearwater-manifold": {
@@ -1019,36 +984,21 @@ var conduitRedesign = {
     ]
   },
   "solace-anchor": {
-    "description": "Your first [Normal Attack] each player turn costs 10 Gauge, does not spend your action and reduces Direct Damage to you by 10% -> 20% until the Enemy Turn ends.",
+    "description": "Your first [Normal Attack] each player turn costs 10 -> 5 Gauge and does not spend your action.",
     "ranges": [
-      {
-        "base": 10,
-        "maximum": 20,
-        "percent": true,
-        "step": false
-      }
+      { "base": 10, "maximum": 5, "percent": false, "step": false }
     ]
   },
   "ruinselect-prism": {
-    "description": "[Skill 1] can also consume your [Fractures] for +15% -> +30% Direct Damage each.",
+    "description": "Your Attack Actions deal +3% -> +6% Direct Damage for every 10% of your maximum HP you are missing.",
     "ranges": [
-      {
-        "base": 15,
-        "maximum": 30,
-        "percent": true,
-        "step": false
-      }
+      { "base": 3, "maximum": 6, "percent": true, "step": false }
     ]
   },
   "infernic-pyre-census": {
-    "description": "Your [Burn] ticks become [Census] ticks that deal +75% -> +150% damage.",
+    "description": "Your Attack Actions deal +10% -> +20% Direct Damage for each enemy with your [Burn].",
     "ranges": [
-      {
-        "base": 75,
-        "maximum": 150,
-        "percent": true,
-        "step": false
-      }
+      { "base": 10, "maximum": 20, "percent": true, "step": false }
     ]
   },
   "oceanic-shared-tide-pump": {
@@ -1067,14 +1017,9 @@ var conduitRedesign = {
     ]
   },
   "botanic-graft-covenant": {
-    "description": "[Flora]'s [Seeds] store +20% -> +40% healing. Newly planted and refreshed [Seeds] receive the bonus, which adds to stored healing. No new resource or [Seed] is created.",
+    "description": "[Flora]'s [Seeds] store +50% -> +100% healing. Newly planted and refreshed [Seeds] receive the bonus, which adds to stored healing. No new resource or [Seed] is created.",
     "ranges": [
-      {
-        "base": 20,
-        "maximum": 40,
-        "percent": true,
-        "step": false
-      }
+      { "base": 50, "maximum": 100, "percent": true, "step": false }
     ]
   },
   "tranquilitic-accord-bastion": {
@@ -1405,7 +1350,7 @@ var kitConduitDesigns = [
     element: "infernic",
     buffs: [],
     effect: redesignEffect("flare-focusing-iris"),
-    lore: "An enthroned iris returns spent native embers as a protective coronation.",
+    lore: "An enthroned iris feeds each spent ember back into the flames already burning.",
     artDesign: "fully reborn scarlet six-leaf focusing iris with a readable protected faceted central crystal, six majestic phoenix shield fans, nested coronation rings, an ivory siege crown and densely layered orange protective ribbons"
   },
   {
@@ -1525,7 +1470,7 @@ var kitConduitDesigns = [
     element: "tranquilitic",
     buffs: [],
     effect: redesignEffect("solace-anchor"),
-    lore: "A completed sanctuary anchor stores the witness of a genuine covenant before releasing a reserve.",
+    lore: "A completed sanctuary anchor steadies one swift strike each turn without breaking its bearer\u2019s stance.",
     artDesign: "fully reborn ivory sanctuary anchor with a readable protected locking joint, six majestic fortress fans, nested solace rings, a pearl witness crown and densely layered turquoise covenant ribbons"
   },
   {
@@ -1537,7 +1482,7 @@ var kitConduitDesigns = [
     element: "chaotic",
     buffs: [],
     effect: redesignEffect("ruinselect-prism"),
-    lore: "The restored selection orrery routes spent personal fractures to one allied reserve.",
+    lore: "The restored parliament draws power from every fracture in its own bearer\u2019s frame.",
     artDesign: "fully reborn fractured obsidian selection orrery with a readable protected central prism, six majestic violet targeting fans, nested fault rings, a crimson parliamentary crown and densely layered opaque precision ribbons"
   },
   {
@@ -1549,7 +1494,7 @@ var kitConduitDesigns = [
     element: "infernic",
     buffs: [],
     effect: redesignEffect("infernic-pyre-census"),
-    lore: "The completed census records only an ember channel that truly closes.",
+    lore: "The completed census counts every pyre its bearer has lit and answers each with force.",
     artDesign: "fully reborn crimson census engine with a readable protected three-counter core, six majestic phoenix requiem fans, nested siege rings, an ivory ember crown and densely layered opaque orange census ribbons"
   },
   {
@@ -1791,7 +1736,7 @@ var expandedConduits = [
   { id: "resonance-crucible", name: "Resonance Crucible", rarity: "Rare", buffs: [], effect: redesignEffect("resonance-crucible"), lore: "A crystal bridge joins two silver chambers, holding elemental resonance under pressure." },
   { id: "siege-cantilever", name: "Siege Cantilever", rarity: "Legendary", buffs: [], effect: redesignEffect("siege-cantilever"), lore: "An ivory siege arm projects from a narrow platinum pivot, sacrificing armor for reach." },
   { id: "nullsong-transmission", name: "Nullsong Transmission", rarity: "Legendary", buffs: [], effect: redesignEffect("nullsong-transmission"), lore: "A platinum gear train turns inside silent crystal baffles, redirecting power from elemental channels." },
-  { id: "horizon-heartcase", name: "Horizon Heartcase", rarity: "Legendary", buffs: [{ stat: "health", kind: "percent", amount: 20 }, { stat: "defense", kind: "percent", amount: -4 }], effect: redesignEffect("horizon-heartcase"), lore: "A white radial life chamber opens broad reserve vanes while its ward plates retract." },
+  { id: "horizon-heartcase", name: "Horizon Heartcase", rarity: "Legendary", buffs: [], effect: redesignEffect("horizon-heartcase"), lore: "A white radial life chamber opens broad reserve vanes while its ward plates retract." },
   { id: "stasis-reliquary", name: "Stasis Reliquary", rarity: "Legendary", buffs: [], effect: redesignEffect("stasis-reliquary"), lore: "A platinum preservation capsule protects its reserve behind locked targeting rings." },
   { id: "granite-hourglass", name: "Granite Hourglass", rarity: "Legendary", buffs: [], effect: redesignEffect("granite-hourglass"), lore: "Twin armored cones throttle the drive between them to reinforce a dense shell." },
   { id: "pale-bulwark-diadem", name: "Pale Bulwark Diadem", rarity: "Legendary", buffs: [], effect: redesignEffect("pale-bulwark-diadem"), lore: "A crown-shaped fortress lattice folds inward around a narrow reserve core." },
@@ -1808,8 +1753,8 @@ var recoveredConduits = [
   { id: "springwell-pump", name: "Springwell Pump", rarity: "Rare", buffs: [], effect: redesignEffect("springwell-pump"), lore: "Two balanced impellers carry Elemental Light through a sealed silver vessel." },
   { id: "worldbreaker-drive", name: "Worldbreaker Drive", rarity: "Legendary", buffs: [{ stat: "health", kind: "percent", amount: -6 }], effect: redesignEffect("worldbreaker-drive"), lore: "An ivory siege crown diverts its life-support reserve into a tremendous striking engine." },
   { id: "immortal-vessel", name: "Immortal Vessel", rarity: "Legendary", buffs: [{ stat: "health", kind: "percent", amount: 25 }, { stat: "damage", kind: "percent", amount: -6 }], effect: redesignEffect("immortal-vessel"), lore: "Platinum sanctuary chambers preserve their bearer by slowing the force-transmission drive." },
-  { id: "citadel-spine", name: "Citadel Spine", rarity: "Legendary", buffs: [{ stat: "defense", kind: "percent", amount: 25 }, { stat: "elementalDamage", kind: "percent", amount: -6 }], effect: redesignEffect("citadel-spine"), lore: "An articulated white fortress folds around its core, sacrificing elemental output for armor." },
-  { id: "astral-prism", name: "Astral Prism", rarity: "Legendary", buffs: [{ stat: "elementalDamage", kind: "percent", amount: 25 }, { stat: "defense", kind: "percent", amount: -6 }], effect: redesignEffect("astral-prism"), lore: "A platinum prism unfolds its protective plates into an extraordinary elemental focus." },
+  { id: "citadel-spine", name: "Citadel Spine", rarity: "Legendary", buffs: [{ stat: "defense", kind: "percent", amount: 25 }, { stat: "crit", kind: "percentage-points", amount: -6 }], effect: redesignEffect("citadel-spine"), lore: "An articulated white fortress folds around its core, closing its targeting slits for armor." },
+  { id: "astral-prism", name: "Astral Prism", rarity: "Legendary", buffs: [{ stat: "crit", kind: "percentage-points", amount: 20 }, { stat: "defense", kind: "percent", amount: -6 }], effect: redesignEffect("astral-prism"), lore: "A platinum prism unfolds its protective plates into an extraordinary precision focus." },
   { id: "judgment-lens", name: "Judgment Lens", rarity: "Legendary", buffs: [], effect: redesignEffect("judgment-lens"), lore: "Nested ivory lenses magnify a perfect strike at the expense of their bearer\u2019s reserve." }
 ];
 var omnicConduits = [
@@ -5130,7 +5075,7 @@ function fixed(state, owner, target, power2, kind, events, bypass = false) {
 }
 function seed(state, owner, target, fraction, events) {
   fraction *= nativeSupportMultiplier(state, owner);
-  if (equipped(owner, "botanic-graft-covenant")) fraction *= 1 + value(state, owner, "botanic-graft-covenant", 0.2, 0.4);
+  if (equipped(owner, "botanic-graft-covenant")) fraction *= 1 + value(state, owner, "botanic-graft-covenant", 0.5, 1);
   const seeds = nativeMemory(owner).seeds ??= {};
   if ((seeds[target.id]?.fraction ?? 0) > fraction) return;
   seeds[target.id] = { fraction, dueRound: state.round + 1 };
@@ -5914,6 +5859,9 @@ function effectiveDefense(state, unit) {
   }
   if (unit.side === "enemy") {
     defense = Math.max(0, defense - (n.excavated ?? 0));
+  } else if (unit.hp > 0) {
+    for (const keeper of alive(state).filter((ally) => ally.id !== unit.id && equipped(ally, "tectonic-faultkeeper-loom")))
+      defense += keeper.stats.defense * value(state, keeper, "tectonic-faultkeeper-loom", 0.15, 0.3);
   }
   return defense;
 }
@@ -5926,7 +5874,10 @@ function nativeControl(state, owner, target) {
 }
 function conduitActionCost(actor, action, state, base) {
   const n = actor.conduitRuntime?.numbers ?? {};
-  if (action === "light") return equipped(actor, "solace-anchor") && actor.shatter >= 10 && actor.conduitRuntime?.numbers.solaceRound !== state.round ? 10 : 0;
+  if (action === "light") {
+    const cost = solaceCost(state, actor);
+    return cost !== void 0 && actor.shatter >= cost ? cost : 0;
+  }
   if (action === "skill1" && n.quietFeather) return 0;
   let discount = 0;
   if ((action === "skill1" || action === "skill2") && n.tailwind && equipped(actor, "atmospheric-skythread-rudder")) {
@@ -5940,6 +5891,10 @@ function conduitActionCost(actor, action, state, base) {
     discount += action === "ultimate" ? Math.min(cut, Math.max(0, base - discount - 70)) : cut;
   }
   return base === 0 ? 0 : Math.max(1, base - discount);
+}
+function solaceCost(state, actor) {
+  if (!equipped(actor, "solace-anchor") || actor.conduitRuntime?.numbers.solaceRound === state.round) return void 0;
+  return Math.max(0, Math.round(value(state, actor, "solace-anchor", 10, 5)));
 }
 function recoveryNormal(actor) {
   return equipped(actor, "chaotic-paradox-spindle");
@@ -5968,12 +5923,10 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     shieldBurn: 0,
     burnPaid: false,
     freeAction: false,
-    openingBurns: Object.fromEntries(state.enemies.filter((enemy) => enemy.hp > 0 && enemy.burn.turns > 0 && enemy.burn.sourceId === actor.id && enemy.burn.origin !== "conduit").map((enemy) => [enemy.id, conduitBurnTick(state, actor, enemy)])),
     eclipseTargets: []
   };
   n.ordinaryResourceSpend = action === "skill2" ? 1 : 0;
-  if (action === "light" && equipped(actor, "solace-anchor") && paid === 10) {
-    n.solaceUses = 1;
+  if (action === "light" && solaceCost(state, actor) === paid) {
     n.solaceRound = state.round;
     ctx.freeAction = true;
   }
@@ -5982,6 +5935,10 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
   if ((action === "skill1" || action === "skill2") && n.tailwind) n.tailwind--;
   const offensive = action === "light" || actor.kit?.abilities[action].strength.damageMultiplier !== void 0;
   if (offensive && equipped(actor, "parallax-relay")) ctx.criticalBonus += value(state, actor, "parallax-relay", 0.15, 0.3);
+  if (offensive && equipped(actor, "ruinselect-prism"))
+    ctx.bonus += Math.floor(Math.max(0, actor.stats.health - actor.hp) / (actor.stats.health * 0.1)) * value(state, actor, "ruinselect-prism", 0.03, 0.06);
+  if (offensive && equipped(actor, "infernic-pyre-census"))
+    ctx.bonus += state.enemies.filter((enemy) => enemy.hp > 0 && enemy.burn.turns > 0 && enemy.burn.sourceId === actor.id).length * value(state, actor, "infernic-pyre-census", 0.1, 0.2);
   if (offensive && equipped(actor, "glassroot-gimbal")) ctx.bonus += Math.floor((actor.shatter + paid) / 10) * value(state, actor, "glassroot-gimbal", 0.01, 0.02);
   ctx.guaranteed = equipped(actor, "falcon-sight") && (n.noncritical ?? 0) >= 2;
   ctx.forbidden = equipped(actor, "verdict-caliper") || action === "light" && equipped(actor, "judgment-lens");
@@ -6061,16 +6018,17 @@ function conduitHitModifiers(state, actor, target, ctx, critical) {
   let bonus = ctx.bonus + calamiticSiegeBonus(state, actor, target);
   let pierce = 0;
   const action = ctx.action;
+  if (target.hp >= target.stats.health && equipped(actor, "breach-pendulum")) bonus += value(state, actor, "breach-pendulum", 0.2, 0.4);
   if (target.hp <= target.stats.health * 0.25 && equipped(actor, "execution-orrery")) bonus += value(state, actor, "execution-orrery", 0.5, 1);
   if (action === "skill1" && equipped(actor, "spearwheel-engine")) pierce += value(state, actor, "spearwheel-engine", 0.15, 0.3);
   if (action !== "light" && target.weakened > 0 && target.weakenSourceId === actor.id && target.weakenOrigin !== "conduit" && equipped(actor, "ominous-eclipse-mantle")) {
     pierce += value(state, actor, "ominous-eclipse-mantle", 0.4, 0.6);
     ctx.eclipseTargets.push(target.id);
   }
-  if (action === "light" || action === "skill1" && equipped(actor, "ruinselect-prism")) {
+  if (action === "light") {
     const marks = target.conduitMarks?.[actor.id] ?? 0;
     if (marks) {
-      bonus += marks * (action === "light" ? value(state, actor, "ominous-nightglass-archive", 0.1, 0.2) : value(state, actor, "ruinselect-prism", 0.15, 0.3));
+      bonus += marks * value(state, actor, "ominous-nightglass-archive", 0.1, 0.2);
       delete target.conduitMarks?.[actor.id];
     }
   }
@@ -6124,7 +6082,6 @@ function applyConduitBurn(state, owner, target, base, ctx) {
     const n = gear(target).numbers;
     n[`cinder:${owner.id}`] = 0;
     n[`extensions:${owner.id}`] = 0;
-    if (target.burn.sourceId !== owner.id || target.burn.turns <= 0) n[`census:${owner.id}`] = 0;
   }
   return damage;
 }
@@ -6326,9 +6283,6 @@ function finishConduitAction(state, owner, ctx, events) {
       case "lifeline-flywheel":
         generatedHeal(owner, owner, damage * value(state, owner, id, 0.08, 0.16), events);
         break;
-      case "breach-pendulum":
-        generatedShield(owner, owner, damage * value(state, owner, id, 0.08, 0.16), events);
-        break;
       case "voltaic-thunderbird-coil":
         for (const hit of ctx.hits.filter((hit2) => hit2.critical && hit2.damage > 0)) generatedStrike(state, owner, healthiestEnemy(state, hit.target), hit.damage * value(state, owner, id, 0.3, 0.6), events);
         break;
@@ -6382,8 +6336,10 @@ function finishConduitAction(state, owner, ctx, events) {
           generatedStrike(state, owner, healthiestEnemy(state, hit.target), (hit.overkill ?? 0) * value(state, owner, id, 0.3, 0.6), events);
         break;
       case "flare-focusing-iris":
-        if ((ctx.spent.ember ?? 0) > 0) for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && ctx.openingBurns[enemy2.id] !== void 0)) {
-          generatedStrike(state, owner, enemy, ctx.openingBurns[enemy.id] * ctx.spent.ember * value(state, owner, id, 0.25, 0.5), events);
+        if ((ctx.spent.ember ?? 0) > 0) for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && enemy2.burn.turns > 0 && enemy2.burn.sourceId === owner.id && enemy2.burn.origin !== "conduit")) {
+          const turns = ctx.spent.ember * step(state, id, 1, 2);
+          enemy.burn.turns += turns;
+          emit(events, "status", owner, enemy, turns, `${enemy.name}'s [Burn] lasts ${turns} more Enemy Turns.`);
         }
         break;
       case "pressurecrest-governor":
@@ -6545,12 +6501,6 @@ function rescue(state, target, loss, events, direct) {
     n.accordShield = accord.stats.health * value(state, accord, "tranquilitic-accord-bastion", 0.1, 0.2);
     return Math.max(0, target.hp - 1);
   }
-  if (direct && equipped(target, "stasis-reliquary") && !n.stasisUsed) {
-    n.stasisUsed = 1;
-    n.stasisProtectedRound = state.round;
-    n.stasisShieldRound = state.round + 1;
-    return Math.max(0, target.hp - 1);
-  }
   if (direct && equipped(target, "horizon-heartcase")) {
     const saves = n.heartcaseSaves ?? 0;
     const excess = loss - target.hp + 1;
@@ -6578,10 +6528,9 @@ function afterConduitHpLoss(state, target, events) {
 function conduitBurnTick(state, owner, target) {
   if (target.burn.origin === "conduit") return target.burn.damage;
   const n = gear(target).numbers;
-  const cinderKey = `cinder:${owner.id}`, censusKey = `census:${owner.id}`, imprint = `imprint:${owner.id}`;
+  const cinderKey = `cinder:${owner.id}`, imprint = `imprint:${owner.id}`;
   let bonus = 0;
   if (equipped(owner, "infernic-cinder-testament")) bonus += (n[cinderKey] ?? 0) * value(state, owner, "infernic-cinder-testament", 0.2, 0.4);
-  if (equipped(owner, "infernic-pyre-census")) bonus += value(state, owner, "infernic-pyre-census", 0.75, 1.5);
   return Math.round(target.burn.damage * (1 + bonus) * (n[imprint] ?? 1));
 }
 function afterConduitBurn(state, owner, target, damage, events) {
@@ -6589,7 +6538,6 @@ function afterConduitBurn(state, owner, target, damage, events) {
   if (damage <= 0 || target.burn.origin === "conduit") return;
   const tn = gear(target).numbers, n = gear(owner).numbers;
   tn[`cinder:${owner.id}`] = (tn[`cinder:${owner.id}`] ?? 0) + 1;
-  tn[`census:${owner.id}`] = (tn[`census:${owner.id}`] ?? 0) + 1;
   if (owner.hp > 0 && equipped(owner, "emberlife-kiln"))
     generatedHeal(owner, owner, damage * value(state, owner, "emberlife-kiln", 0.2, 0.4), events);
   if (equipped(owner, "sootwake-crucible") && target.hp > 0) {
@@ -6605,7 +6553,6 @@ function afterConduitBurn(state, owner, target, damage, events) {
   }
   if (target.burn.turns <= 0) {
     delete tn[`cinder:${owner.id}`];
-    delete tn[`census:${owner.id}`];
   }
 }
 function conduitDeaths(state, previous, events) {
@@ -6687,7 +6634,6 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   if (critical && equipped(target, "sentinel-aperture")) equipmentMultiplier *= 1 - value(state, target, "sentinel-aperture", 0.25, 0.5);
   if (target.hp > target.stats.health * 0.75 && equipped(target, "pale-bulwark-diadem")) equipmentMultiplier *= 1 - value(state, target, "pale-bulwark-diadem", 0.15, 0.3);
   if (n.tauntRound === state.round && equipped(target, "tectonic-atlas-bastion")) equipmentMultiplier *= 1 - value(state, target, "tectonic-atlas-bastion", 0.1, 0.2);
-  if (n.solaceRound === state.round) equipmentMultiplier *= 1 - value(state, target, "solace-anchor", 0.1, 0.2) * (n.solaceUses ?? 1);
   const wardMultiplier = nativeShieldActivationMultiplier(enemy, target);
   const nativeMultiplier = nativeIncomingMultiplier(state, enemy, target, action, events) * wardMultiplier;
   const hasParry = scheduled && n.normalRound === state.round && equipped(target, "master-razor-1");
@@ -6699,6 +6645,8 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   if (hasParry) {
     reflection = Math.max(0, beforeParry - offered) * 0.5;
   }
+  if (equipped(target, "stasis-reliquary") && offered > target.stats.health * 0.2)
+    offered = target.stats.health * 0.2 + (offered - target.stats.health * 0.2) * (1 - value(state, target, "stasis-reliquary", 0.3, 0.6));
   let remaining = Math.max(1, Math.round(offered));
   const postMitigation = remaining;
   remaining = nativeRouteDamage(
@@ -6731,12 +6679,6 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
       emit(events, "shield", network, ally, -amount, `${ally.name}'s linked shield absorbs ${amount} for ${target.name}.`);
     }
   }
-  for (const protector of alive(state).filter((ally) => ally.id !== target.id && gear(ally).numbers.normalRound === state.round && equipped(ally, "tectonic-faultkeeper-loom"))) {
-    const amount = remaining * value(state, protector, "tectonic-faultkeeper-loom", 0.3, 0.6);
-    if (amount <= 0) continue;
-    remaining -= amount;
-    routedDamage(state, enemy, protector, amount, events);
-  }
   const absorbed = consumeShield(target, remaining);
   let loss = remaining - absorbed.absorbed;
   if (shieldBefore > 0 && target.shield <= 0 && absorbed.absorbed > 0 && equipped(target, "fieldbrace-coupler")) n.fieldbraceRound = state.round + 1;
@@ -6763,7 +6705,6 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
     loss -= routed;
     routedDamage(state, enemy, guardian, routed, events);
   }
-  if (n.stasisProtectedRound === state.round) loss = 0;
   loss = deferCalamiticDamage(state, target, loss, events);
   loss = Math.min(target.hp, rescue(state, target, loss, events, true));
   const fullyAbsorbedNative = loss === 0 && absorbed.absorbed >= postMitigation ? new Map([...absorbed.native].filter(([, amount]) => amount >= postMitigation)) : /* @__PURE__ */ new Map();
@@ -6824,17 +6765,13 @@ function absorbedNative(state, owner, target, enemy, amount, broken, events) {
 function conduitTurnStart(state, events) {
   for (const owner of alive(state)) {
     const n = gear(owner).numbers;
-    if (n.solaceRound !== state.round) {
-      delete n.solaceRound;
-      delete n.solaceUses;
-    }
+    if (n.solaceRound !== state.round) delete n.solaceRound;
     if (equipped(owner, "granite-hourglass") && (n.phaseLoss ?? 0) > 0) generatedShield(owner, owner, n.phaseLoss * value(state, owner, "granite-hourglass", 0.3, 0.6), events);
     n.phaseLoss = 0;
     if (n.fieldbraceRound === state.round) {
       delete n.fieldbraceRound;
       generatedHeal(owner, owner, owner.stats.health * value(state, owner, "fieldbrace-coupler", 0.06, 0.12), events);
     }
-    if (n.stasisShieldRound === state.round) generatedShield(owner, owner, owner.stats.health * value(state, owner, "stasis-reliquary", 0.1, 0.2), events);
     if (owner.recoverThrough >= state.round) {
       if (equipped(owner, "tranquilitic-stillhour-carillon")) {
         const amount = value(state, owner, "tranquilitic-stillhour-carillon", 15, 30);

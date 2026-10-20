@@ -62,7 +62,7 @@ export const kitConduitDesigns = [
     buffs: [],
 
     effect: redesignEffect('flare-focusing-iris'),
-    lore: 'An enthroned iris returns spent native embers as a protective coronation.',
+    lore: 'An enthroned iris feeds each spent ember back into the flames already burning.',
     artDesign: 'fully reborn scarlet six-leaf focusing iris with a readable protected faceted central crystal, six majestic phoenix shield fans, nested coronation rings, an ivory siege crown and densely layered orange protective ribbons' },
   { id: 'clearwater-manifold', name: 'Abyssal Clearwater Parliament', rarity: 'Omnic', price: null, theme: 'oceanic', element: 'oceanic',
     buffs: [],
@@ -122,19 +122,19 @@ export const kitConduitDesigns = [
     buffs: [],
 
     effect: redesignEffect('solace-anchor'),
-    lore: 'A completed sanctuary anchor stores the witness of a genuine covenant before releasing a reserve.',
+    lore: 'A completed sanctuary anchor steadies one swift strike each turn without breaking its bearer’s stance.',
     artDesign: 'fully reborn ivory sanctuary anchor with a readable protected locking joint, six majestic fortress fans, nested solace rings, a pearl witness crown and densely layered turquoise covenant ribbons' },
   { id: 'ruinselect-prism', name: 'Ruinselect Fracture Parliament', rarity: 'Omnic', price: null, theme: 'chaotic', element: 'chaotic',
     buffs: [],
 
     effect: redesignEffect('ruinselect-prism'),
-    lore: 'The restored selection orrery routes spent personal fractures to one allied reserve.',
+    lore: 'The restored parliament draws power from every fracture in its own bearer’s frame.',
     artDesign: 'fully reborn fractured obsidian selection orrery with a readable protected central prism, six majestic violet targeting fans, nested fault rings, a crimson parliamentary crown and densely layered opaque precision ribbons' },
   { id: 'infernic-pyre-census', name: 'Pyre Census Requiem', rarity: 'Omnic', price: null, theme: 'infernic', element: 'infernic',
     buffs: [],
 
     effect: redesignEffect('infernic-pyre-census'),
-    lore: 'The completed census records only an ember channel that truly closes.',
+    lore: 'The completed census counts every pyre its bearer has lit and answers each with force.',
     artDesign: 'fully reborn crimson census engine with a readable protected three-counter core, six majestic phoenix requiem fans, nested siege rings, an ivory ember crown and densely layered opaque orange census ribbons' },
   { id: 'oceanic-shared-tide-pump', name: 'Shared Tide Lifesea Engine', rarity: 'Omnic', price: null, theme: 'oceanic', element: 'oceanic',
     buffs: [],

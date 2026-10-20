@@ -1,5 +1,19 @@
 # Current state and handoff
 
+## Machines Conduit overlap audit (D-352)
+
+- Analysis and kept-pair reasons: [machines-conduit-audit.md](machines-conduit-audit.md).
+- `conduit-runtime.ts`: Breach full-HP bonus in `conduitHitModifiers`; Stasis compresses
+  the part of one hit above 20% max HP (no rescue/shield); Faultkeeper Defense aura in
+  `effectiveDefense`; Pyre Census per-burning-enemy and Ruinselect missing-HP bonuses in
+  `prepareConduitAction`; Iris extends own [Burn] per [Infernic Embers] spent; `solaceCost()`
+  (10 -> 5, no damage reduction). Nightglass marks consumed by Normal Attack only.
+- `conduits.ts`: Astral (+crit/-Defense, overflow to Elemental Crit), Citadel (-crit), Heartcase
+  `buffs: []`. `native-kits.ts` Graft coefficient .5 -> 1.
+- Balance: `enemy-progression.test.ts` late benchmark swaps Heartcase for Stasis Reliquary
+  (Heartcase lost an undocumented +70% HP at +5); all clear/lose expectations unchanged.
+- Validation: tsc, `npx vitest run --maxWorkers=4` (4096 pass), `npm run build`. Server redeployed.
+
 ## Ten replacement Conduit effects live (D-351)
 
 - `conduit-runtime.ts`: Fieldbrace sets `fieldbraceRound` on Shield break and heals in

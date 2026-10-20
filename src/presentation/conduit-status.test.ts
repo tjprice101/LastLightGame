@@ -21,7 +21,7 @@ describe('accessible Conduit control and protection readouts', () => {
     const state = createSession('ember').state;
     const ally = state.allies[0];
     const enemy = state.enemies[0];
-    ally.conduitRuntime = { numbers: { windveil: 1, criticalSeal: 1, stasisSkip: 2, stasisProtectedRound: 1, quietFeather: 1 },
+    ally.conduitRuntime = { numbers: { windveil: 1, criticalSeal: 1, stasisSkip: 2, quietFeather: 1 },
       owners: { accord: ally.id }, layers: [{ amount: 20, owner: ally.id, native: false, plate: true }] };
     enemy.conduitRuntime = { numbers: { rootbind: 1, silence: 1 }, owners: { taunt: ally.id } };
     ally.masterConduit = 'master-tide-3';
@@ -31,7 +31,6 @@ describe('accessible Conduit control and protection readouts', () => {
     expect(html).toContain('Windveil');
     expect(html).toContain('Critical Seal');
     expect(html).toContain('cannot act on turn 2');
-    expect(html).toContain('Burn still applies');
     expect(html).toContain('Accord');
     expect(html).toContain('Shield plates: 1');
     expect(html).toContain('Skill 1 costs no Gauge');
