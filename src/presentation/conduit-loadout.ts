@@ -8,7 +8,7 @@ import { getMasterConduit, isMasterConduitId, masterConduits } from '../content/
 import { equippedSquad, ownedProgress, type Account } from '../game/account';
 import { resolveCapturedFighter } from '../game/character-instances';
 import { getCreature } from '../content/creatures';
-import { conduitIcon } from './conduit-store';
+import { conduitIcon, conduitLore } from './conduit-store';
 import { masterConduitIcon, masterEquipment } from './master-conduits';
 import { statDirection } from './stat-change';
 import { escapeDialogText, gameChoose } from './game-dialog';
@@ -155,9 +155,9 @@ export function applyConduitSearch(host: HTMLElement, query: string): void {
 
 const boundHosts = new WeakSet<HTMLElement>();
 
-async function showRule(title: string, rule: string): Promise<void> {
+async function showRule(title: string, rule: string, lore: string): Promise<void> {
   await gameChoose(rule, [{ value: 'close', label: 'Close', primary: true }], 'close',
-    { title, messageHtml: `<p class="game-confirm-message">${escapeDialogText(rule)}</p>` });
+    { title, messageHtml: `<p class="game-confirm-message">${escapeDialogText(rule)}</p>${conduitLore(lore)}` });
 }
 
 /**
@@ -184,11 +184,11 @@ export function bindConduitLoadout(host: HTMLElement): void {
         const restrictions = conduit.rarity === 'Omnic' ? 'Matching combat element required. Maximum 4 Omnic Conduits in ordinary slots.' : '';
         void gameChoose(`${detail} ${rule ?? ''} ${restrictions}`, [{ value: 'close', label: 'Close', primary: true }], 'close', {
           title: conduit.name,
-          messageHtml: `<div class="loadout-detail"><div class="loadout-detail-art">${conduitIcon(conduit.id, level)}</div><p>${escapeDialogText(detail)}</p><h3>Conduit Ability</h3><p>${escapeDialogText(rule)}</p>${restrictions ? `<p>${escapeDialogText(restrictions)}</p>` : ''}<p class="conduit-lore">${escapeDialogText(conduit.lore)}</p></div>`,
+          messageHtml: `<div class="loadout-detail"><div class="loadout-detail-art">${conduitIcon(conduit.id, level)}</div><p>${escapeDialogText(detail)}</p><h3>Conduit Ability</h3><p>${escapeDialogText(rule)}</p>${restrictions ? `<p>${escapeDialogText(restrictions)}</p>` : ''}${conduitLore(conduit.lore)}</div>`,
         });
       } else if (isMasterConduitId(id)) {
         const master = getMasterConduit(id);
-        void showRule(`${master.name} · Master`, `${master.effect} ${master.lore}`);
+        void showRule(`${master.name} · Master`, master.effect, master.lore);
       }
       return;
     }

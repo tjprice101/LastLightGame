@@ -455,6 +455,13 @@ describe('Conduit loadout (D-229)', () => {
       expect(dialog.textContent).toContain('Level 5 of 5');
       expect(dialog.textContent).toContain(conduitEffect(conduit, 5));
       expect(dialog.textContent).toContain('Maximum 4 Omnic');
+      const lore = dialog.querySelector<HTMLDetailsElement>('.conduit-lore-disclosure')!;
+      expect(lore.open).toBe(false);
+      expect(lore.querySelector('summary')?.textContent).toBe('Lore');
+      expect(lore.querySelector('.conduit-lore')?.textContent).toBe(conduit.lore);
+      expect(dialog.querySelector('h3')?.textContent).toBe('Conduit Ability');
+      lore.open = true;
+      expect(lore.open).toBe(true);
       dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
       await Promise.resolve();
       expect(document.querySelector('.game-dialog')).toBeNull();

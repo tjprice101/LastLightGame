@@ -1,12 +1,35 @@
+// @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
-import { additionalCommonConduits, commonConduits as conduits } from '../content/conduits';
+import { additionalCommonConduits, commonConduits as conduits, conduits as allConduits } from '../content/conduits';
 import { emptyAccount } from '../game/account';
-import { conduitStore, conduitInventory } from './conduit-store';
+import { conduitStore, conduitInventory, conduitDetails, conduitLore } from './conduit-store';
+import { masterConduits } from '../content/master-conduits';
+import { masterReference } from './master-conduits';
 import { inventoryHub, characterHub } from './hub';
 import { starters } from '../content/starters';
 import { isMenuPage, sanctuaryContext, sanctuaryHeader } from './sanctuary';
 
 describe('Conduit Store and discovery routes', () => {
+  it('keeps all Conduit lore collapsed while effects remain outside the disclosure', () => {
+    const host = document.createElement('div');
+    for (const entry of [...allConduits, ...masterConduits]) {
+      host.innerHTML = 'buffs' in entry ? conduitDetails(entry.id) : masterReference(entry.id);
+      const lore = host.querySelector<HTMLDetailsElement>('details.conduit-lore-disclosure')!;
+      expect(lore.open).toBe(false);
+      expect(lore.querySelector('summary')?.textContent).toBe('Lore');
+      expect(lore.textContent).toContain(entry.lore);
+      expect(host.querySelector('dd, .master-reference > p')).not.toBeNull();
+      expect(lore.querySelector('dd')).toBeNull();
+      lore.open = true;
+      expect(lore.open).toBe(true);
+      expect(lore.querySelector('.conduit-lore')?.textContent).toBe(entry.lore);
+    }
+    host.innerHTML = conduitStore({ ...emptyAccount(), fractalis: 10000 });
+    expect(host.querySelector<HTMLDetailsElement>('.ref-store-detail details')?.open).toBe(false);
+    expect(host.querySelector('.ref-store-detail .conduit-lore')?.closest('details')).not.toBeNull();
+    expect(conduitLore('<test> & lore')).toContain('&lt;test&gt; &amp; lore');
+  });
+
   it('retains all ten original Common Store mechanisms after the Omnic replacements', () => {
     const html = conduitStore({ ...emptyAccount(), fractalis: 10000 });
     expect(html.match(/data-store-conduit=/g)).toHaveLength(10);

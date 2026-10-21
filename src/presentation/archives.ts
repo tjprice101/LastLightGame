@@ -11,7 +11,7 @@ import { creatures } from '../content/creatures';
 import { capturedRating } from './owned-companion';
 import { characterRating } from './character-rating';
 import { characterRole } from './character-role';
-import { conduitIcon, conduitRarity, conduitDetails } from './conduit-store';
+import { conduitIcon, conduitRarity, conduitDetails, conduitLore } from './conduit-store';
 import { calamiticStoreUnlocked } from '../content/calamitic-conduits';
 import { creatureGlossary } from './creature-glossary';
 import { elementLabel } from './element-label';
@@ -109,7 +109,7 @@ function conduitArchive(account: Account | null): string {
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
       <p>Omnic Master · ${getStarter(entry.character).name}</p><p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
       <p class="archive-effect">${readableEffect(entry.effect)}</p><p>Choose from a Cosmic Grand Master Chest. Final Machines boss: 1% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Named bearer enhancement; no upgrades.</p>
-      ${information(`archive-master-${entry.id}`, entry.name, `<p class="conduit-lore">${entry.lore}</p><p>${readableEffect(entry.effect)}</p>`, 'Details')}
+      ${information(`archive-master-${entry.id}`, entry.name, `${conduitLore(entry.lore)}<p>${readableEffect(entry.effect)}</p>`, 'Details')}
     </article>`).join('')}</div>`;
 }
 

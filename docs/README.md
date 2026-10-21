@@ -5,6 +5,10 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Collapsed Conduit lore (D-358):** repeated origin prose is closed behind
+**Lore** in Conduit details, including Masters; abilities remain visible and
+Lore search still works. [Contract](menus-and-inventory.md#collapsed-conduit-lore-d-358).
+
 **Nonblocking artwork loading (D-328):** navigation no longer waits on hidden
 tabs, closed dialogs or offscreen images, or rejects a successful render after
 12 seconds. Visible art gets a1500ms budget; slow images continue loading,

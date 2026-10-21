@@ -1,5 +1,16 @@
 # Menus and inventory
 
+## Collapsed Conduit lore (D-358)
+
+Conduit descriptions keep ability effects and equipment restrictions visible.
+Origin/lore prose, including the repeated Let/Rise and Elemental Light explanation,
+is inside a native **Lore** disclosure, closed by default. This applies to
+loadout Details, Store, Upgrade and Archive details, including Master Conduits.
+Opening or closing Lore is transient and never writes account data. The
+keyboard-focusable summary has a44px minimum target; Archive Lore search still
+indexes the collapsed text. Validate with `conduit-store.test.ts`,
+`conduit-loadout.test.ts`, `conduit-rules.test.ts` and `archives-controls.test.ts`.
+
 ## Compact Normal activity panels (D-330)
 
 Every Normal activity panel uses the shared `activityLayout(media, details)`

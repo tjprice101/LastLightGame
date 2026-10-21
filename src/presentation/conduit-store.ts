@@ -7,14 +7,19 @@ import { information } from './information';
 import { conduitUpgradeMeter } from './conduit-upgrade-meter';
 import { isBannerConduitEligible } from '../content/machines';
 import { readableEffect } from './effect-copy';
+import { escapeDialogText } from './game-dialog';
 import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCalamiticConduitId } from '../content/calamitic-conduits';
+
+export function conduitLore(...paragraphs: string[]): string {
+  return `<details class="conduit-lore-disclosure"><summary>Lore</summary>${paragraphs.map(text => `<p class="conduit-lore">${escapeDialogText(text)}</p>`).join('')}</details>`;
+}
 
 export function conduitDetails(id: ConduitId, level = 0, revealArt = true): string {
   const conduit = getConduit(id);
   return `<div class="conduit-details-art${revealArt ? '' : ' unreached-character-art'}">${conduitIcon(id, level)}</div>${conduitRarity(id)}
     <dl><dt>Current effect (+${level})</dt><dd>${readableEffect(conduitEffect(conduit, level))}</dd>
     <dt>At +5</dt><dd>${readableEffect(conduitEffect(conduit, 5))}</dd></dl>
-    <p class="conduit-lore">${conduit.lore}</p><p class="conduit-lore">${conduit.power}</p>
+    ${conduitLore(conduit.lore, conduit.power)}
     <p>${isCalamiticConduitId(id) ? `${calamiticTokenPrice} Calamitic Tokens in Rise's Conduit Store · Universal` : conduit.price !== null ? `${conduit.price.toLocaleString('en-US')} Prismatica in the Conduit Store` : 'Awaken the Machines drop'}${isBannerConduitEligible(id) ? ' · Eligible for the 0.5% Legendary bonus tier on successful banner draws' : ''}</p>`;
 }
 
@@ -50,7 +55,7 @@ export function conduitStore(account: Account | null, selected?: string, rarity 
   return `<section class="conduit-store ref-screen ref-conduit-store" data-store-mode="${calamitic ? 'calamitic' : 'ordinary'}">${navigation}
     <aside class="ref-panel"><h3>${calamitic ? 'Calamitic' : 'Rarity'}</h3>${calamitic ? `<p>Universal &middot; Above Omnic</p><p>${currencyIcon('calamitic-tokens')}<strong>${balance.toLocaleString('en-US')}</strong> Calamitic Tokens</p><p>One copy unlocks each creation for your whole collection.</p>` : `<nav class="ref-rarity-filter">${['', ...new Set(conduits.filter(entry => entry.price !== null).map(entry => entry.rarity))].map(value => `<button data-store-rarity="${value}" aria-pressed="${value === rarity}">${value || 'All'}<small>${conduits.filter(entry => entry.price !== null && (!value || entry.rarity === value)).length}</small></button>`).join('')}</nav>`}</aside>
     <section class="ref-panel ref-store-catalog"><header class="ref-panel-heading">${calamitic ? "Rise's prized creations" : 'Recovered ancient mechanisms'} &middot; ${catalog.length}</header><div class="ref-scroll"><div class="ref-product-grid">${catalog.map(conduit => `<button class="ref-product" data-store-conduit="${conduit.id}" aria-pressed="${conduit.id === choice?.id}">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}<b>${conduit.name}</b><small>${conduit.rarity}${calamitic ? ' &middot; Universal' : ''}</small><small>${conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])}</small><span class="ref-chip">${account?.conduits?.[conduit.id] ? `Owned ${account.conduits[conduit.id]}` : `${calamitic ? calamiticTokenPrice : conduit.price} ${currency}`}</span></button>`).join('')}</div></div></section>
-    <aside class="ref-panel ref-store-detail">${choice ? `<header class="ref-panel-heading">Details</header><div class="ref-store-hero">${conduitIcon(choice.id, account?.conduitUpgrades?.[choice.id])}</div><h2>${choice.name}</h2>${conduitRarity(choice.id)}<p>${choice.lore}</p><dl class="ref-detail-facts"><div><dt>Current effect</dt><dd>${conduitEffect(choice, account?.conduitUpgrades?.[choice.id])}</dd></div><div><dt>At +5</dt><dd>${conduitEffect(choice, 5)}</dd></div><div><dt>Owned</dt><dd>${account?.conduits?.[choice.id] ?? 0}</dd></div></dl>
+    <aside class="ref-panel ref-store-detail">${choice ? `<header class="ref-panel-heading">Details</header><div class="ref-store-hero">${conduitIcon(choice.id, account?.conduitUpgrades?.[choice.id])}</div><h2>${choice.name}</h2>${conduitRarity(choice.id)}${conduitLore(choice.lore)}<dl class="ref-detail-facts"><div><dt>Current effect</dt><dd>${conduitEffect(choice, account?.conduitUpgrades?.[choice.id])}</dd></div><div><dt>At +5</dt><dd>${conduitEffect(choice, 5)}</dd></div><div><dt>Owned</dt><dd>${account?.conduits?.[choice.id] ?? 0}</dd></div></dl>
       <footer><p class="conduit-price">${currencyIcon(calamitic ? 'calamitic-tokens' : 'fractalis')}<strong>${cost} ${currency}</strong></p><button class="primary-button" data-buy-conduit="${choice.id}" ${!account || cost === null || cost === undefined || balance < cost || (calamitic && owned) ? 'disabled' : ''}>${calamitic && owned ? 'Owned' : `Buy one &middot; ${cost}`}</button>${account && cost != null && balance < cost && !(calamitic && owned) ? `<p class="quiet">Not enough ${currency}.</p>` : ''}</footer>` : '<p>No Conduits match this filter.</p>'}
     ${information('store-information', 'Conduit purchases', `<p>Purchase with ${currency}. One copy unlocks a Conduit for every Element-Bearer; each name equips once per member. ${calamitic ? 'Calamitic Conduits fit any element, including captured Elemental-Devourers, use ordinary slots with no rarity limit and can be bought once each.' : 'Extra copies add nothing.'} Equip them in Character.</p>`)}
     ${!account ? '<p role="alert">Store unavailable. Resolve the save error before purchasing.</p>' : ''}

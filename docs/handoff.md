@@ -1,5 +1,21 @@
 # Current state and handoff
 
+## Collapsed Conduit lore (D-358)
+
+- Shared `conduitLore` in `presentation/conduit-store.ts` puts lore behind a
+  closed native Lore disclosure across Store, Upgrade, Archive and loadout
+  Details, including Masters. Ability effects and restrictions stay visible.
+- Preserves `.conduit-lore` for Archive search, keyboard interaction,44px
+  targets and dialog Escape/focus behavior. No combat, rewards or save changes.
+- Validation: all-catalog disclosure coverage in conduit-store, loadout dialog
+  regression and existing Archive search/Master rules suites.
+- Verified: `npx vitest run --maxWorkers=4 --reporter=dot` passed all4098
+  tests across181 files; `npm run build` passed (existing chunk-size warning).
+  Browser check confirmed hidden-by-default lore, expand/collapse and a44px
+  summary with no horizontal overflow at the browser's488px narrow viewport.
+  `node tools\bundle_server_game.mjs` left the server bundle unchanged, so
+  no server redeploy or gameplay migration is needed.
+
 ## Elemental Gauge rename and X-5 material drop rule (D-357)
 
 - All visible text/docs say [Elemental Gauge]; internal `shatter*` fields/IDs unchanged.

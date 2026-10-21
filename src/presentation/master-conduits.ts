@@ -4,6 +4,7 @@ import { getStarter, isStarterId } from '../content/starters';
 import type { Account } from '../game/account';
 import { escapeDialogText } from './game-dialog';
 import type { RewardPresentation } from './reward-screen';
+import { conduitLore } from './conduit-store';
 
 export function masterConduitIcon(id: MasterConduitId): string {
   const entry = getMasterConduit(id);
@@ -15,7 +16,7 @@ export function masterChestIcon(): string {
 export function masterReference(id?: MasterConduitId | null): string {
   if (!id) return '';
   const entry = getMasterConduit(id);
-  return `<section class="master-reference"><h3>Master · ${entry.name}</h3><p>${entry.effect}</p><small>Named Element-Bearer only · Triggers and limits as stated above · Does not scale with Conduit upgrades</small><p>${entry.lore}</p></section>`;
+  return `<section class="master-reference"><h3>Master · ${entry.name}</h3><p>${entry.effect}</p><small>Named Element-Bearer only · Triggers and limits as stated above · Does not scale with Conduit upgrades</small>${conduitLore(entry.lore)}</section>`;
 }
 export function masterEquipment(character: string, account: Account | null): string {
   if (!isStarterId(character)) return '<div class="ref-master-slot"><strong>Master slot</strong><p>Character Masters are for their named Element-Bearer only.</p></div>';

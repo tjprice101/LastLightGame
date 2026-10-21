@@ -1,6 +1,8 @@
 .conduit-store-banner { position: relative; isolation: isolate; overflow: hidden; padding: clamp(18px, 3vw, 32px); border: 1px solid #ffffff30; border-radius: 18px; background-image: linear-gradient(90deg, #111b 0%, #1119 45%, #1114 100%), var(--conduit-store-art); background-size: cover; background-position: center; }
 .conduit-store-banner h2 { font: 600 clamp(24px, 3vw, 36px) Georgia, serif; margin: 8px 0 14px; }
 .conduit-store p { line-height: 1.6; }
+.conduit-lore-disclosure > summary { min-height: 44px; box-sizing: border-box; padding: 12px 8px; cursor: pointer; }
+.conduit-lore-disclosure > summary:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .conduit-catalog { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; margin-top: 20px; }
 .conduit-card { min-width: 0; display: flex; flex-direction: column; padding: 20px; border: 1px solid #ffffff25; border-radius: 16px; background: #1b1b1ee8; }
 .conduit-card h3 { margin: 12px 0 6px; font: 600 22px Georgia, serif; }

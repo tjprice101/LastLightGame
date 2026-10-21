@@ -54,7 +54,10 @@ describe('shared menu information', () => {
       expect(rules).not.toContain(starter.description);
       expect(plain(html)).toContain(starter.description);
     }
-    expect(html).not.toContain('<details');
+    expect(rules).not.toContain('<details');
+    const disclosures = html.match(/<details\b[^>]*>/g) ?? [];
+    expect(disclosures.length).toBeGreaterThan(0);
+    expect(disclosures.every(tag => tag === '<details class="conduit-lore-disclosure">')).toBe(true);
   });
   it('keeps summon rules visible inside Rates & Information, without nested disclosures', () => {
     const html = summonHub(emptyAccount());
