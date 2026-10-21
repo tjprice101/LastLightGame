@@ -5,6 +5,11 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Online evolution fodder limit (D-362):** requests now allow up to15 selected
+copies for additive Evolution Value, independently of the squad's3-member
+cap. Fixes valid4+4+4+3 Infernis Evo.6 requests.
+[Contract and validation](evolution-fodder.md).
+
 **Sanctuary income retune (D-361):** guaranteed1-to-5 Null-Prismatica per
 enemy (final boss25), plus5/10/15/20/25/30 from selling Common-to-Omnic wisps.
 Common gives150 Prismatica; higher-tier Prismatica values stay unchanged.

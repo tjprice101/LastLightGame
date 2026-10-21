@@ -13,7 +13,7 @@ import { enemyAbilityMultiplier, enemySkills } from '../content/enemy-skills';
 import { playableDungeons } from '../content/dungeons';
 import { infusionStageCount, type InfusionModeId } from '../content/activities';
 import { elementalWars } from '../content/elemental-war';
-import { characterLevelCap, characterLevelCost } from '../content/progression';
+import { characterLevelCap, characterLevelCost, characterEvolutionCost } from '../content/progression';
 import { capturedLevelCost } from '../game/character-instances';
 import { conduits } from '../content/conduits';
 import { storyCompletionReward, storyRules } from '../content/story';
@@ -26,6 +26,43 @@ function started() { return op(freshGame('tester'), { kind: 'bootstrap', starter
 function rich() { const game = started(); game.account.fractalis = 1000000; game.account.lycalis = 1000; return game; }
 
 describe('server authoritative game engine', () => {
+  it.each([
+    { id: 'ember' as const, mode: 'heavens', forms: [4, 4, 4, 3] },
+    { id: 'ember' as const, mode: 'heavens', forms: Array<number>(15).fill(1) },
+    { id: 'razor' as const, mode: 'abyss', forms: Array<number>(15).fill(1) },
+    { id: 'rosetta' as const, mode: 'roses', forms: Array<number>(15).fill(1) },
+  ])('accepts $forms Evolution Value fodder for $id Evo.6 through request validation and atomic spending', ({ id, mode, forms }) => {
+    const game = rich();
+    const progress = { level: 90, evolution: 5 };
+    game.account.characters[id] = progress;
+    const cost = characterEvolutionCost(id, progress);
+    game.account.materials = { ...cost.materials };
+    game.account.capturedCharacters = forms.map(form => createCreatureCopy(`infusion:${mode}:${form - 1}`));
+    const operation: GameOperation = { kind: 'upgradeCharacter', id, upgradeKind: 'evolve', expected: progress,
+      fodderIds: game.account.capturedCharacters.map(copy => copy.instanceId) };
+    const request = { requestId: crypto.randomUUID(), expectedRevision: 0, operation };
+    expect(validateRequest(request).operation).toEqual(operation);
+    const before = structuredClone(game);
+    const result = op(game, operation).game;
+    expect(result.account.characters[id]).toMatchObject({ level: 90, evolution: 6 });
+    expect(result.account.capturedCharacters).toEqual([]);
+    expect(result.account.fractalis).toBe(game.account.fractalis - cost.fractalis);
+    for (const material of Object.keys(cost.materials)) expect(result.account.materials[material] ?? 0).toBe(0);
+    expect(game).toEqual(before);
+    expect(() => op(result, operation)).toThrow('changed');
+  });
+
+  it('separates the three-member squad limit from the fifteen-copy evolution request limit', () => {
+    const request = (operation: unknown) => ({ requestId: crypto.randomUUID(), expectedRevision: 0, operation });
+    const ids = Array.from({ length: 16 }, (_, index) => `capture:${index}`);
+    expect(() => validateRequest(request({ kind: 'setSquad', ids: ids.slice(0, 4) }))).toThrow('Invalid character IDs');
+    expect(validateRequest(request({ kind: 'setSquad', ids: ['ember', 'tide', 'sprout'] })).operation.kind).toBe('setSquad');
+    for (const fodderIds of [ids, 'not-an-array', [null], [''], ['x'.repeat(101)]]) {
+      expect(() => validateRequest(request({ kind: 'upgradeCharacter', id: 'ember', upgradeKind: 'evolve',
+        expected: { level: 90, evolution: 5 }, fodderIds }))).toThrow('Invalid character IDs');
+    }
+  });
+
   it.each([1, 5, 13, 24, 25])('guarantees Sanctuary premium rewards with atomic account updates at stage %i', stage => {
     const game = rich();
     game.account.characters.ember = { level: 105, evolution: 6 };

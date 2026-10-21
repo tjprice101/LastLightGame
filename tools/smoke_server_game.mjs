@@ -48,7 +48,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--native-calamity')) {
+  if (process.argv.includes('--evolution')) {
+    await smokeEvolutionFodder(client, created.user.id, username);
+  } else if (process.argv.includes('--native-calamity')) {
     await smokeNativeCalamity(client, created.user.id, username);
   } else if (process.argv.includes('--calamitic-economy')) {
     await smokeCalamiticEconomy(client, created.user.id, username);
@@ -762,6 +764,44 @@ async function smokeEnemyBalance(client, userId, username) {
     response = await invoke({ kind: 'quit', runId: response.session.runId }, response.revision);
   }
   console.log('Hosted balance smoke passed: actual Lv60 Training/Heaven ordinary parity, material boss stats, shared level-based skill strength, frozen read and quit; zero currencies granted.');
+}
+
+async function smokeEvolutionFodder(client, userId, username) {
+  const game = freshGame(username);
+  game.starterId = 'ember';
+  game.account.characters = { ember: { level: 90, evolution: 5 } };
+  game.account.firstFracture = true;
+  game.account.squad = ['ember'];
+  game.account.fractalis = 10000;
+  game.account.materials = { 'infernic-epic': 25, 'infernic-legendary': 10, 'heavens-evolution': 10 };
+  game.account.capturedCharacters = [4, 4, 4, 3].map(form => ({
+    instanceId: `capture:${randomUUID()}`, creatureId: `infusion:heavens:${form - 1}`, locked: false,
+  }));
+  assert.ok(ids.includes(userId), 'Evolution fixtures must belong only to a disposable identity.');
+  const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+  assert.equal(seeded.error, null);
+  async function invoke(operation, revision, requestId = randomUUID()) {
+    const result = await client.functions.invoke('game-operation', {
+      body: { operation, expectedRevision: revision, requestId },
+    });
+    if (result.error) throw new Error(`Hosted evolution ${operation.kind} failed (${result.error.context?.status ?? 'transport'}).`);
+    return result.data;
+  }
+  const initial = await invoke({ kind: 'read' }, 0);
+  const operation = { kind: 'upgradeCharacter', id: 'ember', upgradeKind: 'evolve',
+    expected: { level: 90, evolution: 5 }, fodderIds: game.account.capturedCharacters.map(copy => copy.instanceId) };
+  const requestId = randomUUID();
+  const evolved = await invoke(operation, initial.revision, requestId);
+  assert.equal(evolved.account.characters.ember.level, 90);
+  assert.equal(evolved.account.characters.ember.evolution, 6);
+  assert.equal(evolved.account.fractalis, 5200);
+  assert.equal(evolved.account.lycalis, initial.account.lycalis);
+  assert.deepEqual(evolved.account.capturedCharacters, []);
+  for (const material of Object.keys(game.account.materials)) assert.equal(evolved.account.materials[material] ?? 0, 0);
+  assert.equal(evolved.revision, initial.revision + 1);
+  assert.deepEqual(await invoke(operation, initial.revision, requestId), evolved);
+  assert.deepEqual((await invoke({ kind: 'read' }, evolved.revision)).account, evolved.account);
+  console.log('Hosted evolution smoke passed: Infernis Evo.5->6 with 4+4+4+3 Evolution Value, exact costs and four-copy consumption, one revision, idempotent retry and persisted account. No owner accounts modified.');
 }
 
 async function smokeEquippedMaster(client, userId, username) {

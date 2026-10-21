@@ -1,5 +1,30 @@
 # Current state and handoff
 
+## Online additive evolution request fix (D-362)
+
+- Reported Infernis Evo.5->6 selection4+4+4+3 correctly totals15 Evolution
+  Value. Server `validateRequest` mistakenly shared the squad's3-ID ceiling
+  with `fodderIds`, rejecting before account validation.
+- Split limits: squad `ids` stays3; evolution `fodderIds` accepts15, enough
+  for the maximum valid recipe using all form1 copies. String type/length
+  checks remain; account unique/owned/mode/protection/value/cost/stale-state
+  checks and one-write atomicity are unchanged. No saves or recipes changed.
+- Added authoritative request-to-transaction tests for exact reported mix,
+  fifteen form1 Heaven/Abyss/Rose copies, exact spending/consumption/stale
+  retry, squad4 rejection, fodder16 rejection and malformed IDs.
+  Hosted `--evolution` smoke reproduces reported4-copy evolution on a
+  disposable identity, exact spending, persistence and idempotent retry.
+- Verified: `npx vitest run src\online\server-game.test.ts src\game\evolution-fodder.test.ts src\game\crimson-roses.test.ts --maxWorkers=4 --reporter=dot`
+  passed177 tests across3 files. `npm run build` passed typecheck and production
+  build (existing chunk-size warning). `node tools\bundle_server_game.mjs`
+  regenerated matching request validation; `npx supabase functions deploy game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`
+  succeeded. `node tools\smoke_server_game.mjs --evolution` passed the exact
+  reported Infernis4+4+4+3 evolution online, spending4800 Prismatica/required
+  materials and consuming four copies once, idempotent retry and persisted
+  account. Fixture has prior First Fracture claimed, matching an evolved account;
+  disposable identity and cascading records removed. Client assets are unchanged;
+  normal Pages publication on push also validates the repository.
+
 ## Guaranteed Sanctuary income and linear premium sales (D-361)
 
 - Owner chooses guaranteed1 Null-Prismatica per kill at Stage1/Lv65, rising

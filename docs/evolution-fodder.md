@@ -12,6 +12,16 @@ it; the picker shows `Value N` per card and a value meter/status. Character
 leveling never consumes Elemental-Devourers. This supersedes the count/minimum
 form tables and "exactly N" wording below; protections and atomicity unchanged.
 
+**D-362 online request validation:** evolution `fodderIds` accepts up to15
+copies, supporting15 form1 copies or the reported4+4+4+3 selection for
+Evo.5->6. This is separate from squad `ids`, still limited to3 members.
+The account transaction continues validating ownership, unique IDs, required
+mode, exact sufficient value without surplus copies, protection, resources
+and expected progress before one atomic save. Malformed/overlong ID arrays
+remain rejected. No recipe, costs, save migration or automatic consumption.
+Validate request-to-transaction regressions in `src/online/server-game.test.ts`
+and `node tools\smoke_server_game.mjs --evolution` against the deployed bundle.
+
 **D-192 progression correction:** highest-owned Element-Bearer Lv.50 opens
 Heaven/Abyss. Form3 starts at stage13/Lv.65, form4 at19/Lv.75 and form5 at25/Lv.85.
 Evolution/level specialties start at75, so the existing Lv.60/75/90 evolution

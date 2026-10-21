@@ -143,7 +143,8 @@ export function validateRequest(value: unknown): GameRequest {
   }
   if ('locked' in op && typeof op.locked !== 'boolean') throw new Error('Invalid lock.');
   for (const field of ['ids', 'fodderIds']) if (field in op) {
-    if (!Array.isArray(op[field]) || op[field].length > 3 || !op[field].every(id => typeof id === 'string' && id.length > 0 && id.length <= 100)) throw new Error('Invalid character IDs.');
+    const maximum = field === 'fodderIds' ? 15 : 3;
+    if (!Array.isArray(op[field]) || op[field].length > maximum || !op[field].every(id => typeof id === 'string' && id.length > 0 && id.length <= 100)) throw new Error('Invalid character IDs.');
   }
   if (op.kind === 'upgradeCharacter') {
     if (!record(op.expected)) throw new Error('Invalid expected progress.');
