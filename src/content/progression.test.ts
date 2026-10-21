@@ -1,10 +1,27 @@
 import { describe, expect, it } from 'vitest';
-import { artifactSlots, currencies, fractureRules, characterLevelCap, characterGrowthFactor, upgradePaths } from './progression';
-import { availableStarters } from './starters';
+import { artifactSlots, currencies, fractureRules, characterLevelCap, characterGrowthFactor, upgradePaths,
+  characterEvolutionCost, evolutionCost, characterLevelCost } from './progression';
+import { availableStarters, starters, isRoseCharacter, roseCharacters } from './starters';
 import { loadMotion, saveMotion, SETTINGS_KEY } from '../presentation/settings';
 import { SAVE_KEY, type ProfileStorage } from '../game/profile';
 
 describe('confirmed game foundation', () => {
+  it('preserves ordinary evolution recipes and Rose leveling Soul surcharges', () => {
+    for (const starter of starters.filter(starter => !isRoseCharacter(starter.id))) {
+      for (let evolution = 1; evolution <= 5; evolution++) {
+        const progress = { level: characterLevelCap(evolution), evolution };
+        expect(characterEvolutionCost(starter.id, progress)).toEqual(evolutionCost(starter.elementId, progress));
+      }
+    }
+    for (const character of roseCharacters) {
+      expect(characterLevelCost(character.id, { level: 75, evolution: 5 }).materials).toEqual({
+        'rosethorn-common': 3, 'rosethorn-uncommon': 1, 'rosethorn-rare': 1,
+        'rosethorn-epic': 1, 'rosethorn-legendary': 1, 'rosethorn-omnic': 1,
+      });
+      expect(characterLevelCost(character.id, { level: 90, evolution: 6 }).materials['rosethorn-omnic']).toBe(2);
+    }
+  });
+
   it('offers fire, water, and grass and names both currencies correctly', () => {
     expect(availableStarters.map((starter) => starter.id)).toEqual(['ember', 'tide', 'sprout']);
     expect(currencies.map((currency) => currency.name)).toEqual(['Prismatica', 'Null-Prismatica']);

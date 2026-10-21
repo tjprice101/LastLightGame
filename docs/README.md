@@ -5,6 +5,10 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Rose evolution material order (D-360):** Rosetta, Thornia and Crinso use
+Heart, not Soul, for the Evo.4->5 surcharge. Evo.5->6 and all leveling/ordinary
+recipes stay unchanged. [Exact costs and validation](crimson-roses.md#banner-and-progression).
+
 **Equipped Conduit audit (D-359):** all90 ordinary-slot and48 Master effects
 checked with catalog/upgrade/absence tests and actual-action regressions.
 Fixes include stat ordering, Tailwind spending, stored Burn duration/streaks,

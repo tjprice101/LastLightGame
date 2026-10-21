@@ -1,5 +1,11 @@
 # Units and progression
 
+**D-360 Rose evolution order:** Rosetta/Thornia/Crinso Evo.4->5 now costs
+25 Bloom +10 Crest +5 Heart of Rosethorn, not5 Soul. Evo.5->6 retains
+25 Crest +10 Heart +10 Soul. Ordinary recipes and all leveling costs, including
+the Soul surcharges below, are unchanged.
+[Exact Rose recipes](crimson-roses.md#banner-and-progression).
+
 **D-305:** captured Elemental-Devourers now cap at60. New captures/banner awards
 and existing valid saved copies above60 reduce to60, preserving form and skills.
 Enemy levels and Element-Bearer progression are unchanged.

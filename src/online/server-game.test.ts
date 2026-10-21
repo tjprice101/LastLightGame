@@ -13,7 +13,7 @@ import { enemyAbilityMultiplier, enemySkills } from '../content/enemy-skills';
 import { playableDungeons } from '../content/dungeons';
 import { infusionStageCount, type InfusionModeId } from '../content/activities';
 import { elementalWars } from '../content/elemental-war';
-import { characterLevelCost } from '../content/progression';
+import { characterLevelCap, characterLevelCost } from '../content/progression';
 import { capturedLevelCost } from '../game/character-instances';
 import { conduits } from '../content/conduits';
 import { storyCompletionReward, storyRules } from '../content/story';
@@ -26,6 +26,32 @@ function started() { return op(freshGame('tester'), { kind: 'bootstrap', starter
 function rich() { const game = started(); game.account.fractalis = 1000000; game.account.lycalis = 1000; return game; }
 
 describe('server authoritative game engine', () => {
+  it.each(['rosetta', 'thornia', 'crinso'] as const)('charges Heart before Soul for %s evolution authoritatively', id => {
+    for (const evolution of [4, 5]) {
+      const game = rich();
+      const progress = { level: characterLevelCap(evolution), evolution };
+      game.account.characters[id] = progress;
+      game.account.materials = evolution === 4
+        ? { 'rosethorn-rare': 25, 'rosethorn-epic': 10, 'rosethorn-legendary': 5 }
+        : { 'rosethorn-epic': 25, 'rosethorn-legendary': 10, 'rosethorn-omnic': 10 };
+      game.account.capturedCharacters = Array.from({ length: evolution - 2 }, () => createCreatureCopy('infusion:roses:4'));
+      const operation: GameOperation = { kind: 'upgradeCharacter', id, upgradeKind: 'evolve', expected: progress,
+        fodderIds: game.account.capturedCharacters.map(copy => copy.instanceId) };
+      const missing = structuredClone(game);
+      delete missing.account.materials[evolution === 4 ? 'rosethorn-legendary' : 'rosethorn-omnic'];
+      const before = structuredClone(missing);
+      expect(() => op(missing, operation)).toThrow();
+      expect(missing).toEqual(before);
+      const initial = structuredClone(game);
+      const result = op(game, operation).game;
+      expect(game).toEqual(initial);
+      expect(result.account.characters[id]).toMatchObject({ ...progress, evolution: evolution + 1 });
+      expect(result.account.capturedCharacters).toEqual([]);
+      for (const material of Object.keys(game.account.materials)) expect(result.account.materials[material] ?? 0).toBe(0);
+      expect(result.account.fractalis).toBe(game.account.fractalis - (evolution === 4 ? 2400 : 4800));
+    }
+  });
+
   it('excludes owned Machines drops on entry, persisted-run resume, Continue and stage replay', () => {
     let game = rich();
     game.account.storyCompleted = 25;

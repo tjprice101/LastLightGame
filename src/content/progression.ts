@@ -111,7 +111,7 @@ export function characterEvolutionCost(id: StarterId, progress: CharacterProgres
     ...Object.fromEntries(recipe.rarities.map((rarity, index) => [
       roseMaterials[materialRarities.indexOf(rarity)].id, balance.amounts[index],
     ])),
-    ...(progress.evolution >= 4 ? { [roseMaterials[5].id]: progress.evolution === 4 ? 5 : 10 } : {}),
+    ...(progress.evolution >= 4 ? { [roseMaterials[progress.evolution].id]: progress.evolution === 4 ? 5 : 10 } : {}),
   } };
 }
 

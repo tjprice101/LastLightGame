@@ -1,5 +1,27 @@
 # Current state and handoff
 
+## Heart before Soul in Rose evolution (D-360)
+
+- Owner confirms scope: Rosetta, Thornia and Crinso Evo.4->5 cost25 Bloom,
+  10 Crest and5 Heart of Rosethorn (was5 Soul). Evo.5->6 stays25 Crest,
+  10 Heart and10 Soul. Prismatica/fodder, all leveling costs, ordinary
+  Heaven/Abyss specialty recipes, loot and saves remain unchanged.
+- `characterEvolutionCost` selects the surcharge tier from the current
+  evolution (4=Heart,5=Soul), shared by previews, confirmation and atomic
+  offline/server transactions. No account migration or retroactive refund.
+- Tests cover exact late-stage recipes for all three Roses, rendered
+  Heart/no-Soul Evo.4->5 costs, exact one-write spending and fodder consumption,
+  missing-material rejection with unchanged raw saves, authoritative parity,
+  ordinary recipe preservation and unchanged leveling Soul surcharges.
+- Verified: `npx vitest run src\game\crimson-roses.test.ts src\online\server-game.test.ts src\content\progression.test.ts src\game\evolution-fodder.test.ts src\game\max-level.test.ts --maxWorkers=4 --reporter=dot`
+  passed183 tests across5 files. `npm run build` passed typecheck and production
+  build (existing chunk-size warning). `node tools\bundle_server_game.mjs`
+  refreshed the server recipe; `npx supabase functions deploy game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`
+  succeeded. `node tools\smoke_server_game.mjs --native-calamity` passed and
+  removed disposable records. Exact recipe transactions are covered locally
+  through the authoritative engine; hosted smoke is general engine health.
+  Client publication follows through the normal Pages workflow on push.
+
 ## Equipped Conduit verification (D-359)
 
 - Audited90 ordinary-slot Conduits (85 plus5 Calamitic) and48 named Masters.

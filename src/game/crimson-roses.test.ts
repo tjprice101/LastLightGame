@@ -10,7 +10,7 @@ import { standardBannerPool, resolveBannerPull } from '../content/standard-banne
 import { roseCharacters, availableStarters, getStarter } from '../content/starters';
 import { characterArt, characterName } from '../content/character-art';
 import { resolveFighter, shatterGauge } from '../content/combat';
-import { characterLevelCap, characterLevelCost, characterEvolutionCost, characterGrowthFactor } from '../content/progression';
+import { characterLevelCap, characterLevelCost, characterEvolutionCost, characterGrowthFactor, type UpgradeCost } from '../content/progression';
 import { materialArt, materialName } from '../content/dungeon-art';
 import { creatureLoot, getCreature } from '../content/creatures';
 import { fractalisDrop } from '../content/loot-random';
@@ -417,6 +417,42 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
       expect(result.characters[character.id]).toEqual({ level: cap, evolution: evolution + 1 });
       expect(result.capturedCharacters).toEqual([]);
       expect(Object.keys(characterEvolutionCost(character.id, { level: cap, evolution }).materials).every((id) => id.startsWith('rosethorn-'))).toBe(true);
+    }
+  });
+
+  it.each(roseCharacters)('requires Heart before Soul for $name evolution, including displayed and saved costs', character => {
+    for (const evolution of [4, 5]) {
+      const progress = { level: characterLevelCap(evolution), evolution };
+      const cost: UpgradeCost = evolution === 4
+        ? { fractalis: 2400, materials: { 'rosethorn-rare': 25, 'rosethorn-epic': 10, 'rosethorn-legendary': 5 } }
+        : { fractalis: 4800, materials: { 'rosethorn-epic': 25, 'rosethorn-legendary': 10, 'rosethorn-omnic': 10 } };
+      expect(characterEvolutionCost(character.id, progress)).toEqual(cost);
+      const account = funded();
+      account.characters[character.id] = progress;
+      account.materials = { ...cost.materials };
+      const copies = Array.from({ length: evolution - 2 }, () => createCreatureCopy('infusion:roses:4'));
+      account.capturedCharacters = copies;
+      const store = storage();
+      saveAccount(store.saved, account);
+      const view = characterHub(character, 'upgrade-0', account);
+      expect(view).toContain('Heart of Rosethorn');
+      if (evolution === 4) expect(view).not.toContain('Soul of Rosethorn');
+      const ids = copies.map(copy => copy.instanceId);
+      const required = evolution === 4 ? 'rosethorn-legendary' : 'rosethorn-omnic';
+      const missing = structuredClone(account);
+      delete missing.materials[required];
+      saveAccount(store.saved, missing);
+      const raw = store.saved.getItem(ACCOUNT_KEY);
+      expect(() => upgradeCharacter(store.saved, character.id, 'evolve', progress, ids)).toThrow();
+      expect(store.saved.getItem(ACCOUNT_KEY)).toBe(raw);
+      saveAccount(store.saved, account);
+      store.reset();
+      const result = upgradeCharacter(store.saved, character.id, 'evolve', progress, ids);
+      expect(store.writes()).toBe(1);
+      expect(result.characters[character.id]).toEqual({ ...progress, evolution: evolution + 1 });
+      for (const material of Object.keys(cost.materials)) expect(result.materials[material] ?? 0).toBe(0);
+      expect(result.capturedCharacters).toEqual([]);
+      expect(result.fractalis).toBe(account.fractalis - cost.fractalis);
     }
   });
 

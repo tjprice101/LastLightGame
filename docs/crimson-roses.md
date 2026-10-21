@@ -262,8 +262,18 @@ than Luminous Seed. Locks, squads and any equipped Conduit protect sales/fodder.
 |1->2 |30 |300 |15 Seed |None |
 |2->3 |45 |600 |25 Seed +10 Bud |None |
 |3->4 |60 |1,200 |25 Bud +10 Bloom |1 form3+ |
-|4->5 |75 |2,400 |25 Bloom +10 Crest +5 Soul |2 form4+ |
+|4->5 |75 |2,400 |25 Bloom +10 Crest +5 Heart |2 form4+ |
 |5->6 |90 |4,800 |25 Crest +10 Heart +10 Soul |3 form5+ |
+
+D-360: Rosetta, Thornia and Crinso use Heart for the five-item Evo.4->5
+surcharge rather than skipping directly to Soul. Evo.5->6, Prismatica,
+fodder requirements, ordinary characters' Heaven/Abyss specialty items and
+all leveling costs are unchanged. Existing progress is retained without
+retroactive charges/refunds or save migration. Shared `characterEvolutionCost`
+drives the displayed recipe, confirmation and atomic offline/online deduction.
+Regression tests in `crimson-roses.test.ts` and `server-game.test.ts` cover all
+three characters, both late transitions, exact deductions, no-Soul Evo.4->5
+success and missing-Heart/Soul rejection without persistence.
 
 Levels retain existing `10+2*nextLevel` Prismatica and `ceil(nextLevel/30)` Seed;
 Evo.5/6 also consume1 Soul per level. Final cap105; no EB cap increases.
