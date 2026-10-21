@@ -5,6 +5,11 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Sanctuary income retune (D-361):** guaranteed1-to-5 Null-Prismatica per
+enemy (final boss25), plus5/10/15/20/25/30 from selling Common-to-Omnic wisps.
+Common gives150 Prismatica; higher-tier Prismatica values stay unchanged.
+Soar and Delve are untouched. [Exact farm rules](rosethorn-sanctuary.md).
+
 **Rose evolution material order (D-360):** Rosetta, Thornia and Crinso use
 Heart, not Soul, for the Evo.4->5 surcharge. Evo.5->6 and all leveling/ordinary
 recipes stay unchanged. [Exact costs and validation](crimson-roses.md#banner-and-progression).

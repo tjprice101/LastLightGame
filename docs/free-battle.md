@@ -57,7 +57,7 @@ Examples:
 | Material dungeon35 |75-150 Prismatica;15-30 per successful material roll |
 | Heaven/Abyss35 |75-150 Prismatica;15-30 specialty/bonus stacks; premium0/5/10/15 at75/10/10/5% |
 | Treasury25 |24,300-48,600 Prismatica |
-| Sanctuary25 |75-150 Prismatica;80% chance of25 Null-Prismatica |
+| Sanctuary25 |75-150 Prismatica;25 Null-Prismatica guaranteed (D-361) |
 | Roses35 |90-180 Prismatica;15-30 per successful Rosethorn roll |
 | Machines100 |75-150 Prismatica; guaranteed625 Broken Mechanical Components |
 | War10 |25,000-40,000 Prismatica;60% chance of25 Null-Prismatica |

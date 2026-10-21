@@ -4,20 +4,22 @@
 
 Phase10's Tranquilitic Null-Prismatica farm. Owner selected the name and **25 stages,
 levels65-120**, matching Crownfall Treasury rather than the earlier shorter-mode
-proposal. Creatures are divine, increasingly regal flaming wisps. The owner
-requested roughly1 Null-Prismatica on a chance at the beginning and roughly5 at the
-highest level, and sales granting **both Prismatica and Null-Prismatica together** with
+proposal. Creatures are divine, increasingly regal flaming wisps. D-361 replaces
+the historical chance-based premium drops with guaranteed1 at the beginning
+and5 at the highest level, and sales granting **both Prismatica and Null-Prismatica together** with
 less Prismatica than equivalent Gleamstone Slimes.
 
-The owner subsequently capped sale Null-Prismatica at1-10 per copy. The exact
-intermediate sale values and mission chance curve are developer-selected tuning:
+The owner approves D-361's linear5-30 Null-Prismatica sales, superseding D-075's
+historical1-10 cap, and keeps higher-tier Prismatica sale values:
 
-- Level65: **50% none /50% one Null-Prismatica** per kill.
-- Level120 base: **20% none /80% five Null-Prismatica** per kill.
-  D-294 multiplies the final stage25 successful amount by5: **80% of25**
-  on every clear/replay, with the same20% no-premium chance.
-- For growth `g=(level-65)/55`, chance is `0.5+0.3*g` and the successful
-  quantity is `round(1+4*g)`. This is one roll, not five independent rolls.
+- Stage1 / Level65: **one Null-Prismatica guaranteed per kill**.
+- Level120 base: **five Null-Prismatica guaranteed per kill**.
+  D-294 multiplies the final stage25 amount by5: **25 guaranteed**
+  on every clear/replay.
+- For growth `g=(level-65)/55`, quantity is `round(1+4*g)`.
+  This is rounded linear growth across the existing stage-level curve.
+  Keep the existing single premium RNG draw per kill, even at100% chance,
+  so continuing seed behavior stays consistent.
 - Earlier bosses and ordinary enemies use identical payouts. The final boss
   multiplies both currency quantities by5; no separate clear bonus.
 - Ordinary Prismatica remains the shared level-scaled range:7-14 at65,
@@ -33,12 +35,12 @@ with the shared staged enemy skills/multiplier curve.
 
 | Fixed form | Stages | Name | Rarity / Stars | Prismatica sale | Null-Prismatica sale |
 | --- | --- | --- | --- | --- | --- |
-|1 |1-5 |Rosethorn Wisp |Common /1 |100 |1 |
-|2 |6-9 |Votive of First Bloom, Rosethorn Wisp |Uncommon /2 |300 |2 |
-|3 |10-13 |Laurel of the Sacred Flame, Rosethorn Wisp |Rare /3 |1,000 |3 |
-|4 |14-17 |Seraph of the Rose Pyre, Rosethorn Wisp |Epic /4 |3,000 |5 |
-|5 |18-21 |Sovereign of the Hallowed Garden, Rosethorn Wisp |Legendary /5 |10,000 |7 |
-|6 |22-25 |The Flame Beyond Eternity, Rosethorn Wisp |Omnic /6 |30,000 |10 |
+|1 |1-5 |Rosethorn Wisp |Common /1 |150 |5 |
+|2 |6-9 |Votive of First Bloom, Rosethorn Wisp |Uncommon /2 |300 |10 |
+|3 |10-13 |Laurel of the Sacred Flame, Rosethorn Wisp |Rare /3 |1,000 |15 |
+|4 |14-17 |Seraph of the Rose Pyre, Rosethorn Wisp |Epic /4 |3,000 |20 |
+|5 |18-21 |Sovereign of the Hallowed Garden, Rosethorn Wisp |Legendary /5 |10,000 |25 |
+|6 |22-25 |The Flame Beyond Eternity, Rosethorn Wisp |Omnic /6 |30,000 |30 |
 
 Stable IDs: `infusion:sanctuary:0` through `infusion:sanctuary:5`.
 These are creatures, not Element-Bearers. They never evolve. Enemy and captured
@@ -67,7 +69,8 @@ even though their combat element is Tranquilitic.
 ## Atomic rewards and sales
 
 `saveAccountRewards` validates defeated source, mode/form/stage/level, ordinary
-currency range and exact successful Null-Prismatica quantity from that level's odds.
+currency range and exact guaranteed Null-Prismatica quantity from that level's odds.
+Missing Sanctuary premium rewards are rejected explicitly.
 Currency-farm material awards reject. Premium currency, Prismatica, captures,
 discovery, receipts and stage unlock commit in one validated write. Failed
 writes preserve persistent state; receipt replay cannot duplicate awards.
@@ -111,4 +114,9 @@ Tests cover all25 floors,65-120 odds/boundaries, direct/burn kills, independent
 RNG, capture/source validation, write failures/receipts, stage caps/migration,
 retained copies/leveling/squads/Continue, all six dual sale prices, protections,
 overflow in either currency, Standard rewards and pending-art presentation.
+Current D-361 coverage also checks every integer level's guaranteed yield against
+unchanged Soar/Delve expected yield, all-stage direct/Burn kills, authoritative
+early/mid/final reward persistence and all six authoritative dual-currency sales.
+No Soar/Delve or Treasury drop/sale changes, save migration, retroactive grants,
+cost changes or capture-rate changes are included.
 Balance remains local-prototype tuning; no server economy or paid purchases.

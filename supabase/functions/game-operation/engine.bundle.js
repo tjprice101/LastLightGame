@@ -136,8 +136,7 @@ function infusionLycalisOdds(level) {
 function sanctuaryLycalisOdds(level) {
   if (!Number.isInteger(level) || level < 65 || level > 120) throw new Error("Sanctuary Null-Prismatica drops require an enemy level from 65 to 120.");
   const growth = (level - 65) / 55;
-  const chance = 0.5 + 0.3 * growth;
-  return [{ amount: 0, chance: 1 - chance }, { amount: Math.round(1 + 4 * growth), chance }];
+  return [{ amount: 0, chance: 0 }, { amount: Math.round(1 + 4 * growth), chance: 1 }];
 }
 function stagedLycalisOdds(mode, level, stage) {
   if (mode === "treasury" || mode === "roses" || mode === "machines") throw new Error("This mode does not award Null-Prismatica drops.");
@@ -3471,12 +3470,12 @@ function treasuryEnemyStats(level, boss) {
 }
 var treasurySalePrices = [1e3, 3e3, 1e4, 3e4, 1e5, 3e5];
 var sanctuarySalePrices = [
-  { fractalis: 100, lycalis: 1 },
-  { fractalis: 300, lycalis: 2 },
-  { fractalis: 1e3, lycalis: 3 },
-  { fractalis: 3e3, lycalis: 5 },
-  { fractalis: 1e4, lycalis: 7 },
-  { fractalis: 3e4, lycalis: 10 }
+  { fractalis: 150, lycalis: 5 },
+  { fractalis: 300, lycalis: 10 },
+  { fractalis: 1e3, lycalis: 15 },
+  { fractalis: 3e3, lycalis: 20 },
+  { fractalis: 1e4, lycalis: 25 },
+  { fractalis: 3e4, lycalis: 30 }
 ];
 var choiceSaleQuantities = [1, 2, 3, 4, 5, 6];
 function creatureSaleOptions(mode, tier) {
@@ -8591,6 +8590,9 @@ function saveAccountRewards(storage, result, runId) {
         tiers.add(rarity);
         account.conduits = { ...account.conduits, [id]: (account.conduits?.[id] ?? 0) + amount };
       }
+    }
+    if (result.state.infusion?.mode === "sanctuary" && reward.lycalis === void 0) {
+      throw new Error("Rosethorn Sanctuary rewards require their guaranteed Null-Prismatica drop.");
     }
     if (reward.lycalis !== void 0) {
       const creature = enemy.creatureId ? getCreature(enemy.creatureId) : void 0;

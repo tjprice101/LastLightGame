@@ -26,6 +26,42 @@ function started() { return op(freshGame('tester'), { kind: 'bootstrap', starter
 function rich() { const game = started(); game.account.fractalis = 1000000; game.account.lycalis = 1000; return game; }
 
 describe('server authoritative game engine', () => {
+  it.each([1, 5, 13, 24, 25])('guarantees Sanctuary premium rewards with atomic account updates at stage %i', stage => {
+    const game = rich();
+    game.account.characters.ember = { level: 105, evolution: 6 };
+    game.account.infusionStages = { sanctuary: 25 };
+    const entered = op(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'sanctuary', stage } }).game;
+    const state = entered.run!.session.state;
+    state.allies[0].shatter = 100;
+    state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
+    state.lycalisSeed = 1;
+    const before = structuredClone(entered);
+    const operation: GameOperation = { kind: 'act', runId: entered.run!.session.runId, actorId: 'ember',
+      action: 'skill2', targetId: state.enemies[0].id };
+    const result = op(entered, operation);
+    const level = state.enemies[0].level;
+    if (level === null) throw new Error('Missing Sanctuary enemy level.');
+    const expected = Math.round(1 + 4 * (level - 65) / 55) * (stage === 25 ? 5 : 1);
+    const rewards = result.response.result!.events.filter(event => event.kind === 'reward');
+    expect(rewards).toHaveLength(state.enemies.length);
+    expect(rewards.every(reward => reward.lycalis === expected)).toBe(true);
+    expect(result.game.account.lycalis).toBe(game.account.lycalis + expected * state.enemies.length);
+    expect(entered).toEqual(before);
+  });
+
+  it.each([0, 1, 2, 3, 4, 5])('credits both updated Sanctuary sale currencies atomically for tier %i', tier => {
+    const game = rich();
+    const copy = createCreatureCopy(`infusion:sanctuary:${tier}`);
+    game.account.capturedCharacters = [copy];
+    const before = structuredClone(game);
+    const result = op(game, { kind: 'sellCurrencyCreature', id: copy.instanceId }).game;
+    expect(result.account.fractalis - game.account.fractalis).toBe([150, 300, 1000, 3000, 10000, 30000][tier]);
+    expect(result.account.lycalis - game.account.lycalis).toBe(5 * (tier + 1));
+    expect(result.account.capturedCharacters).toEqual([]);
+    expect(game).toEqual(before);
+    expect(() => op(result, { kind: 'sellCurrencyCreature', id: copy.instanceId })).toThrow();
+  });
+
   it.each(['rosetta', 'thornia', 'crinso'] as const)('charges Heart before Soul for %s evolution authoritatively', id => {
     for (const evolution of [4, 5]) {
       const game = rich();

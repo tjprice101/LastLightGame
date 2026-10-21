@@ -205,14 +205,17 @@ bursts reuse actual currency artwork and do not grant an additional reward.
 ## Rosethorn Sanctuary income
 
 [Rosethorn Sanctuary](rosethorn-sanctuary.md) is the dedicated25-floor65-120
-Null-Prismatica farm. A single independent per-kill roll rises from50% chance of1 at65
-to80% chance of5 at120:linear chance, rounded linear successful amount.
-Boss and ordinary payouts match; ordinary Prismatica also drops, no materials.
+Null-Prismatica farm. D-361 guarantees1 per kill at Stage1/Lv65, rising by
+rounded linear growth to5 at Lv120. The final stage25 boss retains5x
+quantities and guarantees25; earlier bosses use ordinary per-kill payouts.
+The separate premium RNG stream still advances once per kill. Ordinary
+Prismatica also drops, no materials. Soar and Delve remain unchanged.
 Captured wisps sell for both currencies in one protected-safe atomic write:
-Common->Omnic100/300/1k/3k/10k/30k Prismatica plus1/2/3/5/7/10 Null-Prismatica.
+Common->Omnic150/300/1k/3k/10k/30k Prismatica plus5/10/15/20/25/30 Null-Prismatica.
 Prices are fixed by form, never level. Locks/squad/any-Conduit protect copies;
 sale cancellation/failure/overflow changes neither balance nor ownership/pity.
-Exact curve/prices are developer tuning under owner-delegated balance.
+Exact curve/prices were selected by the owner in D-361; the older1-10 sale cap
+is superseded. Existing holdings/progress remain without migration or retroactive grants.
 
 ## Standard Banner
 

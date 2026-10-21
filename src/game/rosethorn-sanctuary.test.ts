@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { currencyModes, infusionStageCount } from '../content/activities';
 import { enemyGrowth } from '../content/stat-growth';
 import { capturedEnemyStats, infusionEncounter, infusionEnemies, infusionDrops, sanctuaryEnemyStats, sanctuarySalePrices, treasurySalePrices } from '../content/infusions';
-import { sanctuaryLycalisOdds, rollStagedLycalis, fractalisDrop } from '../content/loot-random';
+import { sanctuaryLycalisOdds, infusionLycalisOdds, rollStagedLycalis, fractalisDrop } from '../content/loot-random';
 import { getCreature, creatureLoot } from '../content/creatures';
 import { standardBannerPool } from '../content/standard-banner';
 import { conduits } from '../content/conduits';
@@ -57,7 +57,7 @@ describe('Phase10 Rosethorn Sanctuary', () => {
         expect(rewards).toHaveLength(encounter.boss ? 1 : 2);
         expect(rewards[0].lycalis).toBe(odds[1].amount);
         for (const reward of rewards) {
-          expect(reward.lycalis === undefined || reward.lycalis === odds[1].amount).toBe(true);
+          expect(reward.lycalis).toBe(odds[1].amount);
           expect(reward.materials).toEqual({});
           expect(reward.message).not.toContain(' and  and ');
         }
@@ -67,14 +67,15 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     expect(sanctuaryEnemyStats(120, true).health).toBe(enemyGrowth.bossHealth);
     for (const stage of [0, 26, NaN, 1.5]) expect(() => infusionEncounter('sanctuary', stage)).toThrow();
   });
-  it('implements the exact 1-at 50% to 5-at 80% curve and validates RNG and level boundaries', () => {
-    expect(sanctuaryLycalisOdds(65)).toEqual([{ amount: 0, chance: .5 }, { amount: 1, chance: .5 }]);
-    expect(sanctuaryLycalisOdds(120)[1]).toEqual({ amount: 5, chance: .8 });
+  it('guarantees a linear rounded 1-to-5 curve above Soar/Delve expected premium yield and validates boundaries', () => {
+    expect(sanctuaryLycalisOdds(65)).toEqual([{ amount: 0, chance: 0 }, { amount: 1, chance: 1 }]);
+    expect(sanctuaryLycalisOdds(120)[1]).toEqual({ amount: 5, chance: 1 });
     for (let level = 65; level <= 120; level++) {
       const [none, drop] = sanctuaryLycalisOdds(level);
       expect(drop.amount).toBe(Math.round(1 + 4 * (level - 65) / 55));
-      expect(drop.chance).toBeCloseTo(.5 + .3 * (level - 65) / 55, 14);
-      expect(rollStagedLycalis('sanctuary', level, () => none.chance - 1e-10)).toBe(0);
+      expect(none.chance).toBe(0);
+      expect(drop.chance).toBe(1);
+      expect(drop.amount).toBeGreaterThan(infusionLycalisOdds(level).reduce((sum, outcome) => sum + outcome.amount * outcome.chance, 0));
       expect(rollStagedLycalis('sanctuary', level, () => none.chance)).toBe(drop.amount);
       expect(rollStagedLycalis('sanctuary', level, () => .999999)).toBe(drop.amount);
     }
@@ -84,14 +85,14 @@ describe('Phase10 Rosethorn Sanctuary', () => {
   it('keeps premium RNG independent of Prismatica, captures and combat for direct and burn kills', () => {
     for (const burn of [false, true]) {
       const premium = defeat(25, burn);
-      const none = defeat(25, burn, 1);
+      const other = defeat(25, burn, 1);
       expect(premium.events.find((entry) => entry.kind === 'reward')?.lycalis).toBe(25);
-      expect(none.events.find((entry) => entry.kind === 'reward')?.lycalis).toBeUndefined();
-      expect(premium.state.rewardSeed).toBe(none.state.rewardSeed);
-      expect(premium.state.captureSeed).toBe(none.state.captureSeed);
-      expect(premium.state.seed).toBe(none.state.seed);
+      expect(other.events.find((entry) => entry.kind === 'reward')?.lycalis).toBe(25);
+      expect(premium.state.rewardSeed).toBe(other.state.rewardSeed);
+      expect(premium.state.captureSeed).toBe(other.state.captureSeed);
+      expect(premium.state.seed).toBe(other.state.seed);
       expect(premium.events.map(({ lycalis, message, ...event }) => event))
-        .toEqual(none.events.map(({ lycalis, message, ...event }) => event));
+        .toEqual(other.events.map(({ lycalis, message, ...event }) => event));
     }
   });
   it('atomically saves rewards/captures/unlocks/receipts, rejects forged amounts/sources/materials and retries failures', () => {
@@ -115,13 +116,14 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     expect(saveAccountRewards(saved, result, 'run')).toEqual(account);
     expect(spy).toHaveBeenCalledTimes(1);
     const before = saved.getItem(ACCOUNT_KEY);
-    for (const patch of ['amount', 'level', 'alive', 'lycalis', 'material', 'mode'] as const) {
+    for (const patch of ['amount', 'level', 'alive', 'lycalis', 'missing-premium', 'material', 'mode'] as const) {
       const forged = structuredClone(result);
       const reward = forged.events.find((entry) => entry.kind === 'reward')!;
       if (patch === 'amount') reward.amount = 1000;
       if (patch === 'level') forged.state.enemies[0].level = 119;
       if (patch === 'alive') forged.state.enemies[0].hp = 1;
       if (patch === 'lycalis') reward.lycalis = 3;
+      if (patch === 'missing-premium') delete reward.lycalis;
       if (patch === 'material') reward.materials = { 'tranquilitic-common': 1 };
       if (patch === 'mode') forged.state.enemies[0].creatureId = 'infusion:heavens:5';
       expect(() => saveAccountRewards(saved, forged, `forged-${patch}`)).toThrow();
@@ -165,8 +167,8 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     }
   });
   it('sells each fixed rarity for both currencies in one write, retaining other copies/discovery/pity', () => {
-    expect(sanctuarySalePrices.map((price) => price.lycalis)).toEqual([1, 2, 3, 5, 7, 10]);
-    expect(sanctuarySalePrices.map((price) => price.fractalis)).toEqual([100, 300, 1000, 3000, 10000, 30000]);
+    expect(sanctuarySalePrices.map((price) => price.lycalis)).toEqual([5, 10, 15, 20, 25, 30]);
+    expect(sanctuarySalePrices.map((price) => price.fractalis)).toEqual([150, 300, 1000, 3000, 10000, 30000]);
     for (let tier = 0; tier < 6; tier++) {
       const saved = storage();
       const copy = createCreatureCopy(`infusion:sanctuary:${tier}`);
@@ -253,15 +255,15 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     account.capturedCharacters = [createCreatureCopy('infusion:sanctuary:5')];
     account.creatures['infusion:sanctuary:5'] = { defeated: true };
     expect(gameplayHub(account)).toContain('data-infusion="sanctuary"');
-    expect(gameplayHub(account)).toContain('50% chance of 1 at Lv.65');
-    expect(gameplayHub(account)).toContain('the final boss gives 25 at 80%.');
-    expect(characterCopyManagement(account)).toContain('30,000 Prismatica + 10 Null-Prismatica');
+    expect(gameplayHub(account)).toContain('guaranteed 1 per enemy at Stage 1 (Lv.65)');
+    expect(gameplayHub(account)).toContain('the final boss gives 25 guaranteed.');
+    expect(characterCopyManagement(account)).toContain('30,000 Prismatica + 30 Null-Prismatica');
     const glossary = creatureGlossary(account);
     expect(glossary).toContain('aria-label="Sale value"');
     expect(glossary).toContain('currencies/fractalis.png');
     expect(glossary).toContain('currencies/lycalis.png');
     expect(glossary).toContain('<strong>30,000</strong>');
-    expect(glossary).toContain('<strong>10</strong>');
+    expect(glossary).toContain('<strong>30</strong>');
     expect(archives(account).match(/data-archive-character=/g)).toHaveLength(126);
     const html = summonHub(account);
     expect(html.match(/data-banner-entry=/g)).toHaveLength(28);
@@ -276,7 +278,8 @@ describe('Phase10 Rosethorn Sanctuary', () => {
     Reflect.apply(Reflect.get(BattleView.prototype, 'render'), view, []);
     expect(view.host.innerHTML).toContain('Stage 25 / 25');
     expect(view.host.innerHTML).toContain('CURRENCY FARM');
-    expect(view.host.innerHTML).toContain('80% of 5 at Lv.120');
+    expect(view.host.innerHTML).toContain('5 at Lv.120');
+    expect(view.host.innerHTML).toContain('25 guaranteed');
     expect(view.host.innerHTML).toContain('assets/backgrounds/sanctuary-arena.png');
     expect(view.host.innerHTML).toContain('assets/enemies/the-flame-beyond-eternity-rosethorn-wisp.png');
     expect(view.host.innerHTML).not.toContain('enemies/undefined');

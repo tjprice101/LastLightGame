@@ -94,7 +94,7 @@ function gameplayInformation(): string {
       <h4>Crownfall Treasury</h4><p>${treasuryPrismaticaText} No Null-Prismatica.
       Sales, Common to Omnic: ${treasurySalePrices.map((price) => price.toLocaleString('en-US')).join(' / ')} Prismatica.</p>
       <h4>Rosethorn Sanctuary</h4><p>Prismatica per enemy: 7-14 at Lv.65 to 15-30 at Lv.120.
-      Null-Prismatica: 50% chance of 1 at Lv.65, rising to 80% of 5 at Lv.120; the final boss gives 25 at 80%.
+      Null-Prismatica: guaranteed 1 per enemy at Stage 1 (Lv.65), rising to 5 at Lv.120; the final boss gives 25 guaranteed.
       Sales, Common to Omnic: ${sanctuarySalePrices.map((price) => `${price.fractalis.toLocaleString('en-US')} Prismatica + ${price.lycalis} Null-Prismatica`).join(' / ')}.</p>` },
     { id: 'roses', title: 'Passion of Crimson Roses', summary: 'Rosethorn materials', content: roseEventRules },
     { id: 'machines', title: 'Awaken the Machines', summary: 'Conduits, components and Masters', content: machineRulesText },

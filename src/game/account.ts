@@ -870,6 +870,9 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
         account.conduits = { ...account.conduits, [id]: (account.conduits?.[id] ?? 0) + amount };
       }
     }
+    if (result.state.infusion?.mode === 'sanctuary' && reward.lycalis === undefined) {
+      throw new Error('Rosethorn Sanctuary rewards require their guaranteed Null-Prismatica drop.');
+    }
     if (reward.lycalis !== undefined) {
       const creature = enemy.creatureId ? getCreature(enemy.creatureId) : undefined;
       if (!Number.isInteger(reward.lycalis) || reward.lycalis < 1 ||

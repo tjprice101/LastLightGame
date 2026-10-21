@@ -26,8 +26,8 @@ describe('shared menu information', () => {
     expect(html.match(/data-information="gameplay-information"/g)).toHaveLength(1);
     expect(plain(html)).toContain('data-information="story-prologue-information"');
     expect(plain(html)).toContain('data-information="gameplay-information"');
-    expect(plain(html)).toContain('50% chance of 1 at Lv.65');
-    expect(plain(html)).toContain('the final boss gives 25 at 80%.');
+    expect(plain(html)).toContain('guaranteed 1 per enemy at Stage 1 (Lv.65)');
+    expect(plain(html)).toContain('the final boss gives 25 guaranteed.');
     expect(plain(html)).toContain('stage 25 final boss gives 24,300-48,600');
     expect(plain(html)).toContain('Choose Continue when ready.');
     expect(html.match(/<details/g)).toHaveLength(1);

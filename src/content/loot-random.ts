@@ -23,8 +23,7 @@ export function rollInfusionLycalis(level: number, random: () => number): number
 export function sanctuaryLycalisOdds(level: number) {
   if (!Number.isInteger(level) || level < 65 || level > 120) throw new Error('Sanctuary Null-Prismatica drops require an enemy level from 65 to 120.');
   const growth = (level - 65) / 55;
-  const chance = .5 + .3 * growth;
-  return [{ amount: 0, chance: 1 - chance }, { amount: Math.round(1 + 4 * growth), chance }];
+  return [{ amount: 0, chance: 0 }, { amount: Math.round(1 + 4 * growth), chance: 1 }];
 }
 
 export function stagedLycalisOdds(mode: InfusionModeId, level: number, stage?: number) {

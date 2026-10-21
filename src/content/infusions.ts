@@ -79,9 +79,9 @@ export function treasuryEnemyStats(level: number, boss: boolean): Stats {
 }
 export const treasurySalePrices = [1000, 3000, 10000, 30000, 100000, 300000] as const;
 export const sanctuarySalePrices = [
-  { fractalis: 100, lycalis: 1 }, { fractalis: 300, lycalis: 2 },
-  { fractalis: 1000, lycalis: 3 }, { fractalis: 3000, lycalis: 5 },
-  { fractalis: 10000, lycalis: 7 }, { fractalis: 30000, lycalis: 10 },
+  { fractalis: 150, lycalis: 5 }, { fractalis: 300, lycalis: 10 },
+  { fractalis: 1000, lycalis: 15 }, { fractalis: 3000, lycalis: 20 },
+  { fractalis: 10000, lycalis: 25 }, { fractalis: 30000, lycalis: 30 },
 ] as const;
 /** Heaven/Abyss slimes sell for ONE chosen payout; each grows linearly by form (1 at form 1 -> 6 at form 6). */
 export const choiceSaleQuantities = [1, 2, 3, 4, 5, 6] as const;

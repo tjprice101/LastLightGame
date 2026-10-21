@@ -1,5 +1,33 @@
 # Current state and handoff
 
+## Guaranteed Sanctuary income and linear premium sales (D-361)
+
+- Owner chooses guaranteed1 Null-Prismatica per kill at Stage1/Lv65, rising
+  by `round(1+4*(level-65)/55)` to5 at Lv120. Existing final-boss5x makes25
+  guaranteed at Stage25. Premium RNG still draws once per kill; other seeds,
+  ordinary Prismatica, capture chances and Soar/Delve/Treasury are unchanged.
+- Sales Common->Omnic: Prismatica150/300/1000/3000/10000/30000 plus
+  Null-Prismatica5/10/15/20/25/30, both in one protected atomic transaction.
+  Owner explicitly preserves higher-tier Prismatica; D-0751-10 cap superseded.
+- Shared `sanctuaryLycalisOdds`/`sanctuarySalePrices` feed rewards, validation,
+  activity/loot/archive/sale displays and server. `saveAccountRewards` rejects
+  omitted guaranteed Sanctuary premium. Activity/battle help copy updated.
+- Tests cover all25 stages, both direct/Burn kills, every integer level's
+  RNG boundaries and yield above Soar/Delve expectation, both RNG seed extremes,
+  exact protected sales, missing/forged premium, atomic rewards/receipts,
+  authoritative early/mid/final drops and all six sale tiers. No save migration
+  or retroactive grant.
+- Verified: `npx vitest run --maxWorkers=4 --reporter=dot` passed4147 tests
+  across182 files; final focused server/Sanctuary/integrated-economy/menu-info
+  run passed99 tests across4 files. `npm run build` passed typecheck and
+  production build (existing chunk-size warning). `node tools\bundle_server_game.mjs`
+  regenerated the server; `npx supabase functions deploy game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`
+  succeeded. `node tools\smoke_server_game.mjs --final-loot` passed21 hosted
+  activity/stage parity, persistence and idempotency cases including Sanctuary's
+  final guaranteed25; disposable identities/records removed. Early farm
+  payouts and all six sale tiers are tested through the local authoritative
+  engine. Client publication uses the normal Pages workflow on push.
+
 ## Heart before Soul in Rose evolution (D-360)
 
 - Owner confirms scope: Rosetta, Thornia and Crinso Evo.4->5 cost25 Bloom,
