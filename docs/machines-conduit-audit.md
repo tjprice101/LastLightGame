@@ -17,7 +17,7 @@ Rules from the owner:
 | Stasis Reliquary | Legendary | Survive-at-1-HP + Shield, duplicated Heartcase/Accord | Damage from one enemy hit above 20% max HP reduced by 30% -> 60% |
 | Faultkeeper Loom | Omnic | Normal Attack draws damage, duplicated Atlas Bastion | Other allies gain Defense equal to 15% -> 30% of yours while you stand |
 | Pyre Census | Omnic | +% [Burn], duplicated Cinder Testament | +10% -> +20% Direct Damage per enemy with your [Burn] |
-| Flare Focusing Iris | Omnic | [Burn] Bonus Strike, duplicated Tempered Strike Link | Spending [Infernic Embers] extends your [Burn] +1 -> +2 Enemy Turns per charge |
+| Flare Focusing Iris | Omnic | [Burn] Bonus Strike, duplicated Tempered Strike Link | Each [Burn] phase consumed by [Flame Arc] extends your remaining [Burn] on each enemy +1 -> +2 Enemy Turns (D-359: authoritative stored duration, not only its snapshot) |
 | Ruinselect Prism | Omnic | Spent and duplicated Nightglass [Fractures] | +3% -> +6% Direct Damage per 10% of your max HP missing |
 | Astral Prism | Legendary | Elemental Damage only feeds [Burn]; overlapped Starvein | +20 -> +70 points Critical Rate, -6% -> -21% Defense; Critical Rate above 100% becomes Elemental Crit chance |
 | Citadel Spine | Legendary | Elemental Damage penalty meaningless for most | +25% -> +87.5% Defense, -6 -> -21 points Critical Rate (Shield rider unchanged) |

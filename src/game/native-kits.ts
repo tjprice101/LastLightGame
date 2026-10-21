@@ -6,7 +6,7 @@ import { nativeBalance } from '../content/native-balance';
 import type { StatusArtId } from '../content/status-art';
 import { applyConduitBurn, applyConduitWeaken, nativeGauge, nativeHeal, nativeShield,
   conduitBurnTick, afterConduitBurn, gear, equipped, value, nativeTargetDefense,
-  generatedShield, generatedStrike, finishNativeHealing } from './conduit-runtime';
+  generatedShield, generatedStrike, finishNativeHealing, effectiveDefense, resetConduitBurnStreak } from './conduit-runtime';
 
 export interface NativeKitState {
   burns?: Record<string, { damage: number; turns: number }>;
@@ -130,6 +130,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
     const damage = applyConduitBurn(state, owner, recipient, owner.stats.damage * fraction, activation);
     burns[recipient.id] = { damage: Math.max(previous?.damage ?? 0, damage), turns: 3 };
     recipient.burn = { ...burns[recipient.id], sourceId: owner.id, origin: 'native' };
+    resetConduitBurnStreak(owner, recipient);
     status(events, owner, recipient, `${recipient.name}: Infernis Burn, ${burns[recipient.id].damage} per phase for 3 phases.`);
   };
   if (action === 'light') {
@@ -236,7 +237,9 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
       }
       if (action === 'ultimate') {
         memory.cover = { targets: other.map(unit => unit.id), fraction: .4, throughPhase: state.round + 1 };
-        nativeShield(state, owner, owner, owner.stats.health * .2, events, { throughPhase: state.round + 1 });
+        const shield = Math.max(owner.stats.health * .2,
+          equipped(owner, 'master-bruno-2') ? effectiveDefense(state, owner) * 2 : 0);
+        nativeShield(state, owner, owner, shield, events, { throughPhase: state.round + 1 });
       }
       break;
     case 'disciple': {

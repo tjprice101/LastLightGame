@@ -1,5 +1,38 @@
 # Current state and handoff
 
+## Equipped Conduit verification (D-359)
+
+- Audited90 ordinary-slot Conduits (85 plus5 Calamitic) and48 named Masters.
+  Existing all-catalog positive/negative and snapshot tests are supplemented
+  by31 real-action/stat regressions in `src/game/conduit-integration.test.ts`.
+- Fixed Critical Rate slot-order clamping, full Tailwind spending, Iris/Tempered
+  stored Burn duration, accepted weaker Burn refresh resetting Cinder streak,
+  Charted accepting another ally's Normal Attack, and Razor parrying only the
+  first scheduled skill per Enemy Turn (all its impacts, not later activations).
+- Owner confirms Eclipse Mantle applies to Normal Attack. Bruno's inert
+  Attack-to-Defense Master instead repairs his support-only Last Flare:
+  Shield=max(200% effective Defense,20% maxHP), same40% Cover/two-phase duration.
+- Disciple assist uses recipient Attack and applicable buffs, not Disciple's.
+  Owner retains two EXTRA Instruction expiration rounds and next-action
+  consumption. Corrected descriptions, no new mechanics for these two Masters.
+- Falcon Sight already worked for actual native/captured Normal Attack
+  criticals; tests confirm rather than change it. Ownership, upgrades, frozen
+  equipment, RNG, rewards and saves remain unchanged.
+- Replaced the hosted `--masters` smoke's retired Atmoso critical-proc fixture
+  with his current all-enemy70% Normal Attack, exact one-time Gauge gain and
+  no self-Cyclone. Keeps a second ready ally so automatic enemy hits cannot
+  contaminate the action's Gauge measurement. Both equipped/unequipped local
+  action tests also confirm the current Master effect.
+- Verified: `npx tsc --noEmit -p .` passed;
+  `npx vitest run --maxWorkers=4 --reporter=dot` passed4129 tests in182 files;
+  `npm run build` passed (existing chunk-size warning).
+  `node tools\bundle_server_game.mjs` regenerated the matching server bundle;
+  `npx supabase functions deploy game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`
+  deployed successfully. `node tools\smoke_server_game.mjs --native-calamity`
+  and `node tools\smoke_server_game.mjs --masters` passed; disposable identities
+  and cascading records were removed. Matching client publication uses the
+  normal Pages workflow on push; no encounter-rules/save migration required.
+
 ## Collapsed Conduit lore (D-358)
 
 - Shared `conduitLore` in `presentation/conduit-store.ts` puts lore behind a

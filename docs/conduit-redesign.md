@@ -1,5 +1,39 @@
 # Conduit redesign: approved roster and runtime (D-313)
 
+## Equipped-effect verification (D-359)
+
+The current catalog is 90 ordinary-slot Conduits (including five Calamitic)
+and 48 named Masters. Existing all-catalog effect/absence tests and upgrade
+coverage are supplemented by real-action regressions in
+`src/game/conduit-integration.test.ts`; conditional effects still require
+their stated action, owner, element, target and timing predicates.
+
+- Critical Rate bonuses and penalties sum before their zero floor, so moving
+  Citadel Spine before Astral Prism cannot erase part of the penalty.
+- Skythread Rudder spends every accumulated Tailwind when Skill 1/2 uses
+  their combined discount.
+- Iris extensions and Tempered Strike consumption update Infernis's stored
+  Burn as well as its visible snapshot. Accepted weaker Burn refreshes reset
+  Cinder Testament's streak even when retaining the stronger tick damage.
+- Owner confirms Eclipse Mantle includes Normal Attack. Nerithe's Charted
+  follow-up also accepts another ally's single-target Normal Attack.
+- Razor's Midnight Bastion parries the first scheduled skill only per Enemy
+  Turn, covering all impacts of that skill, not later activations.
+- Owner selects Quarry Planet Gravitas as a Shield repair, not a new strike:
+  Last Flare grants max(200% effective Defense, 20% maximum HP); Cover unchanged.
+- Owner retains Disciple's recipient-based Sovereign Will assist, including
+  applicable Attack buffs, and Unbound Mindcrown's two EXTRA expiration rounds
+  with next-action consumption. Descriptions now match these mechanics.
+- Falcon Sight's actual Normal Attack critical damage already worked on
+  native and captured fighters; regression coverage confirms it.
+- Atmoso's all-enemy Master Normal Attack is verified at exactly 70% damage
+  per target with only one Gauge gain, locally and on the hosted server. The
+  hosted Master smoke no longer expects his retired critical-proc effect.
+
+No ownership, upgrade costs, saved gear, acquisition, RNG or artwork changes.
+Frozen equipment/upgrade and named-Master boundaries retain their existing tests.
+Historical status statements below do not supersede this current audit.
+
 **Scope boundary:** the owner approved implementing this entire equipment
 roster after its D-302 review. The separate
 [D-311 character identity proposal](character-identity-redesign.md) remains
@@ -226,7 +260,7 @@ reintroduce retired combat elements.
 | O05 | Thunderbird Coil `voltaic-thunderbird-coil` | Atmospheric | Once per offensive activation with a native critical HP hit, arc to the healthiest other living enemy for 30% -> 60% of that first critical's actual HP damage, capped at 50% -> 100% A. No other enemy means no arc. | Critical chain lightning with a genuinely different target. |
 | O06 | Griffin Turbine `atmospheric-griffin-turbine` | Atmospheric | After your Normal Attack deals direct HP damage, each other living ally gains Gauge equal to 15% -> 30% of that damage as a share of your Attack (rounded, up to 25 each; D-355), once per activation. No return to you and no gain on shield-only damage. | A basic-attacking team battery. |
 | O07 | Seraph Mirror `luminous-seraph-mirror` | Tranquilitic | A native critical activation heals each living ally for 8% -> 16% of its total direct HP damage, capped at 3% -> 6% H per ally per activation. | Team lifesteal, not self-sustain or shield conversion. |
-| O08 | Eclipse Mantle `ominous-eclipse-mantle` | Chaotic | When a native damaging skill hits your already-Weakened target, consume one remaining phase of your Weaken after impact to ignore 40% -> 60% of that target's Defense for this hit. One consumption per target per activation; never consume another owner's Weaken. | Spend control duration for penetration. |
+| O08 | Eclipse Mantle `ominous-eclipse-mantle` | Chaotic | When an Attack Action, including Normal Attack, hits your already-Weakened target, consume one remaining phase of your Weaken after impact to ignore 40% -> 60% of that target's Defense for this hit. One consumption per target per activation; never consume another owner's Weaken. | Spend control duration for penetration. |
 | O09 | Kirin Cradle `tranquilitic-kirin-cradle` | Tranquilitic | Defense heals the lowest-HP-ratio living ally for 50% -> 100% D, capped at 10% -> 20% H. Self is eligible; no shield or Gauge is granted. | Defense-stat healer, including non-healer kits. |
 | O10 | Ouroboros Core `chaotic-ouroboros-core` | Chaotic | On Last Flare, convert only Gauge above its actual paid cost into a refresh-only self shield: 0.3% -> 0.6% H per excess Gauge, capped at 15% -> 30% H. Consume that excess Gauge, even if a stronger shield makes the offer redundant; normal recovery remains. | Turn capacity/overflow investment into an ultimate barrier. |
 | O11 | Cinder Testament `infernic-cinder-testament` | Infernic | Each consecutive damaging tick of your Burn on the same enemy adds +20% -> +40% Burn damage per preceding tick, capped at +60% -> +120%. Reapplying Burn resets this item's tick streak on that target. | Let flames mature rather than constantly refresh them. |
@@ -234,7 +268,7 @@ reintroduce retired combat elements.
 | O13 | Faultkeeper Loom `tectonic-faultkeeper-loom` | Botanic | After the owner's Normal Attack that player turn (D-336; formerly while defending), intercept 30% -> 60% of each other ally's incoming post-mitigation direct damage, up to 20% -> 40% H routed total per phase. Your shield then absorbs routed damage; it is not mitigated a second time. | **G**: bounded damage sharing, not another team shield. |
 | O14 | Verdant Covenant `efflorescent-verdant-covenant` | Botanic | Your effective native active heal of another ally primes +20% -> +40% direct damage for that recipient's next Skill 1 or Skill 2, consumed once for the entire activation. Stronger refresh wins; Last Flare/Normal do not consume it. | Healer-to-damage-dealer setup. |
 | O15 | Stormstep Dynamo `voltaic-stormstep-dynamo` | Atmospheric | Switching directly between Skill 1 and Skill 2 gives the new action +25% -> +50% direct damage. Repeating a slot, using Normal/Defense/Last Flare, or a non-damaging new action breaks the chain. First action receives no bonus. | Alternating-skill rotation, no generic reserve bank. |
-| O16 | Skythread Rudder `atmospheric-skythread-rudder` | Atmospheric | Defense primes one Tailwind. Your next ordinary skill costs 10 -> 20 less Gauge, minimum 1 after discounts. Consume only on legal activation; refresh one charge, never stack. | Spend a turn now to afford a stronger skill later. |
+| O16 | Skythread Rudder `atmospheric-skythread-rudder` | Atmospheric | Each Normal Attack grants a Tailwind. Each Tailwind reduces your next Skill 1 or Skill 2 cost by 10 -> 20 Elemental Gauge, minimum 1 after discounts. That skill spends all accumulated Tailwinds on legal activation. | Accumulate discounts through Normal Attacks. |
 | O17 | Dawn Witness Array `luminous-dawn-witness-array` | Tranquilitic | Each noncritical Normal Attack stores a Witness, maximum 3. Your next native critical activation consumes all Witnesses, adding 15% -> 30% A per Witness as one generated strike to its primary target, after native damage. No strike if that target has fallen. | Save failed basics for a later precision payoff, unlike Falcon's forced crit. |
 | O18 | Nightglass Archive `ominous-nightglass-archive` | Chaotic | A native damaging skill places one personal Fracture on each surviving target, maximum 3 per owner/target. Your Normal Attack consumes them for +10% -> +20% direct damage each. Marks are placed after impact; the current skill never consumes them by default. | Skill-to-Normal mark rotation. |
 | O19 | Stillhour Carillon `tranquilitic-stillhour-carillon` | Tranquilitic | At the start of your forced Last Flare recovery turn, gain 15 -> 30 Gauge once and give the lowest-Gauge other living ally the same amount. No gain on an ordinary unspent turn, stasis skip or missing action slot. | Productive recovery that still costs the action. |
@@ -254,7 +288,7 @@ Omnic conversion. These are not an additional 25 unlocks.
 | O25 | Sky Sovereign Escapement `pulse-trigger-pawl` | Atmospheric | A Skill 1/Skill 2 activation that deals native critical HP damage refunds 8 -> 16 Gauge once, capped at that action's actual paid cost. No refund on Normal, Last Flare or generated hits. | Critical skill efficiency replacing obsolete cooldown reduction. |
 | O26 | Firstlight Concordance `firstlight-cam` | Tranquilitic | After a native damaging Normal Attack, donate up to 8 -> 16 of your remaining Gauge to the lowest-Gauge other living ally, capped by their free capacity. Debit and credit the same amount; no recipient means no cost. | A conserved Gauge transfer, not free team generation. |
 | O27 | Secondbeat Rupture Throne `secondbeat-rack` | Chaotic | If an enemy carrying your native Weaken dies, transfer its remaining duration and reduction to the highest-Attack living enemy. Transfer potency is 60% -> 100% of the old reduction, duration at most 3. Stronger existing Weaken wins; transferred Weaken cannot transfer again or generate resources. | Suppression inheritance on kills. |
-| O28 | Ember Coronation Iris `flare-focusing-iris` | Infernic | On an actual native Infernic Embers spend, add a generated strike to each enemy already carrying your Burn for 25% -> 50% of its next-tick damage per spent charge, capped at 60% -> 120% A per target per activation. No added Burn phase is consumed or granted. | Intrinsic resource spend amplifies an established flame field. |
+| O28 | Flare Focusing Iris `flare-focusing-iris` | Infernic | For each Burn phase consumed by Flame Arc, your remaining Burn on each enemy lasts +1 -> +2 Enemy Turns longer. | Spending stored Burn prolongs the remaining flame field. |
 | O29 | Abyssal Clearwater Parliament `clearwater-manifold` | Oceanic | Native Gauge gain that would exceed your capacity instead gives the lowest-Gauge other living ally 50% -> 100% of that overflow, capped at 20 -> 40 Gauge per player round including its enemy phase. Never routes Conduit-origin Gauge or relays another overflow. | Rescue wasted income rather than increase your capacity. |
 | O30 | Aegis Covenant Crown `aegis-return-spring` | Tranquilitic | Native shield growth on another ally primes one Critical Seal on them. Their next enemy critical direct hit is resolved with multiplier 1 instead of the rolled critical multiplier, then the seal is consumed. Grant at most 1 -> 2 seals total across the team per round; each recipient holds one. Critical RNG/result identity is otherwise unchanged. | Anti-critical support for someone else, not a self-defense duplicate. |
 | O31 | Phoenix Lifeforge `emberlife-kiln` | Infernic | Actual HP damage from your native Burn heals you for 20% -> 40% of that damage, capped at 6% -> 12% H total per enemy phase. No healing from propagated Burn or generated echoes. | Damage-over-time self-sustain, distinct from direct lifesteal. |
@@ -338,7 +372,7 @@ the Master itself is enabled.
 | # | Identity and stable ID | Proposed complete effect | Review |
 | --- | --- | --- | --- |
 | M19 | Living Worldwall Atlas `master-bruno-1` | The first direct enemy hit against Bruno each enemy phase cannot remove more than 20% H after shield absorption. It still spends his shield normally. Later hits, Burn and routed damage are uncapped by this Master. | One heavy-hit limiter, not universal damage immunity. |
-| M20 | Quarry Planet Gravitas `master-bruno-2` | Bruno's Last Flare direct damage uses D in place of A in both the native coefficient and the mitigation ratio, `D/(D + enemy Defense)`. Normal critical/outgoing multipliers still apply; other actions stay Attack-based. | **K**: a defense-scaling artillery build. |
+| M20 | Quarry Planet Gravitas `master-bruno-2` | Bruno's Last Flare grants himself a Shield equal to max(200% effective Defense, 20% maximum HP). Cover is unchanged; this adds no attack. | **K**: a defense-scaling Shield build. |
 | M21 | Worldforge Hammer Dominion `master-bruno-3` | Each damaging Skill 1 permanently removes 15% of the target's encounter-entry Defense, capped at 30% total per enemy. In exchange, Skill 2 Cover redirects 35% rather than 50%. Reset excavation on a fresh encounter; no Weaken or stat recursion. | **K**: trade Cover strength for armor excavation. |
 
 ### Disciple: lasting empowerment / linked Gauge / psychic assist
@@ -347,7 +381,7 @@ the Master itself is enabled.
 | --- | --- | --- | --- |
 | M22 | Unbound Mindcrown Synapse `master-disciple-1` | Disciple's native Instructions expire two player rounds later. They still enhance only the recipient's next native action and retain the single ordinary Instruction limit. No generated buff or extra action. | Instruction stewardship. |
 | M23 | Concord Planet Thoughtforge `master-disciple-2` | After Last Flare, link living allies through the end of the next two player rounds. Native positive Gauge gains to a linked ally are split equally among currently living linked allies; clip full recipients without redistribution. Total offered Gauge is conserved, costs/refunds/generated income are not shared, and the link ends if Disciple falls. | **K**: a temporary team economy rewrite, not free Gauge multiplication. |
-| M24 | Sovereign Will Amplifier `master-disciple-3` | After Strike Instruction, its explicitly selected living recipient makes one generated assist at 40% A against the first living enemy in formation order. No extra RNG, critical, Gauge, resources, action spend, Instruction consumption or recursive equipment triggers. Once per Disciple activation. | **K**: support-triggered ally assist. |
+| M24 | Sovereign Will Amplifier `master-disciple-3` | After Strike Instruction, its explicitly selected living recipient makes one generated assist at 40% of their own Attack, including applicable Attack buffs, against the first living enemy in formation order. No extra RNG, critical, Gauge, resources, action spend, Instruction consumption or recursive equipment triggers. Once per Disciple activation. | **K**: support-triggered ally assist. |
 
 ### Elise: armor-cutting precision / four-point storm / execution reset
 
@@ -393,7 +427,7 @@ the Master itself is enabled.
 
 | # | Identity and stable ID | Proposed complete effect | Review |
 | --- | --- | --- | --- |
-| M40 | Shoreless Meridian Worldchart `master-nerithe-1` | Nerithe's Normal Attack marks its surviving target as Charted. One other ally's next single-target native damaging skill copies a generated 40%-damage echo to each different Charted enemy, then clears all Charts. No echo to the original target; Charts neither generate Gauge nor replace her fixed Normal-only +5 passive. | Team target preparation without copying her passive. |
+| M40 | Shoreless Meridian Worldchart `master-nerithe-1` | Nerithe's Normal Attack marks its surviving target as Charted. One other ally's next single-target Attack Action, including Normal Attack, copies a generated 40%-damage echo to each different Charted enemy, then clears all Charts. No echo to the original target; Charts neither generate Gauge nor replace her fixed Normal-only +5 passive. | Team target preparation without copying her passive. |
 | M41 | Folded Ocean Planetarium `master-nerithe-2` | Fold the Sea becomes a pure team support skill: no direct damage or Weaken. It gives each living ally 15 native Gauge and 15% next-direct-hit protection. Retain its Skill 2 Gauge cost and one-action use; effects cannot exceed actual capacity or stack protection. | **K**: an explicit offensive-to-support skill replacement. |
 | M42 | Abyssal Surveyor Crown `master-nerithe-3` | Ocean Beyond the Map deals 50% less direct damage but no longer imposes next-turn recovery. Its 100 Gauge base cost, native Weaken and one-action limit remain; it does not grant another action on the cast turn. | **T**: a lighter ultimate with a real recovery trade-off. |
 

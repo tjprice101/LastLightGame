@@ -55,7 +55,7 @@ try {
   } else if (process.argv.includes('--final-loot') || process.argv.includes('--loot-parity')) {
     await smokeFinalLoot(client, created.user.id, username, process.argv.includes('--loot-parity'));
   } else if (process.argv.includes('--masters')) {
-    await smokeRecurringMaster(client, created.user.id, username);
+    await smokeEquippedMaster(client, created.user.id, username);
   } else if (process.argv.includes('--balance')) {
     await smokeEnemyBalance(client, created.user.id, username);
   } else if (process.argv.includes('--components')) {
@@ -764,11 +764,11 @@ async function smokeEnemyBalance(client, userId, username) {
   console.log('Hosted balance smoke passed: actual Lv60 Training/Heaven ordinary parity, material boss stats, shared level-based skill strength, frozen read and quit; zero currencies granted.');
 }
 
-async function smokeRecurringMaster(client, userId, username) {
+async function smokeEquippedMaster(client, userId, username) {
   const game = freshGame(username);
   game.starterId = 'ember';
   game.account.characters = { ember: { level: 0, evolution: 1 }, atmoso: { level: 0, evolution: 1 } };
-  game.account.squad = ['atmoso'];
+  game.account.squad = ['atmoso', 'ember'];
   game.account.masterConduits = { 'master-atmoso-1': 1 };
   game.account.masterEquipment = { atmoso: 'master-atmoso-1' };
   const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
@@ -776,13 +776,14 @@ async function smokeRecurringMaster(client, userId, username) {
   assert.ok(entered.run);
   const state = entered.run.session.state;
   const owner = state.allies[0];
-  owner.stats.crit = 1;
-  owner.shatter = owner.stats.shatterCapacity;
-  owner.readyRound.skill2 = state.round;
+  owner.stats.crit = 0;
+  owner.stats.damage = 1000;
+  owner.shatter = 0;
   owner.omnicMemory = { 'master-atmoso-1': { usedRound: state.round, bankRound: state.round } };
   state.enemies.forEach(enemy => {
     enemy.hp = enemy.stats.health = 10000;
     enemy.stats.damage = 0;
+    enemy.stats.defense = 0;
     enemy.stats.crit = 0;
   });
   // Only this newly created disposable identity receives deterministic combat fixtures.
@@ -800,14 +801,18 @@ async function smokeRecurringMaster(client, userId, username) {
   const initial = await invoke({ kind: 'read' }, 0);
   assert.equal(initial.session.state.allies[0].masterConduit, 'master-atmoso-1');
   const operation = { kind: 'act', runId: initial.session.runId, actorId: 'atmoso',
-    action: 'skill2', targetId: initial.session.state.enemies[0].id };
+    action: 'light', targetId: initial.session.state.enemies[0].id };
   const requestId = randomUUID();
   const resolved = await invoke(operation, initial.revision, requestId);
-  const followups = resolved.result.events.filter(event =>
-    event.kind === 'damage' && event.message.includes('Sky Without End Turbine'));
+  const hits = resolved.result.events.filter(event =>
+    event.kind === 'damage' && event.source === 'atmoso' && event.origin === 'native');
   assert.ok(state.enemies.length > 1);
-  assert.equal(followups.length, state.enemies.length, 'Master recurs once per native AoE critical, without recursion');
-  assert.equal(new Set(followups.map(event => event.target)).size, state.enemies.length);
+  assert.equal(hits.length, state.enemies.length, 'Master Normal Attack hits every enemy exactly once');
+  assert.equal(new Set(hits.map(event => event.target)).size, state.enemies.length);
+  assert.ok(hits.every(event => event.amount === 700 && !event.critical), 'Each target takes 70% Normal Attack damage');
+  assert.equal(resolved.result.events.filter(event => event.kind === 'attack' && event.source === 'atmoso').length, 1);
+  assert.equal(resolved.session.state.allies[0].shatter, 20, 'Normal Attack grants Gauge once, not per target');
+  assert.equal(resolved.session.state.allies[0].native?.cyclone, undefined, 'Own Normal Attack does not create a Cyclone');
   assert.equal(resolved.session.state.allies[0].omnicMemory['master-atmoso-1'].usedRound, state.round,
     'Legacy round stamps remain untouched and do not block Master effects');
   assert.equal(resolved.revision, initial.revision + 1);
@@ -817,5 +822,5 @@ async function smokeRecurringMaster(client, userId, username) {
   assert.deepEqual(checkpoint.account, resolved.account);
   assert.equal(checkpoint.revision, resolved.revision);
   assert.equal((await invoke({ kind: 'quit', runId: resolved.session.runId }, resolved.revision)).session, null);
-  console.log(`Hosted Master smoke passed: ${followups.length} distinct native AoE critical payoffs in one round, ignored legacy gates, nonrecursive strikes, frozen loadout, idempotent retry, checkpoint persistence and quit.`);
+  console.log(`Hosted Master smoke passed: ${hits.length} distinct Normal Attack targets at exactly 70% damage, one Gauge grant, no self-Cyclone, ignored legacy gates, frozen loadout, idempotent retry, checkpoint persistence and quit.`);
 }

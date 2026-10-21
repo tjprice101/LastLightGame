@@ -284,12 +284,13 @@ export function applyConduitBuffs(stats: Stats, equipment?: ConduitSlots, upgrad
       if (buff.kind === 'percent') stats[buff.stat] *= 1 + buff.amount / 100;
       else if (buff.kind === 'percentage-points') {
         // Critical Rate may exceed 100%: the excess becomes the Elemental Crit chance.
-        const value = Math.max(0, stats[buff.stat] + buff.amount / 100);
-        stats[buff.stat] = buff.stat === 'crit' ? value : Math.min(1, value);
+        const value = stats[buff.stat] + buff.amount / 100;
+        stats[buff.stat] = buff.stat === 'crit' ? value : Math.min(1, Math.max(0, value));
       }
       else stats[buff.stat] += buff.amount;
     }
   }
+  stats.crit = Math.max(0, stats.crit);
 }
 
 export function isActionId(value: unknown): value is ActionId {

@@ -5,6 +5,12 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Status vocabulary
 
+**Equipped Conduit audit (D-359):** all90 ordinary-slot and48 Master effects
+checked with catalog/upgrade/absence tests and actual-action regressions.
+Fixes include stat ordering, Tailwind spending, stored Burn duration/streaks,
+Normal Attack hooks, first-skill-only Razor parry and the owner-approved Bruno
+Shield repair. [Current findings and contract](conduit-redesign.md#equipped-effect-verification-d-359).
+
 **Collapsed Conduit lore (D-358):** repeated origin prose is closed behind
 **Lore** in Conduit details, including Masters; abilities remain visible and
 Lore search still works. [Contract](menus-and-inventory.md#collapsed-conduit-lore-d-358).

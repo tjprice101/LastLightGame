@@ -907,7 +907,7 @@ var conduitRedesign = {
     ]
   },
   "flare-focusing-iris": {
-    "description": "When you spend [Infernic Embers], your [Burn] on each enemy lasts +1 -> +2 Enemy Turns longer per charge spent.",
+    "description": "For each [Burn] phase consumed by [Flame Arc], your remaining [Burn] on each enemy lasts +1 -> +2 Enemy Turns longer.",
     "ranges": [
       { "base": 1, "maximum": 2, "percent": false, "step": true }
     ]
@@ -1121,7 +1121,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-bruno-2": {
-    "description": "[Bruno]'s [Last Flare] uses his Defense in place of his Attack.",
+    "description": "[Bruno]'s [Last Flare] grants himself a [Shield] equal to 200% of his Defense, or 20% of his maximum HP if higher. [Cover] is unchanged.",
     "ranges": []
   },
   "master-bruno-3": {
@@ -1129,7 +1129,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-disciple-1": {
-    "description": "[Disciple]'s [Instructions] last two player Rounds and enhance the recipient's next Attack Action.",
+    "description": "[Disciple]'s [Instructions] expire two player Rounds later and still apply to the recipient's next action.",
     "ranges": []
   },
   "master-disciple-2": {
@@ -1137,7 +1137,7 @@ var conduitRedesign = {
     "ranges": []
   },
   "master-disciple-3": {
-    "description": "After a [Strike] [Instruction], its recipient makes a [Bonus Strike] of 40% of [Disciple]'s Attack against the first enemy.",
+    "description": "After a [Strike] [Instruction], its recipient makes a [Bonus Strike] of 40% of their own Attack, including applicable Attack buffs, against the first enemy.",
     "ranges": []
   },
   "master-elise-1": {
@@ -3313,11 +3313,12 @@ function applyConduitBuffs(stats, equipment, upgrades) {
     for (const buff of conduitBuffs(getConduit(conduitId), upgrades?.[conduitId] ?? 0)) {
       if (buff.kind === "percent") stats[buff.stat] *= 1 + buff.amount / 100;
       else if (buff.kind === "percentage-points") {
-        const value2 = Math.max(0, stats[buff.stat] + buff.amount / 100);
-        stats[buff.stat] = buff.stat === "crit" ? value2 : Math.min(1, value2);
+        const value2 = stats[buff.stat] + buff.amount / 100;
+        stats[buff.stat] = buff.stat === "crit" ? value2 : Math.min(1, Math.max(0, value2));
       } else stats[buff.stat] += buff.amount;
     }
   }
+  stats.crit = Math.max(0, stats.crit);
 }
 function isActionId(value2) {
   return actionIds.some((action) => action === value2);
@@ -5141,6 +5142,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
     const damage = applyConduitBurn(state, owner, recipient, owner.stats.damage * fraction, activation);
     burns[recipient.id] = { damage: Math.max(previous?.damage ?? 0, damage), turns: 3 };
     recipient.burn = { ...burns[recipient.id], sourceId: owner.id, origin: "native" };
+    resetConduitBurnStreak(owner, recipient);
     status2(events, owner, recipient, `${recipient.name}: Infernis Burn, ${burns[recipient.id].damage} per phase for 3 phases.`);
   };
   if (action === "light") {
@@ -5265,7 +5267,11 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       }
       if (action === "ultimate") {
         memory.cover = { targets: other.map((unit) => unit.id), fraction: 0.4, throughPhase: state.round + 1 };
-        nativeShield(state, owner, owner, owner.stats.health * 0.2, events, { throughPhase: state.round + 1 });
+        const shield2 = Math.max(
+          owner.stats.health * 0.2,
+          equipped(owner, "master-bruno-2") ? effectiveDefense(state, owner) * 2 : 0
+        );
+        nativeShield(state, owner, owner, shield2, events, { throughPhase: state.round + 1 });
       }
       break;
     case "disciple": {
@@ -5942,7 +5948,7 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
   }
   if (prepareCalamiticAction(state, actor, action)) ctx.freeAction = true;
   if (action === "skill1" && n.quietFeather) n.quietFeather--;
-  if ((action === "skill1" || action === "skill2") && n.tailwind) n.tailwind--;
+  if ((action === "skill1" || action === "skill2") && n.tailwind) delete n.tailwind;
   const offensive = action === "light" || actor.kit?.abilities[action].strength.damageMultiplier !== void 0;
   if (offensive && equipped(actor, "parallax-relay")) ctx.criticalBonus += value(state, actor, "parallax-relay", 0.15, 0.3);
   if (offensive && equipped(actor, "ruinselect-prism"))
@@ -6031,7 +6037,7 @@ function conduitHitModifiers(state, actor, target, ctx, critical) {
   if (target.hp >= target.stats.health && equipped(actor, "breach-pendulum")) bonus += value(state, actor, "breach-pendulum", 0.2, 0.4);
   if (target.hp <= target.stats.health * 0.25 && equipped(actor, "execution-orrery")) bonus += value(state, actor, "execution-orrery", 0.5, 1);
   if (action === "skill1" && equipped(actor, "spearwheel-engine")) pierce += value(state, actor, "spearwheel-engine", 0.15, 0.3);
-  if (action !== "light" && target.weakened > 0 && target.weakenSourceId === actor.id && target.weakenOrigin !== "conduit" && equipped(actor, "ominous-eclipse-mantle")) {
+  if (target.weakened > 0 && target.weakenSourceId === actor.id && target.weakenOrigin !== "conduit" && equipped(actor, "ominous-eclipse-mantle")) {
     pierce += value(state, actor, "ominous-eclipse-mantle", 0.4, 0.6);
     ctx.eclipseTargets.push(target.id);
   }
@@ -6073,9 +6079,14 @@ function conduitHitModifiers(state, actor, target, ctx, critical) {
   return {
     bonus,
     pierce,
-    attack: ctx.action === "ultimate" && equipped(actor, "master-bruno-2") ? effectiveDefense(state, actor) : actor.stats.damage,
+    attack: actor.stats.damage,
     ...critical && equipped(actor, "master-elise-1") ? { critMultiplier: 1.5 } : {}
   };
+}
+function resetConduitBurnStreak(owner, target) {
+  const n = gear(target).numbers;
+  n[`cinder:${owner.id}`] = 0;
+  n[`extensions:${owner.id}`] = 0;
 }
 function applyConduitBurn(state, owner, target, base, ctx) {
   let bonus = 0;
@@ -6088,11 +6099,7 @@ function applyConduitBurn(state, owner, target, base, ctx) {
     if (ctx.burnPaid) bonus += value(state, owner, "starvein-conductor", 0.3, 0.6);
   }
   const damage = Math.round((base + ctx.shieldBurn) * (1 + bonus));
-  if (target.burn.turns <= 0 || damage >= target.burn.damage) {
-    const n = gear(target).numbers;
-    n[`cinder:${owner.id}`] = 0;
-    n[`extensions:${owner.id}`] = 0;
-  }
+  if (target.burn.turns <= 0 || damage >= target.burn.damage) resetConduitBurnStreak(owner, target);
   return damage;
 }
 function afterConduitImpact(owner, target, ctx) {
@@ -6244,6 +6251,12 @@ function nativeGauge(state, target, offer, events, conduit = false) {
 function recordConduitHit(ctx, target, amount, critical, criticalMultiplier, overkill = 0) {
   ctx.hits.push({ target: target.id, damage: amount, critical, criticalMultiplier, ...overkill > 0 ? { overkill } : {} });
 }
+function adjustBurnTurns(owner, target, delta) {
+  target.burn.turns = Math.max(0, target.burn.turns + delta);
+  const stored = owner.native?.burns?.[target.id];
+  if (stored && target.burn.sourceId === owner.id && target.burn.origin !== "conduit")
+    stored.turns = target.burn.turns;
+}
 function finishConduitAction(state, owner, ctx, events) {
   const n = gear(owner).numbers;
   finishNativeHealing(state, owner, ctx, events);
@@ -6333,7 +6346,7 @@ function finishConduitAction(state, owner, ctx, events) {
           const enemy = state.enemies.find((enemy2) => enemy2.id === hit.target && enemy2.hp > 0 && enemy2.burn.turns > 0 && enemy2.burn.sourceId === owner.id && enemy2.burn.origin !== "conduit");
           if (!enemy) continue;
           const tick = conduitBurnTick(state, owner, enemy);
-          enemy.burn.turns--;
+          adjustBurnTurns(owner, enemy, -1);
           generatedStrike(state, owner, enemy, tick * value(state, owner, id, 0.8, 1.6), events);
         }
         break;
@@ -6351,7 +6364,7 @@ function finishConduitAction(state, owner, ctx, events) {
       case "flare-focusing-iris":
         if ((ctx.spent.ember ?? 0) > 0) for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && enemy2.burn.turns > 0 && enemy2.burn.sourceId === owner.id && enemy2.burn.origin !== "conduit")) {
           const turns = ctx.spent.ember * step(state, id, 1, 2);
-          enemy.burn.turns += turns;
+          adjustBurnTurns(owner, enemy, turns);
           emit(events, "status", owner, enemy, turns, `${enemy.name}'s [Burn] lasts ${turns} more Enemy Turns.`);
         }
         break;
@@ -6492,7 +6505,7 @@ function finishConduitAction(state, owner, ctx, events) {
     if (ctx.action !== "skill1" && ctx.action !== "skill2") continue;
     for (const ally of alive(state)) nativeHeal(state, flora, ally, ally.stats.health * 0.02, events, false);
   }
-  if ((ctx.action === "skill1" || ctx.action === "skill2") && !ctx.all && damage > 0) {
+  if (!ctx.all && damage > 0) {
     for (const nerithe of alive(state).filter((ally) => ally.id !== owner.id && equipped(ally, "master-nerithe-1"))) {
       for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && enemy2.id !== target?.id && gear(enemy2).owners.chart === nerithe.id)) generatedStrike(state, owner, enemy, damage * 0.4, events);
       for (const enemy of state.enemies) if (gear(enemy).owners.chart === nerithe.id) delete gear(enemy).owners.chart;
@@ -6647,9 +6660,16 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   if (critical && equipped(target, "sentinel-aperture")) equipmentMultiplier *= 1 - value(state, target, "sentinel-aperture", 0.25, 0.5);
   if (target.hp > target.stats.health * 0.75 && equipped(target, "pale-bulwark-diadem")) equipmentMultiplier *= 1 - value(state, target, "pale-bulwark-diadem", 0.15, 0.3);
   if (n.tauntRound === state.round && equipped(target, "tectonic-atlas-bastion")) equipmentMultiplier *= 1 - value(state, target, "tectonic-atlas-bastion", 0.1, 0.2);
+  const parryKey = `parry:${target.id}`;
+  const enemyMemory = gear(enemy).numbers;
+  if (!enemy.native) delete enemyMemory[parryKey];
+  const hasParry = scheduled && n.normalRound === state.round && equipped(target, "master-razor-1") && (n.parryRound !== state.round || enemyMemory[parryKey] === state.round);
+  if (hasParry) {
+    n.parryRound = state.round;
+    enemyMemory[parryKey] = state.round;
+  }
   const wardMultiplier = nativeShieldActivationMultiplier(enemy, target);
   const nativeMultiplier = nativeIncomingMultiplier(state, enemy, target, action, events) * wardMultiplier;
-  const hasParry = scheduled && n.normalRound === state.round && equipped(target, "master-razor-1");
   const temporaryMultiplier = (parry) => equipmentMultiplier * nativeMultiplier * (parry ? 0.5 : 1);
   const totalMultiplier = (parry) => temporaryMultiplier(parry);
   let reflection = 0;

@@ -714,7 +714,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "flare-focusing-iris": {
-    "description": "When you spend [Infernic Embers], your [Burn] on each enemy lasts +1 -> +2 Enemy Turns longer per charge spent.",
+    "description": "For each [Burn] phase consumed by [Flame Arc], your remaining [Burn] on each enemy lasts +1 -> +2 Enemy Turns longer.",
     "ranges": [
       {"base":1,"maximum":2,"percent":false,"step":true}
     ]
@@ -932,7 +932,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-bruno-2": {
-    "description": "[Bruno]'s [Last Flare] uses his Defense in place of his Attack.",
+    "description": "[Bruno]'s [Last Flare] grants himself a [Shield] equal to 200% of his Defense, or 20% of his maximum HP if higher. [Cover] is unchanged.",
     "ranges": []
   },
   "master-bruno-3": {
@@ -940,7 +940,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-disciple-1": {
-    "description": "[Disciple]'s [Instructions] last two player Rounds and enhance the recipient's next Attack Action.",
+    "description": "[Disciple]'s [Instructions] expire two player Rounds later and still apply to the recipient's next action.",
     "ranges": []
   },
   "master-disciple-2": {
@@ -948,7 +948,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     "ranges": []
   },
   "master-disciple-3": {
-    "description": "After a [Strike] [Instruction], its recipient makes a [Bonus Strike] of 40% of [Disciple]'s Attack against the first enemy.",
+    "description": "After a [Strike] [Instruction], its recipient makes a [Bonus Strike] of 40% of their own Attack, including applicable Attack buffs, against the first enemy.",
     "ranges": []
   },
   "master-elise-1": {

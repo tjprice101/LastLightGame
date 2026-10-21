@@ -668,11 +668,15 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       conduitIncoming(state, target, owner, 500, false, false, events);
       expect(owner.hp).toBe(enabled ? 200 : 0);
       break;
-    case 'master-bruno-2':
+    case 'master-bruno-2': {
       owner.stats.damage = 200;
-      expect(conduitHitModifiers(state, owner, target, context('ultimate'), false).attack).toBe(enabled ? 100 : 200);
+      owner.stats.defense = 200;
+      const result = attack('ultimate');
+      expect(result.state.allies[0].shield).toBe(enabled ? 400 : 200);
+      expect(result.state.allies[0].native?.cover?.fraction).toBe(.4);
       expect(conduitHitModifiers(state, owner, target, context(), false).attack).toBe(200);
       break;
+    }
     case 'master-bruno-3':
       weaken();
       expect(effectiveDefense(state, target)).toBe(enabled ? 85 : 100);
