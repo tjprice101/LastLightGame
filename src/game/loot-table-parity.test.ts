@@ -51,7 +51,7 @@ describe('live enemy drops match published per-stage loot tables', () => {
           expect(possibilities.some(drop => amount >= drop.minimum && amount <= drop.maximum), `${enemy.name}, stage ${stage}: ${id} x${amount}`).toBe(true);
         }
         for (const drop of table.filter(drop => drop.chance === 1)) expect(actual[drop.id], `${enemy.name}, stage ${stage}: guaranteed ${drop.id}`).toBeDefined();
-        if (seed === 0 && state.story && (enemy.level ?? 0) >= 35) expect(reward.materials![`${enemy.element}-uncommon`]).toBeDefined();
+        if (seed === 0 && state.story) expect(reward.materials![`${enemy.element}-uncommon`]).toBeDefined();
       }
     }
   });

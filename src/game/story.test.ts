@@ -76,19 +76,19 @@ describe('six-region linear Story contract', () => {
         expect(() => storyBossBonus(storyRules.regionStages - 1)).toThrow();
   });
 
-  it('uses the same level/rank combat strength as other modes, unlocking materials five levels after characters need them', () => {
+  it('uses the same level/rank combat strength as other modes, with only two low material tiers', () => {
     for (let stage = 1; stage <= storyRules.stages; stage++) {
       const encounter = storyEncounter(stage);
       expect(encounter.stats).toEqual(enemyCombatStats(encounter.level, encounter.boss));
       const materials = storyMaterialLoot(stage);
       expect(materials[0].id).toBe(`${encounter.element}-common`);
-      expect(materials.map(drop => drop.id.split('-')[1])).toEqual(['common', ...(encounter.level >= 35 ? ['uncommon'] : []), ...(encounter.level >= 50 ? ['rare'] : [])]);
-      if (encounter.level >= 35) expect(materials[1].chance).toBeCloseTo(.25 + .55 * (encounter.level - 35) / 20, 12);
-      if (encounter.level >= 50) expect(materials[2].chance).toBeCloseTo(.15 + .2 * (encounter.level - 50) / 5, 12);
+      expect(materials.every((drop) => /-(common|uncommon)$/.test(drop.id))).toBe(true);
+      expect(materials).toHaveLength(2);
+      expect(materials[1].chance).toBeCloseTo(.25 + .55 * (encounter.level - 1) / 54, 12);
       expect(storyDrops(stage, () => 0)).toEqual(Object.fromEntries(materials.map((drop) => [drop.id, drop.minimum])));
       for (const creature of creatures.filter((entry) => entry.story && entry.stages.includes(stage))) {
         const pool = creatureLoot(creature, stage);
-        expect(pool.filter((drop) => drop.id.includes('-')).every((drop) => /-(common|uncommon|rare)$/.test(drop.id))).toBe(true);
+        expect(pool.filter((drop) => drop.id.includes('-')).every((drop) => /-(common|uncommon)$/.test(drop.id))).toBe(true);
       }
       if (encounter.level >= 38) {
         const dungeonStage = Array.from({ length: 35 }, (_, index) => index + 1).find((floor) =>
@@ -99,9 +99,8 @@ describe('six-region linear Story contract', () => {
         if (encounter.level === dungeon.level) expect(encounter.stats).toEqual(dungeon.stats);
       }
     }
-    expect(storyLoot(storyRules.stages).map((drop) => drop.id)).toEqual(['fractalis', 'chaotic-common', 'chaotic-uncommon', 'chaotic-rare']);
-    expect(storyMaterialLoot(1)).toHaveLength(1);
-    expect(storyMaterialLoot(storyRules.stages)[2].chance).toBeCloseTo(.35);
+    expect(storyLoot(storyRules.stages).map((drop) => drop.id)).toEqual(['fractalis', 'chaotic-common', 'chaotic-uncommon']);
+    expect(storyMaterialLoot(1)[1].chance).toBeCloseTo(.25);
     expect(storyMaterialLoot(storyRules.stages)[1].chance).toBeCloseTo(.8);
     expect(storyMaterialLoot(storyRules.stages)[0]).toMatchObject({ minimum: 15, maximum: 30 });
     expect(() => storyDrops(storyRules.stages, () => 1)).toThrow();

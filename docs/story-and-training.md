@@ -160,13 +160,13 @@ Every kill gives the linear Story Prismatica range from `storyFractalisDrop`
 (D-225): minimum `5+2*(level-1)`, maximum double, so5-10 at Lv1 and113-226 at
 Lv55, a constant step per level and therefore per stage. Crownfall Treasury
 pays exactly this line at the same enemy level on entry, then multiplies it up
-to20x by Lv120. Kills also give matching-element **Common** materials, **Uncommon** from
-enemy Lv35 and **Rare** from Lv50 (D-357 X-5 rule); no Epic/Legendary/Omnic material, specialty,
+to20x by Lv120. Kills also give matching-element **Common** materials and
+**Uncommon** materials from the first Story enemy onward; no Rare/Epic/Legendary/Omnic material, specialty,
 Conduit, component, recruitment or capture is eligible in Story.
 
 Common minimum grows quadratically from1 atLv1 to3 atLv55, maximum twice
-minimum. Uncommon uses that quantity range and a linear25% chance atLv35 to80%
-atLv55. Rare drops exactly the minimum with15% chance atLv50 to35% atLv55. Both tiers reuse the existing dungeon material IDs/art/recipe meaning.
+minimum. Uncommon uses that quantity range and a linear25% chance atLv1 to80%
+atLv55. Both tiers reuse the existing dungeon material IDs/art/recipe meaning.
 These quantity/chance curves are editable developer tuning.
 
 On an account's first successful regional boss clear, the ordinary kill

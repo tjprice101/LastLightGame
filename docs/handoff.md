@@ -4,9 +4,10 @@
 
 - All visible text/docs say [Elemental Gauge]; internal `shatter*` fields/IDs unchanged.
 - `materialDropLevel` (activities.ts): rarity first needed at Lv0/30/45/60/75/90, dropped from enemy Lv+5.
-  Dungeon `materialBrackets` derive first floors from it (1/1/6/12/19/25); Story Uncommon Lv35+/Rare Lv50+;
-  Heaven/Abyss Epic/Legendary/Omnic 65/80/95; Roses unlocks max(80, drop level). Leveling tiers in
-  progression.ts derive from the same table. Calamity/Training/Machines unchanged.
+  Dungeon `materialBrackets` derive first floors from it (1/1/6/12/19/25); Roses unlocks max(80, drop level).
+  Leveling tiers in progression.ts derive from the same table. Owner scope: ONLY elemental dungeons and
+  the Roses event. Heaven/Abyss bonus unlocks stay 80/100/115 and Story loot is unchanged;
+  Calamity/Training/Machines unchanged.
 - Validate: dungeons/loot-random/story/crimson-roses/auto-turn/battle-loot tests plus full suite.
 
 ## Elemental Gauge terminology and Conduit details (D-356)

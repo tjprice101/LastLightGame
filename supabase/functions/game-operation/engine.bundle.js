@@ -3567,9 +3567,9 @@ function infusionEncounter(mode, stage, schedule = "caps") {
   };
 }
 var infusionDropTable = [
-  { rarity: "epic", level: materialDropLevel("Epic"), chance: 0.15, finalChance: 0.85, quantity: 3 },
-  { rarity: "legendary", level: materialDropLevel("Legendary"), chance: 0.06, finalChance: 0.65, quantity: 3 },
-  { rarity: "omnic", level: materialDropLevel("Omnic"), chance: 0.02, finalChance: 0.4, quantity: 3 }
+  { rarity: "epic", level: 80, chance: 0.15, finalChance: 0.85, quantity: 3 },
+  { rarity: "legendary", level: 100, chance: 0.06, finalChance: 0.65, quantity: 3 },
+  { rarity: "omnic", level: 115, chance: 0.02, finalChance: 0.4, quantity: 3 }
 ];
 var specialtyDropTable = [
   { purpose: "weapon", level: 50, quantity: 3 },
@@ -3593,7 +3593,7 @@ function infusionLoot(mode, stage, schedule = "caps") {
     return drop ? [bossLootRange({ id: `${mode}-${entry.purpose}`, ...drop }, multiplier)] : [];
   });
   const bonuses = infusionDropTable.flatMap((entry) => {
-    const drop = scaledDrop(level, schedule === "legacy" ? 80 : 50, schedule === "legacy" ? Math.max(80, entry.level) : entry.level, entry.chance, entry.finalChance, entry.quantity);
+    const drop = scaledDrop(level, schedule === "legacy" ? 80 : 50, entry.level, entry.chance, entry.finalChance, entry.quantity);
     return drop ? [bossLootRange({ rarity: entry.rarity, ...drop }, multiplier)] : [];
   });
   return { specialties, bonuses };
@@ -4253,18 +4253,7 @@ function storyMaterialLoot(stage) {
   const minimum = 1 + Math.floor(2 * growth);
   const drops = [
     { id: `${element}-common`, minimum, maximum: minimum * 2, chance: 1 },
-    ...level >= materialDropLevel("Uncommon") ? [{
-      id: `${element}-uncommon`,
-      minimum,
-      maximum: minimum * 2,
-      chance: 0.25 + 0.55 * (level - materialDropLevel("Uncommon")) / (storyRules.maximumLevel - materialDropLevel("Uncommon"))
-    }] : [],
-    ...level >= materialDropLevel("Rare") ? [{
-      id: `${element}-rare`,
-      minimum: 1,
-      maximum: minimum,
-      chance: 0.15 + 0.2 * (level - materialDropLevel("Rare")) / (storyRules.maximumLevel - materialDropLevel("Rare"))
-    }] : []
+    { id: `${element}-uncommon`, minimum, maximum: minimum * 2, chance: 0.25 + 0.55 * (level - 1) / 54 }
   ];
   return drops.map((drop) => bossLootRange(drop, bossLootMultiplier({ story: { storyStage: stage } })));
 }
@@ -4274,7 +4263,7 @@ function storyDrops(stage, random) {
     return amount === void 0 ? [] : [[drop.id, amount]];
   }));
 }
-var storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common materials of their region, plus Uncommon from Lv.35 and Rare from Lv.50; no captures. Prismatica per kill rises from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x Prismatica (base 5-10 to 113-226) and materials on every clear, plus a one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
+var storyRulesText = `Six regions of ${storyRules.regionStages} stages, Lv.1-55. First clear: 150 Prismatica and 2 Null-Prismatica; replays: 150 Prismatica. Enemies drop Common and Uncommon materials of their region; no captures. Prismatica per kill rises from 8-16 at Lv.1 to 170-340 at Lv.55. Regional bosses give 5x Prismatica (base 5-10 to 113-226) and materials on every clear, plus a one-time bonus of 1,000 Prismatica and 50 Null-Prismatica, rising 15% per region. Continue restores HP and keeps Gauge.`;
 
 // src/content/calamity.ts
 var calamityActivities = [

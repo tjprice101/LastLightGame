@@ -6,7 +6,7 @@ The [D-160 migration](six-element-rework.md#implemented-elemental-migration-cont
 replaces ten types with six, preserves all original enemy families/discoveries,
 merges materials/unlocks safely in walletv4 and starts dungeons atLv38.
 The [Story/Training split](story-and-training.md) is implemented (D-164).
-Story has six20-stage regions Lv1-55, Common/Uncommon (Lv35+)/Rare (Lv50+) materials and atomic
+Story has six20-stage regions Lv1-55, Common/Uncommon materials and atomic
 first-clear regional bonuses. Training retains the old endless Adventure.
 Material inventory, starter leveling/evolution and first-Fracture reward are
 persistent. Soar to Heaven and Delve into the Abyss are playable with specialty
@@ -316,8 +316,8 @@ This is a drop reference, not capture/pity or a second source of rewards.
 - Per defeat: guaranteed weapon material from Lv50/Stage1; evolution and
   leveling materials from Lv75/Stage19. The quantity curve starts at50;
   final specialty stacks are15-30 after D-294's5x quantity boost.
-  Supplemental level unlocks (D-357 X-5 rule): Epic Lv65,
-  Legendary Lv80, Omnic Lv95. Chances grow from15%/6%/2%
+  Preserved supplemental level unlocks: EpicLv80/Stage22,
+  LegendaryLv100/Stage30, OmnicLv115/Stage34. Chances grow from15%/6%/2%
   to85%/65%/40%; successful final stacks are15-30 for each rarity.
   Each successful rarity roll chooses **one** of the mode's eligible elements uniformly,
   not every element. Final Prismatica is75-150. Phase6 adds20% captures per kill,
