@@ -11,7 +11,7 @@ import { inventoryHub, characterHub } from './hub';
 import { elementLabel } from './element-label';
 import { elementAssetIds } from '../content/element-migration';
 import { formatStat, resolveFighter } from '../content/combat';
-import { readableEffect } from './effect-copy';
+import { referencedEffect as readableEffect } from './effect-copy';
 
 describe('unified Archives', () => {
   it('keeps Collections Information focused on rules without a character biography list', () => {

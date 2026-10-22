@@ -888,6 +888,13 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     for (const [id, amount] of Object.entries(reward.materials ?? {})) {
       if (result.state.infusion && (isCurrencyMode(result.state.infusion.mode) || result.state.infusion.mode === 'machines')) throw new Error('This activity does not drop materials.');
       if (!count(amount) || !isMaterial(id)) throw new Error('Invalid enemy material drop.');
+      if (result.state.infusion?.mode === 'heavens' || result.state.infusion?.mode === 'abyss') {
+        const activity = result.state.infusion;
+        const drop = infusionLoot(activity.mode, activity.stage, activity.schedule ?? 'legacy').specialties.find(entry => entry.id === id);
+        if (!drop || amount < drop.minimum || amount > drop.maximum || amount % (drop.quantityMultiplier ?? 1) !== 0) {
+          throw new Error('Soar to Heaven and Delve into the Abyss only drop their three unique materials within the current floor ranges.');
+        }
+      }
       if (result.state.infusion?.mode === 'roses') {
         const drop = infusionLoot('roses', result.state.infusion.stage).specialties.find((entry) => entry.id === id);
         if (!drop || amount < drop.minimum || amount > drop.maximum || amount % multiplier !== 0) throw new Error('Invalid Rosethorn material drop.');

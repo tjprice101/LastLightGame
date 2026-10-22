@@ -7,6 +7,7 @@ import { masterChest, masterConduits } from '../content/master-conduits';
 import { conduits, conduitEffect, getConduit } from '../content/conduits';
 import { bindInformation } from './information';
 import { bracketReferences } from './reference-text';
+import { referencedEffect } from './effect-copy';
 
 afterEach(() => document.body.replaceChildren());
 
@@ -71,7 +72,7 @@ describe('reference Inventory layout', () => {
     expect(html).toContain('Seed of Infernic');
     expect(html).toContain('Soul of Rosethorn');
     expect(html).toContain('Vigil Core');
-    expect(html).toContain(conduitEffect(getConduit('vigil-core'), 0));
+    expect(html).toContain(referencedEffect(conduitEffect(getConduit('vigil-core'), 0)));
     expect(html).toContain('Owned 3');
     expect(html).not.toContain('Shard of Aquatic');
     expect(html).not.toContain('Bastion Lock');
@@ -136,7 +137,7 @@ describe('reference Inventory layout', () => {
       const expected = document.createElement('div');
       expected.innerHTML = bracketReferences(effect);
       expect(dialog.textContent).toContain(expected.textContent);
-      if (ordinary) expect(dialog.textContent).toContain(entry.lore);
+      if (ordinary) expect(dialog.textContent?.replace(/[[\]]/g, '')).toContain(entry.lore);
       expect(card.querySelector('[data-information]')?.textContent).toBe('Details');
       const compact = card.cloneNode(true) as HTMLElement;
       compact.querySelector('dialog')!.remove();

@@ -264,10 +264,10 @@ unseen entries are black silhouettes, seen entries show color/name, defeated
 entries reveal real loot pools and chances. Activity filter and stage selector
 show only the creature's stage band. Evolution forms have separate stable IDs.
 Legacy saves begin with no recorded discoveries; earlier fights are not inferred.
-Mode-associated infusion loot shows each eligible element's rarityChance divided
-by its mode pool length:4 for Heaven,2 for Abyss. AtLv120 each Heaven affinity has
-Epic21.25%/Legendary16.25%/Omnic10%; Abyss has42.5%/32.5%/20%.
-These are shares of the unchanged total rarity chances, not additional rolls.
+Soar/Delve discovery loot lists only each activity's three unique materials
+and its existing currencies (D-373). No elemental-material bonuses remain.
+Crimson Roses lists every unlocked Rosethorn material at100%, using the
+same enemy-level brackets and quantity ranges as elemental dungeons.
 Adventure uses an enemy-level selector; staged encounters show their actual floor loot.
 This is a drop reference, not capture/pity or a second source of rewards.
 
@@ -311,16 +311,16 @@ This is a drop reference, not capture/pity or a second source of rewards.
   Owner clarified that the leveling material applies **throughout Evolution5/6**
   (caps90/105), not just character levels above80. Heaven uses blade/crown/chalice
   objects; Abyss uses claw/fracture-orb/hourglass objects.
-- Both modes may also drop existing Epic/Legendary/Omnic materials, restricted
-  to their **four Heaven/two Abyss affinities**, matching their specialty group.
+- D-373: both modes drop only their three unique materials, never elemental
+  materials of any rarity. Affinity groups still route progression recipes,
+  not bonus loot. This supersedes the narrower D-372 Crest-only removal.
 - Per defeat: guaranteed weapon material from Lv50/Stage1; evolution and
   leveling materials from Lv75/Stage19. The quantity curve starts at50;
   final specialty stacks are15-30 after D-294's5x quantity boost.
-  Preserved supplemental level unlocks: EpicLv80/Stage22,
-  LegendaryLv100/Stage30, OmnicLv115/Stage34. Chances grow from15%/6%/2%
-  to85%/65%/40%; successful final stacks are15-30 for each rarity.
-  Each successful rarity roll chooses **one** of the mode's eligible elements uniformly,
-  not every element. Final Prismatica is75-150. Phase6 adds20% captures per kill,
+  Unique-item quantity scaling and guaranteed rates are unchanged, including
+  Crown of the Scarlet Oath. Existing owned materials and elemental dungeon
+  drops are unchanged. Current and legacy schedules exclude all elemental
+  bonuses. Final Prismatica is75-150. Phase6 adds20% captures per kill,
   ordinary enemies and bosses alike; no guaranteed rare pool or pity.
   Enemy-death stacks vary visually from75-135% size, with randomized scatter and
   independent850-1849ms automatic pickup. Reduced motion keeps a static650ms

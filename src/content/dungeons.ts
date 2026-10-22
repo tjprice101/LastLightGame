@@ -1,4 +1,4 @@
-import { elements, elementalEnemyLevel, elementalDungeonRules, getElement, materialDropLevel, materialRarities as rarityNames, type ElementId } from './activities';
+import { elements, elementalEnemyLevel, elementalDungeonRules, getElement, type ElementId } from './activities';
 import { dungeonArt, legacyDungeonArt, elementAccents } from './dungeon-art';
 import { type Stats } from './combat';
 import { legacyDungeonEnemies, legacyDungeonStrikes, type DungeonEnemy } from './dungeon-enemies';
@@ -7,6 +7,8 @@ import { rollDrop } from './loot-random';
 import { enemyCombatStats } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
+import { materialLevelBrackets, materialRarities, type MaterialRarity } from './material-drops';
+export { materialRarities, type MaterialRarity } from './material-drops';
 
 export const playableDungeons = elements.map((element) => element.id);
 export type PlayableDungeon = (typeof playableDungeons)[number];
@@ -44,22 +46,9 @@ export function dungeonEncounter(element: PlayableDungeon, stage: number, family
   };
 }
 
-export const materialRarities = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic'] as const;
-export type MaterialRarity = (typeof materialRarities)[number];
-
-/** Guaranteed per-kill material ranges. Each bracket adds the next rarity and raises every lower one. */
-const bracketRanges: readonly Partial<Record<MaterialRarity, readonly [number, number]>>[] = [
-  { common: [4, 5] },
-  { common: [8, 10], uncommon: [2, 3] },
-  { common: [12, 15], uncommon: [5, 6], rare: [2, 3] },
-  { common: [16, 20], uncommon: [8, 10], rare: [5, 6], epic: [2, 3] },
-  { common: [20, 25], uncommon: [12, 15], rare: [8, 10], epic: [5, 6], legendary: [2, 3] },
-  { common: [25, 30], uncommon: [16, 20], rare: [12, 15], epic: [8, 10], legendary: [5, 6], omnic: [2, 3] },
-];
 /** D-357: each bracket opens on the first floor whose enemy level reaches that rarity's drop level. */
 export const materialBrackets: readonly { level: number; firstStage: number; ranges: Partial<Record<MaterialRarity, readonly [number, number]>> }[] =
-  bracketRanges.map((ranges, index) => {
-    const level = materialDropLevel(rarityNames[index]);
+  materialLevelBrackets.map(({ level, ranges }) => {
     const firstStage = Array.from({ length: elementalDungeonRules.stages }, (_, stage) => stage + 1).find(stage => elementalEnemyLevel(stage) >= level) ?? 1;
     return { level, firstStage, ranges };
   });

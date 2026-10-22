@@ -3,6 +3,7 @@ import { getConduit, conduitEffect, type ConduitId } from '../content/conduits';
 import { conduitIcon, conduitRarity } from './conduit-store';
 import { escapeDialogText } from './game-dialog';
 import { type RewardPresentation } from './reward-screen';
+import { referencedEffect } from './effect-copy';
 
 export function conduitReward(id: ConduitId, account: Account, title: string, receipt: string): RewardPresentation {
   const conduit = getConduit(id);
@@ -13,6 +14,6 @@ export function conduitReward(id: ConduitId, account: Account, title: string, re
     title, name: conduit.name, accent: '#ffffff', animationLabel: 'Ancient mechanism restored',
     art: `<span class="conduit-reward-art">${conduitIcon(id, level)}</span>`,
     details: `${conduitRarity(id)}<p>Upgrade +${level} · Owned ${owned}</p>
-      <p>${escapeDialogText(conduitEffect(conduit, level))}</p><p>${escapeDialogText(receipt)}</p><p>Account-wide unlock · Not auto-equipped</p>`,
+      <p>${referencedEffect(escapeDialogText(conduitEffect(conduit, level)))}</p><p>${escapeDialogText(receipt)}</p><p>Account-wide unlock · Not auto-equipped</p>`,
   };
 }

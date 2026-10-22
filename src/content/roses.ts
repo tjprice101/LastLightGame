@@ -7,7 +7,6 @@ export const roseMaterials = materialRarities.map((rarity, tier) => ({
 export const roseSaleQuantities = [1, 2, 3, 4, 5, 6] as const;
 /** Event enemies start at Lv.80, so every tier the D-357 rule has unlocked by then drops from the first stage. */
 export const roseMaterialUnlocks = materialRarities.map(rarity => Math.max(80, materialDropLevel(rarity)));
-export const roseFinalChances = [1, .98, .9, .8, .6, .35] as const;
 export const roseCaptureMaximumLevel = 120;
 export const roseFormStages = [1, 6, 11, 16, 22, 29] as const;
 export function roseCaptureAllowed(level: number): boolean {

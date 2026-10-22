@@ -5,8 +5,7 @@ import { elements, materialRarities } from '../content/activities';
 import { resolveFighter, formatStat } from '../content/combat';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 import { conduits, conduitEffect } from '../content/conduits';
-import { readableEffect } from './effect-copy';
-import { bracketReferences } from './reference-text';
+import { referencedEffect as readableEffect } from './effect-copy';
 import { ownedProgress, type Account } from '../game/account';
 import { portrait, assetUrl } from './portrait';
 import { creatures } from '../content/creatures';
@@ -105,12 +104,12 @@ function conduitArchive(account: Account | null): string {
       <div class="archive-mechanism">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div>
       <h3>${conduit.name}</h3>${conduitRarity(conduit.id)}
       <p class="archive-ownership">${account ? `Owned ${account.conduits?.[conduit.id] ?? 0}` : 'Ownership unavailable'}</p>
-      <p class="archive-effect">${bracketReferences(readableEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])))}</p>
+      <p class="archive-effect">${readableEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))}</p>
       ${information(`archive-conduit-${conduit.id}`, conduit.name, conduitDetails(conduit.id, account?.conduitUpgrades?.[conduit.id], (account?.conduits?.[conduit.id] ?? 0) > 0), 'Details')}
     </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card ${account?.masterConduits?.[entry.id] === 1 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-master="${entry.id}" data-filter-rarity="Master" data-filter-ownership="${ownership(account?.masterConduits?.[entry.id] === 1)}">
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
       <p>Omnic Master · ${getStarter(entry.character).name}</p><p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
-      <p class="archive-effect">${bracketReferences(readableEffect(entry.effect))}</p><p>Choose from a Cosmic Grand Master Chest. Final Machines boss: 1% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Named bearer enhancement; no upgrades.</p>
+      <p class="archive-effect">${readableEffect(entry.effect)}</p><p>Choose from a Cosmic Grand Master Chest. Final Machines boss: 1% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Named bearer enhancement; no upgrades.</p>
       ${information(`archive-master-${entry.id}`, entry.name, `${conduitLore(entry.lore)}<p>${readableEffect(entry.effect)}</p>`, 'Details')}
     </article>`).join('')}</div>`;
 }

@@ -2,10 +2,11 @@ import { elements, infusionModes, currencyModes, eventModes, machineModes, isCur
 import { machineEnemies } from './machines';
 import { type Stats } from './combat';
 import { phaseZeroStatDefaults, type ResolvedStats } from './phase-zero-stats';
-import { lootRoll, rollDrop, scaledDrop } from './loot-random';
+import { rollDrop, scaledDrop, type ScaledDrop } from './loot-random';
 import { capturedGrowth, enemyCombatStats, playableGrowth } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
-import { roseMaterials, roseMaterialUnlocks, roseFinalChances, roseSaleQuantities, roseFormStages } from './roses';
+import { roseMaterials, roseSaleQuantities, roseFormStages } from './roses';
+import { materialRangesAtLevel, materialRarities, type MaterialRarity } from './material-drops';
 import { bossLootMultiplier, bossLootRange } from './final-boss-loot';
 
 export function isInfusionMode(value: unknown): value is InfusionModeId {
@@ -172,24 +173,22 @@ export function infusionEncounter(mode: InfusionModeId, stage: number, schedule:
     abilityMultiplier: enemyAbilityMultiplier(level),
     legacyAbilityMultiplier: 1.2 + (stage - 1) / (stages - 1) * (mode === 'roses' ? .65 : 24 * .016) };
 }
-export const infusionDropTable = [
-  { rarity: 'epic', level: 80, chance: .15, finalChance: .85, quantity: 3 },
-  { rarity: 'legendary', level: 100, chance: .06, finalChance: .65, quantity: 3 },
-  { rarity: 'omnic', level: 115, chance: .02, finalChance: .40, quantity: 3 },
-] as const;
 export const specialtyDropTable = [
   { purpose: 'weapon', level: 50, quantity: 3 },
   { purpose: 'evolution', level: 75, quantity: 3 },
   { purpose: 'level', level: 75, quantity: 3 },
 ] as const;
-export function infusionLoot(mode: InfusionModeId, stage: number, schedule: InfusionSchedule = 'caps') {
+export function infusionLoot(mode: InfusionModeId, stage: number, schedule: InfusionSchedule = 'caps'): {
+  specialties: (ScaledDrop & { id: string })[];
+  bonuses: (ScaledDrop & { rarity: MaterialRarity })[];
+} {
   const { level } = infusionEncounter(mode, stage, schedule);
   const multiplier = bossLootMultiplier({ infusion: { mode, stage } });
   if (isCurrencyMode(mode) || mode === 'machines') return { specialties: [], bonuses: [] };
   if (mode === 'roses') return {
     specialties: roseMaterials.flatMap((material, tier) => {
-      const drop = scaledDrop(level, 80, roseMaterialUnlocks[tier], tier === 0 ? 1 : roseFinalChances[tier] / 2, roseFinalChances[tier], 3, 140);
-      return drop ? [bossLootRange({ id: material.id, ...drop }, multiplier)] : [];
+      const range = materialRangesAtLevel(level)[materialRarities[tier]];
+      return range ? [bossLootRange({ id: material.id, minimum: range[0], maximum: range[1], chance: 1 }, multiplier)] : [];
     }), bonuses: [],
   };
   const specialties = specialtyDropTable.flatMap((entry) => {
@@ -197,25 +196,16 @@ export function infusionLoot(mode: InfusionModeId, stage: number, schedule: Infu
     const drop = scaledDrop(level, schedule === 'legacy' ? 80 : 50, unlock, 1, 1, entry.quantity);
     return drop ? [bossLootRange({ id: `${mode}-${entry.purpose}`, ...drop }, multiplier)] : [];
   });
-  const bonuses = infusionDropTable.flatMap((entry) => {
-    const drop = scaledDrop(level, schedule === 'legacy' ? 80 : 50, entry.level, entry.chance, entry.finalChance, entry.quantity);
-    return drop ? [bossLootRange({ rarity: entry.rarity, ...drop }, multiplier)] : [];
-  });
-  return { specialties, bonuses };
+  return { specialties, bonuses: [] };
 }
 
 export function infusionDrops(mode: InfusionModeId, stage: number, random: () => number, schedule: InfusionSchedule = 'caps'): Record<string, number> {
-  const { specialties, bonuses } = infusionLoot(mode, stage, schedule);
-  const eligibleElements = infusionElements(mode);
+  const { specialties } = infusionLoot(mode, stage, schedule);
   const drops: Record<string, number> = {};
   for (const entry of specialties) {
     const amount = rollDrop(entry, random);
     if (amount === undefined && entry.chance === 1) throw new Error('Guaranteed specialty material did not drop.');
     if (amount !== undefined) drops[entry.id] = amount;
-  }
-  for (const entry of bonuses) {
-    const amount = rollDrop(entry, random);
-    if (amount !== undefined) drops[`${eligibleElements[Math.floor(lootRoll(random) * eligibleElements.length)].id}-${entry.rarity}`] = amount;
   }
   return drops;
 }

@@ -137,9 +137,9 @@ describe('saved Elemental-Devourer discoveries and glossary', () => {
     }
     const final = creatureLoot(getCreature('infusion:heavens:5'), infusionModeStageCount);
     expect(final.find((entry) => entry.id === 'heavens-level')).toMatchObject({ minimum: 15, maximum: 30, chance: 1 });
-    expect(final.find((entry) => entry.id === 'infernic-epic')?.chance).toBeCloseTo(.85 / 4);
-    expect(final.find((entry) => entry.id === 'oceanic-legendary')?.chance).toBeCloseTo(.65 / 4);
-    expect(final.find((entry) => entry.id === 'atmospheric-omnic')?.chance).toBeCloseTo(.4 / 4);
+    expect(final.find((entry) => entry.id === 'infernic-epic')).toBeUndefined();
+    expect(final.find((entry) => entry.id === 'oceanic-legendary')).toBeUndefined();
+    expect(final.find((entry) => entry.id === 'atmospheric-omnic')).toBeUndefined();
     expect(final.find((entry) => entry.id === 'chaotic-omnic')).toBeUndefined();
     for (const creature of creatures.filter((entry) => entry.mode === 'heavens' || entry.mode === 'abyss')) for (const stage of creature.stages) {
       const bonuses = creatureLoot(creature, stage).filter((drop) => /-(epic|legendary|omnic)$/.test(drop.id));

@@ -69,7 +69,7 @@ describe('canon across information and lore surfaces', () => {
 
   it('keeps summoning a squad acquisition, not a found creator or new soul reward', () => {
     for (const banner of ['standard', 'roses'] as const) {
-      expect(summonHub(emptyAccount(), banner)).toContain(summonLore);
+      expect(plain(summonHub(emptyAccount(), banner))).toContain(summonLore);
     }
   });
 

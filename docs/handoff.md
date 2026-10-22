@@ -1,5 +1,113 @@
 # Current state and handoff
 
+## Publishing accumulated follow-ups (2026-10-21)
+
+- Owner explicitly requests pushing and deploying all pending changes:
+  D-371 keyword brackets, D-373 material rules (superseding D-372), and
+  removal of the redundant Play Event details button.
+- Authority deployed with `npx supabase functions deploy game-operation
+  --project-ref ohtfgwomdfteaxubndww --no-verify-jwt` after rebundling and
+  server type-checking. `node tools\smoke_server_game.mjs --final-loot`
+  passed21 hosted client/server reward-parity cases, exact persisted
+  outcomes and idempotent retries. `--phase-zero` passed rules5, frozen gear,
+  exact563 damage/55 Burn, unchanged holdings and checkpoint persistence.
+  Disposable smoke identities/cascading records were removed.
+- Prepublication validation: full6,145-test/198-file sequential run and
+  production build passed; the subsequent button-only change passed its
+  20-test targeted suite. Publication uses the existing main-branch Pages
+  workflow, which reruns the complete test suite and configured build.
+  Earlier local/unpublished labels below describe prepublication checkpoints.
+
+## Removing redundant event-details navigation (2026-10-21)
+
+- Removed the extra Event details button beneath the Crimson Roses activity
+  in Play at the owner's request. The activity card, stage/entry controls,
+  banner link and existing Events route remain.
+- Validation: `npx vitest run src\presentation\activity-banner.test.ts
+  src\presentation\ui-copy.test.ts --maxWorkers=2` passed20 tests across2
+  files; `git diff --check` passed. Local/unpublished.
+
+## Special-activity material parity (D-373; 2026-10-21)
+
+- Owner selects Crimson Roses for exact elemental-dungeon material parity.
+  Shared level-bracket ranges now drive guaranteed Rosethorn drops. AtLv80
+  Seed/Bud/Bloom/Crest/Heart give20-25/12-15/8-10/5-6/2-3; Soul opensLv95
+  (Stage10), giving25-30/16-20/12-15/8-10/5-6/2-3. Highest bracket stays
+  capped throughLv140. Final boss retains5x quantities, not a second reward.
+- Owner clarifies Soar/Delve must award only their three unique materials.
+  Removed remaining Legendary/Omnic elemental bonuses as well as Crests;
+  unique-item unlocks/rates/quantity curves are unchanged for current/legacy
+  schedules. Validation rejects elemental/cross-mode/out-of-range materials.
+  Existing holdings, elemental dungeons, currencies and captures remain.
+- Updated event/Play/battle guidance and shared discovery tables. A small
+  dependency-light `content/material-drops.ts` owns the shared ranges,
+  avoiding a dungeon-art/combat import cycle. Dungeon results stay unchanged.
+- Validation: `npx vitest run --maxWorkers=1 --reporter=json` with a
+  session-local `--outputFile` passed **6,145 tests across198 files**, zero
+  failed/pending cases. The two-worker attempt hit the previously observed
+  Archive timeout; sequential validation passed without changing timeouts.
+  `node tools\build_phase_zero_behavior_matrix.mjs` refreshed138 entries/
+  726 scenarios from that report. `npm run build`,
+  `node tools\bundle_server_game.mjs` and
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`
+  passed (existing mock-canvas/chunk-size advisories only).
+- In-memory `node --input-type=module` smoke against the compiled authority
+  verified final Heaven/Abyss25 each award exactly three unique stacks of15
+  at minimum rolls, and Roses35 awards125/80/60/40/25/10. No live profile,
+  credentials, saves or resources were touched. `git diff --check` passed.
+- D-373 supersedes D-372 below. Local/unpublished; matching client/authority
+  publication is still required for hosted rewards to change.
+
+## Removing infusion Crest drops (D-372; 2026-10-21)
+
+- Owner confirms removing only elemental Crest drops from Soar/Delve with no
+  replacement. Removed Epic elemental bonuses from the shared loot table;
+  Legendary/Omnic bonuses, specialties, currencies and captures remain.
+- Current/legacy schedules and discovery loot use that same table. Reward
+  persistence explicitly rejects Crest injection on ordinary/final floors,
+  preserving the complete wallet on rejection. Existing owned Crests and
+  elemental dungeon Crest drops remain unchanged.
+- Updated Play/battle guidance and material contracts. Rebuilt the shared
+  authority bundle with `node tools\bundle_server_game.mjs`.
+- Validation: targeted `npx vitest run` covering infusions, loot-random,
+  creatures, banner-and-lycalis, final-boss-loot, account, creature-loot-dialog,
+  ui-copy, activity-banner and phase-zero-authority with `--maxWorkers=2`
+  passed **136 tests across10 files**. Tests cover every floor/current and
+  legacy schedule, discovery lists, retained dungeon rewards, exact remaining
+  bonus rates/quantities, wallet preservation and injected-reward rejection.
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`,
+  `npm run build` and `git diff --check` passed. Existing mock-canvas and
+  build chunk-size warnings are nonfatal.
+- Local only; matching client/authority publication remains required before
+  hosted rewards change. No account migrations, removals or grants.
+
+## Consistent Conduit keyword brackets (D-371; 2026-10-21)
+
+- Expanded the shared reference vocabulary to all ten stat names, targeting/
+  action keywords, glossary terms, clocks, statuses and native resources.
+  Matching handles case variants, longest phrases, existing brackets and
+  possessives without changing numbers or authored capitalization.
+- Conduit effect presentation explicitly formats prose even inside containers
+  otherwise reserved for plain labels (`dd`, `small`, `span`, buttons).
+  Ordinary/Master gear, Store, Inventory, Collections, upgrades, loot Details,
+  character/captured equipment, upgrade confirmations and acquisition receipts
+  use the same rules. Plain-text confirmations omit element medal HTML.
+  Raw owner ability values, mechanics, account data and authority stay unchanged.
+- Added upgrade-level keyword checks for all90 ordinary entries at+0..+5
+  and fixed-rule checks for all48 Masters, plus the reported Siege Cantilever
+  sentence and shared-surface/idempotence regressions.
+- Validation: `npx vitest run --maxWorkers=2 --reporter=json` with a
+  session-local `--outputFile` passed **6,141 tests across198 files**.
+  `npm run build` passed TypeScript and Vite (existing chunk-size advisory).
+  `node tools\build_phase_zero_behavior_matrix.mjs` against that passing
+  report refreshed138 entries/726 numerical scenarios. Catalog generation
+  preserved all138 raw runtime abilities; `git diff --check` passed.
+  A local browser check confirmed Siege Cantilever Details at+0/+5 display
+  `[All-enemy]`, `[Skills]` and `[Skill Power]` with45%/67.5% unchanged.
+  Temporary preview stopped; no account data was edited.
+- No publication requested in this follow-up; changes remain local until an
+  explicit push/deployment request.
+
 ## Phase 0 coordinated activation and publication (D-370; 2026-10-21)
 
 - Owner explicitly authorizes activation, push and deployment after validation.

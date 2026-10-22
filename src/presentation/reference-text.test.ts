@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { bracketReferences } from './reference-text';
 import { information } from './information';
+import { phaseZeroStatLabels } from '../content/phase-zero-stats';
+import { conduitGlossary } from '../content/conduit-glossary';
 
 describe('bracketed reference formatting', () => {
   it('brackets full names in prose while leaving headings, labels, buttons and attributes plain', () => {
@@ -25,5 +27,32 @@ describe('bracketed reference formatting', () => {
     const markup = information('test-info', 'Story', '<p>Story is open from the start.</p>');
     expect(markup).toContain('<h2 id="test-info-heading">Story</h2>');
     expect(markup).toContain('<p>[Story] is open from the start.</p>');
+  });
+
+  it('supports text-only confirmation messages without escaped element markup', () => {
+    const text = bracketReferences('Oceanic Skills grant Skill Power.', false);
+    expect(text).toBe('[Oceanic] [Skills] grant [Skill Power].');
+    expect(bracketReferences(text, false)).toBe(text);
+  });
+
+  it('brackets the reported targeting, skill and stat keywords without changing the amount', () => {
+    expect(bracketReferences('All-enemy damaging Skills gains +45% Skill Power.'))
+      .toBe('[All-enemy] damaging [Skills] gains +45% [Skill Power].');
+    expect(bracketReferences('all-enemy damaging skills gain +67.5% skill power.'))
+      .toBe('[all-enemy] damaging [skills] gain +67.5% [skill power].');
+  });
+
+  it.each([...Object.values(phaseZeroStatLabels), ...conduitGlossary.map(entry => entry.term)])(
+    'brackets the complete %s keyword instead of its shorter components', term => {
+      expect(bracketReferences(`+20% ${term}.`)).toBe(`+20% [${term}].`);
+    });
+
+  it('keeps existing brackets and possessive native resources intact across repeated rendering', () => {
+    const input = "Normal Attacks against Shielded enemies grant Skill Power and Skill Efficiency on the next player turn. Flora's Empowered Seeds and Thornia's trap grant [Elemental Gauge Capacity].";
+    const once = bracketReferences(input);
+    expect(once).toBe("[Normal Attack] against [Shielded] enemies grant [Skill Power] and [Skill Efficiency] on the next [player turn]. [Flora]'s [Empowered Seeds] and [Thornia]'s [trap] grant [Elemental Gauge Capacity].");
+    expect(bracketReferences(once)).toBe(once);
+    expect(bracketReferences('<span class="stat">Skill Power</span><p data-stat="Skill Power">Skill Power</p>'))
+      .toBe('<span class="stat">Skill Power</span><p data-stat="Skill Power">[Skill Power]</p>');
   });
 });

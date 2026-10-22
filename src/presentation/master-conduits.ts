@@ -1,3 +1,4 @@
+import { referencedEffect } from './effect-copy';
 import { getMasterConduit, masterChest, masterConduits, type MasterConduitId } from '../content/master-conduits';
 import { assetUrl } from './portrait';
 import { getStarter, isStarterId } from '../content/starters';
@@ -16,7 +17,7 @@ export function masterChestIcon(): string {
 export function masterReference(id?: MasterConduitId | null): string {
   if (!id) return '';
   const entry = getMasterConduit(id);
-  return `<section class="master-reference"><h3>Master · ${entry.name}</h3><p>${entry.effect}</p><small>Named Element-Bearer only · Triggers and limits as stated above · Does not scale with Conduit upgrades</small>${conduitLore(entry.lore)}</section>`;
+  return `<section class="master-reference"><h3>Master · ${entry.name}</h3><p>${referencedEffect(entry.effect)}</p><small>Named Element-Bearer only · Triggers and limits as stated above · Does not scale with Conduit upgrades</small>${conduitLore(entry.lore)}</section>`;
 }
 export function masterEquipment(character: string, account: Account | null): string {
   if (!isStarterId(character)) return '<div class="ref-master-slot"><strong>Master slot</strong><p>Character Masters are for their named Element-Bearer only.</p></div>';
@@ -32,6 +33,6 @@ export function masterReward(id: MasterConduitId, account: Account): RewardPrese
   if (account.masterConduits?.[id] !== 1) throw new Error('Saved Master reward is not owned.');
   const entry = getMasterConduit(id);
   return { title: 'Master Conduit unlocked', name: entry.name, art: masterConduitIcon(id),
-    details: `<p>Omnic Master · ${getStarter(entry.character).name}</p><p>${escapeDialogText(entry.effect)}</p><p>One chest opened. Not auto-equipped. Equip in Team.</p>`,
+    details: `<p>Omnic Master · ${getStarter(entry.character).name}</p><p>${referencedEffect(escapeDialogText(entry.effect))}</p><p>One chest opened. Not auto-equipped. Equip in Team.</p>`,
     accent: getStarter(entry.character).color, animationLabel: 'Planetary locks released' };
 }

@@ -7,7 +7,7 @@ import { emptyAccount } from '../game/account';
 import { creatures, creatureLoot } from '../content/creatures';
 import { conduits, getConduit, conduitEffect, isConduitId } from '../content/conduits';
 import { formatStat } from '../content/combat';
-import { readableEffect } from './effect-copy';
+import { referencedEffect as readableEffect } from './effect-copy';
 
 const showModalDescriptor = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'showModal');
 const closeDescriptor = Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, 'close');
@@ -112,7 +112,7 @@ describe('enemy loot dialogs and Conduit details', () => {
             button.click();
             const details = document.getElementById(button.dataset.information!) as HTMLDialogElement;
             expect(details.open).toBe(true);
-            expect(details.textContent).toContain(getConduit(drop.id).lore);
+            expect(details.textContent?.replace(/[[\]]/g, '')).toContain(getConduit(drop.id).lore);
             details.querySelector<HTMLButtonElement>('[data-close-information]')!.click();
           }
         });
@@ -133,8 +133,8 @@ describe('enemy loot dialogs and Conduit details', () => {
     const details = document.getElementById(button.dataset.information!) as HTMLDialogElement;
     expect(loot.open).toBe(true);
     expect(details.open).toBe(true);
-    expect(details.textContent).toContain(conduitEffect(getConduit('duplex-heart'), 3));
-    expect(details.textContent).toContain(conduitEffect(getConduit('duplex-heart'), 5));
+    expect(details.textContent).toContain(readableEffect(conduitEffect(getConduit('duplex-heart'), 3)));
+    expect(details.textContent).toContain(readableEffect(conduitEffect(getConduit('duplex-heart'), 5)));
     details.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     expect(details.open).toBe(false);
     expect(loot.open).toBe(true);
@@ -166,8 +166,8 @@ describe('enemy loot dialogs and Conduit details', () => {
       const dialog = dialogs.get(`archive-conduit-${conduit.id}`)!;
       expect(dialog.textContent).toContain(readableEffect(conduitEffect(conduit, 0)));
       expect(dialog.textContent).toContain(readableEffect(conduitEffect(conduit, 5)));
-      expect(dialog.textContent).toContain(conduit.lore);
-      expect(dialog.textContent).toContain(conduit.power);
+      expect(dialog.textContent?.replace(/[[\]]/g, '')).toContain(conduit.lore);
+      expect(dialog.textContent?.replace(/[[\]]/g, '')).toContain(conduit.power);
       expect(dialog.querySelector('.conduit-details-art')?.classList.contains('unreached-character-art')).toBe(true);
     }
   });

@@ -14,6 +14,7 @@ import { statDirection } from './stat-change';
 import { escapeDialogText, gameChoose } from './game-dialog';
 import { phaseZeroStatLabels, phaseZeroStatsReady } from '../content/phase-zero-stats';
 import { phaseZeroStaticBonuses, phaseZeroUpgradeMagnitude } from '../content/phase-zero-conduit-stats';
+import { referencedEffect } from './effect-copy';
 
 const statLabels: Record<ConduitBuff['stat'], string> = {
   ...phaseZeroStatLabels,
@@ -67,7 +68,7 @@ export function conduitBuffLine(conduit: Conduit, level = 0): string {
 
 /** Full Conduit Ability text at the displayed upgrade level, including conditional mechanics. */
 export function conduitRuleText(conduit: Conduit, level = 0): string {
-  return conduitEffect(conduit, level);
+  return referencedEffect(conduitEffect(conduit, level));
 }
 
 export function conduitMatchesSearch(conduit: Conduit, query: string): boolean {
@@ -297,7 +298,7 @@ function slotCard(owner: string, captured: boolean, element: ElementId, slots: C
     return `<article class="ref-equipment-slot loadout-slot is-empty" data-loadout-slot="${index}" aria-label="Slot ${index + 1} · Empty">${target}
       <span class="loadout-slot-plus">${select}</span><small class="loadout-empty-label">Empty</small></article>`;
   }
-  const next = level < conduitUpgradeCap ? `next level ${conduitEffect(conduit, level + 1)}` : 'Maximum';
+  const next = level < conduitUpgradeCap ? `next level ${referencedEffect(conduitEffect(conduit, level + 1))}` : 'Maximum';
   return `<article class="ref-equipment-slot loadout-slot" data-loadout-slot="${index}" data-loadout-slot-name="${conduit.name}" style="--loadout-accent:${conduitColor(conduit)}">
     <div class="loadout-slot-main"><span class="loadout-slot-art">${conduitIcon(conduit.id, level)}</span><div class="loadout-slot-controls">${target}<button type="button" class="loadout-rule-button" data-loadout-rule="${conduit.id}" data-loadout-detail-level="${level}" aria-label="${conduit.name} details">Details</button></div></div>
     <span class="loadout-slot-body"><b class="loadout-slot-name">${conduit.name}</b>

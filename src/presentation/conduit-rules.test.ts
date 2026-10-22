@@ -5,7 +5,7 @@ import { conduitEffect, getConduit, type ConduitSlots } from '../content/conduit
 import { masterConduits } from '../content/master-conduits';
 import { masterReference } from './master-conduits';
 import { createSession, BattleView } from './battle-view';
-import { readableEffect } from './effect-copy';
+import { referencedEffect as readableEffect } from './effect-copy';
 
 describe('Conduit rules stay on Conduit screens', () => {
   it('keeps equipped Conduit and Master rules out of the battle ability reference and Character ability views', () => {
@@ -29,7 +29,7 @@ describe('Conduit rules stay on Conduit screens', () => {
   it('retains complete rules for all Masters without claiming all effects recur', () => {
     for (const master of masterConduits) {
       const html = masterReference(master.id);
-      expect(html).toContain(master.effect);
+      expect(html).toContain(readableEffect(master.effect));
       expect(html).toContain('Triggers and limits as stated above');
       expect(html).not.toContain('Recurs on qualifying native outcomes');
     }

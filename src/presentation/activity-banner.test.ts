@@ -52,6 +52,11 @@ describe('reference activity banners', () => {
     expect(html).toContain('class="activity-facts"');
     expect(html).toContain('Conduit upgrade currency');
     expect(html).toContain('Passion of Crimson Roses</h3>');
+    const events = html.slice(html.indexOf('id="gameplay-events"'));
+    expect(events).not.toContain('data-page="events"');
+    expect(events).not.toContain('Event details');
+    expect(events).toContain('data-infusion="roses"');
+    expect(events).toContain('data-rose-banner');
     expect(gameplayHub(null)).not.toContain('class="activity-entry"');
   });
   it.each([

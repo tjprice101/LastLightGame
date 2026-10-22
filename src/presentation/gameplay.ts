@@ -85,10 +85,10 @@ function gameplayInformation(): string {
     { id: 'dungeons', title: 'Elemental dungeons', summary: 'Upgrade materials by element', content: `<p>${elementalDungeonRules.stages} stages, Lv.${elementalDungeonRules.startingLevel}-${elementalEnemyLevel(elementalDungeonRules.maximumLevelStage)}. Materials match the dungeon's element and grow with level. No captures or Null-Prismatica.</p>
       <p>Collections lists exact drop tables for defeated Elemental-Devourers.</p>` },
     { id: 'infusion', title: 'Evolution infusion', summary: 'Evolution materials from Heaven and Abyss', content: `<p>${infusionModeStageCount} stages, Lv.50-120. Form 3 from Lv.${infusionFormLevel(2)}, Form 4 from Lv.${infusionFormLevel(3)}, Form 5 from Lv.${infusionFormLevel(4)}.</p>
-      <p>Evolution and leveling materials from Lv.75. Bonus Epic, Legendary and Omnic materials from Lv.80, Lv.100 and Lv.115.</p>
+      <p>Only each activity's three unique materials drop: weapon materials from Lv.50, evolution and leveling materials from Lv.75. No elemental materials.</p>
       <p>Null-Prismatica from Lv.80: 8% for 1, 1.5% for 2, 0.5% for 3, rising to 10%, 10% and 5% at Lv.120. The stage ${infusionModeStageCount} boss gives 5, 10 or 15 at the same chances.</p>
       <p>20% capture chance per enemy. Captures keep their form and skills, up to Lv.60.</p>
-      <ul>${infusionModes.map((mode) => `<li><strong>${mode.name}</strong>: ${elementLabel(infusionEnemyElements[mode.id])} enemies. Materials: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</li>`).join('')}</ul>` },
+      <ul>${infusionModes.map((mode) => `<li><strong>${mode.name}</strong>: ${elementLabel(infusionEnemyElements[mode.id])} enemies. Unique materials support these progression affinities: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</li>`).join('')}</ul>` },
     { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages, Lv.65-120, six fixed forms and a boss every fifth stage. Final bosses give 5x currency. No materials or clear bonus.</p>
       <p>20% capture chance per enemy. Captures keep their form and skills, up to Lv.60. Sell copies in Team; locked, squad and Conduit-equipped copies are protected.</p>
       <h4>Crownfall Treasury</h4><p>${treasuryPrismaticaText} No Null-Prismatica.
@@ -187,7 +187,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
     <section class="activity-group" id="gameplay-story"><h2>Story</h2>
       ${storyCampaign(account, account ? ownedCharacters(account)[0] ?? 'ember' : 'ember', false)}
       </section>
-    <section class="activity-group" id="gameplay-events"><h2>Events</h2>${roseEvent(account, false)}<button class="text-button" data-page="events">Event details &rarr;</button></section></div>`;
+    <section class="activity-group" id="gameplay-events"><h2>Events</h2>${roseEvent(account, false)}</section></div>`;
 }
 
 export function bindGameplayNavigation(host: HTMLElement): void {

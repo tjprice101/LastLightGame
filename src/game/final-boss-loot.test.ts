@@ -61,9 +61,10 @@ describe('repeatable final-boss 5x quantity contract', () => {
       expect(quantity).toBeGreaterThanOrEqual(5);
     }
     if (state.dungeon) expect(Object.values(reward.materials!)).toEqual([125, 80, 60, 40, 25, 10]);
-    if (state.infusion?.mode === 'heavens' || state.infusion?.mode === 'abyss' || state.infusion?.mode === 'roses') {
+    if (state.infusion?.mode === 'heavens' || state.infusion?.mode === 'abyss') {
       expect(Object.values(reward.materials!)).toEqual(Array(Object.keys(reward.materials!).length).fill(15));
     }
+    if (state.infusion?.mode === 'roses') expect(Object.values(reward.materials!)).toEqual([125, 80, 60, 40, 25, 10]);
     if (state.infusion?.mode === 'machines') {
       expect(reward.mechanicalComponents).toBe(625);
       expect(Object.values(reward.conduits!)).toEqual([1, 1, 1]);

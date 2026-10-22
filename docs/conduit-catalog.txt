@@ -32,6 +32,10 @@ or an approved elemental restriction. Botanic includes earth/stone themes;
 Atmospheric includes lightning; Tranquilitic includes light/peace themes.
 
 ABILITY KEY
+In-game ability prose brackets all gameplay keywords (D-371), for example:
+[All-enemy] damaging [Skills] gains +45% [Skill Power].
+The shared presentation formatter handles this without changing raw ability
+values, mechanics or existing brackets in this owner-edited source.
 Ability (Default Value) means the approved base, unupgraded effect only.
 Upgraded values must preserve these mechanics and be verified separately.
 Masters have fixed abilities and cannot be upgraded.

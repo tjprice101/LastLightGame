@@ -1,3 +1,4 @@
+import { referencedEffect } from './effect-copy';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
 import { ownedCharacters, ownedProgress, creatureSaleOffer, isSellableCreatureMode, multiSummonCount, type Account } from '../game/account';
 import { saleControls, saleLabel } from './creature-sale';
@@ -62,7 +63,7 @@ export function characterCopyManagement(account: Account | null, category: 'all'
         <section class="captured-equipment"><h4>Conduits</h4><button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button><p>Omnic: matching combat element only; at most four equipped.</p>${slots.map((equipped, slot) => `<label>${equipped ? conduitIcon(equipped, account.conduitUpgrades?.[equipped]) : ''}Slot ${slot + 1}<select data-capture-conduit="${copy.instanceId}" data-capture-slot="${slot}"><option value="">Empty</option>${conduits.filter((conduit) => (account.conduits?.[conduit.id] ?? 0) > 0).map((conduit) => {
           const reason = conduitEquipReason(conduit, creature.element, slots, slot);
           return `<option value="${conduit.id}" ${equipped === conduit.id ? 'selected' : ''} ${reason ? 'disabled' : ''}>${conduit.name} · ${conduit.rarity} · +${account.conduitUpgrades?.[conduit.id] ?? 0}${reason ? ` · ${reason}` : ''}</option>`;
-        }).join('')}</select>${equipped ? `<span>${conduitEffect(getConduit(equipped), account.conduitUpgrades?.[equipped])}</span>` : ''}</label>`).join('')}</section>
+        }).join('')}</select>${equipped ? `<span>${referencedEffect(conduitEffect(getConduit(equipped), account.conduitUpgrades?.[equipped]))}</span>` : ''}</label>`).join('')}</section>
         <button class="text-button" data-page="squad">Equip in Squad &rarr;</button></div></article>`;
     }).join('')}</div>` : '<p>No captured Elemental-Devourers.</p>'}` : ''}
     <p id="character-lock-result" role="status"></p></section>`;

@@ -133,23 +133,30 @@ reward tables match; D-294 multiplies stage35's currency/material quantities
 by5 on every clear/replay without altering rare-drop or capture chances.
 Prismatica uses the existing quadratic quantity curve extended to140 only here:
 9-18 at80,15-30 at120, base18-36 at140; final stage35 pays90-180.
-Materials roll independently by rarity.
+Every unlocked material is guaranteed (D-373), using the same level brackets
+and inclusive quantity ranges as elemental dungeons.
 
-| Material | Stable ID | Unlock level | Chance at unlock ->140 |
+| Material | Stable ID | First available enemy level in this activity | Chance |
 | --- | --- | --- | --- |
-|Seed |`rosethorn-common` |80 |100% ->100% |
-|Bud |`rosethorn-uncommon` |80 |49% ->98% |
-|Bloom |`rosethorn-rare` |80 |45% ->90% |
-|Crest |`rosethorn-epic` |80 |40% ->80% |
-|Heart |`rosethorn-legendary` |80 |30% ->60% |
-|Soul |`rosethorn-omnic` |95 |17.5% ->35% |
+|Seed |`rosethorn-common` |80 |100% |
+|Bud |`rosethorn-uncommon` |80 |100% |
+|Bloom |`rosethorn-rare` |80 |100% |
+|Crest |`rosethorn-epic` |80 |100% |
+|Heart |`rosethorn-legendary` |80 |100% |
+|Soul |`rosethorn-omnic` |95 |100% |
 
 D-357: unlocks follow the X-5 rule (`max(80, materialDropLevel)`), so every
 tier through Heart is available from the first Lv80 stage.
 
-Quantity minimum is `1+floor(2*((level-80)/60)^2)`, maximum twice that.
-Every successful final drop is15-30 after the D-2945x terminal-boss quantity boost. Chance progress uses the shared power1.4
-curve from each unlock to140. [infusionLoot](../src/content/infusions.ts)
+| Enemy level / stages | Seed | Bud | Bloom | Crest | Heart | Soul |
+| --- | --- | --- | --- | --- | --- | --- |
+|80-94 /1-9 |20-25 |12-15 |8-10 |5-6 |2-3 |- |
+|95-140 /10-34 |25-30 |16-20 |12-15 |8-10 |5-6 |2-3 |
+|Final boss /35 |125-150 |80-100 |60-75 |40-50 |25-30 |10-15 |
+
+The highest dungeon bracket stays capped above95, including event levels
+above120. Earlier bosses use ordinary quantities. The final boss retains
+D-294's5x multiplier. [infusionLoot](../src/content/infusions.ts)
 is authoritative for battles, stage previews and defeated Creature loot.
 Capture uses the existing independent20% RNG, gated before acquisition by
 actual defeated level. No premium RNG is consumed.

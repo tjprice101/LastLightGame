@@ -29,6 +29,17 @@ Citadel Spine, Immortal Vessel, Pale Bulwark Diadem and Starvein Conductor.
 
 ## Status vocabulary
 
+**Special-activity materials (D-373):** Crimson Roses uses elemental-dungeon
+guaranteed drops, enemy-level unlocks and quantity brackets for Rosethorn.
+Soar/Delve drop only their three unique materials, preserving those unlocks
+and quantities. No elemental bonuses remain; existing holdings survive.
+[Drop contract](gameplay-and-elements.md#two-infusion-modes).
+
+**Conduit keyword brackets (D-371):** ability prose brackets targeting/actions,
+all ten stats, statuses, clocks and native resources across ordinary/Master
+display surfaces. Numbers and mechanics are unchanged.
+[Presentation contract](menus-and-inventory.md#bracketed-ability-keywords-d-371).
+
 **Online evolution fodder limit (D-362):** requests now allow up to15 selected
 copies for additive Evolution Value, independently of the squad's3-member
 cap. Fixes valid4+4+4+3 Infernis Evo.6 requests.

@@ -19,6 +19,7 @@ import { gameConfirm } from './game-dialog';
 import { presentReward } from './reward-screen';
 import { conduitEffect, getConduit } from '../content/conduits';
 import { resolveFighter, formatStat } from '../content/combat';
+import { referencedEffect } from './effect-copy';
 
 vi.mock('./game-dialog', async (importOriginal) => ({
   ...await importOriginal<typeof import('./game-dialog')>(), gameConfirm: vi.fn(),
@@ -39,7 +40,7 @@ describe('Conduit Upgrade and account-aware icons', () => {
     expect(html.match(/data-select-upgrade-conduit=/g)).toHaveLength(2);
     expect(html.match(/data-upgrade-card=/g)).toHaveLength(1);
     expect(html).toContain('data-expected-upgrade="4"');
-    expect(html).toContain(conduitEffect(getConduit('worldbreaker-drive'), 4));
+    expect(html).toContain(referencedEffect(conduitEffect(getConduit('worldbreaker-drive'), 4)));
     const host = document.createElement('div');
     host.innerHTML = html;
     expect(host.textContent?.replace(/[[\]]/g, '')).toContain(conduitEffect(getConduit('worldbreaker-drive'), 5).replace(/[[\]]/g, ''));
@@ -89,7 +90,7 @@ describe('Conduit Upgrade and account-aware icons', () => {
       host.innerHTML = html;
       expect(host.textContent?.replace(/[[\]]/g, '')).toContain(conduitEffect(getConduit('worldbreaker-drive'), 5).replace(/[[\]]/g, ''));
     }
-    expect(conduitStore(equipped)).toContain(conduitEffect(getConduit('vigil-core'), 3));
+    expect(conduitStore(equipped)).toContain(referencedEffect(conduitEffect(getConduit('vigil-core'), 3)));
     expect(homeHub(getStarter('ember'), false, equipped)).toContain(formatStat(resolveFighter('ember',
       equipped.characters.ember, equipped.conduitEquipment.ember, equipped.conduitUpgrades).stats.health));
     expect(equipped).toEqual(before);
@@ -181,6 +182,10 @@ describe('upgrade confirmation and failure UI', () => {
     f.button.dataset.upgradeConduit = 'worldbreaker-drive';
     await f.click();
     expect(gameConfirm).toHaveBeenCalledWith(expect.stringContaining('Spend 100 Broken Mechanical Components'), { title: 'Upgrade Conduit', confirmLabel: 'Upgrade' });
+    const message = vi.mocked(gameConfirm).mock.calls[0][0];
+    expect(message).toContain(`Current: ${referencedEffect(conduitEffect(getConduit('worldbreaker-drive'), 0), false)}`);
+    expect(message).toContain(`Next: ${referencedEffect(conduitEffect(getConduit('worldbreaker-drive'), 1), false)}`);
+    expect(message).not.toContain('<span');
     expect(loadAccount(f.storage).mechanicalComponents).toBe(0);
     expect(loadAccount(f.storage).conduitUpgrades).toEqual({ 'worldbreaker-drive': 1 });
     expect(f.status.textContent).toContain('100 Broken Mechanical Components spent');

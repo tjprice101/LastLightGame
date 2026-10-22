@@ -6,6 +6,7 @@ import { summonReward, summonTenReward, type SummonResult } from './summon-prese
 import { rewardScreenMarkup, summonRevealTier } from './reward-screen';
 import { conduitReward } from './conduit-presentation';
 import { conduitEffect, getConduit } from '../content/conduits';
+import { referencedEffect } from './effect-copy';
 
 describe('saved summon reward presentation', () => {
   it('shares the saved receipt foundation with purchases/restoration without consuming or equipping copies', () => {
@@ -14,7 +15,7 @@ describe('saved summon reward presentation', () => {
     const reward = conduitReward('vigil-core', account, 'Conduit upgraded', '100 components spent');
     expect(reward.art).toContain('class="conduit-reward-art"');
     expect(reward.art).toContain('data-conduit-upgrade="3"');
-    expect(reward.details).toContain(conduitEffect(getConduit('vigil-core'), 3));
+    expect(reward.details).toContain(referencedEffect(conduitEffect(getConduit('vigil-core'), 3)));
     expect(reward.details).toContain('Owned 2');
     expect(reward.details).toContain('100 components spent');
     expect(reward.details).toContain('Not auto-equipped');

@@ -1,5 +1,12 @@
 # Dungeons and captured enemies
 
+**D-373 supersedes D-372:** Soar to Heaven and Delve into the Abyss award only
+their three unique materials, with no elemental-material bonuses. Unique-item
+unlocks, rates and quantities, currencies and captures stay unchanged.
+Previously owned materials and elemental dungeon drops are preserved.
+Crimson Roses uses the dungeon guaranteed level/quantity brackets for all
+six Rosethorn tiers. Reward generation, validation and discovery tables agree.
+
 **D-305:** all owned captured Elemental-Devourers cap at60. Higher-level
 captures join at60, retaining form/stage/skills; existing copies normalize
 read-only and persist on the next successful save. Enemy levels, capture

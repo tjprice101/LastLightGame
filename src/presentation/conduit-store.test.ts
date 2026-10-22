@@ -8,6 +8,7 @@ import { masterReference } from './master-conduits';
 import { inventoryHub, characterHub } from './hub';
 import { starters } from '../content/starters';
 import { isMenuPage, sanctuaryContext, sanctuaryHeader } from './sanctuary';
+import { referencedEffect } from './effect-copy';
 
 describe('Conduit Store and discovery routes', () => {
   it('keeps all Conduit lore collapsed while effects remain outside the disclosure', () => {
@@ -38,7 +39,7 @@ describe('Conduit Store and discovery routes', () => {
     for (const conduit of conduits) {
       expect(conduit.rarity).toBe('Common');
       expect(html).toContain(conduit.name);
-      expect(html).toContain(conduit.effect);
+      expect(html).toContain(referencedEffect(conduit.effect));
       expect(html).toContain(`${conduit.price} Prismatica`);
     }
     expect(html).not.toContain('Elemental Light core');

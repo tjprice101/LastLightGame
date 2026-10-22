@@ -28,7 +28,7 @@ import { characterRoster } from './roster';
 import { storyEncounter, storyRules } from '../content/story';
 import { unlockedStoryStage } from '../game/account';
 import { abilityStatuses, kitResource } from './ability-status';
-import { readableEffect } from './effect-copy';
+import { readableEffect, referencedEffect } from './effect-copy';
 import { masterEquipment } from './master-conduits';
 import { applyConduitSearch, conduitLoadout, filledConduitSlots } from './conduit-loadout';
 import { phaseZeroStatsReady, statDisplayUnit } from '../content/phase-zero-stats';
@@ -193,7 +193,7 @@ function equipment(starter: Starter, account: Account | null, compact = false): 
           const reason = conduitEquipReason(entry, starter.elementId, slots, index);
           return `<option value="${entry.id}" ${entry.id === selected ? 'selected' : ''} ${reason ? 'disabled' : ''}>${entry.name} · ${entry.rarity} · +${account?.conduitUpgrades?.[entry.id] ?? 0}${reason ? ` · ${reason}` : ''}</option>`;
         }).join('')}</select>
-        <span>${conduit ? conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]) : 'No bonus'}</span></div>`;
+        <span>${conduit ? referencedEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])) : 'No bonus'}</span></div>`;
     }).join('')}</div></section></div>
     ${!account ? '<p role="alert">Equipment unavailable. Resolve the save error.</p>' : ''}
     <p>Omnic Conduits must match this character's element; at most four may be equipped.</p>

@@ -9,7 +9,7 @@ import { machineComponentRulesText } from '../content/mechanical-components';
 import { gameConfirm } from './game-dialog';
 import { presentReward } from './reward-screen';
 import { conduitReward } from './conduit-presentation';
-import { readableEffect } from './effect-copy';
+import { referencedEffect as readableEffect } from './effect-copy';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 
 const pageSize = 6;
@@ -122,7 +122,7 @@ export function bindConduitUpgrades(host: HTMLElement, storage: ProfileStorage,
         const cost = maximum ? Number(button.dataset.totalCost) : conduitUpgradeCost(conduit, level);
         if (cost === null) throw new Error('This Conduit is already fully upgraded.');
         if (!Number.isSafeInteger(cost) || cost <= 0 || !Number.isInteger(targetLevel) || targetLevel <= level || targetLevel > conduitUpgradeCap) throw new Error('Invalid Conduit upgrade preview.');
-        if (!await gameConfirm(`Spend ${cost} Broken Mechanical Components to upgrade ${conduit.name} from +${level} to +${targetLevel} account-wide? Current: ${conduitEffect(conduit, level).replace(/\.$/, '')}. ${maximum ? 'Target' : 'Next'}: ${conduitEffect(conduit, targetLevel).replace(/\.$/, '')}. Penalties also grow. No copies or other currency are spent.${maximum ? ' This is the highest affordable level, up to +5.' : ''}`, { title: maximum ? 'Max Level Conduit' : 'Upgrade Conduit', confirmLabel: maximum ? 'Max Level' : 'Upgrade' })) return;
+        if (!await gameConfirm(`Spend ${cost} Broken Mechanical Components to upgrade ${conduit.name} from +${level} to +${targetLevel} account-wide? Current: ${readableEffect(conduitEffect(conduit, level), false).replace(/\.$/, '')}. ${maximum ? 'Target' : 'Next'}: ${readableEffect(conduitEffect(conduit, targetLevel), false).replace(/\.$/, '')}. Penalties also grow. No copies or other currency are spent.${maximum ? ' This is the highest affordable level, up to +5.' : ''}`, { title: maximum ? 'Max Level Conduit' : 'Upgrade Conduit', confirmLabel: maximum ? 'Max Level' : 'Upgrade' })) return;
         const plan: ConduitMaxLevelPlan = { id, currentLevel: level, targetLevel, cost };
         if (maximum && performUpgrade && !performMaximum) throw new Error('Online Conduit Max Level is unavailable.');
         const account = maximum

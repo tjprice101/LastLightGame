@@ -14,6 +14,8 @@ import { characterDetail, inventoryHub } from '../presentation/hub';
 import { starters } from './starters';
 import { unitFacing } from '../presentation/unit-facing';
 import { defaultBindings } from '../game/hotkeys';
+import { creatureLoot, creatures } from './creatures';
+import { materialLoot } from './dungeons';
 
 vi.mock('../presentation/activity-transition', () => ({
   activityTransitionPending: () => false,
@@ -35,6 +37,44 @@ function draws(values: number[]): () => number {
 }
 
 describe('playable Heaven and Abyss', () => {
+  it.each(['heavens', 'abyss'] as const)('%s awards only its unique materials on every current/legacy floor and discovery table', mode => {
+    for (let stage = 1; stage <= stageCount; stage++) {
+      for (const schedule of ['caps', 'legacy'] as const) {
+        expect(infusionLoot(mode, stage, schedule).bonuses).toEqual([]);
+        for (const roll of [0, .5, .999999]) {
+          expect(Object.keys(infusionDrops(mode, stage, () => roll, schedule))
+            .every(id => [`${mode}-weapon`, `${mode}-evolution`, `${mode}-level`].includes(id))).toBe(true);
+        }
+      }
+      const creature = creatures.find(entry => entry.mode === mode && entry.stages.includes(stage))!;
+      expect(creatureLoot(creature, stage).some(drop => elements.some(element => drop.id.startsWith(`${element.id}-`)))).toBe(false);
+    }
+    for (const element of elements) {
+      expect(materialLoot(element.id, 35).some(drop => drop.id === `${element.id}-epic`)).toBe(true);
+    }
+  });
+
+  it.each(['heavens', 'abyss'] as const)('%s rejects forged Crest rewards atomically while preserving previously owned Crests', mode => {
+    for (const stage of [1, stageCount]) {
+      const saved = storage();
+      saveAccount(saved, { ...emptyAccount(), materials: { 'infernic-epic': 7 } });
+      const state = createInfusionBattle(mode, stage, 1729, 'ember', { level: 105, evolution: 6 });
+      state.enemies.forEach(enemy => { enemy.hp = 1; });
+      state.allies[0].shatter = 100;
+      const result = act(state, 'ember', 'ultimate', state.enemies[0].id);
+      const before = saved.getItem(ACCOUNT_KEY);
+      for (const rarity of ['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic']) {
+        const forged = structuredClone(result);
+        const reward = forged.events.find(event => event.kind === 'reward')!;
+        reward.materials = { ...reward.materials, [`infernic-${rarity}`]: stage === stageCount ? 15 : 3 };
+        expect(() => saveAccountRewards(saved, forged, `${mode}-forged-${stage}-${rarity}`)).toThrow('only drop their three unique materials');
+        expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
+      }
+      saveAccountRewards(saved, result, `${mode}-valid-${stage}`);
+      expect(loadAccount(saved).materials['infernic-epic']).toBe(7);
+    }
+  });
+
   it.each(['heavens', 'abyss'] as const)('%s wires all stages, six forms, full artwork and bosses', (mode) => {
     for (let stage = 1; stage <= stageCount; stage++) {
       const encounter = infusionEncounter(mode, stage);
@@ -82,49 +122,30 @@ describe('playable Heaven and Abyss', () => {
     expect(gameplayHub(emptyAccount())).toContain(`assets/banners/${mode}-banner.png`);
   });
 
-  it('uses exact specialty bands, quantities, rarity chances and mode-associated rolls', () => {
+  it('preserves exact specialty bands and quantities without bonus elemental rolls', () => {
     for (let stage = 1; stage <= stageCount; stage++) {
       const pool = infusionLoot('heavens', stage);
       expect(infusionDrops('heavens', stage, () => .999999)).toEqual(
         Object.fromEntries(pool.specialties.map((drop) => [drop.id, drop.maximum])));
     }
-    for (const mode of ['heavens', 'abyss'] as const) for (const [index, element] of elements.filter((entry) => entry.infusion === mode).entries()) {
-      const selection = (index + .5) / elements.filter((entry) => entry.infusion === mode).length;
-      expect(infusionDrops(mode, stageCount, draws([0, 0, 0, 0, 0, selection, 0, 0, selection, 0, 0, selection]))).toEqual({
+    for (const mode of ['heavens', 'abyss'] as const) {
+      expect(infusionDrops(mode, stageCount, draws([0, 0, 0]))).toEqual({
         [`${mode}-weapon`]: 15, [`${mode}-evolution`]: 15, [`${mode}-level`]: 15,
-        [`${element.id}-epic`]: 15, [`${element.id}-legendary`]: 15, [`${element.id}-omnic`]: 15,
       });
-    }
-    for (const rarity of ['epic', 'legendary', 'omnic'] as const) {
-      const stage = Array.from({ length: stageCount }, (_, index) => index + 1)
-        .find((candidate) => infusionLoot('abyss', candidate).bonuses.some((drop) => drop.rarity === rarity))!;
-      const pool = infusionLoot('abyss', stage);
-      const earlierRolls = pool.bonuses.findIndex((drop) => drop.rarity === rarity);
-      const drop = pool.bonuses[earlierRolls];
-      for (const success of [true, false]) {
-        const result = infusionDrops('abyss', stage, draws([
-          ...Array<number>(pool.specialties.length).fill(0),
-          ...Array<number>(earlierRolls).fill(.999), success ? drop.chance - .000001 : drop.chance,
-          ...(success ? [0, 0] : []), ...Array<number>(pool.bonuses.length - earlierRolls - 1).fill(.999),
-        ]));
-        expect(result['tranquilitic-' + rarity]).toBe(success ? drop.minimum : undefined);
-      }
+      expect(infusionDrops(mode, stageCount, draws([.999999, .999999, .999999]))).toEqual({
+        [`${mode}-weapon`]: 30, [`${mode}-evolution`]: 30, [`${mode}-level`]: 30,
+      });
     }
     for (const bad of [-1, 1, NaN, Infinity]) expect(() => infusionDrops('abyss', stageCount, () => bad)).toThrow('[0, 1)');
   });
 
   it.each(['heavens', 'abyss'] as const)('%s never awards opposite-mode elements at any floor or selection boundary', (mode) => {
-    const eligible = elements.filter((element) => element.infusion === mode).map((element) => element.id);
     for (let stage = 1; stage <= stageCount; stage++) for (const selection of [0, .199999, .2, .399999, .4, .599999, .6, .799999, .8, .999999]) {
       const pool = infusionLoot(mode, stage);
       const sequence = [...pool.specialties.map(() => 0), ...pool.bonuses.flatMap(() => [0, 0, selection])];
       const drops = infusionDrops(mode, stage, draws(sequence));
-      for (const drop of pool.bonuses) {
-        const id = `${eligible[Math.floor(selection * eligible.length)]}-${drop.rarity}`;
-        expect(drops[id]).toBe(drop.minimum);
-      }
-      for (const element of elements.filter((entry) => entry.infusion !== mode)) {
-        for (const rarity of ['epic', 'legendary', 'omnic']) expect(drops[`${element.id}-${rarity}`]).toBeUndefined();
+      for (const element of elements) {
+        for (const rarity of ['common', 'uncommon', 'rare', 'epic', 'legendary', 'omnic']) expect(drops[`${element.id}-${rarity}`]).toBeUndefined();
       }
     }
   });

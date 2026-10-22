@@ -5,7 +5,7 @@ import { openingStarters, starters } from '../content/starters';
 import { elements } from '../content/activities';
 import { machineRules } from '../content/machines';
 import { conduits, conduitEffect, getConduit } from '../content/conduits';
-import { readableEffect } from './effect-copy';
+import { readableEffect, referencedEffect } from './effect-copy';
 import { defaultBindings } from '../game/hotkeys';
 import { homeHub, characterHub } from './hub';
 import { gameplayHub } from './gameplay';
@@ -108,7 +108,7 @@ describe('visible UI copy', () => {
     const store = primary(conduitStore(account));
     expect(store).not.toContain('Purchase requires confirmation.');
     expect(store).not.toContain('Mechanical drive');
-    expect(store).toContain(conduitEffect(getConduit('vigil-core')));
+    expect(store).toContain(referencedEffect(conduitEffect(getConduit('vigil-core'))));
     expect(store).toContain('data-buy-conduit="vigil-core"');
     expect(store).toContain('Prismatica');
     const upgrades = primary(conduitUpgradeMenu(account));

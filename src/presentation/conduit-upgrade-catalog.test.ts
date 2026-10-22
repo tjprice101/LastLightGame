@@ -4,7 +4,7 @@ import { conduits, conduitEffect, getConduit, type ConduitId } from '../content/
 import { emptyAccount, type Account } from '../game/account';
 import { bindConduitUpgrades, conduitUpgradeMenu, updateConduitUpgradeMenu } from './conduit-upgrade';
 import { bindSelectionPanels } from './selection-panel';
-import { readableEffect } from './effect-copy';
+import { referencedEffect as readableEffect } from './effect-copy';
 
 afterEach(() => document.body.replaceChildren());
 

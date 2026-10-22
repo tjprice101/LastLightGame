@@ -14,7 +14,7 @@ import { conduitInventory, conduitStore } from '../presentation/conduit-store';
 import { archives } from '../presentation/archives';
 import { createSession } from '../presentation/battle-view';
 import { unitReadout } from '../presentation/unit-readout';
-import { readableEffect } from '../presentation/effect-copy';
+import { referencedEffect as readableEffect } from '../presentation/effect-copy';
 
 function slots(...ids: ConduitId[]): ConduitSlots {
   return [...ids, ...Array<null>(8 - ids.length).fill(null)];

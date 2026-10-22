@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { bossLootRange } from '../content/final-boss-loot';
+import { materialLoot } from '../content/dungeons';
+import { materialRangesAtLevel } from '../content/material-drops';
 import { eventModes, infusionStageCount } from '../content/activities';
 import { capturedEnemyStats, infusionEncounter, infusionDrops, infusionLoot, roseEnemyStats } from '../content/infusions';
 import { enemyCombatStats } from '../content/stat-growth';
@@ -192,22 +194,34 @@ describe('Passion of Crimson Roses integration', () => {
     }
   });
 
-  it('uses shared authoritative loot with guaranteed Seeds and growing independent material rolls', () => {
+  it('matches guaranteed dungeon rarity brackets and quantities at the same enemy level', () => {
     const first = infusionLoot('roses', 1).specialties;
     expect(first.map(drop => drop.id)).toEqual(roseMaterials.slice(0, 5).map(material => material.id));
-    expect(first[0]).toEqual({ id: 'rosethorn-common', minimum: 1, maximum: 2, chance: 1 });
-    first.slice(1).forEach((drop, index) => expect(drop.chance).toBeCloseTo([.98, .9, .8, .6][index] / 2, 12));
+    expect(first.map(drop => [drop.minimum, drop.maximum, drop.chance]))
+      .toEqual([[20, 25, 1], [12, 15, 1], [8, 10, 1], [5, 6, 1], [2, 3, 1]]);
     const final = infusionLoot('roses', 35).specialties;
-    expect(final.map((drop) => [drop.minimum, drop.maximum])).toEqual(Array.from({ length: 6 }, () => [15, 30]));
-    expect(final.map((drop) => drop.chance)).toEqual([1, .98, .9, .8, .6, .35]);
+    expect(final.map((drop) => [drop.minimum, drop.maximum])).toEqual([[125, 150], [80, 100], [60, 75], [40, 50], [25, 30], [10, 15]]);
+    expect(final.map((drop) => drop.chance)).toEqual([1, 1, 1, 1, 1, 1]);
+    expect(infusionLoot('roses', 9).specialties).toHaveLength(5);
+    expect(infusionLoot('roses', 10).specialties).toHaveLength(6);
+    for (let stage = 1; stage <= 35; stage++) {
+      const level = Math.round(38 + (stage - 1) * 82 / 34);
+      const ranges = materialRangesAtLevel(level);
+      expect(materialLoot('infernic', stage).map(drop => [drop.minimum, drop.maximum, drop.chance]))
+        .toEqual(Object.values(ranges).map(range => [range[0] * (stage === 35 ? 5 : 1), range[1] * (stage === 35 ? 5 : 1), 1]));
+    }
     for (let stage = 1; stage <= 35; stage++) {
       const encounter = infusionEncounter('roses', stage);
       const creature = getCreature(`infusion:roses:${encounter.tier}`);
+      const ranges = encounter.level < 95 ? [[20, 25], [12, 15], [8, 10], [5, 6], [2, 3]]
+        : [[25, 30], [16, 20], [12, 15], [8, 10], [5, 6], [2, 3]];
+      expect(infusionLoot('roses', stage).specialties.map(drop => [drop.minimum, drop.maximum, drop.chance]))
+        .toEqual(ranges.map(([minimum, maximum]) => [minimum * (stage === 35 ? 5 : 1), maximum * (stage === 35 ? 5 : 1), 1]));
       expect(creatureLoot(creature, stage)).toEqual([{ id: 'fractalis', ...bossLootRange(fractalisDrop(encounter.level, 140), stage === 35 ? 5 : 1) },
         ...infusionLoot('roses', stage).specialties]);
     }
-    expect(infusionDrops('roses', 35, () => 0)).toEqual(Object.fromEntries(roseMaterials.map((material) => [material.id, 15])));
-    expect(infusionDrops('roses', 35, () => .999999)).toEqual({ 'rosethorn-common': 30 });
+    expect(infusionDrops('roses', 35, () => 0)).toEqual(Object.fromEntries(final.map(drop => [drop.id, drop.minimum])));
+    expect(infusionDrops('roses', 35, () => .999999)).toEqual(Object.fromEntries(final.map(drop => [drop.id, drop.maximum])));
   });
 
   it('rejects forged event captures, premium/material payouts, living/wrong-stage sources and failed writes atomically', () => {
