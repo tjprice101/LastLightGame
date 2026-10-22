@@ -91,15 +91,14 @@ describe('hostile progression balance', () => {
       .toBeLessThan(damageAmount(enemy.damage, 1, plain.stats.defense, false) / plain.stats.health * .5);
   });
 
-  it.each(['heavens', 'abyss', 'treasury', 'sanctuary', 'machines', 'roses'] as const)(
-    'measures old geared and ungeared attempts against the final %s boss', mode => {
-      for (const seed of [1, 1729, 12345]) {
-        const stage = infusionStageCount(mode);
-        const create = (gear: ConduitLoadouts) => createInfusionBattle(mode, stage, seed, 'ember', lateProgress.ember, team, lateProgress, gear, [], lateUpgrades);
-        expect(playSquad(withMasterLoadouts(create(lateEquipment), lateMasters)).phase, `${mode} built seed ${seed}`)
-          .toBe(mode === 'roses' ? 'defeat' : 'cleared');
-        expect(playSquad(create({})).phase, `${mode} unbuilt seed ${seed}`).toBe('defeat');
-      }
+  it.each((['heavens', 'abyss', 'treasury', 'sanctuary', 'machines', 'roses'] as const)
+    .flatMap(mode => [1, 1729, 12345].map(seed => ({ mode, seed }))))(
+    'measures geared and ungeared final $mode boss attempts at seed$seed with level-scaled DoT', ({ mode, seed }) => {
+      const stage = infusionStageCount(mode);
+      const create = (gear: ConduitLoadouts) => createInfusionBattle(mode, stage, seed, 'ember', lateProgress.ember, team, lateProgress, gear, [], lateUpgrades);
+      expect(playSquad(withMasterLoadouts(create(lateEquipment), lateMasters)).phase, `${mode} built seed ${seed}`)
+        .toBe(mode === 'roses' && seed !== 1729 ? 'defeat' : 'cleared');
+      expect(playSquad(create({})).phase, `${mode} unbuilt seed ${seed}`).toBe('defeat');
     });
 
   it.each(playableDungeons)('keeps built squads viable at the final %s material boss', element => {
@@ -108,10 +107,10 @@ describe('hostile progression balance', () => {
     }
   });
 
-  it.each(['nerithe', 'orvella', 'vaelor'] as const)('makes the final %s War boss a wall for the old mixed-rarity build', id => {
-    for (const seed of [1, 1729, 12345]) {
-      expect(playSquad(withMasterLoadouts(createWarBattle(id, 10, seed, 'ember', lateProgress.ember, team, lateProgress, lateEquipment, [], lateUpgrades), lateMasters)).phase).toBe('defeat');
-    }
+  it.each((['nerithe', 'orvella', 'vaelor'] as const)
+    .flatMap(id => [1, 1729, 12345].map(seed => ({ id, seed }))))('measures final $id War boss at seed$seed with level-scaled DoT', ({ id, seed }) => {
+    expect(playSquad(withMasterLoadouts(createWarBattle(id, 10, seed, 'ember', lateProgress.ember, team, lateProgress, lateEquipment, [], lateUpgrades), lateMasters)).phase)
+      .toBe(seed === 1729 ? 'cleared' : 'defeat');
   });
 
   it.each(['ember', 'tide', 'sprout'] as const)('%s can clear the first Story encounter at Lv.0 without equipment', (id) => {

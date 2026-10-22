@@ -3,6 +3,7 @@ import type { ConduitId } from '../content/conduits';
 import { conduitRedesign, redesignStep, redesignValue } from '../content/conduit-redesign';
 import { phaseZeroGaugeOffer, phaseZeroPercentageGaugeOffer, phaseZeroSkillCost, phaseZeroStatBase, phaseZeroUpgradeMagnitude } from '../content/phase-zero-conduit-stats';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
+import { damageOverTimeLevelMultiplier } from '../content/native-balance';
 import type { MasterConduitId } from '../content/master-conduits';
 import type { BattleEvent, BattleState, Combatant } from './battle';
 import { buffSnapshot } from './battle-buffs';
@@ -870,13 +871,15 @@ export function applyConduitBurn(state: BattleState, owner: Combatant, target: C
     if (!ctx.burnPaid && owner.hp - payment >= 1) { owner.hp -= payment; ctx.burnPaid = true; }
     if (ctx.burnPaid) bonus += value(state, owner, 'starvein-conductor', .3, .6);
   }
-  const damage = Math.round((base * ctx.skillPower + ctx.shieldBurn) * (1 + bonus));
+  const levelMultiplier = owner.side === 'ally' ? damageOverTimeLevelMultiplier(owner.level ?? 0) : 1;
+  const scaledBase = base * levelMultiplier;
+  const damage = Math.round((scaledBase * ctx.skillPower + ctx.shieldBurn * levelMultiplier) * (1 + bonus));
   if (phaseZeroStatsReady) {
     const n = gear(target).numbers;
     const prior = owner.native?.burns?.[target.id] ??
       (target.burn.sourceId === owner.id ? target.burn : undefined);
     if (!prior || prior.turns <= 0) n[`cinderPower:${owner.id}`] = 0;
-    if (!prior || prior.turns <= 0 || damage >= prior.damage) n[`cinderBase:${owner.id}`] = base;
+    if (!prior || prior.turns <= 0 || damage >= prior.damage) n[`cinderBase:${owner.id}`] = scaledBase;
     return damage;
   }
   if (target.burn.turns <= 0 || damage >= target.burn.damage) resetConduitBurnStreak(owner, target);

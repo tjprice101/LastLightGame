@@ -1,5 +1,35 @@
 # Current state and handoff
 
+## Linear allied DoT scaling (D-381)
+
+- Owner approves an extra `1 + sourceLevel/30` for all allied DoTs:
+  Lv.0 x1/30 x2/60 x3/105 x4.5, once at application, not each tick.
+  Burn uses the shared creation boundary and matching Cinder base snapshot.
+  Native/general/Conduit-enhanced Burn benefits; copied legacy Conduit Burn
+  and old pending snapshots retain stored damage. No enemy DoT/trap/delayed
+  direct-packet bonus or extra multiplication of detonations/Master healing.
+- Updated Infernis's passive reference and the combat specification. Added
+  exhaustive level0-140/single-rounding tests, native skill/Last Flare cases,
+  stored ticks/stronger refresh/Cinder/detonation/Master-healing exclusions,
+  trap/delayed-packet invariance and shared-authority persistence/parity.
+  Disposable hosted `--dot-scaling` checks application/tick/detonation at
+  levels0/30/60/105 with persistence and idempotent retries.
+- The first full suite exposed the old Lv.30 Burn expectation and four
+  seeded late-boss defeat assumptions. Updated exact numerical/benchmark
+  expectations, not enemy tuning: equipped seed1729 now wins Roses and all
+  War finals; seeds1/12345 still lose them. Ungeared final activity attempts
+  remain defeats.
+- Validation: full `npx vitest run --maxWorkers=2 --reporter=json` reports
+  6,304 passing tests/203 files and no failed assertions. The runner exited1
+  despite the passing assertion report; the release workflow must independently
+  confirm a clean test-process exit. `npm run build`, authority bundle/type-check
+  and `git diff --check` passed; the138-entry/726-scenario matrix refreshed.
+- Matching authority deployed successfully. Hosted
+  `node tools\smoke_server_game.mjs --dot-scaling` passed levels0/30/60/105,
+  application/tick/detonation parity, persisted snapshots and idempotent
+  retries. All disposable identities/cascading gameplay records removed.
+  Publishing the client through the main-branch Pages workflow next.
+
 ## Machines35 stages (D-380; 2026-10-22)
 
 - Owner confirms remapping all old75-stage unlocks to

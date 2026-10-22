@@ -201,7 +201,7 @@ describe('Elemental Gauge', () => {
       state.allies[0].stats.crit = 1;
       const result = act(state, 'ember', 'skill1', state.enemies[0].id);
       const actor = state.allies[0];
-      const burn = Math.round(actor.stats.damage * .25);
+      const burn = Math.round(actor.stats.damage * .25 * (1 + 30 / 30));
       expect(result.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(actor.stats.damage, 1.6 * nativeBalance.skillDamageScale, 5, true, actor.stats.critMultiplier));
       expect(result.state.enemies[0].burn).toEqual({ damage: burn, turns: 3, sourceId: 'ember', origin: 'native' });
       expect(result.state.allies[0].readyRound.skill1).toBe(state.round);

@@ -3841,9 +3841,14 @@ var kitPilotDescriptions = {
 var nativeBalance = {
   skillDamageScale: 1.6,
   lastFlare: { damage: 3, support: 1.5 },
+  damageOverTime: { levelsPerBonus: 30 },
   flora: { seed: 0.5, empoweredSeed: 0.975, immediateHeal: 0.75 },
   tizu: { shelter: 0.45, oceanMemory: 0.525 }
 };
+function damageOverTimeLevelMultiplier(level) {
+  if (!Number.isSafeInteger(level) || level < 0) throw new Error("Invalid damage-over-time source level.");
+  return 1 + level / nativeBalance.damageOverTime.levelsPerBonus;
+}
 
 // src/content/native-identities.ts
 function ability(name, description, damageMultiplier, targets, excludeSelf) {
@@ -3862,7 +3867,7 @@ var nativeIdentities = {
     playLoop: "[Infernis] applies [Burn] that lasts across enemy phases; [Flame Arc] can deal its remaining damage at once.",
     passive: {
       name: "Unbroken Ember",
-      description: "[Burn] applied by [Infernis] lasts three enemy phases and deals its damage once per enemy phase, starting with the next one. Reapplying it resets the duration to three phases and keeps the higher damage per phase; it never stacks."
+      description: "[Burn] applied by [Infernis] lasts three enemy phases and deals its damage once per enemy phase, starting with the next one. Allied damage-over-time gains an additional 100% damage per 30 source levels, snapshotted when applied. Reapplying it resets the duration to three phases and keeps the higher damage per phase; it never stacks."
     },
     abilities: {
       skill1: ability("Cinder Cleave", "160% direct damage to one enemy, then apply [Burn] dealing 25% of [Infernis]\u2019s Attack per enemy phase for three enemy phases.", 1.6),
@@ -8059,12 +8064,14 @@ function applyConduitBurn(state, owner, target, base, ctx) {
     }
     if (ctx.burnPaid) bonus += value(state, owner, "starvein-conductor", 0.3, 0.6);
   }
-  const damage = Math.round((base * ctx.skillPower + ctx.shieldBurn) * (1 + bonus));
+  const levelMultiplier = owner.side === "ally" ? damageOverTimeLevelMultiplier(owner.level ?? 0) : 1;
+  const scaledBase = base * levelMultiplier;
+  const damage = Math.round((scaledBase * ctx.skillPower + ctx.shieldBurn * levelMultiplier) * (1 + bonus));
   if (phaseZeroStatsReady) {
     const n = gear(target).numbers;
     const prior = owner.native?.burns?.[target.id] ?? (target.burn.sourceId === owner.id ? target.burn : void 0);
     if (!prior || prior.turns <= 0) n[`cinderPower:${owner.id}`] = 0;
-    if (!prior || prior.turns <= 0 || damage >= prior.damage) n[`cinderBase:${owner.id}`] = base;
+    if (!prior || prior.turns <= 0 || damage >= prior.damage) n[`cinderBase:${owner.id}`] = scaledBase;
     return damage;
   }
   if (target.burn.turns <= 0 || damage >= target.burn.damage) resetConduitBurnStreak(owner, target);

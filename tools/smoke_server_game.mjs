@@ -48,7 +48,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--machines-layout')) {
+  if (process.argv.includes('--dot-scaling')) {
+    await smokeDotScaling(client, created.user.id, username);
+  } else if (process.argv.includes('--machines-layout')) {
     await smokeMachinesLayout(client, created.user.id, username);
   } else if (process.argv.includes('--focus-loot')) {
     await smokeFocusLoot(client, created.user.id, username);
@@ -792,6 +794,60 @@ async function smokeFocusLoot(client, userId, username) {
   assert.ok(denied.error, 'Owned names cannot be focused.');
   assert.deepEqual((await invoke({ kind: 'read' }, persisted.revision)).account, persisted.account);
   console.log('Hosted Focus Loot passed: saved three-tier selection, clear/reselect, all three focused drops, local/authority parity, persisted clearing, idempotent retries and owned-name rejection. Disposable identity only.');
+}
+
+async function smokeDotScaling(firstClient, firstId, firstUsername) {
+  const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+  for (const [index, level] of [0, 30, 60, 105].entries()) {
+    let client = firstClient, userId = firstId, username = firstUsername;
+    if (index) {
+      username = `dot_${randomUUID().replaceAll('-', '').slice(0, 10)}`;
+      const password = randomUUID() + randomUUID(), email = `${username}@example.invalid`;
+      const made = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { username } });
+      if (made.error || !made.data.user) throw new Error('DoT smoke identity creation failed.');
+      userId = made.data.user.id; ids.push(userId);
+      client = createClient(url, clientKey, { auth: { persistSession: false } });
+      if ((await client.auth.signInWithPassword({ email, password })).error) throw new Error('DoT smoke authentication failed.');
+    }
+    let game = freshGame(username);
+    game.starterId = 'ember';
+    game.account.characters = { ember: { level, evolution: 6 }, tide: { level: 0, evolution: 1 } };
+    game.account.squad = ['ember', 'tide'];
+    game = resolveOperation(game, { kind: 'enter', activity: { kind: 'training' } }, entropy).game;
+    for (const ally of game.run.session.state.allies) {
+      ally.stats.health = ally.hp = 10000; ally.stats.damage = 100; ally.stats.crit = 0; ally.shatter = 100;
+    }
+    for (const enemy of game.run.session.state.enemies) {
+      enemy.stats.health = enemy.hp = 100000; enemy.stats.defense = 0; enemy.stats.damage = 1; enemy.stats.crit = 0;
+    }
+    assert.ok(ids.includes(userId));
+    const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+    assert.equal(seeded.error, null);
+    async function invoke(operation, revision, requestId = randomUUID()) {
+      const response = await client.functions.invoke('game-operation', { body: { operation, expectedRevision: revision, requestId } });
+      if (response.error) throw new Error(`Hosted DoT ${operation.kind} failed (${response.error.context?.status ?? 'transport'}).`);
+      return response.data;
+    }
+    let read = await invoke({ kind: 'read' }, 0);
+    for (const step of ['apply', 'tick', 'detonate']) {
+      const operation = step === 'tick' ? { kind: 'endTurn', runId: game.run.session.runId }
+        : { kind: 'act', runId: game.run.session.runId, actorId: 'ember', action: step === 'apply' ? 'skill1' : 'skill2',
+          targetId: game.run.session.state.enemies[0].id };
+      const expected = resolveOperation(game, operation, entropy), requestId = randomUUID();
+      const actual = await invoke(operation, read.revision, requestId);
+      assert.deepEqual(actual.result, JSON.parse(JSON.stringify(expected.response.result)), `DoT level${level} ${step}`);
+      const damage = Math.round(25 * (1 + level / 30));
+      if (step === 'apply') assert.equal(actual.session.state.enemies[0].burn.damage, damage);
+      else assert.equal(actual.result.events.find(event => event.nativeKind === (step === 'tick' ? 'burn' : 'detonation'))?.amount,
+        damage * (step === 'tick' ? 1 : 2));
+      assert.deepEqual(actual.account, expected.response.account);
+      assert.deepEqual(await invoke(operation, read.revision, requestId), actual);
+      read = await invoke({ kind: 'read' }, actual.revision);
+      assert.deepEqual(read.session.state, actual.session.state);
+      game = expected.game;
+    }
+  }
+  console.log('Hosted DoT smoke passed: levels0/30/60/105, exact application/tick/detonation parity, once-only scaling, persisted snapshots and idempotent retries. No owner accounts modified.');
 }
 
 async function smokeLastFlare(firstClient, firstId, firstUsername) {

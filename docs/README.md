@@ -29,6 +29,11 @@ Citadel Spine, Immortal Vessel, Pale Bulwark Diadem and Starvein Conductor.
 
 ## Status vocabulary
 
+**Linear allied DoT growth (D-381):** new Burn applications gain an extra
+`1 + sourceLevel/30` multiplier, applied once before snapshot rounding.
+Enemy DoTs, delayed direct hits and already-scaled copies remain unchanged.
+[Scope and validation](combat.md#linear-allied-damage-over-time-scaling-d-381).
+
 **Machines35-stage layout (D-380):** Lv.10->120 and reward endpoints
 preserved with proportional intermediate scaling. Rare/Legendary drop
 on every stage; Omnic drops on stage26 and every stage afterward.

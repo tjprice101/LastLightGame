@@ -24,7 +24,7 @@ export const nativeIdentities: Record<StarterId, NativeIdentityDefinition> = {
     playLoop: '[Infernis] applies [Burn] that lasts across enemy phases; [Flame Arc] can deal its remaining damage at once.',
     passive: {
       name: 'Unbroken Ember',
-      description: '[Burn] applied by [Infernis] lasts three enemy phases and deals its damage once per enemy phase, starting with the next one. Reapplying it resets the duration to three phases and keeps the higher damage per phase; it never stacks.',
+      description: '[Burn] applied by [Infernis] lasts three enemy phases and deals its damage once per enemy phase, starting with the next one. Allied damage-over-time gains an additional 100% damage per 30 source levels, snapshotted when applied. Reapplying it resets the duration to three phases and keeps the higher damage per phase; it never stacks.',
     },
     abilities: {
       skill1: ability('Cinder Cleave', '160% direct damage to one enemy, then apply [Burn] dealing 25% of [Infernis]’s Attack per enemy phase for three enemy phases.', 1.6),

@@ -1,5 +1,35 @@
 # Combat specification
 
+## Linear allied damage-over-time scaling (D-381)
+
+New allied DoT applications receive an additional `1 + sourceLevel / 30`
+multiplier: Lv.0 x1,30 x2,60 x3,90 x4 and105 x4.5. This supplements existing
+Attack/Skill Power growth, not a replacement curve. Scale the unrounded
+application and round once at the existing damage snapshot boundary.
+The no-progress base fighter (`level: null`) remains equivalent to Lv.0.
+Invalid numeric levels are rejected explicitly.
+
+Burn is currently the game's periodic damage status. Its shared application
+path covers native/general allied applications and Conduit-enhanced Burn;
+Cinder Testament's additive growth stores the same level-adjusted base.
+Enemy-origin DoTs, traps and delayed direct packets are unchanged. Tick,
+detonation, copied spillover and actual-damage-derived Master healing use
+their existing stored/actual damage without another level multiplier.
+There are no independently authored current-production Conduit DoTs outside
+that shared Burn path; copied historical Conduit Burn remains a stored copy.
+
+Keep existing pending snapshots, source ownership, strongest-only refreshes,
+durations, costs, recovery, RNG and saves. The stronger Burn intentionally
+changes the seeded late-boss benchmark: the equipped starter squad at seed1729
+now clears Roses and all three War finals; seeds1/12345 still lose those
+encounters, and unequipped final activity attempts still fail. Do not retune
+enemies to cancel this approved buff.
+
+Validate `damage-over-time-scaling.test.ts`, `battle.test.ts` and
+`enemy-progression.test.ts`, plus the full equipment/native/authority suite.
+Hosted disposable-account check:
+`node tools/smoke_server_game.mjs --dot-scaling`.
+
 ## Last Flare potency (D-378)
 
 All16 Element-Bearers receive3x their previously live Last Flare damage and
