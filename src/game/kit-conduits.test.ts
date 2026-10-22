@@ -88,11 +88,14 @@ describe('replacement Omnic catalog, acquisition and stable identity', () => {
   it('removes replacement entries from Store while inventory, Archive and detailed references share live rules', () => {
     const account = { ...emptyAccount(), conduits: Object.fromEntries(kitConduitDesigns.map((entry) => [entry.id, 1])) };
     const saved = storage(account);
+    const inventory = conduitInventory(account);
+    const archive = archives(account, 'conduits');
+    const store = conduitStore(account);
     for (const entry of kitConduitDesigns) {
-      expect(conduitInventory(account)).toContain(entry.name);
-      expect(archives(account, 'conduits')).toContain(entry.name);
-      expect(archives(account, 'conduits')).toContain(readableEffect(conduitEffect(getConduit(entry.id))));
-      expect(conduitStore(account)).not.toContain(entry.name);
+      expect(inventory).toContain(entry.name);
+      expect(archive).toContain(entry.name);
+      expect(archive).toContain(readableEffect(conduitEffect(getConduit(entry.id))));
+      expect(store).not.toContain(entry.name);
       expect(() => purchaseConduit(saved, entry.id)).toThrow('not sold');
     }
     expect(saved.setItem).not.toHaveBeenCalled();

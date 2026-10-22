@@ -20,6 +20,9 @@
 - Initial Pages run39719090370 caught an obsolete activities-test assertion
   for the removed Event details route. Updated it to require no extra Events
   link while retaining actual Roses entry; no runtime behavior changed.
+- The next run exposed the known5-second kit-catalog test timeout. Removed
+  repeated identical full-Archive/Store/Inventory renders inside its25-entry
+  assertion loop; every entry assertion remains, without raising timeouts.
 
 ## Removing redundant event-details navigation (2026-10-21)
 
