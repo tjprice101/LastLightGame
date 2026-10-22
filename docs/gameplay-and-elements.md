@@ -36,7 +36,7 @@ Quitting ends the run and restores its contextual entry/map; rewards remain.
 Settings still retains an active run. The prologue remains inside Story.
 Events remains a primary tab as well as a Gameplay category.
 [Passion of Crimson Roses](crimson-roses.md) is its first playable event:
-35 stages80-140, Rosethorn materials and20% captures only through enemy Lv.120.
+35 stages80-140, Rosethorn materials and50% captures only through enemy Lv.120 (D-377).
 Existing mode tables/growth/costs below retain their prior120 caps.
 
 ## Canonical elements and dungeons
@@ -320,7 +320,7 @@ This is a drop reference, not capture/pity or a second source of rewards.
   Unique-item quantity scaling and guaranteed rates are unchanged, including
   Crown of the Scarlet Oath. Existing owned materials and elemental dungeon
   drops are unchanged. Current and legacy schedules exclude all elemental
-  bonuses. Final Prismatica is75-150. Phase6 adds20% captures per kill,
+  bonuses. Final Prismatica is75-150. Captures are50% per kill (D-377),
   ordinary enemies and bosses alike; no guaranteed rare pool or pity.
   Enemy-death stacks vary visually from75-135% size, with randomized scatter and
   independent850-1849ms automatic pickup. Reduced motion keeps a static650ms

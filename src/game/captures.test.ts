@@ -1,6 +1,6 @@
 import { infusionStageCount } from '../content/activities';
 import { describe, expect, it } from 'vitest';
-import { createBattle, createDungeonBattle, createInfusionBattle, act, endTurn, nextStage, nextWave, captureSucceeds, actionUnavailable, damageAmount } from './battle';
+import { createBattle, createDungeonBattle, createInfusionBattle, createStoryBattle, act, endTurn, nextStage, nextWave, captureSucceeds, actionUnavailable, damageAmount } from './battle';
 import { emptyAccount, saveAccount, loadAccount, saveAccountRewards, setSquad, equipConduit, levelCapturedCharacter, characterProtection, validateAccount, ACCOUNT_KEY } from './account';
 import { capturedProgress, createCreatureCopy, resolveCapturedFighter, type CapturedCharacter } from './character-instances';
 import { infusionEncounter } from '../content/infusions';
@@ -41,7 +41,7 @@ function seeded() {
   return { saved, account };
 }
 
-describe('20% capture rewards and retained fixed-form Elemental-Devourers', () => {
+describe('50% capture rewards and retained fixed-form Elemental-Devourers', () => {
   it.each(['skill1', 'skill2'] as const)('repeats captured %s on the next turn, preserving saved intervals and Gauge costs', action => {
     const captured = copy();
     const before = structuredClone(captured);
@@ -77,13 +77,41 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
     expect(result.state.allies[0].shatter).toBe(0);
     expect(actionUnavailable(state, actor, 'ultimate')).toBe('This captured form does not have this ability.');
   });
-  it('uses exactly the [0,.2) threshold and rejects invalid rolls', () => {
+  it('uses exactly the [0,.5) threshold and rejects invalid rolls', () => {
     expect(captureSucceeds(0)).toBe(true);
     expect(captureSucceeds(.199999)).toBe(true);
-    expect(captureSucceeds(.2)).toBe(false);
+    expect(captureSucceeds(.2)).toBe(true);
+    expect(captureSucceeds(.499999)).toBe(true);
+    expect(captureSucceeds(.5)).toBe(false);
     expect(captureSucceeds(.999999)).toBe(false);
     for (const value of [-1, 1, NaN, Infinity]) expect(() => captureSucceeds(value)).toThrow();
   });
+  it.each(['heavens', 'abyss', 'treasury', 'sanctuary', 'roses'] as const)(
+    '%s uses the raised rate for every eligible stage, including bosses', mode => {
+      for (let stage = 1; stage <= infusionStageCount(mode); stage++) {
+        for (const captureSeed of [5000, 10000]) {
+          const state = createInfusionBattle(mode, stage, 1, 'ember', { level: 105, evolution: 6 });
+          state.captureSeed = captureSeed;
+          state.enemies[0].hp = 1;
+          state.enemies[0].burn = { damage: 1, turns: 1 };
+          const result = endTurn(state);
+          const reward = result.events.find(event => event.kind === 'reward' && event.source === state.enemies[0].id)!;
+          expect(reward, `${mode} stage ${stage}`).toBeDefined();
+          const enemyLevel = state.enemies[0].level;
+          if (enemyLevel === null) throw new Error('Staged enemy level is missing.');
+          const eligible = mode !== 'roses' || enemyLevel <= 120;
+          expect(!!reward.capture, `${mode} stage ${stage} seed ${captureSeed}`).toBe(eligible && captureSeed === 5000);
+          const comparison = structuredClone(state);
+          comparison.captureSeed = captureSeed === 5000 ? 10000 : 5000;
+          const other = endTurn(comparison);
+          expect(result.state.seed).toBe(other.state.seed);
+          expect(result.state.rewardSeed).toBe(other.state.rewardSeed);
+          expect(result.state.lycalisSeed).toBe(other.state.lycalisSeed);
+          expect(reward.amount).toBe(other.events.find(event => event.kind === 'reward')?.amount);
+          expect(reward.materials).toEqual(other.events.find(event => event.kind === 'reward')?.materials);
+        }
+      }
+    });
   it('captures every newly killed eligible enemy separately, saves once, and retains actual level/skills', () => {
     const saved = storage();
     const state = createInfusionBattle('abyss', 1, 1, 'ember', { level: 105, evolution: 6 });
@@ -118,8 +146,10 @@ describe('20% capture rewards and retained fixed-form Elemental-Devourers', () =
     expect(loadAccount(saved)).toEqual(account);
     expect(() => endTurn(result.state)).toThrow();
   });
-  it('does not capture Adventure/dungeon enemies and does not change material random rolls', () => {
-    for (const state of [createBattle(1), createDungeonBattle('chaotic', 1, 1, 'ember', { level: 105, evolution: 6 })]) {
+  it('does not capture Training, Story, dungeon or Machine enemies and does not change material random rolls', () => {
+    for (const state of [createBattle(1), createDungeonBattle('chaotic', 1, 1, 'ember', { level: 105, evolution: 6 }),
+      createStoryBattle(1, 1, 'ember', { level: 105, evolution: 6 }),
+      createInfusionBattle('machines', 1, 1, 'ember', { level: 105, evolution: 6 })]) {
       state.enemies.forEach((enemy) => { enemy.hp = 1; enemy.burn = { damage: 1, turns: 1 }; });
       expect(endTurn(state).events.filter((event) => event.kind === 'reward').every((event) => !event.capture)).toBe(true);
     }

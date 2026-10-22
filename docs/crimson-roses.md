@@ -158,7 +158,7 @@ The highest dungeon bracket stays capped above95, including event levels
 above120. Earlier bosses use ordinary quantities. The final boss retains
 D-294's5x multiplier. [infusionLoot](../src/content/infusions.ts)
 is authoritative for battles, stage previews and defeated Creature loot.
-Capture uses the existing independent20% RNG, gated before acquisition by
+Capture uses independent50% RNG (D-377), gated before acquisition by
 actual defeated level. No premium RNG is consumed.
 
 `saveAccountRewards` verifies source mode/form/stage/defeat/level and valid

@@ -29,6 +29,17 @@ Citadel Spine, Immortal Vessel, Pale Bulwark Diadem and Starvein Conductor.
 
 ## Status vocabulary
 
+**Capture rate (D-377):** every eligible enemy in Soar, Delve, Treasury,
+Sanctuary and Roses now rolls50% independently per kill. Roses retains
+the enemy Lv.120 eligibility ceiling; owned copies remain capped at60.
+[Capture rules](dungeons-and-captures.md).
+
+**Global targeting keyword (D-375):** `[Global]` replaces All-enemy for
+all-target damage/healing/support effects; eligibility and target side stay
+unchanged. [Presentation contract](menus-and-inventory.md#bracketed-ability-keywords-d-371).
+**Consistent keyword casing (D-376):** shared description formatting also
+normalizes existing brackets, so `[skills]` consistently displays as `[Skills]`.
+
 **Rose progression parity (D-374):** all three Rose Element-Bearers use regular
 base rarity recipes with Rosethorn event materials, without extra Soul/Heart
 surcharges. Soul begins at level91, not76.
@@ -1069,7 +1080,7 @@ See [character naming](units-and-progression.md#global-character-display-names-d
 | [Combat](combat.md) | Battle flow, actions, damage, effects, combat tests |
 | [Adventure](free-battle.md) | Fresh wave-1 runs, linear enemy levels/stats, all starter kits, recovery, hotkeys |
 | [Gameplay and elements](gameplay-and-elements.md) | Grouped activity tab, ten elements/dungeons, level 10-120 curve, materials, infusion modes and evolution recipes |
-| [Dungeons and captures](dungeons-and-captures.md) | Mode eligibility,20% atomic captures, retained kits, fixed-form stats/ratings and art reuse |
+| [Dungeons and captures](dungeons-and-captures.md) | Mode eligibility,50% atomic captures, retained kits, fixed-form stats/ratings and art reuse |
 | [Flaming Depths stages](flaming-depths-stages.md) | Historical Stage 1-50 encounter/skill proposal; old levels/stats superseded by elemental framework |
 | [Units and progression](units-and-progression.md) | Unit identity, roster, leveling, evolution, duplicates |
 | [Character instances](character-instances.md) | Independent copies, locks, levels/Conduits, run snapshots and legacy save compatibility |

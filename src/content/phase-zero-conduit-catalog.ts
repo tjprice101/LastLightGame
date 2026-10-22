@@ -221,7 +221,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Siege Cantilever",
     "rarity": "Legendary",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "All-enemy damaging Skills gains +45% Skill Power."
+    "ability": "Global damaging Skills gains +45% Skill Power."
   },
   "starvein-conductor": {
     "name": "Starvein Conductor",
@@ -683,7 +683,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Thousand-Rose Planetary Aegis",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Thornia only)",
-    "ability": "An Empowered Thorn Trap's first triggered strike each Enemy Turn grants the ally its enemy attacked a Shield worth 12% of that ally's maximum HP for one Enemy Turn. All-enemy attacks protect every living target."
+    "ability": "An Empowered Thorn Trap's first triggered strike each Enemy Turn grants the ally its enemy attacked a Shield worth 12% of that ally's maximum HP for one Enemy Turn. Global attacks protect every living target."
   },
   "master-bliss-1": {
     "name": "Thousandfeather Zenith Loom",

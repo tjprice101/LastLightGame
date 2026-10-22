@@ -449,7 +449,7 @@ var approvedConduitCatalog = {
     "name": "Siege Cantilever",
     "rarity": "Legendary",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "All-enemy damaging Skills gains +45% Skill Power."
+    "ability": "Global damaging Skills gains +45% Skill Power."
   },
   "starvein-conductor": {
     "name": "Starvein Conductor",
@@ -911,7 +911,7 @@ var approvedConduitCatalog = {
     "name": "Thousand-Rose Planetary Aegis",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Thornia only)",
-    "ability": "An Empowered Thorn Trap's first triggered strike each Enemy Turn grants the ally its enemy attacked a Shield worth 12% of that ally's maximum HP for one Enemy Turn. All-enemy attacks protect every living target."
+    "ability": "An Empowered Thorn Trap's first triggered strike each Enemy Turn grants the ally its enemy attacked a Shield worth 12% of that ally's maximum HP for one Enemy Turn. Global attacks protect every living target."
   },
   "master-bliss-1": {
     "name": "Thousandfeather Zenith Loom",
@@ -1520,7 +1520,7 @@ var conduitRedesign = {
     ]
   },
   "siege-cantilever": {
-    "description": "Your all-enemy Attack Actions deal +60% -> +120% Direct Damage when only one enemy is alive.",
+    "description": "Your Global Attack Actions deal +60% -> +120% Direct Damage when only one enemy is alive.",
     "ranges": [
       {
         "base": 60,
@@ -9730,7 +9730,7 @@ function awardDefeats(previous, state, events) {
 }
 function captureSucceeds(value2) {
   if (!Number.isFinite(value2) || value2 < 0 || value2 >= 1) throw new Error("Capture roll must be in [0, 1).");
-  return value2 < 0.2;
+  return value2 < 0.5;
 }
 function act(previous, actorId, action, targetId) {
   if (!isActionId(action)) throw new Error("Unknown combat action.");

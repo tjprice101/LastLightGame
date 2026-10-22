@@ -5,6 +5,7 @@ import { archives } from './archives';
 import { gameplayHub } from './gameplay';
 import { characterHub, characterInformation, characterTabs, inventoryHub } from './hub';
 import { summonHub } from './roster';
+import { bracketReferences } from './reference-text';
 
 const plain = (text?: string | null): string => (text ?? '').replace(/<span class="element-label"[^>]*><img[^>]*>(\[[^\]]+\])<\/span>/g, '$1').replace(/\[([^[\]]+)\]/g, '$1');
 
@@ -52,7 +53,7 @@ describe('shared menu information', () => {
     expect(html.match(/data-information="collections-information"/g)).toHaveLength(1);
     for (const starter of starters) {
       expect(rules).not.toContain(starter.description);
-      expect(plain(html)).toContain(starter.description);
+      expect(plain(html)).toContain(plain(bracketReferences(starter.description, false)));
     }
     expect(rules).not.toContain('<details');
     const disclosures = html.match(/<details\b[^>]*>/g) ?? [];

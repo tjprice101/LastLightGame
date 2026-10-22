@@ -570,7 +570,7 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
 
 export function captureSucceeds(value: number): boolean {
   if (!Number.isFinite(value) || value < 0 || value >= 1) throw new Error('Capture roll must be in [0, 1).');
-  return value < .2;
+  return value < .5;
 }
 
 export function act(previous: BattleState, actorId: string, action: ActionId, targetId: string): BattleResult {

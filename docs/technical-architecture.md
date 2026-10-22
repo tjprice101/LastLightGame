@@ -222,7 +222,7 @@ Economy/progression share **`last-light.wallet` version3**:
   Activation must save cost, ownership/duplicate reward and pity in one atomic
   write; rejected/failed draws do not count. [Rules](summoning-and-economy.md#independent-banner-pity).
 - Treasury reuses staged creature encounters with a separate25-stage limit,
- 65->120 enemy levels, currency-only rewards,20% captures and per-form sale prices.
+ 65->120 enemy levels, currency-only rewards,50% captures (D-377) and per-form sale prices.
   Final duplicate slime uses validated acquisition=`banner-duplicate` at50,
   with Stage22 kit. Source-specific stats permit50 without altering hostile
   Treasury level65 start or Heaven/Abyss80 start. Sale validates the latest

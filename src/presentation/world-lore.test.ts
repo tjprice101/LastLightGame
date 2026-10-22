@@ -14,6 +14,7 @@ import { archives } from './archives';
 import { creatureGlossary } from './creature-glossary';
 import { summonHub } from './roster';
 import { bindInformation } from './information';
+import { bracketReferences } from './reference-text';
 
 const plain = (text?: string | null): string => (text ?? '').replace(/<span class="element-label"[^>]*><img[^>]*>(\[[^\]]+\])<\/span>/g, '$1').replace(/\[([^[\]]+)\]/g, '$1');
 
@@ -37,12 +38,12 @@ describe('canon across information and lore surfaces', () => {
     const before = structuredClone(account);
     const team = document.createElement('main');
     team.innerHTML = referenceTeam(account, { view: 'detail', selected: 'ember', element: '', sort: 'name' });
-    expect(plain(team.querySelector('#bearer-lore-ember')?.textContent)).toContain(getStarter('ember').lore.story);
+    expect(plain(team.querySelector('#bearer-lore-ember')?.textContent)).toContain(plain(bracketReferences(getStarter('ember').lore.story, false)));
     expect(team.querySelector('[data-information="bearer-lore-ember"]')?.textContent).toBe('Lore');
     const collection = document.createElement('main');
     collection.innerHTML = archives(account);
     expect(collection.querySelector('#collections-information')?.textContent).not.toContain(getStarter('ember').lore.story);
-    expect(plain(collection.querySelector('#archive-kit-ember-1')?.textContent)).toContain(getStarter('ember').lore.story);
+    expect(plain(collection.querySelector('#archive-kit-ember-1')?.textContent)).toContain(plain(bracketReferences(getStarter('ember').lore.story, false)));
     expect(account).toEqual(before);
   });
 

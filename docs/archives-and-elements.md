@@ -166,7 +166,7 @@ still drop materials from Heaven's four-affinity pool; Abyss uses its two-affini
 pool. `Creature.element` now always identifies combat typing,
 while optional `dungeonElement` selects a dungeon loot table.
 Adventure still drops only Prismatica. Stage gates, chances and amounts are
-unchanged by elemental typing. Heaven/Abyss/Treasury/Sanctuary grant20% captures.
+unchanged by elemental typing. Heaven/Abyss/Treasury/Sanctuary grant50% captures (D-377); Roses also grant50% through enemy Lv.120.
 Heaven/Abyss and Sanctuary award independent Null-Prismatica drops; Treasury only
 awards mission Prismatica. Sanctuary shares Tranquilitic combat typing but not
 Heaven's evolution-material/fodder routing. See [capture rules](dungeons-and-captures.md).

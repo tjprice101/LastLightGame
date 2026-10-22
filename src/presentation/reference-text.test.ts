@@ -37,22 +37,44 @@ describe('bracketed reference formatting', () => {
 
   it('brackets the reported targeting, skill and stat keywords without changing the amount', () => {
     expect(bracketReferences('All-enemy damaging Skills gains +45% Skill Power.'))
-      .toBe('[All-enemy] damaging [Skills] gains +45% [Skill Power].');
+      .toBe('[Global] damaging [Skills] gains +45% [Skill Power].');
     expect(bracketReferences('all-enemy damaging skills gain +67.5% skill power.'))
-      .toBe('[all-enemy] damaging [skills] gain +67.5% [skill power].');
+      .toBe('[Global] damaging [Skills] gain +67.5% [Skill Power].');
   });
 
   it.each([...Object.values(phaseZeroStatLabels), ...conduitGlossary.map(entry => entry.term)])(
     'brackets the complete %s keyword instead of its shorter components', term => {
-      expect(bracketReferences(`+20% ${term}.`)).toBe(`+20% [${term}].`);
+      for (const casing of [term, term.toLowerCase(), term.toUpperCase()]) {
+        expect(bracketReferences(`+20% ${casing}.`)).toBe(`+20% [${term}].`);
+        expect(bracketReferences(`+20% [${casing}].`)).toBe(`+20% [${term}].`);
+      }
     });
 
   it('keeps existing brackets and possessive native resources intact across repeated rendering', () => {
     const input = "Normal Attacks against Shielded enemies grant Skill Power and Skill Efficiency on the next player turn. Flora's Empowered Seeds and Thornia's trap grant [Elemental Gauge Capacity].";
     const once = bracketReferences(input);
-    expect(once).toBe("[Normal Attack] against [Shielded] enemies grant [Skill Power] and [Skill Efficiency] on the next [player turn]. [Flora]'s [Empowered Seeds] and [Thornia]'s [trap] grant [Elemental Gauge Capacity].");
+    expect(once).toBe("[Normal Attack] against [Shielded] enemies grant [Skill Power] and [Skill Efficiency] on the next [Player Turn]. [Flora]'s [Empowered Seeds] and [Thornia]'s [Trap] grant [Elemental Gauge Capacity].");
     expect(bracketReferences(once)).toBe(once);
     expect(bracketReferences('<span class="stat">Skill Power</span><p data-stat="Skill Power">Skill Power</p>'))
       .toBe('<span class="stat">Skill Power</span><p data-stat="Skill Power">[Skill Power]</p>');
+  });
+
+  it('uses Global for damage, healing and support without changing target-side prose', () => {
+    const text = 'Global damage to enemies, Global Healing to allies and Global Shields for living allies.';
+    const formatted = bracketReferences(text);
+    expect(formatted).toBe('[Global] damage to enemies, [Global] [Healing] to allies and [Global] [Shields] for living allies.');
+    expect(bracketReferences(formatted)).toBe(formatted);
+  });
+
+  it('normalizes mixed and already bracketed keywords while preserving surrounding prose and amounts', () => {
+    const input = 'global damaging [skills] gain +67.5% SKILL POWER after [all-enemy] attacks; [custom wording] stays unchanged.';
+    const expected = '[Global] damaging [Skills] gain +67.5% [Skill Power] after [Global] attacks; [custom wording] stays unchanged.';
+    expect(bracketReferences(input)).toBe(expected);
+    expect(bracketReferences(expected)).toBe(expected);
+  });
+
+  it('leaves casing and brackets in skipped HTML and attributes untouched', () => {
+    const html = '<button data-key="[skills]">[skills]</button><span>[skill power]</span><p title="[skills]">[skills] and healing</p>';
+    expect(bracketReferences(html)).toBe('<button data-key="[skills]">[skills]</button><span>[skill power]</span><p title="[skills]">[Skills] and [Healing]</p>');
   });
 });

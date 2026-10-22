@@ -9,11 +9,14 @@ import { masterReference } from './master-conduits';
 import { emptyAccount } from '../game/account';
 import { inventoryView } from './inventory';
 
-const unbracketedKeyword = /\b(?:All-enemy|Skills?|Skill Power|Skill Duration|Skill Efficiency|Health|Defense|Direct Attack|Critical Rate|Critical Damage Multiplier|Elemental Gauge(?: Capacity| Gain)?|Shields?|Shielded|Attack Actions?|Direct Damage|Bonus Strikes?|Enemy Turns?|Player Turns?|Burn|Weaken|Recovery)\b/i;
+const unbracketedKeyword = /\b(?:Global|All-enemy|Skills?|Skill Power|Skill Duration|Skill Efficiency|Health|Defense|Direct Attack|Critical Rate|Critical Damage Multiplier|Elemental Gauge(?: Capacity| Gain)?|Shields?|Shielded|Attack Actions?|Direct Damage|Bonus Strikes?|Enemy Turns?|Player Turns?|Burn|Weaken|Recovery)\b/i;
 function expectKeywords(html: string): void {
   const host = document.createElement('div');
   host.innerHTML = html;
   expect(host.textContent?.replace(/\[[^\]]+\]/g, '')).not.toMatch(unbracketedKeyword);
+  for (const match of (host.textContent ?? '').matchAll(/\[([^[\]]+)\]/g)) {
+    expect(referencedEffect(match[0], false)).toBe(match[0]);
+  }
 }
 
 describe('Conduit keyword presentation', () => {
@@ -35,7 +38,7 @@ describe('Conduit keyword presentation', () => {
   it('uses the same bracketed rules in Store, Inventory and the equipment formatter', () => {
     const account = emptyAccount();
     account.conduits = { 'vigil-core': 1, 'siege-cantilever': 1 };
-    const expected = '[All-enemy] damaging [Skills] gains +45% [Skill Power].';
+    const expected = '[Global] damaging [Skills] gains +45% [Skill Power].';
     expect(conduitRuleText(conduits.find(entry => entry.id === 'siege-cantilever')!)).toBe(expected);
     expect(inventoryView(account, 'conduits')).toContain(expected);
     expect(conduitInventory(account)).toContain(expected);

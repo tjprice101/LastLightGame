@@ -48,7 +48,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--rose-progression')) {
+  if (process.argv.includes('--capture-rate')) {
+    await smokeFinalLoot(client, created.user.id, username, false, true);
+  } else if (process.argv.includes('--rose-progression')) {
     await smokeRoseProgression(client, created.user.id, username);
   } else if (process.argv.includes('--phase-zero')) {
     await smokePhaseZero(client, created.user.id, username);
@@ -661,9 +663,13 @@ async function smokeGuaranteedComponents(client, userId, username) {
   console.log('Hosted component smoke passed: actual stage1 kills and near-defeated stage100 boss guarantee 3/625 components, atomic balances and idempotent reward retry. No owner accounts modified.');
 }
 
-async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly = false) {
+async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly = false, captureRate = false) {
   const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
-  const activities = [
+  const activities = captureRate ? [
+    ...['heavens', 'abyss', 'treasury', 'sanctuary', 'roses']
+      .flatMap(mode => [1, 5].map(stage => ({ kind: 'infusion', mode, stage }))),
+    { kind: 'infusion', mode: 'roses', stage: 35 },
+  ] : [
     ...(includeEarly ? [
       ...[1, 17].map(stage => ({ kind: 'story', stage })),
       ...['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic']
@@ -707,7 +713,7 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
     state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
     state.rewardSeed = 0; state.componentSeed = 0; state.conduitSeed = 0;
     state.masterChestSeed = 0; state.lycalisSeed = activity.kind === 'war' ? 1 : 15500;
-    state.captureSeed = 0x80000000; state.recruitmentSeed = 0x80000000;
+    state.captureSeed = captureRate ? 5000 : 0x80000000; state.recruitmentSeed = 0x80000000;
     assert.ok(ids.includes(userId), 'Fixtures must belong only to disposable identities.');
     const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
     assert.equal(seeded.error, null);
@@ -725,6 +731,12 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
     const rewards = actual.result.events.filter(event => event.kind === 'reward');
     assert.equal(rewards.length, state.enemies.length);
     assert.deepEqual(rewards, expected.result.events.filter(event => event.kind === 'reward'));
+    if (captureRate) {
+      const eligible = activity.mode !== 'roses' || state.enemies[0].level <= 120;
+      assert.equal(!!rewards[0].capture, eligible, 'First capture roll is between20% and50%; Roses above120 remains excluded.');
+      assert.equal(actual.account.capturedCharacters?.length ?? 0, rewards.filter(reward => reward.capture).length);
+      for (const copy of actual.account.capturedCharacters ?? []) assert.ok(copy.level <= 60);
+    }
     const final = activity.kind === 'story' ? activity.stage % 18 === 0 : activity.kind === 'war' ? activity.stage === 10
       : activity.kind === 'dungeon' ? activity.stage === 35 : activity.stage === (activity.mode === 'machines' ? 100 : ['treasury', 'sanctuary'].includes(activity.mode) ? 25 : 35);
     if (final) {
@@ -770,7 +782,11 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
       await invoke({ kind: 'quit', runId: replayed.session.runId }, replayed.revision);
     } else await invoke({ kind: 'quit', runId: actual.session.runId }, persisted.revision);
   }
-  console.log(`Hosted ${includeEarly ? 'loot-parity/replay' : 'final-loot'} smoke passed: ${activities.length} activity/stage cases, exact client/server rewards, boosted final quantities, unchanged rare counts, separate first-clear bonuses, atomic persisted accounts and idempotent retries${includeEarly ? ', reachable early Story Uncommon drops and victory replays with fresh HP/Gauge and no extra claim' : ''}. No owner accounts modified.`);
+  if (captureRate) {
+    console.log(`Hosted capture-rate smoke passed: ${activities.length} cases, ordinary/boss captures on a roll between20% and50% in all five eligible modes, no Roses capture above120, owned cap60, exact client/server rewards, persisted accounts and idempotent retries. No owner accounts modified.`);
+  } else {
+    console.log(`Hosted ${includeEarly ? 'loot-parity/replay' : 'final-loot'} smoke passed: ${activities.length} activity/stage cases, exact client/server rewards, boosted final quantities, unchanged rare counts, separate first-clear bonuses, atomic persisted accounts and idempotent retries${includeEarly ? ', reachable early Story Uncommon drops and victory replays with fresh HP/Gauge and no extra claim' : ''}. No owner accounts modified.`);
+  }
 }
 
 async function smokeEnemyBalance(client, userId, username) {

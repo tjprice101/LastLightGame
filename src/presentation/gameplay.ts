@@ -87,10 +87,10 @@ function gameplayInformation(): string {
     { id: 'infusion', title: 'Evolution infusion', summary: 'Evolution materials from Heaven and Abyss', content: `<p>${infusionModeStageCount} stages, Lv.50-120. Form 3 from Lv.${infusionFormLevel(2)}, Form 4 from Lv.${infusionFormLevel(3)}, Form 5 from Lv.${infusionFormLevel(4)}.</p>
       <p>Only each activity's three unique materials drop: weapon materials from Lv.50, evolution and leveling materials from Lv.75. No elemental materials.</p>
       <p>Null-Prismatica from Lv.80: 8% for 1, 1.5% for 2, 0.5% for 3, rising to 10%, 10% and 5% at Lv.120. The stage ${infusionModeStageCount} boss gives 5, 10 or 15 at the same chances.</p>
-      <p>20% capture chance per enemy. Captures keep their form and skills, up to Lv.60.</p>
+      <p>50% capture chance per enemy. Captures keep their form and skills, up to Lv.60.</p>
       <ul>${infusionModes.map((mode) => `<li><strong>${mode.name}</strong>: ${elementLabel(infusionEnemyElements[mode.id])} enemies. Unique materials support these progression affinities: ${elements.filter((element) => element.infusion === mode.id).map((element) => element.name).join(', ')}.</li>`).join('')}</ul>` },
     { id: 'currency', title: 'Currency farms', summary: 'Crownfall Treasury & Rosethorn Sanctuary', content: `<p>25 stages, Lv.65-120, six fixed forms and a boss every fifth stage. Final bosses give 5x currency. No materials or clear bonus.</p>
-      <p>20% capture chance per enemy. Captures keep their form and skills, up to Lv.60. Sell copies in Team; locked, squad and Conduit-equipped copies are protected.</p>
+      <p>50% capture chance per enemy. Captures keep their form and skills, up to Lv.60. Sell copies in Team; locked, squad and Conduit-equipped copies are protected.</p>
       <h4>Crownfall Treasury</h4><p>${treasuryPrismaticaText} No Null-Prismatica.
       Sales, Common to Omnic: ${treasurySalePrices.map((price) => price.toLocaleString('en-US')).join(' / ')} Prismatica.</p>
       <h4>Rosethorn Sanctuary</h4><p>Prismatica per enemy: 7-14 at Lv.65 to 15-30 at Lv.120.

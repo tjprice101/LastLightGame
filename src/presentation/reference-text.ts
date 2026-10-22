@@ -15,6 +15,7 @@ const aliases: Record<string, string> = {
   Heaven: 'Soar to Heaven', Abyss: 'Delve into the Abyss',
   Treasury: 'Crownfall Treasury', 'Crimson Roses': 'Passion of Crimson Roses',
   'Normal Attacks': 'Normal Attack', Gauge: 'Elemental Gauge', 'Cosmic Grand Master Chests': 'Cosmic Grand Master Chest',
+  'All-enemy': 'Global',
 };
 
 const fixedNames = ['Roselius', 'Prismatica', 'Null-Prismatica', 'Broken Mechanical Components', 'Cosmic Grand Master Chest',
@@ -22,7 +23,7 @@ const fixedNames = ['Roselius', 'Prismatica', 'Null-Prismatica', 'Broken Mechani
   'Elemental Gauge', 'Normal Attack', 'Skill 1', 'Skill 2', 'Last Flare', 'Burn', 'Weaken',
   ...Object.values(phaseZeroStatLabels), ...conduitGlossary.map(entry => entry.term),
   'HP', 'Maximum HP', 'Elemental Damage', 'Elemental Crit', 'Critical Hit', 'Critical Hits',
-  'All-enemy', 'Single-target', 'Skill-created', 'Skill', 'Skills', 'Shields', 'Shielded',
+  'Global', 'Single-target', 'Skill-created', 'Skill', 'Skills', 'Shields', 'Shielded',
   'Shielding', 'Healing', 'Overhealing', 'Weakened', 'Attack Actions', 'Bonus Strikes',
   'Player Turn', 'Player Turns', 'Enemy Turns', 'Cooldown', 'Cooldowns', 'Recovery',
   'Accord', 'Seed', 'Seeds', 'Empowered Seed', 'Empowered Seeds', 'Gust', 'Gusts', 'Cyclone',
@@ -62,7 +63,7 @@ const skippedTags = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'button', 'stro
   'th', 'option', 'select', 'nav', 'small', 'figcaption', 'meter', 'script', 'style']);
 
 /**
- * Formats named game references in description/information prose as [Full Name]; element names also
+ * Formats named game references in description/information prose as canonical [Full Name]; element names also
  * gain their medal. Only text between tags changes; headings, labels, buttons, values and attributes stay plain.
  */
 export function bracketReferences(html: string, elementMedals = true): string {
@@ -86,19 +87,22 @@ export function bracketReferences(html: string, elementMedals = true): string {
     // Existing element medals in prose read as [Element] too.
     if (elementLabelDepth && skipped.length === 1 && text && elementIds.has(text.trim())) return text.replace(text.trim(), `[${text.trim()}]`);
     if (skipped.length || !text) return text ?? '';
+    const normalized = text.replace(/\[([^[\]]+)\]/g, (bracketed: string, term: string) => {
+      const canonical = names.get(term.toLowerCase());
+      return canonical ? `[${canonical}]` : bracketed;
+    });
     let last = 0;
     let output = '';
-    for (const match of text.matchAll(pattern)) {
+    for (const match of normalized.matchAll(pattern)) {
       const index = match.index ?? 0;
-      const before = text.slice(last, index);
+      const before = normalized.slice(last, index);
       for (const character of before) depth += character === '[' ? 1 : character === ']' ? -1 : 0;
       const fullName = names.get(match[0].toLowerCase()) ?? match[0];
       const element = elementIds.get(fullName);
-      const label = fullName.toLowerCase() === match[0].toLowerCase() ? match[0] : fullName;
-      output += before + (depth > 0 ? match[0] : element && elementMedals ? elementLabel(element, true) : `[${label}]`);
+      output += before + (depth > 0 ? match[0] : element && elementMedals ? elementLabel(element, true) : `[${fullName}]`);
       last = index + match[0].length;
     }
-    const rest = text.slice(last);
+    const rest = normalized.slice(last);
     for (const character of rest) depth += character === '[' ? 1 : character === ']' ? -1 : 0;
     return output + rest;
   });

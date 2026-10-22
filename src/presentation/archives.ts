@@ -119,7 +119,7 @@ export function archives(account: Account | null, selected: ArchiveGallery = 'ch
     <h3>Conduits</h3><p>Owned Conduits show in color with their effects and counts; unowned ones are silhouettes.</p>
     <h3>Elemental-Devourer and Machine discovery</h3><p>Elemental-Devourers are Rise's creations. Machines are destroyed prototypes from her collaboration with Let, not her faction.</p><p>Encountering reveals identity, element and lore; defeating reveals stage loot. View Loot lists stage amounts and rates; View Details shows a Conduit's effects and lore.
     Quantities vary uniformly; final bosses multiply them by 5. Rarity rolls are independent, with no pity.
-    Heaven, Abyss, Treasury and Sanctuary have a 20% capture chance per kill; Story, Training and elemental dungeons have none. Captures keep form and skills, up to Lv.60, and sell at fixed prices by form.</p>
+    Heaven, Abyss, Treasury and Sanctuary have a 50% capture chance per kill; Crimson Roses also has 50% at enemy Lv.120 or below. Story, Training and elemental dungeons have none. Captures keep form and skills, up to Lv.60, and sell at fixed prices by form.</p>
     `)}</header>
     <nav class="archive-navigation" aria-label="Archive galleries">${galleries.map((gallery) =>
       `<button class="archive-gallery-button" data-archive-gallery="${gallery.id}" aria-controls="archive-${gallery.id}" aria-pressed="${selected === gallery.id}"><strong>${gallery.name}</strong><small>${gallery.subtitle}</small></button>`).join('')}</nav>

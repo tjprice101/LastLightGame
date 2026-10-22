@@ -33,7 +33,7 @@ Atmospheric includes lightning; Tranquilitic includes light/peace themes.
 
 ABILITY KEY
 In-game ability prose brackets all gameplay keywords (D-371), for example:
-[All-enemy] damaging [Skills] gains +45% [Skill Power].
+[Global] damaging [Skills] gains +45% [Skill Power].
 The shared presentation formatter handles this without changing raw ability
 values, mechanics or existing brackets in this owner-edited source.
 Ability (Default Value) means the approved base, unupgraded effect only.
@@ -339,7 +339,7 @@ Ability (Default Value): Allies holding your skill-created Shields gain +25% Ski
 Name: Siege Cantilever
 Rarity: Legendary
 Element: Infernic (suggested thematic element; gameplay: universal)
-Ability (Default Value): All-enemy damaging Skills gains +45% Skill Power.
+Ability (Default Value): Global damaging Skills gains +45% Skill Power.
 
 Name: Starvein Conductor
 Rarity: Legendary
@@ -728,7 +728,7 @@ Ability (Default Value): A critical skill grants the most injured ally a Shield 
 Name: Thousand-Rose Planetary Aegis
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Thornia only)
-Ability (Default Value): An Empowered Thorn Trap's first triggered strike each Enemy Turn grants the ally its enemy attacked a Shield worth 12% of that ally's maximum HP for one Enemy Turn. All-enemy attacks protect every living target.
+Ability (Default Value): An Empowered Thorn Trap's first triggered strike each Enemy Turn grants the ally its enemy attacked a Shield worth 12% of that ally's maximum HP for one Enemy Turn. Global attacks protect every living target.
 
 Name: Thousandfeather Zenith Loom
 Rarity: Omnic (Master)

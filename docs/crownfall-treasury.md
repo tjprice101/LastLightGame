@@ -36,7 +36,7 @@ accelerates to20x: base4,860-9,720 at120. D-294 multiplies the stage25
 final boss's sampled quantity by5:24,300-48,600 on every clear/replay.
 Earlier boss/ordinary rates remain equal. Capture chance/count is unchanged.
 No second ordinary currency roll, Null-Prismatica, materials or clear bonus.
-Reward RNG and20% capture RNG remain separate. Burn/AOE share the normal
+Reward RNG and50% capture RNG remain separate (D-377). Burn/AOE share the normal
 newly-dead path. Dead units cannot roll again.
 
 Real captures retain defeated level/stage/skills, independent UUIDs, unlocked

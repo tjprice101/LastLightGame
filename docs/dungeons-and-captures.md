@@ -16,7 +16,7 @@ chances/eligibility, rewards and Element-Bearer levels are unchanged.
 **D-294 final-boss loot:** dungeon35 and Heaven/Abyss35 multiply their
 existing currency/material quantities by5 on every clear/replay. Successful
 final stacks are15-30 and Prismatica75-150. Heaven/Abyss premium outcomes
-become0/5/10/15 at the unchanged75/10/10/5% chances. Capture chance20%,
+become0/5/10/15 at the unchanged75/10/10/5% chances. Capture chance50%,
 one-copy count and captured level/form/kit are unchanged. Earlier bosses use
 ordinary stage payouts. [Shared contract](free-battle.md#repeatable-final-boss-loot-d-294).
 
@@ -54,11 +54,11 @@ and [Character instances](character-instances.md) for persistence/protection.
   periodic stronger strikes; the historical draft is not the active stat table.
 - After every dungeon wave, show an **end-of-wave action report** before advancing.
 - **Soar to Heaven and Delve into the Abyss:** every newly defeated ordinary enemy
-  or boss automatically rolls exactly20% capture chance. Defend/burn/AOE kills
+  or boss automatically rolls exactly50% capture chance (D-377). Defend/burn/AOE kills
   use the same award path; dead enemies cannot roll again.
 - Adventure and the six elemental material dungeons do **not** grant captures.
-  Crownfall Treasury and Rosethorn Sanctuary grant the same20% captures.
-  [Passion of Crimson Roses](crimson-roses.md) also grants20% captures, but only
+  Crownfall Treasury and Rosethorn Sanctuary grant the same50% captures.
+  [Passion of Crimson Roses](crimson-roses.md) also grants50% captures, but only
   for enemies at levels120 or below. Its35 stages run80-140; captures remain
   capped60. Omnic Roselius come from the special banner's Lv.60 duplicate
   conversion, not above-cap mission captures.
@@ -116,7 +116,7 @@ to75/10/10/5% at120. Premium currency joins the same atomic write and appears
 only from enemyLv80; new early infusion floors grant none,
 in loot/results; no clear bonus or Adventure/elemental-dungeon Null-Prismatica.
 See [economy and active banner](summoning-and-economy.md).
-Treasury instead grants currency-only high Prismatica payouts and20% captures,
+Treasury instead grants currency-only high Prismatica payouts and50% captures,
 no Null-Prismatica/materials.25-floor completion is mode-specific.
 The capture, ordinary rewards, discovery and `runId:enemyId` receipt commit in one
 wallet write **before** animation/state advance. Failed writes visibly reject
@@ -172,7 +172,7 @@ Do not invent pending decisions from visual power order.
   duplicating a capture, or losing currency.
 - Keep current version-1 profile/wallet saves readable; do not overwrite corrupt
   collections. Define a retry/migration path before enabling new storage.
-- `src/game/captures.test.ts` covers exact20% boundaries, burn/AOE duplicate
+- `src/game/captures.test.ts` covers exact50% boundaries, all eligible stages/modes, burn/AOE duplicate
   rewards, failed-write retry/dedup, unchanged loot RNG, invalid rewards/skills,
   fixed-form growth, retained damage/ultimate cooldown/recovery, all destinations,
   captured-only Continue, independent leveling/equipment and captured Home/art.

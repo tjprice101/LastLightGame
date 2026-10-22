@@ -41,7 +41,7 @@ it('keeps description coefficients aligned and removes retired Conduit jargon', 
     expect(description ?? '').not.toMatch(forbidden);
   }
   expect(conduitGlossary.map(entry => entry.term)).toEqual([
-    'Attack Action', 'Bonus Strike', 'Direct Damage', 'Shield', 'Enemy Turn', 'Round', 'Battle',
+    'Global', 'Attack Action', 'Bonus Strike', 'Direct Damage', 'Shield', 'Enemy Turn', 'Round', 'Battle',
   ]);
 });
 

@@ -1,5 +1,79 @@
 # Current state and handoff
 
+## Publishing D-375 through D-377 (2026-10-22)
+
+- Owner requests push/deploy now and by default for completed validated project
+  changes; recorded the standing workflow in `AGENTS.md`.
+- Matching authority deployed with `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  `node tools/smoke_server_game.mjs --capture-rate` passed11 hosted cases:
+  ordinary/boss kills in all five eligible modes succeed on a roll between
+  the old20% and new50% thresholds; Rose enemies above120 stay excluded.
+  Client/server reward parity, cap60, persisted accounts and idempotent retries
+  verified. Disposable users and cascading records removed; no owner accounts
+  modified. Docker-not-running warning did not prevent remote deployment.
+- Push publishes Global terminology, canonical keyword casing and50% captures.
+  The main-branch Pages workflow runs the complete test suite and configured
+  online build before release. Earlier local-only notes below are historical.
+
+## Capture rate50% (D-377; 2026-10-22)
+
+- Shared capture success threshold is now `[0, 0.5)` for all eligible kills
+  in Soar, Delve, Treasury, Sanctuary and Roses, ordinary enemies and bosses.
+  Roses still rejects actual enemy levels above120; owned cap60 unchanged.
+  No other modes gain captures, no new RNG draws, and currency/material/
+  recruitment rolls, saved copies and atomic persistence are unchanged.
+- Updated Play, Collections, Rose event and battle guidance to50%.
+  Boundary tests cover0.5 exclusion and added every-stage tests across all
+  five eligible modes with rolls inside/outside the new threshold and
+  unchanged non-capture RNG/rewards.
+- Validation: `npx vitest run --maxWorkers=2 --reporter=json` passed6,160 tests
+  across198 files. Build caught a nullable test-fixture level; added an explicit
+  missing-level guard, then reran `npx vitest run src/game/captures.test.ts
+  --maxWorkers=2 --reporter=dot` (21 passed) and `npm run build` (passed).
+  `node tools/bundle_server_game.mjs` and
+  `npx tsc --project supabase/functions/game-operation/tsconfig.json` passed;
+  behavior matrix refreshed138 entries/726 scenarios. `git diff --check`
+  passed. Existing Vite chunk-size advisory only.
+- Local/unpublished. Authority bundle includes50% but has not been deployed;
+  hosted signed-in play keeps its previously deployed capture rate until
+  coordinated publication.
+
+## Consistent keyword casing (D-376; 2026-10-22)
+
+- Screenshot showed lowercase `[skills]`. Shared reference formatting now
+  uses canonical keyword casing for both plain and already bracketed terms;
+  exact bracketed aliases also resolve, including `[All-enemy]` to `[Global]`.
+  Unknown brackets, ordinary prose, numbers, skipped HTML and attributes stay
+  unchanged. No combat or save changes.
+- Focused validation: `npx vitest run src/presentation/reference-text.test.ts
+  src/presentation/conduit-keywords.test.ts src/presentation/conduit-rules.test.ts
+  src/presentation/conduit-store.test.ts src/presentation/conduit-loadout.test.ts
+  --maxWorkers=2 --reporter=dot` passed206 tests across5 files. Checks include
+  all138 Conduits and ordinary upgrade levels. Updated lore assertions to
+  compare complete canonically formatted prose rather than raw source casing.
+- Final validation: `npx vitest run --maxWorkers=2 --reporter=json` passed6,155
+  tests across198 files; `node tools/build_phase_zero_behavior_matrix.mjs
+  <passing-report>` refreshed138 entries/726 numerical scenarios.
+  `npm run build` passed with only the existing chunk-size advisory.
+  Local/unpublished together with D-375.
+
+## Global targeting keyword (D-375; 2026-10-22)
+
+- Owner requests Global instead of All-enemy. Updated current/historical
+  Conduit descriptions and canonical owner catalog; shared reference alias
+  displays historical unbracketed wording as `[Global]`. Glossary defines
+  all eligible targets on the effect's specified side, covering damage,
+  healing and support without changing mechanics or internal targeting IDs.
+- Validation: `npx vitest run --maxWorkers=2 --reporter=json` passed6,153
+  tests across198 files after updating the glossary's exact-list expectation.
+  `node tools/build_phase_zero_behavior_matrix.mjs <passing-report>` refreshed
+  all138 entries/726 numerical scenarios. `npm run build`,
+  `node tools/bundle_server_game.mjs` and
+  `npx tsc --project supabase/functions/game-operation/tsconfig.json` passed.
+  Only the existing Vite chunk-size advisory remains. Local/unpublished;
+  regenerated authority bundle is not deployed.
+
 ## Publishing Rose progression correction (2026-10-22)
 
 - Owner explicitly requests pushing/deploying D-374. Matching authority

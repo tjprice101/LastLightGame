@@ -137,7 +137,7 @@ describe('reference Inventory layout', () => {
       const expected = document.createElement('div');
       expected.innerHTML = bracketReferences(effect);
       expect(dialog.textContent).toContain(expected.textContent);
-      if (ordinary) expect(dialog.textContent?.replace(/[[\]]/g, '')).toContain(entry.lore);
+      if (ordinary) expect(dialog.textContent?.replace(/[[\]]/g, '')).toContain(bracketReferences(entry.lore, false).replace(/[[\]]/g, ''));
       expect(card.querySelector('[data-information]')?.textContent).toBe('Details');
       const compact = card.cloneNode(true) as HTMLElement;
       compact.querySelector('dialog')!.remove();

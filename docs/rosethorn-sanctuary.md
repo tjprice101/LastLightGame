@@ -24,7 +24,7 @@ historical1-10 cap, and keeps higher-tier Prismatica sale values:
   multiplies both currency quantities by5; no separate clear bonus.
 - Ordinary Prismatica remains the shared level-scaled range:7-14 at65,
   base15-30 at120, final stage25 payout75-150. No material drops or infusion specialties.
-- Independent20% capture chance per defeated enemy. Null-Prismatica, ordinary currency,
+- Independent50% capture chance per defeated enemy (D-377). Null-Prismatica, ordinary currency,
   capture and combat RNG remain separate.
 
 ## Content

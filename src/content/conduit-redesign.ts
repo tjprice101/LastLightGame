@@ -343,7 +343,7 @@ export const conduitRedesign: Readonly<Record<string, ConduitDesign>> = {
     ]
   },
   "siege-cantilever": {
-    "description": "Your all-enemy Attack Actions deal +60% -> +120% Direct Damage when only one enemy is alive.",
+    "description": "Your Global Attack Actions deal +60% -> +120% Direct Damage when only one enemy is alive.",
     "ranges": [
       {
         "base": 60,

@@ -2647,16 +2647,23 @@ banner link without an extra Event details navigation button beneath the card.
 ## Bracketed ability keywords (D-371)
 
 Conduit ability prose consistently brackets gameplay keywords, including
-targeting (`[All-enemy]`, `[Single-target]`), actions (`[Skills]`,
+targeting (`[Global]`, `[Single-target]`), actions (`[Skills]`,
 `[Attack Action]`), all ten stat names (`[Skill Power]`, `[Skill Efficiency]`,
 `[Direct Attack]`), statuses/resources, clocks and native kit terms.
-For example: `[All-enemy] damaging [Skills] gains +45% [Skill Power].`
+For example: `[Global] damaging [Skills] gains +45% [Skill Power].`
+Global replaces the old All-enemy keyword for effects applied to all eligible
+targets, including damage, healing and protection. It preserves each effect's
+specified side, eligibility and targeting mechanics.
 The shared presentation formatter covers ordinary/Master equipment, Inventory,
 Collections, Store, upgrades, loot Details and acquisition receipts, including
 descriptions inside small text, spans and definition values. Upgrade
 confirmations use the same brackets without element medal HTML. Existing brackets
-are not nested; numbers, mechanics, authored capitalization and label/heading
-formatting stay unchanged. The owner-edited catalog remains the raw ability
+are not nested. Recognized keywords use their canonical casing, including
+already bracketed text: `skills`, `[skills]` and `SKILLS` all become `[Skills]`
+(D-376). Exact bracketed aliases also expand to their canonical names, such as
+`[All-enemy]` becoming `[Global]`. Unknown bracketed prose, numbers, mechanics,
+ordinary prose capitalization and label/heading formatting stay unchanged.
+The owner-edited catalog remains the raw ability
 contract; brackets are applied at presentation, not combat calculations.
 Validate with `reference-text.test.ts`, `conduit-keywords.test.ts` and the
 affected presentation regression suites.

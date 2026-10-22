@@ -1,5 +1,13 @@
 # Last Light: AI agent entry point
 
+## Default publication workflow
+
+Owner requests push and deployment by default after completed, validated changes.
+Unless explicitly paused or scoped to local-only work, commit and push project
+changes, deploy the matching authority when shared server behavior changes, and
+verify the hosted client/release. Report failures honestly; do not claim a
+release is live based only on local tests or a successful push.
+
 ## Gradient buttons, off-center labels (D-206)
 
 button-style.ts tags flat buttons (text/icon/tile/filled; art and battle units
