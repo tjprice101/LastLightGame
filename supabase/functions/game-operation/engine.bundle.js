@@ -21,14 +21,19 @@ var elementalMaterials = elements.flatMap((element) => materialRarities.map((rar
 })));
 var dungeonStageCount = 35;
 var infusionModeStageCount = 25;
-var machineStageCount = 75;
+var machineStageCount = 35;
+var previousMachineStageCount = 75;
+function migratePreviousMachineStage(stage) {
+  if (!Number.isSafeInteger(stage) || stage < 1 || stage > previousMachineStageCount) throw new Error("Invalid saved Machines stage.");
+  return Math.max(1, Math.floor(stage * machineStageCount / previousMachineStageCount));
+}
 var legacyActivityStageCounts = { heavens: 35, abyss: 35, machines: 100 };
 function isResizedActivity(mode) {
   return Object.hasOwn(legacyActivityStageCounts, mode);
 }
 function migrateLegacyActivityStage(mode, stage) {
   const legacy = legacyActivityStageCounts[mode];
-  const current = mode === "machines" ? machineStageCount : infusionModeStageCount;
+  const current = mode === "machines" ? previousMachineStageCount : infusionModeStageCount;
   if (!Number.isSafeInteger(stage) || stage < 1 || stage > legacy) throw new Error("Invalid saved infusion stage.");
   return 1 + Math.ceil((stage - 1) * (current - 1) / (legacy - 1));
 }
@@ -3234,7 +3239,7 @@ function masterChestDrops(stage, boss, random) {
 }
 
 // src/content/machines.ts
-var machineRules = { stages: infusionStageCount("machines"), omnicStage: 1 + Math.round(74 * (infusionStageCount("machines") - 1) / 99), rareChance: 0.08, legendaryChance: 0.035, omnicChance: 0.01, bannerBonusChance: 5e-3 };
+var machineRules = { stages: infusionStageCount("machines"), omnicStage: Math.floor(56 * infusionStageCount("machines") / previousMachineStageCount), rareChance: 0.08, legendaryChance: 0.035, omnicChance: 0.01, bannerBonusChance: 5e-3 };
 var machinePools = {
   Rare: conduits.filter((conduit) => conduit.rarity === "Rare"),
   Legendary: conduits.filter((conduit) => conduit.rarity === "Legendary"),
@@ -3310,7 +3315,7 @@ function bannerConduitBonus(random) {
   return rollTier(bannerPool, machineRules.bannerBonusChance, random);
 }
 var machineRulesText = `<p>${machineOrigin}</p>
-  <p>${machineRules.stages} stages, Lv.10-120, a boss every fifth stage. Each enemy drops Prismatica and can drop an unowned Conduit: Rare 8%, Legendary 3.5%, Omnic 1% from stage ${machineRules.omnicStage}.</p>
+  <p>${machineRules.stages} stages, Lv.10-120, a boss every fifth stage. Each enemy drops Prismatica and can drop an unowned Conduit: Rare 8% and Legendary 3.5% on every stage; Omnic 1% on stage ${machineRules.omnicStage} and every stage afterward.</p>
   <p>Each rarity rolls separately; without a focus, its unowned names are equally likely (${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary, ${machinePools.Omnic.length} Omnic). A fully owned rarity drops nothing. Common Conduits are sold in the Store.</p>
   <p>Focus Loot selects one unowned Conduit per Rare, Legendary and Omnic tier. The next successful drop of that tier awards your selection without changing its rate or stage gate. Obtaining a selected Conduit from any source clears only its focus. Master Conduits cannot be focused.</p>
   <p>${machineComponentRulesText} No captures, evolution materials or Null-Prismatica.</p>
@@ -10370,7 +10375,7 @@ function isExchangeQuantity(value2) {
 // src/game/account.ts
 var ACCOUNT_KEY = "last-light.wallet";
 function emptyAccount() {
-  return { version: 8, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 9, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value2) {
   return typeof value2 === "number" && Number.isSafeInteger(value2) && value2 >= 0;
@@ -10390,8 +10395,12 @@ function migrateLegacyDungeonStage(stage, version) {
   }
   return unlocked;
 }
+function hasHistoricalBossReceipt(receipts, boss) {
+  const uuid2 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return receipts.some((receipt) => receipt.length === 37 + boss.length && uuid2.test(receipt.slice(0, 36)) && receipt.slice(36) === `:${boss}`);
+}
 function validateAccount(value2) {
-  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 && value2.version !== 8 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
+  if (!record(value2) || value2.version !== 2 && value2.version !== 3 && value2.version !== 4 && value2.version !== 5 && value2.version !== 6 && value2.version !== 7 && value2.version !== 8 && value2.version !== 9 || !count(value2.fractalis) || !count(value2.lycalis) || !record(value2.materials) || !record(value2.characters) || !record(value2.dungeonStages) || typeof value2.firstFracture !== "boolean" || !Array.isArray(value2.receipts) || !value2.receipts.every((receipt) => typeof receipt === "string") || new Set(value2.receipts).size !== value2.receipts.length) {
     throw new Error("The local progression save is invalid or unsupported. It has not been overwritten.");
   }
   const account = emptyAccount();
@@ -10570,8 +10579,16 @@ function validateAccount(value2) {
     for (const [id, stage] of Object.entries(value2.infusionStages)) {
       if (!isInfusionMode(id) || !count(stage) || stage < 1) throw new Error("Invalid saved infusion stage.");
       const resized = value2.version < 7 && isResizedActivity(id) && !(value2.version === 2 && id !== "machines");
-      if (!resized && stage > infusionStageCount(id)) throw new Error("Invalid saved infusion stage.");
-      account.infusionStages[id] = resized ? migrateLegacyActivityStage(id, stage) : stage;
+      const previousMachines = id === "machines" && value2.version < 9;
+      if (!resized && stage > (previousMachines ? previousMachineStageCount : infusionStageCount(id))) throw new Error("Invalid saved infusion stage.");
+      const migrated = resized ? migrateLegacyActivityStage(id, stage) : stage;
+      account.infusionStages[id] = previousMachines ? migratePreviousMachineStage(migrated) : migrated;
+      if (previousMachines) {
+        const final = value2.version < 7 ? 100 : previousMachineStageCount;
+        const boss = `infusion-machines-${final}-0`;
+        if (stage === final && hasHistoricalBossReceipt(account.receipts, boss))
+          account.normalFinalClears = { ...account.normalFinalClears, machines: true };
+      }
     }
     if (value2.creatures !== void 0) {
       if (!record(value2.creatures)) throw new Error("Invalid saved Elemental-Devourer discoveries.");
@@ -10804,8 +10821,7 @@ function calamityUnlockedTier(account, activity) {
     const finalStage = dungeon ? dungeonStageCount : infusionStageCount(activity);
     const access = dungeon ? account.dungeonStages[activity] : account.infusionStages[activity];
     const boss = dungeon ? `dungeon-${activity}-${finalStage}-0` : `infusion-${activity}-${finalStage}-0`;
-    const uuid2 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    if (access !== finalStage || !account.receipts.some((entry) => entry.length === 37 + boss.length && uuid2.test(entry.slice(0, 36)) && entry.slice(36) === `:${boss}`)) return 0;
+    if (access !== finalStage || !hasHistoricalBossReceipt(account.receipts, boss)) return 0;
   }
   return Math.min(3, (account.calamityClears?.[activity] ?? 0) + 1);
 }
@@ -11698,7 +11714,7 @@ var VirtualStorage = class {
 };
 function isLegacyStoryRun(game) {
   const version = game.account.version;
-  return typeof version === "number" && version < 8 && !!game.run;
+  return typeof version === "number" && !!game.run && (version < 8 || version < 9 && game.run.activity.kind === "infusion" && game.run.activity.mode === "machines");
 }
 function storyCompletedOf(game) {
   return validateAccount(game.account).storyCompleted ?? 0;

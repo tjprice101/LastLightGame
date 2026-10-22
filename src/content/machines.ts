@@ -1,12 +1,12 @@
-import { infusionStageCount, validateMachineStage } from './activities';
+import { infusionStageCount, previousMachineStageCount, validateMachineStage } from './activities';
 import { conduits, getConduit, isConduitId, type ConduitId } from './conduits';
 import { lootRoll } from './loot-random';
 import { machineComponentRulesText } from './mechanical-components';
 import { masterRulesText } from './master-conduits';
 import { machineOrigin } from './world-lore';
 
-/** The Omnic tier opens at the same enemy level as stage 75 of the former 100-stage layout (D-346). */
-export const machineRules = { stages: infusionStageCount('machines'), omnicStage: 1 + Math.round(74 * (infusionStageCount('machines') - 1) / 99), rareChance: .08, legendaryChance: .035, omnicChance: .01, bannerBonusChance: .005 } as const;
+/** D-380: floor the former stage56/75 threshold onto the 35-stage layout. */
+export const machineRules = { stages: infusionStageCount('machines'), omnicStage: Math.floor(56 * infusionStageCount('machines') / previousMachineStageCount), rareChance: .08, legendaryChance: .035, omnicChance: .01, bannerBonusChance: .005 } as const;
 const machinePools = {
   Rare: conduits.filter((conduit) => conduit.rarity === 'Rare'),
   Legendary: conduits.filter((conduit) => conduit.rarity === 'Legendary'),
@@ -88,7 +88,7 @@ export function bannerConduitBonus(random: () => number): ConduitId | undefined 
 }
 
 export const machineRulesText = `<p>${machineOrigin}</p>
-  <p>${machineRules.stages} stages, Lv.10-120, a boss every fifth stage. Each enemy drops Prismatica and can drop an unowned Conduit: Rare 8%, Legendary 3.5%, Omnic 1% from stage ${machineRules.omnicStage}.</p>
+  <p>${machineRules.stages} stages, Lv.10-120, a boss every fifth stage. Each enemy drops Prismatica and can drop an unowned Conduit: Rare 8% and Legendary 3.5% on every stage; Omnic 1% on stage ${machineRules.omnicStage} and every stage afterward.</p>
   <p>Each rarity rolls separately; without a focus, its unowned names are equally likely (${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary, ${machinePools.Omnic.length} Omnic). A fully owned rarity drops nothing. Common Conduits are sold in the Store.</p>
   <p>Focus Loot selects one unowned Conduit per Rare, Legendary and Omnic tier. The next successful drop of that tier awards your selection without changing its rate or stage gate. Obtaining a selected Conduit from any source clears only its focus. Master Conduits cannot be focused.</p>
   <p>${machineComponentRulesText} No captures, evolution materials or Null-Prismatica.</p>

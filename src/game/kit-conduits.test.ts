@@ -66,7 +66,7 @@ describe('replacement Omnic catalog, acquisition and stable identity', () => {
     }
   });
 
-  it('rolls each of45 Omnics at1%/45 from stage56 without changing lower totals or roll counts', () => {
+  it('rolls each of45 Omnics at1%/45 from stage26 onward without changing lower totals or roll counts', () => {
     const pool = conduits.filter((entry) => entry.rarity === 'Omnic');
     for (const [index, entry] of pool.entries()) {
       const values = [.08, .035, 0, (index + .5) / pool.length];
@@ -102,7 +102,7 @@ describe('replacement Omnic catalog, acquisition and stable identity', () => {
   });
 
   it('saves actual Omnic machine awards once, preserving raw wallets on overflow and denied writes', () => {
-    const state = createInfusionBattle('machines', 75, 1729, 'ember', { level: 0, evolution: 1 });
+    const state = createInfusionBattle('machines', machineRules.stages, 1729, 'ember', { level: 0, evolution: 1 });
     state.enemies[0].hp = 1;
     const result = act(state, 'ember', 'light', state.enemies[0].id);
     const reward = result.events.find((entry) => entry.kind === 'reward')!;
@@ -146,7 +146,7 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
     const saved = storage(raw);
     const before = saved.getItem(ACCOUNT_KEY);
     const account = loadAccount(saved);
-    expect(account.version).toBe(8);
+    expect(account.version).toBe(9);
     expect(account.conduitEquipment?.ember).toEqual([...raw.conduitEquipment.ember.slice(0, 2), null, null, null, null, ...raw.conduitEquipment.ember.slice(6)]);
     expect(account.conduitEquipment?.tide).toEqual(slots('vigil-core').map((id, index) => index === 1 ? 'vigil-core' : null));
     expect(account.conduitEquipment?.[raw.capturedCharacters[0].instanceId]).toEqual(raw.conduitEquipment[raw.capturedCharacters[0].instanceId]);
@@ -160,7 +160,7 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(before);
     expect(saved.setItem).not.toHaveBeenCalled();
     const purchased = purchaseConduit(saved, 'vigil-core');
-    expect(purchased.version).toBe(8);
+    expect(purchased.version).toBe(9);
     expect(saved.setItem).toHaveBeenCalledTimes(1);
     expect(loadAccount(saved)).toEqual(purchased);
     const corrupted = { ...purchased, conduitEquipment: { ...purchased.conduitEquipment, tide: slots('tempered-strike-link') } };
@@ -174,7 +174,7 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
       const raw = { ...legacy(), version, dungeonStages: { infernic: 1 } };
       const saved = storage(raw);
       expect(loadAccount(saved).conduitEquipment?.tide?.[0]).toBeNull();
-      expect(loadAccount(saved).version).toBe(8);
+      expect(loadAccount(saved).version).toBe(9);
       expect(saved.setItem).not.toHaveBeenCalled();
     }
     expect(loadAccount(storage({ ...emptyAccount(), version: 4, dungeonStages: { infernic: 13 } })).dungeonStages).toEqual({ infernic: 13 });
@@ -209,7 +209,7 @@ describe('v5 marker and read-only converted equipment compatibility', () => {
     saved.setItem = write;
     purchaseConduit(saved, 'vigil-core');
     expect(saved.setItem).toHaveBeenCalledTimes(1);
-    expect(loadAccount(saved).version).toBe(8);
+    expect(loadAccount(saved).version).toBe(9);
   });
   it('strictly rejects new/current wrong elements and fifth Omnics at account and fighter boundaries', () => {
     const all = kitConduitDesigns.filter((entry) => entry.element === 'infernic').map((entry) => entry.id);

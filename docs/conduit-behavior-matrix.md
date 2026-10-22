@@ -7,13 +7,13 @@ The release gate is enabled for coordinated client/authority publication (D-370)
 - Roster: **138/138** entries, **726** passing baseline/equipment/upgrade scenarios.
 - Ordinary-slot entries: 90, each with an absent baseline and all six +0..+5 upgrade levels.
 - Named Masters: 48, each with a concrete equipped and absent numerical behavior scenario.
-- Full regression: **6237 tests / 201 files passed**; zero failed or pending.
+- Full regression: **6255 tests / 202 files passed**; zero failed or pending.
 - Description parity: all 138 defaults against the complete owner-authored catalog; all 90 ordinary entries at +0..+5; Masters reject upgrades.
 - Separate interaction tests cover generated Master Shield provenance, manual native packets, stored-packet scaling, duplicate auras, additive stat pools and Defense caps.
 - UI and authority suites additionally exercise target-dependent costs, frozen equipment and Throne controls.
 - Passing tests do not establish subjective usefulness or mathematically exhaustive balance across every possible squad.
 
-Evidence source SHA-256 (LF-normalized): `9260a4fc621a62c5d2262569b24eefa21cb34273fef219e6c29b69170d932112`.
+Evidence source SHA-256 (LF-normalized): `e87b7b2b945567ea44a589dcc0f11d774ea37b6f45c19ebcdd88b331557786cd`.
 Regenerate only from a complete passing full-suite JSON report:
 
 ```powershell

@@ -1,5 +1,44 @@
 # Awaken the Machines and expanded Conduits
 
+## Current35-stage layout (D-380)
+
+Machines has **35 stages**, still starting at enemy Lv.10 and ending at
+Lv.120. Intermediate levels use `round(10 + (stage-1)*110/34)`, preserving
+the existing stat and ability curves at those levels. Six enemy forms span
+the shorter activity, and every fifth stage remains a boss. Normal enemy
+Prismatica still uses the same level-based payout; final-boss quantities
+retain their5x multiplier. Components are guaranteed:
+`round(3 + (stage-1)*122/34)`, then5x at stage35, preserving3 initially,
+125 final base and625 on the final boss.
+
+- **Rare8% and Legendary3.5% on every stage.**
+- **Omnic1% on stage26 and every stage afterward**, through stage35.
+  The new threshold is `floor(56/75*35)`. No tier rates, pools, source
+  activities, independent roll draws or Focus Loot rules change.
+- The final-boss-only Cosmic Grand Master Chest stays at1%, now at stage35.
+
+Walletv9 marks the new layout. Every v7-v8 saved Machines stage maps to
+`max(1, floor(oldStage/75*35))`:1->1,35->16,56->26,75->35. Pre-v7
+100-stage saves first use their established100->75 conversion, then this
+new remap. Loading never writes; the first successful transaction savesv9.
+Currentv9 progress never remaps again, and invalid stages reject without
+overwriting raw data. Other activities, currencies, gear, ownership, upgrades,
+Focus Loot, receipts and recorded Calamity access remain intact. Proven old
+final-boss UUID receipts preserve earned Machines Calamity access, but merely
+having unlocked the final stage does not grant a victory.
+
+Pre-v9 online Machines encounters are discarded before validating their old
+stage numbers; already saved rewards remain. Re-enter from the remapped
+unlocked stage. Other currentv8 activity runs are not discarded.
+
+Validation: `npx vitest run src\game\machines-layout.test.ts
+src\game\machines.test.ts src\game\account.test.ts --maxWorkers=2`.
+The layout suite checks every current stage, every old75-stage unlock,
+pre-v7 chaining, failed writes, no repeated migration, final-clear proof,
+old run handling and Omnic availability on all stages26-35. Hosted check:
+`node tools\smoke_server_game.mjs --machines-layout`, using disposable users.
+This section supersedes the historical stage counts/gates below.
+
 ## Focus Loot (D-379)
 
 The Machines activity's **Focus Loot** button opens saved Rare, Legendary and
@@ -9,7 +48,7 @@ names remain visible with **Details** but cannot be focused. Common,
 Calamitic and Master Conduits are not focus options.
 
 A successful rarity roll awards that tier's selected name. Independent8%/
-3.5%/1% rates, the current stage56 Omnic gate, boss parity, completed-tier
+3.5%/1% rates, the current stage26-and-afterward Omnic gate, boss parity, completed-tier
 behavior and RNG draw counts are unchanged. An unsuccessful roll does not
 consume focus. Obtaining a selected name from **any source**, including a
 banner bonus, clears only that tier in the same atomic account save. Other
@@ -32,7 +71,7 @@ Client and authority must be published together.
 ## Unowned-only enemy Conduit drops (D-312)
 
 Machines now choose uniformly among **unowned ordinary Conduit names within
-each successful rarity roll**. Rare8%, Legendary3.5%, Omnic1% from stage75,
+each successful rarity roll**. Rare8%, Legendary3.5%, Omnic1% on stage26 and every stage afterward,
 independent tier rolls and equal boss/ordinary odds remain unchanged. Once
 every name in a rarity is owned, that roll grants no Conduit, compensation,
 cross-tier reroll or replacement reward. One kill can still grant different

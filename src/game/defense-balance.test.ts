@@ -43,13 +43,13 @@ describe('attack-relative Defense balance', () => {
     const stage = Array.from({ length: storyRules.stages }, (_, index) => index + 1)
       .find((candidate) => storyEncounter(candidate).level === 13 && !storyEncounter(candidate).boss)!;
     expect(storyEncounter(stage).level).toBe(13);
-    expect(infusionEncounter('machines', 3).level).toBe(13);
+    expect(infusionEncounter('machines', 2).level).toBe(13);
     expect(storyEncounter(stage).stats).toEqual(enemyCombatStats(13, false));
-    expect(infusionEncounter('machines', 3).stats.damage).toBe(enemyCombatStats(13, false).damage);
+    expect(infusionEncounter('machines', 2).stats.damage).toBe(enemyCombatStats(13, false).damage);
     for (const id of ['ember', 'tide', 'sprout'] as const) {
       for (const state of [
         createStoryBattle(stage, 1729, id, { level: 0, evolution: 1 }),
-        createInfusionBattle('machines', 3, 1729, id, { level: 0, evolution: 1 }),
+        createInfusionBattle('machines', 2, 1729, id, { level: 0, evolution: 1 }),
       ]) {
         state.enemies.forEach((enemy) => { enemy.stats.crit = 0; });
         const original = structuredClone(state);

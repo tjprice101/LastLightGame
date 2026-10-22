@@ -117,7 +117,9 @@ describe('machine content and exact probabilities', () => {
     expect(conduits.filter((entry) => entry.art === null)).toHaveLength(0);
     expect(conduits.filter((entry) => entry.art === entry.id)).toHaveLength(90);
   });
-  it('has75 stages 10-120, six distinct machines, every fifth-stage boss and no missing art URLs', () => {
+  it('has35 stages 10-120, six distinct machines, every fifth-stage boss and no missing art URLs', () => {
+    expect(machineRules.stages).toBe(35);
+    expect(machineRules.omnicStage).toBe(26);
     for (let stage = 1; stage <= machineRules.stages; stage++) {
       const encounter = infusionEncounter('machines', stage);
       expect(encounter.boss).toBe(stage % 5 === 0);
@@ -128,12 +130,12 @@ describe('machine content and exact probabilities', () => {
     expect(new Set(Array.from({ length: machineRules.stages }, (_, index) => infusionEncounter('machines', index + 1).enemy.name)).size).toBe(6);
     expect(infusionEncounter('machines', machineRules.stages).stats.health).toBe(enemyGrowth.bossHealth);
     expect(infusionEncounter('machines', machineRules.stages - 1).stats.health).toBeLessThan(enemyGrowth.health);
-    for (const [tier, [first, last]] of [[1, 13], [14, 25], [26, 38], [39, 50], [51, 63], [64, 75]].entries()) {
+    for (const [tier, [first, last]] of [[1, 6], [7, 12], [13, 18], [19, 24], [25, 30], [31, 35]].entries()) {
       expect(getCreature(`infusion:machines:${tier}`).stages).toEqual(Array.from({ length: last - first + 1 }, (_, index) => first + index));
     }
     for (const stage of [0, machineRules.stages + 1, NaN, 1.5]) expect(() => machineConduitDrops(stage, () => 0)).toThrow();
   });
-  it('checks exact independent tier boundaries, excludes Omnic below 56 and chooses equal entries', () => {
+  it('checks exact independent tier boundaries, excludes Omnic below 26 and chooses equal entries', () => {
     expect(machineConduitDrops(machineRules.omnicStage - 1, sequence(.08, .035))).toEqual({});
     expect(machineConduitDrops(machineRules.omnicStage, sequence(.08, .035, .01))).toEqual({});
     const rarePool = conduits.filter((c) => c.rarity === 'Rare');
@@ -317,18 +319,18 @@ describe('machine rewards and atomic saves', () => {
     expect(next.allies[0].conduitCharges).toBeUndefined();
     expect(saveAccountRewards(saved, { state: real, events: [] }, 'unlock').infusionStages.machines).toBe(27);
   });
-  it('preserves saved stage numbers and discovers/unlocks the expanded late stages without ending at35', () => {
+  it('preserves current stage numbers and unlocks stages up to the final35 without continuing beyond it', () => {
     const saved = storage();
-    saveAccount(saved, { ...loadAccount(saved), infusionStages: { machines: 35, heavens: infusionStageCount('heavens') },
+    saveAccount(saved, { ...loadAccount(saved), infusionStages: { machines: 1, heavens: infusionStageCount('heavens') },
       conduits: { 'infernic-phoenix-reactor': 1 }, conduitUpgrades: { 'infernic-phoenix-reactor': 5 } });
     const raw = saved.getItem(ACCOUNT_KEY);
     const write = vi.spyOn(saved, 'setItem');
-    expect(loadAccount(saved).infusionStages).toEqual({ machines: 35, heavens: infusionStageCount('heavens') });
+    expect(loadAccount(saved).infusionStages).toEqual({ machines: 1, heavens: infusionStageCount('heavens') });
     expect(loadAccount(saved).conduitUpgrades).toEqual({ 'infernic-phoenix-reactor': 5 });
     expect(write).not.toHaveBeenCalled();
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     const progress = { level: 105, evolution: 6 };
-    for (const stage of [35, machineRules.omnicStage - 1, machineRules.omnicStage, machineRules.stages - 1]) {
+    for (const stage of [1, machineRules.omnicStage - 1, machineRules.omnicStage, machineRules.stages - 1]) {
       const state = createInfusionBattle('machines', stage, 1, 'ember', progress);
       state.phase = 'cleared';
       expect(nextStage(state, progress).state.infusion?.stage).toBe(stage + 1);
@@ -344,7 +346,7 @@ describe('machine rewards and atomic saves', () => {
     const markup = gameplayHub(loadAccount(saved));
     expect(markup).toContain(`<dd>${machineRules.stages} stages</dd>`);
     expect(markup).toContain('<dd>10-120</dd>');
-    expect(markup).toContain(`Omnic 1% from stage ${machineRules.omnicStage}`);
+    expect(markup).toContain(`Omnic 1% on stage ${machineRules.omnicStage} and every stage afterward`);
     expect(plain(markup)).toContain('Every Machine drops Broken Mechanical Components: 3 at stage 1');
     expect(markup).toContain(`rising to 125 at stage ${machineRules.stages}`);
     expect(markup).toContain('the final boss drops 625.');

@@ -24,7 +24,7 @@ function fixture(phase: 'cleared' | 'defeat', exit: () => Promise<void>, online:
   Object.defineProperty(HTMLDialogElement.prototype, 'close', {
     configurable: true, value: function (this: HTMLDialogElement) { this.open = false; },
   });
-  const session = createSession('ember', undefined, staged === 'machines' ? { mode: 'machines', stage: 75 } : staged ? { storyStage: 25 } : undefined);
+  const session = createSession('ember', undefined, staged === 'machines' ? { mode: 'machines', stage: 35 } : staged ? { storyStage: 25 } : undefined);
   session.entrancePending = false;
   session.state.phase = phase;
   session.resultsVisible = true;
@@ -48,7 +48,7 @@ describe('battle results exit', () => {
     try {
       f.host.querySelector<HTMLButtonElement>('.battle-results [data-result-restart]')!.click();
       await vi.waitFor(() => expect(f.session.runId).not.toBe(before.runId));
-      expect(f.session.state.infusion?.stage).toBe(75);
+      expect(f.session.state.infusion?.stage).toBe(35);
       expect(f.session.state.machineConduits).toEqual(before.state.machineConduits);
       expect(f.session.state.machineConduits).not.toBe(before.state.machineConduits);
       expect(f.commit).not.toHaveBeenCalled();

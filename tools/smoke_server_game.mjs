@@ -48,7 +48,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--focus-loot')) {
+  if (process.argv.includes('--machines-layout')) {
+    await smokeMachinesLayout(client, created.user.id, username);
+  } else if (process.argv.includes('--focus-loot')) {
     await smokeFocusLoot(client, created.user.id, username);
   } else if (process.argv.includes('--last-flare')) {
     await smokeLastFlare(client, created.user.id, username);
@@ -622,8 +624,8 @@ async function smokeGuaranteedComponents(client, userId, username) {
   game.account.characters = { ember: { level: 105, evolution: 6 } };
   game.account.storyCompleted = 20;
   game.account.squad = ['ember'];
-  game.account.infusionStages = { machines: 75 };
-  game = resolveOperation(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: 75 } }, entropy).game;
+  game.account.infusionStages = { machines: 35 };
+  game = resolveOperation(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: 35 } }, entropy).game;
   game.run.session.state.enemies.forEach(enemy => { enemy.hp = 1; });
   // Only the disposable identity receives a near-defeated final-boss fixture.
   assert.ok(ids.includes(userId));
@@ -638,7 +640,7 @@ async function smokeGuaranteedComponents(client, userId, username) {
   }
   let response = await invoke({ kind: 'read' }, 0);
   let total = 0;
-  for (const stage of [100, 1]) {
+  for (const stage of [35, 1]) {
     if (stage === 1) response = await invoke({ kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage } }, response.revision);
     const original = response;
     let kills = 0;
@@ -653,7 +655,7 @@ async function smokeGuaranteedComponents(client, userId, username) {
       response = await invoke(operation, revision, requestId);
       const rewards = response.result.events.filter(event => event.kind === 'reward');
       for (const reward of rewards) {
-        assert.equal(reward.mechanicalComponents, Math.round(3 + 122 * (stage - 1) / 99) * (stage === 100 ? 5 : 1));
+        assert.equal(reward.mechanicalComponents, Math.round(3 + 122 * (stage - 1) / 34) * (stage === 35 ? 5 : 1));
         total += reward.mechanicalComponents;
         kills++;
       }
@@ -661,10 +663,81 @@ async function smokeGuaranteedComponents(client, userId, username) {
     }
     assert.ok(kills > 0, `Hosted stage ${stage} fixture must defeat a machine.`);
     assert.equal(response.account.mechanicalComponents, total);
-    assert.equal(original.account.mechanicalComponents ?? 0, total - kills * Math.round(3 + 122 * (stage - 1) / 99) * (stage === 100 ? 5 : 1));
+    assert.equal(original.account.mechanicalComponents ?? 0, total - kills * Math.round(3 + 122 * (stage - 1) / 34) * (stage === 35 ? 5 : 1));
     response = await invoke({ kind: 'quit', runId: response.session.runId }, response.revision);
   }
-  console.log('Hosted component smoke passed: actual stage1 kills and near-defeated stage100 boss guarantee 3/625 components, atomic balances and idempotent reward retry. No owner accounts modified.');
+  console.log('Hosted component smoke passed: actual stage1 kills and near-defeated stage35 boss guarantee 3/625 components, atomic balances and idempotent reward retry. No owner accounts modified.');
+}
+
+async function smokeMachinesLayout(firstClient, firstId, firstUsername) {
+  const entropy = { seed: () => 1729, random: () => .5, uuid: () => randomUUID() };
+  const focus = { Rare: 'duplex-heart', Legendary: 'worldbreaker-drive', Omnic: 'infernic-phoenix-reactor' };
+  const cases = [{ legacy: 1 }, { legacy: 35 }, { legacy: 56 }, { legacy: 75 },
+    { stage: 1 }, { stage: 25 }, { stage: 26 }, { stage: 27 }, { stage: 35 }];
+  for (const [index, test] of cases.entries()) {
+    let client = firstClient, userId = firstId, username = firstUsername;
+    if (index) {
+      username = `mach_${randomUUID().replaceAll('-', '').slice(0, 10)}`;
+      const password = randomUUID() + randomUUID(), email = `${username}@example.invalid`;
+      const made = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { username } });
+      if (made.error || !made.data.user) throw new Error('Machines layout smoke identity creation failed.');
+      userId = made.data.user.id; ids.push(userId);
+      client = createClient(url, clientKey, { auth: { persistSession: false } });
+      if ((await client.auth.signInWithPassword({ email, password })).error) throw new Error('Machines layout smoke authentication failed.');
+    }
+    let game = freshGame(username);
+    game.starterId = 'ember';
+    game.account.characters = { ember: { level: 105, evolution: 6 } };
+    game.account.squad = ['ember']; game.account.storyCompleted = 120;
+    game.account.infusionStages = { machines: 35 }; game.account.machineLootFocus = focus;
+    if (test.legacy) {
+      game.account.version = 8;
+      game.account.infusionStages.machines = test.legacy;
+      game.account.mechanicalComponents = 99;
+      if (test.legacy === 75) game.account.receipts = ['12345678-1234-4abc-8def-123456789abc:infusion-machines-75-0'];
+    } else {
+      game = resolveOperation(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: test.stage } }, entropy).game;
+      game.run.session.state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
+      game.run.session.state.conduitSeed = 0;
+      game.run.session.state.masterChestSeed = 0;
+    }
+    assert.ok(ids.includes(userId));
+    assert.equal((await admin.rpc('load_game_account', { p_user: userId, p_initial: game })).error, null);
+    async function invoke(operation, revision, requestId = randomUUID()) {
+      const response = await client.functions.invoke('game-operation', { body: { operation, expectedRevision: revision, requestId } });
+      if (response.error) throw new Error(`Hosted Machines layout ${operation.kind} failed (${response.error.context?.status ?? 'transport'}).`);
+      return response.data;
+    }
+    const read = await invoke({ kind: 'read' }, 0);
+    assert.equal(read.account.version, 9);
+    if (test.legacy) {
+      const stage = Math.max(1, Math.floor(test.legacy * 35 / 75));
+      assert.equal(read.account.infusionStages.machines, stage);
+      assert.deepEqual(read.account.machineLootFocus, focus);
+      assert.equal(read.account.mechanicalComponents, 99);
+      if (test.legacy === 75) assert.equal(read.account.normalFinalClears.machines, true);
+      const operation = { kind: 'setMachineLootFocus', rarity: 'Rare', id: focus.Rare };
+      const id = randomUUID(), saved = await invoke(operation, read.revision, id);
+      assert.equal(saved.account.infusionStages.machines, stage);
+      assert.deepEqual(await invoke(operation, read.revision, id), saved);
+      assert.equal((await invoke({ kind: 'read' }, saved.revision)).account.infusionStages.machines, stage);
+    } else {
+      const state = game.run.session.state;
+      const operation = { kind: 'act', runId: read.session.runId, actorId: 'ember', action: 'light', targetId: state.enemies[0].id };
+      const expected = resolveOperation(game, operation, entropy).response;
+      const id = randomUUID(), actual = await invoke(operation, read.revision, id);
+      assert.deepEqual(actual.result, JSON.parse(JSON.stringify(expected.result)));
+      assert.deepEqual(actual.account, expected.account);
+      const reward = actual.result.events.find(event => event.kind === 'reward');
+      assert.equal(reward.conduits[focus.Rare], 1); assert.equal(reward.conduits[focus.Legendary], 1);
+      assert.equal(reward.conduits[focus.Omnic], test.stage >= 26 ? 1 : undefined);
+      assert.equal(reward.mechanicalComponents, Math.round(3 + 122 * (test.stage - 1) / 34) * (test.stage === 35 ? 5 : 1));
+      assert.equal(reward.masterChests, test.stage === 35 ? 1 : undefined);
+      assert.equal(state.enemies[0].level, Math.round(10 + (test.stage - 1) * 110 / 34));
+      assert.deepEqual(await invoke(operation, read.revision, id), actual);
+    }
+  }
+  console.log('Hosted Machines layout passed: v8 stages1/35/56/75 migrate once to1/16/26/35; holdings/focus/final-clear access preserved. Stages1/25/26/27/35 retain exact reward/level endpoints, Omnic26 onward and final-only Master chest. Local/hosted parity and retries passed; disposable identities only.');
 }
 
 async function smokeFocusLoot(client, userId, username) {
@@ -675,8 +748,8 @@ async function smokeFocusLoot(client, userId, username) {
   game.account.characters = { ember: { level: 105, evolution: 6 } };
   game.account.squad = ['ember'];
   game.account.storyCompleted = 120;
-  game.account.infusionStages = { machines: 75 };
-  game = resolveOperation(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: 60 } }, entropy).game;
+  game.account.infusionStages = { machines: 35 };
+  game = resolveOperation(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: 30 } }, entropy).game;
   const state = game.run.session.state;
   state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
   state.conduitSeed = 0;
@@ -795,13 +868,13 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
       ...['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic']
         .map(element => ({ kind: 'dungeon', element, stage: 1 })),
       ...['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines'].map(mode => ({ kind: 'infusion', mode, stage: 1 })),
-      { kind: 'infusion', mode: 'machines', stage: 75 },
+      { kind: 'infusion', mode: 'machines', stage: 35 },
     ] : []),
     ...[20, 40, 60, 80, 100, 120].map(stage => ({ kind: 'story', stage })),
     ...['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic']
       .map(element => ({ kind: 'dungeon', element, stage: 35 })),
     ...['heavens', 'abyss', 'treasury', 'sanctuary', 'roses', 'machines']
-      .map(mode => ({ kind: 'infusion', mode, stage: mode === 'machines' ? 75 : ['heavens', 'abyss', 'treasury', 'sanctuary'].includes(mode) ? 25 : 35 })),
+      .map(mode => ({ kind: 'infusion', mode, stage: mode === 'machines' ? 35 : ['heavens', 'abyss', 'treasury', 'sanctuary'].includes(mode) ? 25 : 35 })),
     ...['nerithe', 'orvella', 'vaelor'].map(character => ({ kind: 'war', character, stage: 10 })),
   ];
   for (const [index, activity] of activities.entries()) {
@@ -825,7 +898,7 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
     game.account.squad = ['ember'];
     game.account.storyCompleted = activity.kind === 'story' ? activity.stage - 1 : 120;
     game.account.dungeonStages = Object.fromEntries(['infernic', 'oceanic', 'atmospheric', 'botanic', 'tranquilitic', 'chaotic'].map(element => [element, 35]));
-    game.account.infusionStages = { heavens: 25, abyss: 25, treasury: 25, sanctuary: 25, roses: 35, machines: 75 };
+    game.account.infusionStages = { heavens: 25, abyss: 25, treasury: 25, sanctuary: 25, roses: 35, machines: 35 };
     game.account.warStages = { nerithe: 10, orvella: 10, vaelor: 10 };
     game = resolveOperation(game, { kind: 'enter', activity }, entropy).game;
     const state = game.run.session.state;
@@ -858,7 +931,7 @@ async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly 
       for (const copy of actual.account.capturedCharacters ?? []) assert.ok(copy.level <= 60);
     }
     const final = activity.kind === 'story' ? activity.stage % 18 === 0 : activity.kind === 'war' ? activity.stage === 10
-      : activity.kind === 'dungeon' ? activity.stage === 35 : activity.stage === (activity.mode === 'machines' ? 100 : ['treasury', 'sanctuary'].includes(activity.mode) ? 25 : 35);
+      : activity.kind === 'dungeon' ? activity.stage === 35 : activity.stage === (activity.mode === 'machines' ? 35 : ['treasury', 'sanctuary'].includes(activity.mode) ? 25 : 35);
     if (final) {
       assert.equal((rewards[0].amount - (rewards[0].storyBonus?.fractalis ?? 0)) % 5, 0);
       for (const quantity of Object.values(rewards[0].materials ?? {})) assert.equal(quantity % 5, 0);

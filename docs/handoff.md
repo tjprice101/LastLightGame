@@ -1,5 +1,46 @@
 # Current state and handoff
 
+## Machines35 stages (D-380; 2026-10-22)
+
+- Owner confirms remapping all old75-stage unlocks to
+  `max(1,floor(oldStage/75*35))`, and Omnic on stage26 **and every stage
+  afterward**. Machines now spans35 stages Lv.10->120; shared level/stat/
+  ability/component/currency curves proportionally fill the new range.
+  Every fifth stage remains a boss; final-only5x quantities and1% Master
+  chest move to35. Components remain3 initially,125 final base/625 final
+  boss. Rare8%/Legendary3.5% every stage and Omnic1% stages26-35.
+- Walletv9 validates and migrates read-only, saves on the first successful
+  transaction and never remaps current progress. Pre-v7 Machines uses its
+  established100->75 remap first. Inventory/focus/gear/receipts/other activity
+  progress stay intact. Recorded final clears survive; exact historical
+  UUIDv4 final-boss receipts also preserve Calamity access without granting
+  new clears. Old online Machines encounters are discarded before stage
+  validation; other currentv8 runs remain, saved rewards are retained.
+- Focus Loot, activity cards, shared information and battle entry copy now
+  explicitly say stage26 and every stage afterward. Added exhaustive
+  layout/migration/reward tests and disposable hosted `--machines-layout`
+  cases; existing Machines/legacy-version expectations and smoke fixtures
+  updated for35 stages/v9.
+- Validation: full `npx vitest run --maxWorkers=2 --reporter=json` passed
+  6,255 tests/202 files. `npm run build`, `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json` and
+  `git diff --check` passed. Updated the Lv.13 balance fixture to new stage2
+  and replay expectations to35, without changing their required behavior.
+  The138-entry/726-scenario behavior matrix was refreshed from this passing
+  report. Existing mock-canvas warnings/Vite chunk-size advisory are nonfatal.
+- Matching authority deployed with `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  Hosted `node tools\smoke_server_game.mjs --machines-layout` passed old
+  stages1/35/56/75 ->1/16/26/35, persistent one-time remapping, preserved
+  focus/components/final-clear access, actual kills on1/25/26/27/35,
+  exact client/authority rewards/levels, Omnic26 onward, final-only Master
+  chest and idempotency. `--focus-loot` passed again on the shorter layout.
+  Initial smoke-harness issues (overlong test usernames and comparing an
+  undefined property with JSON omission) corrected; all disposable users/
+  cascading records removed, no owner data modified.
+- Publishing through the main-branch Pages full test/configured online-build/
+  deployment workflow; verify the hosted SHA and clearer drop copy afterward.
+
 ## Machines Focus Loot (D-379; 2026-10-22)
 
 - Owner confirms one saved focus per Rare/Legendary/Omnic tier simultaneously

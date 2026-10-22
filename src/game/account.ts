@@ -1,4 +1,4 @@
-import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, isResizedActivity, migrateLegacyActivityStage, type ElementId, type ResizedActivityId } from '../content/activities';
+import { elementalMaterials, dungeonStageCount, elementalEnemyLevel, infusionStageCount, isCurrencyMode, evolutionRequirement, isResizedActivity, migrateLegacyActivityStage, migratePreviousMachineStage, previousMachineStageCount, type ElementId, type ResizedActivityId } from '../content/activities';
 import { fractalisDrop, storyEnemyFractalisDrop, treasuryFractalisDrop, stagedLycalisOdds } from '../content/loot-random';
 import { characterGrowthFactor, characterLevelCap, characterEvolutionCost, characterEvolutionRequirement, fractureRules, characterLevelCost, type CharacterProgress, type UpgradeCost } from '../content/progression';
 import { isInfusionMode, specialtyMaterials } from '../content/infusions';
@@ -30,7 +30,7 @@ import { calamiticLockMessage, calamiticStoreUnlocked, calamiticTokenPrice, isCa
 
 export const ACCOUNT_KEY = 'last-light.wallet';
 export interface Account {
-  version: 8;
+  version: 9;
   fractalis: number;
   lycalis: number;
   bannerPity?: Partial<Record<SummonBannerId, BannerPity>>;
@@ -61,7 +61,7 @@ export interface Account {
   creatures: Record<string, { defeated: boolean }>;
 }
 export function emptyAccount(): Account {
-  return { version: 8, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
+  return { version: 9, fractalis: 0, lycalis: 0, materials: {}, characters: {}, firstFracture: false, dungeonStages: {}, infusionStages: {}, receipts: [], creatures: {} };
 }
 function count(value: unknown): value is number {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
@@ -82,8 +82,13 @@ export function migrateLegacyDungeonStage(stage: number, version: 2 | 3): number
   }
   return unlocked;
 }
+function hasHistoricalBossReceipt(receipts: readonly string[], boss: string): boolean {
+  const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return receipts.some(receipt => receipt.length === 37 + boss.length &&
+    uuid.test(receipt.slice(0, 36)) && receipt.slice(36) === `:${boss}`);
+}
 export function validateAccount(value: unknown): Account {
-  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4 && value.version !== 5 && value.version !== 6 && value.version !== 7 && value.version !== 8) || !count(value.fractalis) || !count(value.lycalis) ||
+  if (!record(value) || (value.version !== 2 && value.version !== 3 && value.version !== 4 && value.version !== 5 && value.version !== 6 && value.version !== 7 && value.version !== 8 && value.version !== 9) || !count(value.fractalis) || !count(value.lycalis) ||
       !record(value.materials) || !record(value.characters) || !record(value.dungeonStages) ||
       typeof value.firstFracture !== 'boolean' || !Array.isArray(value.receipts) ||
       !value.receipts.every((receipt) => typeof receipt === 'string') || new Set(value.receipts).size !== value.receipts.length) {
@@ -269,8 +274,16 @@ export function validateAccount(value: unknown): Account {
       if (!isInfusionMode(id) || !count(stage) || stage < 1) throw new Error('Invalid saved infusion stage.');
       // D-346: v2 Heaven/Abyss already used 25 stages; v3-v6 used 35 Heaven/Abyss and 100 Machines stages.
       const resized = value.version < 7 && isResizedActivity(id) && !(value.version === 2 && id !== 'machines');
-      if (!resized && stage > infusionStageCount(id)) throw new Error('Invalid saved infusion stage.');
-      account.infusionStages[id] = resized ? migrateLegacyActivityStage(id as ResizedActivityId, stage) : stage;
+      const previousMachines = id === 'machines' && value.version < 9;
+      if (!resized && stage > (previousMachines ? previousMachineStageCount : infusionStageCount(id))) throw new Error('Invalid saved infusion stage.');
+      const migrated = resized ? migrateLegacyActivityStage(id as ResizedActivityId, stage) : stage;
+      account.infusionStages[id] = previousMachines ? migratePreviousMachineStage(migrated) : migrated;
+      if (previousMachines) {
+        const final = value.version < 7 ? 100 : previousMachineStageCount;
+        const boss = `infusion-machines-${final}-0`;
+        if (stage === final && hasHistoricalBossReceipt(account.receipts, boss))
+          account.normalFinalClears = { ...account.normalFinalClears, machines: true };
+      }
     }
     if (value.creatures !== undefined) {
       if (!record(value.creatures)) throw new Error('Invalid saved Elemental-Devourer discoveries.');
@@ -524,9 +537,7 @@ export function calamityUnlockedTier(account: Account, activity: CalamityActivit
     const access = dungeon ? account.dungeonStages[activity] : account.infusionStages[activity];
     const boss = dungeon ? `dungeon-${activity}-${finalStage}-0` : `infusion-${activity}-${finalStage}-0`;
     // Historical sessions used randomUUID run IDs; floor access alone is not victory evidence.
-    const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    if (access !== finalStage || !account.receipts.some((entry) =>
-      entry.length === 37 + boss.length && uuid.test(entry.slice(0, 36)) && entry.slice(36) === `:${boss}`)) return 0;
+    if (access !== finalStage || !hasHistoricalBossReceipt(account.receipts, boss)) return 0;
   }
   return Math.min(3, (account.calamityClears?.[activity] ?? 0) + 1);
 }

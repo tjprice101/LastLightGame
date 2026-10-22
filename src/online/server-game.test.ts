@@ -311,7 +311,7 @@ describe('server authoritative game engine', () => {
     expect(validateGameResponse(exited.response)).toEqual(exited.response);
     expect(entered.run!.session.runId).toBe(runId);
   });
-  it.each([1, 25, 50, machineRules.omnicStage, machineRules.stages])('atomically guarantees current component quantities on authoritative Machine stage %s kills', stage => {
+  it.each([1, 15, 25, machineRules.omnicStage, machineRules.stages])('atomically guarantees current component quantities on authoritative Machine stage %s kills', stage => {
     const game = started();
     game.account.storyCompleted = 25;
     game.account.characters.ember = { level: 105, evolution: 6 };
@@ -542,7 +542,7 @@ describe('server authoritative game engine', () => {
     expect(legacy).toEqual(before);
     expect(read.game.run).toBeNull();
     expect(read.response.session).toBeNull();
-    expect(read.response.account.version).toBe(8);
+    expect(read.response.account.version).toBe(9);
     expect(publicGame(legacy, 3).session).toBeNull();
   });
   it('discards a saved Story run from a pre-v6 account and converts its Story count', () => {
@@ -556,7 +556,7 @@ describe('server authoritative game engine', () => {
     expect(legacy).toEqual(before);
     expect(response.game.run).toBeNull();
     expect(response.response.session).toBeNull();
-    expect(response.response.account.version).toBe(8);
+    expect(response.response.account.version).toBe(9);
     expect(response.response.account.storyCompleted).toBe(24);
     expect(storyCompletedOf(legacy)).toBe(24);
     expect(publicGame(legacy, 3).session).toBeNull();

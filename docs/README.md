@@ -29,6 +29,12 @@ Citadel Spine, Immortal Vessel, Pale Bulwark Diadem and Starvein Conductor.
 
 ## Status vocabulary
 
+**Machines35-stage layout (D-380):** Lv.10->120 and reward endpoints
+preserved with proportional intermediate scaling. Rare/Legendary drop
+on every stage; Omnic drops on stage26 and every stage afterward.
+Walletv9 remaps all old75-stage unlocks with `max(1,floor(stage/75*35))`
+read-only until the next successful save. [Migration and validation](awaken-the-machines.md#current35-stage-layout-d-380).
+
 **Machines Focus Loot (D-379):** choose one unowned Rare, Legendary and
 Omnic Conduit simultaneously; the next successful tier drop awards its focus.
 Rates/gates stay unchanged, and obtaining a focused name from any source

@@ -56,7 +56,7 @@ describe('persistent progression transactions', () => {
     const raw = JSON.stringify(legacy);
     saved.setItem(ACCOUNT_KEY, raw);
     const migrated = loadAccount(saved);
-    expect(migrated.version).toBe(8);
+    expect(migrated.version).toBe(9);
     expect(migrated.dungeonStages).toEqual({ infernic: 1, oceanic: 12, atmospheric: 35, tranquilitic: 35 });
     expect(migrated.infusionStages).toEqual({ heavens: 13, abyss: 25 });
     for (const field of ['fractalis', 'lycalis', 'firstFracture', 'materials', 'characters', 'creatures', 'receipts'] as const) {
@@ -65,10 +65,10 @@ describe('persistent progression transactions', () => {
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     saveAccount(saved, migrated);
     expect(loadAccount(saved)).toEqual(migrated);
-    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(8);
+    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!).version).toBe(9);
     expect(validateAccount({ ...legacy, infusionStages: { heavens: 1 } }).infusionStages).toEqual({ heavens: 1 });
   });
-  it('migrates v6 resized activity unlocks read-only and persists v7 in the first transaction', () => {
+  it('migrates v6 resized activity unlocks read-only and persists v9 in the first transaction', () => {
     const saved = storage();
     const legacy = { ...emptyAccount(), version: 6, fractalis: 100,
       materials: { 'infernic-common': 1 }, infusionStages: { heavens: 35, abyss: 18, machines: 100 } };
@@ -78,14 +78,14 @@ describe('persistent progression transactions', () => {
     const write = saved.setItem;
     saved.setItem = (key, value) => { writes++; write(key, value); };
     const loaded = loadAccount(saved);
-    expect(loaded.version).toBe(8);
-    expect(loaded.infusionStages).toEqual({ heavens: 25, abyss: 13, machines: 75 });
+    expect(loaded.version).toBe(9);
+    expect(loaded.infusionStages).toEqual({ heavens: 25, abyss: 13, machines: 35 });
     expect(writes).toBe(0);
     expect(saved.getItem(ACCOUNT_KEY)).toBe(raw);
     const upgraded = upgradeCharacter(saved, 'ember', 'level', { level: 0, evolution: 1 });
     expect(writes).toBe(1);
     expect(upgraded.characters.ember).toMatchObject({ level: 1, evolution: 1 });
-    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!)).toMatchObject({ version: 8, infusionStages: loaded.infusionStages });
+    expect(JSON.parse(saved.getItem(ACCOUNT_KEY)!)).toMatchObject({ version: 9, infusionStages: loaded.infusionStages });
     expect(loadAccount(saved)).toEqual(upgraded);
     expect(writes).toBe(1);
   });

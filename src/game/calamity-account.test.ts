@@ -162,7 +162,7 @@ describe('Calamity account transactions', () => {
     const account = emptyAccount();
     account.infusionStages.machines = infusionStageCount('machines');
     for (const receipt of [
-      `${uuid}:infusion-machines-35-0`,
+      `${uuid}:infusion-machines-75-0`,
       `${uuid}:infusion-machines-100-1`,
       `${uuid}:infusion-machines-100-0:extra`,
       `prefix${uuid}:infusion-machines-100-0`,

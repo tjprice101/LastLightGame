@@ -299,11 +299,13 @@ class VirtualStorage implements ProfileStorage {
 /**
  * Pre-v6 Story runs used the 25-stage layout (D-340); pre-v7 runs may hold Heaven/Abyss/Machines stages or
  * captured-copy snapshots on the former 35/100-stage layouts (D-346); pre-v8 Story runs used 18-stage regions
- * (D-347). Those stage numbers no longer exist, so the unfinished run is discarded; per-kill rewards were already saved.
+ * (D-347). Pre-v9 Machines runs used 75 stages (D-380). Changed-layout unfinished runs are
+ * discarded; per-kill rewards were already saved.
  */
 function isLegacyStoryRun(game: DurableGame): boolean {
   const version = (game.account as { version?: unknown }).version;
-  return typeof version === 'number' && version < 8 && !!game.run;
+  return typeof version === 'number' && !!game.run && (version < 8 ||
+    version < 9 && game.run.activity.kind === 'infusion' && game.run.activity.mode === 'machines');
 }
 /** Story clears on the current layout, converting a stored pre-v6 count without writing. */
 export function storyCompletedOf(game: DurableGame): number {
