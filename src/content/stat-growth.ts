@@ -1,3 +1,6 @@
+import { phaseZeroStatDefaults } from './phase-zero-stats';
+import type { Stats } from './combat';
+
 export const playableGrowth = { perLevel: .15, perEvolution: 1.5 } as const;
 export const enemyExponentialRates = { health: .026, damage: .024, defense: .020 } as const;
 export const enemyStrengthMultiplier = 1.05;
@@ -13,9 +16,10 @@ export const enemyGrowth = { maximumLevel: 120, maximumHostileLevel: 185,
   bossDefense: hostileStat(16 / 3, .30, enemyExponentialRates.defense, 120) } as const;
 export const capturedGrowth = { health: 220, damage: 38, defense: 16 } as const;
 
-export function enemyCombatStats(level: number, boss: boolean) {
+export function enemyCombatStats(level: number, boss: boolean): Stats {
   if (!Number.isInteger(level) || level < 1 || level > enemyGrowth.maximumHostileLevel) throw new Error('Enemy level must be from 1 to 185.');
   return {
+    ...phaseZeroStatDefaults,
     health: hostileStat(boss ? 207.5 : 83, .45, enemyExponentialRates.health, level),
     damage: hostileStat(boss ? 27.5 : 22, .25, enemyExponentialRates.damage, level),
     defense: hostileStat(boss ? 16 / 3 : 4, .30, enemyExponentialRates.defense, level),

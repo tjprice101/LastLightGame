@@ -158,7 +158,7 @@ describe('distinct flagship native identities', () => {
     const state = encounter('razor', 'ember');
     const result = use(state, 'razor', 'skill2');
     expect(result.state.allies.every(unit => unit.shield === 0)).toBe(true);
-    expect(result.state.allies[0].native?.bastion).toEqual({ throughPhase: state.round, loss: 0 });
+    expect(result.state.allies[0].native?.bastion).toEqual({ throughPhase: state.round, loss: 0, skillPower: 1, skillDuration: 0 });
     expect(nativeIncomingMultiplier(result.state, result.state.enemies[0], result.state.allies[0], 'light', [])).toBeCloseTo(.7);
     const ordinary = use(encounter('razor'), 'razor', 'skill1');
     expect(ordinary.events.find(event => event.kind === 'damage')?.amount).toBe(damageAmount(100, 1.6 * nativeBalance.skillDamageScale, 0, false));

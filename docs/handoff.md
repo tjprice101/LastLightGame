@@ -1,5 +1,301 @@
 # Current state and handoff
 
+## Phase 0 coordinated activation and publication (D-370; 2026-10-21)
+
+- Owner explicitly authorizes activation, push and deployment after validation.
+  Shared `phaseZeroStatsReady=true`; the generated authority uses rules5.
+  This supersedes the closed-gate status below.
+- Historical rules4 Conduit-specific regression suites explicitly mock the
+  old gate; current native/transaction/UI suites run with the production flag
+  enabled. All138 current behaviors retain their separate numerical matrix.
+- Activation corrected stale stat-only loadout summaries, bracketed ability
+  search and upgrade guidance (+10% base benefit per level, fixed penalties/
+  thresholds/costs/Duration). Current UI tests assert ten stats rather than
+  legacy seven-stat layouts and authored native support snapshots.
+- Release validation: `npx vitest run --maxWorkers=4 --reporter=json` with a
+  session-local `--outputFile` passed **5,982 tests across197 files**, zero
+  failures/pending. `node tools\build_phase_zero_behavior_matrix.mjs` against
+  that report regenerated138 entries/726 numerical scenarios.
+  `npm run build`, `npx tsc --project supabase\functions\game-operation\tsconfig.json`,
+  `node --check tools\smoke_server_game.mjs` and `git diff --check` passed.
+- Actual production-bundle smoke (no enabled-gate mock) verified rules5,
+  frozen Causality +5 Power2.2,563 Skill1 direct damage/55 Burn, immutable
+  inputs and historical rules4 reconstruction without stale action or
+  holdings loss. Existing jsdom canvas/Vite chunk-size warnings are nonfatal.
+- Authority deployed successfully with `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  `node tools\smoke_server_game.mjs --phase-zero` passed against the hosted
+  function: exact damage/Burn, frozen gear after menu removal, idempotent
+  request retry, checkpoint persistence, unchanged holdings and fresh-entry
+  equipment. Disposable identities/cascading records were removed.
+- Matching client publication uses the existing `Deploy Last Light` workflow
+  on the main-branch push. Require its build/deploy jobs to succeed and verify
+  the hosted version/assets before reporting release completion.
+  No database migration, owner-account edits, refunds or resource grants.
+
+## Phase 0 runtime verified, release gate OFF (D-368; 2026-10-21)
+
+- Supersedes the earlier incomplete-roster accounting below. The
+  [138-entry behavior matrix](conduit-behavior-matrix.md) now links executed
+  numerical behavior checks for every entry:90 ordinary-slot entries with
+  absent/+0..+5 cases and48 named Masters with equipped/absent cases,
+  totaling726 passing matrix scenarios. The generator rejects missing or
+  failing behavior cases; identity/text-reference counts are not evidence.
+- Added actual missing Triage, Stormstep, Cinder and source-Shield reflection
+  behavior. Removed stale Flora healing, Leviathan pooled healing, Atlas
+  mitigation, Aurora critical suppression and Nerithe recovery bypass.
+  Fixed wrong-action Master payoffs (Bliss Last Flare, Rosetta Skill2, Razor
+  Skill1/Last Flare and Nerithe Last Flare). Master Nerithe retains Fold's
+  native damage; Rosetta retains Quarry's native Shields.
+- Generated Atmoso/Aurora/Thornia/Razor/Crinso Master follow-up Shields now have
+  generated provenance and finite clocks. Interaction tests equip competing
+  native-Shield procs and verify no reflection, extra Gauge, Power or Defense
+  chains. Original native Seeds/traps/Cyclones/Foundations keep their identity.
+- Manual Recall/Revenge/trap packets receive action/target modifiers and enter
+  the damage receipt once. Stored Burn/durability/release values are not
+  Power-scaled again. Added direct cross-effect damage/healing assertions.
+- Conditional Defense/Direct Attack/Critical Damage join their pre-equipment
+  base pools. Enemy Defense reductions sum with a50% cap, followed by up to75%
+  skill ignore. Duplicate auras use their strongest living instance; repeated
+  Ward Gauge receipts and Foundation absorption do not multiply. Atlas and
+  Leviathan count one enemy Attack Action, not its individual impacts, and
+  rounded grants cannot exceed their upgraded per-turn Gauge budgets.
+- All138 default descriptions preserve the complete owner-authored text.
+  Fixed multiline intake truncation of Horizon Heartcase. All90 ordinary
+  descriptions have explicit +0..+5 benefit policies; thresholds, costs,
+  penalties, fixed caps and whole-turn Duration stay fixed. Calamitic APIs
+  share this renderer; Masters reject positive upgrade levels.
+- Target-dependent UI/payment/authority checks, frozen equipment, two-turn
+  token clocks, native support snapshots, rescue/action limits and the20%
+  non-Defense mitigation floor remain covered. Authority tests also check
+  rules4-to5 encounter reconstruction without executing a stale action or
+  rewriting saved holdings.
+- Final validation: `npx vitest run --maxWorkers=4 --reporter=json` with a
+  session-local `--outputFile` passed **5,982 tests across197 files**, with
+  zero failures or pending tests. `node tools\build_phase_zero_behavior_matrix.mjs`
+  against that report regenerated all138 entries and726 numerical scenarios.
+  The matrix source hash identifies the exact tested runtime/test inputs.
+- `npm run build` passed TypeScript checking and the317-module Vite build.
+  `git diff --check` and `node --check` for the three Conduit generators
+  passed. Existing jsdom canvas warnings, Git line-ending notices and the
+  Vite large-chunk advisory are nonfatal.
+- `node --input-type=module` compiled-authority smoke passed for both the
+  actual rules4 bundle and an enabled rules5 bundle built only in memory:
+  bootstrap, Training entry/action, immutable operation inputs and frozen
+  equipment. Enabled Causality +5 retained2.2 Power after removing menu gear
+  and dealt563 direct Skill1 damage at100 Attack/zero enemy Defense. A stale
+  rules4 encounter rebuilt to rules5 without applying its action, changing
+  saved holdings or losing frozen equipment. No release flag was changed.
+- Release remains deliberately OFF (`phaseZeroStatsReady=false`, rules4).
+  This completes the requested enabled-gate implementation/verification work,
+  not publication or a claim of optimal squad balance. No commit, push,
+  deployment, account migration, resource grant or save rewrite. A coordinated
+  client/authority activation remains a separate release operation.
+
+### Superseded implementation notes
+
+The following intermediate results are historical, not current blockers.
+
+- Owner authorizes full implementation of all138 current catalog abilities.
+  Preserve account holdings/IDs/eligibility, existing upgrade levels/costs and
+  existing growth for Health/Defense/Direct Attack/critical/capacity.
+  New defaults: Skill Power1, Skill Duration0, Skill Efficiency0, Gauge Gain1;
+  no level growth for these four. Upgrade scaling delegated to implementation.
+- Found Pale's unfinished `______` while checking the actual current file.
+  Owner requests rework; target now grants Shield recipients +25% Skill Power
+  for damaging skills. Latest owner edits, including Cathedral's additional
+  +30% squad Skill Power, remain authoritative over older summaries.
+- Added `src/content/phase-zero-contract.test.ts`: each of the138 approved
+  entries maps to a stable ordinary/Master identity and existing eligibility.
+  Checks counts/order, completed effects, percentage Gauge convention and
+  latest explicit revisions. These tests DO NOT verify runtime effects.
+- Added isolated `src/content/phase-zero-conduit-stats.ts` static-bonus
+  calculation for20 items, including all10 Commons. Add against base values,
+  preserve fractional stats and critical overflow, validate slots/upgrades.
+  Positive scalar benefits grow10% of base per upgrade; penalties and whole
+  Duration turns stay fixed. `applyConduitBuffs` now selects this calculator
+  only when `phaseZeroStatsReady=true`, replacing rather than adding legacy
+  bonuses. The gate remains false, so current live equipment is unchanged.
+  Conditional effects and squad auras must NOT be mistaken for static stats.
+  Shared cost/Gauge helpers now cover additive Efficiency, one final upward
+  cost rounding with50% cap/skill floors, and recipient-capacity percentage
+  Gauge offers with one Gain multiplication/rounding. These are not live hooks.
+- Added the gated ten-stat schema/readout foundation:
+  `src/content/phase-zero-stats.ts`, resolved owned/captured/enemy types and
+  shared `src/presentation/stat-preview.ts`. Team/Home/Archives, upgrades and
+  equipment share the new readout formatting, but `phaseZeroStatsReady=false`
+  preserves current legacy readouts and equipment math until activation.
+  Legacy `elementalDamage` compatibility, growth, account data and costs remain.
+  Foundation-only typecheck passed (`npx tsc --noEmit`); this predates the
+  in-progress full Conduit runtime work and is not its validation.
+- `npx vitest run src\content\phase-zero-contract.test.ts src\content\phase-zero-conduit-stats.test.ts --maxWorkers=2 --reporter=dot`
+  passes262 tests across2 files (141 contract +121 static-stat/cost/Gauge checks).
+- Combined foundation verification:
+  `npx vitest run src\content\phase-zero-contract.test.ts src\content\phase-zero-conduit-stats.test.ts src\content\phase-zero-stats.test.ts src\presentation\phase-zero-readouts.test.ts --maxWorkers=2 --reporter=dot`
+  passes286 tests across4 files. This still does not validate the unfinished
+  dynamic Conduit replacement or authorize activation.
+- Subsequent gated equipment integration verification:
+  `npx vitest run src\content\phase-zero-contract.test.ts src\content\phase-zero-conduit-stats.test.ts src\content\phase-zero-equipment-integration.test.ts src\content\phase-zero-stats.test.ts src\presentation\phase-zero-readouts.test.ts src\presentation\phase-zero-release-gate.test.ts --maxWorkers=2 --reporter=dot`
+  passes291 tests across6 files; `npx tsc --noEmit` passes. Adds enabled-gate
+  tests proving replacement static math, saved-upgrade preservation and
+  unequipped defaults without touching legacy Burn. Negative Efficiency stays
+  negative rather than silently becoming a zero discount.
+- Broader verification while runtime work is still incomplete:
+  `npx vitest run --maxWorkers=2 --reporter=dot` passed4491/4498 tests in
+  185/189 files. Two native snapshot regressions (Flora Seeds and Razor stance
+  extra fields) require gate-safety correction; five presentation timeouts
+  passed on the focused rerun
+  `npx vitest run src\presentation\archives-controls.test.ts src\presentation\inventory.test.ts --maxWorkers=1 --reporter=dot`
+  (19/19). `npm run build` passed TypeScript/Vite with the existing large-chunk
+  advisory. None of these results establishes all138 runtime effects complete.
+- Remaining before activation: all138 effect behavior checks (equipped/
+  absent/+0..+5 where applicable), full dynamic/native hooks, duration/cost/
+  Gauge receipt integration, release-version/session compatibility, UI and
+  authoritative bundle parity, full regression/build and rollout validation.
+  Existing live Conduit behavior is deliberately retained until complete.
+  No deployment, schema migration, resource grant or save rewrite occurred.
+
+- Aegis follow-up (2026-10-21): owner questions expiry-based effect and requests
+  rework. Aegis now grants its bearer +25% Defense for the next Enemy Turn
+  when Shielding another ally with a skill. No Shield-expiry prerequisite;
+  no change to native Shield durations or live gameplay.
+- Aegis wording clarified: the trigger is your skill giving another ally
+  a Shield; the Defense bonus goes to you and ends after the next Enemy Turn.
+
+- Latest empty-ability pass (2026-10-21): filled the seven owner-cleared entries
+  Aegis, Duplex, Opal, Twinpulse, Execution, Meridian and Verdict with new
+  proposals. Shield-expiry Gauge, healing self-sustain, debuff skill potency,
+  paired Normal Attack Gauge, critical finishing, healing-to-Gauge and
+  closing-action skill potency respectively. Percentage Gauge convention
+  retained; other completed entries unchanged. Document-only.
+
+- Latest Cathedral revision (2026-10-21): owner requests another redesign after
+  clearing its ability. Proposed replacement: all living allies gain +25%
+  Skill Efficiency while the bearer lives. Replaces the partner-link design;
+  document-only, other owner edits and blank entries preserved.
+
+## Percentage Gauge grants and final Calamitic edits (D-367; 2026-10-21)
+
+- Owner accepts the designs with further explicit revisions: Causality gives
+  +80% Skill Power and removes the bearer's Last Flare recovery. World-Eater
+  gives +2 turns Skill Duration and heals each living ally for10% of total
+  damage dealt by the bearer's damaging skill. Removed its previous8%-HP
+  healing and once-per-turn restriction; no replacement cap invented.
+- All positive flat Conduit Gauge grants become the same numeric percentage
+  of each recipient's own maximum Gauge Capacity before Gauge Gain scaling.
+  Converted Griffin's ratio and cap to capacity percentages as well.
+  Existing owner-edited percentage grants remain intact. Zero Gauge on
+  revival, costs and held-Gauge thresholds are not positive grants and stay.
+- Catalog header defines the percentage convention. Still document-only;
+  runtime effects, recovery, saves and economy are unchanged.
+
+## Simpler Calamitic follow-up (D-366; 2026-10-21)
+
+- Owner requests simpler Causality/World-Eater and replaces Throne's
+  once-per-Battle restriction with once per player turn per character.
+- Causality now grants living allies20% Direct Damage reduction while its
+  bearer lives. World-Eater's damaging skills heal all living allies for8%
+  of their own maximum HP, once per player turn. No debt or damage reserve.
+- Throne's Last Flare grants an extra Skill1/2 to already-acted other allies,
+  once per recipient per player turn; recovery and the shared no-extra-action
+  chaining/one-granted-action-per-character-per-turn rules remain.
+- Supersedes these three D-364 designs only. Still document-only proposals.
+
+## Legendary usefulness follow-up (D-365; 2026-10-21)
+
+- Owner permits reworking Legendary effects that are redundant or out of place.
+  Reviewed all15; revised Citadel Spine (personal Defense plus protection for
+  injured allies), Immortal Vessel (Health and shared effective healing),
+  Pale Bulwark Diadem (Shield recipients gain Direct Attack while healthy)
+  and Starvein Conductor (HP-paid damaging-skill power, no Burn prerequisite).
+- Retained the other11 distinct build roles, including simple critical
+  specialization, finishers, damage-to-Shield, boss AoE specialization,
+  burst protection, rescue and noncritical Normal Attack builds.
+- This supersedes D-364's preservation of these four Legendary entries only.
+  Common/Rare and all other abilities, names, elements and order stay unchanged.
+  No gameplay implementation or tested balance claim; new values await review.
+
+## Squad-focused Conduit proposal revision (D-364; 2026-10-21)
+
+- Owner clarifies these are new stats, not a request to retain old Conduit
+  mechanics with renamed terms. Requests useful squad interactions and simpler
+  Calamitics. Explicitly preserves Common and owner-edited Rare/Legendary
+  effects; Masters stay character-specific with improved squad synergy.
+- Preserved all40 latest Common/Rare/Legendary ability texts exactly, including
+  owner edits to Spearwheel, Springwell, Citadel, Granite, Horizon, Judgment
+  and Nullsong. Redesigned all45 ordinary Omnic,48 Masters and5 Calamitics.
+  Names, rarity, order, elemental restrictions and bearer assignments unchanged.
+- Masters checked against current `native-identities.ts`: Seeds, Cyclone/Gust,
+  Shuriken, action-order bonuses, Cover, Instructions, Seal, Wounds, Quarry,
+  traps, Combo, Survey, Foundation and Beat. No invented replacement kits.
+  Ordinary effects cover offensive/support relays, varied-element squads,
+  defensive builds, Gauge batteries, debuff setups, healing and recovery.
+- Calamitics: skill-power/efficiency partner link, squad damage deferral,
+  Defense/Shield penetration, once-per-Battle squad extra actions and a
+  shared-damage retaliation reserve. No multi-step Equation puzzle, recurring
+  turn loan or healing-stat side effect on debt.
+- Shared proposal rules define token expiry, source/trigger exclusions,
+  snapshot/cost timing, bounded Defense reductions/ignore, native Master
+  identity, aura lifetimes, debt non-duplication and simultaneous Shields.
+  Descriptions contain abilities rather than explanations of unchanged stats.
+- Verified with read-only `node -` assertions against the pre-revision snapshot:
+  all40 preserved ability texts identical; all98 remaining effects changed;
+  all138 names/rarities/elements/order preserved; distinct, nonempty abilities;
+  all98 new descriptions at most45 words. Additional structural checks and
+  `git diff --check` cover final text. No gameplay tests or build for this
+  document-only revision.
+- All new values, practical usefulness and balance remain unverified proposals
+  for owner review. No runtime, saves, upgrade scaling, deployment or economy
+  changes; implementation requires separate approval.
+
+## Phase 0 stat and Conduit design proposal (D-363; 2026-10-21)
+
+- `docs/conduit-catalog.txt` now proposes base effects for all138 Conduits grouped
+  Common10/Rare15/Legendary15/Omnic93/Calamitic5, alphabetically within each.
+  Omnic includes45 ordinary plus48 named Masters, not a new Master rarity.
+- Name, rarity, element and proposed ability text included. Ordinary abilities
+  show only base (unupgraded) descriptions at the owner's request; Masters are fixed.
+  Existing elements are authoritative; Masters use their bearer's element.
+  Universal45 receive explicitly editorial thematic suggestions, never new
+  equipment restrictions or approved content changes.
+- Initially generated from live resolvers, then owner-edited and redesigned.
+  DO NOT regenerate over the owner's edits. It is no longer a live-effect snapshot.
+- Owner explicitly chooses design-only review before implementation and includes
+  ordinary, Master and Calamitic entries. Preserve all owner-edited effects,
+  fill the blank Breach Pendulum and redesign remaining entries; Common stats
+  stay basic, higher rarities gain specialized interactions and trade-offs.
+- Ten requested stats: Health, Defense, Direct Attack, Critical Damage Multiplier,
+  Critical Rate, Skill Power, Skill Duration, Skill Efficiency, Elemental Gauge
+  Capacity and Elemental Gauge Gain. Owner chooses Skill Power instead of
+  Elemental Damage and delegates duration design with a whole-turn preference.
+  Aegis's percentage duration becomes +1 Shield turn; other edited examples
+  retain their numbers, with terminology normalized.
+- Header defines proposed additive scaling, cost/duration limits, trigger clocks,
+  no recursive procs, bounded actions and shared rescue limits.
+  These interpretations, all new values and safeguards await owner review.
+- Owner requests ability-only descriptions: removed explanatory asides about
+  unchanged stats, ordinary scaling and build intent. Keep actual effects,
+  conditions, costs and limits; shared design rules remain in the header.
+- Owner subsequently emptied nine abilities and requests unique replacements:
+  Breach Pendulum, Duplex Heart, Glassroot Gimbal, Opal Indexer, Sentinel
+  Aperture, Twinpulse Bellows, Wardglass Transformer, Immortal Vessel and
+  Meridian Inverter. Filled only those entries with new design proposals;
+  removed the obsolete header interpretation of the previous Duplex effect.
+- Follow-up: Breach now gives Normal Attack +40% Critical Damage Multiplier
+  against enemies above75% HP. Twinpulse triggers on every Normal Attack;
+  owner confirms each delayed pulse grants8% of maximum Gauge Capacity,
+  rather than a flat8 Gauge. Still document-only proposals.
+- Remaining: owner review, any revisions, then separately authorized runtime
+  stat/schema/UI/combat/Conduit implementation and migration/upgrade design.
+  No implementation, deployment, save, equipment, art or economy change here.
+  Indexed from `docs/README.md`.
+- Verified: read-only `node --input-type=module -` assertions passed138 complete
+  unique entries, rarity totals, alphabetical order, all138 live names/rarities/
+  elements,48 Master bearer restrictions,16 owner-example checks, base-only
+  labels and proposed stat terminology. Vite SSR loaded metadata only; the
+  historical exporter was not run. `git diff --check` passed. Gameplay tests/
+  build are not applicable to this text-only pass.
+
 ## Online additive evolution request fix (D-362)
 
 - Reported Infernis Evo.5->6 selection4+4+4+3 correctly totals15 Evolution

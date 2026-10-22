@@ -1,5 +1,15 @@
 # Units and progression
 
+**D-368/D-370 activated Phase 0:** retain existing growth for Health,
+Defense, Direct Attack, Critical Rate, Critical Damage Multiplier and Elemental
+Gauge Capacity. Add base Skill Power100%, Skill Duration0 additional turns,
+Skill Efficiency0% and Elemental Gauge Gain100%, with no level-based growth.
+Equipment and temporary effects modify these stats according to the approved
+[catalog contract](conduit-catalog.txt). No saved progress, level cap, recipe,
+upgrade cost or account balance changes are authorized by this overhaul.
+The verified ten-stat readouts and equipment math are enabled with rules5;
+Skill Power is its own stat, not a relabeling of legacy Elemental Damage.
+
 **D-360 Rose evolution order:** Rosetta/Thornia/Crinso Evo.4->5 now costs
 25 Bloom +10 Crest +5 Heart of Rosethorn, not5 Soul. Evo.5->6 retains
 25 Crest +10 Heart +10 Soul. Ordinary recipes and all leveling costs, including

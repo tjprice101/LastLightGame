@@ -151,7 +151,7 @@ describe('Disciple ally empowerment', () => {
     state.enemies.forEach((unit) => { unit.hp = 1000000; unit.stats.health = 1000000; });
     const supported = act(state, 'disciple', 'skill1', copy.instanceId).state;
     expect(supported.allies[1].attackBoost).toBeUndefined();
-    expect(supported.allies[1].native?.instruction).toEqual({ kind: 'strike', owner: 'disciple', throughRound: 2 });
+    expect(supported.allies[1].native?.instruction).toEqual({ kind: 'strike', owner: 'disciple', throughRound: 2, damageBonus: .3, supportBonus: .35 });
     expect(supported.allies[2].native?.instruction).toBeUndefined();
     const result = act(supported, copy.instanceId, 'light', supported.enemies[0].id);
     expect(result.events.find((entry) => entry.kind === 'damage')?.amount)
@@ -178,7 +178,7 @@ describe('Disciple ally empowerment', () => {
     expect(attack.events.find((entry) => entry.kind === 'damage')?.amount).toBe(damageAmount(40, 1.3, state.enemies[0].stats.defense, false));
     expect(attack.state.allies[2].native?.instruction).toBeUndefined();
     const next = endTurn(result.state).state;
-    expect(next.allies[2].native?.instruction).toEqual({ kind: 'strike', owner: 'disciple', throughRound: 2 });
+    expect(next.allies[2].native?.instruction).toEqual({ kind: 'strike', owner: 'disciple', throughRound: 2, damageBonus: .3, supportBonus: .35 });
     expect(endTurn(next).state.allies.every((ally) => ally.native?.instruction === undefined)).toBe(true);
   });
   it('Shelter replaces the one Instruction, rejects dead targets, and Resolve grants no immediate shield', () => {
@@ -194,7 +194,7 @@ describe('Disciple ally empowerment', () => {
     state = endTurn(state).state;
     state = act(state, 'disciple', 'skill1', 'elise').state;
     expect(state.allies[0].native?.instruction).toBeUndefined();
-    expect(state.allies[2].native?.instruction).toEqual({ kind: 'strike', owner: 'disciple', throughRound: 3 });
+    expect(state.allies[2].native?.instruction).toEqual({ kind: 'strike', owner: 'disciple', throughRound: 3, damageBonus: .3, supportBonus: .35 });
     const ultimate = controlled();
     const result = act(ultimate, 'disciple', 'ultimate', '');
     expect(result.state.allies.every(ally => ally.native?.instruction?.kind === 'resolve')).toBe(true);

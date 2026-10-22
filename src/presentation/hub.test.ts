@@ -139,7 +139,7 @@ describe('game-specific hub layouts', () => {
     expect(home.slice(0, home.indexOf('<dialog'))).not.toContain('Attack Damage');
     expect(home).toContain('data-information="home-information"');
     for (const html of [homeHub(starter, false), characterDetail(starter, 'overview')]) {
-      for (const label of ['Elemental Gauge capacity', 'Health', 'Defense', 'Attack Damage', 'Critical Rate', 'Critical Damage', 'Elemental Damage']) {
+      for (const label of ['Elemental Gauge Capacity', 'Health', 'Defense', 'Direct Attack', 'Critical Rate', 'Critical Damage Multiplier', 'Skill Power', 'Skill Duration', 'Skill Efficiency', 'Elemental Gauge Gain']) {
         expect(html).toContain(label);
       }
       expect(html).toContain('1.5x');
@@ -196,7 +196,7 @@ describe('game-specific hub layouts', () => {
       expect(detail).toContain('Required resources');
       expect(detail).toContain('Owned / Required');
       expect(detail.match(/id="upgrade-result"/g)).toHaveLength(1);
-      expect(detail.match(/<span><small>/g)).toHaveLength(7);
+      expect(detail.match(/<span><small>/g)).toHaveLength(10);
     }
     expect(isCharacterTab('upgrade-2')).toBe(false);
     expect(() => characterDetail(starter, 'upgrade-2')).toThrow('Unknown character upgrade area');
@@ -264,10 +264,10 @@ describe('game-specific hub layouts', () => {
   it('shows fractional growth consistently on Home, Overview and upgrade previews', () => {
     const account = emptyAccount();
     const preview = characterDetail(starters[0], 'upgrade-1', account);
-    for (const change of ['10 &rarr; 11.03', '38 &rarr; 43.7', '8 &rarr; 9.2']) expect(preview.replace(/<[^>]*>/g, '')).toContain(change);
+    for (const change of ['10 &rarr; 11.03', '38 &rarr; 43.7', '100% &rarr; 100%']) expect(preview.replace(/<[^>]*>/g, '')).toContain(change);
     account.characters.ember = { level: 1, evolution: 1 };
     for (const html of [homeHub(starters[0], false, account), characterDetail(starters[0], 'overview', account)]) {
-      for (const value of ['11.03', '43.7', '9.2']) expect(html).toContain(`<strong>${value}</strong>`);
+      for (const value of ['11.03', '43.7', '100%']) expect(html).toContain(`<strong>${value}</strong>`);
       expect(html).not.toContain('000000000');
     }
   });

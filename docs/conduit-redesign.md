@@ -1,5 +1,17 @@
 # Conduit redesign: approved roster and runtime (D-313)
 
+## Phase 0 replacement activated (D-368/D-370)
+
+The [owner-edited Phase 0 catalog](conduit-catalog.txt) is the approved target
+for all138 existing abilities, including the five Calamitics. Its current
+values replace earlier proposals; the rows and verification history below
+describe the preceding implementation, not proof of the new effects.
+Implementation is verified and the shared release gate is enabled. The new
+[138-entry behavior matrix](conduit-behavior-matrix.md) records concrete
+numerical equipped/absent and upgrade evidence, including separate provenance,
+manual-packet and duplicate-aura regressions. Catalog identity/text checks
+and the historical tests below are not that replacement behavior evidence.
+
 ## Equipped-effect verification (D-359)
 
 The current catalog is 90 ordinary-slot Conduits (including five Calamitic)
@@ -42,7 +54,7 @@ they do not silently implement that proposal or Calamity Mode.
 
 ## Status and owner direction
 
-**Implemented locally; not yet published.** All85 ordinary identities and48
+**Historical D-313 baseline, superseded by Phase 0 above.** All85 ordinary identities and48
 Masters now use the complete effects below. This document supersedes the older
 combat bundles in [ordinary rules](conduits.md),
 [upgrades](conduit-upgrades.md) and [Master rules](master-conduits.md).

@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { emptyAccount, loadAccount, saveAccount, ACCOUNT_KEY } from '../game/account';
 import { SAVE_KEY, type ProfileStorage } from '../game/profile';
@@ -39,7 +40,9 @@ describe('Conduit Upgrade and account-aware icons', () => {
     expect(html.match(/data-upgrade-card=/g)).toHaveLength(1);
     expect(html).toContain('data-expected-upgrade="4"');
     expect(html).toContain(conduitEffect(getConduit('worldbreaker-drive'), 4));
-    expect(html).toContain(conduitEffect(getConduit('worldbreaker-drive'), 5));
+    const host = document.createElement('div');
+    host.innerHTML = html;
+    expect(host.textContent?.replace(/[[\]]/g, '')).toContain(conduitEffect(getConduit('worldbreaker-drive'), 5).replace(/[[\]]/g, ''));
     expect(html).toContain('Upgrade to +5 · 1000 components');
     expect(html).toMatch(/data-upgrade-conduit="worldbreaker-drive"[^>]+disabled/);
     account.mechanicalComponents = 1000;
@@ -47,8 +50,8 @@ describe('Conduit Upgrade and account-aware icons', () => {
     for (const row of ['Common: 25 / 50 / 100 / 175 / 250',
       'Rare: 50 / 100 / 200 / 350 / 500', 'Legendary: 100 / 200 / 400 / 700 / 1000',
       'Omnic: 5000 / 10000 / 20000 / 35000 / 50000']) expect(html).toContain(row);
-    expect(html).toContain('3.5x at +5');
-    expect(html).toContain('Legendary penalties grow too');
+    expect(html).toContain('1.5x at +5');
+    expect(html).toContain('Penalties, thresholds, costs, fixed caps and whole-turn Duration stay fixed');
     expect(html).toContain('id="mechanical-components-balance">250');
     expect(html).toContain('data-machine-activity');
     expect(html).not.toContain('artwork pending');
@@ -82,7 +85,9 @@ describe('Conduit Upgrade and account-aware icons', () => {
     for (const html of [inventoryView(equipped, 'conduits'), archives(equipped, 'conduits'),
       characterDetail(getStarter('ember'), 'equipment', equipped), characterCopyManagement(equipped, 'all')]) {
       expect(html).toContain('data-conduit-upgrade="5"');
-      expect(html).toContain(conduitEffect(getConduit('worldbreaker-drive'), 5));
+      const host = document.createElement('div');
+      host.innerHTML = html;
+      expect(host.textContent?.replace(/[[\]]/g, '')).toContain(conduitEffect(getConduit('worldbreaker-drive'), 5).replace(/[[\]]/g, ''));
     }
     expect(conduitStore(equipped)).toContain(conduitEffect(getConduit('vigil-core'), 3));
     expect(homeHub(getStarter('ember'), false, equipped)).toContain(formatStat(resolveFighter('ember',

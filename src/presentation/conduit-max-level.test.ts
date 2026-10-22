@@ -59,7 +59,7 @@ describe('Conduit Max Level control', () => {
     expect(gameConfirm).toHaveBeenCalledTimes(1);
     expect(gameConfirm).toHaveBeenCalledWith(expect.stringContaining('Spend 600 Broken Mechanical Components'), { title: 'Max Level Conduit', confirmLabel: 'Max Level' });
     expect(gameConfirm).toHaveBeenCalledWith(expect.stringContaining('from +0 to +5'), expect.anything());
-    expect(gameConfirm).toHaveBeenCalledWith(expect.stringContaining('Current: +6% to your maximum HP. Target: +21% to your maximum HP.'), expect.anything());
+    expect(gameConfirm).toHaveBeenCalledWith(expect.stringContaining('Current: +35% Health. Target: +52.5% Health.'), expect.anything());
     expect(write).toHaveBeenCalledTimes(1);
     expect(loadAccount(f.storage)).toMatchObject({ mechanicalComponents: 229, conduitUpgrades: { 'vigil-core': 5 }, conduits: { 'vigil-core': 2 } });
     expect(f.refresh).toHaveBeenCalledTimes(1);

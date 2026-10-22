@@ -48,7 +48,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--evolution')) {
+  if (process.argv.includes('--phase-zero')) {
+    await smokePhaseZero(client, created.user.id, username);
+  } else if (process.argv.includes('--evolution')) {
     await smokeEvolutionFodder(client, created.user.id, username);
   } else if (process.argv.includes('--native-calamity')) {
     await smokeNativeCalamity(client, created.user.id, username);
@@ -351,6 +353,59 @@ try {
   }
   if (failures.length) throw new Error(`Hosted smoke cleanup failed for disposable identity IDs: ${failures.join(', ')}`);
   console.log('Hosted smoke identities and cascading gameplay records removed.');
+}
+
+async function smokePhaseZero(client, userId, username) {
+  assert.equal(conduitRulesVersion, 5, 'The production bundle must activate rules5');
+  const id = 'calamitic-causality-funeral-engine';
+  const entropy = { seed: () => 7321, uuid: () => randomUUID(), random: () => .9 };
+  let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
+  game.account.characters.tide = { level: 0, evolution: 1 };
+  game.account.squad = ['ember', 'tide'];
+  game.account.conduits = { [id]: 1 };
+  game.account.conduitUpgrades = { [id]: 5 };
+  game.account.conduitEquipment = { ember: [id, null, null, null, null, null, null, null] };
+  game = resolveOperation(game, { kind: 'enter', activity: { kind: 'training' } }, entropy).game;
+  const state = game.run.session.state;
+  state.allies[0].stats.damage = 100;
+  state.allies[0].stats.crit = 0;
+  state.allies[0].shatter = 100;
+  for (const enemy of state.enemies) {
+    enemy.stats.health = enemy.hp = 10000;
+    enemy.stats.defense = enemy.stats.damage = enemy.stats.crit = 0;
+  }
+  game.account.conduitEquipment = { ember: [null, null, null, null, null, null, null, null] };
+  assert.ok(ids.includes(userId), 'Only disposable identities may receive fixtures');
+  const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+  assert.equal(seeded.error, null);
+  async function invoke(operation, revision, requestId = randomUUID()) {
+    const result = await client.functions.invoke('game-operation', {
+      body: { operation, expectedRevision: revision, requestId },
+    });
+    if (result.error) throw new Error(`Hosted Phase 0 ${operation.kind} failed (${result.error.context?.status ?? 'transport'}).`);
+    return result.data;
+  }
+  const initial = await invoke({ kind: 'read' }, 0);
+  assert.equal(initial.session.state.conduitRulesVersion, 5);
+  assert.equal(initial.session.state.allies[0].stats.skillPower, 2.2);
+  const operation = { kind: 'act', runId: initial.session.runId, actorId: 'ember', action: 'skill1',
+    targetId: initial.session.state.enemies[0].id };
+  const requestId = randomUUID();
+  const resolved = await invoke(operation, initial.revision, requestId);
+  assert.equal(resolved.result.events.find(event => event.kind === 'damage' && event.source === 'ember').amount, 563);
+  assert.equal(resolved.session.state.enemies[0].burn.damage, 55);
+  assert.equal(resolved.session.state.allies[0].conduits[0], id);
+  assert.deepEqual(resolved.account, initial.account);
+  assert.deepEqual(await invoke(operation, initial.revision, requestId), resolved);
+  const checkpoint = await invoke({ kind: 'checkpoint' }, resolved.revision);
+  assert.deepEqual(checkpoint.session, resolved.session);
+  assert.deepEqual(checkpoint.account, resolved.account);
+  const quit = await invoke({ kind: 'quit', runId: resolved.session.runId }, resolved.revision);
+  const fresh = await invoke({ kind: 'enter', activity: { kind: 'training' } }, quit.revision);
+  assert.equal(fresh.session.state.allies[0].stats.skillPower, 1, 'A fresh entry uses current menu gear');
+  assert.equal(fresh.session.state.conduitRulesVersion, 5);
+  assert.equal((await invoke({ kind: 'quit', runId: fresh.session.runId }, fresh.revision)).session, null);
+  console.log('Hosted Phase 0 smoke passed: rules5, frozen Causality +5 Power2.2, exactly563 direct damage and55 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
 }
 
 async function smokeNativeCalamity(client, userId, username) {

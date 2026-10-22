@@ -1,5 +1,64 @@
 # Combat specification
 
+## Phase 0 activated release (D-368/D-370)
+
+The [owner-edited catalog](conduit-catalog.txt) is the approved target for the
+ten-stat overhaul and all138 equipment effects. It supersedes earlier effect
+designs under rules5. The shared client/authority gate is enabled for the
+owner-authorized coordinated release. Historical conflicting rules below are
+superseded, not additive; hosted release status is in the handoff.
+
+Preserve existing Health, Defense, Direct Attack, Critical Rate, Critical
+Damage Multiplier and Elemental Gauge Capacity growth. New base stats have no
+level growth: Skill Power100%, Skill Duration0 additional turns, Skill
+Efficiency0% and Elemental Gauge Gain100%. Skill Power replaces separate
+Elemental Damage scaling for skills, not Normal Attack, critical probability,
+Gauge receipts or generated equipment effects. Add bonuses before one
+application; stored, converted and released damage must not scale twice.
+
+Skill Duration adds whole turns to timed skill effects, equipment bonuses
+capped at+2; it does not alter cooldowns, recovery, delayed payout timing,
+action grants or instant effects. Skill Efficiency discounts the original
+skill cost additively, capped at50%, rounding the final cost upward once;
+Skill1/2 cost at least1 and Last Flare at least70 unless an explicit named
+override applies. All positive Gauge sources use the recipient's Gauge Gain
+once, rounding once. Conduit grants expressed as percentages use that
+recipient's maximum capacity before Gain. Capacity increases never fill Gauge.
+
+The catalog header also owns proc provenance, strongest-only duplicate auras,
+expiry, shared extra-action/rescue limits and mitigation caps. Verifying
+catalog text or an isolated stat calculator is not runtime-effect verification.
+Activation requires per-entry behavior tests, native/captured compatibility,
+frozen-run handling and matching client/authority validation.
+
+Implemented in the activated release:
+
+- Cost previews are read-only and use the selected target. Menus, gestures,
+  action payment and authority prevalidation share that target-aware cost.
+  Actor selection and automatic turn advancement consider any legal action,
+  including Throne's paid Skill1/2 when Normal Attack is unavailable.
+- Next-action/next-skill Conduit tokens use a two-player-turn expiry and
+  refresh rather than accumulating across casts. Consuming an eligible token
+  does not consume unrelated Normal-only, damaging-skill or Last Flare tokens.
+- Native timed support snapshots include applicable Power/Duration; they do
+  not extend Seed maturity or Razor's delayed Shield payout clock. Instruction
+  support potency applies additively only to healing/Shield packets, not the
+  damage portion of a mixed skill. Generated healing respects received-healing
+  bonuses before its final per-recipient cap.
+- Non-Defense reductions multiply before enforcing the20% damage floor.
+  Generated proc Shields have finite clocks, independent of native duration.
+
+The [138-entry behavior matrix](conduit-behavior-matrix.md) records726 executed
+numerical scenarios: each of90 ordinary entries absent and at+0..+5, and each
+of48 named Masters equipped and absent. Separate integration tests verify
+generated Master Shield isolation, manual-packet modifiers, stored Power,
+strongest-only duplicate auras, additive pre-equipment stat pools and Defense
+caps. Atlas/Leviathan count one enemy attack rather than each impact; rounded
+Gauge receipts respect their per-turn caps. All138 default descriptions and
+90 ordinary upgrade descriptions are checked independently of behavior.
+This is local implementation evidence, not deployment or universal balance
+certification. See the current [handoff](handoff.md) for exact validation.
+
 ## Phase3 hostile strength and visible scaling (D-326)
 
 Owner selects a5% increase to hostile HP, Attack and Defense, not a5%

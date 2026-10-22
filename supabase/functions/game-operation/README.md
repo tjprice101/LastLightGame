@@ -1,5 +1,22 @@
 # Authoritative game operation
 
+## Phase 0 release (D-370)
+
+The owner authorizes coordinated client/authority publication on2026-10-21.
+The shared Phase 0 flag is enabled and the generated engine uses rules5.
+All138 Conduits use the approved ten-stat contract; the behavior matrix and
+current handoff record numerical coverage and hosted publication outcomes.
+Historical encounters reconstruct with frozen squad investments and saved
+holdings retained, without applying stale commands. No database migration or
+resource grants are required. Earlier local-only/rules2/3 notices below are
+historical, not the current release status.
+
+The rules5 authority deployment passed `node tools\smoke_server_game.mjs
+--phase-zero`: frozen Causality +5 gives2.2 Power,563 direct damage and55 Burn
+at100 Attack/zero enemy Defense, with idempotent retries, unchanged holdings,
+checkpoint persistence and current-menu gear on a fresh entry. All disposable
+test identities and cascading gameplay records were removed.
+
 ## Native identities (D-316)
 
 All sixteen Element-Bearers use the shared distinct native kits and combat

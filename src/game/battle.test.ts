@@ -474,7 +474,8 @@ describe('starter abilities and passives', () => {
     expect(ultimate.allies.map((unit) => unit.hp)).toEqual([100 + 220 * nativeBalance.flora.immediateHeal, 0, 190]);
     expect(ultimate.enemies.map((unit) => unit.hp)).toEqual([2000, 2000, 2000]);
     expect(ultimate.allies[2].native?.seeds).toEqual({
-      ember: { fraction: nativeBalance.flora.empoweredSeed, dueRound: 2 }, sprout: { fraction: nativeBalance.flora.empoweredSeed, dueRound: 2 },
+      ember: { fraction: nativeBalance.flora.empoweredSeed, dueRound: 2, empowered: true },
+      sprout: { fraction: nativeBalance.flora.empoweredSeed, dueRound: 2, empowered: true },
     });
   });
   it.each(starters)('$name has two implemented abilities and a consistently named ultimate', (starter) => {

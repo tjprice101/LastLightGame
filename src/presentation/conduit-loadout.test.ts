@@ -87,7 +87,7 @@ describe('Conduit loadout (D-229)', () => {
     wallet.conduitEquipment = { ember: ['vigil-core', null, null, null, null, null, null, null] };
     const html = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
     expect(html).toContain('Total bonuses');
-    expect(html).toMatch(/<span>Health<\/span><strong><span class="stat-change stat-change--increase">\+6%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--increase">[\d,.]+<\/span><\/strong>/);
+    expect(html).toMatch(/<span>Health<\/span><strong><span class="stat-change stat-change--increase">\+35%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--increase">[\d,.]+<\/span><\/strong>/);
     expect(conduitLoadout('tide', 'Tizu', 'oceanic', account())).toContain('No stat changes yet');
   });
 
@@ -96,8 +96,8 @@ describe('Conduit loadout (D-229)', () => {
     wallet.conduitEquipment = { ember: ['worldbreaker-drive', 'bastion-lock', null, null, null, null, null, null] };
     wallet.conduitUpgrades = {};
     const html = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
-    expect(html).toMatch(/<span>Defense<\/span><strong><span class="stat-change stat-change--increase">\+10%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--increase">[\d,.]+<\/span><\/strong>/);
-    expect(html).toMatch(/<span>Health<\/span><strong><span class="stat-change stat-change--decrease">-6%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--decrease">[\d,.]+<\/span><\/strong>/);
+    expect(html).toMatch(/<span>Defense<\/span><strong><span class="stat-change stat-change--increase">\+20%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--increase">[\d,.]+<\/span><\/strong>/);
+    expect(html).toMatch(/<span>Health<\/span><strong><span class="stat-change stat-change--decrease">-12%<\/span> · <span class="loadout-base-stat">[\d,.]+<\/span> → <span class="stat-change stat-change--decrease">[\d,.]+<\/span><\/strong>/);
   });
 
   it('colors net results relative to the unequipped base, not an individual penalty', () => {
@@ -111,6 +111,7 @@ describe('Conduit loadout (D-229)', () => {
     expect(defense.querySelector('.stat-change--decrease')).toBeNull();
     expect(defense.querySelector('.loadout-base-stat')?.classList.contains('stat-change')).toBe(false);
     wallet.conduitUpgrades = { 'bastion-lock': 0, 'astral-prism': 5 };
+    wallet.conduitEquipment = { ember: ['astral-prism', null, null, null, null, null, null, null] };
     const lower = document.createElement('div');
     lower.innerHTML = conduitLoadout('ember', 'Infernis', 'infernic', wallet);
     const lowerDefense = Array.from(lower.querySelectorAll('.loadout-bonus-row')).find(row => row.firstElementChild?.textContent === 'Defense')!;
@@ -180,9 +181,9 @@ describe('Conduit loadout (D-229)', () => {
   });
 
   it('formats compact buff lines and counts filled slots', () => {
-    expect(conduitBuffLine(getConduit('parallax-relay'))).toBe('');
-    expect(conduitBuffLine(getConduit('precision-escapement'))).toBe('+10% Critical multiplier');
-    expect(conduitBuffLine(getConduit('vigil-core'), 2)).toBe('+12% Health');
+    expect(conduitBuffLine(getConduit('parallax-relay'))).toBe('+45% Health · -5% Skill Power');
+    expect(conduitBuffLine(getConduit('precision-escapement'))).toBe('+10% Critical Damage Multiplier');
+    expect(conduitBuffLine(getConduit('vigil-core'), 2)).toBe('+42% Health');
     expect(filledConduitSlots('ember', account())).toBe(1);
     expect(filledConduitSlots('tide', account())).toBe(0);
   });
@@ -274,7 +275,7 @@ describe('Conduit loadout (D-229)', () => {
     expect(loadout.querySelector('.ref-master-slot.loadout-master [data-master-equipment="ember"]')).not.toBeNull();
     expect(loadout.querySelector('[data-loadout-master-rule="master-ember-1"]')).not.toBeNull();
     expect(loadout.querySelectorAll('.loadout-grid > [data-loadout-slot]')).toHaveLength(8);
-    expect(loadout.querySelector('.loadout-bonuses')?.textContent).toContain('No stat changes yet');
+    expect(loadout.querySelector('.loadout-bonuses')?.textContent).toContain('Direct Attack+36%');
     expect(host.querySelectorAll('.loadout-slot.is-empty .loadout-slot-plus [data-conduit-slot]')).toHaveLength(7);
     expect(host.querySelector('[data-loadout-unequip="0"]')?.textContent).toBe('Remove');
     expect(host.querySelector('.loadout-owned-list.ref-scroll')).toBeNull();

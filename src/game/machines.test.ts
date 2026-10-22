@@ -408,12 +408,12 @@ describe('expanded Omnic mechanics', () => {
     const state = expandedBattle('aquatic-undertide-chronometer');
     const application = attack(state, 'skill1');
     const applied = application.events.find((entry) => entry.kind === 'status' && entry.target === state.enemies[0].id)?.debuffs;
-    expect(applied?.weakened).toBe(1);
+    expect(applied?.weakened).toBe(2);
     expect(applied?.weakenFraction).toBe(application.state.enemies[0].weakenFraction);
     const tick = endTurn(application.state);
     const weakenUpdate = tick.events.find((entry) => entry.kind === 'status' && entry.target === state.enemies[0].id);
-    expect(weakenUpdate?.debuffs?.weakened).toBe(0);
-    expect(weakenUpdate?.debuffs?.weakenFraction).toBe(0);
+    expect(weakenUpdate?.debuffs?.weakened).toBe(1);
+    expect(weakenUpdate?.debuffs?.weakenFraction).toBe(application.state.enemies[0].weakenFraction);
     const periodicState = structuredClone(state);
     periodicState.enemies[0].burn = { damage: 7, turns: 2, sourceId: state.allies[0].id };
     const periodic = endTurn(periodicState).events.find((entry) => entry.periodic);

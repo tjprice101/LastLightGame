@@ -202,6 +202,984 @@ function treasuryFractalisDrop(level) {
 var range = (drop) => `${drop.minimum.toLocaleString("en-US")}-${drop.maximum.toLocaleString("en-US")}`;
 var treasuryPrismaticaText = `Prismatica per enemy: ${range(treasuryFractalisDrop(65))} at Lv.65 to ${range(treasuryFractalisDrop(120))} at Lv.120; the stage 25 final boss gives ${range(bossLootRange(treasuryFractalisDrop(120), 5))}.`;
 
+// src/content/phase-zero-stats.ts
+var phaseZeroStatsReady = true;
+var phaseZeroStatDefaults = {
+  skillPower: 1,
+  skillDuration: 0,
+  skillEfficiency: 0,
+  gaugeGain: 1
+};
+function normalizeStats(stats) {
+  return {
+    ...stats,
+    skillPower: stats.skillPower ?? phaseZeroStatDefaults.skillPower,
+    skillDuration: stats.skillDuration ?? phaseZeroStatDefaults.skillDuration,
+    skillEfficiency: stats.skillEfficiency ?? phaseZeroStatDefaults.skillEfficiency,
+    gaugeGain: stats.gaugeGain ?? phaseZeroStatDefaults.gaugeGain
+  };
+}
+var phaseZeroStatLabels = {
+  health: "Health",
+  defense: "Defense",
+  damage: "Direct Attack",
+  critMultiplier: "Critical Damage Multiplier",
+  crit: "Critical Rate",
+  skillPower: "Skill Power",
+  skillDuration: "Skill Duration",
+  skillEfficiency: "Skill Efficiency",
+  shatterCapacity: "Elemental Gauge Capacity",
+  gaugeGain: "Elemental Gauge Gain"
+};
+var phaseZeroStatKeys = Object.keys(phaseZeroStatLabels);
+
+// src/content/phase-zero-conduit-catalog.ts
+var approvedConduitCatalog = {
+  "bastion-lock": {
+    "name": "Bastion Lock",
+    "rarity": "Common",
+    "element": "Botanic (suggested thematic element; gameplay: universal)",
+    "ability": "+20% Defense"
+  },
+  "crosspin-governor": {
+    "name": "Crosspin Governor",
+    "rarity": "Common",
+    "element": "Atmospheric (suggested thematic element; gameplay: universal)",
+    "ability": "+15% Skill Power"
+  },
+  "fieldbrace-coupler": {
+    "name": "Fieldbrace Coupler",
+    "rarity": "Common",
+    "element": "Oceanic (suggested thematic element; gameplay: universal)",
+    "ability": "+20% Skill Power, -5% Defense"
+  },
+  "fracture-reservoir": {
+    "name": "Fracture Reservoir",
+    "rarity": "Common",
+    "element": "Chaotic (suggested thematic element; gameplay: universal)",
+    "ability": "+50% [Elemental Gauge Capacity]."
+  },
+  "parallax-relay": {
+    "name": "Parallax Relay",
+    "rarity": "Common",
+    "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
+    "ability": "+45% Health, -5% Skill Power"
+  },
+  "precision-escapement": {
+    "name": "Precision Escapement",
+    "rarity": "Common",
+    "element": "Atmospheric (suggested thematic element; gameplay: universal)",
+    "ability": "+10% Critical Damage multiplier."
+  },
+  "prism-splinter-socket": {
+    "name": "Prism Splinter Socket",
+    "rarity": "Common",
+    "element": "Infernic (suggested thematic element; gameplay: universal)",
+    "ability": "+5% [Elemental Gauge Gain]."
+  },
+  "reserve-torque-crank": {
+    "name": "Reserve Torque Crank",
+    "rarity": "Common",
+    "element": "Atmospheric (suggested thematic element; gameplay: universal)",
+    "ability": "+15% [Elemental Gauge Gain], -5% Direct Attack"
+  },
+  "siegebound-drive": {
+    "name": "Siegebound Drive",
+    "rarity": "Common",
+    "element": "Infernic (suggested thematic element; gameplay: universal)",
+    "ability": "+30% Direct Attack."
+  },
+  "vigil-core": {
+    "name": "Vigil Core",
+    "rarity": "Common",
+    "element": "Botanic (suggested thematic element; gameplay: universal)",
+    "ability": "+35% Health."
+  },
+  "aegis-capacitor": {
+    "name": "Aegis Capacitor",
+    "rarity": "Rare",
+    "element": "Oceanic (suggested thematic element; gameplay: universal)",
+    "ability": "When your skill gives another ally a Shield, you gain +25% Defense until the next Enemy Turn ends."
+  },
+  "breach-pendulum": {
+    "name": "Breach Pendulum",
+    "rarity": "Rare",
+    "element": "Infernic (suggested thematic element; gameplay: universal)",
+    "ability": "Normal Attack gains +40% Critical Damage Multiplier against enemies above 75% HP."
+  },
+  "coilfeed-ratchet": {
+    "name": "Coilfeed Ratchet",
+    "rarity": "Rare",
+    "element": "Atmospheric (suggested thematic element; gameplay: universal)",
+    "ability": "+7% Skill Efficiency."
+  },
+  "duplex-heart": {
+    "name": "Duplex Heart",
+    "rarity": "Rare",
+    "element": "Botanic (suggested thematic element; gameplay: universal)",
+    "ability": "Casting a healing skill on another ally also restores 5% of your own maximum HP. Once per cast."
+  },
+  "falcon-sight": {
+    "name": "Falcon Sight",
+    "rarity": "Rare",
+    "element": "Atmospheric (suggested thematic element; gameplay: universal)",
+    "ability": "After two noncritical Attack Actions in a row, your next Attack Action is a guaranteed critical hit with +10% Critical Damage Multiplier. One action advances or spends the sequence once, regardless of targets."
+  },
+  "glassroot-gimbal": {
+    "name": "Glassroot Gimbal",
+    "rarity": "Rare",
+    "element": "Botanic (suggested thematic element; gameplay: universal)",
+    "ability": "Gain +35% Skill Power while you have no Shield."
+  },
+  "hammerbalance-link": {
+    "name": "Hammerbalance Link",
+    "rarity": "Rare",
+    "element": "Botanic (suggested thematic element; gameplay: universal)",
+    "ability": "+24% Direct Attack; -8% Defense."
+  },
+  "lifeline-flywheel": {
+    "name": "Lifeline Flywheel",
+    "rarity": "Rare",
+    "element": "Chaotic (suggested thematic element; gameplay: universal)",
+    "ability": "After each Attack Action, heal for 8% of the Direct Damage it dealt to enemy HP or Shield."
+  },
+  "opal-indexer": {
+    "name": "Opal Indexer",
+    "rarity": "Rare",
+    "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
+    "ability": "Skills that apply a debuff gain +25% Skill Power."
+  },
+  "resonance-crucible": {
+    "name": "Resonance Crucible",
+    "rarity": "Rare",
+    "element": "Chaotic (suggested thematic element; gameplay: universal)",
+    "ability": "Damage beyond what defeats an enemy carries over as a [Bonus Strike] on the healthiest other enemy."
+  },
+  "sentinel-aperture": {
+    "name": "Sentinel Aperture",
+    "rarity": "Rare",
+    "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
+    "ability": "Gain +5% Defense for every 10 Elemental Gauge currently held."
+  },
+  "spearwheel-engine": {
+    "name": "Spearwheel Engine",
+    "rarity": "Rare",
+    "element": "Oceanic (suggested thematic element; gameplay: universal)",
+    "ability": "All Skills ignore 10% of enemy Defense."
+  },
+  "springwell-pump": {
+    "name": "Springwell Pump",
+    "rarity": "Rare",
+    "element": "Botanic (suggested thematic element; gameplay: universal)",
+    "ability": "For your abilities that heal or give Shield, they gain +20% Skill Power."
+  },
+  "twinpulse-bellows": {
+    "name": "Twinpulse Bellows",
+    "rarity": "Rare",
+    "element": "Atmospheric (suggested thematic element; gameplay: universal)",
+    "ability": "Each Normal Attack grants you and the other ally with the lowest Gauge percentage 5% Elemental Gauge."
+  },
+  "wardglass-transformer": {
+    "name": "Wardglass Transformer",
+    "rarity": "Rare",
+    "element": "Oceanic (suggested thematic element; gameplay: universal)",
+    "ability": "Gain +25% Critical Damage Multiplier while Shielded. When an enemy breaks your Shield, your next Normal Attack gains +20% Critical Rate. Hold one bonus."
+  },
+  "astral-prism": {
+    "name": "Astral Prism",
+    "rarity": "Legendary",
+    "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
+    "ability": "+30% Critical Rate; -10% Defense."
+  },
+  "citadel-spine": {
+    "name": "Citadel Spine",
+    "rarity": "Legendary",
+    "element": "Botanic (suggested thematic element; gameplay: universal)",
+    "ability": "+35% Defense. Other living allies below 50% HP gain +30% Defense while you are alive."
+  },
+  "execution-orrery": {
+    "name": "Execution Orrery",
+    "rarity": "Legendary",
+    "element": "Chaotic (suggested thematic element; gameplay: universal)",
+    "ability": "Damaging skills gain +35% Critical Rate against enemies below 50% HP."
+  },
+  "granite-hourglass": {
+    "name": "Granite Hourglass",
+    "rarity": "Legendary",
+    "element": "Botanic (suggested thematic element; gameplay: universal)",
+    "ability": "At the start of your next player turn, gain a Shield equal to 30% of the Health lost to enemy Direct Damage during the previous enemy turn."
+  },
+  "horizon-heartcase": {
+    "name": "Horizon Heartcase",
+    "rarity": "Legendary",
+    "element": "Oceanic (suggested thematic element; gameplay: universal)",
+    "ability": "Once per Battle, when enemy Direct Damage would defeat you, automatically spend 40 Elemental Gauge to survive at 1 HP. For each 10 Gauge spent this way, gain +5% Skill Power on your next skill usage. Insufficient Gauge means no rescue; later hits can defeat you."
+  },
+  "immortal-vessel": {
+    "name": "Immortal Vessel",
+    "rarity": "Legendary",
+    "element": "Botanic (suggested thematic element; gameplay: universal)",
+    "ability": "+60% Health. When another ally's Skill heals you, restore 25% of the HP actually restored to the most injured different ally, capped at 8% of their maximum HP per cast."
+  },
+  "judgment-lens": {
+    "name": "Judgment Lens",
+    "rarity": "Legendary",
+    "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
+    "ability": "Damaging skills gain +50% Critical Damage Multiplier."
+  },
+  "meridian-inverter": {
+    "name": "Meridian Inverter",
+    "rarity": "Legendary",
+    "element": "Oceanic (suggested thematic element; gameplay: universal)",
+    "ability": "Allies healed by your healing skills gain 8% Elemental Gauge. Each ally can receive this Gauge once per player turn."
+  },
+  "nullsong-transmission": {
+    "name": "Nullsong Transmission",
+    "rarity": "Legendary",
+    "element": "Chaotic (suggested thematic element; gameplay: universal)",
+    "ability": "Normal Attack uses 250% of your Direct Attack, -15% Skill Power."
+  },
+  "pale-bulwark-diadem": {
+    "name": "Pale Bulwark Diadem",
+    "rarity": "Legendary",
+    "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
+    "ability": "Allies holding your skill-created Shields gain +25% Skill Power for damaging skills."
+  },
+  "siege-cantilever": {
+    "name": "Siege Cantilever",
+    "rarity": "Legendary",
+    "element": "Infernic (suggested thematic element; gameplay: universal)",
+    "ability": "All-enemy damaging Skills gains +45% Skill Power."
+  },
+  "starvein-conductor": {
+    "name": "Starvein Conductor",
+    "rarity": "Legendary",
+    "element": "Infernic (suggested thematic element; gameplay: universal)",
+    "ability": "Damaging skills spend 5% of your maximum HP for +60% Skill Power on their damage. If the payment would defeat you, skip both payment and bonus."
+  },
+  "stasis-reliquary": {
+    "name": "Stasis Reliquary",
+    "rarity": "Legendary",
+    "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
+    "ability": "For an enemy attack dealing Direct Damage above 20% of your maximum HP, reduce only the portion above that threshold by 40%. Treat all impacts of that attack as one total."
+  },
+  "verdict-caliper": {
+    "name": "Verdict Caliper",
+    "rarity": "Legendary",
+    "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
+    "ability": "Your skills gain +45% Skill Power when every other living ally has already acted this player turn."
+  },
+  "worldbreaker-drive": {
+    "name": "Worldbreaker Drive",
+    "rarity": "Legendary",
+    "element": "Infernic (suggested thematic element; gameplay: universal)",
+    "ability": "+85% Skill Power for Last Flare; -12% Health."
+  },
+  "clearwater-manifold": {
+    "name": "Abyssal Clearwater Parliament",
+    "rarity": "Omnic",
+    "element": "Oceanic (actual gameplay element)",
+    "ability": "When your Last Flare is cast, transfer 15% of your current Shield to an ally with the lowest [Elemental Gauge] percentage."
+  },
+  "master-tide-1": {
+    "name": "Abyssal Shelter Observatory",
+    "rarity": "Omnic (Master)",
+    "element": "Oceanic (named bearer's actual element; Master for Tizu only)",
+    "ability": "Allies holding Tizu's Shields gain +30% Defense. Once per ally per Battle, a hit that breaks his Shield deals no remaining damage to their HP."
+  },
+  "master-nerithe-3": {
+    "name": "Abyssal Surveyor Crown",
+    "rarity": "Omnic (Master)",
+    "element": "Oceanic (named bearer's actual element; Master for Nerithe only)",
+    "ability": "Each Survey point spent by Ocean Beyond the Map grants all living allies Elemental Gauge equal to 4% of their own maximum capacity, up to 20% each per cast."
+  },
+  "tranquilitic-accord-bastion": {
+    "name": "Accord Seraph Sanctuary",
+    "rarity": "Omnic",
+    "element": "Tranquilitic (actual gameplay element)",
+    "ability": "Healing or Shielding another ally grants Accord. Once per ally per Battle, Accord prevents a fatal enemy hit, leaving them at 1 HP and granting 25% Skill Efficiency for their next skill."
+  },
+  "aegis-return-spring": {
+    "name": "Aegis Covenant Crown",
+    "rarity": "Omnic",
+    "element": "Tranquilitic (actual gameplay element)",
+    "ability": "Allies holding your skill-created Shields gain +20% Critical Rate and take 30% less Direct Damage from enemy critical hits."
+  },
+  "tectonic-atlas-bastion": {
+    "name": "Atlas Bastion",
+    "rarity": "Omnic",
+    "element": "Botanic (actual gameplay element)",
+    "ability": "Normal Attack taunts all enemies for the next Enemy Turn. Each enemy attack aimed at you during that turn grants the other allies 4% Elemental Gauge, up to 12% each."
+  },
+  "master-sprout-2": {
+    "name": "Briar Constellation Loom",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Flora only)",
+    "ability": "Briar Shot plants a Seed on every living ally instead of only the most injured. Seeds planted by Briar Shot gain +20% Skill Power."
+  },
+  "master-vaelor-3": {
+    "name": "Broken Sky Imperial Metronome",
+    "rarity": "Omnic (Master)",
+    "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
+    "ability": "On Tune, Vaelor's Normal Attack grants the other allies +25% Critical Rate for their next Attack Action. On Crescendo, it instead grants +40% Critical Damage Multiplier."
+  },
+  "infernic-cinder-testament": {
+    "name": "Cinder Testament",
+    "rarity": "Omnic",
+    "element": "Infernic (actual gameplay element)",
+    "ability": "Your Burn gains +15% Skill Power each time another ally damages its target with a skill, up to +60% per application. Refreshing Burn retains its accumulated bonus."
+  },
+  "master-ember-2": {
+    "name": "Cinderstar Genesis Engine",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Infernis only)",
+    "ability": "Flame Arc grants the other allies 4% Elemental Gauge per Burn turn it consumes."
+  },
+  "master-disciple-2": {
+    "name": "Concord Planet Thoughtforge",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Disciple only)",
+    "ability": "An ally who consumes Disciple's Resolve gives each other living ally Elemental Gauge equal to 10% of that recipient's own maximum capacity."
+  },
+  "master-crinso-3": {
+    "name": "Crimson Beauty Pyre Requiem",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Crinso only)",
+    "ability": "Whenever Crinso gains Combo by alternating skills, the most injured ally heals for 8% of their maximum HP. At 3 or more Combo, this heals every living ally instead."
+  },
+  "master-atmoso-3": {
+    "name": "Crosswind Imperial Drive",
+    "rarity": "Omnic (Master)",
+    "element": "Atmospheric (named bearer's actual element; Master for Atmoso only)",
+    "ability": "Allies who add a Gust to Atmoso's Cyclone gain +30% Elemental Gauge Gain until the end of the next player turn."
+  },
+  "luminous-dawn-witness-array": {
+    "name": "Dawn Witness Array",
+    "rarity": "Omnic",
+    "element": "Tranquilitic (actual gameplay element)",
+    "ability": "After your Attack Action fails to critically hit, the other allies gain +15% Critical Rate for their next Attack Action. Your own next Attack Action gains +30% Critical Damage Multiplier."
+  },
+  "master-orvella-2": {
+    "name": "Deep Foundation Planetpress",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Orvella only)",
+    "ability": "Foundation absorption stores healing equal to 40% of the durability spent. At the next player turn, divide it among injured allies, up to 12% of each recipient's maximum HP."
+  },
+  "master-crinso-2": {
+    "name": "Duality Planet Flamewheel",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Crinso only)",
+    "ability": "When Golden Edge follows Crimson Rupture, grant the most injured ally a Shield worth 12% of their maximum HP for one Enemy Turn."
+  },
+  "ominous-eclipse-mantle": {
+    "name": "Eclipse Mantle",
+    "rarity": "Omnic",
+    "element": "Chaotic (actual gameplay element)",
+    "ability": "Your skills ignore 35% of a Weakened enemy's Defense. If another ally applied that Weaken, gain +20% Skill Power against that enemy."
+  },
+  "master-razor-2": {
+    "name": "Eclipse Planet Watchtower",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Razor only)",
+    "ability": "When Eclipse Bastion creates Razor's Shield, each other living ally gains a Shield worth 40% of that amount, capped at 15% of their own maximum HP, for one Enemy Turn."
+  },
+  "flare-focusing-iris": {
+    "name": "Ember Coronation Iris",
+    "rarity": "Omnic",
+    "element": "Infernic (actual gameplay element)",
+    "ability": "+1 Enemy Turn Skill Duration for your Burn. Other allies gain +20% Critical Rate when attacking enemies carrying your Burn."
+  },
+  "cinder-metering-nozzle": {
+    "name": "Eternal Cinder Observatory",
+    "rarity": "Omnic",
+    "element": "Infernic (actual gameplay element)",
+    "ability": "When an enemy carrying your Burn dies, its remaining Burn damage strikes the healthiest other enemy as one Bonus Strike, capped at 200% of your Direct Attack."
+  },
+  "master-sprout-3": {
+    "name": "Evergreen Continuance Crucible",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Flora only)",
+    "ability": "Worldseed's Empowered Seeds grant +25% Defense while pending. Once per Battle, Worldseed also revives fallen allies at 35% HP and 0 Gauge, without a Seed."
+  },
+  "tectonic-faultkeeper-loom": {
+    "name": "Faultkeeper Loom",
+    "rarity": "Omnic",
+    "element": "Botanic (actual gameplay element)",
+    "ability": "While you are alive, other allies gain bonus Defense equal to 25% of your effective Defense. Defense received from squad auras does not increase this bonus."
+  },
+  "master-vaelor-1": {
+    "name": "Final Chord Celestial Resonator",
+    "rarity": "Omnic (Master)",
+    "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
+    "ability": "Last Chord of the Sky grants the other allies +30% Skill Power for their next skill, increased to +60% when cast on Crescendo."
+  },
+  "master-aurora-1": {
+    "name": "Final Dawn Tribunal",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Aurora only)",
+    "ability": "Enemies carrying Aurora's Seal have 25% less Defense. When their Sealed skill resolves, the most injured ally gains a Shield worth 15% of their maximum HP for one Enemy Turn."
+  },
+  "firstlight-cam": {
+    "name": "Firstlight Concordance",
+    "rarity": "Omnic",
+    "element": "Tranquilitic (actual gameplay element)",
+    "ability": "All allies gain +50% Elemental Gauge Gain during the first two player turns and +40% Defense during the first two Enemy Turns of each Battle."
+  },
+  "master-nerithe-2": {
+    "name": "Folded Ocean Planetarium",
+    "rarity": "Omnic (Master)",
+    "element": "Oceanic (named bearer's actual element; Master for Nerithe only)",
+    "ability": "When Fold the Sea moves Survey to a different enemy, the other allies gain +40% Skill Power for their next damaging skill against that enemy."
+  },
+  "master-thornia-1": {
+    "name": "Forbidden Garden Worldlock",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Thornia only)",
+    "ability": "An enemy that triggers Thornia's trap has 20% less Defense until the end of the next player turn."
+  },
+  "tension-governor": {
+    "name": "Fractured Mercy Governor",
+    "rarity": "Omnic",
+    "element": "Chaotic (actual gameplay element)",
+    "ability": "Applying Weaken grants the most injured ally +30% Defense for the next Enemy Turn. If they are below 50% HP, also restore 6% of their maximum HP. Once per skill."
+  },
+  "master-rosetta-3": {
+    "name": "Golden Thorn Judgment Loom",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Rosetta only)",
+    "ability": "Golden Thorn Volley grants each other ally +35% Skill Power for their next damaging skill against the Quarry."
+  },
+  "atmospheric-griffin-turbine": {
+    "name": "Griffin Turbine",
+    "rarity": "Omnic",
+    "element": "Atmospheric (actual gameplay element)",
+    "ability": "Normal Attack grants each other ally Elemental Gauge equal to 20% of their maximum capacity multiplied by its total actual HP damage divided by your Direct Attack, up to 20% each."
+  },
+  "master-ember-1": {
+    "name": "Helios Pyre Cathedral",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Infernis only)",
+    "ability": "After Infernis's Burn damages enemies during an Enemy Turn, heal the most injured ally for 25% of that total HP damage, capped at 12% of their maximum HP."
+  },
+  "master-atmoso-2": {
+    "name": "Horizon Cyclone Orrery",
+    "rarity": "Omnic (Master)",
+    "element": "Atmospheric (named bearer's actual element; Master for Atmoso only)",
+    "ability": "Cyclone release grants every living ally a Shield equal to 30% of its total actual HP damage, capped at 15% of each ally's maximum HP, for one Enemy Turn."
+  },
+  "master-elise-1": {
+    "name": "Infinite Thunderwheel Arsenal",
+    "rarity": "Omnic (Master)",
+    "element": "Atmospheric (named bearer's actual element; Master for Elise only)",
+    "ability": "Enemies holding Elise's Shuriken have 15% less Defense per lodged Shuriken, up to 30%. The reduction ends after the Shuriken are recalled."
+  },
+  "master-orvella-3": {
+    "name": "Keystone Sovereign Counterweight",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Orvella only)",
+    "ability": "Allies protected by Foundation gain +25% Defense. Keystone Reversal gains +50% Skill Power on its Foundation repair."
+  },
+  "tranquilitic-kirin-cradle": {
+    "name": "Kirin Cradle",
+    "rarity": "Omnic",
+    "element": "Tranquilitic (actual gameplay element)",
+    "ability": "Normal Attack heals the most injured ally for 100% of your effective Defense, capped at 12% of their maximum HP. At full HP, they gain 8% Elemental Gauge instead."
+  },
+  "tidebound-reflector": {
+    "name": "Leviathan Mercy Reflector",
+    "rarity": "Omnic",
+    "element": "Oceanic (actual gameplay element)",
+    "ability": "Your Shields reflect 40% of the damage they absorb to the attacker, up to 150% of your Direct Attack per Enemy Turn across all recipients."
+  },
+  "aquatic-leviathan-pump": {
+    "name": "Leviathan Pump",
+    "rarity": "Omnic",
+    "element": "Oceanic (actual gameplay element)",
+    "ability": "Whenever your skill-created Shield absorbs an enemy attack, its recipient gains 5% Elemental Gauge, up to 15% per recipient per Enemy Turn."
+  },
+  "ward-stitch-spool": {
+    "name": "Leviathan Ward Loom",
+    "rarity": "Omnic",
+    "element": "Oceanic (actual gameplay element)",
+    "ability": "Allies holding your skill-created Shields gain +30% Skill Power for healing and Shield skills. Your Shields on them last +1 Enemy Turn."
+  },
+  "master-bruno-1": {
+    "name": "Living Worldwall Atlas",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Bruno only)",
+    "ability": "Whenever Bruno takes Cover damage, its protected ally gains +30% Skill Power for their next skill. Bruno gains +40% Defense while Cover is active."
+  },
+  "master-aurora-3": {
+    "name": "Merciful Eclipse Regulator",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Aurora only)",
+    "ability": "When an enemy consumes Aurora's Seal, heal every living ally for 8% of their maximum HP. Each enemy can trigger this once per Enemy Turn."
+  },
+  "ominous-nightglass-archive": {
+    "name": "Nightglass Archive",
+    "rarity": "Omnic",
+    "element": "Chaotic (actual gameplay element)",
+    "ability": "Your damaging skills mark surviving enemies for two player turns. Other allies' Normal Attacks against marked enemies gain +50% Critical Damage Multiplier."
+  },
+  "master-razor-3": {
+    "name": "Nightglass Counterblade Engine",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Razor only)",
+    "ability": "When Nightcleave spends Wounds, the other allies gain +30% Critical Rate for their next Attack Action."
+  },
+  "master-tide-2": {
+    "name": "Ocean Memory Worldpump",
+    "rarity": "Omnic (Master)",
+    "element": "Oceanic (named bearer's actual element; Master for Tizu only)",
+    "ability": "Tidal Shelter gains +50% Skill Power. Its recipient's next skill gains +25% Skill Efficiency while the Shield remains."
+  },
+  "chaotic-ouroboros-core": {
+    "name": "Ouroboros Core",
+    "rarity": "Omnic",
+    "element": "Chaotic (actual gameplay element)",
+    "ability": "+40% Elemental Gauge Capacity. After Last Flare, all living allies gain a Shield worth 10% of their own maximum HP for two Enemy Turns."
+  },
+  "chaotic-paradox-spindle": {
+    "name": "Paradox Spindle",
+    "rarity": "Omnic",
+    "element": "Chaotic (actual gameplay element)",
+    "ability": "While you recover from Last Flare, the other allies gain +40% Skill Power and +20% Skill Efficiency."
+  },
+  "emberlife-kiln": {
+    "name": "Phoenix Lifeforge",
+    "rarity": "Omnic",
+    "element": "Infernic (actual gameplay element)",
+    "ability": "While any enemy carries your Burn, all living allies receive 30% more healing."
+  },
+  "infernic-phoenix-reactor": {
+    "name": "Phoenix Reactor",
+    "rarity": "Omnic",
+    "element": "Infernic (actual gameplay element)",
+    "ability": "Once per Battle, revive at 35% maximum HP and 0 Gauge when defeated. Other living allies gain a Shield worth 15% of their own maximum HP for one Enemy Turn."
+  },
+  "tempered-strike-link": {
+    "name": "Phoenix Temper Dominion",
+    "rarity": "Omnic",
+    "element": "Infernic (actual gameplay element)",
+    "ability": "When an ally's skill heals your HP, gain +40% Direct Attack for your next Attack Action. After it resolves, that ally gains +20% Skill Efficiency for their next skill."
+  },
+  "master-aurora-2": {
+    "name": "Prismseal Astral Judiciary",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Aurora only)",
+    "ability": "Final Dawn Verdict protects against all enemy skills, not only ultimates. After each protected Enemy Turn, all living allies gain 8% Elemental Gauge."
+  },
+  "infernic-pyre-census": {
+    "name": "Pyre Census Requiem",
+    "rarity": "Omnic",
+    "element": "Infernic (actual gameplay element)",
+    "ability": "Gain +15% Skill Power per different combat element among living squad members, up to +45%. Other allies of a different element from you gain +15% Direct Attack."
+  },
+  "master-bruno-2": {
+    "name": "Quarry Planet Gravitas",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Bruno only)",
+    "ability": "Bruno's Last Flare Shield equals the greater of 250% effective Defense or 25% maximum HP. Allies under his Cover gain +25% Elemental Gauge Gain."
+  },
+  "master-bliss-3": {
+    "name": "Quiet Heaven Fanforge",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
+    "ability": "Thousandfeather Stillness grants each other ally +25% Skill Efficiency for their next skill. When cast as Closing, also grant +1 turn Skill Duration to that skill's timed effects."
+  },
+  "master-rosetta-1": {
+    "name": "Rose Beyond the Sun Orrery",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Rosetta only)",
+    "ability": "The first time two different allies hit Rosetta's Quarry each player turn, those allies each gain 12% Elemental Gauge."
+  },
+  "chaotic-fault-verdict": {
+    "name": "Rosefault Precision Sovereign",
+    "rarity": "Omnic",
+    "element": "Chaotic (actual gameplay element)",
+    "ability": "While Shielded, gain +50% Critical Damage Multiplier. Your first critical Attack Action each player turn grants the ally who supplied your current Shield +20% Skill Power for their next skill."
+  },
+  "ruinselect-prism": {
+    "name": "Ruinselect Fracture Parliament",
+    "rarity": "Omnic",
+    "element": "Chaotic (actual gameplay element)",
+    "ability": "Gain +40% Skill Power while below 50% HP. Healing from other allies does not remove this bonus until the end of your next action."
+  },
+  "secondbeat-rack": {
+    "name": "Secondbeat Rupture Throne",
+    "rarity": "Omnic",
+    "element": "Chaotic (actual gameplay element)",
+    "ability": "After another ally damages an enemy, your next damaging skill against that enemy gains +35% Skill Power. Using it grants that ally 8% Elemental Gauge. Hold one target."
+  },
+  "luminous-seraph-mirror": {
+    "name": "Seraph Mirror",
+    "rarity": "Omnic",
+    "element": "Tranquilitic (actual gameplay element)",
+    "ability": "Your first critical Attack Action each player turn heals every living ally for 6% of their own maximum HP."
+  },
+  "master-thornia-3": {
+    "name": "Shadow Rose Sovereign Foundry",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Thornia only)",
+    "ability": "Each enemy carrying Thornia's trap deals 15% less Direct Damage to other allies. When it triggers a trap, Thornia gains +20% Skill Power for her next skill."
+  },
+  "oceanic-shared-tide-pump": {
+    "name": "Shared Tide Lifesea Engine",
+    "rarity": "Omnic",
+    "element": "Oceanic (actual gameplay element)",
+    "ability": "Shield skills targeting only one ally also grant the most injured different ally a Shield worth 50% of the original amount for the same duration."
+  },
+  "master-nerithe-1": {
+    "name": "Shoreless Meridian Worldchart",
+    "rarity": "Omnic (Master)",
+    "element": "Oceanic (named bearer's actual element; Master for Nerithe only)",
+    "ability": "Other allies' damaging skills ignore 10% of the Surveyed enemy's Defense per Survey point, up to 40%, without consuming Survey."
+  },
+  "pulse-trigger-pawl": {
+    "name": "Sky Sovereign Escapement",
+    "rarity": "Omnic",
+    "element": "Atmospheric (actual gameplay element)",
+    "ability": "Your first critical skill each player turn grants each other ally Elemental Gauge equal to 8% of their own maximum capacity."
+  },
+  "master-atmoso-1": {
+    "name": "Sky Without End Turbine",
+    "rarity": "Omnic (Master)",
+    "element": "Atmospheric (named bearer's actual element; Master for Atmoso only)",
+    "ability": "Each Gust spent by Cyclone release grants all living allies 3% Elemental Gauge, up to 18% each per release."
+  },
+  "atmospheric-skythread-rudder": {
+    "name": "Skythread Rudder",
+    "rarity": "Omnic",
+    "element": "Atmospheric (actual gameplay element)",
+    "ability": "Normal Attack grants the other ally with the lowest Gauge percentage +25% Skill Efficiency for their next Skill 1 or Skill 2. Hold one discount per ally."
+  },
+  "solace-anchor": {
+    "name": "Solace Witness Monolith",
+    "rarity": "Omnic",
+    "element": "Tranquilitic (actual gameplay element)",
+    "ability": "Acting before every other living ally grants them +20% Direct Attack for the rest of that player turn."
+  },
+  "sootwake-crucible": {
+    "name": "Sootwake Phoenix Mirror",
+    "rarity": "Omnic",
+    "element": "Infernic (actual gameplay element)",
+    "ability": "After your Burn damages an enemy, each other ally's next damaging skill against that enemy gains +30% Skill Power. Hold one bonus per ally; it expires after their next action."
+  },
+  "master-disciple-3": {
+    "name": "Sovereign Will Amplifier",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Disciple only)",
+    "ability": "Consuming Disciple's Strike or Resolve with a damaging action grants its recipient +30% Critical Rate and +40% Critical Damage Multiplier for that action."
+  },
+  "tranquilitic-stillhour-carillon": {
+    "name": "Stillhour Carillon",
+    "rarity": "Omnic",
+    "element": "Tranquilitic (actual gameplay element)",
+    "ability": "At the start of each of your Last Flare recovery turns, heal all living allies for 8% of their own maximum HP and grant them 10% Elemental Gauge."
+  },
+  "master-bliss-2": {
+    "name": "Stillplume Planetary Ballet",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
+    "ability": "Opening Warfeather Cut grants the other allies +25% Critical Rate for their next Attack Action. Closing Warfeather Cut heals every other living ally instead of only the most injured."
+  },
+  "master-elise-3": {
+    "name": "Storm Empress Execution Clock",
+    "rarity": "Omnic (Master)",
+    "element": "Atmospheric (named bearer's actual element; Master for Elise only)",
+    "ability": "When Elise recalls both Shuriken, the other allies gain +40% Critical Damage Multiplier for their next Attack Action. If both were lodged in the same enemy, also grant +15% Critical Rate."
+  },
+  "voltaic-stormstep-dynamo": {
+    "name": "Stormstep Dynamo",
+    "rarity": "Omnic",
+    "element": "Atmospheric (actual gameplay element)",
+    "ability": "Alternating Skill 1 and Skill 2 grants +30% Skill Power to the switched skill and +15% Skill Efficiency to the next other ally who casts a skill. Any other action resets your sequence."
+  },
+  "atmospheric-storm-clock": {
+    "name": "Tempest Return Chronarch",
+    "rarity": "Omnic",
+    "element": "Atmospheric (actual gameplay element)",
+    "ability": "Every third critical Attack Action you perform grants all living allies +25% Skill Efficiency for their next Last Flare. Store at most one discount per ally."
+  },
+  "pressurecrest-governor": {
+    "name": "Tempest Shelter Sovereign",
+    "rarity": "Omnic",
+    "element": "Atmospheric (actual gameplay element)",
+    "ability": "A critical skill grants the most injured ally a Shield worth 15% of their maximum HP for one Enemy Turn. Once per player turn."
+  },
+  "master-thornia-2": {
+    "name": "Thousand-Rose Planetary Aegis",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Thornia only)",
+    "ability": "An Empowered Thorn Trap's first triggered strike each Enemy Turn grants the ally its enemy attacked a Shield worth 12% of that ally's maximum HP for one Enemy Turn. All-enemy attacks protect every living target."
+  },
+  "master-bliss-1": {
+    "name": "Thousandfeather Zenith Loom",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
+    "ability": "Quietstorm Flourish grants both its Opening damage buff and Closing squad Shields, regardless of Bliss's action order."
+  },
+  "master-orvella-1": {
+    "name": "Throne Beneath the World",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Orvella only)",
+    "ability": "Worldweight Citadel leaves 40% of Foundation's current durability intact while using its full pre-cast durability for the extra strike. Other allies gain +20% Skill Efficiency for their next skill."
+  },
+  "master-vaelor-2": {
+    "name": "Thunder Choir Planetary Fugue",
+    "rarity": "Omnic (Master)",
+    "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
+    "ability": "On Rise, Resonance Cascade grants its Direct Damage buff to every living ally instead of only Vaelor. Allies also gain +20% Elemental Gauge Gain for the same duration."
+  },
+  "voltaic-thunderbird-coil": {
+    "name": "Thunderbird Coil",
+    "rarity": "Omnic",
+    "element": "Atmospheric (actual gameplay element)",
+    "ability": "Your critical skills arc 40% of their primary target's actual HP damage to the healthiest different enemy. With no other enemy, grant the other allies +20% Critical Rate for their next Attack Action instead."
+  },
+  "master-elise-2": {
+    "name": "Twin Star Planetary Ratchet",
+    "rarity": "Omnic (Master)",
+    "element": "Atmospheric (named bearer's actual element; Master for Elise only)",
+    "ability": "Each Shuriken lodged by Voltstar Cut grants the next other ally's damaging skill against that enemy +35% Skill Power. Consume one Shuriken's bonus per activation; unused bonuses end on recall."
+  },
+  "master-crinso-1": {
+    "name": "Twin-Rose Singularity Drive",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Crinso only)",
+    "ability": "Each Combo spent by Blossoming Cataclysm grants the other allies +15% Critical Damage Multiplier for their next Attack Action, up to +60%."
+  },
+  "master-disciple-1": {
+    "name": "Unbound Mindcrown Synapse",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Disciple only)",
+    "ability": "Disciple's Strike, Shelter and Resolve last +2 player turns. A mismatched action no longer consumes Strike or Shelter; each still ends after one matching action."
+  },
+  "master-razor-1": {
+    "name": "Unbroken Midnight Bastion",
+    "rarity": "Omnic (Master)",
+    "element": "Chaotic (named bearer's actual element; Master for Razor only)",
+    "ability": "When Unbroken Midnight spends Wounds, heal the other living allies for 20% of the amount spent, capped at 15% of each recipient's maximum HP."
+  },
+  "master-ember-3": {
+    "name": "Unbroken Sunforge Throne",
+    "rarity": "Omnic (Master)",
+    "element": "Infernic (named bearer's actual element; Master for Infernis only)",
+    "ability": "Dawnfire grants each other ally +40% Skill Power for their next damaging skill against an enemy carrying Infernis's Burn."
+  },
+  "aquatic-undertide-chronometer": {
+    "name": "Undertide Chronometer",
+    "rarity": "Omnic",
+    "element": "Oceanic (actual gameplay element)",
+    "ability": "+1 Enemy Turn Skill Duration for your Weaken. Other allies gain +15% Skill Efficiency for damaging skills targeting an enemy carrying your Weaken."
+  },
+  "master-tide-3": {
+    "name": "Undertow Sovereign Harpoon",
+    "rarity": "Omnic (Master)",
+    "element": "Oceanic (named bearer's actual element; Master for Tizu only)",
+    "ability": "Allies holding Tizu's Shields ignore 25% of enemy Defense when attacking enemies carrying his Weaken."
+  },
+  "efflorescent-verdant-covenant": {
+    "name": "Verdant Covenant",
+    "rarity": "Omnic",
+    "element": "Botanic (actual gameplay element)",
+    "ability": "Effective healing from your skills grants its recipients +30% Skill Power for their next damaging skill. Hold one bonus per ally."
+  },
+  "master-rosetta-2": {
+    "name": "Virtuous Planet Rosegarden",
+    "rarity": "Omnic (Master)",
+    "element": "Tranquilitic (named bearer's actual element; Master for Rosetta only)",
+    "ability": "Crimson Skyfall against the Quarry heals every ally who hit it that player turn for 8% of their own maximum HP. Each other contributor also gains +20% Skill Efficiency for their next skill."
+  },
+  "master-bruno-3": {
+    "name": "Worldforge Hammer Dominion",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Bruno only)",
+    "ability": "Seismic Hammerfall lowers its target's Defense by 25% through the next player turn. Bruno's Cover recipients gain +25% Direct Attack while protected."
+  },
+  "covercharge-drum": {
+    "name": "Worldgrove Covercharge Heart",
+    "rarity": "Omnic",
+    "element": "Botanic (actual gameplay element)",
+    "ability": "After you use a skill, the next different ally to use a skill gains +20% Skill Power if yours dealt damage, or +15% Skill Efficiency if yours healed or Shielded. A mixed skill grants both."
+  },
+  "botanic-graft-covenant": {
+    "name": "Worldroot Graft Coronation",
+    "rarity": "Omnic",
+    "element": "Botanic (actual gameplay element)",
+    "ability": "Your healing skills gain +50% Skill Power on allies below 40% HP. A recipient healed above that threshold gains +30% Defense for the next Enemy Turn."
+  },
+  "mending-valve": {
+    "name": "Worldroot Sap Cathedral",
+    "rarity": "Omnic",
+    "element": "Botanic (actual gameplay element)",
+    "ability": "Your damaging skills heal the most injured ally for 15% of their total actual HP damage, capped at 10% of that ally's maximum HP per cast."
+  },
+  "rootbound-triage-vault": {
+    "name": "Worldroot Triage Sanctuary",
+    "rarity": "Omnic",
+    "element": "Botanic (actual gameplay element)",
+    "ability": "At the start of each player turn, grant the living ally with the lowest HP percentage +25% Skill Efficiency and +35% Skill Power for healing and Shields until their next action ends."
+  },
+  "master-sprout-1": {
+    "name": "Worldseed Mercy Foundry",
+    "rarity": "Omnic (Master)",
+    "element": "Botanic (named bearer's actual element; Master for Flora only)",
+    "ability": "Flora's Seeds grant their recipients +25% Skill Power for their next skill when harvested or when they mature. Empowered Seeds also grant +15% Skill Efficiency."
+  },
+  "efflorescent-worldtree-heart": {
+    "name": "Worldtree Heart",
+    "rarity": "Omnic",
+    "element": "Botanic (actual gameplay element)",
+    "ability": "Your skills turn 60% of overhealing into a Shield for the recipient, capped at 20% of their maximum HP, lasting two Enemy Turns. Replaces the previous Shield from this Conduit."
+  },
+  "calamitic-cathedral-final-equation": {
+    "name": "Cathedral of the Final Equation",
+    "rarity": "Calamitic",
+    "element": "Chaotic (suggested thematic element; gameplay: universal)",
+    "ability": "All living allies gain +25% Skill Efficiency and +30% Skill Power while you are alive."
+  },
+  "calamitic-causality-funeral-engine": {
+    "name": "Causality Funeral Engine",
+    "rarity": "Calamitic",
+    "element": "Chaotic (suggested thematic element; gameplay: universal)",
+    "ability": "+80% Skill Power. Your Last Flare has no recovery time."
+  },
+  "calamitic-horizon-cleaving-godpress": {
+    "name": "Horizon-Cleaving Godpress",
+    "rarity": "Calamitic",
+    "element": "Chaotic (suggested thematic element; gameplay: universal)",
+    "ability": "Your damaging skills ignore 40% of enemy Defense; 50% of their Direct Damage bypasses Shields."
+  },
+  "calamitic-throne-borrowed-tomorrows": {
+    "name": "Throne of Borrowed Tomorrows",
+    "rarity": "Calamitic",
+    "element": "Chaotic (suggested thematic element; gameplay: universal)",
+    "ability": "Your Last Flare lets each other living ally who has already acted take one additional Skill 1 or Skill 2 this player turn. Each character can receive this extra action once per player turn. Allies in recovery are ineligible."
+  },
+  "calamitic-world-eater-orrery": {
+    "name": "World-Eater's Orrery",
+    "rarity": "Calamitic",
+    "element": "Chaotic (suggested thematic element; gameplay: universal)",
+    "ability": "+2 turns Skill Duration. Damaging enemies with a skill heals each living ally for 10% of the total damage dealt by that skill."
+  }
+};
+function approvedConduitAbility(id) {
+  return approvedConduitCatalog[id]?.ability;
+}
+
+// src/content/phase-zero-conduit-upgrades.ts
+var phaseZeroUpgradePercentages = {
+  "bastion-lock": [0],
+  "crosspin-governor": [0],
+  "fieldbrace-coupler": [0],
+  "fracture-reservoir": [0],
+  "parallax-relay": [0],
+  "precision-escapement": [0],
+  "prism-splinter-socket": [0],
+  "reserve-torque-crank": [0],
+  "siegebound-drive": [0],
+  "vigil-core": [0],
+  "aegis-capacitor": [0],
+  "breach-pendulum": [0],
+  "coilfeed-ratchet": [0],
+  "duplex-heart": [0],
+  "falcon-sight": [0],
+  "glassroot-gimbal": [0],
+  "hammerbalance-link": [0],
+  "lifeline-flywheel": [0],
+  "opal-indexer": [0],
+  "resonance-crucible": [],
+  "sentinel-aperture": [0],
+  "spearwheel-engine": [0],
+  "springwell-pump": [0],
+  "twinpulse-bellows": [0],
+  "wardglass-transformer": [0, 1],
+  "astral-prism": [0],
+  "citadel-spine": [0, 2],
+  "execution-orrery": [0],
+  "granite-hourglass": [0],
+  "horizon-heartcase": [0],
+  "immortal-vessel": [0, 1],
+  "judgment-lens": [0],
+  "meridian-inverter": [0],
+  "nullsong-transmission": [0],
+  "pale-bulwark-diadem": [0],
+  "siege-cantilever": [0],
+  "starvein-conductor": [1],
+  "stasis-reliquary": [1],
+  "verdict-caliper": [0],
+  "worldbreaker-drive": [0],
+  "clearwater-manifold": [0],
+  "tranquilitic-accord-bastion": [0],
+  "aegis-return-spring": [0, 1],
+  "tectonic-atlas-bastion": [0, 1],
+  "infernic-cinder-testament": [0, 1],
+  "luminous-dawn-witness-array": [0, 1],
+  "ominous-eclipse-mantle": [0, 1],
+  "flare-focusing-iris": [0],
+  "cinder-metering-nozzle": [0],
+  "tectonic-faultkeeper-loom": [0],
+  "firstlight-cam": [0, 1],
+  "tension-governor": [0, 2],
+  "atmospheric-griffin-turbine": [0, 1],
+  "tranquilitic-kirin-cradle": [0, 2],
+  "tidebound-reflector": [0, 1],
+  "aquatic-leviathan-pump": [0, 1],
+  "ward-stitch-spool": [0],
+  "ominous-nightglass-archive": [0],
+  "chaotic-ouroboros-core": [0, 1],
+  "chaotic-paradox-spindle": [0, 1],
+  "emberlife-kiln": [0],
+  "infernic-phoenix-reactor": [0, 1],
+  "tempered-strike-link": [0, 1],
+  "infernic-pyre-census": [0, 1, 2],
+  "chaotic-fault-verdict": [0, 1],
+  "ruinselect-prism": [0],
+  "secondbeat-rack": [0, 1],
+  "luminous-seraph-mirror": [0],
+  "oceanic-shared-tide-pump": [0],
+  "pulse-trigger-pawl": [0],
+  "atmospheric-skythread-rudder": [0],
+  "solace-anchor": [0],
+  "sootwake-crucible": [0],
+  "tranquilitic-stillhour-carillon": [0, 1],
+  "voltaic-stormstep-dynamo": [0, 1],
+  "atmospheric-storm-clock": [0],
+  "pressurecrest-governor": [0],
+  "voltaic-thunderbird-coil": [0, 1],
+  "aquatic-undertide-chronometer": [0],
+  "efflorescent-verdant-covenant": [0],
+  "covercharge-drum": [0, 1],
+  "botanic-graft-covenant": [0, 2],
+  "mending-valve": [0],
+  "rootbound-triage-vault": [0, 1],
+  "efflorescent-worldtree-heart": [0],
+  "calamitic-cathedral-final-equation": [0, 1],
+  "calamitic-causality-funeral-engine": [0],
+  "calamitic-horizon-cleaving-godpress": [0, 1],
+  "calamitic-throne-borrowed-tomorrows": [],
+  "calamitic-world-eater-orrery": [0]
+};
+function phaseZeroUpgradedAbility(id, level = 0) {
+  const ability2 = approvedConduitAbility(id);
+  if (ability2 === void 0) return void 0;
+  if (!Number.isInteger(level) || level < 0 || level > 5)
+    throw new Error("Conduit upgrade level must be an integer from 0 to 5.");
+  if (id.startsWith("master-")) {
+    if (level !== 0) throw new Error("Master Conduits cannot be upgraded.");
+    return ability2;
+  }
+  const positions = phaseZeroUpgradePercentages[id];
+  if (!positions) throw new Error(`Missing Phase 0 upgrade policy: ${id}.`);
+  let index = 0;
+  return ability2.replace(/([+-]?\d+(?:\.\d+)?)%/g, (text2, amount) => {
+    if (!positions.includes(index++)) return text2;
+    const upgraded = Number((Number(amount) * (1 + level * 0.1)).toFixed(8));
+    return `${amount.startsWith("+") ? "+" : ""}${upgraded}%`;
+  });
+}
+
 // src/content/conduit-redesign.ts
 var conduitRedesign = {
   "vigil-core": {
@@ -1245,6 +2223,13 @@ function redesignStep(level, base, maximum) {
   return level < 3 ? base : maximum;
 }
 function redesignEffect(id, level = 0) {
+  if (phaseZeroStatsReady) {
+    const ability2 = phaseZeroUpgradedAbility(id, level);
+    if (ability2) {
+      redesignValue(level, 0, 0);
+      return ability2;
+    }
+  }
   const design = conduitRedesign[id];
   if (!design) throw new Error("Missing redesigned Conduit definition: " + id);
   redesignValue(level, 0, 0);
@@ -1608,18 +2593,23 @@ function isCalamiticConduitId(id) {
 }
 function calamiticEffect(id, level = 0) {
   const amount = (base, maximum) => Number(calamiticPower(level, base, maximum).toFixed(6));
-  switch (id) {
-    case "calamitic-world-eater-orrery":
-      return `Store ${amount(40, 80)}% of enemy Direct Damage to HP suffered by living squad members. [Normal Attack] releases the reserve as a [Bonus Strike] against the healthiest enemy.`;
-    case "calamitic-causality-funeral-engine":
-      return `Defer ${amount(40, 60)}% of each enemy hit's Direct Damage to HP after [Shields]. The deferred damage is taken at the start of the next Enemy Turn, ignores [Shields] and can defeat you.`;
-    case "calamitic-horizon-cleaving-godpress":
-      return `${amount(40, 60)}% of your Attack Actions' Direct Damage bypasses enemy [Shields]. While the target has a [Shield], your Attack Actions also gain +${amount(30, 60)}% Direct Damage.`;
-    case "calamitic-throne-borrowed-tomorrows":
-      return `Your first [Normal Attack] each player turn does not spend your action and lets you take one additional [Skill 1] or [Skill 2] that turn. Taking it grants ${amount(10, 30)} [Elemental Gauge], but you cannot act on the next player turn.`;
-    case "calamitic-cathedral-final-equation":
-      return `Use three different action types in succession to complete the [Equation]. Repeating a type restarts the sequence with that action. The third action deals ${amount(120, 240)}% of your Attack as [Bonus Strikes] split equally among enemies, then restarts the sequence.`;
+  if (!phaseZeroStatsReady) {
+    switch (id) {
+      case "calamitic-world-eater-orrery":
+        return `Store ${amount(40, 80)}% of enemy Direct Damage to HP suffered by living squad members. [Normal Attack] releases the reserve as a [Bonus Strike] against the healthiest enemy.`;
+      case "calamitic-causality-funeral-engine":
+        return `Defer ${amount(40, 60)}% of each enemy hit's Direct Damage to HP after [Shields]. The deferred damage is taken at the start of the next Enemy Turn, ignores [Shields] and can defeat you.`;
+      case "calamitic-horizon-cleaving-godpress":
+        return `${amount(40, 60)}% of your Attack Actions' Direct Damage bypasses enemy [Shields]. While the target has a [Shield], your Attack Actions also gain +${amount(30, 60)}% Direct Damage.`;
+      case "calamitic-throne-borrowed-tomorrows":
+        return `Your first [Normal Attack] each player turn does not spend your action and lets you take one additional [Skill 1] or [Skill 2] that turn. Taking it grants ${amount(10, 30)} [Elemental Gauge], but you cannot act on the next player turn.`;
+      case "calamitic-cathedral-final-equation":
+        return `Use three different action types in succession to complete the [Equation]. Repeating a type restarts the sequence with that action. The third action deals ${amount(120, 240)}% of your Attack as [Bonus Strikes] split equally among enemies, then restarts the sequence.`;
+    }
   }
+  const ability2 = phaseZeroUpgradedAbility(id, level);
+  if (!ability2) throw new Error(`Missing approved Calamitic ability: ${id}.`);
+  return ability2;
 }
 
 // src/content/conduits.ts
@@ -3075,6 +4065,122 @@ for (const id of Object.keys(nativeIdentities)) {
 }
 var nativeIdentityIds = Object.keys(nativeIdentities);
 
+// src/content/phase-zero-conduit-stats.ts
+var statKeys = [
+  "health",
+  "defense",
+  "damage",
+  "crit",
+  "critMultiplier",
+  "shatterCapacity",
+  "skillPower",
+  "skillDuration",
+  "skillEfficiency",
+  "gaugeGain"
+];
+var phaseZeroStaticBonuses = {
+  "bastion-lock": [{ stat: "defense", amount: 0.2 }],
+  "crosspin-governor": [{ stat: "skillPower", amount: 0.15, additive: true }],
+  "fieldbrace-coupler": [
+    { stat: "skillPower", amount: 0.2, additive: true },
+    { stat: "defense", amount: -0.05 }
+  ],
+  "fracture-reservoir": [{ stat: "shatterCapacity", amount: 0.5 }],
+  "parallax-relay": [
+    { stat: "health", amount: 0.45 },
+    { stat: "skillPower", amount: -0.05, additive: true }
+  ],
+  "precision-escapement": [{ stat: "critMultiplier", amount: 0.1 }],
+  "prism-splinter-socket": [{ stat: "gaugeGain", amount: 0.05, additive: true }],
+  "reserve-torque-crank": [
+    { stat: "gaugeGain", amount: 0.15, additive: true },
+    { stat: "damage", amount: -0.05 }
+  ],
+  "siegebound-drive": [{ stat: "damage", amount: 0.3 }],
+  "vigil-core": [{ stat: "health", amount: 0.35 }],
+  "coilfeed-ratchet": [{ stat: "skillEfficiency", amount: 0.07, additive: true }],
+  "hammerbalance-link": [
+    { stat: "damage", amount: 0.24 },
+    { stat: "defense", amount: -0.08 }
+  ],
+  "astral-prism": [
+    { stat: "crit", amount: 0.3, additive: true },
+    { stat: "defense", amount: -0.1 }
+  ],
+  "citadel-spine": [{ stat: "defense", amount: 0.35 }],
+  "immortal-vessel": [{ stat: "health", amount: 0.6 }],
+  "nullsong-transmission": [{ stat: "skillPower", amount: -0.15, additive: true }],
+  "worldbreaker-drive": [{ stat: "health", amount: -0.12 }],
+  "chaotic-ouroboros-core": [{ stat: "shatterCapacity", amount: 0.4 }],
+  "calamitic-causality-funeral-engine": [{ stat: "skillPower", amount: 0.8, additive: true }],
+  "calamitic-world-eater-orrery": [{ stat: "skillDuration", amount: 2, additive: true }]
+};
+function phaseZeroUpgradeMagnitude(base, level) {
+  if (!Number.isInteger(level) || level < 0 || level > 5) {
+    throw new Error("Conduit upgrade level must be an integer from 0 to 5.");
+  }
+  if (!Number.isFinite(base)) throw new Error("Conduit magnitude must be finite.");
+  return base > 0 ? base * (1 + level * 0.1) : base;
+}
+function phaseZeroStatBase(value2, stat, equipment, upgrades = {}) {
+  let bonus = 0;
+  for (const id of equipment ?? []) {
+    if (id === null || !(id in phaseZeroStaticBonuses)) continue;
+    const effects = phaseZeroStaticBonuses[id];
+    for (const effect of effects) if (effect.stat === stat && !effect.additive)
+      bonus += phaseZeroUpgradeMagnitude(effect.amount, upgrades[id] ?? 0);
+  }
+  return value2 / (1 + bonus);
+}
+function phaseZeroSkillCost(base, efficiency, action) {
+  if (!Number.isFinite(base) || base < 0 || !Number.isFinite(efficiency)) {
+    throw new Error("Invalid Phase 0 skill cost or efficiency.");
+  }
+  if (action !== "skill1" && action !== "skill2" && action !== "ultimate") return base;
+  return Math.max(action === "ultimate" ? 70 : 1, Math.ceil(base * (1 - Math.min(0.5, efficiency))));
+}
+function phaseZeroGaugeOffer(offer, gaugeGain) {
+  if (!Number.isFinite(offer) || offer < 0 || !Number.isFinite(gaugeGain) || gaugeGain < 0) {
+    throw new Error("Invalid Phase 0 Gauge offer or gain.");
+  }
+  return Math.round(offer * gaugeGain);
+}
+function phaseZeroPercentageGaugeOffer(capacity, fraction, gaugeGain) {
+  if (!Number.isFinite(capacity) || capacity <= 0 || !Number.isFinite(fraction) || fraction < 0) {
+    throw new Error("Invalid Phase 0 Gauge capacity or percentage.");
+  }
+  return phaseZeroGaugeOffer(capacity * fraction, gaugeGain);
+}
+function applyPhaseZeroStaticBonuses(base, slots, upgrades = {}) {
+  const equipment = validateConduitSlots(slots);
+  const levels = validateConduitUpgrades(upgrades);
+  for (const key of statKeys) {
+    const amount = base[key];
+    if (!Number.isFinite(amount) || amount < 0 && key !== "skillEfficiency") {
+      throw new Error(`Invalid Phase 0 base stat: ${key}.`);
+    }
+  }
+  const percent = {};
+  const additive = {};
+  for (const id of equipment) {
+    if (id === null) continue;
+    const bonuses = id in phaseZeroStaticBonuses ? phaseZeroStaticBonuses[id] : [];
+    for (const bonus of bonuses) {
+      const amount = bonus.stat === "skillDuration" ? bonus.amount : phaseZeroUpgradeMagnitude(bonus.amount, levels[id] ?? 0);
+      const pool = bonus.additive ? additive : percent;
+      pool[bonus.stat] = (pool[bonus.stat] ?? 0) + amount;
+    }
+  }
+  const result = { ...base };
+  for (const key of statKeys) {
+    const amount = base[key] * (1 + (percent[key] ?? 0)) + (additive[key] ?? 0);
+    result[key] = key === "skillEfficiency" ? amount : Math.max(0, amount);
+  }
+  result.skillDuration = Math.min(2, Math.floor(result.skillDuration));
+  result.skillEfficiency = Math.min(0.5, result.skillEfficiency);
+  return result;
+}
+
 // src/content/combat.ts
 var actionIds = ["light", "skill1", "skill2", "ultimate"];
 function basicActionName(id, action) {
@@ -3154,6 +4260,7 @@ var fighters = {
 for (const id of Object.keys(fighters)) {
   const identity = nativeIdentities[id];
   const kit = fighters[id];
+  kit.stats = normalizeStats(kit.stats);
   delete kit.pilot;
   kit.nativeIdentity = true;
   kit.passive = {
@@ -3167,9 +4274,9 @@ for (const id of Object.keys(fighters)) {
 }
 var enemyIds = ["goblin", "imp", "golem"];
 var enemies = {
-  goblin: { name: "Goblin", art: "goblin", element: "botanic", stats: { health: 110, defense: 5, damage: 23, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
-  imp: { name: "Imp", art: "imp", element: "infernic", stats: { health: 90, defense: 3, damage: 28, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
-  golem: { name: "Rock Golem", art: "rock-golem", element: "botanic", stats: { health: 160, defense: 15, damage: 20, crit: 0.05, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } }
+  goblin: { name: "Goblin", art: "goblin", element: "botanic", stats: { ...phaseZeroStatDefaults, health: 110, defense: 5, damage: 23, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
+  imp: { name: "Imp", art: "imp", element: "infernic", stats: { ...phaseZeroStatDefaults, health: 90, defense: 3, damage: 28, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
+  golem: { name: "Rock Golem", art: "rock-golem", element: "botanic", stats: { ...phaseZeroStatDefaults, health: 160, defense: 15, damage: 20, crit: 0.05, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } }
 };
 function formatStat(value2) {
   return String(Number(value2.toFixed(2)));
@@ -3203,7 +4310,8 @@ function resolveFighter(id, progress, equipment, upgrades) {
   }
   if (equipment) validateConduitElement(equipment, getStarter(id).elementId);
   applyConduitBuffs(kit.stats, equipment, upgrades);
-  return describeFighter(id, kit);
+  const described = describeFighter(id, kit);
+  return { ...described, stats: normalizeStats(described.stats) };
 }
 function describeFighter(id, snapshot) {
   const kit = structuredClone(snapshot);
@@ -3307,6 +4415,14 @@ function describeFighter(id, snapshot) {
   return kit;
 }
 function applyConduitBuffs(stats, equipment, upgrades) {
+  if (phaseZeroStatsReady) {
+    Object.assign(stats, applyPhaseZeroStaticBonuses(
+      normalizeStats(stats),
+      equipment ?? Array(8).fill(null),
+      upgrades
+    ));
+    return;
+  }
   if (equipment) for (const conduitId of validateConduitSlots(equipment)) {
     if (conduitId === null) continue;
     for (const buff of conduitBuffs(getConduit(conduitId), upgrades?.[conduitId] ?? 0)) {
@@ -3344,6 +4460,7 @@ var capturedGrowth = { health: 220, damage: 38, defense: 16 };
 function enemyCombatStats(level, boss) {
   if (!Number.isInteger(level) || level < 1 || level > enemyGrowth.maximumHostileLevel) throw new Error("Enemy level must be from 1 to 185.");
   return {
+    ...phaseZeroStatDefaults,
     health: hostileStat(boss ? 207.5 : 83, 0.45, enemyExponentialRates.health, level),
     damage: hostileStat(boss ? 27.5 : 22, 0.25, enemyExponentialRates.damage, level),
     defense: hostileStat(boss ? 16 / 3 : 4, 0.3, enemyExponentialRates.defense, level),
@@ -3512,6 +4629,7 @@ function capturedEnemyStats(level, maximumLevel = 120) {
   if (!Number.isInteger(level) || level < 10 || level > maximumLevel || !Number.isInteger(maximumLevel) || maximumLevel < 120 || maximumLevel > 140) throw new Error("Invalid captured creature level.");
   const factor = 1 + Math.min(level, 120) * playableGrowth.perLevel;
   return {
+    ...phaseZeroStatDefaults,
     health: capturedGrowth.health * factor,
     damage: capturedGrowth.damage * factor,
     defense: capturedGrowth.defense * factor ** 0.7,
@@ -4769,7 +5887,7 @@ function resolveCapturedFighter(copy, equipment, upgrades) {
   }
   if (equipment) validateConduitElement(equipment, creature.element);
   applyConduitBuffs(kit.stats, equipment, upgrades);
-  return kit;
+  return { ...kit, stats: normalizeStats(kit.stats) };
 }
 function validateCharacterLocks(value2, owned) {
   if (typeof value2 !== "object" || value2 === null || Array.isArray(value2)) throw new Error("Invalid saved character locks.");
@@ -5037,12 +6155,178 @@ function pilotAfterDirectActivation(actor, action, events, effectiveCritical = f
   }
 }
 
+// src/game/calamitic-conduits.ts
+function power(state, owner, id, base, maximum) {
+  return calamiticPower(state.conduitUpgrades?.[id] ?? 0, base, maximum);
+}
+function status2(owner, amount, message, events) {
+  events.push({ kind: "status", source: owner.id, target: owner.id, amount, critical: false, origin: "conduit", message });
+}
+function calamiticActionReason(state, owner, action) {
+  const n = owner.conduitRuntime?.numbers;
+  if (phaseZeroStatsReady) {
+    return n?.calamiticThroneExtra === state.round && action !== "skill1" && action !== "skill2" ? "The Throne grants one ordinary skill action this turn." : null;
+  }
+  if (n?.calamiticThroneSkip === state.round) return "Tomorrow is owed to the Throne; cannot act this turn.";
+  if (n?.calamiticThroneArmed === state.round && (action === "ultimate" || action === "light")) {
+    return "The borrowed action must be an available ordinary skill.";
+  }
+  return null;
+}
+function calamiticExtraActionAvailable(state, owner, action) {
+  return phaseZeroStatsReady && (action === "skill1" || action === "skill2") && owner.conduitRuntime?.numbers.calamiticThroneExtra === state.round && owner.conduitRuntime?.numbers.extraActionSpent !== state.round && owner.recoverThrough < state.round && owner.hp > 0;
+}
+function calamiticNoLastFlareRecovery(owner) {
+  return phaseZeroStatsReady && equipped(owner, "calamitic-causality-funeral-engine");
+}
+function calamiticSkillPowerBonus(state) {
+  if (!phaseZeroStatsReady) return 0;
+  return Math.max(0, ...state.allies.filter((ally) => ally.hp > 0 && equipped(ally, "calamitic-cathedral-final-equation")).map((ally) => power(state, ally, "calamitic-cathedral-final-equation", 0.3, 0.45)));
+}
+function calamiticSkillEfficiencyBonus(state) {
+  if (!phaseZeroStatsReady) return 0;
+  return Math.max(0, ...state.allies.filter((ally) => ally.hp > 0 && equipped(ally, "calamitic-cathedral-final-equation")).map((ally) => power(state, ally, "calamitic-cathedral-final-equation", 0.25, 0.375)));
+}
+function prepareCalamiticAction(state, owner, action) {
+  if (phaseZeroStatsReady) {
+    if (owner.conduitRuntime?.numbers.calamiticThroneExtra !== state.round) return false;
+    delete gear(owner).numbers.calamiticThroneExtra;
+    gear(owner).numbers.calamiticThroneSpent = state.round;
+    gear(owner).numbers.extraActionSpent = state.round;
+    return false;
+  }
+  if (!equipped(owner, "calamitic-throne-borrowed-tomorrows")) return false;
+  const n = gear(owner).numbers;
+  if (n.calamiticThroneArmed === state.round && action !== "light") {
+    delete n.calamiticThroneArmed;
+    n.calamiticThroneSkip = state.round + 1;
+    n.calamiticThroneGrant = state.round;
+    return false;
+  }
+  if (action === "light" && n.calamiticThroneUsed !== state.round && n.calamiticThroneSkip !== state.round + 1) {
+    n.calamiticThroneArmed = state.round;
+    n.calamiticThroneUsed = state.round;
+    return true;
+  }
+  return false;
+}
+function afterCalamiticAction(state, owner, action, events, skillDamage = 0) {
+  if (owner.hp <= 0) return;
+  if (phaseZeroStatsReady) {
+    if (equipped(owner, "calamitic-throne-borrowed-tomorrows") && action === "ultimate" && gear(owner).numbers.extraActionSpent !== state.round) {
+      for (const ally of state.allies) {
+        if (ally.id === owner.id || ally.hp <= 0 || !ally.spent || ally.recoverThrough >= state.round) continue;
+        const n2 = gear(ally).numbers;
+        if (n2.extraActionGranted === state.round || n2.extraActionSpent === state.round) continue;
+        n2.extraActionGranted = state.round;
+        n2.calamiticThroneGranted = state.round;
+        n2.calamiticThroneExtra = state.round;
+        status2(owner, 1, `${ally.name} may take one additional Skill 1 or Skill 2 this turn.`, events);
+      }
+    }
+    if (equipped(owner, "calamitic-world-eater-orrery") && action !== "light") {
+      if (skillDamage > 0) {
+        const amount = skillDamage * power(state, owner, "calamitic-world-eater-orrery", 0.1, 0.15);
+        for (const ally of state.allies.filter((unit) => unit.hp > 0))
+          generatedHeal(owner, ally, amount, events, state);
+      }
+    }
+    return;
+  }
+  const n = gear(owner).numbers;
+  if (n.calamiticThroneArmed === state.round && action === "light") {
+    status2(owner, 1, `${owner.name} may borrow one ordinary skill; using it costs the next player turn.`, events);
+  }
+  if (n.calamiticThroneGrant === state.round) {
+    delete n.calamiticThroneGrant;
+    generatedGauge(owner, owner, power(state, owner, "calamitic-throne-borrowed-tomorrows", 10, 30), events);
+    status2(owner, state.round + 1, `${owner.name} borrowed tomorrow and cannot act on turn ${state.round + 1}.`, events);
+  }
+  if (action === "light" && equipped(owner, "calamitic-world-eater-orrery") && (n.calamiticOrrery ?? 0) > 0) {
+    const reserve = n.calamiticOrrery;
+    n.calamiticOrrery = 0;
+    const target = state.enemies.filter((enemy) => enemy.hp > 0).sort((a, b) => b.hp - a.hp)[0];
+    status2(owner, reserve, `${owner.name}'s World-Eater's Orrery releases ${Math.round(reserve)} stored force.`, events);
+    generatedStrike(state, owner, target, reserve, events, false);
+  }
+  if (equipped(owner, "calamitic-cathedral-final-equation")) {
+    const bit = 1 << ["light", "skill1", "skill2", "ultimate"].indexOf(action);
+    const previous = n.calamiticEquation ?? 0;
+    const mask = previous & bit ? bit : previous | bit;
+    const count2 = mask.toString(2).replace(/0/g, "").length;
+    n.calamiticEquation = count2 === 3 ? 0 : mask;
+    status2(owner, count2, `${owner.name}'s Final Equation: ${count2} / 3 different actions${count2 === 3 ? " \u2001Edischarge" : ""}.`, events);
+    if (count2 === 3) {
+      const targets = state.enemies.filter((enemy) => enemy.hp > 0);
+      const offer = owner.stats.damage * power(state, owner, "calamitic-cathedral-final-equation", 1.2, 2.4);
+      for (const target of targets) generatedStrike(state, owner, target, offer / targets.length, events, false);
+    }
+  }
+}
+function calamiticShieldBypass(state, owner, action = "light") {
+  if (phaseZeroStatsReady) return calamiticSkillShieldBypass(state, owner, action);
+  return equipped(owner, "calamitic-horizon-cleaving-godpress") ? power(state, owner, "calamitic-horizon-cleaving-godpress", 0.4, 0.6) : 0;
+}
+function calamiticSiegeBonus(state, owner, target) {
+  return !phaseZeroStatsReady && target.shield > 0 && equipped(owner, "calamitic-horizon-cleaving-godpress") ? power(state, owner, "calamitic-horizon-cleaving-godpress", 0.3, 0.6) : 0;
+}
+function calamiticSkillDefenseIgnore(state, owner, action) {
+  return phaseZeroStatsReady && action !== "light" && equipped(owner, "calamitic-horizon-cleaving-godpress") ? power(state, owner, "calamitic-horizon-cleaving-godpress", 0.4, 0.6) : 0;
+}
+function calamiticSkillShieldBypass(state, owner, action) {
+  return phaseZeroStatsReady && action !== "light" && equipped(owner, "calamitic-horizon-cleaving-godpress") ? power(state, owner, "calamitic-horizon-cleaving-godpress", 0.5, 0.75) : 0;
+}
+function deferCalamiticDamage(state, owner, offered, events) {
+  if (phaseZeroStatsReady) return offered;
+  if (offered <= 0 || !equipped(owner, "calamitic-causality-funeral-engine")) return offered;
+  const n = gear(owner).numbers;
+  const deferredOffer = offered * power(state, owner, "calamitic-causality-funeral-engine", 0.4, 0.6);
+  const deferred = Math.floor(deferredOffer + Number.EPSILON * Math.max(1, Math.abs(deferredOffer)));
+  if (deferred <= 0) return offered;
+  n.calamiticDebt = (n.calamiticDebt ?? 0) + deferred;
+  n.calamiticDebtDue = state.round + 1;
+  status2(owner, deferred, `${owner.name}'s Funeral Engine defers ${deferred} HP damage until Enemy Turn ${state.round + 1}.`, events);
+  return Math.max(0, offered - deferred);
+}
+function bankCalamiticDamage(state, loss) {
+  if (phaseZeroStatsReady) return;
+  if (loss <= 0) return;
+  for (const owner of state.allies.filter((ally) => ally.hp > 0 && equipped(ally, "calamitic-world-eater-orrery"))) {
+    const n = gear(owner).numbers;
+    n.calamiticOrrery = (n.calamiticOrrery ?? 0) + loss * power(state, owner, "calamitic-world-eater-orrery", 0.4, 0.8);
+  }
+}
+function settleCalamiticDebt(state, events) {
+  if (phaseZeroStatsReady) return;
+  for (const owner of state.allies) {
+    const n = owner.conduitRuntime?.numbers;
+    if (!n || !n.calamiticDebt || n.calamiticDebtDue > state.round) continue;
+    const debt = n.calamiticDebt;
+    delete n.calamiticDebt;
+    delete n.calamiticDebtDue;
+    if (owner.hp <= 0) continue;
+    const loss = Math.min(owner.hp, debt);
+    owner.hp -= loss;
+    events.push({
+      kind: "damage",
+      source: owner.id,
+      target: owner.id,
+      amount: loss,
+      critical: false,
+      origin: "conduit",
+      periodic: true,
+      shieldRemaining: owner.shield,
+      message: `${owner.name} pays ${loss} HP to the Funeral Engine${owner.hp === 0 ? " \u2001Edefeated" : ""}.`
+    });
+  }
+}
+
 // src/game/native-kits.ts
 var living = (state) => state.allies.filter((unit) => unit.hp > 0);
 var foes = (state) => state.enemies.filter((unit) => unit.hp > 0);
 var hasNativeIdentity = (unit) => !unit.captured && unit.kit?.nativeIdentity === true;
 var nativeMemory = (unit) => unit.native ??= {};
-function status2(events, owner, target, message, amount = 0) {
+function status3(events, owner, target, message, amount = 0) {
   events.push({
     kind: "status",
     source: owner.id,
@@ -5060,14 +6344,34 @@ function attachNativeView(state, event2) {
   for (const ally of state.allies) if (ally.native) units[ally.id] = structuredClone(ally.native);
   event2.nativeView = { round: state.round, units };
 }
-function fixed(state, owner, target, power2, kind, events, bypass = false) {
-  if (owner.hp <= 0 || target.hp <= 0 || power2 <= 0) return;
-  const attack = kind === "revenge" || kind === "demolition" ? power2 : owner.stats.damage;
-  const damage = bypass ? Math.round(power2) : damageAmount(attack, power2 / attack, nativeTargetDefense(state, target), false);
-  const absorbed = Math.min(target.shield, damage);
+function fixed(state, owner, target, power2, kind, events, bypass = false, activation, stored = true) {
+  if (owner.hp <= 0 || target.hp <= 0 || power2 <= 0) return 0;
+  let attack = kind === "revenge" || kind === "demolition" ? power2 : owner.stats.damage;
+  let ignore = activation ? calamiticSkillDefenseIgnore(state, owner, activation.action) : 0;
+  if (phaseZeroStatsReady && activation) {
+    const modifiers = conduitHitModifiers(state, owner, target, activation, false);
+    ignore = modifiers.pierce;
+    if (!stored) {
+      power2 *= (activation.skillPower + modifiers.skillPowerBonus) * (1 + modifiers.bonus) * (owner.stats.damage > 0 ? modifiers.attack / owner.stats.damage : 1) * nativeInstructionDamage(state, owner);
+      if (kind === "revenge") attack = power2;
+      else attack = modifiers.attack;
+    }
+  }
+  const damage = bypass ? Math.round(power2) : damageAmount(
+    attack,
+    power2 / attack,
+    nativeTargetDefense(state, target) * (1 - ignore),
+    false
+  );
+  const shieldBypass = !bypass && activation ? calamiticSkillShieldBypass(state, owner, activation.action) : 0;
+  const absorbed = Math.min(target.shield, damage - Math.floor(damage * shieldBypass));
   target.shield -= absorbed;
   const loss = Math.min(target.hp, damage - absorbed);
   target.hp -= loss;
+  if (phaseZeroStatsReady && activation) {
+    recordConduitHit(activation, target, loss, false, 1, Math.max(0, damage - loss - absorbed), loss + absorbed);
+    nativePrimaryHit(state, owner, target, loss > 0 || absorbed > 0, events);
+  }
   events.push({
     kind: "damage",
     source: owner.id,
@@ -5082,41 +6386,78 @@ function fixed(state, owner, target, power2, kind, events, bypass = false) {
     debuffs: debuffSnapshot(target),
     message: `${owner.name}: ${kind} deals ${loss} damage to ${target.name}${absorbed ? ` (${absorbed} shield absorbed)` : ""}.`
   });
+  return loss;
 }
-function seed(state, owner, target, fraction, events) {
-  fraction *= nativeSupportMultiplier(state, owner);
-  if (equipped(owner, "botanic-graft-covenant")) fraction *= 1 + value(state, owner, "botanic-graft-covenant", 0.5, 1);
+function seed(state, owner, target, fraction, events, activation, empowered = false, powerBonus = 0) {
+  if (phaseZeroStatsReady)
+    fraction *= (activation?.skillPower ?? owner.stats.skillPower ?? 1) + (activation?.supportPowerBonus ?? 0) + powerBonus;
+  else fraction *= nativeSupportMultiplier(state, owner);
+  if (!phaseZeroStatsReady && equipped(owner, "botanic-graft-covenant")) fraction *= 1 + value(state, owner, "botanic-graft-covenant", 0.5, 1);
   const seeds = nativeMemory(owner).seeds ??= {};
   if ((seeds[target.id]?.fraction ?? 0) > fraction) return;
-  seeds[target.id] = { fraction, dueRound: state.round + 1 };
-  status2(events, owner, target, `${target.name} holds a ${fraction * 100}% Seed for the next player turn.`);
+  seeds[target.id] = {
+    fraction,
+    dueRound: state.round + 1,
+    ...phaseZeroStatsReady && empowered ? { empowered: true } : {}
+  };
+  status3(events, owner, target, `${target.name} holds a ${fraction * 100}% Seed for the next player turn.`);
 }
-function releaseCyclone(state, owner, events) {
+function seedPayoff(state, owner, target, empowered) {
+  if (!phaseZeroStatsReady || !equipped(owner, "master-sprout-1")) return;
+  grantToken(state, target, "seedSkillPower", 0.25);
+  if (empowered) grantToken(state, target, "seedSkillEfficiency", 0.15);
+}
+function releaseCyclone(state, owner, events, activation) {
   const field = owner.native?.cyclone;
   if (!field) return;
   delete owner.native.cyclone;
-  for (const target of foes(state)) fixed(state, owner, target, owner.stats.damage * (0.7 + 0.3 * field.gusts), "cyclone", events);
+  let totalActualHpDamage = 0;
+  for (const target of foes(state))
+    totalActualHpDamage += fixed(
+      state,
+      owner,
+      target,
+      owner.stats.damage * (0.7 + 0.3 * field.gusts) * (phaseZeroStatsReady ? field.skillPower ?? 1 : 1),
+      "cyclone",
+      events,
+      false,
+      activation
+    );
+  if (phaseZeroStatsReady && equipped(owner, "master-atmoso-1")) {
+    const fraction = Math.min(0.18, field.gusts * 0.03);
+    for (const ally of living(state)) generatedGaugePercent(owner, ally, fraction, events, state);
+  }
+  if (phaseZeroStatsReady && equipped(owner, "master-atmoso-2") && totalActualHpDamage > 0) {
+    for (const ally of living(state)) {
+      const shield = Math.min(totalActualHpDamage * 0.3, ally.stats.health * 0.15);
+      timedConduitShield(state, owner, ally, shield, "master-atmoso-2", state.round, events);
+    }
+  }
 }
-function recall(state, owner, events) {
+function recall(state, owner, events, activation) {
   const blades = nativeMemory(owner).blades ??= [null, null];
   const targets = [...blades];
+  for (const id of new Set(targets.filter((target) => !!target))) {
+    const enemy = state.enemies.find((unit) => unit.id === id);
+    if (enemy) delete gear(enemy).numbers[`eliseSkillPower:${owner.id}`];
+  }
   blades[0] = blades[1] = null;
   for (const id of targets) {
     const target = state.enemies.find((enemy) => enemy.id === id && enemy.hp > 0);
-    if (target) fixed(state, owner, target, owner.stats.damage * 0.9, "recall", events);
+    if (target) fixed(state, owner, target, owner.stats.damage * 0.9, "recall", events, false, activation, false);
   }
   if (targets[0] && targets[0] === targets[1]) {
     const target = state.enemies.find((enemy) => enemy.id === targets[0] && enemy.hp > 0);
-    if (target) fixed(state, owner, target, owner.stats.damage * 0.6, "recall", events);
+    if (target) fixed(state, owner, target, owner.stats.damage * 0.6, "recall", events, false, activation, false);
   }
 }
 function nativeInstructionDamage(state, owner) {
   const instruction = owner.native?.instruction;
-  return instruction && instruction.throughRound >= state.round && living(state).some((unit) => unit.id === instruction.owner) && instruction.kind !== "shelter" ? 1.3 : 1;
+  return instruction && instruction.throughRound >= state.round && living(state).some((unit) => unit.id === instruction.owner) && instruction.kind !== "shelter" ? 1 + (phaseZeroStatsReady ? instruction.damageBonus ?? 0.3 : 0.3) : 1;
 }
 function nativeSupportMultiplier(state, owner) {
   const instruction = owner.native?.instruction;
-  return instruction && instruction.throughRound >= state.round && living(state).some((unit) => unit.id === instruction.owner) && instruction.kind !== "strike" ? 1.35 : 1;
+  return instruction && instruction.throughRound >= state.round && living(state).some((unit) => unit.id === instruction.owner) && instruction.kind !== "strike" ? 1 + (phaseZeroStatsReady ? instruction.supportBonus ?? 0.35 : 0.35) : 1;
 }
 function nativeAction(state, owner, action, targetId, events, direct, activation) {
   const memory = nativeMemory(owner);
@@ -5133,16 +6474,19 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
     recipient,
     recipient.stats.health * fraction,
     events,
-    { throughPhase: state.round + phases - 1, firstReduction }
+    { throughPhase: state.round + phases - 1 + activation.skillDuration, firstReduction, skillPower: activation.skillPower, activation }
   );
   const burn = (recipient, fraction) => {
     const burns = memory.burns ??= {};
     const previous = burns[recipient.id];
     const damage = applyConduitBurn(state, owner, recipient, owner.stats.damage * fraction, activation);
-    burns[recipient.id] = { damage: Math.max(previous?.damage ?? 0, damage), turns: 3 };
+    burns[recipient.id] = {
+      damage: Math.max(previous?.damage ?? 0, damage),
+      turns: 3 + activation.skillDuration + (phaseZeroStatsReady && equipped(owner, "flare-focusing-iris") ? 1 : 0)
+    };
     recipient.burn = { ...burns[recipient.id], sourceId: owner.id, origin: "native" };
     resetConduitBurnStreak(owner, recipient);
-    status2(events, owner, recipient, `${recipient.name}: Infernis Burn, ${burns[recipient.id].damage} per phase for 3 phases.`);
+    status3(events, owner, recipient, `${recipient.name}: Infernis Burn, ${burns[recipient.id].damage} per phase for ${burns[recipient.id].turns} phases.`);
   };
   if (action === "light") {
     hit(1);
@@ -5159,14 +6503,14 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       }
       if (action === "skill2") {
         hit(1.1, true);
-        for (const enemy of foes(state).filter((enemy2) => !equipped(owner, "master-ember-2") || enemy2.id === targetId)) {
+        for (const enemy of foes(state).filter((enemy2) => phaseZeroStatsReady || !equipped(owner, "master-ember-2") || enemy2.id === targetId)) {
           const stored = memory.burns?.[enemy.id];
           if (!stored) continue;
-          const conserved = equipped(owner, "master-ember-3");
+          const conserved = !phaseZeroStatsReady && equipped(owner, "master-ember-3");
           const ticks = Math.min(conserved ? 1 : 2, stored.turns);
           stored.turns -= ticks;
           activation.spent.ember = (activation.spent.ember ?? 0) + ticks;
-          fixed(state, owner, enemy, stored.damage * ticks * (conserved ? 2 : 1), "detonation", events, true);
+          fixed(state, owner, enemy, stored.damage * ticks * (conserved ? 2 : 1), "detonation", events, true, activation);
           if (enemy.burn.sourceId === owner.id) enemy.burn.turns = stored.turns;
         }
       }
@@ -5178,41 +6522,62 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
     case "tide":
       if (action === "skill1") {
         hit(1.5);
-        if (target?.hp) applyConduitWeaken(state, owner, target, 0.25, events, action, 1);
+        if (target?.hp) applyConduitWeaken(state, owner, target, 0.25, events, action, 1, activation);
       }
-      if (action === "skill2" && ally) shield(ally, nativeBalance.tizu.shelter * (equipped(owner, "master-tide-2") ? 3 : 1), 1);
+      if (action === "skill2" && ally) shield(
+        ally,
+        nativeBalance.tizu.shelter * (!phaseZeroStatsReady && equipped(owner, "master-tide-2") ? 3 : 1),
+        1
+      );
       if (action === "ultimate") for (const recipient of allies) shield(recipient, nativeBalance.tizu.oceanMemory, 2, 0.3);
       break;
     case "sprout":
       if (action === "skill1") {
         hit(1.4);
-        const recipient = [...allies].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
-        if (recipient) seed(state, owner, recipient, nativeBalance.flora.seed, events);
+        const recipients = phaseZeroStatsReady && equipped(owner, "master-sprout-2") ? allies : [[...allies].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0]].filter((unit) => !!unit);
+        for (const recipient of recipients) seed(
+          state,
+          owner,
+          recipient,
+          nativeBalance.flora.seed,
+          events,
+          activation,
+          false,
+          phaseZeroStatsReady && equipped(owner, "master-sprout-2") ? 0.2 : 0
+        );
       }
       if (action === "skill2") {
         for (const recipient of allies) {
           const pending2 = memory.seeds?.[recipient.id];
-          if (pending2) nativeHeal(state, owner, recipient, recipient.stats.health * pending2.fraction, events, true, activation, false);
+          if (pending2) {
+            nativeHeal(state, owner, recipient, recipient.stats.health * pending2.fraction, events, true, activation, false);
+            seedPayoff(state, owner, recipient, !!pending2.empowered);
+          }
         }
         delete memory.seeds;
-        for (const recipient of allies) seed(state, owner, recipient, nativeBalance.flora.seed, events);
+        for (const recipient of allies) seed(state, owner, recipient, nativeBalance.flora.seed, events, activation);
       }
       if (action === "ultimate") for (const recipient of allies) {
         nativeHeal(state, owner, recipient, recipient.stats.health * nativeBalance.flora.immediateHeal, events, true, activation);
-        seed(state, owner, recipient, nativeBalance.flora.empoweredSeed, events);
+        seed(state, owner, recipient, nativeBalance.flora.empoweredSeed, events, activation, true);
       }
       break;
     case "atmoso":
       if (action === "skill1") {
         hit(1.8);
-        releaseCyclone(state, owner, events);
+        releaseCyclone(state, owner, events, activation);
       }
       if (action === "skill2") {
-        releaseCyclone(state, owner, events);
-        memory.cyclone = { gusts: 0, phases: 2, contributors: {} };
+        releaseCyclone(state, owner, events, activation);
+        memory.cyclone = {
+          gusts: 0,
+          phases: 2 + activation.skillDuration,
+          contributors: {},
+          skillPower: activation.skillPower
+        };
       }
       if (action === "ultimate") {
-        releaseCyclone(state, owner, events);
+        releaseCyclone(state, owner, events, activation);
         hit(2, true);
       }
       break;
@@ -5221,14 +6586,33 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       if (action === "skill1") {
         const held = blades.indexOf(null);
         hit(held < 0 ? 1.4 : 1.1);
-        if (held >= 0 && target?.hp) blades[held] = target.id;
+        if (held >= 0 && target?.hp) {
+          blades[held] = target.id;
+          if (phaseZeroStatsReady && equipped(owner, "master-elise-2")) {
+            const numbers = gear(target).numbers;
+            const key = `eliseSkillPower:${owner.id}`;
+            numbers[key] = (numbers[key] ?? 0) + 1;
+          }
+        }
       }
       if (action === "skill2") {
         if (blades.every((blade) => blade === null)) hit(1.4);
-        else recall(state, owner, events);
+        else {
+          const targets = [...blades];
+          recall(state, owner, events, activation);
+          if (phaseZeroStatsReady && equipped(owner, "master-elise-3")) {
+            activation.spent.eliseRecallCount = targets.filter(Boolean).length;
+            activation.spent.eliseSameTarget = targets[0] && targets[0] === targets[1] ? 1 : 0;
+          }
+        }
       }
       if (action === "ultimate") {
-        recall(state, owner, events);
+        const targets = [...blades];
+        recall(state, owner, events, activation);
+        if (phaseZeroStatsReady && equipped(owner, "master-elise-3")) {
+          activation.spent.eliseRecallCount = targets.filter(Boolean).length;
+          activation.spent.eliseSameTarget = targets[0] && targets[0] === targets[1] ? 1 : 0;
+        }
         hit(2.6);
       }
       break;
@@ -5237,23 +6621,41 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       if (action === "skill1") {
         hit(1.7, false, 0, posture === "opening" ? 0.25 : 0);
         if (posture === "closing") {
-          const recipient = [...other].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
-          if (recipient) nativeHeal(state, owner, recipient, recipient.stats.health * 0.06, events, true, activation);
+          if (phaseZeroStatsReady && equipped(owner, "master-bliss-2")) {
+            for (const recipient of other)
+              nativeHeal(state, owner, recipient, recipient.stats.health * 0.06, events, true, activation);
+          } else {
+            const recipient = [...other].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+            if (recipient) nativeHeal(state, owner, recipient, recipient.stats.health * 0.06, events, true, activation);
+          }
         }
+        if (phaseZeroStatsReady && equipped(owner, "master-bliss-2") && posture === "opening")
+          for (const recipient of other) grantToken(state, recipient, "blissCriticalRate", 0.25);
       }
       if (action === "skill2") {
         hit(1.2, true);
-        if (posture === "opening") for (const recipient of allies) {
+        if (posture === "opening" || phaseZeroStatsReady && equipped(owner, "master-bliss-1")) for (const recipient of allies) {
           const prior = recipient.attackBoost?.throughRound ?? 0;
-          if (prior < state.round || (recipient.attackBoost?.fraction ?? 0) <= 0.1)
-            recipient.attackBoost = { fraction: 0.1, throughRound: state.round, sourceId: owner.id, origin: "native" };
+          const fraction = 0.1 * (phaseZeroStatsReady ? activation.skillPower : 1);
+          if (prior < state.round || (recipient.attackBoost?.fraction ?? 0) <= fraction)
+            recipient.attackBoost = {
+              fraction,
+              throughRound: state.round + activation.skillDuration,
+              sourceId: owner.id,
+              origin: "native"
+            };
         }
-        if (posture === "closing") for (const recipient of allies) shield(recipient, 0.06, 1);
+        if (posture === "closing" || phaseZeroStatsReady && equipped(owner, "master-bliss-1"))
+          for (const recipient of allies) shield(recipient, 0.06, 1);
         if (activation.healExtra > 0) for (const recipient of other)
           nativeHeal(state, owner, recipient, 0, events, true, activation);
       }
       if (action === "ultimate") {
         hit(2.5, true, 0, posture === "opening" ? 0.3 : 0);
+        if (phaseZeroStatsReady && equipped(owner, "master-bliss-3")) for (const recipient of other) {
+          grantToken(state, recipient, "blissSkillEfficiency", 0.25);
+          if (posture === "closing") grantToken(state, recipient, "blissSkillDuration", 1);
+        }
         if (posture === "closing") for (const recipient of other)
           nativeHeal(state, owner, recipient, recipient.stats.health * 0.1, events, true, activation);
       }
@@ -5261,16 +6663,34 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
     case "bruno":
       if (action === "skill1") hit(1.9);
       if (action === "skill2") {
-        if (!other.length) memory.reduction = { fraction: 0.2, throughPhase: state.round };
-        else if (ally && ally.id !== owner.id) memory.cover = { targets: [ally.id], fraction: equipped(owner, "master-bruno-3") ? 0.35 : 0.5, throughPhase: state.round };
+        if (!other.length) memory.reduction = {
+          fraction: 0.2 * (phaseZeroStatsReady ? activation.skillPower : 1),
+          throughPhase: state.round + activation.skillDuration
+        };
+        else if (ally && ally.id !== owner.id) memory.cover = {
+          targets: [ally.id],
+          fraction: Math.min(1, (!phaseZeroStatsReady && equipped(owner, "master-bruno-3") ? 0.35 : 0.5) * (phaseZeroStatsReady ? activation.skillPower : 1)),
+          throughPhase: state.round + activation.skillDuration
+        };
       }
       if (action === "ultimate") {
-        memory.cover = { targets: other.map((unit) => unit.id), fraction: 0.4, throughPhase: state.round + 1 };
-        const shield2 = Math.max(
+        memory.cover = {
+          targets: other.map((unit) => unit.id),
+          fraction: Math.min(1, 0.4 * (phaseZeroStatsReady ? activation.skillPower : 1)),
+          throughPhase: state.round + 1 + activation.skillDuration
+        };
+        const shield2 = phaseZeroStatsReady && equipped(owner, "master-bruno-2") ? Math.max(owner.stats.health * 0.25, effectiveDefense(state, owner) * 2.5) : Math.max(
           owner.stats.health * 0.2,
-          equipped(owner, "master-bruno-2") ? effectiveDefense(state, owner) * 2 : 0
+          phaseZeroStatsReady || equipped(owner, "master-bruno-2") ? effectiveDefense(state, owner) * 2 : 0
         );
-        nativeShield(state, owner, owner, shield2, events, { throughPhase: state.round + 1 });
+        nativeShield(
+          state,
+          owner,
+          owner,
+          shield2,
+          events,
+          { throughPhase: state.round + 1 + activation.skillDuration, skillPower: activation.skillPower, activation }
+        );
       }
       break;
     case "disciple": {
@@ -5281,9 +6701,10 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
         nativeMemory(recipient).instruction = {
           kind: action === "skill1" ? "strike" : action === "skill2" ? "shelter" : "resolve",
           owner: owner.id,
-          throughRound: state.round + (equipped(owner, "master-disciple-1") ? 3 : 1)
+          throughRound: state.round + (equipped(owner, "master-disciple-1") ? 3 : 1) + activation.skillDuration,
+          ...phaseZeroStatsReady ? { damageBonus: 0.3 * activation.skillPower, supportBonus: 0.35 * activation.skillPower } : {}
         };
-        status2(events, owner, recipient, `${recipient.name} receives ${action === "skill1" ? "Strike" : action === "skill2" ? "Shelter" : "Resolve"} Instruction.`);
+        status3(events, owner, recipient, `${recipient.name} receives ${action === "skill1" ? "Strike" : action === "skill2" ? "Shelter" : "Resolve"} Instruction.`);
       }
       break;
     }
@@ -5292,19 +6713,46 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       if (action !== "ultimate") {
         const seals = memory.seals ??= {};
         for (const enemy of action === "skill1" ? target ? [target] : [] : foes(state)) {
-          seals[enemy.id] = { fraction: Math.max(seals[enemy.id]?.fraction ?? 0, action === "skill1" ? 0.4 : 0.25), throughPhase: state.round + 2 };
-          status2(events, owner, enemy, `${enemy.name} sealed through enemy phase ${state.round + 2}.`);
+          seals[enemy.id] = {
+            fraction: Math.max(
+              seals[enemy.id]?.fraction ?? 0,
+              Math.min(1, (action === "skill1" ? 0.4 : 0.25) * (phaseZeroStatsReady ? activation.skillPower : 1))
+            ),
+            throughPhase: state.round + 2 + activation.skillDuration
+          };
+          status3(events, owner, enemy, `${enemy.name} sealed through enemy phase ${seals[enemy.id].throughPhase}.`);
         }
-      } else memory.ultimateWardThrough = state.round + 1;
+      } else {
+        memory.ultimateWardThrough = state.round + 1 + activation.skillDuration;
+        if (phaseZeroStatsReady) memory.ultimateWardReduction = 0.5 * activation.skillPower;
+      }
       break;
     case "razor":
-      if (action === "skill2") memory.bastion = { throughPhase: state.round, loss: 0 };
+      if (action === "skill2") memory.bastion = {
+        throughPhase: state.round,
+        loss: 0,
+        ...phaseZeroStatsReady ? {
+          skillPower: activation.skillPower + (activation.supportPowerBonus ?? 0),
+          skillDuration: activation.skillDuration
+        } : {}
+      };
       else {
         const spent = memory.wounds ?? 0;
         memory.wounds = (memory.wounds ?? 0) - spent;
+        activation.spent.wounds = spent;
         hit(action === "skill1" ? 1.6 : 2.2);
-        if (target?.hp) fixed(state, owner, target, spent * (action === "ultimate" ? 2 : 1), "revenge", events);
-        if (action === "skill1" && target?.hp && equipped(owner, "master-razor-3") && !gear(target).numbers[`silenced:${owner.id}`]) {
+        if (target?.hp) fixed(
+          state,
+          owner,
+          target,
+          spent * (action === "ultimate" ? 2 : 1),
+          "revenge",
+          events,
+          false,
+          activation,
+          false
+        );
+        if (!phaseZeroStatsReady && action === "skill1" && target?.hp && equipped(owner, "master-razor-3") && !gear(target).numbers[`silenced:${owner.id}`]) {
           gear(target).numbers[`silenced:${owner.id}`] = 1;
           gear(target).numbers.silence = 1;
         }
@@ -5328,8 +6776,9 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       const traps = memory.traps ??= {};
       if (action === "skill2") {
         const charged = traps[targetId]?.charges === 3;
-        hit(1.7, charged && equipped(owner, "master-thornia-2"));
-        if (charged && equipped(owner, "master-thornia-2")) for (const enemy of foes(state)) {
+        const legacyMaster = !phaseZeroStatsReady && equipped(owner, "master-thornia-2");
+        hit(1.7, charged && legacyMaster);
+        if (charged && legacyMaster) for (const enemy of foes(state)) {
           if (enemy.id !== targetId) {
             enemy.weakened = Math.max(enemy.weakened, 1);
             enemy.weakenFraction = Math.max(enemy.weakenFraction, 0.15);
@@ -5339,13 +6788,21 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
         }
         if (target?.hp && (traps[target.id]?.charges ?? 0) > 0) {
           traps[target.id].charges--;
-          fixed(state, owner, target, owner.stats.damage * 0.8, "trap", events);
+          fixed(state, owner, target, owner.stats.damage * 0.8, "trap", events, false, activation, false);
         }
       } else {
         if (action === "ultimate") hit(1.4, true);
         for (const enemy of action === "skill1" ? target ? [target] : [] : foes(state)) {
-          traps[enemy.id] = { charges: 3, coefficient: Math.max(traps[enemy.id]?.coefficient ?? 0, action === "ultimate" ? 0.9 : 0.6), throughPhase: state.round + 2 };
-          status2(events, owner, enemy, `${enemy.name}: 3 Thorn trap charges through enemy phase ${state.round + 2}.`);
+          traps[enemy.id] = {
+            charges: 3,
+            coefficient: Math.max(
+              traps[enemy.id]?.coefficient ?? 0,
+              (action === "ultimate" ? 0.9 : 0.6) * (phaseZeroStatsReady ? activation.skillPower : 1)
+            ),
+            throughPhase: state.round + 2 + activation.skillDuration,
+            ...phaseZeroStatsReady ? { empowered: action === "ultimate" } : {}
+          };
+          status3(events, owner, enemy, `${enemy.name}: 3 Thorn trap charges through enemy phase ${traps[enemy.id].throughPhase}.`);
         }
       }
       break;
@@ -5353,11 +6810,21 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
     case "crinso":
       if (action === "skill1") {
         hit(1.6, false, memory.edge === "crimson" ? 0.2 : 0);
-        memory.combo = memory.edge === "crimson" ? (memory.combo ?? 0) + 1 : 0;
+        const combo = memory.edge === "crimson" ? (memory.combo ?? 0) + 1 : 0;
+        if (phaseZeroStatsReady && combo > (memory.combo ?? 0)) {
+          activation.spent.crinsoCombo = combo;
+        }
+        memory.combo = combo;
+        if (phaseZeroStatsReady && equipped(owner, "master-crinso-2") && memory.edge === "crimson")
+          activation.spent.goldenEdge = 1;
         memory.edge = "gold";
       } else if (action === "skill2") {
         hit(memory.edge === "gold" ? 2.4 : 2);
-        memory.combo = memory.edge === "gold" ? (memory.combo ?? 0) + 1 : 0;
+        const combo = memory.edge === "gold" ? (memory.combo ?? 0) + 1 : 0;
+        if (phaseZeroStatsReady && combo > (memory.combo ?? 0)) {
+          activation.spent.crinsoCombo = combo;
+        }
+        memory.combo = combo;
         memory.edge = "crimson";
       } else {
         const combo = memory.combo ?? 0;
@@ -5368,14 +6835,22 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       }
       break;
     case "nerithe": {
-      if (action === "skill2" && equipped(owner, "master-nerithe-2")) break;
       const surveyed = foes(state).find((enemy) => enemy.id === memory.survey?.target);
       if (action === "skill2") {
-        if (memory.survey && target) memory.survey.target = target.id;
+        if (!phaseZeroStatsReady && equipped(owner, "master-nerithe-2")) break;
+        if (memory.survey && target) {
+          const moved = memory.survey.target !== target.id;
+          memory.survey.target = target.id;
+          if (phaseZeroStatsReady && moved && equipped(owner, "master-nerithe-2")) for (const recipient of other) {
+            grantToken(state, recipient, "foldTarget", 1);
+            gear(recipient).owners.foldTarget = target.id;
+          }
+        }
         hit(1.3, true);
       } else {
         const spent = surveyed ? Math.min(memory.survey?.points ?? 0, action === "skill1" ? 1 : Infinity) : 0;
         if (memory.survey) memory.survey.points -= spent;
+        activation.spent.survey = spent;
         hit(action === "skill1" ? 1.8 : 2.8, false, spent * (action === "skill1" ? 0.25 : 0.15), 0, surveyed ?? target);
       }
       break;
@@ -5384,32 +6859,42 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       if (action === "skill1") {
         hit(memory.foundation ? 1.4 : 1.8);
         if (memory.foundation) {
-          memory.foundation.durability += owner.stats.health * 0.08;
+          const repair = owner.stats.health * 0.08 * (phaseZeroStatsReady ? activation.skillPower + (activation.supportPowerBonus ?? 0) + (equipped(owner, "master-orvella-3") ? 0.5 : 0) : 1);
+          memory.foundation.durability += repair;
           memory.foundation.maximum = Math.max(memory.foundation.maximum, memory.foundation.durability);
         }
       } else if (action === "skill2") {
-        const plating = equipped(owner, "master-orvella-1");
-        const maximum = owner.stats.health * (plating ? 0.15 : 0.3);
-        memory.foundation = { durability: maximum, maximum, throughPhase: state.round + 2 };
+        const plating = !phaseZeroStatsReady && equipped(owner, "master-orvella-1");
+        const maximum = owner.stats.health * (plating ? 0.15 : 0.3) * (phaseZeroStatsReady ? activation.skillPower : 1);
+        memory.foundation = { durability: maximum, maximum, throughPhase: state.round + 2 + activation.skillDuration };
         if (plating) for (const recipient of allies)
           generatedShield(owner, recipient, Math.min(recipient.stats.health * 0.15, owner.stats.health * 0.05), events, true, recipient.stats.health * 0.15, true);
       } else {
         const power2 = memory.foundation?.durability ?? 0;
-        delete memory.foundation;
+        if (phaseZeroStatsReady && equipped(owner, "master-orvella-1") && memory.foundation) {
+          memory.foundation.durability = power2 * 0.4;
+        } else delete memory.foundation;
         hit(2, true);
-        for (const enemy of foes(state)) fixed(state, owner, enemy, power2, "demolition", events);
+        for (const enemy of foes(state)) fixed(state, owner, enemy, power2, "demolition", events, false, activation);
+        if (phaseZeroStatsReady && equipped(owner, "master-orvella-1"))
+          for (const recipient of other) grantToken(state, recipient, "orvellaSkillEfficiency", 0.2);
       }
       break;
     case "vaelor":
       if (action === "skill1") hit(1.7, false, 0, (memory.beat ?? 0) === 0 ? 0.3 : 0);
       if (action === "skill2") {
         hit(1.2, true);
-        if (memory.beat === 1) owner.attackBoost = {
-          fraction: Math.max(owner.attackBoost?.fraction ?? 0, 0.2),
-          throughRound: Math.max(owner.attackBoost?.throughRound ?? 0, state.round + 1),
-          sourceId: owner.id,
-          origin: "native"
-        };
+        if (memory.beat === 1) {
+          const fraction = 0.2 * (phaseZeroStatsReady ? activation.skillPower : 1);
+          const throughRound = state.round + 1 + activation.skillDuration;
+          if (!phaseZeroStatsReady || !owner.attackBoost || owner.attackBoost.throughRound < state.round || owner.attackBoost.fraction <= fraction)
+            owner.attackBoost = {
+              fraction: phaseZeroStatsReady ? fraction : Math.max(owner.attackBoost?.fraction ?? 0, fraction),
+              throughRound: phaseZeroStatsReady ? throughRound : Math.max(owner.attackBoost?.throughRound ?? 0, throughRound),
+              sourceId: owner.id,
+              origin: "native"
+            };
+        }
       }
       if (action === "ultimate") hit((memory.beat ?? 0) === 2 ? 3.4 : 2.6, true);
       break;
@@ -5418,13 +6903,31 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
   }
 }
 function nativeAfterAction(state, owner, action, priorInstruction, events) {
-  if (priorInstruction && owner.native?.instruction === priorInstruction) delete owner.native.instruction;
+  if (priorInstruction && owner.native?.instruction === priorInstruction) {
+    const ability2 = action === "light" ? void 0 : owner.kit?.abilities[action];
+    const traits = phaseZeroStatsReady ? conduitActionTraits(state, owner, action) : void 0;
+    const damaging = traits?.damage ?? (action === "light" || ability2?.strength.damageMultiplier !== void 0);
+    const supporting = traits ? traits.healing || traits.shield : ability2?.strength.healing !== void 0 || ability2?.strength.shield !== void 0;
+    const matchingOnly = phaseZeroStatsReady && priorInstruction.throughRound >= state.round && living(state).some((unit) => unit.id === priorInstruction.owner && equipped(unit, "master-disciple-1"));
+    const mismatch = matchingOnly && (priorInstruction.kind === "strike" && !damaging || priorInstruction.kind === "shelter" && !supporting);
+    if (!mismatch) delete owner.native.instruction;
+  }
+  if (phaseZeroStatsReady && priorInstruction?.kind === "resolve" && priorInstruction.throughRound >= state.round) {
+    const disciple = living(state).find((unit) => unit.id === priorInstruction.owner && equipped(unit, "master-disciple-2"));
+    if (disciple) for (const ally of living(state).filter((unit) => unit.id !== owner.id))
+      generatedGaugePercent(disciple, ally, 0.1, events, state);
+  }
   for (const caster of living(state).filter(hasNativeIdentity)) {
     const field = caster.native?.cyclone;
     if (field && caster.id !== owner.id && field.contributors[owner.id] !== state.round) {
       field.contributors[owner.id] = state.round;
       field.gusts += 1;
-      status2(events, caster, caster, `Cyclone holds ${field.gusts} Gusts.`);
+      if (phaseZeroStatsReady && equipped(caster, "master-atmoso-3")) {
+        const numbers = gear(owner).numbers;
+        numbers.crosswindGaugeBonus = 0.3;
+        numbers.crosswindGaugeThrough = state.round + 1;
+      }
+      status3(events, caster, caster, `Cyclone holds ${field.gusts} Gusts.`);
     }
   }
   nativeCleanup(state);
@@ -5441,31 +6944,60 @@ function nativePrimaryHit(state, attacker, target, effective, events) {
     if (!quarry.contributors.includes(attacker.id)) quarry.contributors.push(attacker.id);
     if (quarry.contributors.length >= 2) {
       const contributors = living(state).filter((unit) => quarry.contributors.includes(unit.id));
+      if (phaseZeroStatsReady || !equipped(owner, "master-rosetta-1"))
+        for (const ally of contributors) nativeShield(state, owner, ally, ally.stats.health * 0.08, events);
       if (equipped(owner, "master-rosetta-1")) {
-        const recipient = [...living(state)].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
-        if (recipient) nativeShield(state, owner, recipient, recipient.stats.health * 0.48, events);
-      } else for (const ally of contributors) nativeShield(state, owner, ally, ally.stats.health * 0.08, events);
+        if (quarry.paidRound !== state.round) {
+          quarry.paidRound = state.round;
+          if (phaseZeroStatsReady) {
+            for (const contributor of contributors.slice(0, 2))
+              generatedGaugePercent(owner, contributor, 0.12, events, state);
+          } else {
+            const recipient = [...living(state)].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+            if (recipient) nativeShield(state, owner, recipient, recipient.stats.health * 0.48, events);
+          }
+        }
+      }
     }
   }
 }
 function nativeIncomingMultiplier(state, enemy, target, action, events) {
   let multiplier = 1;
-  if (target.native?.reduction && target.native.reduction.throughPhase >= state.round) multiplier *= 1 - target.native.reduction.fraction;
-  if (target.native?.bastion && target.native.bastion.throughPhase >= state.round) multiplier *= 0.7;
+  if (target.native?.reduction && target.native.reduction.throughPhase >= state.round)
+    multiplier *= phaseZeroStatsReady ? Math.max(0, 1 - target.native.reduction.fraction) : 1 - target.native.reduction.fraction;
+  if (target.native?.bastion && target.native.bastion.throughPhase >= state.round)
+    multiplier *= phaseZeroStatsReady ? Math.max(0, 1 - 0.3 * (target.native.bastion.skillPower ?? 1)) : 0.7;
   let hostile = enemy.native?.hostileReduction;
   if (hostile === void 0) {
     hostile = 1;
+    let strongestSeal = 0;
+    let strongestWard = 0;
     for (const owner of living(state).filter(hasNativeIdentity)) {
       if (action !== "light") {
         const seal = owner.native?.seals?.[enemy.id];
         if (seal && seal.throughPhase >= state.round) {
-          hostile *= 1 - seal.fraction;
+          if (phaseZeroStatsReady) strongestSeal = Math.max(strongestSeal, seal.fraction);
+          else hostile *= 1 - seal.fraction;
+          if (phaseZeroStatsReady && equipped(owner, "master-aurora-1"))
+            gear(enemy).owners.auroraShieldOwner = owner.id;
+          if (phaseZeroStatsReady && equipped(owner, "master-aurora-3")) {
+            const key = `auroraHeal:${enemy.id}:${state.round}`;
+            if (gear(enemy).numbers[key] !== 1) {
+              gear(enemy).numbers[key] = 1;
+              for (const ally of living(state))
+                generatedHeal(owner, ally, ally.stats.health * 0.08, events, state);
+            }
+          }
           delete owner.native.seals[enemy.id];
-          status2(events, owner, enemy, `${enemy.name}'s Seal is consumed by its special.`);
+          status3(events, owner, enemy, `${enemy.name}'s Seal is consumed by its special.`);
         }
       }
-      if (action === "ultimate" && (owner.native?.ultimateWardThrough ?? 0) >= state.round) hostile *= 0.5;
+      if ((action === "ultimate" || phaseZeroStatsReady && equipped(owner, "master-aurora-2")) && (owner.native?.ultimateWardThrough ?? 0) >= state.round) {
+        if (phaseZeroStatsReady) strongestWard = Math.max(strongestWard, owner.native?.ultimateWardReduction ?? 0.5);
+        else hostile *= 0.5;
+      }
     }
+    if (phaseZeroStatsReady) hostile *= Math.max(0, 1 - strongestSeal) * Math.max(0, 1 - strongestWard);
     nativeMemory(enemy).hostileReduction = hostile;
   }
   return multiplier * hostile;
@@ -5476,15 +7008,24 @@ function nativeRouteDamage(state, enemy, target, amount, events, redirect) {
   if (bruno?.native?.cover) {
     const routed = remaining * bruno.native.cover.fraction;
     remaining -= routed;
+    if (phaseZeroStatsReady && routed > 0 && equipped(bruno, "master-bruno-1"))
+      grantToken(state, target, "brunoCoverSkillPower", 0.3);
     redirect(bruno, routed * 0.75);
   }
-  for (const owner of living(state)) {
+  const foundations = living(state).filter((owner) => owner.native?.foundation && owner.native.foundation.durability > 0 && owner.native.foundation.throughPhase >= state.round);
+  if (phaseZeroStatsReady) foundations.sort((a, b) => b.native.foundation.durability - a.native.foundation.durability);
+  for (const owner of phaseZeroStatsReady ? foundations.slice(0, 1) : foundations) {
     const foundation = owner.native?.foundation;
     if (!foundation || foundation.throughPhase < state.round) continue;
     const absorbed = Math.min(foundation.durability, remaining * 0.2);
     foundation.durability -= absorbed;
     remaining -= absorbed;
-    status2(events, owner, target, `Foundation absorbs ${absorbed}; ${foundation.durability} durability remains.`, absorbed);
+    if (phaseZeroStatsReady && absorbed > 0 && equipped(owner, "master-orvella-2")) {
+      const numbers = gear(owner).numbers;
+      numbers.foundationHealBank = (numbers.foundationHealBank ?? 0) + absorbed * 0.4;
+      numbers.foundationHealDueRound ??= state.round + 1;
+    }
+    status3(events, owner, target, `Foundation absorbs ${absorbed}; ${foundation.durability} durability remains.`, absorbed);
     if (foundation.durability <= 0) delete owner.native.foundation;
   }
   return remaining;
@@ -5494,7 +7035,7 @@ function nativeDirectHpLoss(state, target, loss, events) {
     const memory = nativeMemory(target);
     memory.wounds = (memory.wounds ?? 0) + loss;
     if (memory.bastion?.throughPhase === state.round) memory.bastion.loss += loss;
-    status2(events, target, target, `${target.name} banks ${memory.wounds} Wounds.`, memory.wounds);
+    status3(events, target, target, `${target.name} banks ${memory.wounds} Wounds.`, memory.wounds);
   }
 }
 function nativeAbsorbedHit(state, target, nativeOwners, loss, events) {
@@ -5506,12 +7047,53 @@ function nativeAbsorbedHit(state, target, nativeOwners, loss, events) {
   }
 }
 function nativeEnemyCompleted(state, enemy, damaging, events) {
+  const auroraOwnerId = gear(enemy).owners.auroraShieldOwner;
+  if (auroraOwnerId) {
+    delete gear(enemy).owners.auroraShieldOwner;
+    const owner = living(state).find((ally) => ally.id === auroraOwnerId && equipped(ally, "master-aurora-1"));
+    const recipient = [...living(state)].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+    if (phaseZeroStatsReady && owner && recipient)
+      timedConduitShield(
+        state,
+        owner,
+        recipient,
+        recipient.stats.health * 0.15,
+        "master-aurora-1",
+        state.round,
+        events
+      );
+  }
   if (!damaging) return;
   for (const owner of living(state).filter(hasNativeIdentity)) {
     const trap = owner.native?.traps?.[enemy.id];
     if (trap && trap.charges > 0 && trap.throughPhase >= state.round) {
       trap.charges--;
-      if (equipped(owner, "master-thornia-1")) {
+      if (phaseZeroStatsReady && equipped(owner, "master-thornia-1")) {
+        gear(enemy).numbers.thorniaDefenseThrough = state.round + 1;
+      }
+      if (phaseZeroStatsReady && equipped(owner, "master-thornia-2") && trap.empowered) {
+        const numbers = gear(owner).numbers;
+        const key = `thorniaShield:${enemy.id}:${state.round}`;
+        if (numbers[key] !== 1) {
+          numbers[key] = 1;
+          const targets = new Set(events.filter((event2) => event2.kind === "damage" && event2.source === enemy.id && state.allies.some((ally) => ally.id === event2.target)).map((event2) => event2.target));
+          for (const id of targets) {
+            const recipient = living(state).find((ally) => ally.id === id);
+            if (recipient) timedConduitShield(
+              state,
+              owner,
+              recipient,
+              recipient.stats.health * 0.12,
+              "master-thornia-2",
+              state.round,
+              events
+            );
+          }
+        }
+      }
+      if (phaseZeroStatsReady && equipped(owner, "master-thornia-3"))
+        grantToken(state, owner, "thorniaSkillPower", 0.2);
+      if (!phaseZeroStatsReady && equipped(owner, "master-thornia-1")) {
         for (const target of foes(state)) generatedStrike(state, owner, target, owner.stats.damage * 0.4, events, false);
       } else fixed(state, owner, enemy, owner.stats.damage * trap.coefficient, "trap", events);
     }
@@ -5534,11 +7116,33 @@ function nativeBurnPhase(state, enemy, events) {
   }
 }
 function nativePhaseEnd(state, events) {
+  if (phaseZeroStatsReady) {
+    const owner = living(state).find((unit) => equipped(unit, "master-aurora-2") && (unit.native?.ultimateWardThrough ?? 0) >= state.round);
+    if (owner) for (const ally of living(state)) generatedGaugePercent(owner, ally, 0.08, events, state);
+  }
+  if (phaseZeroStatsReady) for (const owner of living(state).filter((unit) => equipped(unit, "master-ember-1"))) {
+    const numbers = gear(owner).numbers;
+    const damage = numbers.masterEmberBurnDamage ?? 0;
+    delete numbers.masterEmberBurnDamage;
+    if (damage <= 0) continue;
+    const target = [...living(state)].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+    if (target) generatedHeal(owner, target, damage * 0.25, events, state, target.stats.health * 0.12);
+  }
   for (const owner of living(state).filter(hasNativeIdentity)) {
     const memory = nativeMemory(owner);
     if (memory.cyclone && --memory.cyclone.phases <= 0) releaseCyclone(state, owner, events);
     if (memory.bastion && memory.bastion.throughPhase <= state.round) {
-      if (memory.bastion.loss > 0) nativeShield(state, owner, owner, memory.bastion.loss, events, { throughPhase: state.round + 1 });
+      if (memory.bastion.loss > 0) {
+        const shield = memory.bastion.loss;
+        const created = nativeShield(state, owner, owner, shield, events, {
+          throughPhase: state.round + 1 + (phaseZeroStatsReady ? memory.bastion.skillDuration ?? 0 : 0),
+          ...phaseZeroStatsReady ? { skillPower: memory.bastion.skillPower ?? 1 } : {}
+        });
+        if (phaseZeroStatsReady && equipped(owner, "master-razor-2")) for (const ally of living(state).filter((unit) => unit.id !== owner.id)) {
+          const offer = Math.min(created * 0.4, ally.stats.health * 0.15);
+          timedConduitShield(state, owner, ally, offer, "master-razor-2", state.round, events);
+        }
+      }
       delete memory.bastion;
     }
     if (memory.cover && memory.cover.throughPhase <= state.round) delete memory.cover;
@@ -5550,6 +7154,19 @@ function nativePhaseEnd(state, events) {
   nativeCleanup(state);
 }
 function nativeTurnStart(state, events) {
+  if (phaseZeroStatsReady) for (const owner of living(state).filter((unit) => equipped(unit, "master-orvella-2"))) {
+    const numbers = gear(owner).numbers;
+    if ((numbers.foundationHealDueRound ?? Number.POSITIVE_INFINITY) > state.round) continue;
+    const bank = numbers.foundationHealBank ?? 0;
+    delete numbers.foundationHealBank;
+    delete numbers.foundationHealDueRound;
+    const recipients = living(state).filter((ally) => ally.hp < ally.stats.health);
+    if (bank > 0 && recipients.length) {
+      const share = bank / recipients.length;
+      for (const ally of recipients)
+        generatedHeal(owner, ally, share, events, state, ally.stats.health * 0.12);
+    }
+  }
   for (const owner of living(state).filter(hasNativeIdentity)) {
     const memory = nativeMemory(owner);
     if (owner.definitionId === "vaelor" && memory.beatRound !== state.round) {
@@ -5561,7 +7178,10 @@ function nativeTurnStart(state, events) {
       if (pending2.dueRound > state.round) continue;
       delete memory.seeds[id];
       const target = living(state).find((unit) => unit.id === id);
-      if (target) nativeHeal(state, owner, target, target.stats.health * pending2.fraction, events, true, healing, false);
+      if (target) {
+        nativeHeal(state, owner, target, target.stats.health * pending2.fraction, events, true, healing, false);
+        seedPayoff(state, owner, target, !!pending2.empowered);
+      }
     }
     finishNativeHealing(state, owner, healing, events);
   }
@@ -5589,119 +7209,8 @@ function nativeCleanup(state) {
   }
 }
 
-// src/game/calamitic-conduits.ts
-function power(state, owner, id, base, maximum) {
-  return calamiticPower(state.conduitUpgrades?.[id] ?? 0, base, maximum);
-}
-function status3(owner, amount, message, events) {
-  events.push({ kind: "status", source: owner.id, target: owner.id, amount, critical: false, origin: "conduit", message });
-}
-function calamiticActionReason(state, owner, action) {
-  const n = owner.conduitRuntime?.numbers;
-  if (n?.calamiticThroneSkip === state.round) return "Tomorrow is owed to the Throne; cannot act this turn.";
-  if (n?.calamiticThroneArmed === state.round && (action === "ultimate" || action === "light")) {
-    return "The borrowed action must be an available ordinary skill.";
-  }
-  return null;
-}
-function prepareCalamiticAction(state, owner, action) {
-  if (!equipped(owner, "calamitic-throne-borrowed-tomorrows")) return false;
-  const n = gear(owner).numbers;
-  if (n.calamiticThroneArmed === state.round && action !== "light") {
-    delete n.calamiticThroneArmed;
-    n.calamiticThroneSkip = state.round + 1;
-    n.calamiticThroneGrant = state.round;
-    return false;
-  }
-  if (action === "light" && n.calamiticThroneUsed !== state.round && n.calamiticThroneSkip !== state.round + 1) {
-    n.calamiticThroneArmed = state.round;
-    n.calamiticThroneUsed = state.round;
-    return true;
-  }
-  return false;
-}
-function afterCalamiticAction(state, owner, action, events) {
-  if (owner.hp <= 0) return;
-  const n = gear(owner).numbers;
-  if (n.calamiticThroneArmed === state.round && action === "light") {
-    status3(owner, 1, `${owner.name} may borrow one ordinary skill; using it costs the next player turn.`, events);
-  }
-  if (n.calamiticThroneGrant === state.round) {
-    delete n.calamiticThroneGrant;
-    generatedGauge(owner, owner, power(state, owner, "calamitic-throne-borrowed-tomorrows", 10, 30), events);
-    status3(owner, state.round + 1, `${owner.name} borrowed tomorrow and cannot act on turn ${state.round + 1}.`, events);
-  }
-  if (action === "light" && equipped(owner, "calamitic-world-eater-orrery") && (n.calamiticOrrery ?? 0) > 0) {
-    const reserve = n.calamiticOrrery;
-    n.calamiticOrrery = 0;
-    const target = state.enemies.filter((enemy) => enemy.hp > 0).sort((a, b) => b.hp - a.hp)[0];
-    status3(owner, reserve, `${owner.name}'s World-Eater's Orrery releases ${Math.round(reserve)} stored force.`, events);
-    generatedStrike(state, owner, target, reserve, events, false);
-  }
-  if (equipped(owner, "calamitic-cathedral-final-equation")) {
-    const bit = 1 << ["light", "skill1", "skill2", "ultimate"].indexOf(action);
-    const previous = n.calamiticEquation ?? 0;
-    const mask = previous & bit ? bit : previous | bit;
-    const count2 = mask.toString(2).replace(/0/g, "").length;
-    n.calamiticEquation = count2 === 3 ? 0 : mask;
-    status3(owner, count2, `${owner.name}'s Final Equation: ${count2} / 3 different actions${count2 === 3 ? " \u2001Edischarge" : ""}.`, events);
-    if (count2 === 3) {
-      const targets = state.enemies.filter((enemy) => enemy.hp > 0);
-      const offer = owner.stats.damage * power(state, owner, "calamitic-cathedral-final-equation", 1.2, 2.4);
-      for (const target of targets) generatedStrike(state, owner, target, offer / targets.length, events, false);
-    }
-  }
-}
-function calamiticShieldBypass(state, owner) {
-  return equipped(owner, "calamitic-horizon-cleaving-godpress") ? power(state, owner, "calamitic-horizon-cleaving-godpress", 0.4, 0.6) : 0;
-}
-function calamiticSiegeBonus(state, owner, target) {
-  return target.shield > 0 && equipped(owner, "calamitic-horizon-cleaving-godpress") ? power(state, owner, "calamitic-horizon-cleaving-godpress", 0.3, 0.6) : 0;
-}
-function deferCalamiticDamage(state, owner, offered, events) {
-  if (offered <= 0 || !equipped(owner, "calamitic-causality-funeral-engine")) return offered;
-  const n = gear(owner).numbers;
-  const deferredOffer = offered * power(state, owner, "calamitic-causality-funeral-engine", 0.4, 0.6);
-  const deferred = Math.floor(deferredOffer + Number.EPSILON * Math.max(1, Math.abs(deferredOffer)));
-  if (deferred <= 0) return offered;
-  n.calamiticDebt = (n.calamiticDebt ?? 0) + deferred;
-  n.calamiticDebtDue = state.round + 1;
-  status3(owner, deferred, `${owner.name}'s Funeral Engine defers ${deferred} HP damage until Enemy Turn ${state.round + 1}.`, events);
-  return Math.max(0, offered - deferred);
-}
-function bankCalamiticDamage(state, loss) {
-  if (loss <= 0) return;
-  for (const owner of state.allies.filter((ally) => ally.hp > 0 && equipped(ally, "calamitic-world-eater-orrery"))) {
-    const n = gear(owner).numbers;
-    n.calamiticOrrery = (n.calamiticOrrery ?? 0) + loss * power(state, owner, "calamitic-world-eater-orrery", 0.4, 0.8);
-  }
-}
-function settleCalamiticDebt(state, events) {
-  for (const owner of state.allies) {
-    const n = owner.conduitRuntime?.numbers;
-    if (!n || !n.calamiticDebt || n.calamiticDebtDue > state.round) continue;
-    const debt = n.calamiticDebt;
-    delete n.calamiticDebt;
-    delete n.calamiticDebtDue;
-    if (owner.hp <= 0) continue;
-    const loss = Math.min(owner.hp, debt);
-    owner.hp -= loss;
-    events.push({
-      kind: "damage",
-      source: owner.id,
-      target: owner.id,
-      amount: loss,
-      critical: false,
-      origin: "conduit",
-      periodic: true,
-      shieldRemaining: owner.shield,
-      message: `${owner.name} pays ${loss} HP to the Funeral Engine${owner.hp === 0 ? " \u2001Edefeated" : ""}.`
-    });
-  }
-}
-
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 5 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }
@@ -5722,11 +7231,85 @@ function step(state, id, base, maximum) {
 function alive(state) {
   return state.allies.filter((unit) => unit.hp > 0);
 }
+function magnitude(state, id, base) {
+  return phaseZeroUpgradeMagnitude(base, state.conduitUpgrades?.[id] ?? 0);
+}
+function grantToken(state, target, key, amount, owner) {
+  const memory = gear(target);
+  memory.numbers[key] = amount;
+  memory.numbers[`${key}Through`] = state.round + 1;
+  if (owner) memory.owners[key] = owner.id;
+}
+function token(state, target, key, consume = false) {
+  const memory = target.conduitRuntime;
+  if (!memory) return 0;
+  const amount = (memory.numbers[`${key}Through`] ?? 0) >= state.round ? memory.numbers[key] ?? 0 : 0;
+  if (consume) {
+    delete memory.numbers[key];
+    delete memory.numbers[`${key}Through`];
+  }
+  return amount;
+}
+function conduitActionTraits(state, actor, action) {
+  if (action === "light") return { damage: true, healing: false, shield: false, debuff: false };
+  const strength = actor.kit?.abilities[action].strength;
+  if (!hasNativeIdentity(actor)) return {
+    damage: strength?.damageMultiplier !== void 0,
+    healing: strength?.healing !== void 0,
+    shield: strength?.shield !== void 0,
+    debuff: strength?.weakenFraction !== void 0 || strength?.burnMultiplier !== void 0
+  };
+  const others = alive(state).filter((ally) => ally.id !== actor.id);
+  const closing = others.length > 0 && others.every((ally) => ally.spent);
+  const id = actor.definitionId;
+  return {
+    damage: id === "atmoso" || id === "elise" || id === "bliss" || id === "ember" || id === "crinso" || id === "rosetta" || id === "vaelor" || id === "razor" && action !== "skill2" || id === "aurora" && action === "skill2" || id === "thornia" && action !== "skill1" || id === "orvella" && action !== "skill2" || id === "nerithe" || (id === "tide" || id === "sprout" || id === "bruno") && action === "skill1",
+    healing: id === "sprout" || id === "bliss" && closing && action !== "skill2" || id === "rosetta" && action === "ultimate" && (actor.native?.quarry?.contributors.length ?? 0) >= 2,
+    shield: id === "tide" && action !== "skill1" || id === "bruno" && action === "ultimate" || id === "bliss" && action === "skill2" && (closing || equipped(actor, "master-bliss-1")),
+    debuff: id === "ember" && action !== "skill2" || id === "tide" && action === "skill1" || id === "aurora" && action !== "ultimate" || id === "thornia" && action !== "skill2"
+  };
+}
 function injured(state, owner, other = false) {
   return alive(state).filter((unit) => (!other || unit.id !== owner.id) && unit.hp < unit.stats.health).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
 }
 function lowestGauge(state, owner) {
   return alive(state).filter((unit) => unit.id !== owner.id && unit.shatter < unit.stats.shatterCapacity).sort((a, b) => a.shatter - b.shatter)[0];
+}
+function lowestGaugePercentage(state, owner) {
+  return alive(state).filter((unit) => unit.id !== owner?.id).sort((a, b) => a.shatter / a.stats.shatterCapacity - b.shatter / b.stats.shatterCapacity)[0];
+}
+function effectiveGaugeGain(state, target) {
+  let bonus = 0;
+  if (state.round <= 2 && alive(state).some((ally) => equipped(ally, "firstlight-cam")))
+    bonus += phaseZeroUpgradeMagnitude(0.5, state.conduitUpgrades?.["firstlight-cam"] ?? 0);
+  if ((target.conduitRuntime?.numbers.crosswindGaugeThrough ?? 0) >= state.round)
+    bonus += target.conduitRuntime?.numbers.crosswindGaugeBonus ?? 0.3;
+  if ((target.conduitRuntime?.numbers.gaugeGainThrough ?? 0) >= state.round)
+    bonus += target.conduitRuntime?.numbers.gaugeGainBonus ?? 0;
+  if (alive(state).some((owner) => equipped(owner, "master-bruno-2") && owner.native?.cover?.throughPhase !== void 0 && owner.native.cover.throughPhase >= state.round && owner.native.cover.targets.includes(target.id))) bonus += 0.25;
+  return (target.stats.gaugeGain ?? 1) + bonus;
+}
+function grantCappedGaugePercent(state, owner, target, fraction, cap, key, events) {
+  const memory = gear(owner).numbers;
+  const used = memory[key] ?? 0;
+  const grant = Math.min(fraction, Math.max(0, cap - used));
+  if (grant <= 0) return;
+  memory[key] = used + grant;
+  const gain = effectiveGaugeGain(state, target);
+  const received = memory[`${key}:received`] ?? 0;
+  const offer = Math.min(
+    phaseZeroPercentageGaugeOffer(target.stats.shatterCapacity, grant, gain),
+    Math.max(0, phaseZeroPercentageGaugeOffer(target.stats.shatterCapacity, cap, gain) - received)
+  );
+  memory[`${key}:received`] = received + offer;
+  generatedGauge(owner, target, offer, events, false, true, state);
+}
+function firstEnemyAttackTrigger(enemy, key) {
+  const memory = enemy.native ??= {};
+  const triggers = memory.conduitGaugeTriggers ??= [];
+  if (triggers.includes(key)) return false;
+  triggers.push(key);
+  return true;
 }
 function healthiestEnemy(state, excluded) {
   return state.enemies.filter((unit) => unit.hp > 0 && unit.id !== excluded).sort((a, b) => b.hp - a.hp)[0];
@@ -5751,27 +7334,41 @@ function overhealShield(owner, target, excess, events) {
   emit(events, "shield", owner, target, amount, `${target.name}'s excess healing becomes a ${target.shield} Shield.`);
   return amount;
 }
-function healingReceived(target) {
-  if (!target.conduitRuntime?.layers?.length) return 1;
-  return 1 + Math.max(0, ...layers(target).filter((layer) => layer.amount > 0).map((layer) => layer.healBonus ?? 0));
+function healingReceived(target, state) {
+  const shieldBonus = Math.max(0, ...layers(target).filter((layer) => layer.amount > 0).map((layer) => layer.healBonus ?? 0));
+  const kiln = phaseZeroStatsReady && state && alive(state).some((owner) => equipped(owner, "emberlife-kiln") && state.enemies.some((enemy) => enemy.hp > 0 && enemy.burn.turns > 0 && enemy.burn.sourceId === owner.id && enemy.burn.origin !== "conduit")) ? magnitude(state, "emberlife-kiln", 0.3) : 0;
+  return 1 + shieldBonus + kiln;
 }
-function generatedHeal(owner, target, offer, events) {
+function generatedHeal(owner, target, offer, events, state, cap = Infinity) {
   if (!target || target.hp <= 0) return 0;
-  const healing = Math.max(0, Math.round(offer * healingReceived(target)));
+  const healing = Math.max(0, Math.min(cap, Math.round(offer * healingReceived(target, state))));
   const amount = Math.min(target.stats.health - target.hp, healing);
-  overhealShield(owner, target, healing - Math.max(0, amount), events);
+  if (!phaseZeroStatsReady) overhealShield(owner, target, healing - Math.max(0, amount), events);
   if (amount <= 0) return 0;
   target.hp += amount;
   emit(events, "heal", owner, target, amount, `${owner.name}'s Conduit restores ${amount} HP to ${target.name}.`);
   return amount;
 }
-function generatedGauge(owner, target, offer, events, native = false) {
+function generatedGauge(owner, target, offer, events, native = false, gainApplied = false, state) {
   if (!target || target.hp <= 0) return 0;
+  if (phaseZeroStatsReady && !gainApplied) offer = phaseZeroGaugeOffer(
+    offer,
+    state ? effectiveGaugeGain(state, target) : target.stats.gaugeGain ?? 1
+  );
   const amount = Math.min(target.stats.shatterCapacity - target.shatter, Math.max(0, offer));
   if (amount <= 0) return 0;
   target.shatter += amount;
   emit(events, "status", owner, target, amount, native ? `${target.name} gains ${amount} Elemental Gauge.` : `${owner.name}'s Conduit gives ${target.name} ${amount} Elemental Gauge.`, native);
   return amount;
+}
+function generatedGaugePercent(owner, target, fraction, events, state) {
+  if (!target || target.hp <= 0 || !phaseZeroStatsReady) return 0;
+  const offer = phaseZeroPercentageGaugeOffer(
+    target.stats.shatterCapacity,
+    fraction,
+    state ? effectiveGaugeGain(state, target) : target.stats.gaugeGain ?? 1
+  );
+  return generatedGauge(owner, target, offer, events, false, true, state);
 }
 function layers(unit) {
   const memory = gear(unit);
@@ -5802,12 +7399,27 @@ function generatedShield(owner, target, offer, events, additive = false, _cap = 
   emit(events, "shield", owner, target, amount, `${owner.name}'s Conduit shields ${target.name} for ${amount}.`);
   return amount;
 }
+function timedConduitShield(state, owner, target, offer, id, throughPhase, events, replace = false) {
+  const list = layers(target);
+  if (replace) {
+    for (const layer of list) if (layer.conduit === id && layer.owner === owner.id) {
+      target.shield -= layer.amount;
+      layer.amount = 0;
+    }
+  }
+  const gained = generatedShield(owner, target, offer, events);
+  if (gained > 0) {
+    const layer = list[list.length - 1];
+    layer.conduit = id;
+    layer.expiresAfterPhase = throughPhase;
+  }
+}
 function expireNativeShields(state, events) {
   for (const target of [...state.allies, ...state.enemies]) {
     const list = layers(target);
     const expiredByOwner = /* @__PURE__ */ new Map();
     for (const layer of list) {
-      if (!layer.native || layer.expiresAfterPhase === void 0 || layer.expiresAfterPhase > state.round) continue;
+      if (!layer.native && !phaseZeroStatsReady || layer.expiresAfterPhase === void 0 || layer.expiresAfterPhase > state.round) continue;
       expiredByOwner.set(layer.owner, (expiredByOwner.get(layer.owner) ?? 0) + layer.amount);
       target.shield -= layer.amount;
       layer.amount = 0;
@@ -5856,63 +7468,154 @@ function initializeConduits(state) {
   state.conduitRulesVersion = conduitRulesVersion;
   for (const unit of [...state.allies, ...state.enemies]) {
     gear(unit).numbers.entryDefense = unit.stats.defense;
-    if (unit.side === "ally" && equipped(unit, "fracture-reservoir")) {
+    if (!phaseZeroStatsReady && unit.side === "ally" && equipped(unit, "fracture-reservoir")) {
       unit.shatter = Math.min(unit.stats.shatterCapacity, unit.shatter + value(state, unit, "fracture-reservoir", 5, 10));
     }
-    if (unit.side === "ally" && equipped(unit, "twinpulse-bellows")) {
+    if (!phaseZeroStatsReady && unit.side === "ally" && equipped(unit, "twinpulse-bellows")) {
       unit.shatter = Math.min(unit.stats.shatterCapacity, unit.shatter + unit.stats.shatterCapacity * value(state, unit, "twinpulse-bellows", 0.15, 0.35));
     }
   }
 }
-function effectiveDefense(state, unit) {
+function effectiveDefense(state, unit, excludeSquadAuras = false) {
   let defense = unit.stats.defense;
+  const baseDefense = phaseZeroStatsReady ? phaseZeroStatBase(unit.stats.defense, "defense", unit.conduits, state.conduitUpgrades) : unit.stats.defense;
   const n = unit.conduitRuntime?.numbers ?? {};
-  if (equipped(unit, "master-orvella-3") && unit.hp > 0) {
+  if (phaseZeroStatsReady && !excludeSquadAuras && unit.side === "ally" && unit.hp > 0 && state.round <= 2) {
+    const firstlight = alive(state).find((ally) => equipped(ally, "firstlight-cam"));
+    if (firstlight) defense += baseDefense * phaseZeroUpgradeMagnitude(
+      0.4,
+      state.conduitUpgrades?.["firstlight-cam"] ?? 0
+    );
+  }
+  if (phaseZeroStatsReady && !excludeSquadAuras && unit.side === "ally" && unit.hp > 0 && alive(state).some((owner) => equipped(owner, "master-sprout-3") && !!owner.native?.seeds?.[unit.id]?.empowered && (owner.native.seeds[unit.id]?.dueRound ?? 0) >= state.round)) {
+    defense += baseDefense * 0.25;
+  }
+  if (phaseZeroStatsReady && !excludeSquadAuras && unit.side === "ally" && unit.hp > 0 && layers(unit).some((layer) => layer.native && layer.amount > 0 && state.allies.some((owner) => owner.id === layer.owner && owner.hp > 0 && equipped(owner, "master-tide-1")))) {
+    defense += baseDefense * 0.3;
+  }
+  if (phaseZeroStatsReady && unit.side === "ally" && unit.hp > 0 && unit.native?.cover && unit.native.cover.throughPhase >= state.round && equipped(unit, "master-bruno-1")) defense += baseDefense * 0.4;
+  if (phaseZeroStatsReady && unit.side === "ally" && equipped(unit, "sentinel-aperture"))
+    defense += baseDefense * magnitude(state, "sentinel-aperture", 0.05) * Math.floor(unit.shatter / 10);
+  if (phaseZeroStatsReady && unit.side === "ally" && n.aegisDefenseThrough !== void 0 && n.aegisDefenseThrough >= state.round) defense += baseDefense * (n.aegisDefense ?? 0.25);
+  if (phaseZeroStatsReady && unit.side === "ally") {
+    for (const key of ["tensionDefense", "graftDefense"]) {
+      if ((n[`${key}Through`] ?? 0) >= state.round) defense += baseDefense * (n[key] ?? 0);
+    }
+  }
+  if (phaseZeroStatsReady && !excludeSquadAuras && unit.side === "ally" && unit.hp > 0 && unit.hp < unit.stats.health * 0.5 && state.allies.some((ally) => ally.hp > 0 && ally.id !== unit.id && equipped(ally, "citadel-spine"))) {
+    defense += baseDefense * phaseZeroUpgradeMagnitude(
+      0.3,
+      state.conduitUpgrades?.["citadel-spine"] ?? 0
+    );
+  }
+  if (phaseZeroStatsReady && !excludeSquadAuras && unit.side === "ally" && unit.hp > 0 && alive(state).some((owner) => equipped(owner, "master-orvella-3") && (owner.native?.foundation?.durability ?? 0) > 0 && (owner.native?.foundation?.throughPhase ?? 0) >= state.round))
+    defense += baseDefense * 0.25;
+  if (!phaseZeroStatsReady && equipped(unit, "master-orvella-3") && unit.hp > 0) {
     const foundation = unit.native?.foundation;
     const protectedByFoundation = foundation && foundation.durability > 0 && foundation.throughPhase >= state.round;
     defense += (n.entryDefense ?? defense) * 0.2 * alive(state).filter((ally) => ally.shield > 0 || protectedByFoundation).length;
   }
-  if (unit.side === "enemy") {
+  if (unit.side === "enemy" && !phaseZeroStatsReady) {
     defense = Math.max(0, defense - (n.excavated ?? 0));
-  } else if (unit.hp > 0) {
-    for (const keeper of alive(state).filter((ally) => ally.id !== unit.id && equipped(ally, "tectonic-faultkeeper-loom")))
+    if (phaseZeroStatsReady && (n.thorniaDefenseThrough ?? 0) >= state.round)
+      defense = Math.max(0, defense - (n.entryDefense ?? unit.stats.defense) * 0.2);
+    if (phaseZeroStatsReady && (n.brunoDefenseThrough ?? 0) >= state.round)
+      defense *= 0.75;
+  } else if (unit.hp > 0 && !excludeSquadAuras) {
+    const keepers = alive(state).filter((ally) => ally.id !== unit.id && equipped(ally, "tectonic-faultkeeper-loom"));
+    if (phaseZeroStatsReady) {
+      defense += Math.max(0, ...keepers.map((keeper) => effectiveDefense(state, keeper, true) * phaseZeroUpgradeMagnitude(0.25, state.conduitUpgrades?.["tectonic-faultkeeper-loom"] ?? 0)));
+    } else for (const keeper of keepers) {
       defense += keeper.stats.defense * value(state, keeper, "tectonic-faultkeeper-loom", 0.15, 0.3);
+    }
   }
   return defense;
 }
 function nativeTargetDefense(state, target) {
+  if (phaseZeroStatsReady && target.side === "enemy") {
+    const n = target.conduitRuntime?.numbers ?? {};
+    let reduction = 0;
+    if (alive(state).some((owner) => equipped(owner, "master-aurora-1") && (owner.native?.seals?.[target.id]?.throughPhase ?? 0) >= state.round)) reduction += 0.25;
+    if ((n.thorniaDefenseThrough ?? 0) >= state.round) reduction += 0.2;
+    if ((n.brunoDefenseThrough ?? 0) >= state.round) reduction += 0.25;
+    const lodged = Math.max(0, ...alive(state).filter((owner) => equipped(owner, "master-elise-1")).map((owner) => owner.native?.blades?.filter((id) => id === target.id).length ?? 0));
+    reduction += Math.min(2, lodged) * 0.15;
+    return target.stats.defense * (1 - Math.min(0.5, reduction));
+  }
   const exposed = alive(state).some((owner) => equipped(owner, "master-aurora-1") && nativeControl(state, owner, target));
-  return effectiveDefense(state, target) * (exposed ? 0.85 : 1);
+  let multiplier = exposed ? phaseZeroStatsReady ? 0.75 : 0.85 : 1;
+  if (phaseZeroStatsReady && target.side === "enemy") {
+    const lodged = alive(state).filter((owner) => equipped(owner, "master-elise-1")).reduce((count2, owner) => count2 + (owner.native?.blades?.filter((id) => id === target.id).length ?? 0), 0);
+    multiplier *= 1 - Math.min(2, lodged) * 0.15;
+  }
+  return effectiveDefense(state, target) * multiplier;
 }
 function nativeControl(state, owner, target) {
   return (owner.native?.seals?.[target.id]?.throughPhase ?? 0) >= state.round || target.weakened > 0 && target.weakenSourceId === owner.id && target.weakenOrigin !== "conduit";
 }
-function conduitActionCost(actor, action, state, base) {
+function nativeSupportAction(state, actor, action) {
+  if (!hasNativeIdentity(actor)) return false;
+  if (actor.definitionId === "tide") return action === "skill2" || action === "ultimate";
+  if (actor.definitionId === "sprout") return action === "skill2" || action === "ultimate";
+  if (actor.definitionId === "bruno") return action === "ultimate";
+  if (actor.definitionId === "orvella")
+    return action === "skill2" || action === "skill1" && !!actor.native?.foundation;
+  if (actor.definitionId === "rosetta")
+    return action === "ultimate" && (actor.native?.quarry?.contributors.length ?? 0) >= 2;
+  if (actor.definitionId === "bliss") {
+    const others = alive(state).filter((ally) => ally.id !== actor.id);
+    const closing = others.length > 0 && others.every((ally) => ally.spent);
+    return closing && (action === "skill1" || action === "skill2" || action === "ultimate");
+  }
+  return false;
+}
+function conduitActionCost(actor, action, state, base, targetId) {
   const n = actor.conduitRuntime?.numbers ?? {};
   if (action === "light") {
+    if (phaseZeroStatsReady) return 0;
     const cost = solaceCost(state, actor);
     return cost !== void 0 && actor.shatter >= cost ? cost : 0;
   }
   if (action === "skill1" && n.quietFeather) return 0;
-  let discount = 0;
-  if ((action === "skill1" || action === "skill2") && n.tailwind && equipped(actor, "atmospheric-skythread-rudder")) {
-    discount += value(state, actor, "atmospheric-skythread-rudder", 10, 20) * n.tailwind;
+  if (!phaseZeroStatsReady) {
+    let discount = 0;
+    if ((action === "skill1" || action === "skill2") && n.tailwind && equipped(actor, "atmospheric-skythread-rudder"))
+      discount += value(state, actor, "atmospheric-skythread-rudder", 10, 20) * n.tailwind;
+    if (action === "ultimate" && n.stormCount && equipped(actor, "atmospheric-storm-clock"))
+      discount += value(state, actor, "atmospheric-storm-clock", 15, 30) * n.stormCount;
+    if (base > 0 && equipped(actor, "coilfeed-ratchet")) {
+      const cut = Math.floor(base * value(state, actor, "coilfeed-ratchet", 0.07, 0.14));
+      discount += action === "ultimate" ? Math.min(cut, Math.max(0, base - discount - 70)) : cut;
+    }
+    return base === 0 ? 0 : Math.max(1, base - discount);
   }
-  if (action === "ultimate" && n.stormCount && equipped(actor, "atmospheric-storm-clock")) {
-    discount += value(state, actor, "atmospheric-storm-clock", 15, 30) * n.stormCount;
+  let efficiency = actor.stats.skillEfficiency ?? 0;
+  for (const key of ["seedSkillEfficiency", "blissSkillEfficiency", "orvellaSkillEfficiency", "rosettaSkillEfficiency"])
+    efficiency += token(state, actor, key);
+  if (token(state, actor, "tideEfficiencyPending") && (action === "skill1" || action === "skill2" || action === "ultimate")) {
+    const source = state.allies.find((ally) => ally.id === gear(actor).owners.tideEfficiencyOwner && ally.hp > 0 && equipped(ally, "master-tide-2"));
+    if (source && layers(actor).some((layer) => layer.native && layer.owner === source.id && layer.amount > 0))
+      efficiency += 0.25;
   }
-  if (base > 0 && equipped(actor, "coilfeed-ratchet")) {
-    const cut = Math.floor(base * value(state, actor, "coilfeed-ratchet", 0.07, 0.14));
-    discount += action === "ultimate" ? Math.min(cut, Math.max(0, base - discount - 70)) : cut;
-  }
-  return base === 0 ? 0 : Math.max(1, base - discount);
+  efficiency += calamiticSkillEfficiencyBonus(state);
+  efficiency += token(state, actor, "temperedEfficiency") + token(state, actor, "accordEfficiency") + token(state, actor, "coverEfficiency") + token(state, actor, "triageEfficiency");
+  efficiency += Math.max(0, ...alive(state).filter((owner) => owner.id !== actor.id).map((owner) => token(state, owner, "stormstepOfferEfficiency")));
+  efficiency += Math.max(0, ...alive(state).filter((owner) => owner.id !== actor.id).map((owner) => token(state, owner, "coverOfferEfficiency")));
+  if (action === "skill1" || action === "skill2") efficiency += token(state, actor, "skyEfficiency");
+  if (action === "ultimate") efficiency += token(state, actor, "stormEfficiency");
+  if (alive(state).some((ally) => ally.id !== actor.id && equipped(ally, "chaotic-paradox-spindle") && ally.recoverThrough >= state.round)) efficiency += magnitude(state, "chaotic-paradox-spindle", 0.2);
+  const target = state.enemies.find((enemy) => enemy.id === targetId && enemy.hp > 0 && enemy.weakened > 0);
+  if (target && conduitActionTraits(state, actor, action).damage && alive(state).some((owner) => owner.id !== actor.id && owner.id === target.weakenSourceId && target.weakenOrigin !== "conduit" && equipped(owner, "aquatic-undertide-chronometer")))
+    efficiency += magnitude(state, "aquatic-undertide-chronometer", 0.15);
+  return phaseZeroSkillCost(base, efficiency, action);
 }
 function solaceCost(state, actor) {
+  if (phaseZeroStatsReady) return void 0;
   if (!equipped(actor, "solace-anchor") || actor.conduitRuntime?.numbers.solaceRound === state.round) return void 0;
   return Math.max(0, Math.round(value(state, actor, "solace-anchor", 10, 5)));
 }
 function recoveryNormal(actor) {
-  return equipped(actor, "chaotic-paradox-spindle");
+  return !phaseZeroStatsReady && equipped(actor, "chaotic-paradox-spindle");
 }
 function conduitActionBlocked(_actor, _state) {
   return false;
@@ -5929,17 +7632,49 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     all: nativeAll,
     nativeAll,
     scale: 1,
+    skillPower: phaseZeroStatsReady && action !== "light" ? (actor.stats.skillPower ?? 1) + calamiticSkillPowerBonus(state) : 1,
+    skillDuration: phaseZeroStatsReady ? Math.min(2, Math.floor(actor.stats.skillDuration ?? 0)) : 0,
+    criticalDamageBonus: 0,
     impacts: 1,
     hits: [],
     overheal: 0,
     healed: 0,
+    healRecipients: [],
     spent: {},
     healExtra: 0,
     shieldBurn: 0,
     burnPaid: false,
     freeAction: false,
-    eclipseTargets: []
+    eclipseTargets: [],
+    shieldRecipients: [],
+    nativeHpDamage: 0,
+    nativeShieldDamage: 0
   };
+  if (phaseZeroStatsReady && action !== "light") ctx.supportPowerBonus = nativeSupportMultiplier(state, actor) - 1;
+  if (phaseZeroStatsReady && action === "skill2" && equipped(actor, "master-tide-2")) ctx.skillPower += 0.5;
+  if (phaseZeroStatsReady && action !== "light") {
+    const coverSources = alive(state).filter((owner) => owner.id !== actor.id);
+    ctx.skillPower += Math.max(0, ...coverSources.map((owner) => token(state, owner, "coverOfferPower")));
+    for (const source of coverSources) {
+      token(state, source, "coverOfferPower", true);
+      token(state, source, "coverOfferEfficiency", true);
+      token(state, source, "stormstepOfferEfficiency", true);
+    }
+    for (const key of ["temperedEfficiency", "accordEfficiency", "coverEfficiency"]) token(state, actor, key, true);
+    ctx.supportPowerBonus = (ctx.supportPowerBonus ?? 0) + token(state, actor, "triagePower", true);
+    token(state, actor, "triageEfficiency", true);
+    if (action === "skill1" || action === "skill2") token(state, actor, "skyEfficiency", true);
+    if (action === "ultimate") token(state, actor, "stormEfficiency", true);
+    ctx.skillPower += token(state, actor, "brunoCoverSkillPower", true);
+    ctx.skillDuration = Math.min(2, ctx.skillDuration + token(state, actor, "blissSkillDuration"));
+  }
+  if (phaseZeroStatsReady && equipped(actor, "solace-anchor") && alive(state).filter((ally) => ally.id !== actor.id).every((ally) => !ally.spent)) {
+    for (const ally of alive(state).filter((ally2) => ally2.id !== actor.id)) {
+      const memory = gear(ally).numbers;
+      memory.solaceAttack = magnitude(state, "solace-anchor", 0.2);
+      memory.solaceAttackThrough = state.round;
+    }
+  }
   n.ordinaryResourceSpend = action === "skill2" ? 1 : 0;
   if (action === "light" && solaceCost(state, actor) === paid) {
     n.solaceRound = state.round;
@@ -5948,29 +7683,110 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
   if (prepareCalamiticAction(state, actor, action)) ctx.freeAction = true;
   if (action === "skill1" && n.quietFeather) n.quietFeather--;
   if ((action === "skill1" || action === "skill2") && n.tailwind) delete n.tailwind;
-  const offensive = action === "light" || actor.kit?.abilities[action].strength.damageMultiplier !== void 0;
-  if (offensive && equipped(actor, "parallax-relay")) ctx.criticalBonus += value(state, actor, "parallax-relay", 0.15, 0.3);
-  if (offensive && equipped(actor, "ruinselect-prism"))
+  const traits = conduitActionTraits(state, actor, action);
+  const offensive = phaseZeroStatsReady ? traits.damage : action === "light" || actor.kit?.abilities[action].strength.damageMultiplier !== void 0;
+  if (phaseZeroStatsReady && action !== "light") {
+    const hasSkillDebuff = traits.debuff;
+    const isHealOrShield = traits.healing || traits.shield || nativeSupportAction(state, actor, action);
+    if (equipped(actor, "glassroot-gimbal") && actor.shield <= 0)
+      ctx.skillPower += phaseZeroUpgradeMagnitude(0.35, state.conduitUpgrades?.["glassroot-gimbal"] ?? 0);
+    if (equipped(actor, "opal-indexer") && hasSkillDebuff)
+      ctx.skillPower += phaseZeroUpgradeMagnitude(0.25, state.conduitUpgrades?.["opal-indexer"] ?? 0);
+    if (equipped(actor, "springwell-pump") && isHealOrShield)
+      ctx.skillPower += phaseZeroUpgradeMagnitude(0.2, state.conduitUpgrades?.["springwell-pump"] ?? 0);
+    if (isHealOrShield && layers(actor).some((layer) => layer.amount > 0 && layer.native && state.allies.some((owner) => owner.hp > 0 && owner.id === layer.owner && equipped(owner, "ward-stitch-spool"))))
+      ctx.skillPower += phaseZeroUpgradeMagnitude(0.3, state.conduitUpgrades?.["ward-stitch-spool"] ?? 0);
+    if (equipped(actor, "siege-cantilever") && nativeAll && offensive)
+      ctx.skillPower += phaseZeroUpgradeMagnitude(0.45, state.conduitUpgrades?.["siege-cantilever"] ?? 0);
+    if (equipped(actor, "verdict-caliper") && alive(state).filter((ally) => ally.id !== actor.id).every((ally) => ally.spent))
+      ctx.skillPower += phaseZeroUpgradeMagnitude(0.45, state.conduitUpgrades?.["verdict-caliper"] ?? 0);
+    if (equipped(actor, "worldbreaker-drive") && action === "ultimate")
+      ctx.skillPower += phaseZeroUpgradeMagnitude(0.85, state.conduitUpgrades?.["worldbreaker-drive"] ?? 0);
+    if (equipped(actor, "infernic-pyre-census"))
+      ctx.skillPower += Math.min(3, new Set(alive(state).map((ally) => ally.element)).size) * magnitude(state, "infernic-pyre-census", 0.15);
+    if (alive(state).some((ally) => ally.id !== actor.id && equipped(ally, "chaotic-paradox-spindle") && ally.recoverThrough >= state.round))
+      ctx.skillPower += magnitude(state, "chaotic-paradox-spindle", 0.4);
+    if (equipped(actor, "ruinselect-prism") && (actor.hp < actor.stats.health * 0.5 || n.ruinselectRetained))
+      ctx.skillPower += magnitude(state, "ruinselect-prism", 0.4);
+    delete n.ruinselectRetained;
+    ctx.skillPower += token(state, actor, "faultSkillPower", true);
+    ctx.skillPower += token(state, actor, "coverSkillPower", true);
+    if (offensive) ctx.skillPower += token(state, actor, "verdantPower", true);
+    if (equipped(actor, "horizon-heartcase") && gear(actor).numbers.heartcasePowerBonus) {
+      ctx.skillPower += gear(actor).numbers.heartcasePowerBonus;
+      delete gear(actor).numbers.heartcasePowerBonus;
+    }
+    if (equipped(actor, "starvein-conductor") && offensive) {
+      const payment = Math.ceil(actor.stats.health * 0.05);
+      if (actor.hp - payment >= 1) {
+        actor.hp -= payment;
+        ctx.spent.starveinPower = magnitude(state, "starvein-conductor", 0.6);
+      }
+    }
+    if (offensive && layers(actor).some((layer) => layer.amount > 0 && layer.native && state.allies.some((ally) => ally.id === layer.owner && ally.hp > 0 && equipped(ally, "pale-bulwark-diadem")))) {
+      ctx.skillPower += phaseZeroUpgradeMagnitude(0.25, state.conduitUpgrades?.["pale-bulwark-diadem"] ?? 0);
+    }
+    for (const key of ["vaelorSkillPower", "seedSkillPower", "thorniaSkillPower"])
+      ctx.skillPower += token(state, actor, key, true);
+    if (n.tideEfficiencyPending !== void 0) {
+      token(state, actor, "tideEfficiencyPending", true);
+      delete gear(actor).owners.tideEfficiencyOwner;
+    }
+    for (const key of [
+      "orvellaSkillEfficiency",
+      "rosettaSkillEfficiency",
+      "blissSkillEfficiency",
+      "blissSkillDuration",
+      "seedSkillEfficiency"
+    ]) token(state, actor, key, true);
+  }
+  if (phaseZeroStatsReady && offensive) {
+    ctx.criticalBonus += token(state, actor, "dawnRate", true) + token(state, actor, "thunderRate", true);
+    ctx.criticalDamageBonus += token(state, actor, "dawnDamage", true);
+    if (actor.shield > 0 && equipped(actor, "chaotic-fault-verdict"))
+      ctx.criticalDamageBonus += magnitude(state, "chaotic-fault-verdict", 0.5);
+    const tempered = token(state, actor, "temperedAttack", true);
+    if (tempered > 0) {
+      ctx.spent.temperedAttack = tempered;
+      ctx.spent.temperedSource = state.allies.findIndex((ally) => ally.id === gear(actor).owners.temperedAttack);
+    }
+    const instruction = actor.native?.instruction;
+    const disciple = instruction && instruction.throughRound >= state.round && alive(state).find((unit) => unit.id === instruction.owner && equipped(unit, "master-disciple-3"));
+    if (disciple && (instruction.kind === "strike" || instruction.kind === "resolve")) {
+      ctx.criticalBonus += 0.3;
+      ctx.criticalDamageBonus += 0.4;
+    }
+    for (const key of ["vaelorCriticalRate", "razorCriticalRate", "eliseCriticalRate", "blissCriticalRate"])
+      ctx.criticalBonus += token(state, actor, key, true);
+    for (const key of ["vaelorCriticalDamage", "eliseCriticalDamage", "crinsoCriticalDamage"])
+      ctx.criticalDamageBonus += token(state, actor, key, true);
+  }
+  if (offensive && equipped(actor, "parallax-relay") && !phaseZeroStatsReady) ctx.criticalBonus += value(state, actor, "parallax-relay", 0.15, 0.3);
+  if (offensive && equipped(actor, "ruinselect-prism") && !phaseZeroStatsReady)
     ctx.bonus += Math.floor(Math.max(0, actor.stats.health - actor.hp) / (actor.stats.health * 0.1)) * value(state, actor, "ruinselect-prism", 0.03, 0.06);
-  if (offensive && equipped(actor, "infernic-pyre-census"))
+  if (offensive && equipped(actor, "infernic-pyre-census") && !phaseZeroStatsReady)
     ctx.bonus += state.enemies.filter((enemy) => enemy.hp > 0 && enemy.burn.turns > 0 && enemy.burn.sourceId === actor.id).length * value(state, actor, "infernic-pyre-census", 0.1, 0.2);
-  if (offensive && equipped(actor, "glassroot-gimbal")) ctx.bonus += Math.floor((actor.shatter + paid) / 10) * value(state, actor, "glassroot-gimbal", 0.01, 0.02);
-  ctx.guaranteed = equipped(actor, "falcon-sight") && (n.noncritical ?? 0) >= 2;
-  ctx.forbidden = equipped(actor, "verdict-caliper") || action === "light" && equipped(actor, "judgment-lens");
-  if (equipped(actor, "verdict-caliper")) ctx.bonus += value(state, actor, "verdict-caliper", 0.35, 0.7);
+  if (offensive && equipped(actor, "glassroot-gimbal") && !phaseZeroStatsReady) ctx.bonus += Math.floor((actor.shatter + paid) / 10) * value(state, actor, "glassroot-gimbal", 0.01, 0.02);
+  ctx.guaranteed = (!phaseZeroStatsReady || offensive) && equipped(actor, "falcon-sight") && (n.noncritical ?? 0) >= 2;
+  if (phaseZeroStatsReady && ctx.guaranteed) ctx.criticalDamageBonus += magnitude(state, "falcon-sight", 0.1);
+  ctx.forbidden = !phaseZeroStatsReady && (equipped(actor, "verdict-caliper") || action === "light" && equipped(actor, "judgment-lens"));
+  if (equipped(actor, "verdict-caliper") && !phaseZeroStatsReady) ctx.bonus += value(state, actor, "verdict-caliper", 0.35, 0.7);
   if (action === "light") {
-    if (equipped(actor, "siegebound-drive")) ctx.bonus += value(state, actor, "siegebound-drive", 0.08, 0.16);
-    if (equipped(actor, "nullsong-transmission")) ctx.bonus += value(state, actor, "nullsong-transmission", 0.4, 0.8);
+    if (!phaseZeroStatsReady && equipped(actor, "siegebound-drive")) ctx.bonus += value(state, actor, "siegebound-drive", 0.08, 0.16);
+    if (!phaseZeroStatsReady && equipped(actor, "nullsong-transmission")) ctx.bonus += value(state, actor, "nullsong-transmission", 0.4, 0.8);
+    if (phaseZeroStatsReady && equipped(actor, "wardglass-transformer") && token(state, actor, "wardglassNormal", true)) {
+      ctx.criticalBonus += phaseZeroUpgradeMagnitude(0.2, state.conduitUpgrades?.["wardglass-transformer"] ?? 0);
+    }
     if (actor.recoverThrough >= state.round && recoveryNormal(actor)) ctx.scale *= value(state, actor, "chaotic-paradox-spindle", 0.5, 0.75);
-    if (equipped(actor, "master-atmoso-1")) {
+    if (!phaseZeroStatsReady && equipped(actor, "master-atmoso-1")) {
       ctx.all = true;
       ctx.scale *= 0.7;
     }
   } else {
-    if (action === "skill1" && equipped(actor, "prism-splinter-socket")) ctx.bonus += value(state, actor, "prism-splinter-socket", 0.1, 0.2);
-    if (action === "skill2" && equipped(actor, "crosspin-governor")) ctx.bonus += value(state, actor, "crosspin-governor", 0.1, 0.2);
-    if (action !== "ultimate" && equipped(actor, "nullsong-transmission")) ctx.bonus += value(state, actor, "nullsong-transmission", -0.12, -0.24);
-    if (action !== "ultimate" && equipped(actor, "voltaic-stormstep-dynamo") && n.previousSkill && n.previousSkill !== (action === "skill1" ? 1 : 2)) {
+    if (action === "skill1" && equipped(actor, "prism-splinter-socket") && !phaseZeroStatsReady) ctx.bonus += value(state, actor, "prism-splinter-socket", 0.1, 0.2);
+    if (action === "skill2" && equipped(actor, "crosspin-governor") && !phaseZeroStatsReady) ctx.bonus += value(state, actor, "crosspin-governor", 0.1, 0.2);
+    if (action !== "ultimate" && equipped(actor, "nullsong-transmission") && !phaseZeroStatsReady) ctx.bonus += value(state, actor, "nullsong-transmission", -0.12, -0.24);
+    if (!phaseZeroStatsReady && action !== "ultimate" && equipped(actor, "voltaic-stormstep-dynamo") && n.previousSkill && n.previousSkill !== (action === "skill1" ? 1 : 2)) {
       ctx.bonus += value(state, actor, "voltaic-stormstep-dynamo", 0.25, 0.5);
     }
     if (action !== "ultimate" && n.verdant) {
@@ -5978,69 +7794,140 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
       delete n.verdant;
     }
   }
-  n.previousSkill = offensive ? action === "skill1" ? 1 : action === "skill2" ? 2 : 0 : 0;
-  if (nativeAll && state.enemies.filter((enemy) => enemy.hp > 0).length === 1 && equipped(actor, "siege-cantilever")) ctx.bonus += value(state, actor, "siege-cantilever", 0.6, 1.2);
+  if (phaseZeroStatsReady && equipped(actor, "voltaic-stormstep-dynamo")) {
+    const current = action === "skill1" ? 1 : action === "skill2" ? 2 : 0;
+    if (current && n.previousSkill && n.previousSkill !== current) {
+      ctx.skillPower += magnitude(state, "voltaic-stormstep-dynamo", 0.3);
+      grantToken(state, actor, "stormstepOfferEfficiency", magnitude(state, "voltaic-stormstep-dynamo", 0.15));
+    }
+    n.previousSkill = current;
+  } else n.previousSkill = offensive ? action === "skill1" ? 1 : action === "skill2" ? 2 : 0 : 0;
+  if (!phaseZeroStatsReady && nativeAll && state.enemies.filter((enemy) => enemy.hp > 0).length === 1 && equipped(actor, "siege-cantilever")) ctx.bonus += value(state, actor, "siege-cantilever", 0.6, 1.2);
   if (action === "ultimate") {
-    if (equipped(actor, "atmospheric-storm-clock")) n.stormCount = 0;
-    if (equipped(actor, "worldbreaker-drive")) ctx.bonus += value(state, actor, "worldbreaker-drive", 0.35, 0.7);
-    if (equipped(actor, "master-nerithe-3")) ctx.scale *= 0.5;
-    if (equipped(actor, "master-elise-2")) {
+    if (!phaseZeroStatsReady && equipped(actor, "atmospheric-storm-clock")) n.stormCount = 0;
+    if (equipped(actor, "worldbreaker-drive") && !phaseZeroStatsReady) ctx.bonus += value(state, actor, "worldbreaker-drive", 0.35, 0.7);
+    if (!phaseZeroStatsReady && equipped(actor, "master-nerithe-3")) ctx.scale *= 0.5;
+    if (!phaseZeroStatsReady && equipped(actor, "master-elise-2")) {
       ctx.impacts = 4;
       ctx.scale *= 1.2;
     }
-    if (equipped(actor, "master-razor-2")) ctx.bonus += payShield(actor, actor.shield) / actor.stats.health * 2;
-    if (equipped(actor, "master-vaelor-1")) {
+    if (!phaseZeroStatsReady && equipped(actor, "master-razor-2")) ctx.bonus += payShield(actor, actor.shield) / actor.stats.health * 2;
+    if (!phaseZeroStatsReady && equipped(actor, "master-vaelor-1")) {
       actor.hp -= Math.min(actor.hp - 1, actor.hp * 0.2);
       ctx.bonus += 0.75;
     }
-    if (equipped(actor, "chaotic-ouroboros-core")) {
+    if (!phaseZeroStatsReady && equipped(actor, "chaotic-ouroboros-core")) {
       const excess = actor.shatter;
       actor.shatter = 0;
       n.excessShield = excess * value(state, actor, "chaotic-ouroboros-core", 3e-3, 6e-3) * actor.stats.health;
     }
   }
-  if (action === "skill2" && equipped(actor, "master-ember-2")) {
+  if (!phaseZeroStatsReady && action === "skill2" && equipped(actor, "master-ember-2")) {
     ctx.all = false;
     ctx.scale *= 2;
   }
-  if (action === "skill1" && equipped(actor, "master-bliss-2")) {
+  if (!phaseZeroStatsReady && action === "skill1" && equipped(actor, "master-bliss-2")) {
     ctx.impacts = 2;
     ctx.scale *= 1.4;
   }
-  if (action === "skill2" && equipped(actor, "master-crinso-2")) ctx.shieldBurn = payShield(actor, actor.shield) * 0.5;
-  if (action === "skill2" && equipped(actor, "master-bliss-1")) {
+  if (!phaseZeroStatsReady && action === "skill2" && equipped(actor, "master-crinso-2")) ctx.shieldBurn = payShield(actor, actor.shield) * 0.5;
+  if (!phaseZeroStatsReady && action === "skill2" && equipped(actor, "master-bliss-1")) {
     const count2 = alive(state).filter((ally) => ally.id !== actor.id).length;
     if (count2 && actor.hp - actor.stats.health * 0.1 >= 1) {
       ctx.healExtra = actor.stats.health * 0.1 / count2;
       actor.hp -= actor.stats.health * 0.1;
     }
   }
-  if (equipped(actor, "master-atmoso-2") && n.counterwind) {
+  if (!phaseZeroStatsReady && equipped(actor, "master-atmoso-2") && n.counterwind) {
     if (offensive) ctx.bonus += n.counterwind;
     delete n.counterwind;
     delete n.counterwindActive;
   }
-  if (equipped(actor, "master-crinso-3")) {
+  if (!phaseZeroStatsReady && equipped(actor, "master-crinso-3")) {
     if (!n.crimson || action === "ultimate") ctx.bonus += 0.3;
   }
-  if (action === "skill2" && hasNativeIdentity(actor) && equipped(actor, "master-crinso-1")) {
+  if (!phaseZeroStatsReady && action === "skill2" && hasNativeIdentity(actor) && equipped(actor, "master-crinso-1")) {
     ctx.bonus += n.goldImprint ?? 0;
     delete n.goldImprint;
   }
   return ctx;
 }
+function conduitCriticalBonus(state, actor, target, action = "light") {
+  if (!phaseZeroStatsReady) return 0;
+  let bonus = 0;
+  if (action !== "light" && target.hp < target.stats.health * 0.5 && equipped(actor, "execution-orrery"))
+    bonus += magnitude(state, "execution-orrery", 0.35);
+  if (layers(actor).some((layer) => layer.native && layer.amount > 0 && alive(state).some((owner) => owner.id === layer.owner && equipped(owner, "aegis-return-spring"))))
+    bonus += magnitude(state, "aegis-return-spring", 0.2);
+  if (target.burn.turns > 0 && target.burn.origin !== "conduit" && alive(state).some((owner) => owner.id !== actor.id && owner.id === target.burn.sourceId && equipped(owner, "flare-focusing-iris")))
+    bonus += magnitude(state, "flare-focusing-iris", 0.2);
+  return bonus;
+}
 function conduitHitModifiers(state, actor, target, ctx, critical) {
   let bonus = ctx.bonus + calamiticSiegeBonus(state, actor, target);
   let pierce = 0;
+  let criticalDamageBonus = ctx.criticalDamageBonus;
+  let skillPowerBonus = 0;
   const action = ctx.action;
-  if (target.hp >= target.stats.health && equipped(actor, "breach-pendulum")) bonus += value(state, actor, "breach-pendulum", 0.2, 0.4);
-  if (target.hp <= target.stats.health * 0.25 && equipped(actor, "execution-orrery")) bonus += value(state, actor, "execution-orrery", 0.5, 1);
-  if (action === "skill1" && equipped(actor, "spearwheel-engine")) pierce += value(state, actor, "spearwheel-engine", 0.15, 0.3);
-  if (target.weakened > 0 && target.weakenSourceId === actor.id && target.weakenOrigin !== "conduit" && equipped(actor, "ominous-eclipse-mantle")) {
-    pierce += value(state, actor, "ominous-eclipse-mantle", 0.4, 0.6);
-    ctx.eclipseTargets.push(target.id);
+  if (phaseZeroStatsReady && action !== "light") skillPowerBonus += ctx.spent.starveinPower ?? 0;
+  if (phaseZeroStatsReady && action !== "light" && !ctx.foldTarget && gear(actor).owners.foldTarget === target.id && token(state, actor, "foldTarget", true)) {
+    ctx.foldTarget = target.id;
+    delete gear(actor).owners.foldTarget;
   }
-  if (action === "light") {
+  if (phaseZeroStatsReady && action !== "light") {
+    const points = Math.max(0, ...alive(state).filter((owner) => owner.id !== actor.id && equipped(owner, "master-nerithe-1") && owner.native?.survey?.target === target.id).map((owner) => owner.native?.survey?.points ?? 0));
+    pierce += Math.min(4, points) * 0.1;
+  }
+  if (phaseZeroStatsReady && alive(state).some((owner) => equipped(owner, "master-tide-3") && target.side === "enemy" && target.weakened > 0 && target.weakenSourceId === owner.id && layers(actor).some((layer) => layer.amount > 0 && layer.native && layer.owner === owner.id)))
+    pierce += 0.25;
+  if (phaseZeroStatsReady && ctx.foldTarget === target.id) skillPowerBonus += 0.4;
+  if (phaseZeroStatsReady && action !== "light" && !ctx.rosettaTarget && gear(actor).owners.rosettaTarget === target.id && token(state, actor, "rosettaTarget", true)) {
+    ctx.rosettaTarget = target.id;
+    delete gear(actor).owners.rosettaTarget;
+  }
+  if (phaseZeroStatsReady && ctx.rosettaTarget === target.id) skillPowerBonus += 0.35;
+  if (phaseZeroStatsReady && action !== "light" && ctx.spent.elisePowerUsed && ctx.spent.elisePowerTarget === state.enemies.indexOf(target) + 1)
+    skillPowerBonus += 0.35;
+  if (phaseZeroStatsReady && action !== "light" && !ctx.spent.elisePowerUsed) {
+    const elise = alive(state).find((owner) => owner.id !== actor.id && equipped(owner, "master-elise-2") && owner.native?.blades?.includes(target.id));
+    const key = elise ? `eliseSkillPower:${elise.id}` : "";
+    if (elise && (gear(target).numbers[key] ?? 0) > 0) {
+      skillPowerBonus += 0.35;
+      gear(target).numbers[key]--;
+      ctx.spent.elisePowerUsed = 1;
+      ctx.spent.elisePowerTarget = state.enemies.indexOf(target) + 1;
+    }
+  }
+  if (phaseZeroStatsReady && action !== "light") {
+    const storedOwner = gear(actor).owners.emberSkillOwner;
+    const burnOwner = state.allies.find((ally) => ally.id === storedOwner && equipped(ally, "master-ember-3"));
+    if (burnOwner && target.burn.turns > 0 && target.burn.sourceId === burnOwner.id && target.burn.origin !== "conduit" && token(state, actor, "emberSkillOwner", true)) {
+      ctx.emberBonusOwner = burnOwner.id;
+      delete gear(actor).owners.emberSkillOwner;
+    }
+    if (ctx.emberBonusOwner && target.burn.turns > 0 && target.burn.sourceId === ctx.emberBonusOwner && target.burn.origin !== "conduit") skillPowerBonus += 0.4;
+  }
+  if (phaseZeroStatsReady && action === "light" && critical && target.hp > target.stats.health * 0.75 && equipped(actor, "breach-pendulum")) criticalDamageBonus += magnitude(state, "breach-pendulum", 0.4);
+  if (phaseZeroStatsReady && critical && actor.shield > 0 && equipped(actor, "wardglass-transformer")) criticalDamageBonus += magnitude(state, "wardglass-transformer", 0.25);
+  if (phaseZeroStatsReady && action !== "light" && critical && equipped(actor, "judgment-lens"))
+    criticalDamageBonus += phaseZeroUpgradeMagnitude(0.5, state.conduitUpgrades?.["judgment-lens"] ?? 0);
+  if (!phaseZeroStatsReady && target.hp >= target.stats.health && equipped(actor, "breach-pendulum"))
+    bonus += value(state, actor, "breach-pendulum", 0.2, 0.4);
+  if (!phaseZeroStatsReady && target.hp <= target.stats.health * 0.25 && equipped(actor, "execution-orrery")) bonus += value(state, actor, "execution-orrery", 0.5, 1);
+  if (!phaseZeroStatsReady && action === "skill1" && equipped(actor, "spearwheel-engine")) pierce += value(state, actor, "spearwheel-engine", 0.15, 0.3);
+  if (phaseZeroStatsReady && action !== "light" && equipped(actor, "spearwheel-engine")) pierce += magnitude(state, "spearwheel-engine", 0.1);
+  pierce += calamiticSkillDefenseIgnore(state, actor, action);
+  if (target.weakened > 0 && equipped(actor, "ominous-eclipse-mantle")) {
+    if (phaseZeroStatsReady && action !== "light") {
+      pierce += magnitude(state, "ominous-eclipse-mantle", 0.35);
+      if (target.weakenSourceId && target.weakenSourceId !== actor.id)
+        skillPowerBonus += magnitude(state, "ominous-eclipse-mantle", 0.2);
+    } else if (!phaseZeroStatsReady && target.weakenSourceId === actor.id && target.weakenOrigin !== "conduit") {
+      pierce += value(state, actor, "ominous-eclipse-mantle", 0.4, 0.6);
+      ctx.eclipseTargets.push(target.id);
+    }
+  }
+  if (action === "light" && !phaseZeroStatsReady) {
     const marks = target.conduitMarks?.[actor.id] ?? 0;
     if (marks) {
       bonus += marks * value(state, actor, "ominous-nightglass-archive", 0.1, 0.2);
@@ -6048,7 +7935,30 @@ function conduitHitModifiers(state, actor, target, ctx, critical) {
     }
   }
   const targetMemory = gear(target);
+  if (phaseZeroStatsReady) {
+    if (action === "light" && state.allies.some((owner) => owner.id !== actor.id && (targetMemory.numbers[`nightglass:${owner.id}`] ?? 0) >= state.round))
+      criticalDamageBonus += magnitude(state, "ominous-nightglass-archive", 0.5);
+    if (action !== "light") {
+      let soot = false;
+      for (const source of state.allies.filter((ally) => ally.id !== actor.id)) {
+        const key = `soot:${source.id}:${actor.id}`;
+        if ((targetMemory.numbers[key] ?? 0) >= state.round) {
+          soot = true;
+          delete targetMemory.numbers[key];
+        }
+      }
+      if (soot) ctx.spent[`soot:${target.id}`] = magnitude(state, "sootwake-crucible", 0.3);
+      skillPowerBonus += ctx.spent[`soot:${target.id}`] ?? 0;
+      if (gear(actor).owners.secondbeatTarget === target.id && token(state, actor, "secondbeatPower")) {
+        ctx.spent[`secondbeat:${target.id}`] = token(state, actor, "secondbeatPower", true);
+        const source = state.allies.find((ally) => ally.id === gear(actor).owners.secondbeatSource);
+        if (source) ctx.spent.secondbeatSource = state.allies.indexOf(source) + 1;
+      }
+      skillPowerBonus += ctx.spent[`secondbeat:${target.id}`] ?? 0;
+    }
+  }
   for (const owner of state.allies) {
+    if (phaseZeroStatsReady) break;
     if (owner.id === actor.id) continue;
     const sootPrefix = `soot:${owner.id}:`;
     const sootKeys = Object.keys(targetMemory.numbers).filter((key) => key.startsWith(sootPrefix));
@@ -6066,20 +7976,34 @@ function conduitHitModifiers(state, actor, target, ctx, critical) {
     }
     const openingKey = `opening:${owner.id}`;
     const openings = targetMemory.numbers[openingKey] ?? 0;
-    if (openings > 0 && (hasNativeIdentity(owner) || target.weakened > 0 && target.weakenSourceId === owner.id)) {
+    if (!phaseZeroStatsReady && openings > 0 && (hasNativeIdentity(owner) || target.weakened > 0 && target.weakenSourceId === owner.id)) {
       bonus += 0.4;
       if (!hasNativeIdentity(owner)) target.weakened--;
       if (openings > 1) targetMemory.numbers[openingKey] = openings - 1;
       else delete targetMemory.numbers[openingKey];
     }
   }
-  if (equipped(actor, "master-atmoso-3") && !ctx.forbidden) bonus += Math.max(0, actor.stats.crit + ctx.criticalBonus - 1);
-  if (critical && equipped(actor, "master-elise-1")) pierce += 0.5;
+  if (!phaseZeroStatsReady && equipped(actor, "master-atmoso-3") && !ctx.forbidden) bonus += Math.max(0, actor.stats.crit + ctx.criticalBonus - 1);
+  if (critical && equipped(actor, "master-elise-1") && !phaseZeroStatsReady) pierce += 0.5;
+  const coveredByBruno = phaseZeroStatsReady && alive(state).some((owner) => equipped(owner, "master-bruno-3") && owner.native?.cover?.throughPhase !== void 0 && owner.native.cover.throughPhase >= state.round && owner.native.cover.targets.includes(actor.id));
+  let attackBonus = 0;
+  if (phaseZeroStatsReady) {
+    attackBonus += ctx.spent.temperedAttack ?? 0;
+    if ((gear(actor).numbers.solaceAttackThrough ?? 0) >= state.round)
+      attackBonus += gear(actor).numbers.solaceAttack ?? 0;
+    if (alive(state).some((owner) => owner.id !== actor.id && owner.element !== actor.element && equipped(owner, "infernic-pyre-census"))) attackBonus += magnitude(state, "infernic-pyre-census", 0.15);
+    if (actor.attackBoost && actor.attackBoost.throughRound >= state.round)
+      attackBonus += actor.attackBoost.fraction;
+  }
+  const attack = phaseZeroStatsReady ? actor.stats.damage + phaseZeroStatBase(actor.stats.damage, "damage", actor.conduits, state.conduitUpgrades) * (attackBonus + (coveredByBruno ? 0.25 : 0)) : actor.stats.damage * (1 + attackBonus + (coveredByBruno ? 0.25 : 0));
+  const criticalBase = phaseZeroStatsReady ? phaseZeroStatBase(actor.stats.critMultiplier, "critMultiplier", actor.conduits, state.conduitUpgrades) : actor.stats.critMultiplier;
   return {
     bonus,
-    pierce,
-    attack: actor.stats.damage,
-    ...critical && equipped(actor, "master-elise-1") ? { critMultiplier: 1.5 } : {}
+    skillPowerBonus,
+    pierce: phaseZeroStatsReady ? Math.min(0.75, pierce) : pierce,
+    attack: attack * (phaseZeroStatsReady && action === "light" && equipped(actor, "nullsong-transmission") ? magnitude(state, "nullsong-transmission", 2.5) : 1),
+    ...criticalDamageBonus > 0 ? { criticalDamageBonus: actor.stats.critMultiplier > 0 ? criticalDamageBonus * (criticalBase / actor.stats.critMultiplier) : 0 } : {},
+    ...critical && equipped(actor, "master-elise-1") && !phaseZeroStatsReady ? { critMultiplier: 1.5 } : {}
   };
 }
 function resetConduitBurnStreak(owner, target) {
@@ -6089,7 +8013,7 @@ function resetConduitBurnStreak(owner, target) {
 }
 function applyConduitBurn(state, owner, target, base, ctx) {
   let bonus = 0;
-  if (equipped(owner, "starvein-conductor")) {
+  if (!phaseZeroStatsReady && equipped(owner, "starvein-conductor")) {
     const payment = owner.stats.health * 0.05;
     if (!ctx.burnPaid && owner.hp - payment >= 1) {
       owner.hp -= payment;
@@ -6097,7 +8021,14 @@ function applyConduitBurn(state, owner, target, base, ctx) {
     }
     if (ctx.burnPaid) bonus += value(state, owner, "starvein-conductor", 0.3, 0.6);
   }
-  const damage = Math.round((base + ctx.shieldBurn) * (1 + bonus));
+  const damage = Math.round((base * ctx.skillPower + ctx.shieldBurn) * (1 + bonus));
+  if (phaseZeroStatsReady) {
+    const n = gear(target).numbers;
+    const prior = owner.native?.burns?.[target.id] ?? (target.burn.sourceId === owner.id ? target.burn : void 0);
+    if (!prior || prior.turns <= 0) n[`cinderPower:${owner.id}`] = 0;
+    if (!prior || prior.turns <= 0 || damage >= prior.damage) n[`cinderBase:${owner.id}`] = base;
+    return damage;
+  }
   if (target.burn.turns <= 0 || damage >= target.burn.damage) resetConduitBurnStreak(owner, target);
   return damage;
 }
@@ -6111,33 +8042,44 @@ function afterConduitImpact(owner, target, ctx) {
     }
   }
 }
-function applyConduitWeaken(state, owner, target, fraction, events, action = "skill1", baseDuration = 2) {
-  if (equipped(owner, "master-bruno-3") && action === "skill1") {
+function applyConduitWeaken(state, owner, target, fraction, events, action = "skill1", baseDuration = 2, activation) {
+  if (!phaseZeroStatsReady && equipped(owner, "master-bruno-3") && action === "skill1") {
     gear(target).numbers.excavated = (gear(target).numbers.excavated ?? 0) + (gear(target).numbers.entryDefense ?? target.stats.defense) * 0.15;
     emit(events, "status", owner, target, gear(target).numbers.excavated, `${target.name}'s Battle-start Defense is excavated.`);
     return;
   }
-  const duration = baseDuration + (equipped(owner, "opal-indexer") ? step(state, "opal-indexer", 1, 2) : 0);
-  const strength = fraction + (equipped(owner, "tension-governor") ? value(state, owner, "tension-governor", 0.05, 0.1) : 0);
-  if (target.weakened > 0 && target.weakenFraction > strength) {
+  const duration = baseDuration + (phaseZeroStatsReady ? activation?.skillDuration ?? Math.floor(owner.stats.skillDuration ?? 0) : 0) + (phaseZeroStatsReady ? Number(equipped(owner, "aquatic-undertide-chronometer")) : equipped(owner, "opal-indexer") ? step(state, "opal-indexer", 1, 2) : 0);
+  const strength = fraction * (phaseZeroStatsReady ? activation?.skillPower ?? owner.stats.skillPower ?? 1 : 1) + (!phaseZeroStatsReady && equipped(owner, "tension-governor") ? value(state, owner, "tension-governor", 0.05, 0.1) : 0);
+  const boundedStrength = phaseZeroStatsReady ? Math.min(0.5, strength) : strength;
+  if (target.weakened > 0 && target.weakenFraction > boundedStrength) {
     emit(events, "status", owner, target, target.weakenFraction, `${target.name}'s stronger Weaken remains unchanged.`);
     return;
   }
-  target.weakened = duration;
-  target.weakenFraction = strength;
+  target.weakened = phaseZeroStatsReady ? Math.min(6, duration) : duration;
+  target.weakenFraction = boundedStrength;
   target.weakenSourceId = owner.id;
   target.weakenOrigin = owner.kit?.pilot === "rose-grace" || owner.kit?.pilot === "thorn-aegis" || owner.kit?.pilot === "rose-duality" ? "rose" : "native";
   const n = gear(target).numbers;
-  if (equipped(owner, "aquatic-undertide-chronometer") && !n[`undertide:${owner.id}`]) {
+  if (!phaseZeroStatsReady && equipped(owner, "aquatic-undertide-chronometer") && !n[`undertide:${owner.id}`]) {
     n[`undertide:${owner.id}`] = 1;
     n.scheduleShift = (n.scheduleShift ?? 0) + step(state, "aquatic-undertide-chronometer", 1, 2);
   }
-  if (equipped(owner, "master-razor-3") && !n[`silenced:${owner.id}`]) {
+  if (!phaseZeroStatsReady && equipped(owner, "master-razor-3") && !n[`silenced:${owner.id}`]) {
     n[`silenced:${owner.id}`] = 1;
     n.silence = 1;
   }
-  if (equipped(owner, "master-tide-3")) applyTaunt(owner, target);
-  emit(events, "status", owner, target, strength, `${target.name} has ${Math.round(strength * 100)}% [Weaken] for ${target.weakened} Enemy Turns.`, true);
+  if (!phaseZeroStatsReady && equipped(owner, "master-tide-3")) applyTaunt(owner, target);
+  emit(events, "status", owner, target, boundedStrength, `${target.name} has ${Math.round(boundedStrength * 100)}% [Weaken] for ${target.weakened} Enemy Turns.`, true);
+  if (phaseZeroStatsReady && equipped(owner, "tension-governor") && !activation?.spent.tension) {
+    if (activation) activation.spent.tension = 1;
+    const recipient = alive(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+    if (recipient) {
+      gear(recipient).numbers.tensionDefense = magnitude(state, "tension-governor", 0.3);
+      gear(recipient).numbers.tensionDefenseThrough = state.round;
+      if (recipient.hp < recipient.stats.health * 0.5)
+        generatedHeal(owner, recipient, recipient.stats.health * magnitude(state, "tension-governor", 0.06), events, state);
+    }
+  }
 }
 function supportEffect(state, owner, target, events) {
   if (owner.id !== target.id && equipped(owner, "tranquilitic-accord-bastion") && !gear(target).owners.accord && !gear(target).numbers.accordGranted) {
@@ -6148,83 +8090,148 @@ function supportEffect(state, owner, target, events) {
 }
 function nativeHeal(state, owner, target, offer, events, active, ctx, instruction = active) {
   if (target.hp <= 0) return 0;
-  if (instruction) offer *= nativeSupportMultiplier(state, owner);
-  let bonus = active && equipped(owner, "springwell-pump") ? value(state, owner, "springwell-pump", 0.2, 0.4) : 0;
-  offer = Math.max(0, offer * (1 + bonus) + (active && owner.id !== target.id ? ctx?.healExtra ?? 0 : 0)) * healingReceived(target);
+  if (instruction && !phaseZeroStatsReady) offer *= nativeSupportMultiplier(state, owner);
+  if (phaseZeroStatsReady && ctx && (instruction || !active)) {
+    const graft = active && instruction && equipped(owner, "botanic-graft-covenant") && target.hp < target.stats.health * 0.4 ? magnitude(state, "botanic-graft-covenant", 0.5) : 0;
+    offer *= (ctx.skillPower ?? owner.stats.skillPower ?? 1) + (ctx.supportPowerBonus ?? 0) + graft;
+  }
+  let bonus = !phaseZeroStatsReady && active && equipped(owner, "springwell-pump") ? value(state, owner, "springwell-pump", 0.2, 0.4) : 0;
+  const beforeHp = target.hp;
+  offer = Math.max(0, offer * (1 + bonus) + (active && owner.id !== target.id ? ctx?.healExtra ?? 0 : 0)) * healingReceived(target, state);
   const restored = Math.min(target.stats.health - target.hp, offer);
   const wasted = offer - restored;
   if (ctx) {
     ctx.overheal += wasted;
     ctx.healed += restored;
+    if (restored > 0) ctx.healRecipients?.push(target.id);
   }
   if (active && wasted > 0 && equipped(owner, "efflorescent-worldtree-heart")) {
-    const seed2 = wasted * value(state, owner, "efflorescent-worldtree-heart", 0.5, 1);
-    const key = `seed:${owner.id}`;
-    gear(target).numbers[key] = (gear(target).numbers[key] ?? 0) + seed2;
+    if (phaseZeroStatsReady) {
+      timedConduitShield(
+        state,
+        owner,
+        target,
+        Math.min(
+          target.stats.health * 0.2,
+          wasted * magnitude(state, "efflorescent-worldtree-heart", 0.6)
+        ),
+        "efflorescent-worldtree-heart",
+        state.round + 1,
+        events,
+        true
+      );
+    } else {
+      const seed2 = wasted * value(state, owner, "efflorescent-worldtree-heart", 0.5, 1);
+      const key = `seed:${owner.id}`;
+      gear(target).numbers[key] = (gear(target).numbers[key] ?? 0) + seed2;
+    }
   }
-  overhealShield(owner, target, wasted, events);
+  if (!phaseZeroStatsReady) overhealShield(owner, target, wasted, events);
   if (restored <= 0) return 0;
   target.hp += restored;
+  if (phaseZeroStatsReady && active) {
+    if (equipped(target, "ruinselect-prism") && owner.id !== target.id && beforeHp < target.stats.health * 0.5)
+      gear(target).numbers.ruinselectRetained = 1;
+    if (equipped(target, "tempered-strike-link") && owner.id !== target.id)
+      grantToken(state, target, "temperedAttack", magnitude(state, "tempered-strike-link", 0.4), owner);
+    if (equipped(owner, "efflorescent-verdant-covenant"))
+      grantToken(state, target, "verdantPower", magnitude(state, "efflorescent-verdant-covenant", 0.3), owner);
+    if (equipped(owner, "botanic-graft-covenant") && beforeHp < target.stats.health * 0.4 && target.hp > target.stats.health * 0.4) {
+      gear(target).numbers.graftDefense = magnitude(state, "botanic-graft-covenant", 0.3);
+      gear(target).numbers.graftDefenseThrough = state.round;
+    }
+  }
   emit(events, "heal", owner, target, restored, `${owner.name} restores ${restored} HP to ${target.name}.`, true);
+  if (phaseZeroStatsReady && active && equipped(owner, "meridian-inverter")) {
+    const key = `meridian:${owner.id}`;
+    const memory = gear(target).numbers;
+    if (memory[key] !== state.round) {
+      memory[key] = state.round;
+      generatedGaugePercent(owner, target, magnitude(state, "meridian-inverter", 0.08), events, state);
+    }
+  }
   pilotEffectiveHeal(state, owner, target, restored, events);
   supportEffect(state, owner, target, events);
-  if (active && owner.id !== target.id && equipped(owner, "efflorescent-verdant-covenant")) gear(target).numbers.verdant = Math.max(gear(target).numbers.verdant ?? 0, value(state, owner, "efflorescent-verdant-covenant", 0.2, 0.4));
+  if (phaseZeroStatsReady && ctx?.action !== void 0 && ctx.action !== "light" && owner.id !== target.id && equipped(target, "immortal-vessel")) {
+    const recipient = injured(state, target, true);
+    if (recipient) {
+      const key = `immortal:${target.id}:${recipient.id}`;
+      const prior = ctx.spent?.[key] ?? 0;
+      const cap = recipient.stats.health * 0.08;
+      const healed = generatedHeal(target, recipient, restored * magnitude(state, "immortal-vessel", 0.25), events, state, cap - prior);
+      if (ctx.spent && healed > 0) ctx.spent[key] = prior + healed;
+    }
+  }
+  if (!phaseZeroStatsReady && active && owner.id !== target.id && equipped(owner, "efflorescent-verdant-covenant")) gear(target).numbers.verdant = Math.max(gear(target).numbers.verdant ?? 0, value(state, owner, "efflorescent-verdant-covenant", 0.2, 0.4));
   return restored;
 }
 function finishNativeHealing(state, owner, ctx, events) {
-  if (equipped(owner, "rootbound-triage-vault") && ctx.healed > 0 && owner.shatter >= 15) {
+  if (!phaseZeroStatsReady && equipped(owner, "rootbound-triage-vault") && ctx.healed > 0 && owner.shatter >= 15) {
     const threshold = value(state, owner, "rootbound-triage-vault", 0.2, 0.4);
     const ally = alive(state).filter((ally2) => ally2.hp < ally2.stats.health * threshold).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
     if (ally) {
-      const restored = generatedHeal(owner, ally, ally.stats.health * threshold - ally.hp, events);
+      const restored = generatedHeal(owner, ally, ally.stats.health * threshold - ally.hp, events, state);
       if (restored > 0) owner.shatter -= 15;
     }
   }
 }
 function nativeShield(state, owner, target, offer, events, options = {}) {
-  if (target.hp <= 0) return;
-  offer *= nativeSupportMultiplier(state, owner);
-  let bonus = equipped(owner, "wardglass-transformer") ? value(state, owner, "wardglass-transformer", 0.2, 0.4) : 0;
-  if (owner.id === target.id && owner.hp <= owner.stats.health * 0.75 && equipped(owner, "pale-bulwark-diadem")) bonus += value(state, owner, "pale-bulwark-diadem", 0.25, 0.5);
+  if (target.hp <= 0) return 0;
+  if (!phaseZeroStatsReady) offer *= nativeSupportMultiplier(state, owner);
+  if (phaseZeroStatsReady && options.skillPower !== void 0)
+    offer *= options.skillPower + (options.activation?.supportPowerBonus ?? 0);
+  let bonus = !phaseZeroStatsReady && equipped(owner, "wardglass-transformer") ? value(state, owner, "wardglass-transformer", 0.2, 0.4) : 0;
+  if (!phaseZeroStatsReady && owner.id === target.id && owner.hp <= owner.stats.health * 0.75 && equipped(owner, "pale-bulwark-diadem")) bonus += value(state, owner, "pale-bulwark-diadem", 0.25, 0.5);
   offer *= 1 + bonus;
-  if (equipped(owner, "citadel-spine")) offer += effectiveDefense(state, owner) * value(state, owner, "citadel-spine", 0.1, 0.2);
-  if (equipped(owner, "meridian-inverter")) {
+  if (!phaseZeroStatsReady && equipped(owner, "citadel-spine")) offer += effectiveDefense(state, owner) * value(state, owner, "citadel-spine", 0.1, 0.2);
+  if (!phaseZeroStatsReady && equipped(owner, "meridian-inverter")) {
     generatedHeal(owner, target, offer * value(state, owner, "meridian-inverter", 0.75, 1.5), events);
-    return;
+    return 0;
   }
-  const plate = equipped(owner, "master-orvella-1");
+  const plate = !phaseZeroStatsReady && equipped(owner, "master-orvella-1");
   const finalOffer = offer * (plate ? 0.5 : 1);
   const list = layers(target);
   const existing = target.shield - (plate ? list.filter((layer) => layer.plate).reduce((sum, layer) => sum + layer.amount, 0) : 0);
   const gained = Math.max(0, finalOffer - existing);
   const owned = list.filter((layer) => layer.native && layer.owner === owner.id && layer.amount > 0);
+  const throughPhase = phaseZeroStatsReady && equipped(owner, "ward-stitch-spool") ? (options.throughPhase ?? state.round) + 1 : options.throughPhase;
   for (const layer of owned) {
-    if (options.throughPhase !== void 0 && layer.expiresAfterPhase !== void 0)
-      layer.expiresAfterPhase = Math.max(layer.expiresAfterPhase, options.throughPhase);
+    if (throughPhase !== void 0 && layer.expiresAfterPhase !== void 0)
+      layer.expiresAfterPhase = phaseZeroStatsReady ? throughPhase : Math.max(layer.expiresAfterPhase, throughPhase);
   }
   if (options.firstReduction !== void 0 && owned.length) {
     for (const layer of owned) delete layer.firstReduction;
     owned[0].firstReduction = options.firstReduction;
   }
   if (gained > 0) {
+    options.activation?.shieldRecipients.push(target.id);
     list.push({
       amount: gained,
       owner: owner.id,
       native: true,
-      ...options.throughPhase !== void 0 ? { expiresAfterPhase: options.throughPhase } : {},
+      ...throughPhase !== void 0 ? { expiresAfterPhase: throughPhase } : {},
       ...options.firstReduction !== void 0 && !owned.length ? { firstReduction: options.firstReduction } : {}
     });
     target.shield += gained;
     target.pilot ??= {};
     target.pilot.authoredShieldSourceId = owner.id;
     supportEffect(state, owner, target, events);
-    if (target.id !== owner.id && equipped(owner, "aegis-return-spring")) {
+    if (phaseZeroStatsReady && options.skillPower !== void 0 && owner.id !== target.id && equipped(owner, "aegis-capacitor")) {
+      const memory = gear(owner).numbers;
+      memory.aegisDefense = phaseZeroUpgradeMagnitude(0.25, state.conduitUpgrades?.["aegis-capacitor"] ?? 0);
+      memory.aegisDefenseThrough = state.round;
+    }
+    if (phaseZeroStatsReady && options.activation?.action === "skill2" && equipped(owner, "master-tide-2")) {
+      grantToken(state, target, "tideEfficiencyPending", 1);
+      gear(target).owners.tideEfficiencyOwner = owner.id;
+    }
+    if (!phaseZeroStatsReady && target.id !== owner.id && equipped(owner, "aegis-return-spring")) {
       const n = gear(owner).numbers;
       gear(target).numbers.criticalSeal = (gear(target).numbers.criticalSeal ?? 0) + 1;
     }
   }
   emit(events, "shield", owner, target, gained, `${target.name} has ${target.shield} shield.`, true);
-  if (equipped(owner, "ward-stitch-spool")) {
+  if (!phaseZeroStatsReady && equipped(owner, "ward-stitch-spool")) {
     const healBonus = value(state, owner, "ward-stitch-spool", 0.2, 0.4);
     for (const layer of layers(target)) if (layer.native && layer.owner === owner.id) layer.healBonus = healBonus;
   }
@@ -6233,22 +8240,44 @@ function nativeShield(state, owner, target, offer, events, options = {}) {
     const amount = Math.max(0, Math.round(offer * 0.5) - prior);
     generatedShield(owner, target, amount, events, true, Infinity, true);
   }
+  if (phaseZeroStatsReady && options.skillPower !== void 0 && equipped(owner, "oceanic-shared-tide-pump") && options.activation && options.activation.action !== "light" && owner.kit?.abilities[options.activation.action]?.targets === "one-ally") {
+    const recipient = alive(state).filter((ally) => ally.id !== target.id).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+    if (recipient) timedConduitShield(
+      state,
+      owner,
+      recipient,
+      finalOffer * magnitude(state, "oceanic-shared-tide-pump", 0.5),
+      "oceanic-shared-tide-pump",
+      throughPhase ?? state.round,
+      events
+    );
+  }
+  return gained;
 }
 function nativeGauge(state, target, offer, events, conduit = false) {
   if (offer <= 0 || target.hp <= 0) return;
-  if (!conduit && equipped(target, "reserve-torque-crank")) offer += Math.max(1, Math.round(offer * value(state, target, "reserve-torque-crank", 0.1, 0.25)));
-  const link = state.allies.find((owner) => owner.hp > 0 && equipped(owner, "master-disciple-2") && (gear(owner).numbers.linkThrough ?? 0) >= state.round && gear(target).owners.link === owner.id);
-  const overflow = Math.max(0, target.shatter + offer - target.stats.shatterCapacity);
+  if (!phaseZeroStatsReady && !conduit && equipped(target, "reserve-torque-crank")) offer += Math.max(1, Math.round(offer * value(state, target, "reserve-torque-crank", 0.1, 0.25)));
+  const link = !phaseZeroStatsReady && state.allies.find((owner) => owner.hp > 0 && equipped(owner, "master-disciple-2") && (gear(owner).numbers.linkThrough ?? 0) >= state.round && gear(target).owners.link === owner.id);
+  const legacyOverflow = Math.max(0, target.shatter + offer - target.stats.shatterCapacity);
   if (link) {
     const linked = alive(state).filter((ally) => gear(ally).owners.link === link.id);
-    for (const ally of linked) generatedGauge(target, ally, offer / linked.length, events);
-  } else generatedGauge(target, target, offer, events, true);
-  if (overflow > 0 && equipped(target, "clearwater-manifold")) {
-    generatedGauge(target, lowestGauge(state, target), overflow * value(state, target, "clearwater-manifold", 0.5, 1), events);
+    for (const ally of linked) generatedGauge(target, ally, offer / linked.length, events, false, false, state);
+  } else {
+    const received = phaseZeroStatsReady ? phaseZeroGaugeOffer(offer, effectiveGaugeGain(state, target)) : offer;
+    const overflow2 = Math.max(0, target.shatter + received - target.stats.shatterCapacity);
+    generatedGauge(target, target, received, events, true, phaseZeroStatsReady, state);
+    if (!phaseZeroStatsReady && overflow2 > 0 && equipped(target, "clearwater-manifold")) {
+      generatedGauge(target, lowestGauge(state, target), overflow2 * value(state, target, "clearwater-manifold", 0.5, 1), events, false, false, state);
+    }
+    return;
+  }
+  const overflow = legacyOverflow;
+  if (!phaseZeroStatsReady && overflow > 0 && equipped(target, "clearwater-manifold")) {
+    generatedGauge(target, lowestGauge(state, target), overflow * value(state, target, "clearwater-manifold", 0.5, 1), events, false, false, state);
   }
 }
-function recordConduitHit(ctx, target, amount, critical, criticalMultiplier, overkill = 0) {
-  ctx.hits.push({ target: target.id, damage: amount, critical, criticalMultiplier, ...overkill > 0 ? { overkill } : {} });
+function recordConduitHit(ctx, target, amount, critical, criticalMultiplier, overkill = 0, totalDamage = amount) {
+  ctx.hits.push({ target: target.id, damage: amount, totalDamage, critical, criticalMultiplier, ...overkill > 0 ? { overkill } : {} });
 }
 function adjustBurnTurns(owner, target, delta) {
   target.burn.turns = Math.max(0, target.burn.turns + delta);
@@ -6258,42 +8287,108 @@ function adjustBurnTurns(owner, target, delta) {
 }
 function finishConduitAction(state, owner, ctx, events) {
   const n = gear(owner).numbers;
+  if (phaseZeroStatsReady) {
+    token(state, owner, "triagePower", true);
+    token(state, owner, "triageEfficiency", true);
+  }
   finishNativeHealing(state, owner, ctx, events);
-  if (equipped(owner, "master-nerithe-2") && ctx.action === "skill2") {
+  if (phaseZeroStatsReady && ctx.action === "ultimate" && equipped(owner, "master-nerithe-3") && (ctx.spent.survey ?? 0) > 0) {
+    const grant = Math.min(0.2, (ctx.spent.survey ?? 0) * 0.04);
+    for (const ally of alive(state)) generatedGaugePercent(owner, ally, grant, events, state);
+  }
+  if (phaseZeroStatsReady && equipped(owner, "master-ember-2") && (ctx.spent.ember ?? 0) > 0) {
+    for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id))
+      generatedGaugePercent(owner, ally, (ctx.spent.ember ?? 0) * 0.04, events, state);
+  }
+  if (!phaseZeroStatsReady && equipped(owner, "master-nerithe-2") && ctx.action === "skill2") {
     for (const ally of alive(state)) {
       nativeGauge(state, ally, 15, events, true);
       ally.omnicProtection = 1 - (1 - (ally.omnicProtection ?? 0)) * 0.85;
     }
   }
-  const damage = ctx.hits.reduce((sum, hit) => sum + hit.damage, 0);
+  const damage = ctx.hits.reduce((sum, hit) => sum + hit.damage, 0) + ctx.nativeHpDamage;
+  if (phaseZeroStatsReady && equipped(owner, "duplex-heart") && ctx.healRecipients.some((id) => id !== owner.id)) {
+    generatedHeal(owner, owner, owner.stats.health * phaseZeroUpgradeMagnitude(0.05, state.conduitUpgrades?.["duplex-heart"] ?? 0), events, state);
+  }
   const critical = ctx.hits.find((hit) => hit.critical && hit.damage > 0);
   const primaryHit = ctx.hits[0];
   const target = state.enemies.find((enemy) => enemy.id === primaryHit?.target);
   const killed = ctx.hits.some((hit) => hit.damage > 0 && state.enemies.some((enemy) => enemy.id === hit.target && enemy.hp <= 0));
-  if (critical && ctx.action !== "ultimate" && equipped(owner, "atmospheric-storm-clock"))
+  if (!phaseZeroStatsReady && critical && ctx.action !== "ultimate" && equipped(owner, "atmospheric-storm-clock"))
     n.stormCount = (n.stormCount ?? 0) + ctx.hits.filter((hit) => hit.critical && hit.damage > 0).length;
-  if (!damage) n.previousSkill = 0;
+  if (!phaseZeroStatsReady && !damage) n.previousSkill = 0;
   if (ctx.action === "light") {
     n.normalRound = state.round;
-    if (equipped(owner, "atmospheric-skythread-rudder")) n.tailwind = (n.tailwind ?? 0) + 1;
-    if (equipped(owner, "tranquilitic-kirin-cradle")) generatedHeal(
-      owner,
-      alive(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0],
-      effectiveDefense(state, owner) * value(state, owner, "tranquilitic-kirin-cradle", 0.5, 1),
-      events
-    );
+    if (equipped(owner, "atmospheric-skythread-rudder")) {
+      if (phaseZeroStatsReady) {
+        const recipient = lowestGaugePercentage(state, owner);
+        if (recipient) grantToken(state, recipient, "skyEfficiency", magnitude(state, "atmospheric-skythread-rudder", 0.25));
+      } else n.tailwind = (n.tailwind ?? 0) + 1;
+    }
+    if (phaseZeroStatsReady && equipped(owner, "twinpulse-bellows")) {
+      generatedGaugePercent(owner, owner, phaseZeroUpgradeMagnitude(0.05, state.conduitUpgrades?.["twinpulse-bellows"] ?? 0), events, state);
+      const other = alive(state).filter((ally) => ally.id !== owner.id).sort((a, b) => a.shatter / a.stats.shatterCapacity - b.shatter / b.stats.shatterCapacity)[0];
+      generatedGaugePercent(owner, other, phaseZeroUpgradeMagnitude(0.05, state.conduitUpgrades?.["twinpulse-bellows"] ?? 0), events, state);
+    }
+    if (equipped(owner, "tranquilitic-kirin-cradle")) {
+      const recipient = alive(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+      if (phaseZeroStatsReady && recipient && recipient.hp === recipient.stats.health) {
+        generatedGaugePercent(owner, recipient, phaseZeroUpgradeMagnitude(
+          0.08,
+          state.conduitUpgrades?.["tranquilitic-kirin-cradle"] ?? 0
+        ), events, state);
+      } else generatedHeal(
+        owner,
+        recipient,
+        phaseZeroStatsReady && recipient ? Math.min(effectiveDefense(state, owner) * phaseZeroUpgradeMagnitude(
+          1,
+          state.conduitUpgrades?.["tranquilitic-kirin-cradle"] ?? 0
+        ), recipient.stats.health * 0.12) : effectiveDefense(state, owner) * value(state, owner, "tranquilitic-kirin-cradle", 0.5, 1),
+        events,
+        state,
+        phaseZeroStatsReady && recipient ? recipient.stats.health * 0.12 : Infinity
+      );
+    }
     if (equipped(owner, "tectonic-atlas-bastion")) {
       n.tauntRound = state.round;
+      for (const key of Object.keys(n)) if (key.startsWith("atlasGauge:")) delete n[key];
       for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0)) {
         applyTaunt(owner, enemy);
       }
     }
-    if (equipped(owner, "master-vaelor-3")) {
+    if (!phaseZeroStatsReady && equipped(owner, "master-vaelor-3")) {
       const ally = alive(state).filter((ally2) => ally2.id !== owner.id && ally2.spent && ally2.recoverThrough < state.round).sort((a, b) => b.shatter - a.shatter)[0];
       if (ally) {
         ally.spent = false;
         emit(events, "status", owner, ally, 1, `${owner.name} donates an action to ${ally.name}.`);
       }
+    }
+    if (phaseZeroStatsReady && equipped(owner, "master-vaelor-3")) {
+      const beat = owner.native?.beat;
+      if (beat === 0 || beat === 2) for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) {
+        if (beat === 0) grantToken(state, ally, "vaelorCriticalRate", 0.25);
+        else grantToken(state, ally, "vaelorCriticalDamage", 0.4);
+      }
+    }
+  }
+  if (phaseZeroStatsReady && ctx.action === "ultimate" && equipped(owner, "chaotic-ouroboros-core")) {
+    for (const ally of alive(state))
+      timedConduitShield(
+        state,
+        owner,
+        ally,
+        ally.stats.health * magnitude(state, "chaotic-ouroboros-core", 0.1),
+        "chaotic-ouroboros-core",
+        state.round + 1,
+        events
+      );
+  }
+  if (phaseZeroStatsReady && ctx.action === "ultimate" && equipped(owner, "clearwater-manifold")) {
+    const recipient = lowestGaugePercentage(state, owner);
+    const transferred = Math.min(owner.shield, Math.round(owner.shield * magnitude(state, "clearwater-manifold", 0.15)));
+    if (recipient && transferred > 0) {
+      payShield(owner, transferred);
+      timedConduitShield(state, owner, recipient, transferred, "clearwater-manifold", state.round, events);
     }
   }
   for (const id of owner.conduits ?? []) {
@@ -6303,27 +8398,64 @@ function finishConduitAction(state, owner, ctx, events) {
         if (ctx.hits.length) n.noncritical = ctx.guaranteed || ctx.hits.some((hit) => hit.critical) ? 0 : (n.noncritical ?? 0) + 1;
         break;
       case "lifeline-flywheel":
-        generatedHeal(owner, owner, damage * value(state, owner, id, 0.08, 0.16), events);
+        generatedHeal(owner, owner, ctx.hits.reduce((sum, hit) => sum + (phaseZeroStatsReady ? hit.totalDamage ?? hit.damage : hit.damage), 0) * (phaseZeroStatsReady ? phaseZeroUpgradeMagnitude(0.08, state.conduitUpgrades?.[id] ?? 0) : value(state, owner, id, 0.08, 0.16)), events, state);
         break;
       case "voltaic-thunderbird-coil":
+        if (phaseZeroStatsReady) {
+          if (ctx.action !== "light" && critical && primaryHit && primaryHit.damage > 0) {
+            const recipient = healthiestEnemy(state, primaryHit.target);
+            if (recipient) generatedStrike(
+              state,
+              owner,
+              recipient,
+              primaryHit.damage * magnitude(state, id, 0.4),
+              events
+            );
+            else for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id))
+              grantToken(state, ally, "thunderRate", magnitude(state, id, 0.2));
+          }
+          break;
+        }
         for (const hit of ctx.hits.filter((hit2) => hit2.critical && hit2.damage > 0)) generatedStrike(state, owner, healthiestEnemy(state, hit.target), hit.damage * value(state, owner, id, 0.3, 0.6), events);
         break;
       case "atmospheric-griffin-turbine":
         if (ctx.action === "light" && damage > 0) {
-          const gauge = Math.min(25, Math.round(100 * damage / Math.max(1, owner.stats.damage) * value(state, owner, id, 0.15, 0.3)));
-          for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) generatedGauge(owner, ally, gauge, events);
+          if (phaseZeroStatsReady) {
+            const ratio = phaseZeroUpgradeMagnitude(0.2, state.conduitUpgrades?.[id] ?? 0);
+            const fraction = Math.min(ratio, ratio * damage / Math.max(1, owner.stats.damage));
+            for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id))
+              generatedGaugePercent(owner, ally, fraction, events, state);
+          } else {
+            const gauge = Math.min(25, Math.round(100 * damage / Math.max(1, owner.stats.damage) * value(state, owner, id, 0.15, 0.3)));
+            for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) generatedGauge(owner, ally, gauge, events, false, false, state);
+          }
         }
         break;
       case "luminous-seraph-mirror":
+        if (phaseZeroStatsReady) {
+          if (critical && n.seraphRound !== state.round) {
+            n.seraphRound = state.round;
+            for (const ally of alive(state)) generatedHeal(owner, ally, ally.stats.health * magnitude(state, id, 0.06), events, state);
+          }
+          break;
+        }
         for (const hit of ctx.hits.filter((hit2) => hit2.critical && hit2.damage > 0)) for (const ally of alive(state)) generatedHeal(owner, ally, hit.damage * value(state, owner, id, 0.08, 0.16), events);
         break;
       case "chaotic-ouroboros-core":
-        if (ctx.action === "ultimate") {
+        if (!phaseZeroStatsReady && ctx.action === "ultimate") {
           generatedShield(owner, owner, n.excessShield ?? 0, events);
           delete n.excessShield;
         }
         break;
       case "luminous-dawn-witness-array":
+        if (phaseZeroStatsReady) {
+          if (ctx.hits.length && !ctx.hits.some((hit) => hit.critical)) {
+            for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id))
+              grantToken(state, ally, "dawnRate", magnitude(state, id, 0.15));
+            grantToken(state, owner, "dawnDamage", magnitude(state, id, 0.3));
+          }
+          break;
+        }
         if (ctx.hits.some((hit) => hit.critical)) {
           if (target?.hp && (n.witness ?? 0) > 0) {
             generatedStrike(state, owner, target, owner.stats.damage * n.witness * value(state, owner, id, 0.15, 0.3), events, false);
@@ -6334,13 +8466,17 @@ function finishConduitAction(state, owner, ctx, events) {
       case "ominous-nightglass-archive":
         if (ctx.action !== "light") for (const hit of ctx.hits) {
           const enemy = state.enemies.find((enemy2) => enemy2.id === hit.target && enemy2.hp > 0);
-          if (enemy) {
-            enemy.conduitMarks ??= {};
-            enemy.conduitMarks[owner.id] = (enemy.conduitMarks[owner.id] ?? 0) + 1;
+          if (enemy && hit.damage > 0) {
+            if (phaseZeroStatsReady) gear(enemy).numbers[`nightglass:${owner.id}`] = state.round + 1;
+            else {
+              enemy.conduitMarks ??= {};
+              enemy.conduitMarks[owner.id] = (enemy.conduitMarks[owner.id] ?? 0) + 1;
+            }
           }
         }
         break;
       case "tempered-strike-link":
+        if (phaseZeroStatsReady) break;
         if (ctx.action === "light") for (const hit of ctx.hits) {
           const enemy = state.enemies.find((enemy2) => enemy2.id === hit.target && enemy2.hp > 0 && enemy2.burn.turns > 0 && enemy2.burn.sourceId === owner.id && enemy2.burn.origin !== "conduit");
           if (!enemy) continue;
@@ -6350,17 +8486,44 @@ function finishConduitAction(state, owner, ctx, events) {
         }
         break;
       case "mending-valve":
+        if (phaseZeroStatsReady) {
+          if (ctx.action !== "light" && damage > 0) {
+            const recipient = alive(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+            if (recipient) generatedHeal(
+              owner,
+              recipient,
+              damage * magnitude(state, id, 0.15),
+              events,
+              state,
+              recipient.stats.health * 0.1
+            );
+          }
+          break;
+        }
         for (const hit of ctx.hits.filter((hit2) => hit2.damage > 0 && state.enemies.some((enemy) => enemy.id === hit2.target && enemy.hp <= 0)))
           generatedHeal(owner, injured(state, owner), owner.stats.health * value(state, owner, id, 0.08, 0.16), events);
         break;
       case "pulse-trigger-pawl":
-        if (critical && (ctx.action === "skill1" || ctx.action === "skill2")) generatedGauge(owner, owner, value(state, owner, id, 8, 16), events);
+        if (phaseZeroStatsReady && critical && (ctx.action === "skill1" || ctx.action === "skill2") && n.pulseTriggerRound !== state.round) {
+          n.pulseTriggerRound = state.round;
+          for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id))
+            generatedGaugePercent(owner, ally, phaseZeroUpgradeMagnitude(0.08, state.conduitUpgrades?.[id] ?? 0), events, state);
+        } else if (!phaseZeroStatsReady && critical && (ctx.action === "skill1" || ctx.action === "skill2")) {
+          generatedGauge(owner, owner, value(state, owner, id, 8, 16), events, false, false, state);
+        }
         break;
       case "resonance-crucible":
         for (const hit of ctx.hits.filter((hit2) => (hit2.overkill ?? 0) > 0))
-          generatedStrike(state, owner, healthiestEnemy(state, hit.target), (hit.overkill ?? 0) * value(state, owner, id, 0.3, 0.6), events);
+          generatedStrike(
+            state,
+            owner,
+            healthiestEnemy(state, hit.target),
+            (hit.overkill ?? 0) * (phaseZeroStatsReady ? 1 : value(state, owner, id, 0.3, 0.6)),
+            events
+          );
         break;
       case "flare-focusing-iris":
+        if (phaseZeroStatsReady) break;
         if ((ctx.spent.ember ?? 0) > 0) for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && enemy2.burn.turns > 0 && enemy2.burn.sourceId === owner.id && enemy2.burn.origin !== "conduit")) {
           const turns = ctx.spent.ember * step(state, id, 1, 2);
           adjustBurnTurns(owner, enemy, turns);
@@ -6368,9 +8531,34 @@ function finishConduitAction(state, owner, ctx, events) {
         }
         break;
       case "pressurecrest-governor":
-        if (critical) n.windveil = 1;
+        if (phaseZeroStatsReady) {
+          if (ctx.action !== "light" && critical && n.pressurecrestRound !== state.round) {
+            n.pressurecrestRound = state.round;
+            const recipient = alive(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+            if (recipient) timedConduitShield(
+              state,
+              owner,
+              recipient,
+              recipient.stats.health * magnitude(state, id, 0.15),
+              id,
+              state.round,
+              events
+            );
+          }
+        } else if (critical) n.windveil = 1;
         break;
       case "chaotic-fault-verdict":
+        if (phaseZeroStatsReady) {
+          if (owner.shield > 0 && critical && n.faultVerdictRound !== state.round) {
+            const source = layers(owner).filter((layer) => layer.amount > 0).sort((a, b) => b.amount - a.amount)[0]?.owner;
+            const recipient = alive(state).find((ally) => ally.id === source);
+            if (recipient) {
+              n.faultVerdictRound = state.round;
+              grantToken(state, recipient, "faultSkillPower", magnitude(state, id, 0.2));
+            }
+          }
+          break;
+        }
         for (const hit of ctx.hits.filter((hit2) => hit2.critical && hit2.damage > 0)) {
           const enemy = state.enemies.find((enemy2) => enemy2.id === hit.target && enemy2.hp > 0);
           if (enemy) generatedStrike(state, owner, enemy, payShield(owner, owner.shield) * value(state, owner, id, 0.5, 1), events);
@@ -6378,9 +8566,108 @@ function finishConduitAction(state, owner, ctx, events) {
         break;
     }
   }
+  if (phaseZeroStatsReady) {
+    if (critical && equipped(owner, "atmospheric-storm-clock")) {
+      n.stormCount = (n.stormCount ?? 0) + 1;
+      if (n.stormCount >= 3) {
+        n.stormCount = 0;
+        for (const ally of alive(state)) grantToken(
+          state,
+          ally,
+          "stormEfficiency",
+          magnitude(state, "atmospheric-storm-clock", 0.25)
+        );
+      }
+    }
+    delete n.ruinselectRetained;
+    if (ctx.spent.temperedAttack && ctx.spent.temperedSource >= 0) {
+      const healer = state.allies[ctx.spent.temperedSource];
+      if (healer?.hp > 0) grantToken(state, healer, "temperedEfficiency", magnitude(state, "tempered-strike-link", 0.2));
+    }
+    if (ctx.spent.secondbeatSource) {
+      generatedGaugePercent(
+        owner,
+        state.allies[ctx.spent.secondbeatSource - 1],
+        magnitude(state, "secondbeat-rack", 0.08),
+        events,
+        state
+      );
+    }
+    if (ctx.action !== "light" && equipped(owner, "covercharge-drum")) {
+      if (damage > 0) grantToken(state, owner, "coverOfferPower", magnitude(state, "covercharge-drum", 0.2));
+      if (ctx.healed > 0 || ctx.shieldRecipients.length)
+        grantToken(state, owner, "coverOfferEfficiency", magnitude(state, "covercharge-drum", 0.15));
+    }
+    for (const enemy of state.enemies) {
+      const memory = gear(enemy).numbers;
+      for (const key of Object.keys(memory)) if (key.startsWith("soot:") && key.endsWith(`:${owner.id}`))
+        delete memory[key];
+    }
+    for (const watcher of alive(state).filter((ally) => ally.id !== owner.id && equipped(ally, "secondbeat-rack"))) {
+      if (primaryHit && primaryHit.damage > 0 && target && target.hp > 0) {
+        gear(watcher).owners.secondbeatTarget = target.id;
+        gear(watcher).owners.secondbeatSource = owner.id;
+        grantToken(state, watcher, "secondbeatPower", magnitude(state, "secondbeat-rack", 0.35));
+      }
+    }
+    if (ctx.action !== "light") for (const hit of ctx.hits.filter((hit2) => (hit2.totalDamage ?? hit2.damage) > 0)) {
+      const enemy = state.enemies.find((unit) => unit.id === hit.target && unit.hp > 0);
+      if (!enemy) continue;
+      for (const source of alive(state).filter((ally) => ally.id !== owner.id && equipped(ally, "infernic-cinder-testament"))) {
+        if (!(enemy.burn.sourceId === source.id && enemy.burn.turns > 0 || (source.native?.burns?.[enemy.id]?.turns ?? 0) > 0)) continue;
+        const key = `cinderPower:${source.id}`;
+        const seen = `cinderCast:${source.id}:${enemy.id}`;
+        if (ctx.spent[seen]) continue;
+        ctx.spent[seen] = 1;
+        gear(enemy).numbers[key] = Math.min(
+          magnitude(state, "infernic-cinder-testament", 0.6),
+          (gear(enemy).numbers[key] ?? 0) + magnitude(state, "infernic-cinder-testament", 0.15)
+        );
+      }
+    }
+  }
   switch (owner.masterConduit) {
+    case "master-vaelor-1":
+      if (phaseZeroStatsReady && ctx.action === "ultimate") {
+        const bonus = hasNativeIdentity(owner) && owner.native?.beat === 2 ? 0.6 : 0.3;
+        for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id))
+          grantToken(state, ally, "vaelorSkillPower", bonus);
+      }
+      break;
+    case "master-ember-3":
+      if (phaseZeroStatsReady && ctx.action === "ultimate" && state.enemies.some((enemy) => enemy.hp > 0 && enemy.burn.turns > 0 && enemy.burn.sourceId === owner.id && enemy.burn.origin !== "conduit")) {
+        for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) {
+          grantToken(state, ally, "emberSkillOwner", 1);
+          gear(ally).owners.emberSkillOwner = owner.id;
+        }
+      }
+      break;
+    case "master-razor-1":
+      if (phaseZeroStatsReady && ctx.action === "ultimate" && (ctx.spent.wounds ?? 0) > 0) for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id))
+        generatedHeal(owner, ally, (ctx.spent.wounds ?? 0) * 0.2, events, state, ally.stats.health * 0.15);
+      break;
+    case "master-razor-3":
+      if (phaseZeroStatsReady && ctx.action === "skill1" && (ctx.spent.wounds ?? 0) > 0) for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id))
+        grantToken(state, ally, "razorCriticalRate", 0.3);
+      break;
+    case "master-rosetta-3":
+      if (ctx.action === (phaseZeroStatsReady ? "skill2" : "ultimate")) {
+        const quarryId = owner.native?.quarry?.target;
+        const quarry = state.enemies.find((enemy) => enemy.id === quarryId && enemy.hp > 0);
+        if (quarry && phaseZeroStatsReady) for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) {
+          grantToken(state, ally, "rosettaTarget", 1);
+          gear(ally).owners.rosettaTarget = quarry.id;
+        }
+        else if (!phaseZeroStatsReady) for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && (hasNativeIdentity(owner) ? enemy2.id === owner.native?.quarry?.target : enemy2.weakened > 0 && enemy2.weakenSourceId === owner.id))) {
+          const memory = gear(enemy).numbers, key = `opening:${owner.id}`;
+          memory[key] = (memory[key] ?? 0) + 1;
+        }
+      }
+      break;
     case "master-bruno-3":
-      if (hasNativeIdentity(owner) && ctx.action === "skill1" && damage > 0 && target?.hp) {
+      if (phaseZeroStatsReady && hasNativeIdentity(owner) && ctx.action === "skill1" && damage > 0 && target?.hp) {
+        gear(target).numbers.brunoDefenseThrough = state.round + 1;
+      } else if (!phaseZeroStatsReady && hasNativeIdentity(owner) && ctx.action === "skill1" && damage > 0 && target?.hp) {
         const memory = gear(target).numbers;
         const base = memory.entryDefense ?? target.stats.defense;
         memory.excavated = (memory.excavated ?? 0) + base * 0.15;
@@ -6388,7 +8675,7 @@ function finishConduitAction(state, owner, ctx, events) {
       }
       break;
     case "master-sprout-2":
-      if (ctx.action === "skill1" && damage > 0 && target && target.hp > 0 && !gear(target).numbers[`rooted:${owner.id}`]) {
+      if (!phaseZeroStatsReady && ctx.action === "skill1" && damage > 0 && target && target.hp > 0 && !gear(target).numbers[`rooted:${owner.id}`]) {
         gear(target).numbers[`rooted:${owner.id}`] = 1;
         gear(target).numbers.rootbind = 1;
       }
@@ -6397,32 +8684,32 @@ function finishConduitAction(state, owner, ctx, events) {
       if (ctx.action === "ultimate" && !n.worldseedRevived) {
         const fallen = state.allies.filter((ally) => ally.id !== owner.id && ally.hp <= 0);
         if (fallen.length) n.worldseedRevived = 1;
-        for (const ally of fallen) revive(owner, ally, 0.3, events);
+        for (const ally of fallen) revive(owner, ally, phaseZeroStatsReady ? 0.35 : 0.3, events);
       }
       break;
     case "master-atmoso-2":
-      if (ctx.action === "skill2") {
+      if (!phaseZeroStatsReady && ctx.action === "skill2") {
         n.counterwindActive = 1;
         n.counterwind = 0;
       }
       break;
     case "master-aurora-2":
-      if (ctx.action === "ultimate") for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0)) gear(enemy).numbers.judgmentThrough = state.round + 1;
+      if (!phaseZeroStatsReady && ctx.action === "ultimate") for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0)) gear(enemy).numbers.judgmentThrough = state.round + 1;
       break;
     case "master-bliss-3":
-      if (ctx.action === "ultimate") {
+      if (!phaseZeroStatsReady && ctx.action === "ultimate") {
         const ally = alive(state).filter((ally2) => ally2.id !== owner.id && !ally2.kit?.unavailableActions?.includes("skill1")).sort((a, b) => a.shatter - b.shatter)[0];
         if (ally) gear(ally).numbers.quietFeather = (gear(ally).numbers.quietFeather ?? 0) + 1;
       }
       break;
     case "master-disciple-2":
-      if (ctx.action === "ultimate") {
+      if (!phaseZeroStatsReady && ctx.action === "ultimate") {
         n.linkThrough = state.round + 2;
         for (const ally of alive(state)) gear(ally).owners.link = owner.id;
       }
       break;
     case "master-disciple-3":
-      if (ctx.action === "skill1") {
+      if (!phaseZeroStatsReady && ctx.action === "skill1") {
         const instructed = alive(state).find((ally2) => ally2.native?.instruction?.owner === owner.id && ally2.native.instruction.kind === "strike");
         const ally = hasNativeIdentity(owner) ? instructed : alive(state).filter((ally2) => ally2.id !== owner.id).sort((a, b) => b.stats.damage - a.stats.damage)[0];
         const victim = hasNativeIdentity(owner) ? state.enemies.find((enemy) => enemy.hp > 0) : target;
@@ -6435,84 +8722,134 @@ function finishConduitAction(state, owner, ctx, events) {
       }
       break;
     case "master-elise-3":
-      if (killed && owner.recoverThrough < state.round) {
-        owner.spent = false;
-      }
+      if (phaseZeroStatsReady && (ctx.spent.eliseRecallCount ?? 0) >= 2) {
+        for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) {
+          grantToken(state, ally, "eliseCriticalDamage", 0.4);
+          if (ctx.spent.eliseSameTarget) grantToken(state, ally, "eliseCriticalRate", 0.15);
+        }
+      } else if (!phaseZeroStatsReady && killed && owner.recoverThrough < state.round) owner.spent = false;
       break;
     case "master-rosetta-2":
-      if (ctx.action === "skill2" && hasNativeIdentity(owner) || ctx.action === "skill1" && (ctx.spent.roseGrace ?? 0) > 0) {
+      if (phaseZeroStatsReady && hasNativeIdentity(owner) && ctx.action === "ultimate") {
+        const quarry = owner.native?.quarry;
+        if (quarry?.round === state.round) for (const ally of alive(state).filter((ally2) => quarry.contributors.includes(ally2.id))) {
+          generatedHeal(owner, ally, ally.stats.health * 0.08, events, state);
+          if (ally.id !== owner.id) grantToken(state, ally, "rosettaSkillEfficiency", 0.2);
+        }
+      } else if (!phaseZeroStatsReady && (ctx.action === "skill2" && hasNativeIdentity(owner) || ctx.action === "skill1" && (ctx.spent.roseGrace ?? 0) > 0)) {
         for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && enemy2.id !== target?.id))
           generatedStrike(state, owner, enemy, (primaryHit?.damage ?? 0) * 0.25, events);
       }
       break;
-    case "master-rosetta-3":
-      if (ctx.action === "ultimate") for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && (hasNativeIdentity(owner) ? enemy2.id === owner.native?.quarry?.target : enemy2.weakened > 0 && enemy2.weakenSourceId === owner.id))) {
-        const memory = gear(enemy).numbers, key = `opening:${owner.id}`;
-        memory[key] = (memory[key] ?? 0) + 1;
-      }
-      break;
     case "master-thornia-3":
-      if (ctx.action === "skill1") for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) {
+      if (!phaseZeroStatsReady && ctx.action === "skill1") for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id)) {
         gear(ally).owners.guardian = owner.id;
         gear(ally).numbers.guardianRound = state.round;
       }
       break;
     case "master-crinso-1":
-      if (ctx.action === "skill1" && primaryHit?.critical && target?.hp) {
+      if (phaseZeroStatsReady && hasNativeIdentity(owner) && ctx.action === "ultimate" && (ctx.spent.duality ?? 0) > 0) {
+        const bonus = Math.min(0.6, 0.15 * (ctx.spent.duality ?? 0));
+        for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id))
+          grantToken(state, ally, "crinsoCriticalDamage", bonus);
+      } else if (!phaseZeroStatsReady && ctx.action === "skill1" && primaryHit?.critical && target?.hp) {
         if (hasNativeIdentity(owner)) n.goldImprint = (n.goldImprint ?? 0) + Math.max(0, primaryHit.criticalMultiplier - 1);
         else gear(target).numbers[`imprint:${owner.id}`] = primaryHit.criticalMultiplier;
       }
       break;
     case "master-crinso-2":
-      if (hasNativeIdentity(owner) && ctx.action === "skill2" && target?.hp && ctx.shieldBurn > 0)
+      if (phaseZeroStatsReady && hasNativeIdentity(owner) && ctx.spent.goldenEdge && ctx.action === "skill1") {
+        const recipient = alive(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+        if (recipient) timedConduitShield(
+          state,
+          owner,
+          recipient,
+          recipient.stats.health * 0.12,
+          "master-crinso-2",
+          state.round,
+          events
+        );
+      } else if (!phaseZeroStatsReady && hasNativeIdentity(owner) && ctx.action === "skill2" && target?.hp && ctx.shieldBurn > 0)
         generatedStrike(state, owner, target, ctx.shieldBurn, events, false);
       break;
     case "master-crinso-3":
-      if (!ctx.hits.length) break;
-      if (ctx.action === "ultimate" || n.crimson) generatedHeal(owner, owner, damage * 0.2, events);
-      n.crimson = ctx.action === "ultimate" ? 0 : n.crimson ? 0 : 1;
+      if (phaseZeroStatsReady) {
+        const combo = ctx.spent.crinsoCombo ?? 0;
+        if (combo > 0) {
+          const recipients = combo >= 3 ? alive(state) : alive(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health).slice(0, 1);
+          for (const recipient of recipients)
+            generatedHeal(owner, recipient, recipient.stats.health * 0.08, events, state);
+        }
+      } else {
+        if (!ctx.hits.length) break;
+        if (ctx.action === "ultimate" || n.crimson) generatedHeal(owner, owner, damage * 0.2, events);
+        n.crimson = ctx.action === "ultimate" ? 0 : n.crimson ? 0 : 1;
+      }
       break;
     case "master-nerithe-1":
       if (ctx.action === "light" && target?.hp) gear(target).owners.chart = owner.id;
       break;
     case "master-orvella-2":
-      if (ctx.action === "skill2") {
+      if (!phaseZeroStatsReady && ctx.action === "skill2") {
         const allies = alive(state).filter((ally) => ally.hp < ally.stats.health);
         if (allies.length) {
           const reserve = hasNativeIdentity(owner) ? owner.native?.foundation?.durability ?? 0 : owner.shield;
           const amount = Math.min(reserve, allies.length * Math.min(...allies.map((ally) => ally.stats.health - ally.hp)));
           let total = 0;
-          for (const ally of allies) total += generatedHeal(owner, ally, Math.floor(amount / allies.length), events);
+          for (const ally of allies) total += generatedHeal(owner, ally, Math.floor(amount / allies.length), events, state);
           if (hasNativeIdentity(owner) && owner.native?.foundation) owner.native.foundation.durability -= total;
           else payShield(owner, total);
         }
       }
       break;
     case "master-vaelor-2":
-      if (ctx.action === "skill2" && (hasNativeIdentity(owner) ? owner.native?.beat === 1 : (ctx.spent.tempest ?? 0) > 0)) for (const hit of ctx.hits) {
-        const enemy = state.enemies.find((enemy2) => enemy2.id === hit.target && enemy2.hp > 0);
-        if (enemy && (enemy.weakened <= 0 || enemy.weakenFraction < 0.15)) {
-          enemy.weakened = 1;
-          enemy.weakenFraction = 0.15;
-          enemy.weakenSourceId = owner.id;
-          enemy.weakenOrigin = "conduit";
+      if (ctx.action === "skill2" && (hasNativeIdentity(owner) ? owner.native?.beat === 1 : (ctx.spent.tempest ?? 0) > 0)) {
+        if (phaseZeroStatsReady) {
+          const fraction = 0.2 * ctx.skillPower;
+          const throughRound = state.round + 1 + ctx.skillDuration;
+          for (const ally of alive(state)) {
+            const prior = ally.attackBoost && ally.attackBoost.throughRound >= state.round ? ally.attackBoost.fraction : 0;
+            if (prior <= fraction)
+              ally.attackBoost = { fraction, throughRound, sourceId: owner.id, origin: "native" };
+            const numbers = gear(ally).numbers;
+            numbers.gaugeGainBonus = 0.2;
+            numbers.gaugeGainThrough = throughRound;
+          }
+        } else for (const hit of ctx.hits) {
+          const enemy = state.enemies.find((enemy2) => enemy2.id === hit.target && enemy2.hp > 0);
+          if (enemy && (enemy.weakened <= 0 || enemy.weakenFraction < 0.15)) {
+            enemy.weakened = 1;
+            enemy.weakenFraction = 0.15;
+            enemy.weakenSourceId = owner.id;
+            enemy.weakenOrigin = "conduit";
+          }
         }
       }
       break;
   }
-  for (const flora of alive(state).filter((ally) => equipped(ally, "master-sprout-1"))) {
+  for (const flora of alive(state).filter((ally) => !phaseZeroStatsReady && equipped(ally, "master-sprout-1"))) {
     if (ctx.action !== "skill1" && ctx.action !== "skill2") continue;
     for (const ally of alive(state)) nativeHeal(state, flora, ally, ally.stats.health * 0.02, events, false);
   }
   if (!ctx.all && damage > 0) {
-    for (const nerithe of alive(state).filter((ally) => ally.id !== owner.id && equipped(ally, "master-nerithe-1"))) {
+    for (const nerithe of alive(state).filter((ally) => !phaseZeroStatsReady && ally.id !== owner.id && equipped(ally, "master-nerithe-1"))) {
       for (const enemy of state.enemies.filter((enemy2) => enemy2.hp > 0 && enemy2.id !== target?.id && gear(enemy2).owners.chart === nerithe.id)) generatedStrike(state, owner, enemy, damage * 0.4, events);
       for (const enemy of state.enemies) if (gear(enemy).owners.chart === nerithe.id) delete gear(enemy).owners.chart;
     }
   }
-  afterCalamiticAction(state, owner, ctx.action, events);
+  afterCalamiticAction(
+    state,
+    owner,
+    ctx.action,
+    events,
+    ctx.action === "light" ? 0 : ctx.hits.reduce((sum, hit) => sum + (hit.totalDamage ?? hit.damage), 0) + ctx.nativeHpDamage + ctx.nativeShieldDamage
+  );
 }
 function revive(owner, target, fraction, events) {
+  if (phaseZeroStatsReady) {
+    if (gear(target).numbers.rescueUsed) return;
+    gear(target).numbers.rescueUsed = 1;
+  }
   target.hp = Math.max(1, Math.round(target.stats.health * fraction));
   target.shatter = 0;
   emit(events, "heal", owner, target, target.hp, `${target.name} is revived by a Conduit at ${target.hp} HP.`);
@@ -6520,13 +8857,25 @@ function revive(owner, target, fraction, events) {
 function rescue(state, target, loss, events, direct) {
   if (loss < target.hp) return loss;
   const n = gear(target).numbers;
-  const accord = state.allies.find((owner) => owner.id === gear(target).owners.accord);
+  if (phaseZeroStatsReady && n.rescueUsed) return loss;
+  const accord = state.allies.find((owner) => owner.id === gear(target).owners.accord && (!phaseZeroStatsReady || owner.hp > 0));
   if (direct && accord) {
     delete gear(target).owners.accord;
-    n.accordShield = accord.stats.health * value(state, accord, "tranquilitic-accord-bastion", 0.1, 0.2);
+    if (phaseZeroStatsReady) {
+      n.rescueUsed = 1;
+      grantToken(state, target, "accordEfficiency", magnitude(state, "tranquilitic-accord-bastion", 0.25));
+    } else n.accordShield = accord.stats.health * value(state, accord, "tranquilitic-accord-bastion", 0.1, 0.2);
     return Math.max(0, target.hp - 1);
   }
-  if (direct && equipped(target, "horizon-heartcase")) {
+  if (direct && phaseZeroStatsReady && equipped(target, "horizon-heartcase") && !n.heartcaseUsed && target.shatter >= 40) {
+    target.shatter -= 40;
+    n.rescueUsed = 1;
+    n.heartcaseUsed = 1;
+    n.heartcasePowerBonus = 4 * phaseZeroUpgradeMagnitude(0.05, state.conduitUpgrades?.["horizon-heartcase"] ?? 0);
+    emit(events, "status", target, target, 40, `${target.name}'s Horizon Heartcase spends 40 Elemental Gauge and survives at 1 HP.`);
+    return Math.max(0, target.hp - 1);
+  }
+  if (direct && !phaseZeroStatsReady && equipped(target, "horizon-heartcase")) {
     const saves = n.heartcaseSaves ?? 0;
     const excess = loss - target.hp + 1;
     const cost = Math.max(1, Math.ceil(excess / (target.stats.health * 0.01) * (1 - value(state, target, "horizon-heartcase", 0.2, 0.5)))) + 10 * saves;
@@ -6545,14 +8894,25 @@ function afterConduitHpLoss(state, target, events) {
     generatedShield(target, target, n.accordShield, events);
     delete n.accordShield;
   }
-  if (target.hp <= 0 && equipped(target, "infernic-phoenix-reactor") && !n.phoenixUsed) {
+  if (target.hp <= 0 && equipped(target, "infernic-phoenix-reactor") && !n.phoenixUsed && (!phaseZeroStatsReady || !n.rescueUsed)) {
     n.phoenixUsed = 1;
-    revive(target, target, value(state, target, "infernic-phoenix-reactor", 0.25, 0.5), events);
+    revive(target, target, phaseZeroStatsReady ? magnitude(state, "infernic-phoenix-reactor", 0.35) : value(state, target, "infernic-phoenix-reactor", 0.25, 0.5), events);
+    if (phaseZeroStatsReady) for (const ally of alive(state).filter((ally2) => ally2.id !== target.id))
+      timedConduitShield(
+        state,
+        target,
+        ally,
+        ally.stats.health * magnitude(state, "infernic-phoenix-reactor", 0.15),
+        "infernic-phoenix-reactor",
+        state.round,
+        events
+      );
   }
 }
 function conduitBurnTick(state, owner, target) {
   if (target.burn.origin === "conduit") return target.burn.damage;
   const n = gear(target).numbers;
+  if (phaseZeroStatsReady) return Math.round(target.burn.damage + (n[`cinderBase:${owner.id}`] ?? 0) * (n[`cinderPower:${owner.id}`] ?? 0));
   const cinderKey = `cinder:${owner.id}`, imprint = `imprint:${owner.id}`;
   let bonus = 0;
   if (equipped(owner, "infernic-cinder-testament")) bonus += (n[cinderKey] ?? 0) * value(state, owner, "infernic-cinder-testament", 0.2, 0.4);
@@ -6562,16 +8922,23 @@ function afterConduitBurn(state, owner, target, damage, events) {
   if (target.burn.origin !== "conduit") delete gear(target).numbers[`imprint:${owner.id}`];
   if (damage <= 0 || target.burn.origin === "conduit") return;
   const tn = gear(target).numbers, n = gear(owner).numbers;
-  tn[`cinder:${owner.id}`] = (tn[`cinder:${owner.id}`] ?? 0) + 1;
-  if (owner.hp > 0 && equipped(owner, "emberlife-kiln"))
+  if (phaseZeroStatsReady && equipped(owner, "master-ember-1"))
+    n.masterEmberBurnDamage = (n.masterEmberBurnDamage ?? 0) + damage;
+  if (!phaseZeroStatsReady) tn[`cinder:${owner.id}`] = (tn[`cinder:${owner.id}`] ?? 0) + 1;
+  if (!phaseZeroStatsReady && owner.hp > 0 && equipped(owner, "emberlife-kiln"))
     generatedHeal(owner, owner, damage * value(state, owner, "emberlife-kiln", 0.2, 0.4), events);
   if (equipped(owner, "sootwake-crucible") && target.hp > 0) {
-    const serialKey = `sootSerial:${owner.id}`;
-    const serial = (tn[serialKey] ?? 0) + 1;
-    tn[serialKey] = serial;
-    tn[`soot:${owner.id}:${serial}`] = state.round + 1;
+    if (phaseZeroStatsReady) {
+      for (const ally of alive(state).filter((ally2) => ally2.id !== owner.id))
+        tn[`soot:${owner.id}:${ally.id}`] = state.round + 1;
+    } else {
+      const serialKey = `sootSerial:${owner.id}`;
+      const serial = (tn[serialKey] ?? 0) + 1;
+      tn[serialKey] = serial;
+      tn[`soot:${owner.id}:${serial}`] = state.round + 1;
+    }
   }
-  if (target.burn.turns === 0 && target.hp > 0 && owner.hp > owner.stats.health * 0.5 && equipped(owner, "master-ember-1") && owner.hp - owner.stats.health * 0.03 >= 1) {
+  if (!phaseZeroStatsReady && target.burn.turns === 0 && target.hp > 0 && owner.hp > owner.stats.health * 0.5 && equipped(owner, "master-ember-1") && owner.hp - owner.stats.health * 0.03 >= 1) {
     owner.hp -= owner.stats.health * 0.03;
     target.burn.turns = 1;
     emit(events, "status", owner, target, 1, `${owner.name} pays HP to sustain Burn for one phase.`);
@@ -6587,11 +8954,16 @@ function conduitDeaths(state, previous, events) {
     const owner = state.allies.find((ally) => ally.id === enemy.burn.sourceId);
     if (owner && enemy.burn.turns > 0 && enemy.burn.origin !== "conduit" && equipped(owner, "cinder-metering-nozzle")) {
       const target = healthiestEnemy(state);
-      const damage = conduitBurnTick(state, owner, enemy) * value(state, owner, "cinder-metering-nozzle", 0.25, 0.5);
-      if (target && (target.burn.turns <= 0 || target.burn.damage < damage)) target.burn = { damage, turns: enemy.burn.turns, sourceId: owner.id, origin: "conduit" };
+      const damage = phaseZeroStatsReady ? Math.min(
+        conduitBurnTick(state, owner, enemy) * enemy.burn.turns,
+        owner.stats.damage * magnitude(state, "cinder-metering-nozzle", 2)
+      ) : conduitBurnTick(state, owner, enemy) * value(state, owner, "cinder-metering-nozzle", 0.25, 0.5);
+      if (phaseZeroStatsReady) generatedStrike(state, owner, target, damage, events);
+      else if (target && (target.burn.turns <= 0 || target.burn.damage < damage))
+        target.burn = { damage, turns: enemy.burn.turns, sourceId: owner.id, origin: "conduit" };
     }
     const suppressor = state.allies.find((ally) => ally.id === enemy.weakenSourceId);
-    if (suppressor && enemy.weakened > 0 && enemy.weakenOrigin !== "conduit" && equipped(suppressor, "secondbeat-rack")) {
+    if (!phaseZeroStatsReady && suppressor && enemy.weakened > 0 && enemy.weakenOrigin !== "conduit" && equipped(suppressor, "secondbeat-rack")) {
       const target = state.enemies.filter((unit) => unit.hp > 0).sort((a, b) => b.stats.damage - a.stats.damage)[0];
       const fraction = enemy.weakenFraction * value(state, suppressor, "secondbeat-rack", 0.6, 1);
       if (target) {
@@ -6651,18 +9023,24 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   }
   const shieldBefore = target.shield;
   let equipmentMultiplier = 1;
-  for (const keeper of alive(state).filter((ally) => equipped(ally, "firstlight-cam"))) {
+  for (const keeper of alive(state).filter((ally) => !phaseZeroStatsReady && equipped(ally, "firstlight-cam"))) {
     const memory = gear(keeper).numbers;
     memory.firstlightRound ??= state.round;
     if (memory.firstlightRound === state.round) equipmentMultiplier *= 1 - value(state, keeper, "firstlight-cam", 0.25, 0.5);
   }
-  if (critical && equipped(target, "sentinel-aperture")) equipmentMultiplier *= 1 - value(state, target, "sentinel-aperture", 0.25, 0.5);
-  if (target.hp > target.stats.health * 0.75 && equipped(target, "pale-bulwark-diadem")) equipmentMultiplier *= 1 - value(state, target, "pale-bulwark-diadem", 0.15, 0.3);
-  if (n.tauntRound === state.round && equipped(target, "tectonic-atlas-bastion")) equipmentMultiplier *= 1 - value(state, target, "tectonic-atlas-bastion", 0.1, 0.2);
+  if (!phaseZeroStatsReady && critical && equipped(target, "sentinel-aperture")) equipmentMultiplier *= 1 - value(state, target, "sentinel-aperture", 0.25, 0.5);
+  if (!phaseZeroStatsReady && target.hp > target.stats.health * 0.75 && equipped(target, "pale-bulwark-diadem")) equipmentMultiplier *= 1 - value(state, target, "pale-bulwark-diadem", 0.15, 0.3);
+  if (phaseZeroStatsReady && critical && layers(target).some((layer) => layer.native && layer.amount > 0 && alive(state).some((owner) => owner.id === layer.owner && equipped(owner, "aegis-return-spring"))))
+    equipmentMultiplier *= 1 - magnitude(state, "aegis-return-spring", 0.3);
+  if (!phaseZeroStatsReady && n.tauntRound === state.round && equipped(target, "tectonic-atlas-bastion")) equipmentMultiplier *= 1 - value(state, target, "tectonic-atlas-bastion", 0.1, 0.2);
+  if (phaseZeroStatsReady && target.side === "ally") {
+    const thornia = alive(state).find((ally) => equipped(ally, "master-thornia-3") && ally.id !== target.id && (ally.native?.traps?.[enemy.id]?.charges ?? 0) > 0);
+    if (thornia) equipmentMultiplier *= 0.85;
+  }
   const parryKey = `parry:${target.id}`;
   const enemyMemory = gear(enemy).numbers;
   if (!enemy.native) delete enemyMemory[parryKey];
-  const hasParry = scheduled && n.normalRound === state.round && equipped(target, "master-razor-1") && (n.parryRound !== state.round || enemyMemory[parryKey] === state.round);
+  const hasParry = !phaseZeroStatsReady && scheduled && n.normalRound === state.round && equipped(target, "master-razor-1") && (n.parryRound !== state.round || enemyMemory[parryKey] === state.round);
   if (hasParry) {
     n.parryRound = state.round;
     enemyMemory[parryKey] = state.round;
@@ -6677,8 +9055,30 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   if (hasParry) {
     reflection = Math.max(0, beforeParry - offered) * 0.5;
   }
-  if (equipped(target, "stasis-reliquary") && offered > target.stats.health * 0.2)
+  if (phaseZeroStatsReady && equipped(target, "stasis-reliquary")) {
+    const key = `stasis:${enemy.id}:${action}:${state.round}`;
+    const prior = n[key] ?? 0;
+    const remainingThreshold = Math.max(0, target.stats.health * 0.2 - prior);
+    const protectedPortion = Math.max(0, offered - remainingThreshold);
+    n[key] = prior + offered;
+    offered -= protectedPortion * phaseZeroUpgradeMagnitude(0.4, state.conduitUpgrades?.["stasis-reliquary"] ?? 0);
+  } else if (equipped(target, "stasis-reliquary") && offered > target.stats.health * 0.2) {
     offered = target.stats.health * 0.2 + (offered - target.stats.health * 0.2) * (1 - value(state, target, "stasis-reliquary", 0.3, 0.6));
+  }
+  if (phaseZeroStatsReady) offered = Math.max(damage * 0.2, offered);
+  if (phaseZeroStatsReady && n.tauntRound === state.round && equipped(target, "tectonic-atlas-bastion") && firstEnemyAttackTrigger(enemy, `atlas:${target.id}`)) {
+    for (const ally of alive(state).filter((ally2) => ally2.id !== target.id)) {
+      grantCappedGaugePercent(
+        state,
+        target,
+        ally,
+        phaseZeroUpgradeMagnitude(0.04, state.conduitUpgrades?.["tectonic-atlas-bastion"] ?? 0),
+        phaseZeroUpgradeMagnitude(0.12, state.conduitUpgrades?.["tectonic-atlas-bastion"] ?? 0),
+        `atlasGauge:${ally.id}:${state.round}`,
+        events
+      );
+    }
+  }
   let remaining = Math.max(1, Math.round(offered));
   const postMitigation = remaining;
   remaining = nativeRouteDamage(
@@ -6689,7 +9089,7 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
     events,
     (recipient, redirected) => routedDamage(state, enemy, recipient, redirected, events, true)
   );
-  const networks = alive(state).filter((ally) => equipped(ally, "oceanic-shared-tide-pump") && layers(target).some((layer) => layer.native && layer.owner === ally.id && layer.amount > 0));
+  const networks = alive(state).filter((ally) => !phaseZeroStatsReady && equipped(ally, "oceanic-shared-tide-pump") && layers(target).some((layer) => layer.native && layer.owner === ally.id && layer.amount > 0));
   for (const network of networks) {
     let budget = remaining;
     for (const ally of alive(state).filter((ally2) => ally2.id !== target.id)) {
@@ -6713,24 +9113,27 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   }
   const absorbed = consumeShield(target, remaining);
   let loss = remaining - absorbed.absorbed;
-  if (shieldBefore > 0 && target.shield <= 0 && absorbed.absorbed > 0 && equipped(target, "fieldbrace-coupler")) n.fieldbraceRound = state.round + 1;
+  if (!phaseZeroStatsReady && shieldBefore > 0 && target.shield <= 0 && absorbed.absorbed > 0 && equipped(target, "fieldbrace-coupler")) n.fieldbraceRound = state.round + 1;
   for (const [id, amount] of absorbed.native) {
     const owner = state.allies.find((ally) => ally.id === id);
     if (!owner) continue;
     const broke = absorbed.broken.has(id);
-    if (equipped(owner, "master-tide-1") && broke && !n[`tideGuard:${id}`]) {
-      n[`tideGuard:${id}`] = 1;
+    if (phaseZeroStatsReady && broke && owner.id === target.id && equipped(owner, "wardglass-transformer"))
+      grantToken(state, target, "wardglassNormal", 1);
+    const guardKey = phaseZeroStatsReady ? "tideGuard" : `tideGuard:${id}`;
+    if (equipped(owner, "master-tide-1") && broke && !n[guardKey]) {
+      n[guardKey] = 1;
       loss = 0;
     }
     pilotAuthoredShieldAbsorbed(state, id, amount, events);
     absorbedNative(state, owner, target, enemy, amount, broke, events);
   }
   if (absorbed.absorbed > 0 && target.hp > 0) {
-    if (equipped(target, "aegis-capacitor")) generatedGauge(target, target, value(state, target, "aegis-capacitor", 4, 8), events);
-    if (equipped(target, "tidebound-reflector"))
+    if (!phaseZeroStatsReady && equipped(target, "aegis-capacitor")) generatedGauge(target, target, value(state, target, "aegis-capacitor", 4, 8), events, false, false, state);
+    if (!phaseZeroStatsReady && equipped(target, "tidebound-reflector"))
       generatedStrike(state, target, enemy, absorbed.absorbed * value(state, target, "tidebound-reflector", 0.2, 0.4), events);
   }
-  if (equipped(target, "master-bruno-1")) loss *= 0.8;
+  if (!phaseZeroStatsReady && equipped(target, "master-bruno-1")) loss *= 0.8;
   const guardian = state.allies.find((ally) => ally.id === gear(target).owners.guardian && ally.hp > 0);
   if (guardian && loss >= target.hp && n.guardianRound === state.round) {
     const routed = loss - target.hp + 1;
@@ -6753,8 +9156,8 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   if (reflection > 0) generatedStrike(state, target, enemy, reflection, events);
   if (loss > 0) {
     n.phaseLoss = (n.phaseLoss ?? 0) + loss;
-    if (target.hp > 0 && equipped(target, "duplex-heart")) generatedHeal(target, injured(state, target, true), target.stats.health * value(state, target, "duplex-heart", 0.05, 0.1), events);
-    const aurora = state.allies.find((ally) => ally.hp > 0 && equipped(ally, "master-aurora-3") && nativeControl(state, ally, enemy));
+    if (!phaseZeroStatsReady && target.hp > 0 && equipped(target, "duplex-heart")) generatedHeal(target, injured(state, target, true), target.stats.health * value(state, target, "duplex-heart", 0.05, 0.1), events);
+    const aurora = !phaseZeroStatsReady ? state.allies.find((ally) => ally.hp > 0 && equipped(ally, "master-aurora-3") && nativeControl(state, ally, enemy)) : void 0;
     if (aurora) {
       const an = gear(aurora).numbers;
       const recipient = alive(state).filter((ally) => ally.id !== target.id && ally.hp < ally.stats.health).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
@@ -6762,15 +9165,16 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
     }
   }
   if (target.hp > 0) {
-    if (n.counterwindActive) n.counterwind = (n.counterwind ?? 0) + 0.15;
+    if (!phaseZeroStatsReady && n.counterwindActive) n.counterwind = (n.counterwind ?? 0) + 0.15;
   }
 }
 function allyFell(state, fallen, events) {
+  if (phaseZeroStatsReady) return;
   for (const owner of alive(state).filter((ally) => ally.id !== fallen.id && equipped(ally, "covercharge-drum"))) {
     const heal = value(state, owner, "covercharge-drum", 0.1, 0.2), gauge = value(state, owner, "covercharge-drum", 20, 40);
     for (const ally of alive(state)) {
       generatedHeal(owner, ally, ally.stats.health * heal, events);
-      generatedGauge(owner, ally, gauge, events);
+      generatedGauge(owner, ally, gauge, events, false, false, state);
     }
   }
 }
@@ -6789,32 +9193,83 @@ function routedDamage(state, enemy, target, amount, events, nativeRedirect = fal
 function absorbedNative(state, owner, target, enemy, amount, broken, events) {
   if (owner.hp <= 0) return;
   const n = gear(owner).numbers;
-  if (equipped(owner, "aquatic-leviathan-pump")) n.absorption = (n.absorption ?? 0) + amount;
-  if (broken && equipped(owner, "master-thornia-1")) {
+  if (phaseZeroStatsReady && equipped(owner, "tidebound-reflector")) {
+    const key = `reflection:${state.round}`;
+    const offer = Math.min(
+      amount * magnitude(state, "tidebound-reflector", 0.4),
+      Math.max(0, owner.stats.damage * magnitude(state, "tidebound-reflector", 1.5) - (n[key] ?? 0))
+    );
+    if (offer > 0) {
+      n[key] = (n[key] ?? 0) + offer;
+      generatedStrike(state, owner, enemy, offer, events);
+    }
+  }
+  if (equipped(owner, "aquatic-leviathan-pump")) {
+    if (!phaseZeroStatsReady) n.absorption = (n.absorption ?? 0) + amount;
+    if (phaseZeroStatsReady && firstEnemyAttackTrigger(enemy, `leviathan:${owner.id}:${target.id}`)) {
+      const level = state.conduitUpgrades?.["aquatic-leviathan-pump"] ?? 0;
+      grantCappedGaugePercent(
+        state,
+        owner,
+        target,
+        phaseZeroUpgradeMagnitude(0.05, level),
+        phaseZeroUpgradeMagnitude(0.15, level),
+        `leviathanGauge:${target.id}:${state.round}`,
+        events
+      );
+    }
+  }
+  if (!phaseZeroStatsReady && broken && equipped(owner, "master-thornia-1")) {
     for (const foe of state.enemies.filter((foe2) => foe2.hp > 0)) generatedStrike(state, owner, foe, amount * 0.4, events);
   }
 }
 function conduitTurnStart(state, events) {
+  if (phaseZeroStatsReady && alive(state).some((owner) => equipped(owner, "rootbound-triage-vault"))) {
+    const recipient = alive(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
+    if (recipient) {
+      grantToken(state, recipient, "triageEfficiency", magnitude(state, "rootbound-triage-vault", 0.25));
+      grantToken(state, recipient, "triagePower", magnitude(state, "rootbound-triage-vault", 0.35));
+    }
+  }
   for (const owner of alive(state)) {
     const n = gear(owner).numbers;
+    for (const key of Object.keys(n)) if (/^(?:atlasGauge|leviathanGauge|thorniaShield):/.test(key)) {
+      const parts = key.split(":");
+      const round = Number(parts[parts.length - (key.endsWith(":received") ? 2 : 1)]);
+      if (Number.isFinite(round) && round < state.round) delete n[key];
+    }
     if (n.solaceRound !== state.round) delete n.solaceRound;
-    if (equipped(owner, "granite-hourglass") && (n.phaseLoss ?? 0) > 0) generatedShield(owner, owner, n.phaseLoss * value(state, owner, "granite-hourglass", 0.2, 0.4), events);
+    if (equipped(owner, "granite-hourglass") && (n.phaseLoss ?? 0) > 0)
+      generatedShield(owner, owner, n.phaseLoss * (phaseZeroStatsReady ? phaseZeroUpgradeMagnitude(0.3, state.conduitUpgrades?.["granite-hourglass"] ?? 0) : value(state, owner, "granite-hourglass", 0.2, 0.4)), events);
     n.phaseLoss = 0;
-    if (n.fieldbraceRound === state.round) {
+    if (!phaseZeroStatsReady && n.fieldbraceRound === state.round) {
       delete n.fieldbraceRound;
       generatedHeal(owner, owner, owner.stats.health * value(state, owner, "fieldbrace-coupler", 0.06, 0.12), events);
     }
     if (owner.recoverThrough >= state.round) {
       if (equipped(owner, "tranquilitic-stillhour-carillon")) {
-        const amount = value(state, owner, "tranquilitic-stillhour-carillon", 15, 30);
-        generatedGauge(owner, owner, amount, events);
-        generatedGauge(owner, lowestGauge(state, owner), amount, events);
+        if (phaseZeroStatsReady) {
+          for (const ally of alive(state)) {
+            generatedHeal(owner, ally, ally.stats.health * phaseZeroUpgradeMagnitude(
+              0.08,
+              state.conduitUpgrades?.["tranquilitic-stillhour-carillon"] ?? 0
+            ), events, state);
+            generatedGaugePercent(owner, ally, phaseZeroUpgradeMagnitude(
+              0.1,
+              state.conduitUpgrades?.["tranquilitic-stillhour-carillon"] ?? 0
+            ), events, state);
+          }
+        } else {
+          const amount = value(state, owner, "tranquilitic-stillhour-carillon", 15, 30);
+          generatedGauge(owner, owner, amount, events, false, false, state);
+          generatedGauge(owner, lowestGauge(state, owner), amount, events, false, false, state);
+        }
       }
     }
-    if (equipped(owner, "aquatic-leviathan-pump") && (n.absorption ?? 0) > 0) {
+    if (!phaseZeroStatsReady && equipped(owner, "aquatic-leviathan-pump") && (n.absorption ?? 0) > 0) {
       const pool = n.absorption * value(state, owner, "aquatic-leviathan-pump", 0.3, 0.6);
       const recipients = alive(state).filter((ally) => ally.hp < ally.stats.health);
-      for (const ally of recipients) generatedHeal(owner, ally, pool / recipients.length, events);
+      for (const ally of recipients) generatedHeal(owner, ally, pool / recipients.length, events, state);
     }
     n.absorption = 0;
     for (const source of state.allies) {
@@ -7074,24 +9529,24 @@ function damageAmount(base, multiplier, defense, critical, critMultiplier = 1.5)
   const mitigation = base === 0 ? 0 : 1 / (1 + defense / base);
   return Math.max(1, Math.round(base * multiplier * (critical ? critMultiplier : 1) * mitigation));
 }
-function actionUnavailable(state, actor, action) {
+function actionUnavailable(state, actor, action, targetId) {
   if (state.phase !== "player") return "This wave is not accepting actions.";
   if (actor.side !== "ally" || !state.allies.some((ally) => ally.id === actor.id)) return "Choose a team member.";
   if (action !== "light" && actor.kit?.unavailableActions?.includes(action)) return "This captured form does not have this ability.";
   if (actor.hp <= 0) return "This character is defeated.";
-  if (actor.spent) return "This character has already acted this turn.";
+  if (actor.spent && !calamiticExtraActionAvailable(state, actor, action)) return "This character has already acted this turn.";
   const calamiticReason = calamiticActionReason(state, actor, action);
   if (calamiticReason) return calamiticReason;
   if (conduitActionBlocked(actor, state)) return "This character cannot take another action this turn.";
   if (actor.recoverThrough >= state.round && !(action === "light" && recoveryNormal(actor))) return "Recovering this turn after Last Flare.";
   if (action === "ultimate" && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
-  const gaugeCost = actionGaugeCost(actor, action, state);
+  const gaugeCost = actionGaugeCost(actor, action, state, targetId);
   if (actor.shatter < gaugeCost) return `Requires ${gaugeCost} Elemental Gauge.`;
   return null;
 }
-function actionGaugeCost(actor, action, state) {
+function actionGaugeCost(actor, action, state, targetId) {
   const cost = shatterGauge.costs[action];
-  return conduitActionCost(actor, action, state, cost);
+  return conduitActionCost(actor, action, state, cost, targetId);
 }
 function event(events, kind, source, target, amount, message, critical = false) {
   events.push({
@@ -7137,13 +9592,20 @@ function healTeam(state, source, amount, events, percent = false, ctx) {
     nativeHeal(state, source, ally, percent ? Math.max(1, Math.round(ally.stats.health * amount)) : amount, events, !percent, ctx);
   }
 }
-function shieldTeam(state, source, amount, events, authored = true) {
+function shieldTeam(state, source, amount, events, authored = true, activation) {
   const recipients = state.allies.filter((unit) => unit.hp > 0);
-  const concentrated = equipped(source, "master-tide-2");
+  const concentrated = !phaseZeroStatsReady && equipped(source, "master-tide-2");
   const selected = concentrated ? [...recipients].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health).slice(0, 1) : recipients;
   for (const ally of selected) {
     if (authored) {
-      nativeShield(state, source, ally, amount * (concentrated ? 3 : 1), events);
+      nativeShield(
+        state,
+        source,
+        ally,
+        amount * (concentrated ? 3 : 1),
+        events,
+        activation ? { skillPower: activation.skillPower, activation } : {}
+      );
       continue;
     }
     const gained = Math.max(0, amount - ally.shield);
@@ -7283,7 +9745,7 @@ function act(previous, actorId, action, targetId) {
   if (!isActionId(action)) throw new Error("Unknown combat action.");
   const original = previous.allies.find((unit) => unit.id === actorId);
   if (!original) throw new Error("Unknown team member.");
-  const reason = actionUnavailable(previous, original, action);
+  const reason = actionUnavailable(previous, original, action, targetId);
   if (reason) throw new Error(reason);
   const native = hasNativeIdentity(original);
   const nativeAbility = action === "light" ? void 0 : original.kit?.abilities[action];
@@ -7303,14 +9765,14 @@ function act(previous, actorId, action, targetId) {
   const strength = action === "light" ? null : definition.abilities[action].strength;
   const events = [];
   const name = action === "light" ? basicActionName(actor.definitionId, action) : definition.abilities[action].name;
-  const paid = actionGaugeCost(actor, action, state);
+  const paid = actionGaugeCost(actor, action, state, targetId);
   const nativeAll = native ? nativeAbility?.targets === "all-enemies" : !actor.captured && (action === "ultimate" || action === "skill2" && actor.definitionId === "ember" || action !== "light" && definition.abilities[action].targets === "all-enemies");
   actor.shatter -= paid;
   const activation = prepareConduitAction(state, actor, action, paid, nativeAll);
   const priorInstruction = actor.native?.instruction;
   events.push({ kind: "attack", source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action, abilityName: name });
   actor.spent = !activation.freeAction;
-  if (action === "ultimate" && !equipped(actor, "master-nerithe-3")) actor.recoverThrough = state.round + 1;
+  if (action === "ultimate" && (phaseZeroStatsReady || !equipped(actor, "master-nerithe-3")) && !calamiticNoLastFlareRecovery(actor)) actor.recoverThrough = state.round + 1;
   nativeGauge(state, actor, shatterGauge.gains[action] + (action === "light" ? definition.passive.lightGaugeBonus ?? 0 : 0), events);
   if (action === "skill1" || action === "skill2") actor.readyRound[action] = state.round;
   if (action === "ultimate" && actor.captured) actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
@@ -7319,16 +9781,16 @@ function act(previous, actorId, action, targetId) {
       const targets = activation.all ? state.enemies.filter((enemy) => enemy.hp > 0) : nativeAll ? selected.filter((enemy) => enemy.id === targetId) : selected;
       for (const target of targets) {
         if (target.hp <= 0) continue;
-        const rolled = rollCritical(state, actor.stats.crit + criticalBonus + activation.criticalBonus);
+        const rolled = rollCritical(state, actor.stats.crit + criticalBonus + activation.criticalBonus + conduitCriticalBonus(state, actor, target, action));
         const critical = !activation.forbidden && (activation.guaranteed || rolled.critical);
         const elemental = critical && rolled.elemental;
         const modifiers = conduitHitModifiers(state, actor, target, activation, critical);
-        const criticalMultiplier = modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) * (critical && action !== "light" && equipped(actor, "judgment-lens") ? 1 + value(state, actor, "judgment-lens", 0.4, 0.8) : 1) * (critical && activation.guaranteed && equipped(actor, "falcon-sight") ? 1 + value(state, actor, "falcon-sight", 0.1, 0.2) : 1);
-        const boost = actor.attackBoost && actor.attackBoost.throughRound >= state.round ? 1 + actor.attackBoost.fraction : 1;
+        const criticalMultiplier = (modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) * (critical && action !== "light" && equipped(actor, "judgment-lens") && !phaseZeroStatsReady ? 1 + value(state, actor, "judgment-lens", 0.4, 0.8) : 1) * (critical && activation.guaranteed && equipped(actor, "falcon-sight") && !phaseZeroStatsReady ? 1 + value(state, actor, "falcon-sight", 0.1, 0.2) : 1)) * (1 + (modifiers.criticalDamageBonus ?? 0));
+        const boost = !phaseZeroStatsReady && actor.attackBoost && actor.attackBoost.throughRound >= state.round ? 1 + actor.attackBoost.fraction : 1;
         const offered = damageAmount(
           modifiers.attack,
-          coefficient * activation.scale * boost * nativeInstructionDamage(state, actor) * (1 + modifiers.bonus),
-          nativeTargetDefense(state, target) * (1 - Math.min(1, pierce + modifiers.pierce)),
+          coefficient * activation.scale * (activation.skillPower + modifiers.skillPowerBonus) * boost * nativeInstructionDamage(state, actor) * (1 + modifiers.bonus),
+          nativeTargetDefense(state, target) * (1 - Math.min(phaseZeroStatsReady ? 0.75 : 1, pierce + modifiers.pierce)),
           critical,
           criticalMultiplier
         );
@@ -7336,7 +9798,7 @@ function act(previous, actorId, action, targetId) {
         let hpDamage = 0;
         for (let impact = 0; impact < activation.impacts && target.hp > 0; impact++) {
           const portion = Math.floor(offered / activation.impacts) + (impact === activation.impacts - 1 ? offered % activation.impacts : 0);
-          hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor));
+          hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor, action));
           events[events.length - 1].origin = "native";
           hpDamage += events[events.length - 1].amount;
         }
@@ -7346,7 +9808,8 @@ function act(previous, actorId, action, targetId) {
           hpDamage,
           critical,
           criticalMultiplier,
-          target.hp <= 0 ? offered - hpDamage - (shieldBefore - target.shield) : 0
+          target.hp <= 0 ? offered - hpDamage - (shieldBefore - target.shield) : 0,
+          hpDamage + Math.max(0, shieldBefore - target.shield)
         );
         afterConduitImpact(actor, target, activation);
         nativePrimaryHit(state, actor, target, hpDamage > 0 || shieldBefore > target.shield, events);
@@ -7374,27 +9837,27 @@ function act(previous, actorId, action, targetId) {
       multiplier = strength.damageMultiplier;
     }
     if (actor.hp <= actor.stats.health / 2) multiplier *= 1 + definition.passive.damageBonus;
-    if (actor.attackBoost && actor.attackBoost.throughRound >= state.round) multiplier *= 1 + actor.attackBoost.fraction;
+    if (!phaseZeroStatsReady && actor.attackBoost && actor.attackBoost.throughRound >= state.round) multiplier *= 1 + actor.attackBoost.fraction;
     for (const target of targets) {
-      const rolled = rollCritical(state, actor.stats.crit + (strength?.critBonus ?? 0) + activation.criticalBonus);
+      const rolled = rollCritical(state, actor.stats.crit + (strength?.critBonus ?? 0) + activation.criticalBonus + conduitCriticalBonus(state, actor, target, action));
       const critical = !activation.forbidden && (activation.guaranteed || rolled.critical);
       const elemental = critical && rolled.elemental;
       const modifiers = conduitHitModifiers(state, actor, target, activation, critical);
-      const criticalMultiplier = modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) * (critical && action !== "light" && equipped(actor, "judgment-lens") ? 1 + value(state, actor, "judgment-lens", 0.4, 0.8) : 1) * (critical && activation.guaranteed && equipped(actor, "falcon-sight") ? 1 + value(state, actor, "falcon-sight", 0.1, 0.2) : 1);
+      const criticalMultiplier = (modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) * (critical && action !== "light" && equipped(actor, "judgment-lens") && !phaseZeroStatsReady ? 1 + value(state, actor, "judgment-lens", 0.4, 0.8) : 1) * (critical && activation.guaranteed && equipped(actor, "falcon-sight") && !phaseZeroStatsReady ? 1 + value(state, actor, "falcon-sight", 0.1, 0.2) : 1)) * (1 + (modifiers.criticalDamageBonus ?? 0));
       const priorShield = target.shield;
       const priorBurnTurns = target.burn.turns;
       const secondaryCleave = action === "skill2" && equipped(actor, "master-thornia-2") && target.id !== targetId;
       const offered = damageAmount(
         modifiers.attack,
-        multiplier * activation.scale * (secondaryCleave ? 0.5 : 1) * (1 + pilotBonus) * (1 + modifiers.bonus) * nativeInstructionDamage(state, actor),
-        nativeTargetDefense(state, target) * (1 - modifiers.pierce),
+        multiplier * activation.scale * (activation.skillPower + modifiers.skillPowerBonus) * (secondaryCleave ? 0.5 : 1) * (1 + pilotBonus) * (1 + modifiers.bonus) * nativeInstructionDamage(state, actor),
+        nativeTargetDefense(state, target) * (1 - (phaseZeroStatsReady ? Math.min(0.75, modifiers.pierce) : modifiers.pierce)),
         critical,
         criticalMultiplier
       );
       let hpDamage = 0;
       for (let impact = 0; impact < activation.impacts && target.hp > 0; impact++) {
         const portion = Math.floor(offered / activation.impacts) + (impact === activation.impacts - 1 ? offered % activation.impacts : 0);
-        hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor));
+        hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor, action));
         events[events.length - 1].origin = "native";
         hpDamage += events[events.length - 1].amount;
       }
@@ -7404,29 +9867,31 @@ function act(previous, actorId, action, targetId) {
         hpDamage,
         critical,
         criticalMultiplier,
-        target.hp <= 0 ? offered - hpDamage - (priorShield - target.shield) : 0
+        target.hp <= 0 ? offered - hpDamage - (priorShield - target.shield) : 0,
+        hpDamage + Math.max(0, priorShield - target.shield)
       );
       afterConduitImpact(actor, target, activation);
       const effectiveHit = hpDamage > 0 || priorShield > target.shield;
       nativePrimaryHit(state, actor, target, effectiveHit, events);
       effectiveCriticalDamage ||= critical && effectiveHit;
       if (target.hp > 0 && strength?.burnMultiplier !== void 0) {
-        const damage = applyConduitBurn(state, actor, target, actor.stats.elementalDamage * strength.burnMultiplier, activation);
+        const burnAttack = phaseZeroStatsReady ? actor.stats.damage : actor.stats.elementalDamage;
+        const damage = applyConduitBurn(state, actor, target, burnAttack * strength.burnMultiplier, activation);
         const clockExtension = Math.max(0, target.burn.turns - priorBurnTurns);
         if (target.burn.turns <= 0 || damage >= target.burn.damage) {
-          target.burn = { damage, turns: Math.min(6, 2 + clockExtension), sourceId: actor.id, origin: actor.kit?.pilot === "rose-duality" ? "rose" : "native" };
+          target.burn = { damage, turns: Math.min(6, 2 + clockExtension + (phaseZeroStatsReady ? activation.skillDuration : 0)), sourceId: actor.id, origin: actor.kit?.pilot === "rose-duality" ? "rose" : "native" };
           event(events, "status", actor, target, damage, `${target.name} burns for ${target.burn.turns} enemy phases.`);
         }
       }
       if (target.hp > 0 && strength?.weakenFraction !== void 0) {
-        applyConduitWeaken(state, actor, target, (strength.weakenFraction + starterBonus.weaken) * (secondaryCleave ? 0.5 : 1), events, action, secondaryCleave ? 1 : 2);
+        applyConduitWeaken(state, actor, target, (strength.weakenFraction + starterBonus.weaken) * (secondaryCleave ? 0.5 : 1), events, action, secondaryCleave ? 1 : 2, activation);
       }
     }
   }
   for (const resource of ["ember", "bloom", "tempest", "thornAegis", "duality", "roseGrace"]) activation.spent[resource] = Math.max(0, (priorResources[resource] ?? 0) - (actor.pilot?.[resource] ?? 0));
   pilotAfterDirectActivation(actor, action, events, effectiveCriticalDamage);
   if (strength?.shield !== void 0 || starterBonus.shield > 0) {
-    shieldTeam(state, actor, (strength?.shield ?? 0) + starterBonus.shield, events);
+    shieldTeam(state, actor, (strength?.shield ?? 0) + starterBonus.shield, events, true, activation);
   }
   if (strength?.healing !== void 0) {
     healTeam(state, actor, strength.healing * starterBonus.healing, events, false, activation);
@@ -7582,7 +10047,11 @@ function actAndAdvanceTurn(previous, actorId, action, targetId) {
   return { state: advanced.state, events: [...actionResult.events, ...advanced.events] };
 }
 function teamCanAct(state) {
-  return state.phase === "player" && state.allies.some((ally) => actionIds.some((action) => actionUnavailable(state, ally, action) === null));
+  return state.phase === "player" && state.allies.some((ally) => combatantCanAct(state, ally));
+}
+function combatantCanAct(state, actor, targetId) {
+  const targets = targetId ? [targetId] : state.enemies.filter((enemy) => enemy.hp > 0).map((enemy) => enemy.id);
+  return actionIds.some((action) => targets.length ? targets.some((id) => actionUnavailable(state, actor, action, id) === null) : actionUnavailable(state, actor, action) === null);
 }
 function advanceUnavailableTurns(previous) {
   let state = previous;
@@ -7619,7 +10088,7 @@ function nextStage(previous, progress) {
   for (const ally of state.allies) {
     const prior = previous.allies.find((unit) => unit.id === ally.id);
     if (!prior) throw new Error("Continuing character is missing from the previous encounter.");
-    ally.shatter = Math.min(
+    ally.shatter = phaseZeroStatsReady ? Math.min(prior.shatter, ally.stats.shatterCapacity) : Math.min(
       prior.shatter + (equipped(ally, "fracture-reservoir") ? value(state, ally, "fracture-reservoir", 5, 10) : 0) + (equipped(ally, "twinpulse-bellows") ? ally.stats.shatterCapacity * value(state, ally, "twinpulse-bellows", 0.15, 0.35) : 0),
       ally.stats.shatterCapacity
     );
@@ -9393,7 +11862,7 @@ function resolveOperation(previous, operation, entropy) {
         if (operation.kind === "act") {
           if (!isActionId(operation.action)) throw new Error("Invalid battle action.");
           const actor = state.allies.find((a) => a.id === operation.actorId);
-          if (!actor || actionUnavailable(state, actor, operation.action)) throw new Error("The selected squad member cannot use that action.");
+          if (!actor || actionUnavailable(state, actor, operation.action, operation.targetId)) throw new Error("The selected squad member cannot use that action.");
           const targets = [...state.allies, ...state.enemies];
           if (!targets.some((t) => t.id === operation.targetId && t.hp > 0)) throw new Error("Invalid battle target.");
           result = actAndAdvanceTurn(state, operation.actorId, operation.action, operation.targetId);

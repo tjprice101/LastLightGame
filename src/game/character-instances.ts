@@ -3,7 +3,8 @@ import { isStarterId, type StarterId } from '../content/starters';
 import { infusionEncounter, capturedEnemyStats, legacyInfusionEnemyLevel } from '../content/infusions';
 import { legacyActivityStageCounts } from '../content/activities';
 import { enemySkills, type EnemySkill } from '../content/enemy-skills';
-import { applyConduitBuffs, formatStat, type FighterDefinition } from '../content/combat';
+import { applyConduitBuffs, formatStat, type FighterDefinition, type ResolvedFighterDefinition } from '../content/combat';
+import { normalizeStats } from '../content/phase-zero-stats';
 import { validateConduitElement, type ConduitSlots, type ConduitUpgrades } from '../content/conduits';
 import { roseDuplicateMinimumLevel, roseCaptureMaximumLevel } from '../content/roses';
 import { levelingMaterials } from '../content/progression';
@@ -113,7 +114,7 @@ export function capturedLevelCost(copy: CapturedCharacter) {
     materials: levelingMaterials(creature.mode === 'roses' ? 'rosethorn' : creature.element, level + 1) };
 }
 
-export function resolveCapturedFighter(copy: CapturedCharacter, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): FighterDefinition {
+export function resolveCapturedFighter(copy: CapturedCharacter, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): ResolvedFighterDefinition {
   const creature = getCreature(copy.creatureId);
   if (!creature.mode || creature.mode === 'machines') throw new Error('Captured Elemental-Devourer mode is missing or non-capturable.');
   const { level, tier, skills } = capturedProgress(copy);
@@ -137,7 +138,7 @@ export function resolveCapturedFighter(copy: CapturedCharacter, equipment?: Cond
   }
   if (equipment) validateConduitElement(equipment, creature.element);
   applyConduitBuffs(kit.stats, equipment, upgrades);
-  return kit;
+  return { ...kit, stats: normalizeStats(kit.stats) };
 }
 
 export function validateCharacterLocks(value: unknown, owned: Partial<Record<StarterId, unknown>>): CharacterLocks {

@@ -7,6 +7,8 @@ import { warFighters, warActionNames, isWarCharacter } from './war-characters';
 import { kitPilotDescriptions, type KitPilot } from './kit-pilots';
 import { elementalEffectFamilies } from './elemental-effects';
 import { nativeIdentities } from './native-identities';
+import { normalizeStats, phaseZeroStatDefaults, phaseZeroStatsReady, type ResolvedStats } from './phase-zero-stats';
+import { applyPhaseZeroStaticBonuses } from './phase-zero-conduit-stats';
 
 export const actionIds = ['light', 'skill1', 'skill2', 'ultimate'] as const;
 export type ActionId = (typeof actionIds)[number];
@@ -28,6 +30,10 @@ export interface Stats {
   shatterCapacity: number;
   critMultiplier: number;
   elementalDamage: number;
+  skillPower?: number;
+  skillDuration?: number;
+  skillEfficiency?: number;
+  gaugeGain?: number;
 }
 export interface AbilityStrength {
   damageMultiplier?: number;
@@ -47,6 +53,7 @@ export interface FighterDefinition {
   abilities: Record<'skill1' | 'skill2' | 'ultimate', Ability>;
   unavailableActions?: ('skill1' | 'skill2' | 'ultimate')[];
 }
+export type ResolvedFighterDefinition = Omit<FighterDefinition, 'stats'> & { stats: ResolvedStats };
 
 export const fighters: Record<StarterId, FighterDefinition> = {
   ...flagshipFighters,
@@ -116,6 +123,7 @@ export const fighters: Record<StarterId, FighterDefinition> = {
 for (const id of Object.keys(fighters) as StarterId[]) {
   const identity = nativeIdentities[id];
   const kit = fighters[id];
+  kit.stats = normalizeStats(kit.stats);
   delete kit.pilot;
   kit.nativeIdentity = true;
   kit.passive = {
@@ -129,16 +137,16 @@ export const enemyIds = ['goblin', 'imp', 'golem'] as const;
 export const adventureScaling = { healthPerWave: 0.24, damagePerWave: 0.24, defensePerWave: 2 } as const;
 export type EnemyId = (typeof enemyIds)[number];
 export const enemies: Record<EnemyId, { name: string; art: string; element: ElementId; stats: Stats }> = {
-  goblin: { name: 'Goblin', art: 'goblin', element: 'botanic', stats: { health: 110, defense: 5, damage: 23, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
-  imp: { name: 'Imp', art: 'imp', element: 'infernic', stats: { health: 90, defense: 3, damage: 28, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
-  golem: { name: 'Rock Golem', art: 'rock-golem', element: 'botanic', stats: { health: 160, defense: 15, damage: 20, crit: 0.05, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
+  goblin: { name: 'Goblin', art: 'goblin', element: 'botanic', stats: { ...phaseZeroStatDefaults, health: 110, defense: 5, damage: 23, crit: 0.1, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
+  imp: { name: 'Imp', art: 'imp', element: 'infernic', stats: { ...phaseZeroStatDefaults, health: 90, defense: 3, damage: 28, crit: 0.15, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
+  golem: { name: 'Rock Golem', art: 'rock-golem', element: 'botanic', stats: { ...phaseZeroStatDefaults, health: 160, defense: 15, damage: 20, crit: 0.05, shatterCapacity: 100, critMultiplier: 1.5, elementalDamage: 0 } },
 };
 
 export function formatStat(value: number): string {
   return String(Number(value.toFixed(2)));
 }
 
-export function resolveFighter(id: StarterId, progress?: CharacterProgress, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): FighterDefinition {
+export function resolveFighter(id: StarterId, progress?: CharacterProgress, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): ResolvedFighterDefinition {
   const base = fighters[id];
   if (!base) throw new Error('Unknown fighter definition.');
   const factor = progress ? characterGrowthFactor(progress) : 1;
@@ -167,7 +175,8 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
   }
   if (equipment) validateConduitElement(equipment, getStarter(id).elementId);
   applyConduitBuffs(kit.stats, equipment, upgrades);
-  return describeFighter(id, kit);
+  const described = describeFighter(id, kit);
+  return { ...described, stats: normalizeStats(described.stats) };
 }
 
 export function describeFighter(id: StarterId, snapshot: FighterDefinition): FighterDefinition {
@@ -278,6 +287,11 @@ export function describeFighter(id: StarterId, snapshot: FighterDefinition): Fig
 }
 
 export function applyConduitBuffs(stats: Stats, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): void {
+  if (phaseZeroStatsReady) {
+    Object.assign(stats, applyPhaseZeroStaticBonuses(normalizeStats(stats),
+      equipment ?? Array<null>(8).fill(null), upgrades));
+    return;
+  }
   if (equipment) for (const conduitId of validateConduitSlots(equipment)) {
     if (conduitId === null) continue;
     for (const buff of conduitBuffs(getConduit(conduitId), upgrades?.[conduitId] ?? 0)) {

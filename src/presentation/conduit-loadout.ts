@@ -12,10 +12,14 @@ import { conduitIcon, conduitLore } from './conduit-store';
 import { masterConduitIcon, masterEquipment } from './master-conduits';
 import { statDirection } from './stat-change';
 import { escapeDialogText, gameChoose } from './game-dialog';
+import { phaseZeroStatLabels, phaseZeroStatsReady } from '../content/phase-zero-stats';
+import { phaseZeroStaticBonuses, phaseZeroUpgradeMagnitude } from '../content/phase-zero-conduit-stats';
 
 const statLabels: Record<ConduitBuff['stat'], string> = {
+  ...phaseZeroStatLabels,
   health: 'Health', damage: 'Attack', defense: 'Defense', crit: 'Critical rate',
   critMultiplier: 'Critical multiplier', elementalDamage: 'Elemental damage', shatterCapacity: 'Elemental Gauge capacity',
+  ...(phaseZeroStatsReady ? phaseZeroStatLabels : {}),
 };
 
 export const conduitLoadoutPageSize = 4;
@@ -48,6 +52,13 @@ export function resetConduitLoadoutView(): void {
 
 /** Stat-only summary of a Conduit's buffs at an upgrade level, e.g. "+8% Attack". */
 export function conduitBuffLine(conduit: Conduit, level = 0): string {
+  if (phaseZeroStatsReady) {
+    const bonuses = phaseZeroStaticBonuses[conduit.id as keyof typeof phaseZeroStaticBonuses] ?? [];
+    return bonuses.map(bonus => {
+      const amount = bonus.stat === 'skillDuration' ? bonus.amount : phaseZeroUpgradeMagnitude(bonus.amount, level);
+      return `${amount > 0 ? '+' : ''}${formatStat(amount * (bonus.stat === 'skillDuration' ? 1 : 100))}${bonus.stat === 'skillDuration' ? '' : '%'} ${phaseZeroStatLabels[bonus.stat]}`;
+    }).join(' · ');
+  }
   return conduitBuffs(conduit, level).map((buff) => {
     const amount = `${buff.amount > 0 ? '+' : ''}${formatStat(buff.amount)}`;
     return `${amount}${buff.kind === 'percent' ? '%' : buff.kind === 'percentage-points' ? ' pts' : ''} ${statLabels[buff.stat]}`;

@@ -30,12 +30,14 @@ import { storyEncounter, storyCreature, storyDrops, storyRules } from '../conten
 import { bossLootMultiplier, bossLootRange } from '../content/final-boss-loot';
 import { calamityEncounter, calamityPatterns, calamityChest, type CalamityActivityId, type CalamityTier } from '../content/calamity';
 import { initializeConduits, equipped, gear, value, effectiveDefense, nativeTargetDefense, afterConduitImpact, conduitActionCost, conduitActionBlocked, recoveryNormal,
-  prepareConduitAction, conduitHitModifiers, recordConduitHit, finishConduitAction, applyConduitBurn, applyConduitWeaken,
+  prepareConduitAction, conduitHitModifiers, conduitCriticalBonus, recordConduitHit, finishConduitAction, applyConduitBurn, applyConduitWeaken,
   nativeHeal, nativeShield, nativeGauge, supportEffect, conduitTurnStart, conduitIncoming, conduitBurnTick, afterConduitBurn,
   conduitDeaths, forcedConduitTarget, conduitSuppressSkill, expireNativeShields, type ConduitRuntimeState, type ConduitActivation } from './conduit-runtime';
-import { calamiticActionReason, calamiticShieldBypass, settleCalamiticDebt } from './calamitic-conduits';
+import { calamiticActionReason, calamiticExtraActionAvailable, calamiticNoLastFlareRecovery,
+  calamiticShieldBypass, settleCalamiticDebt } from './calamitic-conduits';
 import { hasNativeIdentity, nativeAction, nativeAfterAction, nativePrimaryHit, nativeInstructionDamage, nativeCleanup,
   nativeBurnPhase, nativeEnemyCompleted, nativePhaseEnd, nativeTurnStart, attachNativeView, type NativeView, type NativeKitState, type NativeDamageKind } from './native-kits';
+import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 
 export interface Combatant {
   id: string;
@@ -395,25 +397,25 @@ export function damageAmount(base: number, multiplier: number, defense: number, 
   return Math.max(1, Math.round(base * multiplier * (critical ? critMultiplier : 1) * mitigation));
 }
 
-export function actionUnavailable(state: BattleState, actor: Combatant, action: ActionId): string | null {
+export function actionUnavailable(state: BattleState, actor: Combatant, action: ActionId, targetId?: string): string | null {
   if (state.phase !== 'player') return 'This wave is not accepting actions.';
   if (actor.side !== 'ally' || !state.allies.some((ally) => ally.id === actor.id)) return 'Choose a team member.';
   if (action !== 'light' && actor.kit?.unavailableActions?.includes(action)) return 'This captured form does not have this ability.';
   if (actor.hp <= 0) return 'This character is defeated.';
-  if (actor.spent) return 'This character has already acted this turn.';
+  if (actor.spent && !calamiticExtraActionAvailable(state, actor, action)) return 'This character has already acted this turn.';
   const calamiticReason = calamiticActionReason(state, actor, action);
   if (calamiticReason) return calamiticReason;
   if (conduitActionBlocked(actor, state)) return 'This character cannot take another action this turn.';
   if (actor.recoverThrough >= state.round && !(action === 'light' && recoveryNormal(actor))) return 'Recovering this turn after Last Flare.';
   if (action === 'ultimate' && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
-  const gaugeCost = actionGaugeCost(actor, action, state);
+  const gaugeCost = actionGaugeCost(actor, action, state, targetId);
   if (actor.shatter < gaugeCost) return `Requires ${gaugeCost} Elemental Gauge.`;
   return null;
 }
 
-function actionGaugeCost(actor: Combatant, action: ActionId, state: BattleState): number {
+export function actionGaugeCost(actor: Combatant, action: ActionId, state: BattleState, targetId?: string): number {
   const cost = shatterGauge.costs[action];
-  return conduitActionCost(actor, action, state, cost);
+  return conduitActionCost(actor, action, state, cost, targetId);
 }
 
 function event(events: BattleEvent[], kind: BattleEvent['kind'], source: Combatant, target: Combatant, amount: number, message: string, critical = false): void {
@@ -449,12 +451,13 @@ function healTeam(state: BattleState, source: Combatant, amount: number, events:
   }
 }
 
-function shieldTeam(state: BattleState, source: Combatant, amount: number, events: BattleEvent[], authored = true): void {
+function shieldTeam(state: BattleState, source: Combatant, amount: number, events: BattleEvent[], authored = true, activation?: ConduitActivation): void {
   const recipients = state.allies.filter(unit => unit.hp > 0);
-  const concentrated = equipped(source, 'master-tide-2');
+  const concentrated = !phaseZeroStatsReady && equipped(source, 'master-tide-2');
   const selected = concentrated ? [...recipients].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health).slice(0, 1) : recipients;
   for (const ally of selected) {
-    if (authored) { nativeShield(state, source, ally, amount * (concentrated ? 3 : 1), events); continue; }
+    if (authored) { nativeShield(state, source, ally, amount * (concentrated ? 3 : 1), events,
+      activation ? { skillPower: activation.skillPower, activation } : {}); continue; }
     const gained = Math.max(0, amount - ally.shield);
     if (gained > 0) {
       delete ally.pilot?.authoredShieldSourceId;
@@ -574,7 +577,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   if (!isActionId(action)) throw new Error('Unknown combat action.');
   const original = previous.allies.find((unit) => unit.id === actorId);
   if (!original) throw new Error('Unknown team member.');
-  const reason = actionUnavailable(previous, original, action);
+  const reason = actionUnavailable(previous, original, action, targetId);
   if (reason) throw new Error(reason);
   const native = hasNativeIdentity(original);
   const nativeAbility = action === 'light' ? undefined : original.kit?.abilities[action];
@@ -599,7 +602,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   const strength = action === 'light' ? null : definition.abilities[action].strength;
   const events: BattleEvent[] = [];
   const name = action === 'light' ? basicActionName(actor.definitionId, action) : definition.abilities[action].name;
-  const paid = actionGaugeCost(actor, action, state);
+  const paid = actionGaugeCost(actor, action, state, targetId);
   const nativeAll = native ? nativeAbility?.targets === 'all-enemies' : !actor.captured && (action === 'ultimate' || (action === 'skill2' && actor.definitionId === 'ember') ||
     (action !== 'light' && definition.abilities[action].targets === 'all-enemies'));
   actor.shatter -= paid;
@@ -607,7 +610,8 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   const priorInstruction = actor.native?.instruction;
   events.push({ kind: 'attack', source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action, abilityName: name });
   actor.spent = !activation.freeAction;
-  if (action === 'ultimate' && !equipped(actor, 'master-nerithe-3')) actor.recoverThrough = state.round + 1;
+  if (action === 'ultimate' && (phaseZeroStatsReady || !equipped(actor, 'master-nerithe-3')) &&
+      !calamiticNoLastFlareRecovery(actor)) actor.recoverThrough = state.round + 1;
   nativeGauge(state, actor, shatterGauge.gains[action] + (action === 'light' ? (definition.passive.lightGaugeBonus ?? 0) : 0), events);
   if (action === 'skill1' || action === 'skill2') actor.readyRound[action] = state.round;
   if (action === 'ultimate' && actor.captured) actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
@@ -617,27 +621,31 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
         nativeAll ? selected.filter(enemy => enemy.id === targetId) : selected;
       for (const target of targets) {
         if (target.hp <= 0) continue;
-        const rolled = rollCritical(state, actor.stats.crit + criticalBonus + activation.criticalBonus);
+        const rolled = rollCritical(state, actor.stats.crit + criticalBonus + activation.criticalBonus +
+          conduitCriticalBonus(state, actor, target, action));
         const critical = !activation.forbidden && (activation.guaranteed || rolled.critical);
         const elemental = critical && rolled.elemental;
         const modifiers = conduitHitModifiers(state, actor, target, activation, critical);
-        const criticalMultiplier = modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) *
-          (critical && action !== 'light' && equipped(actor, 'judgment-lens') ? 1 + value(state, actor, 'judgment-lens', .4, .8) : 1) *
-          (critical && activation.guaranteed && equipped(actor, 'falcon-sight') ? 1 + value(state, actor, 'falcon-sight', .1, .2) : 1);
-        const boost = actor.attackBoost && actor.attackBoost.throughRound >= state.round ? 1 + actor.attackBoost.fraction : 1;
-        const offered = damageAmount(modifiers.attack, coefficient * activation.scale * boost *
+        const criticalMultiplier = (modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) *
+          (critical && action !== 'light' && equipped(actor, 'judgment-lens') && !phaseZeroStatsReady ? 1 + value(state, actor, 'judgment-lens', .4, .8) : 1) *
+          (critical && activation.guaranteed && equipped(actor, 'falcon-sight') && !phaseZeroStatsReady ? 1 + value(state, actor, 'falcon-sight', .1, .2) : 1)) *
+          (1 + (modifiers.criticalDamageBonus ?? 0));
+        const boost = !phaseZeroStatsReady && actor.attackBoost && actor.attackBoost.throughRound >= state.round ? 1 + actor.attackBoost.fraction : 1;
+        const offered = damageAmount(modifiers.attack, coefficient * activation.scale *
+          (activation.skillPower + modifiers.skillPowerBonus) * boost *
           nativeInstructionDamage(state, actor) * (1 + modifiers.bonus),
-          nativeTargetDefense(state, target) * (1 - Math.min(1, pierce + modifiers.pierce)), critical, criticalMultiplier);
+          nativeTargetDefense(state, target) * (1 - Math.min(phaseZeroStatsReady ? .75 : 1, pierce + modifiers.pierce)), critical, criticalMultiplier);
         const shieldBefore = target.shield;
         let hpDamage = 0;
         for (let impact = 0; impact < activation.impacts && target.hp > 0; impact++) {
           const portion = Math.floor(offered / activation.impacts) + (impact === activation.impacts - 1 ? offered % activation.impacts : 0);
-          hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor));
+          hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor, action));
           events[events.length - 1].origin = 'native';
           hpDamage += events[events.length - 1].amount;
         }
         recordConduitHit(activation, target, hpDamage, critical, criticalMultiplier,
-          target.hp <= 0 ? offered - hpDamage - (shieldBefore - target.shield) : 0);
+          target.hp <= 0 ? offered - hpDamage - (shieldBefore - target.shield) : 0,
+          hpDamage + Math.max(0, shieldBefore - target.shield));
         afterConduitImpact(actor, target, activation);
         nativePrimaryHit(state, actor, target, hpDamage > 0 || shieldBefore > target.shield, events);
       }
@@ -665,51 +673,56 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
       multiplier = strength.damageMultiplier;
     }
     if (actor.hp <= actor.stats.health / 2) multiplier *= 1 + definition.passive.damageBonus;
-    if (actor.attackBoost && actor.attackBoost.throughRound >= state.round) multiplier *= 1 + actor.attackBoost.fraction;
+    if (!phaseZeroStatsReady && actor.attackBoost && actor.attackBoost.throughRound >= state.round) multiplier *= 1 + actor.attackBoost.fraction;
     for (const target of targets) {
-      const rolled = rollCritical(state, actor.stats.crit + (strength?.critBonus ?? 0) + activation.criticalBonus);
+      const rolled = rollCritical(state, actor.stats.crit + (strength?.critBonus ?? 0) + activation.criticalBonus +
+        conduitCriticalBonus(state, actor, target, action));
       const critical = !activation.forbidden && (activation.guaranteed || rolled.critical);
       const elemental = critical && rolled.elemental;
       const modifiers = conduitHitModifiers(state, actor, target, activation, critical);
-      const criticalMultiplier = modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) *
-        (critical && action !== 'light' && equipped(actor, 'judgment-lens') ? 1 + value(state, actor, 'judgment-lens', .4, .8) : 1) *
-        (critical && activation.guaranteed && equipped(actor, 'falcon-sight') ? 1 + value(state, actor, 'falcon-sight', .1, .2) : 1);
+      const criticalMultiplier = (modifiers.critMultiplier ?? actor.stats.critMultiplier * (elemental ? elementalCritFactor : 1) *
+        (critical && action !== 'light' && equipped(actor, 'judgment-lens') && !phaseZeroStatsReady ? 1 + value(state, actor, 'judgment-lens', .4, .8) : 1) *
+        (critical && activation.guaranteed && equipped(actor, 'falcon-sight') && !phaseZeroStatsReady ? 1 + value(state, actor, 'falcon-sight', .1, .2) : 1)) *
+        (1 + (modifiers.criticalDamageBonus ?? 0));
       const priorShield = target.shield;
       const priorBurnTurns = target.burn.turns;
       const secondaryCleave = action === 'skill2' && equipped(actor, 'master-thornia-2') && target.id !== targetId;
-      const offered = damageAmount(modifiers.attack, multiplier * activation.scale * (secondaryCleave ? .5 : 1) *
+      const offered = damageAmount(modifiers.attack, multiplier * activation.scale *
+        (activation.skillPower + modifiers.skillPowerBonus) * (secondaryCleave ? .5 : 1) *
         (1 + pilotBonus) * (1 + modifiers.bonus) * nativeInstructionDamage(state, actor),
-        nativeTargetDefense(state, target) * (1 - modifiers.pierce), critical, criticalMultiplier);
+        nativeTargetDefense(state, target) * (1 - (phaseZeroStatsReady ? Math.min(.75, modifiers.pierce) : modifiers.pierce)), critical, criticalMultiplier);
       let hpDamage = 0;
       for (let impact = 0; impact < activation.impacts && target.hp > 0; impact++) {
         const portion = Math.floor(offered / activation.impacts) + (impact === activation.impacts - 1 ? offered % activation.impacts : 0);
-        hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor));
+        hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor, action));
         events[events.length - 1].origin = 'native';
         hpDamage += events[events.length - 1].amount;
       }
       recordConduitHit(activation, target, hpDamage, critical, criticalMultiplier,
-        target.hp <= 0 ? offered - hpDamage - (priorShield - target.shield) : 0);
+        target.hp <= 0 ? offered - hpDamage - (priorShield - target.shield) : 0,
+        hpDamage + Math.max(0, priorShield - target.shield));
       afterConduitImpact(actor, target, activation);
       const effectiveHit = hpDamage > 0 || priorShield > target.shield;
       nativePrimaryHit(state, actor, target, effectiveHit, events);
       effectiveCriticalDamage ||= critical && effectiveHit;
       if (target.hp > 0 && strength?.burnMultiplier !== undefined) {
-        const damage = applyConduitBurn(state, actor, target, actor.stats.elementalDamage * strength.burnMultiplier, activation);
+        const burnAttack = phaseZeroStatsReady ? actor.stats.damage : actor.stats.elementalDamage;
+        const damage = applyConduitBurn(state, actor, target, burnAttack * strength.burnMultiplier, activation);
         const clockExtension = Math.max(0, target.burn.turns - priorBurnTurns);
         if (target.burn.turns <= 0 || damage >= target.burn.damage) {
-          target.burn = { damage, turns: Math.min(6, 2 + clockExtension), sourceId: actor.id, origin: actor.kit?.pilot === 'rose-duality' ? 'rose' : 'native' };
+          target.burn = { damage, turns: Math.min(6, 2 + clockExtension + (phaseZeroStatsReady ? activation.skillDuration : 0)), sourceId: actor.id, origin: actor.kit?.pilot === 'rose-duality' ? 'rose' : 'native' };
           event(events, 'status', actor, target, damage, `${target.name} burns for ${target.burn.turns} enemy phases.`);
         }
       }
       if (target.hp > 0 && strength?.weakenFraction !== undefined) {
-        applyConduitWeaken(state, actor, target, (strength.weakenFraction + starterBonus.weaken) * (secondaryCleave ? .5 : 1), events, action, secondaryCleave ? 1 : 2);
+        applyConduitWeaken(state, actor, target, (strength.weakenFraction + starterBonus.weaken) * (secondaryCleave ? .5 : 1), events, action, secondaryCleave ? 1 : 2, activation);
       }
     }
   }
   for (const resource of ['ember', 'bloom', 'tempest', 'thornAegis', 'duality', 'roseGrace'] as const) activation.spent[resource] = Math.max(0, (priorResources[resource] ?? 0) - (actor.pilot?.[resource] ?? 0));
   pilotAfterDirectActivation(actor, action, events, effectiveCriticalDamage);
   if (strength?.shield !== undefined || starterBonus.shield > 0) {
-    shieldTeam(state, actor, (strength?.shield ?? 0) + starterBonus.shield, events);
+    shieldTeam(state, actor, (strength?.shield ?? 0) + starterBonus.shield, events, true, activation);
   }
   if (strength?.healing !== undefined) {
     healTeam(state, actor, strength.healing * starterBonus.healing, events, false, activation);
@@ -854,8 +867,14 @@ export function actAndAdvanceTurn(previous: BattleState, actorId: string, action
 }
 
 export function teamCanAct(state: BattleState): boolean {
-  return state.phase === 'player' && state.allies.some((ally) =>
-    actionIds.some((action) => actionUnavailable(state, ally, action) === null));
+  return state.phase === 'player' && state.allies.some(ally => combatantCanAct(state, ally));
+}
+
+export function combatantCanAct(state: BattleState, actor: Combatant, targetId?: string): boolean {
+  const targets = targetId ? [targetId] : state.enemies.filter(enemy => enemy.hp > 0).map(enemy => enemy.id);
+  return actionIds.some(action => targets.length
+    ? targets.some(id => actionUnavailable(state, actor, action, id) === null)
+    : actionUnavailable(state, actor, action) === null);
 }
 
 export function advanceUnavailableTurns(previous: BattleState): BattleResult {
@@ -900,8 +919,9 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
   for (const ally of state.allies) {
     const prior = previous.allies.find((unit) => unit.id === ally.id);
     if (!prior) throw new Error('Continuing character is missing from the previous encounter.');
-    ally.shatter = Math.min(prior.shatter + (equipped(ally, 'fracture-reservoir') ? value(state, ally, 'fracture-reservoir', 5, 10) : 0) +
-      (equipped(ally, 'twinpulse-bellows') ? ally.stats.shatterCapacity * value(state, ally, 'twinpulse-bellows', .15, .35) : 0),
+    ally.shatter = phaseZeroStatsReady ? Math.min(prior.shatter, ally.stats.shatterCapacity) :
+      Math.min(prior.shatter + (equipped(ally, 'fracture-reservoir') ? value(state, ally, 'fracture-reservoir', 5, 10) : 0) +
+        (equipped(ally, 'twinpulse-bellows') ? ally.stats.shatterCapacity * value(state, ally, 'twinpulse-bellows', .15, .35) : 0),
       ally.stats.shatterCapacity);
     if (prior.masterConduit) ally.masterConduit = prior.masterConduit;
   }

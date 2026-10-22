@@ -14,8 +14,8 @@ import { squadHub } from './roster';
 import { materialArt, materialName } from '../content/dungeon-art';
 import { information } from './information';
 import { currencyIcon } from './currency-icon';
-import { statChange } from './stat-change';
 import { elementLabel } from './element-label';
+import { statPreview } from './stat-preview';
 
 export type ReferenceTeamView = 'detail' | 'bearers' | 'creatures' | 'capture' | 'formation' | 'conduits' | 'capture-conduits';
 export interface ReferenceTeamState {
@@ -127,7 +127,7 @@ function captureDetail(account: Account, id: string, tab = 'overview'): string {
     </div><div id="capture-panel-upgrade-1" class="ref-capture-panel" ${tab === 'upgrade-1' ? '' : 'hidden'}>
       ${next ? `<div class="character-upgrade-grid"><section class="character-category upgrade-benefits"><div class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Level &amp; stat preview</h3>
         <div class="hub-comparison"><div><small>CURRENT</small><strong>Lv.${progress.level}</strong></div><div><small>NEXT</small><strong>Lv.${progress.level + 1}</strong></div></div>
-        <div class="upgrade-stat-preview">${(['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).map(key => `<span><small>${({ health: 'Health', defense: 'Defense', damage: 'Attack', crit: 'Critical Rate', critMultiplier: 'Critical Damage', shatterCapacity: 'Elemental Gauge Capacity', elementalDamage: 'Elemental Damage' })[key]}</small><strong>${statChange(kit.stats[key], next[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '')}</strong></span>`).join('')}</div></div></section>
+        <div class="upgrade-stat-preview">${statPreview(kit.stats, next)}</div></div></section>
         <section class="character-category upgrade-payment"><h3>Required resources <small class="resource-key">Owned / Required</small></h3><ul class="upgrade-resources">${resources.map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${resource.name}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>` : `<section class="character-category"><p class="ref-growth-summary">Maximum level ${capturedLevelCap}</p>`}
         <div class="ref-growth-action">
         ${cost ? `<button class="primary-button" data-level-capture="${id}" data-expected-level="${progress.level}" ${canLevel ? '' : 'disabled'}>Level up</button>` : ''}

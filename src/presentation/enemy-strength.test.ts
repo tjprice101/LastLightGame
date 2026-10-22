@@ -41,7 +41,7 @@ describe('visible enemy strength', () => {
         expect(document.body.textContent).toContain(enemy.boss
           ? `Boss scaling vs standard Lv.${enemy.level} enemy` : `Standard Lv.${enemy.level} stats`);
         const baseline = enemyCombatStats(enemy.level!, false);
-        for (const [label, key] of [['HP', 'health'], ['Attack', 'damage'], ['Defense', 'defense']] as const) {
+        for (const [label, key] of [['HP', 'health'], ['Direct Attack', 'damage'], ['Defense', 'defense']] as const) {
           const badge = document.querySelector(`[data-scaled-stat="${label}"]`);
           if (enemy.stats[key] === baseline[key]) expect(badge).toBeNull();
           else {
@@ -67,13 +67,13 @@ describe('visible enemy strength', () => {
     document.body.innerHTML = unitReadout(enemy, true);
     expect(document.querySelector('.enemy-scaling-label')?.textContent).toBe('Activity scaling vs standard Lv.55 enemy');
     expect(document.querySelector('.enemy-scaling-increased')?.textContent).toBe('HP +50%');
-    expect(document.querySelector('.enemy-scaling-decreased')?.textContent).toBe('Attack -20%');
+    expect(document.querySelector('.enemy-scaling-decreased')?.textContent).toBe('Direct Attack -20%');
     expect(document.querySelector('[data-scaled-stat="Defense"]')).toBeNull();
     expect(document.body.textContent).toContain('Weaken -30%');
     expect(enemy).toEqual(before);
     enemy.stats.damage = standard.damage * .99999;
     document.body.innerHTML = unitReadout(enemy, true);
-    expect(document.querySelector('.enemy-scaling-decreased')?.textContent).toBe('Attack -<0.1%');
+    expect(document.querySelector('.enemy-scaling-decreased')?.textContent).toBe('Direct Attack -<0.1%');
   });
 
   it('shows exact stats and real same-level differences, not an activity difficulty label', () => {

@@ -86,7 +86,7 @@ describe('hostile progression balance', () => {
     basic.enemies = [basic.enemies[0]];
     basic.enemies[0].stats = { ...enemy }; basic.enemies[0].hp = enemy.health; basic.allies[0].stats.crit = 0;
     const enhanced = act(basic, 'ember', 'light', basic.enemies[0].id).events.find(event => event.kind === 'damage')!.amount;
-    expect(enhanced).toBeGreaterThan(damageAmount(built.stats.damage, 1, enemy.defense, false));
+    expect(enhanced).toBe(damageAmount(built.stats.damage, 1, enemy.defense, false));
     expect(damageAmount(enemy.damage, 1, built.stats.defense, false) / built.stats.health)
       .toBeLessThan(damageAmount(enemy.damage, 1, plain.stats.defense, false) / plain.stats.health * .5);
   });

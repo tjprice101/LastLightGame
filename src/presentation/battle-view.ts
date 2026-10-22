@@ -1,7 +1,7 @@
 import { actionIds, describeFighter, enemies, formatStat, isActionId, shatterGauge, type ActionId } from '../content/combat';
 import { gameConfirm, gameDialogPending } from './game-dialog';
 import { getStarter, isStarterId, type StarterId } from '../content/starters';
-import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, actionUnavailable, createBattle, createCalamityBattle, createDungeonBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, withMasterLoadouts, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
+import { actAndAdvanceTurn, advanceUnavailableTurns, teamCanAct, combatantCanAct, actionUnavailable, actionGaugeCost, createBattle, createCalamityBattle, createDungeonBattle, createInfusionBattle, createWarBattle, createStoryBattle, endTurn, nextStage, nextWave, withMasterLoadouts, type BattleState, type BattleEvent, type BattleResult, type Combatant } from '../game/battle';
 import { calamityEncounter, isCalamityActivityId, isCalamityTier, type CalamityActivityId, type CalamityTier } from '../content/calamity';
 import { confirmCalamity, calamityCadence } from './calamity';
 import { calamityBossArt, calamityArenaArt } from '../content/calamity-art';
@@ -251,7 +251,7 @@ export class BattleView {
     }
     const actor = this.session.state.allies.find(unit => unit.id === this.actorId);
     if (command !== 'endTurn' && actor && needsAllyTarget(actor, command) && !allyTargetId) {
-      const reason = actionUnavailable(this.session.state, actor, command);
+      const reason = actionUnavailable(this.session.state, actor, command, this.targetId);
       if (reason) { this.error(reason); return; }
       void this.chooseAlly(actor, command);
       return;
@@ -675,7 +675,7 @@ export class BattleView {
   private unit(unit: Combatant): string {
     const { art, color } = definition(unit);
     const selected = unit.side === 'ally' ? unit.id === this.actorId : unit.id === this.targetId;
-    const ultimateReady = unit.side === 'ally' && actionUnavailable(this.session.state, unit, 'ultimate') === null;
+    const ultimateReady = unit.side === 'ally' && actionUnavailable(this.session.state, unit, 'ultimate', this.targetId) === null;
     return `<button class="battle-unit ${selected ? 'selected-unit' : ''} ${unit.hp <= 0 ? 'fallen' : ''} ${ultimateReady ? 'ultimate-ready' : ''}"
       data-unit="${unit.id}" data-side="${unit.side}" aria-pressed="${selected}" style="--element:${color};--unit-scale:${battleArtScale(this.session.state, unit)}" ${unit.hp <= 0 ? 'disabled' : ''}>
       <span class="battle-art">
@@ -693,8 +693,8 @@ export class BattleView {
     this.stateChanged?.(state);
     if (!state.enemies.some((enemy) => enemy.id === this.targetId && enemy.hp > 0)) this.targetId = state.enemies.find((enemy) => enemy.hp > 0)?.id ?? '';
     if (!state.allies.some((ally) => ally.id === this.actorId && ally.hp > 0 &&
-        (state.phase !== 'player' || actionUnavailable(state, ally, 'light') === null))) {
-      const fallback = state.allies.find((ally) => actionUnavailable(state, ally, 'light') === null) ??
+        (state.phase !== 'player' || combatantCanAct(state, ally, this.targetId)))) {
+      const fallback = state.allies.find((ally) => combatantCanAct(state, ally, this.targetId)) ??
         state.allies.find((ally) => ally.hp > 0) ?? state.allies[0];
       if (!fallback) throw new Error('Battle has no character.');
       this.actorId = fallback.id;
@@ -737,7 +737,7 @@ export class BattleView {
       <header class="drawer-heading"><div><p class="eyebrow">TACTICS · REFERENCE</p><h2 id="battle-menu-heading">Battle menu</h2></div><button id="close-battle-menu" class="drawer-close" aria-label="Close battle menu">&times;</button></header>
       <div class="battle-utilities">
       <section class="battle-combat-menu"><h3>Actions · ${actor.name}</h3>${nativeIdentityReference(actor)}<p class="quiet">Enemy target: ${state.enemies.find(enemy => enemy.id === this.targetId)?.name ?? 'None'}. Ally-targeted actions open a separate living-ally selector before commitment; cancel spends nothing. Turns advance automatically when no teammate can act.</p>
-      <div class="battle-actor-picker" role="group" aria-label="Choose acting squad member">${state.allies.map((ally) => `<button class="text-button" data-actor="${ally.id}" aria-pressed="${ally.id === this.actorId}" title="${ally.name}" ${this.busy || ally.hp <= 0 || actionUnavailable(state, ally, 'light') !== null ? 'disabled' : ''}>${isStarterId(ally.definitionId) ? getStarter(ally.definitionId).name : ally.name}${ally.hp <= 0 ? ' · defeated' : actionUnavailable(state, ally, 'light') !== null ? ' · unavailable' : ''}</button>`).join('')}</div>
+      <div class="battle-actor-picker" role="group" aria-label="Choose acting squad member">${state.allies.map((ally) => `<button class="text-button" data-actor="${ally.id}" aria-pressed="${ally.id === this.actorId}" title="${ally.name}" ${this.busy || !combatantCanAct(state, ally, this.targetId) ? 'disabled' : ''}>${isStarterId(ally.definitionId) ? getStarter(ally.definitionId).name : ally.name}${ally.hp <= 0 ? ' · defeated' : !combatantCanAct(state, ally, this.targetId) ? ' · unavailable' : ''}</button>`).join('')}</div>
       <div class="battle-context-actions">${actionIds.map((action) => this.actionButton(state, actor, action)).join('')}</div>
       ${state.phase === 'player' ? '<button id="end-battle-turn" class="battle-chrome-button">Pass remaining actions</button>' : ''}</section>
       <section class="battle-unit-intel"><h3>Combatants</h3>${[...state.allies, ...state.enemies].map((unit) =>
@@ -823,8 +823,10 @@ export class BattleView {
           const id = button.dataset.unit;
           const actor = this.session.state.allies.find((unit) => unit.id === id);
           if (!actor) throw new Error('Gesture actor is missing.');
-          const reason = actionUnavailable(this.session.state, actor, 'light');
-          if (reason) { this.error(reason); return; }
+          if (!combatantCanAct(this.session.state, actor, this.targetId)) {
+            this.error(actionUnavailable(this.session.state, actor, 'light', this.targetId) ?? 'No available action.');
+            return;
+          }
           this.actorId = actor.id;
           suppressClick = false;
           gesture = { pointerId: event.pointerId, x: event.clientX, y: event.clientY };
@@ -989,14 +991,14 @@ export class BattleView {
     const kit = !actor.captured && isStarterId(actor.definitionId) ? describeFighter(actor.definitionId, actor.kit) : actor.kit;
     const ability = action === 'light' ? null : kit.abilities[action];
     const name = action === 'light' ? basicActionName(actor.definitionId, action) : kit.abilities[action].name;
-    const reason = actionUnavailable(state, actor, action);
+    const reason = actionUnavailable(state, actor, action, this.targetId);
     return `<button data-action="${action}" class="battle-action" ${reason ? 'disabled' : ''}>
       <span class="battle-action-heading">${isStarterId(actor.definitionId) ? abilityIcon(actor.definitionId, action) : ''}<strong>${name}</strong></span>
       ${ability ? abilityStatuses(ability.strength, actor.kit.nativeIdentity && !actor.captured ? actor.definitionId : undefined, action === 'light' ? undefined : action) : ''}
       ${nativeActionHint(state, actor, action, this.targetId) ? `<span class="battle-ally-target">${nativeActionHint(state, actor, action, this.targetId)}</span>` : ''}
       ${ability && actor.kit.nativeIdentity ? `<span>${readableEffect(ability.description)}</span>` : ''}
       ${action === 'light' ? `<span>Down or right-click · +${shatterGauge.gains[action]} Elemental Gauge</span>` : `<span>${action === 'ultimate' ? 'Up' : action === 'skill1' ? 'Left' : 'Right'}</span>`}
-      ${ability ? `<span>Costs ${shatterGauge.costs[action]} Elemental Gauge${action === 'ultimate' && ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
+      ${ability ? `<span>Costs ${actionGaugeCost(actor, action, state, this.targetId)} Elemental Gauge${action === 'ultimate' && ability.cooldown ? `; ${ability.cooldown}-turn cooldown` : ''}.</span>` : ''}
       <small>${reason ?? 'Ready'}</small></button>`;
   }
 

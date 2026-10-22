@@ -1,6 +1,7 @@
 import { elements, infusionModes, currencyModes, eventModes, machineModes, isCurrencyMode, infusionStageCount, infusionModeStageCount, getElement, type ElementId, type InfusionModeId } from './activities';
 import { machineEnemies } from './machines';
 import { type Stats } from './combat';
+import { phaseZeroStatDefaults, type ResolvedStats } from './phase-zero-stats';
 import { lootRoll, rollDrop, scaledDrop } from './loot-random';
 import { capturedGrowth, enemyCombatStats, playableGrowth } from './stat-growth';
 import { enemyAbilityMultiplier } from './enemy-skills';
@@ -118,11 +119,12 @@ function creatureEnemyStats(level: number, boss: boolean, maximumLevel = 120): S
   return enemyCombatStats(Math.min(level, maximumLevel), boss);
 }
 
-export function capturedEnemyStats(level: number, maximumLevel = 120): Stats {
+export function capturedEnemyStats(level: number, maximumLevel = 120): ResolvedStats {
   if (!Number.isInteger(level) || level < 10 || level > maximumLevel ||
       !Number.isInteger(maximumLevel) || maximumLevel < 120 || maximumLevel > 140) throw new Error('Invalid captured creature level.');
   const factor = 1 + Math.min(level, 120) * playableGrowth.perLevel;
   return {
+    ...phaseZeroStatDefaults,
     health: capturedGrowth.health * factor,
     damage: capturedGrowth.damage * factor,
     defense: capturedGrowth.defense * factor ** .7,

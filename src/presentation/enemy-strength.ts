@@ -4,6 +4,7 @@ import { dungeonEncounter, isPlayableDungeon } from '../content/dungeons';
 import { infusionEncounter, isInfusionMode } from '../content/infusions';
 import { isWarCharacter, warEncounter } from '../content/elemental-war';
 import './enemy-strength.css';
+import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 
 interface EnemyStrength {
   level: number;
@@ -15,7 +16,7 @@ function strengthValues(encounter: EnemyStrength) {
   const standard = enemyCombatStats(encounter.level, false);
   return [
     ['HP', encounter.stats.health, standard.health],
-    ['Attack', encounter.stats.damage, standard.damage],
+    [phaseZeroStatsReady ? 'Direct Attack' : 'Attack', encounter.stats.damage, standard.damage],
     ['Defense', encounter.stats.defense, standard.defense],
   ] as const;
 }

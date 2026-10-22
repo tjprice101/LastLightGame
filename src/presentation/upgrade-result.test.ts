@@ -5,9 +5,10 @@ import { resolveFighter } from '../content/combat';
 import { upgradeResult } from './upgrade-result';
 import { statChange } from './stat-change';
 import { characterArt } from '../content/character-art';
+import { phaseZeroStatKeys } from '../content/phase-zero-stats';
 
 describe('saved upgrade stat results', () => {
-  it('shows all seven actual equipped stats for a single level without changing either account', () => {
+  it('shows all ten actual equipped stats for a single level without changing either account', () => {
     const before = emptyAccount();
     before.characters.ember = { level: 0, evolution: 1, weaponRank: 2 };
     before.conduits = { 'vigil-core': 1 };
@@ -21,11 +22,11 @@ describe('saved upgrade stat results', () => {
     expect(result.title).toBe('Level up!');
     expect(result.savedLabel).toBe('Upgrade saved');
     expect(result.details).toContain('Level 0 → 1');
-    const keys = ['health', 'damage', 'defense', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const;
+    const keys = phaseZeroStatKeys;
     const changed = keys.filter(key => from[key] !== to[key]);
     expect(changed.length).toBeGreaterThan(0);
     expect(result.details.match(/<article /g)).toHaveLength(changed.length);
-    expect(result.details.match(/<li>/g) ?? []).toHaveLength(7 - changed.length);
+    expect(result.details.match(/<li>/g) ?? []).toHaveLength(10 - changed.length);
     expect(result.details).toContain(statChange(from.health, to.health));
     expect(result.details).not.toContain('&rarr; <b class="stat-change stat-change--unchanged"');
     expect(result.details).not.toContain('>+0x<');
@@ -86,8 +87,8 @@ describe('saved upgrade stat results', () => {
     expect(result.details).not.toContain('<article ');
     expect(result.details).toContain('No stat changes.');
     expect(result.details.match(/stat-change--unchanged">Unchanged/g)).toHaveLength(1);
-    expect(result.details.match(/<li>/g)).toHaveLength(7);
-    expect(result.details).toContain('<li><span>Critical multiplier</span>');
+    expect(result.details.match(/<li>/g)).toHaveLength(10);
+    expect(result.details).toContain('<li><span>Critical Damage Multiplier</span>');
     expect(result.details).not.toContain('stat-change--increase');
   });
 

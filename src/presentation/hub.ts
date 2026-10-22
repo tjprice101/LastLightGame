@@ -31,6 +31,8 @@ import { abilityStatuses, kitResource } from './ability-status';
 import { readableEffect } from './effect-copy';
 import { masterEquipment } from './master-conduits';
 import { applyConduitSearch, conduitLoadout, filledConduitSlots } from './conduit-loadout';
+import { phaseZeroStatsReady, statDisplayUnit } from '../content/phase-zero-stats';
+import { displayStatLabels, statPreview, type DisplayStatKey } from './stat-preview';
 
 export const characterTabs = [
   { id: 'overview', label: 'Overview', symbol: '01' },
@@ -46,26 +48,27 @@ export function stats(unit: Starter | CapturedCharacter, progress?: CharacterPro
   const values = 'instanceId' in unit ? resolveCapturedFighter(unit, equipment, upgrades).stats : resolveFighter(unit.id, progress, equipment, upgrades).stats;
   const base = 'instanceId' in unit ? resolveCapturedFighter(unit).stats : resolveFighter(unit.id, progress).stats;
   const changed = equipment?.some((id) => id !== null);
-  const statKeys = { Health: 'health', Defense: 'defense', 'Attack Damage': 'damage', 'Critical Rate': 'crit',
-    'Critical Damage Multiplier': 'critMultiplier', 'Elemental Gauge capacity': 'shatterCapacity', 'Elemental Damage': 'elementalDamage' } as const;
-  type StatEntry = [keyof typeof statKeys, string | number];
-  const groups: { label: string; entries: StatEntry[] }[] = [
-    { label: 'Survival', entries: [['Health', values.health], ['Defense', values.defense]] },
-    { label: 'Offense', entries: [['Attack Damage', values.damage], ['Critical Rate', `${formatStat(values.crit * 100)}%`],
-      ['Critical Damage Multiplier', `${formatStat(values.critMultiplier)}x`], ['Elemental Damage', values.elementalDamage]] },
-    { label: 'Resource', entries: [['Elemental Gauge capacity', values.shatterCapacity]] },
+  const labels = { ...displayStatLabels, ...(phaseZeroStatsReady ? {} : {
+    damage: 'Attack Damage', critMultiplier: 'Critical Damage Multiplier', shatterCapacity: 'Elemental Gauge capacity',
+  }) };
+  const groups: { label: string; entries: DisplayStatKey[] }[] = [
+    { label: 'Survival', entries: ['health', 'defense'] },
+    { label: 'Offense', entries: ['damage', 'crit', 'critMultiplier', ...(phaseZeroStatsReady ? [] : ['elementalDamage'] as const)] },
+    ...(phaseZeroStatsReady ? [{ label: 'Skills', entries: ['skillPower', 'skillDuration', 'skillEfficiency'] as DisplayStatKey[] }] : []),
+    { label: 'Resource', entries: ['shatterCapacity', ...(phaseZeroStatsReady ? ['gaugeGain'] as const : [])] },
   ];
-  const render = (entries: readonly StatEntry[]): string => entries.map(([label, value]) => {
-    const key = statKeys[label];
+  const render = (entries: readonly DisplayStatKey[]): string => entries.map(key => {
+    const label = labels[key];
+    const unit = statDisplayUnit(key);
+    const value = unit === '%' ? values[key] * 100 : values[key];
     const direction = statDirection(base[key], values[key]);
     const modified = changed && direction !== 'unchanged';
-    const unit = key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '';
-    return `<div><small>${label}</small><strong${modified ? ` class="stat-change stat-change--${direction}"` : ''}>${typeof value === 'number' ? formatStat(value) : value}</strong>${modified ? `<small>Before Conduits: ${formatStat(key === 'crit' ? base[key] * 100 : base[key])}${unit}</small>` : ''}${key === 'crit' && values.crit > 1 ? `<small class="elemental-crit-chance">Elemental Crit chance: ${formatStat(Math.min(100, (values.crit - 1) * 100))}%</small>` : ''}</div>`;
+    return `<div><small>${label}</small><strong${modified ? ` class="stat-change stat-change--${direction}"` : ''}>${formatStat(value)}${unit}</strong>${modified ? `<small>Before Conduits: ${formatStat(unit === '%' ? base[key] * 100 : base[key])}${unit}</small>` : ''}${key === 'crit' && values.crit > 1 ? `<small class="elemental-crit-chance">Elemental Crit chance: ${formatStat(Math.min(100, (values.crit - 1) * 100))}%</small>` : ''}</div>`;
   }).join('');
   return grouped ? `<div class="character-stat-groups" aria-label="Current combat stats">${groups.map((group) =>
     `<section class="character-category"><h3>${group.label}</h3><div class="hub-stats">${render(group.entries)}</div></section>`).join('')}</div>`
     : `<div class="hub-stats" aria-label="Current combat stats">${render([
-      ['Elemental Gauge capacity', values.shatterCapacity], ...groups[0].entries, ...groups[1].entries,
+      ...groups[groups.length - 1].entries, ...groups.slice(0, -1).flatMap(group => group.entries),
     ])}</div>`;
 }
 
@@ -137,7 +140,7 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
         <h2 aria-label="${displayName}">${identity} ${capturedLeader ? '' : characterRole(starter.id)}</h2>${capturedLeader?.rating ?? characterRating(starter.id, progress?.evolution)}
         ${capturedLeader ? '' : `<p class="home-vow">${starter.title}</p>`}
         <p class="upgrade-progress">${capturedLeader?.progress ?? `Lv.${progress?.level ?? 0} · Evo.${progress?.evolution ?? 1}`}</p>
-        <div class="mono-leader-stats">${([['Health', leaderStats.health], ['Attack', leaderStats.damage], ['Defense', leaderStats.defense]] as const).map(([label, value]) => `<div><small>${label}</small><strong>${formatStat(value)}</strong></div>`).join('')}</div>
+        <div class="mono-leader-stats">${([['Health', leaderStats.health], [phaseZeroStatsReady ? 'Direct Attack' : 'Attack', leaderStats.damage], ['Defense', leaderStats.defense]] as const).map(([label, value]) => `<div><small>${label}</small><strong>${formatStat(value)}</strong></div>`).join('')}</div>
         <button type="button" class="text-button home-character-link" data-page="team" data-team-area="${capturedLeader ? 'creatures' : 'bearers'}" ${capturedLeader ? `data-team-capture="${squad[0]}"` : `data-team-character="${starter.id}"`}>View ${capturedLeader ? 'creature' : 'character'} &rarr;</button>
         ${firstArrival ? `<p class="bond-message">${starter.lore.awakening}</p>` : ''}</div>
         ${information('home-information', 'Character information',
@@ -250,15 +253,14 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
   if (compact) return `<p class="ref-growth-summary">${evolve ? `Evo.${current.evolution} → ${next.evolution} · Level cap ${characterLevelCap(next.evolution)}` : `Lv.${current.level} → ${next.level} · Cap ${cap}`}</p>
     <p class="ref-growth-cost">${currencyIcon('fractalis')}${cost.fractalis} Prismatica</p>
     <ul class="ref-growth-materials">${resources.slice(1).map(resource => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<span>${resource.needed} ${resource.name}<small>Owned ${resource.owned}</small></span></li>`).join('')}</ul>
-    <section class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Stat preview</h3><div>${(['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).map(key => `<div><small>${({ health: 'Health', defense: 'Defense', damage: 'Attack', crit: 'Critical Rate', critMultiplier: 'Critical Damage', shatterCapacity: 'Elemental Gauge Capacity', elementalDamage: 'Elemental Damage' })[key]}</small>${statChange(before[key], after[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '')}</div>`).join('')}</div></section>
+    <section class="ref-growth-preview"><h3 class="ref-growth-preview-heading">Stat preview</h3><div>${statPreview(before, after, 'div')}</div></section>
     ${selection}<button class="primary-button" data-upgrade="${evolve ? 'evolve' : 'level'}" data-fodder-value-required="${count}" data-upgrade-blocked="${!!reason}" ${reason || count ? 'disabled' : ''}>${evolve ? 'Evolve' : 'Level up'}</button>
     ${!evolve ? `<button class="ref-link" data-max-level="${starter.id}">Max Level</button>` : ''}<p class="quiet">${reason}</p>`;
   return `${organized ? '' : `<p class="upgrade-progress">Lv.${current.level} / ${cap} &middot; Evo.${current.evolution} / ${characterGrowth.forms}</p>`}
     <div class="character-upgrade-grid"><section class="character-category upgrade-benefits">${organized ? `<div class="ref-growth-preview"><h3 class="ref-growth-preview-heading">${evolve ? 'Stat &amp; form preview' : 'Level &amp; stat preview'}</h3>` : ''}${organized ? '' : `<h3>${evolve ? 'Evolution preview' : 'Level preview'}</h3>`}
     <div class="hub-comparison"><div><small>CURRENT</small><strong>${evolve ? `Evo.${current.evolution}` : `Lv.${current.level}`}</strong></div>
     <div><small>NEXT</small>${nextPortrait ? `<div class="evolution-silhouette unreached-character-art"><span class="character-idle" data-character="${starter.id}"><img draggable="false" src="${nextPortrait.src}" alt="${characterName(starter.id, next.evolution)} next evolution silhouette" ${characterFacingAttributes(starter.id, next.evolution)} width="150" height="150"></span></div>` : ''}<strong>${evolve ? `Evo.${next.evolution} · Cap ${characterLevelCap(next.evolution)}` : `Lv.${next.level}`}</strong></div></div>
-    <div class="upgrade-stat-preview">${(['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).map((key) =>
-      `<span><small>${({ health: 'Health', defense: 'Defense', damage: 'Attack', crit: 'Critical Rate', critMultiplier: 'Critical Damage', shatterCapacity: 'Elemental Gauge Capacity', elementalDamage: 'Elemental Damage' })[key]}</small><strong>${statChange(before[key], after[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '')}</strong></span>`).join('')}</div>
+    <div class="upgrade-stat-preview">${statPreview(before, after)}</div>
     ${organized ? '</div>' : ''}</section><section class="character-category upgrade-payment"><h3>Required resources${organized ? ' <small class="resource-key">Owned / Required</small>' : ''}</h3>${organized ? '' : '<p class="resource-key">Owned / Required</p>'}
     <ul class="upgrade-resources">${resources.map((resource) => `<li class="${resource.owned < resource.needed ? 'resource-missing' : 'resource-sufficient'}">${resource.icon}<strong>${resource.name}</strong><span>${resource.owned} / ${resource.needed}</span></li>`).join('')}</ul>
     ${evolve && !account.firstFracture ? `<p class="currency-reward">${currencyIcon('lycalis')}<span>First Fracture reward: +10 Null-Prismatica.</span></p>` : ''}

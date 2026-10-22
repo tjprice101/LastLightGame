@@ -18,6 +18,7 @@ import { bindInformation } from './information';
 import { archives } from './archives';
 import { characterName } from '../content/character-art';
 import { elementLabel } from './element-label';
+import { phaseZeroStatKeys, statDisplayUnit } from '../content/phase-zero-stats';
 
 vi.mock('./reward-screen', () => ({ presentReward: vi.fn().mockResolvedValue(undefined) }));
 vi.mock('./settings', () => ({ reducedMotion: vi.fn(() => false) }));
@@ -186,13 +187,13 @@ describe('reference Team upgrade presentation', () => {
     expect(level.hidden).toBe(false);
     expect(host.querySelector('.ref-growth-detail')).not.toBeNull();
     if (capturedProgress(copy).level < 60) {
-      expect(level.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(7);
+      expect(level.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(10);
       expect(level.textContent).toContain(`0 / ${capturedLevelCost(copy).fractalis}`);
       const beforeStats = resolveCapturedFighter(copy).stats;
       const afterStats = resolveCapturedFighter({ ...copy, level: 60 }).stats;
-      for (const [index, key] of (['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity', 'elementalDamage'] as const).entries()) {
+      for (const [index, key] of phaseZeroStatKeys.entries()) {
         const expected = document.createElement('div');
-        expected.innerHTML = statChange(beforeStats[key], afterStats[key], key === 'crit' ? '%' : key === 'critMultiplier' ? 'x' : '');
+        expected.innerHTML = statChange(beforeStats[key]!, afterStats[key]!, statDisplayUnit(key));
         expect(level.querySelectorAll('.upgrade-stat-preview > span')[index].textContent).toContain(expected.textContent);
       }
       for (const [id, amount] of Object.entries(capturedLevelCost(copy).materials)) {
@@ -275,11 +276,11 @@ describe('reference Team upgrade presentation', () => {
           const row = Array.from(resources.querySelectorAll('li')).find(row => row.querySelector('strong')?.textContent === materialName(id));
           expect(row?.querySelector('span')?.textContent).toBe(`0 / ${amount}`);
         }
-        expect(host.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(7);
+        expect(host.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(10);
         const preview = host.querySelector('.upgrade-benefits > .ref-growth-preview');
         expect(preview).not.toBeNull();
         expect(preview?.querySelector('.ref-growth-preview-heading')?.textContent).toBe(tab === 'upgrade-0' ? 'Stat & form preview' : 'Level & stat preview');
-        expect(preview?.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(7);
+        expect(preview?.querySelectorAll('.upgrade-stat-preview > span')).toHaveLength(10);
         expect(host.querySelector('.upgrade-benefits details')).toBeNull();
         expect(host.querySelector('.ref-growth-detail')).not.toBeNull();
         expect(host.querySelectorAll('.upgrade-benefits h3')).toHaveLength(1);

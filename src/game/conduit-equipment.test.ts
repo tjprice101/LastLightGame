@@ -1,4 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
+
+// Historical rules4 contract; Phase 0 numerical coverage lives in the phase-zero suites.
+vi.mock('../content/phase-zero-stats', async importOriginal => ({
+  ...await importOriginal<typeof import('../content/phase-zero-stats')>(),
+  phaseZeroStatsReady: false,
+}));
 import { ACCOUNT_KEY, loadAccount, saveAccount, equipConduit, unequipAllConduits } from './account';
 import { SAVE_KEY, type ProfileStorage } from './profile';
 import { commonConduits as conduits, validateConduitSlots, type ConduitSlots } from '../content/conduits';

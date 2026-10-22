@@ -1,4 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+
+// Historical rules4 contract; Phase 0 numerical coverage lives in the phase-zero suites.
+vi.mock('../content/phase-zero-stats', async importOriginal => ({
+  ...await importOriginal<typeof import('../content/phase-zero-stats')>(),
+  phaseZeroStatsReady: false,
+}));
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { conduits, type ConduitId, type ConduitSlots } from '../content/conduits';
@@ -23,7 +29,7 @@ it('documents each of the original 133 equipment IDs exactly once in the generat
 });
 
 it('keeps description coefficients aligned and removes retired Conduit jargon', () => {
-  const forbidden = /capped|maximum \+|at most|once per|native|generated|refresh-only|encounter|enemy phase| offer/i;
+  const forbidden = /capped|maximum \+|at most|native|generated|refresh-only|encounter|enemy phase| offer/i;
   for (const [id, design] of Object.entries(conduitRedesign)) {
     const placeholders = design.description.match(/[-+]?\d+(?:\.\d+)?%?\s*->\s*[-+]?\d+(?:\.\d+)?%?/g) ?? [];
     expect(placeholders, id).toHaveLength(design.ranges.length);

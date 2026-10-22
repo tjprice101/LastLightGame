@@ -1,5 +1,15 @@
 # Conduits and Conduit Store
 
+**D-368/D-370 verified and activated for publication:** the approved
+[Phase 0 catalog](conduit-catalog.txt) specifies all138 replacement abilities
+and the new stat contract. Preserve IDs, ownership, equipment restrictions,
+artwork, saved upgrades and costs. Rules5 and the shared client/authority
+gate are enabled; hosted publication status is in the handoff.
+The [138-entry behavior matrix](conduit-behavior-matrix.md) records
+individual numerical checks and upgrade coverage. Historical
+mechanics below are historical where they conflict; never combine old
+passive bonuses with the replacement static calculator.
+
 **D-324:** [five Calamitic creations](calamitic-conduits.md) extend the catalog
 to90 ordinary plus48 Masters. Universal, token-purchased and above Omnic,
 they retain eight ordinary slots/unique names with no extra Calamitic cap.
@@ -22,7 +32,7 @@ Ordinary effects scale through+5 using their exact endpoints and thresholds;
 Masters remain fixed. Only listed passive stats enter permanent stat totals.
 IDs, art, prices, rarity, acquisition, ownership and saved upgrades are unchanged.
 Historical combat/stat tables below are superseded by that roster, not additive.
-The website and authoritative server have not yet published this redesign.
+This earlier D-313 publication status is superseded by D-370 above.
 
 **D-312:** Machines enemy drops exclude already-owned ordinary names, choosing
 equally among the remaining names in each unchanged rarity roll. A completed

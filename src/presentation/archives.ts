@@ -3,8 +3,10 @@ import { characterName } from '../content/character-art';
 import { evolutionRarity } from '../content/progression';
 import { elements, materialRarities } from '../content/activities';
 import { resolveFighter, formatStat } from '../content/combat';
+import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 import { conduits, conduitEffect } from '../content/conduits';
 import { readableEffect } from './effect-copy';
+import { bracketReferences } from './reference-text';
 import { ownedProgress, type Account } from '../game/account';
 import { portrait, assetUrl } from './portrait';
 import { creatures } from '../content/creatures';
@@ -60,7 +62,7 @@ function characterArchive(account: Account | null): string {
         <h3>Origin</h3><p>${starter.description}</p><p>${starter.lore.story}</p><blockquote>${starter.lore.vow}</blockquote>
         ${current ? '' : '<p class="quiet">Level 0 preview</p>'}
         <dl class="archive-stats"><div><dt>Health</dt><dd>${formatStat(kit.stats.health)}</dd></div>
-          <div><dt>Attack</dt><dd>${formatStat(kit.stats.damage)}</dd></div><div><dt>Defense</dt><dd>${formatStat(kit.stats.defense)}</dd></div></dl>
+          <div><dt>${phaseZeroStatsReady ? 'Direct Attack' : 'Attack'}</dt><dd>${formatStat(kit.stats.damage)}</dd></div><div><dt>Defense</dt><dd>${formatStat(kit.stats.defense)}</dd></div></dl>
         <h3>${current ? 'Current combat kit' : 'Form combat-kit preview'}</h3><p><strong>${kit.passive.name} · Passive</strong><br>${readableEffect(kit.passive.description)}</p>${kitResource(kit, starter.id)}
           ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => `<p><strong>${kit.abilities[action].name}</strong>${abilityStatuses(kit.abilities[action].strength, starter.id, action)}<br>${readableEffect(kit.abilities[action].description)}</p>`).join('')}`, 'Combat kit')}
       </article>`;
@@ -103,12 +105,12 @@ function conduitArchive(account: Account | null): string {
       <div class="archive-mechanism">${conduitIcon(conduit.id, account?.conduitUpgrades?.[conduit.id])}</div>
       <h3>${conduit.name}</h3>${conduitRarity(conduit.id)}
       <p class="archive-ownership">${account ? `Owned ${account.conduits?.[conduit.id] ?? 0}` : 'Ownership unavailable'}</p>
-      <p class="archive-effect">${readableEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id]))}</p>
+      <p class="archive-effect">${bracketReferences(readableEffect(conduitEffect(conduit, account?.conduitUpgrades?.[conduit.id])))}</p>
       ${information(`archive-conduit-${conduit.id}`, conduit.name, conduitDetails(conduit.id, account?.conduitUpgrades?.[conduit.id], (account?.conduits?.[conduit.id] ?? 0) > 0), 'Details')}
     </article>`).join('')}${masterConduits.map(entry => `<article class="archive-card ${account?.masterConduits?.[entry.id] === 1 ? 'archive-conduit-revealed' : 'archive-conduit-locked'}" data-archive-master="${entry.id}" data-filter-rarity="Master" data-filter-ownership="${ownership(account?.masterConduits?.[entry.id] === 1)}">
       <div class="archive-mechanism">${masterConduitIcon(entry.id)}</div><h3>${entry.name}</h3>
       <p>Omnic Master · ${getStarter(entry.character).name}</p><p class="archive-ownership">${account ? account.masterConduits?.[entry.id] === 1 ? 'Owned' : 'Not owned' : 'Ownership unavailable'}</p>
-      <p class="archive-effect">${readableEffect(entry.effect)}</p><p>Choose from a Cosmic Grand Master Chest. Final Machines boss: 1% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Named bearer enhancement; no upgrades.</p>
+      <p class="archive-effect">${bracketReferences(readableEffect(entry.effect))}</p><p>Choose from a Cosmic Grand Master Chest. Final Machines boss: 1% chest drop. Every Calamity EX+3 chest contains two guaranteed Master chests. Named bearer enhancement; no upgrades.</p>
       ${information(`archive-master-${entry.id}`, entry.name, `${conduitLore(entry.lore)}<p>${readableEffect(entry.effect)}</p>`, 'Details')}
     </article>`).join('')}</div>`;
 }

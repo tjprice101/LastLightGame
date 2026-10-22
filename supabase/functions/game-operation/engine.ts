@@ -482,7 +482,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
         if (operation.kind === 'act') {
           if (!isActionId(operation.action)) throw new Error('Invalid battle action.');
           const actor = state.allies.find(a => a.id === operation.actorId);
-          if (!actor || actionUnavailable(state, actor, operation.action)) throw new Error('The selected squad member cannot use that action.');
+          if (!actor || actionUnavailable(state, actor, operation.action, operation.targetId)) throw new Error('The selected squad member cannot use that action.');
           const targets = [...state.allies, ...state.enemies];
           if (!targets.some(t => t.id === operation.targetId && t.hp > 0)) throw new Error('Invalid battle target.');
           result = actAndAdvanceTurn(state, operation.actorId, operation.action, operation.targetId);

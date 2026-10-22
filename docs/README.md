@@ -3,6 +3,30 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+## Phase 0 release (D-370)
+
+[Conduit catalog](conduit-catalog.txt): approved base effects for all138
+Conduits, sorted by rarity and name, including48 Omnic Masters. Preserves
+owner-edited examples and proposes remaining effects around the ten-stat
+Phase 0 direction, additive Skill Power/Gauge Gain and whole-turn duration.
+Owner authorizes implementation and coordinated publication2026-10-21.
+The shared client/authority gate is enabled; rules5 is the current release.
+See the handoff for hosted publication and validation outcomes.
+Suggested thematic elements remain editorial, not equipment restrictions.
+See D-368 for implementation choices and current scope.
+The [138-entry behavior matrix](conduit-behavior-matrix.md) links726 passing
+numerical scenarios:90 ordinary entries absent/+0..+5 and48 Masters equipped/
+absent. Provenance, manual native packets, strongest-only auras, upgraded
+descriptions and selected-target client/authority costs have dedicated
+regressions. Activation is enabled; see the [current handoff](handoff.md)
+and matrix for exact validation and coordinated-release status.
+The D-364 squad revision preserves the latest Common/Rare/Legendary draft,
+redesigns all98 Omnic/Master/Calamitic abilities, keeps Masters native-kit-specific,
+and simplifies Calamitic mechanics. Usefulness and balance still need review
+across every possible squad; tested behavior is not a universal balance claim.
+The D-365 follow-up revises four redundant or awkward Legendary designs:
+Citadel Spine, Immortal Vessel, Pale Bulwark Diadem and Starvein Conductor.
+
 ## Status vocabulary
 
 **Online evolution fodder limit (D-362):** requests now allow up to15 selected

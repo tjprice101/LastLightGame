@@ -6,6 +6,7 @@ import { sanctuaryHeader } from './sanctuary';
 import { masterChest, masterConduits } from '../content/master-conduits';
 import { conduits, conduitEffect, getConduit } from '../content/conduits';
 import { bindInformation } from './information';
+import { bracketReferences } from './reference-text';
 
 afterEach(() => document.body.replaceChildren());
 
@@ -132,12 +133,14 @@ describe('reference Inventory layout', () => {
       const card = host.querySelector(`[data-inventory-${ordinary ? 'conduit' : 'master'}="${entry.id}"]`)!;
       const dialog = card.querySelector('dialog')!;
       const effect = ordinary ? conduitEffect(entry, 5) : entry.effect;
-      expect(dialog.textContent).toContain(effect);
+      const expected = document.createElement('div');
+      expected.innerHTML = bracketReferences(effect);
+      expect(dialog.textContent).toContain(expected.textContent);
       if (ordinary) expect(dialog.textContent).toContain(entry.lore);
       expect(card.querySelector('[data-information]')?.textContent).toBe('Details');
       const compact = card.cloneNode(true) as HTMLElement;
       compact.querySelector('dialog')!.remove();
-      expect(compact.textContent).not.toContain(effect);
+      expect(compact.textContent?.replace(/[[\]]/g, '')).not.toContain(effect.replace(/[[\]]/g, ''));
       expect(compact.textContent).toContain(entry.name);
       expect(compact.textContent).toContain('Owned 1');
     }

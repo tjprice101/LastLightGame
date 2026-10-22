@@ -7,6 +7,7 @@ import { characterRole } from './character-role';
 import { characterRating, starBadge } from './character-rating';
 import { currencyIcon } from './currency-icon';
 import { formatStat } from '../content/combat';
+import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 import './roster.css';
 import './squad-formation.css';
 import { characterProtection } from '../game/account';
@@ -52,8 +53,8 @@ export function characterCopyManagement(account: Account | null, category: 'all'
       const slots: ConduitSlots = account.conduitEquipment?.[copy.instanceId] ?? Array.from({ length: conduitSlotCount }, () => null);
       return `<article class="archive-card" data-captured-copy="${copy.instanceId}"><div class="captured-stage"><div class="archive-portrait">${compact ? ownedCompanion(account, copy.instanceId).art : creature.art ? `<img src="${assetUrl(`enemies/${creature.art}.png`)}" alt="${creature.name}" width="960" height="960">` : '<span>Artwork pending</span>'}</div>
         <h3>${creature.name}</h3>${elementLabel(creature.element)}${capturedRating(creature.id)}<p>Copy ${index + 1} · Lv.${progress.level}</p></div><div class="captured-controls">${lockControl(account, copy.instanceId)}
-        <p>HP ${formatStat(kit.stats.health)} · Attack ${formatStat(kit.stats.damage)} · Defense ${formatStat(kit.stats.defense)}</p>
-        <section class="captured-abilities"><h4>Retained abilities</h4>${progress.skills.map((skill) => `<p>${skill.name}: ${formatStat(skill.multiplier * 100)}% Attack · ${skill.action === 'ultimate' ? `${kit.abilities.ultimate.cooldown}-turn cooldown` : 'No cooldown'} · ${skill.action}</p>`).join('')}</section>
+        <p>HP ${formatStat(kit.stats.health)} · ${phaseZeroStatsReady ? 'Direct Attack' : 'Attack'} ${formatStat(kit.stats.damage)} · Defense ${formatStat(kit.stats.defense)}</p>
+        <section class="captured-abilities"><h4>Retained abilities</h4>${progress.skills.map((skill) => `<p>${skill.name}: ${formatStat(skill.multiplier * 100)}% ${phaseZeroStatsReady ? 'Direct Attack' : 'Attack'} · ${skill.action === 'ultimate' ? `${kit.abilities.ultimate.cooldown}-turn cooldown` : 'No cooldown'} · ${skill.action}</p>`).join('')}</section>
         <button class="primary-button" data-level-capture="${copy.instanceId}" data-expected-level="${progress.level}" ${!cost || account.fractalis < cost.fractalis || Object.entries(cost.materials).some(([id, amount]) => (account.materials[id] ?? 0) < amount) ? 'disabled' : ''}>${cost ? `Level up · ${cost.fractalis} Prismatica` : `Maximum level ${capturedLevelCap}`}</button>
         <button class="text-button" type="button" data-max-level="${copy.instanceId}">Max Level</button>
         ${cost ? itemShowcase([{ id: 'fractalis', amount: cost.fractalis }, ...Object.entries(cost.materials).map(([id, amount]) => ({ id, amount }))], 'Level cost') : ''}
