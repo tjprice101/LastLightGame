@@ -29,6 +29,11 @@ Citadel Spine, Immortal Vessel, Pale Bulwark Diadem and Starvein Conductor.
 
 ## Status vocabulary
 
+**Rose progression parity (D-374):** all three Rose Element-Bearers use regular
+base rarity recipes with Rosethorn event materials, without extra Soul/Heart
+surcharges. Soul begins at level91, not76.
+[Recipes and validation](crimson-roses.md#banner-and-progression).
+
 **Special-activity materials (D-373):** Crimson Roses uses elemental-dungeon
 guaranteed drops, enemy-level unlocks and quantity brackets for Rosethorn.
 Soar/Delve drop only their three unique materials, preserving those unlocks

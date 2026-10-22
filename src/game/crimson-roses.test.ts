@@ -434,12 +434,12 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
     }
   });
 
-  it.each(roseCharacters)('requires Heart before Soul for $name evolution, including displayed and saved costs', character => {
+  it.each(roseCharacters)('uses ordinary base evolution rarities for $name without extra Heart/Soul surcharges', character => {
     for (const evolution of [4, 5]) {
       const progress = { level: characterLevelCap(evolution), evolution };
       const cost: UpgradeCost = evolution === 4
-        ? { fractalis: 2400, materials: { 'rosethorn-rare': 25, 'rosethorn-epic': 10, 'rosethorn-legendary': 5 } }
-        : { fractalis: 4800, materials: { 'rosethorn-epic': 25, 'rosethorn-legendary': 10, 'rosethorn-omnic': 10 } };
+        ? { fractalis: 2400, materials: { 'rosethorn-rare': 25, 'rosethorn-epic': 10 } }
+        : { fractalis: 4800, materials: { 'rosethorn-epic': 25, 'rosethorn-legendary': 10 } };
       expect(characterEvolutionCost(character.id, progress)).toEqual(cost);
       const account = funded();
       account.characters[character.id] = progress;
@@ -449,10 +449,11 @@ describe('Roses Under Sunny Skies and rose Element-Bearers', () => {
       const store = storage();
       saveAccount(store.saved, account);
       const view = characterHub(character, 'upgrade-0', account);
-      expect(view).toContain('Heart of Rosethorn');
-      if (evolution === 4) expect(view).not.toContain('Soul of Rosethorn');
+      expect(view).not.toContain('Soul of Rosethorn');
+      if (evolution === 4) expect(view).not.toContain('Heart of Rosethorn');
+      else expect(view).toContain('Heart of Rosethorn');
       const ids = copies.map(copy => copy.instanceId);
-      const required = evolution === 4 ? 'rosethorn-legendary' : 'rosethorn-omnic';
+      const required = evolution === 4 ? 'rosethorn-epic' : 'rosethorn-legendary';
       const missing = structuredClone(account);
       delete missing.materials[required];
       saveAccount(store.saved, missing);

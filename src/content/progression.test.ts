@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { artifactSlots, currencies, fractureRules, characterLevelCap, characterGrowthFactor, upgradePaths,
-  characterEvolutionCost, evolutionCost, characterLevelCost } from './progression';
+  characterEvolutionCost, evolutionCost, characterLevelCost, levelingMaterials, evolutionBalance } from './progression';
+import { evolutionRecipes } from './activities';
 import { availableStarters, starters, isRoseCharacter, roseCharacters } from './starters';
 import { loadMotion, saveMotion, SETTINGS_KEY } from '../presentation/settings';
 import { SAVE_KEY, type ProfileStorage } from '../game/profile';
 
 describe('confirmed game foundation', () => {
-  it('preserves ordinary evolution recipes and Rose leveling Soul surcharges', () => {
+  it('preserves ordinary recipes and uses their base rarity format with Rosethorn for Roses', () => {
     for (const starter of starters.filter(starter => !isRoseCharacter(starter.id))) {
       for (let evolution = 1; evolution <= 5; evolution++) {
         const progress = { level: characterLevelCap(evolution), evolution };
@@ -16,9 +17,20 @@ describe('confirmed game foundation', () => {
     for (const character of roseCharacters) {
       expect(characterLevelCost(character.id, { level: 75, evolution: 5 }).materials).toEqual({
         'rosethorn-common': 3, 'rosethorn-uncommon': 1, 'rosethorn-rare': 1,
-        'rosethorn-epic': 1, 'rosethorn-legendary': 1, 'rosethorn-omnic': 1,
+        'rosethorn-epic': 1, 'rosethorn-legendary': 1,
       });
-      expect(characterLevelCost(character.id, { level: 90, evolution: 6 }).materials['rosethorn-omnic']).toBe(2);
+      expect(characterLevelCost(character.id, { level: 90, evolution: 6 }).materials['rosethorn-omnic']).toBe(1);
+      for (let evolution = 1; evolution <= 6; evolution++) {
+        for (let level = 0; level < characterLevelCap(evolution); level++) {
+          expect(characterLevelCost(character.id, { level, evolution })).toEqual({
+            fractalis: 10 + 2 * (level + 1), materials: levelingMaterials('rosethorn', level + 1),
+          });
+        }
+        if (evolution < 6) expect(characterEvolutionCost(character.id, { level: characterLevelCap(evolution), evolution }))
+          .toEqual({ fractalis: evolutionBalance[evolution - 1].fractalis,
+            materials: Object.fromEntries(evolutionRecipes[evolution - 1].rarities.map((rarity, index) =>
+              [`rosethorn-${rarity.toLowerCase()}`, evolutionBalance[evolution - 1].amounts[index]])) });
+      }
     }
   });
 

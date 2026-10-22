@@ -1,5 +1,40 @@
 # Current state and handoff
 
+## Publishing Rose progression correction (2026-10-22)
+
+- Owner explicitly requests pushing/deploying D-374. Matching authority
+  deployed with `npx supabase functions deploy game-operation --project-ref
+  ohtfgwomdfteaxubndww --no-verify-jwt` after bundle/type-check validation.
+- Added `node tools\smoke_server_game.mjs --rose-progression`: hosted
+  Rosetta/Thornia/Crinso each evolve4->5 with the base Rosethorn recipe and
+  level75->76 without Souls. Exact materials/Prismatica/fodder, idempotent
+  retries and persisted account verified. Disposable identity and cascading
+  records removed; no owner accounts touched.
+- Client publication uses the main-branch Pages workflow's complete tests
+  and configured production build. Earlier local-only labels below describe
+  prepublication checkpoints.
+
+## Rose progression parity (D-374; 2026-10-22)
+
+- Owner explicitly approves removing extra Rose-only level/evolution
+  surcharges. Rosetta/Thornia/Crinso retain Rosethorn event materials and use
+  ordinary base rarity thresholds/amounts. No Soul below destination91;
+  one Soul per level thereafter. Evo.4->5 costs25 Bloom/10 Crest, Evo.5->6
+  costs25 Crest/10 Heart, without extra Heart/Soul items.
+- Shared character-aware recipes drive UI, Max Level, single-level and
+  online/offline transactions. Ordinary Heaven/Abyss specialty recipes,
+  Prismatica, caps, Roselius fodder and saved progress remain unchanged.
+  No retroactive refunds, migrations or grants.
+- Targeted189 tests passed across progression, Crimson Roses, Max Level
+  and authoritative server-game suites. Tests cover every valid level/form
+  for all three Roses, exact75->90 Max Level without Souls, Soul91 gate,
+  displayed recipes and atomic late evolutions/online leveling.
+  `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json`,
+  `npm run build` and `git diff --check` passed. The existing Vite
+  chunk-size advisory remains nonfatal. Local/unpublished; the authority
+  bundle is updated but not deployed.
+
 ## Publishing accumulated follow-ups (2026-10-21)
 
 - Owner explicitly requests pushing and deploying all pending changes:

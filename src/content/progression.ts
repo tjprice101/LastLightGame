@@ -97,9 +97,7 @@ export function characterLevelCap(evolution: number): number {
 export function characterLevelCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
   const cost = levelCost(getStarter(id).elementId, progress);
   if (!isRoseCharacter(id)) return cost;
-  const materials = levelingMaterials('rosethorn', progress.level + 1);
-  if (progress.evolution >= 5) materials[roseMaterials[5].id] = (materials[roseMaterials[5].id] ?? 0) + 1;
-  return { fractalis: cost.fractalis, materials };
+  return { fractalis: cost.fractalis, materials: levelingMaterials('rosethorn', progress.level + 1) };
 }
 
 export function characterEvolutionCost(id: StarterId, progress: CharacterProgress): UpgradeCost {
@@ -111,7 +109,6 @@ export function characterEvolutionCost(id: StarterId, progress: CharacterProgres
     ...Object.fromEntries(recipe.rarities.map((rarity, index) => [
       roseMaterials[materialRarities.indexOf(rarity)].id, balance.amounts[index],
     ])),
-    ...(progress.evolution >= 4 ? { [roseMaterials[progress.evolution].id]: progress.evolution === 4 ? 5 : 10 } : {}),
   } };
 }
 

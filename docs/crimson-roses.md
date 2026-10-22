@@ -269,21 +269,25 @@ than Luminous Seed. Locks, squads and any equipped Conduit protect sales/fodder.
 |1->2 |30 |300 |15 Seed |None |
 |2->3 |45 |600 |25 Seed +10 Bud |None |
 |3->4 |60 |1,200 |25 Bud +10 Bloom |1 form3+ |
-|4->5 |75 |2,400 |25 Bloom +10 Crest +5 Heart |2 form4+ |
-|5->6 |90 |4,800 |25 Crest +10 Heart +10 Soul |3 form5+ |
+|4->5 |75 |2,400 |25 Bloom +10 Crest |2 form4+ |
+|5->6 |90 |4,800 |25 Crest +10 Heart |3 form5+ |
 
-D-360: Rosetta, Thornia and Crinso use Heart for the five-item Evo.4->5
-surcharge rather than skipping directly to Soul. Evo.5->6, Prismatica,
-fodder requirements, ordinary characters' Heaven/Abyss specialty items and
-all leveling costs are unchanged. Existing progress is retained without
-retroactive charges/refunds or save migration. Shared `characterEvolutionCost`
+D-374 supersedes D-360: Rosetta, Thornia and Crinso use the ordinary base
+rarity recipes with their own Rosethorn materials. No extra Heart/Soul
+evolution surcharge or Soul leveling surcharge remains. Prismatica,
+fodder requirements and ordinary characters' Heaven/Abyss specialty items
+are unchanged. Existing progress is retained without retroactive
+charges/refunds or save migration. Shared `characterEvolutionCost`
 drives the displayed recipe, confirmation and atomic offline/online deduction.
 Regression tests in `crimson-roses.test.ts` and `server-game.test.ts` cover all
-three characters, both late transitions, exact deductions, no-Soul Evo.4->5
-success and missing-Heart/Soul rejection without persistence.
+three characters, both late transitions, exact deductions, no-Soul evolution
+success and missing required rarity rejection without persistence.
 
-Levels retain existing `10+2*nextLevel` Prismatica and `ceil(nextLevel/30)` Seed;
-Evo.5/6 also consume1 Soul per level. Final cap105; no EB cap increases.
+Levels retain existing `10+2*nextLevel` Prismatica and `ceil(nextLevel/30)` Seed.
+Additional cumulative rarities follow regular leveling: Bud at31, Bloom at46,
+Crest at61, Heart at76 and Soul at91, one each per level once unlocked.
+There is no form-based surcharge, including preserved low-level late forms.
+Final cap105; no EB cap increases.
 Max Level, confirmations, previews and transactions share character-aware
 costs. Existing EBs retain every recipe, fodder mode and saved progress.
 First Fracture still awards10 Null-Prismatica once globally, not per character.

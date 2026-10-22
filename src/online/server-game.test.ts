@@ -99,19 +99,19 @@ describe('server authoritative game engine', () => {
     expect(() => op(result, { kind: 'sellCurrencyCreature', id: copy.instanceId })).toThrow();
   });
 
-  it.each(['rosetta', 'thornia', 'crinso'] as const)('charges Heart before Soul for %s evolution authoritatively', id => {
+  it.each(['rosetta', 'thornia', 'crinso'] as const)('uses base Rosethorn evolution recipes without surcharges for %s authoritatively', id => {
     for (const evolution of [4, 5]) {
       const game = rich();
       const progress = { level: characterLevelCap(evolution), evolution };
       game.account.characters[id] = progress;
       game.account.materials = evolution === 4
-        ? { 'rosethorn-rare': 25, 'rosethorn-epic': 10, 'rosethorn-legendary': 5 }
-        : { 'rosethorn-epic': 25, 'rosethorn-legendary': 10, 'rosethorn-omnic': 10 };
+        ? { 'rosethorn-rare': 25, 'rosethorn-epic': 10 }
+        : { 'rosethorn-epic': 25, 'rosethorn-legendary': 10 };
       game.account.capturedCharacters = Array.from({ length: evolution - 2 }, () => createCreatureCopy('infusion:roses:4'));
       const operation: GameOperation = { kind: 'upgradeCharacter', id, upgradeKind: 'evolve', expected: progress,
         fodderIds: game.account.capturedCharacters.map(copy => copy.instanceId) };
       const missing = structuredClone(game);
-      delete missing.account.materials[evolution === 4 ? 'rosethorn-legendary' : 'rosethorn-omnic'];
+      delete missing.account.materials[evolution === 4 ? 'rosethorn-epic' : 'rosethorn-legendary'];
       const before = structuredClone(missing);
       expect(() => op(missing, operation)).toThrow();
       expect(missing).toEqual(before);
@@ -171,6 +171,24 @@ describe('server authoritative game engine', () => {
     expect(after.run).toEqual(before.run);
     expect(game).toEqual(before);
     expect(() => op(game, { kind: 'unequipAllConduits', character: 'sprout' })).toThrow('owned character');
+    expect(game).toEqual(before);
+  });
+
+  it.each(['rosetta', 'thornia', 'crinso'] as const)('levels %s past75 without Soul on single and Max Level requests', id => {
+    const game = rich();
+    const progress = { level: 75, evolution: 5 };
+    game.account.characters[id] = progress;
+    game.account.materials = { 'rosethorn-common': 3, 'rosethorn-uncommon': 1, 'rosethorn-rare': 1,
+      'rosethorn-epic': 1, 'rosethorn-legendary': 1 };
+    const before = structuredClone(game);
+    const single = op(game, { kind: 'upgradeCharacter', id, upgradeKind: 'level', expected: progress }).game;
+    const expected = maxLevelPlan(game.account, id);
+    expect(expected.targetLevel).toBe(76);
+    expect(expected.cost.materials).toEqual(game.account.materials);
+    const bulk = op(game, { kind: 'levelMax', id, expected }).game;
+    expect(bulk.account).toEqual(single.account);
+    expect(bulk.account.characters[id]).toEqual({ level: 76, evolution: 5 });
+    expect(bulk.account.materials['rosethorn-omnic']).toBeUndefined();
     expect(game).toEqual(before);
   });
 

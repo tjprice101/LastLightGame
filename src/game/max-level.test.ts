@@ -5,6 +5,8 @@ import { capturedProgress, capturedLevelCost, createCreatureCopy } from './chara
 import { levelCost } from '../content/progression';
 import { maxLevelPreview } from '../presentation/max-level';
 import { materialRarities } from '../content/activities';
+import { roseCharacters } from '../content/starters';
+import { characterHub } from '../presentation/hub';
 
 function storage() {
   const values = new Map([[SAVE_KEY, '{"version":1,"starterId":"ember"}']]);
@@ -30,6 +32,32 @@ function funded(): Account {
 }
 
 describe('Max Level plans and transactions', () => {
+  it.each(roseCharacters)('levels $name from 75 to 90 without Souls and requires one Soul starting at 91', character => {
+    const store = storage();
+    const account = funded();
+    account.characters[character.id] = { level: 75, evolution: 5 };
+    account.materials = { 'rosethorn-common': 45, 'rosethorn-uncommon': 15, 'rosethorn-rare': 15,
+      'rosethorn-epic': 15, 'rosethorn-legendary': 15 };
+    saveAccount(store.saved, account);
+    const plan = maxLevelPlan(account, character.id);
+    expect(plan).toMatchObject({ targetLevel: 90, cost: { fractalis: 2640, materials: account.materials } });
+    expect(plan.cost.materials['rosethorn-omnic']).toBeUndefined();
+    expect(maxLevelPreview(account, character.id).html).not.toContain('Soul of Rosethorn');
+    expect(characterHub(character, 'upgrade-1', account)).not.toContain('Soul of Rosethorn');
+    const writes = store.writes();
+    const after = levelCharacterToMaximum(store.saved, plan);
+    expect(store.writes()).toBe(writes + 1);
+    expect(after.characters[character.id]).toEqual({ level: 90, evolution: 5 });
+    expect(after.materials['rosethorn-omnic']).toBeUndefined();
+    after.characters[character.id] = { level: 90, evolution: 6 };
+    after.materials = { 'rosethorn-common': 4, 'rosethorn-uncommon': 1, 'rosethorn-rare': 1,
+      'rosethorn-epic': 1, 'rosethorn-legendary': 1 };
+    expect(maxLevelPlan(after, character.id).targetLevel).toBe(90);
+    after.materials['rosethorn-omnic'] = 1;
+    expect(maxLevelPlan(after, character.id)).toMatchObject({ targetLevel: 91,
+      cost: { materials: { 'rosethorn-omnic': 1 } } });
+  });
+
   it('previews exact cumulative costs without mutating the account or save', () => {
     const store = storage();
     const account = saveAccount(store.saved, funded());

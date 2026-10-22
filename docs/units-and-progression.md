@@ -10,10 +10,12 @@ upgrade cost or account balance changes are authorized by this overhaul.
 The verified ten-stat readouts and equipment math are enabled with rules5;
 Skill Power is its own stat, not a relabeling of legacy Elemental Damage.
 
-**D-360 Rose evolution order:** Rosetta/Thornia/Crinso Evo.4->5 now costs
-25 Bloom +10 Crest +5 Heart of Rosethorn, not5 Soul. Evo.5->6 retains
-25 Crest +10 Heart +10 Soul. Ordinary recipes and all leveling costs, including
-the Soul surcharges below, are unchanged.
+**D-374 Rose progression parity supersedes D-360:** Rosetta/Thornia/Crinso
+use the ordinary base rarity recipes with Rosethorn event materials, without
+extra leveling or evolution surcharges. Evo.4->5 costs25 Bloom +10 Crest;
+Evo.5->6 costs25 Crest +10 Heart. Level76 adds Heart, not Soul; Soul starts
+at destination91 and costs one per level. Prismatica/caps/Roselius fodder
+remain unchanged. Existing progress is preserved without refunds/migration.
 [Exact Rose recipes](crimson-roses.md#banner-and-progression).
 
 **D-305:** captured Elemental-Devourers now cap at60. New captures/banner awards
@@ -40,12 +42,12 @@ higher rarity per level**, cumulatively:
 This table does not raise level caps: Element-Bearers still cap at105 and
 captured copies at60 (D-305). Use the member's combat element; Rosetta, Thornia,
 Crinso and captured Roselius instead use equivalent Rosethorn rarities.
-Prismatica stays `10 + 2 * destination`. Existing Evo5/6 specialty surcharges
-remain **additional**, independent of destination level:
+Prismatica stays `10 + 2 * destination`. Evo5/6 specialty surcharges apply
+only to ordinary Element-Bearers, independent of destination level:
 
 - Ordinary Element-Bearers: one matching Heaven/Abyss leveling specialty.
-- Rose Element-Bearers: one Soul of Rosethorn. At destination91+, this adds
-  to the ordinary Omnic requirement, so the cost is **two Souls per level**.
+- Rose Element-Bearers: no specialty surcharge. One Soul of Rosethorn is
+  required only at destination91+, following the shared Omnic threshold.
 - Captured copies: no Element-Bearer specialty surcharge; late Roselius pay
   no Omnic leveling materials because their cap is60.
 
@@ -62,7 +64,7 @@ drop odds, evolution recipes, rewards, holdings and saved levels are unchanged.
 No retroactive charges, grants, migration or load-time writes.
 
 Validation includes every threshold's before/after recipe, all16 Element-Bearers,
-captured elemental/Rosethorn families through60, additive Rose Souls, exact
+captured elemental/Rosethorn families through60, Rose rarity thresholds, exact
 single/Max deductions, missing-material rejection, failed-save preservation,
 rendered costs and authoritative single/bulk parity. The generated server engine
 must be published with the client before claiming online availability.

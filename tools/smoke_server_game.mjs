@@ -48,7 +48,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--phase-zero')) {
+  if (process.argv.includes('--rose-progression')) {
+    await smokeRoseProgression(client, created.user.id, username);
+  } else if (process.argv.includes('--phase-zero')) {
     await smokePhaseZero(client, created.user.id, username);
   } else if (process.argv.includes('--evolution')) {
     await smokeEvolutionFodder(client, created.user.id, username);
@@ -857,6 +859,51 @@ async function smokeEvolutionFodder(client, userId, username) {
   assert.deepEqual(await invoke(operation, initial.revision, requestId), evolved);
   assert.deepEqual((await invoke({ kind: 'read' }, evolved.revision)).account, evolved.account);
   console.log('Hosted evolution smoke passed: Infernis Evo.5->6 with 4+4+4+3 Evolution Value, exact costs and four-copy consumption, one revision, idempotent retry and persisted account. No owner accounts modified.');
+}
+
+async function smokeRoseProgression(client, userId, username) {
+  const game = freshGame(username);
+  game.starterId = 'ember';
+  game.account.characters = { ember: { level: 0, evolution: 1 },
+    ...Object.fromEntries(['rosetta', 'thornia', 'crinso'].map(id => [id, { level: 75, evolution: 4 }])) };
+  game.account.squad = ['rosetta', 'thornia', 'crinso'];
+  game.account.firstFracture = true;
+  game.account.fractalis = 10000;
+  game.account.materials = { 'rosethorn-common': 9, 'rosethorn-uncommon': 3,
+    'rosethorn-rare': 78, 'rosethorn-epic': 33, 'rosethorn-legendary': 3 };
+  game.account.capturedCharacters = Array.from({ length: 6 }, () => ({
+    instanceId: `capture:${randomUUID()}`, creatureId: 'infusion:roses:3', locked: false,
+  }));
+  assert.ok(ids.includes(userId), 'Rose fixtures must belong only to a disposable identity.');
+  const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+  assert.equal(seeded.error, null);
+  async function invoke(operation, revision, requestId = randomUUID()) {
+    const result = await client.functions.invoke('game-operation', {
+      body: { operation, expectedRevision: revision, requestId },
+    });
+    if (result.error) throw new Error(`Hosted Rose ${operation.kind} failed (${result.error.context?.status ?? 'transport'}).`);
+    return result.data;
+  }
+  let current = await invoke({ kind: 'read' }, 0);
+  for (const [index, id] of ['rosetta', 'thornia', 'crinso'].entries()) {
+    for (const operation of [
+      { kind: 'upgradeCharacter', id, upgradeKind: 'evolve', expected: { level: 75, evolution: 4 },
+        fodderIds: game.account.capturedCharacters.slice(index * 2, index * 2 + 2).map(copy => copy.instanceId) },
+      { kind: 'upgradeCharacter', id, upgradeKind: 'level', expected: { level: 75, evolution: 5 } },
+    ]) {
+      const revision = current.revision;
+      const requestId = randomUUID();
+      current = await invoke(operation, revision, requestId);
+      assert.deepEqual(await invoke(operation, revision, requestId), current);
+    }
+    assert.deepEqual(current.account.characters[id], { level: 76, evolution: 5 });
+    assert.equal(current.account.materials['rosethorn-omnic'] ?? 0, 0);
+  }
+  assert.equal(current.account.fractalis, 2314);
+  assert.deepEqual(current.account.capturedCharacters, []);
+  for (const material of Object.keys(game.account.materials)) assert.equal(current.account.materials[material] ?? 0, 0);
+  assert.deepEqual((await invoke({ kind: 'read' }, current.revision)).account, current.account);
+  console.log('Hosted Rose progression passed: all three characters evolve4->5 with base recipes, level75->76 without Souls, exact costs/fodder, idempotent retries and persisted holdings. No owner accounts modified.');
 }
 
 async function smokeEquippedMaster(client, userId, username) {
