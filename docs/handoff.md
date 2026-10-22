@@ -28,7 +28,11 @@
   `node tools\smoke_server_game.mjs --dot-scaling` passed levels0/30/60/105,
   application/tick/detonation parity, persisted snapshots and idempotent
   retries. All disposable identities/cascading gameplay records removed.
-  Publishing the client through the main-branch Pages workflow next.
+  Client release `fdf4a3c` passed Pages workflow39805181939, including a
+  clean full-test process exit and configured online build/deployment.
+  Hosted `version.json` matches the full commit SHA. The owner's subsequent
+  "Nevermind" cancels the proposed enemy-damage/individual Last Flare rework;
+  neither rebalance was applied.
 
 ## Machines35 stages (D-380; 2026-10-22)
 
