@@ -77,7 +77,7 @@ describe('Machines Focus Loot screen', () => {
     expect(host.querySelector('.machine-focus-body')?.getAttribute('aria-busy')).toBe('true');
     reject(failed);
     await vi.waitFor(() => expect(error).toHaveBeenCalledWith(failed));
-    expect(host.querySelector('.machine-focus-status')!.textContent).toContain('not saved');
+    expect(host.querySelector('.machine-focus-status')!.textContent).toContain('could not be confirmed');
     expect(button.disabled).toBe(false);
     expect(host.querySelector('.machine-focus-body')!.hasAttribute('aria-busy')).toBe(false);
     expect(document.activeElement).toBe(button);

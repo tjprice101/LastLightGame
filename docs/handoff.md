@@ -36,8 +36,12 @@
   three-tier persistence, clear/reselect, all three focused awards, exact
   local/hosted parity, atomic clearing, saved readback, owned-name rejection
   and idempotent retries. Disposable identity/cascading data removed.
-- Publishing client through the main-branch Pages test/build/deployment
-  workflow; verify the hosted commit and assets after completion.
+- Client release `1f98bc0` passed main-branch Pages workflow39737830452,
+  including full tests, configured online build and deployment.
+  Follow-up retry wording explicitly leaves network outcomes unconfirmed
+  rather than claiming no save occurred;11 focused presentation tests and
+  the production build passed again. Publish that client-only refinement
+  through the same workflow and verify the hosted commit/assets.
 
 ## Last Flare potency (D-378; 2026-10-22)
 

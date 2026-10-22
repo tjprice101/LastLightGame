@@ -72,7 +72,7 @@ export function bindMachineLootFocus(host: HTMLElement,
       body.querySelector<HTMLButtonElement>(`[data-focus-tier="${rarity}"]`)?.focus({ preventScroll: true });
     } catch (error) {
       controls.forEach((control, index) => { control.disabled = disabled[index]; });
-      status.textContent = 'Loot focus was not saved. Please retry.';
+      status.textContent = 'Loot focus could not be confirmed. Retry the same selection.';
       button.focus({ preventScroll: true });
       onError(error);
     } finally {
