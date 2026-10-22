@@ -1,0 +1,32 @@
+#machine-loot-focus .machine-focus-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 12px;
+}
+
+#machine-loot-focus .machine-focus-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+
+#machine-loot-focus .machine-focus-grid > li {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--ui-border, #666);
+}
+
+#machine-loot-focus .machine-focus-grid h4 {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+#machine-loot-focus button {
+  min-height: 44px;
+}

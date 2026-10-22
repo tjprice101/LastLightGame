@@ -3240,6 +3240,20 @@ var machinePools = {
   Legendary: conduits.filter((conduit) => conduit.rarity === "Legendary"),
   Omnic: conduits.filter((conduit) => conduit.rarity === "Omnic")
 };
+var machineFocusRarities = ["Rare", "Legendary", "Omnic"];
+function isMachineFocusRarity(value2) {
+  return machineFocusRarities.some((rarity) => rarity === value2);
+}
+function validateMachineLootFocus(value2) {
+  if (typeof value2 !== "object" || value2 === null || Array.isArray(value2)) throw new Error("Invalid saved Machines loot focus.");
+  const focus = {};
+  for (const [rarity, id] of Object.entries(value2)) {
+    if (!isMachineFocusRarity(rarity) || !isConduitId(id) || getConduit(id).rarity !== rarity)
+      throw new Error("Choose a Rare, Legendary or Omnic Conduit of the matching rarity for Focus Loot.");
+    focus[rarity] = id;
+  }
+  return focus;
+}
 var bannerConduitIds = ["worldbreaker-drive", "immortal-vessel", "citadel-spine", "astral-prism", "judgment-lens"];
 var bannerPool = conduits.filter((conduit) => bannerConduitIds.some((id) => conduit.id === id));
 var machineEnemies = [
@@ -3250,18 +3264,21 @@ var machineEnemies = [
   { name: "Crowned Phoenix", art: "crowned-phoenix", element: "infernic", skill: "Sunforge Rebirth", theme: "crimson-and-ivory mechanized phoenix, eight magnificent blade-feather wings and platinum crown" },
   { name: "Ouroboros of the First Dawn", art: "ouroboros-first-dawn", element: "chaotic", skill: "Genesis Overdrive", theme: "compact opal-and-ivory mechanized celestial dragon coiled around a restored core, sixteen magnificent vaned wings and prismatic regalia" }
 ];
-function machineConduitLoot(stage, owned = {}) {
+function machineConduitLoot(stage, owned = {}, focus = {}) {
   validateMachineStage(stage);
+  validateMachineLootFocus(focus);
   return ["Rare", "Legendary", "Omnic"].filter((rarity) => rarity !== "Omnic" || stage >= machineRules.omnicStage).flatMap((rarity) => {
     const pool = machinePools[rarity];
     const remaining = pool.filter((conduit) => !(owned[conduit.id] ?? 0)).length;
     const chance = rarity === "Rare" ? machineRules.rareChance : rarity === "Legendary" ? machineRules.legendaryChance : machineRules.omnicChance;
+    const selected = focus[rarity];
+    const focused = selected && !(owned[selected] ?? 0) ? selected : void 0;
     return pool.map((conduit) => ({
       id: conduit.id,
       minimum: 1,
       maximum: 1,
-      chance: (owned[conduit.id] ?? 0) > 0 || !remaining ? 0 : chance / remaining,
-      note: `Independent ${rarity} tier roll, then equal choice among unowned Conduits in that tier. Owned names have 0% chance; a complete tier awards no Conduit or replacement. Bosses use the same odds.`
+      chance: (owned[conduit.id] ?? 0) > 0 || !remaining ? 0 : focused ? conduit.id === focused ? chance : 0 : chance / remaining,
+      note: `Independent ${rarity} tier roll, then ${focused ? "award the focused Conduit" : "equal choice among unowned Conduits in that tier"}. Owned names have 0% chance; a complete tier awards no Conduit or replacement. Bosses use the same odds.`
     }));
   });
 }
@@ -3270,8 +3287,9 @@ function rollTier(pool, chance, random) {
   const choice = lootRoll(random);
   return pool.length ? pool[Math.floor(choice * pool.length)].id : void 0;
 }
-function machineConduitDrops(stage, random, owned = {}) {
+function machineConduitDrops(stage, random, owned = {}, focus = {}) {
   validateMachineStage(stage);
+  validateMachineLootFocus(focus);
   const drops = {};
   for (const [pool, chance] of [
     [machinePools.Rare, machineRules.rareChance],
@@ -3280,7 +3298,11 @@ function machineConduitDrops(stage, random, owned = {}) {
   ]) {
     if (!chance) continue;
     const id = rollTier(pool.filter((conduit) => !(owned[conduit.id] ?? 0)), chance, random);
-    if (id) drops[id] = 1;
+    if (id) {
+      const rarity = getConduit(id).rarity;
+      const selected = isMachineFocusRarity(rarity) ? focus[rarity] : void 0;
+      drops[selected && !(owned[selected] ?? 0) ? selected : id] = 1;
+    }
   }
   return drops;
 }
@@ -3289,7 +3311,8 @@ function bannerConduitBonus(random) {
 }
 var machineRulesText = `<p>${machineOrigin}</p>
   <p>${machineRules.stages} stages, Lv.10-120, a boss every fifth stage. Each enemy drops Prismatica and can drop an unowned Conduit: Rare 8%, Legendary 3.5%, Omnic 1% from stage ${machineRules.omnicStage}.</p>
-  <p>Each rarity rolls separately; names within it are equally likely (${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary, ${machinePools.Omnic.length} Omnic). A fully owned rarity drops nothing. Common Conduits are sold in the Store.</p>
+  <p>Each rarity rolls separately; without a focus, its unowned names are equally likely (${machinePools.Rare.length} Rare, ${machinePools.Legendary.length} Legendary, ${machinePools.Omnic.length} Omnic). A fully owned rarity drops nothing. Common Conduits are sold in the Store.</p>
+  <p>Focus Loot selects one unowned Conduit per Rare, Legendary and Omnic tier. The next successful drop of that tier awards your selection without changing its rate or stage gate. Obtaining a selected Conduit from any source clears only its focus. Master Conduits cannot be focused.</p>
   <p>${machineComponentRulesText} No captures, evolution materials or Null-Prismatica.</p>
   <p>One copy unlocks a Conduit for every Element-Bearer; components upgrade it to +5. Each Element-Bearer has eight slots, up to four matching-element Omnic.</p>
   <p>${masterRulesText}</p>`;
@@ -9704,8 +9727,13 @@ function awardDefeats(previous, state, events) {
       seed2 ^= seed2 << 5;
       state.conduitSeed = seed2 >>> 0;
       return state.conduitSeed / 4294967296;
-    }, state.machineConduits) : void 0;
+    }, state.machineConduits, state.machineLootFocus) : void 0;
     if (conduits2) state.machineConduits = { ...state.machineConduits, ...conduits2 };
+    if (conduits2 && state.machineLootFocus) for (const id of Object.keys(conduits2)) {
+      if (!isConduitId(id)) throw new Error("Unknown machine Conduit reward.");
+      const rarity = getConduit(id).rarity;
+      if (isMachineFocusRarity(rarity) && state.machineLootFocus[rarity] === id) delete state.machineLootFocus[rarity];
+    }
     const masterChests = state.infusion?.mode === "machines" ? masterChestDrops(state.infusion.stage, enemy.boss === true, () => {
       let seed2 = state.masterChestSeed ?? ((previous.rewardSeed ^ 2135587861) >>> 0 || 1);
       seed2 ^= seed2 << 13;
@@ -10106,6 +10134,7 @@ function nextStage(previous, progress) {
   }
   if (previous.conduitSeed !== void 0) state.conduitSeed = previous.conduitSeed;
   if (previous.machineConduits !== void 0) state.machineConduits = { ...previous.machineConduits };
+  if (previous.machineLootFocus !== void 0) state.machineLootFocus = { ...previous.machineLootFocus };
   if (previous.componentSeed !== void 0) state.componentSeed = previous.componentSeed;
   if (previous.masterChestSeed !== void 0) state.masterChestSeed = previous.masterChestSeed;
   if (previous.war) {
@@ -10463,6 +10492,7 @@ function validateAccount(value2) {
       account.conduits[id] = amount;
     }
   }
+  if (value2.machineLootFocus !== void 0) account.machineLootFocus = validateMachineLootFocus(value2.machineLootFocus);
   if (value2.conduitUpgrades !== void 0) {
     account.conduitUpgrades = validateConduitUpgrades(value2.conduitUpgrades);
     for (const id of Object.keys(account.conduitUpgrades)) {
@@ -10872,8 +10902,24 @@ function upgradeConduit(storage, id, expectedLevel) {
 }
 function saveAccount(storage, account) {
   const validated = validateAccount(account);
+  for (const [rarity, id] of Object.entries(validated.machineLootFocus ?? {})) {
+    if (isMachineFocusRarity(rarity) && (validated.conduits?.[id] ?? 0) > 0) delete validated.machineLootFocus?.[rarity];
+  }
   storage.setItem(ACCOUNT_KEY, JSON.stringify(validated));
   return validated;
+}
+function setMachineLootFocus(storage, rarity, id) {
+  if (!isMachineFocusRarity(rarity)) throw new Error("Choose a Rare, Legendary or Omnic loot focus.");
+  const account = loadAccount(storage);
+  const focus = { ...account.machineLootFocus };
+  if (id === null) delete focus[rarity];
+  else {
+    validateMachineLootFocus({ [rarity]: id });
+    if ((account.conduits?.[id] ?? 0) > 0) throw new Error("Choose an unowned Conduit to focus.");
+    focus[rarity] = id;
+  }
+  account.machineLootFocus = focus;
+  return saveAccount(storage, account);
 }
 function isMaterial(id) {
   return elementalMaterials.some((material) => material.id === id) || specialtyMaterials.some((material) => material.id === id) || roseMaterials.some((material) => material.id === id);
@@ -11060,7 +11106,7 @@ function saveAccountRewards(storage, result, runId) {
     }
     if (reward.conduits !== void 0) {
       if (result.state.infusion?.mode !== "machines") throw new Error("Conduit drops require Awaken the Machines.");
-      const eligible = machineConduitLoot(result.state.infusion.stage, account.conduits);
+      const eligible = machineConduitLoot(result.state.infusion.stage, account.conduits, account.machineLootFocus);
       const tiers = /* @__PURE__ */ new Set();
       for (const [id, amount] of Object.entries(reward.conduits)) {
         if (!isConduitId(id) || amount !== 1 || !eligible.some((drop) => drop.id === id && drop.chance > 0)) throw new Error("Invalid machine Conduit reward: only unowned eligible names may drop.");
@@ -11453,6 +11499,7 @@ var operationKeys = {
   summonTen: ["bannerId"],
   sellCurrencyCreature: ["id", "saleOption"],
   purchaseConduit: ["id"],
+  setMachineLootFocus: ["rarity", "id"],
   equipConduit: ["character", "slot", "conduit"],
   upgradeConduit: ["id", "expectedLevel"],
   maxConduit: ["expected"],
@@ -11486,7 +11533,11 @@ function validateRequest(value2) {
   keys(op, ["kind", ...operationKeys[op.kind]]);
   if (operationKeys[op.kind].some((key) => key !== "fodderIds" && key !== "saleOption" && !(op.kind === "friendRequest" && (key === "username" || key === "friendCode")) && !(key in op))) throw new Error("Missing operation field.");
   for (const field of ["id", "character", "runId", "actorId", "targetId", "bannerId", "starterId", "element", "frame", "upgradeKind", "action", "saleOption"]) {
-    if (field in op) text(op[field]);
+    if (field in op && !(op.kind === "setMachineLootFocus" && field === "id" && op.id === null)) text(op[field]);
+  }
+  if (op.kind === "setMachineLootFocus") {
+    if (!isMachineFocusRarity(op.rarity)) throw new Error("Choose a valid Machines focus rarity.");
+    if (op.id !== null) validateMachineLootFocus({ [op.rarity]: op.id });
   }
   for (const field of ["slot", "expectedLevel", "quantity", "expectedCount"]) if (field in op) integer(op[field]);
   if (op.kind === "openCalamityChest") {
@@ -11703,7 +11754,10 @@ function encounter(game, run, seed2, trainingWave = 1) {
   const args = [seed2, game.starterId, s.progress, run.roster, teamProgress, run.equipment, run.captures, run.upgrades];
   const a = run.activity;
   const state = withMasterLoadouts(a.kind === "training" ? atTrainingWave(createBattle(seed2, run.roster, teamProgress, run.equipment, run.captures, run.upgrades), trainingWave) : a.kind === "calamity" ? createCalamityBattle(a.activity, a.tier, ...args) : a.kind === "story" ? createStoryBattle(a.stage, ...args) : a.kind === "dungeon" ? createDungeonBattle(a.element, a.stage, ...args) : a.kind === "infusion" ? createInfusionBattle(a.mode, a.stage, ...args, s.state ? s.state.infusion?.schedule ?? "legacy" : "caps") : createWarBattle(a.character, a.stage, ...args), masters);
-  if (state.infusion?.mode === "machines") state.machineConduits = { ...game.account.conduits };
+  if (state.infusion?.mode === "machines") {
+    state.machineConduits = { ...game.account.conduits };
+    state.machineLootFocus = { ...game.account.machineLootFocus };
+  }
   return state;
 }
 function resolveOperation(previous, operation, entropy) {
@@ -11774,6 +11828,9 @@ function resolveOperation(previous, operation, entropy) {
         break;
       case "purchaseConduit":
         purchaseConduit(storage, operation.id);
+        break;
+      case "setMachineLootFocus":
+        setMachineLootFocus(storage, operation.rarity, operation.id);
         break;
       case "equipConduit":
         equipConduit(storage, operation.character, operation.slot, operation.conduit);
@@ -11875,7 +11932,10 @@ function resolveOperation(previous, operation, entropy) {
           game.run = null;
           break;
         }
-        if (state.infusion?.mode === "machines") state.machineConduits = { ...game.account.conduits };
+        if (state.infusion?.mode === "machines") {
+          state.machineConduits = { ...game.account.conduits };
+          state.machineLootFocus = { ...game.account.machineLootFocus };
+        }
         if (operation.kind === "act") {
           if (!isActionId(operation.action)) throw new Error("Invalid battle action.");
           const actor = state.allies.find((a) => a.id === operation.actorId);

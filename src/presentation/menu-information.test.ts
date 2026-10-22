@@ -31,7 +31,9 @@ describe('shared menu information', () => {
     expect(plain(html)).toContain('the final boss gives 25 guaranteed.');
     expect(plain(html)).toContain('stage 25 final boss gives 24,300-48,600');
     expect(plain(html)).toContain('Choose Continue when ready.');
-    expect(html.match(/<details/g)).toHaveLength(1);
+    const disclosures = html.match(/<details\b[^>]*>/g) ?? [];
+    expect(disclosures.filter(tag => tag !== '<details class="conduit-lore-disclosure">')).toEqual(['<details class="story-prologue">']);
+    expect(html.match(/data-information="machine-loot-focus"/g)).toHaveLength(1);
     expect(plain(html)).toContain('<details class="story-prologue">');
   });
   it('gives Inventory a single Information dialog without mixing stores or galleries into holdings', () => {

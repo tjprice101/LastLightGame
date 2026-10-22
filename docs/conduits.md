@@ -1,5 +1,11 @@
 # Conduits and Conduit Store
 
+**D-379 Focus Loot:** [Machines](awaken-the-machines.md#focus-loot-d-379)
+supports one saved unowned selection per Rare/Legendary/Omnic rarity. The
+next successful roll of that rarity awards it without changing drop rates.
+Obtaining it from any source atomically clears that tier's focus. Details
+remain available; Master/Common/Calamitic Conduits cannot be focused.
+
 **D-368/D-370 verified and activated for publication:** the approved
 [Phase 0 catalog](conduit-catalog.txt) specifies all138 replacement abilities
 and the new stat contract. Preserve IDs, ownership, equipment restrictions,

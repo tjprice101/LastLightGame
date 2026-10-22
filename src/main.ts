@@ -27,7 +27,8 @@ import { portrait, portraitAttributes, characterFacing } from './presentation/po
 import { conduitStore, updateConduitStore } from './presentation/conduit-store';
 import { conduitUpgradeMenu, bindConduitUpgrades, updateConduitUpgradeMenu } from './presentation/conduit-upgrade';
 import { getConduit, isConduitId, conduitEffect } from './content/conduits';
-import { purchaseConduit, equipConduit, setCharacterLock, ownedCharacterInstances, levelCapturedCharacter } from './game/account';
+import { purchaseConduit, setMachineLootFocus, equipConduit, setCharacterLock, ownedCharacterInstances, levelCapturedCharacter } from './game/account';
+import { bindMachineLootFocus } from './presentation/machine-loot-focus';
 import { openMasterChest, openCalamityChest, equipMasterConduit, unequipAllConduits } from './game/account';
 import { calamiticTokenPrice, isCalamiticConduitId } from './content/calamitic-conduits';
 import { parseCalamityChestId, calamityChest } from './content/calamity';
@@ -724,6 +725,15 @@ function renderMenu(firstArrival = false): void {
   applyConduitSearch(app, conduitSearch);
   bindConduitLoadout(app);
   bindGameplayNavigation(app);
+  bindMachineLootFocus(app, async (rarity, id) => {
+    account = playMode === 'online'
+      ? (await performOnline({ kind: 'setMachineLootFocus', rarity, id })).account
+      : setMachineLootFocus(gameStorage, rarity, id);
+    return account;
+  }, error => {
+    console.error('Machines loot focus rejected', error);
+    showError(errorMessage(error));
+  });
   bindEnemyStrength(app);
   bindActivityDifficulties(app);
   bindStoryNavigation(app, account);
@@ -813,7 +823,7 @@ function renderMenu(firstArrival = false): void {
       showError(`${saved ? 'Your Master is saved, but its presentation could not complete. Check Inventory.' : 'The chest was not opened.'} ${errorMessage(error)}`);
     } finally { masterOpening = false; }
   });
-  bindCreatureGlossary(app, account?.conduitUpgrades, account?.conduits);
+  bindCreatureGlossary(app, account?.conduitUpgrades, account?.conduits, account?.machineLootFocus);
   bindArchives(app);
   bindSquadPreview(app, account);
   bindSummonRates(app);
@@ -1075,7 +1085,11 @@ function renderMenu(firstArrival = false): void {
       const error = app.querySelector('#wallet-error');
       if (error) error.textContent = '';
     }, backMenu, playMode === 'online' ? battleAuthority() : undefined, (state) => {
-      if (playMode === 'legacy' && state.infusion?.mode === 'machines') state.machineConduits = { ...currentAccount().conduits };
+      if (playMode === 'legacy' && state.infusion?.mode === 'machines') {
+        const current = currentAccount();
+        state.machineConduits = { ...current.conduits };
+        state.machineLootFocus = { ...current.machineLootFocus };
+      }
       music.setTrack(battleMusic(state));
     });
   }

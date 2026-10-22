@@ -48,7 +48,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--last-flare')) {
+  if (process.argv.includes('--focus-loot')) {
+    await smokeFocusLoot(client, created.user.id, username);
+  } else if (process.argv.includes('--last-flare')) {
     await smokeLastFlare(client, created.user.id, username);
   } else if (process.argv.includes('--capture-rate')) {
     await smokeFinalLoot(client, created.user.id, username, false, true);
@@ -663,6 +665,60 @@ async function smokeGuaranteedComponents(client, userId, username) {
     response = await invoke({ kind: 'quit', runId: response.session.runId }, response.revision);
   }
   console.log('Hosted component smoke passed: actual stage1 kills and near-defeated stage100 boss guarantee 3/625 components, atomic balances and idempotent reward retry. No owner accounts modified.');
+}
+
+async function smokeFocusLoot(client, userId, username) {
+  const entropy = { seed: () => 1729, random: () => .5, uuid: () => randomUUID() };
+  const focus = { Rare: 'duplex-heart', Legendary: 'worldbreaker-drive', Omnic: 'infernic-phoenix-reactor' };
+  let game = freshGame(username);
+  game.starterId = 'ember';
+  game.account.characters = { ember: { level: 105, evolution: 6 } };
+  game.account.squad = ['ember'];
+  game.account.storyCompleted = 120;
+  game.account.infusionStages = { machines: 75 };
+  game = resolveOperation(game, { kind: 'enter', activity: { kind: 'infusion', mode: 'machines', stage: 60 } }, entropy).game;
+  const state = game.run.session.state;
+  state.enemies.forEach(enemy => { enemy.hp = 1; enemy.stats.defense = 0; });
+  state.conduitSeed = 0;
+  assert.ok(ids.includes(userId), 'Only disposable identities may be seeded.');
+  const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+  assert.equal(seeded.error, null);
+  async function invoke(operation, revision, requestId = randomUUID()) {
+    const response = await client.functions.invoke('game-operation', { body: { operation, expectedRevision: revision, requestId } });
+    if (response.error) throw new Error(`Hosted Focus Loot ${operation.kind} failed (${response.error.context?.status ?? 'transport'}).`);
+    return response.data;
+  }
+  let current = await invoke({ kind: 'read' }, 0);
+  for (const [rarity, id] of Object.entries(focus)) {
+    const operation = { kind: 'setMachineLootFocus', rarity, id };
+    const requestId = randomUUID(), revision = current.revision;
+    current = await invoke(operation, revision, requestId);
+    assert.equal(current.account.machineLootFocus[rarity], id);
+    assert.deepEqual(await invoke(operation, revision, requestId), current);
+    game = resolveOperation(game, operation, entropy).game;
+  }
+  current = await invoke({ kind: 'setMachineLootFocus', rarity: 'Omnic', id: null }, current.revision);
+  assert.equal(current.account.machineLootFocus.Omnic, undefined);
+  current = await invoke({ kind: 'setMachineLootFocus', rarity: 'Omnic', id: focus.Omnic }, current.revision);
+  const operation = { kind: 'act', runId: current.session.runId, actorId: 'ember', action: 'light', targetId: state.enemies[0].id };
+  const expected = resolveOperation(game, operation, entropy).response;
+  const requestId = randomUUID(), revision = current.revision;
+  const actual = await invoke(operation, revision, requestId);
+  assert.deepEqual(actual.result, expected.result);
+  assert.deepEqual(actual.account, expected.account);
+  assert.deepEqual(actual.result.events.find(event => event.kind === 'reward').conduits,
+    Object.fromEntries(Object.values(focus).map(id => [id, 1])));
+  assert.deepEqual(actual.account.machineLootFocus, {});
+  assert.deepEqual(await invoke(operation, revision, requestId), actual);
+  const persisted = await invoke({ kind: 'read' }, actual.revision);
+  assert.deepEqual(persisted.account, actual.account);
+  const denied = await client.functions.invoke('game-operation', {
+    body: { operation: { kind: 'setMachineLootFocus', rarity: 'Rare', id: focus.Rare },
+      expectedRevision: persisted.revision, requestId: randomUUID() },
+  });
+  assert.ok(denied.error, 'Owned names cannot be focused.');
+  assert.deepEqual((await invoke({ kind: 'read' }, persisted.revision)).account, persisted.account);
+  console.log('Hosted Focus Loot passed: saved three-tier selection, clear/reselect, all three focused drops, local/authority parity, persisted clearing, idempotent retries and owned-name rejection. Disposable identity only.');
 }
 
 async function smokeLastFlare(firstClient, firstId, firstUsername) {

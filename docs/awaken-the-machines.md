@@ -1,5 +1,34 @@
 # Awaken the Machines and expanded Conduits
 
+## Focus Loot (D-379)
+
+The Machines activity's **Focus Loot** button opens saved Rare, Legendary and
+Omnic selections with a separate focus for each rarity. Select or replace any
+unowned name, or clear a rarity to restore its general unowned pool. Owned
+names remain visible with **Details** but cannot be focused. Common,
+Calamitic and Master Conduits are not focus options.
+
+A successful rarity roll awards that tier's selected name. Independent8%/
+3.5%/1% rates, the current stage56 Omnic gate, boss parity, completed-tier
+behavior and RNG draw counts are unchanged. An unsuccessful roll does not
+consume focus. Obtaining a selected name from **any source**, including a
+banner bonus, clears only that tier in the same atomic account save. Other
+focuses persist across entries, Continue, Replay, Settings and sign-in.
+Banner bonuses themselves are not redirected.
+
+Legacy accounts without the optional `machineLootFocus` field load without
+writes or migration. Malformed tiers/IDs and owned selections are rejected;
+failed saves preserve both inventory and focus. Receipt retries do not grant
+again or consume another focus. Multiple kills in one action consume a
+selection once before returning to the ordinary unowned pool. Collections'
+View Loot reflects focus-specific per-name chances and retains Details.
+
+Validation: `npx vitest run src\game\machine-loot-focus.test.ts
+src\presentation\machine-loot-focus.test.ts --maxWorkers=2`; full suite/build,
+authority bundle/type-check, and `node tools\smoke_server_game.mjs --focus-loot`
+for disposable hosted persistence, three-tier drops and idempotent retries.
+Client and authority must be published together.
+
 ## Unowned-only enemy Conduit drops (D-312)
 
 Machines now choose uniformly among **unowned ordinary Conduit names within

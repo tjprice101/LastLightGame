@@ -970,7 +970,10 @@ export class BattleView {
         upgrades: this.session.state.conduitUpgrades,
         masters: Object.fromEntries(this.session.state.allies.filter(ally => ally.masterConduit).map(ally => [ally.definitionId, ally.masterConduit])),
       });
-      if (fresh.state.infusion?.mode === 'machines') fresh.state.machineConduits = { ...this.session.state.machineConduits };
+      if (fresh.state.infusion?.mode === 'machines') {
+        fresh.state.machineConduits = { ...this.session.state.machineConduits };
+        fresh.state.machineLootFocus = { ...this.session.state.machineLootFocus };
+      }
       try {
         await transitionActivity(() => {
           if (this.disposed) return;

@@ -1,6 +1,6 @@
 import { enemies, enemyIds, formatStat } from './combat';
 import { elements, getElement, dungeonStageCount, infusionModes, currencyModes, eventModes, machineModes, type ElementId, type InfusionModeId } from './activities';
-import { machineConduitLoot } from './machines';
+import { machineConduitLoot, type MachineLootFocus } from './machines';
 import type { ConduitId } from './conduits';
 import { masterChest } from './master-conduits';
 import { machineComponentDrop } from './mechanical-components';
@@ -85,7 +85,7 @@ export function creatureLore(creature: Creature): string {
 }
 
 export interface CreatureLoot { id: string; minimum: number; maximum: number; chance: number; note?: string }
-export function creatureLoot(creature: Creature, stage?: number, ownedConduits?: Partial<Record<ConduitId, number>>): CreatureLoot[] {
+export function creatureLoot(creature: Creature, stage?: number, ownedConduits?: Partial<Record<ConduitId, number>>, focus?: MachineLootFocus): CreatureLoot[] {
   getCreature(creature.id);
   if (creature.stages.length && (stage === undefined || !creature.stages.includes(stage))) throw new Error('Choose a stage where this Elemental-Devourer appears.');
   if (creature.calamity) {
@@ -109,7 +109,7 @@ export function creatureLoot(creature: Creature, stage?: number, ownedConduits?:
     : creature.mode && stage !== undefined ? { infusion: { mode: creature.mode, stage } } : {});
   const loot: CreatureLoot[] = [{ id: 'fractalis', ...bossLootRange(creature.mode === 'treasury' ? treasuryFractalisDrop(level) : fractalisDrop(level, creature.mode === 'roses' ? 140 : 120), multiplier) }];
   if (creature.mode === 'treasury') return loot;
-  if (creature.mode === 'machines' && stage !== undefined) return [...loot, machineComponentDrop(stage), ...machineConduitLoot(stage, ownedConduits),
+  if (creature.mode === 'machines' && stage !== undefined) return [...loot, machineComponentDrop(stage), ...machineConduitLoot(stage, ownedConduits, focus),
     ...(stage === masterChest.stage ? [{ id: masterChest.id, minimum: 1, maximum: 1, chance: masterChest.chance,
       note: 'Final boss only. Open in Inventory to choose one unowned character-specific Omnic Master Conduit.' }] : [])];
   if (creature.dungeonElement && stage !== undefined) {

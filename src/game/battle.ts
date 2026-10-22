@@ -11,7 +11,7 @@ import { enemyGrowth, enemyCombatStats } from '../content/stat-growth';
 import { enemyAbilityMultiplier, enemySkills, scheduledEnemySkill, type EnemySkill } from '../content/enemy-skills';
 import { getConduit, isConduitId, validateConduitUpgrades, type ConduitId, type ConduitSlots, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
 import { rollMachineComponents } from '../content/mechanical-components';
-import { machineConduitDrops } from '../content/machines';
+import { machineConduitDrops, isMachineFocusRarity, type MachineLootFocus } from '../content/machines';
 import { capturedProgress, capturedLevelCap, resolveCapturedFighter, type CapturedCharacter } from './character-instances';
 import { roseCaptureAllowed } from '../content/roses';
 import { getCreature } from '../content/creatures';
@@ -103,6 +103,7 @@ export interface BattleState {
   lycalisSeed?: number;
   conduitSeed?: number;
   machineConduits?: Partial<Record<ConduitId, number>>;
+  machineLootFocus?: MachineLootFocus;
   componentSeed?: number;
   masterChestSeed?: number;
   recruitmentSeed?: number;
@@ -529,8 +530,13 @@ function awardDefeats(previous: BattleState, state: BattleState, events: BattleE
       seed ^= seed << 5;
       state.conduitSeed = seed >>> 0;
       return state.conduitSeed / 0x100000000;
-    }, state.machineConduits) : undefined;
+    }, state.machineConduits, state.machineLootFocus) : undefined;
     if (conduits) state.machineConduits = { ...state.machineConduits, ...conduits };
+    if (conduits && state.machineLootFocus) for (const id of Object.keys(conduits)) {
+      if (!isConduitId(id)) throw new Error('Unknown machine Conduit reward.');
+      const rarity = getConduit(id).rarity;
+      if (isMachineFocusRarity(rarity) && state.machineLootFocus[rarity] === id) delete state.machineLootFocus[rarity];
+    }
     const masterChests = state.infusion?.mode === 'machines' ? masterChestDrops(state.infusion.stage, enemy.boss === true, () => {
       let seed = state.masterChestSeed ?? (((previous.rewardSeed ^ 0x7f4a7c15) >>> 0) || 1);
       seed ^= seed << 13;
@@ -927,6 +933,7 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
   }
   if (previous.conduitSeed !== undefined) state.conduitSeed = previous.conduitSeed;
   if (previous.machineConduits !== undefined) state.machineConduits = { ...previous.machineConduits };
+  if (previous.machineLootFocus !== undefined) state.machineLootFocus = { ...previous.machineLootFocus };
   if (previous.componentSeed !== undefined) state.componentSeed = previous.componentSeed;
   if (previous.masterChestSeed !== undefined) state.masterChestSeed = previous.masterChestSeed;
   if (previous.war) {

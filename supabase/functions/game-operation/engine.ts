@@ -2,7 +2,7 @@ import {
   ACCOUNT_KEY, emptyAccount, loadAccount, saveAccount, validateAccount, equippedSquad, ownedCharacters,
   ownedCharacterInstances, ownedProgress, setSquad, setCharacterLock, summonCharacter, summonCharacters, multiSummonCount,
   purchaseExchangeMaterial, type SummonDraw, sellCurrencyCreature,
-  purchaseConduit, equipConduit, unequipAllConduits, openMasterChest, openCalamityChest, equipMasterConduit, upgradeConduit, upgradeConduitToMaximum, upgradeCharacter, levelCapturedCharacter,
+  purchaseConduit, setMachineLootFocus, equipConduit, unequipAllConduits, openMasterChest, openCalamityChest, equipMasterConduit, upgradeConduit, upgradeConduitToMaximum, upgradeCharacter, levelCapturedCharacter,
   levelCharacterToMaximum, saveAccountRewards, unlockedStage, unlockedInfusionStage,
   unlockedWarStage, unlockedStoryStage, type Account,
 } from '../../../src/game/account';
@@ -36,6 +36,7 @@ export function profileIconUnlocked(account: Account, icon: OnlineProfile['icon'
 import type { CapturedCharacter } from '../../../src/game/character-instances';
 import type { ConduitLoadouts, ConduitUpgrades } from '../../../src/content/conduits';
 import { getConduit } from '../../../src/content/conduits';
+import { isMachineFocusRarity, validateMachineLootFocus } from '../../../src/content/machines';
 import { assertActivityAccess } from '../../../src/game/activity-access';
 import { validateSaveFile } from '../../../src/game/save-file';
 import { conduitRulesVersion } from '../../../src/game/conduit-runtime';
@@ -108,6 +109,7 @@ const operationKeys: Record<GameOperation['kind'], string[]> = {
   cancelFriendRequest: ['userId'], removeFriend: ['userId'],
   read: [], checkpoint: [], bootstrap: ['starterId'], importSave: ['save'], setSquad: ['ids'], setCharacterLock: ['id', 'locked'],
   summon: ['bannerId'], summonTen: ['bannerId'], sellCurrencyCreature: ['id', 'saleOption'], purchaseConduit: ['id'],
+  setMachineLootFocus: ['rarity', 'id'],
   equipConduit: ['character', 'slot', 'conduit'], upgradeConduit: ['id', 'expectedLevel'],
   maxConduit: ['expected'],
   unequipAllConduits: ['character'],
@@ -134,7 +136,11 @@ export function validateRequest(value: unknown): GameRequest {
   if (operationKeys[op.kind as GameOperation['kind']].some(key => key !== 'fodderIds' && key !== 'saleOption' &&
       !(op.kind === 'friendRequest' && (key === 'username' || key === 'friendCode')) && !(key in op))) throw new Error('Missing operation field.');
   for (const field of ['id', 'character', 'runId', 'actorId', 'targetId', 'bannerId', 'starterId', 'element', 'frame', 'upgradeKind', 'action', 'saleOption']) {
-    if (field in op) text(op[field]);
+    if (field in op && !(op.kind === 'setMachineLootFocus' && field === 'id' && op.id === null)) text(op[field]);
+  }
+  if (op.kind === 'setMachineLootFocus') {
+    if (!isMachineFocusRarity(op.rarity)) throw new Error('Choose a valid Machines focus rarity.');
+    if (op.id !== null) validateMachineLootFocus({ [op.rarity]: op.id });
   }
   for (const field of ['slot', 'expectedLevel', 'quantity', 'expectedCount']) if (field in op) integer(op[field]);
   if (op.kind === 'openCalamityChest') {
@@ -354,7 +360,10 @@ function encounter(game: DurableGame, run: DurableRun, seed: number, trainingWav
     a.kind === 'story' ? createStoryBattle(a.stage, ...args) :
     a.kind === 'dungeon' ? createDungeonBattle(a.element, a.stage, ...args) :
     a.kind === 'infusion' ? createInfusionBattle(a.mode, a.stage, ...args, s.state ? s.state.infusion?.schedule ?? 'legacy' : 'caps') : createWarBattle(a.character, a.stage, ...args), masters);
-  if (state.infusion?.mode === 'machines') state.machineConduits = { ...game.account.conduits };
+  if (state.infusion?.mode === 'machines') {
+    state.machineConduits = { ...game.account.conduits };
+    state.machineLootFocus = { ...game.account.machineLootFocus };
+  }
   return state;
 }
 export function resolveOperation(previous: DurableGame, operation: GameOperation,
@@ -421,6 +430,7 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
         break;
       case 'sellCurrencyCreature': sellCurrencyCreature(storage, operation.id, operation.saleOption); break;
       case 'purchaseConduit': purchaseConduit(storage, operation.id); break;
+      case 'setMachineLootFocus': setMachineLootFocus(storage, operation.rarity, operation.id); break;
       case 'equipConduit': equipConduit(storage, operation.character, operation.slot, operation.conduit); break;
       case 'unequipAllConduits': unequipAllConduits(storage, operation.character); break;
       case 'openMasterChest': openMasterChest(storage, operation.id); break;
@@ -478,7 +488,10 @@ export function resolveOperation(previous: DurableGame, operation: GameOperation
         if (!run || run.session.runId !== operation.runId) throw new Error('This battle run is no longer active.');
         const state = run.session.state;
         if (operation.kind === 'quit') { game.run = null; break; }
-        if (state.infusion?.mode === 'machines') state.machineConduits = { ...game.account.conduits };
+        if (state.infusion?.mode === 'machines') {
+          state.machineConduits = { ...game.account.conduits };
+          state.machineLootFocus = { ...game.account.machineLootFocus };
+        }
         if (operation.kind === 'act') {
           if (!isActionId(operation.action)) throw new Error('Invalid battle action.');
           const actor = state.allies.find(a => a.id === operation.actorId);

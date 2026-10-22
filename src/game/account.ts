@@ -11,7 +11,8 @@ import { materialName } from '../content/dungeon-art';
 import { getCreature } from '../content/creatures';
 import { getConduit, isConduitId, validateConduitSlots, normalizeLegacyKitSlots, validateConduitElement, conduitSlotCount, validateConduitUpgrades, conduitUpgradeCost, conduitUpgradeCap, type ConduitId, type ConduitLoadouts, type ConduitUpgrades } from '../content/conduits';
 import { machineComponentDrop } from '../content/mechanical-components';
-import { bannerConduitBonus, machineConduitLoot } from '../content/machines';
+import { bannerConduitBonus, machineConduitLoot, validateMachineLootFocus, isMachineFocusRarity,
+  type MachineLootFocus, type MachineFocusRarity } from '../content/machines';
 import { isMasterConduitId, masterChest, validateMasterCharacter, type MasterConduitId, type MasterLoadouts } from '../content/master-conduits';
 import { validateCapturedCharacters, migrateLegacyCapturedCopies, validateCharacterLocks, capturedProgress, capturedLevelCost, capturedLevelCap, createCreatureCopy, type CapturedCharacter, type CharacterLocks } from './character-instances';
 import { infusionEncounter, infusionLoot, infusionElements, creatureSaleOptions } from '../content/infusions';
@@ -39,6 +40,7 @@ export interface Account {
   capturedCharacters?: CapturedCharacter[];
   characterLocks?: CharacterLocks;
   conduits?: Partial<Record<ConduitId, number>>;
+  machineLootFocus?: MachineLootFocus;
   conduitEquipment?: ConduitLoadouts;
   conduitUpgrades?: ConduitUpgrades;
   mechanicalComponents?: number;
@@ -189,6 +191,7 @@ export function validateAccount(value: unknown): Account {
       account.conduits[id] = amount;
     }
   }
+  if (value.machineLootFocus !== undefined) account.machineLootFocus = validateMachineLootFocus(value.machineLootFocus);
   if (value.conduitUpgrades !== undefined) {
     account.conduitUpgrades = validateConduitUpgrades(value.conduitUpgrades);
     for (const id of Object.keys(account.conduitUpgrades)) {
@@ -636,8 +639,24 @@ export function upgradeConduit(storage: ProfileStorage, id: ConduitId, expectedL
 }
 export function saveAccount(storage: ProfileStorage, account: Account): Account {
   const validated = validateAccount(account);
+  for (const [rarity, id] of Object.entries(validated.machineLootFocus ?? {})) {
+    if (isMachineFocusRarity(rarity) && (validated.conduits?.[id] ?? 0) > 0) delete validated.machineLootFocus?.[rarity];
+  }
   storage.setItem(ACCOUNT_KEY, JSON.stringify(validated));
   return validated;
+}
+export function setMachineLootFocus(storage: ProfileStorage, rarity: MachineFocusRarity, id: ConduitId | null): Account {
+  if (!isMachineFocusRarity(rarity)) throw new Error('Choose a Rare, Legendary or Omnic loot focus.');
+  const account = loadAccount(storage);
+  const focus = { ...account.machineLootFocus };
+  if (id === null) delete focus[rarity];
+  else {
+    validateMachineLootFocus({ [rarity]: id });
+    if ((account.conduits?.[id] ?? 0) > 0) throw new Error('Choose an unowned Conduit to focus.');
+    focus[rarity] = id;
+  }
+  account.machineLootFocus = focus;
+  return saveAccount(storage, account);
 }
 function isMaterial(id: string): boolean {
   return elementalMaterials.some((material) => material.id === id) || specialtyMaterials.some((material) => material.id === id) ||
@@ -860,7 +879,7 @@ export function saveAccountRewards(storage: ProfileStorage, result: BattleResult
     }
     if (reward.conduits !== undefined) {
       if (result.state.infusion?.mode !== 'machines') throw new Error('Conduit drops require Awaken the Machines.');
-      const eligible = machineConduitLoot(result.state.infusion.stage, account.conduits);
+      const eligible = machineConduitLoot(result.state.infusion.stage, account.conduits, account.machineLootFocus);
       const tiers = new Set<string>();
       for (const [id, amount] of Object.entries(reward.conduits)) {
         if (!isConduitId(id) || amount !== 1 || !eligible.some((drop) => drop.id === id && drop.chance > 0)) throw new Error('Invalid machine Conduit reward: only unowned eligible names may drop.');

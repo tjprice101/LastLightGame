@@ -15,6 +15,7 @@ import { information, informationTopics } from './information';
 import { itemShowcase } from './item-showcase';
 import { roseEvent, roseEventRules } from './rose-event';
 import { machineRules, machineRulesText } from '../content/machines';
+import { machineLootFocus } from './machine-loot-focus';
 import { activityBanner } from './activity-banner';
 import { activityLayout } from './activity-layout';
 import { infusionEntry } from './activity-entry';
@@ -162,6 +163,7 @@ export function gameplayHub(account: Account | null = emptyAccount()): string {
       <p>Unowned Conduits only. A completed rarity awards no Conduit or replacement reward.</p>`, `
       ${itemShowcase([{ id: 'mechanical-components' }], 'Conduit upgrade currency')}
       <button class="text-button" data-page="conduit-upgrade">Conduit Upgrade &rarr;</button>
+      ${machineLootFocus(account)}
       ${infusionEntry({ id: 'machines', name: 'Awaken the Machines' }, account)}`), account)}
       </article></section>
     <section class="activity-group" id="gameplay-war"><h2>Elemental War</h2>

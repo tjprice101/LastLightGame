@@ -7,6 +7,7 @@ import type { CharacterProgress } from '../content/progression';
 import { isStarterId, type StarterId } from '../content/starters';
 import type { ActionId } from '../content/combat';
 import type { ConduitId } from '../content/conduits';
+import type { MachineFocusRarity } from '../content/machines';
 import type { ElementId, InfusionModeId } from '../content/activities';
 import type { WarCharacterId } from '../content/elemental-war';
 import type { SummonBannerId } from '../content/summon-banners';
@@ -80,6 +81,7 @@ export type GameOperation =
   | { kind: 'summonTen'; bannerId: SummonBannerId }
   | { kind: 'sellCurrencyCreature'; id: string; saleOption?: string }
   | { kind: 'purchaseConduit'; id: ConduitId }
+  | { kind: 'setMachineLootFocus'; rarity: MachineFocusRarity; id: ConduitId | null }
   | { kind: 'equipConduit'; character: string; slot: number; conduit: ConduitId | null }
   | { kind: 'unequipAllConduits'; character: string }
   | { kind: 'openMasterChest'; id: MasterConduitId }

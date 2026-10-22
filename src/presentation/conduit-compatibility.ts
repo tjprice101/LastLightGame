@@ -37,6 +37,7 @@ export function restartHistoricalConduitSession(session: BattleSession): boolean
     : atTrainingWave(createBattle(seed, roster, progress, equipment, captures, old.conduitUpgrades), old.wave);
   session.state = withMasterLoadouts(fresh, masters);
   if (old.machineConduits) session.state.machineConduits = { ...old.machineConduits };
+  if (old.machineLootFocus) session.state.machineLootFocus = { ...old.machineLootFocus };
   session.runId = crypto.randomUUID();
   session.stageEvents = [];
   session.entrancePending = true;

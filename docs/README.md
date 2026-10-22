@@ -29,6 +29,11 @@ Citadel Spine, Immortal Vessel, Pale Bulwark Diadem and Starvein Conductor.
 
 ## Status vocabulary
 
+**Machines Focus Loot (D-379):** choose one unowned Rare, Legendary and
+Omnic Conduit simultaneously; the next successful tier drop awards its focus.
+Rates/gates stay unchanged, and obtaining a focused name from any source
+clears only that tier. [Contract and validation](awaken-the-machines.md#focus-loot-d-379).
+
 **Last Flare potency (D-378):** all16 characters gain3x Last Flare damage
 and1.5x non-damage potency, with costs, recovery, durations and targeting
 unchanged. [Exact tuning and validation](character-identity-redesign.md#current-tuning-and-implementation).

@@ -1,5 +1,44 @@
 # Current state and handoff
 
+## Machines Focus Loot (D-379; 2026-10-22)
+
+- Owner confirms one saved focus per Rare/Legendary/Omnic tier simultaneously
+  and clearing whenever its selected name is obtained from any source.
+  Machines now has a Focus Loot modal with rarity tabs, unowned selection,
+  replacement/clear controls and full Details for owned/unowned names.
+  Master/Common/Calamitic options are excluded.
+- Optional validated account focus persists without load-time writes.
+  Shared account saves clear acquired names atomically across all reward/
+  purchase paths. Machines overrides only successful tier identities; rarity
+  rates, stage56 Omnic gate and independent RNG consumption remain unchanged.
+  Multiple kills, Continue, Replay, historical reconstruction and Settings
+  preserve the remaining focuses. Reward validation enforces selected names;
+  failed writes and receipt retries cannot lose focus or grant twice.
+- Matching online operation is strictly validated; authoritative entry/action/
+  retry refresh current focus. Collections' live tables show focused odds.
+  Dedicated model/combat/authority and presentation tests cover every75
+  eligible name, rates/gates/RNG, persistence, malformed inputs, multi-kills,
+  failed writes, banner acquisition, Details and UI error states.
+- Validation: `npx vitest run --maxWorkers=2 --reporter=json` passed6,237
+  tests/201 files; `npm run build`, `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json` and
+  `git diff --check` passed. Updated the older Gameplay disclosure-count
+  assertion to permit the requested Conduit Details lore. Existing mock-canvas
+  warnings and Vite chunk-size advisory remain nonfatal. Refreshed the
+  138-entry/726-scenario behavior-matrix evidence from the full passing report.
+- Browser validation used an isolated in-memory fixture, not a real profile:
+  desktop layout, rarity tabs, selection, nested Details and Escape/focus
+  restoration checked; no account storage or hosted owner data changed.
+  Temporary local UI server stopped after the check.
+- Matching authority deployed using `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  `node tools\smoke_server_game.mjs --focus-loot` passed: simultaneous
+  three-tier persistence, clear/reselect, all three focused awards, exact
+  local/hosted parity, atomic clearing, saved readback, owned-name rejection
+  and idempotent retries. Disposable identity/cascading data removed.
+- Publishing client through the main-branch Pages test/build/deployment
+  workflow; verify the hosted commit and assets after completion.
+
 ## Last Flare potency (D-378; 2026-10-22)
 
 - Owner selects3x damage/1.5x non-damage potency for all16 characters.
