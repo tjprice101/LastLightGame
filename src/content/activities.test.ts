@@ -73,7 +73,8 @@ describe('activity and progression framework', () => {
     expect(markup).toContain('data-infusion="machines"');
     expect(markup).toContain('data-page="battle"');
     expect(markup).toContain('data-story-enter="1"');
-    expect(markup).toContain('data-page="events"');
+    expect(markup).not.toContain('data-page="events"');
+    expect(markup).toContain('data-infusion="roses"');
     for (const starter of starters) {
       const detail = characterDetail(starter, 'upgrade-0');
       expect(detail).toContain('Evo.1');

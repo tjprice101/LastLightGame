@@ -17,6 +17,9 @@
   20-test targeted suite. Publication uses the existing main-branch Pages
   workflow, which reruns the complete test suite and configured build.
   Earlier local/unpublished labels below describe prepublication checkpoints.
+- Initial Pages run39719090370 caught an obsolete activities-test assertion
+  for the removed Event details route. Updated it to require no extra Events
+  link while retaining actual Roses entry; no runtime behavior changed.
 
 ## Removing redundant event-details navigation (2026-10-21)
 
