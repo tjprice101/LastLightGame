@@ -13,6 +13,9 @@
 - Client publication uses the main-branch Pages workflow's complete tests
   and configured production build. Earlier local-only labels below describe
   prepublication checkpoints.
+- Initial release CI caught two historical leveling-material expectations
+  that still asserted the removed Rose Soul surcharge. Updated expectations
+  retain ordinary specialty coverage and require exactly one Soul at91.
 
 ## Rose progression parity (D-374; 2026-10-22)
 

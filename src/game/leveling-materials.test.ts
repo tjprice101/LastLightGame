@@ -46,9 +46,8 @@ describe('cumulative higher-rarity leveling materials', () => {
         const progress: CharacterProgress = { level, evolution };
         const family = isRoseCharacter(character.id) ? 'rosethorn' : character.elementId;
         const materials = expectedMaterials(family, level + 1, higherTiers);
-        if (evolution >= 5) {
-          const specialty = isRoseCharacter(character.id) ? 'rosethorn-omnic'
-            : ['infernic', 'oceanic', 'atmospheric', 'botanic'].includes(character.elementId) ? 'heavens-level' : 'abyss-level';
+        if (evolution >= 5 && !isRoseCharacter(character.id)) {
+          const specialty = ['infernic', 'oceanic', 'atmospheric', 'botanic'].includes(character.elementId) ? 'heavens-level' : 'abyss-level';
           materials[specialty] = (materials[specialty] ?? 0) + 1;
         }
         expect(characterLevelCost(character.id, progress)).toEqual({ fractalis: 10 + 2 * (level + 1), materials });
@@ -98,7 +97,7 @@ describe('cumulative higher-rarity leveling materials', () => {
     expect(after.fractalis).toBe(808);
     expect(after.materials[`${family}-common`]).toBe(6);
     for (const rarity of materialRarities.slice(1)) {
-      expect(after.materials[`${family}-${rarity.toLowerCase()}`]).toBe(kind === 'rosetta' && rarity === 'Omnic' ? 8 : 9);
+      expect(after.materials[`${family}-${rarity.toLowerCase()}`]).toBe(9);
     }
     expect(after.materials['heavens-level']).toBe(kind === 'ember' ? 9 : 10);
   });
