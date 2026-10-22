@@ -44,21 +44,22 @@ describe('approved sixteen native identities', () => {
     expect(nativeIdentities.sprout.abilities.ultimate.description).toContain(`${nativeBalance.flora.empoweredSeed * 100}% at the start of the next player turn`);
   });
 
-  it('scales conditional direct coefficients once without changing fixed follow-ups, Burn, pierce or support', () => {
+  it('scales Last Flare damage and support while preserving ordinary skill coefficients', () => {
     const scale = nativeBalance.skillDamageScale;
+    const flareScale = scale * nativeBalance.lastFlare.damage;
     expect(nativeIdentities.crinso.abilities.skill2.description).toContain(`${200 * scale}% direct damage`);
     expect(nativeIdentities.crinso.abilities.skill2.description).toContain(`increased by ${40 * scale}% (${240 * scale}% total)`);
-    expect(nativeIdentities.crinso.abilities.ultimate.description).toContain(`${260 * scale}% direct damage`);
-    expect(nativeIdentities.crinso.abilities.ultimate.description).toContain(`${45 * scale}% per [Combo]`);
-    expect(nativeIdentities.crinso.abilities.ultimate.description).toContain('ignores 30% of the target’s Defense');
+    expect(nativeIdentities.crinso.abilities.ultimate.description).toContain(`${Number((260 * flareScale).toFixed(2))}% direct damage`);
+    expect(nativeIdentities.crinso.abilities.ultimate.description).toContain(`${Number((45 * flareScale).toFixed(2))}% per [Combo]`);
+    expect(nativeIdentities.crinso.abilities.ultimate.description).toContain('ignores 45% of the target’s Defense');
     expect(nativeIdentities.rosetta.abilities.skill2.description).toContain(`${25 * scale}% for each other ally who hit it this player turn.`);
-    expect(nativeIdentities.vaelor.abilities.ultimate.description).toContain(`${340 * scale}% on [Crescendo]`);
+    expect(nativeIdentities.vaelor.abilities.ultimate.description).toContain(`${Number((340 * flareScale).toFixed(2))}% on [Crescendo]`);
     expect(nativeIdentities.elise.abilities.skill2.description).toContain('90% of [Elise]’s Attack and cannot critically hit');
     expect(nativeIdentities.elise.abilities.skill2.description).toContain('one extra 60% strike');
     expect(nativeIdentities.elise.abilities.skill2.description).toContain(`${140 * scale}% direct damage`);
     expect(nativeIdentities.ember.abilities.skill1.description).toContain('[Burn] dealing 25% of [Infernis]’s Attack');
     expect(nativeIdentities.atmoso.abilities.skill2.description).toContain('70% of [Atmoso]’s Attack plus 30% per [Gust] and cannot critically hit');
-    expect(nativeIdentities.thornia.abilities.ultimate.description).toContain('deal 90% of [Thornia]’s Attack and cannot critically hit');
+    expect(nativeIdentities.thornia.abilities.ultimate.description).toContain('deal 270% of [Thornia]’s Attack and cannot critically hit');
   });
 
   it.each(nativeIdentityIds)('%s replaces every old native slot and passive without mutating stat growth', id => {
@@ -83,12 +84,13 @@ describe('approved sixteen native identities', () => {
     for (const [index, action] of actions.entries()) {
       expect(grown.abilities[action].cooldown).toBe(0);
       const coefficient = coefficients[id][index];
-      expect(grown.abilities[action].strength.damageMultiplier).toBe(coefficient === undefined ? undefined : coefficient * nativeBalance.skillDamageScale);
+      const scale = nativeBalance.skillDamageScale * (action === 'ultimate' ? nativeBalance.lastFlare.damage : 1);
+      expect(grown.abilities[action].strength.damageMultiplier).toBe(coefficient === undefined ? undefined : coefficient * scale);
       expect(grown.abilities[action].strength).toEqual(base.abilities[action].strength);
       expect(grown.abilities[action].strength).toEqual(nativeIdentities[id].abilities[action].strength);
       const expectedStrength = coefficients[id][index] === undefined
         ? {}
-        : { damageMultiplier: coefficients[id][index]! * nativeBalance.skillDamageScale, ...(id === 'tide' && action === 'skill1' ? { weakenFraction: .25 } : {}) };
+        : { damageMultiplier: coefficients[id][index]! * scale, ...(id === 'tide' && action === 'skill1' ? { weakenFraction: .25 } : {}) };
       expect(grown.abilities[action].strength).toEqual(expectedStrength);
     }
     expect(base).toEqual(before);

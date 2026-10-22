@@ -75,7 +75,8 @@ function fixed(state: BattleState, owner: Combatant, target: Combatant, power: n
       else attack = modifiers.attack;
     }
   }
-  const damage = bypass ? Math.round(power) : damageAmount(attack, power / attack,
+  const flareDamage = activation?.action === 'ultimate' ? nativeBalance.lastFlare.damage : 1;
+  const damage = bypass ? Math.round(power * flareDamage) : damageAmount(attack, power / attack * flareDamage,
     nativeTargetDefense(state, target) * (1 - ignore), false);
   const shieldBypass = !bypass && activation ? calamiticSkillShieldBypass(state, owner, activation.action) : 0;
   const absorbed = Math.min(target.shield, damage - Math.floor(damage * shieldBypass));
@@ -167,8 +168,11 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
   const memory = nativeMemory(owner);
   const target = state.enemies.find(enemy => enemy.id === targetId && enemy.hp > 0);
   const ally = state.allies.find(unit => unit.id === targetId && unit.hp > 0);
+  const flareDamage = action === 'ultimate' ? nativeBalance.lastFlare.damage : 1;
+  const flareSupport = action === 'ultimate' ? nativeBalance.lastFlare.support : 1;
   const hit = (coefficient: number, all = false, pierce = 0, crit = 0, chosen = target) =>
-    direct(all ? foes(state) : chosen ? [chosen] : [], coefficient * (action === 'light' ? 1 : nativeBalance.skillDamageScale), pierce, crit);
+    direct(all ? foes(state) : chosen ? [chosen] : [], coefficient * (action === 'light' ? 1 : nativeBalance.skillDamageScale) * flareDamage,
+      Math.min(1, pierce * flareSupport), Math.min(1, crit * flareSupport));
   const allies = living(state);
   const other = allies.filter(unit => unit.id !== owner.id);
   const acted = other.filter(unit => unit.spent).length;
@@ -209,7 +213,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
           if (enemy.burn.sourceId === owner.id) enemy.burn.turns = stored.turns;
         }
       }
-      if (action === 'ultimate') { hit(2, true); for (const enemy of foes(state)) burn(enemy, .45); }
+      if (action === 'ultimate') { hit(2, true); for (const enemy of foes(state)) burn(enemy, .45 * flareDamage); }
       break;
     case 'tide':
       if (action === 'skill1') {
@@ -218,7 +222,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
       }
       if (action === 'skill2' && ally) shield(ally,
         nativeBalance.tizu.shelter * (!phaseZeroStatsReady && equipped(owner, 'master-tide-2') ? 3 : 1), 1);
-      if (action === 'ultimate') for (const recipient of allies) shield(recipient, nativeBalance.tizu.oceanMemory, 2, .3);
+      if (action === 'ultimate') for (const recipient of allies) shield(recipient, nativeBalance.tizu.oceanMemory, 2, .3 * flareSupport);
       break;
     case 'sprout':
       if (action === 'skill1') {
@@ -325,7 +329,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
           if (posture === 'closing') grantToken(state, recipient, 'blissSkillDuration', 1);
         }
         if (posture === 'closing') for (const recipient of other)
-          nativeHeal(state, owner, recipient, recipient.stats.health * .1, events, true, activation);
+          nativeHeal(state, owner, recipient, recipient.stats.health * .1 * flareSupport, events, true, activation);
       }
       break;
     case 'bruno':
@@ -342,13 +346,13 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
       }
       if (action === 'ultimate') {
         memory.cover = { targets: other.map(unit => unit.id),
-          fraction: Math.min(1, .4 * (phaseZeroStatsReady ? activation.skillPower : 1)),
+          fraction: Math.min(1, .4 * flareSupport * (phaseZeroStatsReady ? activation.skillPower : 1)),
           throughPhase: state.round + 1 + activation.skillDuration };
         const shield = phaseZeroStatsReady && equipped(owner, 'master-bruno-2')
           ? Math.max(owner.stats.health * .25, effectiveDefense(state, owner) * 2.5)
           : Math.max(owner.stats.health * .2,
             phaseZeroStatsReady || equipped(owner, 'master-bruno-2') ? effectiveDefense(state, owner) * 2 : 0);
-        nativeShield(state, owner, owner, shield, events,
+        nativeShield(state, owner, owner, shield * flareSupport, events,
           { throughPhase: state.round + 1 + activation.skillDuration, skillPower: activation.skillPower, activation });
       }
       break;
@@ -359,7 +363,8 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
       for (const recipient of recipients) {
         nativeMemory(recipient).instruction = { kind: action === 'skill1' ? 'strike' : action === 'skill2' ? 'shelter' : 'resolve',
           owner: owner.id, throughRound: state.round + (equipped(owner, 'master-disciple-1') ? 3 : 1) + activation.skillDuration,
-          ...(phaseZeroStatsReady ? { damageBonus: .3 * activation.skillPower, supportBonus: .35 * activation.skillPower } : {}) };
+          ...(phaseZeroStatsReady ? { damageBonus: .3 * flareSupport * activation.skillPower,
+            supportBonus: .35 * flareSupport * activation.skillPower } : {}) };
         status(events, owner, recipient, `${recipient.name} receives ${action === 'skill1' ? 'Strike' : action === 'skill2' ? 'Shelter' : 'Resolve'} Instruction.`);
       }
       break;
@@ -376,7 +381,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
         }
       } else {
         memory.ultimateWardThrough = state.round + 1 + activation.skillDuration;
-        if (phaseZeroStatsReady) memory.ultimateWardReduction = .5 * activation.skillPower;
+        if (phaseZeroStatsReady) memory.ultimateWardReduction = .5 * flareSupport * activation.skillPower;
       }
       break;
     case 'razor':
@@ -406,7 +411,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
         const contributors = quarry?.round === state.round ? quarry.contributors : [];
         hit(action === 'ultimate' ? 3 : marked ? 2 + .25 * contributors.filter(id => id !== owner.id).length : 1.6, false, 0, 0, marked ?? target);
         if (action === 'ultimate' && contributors.length >= 2) for (const recipient of allies.filter(unit => contributors.includes(unit.id)))
-          nativeHeal(state, owner, recipient, recipient.stats.health * .1, events, true, activation);
+          nativeHeal(state, owner, recipient, recipient.stats.health * .1 * flareSupport, events, true, activation);
       }
       break;
     }
@@ -431,7 +436,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
         if (action === 'ultimate') hit(1.4, true);
         for (const enemy of action === 'skill1' ? target ? [target] : [] : foes(state)) {
           traps[enemy.id] = { charges: 3, coefficient: Math.max(traps[enemy.id]?.coefficient ?? 0,
-            (action === 'ultimate' ? .9 : .6) * (phaseZeroStatsReady ? activation.skillPower : 1)),
+            (action === 'ultimate' ? .9 * flareDamage : .6) * (phaseZeroStatsReady ? activation.skillPower : 1)),
           throughPhase: state.round + 2 + activation.skillDuration,
           ...(phaseZeroStatsReady ? { empowered: action === 'ultimate' } : {}) };
           status(events, owner, enemy, `${enemy.name}: 3 Thorn trap charges through enemy phase ${traps[enemy.id].throughPhase}.`);
@@ -960,7 +965,8 @@ export function nativeReadout(state: BattleState, unit: Combatant): NativeReadou
     'Stored from direct enemy HP loss.', ['native-razor-wounds']);
   if (memory.bastion && memory.bastion.throughPhase >= state.round) add('Bastion', '30% direct-hit reduction',
     `Through enemy phase ${memory.bastion.throughPhase}; ${Math.round(memory.bastion.loss)} HP lost stored for the following shield.`, ['native-razor-bastion']);
-  if (memory.ultimateWardThrough !== undefined && memory.ultimateWardThrough >= state.round) add('Ultimate Ward', '50% ultimate damage reduction',
+  if (memory.ultimateWardThrough !== undefined && memory.ultimateWardThrough >= state.round) add('Ultimate Ward',
+    `${Number((Math.min(1, memory.ultimateWardReduction ?? .5) * 100).toFixed(2))}% ultimate damage reduction`,
     `Through enemy phase ${memory.ultimateWardThrough}.`, ['native-aurora-ultimate-ward']);
   if (memory.survey) add('Survey', `${memory.survey.points}`, state.enemies.find(enemy => enemy.id === memory.survey?.target)?.name ?? '', ['native-nerithe-survey']);
   if (memory.quarry) add('Quarry', state.enemies.find(enemy => enemy.id === memory.quarry?.target)?.name ?? '',

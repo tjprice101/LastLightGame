@@ -779,7 +779,7 @@ var approvedConduitCatalog = {
     "name": "Quarry Planet Gravitas",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Bruno only)",
-    "ability": "Bruno's Last Flare Shield equals the greater of 250% effective Defense or 25% maximum HP. Allies under his Cover gain +25% Elemental Gauge Gain."
+    "ability": "Bruno's Last Flare Shield equals the greater of 375% effective Defense or 37.5% maximum HP. Allies under his Cover gain +25% Elemental Gauge Gain."
   },
   "master-bliss-3": {
     "name": "Quiet Heaven Fanforge",
@@ -3812,8 +3812,9 @@ var kitPilotDescriptions = {
 // src/content/native-balance.ts
 var nativeBalance = {
   skillDamageScale: 1.6,
-  flora: { seed: 0.5, empoweredSeed: 0.65, immediateHeal: 0.5 },
-  tizu: { shelter: 0.45, oceanMemory: 0.35 }
+  lastFlare: { damage: 3, support: 1.5 },
+  flora: { seed: 0.5, empoweredSeed: 0.975, immediateHeal: 0.75 },
+  tizu: { shelter: 0.45, oceanMemory: 0.525 }
 };
 
 // src/content/native-identities.ts
@@ -3838,7 +3839,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Cinder Cleave", "160% direct damage to one enemy, then apply [Burn] dealing 25% of [Infernis]\u2019s Attack per enemy phase for three enemy phases.", 1.6),
       skill2: ability("Flame Arc", "110% direct damage to all enemies. Each surviving enemy carrying [Infernis]\u2019s [Burn] immediately takes the damage of up to two of its remaining [Burn] phases, and those phases are removed. [Burn] applied by other characters is unaffected.", 1.1, "all-enemies"),
-      ultimate: ability("Last Flare: Dawnfire", "200% direct damage to all enemies, then apply [Burn] dealing 45% of [Infernis]\u2019s Attack per enemy phase for three enemy phases; an existing stronger [Burn] keeps its higher damage. [Burn] continues during the recovery turn while [Infernis] is alive.", 2, "all-enemies")
+      ultimate: ability("Last Flare: Dawnfire", "200% direct damage to all enemies, then apply [Burn] dealing 135% of [Infernis]\u2019s Attack per enemy phase for three enemy phases; an existing stronger [Burn] keeps its higher damage. [Burn] continues during the recovery turn while [Infernis] is alive.", 2, "all-enemies")
     }
   },
   tide: {
@@ -3851,7 +3852,7 @@ var nativeIdentities = {
     abilities: {
       skill1: { ...ability("Undertow Thrust", "150% direct damage to one enemy and apply 25% [Weaken] for the next enemy phase. [Weaken] reduces the direct damage that enemy deals.", 1.5), strength: { damageMultiplier: 1.5, weakenFraction: 0.25 } },
       skill2: ability("Tidal Shelter", `Choose one living ally. It gains a shield worth ${nativeBalance.tizu.shelter * 100}% of its maximum HP until the next enemy phase ends. Recasting replaces the shield.`, void 0, "one-ally"),
-      ultimate: ability("Last Flare: Ocean Memory", `All living allies gain a shield worth ${nativeBalance.tizu.oceanMemory * 100}% of their maximum HP until the second enemy phase ends. The first direct hit each ally takes while this shield remains is reduced by 30% before the shield absorbs it.`, void 0, "all-allies")
+      ultimate: ability("Last Flare: Ocean Memory", `All living allies gain a shield worth ${nativeBalance.tizu.oceanMemory * 100}% of their maximum HP until the second enemy phase ends. The first direct hit each ally takes while this shield remains is reduced by 45% before the shield absorbs it.`, void 0, "all-allies")
     }
   },
   sprout: {
@@ -3877,7 +3878,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Razor Gale", "180% direct damage to one enemy. If a [Cyclone] exists, it releases immediately on all living enemies and ends.", 1.8),
       skill2: ability("Cyclone Weave", "Release any existing [Cyclone], then create a new [Cyclone] with 0 [Gust] lasting two enemy phases. When the second enemy phase ends, it releases on all living enemies. A [Cyclone] release deals 70% of [Atmoso]\u2019s Attack plus 30% per [Gust] and cannot critically hit. [Gust] never carries over to a new [Cyclone]. [Atmoso] must be alive for a release.", void 0, "all-enemies"),
-      ultimate: ability("Last Flare: Sky Without End", "Release any active [Cyclone] at its current [Gust] count, then deal 200% direct damage to all enemies.", 2, "all-enemies")
+      ultimate: ability("Last Flare: Sky Without End", "Release any active [Cyclone] at its current [Gust] count for three times its normal release damage, then deal 200% direct damage to all enemies.", 2, "all-enemies")
     }
   },
   elise: {
@@ -3890,7 +3891,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Voltstar Cut", "Throw one held [Shuriken] for 110% direct damage to the selected enemy; it lodges in that enemy. With no [Shuriken] held, deal 140% direct damage instead and neither [Shuriken] moves. Both [Shuriken] can lodge in the same enemy.", 1.1),
       skill2: ability("Crosscurrent Volley", "Recall every lodged [Shuriken]: each strikes its enemy for 90% of [Elise]\u2019s Attack and cannot critically hit. If both were in the same enemy, it takes one extra 60% strike. If both [Shuriken] are already held, deal 140% direct damage to the selected enemy instead. Recalled strikes generate no Gauge.", 1.4),
-      ultimate: ability("Last Flare: Infinite Thunderwheel", "Recall every lodged [Shuriken] using the same 90% strikes and 60% same-enemy strike, then deal 260% direct damage to the selected enemy. Both [Shuriken] return to [Elise] afterward.", 2.6)
+      ultimate: ability("Last Flare: Infinite Thunderwheel", "Recall every lodged [Shuriken] with 270% strikes and a 180% same-enemy strike, then deal 260% direct damage to the selected enemy. Both [Shuriken] return to [Elise] afterward.", 2.6)
     }
   },
   bliss: {
@@ -3903,7 +3904,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Warfeather Cut", "170% direct damage to one enemy. [Opening]: +25 percentage points Critical Rate for this attack. [Closing]: heal the most injured other living ally for 6% of its maximum HP. [Passing]: no bonus.", 1.7),
       skill2: ability("Quietstorm Flourish", "120% direct damage to all enemies. [Opening]: living allies deal 10% more direct damage until this player turn ends. [Closing]: all living allies gain a shield worth 6% of their maximum HP until the next enemy phase ends. [Passing]: no bonus.", 1.2, "all-enemies"),
-      ultimate: ability("Last Flare: Thousandfeather Stillness", "250% direct damage to all enemies. [Opening]: +30 percentage points Critical Rate for this attack. [Closing]: heal other living allies for 10% of their maximum HP. [Passing]: no bonus.", 2.5, "all-enemies")
+      ultimate: ability("Last Flare: Thousandfeather Stillness", "250% direct damage to all enemies. [Opening]: +45 percentage points Critical Rate for this attack. [Closing]: heal other living allies for 15% of their maximum HP. [Passing]: no bonus.", 2.5, "all-enemies")
     }
   },
   bruno: {
@@ -3916,7 +3917,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Seismic Hammerfall", "190% direct damage to one enemy.", 1.9),
       skill2: ability("Citadel Mantle", "Place [Cover] on another living ally until the next enemy phase ends: 50% of the direct damage it takes, after Defense, is redirected to [Bruno]. Only one ally can hold this [Cover]; recasting moves it. If [Bruno] is the only living ally, he instead takes 20% less direct damage for that phase. Redirected damage cannot be redirected again.", void 0, "one-ally", true),
-      ultimate: ability("Last Flare: Worldwall Ascendant", "Place [Cover] on every other living ally for two enemy phases, redirecting 40% of each direct hit to [Bruno]; this replaces single-ally [Cover]. [Bruno] gains a shield worth 20% of his maximum HP for the same duration.", void 0, "all-allies")
+      ultimate: ability("Last Flare: Worldwall Ascendant", "Place [Cover] on every other living ally for two enemy phases, redirecting 60% of each direct hit to [Bruno]; this replaces single-ally [Cover]. [Bruno] gains a shield worth 30% of his maximum HP for the same duration.", void 0, "all-allies")
     }
   },
   disciple: {
@@ -3929,7 +3930,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Thoughtspark Benediction", "Give one living ally [Strike]: its next action that deals damage deals 30% more direct damage. If its next action deals no damage, [Strike] is used up with no effect.", void 0, "one-ally"),
       skill2: ability("Concord of Chaos", "Give one living ally [Shelter]: if its next action heals or shields, that healing or shielding is 35% larger. If its next action only deals damage, [Shelter] is used up with no effect. Healing and shields created by Conduits are not increased.", void 0, "one-ally"),
-      ultimate: ability("Last Flare: Unbound Mindcrown", "Give [Resolve] to all living allies, replacing their current [Instruction]. Each ally\u2019s next action gains [Strike] (30% more direct damage), [Shelter] (35% more healing and shields) or both, matching what that action does. [Resolve] expires at the end of the next player turn.", void 0, "all-allies")
+      ultimate: ability("Last Flare: Unbound Mindcrown", "Give [Resolve] to all living allies, replacing their current [Instruction]. Each ally\u2019s next action gains [Strike] (45% more direct damage), [Shelter] (52.5% more healing and shields) or both, matching what that action does. [Resolve] expires at the end of the next player turn.", void 0, "all-allies")
     }
   },
   aurora: {
@@ -3942,7 +3943,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Gleamseal", "Place a [Seal] on one enemy: its next scheduled special skill or ultimate within three enemy phases deals 40% less direct damage, then the [Seal] ends. Its [Normal Attack] does not use the [Seal]. Recasting resets the duration and keeps the stronger [Seal]; it never stacks."),
       skill2: ability("Eclipse Mandate", "100% direct damage to all enemies, then place a 25% [Seal] on each survivor, following the same rules as [Gleamseal].", 1, "all-enemies"),
-      ultimate: ability("Last Flare: Final Dawn Verdict", "For two enemy phases, all living allies take 50% less direct damage from enemy ultimates. Enemy [Normal Attack] and other skills are unaffected.", void 0, "all-allies")
+      ultimate: ability("Last Flare: Final Dawn Verdict", "For two enemy phases, all living allies take 75% less direct damage from enemy ultimates. Enemy [Normal Attack] and other skills are unaffected.", void 0, "all-allies")
     }
   },
   razor: {
@@ -3955,7 +3956,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Nightcleave", "160% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses the spent amount as its Attack, is reduced by Defense and cannot critically hit. With no [Wounds], only the first hit occurs.", 1.6),
       skill2: ability("Eclipse Bastion", "[Razor] takes 30% less direct damage during the next enemy phase. If he lost HP to direct hits during that phase, he then gains a shield equal to that HP through the following enemy phase."),
-      ultimate: ability("Last Flare: Unbroken Midnight", "220% direct damage to one enemy, then spend all [Wounds] for an extra strike that uses twice the spent amount as its Attack, is reduced by Defense and cannot critically hit.", 2.2)
+      ultimate: ability("Last Flare: Unbroken Midnight", "220% direct damage to one enemy, then spend all [Wounds] for an extra strike dealing three times the damage of a strike using twice the spent amount as its Attack, reduced by Defense and unable to critically hit.", 2.2)
     }
   },
   rosetta: {
@@ -3968,7 +3969,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Golden Thorn Volley", "160% direct damage to one enemy and mark it as [Quarry] until it is defeated or [Rosetta] marks another enemy. This hit counts as her contribution. Marking the same enemy again keeps this turn\u2019s count; marking a different enemy resets it.", 1.6),
       skill2: ability("Crimson Skyfall", "200% direct damage to a living [Quarry], plus 25% for each other ally who hit it this player turn. With no living [Quarry], deal 160% direct damage to the selected enemy. Does not mark a [Quarry].", 2),
-      ultimate: ability("Last Flare: Rose Beyond the Sun", "300% direct damage to the [Quarry], or to the selected enemy if there is none. If at least two different allies hit the [Quarry] this player turn, those allies heal 10% of their maximum HP; other allies are not healed.", 3)
+      ultimate: ability("Last Flare: Rose Beyond the Sun", "300% direct damage to the [Quarry], or to the selected enemy if there is none. If at least two different allies hit the [Quarry] this player turn, those allies heal 15% of their maximum HP; other allies are not healed.", 3)
     }
   },
   thornia: {
@@ -3981,7 +3982,7 @@ var nativeIdentities = {
     abilities: {
       skill1: ability("Gilded Thorn Guard", "Place a [Thorn Trap] with three charges on the selected enemy for three enemy phases. Recasting resets it to three charges and three enemy phases and never adds more. Recasting on an [Empowered Thorn Trap] keeps it empowered."),
       skill2: ability("Shadow Rose Cleave", "170% direct damage to one enemy. If it has a [Thorn Trap], spend one charge for an extra strike of 80% of [Thornia]\u2019s Attack that cannot critically hit.", 1.7),
-      ultimate: ability("Last Flare: Thousand-Rose Dominion", "140% direct damage to all enemies, then place an [Empowered Thorn Trap] with three charges on each survivor for three enemy phases. Its strikes deal 90% of [Thornia]\u2019s Attack and cannot critically hit.", 1.4, "all-enemies")
+      ultimate: ability("Last Flare: Thousand-Rose Dominion", "140% direct damage to all enemies, then place an [Empowered Thorn Trap] with three charges on each survivor for three enemy phases. Its strikes deal 270% of [Thornia]\u2019s Attack and cannot critically hit.", 1.4, "all-enemies")
     }
   },
   crinso: {
@@ -4058,9 +4059,16 @@ var directDescriptionCoefficients = {
 for (const id of Object.keys(nativeIdentities)) {
   for (const [index, action] of ["skill1", "skill2", "ultimate"].entries()) {
     const definition = nativeIdentities[id].abilities[action];
-    if (definition.strength.damageMultiplier !== void 0) definition.strength.damageMultiplier *= nativeBalance.skillDamageScale;
+    const scale = nativeBalance.skillDamageScale * (action === "ultimate" ? nativeBalance.lastFlare.damage : 1);
+    if (definition.strength.damageMultiplier !== void 0) definition.strength.damageMultiplier *= scale;
     const coefficients = directDescriptionCoefficients[id][index];
-    definition.description = definition.description.replace(/(\d+(?:\.\d+)?)%/g, (text2, amount) => coefficients.includes(Number(amount)) ? `${Number(amount) * nativeBalance.skillDamageScale}%` : text2);
+    definition.description = definition.description.replace(/(\d+(?:\.\d+)?)%/g, (text2, amount) => coefficients.includes(Number(amount)) ? `${Number((Number(amount) * scale).toFixed(2))}%` : text2);
+    if (action === "ultimate" && id === "crinso") definition.description = definition.description.replace("ignores 30%", "ignores 45%");
+    if (action === "ultimate" && id === "nerithe") definition.description = definition.description.replace("ignores 15%", "ignores 22.5%");
+    if (action === "ultimate" && id === "orvella") definition.description = definition.description.replace(
+      "uses its remaining durability as Attack",
+      "deals three times the damage of a strike using its remaining durability as Attack"
+    );
   }
 }
 var nativeIdentityIds = Object.keys(nativeIdentities);
@@ -6348,9 +6356,10 @@ function fixed(state, owner, target, power2, kind, events, bypass = false, activ
       else attack = modifiers.attack;
     }
   }
-  const damage = bypass ? Math.round(power2) : damageAmount(
+  const flareDamage = activation?.action === "ultimate" ? nativeBalance.lastFlare.damage : 1;
+  const damage = bypass ? Math.round(power2 * flareDamage) : damageAmount(
     attack,
-    power2 / attack,
+    power2 / attack * flareDamage,
     nativeTargetDefense(state, target) * (1 - ignore),
     false
   );
@@ -6454,7 +6463,14 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
   const memory = nativeMemory(owner);
   const target = state.enemies.find((enemy) => enemy.id === targetId && enemy.hp > 0);
   const ally = state.allies.find((unit) => unit.id === targetId && unit.hp > 0);
-  const hit = (coefficient, all = false, pierce = 0, crit = 0, chosen = target) => direct(all ? foes(state) : chosen ? [chosen] : [], coefficient * (action === "light" ? 1 : nativeBalance.skillDamageScale), pierce, crit);
+  const flareDamage = action === "ultimate" ? nativeBalance.lastFlare.damage : 1;
+  const flareSupport = action === "ultimate" ? nativeBalance.lastFlare.support : 1;
+  const hit = (coefficient, all = false, pierce = 0, crit = 0, chosen = target) => direct(
+    all ? foes(state) : chosen ? [chosen] : [],
+    coefficient * (action === "light" ? 1 : nativeBalance.skillDamageScale) * flareDamage,
+    Math.min(1, pierce * flareSupport),
+    Math.min(1, crit * flareSupport)
+  );
   const allies = living(state);
   const other = allies.filter((unit) => unit.id !== owner.id);
   const acted = other.filter((unit) => unit.spent).length;
@@ -6507,7 +6523,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       }
       if (action === "ultimate") {
         hit(2, true);
-        for (const enemy of foes(state)) burn(enemy, 0.45);
+        for (const enemy of foes(state)) burn(enemy, 0.45 * flareDamage);
       }
       break;
     case "tide":
@@ -6520,7 +6536,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
         nativeBalance.tizu.shelter * (!phaseZeroStatsReady && equipped(owner, "master-tide-2") ? 3 : 1),
         1
       );
-      if (action === "ultimate") for (const recipient of allies) shield(recipient, nativeBalance.tizu.oceanMemory, 2, 0.3);
+      if (action === "ultimate") for (const recipient of allies) shield(recipient, nativeBalance.tizu.oceanMemory, 2, 0.3 * flareSupport);
       break;
     case "sprout":
       if (action === "skill1") {
@@ -6648,7 +6664,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
           if (posture === "closing") grantToken(state, recipient, "blissSkillDuration", 1);
         }
         if (posture === "closing") for (const recipient of other)
-          nativeHeal(state, owner, recipient, recipient.stats.health * 0.1, events, true, activation);
+          nativeHeal(state, owner, recipient, recipient.stats.health * 0.1 * flareSupport, events, true, activation);
       }
       break;
     case "bruno":
@@ -6667,7 +6683,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
       if (action === "ultimate") {
         memory.cover = {
           targets: other.map((unit) => unit.id),
-          fraction: Math.min(1, 0.4 * (phaseZeroStatsReady ? activation.skillPower : 1)),
+          fraction: Math.min(1, 0.4 * flareSupport * (phaseZeroStatsReady ? activation.skillPower : 1)),
           throughPhase: state.round + 1 + activation.skillDuration
         };
         const shield2 = phaseZeroStatsReady && equipped(owner, "master-bruno-2") ? Math.max(owner.stats.health * 0.25, effectiveDefense(state, owner) * 2.5) : Math.max(
@@ -6678,7 +6694,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
           state,
           owner,
           owner,
-          shield2,
+          shield2 * flareSupport,
           events,
           { throughPhase: state.round + 1 + activation.skillDuration, skillPower: activation.skillPower, activation }
         );
@@ -6693,7 +6709,10 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
           kind: action === "skill1" ? "strike" : action === "skill2" ? "shelter" : "resolve",
           owner: owner.id,
           throughRound: state.round + (equipped(owner, "master-disciple-1") ? 3 : 1) + activation.skillDuration,
-          ...phaseZeroStatsReady ? { damageBonus: 0.3 * activation.skillPower, supportBonus: 0.35 * activation.skillPower } : {}
+          ...phaseZeroStatsReady ? {
+            damageBonus: 0.3 * flareSupport * activation.skillPower,
+            supportBonus: 0.35 * flareSupport * activation.skillPower
+          } : {}
         };
         status3(events, owner, recipient, `${recipient.name} receives ${action === "skill1" ? "Strike" : action === "skill2" ? "Shelter" : "Resolve"} Instruction.`);
       }
@@ -6715,7 +6734,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
         }
       } else {
         memory.ultimateWardThrough = state.round + 1 + activation.skillDuration;
-        if (phaseZeroStatsReady) memory.ultimateWardReduction = 0.5 * activation.skillPower;
+        if (phaseZeroStatsReady) memory.ultimateWardReduction = 0.5 * flareSupport * activation.skillPower;
       }
       break;
     case "razor":
@@ -6759,7 +6778,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
         const contributors = quarry?.round === state.round ? quarry.contributors : [];
         hit(action === "ultimate" ? 3 : marked ? 2 + 0.25 * contributors.filter((id) => id !== owner.id).length : 1.6, false, 0, 0, marked ?? target);
         if (action === "ultimate" && contributors.length >= 2) for (const recipient of allies.filter((unit) => contributors.includes(unit.id)))
-          nativeHeal(state, owner, recipient, recipient.stats.health * 0.1, events, true, activation);
+          nativeHeal(state, owner, recipient, recipient.stats.health * 0.1 * flareSupport, events, true, activation);
       }
       break;
     }
@@ -6788,7 +6807,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
             charges: 3,
             coefficient: Math.max(
               traps[enemy.id]?.coefficient ?? 0,
-              (action === "ultimate" ? 0.9 : 0.6) * (phaseZeroStatsReady ? activation.skillPower : 1)
+              (action === "ultimate" ? 0.9 * flareDamage : 0.6) * (phaseZeroStatsReady ? activation.skillPower : 1)
             ),
             throughPhase: state.round + 2 + activation.skillDuration,
             ...phaseZeroStatsReady ? { empowered: action === "ultimate" } : {}

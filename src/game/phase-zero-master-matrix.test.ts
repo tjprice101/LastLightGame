@@ -142,7 +142,7 @@ const checks: Record<MasterConduitId, Check> = {
   'master-aurora-2': (state, equipped) => {
     const result = cast(state, 'ultimate');
     expect(result.enemies[0].conduitRuntime?.numbers.judgmentThrough).toBeUndefined();
-    expect(nativeIncomingMultiplier(result, result.enemies[0], result.allies[1], 'skill1', [])).toBe(equipped ? .5 : 1);
+    expect(nativeIncomingMultiplier(result, result.enemies[0], result.allies[1], 'skill1', [])).toBe(equipped ? .25 : 1);
     nativePhaseEnd(result, []);
     expect(result.allies[1].shatter).toBe(equipped ? 116 : 100);
   },
@@ -192,7 +192,7 @@ const checks: Record<MasterConduitId, Check> = {
   },
   'master-bruno-2': (state, equipped) => {
     const result = cast(state, 'ultimate');
-    expect(result.allies[0].shield).toBe(equipped ? 250 : 200);
+    expect(result.allies[0].shield).toBe(equipped ? 375 : 300);
     result.allies[1].shatter = 0;
     nativeGauge(result, result.allies[1], 20, []);
     expect(result.allies[1].shatter).toBe(equipped ? 25 : 20);
@@ -292,8 +292,8 @@ const checks: Record<MasterConduitId, Check> = {
     wound(state);
     state.allies[0].native = { quarry: { target: state.enemies[0].id, round: 1, contributors: [state.allies[1].id] } };
     const result = cast(state, 'ultimate');
-    // The attack makes Rosetta the second contributor, retaining the native 10% heal.
-    expect(result.allies[1].hp).toBe(equipped ? 280 : 200);
+    // Rosetta becomes the second contributor: native 15% heal plus the independent Master heal.
+    expect(result.allies[1].hp).toBe(equipped ? 330 : 250);
     expect(result.allies[2].hp).toBe(100);
     expect(cost(result)).toBe(equipped ? 80 : 100);
   },

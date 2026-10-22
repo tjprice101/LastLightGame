@@ -36,9 +36,9 @@ describe('sixteen native identities without equipment', () => {
     expect(result.state.allies[0].native?.burns?.[target]?.turns).toBe(1);
     state = use(state, 'ember', 'ultimate').state;
     state = use(state, 'ember', 'skill1').state;
-    expect(state.allies[0].native?.burns?.[target]).toEqual({ damage: 45, turns: 3 });
+    expect(state.allies[0].native?.burns?.[target]).toEqual({ damage: 135, turns: 3 });
     const phase = endTurn(state);
-    expect(phase.events.find(event => event.nativeKind === 'burn')?.amount).toBe(45);
+    expect(phase.events.find(event => event.nativeKind === 'burn')?.amount).toBe(135);
   });
 
   it('Tizu explicitly shields one selected ally and expires it after the phase, with a non-damaging ultimate', () => {
@@ -199,7 +199,7 @@ describe('sixteen native identities without equipment', () => {
     delete state.allies[0].native!.seals;
     expect(nativeIncomingMultiplier(state, state.enemies[0], state.allies[0], 'skill1', [])).toBe(1);
     delete state.enemies[0].native;
-    expect(nativeIncomingMultiplier(state, state.enemies[0], state.allies[0], 'ultimate', [])).toBe(.5);
+    expect(nativeIncomingMultiplier(state, state.enemies[0], state.allies[0], 'ultimate', [])).toBe(.25);
   });
 
   it('Razor banks all actual direct HP loss and spends every Wound as fixed noncritical revenge', () => {
@@ -211,7 +211,7 @@ describe('sixteen native identities without equipment', () => {
     expect(small.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(500);
     const large = use(state, 'razor', 'ultimate');
     expect(large.state.allies[0].native?.wounds).toBe(0);
-    expect(large.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(1000);
+    expect(large.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(3000);
   });
 
   it('Razor defensive stance shields only actual phase HP loss, and has no automatic team protection', () => {
@@ -256,7 +256,7 @@ describe('sixteen native identities without equipment', () => {
   it('Thornia stronger empowered traps survive ordinary refreshes', () => {
     let state = use(encounter('thornia'), 'thornia', 'ultimate').state;
     state = use(state, 'thornia', 'skill1').state;
-    expect(state.allies[0].native?.traps?.[state.enemies[0].id]).toMatchObject({ charges: 3, coefficient: .9 });
+    expect(state.allies[0].native?.traps?.[state.enemies[0].id]).toMatchObject({ charges: 3, coefficient: 2.7 });
   });
 
   it('Crinso alternates four edges for Combo3, repeats reset, and never authors Burn', () => {
@@ -265,7 +265,7 @@ describe('sixteen native identities without equipment', () => {
     expect(state.allies[0].native).toMatchObject({ edge: 'crimson', combo: 3 });
     expect(state.enemies.every(enemy => enemy.burn.turns === 0)).toBe(true);
     const ultimate = use(state, 'crinso', 'ultimate');
-    expect(ultimate.events.find(event => event.kind === 'damage')?.amount).toBe(damageAmount(100, 3.95 * nativeBalance.skillDamageScale, 0, false));
+    expect(ultimate.events.find(event => event.kind === 'damage')?.amount).toBe(damageAmount(100, 3.95 * nativeBalance.skillDamageScale * 3, 0, false));
     expect(ultimate.state.allies[0].native).toMatchObject({ combo: 0 });
     expect(ultimate.state.allies[0].native?.edge).toBeUndefined();
     const repeated = use(state, 'crinso', 'skill2');
@@ -315,7 +315,7 @@ describe('sixteen native identities without equipment', () => {
     state = use(state, 'orvella', 'skill1').state;
     expect(state.allies[0].native?.foundation?.durability).toBe(360);
     const demolition = use(state, 'orvella', 'ultimate');
-    expect(demolition.events.filter(event => event.nativeKind === 'demolition').map(event => event.amount)).toEqual([360, 360, 360]);
+    expect(demolition.events.filter(event => event.nativeKind === 'demolition').map(event => event.amount)).toEqual([1080, 1080, 1080]);
     expect(demolition.state.allies[0].native?.foundation).toBeUndefined();
   });
 
@@ -334,7 +334,7 @@ describe('sixteen native identities without equipment', () => {
     expect(state.allies[0].attackBoost).toMatchObject({ fraction: .2, throughRound: 3 });
     state = endTurn(state).state;
     const crescendo = use(state, 'vaelor', 'ultimate');
-    expect(crescendo.events.find(event => event.kind === 'damage')?.amount).toBe(damageAmount(100, 3.4 * nativeBalance.skillDamageScale * 1.2, 0, false));
+    expect(crescendo.events.find(event => event.kind === 'damage')?.amount).toBe(damageAmount(100, 3.4 * nativeBalance.skillDamageScale * 1.2 * 3, 0, false));
     expect(crescendo.state.allies[0].recoverThrough).toBe(4);
     state = endTurn(crescendo.state).state;
     expect(state.allies[0].native?.beat).toBe(0);

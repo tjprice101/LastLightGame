@@ -4,6 +4,7 @@ import { actAndAdvanceTurn } from '../game/battle';
 import { conduitRulesVersion } from '../game/conduit-runtime';
 import type { GameOperation } from './server-game';
 import type { StarterId } from '../content/starters';
+import { nativeIdentityIds } from '../content/native-identities';
 
 let sequence = 0;
 const entropy = { seed: () => 1729, random: () => .5,
@@ -20,6 +21,14 @@ function ready(roster: StarterId[]) {
 }
 
 describe('native identity authoritative parity and restart', () => {
+  it.each(nativeIdentityIds)('matches %s strengthened Last Flare and frozen state online', id => {
+    const game = ready([id, id === 'ember' ? 'tide' : 'ember']);
+    const targetId = game.run!.session.state.enemies[0].id;
+    const local = actAndAdvanceTurn(game.run!.session.state, id, 'ultimate', targetId);
+    const online = op(game, { kind: 'act', runId: game.run!.session.runId, actorId: id, action: 'ultimate', targetId });
+    expect(online.response.result).toEqual(local);
+    expect(op(online.game, { kind: 'read' }).game.run!.session.state).toEqual(local.state);
+  });
   it.each([
     { roster: ['tide', 'ember'] as StarterId[], actor: 'tide', action: 'skill2', target: 'ember' },
     { roster: ['bruno', 'ember'] as StarterId[], actor: 'bruno', action: 'skill2', target: 'ember' },

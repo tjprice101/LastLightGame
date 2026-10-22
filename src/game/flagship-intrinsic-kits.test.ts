@@ -77,8 +77,8 @@ describe('distinct flagship native identities', () => {
     let state = use(encounter('elise'), 'elise', 'skill1').state;
     state = use(state, 'elise', 'skill1', state.enemies[1].id).state;
     const flare = use(state, 'elise', 'ultimate');
-    expect(flare.events.filter(event => event.nativeKind === 'recall').map(event => event.amount)).toEqual([90, 90]);
-    expect(flare.events.filter(event => event.kind === 'damage' && !event.nativeKind).map(event => event.amount)).toEqual([260 * nativeBalance.skillDamageScale]);
+    expect(flare.events.filter(event => event.nativeKind === 'recall').map(event => event.amount)).toEqual([270, 270]);
+    expect(flare.events.filter(event => event.kind === 'damage' && !event.nativeKind).map(event => event.amount)).toEqual([260 * nativeBalance.skillDamageScale * 3]);
     expect(flare.state.allies[0].native?.blades).toEqual([null, null]);
   });
 

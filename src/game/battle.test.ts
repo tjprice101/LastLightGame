@@ -182,7 +182,7 @@ describe('Elemental Gauge', () => {
       expect(use(state, 'tide', 'skill2').allies[0].shield).toBeCloseTo(220 * factor * nativeBalance.tizu.shelter);
       state.allies[0].hp = 100;
       expect(use(state, 'sprout', 'skill2').allies[0].hp).toBe(100);
-      expect(use(state, 'sprout', 'ultimate').allies[0].hp).toBeCloseTo(100 + 220 * factor * nativeBalance.flora.immediateHeal);
+      expect(use(state, 'sprout', 'ultimate').allies[0].hp).toBeCloseTo(Math.min(220 * factor, 100 + 220 * factor * nativeBalance.flora.immediateHeal));
       state.phase = 'cleared';
       state.enemies.forEach((unit) => { unit.hp = 0; });
       expect(nextWave(state).state.allies[0].stats.damage).toBeCloseTo(38 * factor);
@@ -405,7 +405,7 @@ describe('starter abilities and passives', () => {
   it('Flame Arc and Dawnfire hit every enemy', () => {
     const state = controlled();
     expect(use(state, 'ember', 'skill2').enemies.map((unit) => unit.hp)).toEqual(state.enemies.map(unit => 2000 - damageAmount(38, 1.1 * nativeBalance.skillDamageScale, unit.stats.defense, false)));
-    expect(use(state, 'ember', 'ultimate').enemies.map((unit) => unit.hp)).toEqual(state.enemies.map(unit => 2000 - damageAmount(38, 2 * nativeBalance.skillDamageScale, unit.stats.defense, false)));
+    expect(use(state, 'ember', 'ultimate').enemies.map((unit) => unit.hp)).toEqual(state.enemies.map(unit => 2000 - damageAmount(38, 2 * nativeBalance.skillDamageScale * 3, unit.stats.defense, false)));
   });
   it('Tizu has no passive flat Defense and Undertow weakens one enemy-phase window', () => {
     let state = controlled();
@@ -471,7 +471,7 @@ describe('starter abilities and passives', () => {
     const support = use(state, 'sprout', 'skill2');
     expect(support.allies.map((unit) => unit.hp)).toEqual([100, 0, 190]);
     const ultimate = use(state, 'sprout', 'ultimate');
-    expect(ultimate.allies.map((unit) => unit.hp)).toEqual([100 + 220 * nativeBalance.flora.immediateHeal, 0, 190]);
+    expect(ultimate.allies.map((unit) => unit.hp)).toEqual([Math.min(220, 100 + 220 * nativeBalance.flora.immediateHeal), 0, 190]);
     expect(ultimate.enemies.map((unit) => unit.hp)).toEqual([2000, 2000, 2000]);
     expect(ultimate.allies[2].native?.seeds).toEqual({
       ember: { fraction: nativeBalance.flora.empoweredSeed, dueRound: 2, empowered: true },

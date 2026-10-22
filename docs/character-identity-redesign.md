@@ -20,6 +20,18 @@ precedence.
 
 ## Current tuning and implementation
 
+**D-378 Last Flare tuning:** owner selects3x damage and1.5x other potency.
+This multiplies the previously live Last Flare values, not Normal Attack or
+Skill1/2. Damage includes Burn/traps, recalled blades, a released Cyclone and
+Wounds/Foundation payoffs. Healing, shields, Critical Rate bonuses, Cover,
+Instructions, ward reduction and Defense ignore gain1.5x. Resource counts,
+targeting, costs, cooldowns, durations and recovery stay unchanged; existing
+natural caps and actual missing-HP limits still apply. Independent generated
+Conduit effects keep their own formulas. Bruno's native Shield replacement
+also gains1.5x; its current Master formula is375% Defense or37.5% HP.
+Already pending status packets keep their original snapshot; new casts use
+the new potency. No account migration, grants or encounter reset.
+
 Primary native **skill** direct coefficients use a fixed1.6 tuning factor over
 the reviewed first pass. Normal Attack, critical fundamentals, fixed follow-ups,
 Burn, pierce, buffs and mitigation do **not** receive that factor. Authored
@@ -29,33 +41,36 @@ coefficients do not receive the old additional generic potency multiplier.
 
 | Bearer | Skill 1 direct | Skill 2 direct | Last Flare direct |
 | --- | --- | --- | --- |
-| Infernis | 256% A | 176% A all enemies | 320% A all enemies |
+| Infernis | 256% A | 176% A all enemies | 960% A all enemies |
 | Tizu | 240% A | None | None |
 | Flora | 224% A | None | None |
-| Atmoso | 288% A | None | 320% A all enemies |
-| Elise | 176% A throw; 224% A with no held blade | 224% A only when no blade is lodged; otherwise fixed recall | 416% A selected enemy after recall |
-| Bliss | 272% A | 192% A all enemies | 400% A all enemies |
+| Atmoso | 288% A | None | 960% A all enemies |
+| Elise | 176% A throw; 224% A with no held blade | 224% A only when no blade is lodged; otherwise fixed recall | 1248% A selected enemy after recall |
+| Bliss | 272% A | 192% A all enemies | 1200% A all enemies |
 | Bruno | 304% A | None | None |
 | Disciple | None | None | None |
 | Aurora | None | 160% A all enemies | None |
-| Razor | 256% A plus fixed Wounds payoff | None | 352% A plus fixed Wounds payoff |
-| Rosetta | 256% A | Quarry320% A +40 pp per other contributor, cap400%; fallback256% A | 480% A selected Quarry/enemy |
-| Thornia | None | 272% A plus fixed trap consumption | 224% A all enemies |
-| Crinso | 256% A | 320% A, or384% A after Gold | 416% A +72 pp per Combo, cap632% |
-| Nerithe | 288% A | 208% A all enemies | 448% A surveyed/selected enemy |
-| Orvella | 224% A with Foundation; otherwise288% A | None | 320% A all enemies plus finite demolition |
-| Vaelor | 272% A | 192% A all enemies | 416% A, or544% A during Crescendo |
+| Razor | 256% A plus fixed Wounds payoff | None | 1056% A plus tripled Wounds payoff |
+| Rosetta | 256% A | Quarry320% A +40 pp per other contributor, cap400%; fallback256% A | 1440% A selected Quarry/enemy |
+| Thornia | None | 272% A plus fixed trap consumption | 672% A all enemies |
+| Crinso | 256% A | 320% A, or384% A after Gold | 1248% A +216 pp per Combo;1896% at Combo3 |
+| Nerithe | 288% A | 208% A all enemies | 1344% A surveyed/selected enemy |
+| Orvella | 224% A with Foundation; otherwise288% A | None | 960% A all enemies plus tripled finite demolition |
+| Vaelor | 272% A | 192% A all enemies | 1248% A, or1632% A during Crescendo |
 
-Flora's ordinary Seed stores50% R, empowered Seed65% R, and Last Flare's
-immediate heal offers50% R. No automatic native passive heal remains. Tizu's
-selected one-phase Shelter offers45% R; two-phase Ocean Memory offers35% R
-to each living ally and its original first-hit30% reduction. Equipment and
+Flora's ordinary Seed stores50% R, empowered Seed97.5% R, and Last Flare's
+immediate heal offers75% R. No automatic native passive heal remains. Tizu's
+selected one-phase Shelter offers45% R; two-phase Ocean Memory offers52.5% R
+to each living ally and first-hit45% reduction. Equipment and
 Instructions modify these offers once under their explicit rules.
 
-Other reviewed non-direct percentages and clocks remain: Infernis25%/45% A
-Burn, Cyclone70% +30% per Gust, Elise90% recalls/60% convergence,
-Bruno50%/40% Cover, Instruction30%/35%, native Quarry8% contributor shields,
-Thornia60%/90% retaliation, and Foundation30% H budget. The
+Ordinary skill/passive values remain: Infernis25% A Burn, Cyclone70% +30%
+per Gust, Elise90% recalls/60% convergence, Bruno50% Cover, Instruction30%/35%,
+native Quarry8% contributor shields, Thornia60% retaliation and Foundation30% H.
+Last Flare now offers135% A Burn,3x Cyclone releases,270% recalls/180%
+convergence,60% Cover/30% H self Shield,45%/52.5% Resolve bonuses,75% Aurora
+ward,15% Rosetta/Closing Bliss healing,45 pp Opening Bliss Critical Rate,
+270% trap retaliation and45% Crinso/22.5% per-point Nerithe Defense ignore. The
 [133-item compatibility matrix](character-conduit-compatibility.md) documents
 each retained/adapted item, including intentional transformations of these
 values or targets.

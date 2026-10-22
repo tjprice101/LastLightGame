@@ -150,7 +150,7 @@ describe('Phase 0 cross-effect rules', () => {
     const result = act(state, elise.id, action, target.id);
     const recalls = result.events.filter(event => event.kind === 'damage' && event.nativeKind === 'recall');
     expect(recalls.map(event => event.amount)).toEqual([.9, .9, .6].map(coefficient =>
-      damageAmount(100, coefficient * 1.7, 55, false)));
+      damageAmount(100, coefficient * 1.7 * (action === 'ultimate' ? 3 : 1), 55, false)));
     const total = result.events.filter(event => event.kind === 'damage' && event.origin === 'native')
       .reduce((sum, event) => sum + event.amount + (event.shieldAbsorbed ?? 0), 0);
     expect(result.state.allies[1].hp).toBe(100 + Math.round(total * .1));

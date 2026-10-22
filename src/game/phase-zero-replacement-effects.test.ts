@@ -120,7 +120,7 @@ describe('Phase 0 Master token lifetimes', () => {
         expect(aurora.allies[0].native?.seals?.[aurora.enemies[0].id]?.throughPhase).toBe(3 + duration);
         const ward = cast('aurora', 'ultimate');
         expect(ward.allies[0].native?.ultimateWardThrough).toBe(2 + duration);
-        expect(ward.allies[0].native?.ultimateWardReduction).toBeCloseTo(.5 * power);
+        expect(ward.allies[0].native?.ultimateWardReduction).toBeCloseTo(.75 * power);
         const orvella = cast('orvella', 'skill2', 'master-orvella-1');
         expect(orvella.allies[0].native?.foundation?.durability).toBeCloseTo(300 * power);
         expect(orvella.allies[0].native?.foundation?.throughPhase).toBe(3 + duration);

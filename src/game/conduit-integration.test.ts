@@ -129,10 +129,10 @@ describe('equipped Conduit battle integration audit', () => {
     state = endTurn(state).state;
     expect(gear(state.enemies[0]).numbers['cinder:ember']).toBe(2);
     state = use(state, 'skill1').state;
-    expect(state.enemies[0].burn.damage).toBe(45);
+    expect(state.enemies[0].burn.damage).toBe(135);
     expect(gear(state.enemies[0]).numbers['cinder:ember']).toBe(0);
     const result = endTurn(state);
-    expect(result.events.find(event => event.kind === 'damage' && event.nativeKind === 'burn')?.amount).toBe(45);
+    expect(result.events.find(event => event.kind === 'damage' && event.nativeKind === 'burn')?.amount).toBe(135);
   });
 
   it('applies Eclipse Mantle Defense pierce and Weaken consumption on Normal Attack', () => {
@@ -200,7 +200,8 @@ describe('equipped Conduit battle integration audit', () => {
     const state = withMasterLoadouts(encounter('bruno'), { bruno: 'master-bruno-2' });
     state.allies[0].stats.defense = defense;
     const result = use(state, 'ultimate');
-    expect(result.state.allies[0].shield).toBe(Math.max(2000, defense * 2));
-    expect(result.state.allies[0].native?.cover).toMatchObject({ fraction: .4, throughPhase: 2 });
+    expect(result.state.allies[0].shield).toBe(Math.max(2000, defense * 2) * 1.5);
+    expect(result.state.allies[0].native?.cover?.fraction).toBeCloseTo(.6);
+    expect(result.state.allies[0].native?.cover?.throughPhase).toBe(2);
   });
 });

@@ -29,6 +29,10 @@ Citadel Spine, Immortal Vessel, Pale Bulwark Diadem and Starvein Conductor.
 
 ## Status vocabulary
 
+**Last Flare potency (D-378):** all16 characters gain3x Last Flare damage
+and1.5x non-damage potency, with costs, recovery, durations and targeting
+unchanged. [Exact tuning and validation](character-identity-redesign.md#current-tuning-and-implementation).
+
 **Capture rate (D-377):** every eligible enemy in Soar, Delve, Treasury,
 Sanctuary and Roses now rolls50% independently per kill. Roses retains
 the enemy Lv.120 eligibility ceiling; owned copies remain capped at60.

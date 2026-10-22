@@ -1,5 +1,34 @@
 # Current state and handoff
 
+## Last Flare potency (D-378; 2026-10-22)
+
+- Owner selects3x damage/1.5x non-damage potency for all16 characters.
+  Shared native action/direct and manual-packet paths cover main hits, Burn,
+  traps, recalls, Cyclone releases and Wounds/Foundation. Non-damage changes
+  include healing/Seeds, Shield/Cover, Resolve, ward, Critical Rate and pierce.
+  Costs, recovery, clocks, counts, eligibility and pending snapshots unchanged.
+  Independent generated equipment effects retain their formulas; Bruno's
+  native Master Shield replacement is scaled and catalog copy refreshed.
+- Added roster-wide numerical and conditional tests plus all16 authority
+  parity/read tests. Hosted smoke `node tools/smoke_server_game.mjs
+  --last-flare` exercises all16 with stored/conditional resources, exact local/
+  hosted results, persistence, retry safety and unchanged costs/recovery using
+  disposable identities only.
+- Validation: full `npx vitest run --maxWorkers=2 --reporter=json` passed6,204
+  tests/199 files. `npm run build` passed after adding the optional-layer guard
+  to the new test (28 cases rerun); authority bundle/type-check and
+  `git diff --check` passed. The138-entry/726-scenario Conduit matrix is
+  refreshed and now hashes native tuning/identity definitions plus Last Flare
+  numerical/authority tests. Existing Vite chunk-size advisory only.
+- Matching authority deployed with `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  `node tools/smoke_server_game.mjs --last-flare` passed for all16:
+  exact local/hosted effects, stored payoffs, persistent snapshots and
+  idempotent retries. Disposable identities/cascading records removed;
+  no owner accounts modified. Docker-not-running warning was nonfatal.
+- Publishing client through main-branch Pages full tests/configured online
+  build/deployment; verify hosted version after workflow completion.
+
 ## Publishing D-375 through D-377 (2026-10-22)
 
 - Owner requests push/deploy now and by default for completed validated project

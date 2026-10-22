@@ -1,5 +1,17 @@
 # Combat specification
 
+## Last Flare potency (D-378)
+
+All16 Element-Bearers receive3x their previously live Last Flare damage and
+1.5x non-damage potency. This includes delayed/stored native damage, healing,
+shielding, bonuses, mitigation and Defense ignore, not ordinary skills or
+independent Conduit-generated effects. Gauge costs, recovery, durations,
+resource counts, target eligibility and snapshots are preserved.
+[Exact roster values and scope](character-identity-redesign.md#current-tuning-and-implementation).
+Validate `last-flare-balance.test.ts`, native kit/content/presentation suites
+and `native-identities-server.test.ts`; hosted release check:
+`node tools/smoke_server_game.mjs --last-flare`. specification
+
 ## Phase 0 activated release (D-368/D-370)
 
 The [owner-edited catalog](conduit-catalog.txt) is the approved target for the

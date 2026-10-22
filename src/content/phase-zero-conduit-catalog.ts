@@ -551,7 +551,7 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Quarry Planet Gravitas",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Bruno only)",
-    "ability": "Bruno's Last Flare Shield equals the greater of 250% effective Defense or 25% maximum HP. Allies under his Cover gain +25% Elemental Gauge Gain."
+    "ability": "Bruno's Last Flare Shield equals the greater of 375% effective Defense or 37.5% maximum HP. Allies under his Cover gain +25% Elemental Gauge Gain."
   },
   "master-bliss-3": {
     "name": "Quiet Heaven Fanforge",

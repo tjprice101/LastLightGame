@@ -50,10 +50,10 @@ describe('distinct no-equipment starter identities', () => {
     const state = encounter('ember');
     const flare = use(state, 'ember', 'ultimate');
     expect(flare.events.some(event => event.nativeKind === 'detonation')).toBe(false);
-    expect(flare.events.find(event => event.kind === 'damage')?.amount).toBe(200 * nativeBalance.skillDamageScale);
+    expect(flare.events.find(event => event.kind === 'damage')?.amount).toBe(200 * nativeBalance.skillDamageScale * 3);
     expect(flare.state.allies[0].recoverThrough).toBe(state.round + 1);
     const refreshed = use(flare.state, 'ember', 'skill1');
-    expect(refreshed.state.allies[0].native?.burns?.[state.enemies[0].id]).toEqual({ damage: 45, turns: 3 });
+    expect(refreshed.state.allies[0].native?.burns?.[state.enemies[0].id]).toEqual({ damage: 135, turns: 3 });
   });
 
   it('Tizu requires a living ally target and grants only that recipient the tuned short barrier', () => {
@@ -84,7 +84,7 @@ describe('distinct no-equipment starter identities', () => {
     expect(result.state.allies.map(unit => unit.shield)).toEqual([1000 * nativeBalance.tizu.oceanMemory, 1000 * nativeBalance.tizu.oceanMemory]);
     expect(result.state.allies[0].recoverThrough).toBe(state.round + 1);
     expect(result.state.allies[1].conduitRuntime?.layers).toContainEqual(expect.objectContaining({
-      owner: 'tide', native: true, firstReduction: .3, expiresAfterPhase: state.round + 1,
+      owner: 'tide', native: true, firstReduction: .3 * 1.5, expiresAfterPhase: state.round + 1,
     }));
   });
 
@@ -113,7 +113,7 @@ describe('distinct no-equipment starter identities', () => {
 
   it('Worldseed heals immediately, preserves empowered delivery and never revives', () => {
     const state = encounter('sprout', 'ember', 'tide');
-    state.allies[0].hp = state.allies[1].hp = 500;
+    state.allies[0].hp = state.allies[1].hp = 100;
     state.allies[2].hp = 0;
     const flare = use(state, 'sprout', 'ultimate');
     expect(flare.events.filter(event => event.kind === 'heal').map(event => event.amount)).toEqual([1000 * nativeBalance.flora.immediateHeal, 1000 * nativeBalance.flora.immediateHeal]);

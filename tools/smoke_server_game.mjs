@@ -48,7 +48,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--capture-rate')) {
+  if (process.argv.includes('--last-flare')) {
+    await smokeLastFlare(client, created.user.id, username);
+  } else if (process.argv.includes('--capture-rate')) {
     await smokeFinalLoot(client, created.user.id, username, false, true);
   } else if (process.argv.includes('--rose-progression')) {
     await smokeRoseProgression(client, created.user.id, username);
@@ -661,6 +663,68 @@ async function smokeGuaranteedComponents(client, userId, username) {
     response = await invoke({ kind: 'quit', runId: response.session.runId }, response.revision);
   }
   console.log('Hosted component smoke passed: actual stage1 kills and near-defeated stage100 boss guarantee 3/625 components, atomic balances and idempotent reward retry. No owner accounts modified.');
+}
+
+async function smokeLastFlare(firstClient, firstId, firstUsername) {
+  const roster = ['ember', 'tide', 'sprout', 'atmoso', 'elise', 'bliss', 'bruno', 'disciple',
+    'aurora', 'razor', 'rosetta', 'thornia', 'crinso', 'nerithe', 'orvella', 'vaelor'];
+  const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+  for (const [index, actorId] of roster.entries()) {
+    let client = firstClient, userId = firstId, username = firstUsername;
+    if (index) {
+      username = `flare_${randomUUID().replaceAll('-', '').slice(0, 10)}`;
+      const password = randomUUID() + randomUUID(), email = `${username}@example.invalid`;
+      const made = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { username } });
+      if (made.error || !made.data.user) throw new Error('Last Flare smoke identity creation failed.');
+      userId = made.data.user.id;
+      ids.push(userId);
+      client = createClient(url, clientKey, { auth: { persistSession: false } });
+      if ((await client.auth.signInWithPassword({ email, password })).error) throw new Error('Last Flare smoke authentication failed.');
+    }
+    let game = freshGame(username);
+    game.starterId = 'ember';
+    const other = actorId === 'ember' ? 'tide' : 'ember';
+    game.account.characters = Object.fromEntries([actorId, other].map(id => [id, { level: 0, evolution: 1 }]));
+    game.account.squad = [actorId, other];
+    game = resolveOperation(game, { kind: 'enter', activity: { kind: 'training' } }, entropy).game;
+    const state = game.run.session.state;
+    for (const ally of state.allies) {
+      ally.stats.health = 1000; ally.hp = 100; ally.stats.damage = 100;
+      ally.stats.crit = 0; ally.shatter = 100;
+    }
+    for (const enemy of state.enemies) {
+      enemy.stats.health = enemy.hp = 100000; enemy.stats.defense = 100;
+    }
+    const owner = state.allies[0], target = state.enemies[0];
+    if (actorId === 'elise') owner.native = { blades: [target.id, target.id] };
+    if (actorId === 'atmoso') owner.native = { cyclone: { gusts: 2, phases: 2, contributors: {}, skillPower: 1 } };
+    if (actorId === 'razor') owner.native = { wounds: 200 };
+    if (actorId === 'orvella') owner.native = { foundation: { durability: 200, maximum: 300, throughPhase: 3 } };
+    if (actorId === 'crinso') owner.native = { combo: 3, edge: 'crimson' };
+    if (actorId === 'nerithe') owner.native = { survey: { target: target.id, points: 2 } };
+    if (actorId === 'rosetta') owner.native = { quarry: { target: target.id, round: 1, contributors: [other] } };
+    assert.ok(ids.includes(userId));
+    const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+    assert.equal(seeded.error, null);
+    async function invoke(operation, revision, requestId = randomUUID()) {
+      const response = await client.functions.invoke('game-operation', { body: { operation, expectedRevision: revision, requestId } });
+      if (response.error) throw new Error(`Hosted Last Flare ${operation.kind} failed (${response.error.context?.status ?? 'transport'}).`);
+      return response.data;
+    }
+    const operation = { kind: 'act', runId: game.run.session.runId, actorId, action: 'ultimate', targetId: target.id };
+    const expected = resolveOperation(game, operation, entropy).response;
+    const requestId = randomUUID();
+    const read = await invoke({ kind: 'read' }, 0);
+    const actual = await invoke(operation, read.revision, requestId);
+    assert.deepEqual(actual.result, expected.result, actorId);
+    assert.equal(actual.session.state.allies[0].shatter, 0);
+    assert.equal(actual.session.state.allies[0].recoverThrough, 2);
+    assert.deepEqual(actual.account, expected.account);
+    assert.deepEqual(await invoke(operation, read.revision, requestId), actual);
+    const persisted = await invoke({ kind: 'read' }, actual.revision);
+    assert.deepEqual(persisted.session.state, actual.session.state);
+  }
+  console.log('Hosted Last Flare smoke passed: all16 characters, exact client/server damage/support and stored follow-ups, unchanged costs/recovery, persisted snapshots and idempotent retries. No owner accounts modified.');
 }
 
 async function smokeFinalLoot(firstClient, firstId, firstUsername, includeEarly = false, captureRate = false) {

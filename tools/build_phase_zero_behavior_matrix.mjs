@@ -62,6 +62,8 @@ const digestPaths = [
   'src/content/phase-zero-conduit-upgrades.test.ts', 'src/content/phase-zero-conduit-upgrades.ts',
   'src/content/phase-zero-conduit-stats.ts', 'src/game/conduit-runtime.ts', 'src/game/native-kits.ts',
   'src/game/battle.ts', 'src/game/calamitic-conduits.ts',
+  'src/content/native-balance.ts', 'src/content/native-identities.ts',
+  'src/game/last-flare-balance.test.ts', 'src/online/native-identities-server.test.ts',
   'src/online/phase-zero-authority.test.ts', 'src/presentation/phase-zero-battle-controls.test.ts',
   'supabase/functions/game-operation/engine.ts', 'src/content/phase-zero-stats.ts',
   'src/presentation/phase-zero-release-gate.test.ts', 'src/content/phase-zero-stats.test.ts',

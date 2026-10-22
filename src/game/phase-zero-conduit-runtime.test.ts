@@ -434,7 +434,7 @@ describe('Phase 0 shared runtime math', () => {
     const activation = prepareConduitAction(state, bruno, 'ultimate', 100, false);
     nativeAction(state, bruno, 'ultimate', state.enemies[0].id, [], () => {}, activation);
     expect(bruno.shield).toBe(Math.round(Math.max(250, effectiveDefense(state, bruno) * 2.5) *
-      activation.skillPower));
+      activation.skillPower * 1.5));
   });
 
   it('grants Master Bruno the Cover Defense and next-skill power only after routing damage', () => {

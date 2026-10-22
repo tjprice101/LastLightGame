@@ -618,7 +618,7 @@ Ability (Default Value): Gain +15% Skill Power per different combat element amon
 Name: Quarry Planet Gravitas
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Bruno only)
-Ability (Default Value): Bruno's Last Flare Shield equals the greater of 250% effective Defense or 25% maximum HP. Allies under his Cover gain +25% Elemental Gauge Gain.
+Ability (Default Value): Bruno's Last Flare Shield equals the greater of 375% effective Defense or 37.5% maximum HP. Allies under his Cover gain +25% Elemental Gauge Gain.
 
 Name: Quiet Heaven Fanforge
 Rarity: Omnic (Master)

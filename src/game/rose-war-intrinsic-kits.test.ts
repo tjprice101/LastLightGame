@@ -65,7 +65,7 @@ describe('distinct Rose and Elemental War identities', () => {
   it('Thornia can harvest one charge immediately and weaker refresh preserves empowered retaliation', () => {
     let state = use(encounter('thornia'), 'thornia', 'ultimate').state;
     state = use(state, 'thornia', 'skill1').state;
-    expect(state.allies[0].native?.traps?.[state.enemies[0].id]).toMatchObject({ charges: 3, coefficient: .9 });
+    expect(state.allies[0].native?.traps?.[state.enemies[0].id]).toMatchObject({ charges: 3, coefficient: 2.7 });
     const harvest = use(state, 'thornia', 'skill2');
     expect(harvest.events.find(event => event.nativeKind === 'trap')?.amount).toBe(80);
     expect(harvest.state.allies[0].native?.traps?.[state.enemies[0].id]?.charges).toBe(2);
@@ -77,7 +77,7 @@ describe('distinct Rose and Elemental War identities', () => {
     expect(state.allies[0].native).toMatchObject({ combo: 3, edge: 'crimson' });
     expect(state.enemies.every(enemy => enemy.burn.turns === 0)).toBe(true);
     const flare = use(state, 'crinso', 'ultimate');
-    expect(flare.events.filter(event => event.kind === 'damage').map(event => event.amount)).toEqual([Math.round(395 * nativeBalance.skillDamageScale)]);
+    expect(flare.events.filter(event => event.kind === 'damage').map(event => event.amount)).toEqual([Math.round(395 * nativeBalance.skillDamageScale * 3)]);
     expect(flare.state.allies[0].native?.combo).toBe(0);
     expect(flare.state.allies[0].native?.edge).toBeUndefined();
     expect(flare.state.allies[0].recoverThrough).toBe(state.round + 1);
@@ -130,7 +130,7 @@ describe('distinct Rose and Elemental War identities', () => {
     expect(repair.events.find(event => event.kind === 'damage')?.amount).toBe(140 * nativeBalance.skillDamageScale);
     expect(repair.state.allies[0].native?.foundation?.durability).toBe(330);
     const demolition = use(repair.state, 'orvella', 'ultimate');
-    expect(demolition.events.filter(event => event.nativeKind === 'demolition').map(event => event.amount)).toEqual([330, 330]);
+    expect(demolition.events.filter(event => event.nativeKind === 'demolition').map(event => event.amount)).toEqual([990, 990]);
     expect(demolition.state.allies[0].native?.foundation).toBeUndefined();
     const noStructure = use(encounter('orvella'), 'orvella', 'skill1');
     expect(noStructure.events.find(event => event.kind === 'damage')?.amount).toBe(180 * nativeBalance.skillDamageScale);
@@ -146,7 +146,7 @@ describe('distinct Rose and Elemental War identities', () => {
     state = endTurn(state).state;
     expect(state.allies[0].native?.beat).toBe(2);
     const flare = use(state, 'vaelor', 'ultimate');
-    expect(flare.events.filter(event => event.kind === 'damage').map(event => event.amount)).toEqual([Math.round(340 * nativeBalance.skillDamageScale * 1.2), Math.round(340 * nativeBalance.skillDamageScale * 1.2)]);
+    expect(flare.events.filter(event => event.kind === 'damage').map(event => event.amount)).toEqual([Math.round(340 * nativeBalance.skillDamageScale * 1.2 * 3), Math.round(340 * nativeBalance.skillDamageScale * 1.2 * 3)]);
     const recovery = endTurn(flare.state).state;
     expect(recovery.allies[0].native?.beat).toBe(0);
     expect(recovery.allies[0].recoverThrough).toBe(flare.state.round + 1);
@@ -161,7 +161,7 @@ describe('distinct Rose and Elemental War identities', () => {
     expect(small.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(500);
     expect(small.state.allies[0].native?.wounds).toBe(0);
     const flare = use(state, 'razor', 'ultimate');
-    expect(flare.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(1000);
+    expect(flare.events.find(event => event.nativeKind === 'revenge')?.amount).toBe(3000);
     expect(flare.state.allies[0].native?.wounds).toBe(0);
   });
 

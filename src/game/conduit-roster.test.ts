@@ -678,8 +678,8 @@ function exerciseMaster(id: MasterConduitId, enabled: boolean): void {
       owner.stats.damage = 200;
       owner.stats.defense = 200;
       const result = attack('ultimate');
-      expect(result.state.allies[0].shield).toBe(enabled ? 400 : 200);
-      expect(result.state.allies[0].native?.cover?.fraction).toBe(.4);
+      expect(result.state.allies[0].shield).toBe(enabled ? 600 : 300);
+      expect(result.state.allies[0].native?.cover?.fraction).toBeCloseTo(.6);
       expect(conduitHitModifiers(state, owner, target, context(), false).attack).toBe(200);
       break;
     }
