@@ -100,8 +100,8 @@ describe('Calamitic market and shared surfaces', () => {
       expect(row?.querySelector('strong')?.textContent).toBe(String(tokens));
       expect(row?.querySelector('img')?.getAttribute('src')).toBe(currencyArt('calamitic-tokens'));
       const reward = rollCalamityChest('machines', tier, () => 0);
-      expect(calamityOpeningReward(`calamity:machines:${tier}`, reward).details).toContain(`${tokens} Calamitic Tokens`);
-      expect(calamityOpeningReward(`calamity:machines:${tier}`, reward).details).toContain(currencyArt('calamitic-tokens'));
+      expect(calamityOpeningReward(`calamity:machines:${tier}`, reward).art).toContain(`${tokens} Calamitic Tokens`);
+      expect(calamityOpeningReward(`calamity:machines:${tier}`, reward).art).toContain(currencyArt('calamitic-tokens'));
     }
   });
 

@@ -4,7 +4,7 @@ import { type Account, type openCalamityChest } from '../game/account';
 import { activityAccess, assertActivityAccess } from '../game/activity-access';
 import { information } from './information';
 import { escapeDialogText, gameConfirm, gameDialogPending } from './game-dialog';
-import { materialName } from '../content/dungeon-art';
+import { materialArt, materialName } from '../content/dungeon-art';
 import { getConduit, isConduitId } from '../content/conduits';
 import { type RewardPresentation } from './reward-screen';
 import { calamityBossArt, calamityChestArt, calamityArenaArt } from '../content/calamity-art';
@@ -13,6 +13,8 @@ import { pngFallback } from './image-format';
 import './calamity.css';
 import { enemyStrength } from './enemy-strength';
 import { currencyIcon } from './currency-icon';
+import { conduitIcon } from './conduit-store';
+import { masterChestIcon } from './master-conduits';
 
 export function activityDifficulty(activity: CalamityActivityId, normal: string, account: Account | null): string {
   const name = calamityActivities.find(entry => entry.id === activity)?.name;
@@ -180,19 +182,26 @@ export function calamityCadence(activity: CalamityActivityId, round: number): st
 export function calamityOpeningReward(id: string, reward: ReturnType<typeof openCalamityChest>['reward']): RewardPresentation {
   const { activity, tier } = parseCalamityChestId(id);
   const chest = calamityChest(activity, tier);
-  const lines = [
-    ...(reward.fractalis ? [`${reward.fractalis} Prismatica`] : []),
-    ...(reward.lycalis ? [`${reward.lycalis} Null-Prismatica`] : []),
-    ...Object.entries(reward.materials).map(([material, amount]) => `${amount} ${materialName(material)}`),
+  const items: { label: string; art: string }[] = [
+    ...(reward.fractalis ? [{ label: `${reward.fractalis} Prismatica`, art: currencyIcon('fractalis') }] : []),
+    ...(reward.lycalis ? [{ label: `${reward.lycalis} Null-Prismatica`, art: currencyIcon('lycalis') }] : []),
+    ...Object.entries(reward.materials).map(([material, amount]) => {
+      const art = materialArt(material);
+      return { label: `${amount} ${materialName(material)}`, art: art
+        ? `<img src="${assetUrl(`materials/${art}.png`)}" alt="" width="80" height="80">`
+        : '<span class="art-pending">Artwork pending</span>' };
+    }),
     ...Object.entries(reward.conduits).map(([conduit, amount]) => {
       if (!isConduitId(conduit)) throw new Error('Unknown Conduit in chest receipt.');
-      return `${amount} ${getConduit(conduit).name}`;
+      return { label: `${amount} ${getConduit(conduit).name}`, art: conduitIcon(conduit) };
     }),
-    ...(reward.mechanicalComponents ? [`${reward.mechanicalComponents} Broken Mechanical Components`] : []),
-    ...(reward.masterChests ? [`${reward.masterChests} Cosmic Grand Master Chests`] : []),
+    ...(reward.mechanicalComponents ? [{ label: `${reward.mechanicalComponents} Broken Mechanical Components`, art: currencyIcon('mechanical-components') }] : []),
+    ...(reward.masterChests ? [{ label: `${reward.masterChests} Cosmic Grand Master Chests`, art: masterChestIcon() }] : []),
+    ...(reward.calamiticTokens ? [{ label: `${reward.calamiticTokens} Calamitic Tokens`, art: currencyIcon('calamitic-tokens') }] : []),
   ];
-  return { title: 'Calamity chest opened', name: chest.name, art: calamityChestIcon(tier),
-    details: `<ul>${lines.map(line => `<li>${escapeDialogText(line)}</li>`).join('')}${
-      reward.calamiticTokens ? `<li class="currency-reward">${currencyIcon('calamitic-tokens')}${reward.calamiticTokens} Calamitic Tokens</li>` : ''}</ul>`,
+  return { title: 'Calamity chest opened', name: chest.name,
+    art: `<ul class="summon-ten-grid calamity-reward-grid" aria-label="Received loot">${items.map(item =>
+      `<li class="summon-ten-result"><div class="summon-ten-art">${item.art}</div><b>${escapeDialogText(item.label)}</b></li>`).join('')}</ul>`,
+    details: '<p>Rewards added to Inventory.</p>',
     accent: '#ed4545', animationLabel: 'Opening chest…', savedLabel: 'Rewards saved' };
 }

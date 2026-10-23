@@ -276,11 +276,40 @@ describe('Calamity presentation', () => {
       expect(html).not.toContain('<th>Weight</th>');
       const reward = rollCalamityChest(activity.id, tier, () => .1);
       const reveal = calamityOpeningReward(chest.id, reward);
-      expect(reveal.details).toContain(`${reward.fractalis} Prismatica`);
-      expect(reveal.details).toContain(`${reward.lycalis} Null-Prismatica`);
-      expect(reveal.art).toContain(`items/${calamityChestArt[tier]}.png?v=`);
+      expect(reveal.art).toContain(`${reward.fractalis} Prismatica`);
+      expect(reveal.art).toContain(`${reward.lycalis} Null-Prismatica`);
+      expect(reveal.art).not.toContain('calamity-chest-art');
+      expect(reveal.art).not.toContain(`items/${calamityChestArt[tier]}.png?v=`);
+      document.body.innerHTML = reveal.art;
+      expect(document.querySelector('[aria-label="Received loot"]')).not.toBeNull();
+      expect(document.body.textContent).toContain(`${reward.fractalis} Prismatica`);
+      expect(document.body.textContent).toContain(`${reward.lycalis} Null-Prismatica`);
+      expect(document.querySelectorAll('.summon-ten-result')).toHaveLength(
+        Number(reward.fractalis > 0) + Number(reward.lycalis > 0)
+        + Object.keys(reward.materials).length + Object.keys(reward.conduits).length
+        + Number(reward.mechanicalComponents > 0) + Number(reward.masterChests > 0)
+        + Number(reward.calamiticTokens > 0));
       expect(reveal.savedLabel).toBe('Rewards saved');
     }
+  });
+
+  it('reveals every saved loot category without rerolling, changing the receipt, or showing the consumed chest', () => {
+    const reward = { ...rollCalamityChest('machines', 3, () => .1),
+      materials: { 'infernic-common': 17 }, conduits: { 'stasis-reliquary': 1 },
+      mechanicalComponents: 23, masterChests: 2, calamiticTokens: 50 };
+    const before = structuredClone(reward);
+    const reveal = calamityOpeningReward('calamity:machines:3', reward);
+    document.body.innerHTML = reveal.art;
+    const labels = Array.from(document.querySelectorAll('.summon-ten-result b'), item => item.textContent);
+    expect(labels).toHaveLength(7);
+    expect(labels).toContain('1 Stasis Reliquary');
+    expect(labels).toContain('23 Broken Mechanical Components');
+    expect(labels).toContain('2 Cosmic Grand Master Chests');
+    expect(labels).toContain('50 Calamitic Tokens');
+    expect(document.querySelectorAll('img')).toHaveLength(7);
+    expect(document.querySelector('img[src*="calamity-chest-"]')).toBeNull();
+    expect(document.querySelector('img[src*="master-chest"]')).not.toBeNull();
+    expect(reward).toEqual(before);
   });
 
   it('lists only owned positive chest stacks, preserves filters, and never opens them while rendering', () => {

@@ -1,5 +1,25 @@
 # Calamity Mode (D-308 / D-315)
 
+## Opened chest loot presentation (D-388)
+
+Every Calamity chest opening reveals its actual saved loot as artwork/name/
+quantity cards using the banner result grid. Do not show the consumed
+Slayer/Master/Omnipotent chest image on the opening result screen.
+Currencies, materials, Conduits, Broken Mechanical Components, Calamitic
+Tokens and awarded Cosmic Grand Master Chests use their shared artwork
+resolvers; genuinely pending artwork remains a named neutral placeholder.
+An awarded Cosmic Grand Master Chest is loot, so its image remains valid.
+Do not duplicate the card receipt as a second list below it.
+
+Keep the shared reward dialog's animation, Skip, Continue, Escape,
+reduced motion, focus restoration and saved-error behavior. Rendering only
+presents the existing saved receipt; no rerolls, writes or claims are added.
+Inventory, battle victory receipts, drop art and View Loot retain sealed-chest
+art because those surfaces describe the unopened item. Master-choice openings
+already show their awarded Master, not a chest, and remain unchanged.
+Validate Calamity/reward-screen/Calamitic presentation tests and production
+layout at320/390/1280 CSS pixels.
+
 The owner requests implementation with placeholder art and delegates final
 boss mechanics, loot weights/quantities and difficulty tuning. Free entry,
 no defeat penalty and verifiable-final-clear access are approved. Client/server

@@ -1,5 +1,13 @@
 # Combat specification
 
+## Critical popup size revision (D-388)
+
+Owner finds D-386 too small. Critical/Elemental Crit numbers now use28-40px,
+with separate16-20px white labels, both responsive. Keep static rainbow
+Elemental Crit numbers, the1.05 peak scale, exact values/accessibility names,
+normal popups, impact clocks and reduced-motion behavior unchanged.
+This supersedes D-386's22-34px numbers/12px labels, not its clustered loot.
+
 ## Stasis status readability (D-387)
 
 Stasis Reliquary's active protection explicitly prevents further damage this

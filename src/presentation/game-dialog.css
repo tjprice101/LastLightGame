@@ -51,6 +51,9 @@
 .summon-ten-art img, .summon-ten-art .character-idle { width: 100%; height: 100%; min-width: 0; min-height: 0; max-width: 100%; max-height: 100%; object-fit: contain; animation: none; }
 .summon-ten-result b { font-size: 13px; line-height: 1.25; overflow-wrap: anywhere; }
 .summon-ten-result small { font-size: 11px; opacity: .8; }
+.calamity-reward-grid .summon-ten-result { grid-template-rows: auto auto; }
+.calamity-reward-grid .conduit-icon-frame { width: 100%; height: 100%; min-height: 0; }
+.reward-screen[data-reward-revealed]:has(.calamity-reward-grid) .reward-stage { min-height: 0; }
 @media (max-width: 640px) { .summon-ten-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .reward-screen .game-dialog-actions { justify-content: center; flex-shrink: 0; margin-top: 16px; padding-top: 12px; border-top: 1px solid #ffffff26; }
 .reward-animation-label { font-size: clamp(20px, 4vw, 32px); margin: 14px 0; }

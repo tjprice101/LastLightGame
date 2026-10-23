@@ -5,6 +5,10 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Post-refresh battle measurements
 
+**Current presentation (D-388):** [larger critical numbers/labels](combat.md#critical-popup-size-revision-d-388)
+supersede D-386 sizes. [Calamity opening results](calamity-mode.md#opened-chest-loot-presentation-d-388)
+show saved loot cards instead of the consumed chest image.
+
 **Status readability (D-387):** [clear Stasis damage-taken/cooldown wording and
 full-width Conduit status rows](combat.md#stasis-status-readability-d-387)
 prevent active statuses from squeezing HP into a vertical stack.

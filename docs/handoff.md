@@ -1,5 +1,28 @@
 # Current state and handoff
 
+## Critical size, Calamity loot and read-only Conduit audit (D-388)
+
+- Owner finds critical text too small: responsive numbers now28-40px and
+  separate white labels16-20px. Keep exact values, static rainbow, accessibility
+  names,1.05 peak scale and normal/impact/reduced-motion behavior.
+- Calamity opening results use actual saved artwork/name/quantity loot cards
+  on the existing banner-result grid. No consumed Calamity chest image or
+  duplicate list; awarded Cosmic Grand Master Chests remain legitimate loot.
+  Preserve shared Skip/Continue/Escape, focus and persistence semantics.
+- Production CSS browser fixture at actual320/390/1280 CSS-pixel widths
+  confirms28/28/38.4px numbers and16/16/19.2px labels, two/two/five loot
+  columns and no horizontal dialog overflow. No account writes.
+- `npx vitest run src\presentation\calamity.test.ts
+  src\presentation\calamitic-conduits.test.ts
+  src\presentation\reward-screen.test.ts src\presentation\battle-impact.test.ts
+  --maxWorkers=2`:79 tests/four files passed. Covers all12 activities/all
+  tiers, every receipt category, no consumed chest image or receipt mutation,
+  and existing shared reveal controls. `npm run build` passed with the
+  existing large-chunk advisory. Temporary production preview stopped.
+- Owner requests simulations and functionality/stat review for all138
+  Conduits, with particular attention to Stasis. Audit is read-only with
+  respect to gameplay: no nerfs, fixes or runtime/authority changes approved.
+
 ## Stasis wording and readout layout (D-387)
 
 - Owner screenshot shows awkward Stasis penalty wording and HP wrapping one
