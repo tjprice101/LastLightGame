@@ -17,6 +17,10 @@
   HP stays on one line, status occupies a separate full-width row without
   overflow, and empty status containers are hidden. No account writes.
   Client-only publication follows the standing workflow.
+- Initial publication CI exposed two old wording assertions in the Stasis
+  serialization integration test; updated both to the clarified text.
+  Rerunning that suite plus the three presentation suites passed53 tests/
+  four files. No runtime correction or combat change was needed.
 
 
 ## Critical popup readability and loot clusters (D-386)

@@ -219,14 +219,14 @@ describe('D-382 replacement interactions', () => {
     const state = fixture(['stasis-reliquary']);
     state.allies[0].shield = 1;
     conduitIncoming(state, state.enemies[0], state.allies[0], 100, false, false, []);
-    expect(conduitStatusReadout(state.allies[0], 1)).toContain('no further damage');
+    expect(conduitStatusReadout(state.allies[0], 1)).toContain('Prevents all further damage');
     const restored: BattleState = JSON.parse(JSON.stringify(state));
     conduitIncoming(restored, restored.enemies[1], restored.allies[0], 100000, true, true, []);
     expect(restored.allies[0].hp).toBe(1000);
     const next = endTurn(restored).state;
     expect(next.round).toBe(2);
     expect(actionUnavailable(next, next.allies[0], 'light')).toBeNull();
-    expect(conduitStatusReadout(next.allies[0], 2)).toContain('+25% enemy attack damage');
+    expect(conduitStatusReadout(next.allies[0], 2)).toContain('Take 25% more damage from enemy [Attack Actions]');
   });
 
   it('Pale and Stasis also protect the wearer when intercepting native Cover damage', () => {
