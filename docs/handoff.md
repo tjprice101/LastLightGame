@@ -20,6 +20,10 @@
   1280 widths confirm22/22/34px critical numbers,12px labels, static gradient
   and bounded non-collinear five-drop clusters. Screenshot capture unavailable;
   verified actual computed styles/geometry instead. Temporary preview stopped.
+- Repeated browser checks against the actual production build (without
+  reinjected CSS) at320/390/1280. Critical font selectors include their label
+  attribute to outrank later legacy theme rules regardless of bundle order;
+  both types resolve22/22/34px,12px labels and no gradient animation.
 - Standing workflow publishes client only; no authority deployment required.
 
 ## Stronger gradual approach to accepted EX+1 (D-385)
