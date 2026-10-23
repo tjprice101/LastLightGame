@@ -1,5 +1,41 @@
 # Current state and handoff
 
+## Stronger gradual approach to accepted EX+1 (D-385)
+
+- Owner confirms EX+1 difficulty is good and requests strengthening preceding
+  levels from80. Preserve1-80 and145-185 exactly, all players/Conduits,
+  captured playable stats, rewards, skills, actual levels and stage gates.
+- Only81-144 evaluates the existing D-384 stat curve at
+  `E=L+160*t*t*(1-t)*(1-t)`, `t=(L-80)/65`, rounding once at the final stat.
+  The bounded ten-level stat advance vanishes in value/slope at both anchors.
+  Every stat is monotonic, stays below145 until145 and increases below7.2%
+  per level. Actual skill/reward/capture rules continue using actual L.
+  [Current exact stats](combat.md#smooth-approach-to-accepted-calamity-ex1-d-385).
+- Boss120 becomes248758/8652/1774;140 becomes424325/12589/2620.
+  Accepted EX+1 remains512313/14367/3005; EX+2/3 remain unchanged.
+  Rules9 uses the existing rules8/older safe encounter restart preserving
+  frozen team/equipment and all saved rewards; regenerate/publish authority.
+- Prior D-384 Pages workflow39915402209 eventually succeeded, passing6466
+  tests/206 files; live fullSHA f931193db3de236804253ad7aff4743197181feb
+  verified before this follow-up. Earlier Node-provisioning delay is resolved.
+- `npm test -- --maxWorkers=2` passed6471 tests/206 files; focused curve/
+  progression/restart/survey tests passed201/five files. Authority regeneration,
+  authority/tool TypeScript, `npm run build` and smoke syntax passed.
+- Rules9 authority deployed successfully. Hosted `--native-calamity`,
+  `--phase-zero` and `--balance` passed exact stronger120/140, unchanged145/185/
+  60/64, equipment/action/reward/persistence/idempotency parity and explicit
+  ally targeting. All disposable identities/cascading records were removed.
+- [Matched rerun](enemy-resistance-2026-10-23.md) completed112640 fixtures in
+  581.325 seconds:56534 wins/56054 defeats/52 explicit unresolved timeouts.
+  Independent unique-key and exact category/level counts passed. All58880
+  Lv80/145+ result rows exactly reproduce D-384, including source contributions;
+  all53760 intermediate rows change. Default-Master130 wins98.8%->97.4%
+  with winning rounds3->4;140 wins94.0%->92.3%; native Machines12078/80
+  and Roses14069/80. EX+1 remains785/960 (81.8%) and median five winning rounds.
+  Characters/Conduits are not nerfed; existing higher Calamity walls remain.
+- Matching authority is verified. Commit/push/Pages client publication and
+  full liveSHA/chunk verification follow the standing workflow.
+
 ## Progressive enemy resistance (D-384)
 
 - Owner explicitly requests substantial resistance gains80-140, selects

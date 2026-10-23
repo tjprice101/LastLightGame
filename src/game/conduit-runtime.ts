@@ -16,7 +16,7 @@ import { hasNativeIdentity, nativeAbsorbedHit, nativeDirectHpLoss, nativeIncomin
 import { prepareCalamiticAction, afterCalamiticAction, calamiticSiegeBonus, deferCalamiticDamage,
   bankCalamiticDamage, calamiticSkillDefenseIgnore, calamiticSkillPowerBonus, calamiticSkillEfficiencyBonus } from './calamitic-conduits';
 
-export const conduitRulesVersion = phaseZeroStatsReady ? 8 : 4;
+export const conduitRulesVersion = phaseZeroStatsReady ? 9 : 4;
 export interface ConduitShieldLayer {
   amount: number;
   owner: string;

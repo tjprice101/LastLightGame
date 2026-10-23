@@ -1,5 +1,16 @@
 # Authoritative game operation
 
+## Accepted EX+1 approach (D-385)
+
+Current rules9 strengthens only actual levels81-144 with the shared smooth
+stat-only approach. Exact1-80 and145+ stats, players/equipment/captures,
+actual levels, skill timing, rates and rewards remain unchanged.
+[Formula and current stats](../../../docs/combat.md#smooth-approach-to-accepted-calamity-ex1-d-385).
+Rules8/older snapshots restart through the established frozen-investment/
+saved-reward-safe compatibility path. Regenerate/type-check/deploy matching
+client/authority. Hosted native/Calamity smoke verifies new120/140 and unchanged
+145/185 stats with persistence/idempotency; release evidence is in the handoff.
+
 ## Progressive enemy resistance (D-384)
 
 Current shared combat rules8 adds the approved harder enemy direction:

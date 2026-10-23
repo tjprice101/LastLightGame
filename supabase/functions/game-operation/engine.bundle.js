@@ -4607,7 +4607,12 @@ var playableGrowth = { perLevel: 0.15, perEvolution: 1.5 };
 var enemyExponentialRates = { health: 0.026, damage: 0.024, defense: 0.02 };
 var enemyStrengthMultiplier = 1.05;
 var enemyResistanceRamp = { startingLevel: 80, span: 60, health: 3, damage: 1.5, defense: 2 };
+var enemyCalamityApproach = { startingLevel: 80, endingLevel: 145, maximumAdvance: 10 };
 function hostileStat(base, initialRate, stat, level) {
+  if (level > enemyCalamityApproach.startingLevel && level < enemyCalamityApproach.endingLevel) {
+    const progress = (level - enemyCalamityApproach.startingLevel) / (enemyCalamityApproach.endingLevel - enemyCalamityApproach.startingLevel);
+    level += enemyCalamityApproach.maximumAdvance * 16 * progress ** 2 * (1 - progress) ** 2;
+  }
   const rate = enemyExponentialRates[stat];
   const resistance = enemyResistanceRamp[stat] ** (Math.max(0, level - enemyResistanceRamp.startingLevel) / enemyResistanceRamp.span);
   return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate) * enemyStrengthMultiplier * resistance);
@@ -7381,7 +7386,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = phaseZeroStatsReady ? 8 : 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 9 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }

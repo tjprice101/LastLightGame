@@ -23,8 +23,11 @@ describe('accelerating enemy stat curves', () => {
           ['defense', boss ? 16 / 3 : 4, .30],
         ] as const) {
           const rate = enemyExponentialRates[stat];
-          const original = base * (1 + slope * Math.expm1(rate * (level - 1)) / rate);
-          const resistance = enemyResistanceRamp[stat] ** (Math.max(0, level - 80) / 60);
+          const progress = (level - 80) / 65;
+          const effectiveLevel = level > 80 && level < 145
+            ? level + 160 * progress ** 2 * (1 - progress) ** 2 : level;
+          const original = base * (1 + slope * Math.expm1(rate * (effectiveLevel - 1)) / rate);
+          const resistance = enemyResistanceRamp[stat] ** (Math.max(0, effectiveLevel - 80) / 60);
           expect(stats[stat]).toBe(Math.round(original * 1.05 * resistance));
           expect(Math.abs(stats[stat] - original * 1.05 * resistance)).toBeLessThanOrEqual(.5);
           expect(Number.isSafeInteger(stats[stat])).toBe(true);
@@ -36,7 +39,7 @@ describe('accelerating enemy stat curves', () => {
           if (level > 1) {
             const previous = enemyCombatStats(level - 1, boss)[stat];
             expect(stats[stat]).toBeGreaterThanOrEqual(previous);
-            if (level > 80) expect(stats[stat] / previous).toBeLessThan(1.05);
+            if (level > 80) expect(stats[stat] / previous).toBeLessThan(1.072);
           }
         }
       }
@@ -48,9 +51,9 @@ describe('accelerating enemy stat curves', () => {
     for (const value of [0, -1, 186, NaN, Infinity, 1.5]) expect(() => enemyCombatStats(value, false)).toThrow();
   });
 
-  it('reaches the first-pass140 tuning and continues strengthening through every Calamity tier', () => {
+  it('strengthens every intermediate81-144 stat while preserving all opening and accepted Calamity stats', () => {
     for (const boss of [false, true]) {
-      for (const level of [80, 90, 100, 110, 120, 130, 140, 145, 160, 185]) {
+      for (let level = 1; level <= 185; level++) {
         for (const [stat, base, slope, target] of [
           ['health', boss ? 207.5 : 83, .45, 3],
           ['damage', boss ? 27.5 : 22, .25, 1.5],
@@ -58,21 +61,40 @@ describe('accelerating enemy stat curves', () => {
         ] as const) {
           const rate = enemyExponentialRates[stat];
           const before = base * (1 + slope * Math.expm1(rate * (level - 1)) / rate) * 1.05;
-          expect(enemyCombatStats(level, boss)[stat]).toBe(Math.round(before * target ** ((level - 80) / 60)));
-          if (level > 80) expect(enemyCombatStats(level, boss)[stat]).toBeGreaterThan(Math.round(before));
+          const previous = Math.round(before * target ** (Math.max(0, level - 80) / 60));
+          if (level > 80 && level < 145) expect(enemyCombatStats(level, boss)[stat]).toBeGreaterThanOrEqual(previous);
+          else expect(enemyCombatStats(level, boss)[stat]).toBe(previous);
+          if (level >= 82 && level <= 143) expect(enemyCombatStats(level, boss)[stat]).toBeGreaterThan(previous);
         }
+      }
+    }
+  });
+
+  it('joins80 and145 without a growth-rate cliff and never reaches EX+1 stats early', () => {
+    for (const boss of [false, true]) for (const stat of ['health', 'damage', 'defense'] as const) {
+      const growth = (level: number) => Math.log(enemyCombatStats(level, boss)[stat] / enemyCombatStats(level - 1, boss)[stat]);
+      const base = stat === 'health' ? boss ? 207.5 : 83 : stat === 'damage' ? boss ? 27.5 : 22 : boss ? 16 / 3 : 4;
+      const slope = stat === 'health' ? .45 : stat === 'damage' ? .25 : .30;
+      const rate = enemyExponentialRates[stat];
+      const previous81 = Math.round(base * (1 + slope * Math.expm1(rate * 80) / rate) * 1.05 * enemyResistanceRamp[stat] ** (1 / 60));
+      const previousGrowth81 = Math.log(previous81 / enemyCombatStats(80, boss)[stat]);
+      expect(Math.abs(growth(81) - previousGrowth81)).toBeLessThan(.007);
+      expect(Math.abs(growth(145) - growth(146))).toBeLessThan(.007);
+      for (let level = 81; level < 145; level++) {
+        expect(Math.abs(growth(level + 1) - growth(level))).toBeLessThan(.007);
+        expect(enemyCombatStats(level, boss)[stat]).toBeLessThan(enemyCombatStats(145, boss)[stat]);
       }
     }
   });
 
   it.each([
     [80, 25856, 1731, 329],
-    [90, 41539, 2433, 471],
-    [100, 66220, 3394, 668],
-    [110, 104967, 4707, 940],
-    [120, 165684, 6498, 1316],
-    [130, 260694, 8942, 1836],
-    [140, 409204, 12273, 2551],
+    [90, 47170, 2665, 518],
+    [100, 92565, 4306, 856],
+    [110, 164798, 6474, 1311],
+    [120, 248758, 8652, 1774],
+    [130, 327316, 10493, 2168],
+    [140, 424325, 12589, 2620],
     [145, 512313, 14367, 3005],
     [160, 1003175, 22992, 4892],
     [185, 3059413, 50059, 10938],

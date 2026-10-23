@@ -5,7 +5,11 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Post-refresh battle measurements
 
-**Current tuning (D-384):** owner now authorizes progressive enemy Health,
+**Current tuning (D-385):** owner accepts EX+1, strengthens81-144 and preserves
+1-80/145+. [Exact smooth approach formula/stats](combat.md#smooth-approach-to-accepted-calamity-ex1-d-385)
+and [matched current/historical results](enemy-resistance-2026-10-23.md).
+
+**Previous tuning (D-384):** owner authorizes progressive enemy Health,
 Attack and Defense increases after80, continuing through Calamity. See
 [exact ordinary/boss stats and formula](combat.md#progressive-late-enemy-resistance-d-384)
 and the [current handoff](handoff.md) for validation and post-tuning measurements.
@@ -42,8 +46,8 @@ Conduits, sorted by rarity and name, including48 Omnic Masters. Preserves
 owner-edited examples and proposes remaining effects around the ten-stat
 Phase 0 direction, additive Skill Power/Gauge Gain and whole-turn duration.
 Owner authorizes implementation and coordinated publication2026-10-21.
-The shared client/authority gate is enabled; rules8 is current after the D-384
-enemy ramp. The D-383 equipment behavior itself is unchanged.
+The shared client/authority gate is enabled; rules9 is current after the D-385
+EX+1 approach. The D-383 equipment behavior itself is unchanged.
 See the handoff for hosted publication and validation outcomes.
 Suggested thematic elements remain editorial, not equipment restrictions.
 See D-368 for implementation choices and current scope.

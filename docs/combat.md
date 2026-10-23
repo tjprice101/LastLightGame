@@ -1,6 +1,54 @@
 # Combat specification
 
+## Smooth approach to accepted Calamity EX+1 (D-385)
+
+Owner accepts EX+1 difficulty and requests stronger preceding levels with
+gradual growth from80 to EX+1. Preserve every shared stat at1-80 and145-185,
+including all three Calamity tiers. Strengthen only81-144, without player/
+Conduit nerfs, added mechanics, reward changes or altered stage/level schedules.
+
+For actual hostile level L strictly between80 and145, set `t=(L-80)/65` and
+evaluate the existing D-384 stat formula at
+`E=L+10*16*t*t*(1-t)*(1-t)`. Otherwise E=L. Apply both the underlying shifted
+exponential and its existing resistance factor at E, rounding only the final
+stat once. This front-loads at most ten levels of stat growth near112.5, then
+smoothly meets the accepted145 anchor. Effective level is strictly increasing,
+never reaches145 early, and its advance and advance slope are zero at both
+anchors. Actual enemy levels, rewards, skill schedules and capture eligibility
+continue using L, **not E**. This is stat tuning, not artificial enemy leveling.
+The original D-384 onset at80 remains; the new shaping adds no boundary cliff.
+
+All ordinary/boss Health, Attack and Defense values increase monotonically.
+No post80 one-level stat increase reaches7.2%, and adjacent log-growth rates
+change by less than0.007 throughout the approach. At145 the stat curve rejoins
+the original D-384 slope; EX+1/2/3 combat behavior is unchanged.
+
+|Actual level|Ordinary Health|Ordinary Attack|Ordinary Defense|Boss Health|Boss Attack|Boss Defense|
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+|80|10,343|1,385|247|25,856|1,731|329|
+|90|18,868|2,132|389|47,170|2,665|518|
+|100|37,026|3,444|642|92,565|4,306|856|
+|110|65,919|5,179|983|164,798|6,474|1,311|
+|120|99,503|6,922|1,330|248,758|8,652|1,774|
+|130|130,927|8,394|1,626|327,316|10,493|2,168|
+|140|169,730|10,071|1,965|424,325|12,589|2,620|
+|144|196,249|11,150|2,184|490,622|13,938|2,912|
+|145:EX+1|204,925|11,494|2,253|512,313|14,367|3,005|
+|160:EX+2|401,270|18,394|3,669|1,003,175|22,992|4,892|
+|185:EX+3|1,223,765|40,047|8,204|3,059,413|50,059|10,938|
+
+Shared spawners/catalogs/previews and the generated authority all consume the
+same curve. Playable captured stats remain independent and unchanged. Rules9
+uses the established frozen-investment/saved-reward-safe restart for rules8
+and earlier encounters. No account migration, grants or load-time wallet writes.
+Exact per-level numerical/monotonic/join/anchor and online/offline compatibility
+regressions cover this change. [Matched battle results](enemy-resistance-2026-10-23.md)
+distinguish current approach measurements from the historical D-384 first pass.
+
 ## Progressive late-enemy resistance (D-384)
+
+Historical first-pass table below; D-385 above strengthens81-144 only and owns
+the current pre-EX+1 values. The145+ values and underlying formula stay unchanged.
 
 Owner requests substantial resistance gains from enemy80 through140, explicitly
 chooses stronger Health, Defense **and Attack**, and asks for a harder first pass

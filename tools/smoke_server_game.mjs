@@ -373,7 +373,7 @@ try {
 }
 
 async function smokePhaseZero(client, userId, username) {
-  assert.equal(conduitRulesVersion, 8, 'The production bundle must activate rules8');
+  assert.equal(conduitRulesVersion, 9, 'The production bundle must activate rules9');
   const id = 'calamitic-causality-funeral-engine';
   const entropy = { seed: () => 7321, uuid: () => randomUUID(), random: () => .9 };
   let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
@@ -403,7 +403,7 @@ async function smokePhaseZero(client, userId, username) {
     return result.data;
   }
   const initial = await invoke({ kind: 'read' }, 0);
-  assert.equal(initial.session.state.conduitRulesVersion, 8);
+  assert.equal(initial.session.state.conduitRulesVersion, 9);
   assert.equal(initial.session.state.allies[0].stats.skillPower, 1);
   assert.equal(initial.session.state.allies[0].stats.skillEfficiency, .5);
   const operation = { kind: 'act', runId: initial.session.runId, actorId: 'ember', action: 'skill1',
@@ -422,13 +422,13 @@ async function smokePhaseZero(client, userId, username) {
   const quit = await invoke({ kind: 'quit', runId: resolved.session.runId }, resolved.revision);
   const fresh = await invoke({ kind: 'enter', activity: { kind: 'training' } }, quit.revision);
   assert.equal(fresh.session.state.allies[0].stats.skillPower, 1, 'A fresh entry uses current menu gear');
-  assert.equal(fresh.session.state.conduitRulesVersion, 8);
+  assert.equal(fresh.session.state.conduitRulesVersion, 9);
   assert.equal((await invoke({ kind: 'quit', runId: fresh.session.runId }, fresh.revision)).session, null);
-  console.log('Hosted Phase 0 smoke passed: rules8, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
+  console.log('Hosted Phase 0 smoke passed: rules9, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
 }
 
 async function smokeConduitRework(firstClient, firstId, firstUsername) {
-  assert.equal(conduitRulesVersion, 8);
+  assert.equal(conduitRulesVersion, 9);
   const replacements = [
     'bastion-lock', 'crosspin-governor', 'fieldbrace-coupler', 'fracture-reservoir', 'parallax-relay',
     'precision-escapement', 'prism-splinter-socket', 'reserve-torque-crank', 'siegebound-drive', 'vigil-core',
@@ -502,11 +502,11 @@ async function smokeConduitRework(firstClient, firstId, firstUsername) {
       game = expected.game;
     }
   }
-  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules8 static/runtime parity, healing/Shield/Last Flare/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
+  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules9 static/runtime parity, healing/Shield/Last Flare/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
 }
 
 async function smokeOmnicRefresh(firstClient, firstId, firstUsername) {
-  assert.equal(conduitRulesVersion, 8);
+  assert.equal(conduitRulesVersion, 9);
   const source = readFileSync(new URL('../src/content/phase-zero-conduit-catalog.ts', import.meta.url), 'utf8');
   const catalog = JSON.parse(source.slice(source.indexOf('= {') + 2, source.lastIndexOf('};') + 1));
   const ordinary = Object.entries(catalog).filter(([id, entry]) => entry.rarity === 'Omnic' && !id.startsWith('master-'));
@@ -687,7 +687,7 @@ async function smokeNativeCalamity(client, userId, username) {
   let exited = await invoke({ kind: 'quit', runId: rose.session.runId }, rose.revision);
   assert.equal(exited.session, null);
   for (const [mode, level, health, damage, defense] of [
-    ['machines', 120, 165684, 6498, 1316], ['roses', 140, 409204, 12273, 2551],
+    ['machines', 120, 248758, 8652, 1774], ['roses', 140, 424325, 12589, 2620],
   ]) {
     const normal = await invoke({ kind: 'enter', activity: { kind: 'infusion', mode, stage: 35 } }, exited.revision);
     const enemy = normal.session.state.enemies[0];

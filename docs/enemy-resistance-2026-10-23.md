@@ -1,6 +1,97 @@
-# Progressive enemy resistance: first-pass measurements
+# Progressive enemy resistance and accepted EX+1 approach
 
-## Implemented direction (D-384)
+## Current stronger approach (D-385)
+
+Owner accepts EX+1 difficulty and requests stronger preceding levels with a
+gradual approach from80. Only81-144 changes;1-80 and145+ remain numerically
+identical to D-384. Characters, Conduits, playable captures, actual enemy
+levels, skills, rewards, rates and stage schedules are unchanged.
+
+[Current formula and ordinary/boss stats](combat.md#smooth-approach-to-accepted-calamity-ex1-d-385):
+evaluate the existing D-384 stats at `E=L+160*t*t*(1-t)*(1-t)`,
+`t=(L-80)/65`, only inside80<L<145. The maximum stat-only advance is ten levels,
+with zero value/slope at the80/145 anchors. Actual reward and skill logic uses
+L, never E. One final rounding step remains. Growth is monotonic, stays below
+EX+1 until145 and never reaches7.2% per level; the145 join preserves its slope.
+
+|Actual enemy level|Boss Health|Boss Attack|Boss Defense|
+| --- | ---: | ---: | ---: |
+|80|25,856|1,731|329|
+|90|47,170|2,665|518|
+|100|92,565|4,306|856|
+|110|164,798|6,474|1,311|
+|120|248,758|8,652|1,774|
+|130|327,316|10,493|2,168|
+|140|424,325|12,589|2,620|
+|144|490,622|13,938|2,912|
+|145:EX+1 unchanged|512,313|14,367|3,005|
+|160:EX+2 unchanged|1,003,175|22,992|4,892|
+|185:EX+3 unchanged|3,059,413|50,059|10,938|
+
+Rules9 restarts old snapshots through the existing frozen-investment/
+saved-reward-safe compatibility path. Full regression6,471 tests/206 files,
+focused201 tests/five files, client/authority builds, explicit tool TypeScript
+and smoke syntax passed. Hosted rules9 native/Calamity, Phase0 and early-balance
+smokes passed new120/140 and unchanged145/185/60/64 stats, exact action parity,
+explicit ally targets, actual rewards, persistence and idempotent retries.
+Disposable identities/cascading records were removed; owner accounts unchanged.
+
+### D-385 matched battle results
+
+Reran the complete112,640-fixture matrix in581.325 seconds with the same
+Lv105/Evo6 squads, legal equipment, seeds, pilot and100-round/1,800-decision
+horizon. All keys are unique and match the previous matrix exactly.
+All58,880 rows at80 or145+ match their D-384 counterparts **exactly**, including
+outcomes, rounds, survivors, enemy remaining Health, first KO and contributions.
+All53,760 intermediate result rows change with stronger stats.
+
+Total56,534 wins/56,054 defeats/52 unresolved horizon timeouts. Categories remain
+99,840 Calamity-pattern,4,480 standard boss and8,320 supported character trials.
+Timeouts are neither silent wins nor silently relabeled defeats.
+
+Each Calamity-pattern cell below contains960 trials across12 authored patterns,
+eight squads and ten seeds. Only145/160/185 are playable native Calamity
+milestones; earlier levels are controlled offline probes, not new stages.
+
+|Enemy level|Common+0|Mixed+0|Mixed+5|Four Omnic+0|Four Omnic+5|Omnic+5/Master|Calamitic/Omnic+5/Master|
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+|80|100.0%|100.0%|100.0%|100.0%|100.0%|100.0%|100.0%|
+|90|90.5%|100.0%|100.0%|100.0%|100.0%|100.0%|100.0%|
+|100|51.3%|100.0%|100.0%|99.8%|100.0%|100.0%|100.0%|
+|110|4.6%|94.3%|100.0%|90.0%|100.0%|100.0%|100.0%|
+|120|0.0%|78.1%|98.6%|70.8%|98.6%|99.1%|97.9%|
+|130|0.0%|49.3%|92.6%|54.8%|94.2%|97.4%|94.8%|
+|140|0.0%|25.6%|84.6%|34.8%|81.1%|92.3%|81.3%|
+|145:EX+1 unchanged|0.0%|10.0%|76.5%|21.4%|61.6%|81.8%|74.8%|
+
+Percentages use one-decimal half-up presentation. Higher rarities replace
+other bonuses; these fixed candidate profiles are not optimized best-in-slot.
+For default-Master candidates, winning rounds now rise1/2/2/3/3/4/5/5
+at80/90/100/110/120/130/140/145. The old110/130 medians were2/3 respectively.
+Win rates are not the only difficulty metric: strongest builds remain highly
+successful below130 but take longer and face stronger pressure.
+
+Native Machines120 Master candidates now win78/80 (97.5%, previously80/80);
+native Roses140 win69/80 (86.3%, previously73/80). Standard probes130 win77/80.
+Supported-character trials still have6,730 wins/1,590 defeats; their higher
+fight lengths demonstrate changed pressure despite equal overall outcomes.
+Every higher Calamity wall in the D-384 results below is unchanged.
+This is numerical growth and measured heuristic difficulty, not a guarantee
+that every squad's win rate/fight length changes monotonically at every level.
+Authored patterns, character mechanics, RNG and fixed level-based skills remain.
+
+Reproduction uses the same `levels` command documented below. Current raw
+session evidence: `battle-ex1-approach-2026-10-23.jsonl`, summary
+`battle-ex1-approach-summary.json`. Raw SHA256:
+`dec72fa24ec5fc6df88151dbb3107f9f96017b977b3c7df267761d086e38aa81`.
+Runner metadata records parentf931193 plus the exact approach constants; the
+run includes the D-385 changes published with this section. As-executed
+`stat-growth.ts` SHA256:
+`ccb7d9c4fd1941b6000b20e5fd61d15941e5078ebdea2a602488e85b99780ca4`.
+
+## Historical first-pass direction (D-384)
+
+The remainder records the earlier D-384 run, not current81-144 balance.
 
 Owner asks for significant resistance gains80-140, explicitly selects stronger
 Health, Defense and Attack, and delegates a harder first pass for later tuning.
