@@ -5,6 +5,10 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Post-refresh battle measurements
 
+**Battle presentation (D-386):** [smaller readable critical popups and clustered
+enemy loot](combat.md#readable-critical-popups-and-clustered-loot-d-386).
+Presentation only; exact damage/rewards and rules9 authority stay unchanged.
+
 **Current tuning (D-385):** owner accepts EX+1, strengthens81-144 and preserves
 1-80/145+. [Exact smooth approach formula/stats](combat.md#smooth-approach-to-accepted-calamity-ex1-d-385)
 and [matched current/historical results](enemy-resistance-2026-10-23.md).

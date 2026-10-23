@@ -13,16 +13,18 @@ describe('attack presentation impact boundary', () => {
     expect(periodicIndex).toBeGreaterThan(0);
     expect(impactEvents(result.events, 0)).not.toContain(periodicIndex);
   });
-  it('updates HP/bar and displays damage at impact, before return and number animations finish', async () => {
+  it.each(['normal', 'critical', 'elemental'] as const)('updates HP/bar and displays readable %s damage at impact before animations finish', async kind => {
     const before = createBattle(1729, ['ember']);
     before.allies[0].stats.crit = 0;
     const result = actAndAdvanceTurn(before, 'ember', 'light', before.enemies[0].id);
     const damage = result.events[impactEvents(result.events, 0)[0]];
+    damage.critical = kind !== 'normal';
+    damage.elementalCritical = kind === 'elemental';
     const originalHP = before.enemies[0].stats.health;
     const bar = { style: { width: '100%' } };
     const hp = { textContent: `HP ${originalHP} / ${originalHP}` };
     const classes = new Set<string>();
-    const numbers: { textContent: string }[] = [];
+    const numbers: { textContent: string; dataset: { criticalLabel?: string } }[] = [];
     const sprite = {};
     const bounds = { x: 0, y: 0, width: 200, height: 200 };
     const art = { append: () => {}, getBoundingClientRect: () => bounds };
@@ -30,7 +32,7 @@ describe('attack presentation impact boundary', () => {
       getBoundingClientRect: () => bounds,
       querySelector: (selector: string) => selector === '.health-track > span' ? bar
         : selector === '.unit-health' ? hp : art,
-      append: (number: { textContent: string }) => numbers.push(number),
+      append: (number: { textContent: string; dataset: { criticalLabel?: string } }) => numbers.push(number),
       classList: { add: (value: string) => classes.add(value), remove: (value: string) => classes.delete(value) },
     };
     const source = {
@@ -69,6 +71,7 @@ describe('attack presentation impact boundary', () => {
       expect(hp.textContent).toBe(`HP ${originalHP - damage.amount} / ${originalHP}`);
       expect(Number.parseFloat(bar.style.width)).toBeCloseTo((originalHP - damage.amount) / originalHP * 100);
       expect(numbers[0].textContent).toBe(`-${damage.amount}`);
+      expect(numbers[0].dataset.criticalLabel).toBe(kind === 'normal' ? undefined : kind === 'critical' ? 'Crit' : 'Elemental Crit');
       finishVisuals();
       await presentation;
     } finally {

@@ -1,5 +1,26 @@
 # Combat specification
 
+## Readable critical popups and clustered loot (D-386)
+
+Presentation only: Critical and Elemental Crit damage numbers use22-34px
+responsive text, with a separate white12px Crit/Elemental Crit label below.
+The exact signed number stays intact; accessible names include both amount
+and critical type. Elemental Crit retains a static rainbow number, not the
+previous animated gradient; neither critical popup uses the oversized1.18
+peak scale (now1.05). Ordinary damage/healing/Shield popups, impact timing,
+850ms lifetime, speed and reduced-motion behavior are unchanged.
+
+Enemy loot uses a compact near-square viewport-bounded layout, with staggered
+vertical offsets and the existing cosmetic scatter instead of a single long
+line. Rows are capped at100px spacing; larger receipts still wrap. Preserve
+actual saved items/quantities, artwork, beam colors, Conduit upgrade markers,
+1.5x drop size, independent pickup durations, accessible receipt, disposal
+and reduced-motion static presentation. No combat/reward RNG or saves change.
+
+Validate `battle-loot.test.ts`, `battle-impact.test.ts`, health/speed suites
+and production build. Browser checks at320/390/1280 confirm22/22/34px critical
+numbers,12px labels, no gradient animation and bounded staggered clusters.
+
 ## Smooth approach to accepted Calamity EX+1 (D-385)
 
 Owner accepts EX+1 difficulty and requests stronger preceding levels with

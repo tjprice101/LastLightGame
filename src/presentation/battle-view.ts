@@ -615,12 +615,17 @@ export class BattleView {
       }
       const amount = document.createElement('span');
       amount.className = `damage-number ${entry.kind}${entry.critical ? ' critical' : ''}${entry.elementalCritical ? ' elemental-critical' : ''}`;
-      amount.textContent = `${entry.kind === 'damage' ? '-' : '+'}${formatStat(entry.amount)}${entry.elementalCritical ? ' ELEMENTAL CRIT' : entry.critical ? ' CRIT' : ''}`;
+      amount.textContent = `${entry.kind === 'damage' ? '-' : '+'}${formatStat(entry.amount)}`;
+      if (entry.critical || entry.elementalCritical) {
+        const label = entry.elementalCritical ? 'Elemental Crit' : 'Crit';
+        amount.dataset.criticalLabel = label;
+        amount.setAttribute('aria-label', `${amount.textContent} ${label}`);
+      }
       target.append(amount);
       try {
         await this.play(amount, [
           { opacity: 1, transform: 'translateY(6px) scale(.75)' },
-          { opacity: 1, transform: 'translateY(-8px) scale(1.18)', offset: .18 },
+          { opacity: 1, transform: `translateY(-8px) scale(${entry.critical || entry.elementalCritical ? 1.05 : 1.18})`, offset: .18 },
           { opacity: 1, transform: 'translateY(-24px) scale(1)', offset: .7 },
           { opacity: 0, transform: 'translateY(-48px) scale(.95)' },
         ], 850);

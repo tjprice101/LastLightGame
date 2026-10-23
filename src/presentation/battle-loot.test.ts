@@ -95,7 +95,7 @@ describe('enemy-death loot presentation', () => {
     expect(event).toEqual(before);
   });
 
-  it.each([320, 390, 1280])('wraps larger loot into viewport-bounded rows at %ipx', width => {
+  it.each([320, 390, 1280])('spreads loot in a compact viewport-bounded cluster at %ipx', width => {
     documentFixture();
     vi.stubGlobal('innerWidth', width);
     const burst = lootBurst(reward, () => .5);
@@ -108,7 +108,18 @@ describe('enemy-death loot presentation', () => {
       y: parseFloat(fixtureDrop(drop).style.getPropertyValue('--loot-y')),
     }));
     expect(positions.every(position => Math.abs(position.x) + 52 <= width / 2)).toBe(true);
-    if (width === 320) expect(new Set(positions.map(position => position.y)).size).toBe(2);
+    expect(layout.columns).toBe(2);
+    expect(new Set(positions.map(position => position.y)).size).toBe(4);
+    expect(new Set(positions.map(position => position.x)).size).toBe(2);
+  });
+  it('staggers even two drops instead of placing them in a horizontal line', () => {
+    documentFixture();
+    const event = { ...reward, materials: undefined, lycalis: 3 };
+    const burst = lootBurst(event, () => .5);
+    const drops = Array.from(burst.children).map(fixtureDrop);
+    expect(drops).toHaveLength(2);
+    expect(drops[0].style.getPropertyValue('--loot-y')).not.toBe(drops[1].style.getPropertyValue('--loot-y'));
+    expect(event).toEqual({ ...reward, materials: undefined, lycalis: 3 });
   });
   it.each([0, 3, 5])('shows the snapshotted Conduit level %i as five squares', (level) => {
     documentFixture();

@@ -1,5 +1,27 @@
 # Current state and handoff
 
+## Critical popup readability and loot clusters (D-386)
+
+- Owner requests smaller/readable Crit and Elemental Crit popups plus loosely
+  clustered enemy loot. Presentation only; combat/loot calculations, reward
+  receipts, RNG, authority rules9 and saves are unchanged.
+- Critical numbers now22-34px with separate white12px labels, accessible
+  amount/type names and peak scale1.05. Elemental Crit retains static rainbow
+  numbers without shimmer. Normal/heal/Shield readouts and impact clocks remain.
+- Loot uses near-square viewport-bounded columns,100px maximum row spacing and
+  alternating vertical stagger plus existing independent cosmetic variation.
+  Keep1.5x size, actual amounts/items/art/beams/upgrades, pickup clocks,
+  reduced-motion receipts and disposal cleanup.
+- `npx vitest run src\presentation\battle-loot.test.ts
+  src\presentation\battle-impact.test.ts src\presentation\battle-health.test.ts
+  src\presentation\battle-speed.test.ts --maxWorkers=2`:60 tests/four files
+  passed. `npm run build` passed with the existing large-chunk advisory.
+- Browser fixture uses real loot renderer/CSS without account writes:320/390/
+  1280 widths confirm22/22/34px critical numbers,12px labels, static gradient
+  and bounded non-collinear five-drop clusters. Screenshot capture unavailable;
+  verified actual computed styles/geometry instead. Temporary preview stopped.
+- Standing workflow publishes client only; no authority deployment required.
+
 ## Stronger gradual approach to accepted EX+1 (D-385)
 
 - Owner confirms EX+1 difficulty is good and requests strengthening preceding

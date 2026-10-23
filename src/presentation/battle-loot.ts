@@ -19,9 +19,9 @@ export function lootMotion(random: () => number = Math.random) {
 }
 
 export function lootLayout(count: number, viewportWidth: number, viewportHeight = innerHeight) {
-  const columns = Math.min(count, Math.max(1, Math.floor((viewportWidth - 104) / 82) + 1));
+  const columns = Math.min(count, Math.ceil(Math.sqrt(count)), Math.max(1, Math.floor((viewportWidth - 104) / 82) + 1));
   const rows = Math.ceil(count / columns);
-  const rowGap = Math.min(140, Math.max(0, viewportHeight - 272) / Math.max(1, rows - 1));
+  const rowGap = Math.min(100, Math.max(0, viewportHeight - 272) / Math.max(1, rows - 1));
   return { columns, spread: (columns - 1) * 41 + 52,
     rowGap, bottom: (rows - 1) * rowGap + 76, top: 196 };
 }
@@ -82,7 +82,8 @@ export function lootBurst(event: BattleEvent, random: () => number = Math.random
     drop.style.setProperty('--loot-color', item.color);
     const rowCount = Math.min(layout.columns, items.length - Math.floor(index / layout.columns) * layout.columns);
     drop.style.setProperty('--loot-x', `${(index % layout.columns - (rowCount - 1) / 2) * 82 + motion.scatter}px`);
-    drop.style.setProperty('--loot-y', `${Math.floor(index / layout.columns) * layout.rowGap + motion.height}px`);
+    const stagger = items.length > 1 ? (index % 2 ? 18 : -18) : 0;
+    drop.style.setProperty('--loot-y', `${Math.floor(index / layout.columns) * layout.rowGap + stagger + motion.height}px`);
     drop.style.setProperty('--loot-size', String(motion.size * 1.5));
     drop.dataset.pickupDuration = String(motion.duration);
     const beam = document.createElement('span');

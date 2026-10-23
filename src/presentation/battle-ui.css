@@ -144,7 +144,7 @@
   .battle-screen .battle-utilities > details > summary { font-size: 11px; padding-inline: 10px; }
 }
 
-/* D-223 Elemental Crit: rainbow damage number for crits rolled from Critical Rate above 100%. */
-.battle-screen .damage-number.elemental-critical { background: linear-gradient(90deg, #ff4d4d, #ffb347, #fff35c, #5cff8a, #4dc3ff, #9b6bff, #ff6bd6, #ff4d4d); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: .6px #000; text-shadow: none; filter: drop-shadow(0 2px 2px #000); font-size: 1.15em; animation: elemental-crit-shift 900ms linear infinite; }
-@keyframes elemental-crit-shift { to { background-position: 200% 0; } }
-html[data-motion="reduced"] .battle-screen .damage-number.elemental-critical { animation: none; }
+.battle-screen .damage-number.critical,
+.battle-screen .damage-number.elemental-critical { font-size: clamp(22px, 2.5vw, 34px); line-height: 1.15; }
+.battle-screen .damage-number[data-critical-label]::after { content: attr(data-critical-label); display: block; margin-top: 3px; color: #fff; font-size: 12px; font-weight: 700; line-height: 1.25; text-align: center; -webkit-text-stroke: 0; text-shadow: 0 1px 2px #000, 1px 0 2px #000, -1px 0 2px #000; }
+.battle-screen .damage-number.elemental-critical { background: linear-gradient(90deg, #ff8080, #ffe080, #a0ffb5, #88d8ff, #c5a0ff, #ff9ddd); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: .35px #000; text-shadow: none; filter: drop-shadow(0 2px 2px #000); }
