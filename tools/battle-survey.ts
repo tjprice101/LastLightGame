@@ -6,11 +6,14 @@ import { validateConduitElement, validateConduitSlots, type ConduitId, type Cond
 import { playableDungeons, type PlayableDungeon } from '../src/content/dungeons';
 import { masterConduits, type MasterConduitId, type MasterLoadouts } from '../src/content/master-conduits';
 import { characterLevelCap, type CharacterProgress } from '../src/content/progression';
+import { enemyCombatStats } from '../src/content/stat-growth';
+import { enemyAbilityMultiplier, enemySkills } from '../src/content/enemy-skills';
 import { getStarter, starters, type StarterId } from '../src/content/starters';
 import { actAndAdvanceTurn, actionUnavailable, createBattle, createCalamityBattle, createDungeonBattle,
   createInfusionBattle, createStoryBattle, createWarBattle, endTurn, nextWave, withMasterLoadouts,
   type BattleEvent, type BattleState } from '../src/game/battle';
 import { benchmarkPriorities, benchmarkTarget } from '../src/game/native-benchmark-pilot';
+import { initializeConduits } from '../src/game/conduit-runtime';
 
 export const surveySeeds = [1, 1729, 12345, 54321, 104729, 65537, 314159, 271828, 8675309, 4294967295];
 export const surveyLimits = { rounds: 100, decisions: 1800 } as const;
@@ -293,6 +296,63 @@ export function runFocusedSurvey(emit: (row: SurveyRow) => void): number {
 
 export const timeoutFollowupLimits = { rounds: 1000, decisions: 18000 };
 
+export const levelSweepLevels = [80, 90, 100, 110, 120, 130, 140, 145, 150, 160, 170, 180, 185] as const;
+
+export function makeLevelProbe(enemyLevel: number, roster: readonly StarterId[], build: Build,
+  seed: number, pattern: CalamityActivityId | 'standard', override: MasterLoadouts = {}): BattleState {
+  if (!levelSweepLevels.some(level => level === enemyLevel) || pattern === 'standard' && enemyLevel > 140)
+    throw new Error('Unsupported level-sweep probe.');
+  const encounter: Encounter = pattern === 'standard' ? { kind: 'infusion', mode: enemyLevel > 120 ? 'roses' : 'machines', stage: 35 } :
+    { kind: 'calamity', activity: pattern, tier: enemyLevel === 185 ? 3 : enemyLevel === 160 ? 2 : 1 };
+  const state = makeBattle(encounter, roster, 105, build, seed, override);
+  if (state.enemies[0].level === enemyLevel) return state;
+  const enemy = state.enemies[0];
+  enemy.level = enemyLevel;
+  enemy.stats = enemyCombatStats(enemyLevel, true);
+  enemy.hp = enemy.stats.health;
+  delete enemy.conduitRuntime;
+  if (pattern === 'standard') {
+    const strike = enemy.enemySkills?.[0]?.name;
+    if (!strike) throw new Error('Standard probe requires a real authored strike.');
+    enemy.enemySkills = enemySkills(enemyLevel, true, strike, enemyAbilityMultiplier(enemyLevel));
+  }
+  initializeConduits(state);
+  return state;
+}
+
+export function runLevelSweep(emit: (row: SurveyRow) => void): number {
+  let count = 0;
+  function sample(category: string, squad: string, roster: StarterId[], build: Build, enemyLevel: number,
+    pattern: CalamityActivityId | 'standard', override: MasterLoadouts = {}, master: SurveyRow['master'] = 'default') {
+    const native = pattern === 'standard' ? [120, 140].includes(enemyLevel) : [145, 160, 185].includes(enemyLevel);
+    for (const seed of surveySeeds) {
+      const initial = makeLevelProbe(enemyLevel, roster, build, seed, pattern, override);
+      const { result } = measureBattle(initial);
+      emit({ ...result, category, squad, roster, level: 105, build, enemyLevel, seed, policy: 'native', master,
+        encounter: `${pattern === 'standard' ? 'Standard boss' : `Calamity ${pattern}`} Lv${enemyLevel}`,
+        scenario: native ? 'native-encounter' : 'controlled-level-probe' });
+      count++;
+    }
+  }
+  for (const enemyLevel of levelSweepLevels) {
+    for (const squad of surveySquads) {
+      for (const build of ['bare', 'common0', 'mixed0', 'mixed5', 'omnic0', 'omnic5', 'master5', 'calamitic5'] as const) {
+        for (const { id } of calamityActivities)
+          sample('level-sweep-calamity', squad.name, squad.roster, build, enemyLevel, id);
+        if (enemyLevel <= 140)
+          sample('level-sweep-standard', squad.name, squad.roster, build, enemyLevel, 'standard');
+      }
+    }
+    for (const character of starters) {
+      const roster: StarterId[] = [character.id, ...balanced.filter(id => id !== character.id)].slice(0, 3);
+      for (const master of [null, ...masterConduits.filter(entry => entry.character === character.id).map(entry => entry.id)])
+        sample('level-sweep-character', character.name, roster, 'master5', enemyLevel, 'machines',
+          { [character.id]: master }, master ?? 'none');
+    }
+  }
+  return count;
+}
+
 export function runTimeoutSurvey(source: SurveyRow[], emit: (row: SurveyRow) => void): number {
   const pending = source.filter(row => row.outcome === 'timeout');
   for (const row of pending) {
@@ -309,6 +369,8 @@ export function runTimeoutSurvey(source: SurveyRow[], emit: (row: SurveyRow) => 
 export function describeSurvey() {
   return {
     seeds: surveySeeds, limits: surveyLimits, timeoutFollowupLimits, common, mixed, omnic, calamitics, enemyScenarios,
+    levelSweep: { levels: levelSweepLevels, characterLevel: 105, policies: ['native'],
+      methodology: 'Controlled single-boss level probes use exact shared boss stats and unchanged authored Calamity patterns at each requested level. Standard boss probes use Machines through120 and Roses at130/140, rebuilding level-dependent scheduled skills. Standard120/140 and Calamity145/160/185 are unchanged native encounter controls; all other level/pattern combinations are synthetic offline probes, not playable stages.' },
     builds: Object.fromEntries((['bare', 'common0', 'mixed0', 'mixed5', 'omnic0', 'omnic5', 'master5', 'calamitic5'] as const)
       .map(build => [build, loadout(starters.map(character => character.id), build)])),
     progression: 'Minimum legal evolution for each sampled level; level105 is evolution6. Weapon rank0.',

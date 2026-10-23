@@ -1,5 +1,33 @@
 # Current state and handoff
 
+## Ten-level difficulty sweep80 through EX+3 (2026-10-23)
+
+- Owner requests every ten levels starting80 through Calamity EX+3.
+  [Full results](battle-level-sweep-2026-10-23.md) cover enemy80/90/.../180
+  plus exact145/160/185 milestones with unchanged Lv.105/Evo.6 squads.
+  No production combat, equipment, enemies, rewards, saves or authority changed.
+- Completed112,640 new encounter resolutions:99,840 across all12 Calamity
+  patterns/eight squads/eight builds/ten seeds,4,480 standard boss probes and
+  8,320 supported character probes including all16 subjects/all48 Masters
+  and no-subject-Master controls. Native and synthetic fixtures are explicitly
+  distinguished. Standard probes use Machines through120 and Roses at130/140;
+  the initial incomplete run caught the Machines reward ceiling and was fully
+  rerun after fixing only the offline fixture.
+- Developed candidates remain almost universally successful through140-150.
+  At160, default-Master builds win96.1%, declining to87.1% at170,66.7% at180
+  and57.7% at185. Common+0 declines89.2% at100 to46% at120 and9.4% at130
+  across the controlled Calamity patterns. Native ordinary results are separate.
+- All supported character/Master/no-subject-Master combinations win10/10
+  through180 against the Machines pattern; six185 losses total. This is
+  saturated supported-build evidence, not a solo/Master ranking.
+- 13 original-horizon timeouts remain explicit, not victories or silent losses.
+- `npx vitest run tools\battle-survey.test.ts src\game\calamity.test.ts
+  --maxWorkers=2` passed108 tests/two files. Tool TypeScript and Node syntax
+  checks passed.26,240 native control results exactly reproduce the preceding
+  survey. Raw/summary files and digest are recorded in the report.
+  Recommended tuning discussion remains upper-end encounters, not nerfs or a
+  blanket enemy Attack increase; no enemy buff is selected/approved.
+
 ## Post-refresh battle survey (2026-10-23)
 
 - Owner requests broad difficulty/capability measurements, no character or

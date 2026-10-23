@@ -5,6 +5,12 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Post-refresh battle measurements
 
+[Ten-level sweep80 through Calamity EX+3](battle-level-sweep-2026-10-23.md):
+112,640 additional offline encounter resolutions at enemy80/90/.../180,
+plus native145/160/185 milestones. All12 Calamity patterns, eight squads,
+eight builds, all16 characters/all48 Masters and exact native controls.
+Synthetic probes are distinguished from playable encounters; no balance changes.
+
 [2026-10-23 battle survey](battle-survey-2026-10-23.md):78,893 offline encounter
 resolutions across progression, eight squads/equipment profiles, all16
 Element-Bearers/all48 Masters, solo tests, continuous Training and hypothetical

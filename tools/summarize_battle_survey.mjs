@@ -98,6 +98,11 @@ const summary = {
   enemyWhatIf: grouped(rows.filter(row => row.category === 'enemy-what-if'), row => `${row.scenario}/${row.build}/${row.encounter}`),
   enemyWhatIfSquads: grouped(rows.filter(row => row.category === 'enemy-what-if'), row => `${row.scenario}/${row.squad}/${row.build}/${row.encounter}`),
   timeoutFollowups: rows.filter(row => row.category === 'timeout-followup').map(({ contribution, ...row }) => row),
+  levelSweep: grouped(rows.filter(row => row.category === 'level-sweep-calamity'), row => `${row.enemyLevel}/${row.build}`),
+  levelSweepSquads: grouped(rows.filter(row => row.category === 'level-sweep-calamity'), row => `${row.squad}/${row.enemyLevel}/${row.build}`),
+  levelSweepPatterns: grouped(rows.filter(row => row.category === 'level-sweep-calamity'), row => `${row.encounter}/${row.build}`),
+  levelSweepStandard: grouped(rows.filter(row => row.category === 'level-sweep-standard'), row => `${row.enemyLevel}/${row.build}`),
+  levelSweepCharacters: grouped(rows.filter(row => row.category === 'level-sweep-character'), row => `${row.squad}/${row.enemyLevel}/${row.master}`),
   timeouts: grouped(rows.filter(row => row.outcome === 'timeout'), row => `${row.category}/${row.squad}/${row.build}/${row.encounter}`),
 };
 writeFileSync(output, JSON.stringify(summary, null, 2) + '\n');

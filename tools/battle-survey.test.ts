@@ -2,7 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { validateConduitElement, validateConduitSlots } from '../src/content/conduits';
 import { getStarter, starters } from '../src/content/starters';
 import { createStoryBattle } from '../src/game/battle';
-import { describeSurvey, enemyWhatIf, loadout, makeBattle, measureBattle, progressAt, surveyLimits } from './battle-survey';
+import { enemyCombatStats } from '../src/content/stat-growth';
+import { calamityActivities } from '../src/content/calamity';
+import { enemyAbilityMultiplier, enemySkills } from '../src/content/enemy-skills';
+import { describeSurvey, enemyWhatIf, levelSweepLevels, loadout, makeBattle, makeLevelProbe, measureBattle, progressAt, surveyLimits } from './battle-survey';
 
 describe('offline battle survey integrity', () => {
   it('constructs legal eight-slot, matching-element loadouts for all16 characters and every build', () => {
@@ -61,5 +64,40 @@ describe('offline battle survey integrity', () => {
     const early = makeBattle({ kind: 'infusion', mode: 'machines', stage: 25 }, ['ember'], 105, 'master5', 1729);
     expect(early.enemies[0].level).toBeLessThan(100);
     expect(enemyWhatIf(early, 'hp150-attack110')).toEqual(early);
+  });
+  it('covers every ten enemy levels from80 through180 plus exact Calamity milestones', () => {
+    expect(levelSweepLevels).toEqual([80, 90, 100, 110, 120, 130, 140, 145, 150, 160, 170, 180, 185]);
+    for (const level of levelSweepLevels) {
+      const state = makeLevelProbe(level, ['ember', 'tide', 'sprout'], 'master5', 1729, 'machines');
+      expect(state.enemies[0].level).toBe(level);
+      expect(state.enemies[0].stats).toEqual(enemyCombatStats(level, true));
+      expect(state.enemies[0].hp).toBe(state.enemies[0].stats.health);
+      expect(state.allies.map(unit => unit.level)).toEqual([105, 105, 105]);
+    }
+    expect(() => makeLevelProbe(190, ['ember'], 'bare', 1729, 'machines')).toThrow();
+    expect(() => makeLevelProbe(150, ['ember'], 'bare', 1729, 'standard')).toThrow();
+  });
+  it('exactly reproduces all36 native Calamity encounters at145/160/185', () => {
+    for (const { id } of calamityActivities) for (const tier of [1, 2, 3] as const) {
+      const actual = makeBattle({ kind: 'calamity', activity: id, tier }, ['ember', 'tide', 'sprout'], 105, 'master5', 1729);
+      expect(makeLevelProbe([145, 160, 185][tier - 1], ['ember', 'tide', 'sprout'], 'master5', 1729, id)).toEqual(actual);
+    }
+  });
+  it('rebuilds standard boss level-dependent skills while preserving the native120 control', () => {
+    const native = makeBattle({ kind: 'infusion', mode: 'machines', stage: 35 }, ['ember'], 105, 'mixed5', 1729);
+    expect(makeLevelProbe(120, ['ember'], 'mixed5', 1729, 'standard')).toEqual(native);
+    const state = makeLevelProbe(80, ['ember'], 'mixed5', 1729, 'standard'), enemy = state.enemies[0];
+    expect(enemy.stats).toEqual(enemyCombatStats(80, true));
+    expect(enemy.enemySkills).toEqual(enemySkills(80, true, native.enemies[0].enemySkills![0].name, enemyAbilityMultiplier(80)));
+    expect(state.allies).toEqual(native.allies);
+  });
+  it('uses the real Rose reward range for standard130/140 so successful probes can finish', () => {
+    for (const level of [130, 140]) {
+      const state = makeLevelProbe(level, ['ember', 'tide', 'sprout'], 'mixed5', 1729, 'standard');
+      expect(state.infusion?.mode).toBe('roses');
+      expect(measureBattle(state).result.outcome).toBe('win');
+    }
+    expect(makeLevelProbe(140, ['ember'], 'mixed5', 1729, 'standard')).toEqual(
+      makeBattle({ kind: 'infusion', mode: 'roses', stage: 35 }, ['ember'], 105, 'mixed5', 1729));
   });
 });
