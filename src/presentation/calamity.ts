@@ -90,7 +90,8 @@ export function calamityLoot(activity: CalamityActivityId, tier: CalamityTier): 
   const weight = rows.reduce((sum, row) => sum + row.weight, 0);
   return `${calamityChestIcon(tier)}<p>${escapeDialogText(chest.name)}</p><h3>Guaranteed contents</h3>
     ${calamityChestContents(activity, tier)}
-    <p>Each random reward is chosen separately from this table. The same reward can appear more than once.</p>
+    <p>Each random reward is chosen separately from this table. The same reward can appear more than once, except Conduits.</p>
+    ${chest.componentRange ? `<p>Conduit rolls keep their rarity chances and select equally among unowned names of that rarity, excluding names already awarded in this chest. Listed Conduit chances assume none are owned. If that rarity is fully owned, receive ${chest.componentRange.min.toLocaleString('en-US')}-${chest.componentRange.max.toLocaleString('en-US')} extra Broken Mechanical Components instead. Random component bonuses are additional to the guaranteed payout.</p>` : ''}
     <table><thead><tr><th>Reward</th><th>Chance per reward</th><th>Quantity</th></tr></thead><tbody>${rows.map(row =>
     `<tr><td>${escapeDialogText(row.label)}</td><td>${Number((row.weight / weight * 100).toFixed(6))}%</td><td>${row.min}-${row.max}</td></tr>`).join('')}</tbody></table>
     <p>Open in Inventory to receive these rewards. Opening uses one chest.</p>`;
@@ -103,6 +104,7 @@ function calamityChestContents(activity: CalamityActivityId, tier: CalamityTier)
     <li><span>Null-Prismatica</span><strong>${chest.lycalis}</strong></li>
     <li><span class="currency-reward">${currencyIcon('calamitic-tokens')}Calamitic Tokens</span><strong>${chest.calamiticTokens}</strong></li>
     ${chest.masterChests ? `<li><span>Cosmic Grand Master Chests</span><strong>${chest.masterChests}</strong></li>` : ''}
+    ${chest.componentRange ? `<li><span>Broken Mechanical Components</span><strong>${chest.componentRange.min.toLocaleString('en-US')}-${chest.componentRange.max.toLocaleString('en-US')}</strong></li>` : ''}
     <li><span>Random rewards</span><strong>${chest.bundles}</strong></li>
   </ul>`;
 }

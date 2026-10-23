@@ -1,5 +1,26 @@
 # Calamity Mode (D-308 / D-315)
 
+## Machines chest ownership and component guarantees (D-389)
+
+Applies only to Awaken the Machines Calamity chests, including existing unopened
+stacks. Every opening grants one independent inclusive-uniform Broken Mechanical
+Components payout: EX+1 3,000-6,000; EX+2 5,000-8,000; EX+3 10,000-12,000.
+The existing3/5/7 random bundles and60%100-200 component bonuses remain.
+Thus total components can exceed the guaranteed range.
+
+Conduit tier chances remain20% Rare/15% Legendary/5% Omnic per bundle.
+Choose uniformly among currently unowned names of that rarity, excluding
+names already awarded earlier in this opening. If no names remain, replace
+that bundle with an additional independent payout using the same tier range.
+Do not reroll into another rarity, grant duplicates or change other activities.
+Normal Machines Focus Loot behavior is unchanged.
+
+Opening reads current ownership and saves chest consumption, all rewards,
+Focus Loot normalization and the advanced independent chest seed atomically.
+Denied writes/overflow preserve the chest, holdings and seed. Cached historical
+opening receipts remain valid for idempotent retry, with no retroactive reroll
+or component grants. Client and shared authority must deploy together.
+
 ## Opened chest loot presentation (D-388)
 
 Every Calamity chest opening reveals its actual saved loot as artwork/name/
@@ -220,15 +241,14 @@ are not reused.
 | Sanctuary |70%:5-10 Null-Prismatica;25%:15-25;5%:40-50|
 | Heaven |35%:5-10 Crown of the Scarlet Oath;35%:10-20 Chalice of the Undying Dawn;15%:10-20 Epic,10%:6-12 Legendary,5%:3-6 Omnic materials; each elemental tier equally divided among Infernic/Oceanic/Atmospheric/Botanic|
 | Abyss |35%:5-10 Heart of the Shattered Void;35%:10-20 Hourglass of Endless Wrath;15%:10-20 Epic,10%:6-12 Legendary,5%:3-6 Omnic materials; each elemental tier equally divided among Tranquilitic/Chaotic|
-| Machines |60%:100-200 Broken Mechanical Components;20%:one Rare Conduit;15%:one Legendary;5%:one Omnic; equal selection among names within the chosen rarity|
+| Machines |60%:100-200 additional Broken Mechanical Components;20%:one unowned Rare Conduit;15%:one unowned Legendary;5%:one unowned Omnic; exhausted rarities convert to the tier component range above|
 | Roses |Seed10%:30-60; Bud15%:20-40; Bloom25%:15-30; Crest25%:10-20; Heart15%:6-12; Soul10%:3-6|
 | Each material dungeon |Own-element Common10%:30-60; Uncommon15%:20-40; Rare25%:15-30; Epic25%:10-20; Legendary15%:6-12; Omnic10%:3-6|
 
 No character grants, captured copies, Master unlocks or extra Master chests in
 random bundles. Disabled weapon-only materials are excluded. Ordinary Conduit
-copies from chest bundles can repeat, including already-owned names; D-312's
-unowned-only rule applies to normal Machines **enemy** rolls, not curated chest
-openings. No automatic equipment or alteration of saved upgrades.
+rewards from Machines chests are unowned-only under D-389, including within
+the same opening. No automatic equipment or alteration of saved upgrades.
 
 ## Boss skills and counterplay
 

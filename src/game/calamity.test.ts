@@ -5,7 +5,7 @@ import { act, actAndAdvanceTurn, actionUnavailable, createCalamityBattle, endTur
   withMasterLoadouts, type BattleState } from './battle';
 import { enemyCombatStats } from '../content/stat-growth';
 import { enemyAbilityMultiplier } from '../content/enemy-skills';
-import { getConduit, validateConduitSlots, type ConduitLoadouts, type ConduitSlots } from '../content/conduits';
+import { conduits, getConduit, validateConduitSlots, type ConduitLoadouts, type ConduitSlots } from '../content/conduits';
 import { characterLevelCap } from '../content/progression';
 import type { StarterId } from '../content/starters';
 import { creatureLoot, getCreature } from '../content/creatures';
@@ -67,7 +67,9 @@ describe('isolated Calamity definitions and rewards', () => {
       'calamiticTokens', 'conduits', 'fractalis', 'id', 'lycalis', 'masterChests', 'materials', 'mechanicalComponents', 'name',
     ]);
     const chest = calamityChest(activity, tier);
-    expect(calls).toBe(chest.bundles * 2);
+    expect(calls).toBe(chest.bundles * 2 + Number(activity === 'machines'));
+    if (activity === 'machines') expect(reward.mechanicalComponents).toBe(chest.componentRange!.min + chest.bundles * 100);
+    else expect(reward.mechanicalComponents).toBe(0);
     expect(reward.masterChests).toBe(tier === 3 ? 2 : 0);
     expect(reward.calamiticTokens).toBe([1, 3, 8][tier - 1]);
     expect(reward.fractalis).toBe(chest.fractalis + (activity === 'treasury' ? chest.bundles * 25_000 : 0));
@@ -82,19 +84,50 @@ describe('isolated Calamity definitions and rewards', () => {
       const table = calamityLootTable(id);
       let offset = 0;
       for (const row of table) {
+        if (row.kind === 'conduit') { offset += row.weight; continue; }
         for (const quantity of [0, 1 - Number.EPSILON]) {
           let calls = 0;
-          const reward = rollCalamityChest(id, 1, () => calls++ % 2 === 0 ? (offset + row.weight / 2) / 100 : quantity);
+          const reward = rollCalamityChest(id, 1, () => {
+            const call = calls++;
+            if (id === 'machines' && call === 0) return quantity;
+            return (call - Number(id === 'machines')) % 2 === 0 ? (offset + row.weight / 2) / 100 : quantity;
+          });
           const expected = (quantity === 0 ? row.min : row.max) * 3;
           if (row.kind === 'material') expect(reward.materials).toEqual({ [row.id!]: expected });
-          if (row.kind === 'conduit') expect(reward.conduits).toEqual({ [row.id!]: expected });
           if (row.kind === 'fractalis') expect(reward.fractalis).toBe(100_000 + expected);
           if (row.kind === 'lycalis') expect(reward.lycalis).toBe(50 + expected);
-          if (row.kind === 'components') expect(reward.mechanicalComponents).toBe(expected);
+          if (row.kind === 'components') expect(reward.mechanicalComponents).toBe(expected + (quantity === 0 ? 3_000 : 6_000));
         }
         offset += row.weight;
       }
       expect(() => rollCalamityChest(id, 1, () => 1)).toThrow();
+    }
+  });
+  it.each(tiers)('guarantees tier %i component endpoints and converts exhausted rarity rolls without duplicates', tier => {
+    const range = calamityChest('machines', tier).componentRange!;
+    const rare = conduits.filter(entry => entry.rarity === 'Rare');
+    const owned = Object.fromEntries(rare.slice(1).map(entry => [entry.id, 1]));
+    for (const quantity of [0, 1 - Number.EPSILON]) {
+      let calls = 0;
+      const reward = rollCalamityChest('machines', tier, () => {
+        const call = calls++;
+        return call === 0 || call % 2 === 0 ? quantity : .65;
+      }, owned);
+      expect(reward.conduits).toEqual({ [rare[0].id]: 1 });
+      expect(reward.mechanicalComponents).toBe((quantity === 0 ? range.min : range.max)
+        * calamityChest('machines', tier).bundles);
+      expect(calls).toBe(1 + calamityChest('machines', tier).bundles * 2);
+    }
+  });
+  it('never awards an already owned Conduit at any eligible rarity, including names earned in the same chest', () => {
+    for (const [rarity, pick] of [['Rare', .65], ['Legendary', .85], ['Omnic', .99]] as const) {
+      const pool = conduits.filter(entry => entry.rarity === rarity);
+      const owned = Object.fromEntries(pool.slice(1).map(entry => [entry.id, 1]));
+      let calls = 0;
+      const reward = rollCalamityChest('machines', 3, () => calls++ % 2 ? pick : .5, owned);
+      expect(reward.conduits).toEqual({ [pool[0].id]: 1 });
+      expect(reward.mechanicalComponents).toBe(11_000 * 7);
+      expect(owned[pool[0].id]).toBeUndefined();
     }
   });
   it('restricts all random materials and excludes weapon-only materials and Master rewards', () => {

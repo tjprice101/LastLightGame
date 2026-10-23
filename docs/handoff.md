@@ -1,5 +1,29 @@
 # Current state and handoff
 
+## Machines Calamity chest rewards (D-389)
+
+- Owner confirms Machines-only chest change: guaranteed components3000-6000/
+  5000-8000/10000-12000 at EX+1/2/3, retaining3/5/7 bundles and existing
+  60%100-200 bonuses. Each exhausted-rarity Conduit roll adds another payout
+  in the same tier range. Total can exceed the guaranteed range.
+- Rare20%/Legendary15%/Omnic5% chances unchanged. Select equally among unowned
+  names, excluding earlier rewards in the same opening. Current saved ownership
+  enters the pure resolver; one atomic save consumes chest and records rewards/
+  seed. No load writes, retroactive grants, Focus Loot rewrite or other-mode change.
+- Receipt bounds accept the increased components and retain historical cached
+  receipts for idempotent retry. Publish matching generated authority/client.
+- Focused six-file chest/account/server/HTTP/presentation run passed360 tests.
+  `npm test -- --maxWorkers=2` passed6489 tests/207 files; `npm run build`,
+  `node tools\bundle_server_game.mjs`, strict engine TypeScript and smoke
+  syntax checks passed. Follow-up guaranteed-range UI assertion passed63
+  presentation tests. Existing jsdom canvas and Vite chunk advisories remain.
+- Matching authority deployed with `npx supabase functions deploy game-operation
+  --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  `node tools\smoke_server_game.mjs --calamity-components` passed all three
+  tier guarantees, last-unowned selection, fully-owned conversions, exact
+  local/server receipts, persisted holdings and idempotent retries across
+  six openings. Disposable identity/cascading records removed.
+
 ## Critical size, Calamity loot and read-only Conduit audit (D-388)
 
 - Owner follow-up increases only Crit/Elemental Crit labels to20-24px

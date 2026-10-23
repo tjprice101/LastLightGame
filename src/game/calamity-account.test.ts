@@ -3,6 +3,7 @@ import { calamityActivities, calamityChest, calamityChestId, rollCalamityChest, 
 import { infusionStageCount } from '../content/activities';
 import { isPlayableDungeon } from '../content/dungeons';
 import { masterConduits } from '../content/master-conduits';
+import { conduits } from '../content/conduits';
 import { calamiticConduits, calamiticLockMessage, calamiticTokenPrice } from '../content/calamitic-conduits';
 import { ACCOUNT_KEY, calamityUnlockedTier, emptyAccount, loadAccount, openCalamityChest, purchaseConduit, saveAccount, saveAccountRewards, validateAccount, type Account } from './account';
 import { act, createCalamityBattle, createDungeonBattle, createInfusionBattle, type BattleEvent, type BattleResult } from './battle';
@@ -55,6 +56,24 @@ function rng(seed: number) {
 }
 
 describe('Calamity account transactions', () => {
+  it('opens Machines chests from current ownership and converts fully owned rarities without increasing their counts', () => {
+    const { saved, writes } = storage();
+    const account = prepared(saved, 'machines', 3);
+    const id = calamityChestId('machines', 3);
+    account.calamityChests = { [id]: 1 };
+    account.conduits = Object.fromEntries(conduits.map(entry => [entry.id, 1]));
+    account.calamitySeed = 123;
+    saveAccount(saved, account);
+    const before = writes();
+    const expected = rollCalamityChest('machines', 3, rng(123), account.conduits);
+    const opened = openCalamityChest(saved, id, 1);
+    expect(opened.reward).toEqual(expected);
+    expect(opened.reward.conduits).toEqual({});
+    expect(opened.account.conduits).toEqual(account.conduits);
+    expect(opened.account.mechanicalComponents).toBe(expected.mechanicalComponents);
+    expect(opened.reward.mechanicalComponents).toBeGreaterThanOrEqual(10_000);
+    expect(writes()).toBe(before + 1);
+  });
   it.each(calamityActivities.flatMap(({ id }) => ([1, 2, 3] as const).map((tier) => [id, tier] as const)))(
     '%s EX%i atomically earns and opens exactly its chest without ordinary loot',
     (activity, tier) => {
@@ -350,7 +369,7 @@ describe('Calamity account transactions', () => {
     expect(writes()).toBe(before);
   });
 
-  it.each(['denied', 'fractalis', 'lycalis', 'materials', 'conduits', 'mechanicalComponents', 'calamiticTokens', 'masterChests'] as const)(
+  it.each(['denied', 'fractalis', 'lycalis', 'materials', 'mechanicalComponents', 'calamiticTokens', 'masterChests'] as const)(
     'failed %s opening preserves chest count and RNG for an identical retry', (failure) => {
       const { saved, deny, allow } = storage();
       const activity = failure === 'materials' ? 'infernic' : 'machines';
@@ -358,12 +377,10 @@ describe('Calamity account transactions', () => {
       const account = prepared(saved, activity, 3);
       account.calamityChests = { [id]: 1 };
       let seed = 123;
-      while (failure === 'conduits' && Object.keys(rollCalamityChest(activity, 3, rng(seed)).conduits).length === 0) seed++;
       account.calamitySeed = seed;
       const expected = rollCalamityChest(activity, 3, rng(seed));
       if (failure === 'fractalis' || failure === 'lycalis') account[failure] = Number.MAX_SAFE_INTEGER;
       if (failure === 'materials') for (const material of Object.keys(expected.materials)) account.materials[material] = Number.MAX_SAFE_INTEGER;
-      if (failure === 'conduits') account.conduits = Object.fromEntries(Object.keys(expected.conduits).map((conduit) => [conduit, Number.MAX_SAFE_INTEGER]));
       if (failure === 'mechanicalComponents') account.mechanicalComponents = Number.MAX_SAFE_INTEGER;
       if (failure === 'calamiticTokens') account.calamiticTokens = Number.MAX_SAFE_INTEGER;
       if (failure === 'masterChests') account.masterChests = Number.MAX_SAFE_INTEGER;

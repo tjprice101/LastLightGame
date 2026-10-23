@@ -4,6 +4,7 @@ import { calamityActivities, calamityChest, calamityChestId } from '../content/c
 import { calamityBossArt } from '../content/calamity-art';
 import { calamiticConduits, calamiticTokenPrice } from '../content/calamitic-conduits';
 import { activityAccess } from '../game/activity-access';
+import { conduits } from '../content/conduits';
 import { validateGameResponse, type GameOperation } from './server-game';
 
 let sequence = 0;
@@ -19,6 +20,25 @@ function ready() {
 }
 
 describe('authoritative Calamity operations', () => {
+  it.each([1, 2, 3] as const)('honors Machines tier %i guaranteed components and fully-owned conversions authoritatively', tier => {
+    const game = ready();
+    const id = calamityChestId('machines', tier);
+    game.account.calamityChests = { [id]: 1 };
+    game.account.conduits = Object.fromEntries(conduits.map(entry => [entry.id, 1]));
+    const before = structuredClone(game);
+    const opened = op(game, { kind: 'openCalamityChest', id, expectedCount: 1 });
+    const range = calamityChest('machines', tier).componentRange!;
+    const receipt = opened.response.calamityOpening!;
+    expect(receipt.conduits).toEqual({});
+    expect(receipt.mechanicalComponents).toBeGreaterThanOrEqual(range.min);
+    expect(receipt.mechanicalComponents).toBeLessThanOrEqual(range.max * (calamityChest('machines', tier).bundles + 1));
+    expect(opened.game.account.conduits).toEqual(game.account.conduits);
+    expect(validateGameResponse(opened.response).calamityOpening).toEqual(receipt);
+    expect(() => validateGameResponse({ ...opened.response, calamityOpening: {
+      ...receipt, mechanicalComponents: range.max * (calamityChest('machines', tier).bundles + 1) + 1,
+    } })).toThrow('incomplete');
+    expect(game).toEqual(before);
+  });
   it('requires actual normal final-clear evidence, not old stage unlocks or bearer levels', () => {
     const game = ready();
     delete game.account.normalFinalClears;

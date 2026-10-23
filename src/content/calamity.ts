@@ -47,7 +47,8 @@ export function calamityChest(activity: CalamityActivityId, tier: CalamityTier) 
   const title = ['Slayer', 'Master', 'Omnipotent'][tier - 1];
   return { id, name: `${calamityActivity(activity).name} EX+${title} Chest`,
     fractalis: [100_000, 250_000, 500_000][tier - 1], lycalis: [50, 70, 100][tier - 1],
-    calamiticTokens: [1, 3, 8][tier - 1], bundles: [3, 5, 7][tier - 1], masterChests: tier === 3 ? 2 : 0 };
+    calamiticTokens: [1, 3, 8][tier - 1], bundles: [3, 5, 7][tier - 1], masterChests: tier === 3 ? 2 : 0,
+    componentRange: activity === 'machines' ? { min: [3_000, 5_000, 10_000][tier - 1], max: [6_000, 8_000, 12_000][tier - 1] } : null };
 }
 
 export interface CalamityLootRow {
@@ -112,7 +113,8 @@ export interface CalamityOpening {
   calamiticTokens: number;
   masterChests: number;
 }
-export function rollCalamityChest(activity: CalamityActivityId, tier: CalamityTier, roll: () => number): CalamityOpening {
+export function rollCalamityChest(activity: CalamityActivityId, tier: CalamityTier, roll: () => number,
+  owned: Readonly<Partial<Record<ConduitId, number>>> = {}): CalamityOpening {
   const chest = calamityChest(activity, tier);
   const reward: CalamityOpening = { id: chest.id, name: chest.name, fractalis: chest.fractalis,
     lycalis: chest.lycalis, calamiticTokens: chest.calamiticTokens, masterChests: chest.masterChests,
@@ -124,17 +126,26 @@ export function rollCalamityChest(activity: CalamityActivityId, tier: CalamityTi
     return value;
   };
   const totalWeight = table.reduce((sum, row) => sum + row.weight, 0);
+  const components = (value: number): number => {
+    if (!chest.componentRange) throw new Error('Calamity component range is missing.');
+    return chest.componentRange.min + Math.floor(value * (chest.componentRange.max - chest.componentRange.min + 1));
+  };
+  if (chest.componentRange) reward.mechanicalComponents = components(random());
   for (let bundle = 0; bundle < chest.bundles; bundle++) {
     let pick = random() * totalWeight;
     const row = table.find(entry => { pick -= entry.weight; return pick < 0; }) ?? table[table.length - 1];
-    const amount = row.min + Math.floor(random() * (row.max - row.min + 1));
+    const quantityRoll = random();
+    const amount = row.min + Math.floor(quantityRoll * (row.max - row.min + 1));
     if (row.kind === 'fractalis' || row.kind === 'lycalis') reward[row.kind] += amount;
     else if (row.kind === 'components') reward.mechanicalComponents += amount;
     else if (row.kind === 'material' && row.id) reward.materials[row.id] = (reward.materials[row.id] ?? 0) + amount;
     else if (row.kind === 'conduit' && row.id) {
-      const id = conduits.find(conduit => conduit.id === row.id)?.id;
-      if (!id) throw new Error('Unknown Calamity Conduit reward.');
-      reward.conduits[id] = (reward.conduits[id] ?? 0) + amount;
+      const selected = conduits.find(conduit => conduit.id === row.id);
+      if (!selected) throw new Error('Unknown Calamity Conduit reward.');
+      const pool = conduits.filter(conduit => conduit.rarity === selected.rarity
+        && (owned[conduit.id] ?? 0) === 0 && (reward.conduits[conduit.id] ?? 0) === 0);
+      if (pool.length) reward.conduits[pool[Math.floor(quantityRoll * pool.length)].id] = 1;
+      else reward.mechanicalComponents += components(quantityRoll);
     } else throw new Error('Malformed Calamity loot row.');
   }
   return reward;

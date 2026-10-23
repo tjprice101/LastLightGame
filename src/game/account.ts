@@ -563,7 +563,7 @@ export function openCalamityChest(storage: ProfileStorage, id: string, expectedC
     seed ^= seed << 5;
     seed >>>= 0;
     return seed / 0x100000000;
-  });
+  }, account.conduits);
   const add = (current: number, amount: number): number => {
     if (!count(amount) || !count(current + amount)) throw new Error('Calamity reward inventory capacity reached.');
     return current + amount;

@@ -5,6 +5,10 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Post-refresh battle measurements
 
+**Machines chest rewards (D-389):** [unowned-only Conduits and tier component
+guarantees/conversions](calamity-mode.md#machines-chest-ownership-and-component-guarantees-d-389).
+Other Calamity activities and normal Machines drops are unchanged.
+
 **Read-only Conduit audit (D-388):** [all138 IDs,94,680 matched pairs and
 ranked measured synergies](conduit-balance-audit-2026-10-23.md).
 Glassroot/Health scaling, Razor Revenge burst, duplicate auras and Stasis/

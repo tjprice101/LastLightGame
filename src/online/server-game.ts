@@ -144,7 +144,9 @@ function validCalamityOpening(value: unknown): boolean {
       reward.calamiticTokens !== chest.calamiticTokens ||
       reward.masterChests !== chest.masterChests || !object(reward.materials) || !object(reward.conduits)) return false;
     for (const [field, kind, base] of [['fractalis', 'fractalis', chest.fractalis], ['lycalis', 'lycalis', chest.lycalis], ['mechanicalComponents', 'components', 0]] as const) {
-      const maximum = Math.max(0, ...rows.filter(row => row.kind === kind).map(row => row.max)) * chest.bundles;
+      const maximum = field === 'mechanicalComponents' && chest.componentRange
+        ? chest.componentRange.max * (chest.bundles + 1)
+        : Math.max(0, ...rows.filter(row => row.kind === kind).map(row => row.max)) * chest.bundles;
       if ((reward[field] as number) < base || (reward[field] as number) > base + maximum) return false;
     }
     for (const [id, count] of Object.entries(reward.materials)) {

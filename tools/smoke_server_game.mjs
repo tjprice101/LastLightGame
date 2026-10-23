@@ -49,7 +49,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--omnic-refresh')) {
+  if (process.argv.includes('--calamity-components')) {
+    await smokeCalamityComponents(client, created.user.id, username);
+  } else if (process.argv.includes('--omnic-refresh')) {
     await smokeOmnicRefresh(client, created.user.id, username);
   } else if (process.argv.includes('--conduit-rework')) {
     await smokeConduitRework(client, created.user.id, username);
@@ -700,6 +702,56 @@ async function smokeNativeCalamity(client, userId, username) {
     assert.equal(exited.session, null);
   }
   console.log(`Hosted native/Calamity smoke passed: rules${conduitRulesVersion}, explicit Tizu/Disciple recipients, Lv185 EX3 chest-only fixture victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned exact120/140/145/185 resistance stats and artwork.`);
+}
+
+async function smokeCalamityComponents(client, userId, username) {
+  const source = readFileSync(new URL('../src/content/phase-zero-conduit-catalog.ts', import.meta.url), 'utf8');
+  const catalog = JSON.parse(source.slice(source.indexOf('= {') + 2, source.lastIndexOf('};') + 1));
+  const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+  let game = freshGame(username);
+  game.starterId = 'ember';
+  game.account.characters = { ember: { level: 0, evolution: 1 } };
+  game.account.squad = ['ember'];
+  game.account.conduits = Object.fromEntries(Object.keys(catalog).filter(id => !id.startsWith('master-')).map(id => [id, 1]));
+  delete game.account.conduits['springwell-pump'];
+  game.account.calamityChests = Object.fromEntries([1, 2, 3].map(tier => [`calamity:machines:${tier}`, 2]));
+  const first = { kind: 'openCalamityChest', id: 'calamity:machines:1', expectedCount: 2 };
+  let seed = 1;
+  for (; seed < 1000; seed++) {
+    game.account.calamitySeed = seed;
+    if (resolveOperation(game, first, entropy).response.calamityOpening.conduits['springwell-pump'] === 1) break;
+  }
+  assert.ok(seed < 1000, 'Find a real seeded unowned reward');
+  assert.ok(ids.includes(userId), 'Only disposable identities may receive fixtures');
+  const seeded = await admin.rpc('load_game_account', { p_user: userId, p_initial: game });
+  assert.equal(seeded.error, null);
+  let revision = 0;
+  async function invoke(operation, requestId = randomUUID()) {
+    const result = await client.functions.invoke('game-operation', {
+      body: { operation, expectedRevision: revision, requestId },
+    });
+    assert.equal(result.error, null, `Hosted ${operation.kind} succeeds`);
+    return result.data;
+  }
+  for (const tier of [1, 2, 3]) {
+    for (const expectedCount of [2, 1]) {
+      const operation = { kind: 'openCalamityChest', id: `calamity:machines:${tier}`, expectedCount };
+      const expected = resolveOperation(game, operation, entropy);
+      const requestId = randomUUID();
+      const actual = await invoke(operation, requestId);
+      assert.deepEqual(actual.calamityOpening, expected.response.calamityOpening);
+      assert.deepEqual(actual.account, expected.response.account);
+      assert.deepEqual(await invoke(operation, requestId), actual, 'Retry returns the saved receipt');
+      const floor = [3000, 5000, 10000][tier - 1];
+      assert.ok(actual.calamityOpening.mechanicalComponents >= floor);
+      if (tier === 1 && expectedCount === 2) assert.deepEqual(actual.calamityOpening.conduits, { 'springwell-pump': 1 });
+      else assert.deepEqual(actual.calamityOpening.conduits, {}, 'Fully owned pools never duplicate');
+      revision = actual.revision;
+      game = expected.game;
+      assert.deepEqual((await invoke({ kind: 'read' })).account, actual.account);
+    }
+  }
+  console.log('Hosted Machines chest smoke passed: all three guaranteed tier ranges, one remaining unowned reward, fully-owned conversions, exact local/server receipts, persisted balances and idempotent retries. Disposable identity only.');
 }
 
 async function smokeCalamiticEconomy(client, userId, username) {

@@ -222,6 +222,8 @@ describe('Calamity presentation', () => {
       expect(rewards).toContain(`Prismatica${chest.fractalis.toLocaleString('en-US')}`);
       expect(rewards).toContain(`Null-Prismatica${chest.lycalis}`);
       expect(rewards).toContain(`Random rewards${chest.bundles}`);
+      if (chest.componentRange) expect(rewards).toContain(
+        `Broken Mechanical Components${chest.componentRange.min.toLocaleString('en-US')}-${chest.componentRange.max.toLocaleString('en-US')}`);
       expect(rewards.filter(row => row?.includes('Cosmic Grand Master Chests'))).toEqual(
         chest.masterChests ? [`Cosmic Grand Master Chests${chest.masterChests}`] : []);
       expect(card.querySelector('.calamity-tier-actions [data-calamity]')).not.toBeNull();
