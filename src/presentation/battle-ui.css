@@ -146,5 +146,5 @@
 
 .battle-screen .damage-number.critical[data-critical-label],
 .battle-screen .damage-number.elemental-critical[data-critical-label] { font-size: clamp(28px, 3vw, 40px); line-height: 1.15; }
-.battle-screen .damage-number[data-critical-label]::after { content: attr(data-critical-label); display: block; margin-top: 4px; color: #fff; font-size: clamp(16px, 1.5vw, 20px); font-weight: 700; line-height: 1.25; text-align: center; -webkit-text-stroke: 0; text-shadow: 0 1px 2px #000, 1px 0 2px #000, -1px 0 2px #000; }
+.battle-screen .damage-number[data-critical-label]::after { content: attr(data-critical-label); display: block; margin-top: 4px; color: #fff; font-size: clamp(20px, 1.8vw, 24px); font-weight: 700; line-height: 1.25; text-align: center; -webkit-text-stroke: 0; text-shadow: 0 1px 2px #000, 1px 0 2px #000, -1px 0 2px #000; }
 .battle-screen .damage-number.elemental-critical { background: linear-gradient(90deg, #ff8080, #ffe080, #a0ffb5, #88d8ff, #c5a0ff, #ff9ddd); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: .35px #000; text-shadow: none; filter: drop-shadow(0 2px 2px #000); }

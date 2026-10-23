@@ -2,6 +2,13 @@
 
 ## Critical size, Calamity loot and read-only Conduit audit (D-388)
 
+- Owner follow-up increases only Crit/Elemental Crit labels to20-24px
+  (`clamp(20px, 1.8vw, 24px)`), preserving28-40px damage numbers and all
+  other popup behavior. Supersedes the earlier16-20px label measurements below.
+  `npx vitest run src\presentation\battle-impact.test.ts --maxWorkers=2`
+  passed4 tests; `npm run build` passed. Actual production CSS at320/390/1280
+  confirms20/20/23.04px labels for both types, unchanged28/28/38.4px numbers.
+  Temporary preview stopped; no account writes.
 - Owner finds critical text too small: responsive numbers now28-40px and
   separate white labels16-20px. Keep exact values, static rainbow, accessibility
   names,1.05 peak scale and normal/impact/reduced-motion behavior.
