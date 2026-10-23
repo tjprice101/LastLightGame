@@ -3,6 +3,14 @@
 This folder is the shared reference for the owner, developers, and AI agents.
 It is intended to make features easy to locate, extend, and hand off.
 
+## Post-refresh battle measurements
+
+[2026-10-23 battle survey](battle-survey-2026-10-23.md):78,893 offline encounter
+resolutions across progression, eight squads/equipment profiles, all16
+Element-Bearers/all48 Masters, solo tests, continuous Training and hypothetical
+enemy-only increases. Production balance is unchanged; measured findings and
+unapproved next-step recommendations are explicitly separated.
+
 ## Phase 0 release (D-370)
 
 **D-383 current refresh:** all45 ordinary Omnics and48 Masters now have

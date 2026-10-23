@@ -1,5 +1,40 @@
 # Current state and handoff
 
+## Post-refresh battle survey (2026-10-23)
+
+- Owner requests broad difficulty/capability measurements, no character or
+  Conduit nerfs; stronger enemies are the permitted direction if tuning follows.
+  **No production balance changes were made.** See the
+  [full report](battle-survey-2026-10-23.md) for evidence and limitations.
+- Added reproducible offline real-engine survey, seven integrity tests and
+  grouped JSON summarizer. Completed78,893 encounter resolutions:66,727 main,
+  12,160 late-curve/enemy-only hypothetical tests and six extended timeout
+  retries. Uses synthetic fixtures only; no accounts, wallet writes or network.
+- Endgame is sharply build-dependent. Max-level unequipped squads lose all
+  tested finals; mixed+5 and four-Omnic+5/Master candidates clear all Lv.120
+  finals, typically in two rounds. EX+3 wins range7/120 to118/120 for different
+  default-Master squads. Continuous Training exposes sustain failures hidden
+  by fresh-entry boss tests; developed healing/control squads reach the125-wave
+  survey ceiling, while two-DPS runs can fail much earlier.
+- Every character and all48 Masters were exercised, including no-subject-Master
+  controls and a second action policy. Supported tests largely saturate at
+  wins and do not establish a best-Master tier list. Solo results, source
+  damage/healing/Shield contributions and natural Last Flare usage are reported.
+- Hypothetical enemy Health x1.5/Attack x1.1 leaves developed Machines120
+  candidates at80/80 but drops Common candidates from30/80 to8/80. It also
+  reduces default-Master Machines EX+3 from46/80 to28/80. These are isolated
+  cloned fixtures, not a proposed/implemented global curve. Favor a discussion
+  of upper-end boss durability/mechanics and acquisition access over blanket
+  Attack growth. No enemy buff has yet been selected/approved.
+- Six100-round timeouts were retried to at least1,000 rounds:one late defeat,
+  five unresolved potential sustain/pilot stalemates. Never counted as wins
+  or silently reclassified as losses. Raw JSONL/summary retained in session
+  files with report digests; rerun commands are in the report.
+- `npx vitest run tools\battle-survey.test.ts src\game\calamity.test.ts
+  --maxWorkers=2` passed104 tests/two files. Explicit tool TypeScript checking
+  and runner/summarizer Node syntax checks passed. Existing current production
+  combat behavior and D-383 numerical evidence are unchanged.
+
 ## Omnic and Master refresh (D-383)
 
 - Current implementation refreshes all45 ordinary Omnics and48 named Masters.
