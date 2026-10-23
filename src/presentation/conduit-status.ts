@@ -25,9 +25,9 @@ export function conduitStatuses(snapshot: ReturnType<typeof conduitStatusSnapsho
   if (n.stasisSkip && n.stasisSkip >= round) add('stasis-skip',
     n.stasisSkip === round ? 'Stasis: cannot act this turn.' : `Stasis: cannot act on turn ${n.stasisSkip}.`);
   if (n.stasisProtected === round)
-    add('stasis-protection', '[Stasis Reliquary]: no further damage this [Enemy Turn].');
+    add('stasis-protection', '[Stasis Reliquary]: Prevents all further damage this [Enemy Turn].');
   if (n.stasisPenalty === round)
-    add('stasis-penalty', '[Stasis Reliquary]: +25% enemy attack damage this [Enemy Turn]; protection unavailable.');
+    add('stasis-penalty', '[Stasis Reliquary]: Take 25% more damage from enemy [Attack Actions] this [Enemy Turn]. [Shield] break protection is on cooldown.');
   if (snapshot.owners.accord) add('accord', `Accord: one lethal direct hit prevented; shield follows · ${owner(snapshot.owners.accord)?.name ?? snapshot.owners.accord}.`);
   if (n.quietFeather) add('quiet-feather', 'Quiet Feather: next legal Skill 1 costs no Elemental Gauge; no extra action or recovery bypass.');
   const guardian = owner(snapshot.owners.guardian);

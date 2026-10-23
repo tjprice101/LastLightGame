@@ -5,6 +5,10 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Post-refresh battle measurements
 
+**Status readability (D-387):** [clear Stasis damage-taken/cooldown wording and
+full-width Conduit status rows](combat.md#stasis-status-readability-d-387)
+prevent active statuses from squeezing HP into a vertical stack.
+
 **Battle presentation (D-386):** [smaller readable critical popups and clustered
 enemy loot](combat.md#readable-critical-popups-and-clustered-loot-d-386).
 Presentation only; exact damage/rewards and rules9 authority stay unchanged.

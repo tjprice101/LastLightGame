@@ -5,6 +5,20 @@ import { unitReadout } from './unit-readout';
 import { nativeBalance } from '../content/native-balance';
 
 describe('accessible Conduit control and protection readouts', () => {
+  it('explains Stasis protection and its damage-taken penalty on the correct turns', () => {
+    const unit = createSession('ember').state.allies[0];
+    unit.conduitRuntime = { numbers: { stasisProtected: 2, stasisPenalty: 3 }, owners: {} };
+    const snapshot = conduitStatusSnapshot(unit);
+    const protectedTurn = conduitStatuses(snapshot, 2);
+    expect(protectedTurn).toContain('Prevents all further damage this [Enemy Turn].');
+    expect(protectedTurn).not.toContain('Take 25% more damage');
+    const penaltyTurn = conduitStatuses(snapshot, 3);
+    expect(penaltyTurn).toContain('Take 25% more damage from enemy [Attack Actions] this [Enemy Turn].');
+    expect(penaltyTurn).toContain('[Shield] break protection is on cooldown.');
+    expect(penaltyTurn).not.toContain('Prevents all further damage');
+    expect(conduitStatuses(snapshot, 4)).toBe('');
+  });
+
   it('describes active Master links as Gauge income, not shared damage', () => {
     const state = createSession('disciple').state;
     const owner = state.allies[0];

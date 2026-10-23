@@ -49,6 +49,8 @@ html body .battle-screen #battle-root .battle-status-badge { background: #1a1a1c
 html body .battle-screen #battle-root .status-icon { width: 16px; height: 16px; vertical-align: middle; object-fit: contain; }
 html body .battle-screen .unit-active-buffs { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px; min-width: 0; }
 html body .battle-screen .unit-active-buffs:empty { display: none; }
+html body .battle-screen #battle-root .unit-conduit-statuses { grid-column: 1 / -1; min-width: 0; }
+html body .battle-screen #battle-root .unit-conduit-statuses:empty { display: none; }
 html body .battle-screen #battle-root .unit-active-buffs .battle-status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 6px; white-space: normal; overflow-wrap: anywhere; text-align: left; color: #f4f4f5; }
 html body .battle-screen #battle-root .battle-action { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: .2rem; padding: .55rem .7rem; border: 1px solid #2d2d31; border-radius: .7rem; background: #1a1a1c; color: #f4f4f5; min-height: 68px; min-width: 0; box-shadow: none; }
 html body .battle-screen #battle-root .battle-action strong { font-size: .78rem; overflow-wrap: anywhere; }

@@ -1,5 +1,24 @@
 # Current state and handoff
 
+## Stasis wording and readout layout (D-387)
+
+- Owner screenshot shows awkward Stasis penalty wording and HP wrapping one
+  character per line. Wording now explicitly describes damage taken and the
+  Shield-break protection cooldown, retaining bracketed terms.
+- Root cause: Conduit status container occupied the auto-sized second readout
+  column. It now spans the entire grid row; empty containers are hidden.
+  Combat math, status clocks, authority rules9 and saved data are unchanged.
+- `npx vitest run src\presentation\conduit-status.test.ts
+  src\presentation\unit-readout.test.ts
+  src\presentation\calamitic-conduits.test.ts --maxWorkers=2`:19 tests/three
+  files passed, including Stasis protection/penalty expiry. `npm run build`
+  passed with the existing chunk-size advisory.
+- Actual production CSS browser fixture at320/390/1280 confirms the pictured
+  HP stays on one line, status occupies a separate full-width row without
+  overflow, and empty status containers are hidden. No account writes.
+  Client-only publication follows the standing workflow.
+
+
 ## Critical popup readability and loot clusters (D-386)
 
 - Owner requests smaller/readable Crit and Elemental Crit popups plus loosely

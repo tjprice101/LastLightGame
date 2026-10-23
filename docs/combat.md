@@ -1,5 +1,16 @@
 # Combat specification
 
+## Stasis status readability (D-387)
+
+Stasis Reliquary's active protection explicitly prevents further damage this
+[Enemy Turn]. Its penalty says the wearer takes25% more damage from enemy
+[Attack Actions] this [Enemy Turn], with [Shield] break protection on cooldown.
+This describes existing mechanics; damage, clocks and authority stay unchanged.
+Field Conduit statuses span the entire readout grid row rather than occupying
+the auto-sized second column and squeezing HP into a vertical stack. Empty
+Conduit status containers are hidden. Validate Conduit/readout tests and actual
+production CSS at mobile/desktop widths with long HP values and active Stasis.
+
 ## Readable critical popups and clustered loot (D-386)
 
 Presentation only: Critical and Elemental Crit damage numbers use22-34px
