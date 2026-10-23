@@ -176,9 +176,9 @@ describe('Calamity visible boss patterns', () => {
 describe('Calamity seeded difficulty benchmarks', () => {
   it.each(tiers)('measures four-Omnic candidate squads and intentional difficulty walls at EX+%s', tier => {
     const expectedWins = {
-      1: { starters: [36, 36, 36], mixed: [36, 36, 36] },
-      2: { starters: [36, 36, 36], mixed: [35, 35, 36] },
-      3: { starters: [23, 0, 26], mixed: [7, 3, 24] },
+      1: { starters: [36, 31, 36], mixed: [32, 32, 36] },
+      2: { starters: [20, 2, 20], mixed: [2, 0, 19] },
+      3: { starters: [0, 0, 0], mixed: [0, 0, 0] },
     } as const;
     const roster = ['rosetta', 'thornia', 'sprout'] as const satisfies readonly StarterId[];
     const progress = Object.fromEntries(roster.map(id => [id, { level: 105, evolution: 6 }]));

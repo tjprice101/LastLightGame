@@ -5,6 +5,7 @@ import { conduitRulesVersion } from '../game/conduit-runtime';
 import type { GameOperation } from './server-game';
 import type { StarterId } from '../content/starters';
 import { nativeIdentityIds } from '../content/native-identities';
+import { enemyCombatStats } from '../content/stat-growth';
 
 let sequence = 0;
 const entropy = { seed: () => 1729, random: () => .5,
@@ -21,6 +22,25 @@ function ready(roster: StarterId[]) {
 }
 
 describe('native identity authoritative parity and restart', () => {
+  it('rebuilds a rules7 late Training encounter with stronger enemies and unchanged frozen allies/holdings', () => {
+    const game = ready(['ember', 'tide']);
+    const session = game.run!.session;
+    session.state.conduitRulesVersion = 7;
+    session.state.wave = 120;
+    const before = structuredClone(game);
+    const result = op(game, { kind: 'read' });
+    expect(result.game.account).toEqual(before.account);
+    const restored = result.game.run!.session;
+    expect(restored.state.wave).toBe(120);
+    expect(restored.state.conduitRulesVersion).toBe(8);
+    for (const enemy of restored.state.enemies) {
+      expect(enemy.level).toBe(120);
+      expect(enemy.stats).toEqual(enemyCombatStats(120, false));
+    }
+    expect(restored.state.allies.map(ally => ally.stats)).toEqual(session.state.allies.map(ally => ally.stats));
+    expect(result.response.result).toBeUndefined();
+    expect(game).toEqual(before);
+  });
   it.each(nativeIdentityIds)('matches %s strengthened Last Flare and frozen state online', id => {
     const game = ready([id, id === 'ember' ? 'tide' : 'ember']);
     const targetId = game.run!.session.state.enemies[0].id;
@@ -60,7 +80,7 @@ describe('native identity authoritative parity and restart', () => {
     expect(game).toEqual(before);
   });
 
-  it.each([2, 3].flatMap(version => (['read', 'checkpoint', 'act'] as const).map(kind => ({ version, kind }))))(
+  it.each([2, 3, 7].flatMap(version => (['read', 'checkpoint', 'act'] as const).map(kind => ({ version, kind }))))(
     'restarts version$version through $kind without applying stale commands or replacing frozen squad', ({ version, kind }) => {
     const game = ready(['crinso', 'tide']);
     const runId = game.run!.session.runId;

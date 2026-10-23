@@ -1,5 +1,59 @@
 # Current state and handoff
 
+## Progressive enemy resistance (D-384)
+
+- Owner explicitly requests substantial resistance gains80-140, selects
+  Health **and Defense and Attack**, and delegates a harder first-pass tuning
+  with stats reported for subsequent iteration. This supersedes the earlier
+  measurement-only/no-enemy-buff status. Characters, Conduits and captured
+  playable stats are unchanged; there are no player nerfs.
+- Shared hostile stats retain the previous shifted exponential/1.05 factor,
+  multiplying the unrounded result by `target ** (max(0,level-80)/60)` before
+  one final rounding: Health target3, Attack1.5, Defense2. Levels1-80 remain
+  unchanged; extra growth continues smoothly through185. [All exact ordinary/
+  boss stats](combat.md#progressive-late-enemy-resistance-d-384).
+- Boss120 is165684 Health/6498 Attack/1316 Defense;140 is409204/12273/2551;
+  EX+1 is512313/14367/3005, EX+2 is1003175/22992/4892 and EX+3 is
+  3059413/50059/10938. These are base stats, not final attack-hit damage.
+- Rules8 regenerates the matching authority. Rules7/older online and offline
+  encounters restart through existing compatibility, retaining frozen squad
+  investments and saved holdings/rewards. No wallet migration, grants, rates
+  or level/stage schedules change.
+- Exact numerical, post80 monotonic/<5%-per-level, opening and captured
+  invariants have regressions. Native seeded Calamity expected wins are updated
+  to measured harder outcomes, not relaxed assertions; the premium-RNG test
+  isolates its surviving actor so stronger enemies do not obscure repeat-kill
+  checks. Hosted native/Calamity smoke now checks exact120/140/145/185 stats.
+- [Matched rerun](enemy-resistance-2026-10-23.md) completed112,640 unique
+  fixtures in633.697 seconds:58,507 wins,54,083 defeats,50 explicit unresolved
+  timeouts. Independent counts match every category/level; all8,960 Lv80
+  controls exactly reproduce historical rows, including source contributions.
+  At140, default-Master wins100%->94.0% and median winning rounds3->5;
+  four-Omnic+5 wins99.7%->82.6% and rounds3->6. At160, Master wins
+  96.1%->37.5%;185,57.7%->0% for the representative squads. All supported
+  character trials clear through150; six of640 still clear185.
+  **Upper Calamity is now an extreme first-pass wall**, not certified final
+  balance or proof that every possible legal build cannot win.
+- `npm test -- --maxWorkers=2` passed6,466 tests/206 files. Focused numerical,
+  Calamity, reward-stream, online/offline compatibility checks passed205 tests.
+  `node tools\bundle_server_game.mjs`, authority/tool TypeScript and
+  `npm run build` passed; only existing canvas/chunk-size warnings remain.
+- Matching rules8 authority deployed with `npx supabase functions deploy
+  game-operation --project-ref ohtfgwomdfteaxubndww --no-verify-jwt`.
+  Hosted `--native-calamity` passed exact120/140/145/185 newly spawned stats,
+  actual reward persistence/idempotency and explicit ally targeting.
+  Hosted `--phase-zero` passed unchanged equipment/action parity. Initial
+  expanded normal-entry smoke required the existing Story gate in its
+  disposable fixture; no production access rule was changed. All disposable
+  identities/cascading records were removed; no owner accounts were edited.
+- Hosted `--balance` also passed unchanged Lv60 Training/material and Lv64
+  Heaven stats, shared skills and persistence. Its historical fixture now
+  includes existing Phase0 defaults and the current25-stage Heaven schedule;
+  no production early-stage behavior changed.
+- Standing publication workflow commits/pushes this validated client/bundle/
+  report together and triggers Pages; verify the resulting full live SHA and
+  imported chunks before reporting completion.
+
 ## Ten-level difficulty sweep80 through EX+3 (2026-10-23)
 
 - Owner requests every ten levels starting80 through Calamity EX+3.

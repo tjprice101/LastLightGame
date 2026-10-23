@@ -373,7 +373,7 @@ try {
 }
 
 async function smokePhaseZero(client, userId, username) {
-  assert.equal(conduitRulesVersion, 7, 'The production bundle must activate rules7');
+  assert.equal(conduitRulesVersion, 8, 'The production bundle must activate rules8');
   const id = 'calamitic-causality-funeral-engine';
   const entropy = { seed: () => 7321, uuid: () => randomUUID(), random: () => .9 };
   let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
@@ -403,7 +403,7 @@ async function smokePhaseZero(client, userId, username) {
     return result.data;
   }
   const initial = await invoke({ kind: 'read' }, 0);
-  assert.equal(initial.session.state.conduitRulesVersion, 7);
+  assert.equal(initial.session.state.conduitRulesVersion, 8);
   assert.equal(initial.session.state.allies[0].stats.skillPower, 1);
   assert.equal(initial.session.state.allies[0].stats.skillEfficiency, .5);
   const operation = { kind: 'act', runId: initial.session.runId, actorId: 'ember', action: 'skill1',
@@ -422,13 +422,13 @@ async function smokePhaseZero(client, userId, username) {
   const quit = await invoke({ kind: 'quit', runId: resolved.session.runId }, resolved.revision);
   const fresh = await invoke({ kind: 'enter', activity: { kind: 'training' } }, quit.revision);
   assert.equal(fresh.session.state.allies[0].stats.skillPower, 1, 'A fresh entry uses current menu gear');
-  assert.equal(fresh.session.state.conduitRulesVersion, 7);
+  assert.equal(fresh.session.state.conduitRulesVersion, 8);
   assert.equal((await invoke({ kind: 'quit', runId: fresh.session.runId }, fresh.revision)).session, null);
-  console.log('Hosted Phase 0 smoke passed: rules7, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
+  console.log('Hosted Phase 0 smoke passed: rules8, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
 }
 
 async function smokeConduitRework(firstClient, firstId, firstUsername) {
-  assert.equal(conduitRulesVersion, 7);
+  assert.equal(conduitRulesVersion, 8);
   const replacements = [
     'bastion-lock', 'crosspin-governor', 'fieldbrace-coupler', 'fracture-reservoir', 'parallax-relay',
     'precision-escapement', 'prism-splinter-socket', 'reserve-torque-crank', 'siegebound-drive', 'vigil-core',
@@ -502,11 +502,11 @@ async function smokeConduitRework(firstClient, firstId, firstUsername) {
       game = expected.game;
     }
   }
-  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules7 static/runtime parity, healing/Shield/Last Flare/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
+  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules8 static/runtime parity, healing/Shield/Last Flare/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
 }
 
 async function smokeOmnicRefresh(firstClient, firstId, firstUsername) {
-  assert.equal(conduitRulesVersion, 7);
+  assert.equal(conduitRulesVersion, 8);
   const source = readFileSync(new URL('../src/content/phase-zero-conduit-catalog.ts', import.meta.url), 'utf8');
   const catalog = JSON.parse(source.slice(source.indexOf('= {') + 2, source.lastIndexOf('};') + 1));
   const ordinary = Object.entries(catalog).filter(([id, entry]) => entry.rarity === 'Omnic' && !id.startsWith('master-'));
@@ -616,6 +616,8 @@ async function smokeNativeCalamity(client, userId, username) {
   game.account.squad = ['tide', 'disciple', 'ember'];
   game.account.normalFinalClears = { treasury: true, roses: true };
   game.account.calamityClears = { treasury: 2 };
+  game.account.storyCompleted = 120;
+  game.account.infusionStages = { machines: 35, roses: 35 };
   game = resolveOperation(game, {
     kind: 'enter', activity: { kind: 'calamity', activity: 'treasury', tier: 3 },
   }, entropy).game;
@@ -634,6 +636,9 @@ async function smokeNativeCalamity(client, userId, username) {
   let response = await invoke({ kind: 'read' }, 0);
   assert.equal(response.session.state.conduitRulesVersion, conduitRulesVersion);
   assert.equal(response.session.state.enemies[0].level, 185);
+  assert.equal(response.session.state.enemies[0].stats.health, 3059413);
+  assert.equal(response.session.state.enemies[0].stats.damage, 50059);
+  assert.equal(response.session.state.enemies[0].stats.defense, 10938);
   const runId = response.session.runId;
   for (const [actorId, action, targetId] of [
     ['tide', 'skill2', 'disciple'], ['disciple', 'skill1', 'ember'],
@@ -671,16 +676,30 @@ async function smokeNativeCalamity(client, userId, username) {
   assert.equal(quit.session, null);
   const entered = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'treasury', tier: 1 } }, quit.revision);
   assert.equal(entered.session.state.enemies[0].art, 'calamity-boss-treasury');
-  assert.equal(entered.session.state.enemies[0].stats.health, 155831);
-  assert.equal(entered.session.state.enemies[0].stats.damage, 9260);
-  assert.equal(entered.session.state.enemies[0].stats.defense, 1418);
+  assert.equal(entered.session.state.enemies[0].stats.health, 512313);
+  assert.equal(entered.session.state.enemies[0].stats.damage, 14367);
+  assert.equal(entered.session.state.enemies[0].stats.defense, 3005);
   const leave = await invoke({ kind: 'quit', runId: entered.session.runId }, entered.revision);
   assert.equal(leave.session, null);
   const rose = await invoke({ kind: 'enter', activity: { kind: 'calamity', activity: 'roses', tier: 1 } }, leave.revision);
   assert.equal(rose.session.state.enemies[0].art, 'calamity-boss-roses');
   assert.deepEqual(rose.session.state.enemies[0].stats, entered.session.state.enemies[0].stats);
-  assert.equal((await invoke({ kind: 'quit', runId: rose.session.runId }, rose.revision)).session, null);
-  console.log(`Hosted native/Calamity smoke passed: rules${conduitRulesVersion}, explicit Tizu/Disciple recipients, Lv185 EX3 chest-only fixture victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned Treasury/Rose exponential stats and artwork.`);
+  let exited = await invoke({ kind: 'quit', runId: rose.session.runId }, rose.revision);
+  assert.equal(exited.session, null);
+  for (const [mode, level, health, damage, defense] of [
+    ['machines', 120, 165684, 6498, 1316], ['roses', 140, 409204, 12273, 2551],
+  ]) {
+    const normal = await invoke({ kind: 'enter', activity: { kind: 'infusion', mode, stage: 35 } }, exited.revision);
+    const enemy = normal.session.state.enemies[0];
+    assert.equal(enemy.level, level);
+    assert.equal(enemy.hp, health);
+    assert.equal(enemy.stats.health, health);
+    assert.equal(enemy.stats.damage, damage);
+    assert.equal(enemy.stats.defense, defense);
+    exited = await invoke({ kind: 'quit', runId: normal.session.runId }, normal.revision);
+    assert.equal(exited.session, null);
+  }
+  console.log(`Hosted native/Calamity smoke passed: rules${conduitRulesVersion}, explicit Tizu/Disciple recipients, Lv185 EX3 chest-only fixture victory, atomic opening with two Master chests, idempotent action/opening, persisted holdings and freshly spawned exact120/140/145/185 resistance stats and artwork.`);
 }
 
 async function smokeCalamiticEconomy(client, userId, username) {
@@ -1254,16 +1273,20 @@ async function smokeEnemyBalance(client, userId, username) {
     return result.data;
   }
   const ordinary = { health: 5573, damage: 774, defense: 146, crit: .12,
-    critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0 };
+    critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0,
+    skillPower: 1, skillDuration: 0, skillEfficiency: 0, gaugeGain: 1 };
   const boss = { ...ordinary, health: 13932, damage: 967, defense: 195 };
   let response = await invoke({ kind: 'continue', runId: game.run.session.runId }, 0);
-  for (const activity of [null, { kind: 'infusion', mode: 'heavens', stage: 9 },
-    { kind: 'dungeon', element: 'infernic', stage: 10 }]) {
+  for (const [activity, level, stats] of [
+    [null, 60, ordinary],
+    [{ kind: 'infusion', mode: 'heavens', stage: 9 }, 64, { ...ordinary, health: 6339, damage: 874, defense: 163 }],
+    [{ kind: 'dungeon', element: 'infernic', stage: 10 }, 60, boss],
+  ]) {
     if (activity) response = await invoke({ kind: 'enter', activity }, response.revision);
     for (const enemy of response.session.state.enemies) {
-      assert.equal(enemy.level, 60);
-      assert.deepEqual(enemy.stats, enemy.boss ? boss : ordinary);
-      assert.equal(enemy.enemySkills[0].multiplier, 1.2 + 59 * .004);
+      assert.equal(enemy.level, level);
+      assert.deepEqual(enemy.stats, stats);
+      assert.equal(enemy.enemySkills[0].multiplier, 1.2 + (level - 1) * .004);
       assert.equal(enemy.enemySkills[0].every, enemy.boss ? 2 : 3);
     }
     assert.equal(response.account.fractalis, 0);
@@ -1272,7 +1295,7 @@ async function smokeEnemyBalance(client, userId, username) {
     assert.deepEqual(snapshot.session, response.session);
     response = await invoke({ kind: 'quit', runId: response.session.runId }, response.revision);
   }
-  console.log('Hosted balance smoke passed: actual Lv60 Training/Heaven ordinary parity, material boss stats, shared level-based skill strength, frozen read and quit; zero currencies granted.');
+  console.log('Hosted balance smoke passed: unchanged Lv60 Training/material boss and Lv64 Heaven stats, shared level-based skill strength, frozen read and quit; zero currencies granted.');
 }
 
 async function smokeEvolutionFodder(client, userId, username) {

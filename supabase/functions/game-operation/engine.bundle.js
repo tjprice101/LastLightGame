@@ -4606,27 +4606,30 @@ function isActionId(value2) {
 var playableGrowth = { perLevel: 0.15, perEvolution: 1.5 };
 var enemyExponentialRates = { health: 0.026, damage: 0.024, defense: 0.02 };
 var enemyStrengthMultiplier = 1.05;
-function hostileStat(base, initialRate, rate, level) {
-  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate) * enemyStrengthMultiplier);
+var enemyResistanceRamp = { startingLevel: 80, span: 60, health: 3, damage: 1.5, defense: 2 };
+function hostileStat(base, initialRate, stat, level) {
+  const rate = enemyExponentialRates[stat];
+  const resistance = enemyResistanceRamp[stat] ** (Math.max(0, level - enemyResistanceRamp.startingLevel) / enemyResistanceRamp.span);
+  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate) * enemyStrengthMultiplier * resistance);
 }
 var enemyGrowth = {
   maximumLevel: 120,
   maximumHostileLevel: 185,
-  health: hostileStat(83, 0.45, enemyExponentialRates.health, 120),
-  bossHealth: hostileStat(207.5, 0.45, enemyExponentialRates.health, 120),
-  damage: hostileStat(22, 0.25, enemyExponentialRates.damage, 120),
-  bossDamage: hostileStat(27.5, 0.25, enemyExponentialRates.damage, 120),
-  defense: hostileStat(4, 0.3, enemyExponentialRates.defense, 120),
-  bossDefense: hostileStat(16 / 3, 0.3, enemyExponentialRates.defense, 120)
+  health: hostileStat(83, 0.45, "health", 120),
+  bossHealth: hostileStat(207.5, 0.45, "health", 120),
+  damage: hostileStat(22, 0.25, "damage", 120),
+  bossDamage: hostileStat(27.5, 0.25, "damage", 120),
+  defense: hostileStat(4, 0.3, "defense", 120),
+  bossDefense: hostileStat(16 / 3, 0.3, "defense", 120)
 };
 var capturedGrowth = { health: 220, damage: 38, defense: 16 };
 function enemyCombatStats(level, boss) {
   if (!Number.isInteger(level) || level < 1 || level > enemyGrowth.maximumHostileLevel) throw new Error("Enemy level must be from 1 to 185.");
   return {
     ...phaseZeroStatDefaults,
-    health: hostileStat(boss ? 207.5 : 83, 0.45, enemyExponentialRates.health, level),
-    damage: hostileStat(boss ? 27.5 : 22, 0.25, enemyExponentialRates.damage, level),
-    defense: hostileStat(boss ? 16 / 3 : 4, 0.3, enemyExponentialRates.defense, level),
+    health: hostileStat(boss ? 207.5 : 83, 0.45, "health", level),
+    damage: hostileStat(boss ? 27.5 : 22, 0.25, "damage", level),
+    defense: hostileStat(boss ? 16 / 3 : 4, 0.3, "defense", level),
     crit: 0.12,
     critMultiplier: 1.5,
     shatterCapacity: 100,
@@ -7378,7 +7381,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = phaseZeroStatsReady ? 7 : 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 8 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }

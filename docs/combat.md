@@ -1,5 +1,69 @@
 # Combat specification
 
+## Progressive late-enemy resistance (D-384)
+
+Owner requests substantial resistance gains from enemy80 through140, explicitly
+chooses stronger Health, Defense **and Attack**, and asks for a harder first pass
+that can be tuned again after measurement. No characters or Conduits are nerfed.
+This supersedes the earlier measurement-only/no-approved-enemy-buff status,
+not the historical surveys or their recorded outcomes.
+
+Keep the previous shifted exponential and1.05 strength factor, then multiply
+each unrounded hostile stat by `target ** (max(0, level - 80) / 60)`:
+Health target3, Direct Attack target1.5, Defense target2. Round once at the
+existing final stat boundary. Levels1-80 remain byte-for-byte numerically
+unchanged;80 anchors the continuous ramp, not an immediate difficulty spike.
+At140 the extra factors are3x Health,1.5x Attack and2x Defense relative to the
+previous curve. Continue the same compounding through185, without a140 plateau
+or a drop at Calamity entry. All affected stats remain monotonically increasing;
+every post80 adjacent-level increase is below5%.
+
+Shared `enemyCombatStats` supplies Training, material dungeons, infusions,
+Machines, Roses, War and Calamity, including their previews/catalogs and the
+generated online authority. Existing boss ratios, level schedules, primary/
+ultimate attack multipliers, drops, rewards, captures and level caps stay fixed.
+Attack is a base stat, **not the final damage of a hit**; Defense, skills,
+critical hits, Shields and mitigation still apply. Captured playable
+Elemental-Devourers keep their separate unchanged player-growth curve.
+
+### Exact base stats
+
+|Enemy level|Ordinary Health|Ordinary Attack|Ordinary Defense|Boss Health|Boss Attack|Boss Defense|
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+|80|10,343|1,385|247|25,856|1,731|329|
+|90|16,616|1,947|353|41,539|2,433|471|
+|100|26,488|2,715|501|66,220|3,394|668|
+|110|41,987|3,765|705|104,967|4,707|940|
+|120|66,274|5,199|987|165,684|6,498|1,316|
+|130|104,278|7,154|1,377|260,694|8,942|1,836|
+|140|163,682|9,818|1,913|409,204|12,273|2,551|
+|145:EX+1|204,925|11,494|2,253|512,313|14,367|3,005|
+|150|256,460|13,449|2,652|641,150|16,811|3,537|
+|160:EX+2|401,270|18,394|3,669|1,003,175|22,992|4,892|
+|170|627,183|25,126|5,067|1,567,959|31,407|6,756|
+|180|979,491|34,290|6,988|2,448,728|42,863|9,318|
+|185:EX+3|1,223,765|40,047|8,204|3,059,413|50,059|10,938|
+
+These are shared numerical probes; not every level/type is a playable stage.
+Calamity uses only the boss columns at145/160/185. Boss patterns/Conduits can
+apply their authored battle modifiers after these base stats.
+
+Rules8 uses the existing encounter compatibility restart for older snapshots,
+retaining frozen squad investments and all previously saved rewards. No wallet
+migration, grants or load-time account writes are introduced.
+
+Validation: exact numerical/monotonic/opening/captured regressions in
+`stat-growth.test.ts`, native encounter and Defense suites, rules7-to8 online
+and offline restart tests, complete regression/build and generated-authority
+checks. Repeat the full `levels` survey against the historical112,640-fixture
+baseline; keep failures and timeouts explicit. Hosted `--native-calamity`
+verifies newly spawned exact145 stats as well as rewards/idempotency.
+[Completed first-pass results](enemy-resistance-2026-10-23.md):112,640 matched
+fixtures; developed default-Master140 wins94.0% with median five winning rounds,
+EX+2 wins37.5%, EX+3 wins0% in the representative-squad matrix. This is a severe
+upper-end first pass, not final balance; supported-character EX+3 trials still
+have six wins out of640. There are50 unresolved fixed-horizon timeouts.
+
 ## Omnic and Master refresh (D-383)
 
 The [catalog](conduit-catalog.txt) and [138-entry compatibility matrix](character-conduit-compatibility.md)
@@ -45,7 +109,8 @@ are not rebalanced in this batch.
   JSON records. Database JSON key reordering therefore cannot change the order
   of effective heals and generated Shields after an authority save/reload.
 
-Shared rules7 restarts older encounter snapshots through the existing
+This equipment refresh shipped as rules7; D-384 now uses rules8 with unchanged
+equipment behavior. Shared compatibility restarts older encounter snapshots through the existing
 compatibility path, retaining frozen investment and already-saved rewards.
 Validate `omnic-refresh.test.ts`, the Phase0 Master/ordinary/interaction suites,
 presentation and authority parity, plus the complete regression and exact seeded
@@ -97,7 +162,7 @@ and `native-identities-server.test.ts`; hosted release check:
 
 The [owner-edited catalog](conduit-catalog.txt) is the approved target for the
 ten-stat overhaul and all138 equipment effects. It supersedes earlier effect
-designs under rules7, including the45 D-382 replacements and93 D-383 refreshes. The shared client/authority gate is enabled for the
+designs under current rules8, including the45 D-382 replacements and93 D-383 refreshes. The shared client/authority gate is enabled for the
 owner-authorized coordinated release. Historical conflicting rules below are
 superseded, not additive; hosted release status is in the handoff.
 
@@ -389,6 +454,9 @@ remain stronger than ordinary enemies. Enemy count and player squad/build still
 affect total encounter difficulty. There is no hidden player-level modifier.
 
 ### Smooth exponential pursuit and intentional walls (D-319)
+
+Historical base curve and table, before the later1.05 factor and D-384
+post80 resistance ramp. Use the current D-384 formula/table above for live stats.
 
 Owner explicitly requests game-wide exponential hostile growth, not character
 buffs to keep pace. This supersedes the old D-289 endpoints, quadratic event

@@ -1,5 +1,10 @@
 # Post-refresh battle survey: 2026-10-23
 
+Historical **pre-D-384** evidence and recommendations. The owner subsequently
+authorized a harder progressive Health/Attack/Defense curve after80; that
+decision supersedes the no-Attack-increase recommendation below, not these
+recorded results. [Current tuning](combat.md#progressive-late-enemy-resistance-d-384).
+
 ## Verdict
 
 **Do not nerf characters or Conduits. Do not apply a blanket enemy Attack

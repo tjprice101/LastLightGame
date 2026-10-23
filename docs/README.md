@@ -5,6 +5,14 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Post-refresh battle measurements
 
+**Current tuning (D-384):** owner now authorizes progressive enemy Health,
+Attack and Defense increases after80, continuing through Calamity. See
+[exact ordinary/boss stats and formula](combat.md#progressive-late-enemy-resistance-d-384)
+and the [current handoff](handoff.md) for validation and post-tuning measurements.
+The [matched112,640-battle rerun](enemy-resistance-2026-10-23.md) records the new
+win curves, longer140 fights and severe upper-Calamity walls.
+The two surveys below are historical **pre-D-384** baselines, not current balance.
+
 [Ten-level sweep80 through Calamity EX+3](battle-level-sweep-2026-10-23.md):
 112,640 additional offline encounter resolutions at enemy80/90/.../180,
 plus native145/160/185 milestones. All12 Calamity patterns, eight squads,
@@ -34,7 +42,8 @@ Conduits, sorted by rarity and name, including48 Omnic Masters. Preserves
 owner-edited examples and proposes remaining effects around the ten-stat
 Phase 0 direction, additive Skill Power/Gauge Gain and whole-turn duration.
 Owner authorizes implementation and coordinated publication2026-10-21.
-The shared client/authority gate is enabled; rules7 is the current implementation.
+The shared client/authority gate is enabled; rules8 is current after the D-384
+enemy ramp. The D-383 equipment behavior itself is unchanged.
 See the handoff for hosted publication and validation outcomes.
 Suggested thematic elements remain editorial, not equipment restrictions.
 See D-368 for implementation choices and current scope.

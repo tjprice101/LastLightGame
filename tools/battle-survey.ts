@@ -6,7 +6,7 @@ import { validateConduitElement, validateConduitSlots, type ConduitId, type Cond
 import { playableDungeons, type PlayableDungeon } from '../src/content/dungeons';
 import { masterConduits, type MasterConduitId, type MasterLoadouts } from '../src/content/master-conduits';
 import { characterLevelCap, type CharacterProgress } from '../src/content/progression';
-import { enemyCombatStats } from '../src/content/stat-growth';
+import { enemyCombatStats, enemyResistanceRamp, enemyStrengthMultiplier } from '../src/content/stat-growth';
 import { enemyAbilityMultiplier, enemySkills } from '../src/content/enemy-skills';
 import { getStarter, starters, type StarterId } from '../src/content/starters';
 import { actAndAdvanceTurn, actionUnavailable, createBattle, createCalamityBattle, createDungeonBattle,
@@ -369,6 +369,7 @@ export function runTimeoutSurvey(source: SurveyRow[], emit: (row: SurveyRow) => 
 export function describeSurvey() {
   return {
     seeds: surveySeeds, limits: surveyLimits, timeoutFollowupLimits, common, mixed, omnic, calamitics, enemyScenarios,
+    enemyTuning: { enemyStrengthMultiplier, enemyResistanceRamp },
     levelSweep: { levels: levelSweepLevels, characterLevel: 105, policies: ['native'],
       methodology: 'Controlled single-boss level probes use exact shared boss stats and unchanged authored Calamity patterns at each requested level. Standard boss probes use Machines through120 and Roses at130/140, rebuilding level-dependent scheduled skills. Standard120/140 and Calamity145/160/185 are unchanged native encounter controls; all other level/pattern combinations are synthetic offline probes, not playable stages.' },
     builds: Object.fromEntries((['bare', 'common0', 'mixed0', 'mixed5', 'omnic0', 'omnic5', 'master5', 'calamitic5'] as const)

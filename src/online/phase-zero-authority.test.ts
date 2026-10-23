@@ -22,7 +22,7 @@ describe('Phase 0 authority source parity', () => {
     expect(result.response.result).toBeUndefined();
     expect(result.game.account).toEqual(previous.account);
     const restored = result.game.run!.session.state;
-    expect(restored.conduitRulesVersion).toBe(7);
+    expect(restored.conduitRulesVersion).toBe(8);
     expect(restored.allies[0].hp).toBe(restored.allies[0].stats.health);
     expect(restored.allies[0].stats.skillPower).toBe(1);
     expect(restored.allies[0].stats.skillEfficiency).toBe(.5);

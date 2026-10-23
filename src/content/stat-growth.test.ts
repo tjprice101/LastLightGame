@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { enemyCombatStats, enemyExponentialRates, enemyGrowth, enemyStat, enemyStrengthMultiplier } from './stat-growth';
+import { enemyCombatStats, enemyExponentialRates, enemyGrowth, enemyResistanceRamp, enemyStat, enemyStrengthMultiplier } from './stat-growth';
 import { calamityActivities, calamityEncounter } from './calamity';
 import { resolveFighter } from './combat';
 import { dungeonEncounter, playableDungeons } from './dungeons';
-import { infusionEncounter } from './infusions';
+import { capturedEnemyStats, infusionEncounter } from './infusions';
 import { infusionModeStageCount } from './activities';
 import { act, actionUnavailable, createBattle, createDungeonBattle, createInfusionBattle, endTurn, nextWave } from '../game/battle';
 import { starters } from './starters';
 import { benchmarkTarget } from '../game/native-benchmark-pilot';
 
 describe('accelerating enemy stat curves', () => {
-  it('uses one shifted exponential from the opening through185 without120/140 plateaus or Calamity multipliers', () => {
+  it('preserves the opening curve and compounds resistance after80 through185 without plateaus or Calamity multipliers', () => {
     for (const boss of [false, true]) {
       const opening = enemyCombatStats(1, boss);
       expect(enemyStrengthMultiplier).toBe(1.05);
@@ -24,13 +24,19 @@ describe('accelerating enemy stat curves', () => {
         ] as const) {
           const rate = enemyExponentialRates[stat];
           const original = base * (1 + slope * Math.expm1(rate * (level - 1)) / rate);
-          expect(stats[stat]).toBe(Math.round(original * 1.05));
-          expect(Math.abs(stats[stat] - original * 1.05)).toBeLessThanOrEqual(.5);
+          const resistance = enemyResistanceRamp[stat] ** (Math.max(0, level - 80) / 60);
+          expect(stats[stat]).toBe(Math.round(original * 1.05 * resistance));
+          expect(Math.abs(stats[stat] - original * 1.05 * resistance)).toBeLessThanOrEqual(.5);
           expect(Number.isSafeInteger(stats[stat])).toBe(true);
-          if (level >= 21) {
+          if (level >= 21 && level <= 80) {
             const before = enemyCombatStats(level - 20, boss)[stat];
             const middle = enemyCombatStats(level - 10, boss)[stat];
             expect(Math.abs((stats[stat] - middle) - (middle - before) * Math.exp(rate * 10))).toBeLessThan(3);
+          }
+          if (level > 1) {
+            const previous = enemyCombatStats(level - 1, boss)[stat];
+            expect(stats[stat]).toBeGreaterThanOrEqual(previous);
+            if (level > 80) expect(stats[stat] / previous).toBeLessThan(1.05);
           }
         }
       }
@@ -40,6 +46,42 @@ describe('accelerating enemy stat curves', () => {
       expect(encounter.stats).toEqual(enemyCombatStats(encounter.level, true));
     }
     for (const value of [0, -1, 186, NaN, Infinity, 1.5]) expect(() => enemyCombatStats(value, false)).toThrow();
+  });
+
+  it('reaches the first-pass140 tuning and continues strengthening through every Calamity tier', () => {
+    for (const boss of [false, true]) {
+      for (const level of [80, 90, 100, 110, 120, 130, 140, 145, 160, 185]) {
+        for (const [stat, base, slope, target] of [
+          ['health', boss ? 207.5 : 83, .45, 3],
+          ['damage', boss ? 27.5 : 22, .25, 1.5],
+          ['defense', boss ? 16 / 3 : 4, .30, 2],
+        ] as const) {
+          const rate = enemyExponentialRates[stat];
+          const before = base * (1 + slope * Math.expm1(rate * (level - 1)) / rate) * 1.05;
+          expect(enemyCombatStats(level, boss)[stat]).toBe(Math.round(before * target ** ((level - 80) / 60)));
+          if (level > 80) expect(enemyCombatStats(level, boss)[stat]).toBeGreaterThan(Math.round(before));
+        }
+      }
+    }
+  });
+
+  it.each([
+    [80, 25856, 1731, 329],
+    [90, 41539, 2433, 471],
+    [100, 66220, 3394, 668],
+    [110, 104967, 4707, 940],
+    [120, 165684, 6498, 1316],
+    [130, 260694, 8942, 1836],
+    [140, 409204, 12273, 2551],
+    [145, 512313, 14367, 3005],
+    [160, 1003175, 22992, 4892],
+    [185, 3059413, 50059, 10938],
+  ])('locks exact Lv%s boss stats with one final rounding step', (level, health, damage, defense) => {
+    expect(enemyCombatStats(level, true)).toMatchObject({ health, damage, defense });
+  });
+
+  it('leaves captured playable stats on their independent player-growth curve', () => {
+    expect(capturedEnemyStats(120)).toMatchObject({ health: 4180, damage: 722, defense: 16 * 19 ** .7 });
   });
 
   it.each(starters)('$name retains playable growth while hostile relative pressure compounds', ({ id }) => {

@@ -109,6 +109,7 @@ describe('Phase8 Null-Prismatica rewards and gated Standard Banner', () => {
   });
   it('advances the premium stream once per new kill and never rerolls an already-dead enemy', () => {
     const { state } = kills('heavens');
+    state.allies[0].hp = state.allies[0].stats.health = 1_000_000;
     state.enemies[1].hp = state.enemies[1].stats.health;
     state.enemies[1].burn = { damage: 0, turns: 0 };
     const result = endTurn(state);

@@ -1,5 +1,18 @@
 # Authoritative game operation
 
+## Progressive enemy resistance (D-384)
+
+Current shared combat rules8 adds the approved harder enemy direction:
+the previous hostile stats gain additional Health3x/Attack1.5x/Defense2x
+per60 levels after80, continuously through185, with one final rounding step.
+Opening1-80, playable/captured stats, equipment, rewards and stage gates remain
+unchanged. [Exact stats and scope](../../../docs/combat.md#progressive-late-enemy-resistance-d-384).
+Older rules7 and earlier encounters use the existing safe restart, preserving
+frozen squad investments and all saved rewards. Regenerate/type-check/deploy
+the matching bundle with the client; hosted `--native-calamity` asserts the new
+exact145 Health512313/Attack14367/Defense3005. Current publication evidence
+belongs in the handoff; the older release sections below are historical.
+
 ## Phase 0 release (D-370)
 
 The owner authorizes coordinated client/authority publication on2026-10-21.

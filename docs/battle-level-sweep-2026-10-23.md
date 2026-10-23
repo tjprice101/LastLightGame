@@ -1,5 +1,11 @@
 # Enemy level80 through Calamity EX+3: ten-level sweep
 
+Historical **pre-D-384** measurements. The owner subsequently authorized
+stronger enemy Health, Attack and Defense; see the
+[current formula/stats](combat.md#progressive-late-enemy-resistance-d-384)
+and [post-tuning evidence](handoff.md#progressive-enemy-resistance-d-384).
+The recorded baseline outcomes below are intentionally preserved.
+
 ## Scope
 
 Owner requests measurements at every ten levels from80 through Calamity EX+3.

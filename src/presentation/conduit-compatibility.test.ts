@@ -78,7 +78,7 @@ describe('Conduit rules encounter compatibility', () => {
     expect(result.game.account).toEqual(game.account);
   });
 
-  it.each([undefined, 2, 3])('restarts an offline version%s encounter once, preserving progress, gear, masters and log communication', version => {
+  it.each([undefined, 2, 3, 7])('restarts an offline version%s encounter once, preserving progress, gear, masters and log communication', version => {
     const online = historical().run!;
     const session = structuredClone(online.session);
     session.state.conduitRulesVersion = version;

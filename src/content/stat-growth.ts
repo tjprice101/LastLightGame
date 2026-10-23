@@ -4,25 +4,28 @@ import type { Stats } from './combat';
 export const playableGrowth = { perLevel: .15, perEvolution: 1.5 } as const;
 export const enemyExponentialRates = { health: .026, damage: .024, defense: .020 } as const;
 export const enemyStrengthMultiplier = 1.05;
-function hostileStat(base: number, initialRate: number, rate: number, level: number): number {
-  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate) * enemyStrengthMultiplier);
+export const enemyResistanceRamp = { startingLevel: 80, span: 60, health: 3, damage: 1.5, defense: 2 } as const;
+function hostileStat(base: number, initialRate: number, stat: keyof typeof enemyExponentialRates, level: number): number {
+  const rate = enemyExponentialRates[stat];
+  const resistance = enemyResistanceRamp[stat] ** (Math.max(0, level - enemyResistanceRamp.startingLevel) / enemyResistanceRamp.span);
+  return Math.round(base * (1 + initialRate * Math.expm1(rate * (level - 1)) / rate) * enemyStrengthMultiplier * resistance);
 }
 export const enemyGrowth = { maximumLevel: 120, maximumHostileLevel: 185,
-  health: hostileStat(83, .45, enemyExponentialRates.health, 120),
-  bossHealth: hostileStat(207.5, .45, enemyExponentialRates.health, 120),
-  damage: hostileStat(22, .25, enemyExponentialRates.damage, 120),
-  bossDamage: hostileStat(27.5, .25, enemyExponentialRates.damage, 120),
-  defense: hostileStat(4, .30, enemyExponentialRates.defense, 120),
-  bossDefense: hostileStat(16 / 3, .30, enemyExponentialRates.defense, 120) } as const;
+  health: hostileStat(83, .45, 'health', 120),
+  bossHealth: hostileStat(207.5, .45, 'health', 120),
+  damage: hostileStat(22, .25, 'damage', 120),
+  bossDamage: hostileStat(27.5, .25, 'damage', 120),
+  defense: hostileStat(4, .30, 'defense', 120),
+  bossDefense: hostileStat(16 / 3, .30, 'defense', 120) } as const;
 export const capturedGrowth = { health: 220, damage: 38, defense: 16 } as const;
 
 export function enemyCombatStats(level: number, boss: boolean): Stats {
   if (!Number.isInteger(level) || level < 1 || level > enemyGrowth.maximumHostileLevel) throw new Error('Enemy level must be from 1 to 185.');
   return {
     ...phaseZeroStatDefaults,
-    health: hostileStat(boss ? 207.5 : 83, .45, enemyExponentialRates.health, level),
-    damage: hostileStat(boss ? 27.5 : 22, .25, enemyExponentialRates.damage, level),
-    defense: hostileStat(boss ? 16 / 3 : 4, .30, enemyExponentialRates.defense, level),
+    health: hostileStat(boss ? 207.5 : 83, .45, 'health', level),
+    damage: hostileStat(boss ? 27.5 : 22, .25, 'damage', level),
+    defense: hostileStat(boss ? 16 / 3 : 4, .30, 'defense', level),
     crit: .12, critMultiplier: 1.5, shatterCapacity: 100, elementalDamage: 0,
   };
 }
