@@ -15,36 +15,39 @@ const statKeys = ['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shat
 interface StaticBonus { stat: StatKey; amount: number; additive?: true }
 
 export const phaseZeroStaticBonuses = {
-  'bastion-lock': [{ stat: 'defense', amount: .2 }],
-  'crosspin-governor': [{ stat: 'skillPower', amount: .15, additive: true }],
-  'fieldbrace-coupler': [
-    { stat: 'skillPower', amount: .2, additive: true }, { stat: 'defense', amount: -.05 },
-  ],
-  'fracture-reservoir': [{ stat: 'shatterCapacity', amount: .5 }],
-  'parallax-relay': [
-    { stat: 'health', amount: .45 }, { stat: 'skillPower', amount: -.05, additive: true },
-  ],
+  'bastion-lock': [{ stat: 'defense', amount: .35 }, { stat: 'skillPower', amount: .25, additive: true }],
+  'crosspin-governor': [{ stat: 'skillPower', amount: .4, additive: true }],
+  'fieldbrace-coupler': [{ stat: 'crit', amount: .25, additive: true }],
+  'fracture-reservoir': [{ stat: 'shatterCapacity', amount: .4 }],
+  'parallax-relay': [{ stat: 'health', amount: .5 }],
   'precision-escapement': [{ stat: 'critMultiplier', amount: .1 }],
-  'prism-splinter-socket': [{ stat: 'gaugeGain', amount: .05, additive: true }],
+  'prism-splinter-socket': [{ stat: 'gaugeGain', amount: .075, additive: true }, { stat: 'skillEfficiency', amount: .05, additive: true }],
   'reserve-torque-crank': [
-    { stat: 'gaugeGain', amount: .15, additive: true }, { stat: 'damage', amount: -.05 },
+    { stat: 'shatterCapacity', amount: .25 }, { stat: 'gaugeGain', amount: .1, additive: true },
   ],
-  'siegebound-drive': [{ stat: 'damage', amount: .3 }],
-  'vigil-core': [{ stat: 'health', amount: .35 }],
-  'coilfeed-ratchet': [{ stat: 'skillEfficiency', amount: .07, additive: true }],
+  'siegebound-drive': [{ stat: 'damage', amount: .35 }, { stat: 'skillEfficiency', amount: .05, additive: true }],
+  'vigil-core': [{ stat: 'health', amount: 1 }],
+  'aegis-capacitor': [{ stat: 'health', amount: .75 }, { stat: 'defense', amount: .75 }],
+  'coilfeed-ratchet': [{ stat: 'skillEfficiency', amount: .08, additive: true },
+    { stat: 'skillPower', amount: .08, additive: true }, { stat: 'crit', amount: .08, additive: true }],
+  'falcon-sight': [{ stat: 'crit', amount: .25, additive: true }, { stat: 'health', amount: .45 }],
   'hammerbalance-link': [
-    { stat: 'damage', amount: .24 }, { stat: 'defense', amount: -.08 },
+    { stat: 'damage', amount: .85 }, { stat: 'critMultiplier', amount: .15 },
   ],
   'astral-prism': [
-    { stat: 'crit', amount: .3, additive: true }, { stat: 'defense', amount: -.1 },
+    { stat: 'crit', amount: .3, additive: true }, { stat: 'critMultiplier', amount: .25 }, { stat: 'health', amount: .5 },
   ],
-  'citadel-spine': [{ stat: 'defense', amount: .35 }],
-  'immortal-vessel': [{ stat: 'health', amount: .6 }],
-  'nullsong-transmission': [{ stat: 'skillPower', amount: -.15, additive: true }],
-  'worldbreaker-drive': [{ stat: 'health', amount: -.12 }],
+  'citadel-spine': [{ stat: 'damage', amount: .75 }, { stat: 'gaugeGain', amount: .07, additive: true }],
+  'immortal-vessel': [{ stat: 'health', amount: 2.5 }, { stat: 'defense', amount: .75 }],
+  'resonance-crucible': [{ stat: 'defense', amount: .75 }, { stat: 'health', amount: .5 },
+    { stat: 'skillDuration', amount: 1, additive: true }],
+  'wardglass-transformer': [{ stat: 'critMultiplier', amount: .35 }, { stat: 'defense', amount: -.35 }],
   'chaotic-ouroboros-core': [{ stat: 'shatterCapacity', amount: .4 }],
-  'calamitic-causality-funeral-engine': [{ stat: 'skillPower', amount: .8, additive: true }],
-  'calamitic-world-eater-orrery': [{ stat: 'skillDuration', amount: 2, additive: true }],
+  'calamitic-causality-funeral-engine': [{ stat: 'skillEfficiency', amount: 1, additive: true }],
+  'calamitic-cathedral-final-equation': [{ stat: 'skillEfficiency', amount: .65, additive: true }],
+  'calamitic-horizon-cleaving-godpress': [{ stat: 'defense', amount: .75 }],
+  'calamitic-throne-borrowed-tomorrows': [{ stat: 'health', amount: .45 }, { stat: 'defense', amount: .45 }],
+  'calamitic-world-eater-orrery': [{ stat: 'skillDuration', amount: 3, additive: true }],
 } as const satisfies Partial<Record<ConduitSlots[number] & string, readonly StaticBonus[]>>;
 
 export function phaseZeroUpgradeMagnitude(base: number, level: number): number {
@@ -56,7 +59,7 @@ export function phaseZeroUpgradeMagnitude(base: number, level: number): number {
 }
 
 export function phaseZeroStatBase(
-  value: number, stat: 'defense' | 'damage' | 'critMultiplier',
+  value: number, stat: 'health' | 'defense' | 'damage' | 'critMultiplier',
   equipment: ConduitSlots | undefined, upgrades: ConduitUpgrades = {},
 ): number {
   let bonus = 0;
@@ -121,7 +124,10 @@ export function applyPhaseZeroStaticBonuses(
     const amount = base[key] * (1 + (percent[key] ?? 0)) + (additive[key] ?? 0);
     result[key] = key === 'skillEfficiency' ? amount : Math.max(0, amount);
   }
-  result.skillDuration = Math.min(2, Math.floor(result.skillDuration));
+  result.skillDuration = Math.floor(result.skillDuration);
   result.skillEfficiency = Math.min(.5, result.skillEfficiency);
+  if (equipment.includes('glassroot-gimbal'))
+    result.skillPower += Math.floor(result.health / 200) *
+      phaseZeroUpgradeMagnitude(.05, levels['glassroot-gimbal'] ?? 0);
   return result;
 }

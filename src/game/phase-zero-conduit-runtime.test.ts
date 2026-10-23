@@ -101,15 +101,15 @@ describe('Phase 0 shared runtime math', () => {
     expect(result.enemies[0].burn.turns).toBe(4);
   });
 
-  it('applies Sentinel Defense per held Gauge and Aegis defense after granting an ally a skill Shield', () => {
+  it('removes the retired Sentinel and Aegis conditional Defense hooks', () => {
     const state = fixture();
     const [owner, ally] = state.allies;
     owner.conduits = ['sentinel-aperture', null, null, null, null, null, null, null];
     owner.shatter = 30;
-    expect(effectiveDefense(state, owner)).toBe(115);
+    expect(effectiveDefense(state, owner)).toBe(100);
     owner.conduits = ['aegis-capacitor', null, null, null, null, null, null, null];
     nativeShield(state, owner, ally, 100, [], { skillPower: 1 });
-    expect(effectiveDefense(state, owner)).toBe(125);
+    expect(effectiveDefense(state, owner)).toBe(100);
   });
 
   it('uses Tizu Shield Defense only while the source-owned Shield remains', () => {
@@ -133,12 +133,12 @@ describe('Phase 0 shared runtime math', () => {
     expect(prepareConduitAction(state, recipient, 'skill2', 40, false).skillPower).toBe(1.33);
   });
 
-  it('applies the approved Cathedral squad aura additively and only while its bearer lives', () => {
+  it('Cathedral no longer grants a squad Power or Efficiency aura', () => {
     const state = fixture();
     const [actor, aura] = state.allies;
     aura.conduits = ['calamitic-cathedral-final-equation', null, null, null, null, null, null, null];
-    expect(prepareConduitAction(state, actor, 'skill1', 25, false).skillPower).toBeCloseTo(1.3);
-    expect(conduitActionCost(actor, 'skill1', state, 25)).toBe(19);
+    expect(prepareConduitAction(state, actor, 'skill1', 25, false).skillPower).toBe(1);
+    expect(conduitActionCost(actor, 'skill1', state, 25)).toBe(25);
     aura.hp = 0;
     expect(prepareConduitAction(state, actor, 'skill1', 25, false).skillPower).toBe(1);
     expect(conduitActionCost(actor, 'skill1', state, 25)).toBe(25);
@@ -165,29 +165,30 @@ describe('Phase 0 shared runtime math', () => {
     expect(result.allies[0].recoverThrough).toBe(0);
   });
 
-  it('applies Horizon-Cleaving skill Defense ignore and Shield bypass to actual skill damage', () => {
+  it('applies Horizon-Cleaving skill Defense ignore without bypassing Shields', () => {
     const state = fixture();
     const owner = state.allies[0], target = state.enemies[0];
     owner.conduits = ['calamitic-horizon-cleaving-godpress', null, null, null, null, null, null, null];
     target.stats.defense = 100;
     target.shield = 1000;
     const result = act(state, owner.id, 'skill1', target.id);
-    expect(result.events.find(event => event.kind === 'damage' && event.source === owner.id)?.amount).toBeGreaterThan(0);
+    expect(result.events.find(event => event.kind === 'damage' && event.source === owner.id)?.amount).toBe(0);
     expect(result.state.enemies[0].shield).toBeGreaterThan(0);
     expect(result.state.enemies[0].shield).toBeLessThan(1000);
-    expect(result.state.enemies[0].hp).toBeLessThan(100_000);
+    expect(result.state.enemies[0].hp).toBe(100_000);
     expect(calamiticShieldBypass(state, owner, 'light')).toBe(0);
-    expect(calamiticShieldBypass(state, owner, 'skill1')).toBe(.5);
+    expect(calamiticShieldBypass(state, owner, 'skill1')).toBe(0);
   });
 
-  it('World-Eater heals each living ally from total actual skill HP or Shield damage', () => {
+  it('World-Eater boosts debuff skills without healing the squad', () => {
     const state = fixture();
     const owner = state.allies[0], ally = state.allies[1];
     owner.conduits = ['calamitic-world-eater-orrery', null, null, null, null, null, null, null];
     ally.hp = 500;
     const result = act(state, owner.id, 'skill1', state.enemies[0].id);
     const damage = result.events.find(event => event.kind === 'damage' && event.source === owner.id)?.amount ?? 0;
-    expect(result.state.allies[1].hp).toBe(500 + Math.round(damage * .1));
+    expect(damage).toBeGreaterThan(0);
+    expect(result.state.allies[1].hp).toBe(500);
   });
 
   it('uses recipient capacity for percentage Gauge grants and applies Gauge Gain once', () => {

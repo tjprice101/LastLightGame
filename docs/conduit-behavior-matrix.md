@@ -2,18 +2,19 @@
 
 This is executed numerical behavior evidence, not a count of source references or nonempty ability strings.
 The approved ability contract remains [conduit-catalog.txt](conduit-catalog.txt).
-The release gate is enabled for coordinated client/authority publication (D-370). This report certifies tested behavior, not hosted deployment or balance quality.
+The release gate is enabled for coordinated client/authority publication (D-370/D-382, rules6). This report certifies tested behavior, not hosted deployment or balance quality.
 
 - Roster: **138/138** entries, **726** passing baseline/equipment/upgrade scenarios.
 - Ordinary-slot entries: 90, each with an absent baseline and all six +0..+5 upgrade levels.
 - Named Masters: 48, each with a concrete equipped and absent numerical behavior scenario.
-- Full regression: **6304 tests / 203 files passed**; zero failed or pending.
+- Full regression: **6330 tests / 204 files passed**; zero failed or pending.
 - Description parity: all 138 defaults against the complete owner-authored catalog; all 90 ordinary entries at +0..+5; Masters reject upgrades.
 - Separate interaction tests cover generated Master Shield provenance, manual native packets, stored-packet scaling, duplicate auras, additive stat pools and Defense caps.
 - UI and authority suites additionally exercise target-dependent costs, frozen equipment and Throne controls.
+- D-382 regressions cover all45 replacements, complete-Health conversion thresholds, cast-level seeded randomness, conditional Health, sole-owner Shield provenance, routed protection and persisted Stasis clocks.
 - Passing tests do not establish subjective usefulness or mathematically exhaustive balance across every possible squad.
 
-Evidence source SHA-256 (LF-normalized): `433a02dd516808bb10d35b6c94cf11c9e6f795a035e22f2d6716660d09de28e0`.
+Evidence source SHA-256 (LF-normalized): `9de5e0c8cd4a696fd9671ad47b4dd82c33f0c93629c5c4a6c5e4ffe0c9e208ba`.
 Regenerate only from a complete passing full-suite JSON report:
 
 ```powershell
@@ -32,35 +33,35 @@ node tools\build_phase_zero_behavior_matrix.mjs "<passing-report.json>"
 | 8 | Reserve Torque Crank | `reserve-torque-crank` | Absent; +0..+5 | [reserve-torque-crank scales its approved benefit once](../src/content/phase-zero-conduit-stats.test.ts) | 7 passed |
 | 9 | Siegebound Drive | `siegebound-drive` | Absent; +0..+5 | [siegebound-drive scales its approved benefit once](../src/content/phase-zero-conduit-stats.test.ts) | 7 passed |
 | 10 | Vigil Core | `vigil-core` | Absent; +0..+5 | [vigil-core scales its approved benefit once](../src/content/phase-zero-conduit-stats.test.ts) | 7 passed |
-| 11 | Aegis Capacitor | `aegis-capacitor` | Absent; +0..+5 | [aegis-capacitor grants Defense only on another ally skill Shield and expires next Enemy Turn](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 12 | Breach Pendulum | `breach-pendulum` | Absent; +0..+5 | [breach-pendulum scales only Normal critical damage above the strict 75% threshold](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 11 | Aegis Capacitor | `aegis-capacitor` | Absent; +0..+5 | [aegis-capacitor grants permanent Health and Defense, not a Shield-triggered aura](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 12 | Breach Pendulum | `breach-pendulum` | Absent; +0..+5 | [breach-pendulum reduces starting Defense once, without a Normal critical bonus](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 13 | Coilfeed Ratchet | `coilfeed-ratchet` | Absent; +0..+5 | [coilfeed-ratchet scales its approved benefit once](../src/content/phase-zero-conduit-stats.test.ts) | 7 passed |
 | 14 | Duplex Heart | `duplex-heart` | Absent; +0..+5 | [duplex-heart heals the caster once after effective other-ally skill healing](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 15 | Falcon Sight | `falcon-sight` | Absent; +0..+5 | [falcon-sight counts Attack Actions, not targets, and spends one guaranteed critical](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 16 | Glassroot Gimbal | `glassroot-gimbal` | Absent; +0..+5 | [glassroot-gimbal has no Shield bonus and does not affect Normal Attack](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 15 | Falcon Sight | `falcon-sight` | Absent; +0..+5 | [falcon-sight grants static stats without a guaranteed critical sequence](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 16 | Glassroot Gimbal | `glassroot-gimbal` | Absent; +0..+5 | [glassroot-gimbal converts maximum Health to Power regardless of Shield, not Normal damage](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 17 | Hammerbalance Link | `hammerbalance-link` | Absent; +0..+5 | [hammerbalance-link scales its approved benefit once](../src/content/phase-zero-conduit-stats.test.ts) | 7 passed |
 | 18 | Lifeline Flywheel | `lifeline-flywheel` | Absent; +0..+5 | [lifeline-flywheel counts actual HP plus Shield damage, not overkill](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 19 | Opal Indexer | `opal-indexer` | Absent; +0..+5 | [opal-indexer only boosts actual native debuff skills](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 20 | Resonance Crucible | `resonance-crucible` | Absent; +0..+5 | [resonance-crucible transfers all named overkill once and does not create native procs](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 21 | Sentinel Aperture | `sentinel-aperture` | Absent; +0..+5 | [sentinel-aperture uses held whole 10-Gauge steps, not a passive Gauge grant](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 20 | Resonance Crucible | `resonance-crucible` | Absent; +0..+5 | [resonance-crucible grants stats/duration without retired overkill strikes](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 21 | Sentinel Aperture | `sentinel-aperture` | Absent; +0..+5 | [sentinel-aperture boosts only Skill 1 and no longer grants held-Gauge Defense](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 22 | Spearwheel Engine | `spearwheel-engine` | Absent; +0..+5 | [spearwheel-engine pierces every skill but never Normal Attack](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 23 | Springwell Pump | `springwell-pump` | Absent; +0..+5 | [springwell-pump classifies healing/Shield abilities, not every skill](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 24 | Twinpulse Bellows | `twinpulse-bellows` | Absent; +0..+5 | [twinpulse-bellows uses recipient capacity and Gauge percentage with formation ties](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 25 | Wardglass Transformer | `wardglass-transformer` | Absent; +0..+5 | [wardglass-transformer boosts critical skills too, and enemy Shield break grants one Normal token](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 25 | Wardglass Transformer | `wardglass-transformer` | Absent; +0..+5 | [wardglass-transformer grants unconditional critical multiplier with fixed Defense penalty and no break token](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 26 | Astral Prism | `astral-prism` | Absent; +0..+5 | [astral-prism scales its approved benefit once](../src/content/phase-zero-conduit-stats.test.ts) | 7 passed |
-| 27 | Citadel Spine | `citadel-spine` | Absent; +0..+5 | [citadel-spine protects only other living allies strictly below half HP](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 28 | Execution Orrery | `execution-orrery` | Absent; +0..+5 | [execution-orrery is target-local critical chance below 50%, not obsolete execute damage](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 27 | Citadel Spine | `citadel-spine` | Absent; +0..+5 | [citadel-spine protects only other living allies strictly below 75% Health](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 28 | Execution Orrery | `execution-orrery` | Absent; +0..+5 | [execution-orrery boosts Skill 2 Power and Efficiency, without a target Health predicate](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 29 | Granite Hourglass | `granite-hourglass` | Absent; +0..+5 | [granite-hourglass measures enemy HP loss, excluding Shields and redirected damage](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 30 | Horizon Heartcase | `horizon-heartcase` | Absent; +0..+5 | [horizon-heartcase pays exactly 40 Gauge once and grants upgraded next-skill Power](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 31 | Immortal Vessel | `immortal-vessel` | Absent; +0..+5 | [immortal-vessel shares effective incoming healing with a fixed recipient HP cap per cast](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 30 | Horizon Heartcase | `horizon-heartcase` | Absent; +0..+5 | [horizon-heartcase conditionally grants Health/Defense, never its retired rescue](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 31 | Immortal Vessel | `immortal-vessel` | Absent; +0..+5 | [immortal-vessel grants its new stats without forwarding incoming heals](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 32 | Judgment Lens | `judgment-lens` | Absent; +0..+5 | [judgment-lens boosts only skill critical multipliers](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 33 | Meridian Inverter | `meridian-inverter` | Absent; +0..+5 | [meridian-inverter grants each effectively healed ally percentage Gauge once per turn](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 34 | Nullsong Transmission | `nullsong-transmission` | Absent; +0..+5 | [nullsong-transmission uses the upgraded Normal Attack stat and a fixed Skill Power penalty, never the old attack multiplier](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 35 | Pale Bulwark Diadem | `pale-bulwark-diadem` | Absent; +0..+5 | [Pale buffs another Shield holder, not only another Pale wearer, until the Shield is lost](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 33 | Meridian Inverter | `meridian-inverter` | Absent; +0..+5 | [meridian-inverter grants each effectively healed ally percentage Gauge once per cast](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 34 | Nullsong Transmission | `nullsong-transmission` | Absent; +0..+5 | [nullsong-transmission rolls one cast bonus without altering Normal Attack or static Power](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 35 | Pale Bulwark Diadem | `pale-bulwark-diadem` | Absent; +0..+5 | [Pale protects only its wearer Shields without the retired outgoing Power aura](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 36 | Siege Cantilever | `siege-cantilever` | Absent; +0..+5 | [siege-cantilever boosts all-enemy damaging skills, not single-target skills](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 37 | Starvein Conductor | `starvein-conductor` | Absent; +0..+5 | [starvein-conductor pays once and boosts damage only, not Burn or healing in mixed skills](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 38 | Stasis Reliquary | `stasis-reliquary` | Absent; +0..+5 | [stasis-reliquary treats the impacts of one attack as one threshold total](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 39 | Verdict Caliper | `verdict-caliper` | Absent; +0..+5 | [verdict-caliper checks other living allies spent and boosts skills without banning critical hits](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 37 | Starvein Conductor | `starvein-conductor` | Absent; +0..+5 | [starvein-conductor rewards a diverse frozen Squad without spending Health or adding Skill Power](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 38 | Stasis Reliquary | `stasis-reliquary` | Absent; +0..+5 | [stasis-reliquary blocks Shield-break spillover and subsequent hits, then applies one penalty turn](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 39 | Verdict Caliper | `verdict-caliper` | Absent; +0..+5 | [verdict-caliper heals once per critical Attack Action without requiring other allies to act](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 40 | Worldbreaker Drive | `worldbreaker-drive` | Absent; +0..+5 | [worldbreaker-drive changes Last Flare Power only, not other skills or a retired AoE override](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 41 | Abyssal Clearwater Parliament | `clearwater-manifold` | Absent; +0..+5 | [clearwater-manifold transfers the upgraded Shield fraction without creating a native layer](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 42 | Abyssal Shelter Observatory | `master-tide-1` | Absent; equipped (fixed) | [master-tide-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
@@ -155,8 +156,8 @@ node tools\build_phase_zero_behavior_matrix.mjs "<passing-report.json>"
 | 131 | Worldroot Triage Sanctuary | `rootbound-triage-vault` | Absent; +0..+5 | [rootbound-triage-vault selects the most injured and expires after any next action](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 132 | Worldseed Mercy Foundry | `master-sprout-1` | Absent; equipped (fixed) | [master-sprout-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 133 | Worldtree Heart | `efflorescent-worldtree-heart` | Absent; +0..+5 | [Worldtree creates a capped timed replacement Shield, not an accumulating heal reserve or generic overheal Shield](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
-| 134 | Cathedral of the Final Equation | `calamitic-cathedral-final-equation` | Absent; +0..+5 | [calamitic-cathedral-final-equation grants upgraded living-squad Power and Efficiency once across duplicate sources](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 135 | Causality Funeral Engine | `calamitic-causality-funeral-engine` | Absent; +0..+5 | [calamitic-causality-funeral-engine grants upgraded additive Power and removes Last Flare recovery only](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 136 | Horizon-Cleaving Godpress | `calamitic-horizon-cleaving-godpress` | Absent; +0..+5 | [Godpress ignores the upgraded share of Defense and bypasses the upgraded Shield share for skills, not Normals](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 134 | Cathedral of the Final Equation | `calamitic-cathedral-final-equation` | Absent; +0..+5 | [calamitic-cathedral-final-equation buffs its bearer only, without the retired squad aura](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 135 | Causality Funeral Engine | `calamitic-causality-funeral-engine` | Absent; +0..+5 | [calamitic-causality-funeral-engine grants Efficiency and Last Flare damage without free actions](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 136 | Horizon-Cleaving Godpress | `calamitic-horizon-cleaving-godpress` | Absent; +0..+5 | [Godpress ignores Defense for skills without bypassing Shields or changing Normal damage](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 137 | Throne of Borrowed Tomorrows | `calamitic-throne-borrowed-tomorrows` | Absent; +0..+5 | [calamitic-throne-borrowed-tomorrows grants spent nonrecovering recipients exactly one extra skill per player turn](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 138 | World-Eater's Orrery | `calamitic-world-eater-orrery` | Absent; +0..+5 | [calamitic-world-eater-orrery heals every living ally from each skill total, not Normals or a once-turn limit](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 138 | World-Eater's Orrery | `calamitic-world-eater-orrery` | Absent; +0..+5 | [calamitic-world-eater-orrery boosts debuff skills and duration without the retired healing](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |

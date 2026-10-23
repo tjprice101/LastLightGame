@@ -1,6 +1,20 @@
 # Conduit upgrades and Broken Mechanical Components
 
-## Current effect scaling (D-313)
+## Current effect scaling (D-368 / D-382)
+
+All90 ordinary entries use the [approved catalog](conduit-catalog.txt).
+Beneficial percentages increase10% of their base per saved level, reaching
+150% of base at+5. Penalties, trigger thresholds, proc odds, durations and
+extra-action counts stay fixed. For Nullsong, positive75% becomes112.5%;
+the negative75% and50/50 roll stay fixed. Glassroot's per200 Health coefficient
+upgrades; its complete-Health-step calculation is uncapped. Masters never
+upgrade. Skill Duration no longer has a global equipment cap; per-status
+safety caps and Skill Efficiency50%/1-or70-Gauge floors remain.
+Details/previews/receipts and frozen combat use the same exact policies.
+Prices, saved levels, holdings and art are unchanged. Older scaling and
+increasing-penalty statements below describe history, not current behavior.
+
+## Historical effect scaling (D-313)
 
 All85 ordinary Conduits now upgrade their complete
 [approved effects](conduit-redesign.md), not only generic stat bundles.
@@ -24,7 +38,7 @@ Masters remain non-upgradeable.
 
 The button displays the affordable target and total cost and is disabled at+5
 or if the next step is unaffordable. A game-native confirmation previews the
-current/target effects (including increased penalties) and exact total spending.
+current/target effects (with fixed penalties) and exact total spending.
 `conduitMaxLevelPlan` is shared by UI and authoritative transactions;
 `upgradeConduitToMaximum` rereads ownership, level and resources and rejects
 changed/forged previews before one atomic component/upgrade write. No sequence
@@ -85,12 +99,12 @@ existing delegated balance direction, not additional owner-authored numbers.
 
 - D-290: every defeated **Awaken the Machines** enemy guarantees components,
   every stage and form. D-294 gives the final boss5x quantities.
-- Stage1 gives3 per enemy; stage100's base125 becomes a guaranteed625.
+- Stage1 gives3 per enemy; stage35's base125 becomes a guaranteed625 (D-380).
   This supersedes D-139's chance-based/quadratic drop curve and D-290's final
   payout only. Earlier bosses keep the ordinary stage quantity.
-- With `t = (stage - 1) / 99`, quantity is `round(3 + 122*t)`.
+- With `t = (stage - 1) / 34`, quantity is `round(3 + 122*t)`.
   Base quantity grows linearly with whole-unit rounding; chance is always100%.
-  Multiply by5 only at stage100; no extra RNG call or clear grant.
+  Multiply by5 only at stage35; no extra RNG call or clear grant.
 - Each kill retains one independent component RNG draw using `componentSeed`
   for stream compatibility; its value cannot change the guaranteed quantity.
   Combat, Conduit, Prismatica, material, capture and Null-Prismatica RNG are unchanged.

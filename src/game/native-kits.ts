@@ -375,7 +375,8 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
         const seals = memory.seals ??= {};
         for (const enemy of action === 'skill1' ? target ? [target] : [] : foes(state)) {
           seals[enemy.id] = { fraction: Math.max(seals[enemy.id]?.fraction ?? 0,
-            Math.min(1, (action === 'skill1' ? .4 : .25) * (phaseZeroStatsReady ? activation.skillPower : 1))),
+            Math.min(1, (action === 'skill1' ? .4 : .25) *
+              (phaseZeroStatsReady ? activation.skillPower + (activation.debuffPowerBonus ?? 0) : 1))),
           throughPhase: state.round + 2 + activation.skillDuration };
           status(events, owner, enemy, `${enemy.name} sealed through enemy phase ${seals[enemy.id].throughPhase}.`);
         }

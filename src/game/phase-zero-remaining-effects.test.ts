@@ -7,7 +7,7 @@ import { applyConduitBuffs } from '../content/combat';
 import {
   applyConduitBurn, conduitActionCost, conduitBurnTick, conduitCriticalBonus,
   conduitHitModifiers, conduitIncoming, conduitTurnStart, expireNativeShields,
-  effectiveDefense, finishConduitAction, finishNativeHealing, gear, initializeConduits, nativeHeal, nativeShield, prepareConduitAction, recordConduitHit,
+  effectiveDefense, finishConduitAction, finishNativeHealing, gear, initializeConduits, nativeHeal, nativeShield, prepareConduitAction, recordConduitHit, refreshConduitStats,
 } from './conduit-runtime';
 import { afterCalamiticAction, calamiticExtraActionAvailable } from './calamitic-conduits';
 
@@ -45,56 +45,63 @@ function hit(state: BattleState, action: ActionId, damage = 100, critical = fals
 }
 
 describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level => {
-  it('nullsong-transmission uses the upgraded Normal Attack stat and a fixed Skill Power penalty, never the old attack multiplier', () => {
+  it('nullsong-transmission rolls one cast bonus without altering Normal Attack or static Power', () => {
     const state = fixture('nullsong-transmission', level), [owner] = state.allies;
     applyConduitBuffs(owner.stats, owner.conduits, state.conduitUpgrades);
-    expect(owner.stats.skillPower).toBe(level === null ? 1 : .85);
+    expect(owner.stats.skillPower).toBe(1);
     const ctx = prepareConduitAction(state, owner, 'light', 0, false);
     expect(conduitHitModifiers(state, owner, state.enemies[0], ctx, false).attack)
-      .toBeCloseTo(level === null ? 100 : 100 * benefit(2.5, level));
+      .toBe(100);
     const result = act(state, owner.id, 'light', state.enemies[0].id);
     expect(result.events.find(event => event.kind === 'damage' && event.source === owner.id)?.amount)
-      .toBe(level === null ? 100 : Math.round(100 * benefit(2.5, level)));
-    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBe(level === null ? 1 : .85);
+      .toBe(100);
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + benefit(.75, level));
   });
-  it('aegis-capacitor grants Defense only on another ally skill Shield and expires next Enemy Turn', () => {
+  it('aegis-capacitor grants permanent Health and Defense, not a Shield-triggered aura', () => {
     const state = fixture('aegis-capacitor', level), [owner, ally] = state.allies;
+    applyConduitBuffs(owner.stats, owner.conduits, state.conduitUpgrades);
     nativeShield(state, owner, owner, 100, [], { skillPower: 1 });
-    expect(effectiveDefense(state, owner)).toBe(100);
+    expect(effectiveDefense(state, owner)).toBeCloseTo(100 * (1 + benefit(.75, level)));
     nativeShield(state, owner, ally, 100, [], { skillPower: 1 });
-    expect(effectiveDefense(state, owner)).toBeCloseTo(100 * (1 + benefit(.25, level)));
+    expect(effectiveDefense(state, owner)).toBeCloseTo(100 * (1 + benefit(.75, level)));
     nativeShield(state, owner, ally, 100, [], { skillPower: 1 });
-    expect(effectiveDefense(state, owner)).toBeCloseTo(100 * (1 + benefit(.25, level)));
+    expect(effectiveDefense(state, owner)).toBeCloseTo(100 * (1 + benefit(.75, level)));
     state.round++;
-    expect(effectiveDefense(state, owner)).toBe(100);
+    expect(effectiveDefense(state, owner)).toBeCloseTo(100 * (1 + benefit(.75, level)));
+    expect(owner.stats.health).toBeCloseTo(1000 * (1 + benefit(.75, level)));
   });
 
-  it('citadel-spine protects only other living allies strictly below half HP', () => {
+  it('citadel-spine protects only other living allies strictly below 75% Health', () => {
     const state = fixture('citadel-spine', level), [owner, ally] = state.allies;
-    ally.hp = 499;
-    expect(effectiveDefense(state, ally)).toBeCloseTo(100 * (1 + benefit(.3, level)));
-    ally.hp = 500;
+    ally.hp = 749;
+    expect(effectiveDefense(state, ally)).toBeCloseTo(100 * (1 + benefit(.35, level)));
+    ally.hp = 750;
     expect(effectiveDefense(state, ally)).toBe(100);
     owner.hp = 0; ally.hp = 499;
     expect(effectiveDefense(state, ally)).toBe(100);
   });
 
-  it('immortal-vessel shares effective incoming healing with a fixed recipient HP cap per cast', () => {
+  it('immortal-vessel grants its new stats without forwarding incoming heals', () => {
     const state = fixture('immortal-vessel', level), [owner, healer, third] = state.allies;
+    applyConduitBuffs(owner.stats, owner.conduits, state.conduitUpgrades);
+    expect(owner.stats.health).toBeCloseTo(1000 * (1 + benefit(2.5, level)));
+    expect(owner.stats.defense).toBeCloseTo(100 * (1 + benefit(.75, level)));
     owner.hp = third.hp = 100;
     const ctx = prepareConduitAction(state, healer, 'ultimate', 100, false);
     nativeHeal(state, healer, owner, 100, [], true, ctx);
-    expect(third.hp).toBe(100 + Math.round(100 * benefit(.25, level)));
+    expect(third.hp).toBe(100);
     nativeHeal(state, healer, owner, 100, [], true, ctx);
     nativeHeal(state, healer, owner, 100, [], true, ctx);
     nativeHeal(state, healer, owner, 100, [], true, ctx);
-    expect(third.hp).toBe(level === null ? 100 : 180);
+    expect(third.hp).toBe(100);
   });
 
-  it('sentinel-aperture uses held whole 10-Gauge steps, not a passive Gauge grant', () => {
+  it('sentinel-aperture boosts only Skill 1 and no longer grants held-Gauge Defense', () => {
     const state = fixture('sentinel-aperture', level), [owner] = state.allies;
     owner.shatter = 39;
-    expect(effectiveDefense(state, owner)).toBeCloseTo(100 * (1 + 3 * benefit(.05, level)));
+    expect(effectiveDefense(state, owner)).toBe(100);
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + benefit(.99, level));
+    expect(prepareConduitAction(state, owner, 'skill2', 40, true).skillPower).toBe(1);
     owner.shatter = 0;
     expect(effectiveDefense(state, owner)).toBe(100);
   });
@@ -174,15 +181,20 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
 
   it('worldbreaker-drive changes Last Flare Power only, not other skills or a retired AoE override', () => {
     const state = fixture('worldbreaker-drive', level), [owner] = state.allies;
-    expect(prepareConduitAction(state, owner, 'ultimate', 100, true).skillPower).toBeCloseTo(1 + benefit(.85, level));
+    expect(prepareConduitAction(state, owner, 'ultimate', 100, true).skillPower).toBeCloseTo(1 + benefit(.99, level));
     expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBe(1);
+    for (const action of ['light', 'skill1', 'skill2', 'ultimate'] as const)
+      expect(prepareConduitAction(state, owner, action, 0, false).bonus).toBeCloseTo(benefit(.65, level));
   });
 
-  it('calamitic-cathedral-final-equation grants upgraded living-squad Power and Efficiency once across duplicate sources', () => {
+  it('calamitic-cathedral-final-equation buffs its bearer only, without the retired squad aura', () => {
     const state = fixture('calamitic-cathedral-final-equation', level), [owner, ally, third] = state.allies;
     third.conduits = owner.conduits ? [...owner.conduits] : undefined;
-    expect(prepareConduitAction(state, ally, 'skill1', 25, false).skillPower).toBeCloseTo(1 + benefit(.3, level));
-    expect(conduitActionCost(ally, 'skill1', state, 100)).toBe(Math.ceil(100 * (1 - benefit(.25, level))));
+    const ctx = prepareConduitAction(state, owner, 'skill1', 25, false);
+    expect(ctx.criticalBonus).toBeCloseTo(benefit(2.5, level));
+    expect(ctx.criticalDamageBonus).toBeCloseTo(benefit(1.2, level));
+    expect(prepareConduitAction(state, ally, 'skill1', 25, false).skillPower).toBe(1);
+    expect(conduitActionCost(ally, 'skill1', state, 100)).toBe(100);
     owner.hp = third.hp = 0;
     expect(prepareConduitAction(state, ally, 'skill1', 25, false).skillPower).toBe(1);
     expect(conduitActionCost(ally, 'skill1', state, 100)).toBe(100);
@@ -198,32 +210,46 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     expect(calamiticExtraActionAvailable(state, ally, 'light')).toBe(false);
   });
 
-  it('calamitic-causality-funeral-engine grants upgraded additive Power and removes Last Flare recovery only', () => {
+  it('calamitic-causality-funeral-engine grants Efficiency and Last Flare damage without free actions', () => {
     const state = fixture('calamitic-causality-funeral-engine', level), [owner] = state.allies;
     applyConduitBuffs(owner.stats, owner.conduits, state.conduitUpgrades);
-    expect(prepareConduitAction(state, owner, 'ultimate', 100, true).skillPower).toBeCloseTo(1 + benefit(.8, level));
+    const ctx = prepareConduitAction(state, owner, 'ultimate', 100, true);
+    expect(ctx.skillPower).toBe(1);
+    expect(ctx.bonus).toBeCloseTo(benefit(1.25, level));
+    expect(conduitActionCost(owner, 'ultimate', state, 100)).toBe(level === null ? 100 : 70);
     const result = act(state, owner.id, 'ultimate', state.enemies[0].id).state;
     expect(result.allies[0].recoverThrough).toBe(level === null ? 2 : 0);
     expect(result.allies[0].spent).toBe(true);
   });
 
-  it('calamitic-world-eater-orrery heals every living ally from each skill total, not Normals or a once-turn limit', () => {
+  it('calamitic-world-eater-orrery boosts debuff skills and duration without the retired healing', () => {
     const state = fixture('calamitic-world-eater-orrery', level), [owner, ally, third] = state.allies;
     ally.hp = 100; third.hp = 0;
     hit(state, 'skill1', 40, false, 100);
-    expect(ally.hp).toBe(100 + Math.round(100 * benefit(.1, level)));
+    expect(ally.hp).toBe(100);
     hit(state, 'skill2', 40, false, 100);
-    expect(ally.hp).toBe(100 + 2 * Math.round(100 * benefit(.1, level)));
+    expect(ally.hp).toBe(100);
     hit(state, 'light', 100);
-    expect(ally.hp).toBe(100 + 2 * Math.round(100 * benefit(.1, level)));
+    expect(ally.hp).toBe(100);
+    applyConduitBuffs(owner.stats, owner.conduits, state.conduitUpgrades);
+    const ctx = prepareConduitAction(state, owner, 'skill1', 25, false);
+    expect(ctx.skillPower).toBe(1);
+    expect(ctx.debuffPowerBonus ?? 0).toBeCloseTo(benefit(1.25, level));
+    expect(applyConduitBurn(state, owner, state.enemies[0], 100, ctx)).toBe(Math.round(100 * (1 + benefit(1.25, level))));
+    expect(ctx.skillDuration).toBe(level === null ? 0 : 3);
     expect(third.hp).toBe(0);
     expect(owner.hp).toBe(1000);
   });
-  it('breach-pendulum scales only Normal critical damage above the strict 75% threshold', () => {
+  it('breach-pendulum reduces starting Defense once, without a Normal critical bonus', () => {
     const state = fixture('breach-pendulum', level);
     const [owner] = state.allies, enemy = state.enemies[0];
     const normal = prepareConduitAction(state, owner, 'light', 0, false);
-    expect(conduitHitModifiers(state, owner, enemy, normal, true).criticalDamageBonus ?? 0).toBeCloseTo(benefit(.4, level));
+    expect(conduitHitModifiers(state, owner, enemy, normal, true).criticalDamageBonus ?? 0).toBe(0);
+    enemy.stats.defense = 100;
+    delete gear(enemy).numbers.breachApplied;
+    initializeConduits(state);
+    initializeConduits(state);
+    expect(enemy.stats.defense).toBeCloseTo(100 * (1 - benefit(.1, level)));
     enemy.hp = 7500;
     expect(conduitHitModifiers(state, owner, enemy, normal, true).criticalDamageBonus ?? 0).toBe(0);
     enemy.hp = 10000;
@@ -243,46 +269,56 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     expect(ctx.healRecipients).toEqual([ally.id, third.id]);
   });
 
-  it('falcon-sight counts Attack Actions, not targets, and spends one guaranteed critical', () => {
+  it('falcon-sight grants static stats without a guaranteed critical sequence', () => {
     const state = fixture('falcon-sight', level);
     const [owner] = state.allies;
     hit(state, 'light');
     hit(state, 'skill1');
     const ctx = prepareConduitAction(state, owner, 'light', 0, false);
-    expect(ctx.guaranteed).toBe(level !== null);
-    expect(ctx.criticalDamageBonus).toBeCloseTo(benefit(.1, level));
+    expect(ctx.guaranteed).toBe(false);
+    expect(ctx.criticalDamageBonus).toBe(0);
+    applyConduitBuffs(owner.stats, owner.conduits, state.conduitUpgrades);
+    expect(owner.stats.crit).toBeCloseTo(benefit(.25, level));
+    expect(owner.stats.health).toBeCloseTo(1000 * (1 + benefit(.45, level)));
     recordConduitHit(ctx, state.enemies[0], 100, true, 1.5);
     recordConduitHit(ctx, state.enemies[1], 100, true, 1.5);
     finishConduitAction(state, owner, ctx, []);
     expect(prepareConduitAction(state, owner, 'light', 0, false).guaranteed).toBe(false);
   });
 
-  it('glassroot-gimbal has no Shield bonus and does not affect Normal Attack', () => {
+  it('glassroot-gimbal converts maximum Health to Power regardless of Shield, not Normal damage', () => {
     const state = fixture('glassroot-gimbal', level), owner = state.allies[0];
-    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + benefit(.35, level));
+    applyConduitBuffs(owner.stats, owner.conduits, state.conduitUpgrades);
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + 5 * benefit(.05, level));
     expect(prepareConduitAction(state, owner, 'light', 0, false).skillPower).toBe(1);
     owner.shield = 1;
-    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBe(1);
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + 5 * benefit(.05, level));
   });
 
   it('lifeline-flywheel counts actual HP plus Shield damage, not overkill', () => {
     const state = fixture('lifeline-flywheel', level), owner = state.allies[0];
     owner.hp = 100;
     hit(state, 'light', 40, false, 100, 500);
-    expect(owner.hp).toBe(100 + Math.round(100 * benefit(.08, level)));
+    expect(owner.hp).toBe(100 + Math.round(100 * benefit(.1, level)));
   });
 
   it('opal-indexer only boosts actual native debuff skills', () => {
     const state = fixture('opal-indexer', level), owner = state.allies[0];
-    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + benefit(.25, level));
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + benefit(.75, level));
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillDuration).toBe(level === null ? 0 : 1);
     expect(prepareConduitAction(state, owner, 'skill2', 40, true).skillPower).toBe(1);
   });
 
-  it('resonance-crucible transfers all named overkill once and does not create native procs', () => {
+  it('resonance-crucible grants stats/duration without retired overkill strikes', () => {
     const state = fixture('resonance-crucible', level), target = state.enemies[1];
     const before = target.hp;
     const { events } = hit(state, 'skill1', 1, false, 1, 80);
-    expect(before - target.hp).toBe(level === null ? 0 : 80);
+    expect(before - target.hp).toBe(0);
+    const owner = state.allies[0];
+    applyConduitBuffs(owner.stats, owner.conduits, state.conduitUpgrades);
+    expect(owner.stats.health).toBeCloseTo(1000 * (1 + benefit(.5, level)));
+    expect(owner.stats.defense).toBeCloseTo(100 * (1 + benefit(.75, level)));
+    expect(owner.stats.skillDuration).toBe(level === null ? 0 : 1);
     expect(events.filter(event => event.kind === 'damage').every(event => event.origin === 'conduit')).toBe(true);
   });
 
@@ -305,27 +341,32 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     owner.shatter = 0; first.shatter = 50; second.shatter = 40;
     first.stats.shatterCapacity = 400;
     hit(state, 'light');
-    expect(owner.shatter).toBe(Math.round(200 * benefit(.05, level)));
-    expect(first.shatter).toBe(50 + Math.round(400 * benefit(.05, level)));
+    expect(owner.shatter).toBe(Math.round(200 * benefit(.07, level)));
+    expect(first.shatter).toBe(50 + Math.round(400 * benefit(.07, level)));
     expect(second.shatter).toBe(40);
   });
 
-  it('wardglass-transformer boosts critical skills too, and enemy Shield break grants one Normal token', () => {
+  it('wardglass-transformer grants unconditional critical multiplier with fixed Defense penalty and no break token', () => {
     const state = fixture('wardglass-transformer', level), [owner] = state.allies;
     nativeShield(state, owner, owner, 20, []);
     expect(conduitHitModifiers(state, owner, state.enemies[0],
-      prepareConduitAction(state, owner, 'skill1', 25, false), true).criticalDamageBonus ?? 0).toBeCloseTo(benefit(.25, level));
+      prepareConduitAction(state, owner, 'skill1', 25, false), true).criticalDamageBonus ?? 0).toBe(0);
     conduitIncoming(state, state.enemies[0], owner, 30, false, false, []);
     const skill = prepareConduitAction(state, owner, 'skill1', 25, false);
     expect(skill.criticalBonus).toBe(0);
-    expect(prepareConduitAction(state, owner, 'light', 0, false).criticalBonus).toBeCloseTo(benefit(.2, level));
     expect(prepareConduitAction(state, owner, 'light', 0, false).criticalBonus).toBe(0);
+    expect(prepareConduitAction(state, owner, 'light', 0, false).criticalBonus).toBe(0);
+    applyConduitBuffs(owner.stats, owner.conduits, state.conduitUpgrades);
+    expect(owner.stats.critMultiplier).toBeCloseTo(1.5 * (1 + benefit(.35, level)));
+    expect(owner.stats.defense).toBeCloseTo(level === null ? 100 : 65);
   });
 
-  it('execution-orrery is target-local critical chance below 50%, not obsolete execute damage', () => {
+  it('execution-orrery boosts Skill 2 Power and Efficiency, without a target Health predicate', () => {
     const state = fixture('execution-orrery', level), [owner] = state.allies, target = state.enemies[0];
     target.hp = 4999;
-    expect(conduitCriticalBonus(state, owner, target, 'skill1')).toBeCloseTo(benefit(.35, level));
+    expect(conduitCriticalBonus(state, owner, target, 'skill1')).toBe(0);
+    expect(prepareConduitAction(state, owner, 'skill2', 40, true).skillPower).toBeCloseTo(1 + benefit(.99, level));
+    expect(conduitActionCost(owner, 'skill2', state, 40)).toBe(Math.ceil(40 * (1 - benefit(.1, level))));
     expect(conduitCriticalBonus(state, owner, target, 'light')).toBe(0);
     expect(conduitHitModifiers(state, owner, target, prepareConduitAction(state, owner, 'skill1', 25, false), false).bonus).toBe(0);
     target.hp = 5000;
@@ -345,13 +386,23 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     expect(owner.shield).toBe(0);
   });
 
-  it('horizon-heartcase pays exactly 40 Gauge once and grants upgraded next-skill Power', () => {
+  it('horizon-heartcase conditionally grants Health/Defense, never its retired rescue', () => {
     const state = fixture('horizon-heartcase', level), [owner] = state.allies;
-    owner.hp = 10; owner.shatter = 40;
+    owner.shatter = 40;
+    refreshConduitStats(state);
+    expect(owner.stats.health).toBeCloseTo(1000 * (1 + benefit(.2, level)));
+    expect(effectiveDefense(state, owner)).toBeCloseTo(100 * (1 + benefit(.1, level)));
+    owner.shatter = 100;
+    owner.spent = true;
+    refreshConduitStats(state);
+    expect(owner.stats.health).toBe(1000);
+    const ctx = prepareConduitAction(state, owner, 'ultimate', 100, true);
+    expect(ctx.criticalBonus).toBeCloseTo(benefit(.1, level));
+    expect(ctx.criticalDamageBonus).toBeCloseTo(benefit(.35, level));
+    owner.hp = 10;
     conduitIncoming(state, state.enemies[0], owner, 100, false, false, []);
-    expect(owner.hp).toBe(level === null ? 0 : 1);
-    expect(gear(owner).numbers.rescueUsed ?? 0).toBe(level === null ? 0 : 1);
-    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + 4 * benefit(.05, level));
+    expect(owner.hp).toBe(0);
+    expect(gear(owner).numbers.rescueUsed ?? 0).toBe(0);
     expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBe(1);
   });
 
@@ -363,48 +414,66 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
       .criticalDamageBonus ?? 0).toBe(0);
   });
 
-  it('meridian-inverter grants each effectively healed ally percentage Gauge once per turn', () => {
+  it('meridian-inverter grants each effectively healed ally percentage Gauge once per cast', () => {
     const state = fixture('meridian-inverter', level, ['sprout', 'ember', 'tide']), [owner, ally] = state.allies;
     ally.hp = 100; ally.shatter = 0;
     const ctx = prepareConduitAction(state, owner, 'ultimate', 100, false);
     nativeHeal(state, owner, ally, 10, [], true, ctx);
     nativeHeal(state, owner, ally, 10, [], true, ctx);
-    expect(ally.shatter).toBe(Math.round(200 * benefit(.08, level)));
+    expect(ally.shatter).toBe(Math.round(200 * benefit(.04, level)));
+    nativeHeal(state, owner, ally, 10, [], true, prepareConduitAction(state, owner, 'skill2', 40, false));
+    expect(ally.shatter).toBe(2 * Math.round(200 * benefit(.04, level)));
   });
 
   it('siege-cantilever boosts all-enemy damaging skills, not single-target skills', () => {
     const state = fixture('siege-cantilever', level), [owner] = state.allies;
-    expect(prepareConduitAction(state, owner, 'skill2', 40, true).skillPower).toBeCloseTo(1 + benefit(.45, level));
+    expect(prepareConduitAction(state, owner, 'skill2', 40, true).skillPower).toBeCloseTo(1 + benefit(1.5, level));
     expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBe(1);
   });
 
-  it('starvein-conductor pays once and boosts damage only, not Burn or healing in mixed skills', () => {
+  it('starvein-conductor rewards a diverse frozen Squad without spending Health or adding Skill Power', () => {
     const state = fixture('starvein-conductor', level), [owner] = state.allies;
     const ctx = prepareConduitAction(state, owner, 'skill1', 25, false);
-    expect(owner.hp).toBe(level === null ? 1000 : 950);
+    expect(owner.hp).toBe(1000);
     expect(ctx.skillPower).toBe(1);
-    expect(conduitHitModifiers(state, owner, state.enemies[0], ctx, false).skillPowerBonus).toBeCloseTo(benefit(.6, level));
+    expect(conduitHitModifiers(state, owner, state.enemies[0], ctx, false).skillPowerBonus).toBe(0);
+    expect(conduitActionCost(owner, 'skill1', state, 100)).toBe(Math.ceil(100 * (1 - Math.min(.5, benefit(.35, level)))));
     expect(applyConduitBurn(state, owner, state.enemies[0], 25, ctx)).toBe(25);
     owner.hp = 50;
     expect(conduitHitModifiers(state, owner, state.enemies[0],
       prepareConduitAction(state, owner, 'skill1', 25, false), false).skillPowerBonus).toBe(0);
     expect(owner.hp).toBe(50);
+    state.allies[1].element = owner.element;
+    expect(conduitActionCost(owner, 'skill1', state, 100)).toBe(100);
   });
 
-  it('stasis-reliquary treats the impacts of one attack as one threshold total', () => {
+  it('stasis-reliquary blocks Shield-break spillover and subsequent hits, then applies one penalty turn', () => {
     const state = fixture('stasis-reliquary', level), [owner] = state.allies;
     const enemy = state.enemies[0];
+    owner.shield = 50;
     for (let i = 0; i < 3; i++) conduitIncoming(state, enemy, owner, 100, false, true, [], 'skill1');
-    expect(1000 - owner.hp).toBeCloseTo(300 - 100 * benefit(.4, level));
+    expect(owner.hp).toBe(level === null ? 750 : 1000);
+    state.round++;
+    owner.shield = 50;
+    conduitIncoming(state, enemy, owner, 100, false, true, [], 'skill1');
+    expect(owner.hp).toBe(level === null ? 700 : 925);
+    state.round++;
+    owner.shield = 50;
+    conduitIncoming(state, enemy, owner, 100, false, true, [], 'skill1');
+    expect(owner.hp).toBe(level === null ? 650 : 925);
   });
 
-  it('verdict-caliper checks other living allies spent and boosts skills without banning critical hits', () => {
+  it('verdict-caliper heals once per critical Attack Action without requiring other allies to act', () => {
     const state = fixture('verdict-caliper', level), [owner, first, second] = state.allies;
     expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBe(1);
     first.spent = true; second.hp = 0;
     const ctx = prepareConduitAction(state, owner, 'skill1', 25, false);
-    expect(ctx.skillPower).toBeCloseTo(1 + benefit(.45, level));
+    expect(ctx.skillPower).toBe(1);
     expect(ctx.forbidden).toBe(false);
+    owner.hp = 100;
+    for (const target of state.enemies) recordConduitHit(ctx, target, 10, true, 1.5);
+    finishConduitAction(state, owner, ctx, []);
+    expect(owner.hp).toBe(100 + Math.round(1000 * benefit(.25, level)));
   });
 
   it('clearwater-manifold transfers the upgraded Shield fraction without creating a native layer', () => {

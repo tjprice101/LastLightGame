@@ -1,5 +1,58 @@
 # Current state and handoff
 
+## Owner replacement of45 Conduits (D-382)
+
+- Replaced all10 Common/15 Rare/15 Legendary/five Calamitic abilities from
+  the owner's list.45 ordinary Omnics/48 Masters, IDs, ownership, costs,
+  saved upgrade levels, equipment eligibility, acquisition and artwork are
+  unchanged. [Catalog](conduit-catalog.txt), [current138-entry compatibility
+  matrix](character-conduit-compatibility.md), [upgrade rules](conduit-upgrades.md),
+  [Calamitics](calamitic-conduits.md) and [combat](combat.md) now agree.
+- Resolved owner clarifications: Reserve means capacity; Glassroot is uncapped
+  per complete200 equipment-inclusive maximum Health; Nullsong is one seeded
+  50/50 cast roll, shared by every impact; only its positive bonus upgrades.
+  Heartcase uses personal Gauge/cooldown/recovery, ignoring spent/turn gates;
+  conditional maximum Health never grants free healing. Funeral ignores both
+  Last Flare cooldown/recovery but retains Gauge floors/action spending.
+  Starvein includes all frozen Squad Members, even defeated ones.
+- Removed the global equipment Skill Duration cap, retaining each status's
+  safety limits. Beneficial percentages grow10% of base/level; penalties,
+  conditions, odds, durations and action counts stay fixed. Orrery increases
+  only debuff potency, not direct damage, healing or Shields.
+- Pale protects only Shield-covered damage, including routed enemy hits,
+  retaining sole-owner native full-block provenance. Stasis blocks breaking
+  spillover/later hits that Enemy Turn, then has one vulnerable Enemy Turn
+  (+25% enemy attack damage, no proc). Copied readouts show both clocks.
+  Removed the replaced equipment's old triggers; shared rules6 restarts
+  historical encounters while preserving frozen investment/saved rewards.
+- Shared keyword formatting adds canonical Debuff, Damage Reduction, Squad/
+  Member and Element terminology. Updated current descriptions and all138
+  displayed defaults. Regenerate the current matrix with
+  `node tools\build_phase_zero_conduit_catalog.mjs`, not the historical
+  133-entry generator.
+- Existing exact seeded combat expectations were measured and updated for
+  intentional equipment changes. No enemy curve or cancelled individual
+  Last Flare rebalance is included. EX+1 upgraded squads now clear all36
+  benchmark encounters; EX+2 retains build-dependent losses; EX+3 remains
+  a substantial wall.
+- Validation: `npx vitest run --maxWorkers=2 --reporter=json` passed6,330 tests/
+  204 files with exit0. The138-entry/726-scenario behavior matrix refreshed
+  from that complete passing report. `npm run build`,
+  `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json` and
+  `git diff --check` passed. Existing Vite chunk-size advisory is nonfatal.
+- Matching authority deployed successfully. Disposable
+  `node tools\smoke_server_game.mjs --conduit-rework` passed all45 at+0/+5
+  across four squads, exact shared-engine results, persistent snapshots and
+  request-idempotent retries. `--phase-zero` also passed frozen Funeral+5,
+  cost-cap/Burn parity, unchanged holdings and fresh-entry gear.
+  All disposable identities/cascading gameplay records were removed; no
+  owner accounts were modified. The initial smoke's17-character fixture
+  username was corrected to meet the existing16-character identity limit.
+- Client publication uses main's Deploy Last Light workflow; its configured
+  online build runs the full suite again and publishes `version.json` with
+  the full commit SHA. No owner decisions or requested mechanics remain open.
+
 ## Linear allied DoT scaling (D-381)
 
 - Owner approves an extra `1 + sourceLevel/30` for all allied DoTs:

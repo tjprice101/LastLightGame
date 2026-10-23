@@ -1,5 +1,5 @@
 LAST LIGHT - APPROVED PHASE 0 STAT AND CONDUIT CONTRACT
-Design revision: 2026-10-21
+Design revision: 2026-10-22 (D-382)
 
 APPROVED CONTRACT - IMPLEMENTATION VERIFIED; ACTIVATION AUTHORIZED (D-370)
 The owner authorizes the Phase 0 stat overhaul and all listed Conduit changes.
@@ -12,9 +12,8 @@ New upgrade scaling may be chosen during implementation; Masters remain fixed.
 Do not activate a partial Conduit roster or claim checks that have not passed.
 
 SQUAD DESIGN REVISION
-Common and Rare entries are preserved from the owner's latest draft.
-Four Legendary entries receive a follow-up usefulness rework; the other 11 remain.
-All 45 ordinary Omnic, 48 Masters and five Calamitic abilities are redesigned.
+D-382 replaces all 10 Common, 15 Rare, 15 Legendary and five Calamitic effects.
+All 45 ordinary Omnic and 48 Master abilities remain unchanged.
 Masters remain character-specific and build on their actual native abilities.
 Calamitic effects emphasize one clear squad-changing mechanic, not long chains
 of conditions. Practical usefulness is a design goal, not a tested balance claim.
@@ -93,7 +92,7 @@ GLOBAL DESIGN CLARIFICATIONS AND SAFETY LIMITS
   Flare activations, not periodic or generated damage. A prohibition on
   critical hits overrides a guaranteed-critical or critical-chance bonus.
 - Timed effects use the appropriate player's turn or Enemy Turn clock stated
-  in their ability. Equipment Skill Duration bonuses add, capped at +2 turns.
+  in their ability. Equipment Skill Duration bonuses add without a global cap.
   Instant effects and one-use tokens do not acquire duration from this stat.
 - Status potency retains its own limits: Weaken cannot exceed 50%. Skill Power
   cannot turn Weaken, delay or replacement skills into permanent enemy lockdown.
@@ -155,52 +154,52 @@ COMMON (10)
 Name: Bastion Lock
 Rarity: Common
 Element: Botanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +20% Defense
+Ability (Default Value): +35% [Defense] and +25% [Skill Power].
 
 Name: Crosspin Governor
 Rarity: Common
 Element: Atmospheric (suggested thematic element; gameplay: universal)
-Ability (Default Value): +15% Skill Power
+Ability (Default Value): +40% [Skill Power].
 
 Name: Fieldbrace Coupler
 Rarity: Common
 Element: Oceanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +20% Skill Power, -5% Defense
+Ability (Default Value): +25% [Critical Rate].
 
 Name: Fracture Reservoir
 Rarity: Common
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +50% [Elemental Gauge Capacity].
+Ability (Default Value): +40% [Elemental Gauge Capacity].
 
 Name: Parallax Relay
 Rarity: Common
 Element: Tranquilitic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +45% Health, -5% Skill Power
+Ability (Default Value): +50% [Health] and +10% [Last Flare] [Direct Damage].
 
 Name: Precision Escapement
 Rarity: Common
 Element: Atmospheric (suggested thematic element; gameplay: universal)
-Ability (Default Value): +10% Critical Damage multiplier.
+Ability (Default Value): +10% [Critical Damage Multiplier].
 
 Name: Prism Splinter Socket
 Rarity: Common
 Element: Infernic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +5% [Elemental Gauge Gain].
+Ability (Default Value): +7.5% [Elemental Gauge Gain] and +5% [Skill Efficiency].
 
 Name: Reserve Torque Crank
 Rarity: Common
 Element: Atmospheric (suggested thematic element; gameplay: universal)
-Ability (Default Value): +15% [Elemental Gauge Gain], -5% Direct Attack
+Ability (Default Value): +25% [Elemental Gauge Capacity] and +10% [Elemental Gauge Gain].
 
 Name: Siegebound Drive
 Rarity: Common
 Element: Infernic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +30% Direct Attack.
+Ability (Default Value): +35% [Direct Attack] and +5% [Skill Efficiency].
 
 Name: Vigil Core
 Rarity: Common
 Element: Botanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +35% Health.
+Ability (Default Value): +100% [Health].
 
 ==============================================================================
 RARE (15)
@@ -209,77 +208,77 @@ RARE (15)
 Name: Aegis Capacitor
 Rarity: Rare
 Element: Oceanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): When your skill gives another ally a Shield, you gain +25% Defense until the next Enemy Turn ends.
+Ability (Default Value): +75% [Health] and +75% [Defense].
 
 Name: Breach Pendulum
 Rarity: Rare
 Element: Infernic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Normal Attack gains +40% Critical Damage Multiplier against enemies above 75% HP.
+Ability (Default Value): All enemies begin each [Battle] with 10% less [Defense]. Multiple copies do not stack.
 
 Name: Coilfeed Ratchet
 Rarity: Rare
 Element: Atmospheric (suggested thematic element; gameplay: universal)
-Ability (Default Value): +7% Skill Efficiency.
+Ability (Default Value): +8% [Skill Efficiency], +8% [Skill Power] and +8% [Critical Rate].
 
 Name: Duplex Heart
 Rarity: Rare
 Element: Botanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Casting a healing skill on another ally also restores 5% of your own maximum HP. Once per cast.
+Ability (Default Value): Casting a healing [Skill] that restores another ally's [Health] also restores 5% of your maximum [Health] to you. Once per cast.
 
 Name: Falcon Sight
 Rarity: Rare
 Element: Atmospheric (suggested thematic element; gameplay: universal)
-Ability (Default Value): After two noncritical Attack Actions in a row, your next Attack Action is a guaranteed critical hit with +10% Critical Damage Multiplier. One action advances or spends the sequence once, regardless of targets.
+Ability (Default Value): +25% [Critical Rate] and +45% [Health].
 
 Name: Glassroot Gimbal
 Rarity: Rare
 Element: Botanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Gain +35% Skill Power while you have no Shield.
+Ability (Default Value): Gain +5% [Skill Power] per complete 200 maximum [Health], including equipment bonuses. No cap.
 
 Name: Hammerbalance Link
 Rarity: Rare
 Element: Botanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +24% Direct Attack; -8% Defense.
+Ability (Default Value): +85% [Direct Attack] and +15% [Critical Damage Multiplier].
 
 Name: Lifeline Flywheel
 Rarity: Rare
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): After each Attack Action, heal for 8% of the Direct Damage it dealt to enemy HP or Shield.
+Ability (Default Value): After each [Attack Action] or [Skill], restore [Health] equal to 10% of its actual [Direct Damage] to enemy [Health] and [Shields]. Once per activation; excludes periodic and generated damage.
 
 Name: Opal Indexer
 Rarity: Rare
 Element: Tranquilitic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Skills that apply a debuff gain +25% Skill Power.
+Ability (Default Value): [Skills] that apply a [Debuff] gain +75% [Skill Power] and +1 turn [Skill Duration].
 
 Name: Resonance Crucible
 Rarity: Rare
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Damage beyond what defeats an enemy carries over as a [Bonus Strike] on the healthiest other enemy.
+Ability (Default Value): +75% [Defense], +50% [Health] and +1 turn [Skill Duration].
 
 Name: Sentinel Aperture
 Rarity: Rare
 Element: Tranquilitic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Gain +5% Defense for every 10 Elemental Gauge currently held.
+Ability (Default Value): Your [Skill 1] gains +99% [Skill Power].
 
 Name: Spearwheel Engine
 Rarity: Rare
 Element: Oceanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): All Skills ignore 10% of enemy Defense.
+Ability (Default Value): All [Skills] ignore 10% of enemy [Defense].
 
 Name: Springwell Pump
 Rarity: Rare
 Element: Botanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): For your abilities that heal or give Shield, they gain +20% Skill Power.
+Ability (Default Value): Your [Skills] that heal or grant [Shields] gain +20% [Skill Power].
 
 Name: Twinpulse Bellows
 Rarity: Rare
 Element: Atmospheric (suggested thematic element; gameplay: universal)
-Ability (Default Value): Each Normal Attack grants you and the other ally with the lowest Gauge percentage 5% Elemental Gauge.
+Ability (Default Value): Each [Normal Attack] grants you and the other living ally with the lowest [Elemental Gauge] percentage 7% of each recipient's [Elemental Gauge Capacity].
 
 Name: Wardglass Transformer
 Rarity: Rare
 Element: Oceanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Gain +25% Critical Damage Multiplier while Shielded. When an enemy breaks your Shield, your next Normal Attack gains +20% Critical Rate. Hold one bonus.
+Ability (Default Value): +35% [Critical Damage Multiplier] and -35% [Defense].
 
 ==============================================================================
 LEGENDARY (15)
@@ -288,78 +287,77 @@ LEGENDARY (15)
 Name: Astral Prism
 Rarity: Legendary
 Element: Tranquilitic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +30% Critical Rate; -10% Defense.
+Ability (Default Value): +30% [Critical Rate], +25% [Critical Damage Multiplier] and +50% [Health].
 
 Name: Citadel Spine
 Rarity: Legendary
 Element: Botanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +35% Defense. Other living allies below 50% HP gain +30% Defense while you are alive.
+Ability (Default Value): +75% [Direct Attack] and +7% [Elemental Gauge Gain]. Other living allies below 75% [Health] gain +35% [Defense] while you are alive. Multiple copies of this aura do not stack.
 
 Name: Execution Orrery
 Rarity: Legendary
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Damaging skills gain +35% Critical Rate against enemies below 50% HP.
+Ability (Default Value): Your [Skill 2] gains +99% [Skill Power] and +10% [Skill Efficiency].
 
 Name: Granite Hourglass
 Rarity: Legendary
 Element: Botanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): At the start of your next player turn, gain a Shield equal to 30% of the Health lost to enemy Direct Damage during the previous enemy turn.
+Ability (Default Value): At the start of your next [Player Turn], gain a [Shield] equal to 30% of the [Health] lost to enemy [Direct Damage] during the previous [Enemy Turn].
 
 Name: Horizon Heartcase
 Rarity: Legendary
 Element: Oceanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Once per Battle, when enemy Direct Damage would defeat you, automatically spend 40 Elemental Gauge to survive at 1 HP. For each 10 Gauge spent this way,
-gain +5% Skill Power on your next skill usage. Insufficient Gauge means no rescue; later hits can defeat you.
+Ability (Default Value): Your [Last Flare] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. While your [Last Flare] is unavailable because of your [Elemental Gauge], [Cooldown] or [Recovery], gain +20% [Health] and +10% [Defense]. Having already acted does not activate this bonus.
 
 Name: Immortal Vessel
 Rarity: Legendary
 Element: Botanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +60% Health. When another ally's Skill heals you, restore 25% of the HP actually restored to the most injured different ally, capped at 8% of their maximum HP per cast.
+Ability (Default Value): +250% [Health] and +75% [Defense].
 
 Name: Judgment Lens
 Rarity: Legendary
 Element: Tranquilitic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Damaging skills gain +50% Critical Damage Multiplier.
+Ability (Default Value): Damaging [Skills] gain +50% [Critical Damage Multiplier]. Support [Skills] gain +50% [Skill Power].
 
 Name: Meridian Inverter
 Rarity: Legendary
 Element: Oceanic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Allies healed by your healing skills gain 8% Elemental Gauge. Each ally can receive this Gauge once per player turn.
+Ability (Default Value): Each ally whose [Health] your healing [Skill] restores gains 4% of their [Elemental Gauge Capacity], once per cast.
 
 Name: Nullsong Transmission
 Rarity: Legendary
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Normal Attack uses 250% of your Direct Attack, -15% Skill Power.
+Ability (Default Value): Each [Skill] cast has a 50% chance to gain +75% [Skill Power]; otherwise it receives -75% [Skill Power]. Roll once per cast, shared by all targets and impacts.
 
 Name: Pale Bulwark Diadem
 Rarity: Legendary
 Element: Tranquilitic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Allies holding your skill-created Shields gain +25% Skill Power for damaging skills.
+Ability (Default Value): [Shields] on you gain 50% [Damage Reduction]. Only the absorbed portion benefits; any damage beyond the protected [Shield] damages [Health] normally.
 
 Name: Siege Cantilever
 Rarity: Legendary
 Element: Infernic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Global damaging Skills gains +45% Skill Power.
+Ability (Default Value): Your [Global] damaging [Skills] gain +150% [Skill Power].
 
 Name: Starvein Conductor
 Rarity: Legendary
 Element: Infernic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Damaging skills spend 5% of your maximum HP for +60% Skill Power on their damage. If the payment would defeat you, skip both payment and bonus.
+Ability (Default Value): If every [Squad Member] has a different [Element], gain +35% [Skill Efficiency] and +10% [Elemental Gauge Gain]. Defeated members still count.
 
 Name: Stasis Reliquary
 Rarity: Legendary
 Element: Tranquilitic (suggested thematic element; gameplay: universal)
-Ability (Default Value): For an enemy attack dealing Direct Damage above 20% of your maximum HP, reduce only the portion above that threshold by 40%. Treat all impacts of that attack as one total.
+Ability (Default Value): When enemy damage breaks your [Shield], prevent the breaking hit's remaining damage and all further damage to you that [Enemy Turn]. During the next [Enemy Turn], take 25% more enemy attack damage and cannot activate this protection. Protection becomes available again on the following [Enemy Turn].
 
 Name: Verdict Caliper
 Rarity: Legendary
 Element: Tranquilitic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Your skills gain +45% Skill Power when every other living ally has already acted this player turn.
+Ability (Default Value): Each [Attack Action] that critically hits restores 25% of your maximum [Health], once per activation regardless of targets or impacts.
 
 Name: Worldbreaker Drive
 Rarity: Legendary
 Element: Infernic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +85% Skill Power for Last Flare; -12% Health.
+Ability (Default Value): Your [Last Flare] gains +99% [Skill Power]. All your [Attack Actions] gain +65% [Direct Damage].
 
 ==============================================================================
 OMNIC (93)
@@ -837,24 +835,24 @@ CALAMITIC (5)
 Name: Cathedral of the Final Equation
 Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): All living allies gain +25% Skill Efficiency and +30% Skill Power while you are alive.
+Ability (Default Value): Your [Attack Actions] gain +250% [Critical Rate] and +120% [Critical Damage Multiplier]. +65% [Skill Efficiency].
 
 Name: Causality Funeral Engine
 Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +80% Skill Power. Your Last Flare has no recovery time.
+Ability (Default Value): +100% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]. Normal [Elemental Gauge] cost caps and floors still apply.
 
 Name: Horizon-Cleaving Godpress
 Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Your damaging skills ignore 40% of enemy Defense; 50% of their Direct Damage bypasses Shields.
+Ability (Default Value): Your damaging [Skills] ignore 55% of enemy [Defense]. +75% [Defense].
 
 Name: Throne of Borrowed Tomorrows
 Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): Your Last Flare lets each other living ally who has already acted take one additional Skill 1 or Skill 2 this player turn. Each character can receive this extra action once per player turn. Allies in recovery are ineligible.
+Ability (Default Value): Your [Last Flare] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Last Flare] [Recovery] are ineligible. +45% [Health] and +45% [Defense].
 
 Name: World-Eater's Orrery
 Rarity: Calamitic
 Element: Chaotic (suggested thematic element; gameplay: universal)
-Ability (Default Value): +2 turns Skill Duration. Damaging enemies with a skill heals each living ally for 10% of the total damage dealt by that skill.
+Ability (Default Value): +3 turns [Skill Duration]. [Debuffs] applied by your [Skills], including [Burn] damage and [Weaken] strength, gain +125% [Skill Power]. This bonus does not increase the skill's [Direct Damage], healing or [Shields].

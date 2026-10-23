@@ -5,12 +5,20 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Phase 0 release (D-370)
 
+**D-382 current replacement:**45 owner-reworked Common/Rare/Legendary/
+Calamitic abilities are specified in the catalog;45 ordinary Omnics and48
+Masters retain their effects. Rules6, no global equipment duration cap,
+fixed penalties/conditions/odds/counts and10%-of-base beneficial percentage
+upgrades supersede earlier conflicting rules. See
+[current compatibility](character-conduit-compatibility.md),
+[upgrade policy](conduit-upgrades.md) and [combat](combat.md).
+
 [Conduit catalog](conduit-catalog.txt): approved base effects for all138
 Conduits, sorted by rarity and name, including48 Omnic Masters. Preserves
 owner-edited examples and proposes remaining effects around the ten-stat
 Phase 0 direction, additive Skill Power/Gauge Gain and whole-turn duration.
 Owner authorizes implementation and coordinated publication2026-10-21.
-The shared client/authority gate is enabled; rules5 is the current release.
+The shared client/authority gate is enabled; rules6 is the current release.
 See the handoff for hosted publication and validation outcomes.
 Suggested thematic elements remain editorial, not equipment restrictions.
 See D-368 for implementation choices and current scope.

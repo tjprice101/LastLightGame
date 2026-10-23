@@ -29,7 +29,7 @@ import { masterChestDrops, validateMasterCharacter, type MasterConduitId, type M
 import { storyEncounter, storyCreature, storyDrops, storyRules } from '../content/story';
 import { bossLootMultiplier, bossLootRange } from '../content/final-boss-loot';
 import { calamityEncounter, calamityPatterns, calamityChest, type CalamityActivityId, type CalamityTier } from '../content/calamity';
-import { initializeConduits, equipped, gear, value, effectiveDefense, nativeTargetDefense, afterConduitImpact, conduitActionCost, conduitActionBlocked, recoveryNormal,
+import { initializeConduits, refreshConduitStats, equipped, gear, value, effectiveDefense, nativeTargetDefense, afterConduitImpact, conduitActionCost, conduitActionBlocked, recoveryNormal,
   prepareConduitAction, conduitHitModifiers, conduitCriticalBonus, recordConduitHit, finishConduitAction, applyConduitBurn, applyConduitWeaken,
   nativeHeal, nativeShield, nativeGauge, supportEffect, conduitTurnStart, conduitIncoming, conduitBurnTick, afterConduitBurn,
   conduitDeaths, forcedConduitTarget, conduitSuppressSkill, expireNativeShields, type ConduitRuntimeState, type ConduitActivation } from './conduit-runtime';
@@ -184,6 +184,7 @@ export function createWarBattle(character: WarCharacterId, stage: number, seed: 
   state.enemies = [unit];
   state.lycalisSeed = ((seed ^ 0xa0761d65) >>> 0) || 1;
   state.recruitmentSeed = ((seed ^ 0xe7037ed1) >>> 0) || 1;
+  initializeConduits(state);
   return state;
 }
 
@@ -278,7 +279,7 @@ export function createBattle(seed = 1729, roster: readonly string[] = ['ember'],
     }),
     enemies: spawnWave(1),
   };
-  initializeConduits(state);
+  initializeConduits(state, true);
   return state;
 }
 
@@ -307,6 +308,7 @@ export function createDungeonBattle(element: PlayableDungeon, stage: number, see
     unit.enemySkills = enemySkills(selected.level, selected.boss, selected.ability, selected.abilityMultiplier);
     return unit;
   });
+  initializeConduits(state);
   return state;
 }
 
@@ -336,10 +338,11 @@ export function createStoryBattle(stage: number, seed: number, starter: StarterI
     unit.enemySkills = enemySkills(encounter.level, encounter.boss, `${creature.name} Strike`, encounter.abilityMultiplier);
     return unit;
   });
+  initializeConduits(state);
   return state;
 }
 
-function roll(state: BattleState): number {
+export function roll(state: BattleState): number {
   let seed = state.seed;
   seed ^= seed << 13;
   seed ^= seed >>> 17;
@@ -364,6 +367,7 @@ export function createInfusionBattle(mode: InfusionModeId, stage: number, seed: 
     unit.enemySkills = enemySkills(encounter.level, encounter.boss, encounter.ability, encounter.abilityMultiplier);
     return unit;
   });
+  initializeConduits(state);
   return state;
 }
 
@@ -377,6 +381,7 @@ export function createCalamityBattle(activity: CalamityActivityId, tier: Calamit
   Object.assign(unit, { level: encounter.level, boss: true, color: '#df3548', enemySkills: encounter.skills,
     creatureId: `calamity:${activity}`, art: getCreature(`calamity:${activity}`).art });
   state.enemies = [unit];
+  initializeConduits(state);
   return state;
 }
 
@@ -407,8 +412,10 @@ export function actionUnavailable(state: BattleState, actor: Combatant, action: 
   const calamiticReason = calamiticActionReason(state, actor, action);
   if (calamiticReason) return calamiticReason;
   if (conduitActionBlocked(actor, state)) return 'This character cannot take another action this turn.';
-  if (actor.recoverThrough >= state.round && !(action === 'light' && recoveryNormal(actor))) return 'Recovering this turn after Last Flare.';
-  if (action === 'ultimate' && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
+  if (actor.recoverThrough >= state.round && !calamiticNoLastFlareRecovery(actor) &&
+      !(action === 'light' && recoveryNormal(actor))) return 'Recovering this turn after Last Flare.';
+  if (action === 'ultimate' && !calamiticNoLastFlareRecovery(actor) &&
+      (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
   const gaugeCost = actionGaugeCost(actor, action, state, targetId);
   if (actor.shatter < gaugeCost) return `Requires ${gaugeCost} Elemental Gauge.`;
   return null;
@@ -612,6 +619,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   const nativeAll = native ? nativeAbility?.targets === 'all-enemies' : !actor.captured && (action === 'ultimate' || (action === 'skill2' && actor.definitionId === 'ember') ||
     (action !== 'light' && definition.abilities[action].targets === 'all-enemies'));
   actor.shatter -= paid;
+  refreshConduitStats(state);
   const activation = prepareConduitAction(state, actor, action, paid, nativeAll);
   const priorInstruction = actor.native?.instruction;
   events.push({ kind: 'attack', source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action, abilityName: name });
@@ -620,7 +628,8 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
       !calamiticNoLastFlareRecovery(actor)) actor.recoverThrough = state.round + 1;
   nativeGauge(state, actor, shatterGauge.gains[action] + (action === 'light' ? (definition.passive.lightGaugeBonus ?? 0) : 0), events);
   if (action === 'skill1' || action === 'skill2') actor.readyRound[action] = state.round;
-  if (action === 'ultimate' && actor.captured) actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
+  if (action === 'ultimate' && actor.captured && !calamiticNoLastFlareRecovery(actor))
+    actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
   if (native) {
     const direct = (selected: Combatant[], coefficient: number, pierce = 0, criticalBonus = 0) => {
       const targets = activation.all ? state.enemies.filter(enemy => enemy.hp > 0) :
@@ -659,6 +668,7 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
     nativeAction(state, actor, action, targetId, events, direct, activation);
     nativeAfterAction(state, actor, action, priorInstruction, events);
     finishConduitAction(state, actor, activation, events);
+    refreshConduitStats(state);
     conduitDeaths(state, previous, events);
     nativeCleanup(state);
     checkOutcome(state);
@@ -768,6 +778,7 @@ function newTurn(state: BattleState, events: BattleEvent[]): void {
   }
   conduitTurnStart(state, events);
   nativeTurnStart(state, events);
+  refreshConduitStats(state);
   for (const ally of state.allies.filter((unit) => unit.hp > 0 && (unit.kit?.passive.healFraction ?? 0) > 0)) {
     if (!ally.kit) throw new Error('Passive combat kit is missing.');
     if (equipped(ally, 'master-sprout-1')) continue;
@@ -777,6 +788,7 @@ function newTurn(state: BattleState, events: BattleEvent[]): void {
     } else healTeam(state, ally, ally.kit.passive.healFraction, events, true);
   }
   events.push({ kind: 'turn', source: '', target: '', amount: state.round, critical: false, message: `Turn ${state.round}. Only Last Flare forces next-turn recovery.` });
+  refreshConduitStats(state);
   attachNativeView(state, events[events.length - 1]);
 }
 
@@ -941,6 +953,7 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
     state.lycalisSeed = previous.lycalisSeed;
     state.recruitmentSeed = previous.recruitmentSeed;
   }
+  refreshConduitStats(state, true);
   return { state, events: [{ kind: 'turn', source: '', target: '', amount: state.wave, critical: false,
     message: 'Next stage. Health and cooldowns reset; Elemental Gauge carries over.' }] };
 }
@@ -960,7 +973,9 @@ export function nextWave(previous: BattleState): BattleResult {
     delete ally.omnicMemory;
     delete ally.omnicProtection;
     const layers = ally.conduitRuntime?.layers;
-    ally.conduitRuntime = { numbers: {}, owners: {}, ...(layers ? { layers } : {}) };
+    const heartcaseEntryHealth = ally.conduitRuntime?.numbers.heartcaseEntryHealth;
+    ally.conduitRuntime = { numbers: heartcaseEntryHealth === undefined ? {} : { heartcaseEntryHealth },
+      owners: {}, ...(layers ? { layers } : {}) };
     delete ally.conduitCharges;
   }
   initializeConduits(state);

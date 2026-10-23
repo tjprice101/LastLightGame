@@ -11,241 +11,241 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Bastion Lock",
     "rarity": "Common",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "+20% Defense"
+    "ability": "+35% [Defense] and +25% [Skill Power]."
   },
   "crosspin-governor": {
     "name": "Crosspin Governor",
     "rarity": "Common",
     "element": "Atmospheric (suggested thematic element; gameplay: universal)",
-    "ability": "+15% Skill Power"
+    "ability": "+40% [Skill Power]."
   },
   "fieldbrace-coupler": {
     "name": "Fieldbrace Coupler",
     "rarity": "Common",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "+20% Skill Power, -5% Defense"
+    "ability": "+25% [Critical Rate]."
   },
   "fracture-reservoir": {
     "name": "Fracture Reservoir",
     "rarity": "Common",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "+50% [Elemental Gauge Capacity]."
+    "ability": "+40% [Elemental Gauge Capacity]."
   },
   "parallax-relay": {
     "name": "Parallax Relay",
     "rarity": "Common",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "+45% Health, -5% Skill Power"
+    "ability": "+50% [Health] and +10% [Last Flare] [Direct Damage]."
   },
   "precision-escapement": {
     "name": "Precision Escapement",
     "rarity": "Common",
     "element": "Atmospheric (suggested thematic element; gameplay: universal)",
-    "ability": "+10% Critical Damage multiplier."
+    "ability": "+10% [Critical Damage Multiplier]."
   },
   "prism-splinter-socket": {
     "name": "Prism Splinter Socket",
     "rarity": "Common",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "+5% [Elemental Gauge Gain]."
+    "ability": "+7.5% [Elemental Gauge Gain] and +5% [Skill Efficiency]."
   },
   "reserve-torque-crank": {
     "name": "Reserve Torque Crank",
     "rarity": "Common",
     "element": "Atmospheric (suggested thematic element; gameplay: universal)",
-    "ability": "+15% [Elemental Gauge Gain], -5% Direct Attack"
+    "ability": "+25% [Elemental Gauge Capacity] and +10% [Elemental Gauge Gain]."
   },
   "siegebound-drive": {
     "name": "Siegebound Drive",
     "rarity": "Common",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "+30% Direct Attack."
+    "ability": "+35% [Direct Attack] and +5% [Skill Efficiency]."
   },
   "vigil-core": {
     "name": "Vigil Core",
     "rarity": "Common",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "+35% Health."
+    "ability": "+100% [Health]."
   },
   "aegis-capacitor": {
     "name": "Aegis Capacitor",
     "rarity": "Rare",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "When your skill gives another ally a Shield, you gain +25% Defense until the next Enemy Turn ends."
+    "ability": "+75% [Health] and +75% [Defense]."
   },
   "breach-pendulum": {
     "name": "Breach Pendulum",
     "rarity": "Rare",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "Normal Attack gains +40% Critical Damage Multiplier against enemies above 75% HP."
+    "ability": "All enemies begin each [Battle] with 10% less [Defense]. Multiple copies do not stack."
   },
   "coilfeed-ratchet": {
     "name": "Coilfeed Ratchet",
     "rarity": "Rare",
     "element": "Atmospheric (suggested thematic element; gameplay: universal)",
-    "ability": "+7% Skill Efficiency."
+    "ability": "+8% [Skill Efficiency], +8% [Skill Power] and +8% [Critical Rate]."
   },
   "duplex-heart": {
     "name": "Duplex Heart",
     "rarity": "Rare",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "Casting a healing skill on another ally also restores 5% of your own maximum HP. Once per cast."
+    "ability": "Casting a healing [Skill] that restores another ally's [Health] also restores 5% of your maximum [Health] to you. Once per cast."
   },
   "falcon-sight": {
     "name": "Falcon Sight",
     "rarity": "Rare",
     "element": "Atmospheric (suggested thematic element; gameplay: universal)",
-    "ability": "After two noncritical Attack Actions in a row, your next Attack Action is a guaranteed critical hit with +10% Critical Damage Multiplier. One action advances or spends the sequence once, regardless of targets."
+    "ability": "+25% [Critical Rate] and +45% [Health]."
   },
   "glassroot-gimbal": {
     "name": "Glassroot Gimbal",
     "rarity": "Rare",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "Gain +35% Skill Power while you have no Shield."
+    "ability": "Gain +5% [Skill Power] per complete 200 maximum [Health], including equipment bonuses. No cap."
   },
   "hammerbalance-link": {
     "name": "Hammerbalance Link",
     "rarity": "Rare",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "+24% Direct Attack; -8% Defense."
+    "ability": "+85% [Direct Attack] and +15% [Critical Damage Multiplier]."
   },
   "lifeline-flywheel": {
     "name": "Lifeline Flywheel",
     "rarity": "Rare",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "After each Attack Action, heal for 8% of the Direct Damage it dealt to enemy HP or Shield."
+    "ability": "After each [Attack Action] or [Skill], restore [Health] equal to 10% of its actual [Direct Damage] to enemy [Health] and [Shields]. Once per activation; excludes periodic and generated damage."
   },
   "opal-indexer": {
     "name": "Opal Indexer",
     "rarity": "Rare",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "Skills that apply a debuff gain +25% Skill Power."
+    "ability": "[Skills] that apply a [Debuff] gain +75% [Skill Power] and +1 turn [Skill Duration]."
   },
   "resonance-crucible": {
     "name": "Resonance Crucible",
     "rarity": "Rare",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "Damage beyond what defeats an enemy carries over as a [Bonus Strike] on the healthiest other enemy."
+    "ability": "+75% [Defense], +50% [Health] and +1 turn [Skill Duration]."
   },
   "sentinel-aperture": {
     "name": "Sentinel Aperture",
     "rarity": "Rare",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "Gain +5% Defense for every 10 Elemental Gauge currently held."
+    "ability": "Your [Skill 1] gains +99% [Skill Power]."
   },
   "spearwheel-engine": {
     "name": "Spearwheel Engine",
     "rarity": "Rare",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "All Skills ignore 10% of enemy Defense."
+    "ability": "All [Skills] ignore 10% of enemy [Defense]."
   },
   "springwell-pump": {
     "name": "Springwell Pump",
     "rarity": "Rare",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "For your abilities that heal or give Shield, they gain +20% Skill Power."
+    "ability": "Your [Skills] that heal or grant [Shields] gain +20% [Skill Power]."
   },
   "twinpulse-bellows": {
     "name": "Twinpulse Bellows",
     "rarity": "Rare",
     "element": "Atmospheric (suggested thematic element; gameplay: universal)",
-    "ability": "Each Normal Attack grants you and the other ally with the lowest Gauge percentage 5% Elemental Gauge."
+    "ability": "Each [Normal Attack] grants you and the other living ally with the lowest [Elemental Gauge] percentage 7% of each recipient's [Elemental Gauge Capacity]."
   },
   "wardglass-transformer": {
     "name": "Wardglass Transformer",
     "rarity": "Rare",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "Gain +25% Critical Damage Multiplier while Shielded. When an enemy breaks your Shield, your next Normal Attack gains +20% Critical Rate. Hold one bonus."
+    "ability": "+35% [Critical Damage Multiplier] and -35% [Defense]."
   },
   "astral-prism": {
     "name": "Astral Prism",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "+30% Critical Rate; -10% Defense."
+    "ability": "+30% [Critical Rate], +25% [Critical Damage Multiplier] and +50% [Health]."
   },
   "citadel-spine": {
     "name": "Citadel Spine",
     "rarity": "Legendary",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "+35% Defense. Other living allies below 50% HP gain +30% Defense while you are alive."
+    "ability": "+75% [Direct Attack] and +7% [Elemental Gauge Gain]. Other living allies below 75% [Health] gain +35% [Defense] while you are alive. Multiple copies of this aura do not stack."
   },
   "execution-orrery": {
     "name": "Execution Orrery",
     "rarity": "Legendary",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "Damaging skills gain +35% Critical Rate against enemies below 50% HP."
+    "ability": "Your [Skill 2] gains +99% [Skill Power] and +10% [Skill Efficiency]."
   },
   "granite-hourglass": {
     "name": "Granite Hourglass",
     "rarity": "Legendary",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "At the start of your next player turn, gain a Shield equal to 30% of the Health lost to enemy Direct Damage during the previous enemy turn."
+    "ability": "At the start of your next [Player Turn], gain a [Shield] equal to 30% of the [Health] lost to enemy [Direct Damage] during the previous [Enemy Turn]."
   },
   "horizon-heartcase": {
     "name": "Horizon Heartcase",
     "rarity": "Legendary",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "Once per Battle, when enemy Direct Damage would defeat you, automatically spend 40 Elemental Gauge to survive at 1 HP. For each 10 Gauge spent this way, gain +5% Skill Power on your next skill usage. Insufficient Gauge means no rescue; later hits can defeat you."
+    "ability": "Your [Last Flare] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. While your [Last Flare] is unavailable because of your [Elemental Gauge], [Cooldown] or [Recovery], gain +20% [Health] and +10% [Defense]. Having already acted does not activate this bonus."
   },
   "immortal-vessel": {
     "name": "Immortal Vessel",
     "rarity": "Legendary",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "+60% Health. When another ally's Skill heals you, restore 25% of the HP actually restored to the most injured different ally, capped at 8% of their maximum HP per cast."
+    "ability": "+250% [Health] and +75% [Defense]."
   },
   "judgment-lens": {
     "name": "Judgment Lens",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "Damaging skills gain +50% Critical Damage Multiplier."
+    "ability": "Damaging [Skills] gain +50% [Critical Damage Multiplier]. Support [Skills] gain +50% [Skill Power]."
   },
   "meridian-inverter": {
     "name": "Meridian Inverter",
     "rarity": "Legendary",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "Allies healed by your healing skills gain 8% Elemental Gauge. Each ally can receive this Gauge once per player turn."
+    "ability": "Each ally whose [Health] your healing [Skill] restores gains 4% of their [Elemental Gauge Capacity], once per cast."
   },
   "nullsong-transmission": {
     "name": "Nullsong Transmission",
     "rarity": "Legendary",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "Normal Attack uses 250% of your Direct Attack, -15% Skill Power."
+    "ability": "Each [Skill] cast has a 50% chance to gain +75% [Skill Power]; otherwise it receives -75% [Skill Power]. Roll once per cast, shared by all targets and impacts."
   },
   "pale-bulwark-diadem": {
     "name": "Pale Bulwark Diadem",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "Allies holding your skill-created Shields gain +25% Skill Power for damaging skills."
+    "ability": "[Shields] on you gain 50% [Damage Reduction]. Only the absorbed portion benefits; any damage beyond the protected [Shield] damages [Health] normally."
   },
   "siege-cantilever": {
     "name": "Siege Cantilever",
     "rarity": "Legendary",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "Global damaging Skills gains +45% Skill Power."
+    "ability": "Your [Global] damaging [Skills] gain +150% [Skill Power]."
   },
   "starvein-conductor": {
     "name": "Starvein Conductor",
     "rarity": "Legendary",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "Damaging skills spend 5% of your maximum HP for +60% Skill Power on their damage. If the payment would defeat you, skip both payment and bonus."
+    "ability": "If every [Squad Member] has a different [Element], gain +35% [Skill Efficiency] and +10% [Elemental Gauge Gain]. Defeated members still count."
   },
   "stasis-reliquary": {
     "name": "Stasis Reliquary",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "For an enemy attack dealing Direct Damage above 20% of your maximum HP, reduce only the portion above that threshold by 40%. Treat all impacts of that attack as one total."
+    "ability": "When enemy damage breaks your [Shield], prevent the breaking hit's remaining damage and all further damage to you that [Enemy Turn]. During the next [Enemy Turn], take 25% more enemy attack damage and cannot activate this protection. Protection becomes available again on the following [Enemy Turn]."
   },
   "verdict-caliper": {
     "name": "Verdict Caliper",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "Your skills gain +45% Skill Power when every other living ally has already acted this player turn."
+    "ability": "Each [Attack Action] that critically hits restores 25% of your maximum [Health], once per activation regardless of targets or impacts."
   },
   "worldbreaker-drive": {
     "name": "Worldbreaker Drive",
     "rarity": "Legendary",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "+85% Skill Power for Last Flare; -12% Health."
+    "ability": "Your [Last Flare] gains +99% [Skill Power]. All your [Attack Actions] gain +65% [Direct Damage]."
   },
   "clearwater-manifold": {
     "name": "Abyssal Clearwater Parliament",
@@ -809,31 +809,31 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Cathedral of the Final Equation",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "All living allies gain +25% Skill Efficiency and +30% Skill Power while you are alive."
+    "ability": "Your [Attack Actions] gain +250% [Critical Rate] and +120% [Critical Damage Multiplier]. +65% [Skill Efficiency]."
   },
   "calamitic-causality-funeral-engine": {
     "name": "Causality Funeral Engine",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "+80% Skill Power. Your Last Flare has no recovery time."
+    "ability": "+100% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]. Normal [Elemental Gauge] cost caps and floors still apply."
   },
   "calamitic-horizon-cleaving-godpress": {
     "name": "Horizon-Cleaving Godpress",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "Your damaging skills ignore 40% of enemy Defense; 50% of their Direct Damage bypasses Shields."
+    "ability": "Your damaging [Skills] ignore 55% of enemy [Defense]. +75% [Defense]."
   },
   "calamitic-throne-borrowed-tomorrows": {
     "name": "Throne of Borrowed Tomorrows",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "Your Last Flare lets each other living ally who has already acted take one additional Skill 1 or Skill 2 this player turn. Each character can receive this extra action once per player turn. Allies in recovery are ineligible."
+    "ability": "Your [Last Flare] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Last Flare] [Recovery] are ineligible. +45% [Health] and +45% [Defense]."
   },
   "calamitic-world-eater-orrery": {
     "name": "World-Eater's Orrery",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "+2 turns Skill Duration. Damaging enemies with a skill heals each living ally for 10% of the total damage dealt by that skill."
+    "ability": "+3 turns [Skill Duration]. [Debuffs] applied by your [Skills], including [Burn] damage and [Weaken] strength, gain +125% [Skill Power]. This bonus does not increase the skill's [Direct Damage], healing or [Shields]."
   }
 };
 

@@ -19,14 +19,14 @@ describe('Phase 0 equipment resolution when the release gate is enabled', () => 
     const stats = base();
     applyConduitBuffs(stats, slots);
     expect(stats.health).toBe(1000);
-    expect(stats.defense).toBeCloseTo(150);
-    expect(stats.damage).toBe(200);
+    expect(stats.defense).toBeCloseTo(135);
+    expect(stats.damage).toBe(350);
     expect(stats.critMultiplier).toBeCloseTo(1.65);
-    expect(stats.shatterCapacity).toBe(150);
-    expect(stats.skillPower).toBeCloseTo(1.35);
+    expect(stats.shatterCapacity).toBe(140);
+    expect(stats.skillPower).toBeCloseTo(1.65);
     expect(stats.skillDuration).toBe(0);
     expect(stats.skillEfficiency).toBe(0);
-    expect(stats.gaugeGain).toBe(1);
+    expect(stats.gaugeGain).toBe(1.07);
     expect(stats.elementalDamage).toBe(12.345);
   });
 
@@ -34,8 +34,8 @@ describe('Phase 0 equipment resolution when the release gate is enabled', () => 
     const stats = base();
     const upgrades = { 'bastion-lock': 5, 'fieldbrace-coupler': 5 };
     applyConduitBuffs(stats, slots, upgrades);
-    expect(stats.defense).toBeCloseTo(160);
-    expect(stats.skillPower).toBeCloseTo(1.45);
+    expect(stats.defense).toBeCloseTo(152.5);
+    expect(stats.skillPower).toBeCloseTo(1.775);
     expect(upgrades).toEqual({ 'bastion-lock': 5, 'fieldbrace-coupler': 5 });
     expect(slots[0]).toBe('bastion-lock');
   });

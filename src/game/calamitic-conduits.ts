@@ -2,7 +2,6 @@ import { calamiticPower, type CalamiticConduitId } from '../content/calamitic-co
 import type { ActionId } from '../content/combat';
 import type { BattleEvent, BattleState, Combatant } from './battle';
 import { equipped, gear, generatedGauge, generatedStrike } from './conduit-runtime';
-import { generatedHeal } from './conduit-runtime';
 import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 
 function power(state: BattleState, owner: Combatant, id: CalamiticConduitId, base: number, maximum: number): number {
@@ -38,18 +37,12 @@ export function calamiticNoLastFlareRecovery(owner: Combatant): boolean {
   return phaseZeroStatsReady && equipped(owner, 'calamitic-causality-funeral-engine');
 }
 
-export function calamiticSkillPowerBonus(state: BattleState): number {
-  if (!phaseZeroStatsReady) return 0;
-  return Math.max(0, ...state.allies.filter(ally => ally.hp > 0 &&
-    equipped(ally, 'calamitic-cathedral-final-equation')).map(ally =>
-    power(state, ally, 'calamitic-cathedral-final-equation', .3, .45)));
+export function calamiticSkillPowerBonus(_state: BattleState): number {
+  return 0;
 }
 
-export function calamiticSkillEfficiencyBonus(state: BattleState): number {
-  if (!phaseZeroStatsReady) return 0;
-  return Math.max(0, ...state.allies.filter(ally => ally.hp > 0 &&
-    equipped(ally, 'calamitic-cathedral-final-equation')).map(ally =>
-    power(state, ally, 'calamitic-cathedral-final-equation', .25, .375)));
+export function calamiticSkillEfficiencyBonus(_state: BattleState): number {
+  return 0;
 }
 
 export function prepareCalamiticAction(state: BattleState, owner: Combatant, action: ActionId): boolean {
@@ -76,7 +69,7 @@ export function prepareCalamiticAction(state: BattleState, owner: Combatant, act
   return false;
 }
 
-export function afterCalamiticAction(state: BattleState, owner: Combatant, action: ActionId, events: BattleEvent[], skillDamage = 0): void {
+export function afterCalamiticAction(state: BattleState, owner: Combatant, action: ActionId, events: BattleEvent[], _skillDamage = 0): void {
   if (owner.hp <= 0) return;
   if (phaseZeroStatsReady) {
     if (equipped(owner, 'calamitic-throne-borrowed-tomorrows') && action === 'ultimate' &&
@@ -89,13 +82,6 @@ export function afterCalamiticAction(state: BattleState, owner: Combatant, actio
         n.calamiticThroneGranted = state.round;
         n.calamiticThroneExtra = state.round;
         status(owner, 1, `${ally.name} may take one additional Skill 1 or Skill 2 this turn.`, events);
-      }
-    }
-    if (equipped(owner, 'calamitic-world-eater-orrery') && action !== 'light') {
-      if (skillDamage > 0) {
-        const amount = skillDamage * power(state, owner, 'calamitic-world-eater-orrery', .1, .15);
-        for (const ally of state.allies.filter(unit => unit.hp > 0))
-          generatedHeal(owner, ally, amount, events, state);
       }
     }
     return;
@@ -144,12 +130,11 @@ export function calamiticSiegeBonus(state: BattleState, owner: Combatant, target
 
 export function calamiticSkillDefenseIgnore(state: BattleState, owner: Combatant, action: ActionId): number {
   return phaseZeroStatsReady && action !== 'light' && equipped(owner, 'calamitic-horizon-cleaving-godpress')
-    ? power(state, owner, 'calamitic-horizon-cleaving-godpress', .4, .6) : 0;
+    ? power(state, owner, 'calamitic-horizon-cleaving-godpress', .55, .825) : 0;
 }
 
-export function calamiticSkillShieldBypass(state: BattleState, owner: Combatant, action: ActionId): number {
-  return phaseZeroStatsReady && action !== 'light' && equipped(owner, 'calamitic-horizon-cleaving-godpress')
-    ? power(state, owner, 'calamitic-horizon-cleaving-godpress', .5, .75) : 0;
+export function calamiticSkillShieldBypass(_state: BattleState, _owner: Combatant, _action: ActionId): number {
+  return 0;
 }
 
 export function deferCalamiticDamage(state: BattleState, owner: Combatant, offered: number, events: BattleEvent[]): number {

@@ -48,7 +48,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--dot-scaling')) {
+  if (process.argv.includes('--conduit-rework')) {
+    await smokeConduitRework(client, created.user.id, username);
+  } else if (process.argv.includes('--dot-scaling')) {
     await smokeDotScaling(client, created.user.id, username);
   } else if (process.argv.includes('--machines-layout')) {
     await smokeMachinesLayout(client, created.user.id, username);
@@ -368,7 +370,7 @@ try {
 }
 
 async function smokePhaseZero(client, userId, username) {
-  assert.equal(conduitRulesVersion, 5, 'The production bundle must activate rules5');
+  assert.equal(conduitRulesVersion, 6, 'The production bundle must activate rules6');
   const id = 'calamitic-causality-funeral-engine';
   const entropy = { seed: () => 7321, uuid: () => randomUUID(), random: () => .9 };
   let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
@@ -398,14 +400,16 @@ async function smokePhaseZero(client, userId, username) {
     return result.data;
   }
   const initial = await invoke({ kind: 'read' }, 0);
-  assert.equal(initial.session.state.conduitRulesVersion, 5);
-  assert.equal(initial.session.state.allies[0].stats.skillPower, 2.2);
+  assert.equal(initial.session.state.conduitRulesVersion, 6);
+  assert.equal(initial.session.state.allies[0].stats.skillPower, 1);
+  assert.equal(initial.session.state.allies[0].stats.skillEfficiency, .5);
   const operation = { kind: 'act', runId: initial.session.runId, actorId: 'ember', action: 'skill1',
     targetId: initial.session.state.enemies[0].id };
   const requestId = randomUUID();
   const resolved = await invoke(operation, initial.revision, requestId);
-  assert.equal(resolved.result.events.find(event => event.kind === 'damage' && event.source === 'ember').amount, 563);
-  assert.equal(resolved.session.state.enemies[0].burn.damage, 55);
+  const expected = resolveOperation(game, operation, entropy);
+  assert.deepEqual(resolved.result, JSON.parse(JSON.stringify(expected.response.result)));
+  assert.equal(resolved.session.state.enemies[0].burn.damage, 25);
   assert.equal(resolved.session.state.allies[0].conduits[0], id);
   assert.deepEqual(resolved.account, initial.account);
   assert.deepEqual(await invoke(operation, initial.revision, requestId), resolved);
@@ -415,9 +419,87 @@ async function smokePhaseZero(client, userId, username) {
   const quit = await invoke({ kind: 'quit', runId: resolved.session.runId }, resolved.revision);
   const fresh = await invoke({ kind: 'enter', activity: { kind: 'training' } }, quit.revision);
   assert.equal(fresh.session.state.allies[0].stats.skillPower, 1, 'A fresh entry uses current menu gear');
-  assert.equal(fresh.session.state.conduitRulesVersion, 5);
+  assert.equal(fresh.session.state.conduitRulesVersion, 6);
   assert.equal((await invoke({ kind: 'quit', runId: fresh.session.runId }, fresh.revision)).session, null);
-  console.log('Hosted Phase 0 smoke passed: rules5, frozen Causality +5 Power2.2, exactly563 direct damage and55 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
+  console.log('Hosted Phase 0 smoke passed: rules6, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
+}
+
+async function smokeConduitRework(firstClient, firstId, firstUsername) {
+  assert.equal(conduitRulesVersion, 6);
+  const replacements = [
+    'bastion-lock', 'crosspin-governor', 'fieldbrace-coupler', 'fracture-reservoir', 'parallax-relay',
+    'precision-escapement', 'prism-splinter-socket', 'reserve-torque-crank', 'siegebound-drive', 'vigil-core',
+    'aegis-capacitor', 'breach-pendulum', 'coilfeed-ratchet', 'duplex-heart', 'falcon-sight', 'glassroot-gimbal',
+    'hammerbalance-link', 'lifeline-flywheel', 'opal-indexer', 'resonance-crucible', 'sentinel-aperture',
+    'spearwheel-engine', 'springwell-pump', 'twinpulse-bellows', 'wardglass-transformer', 'astral-prism',
+    'citadel-spine', 'execution-orrery', 'granite-hourglass', 'horizon-heartcase', 'immortal-vessel',
+    'judgment-lens', 'meridian-inverter', 'nullsong-transmission', 'pale-bulwark-diadem', 'siege-cantilever',
+    'starvein-conductor', 'stasis-reliquary', 'verdict-caliper', 'worldbreaker-drive',
+    'calamitic-cathedral-final-equation', 'calamitic-causality-funeral-engine',
+    'calamitic-horizon-cleaving-godpress', 'calamitic-throne-borrowed-tomorrows', 'calamitic-world-eater-orrery',
+  ];
+  assert.equal(new Set(replacements).size, 45);
+  let index = 0;
+  for (const level of [0, 5]) for (const batch of [replacements.slice(0, 24), replacements.slice(24)]) {
+    let client = firstClient, userId = firstId, username = firstUsername;
+    if (index++) {
+      username = `rw_${randomUUID().replaceAll('-', '').slice(0, 10)}`;
+      const password = randomUUID() + randomUUID(), email = `${username}@example.invalid`;
+      const made = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { username } });
+      if (made.error || !made.data.user) throw new Error('Conduit rework smoke identity creation failed.');
+      userId = made.data.user.id; ids.push(userId);
+      client = createClient(url, clientKey, { auth: { persistSession: false } });
+      if ((await client.auth.signInWithPassword({ email, password })).error)
+        throw new Error('Conduit rework smoke authentication failed.');
+    }
+    const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+    let game = freshGame(username);
+    game.starterId = 'ember';
+    const squad = ['ember', 'tide', 'sprout'];
+    game.account.characters = Object.fromEntries(squad.map(id => [id, { level: 0, evolution: 1 }]));
+    game.account.squad = squad;
+    game.account.conduits = Object.fromEntries(batch.map(id => [id, 1]));
+    game.account.conduitUpgrades = Object.fromEntries(batch.map(id => [id, level]));
+    game.account.conduitEquipment = Object.fromEntries(squad.map((id, member) => {
+      const selected = batch.slice(member * 8, member * 8 + 8);
+      return [id, [...selected, ...Array(8 - selected.length).fill(null)]];
+    }));
+    game = resolveOperation(game, { kind: 'enter', activity: { kind: 'training' } }, entropy).game;
+    const runId = game.run.session.runId;
+    for (const ally of game.run.session.state.allies) {
+      ally.shatter = ally.stats.shatterCapacity;
+      ally.hp = Math.round(ally.stats.health * .75);
+    }
+    for (const enemy of game.run.session.state.enemies) {
+      enemy.stats.health = enemy.hp = 1000000;
+      enemy.stats.damage = 10; enemy.stats.crit = 0;
+    }
+    assert.ok(ids.includes(userId), 'Only disposable identities may receive fixtures');
+    assert.equal((await admin.rpc('load_game_account', { p_user: userId, p_initial: game })).error, null);
+    async function invoke(operation, revision, requestId = randomUUID()) {
+      const response = await client.functions.invoke('game-operation', { body: { operation, expectedRevision: revision, requestId } });
+      if (response.error) throw new Error(`Hosted Conduit rework ${operation.kind} failed (${response.error.context?.status ?? 'transport'}).`);
+      return response.data;
+    }
+    let read = await invoke({ kind: 'read' }, 0);
+    assert.deepEqual(read.session.state, JSON.parse(JSON.stringify(game.run.session.state)));
+    for (const operation of [
+      { kind: 'act', runId, actorId: 'ember', action: 'skill1', targetId: game.run.session.state.enemies[0].id },
+      { kind: 'act', runId, actorId: 'tide', action: 'skill2', targetId: 'sprout' },
+      { kind: 'act', runId, actorId: 'sprout', action: 'ultimate', targetId: 'sprout' },
+      { kind: 'endTurn', runId },
+    ]) {
+      const expected = resolveOperation(game, operation, entropy), requestId = randomUUID();
+      const actual = await invoke(operation, read.revision, requestId);
+      assert.deepEqual(actual.result, JSON.parse(JSON.stringify(expected.response.result)), `Conduit batch${index} +${level}`);
+      assert.deepEqual(actual.account, expected.response.account);
+      assert.deepEqual(await invoke(operation, read.revision, requestId), actual);
+      read = await invoke({ kind: 'read' }, actual.revision);
+      assert.deepEqual(read.session.state, actual.session.state);
+      game = expected.game;
+    }
+  }
+  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules6 static/runtime parity, healing/Shield/Last Flare/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
 }
 
 async function smokeNativeCalamity(client, userId, username) {

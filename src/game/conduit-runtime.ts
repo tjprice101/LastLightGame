@@ -6,6 +6,7 @@ import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 import { damageOverTimeLevelMultiplier } from '../content/native-balance';
 import type { MasterConduitId } from '../content/master-conduits';
 import type { BattleEvent, BattleState, Combatant } from './battle';
+import { roll } from './battle';
 import { buffSnapshot } from './battle-buffs';
 import { debuffSnapshot } from './battle-debuffs';
 import { pilotAuthoredShieldAbsorbed, pilotEffectiveHeal } from './kit-pilots';
@@ -14,7 +15,7 @@ import { hasNativeIdentity, nativeAbsorbedHit, nativeDirectHpLoss, nativeIncomin
 import { prepareCalamiticAction, afterCalamiticAction, calamiticSiegeBonus, deferCalamiticDamage,
   bankCalamiticDamage, calamiticSkillDefenseIgnore, calamiticSkillPowerBonus, calamiticSkillEfficiencyBonus } from './calamitic-conduits';
 
-export const conduitRulesVersion = phaseZeroStatsReady ? 5 : 4;
+export const conduitRulesVersion = phaseZeroStatsReady ? 6 : 4;
 export interface ConduitShieldLayer {
   amount: number;
   owner: string;
@@ -44,6 +45,7 @@ export interface ConduitActivation {
   nativeAll: boolean;
   scale: number;
   skillPower: number;
+  debuffPowerBonus?: number;
   supportPowerBonus?: number;
   skillDuration: number;
   criticalDamageBonus: number;
@@ -88,6 +90,32 @@ function step(state: BattleState, id: ConduitId, base: number, maximum: number):
 function alive(state: BattleState): Combatant[] { return state.allies.filter(unit => unit.hp > 0); }
 function magnitude(state: BattleState, id: ConduitId, base: number): number {
   return phaseZeroUpgradeMagnitude(base, state.conduitUpgrades?.[id] ?? 0);
+}
+function diverseSquad(state: BattleState): boolean {
+  return new Set(state.allies.map(ally => ally.element)).size === state.allies.length;
+}
+function heartcaseUnavailable(state: BattleState, unit: Combatant): boolean {
+  return unit.kit?.unavailableActions?.includes('ultimate') === true ||
+    (!equipped(unit, 'calamitic-causality-funeral-engine') &&
+      (unit.recoverThrough >= state.round || (unit.readyRound.ultimate ?? 0) > state.round)) ||
+    unit.shatter < conduitActionCost(unit, 'ultimate', state, shatterGauge.costs.ultimate);
+}
+export function refreshConduitStats(state: BattleState, initial = false): void {
+  if (!phaseZeroStatsReady) return;
+  for (const unit of state.allies) {
+    if (!equipped(unit, 'horizon-heartcase')) continue;
+    const n = gear(unit).numbers;
+    n.heartcaseEntryHealth ??= unit.stats.health;
+    const baseHealth = phaseZeroStatBase(n.heartcaseEntryHealth, 'health', unit.conduits, state.conduitUpgrades);
+    const health = n.heartcaseEntryHealth + (heartcaseUnavailable(state, unit)
+      ? baseHealth * magnitude(state, 'horizon-heartcase', .2) : 0);
+    if (equipped(unit, 'glassroot-gimbal')) {
+      unit.stats.skillPower = (unit.stats.skillPower ?? 1) +
+        (Math.floor(health / 200) - Math.floor(unit.stats.health / 200)) * magnitude(state, 'glassroot-gimbal', .05);
+    }
+    unit.stats.health = health;
+    unit.hp = initial ? health : Math.min(unit.hp, health);
+  }
 }
 export function grantToken(state: BattleState, target: Combatant, key: string, amount: number, owner?: Combatant): void {
   const memory = gear(target);
@@ -147,6 +175,8 @@ function lowestGaugePercentage(state: BattleState, owner?: Combatant): Combatant
 }
 function effectiveGaugeGain(state: BattleState, target: Combatant): number {
   let bonus = 0;
+  if (equipped(target, 'starvein-conductor') && diverseSquad(state))
+    bonus += magnitude(state, 'starvein-conductor', .1);
   if (state.round <= 2 && alive(state).some(ally => equipped(ally, 'firstlight-cam')))
     bonus += phaseZeroUpgradeMagnitude(.5, state.conduitUpgrades?.['firstlight-cam'] ?? 0);
   if ((target.conduitRuntime?.numbers.crosswindGaugeThrough ?? 0) >= state.round)
@@ -222,6 +252,7 @@ export function generatedGauge(owner: Combatant, target: Combatant | undefined, 
   const amount = Math.min(target.stats.shatterCapacity - target.shatter, Math.max(0, offer));
   if (amount <= 0) return 0;
   target.shatter += amount;
+  if (state) refreshConduitStats(state);
   emit(events, 'status', owner, target, amount, native ? `${target.name} gains ${amount} Elemental Gauge.`
     : `${owner.name}'s Conduit gives ${target.name} ${amount} Elemental Gauge.`, native);
   return amount;
@@ -317,13 +348,22 @@ export function generatedStrike(state: BattleState, owner: Combatant, target: Co
   emit(events, 'damage', owner, target, loss, `${owner.name}'s Conduit strikes ${target.name} for ${loss}.`);
   return loss;
 }
-export function initializeConduits(state: BattleState): void {
+export function initializeConduits(state: BattleState, initial = false): void {
   state.conduitRulesVersion = conduitRulesVersion;
   for (const unit of [...state.allies, ...state.enemies]) {
     gear(unit).numbers.entryDefense = unit.stats.defense;
     if (!phaseZeroStatsReady && unit.side === 'ally' && equipped(unit, 'fracture-reservoir')) {
       unit.shatter = Math.min(unit.stats.shatterCapacity, unit.shatter + value(state, unit, 'fracture-reservoir', 5, 10));
     }
+    if (phaseZeroStatsReady && state.allies.some(unit => equipped(unit, 'breach-pendulum'))) {
+      const reduction = magnitude(state, 'breach-pendulum', .1);
+      for (const enemy of state.enemies) {
+        if (gear(enemy).numbers.breachApplied) continue;
+        enemy.stats.defense *= 1 - reduction;
+        gear(enemy).numbers.breachApplied = 1;
+      }
+    }
+    refreshConduitStats(state, initial);
     if (!phaseZeroStatsReady && unit.side === 'ally' && equipped(unit, 'twinpulse-bellows')) {
       unit.shatter = Math.min(unit.stats.shatterCapacity, unit.shatter + unit.stats.shatterCapacity * value(state, unit, 'twinpulse-bellows', .15, .35));
     }
@@ -354,18 +394,16 @@ export function effectiveDefense(state: BattleState, unit: Combatant, excludeSqu
   if (phaseZeroStatsReady && unit.side === 'ally' && unit.hp > 0 && unit.native?.cover &&
       unit.native.cover.throughPhase >= state.round &&
       equipped(unit, 'master-bruno-1')) defense += baseDefense * .4;
-  if (phaseZeroStatsReady && unit.side === 'ally' && equipped(unit, 'sentinel-aperture'))
-    defense += baseDefense * magnitude(state, 'sentinel-aperture', .05) * Math.floor(unit.shatter / 10);
-  if (phaseZeroStatsReady && unit.side === 'ally' && n.aegisDefenseThrough !== undefined &&
-      n.aegisDefenseThrough >= state.round) defense += baseDefense * (n.aegisDefense ?? .25);
+  if (phaseZeroStatsReady && equipped(unit, 'horizon-heartcase') && heartcaseUnavailable(state, unit))
+    defense += baseDefense * magnitude(state, 'horizon-heartcase', .1);
   if (phaseZeroStatsReady && unit.side === 'ally') {
     for (const key of ['tensionDefense', 'graftDefense']) {
       if ((n[`${key}Through`] ?? 0) >= state.round) defense += baseDefense * (n[key] ?? 0);
     }
   }
-  if (phaseZeroStatsReady && !excludeSquadAuras && unit.side === 'ally' && unit.hp > 0 && unit.hp < unit.stats.health * .5 &&
+  if (phaseZeroStatsReady && !excludeSquadAuras && unit.side === 'ally' && unit.hp > 0 && unit.hp < unit.stats.health * .75 &&
       state.allies.some(ally => ally.hp > 0 && ally.id !== unit.id && equipped(ally, 'citadel-spine'))) {
-    defense += baseDefense * phaseZeroUpgradeMagnitude(.3,
+    defense += baseDefense * phaseZeroUpgradeMagnitude(.35,
       state.conduitUpgrades?.['citadel-spine'] ?? 0);
   }
   if (phaseZeroStatsReady && !excludeSquadAuras && unit.side === 'ally' && unit.hp > 0 &&
@@ -458,6 +496,10 @@ export function conduitActionCost(actor: Combatant, action: ActionId, state: Bat
     return base === 0 ? 0 : Math.max(1, base - discount);
   }
   let efficiency = actor.stats.skillEfficiency ?? 0;
+  if (equipped(actor, 'starvein-conductor') && diverseSquad(state))
+    efficiency += magnitude(state, 'starvein-conductor', .35);
+  if (equipped(actor, 'execution-orrery') && action === 'skill2')
+    efficiency += magnitude(state, 'execution-orrery', .1);
   for (const key of ['seedSkillEfficiency', 'blissSkillEfficiency', 'orvellaSkillEfficiency', 'rosettaSkillEfficiency'])
     efficiency += token(state, actor, key);
   if (token(state, actor, 'tideEfficiencyPending') && (action === 'skill1' || action === 'skill2' || action === 'ultimate')) {
@@ -498,7 +540,7 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
   const ctx: ConduitActivation = { action, paid, bonus: 0, criticalBonus: 0, guaranteed: false, forbidden: false,
     all: nativeAll, nativeAll, scale: 1, skillPower: phaseZeroStatsReady && action !== 'light'
       ? (actor.stats.skillPower ?? 1) + calamiticSkillPowerBonus(state) : 1,
-    skillDuration: phaseZeroStatsReady ? Math.min(2, Math.floor(actor.stats.skillDuration ?? 0)) : 0,
+    skillDuration: phaseZeroStatsReady ? Math.floor(actor.stats.skillDuration ?? 0) : 0,
     criticalDamageBonus: 0, impacts: 1, hits: [], overheal: 0, healed: 0, healRecipients: [], spent: {}, healExtra: 0,
     shieldBurn: 0, burnPaid: false, freeAction: false,
     eclipseTargets: [], shieldRecipients: [], nativeHpDamage: 0, nativeShieldDamage: 0 };
@@ -518,7 +560,7 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
     if (action === 'skill1' || action === 'skill2') token(state, actor, 'skyEfficiency', true);
     if (action === 'ultimate') token(state, actor, 'stormEfficiency', true);
     ctx.skillPower += token(state, actor, 'brunoCoverSkillPower', true);
-    ctx.skillDuration = Math.min(2, ctx.skillDuration + token(state, actor, 'blissSkillDuration'));
+    ctx.skillDuration += token(state, actor, 'blissSkillDuration');
   }
   if (phaseZeroStatsReady && equipped(actor, 'solace-anchor') &&
       alive(state).filter(ally => ally.id !== actor.id).every(ally => !ally.spent)) {
@@ -540,11 +582,21 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
     action === 'light' || actor.kit?.abilities[action].strength.damageMultiplier !== undefined;
   if (phaseZeroStatsReady && action !== 'light') {
     const hasSkillDebuff = traits.debuff;
-    const isHealOrShield = traits.healing || traits.shield || nativeSupportAction(state, actor, action);
-    if (equipped(actor, 'glassroot-gimbal') && actor.shield <= 0)
-      ctx.skillPower += phaseZeroUpgradeMagnitude(.35, state.conduitUpgrades?.['glassroot-gimbal'] ?? 0);
-    if (equipped(actor, 'opal-indexer') && hasSkillDebuff)
-      ctx.skillPower += phaseZeroUpgradeMagnitude(.25, state.conduitUpgrades?.['opal-indexer'] ?? 0);
+    const isHealOrShield = traits.healing || traits.shield;
+    if (equipped(actor, 'opal-indexer') && hasSkillDebuff) {
+      ctx.skillPower += magnitude(state, 'opal-indexer', .75);
+      ctx.skillDuration++;
+    }
+    if (equipped(actor, 'calamitic-world-eater-orrery') && hasSkillDebuff)
+      ctx.debuffPowerBonus = magnitude(state, 'calamitic-world-eater-orrery', 1.25);
+    if (equipped(actor, 'sentinel-aperture') && action === 'skill1')
+      ctx.skillPower += magnitude(state, 'sentinel-aperture', .99);
+    if (equipped(actor, 'execution-orrery') && action === 'skill2')
+      ctx.skillPower += magnitude(state, 'execution-orrery', .99);
+    if (equipped(actor, 'nullsong-transmission'))
+      ctx.skillPower += roll(state) < .5 ? magnitude(state, 'nullsong-transmission', .75) : -.75;
+    if (equipped(actor, 'judgment-lens') && (!offensive || isHealOrShield || nativeSupportAction(state, actor, action)))
+      ctx.skillPower += magnitude(state, 'judgment-lens', .5);
     if (equipped(actor, 'springwell-pump') && isHealOrShield)
       ctx.skillPower += phaseZeroUpgradeMagnitude(.2, state.conduitUpgrades?.['springwell-pump'] ?? 0);
     if (isHealOrShield && layers(actor).some(layer => layer.amount > 0 && layer.native &&
@@ -552,12 +604,9 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
           equipped(owner, 'ward-stitch-spool'))))
       ctx.skillPower += phaseZeroUpgradeMagnitude(.3, state.conduitUpgrades?.['ward-stitch-spool'] ?? 0);
     if (equipped(actor, 'siege-cantilever') && nativeAll && offensive)
-      ctx.skillPower += phaseZeroUpgradeMagnitude(.45, state.conduitUpgrades?.['siege-cantilever'] ?? 0);
-    if (equipped(actor, 'verdict-caliper') &&
-        alive(state).filter(ally => ally.id !== actor.id).every(ally => ally.spent))
-      ctx.skillPower += phaseZeroUpgradeMagnitude(.45, state.conduitUpgrades?.['verdict-caliper'] ?? 0);
+      ctx.skillPower += magnitude(state, 'siege-cantilever', 1.5);
     if (equipped(actor, 'worldbreaker-drive') && action === 'ultimate')
-      ctx.skillPower += phaseZeroUpgradeMagnitude(.85, state.conduitUpgrades?.['worldbreaker-drive'] ?? 0);
+      ctx.skillPower += magnitude(state, 'worldbreaker-drive', .99);
     if (equipped(actor, 'infernic-pyre-census'))
       ctx.skillPower += Math.min(3, new Set(alive(state).map(ally => ally.element)).size) *
         magnitude(state, 'infernic-pyre-census', .15);
@@ -570,21 +619,6 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
     ctx.skillPower += token(state, actor, 'faultSkillPower', true);
     ctx.skillPower += token(state, actor, 'coverSkillPower', true);
     if (offensive) ctx.skillPower += token(state, actor, 'verdantPower', true);
-    if (equipped(actor, 'horizon-heartcase') && gear(actor).numbers.heartcasePowerBonus) {
-      ctx.skillPower += gear(actor).numbers.heartcasePowerBonus;
-      delete gear(actor).numbers.heartcasePowerBonus;
-    }
-    if (equipped(actor, 'starvein-conductor') && offensive) {
-      const payment = Math.ceil(actor.stats.health * .05);
-      if (actor.hp - payment >= 1) {
-        actor.hp -= payment;
-        ctx.spent.starveinPower = magnitude(state, 'starvein-conductor', .6);
-      }
-    }
-    if (offensive && layers(actor).some(layer => layer.amount > 0 && layer.native &&
-      state.allies.some(ally => ally.id === layer.owner && ally.hp > 0 && equipped(ally, 'pale-bulwark-diadem')))) {
-      ctx.skillPower += phaseZeroUpgradeMagnitude(.25, state.conduitUpgrades?.['pale-bulwark-diadem'] ?? 0);
-    }
     for (const key of ['vaelorSkillPower', 'seedSkillPower', 'thorniaSkillPower'])
       ctx.skillPower += token(state, actor, key, true);
     if (n.tideEfficiencyPending !== undefined) {
@@ -595,6 +629,18 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
       'blissSkillDuration', 'seedSkillEfficiency']) token(state, actor, key, true);
   }
   if (phaseZeroStatsReady && offensive) {
+    if (equipped(actor, 'calamitic-cathedral-final-equation')) {
+      ctx.criticalBonus += magnitude(state, 'calamitic-cathedral-final-equation', 2.5);
+      ctx.criticalDamageBonus += magnitude(state, 'calamitic-cathedral-final-equation', 1.2);
+    }
+    if (action === 'ultimate' && equipped(actor, 'horizon-heartcase')) {
+      ctx.criticalBonus += magnitude(state, 'horizon-heartcase', .1);
+      ctx.criticalDamageBonus += magnitude(state, 'horizon-heartcase', .35);
+    }
+    if (equipped(actor, 'worldbreaker-drive')) ctx.bonus += magnitude(state, 'worldbreaker-drive', .65);
+    if (action === 'ultimate' && equipped(actor, 'parallax-relay')) ctx.bonus += magnitude(state, 'parallax-relay', .1);
+    if (action === 'ultimate' && equipped(actor, 'calamitic-causality-funeral-engine'))
+      ctx.bonus += magnitude(state, 'calamitic-causality-funeral-engine', 1.25);
     ctx.criticalBonus += token(state, actor, 'dawnRate', true) + token(state, actor, 'thunderRate', true);
     ctx.criticalDamageBonus += token(state, actor, 'dawnDamage', true);
     if (actor.shield > 0 && equipped(actor, 'chaotic-fault-verdict'))
@@ -623,16 +669,12 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
     ctx.bonus += state.enemies.filter(enemy => enemy.hp > 0 && enemy.burn.turns > 0 && enemy.burn.sourceId === actor.id).length *
       value(state, actor, 'infernic-pyre-census', .1, .2);
   if (offensive && equipped(actor, 'glassroot-gimbal') && !phaseZeroStatsReady) ctx.bonus += Math.floor((actor.shatter + paid) / 10) * value(state, actor, 'glassroot-gimbal', .01, .02);
-  ctx.guaranteed = (!phaseZeroStatsReady || offensive) && equipped(actor, 'falcon-sight') && (n.noncritical ?? 0) >= 2;
-  if (phaseZeroStatsReady && ctx.guaranteed) ctx.criticalDamageBonus += magnitude(state, 'falcon-sight', .1);
+  ctx.guaranteed = !phaseZeroStatsReady && equipped(actor, 'falcon-sight') && (n.noncritical ?? 0) >= 2;
   ctx.forbidden = !phaseZeroStatsReady && (equipped(actor, 'verdict-caliper') || (action === 'light' && equipped(actor, 'judgment-lens')));
   if (equipped(actor, 'verdict-caliper') && !phaseZeroStatsReady) ctx.bonus += value(state, actor, 'verdict-caliper', .35, .7);
   if (action === 'light') {
     if (!phaseZeroStatsReady && equipped(actor, 'siegebound-drive')) ctx.bonus += value(state, actor, 'siegebound-drive', .08, .16);
     if (!phaseZeroStatsReady && equipped(actor, 'nullsong-transmission')) ctx.bonus += value(state, actor, 'nullsong-transmission', .4, .8);
-    if (phaseZeroStatsReady && equipped(actor, 'wardglass-transformer') && token(state, actor, 'wardglassNormal', true)) {
-      ctx.criticalBonus += phaseZeroUpgradeMagnitude(.2, state.conduitUpgrades?.['wardglass-transformer'] ?? 0);
-    }
     if (actor.recoverThrough >= state.round && recoveryNormal(actor)) ctx.scale *= value(state, actor, 'chaotic-paradox-spindle', .5, .75);
     if (!phaseZeroStatsReady && equipped(actor, 'master-atmoso-1')) { ctx.all = true; ctx.scale *= .7; }
   } else {
@@ -683,13 +725,12 @@ export function prepareConduitAction(state: BattleState, actor: Combatant, actio
     ctx.bonus += n.goldImprint ?? 0;
     delete n.goldImprint;
   }
+  ctx.skillPower = Math.max(0, ctx.skillPower);
   return ctx;
 }
 export function conduitCriticalBonus(state: BattleState, actor: Combatant, target: Combatant, action: ActionId = 'light'): number {
   if (!phaseZeroStatsReady) return 0;
   let bonus = 0;
-  if (action !== 'light' && target.hp < target.stats.health * .5 && equipped(actor, 'execution-orrery'))
-    bonus += magnitude(state, 'execution-orrery', .35);
   if (layers(actor).some(layer => layer.native && layer.amount > 0 &&
       alive(state).some(owner => owner.id === layer.owner && equipped(owner, 'aegis-return-spring'))))
     bonus += magnitude(state, 'aegis-return-spring', .2);
@@ -753,10 +794,6 @@ export function conduitHitModifiers(state: BattleState, actor: Combatant, target
     if (ctx.emberBonusOwner && target.burn.turns > 0 && target.burn.sourceId === ctx.emberBonusOwner &&
         target.burn.origin !== 'conduit') skillPowerBonus += .4;
   }
-  if (phaseZeroStatsReady && action === 'light' && critical && target.hp > target.stats.health * .75 &&
-      equipped(actor, 'breach-pendulum')) criticalDamageBonus += magnitude(state, 'breach-pendulum', .4);
-  if (phaseZeroStatsReady && critical && actor.shield > 0 &&
-      equipped(actor, 'wardglass-transformer')) criticalDamageBonus += magnitude(state, 'wardglass-transformer', .25);
   if (phaseZeroStatsReady && action !== 'light' && critical && equipped(actor, 'judgment-lens'))
     criticalDamageBonus += phaseZeroUpgradeMagnitude(.5, state.conduitUpgrades?.['judgment-lens'] ?? 0);
   if (!phaseZeroStatsReady && target.hp >= target.stats.health && equipped(actor, 'breach-pendulum'))
@@ -853,9 +890,7 @@ export function conduitHitModifiers(state: BattleState, actor: Combatant, target
   const criticalBase = phaseZeroStatsReady
     ? phaseZeroStatBase(actor.stats.critMultiplier, 'critMultiplier', actor.conduits, state.conduitUpgrades) : actor.stats.critMultiplier;
   return { bonus, skillPowerBonus, pierce: phaseZeroStatsReady ? Math.min(.75, pierce) : pierce,
-    attack: attack *
-      (phaseZeroStatsReady && action === 'light' && equipped(actor, 'nullsong-transmission')
-        ? magnitude(state, 'nullsong-transmission', 2.5) : 1),
+    attack,
     ...(criticalDamageBonus > 0 ? { criticalDamageBonus: actor.stats.critMultiplier > 0
       ? criticalDamageBonus * (criticalBase / actor.stats.critMultiplier) : 0 } : {}),
     ...(critical && equipped(actor, 'master-elise-1') && !phaseZeroStatsReady ? { critMultiplier: 1.5 } : {}) };
@@ -873,7 +908,8 @@ export function applyConduitBurn(state: BattleState, owner: Combatant, target: C
   }
   const levelMultiplier = owner.side === 'ally' ? damageOverTimeLevelMultiplier(owner.level ?? 0) : 1;
   const scaledBase = base * levelMultiplier;
-  const damage = Math.round((scaledBase * ctx.skillPower + ctx.shieldBurn * levelMultiplier) * (1 + bonus));
+  const damage = Math.round((scaledBase * (ctx.skillPower + (ctx.debuffPowerBonus ?? 0)) +
+    ctx.shieldBurn * levelMultiplier) * (1 + bonus));
   if (phaseZeroStatsReady) {
     const n = gear(target).numbers;
     const prior = owner.native?.burns?.[target.id] ??
@@ -900,7 +936,8 @@ export function applyConduitWeaken(state: BattleState, owner: Combatant, target:
   const duration = baseDuration + (phaseZeroStatsReady ? activation?.skillDuration ?? Math.floor(owner.stats.skillDuration ?? 0) : 0) +
     (phaseZeroStatsReady ? Number(equipped(owner, 'aquatic-undertide-chronometer')) :
       equipped(owner, 'opal-indexer') ? step(state, 'opal-indexer', 1, 2) : 0);
-  const strength = fraction * (phaseZeroStatsReady ? activation?.skillPower ?? owner.stats.skillPower ?? 1 : 1) +
+  const strength = fraction * (phaseZeroStatsReady
+    ? (activation?.skillPower ?? owner.stats.skillPower ?? 1) + (activation?.debuffPowerBonus ?? 0) : 1) +
     (!phaseZeroStatsReady && equipped(owner, 'tension-governor') ? value(state, owner, 'tension-governor', .05, .1) : 0);
   const boundedStrength = phaseZeroStatsReady ? Math.min(.5, strength) : strength;
   if (target.weakened > 0 && target.weakenFraction > boundedStrength) {
@@ -984,26 +1021,14 @@ export function nativeHeal(state: BattleState, owner: Combatant, target: Combata
   }
   emit(events, 'heal', owner, target, restored, `${owner.name} restores ${restored} HP to ${target.name}.`, true);
   if (phaseZeroStatsReady && active && equipped(owner, 'meridian-inverter')) {
-    const key = `meridian:${owner.id}`;
-    const memory = gear(target).numbers;
-    if (memory[key] !== state.round) {
-      memory[key] = state.round;
-      generatedGaugePercent(owner, target, magnitude(state, 'meridian-inverter', .08), events, state);
+    const key = `meridian:${target.id}`;
+    if (ctx?.spent && !ctx.spent[key]) {
+      ctx.spent[key] = 1;
+      generatedGaugePercent(owner, target, magnitude(state, 'meridian-inverter', .04), events, state);
     }
   }
   pilotEffectiveHeal(state, owner, target, restored, events);
   supportEffect(state, owner, target, events);
-  if (phaseZeroStatsReady && ctx?.action !== undefined && ctx.action !== 'light' && owner.id !== target.id &&
-      equipped(target, 'immortal-vessel')) {
-    const recipient = injured(state, target, true);
-    if (recipient) {
-      const key = `immortal:${target.id}:${recipient.id}`;
-      const prior = ctx.spent?.[key] ?? 0;
-      const cap = recipient.stats.health * .08;
-      const healed = generatedHeal(target, recipient, restored * magnitude(state, 'immortal-vessel', .25), events, state, cap - prior);
-      if (ctx.spent && healed > 0) ctx.spent[key] = prior + healed;
-    }
-  }
   if (!phaseZeroStatsReady && active && owner.id !== target.id && equipped(owner, 'efflorescent-verdant-covenant')) gear(target).numbers.verdant = Math.max(gear(target).numbers.verdant ?? 0, value(state, owner, 'efflorescent-verdant-covenant', .2, .4));
   return restored;
 }
@@ -1057,11 +1082,6 @@ export function nativeShield(state: BattleState, owner: Combatant, target: Comba
     target.shield += gained;
     target.pilot ??= {}; target.pilot.authoredShieldSourceId = owner.id;
     supportEffect(state, owner, target, events);
-    if (phaseZeroStatsReady && options.skillPower !== undefined && owner.id !== target.id && equipped(owner, 'aegis-capacitor')) {
-      const memory = gear(owner).numbers;
-      memory.aegisDefense = phaseZeroUpgradeMagnitude(.25, state.conduitUpgrades?.['aegis-capacitor'] ?? 0);
-      memory.aegisDefenseThrough = state.round;
-    }
     if (phaseZeroStatsReady && options.activation?.action === 'skill2' && equipped(owner, 'master-tide-2')) {
       grantToken(state, target, 'tideEfficiencyPending', 1);
       gear(target).owners.tideEfficiencyOwner = owner.id;
@@ -1150,6 +1170,9 @@ export function finishConduitAction(state: BattleState, owner: Combatant, ctx: C
     generatedHeal(owner, owner, owner.stats.health * phaseZeroUpgradeMagnitude(.05, state.conduitUpgrades?.['duplex-heart'] ?? 0), events, state);
   }
   const critical = ctx.hits.find(hit => hit.critical && hit.damage > 0);
+  if (phaseZeroStatsReady && ctx.hits.some(hit => hit.critical && (hit.totalDamage ?? hit.damage) > 0) &&
+      equipped(owner, 'verdict-caliper'))
+    generatedHeal(owner, owner, owner.stats.health * magnitude(state, 'verdict-caliper', .25), events, state);
   const primaryHit = ctx.hits[0];
   const target = state.enemies.find(enemy => enemy.id === primaryHit?.target);
   const killed = ctx.hits.some(hit => hit.damage > 0 && state.enemies.some(enemy => enemy.id === hit.target && enemy.hp <= 0));
@@ -1165,10 +1188,10 @@ export function finishConduitAction(state: BattleState, owner: Combatant, ctx: C
       } else n.tailwind = (n.tailwind ?? 0) + 1;
     }
     if (phaseZeroStatsReady && equipped(owner, 'twinpulse-bellows')) {
-      generatedGaugePercent(owner, owner, phaseZeroUpgradeMagnitude(.05, state.conduitUpgrades?.['twinpulse-bellows'] ?? 0), events, state);
+      generatedGaugePercent(owner, owner, phaseZeroUpgradeMagnitude(.07, state.conduitUpgrades?.['twinpulse-bellows'] ?? 0), events, state);
       const other = alive(state).filter(ally => ally.id !== owner.id)
         .sort((a, b) => a.shatter / a.stats.shatterCapacity - b.shatter / b.stats.shatterCapacity)[0];
-      generatedGaugePercent(owner, other, phaseZeroUpgradeMagnitude(.05, state.conduitUpgrades?.['twinpulse-bellows'] ?? 0), events, state);
+      generatedGaugePercent(owner, other, phaseZeroUpgradeMagnitude(.07, state.conduitUpgrades?.['twinpulse-bellows'] ?? 0), events, state);
     }
     if (equipped(owner, 'tranquilitic-kirin-cradle')) {
       const recipient = alive(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
@@ -1217,11 +1240,11 @@ export function finishConduitAction(state: BattleState, owner: Combatant, ctx: C
     if (!id) continue;
     switch (id) {
       case 'falcon-sight':
-        if (ctx.hits.length) n.noncritical = ctx.guaranteed || ctx.hits.some(hit => hit.critical) ? 0 : (n.noncritical ?? 0) + 1;
+        if (!phaseZeroStatsReady && ctx.hits.length) n.noncritical = ctx.guaranteed || ctx.hits.some(hit => hit.critical) ? 0 : (n.noncritical ?? 0) + 1;
         break;
       case 'lifeline-flywheel':
         generatedHeal(owner, owner, ctx.hits.reduce((sum, hit) => sum + (phaseZeroStatsReady ? hit.totalDamage ?? hit.damage : hit.damage), 0) *
-          (phaseZeroStatsReady ? phaseZeroUpgradeMagnitude(.08, state.conduitUpgrades?.[id] ?? 0) : value(state, owner, id, .08, .16)), events, state); break;
+          (phaseZeroStatsReady ? phaseZeroUpgradeMagnitude(.1, state.conduitUpgrades?.[id] ?? 0) : value(state, owner, id, .08, .16)), events, state); break;
       case 'voltaic-thunderbird-coil':
         if (phaseZeroStatsReady) {
           if (ctx.action !== 'light' && critical && primaryHit && primaryHit.damage > 0) {
@@ -1314,6 +1337,7 @@ export function finishConduitAction(state: BattleState, owner: Combatant, ctx: C
         }
         break;
       case 'resonance-crucible':
+        if (phaseZeroStatsReady) break;
         for (const hit of ctx.hits.filter(hit => (hit.overkill ?? 0) > 0))
           generatedStrike(state, owner, healthiestEnemy(state, hit.target),
             (hit.overkill ?? 0) * (phaseZeroStatsReady ? 1 : value(state, owner, id, .3, .6)), events);
@@ -1628,14 +1652,6 @@ function rescue(state: BattleState, target: Combatant, loss: number, events: Bat
     } else n.accordShield = accord.stats.health * value(state, accord, 'tranquilitic-accord-bastion', .1, .2);
     return Math.max(0, target.hp - 1);
   }
-  if (direct && phaseZeroStatsReady && equipped(target, 'horizon-heartcase') && !n.heartcaseUsed && target.shatter >= 40) {
-    target.shatter -= 40;
-    n.rescueUsed = 1;
-    n.heartcaseUsed = 1;
-    n.heartcasePowerBonus = 4 * phaseZeroUpgradeMagnitude(.05, state.conduitUpgrades?.['horizon-heartcase'] ?? 0);
-    emit(events, 'status', target, target, 40, `${target.name}'s Horizon Heartcase spends 40 Elemental Gauge and survives at 1 HP.`);
-    return Math.max(0, target.hp - 1);
-  }
   if (direct && !phaseZeroStatsReady && equipped(target, 'horizon-heartcase')) {
     // Each save costs 10 more Gauge than the last, so the drain always runs out.
     const saves = n.heartcaseSaves ?? 0;
@@ -1764,9 +1780,30 @@ function nativeShieldActivationMultiplier(enemy: Combatant, target: Combatant): 
   if (multiplier < 1) memory.numbers[key] = multiplier;
   return multiplier;
 }
+function absorbEnemyDamage(state: BattleState, target: Combatant, amount: number, events: BattleEvent[]) {
+  const shieldBefore = target.shield;
+  const reduction = phaseZeroStatsReady && equipped(target, 'pale-bulwark-diadem')
+    ? magnitude(state, 'pale-bulwark-diadem', .5) : 0;
+  const covered = Math.min(amount, shieldBefore / (1 - reduction));
+  const absorbed = consumeShield(target, covered * (1 - reduction));
+  let loss = Math.max(0, amount - covered);
+  const n = gear(target).numbers;
+  if (phaseZeroStatsReady && shieldBefore > 0 && target.shield <= 0 &&
+      equipped(target, 'stasis-reliquary') && n.stasisPenalty !== state.round) {
+    n.stasisProtected = state.round;
+    n.stasisPenalty = state.round + 1;
+    loss = 0;
+    emit(events, 'status', target, target, 1, `${target.name}'s [Stasis Reliquary] prevents damage for this [Enemy Turn]; next [Enemy Turn] takes 25% more attack damage.`);
+  }
+  return { absorbed, loss, covered };
+}
 export function conduitIncoming(state: BattleState, enemy: Combatant, target: Combatant, damage: number, critical: boolean,
   scheduled: boolean, events: BattleEvent[], action: ActionId = scheduled ? 'skill1' : 'light'): void {
   const n = gear(target).numbers;
+  if (phaseZeroStatsReady && n.stasisProtected === state.round) {
+    emit(events, 'damage', enemy, target, 0, `${target.name}'s [Stasis Reliquary] prevents further damage this [Enemy Turn].`);
+    return;
+  }
   if (!scheduled && n.windveil && n.windveilRound !== state.round - 1) {
     delete n.windveil; n.windveilRound = state.round;
     emit(events, 'status', target, target, 0, `${target.name}'s Windveil avoids the Normal Attack.`);
@@ -1774,6 +1811,7 @@ export function conduitIncoming(state: BattleState, enemy: Combatant, target: Co
   }
   const shieldBefore = target.shield;
   let equipmentMultiplier = 1;
+  if (phaseZeroStatsReady && n.stasisPenalty === state.round) equipmentMultiplier *= 1.25;
   for (const keeper of alive(state).filter(ally => !phaseZeroStatsReady && equipped(ally, 'firstlight-cam'))) {
     const memory = gear(keeper).numbers;
     memory.firstlightRound ??= state.round;
@@ -1807,14 +1845,7 @@ export function conduitIncoming(state: BattleState, enemy: Combatant, target: Co
   if (hasParry) {
     reflection = Math.max(0, beforeParry - offered) * .5;
   }
-  if (phaseZeroStatsReady && equipped(target, 'stasis-reliquary')) {
-    const key = `stasis:${enemy.id}:${action}:${state.round}`;
-    const prior = n[key] ?? 0;
-    const remainingThreshold = Math.max(0, target.stats.health * .2 - prior);
-    const protectedPortion = Math.max(0, offered - remainingThreshold);
-    n[key] = prior + offered;
-    offered -= protectedPortion * phaseZeroUpgradeMagnitude(.4, state.conduitUpgrades?.['stasis-reliquary'] ?? 0);
-  } else if (equipped(target, 'stasis-reliquary') && offered > target.stats.health * .2) {
+  if (!phaseZeroStatsReady && equipped(target, 'stasis-reliquary') && offered > target.stats.health * .2) {
     offered = target.stats.health * .2 + (offered - target.stats.health * .2) * (1 - value(state, target, 'stasis-reliquary', .3, .6));
   }
   if (phaseZeroStatsReady) offered = Math.max(damage * .2, offered);
@@ -1848,15 +1879,14 @@ export function conduitIncoming(state: BattleState, enemy: Combatant, target: Co
       emit(events, 'shield', network, ally, -amount, `${ally.name}'s linked shield absorbs ${amount} for ${target.name}.`);
     }
   }
-  const absorbed = consumeShield(target, remaining);
-  let loss = remaining - absorbed.absorbed;
+  const shieldResult = absorbEnemyDamage(state, target, remaining, events);
+  const { absorbed } = shieldResult;
+  let loss = shieldResult.loss;
   if (!phaseZeroStatsReady && shieldBefore > 0 && target.shield <= 0 && absorbed.absorbed > 0 && equipped(target, 'fieldbrace-coupler')) n.fieldbraceRound = state.round + 1;
   for (const [id, amount] of absorbed.native) {
     const owner = state.allies.find(ally => ally.id === id);
     if (!owner) continue;
     const broke = absorbed.broken.has(id);
-    if (phaseZeroStatsReady && broke && owner.id === target.id && equipped(owner, 'wardglass-transformer'))
-      grantToken(state, target, 'wardglassNormal', 1);
     const guardKey = phaseZeroStatsReady ? 'tideGuard' : `tideGuard:${id}`;
     if (equipped(owner, 'master-tide-1') && broke && !n[guardKey]) { n[guardKey] = 1; loss = 0; }
     pilotAuthoredShieldAbsorbed(state, id, amount, events);
@@ -1875,11 +1905,12 @@ export function conduitIncoming(state: BattleState, enemy: Combatant, target: Co
   }
   loss = deferCalamiticDamage(state, target, loss, events);
   loss = Math.min(target.hp, rescue(state, target, loss, events, true));
-  const fullyAbsorbedNative = loss === 0 && absorbed.absorbed >= postMitigation
-    ? new Map([...absorbed.native].filter(([, amount]) => amount >= postMitigation))
+  const fullyAbsorbedNative = loss === 0 && shieldResult.covered >= postMitigation
+    ? new Map([...absorbed.native].filter(([, amount]) => amount >= absorbed.absorbed))
     : new Map<string, number>();
   nativeAbsorbedHit(state, target, fullyAbsorbedNative, loss, events);
   nativeGauge(state, target, shatterGauge.incomingHit, events);
+  loss = Math.min(target.hp, loss);
   target.hp -= loss;
   bankCalamiticDamage(state, loss);
   emit(events, 'damage', enemy, target, loss, `${target.name}: ${Math.round(loss)} damage${critical ? ' (critical)' : ''}${absorbed.absorbed ? `, ${Math.round(absorbed.absorbed)} shield absorbed` : ''}.`, true);
@@ -1916,8 +1947,11 @@ function allyFell(state: BattleState, fallen: Combatant, events: BattleEvent[]):
   }
 }
 function routedDamage(state: BattleState, enemy: Combatant, target: Combatant, amount: number, events: BattleEvent[], nativeRedirect = false): void {
-  const absorbed = consumeShield(target, amount).absorbed;
-  const loss = Math.min(target.hp, amount - absorbed);
+  const n = gear(target).numbers;
+  if (phaseZeroStatsReady && n.stasisProtected === state.round) return;
+  if (phaseZeroStatsReady && n.stasisPenalty === state.round) amount = Math.round(amount * 1.25);
+  const { loss: remaining } = absorbEnemyDamage(state, target, amount, events);
+  const loss = Math.min(target.hp, remaining);
   const wasStanding = target.hp > 0;
   target.hp -= loss;
   emit(events, 'damage', enemy, target, loss, `${target.name} intercepts ${Math.round(amount)} damage (Conduit routing).`);

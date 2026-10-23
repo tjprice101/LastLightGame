@@ -1,5 +1,14 @@
 # Conduit redesign: approved roster and runtime (D-313)
 
+**Current D-382:** [the owner catalog](conduit-catalog.txt) replaces all10
+Common/15 Rare/15 Legendary/five Calamitic abilities.45 ordinary Omnics and48
+Masters retain their effects; the global equipment Skill Duration cap is
+removed. Rules6 restarts old encounters without losing frozen investments
+or saved rewards. [Current compatibility](character-conduit-compatibility.md)
+is generated from that catalog; the historical133-item generator below must
+not overwrite it. Beneficial percentages grow10% of base/level; penalties,
+conditions, proc odds, durations and extra-action counts remain fixed.
+
 ## Phase 0 replacement activated (D-368/D-370)
 
 The [owner-edited Phase 0 catalog](conduit-catalog.txt) is the approved target

@@ -42,7 +42,7 @@ describe('shared menu information', () => {
     expect(plain(html)).toContain('data-information="inventory-information"');
     expect(plain(html)).toContain('Common Conduits are sold in the Store');
     expect(plain(html)).toContain('higher tiers drop in Awaken the Machines');
-    expect(plain(html)).toContain('Up to four ordinary Omnic Conduits, matching the wearer\'s element');
+    expect(plain(html)).toContain('Up to four ordinary Omnic Conduits, matching the wearer\'s Element');
     expect(plain(html)).toContain('Counts show distinct item types');
     for (const term of ['Attack Action', 'Bonus Strike', 'Direct Damage', 'Shield', 'Enemy Turn', 'Round', 'Battle']) expect(html).toContain(`<dt>${term}</dt>`);
     expect(html).not.toMatch(/data-page="(?:stores|collections)"/);

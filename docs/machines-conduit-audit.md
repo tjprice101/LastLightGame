@@ -1,5 +1,11 @@
 # Machines Conduit overlap audit (D-352)
 
+**Historical audit:** effect rows below describe the D-352 implementation.
+D-368/D-382 replace them with the [current catalog](conduit-catalog.txt) and
+[compatibility matrix](character-conduit-compatibility.md). In particular,
+current Breach, Stasis, Astral, Citadel and Heartcase do not retain these
+historical triggers or penalties.
+
 Scope: every Rare, Legendary and Omnic Conduit from Awaken the Machines,
 compared against the full catalog (Common, Machines, kit and Calamitic).
 

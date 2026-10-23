@@ -59,6 +59,7 @@ for (const [id] of Object.entries(catalog).filter(([id]) => id.startsWith('maste
 if (evidence.size !== 138) throw new Error(`Expected 138 behavior entries, found ${evidence.size}.`);
 const digestPaths = [
   'docs/conduit-catalog.txt', ...Object.values(files), 'src/game/phase-zero-interactions.test.ts',
+  'src/game/conduit-rework.test.ts', 'src/presentation/conduit-status.ts',
   'src/content/phase-zero-conduit-upgrades.test.ts', 'src/content/phase-zero-conduit-upgrades.ts',
   'src/content/phase-zero-conduit-stats.ts', 'src/game/conduit-runtime.ts', 'src/game/native-kits.ts',
   'src/game/battle.ts', 'src/game/calamitic-conduits.ts',
@@ -81,7 +82,7 @@ const output = [
   '# Phase 0 Conduit behavior matrix', '',
   'This is executed numerical behavior evidence, not a count of source references or nonempty ability strings.',
   'The approved ability contract remains [conduit-catalog.txt](conduit-catalog.txt).',
-  'The release gate is enabled for coordinated client/authority publication (D-370). This report certifies tested behavior, not hosted deployment or balance quality.', '',
+  'The release gate is enabled for coordinated client/authority publication (D-370/D-382, rules6). This report certifies tested behavior, not hosted deployment or balance quality.', '',
   `- Roster: **138/138** entries, **${count}** passing baseline/equipment/upgrade scenarios.`,
   '- Ordinary-slot entries: 90, each with an absent baseline and all six +0..+5 upgrade levels.',
   '- Named Masters: 48, each with a concrete equipped and absent numerical behavior scenario.',
@@ -89,6 +90,7 @@ const output = [
   '- Description parity: all 138 defaults against the complete owner-authored catalog; all 90 ordinary entries at +0..+5; Masters reject upgrades.',
   '- Separate interaction tests cover generated Master Shield provenance, manual native packets, stored-packet scaling, duplicate auras, additive stat pools and Defense caps.',
   '- UI and authority suites additionally exercise target-dependent costs, frozen equipment and Throne controls.',
+  '- D-382 regressions cover all45 replacements, complete-Health conversion thresholds, cast-level seeded randomness, conditional Health, sole-owner Shield provenance, routed protection and persisted Stasis clocks.',
   '- Passing tests do not establish subjective usefulness or mathematically exhaustive balance across every possible squad.', '',
   `Evidence source SHA-256 (LF-normalized): \`${digest.digest('hex')}\`.`,
   'Regenerate only from a complete passing full-suite JSON report:', '',

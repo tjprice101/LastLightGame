@@ -249,15 +249,20 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     expect(effectiveDefense(state, target)).toBe(100);
   });
 
-  it('Pale buffs another Shield holder, not only another Pale wearer, until the Shield is lost', () => {
+  it('Pale protects only its wearer Shields without the retired outgoing Power aura', () => {
     const state = setup('pale-bulwark-diadem', level);
     const [owner, target] = state.allies;
     nativeShield(state, owner, target, 100, [], { skillPower: 1 });
     expect(prepareConduitAction(state, target, 'skill1', 25, false).skillPower)
-      .toBeCloseTo(1 + scaling(.25, level));
+      .toBe(1);
     expect(prepareConduitAction(state, target, 'skill2', 40, false).skillPower).toBe(1);
     target.shield = 0;
     expect(prepareConduitAction(state, target, 'skill1', 25, false).skillPower).toBe(1);
+    owner.shield = 100;
+    conduitIncoming(state, state.enemies[0], owner, 150, false, false, []);
+    const reduction = scaling(.5, level);
+    expect(owner.hp).toBe(1000 - Math.round(Math.max(0, 150 - 100 / (1 - reduction))));
+    expect(owner.shield).toBeCloseTo(Math.max(0, 100 - 150 * (1 - reduction)));
   });
 
   it('Griffin uses total HP damage, recipient capacity and Gain, with an upgraded capacity cap', () => {
@@ -290,9 +295,9 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
   it('Faultkeeper shares personal effective Defense without recursive or duplicate squad-aura inflation', () => {
     const state = setup('tectonic-faultkeeper-loom', level);
     const [owner, recipient, other] = state.allies;
-    if (level !== null) owner.conduits![1] = 'sentinel-aperture';
+    if (level !== null) owner.conduits![1] = 'horizon-heartcase';
     owner.shatter = 40;
-    const ownDefense = level === null ? 100 : 120;
+    const ownDefense = level === null ? 100 : 110;
     expect(effectiveDefense(state, recipient)).toBeCloseTo(100 + ownDefense * scaling(.25, level));
     if (level !== null) other.conduits = ['tectonic-faultkeeper-loom', null, null, null, null, null, null, null];
     expect(effectiveDefense(state, recipient)).toBeCloseTo(100 + ownDefense * scaling(.25, level));
@@ -707,17 +712,17 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     expect(recipient.shield).toBe(0);
   });
 
-  it('Godpress ignores the upgraded share of Defense and bypasses the upgraded Shield share for skills, not Normals', () => {
+  it('Godpress ignores Defense for skills without bypassing Shields or changing Normal damage', () => {
     const state = setup('calamitic-horizon-cleaving-godpress', level);
     const owner = state.allies[0], target = state.enemies[0];
     target.stats.defense = 100;
     target.shield = 10000;
     const damage = damageAmount(100, 1.6 * nativeBalance.skillDamageScale,
-      100 * (1 - scaling(.4, level)), false);
+      100 * (1 - Math.min(.75, scaling(.55, level))), false);
     const result = act(state, owner.id, 'skill1', target.id);
     const hit = result.events.find(event => event.kind === 'damage' && event.source === owner.id);
-    expect(hit?.amount).toBe(Math.floor(damage * scaling(.5, level)));
-    expect(result.state.enemies[0].shield).toBe(10000 - damage + Math.floor(damage * scaling(.5, level)));
+    expect(hit?.amount).toBe(0);
+    expect(result.state.enemies[0].shield).toBe(10000 - damage);
     const normal = act(state, owner.id, 'light', target.id).state;
     expect(normal.enemies[0].hp).toBe(10000);
     expect(normal.enemies[0].shield).toBe(9950);
@@ -786,7 +791,7 @@ describe('Phase 0 Calamitic replacement safety', () => {
     expect(teamCanAct(state)).toBe(true);
   });
 
-  it('Orrery counts native Recall damage once without scaling a stored damage packet twice', () => {
+  it('Orrery does not boost Recall or heal from its stored damage', () => {
     const state = fixture('calamitic-world-eater-orrery', 0, ['elise', 'tide']);
     const [elise, recipient] = state.allies;
     recipient.hp = 100;
@@ -796,8 +801,8 @@ describe('Phase 0 Calamitic replacement safety', () => {
     const damage = result.events.filter(event => event.kind === 'damage' && event.origin === 'native')
       .reduce((sum, event) => sum + event.amount + (event.shieldAbsorbed ?? 0), 0);
     expect(damage).toBe(360);
-    expect(result.state.allies[1].hp).toBe(136);
+    expect(result.state.allies[1].hp).toBe(100);
     expect(result.events.filter(event => event.kind === 'heal' && event.origin === 'conduit' &&
-      event.target === recipient.id)).toHaveLength(1);
+      event.target === recipient.id)).toHaveLength(0);
   });
 });

@@ -11,23 +11,22 @@ const base: PhaseZeroEquipmentStats = {
 };
 const slots = (...ids: ConduitId[]): ConduitSlots => [...ids, ...Array<null>(8 - ids.length).fill(null)];
 const expectedBonuses = [
-  ['bastion-lock', 'defense', 20],
-  ['crosspin-governor', 'skillPower', .15],
-  ['fieldbrace-coupler', 'skillPower', .2],
-  ['fracture-reservoir', 'shatterCapacity', 50],
-  ['parallax-relay', 'health', 450],
+  ['bastion-lock', 'defense', 35],
+  ['crosspin-governor', 'skillPower', .4],
+  ['fieldbrace-coupler', 'crit', .25],
+  ['fracture-reservoir', 'shatterCapacity', 40],
+  ['parallax-relay', 'health', 500],
   ['precision-escapement', 'critMultiplier', .15],
-  ['prism-splinter-socket', 'gaugeGain', .05],
-  ['reserve-torque-crank', 'gaugeGain', .15],
-  ['siegebound-drive', 'damage', 60],
-  ['vigil-core', 'health', 350],
-  ['coilfeed-ratchet', 'skillEfficiency', .07],
-  ['hammerbalance-link', 'damage', 48],
+  ['prism-splinter-socket', 'gaugeGain', .075],
+  ['reserve-torque-crank', 'gaugeGain', .1],
+  ['siegebound-drive', 'damage', 70],
+  ['vigil-core', 'health', 1000],
+  ['coilfeed-ratchet', 'skillEfficiency', .08],
+  ['hammerbalance-link', 'damage', 170],
   ['astral-prism', 'crit', .3],
-  ['citadel-spine', 'defense', 35],
-  ['immortal-vessel', 'health', 600],
+  ['citadel-spine', 'damage', 150],
+  ['immortal-vessel', 'health', 2500],
   ['chaotic-ouroboros-core', 'shatterCapacity', 40],
-  ['calamitic-causality-funeral-engine', 'skillPower', .8],
 ] as const satisfies readonly (readonly [ConduitId, keyof PhaseZeroEquipmentStats, number])[];
 
 describe('Phase 0 static equipment foundation (not live activation)', () => {
@@ -43,35 +42,35 @@ describe('Phase 0 static equipment foundation (not live activation)', () => {
 
     it('keeps penalties and whole-turn duration fixed', () => {
       const result = applyPhaseZeroStaticBonuses(base,
-        slots('fieldbrace-coupler', 'parallax-relay', 'reserve-torque-crank', 'hammerbalance-link',
+        slots('wardglass-transformer', 'parallax-relay', 'reserve-torque-crank', 'hammerbalance-link',
           'astral-prism', 'nullsong-transmission', 'worldbreaker-drive', 'calamitic-world-eater-orrery'),
         {
-          'fieldbrace-coupler': level, 'parallax-relay': level,
+          'wardglass-transformer': level, 'parallax-relay': level,
           'reserve-torque-crank': level, 'hammerbalance-link': level,
           'astral-prism': level, 'nullsong-transmission': level,
           'worldbreaker-drive': level, 'calamitic-world-eater-orrery': level,
         });
-      expect(result.defense).toBeCloseTo(77);
-      expect(result.damage).toBeCloseTo(200 * (.95 + .24 * (1 + level * .1)));
-      expect(result.skillPower).toBeCloseTo(.8 + .2 * (1 + level * .1));
-      expect(result.skillDuration).toBe(2);
+      expect(result.defense).toBeCloseTo(65);
+      expect(result.damage).toBeCloseTo(200 * (1 + .85 * (1 + level * .1)));
+      expect(result.skillPower).toBe(1);
+      expect(result.skillDuration).toBe(3);
     });
   });
 
   it('leaves absent equipment and its inputs unchanged', () => {
     const stats = structuredClone(base);
-    const equipment = slots('aegis-capacitor');
+    const equipment = slots('duplex-heart');
     const result = applyPhaseZeroStaticBonuses(stats, equipment);
     expect(result).toEqual(base);
     expect(result).not.toBe(stats);
     expect(stats).toEqual(base);
-    expect(equipment).toEqual(slots('aegis-capacitor'));
+    expect(equipment).toEqual(slots('duplex-heart'));
   });
 
   it('preserves negative Efficiency and ignores unrelated legacy stat fields', () => {
     const stats = { ...base, skillEfficiency: -.15, elementalDamage: 123.456 };
     const result = applyPhaseZeroStaticBonuses(stats, slots('coilfeed-ratchet'));
-    expect(result.skillEfficiency).toBeCloseTo(-.08);
+    expect(result.skillEfficiency).toBeCloseTo(-.07);
     expect(result).toHaveProperty('elementalDamage', 123.456);
     expect(phaseZeroSkillCost(25, result.skillEfficiency, 'skill1')).toBe(27);
   });
@@ -80,9 +79,9 @@ describe('Phase 0 static equipment foundation (not live activation)', () => {
     const equipment = slots('bastion-lock', 'citadel-spine', 'crosspin-governor',
       'fieldbrace-coupler', 'prism-splinter-socket', 'reserve-torque-crank');
     const result = applyPhaseZeroStaticBonuses(base, equipment);
-    expect(result.defense).toBeCloseTo(150);
-    expect(result.skillPower).toBeCloseTo(1.35);
-    expect(result.gaugeGain).toBeCloseTo(1.2);
+    expect(result.defense).toBeCloseTo(135);
+    expect(result.skillPower).toBeCloseTo(1.65);
+    expect(result.gaugeGain).toBeCloseTo(1.245);
     expect(applyPhaseZeroStaticBonuses(base, [...equipment].reverse())).toEqual(result);
   });
 
@@ -90,12 +89,12 @@ describe('Phase 0 static equipment foundation (not live activation)', () => {
     const stats = { ...base, crit: .95, damage: 201.123456789 };
     const result = applyPhaseZeroStaticBonuses(stats, slots('astral-prism', 'siegebound-drive'));
     expect(result.crit).toBeCloseTo(1.25);
-    expect(result.damage).toBeCloseTo(stats.damage * 1.3, 12);
+    expect(result.damage).toBeCloseTo(stats.damage * 1.35, 12);
   });
 
   it('does not fill Gauge or mutate owned upgrade levels', () => {
     const upgrades = { 'fracture-reservoir': 5 };
-    expect(applyPhaseZeroStaticBonuses(base, slots('fracture-reservoir'), upgrades).shatterCapacity).toBe(175);
+    expect(applyPhaseZeroStaticBonuses(base, slots('fracture-reservoir'), upgrades).shatterCapacity).toBe(160);
     expect(upgrades).toEqual({ 'fracture-reservoir': 5 });
   });
 

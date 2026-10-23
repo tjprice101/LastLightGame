@@ -217,7 +217,7 @@ describe('50% capture rewards and retained fixed-form Elemental-Devourers', () =
     expect(() => levelCapturedCharacter(saved, first.instanceId, 50)).toThrow('changed');
     const equipped = equipConduit(saved, first.instanceId, 0, 'vigil-core');
     expect(resolveCapturedFighter(equipped.capturedCharacters![0], equipped.conduitEquipment?.[first.instanceId]).stats.health)
-      .toBeCloseTo(resolveCapturedFighter(equipped.capturedCharacters![0]).stats.health * 1.35);
+      .toBeCloseTo(resolveCapturedFighter(equipped.capturedCharacters![0]).stats.health * 2);
     expect(equipped.conduitEquipment?.[second.instanceId]).toBeUndefined();
     const max = loadAccount(saved);
     max.capturedCharacters![0].level = 120;

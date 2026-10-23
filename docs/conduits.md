@@ -1,5 +1,16 @@
 # Conduits and Conduit Store
 
+**Current D-382 replacement:** the owner replaces all10 Common,15 Rare,
+15 Legendary and five Calamitic abilities in the [catalog](conduit-catalog.txt).
+The45 ordinary Omnics and48 Masters keep their effects. Rules6 replaces
+rules5; equipment Skill Duration no longer has a global cap. Beneficial
+percentages grow10% of base per upgrade; penalties, conditions, proc chances,
+durations and extra-action counts stay fixed. Existing Skill Efficiency caps
+and Gauge floors remain. All names, IDs, art, ownership, saved levels, costs,
+acquisition and equip restrictions are preserved. The
+[current compatibility matrix](character-conduit-compatibility.md) covers138
+entries. Earlier effect descriptions below are historical, not additive.
+
 **D-379 Focus Loot:** [Machines](awaken-the-machines.md#focus-loot-d-379)
 supports one saved unowned selection per Rare/Legendary/Omnic rarity. The
 next successful roll of that rarity awards it without changing drop rates.
@@ -9,7 +20,7 @@ remain available; Master/Common/Calamitic Conduits cannot be focused.
 **D-368/D-370 verified and activated for publication:** the approved
 [Phase 0 catalog](conduit-catalog.txt) specifies all138 replacement abilities
 and the new stat contract. Preserve IDs, ownership, equipment restrictions,
-artwork, saved upgrades and costs. Rules5 and the shared client/authority
+artwork, saved upgrades and costs. Rules6 and the shared client/authority
 gate are enabled; hosted publication status is in the handoff.
 The [138-entry behavior matrix](conduit-behavior-matrix.md) records
 individual numerical checks and upgrade coverage. Historical
@@ -22,7 +33,7 @@ they retain eight ordinary slots/unique names with no extra Calamitic cap.
 The existing four-Omnic maximum is separate. Rise alone built these devices;
 the earlier collaborative-prototype lore still applies to the original85.
 
-**D-316 native compatibility:** the approved sixteen-character replacement is
+**Historical D-316 native compatibility:** the approved sixteen-character replacement is
 implemented locally alongside explicitly adapted dependent effects. The
 [133-item matrix](character-conduit-compatibility.md) and
 [current exact roster](conduit-redesign.md) supersede retired resource/slot
@@ -31,7 +42,7 @@ Shared rules version3 restarts historical current encounters only; frozen
 investments and already saved rewards are preserved. No automatic unequips,
 refunds, account migration or publication.
 
-**Current D-313 combat contract:** the owner approved and all133 reviewed
+**Historical D-313 combat contract:** the owner approved and all133 reviewed
 effects are implemented locally: [85 ordinary and48 Masters](conduit-redesign.md).
 Each row replaces its old bundles; unlisted passive stats are removed.
 Ordinary effects scale through+5 using their exact endpoints and thresholds;

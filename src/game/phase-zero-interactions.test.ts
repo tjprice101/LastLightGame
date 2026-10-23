@@ -55,14 +55,14 @@ describe('Phase 0 cross-effect rules', () => {
     ally.conduits = slots('bastion-lock', 'siegebound-drive', 'precision-escapement', 'judgment-lens');
     applyConduitBuffs(ally.stats, ally.conduits);
     ally.attackBoost = { fraction: .2, throughRound: 1 };
-    expect(effectiveDefense(state, ally)).toBeCloseTo(160);
+    expect(effectiveDefense(state, ally)).toBeCloseTo(175);
     const ctx = prepareConduitAction(state, ally, 'skill1', 25, false);
     const modifiers = conduitHitModifiers(state, ally, state.enemies[0], ctx, true);
-    expect(modifiers.attack).toBeCloseTo(150);
+    expect(modifiers.attack).toBeCloseTo(155);
     expect(ally.stats.critMultiplier * (1 + modifiers.criticalDamageBonus!)).toBeCloseTo(1.5 * 1.6);
     const result = act(state, ally.id, 'skill1', state.enemies[0].id);
     expect(result.events.find(event => event.kind === 'damage' && event.source === ally.id)?.amount)
-      .toBe(damageAmount(150, 1.5 * nativeBalance.skillDamageScale, 0, false));
+      .toBe(damageAmount(155, 1.5 * nativeBalance.skillDamageScale * 1.25, 0, false));
     ally.stats.damage = ally.stats.defense = ally.stats.critMultiplier = 0;
     const zero = conduitHitModifiers(state, ally, state.enemies[0], ctx, true);
     expect(zero.attack).toBe(0);
@@ -71,7 +71,7 @@ describe('Phase 0 cross-effect rules', () => {
   });
 
   it.each(['firstlight-cam', 'citadel-spine', 'infernic-pyre-census', 'tectonic-faultkeeper-loom',
-    'chaotic-paradox-spindle', 'calamitic-cathedral-final-equation'] as const)(
+    'chaotic-paradox-spindle'] as const)(
     '%s has the same recipient aura with one or two living sources and loses it when all die', id => {
       const state = fixture(), [first, recipient, second] = state.allies;
       first.conduits = slots(id);
@@ -153,9 +153,10 @@ describe('Phase 0 cross-effect rules', () => {
       damageAmount(100, coefficient * 1.7 * (action === 'ultimate' ? 3 : 1), 55, false)));
     const total = result.events.filter(event => event.kind === 'damage' && event.origin === 'native')
       .reduce((sum, event) => sum + event.amount + (event.shieldAbsorbed ?? 0), 0);
-    expect(result.state.allies[1].hp).toBe(100 + Math.round(total * .1));
+    expect(total).toBeGreaterThan(0);
+    expect(result.state.allies[1].hp).toBe(100);
     expect(result.events.filter(event => event.kind === 'heal' && event.origin === 'conduit' &&
-      event.target === healer.id)).toHaveLength(1);
+      event.target === healer.id)).toHaveLength(0);
   });
 
   it('Revenge and stored detonation receive skill pierce, but stored Burn never receives Skill Power twice', () => {

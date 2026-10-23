@@ -1,4 +1,4 @@
-# Calamitic Conduits (D-324)
+# Calamitic Conduits (D-324 / current D-382)
 
 ## Confirmed scope
 
@@ -12,8 +12,8 @@ The owner explicitly chooses chest tokens rather than direct Conduit drops,
 no additional Calamitic equipment limit, five component-funded upgrades more
 expensive than Omnic, and full implementation. All six delivered artwork
 exports are installed under D-325.
-Exact prices, token quantities and effect coefficients below are editable
-developer tuning, not owner-authored numbers.
+Prices and token quantities remain developer tuning. D-382 replaces the five
+effects below with owner-authored values; older effect designs are superseded.
 
 ## Acquisition and sealed shop
 
@@ -45,30 +45,26 @@ developer tuning, not owner-authored numbers.
 
 ## Five effects
 
-All effects scale linearly across saved upgrade levels0 through5.
-Percentages below show unupgraded -> +5. Generated strikes use ordinary
-Attack/(Attack+effective Defense) mitigation, then shields and one rounded
-damage outcome. They do not roll critical hits, grant native resources or
-recursively activate other action effects.
+Beneficial percentages grow10% of base per saved upgrade level0 through5.
+Below, unupgraded -> +5 means1x ->1.5x the listed benefit. Fixed durations,
+extra-action counts, restrictions and cost caps never upgrade. These are
+wearer effects, not Cathedral's former squad aura or Orrery's former healing.
 
 | Stable ID | Creation | Complete effect |
 | --- | --- | --- |
-| `calamitic-world-eater-orrery` | World-Eater's Orrery | Store40% ->80% of actual direct enemy HP damage taken by living squad members, capped at400% ->800% wearer Attack. Defense empties the reserve into one generated strike against the healthiest living enemy. Shields, self-costs, routed/generated losses and deferred debt do not fill the reserve. Each living wearer has its own cap/reserve. |
-| `calamitic-causality-funeral-engine` | Causality Funeral Engine | Defer40% ->60% of direct enemy damage remaining after shields, up to30% ->50% wearer maximum HP per enemy phase. Deferred amounts are whole units. Pay exact recorded debt before attacks in the next enemy phase. Debt bypasses shields/protection, can defeat its wearer and cannot be deferred again. Routed damage is excluded. Debt is consumed once; a fallen wearer does not transfer it to a revival. |
-| `calamitic-horizon-cleaving-godpress` | Horizon-Cleaving Godpress |40% ->60% of native direct damage bypasses shields. Against an enemy with a shield, native direct damage also gains30% ->60%. Remaining damage spends shields normally. Applies to captured manual attacks too, not Burn or generated damage. |
-| `calamitic-throne-borrowed-tomorrows` | Throne of Borrowed Tomorrows | Defense offers one further Normal Attack or available ordinary skill this player turn. Taking it grants10 ->30 Gauge after ordinary costs and makes the wearer unable to act next player turn. Next borrowing becomes available three turns after use. Declining the offer loses no turn. No borrowed Defense/Last Flare, missing-skill/recovery bypass or extra action beyond existing limits. |
-| `calamitic-cathedral-final-equation` | Cathedral of the Final Equation | Three different manual action types in succession discharge120% ->240% Attack split equally among living enemies, then clear the sequence. Repeating any recorded type restarts with that repeated action. Normal Attack, Skill1, Skill2 and Last Flare are distinct types. Support actions count; automatic follow-ups do not. |
+| `calamitic-world-eater-orrery` | World-Eater's Orrery | +3 [Skill Duration]; +125% ->187.5% [Skill Power] for [Debuff] potency only, including [Burn], [Weaken] and Aurora seals. No direct damage/healing/[Shield] bonus or former generated healing. Individual status safety caps remain. |
+| `calamitic-causality-funeral-engine` | Causality Funeral Engine | +100% ->150% [Skill Efficiency]; [Last Flare] has no cooldown or recovery and gains +125% ->187.5% damage. Efficiency still caps at50% reduction; [Skill 1]/[Skill 2] cost at least1 [Elemental Gauge], [Last Flare] at least70. One ordinary action remains spent. |
+| `calamitic-horizon-cleaving-godpress` | Horizon-Cleaving Godpress | Damaging [Skills] ignore55% ->82.5% enemy [Defense], subject to the existing combined75% skill-ignore cap; +75% ->112.5% [Defense]. No [Shield] bypass. |
+| `calamitic-throne-borrowed-tomorrows` | Throne of Borrowed Tomorrows | Activating [Last Flare] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] that [Player Turn]. Each ally receives this at most once per turn; allies in [Last Flare] recovery are ineligible. Missing actions, cooldowns and Gauge costs still apply. +45% ->67.5% [Health] and [Defense]. |
+| `calamitic-cathedral-final-equation` | Cathedral of the Final Equation | Wearer's [Attack Actions] gain +250% ->375% [Critical Rate] and +120% ->180% [Critical Damage Multiplier]; +65% ->97.5% [Skill Efficiency], subject to existing caps/floors. No squad-wide benefit. |
 
-Defense-triggered lethal strikes run the same death, outcome and deduplicated
-reward finalization as offensive actions. Real HP losses, remaining shields,
-stored reserves, debts, due phases, borrowed turns and Equation counts remain
-visible through existing ordered events and copied battle readouts.
-
-The typed definitions live in `src/content/calamitic-conduits.ts`; runtime hooks
-live in `src/game/calamitic-conduits.ts`. The original133-item redesign registry
-and compatibility matrix still cover their historical85 ordinary/48 Masters.
-The full catalog is now90 ordinary plus48 Masters; the five additions have
-separate exhaustive equipped/unequipped tests at every upgrade level.
+The [owner catalog](conduit-catalog.txt) owns exact current text. Static bonuses
+live in `src/content/phase-zero-conduit-stats.ts`; current hooks live in
+`src/game/conduit-runtime.ts` and `src/game/calamitic-conduits.ts`. Historical
+typed effect coefficients remain only for explicitly disabled legacy tests.
+The [current compatibility matrix](character-conduit-compatibility.md) covers
+all90 ordinary plus48 Masters. No current reserve, debt, borrowed Defense
+action, Equation counter or squad healing survives these replacements.
 
 ## Upgrades and persistence
 
@@ -80,7 +76,7 @@ Five account-wide upgrades use Broken Mechanical Components only:
 
 The400x base-curve multiplier is twice Omnic's200x. Existing one-step and
 Max Level previews, confirmation, stale-state checks and atomic transactions
-apply. There are no flat passive stats or automatic equipment changes.
+apply. Only listed replacement stats apply; no automatic equipment changes.
 
 `Account.calamiticTokens` is optional, nonnegative and safe-integer validated.
 Missing legacy balances read as0 without writing or resetting any account
@@ -99,8 +95,9 @@ Publish the matching client/authority together and reload already-open tabs
 before opening chests. An old client can reject the new response after the
 server saved the reward; its same-request retry is idempotent, not another
 opening. Refresh/read the saved account rather than treating that response
-error as proof that the chest was not consumed. Wallet version5 and battle
-rules4 are not network-response versions and must not be bumped for this.
+error as proof that the chest was not consumed. Wallet and battle rules
+versions are not network-response versions; this receipt field alone does
+not require bumping either. D-382 independently uses combat rules6.
 
 Encounters freeze equipment and upgrade levels. Calamitic state lives in the
 existing copied Conduit runtime numbers, survives Settings/resume, and resets

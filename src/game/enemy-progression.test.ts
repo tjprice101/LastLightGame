@@ -97,7 +97,7 @@ describe('hostile progression balance', () => {
       const stage = infusionStageCount(mode);
       const create = (gear: ConduitLoadouts) => createInfusionBattle(mode, stage, seed, 'ember', lateProgress.ember, team, lateProgress, gear, [], lateUpgrades);
       expect(playSquad(withMasterLoadouts(create(lateEquipment), lateMasters)).phase, `${mode} built seed ${seed}`)
-        .toBe(mode === 'roses' && seed !== 1729 ? 'defeat' : 'cleared');
+        .toBe('cleared');
       expect(playSquad(create({})).phase, `${mode} unbuilt seed ${seed}`).toBe('defeat');
     });
 
@@ -110,7 +110,7 @@ describe('hostile progression balance', () => {
   it.each((['nerithe', 'orvella', 'vaelor'] as const)
     .flatMap(id => [1, 1729, 12345].map(seed => ({ id, seed }))))('measures final $id War boss at seed$seed with level-scaled DoT', ({ id, seed }) => {
     expect(playSquad(withMasterLoadouts(createWarBattle(id, 10, seed, 'ember', lateProgress.ember, team, lateProgress, lateEquipment, [], lateUpgrades), lateMasters)).phase)
-      .toBe(seed === 1729 ? 'cleared' : 'defeat');
+      .toBe('cleared');
   });
 
   it.each(['ember', 'tide', 'sprout'] as const)('%s can clear the first Story encounter at Lv.0 without equipment', (id) => {
@@ -153,7 +153,7 @@ describe('hostile progression balance', () => {
     }
   });
 
-  it('allows early material progress but creates a fodder wall for the Common-only squad', () => {
+  it('allows early material and infusion progress with the strengthened Common-only squad', () => {
     const rareStage = Array.from({ length: 35 }, (_, index) => index + 1).find(stage => elementalEnemyLevel(stage) >= 48)!;
     let infusionDefeats = 0;
     for (const seed of [1, 1729, 12345]) {
@@ -173,7 +173,7 @@ describe('hostile progression balance', () => {
         } else expect(result.phase, `seed ${seed}, dungeon stage ${initial.wave}`).toBe('cleared');
       }
     }
-    expect(infusionDefeats).toBeGreaterThan(0);
+    expect(infusionDefeats).toBe(0);
   });
 
   it('uses identical level/rank stats and skill power for every real spawned enemy in every activity', () => {

@@ -1,5 +1,10 @@
 # Redundant Conduit replacements (D-349 proposal, implemented D-351)
 
+**Historical review:** D-368/D-382 supersede these equipment effects.
+Use the [current138-entry catalog](conduit-catalog.txt) and
+[compatibility matrix](character-conduit-compatibility.md), including the
+replacement Heartcase and Stasis clocks. The record below is not additive.
+
 Status: **implemented (D-351).** The owner approved all ten with current names and these numbers.
 Horizon Heartcase adds +10 Gauge to each later save in a Battle so the drain always runs out.
 

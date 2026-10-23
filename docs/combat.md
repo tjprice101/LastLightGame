@@ -46,7 +46,7 @@ and `native-identities-server.test.ts`; hosted release check:
 
 The [owner-edited catalog](conduit-catalog.txt) is the approved target for the
 ten-stat overhaul and all138 equipment effects. It supersedes earlier effect
-designs under rules5. The shared client/authority gate is enabled for the
+designs under rules6, including the45 D-382 replacements. The shared client/authority gate is enabled for the
 owner-authorized coordinated release. Historical conflicting rules below are
 superseded, not additive; hosted release status is in the handoff.
 
@@ -58,14 +58,42 @@ Elemental Damage scaling for skills, not Normal Attack, critical probability,
 Gauge receipts or generated equipment effects. Add bonuses before one
 application; stored, converted and released damage must not scale twice.
 
-Skill Duration adds whole turns to timed skill effects, equipment bonuses
-capped at+2; it does not alter cooldowns, recovery, delayed payout timing,
+Skill Duration adds whole turns to timed skill effects without a global
+equipment cap (D-382); individual status safety limits still apply.
+It does not alter cooldowns, recovery, delayed payout timing,
 action grants or instant effects. Skill Efficiency discounts the original
 skill cost additively, capped at50%, rounding the final cost upward once;
 Skill1/2 cost at least1 and Last Flare at least70 unless an explicit named
 override applies. All positive Gauge sources use the recipient's Gauge Gain
 once, rounding once. Conduit grants expressed as percentages use that
 recipient's maximum capacity before Gain. Capacity increases never fill Gauge.
+
+D-382 clarifications for the replacement equipment:
+- Glassroot uses complete200 maximum Health steps after equipment bonuses,
+  with no conversion cap. Heartcase's conditional Health adds against the
+  pre-equipment base; Gauge/cooldown/recovery alone determine personal Last
+  Flare availability, not spent/turn restrictions. Funeral bypasses its
+  cooldown/recovery predicates. Changing maximum Health clamps existing HP
+  but never heals it; fresh stage entry retains its ordinary full-heal rule.
+- Nullsong rolls once per valid Skill cast on the existing combat stream,
+  shared across targets/impacts:50/50 +75% or-75% additive Skill Power.
+  Only its positive bonus upgrades. Rejected actions/Normals do not roll.
+- Pale protects only the Shield-covered part of incoming damage, including
+  redirected enemy damage; unshielded spillover is normal damage. Stasis
+  blocks breaking-hit spillover and subsequent damage that Enemy Turn,
+  including routed hits. The following Enemy Turn takes25% more enemy
+  attack damage and cannot trigger protection; the next turn may trigger.
+  It never prevents a player's action. Copied runtime badges show both clocks.
+- World-Eater's125% bonus is debuff potency only, including Burn, Weaken and
+  Aurora seals, never direct damage, healing or Shields. Existing Weaken50%/
+  six-turn and seal100% safety caps remain. Its+3 duration is fixed.
+- Funeral removes both Last Flare cooldown and recovery, not action spending
+  or Gauge requirements. Starvein checks all frozen Squad Members, including
+  defeated members; its recipient Gauge Gain is applied once.
+
+The45 replacements change equipped benchmark outcomes, not enemy Health or
+damage curves. Exact seeded Calamity and late-boss expectations are recorded
+in the existing regression suites; no cancelled enemy rebalance is included.
 
 The catalog header also owns proc provenance, strongest-only duplicate auras,
 expiry, shared extra-action/rescue limits and mitigation caps. Verifying

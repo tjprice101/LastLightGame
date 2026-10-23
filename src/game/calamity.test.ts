@@ -175,6 +175,11 @@ describe('Calamity visible boss patterns', () => {
 
 describe('Calamity seeded difficulty benchmarks', () => {
   it.each(tiers)('measures four-Omnic candidate squads and intentional difficulty walls at EX+%s', tier => {
+    const expectedWins = {
+      1: { starters: [36, 26, 36], mixed: [36, 31, 36] },
+      2: { starters: [36, 5, 27], mixed: [30, 1, 17] },
+      3: { starters: [15, 0, 0], mixed: [0, 0, 0] },
+    } as const;
     const roster = ['rosetta', 'thornia', 'sprout'] as const satisfies readonly StarterId[];
     const progress = Object.fromEntries(roster.map(id => [id, { level: 105, evolution: 6 }]));
     const omnic = {
@@ -202,8 +207,8 @@ describe('Calamity seeded difficulty benchmarks', () => {
       expect(slots.every(id => id && fullUpgrades[id] === 5)).toBe(true);
     }
     for (const squad of [
-      { name: 'starters', roster: team, progress: Object.fromEntries(team.map(id => [id, { level: 105, evolution: 6 }])), leader: 'ember' as const, masters },
-      { name: 'mixed', roster, progress, leader: 'rosetta' as const, masters: { rosetta: 'master-rosetta-1', thornia: 'master-thornia-3', sprout: 'master-sprout-1' } as const },
+      { name: 'starters' as const, roster: team, progress: Object.fromEntries(team.map(id => [id, { level: 105, evolution: 6 }])), leader: 'ember' as const, masters },
+      { name: 'mixed' as const, roster, progress, leader: 'rosetta' as const, masters: { rosetta: 'master-rosetta-1', thornia: 'master-thornia-3', sprout: 'master-sprout-1' } as const },
     ]) {
       for (const build of ['old-mixed', 'four-omnic-0', 'four-omnic-5'] as const) {
         const gear = build === 'old-mixed' ? oldMixed : full;
@@ -224,11 +229,8 @@ describe('Calamity seeded difficulty benchmarks', () => {
         expect(results).toHaveLength(36);
         if (build === 'four-omnic-0') expect(summary.timeouts).toBe(0);
         expect(results.every(result => result.rounds > 0 && Number.isFinite(result.bossRemaining))).toBe(true);
-        if (build === 'four-omnic-0' || tier > 2 || (tier > 1 && squad.name === 'starters')) expect(summary.defeats).toBe(36);
-        else if (tier > 1) expect(summary.wins).toBeLessThan(results.length / 2);
-        if (tier === 1 && squad.name === 'mixed' && build === 'four-omnic-5') {
-          expect(summary.wins).toBeLessThan(results.length / 2);
-        }
+        const wins = expectedWins[tier][squad.name][['old-mixed', 'four-omnic-0', 'four-omnic-5'].indexOf(build)];
+        expect(summary).toMatchObject({ wins, defeats: 36 - wins, timeouts: 0 });
       }
     }
   }, 60_000);

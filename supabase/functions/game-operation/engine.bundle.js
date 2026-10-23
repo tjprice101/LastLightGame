@@ -244,241 +244,241 @@ var approvedConduitCatalog = {
     "name": "Bastion Lock",
     "rarity": "Common",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "+20% Defense"
+    "ability": "+35% [Defense] and +25% [Skill Power]."
   },
   "crosspin-governor": {
     "name": "Crosspin Governor",
     "rarity": "Common",
     "element": "Atmospheric (suggested thematic element; gameplay: universal)",
-    "ability": "+15% Skill Power"
+    "ability": "+40% [Skill Power]."
   },
   "fieldbrace-coupler": {
     "name": "Fieldbrace Coupler",
     "rarity": "Common",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "+20% Skill Power, -5% Defense"
+    "ability": "+25% [Critical Rate]."
   },
   "fracture-reservoir": {
     "name": "Fracture Reservoir",
     "rarity": "Common",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "+50% [Elemental Gauge Capacity]."
+    "ability": "+40% [Elemental Gauge Capacity]."
   },
   "parallax-relay": {
     "name": "Parallax Relay",
     "rarity": "Common",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "+45% Health, -5% Skill Power"
+    "ability": "+50% [Health] and +10% [Last Flare] [Direct Damage]."
   },
   "precision-escapement": {
     "name": "Precision Escapement",
     "rarity": "Common",
     "element": "Atmospheric (suggested thematic element; gameplay: universal)",
-    "ability": "+10% Critical Damage multiplier."
+    "ability": "+10% [Critical Damage Multiplier]."
   },
   "prism-splinter-socket": {
     "name": "Prism Splinter Socket",
     "rarity": "Common",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "+5% [Elemental Gauge Gain]."
+    "ability": "+7.5% [Elemental Gauge Gain] and +5% [Skill Efficiency]."
   },
   "reserve-torque-crank": {
     "name": "Reserve Torque Crank",
     "rarity": "Common",
     "element": "Atmospheric (suggested thematic element; gameplay: universal)",
-    "ability": "+15% [Elemental Gauge Gain], -5% Direct Attack"
+    "ability": "+25% [Elemental Gauge Capacity] and +10% [Elemental Gauge Gain]."
   },
   "siegebound-drive": {
     "name": "Siegebound Drive",
     "rarity": "Common",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "+30% Direct Attack."
+    "ability": "+35% [Direct Attack] and +5% [Skill Efficiency]."
   },
   "vigil-core": {
     "name": "Vigil Core",
     "rarity": "Common",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "+35% Health."
+    "ability": "+100% [Health]."
   },
   "aegis-capacitor": {
     "name": "Aegis Capacitor",
     "rarity": "Rare",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "When your skill gives another ally a Shield, you gain +25% Defense until the next Enemy Turn ends."
+    "ability": "+75% [Health] and +75% [Defense]."
   },
   "breach-pendulum": {
     "name": "Breach Pendulum",
     "rarity": "Rare",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "Normal Attack gains +40% Critical Damage Multiplier against enemies above 75% HP."
+    "ability": "All enemies begin each [Battle] with 10% less [Defense]. Multiple copies do not stack."
   },
   "coilfeed-ratchet": {
     "name": "Coilfeed Ratchet",
     "rarity": "Rare",
     "element": "Atmospheric (suggested thematic element; gameplay: universal)",
-    "ability": "+7% Skill Efficiency."
+    "ability": "+8% [Skill Efficiency], +8% [Skill Power] and +8% [Critical Rate]."
   },
   "duplex-heart": {
     "name": "Duplex Heart",
     "rarity": "Rare",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "Casting a healing skill on another ally also restores 5% of your own maximum HP. Once per cast."
+    "ability": "Casting a healing [Skill] that restores another ally's [Health] also restores 5% of your maximum [Health] to you. Once per cast."
   },
   "falcon-sight": {
     "name": "Falcon Sight",
     "rarity": "Rare",
     "element": "Atmospheric (suggested thematic element; gameplay: universal)",
-    "ability": "After two noncritical Attack Actions in a row, your next Attack Action is a guaranteed critical hit with +10% Critical Damage Multiplier. One action advances or spends the sequence once, regardless of targets."
+    "ability": "+25% [Critical Rate] and +45% [Health]."
   },
   "glassroot-gimbal": {
     "name": "Glassroot Gimbal",
     "rarity": "Rare",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "Gain +35% Skill Power while you have no Shield."
+    "ability": "Gain +5% [Skill Power] per complete 200 maximum [Health], including equipment bonuses. No cap."
   },
   "hammerbalance-link": {
     "name": "Hammerbalance Link",
     "rarity": "Rare",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "+24% Direct Attack; -8% Defense."
+    "ability": "+85% [Direct Attack] and +15% [Critical Damage Multiplier]."
   },
   "lifeline-flywheel": {
     "name": "Lifeline Flywheel",
     "rarity": "Rare",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "After each Attack Action, heal for 8% of the Direct Damage it dealt to enemy HP or Shield."
+    "ability": "After each [Attack Action] or [Skill], restore [Health] equal to 10% of its actual [Direct Damage] to enemy [Health] and [Shields]. Once per activation; excludes periodic and generated damage."
   },
   "opal-indexer": {
     "name": "Opal Indexer",
     "rarity": "Rare",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "Skills that apply a debuff gain +25% Skill Power."
+    "ability": "[Skills] that apply a [Debuff] gain +75% [Skill Power] and +1 turn [Skill Duration]."
   },
   "resonance-crucible": {
     "name": "Resonance Crucible",
     "rarity": "Rare",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "Damage beyond what defeats an enemy carries over as a [Bonus Strike] on the healthiest other enemy."
+    "ability": "+75% [Defense], +50% [Health] and +1 turn [Skill Duration]."
   },
   "sentinel-aperture": {
     "name": "Sentinel Aperture",
     "rarity": "Rare",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "Gain +5% Defense for every 10 Elemental Gauge currently held."
+    "ability": "Your [Skill 1] gains +99% [Skill Power]."
   },
   "spearwheel-engine": {
     "name": "Spearwheel Engine",
     "rarity": "Rare",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "All Skills ignore 10% of enemy Defense."
+    "ability": "All [Skills] ignore 10% of enemy [Defense]."
   },
   "springwell-pump": {
     "name": "Springwell Pump",
     "rarity": "Rare",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "For your abilities that heal or give Shield, they gain +20% Skill Power."
+    "ability": "Your [Skills] that heal or grant [Shields] gain +20% [Skill Power]."
   },
   "twinpulse-bellows": {
     "name": "Twinpulse Bellows",
     "rarity": "Rare",
     "element": "Atmospheric (suggested thematic element; gameplay: universal)",
-    "ability": "Each Normal Attack grants you and the other ally with the lowest Gauge percentage 5% Elemental Gauge."
+    "ability": "Each [Normal Attack] grants you and the other living ally with the lowest [Elemental Gauge] percentage 7% of each recipient's [Elemental Gauge Capacity]."
   },
   "wardglass-transformer": {
     "name": "Wardglass Transformer",
     "rarity": "Rare",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "Gain +25% Critical Damage Multiplier while Shielded. When an enemy breaks your Shield, your next Normal Attack gains +20% Critical Rate. Hold one bonus."
+    "ability": "+35% [Critical Damage Multiplier] and -35% [Defense]."
   },
   "astral-prism": {
     "name": "Astral Prism",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "+30% Critical Rate; -10% Defense."
+    "ability": "+30% [Critical Rate], +25% [Critical Damage Multiplier] and +50% [Health]."
   },
   "citadel-spine": {
     "name": "Citadel Spine",
     "rarity": "Legendary",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "+35% Defense. Other living allies below 50% HP gain +30% Defense while you are alive."
+    "ability": "+75% [Direct Attack] and +7% [Elemental Gauge Gain]. Other living allies below 75% [Health] gain +35% [Defense] while you are alive. Multiple copies of this aura do not stack."
   },
   "execution-orrery": {
     "name": "Execution Orrery",
     "rarity": "Legendary",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "Damaging skills gain +35% Critical Rate against enemies below 50% HP."
+    "ability": "Your [Skill 2] gains +99% [Skill Power] and +10% [Skill Efficiency]."
   },
   "granite-hourglass": {
     "name": "Granite Hourglass",
     "rarity": "Legendary",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "At the start of your next player turn, gain a Shield equal to 30% of the Health lost to enemy Direct Damage during the previous enemy turn."
+    "ability": "At the start of your next [Player Turn], gain a [Shield] equal to 30% of the [Health] lost to enemy [Direct Damage] during the previous [Enemy Turn]."
   },
   "horizon-heartcase": {
     "name": "Horizon Heartcase",
     "rarity": "Legendary",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "Once per Battle, when enemy Direct Damage would defeat you, automatically spend 40 Elemental Gauge to survive at 1 HP. For each 10 Gauge spent this way, gain +5% Skill Power on your next skill usage. Insufficient Gauge means no rescue; later hits can defeat you."
+    "ability": "Your [Last Flare] gains +35% [Critical Damage Multiplier] and +10% [Critical Rate]. While your [Last Flare] is unavailable because of your [Elemental Gauge], [Cooldown] or [Recovery], gain +20% [Health] and +10% [Defense]. Having already acted does not activate this bonus."
   },
   "immortal-vessel": {
     "name": "Immortal Vessel",
     "rarity": "Legendary",
     "element": "Botanic (suggested thematic element; gameplay: universal)",
-    "ability": "+60% Health. When another ally's Skill heals you, restore 25% of the HP actually restored to the most injured different ally, capped at 8% of their maximum HP per cast."
+    "ability": "+250% [Health] and +75% [Defense]."
   },
   "judgment-lens": {
     "name": "Judgment Lens",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "Damaging skills gain +50% Critical Damage Multiplier."
+    "ability": "Damaging [Skills] gain +50% [Critical Damage Multiplier]. Support [Skills] gain +50% [Skill Power]."
   },
   "meridian-inverter": {
     "name": "Meridian Inverter",
     "rarity": "Legendary",
     "element": "Oceanic (suggested thematic element; gameplay: universal)",
-    "ability": "Allies healed by your healing skills gain 8% Elemental Gauge. Each ally can receive this Gauge once per player turn."
+    "ability": "Each ally whose [Health] your healing [Skill] restores gains 4% of their [Elemental Gauge Capacity], once per cast."
   },
   "nullsong-transmission": {
     "name": "Nullsong Transmission",
     "rarity": "Legendary",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "Normal Attack uses 250% of your Direct Attack, -15% Skill Power."
+    "ability": "Each [Skill] cast has a 50% chance to gain +75% [Skill Power]; otherwise it receives -75% [Skill Power]. Roll once per cast, shared by all targets and impacts."
   },
   "pale-bulwark-diadem": {
     "name": "Pale Bulwark Diadem",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "Allies holding your skill-created Shields gain +25% Skill Power for damaging skills."
+    "ability": "[Shields] on you gain 50% [Damage Reduction]. Only the absorbed portion benefits; any damage beyond the protected [Shield] damages [Health] normally."
   },
   "siege-cantilever": {
     "name": "Siege Cantilever",
     "rarity": "Legendary",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "Global damaging Skills gains +45% Skill Power."
+    "ability": "Your [Global] damaging [Skills] gain +150% [Skill Power]."
   },
   "starvein-conductor": {
     "name": "Starvein Conductor",
     "rarity": "Legendary",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "Damaging skills spend 5% of your maximum HP for +60% Skill Power on their damage. If the payment would defeat you, skip both payment and bonus."
+    "ability": "If every [Squad Member] has a different [Element], gain +35% [Skill Efficiency] and +10% [Elemental Gauge Gain]. Defeated members still count."
   },
   "stasis-reliquary": {
     "name": "Stasis Reliquary",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "For an enemy attack dealing Direct Damage above 20% of your maximum HP, reduce only the portion above that threshold by 40%. Treat all impacts of that attack as one total."
+    "ability": "When enemy damage breaks your [Shield], prevent the breaking hit's remaining damage and all further damage to you that [Enemy Turn]. During the next [Enemy Turn], take 25% more enemy attack damage and cannot activate this protection. Protection becomes available again on the following [Enemy Turn]."
   },
   "verdict-caliper": {
     "name": "Verdict Caliper",
     "rarity": "Legendary",
     "element": "Tranquilitic (suggested thematic element; gameplay: universal)",
-    "ability": "Your skills gain +45% Skill Power when every other living ally has already acted this player turn."
+    "ability": "Each [Attack Action] that critically hits restores 25% of your maximum [Health], once per activation regardless of targets or impacts."
   },
   "worldbreaker-drive": {
     "name": "Worldbreaker Drive",
     "rarity": "Legendary",
     "element": "Infernic (suggested thematic element; gameplay: universal)",
-    "ability": "+85% Skill Power for Last Flare; -12% Health."
+    "ability": "Your [Last Flare] gains +99% [Skill Power]. All your [Attack Actions] gain +65% [Direct Damage]."
   },
   "clearwater-manifold": {
     "name": "Abyssal Clearwater Parliament",
@@ -1042,31 +1042,31 @@ var approvedConduitCatalog = {
     "name": "Cathedral of the Final Equation",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "All living allies gain +25% Skill Efficiency and +30% Skill Power while you are alive."
+    "ability": "Your [Attack Actions] gain +250% [Critical Rate] and +120% [Critical Damage Multiplier]. +65% [Skill Efficiency]."
   },
   "calamitic-causality-funeral-engine": {
     "name": "Causality Funeral Engine",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "+80% Skill Power. Your Last Flare has no recovery time."
+    "ability": "+100% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]. Normal [Elemental Gauge] cost caps and floors still apply."
   },
   "calamitic-horizon-cleaving-godpress": {
     "name": "Horizon-Cleaving Godpress",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "Your damaging skills ignore 40% of enemy Defense; 50% of their Direct Damage bypasses Shields."
+    "ability": "Your damaging [Skills] ignore 55% of enemy [Defense]. +75% [Defense]."
   },
   "calamitic-throne-borrowed-tomorrows": {
     "name": "Throne of Borrowed Tomorrows",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "Your Last Flare lets each other living ally who has already acted take one additional Skill 1 or Skill 2 this player turn. Each character can receive this extra action once per player turn. Allies in recovery are ineligible."
+    "ability": "Your [Last Flare] lets each other living ally who has already acted activate one additional [Skill 1] or [Skill 2] this [Player Turn]. Each character can receive this extra action once per [Player Turn]. Allies in [Last Flare] [Recovery] are ineligible. +45% [Health] and +45% [Defense]."
   },
   "calamitic-world-eater-orrery": {
     "name": "World-Eater's Orrery",
     "rarity": "Calamitic",
     "element": "Chaotic (suggested thematic element; gameplay: universal)",
-    "ability": "+2 turns Skill Duration. Damaging enemies with a skill heals each living ally for 10% of the total damage dealt by that skill."
+    "ability": "+3 turns [Skill Duration]. [Debuffs] applied by your [Skills], including [Burn] damage and [Weaken] strength, gain +125% [Skill Power]. This bonus does not increase the skill's [Direct Damage], healing or [Shields]."
   }
 };
 function approvedConduitAbility(id) {
@@ -1075,46 +1075,46 @@ function approvedConduitAbility(id) {
 
 // src/content/phase-zero-conduit-upgrades.ts
 var phaseZeroUpgradePercentages = {
-  "bastion-lock": [0],
+  "bastion-lock": [0, 1],
   "crosspin-governor": [0],
   "fieldbrace-coupler": [0],
   "fracture-reservoir": [0],
-  "parallax-relay": [0],
+  "parallax-relay": [0, 1],
   "precision-escapement": [0],
-  "prism-splinter-socket": [0],
-  "reserve-torque-crank": [0],
-  "siegebound-drive": [0],
+  "prism-splinter-socket": [0, 1],
+  "reserve-torque-crank": [0, 1],
+  "siegebound-drive": [0, 1],
   "vigil-core": [0],
-  "aegis-capacitor": [0],
+  "aegis-capacitor": [0, 1],
   "breach-pendulum": [0],
-  "coilfeed-ratchet": [0],
+  "coilfeed-ratchet": [0, 1, 2],
   "duplex-heart": [0],
-  "falcon-sight": [0],
+  "falcon-sight": [0, 1],
   "glassroot-gimbal": [0],
-  "hammerbalance-link": [0],
+  "hammerbalance-link": [0, 1],
   "lifeline-flywheel": [0],
   "opal-indexer": [0],
-  "resonance-crucible": [],
+  "resonance-crucible": [0, 1],
   "sentinel-aperture": [0],
   "spearwheel-engine": [0],
   "springwell-pump": [0],
   "twinpulse-bellows": [0],
-  "wardglass-transformer": [0, 1],
-  "astral-prism": [0],
-  "citadel-spine": [0, 2],
-  "execution-orrery": [0],
+  "wardglass-transformer": [0],
+  "astral-prism": [0, 1, 2],
+  "citadel-spine": [0, 1, 3],
+  "execution-orrery": [0, 1],
   "granite-hourglass": [0],
-  "horizon-heartcase": [0],
+  "horizon-heartcase": [0, 1, 2, 3],
   "immortal-vessel": [0, 1],
-  "judgment-lens": [0],
+  "judgment-lens": [0, 1],
   "meridian-inverter": [0],
-  "nullsong-transmission": [0],
+  "nullsong-transmission": [1],
   "pale-bulwark-diadem": [0],
   "siege-cantilever": [0],
-  "starvein-conductor": [1],
-  "stasis-reliquary": [1],
+  "starvein-conductor": [0, 1],
+  "stasis-reliquary": [],
   "verdict-caliper": [0],
-  "worldbreaker-drive": [0],
+  "worldbreaker-drive": [0, 1],
   "clearwater-manifold": [0],
   "tranquilitic-accord-bastion": [0],
   "aegis-return-spring": [0, 1],
@@ -1160,10 +1160,10 @@ var phaseZeroUpgradePercentages = {
   "mending-valve": [0],
   "rootbound-triage-vault": [0, 1],
   "efflorescent-worldtree-heart": [0],
-  "calamitic-cathedral-final-equation": [0, 1],
-  "calamitic-causality-funeral-engine": [0],
+  "calamitic-cathedral-final-equation": [0, 1, 2],
+  "calamitic-causality-funeral-engine": [0, 1],
   "calamitic-horizon-cleaving-godpress": [0, 1],
-  "calamitic-throne-borrowed-tomorrows": [],
+  "calamitic-throne-borrowed-tomorrows": [0, 1],
   "calamitic-world-eater-orrery": [0]
 };
 function phaseZeroUpgradedAbility(id, level = 0) {
@@ -4120,41 +4120,49 @@ var statKeys = [
   "gaugeGain"
 ];
 var phaseZeroStaticBonuses = {
-  "bastion-lock": [{ stat: "defense", amount: 0.2 }],
-  "crosspin-governor": [{ stat: "skillPower", amount: 0.15, additive: true }],
-  "fieldbrace-coupler": [
-    { stat: "skillPower", amount: 0.2, additive: true },
-    { stat: "defense", amount: -0.05 }
-  ],
-  "fracture-reservoir": [{ stat: "shatterCapacity", amount: 0.5 }],
-  "parallax-relay": [
-    { stat: "health", amount: 0.45 },
-    { stat: "skillPower", amount: -0.05, additive: true }
-  ],
+  "bastion-lock": [{ stat: "defense", amount: 0.35 }, { stat: "skillPower", amount: 0.25, additive: true }],
+  "crosspin-governor": [{ stat: "skillPower", amount: 0.4, additive: true }],
+  "fieldbrace-coupler": [{ stat: "crit", amount: 0.25, additive: true }],
+  "fracture-reservoir": [{ stat: "shatterCapacity", amount: 0.4 }],
+  "parallax-relay": [{ stat: "health", amount: 0.5 }],
   "precision-escapement": [{ stat: "critMultiplier", amount: 0.1 }],
-  "prism-splinter-socket": [{ stat: "gaugeGain", amount: 0.05, additive: true }],
+  "prism-splinter-socket": [{ stat: "gaugeGain", amount: 0.075, additive: true }, { stat: "skillEfficiency", amount: 0.05, additive: true }],
   "reserve-torque-crank": [
-    { stat: "gaugeGain", amount: 0.15, additive: true },
-    { stat: "damage", amount: -0.05 }
+    { stat: "shatterCapacity", amount: 0.25 },
+    { stat: "gaugeGain", amount: 0.1, additive: true }
   ],
-  "siegebound-drive": [{ stat: "damage", amount: 0.3 }],
-  "vigil-core": [{ stat: "health", amount: 0.35 }],
-  "coilfeed-ratchet": [{ stat: "skillEfficiency", amount: 0.07, additive: true }],
+  "siegebound-drive": [{ stat: "damage", amount: 0.35 }, { stat: "skillEfficiency", amount: 0.05, additive: true }],
+  "vigil-core": [{ stat: "health", amount: 1 }],
+  "aegis-capacitor": [{ stat: "health", amount: 0.75 }, { stat: "defense", amount: 0.75 }],
+  "coilfeed-ratchet": [
+    { stat: "skillEfficiency", amount: 0.08, additive: true },
+    { stat: "skillPower", amount: 0.08, additive: true },
+    { stat: "crit", amount: 0.08, additive: true }
+  ],
+  "falcon-sight": [{ stat: "crit", amount: 0.25, additive: true }, { stat: "health", amount: 0.45 }],
   "hammerbalance-link": [
-    { stat: "damage", amount: 0.24 },
-    { stat: "defense", amount: -0.08 }
+    { stat: "damage", amount: 0.85 },
+    { stat: "critMultiplier", amount: 0.15 }
   ],
   "astral-prism": [
     { stat: "crit", amount: 0.3, additive: true },
-    { stat: "defense", amount: -0.1 }
+    { stat: "critMultiplier", amount: 0.25 },
+    { stat: "health", amount: 0.5 }
   ],
-  "citadel-spine": [{ stat: "defense", amount: 0.35 }],
-  "immortal-vessel": [{ stat: "health", amount: 0.6 }],
-  "nullsong-transmission": [{ stat: "skillPower", amount: -0.15, additive: true }],
-  "worldbreaker-drive": [{ stat: "health", amount: -0.12 }],
+  "citadel-spine": [{ stat: "damage", amount: 0.75 }, { stat: "gaugeGain", amount: 0.07, additive: true }],
+  "immortal-vessel": [{ stat: "health", amount: 2.5 }, { stat: "defense", amount: 0.75 }],
+  "resonance-crucible": [
+    { stat: "defense", amount: 0.75 },
+    { stat: "health", amount: 0.5 },
+    { stat: "skillDuration", amount: 1, additive: true }
+  ],
+  "wardglass-transformer": [{ stat: "critMultiplier", amount: 0.35 }, { stat: "defense", amount: -0.35 }],
   "chaotic-ouroboros-core": [{ stat: "shatterCapacity", amount: 0.4 }],
-  "calamitic-causality-funeral-engine": [{ stat: "skillPower", amount: 0.8, additive: true }],
-  "calamitic-world-eater-orrery": [{ stat: "skillDuration", amount: 2, additive: true }]
+  "calamitic-causality-funeral-engine": [{ stat: "skillEfficiency", amount: 1, additive: true }],
+  "calamitic-cathedral-final-equation": [{ stat: "skillEfficiency", amount: 0.65, additive: true }],
+  "calamitic-horizon-cleaving-godpress": [{ stat: "defense", amount: 0.75 }],
+  "calamitic-throne-borrowed-tomorrows": [{ stat: "health", amount: 0.45 }, { stat: "defense", amount: 0.45 }],
+  "calamitic-world-eater-orrery": [{ stat: "skillDuration", amount: 3, additive: true }]
 };
 function phaseZeroUpgradeMagnitude(base, level) {
   if (!Number.isInteger(level) || level < 0 || level > 5) {
@@ -4217,8 +4225,10 @@ function applyPhaseZeroStaticBonuses(base, slots, upgrades = {}) {
     const amount = base[key] * (1 + (percent[key] ?? 0)) + (additive[key] ?? 0);
     result[key] = key === "skillEfficiency" ? amount : Math.max(0, amount);
   }
-  result.skillDuration = Math.min(2, Math.floor(result.skillDuration));
+  result.skillDuration = Math.floor(result.skillDuration);
   result.skillEfficiency = Math.min(0.5, result.skillEfficiency);
+  if (equipment.includes("glassroot-gimbal"))
+    result.skillPower += Math.floor(result.health / 200) * phaseZeroUpgradeMagnitude(0.05, levels["glassroot-gimbal"] ?? 0);
   return result;
 }
 
@@ -6211,13 +6221,11 @@ function calamiticExtraActionAvailable(state, owner, action) {
 function calamiticNoLastFlareRecovery(owner) {
   return phaseZeroStatsReady && equipped(owner, "calamitic-causality-funeral-engine");
 }
-function calamiticSkillPowerBonus(state) {
-  if (!phaseZeroStatsReady) return 0;
-  return Math.max(0, ...state.allies.filter((ally) => ally.hp > 0 && equipped(ally, "calamitic-cathedral-final-equation")).map((ally) => power(state, ally, "calamitic-cathedral-final-equation", 0.3, 0.45)));
+function calamiticSkillPowerBonus(_state) {
+  return 0;
 }
-function calamiticSkillEfficiencyBonus(state) {
-  if (!phaseZeroStatsReady) return 0;
-  return Math.max(0, ...state.allies.filter((ally) => ally.hp > 0 && equipped(ally, "calamitic-cathedral-final-equation")).map((ally) => power(state, ally, "calamitic-cathedral-final-equation", 0.25, 0.375)));
+function calamiticSkillEfficiencyBonus(_state) {
+  return 0;
 }
 function prepareCalamiticAction(state, owner, action) {
   if (phaseZeroStatsReady) {
@@ -6242,7 +6250,7 @@ function prepareCalamiticAction(state, owner, action) {
   }
   return false;
 }
-function afterCalamiticAction(state, owner, action, events, skillDamage = 0) {
+function afterCalamiticAction(state, owner, action, events, _skillDamage = 0) {
   if (owner.hp <= 0) return;
   if (phaseZeroStatsReady) {
     if (equipped(owner, "calamitic-throne-borrowed-tomorrows") && action === "ultimate" && gear(owner).numbers.extraActionSpent !== state.round) {
@@ -6254,13 +6262,6 @@ function afterCalamiticAction(state, owner, action, events, skillDamage = 0) {
         n2.calamiticThroneGranted = state.round;
         n2.calamiticThroneExtra = state.round;
         status2(owner, 1, `${ally.name} may take one additional Skill 1 or Skill 2 this turn.`, events);
-      }
-    }
-    if (equipped(owner, "calamitic-world-eater-orrery") && action !== "light") {
-      if (skillDamage > 0) {
-        const amount = skillDamage * power(state, owner, "calamitic-world-eater-orrery", 0.1, 0.15);
-        for (const ally of state.allies.filter((unit) => unit.hp > 0))
-          generatedHeal(owner, ally, amount, events, state);
       }
     }
     return;
@@ -6303,10 +6304,10 @@ function calamiticSiegeBonus(state, owner, target) {
   return !phaseZeroStatsReady && target.shield > 0 && equipped(owner, "calamitic-horizon-cleaving-godpress") ? power(state, owner, "calamitic-horizon-cleaving-godpress", 0.3, 0.6) : 0;
 }
 function calamiticSkillDefenseIgnore(state, owner, action) {
-  return phaseZeroStatsReady && action !== "light" && equipped(owner, "calamitic-horizon-cleaving-godpress") ? power(state, owner, "calamitic-horizon-cleaving-godpress", 0.4, 0.6) : 0;
+  return phaseZeroStatsReady && action !== "light" && equipped(owner, "calamitic-horizon-cleaving-godpress") ? power(state, owner, "calamitic-horizon-cleaving-godpress", 0.55, 0.825) : 0;
 }
-function calamiticSkillShieldBypass(state, owner, action) {
-  return phaseZeroStatsReady && action !== "light" && equipped(owner, "calamitic-horizon-cleaving-godpress") ? power(state, owner, "calamitic-horizon-cleaving-godpress", 0.5, 0.75) : 0;
+function calamiticSkillShieldBypass(_state, _owner, _action) {
+  return 0;
 }
 function deferCalamiticDamage(state, owner, offered, events) {
   if (phaseZeroStatsReady) return offered;
@@ -6759,7 +6760,7 @@ function nativeAction(state, owner, action, targetId, events, direct, activation
           seals[enemy.id] = {
             fraction: Math.max(
               seals[enemy.id]?.fraction ?? 0,
-              Math.min(1, (action === "skill1" ? 0.4 : 0.25) * (phaseZeroStatsReady ? activation.skillPower : 1))
+              Math.min(1, (action === "skill1" ? 0.4 : 0.25) * (phaseZeroStatsReady ? activation.skillPower + (activation.debuffPowerBonus ?? 0) : 1))
             ),
             throughPhase: state.round + 2 + activation.skillDuration
           };
@@ -7253,7 +7254,7 @@ function nativeCleanup(state) {
 }
 
 // src/game/conduit-runtime.ts
-var conduitRulesVersion = phaseZeroStatsReady ? 5 : 4;
+var conduitRulesVersion = phaseZeroStatsReady ? 6 : 4;
 function gear(unit) {
   return unit.conduitRuntime ??= { numbers: {}, owners: {} };
 }
@@ -7276,6 +7277,27 @@ function alive(state) {
 }
 function magnitude(state, id, base) {
   return phaseZeroUpgradeMagnitude(base, state.conduitUpgrades?.[id] ?? 0);
+}
+function diverseSquad(state) {
+  return new Set(state.allies.map((ally) => ally.element)).size === state.allies.length;
+}
+function heartcaseUnavailable(state, unit) {
+  return unit.kit?.unavailableActions?.includes("ultimate") === true || !equipped(unit, "calamitic-causality-funeral-engine") && (unit.recoverThrough >= state.round || (unit.readyRound.ultimate ?? 0) > state.round) || unit.shatter < conduitActionCost(unit, "ultimate", state, shatterGauge.costs.ultimate);
+}
+function refreshConduitStats(state, initial = false) {
+  if (!phaseZeroStatsReady) return;
+  for (const unit of state.allies) {
+    if (!equipped(unit, "horizon-heartcase")) continue;
+    const n = gear(unit).numbers;
+    n.heartcaseEntryHealth ??= unit.stats.health;
+    const baseHealth = phaseZeroStatBase(n.heartcaseEntryHealth, "health", unit.conduits, state.conduitUpgrades);
+    const health = n.heartcaseEntryHealth + (heartcaseUnavailable(state, unit) ? baseHealth * magnitude(state, "horizon-heartcase", 0.2) : 0);
+    if (equipped(unit, "glassroot-gimbal")) {
+      unit.stats.skillPower = (unit.stats.skillPower ?? 1) + (Math.floor(health / 200) - Math.floor(unit.stats.health / 200)) * magnitude(state, "glassroot-gimbal", 0.05);
+    }
+    unit.stats.health = health;
+    unit.hp = initial ? health : Math.min(unit.hp, health);
+  }
 }
 function grantToken(state, target, key, amount, owner) {
   const memory = gear(target);
@@ -7323,6 +7345,8 @@ function lowestGaugePercentage(state, owner) {
 }
 function effectiveGaugeGain(state, target) {
   let bonus = 0;
+  if (equipped(target, "starvein-conductor") && diverseSquad(state))
+    bonus += magnitude(state, "starvein-conductor", 0.1);
   if (state.round <= 2 && alive(state).some((ally) => equipped(ally, "firstlight-cam")))
     bonus += phaseZeroUpgradeMagnitude(0.5, state.conduitUpgrades?.["firstlight-cam"] ?? 0);
   if ((target.conduitRuntime?.numbers.crosswindGaugeThrough ?? 0) >= state.round)
@@ -7401,6 +7425,7 @@ function generatedGauge(owner, target, offer, events, native = false, gainApplie
   const amount = Math.min(target.stats.shatterCapacity - target.shatter, Math.max(0, offer));
   if (amount <= 0) return 0;
   target.shatter += amount;
+  if (state) refreshConduitStats(state);
   emit(events, "status", owner, target, amount, native ? `${target.name} gains ${amount} Elemental Gauge.` : `${owner.name}'s Conduit gives ${target.name} ${amount} Elemental Gauge.`, native);
   return amount;
 }
@@ -7507,13 +7532,22 @@ function generatedStrike(state, owner, target, offer, events, mitigated = true) 
   emit(events, "damage", owner, target, loss, `${owner.name}'s Conduit strikes ${target.name} for ${loss}.`);
   return loss;
 }
-function initializeConduits(state) {
+function initializeConduits(state, initial = false) {
   state.conduitRulesVersion = conduitRulesVersion;
   for (const unit of [...state.allies, ...state.enemies]) {
     gear(unit).numbers.entryDefense = unit.stats.defense;
     if (!phaseZeroStatsReady && unit.side === "ally" && equipped(unit, "fracture-reservoir")) {
       unit.shatter = Math.min(unit.stats.shatterCapacity, unit.shatter + value(state, unit, "fracture-reservoir", 5, 10));
     }
+    if (phaseZeroStatsReady && state.allies.some((unit2) => equipped(unit2, "breach-pendulum"))) {
+      const reduction = magnitude(state, "breach-pendulum", 0.1);
+      for (const enemy of state.enemies) {
+        if (gear(enemy).numbers.breachApplied) continue;
+        enemy.stats.defense *= 1 - reduction;
+        gear(enemy).numbers.breachApplied = 1;
+      }
+    }
+    refreshConduitStats(state, initial);
     if (!phaseZeroStatsReady && unit.side === "ally" && equipped(unit, "twinpulse-bellows")) {
       unit.shatter = Math.min(unit.stats.shatterCapacity, unit.shatter + unit.stats.shatterCapacity * value(state, unit, "twinpulse-bellows", 0.15, 0.35));
     }
@@ -7537,17 +7571,16 @@ function effectiveDefense(state, unit, excludeSquadAuras = false) {
     defense += baseDefense * 0.3;
   }
   if (phaseZeroStatsReady && unit.side === "ally" && unit.hp > 0 && unit.native?.cover && unit.native.cover.throughPhase >= state.round && equipped(unit, "master-bruno-1")) defense += baseDefense * 0.4;
-  if (phaseZeroStatsReady && unit.side === "ally" && equipped(unit, "sentinel-aperture"))
-    defense += baseDefense * magnitude(state, "sentinel-aperture", 0.05) * Math.floor(unit.shatter / 10);
-  if (phaseZeroStatsReady && unit.side === "ally" && n.aegisDefenseThrough !== void 0 && n.aegisDefenseThrough >= state.round) defense += baseDefense * (n.aegisDefense ?? 0.25);
+  if (phaseZeroStatsReady && equipped(unit, "horizon-heartcase") && heartcaseUnavailable(state, unit))
+    defense += baseDefense * magnitude(state, "horizon-heartcase", 0.1);
   if (phaseZeroStatsReady && unit.side === "ally") {
     for (const key of ["tensionDefense", "graftDefense"]) {
       if ((n[`${key}Through`] ?? 0) >= state.round) defense += baseDefense * (n[key] ?? 0);
     }
   }
-  if (phaseZeroStatsReady && !excludeSquadAuras && unit.side === "ally" && unit.hp > 0 && unit.hp < unit.stats.health * 0.5 && state.allies.some((ally) => ally.hp > 0 && ally.id !== unit.id && equipped(ally, "citadel-spine"))) {
+  if (phaseZeroStatsReady && !excludeSquadAuras && unit.side === "ally" && unit.hp > 0 && unit.hp < unit.stats.health * 0.75 && state.allies.some((ally) => ally.hp > 0 && ally.id !== unit.id && equipped(ally, "citadel-spine"))) {
     defense += baseDefense * phaseZeroUpgradeMagnitude(
-      0.3,
+      0.35,
       state.conduitUpgrades?.["citadel-spine"] ?? 0
     );
   }
@@ -7633,6 +7666,10 @@ function conduitActionCost(actor, action, state, base, targetId) {
     return base === 0 ? 0 : Math.max(1, base - discount);
   }
   let efficiency = actor.stats.skillEfficiency ?? 0;
+  if (equipped(actor, "starvein-conductor") && diverseSquad(state))
+    efficiency += magnitude(state, "starvein-conductor", 0.35);
+  if (equipped(actor, "execution-orrery") && action === "skill2")
+    efficiency += magnitude(state, "execution-orrery", 0.1);
   for (const key of ["seedSkillEfficiency", "blissSkillEfficiency", "orvellaSkillEfficiency", "rosettaSkillEfficiency"])
     efficiency += token(state, actor, key);
   if (token(state, actor, "tideEfficiencyPending") && (action === "skill1" || action === "skill2" || action === "ultimate")) {
@@ -7676,7 +7713,7 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     nativeAll,
     scale: 1,
     skillPower: phaseZeroStatsReady && action !== "light" ? (actor.stats.skillPower ?? 1) + calamiticSkillPowerBonus(state) : 1,
-    skillDuration: phaseZeroStatsReady ? Math.min(2, Math.floor(actor.stats.skillDuration ?? 0)) : 0,
+    skillDuration: phaseZeroStatsReady ? Math.floor(actor.stats.skillDuration ?? 0) : 0,
     criticalDamageBonus: 0,
     impacts: 1,
     hits: [],
@@ -7709,7 +7746,7 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     if (action === "skill1" || action === "skill2") token(state, actor, "skyEfficiency", true);
     if (action === "ultimate") token(state, actor, "stormEfficiency", true);
     ctx.skillPower += token(state, actor, "brunoCoverSkillPower", true);
-    ctx.skillDuration = Math.min(2, ctx.skillDuration + token(state, actor, "blissSkillDuration"));
+    ctx.skillDuration += token(state, actor, "blissSkillDuration");
   }
   if (phaseZeroStatsReady && equipped(actor, "solace-anchor") && alive(state).filter((ally) => ally.id !== actor.id).every((ally) => !ally.spent)) {
     for (const ally of alive(state).filter((ally2) => ally2.id !== actor.id)) {
@@ -7730,21 +7767,29 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
   const offensive = phaseZeroStatsReady ? traits.damage : action === "light" || actor.kit?.abilities[action].strength.damageMultiplier !== void 0;
   if (phaseZeroStatsReady && action !== "light") {
     const hasSkillDebuff = traits.debuff;
-    const isHealOrShield = traits.healing || traits.shield || nativeSupportAction(state, actor, action);
-    if (equipped(actor, "glassroot-gimbal") && actor.shield <= 0)
-      ctx.skillPower += phaseZeroUpgradeMagnitude(0.35, state.conduitUpgrades?.["glassroot-gimbal"] ?? 0);
-    if (equipped(actor, "opal-indexer") && hasSkillDebuff)
-      ctx.skillPower += phaseZeroUpgradeMagnitude(0.25, state.conduitUpgrades?.["opal-indexer"] ?? 0);
+    const isHealOrShield = traits.healing || traits.shield;
+    if (equipped(actor, "opal-indexer") && hasSkillDebuff) {
+      ctx.skillPower += magnitude(state, "opal-indexer", 0.75);
+      ctx.skillDuration++;
+    }
+    if (equipped(actor, "calamitic-world-eater-orrery") && hasSkillDebuff)
+      ctx.debuffPowerBonus = magnitude(state, "calamitic-world-eater-orrery", 1.25);
+    if (equipped(actor, "sentinel-aperture") && action === "skill1")
+      ctx.skillPower += magnitude(state, "sentinel-aperture", 0.99);
+    if (equipped(actor, "execution-orrery") && action === "skill2")
+      ctx.skillPower += magnitude(state, "execution-orrery", 0.99);
+    if (equipped(actor, "nullsong-transmission"))
+      ctx.skillPower += roll(state) < 0.5 ? magnitude(state, "nullsong-transmission", 0.75) : -0.75;
+    if (equipped(actor, "judgment-lens") && (!offensive || isHealOrShield || nativeSupportAction(state, actor, action)))
+      ctx.skillPower += magnitude(state, "judgment-lens", 0.5);
     if (equipped(actor, "springwell-pump") && isHealOrShield)
       ctx.skillPower += phaseZeroUpgradeMagnitude(0.2, state.conduitUpgrades?.["springwell-pump"] ?? 0);
     if (isHealOrShield && layers(actor).some((layer) => layer.amount > 0 && layer.native && state.allies.some((owner) => owner.hp > 0 && owner.id === layer.owner && equipped(owner, "ward-stitch-spool"))))
       ctx.skillPower += phaseZeroUpgradeMagnitude(0.3, state.conduitUpgrades?.["ward-stitch-spool"] ?? 0);
     if (equipped(actor, "siege-cantilever") && nativeAll && offensive)
-      ctx.skillPower += phaseZeroUpgradeMagnitude(0.45, state.conduitUpgrades?.["siege-cantilever"] ?? 0);
-    if (equipped(actor, "verdict-caliper") && alive(state).filter((ally) => ally.id !== actor.id).every((ally) => ally.spent))
-      ctx.skillPower += phaseZeroUpgradeMagnitude(0.45, state.conduitUpgrades?.["verdict-caliper"] ?? 0);
+      ctx.skillPower += magnitude(state, "siege-cantilever", 1.5);
     if (equipped(actor, "worldbreaker-drive") && action === "ultimate")
-      ctx.skillPower += phaseZeroUpgradeMagnitude(0.85, state.conduitUpgrades?.["worldbreaker-drive"] ?? 0);
+      ctx.skillPower += magnitude(state, "worldbreaker-drive", 0.99);
     if (equipped(actor, "infernic-pyre-census"))
       ctx.skillPower += Math.min(3, new Set(alive(state).map((ally) => ally.element)).size) * magnitude(state, "infernic-pyre-census", 0.15);
     if (alive(state).some((ally) => ally.id !== actor.id && equipped(ally, "chaotic-paradox-spindle") && ally.recoverThrough >= state.round))
@@ -7755,20 +7800,6 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     ctx.skillPower += token(state, actor, "faultSkillPower", true);
     ctx.skillPower += token(state, actor, "coverSkillPower", true);
     if (offensive) ctx.skillPower += token(state, actor, "verdantPower", true);
-    if (equipped(actor, "horizon-heartcase") && gear(actor).numbers.heartcasePowerBonus) {
-      ctx.skillPower += gear(actor).numbers.heartcasePowerBonus;
-      delete gear(actor).numbers.heartcasePowerBonus;
-    }
-    if (equipped(actor, "starvein-conductor") && offensive) {
-      const payment = Math.ceil(actor.stats.health * 0.05);
-      if (actor.hp - payment >= 1) {
-        actor.hp -= payment;
-        ctx.spent.starveinPower = magnitude(state, "starvein-conductor", 0.6);
-      }
-    }
-    if (offensive && layers(actor).some((layer) => layer.amount > 0 && layer.native && state.allies.some((ally) => ally.id === layer.owner && ally.hp > 0 && equipped(ally, "pale-bulwark-diadem")))) {
-      ctx.skillPower += phaseZeroUpgradeMagnitude(0.25, state.conduitUpgrades?.["pale-bulwark-diadem"] ?? 0);
-    }
     for (const key of ["vaelorSkillPower", "seedSkillPower", "thorniaSkillPower"])
       ctx.skillPower += token(state, actor, key, true);
     if (n.tideEfficiencyPending !== void 0) {
@@ -7784,6 +7815,18 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     ]) token(state, actor, key, true);
   }
   if (phaseZeroStatsReady && offensive) {
+    if (equipped(actor, "calamitic-cathedral-final-equation")) {
+      ctx.criticalBonus += magnitude(state, "calamitic-cathedral-final-equation", 2.5);
+      ctx.criticalDamageBonus += magnitude(state, "calamitic-cathedral-final-equation", 1.2);
+    }
+    if (action === "ultimate" && equipped(actor, "horizon-heartcase")) {
+      ctx.criticalBonus += magnitude(state, "horizon-heartcase", 0.1);
+      ctx.criticalDamageBonus += magnitude(state, "horizon-heartcase", 0.35);
+    }
+    if (equipped(actor, "worldbreaker-drive")) ctx.bonus += magnitude(state, "worldbreaker-drive", 0.65);
+    if (action === "ultimate" && equipped(actor, "parallax-relay")) ctx.bonus += magnitude(state, "parallax-relay", 0.1);
+    if (action === "ultimate" && equipped(actor, "calamitic-causality-funeral-engine"))
+      ctx.bonus += magnitude(state, "calamitic-causality-funeral-engine", 1.25);
     ctx.criticalBonus += token(state, actor, "dawnRate", true) + token(state, actor, "thunderRate", true);
     ctx.criticalDamageBonus += token(state, actor, "dawnDamage", true);
     if (actor.shield > 0 && equipped(actor, "chaotic-fault-verdict"))
@@ -7810,16 +7853,12 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
   if (offensive && equipped(actor, "infernic-pyre-census") && !phaseZeroStatsReady)
     ctx.bonus += state.enemies.filter((enemy) => enemy.hp > 0 && enemy.burn.turns > 0 && enemy.burn.sourceId === actor.id).length * value(state, actor, "infernic-pyre-census", 0.1, 0.2);
   if (offensive && equipped(actor, "glassroot-gimbal") && !phaseZeroStatsReady) ctx.bonus += Math.floor((actor.shatter + paid) / 10) * value(state, actor, "glassroot-gimbal", 0.01, 0.02);
-  ctx.guaranteed = (!phaseZeroStatsReady || offensive) && equipped(actor, "falcon-sight") && (n.noncritical ?? 0) >= 2;
-  if (phaseZeroStatsReady && ctx.guaranteed) ctx.criticalDamageBonus += magnitude(state, "falcon-sight", 0.1);
+  ctx.guaranteed = !phaseZeroStatsReady && equipped(actor, "falcon-sight") && (n.noncritical ?? 0) >= 2;
   ctx.forbidden = !phaseZeroStatsReady && (equipped(actor, "verdict-caliper") || action === "light" && equipped(actor, "judgment-lens"));
   if (equipped(actor, "verdict-caliper") && !phaseZeroStatsReady) ctx.bonus += value(state, actor, "verdict-caliper", 0.35, 0.7);
   if (action === "light") {
     if (!phaseZeroStatsReady && equipped(actor, "siegebound-drive")) ctx.bonus += value(state, actor, "siegebound-drive", 0.08, 0.16);
     if (!phaseZeroStatsReady && equipped(actor, "nullsong-transmission")) ctx.bonus += value(state, actor, "nullsong-transmission", 0.4, 0.8);
-    if (phaseZeroStatsReady && equipped(actor, "wardglass-transformer") && token(state, actor, "wardglassNormal", true)) {
-      ctx.criticalBonus += phaseZeroUpgradeMagnitude(0.2, state.conduitUpgrades?.["wardglass-transformer"] ?? 0);
-    }
     if (actor.recoverThrough >= state.round && recoveryNormal(actor)) ctx.scale *= value(state, actor, "chaotic-paradox-spindle", 0.5, 0.75);
     if (!phaseZeroStatsReady && equipped(actor, "master-atmoso-1")) {
       ctx.all = true;
@@ -7893,13 +7932,12 @@ function prepareConduitAction(state, actor, action, paid, nativeAll) {
     ctx.bonus += n.goldImprint ?? 0;
     delete n.goldImprint;
   }
+  ctx.skillPower = Math.max(0, ctx.skillPower);
   return ctx;
 }
 function conduitCriticalBonus(state, actor, target, action = "light") {
   if (!phaseZeroStatsReady) return 0;
   let bonus = 0;
-  if (action !== "light" && target.hp < target.stats.health * 0.5 && equipped(actor, "execution-orrery"))
-    bonus += magnitude(state, "execution-orrery", 0.35);
   if (layers(actor).some((layer) => layer.native && layer.amount > 0 && alive(state).some((owner) => owner.id === layer.owner && equipped(owner, "aegis-return-spring"))))
     bonus += magnitude(state, "aegis-return-spring", 0.2);
   if (target.burn.turns > 0 && target.burn.origin !== "conduit" && alive(state).some((owner) => owner.id !== actor.id && owner.id === target.burn.sourceId && equipped(owner, "flare-focusing-iris")))
@@ -7950,8 +7988,6 @@ function conduitHitModifiers(state, actor, target, ctx, critical) {
     }
     if (ctx.emberBonusOwner && target.burn.turns > 0 && target.burn.sourceId === ctx.emberBonusOwner && target.burn.origin !== "conduit") skillPowerBonus += 0.4;
   }
-  if (phaseZeroStatsReady && action === "light" && critical && target.hp > target.stats.health * 0.75 && equipped(actor, "breach-pendulum")) criticalDamageBonus += magnitude(state, "breach-pendulum", 0.4);
-  if (phaseZeroStatsReady && critical && actor.shield > 0 && equipped(actor, "wardglass-transformer")) criticalDamageBonus += magnitude(state, "wardglass-transformer", 0.25);
   if (phaseZeroStatsReady && action !== "light" && critical && equipped(actor, "judgment-lens"))
     criticalDamageBonus += phaseZeroUpgradeMagnitude(0.5, state.conduitUpgrades?.["judgment-lens"] ?? 0);
   if (!phaseZeroStatsReady && target.hp >= target.stats.health && equipped(actor, "breach-pendulum"))
@@ -8044,7 +8080,7 @@ function conduitHitModifiers(state, actor, target, ctx, critical) {
     bonus,
     skillPowerBonus,
     pierce: phaseZeroStatsReady ? Math.min(0.75, pierce) : pierce,
-    attack: attack * (phaseZeroStatsReady && action === "light" && equipped(actor, "nullsong-transmission") ? magnitude(state, "nullsong-transmission", 2.5) : 1),
+    attack,
     ...criticalDamageBonus > 0 ? { criticalDamageBonus: actor.stats.critMultiplier > 0 ? criticalDamageBonus * (criticalBase / actor.stats.critMultiplier) : 0 } : {},
     ...critical && equipped(actor, "master-elise-1") && !phaseZeroStatsReady ? { critMultiplier: 1.5 } : {}
   };
@@ -8066,7 +8102,7 @@ function applyConduitBurn(state, owner, target, base, ctx) {
   }
   const levelMultiplier = owner.side === "ally" ? damageOverTimeLevelMultiplier(owner.level ?? 0) : 1;
   const scaledBase = base * levelMultiplier;
-  const damage = Math.round((scaledBase * ctx.skillPower + ctx.shieldBurn * levelMultiplier) * (1 + bonus));
+  const damage = Math.round((scaledBase * (ctx.skillPower + (ctx.debuffPowerBonus ?? 0)) + ctx.shieldBurn * levelMultiplier) * (1 + bonus));
   if (phaseZeroStatsReady) {
     const n = gear(target).numbers;
     const prior = owner.native?.burns?.[target.id] ?? (target.burn.sourceId === owner.id ? target.burn : void 0);
@@ -8094,7 +8130,7 @@ function applyConduitWeaken(state, owner, target, fraction, events, action = "sk
     return;
   }
   const duration = baseDuration + (phaseZeroStatsReady ? activation?.skillDuration ?? Math.floor(owner.stats.skillDuration ?? 0) : 0) + (phaseZeroStatsReady ? Number(equipped(owner, "aquatic-undertide-chronometer")) : equipped(owner, "opal-indexer") ? step(state, "opal-indexer", 1, 2) : 0);
-  const strength = fraction * (phaseZeroStatsReady ? activation?.skillPower ?? owner.stats.skillPower ?? 1 : 1) + (!phaseZeroStatsReady && equipped(owner, "tension-governor") ? value(state, owner, "tension-governor", 0.05, 0.1) : 0);
+  const strength = fraction * (phaseZeroStatsReady ? (activation?.skillPower ?? owner.stats.skillPower ?? 1) + (activation?.debuffPowerBonus ?? 0) : 1) + (!phaseZeroStatsReady && equipped(owner, "tension-governor") ? value(state, owner, "tension-governor", 0.05, 0.1) : 0);
   const boundedStrength = phaseZeroStatsReady ? Math.min(0.5, strength) : strength;
   if (target.weakened > 0 && target.weakenFraction > boundedStrength) {
     emit(events, "status", owner, target, target.weakenFraction, `${target.name}'s stronger Weaken remains unchanged.`);
@@ -8188,25 +8224,14 @@ function nativeHeal(state, owner, target, offer, events, active, ctx, instructio
   }
   emit(events, "heal", owner, target, restored, `${owner.name} restores ${restored} HP to ${target.name}.`, true);
   if (phaseZeroStatsReady && active && equipped(owner, "meridian-inverter")) {
-    const key = `meridian:${owner.id}`;
-    const memory = gear(target).numbers;
-    if (memory[key] !== state.round) {
-      memory[key] = state.round;
-      generatedGaugePercent(owner, target, magnitude(state, "meridian-inverter", 0.08), events, state);
+    const key = `meridian:${target.id}`;
+    if (ctx?.spent && !ctx.spent[key]) {
+      ctx.spent[key] = 1;
+      generatedGaugePercent(owner, target, magnitude(state, "meridian-inverter", 0.04), events, state);
     }
   }
   pilotEffectiveHeal(state, owner, target, restored, events);
   supportEffect(state, owner, target, events);
-  if (phaseZeroStatsReady && ctx?.action !== void 0 && ctx.action !== "light" && owner.id !== target.id && equipped(target, "immortal-vessel")) {
-    const recipient = injured(state, target, true);
-    if (recipient) {
-      const key = `immortal:${target.id}:${recipient.id}`;
-      const prior = ctx.spent?.[key] ?? 0;
-      const cap = recipient.stats.health * 0.08;
-      const healed = generatedHeal(target, recipient, restored * magnitude(state, "immortal-vessel", 0.25), events, state, cap - prior);
-      if (ctx.spent && healed > 0) ctx.spent[key] = prior + healed;
-    }
-  }
   if (!phaseZeroStatsReady && active && owner.id !== target.id && equipped(owner, "efflorescent-verdant-covenant")) gear(target).numbers.verdant = Math.max(gear(target).numbers.verdant ?? 0, value(state, owner, "efflorescent-verdant-covenant", 0.2, 0.4));
   return restored;
 }
@@ -8261,11 +8286,6 @@ function nativeShield(state, owner, target, offer, events, options = {}) {
     target.pilot ??= {};
     target.pilot.authoredShieldSourceId = owner.id;
     supportEffect(state, owner, target, events);
-    if (phaseZeroStatsReady && options.skillPower !== void 0 && owner.id !== target.id && equipped(owner, "aegis-capacitor")) {
-      const memory = gear(owner).numbers;
-      memory.aegisDefense = phaseZeroUpgradeMagnitude(0.25, state.conduitUpgrades?.["aegis-capacitor"] ?? 0);
-      memory.aegisDefenseThrough = state.round;
-    }
     if (phaseZeroStatsReady && options.activation?.action === "skill2" && equipped(owner, "master-tide-2")) {
       grantToken(state, target, "tideEfficiencyPending", 1);
       gear(target).owners.tideEfficiencyOwner = owner.id;
@@ -8356,6 +8376,8 @@ function finishConduitAction(state, owner, ctx, events) {
     generatedHeal(owner, owner, owner.stats.health * phaseZeroUpgradeMagnitude(0.05, state.conduitUpgrades?.["duplex-heart"] ?? 0), events, state);
   }
   const critical = ctx.hits.find((hit) => hit.critical && hit.damage > 0);
+  if (phaseZeroStatsReady && ctx.hits.some((hit) => hit.critical && (hit.totalDamage ?? hit.damage) > 0) && equipped(owner, "verdict-caliper"))
+    generatedHeal(owner, owner, owner.stats.health * magnitude(state, "verdict-caliper", 0.25), events, state);
   const primaryHit = ctx.hits[0];
   const target = state.enemies.find((enemy) => enemy.id === primaryHit?.target);
   const killed = ctx.hits.some((hit) => hit.damage > 0 && state.enemies.some((enemy) => enemy.id === hit.target && enemy.hp <= 0));
@@ -8371,9 +8393,9 @@ function finishConduitAction(state, owner, ctx, events) {
       } else n.tailwind = (n.tailwind ?? 0) + 1;
     }
     if (phaseZeroStatsReady && equipped(owner, "twinpulse-bellows")) {
-      generatedGaugePercent(owner, owner, phaseZeroUpgradeMagnitude(0.05, state.conduitUpgrades?.["twinpulse-bellows"] ?? 0), events, state);
+      generatedGaugePercent(owner, owner, phaseZeroUpgradeMagnitude(0.07, state.conduitUpgrades?.["twinpulse-bellows"] ?? 0), events, state);
       const other = alive(state).filter((ally) => ally.id !== owner.id).sort((a, b) => a.shatter / a.stats.shatterCapacity - b.shatter / b.stats.shatterCapacity)[0];
-      generatedGaugePercent(owner, other, phaseZeroUpgradeMagnitude(0.05, state.conduitUpgrades?.["twinpulse-bellows"] ?? 0), events, state);
+      generatedGaugePercent(owner, other, phaseZeroUpgradeMagnitude(0.07, state.conduitUpgrades?.["twinpulse-bellows"] ?? 0), events, state);
     }
     if (equipped(owner, "tranquilitic-kirin-cradle")) {
       const recipient = alive(state).sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0];
@@ -8440,10 +8462,10 @@ function finishConduitAction(state, owner, ctx, events) {
     if (!id) continue;
     switch (id) {
       case "falcon-sight":
-        if (ctx.hits.length) n.noncritical = ctx.guaranteed || ctx.hits.some((hit) => hit.critical) ? 0 : (n.noncritical ?? 0) + 1;
+        if (!phaseZeroStatsReady && ctx.hits.length) n.noncritical = ctx.guaranteed || ctx.hits.some((hit) => hit.critical) ? 0 : (n.noncritical ?? 0) + 1;
         break;
       case "lifeline-flywheel":
-        generatedHeal(owner, owner, ctx.hits.reduce((sum, hit) => sum + (phaseZeroStatsReady ? hit.totalDamage ?? hit.damage : hit.damage), 0) * (phaseZeroStatsReady ? phaseZeroUpgradeMagnitude(0.08, state.conduitUpgrades?.[id] ?? 0) : value(state, owner, id, 0.08, 0.16)), events, state);
+        generatedHeal(owner, owner, ctx.hits.reduce((sum, hit) => sum + (phaseZeroStatsReady ? hit.totalDamage ?? hit.damage : hit.damage), 0) * (phaseZeroStatsReady ? phaseZeroUpgradeMagnitude(0.1, state.conduitUpgrades?.[id] ?? 0) : value(state, owner, id, 0.08, 0.16)), events, state);
         break;
       case "voltaic-thunderbird-coil":
         if (phaseZeroStatsReady) {
@@ -8558,6 +8580,7 @@ function finishConduitAction(state, owner, ctx, events) {
         }
         break;
       case "resonance-crucible":
+        if (phaseZeroStatsReady) break;
         for (const hit of ctx.hits.filter((hit2) => (hit2.overkill ?? 0) > 0))
           generatedStrike(
             state,
@@ -8912,14 +8935,6 @@ function rescue(state, target, loss, events, direct) {
     } else n.accordShield = accord.stats.health * value(state, accord, "tranquilitic-accord-bastion", 0.1, 0.2);
     return Math.max(0, target.hp - 1);
   }
-  if (direct && phaseZeroStatsReady && equipped(target, "horizon-heartcase") && !n.heartcaseUsed && target.shatter >= 40) {
-    target.shatter -= 40;
-    n.rescueUsed = 1;
-    n.heartcaseUsed = 1;
-    n.heartcasePowerBonus = 4 * phaseZeroUpgradeMagnitude(0.05, state.conduitUpgrades?.["horizon-heartcase"] ?? 0);
-    emit(events, "status", target, target, 40, `${target.name}'s Horizon Heartcase spends 40 Elemental Gauge and survives at 1 HP.`);
-    return Math.max(0, target.hp - 1);
-  }
   if (direct && !phaseZeroStatsReady && equipped(target, "horizon-heartcase")) {
     const saves = n.heartcaseSaves ?? 0;
     const excess = loss - target.hp + 1;
@@ -9058,8 +9073,27 @@ function nativeShieldActivationMultiplier(enemy, target) {
   if (multiplier < 1) memory.numbers[key] = multiplier;
   return multiplier;
 }
+function absorbEnemyDamage(state, target, amount, events) {
+  const shieldBefore = target.shield;
+  const reduction = phaseZeroStatsReady && equipped(target, "pale-bulwark-diadem") ? magnitude(state, "pale-bulwark-diadem", 0.5) : 0;
+  const covered = Math.min(amount, shieldBefore / (1 - reduction));
+  const absorbed = consumeShield(target, covered * (1 - reduction));
+  let loss = Math.max(0, amount - covered);
+  const n = gear(target).numbers;
+  if (phaseZeroStatsReady && shieldBefore > 0 && target.shield <= 0 && equipped(target, "stasis-reliquary") && n.stasisPenalty !== state.round) {
+    n.stasisProtected = state.round;
+    n.stasisPenalty = state.round + 1;
+    loss = 0;
+    emit(events, "status", target, target, 1, `${target.name}'s [Stasis Reliquary] prevents damage for this [Enemy Turn]; next [Enemy Turn] takes 25% more attack damage.`);
+  }
+  return { absorbed, loss, covered };
+}
 function conduitIncoming(state, enemy, target, damage, critical, scheduled, events, action = scheduled ? "skill1" : "light") {
   const n = gear(target).numbers;
+  if (phaseZeroStatsReady && n.stasisProtected === state.round) {
+    emit(events, "damage", enemy, target, 0, `${target.name}'s [Stasis Reliquary] prevents further damage this [Enemy Turn].`);
+    return;
+  }
   if (!scheduled && n.windveil && n.windveilRound !== state.round - 1) {
     delete n.windveil;
     n.windveilRound = state.round;
@@ -9068,6 +9102,7 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   }
   const shieldBefore = target.shield;
   let equipmentMultiplier = 1;
+  if (phaseZeroStatsReady && n.stasisPenalty === state.round) equipmentMultiplier *= 1.25;
   for (const keeper of alive(state).filter((ally) => !phaseZeroStatsReady && equipped(ally, "firstlight-cam"))) {
     const memory = gear(keeper).numbers;
     memory.firstlightRound ??= state.round;
@@ -9100,14 +9135,7 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   if (hasParry) {
     reflection = Math.max(0, beforeParry - offered) * 0.5;
   }
-  if (phaseZeroStatsReady && equipped(target, "stasis-reliquary")) {
-    const key = `stasis:${enemy.id}:${action}:${state.round}`;
-    const prior = n[key] ?? 0;
-    const remainingThreshold = Math.max(0, target.stats.health * 0.2 - prior);
-    const protectedPortion = Math.max(0, offered - remainingThreshold);
-    n[key] = prior + offered;
-    offered -= protectedPortion * phaseZeroUpgradeMagnitude(0.4, state.conduitUpgrades?.["stasis-reliquary"] ?? 0);
-  } else if (equipped(target, "stasis-reliquary") && offered > target.stats.health * 0.2) {
+  if (!phaseZeroStatsReady && equipped(target, "stasis-reliquary") && offered > target.stats.health * 0.2) {
     offered = target.stats.health * 0.2 + (offered - target.stats.health * 0.2) * (1 - value(state, target, "stasis-reliquary", 0.3, 0.6));
   }
   if (phaseZeroStatsReady) offered = Math.max(damage * 0.2, offered);
@@ -9156,15 +9184,14 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
       emit(events, "shield", network, ally, -amount, `${ally.name}'s linked shield absorbs ${amount} for ${target.name}.`);
     }
   }
-  const absorbed = consumeShield(target, remaining);
-  let loss = remaining - absorbed.absorbed;
+  const shieldResult = absorbEnemyDamage(state, target, remaining, events);
+  const { absorbed } = shieldResult;
+  let loss = shieldResult.loss;
   if (!phaseZeroStatsReady && shieldBefore > 0 && target.shield <= 0 && absorbed.absorbed > 0 && equipped(target, "fieldbrace-coupler")) n.fieldbraceRound = state.round + 1;
   for (const [id, amount] of absorbed.native) {
     const owner = state.allies.find((ally) => ally.id === id);
     if (!owner) continue;
     const broke = absorbed.broken.has(id);
-    if (phaseZeroStatsReady && broke && owner.id === target.id && equipped(owner, "wardglass-transformer"))
-      grantToken(state, target, "wardglassNormal", 1);
     const guardKey = phaseZeroStatsReady ? "tideGuard" : `tideGuard:${id}`;
     if (equipped(owner, "master-tide-1") && broke && !n[guardKey]) {
       n[guardKey] = 1;
@@ -9187,9 +9214,10 @@ function conduitIncoming(state, enemy, target, damage, critical, scheduled, even
   }
   loss = deferCalamiticDamage(state, target, loss, events);
   loss = Math.min(target.hp, rescue(state, target, loss, events, true));
-  const fullyAbsorbedNative = loss === 0 && absorbed.absorbed >= postMitigation ? new Map([...absorbed.native].filter(([, amount]) => amount >= postMitigation)) : /* @__PURE__ */ new Map();
+  const fullyAbsorbedNative = loss === 0 && shieldResult.covered >= postMitigation ? new Map([...absorbed.native].filter(([, amount]) => amount >= absorbed.absorbed)) : /* @__PURE__ */ new Map();
   nativeAbsorbedHit(state, target, fullyAbsorbedNative, loss, events);
   nativeGauge(state, target, shatterGauge.incomingHit, events);
+  loss = Math.min(target.hp, loss);
   target.hp -= loss;
   bankCalamiticDamage(state, loss);
   emit(events, "damage", enemy, target, loss, `${target.name}: ${Math.round(loss)} damage${critical ? " (critical)" : ""}${absorbed.absorbed ? `, ${Math.round(absorbed.absorbed)} shield absorbed` : ""}.`, true);
@@ -9224,8 +9252,11 @@ function allyFell(state, fallen, events) {
   }
 }
 function routedDamage(state, enemy, target, amount, events, nativeRedirect = false) {
-  const absorbed = consumeShield(target, amount).absorbed;
-  const loss = Math.min(target.hp, amount - absorbed);
+  const n = gear(target).numbers;
+  if (phaseZeroStatsReady && n.stasisProtected === state.round) return;
+  if (phaseZeroStatsReady && n.stasisPenalty === state.round) amount = Math.round(amount * 1.25);
+  const { loss: remaining } = absorbEnemyDamage(state, target, amount, events);
+  const loss = Math.min(target.hp, remaining);
   const wasStanding = target.hp > 0;
   target.hp -= loss;
   emit(events, "damage", enemy, target, loss, `${target.name} intercepts ${Math.round(amount)} damage (Conduit routing).`);
@@ -9358,6 +9389,7 @@ function createWarBattle(character, stage, seed2, starter, progress, roster = [s
   state.enemies = [unit];
   state.lycalisSeed = (seed2 ^ 2692095333) >>> 0 || 1;
   state.recruitmentSeed = (seed2 ^ 3875765969) >>> 0 || 1;
+  initializeConduits(state);
   return state;
 }
 function warRewardRoll(state, key) {
@@ -9465,7 +9497,7 @@ function createBattle(seed2 = 1729, roster = ["ember"], progress = {}, equipment
     }),
     enemies: spawnWave(1)
   };
-  initializeConduits(state);
+  initializeConduits(state, true);
   return state;
 }
 function createDungeonBattle(element, stage, seed2, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}, encounterSeed) {
@@ -9492,6 +9524,7 @@ function createDungeonBattle(element, stage, seed2, starter, progress, roster = 
     unit.enemySkills = enemySkills(selected.level, selected.boss, selected.ability, selected.abilityMultiplier);
     return unit;
   });
+  initializeConduits(state);
   return state;
 }
 function createStoryBattle(stage, seed2, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}, encounterSeed) {
@@ -9518,6 +9551,7 @@ function createStoryBattle(stage, seed2, starter, progress, roster = [starter], 
     unit.enemySkills = enemySkills(encounter2.level, encounter2.boss, `${creature.name} Strike`, encounter2.abilityMultiplier);
     return unit;
   });
+  initializeConduits(state);
   return state;
 }
 function roll(state) {
@@ -9543,6 +9577,7 @@ function createInfusionBattle(mode, stage, seed2, starter, progress, roster = [s
     unit.enemySkills = enemySkills(encounter2.level, encounter2.boss, encounter2.ability, encounter2.abilityMultiplier);
     return unit;
   });
+  initializeConduits(state);
   return state;
 }
 function createCalamityBattle(activity, tier, seed2, starter, progress, roster = [starter], teamProgress = { [starter]: progress }, equipment = {}, captures = [], upgrades = {}) {
@@ -9559,6 +9594,7 @@ function createCalamityBattle(activity, tier, seed2, starter, progress, roster =
     art: getCreature(`calamity:${activity}`).art
   });
   state.enemies = [unit];
+  initializeConduits(state);
   return state;
 }
 var elementalCritFactor = 1.5;
@@ -9583,8 +9619,8 @@ function actionUnavailable(state, actor, action, targetId) {
   const calamiticReason = calamiticActionReason(state, actor, action);
   if (calamiticReason) return calamiticReason;
   if (conduitActionBlocked(actor, state)) return "This character cannot take another action this turn.";
-  if (actor.recoverThrough >= state.round && !(action === "light" && recoveryNormal(actor))) return "Recovering this turn after Last Flare.";
-  if (action === "ultimate" && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
+  if (actor.recoverThrough >= state.round && !calamiticNoLastFlareRecovery(actor) && !(action === "light" && recoveryNormal(actor))) return "Recovering this turn after Last Flare.";
+  if (action === "ultimate" && !calamiticNoLastFlareRecovery(actor) && (actor.readyRound.ultimate ?? 0) > state.round) return `Ready on turn ${actor.readyRound.ultimate}.`;
   const gaugeCost = actionGaugeCost(actor, action, state, targetId);
   if (actor.shatter < gaugeCost) return `Requires ${gaugeCost} Elemental Gauge.`;
   return null;
@@ -9818,6 +9854,7 @@ function act(previous, actorId, action, targetId) {
   const paid = actionGaugeCost(actor, action, state, targetId);
   const nativeAll = native ? nativeAbility?.targets === "all-enemies" : !actor.captured && (action === "ultimate" || action === "skill2" && actor.definitionId === "ember" || action !== "light" && definition.abilities[action].targets === "all-enemies");
   actor.shatter -= paid;
+  refreshConduitStats(state);
   const activation = prepareConduitAction(state, actor, action, paid, nativeAll);
   const priorInstruction = actor.native?.instruction;
   events.push({ kind: "attack", source: actor.id, target: support ? actor.id : targetId, amount: 0, critical: false, message: `${actor.name} uses ${name}.`, action, abilityName: name });
@@ -9825,7 +9862,8 @@ function act(previous, actorId, action, targetId) {
   if (action === "ultimate" && (phaseZeroStatsReady || !equipped(actor, "master-nerithe-3")) && !calamiticNoLastFlareRecovery(actor)) actor.recoverThrough = state.round + 1;
   nativeGauge(state, actor, shatterGauge.gains[action] + (action === "light" ? definition.passive.lightGaugeBonus ?? 0 : 0), events);
   if (action === "skill1" || action === "skill2") actor.readyRound[action] = state.round;
-  if (action === "ultimate" && actor.captured) actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
+  if (action === "ultimate" && actor.captured && !calamiticNoLastFlareRecovery(actor))
+    actor.readyRound.ultimate = state.round + definition.abilities.ultimate.cooldown;
   if (native) {
     const direct = (selected, coefficient, pierce = 0, criticalBonus = 0) => {
       const targets = activation.all ? state.enemies.filter((enemy) => enemy.hp > 0) : nativeAll ? selected.filter((enemy) => enemy.id === targetId) : selected;
@@ -9868,6 +9906,7 @@ function act(previous, actorId, action, targetId) {
     nativeAction(state, actor, action, targetId, events, direct, activation);
     nativeAfterAction(state, actor, action, priorInstruction, events);
     finishConduitAction(state, actor, activation, events);
+    refreshConduitStats(state);
     conduitDeaths(state, previous, events);
     nativeCleanup(state);
     checkOutcome(state);
@@ -9985,6 +10024,7 @@ function newTurn(state, events) {
   }
   conduitTurnStart(state, events);
   nativeTurnStart(state, events);
+  refreshConduitStats(state);
   for (const ally of state.allies.filter((unit) => unit.hp > 0 && (unit.kit?.passive.healFraction ?? 0) > 0)) {
     if (!ally.kit) throw new Error("Passive combat kit is missing.");
     if (equipped(ally, "master-sprout-1")) continue;
@@ -9994,6 +10034,7 @@ function newTurn(state, events) {
     } else healTeam(state, ally, ally.kit.passive.healFraction, events, true);
   }
   events.push({ kind: "turn", source: "", target: "", amount: state.round, critical: false, message: `Turn ${state.round}. Only Last Flare forces next-turn recovery.` });
+  refreshConduitStats(state);
   attachNativeView(state, events[events.length - 1]);
 }
 function endTurn(previous) {
@@ -10154,6 +10195,7 @@ function nextStage(previous, progress) {
     state.lycalisSeed = previous.lycalisSeed;
     state.recruitmentSeed = previous.recruitmentSeed;
   }
+  refreshConduitStats(state, true);
   return { state, events: [{
     kind: "turn",
     source: "",
@@ -10181,7 +10223,12 @@ function nextWave(previous) {
     delete ally.omnicMemory;
     delete ally.omnicProtection;
     const layers2 = ally.conduitRuntime?.layers;
-    ally.conduitRuntime = { numbers: {}, owners: {}, ...layers2 ? { layers: layers2 } : {} };
+    const heartcaseEntryHealth = ally.conduitRuntime?.numbers.heartcaseEntryHealth;
+    ally.conduitRuntime = {
+      numbers: heartcaseEntryHealth === void 0 ? {} : { heartcaseEntryHealth },
+      owners: {},
+      ...layers2 ? { layers: layers2 } : {}
+    };
     delete ally.conduitCharges;
   }
   initializeConduits(state);

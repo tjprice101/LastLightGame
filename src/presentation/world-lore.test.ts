@@ -26,10 +26,10 @@ describe('canon across information and lore surfaces', () => {
     const prologues = [host.querySelector('#story-prologue-information'), host.querySelector('.story-prologue')];
     for (const surface of [worldLore(), sanctuaryHeader('home', 0), gameplayHub(account),
       ...prologues.map(prologue => prologue?.innerHTML ?? '')]) {
-      for (const entry of worldHistory) expect(plain(surface)).toContain(entry.text);
-      expect(plain(surface)).toContain(machineOrigin);
+      for (const entry of worldHistory) expect(plain(surface).toLowerCase()).toContain(entry.text.toLowerCase());
+      expect(plain(surface)).toContain(plain(bracketReferences(machineOrigin, false)));
     }
-    for (const prologue of prologues) expect(plain(prologue?.textContent)).toContain(storyPurpose);
+    for (const prologue of prologues) expect(plain(prologue?.textContent).toLowerCase()).toContain(storyPurpose.toLowerCase());
   });
 
   it('keeps individual character histories optional instead of restoring the Collections text wall', () => {
@@ -70,7 +70,7 @@ describe('canon across information and lore surfaces', () => {
 
   it('keeps summoning a squad acquisition, not a found creator or new soul reward', () => {
     for (const banner of ['standard', 'roses'] as const) {
-      expect(plain(summonHub(emptyAccount(), banner))).toContain(summonLore);
+      expect(plain(summonHub(emptyAccount(), banner)).toLowerCase()).toContain(summonLore.toLowerCase());
     }
   });
 

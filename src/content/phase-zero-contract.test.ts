@@ -74,19 +74,19 @@ describe('approved Phase 0 catalog contract (not runtime effect verification)', 
   it('retains the final approved Calamitic and Aegis revisions', () => {
     const ability = (name: string) => entries.find((entry) => entry.name === name)?.ability;
     expect(ability('Aegis Capacitor')).toBe(
-      'When your skill gives another ally a Shield, you gain +25% Defense until the next Enemy Turn ends.',
+      '+75% [Health] and +75% [Defense].',
     );
     expect(ability('Cathedral of the Final Equation')).toBe(
-      'All living allies gain +25% Skill Efficiency and +30% Skill Power while you are alive.',
+      'Your [Attack Actions] gain +250% [Critical Rate] and +120% [Critical Damage Multiplier]. +65% [Skill Efficiency].',
     );
     expect(ability('Causality Funeral Engine')).toBe(
-      '+80% Skill Power. Your Last Flare has no recovery time.',
+      '+100% [Skill Efficiency]. Your [Last Flare] has no [Cooldown] or [Recovery] and gains +125% [Direct Damage]. Normal [Elemental Gauge] cost caps and floors still apply.',
     );
     expect(ability("World-Eater's Orrery")).toBe(
-      '+2 turns Skill Duration. Damaging enemies with a skill heals each living ally for 10% of the total damage dealt by that skill.',
+      '+3 turns [Skill Duration]. [Debuffs] applied by your [Skills], including [Burn] damage and [Weaken] strength, gain +125% [Skill Power]. This bonus does not increase the skill\'s [Direct Damage], healing or [Shields].',
     );
     expect(ability('Throne of Borrowed Tomorrows')).toContain(
-      'Each character can receive this extra action once per player turn.',
+      'Each character can receive this extra action once per [Player Turn].',
     );
     expect(ability('Throne of Borrowed Tomorrows')).not.toContain('Once per Battle');
   });

@@ -1,6 +1,11 @@
 # Conduit and ability expansion phases (D-151/D-157)
 
-**Current ability direction (D-163):** the owner clarifies buffs/debuffs/stacks
+**Historical expansion plan:** current equipment mechanics are owned by the
+[138-entry catalog](conduit-catalog.txt), including D-382's45 replacements.
+Acquisition and stable identity history remain below; do not combine earlier
+ability proposals with current effects.
+
+**Historical ability direction (D-163):** the owner clarifies buffs/debuffs/stacks
 must be intrinsic character abilities, not equipment. Full-roster batches are
 approved; the [three-starter redesign](character-kit-rework.md) is implemented.
 Earlier pilot details below remain history; starter rules are superseded by
