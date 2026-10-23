@@ -5,6 +5,11 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Post-refresh battle measurements
 
+**Read-only Conduit audit (D-388):** [all138 IDs,94,680 matched pairs and
+ranked measured synergies](conduit-balance-audit-2026-10-23.md).
+Glassroot/Health scaling, Razor Revenge burst, duplicate auras and Stasis/
+Granite recurrence merit owner review. No Conduit balance changes made.
+
 **Current presentation (D-388):** [larger critical numbers/labels](combat.md#critical-popup-size-revision-d-388)
 supersede D-386 sizes. [Calamity opening results](calamity-mode.md#opened-chest-loot-presentation-d-388)
 show saved loot cards instead of the consumed chest image.

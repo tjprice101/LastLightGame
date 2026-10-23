@@ -19,9 +19,28 @@
   tiers, every receipt category, no consumed chest image or receipt mutation,
   and existing shared reveal controls. `npm run build` passed with the
   existing large-chunk advisory. Temporary production preview stopped.
+- UI commit19c7f25 published successfully via Pages39978366989:6476 tests/
+  206 files passed and configured online build passed. Live fullSHA, two
+  stylesheets/four game chunks, larger critical clamps and loot-grid code
+  verified. Actual renderer fixture shows five saved Machines EX+3 loot
+  cards, no consumed chest image and working Skip-to-Continue reveal.
 - Owner requests simulations and functionality/stat review for all138
   Conduits, with particular attention to Stasis. Audit is read-only with
   respect to gameplay: no nerfs, fixes or runtime/authority changes approved.
+- [Completed audit](conduit-balance-audit-2026-10-23.md):94680 matched pairs,
+  all138 IDs/889 eligible wearer pairs, ordinary+0/+5 and fixed Masters,
+  all36 native Calamity encounters in the extended pass; three fixed seeds.
+  Additional18 EX+3 winning pairs replayed with exact ordered events.
+- Highest concerns: uncapped Glassroot/Health scaling; Razor Master1 surviving
+  into round3 native Atmospheric EX+3 Revenge burst; approved duplicate
+  Nightglass auras; Gauge-support multi-impact synergies. Stasis/Granite
+  reaches48 alternating activations in100 rounds, sometimes a stalemate;
+  its cooldown/25% penalty work. No permanent every-turn immunity or new
+  catalog violation demonstrated. All timeouts remain separate from wins.
+- Audit adds tools/tests/report only. Focused numerical/runtime/audit suites
+  passed1722 tests/nine files; strict tool TypeScript and runner syntax pass.
+  Raw evidence/hashes and exact reproduction commands are in the report;
+  generated scratch directories were cleaned. No gameplay/authority changes.
 
 ## Stasis wording and readout layout (D-387)
 
