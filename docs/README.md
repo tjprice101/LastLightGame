@@ -5,9 +5,11 @@ It is intended to make features easy to locate, extend, and hand off.
 
 ## Phase 0 release (D-370)
 
-**D-382 current replacement:**45 owner-reworked Common/Rare/Legendary/
-Calamitic abilities are specified in the catalog;45 ordinary Omnics and48
-Masters retain their effects. Rules6, no global equipment duration cap,
+**D-383 current refresh:** all45 ordinary Omnics and48 Masters now have
+refreshed designs, using the owner's55 entries and38 individually tailored
+completions. The previous45 D-382 Common/Rare/Legendary/Calamitic replacements
+are preserved. Omnic/Master squad auras stack per living wearer; personal
+Master bonuses share the additive raw-base stat pools. Rules7, no global equipment duration cap,
 fixed penalties/conditions/odds/counts and10%-of-base beneficial percentage
 upgrades supersede earlier conflicting rules. See
 [current compatibility](character-conduit-compatibility.md),
@@ -18,13 +20,13 @@ Conduits, sorted by rarity and name, including48 Omnic Masters. Preserves
 owner-edited examples and proposes remaining effects around the ten-stat
 Phase 0 direction, additive Skill Power/Gauge Gain and whole-turn duration.
 Owner authorizes implementation and coordinated publication2026-10-21.
-The shared client/authority gate is enabled; rules6 is the current release.
+The shared client/authority gate is enabled; rules7 is the current implementation.
 See the handoff for hosted publication and validation outcomes.
 Suggested thematic elements remain editorial, not equipment restrictions.
 See D-368 for implementation choices and current scope.
 The [138-entry behavior matrix](conduit-behavior-matrix.md) links726 passing
 numerical scenarios:90 ordinary entries absent/+0..+5 and48 Masters equipped/
-absent. Provenance, manual native packets, strongest-only auras, upgraded
+absent. Provenance, manual native packets, stacked Omnic/Master auras, upgraded
 descriptions and selected-target client/authority costs have dedicated
 regressions. Activation is enabled; see the [current handoff](handoff.md)
 and matrix for exact validation and coordinated-release status.

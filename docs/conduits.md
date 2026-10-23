@@ -1,9 +1,22 @@
 # Conduits and Conduit Store
 
-**Current D-382 replacement:** the owner replaces all10 Common,15 Rare,
+**Current D-383 refresh:** all45 ordinary Omnics and48 Masters use the
+[current catalog](conduit-catalog.txt):55 owner-supplied baselines and38
+unique completions retaining their native/elemental mechanics with stronger,
+tailored stat packages. Omnic/Master squad auras add per living wearer,
+including duplicate names; losing a source removes only its contribution.
+Personal Master stats share the ordinary raw-base pools, respecting existing
+caps. Changing maximum Health clamps held Health but never heals or revives;
+initial full-health entry and explicit stage resets retain their intended fill.
+Personal menu previews include permanent Master stats, excluding conditional
+battle effects and squad auras. Gear, costs, IDs, art, ownership, acquisition
+and restrictions are unchanged. Rules7 restarts historical encounters while
+preserving frozen investment and saved rewards.
+
+**D-382 preserved replacement:** the owner replaces all10 Common,15 Rare,
 15 Legendary and five Calamitic abilities in the [catalog](conduit-catalog.txt).
-The45 ordinary Omnics and48 Masters keep their effects. Rules6 replaces
-rules5; equipment Skill Duration no longer has a global cap. Beneficial
+Its statement that Omnics/Masters were unchanged is superseded by D-383.
+Equipment Skill Duration no longer has a global cap. Beneficial
 percentages grow10% of base per upgrade; penalties, conditions, proc chances,
 durations and extra-action counts stay fixed. Existing Skill Efficiency caps
 and Gauge floors remain. All names, IDs, art, ownership, saved levels, costs,
@@ -20,7 +33,7 @@ remain available; Master/Common/Calamitic Conduits cannot be focused.
 **D-368/D-370 verified and activated for publication:** the approved
 [Phase 0 catalog](conduit-catalog.txt) specifies all138 replacement abilities
 and the new stat contract. Preserve IDs, ownership, equipment restrictions,
-artwork, saved upgrades and costs. Rules6 and the shared client/authority
+artwork, saved upgrades and costs. Rules7 and the shared client/authority
 gate are enabled; hosted publication status is in the handoff.
 The [138-entry behavior matrix](conduit-behavior-matrix.md) records
 individual numerical checks and upgrade coverage. Historical

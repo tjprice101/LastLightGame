@@ -1,6 +1,6 @@
 # Conduit upgrades and Broken Mechanical Components
 
-## Current effect scaling (D-368 / D-382)
+## Current effect scaling (D-368 / D-382 / D-383)
 
 All90 ordinary entries use the [approved catalog](conduit-catalog.txt).
 Beneficial percentages increase10% of their base per saved level, reaching
@@ -13,6 +13,13 @@ safety caps and Skill Efficiency50%/1-or70-Gauge floors remain.
 Details/previews/receipts and frozen combat use the same exact policies.
 Prices, saved levels, holdings and art are unchanged. Older scaling and
 increasing-penalty statements below describe history, not current behavior.
+
+D-383 extends the same10%-of-base rule to every added Omnic personal/squad
+stat and revised beneficial percentage. Clearwater35% becomes52.5% per other
+Oceanic member; Phoenix8% becomes12% per eligible tick; Dawn200% becomes300%
+for its next Attack Action. Kirin's50%-recipient-Health cap stays fixed.
+All48 Masters remain fixed. Explicit percentage-position policies are
+verified against every upgraded description and all93 refreshed stat packages.
 
 ## Historical effect scaling (D-313)
 

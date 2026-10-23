@@ -1,9 +1,10 @@
 # Conduit redesign: approved roster and runtime (D-313)
 
-**Current D-382:** [the owner catalog](conduit-catalog.txt) replaces all10
-Common/15 Rare/15 Legendary/five Calamitic abilities.45 ordinary Omnics and48
-Masters retain their effects; the global equipment Skill Duration cap is
-removed. Rules6 restarts old encounters without losing frozen investments
+**Current D-383:** [the owner catalog](conduit-catalog.txt) refreshes all45
+ordinary Omnics and48 Masters, preserving the previous45 D-382
+Common/Rare/Legendary/Calamitic replacements. Omnic/Master squad auras stack
+per living wearer; the global equipment Skill Duration cap remains removed.
+Rules7 restarts old encounters without losing frozen investments
 or saved rewards. [Current compatibility](character-conduit-compatibility.md)
 is generated from that catalog; the historical133-item generator below must
 not overwrite it. Beneficial percentages grow10% of base/level; penalties,

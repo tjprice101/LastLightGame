@@ -26,6 +26,7 @@ const fixedNames = ['Roselius', 'Prismatica', 'Null-Prismatica', 'Broken Mechani
   'Global', 'Single-target', 'Skill-created', 'Skill', 'Skills', 'Shields', 'Shielded', 'Debuff', 'Debuffs',
   'Squad', 'Squad Member', 'Squad Members', 'Element', 'Elements', 'Damage Reduction', 'Debuff', 'Debuffs',
   'Squad', 'Squad Member', 'Squad Members', 'Element', 'Elements', 'Damage Reduction',
+  'Element-Bearer', 'Element-Bearers', 'Elemental-Devourer', 'Elemental-Devourers',
   'Shielding', 'Healing', 'Overhealing', 'Weakened', 'Attack Actions', 'Bonus Strikes',
   'Player Turn', 'Player Turns', 'Enemy Turns', 'Cooldown', 'Cooldowns', 'Recovery',
   'Accord', 'Seed', 'Seeds', 'Empowered Seed', 'Empowered Seeds', 'Gust', 'Gusts', 'Cyclone',

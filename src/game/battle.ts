@@ -159,6 +159,7 @@ export interface BattleDebuffSnapshot {
 export interface BattleResult { state: BattleState; events: BattleEvent[] }
 
 export function withMasterLoadouts(state: BattleState, masters: MasterLoadouts = {}): BattleState {
+  const fullHealth = new Set(state.allies.filter(ally => ally.hp > 0 && ally.hp === ally.stats.health).map(ally => ally.id));
   for (const [character, id] of Object.entries(masters)) {
     if (id !== null && id !== undefined) validateMasterCharacter(id, character);
   }
@@ -168,6 +169,8 @@ export function withMasterLoadouts(state: BattleState, masters: MasterLoadouts =
     if (id) ally.masterConduit = id;
   }
   if (state.conduitRulesVersion === undefined) initializeConduits(state);
+  refreshConduitStats(state);
+  for (const ally of state.allies) if (fullHealth.has(ally.id)) ally.hp = ally.stats.health;
   return state;
 }
 
@@ -616,7 +619,9 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
   const events: BattleEvent[] = [];
   const name = action === 'light' ? basicActionName(actor.definitionId, action) : definition.abilities[action].name;
   const paid = actionGaugeCost(actor, action, state, targetId);
-  const nativeAll = native ? nativeAbility?.targets === 'all-enemies' : !actor.captured && (action === 'ultimate' || (action === 'skill2' && actor.definitionId === 'ember') ||
+  const nativeAll = native ? nativeAbility?.targets === 'all-enemies' &&
+    !(phaseZeroStatsReady && actor.definitionId === 'ember' && action === 'ultimate' && equipped(actor, 'master-ember-2'))
+    : !actor.captured && (action === 'ultimate' || (action === 'skill2' && actor.definitionId === 'ember') ||
     (action !== 'light' && definition.abilities[action].targets === 'all-enemies'));
   actor.shatter -= paid;
   refreshConduitStats(state);
@@ -651,18 +656,20 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
           nativeInstructionDamage(state, actor) * (1 + modifiers.bonus),
           nativeTargetDefense(state, target) * (1 - Math.min(phaseZeroStatsReady ? .75 : 1, pierce + modifiers.pierce)), critical, criticalMultiplier);
         const shieldBefore = target.shield;
-        let hpDamage = 0;
+        let hpDamage = 0, effectiveHits = 0;
         for (let impact = 0; impact < activation.impacts && target.hp > 0; impact++) {
           const portion = Math.floor(offered / activation.impacts) + (impact === activation.impacts - 1 ? offered % activation.impacts : 0);
+          const impactShield = target.shield;
           hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor, action));
           events[events.length - 1].origin = 'native';
           hpDamage += events[events.length - 1].amount;
+          if (events[events.length - 1].amount > 0 || impactShield > target.shield) effectiveHits++;
         }
         recordConduitHit(activation, target, hpDamage, critical, criticalMultiplier,
           target.hp <= 0 ? offered - hpDamage - (shieldBefore - target.shield) : 0,
           hpDamage + Math.max(0, shieldBefore - target.shield));
         afterConduitImpact(actor, target, activation);
-        nativePrimaryHit(state, actor, target, hpDamage > 0 || shieldBefore > target.shield, events);
+        nativePrimaryHit(state, actor, target, effectiveHits > 0, events, effectiveHits);
       }
     };
     nativeAction(state, actor, action, targetId, events, direct, activation);
@@ -707,19 +714,21 @@ export function act(previous: BattleState, actorId: string, action: ActionId, ta
         (activation.skillPower + modifiers.skillPowerBonus) * (secondaryCleave ? .5 : 1) *
         (1 + pilotBonus) * (1 + modifiers.bonus) * nativeInstructionDamage(state, actor),
         nativeTargetDefense(state, target) * (1 - (phaseZeroStatsReady ? Math.min(.75, modifiers.pierce) : modifiers.pierce)), critical, criticalMultiplier);
-      let hpDamage = 0;
+      let hpDamage = 0, effectiveHits = 0;
       for (let impact = 0; impact < activation.impacts && target.hp > 0; impact++) {
         const portion = Math.floor(offered / activation.impacts) + (impact === activation.impacts - 1 ? offered % activation.impacts : 0);
+        const impactShield = target.shield;
         hurt(target, portion, actor, events, critical, false, 0, elemental, calamiticShieldBypass(state, actor, action));
         events[events.length - 1].origin = 'native';
         hpDamage += events[events.length - 1].amount;
+        if (events[events.length - 1].amount > 0 || impactShield > target.shield) effectiveHits++;
       }
       recordConduitHit(activation, target, hpDamage, critical, criticalMultiplier,
         target.hp <= 0 ? offered - hpDamage - (priorShield - target.shield) : 0,
         hpDamage + Math.max(0, priorShield - target.shield));
       afterConduitImpact(actor, target, activation);
       const effectiveHit = hpDamage > 0 || priorShield > target.shield;
-      nativePrimaryHit(state, actor, target, effectiveHit, events);
+      nativePrimaryHit(state, actor, target, effectiveHit, events, effectiveHits);
       effectiveCriticalDamage ||= critical && effectiveHit;
       if (target.hp > 0 && strength?.burnMultiplier !== undefined) {
         const burnAttack = phaseZeroStatsReady ? actor.stats.damage : actor.stats.elementalDamage;
@@ -935,13 +944,17 @@ export function nextStage(previous: BattleState, progress: CharacterProgress | P
     ? createInfusionBattle(destination.mode, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, destination.schedule ?? 'legacy')
     : createDungeonBattle(destination.element, destination.stage + 1, previous.seed, starter, leaderProgress, roster, teamProgress, equipment, captures, previous.conduitUpgrades, previous.encounterSeed);
   for (const ally of state.allies) {
+    const prior = previous.allies.find(unit => unit.id === ally.id);
+    if (prior?.masterConduit) ally.masterConduit = prior.masterConduit;
+  }
+  refreshConduitStats(state, true);
+  for (const ally of state.allies) {
     const prior = previous.allies.find((unit) => unit.id === ally.id);
     if (!prior) throw new Error('Continuing character is missing from the previous encounter.');
     ally.shatter = phaseZeroStatsReady ? Math.min(prior.shatter, ally.stats.shatterCapacity) :
       Math.min(prior.shatter + (equipped(ally, 'fracture-reservoir') ? value(state, ally, 'fracture-reservoir', 5, 10) : 0) +
         (equipped(ally, 'twinpulse-bellows') ? ally.stats.shatterCapacity * value(state, ally, 'twinpulse-bellows', .15, .35) : 0),
       ally.stats.shatterCapacity);
-    if (prior.masterConduit) ally.masterConduit = prior.masterConduit;
   }
   if (previous.conduitSeed !== undefined) state.conduitSeed = previous.conduitSeed;
   if (previous.machineConduits !== undefined) state.machineConduits = { ...previous.machineConduits };
@@ -974,8 +987,9 @@ export function nextWave(previous: BattleState): BattleResult {
     delete ally.omnicProtection;
     const layers = ally.conduitRuntime?.layers;
     const heartcaseEntryHealth = ally.conduitRuntime?.numbers.heartcaseEntryHealth;
+    const statBase = ally.conduitRuntime?.statBase;
     ally.conduitRuntime = { numbers: heartcaseEntryHealth === undefined ? {} : { heartcaseEntryHealth },
-      owners: {}, ...(layers ? { layers } : {}) };
+      owners: {}, ...(statBase ? { statBase } : {}), ...(layers ? { layers } : {}) };
     delete ally.conduitCharges;
   }
   initializeConduits(state);

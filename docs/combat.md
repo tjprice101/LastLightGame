@@ -1,5 +1,56 @@
 # Combat specification
 
+## Omnic and Master refresh (D-383)
+
+The [catalog](conduit-catalog.txt) and [138-entry compatibility matrix](character-conduit-compatibility.md)
+own all exact abilities. D-383 refreshes45 ordinary Omnics and48 Masters:
+the owner's55 designs are preserved as the baseline;38 completions retain
+their distinct native/elemental triggers with individually tailored stat packages.
+The previous45 D-382 replacements, enemy curves and ordinary character kits
+are not rebalanced in this batch.
+
+- Unconditional Direct Damage wording in this batch is the Direct Attack stat.
+  Action-specific bonuses still modify only that action's damage.
+  Passive `+X% Elemental Gauge` means maximum capacity; Crosswind45 means45%.
+- Omnic/Master squad auras add per living wearer, including duplicate names.
+  Existing native strongest-only protections and refresh-only next-action tokens
+  retain their limits. Ordinary/Master stats share one raw-base additive pool.
+  Efficiency remains capped at50%, with1/70 Gauge floors. Frozen equipment,
+  upgrades and baseline stats survive Settings/Training/Continue/authority saves.
+- Losing an aura source removes its bonus. Maximum Health changes clamp current
+  Health but never heal or revive; explicit initial/full-stage resets remain.
+  Glassroot counts complete200 final maximum Health without repeated growth.
+  Menus show personal permanent stats, including Master bonuses; live squad
+  auras and conditional modifiers are battle-only.
+- Clearwater counts every other frozen Oceanic Squad Member, including defeated
+  members and captured Elemental-Devourers. Ruinselect adds55% Power/20% Defense
+  per defeated member and removes that contribution on revival.
+- Phoenix Lifeforge heals each living member8% maximum Health per actual
+  character-ability Burn tick per enemy, once per living wearer; copied/generated
+  ticks and detonations cannot trigger it. Its150% Attack aura needs a living
+  burning enemy. Eternal Furnace transfers the full remaining Burn on death.
+- Cinderstar focuses Infernis Last Flare direct hits and Burn on the selected
+  enemy, adding125% action-specific damage; the old consumed-Burn Gauge is gone.
+  Tizu's first Master is only its listed personal stats, not old Shield immunity.
+  Dawn adds200% damage to the complete next Attack Action, consumed once.
+- Griffin gives other allies10% own capacity after a Normal, independent of
+  its damage. Kirin heals from Defense with a fixed50%-recipient-Health cap.
+  Ward Loom's30% support Power applies to any Shielded ally, not only its owner.
+  Horizon Cyclone's30%-actual-damage Shield no longer has its old15% Health cap;
+  Razor's shared Shield cap is45% recipient Health.
+- Rosetta's first Master grants all living allies12% capacity every two actual
+  effective Quarry impacts, including multi-impact actions. A new Quarry resets
+  the unfinished pair; unrelated native contributor rules are unchanged.
+- Mature Seeds settle in frozen squad order, not the key order of their stored
+  JSON records. Database JSON key reordering therefore cannot change the order
+  of effective heals and generated Shields after an authority save/reload.
+
+Shared rules7 restarts older encounter snapshots through the existing
+compatibility path, retaining frozen investment and already-saved rewards.
+Validate `omnic-refresh.test.ts`, the Phase0 Master/ordinary/interaction suites,
+presentation and authority parity, plus the complete regression and exact seeded
+Calamity benchmarks. Hosted smoke uses disposable accounts only.
+
 ## Linear allied damage-over-time scaling (D-381)
 
 New allied DoT applications receive an additional `1 + sourceLevel / 30`
@@ -46,7 +97,7 @@ and `native-identities-server.test.ts`; hosted release check:
 
 The [owner-edited catalog](conduit-catalog.txt) is the approved target for the
 ten-stat overhaul and all138 equipment effects. It supersedes earlier effect
-designs under rules6, including the45 D-382 replacements. The shared client/authority gate is enabled for the
+designs under rules7, including the45 D-382 replacements and93 D-383 refreshes. The shared client/authority gate is enabled for the
 owner-authorized coordinated release. Historical conflicting rules below are
 superseded, not additive; hosted release status is in the handoff.
 

@@ -2,19 +2,20 @@
 
 This is executed numerical behavior evidence, not a count of source references or nonempty ability strings.
 The approved ability contract remains [conduit-catalog.txt](conduit-catalog.txt).
-The release gate is enabled for coordinated client/authority publication (D-370/D-382, rules6). This report certifies tested behavior, not hosted deployment or balance quality.
+The release gate is enabled for coordinated client/authority publication (D-370/D-382/D-383, rules7). This report certifies tested behavior, not hosted deployment or balance quality.
 
 - Roster: **138/138** entries, **726** passing baseline/equipment/upgrade scenarios.
 - Ordinary-slot entries: 90, each with an absent baseline and all six +0..+5 upgrade levels.
 - Named Masters: 48, each with a concrete equipped and absent numerical behavior scenario.
-- Full regression: **6330 tests / 204 files passed**; zero failed or pending.
+- Full regression: **6438 tests / 205 files passed**; zero failed or pending.
 - Description parity: all 138 defaults against the complete owner-authored catalog; all 90 ordinary entries at +0..+5; Masters reject upgrades.
 - Separate interaction tests cover generated Master Shield provenance, manual native packets, stored-packet scaling, duplicate auras, additive stat pools and Defense caps.
 - UI and authority suites additionally exercise target-dependent costs, frozen equipment and Throne controls.
 - D-382 regressions cover all45 replacements, complete-Health conversion thresholds, cast-level seeded randomness, conditional Health, sole-owner Shield provenance, routed protection and persisted Stasis clocks.
+- D-383 additionally checks all93 Omnic/Master personal and squad stat packages, fixed Master/ordinary additive pools, duplicate living-source stacking, Health clamping, revival, Glassroot, Training snapshots, focused Last Flare, every-two-impact Quarry payouts, native-only Phoenix healing and Seed settlement parity after persistent JSON key reordering.
 - Passing tests do not establish subjective usefulness or mathematically exhaustive balance across every possible squad.
 
-Evidence source SHA-256 (LF-normalized): `9de5e0c8cd4a696fd9671ad47b4dd82c33f0c93629c5c4a6c5e4ffe0c9e208ba`.
+Evidence source SHA-256 (LF-normalized): `c5a7c9cff997ea6d2610129c7b50355c9fdb7844fe29c00e26f290ca952eb3db`.
 Regenerate only from a complete passing full-suite JSON report:
 
 ```powershell
@@ -63,7 +64,7 @@ node tools\build_phase_zero_behavior_matrix.mjs "<passing-report.json>"
 | 38 | Stasis Reliquary | `stasis-reliquary` | Absent; +0..+5 | [stasis-reliquary blocks Shield-break spillover and subsequent hits, then applies one penalty turn](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 39 | Verdict Caliper | `verdict-caliper` | Absent; +0..+5 | [verdict-caliper heals once per critical Attack Action without requiring other allies to act](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 40 | Worldbreaker Drive | `worldbreaker-drive` | Absent; +0..+5 | [worldbreaker-drive changes Last Flare Power only, not other skills or a retired AoE override](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
-| 41 | Abyssal Clearwater Parliament | `clearwater-manifold` | Absent; +0..+5 | [clearwater-manifold transfers the upgraded Shield fraction without creating a native layer](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
+| 41 | Abyssal Clearwater Parliament | `clearwater-manifold` | Absent; +0..+5 | [clearwater-manifold counts other Oceanic Squad Members even when defeated, without transferring Shields](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 42 | Abyssal Shelter Observatory | `master-tide-1` | Absent; equipped (fixed) | [master-tide-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 43 | Abyssal Surveyor Crown | `master-nerithe-3` | Absent; equipped (fixed) | [master-nerithe-3](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 44 | Accord Seraph Sanctuary | `tranquilitic-accord-bastion` | Absent; +0..+5 | [Accord prevents one fatal enemy hit, grants only a next-skill discount and cannot rescue twice](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
@@ -82,17 +83,17 @@ node tools\build_phase_zero_behavior_matrix.mjs "<passing-report.json>"
 | 57 | Eclipse Mantle | `ominous-eclipse-mantle` | Absent; +0..+5 | [Eclipse ignores Weakened Defense and adds target-only Power without consuming Weaken](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 58 | Eclipse Planet Watchtower | `master-razor-2` | Absent; equipped (fixed) | [master-razor-2](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 59 | Ember Coronation Iris | `flare-focusing-iris` | Absent; +0..+5 | [Iris extends only authored Burn and gives other allies the target-dependent Critical Rate](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
-| 60 | Eternal Cinder Observatory | `cinder-metering-nozzle` | Absent; +0..+5 | [Cinder Nozzle releases remaining Burn as one capped Bonus Strike, not another Burn](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 60 | Eternal Cinder Observatory | `cinder-metering-nozzle` | Absent; +0..+5 | [Cinder Nozzle releases all remaining Burn as one Bonus Strike, not another Burn](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 61 | Evergreen Continuance Crucible | `master-sprout-3` | Absent; equipped (fixed) | [master-sprout-3](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
-| 62 | Faultkeeper Loom | `tectonic-faultkeeper-loom` | Absent; +0..+5 | [Faultkeeper shares personal effective Defense without recursive or duplicate squad-aura inflation](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 62 | Faultkeeper Loom | `tectonic-faultkeeper-loom` | Absent; +0..+5 | [Faultkeeper stacks personal effective Defense from living sources without recursive inflation](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 63 | Final Chord Celestial Resonator | `master-vaelor-1` | Absent; equipped (fixed) | [master-vaelor-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 64 | Final Dawn Tribunal | `master-aurora-1` | Absent; equipped (fixed) | [master-aurora-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
-| 65 | Firstlight Concordance | `firstlight-cam` | Absent; +0..+5 | [Firstlight adds upgraded Gauge Gain once to existing Gain and expires after turn two](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 65 | Firstlight Concordance | `firstlight-cam` | Absent; +0..+5 | [Firstlight permanently adds upgraded Gauge Gain once to existing Gain](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 66 | Folded Ocean Planetarium | `master-nerithe-2` | Absent; equipped (fixed) | [master-nerithe-2](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 67 | Forbidden Garden Worldlock | `master-thornia-1` | Absent; equipped (fixed) | [master-thornia-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 68 | Fractured Mercy Governor | `tension-governor` | Absent; +0..+5 | [Tension gives one injured ally Defense and a bounded heal, not additional Weaken potency](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 69 | Golden Thorn Judgment Loom | `master-rosetta-3` | Absent; equipped (fixed) | [master-rosetta-3](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
-| 70 | Griffin Turbine | `atmospheric-griffin-turbine` | Absent; +0..+5 | [Griffin uses total HP damage, recipient capacity and Gain, with an upgraded capacity cap](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 70 | Griffin Turbine | `atmospheric-griffin-turbine` | Absent; +0..+5 | [Griffin grants fixed upgraded recipient capacity and Gain regardless of Normal damage](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 71 | Helios Pyre Cathedral | `master-ember-1` | Absent; equipped (fixed) | [master-ember-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 72 | Horizon Cyclone Orrery | `master-atmoso-2` | Absent; equipped (fixed) | [master-atmoso-2](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 73 | Infinite Thunderwheel Arsenal | `master-elise-1` | Absent; equipped (fixed) | [master-elise-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
@@ -108,16 +109,16 @@ node tools\build_phase_zero_behavior_matrix.mjs "<passing-report.json>"
 | 83 | Ocean Memory Worldpump | `master-tide-2` | Absent; equipped (fixed) | [master-tide-2](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 84 | Ouroboros Core | `chaotic-ouroboros-core` | Absent; +0..+5 | [chaotic-ouroboros-core creates upgraded generated Shields for two fixed Enemy Turns after Last Flare](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 85 | Paradox Spindle | `chaotic-paradox-spindle` | Absent; +0..+5 | [Paradox buffs only other allies during recovery and does not allow recovery Normals](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
-| 86 | Phoenix Lifeforge | `emberlife-kiln` | Absent; +0..+5 | [Emberlife increases squad received healing only during its own Burn, without a Burn-triggered heal](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 86 | Phoenix Lifeforge | `emberlife-kiln` | Absent; +0..+5 | [Emberlife heals the squad per native Burn tick without increasing received healing](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 87 | Phoenix Reactor | `infernic-phoenix-reactor` | Absent; +0..+5 | [infernic-phoenix-reactor revives once with upgraded HP and a finite generated squad Shield](../src/game/phase-zero-remaining-effects.test.ts) | 7 passed |
 | 88 | Phoenix Temper Dominion | `tempered-strike-link` | Absent; +0..+5 | [Tempered exchanges one received-skill-heal Attack bonus for the healer next-skill Efficiency](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 89 | Prismseal Astral Judiciary | `master-aurora-2` | Absent; equipped (fixed) | [master-aurora-2](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
-| 90 | Pyre Census Requiem | `infernic-pyre-census` | Absent; +0..+5 | [Pyre Census counts distinct living elements and buffs only other-element allies](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 90 | Pyre Census Requiem | `infernic-pyre-census` | Absent; +0..+5 | [Pyre Census gains Skill Power per distinct living element without the retired other-element Attack aura](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 91 | Quarry Planet Gravitas | `master-bruno-2` | Absent; equipped (fixed) | [master-bruno-2](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 92 | Quiet Heaven Fanforge | `master-bliss-3` | Absent; equipped (fixed) | [master-bliss-3](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 93 | Rose Beyond the Sun Orrery | `master-rosetta-1` | Absent; equipped (fixed) | [master-rosetta-1](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |
 | 94 | Rosefault Precision Sovereign | `chaotic-fault-verdict` | Absent; +0..+5 | [Fault Verdict buffs Shielded critical damage and rewards the supplier once per turn without consuming Shield](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
-| 95 | Ruinselect Fracture Parliament | `ruinselect-prism` | Absent; +0..+5 | [Ruinselect retains low-HP Power through an allied heal for one action only](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
+| 95 | Ruinselect Fracture Parliament | `ruinselect-prism` | Absent; +0..+5 | [Ruinselect gains Power and Defense per defeated member and loses them on revival](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 96 | Secondbeat Rupture Throne | `secondbeat-rack` | Absent; +0..+5 | [Secondbeat holds one damaged target and grants the source Gauge only when the damaging skill uses it](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 97 | Seraph Mirror | `luminous-seraph-mirror` | Absent; +0..+5 | [Seraph heals each recipient from their own max HP once per turn, not per target](../src/game/phase-zero-replacement-effects.test.ts) | 7 passed |
 | 98 | Shadow Rose Sovereign Foundry | `master-thornia-3` | Absent; equipped (fixed) | [master-thornia-3](../src/game/phase-zero-master-matrix.test.ts) | 2 passed |

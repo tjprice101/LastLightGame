@@ -44,8 +44,12 @@ const checks: Record<MasterConduitId, Check> = {
     owner.native = { burns: Object.fromEntries(state.enemies.map(enemy => [enemy.id, { turns: 3, damage: 10 }])) };
     for (const enemy of state.enemies) enemy.burn = { turns: 3, damage: 10, sourceId: owner.id, origin: 'native' };
     const result = cast(state, 'skill2');
-    expect(result.allies[1].shatter).toBe(100 + (equipped ? 200 * .04 * 2 * state.enemies.length : 0));
+    expect(result.allies[1].shatter).toBe(100);
     for (const burn of Object.values(result.allies[0].native!.burns!)) expect(burn.turns).toBe(1);
+    const flare = cast(state, 'ultimate');
+    expect(flare.enemies.filter(enemy => enemy.hp < 100000)).toHaveLength(equipped ? 1 : state.enemies.length);
+    expect(flare.allies[0].stats).toMatchObject({ health: equipped ? 1550 : 1000,
+      defense: equipped ? 165 : 100, skillPower: equipped ? 1.4 : 1 });
   },
   'master-ember-3': (state, equipped) => {
     const result = cast(state, 'ultimate');
@@ -54,12 +58,15 @@ const checks: Record<MasterConduitId, Check> = {
   },
   'master-tide-1': (state, equipped) => {
     nativeShield(state, state.allies[0], state.allies[1], 10, []);
-    expect(effectiveDefense(state, state.allies[1])).toBe(equipped ? 130 : 100);
+    expect(effectiveDefense(state, state.allies[1])).toBe(100);
+    expect(state.allies[0].stats.defense).toBe(equipped ? 180 : 100);
+    expect(state.allies[0].stats.skillPower).toBe(equipped ? 1.45 : 1);
+    expect(conduitActionCost(state.allies[0], 'skill1', state, 100)).toBe(equipped ? 65 : 100);
     conduitIncoming(state, state.enemies[0], state.allies[1], 100, false, false, []);
-    expect(state.allies[1].hp).toBe(equipped ? 1000 : 910);
+    expect(state.allies[1].hp).toBe(910);
     nativeShield(state, state.allies[0], state.allies[1], 10, []);
     conduitIncoming(state, state.enemies[0], state.allies[1], 100, false, false, []);
-    expect(state.allies[1].hp).toBe(equipped ? 910 : 820);
+    expect(state.allies[1].hp).toBe(820);
   },
   'master-tide-2': (state, equipped) => {
     const wrong = cast(state, 'ultimate');
@@ -91,7 +98,7 @@ const checks: Record<MasterConduitId, Check> = {
     state.allies[1].hp = 100;
     const result = cast(state, 'skill1'), seeds = result.allies[0].native!.seeds!;
     expect(Object.keys(seeds)).toHaveLength(equipped ? 3 : 1);
-    expect(seeds[result.allies[1].id].fraction).toBeCloseTo(nativeBalance.flora.seed * (equipped ? 1.2 : 1));
+    expect(seeds[result.allies[1].id].fraction).toBeCloseTo(nativeBalance.flora.seed * (equipped ? 1.45 : 1));
   },
   'master-sprout-3': (state, equipped) => {
     state.allies[2].hp = 0;
@@ -135,14 +142,14 @@ const checks: Record<MasterConduitId, Check> = {
     expect(nativeTargetDefense(result, enemy)).toBe(equipped ? 75 : 100);
     nativeIncomingMultiplier(result, enemy, result.allies[1], 'skill1', []);
     nativeEnemyCompleted(result, enemy, true, []);
-    expect(result.allies[1].shield).toBe(equipped ? 150 : 0);
+    expect(result.allies[1].shield).toBe(equipped ? 263 : 0);
     expect(nativeTargetDefense(result, enemy)).toBe(100);
     expect(shieldLayers(result).every(layer => !layer.native)).toBe(true);
   },
   'master-aurora-2': (state, equipped) => {
     const result = cast(state, 'ultimate');
     expect(result.enemies[0].conduitRuntime?.numbers.judgmentThrough).toBeUndefined();
-    expect(nativeIncomingMultiplier(result, result.enemies[0], result.allies[1], 'skill1', [])).toBe(equipped ? .25 : 1);
+    expect(nativeIncomingMultiplier(result, result.enemies[0], result.allies[1], 'skill1', [])).toBe(equipped ? 0 : 1);
     nativePhaseEnd(result, []);
     expect(result.allies[1].shatter).toBe(equipped ? 116 : 100);
   },
@@ -157,12 +164,12 @@ const checks: Record<MasterConduitId, Check> = {
   },
   'master-bliss-1': (state, equipped) => {
     const result = cast(state, 'skill2');
-    expect(result.allies[1].attackBoost?.fraction).toBe(.1);
-    expect(result.allies[1].shield).toBe(equipped ? 60 : 0);
+    expect(result.allies[1].attackBoost?.fraction).toBeCloseTo(equipped ? .17 : .1);
+    expect(result.allies[1].shield).toBe(equipped ? 102 : 0);
     state.allies[1].spent = state.allies[2].spent = true;
     const closing = cast(state, 'skill2');
-    expect(closing.allies[1].shield).toBe(60);
-    expect(closing.allies[1].attackBoost?.fraction ?? 0).toBe(equipped ? .1 : 0);
+    expect(closing.allies[1].shield).toBe(equipped ? 102 : 60);
+    expect(closing.allies[1].attackBoost?.fraction ?? 0).toBeCloseTo(equipped ? .17 : 0);
   },
   'master-bliss-2': (state, equipped) => {
     const result = cast(state, 'skill1');
@@ -185,14 +192,14 @@ const checks: Record<MasterConduitId, Check> = {
   },
   'master-bruno-1': (state, equipped) => {
     const result = cast(state, 'skill2', true), [owner, recipient] = result.allies;
-    expect(effectiveDefense(result, owner)).toBe(equipped ? 140 : 100);
+    expect(effectiveDefense(result, owner)).toBe(equipped ? 195 : 100);
     nativeRouteDamage(result, result.enemies[0], recipient, 100, [], () => {});
     expect(next(result).skillPower).toBe(equipped ? 1.3 : 1);
     expect(next(result).skillPower).toBe(1);
   },
   'master-bruno-2': (state, equipped) => {
     const result = cast(state, 'ultimate');
-    expect(result.allies[0].shield).toBe(equipped ? 375 : 300);
+    expect(result.allies[0].shield).toBe(equipped ? 618.75 : 300);
     result.allies[1].shatter = 0;
     nativeGauge(result, result.allies[1], 20, []);
     expect(result.allies[1].shatter).toBe(equipped ? 25 : 20);
@@ -262,7 +269,7 @@ const checks: Record<MasterConduitId, Check> = {
     state.allies[0].native = { bastion: { throughPhase: 1, loss: 500 } };
     nativePhaseEnd(state, []);
     expect(state.allies[0].shield).toBe(500);
-    expect(state.allies[1].shield).toBe(equipped ? 150 : 0);
+    expect(state.allies[1].shield).toBe(equipped ? 200 : 0);
     expect(shieldLayers(state).every(layer => !layer.native)).toBe(true);
   },
   'master-razor-3': (state, equipped) => {
@@ -278,15 +285,15 @@ const checks: Record<MasterConduitId, Check> = {
     owner.native = { quarry: { target: target.id, round: 1, contributors: [] } };
     nativePrimaryHit(state, first, target, true, []);
     nativePrimaryHit(state, first, target, true, []);
-    expect(first.shatter).toBe(100);
+    expect(first.shatter).toBe(equipped ? 124 : 100);
     nativePrimaryHit(state, second, target, true, []);
     expect(first.shield).toBe(80);
     expect(second.shield).toBe(80);
     expect(first.shatter).toBe(equipped ? 124 : 100);
     expect(second.shatter).toBe(equipped ? 124 : 100);
     nativePrimaryHit(state, owner, target, true, []);
-    expect(owner.shatter).toBe(100);
-    expect(first.shatter).toBe(equipped ? 124 : 100);
+    expect(owner.shatter).toBe(equipped ? 148 : 100);
+    expect(first.shatter).toBe(equipped ? 148 : 100);
   },
   'master-rosetta-2': (state, equipped) => {
     wound(state);
@@ -328,8 +335,8 @@ const checks: Record<MasterConduitId, Check> = {
     conduitIncoming(result, enemy, recipient, 100, false, false, []);
     expect(recipient.hp).toBe(equipped ? 915 : 900);
     nativeEnemyCompleted(result, enemy, true, []);
-    expect(prepareConduitAction(result, owner, 'skill1', 25, false).skillPower).toBe(equipped ? 1.2 : 1);
-    expect(prepareConduitAction(result, owner, 'skill1', 25, false).skillPower).toBe(1);
+    expect(prepareConduitAction(result, owner, 'skill1', 25, false).skillPower).toBe(equipped ? 1.65 : 1);
+    expect(prepareConduitAction(result, owner, 'skill1', 25, false).skillPower).toBe(equipped ? 1.45 : 1);
   },
   'master-crinso-1': (state, equipped) => {
     state.allies[0].native = { combo: 9 };
@@ -395,14 +402,14 @@ const checks: Record<MasterConduitId, Check> = {
     expect(state.allies[1].hp).toBe(100);
     state.round++;
     nativeTurnStart(state, []);
-    expect(state.allies[1].hp).toBe(equipped ? 140 : 100);
-    expect(state.allies[2].hp).toBe(equipped ? 140 : 100);
+    expect(state.allies[1].hp).toBe(equipped ? 127 : 100);
+    expect(state.allies[2].hp).toBe(equipped ? 127 : 100);
   },
   'master-orvella-3': (state, equipped) => {
     state.allies[0].native = { foundation: { durability: 500, maximum: 500, throughPhase: 3 } };
     expect(effectiveDefense(state, state.allies[1])).toBe(equipped ? 125 : 100);
     const result = cast(state, 'skill1');
-    expect(result.allies[0].native?.foundation?.durability).toBe(equipped ? 620 : 580);
+    expect(result.allies[0].native?.foundation?.durability).toBe(equipped ? 662 : 580);
     expect(prepareConduitAction(state, state.allies[0], 'skill1', 25, false).skillPower).toBe(1);
   },
   'master-vaelor-1': (state, equipped) => {
@@ -420,6 +427,10 @@ const checks: Record<MasterConduitId, Check> = {
     expect(result.allies[1].shatter).toBe(equipped ? 24 : 20);
     state.allies[0].stats.skillPower = 1.5;
     state.allies[0].stats.skillDuration = 2;
+    if (state.allies[0].conduitRuntime?.statBase) {
+      state.allies[0].conduitRuntime.statBase.skillPower = 1.5;
+      state.allies[0].conduitRuntime.statBase.skillDuration = 2;
+    }
     const powered = cast(state, 'skill2');
     expect(powered.allies[1].attackBoost?.fraction ?? 0).toBeCloseTo(equipped ? .3 : 0);
     if (equipped) {

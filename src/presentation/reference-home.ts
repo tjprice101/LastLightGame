@@ -17,7 +17,7 @@ export function referenceHome(starter: Starter, account: Account | null): string
   const copy = !isStarterId(id) ? account.capturedCharacters?.find(entry => entry.instanceId === id) : undefined;
   const progress = isStarterId(id) ? ownedProgress(account, id) : undefined;
   const stats = copy ? resolveCapturedFighter(copy, account.conduitEquipment?.[id], account.conduitUpgrades).stats
-    : resolveFighter(starter.id, progress, account.conduitEquipment?.[id], account.conduitUpgrades).stats;
+    : resolveFighter(starter.id, progress, account.conduitEquipment?.[id], account.conduitUpgrades, account.masterEquipment?.[starter.id] ?? undefined).stats;
   const completed = account.storyCompleted ?? 0;
   const encounter = storyEncounter(unlockedStoryStage(account));
   const region = storyRegions.find(entry => entry.element === encounter.element);

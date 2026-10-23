@@ -176,9 +176,9 @@ describe('Calamity visible boss patterns', () => {
 describe('Calamity seeded difficulty benchmarks', () => {
   it.each(tiers)('measures four-Omnic candidate squads and intentional difficulty walls at EX+%s', tier => {
     const expectedWins = {
-      1: { starters: [36, 26, 36], mixed: [36, 31, 36] },
-      2: { starters: [36, 5, 27], mixed: [30, 1, 17] },
-      3: { starters: [15, 0, 0], mixed: [0, 0, 0] },
+      1: { starters: [36, 36, 36], mixed: [36, 36, 36] },
+      2: { starters: [36, 36, 36], mixed: [35, 35, 36] },
+      3: { starters: [23, 0, 26], mixed: [7, 3, 24] },
     } as const;
     const roster = ['rosetta', 'thornia', 'sprout'] as const satisfies readonly StarterId[];
     const progress = Object.fromEntries(roster.map(id => [id, { level: 105, evolution: 6 }]));
@@ -230,7 +230,7 @@ describe('Calamity seeded difficulty benchmarks', () => {
         if (build === 'four-omnic-0') expect(summary.timeouts).toBe(0);
         expect(results.every(result => result.rounds > 0 && Number.isFinite(result.bossRemaining))).toBe(true);
         const wins = expectedWins[tier][squad.name][['old-mixed', 'four-omnic-0', 'four-omnic-5'].indexOf(build)];
-        expect(summary).toMatchObject({ wins, defeats: 36 - wins, timeouts: 0 });
+        expect.soft(summary, `EX+${tier} ${squad.name} ${build}`).toMatchObject({ wins, defeats: 36 - wins, timeouts: 0 });
       }
     }
   }, 60_000);

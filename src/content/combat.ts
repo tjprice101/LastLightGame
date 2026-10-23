@@ -9,6 +9,7 @@ import { elementalEffectFamilies } from './elemental-effects';
 import { nativeIdentities } from './native-identities';
 import { normalizeStats, phaseZeroStatDefaults, phaseZeroStatsReady, type ResolvedStats } from './phase-zero-stats';
 import { applyPhaseZeroStaticBonuses } from './phase-zero-conduit-stats';
+import { validateMasterCharacter, type MasterConduitId } from './master-conduits';
 
 export const actionIds = ['light', 'skill1', 'skill2', 'ultimate'] as const;
 export type ActionId = (typeof actionIds)[number];
@@ -146,7 +147,9 @@ export function formatStat(value: number): string {
   return String(Number(value.toFixed(2)));
 }
 
-export function resolveFighter(id: StarterId, progress?: CharacterProgress, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): ResolvedFighterDefinition {
+export function resolveFighter(id: StarterId, progress?: CharacterProgress, equipment?: ConduitSlots, upgrades?: ConduitUpgrades,
+  master?: MasterConduitId): ResolvedFighterDefinition {
+  if (master) validateMasterCharacter(master, id);
   const base = fighters[id];
   if (!base) throw new Error('Unknown fighter definition.');
   const factor = progress ? characterGrowthFactor(progress) : 1;
@@ -174,7 +177,7 @@ export function resolveFighter(id: StarterId, progress?: CharacterProgress, equi
     if (strength.critBonus !== undefined) strength.critBonus = Math.min(1, strength.critBonus);
   }
   if (equipment) validateConduitElement(equipment, getStarter(id).elementId);
-  applyConduitBuffs(kit.stats, equipment, upgrades);
+  applyConduitBuffs(kit.stats, equipment, upgrades, master);
   const described = describeFighter(id, kit);
   return { ...described, stats: normalizeStats(described.stats) };
 }
@@ -286,10 +289,11 @@ export function describeFighter(id: StarterId, snapshot: FighterDefinition): Fig
   return kit;
 }
 
-export function applyConduitBuffs(stats: Stats, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): void {
+export function applyConduitBuffs(stats: Stats, equipment?: ConduitSlots, upgrades?: ConduitUpgrades,
+  master?: MasterConduitId): void {
   if (phaseZeroStatsReady) {
     Object.assign(stats, applyPhaseZeroStaticBonuses(normalizeStats(stats),
-      equipment ?? Array<null>(8).fill(null), upgrades));
+      equipment ?? Array<null>(8).fill(null), upgrades, master));
     return;
   }
   if (equipment) for (const conduitId of validateConduitSlots(equipment)) {

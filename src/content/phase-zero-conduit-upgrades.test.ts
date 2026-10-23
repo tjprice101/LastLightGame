@@ -58,7 +58,7 @@ describe('approved ability upgrade presentation', () => {
     expect(phaseZeroUpgradedAbility('citadel-spine', 5)).toContain('below 75% [Health] gain +52.5% [Defense]');
     expect(phaseZeroUpgradedAbility('wardglass-transformer', 5)).toContain('-35% [Defense]');
     expect(phaseZeroUpgradedAbility('nullsong-transmission', 5)).toContain('50% chance to gain +112.5% [Skill Power]; otherwise it receives -75%');
-    expect(phaseZeroUpgradedAbility('tranquilitic-kirin-cradle', 5)).toContain('150% of your effective Defense, capped at 12%');
+    expect(phaseZeroUpgradedAbility('tranquilitic-kirin-cradle', 5)).toContain('150% of your effective [Defense], capped at 50%');
     expect(phaseZeroUpgradedAbility('calamitic-world-eater-orrery', 5)).toContain('+3 turns [Skill Duration]');
     expect(phaseZeroUpgradedAbility('stasis-reliquary', 5)).toContain('25% more');
   });

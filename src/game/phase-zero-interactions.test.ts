@@ -64,15 +64,16 @@ describe('Phase 0 cross-effect rules', () => {
     expect(result.events.find(event => event.kind === 'damage' && event.source === ally.id)?.amount)
       .toBe(damageAmount(155, 1.5 * nativeBalance.skillDamageScale * 1.25, 0, false));
     ally.stats.damage = ally.stats.defense = ally.stats.critMultiplier = 0;
+    Object.assign(ally.conduitRuntime!.statBase!, { damage: 0, defense: 0, critMultiplier: 0 });
     const zero = conduitHitModifiers(state, ally, state.enemies[0], ctx, true);
     expect(zero.attack).toBe(0);
     expect(zero.criticalDamageBonus).toBe(0);
     expect(effectiveDefense(state, ally)).toBe(0);
   });
 
-  it.each(['firstlight-cam', 'citadel-spine', 'infernic-pyre-census', 'tectonic-faultkeeper-loom',
+  it.each(['firstlight-cam', 'citadel-spine', 'tectonic-faultkeeper-loom',
     'chaotic-paradox-spindle'] as const)(
-    '%s has the same recipient aura with one or two living sources and loses it when all die', id => {
+    '%s stacks Omnic recipient auras per living source while preserving Citadel strongest-only', id => {
       const state = fixture(), [first, recipient, second] = state.allies;
       first.conduits = slots(id);
       first.recoverThrough = second.recoverThrough = 1;
@@ -85,7 +86,13 @@ describe('Phase 0 cross-effect rules', () => {
       };
       const one = read();
       second.conduits = slots(id);
-      expect(read()).toEqual(one);
+      const two = read();
+      if (id === 'citadel-spine') expect(two).toEqual(one);
+      else {
+        expect(two.defense - 100).toBeCloseTo(2 * (one.defense - 100));
+        expect(two.power - 1).toBeCloseTo(2 * (one.power - 1));
+        expect(100 - two.cost).toBeCloseTo(2 * (100 - one.cost));
+      }
       first.hp = 0;
       expect(read()).toEqual(one);
       second.hp = 0;
@@ -150,7 +157,7 @@ describe('Phase 0 cross-effect rules', () => {
     const result = act(state, elise.id, action, target.id);
     const recalls = result.events.filter(event => event.kind === 'damage' && event.nativeKind === 'recall');
     expect(recalls.map(event => event.amount)).toEqual([.9, .9, .6].map(coefficient =>
-      damageAmount(100, coefficient * 1.7 * (action === 'ultimate' ? 3 : 1), 55, false)));
+      damageAmount(100, coefficient * 1.7 * (action === 'ultimate' ? 3 * 1.45 : 1), 55, false)));
     const total = result.events.filter(event => event.kind === 'damage' && event.origin === 'native')
       .reduce((sum, event) => sum + event.amount + (event.shieldAbsorbed ?? 0), 0);
     expect(total).toBeGreaterThan(0);
@@ -178,9 +185,9 @@ describe('Phase 0 cross-effect rules', () => {
 describe('generated Master Shield provenance', () => {
   const cases: { master: MasterConduitId; character: StarterId; action?: ActionId;
     setup: (state: BattleState) => void; followup?: (state: BattleState) => void; amount: number }[] = [
-    { master: 'master-atmoso-2', character: 'atmoso', action: 'skill1', amount: 150,
+    { master: 'master-atmoso-2', character: 'atmoso', action: 'skill1', amount: 225,
       setup: state => { state.allies[0].native = { cyclone: { gusts: 6, phases: 2, contributors: {} } }; } },
-    { master: 'master-aurora-1', character: 'aurora', action: 'skill1', amount: 150,
+    { master: 'master-aurora-1', character: 'aurora', action: 'skill1', amount: 263,
       setup: state => { state.allies[1].hp = 100; },
       followup: state => {
         nativeIncomingMultiplier(state, state.enemies[0], state.allies[1], 'skill1', []);
@@ -193,7 +200,7 @@ describe('generated Master Shield provenance', () => {
           target: state.allies[1].id, amount: 1, critical: false, message: 'hit' }];
         nativeEnemyCompleted(state, state.enemies[0], true, events);
       } },
-    { master: 'master-razor-2', character: 'razor', amount: 150,
+    { master: 'master-razor-2', character: 'razor', amount: 200,
       setup: state => { state.allies[0].native = { bastion: { throughPhase: 1, loss: 500 } }; },
       followup: state => { nativePhaseEnd(state, []); } },
     { master: 'master-crinso-2', character: 'crinso', action: 'skill1', amount: 120,
@@ -205,13 +212,14 @@ describe('generated Master Shield provenance', () => {
     owner.stats.skillPower = 2;
     owner.conduits = slots('aegis-capacitor', 'aegis-return-spring', 'pale-bulwark-diadem', 'aquatic-leviathan-pump',
       'tidebound-reflector', 'oceanic-shared-tide-pump');
+    const personalDefense = effectiveDefense(state, owner);
     entry.setup(state);
     const result = entry.action ? act(state, owner.id, entry.action, state.enemies[0].id).state : state;
     entry.followup?.(result);
     const recipient = result.allies[1];
     expect(recipient.shield).toBe(entry.amount);
     expect(recipient.conduitRuntime?.layers?.every(layer => !layer.native)).toBe(true);
-    expect(effectiveDefense(result, result.allies[0])).toBe(100);
+    expect(effectiveDefense(result, result.allies[0])).toBe(personalDefense);
     expect(conduitCriticalBonus(result, recipient, result.enemies[0])).toBe(0);
     expect(prepareConduitAction(result, recipient, 'skill1', 25, false).skillPower).toBe(1);
     const gauge = result.allies[0].shatter;

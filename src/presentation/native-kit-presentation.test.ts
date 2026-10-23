@@ -5,7 +5,7 @@ import { resolveFighter, type ActionId } from '../content/combat';
 import type { StarterId } from '../content/starters';
 import { createBattle, type BattleEvent } from '../game/battle';
 import { BattleView, createSession, type BattleAuthority } from './battle-view';
-import { allyTargetCandidates, allyTargetHint, nativeIdentityReference, nativeStateReadout, needsAllyTarget } from './native-kit-presentation';
+import { allyTargetCandidates, allyTargetHint, nativeActionHint, nativeIdentityReference, nativeStateReadout, needsAllyTarget } from './native-kit-presentation';
 import { attackEffectTargets, healthSnapshot } from './battle-health';
 import { gestureGuide, updateGestureGuide } from './gesture-guide';
 import { kitResource } from './ability-status';
@@ -47,6 +47,15 @@ afterEach(() => {
   Reflect.deleteProperty(HTMLDialogElement.prototype, 'showModal');
   Reflect.deleteProperty(HTMLDialogElement.prototype, 'close');
   Reflect.deleteProperty(Element.prototype, 'animate');
+});
+
+it('shows the selected enemy rather than a Global hint for Cinderstar Last Flare', () => {
+  const state = createBattle(1729, ['ember']);
+  state.allies[0].masterConduit = 'master-ember-2';
+  const hint = nativeActionHint(state, state.allies[0], 'ultimate', state.enemies[1].id);
+  expect(hint).toContain(`Enemy: ${state.enemies[1].name}`);
+  expect(hint).toContain('Focused Last Flare');
+  expect(hint).not.toContain('All living enemies');
 });
 
 function fixture(id: StarterId, action: ActionId = 'skill2', solo = false, offline = false) {

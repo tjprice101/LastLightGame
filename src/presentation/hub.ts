@@ -44,10 +44,11 @@ export function isCharacterTab(value: string): boolean {
   return characterTabs.some((tab) => tab.id === value);
 }
 
-export function stats(unit: Starter | CapturedCharacter, progress?: CharacterProgress, grouped = false, equipment?: ConduitSlots, upgrades?: ConduitUpgrades): string {
-  const values = 'instanceId' in unit ? resolveCapturedFighter(unit, equipment, upgrades).stats : resolveFighter(unit.id, progress, equipment, upgrades).stats;
+export function stats(unit: Starter | CapturedCharacter, progress?: CharacterProgress, grouped = false, equipment?: ConduitSlots, upgrades?: ConduitUpgrades,
+  master?: import('../content/master-conduits').MasterConduitId): string {
+  const values = 'instanceId' in unit ? resolveCapturedFighter(unit, equipment, upgrades).stats : resolveFighter(unit.id, progress, equipment, upgrades, master).stats;
   const base = 'instanceId' in unit ? resolveCapturedFighter(unit).stats : resolveFighter(unit.id, progress).stats;
-  const changed = equipment?.some((id) => id !== null);
+  const changed = master || equipment?.some((id) => id !== null);
   const labels = { ...displayStatLabels, ...(phaseZeroStatsReady ? {} : {
     damage: 'Attack Damage', critMultiplier: 'Critical Damage Multiplier', shatterCapacity: 'Elemental Gauge capacity',
   }) };
@@ -121,7 +122,7 @@ export function homeHub(starter: Starter, firstArrival: boolean, account: Accoun
   const completed = account?.storyCompleted ?? 0;
   const nextStory = storyEncounter(account ? unlockedStoryStage(account) : 1);
   const leaderStats = capturedCopy ? resolveCapturedFighter(capturedCopy, account?.conduitEquipment?.[capturedCopy.instanceId], account?.conduitUpgrades).stats
-    : resolveFighter(starter.id, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades).stats;
+    : resolveFighter(starter.id, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades, account?.masterEquipment?.[starter.id] ?? undefined).stats;
   return `<div class="hub-heading"><p class="eyebrow">THE SANCTUARY</p><h1 tabindex="-1">Home</h1></div>
     <div class="home-hub" style="--element:${capturedLeader?.color ?? starter.color}">
       <button type="button" class="mono-story-launch" data-page="story"><span class="mono-panel-heading">Story · ${completed} / ${storyRules.stages}</span>
@@ -197,7 +198,7 @@ function equipment(starter: Starter, account: Account | null, compact = false): 
     }).join('')}</div></section></div>
     ${!account ? '<p role="alert">Equipment unavailable. Resolve the save error.</p>' : ''}
     <p>Omnic Conduits must match this character's element; at most four may be equipped.</p>
-    <p id="conduit-equipment-result" role="status"></p>${stats(starter, account ? ownedProgress(account, starter.id) : undefined, true, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)}</section>`;
+    <p id="conduit-equipment-result" role="status"></p>${stats(starter, account ? ownedProgress(account, starter.id) : undefined, true, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades, account?.masterEquipment?.[starter.id] ?? undefined)}</section>`;
 }
 
 function materialIcon(id: string): string {
@@ -221,8 +222,8 @@ function upgradePanel(starter: Starter, evolve: boolean, account: Account | null
   const cost = evolve ? characterEvolutionCost(starter.id, current) : characterLevelCost(starter.id, current);
   const next = evolve ? { ...current, evolution: current.evolution + 1 } : { ...current, level: current.level + 1 };
   const nextPortrait = evolve ? portraitAttributes(starter, next.evolution) : null;
-  const before = resolveFighter(starter.id, current, account.conduitEquipment?.[starter.id], account.conduitUpgrades).stats;
-  const after = resolveFighter(starter.id, next, account.conduitEquipment?.[starter.id], account.conduitUpgrades).stats;
+  const before = resolveFighter(starter.id, current, account.conduitEquipment?.[starter.id], account.conduitUpgrades, account.masterEquipment?.[starter.id] ?? undefined).stats;
+  const after = resolveFighter(starter.id, next, account.conduitEquipment?.[starter.id], account.conduitUpgrades, account.masterEquipment?.[starter.id] ?? undefined).stats;
   const resources = [{ name: 'Prismatica', owned: account.fractalis, needed: cost.fractalis, icon: currencyIcon('fractalis') },
     ...Object.entries(cost.materials).map(([id, needed]) => {
       return { name: materialName(id), owned: account.materials[id] ?? 0, needed,
@@ -307,10 +308,10 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
   const tab = characterTabs.find((entry) => entry.id === selectedTab);
   if (!tab) throw new Error('Unknown character upgrade area.');
   const progress = account ? ownedProgress(account, starter.id) : undefined;
-  const kit = resolveFighter(starter.id, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades);
+  const kit = resolveFighter(starter.id, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades, account?.masterEquipment?.[starter.id] ?? undefined);
   let detail: string;
   if (selectedTab === 'overview' && organized) {
-    detail = `<div class="ref-character-overview"><section class="character-category"><h3>Stats</h3>${stats(starter, progress, false, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)}</section>
+    detail = `<div class="ref-character-overview"><section class="character-category"><h3>Stats</h3>${stats(starter, progress, false, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades, account?.masterEquipment?.[starter.id] ?? undefined)}</section>
       <section class="character-category"><h3>Skills</h3><div class="ref-ability-buttons">
       ${(['passive', 'skill1', 'skill2', 'ultimate'] as const).map(action => {
         const label = action === 'passive' ? 'Passive' : action === 'skill1' ? 'Skill 1' : action === 'skill2' ? 'Skill 2' : 'Last Flare';
@@ -320,7 +321,7 @@ export function characterDetail(starter: Starter, selectedTab: string, account: 
           `${abilityIcon(starter.id, action)}<span><strong>${action === 'passive' ? kit.passive.name : kit.abilities[action].name}</strong><small>${label} · View details</small></span>`);
       }).join('')}</div></section></div>`;
   } else if (selectedTab === 'overview') {
-    detail = `<div class="mono-character-quad"><section class="character-category mono-character-stats"><h3>Stats</h3>${stats(starter, progress, false, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)}</section><section class="character-category character-combat"><h3>Skills</h3><div class="character-ability-grid">
+    detail = `<div class="mono-character-quad"><section class="character-category mono-character-stats"><h3>Stats</h3>${stats(starter, progress, false, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades, account?.masterEquipment?.[starter.id] ?? undefined)}</section><section class="character-category character-combat"><h3>Skills</h3><div class="character-ability-grid">
       <article class="hub-ability"><h3 class="ability-heading">${abilityIcon(starter.id, 'passive')}<span>${kit.passive.name} · Passive</span></h3><p>${readableEffect(kit.passive.description)}</p>${kitResource(kit, starter.id)}</article>
       ${(['skill1', 'skill2', 'ultimate'] as const).map((action) => ability(starter, action, progress, account?.conduitEquipment?.[starter.id], account?.conduitUpgrades)).join('')}</div></section>
       <section class="character-category mono-character-growth"><h3>Growth</h3><div class="mono-growth-options"><article><h4>Level up</h4>${upgradePanel(starter, false, account, false, true)}</article><article><h4>Evolve</h4>${upgradePanel(starter, true, account, false, true)}</article></div><p id="upgrade-result" role="status"></p></section>

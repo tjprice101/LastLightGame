@@ -15,7 +15,7 @@ function stats(account: Account, id: string) {
   const equipment = account.conduitEquipment?.[id];
   if (isStarterId(id)) {
     if (!account.characters[id]) throw new Error('Upgrade result requires an owned Element-Bearer.');
-    return resolveFighter(id, ownedProgress(account, id), equipment, account.conduitUpgrades).stats;
+    return resolveFighter(id, ownedProgress(account, id), equipment, account.conduitUpgrades, account.masterEquipment?.[id] ?? undefined).stats;
   }
   const copy = account.capturedCharacters?.find(entry => entry.instanceId === id);
   if (!copy) throw new Error('Upgrade result requires the saved captured copy.');

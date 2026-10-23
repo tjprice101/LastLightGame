@@ -7,6 +7,7 @@ import { createGameDialog, escapeDialogText } from './game-dialog';
 import './native-kit.css';
 import { readableEffect } from './effect-copy';
 import { statusIcon } from './status-icon';
+import { phaseZeroStatsReady } from '../content/phase-zero-stats';
 
 export function nativeIdentityReference(unit: Combatant): string {
   if (unit.captured || !unit.kit?.nativeIdentity || !isStarterId(unit.definitionId)) return '';
@@ -59,7 +60,10 @@ export function nativeActionHint(state: BattleState, actor: Combatant, action: A
   if (action === 'light') return `Enemy: ${selected?.name ?? 'None'} · immediate`;
   const ability = actor.kit.abilities[action];
   const self = action === 'skill2' && (actor.definitionId === 'razor' || actor.definitionId === 'orvella');
-  const target = self ? actor.definitionId === 'orvella' ? 'Shared Foundation' : 'Self'
+  const focusedFlare = phaseZeroStatsReady && actor.definitionId === 'ember' && action === 'ultimate' &&
+    actor.masterConduit === 'master-ember-2';
+  const target = focusedFlare ? `Enemy: ${selected?.name ?? 'None'} · Focused Last Flare`
+    : self ? actor.definitionId === 'orvella' ? 'Shared Foundation' : 'Self'
     : ability.targets === 'all-allies' ? 'All living allies'
     : ability.targets === 'all-enemies' ? 'All living enemies'
     : actor.definitionId === 'rosetta' && action !== 'skill1' ? 'Quarry or selected enemy'

@@ -8,4 +8,10 @@ describe('readable effect prose', () => {
     const formula = '15% H/R, A/(A+D), `D/(D + enemy Defense)`, 1/2, 3/5, +8% damage.';
     expect(readableEffect(formula)).toBe(formula);
   });
+  it('does not rewrite URLs or other HTML attributes during repeated formatting', () => {
+    const html = '<span data-rule="healing/shield"><img src="/assets/elements/aquatic.png">Health/Defense</span>';
+    const expected = '<span data-rule="healing/shield"><img src="/assets/elements/aquatic.png">Health / Defense</span>';
+    expect(readableEffect(html)).toBe(expected);
+    expect(readableEffect(expected)).toBe(expected);
+  });
 });

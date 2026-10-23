@@ -1,6 +1,53 @@
 # Current state and handoff
 
-## Owner replacement of45 Conduits (D-382)
+## Omnic and Master refresh (D-383)
+
+- Current implementation refreshes all45 ordinary Omnics and48 named Masters.
+  The owner's55 designs are the baseline;38 completions retain distinct
+  native/elemental mechanics with tailored stat packages. The previous45
+  D-382 replacements remain unchanged. [Exact catalog](conduit-catalog.txt),
+  [combat contract](combat.md#omnic-and-master-refresh-d-383),
+  [Masters](master-conduits.md) and [upgrade policy](conduit-upgrades.md).
+- Owner clarifies passive Gauge as capacity, Crosswind45 as45% Attack,
+  unconditional Direct Damage as Direct Attack for this batch, action-specific
+  bonuses as damage modifiers, duplicate living-wearer aura addition, captured/
+  defeated Oceanic Clearwater members and native per-enemy Phoenix ticks.
+- Shared typed personal/squad stats and immutable equipped baselines preserve
+  raw-base additive pools, Efficiency caps, Glassroot, no free healing/revival,
+  frozen gear and Training/Continue/Settings persistence. Personal menu previews
+  now include fixed Master stats; live squad auras remain battle modifiers.
+- Revised mechanics include focused Infernis Last Flare/Burn, Dawn next-action
+  damage, Phoenix healing/Attack aura, defeated-member Ruinselect, fixed Griffin
+  Gauge, Kirin50% cap, Ward support, Quarry every-two-effective-impact Gauge,
+  full remaining-Burn transfer and the requested native Shield-cap changes.
+- Added complete93-entry stat/upgrade coverage and focused interaction/lifecycle
+  tests; updated stale native/mechanical expectations without weakening exact
+  assertions. Fixed Master stat previews being added per occupied slot and
+  repeated reference formatting altering element-art URLs. Rules7 uses the
+  existing old-encounter restart path without changing saved investments/rewards.
+- Continue now attaches Master capacity before carrying Gauge; revival restores
+  living-source auras before calculating the revived Health percentage.
+  Hosted testing exposed database JSON key reordering of pending Seeds.
+  Settlement now follows frozen squad order, with an explicit heal/Shield
+  event-order regression for reordered persisted records.
+- Validation: `npx vitest run --maxWorkers=2 --reporter=json` passed6,438 tests/
+  205 files, zero failed or pending. The138-entry/726-scenario behavior matrix
+  was regenerated from the complete passing report. `npm run build`,
+  `node tools\bundle_server_game.mjs`,
+  `npx tsc --project supabase\functions\game-operation\tsconfig.json` and
+  `git diff --check` passed. Existing Vite chunk-size advisory is nonfatal.
+- Matching rules7 authority deployed successfully.
+  `node tools\smoke_server_game.mjs --omnic-refresh` passed all45 ordinary
+  Omnics at+0/+5 and all48 fixed Masters across24 disposable fixtures:
+  exact Normal/Last Flare/enemy-phase parity, frozen investments after menu
+  unequips, idempotent retries and persisted checkpoints. `--conduit-rework`
+  and `--phase-zero` also passed. All disposable identities and cascading
+  gameplay records were removed; no owner accounts were modified.
+- Client publication uses main's Deploy Last Light workflow, which reruns the
+  full suite, builds the configured online client and publishes the full commit
+  SHA in `version.json`. No owner decisions or requested mechanics remain open.
+
+## Previous owner replacement of45 Conduits (D-382)
 
 - Replaced all10 Common/15 Rare/15 Legendary/five Calamitic abilities from
   the owner's list.45 ordinary Omnics/48 Masters, IDs, ownership, costs,

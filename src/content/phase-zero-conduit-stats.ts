@@ -1,5 +1,7 @@
 import type { ActionId, Stats } from './combat';
 import { validateConduitSlots, validateConduitUpgrades, type ConduitSlots, type ConduitUpgrades } from './conduits';
+import { omnicSelfStats, omnicStatBonuses } from './omnic-conduit-stats';
+import type { MasterConduitId } from './master-conduits';
 
 export type PhaseZeroEquipmentStats = Pick<Stats,
   'health' | 'defense' | 'damage' | 'crit' | 'critMultiplier' | 'shatterCapacity'> & {
@@ -13,8 +15,16 @@ type StatKey = keyof PhaseZeroEquipmentStats;
 const statKeys = ['health', 'defense', 'damage', 'crit', 'critMultiplier', 'shatterCapacity',
   'skillPower', 'skillDuration', 'skillEfficiency', 'gaugeGain'] as const satisfies readonly StatKey[];
 interface StaticBonus { stat: StatKey; amount: number; additive?: true }
+const omnicBonuses = (id: string): StaticBonus[] => Object.entries(omnicStatBonuses(id)).map(([stat, amount]) => ({
+  stat: stat as StatKey, amount,
+  ...(['crit', 'skillPower', 'skillEfficiency', 'gaugeGain'].includes(stat) ? { additive: true as const } : {}),
+}));
+type OrdinaryStatId = Exclude<keyof typeof omnicSelfStats, `master-${string}`>;
+const ordinaryOmnicBonuses = Object.fromEntries(Object.keys(omnicSelfStats)
+  .filter(id => !id.startsWith('master-')).map(id => [id, omnicBonuses(id)])) as Record<OrdinaryStatId, StaticBonus[]>;
 
 export const phaseZeroStaticBonuses = {
+  ...ordinaryOmnicBonuses,
   'bastion-lock': [{ stat: 'defense', amount: .35 }, { stat: 'skillPower', amount: .25, additive: true }],
   'crosspin-governor': [{ stat: 'skillPower', amount: .4, additive: true }],
   'fieldbrace-coupler': [{ stat: 'crit', amount: .25, additive: true }],
@@ -42,7 +52,6 @@ export const phaseZeroStaticBonuses = {
   'resonance-crucible': [{ stat: 'defense', amount: .75 }, { stat: 'health', amount: .5 },
     { stat: 'skillDuration', amount: 1, additive: true }],
   'wardglass-transformer': [{ stat: 'critMultiplier', amount: .35 }, { stat: 'defense', amount: -.35 }],
-  'chaotic-ouroboros-core': [{ stat: 'shatterCapacity', amount: .4 }],
   'calamitic-causality-funeral-engine': [{ stat: 'skillEfficiency', amount: 1, additive: true }],
   'calamitic-cathedral-final-equation': [{ stat: 'skillEfficiency', amount: .65, additive: true }],
   'calamitic-horizon-cleaving-godpress': [{ stat: 'defense', amount: .75 }],
@@ -59,8 +68,8 @@ export function phaseZeroUpgradeMagnitude(base: number, level: number): number {
 }
 
 export function phaseZeroStatBase(
-  value: number, stat: 'health' | 'defense' | 'damage' | 'critMultiplier',
-  equipment: ConduitSlots | undefined, upgrades: ConduitUpgrades = {},
+  value: number, stat: 'health' | 'defense' | 'damage' | 'critMultiplier' | 'shatterCapacity',
+  equipment: ConduitSlots | undefined, upgrades: ConduitUpgrades = {}, master?: MasterConduitId,
 ): number {
   let bonus = 0;
   for (const id of equipment ?? []) {
@@ -69,6 +78,7 @@ export function phaseZeroStatBase(
     for (const effect of effects) if (effect.stat === stat && !effect.additive)
       bonus += phaseZeroUpgradeMagnitude(effect.amount, upgrades[id] ?? 0);
   }
+  bonus += omnicStatBonuses(master ?? '')[stat] ?? 0;
   return value / (1 + bonus);
 }
 
@@ -96,7 +106,7 @@ export function phaseZeroPercentageGaugeOffer(capacity: number, fraction: number
 
 /** Release preparation only: callers must not combine this with legacy equipment bonuses. */
 export function applyPhaseZeroStaticBonuses(
-  base: PhaseZeroEquipmentStats, slots: ConduitSlots, upgrades: ConduitUpgrades = {},
+  base: PhaseZeroEquipmentStats, slots: ConduitSlots, upgrades: ConduitUpgrades = {}, master?: MasterConduitId,
 ): PhaseZeroEquipmentStats {
   const equipment = validateConduitSlots(slots);
   const levels = validateConduitUpgrades(upgrades);
@@ -118,6 +128,10 @@ export function applyPhaseZeroStaticBonuses(
       const pool = bonus.additive ? additive : percent;
       pool[bonus.stat] = (pool[bonus.stat] ?? 0) + amount;
     }
+  }
+  if (master) for (const bonus of omnicBonuses(master)) {
+    const pool = bonus.additive ? additive : percent;
+    pool[bonus.stat] = (pool[bonus.stat] ?? 0) + bonus.amount;
   }
   const result = { ...base };
   for (const key of statKeys) {

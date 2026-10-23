@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import assert from 'node:assert/strict';
 import { conduitRulesVersion, freshGame, resolveOperation } from '../supabase/functions/game-operation/engine.bundle.js';
@@ -48,7 +49,9 @@ try {
     }
     return data;
   }
-  if (process.argv.includes('--conduit-rework')) {
+  if (process.argv.includes('--omnic-refresh')) {
+    await smokeOmnicRefresh(client, created.user.id, username);
+  } else if (process.argv.includes('--conduit-rework')) {
     await smokeConduitRework(client, created.user.id, username);
   } else if (process.argv.includes('--dot-scaling')) {
     await smokeDotScaling(client, created.user.id, username);
@@ -370,7 +373,7 @@ try {
 }
 
 async function smokePhaseZero(client, userId, username) {
-  assert.equal(conduitRulesVersion, 6, 'The production bundle must activate rules6');
+  assert.equal(conduitRulesVersion, 7, 'The production bundle must activate rules7');
   const id = 'calamitic-causality-funeral-engine';
   const entropy = { seed: () => 7321, uuid: () => randomUUID(), random: () => .9 };
   let game = resolveOperation(freshGame(username), { kind: 'bootstrap', starterId: 'ember' }, entropy).game;
@@ -400,7 +403,7 @@ async function smokePhaseZero(client, userId, username) {
     return result.data;
   }
   const initial = await invoke({ kind: 'read' }, 0);
-  assert.equal(initial.session.state.conduitRulesVersion, 6);
+  assert.equal(initial.session.state.conduitRulesVersion, 7);
   assert.equal(initial.session.state.allies[0].stats.skillPower, 1);
   assert.equal(initial.session.state.allies[0].stats.skillEfficiency, .5);
   const operation = { kind: 'act', runId: initial.session.runId, actorId: 'ember', action: 'skill1',
@@ -419,13 +422,13 @@ async function smokePhaseZero(client, userId, username) {
   const quit = await invoke({ kind: 'quit', runId: resolved.session.runId }, resolved.revision);
   const fresh = await invoke({ kind: 'enter', activity: { kind: 'training' } }, quit.revision);
   assert.equal(fresh.session.state.allies[0].stats.skillPower, 1, 'A fresh entry uses current menu gear');
-  assert.equal(fresh.session.state.conduitRulesVersion, 6);
+  assert.equal(fresh.session.state.conduitRulesVersion, 7);
   assert.equal((await invoke({ kind: 'quit', runId: fresh.session.runId }, fresh.revision)).session, null);
-  console.log('Hosted Phase 0 smoke passed: rules6, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
+  console.log('Hosted Phase 0 smoke passed: rules7, frozen Funeral +5 Efficiency cap, exact direct-damage parity and25 Burn, unchanged holdings, idempotent action, checkpoint persistence and fresh-entry gear.');
 }
 
 async function smokeConduitRework(firstClient, firstId, firstUsername) {
-  assert.equal(conduitRulesVersion, 6);
+  assert.equal(conduitRulesVersion, 7);
   const replacements = [
     'bastion-lock', 'crosspin-governor', 'fieldbrace-coupler', 'fracture-reservoir', 'parallax-relay',
     'precision-escapement', 'prism-splinter-socket', 'reserve-torque-crank', 'siegebound-drive', 'vigil-core',
@@ -499,7 +502,109 @@ async function smokeConduitRework(firstClient, firstId, firstUsername) {
       game = expected.game;
     }
   }
-  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules6 static/runtime parity, healing/Shield/Last Flare/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
+  console.log('Hosted Conduit rework smoke passed: all45 replacements at +0/+5 across four disposable squads, rules7 static/runtime parity, healing/Shield/Last Flare/enemy-phase results, persisted snapshots and idempotent retries. No owner accounts modified.');
+}
+
+async function smokeOmnicRefresh(firstClient, firstId, firstUsername) {
+  assert.equal(conduitRulesVersion, 7);
+  const source = readFileSync(new URL('../src/content/phase-zero-conduit-catalog.ts', import.meta.url), 'utf8');
+  const catalog = JSON.parse(source.slice(source.indexOf('= {') + 2, source.lastIndexOf('};') + 1));
+  const ordinary = Object.entries(catalog).filter(([id, entry]) => entry.rarity === 'Omnic' && !id.startsWith('master-'));
+  const masters = Object.keys(catalog).filter(id => id.startsWith('master-'));
+  assert.equal(ordinary.length, 45); assert.equal(masters.length, 48);
+  const characters = { infernic: 'ember', oceanic: 'tide', atmospheric: 'atmoso',
+    botanic: 'sprout', tranquilitic: 'bliss', chaotic: 'disciple' };
+  const fixtures = [];
+  const groups = Object.entries(characters).map(([element, character]) => ({
+    character, ids: ordinary.filter(([, entry]) => entry.element.toLowerCase().startsWith(element)).map(([id]) => id),
+  }));
+  for (const level of [0, 5]) for (const family of [groups.slice(0, 3), groups.slice(3)]) {
+    for (let offset = 0; offset < Math.max(...family.map(group => group.ids.length)); offset += 4) {
+      const roster = family.map(group => group.character);
+      fixtures.push({ roster, level, equipment: Object.fromEntries(family.map(group =>
+        [group.character, [...group.ids.slice(offset, offset + 4), ...Array(8 - group.ids.slice(offset, offset + 4).length).fill(null)]])), masters: {} });
+    }
+  }
+  const masterGroups = [];
+  for (const id of masters) {
+    const character = id.slice(7, id.lastIndexOf('-'));
+    let group = masterGroups.find(group => Object.keys(group).length < 3 && !group[character]);
+    if (!group) { group = {}; masterGroups.push(group); }
+    group[character] = id;
+  }
+  for (const loadout of masterGroups) fixtures.push({
+    roster: [...new Set([...Object.keys(loadout), 'ember', 'tide', 'sprout'])].slice(0, 3),
+    level: 0, equipment: {}, masters: loadout,
+  });
+  assert.equal(new Set(fixtures.flatMap(fixture => Object.values(fixture.equipment).flat().filter(Boolean))).size, 45);
+  assert.equal(new Set(fixtures.flatMap(fixture => Object.values(fixture.masters))).size, 48);
+  let index = 0;
+  for (const fixture of fixtures) {
+    let client = firstClient, userId = firstId, username = firstUsername;
+    if (index++) {
+      username = `om_${randomUUID().replaceAll('-', '').slice(0, 10)}`;
+      const password = randomUUID() + randomUUID(), email = `${username}@example.invalid`;
+      const made = await admin.auth.admin.createUser({ email, password, email_confirm: true, user_metadata: { username } });
+      if (made.error || !made.data.user) throw new Error('Omnic smoke identity creation failed.');
+      userId = made.data.user.id; ids.push(userId);
+      client = createClient(url, clientKey, { auth: { persistSession: false } });
+      if ((await client.auth.signInWithPassword({ email, password })).error) throw new Error('Omnic smoke login failed.');
+    }
+    const entropy = { seed: () => 1729, uuid: () => randomUUID(), random: () => .5 };
+    let game = freshGame(username);
+    game.starterId = 'ember';
+    game.account.characters = Object.fromEntries([...new Set(['ember', ...fixture.roster])].map(id => [id, { level: 0, evolution: 1 }]));
+    game.account.squad = fixture.roster;
+    const equipped = Object.values(fixture.equipment).flat().filter(Boolean);
+    game.account.conduits = Object.fromEntries(equipped.map(id => [id, 1]));
+    game.account.conduitUpgrades = Object.fromEntries(equipped.map(id => [id, fixture.level]));
+    game.account.conduitEquipment = fixture.equipment;
+    game.account.masterConduits = Object.fromEntries(Object.values(fixture.masters).map(id => [id, 1]));
+    game.account.masterEquipment = fixture.masters;
+    game = resolveOperation(game, { kind: 'enter', activity: { kind: 'training' } }, entropy).game;
+    const runId = game.run.session.runId;
+    for (const unit of game.run.session.state.allies) {
+      unit.shatter = unit.stats.shatterCapacity; unit.hp = Math.round(unit.stats.health * .75);
+    }
+    for (const enemy of game.run.session.state.enemies) {
+      enemy.hp = enemy.stats.health = 1000000; enemy.stats.damage = 1; enemy.stats.crit = 0;
+    }
+    game.account.conduitEquipment = {}; game.account.masterEquipment = {};
+    assert.ok(ids.includes(userId), 'Only disposable identities may receive fixtures');
+    assert.equal((await admin.rpc('load_game_account', { p_user: userId, p_initial: game })).error, null);
+    async function invoke(operation, revision, requestId = randomUUID()) {
+      const result = await client.functions.invoke('game-operation', { body: { operation, expectedRevision: revision, requestId } });
+      if (result.error) throw new Error(`Hosted Omnic fixture${index} ${operation.kind} failed (${result.error.context?.status ?? 'transport'}).`);
+      return result.data;
+    }
+    let response = await invoke({ kind: 'read' }, 0);
+    assert.deepEqual(response.session.state, JSON.parse(JSON.stringify(game.run.session.state)));
+    for (const action of ['light', 'ultimate']) {
+      for (const actorId of fixture.roster) {
+        const actor = game.run.session.state.allies.find(unit => unit.id === actorId);
+        const ability = action === 'light' ? null : actor.kit.abilities[action];
+        const targetId = ability?.targets === 'one-ally'
+          ? fixture.roster.find(id => id !== actorId) : game.run.session.state.enemies[0].id;
+        const operation = { kind: 'act', runId, actorId, action, targetId };
+        const expected = resolveOperation(game, operation, entropy), requestId = randomUUID();
+        const actual = await invoke(operation, response.revision, requestId);
+        assert.deepEqual(actual.result, JSON.parse(JSON.stringify(expected.response.result)), `Omnic fixture${index} ${actorId} ${action}`);
+        assert.deepEqual(actual.account, expected.response.account);
+        assert.deepEqual(await invoke(operation, response.revision, requestId), actual);
+        game = expected.game; response = actual;
+      }
+      if (action === 'light') {
+        const operation = { kind: 'endTurn', runId }, expected = resolveOperation(game, operation, entropy);
+        response = await invoke(operation, response.revision);
+        assert.deepEqual(response.result, JSON.parse(JSON.stringify(expected.response.result)));
+        game = expected.game;
+      }
+    }
+    const checkpoint = await invoke({ kind: 'checkpoint' }, response.revision);
+    assert.deepEqual(checkpoint.session, response.session);
+    assert.deepEqual(checkpoint.account, response.account);
+  }
+  console.log(`Hosted Omnic refresh passed: all45 ordinary Omnics at +0/+5 and all48 fixed Masters across ${fixtures.length} disposable fixtures, exact Normal/Last Flare/enemy-phase authority parity, frozen investments after menu unequips, idempotent retries and persistent checkpoints.`);
 }
 
 async function smokeNativeCalamity(client, userId, username) {

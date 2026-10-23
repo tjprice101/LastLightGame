@@ -9,7 +9,7 @@ import type { StatusArtId } from '../content/status-art';
 import { applyConduitBurn, applyConduitWeaken, nativeGauge, nativeHeal, nativeShield,
   conduitBurnTick, afterConduitBurn, conduitActionTraits, conduitHitModifiers, recordConduitHit,
   timedConduitShield, gear, grantToken, equipped, value, nativeTargetDefense,
-  generatedShield, generatedStrike, generatedHeal, generatedGaugePercent, finishNativeHealing, effectiveDefense, resetConduitBurnStreak } from './conduit-runtime';
+  generatedShield, generatedStrike, generatedHeal, generatedGaugePercent, finishNativeHealing, effectiveDefense, resetConduitBurnStreak, refreshConduitStats } from './conduit-runtime';
 
 export interface NativeKitState {
   burns?: Record<string, { damage: number; turns: number }>;
@@ -24,7 +24,7 @@ export interface NativeKitState {
   ultimateWardReduction?: number;
   wounds?: number;
   bastion?: { throughPhase: number; loss: number; skillPower?: number; skillDuration?: number };
-  quarry?: { target: string; round: number; contributors: string[]; paidRound?: number };
+  quarry?: { target: string; round: number; contributors: string[]; paidRound?: number; hits?: number };
   traps?: Record<string, { charges: number; coefficient: number; throughPhase: number; empowered?: boolean }>;
   combo?: number;
   edge?: 'gold' | 'crimson';
@@ -127,7 +127,7 @@ function releaseCyclone(state: BattleState, owner: Combatant, events: BattleEven
   }
   if (phaseZeroStatsReady && equipped(owner, 'master-atmoso-2') && totalActualHpDamage > 0) {
     for (const ally of living(state)) {
-      const shield = Math.min(totalActualHpDamage * .3, ally.stats.health * .15);
+      const shield = totalActualHpDamage * .3;
       timedConduitShield(state, owner, ally, shield, 'master-atmoso-2', state.round, events);
     }
   }
@@ -213,7 +213,12 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
           if (enemy.burn.sourceId === owner.id) enemy.burn.turns = stored.turns;
         }
       }
-      if (action === 'ultimate') { hit(2, true); for (const enemy of foes(state)) burn(enemy, .45 * flareDamage); }
+      if (action === 'ultimate') {
+        const focused = phaseZeroStatsReady && equipped(owner, 'master-ember-2');
+        hit(2, !focused);
+        for (const enemy of focused ? target && target.hp > 0 ? [target] : [] : foes(state))
+          burn(enemy, .45 * flareDamage);
+      }
       break;
     case 'tide':
       if (action === 'skill1') {
@@ -230,7 +235,7 @@ export function nativeAction(state: BattleState, owner: Combatant, action: Actio
         const recipients = phaseZeroStatsReady && equipped(owner, 'master-sprout-2') ? allies
           : [[...allies].sort((a, b) => a.hp / a.stats.health - b.hp / b.stats.health)[0]].filter((unit): unit is Combatant => !!unit);
         for (const recipient of recipients) seed(state, owner, recipient, nativeBalance.flora.seed, events,
-          activation, false, phaseZeroStatsReady && equipped(owner, 'master-sprout-2') ? .2 : 0);
+          activation, false, phaseZeroStatsReady && equipped(owner, 'master-sprout-2') ? .45 : 0);
       }
       if (action === 'skill2') {
         for (const recipient of allies) {
@@ -572,18 +577,25 @@ export function nativeAfterAction(state: BattleState, owner: Combatant, action: 
   nativeCleanup(state);
 }
 
-export function nativePrimaryHit(state: BattleState, attacker: Combatant, target: Combatant, effective: boolean, events: BattleEvent[]): void {
+export function nativePrimaryHit(state: BattleState, attacker: Combatant, target: Combatant, effective: boolean, events: BattleEvent[], hits = 1): void {
   if (!effective) return;
   for (const owner of living(state).filter(hasNativeIdentity)) {
     const quarry = owner.native?.quarry;
     if (!quarry || quarry.target !== target.id) continue;
+    if (phaseZeroStatsReady && equipped(owner, 'master-rosetta-1')) {
+      quarry.hits = (quarry.hits ?? 0) + hits;
+      while (quarry.hits >= 2) {
+        quarry.hits -= 2;
+        for (const ally of living(state)) generatedGaugePercent(owner, ally, .12, events, state);
+      }
+    }
     if (quarry.round !== state.round) { quarry.round = state.round; quarry.contributors = []; }
     if (!quarry.contributors.includes(attacker.id)) quarry.contributors.push(attacker.id);
     if (quarry.contributors.length >= 2) {
       const contributors = living(state).filter(unit => quarry.contributors.includes(unit.id));
       if (phaseZeroStatsReady || !equipped(owner, 'master-rosetta-1'))
         for (const ally of contributors) nativeShield(state, owner, ally, ally.stats.health * .08, events);
-      if (equipped(owner, 'master-rosetta-1')) {
+      if (!phaseZeroStatsReady && equipped(owner, 'master-rosetta-1')) {
         if (quarry.paidRound !== state.round) {
           quarry.paidRound = state.round;
           if (phaseZeroStatsReady) {
@@ -765,6 +777,7 @@ export function nativeBurnPhase(state: BattleState, enemy: Combatant, events: Ba
 }
 
 export function nativePhaseEnd(state: BattleState, events: BattleEvent[]): void {
+  refreshConduitStats(state);
   if (phaseZeroStatsReady) {
     const owner = living(state).find(unit => equipped(unit, 'master-aurora-2') &&
       (unit.native?.ultimateWardThrough ?? 0) >= state.round);
@@ -789,7 +802,7 @@ export function nativePhaseEnd(state: BattleState, events: BattleEvent[]): void 
           ...(phaseZeroStatsReady ? { skillPower: memory.bastion.skillPower ?? 1 } : {}),
         });
         if (phaseZeroStatsReady && equipped(owner, 'master-razor-2')) for (const ally of living(state).filter(unit => unit.id !== owner.id)) {
-          const offer = Math.min(created * .4, ally.stats.health * .15);
+          const offer = Math.min(created * .4, ally.stats.health * .45);
           timedConduitShield(state, owner, ally, offer, 'master-razor-2', state.round, events);
         }
       }
@@ -805,6 +818,7 @@ export function nativePhaseEnd(state: BattleState, events: BattleEvent[]): void 
 }
 
 export function nativeTurnStart(state: BattleState, events: BattleEvent[]): void {
+  refreshConduitStats(state);
   if (phaseZeroStatsReady) for (const owner of living(state).filter(unit => equipped(unit, 'master-orvella-2'))) {
     const numbers = gear(owner).numbers;
     if ((numbers.foundationHealDueRound ?? Number.POSITIVE_INFINITY) > state.round) continue;
@@ -825,8 +839,9 @@ export function nativeTurnStart(state: BattleState, events: BattleEvent[]): void
       memory.beatRound = state.round;
     }
     const healing = { healed: 0, overheal: 0 };
-    for (const [id, pending] of Object.entries(memory.seeds ?? {})) {
-      if (pending.dueRound > state.round) continue;
+    for (const member of state.allies) {
+      const id = member.id, pending = memory.seeds?.[id];
+      if (!pending || pending.dueRound > state.round) continue;
       delete memory.seeds![id];
       const target = living(state).find(unit => unit.id === id);
       if (target) {

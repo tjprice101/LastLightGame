@@ -246,7 +246,7 @@ function statPair(id: string, account: Account | null) {
   const slots = slotsFor(id, account);
   if (isStarterId(id)) {
     const progress = account ? ownedProgress(account, id) : undefined;
-    return { before: resolveFighter(id, progress).stats, after: resolveFighter(id, progress, slots, account?.conduitUpgrades).stats };
+    return { before: resolveFighter(id, progress).stats, after: resolveFighter(id, progress, slots, account?.conduitUpgrades, account?.masterEquipment?.[id] ?? undefined).stats };
   }
   const copy = account?.capturedCharacters?.find((entry) => entry.instanceId === id);
   if (!copy) throw new Error('Choose an owned captured Elemental-Devourer.');

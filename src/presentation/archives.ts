@@ -49,7 +49,8 @@ function characterArchive(account: Account | null): string {
       const evolution = index + 1;
       const revealed = !!progress && progress.evolution >= evolution;
       const current = progress?.evolution === evolution;
-      const kit = resolveFighter(starter.id, current ? progress : { level: 0, evolution, weaponRank: 0 }, current ? account?.conduitEquipment?.[starter.id] : undefined, current ? account?.conduitUpgrades : undefined);
+      const kit = resolveFighter(starter.id, current ? progress : { level: 0, evolution, weaponRank: 0 }, current ? account?.conduitEquipment?.[starter.id] : undefined, current ? account?.conduitUpgrades : undefined,
+        current ? account?.masterEquipment?.[starter.id] ?? undefined : undefined);
       return `<article class="archive-card ${revealed ? 'archive-form-revealed' : 'archive-form-locked'}" data-archive-character="${starter.id}" data-form="${evolution}" data-filter-element="${starter.elementId}" data-filter-rarity="${evolutionRarity(evolution)}" data-filter-ownership="${!account ? 'unavailable' : owned ? 'owned' : 'unowned'}" data-filter-discovery="${!account ? 'unavailable' : revealed ? 'revealed' : 'locked'}" data-filter-stars="${starter.stars}">
         <div class="archive-portrait${revealed ? '' : ' unreached-character-art'}">${portrait(starter, evolution)}</div>
         <h3>${characterName(starter.id, evolution)} · Evo.${evolution}</h3>

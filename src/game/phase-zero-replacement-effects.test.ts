@@ -101,6 +101,10 @@ describe('Phase 0 Master token lifetimes', () => {
           const owner = state.allies[0];
           owner.stats.skillPower = power;
           owner.stats.skillDuration = duration;
+          if (owner.conduitRuntime?.statBase) {
+            owner.conduitRuntime.statBase.skillPower = power;
+            owner.conduitRuntime.statBase.skillDuration = duration;
+          }
           owner.native = { beat: 1 };
           return act(state, owner.id, action,
             id === 'bruno' || id === 'disciple' ? state.allies[2].id : state.enemies[0].id).state;
@@ -122,7 +126,7 @@ describe('Phase 0 Master token lifetimes', () => {
         expect(ward.allies[0].native?.ultimateWardThrough).toBe(2 + duration);
         expect(ward.allies[0].native?.ultimateWardReduction).toBeCloseTo(.75 * power);
         const orvella = cast('orvella', 'skill2', 'master-orvella-1');
-        expect(orvella.allies[0].native?.foundation?.durability).toBeCloseTo(300 * power);
+        expect(orvella.allies[0].native?.foundation?.durability).toBeCloseTo(630 * power);
         expect(orvella.allies[0].native?.foundation?.throughPhase).toBe(3 + duration);
         expect(orvella.allies.map(ally => ally.shield)).toEqual([0, 0, 0]);
         const vaelor = cast('vaelor', 'skill2', 'master-vaelor-2');
@@ -227,17 +231,18 @@ describe('Phase 0 Master token lifetimes', () => {
       for (const ally of state.allies) ally.hp = 500;
       const result = act(state, state.allies[0].id, 'skill2', state.enemies[0].id);
       expect(result.state.allies.map(ally => ally.hp)).toEqual([500, 500, 500]);
-      expect(result.state.allies[0].native?.foundation?.durability).toBe(300);
+      expect(result.state.allies[0].native?.foundation?.durability).toBe(equipped ? 627.75 : 300);
       expect(result.events.filter(event => event.kind === 'heal')).toEqual([]);
     }
   });
 });
 
 describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
-  it('Firstlight adds upgraded Gauge Gain once to existing Gain and expires after turn two', () => {
+  it('Firstlight permanently adds upgraded Gauge Gain once to existing Gain', () => {
     const state = setup('firstlight-cam', level);
     const target = state.allies[1];
     target.stats.gaugeGain = 1.2;
+    if (target.conduitRuntime?.statBase) target.conduitRuntime.statBase.gaugeGain = 1.2;
     target.shatter = 0;
     nativeGauge(state, target, 20, []);
     expect(target.shatter).toBe(Math.round(20 * (1.2 + scaling(.5, level))));
@@ -245,8 +250,8 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     state.round = 3;
     target.shatter = 0;
     nativeGauge(state, target, 20, []);
-    expect(target.shatter).toBe(24);
-    expect(effectiveDefense(state, target)).toBe(100);
+    expect(target.shatter).toBe(Math.round(20 * (1.2 + scaling(.5, level))));
+    expect(effectiveDefense(state, target)).toBeCloseTo(100 * (1 + scaling(.4, level)));
   });
 
   it('Pale protects only its wearer Shields without the retired outgoing Power aura', () => {
@@ -265,17 +270,17 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     expect(owner.shield).toBeCloseTo(Math.max(0, 100 - 150 * (1 - reduction)));
   });
 
-  it('Griffin uses total HP damage, recipient capacity and Gain, with an upgraded capacity cap', () => {
+  it('Griffin grants fixed upgraded recipient capacity and Gain regardless of Normal damage', () => {
     const state = setup('atmospheric-griffin-turbine', level);
     const target = state.allies[1];
     target.shatter = 0;
     target.stats.shatterCapacity = 300;
     target.stats.gaugeGain = 1.2;
     finishHit(state, 'light', false, 50);
-    expect(target.shatter).toBe(Math.round(300 * scaling(.2, level) * .5 * 1.2));
+    expect(target.shatter).toBe(Math.round(300 * scaling(.1, level) * 1.2));
     target.shatter = 0;
     finishHit(state, 'light', false, 10000);
-    expect(target.shatter).toBe(Math.round(300 * scaling(.2, level) * 1.2));
+    expect(target.shatter).toBe(Math.round(300 * scaling(.1, level) * 1.2));
   });
 
   it('Kirin heals from effective Defense with its recipient-HP cap and full-HP Gauge alternative', () => {
@@ -284,7 +289,11 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     target.hp = 100;
     owner.stats.defense = 200;
     finishHit(state, 'light');
-    expect(target.hp).toBe(100 + (level === null ? 0 : 120));
+    expect(target.hp).toBe(100 + Math.round(200 * scaling(1, level)));
+    target.hp = 100;
+    owner.stats.defense = 10000;
+    finishHit(state, 'light');
+    expect(target.hp).toBe(level === null ? 100 : 600);
     target.hp = 1000;
     target.shatter = 0;
     owner.shatter = 0;
@@ -292,15 +301,15 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     expect(owner.shatter).toBe(Math.round(200 * scaling(.08, level)));
   });
 
-  it('Faultkeeper shares personal effective Defense without recursive or duplicate squad-aura inflation', () => {
+  it('Faultkeeper stacks personal effective Defense from living sources without recursive inflation', () => {
     const state = setup('tectonic-faultkeeper-loom', level);
     const [owner, recipient, other] = state.allies;
     if (level !== null) owner.conduits![1] = 'horizon-heartcase';
     owner.shatter = 40;
-    const ownDefense = level === null ? 100 : 110;
+    const ownDefense = 100 + (level === null ? 0 : 10 / (1 + scaling(.75, level)));
     expect(effectiveDefense(state, recipient)).toBeCloseTo(100 + ownDefense * scaling(.25, level));
     if (level !== null) other.conduits = ['tectonic-faultkeeper-loom', null, null, null, null, null, null, null];
-    expect(effectiveDefense(state, recipient)).toBeCloseTo(100 + ownDefense * scaling(.25, level));
+    expect(effectiveDefense(state, recipient)).toBeCloseTo(100 + (ownDefense + 100) * scaling(.25, level));
   });
 
   it('Dawn Witness gives one refreshable next-Attack bonus and expires rather than accumulating strikes', () => {
@@ -347,14 +356,15 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
   it('Seraph heals each recipient from their own max HP once per turn, not per target', () => {
     const state = setup('luminous-seraph-mirror', level);
     for (const ally of state.allies) ally.hp = 100;
-    const expected = 100 + Math.round(1000 * scaling(.06, level));
+    const heal = Math.round(1000 * (1 + scaling(.65, level)) * scaling(.06, level));
+    const expected = 100 + heal;
     finishHit(state, 'skill1', true, 100, true);
     for (const ally of state.allies) expect(ally.hp).toBe(expected);
     finishHit(state, 'light', true);
     for (const ally of state.allies) expect(ally.hp).toBe(expected);
     state.round++;
     finishHit(state, 'light', true);
-    for (const ally of state.allies) expect(ally.hp).toBe(100 + 2 * Math.round(1000 * scaling(.06, level)));
+    for (const ally of state.allies) expect(ally.hp).toBe(100 + 2 * heal);
   });
 
   it('Mending heals the lowest HP-percentage ally from total skill HP damage, with a per-cast cap', () => {
@@ -392,7 +402,7 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     expect(conduitCriticalBonus(result, result.allies[0], result.enemies[0])).toBe(0);
   });
 
-  it('Cinder Nozzle releases remaining Burn as one capped Bonus Strike, not another Burn', () => {
+  it('Cinder Nozzle releases all remaining Burn as one Bonus Strike, not another Burn', () => {
     const state = setup('cinder-metering-nozzle', level);
     const previous = structuredClone(state), enemy = state.enemies[0];
     enemy.burn = { sourceId: state.allies[0].id, damage: 1000, turns: 3, origin: 'native' };
@@ -400,7 +410,7 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     const events: BattleEvent[] = [];
     conduitDeaths(state, previous, events);
     expect(events.filter(event => event.kind === 'damage')).toHaveLength(level === null ? 0 : 1);
-    expect(events.find(event => event.kind === 'damage')?.amount ?? 0).toBe(Math.round(100 * scaling(2, level)));
+    expect(events.find(event => event.kind === 'damage')?.amount ?? 0).toBe(level === null ? 0 : 3000);
     expect(state.enemies[1].burn.turns).toBe(0);
     conduitDeaths(state, previous, events);
     expect(events.filter(event => event.kind === 'damage')).toHaveLength(level === null ? 0 : 1);
@@ -423,7 +433,7 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     const ctx = prepareConduitAction(state, owner, 'skill1', 25, false);
     applyConduitWeaken(state, owner, state.enemies[0], .25, [], 'skill1', 1, ctx);
     applyConduitWeaken(state, owner, state.enemies[1], .25, [], 'skill1', 1, ctx);
-    expect(ally.hp).toBe(100 + Math.round(1000 * scaling(.06, level)));
+    expect(ally.hp).toBe(100 + Math.round(1000 * (1 + scaling(.55, level)) * scaling(.06, level)));
     expect(effectiveDefense(state, ally)).toBeCloseTo(100 * (1 + scaling(.3, level)));
     expect(state.enemies[0].weakenFraction).toBe(.25);
     state.round++;
@@ -441,31 +451,32 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     expect(prepareConduitAction(state, ally, 'skill1', 25, false).skillPower).toBe(1);
   });
 
-  it('Emberlife increases squad received healing only during its own Burn, without a Burn-triggered heal', () => {
+  it('Emberlife heals the squad per native Burn tick without increasing received healing', () => {
     const state = setup('emberlife-kiln', level);
     const [owner, ally] = state.allies;
     ally.hp = 100;
     state.enemies[0].burn = { damage: 10, turns: 2, sourceId: owner.id, origin: 'native' };
     generatedHeal(owner, ally, 100, [], state);
-    expect(ally.hp).toBe(100 + Math.round(100 * (1 + scaling(.3, level))));
+    expect(ally.hp).toBe(200);
     const events: BattleEvent[] = [];
     afterConduitBurn(state, owner, state.enemies[0], 10, events);
-    expect(events.some(event => event.kind === 'heal')).toBe(false);
+    expect(ally.hp).toBe(200 + Math.round(1000 * scaling(.08, level)));
+    expect(events.filter(event => event.kind === 'heal')).toHaveLength(level === null ? 0 : 1);
     state.enemies[0].burn.turns = 0;
     expect(generatedHeal(owner, ally, 100, [], state)).toBe(100);
   });
 
-  it('Pyre Census counts distinct living elements and buffs only other-element allies', () => {
+  it('Pyre Census gains Skill Power per distinct living element without the retired other-element Attack aura', () => {
     const state = setup('infernic-pyre-census', level);
     const [owner, other, same] = state.allies;
     same.element = owner.element;
-    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + 2 * scaling(.15, level));
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + 2 * scaling(.2, level));
     expect(conduitHitModifiers(state, other, state.enemies[0],
-      prepareConduitAction(state, other, 'light', 0, false), false).attack).toBeCloseTo(100 * (1 + scaling(.15, level)));
+      prepareConduitAction(state, other, 'light', 0, false), false).attack).toBe(100);
     expect(conduitHitModifiers(state, same, state.enemies[0],
       prepareConduitAction(state, same, 'light', 0, false), false).attack).toBe(100);
     other.hp = 0;
-    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + scaling(.15, level));
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + scaling(.2, level));
   });
 
   it('Tempered exchanges one received-skill-heal Attack bonus for the healer next-skill Efficiency', () => {
@@ -475,7 +486,7 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     nativeHeal(state, healer, owner, 100, [], true, prepareConduitAction(state, healer, 'skill2', 40, false));
     const ctx = prepareConduitAction(state, owner, 'light', 0, false);
     expect(conduitHitModifiers(state, owner, state.enemies[0], ctx, false).attack)
-      .toBeCloseTo(100 * (1 + scaling(.4, level)));
+      .toBeCloseTo(100 + 100 / (1 + scaling(1, level)) * scaling(.4, level));
     recordConduitHit(ctx, state.enemies[0], 100, false, 1.5);
     finishConduitAction(state, owner, ctx, []);
     expect(conduitActionCost(healer, 'skill1', state, 25)).toBe(Math.ceil(25 * (1 - scaling(.2, level))));
@@ -518,18 +529,15 @@ describe.each(variants)('Phase 0 replacement effects: absent/+%s', level => {
     expect(prepareConduitAction(state, supplier, 'skill1', 25, false).skillPower).toBe(1);
   });
 
-  it('Ruinselect retains low-HP Power through an allied heal for one action only', () => {
+  it('Ruinselect gains Power and Defense per defeated member and loses them on revival', () => {
     const state = setup('ruinselect-prism', level);
     const [owner, healer] = state.allies;
-    owner.hp = 300;
-    nativeHeal(state, healer, owner, 600, [], true, prepareConduitAction(state, healer, 'skill2', 40, false));
-    expect(owner.hp).toBe(900);
-    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower)
-      .toBeCloseTo(1 + scaling(.4, level));
+    healer.hp = 0;
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + scaling(.55, level));
+    expect(effectiveDefense(state, owner)).toBeCloseTo(100 * (1 + scaling(.2, level)));
+    healer.hp = 1;
     expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBe(1);
-    owner.hp = 300;
-    generatedHeal(healer, owner, 600, [], state);
-    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBe(1);
+    expect(effectiveDefense(state, owner)).toBe(100);
   });
 
   it('Secondbeat holds one damaged target and grants the source Gauge only when the damaging skill uses it', () => {

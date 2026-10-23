@@ -145,9 +145,10 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
   it('infernic-phoenix-reactor revives once with upgraded HP and a finite generated squad Shield', () => {
     const state = fixture('infernic-phoenix-reactor', level), [owner, ally] = state.allies;
     conduitIncoming(state, state.enemies[0], owner, 2000, false, false, []);
-    expect(owner.hp).toBe(Math.round(1000 * benefit(.35, level)));
+    const health = 1000 * (1 + benefit(.55, level));
+    expect(owner.hp).toBe(Math.round(health * benefit(.35, level)));
     expect(owner.shatter).toBe(level === null ? 110 : 0);
-    expect(ally.shield).toBe(Math.round(1000 * benefit(.15, level)));
+    expect(ally.shield).toBe(Math.round(health * benefit(.15, level)));
     expect(ally.conduitRuntime?.layers?.every(layer => !layer.native) ?? true).toBe(true);
     conduitIncoming(state, state.enemies[0], owner, 2000, false, false, []);
     expect(owner.hp).toBe(0);
@@ -171,9 +172,10 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
   it('chaotic-ouroboros-core creates upgraded generated Shields for two fixed Enemy Turns after Last Flare', () => {
     const state = fixture('chaotic-ouroboros-core', level);
     hit(state, 'ultimate');
-    expect(state.allies.map(ally => ally.shield)).toEqual(Array(3).fill(Math.round(1000 * benefit(.1, level))));
+    const shield = Math.round(1000 * (1 + benefit(.55, level)) * benefit(.1, level));
+    expect(state.allies.map(ally => ally.shield)).toEqual(Array(3).fill(shield));
     expireNativeShields(state, []);
-    expect(state.allies[1].shield).toBe(Math.round(1000 * benefit(.1, level)));
+    expect(state.allies[1].shield).toBe(shield);
     state.round++;
     expireNativeShields(state, []);
     expect(state.allies[1].shield).toBe(0);
@@ -476,13 +478,16 @@ describe.each(levels)('remaining ordinary Phase 0 effects: absent/+%s', level =>
     expect(owner.hp).toBe(100 + Math.round(1000 * benefit(.25, level)));
   });
 
-  it('clearwater-manifold transfers the upgraded Shield fraction without creating a native layer', () => {
+  it('clearwater-manifold counts other Oceanic Squad Members even when defeated, without transferring Shields', () => {
     const state = fixture('clearwater-manifold', level), [owner, first] = state.allies;
+    first.element = 'oceanic';
     owner.shield = 200; first.shatter = 0;
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + benefit(.35, level));
+    first.hp = 0;
+    expect(prepareConduitAction(state, owner, 'skill1', 25, false).skillPower).toBeCloseTo(1 + benefit(.35, level));
     hit(state, 'ultimate');
-    const amount = Math.round(200 * benefit(.15, level));
-    expect(first.shield).toBe(amount);
-    expect(owner.shield).toBe(200 - amount);
+    expect(first.shield).toBe(0);
+    expect(owner.shield).toBe(200);
     expect(first.conduitRuntime?.layers?.every(layer => !layer.native) ?? true).toBe(true);
     expireNativeShields(state, []);
     expect(first.shield).toBe(0);

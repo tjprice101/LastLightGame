@@ -103,9 +103,9 @@ describe('linear allied DoT level scaling', () => {
     target.burn = { damage, turns: 3, sourceId: owner.id, origin: 'native' };
     gear(target).numbers[`cinderPower:${owner.id}`] = .6;
     expect(damage).toBe(113);
-    expect(conduitBurnTick(state, owner, target)).toBe(158);
+    expect(conduitBurnTick(state, owner, target)).toBe(181);
     owner.level = 105;
-    expect(conduitBurnTick(state, owner, target)).toBe(158);
+    expect(conduitBurnTick(state, owner, target)).toBe(181);
     target.burn.origin = 'conduit';
     expect(conduitBurnTick(state, owner, target)).toBe(113);
   });
@@ -131,9 +131,9 @@ describe('linear allied DoT level scaling', () => {
     const applied = act(state, owner.id, 'skill1', target.id).state;
     const events: BattleEvent[] = [];
     nativeBurnPhase(applied, applied.enemies[0], events);
-    expect(events.find(event => event.nativeKind === 'burn')?.amount).toBe(75);
+    expect(events.find(event => event.nativeKind === 'burn')?.amount).toBe(116);
     nativePhaseEnd(applied, events);
-    expect(events.find(event => event.kind === 'heal')?.amount).toBe(19);
+    expect(events.find(event => event.kind === 'heal')?.amount).toBe(29);
     const healed = applied.allies[1].hp;
     nativePhaseEnd(applied, []);
     expect(applied.allies[1].hp).toBe(healed);

@@ -1,23 +1,24 @@
 # Character Master Conduits (D-201)
 
-**Current D-313 mechanics:** all48
-[approved Master transformations](conduit-redesign.md#master-roster-48)
-are implemented locally. Their complete rows replace every old effect,
+**Current D-383 mechanics:** all48
+[approved Master transformations](character-conduit-compatibility.md)
+have refreshed personal/squad stat packages and exact native mechanics in
+the [authoritative catalog](conduit-catalog.txt). Their complete rows replace every old effect,
 reserve bank and uniform recurring-trigger claim below. Three fixed alternatives
 per character now have individual limits, including approved rescues, action
 changes, shields, control and native-resource transformations. Only explicitly
 approved native passive replacements can earn their documented native resources;
 generated assists/strikes/heals never feed native loops.
 Acquisition, matching slots, artwork and non-upgradeability are unchanged.
-Client/server publication is still pending.
+Rules7 publication and validation status are in the [handoff](handoff.md).
 
 ## Acquisition and choice
 
 There are **48 Omnic Masters: three for each of the 16 Element-Bearers**.
-They are separate from the 85 ordinary Conduits and never enter ordinary
+They are separate from the90 ordinary-slot Conduits and never enter ordinary
 machine tier rolls, banners, the Store or Conduit upgrades.
 
-The final Awaken the Machines boss, **stage 100 / Lv.120**, independently has
+The final Awaken the Machines boss, **stage35 / Lv.120**, independently has
 a **1% chance** to drop one **Cosmic Grand Master Chest**. Repeat final clears
 are eligible. This remains the only ordinary direct enemy drop. Under D-315,
 opening any [Calamity EX+Omnipotent chest](calamity-mode.md) additionally grants
@@ -36,7 +37,7 @@ extra chests remain unopened; there is no duplicate conversion.
 Each owned Element-Bearer has **one matching Master slot**, separate from the
 eight ordinary slots and their four-Omnic cap. Captured creatures cannot equip
 Masters. Unlocks are permanent; swapping/removing equipment consumes nothing.
-Masters have fixed kit effects, not upgrade-scaled stat bundles, and cannot
+Masters have fixed kit effects and listed personal/squad stats, never upgrade-scaled, and cannot
 be upgraded, sold or purchased.
 
 Team equipment exposes the actual slot and exact effect. Inventory lists
@@ -44,7 +45,7 @@ owned Masters; Collections lists all 48 with ownership. Character and Battle
 references show the equipped effect. The final creature's loot reference
 publishes the actual chest chance.
 
-## Current kit mechanics (D-313)
+## Current kit mechanics (D-383)
 
 The [typed catalogue](../src/content/master-conduits.ts) retains all48 stable
 IDs, assignments, art and exact descriptions from the approved roster.
@@ -52,9 +53,10 @@ IDs, assignments, art and exact descriptions from the approved roster.
 rows; there is no old `.rule`/Astral Reserve resolver or generic recurring limit.
 Native and generated provenance, ordinary-before-Master resolution, shield
 layers, action caps, rescue precedence and snapshot restarts follow the
-[shared resolution contract](conduit-redesign.md#healing-shields-gauge-and-targeting).
+[shared resolution contract](combat.md#omnic-and-master-refresh-d-383).
 Executable paired coverage for every Master lives in
-[conduit-roster.test.ts](../src/game/conduit-roster.test.ts).
+[phase-zero-master-matrix.test.ts](../src/game/phase-zero-master-matrix.test.ts)
+and [omnic-refresh.test.ts](../src/game/omnic-refresh.test.ts).
 
 ## Historical kit mechanics (before D-313; not current effects)
 

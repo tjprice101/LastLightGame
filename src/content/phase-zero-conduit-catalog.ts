@@ -251,559 +251,559 @@ export const approvedConduitCatalog: Readonly<Record<string, ApprovedConduitEntr
     "name": "Abyssal Clearwater Parliament",
     "rarity": "Omnic",
     "element": "Oceanic (actual gameplay element)",
-    "ability": "When your Last Flare is cast, transfer 15% of your current Shield to an ally with the lowest [Elemental Gauge] percentage."
+    "ability": "For each other [Oceanic] [Squad Member] in your frozen [Squad], gain +35% [Skill Power]. Defeated members still count; captured Elemental-Devourers qualify."
   },
   "master-tide-1": {
     "name": "Abyssal Shelter Observatory",
     "rarity": "Omnic (Master)",
     "element": "Oceanic (named bearer's actual element; Master for Tizu only)",
-    "ability": "Allies holding Tizu's Shields gain +30% Defense. Once per ally per Battle, a hit that breaks his Shield deals no remaining damage to their HP."
+    "ability": "Tizu gains +35% [Skill Efficiency], +45% [Skill Power], and +80% [Defense]."
   },
   "master-nerithe-3": {
     "name": "Abyssal Surveyor Crown",
     "rarity": "Omnic (Master)",
     "element": "Oceanic (named bearer's actual element; Master for Nerithe only)",
-    "ability": "Each Survey point spent by Ocean Beyond the Map grants all living allies Elemental Gauge equal to 4% of their own maximum capacity, up to 20% each per cast."
+    "ability": "Each Survey point spent by Ocean Beyond the Map grants all living allies [Elemental Gauge] equal to 4% of their own maximum capacity, up to 20% each per cast."
   },
   "tranquilitic-accord-bastion": {
     "name": "Accord Seraph Sanctuary",
     "rarity": "Omnic",
     "element": "Tranquilitic (actual gameplay element)",
-    "ability": "Healing or Shielding another ally grants Accord. Once per ally per Battle, Accord prevents a fatal enemy hit, leaving them at 1 HP and granting 25% Skill Efficiency for their next skill."
+    "ability": "Healing or Shielding another ally grants Accord. Once per ally per Battle, Accord prevents a fatal enemy hit, leaving them at 1 HP and granting 25% [Skill Efficiency] for their next [Skill]. +85% [Health] and +20% [Skill Efficiency]."
   },
   "aegis-return-spring": {
     "name": "Aegis Covenant Crown",
     "rarity": "Omnic",
     "element": "Tranquilitic (actual gameplay element)",
-    "ability": "Allies holding your skill-created Shields gain +20% Critical Rate and take 30% less Direct Damage from enemy critical hits."
+    "ability": "Allies holding your [Skill]-created [Shields] gain +20% [Critical Rate] and take 30% less [Direct Damage] from enemy critical hits. +90% [Defense] and +40% [Critical Damage Multiplier]."
   },
   "tectonic-atlas-bastion": {
     "name": "Atlas Bastion",
     "rarity": "Omnic",
     "element": "Botanic (actual gameplay element)",
-    "ability": "Normal Attack taunts all enemies for the next Enemy Turn. Each enemy attack aimed at you during that turn grants the other allies 4% Elemental Gauge, up to 12% each."
+    "ability": "[Normal Attack] taunts all enemies for the next [Enemy Turn]. Each enemy attack aimed at you during that turn grants the other allies 4% [Elemental Gauge]."
   },
   "master-sprout-2": {
     "name": "Briar Constellation Loom",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Flora only)",
-    "ability": "Briar Shot plants a Seed on every living ally instead of only the most injured. Seeds planted by Briar Shot gain +20% Skill Power."
+    "ability": "Briar Shot plants a Seed on every living ally instead of only the most injured. Seeds planted by Briar Shot gain +45% [Skill Power]."
   },
   "master-vaelor-3": {
     "name": "Broken Sky Imperial Metronome",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
-    "ability": "On Tune, Vaelor's Normal Attack grants the other allies +25% Critical Rate for their next Attack Action. On Crescendo, it instead grants +40% Critical Damage Multiplier."
+    "ability": "On Tune, Vaelor's [Normal Attack] grants the other allies +25% [Critical Rate] for their next [Attack Action]. On Crescendo, it instead grants +40% [Critical Damage Multiplier]. +30% [Critical Rate] and +45% [Elemental Gauge Gain]."
   },
   "infernic-cinder-testament": {
     "name": "Cinder Testament",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "Your Burn gains +15% Skill Power each time another ally damages its target with a skill, up to +60% per application. Refreshing Burn retains its accumulated bonus."
+    "ability": "Your [Burn] gains +20% [Direct Damage] each time another ally damages its target with a [Skill], up to +60% per application. Refreshing [Burn] retains its accumulated bonus."
   },
   "master-ember-2": {
     "name": "Cinderstar Genesis Engine",
     "rarity": "Omnic (Master)",
     "element": "Infernic (named bearer's actual element; Master for Infernis only)",
-    "ability": "Flame Arc grants the other allies 4% Elemental Gauge per Burn turn it consumes."
+    "ability": "Infernis' [Last Flare] now targets one enemy and gains +125% [Direct Damage]. Infernis also gains +55% [Health], +65% [Defense], and +40% [Skill Power]."
   },
   "master-disciple-2": {
     "name": "Concord Planet Thoughtforge",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Disciple only)",
-    "ability": "An ally who consumes Disciple's Resolve gives each other living ally Elemental Gauge equal to 10% of that recipient's own maximum capacity."
+    "ability": "An ally who consumes Disciple's Resolve gives each other living ally [Elemental Gauge] equal to 10% of that recipient's own maximum capacity."
   },
   "master-crinso-3": {
     "name": "Crimson Beauty Pyre Requiem",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Crinso only)",
-    "ability": "Whenever Crinso gains Combo by alternating skills, the most injured ally heals for 8% of their maximum HP. At 3 or more Combo, this heals every living ally instead."
+    "ability": "Whenever Crinso gains Combo by alternating [Skills], the most injured ally heals for 8% of their maximum [Health]. At 3 or more Combo, this heals every living ally instead. Crinso gains +65% [Skill Power] and +45% [Skill Efficiency]"
   },
   "master-atmoso-3": {
     "name": "Crosswind Imperial Drive",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Atmoso only)",
-    "ability": "Allies who add a Gust to Atmoso's Cyclone gain +30% Elemental Gauge Gain until the end of the next player turn."
+    "ability": "Allies who add a Gust to Atmoso's Cyclone gain +30% [Elemental Gauge Gain] until the end of the next [Player Turn]. Atmoso gains +45% [Skill Power] and +45% [Direct Attack]."
   },
   "luminous-dawn-witness-array": {
     "name": "Dawn Witness Array",
     "rarity": "Omnic",
     "element": "Tranquilitic (actual gameplay element)",
-    "ability": "After your Attack Action fails to critically hit, the other allies gain +15% Critical Rate for their next Attack Action. Your own next Attack Action gains +30% Critical Damage Multiplier."
+    "ability": "After your [Attack Action] fails to critically hit, each other living ally gains +15% [Critical Rate] for their next [Attack Action]. Your next [Attack Action] gains +30% [Critical Damage Multiplier] and +200% [Direct Damage]. Hold one bonus per recipient; refresh rather than stack."
   },
   "master-orvella-2": {
     "name": "Deep Foundation Planetpress",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Orvella only)",
-    "ability": "Foundation absorption stores healing equal to 40% of the durability spent. At the next player turn, divide it among injured allies, up to 12% of each recipient's maximum HP."
+    "ability": "Foundation absorption stores healing equal to 40% of the durability spent. At the next [Player Turn], divide it among injured allies, up to 12% of each recipient's maximum [Health]. Passive Ability: Orvella and [Squad Members] gain +55% [Health] and +35% [Skill Power]."
   },
   "master-crinso-2": {
     "name": "Duality Planet Flamewheel",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Crinso only)",
-    "ability": "When Golden Edge follows Crimson Rupture, grant the most injured ally a Shield worth 12% of their maximum HP for one Enemy Turn."
+    "ability": "When Golden Edge follows Crimson Rupture, grant the most injured ally a [Shield] worth 12% of their maximum [Health] for one [Enemy Turn]. Crinso gains +55% [Defense] and +45% [Skill Efficiency]."
   },
   "ominous-eclipse-mantle": {
     "name": "Eclipse Mantle",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "Your skills ignore 35% of a Weakened enemy's Defense. If another ally applied that Weaken, gain +20% Skill Power against that enemy."
+    "ability": "Your [Skills] ignore 35% of a Weakened enemy's [Defense]. If another ally applied that [Weaken], gain +20% [Skill Power] against that enemy. +35% [Skill Power], and +45% [Last Flare] [Direct Damage]."
   },
   "master-razor-2": {
     "name": "Eclipse Planet Watchtower",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Razor only)",
-    "ability": "When Eclipse Bastion creates Razor's Shield, each other living ally gains a Shield worth 40% of that amount, capped at 15% of their own maximum HP, for one Enemy Turn."
+    "ability": "When Eclipse Bastion creates Razor's [Shield], each other living ally gains a [Shield] worth 40% of that amount, capped at 45% of their own maximum HP, for one [Enemy Turn]. Passive: All [Squad Members], including Razor, gain +55% [Health] and +35% [Skill Efficiency]."
   },
   "flare-focusing-iris": {
     "name": "Ember Coronation Iris",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "+1 Enemy Turn Skill Duration for your Burn. Other allies gain +20% Critical Rate when attacking enemies carrying your Burn."
+    "ability": "+1 [Enemy Turn] [Skill Duration] for your [Burn]. Other allies gain +20% [Critical Rate] when attacking enemies carrying your [Burn]. +80% [Skill Power] on [Skills] that apply [Burn] and +55% [Direct Attack]."
   },
   "cinder-metering-nozzle": {
     "name": "Eternal Cinder Observatory",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "When an enemy carrying your Burn dies, its remaining Burn damage strikes the healthiest other enemy as one Bonus Strike, capped at 200% of your Direct Attack."
+    "ability": "When an enemy carrying [Burn] dies, its remaining [Burn] damage strikes the healthiest other enemy as one Bonus Strike. +225% [Direct Attack]."
   },
   "master-sprout-3": {
     "name": "Evergreen Continuance Crucible",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Flora only)",
-    "ability": "Worldseed's Empowered Seeds grant +25% Defense while pending. Once per Battle, Worldseed also revives fallen allies at 35% HP and 0 Gauge, without a Seed."
+    "ability": "Worldseed's Empowered Seeds grant +25% [Defense] while pending. Once per Battle, Worldseed also revives fallen allies at 35% [Health] and 0 Gauge, without a Seed. +99% [Health] to Flora, and +65% [Elemental Gauge Gain]."
   },
   "tectonic-faultkeeper-loom": {
     "name": "Faultkeeper Loom",
     "rarity": "Omnic",
     "element": "Botanic (actual gameplay element)",
-    "ability": "While you are alive, other allies gain bonus Defense equal to 25% of your effective Defense. Defense received from squad auras does not increase this bonus."
+    "ability": "While you are alive, other allies gain bonus [Defense] equal to 25% of your effective [Defense]. +75% [Defense] and +55% [Skill Power]."
   },
   "master-vaelor-1": {
     "name": "Final Chord Celestial Resonator",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
-    "ability": "Last Chord of the Sky grants the other allies +30% Skill Power for their next skill, increased to +60% when cast on Crescendo."
+    "ability": "Last Chord of the Sky grants the other allies +30% [Skill Power] for their next [Skill], increased to +60% when cast on Crescendo. Vaelor gains +35% [Skill Power] and +105% [Direct Attack]."
   },
   "master-aurora-1": {
     "name": "Final Dawn Tribunal",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Aurora only)",
-    "ability": "Enemies carrying Aurora's Seal have 25% less Defense. When their Sealed skill resolves, the most injured ally gains a Shield worth 15% of their maximum HP for one Enemy Turn."
+    "ability": "Enemies carrying Aurora's Seal have 25% less [Defense]. When their Sealed [Skill] resolves, the most injured ally gains a [Shield] worth 15% of their maximum [Health] for one [Enemy Turn]. Aurora and Allies gain +75% [Health] and +65% [Defense]."
   },
   "firstlight-cam": {
     "name": "Firstlight Concordance",
     "rarity": "Omnic",
     "element": "Tranquilitic (actual gameplay element)",
-    "ability": "All allies gain +50% Elemental Gauge Gain during the first two player turns and +40% Defense during the first two Enemy Turns of each Battle."
+    "ability": "Your entire [Squad] (including this character) gains +50% [Elemental Gauge Gain] and +40% [Defense]. This character gains an additional +35% [Health] and +45% [Skill Power]."
   },
   "master-nerithe-2": {
     "name": "Folded Ocean Planetarium",
     "rarity": "Omnic (Master)",
     "element": "Oceanic (named bearer's actual element; Master for Nerithe only)",
-    "ability": "When Fold the Sea moves Survey to a different enemy, the other allies gain +40% Skill Power for their next damaging skill against that enemy."
+    "ability": "When Fold the Sea moves Survey to a different enemy, your other allies gain +40% [Skill Power] for their next damaging [Skill] against that newly marked enemy. Nerithe gains +55% [Skill Power] and +55% [Defense]."
   },
   "master-thornia-1": {
     "name": "Forbidden Garden Worldlock",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Thornia only)",
-    "ability": "An enemy that triggers Thornia's trap has 20% less Defense until the end of the next player turn."
+    "ability": "An enemy that triggers Thornia's trap has 20% less [Defense] until the end of the next [Player Turn]. Thornia gains +75% [Skill Power] and +20% [Defense]."
   },
   "tension-governor": {
     "name": "Fractured Mercy Governor",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "Applying Weaken grants the most injured ally +30% Defense for the next Enemy Turn. If they are below 50% HP, also restore 6% of their maximum HP. Once per skill."
+    "ability": "Applying [Weaken] grants the most injured ally +30% [Defense] for the next [Enemy Turn]. If they are below 50% [Health], also restore 6% of their maximum [Health]. Once per [Skill]. +25% [Skill Efficiency] and all [Squad Members] gain +55% [Health]."
   },
   "master-rosetta-3": {
     "name": "Golden Thorn Judgment Loom",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Rosetta only)",
-    "ability": "Golden Thorn Volley grants each other ally +35% Skill Power for their next damaging skill against the Quarry."
+    "ability": "Golden Thorn Volley grants each other ally +35% [Skill Power] for their next damaging [Skill] against the Quarry. +60% [Skill Power] and +35% [Elemental Gauge Capacity]."
   },
   "atmospheric-griffin-turbine": {
     "name": "Griffin Turbine",
     "rarity": "Omnic",
     "element": "Atmospheric (actual gameplay element)",
-    "ability": "Normal Attack grants each other ally Elemental Gauge equal to 20% of their maximum capacity multiplied by its total actual HP damage divided by your Direct Attack, up to 20% each."
+    "ability": "Each [Normal Attack] grants every other living ally 10% of their own maximum [Elemental Gauge Capacity], scaled once by their [Elemental Gauge Gain]. +99% [Direct Attack]."
   },
   "master-ember-1": {
     "name": "Helios Pyre Cathedral",
     "rarity": "Omnic (Master)",
     "element": "Infernic (named bearer's actual element; Master for Infernis only)",
-    "ability": "After Infernis's Burn damages enemies during an Enemy Turn, heal the most injured ally for 25% of that total HP damage, capped at 12% of their maximum HP."
+    "ability": "After Infernis's [Burn] damages enemies during an [Enemy Turn], heal the most injured ally for 25% of that total [Health] damage, capped at 12% of their maximum [Health]. Passive: All [Squad Members], including Infernis, gain +60% [Health] and +20% [Defense]. Infernis gains +55% [Skill Power]."
   },
   "master-atmoso-2": {
     "name": "Horizon Cyclone Orrery",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Atmoso only)",
-    "ability": "Cyclone release grants every living ally a Shield equal to 30% of its total actual HP damage, capped at 15% of each ally's maximum HP, for one Enemy Turn."
+    "ability": "Cyclone release grants every living ally a [Shield] equal to 30% of its total [Health] damage for one [Enemy Turn]. Passive: All [Squad Members] gain +55% [Health] and +45% [Defense]."
   },
   "master-elise-1": {
     "name": "Infinite Thunderwheel Arsenal",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Elise only)",
-    "ability": "Enemies holding Elise's Shuriken have 15% less Defense per lodged Shuriken, up to 30%. The reduction ends after the Shuriken are recalled."
+    "ability": "Enemies holding Elise's Shuriken have 15% less [Defense] per lodged Shuriken. The reduction ends after the Shuriken are recalled. Elise gains +55% [Skill Power], +45% [Health], and +35% [Defense]."
   },
   "master-orvella-3": {
     "name": "Keystone Sovereign Counterweight",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Orvella only)",
-    "ability": "Allies protected by Foundation gain +25% Defense. Keystone Reversal gains +50% Skill Power on its Foundation repair."
+    "ability": "Allies protected by Foundation gain +25% [Defense]. Keystone Reversal gains +50% [Skill Power] on its Foundation repair. Orvella gains +35% [Health] and +15% [Skill Efficiency]."
   },
   "tranquilitic-kirin-cradle": {
     "name": "Kirin Cradle",
     "rarity": "Omnic",
     "element": "Tranquilitic (actual gameplay element)",
-    "ability": "Normal Attack heals the most injured ally for 100% of your effective Defense, capped at 12% of their maximum HP. At full HP, they gain 8% Elemental Gauge instead."
+    "ability": "[Normal Attack] heals the most injured ally for 100% of your effective [Defense], capped at 50% of their maximum [Health]. At full [Health], they gain 8% [Elemental Gauge] instead. +65% [Defense] and +200% [Direct Attack]."
   },
   "tidebound-reflector": {
     "name": "Leviathan Mercy Reflector",
     "rarity": "Omnic",
     "element": "Oceanic (actual gameplay element)",
-    "ability": "Your Shields reflect 40% of the damage they absorb to the attacker, up to 150% of your Direct Attack per Enemy Turn across all recipients."
+    "ability": "Your [Shields] reflect 40% of the damage they absorb to the attacker, up to 150% of your [Direct Attack] per [Enemy Turn] across all recipients. +125% [Direct Attack]."
   },
   "aquatic-leviathan-pump": {
     "name": "Leviathan Pump",
     "rarity": "Omnic",
     "element": "Oceanic (actual gameplay element)",
-    "ability": "Whenever your skill-created Shield absorbs an enemy attack, its recipient gains 5% Elemental Gauge, up to 15% per recipient per Enemy Turn."
+    "ability": "Whenever a [Shield] absorbs an enemy attack, its recipient gains 5% [Elemental Gauge]. +45% [Defense] and +25% [Critical Rate]."
   },
   "ward-stitch-spool": {
     "name": "Leviathan Ward Loom",
     "rarity": "Omnic",
     "element": "Oceanic (actual gameplay element)",
-    "ability": "Allies holding your skill-created Shields gain +30% Skill Power for healing and Shield skills. Your Shields on them last +1 Enemy Turn."
+    "ability": "Living allies, including yourself, holding any [Shield] gain +30% [Skill Power] for healing and [Shield]-generating [Skills] while you are alive. Your [Skill]-created [Shields] last +1 [Enemy Turn]. +55% [Defense] and +55% [Skill Power]."
   },
   "master-bruno-1": {
     "name": "Living Worldwall Atlas",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Bruno only)",
-    "ability": "Whenever Bruno takes Cover damage, its protected ally gains +30% Skill Power for their next skill. Bruno gains +40% Defense while Cover is active."
+    "ability": "Whenever Bruno takes Cover damage, its protected ally gains +30% [Skill Power] for their next [Skill]. Bruno gains +40% [Defense] while Cover is active. +55% [Defense] and +45% [Skill Power]."
   },
   "master-aurora-3": {
     "name": "Merciful Eclipse Regulator",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Aurora only)",
-    "ability": "When an enemy consumes Aurora's Seal, heal every living ally for 8% of their maximum HP. Each enemy can trigger this once per Enemy Turn."
+    "ability": "When an enemy consumes Aurora's Seal, heal every living ally for 8% of their maximum [Health]. Each enemy can trigger this once per [Enemy Turn]. +45% [Skill Power] and +25% [Health]."
   },
   "ominous-nightglass-archive": {
     "name": "Nightglass Archive",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "Your damaging skills mark surviving enemies for two player turns. Other allies' Normal Attacks against marked enemies gain +50% Critical Damage Multiplier."
+    "ability": "Your damaging [Skills] mark surviving enemies for two [Player Turns]. Other allies' [Normal Attacks] against marked enemies gain +50% [Critical Damage Multiplier]. While you are alive, all living [Squad Members] gain +200% [Direct Attack]."
   },
   "master-razor-3": {
     "name": "Nightglass Counterblade Engine",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Razor only)",
-    "ability": "When Nightcleave spends Wounds, the other allies gain +30% Critical Rate for their next Attack Action."
+    "ability": "When Nightcleave spends Wounds, your other allies gain +30% [Critical Rate] for their next [Attack Action]. +55% [Skill Power] and +35% [Skill Efficiency]."
   },
   "master-tide-2": {
     "name": "Ocean Memory Worldpump",
     "rarity": "Omnic (Master)",
     "element": "Oceanic (named bearer's actual element; Master for Tizu only)",
-    "ability": "Tidal Shelter gains +50% Skill Power. Its recipient's next skill gains +25% Skill Efficiency while the Shield remains."
+    "ability": "Tidal Shelter gains +50% [Skill Power]. Its recipient's next [Skill] gains +25% [Skill Efficiency] while the [Shield] remains. +45% [Defense] and +25% [Elemental Gauge Gain]."
   },
   "chaotic-ouroboros-core": {
     "name": "Ouroboros Core",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "+40% Elemental Gauge Capacity. After Last Flare, all living allies gain a Shield worth 10% of their own maximum HP for two Enemy Turns."
+    "ability": "+40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] for 2 [Enemy Turns]. Passive: All [Squad Members] gain +55% [Health]."
   },
   "chaotic-paradox-spindle": {
     "name": "Paradox Spindle",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "While you recover from Last Flare, the other allies gain +40% Skill Power and +20% Skill Efficiency."
+    "ability": "While you recover from [Last Flare], your other allies gain +40% [Skill Power] and +20% [Skill Efficiency]. +35% [Defense] and +20% [Skill Efficiency]."
   },
   "emberlife-kiln": {
     "name": "Phoenix Lifeforge",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "While any enemy carries your Burn, all living allies receive 30% more healing."
+    "ability": "While any enemy carries [Burn], all living [Squad Members] gain +150% [Direct Attack]. Each [Burn] tick from a character ability that deals [Health] damage heals every living [Squad Member] for 8% of their own maximum [Health]. Copied and Conduit-generated ticks do not trigger this healing. +55% [Skill Power] and +40% [Elemental Gauge Capacity]."
   },
   "infernic-phoenix-reactor": {
     "name": "Phoenix Reactor",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "Once per Battle, revive at 35% maximum HP and 0 Gauge when defeated. Other living allies gain a Shield worth 15% of their own maximum HP for one Enemy Turn."
+    "ability": "Once per Battle, revive at 35% maximum [Health] and 0 Gauge when defeated. Other living allies gain a [Shield] worth 15% of their own maximum [Health] for one [Enemy Turn]. Passive: All [Squad Members] gain +55% [Health]."
   },
   "tempered-strike-link": {
     "name": "Phoenix Temper Dominion",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "When an ally's skill heals your HP, gain +40% Direct Attack for your next Attack Action. After it resolves, that ally gains +20% Skill Efficiency for their next skill."
+    "ability": "When an ally's [Skill] heals your [Health], gain +40% [Direct Attack] for your next [Attack Action]. After it resolves, that ally gains +20% [Skill Efficiency] for their next [Skill]. +100% [Direct Attack] and +10% [Critical Rate]."
   },
   "master-aurora-2": {
     "name": "Prismseal Astral Judiciary",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Aurora only)",
-    "ability": "Final Dawn Verdict protects against all enemy skills, not only ultimates. After each protected Enemy Turn, all living allies gain 8% Elemental Gauge."
+    "ability": "Final Dawn Verdict protects against all enemy [Skills], not only ultimates. After each protected [Enemy Turn], all living allies gain 8% [Elemental Gauge]. +25% [Defense] and +65% [Skill Power]."
   },
   "infernic-pyre-census": {
     "name": "Pyre Census Requiem",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "Gain +15% Skill Power per different combat element among living squad members, up to +45%. Other allies of a different element from you gain +15% Direct Attack."
+    "ability": "Gain +20% [Skill Power] per different [Element] among living [Squad Members]. +55% [Skill Power] and +25% [Health]."
   },
   "master-bruno-2": {
     "name": "Quarry Planet Gravitas",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Bruno only)",
-    "ability": "Bruno's Last Flare Shield equals the greater of 375% effective Defense or 37.5% maximum HP. Allies under his Cover gain +25% Elemental Gauge Gain."
+    "ability": "Bruno's [Last Flare] [Shield] equals the greater of 375% effective [Defense] or 37.5% maximum HP. Allies under his Cover gain +25% [Elemental Gauge Gain]. +65% [Health] and +65% [Defense]."
   },
   "master-bliss-3": {
     "name": "Quiet Heaven Fanforge",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
-    "ability": "Thousandfeather Stillness grants each other ally +25% Skill Efficiency for their next skill. When cast as Closing, also grant +1 turn Skill Duration to that skill's timed effects."
+    "ability": "Thousandfeather Stillness grants each other ally +25% [Skill Efficiency] for their next [Skill]. When cast as Closing, also grant +1 turn [Skill Duration] to that [Skill]'s timed effects. +25% [Skill Efficiency] and +35% [Elemental Gauge Gain]."
   },
   "master-rosetta-1": {
     "name": "Rose Beyond the Sun Orrery",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Rosetta only)",
-    "ability": "The first time two different allies hit Rosetta's Quarry each player turn, those allies each gain 12% Elemental Gauge."
+    "ability": "Every two actual damaging hits against Rosetta's Quarry grant all living allies 12% of their own maximum [Elemental Gauge Capacity]. Track hits on the current Quarry; a new Quarry resets the unfinished pair. +35% [Skill Efficiency] and +55% [Skill Power]."
   },
   "chaotic-fault-verdict": {
     "name": "Rosefault Precision Sovereign",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "While Shielded, gain +50% Critical Damage Multiplier. Your first critical Attack Action each player turn grants the ally who supplied your current Shield +20% Skill Power for their next skill."
+    "ability": "While Shielded, gain +50% [Critical Damage Multiplier]. Your first critical [Attack Action] each [Player Turn] grants the ally who supplied your current [Shield] +20% [Skill Power] for their next [Skill]. +70% [Last Flare] damage and +55% [Health]."
   },
   "ruinselect-prism": {
     "name": "Ruinselect Fracture Parliament",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "Gain +40% Skill Power while below 50% HP. Healing from other allies does not remove this bonus until the end of your next action."
+    "ability": "Gain +55% [Skill Power] and +20% [Defense] for each defeated [Squad Member] in your frozen [Squad]. Lose that member's bonus when they revive."
   },
   "secondbeat-rack": {
     "name": "Secondbeat Rupture Throne",
     "rarity": "Omnic",
     "element": "Chaotic (actual gameplay element)",
-    "ability": "After another ally damages an enemy, your next damaging skill against that enemy gains +35% Skill Power. Using it grants that ally 8% Elemental Gauge. Hold one target."
+    "ability": "After another ally damages an enemy, your next damaging [Skill] against that same enemy gains +35% [Skill Power]. Using it grants that ally 8% [Elemental Gauge]. +35% [Health] and +15% [Critical Rate]."
   },
   "luminous-seraph-mirror": {
     "name": "Seraph Mirror",
     "rarity": "Omnic",
     "element": "Tranquilitic (actual gameplay element)",
-    "ability": "Your first critical Attack Action each player turn heals every living ally for 6% of their own maximum HP."
+    "ability": "Your first critical [Attack Action] each [Player Turn] heals every living ally for 6% of their own maximum [Health]. Passive: All [Squad Members] gain +65% [Health]."
   },
   "master-thornia-3": {
     "name": "Shadow Rose Sovereign Foundry",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Thornia only)",
-    "ability": "Each enemy carrying Thornia's trap deals 15% less Direct Damage to other allies. When it triggers a trap, Thornia gains +20% Skill Power for her next skill."
+    "ability": "Each enemy carrying Thornia's trap deals 15% less [Direct Damage] to other allies. When it triggers a trap, Thornia gains +20% [Skill Power] for her next [Skill]. +45% [Skill Power] and +35% [Elemental Gauge Gain]."
   },
   "oceanic-shared-tide-pump": {
     "name": "Shared Tide Lifesea Engine",
     "rarity": "Omnic",
     "element": "Oceanic (actual gameplay element)",
-    "ability": "Shield skills targeting only one ally also grant the most injured different ally a Shield worth 50% of the original amount for the same duration."
+    "ability": "[Shield] [Skills] targeting only one ally also grant the most injured different ally a [Shield] worth 50% of the original amount for the same duration. +65% [Health] and +30% [Skill Efficiency]."
   },
   "master-nerithe-1": {
     "name": "Shoreless Meridian Worldchart",
     "rarity": "Omnic (Master)",
     "element": "Oceanic (named bearer's actual element; Master for Nerithe only)",
-    "ability": "Other allies' damaging skills ignore 10% of the Surveyed enemy's Defense per Survey point, up to 40%, without consuming Survey."
+    "ability": "Other allies' damaging [Skills] ignore 10% of the Surveyed enemy's [Defense] per Survey point, up to 40%, without consuming Survey. +75% [Direct Attack] and +50% [Elemental Gauge Capacity]."
   },
   "pulse-trigger-pawl": {
     "name": "Sky Sovereign Escapement",
     "rarity": "Omnic",
     "element": "Atmospheric (actual gameplay element)",
-    "ability": "Your first critical skill each player turn grants each other ally Elemental Gauge equal to 8% of their own maximum capacity."
+    "ability": "Your first critical [Skill] each [Player Turn] grants each other ally [Elemental Gauge] equal to 8% of their own maximum capacity. +40% [Critical Rate] and +65% [Skill Power]."
   },
   "master-atmoso-1": {
     "name": "Sky Without End Turbine",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Atmoso only)",
-    "ability": "Each Gust spent by Cyclone release grants all living allies 3% Elemental Gauge, up to 18% each per release."
+    "ability": "Each Gust spent by Cyclone release grants all living allies 3% [Elemental Gauge], up to 18% each per release. +50% [Skill Power] and +60% [Elemental Gauge Capacity]."
   },
   "atmospheric-skythread-rudder": {
     "name": "Skythread Rudder",
     "rarity": "Omnic",
     "element": "Atmospheric (actual gameplay element)",
-    "ability": "Normal Attack grants the other ally with the lowest Gauge percentage +25% Skill Efficiency for their next Skill 1 or Skill 2. Hold one discount per ally."
+    "ability": "[Normal Attack] grants the other ally with the lowest Gauge percentage +25% [Skill Efficiency] for their next [Skill 1] or [Skill 2]. Hold one discount per ally. +60% [Elemental Gauge Capacity] and +35% [Elemental Gauge Gain]."
   },
   "solace-anchor": {
     "name": "Solace Witness Monolith",
     "rarity": "Omnic",
     "element": "Tranquilitic (actual gameplay element)",
-    "ability": "Acting before every other living ally grants them +20% Direct Attack for the rest of that player turn."
+    "ability": "Acting before every other living ally grants them +20% [Direct Attack] for the rest of that [Player Turn]. +80% [Direct Attack] and +35% [Critical Damage Multiplier]."
   },
   "sootwake-crucible": {
     "name": "Sootwake Phoenix Mirror",
     "rarity": "Omnic",
     "element": "Infernic (actual gameplay element)",
-    "ability": "After your Burn damages an enemy, each other ally's next damaging skill against that enemy gains +30% Skill Power. Hold one bonus per ally; it expires after their next action."
+    "ability": "After your [Burn] damages an enemy, each other ally's next damaging [Skill] against that enemy gains +30% [Skill Power]. Hold one bonus per ally; it expires after their next action. +75% [Skill Power] and +25% [Critical Damage Multiplier]."
   },
   "master-disciple-3": {
     "name": "Sovereign Will Amplifier",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Disciple only)",
-    "ability": "Consuming Disciple's Strike or Resolve with a damaging action grants its recipient +30% Critical Rate and +40% Critical Damage Multiplier for that action."
+    "ability": "Consuming Disciple's Strike or Resolve with a damaging action grants its recipient +30% [Critical Rate] and +40% [Critical Damage Multiplier] for that action. +60% [Skill Power] and +45% [Critical Damage Multiplier]."
   },
   "tranquilitic-stillhour-carillon": {
     "name": "Stillhour Carillon",
     "rarity": "Omnic",
     "element": "Tranquilitic (actual gameplay element)",
-    "ability": "At the start of each of your Last Flare recovery turns, heal all living allies for 8% of their own maximum HP and grant them 10% Elemental Gauge."
+    "ability": "At the start of each of your [Last Flare] recovery turns, heal all living allies for 8% of their own maximum HP and grant them 10% [Elemental Gauge]. +120% [Health] and +30% [Elemental Gauge Gain]."
   },
   "master-bliss-2": {
     "name": "Stillplume Planetary Ballet",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
-    "ability": "Opening Warfeather Cut grants the other allies +25% Critical Rate for their next Attack Action. Closing Warfeather Cut heals every other living ally instead of only the most injured."
+    "ability": "Opening Warfeather Cut grants the other allies +25% [Critical Rate] for their next [Attack Action]. Closing Warfeather Cut heals every other living ally instead of only the most injured. +85% [Direct Attack] and +25% [Critical Rate]."
   },
   "master-elise-3": {
     "name": "Storm Empress Execution Clock",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Elise only)",
-    "ability": "When Elise recalls both Shuriken, the other allies gain +40% Critical Damage Multiplier for their next Attack Action. If both were lodged in the same enemy, also grant +15% Critical Rate."
+    "ability": "When Elise recalls both Shuriken, the other allies gain +40% [Critical Damage Multiplier] for their next [Attack Action]. If both were lodged in the same enemy, also grant +15% [Critical Rate]. +65% [Critical Damage Multiplier] and +40% [Elemental Gauge Gain]."
   },
   "voltaic-stormstep-dynamo": {
     "name": "Stormstep Dynamo",
     "rarity": "Omnic",
     "element": "Atmospheric (actual gameplay element)",
-    "ability": "Alternating Skill 1 and Skill 2 grants +30% Skill Power to the switched skill and +15% Skill Efficiency to the next other ally who casts a skill. Any other action resets your sequence."
+    "ability": "Alternating [Skill 1] and [Skill 2] grants +30% [Skill Power] to the switched [Skill] and +15% [Skill Efficiency] to the next other ally who casts a [Skill]. Any other action resets your sequence. +70% [Direct Attack] and +25% [Skill Efficiency]."
   },
   "atmospheric-storm-clock": {
     "name": "Tempest Return Chronarch",
     "rarity": "Omnic",
     "element": "Atmospheric (actual gameplay element)",
-    "ability": "Every third critical Attack Action you perform grants all living allies +25% Skill Efficiency for their next Last Flare. Store at most one discount per ally."
+    "ability": "Every third critical [Attack Action] you perform grants all living allies +25% [Skill Efficiency] for their next [Last Flare]. Store at most one discount per ally. +35% [Critical Rate] and +75% [Elemental Gauge Capacity]."
   },
   "pressurecrest-governor": {
     "name": "Tempest Shelter Sovereign",
     "rarity": "Omnic",
     "element": "Atmospheric (actual gameplay element)",
-    "ability": "A critical skill grants the most injured ally a Shield worth 15% of their maximum HP for one Enemy Turn. Once per player turn."
+    "ability": "A critical [Skill] grants the most injured ally a [Shield] worth 15% of their maximum HP for one [Enemy Turn]. Once per [Player Turn]. +85% [Defense] and +30% [Critical Rate]."
   },
   "master-thornia-2": {
     "name": "Thousand-Rose Planetary Aegis",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Thornia only)",
-    "ability": "An Empowered Thorn Trap's first triggered strike each Enemy Turn grants the ally its enemy attacked a Shield worth 12% of that ally's maximum HP for one Enemy Turn. Global attacks protect every living target."
+    "ability": "An Empowered Thorn Trap's first triggered strike each [Enemy Turn] grants the ally its enemy attacked a [Shield] worth 12% of that ally's maximum HP for one [Enemy Turn]. [Global] attacks protect every living target. +90% [Health] and +60% [Defense]."
   },
   "master-bliss-1": {
     "name": "Thousandfeather Zenith Loom",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Bliss only)",
-    "ability": "Quietstorm Flourish grants both its Opening damage buff and Closing squad Shields, regardless of Bliss's action order."
+    "ability": "Quietstorm Flourish grants both its Opening damage buff and Closing [Squad] [Shields], regardless of Bliss's action order. +70% [Skill Power] and +45% [Defense]."
   },
   "master-orvella-1": {
     "name": "Throne Beneath the World",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Orvella only)",
-    "ability": "Worldweight Citadel leaves 40% of Foundation's current durability intact while using its full pre-cast durability for the extra strike. Other allies gain +20% Skill Efficiency for their next skill."
+    "ability": "Worldweight Citadel leaves 40% of Foundation's current durability intact while using its full pre-cast durability for the extra strike. Other allies gain +20% [Skill Efficiency] for their next [Skill]. +110% [Health] and +40% [Elemental Gauge Capacity]."
   },
   "master-vaelor-2": {
     "name": "Thunder Choir Planetary Fugue",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Vaelor only)",
-    "ability": "On Rise, Resonance Cascade grants its Direct Damage buff to every living ally instead of only Vaelor. Allies also gain +20% Elemental Gauge Gain for the same duration."
+    "ability": "On Rise, Resonance Cascade grants its [Direct Damage] buff to every living ally instead of only Vaelor. Allies also gain +20% [Elemental Gauge Gain] for the same duration. +90% [Direct Attack] and +30% [Skill Efficiency]."
   },
   "voltaic-thunderbird-coil": {
     "name": "Thunderbird Coil",
     "rarity": "Omnic",
     "element": "Atmospheric (actual gameplay element)",
-    "ability": "Your critical skills arc 40% of their primary target's actual HP damage to the healthiest different enemy. With no other enemy, grant the other allies +20% Critical Rate for their next Attack Action instead."
+    "ability": "Your critical [Skills] arc 40% of their primary target's actual HP damage to the healthiest different enemy. With no other enemy, grant the other allies +20% [Critical Rate] for their next [Attack Action] instead. +95% [Direct Attack] and +45% [Critical Damage Multiplier]."
   },
   "master-elise-2": {
     "name": "Twin Star Planetary Ratchet",
     "rarity": "Omnic (Master)",
     "element": "Atmospheric (named bearer's actual element; Master for Elise only)",
-    "ability": "Each Shuriken lodged by Voltstar Cut grants the next other ally's damaging skill against that enemy +35% Skill Power. Consume one Shuriken's bonus per activation; unused bonuses end on recall."
+    "ability": "Each Shuriken lodged by Voltstar Cut grants the next other ally's damaging [Skill] against that enemy +35% [Skill Power]. Consume one Shuriken's bonus per activation; unused bonuses end on recall. +80% [Direct Attack] and +40% [Skill Power]."
   },
   "master-crinso-1": {
     "name": "Twin-Rose Singularity Drive",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Crinso only)",
-    "ability": "Each Combo spent by Blossoming Cataclysm grants the other allies +15% Critical Damage Multiplier for their next Attack Action, up to +60%."
+    "ability": "Each Combo spent by Blossoming Cataclysm grants the other allies +15% [Critical Damage Multiplier] for their next [Attack Action], up to +60%. +75% [Critical Damage Multiplier] and +50% [Elemental Gauge Capacity]."
   },
   "master-disciple-1": {
     "name": "Unbound Mindcrown Synapse",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Disciple only)",
-    "ability": "Disciple's Strike, Shelter and Resolve last +2 player turns. A mismatched action no longer consumes Strike or Shelter; each still ends after one matching action."
+    "ability": "Disciple's Strike, Shelter and Resolve last +2 [Player Turns]. A mismatched action no longer consumes Strike or Shelter; each still ends after one matching action. +75% [Health] and +35% [Skill Efficiency]."
   },
   "master-razor-1": {
     "name": "Unbroken Midnight Bastion",
     "rarity": "Omnic (Master)",
     "element": "Chaotic (named bearer's actual element; Master for Razor only)",
-    "ability": "When Unbroken Midnight spends Wounds, heal the other living allies for 20% of the amount spent, capped at 15% of each recipient's maximum HP."
+    "ability": "When Unbroken Midnight spends Wounds, heal the other living allies for 20% of the amount spent, capped at 15% of each recipient's maximum HP. +100% [Health] and +30% [Elemental Gauge Gain]."
   },
   "master-ember-3": {
     "name": "Unbroken Sunforge Throne",
     "rarity": "Omnic (Master)",
     "element": "Infernic (named bearer's actual element; Master for Infernis only)",
-    "ability": "Dawnfire grants each other ally +40% Skill Power for their next damaging skill against an enemy carrying Infernis's Burn."
+    "ability": "Dawnfire grants each other ally +40% [Skill Power] for their next damaging [Skill] against an enemy carrying Infernis's [Burn]. +85% [Direct Attack] and +35% [Elemental Gauge Gain]."
   },
   "aquatic-undertide-chronometer": {
     "name": "Undertide Chronometer",
     "rarity": "Omnic",
     "element": "Oceanic (actual gameplay element)",
-    "ability": "+1 Enemy Turn Skill Duration for your Weaken. Other allies gain +15% Skill Efficiency for damaging skills targeting an enemy carrying your Weaken."
+    "ability": "+1 [Enemy Turn] [Skill Duration] for your [Weaken]. Other allies gain +15% [Skill Efficiency] for damaging [Skills] targeting an enemy carrying your [Weaken]. +70% [Defense] and +30% [Skill Efficiency]."
   },
   "master-tide-3": {
     "name": "Undertow Sovereign Harpoon",
     "rarity": "Omnic (Master)",
     "element": "Oceanic (named bearer's actual element; Master for Tizu only)",
-    "ability": "Allies holding Tizu's Shields ignore 25% of enemy Defense when attacking enemies carrying his Weaken."
+    "ability": "Allies holding Tizu's [Shields] ignore 25% of enemy [Defense] when attacking enemies carrying his [Weaken]. +95% [Defense] and +35% [Skill Power]."
   },
   "efflorescent-verdant-covenant": {
     "name": "Verdant Covenant",
     "rarity": "Omnic",
     "element": "Botanic (actual gameplay element)",
-    "ability": "Effective healing from your skills grants its recipients +30% Skill Power for their next damaging skill. Hold one bonus per ally."
+    "ability": "Effective healing from your [Skills] grants its recipients +30% [Skill Power] for their next damaging [Skill]. Hold one bonus per ally. +95% [Health] and +25% [Elemental Gauge Gain]."
   },
   "master-rosetta-2": {
     "name": "Virtuous Planet Rosegarden",
     "rarity": "Omnic (Master)",
     "element": "Tranquilitic (named bearer's actual element; Master for Rosetta only)",
-    "ability": "Crimson Skyfall against the Quarry heals every ally who hit it that player turn for 8% of their own maximum HP. Each other contributor also gains +20% Skill Efficiency for their next skill."
+    "ability": "Crimson Skyfall against the Quarry heals every ally who hit it that [Player Turn] for 8% of their own maximum HP. Each other contributor also gains +20% [Skill Efficiency] for their next [Skill]. +80% [Health] and +30% [Skill Efficiency]."
   },
   "master-bruno-3": {
     "name": "Worldforge Hammer Dominion",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Bruno only)",
-    "ability": "Seismic Hammerfall lowers its target's Defense by 25% through the next player turn. Bruno's Cover recipients gain +25% Direct Attack while protected."
+    "ability": "Seismic Hammerfall lowers its target's [Defense] by 25% through the next [Player Turn]. Bruno's Cover recipients gain +25% [Direct Attack] while protected. +60% [Direct Attack] and +85% [Defense]."
   },
   "covercharge-drum": {
     "name": "Worldgrove Covercharge Heart",
     "rarity": "Omnic",
     "element": "Botanic (actual gameplay element)",
-    "ability": "After you use a skill, the next different ally to use a skill gains +20% Skill Power if yours dealt damage, or +15% Skill Efficiency if yours healed or Shielded. A mixed skill grants both."
+    "ability": "After you use a [Skill], the next different ally to use a [Skill] gains +20% [Skill Power] if yours dealt damage, or +15% [Skill Efficiency] if yours healed or Shielded. A mixed [Skill] grants both. +60% [Skill Power] and +50% [Elemental Gauge Capacity]."
   },
   "botanic-graft-covenant": {
     "name": "Worldroot Graft Coronation",
     "rarity": "Omnic",
     "element": "Botanic (actual gameplay element)",
-    "ability": "Your healing skills gain +50% Skill Power on allies below 40% HP. A recipient healed above that threshold gains +30% Defense for the next Enemy Turn."
+    "ability": "Your healing [Skills] gain +50% [Skill Power] on allies below 40% HP. A recipient healed above that threshold gains +30% [Defense] for the next [Enemy Turn]. +110% [Health] and +20% [Skill Efficiency]."
   },
   "mending-valve": {
     "name": "Worldroot Sap Cathedral",
     "rarity": "Omnic",
     "element": "Botanic (actual gameplay element)",
-    "ability": "Your damaging skills heal the most injured ally for 15% of their total actual HP damage, capped at 10% of that ally's maximum HP per cast."
+    "ability": "Your damaging [Skills] heal the most injured ally for 15% of their total actual HP damage, capped at 10% of that ally's maximum HP per cast. +85% [Direct Attack] and +40% [Skill Power]."
   },
   "rootbound-triage-vault": {
     "name": "Worldroot Triage Sanctuary",
     "rarity": "Omnic",
     "element": "Botanic (actual gameplay element)",
-    "ability": "At the start of each player turn, grant the living ally with the lowest HP percentage +25% Skill Efficiency and +35% Skill Power for healing and Shields until their next action ends."
+    "ability": "At the start of each [Player Turn], grant the living ally with the lowest HP percentage +25% [Skill Efficiency] and +35% [Skill Power] for healing and [Shields] until their next action ends. +70% [Health] and +60% [Defense]."
   },
   "master-sprout-1": {
     "name": "Worldseed Mercy Foundry",
     "rarity": "Omnic (Master)",
     "element": "Botanic (named bearer's actual element; Master for Flora only)",
-    "ability": "Flora's Seeds grant their recipients +25% Skill Power for their next skill when harvested or when they mature. Empowered Seeds also grant +15% Skill Efficiency."
+    "ability": "Flora's Seeds grant their recipients +25% [Skill Power] for their next [Skill] when harvested or when they mature. Empowered Seeds also grant +15% [Skill Efficiency]. +65% [Skill Power] and +50% [Elemental Gauge Capacity]."
   },
   "efflorescent-worldtree-heart": {
     "name": "Worldtree Heart",
     "rarity": "Omnic",
     "element": "Botanic (actual gameplay element)",
-    "ability": "Your skills turn 60% of overhealing into a Shield for the recipient, capped at 20% of their maximum HP, lasting two Enemy Turns. Replaces the previous Shield from this Conduit."
+    "ability": "Your [Skills] turn 60% of overhealing into a [Shield] for the recipient, capped at 20% of their maximum HP, lasting two [Enemy Turns]. Replaces the previous [Shield] from this Conduit. +140% [Health] and +35% [Skill Power]."
   },
   "calamitic-cathedral-final-equation": {
     "name": "Cathedral of the Final Equation",

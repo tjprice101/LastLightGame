@@ -112,12 +112,13 @@ describe('Phase 0 shared runtime math', () => {
     expect(effectiveDefense(state, owner)).toBe(100);
   });
 
-  it('uses Tizu Shield Defense only while the source-owned Shield remains', () => {
+  it('uses Tizu Master personal stats without the retired recipient Shield Defense', () => {
     const state = fixture(['tide', 'sprout', 'ember']);
     const [tide, recipient] = state.allies;
     tide.masterConduit = 'master-tide-1';
     nativeShield(state, tide, recipient, 100, []);
-    expect(effectiveDefense(state, recipient)).toBe(130);
+    expect(effectiveDefense(state, recipient)).toBe(100);
+    expect(effectiveDefense(state, tide)).toBe(180);
     recipient.shield = 0;
     expect(effectiveDefense(state, recipient)).toBe(100);
   });
@@ -203,7 +204,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(target.shatter).toBe(24);
   });
 
-  it('applies Firstlight only during the first two turns to Gauge Gain and Defense', () => {
+  it('applies Firstlight permanent Gauge Gain and Defense throughout the encounter', () => {
     const state = fixture();
     const [owner, target] = state.allies;
     owner.conduits = ['firstlight-cam', null, null, null, null, null, null, null];
@@ -214,8 +215,8 @@ describe('Phase 0 shared runtime math', () => {
     target.shatter = 0;
     state.round = 3;
     nativeGauge(state, target, 20, []);
-    expect(target.shatter).toBe(20);
-    expect(effectiveDefense(state, target)).toBe(100);
+    expect(target.shatter).toBe(30);
+    expect(effectiveDefense(state, target)).toBe(140);
   });
 
   it('grants Pulse Trigger Gauge to other allies only once on the first critical skill each turn', () => {
@@ -242,17 +243,15 @@ describe('Phase 0 shared runtime math', () => {
     expect(absent.allies[1].shatter).toBe(0);
   });
 
-  it('uses Griffin Turbine actual HP damage as a recipient-capacity fraction', () => {
+  it('uses Griffin Turbine fixed recipient-capacity Gauge after Normal Attack', () => {
     const state = fixture();
     const [owner, first, second] = state.allies;
     owner.conduits = ['atmospheric-griffin-turbine', null, null, null, null, null, null, null];
     first.shatter = 0;
     second.shatter = 0;
     const result = act(state, owner.id, 'light', state.enemies[0].id).state;
-    const actualLoss = 100_000 - result.enemies[0].hp;
-    const fraction = Math.min(.2, .2 * actualLoss / owner.stats.damage);
-    expect(result.allies[1].shatter).toBe(Math.round(200 * fraction));
-    expect(result.allies[2].shatter).toBe(Math.round(200 * fraction));
+    expect(result.allies[1].shatter).toBe(20);
+    expect(result.allies[2].shatter).toBe(20);
   });
 
   it('spends Survey points for the Surveyor Crown Gauge cap per cast', () => {
@@ -292,21 +291,21 @@ describe('Phase 0 shared runtime math', () => {
     owner.native = { cyclone: { gusts: 6, phases: 1, contributors: {} } };
     owner.shatter = first.shatter = second.shatter = 0;
     nativePhaseEnd(state, []);
-    expect(owner.shatter).toBe(36);
+    expect(owner.shatter).toBe(58);
     expect(first.shatter).toBe(36);
     expect(second.shatter).toBe(36);
   });
 
-  it('shields allies from Atmoso Cyclone actual HP damage with the approved cap', () => {
+  it('shields allies for 30% of Atmoso Cyclone actual HP damage without the retired Health cap', () => {
     const state = fixture(['atmoso', 'tide', 'sprout']);
     const [owner, first, second] = state.allies;
     owner.masterConduit = 'master-atmoso-2';
     owner.stats.damage = 2000;
     owner.native = { cyclone: { gusts: 1, phases: 1, contributors: {} } };
     nativePhaseEnd(state, []);
-    expect(first.shield).toBe(150);
-    expect(second.shield).toBe(150);
-    expect(owner.shield).toBe(150);
+    expect(first.shield).toBe(1800);
+    expect(second.shield).toBe(1800);
+    expect(owner.shield).toBe(1800);
     expect(owner.conduitRuntime?.layers?.[0].expiresAfterPhase).toBe(state.round);
   });
 
@@ -352,7 +351,7 @@ describe('Phase 0 shared runtime math', () => {
     expect(contributor.shatter).toBe(10);
   });
 
-  it('applies Cinderstar Gauge per Burn turn consumed', () => {
+  it('removes Cinderstar consumed-Burn Gauge and focuses Last Flare damage instead', () => {
     const state = fixture(['ember', 'tide', 'sprout']);
     const [owner, first, second] = state.allies;
     owner.masterConduit = 'master-ember-2';
@@ -360,8 +359,11 @@ describe('Phase 0 shared runtime math', () => {
     const activation = prepareConduitAction(state, owner, 'skill2', 40, true);
     activation.spent.ember = 2;
     finishConduitAction(state, owner, activation, []);
-    expect(first.shatter).toBe(16);
-    expect(second.shatter).toBe(16);
+    expect(first.shatter).toBe(0);
+    expect(second.shatter).toBe(0);
+    const flare = prepareConduitAction(state, owner, 'ultimate', 100, true);
+    expect(flare.bonus).toBe(1.25);
+    expect(flare.all).toBe(false);
   });
 
   it('extends Aurora Verdict protection to enemy skills and grants its end-turn Gauge', () => {
@@ -430,12 +432,12 @@ describe('Phase 0 shared runtime math', () => {
     ally.shatter = 0;
     nativeGauge(state, ally, 10, []);
     expect(ally.shatter).toBe(13);
-    expect(effectiveDefense(state, bruno)).toBe(100);
+    expect(effectiveDefense(state, bruno)).toBe(165);
 
     const activation = prepareConduitAction(state, bruno, 'ultimate', 100, false);
     nativeAction(state, bruno, 'ultimate', state.enemies[0].id, [], () => {}, activation);
-    expect(bruno.shield).toBe(Math.round(Math.max(250, effectiveDefense(state, bruno) * 2.5) *
-      activation.skillPower * 1.5));
+    expect(bruno.shield).toBeCloseTo(Math.max(250, effectiveDefense(state, bruno) * 2.5) *
+      activation.skillPower * 1.5);
   });
 
   it('grants Master Bruno the Cover Defense and next-skill power only after routing damage', () => {
@@ -443,7 +445,7 @@ describe('Phase 0 shared runtime math', () => {
     const [bruno, recipient] = state.allies;
     bruno.masterConduit = 'master-bruno-1';
     bruno.native = { cover: { targets: [recipient.id], fraction: .4, throughPhase: state.round } };
-    expect(effectiveDefense(state, bruno)).toBe(140);
+    expect(effectiveDefense(state, bruno)).toBe(195);
     nativeRouteDamage(state, state.enemies[0], recipient, 100, [], () => {});
     expect(prepareConduitAction(state, recipient, 'skill1', 25, false).skillPower).toBe(1.3);
     expect(prepareConduitAction(state, recipient, 'skill1', 25, false).skillPower).toBe(1);
@@ -543,7 +545,7 @@ describe('Phase 0 shared runtime math', () => {
     const repair = prepareConduitAction(state, orvella, 'skill1', 25, false);
     expect(repair.skillPower).toBe(1);
     nativeAction(state, orvella, 'skill1', state.enemies[0].id, [], () => {}, repair);
-    expect(orvella.native.foundation?.durability).toBe(620);
+    expect(orvella.native.foundation?.durability).toBe(662);
     orvella.masterConduit = 'master-orvella-2';
     first.hp = 500;
     second.hp = 600;
@@ -551,8 +553,8 @@ describe('Phase 0 shared runtime math', () => {
     expect(orvella.conduitRuntime?.numbers.foundationHealBank).toBe(80);
     state.round++;
     nativeTurnStart(state, []);
-    expect(first.hp).toBe(540);
-    expect(second.hp).toBe(640);
+    expect(first.hp).toBe(527);
+    expect(second.hp).toBe(627);
   });
 
   it('preserves Foundation and grants one-skill Efficiency after Master Orvella Last Flare', () => {
@@ -607,7 +609,7 @@ describe('Phase 0 shared runtime math', () => {
     const activation = prepareConduitAction(state, owner, 'skill1', 25, false);
     nativeAction(state, owner, 'skill1', state.enemies[0].id, [], () => {}, activation);
     for (const ally of [owner, first, second])
-      expect(owner.native.seeds?.[ally.id]?.fraction).toBeCloseTo(nativeBalance.flora.seed * 1.2);
+      expect(owner.native.seeds?.[ally.id]?.fraction).toBeCloseTo(nativeBalance.flora.seed * 1.45);
   });
 
   it('grants Seed harvest or maturity Skill Power and Efficiency bonuses once', () => {
@@ -753,7 +755,7 @@ describe('Phase 0 shared runtime math', () => {
     conduitIncoming(state, enemy, ally, 100, false, false, [], 'light');
     expect(startingHp - ally.hp).toBe(85);
     nativeEnemyCompleted(state, enemy, true, []);
-    expect(prepareConduitAction(state, thornia, 'skill1', 25, false).skillPower).toBe(1.2);
+    expect(prepareConduitAction(state, thornia, 'skill1', 25, false).skillPower).toBe(1.65);
   });
 
   it('shares Razor Bastion Shields and applies Master Wound spend payoffs', () => {
@@ -841,10 +843,10 @@ describe('Phase 0 shared runtime math', () => {
     owner.conduits = ['infernic-phoenix-reactor', null, null, null, null, null, null, null];
     owner.hp = 0;
     afterConduitHpLoss(state, owner, []);
-    expect(owner.hp).toBe(350);
+    expect(owner.hp).toBe(543);
     expect(owner.shatter).toBe(0);
-    expect(first.shield).toBe(150);
-    expect(second.shield).toBe(150);
+    expect(first.shield).toBe(233);
+    expect(second.shield).toBe(233);
     expect(first.conduitRuntime?.layers?.[0].expiresAfterPhase).toBe(state.round);
   });
 

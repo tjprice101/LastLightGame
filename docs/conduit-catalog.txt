@@ -1,5 +1,5 @@
 LAST LIGHT - APPROVED PHASE 0 STAT AND CONDUIT CONTRACT
-Design revision: 2026-10-22 (D-382)
+Design revision: 2026-10-22 (D-383)
 
 APPROVED CONTRACT - IMPLEMENTATION VERIFIED; ACTIVATION AUTHORIZED (D-370)
 The owner authorizes the Phase 0 stat overhaul and all listed Conduit changes.
@@ -8,12 +8,12 @@ Numerical evidence: docs/conduit-behavior-matrix.md covers all 138 entries,
 including absent/+0..+5 ordinary entries and equipped/absent fixed Masters.
 Hosted publication and validation status are recorded in docs/handoff.md.
 Preserve existing ownership, IDs, equipment eligibility, upgrade levels and costs.
-New upgrade scaling may be chosen during implementation; Masters remain fixed.
+Beneficial ordinary percentages grow10% of base per upgrade; Masters remain fixed.
 Do not activate a partial Conduit roster or claim checks that have not passed.
 
 SQUAD DESIGN REVISION
 D-382 replaces all 10 Common, 15 Rare, 15 Legendary and five Calamitic effects.
-All 45 ordinary Omnic and 48 Master abilities remain unchanged.
+D-383 refreshes all 45 ordinary Omnic and 48 Master abilities. Owner55 designs are the baseline; the remaining38 retain distinct native/elemental mechanics with tailored stat packages.
 Masters remain character-specific and build on their actual native abilities.
 Calamitic effects emphasize one clear squad-changing mechanic, not long chains
 of conditions. Practical usefulness is a design goal, not a tested balance claim.
@@ -366,467 +366,467 @@ OMNIC (93)
 Name: Abyssal Clearwater Parliament
 Rarity: Omnic
 Element: Oceanic (actual gameplay element)
-Ability (Default Value): When your Last Flare is cast, transfer 15% of your current Shield to an ally with the lowest [Elemental Gauge] percentage.
+Ability (Default Value): For each other [Oceanic] [Squad Member] in your frozen [Squad], gain +35% [Skill Power]. Defeated members still count; captured Elemental-Devourers qualify.
 
 Name: Abyssal Shelter Observatory
 Rarity: Omnic (Master)
 Element: Oceanic (named bearer's actual element; Master for Tizu only)
-Ability (Default Value): Allies holding Tizu's Shields gain +30% Defense. Once per ally per Battle, a hit that breaks his Shield deals no remaining damage to their HP.
+Ability (Default Value): Tizu gains +35% [Skill Efficiency], +45% [Skill Power], and +80% [Defense].
 
 Name: Abyssal Surveyor Crown
 Rarity: Omnic (Master)
 Element: Oceanic (named bearer's actual element; Master for Nerithe only)
-Ability (Default Value): Each Survey point spent by Ocean Beyond the Map grants all living allies Elemental Gauge equal to 4% of their own maximum capacity, up to 20% each per cast.
+Ability (Default Value): Each Survey point spent by Ocean Beyond the Map grants all living allies [Elemental Gauge] equal to 4% of their own maximum capacity, up to 20% each per cast.
 
 Name: Accord Seraph Sanctuary
 Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
-Ability (Default Value): Healing or Shielding another ally grants Accord. Once per ally per Battle, Accord prevents a fatal enemy hit, leaving them at 1 HP and granting 25% Skill Efficiency for their next skill.
+Ability (Default Value): Healing or Shielding another ally grants Accord. Once per ally per Battle, Accord prevents a fatal enemy hit, leaving them at 1 HP and granting 25% [Skill Efficiency] for their next [Skill]. +85% [Health] and +20% [Skill Efficiency].
 
 Name: Aegis Covenant Crown
 Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
-Ability (Default Value): Allies holding your skill-created Shields gain +20% Critical Rate and take 30% less Direct Damage from enemy critical hits.
+Ability (Default Value): Allies holding your [Skill]-created [Shields] gain +20% [Critical Rate] and take 30% less [Direct Damage] from enemy critical hits. +90% [Defense] and +40% [Critical Damage Multiplier].
 
 Name: Atlas Bastion
 Rarity: Omnic
 Element: Botanic (actual gameplay element)
-Ability (Default Value): Normal Attack taunts all enemies for the next Enemy Turn. Each enemy attack aimed at you during that turn grants the other allies 4% Elemental Gauge, up to 12% each.
+Ability (Default Value): [Normal Attack] taunts all enemies for the next [Enemy Turn]. Each enemy attack aimed at you during that turn grants the other allies 4% [Elemental Gauge].
 
 Name: Briar Constellation Loom
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Flora only)
-Ability (Default Value): Briar Shot plants a Seed on every living ally instead of only the most injured. Seeds planted by Briar Shot gain +20% Skill Power.
+Ability (Default Value): Briar Shot plants a Seed on every living ally instead of only the most injured. Seeds planted by Briar Shot gain +45% [Skill Power].
 
 Name: Broken Sky Imperial Metronome
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Vaelor only)
-Ability (Default Value): On Tune, Vaelor's Normal Attack grants the other allies +25% Critical Rate for their next Attack Action. On Crescendo, it instead grants +40% Critical Damage Multiplier.
+Ability (Default Value): On Tune, Vaelor's [Normal Attack] grants the other allies +25% [Critical Rate] for their next [Attack Action]. On Crescendo, it instead grants +40% [Critical Damage Multiplier]. +30% [Critical Rate] and +45% [Elemental Gauge Gain].
 
 Name: Cinder Testament
 Rarity: Omnic
 Element: Infernic (actual gameplay element)
-Ability (Default Value): Your Burn gains +15% Skill Power each time another ally damages its target with a skill, up to +60% per application. Refreshing Burn retains its accumulated bonus.
+Ability (Default Value): Your [Burn] gains +20% [Direct Damage] each time another ally damages its target with a [Skill], up to +60% per application. Refreshing [Burn] retains its accumulated bonus.
 
 Name: Cinderstar Genesis Engine
 Rarity: Omnic (Master)
 Element: Infernic (named bearer's actual element; Master for Infernis only)
-Ability (Default Value): Flame Arc grants the other allies 4% Elemental Gauge per Burn turn it consumes.
+Ability (Default Value): Infernis' [Last Flare] now targets one enemy and gains +125% [Direct Damage]. Infernis also gains +55% [Health], +65% [Defense], and +40% [Skill Power].
 
 Name: Concord Planet Thoughtforge
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Disciple only)
-Ability (Default Value): An ally who consumes Disciple's Resolve gives each other living ally Elemental Gauge equal to 10% of that recipient's own maximum capacity.
+Ability (Default Value): An ally who consumes Disciple's Resolve gives each other living ally [Elemental Gauge] equal to 10% of that recipient's own maximum capacity.
 
 Name: Crimson Beauty Pyre Requiem
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Crinso only)
-Ability (Default Value): Whenever Crinso gains Combo by alternating skills, the most injured ally heals for 8% of their maximum HP. At 3 or more Combo, this heals every living ally instead.
+Ability (Default Value): Whenever Crinso gains Combo by alternating [Skills], the most injured ally heals for 8% of their maximum [Health]. At 3 or more Combo, this heals every living ally instead. Crinso gains +65% [Skill Power] and +45% [Skill Efficiency]
 
 Name: Crosswind Imperial Drive
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Atmoso only)
-Ability (Default Value): Allies who add a Gust to Atmoso's Cyclone gain +30% Elemental Gauge Gain until the end of the next player turn.
+Ability (Default Value): Allies who add a Gust to Atmoso's Cyclone gain +30% [Elemental Gauge Gain] until the end of the next [Player Turn]. Atmoso gains +45% [Skill Power] and +45% [Direct Attack].
 
 Name: Dawn Witness Array
 Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
-Ability (Default Value): After your Attack Action fails to critically hit, the other allies gain +15% Critical Rate for their next Attack Action. Your own next Attack Action gains +30% Critical Damage Multiplier.
+Ability (Default Value): After your [Attack Action] fails to critically hit, each other living ally gains +15% [Critical Rate] for their next [Attack Action]. Your next [Attack Action] gains +30% [Critical Damage Multiplier] and +200% [Direct Damage]. Hold one bonus per recipient; refresh rather than stack.
 
 Name: Deep Foundation Planetpress
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Orvella only)
-Ability (Default Value): Foundation absorption stores healing equal to 40% of the durability spent. At the next player turn, divide it among injured allies, up to 12% of each recipient's maximum HP.
+Ability (Default Value): Foundation absorption stores healing equal to 40% of the durability spent. At the next [Player Turn], divide it among injured allies, up to 12% of each recipient's maximum [Health]. Passive Ability: Orvella and [Squad Members] gain +55% [Health] and +35% [Skill Power].
 
 Name: Duality Planet Flamewheel
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Crinso only)
-Ability (Default Value): When Golden Edge follows Crimson Rupture, grant the most injured ally a Shield worth 12% of their maximum HP for one Enemy Turn.
+Ability (Default Value): When Golden Edge follows Crimson Rupture, grant the most injured ally a [Shield] worth 12% of their maximum [Health] for one [Enemy Turn]. Crinso gains +55% [Defense] and +45% [Skill Efficiency].
 
 Name: Eclipse Mantle
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): Your skills ignore 35% of a Weakened enemy's Defense. If another ally applied that Weaken, gain +20% Skill Power against that enemy.
+Ability (Default Value): Your [Skills] ignore 35% of a Weakened enemy's [Defense]. If another ally applied that [Weaken], gain +20% [Skill Power] against that enemy. +35% [Skill Power], and +45% [Last Flare] [Direct Damage].
 
 Name: Eclipse Planet Watchtower
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Razor only)
-Ability (Default Value): When Eclipse Bastion creates Razor's Shield, each other living ally gains a Shield worth 40% of that amount, capped at 15% of their own maximum HP, for one Enemy Turn.
+Ability (Default Value): When Eclipse Bastion creates Razor's [Shield], each other living ally gains a [Shield] worth 40% of that amount, capped at 45% of their own maximum HP, for one [Enemy Turn]. Passive: All [Squad Members], including Razor, gain +55% [Health] and +35% [Skill Efficiency].
 
 Name: Ember Coronation Iris
 Rarity: Omnic
 Element: Infernic (actual gameplay element)
-Ability (Default Value): +1 Enemy Turn Skill Duration for your Burn. Other allies gain +20% Critical Rate when attacking enemies carrying your Burn.
+Ability (Default Value): +1 [Enemy Turn] [Skill Duration] for your [Burn]. Other allies gain +20% [Critical Rate] when attacking enemies carrying your [Burn]. +80% [Skill Power] on [Skills] that apply [Burn] and +55% [Direct Attack].
 
 Name: Eternal Cinder Observatory
 Rarity: Omnic
 Element: Infernic (actual gameplay element)
-Ability (Default Value): When an enemy carrying your Burn dies, its remaining Burn damage strikes the healthiest other enemy as one Bonus Strike, capped at 200% of your Direct Attack.
+Ability (Default Value): When an enemy carrying [Burn] dies, its remaining [Burn] damage strikes the healthiest other enemy as one Bonus Strike. +225% [Direct Attack].
 
 Name: Evergreen Continuance Crucible
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Flora only)
-Ability (Default Value): Worldseed's Empowered Seeds grant +25% Defense while pending. Once per Battle, Worldseed also revives fallen allies at 35% HP and 0 Gauge, without a Seed.
+Ability (Default Value): Worldseed's Empowered Seeds grant +25% [Defense] while pending. Once per Battle, Worldseed also revives fallen allies at 35% [Health] and 0 Gauge, without a Seed. +99% [Health] to Flora, and +65% [Elemental Gauge Gain].
 
 Name: Faultkeeper Loom
 Rarity: Omnic
 Element: Botanic (actual gameplay element)
-Ability (Default Value): While you are alive, other allies gain bonus Defense equal to 25% of your effective Defense. Defense received from squad auras does not increase this bonus.
+Ability (Default Value): While you are alive, other allies gain bonus [Defense] equal to 25% of your effective [Defense]. +75% [Defense] and +55% [Skill Power].
 
 Name: Final Chord Celestial Resonator
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Vaelor only)
-Ability (Default Value): Last Chord of the Sky grants the other allies +30% Skill Power for their next skill, increased to +60% when cast on Crescendo.
+Ability (Default Value): Last Chord of the Sky grants the other allies +30% [Skill Power] for their next [Skill], increased to +60% when cast on Crescendo. Vaelor gains +35% [Skill Power] and +105% [Direct Attack].
 
 Name: Final Dawn Tribunal
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Aurora only)
-Ability (Default Value): Enemies carrying Aurora's Seal have 25% less Defense. When their Sealed skill resolves, the most injured ally gains a Shield worth 15% of their maximum HP for one Enemy Turn.
+Ability (Default Value): Enemies carrying Aurora's Seal have 25% less [Defense]. When their Sealed [Skill] resolves, the most injured ally gains a [Shield] worth 15% of their maximum [Health] for one [Enemy Turn]. Aurora and Allies gain +75% [Health] and +65% [Defense].
 
 Name: Firstlight Concordance
 Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
-Ability (Default Value): All allies gain +50% Elemental Gauge Gain during the first two player turns and +40% Defense during the first two Enemy Turns of each Battle.
+Ability (Default Value): Your entire [Squad] (including this character) gains +50% [Elemental Gauge Gain] and +40% [Defense]. This character gains an additional +35% [Health] and +45% [Skill Power].
 
 Name: Folded Ocean Planetarium
 Rarity: Omnic (Master)
 Element: Oceanic (named bearer's actual element; Master for Nerithe only)
-Ability (Default Value): When Fold the Sea moves Survey to a different enemy, the other allies gain +40% Skill Power for their next damaging skill against that enemy.
+Ability (Default Value): When Fold the Sea moves Survey to a different enemy, your other allies gain +40% [Skill Power] for their next damaging [Skill] against that newly marked enemy. Nerithe gains +55% [Skill Power] and +55% [Defense].
 
 Name: Forbidden Garden Worldlock
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Thornia only)
-Ability (Default Value): An enemy that triggers Thornia's trap has 20% less Defense until the end of the next player turn.
+Ability (Default Value): An enemy that triggers Thornia's trap has 20% less [Defense] until the end of the next [Player Turn]. Thornia gains +75% [Skill Power] and +20% [Defense].
 
 Name: Fractured Mercy Governor
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): Applying Weaken grants the most injured ally +30% Defense for the next Enemy Turn. If they are below 50% HP, also restore 6% of their maximum HP. Once per skill.
+Ability (Default Value): Applying [Weaken] grants the most injured ally +30% [Defense] for the next [Enemy Turn]. If they are below 50% [Health], also restore 6% of their maximum [Health]. Once per [Skill]. +25% [Skill Efficiency] and all [Squad Members] gain +55% [Health].
 
 Name: Golden Thorn Judgment Loom
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Rosetta only)
-Ability (Default Value): Golden Thorn Volley grants each other ally +35% Skill Power for their next damaging skill against the Quarry.
+Ability (Default Value): Golden Thorn Volley grants each other ally +35% [Skill Power] for their next damaging [Skill] against the Quarry. +60% [Skill Power] and +35% [Elemental Gauge Capacity].
 
 Name: Griffin Turbine
 Rarity: Omnic
 Element: Atmospheric (actual gameplay element)
-Ability (Default Value): Normal Attack grants each other ally Elemental Gauge equal to 20% of their maximum capacity multiplied by its total actual HP damage divided by your Direct Attack, up to 20% each.
+Ability (Default Value): Each [Normal Attack] grants every other living ally 10% of their own maximum [Elemental Gauge Capacity], scaled once by their [Elemental Gauge Gain]. +99% [Direct Attack].
 
 Name: Helios Pyre Cathedral
 Rarity: Omnic (Master)
 Element: Infernic (named bearer's actual element; Master for Infernis only)
-Ability (Default Value): After Infernis's Burn damages enemies during an Enemy Turn, heal the most injured ally for 25% of that total HP damage, capped at 12% of their maximum HP.
+Ability (Default Value): After Infernis's [Burn] damages enemies during an [Enemy Turn], heal the most injured ally for 25% of that total [Health] damage, capped at 12% of their maximum [Health]. Passive: All [Squad Members], including Infernis, gain +60% [Health] and +20% [Defense]. Infernis gains +55% [Skill Power].
 
 Name: Horizon Cyclone Orrery
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Atmoso only)
-Ability (Default Value): Cyclone release grants every living ally a Shield equal to 30% of its total actual HP damage, capped at 15% of each ally's maximum HP, for one Enemy Turn.
+Ability (Default Value): Cyclone release grants every living ally a [Shield] equal to 30% of its total [Health] damage for one [Enemy Turn]. Passive: All [Squad Members] gain +55% [Health] and +45% [Defense].
 
 Name: Infinite Thunderwheel Arsenal
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Elise only)
-Ability (Default Value): Enemies holding Elise's Shuriken have 15% less Defense per lodged Shuriken, up to 30%. The reduction ends after the Shuriken are recalled.
+Ability (Default Value): Enemies holding Elise's Shuriken have 15% less [Defense] per lodged Shuriken. The reduction ends after the Shuriken are recalled. Elise gains +55% [Skill Power], +45% [Health], and +35% [Defense].
 
 Name: Keystone Sovereign Counterweight
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Orvella only)
-Ability (Default Value): Allies protected by Foundation gain +25% Defense. Keystone Reversal gains +50% Skill Power on its Foundation repair.
+Ability (Default Value): Allies protected by Foundation gain +25% [Defense]. Keystone Reversal gains +50% [Skill Power] on its Foundation repair. Orvella gains +35% [Health] and +15% [Skill Efficiency].
 
 Name: Kirin Cradle
 Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
-Ability (Default Value): Normal Attack heals the most injured ally for 100% of your effective Defense, capped at 12% of their maximum HP. At full HP, they gain 8% Elemental Gauge instead.
+Ability (Default Value): [Normal Attack] heals the most injured ally for 100% of your effective [Defense], capped at 50% of their maximum [Health]. At full [Health], they gain 8% [Elemental Gauge] instead. +65% [Defense] and +200% [Direct Attack].
 
 Name: Leviathan Mercy Reflector
 Rarity: Omnic
 Element: Oceanic (actual gameplay element)
-Ability (Default Value): Your Shields reflect 40% of the damage they absorb to the attacker, up to 150% of your Direct Attack per Enemy Turn across all recipients.
+Ability (Default Value): Your [Shields] reflect 40% of the damage they absorb to the attacker, up to 150% of your [Direct Attack] per [Enemy Turn] across all recipients. +125% [Direct Attack].
 
 Name: Leviathan Pump
 Rarity: Omnic
 Element: Oceanic (actual gameplay element)
-Ability (Default Value): Whenever your skill-created Shield absorbs an enemy attack, its recipient gains 5% Elemental Gauge, up to 15% per recipient per Enemy Turn.
+Ability (Default Value): Whenever a [Shield] absorbs an enemy attack, its recipient gains 5% [Elemental Gauge]. +45% [Defense] and +25% [Critical Rate].
 
 Name: Leviathan Ward Loom
 Rarity: Omnic
 Element: Oceanic (actual gameplay element)
-Ability (Default Value): Allies holding your skill-created Shields gain +30% Skill Power for healing and Shield skills. Your Shields on them last +1 Enemy Turn.
+Ability (Default Value): Living allies, including yourself, holding any [Shield] gain +30% [Skill Power] for healing and [Shield]-generating [Skills] while you are alive. Your [Skill]-created [Shields] last +1 [Enemy Turn]. +55% [Defense] and +55% [Skill Power].
 
 Name: Living Worldwall Atlas
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Bruno only)
-Ability (Default Value): Whenever Bruno takes Cover damage, its protected ally gains +30% Skill Power for their next skill. Bruno gains +40% Defense while Cover is active.
+Ability (Default Value): Whenever Bruno takes Cover damage, its protected ally gains +30% [Skill Power] for their next [Skill]. Bruno gains +40% [Defense] while Cover is active. +55% [Defense] and +45% [Skill Power].
 
 Name: Merciful Eclipse Regulator
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Aurora only)
-Ability (Default Value): When an enemy consumes Aurora's Seal, heal every living ally for 8% of their maximum HP. Each enemy can trigger this once per Enemy Turn.
+Ability (Default Value): When an enemy consumes Aurora's Seal, heal every living ally for 8% of their maximum [Health]. Each enemy can trigger this once per [Enemy Turn]. +45% [Skill Power] and +25% [Health].
 
 Name: Nightglass Archive
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): Your damaging skills mark surviving enemies for two player turns. Other allies' Normal Attacks against marked enemies gain +50% Critical Damage Multiplier.
+Ability (Default Value): Your damaging [Skills] mark surviving enemies for two [Player Turns]. Other allies' [Normal Attacks] against marked enemies gain +50% [Critical Damage Multiplier]. While you are alive, all living [Squad Members] gain +200% [Direct Attack].
 
 Name: Nightglass Counterblade Engine
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Razor only)
-Ability (Default Value): When Nightcleave spends Wounds, the other allies gain +30% Critical Rate for their next Attack Action.
+Ability (Default Value): When Nightcleave spends Wounds, your other allies gain +30% [Critical Rate] for their next [Attack Action]. +55% [Skill Power] and +35% [Skill Efficiency].
 
 Name: Ocean Memory Worldpump
 Rarity: Omnic (Master)
 Element: Oceanic (named bearer's actual element; Master for Tizu only)
-Ability (Default Value): Tidal Shelter gains +50% Skill Power. Its recipient's next skill gains +25% Skill Efficiency while the Shield remains.
+Ability (Default Value): Tidal Shelter gains +50% [Skill Power]. Its recipient's next [Skill] gains +25% [Skill Efficiency] while the [Shield] remains. +45% [Defense] and +25% [Elemental Gauge Gain].
 
 Name: Ouroboros Core
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): +40% Elemental Gauge Capacity. After Last Flare, all living allies gain a Shield worth 10% of their own maximum HP for two Enemy Turns.
+Ability (Default Value): +40% [Elemental Gauge Capacity]. After [Last Flare], all living allies gain a [Shield] worth 10% of their own maximum [Health] for 2 [Enemy Turns]. Passive: All [Squad Members] gain +55% [Health].
 
 Name: Paradox Spindle
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): While you recover from Last Flare, the other allies gain +40% Skill Power and +20% Skill Efficiency.
+Ability (Default Value): While you recover from [Last Flare], your other allies gain +40% [Skill Power] and +20% [Skill Efficiency]. +35% [Defense] and +20% [Skill Efficiency].
 
 Name: Phoenix Lifeforge
 Rarity: Omnic
 Element: Infernic (actual gameplay element)
-Ability (Default Value): While any enemy carries your Burn, all living allies receive 30% more healing.
+Ability (Default Value): While any enemy carries [Burn], all living [Squad Members] gain +150% [Direct Attack]. Each [Burn] tick from a character ability that deals [Health] damage heals every living [Squad Member] for 8% of their own maximum [Health]. Copied and Conduit-generated ticks do not trigger this healing. +55% [Skill Power] and +40% [Elemental Gauge Capacity].
 
 Name: Phoenix Reactor
 Rarity: Omnic
 Element: Infernic (actual gameplay element)
-Ability (Default Value): Once per Battle, revive at 35% maximum HP and 0 Gauge when defeated. Other living allies gain a Shield worth 15% of their own maximum HP for one Enemy Turn.
+Ability (Default Value): Once per Battle, revive at 35% maximum [Health] and 0 Gauge when defeated. Other living allies gain a [Shield] worth 15% of their own maximum [Health] for one [Enemy Turn]. Passive: All [Squad Members] gain +55% [Health].
 
 Name: Phoenix Temper Dominion
 Rarity: Omnic
 Element: Infernic (actual gameplay element)
-Ability (Default Value): When an ally's skill heals your HP, gain +40% Direct Attack for your next Attack Action. After it resolves, that ally gains +20% Skill Efficiency for their next skill.
+Ability (Default Value): When an ally's [Skill] heals your [Health], gain +40% [Direct Attack] for your next [Attack Action]. After it resolves, that ally gains +20% [Skill Efficiency] for their next [Skill]. +100% [Direct Attack] and +10% [Critical Rate].
 
 Name: Prismseal Astral Judiciary
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Aurora only)
-Ability (Default Value): Final Dawn Verdict protects against all enemy skills, not only ultimates. After each protected Enemy Turn, all living allies gain 8% Elemental Gauge.
+Ability (Default Value): Final Dawn Verdict protects against all enemy [Skills], not only ultimates. After each protected [Enemy Turn], all living allies gain 8% [Elemental Gauge]. +25% [Defense] and +65% [Skill Power].
 
 Name: Pyre Census Requiem
 Rarity: Omnic
 Element: Infernic (actual gameplay element)
-Ability (Default Value): Gain +15% Skill Power per different combat element among living squad members, up to +45%. Other allies of a different element from you gain +15% Direct Attack.
+Ability (Default Value): Gain +20% [Skill Power] per different [Element] among living [Squad Members]. +55% [Skill Power] and +25% [Health].
 
 Name: Quarry Planet Gravitas
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Bruno only)
-Ability (Default Value): Bruno's Last Flare Shield equals the greater of 375% effective Defense or 37.5% maximum HP. Allies under his Cover gain +25% Elemental Gauge Gain.
+Ability (Default Value): Bruno's [Last Flare] [Shield] equals the greater of 375% effective [Defense] or 37.5% maximum HP. Allies under his Cover gain +25% [Elemental Gauge Gain]. +65% [Health] and +65% [Defense].
 
 Name: Quiet Heaven Fanforge
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Bliss only)
-Ability (Default Value): Thousandfeather Stillness grants each other ally +25% Skill Efficiency for their next skill. When cast as Closing, also grant +1 turn Skill Duration to that skill's timed effects.
+Ability (Default Value): Thousandfeather Stillness grants each other ally +25% [Skill Efficiency] for their next [Skill]. When cast as Closing, also grant +1 turn [Skill Duration] to that [Skill]'s timed effects. +25% [Skill Efficiency] and +35% [Elemental Gauge Gain].
 
 Name: Rose Beyond the Sun Orrery
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Rosetta only)
-Ability (Default Value): The first time two different allies hit Rosetta's Quarry each player turn, those allies each gain 12% Elemental Gauge.
+Ability (Default Value): Every two actual damaging hits against Rosetta's Quarry grant all living allies 12% of their own maximum [Elemental Gauge Capacity]. Track hits on the current Quarry; a new Quarry resets the unfinished pair. +35% [Skill Efficiency] and +55% [Skill Power].
 
 Name: Rosefault Precision Sovereign
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): While Shielded, gain +50% Critical Damage Multiplier. Your first critical Attack Action each player turn grants the ally who supplied your current Shield +20% Skill Power for their next skill.
+Ability (Default Value): While Shielded, gain +50% [Critical Damage Multiplier]. Your first critical [Attack Action] each [Player Turn] grants the ally who supplied your current [Shield] +20% [Skill Power] for their next [Skill]. +70% [Last Flare] damage and +55% [Health].
 
 Name: Ruinselect Fracture Parliament
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): Gain +40% Skill Power while below 50% HP. Healing from other allies does not remove this bonus until the end of your next action.
+Ability (Default Value): Gain +55% [Skill Power] and +20% [Defense] for each defeated [Squad Member] in your frozen [Squad]. Lose that member's bonus when they revive.
 
 Name: Secondbeat Rupture Throne
 Rarity: Omnic
 Element: Chaotic (actual gameplay element)
-Ability (Default Value): After another ally damages an enemy, your next damaging skill against that enemy gains +35% Skill Power. Using it grants that ally 8% Elemental Gauge. Hold one target.
+Ability (Default Value): After another ally damages an enemy, your next damaging [Skill] against that same enemy gains +35% [Skill Power]. Using it grants that ally 8% [Elemental Gauge]. +35% [Health] and +15% [Critical Rate].
 
 Name: Seraph Mirror
 Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
-Ability (Default Value): Your first critical Attack Action each player turn heals every living ally for 6% of their own maximum HP.
+Ability (Default Value): Your first critical [Attack Action] each [Player Turn] heals every living ally for 6% of their own maximum [Health]. Passive: All [Squad Members] gain +65% [Health].
 
 Name: Shadow Rose Sovereign Foundry
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Thornia only)
-Ability (Default Value): Each enemy carrying Thornia's trap deals 15% less Direct Damage to other allies. When it triggers a trap, Thornia gains +20% Skill Power for her next skill.
+Ability (Default Value): Each enemy carrying Thornia's trap deals 15% less [Direct Damage] to other allies. When it triggers a trap, Thornia gains +20% [Skill Power] for her next [Skill]. +45% [Skill Power] and +35% [Elemental Gauge Gain].
 
 Name: Shared Tide Lifesea Engine
 Rarity: Omnic
 Element: Oceanic (actual gameplay element)
-Ability (Default Value): Shield skills targeting only one ally also grant the most injured different ally a Shield worth 50% of the original amount for the same duration.
+Ability (Default Value): [Shield] [Skills] targeting only one ally also grant the most injured different ally a [Shield] worth 50% of the original amount for the same duration. +65% [Health] and +30% [Skill Efficiency].
 
 Name: Shoreless Meridian Worldchart
 Rarity: Omnic (Master)
 Element: Oceanic (named bearer's actual element; Master for Nerithe only)
-Ability (Default Value): Other allies' damaging skills ignore 10% of the Surveyed enemy's Defense per Survey point, up to 40%, without consuming Survey.
+Ability (Default Value): Other allies' damaging [Skills] ignore 10% of the Surveyed enemy's [Defense] per Survey point, up to 40%, without consuming Survey. +75% [Direct Attack] and +50% [Elemental Gauge Capacity].
 
 Name: Sky Sovereign Escapement
 Rarity: Omnic
 Element: Atmospheric (actual gameplay element)
-Ability (Default Value): Your first critical skill each player turn grants each other ally Elemental Gauge equal to 8% of their own maximum capacity.
+Ability (Default Value): Your first critical [Skill] each [Player Turn] grants each other ally [Elemental Gauge] equal to 8% of their own maximum capacity. +40% [Critical Rate] and +65% [Skill Power].
 
 Name: Sky Without End Turbine
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Atmoso only)
-Ability (Default Value): Each Gust spent by Cyclone release grants all living allies 3% Elemental Gauge, up to 18% each per release.
+Ability (Default Value): Each Gust spent by Cyclone release grants all living allies 3% [Elemental Gauge], up to 18% each per release. +50% [Skill Power] and +60% [Elemental Gauge Capacity].
 
 Name: Skythread Rudder
 Rarity: Omnic
 Element: Atmospheric (actual gameplay element)
-Ability (Default Value): Normal Attack grants the other ally with the lowest Gauge percentage +25% Skill Efficiency for their next Skill 1 or Skill 2. Hold one discount per ally.
+Ability (Default Value): [Normal Attack] grants the other ally with the lowest Gauge percentage +25% [Skill Efficiency] for their next [Skill 1] or [Skill 2]. Hold one discount per ally. +60% [Elemental Gauge Capacity] and +35% [Elemental Gauge Gain].
 
 Name: Solace Witness Monolith
 Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
-Ability (Default Value): Acting before every other living ally grants them +20% Direct Attack for the rest of that player turn.
+Ability (Default Value): Acting before every other living ally grants them +20% [Direct Attack] for the rest of that [Player Turn]. +80% [Direct Attack] and +35% [Critical Damage Multiplier].
 
 Name: Sootwake Phoenix Mirror
 Rarity: Omnic
 Element: Infernic (actual gameplay element)
-Ability (Default Value): After your Burn damages an enemy, each other ally's next damaging skill against that enemy gains +30% Skill Power. Hold one bonus per ally; it expires after their next action.
+Ability (Default Value): After your [Burn] damages an enemy, each other ally's next damaging [Skill] against that enemy gains +30% [Skill Power]. Hold one bonus per ally; it expires after their next action. +75% [Skill Power] and +25% [Critical Damage Multiplier].
 
 Name: Sovereign Will Amplifier
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Disciple only)
-Ability (Default Value): Consuming Disciple's Strike or Resolve with a damaging action grants its recipient +30% Critical Rate and +40% Critical Damage Multiplier for that action.
+Ability (Default Value): Consuming Disciple's Strike or Resolve with a damaging action grants its recipient +30% [Critical Rate] and +40% [Critical Damage Multiplier] for that action. +60% [Skill Power] and +45% [Critical Damage Multiplier].
 
 Name: Stillhour Carillon
 Rarity: Omnic
 Element: Tranquilitic (actual gameplay element)
-Ability (Default Value): At the start of each of your Last Flare recovery turns, heal all living allies for 8% of their own maximum HP and grant them 10% Elemental Gauge.
+Ability (Default Value): At the start of each of your [Last Flare] recovery turns, heal all living allies for 8% of their own maximum HP and grant them 10% [Elemental Gauge]. +120% [Health] and +30% [Elemental Gauge Gain].
 
 Name: Stillplume Planetary Ballet
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Bliss only)
-Ability (Default Value): Opening Warfeather Cut grants the other allies +25% Critical Rate for their next Attack Action. Closing Warfeather Cut heals every other living ally instead of only the most injured.
+Ability (Default Value): Opening Warfeather Cut grants the other allies +25% [Critical Rate] for their next [Attack Action]. Closing Warfeather Cut heals every other living ally instead of only the most injured. +85% [Direct Attack] and +25% [Critical Rate].
 
 Name: Storm Empress Execution Clock
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Elise only)
-Ability (Default Value): When Elise recalls both Shuriken, the other allies gain +40% Critical Damage Multiplier for their next Attack Action. If both were lodged in the same enemy, also grant +15% Critical Rate.
+Ability (Default Value): When Elise recalls both Shuriken, the other allies gain +40% [Critical Damage Multiplier] for their next [Attack Action]. If both were lodged in the same enemy, also grant +15% [Critical Rate]. +65% [Critical Damage Multiplier] and +40% [Elemental Gauge Gain].
 
 Name: Stormstep Dynamo
 Rarity: Omnic
 Element: Atmospheric (actual gameplay element)
-Ability (Default Value): Alternating Skill 1 and Skill 2 grants +30% Skill Power to the switched skill and +15% Skill Efficiency to the next other ally who casts a skill. Any other action resets your sequence.
+Ability (Default Value): Alternating [Skill 1] and [Skill 2] grants +30% [Skill Power] to the switched [Skill] and +15% [Skill Efficiency] to the next other ally who casts a [Skill]. Any other action resets your sequence. +70% [Direct Attack] and +25% [Skill Efficiency].
 
 Name: Tempest Return Chronarch
 Rarity: Omnic
 Element: Atmospheric (actual gameplay element)
-Ability (Default Value): Every third critical Attack Action you perform grants all living allies +25% Skill Efficiency for their next Last Flare. Store at most one discount per ally.
+Ability (Default Value): Every third critical [Attack Action] you perform grants all living allies +25% [Skill Efficiency] for their next [Last Flare]. Store at most one discount per ally. +35% [Critical Rate] and +75% [Elemental Gauge Capacity].
 
 Name: Tempest Shelter Sovereign
 Rarity: Omnic
 Element: Atmospheric (actual gameplay element)
-Ability (Default Value): A critical skill grants the most injured ally a Shield worth 15% of their maximum HP for one Enemy Turn. Once per player turn.
+Ability (Default Value): A critical [Skill] grants the most injured ally a [Shield] worth 15% of their maximum HP for one [Enemy Turn]. Once per [Player Turn]. +85% [Defense] and +30% [Critical Rate].
 
 Name: Thousand-Rose Planetary Aegis
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Thornia only)
-Ability (Default Value): An Empowered Thorn Trap's first triggered strike each Enemy Turn grants the ally its enemy attacked a Shield worth 12% of that ally's maximum HP for one Enemy Turn. Global attacks protect every living target.
+Ability (Default Value): An Empowered Thorn Trap's first triggered strike each [Enemy Turn] grants the ally its enemy attacked a [Shield] worth 12% of that ally's maximum HP for one [Enemy Turn]. [Global] attacks protect every living target. +90% [Health] and +60% [Defense].
 
 Name: Thousandfeather Zenith Loom
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Bliss only)
-Ability (Default Value): Quietstorm Flourish grants both its Opening damage buff and Closing squad Shields, regardless of Bliss's action order.
+Ability (Default Value): Quietstorm Flourish grants both its Opening damage buff and Closing [Squad] [Shields], regardless of Bliss's action order. +70% [Skill Power] and +45% [Defense].
 
 Name: Throne Beneath the World
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Orvella only)
-Ability (Default Value): Worldweight Citadel leaves 40% of Foundation's current durability intact while using its full pre-cast durability for the extra strike. Other allies gain +20% Skill Efficiency for their next skill.
+Ability (Default Value): Worldweight Citadel leaves 40% of Foundation's current durability intact while using its full pre-cast durability for the extra strike. Other allies gain +20% [Skill Efficiency] for their next [Skill]. +110% [Health] and +40% [Elemental Gauge Capacity].
 
 Name: Thunder Choir Planetary Fugue
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Vaelor only)
-Ability (Default Value): On Rise, Resonance Cascade grants its Direct Damage buff to every living ally instead of only Vaelor. Allies also gain +20% Elemental Gauge Gain for the same duration.
+Ability (Default Value): On Rise, Resonance Cascade grants its [Direct Damage] buff to every living ally instead of only Vaelor. Allies also gain +20% [Elemental Gauge Gain] for the same duration. +90% [Direct Attack] and +30% [Skill Efficiency].
 
 Name: Thunderbird Coil
 Rarity: Omnic
 Element: Atmospheric (actual gameplay element)
-Ability (Default Value): Your critical skills arc 40% of their primary target's actual HP damage to the healthiest different enemy. With no other enemy, grant the other allies +20% Critical Rate for their next Attack Action instead.
+Ability (Default Value): Your critical [Skills] arc 40% of their primary target's actual HP damage to the healthiest different enemy. With no other enemy, grant the other allies +20% [Critical Rate] for their next [Attack Action] instead. +95% [Direct Attack] and +45% [Critical Damage Multiplier].
 
 Name: Twin Star Planetary Ratchet
 Rarity: Omnic (Master)
 Element: Atmospheric (named bearer's actual element; Master for Elise only)
-Ability (Default Value): Each Shuriken lodged by Voltstar Cut grants the next other ally's damaging skill against that enemy +35% Skill Power. Consume one Shuriken's bonus per activation; unused bonuses end on recall.
+Ability (Default Value): Each Shuriken lodged by Voltstar Cut grants the next other ally's damaging [Skill] against that enemy +35% [Skill Power]. Consume one Shuriken's bonus per activation; unused bonuses end on recall. +80% [Direct Attack] and +40% [Skill Power].
 
 Name: Twin-Rose Singularity Drive
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Crinso only)
-Ability (Default Value): Each Combo spent by Blossoming Cataclysm grants the other allies +15% Critical Damage Multiplier for their next Attack Action, up to +60%.
+Ability (Default Value): Each Combo spent by Blossoming Cataclysm grants the other allies +15% [Critical Damage Multiplier] for their next [Attack Action], up to +60%. +75% [Critical Damage Multiplier] and +50% [Elemental Gauge Capacity].
 
 Name: Unbound Mindcrown Synapse
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Disciple only)
-Ability (Default Value): Disciple's Strike, Shelter and Resolve last +2 player turns. A mismatched action no longer consumes Strike or Shelter; each still ends after one matching action.
+Ability (Default Value): Disciple's Strike, Shelter and Resolve last +2 [Player Turns]. A mismatched action no longer consumes Strike or Shelter; each still ends after one matching action. +75% [Health] and +35% [Skill Efficiency].
 
 Name: Unbroken Midnight Bastion
 Rarity: Omnic (Master)
 Element: Chaotic (named bearer's actual element; Master for Razor only)
-Ability (Default Value): When Unbroken Midnight spends Wounds, heal the other living allies for 20% of the amount spent, capped at 15% of each recipient's maximum HP.
+Ability (Default Value): When Unbroken Midnight spends Wounds, heal the other living allies for 20% of the amount spent, capped at 15% of each recipient's maximum HP. +100% [Health] and +30% [Elemental Gauge Gain].
 
 Name: Unbroken Sunforge Throne
 Rarity: Omnic (Master)
 Element: Infernic (named bearer's actual element; Master for Infernis only)
-Ability (Default Value): Dawnfire grants each other ally +40% Skill Power for their next damaging skill against an enemy carrying Infernis's Burn.
+Ability (Default Value): Dawnfire grants each other ally +40% [Skill Power] for their next damaging [Skill] against an enemy carrying Infernis's [Burn]. +85% [Direct Attack] and +35% [Elemental Gauge Gain].
 
 Name: Undertide Chronometer
 Rarity: Omnic
 Element: Oceanic (actual gameplay element)
-Ability (Default Value): +1 Enemy Turn Skill Duration for your Weaken. Other allies gain +15% Skill Efficiency for damaging skills targeting an enemy carrying your Weaken.
+Ability (Default Value): +1 [Enemy Turn] [Skill Duration] for your [Weaken]. Other allies gain +15% [Skill Efficiency] for damaging [Skills] targeting an enemy carrying your [Weaken]. +70% [Defense] and +30% [Skill Efficiency].
 
 Name: Undertow Sovereign Harpoon
 Rarity: Omnic (Master)
 Element: Oceanic (named bearer's actual element; Master for Tizu only)
-Ability (Default Value): Allies holding Tizu's Shields ignore 25% of enemy Defense when attacking enemies carrying his Weaken.
+Ability (Default Value): Allies holding Tizu's [Shields] ignore 25% of enemy [Defense] when attacking enemies carrying his [Weaken]. +95% [Defense] and +35% [Skill Power].
 
 Name: Verdant Covenant
 Rarity: Omnic
 Element: Botanic (actual gameplay element)
-Ability (Default Value): Effective healing from your skills grants its recipients +30% Skill Power for their next damaging skill. Hold one bonus per ally.
+Ability (Default Value): Effective healing from your [Skills] grants its recipients +30% [Skill Power] for their next damaging [Skill]. Hold one bonus per ally. +95% [Health] and +25% [Elemental Gauge Gain].
 
 Name: Virtuous Planet Rosegarden
 Rarity: Omnic (Master)
 Element: Tranquilitic (named bearer's actual element; Master for Rosetta only)
-Ability (Default Value): Crimson Skyfall against the Quarry heals every ally who hit it that player turn for 8% of their own maximum HP. Each other contributor also gains +20% Skill Efficiency for their next skill.
+Ability (Default Value): Crimson Skyfall against the Quarry heals every ally who hit it that [Player Turn] for 8% of their own maximum HP. Each other contributor also gains +20% [Skill Efficiency] for their next [Skill]. +80% [Health] and +30% [Skill Efficiency].
 
 Name: Worldforge Hammer Dominion
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Bruno only)
-Ability (Default Value): Seismic Hammerfall lowers its target's Defense by 25% through the next player turn. Bruno's Cover recipients gain +25% Direct Attack while protected.
+Ability (Default Value): Seismic Hammerfall lowers its target's [Defense] by 25% through the next [Player Turn]. Bruno's Cover recipients gain +25% [Direct Attack] while protected. +60% [Direct Attack] and +85% [Defense].
 
 Name: Worldgrove Covercharge Heart
 Rarity: Omnic
 Element: Botanic (actual gameplay element)
-Ability (Default Value): After you use a skill, the next different ally to use a skill gains +20% Skill Power if yours dealt damage, or +15% Skill Efficiency if yours healed or Shielded. A mixed skill grants both.
+Ability (Default Value): After you use a [Skill], the next different ally to use a [Skill] gains +20% [Skill Power] if yours dealt damage, or +15% [Skill Efficiency] if yours healed or Shielded. A mixed [Skill] grants both. +60% [Skill Power] and +50% [Elemental Gauge Capacity].
 
 Name: Worldroot Graft Coronation
 Rarity: Omnic
 Element: Botanic (actual gameplay element)
-Ability (Default Value): Your healing skills gain +50% Skill Power on allies below 40% HP. A recipient healed above that threshold gains +30% Defense for the next Enemy Turn.
+Ability (Default Value): Your healing [Skills] gain +50% [Skill Power] on allies below 40% HP. A recipient healed above that threshold gains +30% [Defense] for the next [Enemy Turn]. +110% [Health] and +20% [Skill Efficiency].
 
 Name: Worldroot Sap Cathedral
 Rarity: Omnic
 Element: Botanic (actual gameplay element)
-Ability (Default Value): Your damaging skills heal the most injured ally for 15% of their total actual HP damage, capped at 10% of that ally's maximum HP per cast.
+Ability (Default Value): Your damaging [Skills] heal the most injured ally for 15% of their total actual HP damage, capped at 10% of that ally's maximum HP per cast. +85% [Direct Attack] and +40% [Skill Power].
 
 Name: Worldroot Triage Sanctuary
 Rarity: Omnic
 Element: Botanic (actual gameplay element)
-Ability (Default Value): At the start of each player turn, grant the living ally with the lowest HP percentage +25% Skill Efficiency and +35% Skill Power for healing and Shields until their next action ends.
+Ability (Default Value): At the start of each [Player Turn], grant the living ally with the lowest HP percentage +25% [Skill Efficiency] and +35% [Skill Power] for healing and [Shields] until their next action ends. +70% [Health] and +60% [Defense].
 
 Name: Worldseed Mercy Foundry
 Rarity: Omnic (Master)
 Element: Botanic (named bearer's actual element; Master for Flora only)
-Ability (Default Value): Flora's Seeds grant their recipients +25% Skill Power for their next skill when harvested or when they mature. Empowered Seeds also grant +15% Skill Efficiency.
+Ability (Default Value): Flora's Seeds grant their recipients +25% [Skill Power] for their next [Skill] when harvested or when they mature. Empowered Seeds also grant +15% [Skill Efficiency]. +65% [Skill Power] and +50% [Elemental Gauge Capacity].
 
 Name: Worldtree Heart
 Rarity: Omnic
 Element: Botanic (actual gameplay element)
-Ability (Default Value): Your skills turn 60% of overhealing into a Shield for the recipient, capped at 20% of their maximum HP, lasting two Enemy Turns. Replaces the previous Shield from this Conduit.
+Ability (Default Value): Your [Skills] turn 60% of overhealing into a [Shield] for the recipient, capped at 20% of their maximum HP, lasting two [Enemy Turns]. Replaces the previous [Shield] from this Conduit. +140% [Health] and +35% [Skill Power].
 
 ==============================================================================
 CALAMITIC (5)

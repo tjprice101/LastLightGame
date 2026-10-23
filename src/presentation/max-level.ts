@@ -12,9 +12,9 @@ export function maxLevelPreview(account: Account, id: string): { html: string; p
   const copy = account.capturedCharacters?.find((entry) => entry.instanceId === id);
   const equipment = account.conduitEquipment?.[id];
   const progress = isStarterId(id) ? account.characters[id] : undefined;
-  const before = isStarterId(id) ? resolveFighter(id, progress, equipment, account.conduitUpgrades).stats
+  const before = isStarterId(id) ? resolveFighter(id, progress, equipment, account.conduitUpgrades, account.masterEquipment?.[id] ?? undefined).stats
     : copy ? resolveCapturedFighter(copy, equipment, account.conduitUpgrades).stats : null;
-  const after = isStarterId(id) && progress ? resolveFighter(id, { ...progress, level: plan.targetLevel }, equipment, account.conduitUpgrades).stats
+  const after = isStarterId(id) && progress ? resolveFighter(id, { ...progress, level: plan.targetLevel }, equipment, account.conduitUpgrades, account.masterEquipment?.[id] ?? undefined).stats
     : copy ? resolveCapturedFighter({ ...copy, level: plan.targetLevel }, equipment, account.conduitUpgrades).stats : null;
   if (!before || !after) throw new Error('Character stats are unavailable.');
   return { plan, html: `<h2 id="max-level-heading">Max Level</h2>
