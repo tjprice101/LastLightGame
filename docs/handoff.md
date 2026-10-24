@@ -15,9 +15,12 @@
   except for removal of Stasis's repeated20% maximum explanation.
 - Validation: catalog regeneration succeeded; six focused catalog/runtime/
   presentation files pass979 tests. Added all-level Stasis current-value,
-  penalty/cooldown and catalog-wide boilerplate regressions. Production
-  build/typecheck passes with the existing chunk-size warning. Release CI
-  and hosted publication are verified separately in the completion report.
+  penalty/cooldown and catalog-wide boilerplate regressions. Initial release
+  CI found one old exact-copy assertion expecting Causality's removed global
+  reminder; updated it to the concise ability while retaining a separate
+  shared-cap assertion. Full local suite now passes6523 tests/208 files.
+  Production build/typecheck passes with the existing chunk-size warning.
+  Hosted publication is verified separately in the completion report.
 
 ## Slim battle stats bar (D-396)
 
